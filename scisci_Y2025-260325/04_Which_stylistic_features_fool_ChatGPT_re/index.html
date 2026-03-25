@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Which stylistic features fool ChatGPT research evaluations?</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Which stylistic features fool ChatGPT research evaluations?</h1>
+<blockquote>
+<p><strong>저자</strong>: Kayvan Kousha, Mike Thelwall | <strong>날짜</strong>: 2026-03-16 | <strong>DOI</strong>: 10.48550/arXiv.2603.14919</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>핵심 요약</h2>
+<p>본 연구는 ChatGPT의 연구 품질 평가에서 초록의 가독성, 언어적 복잡성, 길이 등 연구 품질과 무관한 문체적 특징이 점수에 영향을 미치는지 분석한다. UK REF 2021에 제출된 99,277편의 학술 논문을 대상으로 분석한 결과, ChatGPT가 인간 전문가보다 언어적 복잡성에 더 강하게 반응하며, 긴 초록과 난해한 문체에 편향될 가능성이 있음을 밝혔다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 배경 및 동기</h2>
+<p>LLM이 연구 평가를 지원하는 도구로서 잠재력을 보이고 있으며, 제목과 초록만으로도 전문가 점수와 중간 정도의 상관관계를 보인다. 그러나 LLM이 전문(full text)보다 제목/초록에서 더 높은 상관을 보이는 현상은, LLM이 연구 품질과 무관한 문서 속성을 활용하여 "속임수"를 쓰고 있을 가능성을 시사한다. 이러한 잠재적 편향 요인의 식별이 필요하다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>방법론</h2>
+<ul>
+<li><strong>데이터</strong>: UK REF 2021에 제출된 99,277편의 고유 학술논문, 34개 Unit of Assessment(UoA)에 걸침</li>
+<li><strong>LLM 점수</strong>: ChatGPT-4o, ChatGPT-4o mini, ChatGPT-5 mini의 API를 통해 제목/초록 기반 연구 품질 점수 산출 (5회 반복 평균)</li>
+<li><strong>문체 지표</strong>: Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog Index, Coleman-Liau Index, 초록 길이(단어 수, 문장 수), 평균 문장 길이, 음절 수 등</li>
+<li><strong>비교</strong>: 각 문체 지표와 ChatGPT 점수, REF 전문가 점수, NLCS 인용 지표 간 Spearman 상관관계 분석</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>주요 결과</h2>
+<ul>
+<li>언어적 복잡성(Flesch-Kincaid Grade Level 등)이 ChatGPT 점수와 REF 전문가 점수 모두에 양의 상관을 보이지만, ChatGPT에서 상관이 더 강함</li>
+<li>초록 길이가 ChatGPT 점수와 더 강한 양의 상관을 보여, 긴 초록에 대한 편향 시사</li>
+<li>이러한 패턴은 분야에 따라 다르게 나타나며, 일부 UoA에서 특히 두드러짐</li>
+<li>ChatGPT의 문체 편향이 인용 지표(NLCS)와의 상관 패턴과도 차이를 보임</li>
+<li>개별 output 수준 점수(UoA 1-6, 각 500편)에서도 동일한 패턴 확인</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>독창성 및 기여</h2>
+<p>LLM 기반 연구 평가에서 문체적 편향을 체계적으로 분석한 최초의 대규모 연구이다. 99,277편이라는 방대한 데이터셋과 34개 분야에 걸친 분석은 분야별 차이를 포함한 포괄적 그림을 제공하며, LLM의 연구 평가 활용에 대한 중요한 경고를 제시한다.</p>
+</div><div class="section-box"><h2>한계 및 향후 연구</h2>
+<ul>
+<li>인과관계가 아닌 상관관계 분석에 그침</li>
+<li>REF 부서 수준 평균 점수를 개별 논문 품질의 대리 변수로 사용하여 부정확성 내재</li>
+<li>LLM 훈련 데이터에 REF 점수가 포함되었을 가능성 완전 배제 불가</li>
+<li>초록 외 전문(full text) 기반 평가에서의 문체 편향은 미분석</li>
+<li>향후 LLM 편향 완화 기법(문체 정규화 등) 개발 필요</li>
+</ul>
+</div><div class="section-box"><h2>평가</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: LLM 기반 연구 평가의 실용적 적용에 앞서 반드시 고려해야 할 문체적 편향 문제를 대규모 실증 데이터로 명확히 제시한 시의적절한 연구이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

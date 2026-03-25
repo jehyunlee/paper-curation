@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scientific production in the era of Large Language Models</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Scientific production in the era of Large Language Models</h1>
+<blockquote>
+<p><strong>저자</strong>: Keigo Kusumegi, Xinyu Yang, Paul Ginsparg, Mathijs de Vaan, Toby Stuart, Yian Yin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: 10.1126/science.adw3000</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>핵심 요약</h2>
+<p>본 연구는 Large Language Models(LLMs)이 과학 연구 생산에 미치는 거시적 영향을 210만 편의 preprint, 2.8만 건의 peer review 보고서, 2.46억 건의 온라인 접속 데이터를 활용하여 분석한다. LLM 도입이 연구자의 생산성을 23.7~89.3% 증가시키고, 언어적 복잡성과 논문 품질 간의 기존 양의 상관관계를 역전시키며, 연구자들이 더 다양한 선행 문헌을 접하도록 유도한다는 세 가지 핵심 발견을 제시한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 배경 및 동기</h2>
+<p>생성형 AI가 모든 학문 분야에서 빠르게 채택되고 있음에도 불구하고, LLM이 과학적 생산 전반에 미치는 체계적 영향에 대한 실증적 증거는 단편적이었다. 기존 연구들이 단백질 구조 예측이나 재료 발견 등 특정 과학적 맥락에서의 AI 활용을 다루었다면, 본 연구는 과학 기업 전체에 대한 LLM의 거시적 영향이라는 열린 질문에 답하고자 한다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>방법론</h2>
+<ul>
+<li><strong>데이터</strong>: arXiv(120만 편), bioRxiv(22.1만 편), SSRN(67.6만 편)의 2018-2024년 preprint와 ICLR-2024의 2.8만 건 peer review 보고서, arXiv 논문에 대한 2.46억 건의 조회/다운로드 기록 활용</li>
+<li><strong>LLM 사용 탐지</strong>: ChatGPT 이전 시기의 human-written text token 분포와 GPT-3.5turbo로 재작성한 LLM-written text token 분포를 비교하는 텍스트 기반 AI 탐지 알고리즘 개발</li>
+<li><strong>분석</strong>: Author-level fixed effects event model을 통한 생산성 분석, Flesch Reading Ease Score를 활용한 writing complexity 분석, differences-in-differences 분석을 통한 인용 행동 변화 분석</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>주요 결과</h2>
+<ul>
+<li>LLM 채택 후 연구자의 논문 생산성이 arXiv 36.2%, bioRxiv 52.9%, SSRN 59.8% 증가</li>
+<li>아시아계 연구자(비영어 모국어)의 생산성 증가가 가장 큼: bioRxiv 89.3%, SSRN 88.9%</li>
+<li>LLM 보조 논문에서 writing complexity와 논문 품질 간 관계가 역전됨 — 복잡한 문체의 LLM 보조 논문이 오히려 낮은 peer review 점수를 받음</li>
+<li>Bing Chat(GPT-4) 도입 후 사용자가 책(+26.3%), 더 최근 논문, 덜 인용된 논문에 접근하는 경향 증가</li>
+<li>LLM 채택자들은 11.9% 더 높은 확률로 책을 인용하고, 평균 0.379년 더 최근 문헌을 인용</li>
+</ul>
+</div><div class="section-box"><h2>독창성 및 기여</h2>
+<p>세 가지 대규모 preprint 저장소를 통합하여 LLM이 과학 생산에 미치는 거시적 영향을 최초로 체계적으로 분석한 연구이다. 특히 LLM이 writing complexity의 품질 신호 기능을 무력화한다는 발견과, 비영어권 연구자에 대한 비대칭적 생산성 효과의 정량화는 과학 정책에 중요한 시사점을 제공한다.</p>
+</div><div class="section-box"><h2>한계 및 향후 연구</h2>
+<ul>
+<li>인과적 식별 미비: AI 탐지 방법의 불완전성, self-selection bias 가능성</li>
+<li>초록 기반 탐지로 전문 전체에서의 LLM 사용을 포착하지 못함</li>
+<li>ChatGPT 이후 초기 세대 LLM 데이터에 기반한 스냅샷이므로, 현재의 더 발전된 모델 효과는 미반영</li>
+<li>향후 LLM이 학문 간 장벽을 낮추는 효과와 "invisible colleges" 대체 가능성에 대한 연구 필요</li>
+</ul>
+</div><div class="section-box"><h2>평가</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: Science지에 게재된 본 연구는 LLM이 과학 생산 생태계를 근본적으로 재편하고 있음을 대규모 실증 데이터로 설득력 있게 보여주며, 과학 평가 체계의 재설계 필요성을 강력히 제기하는 landmark 연구이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

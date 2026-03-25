@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BibFusion: A Python package to integrate, deduplicate, and harmonize exported bi</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>BibFusion: A Python package to integrate, deduplicate, and harmonize exported bibliographic records from Scopus and Web of Science for bibliometric analysis</h1>
+<blockquote>
+<p><strong>저자</strong>: Angelo Britto, Sebastian Robledo, Martha Zuluaga | <strong>날짜</strong>: 2026-02-14 | <strong>DOI</strong>: 10.47909/ijsmc.342</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>핵심 요약</h2>
+<p>본 연구는 Scopus와 Web of Science의 서지 레코드를 통합, 중복 제거, 정규화하여 분석 가능한 단일 코퍼스로 변환하는 Python 패키지 BibFusion을 제시한다. DOI 기반 중복 제거, OpenAlex를 통한 식별자 보강, ORCID/OpenAlexAuthorID 기반 저자 명확화, 인용 문자열 정제 등의 기능을 갖추며, 기업가적 마케팅 쿼리 시연에서 436건의 소스 레코드를 253개의 고유 저작물로 통합하였다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 배경 및 동기</h2>
+<p>Bibliometric 분석의 타당성은 기저 서지 메타데이터의 일관성에 달려 있으나, Scopus와 WoS는 커버리지, 내보내기 구조, 필드 완전성에서 차이가 있어 통합이 어렵다. DOI 누락, 저자명 변이, 소속 불일치, 인용 문자열 비표준화 등으로 중복이 팽창하고 인용 링크가 단절되어 생산성, 협업, 과학 지리 지표에 편향을 초래한다. 기존 도구(bibliometrix, VOSviewer 등)는 데이터 시각화에는 강하지만 크로스 데이터베이스 통합 전처리는 추가 작업이 필요하다.</p>
+</div><div class="section-box"><h2>방법론</h2>
+<ul>
+<li><strong>입력</strong>: Scopus CSV 파일과 WoS TXT 파일</li>
+<li><strong>정규화</strong>: ASCII/대문자 표준화, 소속 파싱 및 국가 추출</li>
+<li><strong>보강</strong>: DOI 기반 OpenAlex 조회로 영구 식별자(OpenAlex work ID, ORCID, OpenAlex author ID) 회복</li>
+<li><strong>중복 제거</strong>: DOI 우선 cascade + 보수적 fallback(제목-연도-제1저자)</li>
+<li><strong>저자 명확화</strong>: 정식 PersonID 계층(ORCID → OpenAlexAuthorID → 정규화된 이름)</li>
+<li><strong>인용 정제</strong>: 인용 문자열 정제 및 일관된 인용 링크 보존</li>
+<li><strong>저널 정보</strong>: ISSN/EISSN 규칙을 활용한 Scimago 정보 통합</li>
+<li><strong>감사</strong>: 출처, 병합 결정, 잔여 불확실성에 대한 감사 산출물 생성</li>
+</ul>
+</div><div class="section-box"><h2>주요 결과</h2>
+<ul>
+<li>기업가적 마케팅 쿼리 시연에서 436건 소스 레코드를 253개 고유 저작물로 통합</li>
+<li>통합 코퍼스에서 8,569편의 분석 가능한 인용 레이어 구축</li>
+<li>높은 식별자 및 지리적 완전성 달성</li>
+<li>중복 팽창과 메타데이터 단편화를 효과적으로 감소</li>
+<li>감사 산출물(별칭, 잠재적 충돌, 병합 로그)을 통한 투명성 확보</li>
+</ul>
+</div><div class="section-box"><h2>독창성 및 기여</h2>
+<p>Scopus-WoS 통합을 위한 재사용 가능하고 감사 가능한 Python 파이프라인을 제공한 점이 핵심 기여이다. DOI 기반 OpenAlex 보강, 정식 PersonID 계층을 통한 저자 명확화, 인용 문자열 정제와 재매핑을 통합적으로 수행하며, 모든 병합 결정에 대한 감사 추적성을 갖춘 점이 기존 도구 대비 차별화 요소이다.</p>
+</div><div class="section-box"><h2>한계 및 향후 연구</h2>
+<ul>
+<li>DOI가 없는 레코드에 대한 fallback 규칙(제목-연도-제1저자)이 보수적이어서 일부 중복 미제거 가능</li>
+<li>OpenAlex 자체의 메타데이터 불완전성이 보강 품질에 영향</li>
+<li>ORCID 보급률이 분야별로 상이하여 저자 명확화 품질 편차</li>
+<li>소규모 시연(436건)으로 대규모 데이터셋에서의 성능 미검증</li>
+<li>영어 저널 논문에 초점을 맞추어 비영어 문헌 처리 미확인</li>
+<li>향후 추가 데이터 소스(Dimensions, OpenAlex 직접 등) 지원 및 대규모 벤치마킹 필요</li>
+</ul>
+</div><div class="section-box"><h2>평가</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
+<p><strong>총평</strong>: Bibliometric 연구의 데이터 전처리 파이프라인이라는 실질적 문제를 체계적으로 해결하는 유용한 도구 논문으로, 재현 가능성과 감사 추적성에 대한 강조가 높이 평가된다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
