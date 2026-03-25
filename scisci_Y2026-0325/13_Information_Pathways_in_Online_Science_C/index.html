@@ -8,26 +8,35 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #fafafa; }
-h1 { font-size: 1.5rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.15rem; color: #2E74B5; margin: 1.8rem 0 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid #e0e0e0; }
-h3 { font-size: 1rem; color: #333; margin: 1rem 0 0.4rem; }
-p { margin: 0.5rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 1rem 0; padding: 0.8rem 1.2rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #555; }
-ul, ol { margin: 0.5rem 0 0.5rem 1.5rem; }
-li { margin: 0.3rem 0; }
-table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; }
+body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
+th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; }
+td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
 pre code { background: none; color: inherit; }
-img { max-width: min(100%, 800px); border: 1px solid #eee; border-radius: 8px; margin: 1rem 0; display: block; }
-hr { border: none; border-top: 1px solid #e0e0e0; margin: 1.5rem 0; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #2E74B5; }
-.back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 
@@ -43,11 +52,11 @@ a { color: #2E74B5; }
 </blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
-<h2>핵심 요약</h2>
+<div class="section-box"><h2>핵심 요약</h2>
 <p>본 논문은 COVID-19 관련 과학 논문의 온라인 확산 경로를 소셜 미디어(Twitter)와 뉴스 미디어를 아우르는 multi-level 관점에서 분석한다. 1.24M 트윗과 211K 뉴스 기사를 분석하여, 조직적 contrarian 네트워크가 반합의(anti-consensus) 전문가를 불균형적으로 증폭시키는 현상, 그리고 뉴스 미디어 보도가 Twitter superspreader 활동에 시간적으로 후행하는 information pathway를 발견하였다.</p>
-<h2>연구 배경 및 동기</h2>
+</div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>과학적 사실에 대한 회의론이 증가하고, 과학 커뮤니케이션이 온라인 공간에서 grassroots 형태로 이루어지고 있다. 기존 연구는 전문가, 뉴스 미디어, 소셜 미디어 사용자를 개별적으로 분석해 왔으나, 이들의 상호작용과 과학 커뮤니케이션 형성에서의 역할 관계는 잘 알려지지 않았다. 특히 분산된 grassroots 활동이 어떻게 중앙화된 전문가 영향력이나 조직적 정보 조작으로 발전하는지, 뉴스 미디어가 이 정보 흐름에서 어떤 위치를 차지하는지 이해가 부족했다.</p>
-<h2>방법론</h2>
+</div><div class="section-box"><h2>방법론</h2>
 <ul>
 <li><strong>데이터셋</strong>: Efstratiou et al. (2024)의 데이터셋 활용 - bioRxiv/medRxiv COVID-19 관련 preprint 25K+편, 1.24M 트윗(346K 사용자), 211K 뉴스 기사(2.34K 매체)</li>
 <li><strong>조직적 네트워크 탐지</strong>: Co-retweet similarity 기반 네트워크 구축 (30분 time window, TF-IDF, cosine similarity), eigenvector centrality 상위 1%를 coordinated account로 식별</li>
@@ -56,7 +65,7 @@ a { color: #2E74B5; }
 <li><strong>감정 분석</strong>: DistilRoBERTa 모델로 감정 분류</li>
 <li><strong>미디어-Twitter 관계</strong>: DOI 기반 TF-IDF 벡터화와 cosine similarity로 매체-superspreader 정렬도 분석; Gaussian kernel density estimation으로 시간적 선후관계(precedence pathway) 분석</li>
 </ul>
-<h2>주요 결과</h2>
+</div><div class="section-box"><h2>주요 결과</h2>
 <ul>
 <li><strong>조직적 네트워크</strong>: coordinated account의 96.4%가 contrarian이며, 주로 백신/부스터, 바이러스 변이/면역, 초과 사망률 관련 논문에 집중</li>
 <li><strong>Superspreader 특성</strong>: 80.6%가 conformist(친합의)이며, 주로 의사/과학자 자격 보유; contrarian superspreader는 55.4%가 비의료 분야 전문가</li>
@@ -64,13 +73,13 @@ a { color: #2E74B5; }
 <li><strong>미디어 정렬</strong>: conformist superspreader는 주류/의료 매체와, contrarian superspreader는 저신뢰/음모론/유사과학 매체와 높은 유사성</li>
 <li><strong>시간적 선후관계</strong>: superspreader의 활동이 뉴스 보도에 시간적으로 선행 (median 19.6-28시간). 자동화(bot)가 아닌 인간 주도의 조직적 행동</li>
 </ul>
-<h2>독창성 및 기여</h2>
+</div><div class="section-box"><h2>독창성 및 기여</h2>
 <ul>
 <li>소셜 미디어 내 다양한 행위자(organic users, bots, superspreaders, coordinated accounts)와 뉴스 미디어를 아우르는 <strong>multi-level information pathway</strong> 분석 프레임워크 최초 제시</li>
 <li>조직적 네트워크가 특정 contrarian 전문가를 선택적으로 증폭하는 메커니즘을 실증적으로 규명</li>
 <li>Twitter-to-news temporal precedence를 정량화하여 과학 커뮤니케이션에서 플랫폼과 뉴스 매체의 관계를 새롭게 조명</li>
 </ul>
-<h2>한계 및 향후 연구</h2>
+</div><div class="section-box"><h2>한계 및 향후 연구</h2>
 <ul>
 <li><strong>저자 언급 한계</strong>: 과학 논문 공유에만 한정 (다른 형태의 과학 커뮤니케이션 미포함); COVID-19이라는 특정 주제, Twitter라는 특정 플랫폼에 한정; 시간적 선후관계가 인과관계를 의미하지 않음</li>
 <li><strong>추가 지적</strong>:</li>
@@ -79,7 +88,7 @@ a { color: #2E74B5; }
 <li>Contrarian/conformist 이진 분류가 과학적 논쟁의 nuance를 포착하지 못할 수 있음</li>
 <li>Twitter API 변경(2023년 5월) 이후 재현 불가능한 연구</li>
 </ul>
-<h2>평가</h2>
+</div><div class="section-box"><h2>평가</h2>
 <table>
 <thead>
 <tr>
@@ -110,7 +119,7 @@ a { color: #2E74B5; }
 </tr>
 </tbody>
 </table>
-<p><strong>총평</strong>: COVID-19 과학 커뮤니케이션의 multi-level 정보 경로를 포괄적으로 분석한 우수한 연구로, 조직적 contrarian 증폭과 Twitter-to-news precedence라는 두 가지 핵심 발견은 과학 커뮤니케이션과 misinformation 연구에 중요한 함의를 제공한다.</p>
+<p><strong>총평</strong>: COVID-19 과학 커뮤니케이션의 multi-level 정보 경로를 포괄적으로 분석한 우수한 연구로, 조직적 contrarian 증폭과 Twitter-to-news precedence라는 두 가지 핵심 발견은 과학 커뮤니케이션과 misinformation 연구에 중요한 함의를 제공한다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

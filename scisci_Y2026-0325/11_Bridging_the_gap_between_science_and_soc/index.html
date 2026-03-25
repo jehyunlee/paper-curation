@@ -8,26 +8,35 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #fafafa; }
-h1 { font-size: 1.5rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.15rem; color: #2E74B5; margin: 1.8rem 0 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid #e0e0e0; }
-h3 { font-size: 1rem; color: #333; margin: 1rem 0 0.4rem; }
-p { margin: 0.5rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 1rem 0; padding: 0.8rem 1.2rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #555; }
-ul, ol { margin: 0.5rem 0 0.5rem 1.5rem; }
-li { margin: 0.3rem 0; }
-table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; }
+body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
+th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; }
+td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
 pre code { background: none; color: inherit; }
-img { max-width: min(100%, 800px); border: 1px solid #eee; border-radius: 8px; margin: 1rem 0; display: block; }
-hr { border: none; border-top: 1px solid #e0e0e0; margin: 1.5rem 0; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #2E74B5; }
-.back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 
@@ -43,18 +52,18 @@ a { color: #2E74B5; }
 </blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
-<h2>핵심 요약</h2>
+<div class="section-box"><h2>핵심 요약</h2>
 <p>본 논문은 영국 Research Excellence Framework(REF)의 465개 사례를 분석하여, 도서관이 과학 연구의 사회적 영향(societal impact) 창출 과정에서 수행하는 역할과 전략을 체계적으로 규명한다. LLM과 BERTopic을 결합한 하이브리드 접근법으로 다섯 가지 핵심 전략을 도출하였으며, 도서관의 기여가 Arts and Humanities(76%) 분야와 문화적 영향(67%)에 집중되어 있음을 밝혔다.</p>
-<h2>연구 배경 및 동기</h2>
+</div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>과학 연구의 사회적 가치는 학계 밖으로의 지식 확산에 크게 의존하지만, 기존 연구는 대학, 기업, 정부, 일반 대중 등 지식 생산자와 소비자에 주로 집중해 왔다. 도서관과 같은 knowledge broker(지식 중개 기관)의 역할은 체계적으로 분석되지 않았으며, 이러한 기관이 어떻게 디지털 격차를 해소하고 연구의 도달 범위를 확장하는지에 대한 이해가 부족했다.</p>
-<h2>방법론</h2>
+</div><div class="section-box"><h2>방법론</h2>
 <ul>
 <li><strong>데이터</strong>: UKRI API를 통해 수집한 REF2014(6,637건) 및 REF2021(6,361건) impact case studies</li>
 <li><strong>도서관 목록</strong>: Library Technology 웹사이트에서 웹 스크래핑으로 수집한 글로벌 도서관 정보</li>
 <li><strong>전략 추출</strong>: 도서관명을 REF 사례의 SI/DI 섹션에 exact matching한 후, GPT-4o를 사용하여 도서관 참여 전략을 추출 (precision 84%, recall 76%)</li>
 <li><strong>전략 요약</strong>: BERTopic 모델링으로 16개 초기 토픽 클러스터를 도출하고, Silhouette Score 최적화(w_s=0.8, w_e=0.2)를 거쳐 수동 병합으로 5개 핵심 전략 도출</li>
 </ul>
-<h2>주요 결과</h2>
+</div><div class="section-box"><h2>주요 결과</h2>
 <ul>
 <li>도서관이 참여한 465개 impact case 중 76%가 Arts and Humanities(Main Panel D) 분야에 집중</li>
 <li>영향 유형별로는 문화적 영향(67%)과 사회적 영향(22%)이 지배적</li>
@@ -65,13 +74,13 @@ a { color: #2E74B5; }
 <li><strong>Digital Content Creation and Knowledge Dissemination</strong>: 디지털 아카이브, 오픈 교육 자료 개발</li>
 <li><strong>Major Events and Public Programming</strong>: 국제 컨퍼런스, 전시회 등 대규모 공공 행사 기획</li>
 </ul>
-<h2>독창성 및 기여</h2>
+</div><div class="section-box"><h2>독창성 및 기여</h2>
 <ul>
 <li>도서관을 research impact 생태계의 knowledge broker로 체계적으로 위치시킨 최초의 실증 연구</li>
 <li>LLM(GPT-4o)과 BERTopic을 결합한 하이브리드 텍스트 분석 방법론의 적용</li>
 <li>REF 데이터를 활용한 evidence-based framework 제시로, 도서관의 사회적 기여를 정량화</li>
 </ul>
-<h2>한계 및 향후 연구</h2>
+</div><div class="section-box"><h2>한계 및 향후 연구</h2>
 <ul>
 <li><strong>저자 언급 한계</strong>: REF 사례 데이터의 word-length 제한으로 도서관 유형별 세분화된 분석이 어려움; 영국 REF에 한정된 데이터로 다른 지역으로의 일반화 필요</li>
 <li><strong>추가 지적</strong>:</li>
@@ -80,7 +89,7 @@ a { color: #2E74B5; }
 <li>LLM 추출의 precision(84%)과 recall(76%)이 높지 않아 일부 전략이 누락되었을 수 있음</li>
 <li>Silhouette Score가 0.1788로 매우 낮아 클러스터링 품질에 의문</li>
 </ul>
-<h2>평가</h2>
+</div><div class="section-box"><h2>평가</h2>
 <table>
 <thead>
 <tr>
@@ -111,7 +120,7 @@ a { color: #2E74B5; }
 </tr>
 </tbody>
 </table>
-<p><strong>총평</strong>: 도서관의 research impact 기여를 체계적으로 분석한 흥미로운 시도이나, 영국 REF에 국한된 데이터와 낮은 클러스터링 품질, 그리고 Arts and Humanities 편중이라는 한계가 결론의 일반화 가능성을 제약한다.</p>
+<p><strong>총평</strong>: 도서관의 research impact 기여를 체계적으로 분석한 흥미로운 시도이나, 영국 REF에 국한된 데이터와 낮은 클러스터링 품질, 그리고 Arts and Humanities 편중이라는 한계가 결론의 일반화 가능성을 제약한다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>
