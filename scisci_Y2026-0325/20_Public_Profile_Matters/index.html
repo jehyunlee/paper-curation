@@ -30,6 +30,10 @@ a { color: #2E74B5; }
 .back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Karan Goyal, Dikshant Kukreja, Vikram Goyal, Mukesh Mohania (IIIT Delhi) | <strong>날짜</strong>: 2026-03-18 | <strong>arXiv</strong>: 2603.17361v1 [cs.IR]</p>
 </blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
 <h2>핵심 요약</h2>
 <p>본 논문은 local citation recommendation (LCR) 문제를 해결하기 위해 두 단계 시스템을 제안한다. 첫 번째 단계인 <strong>Profiler</strong>는 논문의 "public profile" (인용 네트워크 내에서 해당 논문이 어떻게 인식되는지)을 활용하는 비학습(non-learnable) 검색 모듈이며, 두 번째 단계인 <strong>DAVINCI</strong>는 검색 단계의 confidence prior와 semantic 정보를 adaptive vector-gating 메커니즘으로 융합하는 reranker이다. 또한 기존 transductive 평가 방식의 한계를 지적하고, 시간 순서를 엄격히 준수하는 <strong>inductive evaluation setting</strong>을 도입하여 현실적 평가 프레임워크를 제시한다.</p>

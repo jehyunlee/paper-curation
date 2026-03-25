@@ -30,6 +30,10 @@ a { color: #2E74B5; }
 .back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Yifan Qian, Zhe Wen, Alexander C. Furnas, Yue Bai, Erzhuo Shao, Dashun Wang | <strong>날짜</strong>: 2026년 1월 | <strong>arXiv</strong>: 2601.15485v1</p>
 </blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
 <h2>핵심 요약</h2>
 <p>본 논문은 LLM(Large Language Model)의 부상이 미국 연방 연구 자금 시스템을 어떻게 재편하고 있는지를 대규모 실증 분석으로 밝힌다. NSF와 NIH의 비공개 제안서(funded + unfunded)와 공개 수상 데이터를 결합하여, LLM 사용이 2023년부터 급격히 증가하되 bimodal 분포를 보이며, LLM 사용이 높을수록 연구 제안의 semantic distinctiveness가 낮아져 최근 지원된 과제와 유사해지는 경향을 발견하였다. 이 효과는 기관에 따라 상이하여, NIH에서는 LLM 사용이 채택 확률 및 논문 생산량과 양의 상관을 보이나 NSF에서는 유의미한 관계가 없다.</p>

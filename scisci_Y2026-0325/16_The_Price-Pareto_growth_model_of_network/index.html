@@ -30,6 +30,10 @@ a { color: #2E74B5; }
 .back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Lukasz Brzozowski, Marek Gagolewski, Grzegorz Siudem, Barbara Zogala-Siudem | <strong>날짜</strong>: 2026년 2월 (Preprint, 2026-02-24 업데이트) | <strong>arXiv</strong>: 2510.13392v2</p>
 </blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
 <h2>핵심 요약</h2>
 <p>본 논문은 커뮤니티 구조를 가진 네트워크의 degree sequence를 모델링하기 위한 새로운 분석적 프레임워크를 제안한다. 기존의 3DSI(Price-Pareto) 모델을 확장하여, 각 커뮤니티별로 고유한 성장 파라미터(참고문헌 수 $m_i$, preferential attachment 비율 $\rho_i$, 커뮤니티 확률 $p_i$)를 부여함으로써 과학 분야 간 인용 문화의 이질성을 포착한다. 각 커뮤니티의 citation count 분포가 Pareto type II 분포로 수렴함을 증명하고, Gini index에 대한 해석적 공식을 도출하였다.</p>

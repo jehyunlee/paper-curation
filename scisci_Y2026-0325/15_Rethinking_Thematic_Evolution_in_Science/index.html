@@ -30,6 +30,10 @@ a { color: #2E74B5; }
 .back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Massimo Aria, Luca D'aniello, Michelangelo Misuraca, Maria Spano | <strong>날짜</strong>: 2026-03-09 | <strong>DOI/arXiv</strong>: arXiv:2603.06436v1</p>
 </blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
 <h2>핵심 요약</h2>
 <p>본 논문은 science mapping의 종단적(longitudinal) 주제 진화 분석에서 존재하는 방법론적 비일관성을 해결하는 통합 프레임워크를 제안한다. 기존 접근법은 cross-sectional 주제 탐지에는 관계형 네트워크 클러스터링을, inter-temporal 연결에는 집합론적 keyword overlap을 사용하는 구조적 비대칭이 있었다. 제안된 프레임워크는 fuzzy document affiliation, PageRank 가중 lineage strength, 그리고 dual-thresholding 기반 자동 계보 탐지를 하나의 관계형 아키텍처 내에서 통합한다.</p>

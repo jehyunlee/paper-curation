@@ -30,6 +30,10 @@ a { color: #2E74B5; }
 .back { margin-top: 2rem; padding: 1rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Angelo Britto, Sebastian Robledo, Martha Zuluaga | <strong>날짜</strong>: 2026-02-15 | <strong>DOI</strong>: 10.47909/ijsmc.342</p>
 </blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
 <hr />
 <h2>핵심 요약</h2>
 <p>본 논문은 Scopus와 Web of Science(WoS)의 서지 데이터를 통합, 중복 제거, 정규화하여 분석 가능한 단일 코퍼스를 생성하는 Python 패키지 BibFusion을 소개한다. DOI 기반 1차 매칭과 보수적 fallback 전략, OpenAlex를 통한 식별자 보강, 그리고 canonical PersonID 기반 저자 동음이의어 해소를 핵심 기능으로 하며, 7개의 관계형 엔티티 테이블과 감사 추적(audit artifact)을 산출한다.</p>
