@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Remote collaboration fuses fewer breakthrough ideas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Remote collaboration fuses fewer breakthrough ideas</h1>
+<blockquote>
+<p><strong>저자</strong>: Yiling Lin, Carl Benedikt Frey, Lingfei Wu | <strong>날짜</strong>: 2023-11-30 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-023-06767-1" target="_blank">10.1038/s41586-023-06767-1</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>원격 협업은 돌파구적 혁신을 저해한다. 협업 거리가 0km에서 600km 이상으로 증가하면 논문의 파괴적 혁신(disruption) 확률이 28%에서 22%로, 특허는 67%에서 55%로 하락한다. 원격 팀원들은 주로 실험 수행, 데이터 분석 등 후기 기술적 작업에 집중하며, 연구 구상(conceiving) 참여 확률은 63%에서 51%로 감소한다. 즉, 디지털 기술의 발전에도 불구하고 대면 상호작용이 파괴적 아이디어 융합에 여전히 핵심적이다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>재조합 성장 이론(recombinant growth theory)에 따르면 더 많은 연구자와 더 넓은 협업 네트워크는 더 많은 발견으로 이어져야 한다. 그러나 최근 연구들은 "아이디어를 찾기가 점점 더 어려워지고 있다"는 모순된 현상을 보고하고 있다. 원격 협업이 전 세계적으로 급증하는 상황에서, 연결성 증가가 왜 혁신 가속으로 이어지지 않는지에 대한 설명이 필요했다. 저자들은 팀 내 역할 분담과 지식의 암묵적(tacit) vs. 코드화된(codified) 성격에 주목하여, 원격 팀과 현장 팀의 혁신 기여 차이를 체계적으로 분석했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>원격 팀의 혁신 페널티 확인</strong>: 모든 분야, 시기, 팀 규모에서 원격 팀은 현장 팀 대비 파괴적 혁신 확률이 3-4% 낮았으며, 이는 분야/시기/팀 규모/경력/지식 다양성/연결 강도 및 저자 고정효과 통제 후에도 유지됨.</li>
+<li><strong>역할 분화 발견</strong>: 동일한 과학자가 원격으로 전환하면 연구 구상 참여 확률이 12% 감소(63%→51%)하는 반면, 실험 수행은 미미하게 증가(42%→43%). 원격 팀은 기술적 실행에, 현장 팀은 개념적 창조에 비교우위를 가짐.</li>
+<li><strong>세대 간 지식 전달 단절</strong>: 현장 팀에서는 인용 영향력 차이와 관계없이 공동 구상 확률이 34%로 일정했으나, 원격 팀에서는 인용 격차가 10^4배일 때 33%에서 23%로 급감. 신진 연구자가 혁신적 아이디어 구상에서 배제됨.</li>
+<li><strong>시간대 효과</strong>: 같은 시간대 내 원격 협업(24% disruption)에서 시간대 간 원격 협업(22%)으로 이동할 때 추가 하락 관찰.</li>
+<li><strong>50년 추세</strong>: 팀원 간 평균 거리가 논문에서 100km→1,000km, 특허에서 250km→750km으로 증가하면서 원격 협업 비중이 지속적으로 상승.</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: 1960-2020년 논문 2,013만 편(22,566,650명 과학자, 3,562개 도시), 1976-2020년 특허 406만 건(2,732,326명 발명가, 87,937개 도시). Microsoft Academic Graph 및 PatentsView 활용.</li>
+<li><strong>혁신 측정</strong>: Disruption score (D score, -1~1). 후속 인용이 해당 논문의 참고문헌을 무시하면 disruptive, 함께 인용하면 developing.</li>
+<li><strong>역할 분석</strong>: Nature, Science, PNAS, PLOS ONE의 89,575편 저자 기여 공개(author contribution disclosures) 분석. 4개 활동 분류: 연구 구상, 실험 수행, 데이터 분석, 논문 작성.</li>
+<li><strong>강건성</strong>: (1) 동일 과학자의 현장/원격 전환 추적, (2) 반복 협업 팀의 지리적 분리 이벤트 스터디, (3) 기계학습으로 역할 예측하여 표본 확대(16,397,750편).</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<p>팀 수준의 혁신 성과를 넘어 <strong>팀 내 개인의 역할 변화</strong>를 추적한 최초의 대규모 정량 연구. 기존 연구가 "대형 팀 vs. 소형 팀" 또는 "원격 vs. 대면"의 성과 차이에 집중한 반면, 본 연구는 동일 과학자가 협업 방식을 전환할 때 역할이 어떻게 변하는지를 보여줌으로써, 원격 협업이 혁신을 저해하는 메커니즘(암묵지 교환의 어려움 → 개념적 작업 배제)을 규명했다. 또한 세대 간 지식 전달에 대한 함의는 과학 정책에 중요한 시사점을 제공한다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>저자 기여 공개(author contribution disclosures)는 자기 보고(self-reported)이며 Nature, Science, PNAS, PLOS ONE에 한정되어 대표성에 한계가 있음.</li>
+<li>D score는 인용 패턴 기반이므로 인용 관행이 분야마다 다를 수 있음.</li>
+<li>관찰 연구이므로 인과관계 주장에 한계가 있음(선택 편향 가능성).</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>COVID-19 이후 급증한 화상회의 도구(Zoom, Teams 등)의 효과를 시간적으로 분리하여 분석하지 못함. 2020년 이후 데이터에서 원격 협업의 질적 변화가 있었을 가능성.</li>
+<li>"원격"의 정의가 도시 단위 이진 분류로, 같은 도시 내 다른 기관 간 협업(예: 보스턴 내 MIT-Harvard)과 진정한 대면 협업을 구분하지 못함.</li>
+<li>분야별 이질성(예: 이론 물리학 vs. 실험 생물학)에 대한 심층 분석이 부족하며, 어떤 유형의 연구가 원격에서도 파괴적일 수 있는지에 대한 논의가 제한적.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>COVID-19 전후 비교를 통한 디지털 협업 도구 효과의 자연 실험 분석.</li>
+<li>하이브리드 협업 모델(주기적 대면 + 원격)의 최적 빈도와 혁신 성과 관계 탐구.</li>
+<li>분야별, 연구 유형별(이론/실험/계산) 원격 협업 효과의 이질성 분석.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: 원격 협업 시대의 혁신 감소라는 퍼즐에 대해 팀 내 역할 분화라는 새로운 메커니즘을 제시한 Nature급 연구. 2,000만 편 이상의 대규모 데이터와 다층적 강건성 검증이 설득력을 높이며, 과학 정책과 조직 관리에 직접적 시사점을 제공한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
