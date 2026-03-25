@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/jehyu/Arbeitplatz/paper-curation\\\" && git add -A && git commit -m \\\"Paper curation: scisci_260325 (9 reviews)\\\" && git push origin main 2>&1\",\"timeout\":60000,\"description\":\"C...",
-  "error": "Exit code 1\nwarning: in the working copy of '.omc/state/hud-state.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scisci_260325/01_chatgpt_eval/review.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scisci_260325/02_polymer_scientometrics/review.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scisci_260325/03_ai_risk_scientometric/review.md', LF will be r...",
-  "timestamp": "2026-03-24T23:34:38.937Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"# The old dir was already renamed on disk. Just stage everything and commit.\\ngit add -A scisci_Y2026-0325/ scisci_2026_full/ && git commit -m \\\"$(cat <<'EOF'\\nRedesign scisci curation: ca...",
+  "error": "Exit code 3221225477\n      0 [main] bash (4240) C:\\Program Files\\Git\\bin\\..\\usr\\bin\\bash.exe: *** fatal error - add_item (\"\\??\\C:\\Program Files\\Git\", \"/\", ...) failed, errno 1",
+  "timestamp": "2026-03-25T05:23:01.845Z",
+  "retry_count": 3
 }
