@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mapping Knowledge: Topic Analysis of Science Locates Researchers in Disciplinary</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Mapping Knowledge: Topic Analysis of Science Locates Researchers in Disciplinary Landscape</h1>
+<blockquote>
+<p><strong>저자</strong>: Radim Hladik, Yann Renisio | <strong>날짜</strong>: 2024-02-22 | <strong>Journal</strong>: (preprint, OSF) | <strong>DOI</strong>: 10.31235/osf.io/94jd5</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>Topic modeling과 compositional data analysis(CoDa), 기하학적 데이터 분석(GDA)을 결합하여 개별 연구자를 학문 분야의 지식 공간 내에 배치하는 "인식론적 좌표계(epistemological coordinate system)"를 구축했다. 체코 공화국의 R&amp;D 정보 시스템에서 수집한 1,039,577편의 논문(838,428편 텍스트 포함)과 118,560명의 저자 데이터를 사용하여, 과학 지식 공간의 주요 구조축이 Culture-Nature(분산의 25.1%), Life-Non-life(15.3%), Materials-Methods(7.7%)의 세 가지임을 밝혔다.</p>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>과학 지도 작성(science mapping)은 전통적으로 계량서지학(scientometrics)과 사회학이라는 두 전통으로 분리되어 있었다. 계량서지학은 인용·공저 네트워크 기반의 bottom-up 분류를, 사회학은 설문·인물 조사 기반의 사회적 차원 분석을 각각 강조했다. Pierre Bourdieu의 장(field) 이론이 제시한 "위치(positions)의 공간"과 "입장 표명(position-takings)의 공간" 간 상동성(homology)이라는 통합적 프레임워크가 있었지만, 이를 경험적으로 구현하는 방법론이 부재했다. 이 연구는 topic modeling의 확률적·관계적 속성이 Bourdieu 사회학과 이론적으로 양립 가능하다는 점에 착안하여, 텍스트 기반 지식 분류와 연구자 개인의 인식론적 위치를 동시에 파악하는 방법론을 제안한다.</p>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>계층적 클러스터링과 FORD 분류의 정합성 확인</strong>: Bottom-up topic model에서 도출한 분야 클러스터가 전문가 기반 FORD(Fields of Research and Development) 분류 체계의 중첩 구조와 대체로 일치하며, 2-클러스터 해에서 SSH/STEM 구분, 3-클러스터 해에서 생명/비생명과학 구분이 재현됨 (silhouette score 최고 0.31)</li>
+<li><strong>세 가지 인식론적 축 발견</strong>: PCA를 통해 Culture-Nature(25.1%), Life-Non-life(15.3%), Materials-Methods(7.7%) 축을 식별하고, 추가로 Synthesis-Analysis(6.1%), Applied-Fundamental(4.7%), Description-Prescription(3.6%) 축까지 해석</li>
+<li><strong>개별 연구자의 인식론적 좌표 생성</strong>: 112,835명 연구자의 topic portfolio를 PCA 공간에 투사하여 연속적 인식론적 좌표를 부여, Piaget의 인식론적 원과 Klavans &amp; Boyack(2009) 합의 지도와 유사한 원형 패턴 관찰</li>
+<li><strong>성별 편향의 인식론적 차원 규명</strong>: 여성 연구자가 Life 축 방향에 집중 분포하며, 대부분 분야에서 성별 차이가 수학·공학·물리학 교차점을 향한 일관된 방향성을 보임</li>
+<li><strong>보조 변수를 통한 검증</strong>: 출판 형태(논문 비율), 성별, 공저자 수, 기관 유형(체코 과학아카데미, 병원, 예술학교), 연구비 출처 등이 인식론적 좌표와 체계적으로 연관됨을 확인</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: 체코 R&amp;D Information System의 2000-2021년 출판 기록 1,039,577편, 838,428편의 제목·초록·키워드 텍스트, 118,560명 저자, 55,603건 연구비</li>
+<li><strong>Topic modeling</strong>: TopSBM(hierarchical stochastic block model 기반) 알고리즘 사용, 하이퍼파라미터 없이 3,656개 토픽 도출, 256GB RAM 서버에서 실행</li>
+<li><strong>Compositional data transformation</strong>: 분야별 topic portfolio에 centred log-ratio(clr) 변환 후 z-score 표준화</li>
+<li><strong>기하학적 분석</strong>: Ward 방법 계층적 클러스터링, 분야-토픽 행렬의 전치 후 PCA 수행, 개별 연구자 topic portfolio를 PCA 공간에 barycenter로 투사</li>
+<li><strong>검증</strong>: 백분위 기반 보조 변수 분포 분석, Genderize.io 기반 성별 추정(정확도 98%), silhouette 및 Dunn's index로 클러스터링 검증</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<p>이 연구의 핵심 독창성은 topic modeling, compositional data analysis, geometric data analysis를 결합한 방법론적 프로토콜에 있다. 기존 science mapping이 분야 수준의 집합적 지도에 머물렀다면, 이 연구는 개별 연구자를 텍스트 내용에 기반한 연속적 인식론적 좌표 위에 배치하는 최초의 체계적 시도이다. 특히 topic model의 확률 분포를 compositional data로 재해석하여 clr 변환을 적용한 점, 그리고 분야를 "활성 변수"로 사용하여 언어적·사회적 효과로부터 지식의 자율적 구조를 분리한 이중 참조(double recourse) 전략은 방법론적으로 새롭다. Bourdieu의 position-takings 개념을 대규모 텍스트 데이터로 경험적으로 조작화(operationalize)한 점도 사회학적 기여가 크다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Topic modeling의 확률적 초기화와 ground truth 부재로 인한 재현성 문제</li>
+<li>TopSBM이 단어를 단일 토픽에만 배정하여 동음이의어(homonymy) 처리 미흡</li>
+<li>체코 단일 국가 데이터의 대표성 한계 — 세계 과학 전체로의 일반화에 제약</li>
+<li>분야 내부의 세부 지식 조직 체계와 전체 좌표계의 관련성 추가 연구 필요</li>
+<li>인용 데이터 미활용 — 출판물 가중치가 동일하여 영향력 반영 불가</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li><strong>시간적 동태성 부재</strong>: 20년간의 데이터를 정적 스냅샷으로 분석하여 연구자 개인의 궤적 변화나 분야 간 이동 패턴을 파악하지 못함</li>
+<li><strong>영어 텍스트만 사용</strong>: 체코어 출판물은 언어 감지에서 제외되어 인문·사회과학의 상당 부분이 누락되었을 가능성</li>
+<li><strong>TopSBM의 확장성 문제</strong>: 256GB RAM이 필요한 만큼 다른 국가나 더 큰 데이터셋에 적용하기 어려울 수 있음</li>
+<li><strong>학제 간 연구의 측정</strong>: 잔여 범주(Other)가 학제 간 영역으로 해석되었으나, 이에 대한 정량적 학제 간 지표가 부족</li>
+<li><strong>인과 관계 미확립</strong>: 보조 변수(성별, 기관 등)와 인식론적 좌표 간 연관성은 확인하였으나, 인과적 해석은 부재</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>시계열 분석을 통한 연구자의 인식론적 궤적 추적 및 분야 이동 동학 연구</li>
+<li>다국가 비교 연구를 통한 인식론적 좌표계의 보편성 검증</li>
+<li>인용 가중치를 결합한 확장 모델 개발</li>
+<li>LLM 기반 embedding과의 비교 연구로 topic model 접근법의 상대적 장점 검증</li>
+<li>과학 이외의 문화 생산 영역(문학, 영화, 정치)에의 방법론 확장</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: Topic modeling과 compositional/geometric data analysis를 결합하여 개별 연구자를 인식론적 좌표 위에 배치하는 독창적이고 방법론적으로 정교한 연구이나, 체코 단일 국가 데이터와 정적 분석이라는 한계가 일반화 가능성을 제약한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

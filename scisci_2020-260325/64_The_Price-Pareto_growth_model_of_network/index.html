@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Price-Pareto growth model of networks with community structure</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>The Price-Pareto growth model of networks with community structure</h1>
+<blockquote>
+<p><strong>저자</strong>: Lukasz Brzozowski, Marek Gagolewski, Grzegorz Siudem, Barbara Zogala-Siudem | <strong>날짜</strong>: 2026-02-23 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: 10.48550/arXiv.2510.13392</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>기존 3DSI(Price-Pareto) 인용 네트워크 성장 모델을 커뮤니티 구조로 확장하여, 각 학문 분야(커뮤니티)별로 고유한 성장률, 참고문헌 수, 선호적 부착 비율을 갖는 해석적(analytical) 프레임워크를 제시했다. 각 커뮤니티의 인용 분포가 점근적으로 Pareto type II 분포에 수렴함을 증명하고, Gini 지수의 닫힌 형태 공식을 유도했으며, Cora(2,708 노드)와 DBLP(481,387 노드) 실제 네트워크에서 모델의 적합성을 검증했다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: Price 모델과 Barabasi-Albert 모델로 대표되는 선호적 부착(preferential attachment) 기반 인용 네트워크 성장 모델이 멱법칙 분포를 잘 설명하며, 3DSI 모델은 우연적(accidental) 인용과 선호적 인용을 구분하여 세 가지 파라미터로 과학적 영향력을 기술한다.</li>
+<li><strong>갭</strong>: 기존 해석적 네트워크 모델은 커뮤니티 구조를 지원하지 않으며, 커뮤니티를 다루는 모델(GNN, SBM 등)은 성장 역학을 포착하지 못하거나 해석적 투명성이 부족하다. Drobyshevskiy &amp; Turdakov(2019)의 서베이에서도 선호적 부착 규칙 하에서 커뮤니티 구조를 허용하는 랜덤 그래프 모델이 없음을 확인했다.</li>
+<li><strong>이유</strong>: 실제 과학 분야는 성장 속도, 평균 참고문헌 수, 인용 문화가 크게 다르므로(예: AI vs Classical Logic), 단일 글로벌 파라미터로는 이질적 커뮤니티의 지역적 역학을 포착할 수 없다.</li>
+<li><strong>접근법</strong>: 3DSI 모델을 최소한으로 확장하여 커뮤니티별 파라미터(m_i, rho_i, p_i)를 도입하고, 우연적 인용은 전체 네트워크에서, 선호적 인용은 동일 커뮤니티 내에서만 발생하도록 설계한다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>해석적 닫힌 형태 공식 유도</strong>: 커뮤니티별 노드 차수(in-degree)에 대한 닫힌 형태 공식(Eq. 7)을 도출하고, 점근적으로 Pareto type II(Lomax) 분포에 수렴함을 증명했다.</li>
+<li><strong>Gini 지수 공식</strong>: 커뮤니티별 Gini 계수의 정확한 공식(Eq. 8: G_i = (t-nu_i)/(t-1) * 1/(2-nu_i))과 전체 네트워크 Gini 계수의 근사 공식(hypergeometric function 기반)을 유도했다.</li>
+<li><strong>파라미터 추정 방법</strong>: Gini 기반, 커뮤니티 내부 엣지 기반, 연립방정식 기반 등 다양한 파라미터 추정 방법을 제시하고, Gini 기반 추정이 가장 우수함을 확인했다.</li>
+<li><strong>실증 검증</strong>: Cora(7개 커뮤니티)와 DBLP 저자 네트워크(8개 커뮤니티, 481K 노드)에서 모델이 저/중 차수 노드에 특히 잘 적합하며, 분야별 rho 값의 큰 분산(Cora: 0.457~0.710, DBLP: 0.523~0.810)이 인용 문화의 이질성을 반영함을 확인했다.</li>
+<li><strong>지수 감쇠 확장</strong>: 주의 감쇠(attention decay)를 반영한 지수 감쇠 모델 변형을 부록에서 제시하고, q-analog Gamma 함수를 활용한 닫힌 형태 공식을 유도했다.</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>모델 구조</strong>: 각 반복에서 새 노드가 확률 p_i로 커뮤니티 i에 배정 → (1-rho_i)<em>m_i개 우연적 인용(전체 네트워크에서 균등 랜덤) + rho_i</em>m_i개 선호적 인용(동일 커뮤니티 내 차수 비례) 배분</li>
+<li><strong>수학적 도구</strong>: 음이항 분포를 통한 글로벌/로컬 시간 변환, Beta 함수와 확률생성함수를 활용한 우연적 인용 이득 유도, Gautschi 부등식을 통한 점근적 수렴 증명, hypergeometric function을 통한 혼합 분포 Gini 계수 유도</li>
+<li><strong>실험 데이터</strong>: Cora(2,708 논문, 5,429 엣지, 7개 ML 하위 분야) 및 DBLP v14(481,387 저자, 58.5M 엣지, 8개 CS 하위 분야)</li>
+<li><strong>추정 방법 비교</strong>: Gini 기반(Eq. 19), 커뮤니티 내부 엣지 기반(Eq. 20), 연립방정식 기반(Eq. 21), 수치 최적화(L-BFGS-B)</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<p>선호적 부착과 커뮤니티 구조를 동시에 포착하는 해석적 네트워크 성장 모델을 최초로 제시한 점이 핵심적 기여이다. 기존에는 이 두 특성을 결합한 해석적 모델이 존재하지 않았으며(Drobyshevskiy &amp; Turdakov, 2019), 본 연구는 3DSI의 "최소한의 해석적 확장"이라는 원칙 하에 파라미터 수를 커뮤니티 수에 선형적으로 유지하면서도 커뮤니티별 인용 분포, Gini 지수, 점근 분포 등 풍부한 이론적 결과를 도출했다. 또한 "effective rho"(nu_i) 개념의 도입으로 커뮤니티 간 상호작용의 영향을 단일 파라미터로 압축한 것이 수학적으로 우아하다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>주의 감쇠(attention decay)가 모델에 내재되어 있지 않아, 큰 커뮤니티의 고차수 노드를 과대추정하는 경향이 있다.</li>
+<li>커뮤니티 간 인용이 균등 분포(uniform)로만 가정되어, 커뮤니티 간 선호적 부착을 허용하면 파라미터가 k x k로 폭증한다.</li>
+<li>비연관적(dissociative) 네트워크에는 적용할 수 없다.</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>실험에 사용된 네트워크가 Cora(매우 작음)와 DBLP(CS 단일 분야)뿐으로, 물리학/의학 등 인용 문화가 크게 다른 분야에 대한 검증이 없어 일반화 가능성이 제한적이다.</li>
+<li>커뮤니티 배정 확률 p_i가 시간에 따라 고정되어 있어, 실제 학문 분야의 비균등 성장(예: AI 분야의 폭발적 성장)을 반영하지 못한다.</li>
+<li>모델이 인용 시점의 시간적 역학(temporal dynamics)을 완전히 무시하여, 논문의 나이에 따른 인용 곡선의 상승-하강 패턴을 포착할 수 없다. 부록의 지수 감쇠 모델은 수치적 불안정성으로 실용성이 제한적이다.</li>
+<li>글로벌 차수 시퀀스의 해석적 표현을 얻지 못한 것이 한계로, 네트워크 전체 수준의 분석에서는 표준 3DSI와의 차별성이 약화된다.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>시간 가변 커뮤니티 확률 p_i(t)와 안정적인 주의 감쇠 메커니즘의 통합</li>
+<li>SBM/LFR을 보완하는 커뮤니티 감지 벤치마크 그래프 생성 프레임워크 개발</li>
+<li>물리학, 의학 등 다양한 학문 분야의 대규모 인용 네트워크에 대한 검증</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 5/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 선호적 부착과 커뮤니티 구조를 결합한 최초의 해석적 네트워크 성장 모델로서 수학적 완성도가 뛰어나고 Pareto 수렴 및 Gini 공식 등 이론적 기여가 탁월하나, 실증 검증의 범위가 CS 분야에 한정되고 주의 감쇠 부재로 인한 고차수 노드 과대추정 문제가 실용적 한계로 남는다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

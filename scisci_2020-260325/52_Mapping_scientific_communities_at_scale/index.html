@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mapping scientific communities at scale</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Mapping scientific communities at scale</h1>
+<blockquote>
+<p><strong>저자</strong>: Victor Barbier, Eric Jeangirard | <strong>날짜</strong>: 2025-01-17 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: 10.48550/arXiv.2501.10035</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>프랑스 연구 포털 scanR의 약 400만 건 논문 메타데이터를 기반으로, Elasticsearch aggregation으로 상위 2,000개 strongest link를 추출하고, Graphology(ForceAtlas2 + Louvain)로 네트워크를 구축/시각화하며, Mistral Nemo LLM으로 커뮤니티 레이블링, OpenAlex 인용 데이터로 hot topic을 탐지하는 확장 가능한(scalable) 과학 커뮤니티 매핑 파이프라인을 제시한다. 기존 VOSviewer 등의 노드 필터링 방식 대신 링크 필터링 방식을 채택하여 대규모 코퍼스에서도 실시간 웹 인터랙션이 가능한 도구를 구현했다.</p>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>기존 지식</strong>: VOSviewer, Gephi 등 bibliometric network 분석 도구가 널리 사용되며, co-publication/citation 기반 science mapping이 확립되어 있다.</li>
+<li><strong>한계/격차</strong>: (1) 기존 도구는 수백만 건 규모의 대규모 코퍼스에서 노드 수 임계값으로 필터링하면 연결 없는 고립 노드만 남는 문제 발생, (2) 처리 시간이 길어 웹 애플리케이션에 부적합, (3) scanR 포털이 검색 엔진으로만 기능하여 기관/저자 간 상호작용 구조를 보여주지 못함.</li>
+<li><strong>접근</strong>: 노드가 아닌 <strong>링크(edge)</strong>를 필터링하여 가장 강한 상호작용만 추출하는 전략을 채택. Elasticsearch의 사전 계산된 co-occurrence 쌍과 aggregation 기능으로 대규모 코퍼스에서 효율적으로 strongest link를 추출하고, betweenness centrality로 추가 필터링 후 ForceAtlas2 + Louvain으로 시각화.</li>
+</ul>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>링크 기반 필터링 전략</strong>: 노드 필터링 대신 상위 2,000개 strongest link 추출 방식으로 대규모 네트워크의 정보 손실을 최소화하면서 계산 효율성 확보</li>
+<li><strong>다차원 매핑 지원</strong>: 저자, 기관, 연구소, 토픽, 소프트웨어, 펀딩, 국가 등 다양한 entity 유형의 co-occurrence 네트워크를 동일 파이프라인으로 생성</li>
+<li><strong>LLM 기반 커뮤니티 자동 레이블링</strong>: Mistral Nemo를 활용하여 Louvain 클러스터에 해석 가능한 이름을 자동 부여</li>
+<li><strong>커스텀 범위(perimeter) 지원</strong>: 프랑스 내 모든 연구기관이 자체 코퍼스 기반의 맞춤형 매핑 도구를 iframe으로 임베드 가능</li>
+<li><strong>오픈소스 공개</strong>: 전체 코드를 GitHub(MIT 라이선스)에 공개하여 재현성과 확장성 보장</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: scanR 포털의 약 400만 건 프랑스 연구 출판물 메타데이터 (BSO 기반, PID로 disambiguated)</li>
+<li><strong>방법</strong>:</li>
+<li>메타데이터 enrichment: idref(저자), SIRENE/RNSR(기관), Wikidata(토픽), entity-fishing, GROBID/Softcite(소프트웨어)</li>
+<li>Elasticsearch: 논문 수준에서 사전 계산된 co-occurrence 쌍 → aggregation으로 상위 2,000 strongest link 추출</li>
+<li>Graphology: 링크 → 그래프 변환 → component 필터링 → betweenness centrality로 노드 300개 이하로 축소</li>
+<li>ForceAtlas2: 2D spatialization (자동 파라미터 설정)</li>
+<li>Louvain algorithm: 커뮤니티 탐지</li>
+<li>VOSviewer Online: 시각화 렌더링</li>
+<li>Mistral Nemo LLM: 커뮤니티별 주제 키워드 기반 레이블 자동 생성</li>
+<li>OpenAlex: 최근 2년 인용 수로 hot topic score 추정</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>대규모 bibliometric 데이터에서 <strong>링크 필터링</strong>이라는 단순하지만 효과적인 전략을 제안하여 기존 노드 필터링의 한계(고립 노드 문제)를 우회한 실용적 접근</li>
+<li>LLM을 커뮤니티 레이블링에 활용한 점은 science mapping 분야에서 비교적 새로운 시도</li>
+<li>국가 수준의 연구 포털에 네트워크 분석 도구를 통합하여 정책 결정 지원 목적으로 실제 운영 중인 사례</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>OpenAlex 인용 데이터의 불완전성으로 hot topic score 해석에 주의 필요</li>
+<li>Louvain vs. Leiden 알고리즘 벤치마크가 아직 수행되지 않음</li>
+<li>소속기관 자동 매칭(affiliation disambiguation)에 여전히 human curation 필요</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li><strong>평가/검증 부재</strong>: 제안된 파이프라인의 정량적 평가(예: community detection의 modularity 비교, ground truth 대비 정확도, 사용자 만족도 조사)가 전혀 없어, 실제 유용성을 객관적으로 판단하기 어려움</li>
+<li><strong>프랑스 중심 편향</strong>: idref, SIRENE, RNSR 등 프랑스 고유 PID에 의존하여 국제적 일반화 가능성이 제한적</li>
+<li><strong>상위 2,000 링크 임계값의 근거 부족</strong>: "optimal performance"를 위해 2,000으로 설정했다고만 언급하며, 다른 임계값에 따른 네트워크 품질 변화 분석 없음</li>
+<li><strong>LLM 레이블링의 신뢰성</strong>: Mistral Nemo의 레이블 품질에 대한 체계적 평가(예: 전문가 판단과의 일치도)가 없음</li>
+<li><strong>논문 길이와 깊이</strong>: 8페이지로 매우 짧아, 방법론적 세부사항과 결과 분석이 부족하며 시스템 설명서에 가까움</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Louvain vs. Leiden 알고리즘 비교 벤치마크 수행</li>
+<li>다국가 PID 체계(ORCID, ROR 등)로 확장하여 국제적 적용 가능성 확보</li>
+<li>커뮤니티 레이블링의 품질 평가를 위한 전문가 기반 검증 연구</li>
+<li>시계열 분석을 통한 커뮤니티 진화 추적 기능 추가</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span><span class="eval-badge">Technical Soundness: 2/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 2/5</span></div>
+<p><strong>총평</strong>: 대규모 bibliometric 데이터의 실시간 네트워크 매핑이라는 실용적 문제를 해결하는 오픈소스 시스템을 제시했으나, 학술 논문으로서의 깊이가 부족하며 정량적 평가와 검증이 전무하여 기술 보고서(technical report) 수준에 머문다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

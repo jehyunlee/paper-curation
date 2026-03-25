@@ -1,0 +1,627 @@
+RESEARCHARTICLE SOCIALSCIENCES OPEN ACCESS
+Gender-diverse teams produce more novel and higher-impact
+scientific ideas
+Yang Yanga,b,c,TanyaY.Tiand,TeresaK.Woodruﬀe,BenjaminF.Jonesf,g,andBrianUzzib,f,h,1
+EditedbySusanFiske,PrincetonUniversity,Princeton,NJ;receivedJanuary16,2022;acceptedJuly24,2022
+Science’s changing demographics raise new questions about research team diversity
+and research outcomes. We study mixed-gender research teams, examining 6.6 million
+papers published across the medical sciences since 2000 and establishing several core
+findings. First, the fraction of publications by mixed-gender teams has grown rapidly,yetmixed-genderteamscontinuetobeunderrepresentedcomparedtotheexpectations
+of a null model. Second, despite their underrepresentation, the publications of mixed-
+genderteamsaresubstantiallymorenovelandimpactfulthanthepublicationsofsame-gender teams of equivalent size. Third, the greater the gender balance on a team, the
+bettertheteamscoresontheseperformancemeasures.Fourth,thesepatternsgeneralize
+across medical subfields. Finally, the novelty and impact advantages seen with mixed-genderteamspersistwhenconsideringnumerouscontrolsandpotentialrelatedfeatures,
+including fixed effects for the individual researchers, team structures, and network
+positioning,suggestingthatateam’sgenderbalanceisanunderrecognizedyetpowerfulcorrelateofnovelandimpactfulscientificdiscoveries.
+teamscience |genderinequality |innovation |computationalsocialscience
+Medicalresearchisundergoingtwotransformationsthatarepotentiallyremakingpractice
+andresearchimpact.Firstistheincreasedparticipationofwomeninmedicalscience(1–3).The last decade in medical science has seen women’s participation rates exceed men’s
+participationratesingraduateandpostdoctoralresearchtrainingin60to40%and54to
+46%ratios,respectively(4).Secondistheshiftfromindividualtoteamscience(5).Risingteamwork levels are broadly documented across scientific fields and show that teams are
+associatedwithmorenovelcombinationsofpriorwork(6)andhighercitationimpact(5).
+The rise in women’s participation in research and the rise in teamwork suggest
+that research formats may be evolving toward gender-diverse collaborations, potentially
+openingnewpathwaystoinclusivityinscienceandopeningnewopportunitiesformedical
+research.Cluesregardingimpactcomefromahandfuloflaboratoryexperimentsthathavefoundthatteamsmixingwomenandmenarebetteratgeneralproblem-solvingtasksthan
+all-women or all-men teams with equivalent IQ levels (7). Nevertheless, in professional
+settings gender dynamics can produce a propensity for same-gender teams (8–12) thatpotentially reduces workgroup diversity and fairness (13–16). In addition, the degree to
+whichlaboratorystudiesreliablygeneralizetopracticeandpolicyinreal-worldsettingsis
+unclear (17–19). Given the potential yet unknown implications of the rise in teamworkand women’s participation in medical research, we conducted a large-scale study of how
+changing gender demographics, team creation (20, 21), and team performance (22, 23)
+are reshaping medical science research practice and impact using an original dataset of
+over6.6millionmedicalresearchpaperspublishedinmorethan15,000journalsoverthe
+last20y.Afulldescriptionofourdataandmethodsappearsin Materials and Methods and
+SI Appendix , section 1.1 .
+Gender-Diverse Teams Have Proliferated but Remain
+Underrepresented
+Fig. 1 Aplots the upward trend of women’s participation in medical science from 2000
+to 2019, while Fig. 1 Bshows the share of different team sizes per year (Fig. 1 B,Inset
+shows the average team size over time) for our full sample of 6.6 million medical papers.
+The major change in team size is that large teams have supplanted small teams, whichis consistent with existing literature (5, 24). In 2000, papers with one or two authors
+accountedfor15and16%ofpublications,respectively,butby2015theirsharesdropped
+toonly8and12%,whilethelargeteams(morethansixauthors)increasedtheirsharefrom25 to 46% of papers. Large teams (more than six authors) now dominate the production
+ofknowledge in medicine andthe trendcontinues upward.
+As teams rise in share and size, there is more opportunity for researchers of different
+genders to collaborate (25). To quantify the changing incidence of gender-diverse teams,Significance
+Scienceteamsmadeupofmen
+andwomenproducepapersthat
+aremorenovelandhighlycited
+thanthoseofall-menorall-womenteams.These
+performanceadvantagesincrease
+thegreatertheteam’sgenderbalanceandappearnearly
+universal.Onaverage,theyhold
+forsmallandlargeteams,the45subﬁeldsofmedicine,and
+women-ormen-ledteamsand
+generalizetopublishedpapersinallscienceﬁeldsoverthelast20y.
+Notwithstandingthesebeneﬁts,
+gender-diverseteamsremain
+underrepresentedinscience
+whencomparedtowhatisexpectediftheteamsinthedata
+hadbeenformedwithoutregard
+togender.Theseﬁndingsrevealpotentiallynewgenderand
+teamworksynergiesthatcorrelate
+withscientiﬁcdiscoveriesandinformdiversity,equity,and
+inclusion(DEI)initiatives.
+Author contributions: Y.Y., T.Y.T., B.F.J., and B.U. designed
+research; Y.Y., T.Y.T., T.K.W., B.F.J., and B.U. performedresearch;Y.Y.analyzeddata;andY.Y.,T.Y.T.,B.F.J.,andB.U.
+wrotethepaper.
+Theauthorsdeclarenocompetinginterest.ThisarticleisaPNASDirectSubmission.
+Copyright © 2022 the Author(s). Published by PNAS.
+This open access article is distributed under Creative
+Commons Attribution-NonCommercial-NoDerivatives
+License4.0(CCBY-NC-ND) .
+1To whom correspondence may be addressed. Email:
+uzzi@northwestern.edu.
+This article contains supporting information online at
+https://www.pnas.org/lookup/suppl/doi:10.1073/pnas.
+2200841119/-/DCSupplemental .
+PublishedAugust29,2022.
+PNAS2022 Vol. 119 No. 36 e2200841119 https://doi.org/10.1073/pnas.2200841119 1of8
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+AB
+CE
+DF
+Fig. 1.Theunderrepresentationofgender-diverseteams.( A)Thesharpupwardtrendofwomen’sparticipationinmedicalresearchoverthelast20y.( B)The
+shareofdiﬀerentteamsizesbyyearoverthesameperiod.Themajorchangeisthatlargeteamsofsixormoreresearchersperpaperhavesupplantedteamsof smaller sizes with the largest drop in solo authorship and two-person teams. CandDshow that the share of publications from mixed-gender teams has
+steadily increased with time. Nonetheless, EandFindicate that mixed-gender teams are signiﬁcantly underrepresented in medical science (no CIs cross the
+0.00diﬀerenceline)byupto17%dependingontheteamsizewhenwemeasureteamgenderdiversityusingtheShannonentropy( SI Appendix ,section1.2.5 ).
+wemeasuredteamgendercompositionintwoways.First,“mixed
+gender” is a binary variable equal to 0 if the team is all the same
+genderand1iftheteamhasanycombinationofwomenandmen.Second, “gender diversity” is a continuous variable that ranges
+from 0 when the team is made up of 100% women or men to
+1when the team includes equal percentages ofwomen and men.
+Following prior work (26–28), we use a validated name-to-
+gender inference method (29, 30) to compute a probability es-
+timate of an author’s gender based on the author’s first nameand last name. This algorithmic approach has the advantage of
+being comparable to most past measurements of gender in the
+literature (9, 28, 31). Also, it enables discipline-wide analyses ofgender that would be unattainable with manual coding (32). In
+our case, the algorithm’s estimate of the percentage of women
+and men authors in our study agrees with studies that use self-reported gender information. The 2019 and 2020 Association of
+American Medical Colleges (AAMC) census data (4) indicated
+that women comprised 42.7 and 43.2%, respectively, of faculty,which aligns with our estimate that women comprise 42.3% of
+authors in our data. Another study focused on the gender of
+6,722 authors of 1,370 COVID-19–related articles found thatthat women comprised 34% of all authors (28). By comparison,
+35.7% of 60,839 authors of 9,033 COVID-19–related papers
+in our data are estimated to be women. At the same time, ourmethod has certain limitations. First, the algorithmic estimation
+approach is limited to binary gender classification (33). Second,
+although the method is widely used and validated (30) and thegender classification estimates of authors in our study agree withthe fraction of scientists who self-report being a woman or a
+man,itisstillpossiblethatthegenderofsomeindividualauthors
+is misclassified. SI Appendix ,section 3 attempts to address the
+impactofthesechallengesonthereliabilityofresultsbyestimating
+howdifferent classification errorswouldalter ourmain findings.
+Fig. 1 Cindicates the share of mixed-gender teams, by team
+size, and how this has evolved over time using our measures
+(SI Appendix ,section 1.2.5 ).In2000,about60%ofteamsofsize
+fourincludedbothmenandwomen;by2019,thepercentagewasabout 70%. Fig. 1 Dsimilarly shows upward trends using a con-
+tinuousratherthanabinarymeasureofteamgendercomposition
+(SI Appendix ,section 1.2.5 ).
+Theseresultsleaveopenthequestionofwhethertheincreasein
+gender-diverse teams is more or less than expected if teams were
+assembled without regard to gender. To undertake this analysis,wedesignedanullmodeltoestimatetheexpectedrateofgender-
+diverse teams. The model holds constant the number of papers,
+distributionofteamsize,andnumberofmenandwomenauthorsin each year. It then randomly interchanges women and men
+authors who have the same first year of publication, total pub-
+lications, and country(see SI Appendix , section6.1 fordetails).
+Fig. 1 EandFshowstherelativelevelsofunderrepresentation
+of teams that included both women and men researchers
+according to our two measures of team gender diversity(SI Appendix ,section 1.2.5 ). Fig. 1 EandFshows that gender-
+diverse teams are significantly underrepresented at every team
+size,withasmuchas17%underrepresentationdependingontheteam’s size (means with 95% CIs shown, all Pvalues<0.01).
+2of8https://doi.org/10.1073/pnas.2200841119 pnas.org
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+Further, the plots show that substantial underrepresentation
+remainspersistentoverthepast20ydespitetheriseinteamwork,
+the rise in the participation of women in science, and policies of
+inclusiveness.
+Gender-Diverse Teams Are More Novel and
+Impactful
+Wenextexaminenoveltyandimpactoutcomes,studyingascien-
+tific team’s output from different perspectives. Novelty concerns
+the degree to which a paper combines past knowledge in a new
+way,whileimpactconcernsthedegreetowhichapaperinfluences
+futurework.Apaper’simpactandnoveltycanbepositivelyrelated
+but are also empirically distinct and can be driven by separatefactors(6,34),suggestingthenecessityofstudyingbothmeasures
+when characterizing a scientific team’s output.
+Novelty Measures. To measure a paper’s novelty, we followed
+prior literature and denote novel papers as those that combine
+knowledgeinanewwayrelativetoexistingcombinations.Because
+novelty is a broad concept, we used two different measures of apaper’s novelty from the literature (6, 34). The novelty measure
+used in our main results is based on ref. 6, which uses the
+journalsreferencedinapaperandexamineswhethergivenjournalpairingsarecommonorunusual.Specifically,thenoveltymeasure
+quantifies the observed co-occurrence frequencies of all journal
+pairings in the literature prior to the publication year of thetarget paper. The observed co-occurrence of journal pairings in
+each paper is compared to a null model of what the pairing
+frequency would be if the journal pairings were combined bychance.Paperswhosebibliographiescontainjournalpairingsthat
+havefrequentlyoccurredtogetherinthepast(morethanexpected
+by chance) indicate relatively conventional and familiar pairings
+of knowledge; by contrast, papers whose bibliographies contain
+journalpairingsthathappenlessthanexpectedbychanceindicatenovel combinations of knowledge (6).
+Our second novelty measure is the Sterling index (34), which
+uses the subject categories of the papers cited in a paper’s bibli-ography to compute a paper’s novelty. In our study, we used 291
+subject categories as defined by the Microsoft Academic Graph
+(MAG)(35).Paperswhosebibliographiescontainsubjectpairingsthat have been frequently cocited in the past represent conven-
+tional pairings of knowledge, while papers whose bibliographies
+contain subject pairings that have been rarely cocited representnovel combinations of knowledge. The measure ranges from
+0 to 1, where high values indicate higher novelty. Materials and
+MethodsandSI Appendix ,sections1.2.2, 1.2.3,and 2.3 compare
+the two novelty measures and show that the results are robust to
+either measure.
+Impact Measures. To measure a paper’s impact, we followed
+prior literature and denoted high-impact papers as those in
+the top 5% of citations for papers published in a given year
+(SI Appendix ,section 1.2.4 ) (36). A continuous measure of
+impact, which is defined as a paper’s citations normalized by
+the publication year average, produced confirmatory findings
+(SI Appendix ,section 1.2.4 ).
+Novelty and Impact Results. We ran fixed-effects regressions
+to investigate a paper’s novelty and citation impact con-ditional on the team’s gender diversity and team size. We
+further control for numerous author, journal, and institutional
+characteristics (see Materials and Methods and SI Appendix ,
+section 2.1 for further information about regression methods).
+InSI Appendix ,Tables S1 and S2 present regression details forteam gender diversity when it is measured as a binary and a
+continuousvariable.
+Fig. 2 Apresents regression results for mixed-gender teams
+andindicatesthatmixed-genderteamspublishsignificantlymorenovel papers than same-gender teams (two-sample ttest, Pvalue
+<0.001). For example, large (more than authors) mixed-gender
+teamsare9.1%morelikelytopublishanovelpaperthanthebaserate [(48 to 44%)/44%]. Given that novelty positively correlates
+withteamsize(5,6,37),thesubstantialaddedexplanatorypower
+of mixed-gender teams vs. same-gender teams holding team sizeconstant is striking. Proportionally, the increase in novelty for a
+mixed-genderteamofsixormoreauthorsrelativetosame-gender
+teamsisequivalenttotheincreaseinnoveltyobtainedbydoublinga same-gender team size fromtwo tofour.
+Fig. 2 Bshows that mixed-gender teams publish significantly
+more highly cited papers than same-gender teams. The impact
+advantage of mixed-gender teams appears at all team sizes. Fo-
+cusing on large teams (more than six authors), mixed-genderteams are 14.6% [(10.2 to 8.9%)/8.9%) = 14.6%] more likely
+to publish an upper-tail paper than same-gender teams of equal
+size. Measuring team gender diversity as a continuous variableconfirmed the above results and indicated that as gender-diverse
+teamsapproacha50/50splitofwomenandmen,theassociation
+between gender-diverse teams and novelty and impact increases(SI Appendix ,Tables S1 and S2 ).
+We further examined how team performance varies with
+the gender of the team’s first and last author (38). Consistentwith our main finding, mixed-gender teams, irrespective of
+the leader’s gender, produced significantly more novel and
+highly cited research than same-gender teams ( P<0.001;
+SI Appendix , Fig.S16). Comparing women-led mixed-gender
+teamstomen-ledmixed-genderteams,wefoundthatwomen-led
+mixed-genderteamshavegreaternoveltybutfewercitationsthanmen-led mixed-gender teams( SI Appendix , section 7 ).
+GeneralizabilityacrossSubﬁeldsinMedicine. Subfieldsinmed-
+ical research have important differences in the gender distribu-
+tion of active researchers, research questions addressed, research
+funding, age and gender of team leaders and mentors, and otherfeatures (39–41). To examine how the findings might vary across
+subfields in medicine, we conducted several tests. We grouped
+papers in one of 45 MAG-designated primary medical subfieldsandranaseparateregressionforeachsubfieldusingthesamefixed-
+effectsregressionspecification as above.
+Fig. 2 Cand Dshows that the findings strongly generalize
+acrosssubfieldsinmedicine.The yaxisshowstheregressioncoef-
+ficient value with 95% CIs when novelty (Fig. 2 C) and citation
+impact (Fig. 2 D) are regressed on the team’s gender diversity for
+45 separate subfields in medical science ( xaxis). The 45 subfields
+are sorted from largest to smallest in terms of total number ofpublications ( SI Appendix , Table S5 provides names of each sub-
+field), which naturally leads to more precise coefficient estimates
+for the larger subfields to the left and less precise estimates forthe smaller subfields to the right. Fig. 2 CandDdemonstrates
+thattheteam’sgenderdiversitysignificantlyandpositivelypredicts
+a team’s novelty and impact for most subfields with the smallersubfields exhibiting noisy relationships ( SI Appendix ,section 4 ).
+In Fig. 2 C, we can see that 43 of 45 subfields (representing 99%
+of papers in medicine) have positive coefficients when predict-ing novelty. The coefficients are both positive and significant in
+29 subfields (representing 85% of papers in medicine). In Fig.
+2D, we observe that 30 of 45 subfields (representing 83% of
+papers in medicine) have positive coefficients when predicting
+papers’impact.Thecoefficientsarebothpositiveandsignificantin
+PNAS2022 Vol. 119 No.36 e2200841119 https://doi.org/10.1073/pnas.2200841119 3of8
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+A
+C
+DB
+Fig. 2.Mixed-gender teams produce more novel and highly cited research publications. ( A) Mixed-gender teams are more likely to produce novel papers
+than same-gender teams at all team sizes. Teams of six or more authors are 9.1% more likely to publish novel work than the base rate. ( B) Mixed-gender
+teams are more likely to publish an upper-tail paper than same-gender teams by as much as 14.6%, depending on team sizes. ( CandD) The performance
+beneﬁtsofgenderdiversitygeneralizeacross45medicalsubﬁelds.Medicalsubﬁeldsarearrangedfromlefttorightaccordingtothenumberofpublic ationsin
+the subﬁelds (largest to smallest) with statistically signiﬁcant relationships for novelty and impact becoming noisier for smaller medical subﬁel ds. Dark-green
+coloringindicatessigniﬁcantcoeﬃcients( Pvalue<0.05),whilelight-greencoloringindicatesnonsigniﬁcantcoeﬃcients.
+24 subfields (representing 75% of papers in medicine). Detailed
+resultsofgeneralizabilityacrossmedicalsubfieldscanbefoundin
+SI Appendix , section 4 .
+Potential Alternative Explanatory Factors
+Our final analysis investigates possible factors behind the new
+empiricalregularitiesthatwehaveidentified.Priorworkonteam
+science and gender (18, 42–45) has explained team performanceasafunctionofexpertise(18,25,45–47),demographics(48,49),
+and network characteristics (47, 50–52) that enhance a team’s
+access to problem-solving and promotional resources (45, 53)(see SI Appendix , section 10 for a summary of this literature).
+To examine these possibilities, we further consider measures that
+quantify the diversity of expertise across team members; the net-worksize,range,anddensityofteammembers;andthecareerage
+and international diversity of team members. The measurements
+ofthesefactorsfollowpastliteratureandaredescribedin Materials
+and Methods andSI Appendix ,section 10 .
+We first examined whether mixed-gender teams have different
+expertise, network, age diversity, and international diversitycharacteristics compared to same-gender teams. We found
+that mixed-gender teams are associated with significantly 1)
+higher topic-related expertise diversity (measured by uniqueexpertise on the team and Shannon entropy of team expertise;
+Materials and Methods ); 2) lower network density, largernetwork range, and larger network size; 3) higher career age
+diversity;and4)highergeographicdiversityandinternationalism
+(SI Appendix ,Table S11 and Fig.S19 ).
+Given these differences, we further consider regression models
+that predict team performance based on the gender diversity of
+the team while also controlling for these potential related factors.
+Fig. 3 summarizes the regression results when accounting for
+these features separately or together. We find that the size ofthe coefficient for mixed-gender teams tends to decrease, yet the
+substantially and statistically significant main effects of mixed-
+genderteamsonnoveltyandimpactholdacrossallspecifications.These findings taken together indicate that mixed-gender teams
+correlate with expertise, network, and demographic drivers of
+team success, which may inform the performance advantagesseenamongmixed-genderteams.Yettheperformanceadvantages
+cannot be fully explained by those drivers, suggesting that a
+team’sgenderbalanceisanunderrecognizedyetpowerfulcorrelateof novel and impactful scientific discoveries that increases in
+magnitude withthe gender balance of the team.
+Finally, we examined whether the gender homophily in cita-
+tion behavior may explain our findings. Research indicates that
+citations show homophily—men cite papers by men more than
+papers by women and vice versa (53, 54). Importantly, we findthatmixed-genderteamsreceivemorecitationsthansame-gender
+teams regardless of the citing team—from all-women, all-men,
+and mixed-gender citing teams alike ( SI Appendix ,section 9 ).
+4of8https://doi.org/10.1073/pnas.2200841119 pnas.org
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+A
+B
+Fig. 3.Mixed-genderteamsandresearchoutcomescontrollingfornumerousfactors.( AandB)Theregressioncoeﬃcientand95%CIsformixed-genderteams
+inpredictingnovelty( A)andcitationimpact( B)whilecontrollingforthefeaturesindicatedinthepanelheadings.Theleftmostpanelsindicatethecoeﬃcients
+of mixed-gender team in baseline regressions.The rightmost panels indicate the coeﬃcients of mixed-gender team after controlling collectively fo re x p e r t i s e
+diversity,networkstructure,careeragediversity,andinternationaldiversity.
+Discussion
+Conducting an analysis of 6.6 million published papers from
+more than 15,000 different medical journals worldwide, we findthat mixed-gender teams—teams combining women and menscientists—producemorenovelandmorehighlycitedpapersthan
+all-women or all-men teams. Mixed-gender teams publish papers
+thatareupto7%morenoveland14.6%morelikelytobeupper-tail papers than papers published by same-gender teams, resultsthat are robust to numerous institutional, team, and individual
+controls and further generalize by subfield. Finally, in exploring
+gender in science through the lens of teamwork, the results pointto a potentially transformative approach for thinking about and
+capturingthe value of gender diversity in science (1, 3, 22).
+Another key finding of this work is that mixed-gender teams
+are significantly underrepresented compared to what would beexpected by chance. This underrepresentation is all the more
+striking given the findings that gender-diverse teams produce
+more novel and high-impact research and suggests that gender-diverseteamsmayhavesubstantialuntappedpotentialformedical
+research. Nevertheless, the underrepresentation of gender-diverse
+teamsmayreflectresearchshowingthatwomenreceivelesscreditfor their successes than do men teammates (14, 55), which inturn inhibits the formation of gender-diverse teams and women’s
+successin receiving grants(56), prizes (3),and promotions (22).
+We are conservative in speculating on the theoretical mech-
+anisms at work given the noncausal nature of our study, butthe richer descriptive findings in such a large-scale dataset are
+informative.Wefoundthattheassociationbetweengenderdiver-
+sity and team performance both supports and challenges currentthinking.Examiningcausalandnoncausalfactorsreportedinthe
+literature, we find that mixed-gender teams are correlated with
+expertise, network, career age, and international features of ateam. Nevertheless, we found that the strong positive associationbetween mixed-gender teams and team success can only partly
+be explained by expertise, network, career age, or international
+measures, suggesting that a rich set of factors, including factorsas yet unveiled in the literature, may be at work in the researchadvantages ofmixed-gender teams.Thus, future research should examine the causal mechanisms
+that might explain why gender-diverse teams outperform same-
+gender teams (52, 57) and how those mechanisms translate intoactionablepracticesandpolicy(24).Laboratoryexperimentssug-
+gestthatwomenonateamimproveinformation-sharingprocesses
+on teams, such as turn taking (7). It might also be that womenprovide a perspective on research questions that men do not
+possess and vice versa or it may be that when a team has both
+womenandmenteammates,therearesynergiesspecifictogender-diverse teams that are more than the additivity of team processes
+andinformationtypicallyassociatedwithall-womenandall-men
+teams (45).
+Beyond experimental studies of the gender balance phenom-
+ena,futureresearchshouldexaminethephenomenainotherareas
+of science (14, 58, 59). In this research we focused on medicine,a large branch of science and among the most funded with its
+wide array of downstream applications (3, 60). In addition, the
+advantages of gender-diverse teams in other branches of sciencewere preliminarily studied. The results indicate that the novelty
+andimpactbenefitsofgender-diverseteamsgeneralizeonaverage
+topublishedpapersinallsciencefieldsoverthelast20y(detailsinSI Appendix , section 5 ). Future research should further examine
+the role of gender-diverse teams in STEM (science, technology,
+engineering, and mathematics) fields more broadly to sharpeninsights on practices that promote innovation, inclusiveness, and
+equality.
+Similarly, teamwork characterizes work practices within most
+for-profit and nonprofit organizations, which also stand to gain
+from a better understanding of the link between gender balance
+and team performance and diversity, equity, and inclusion (DEI)
+initiatives. For example, COVID-19 has fundamentally changed
+interpersonal interactions in organizations. In-person meetingshave been substantially supplanted by virtual meetings, which
+are weaker at creative ideation (61). While it is beyond the
+scope of this study to examine how the phenomenon of teamgenderdiversityrelatestoin-personvs.virtualteamwork,itwould
+be valuable to investigate whether the creativity loss of virtual
+meetingsrelativetoin-personmeetingscanbepartiallymitigatedby gender balance on teams. One important upshot of these
+PNAS2022 Vol. 119 No.36 e2200841119 https://doi.org/10.1073/pnas.2200841119 5of8
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+future research questions suggests that team gender balance is
+a phenomenon at the center of a confluence of changes in the
+compositionoftheworkforce,innovation,fairness,andinclusion.
+In this sense, our findings provide a different lens on potentialgender and teamwork synergies that correlate with the rate of
+scientific discoveries andinform opportunities in DEI initiatives.
+Materials and Methods
+Data and methods used in our work are described below.
+Data Samples. We conduct a large-scale systemic investigation of the perfor-
+mance of gender-diverse research teams in the medical sciences. Our ﬁeld-widedataset has over 6.6 million research publications by 3.2 million women and4.4 million men scientists in more than 15,000 medical science journals from
+2000 to 2019 as recorded in Microsoft Academic Graph (35). MAG is a scientiﬁc
+publication database that records journal articles’ bibliographic information (title,journal, journal ﬁeld, volume, issue, page, publication date), authorship (name),
+author afﬁliations (name, webpage, and wikipage), and citation links to other
+papers in the database.
+Name-to-Gender Inference Based on First and Last Names. The main
+procedure for estimating a scientist’s gender uses the Namsor software (29, 30),which has been developed and examined for multiple languages (e.g., Chinese,
+English, French, Spanish, etc.) (30). The algorithm was run on the ﬁrst and last
+names of all authors as they appear in the MAG database. This procedure imple-ments a binary gender system to remain consistent with most existing gender
+studies in science (28, 30), which is not designed to address the important issue
+of nonbinary gender distinctions in the data. The analysis suggests the methodapplied in our sample has face validity. As noted above, the algorithm’s estimate
+of the gender distribution of women and men authors in our study is within a
+few percentage points of the percentages of women and men estimated from theself-reported gender information disclosed by women and men researchers andreported by the Association of American Medical Colleges (4) and an indepen-
+dent study of more than 6,000 researchers (28). Further, to empirically alleviate
+concerns of misclassiﬁcation, we conduct several robustness checks to quantifyhow the results vary given different levels of assumed misclassiﬁcation of gender
+(SI Appendix , Tables S3 and S4 ). Finally, our gender detection results are demon-
+strated to be consistent with the Gender API (application programming interface)(62) (another widely used name-to-gender method; SI Appendix , section 3.2 ).
+These results are explained in SI Appendix ,s e c t i o n3 .
+Variables. Our main independent variable is team gender diversity, and our
+two outcome variables are research novelty and research impact. All variables
+were constructed with MAG data.
+Team gender diversity. To measure the gender composition in a scientiﬁc team,
+we use a binary variable, mixed-gender team, in the main analysis. A mixed-
+gender team has both men and women. Otherwise, it is a same-gender team.Additionally, we use a continuous variable to evaluate the gender composition of
+a scientiﬁc team (9) that takes the form
+g
+i=−pflog2(pf)−(1−pf)log2(1−pf), [1]
+where pfindicates the portion of women authors in a team i.The value of giranges
+from 0 to 1.When the value of giis low,either women or men are the majority of a
+team. When gi=0, the team is either an all-women team or an all-men team. By
+contrast, when the value of giis high, women and men have roughly equivalent
+presence in the team. When gi=1, the team has 50% women and 50% men.
+Novelty measures. We use two measures of novelty to characterize the mixture
+of knowledge in a given paper (6, 34). The main measure considers papers withstatistically atypical combinations of references to be novel because they createnew combinations of knowledge that have not been joined, or rarely joined, in
+previous research. To compute a paper’s novelty, we use a z score. The z score is
+computed from the observed frequency of journal pairings that appear within apaper’s reference list and the expected distribution of journal pairings created by
+randomized citation networks. When a z score is less than zero, the combination
+of prior work is considered novel (i.e., a novel pairing of ideas), and when the zscore is above zero,the combination of prior work is considered conventional (i.e.,a common pairing of ideas). A journal pairing is deﬁned as novel if its novelty z
+score is smaller than zero.
+Our second measure of the novelty of scientiﬁc papers (34) focuses on subject
+(a.k.a. topic) pairings cited within a paper’s reference list. The measure considerspapers with rare combinations of subjects to be novel because they create new
+combinations of knowledge in terms of subjects that have been infrequently
+cocited together in previous research. The 244 Web of Science (WoS) subjectcategories are used in the work of ref. 34. Similarly, we use the tier 1 ﬁelds ofstudy recorded in MAG as subject categories in our context. In MAG, each paper is
+tagged with several subjects (tier 1 ﬁelds of study). After enumerating all papers’
+reference lists, we can calculate how many times each pair of subjects has beencocited in prior research. We denote by S
+ijthe cosine similarity between subject
+iand subject jin the subject cocitation matrix. Formally, piis the proportion
+of papers in the reference list associated with subject i,pjis the proportion
+of papers in the reference list associated with subject j,a n d Sijindicates the
+cosine similarity between subject iand subject j(further details are provided in
+SI Appendix , sections 1.2.2 and 1.2.3 ):
+novelty subjects =1−/summationdisplay
+ijSijpipj. [2]
+Impact measures. The MAG database tracks a paper’s annual citations received.
+We deﬁne high-impact papers as those in the top 5% of citations for paperspublished in the same year. The variable is denoted as an upper-tail paper if
+it is a top 5% highly cited paper. We alternatively measure impact as a ratio to
+normalizing a paper i’s ﬁnal citations by the publication year average, which is
+denoted as /hatwidec
+i(seeSI Appendix , section 1.2.3 for details). For robustness tests, we
+run a similar regression by substituting the binary upper-tail paper variable with
+this continuous one. Given that /hatwidecifollows a heavy-tail distribution, we use a log
+transform of /hatwidecito measure a scientiﬁc paper’s impact:
+impact =log(/hatwideci+1). [3]
+Regression Analysis. To quantify the link between team gender diversity
+and performance, we used ﬁxed-effects regressions. The regressions control forconfounds due to the authorship, team size, leadership, institutional prestige
+rank, year, journal quality, prior citation impact at the time of publication,
+average team career age, and individual ﬁxed effects (5, 6, 18, 36, 49) (seeSI Appendix ,s e c t i o n2 for details). Alternative measurements and null models
+conﬁrm the results (see SI Appendix ,s e c t i o n s2a n d3 for details), and to test the
+generalizability of our ﬁndings, we ran separate regressions for each of the 45medical subﬁelds (see SI Appendix , section 4 and Table S5 for details).
+We further engage in a series of analyses that examine several potential
+pathways through which mixed-gender teams may outperform same-genderteams when it comes to novelty and impact. Accordingly, we investigate thefollowing measures:
+Topic-related expertise. For a paper with nauthors ( a1,a2,. . . , an) published
+at time t, we can extract an author ai’s publication record and identify the set of
+topics aiworked on before time t.Such a set of topics is denoted as τai.Let there be
+a functionμsuch thatτ∈μ(τai)andτ/∈μ(τaj)for all j/negationslash=i;t h e nμ(τai)is de-
+ﬁned as unique topics of ai.In this way,unique expertise on the team is deﬁned as
+unique expertise on the team =log|/uniondisplay
+μ(τai)|. [4]
+After we quantiﬁed the unique expertise of individuals, we also measured
+whether the team is exposed to a diverse set of expertise overall, which is
+measured using the Shannon entropy. After enumerating τaiof all authors, we
+can calculate the weighted distribution of topics in the team. If the weighted
+portion of topic kis denoted as pk, the team Shannon entropy of team expertise
+takes the following form:
+Shannon entropy of team expertise =−K/summationdisplay
+k=1pklog(pk). [5]
+Detailed information can be found in SI Appendix , section 10.1 .
+Network characteristics. For a team with nauthors ( a1,a2,. . . ,an) working on
+a paper at time t,l e teij=1i faiandajcollaborated before time tand let eij=0
+otherwise. In this way, a team’s network density is deﬁned as
+network density =/summationtext/summationtexteij
+n(n−1). [6]
+6of8https://doi.org/10.1073/pnas.2200841119 pnas.org
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+Further, we denote a set of scientists who collaborated with aibefore time tasAi.
+Let there be a function φsuch thatα∈φ(Ai)andα/∈φ(Aj)for all j/negationslash=i;t h e n
+φ(Ai)is deﬁned as unique collaborators of ai. In this way, a team’s network range
+is deﬁned as
+network range =log|/uniondisplay
+φ(Ai)|. [7]
+We also measure the team network size as
+network size =log|/uniondisplay
+Ai|. [8]
+An illustrative example of these variables is presented in SI Appendix , section 10.2 .
+Career age diversity. For a team with nauthors ( a1,a2,. . . , an) working on a
+paper at time t, we denote the career age of aiasγi. Following the work of refs.
+52 and 63, we measure the team age diversity in the form of
+age diversity =log/summationtext/summationtext|γi−γj|
+n(n−1),i/negationslash=j. [9]
+Internationalism. For a paper with nauthors ( a1,a2, ..., and an) published at
+time t, we can extract all afﬁliated countries with authors a1,a2,...,a n d an, which
+is denoted as C=c1,c2,...,cm. In this way, internationalism is measured by
+the logged number of countries associated with a team:
+internationalism =log(|C|). [10]Data,Materials,andSoftwareAvailability. Previously published data were
+used for this work ( https://www.microsoft.com/en-us/research/project/microsoft-
+academic-graph/ ).
+ACKNOWLEDGMENTS. This study is supported by the Air Force Ofﬁce of Sci-
+entiﬁc Research under Minerva Award FA9550-19-1-0354, the Northwestern
+Alumnae Grant, and the Northwestern University Institute on Complex Systemsand Data Science. The access to NamSor API is funded by a research budgetgrant when Y.Y. was at Syracuse University. We wish to thank the participants at
+the Science of Science Funding National Bureau of Economic Research Summer
+Institute meeting, the 2022 International Conference on the Science of Science &Innovation, and the two anonymous reviewers and Susan Fiske for their excellent
+comments.
+Authoraﬃliations:aMendozaCollegeofBusiness,UniversityofNotreDame,NotreDame,
+IN 46556;bNorthwestern Institute on Complex Systems and Data Science, Northwestern
+University, Evanston, IL 60208;cLucy Family Institute for Data and Society, University of
+NotreDame,NotreDame,IN46556;dNewYorkUniversityShanghai,NewYorkUniversity,
+Shanghai,China;eDepartmentofObstetrics,Gynecology,andReproductiveBiology,Michi-
+ganStateUniversity,EastLansing,MN48824;fKelloggSchoolofManagement,Northwest-
+ernUniversity,Evanston,IL60208;gNationalBureauofEconomicResearch,Cambridge,MA
+02138; andhTheMcCormickSchoolofEngineering, NorthwesternUniversity, Evanston, IL
+60208
+1. H. Etkowitz, C. Kemelgor, B. Uzzi, Athena Unbound: The Advancement of Women in Science and
+Technology (Cambridge University Press, Cambridge, UK, 2000).
+2. L. M. Ataman, Y. Ma, F. E. Duncan, B. Uzzi, T. K. Woodruff, Quantifying the growth of oncofertility. Biol.
+Reprod. 99, 263–265 (2018).
+3 . Y .M a ,D .F .O l i v e i r a ,T .K .W o o d r u f f ,B .U z z i ,W o m e nw h ow i np r i z e sg e tl e s sm o n e ya n dp r e s t i g e .
+Nature 565, 287–288 (2019).
+4. Association of American Medical Colleges, U.S. medical school faculty trends: Percentages.
+https://www.aamc.org/data-reports/faculty-institutions/interactive-data/2020-us-medical-school-faculty.
+Accessed 1 January 2022.
+5. S. Wuchty, B. F. Jones, B. Uzzi, The increasing dominance of teams in production of knowledge.
+Science 316, 1036–1039 (2007).
+6. B. Uzzi, S. Mukherjee, M. Stringer, B. Jones, Atypical combinations and scientiﬁc impact. Science 342,
+468–472 (2013).
+7. A. W. Woolley, C. F. Chabris, A. Pentland, N. Hashmi, T. W. Malone, Evidence for a collective intelligence
+factor in the performance of human groups. Science 330, 686–688 (2010).
+8. E. H. Gorman, Gender stereotypes, same-gender preferences, and organizational variation in the
+hiring of women: Evidence from law ﬁrms. Am. Sociol. Rev. 70, 702–728 (2005).
+9. Y. Yang, N. V. Chawla, B. Uzzi, A network’s gender composition and communication pattern predict
+women’s leadership success. P r o c .N a t l .A c a d .S c i .U . S . A . 116, 2033–2038 (2019).
+10. R. DeCastro, D. Sambuco, P . A. Ubel, A. Stewart, R. Jagsi, Mentor networks in academic medicine:
+Moving beyond a dyadic conception of mentoring for junior faculty researchers. Acad. Med. 88,
+488–496 (2013).
+11. P . Fontanarosa, H. Bauchner, A. Flanagin, Authorship and team science. JAMA 318, 2433–2437
+(2017).
+12. E. H. Chang, E. L. Kirgios, R. K. Smith, Large-scale ﬁeld experiment shows null effects of team
+demographic diversity on outsiders’ willingness to support the team. J. Exp. Soc. Psychol. 94, 104099
+(2021).
+13. L. A. Rivera, Hiring as cultural matching: The case of elite professional service ﬁrms. Am. Sociol. Rev.
+77, 999–1022 (2012).
+14. B. Macaluso, V. Larivi `ere, T. Sugimoto, C. R. Sugimoto, Is science built on the shoulders of women? A
+study of gender differences in contributorship. Acad. Med. 91, 1136–1142 (2016).
+15. H. Sarsons, Recognition for group work: Gender differences in academia. Am. Econ. Rev. 107,
+141–145 (2017).
+16. B. K. AlShebli, T. Rahwan, W. L. Woon, The preeminence of ethnic diversity in scientiﬁc collaboration.
+Nat. Commun. 9, 5163 (2018).
+17. M. W. Nielsen et al., Opinion: Gender diversity leads to better science. P r o c .N a t l .A c a d .S c i .U . S . A . 114,
+1740–1742 (2017).
+18. K B ¨orner et al., A multi-level systems perspective for the science of team science. Sci. Transl. Med. 2,
+49cm24 (2010).
+19. A. W. Woolley, R. M. Chow, A. T. Mayo, C. Riedl, J. W. Chang, Collective attention and collective
+intelligence: The role of hierarchy and team gender composition. Organ. Sci. , 10.1287/orsc.
+2022.1602 (2022).
+20. J. S. Long, Measures of sex differences in scientiﬁc productivity. Soc. Forces 71, 159–178 (1992).
+21. J. B. Bear, A. W. Woolley, The role of gender in team collaboration and performance. Interdiscip. Sci.
+Rev.36, 146–153 (2011).
+22. H. Etzkowitz, C. Kemelgor, M. Neuschatz, B. Uzzi, J. Alonzo, The paradox of critical mass for women in
+science. Science 266, 51–54 (1994).
+23. L. G. Campbell, S. Mehtani, M. E. Dozier, J. Rinehart, Gender-heterogeneous working groups produce
+higher quality science. PLoS One 8, e79147 (2013).
+24. S. Fortunato et al., Science of science. Science 359, eaao0185 (2018).
+25. R. Guimer `a ,B .U z z i ,J .S p i r o ,L .A .N .A m a r a l ,T e a ma s s e m b l ym e c h a n i s m sd e t e r m i n ec o l l a b o r a t i o n
+network structure and team performance. Science 308, 697–702 (2005).
+26. J. D. West, J. Jacquet, M. M. King, S. J. Correll, C. T. Bergstrom, The role of gender in scholarly
+authorship. PLoS One 8, e66212 (2013).
+27. V. Larivi `ere, C. Ni, Y. Gingras, B. Cronin, C. R. Sugimoto, Bibliometrics: Global gender disparities in
+science. Nature 504, 211–213 (2013).28. A. C. Pinho-Gomes et al., Where are the women? Gender inequalities in COVID-19 research
+authorship. BMJ Glob. Health 5, e002922 (2020).
+29. NamSor API, Namsor: Name checker for gender, origin and ethnicity determination. https://github.
+com/namsor/namsor-api. Accessed 30 October 2020.
+30. L. Santamar ´ı a ,H .M i h a l j e v i ´c, Comparison and benchmark of name-to-gender inference services. PeerJ
+Comput. Sci. 4, e156 (2018).
+31. G. Shannon et al., Gender equality in science, medicine, and global health: Where are we at and why
+does it matter? Lancet 393, 560–569 (2019).
+32. N. Caplar, S. Tacchella, S. Birrer, Quantitative evaluation of gender bias in astronomical publications
+from citation counts. Nat. Astron. 1, 1–5 (2017).
+33. C. Richards et al., Non-binary or genderqueer genders. Int. Rev. Psychiatry 28, 95–102 (2016).
+34. E. Leahey, C. M. Beckman, T. L. Stanko, Prominent but less productive: The impact of interdisciplinarity
+on scientists’ research. Adm. Sci. Q. 62, 105–139 (2017).
+35. K. Wang et al., A review of Microsoft academic services for science of science studies. Front Big Data 2,
+45 (2019).
+36. B. F. Jones, S. Wuchty, B. Uzzi, Multi-university research teams: Shifting impact, geography, and
+stratiﬁcation in science. Science 322, 1259–1262 (2008).
+37. K. J. Boudreau, E. C. Guinan, K. R. Lakhani, C. Riedl, Looking across and looking beyond the
+knowledge frontier: Intellectual distance, novelty, and resource allocation in science. Manage. Sci. 62,
+2765–2783 (2016).
+38. M. Chowdhary et al., Women’s representation in leadership positions in academic medical oncology,
+radiation oncology, and surgical oncology programs. JAMA Netw. Open 3, e200708–e200708
+(2020).
+39. S. Mukherjee, D. M. Romero, B. Jones, B. Uzzi, The nearly universal link between the age of past
+knowledge and tomorrow’s breakthroughs in science and technology: The hotspot. Sci. Adv. 3,
+e1601315 (2017).
+40. B. F. Jones, The burden of knowledge and the “death of the renaissance man”: Is innovation getting
+harder? Rev. Econ. Stud. 76, 283–317 (2009).
+41. Y. Ma, S. Mukherjee, B. Uzzi, Mentorship and prot ´eg´e success in STEM ﬁelds. P r o c .N a t l .A c a d .S c i .
+U.S.A. 117, 14077–14083 (2020).
+42. S. K. Horwitz, I. B. Horwitz, The effects of team diversity on team outcomes: A meta-analytic review of
+team demography. J. Manage. 33, 987–1015 (2007).
+43. B. Stvilia et al., Composition of scientiﬁc teams and publication productivity at a national science lab.
+J .A m .S o c .I n f .S c i .T e c h n o l . 62, 270–283 (2011).
+44. A. W. Woolley, M. E. Gerbasi, C. F. Chabris, S. M. Kosslyn, J. R. Hackman, Bringing in the experts: How
+team composition and collaborative planning jointly shape analytic effectiveness. Small Group Res.
+39, 352–371 (2008).
+45. S. E. Page, The Difference: How the Power of Diversity Creates Better Groups, Firms, Schools, and
+Societies (Princeton University Press, 2007).
+46. National Research Council, Enhancing the Effectiveness of Team Science (National Academies Press,
+2015).
+47. B. Uzzi, A social network’s changing statistical properties and the quality of human innovation. J. Phys.
+AM a t h .T h e o r . 41, 224023 (2008).
+48. R. Reagans, E. Zuckerman, B. McEvily, How to make the team: Social networks vs. demography as
+criteria for designing effective teams. Adm. Sci. Q. 49, 101–133 (2004).
+49. B. Jones, E. Reedy, B. A. Weinberg, Age and scientiﬁc genius. https://www.nber.org/papers/w19866.
+Accessed 5 August 2022.
+50. B. Uzzi, J. Spiro, Collaboration and creativity: The small world problem. A m .J .S o c i o l . 111, 447–504
+(2005).
+51. M. A. Marks, L. A. DeChurch, J. E. Mathieu, F. J. Panzer, A. Alonso, Teamwork in multiteam systems.
+J. Appl. Psychol. 90, 964–971 (2005).
+52. R. Reagans, E. W. Zuckerman, Networks, diversity, and productivity: The social capital of corporate R&D
+teams. Organ. Sci. 12, 502–517 (2001).
+53. M. L. Dion, J. L. Sumner, S. M. Mitchell, Gendered citation patterns across political science and social
+science methodology ﬁelds. Polit. Anal. 26, 312–327 (2018).
+PNAS2022 Vol. 119 No.36 e2200841119 https://doi.org/10.1073/pnas.2200841119 7of8
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---
+54. M. Potthoff, F. Zimmermann, Is there a gender-based fragmentation of communication science? An
+investigation of the reasons for the apparent gender homophily in citations. Scientometrics 112,
+1047–1063 (2017).
+55. M. B. Ross et al., Women are credited less in science than are men. Nature 608, 135–145 (2022).
+56. D. F. M. Oliveira, Y. Ma, T. K. Woodruff, B. Uzzi, Comparison of national institutes of health grant
+amounts to ﬁrst-time male and female principal investigators. JAMA 321, 898–900 (2019).
+57. S. Harvey, A different perspective: The multiple effects of deep level diversity on group creativity.
+J. Exp. Soc. Psychol. 49, 822–832 (2013).
+58. M. E. Heilman, M. C. Haynes, No credit where credit is due: Attributional rationalization of women’s
+success in male-female teams. J. Appl. Psychol. 90, 905–916 (2005).59. M. Ahmadpoor, B. F. Jones, Decoding team and individual impact in science and invention. Proc. Natl.
+A c a d .S c i .U . S . A . 116, 13885–13890 (2019).
+60. Y. Yin, Y. Dong, K. Wang, D. Wang, B. Jones, Public use and public funding of science. Nat. Hum.
+Behav. , 10.1038/s41562-022-01397-5 (2022).
+61. E. ´A. Horv ´at, B. Uzzi, Virtual collaboration hinders a key component of creativity. Nature 605, 38–39
+(2022).
+62. Gender API, Gender API - Determines the gender of a ﬁrst name. https://gender-api.com. Accessed 30
+April 2022.
+63. M. G. Kendall, A. Stuart, J. K. Ord, Kendall’s Advanced Theory of Statistics (Oxford University Press, Inc.,
+1987).
+8of8https://doi.org/10.1073/pnas.2200841119 pnas.org
+Downloaded from https://www.pnas.org by Korea Institute of Science and Technology KIST on March 25, 2026 from IP address 161.122.238.28.
+
+---PAGE---

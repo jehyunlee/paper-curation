@@ -1,0 +1,1151 @@
+Research Paper
+Do novel papers attract more social attention?
+Jiaqi Cheng a, Yundong Xie b,*, Qiang Wu a
+a School of Management, University of Science and Technology of China, Hefei, PR China
+b School of Public Affairs, University of Science and Technology of China, Hefei, PR China
+A R T I C L E  I N F O
+Keywords:
+Novel papers
+Social attention
+Altmetrics
+Citation
+Economics and business
+A B S T R A C T
+The proliferation of social media and the increasing emphasis on societal impact on research 
+evaluation have highlighted the importance of understanding how scientific novelty influences 
+public engagement. This study examines how the novelty of scientific research correlates with the 
+social attention it garners. The analysis is based on a dataset comprising over 310,000 articles in 
+economics and business published from 2012 to 2019. We use Altmetrics—comprising the 
+Altmetric Attention Score, Mendeley, Twitter, Blogs, News, Facebook, and Wikipedia—to 
+evaluate the social attention received by both novel and non-novel papers as defined by us. The 
+results show that novel research consistently garners greater social attention, with particularly 
+strong effects observed in top-tier journals and open-access publications. Our findings remain 
+robust even when employing alternative measures of novelty and controlling for the citation 
+count. Further analysis comparing outcomes across various Altmetric sources provides a 
+comprehensive view of how different platforms reflect societal engagement with novel research. 
+This study provides valuable insights into the societal attention of novel and original scientific 
+research, offering a new perspective for academic publishing and research evaluation.
+1. Introduction
+In recent years, the proliferation of social media has fundamentally transformed the landscape of scientific communication, 
+extending its reach beyond traditional academic audiences to engage a more diverse public. Within the academic community, there has 
+been an increasing emphasis from governments and public funding agencies on the necessity for scientists to demonstrate the societal 
+impact of their research endeavors (Bornmann, 2013; Salter et al., 2017; Ou et al., 2024). In line with policy demands that extend 
+beyond traditional evaluation models based on citation and productivity (Waltman, 2016), public attention has become a critical 
+factor in assessing the societal impact of scientific research (Díaz-Faes et al., 2019; Robinson-Garcia et al., 2018). This also underscores 
+the importance of understanding the factors that drive public interest in scientific inquiry.
+Research on unprecedented events, especially large-scale epidemic events, is typically considered novel. The COVID-19 pandemic 
+served as a typical observational window, during which research papers related to the pandemic topics experienced a rapid accu­
+mulation of academic citations and social media mentions, significantly outpacing other subjects (Kousha & Thelwall, 2020). Although 
+previous studies have shown a weak or negative correlation between Twitter mentions and academic impact (Costas et al., 2015; 
+Haustein et al., 2014; Thelwall et al., 2013), this research found that, in the early stages of COVID-19 research dissemination, Twitter 
+mentions became an effective early indicator of academic impact (Kousha & Thelwall, 2020). This study highlights how urgent and 
+* Corresponding author.
+E-mail address: ydxie@ustc.edu.cn (Y. Xie). 
+Contents lists available at ScienceDirect
+Journal of Informetrics
+journal homepage: www.elsevier.com/locate/joi
+https://doi.org/10.1016/j.joi.2025.101710
+Received 25 November 2024; Received in revised form 21 July 2025; Accepted 25 July 2025  
+Journal of Informetrics 19 (2025) 101710 
+Available online 8 August 2025 
+1751-1577/© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+novel research can attract substantial attention in both academic and public spheres, and it suggests that in fields characterized by high 
+public interest and novelty, Altmetrics can provide relatively immediate and effective social insights.
+Existing empirical studies have systematically discussed the relationship between novelty and academic citations, and there is a 
+threshold in the positive impact of novelty on citation counts. (Yan et al., 2020; Zhang et al., 2021). While interdisciplinary research, 
+which is related to and can promote novelty in some way, enhances social visibility for scientists (D’Este & Robinson-García, 2023), the 
+two concepts are not always the same. Therefore, the mechanism by which novelty in research papers affects social attention remains 
+under-explored. More specifically, it is unclear whether research with greater novelty is more likely to attract public interest on 
+platforms such as social media, thus facilitating broader public dissemination and engagement.
+This study investigates the impact of novelty in scientific research on social attention by analyzing a sample of over 380,000 ac­
+ademic journal articles from the fields of economics and business. Using altmetrics, such as social media usage counts, we quantita­
+tively assess social attention, drawing on prior work (D’Este & Robinson-García, 2023; Robinson-Garcia et al., 2018; Wouters et al., 
+2019). Our analysis explores the positive effects of research novelty on public engagement and also considers factors that may in­
+fluence the consistency of this relationship. This study helps our understanding of how the novelty of scientific research boosts social 
+visibility, enhances public communication, and ultimately bridges the gap between science and society, motivating research with 
+broader societal impact.
+This paper is organized as follows. The following section presents the relevant literature. Section 3 presents the data and methods 
+used in the study. Section 4 contains the data analysis, including descriptive analysis, benchmark model analysis, robustness analysis, 
+heterogeneous analysis, and additional analysis. Section 5 engages in discussion and a summary of the major conclusions.
+2. Literature review
+2.1. Research on novelty
+In the tradition of economic management studies, novelty is the result of recombining what is already known “differently” 
+(Schumpeter & Backhaus, 2003). Technology does not emerge from a void but is derived from existing knowledge (Ozman, 2012). 
+Recent research has supported this perspective in which scientific novelty is identified by remote (Wang et al., 2017) and atypical (Uzzi 
+et al., 2013) combinations of the backward citations. Indicators about knowledge sources that have been proposed in prior research 
+include references, cited journals, and knowledge entities within papers like keywords (Dahlin & Behrens, 2005; Lee et al., 2015; 
+Trapido, 2015; Uddin et al., 2015; Uzzi et al., 2013; Wang et al., 2017, 2018).
+Dahlin & Behrens (2005) were among the first to propose the use of paired references as a metric for novelty, asserting that this 
+criterion can identify potential radical inventions before market introduction. This method was later adopted by Trapido (2015), who 
+discussed the Matthew effect of novelty in scientific publications. Despite its ability to identify more complex and unconventional 
+combinations of existing knowledge, it is less frequently used due to its high computational demands (Matsumoto et al., 2021). Uddin 
+et al. (2015) introduced a framework for exploring knowledge structures through keyword combinations to examine emerging fields in 
+multidisciplinary research. Uzzi et al. (2013) investigated the combination atypicality of journal pairs cited in publications. Bornmann 
+et al. (2019a) validated the novelty indicators proposed by Uzzi et al. (2013) and Wang et al. (2017) using peer review data from 
+biomedical research and concluded that only the indicator developed by Uzzi et al. (2013) effectively reflects peer review assessments.
+Some studies have pointed out that the methods for measuring the scientific novelty of papers are related to the ways of quantifying 
+interdisciplinary research (Fontana et al., 2020), and the interdisciplinary characteristics of a paper can promote its novelty (D’Este 
+et al., 2019; Chen et al., 2024). However, it is noteworthy that interdisciplinarity and novelty do not always capture the same aspects of 
+research outcomes. For instance, Nobel Prize-winning research, which is often considered novel, is not always interdisciplinary (Szell 
+et al., 2018). Another article highlighted the negative correlation between the CD index and the potential for papers to connect with 
+society (Yang et al., 2024). There is a research gap in the relationship between the novelty of studies and social attention.
+The impact of novel works is also inconsistent and often subject to contrasting viewpoints. The first perspective supports that the 
+novelty and uniqueness of a paper signify an important integration of old and new ideas, generating substantial new knowledge and 
+garnering widespread recognition (Foster et al., 2015). A comprehensive assessment of the overall value of a paper should include 
+consideration of both impact and novelty (Yan & Fan, 2024). Such novelty increases the likelihood of making a significant impact on 
+other papers (Criscuolo et al., 2013) and can serve as a key driver of radical technological innovation (Ozman, 2012). Furthermore, the 
+premium associated with novelty can be transferred from the authors’ identity to their work, and also inherited from mentors to the 
+work of their mentees (Trapido, 2015). On the other hand, excessively novel research may face resistance in certain respects. For 
+example, as novel components increase in a work, so does the quantity of original knowledge elements, which can complicate un­
+derstanding (Verhoeven et al., 2016). There may be a risk of insufficient insight into the foundational knowledge or an inability to 
+recognize potential weaknesses in their research (Kaplan & Vakili, 2015). The combination of broad concepts may be too difficult to 
+interpret and may even hinder reviewers and readers from fully appreciating the value of the research (Yan et al., 2020).
+2.2. Research on social attention and altmetrics
+The benefits that society derives from scientific progress can only be realized when scientific outputs achieve full exposure to the 
+social audience (Bornmann, 2013). As such, the societal visibility of scientific production and its value has become a crucial metric for 
+assessing its impact. The limitations of traditional bibliometric methods in capturing the broader societal influence, such as 
+commercialization or teaching of research, have spurred growing interest in alternative indicators, particularly altmetrics, which serve 
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+2 
+to complement traditional citation-count-tracking measures (Mohammadi & Thelwall, 2014; Priem, 2015; Priem et al., 2011; Lemke 
+et al., 2022). Altmetrics, or more specifically social media metrics, were initially developed to gauge the online engagement with 
+scientific work. Over time, with the involvement of commercial data providers (major Altmetric aggregators like Altmetric.com, 
+Lagotto, Plum Analytics, and CrossRef Event Data), the scope of Altmetric sources and the diversity of the indicators themselves have 
+expanded considerably (Haustein, 2016; Robinson-García et al., 2014; Zahedi & Costas, 2018). Hence, Altmetrics offers methodo­
+logical advantages in terms of broadness, diversity, speed, and openness (Wouters & Costas, 2012).
+A growing body of literature has argued that Altmetrics have established a foundation for indexing the societal impact of research 
+beyond traditional academic spheres (Bornmann et al., 2019b; Mohammadi & Thelwall, 2014). Bornmann et al. (2019a) employed a 
+subset of Altmetric data in conjunction with the UK REF dataset to scrutinize the convergent validity of altmetrics and revealed that 
+Altmetric scores are often nearly uncorrelated with expert reviewer scores. However, this discrepancy suggests that altmetrics might 
+capture a unique form of societal impact—one potentially overlooked by academic reviewers—that includes dimensions of public 
+engagement and socially relevant practical applications. Consequently, the use of altmetrics as a measure of societal attention in this 
+study is both theoretically and empirically justified.
+However, Robinson-Garcia et al. (2018) argued that the capacity of altmetrics to reflect social impact is deeply intertwined with the 
+selection of specific indicators and the conceptual dimensions they represent. Zhang et al. (2019) demonstrated that, among all 
+Altmetric sub-indicators, the number of Mendeley readers is the most effective metric for distinguishing highly cited publications from 
+those experiencing rapid citation growth. Bornmann & Haunschild (2018) found that Mendeley readership and citations converge on a 
+single factor significantly associated with research quality, as measured by F1000Prime. In contrast, Twitter activity loads onto a 
+separate factor that is unrelated to research quality. There is a lack of research on whether different social media sources’ 
+sub-indicators vary in their ability to reflect the novelty attributes of articles, and we will further analyze this in a later section.
+Since the 21st century, the dynamics of open access have been of significant concern and have received substantial support from the 
+scientific community (Lawrence, 2001; Maddi & Sapinho, 2022). Apart from OACA (Open Access Citation Advantage) (Eysenbach, 
+2006; Norris et al., 2008), some researchers claim that open access (OA) can facilitate the flow of scientific works to the public, thereby 
+benefiting society by reducing efficiency losses in the innovation process (Gold, 2021; Nelson & Eggett, 2017). This partially explains 
+the intrinsic mechanisms by which novelty influences societal attention. Research has also demonstrated that top-tier journals are 
+more likely to attract a larger and more engaged readership, reducing scholars’ reliance on search engines to access papers published in 
+these journals (Ma et al., 2019; Wang et al., 2022).
+This study examines papers from economics and business journals to explore the relationship between novelty in scientific pub­
+lications and the social attention they receive. The findings offer insights into the topic of ‘How and to what extent scientific findings’ 
+novelty contribute to their social attention by boosting social engagement and public involvement on social media platforms’. The 
+following questions should be considered deeply: 
+RQ1. Do papers with high-level novelty receive more social attention when controlling for confounding factors?
+RQ2. How does novelty relate to the social impact and attention of papers when considering the heterogeneity across open access 
+status and top-tier journals?
+RQ3. What differences are observed when further examining social attention across different media?
+3. Data and method
+3.1. Data collection
+The primary dataset for this study was derived from the Microsoft Academic Graph (MAG) and the SciSciNet database (Lin et al., 
+2023). The SciSciNet database is a large-scale open data lake for scientific research, encompassing >134 million scientific publications. 
+The proposed data lake enhances the robustness and reproducibility of research by minimizing redundant work in data processing and 
+measurement (Lin et al., 2023).
+We retrieved all published journal articles in economics and business from MAG and limited the sample to those published between 
+2012 and 2019. The distribution of the articles by year is shown in Fig. 1. The data were truncated in 2019 to ensure that each article 
+had at least a three-year time window, thereby guaranteeing that the articles received sufficient attention. Additionally, since Alt­
+metric.com was established in 2011, the data were confined to the period of 2012 to 2019.
+To refine our dataset, we excluded all documents that did not provide a Digital Object Identifier (DOI) in MAG, as we required the 
+DOI for each article to retrieve the altmetrics scores via the Altmetric API. We selected seven metrics, including Altmetric Attention 
+Score, Mendeley, News, Twitter, Facebook, Wikipedia, Blogs. It should be noted that all altmetrics are replaced with values of 0 if an 
+article has no records on Altmetric.com. We also removed articles from our analysis sample for which the novelty variables measured 
+by uncommon bibliography combinations could not be obtained from the SciSciNet database, since some often lack proper references 
+focusing on evaluating and reporting new research like the MIT Sloan Management Review. The final dataset comprises 316,303 
+papers.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+3 
+3.2. Variables
+3.2.1. Novelty
+In this study, the novelty of articles is identified by uncommon journal combinations in the bibliography of each paper proposed by 
+Uzzi et al. (2013). More specifically, for each selected paper, all cited journal pairwise combinations are identified, and their 
+co-occurrence frequencies are counted before the publication year of the target paper. By comparing the actual journal-pair fre­
+quencies in the citation network with the average frequencies in the randomized citation networks controlling for the natural skewness 
+of citation distributions, a Z-score is generated for each journal-pair. A lower Z-score indicates that the combination appears to be 
+innovative, as the journal-pair is relatively rare within the field. 
+Zscore = (co −occurence frequency counted −
+average frequencies )
+standard deviation
+(1) 
+Subsequently, the 10th percentile Z-score is derived based on the Z-score distribution of the journal lists for each paper to capture 
+the left-tail-end atypical combinations at the paper level. Articles with a 10th percentile Z-score greater than 0 are considered relatively 
+Fig. 2. Mean of Altmetrics of papers by whether they are classified as novel paper. AAScore represents the Altmetric Attention Score.
+Fig. 1. Distribution of paper by year published.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+4 
+more common, while those with a score <0 are considered relatively more novel. We applied a natural logarithm transformation to the 
+continuous variable in Eq. (2), converting the z-score into the following form to represent the extent of a paper’s novelty. According to 
+this transformation, the higher the innovativeness of an article, the greater its novelty value (Yang et al., 2022). 
+Novelty =
+{
+−ln(Zscore10th + 1), Zscore10th > 0
+ln( −Zscore10th + 1), Zscore10th < 0
+(2) 
+3.2.1. Social attention
+In the main analysis, we used the Altmetric Attention Score data obtained from Altmetric.com to quantify social attention. To 
+address the skewness in the distribution, we applied a natural logarithmic transformation with an additive constant.
+Fig. 2 presents the distribution of the Altmetric attention scores and six sub-metrics collected from Altmetric.com, categorized by 
+whether the papers are classified as "novel-papers" within our sample. Across each metric, papers identified as “novel paper” 
+demonstrate a notable relative advantage. Specifically, the mean social attention garnered by novel-papers is approximately two to 
+three times higher than that of non-novel papers. These findings provide preliminary evidence for the subsequent analysis of the 
+relationship between a paper’s novelty and its social attention.
+3.3. Model specification
+To formally examine the relationship between the novelty of academic papers and the social attention received, we constructed the 
+following benchmark model-a linear regression model with fixed effects: 
+Social Attentionijt = α + β1Noveltyijt + β2Controlijt + fixedijt + εijt
+(3) 
+In the baseline test, social attention (ijt) is measured using the natural logarithm of the Altmetric attention score of paper i pub­
+lished in journal j in year t plus one. The novelty of the articles is measured by the presence of uncommon combinations of references 
+found in the bibliographies of each paper. Fixedijt represents the fixed effects and εijt is the error term.
+Controls encompass all the control variables defined. These included (1) team size (Heinze et al., 2009); (2) reference count; (3) 
+institution count; (4) country count (Pohl, 2021); (5) top scientist; (6) top institution (Way et al., 2019); (7) open access (OA). We 
+collected the variables team size, reference count, institution count, and country count from Microsoft Academic Graph (MAG) and 
+obtained the sample articles’ open access status from the OpenAlex website. We define a "top scientist" as one who has at least one 
+author in the article’s creation team with an h-index greater than 40, and we select the Academic Ranking of World Universities 
+(ARWU) to define the Top institution. Table 1 provides a succinct description of the control variable employed in this study.
+4. Results
+4.1. Descriptive statistics
+We present the descriptive statistics for the main variables in Table 2 and their correlation coefficients and significance levels 
+among the variables in Table 3. The correlation coefficients between the variables indicate that the novelty of articles is highly 
+correlated with social impact, which we will further analyze in a later section. From Table 2, the standardized social attention ranges 
+from 0 to 8.479, and novelty spans from −10.01 to 5.695. The average novelty score for the full sample of articles is −1.044, indicating 
+that, on average, the references in these articles primarily consist of conventional combinations of published works. Notably, 10.3 % of 
+the articles include top scientists in their research teams, and 23.4 % have members from institutions ranked in the ARWU Rankings 
+top 100. Furthermore, approximately 29.2 % of the articles are available in open access format.
+4.2. Regression analysis
+Table 4 reports the estimation results of our benchmark model and several alternative specifications. We followed a rigorous 
+procedure across Models 1 to 6. Columns (1) show the results when only the ‘Novelty’ variable was included in the model. The 
+Table 1 
+Description of control variables.
+Control variables
+Explanation
+Team size
+The natural logarithm of one plus the number of authors in the research teams
+Reference count
+The natural logarithm of one plus the number of references of the paper
+Institution count
+The natural logarithm of one plus the number of institutions represented by the scientists in the team
+Country count
+The natural logarithm of one plus the number of countries represented by the scientists in the team
+Top scientist
+Whether the team includes any top scientist or not (0 = no; 1 = yes) 
+Top scientist: Author H-index max in team > 40
+Top institution
+Whether any number in team from top institution or not (0 = no; 1 = yes) 
+Top institution: ShanghaiRanking’s Academic Ranking of World Universities (ARWU) 2019 edition Top 100
+Open Access
+Whether the paper is open access or not (0 = no; 1 = yes)
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+5 
+regression coefficients between ‘Novelty’ and ‘Social attention’ were positive and statistically significant at the 0.001 level, indicating 
+the initial evidence that hat paper novelty positively influences subsequent social attention. We gradually incorporate control vari­
+ables, fixed effects, and interaction fixed effects between year and journal across Models 2 to 6. Across all models, the results 
+consistently demonstrate that the independent variable has a significant positive effect. Column 6 includes the journal-year interaction 
+fixed effects, yielding the highest R-squared (R² = 0.354), which enhances the model’s explanatory power. Thus, we adopt the 
+Table 2 
+Descriptive statistics for variables defined in this paper.
+Variables
+N
+Mean
+S.D.
+Min
+Max
+Social attention
+316,303
+0.609
+1.071
+0
+8.479
+Novelty
+316,303
+−1.044
+2.311
+−10.01
+5.695
+Open Access
+316,303
+0.292
+0.455
+0
+1
+Top institution
+316,303
+0.234
+0.423
+0
+1
+Reference
+316,303
+3.412
+0.747
+1.099
+6.770
+Team size
+316,303
+1.165
+0.356
+0.693
+3.689
+Institution count
+316,303
+0.940
+0.295
+0.693
+3.611
+Country count
+316,303
+0.816
+0.218
+0.693
+2.890
+Top scientist
+316,303
+0.103
+0.304
+0
+1
+Citation
+316,303
+2.207
+1.239
+0
+8.039
+Notes: The dependent variable in the models, Novelty, is the natural logarithm of the 10th pct zscore of the paper’s uncommon reference combination 
+add 1 as shown in Eq. (2). The independent variable is the natural logarithm of the Altmetric attention score of the paper from Altmetric.com add 1. 
+Citation represents the citation counts of the papers received. We still obtained the citation counts for articles from MAG and applied a natural 
+logarithmic transformation with an addition of one to these citation counts.
+Table 3 
+Pearson Correlation Coefficients Matrix of Variables.
+Variables
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+(7)
+(8)
+(9)
+Social attention
+1
+​
+​
+​
+​
+​
+​
+​
+​
+Novelty
+0.163***
+1
+​
+​
+​
+​
+​
+​
+​
+Open Access
+0.166***
+0.052***
+1
+​
+​
+​
+​
+​
+​
+Top institution
+0.192***
+0.056***
+0.022***
+1
+​
+​
+​
+​
+​
+Reference
+0.085***
+0.219***
+−0.050***
+0.058***
+1
+​
+​
+​
+​
+Team size
+0.093***
+0.174***
+0.108***
+0.110***
+0.144***
+1
+​
+​
+​
+Institution count
+0.101***
+0.046***
+0.056***
+0.243***
+0.198***
+0.574***
+1
+​
+​
+Country count
+0.063***
+0.035***
+0.064***
+0.179***
+0.162***
+0.389***
+0.693***
+1
+​
+Top scientist
+0.162***
+0.112***
+0.045***
+0.187***
+0.079***
+0.237***
+0.222***
+0.197***
+1
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+Table 4 
+Model estimation results.
+Variables
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+Novelty
+0.076***
+0.058***
+0.055***
+0.029***
+0.028***
+0.029***
+​
+(84.11)
+(65.40)
+(63.08)
+(32.75)
+(32.16)
+(31.09)
+Open Access
+​
+0.362***
+0.305***
+0.348***
+0.290***
+0.265***
+​
+​
+(81.98)
+(67.80)
+(74.94)
+(60.88)
+(50.82)
+Top institution
+​
+0.393***
+0.393***
+0.113***
+0.114***
+0.110***
+​
+​
+(76.01)
+(76.72)
+(23.32)
+(23.84)
+(22.12)
+Reference
+​
+0.065***
+0.060***
+0.057***
+0.053***
+0.054***
+​
+​
+(25.20)
+(23.08)
+(19.49)
+(18.34)
+(17.52)
+Team size
+​
+−0.017**
+−0.038***
+0.064***
+0.053***
+0.058***
+​
+​
+(−2.429)
+(−5.623)
+(10.05)
+(8.254)
+(8.597)
+Institution count
+​
+0.160***
+0.155***
+0.050***
+0.046***
+0.041***
+​
+​
+(15.01)
+(14.62)
+(5.214)
+(4.814)
+(4.196)
+Country count
+​
+−0.174***
+−0.175***
+−0.083***
+−0.081***
+−0.075***
+​
+​
+(−13.69)
+(−13.82)
+(−7.374)
+(−7.264)
+(−6.513)
+Top scientist
+​
+0.377***
+0.389***
+0.137***
+0.149***
+0.154***
+​
+​
+(47.01)
+(48.78)
+(19.25)
+(21.16)
+(21.14)
+Year FE
+No
+No
+Yes
+No
+Yes
+No
+Journal FE
+No
+No
+No
+Yes
+Yes
+No
+Journal-year FE
+No
+No
+No
+No
+No
+Yes
+Observations
+316,303
+316,303
+316,303
+316,303
+316,303
+316,303
+Ajusted R2
+0.027
+0.098
+0.110
+0.315
+0.324
+0.354
+Notes: The independent variable is the natural logarithm of the Altmetric attention score of the paper from Altmetric.com add 1. FE fixed effect, 
+Robust t-statistics in parentheses. All standard errors are robust standard errors.
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+6 
+estimates from Column 6 as our benchmark, suggesting that a one-unit increase in the novelty of a paper is associated with a 2.9 % 
+increase in its Altmetric attention score.
+The results of the control variables also provide valuable insights. For instance, the regression coefficient for Open Access is 0.265 
+(p < 0.01), indicating initial evidence that open-access articles may receive more attention. Similarly, the coefficients for Top Insti­
+tution and Top Scientist are 0.110 (p < 0.01) and 0.154 (p < 0.01), respectively (both significant), indicating that research originating 
+from prestigious institutions or involving top scientists may have a competitive advantage. The positive coefficients for Reference (β =
+0.054, p < 0.01) and Team Size (β = 0.058, p < 0.01) further corroborate the findings from prior studies, which suggest that a higher 
+number of references and larger team sizes are typically associated with greater academic influence.
+Notably, the regression coefficient for Country Count is negative (β = −0.075, p < 0.01), which may imply that international 
+collaboration does not always positively affect the dependent variable. This could be due to unobserved mechanisms, such as coor­
+dination challenges or cultural differences, which might offset the potential benefits of cross-country collaboration. Additionally, the 
+inclusion of journal-year fixed effects effectively controls for journal-specific characteristics and time trends, thereby enhancing the 
+accuracy of the estimates.
+4.3. Robustness checks
+In this section, we check the robustness of the regression to provide further evidence of the validity of the current effect by changing 
+variables, using alternative measurements, reducing the sample size, and focusing on specific research areas. First, to further 
+demonstrate the impact of an article’s novelty on the social attention it subsequently receives, we changed the counting method of 
+independent variables by using binary variables instead of counting variables. Papers with a 10pct-zscore <0 are classified as novel- 
+papers and assigned a value of 1; all other papers are assigned a value of 0 (Yang et al., 2022). The regression results remain stable 
+using “novel-paper” as the independent variable, as shown in the first column of Table 5. According to the results, when a paper 
+changes from being non-novel to novel, the Altmetric score increases by approximately 10 %.
+Second, alternative metrics to quantify novelty are employed. On the one hand, we adopted a more recent metric—the disruption 
+index (Funk & Owen-Smith, 2017; Wu et al., 2019), which quantifies scientific novelty by measuring the extent to which a paper 
+disrupts or substitutes the existing knowledge by its citation patterns (Liang et al., 2023). On the other hand, we applied the textual 
+novelty measurement established by Kelly et al. (2021), defining academic novelty as research work that demonstrates conceptual 
+distinctiveness from its predecessors while exhibiting reduced reliance on existing scholarly contributions. We implemented their 
+high-dimensional NLP framework across our samples’ titles and abstracts (2012–2014 corpus, n = 110,566). The results in Columns 2 
+and 3 of Table 5 validate that our conclusions remain consistent across different measurement frameworks, and these multi-metric 
+approaches addresses potential bias from any single operationalization.
+Third, we filtered out papers with no Altmetric score and excluded those with novelty scores exceeding the 95th percentile and 
+below the 5th percentile to reduce the impact of outliers. We applied a similar procedure, and the results confirmed its significance, as 
+evidenced in Columns 4 and 5 of Table 5. Forth, we conducted regression analyses separately on the samples from the two selected 
+journal fields (business & economics) to ensure consistency and robustness. As depicted in Columns 6 and 7 of Table 5, the primary 
+observed coefficients stand at 0.035 and 0.024 and hold statistical significance at the 0.01 level, in line with the findings of the baseline 
+regression model. Finally, we included “Citation” as a control variable to mitigate the potential influence of quality (as Column 8 of 
+Table 5), and the results remain significant. We still obtained the citation counts for articles from MAG and applied a natural loga­
+rithmic transformation with an addition of one to these citation counts.
+Table 5 
+Robustness check.
+Variables
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+(7)
+(8)
+Novel paper
+0.098***
+​
+​
+​
+​
+​
+​
+​
+​
+(22.75)
+​
+​
+​
+​
+​
+​
+​
+Novelty
+​
+0.023***
+0.264***
+0.037***
+0.028***
+0.035***
+0.024***
+0.029***
+​
+​
+(5.34)
+(5.51)
+(19.19)
+(24.69)
+(23.21)
+(19.66)
+(32.15)
+Controls
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Citation
+No
+No
+No
+No
+No
+No
+No
+Yes
+Journal-year FE
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Observations
+316,303
+289,586
+110,566
+112,761
+284,673
+143,901
+172,402
+316,303
+Ajusted R2
+0.353
+0.319
+0.275
+0.250
+0.339
+0.406
+0.314
+0.395
+Note: A binary variable “novel-paper” to indicate whether a paper is novel or not, where papers with a 10th pct z-score less than zero are designated as 
+novel papers and are assigned a value of 1 and conversely. Of these, 101,540 were categorized as novel and 214,764 as non-novel. Robust t-statistics 
+in parentheses.
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+7 
+4.4. Heterogeneous analysis
+4.4.1. Open access
+In this section, we investigate whether OA introduces heterogeneity. As illustrated in Table 6, the coefficients of the independent 
+variable in both models are significantly positive. However, the regression coefficient for the novelty of open access (OA) articles (β =
+0.037; p < 0.01) is markedly higher than that for non-OA articles (β = 0.025; p < 0.01). The result indicates that, in OA articles, the 
+impact of novelty on social attention is more pronounced. Our findings support previous research suggesting that in open access (OA) 
+environments, the transparency and accessibility of research results are significantly enhanced. This environment provides favorable 
+conditions for the dissemination of novel articles, enabling them to reach a broader audience and thus increase social attention. 
+However, it is important to note that our study does not attempt to establish a direct causal relationship between novelty and social 
+attention. Other factors may also contribute to higher social attention to articles.
+4.4.2. Top journal
+In this section, we examine whether papers published in top-tier journals achieve relative advantages. Drawing on previous 
+research, we define the journals listed in FT50 and UT Dallas 24 as top-tier journals (Hou et al., 2022; Yang et al., 2023). We use binary 
+variables FT50 and UTD24 based on whether the papers are affiliated with the journals on the respective lists to reflect the effect of the 
+top-tier journals. The results in Table 7 indicate that the advantages conferred by novelty are more likely to be recognized in papers 
+from top-tier journals.
+4.5. Additional analysis
+In this section, we select specific metrics—Mendeley, Twitter, Blogs, News, Facebook, and Wikipedia—for further analysis of 
+behavior in different contexts. Observations of the collected Altmetric data reveal varying coverage rates of sample mentions across 
+different media sources. The data were grouped according to whether the papers were classified as novel, with specific coverage rates 
+presented in Table 8. Both groups exhibit high mention rates on Mendeley and Twitter, consistent with previous statistical findings. 
+Additionally, no significant distribution differences are observed between the two groups across all seven media sources, allowing for 
+further analysis of the differential effects of novelty on social attention across various media platforms.
+In accordance with the previously outlined methodology, we applied a plus-one natural logarithm transformation to the counts of 
+various media sources. The results are presented in Table 9, indicating that all results are statistically significant in the positive di­
+rection. The effect observed in Mendeley (β = 0.046; p = < 0.01) is particularly prominent, approximately 2.4 times that of Twitter and 
+as much as ten more times greater than other media types. Mendeley is the most recently prominent data source, and its high coef­
+ficient may be associated with the broadest reader coverage and its nature as an early indicator of academic impact (Zahedi et al., 
+2017). The most extreme disparity is observed in Wikipedia (β = 0.002; p = < 0.01), which is believed to reflect the educational impact 
+dimension of societal influence (Gonz´alez-Betancor & Dorta-Gonz´alez, 2023).
+Table 6 
+Heterogeneous analysis of OA.
+Variables
+(1)
+(2)
+(3)
+(4)
+OA
+Non-OA
+OA
+Non-OA
+Novelty
+0.111***
+0.054***
+0.037***
+0.025***
+​
+(59.11)
+(57.02)
+(17.99)
+(23.72)
+Controls
+No
+No
+Yes
+Yes
+Journal-year FE
+No
+No
+Yes
+Yes
+Observations
+92,250
+224,053
+92,250
+224,053
+Ajusted R2
+0.043
+0.017
+0.425
+0.282
+Note: Table 6 show the results of the subgroup analyses across OA and the Columns 1, 3 represent yes. Robust t-statistics in parentheses.
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+Table 7 
+Heterogeneous analysis of top-tier journals.
+Variables
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+(7)
+(8)
+FT50
+Non -FT50
+FT50
+Non -FT50
+UTD24
+Non-UTD24
+UTD24
+Non-UTD24
+Novelty
+0.064***
+0.079***
+0.062***
+0.027***
+0.044***
+0.077***
+0.063***
+0.028***
+​
+(11.79)
+(86.88)
+(12.08)
+(28.89)
+(6.467)
+(85.52)
+(9.051)
+(29.85)
+Controls
+No
+No
+Yes
+Yes
+No
+No
+Yes
+Yes
+Journal-year FE
+No
+No
+Yes
+Yes
+No
+No
+Yes
+Yes
+Observations
+13,270
+303,033
+13,270
+303,033
+7,053
+309,250
+7,053
+309,250
+Ajusted R2
+0.012
+0.030
+0.289
+0.356
+0.006
+0.028
+0.209
+0.358
+Note: Table 7 show the results of the subgroup analyses across the top-tier journals. The column 1–4 show the results of subgroup analyses across FT50 
+while the Columns 1, 3 represent yes. Columns 5–8 show the results of that under UTD24. Robust t-statistics in parentheses.
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+8 
+4. Discussion
+The main objective of this study is to examine whether the novelty of a paper is associated with the social attention it receives on 
+social media platforms. While many previous studies have explored the relationship between a paper’s novelty and its scientific 
+impact, the social attention dimension remains underexplored, particularly in terms of empirical evidence for individual metrics. In 
+this work, we focus on the impact of a paper’s novelty on the subsequent social attention it garners.
+The findings of the current study indicate a significant positive relationship between the novelty of a paper and its social attention. 
+Specifically, our results demonstrate that papers characterized by higher levels of novelty tend to receive greater social engagement on 
+platforms. This aligns with the broader understanding that innovative research is more likely to capture public interest and attention. 
+We conducted several robustness tests by replacing the variables and narrowing the sample scope; the results remained significant, 
+even stronger in some cases. Heterogeneity tests further indicated that publications in top-tier journals and those with open access 
+(OA) channels exhibited notable spillover effects. Finally, the source-specific analyses of Mendeley, Twitter, Blogs, News, Facebook, 
+and Wikipedia showed that Mendeley and Twitter provided the strongest representations, which is consistent with the prior findings.
+We propose several explanations for our findings. First, novel research often addresses underexplored issues that can stimulate 
+curiosity within both academic and public audiences, thereby drawing greater attention. For instance, interdisciplinary studies may 
+engage experts and audiences from multiple fields. Furthermore, users of social media platforms are inclined to share content that is 
+unique and thought-provoking, and highly novel papers meet this criterion, thereby garnering greater attention on such platforms. 
+Second, papers with high levels of novelty may be more frequently covered by the media or cited by science communicators, as 
+journalists and communicators often prioritize research with groundbreaking findings for reporting. This external exposure further 
+amplifies the influence of such papers on social media platforms. Additionally, public understanding of and interest in science is often 
+shaped by media coverage; thus, highly novel papers, once disseminated through media channels, are more likely to spark widespread 
+social discussion and engagement.
+Also, this study acknowledges several limitations that warrant further investigation. First, our focus on economics and business 
+papers raises the question of whether the findings would differ across other disciplines. Second, we analyze only journal articles; future 
+studies could broaden this scope to include patents and project data, enhancing representativeness and comprehensiveness. Third, the 
+article lacks more analysis using various alternative metrics to quantify the novelty of scientific papers. Thus, future research can 
+explore a broader range of dynamics in this context.
+5. Conclusion
+In this study, we examined the relationship between the novelty of research papers and the level of social attention they garner. Our 
+dataset includes over 310,000 journal articles in the economics and business field, published between 2012 and 2019. Of these, 
+101,540 were categorized as novel and 214,764 as non-novel.
+Our primary contribution lies in identifying the nuanced relationship between research novelty and its social attention, offering 
+empirical evidence that underscores the unique role of truly novel work in driving both academic progress and societal interest. This 
+paper offers insights into enhancing the public communication of scientific research and bridging the knowledge gap between science 
+and society. Research characterized by higher novelty tends to receive greater social visibility and media attention, facilitating faster 
+Table 8 
+The mention rate in the two groups on respective Altmetric sources.
+Altmetrics
+Novel paper
+Non-novel paper
+Altmetric Attention Score
+44.3 %
+31.6 %
+Mendeley
+44.2 %
+31.4 %
+Twitter
+35.1 %
+23.0 %
+News
+8.5 %
+4.1 %
+Facebook
+8.0 %
+4.2 %
+Blogs
+7.7 %
+3.7 %
+Wikipedia
+3.2 %
+1.9 %
+Table 9 
+Additional analysis.
+Variables
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+Mendeley
+Twitter
+Blogs
+News
+Facebook
+Wikipedia
+Novelty
+0.046***
+0.019***
+0.004***
+0.008***
+0.002***
+0.002***
+​
+(26.24)
+(28.99)
+(19.91)
+(22.20)
+(13.00)
+(10.59)
+Controls
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Journal-year FE
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+Observations
+316,303
+316,303
+316,303
+316,303
+316,303
+316,303
+Ajusted R2
+0.316
+0.428
+0.200
+0.159
+0.298
+0.048
+Note: Robust t-statistics in parentheses.
+*** p < 0.01, ** p < 0.05, * p < 0.1.
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+9 
+dissemination and strengthening public engagement and trust in scientific knowledge. Increased visibility on platforms like social 
+media also motivates researchers—particularly emerging scholars—to pursue innovative studies, enriching academia with fresh in­
+sights and methodologies. By elucidating the link between research novelty and social attention, this study provides a new perspective 
+for academic publishing and research evaluation, promoting the dissemination of innovative research with societal impact.
+CRediT authorship contribution statement
+Jiaqi Cheng: Writing – review & editing, Writing – original draft, Methodology, Data curation, Conceptualization. Yundong Xie: 
+Writing – review & editing, Supervision, Methodology, Funding acquisition, Data curation, Conceptualization. Qiang Wu: Supervi­
+sion, Project administration, Funding acquisition.
+Acknowledgements
+The author would like to thank the editors and anonymous reviewers for their constructive comments and insightful suggestions, 
+which helped us improve the paper. This research was supported by the National Natural Science Foundation of China (72404261, 
+72374188, and 71874173), the Anhui Postdoctoral Scientific Research Program Foundation (2025C1109), the Featured Social Science 
+Fund of USTC (FSSF-A-230204), and the Postdoctoral Fellowship Program of CPSF (GZC20232600).
+References
+Bornmann, L. (2013). What is societal impact of research and how can it be assessed? a literature survey. Journal of the American Society for Information Science and 
+Technology, 64(2), 217–233. https://doi.org/10.1002/asi.22803
+Bornmann, L., & Haunschild, R. (2018). Do altmetrics correlate with the quality of papers? A large-scale empirical study based on F1000Prime data. PLOS One, 13(5), 
+Article e0197133. https://doi.org/10.1371/journal.pone.0197133
+Bornmann, L., Haunschild, R., & Adams, J. (2019a). Do altmetrics assess societal impact in a comparable way to case studies? An empirical test of the convergent 
+validity of altmetrics based on data from the UK research excellence framework (REF). Journal of Informetrics, 13(1), 325–340. https://doi.org/10.1016/j. 
+joi.2019.01.008
+Bornmann, L., Tekles, A., Zhang, H. H., & Ye, F. Y. (2019b). Do we measure novelty when we analyze unusual combinations of cited references? A validation study of 
+bibliometric novelty indicators based on F1000Prime data. Journal of Informetrics, 13(4), Article 100979. https://doi.org/10.1016/j.joi.2019.100979
+Chen, S., Guo, Y., Ding, A. S., & Song, Y. (2024). Is interdisciplinarity more likely to produce novel or disruptive research? Scientometrics, 129(5), 2615–2632. https:// 
+doi.org/10.1007/s11192-024-04981-w
+Costas, R., Zahedi, Z., & Wouters, P. (2015). Do “altmetrics” correlate with citations? Extensive comparison of altmetric indicators with citations from a 
+multidisciplinary perspective. Journal of the Association for Information Science and Technology, 66(10), 2003–2019. https://doi.org/10.1002/asi.23309
+Criscuolo, P., Dahlander, L., Grohsjean, T., & Salter, A. (2013). Evaluating novelty: The role of panels in the selection of R&D projects. Academy of Management 
+Journal, 60(2), 433–460. https://doi.org/10.5465/amj.2014.0861
+Dahlin, K. B., & Behrens, D. M. (2005). When is an invention really radical?: Defining and measuring technological radicalness. Research Policy, 34(5), 717–737. 
+https://doi.org/10.1016/j.respol.2005.03.009
+D’Este, P., Llopis, O., Rentocchini, F., & Yegros, A. (2019). The relationship between interdisciplinarity and distinct modes of university-industry interaction. Research 
+Policy, 48(9), Article 103799. https://doi.org/10.1016/j.respol.2019.05.008
+D’Este, P., & Robinson-García, N. (2023). Interdisciplinary research and the societal visibility of science: The advantages of spanning multiple and distant scientific 
+fields. Research Policy, 52(2), Article 104609. https://doi.org/10.1016/j.respol.2022.104609
+Díaz-Faes, A. A., Bowman, T. D., & Costas, R. (2019). Towards a second generation of ‘social media metrics’: Characterizing Twitter communities of attention around 
+science. PLOS One, 14(5), Article e0216408. https://doi.org/10.1371/journal.pone.0216408
+Eysenbach, G. (2006). Citation advantage of open access articles. PLOS Biology, 4(5), 692–698. https://doi.org/10.1371/journal.pbio.0040157
+Fontana, M., Iori, M., Montobbio, F., & Sinatra, R. (2020). New and atypical combinations: An assessment of novelty and interdisciplinarity. Research Policy, 49(7), 
+Article 104063. https://doi.org/10.1016/j.respol.2020.104063
+Foster, J. G., Rzhetsky, A., & Evans, J. A. (2015). Tradition and Innovation in Scientists’ Research Strategies. American Sociological Review, 80(5), 875–908. https:// 
+doi.org/10.1177/0003122415601618
+Funk, R. J., & Owen-Smith, J. (2017). A Dynamic Network Measure of Technological Change. Management Science, 63(3), 791–817. https://doi.org/10.1287/ 
+mnsc.2015.2366
+Gold, E. R. (2021). The fall of the innovation empire and its possible rise through open science. Research Policy, 50(5), Article 104226. https://doi.org/10.1016/j. 
+respol.2021.104226
+Gonz´alez-Betancor, S. M., & Dorta-Gonz´alez, P. (2023). Does society show differential attention to researchers based on gender and field? Journal of Informetrics, 17 
+(4), Article 101452. https://doi.org/10.1016/j.joi.2023.101452
+Haustein, S. (2016). Grand challenges in altmetrics: Heterogeneity, data quality and dependencies. Scientometrics, 108(1), 413–423. https://doi.org/10.1007/s11192- 
+016-1910-9
+Haustein, S., Larivi`ere, V., Thelwall, M., Amyot, D., & Peters, I. (2014). Tweets vs. Mendeley readers: How do these two social media metrics differ? IT-Information 
+Technology, 56(5), 207–215. https://doi.org/10.1515/itit-2014-1048
+Heinze, T., Shapira, P., Rogers, J. D., & Senker, J. M. (2009). Organizational and institutional influences on creativity in scientific research. Research Policy, 38(4), 
+610–623. https://doi.org/10.1016/j.respol.2009.01.014
+Hou, L., Wu, Q., & Xie, Y. (2022). Does early publishing in top journals really predict long-term scientific success in the business field? Scientometrics, 127(11), 
+6083–6107. https://doi.org/10.1007/s11192-022-04509-0
+Kaplan, S., & Vakili, K. (2015). The double-edged sword of recombination in breakthrough innovation. Strategic Management Journal, 36(10), 1435–1457. https://doi. 
+org/10.1002/smj.2294
+Kelly, B., Papanikolaou, D., Seru, A., & Taddy, M. (2021). Measuring Technological Innovation over the Long Run. American Economic Review: Insights, 3(3), 303–320. 
+https://doi.org/10.1257/aeri.20190499
+Kousha, K., & Thelwall, M. (2020). Covid-19 publications: Database coverage, citations, readers, tweets, news, facebook walls, reddit posts. Quantitative Science 
+Studies, 1(3), 1068–1091. https://doi.org/10.1162/qss_a_00066
+Lawrence, S. (2001). Free online availability substantially increases a paper’s impact. Nature, 411(6837), 521. https://doi.org/10.1038/35079151
+Lee, Y. N., Walsh, J. P., & Wang, J. (2015). Creativity in scientific teams: Unpacking novelty and impact. Research Policy, 44(3), 684–697. https://doi.org/10.1016/j. 
+respol.2014.10.007
+Lemke, S., Brede, M., Rotgeri, S., & Peters, I. (2022). Research articles promoted in embargo e-mails receive higher citations and altmetrics. Scientometrics, 127(1), 
+75–97. https://doi.org/10.1007/s11192-021-04217-1
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+10 
+Liang, Z., Mao, J., & Li, G. (2023). Bias against scientific novelty: A prepublication perspective. Journal of the Association for Information Science and Technology, 74(1), 
+99–114. https://doi.org/10.1002/asi.24725
+Lin, Z., Yin, Y., Liu, L., & Wang, D. (2023). SciSciNet: A large-scale open data lake for the science of science research. Scientific Data, 10(1), 315. https://doi.org/ 
+10.1038/s41597-023-02198-9
+Ma, C., Li, Y., Guo, F., & Si, K. (2019). The citation trap: Papers published at year-end receive systematically fewer citations. Journal of Economic Behavior and 
+Organization, 166, 667–687. https://doi.org/10.1016/j.jebo.2019.08.007
+Maddi, A., & Sapinho, D. (2022). Article processing charges, altmetrics and citation impact: Is there an economic rationale? Scientometrics, 127(12), 7351–7368. 
+https://doi.org/10.1007/s11192-022-04284-y
+Matsumoto, K., Shibayama, S., Kang, B., & Igami, M. (2021). Introducing a novelty indicator for scientific research: Validating the knowledge-based combinatorial 
+approach. Scientometrics, 126(8), 6891–6915. https://doi.org/10.1007/s11192-021-04049-z
+Mohammadi, E., & Thelwall, M. (2014). Mendeley readership altmetrics for the social sciences and humanities: Research evaluation and knowledge flows. Journal of 
+the Association for Information Science and Technology, 65(8), 1627–1638. https://doi.org/10.1002/asi.23071
+Nelson, G. M., & Eggett, D. L. (2017). Citations, mandates, and money: Author motivations to publish in chemistry hybrid open access journals. Journal of the 
+Association for Information Science and Technology, 68(10), 2501–2510. https://doi.org/10.1002/asi.23897
+Norris, M., Oppenheim, C., & Rowland, F. (2008). The citation advantage of open-access articles. Journal of the American Society for Information Science and Technology, 
+59(12), 1963–1972. https://doi.org/10.1002/asi.20898
+Ou, G., Zhao, K., Zuo, R., & Wu, J. (2024). Effects of research funding on the academic impact and societal visibility of scientific research. Journal of Informetrics, 18 
+(4), Article 101592. https://doi.org/10.1016/j.joi.2024.101592
+Ozman, M. (2012). W. Brian Arthur: The nature of technology: What it is and how it evolves. Genetic Programming and Evolvable Machines, 13(2), 265–267. https://doi. 
+org/10.1007/s10710-012-9158-5
+Pohl, H. (2021). Internationalisation, innovation, and academic–corporate co-publications. Scientometrics, 126(2), 1329–1358. https://doi.org/10.1007/s11192-020- 
+03799-6
+Priem, J. (2015). Altmetrics (chapter from beyond bibliometrics: Harnessing multidimensional indicators of scholarly impact). arXiv preprint. arXiv:1507.01328 
+http://arxiv.org/abs/1507.01328.
+Priem, J., Taraborelli, D., Groth, P., & Neylon, C. (2011). Altmetrics: A manifesto. Altmetrics.Org. 
+Robinson-García, N., Torres-Salinas, D., Zahedi, Z., & Costas, R. (2014). New data, new possibilities: Exploring the insides of altmetric.com. Profesional de La 
+Informacion, 23(4), 359–366. https://doi.org/10.3145/epi.2014.jul.03
+Robinson-Garcia, N., van Leeuwen, T. N., & R`afols, I. (2018). Using altmetrics for contextualised mapping of societal impact: From hits to networks. Science and Public 
+Policy, 45(6), 815–826. https://doi.org/10.1093/SCIPOL/SCY024
+Salter, A., Salandra, R., & Walker, J. (2017). Exploring preferences for impact versus publications among UK business and management academics. Research Policy, 46 
+(10), 1769–1782. https://doi.org/10.1016/j.respol.2017.08.005
+Schumpeter, J., & Backhaus, U. (2003). The Theory of Economic Development. In J. Backhaus (Ed.), Joseph Alois Schumpeter: Entrepreneurship, Style and Vision (pp. 
+61–116). Springer US. https://doi.org/10.1007/0-306-48082-4_3. 
+Szell, M., Ma, Y., & Sinatra, R. (2018). A Nobel opportunity for interdisciplinarity. Nature Physics, 14(11), 1075–1078. https://doi.org/10.1038/s41567-018-0314-6
+Thelwall, M., Haustein, S., Larivi`ere, V., & Sugimoto, C. R. (2013). Do Altmetrics Work? Twitter and Ten Other Social Web Services. PLOS One, 8(5), Article e64841. 
+https://doi.org/10.1371/journal.pone.0064841
+Trapido, D. (2015). How novelty in knowledge earns recognition: The role of consistent identities. Research Policy, 44(8), 1488–1500. https://doi.org/10.1016/j. 
+respol.2015.05.007
+Uddin, S., Khan, A., & Baur, L. A. (2015). A framework to explore the knowledge structure of multidisciplinary research fields. PloS One, 10(4), Article e0123537. 
+https://doi.org/10.1371/journal.pone.0123537
+Uzzi, B., Mukherjee, S., Stringer, M., & Jones, B. (2013). Atypical Combinations and Scientific Impact. Science, 342(6157), 468–472. https://doi.org/10.1126/ 
+science.1240474
+Verhoeven, D., Bakker, J., & Veugelers, R. (2016). Measuring technological novelty with patent-based indicators. Research Policy, 45(3), 707–723. https://doi.org/ 
+10.1016/j.respol.2015.11.010
+Waltman, L. (2016). A review of the literature on citation impact indicators. Journal of Informetrics, 10(2), 365–391. https://doi.org/10.1016/j.joi.2016.02.007
+Wang, J., Lee, Y. N., & Walsh, J. P. (2018). Funding model and creativity in science: Competitive versus block funding and status contingency effects. Research Policy, 
+47(6), 1070–1083. https://doi.org/10.1016/j.respol.2018.03.014
+Wang, J., Veugelers, R., & Stephan, P. (2017). Bias against novelty in science: A cautionary tale for users of bibliometric indicators. Research Policy, 46(8), 1416–1436. 
+https://doi.org/10.1016/j.respol.2017.06.006
+Wang, Y., Xie, Y., Wang, D., Guo, L., & Zhou, R. (2022). Do cover papers get better citations and usage counts? An analysis of 42 journals in cell biology. Scientometrics, 
+127(7), 3793–3813. https://doi.org/10.1007/s11192-022-04444-0
+Way, S. F., Morgan, A. C., Larremore, D. B., & Clauset, A. (2019). Productivity, prominence, and the effects of academic environment. Proceedings of the National 
+Academy of Sciences of the United States of America, 166(22), 10729–10733. https://doi.org/10.1073/pnas.1817431116
+Wouters, P., & Costas, R. (2012). Users, narcissism and control—Tracking the impact of scholarly publications in the 21st century. Utrecht: SURF foundation. Retrieved from 
+http://www.surf.nl/nl/publicaties/Documents/Usersnarcissismandcontrol.pdf.
+Wouters, P., Zahedi, Z., & Costas, R. (2019). Social Media Metrics for New Research Evaluation. In W. Gl¨anzel, H. F. Moed, U. Schmoch, & M. Thelwall (Eds.), Springer 
+Handbook of Science and Technology Indicators (pp. 687–713). Springer International Publishing. https://doi.org/10.1007/978-3-030-02511-3_26. 
+Wu, L., Wang, D., & Evans, J. A. (2019). Large teams develop and small teams disrupt science and technology. Nature, 566(7744), 378–382. https://doi.org/10.1038/ 
+s41586-019-0941-9
+Yan, Y., Tian, S., & Zhang, J. (2020). The impact of a paper’s new combinations and new components on its citation. Scientometrics, 122(2), 895–913. https://doi.org/ 
+10.1007/s11192-019-03314-6
+Yan, Z., & Fan, K. (2024). An integrated indicator for evaluating scientific papers: Considering academic impact and novelty. Scientometrics, 129(11), 6909–6929. 
+https://doi.org/10.1007/s11192-024-05150-9
+Yang, A. J., Yan, X., Hu, H., Hu, H., Kong, J., & Deng, S. (2024). Are disruptive papers more likely to impact technology and society? Journal of the Association for 
+Information Science and Technology, 76(3), 563–579. https://doi.org/10.1002/asi.24947
+Yang, R., Wu, Q., & Xie, Y. (2023). Are scientific articles involving corporations associated with higher citations and views? an analysis of the top journals in business 
+research. Scientometrics, 128(10), 5659–5685. https://doi.org/10.1007/s11192-023-04808-0
+Yang, Y., Tian, T. Y., Woodruff, T. K., Jones, B. F., & Uzzi, B. (2022). Gender-diverse teams produce more novel and higher-impact scientific ideas. Proceedings of the 
+National Academy of Sciences of the United States of America, 119(36), Article e2200841119. https://doi.org/10.1073/pnas.2200841119
+Zahedi, Z., & Costas, R. (2018). General discussion of data quality challenges in social media metrics: Extensive comparison of four major altmetric data aggregators. 
+PLOS One, 13(5), Article e0197326. https://doi.org/10.1371/journal.pone.0197326
+Zahedi, Z., Costas, R., & Wouters, P. (2017). Mendeley readership as a filtering tool to identify highly cited publications. Journal of the Association for Information 
+Science and Technology, 68(10), 2511–2521. https://doi.org/10.1002/asi.23883
+Zhang, X., Wang, X., Zhao, H., Ord´o˜nez de Pablos, P., Sun, Y., & Xiong, H. (2019). An effectiveness analysis of altmetrics indices for different levels of artificial 
+intelligence publications. Scientometrics, 119(3), 1311–1344. https://doi.org/10.1007/s11192-019-03088-x
+Zhang, X., Xie, Q., & Song, M. (2021). Measuring the impact of novelty, bibliometric, and academic-network factors on citation count using a neural network. Journal 
+of Informetrics, 15(2), Article 101140. https://doi.org/10.1016/j.joi.2021.101140
+J. Cheng et al.                                                                                                                                                                                                          
+Journal of Informetrics 19 (2025) 101710 
+11 

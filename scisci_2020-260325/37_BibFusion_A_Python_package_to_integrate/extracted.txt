@@ -1,0 +1,1860 @@
+ORIGINAL ARTICLE
+1
+Iberoamerican Journal of Science Measurement and Communication
+Received: 29-11-2025. Accepted: :09-02-2026. Published: 15-02-2026.
+How to cite: Britto, A., Robledo, S., & Zuluaga, M. (2026). BibFusion: A Python package to integrate, deduplicate, and 
+harmonize exported bibliographic records from Scopus and Web of Science for bibliometric analysis. Iberoamerican 
+Journal of Science Measurement and Communication; 6(1), 1-21. DOI: 10.47909/ijsmc.324
+Copyright: © 2026 The author(s). This is an open access article distributed under the terms of the CC BY-NC 4.0 
+license which permits copying and redistributing the material in any medium or format, adapting, transforming, and 
+building upon the material as long as the license terms are followed.
+BibFusion: A Python package to integrate, deduplicate, 
+and harmonize exported bibliographic records from 
+Scopus and Web of Science for bibliometric analysis
+Angelo Britto1,2, Sebastian Robledo3,*, Martha Zuluaga1
+1	 Universidad Nacional de Colombia, Colombia.
+2	 MetricSci, Colombia.
+3	 Escuela de pregrado, Dirección Académica, Vicerrectoría de Sede, Universidad Nacional de Colombia, 
+Sede la Paz, Cesar, Colombia.
+*	 Autor correspondiente
+	 Email: srobledog@unal.edu.co. ORCID: https://orcid.org/0000-0003-4357-4402
+ABSTRACT 
+Objective. The study presented BibFusion, a Python software package that harmonizes bibliographic 
+exports from Scopus and Web of Science into a single, traceable, analysis-ready corpus for bibliometric 
+and scientometric research.
+Design/Methodology/Approach. BibFusion was capable of ingesting Scopus CSV and WoS TXT files, 
+applying systematic normalization (e.g., ASCII/uppercase standardization of titles and SR keys, affilia­
+tion parsing with country extraction), and optionally enriching records via DOI‑based resolution against 
+OpenAlex to recover persistent identifiers (e.g., OpenAlex work IDs, ORCID when available, and OpenAl­
+ex author IDs). Cross-database integration employed a DOI-first deduplication cascade with a conserva­
+tive fallback (title-year-first author) in the event that a DOI is absent. The authors were disambiguated 
+through a canonical PersonID hierarchy (ORCID → OpenAlexAuthorID → normalized name). Citation 
+strings were cleaned and remapped to ensure the preservation of consistent citation links, and journal/
+Scimago information was consolidated using ISSN/EISSN rules.
+Results. In a demonstration on an entrepreneurial marketing query, BibFusion consolidated 436 source 
+records into 253 unique main works and materialized a unified corpus of 8,569 articles. The resulting 
+dataset demonstrated high levels of identifier and geographic completeness, and it provided an analy­
+sis-ready citation layer.
+Conclusions/Value. BibFusion offers a reusable, auditable integration workflow that has been demonstrat­
+ed to reduce duplicate inflation and metadata fragmentation. This workflow facilitates the explicit determi­
+nation of merge decisions and residual uncertainty, thereby ensuring transparency in downstream analyses.
+KEYWORDS: : bibliometrics; scientometrics; cross-database integration; Scopus; Web of Science; meta­
+data preprocessing; author disambiguation; citation networks; reproducible research.
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+2
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+1. INTRODUCTION
+B
+ibliometric analyses are widely used to 
+trace how research domains evolve; how­
+ever, the validity of these insights depends on 
+the consistency of the underlying bibliograph­
+ic metadata (Zhang et al., 2024). In practice, 
+integrating records from major sources such 
+as Scopus and Web of Science (WoS) remains 
+challenging because the two platforms differ 
+in coverage, export structures, and field com­
+pleteness (Kumpulainen & Seppänen, 2022). 
+These discrepancies frequently result in the 
+replication of items across sources, variations 
+in author names, ambiguous or incomplete af­
+filiations, and non-standardized references that 
+fragment citation links. Consequently, down­
+stream indicators —including country and in­
+stitutional maps, temporal production trends, 
+and coauthorship or citation networks— may 
+exhibit bias or instability if preprocessing is 
+executed in an ad hoc manner. A reproducible 
+harmonization step prior to any domain-specif­
+ic analysis (e.g., entrepreneurial marketing-re­
+lated searches) is therefore essential to build 
+a clean, integrated corpus suitable for reliable 
+scientometric analysis (Nowakowska, 2025). 
+Integrating Scopus and Web of Science into 
+a single corpus is difficult because the two da­
+tabases differ in coverage, export structure, 
+and metadata completeness (Delgado-Quirós 
+& Ortega, 2024). DOIs may be missing or mal­
+formed; textual fields (titles and cited-refer­
+ence strings) vary in capitalization, punctua­
+tion, and character normalization; and author 
+and affiliation data are often heterogeneous 
+or incomplete, complicating attribution at the 
+person and country levels (Visser et al., 2021). 
+Taken together, these discrepancies inflate du­
+plicates, introduce ambiguity in author iden­
+tities, and fragment citation links, thereby bi­
+asing indicators of productivity, collaboration, 
+and scientific geography (Nowakowska, 2025).
+To address this problem, we present BibFu­
+sion, a reproducible and auditable software tool 
+that harmonizes and merges Scopus and Web 
+of Science exports into a unified, traceable, 
+analysis-ready dataset. BibFusion standardizes 
+metadata, parses affiliations (including coun­
+try extraction), and optionally enriches records 
+through DOI-based resolution against Ope­
+nAlex to recover persistent work and author 
+identifiers when available (Nowakowska, 2025; 
+Priem et al., 2022). Integration follows a conser­
+vative deduplication strategy (DOI-first, with 
+fallback rules when missing) and consolidates 
+authorship to support consistent author-lev­
+el analyses (Visser et al., 2021). The result is a 
+relational corpus materialized as linked tables, 
+accompanied by audit artifacts that document 
+provenance and merge decisions to facilitate 
+transparent review and reproducibility (Maisa­
+no et al., 2025).
+The study’s scope is delineated by the search 
+query implemented in Scopus and WoS, with 
+a focus on English-language journal articles 
+within the stipulated publication window for 
+the primary corpus. Given that cross-source in­
+tegration is most reliable when persistent iden­
+tifiers are available, BibFusion prioritizes DOI-
+based matching when present and relies on 
+conservative metadata agreement rules when 
+DOIs are missing or malformed. Similarly, the 
+processes of enrichment and author consolida­
+tion are enhanced by the utilization of external 
+identifiers, such as ORCID or OpenAlexAuthor­
+ID. However, these identifiers may exhibit in­
+completeness across different sources. Conse­
+quently, unresolved cases are retained without 
+the imposition of forced decisions, and they are 
+exposed through audit outputs for transparent 
+review. It is important to note that while the 
+main corpus is query-bounded, cited referenc­
+es may extend beyond the query’s time window 
+and document-type constraints. This is expect­
+ed when constructing citation networks.
+This study proposes a reproducible and au­
+dit-ready preprocessing pipeline that harmo­
+nizes Scopus and WoS exports into a unified 
+relational corpus. The workflow integrates 
+identifier-centric enrichment (via DOI reso­
+lution in OpenAlex) with systematic author 
+disambiguation using a canonical PersonID. 
+It materializes the merged corpus as linked 
+entities with explicit provenance. In addition 
+to analysis-ready outputs for productivity, col­
+laboration, and geographic analyses, BibFusion 
+generates audit artifacts (e.g., aliases, potential 
+conflicts, and merge logs) that facilitate trans­
+parency and reproducibility in integration deci­
+sions. The remainder of this study is structured 
+as follows. Section 1.1 reviews related work 
+on cross-database bibliographic integration 
+and disambiguation. Section 2 delineates the 
+3
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+composition of the package, including its inputs 
+and outputs, as well as the unified data model. 
+Section 3 delineates the preprocessing method­
+ology, encompassing normalization, OpenAl­
+ex-based enrichment, deduplication and merge 
+rules, author disambiguation, citation cleaning, 
+and journal/Scimago consolidation. Section 
+4 reports the resulting corpus and key quality 
+control indicators. Section 5 delves into the im­
+plications, limitations, and practical guidance 
+for reuse. Section 6 concludes and outlines fu­
+ture improvements. Supplementary workflow 
+details and documentation can be found in the 
+Appendices.
+1.1. Literature review
+Existing bibliometric ecosystems provide ro­
+bust support for importing, mapping, and vi­
+sualizing Scopus and WoS exports, including 
+widely used packages and interfaces such as 
+bibliometrix/biblioshiny (Aria & Cuccurullo, 
+2017; Maisano et al., 2025), VOSviewer (van 
+Eck & Waltman, 2010), and CiteSpace (Chen, 
+2006), as well as Python-oriented tools for ac­
+cess and trend analysis such as pybliometrics 
+(Rose & Kitchin, 2019) and ScientoPy (Ruiz-Ro­
+sero et al., 2019). While these tools are highly 
+effective once data are ingested, cross-database 
+integration typically still requires additional 
+processing to reconcile heterogeneous export 
+schemas and metadata inconsistencies (e.g., 
+missing or inconsistently recorded DOIs, vari­
+ant author strings, and incomplete or non-stan­
+dardized affiliations), particularly when the 
+goal is to preserve and harmonize cited ref­
+erences across sources. In response to these 
+challenges, integration-focused workflows have 
+emerged. These range from tosr, which opera­
+tionalized Scopus-WoS integration while ex­
+plicitly incorporating reference information be­
+yond standard merges (Robledo et al., 2024), to 
+newer Python pipelines such as BibexPy, which 
+emphasizes automated merging and metada­
+ta enhancement via external services (Kara et 
+al., 2025), and configurable matching toolkits 
+such as TeslaSCItoolkit, which formalize record 
+linkage through similarity metrics and match 
+classification (Nikolić et al., 2024). A review of 
+the extant literature reveals a general tendency 
+toward identifier-centric and automation-ori­
+ented integration. However, there are notable 
+lacunae with respect to (i) the production of 
+an explicit, relational entity-relationship (ER) 
+representation that differentiates core entities 
+from linking tables, and (ii) the provision of 
+auditable, versioned artifacts that document 
+merge and disambiguation decisions, particu­
+larly at the reference level.
+As demonstrated in the extant literature, 
+structural challenges have been thoroughly 
+documented in the context of bibliometric in­
+tegration. These challenges persist in impeding 
+the reliable consolidation of Scopus and WoS 
+records (McKay, 2026). First, the efficacy of 
+deduplication is often undermined by missing, 
+malformed, or inconsistently recorded DOIs. 
+This forces reliance on secondary matching 
+rules (e.g., title-year-first author) and increases 
+both false positives and false negatives (Cul­
+bert et al., 2025). Second, the process of au­
+thor disambiguation remains imperfect due 
+to orthographic variation, inconsistent use of 
+initials, transliteration differences (accented 
+forms vs. ASCII), and homonymy. These fac­
+tors can lead to the fragmentation or confla­
+tion of identities, resulting in the distortion of 
+productivity and collaboration indicators (Kim 
+& Owen-Smith, 2021). Third, cited-reference 
+information is characterized by significant 
+heterogeneity. Reference strings frequently 
+exhibit a variety of formats, irregular punctu­
+ation, standalone years, or malformed entries. 
+These characteristics can disrupt citation links 
+and weaken citation and co-citation networks, 
+particularly when reference-level integration is 
+necessary across sources (Cioffi et al., 2022). 
+In conclusion, outlet and affiliation metadata 
+frequently necessitate additional normaliza­
+tion (e.g., journal name/abbreviation harmo­
+nization, incomplete affiliations, and missing 
+or implicit country information), which can 
+introduce bias in collaboration and scientif­
+ic geography measures (Purnell, 2022). The 
+aforementioned challenges, when considered 
+collectively, serve as a compelling rationale for 
+the development of reproducible preprocessing 
+pipelines. These pipelines are designed to stan­
+dardize metadata, enhance deduplication, im­
+prove traceability, and optimize citation links 
+prior to bibliometric and network analysis.
+Despite the sustained progress in bibliomet­
+ric software and database-specific importers, 
+an important gap persists in cross-database 
+4
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+integration. Many workflows emphasize down­
+stream indicators and visualization, while the 
+integration layer (including cited-reference har­
+monization) remains difficult to reproduce and 
+audit (Ng et al., 2025). In particular, relatively 
+few approaches formalize the merged output as 
+an explicit ER model that separates core enti­
+ties (e.g., Articles, Authors, Journal, Affiliation) 
+from linking tables (e.g., ArticleAuthor, Cita­
+tion) and maintains stable identifiers across 
+sources (Massari et al., 2024). Consequently, 
+pivotal steps —such as deduplication decisions, 
+author identity resolution, and citation-string 
+cleaning— are frequently implemented in ways 
+that are challenging to inspect, validate, or re­
+run consistently when inputs change. Further­
+more, the production of audit artifacts (e.g., 
+aliases, potential conflicts, and merge logs) is 
+not uniform, which necessitates the reliance of 
+researchers on manual spot checks with lim­
+ited documentation (Elstad et al., 2023). This 
+approach fosters the establishment of a repro­
+ducible pipeline, which culminates in the gen­
+eration of an analysis-ready relational corpus, 
+accompanied by auditable files. These files 
+serve to enhance the transparency of integra­
+tion decisions, thereby facilitating systematic 
+verification and iterative refinement.
+In this context, BibFusion is positioned as 
+a reproducible, audit-ready integration layer 
+between Scopus and WoS that complements 
+—rather than replaces— existing bibliometric 
+analysis ecosystems. The integration gap is 
+addressed by materializing the merged output 
+as an explicit ER structure and by preserving 
+reference-level links through dedicated citation 
+and linking tables (e.g., standardized SR/SR_
+ref keys and a cleaned citation edge list; Delga­
+do-Quirós & Ortega, 2025). Methodologically, 
+BibFusion employs a DOI-first matching strat­
+egy with conservative fallbacks. When DOIs 
+can be resolved, BibFusion enriches records 
+via OpenAlex to recover persistent identifiers 
+for works and authors (Chavarro et al., 2025). 
+It also assigns a canonical PersonID (ORCID → 
+OpenAlexAuthorIDx → normalized name) to 
+strengthen author-level continuity, where iden­
+tifier coverage supports reliable linking (Rehs, 
+2021). Of particular significance is the exter­
+nalization of uncertainty through audit outputs 
+(aliases, potential conflicts, and merge logs), 
+thereby enabling transparent inspection and 
+iterative correction (Ornstein, 2025). The result 
+is a unified, analysis-ready relational corpus 
+with explicit provenance that can be directly 
+consumed for bibliometric, collaboration, geo­
+graphic, and citation-network analyses. 
+2. PACKAGE OVERVIEW AND DATA MODEL
+2.1. Package purpose, inputs, and outputs
+BibFusion is a modular preprocessing pack­
+age that harmonizes bibliographic exports 
+from Scopus and WoS into a unified, traceable, 
+analysis-ready corpus. The system has been 
+developed to ingest raw Scopus CSV and WoS 
+TXT files, apply systematic normalization to 
+key metadata fields (e.g., titles, reference keys, 
+affiliations, and country information), and 
+enrich records through OpenAlex to recov­
+er persistent identifiers for works and authors 
+when available (Velez-Estevez et al., 2023). The 
+pipeline then performs DOI-first deduplication 
+with conservative fallbacks (Kara et al., 2025), 
+assigns canonical PersonIDs for author disam­
+biguation, cleans and remaps citation strings to 
+preserve consistent citation links, and consoli­
+dates journal and Scimago-related information 
+using ISSN/EISSN rules (Mischo et al., 2024). 
+The workflow has been implemented as a series 
+of reusable modules, including ingestion, nor­
+malization, enrichment, matching/merging, 
+author disambiguation, and citation/journal 
+processing. This modular approach enables 
+users to execute the workflow in its entirety to 
+generate a complete dataset or to run individual 
+stages to support incremental updates and tar­
+geted quality control.
+2.2. Workflow at a glance
+Figure 1 provides a synopsis of the end-to-end 
+workflow that has been implemented by Bib­
+Fusion. Scopus CSV and WoS TXT exports 
+are processed in parallel through a series of 
+modular stages. These stages include ingestion 
+and canonicalization, metadata normalization 
+(including affiliation parsing and country ex­
+traction), and optional DOI-based enrichment 
+via OpenAlex (Culbert et al., 2025). The stan­
+dardized records are then deduplicated and 
+merged using a DOI-first matching cascade 
+with conservative fallbacks. The integrated 
+5
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+corpus is subsequently structured through 
+PersonID-based author disambiguation, cita­
+tion-string cleaning and remapping (to popu­
+late the Citation table), and journal/Scimago 
+consolidation using ISSN/EISSN rules. The 
+outputs are materialized as seven relational 
+entity tables and accompanied by audit arti­
+facts that document aliases, potential conflicts, 
+and merge logs. Function-level process dia­
+grams (including intermediate data frames and 
+transformation functions) are provided in Ap­
+pendix A (Figures A1 and A2).
+Figure 1. Overview of the preprocessing pipeline. Note: Prepared by the authors.
+2.3. Data model
+Figure 2 presents the unified ER model of the 
+integrated corpus produced by BibFusion. The 
+pipeline first maps WoS and Scopus exports 
+into source-specific staging tables that share 
+the same entity structure and key conventions 
+(a shared, aggregated staging schema) after 
+parsing and normalization. At this stage, stan­
+dardizing structure is preferable to merging 
+heterogeneous exports directly. This approach 
+reduces discrepancies in field naming and for­
+matting and facilitates consistent, rule-based 
+deduplication and integration (Rehs, 2021). The 
+final corpus is stored as seven linked relational 
+entities: Articles, Authors, ArticleAuthor, Cita­
+tion, Affiliation, Journal, and Scimagodb. As 
+illustrated in Figure 2, solid connectors denote 
+enforced joins, while dashed connectors signify 
+FK-like or optional resolutions when coverage 
+is incomplete (e.g., SR_ref in Citation may not 
+always resolve to a full Articles record). Prov­
+enance is preserved through source indicators 
+(e.g., sources_merged) and main-vs-reference 
+flags (e.g., ismainarticle), thereby enabling 
+reproducible bibliometric, collaboration, geo­
+graphic, and citation-network analyses with 
+transparent filtering of record types (Lastilla et 
+al., 2022).
+2.4. Output inventory
+Table 1 enumerates the seven CSV outputs 
+produced by BibFusion and their roles in the 
+unified relational schema. The following cat­
+egories are included in the database: Arti­
+cles (work-level records), Authors (canonical 
+identities keyed by PersonID), ArticleAuthor 
+(work-author links), Citation (directed citation 
+edges), Affiliation (work-author-affiliation in­
+stances with country), Journal (normalized 
+outlets keyed by journal_id), and Scimagodb 
+(journal-level metrics joinable via journal_id). 
+According to the findings reported in Table 1, 
+the row granularity, primary key(s), and join 
+fields that preserve relational integrity for each 
+file are documented. The join fields include SR, 
+PersonID, journal_id, and SR → SR_ref links. 
+It should be noted that SR_ref may not always 
+resolve to a full Articles record. In summary, 
+6
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+the table offers a succinct reference manual for 
+the assembly of reproducible trend, collabora­
+tion, geographic, and citation-network analyses 
+from the standardized entities.
+In addition to the entity tables summarized 
+in Table 1, BibFusion organizes outputs into 
+three directories. These directories separate 
+source-level intermediate artifacts from the fi­
+nal integrated corpus. WoS_results/ and Sco­
+pus_results/ are where standardized staging 
+outputs and source-specific logs are stored. 
+These logs are generated during ingestion, 
+normalization, and (when enabled) OpenAlex 
+enrichment. This enables partial reruns and 
+targeted debugging at the source level. The 
+final deliverables, prepared for analysis, are 
+stored in all_data_wos_scopus/ directory. 
+This directory contains the seven relational 
+CSV entities, along with audit files that doc­
+ument aliases, potential conflicts, and merge 
+logs. This separation supports reproducible 
+execution while ensuring that intermediate 
+processing products remain distinct from the 
+consolidated dataset that is subsequently uti­
+lized in downstream analyses. For transpar­
+ent reuse, a comprehensive versioned data 
+dictionary (variable definitions, provenance, 
+and transformation rules) is distributed with 
+the BibFusion repository (https://pypi.org/
+project/bibfusion).
+3. METHODOLOGY
+3.1. Data collection, exports
+and search strategy
+BibFusion ingests two primary bibliographic 
+sources: Scopus exports in CSV format and WoS 
+TXT format. The records are obtained through 
+each platform’s standard export interface and 
+include core metadata (e.g., title, authors, affil­
+iations, publication year, source/journal infor­
+mation, DOI when available, cited references, 
+and citation counts). The utilization of both 
+sources serves to expand the scope of coverage 
+while maintaining the provenance of the sourc­
+es for the purpose of traceability. This enables 
+the pipeline to harmonize records that refer to 
+the same publication across various databases. 
+Operationally, BibFusion employs source-spe­
+cific parsers and maps both exports into an 
+identical staging schema (source-aligned ta­
+bles). Consequently, subsequent normalization, 
+enrichment, and deduplication/merge steps 
+Figure 2. Unified ER model of the BibFusion integrated corpus. Note: Prepared by the authors.
+7
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+Table 1. BibFusion output inventory and relational join keys. Note: SR_ref is a normalized cited-
+reference key and does not always resolve to a full record in All_Articles (e.g., books, reports, or out-
+of-coverage works). In those cases, the citation edge is retained for citation-network analyses using the 
+SR → SR_ref structure. PersonID is the canonical author identifier used across outputs, assigned using 
+a priority rule (ORCID → OpenAlexAuthorID → normalized name) and can be populated via enrichment 
+even when absent in the raw exports. Data generated by BibFusion.
+Output CSV
+Row granularity
+Primary key (PK)
+Foreign
+keys / links
+(how to join)
+Key columns 
+(examples)
+Purpose
+All_Articles.csv
+One row per 
+work record (main 
+records + refer­
+ence-like records) 
+after harmoniza­
+tion/merge
+SR (canonical work/
+reference key); DOI as 
+persistent identi­
+fier when present 
+(recommended guard: 
+SR + DOI for rare 
+SR collisions among 
+references)
+SR is referenced by 
+All_ArticleAuthor 
+and All_Citation; 
+journal linkage via 
+source_title/journal 
+→ All_Journal
+SR, title, year, 
+DOI, ismainarticle, 
+sources_merged, 
+country, source_ti­
+tle, journal, 
+cited_by, cited_ref­
+erence_count, link
+Canonical works 
+table for trend/pro­
+ductivity analyses 
+and as the node 
+list for collabora­
+tion and citation 
+networks
+All_Authors.csv
+One row per unique 
+person identity af­
+ter disambiguation
+PersonID
+PersonID is refer­
+enced by All_Artic­
+leAuthor
+PersonID, Au­
+thorFullName, 
+AuthorName, Orcid, 
+OpenAlexAuthor­
+ID, ResearcherID, 
+email, AuthorID
+Canonical author 
+identity table en­
+abling author-level 
+analyses and con­
+sistent joins across 
+outputs
+All_ArticleAuthor.csv
+One row per 
+authorship link 
+(person-work asso­
+ciation)
+SR, PersonID, Au­
+thorOrder
+SR → All_Articles.
+SR; PersonID → All_
+Authors.PersonID
+SR, PersonID, 
+AuthorOrder, Cor­
+respondingAuthor, 
+OpenAlexAuthorID, 
+AuthorID, openal­
+ex_work_id
+Implements the 
+many-to-many 
+authorship rela­
+tionship (coauthor­
+ship networks, 
+author-order analy­
+ses, productivity by 
+author)
+All_Citation.csv
+One row per di­
+rected citation edge 
+(citing → cited)
+SR, SR_ref
+SR → All_Articles.SR 
+(citing work); SR_ref 
+→ All_Articles.
+SR when available 
+(optional mapping; 
+some cited items 
+remain external.)
+SR, SR_ref
+Edge list for 
+citation/co-cita­
+tion networks and 
+cleaned refer­
+ence-linking across 
+sources
+All_Affiliation.csv
+One row per 
+(work-author-affili­
+ation) instance
+SR, AuthorID, 
+Affiliation (Country 
+is derived and can 
+be retained as an 
+attribute.)
+SR → All_Articles.
+SR; AuthorID can 
+link to All_Authors.
+AuthorID and/or to 
+All_ArticleAuthor 
+(then to PersonID)
+SR, AuthorID, affili­
+ation, country
+Institutional 
+and geographic 
+mapping (affilia­
+tions/countries), 
+supporting collab­
+oration-by-coun­
+try and affilia­
+tion-based analyses
+All_Journal.csv
+One row per 
+normalized journal/
+source
+journal_id
+Join from All_Arti­
+cles using source_ti­
+tle (preferred) and/
+or journal → All_
+Journal.source_title/
+journal; journal_id 
+→ All_Scimagodb.
+journal_id
+journal_id, source_
+title, journal
+Normalized journal 
+metadata enabling 
+outlet-based anal­
+yses and a bridge 
+to Scimago-style 
+metrics
+All_Scimagodb.csv
+One row per jour­
+nal with available 
+metrics
+journal_id
+journal_id → All_
+Journal.journal_id
+journal_id, title, 
+Issn, eIssn, SJR, 
+SJR best quartile, 
+H index, publisher, 
+country, categories, 
+areas, coverage
+Journal-level 
+contextual metrics 
+(quartiles/SJR/H-in­
+dex, categories) for 
+outlet benchmark­
+ing and stratified 
+analyses
+8
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+operate on harmonized representations rather 
+than heterogeneous raw formats. It is notewor­
+thy that all exports were generated under the 
+“full record” settings, inclusive of the cited ref­
+erences, as detailed in Appendix B. The records 
+were retrieved using aligned selection criteria 
+in Scopus and WoS to maximize the compa­
+rability of the sources. In both databases, an 
+exact phrase search was conducted in the Title 
+field for the term “entrepreneurial marketing” 
+to prioritize precision and reduce topical noise 
+relative to abstract- or keyword-based search­
+es. The results of the study were restricted to 
+English-language journal articles (document 
+type: Article) published within the timeframe 
+of 2005-2025 (inclusive). The Scopus query 
+was implemented using the advanced search 
+syntax (operationalized as PUBYEAR > 2004 
+AND PUBYEAR < 2026, with DOCTYPE “ar” 
+corresponding to Article), whereas the WoS 
+query was implemented using Core Collection 
+field tags (e.g., TI for Title and PY for publica­
+tion year). In the WoS database, the PY field 
+may indicate either the final publication year or 
+an early-access year, depending on the context. 
+BibFusion is designed to preserve source-spe­
+cific year fields while standardizing integrat­
+ed outputs to ensure consistent downstream 
+reporting. 
+Scopus (advanced search):
+TITLE(“entrepreneurial marketing”) AND 
+PUBYEAR > 2004 AND PUBYEAR < 2026 
+AND 
+(LIMIT-TO(DOCTYPE,”ar”)) 
+AND 
+(LIMIT-TO(LANGUAGE,”English”))
+Web of Science Core Collection
+(advanced search):
+TI=(“entrepreneurial 
+marketing”) 
+AND 
+PY=(2005-2025) AND LA=(English) AND 
+DT=(Article)
+BibFusion has been developed to function 
+with full-record exports from both Scopus 
+and WoS. Accordingly, the workflow assumes 
+that (i) Scopus records are exported as CSV 
+with “Select all information” enabled and (ii) 
+WoS records are exported as TXT using “Full 
+Record and Cited References.” These set­
+tings ensure the availability of the minimum 
+information required for harmonization and 
+integration, including bibliographic descrip­
+tors (e.g., title, year, document type, source/
+journal identifiers such as ISSN/EISSN, and 
+pagination where available), persistent iden­
+tifiers (especially DOI), authorship and affilia­
+tion/address fields (for authorship linking and 
+country extraction), and complete cited-refer­
+ence strings (to construct and normalize SR/
+SR_ref keys and populate the Citation entity). 
+To prevent information loss, any truncation 
+option intended for spreadsheet compatibil­
+ity (e.g., “optimize for Excel”) should be dis­
+abled, as it has the potential to shorten long 
+fields such as affiliations, abstracts, and cited 
+references and to compromise matching and 
+citation-link construction. The export config­
+urations utilized in this study are document­
+ed in Appendix B (Figures B1 and B2). BibFu­
+sion relies on exports that collectively cover 
+five metadata components. (i) The following 
+bibliographic core metadata elements are re­
+quired for normalization and consolidation 
+of outlets: title, publication year, and source/
+journal information (including ISSN/EISSN 
+when available), together with volume/issue/
+pages. (ii) Persistent and database-specific 
+identifiers, most notably the DOI, serve as the 
+primary anchors for cross-source matching 
+and deduplication. (iii) Authorship and affili­
+ation/address fields enable authorship linking, 
+institutional parsing, and country extraction 
+for geographic analyses. (iv) Full cited-refer­
+ence strings populate the Citation entity. This, 
+in turn, supports SR/SR_ref normalization. 
+The purpose of this support is to preserve con­
+sistent citation links. (v) The retention of sup­
+plementary descriptors (e.g., citation counts, 
+open-access indicators, and keywords/ab­
+stracts) is essential for maintaining traceabili­
+ty and facilitating downstream descriptive and 
+thematic analyses following the generation of a 
+unified corpus.
+3.2. Data quality considerations
+and limitations
+Given that BibFusion necessitates complete ex­
+ports from Scopus and WoS, the pipeline has 
+been engineered to address real-world miss­
+ingness and inconsistencies that persist even 
+under comprehensive export configurations. 
+9
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+Common issues include (i) empty or partially 
+populated metadata fields (especially affilia­
+tions, addresses, and identifiers); (ii) missing, 
+malformed, or inconsistently formatted DOIs, 
+which can prevent exact matching across 
+sources; and (iii) heterogeneity in author and 
+source strings, including variations in punc­
+tuation, ordering, initials, and diacritics (ac­
+cented forms vs. ASCII). BibFusion addresses 
+these issues through systematic normalization 
+(ASCII/uppercase standardization for key text 
+fields such as titles and SR keys), DOI cleaning/
+normalization when DOIs are present, and a 
+conservative matching cascade that prioritizes 
+exact DOI alignment and applies a light title-
+year-first author fallback only when the DOI 
+is unavailable. Rather than discarding records 
+with incomplete fields, the pipeline retains 
+them whenever a canonical work/reference 
+key can be constructed. This approach pre­
+serves provenance while reducing the risk of 
+false merges. The consolidation of author iden­
+tities is achieved through a canonical PersonID 
+(ORCID → OpenAlexAuthorID → normalized 
+name), and the cleansing of cited-reference 
+strings to remove malformed or low-informa­
+tion entries (e.g., standalone years) that would 
+otherwise disrupt the integrity of citation 
+linking. Residual ambiguities are not resolved 
+without explicit articulation: BibFusion gen­
+erates audit artifacts (i.e., aliases, potential 
+conflicts, and merge logs) to facilitate the re­
+view and correction of uncertain cases without 
+compromising reproducibility.
+3.3. Corpus definition
+The fundamental unit of analysis in BibFusion 
+is the bibliographic record, as it is represented 
+within the integrated corpus. Two record types 
+are distinguished from the outset: main re­
+cords, which are publications retrieved direct­
+ly from Scopus and WoS under the specified 
+query and filters, and reference records, which 
+are cited items parsed from the reference lists 
+of the main records. It is imperative to note 
+that both entities are stored within the Arti­
+cles entity, with the objective of maintaining a 
+singular node space for the purpose of network 
+construction. However, it is crucial to acknowl­
+edge a substantial discrepancy between them 
+with respect to completeness. Typically, main 
+records are characterized by their richness 
+in metadata and the presence of persistent 
+identifiers (e.g., DOI and source fields), while 
+reference records may contain a cleaned/nor­
+malized reference key (SR/SR_ref) and a re­
+stricted set of attributes solely. Directed cita­
+tion relations are represented in the Citation 
+entity as edges from a citing main record (SR) 
+to a cited reference key (SR_ref). It should be 
+noted that not all cited items necessarily map 
+to a fully described article record within the 
+dataset. The Authorship relations are captured 
+in ArticleAuthor exclusively when sufficient 
+metadata is available for a reliable linkage to a 
+canonical PersonID. This representation facili­
+tates analyses centered on the retrieved corpus 
+(e.g., productivity and geographic indicators 
+on main records) while enabling citation-net­
+work analyses that transparently incorporate 
+reference-only nodes without overstating their 
+metadata quality.
+The integrated Articles table, which was 
+generated using the search strategy outlined 
+in Section 3.1, contains a total of 8,569 bib­
+liographic records. Of these, 253 are main 
+records retrieved directly from Scopus and 
+WoS (ismainarticle = True), while 8,316 are 
+reference records parsed from cited-reference 
+strings (ismainarticle = False). Provenance 
+is retained in the merged sources, with 5,178 
+records observed in both the Scopus and WoS 
+databases. Of these, 2,541 are Scopus-only re­
+cords, while 850 are WoS-only records. A to­
+tal of 183 records were found to be matched 
+across both sources, 59 of which were exclu­
+sively found in Scopus, and 11 were exclusively 
+found in WoS. The overall DOI availability rate 
+is high (8,054 out of 8,569 records, represent­
+ing 94% of the total) and remains substantial 
+for main records (220 out of 253 records, rep­
+resenting 87% of the total). Notably, the DOI 
+coverage among main records in both sources 
+reached 98.9%, reflecting the complementari­
+ty of the two databases for identifier recovery. 
+The primary corpus encompasses the period 
+from 2005 to 2025, as delineated by the que­
+ry. However, reference records extend beyond 
+this timeframe, reaching as far back as 1900 
+and extending to 2026. This is due to the in­
+heritance of years from cited items and the po­
+tential inclusion of infrequent early-access or 
+noisy year values.
+10
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+3.4. BibFusion pipeline and reproducibility
+The workflow, as depicted in Figure 1, serves as 
+a foundational framework for the subsequent 
+discussion. Building upon this foundation, 
+BibFusion implements a modular, end-to-end 
+data processing pipeline that transforms raw 
+Scopus CSV and WoS TXT exports into a har­
+monized, deduplicated, and auditable relation­
+al corpus. This corpus is designed to be suit­
+able for reproducible bibliometric and network 
+analyses. BibFusion’s initialization process en­
+tails the ingestion of Scopus CSV and WoS TXT 
+exports, which are parsed using source-specif­
+ic parsers. These parsers facilitate the conver­
+sion of heterogeneous raw fields into a unified 
+staging schema, while preserving source prov­
+enance to ensure traceability. Subsequently, a 
+uniform normalization layer is applied to sta­
+bilize downstream matching. Key text fields 
+(e.g., titles and author strings) are converted to 
+a consistent ASCII/uppercase representation 
+and trimmed to remove spurious whitespace 
+and formatting artifacts. Concurrently, refer­
+ence keys undergo standardization through a 
+process of cleaning and normalization of SR/
+SR_ref strings. This involves the removal of 
+inconsistent punctuation and low-information 
+tokens, thereby ensuring the integrity and re­
+liability of citation linking and deduplication. 
+In conclusion, the affiliation and address fields 
+are parsed to derive a normalized country at­
+tribute. Repetitive or inconsistent country 
+mentions within a record are consolidated so 
+that country-level and geographic indicators 
+remain comparable across Scopus and WoS af­
+ter integration.
+Subsequent to normalization, BibFusion has 
+the capacity to optionally enrich records using 
+DOI-based resolution against OpenAlex. The 
+purpose of this process is to recover persistent 
+identifiers and improve cross-source linking. 
+When a valid DOI is available, the pipeline 
+queries OpenAlex to obtain a stable work iden­
+tifier (e.g., OpenAlex work ID) and to expand 
+author metadata, including OpenAlexAuthor­
+ID and ORCID, where available. This process 
+later strengthens author disambiguation and 
+joins across entities. This enrichment step is 
+intentionally conservative and non-blocking: 
+records with missing or invalid DOIs, or DOIs 
+that cannot be resolved, are skipped and logged 
+rather than causing failures, so that incom­
+plete records remain in the integrated corpus 
+while unresolved identifiers and enrichment 
+outcomes are transparently documented for 
+review. BibFusion integrates Scopus and WoS 
+records through a DOI-first deduplication and 
+merge strategy, applying exact matching on 
+normalized DOIs whenever available and using 
+a conservative fallback based on title-year-first 
+author agreement when DOI is missing. In the 
+event of the consolidation of two records, the 
+pipeline employs a transparent best-record 
+policy, which entails the retention of the most 
+informative values across fields that are pres­
+ent in more than one record. This process also 
+preserves provenance through the use of sourc­
+es_merged and related flags, which indicate the 
+origin of each integrated row. The unified cor­
+pus is then materialized into the relational enti­
+ties defined in Section 2: authors are disambig­
+uated using a canonical PersonID (ORCID → 
+OpenAlexAuthorID → normalized name) and 
+propagated to Authors and ArticleAuthor; cita­
+tion strings are cleaned and standardized into 
+directed edges in Citation; and outlet metada­
+ta are consolidated into Journal and linked to 
+Scimagodb using ISSN/EISSN- and title-based 
+normalization rules.
+BibFusion integrates quality control mea­
+sures at various stages of the workflow to mini­
+mize noise without compromising uncertainty. 
+During the process of citation cleaning, low-in­
+formation or malformed reference entries 
+are filtered. Examples of such entries include 
+empty SR/SR_ref keys, standalone years, or 
+non-informative punctuation strings. Poten­
+tially ambiguous situations, such as borderline 
+deduplication matches, author name collisions, 
+or incomplete identifier resolution, are logged 
+and surfaced. Rather than being forced into a 
+single interpretation, these situations are in­
+stead logged and surfaced to allow for the pos­
+sibility of multiple interpretations. In addition 
+to the seven entity tables, the pipeline generates 
+audit artifacts (e.g., aliases, potential conflicts, 
+and merge logs) that provide an explicit trail of 
+key decisions and cases requiring inspection. 
+BibFusion facilitates reproducible diagnostics 
+by providing a summary of core QC indicators, 
+including duplicates removed under the match­
+ing cascade, DOI coverage (both overall and 
+for main records), the completeness of country 
+11
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+extraction for main records, and the proportion 
+of unresolved enrichment lookups. This enables 
+users to evaluate data quality prior to conduct­
+ing bibliometric, collaboration, geographic, or 
+citation-network analyses.
+BibFusion is distributed as a versioned Py­
+thon package with explicit dependencies spec­
+ified in requirements.txt, enabling environment 
+recreation and consistent execution across sys­
+tems. The pipeline is implemented through a 
+designated entry point, such as “python run_
+main.py,” adhering to a predetermined input/
+output directory structure that demarcates 
+source-specific staging artifacts from the final 
+integrated dataset. This directory convention 
+includes directories designated for specific data 
+sources, namely “Scopus_results/,” “WoS_re­
+sults/,” and “all_data_wos_scopus/.” The re­
+producibility of the process is further support­
+ed by deterministic file outputs (the seven entity 
+tables plus audit artifacts) and log files that re­
+cord enrichment and merge operations. In com­
+putational terms, runtime scales primarily with 
+the number of records processed and with the 
+optional OpenAlex enrichment step. DOI-based 
+resolution is typically the main bottleneck and 
+can be constrained by external API rate limits. 
+As a result, large-scale runs may require batch­
+ing, caching, or scheduled execution to ensure 
+reliable completion. The version utilized in this 
+study is BibFusion v1.0.0, which is available at 
+the project repository: https://github.com/lad­
+mepaz/bibfusion. The repository contains the 
+source code, an example folder structure, and 
+a versioned data dictionary (CSV/MD) that doc­
+uments all output variables, including defini­
+tions, provenance (Scopus/WoS/derived), and 
+normalization rules.
+4. RESULTS
+4.1. Integrated corpus produced by BibFusion 
+BibFusion produces a unified relational corpus 
+organized into seven entities, as defined by the 
+data model in Section 2.3: Articles, Authors, 
+ArticleAuthor, Citation, Affiliation, Journal, 
+and Scimagodb. As illustrated in Table 2, the 
+final sizes of each entity for the specified run, 
+as outlined in Section 3.1, are reported. This ta­
+ble offers a concise summary of the integrated 
+dataset that was generated by the pipeline.
+Entity (CSV)
+Rows
+What it represents
+Articles (All_Articles.csv)
+8,569
+Work records (main + reference records)
+Authors (All_Authors.csv)
+17,219
+Disambiguated persons (unique PersonID)
+ArticleAuthor (All_ArticleAuthor.csv)
+28,254
+Authorship links (work-author associations)
+Citation (All_Citation.csv)
+24,392
+Directed citation edges (SR → SR_ref)
+Affiliation (All_Affiliation.csv)
+34,488
+Work-author-affiliation instances (with country)
+Journal (All_Journal.csv)
+831
+Normalized journals/sources (journal_id)
+Scimagodb (All_Scimagodb.csv)
+740
+Journals with metrics (joinable by journal_id)
+Table 2. Entity sizes of the unified corpus produced by BibFusion.
+Note: The Articles entity includes 253 main records and 8,316 reference records
+parsed from cited references. Data generated by the authors.
+In response to the query regarding entrepre­
+neurial marketing, the Articles entity has been 
+found to contain a total of 8,569 bibliograph­
+ic records. This number is comprised of 253 
+main records that were retrieved directly from 
+Scopus/WoS and 8,316 reference records that 
+were parsed from cited-reference strings. The 
+authorship layer consists of 17,219 disambigu­
+ated persons in Authors and 28,254 authorship 
+links in ArticleAuthor, while the citation layer 
+contains 24,392 directed citation edges in Ci­
+tation. The remaining entities —Affiliation, 
+Journal, and Scimagodb— capture the stan­
+dardized institutional and geographic informa­
+tion, as well as the consolidated outlet metada­
+ta and metrics. These entities contextualize the 
+unified corpus for downstream analyses.
+4.2. Integration outcomes
+and dataset readiness (QC evidence) 
+As illustrated in Table 3, key integration 
+and quality indicators are reported, demon­
+strating that the corpus is analysis-ready 
+12
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+following harmonization. At the level of 
+main records —that is, publications retrieved 
+directly from the query— BibFusion pre­
+serves cross-source provenance via sourc­
+es_merged. This indicates that 183 out of 
+253 (72.3%) main records are present in both 
+Scopus and WoS, while 59 out of 253 (23.3%) 
+are Scopus-only and 11 out of 253 (4.3%) are 
+WoS-only. This overlap indicates that, in the 
+absence of integration, the combined raw re­
+trieval would amount to 436 database-specif­
+ic main records (Scopus: 242 and WoS: 194), 
+accompanied by 183 cross-source duplicates. 
+Through integration, BibFusion consolidates 
+these into 253 unique main works, thereby 
+preventing double-counting in downstream 
+productivity, collaboration, and geographic 
+indicators.
+Indicator
+Value
+Unique main records (integrated)
+253
+Reference records (parsed from citations)
+8,316
+Main records by provenance (sources_merged)
+183 (both); 59 (Scopus-only); 11 (WoS-only)
+Raw main retrieval before merge (Scopus + WoS)
+242 + 194 = 436
+Cross-source duplicates consolidated (main)
+183
+DOI coverage (all Articles)
+8,054/8,569 = 94%
+DOI coverage (main records)
+220/253 = 87%
+DOI coverage (matched main in both sources)
+181/183 = 98.9%
+Country completeness in Articles (main records)
+252/253 = 99.6%
+Affiliation rows with country populated
+34,488/34,488 = 100%
+Citation edges (unique)
+24,392 (0 duplicate edges)
+Citation edges originating from main records
+23,927/24,392 = 98.1%
+Citing endpoint resolvable in Articles (SR)
+24,392/24,392 = 100%
+Cited endpoint resolvable in Articles (SR_ref)
+13,275/24,392 = 54.4%
+Journals linked to Scimagodb metrics (journal_id)
+727/831 = 87.5%
+Temporal coverage
+Main: 2005-2025; References: 1900-2026
+Table 3. Integration outcomes and quality indicators supporting dataset readiness.
+Note: The cited endpoint resolvability rate is expected to be <100% because many cited items
+(e.g., books or out-of-coverage sources) do not appear as fully described records in All_Articles;
+edges are retained using the normalized SR_ref key. Data generated by the software Python.
+The completeness of identifiers and meta­
+data further supports the dataset’s readiness. 
+The overall DOI coverage was found to be 94% 
+(8,054 out of 8,569), with a 87% coverage for 
+main records (220 out of 253). A strong com­
+plementarity effect was observed across sourc­
+es. The proportion of DOI coverage among 
+matched main records is 98.9% (181 out of 
+183), while it is lower for source-unique main 
+records (Scopus-only: 57.6% and WoS-only: 
+45.5%), indicating that merging substantially 
+improves identifier availability for the unified 
+corpus. The geographic metadata for the main 
+corpus is found to be highly complete. The ar­
+ticle-level country field is populated for 252 
+out of 253 (99.6%) main records, and the Af­
+filiation entity provides a normalized country 
+value for 100% of affiliation rows. Affiliations 
+are available for 251 out of 253 (99.2%) main 
+records. Outlet consolidation is also robust. A 
+total of 87.5% of normalized journals (727 out 
+of 831) are linked to Scimagodb metrics via 
+journal_id, thereby enabling stratified anal­
+yses by journal indicators. In conclusion, the 
+use of citation linking has been demonstrat­
+ed to exhibit a reliable structure for network 
+construction while maintaining transparency 
+regarding coverage limits. The citation table 
+contains 24,392 directed edges, with no du­
+plicate edges under the (SR, SR_ref) key. All 
+citing keys (SR) resolve to the Articles entity 
+(100%), and 98.1% of citation edges originate 
+from main records. For the specified endpoint, 
+54.4% of SR_ref values are mapped to an Arti­
+cles record, while the remaining values corre­
+spond to out-of-coverage items, such as books 
+or sources not represented as full records. This 
+process generates a citation network that is 
+13
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+both functional and explicit. That is to say, the 
+edges are preserved and standardized, and the 
+cited nodes are reference-only keys rather than 
+fully described works.
+5. DISCUSSION
+5.1. Implications
+The integration and QC evidence reported in 
+Tables 2 and 3 directly impacts the validity 
+of downstream scientometric analyses. First, 
+the consolidation of cross-source duplicates 
+and the preservation of provenance (sourc­
+es_merged) serve to prevent double-counting 
+and stabilize productivity and trend indicators. 
+In the absence of deduplication, the same work 
+can appear as two separate records, resulting in 
+inflated publication counts and distorted time 
+series patterns and outlet rankings. Second, the 
+enhancement of identifier coverage, particular­
+ly the near-complete availability of DOIs across 
+records aligned between Scopus and WoS, for­
+tifies record linkage and facilitates more de­
+pendable connections to external resources, 
+thereby mitigating fragmentation in citation 
+and metadata enrichment workflows. Third, 
+the high completeness of country extraction 
+for main records (and full country population 
+in the Affiliation table) materially improves 
+scientific geography analyses by reducing 
+“unknown country” noise and allowing coun­
+try-level production and collaboration maps to 
+reflect institutional signals rather than missing 
+data artifacts. In conclusion, the utilization of 
+the canonical PersonID in conjunction with the 
+explicit authorship link table facilitates the es­
+tablishment of more credible coauthorship and 
+collaboration networks. This enhancement is 
+achieved by mitigating the occurrence of au­
+thor splitting or merging that is precipitated 
+by orthographic variants, including but not 
+limited to accents, initials, and the sequence of 
+authorship. When considered as a whole, these 
+QC enhancements progress the dataset from a 
+collection of heterogeneous exports to a trace­
+able relational corpus. In this new form, biblio­
+metric indicators, country-based comparisons, 
+and network measures can be computed repro­
+ducibly with a reduced risk of bias driven by 
+metadata inconsistencies (Crystal-Ornelas et 
+al., 2022).
+5.2. Positioning and limitations
+Conceptually, BibFusion occupies a middle 
+ground between general-purpose bibliometric 
+toolkits and ad hoc, project-specific integration 
+scripts. Many existing workflows facilitate the 
+importation of Scopus and WoS exports into 
+a unified flat table for descriptive indicators. 
+However, these workflows frequently result in 
+the transformation of cited references into da­
+tabase-specific strings, thereby failing to estab­
+lish a shared, normalized reference-key space 
+across sources. Consequently, the construction 
+of citation networks and the deduplication of 
+references can become fragile and challenging 
+to reproduce. BibFusion addresses this gap by 
+materializing the integrated corpus as an ex­
+plicit ER model and by generating dedicated 
+linking tables (ArticleAuthor, Citation, Affilia­
+tion) anchored to canonical identifiers (SR and 
+PersonID). Provenance is preserved through 
+the use of sources_merged, and integration 
+decisions are externalized via audit artifacts 
+to support inspection and reruns. In prac­
+tice, this design reduces cross-source double 
+counting, stabilizes author- and country-level 
+attribution for the main corpus, and produces 
+an analysis-ready citation edge list with clear, 
+transparent boundaries between resolvable 
+and out-of-coverage cited items.
+Concurrently, BibFusion does not eliminate 
+the intrinsic constraints of bibliographic meta­
+data (Visser et al., 2021). Cross-source inte­
+gration is predicated on persistent identifiers, 
+and thus a DOI-first strategy is vulnerable to 
+missing, malformed, or inconsistently record­
+ed DOIs. Although BibFusion applies conserva­
+tive fallback rules when a DOI is unavailable, 
+any non-DOI matching retains a residual risk 
+of both missed matches and occasional false 
+merges. The use of ORCID and OpenAlex iden­
+tifiers in conjunction with name normalization 
+serves to strengthen author disambiguation. 
+However, cases of homonymy and incomplete 
+identifier coverage can still result in ambigu­
+ous situations that necessitate human review. 
+Therefore, the generation of explicit conflict 
+files and alias logs is preferable to the imposi­
+tion of deterministic decisions. Similarly, cita­
+tion linking is inherently incomplete when cit­
+ed items fall outside the scope of the exported 
+databases (e.g., books, reports, or non-indexed 
+14
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+sources). BibFusion preserves these relations 
+as reference-keyed nodes but cannot guar­
+antee complete metadata for out-of-coverage 
+works. In this regard, the contribution of Bib­
+Fusion does not lie in the resolution of imper­
+fect metadata, but rather in the provision of a 
+reproducible, audit-ready integration workflow. 
+This workflow serves to mitigate avoidable in­
+consistencies and renders residual uncertainty 
+evident for rigorous downstream scientometric 
+analysis.
+5.3. Practical guidance
+BibFusion’s relational outputs are structured 
+to support common scientometric analyses in a 
+straightforward and reproducible way. For the 
+purpose of trend and productivity analyses, the 
+Articles table functions as the primary unit of 
+analysis. Typically, the filter is set to ismain­
+article = True, allowing for the computation of 
+publication time series (by year) and outlet-lev­
+el summaries (via source_title/journal) on 
+the deduplicated corpus without the inflation 
+of counts. Additionally, the sources_merged 
+field facilitates sensitivity checks by source 
+provenance. In the context of scientific geog­
+raphy, country-level results can be obtained at 
+two complementary resolutions. The first is a 
+lightweight view, which utilizes the article-lev­
+el country field in Articles for the purpose of 
+main-corpus production maps. The second is 
+a finer-grained view, which employs the Affili­
+ation table to analyze author-institution-coun­
+try linkages. Examples of such linkages include 
+multicountry outputs, institutional collabo­
+ration patterns, and fractional counting ap­
+proaches (Demaine, 2022; Hottenrott et al., 
+2021; Matveeva et al., 2022; Sivertsen et al., 
+2025). For the purpose of coauthorship analy­
+ses, ArticleAuthor employs a normalized bipar­
+tite structure to link works (SR) to disambig­
+uated authors (PersonID). This representation 
+enables the derivation of coauthor networks 
+through the projection of author-author ties 
+within each SR, with the option of assigning 
+edge weights based on the number of shared 
+publications. For citation-based analyses, Cita­
+tion provides a cleaned directed edge list (SR 
+→ SR_ref) that supports citation graphs, basic 
+impact measures (in-degree/out-degree), and 
+co-citation analyses (Chen et al., 2024; Wang 
+et al., 2023; Yang et al., 2024). When a cited 
+key (SR_ref) resolves to a record in Articles, 
+cited nodes can be enriched with full metada­
+ta; when it does not, the edge is retained with 
+the normalized reference key, so the network 
+structure remains intact while clearly marking 
+out-of-coverage items. In conclusion, Journal 
+and Scimagodb contextualize results at the out­
+let level by linking publications to normalized 
+journal identities and, when available, to indi­
+cators such as SJR quartiles and subject cate­
+gories, enabling consistent stratified reporting 
+across the unified corpus (Lim et al., 2024; 
+Schmal, 2024; Vaccaro et al., 2022).
+To ensure the attainment of consistent re­
+sults, it is imperative that BibFusion be execut­
+ed on complete exports from both databases, 
+employing standardized settings. For Scopus, 
+records should be exported as a CSV file with 
+the “Select all information” option enabled. For 
+WoS, records should be exported as a TXT file 
+with the “Full Record and Cited References” 
+option selected, as outlined in Appendix B. In 
+both cases, users should avoid truncation op­
+tions intended for spreadsheet compatibility 
+(e.g., “optimize for Excel”), as these can shorten 
+long fields such as affiliations, abstracts, and 
+reference strings and degrade matching and ci­
+tation linking. In addition, it is recommended 
+to maintain a consistent search strategy across 
+various sources, ensuring alignment in terms 
+of fields, years, languages, and document types. 
+To ensure comprehensive reproducibility, it is 
+essential to archive precise queries and export 
+dates alongside the raw files. During execution, 
+it is considered best practice to preserve the 
+default folder structure (i.e., Scopus_results/, 
+WoS_results/, and all_data_wos_scopus/) and 
+to retain all generated logs and audit artifacts. 
+It is imperative that users thoroughly examine 
+audit outputs, with a particular focus on alias/
+conflict files and merge logs, prior to conduct­
+ing analyses at the author- or institution-level. 
+Furthermore, substantive indicators such as 
+trends, geography, and collaboration should 
+be restricted to main records (ismainarticle = 
+True), unless the objective of the study is to ex­
+amine the reference layer explicitly. For large 
+corpora, optional OpenAlex enrichment should 
+be planned meticulously: It is important to 
+note that DOI resolution can be subject to rate 
+limitations. Consequently, when attempting to 
+15
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+scale up, the implementation of batching and 
+caching is strongly advised. In conclusion, 
+downstream analyses should rely on the rela­
+tional joins defined by the data model (SR, Per­
+sonID, journal_id) rather than re-parsing raw 
+strings. This will ensure that results remain 
+consistent, auditable, and reproducible across 
+runs.
+6. CONCLUSION
+This study presented BibFusion, a reproducible 
+preprocessing pipeline that harmonizes Scopus 
+and WoS exports into a unified, traceable, anal­
+ysis-ready corpus. BibFusion operationalizes 
+a unified ER model and produces seven rela­
+tional tables —Articles, Authors, ArticleAuthor, 
+Citation, Affiliation, Journal, and Scimagodb— 
+supported by explicit primary/foreign keys and 
+provenance fields to preserve relational integ­
+rity across entities. The pipeline implements 
+systematic normalization, which includes AS­
+CII/uppercase standardization and SR/SR_
+ref cleaning. It also implements conservative 
+cross-source integration, which includes DOI-
+first deduplication with controlled fallbacks. 
+The pipeline can also identify the canonical 
+author via PersonID and consolidate citations 
+and outlets in a structured manner. A funda­
+mental objective is the integration of relational 
+structure with auditability: BibFusion produc­
+es standardized outputs for bibliometric and 
+network analyses, as well as audit artifacts (i.e., 
+aliases, potential conflicts, and merge logs) that 
+facilitate transparency in key decisions and 
+enable targeted human review when metadata 
+remains ambiguous. The integration of these 
+components establishes a pragmatic founda­
+tion for reproducible scientometric workflows, 
+thereby mitigating avoidable inconsistencies 
+across sources and explicitly documenting re­
+sidual uncertainty rather than concealing it. 
+BibFusion provides practical value to the sci­
+entometrics and bibliometrics community by 
+transforming two heterogeneous, widely used 
+data sources into a reproducible and auditable 
+integration workflow. By standardizing iden­
+tifiers, consolidating duplicates, and exposing 
+a clear ER structure, the package reduces the 
+repetitive, error-prone manual curation that 
+often precedes bibliometric analyses —particu­
+larly for collaboration and scientific geography 
+studies where author and affiliation inconsis­
+tencies can strongly bias results. Furthermore, 
+BibFusion’s incorporation of audit logs and con­
+flict/alias artifacts serves to make residual un­
+certainty explicit, thereby enabling transparent 
+inspection and correction without compromis­
+ing the reproducibility of results. Consequent­
+ly, researchers can allocate less effort toward 
+ad hoc cleaning and more toward interpretable 
+analyses, while maintaining a documented trail 
+that supports verification, extension, and reuse 
+across studies and research domains.
+It has been demonstrated that the imple­
+mentation of multiple extensions has the poten­
+tial to enhance the functionality of BibFusion 
+and expand its range of applications. First, the 
+robustness of matching could be enhanced by 
+incorporating supplementary similarity signals 
+that extend beyond the current conservative 
+cascade. These additional signals might include 
+structured field agreement on journal/volume/
+pages, calibrated string-similarity thresholds, 
+and probabilistic or learned record-linkage 
+models. This approach would ensure the pres­
+ervation of auditability and the control of false 
+merges. Second, the scope of coverage could 
+be expanded by incorporating supplementary 
+sources and formats, such as OpenAlex snap­
+shots, Crossref metadata, dimensions, PubMed, 
+or institutional repositories. Additionally, en­
+hancing the ingestion process to align with 
+evolving export schemas could further expand 
+the scope of coverage. Third, the efficacy of 
+quality assurance could be augmented through 
+the implementation of automated QC dash­
+boards that facilitate the reporting of readiness 
+metrics (e.g., DOI and country completeness, 
+duplicate consolidation rates, citation endpoint 
+resolvability, and author ID coverage) and the 
+identification of high-impact ambiguity clusters 
+for subsequent review. In conclusion, workflow 
+scalability can be enhanced through caching 
+and incremental updates (e.g., re-running only 
+enrichment or only merging on newly added re­
+cords), facilitating efficient maintenance of lon­
+gitudinal corpora as databases and identifiers 
+evolve over time.
+Acknowledgments
+The authors acknowledge the support of the 
+Universidad Nacional de Colombia, MetricSci, 
+16
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+and the Data Lab at the Universidad Nacional 
+de Colombia, Sede de La Paz, for facilitating the 
+development and testing of the BibFusion pre­
+processing pipeline, providing repository host­
+ing and computational equipment, and sup­
+porting students involved in this project. The 
+authors also acknowledge OpenAI for provid­
+ing AI tools used during the development and 
+writing process (e.g., Codex and ChatGPT) to 
+assist with generating and optimizing portions 
+of the codebase and to support manuscript or­
+ganization and iterative revision. All outputs 
+produced with AI assistance were reviewed and 
+validated by the authors, who accept full re­
+sponsibility for the final code and manuscript.
+Funding
+This research received funding from Univer­
+sidad Nacional de Colombia, Sede de La Paz, 
+through the project “Estrategias Innovadoras 
+de Marketing Emprendedor: Un Caso Aplicado 
+al Laboratorio de Datos de la Universidad Na­
+cional” (Hermes 64027).
+Conflict of interest
+The authors declare no conflicts of interest.
+Contribution statement
+Angelo Britto: Conceptualization, software, 
+data curation, methodology, validation, writing 
+– review & editing.
+Sebastian 
+Robledo: 
+Conceptualization, 
+software, methodology, data curation, for­
+mal analysis, visualization, writing – origi­
+nal draft, writing – review & editing, project 
+administration.
+Martha Zuluaga: Validation, investigation, 
+formal analysis, visualization, writing – review 
+& editing.
+Statement of data consent
+The bibliographic data utilized in this study 
+were obtained through licensed exports from 
+Scopus and Web of Science and are subject 
+to the terms and conditions of the respective 
+providers. Consequently, the exported files in 
+their raw state are not disseminated publicly. 
+The processed outputs generated by BibFusion 
+(aggregated CSV entity tables) and the code/
+workflow details can be made available upon 
+reasonable request, subject to compliance with 
+data provider licensing restrictions. 
+REFERENCES
+Aria, M., & Cuccurullo, C. (2017). bibliome­
+trix: An R-tool for comprehensive science 
+mapping analysis. Journal of Informetrics, 
+11(4), 959‑975. https://doi.org/10.1016/j.
+joi.2017.08.007
+Chavarro, D., Alperin, J. P., & Willinsky, J. 
+(2025). On the open road to universal index­
+ing: OpenAlex and Open Journal Systems. 
+Quantitative Science Studies, 6, 1039-1058. 
+https://doi.org/10.1162/qss.a.17
+Chen, C. (2006). CiteSpace II: Detecting and vi­
+sualizing emerging trends and transient pat­
+terns in scientific literature. Journal of the 
+American Society for Information Science 
+and Technology, 57(3), 359-377. https://doi.
+org/10.1002/asi.20317
+Chen, X., Mao, J., & Li, G. (2024). A co-citation 
+approach to the analysis on the interaction 
+between scientific and technological knowl­
+edge. Journal of Informetrics, 18(3), 101548. 
+https://doi.org/10.1016/j.joi.2024.101548
+Cioffi, A., Coppini, S., Massari, A., Moret­
+ti, A., Peroni, S., Santini, C., & Shahid­
+zadeh Asadi, N. (2022). Identifying and 
+correcting invalid citations due to DOI 
+errors in Crossref data. Scientometrics, 
+127(6), 3593-3612. https://doi.org/10.1007/
+s11192-022-04367-w
+Crystal-Ornelas, R., Varadharajan, C., 
+O’Ryan, D., Beilsmith, K., Bond-Lamber­
+ty, B., Boye, K., Burrus, M., Cholia, S., 
+Christianson, D. S., Crow, M., Damerow, 
+J., Ely, K. S., Goldman, A. E., Heinz, S. L., 
+Hendrix, V. C., Kakalia, Z., Mathes, K., 
+O’Brien, F., Pennington, S. C., … Agar­
+wal, D. A. (2022). Enabling FAIR data in 
+Earth and environmental science with com­
+munity-centric (meta)data reporting for­
+mats. Scientific Data, 9(1), 700. https://doi.
+org/10.1038/s41597-022-01606-w
+Culbert, J. H., Hobert, A., Jahn, N., Haup­
+ka, N., Schmidt, M., Donner, P., & Mayr, 
+P. (2025). Reference coverage analysis of 
+OpenAlex compared to Web of Science and 
+17
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+Scopus. Scientometrics, 130(4), 2475-2492. 
+https://doi.org/10.1007/s11192-025-05293-3
+Delgado-Quirós, L., & Ortega, J. L. (2024). 
+Completeness degree of publication metada­
+ta in eight free-access scholarly databases. 
+Quantitative Science Studies, 5(1), 31-49. 
+https://doi.org/10.1162/qss_a_00286
+Delgado-Quirós, L., & Ortega, J. L. (2025). 
+Citation counts and inclusion of references 
+in seven free-access scholarly databases: A 
+comparative analysis. Journal of Informet­
+rics, 19(1), 101618. https://doi.org/10.1016/j.
+joi.2024.101618
+Demaine, J. (2022). Fractionalization of re­
+search impact reveals global trends in 
+university 
+collaboration. 
+Scientometrics, 
+127(5), 2235-2247. https://doi.org/10.1007/
+s11192-021-04246-w
+Elstad, M., Ahmed, S., Røislien, J., & Dou­
+iri, A. (2023). Evaluation of the reported 
+data linkage process and associated quality 
+issues for linked routinely collected health­
+care data in multimorbidity research: a sys­
+tematic methodology review. BMJ Open, 
+13(5), e069212. https://doi.org/10.1136/
+bmjopen-2022-069212
+Hottenrott, H., Rose, M. E., & Lawson, 
+C. (2021). The rise of multiple institution­
+al affiliations in academia. Journal of the 
+Association for Information Science and 
+Technology, 72(8), 1039-1058. https://doi.
+org/10.1002/asi.24472
+Kara, B. C., Şahin, A., & Dirsehan, T. (2025). 
+BibexPy: Harmonizing the bibliomet­
+ric symphony of Scopus and Web of Sci­
+ence. SoftwareX, 30, 102098. https://doi.
+org/10.1016/j.softx.2025.102098
+Kim, J., & Owen-Smith, J. (2021). OR­
+CID-linked labeled data for evaluating au­
+thor name disambiguation at scale. Scien­
+tometrics, 126(3), 2057-2083. https://doi.
+org/10.1007/s11192-020-03826-6
+Kumpulainen, M., & Seppänen, M. (2022). 
+Combining Web of Science and Scopus data­
+sets in citation-based literature study. Sci­
+entometrics, 127(10), 5613-5631. https://doi.
+org/10.1007/s11192-022-04475-7
+Lastilla, L., Ammirati, S., Firmani, D., Ko­
+modakis, N., Merialdo, P., & Scardapane, 
+S. (2022). Self-supervised learning for me­
+dieval handwriting identification: A case 
+study from the Vatican Apostolic Library. 
+Information Processing & Management, 
+59(3), 102875. https://doi.org/10.1016/j.
+ipm.2022.102875
+Lim, W. M., Kumar, S., & Donthu, N. (2024). 
+How to combine and clean bibliometric data 
+and use bibliometric tools synergistically: 
+Guidelines using metaverse research. Jour­
+nal of Business Research, 182, 114760. https://
+doi.org/10.1016/j.jbusres.2024.114760
+Maisano, D. A., Mastrogiacomo, L., Fer­
+rara, L., & Franceschini, F. (2025). A 
+large-scale semi-automated approach for 
+assessing document-type classification er­
+rors in bibliometric databases. Scientomet­
+rics, 130, 1901-1938. https://doi.org/10.1007/
+s11192-025-05244-y
+Massari, A., Mariani, F., Heibi, I., Peroni, S., 
+& Shotton, D. (2024). OpenCitations Meta. 
+Quantitative Science Studies, 5(1), 50-75. 
+https://doi.org/10.1162/qss_a_00292
+Matveeva, N., Sterligov, I., & Lovakov, A. 
+(2022). International scientific collabora­
+tion of post-Soviet countries: a bibliometric 
+analysis. Scientometrics, 127(3), 1583-1607. 
+https://doi.org/10.1007/s11192-022-04274-0
+McKay, A. S. (2026). Common errors in biblio­
+metric reviews and a novel method for cor­
+recting them. Scientometrics. https://doi.
+org/10.1007/s11192-026-05544-x
+Mischo, W., Schlembach, M., & Cabada, E. 
+(2024). Relationships between journal pub­
+lication, citation, and usage metrics within a 
+Carnegie R1 university collection: A correla­
+tion analysis. College and Research Librar­
+ies, 85(2), 234-253. https://doi.org/10.5860/
+crl.85.2.234
+Ng, J. Y., Liu, H., Masood, M., Syed, N., Ste­
+phen, D., Ayala, A. P., Sabé, M., Solmi, M., 
+Waltman, L., Haustein, S., & Moher, D. 
+(2025). Guidance for the reporting of biblio­
+metric analyses: A scoping review. Quanti­
+tative Science Studies, 6, 988-1001. https://
+doi.org/10.1162/qss.a.12
+Nikolić, D., Ivanović, D., & Ivanović, L. (2024). 
+An open-source tool for merging data from 
+multiple citation databases. Scientometrics, 
+129(7), 4573-4595. https://doi.org/10.1007/
+s11192-024-05076-2
+Nowakowska, M. (2025). A comprehensive ap­
+proach to preprocessing data for bibliometric 
+analysis. Scientometrics, 130(9), 5191-5225. 
+https://doi.org/10.1007/s11192-025-05415-x
+18
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+Ornstein, J. T. (2025). Probabilistic record 
+linkage using Pretrained text embeddings. 
+Political Analysis: An Annual Publication 
+of the Methodology Section of the American 
+Political Science Association, Advance online 
+publication, 1-12. https://doi.org/10.1017/
+pan.2025.10016
+Priem, J., Piwowar, H., & Orr, R. (2022). Ope­
+nAlex: A fully-open index of scholarly works, 
+authors, venues, institutions, and concepts. 
+In arXiv [cs.DL]. https://doi.org/10.48550/
+ARXIV.2205.01833
+Purnell, P. J. (2022). The prevalence and im­
+pact of university affiliation discrepancies 
+between four bibliographic databases-Sco­
+pus, Web of Science, Dimensions, and Mi­
+crosoft Academic. Quantitative Science 
+Studies, 3(1), 99-121. https://doi.org/10.1162/
+qss_a_00175
+Rehs, A. (2021). A supervised machine learn­
+ing approach to author disambiguation in 
+the Web of Science. Journal of Informet­
+rics, 15(3), 101166. https://doi.org/10.1016/j.
+joi.2021.101166
+Robledo, S., Valencia, L., Zuluaga, M., Ech­
+everri, O. A., & Valencia, J. W. A. (2024). 
+tosr: Create the Tree of Science from WoS and 
+Scopus. Journal of Scientometric Research, 
+13(2), 459-465. https://doi.org/10.5530/
+jscires.13.2.36
+Rose, M. E., & Kitchin, J. R. (2019). pyblio­
+metrics: Scriptable bibliometrics using a 
+Python interface to Scopus. SoftwareX, 
+10(100263), 100263. https://doi.org/10.1016/j.
+softx.2019.100263
+Ruiz-Rosero, J., Ramirez-Gonzalez, G., & 
+Viveros-Delgado, J. (2019). Software sur­
+vey: ScientoPy, a scientometric tool for topics 
+trend analysis in scientific publications. Sci­
+entometrics, 121(2), 1165-1188. https://doi.
+org/10.1007/s11192-019-03213-w
+Schmal, W. B. (2024). How transformative are 
+transformative agreements? Evidence from 
+Germany across disciplines. Scientometrics, 
+129, 
+1863-1889. 
+https://doi.org/10.1007/
+s11192-024-04955-y
+Sivertsen, G., Rousseau, R., & Zhang, L. 
+(2025). The motivations for and effects of 
+modified fractional counting. Journal of 
+Informetrics, 19(3), 101681. https://doi.
+org/10.1016/j.joi.2025.101681
+Vaccaro, G., Sánchez-Núñez, P., & Witt-Ro­
+dríguez, P. (2022). Bibliometrics evaluation 
+of scientific journals and country research 
+output of dental research in Latin Amer­
+ica using Scimago Journal and Country 
+Rank. Publications, 10(3), 26. https://doi.
+org/10.3390/publications10030026
+van Eck, N. J., & Waltman, L. (2010). Soft­
+ware survey: VOSviewer, a computer pro­
+gram for bibliometric mapping. Scientomet­
+rics, 84(2), 523-538. https://doi.org/10.1007/
+s11192-009-0146-3
+Velez-Estevez, A., Perez, I. J., García-Sán­
+chez, P., Moral-Munoz, J. A., & Cobo, M. 
+J. (2023). New trends in bibliometric APIs: A 
+comparative analysis. Information Process­
+ing & Management, 60(4), 103385. https://
+doi.org/10.1016/j.ipm.2023.103385
+Visser, M., van Eck, N. J., & Waltman, L. 
+(2021). Large-scale comparison of bib­
+liographic data sources: Scopus, Web of Sci­
+ence, Dimensions, Crossref, and Microsoft 
+Academic. Quantitative Science Studies, 2(1), 
+20‑41. https://doi.org/10.1162/qss_a_00112
+Wang, F., Dong, J., Lu, W., & Xu, S. (2023). 
+Collaboration prediction based on multilayer 
+all-author tripartite citation networks: A case 
+study of gene editing. Journal of Informet­
+rics, 17(1), 101374. https://doi.org/10.1016/j.
+joi.2022.101374
+Yang, J., Wu, L., & Lyu, L. (2024). Research 
+on scientific knowledge evolution patterns 
+based on ego-centered fine-granularity ci­
+tation network. Information Processing & 
+Management, 61(4), 103766. https://doi.
+org/10.1016/j.ipm.2024.103766
+Zhang, L., Cao, Z., Shang, Y., Sivertsen, G., 
+& Huang, Y. (2024). Missing institutions in 
+OpenAlex: possible reasons, implications, and 
+solutions. Scientometrics, 129, 5869-5891. 
+https://doi.org/10.1007/s11192-023-04923-y
+19
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+APPENDICES
+Appendix A. Source-specific workflow diagrams
+Figure A1. Function-level workflow for WoS TXT preprocessing. Note: This diagram provides a function-
+level view of the transformations applied to the WoS TXT export, complementing the end-to-end workflow 
+in Figure 1. It traces the sequence from ingestion and canonicalization through metadata normalization 
+(e.g., title and SR key standardization), affiliation parsing with country extraction, and the generation of 
+standardized staging outputs used in the subsequent cross-database merge. Red-outlined boxes denote 
+the standardized entity outputs that correspond to the unified ER model in Figure 2.
+Figure A2. Function-level workflow for Scopus CSV preprocessing and DOI-based OpenAlex 
+enrichment. Note: This diagram complements Figure 1 by detailing the sequence of functions applied 
+to Scopus CSV exports. It shows ingestion and field normalization (including DOI standardization), 
+DOI-driven enrichment via OpenAlex (e.g., work identifiers and author identifiers when available), 
+and downstream processing steps such as reference/SR construction, journal/Scimago consolidation, 
+and affiliation parsing with country extraction. The workflow produces standardized, source-aligned 
+staging entities that feed the subsequent cross-database deduplication and merge step.
+20
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+Angelo Britto, Sebastian Robledo, Martha Zuluaga
+Appendix B. Export settings used for data collection (Scopus and WoS)
+Figure B1. Scopus CSV export configuration (“Select all information”). Note: This figure documents 
+the Scopus export settings used to generate the raw CSV input for BibFusion, in which the export is 
+configured to include all available information (e.g., citation information, bibliographical information, 
+abstracts/keywords, funding details, and other descriptors). These settings are required to preserve 
+complete metadata and ensure consistent downstream normalization, deduplication, and traceability.
+21
+Iberoamerican Journal of Science Measurement and Communication
+Vol. 6, No. 1, 2026, 1-21. DOI: 10.47909/ijsmc.342
+ORIGINAL ARTICLE
+BibFusion: A Python package to integrate, deduplicate…
+Figure B2. WoS TXT export configuration (“Full Record and Cited References”). Note: This figure 
+documents the WoS export settings used to generate the raw TXT input for BibFusion, in which records 
+are exported as a plain-text file with “Full Record and Cited References” selected. This configuration 
+ensures that both full bibliographic metadata and cited-reference strings are available for SR/SR_ref 
+normalization and citation-link construction in the unified corpus.

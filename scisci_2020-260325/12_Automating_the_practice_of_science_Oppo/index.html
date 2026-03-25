@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Automating the practice of science: Opportunities, challenges, and implications</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Automating the practice of science: Opportunities, challenges, and implications</h1>
+<blockquote>
+<p><strong>저자</strong>: Sebastian Musslick, Laura K. Bartlett, Suyog H. Chandramouli, Marina Dubova, Fernand Gobet, Thomas L. Griffiths, Jessica Hullman, Ross D. King, J. Nathan Kutz, Christopher G. Lucas, Suhas Mahesh, Franco Pestilli, Sabina J. Sloman, William R. Holmes | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: PNAS | <strong>DOI</strong>: 10.1073/pnas.2401238121</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>과학적 실천의 자동화는 현재 잘 정의된 엔지니어링 및 발견 문제에 국한되어 있으나, 가설 생성부터 실험 설계, 데이터 수집, 통계 추론, 모델 발견까지 과학 연구의 전 과정으로 확장될 잠재력을 가지며, 이는 단순한 효율성 증가가 아닌 과학 수행 방식 자체의 근본적 전환(paradigm shift)을 의미한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>자동화는 산업 전반을 변혁시켰으나 과학 연구에서는 아직 초기 단계에 머물러 있다. 기존 과학 자동화는 명확한 목표와 잘 정의된 하위 과제를 가진 영역(화학 합성, 재료 발견 등)에 한정되어 있었다. AI, 소프트웨어, 컴퓨팅 하드웨어의 동시적 발전이 과학 프로세스 전반에 대한 더 광범위한 자동화의 무대를 열고 있으며, AlphaFold(노벨상 수상), robot scientist Adam/Eve, A-Lab 등 성공적 사례가 등장하였다. 그러나 자동화의 범위, 병목 현상, 윤리적/실질적 함의에 대한 체계적 평가가 부재하여, 14명의 다학제 전문가가 이를 종합적으로 논의하였다.</p>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>자동화 가능성의 프레임워크 제시</strong>: 과학 과제의 자동화 난이도를 결정하는 4가지 요인(입력 데이터의 가용성/품질, 계산 복잡도, 하드웨어 엔지니어링 복잡도, 과제 목표의 주관성)을 체계화하였다.</li>
+<li><strong>폐쇄 루프 자동화 사례 분석</strong>: Adam(효모 기능 유전체학), Eve(약물 재배치 - triclosan의 말라리아 치료 가능성 발견), A-Lab(무기 분말 자율 합성), AutoRA(행동과학 온라인 실험), LLM 기반 ML 연구 자동화(논문 1편당 15 USD)를 비교 분석하였다.</li>
+<li><strong>미래 기회 식별</strong>: 데이터 수집/표준화/공유, 데이터 주도와 지식 주도 발견의 통합, 생성형 AI/LLM의 문헌 합성 및 가설 생성 역할을 핵심 기회로 제시하였다.</li>
+<li><strong>"자동화의 역설" 개념화</strong>: 자동화 시스템이 효율적일수록 인간 감독의 역할이 더 중요해진다는 역설을 과학 맥락에서 논의하였다.</li>
+<li><strong>윤리적 함의의 체계적 정리</strong>: 편향 전파, 가치 정렬, 책임 소재, 과학 교육 재편, 피어리뷰 시스템 압박 등을 포괄적으로 다루었다.</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>방법론</strong>: 다학제 전문가 14명(인지과학, 컴퓨터과학, 화학공학, 재료과학, 심리학, 신경과학, 수학, 철학 등)의 관점을 종합한 perspective article</li>
+<li><strong>분석 구조</strong>: 목표 관련 한계(규범적/인식론적 목표)와 기술적 한계(4가지 요인)로 구분하여 체계적 논의</li>
+<li><strong>사례 연구</strong>: 생물학(Adam, Eve, Wormbot-AI), 재료과학(A-Lab), 행동과학(AutoRA), 수학(Ramanujan Machine), 화학(LLM co-scientist), 신경과학(BrainGPT) 등 다양한 분야의 최신 사례를 인용</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>과학 자동화를 개별 기술이 아닌 과학적 실천 전체의 맥락에서 조망하는 통합적 프레임워크를 제공한다.</li>
+<li>자동화의 기술적 가능성뿐 아니라 "자동화해야 하는 것"과 "자동화하지 말아야 할 것"을 구분하는 목표 관련 한계(goal-related bounds)를 명시적으로 논의한다.</li>
+<li>예측 정확도 향상과 인간 이해 사이의 인식론적 딜레마를 기초과학 vs 응용과학의 관점에서 분석한다.</li>
+<li>Moravec의 역설을 과학 실험 자동화에 적용하여, 인지적 과제보다 감각운동적 과제(실험 조작)의 자동화가 더 어렵다는 점을 강조한다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>현재 폐쇄 루프 자동화는 인간 연구자가 사전 정의한 제한된 실험 설계 및 모델 공간 내에서만 작동한다.</li>
+<li>데이터 표준화 부족으로 자동화 시스템이 분야 간 개념 전이에 어려움을 겪는다.</li>
+<li>인지과학에서의 과학적 발견은 무한한 데이터가 있어도 계산적으로 난해(computationally intractable)할 수 있다.</li>
+<li>실험실 로봇공학과 하드웨어의 한계가 복잡한 생물학/물리학 실험의 자동화를 저해한다.</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>Perspective article로서 체계적 문헌 리뷰가 아니므로, 사례 선택에 저자들의 주관이 반영되어 있으며 자동화 실패 사례에 대한 논의가 부족하다.</li>
+<li>자동화의 경제적 비용-편익 분석이 정량적으로 제시되지 않았다(LLM 논문 15 USD 외에는 구체적 수치 부족).</li>
+<li>개발도상국의 과학 자동화 접근성 격차나 자동화로 인한 과학 인력 대체 문제에 대한 논의가 미흡하다.</li>
+<li>분야별 자동화 성숙도의 차이를 정량적으로 비교하는 프레임워크가 없다.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>자동화 시스템의 실제 과학적 발견 기여도를 정량적으로 측정하는 벤치마크 개발</li>
+<li>인간-AI 협업 과학 연구의 최적 역할 분배 모델 연구</li>
+<li>자동화된 피어리뷰 시스템의 신뢰성 및 편향 평가</li>
+<li>분야별 자동화 로드맵 수립을 위한 실증 연구</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 과학 자동화의 현황, 기회, 과제, 함의를 다학제적 관점에서 포괄적으로 정리한 시의적절한 관점 논문으로, 특히 자동화의 기술적 한계와 규범적 한계를 구분하는 프레임워크와 "자동화의 역설" 논의가 연구자와 정책 입안자 모두에게 유용한 사고 틀을 제공한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

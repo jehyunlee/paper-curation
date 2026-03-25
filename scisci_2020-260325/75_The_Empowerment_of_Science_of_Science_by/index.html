@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Empowerment of Science of Science by Large Language Models: New Tools and Me</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>The Empowerment of Science of Science by Large Language Models: New Tools and Methods</h1>
+<blockquote>
+<p><strong>저자</strong>: Guoqiang Liang, Jingqian Gong, Mengxuan Li, Gege Lin, Shuo Zhang | <strong>날짜</strong>: 2025-11-19 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: 10.48550/arXiv.2511.15370</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>LLM의 핵심 기술(prompt engineering, RAG, fine-tuning, pre-training, tool learning)을 사용자 관점에서 체계적으로 정리하고, Science of Science(SciSci) 분야의 역사적 발전을 추적한 뒤, LLM이 SciSci에 적용될 수 있는 세 가지 방향 -- 과학적 인식(entity/relationship extraction을 통한 지식 그래프 구축), 과학적 평가(AI agent 기반), 과학적 예측(LLM 기반 multilayer network를 통한 research front 탐지) -- 을 제시하는 종합 리뷰 논문이다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>LLM이 NLP, 이미지 인식, 멀티모달 태스크에서 뛰어난 성능을 보이며 AGI로의 경로를 열고 있지만, SciSci(계량서지학/과학학) 분야에서의 활용 가능성은 체계적으로 탐구되지 않았다. SciSci는 전통적으로 인용 분석, 단어 빈도 분석, 통계 분석에 의존해 왔으나, BERT, GCN, 지식 그래프 등의 도입으로 방법론이 확장되고 있다. LLM의 비구조화 텍스트 처리 능력이 이 분야에 새로운 도구와 방법을 제공할 잠재력이 있다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>LLM 기술 체계화</strong>: 사용자 관점에서 prompt engineering → RAG(Naive/Advanced/Modular) → fine-tuning → pre-training → tool learning의 5단계 기술을 복잡도 순으로 정리. GPT 시리즈의 아키텍처 진화(GPT-1~GPT-4)를 파라미터/레이어/데이터 규모로 정량 비교</li>
+<li><strong>SciSci 역사 추적</strong>: 1960년대 SCI 도입부터 cumulative advantage, Matthew effect, invisible colleges를 거쳐, 복잡계 과학자/물리학자의 진입으로 GNN, multilayer network, hypergraph 방법론이 도입된 최근까지 개관</li>
+<li><strong>Scientific perception</strong>: LLM 기반 entity-relationship extraction 데모를 Kimi LLM + networkX로 구현. 전통적 co-word analysis 대비 의미 차원 정보가 풍부한 네트워크 구축 가능성 제시</li>
+<li><strong>Scientific evaluation</strong>: AI agent(= LLM + memory + function calling + tool usage) 기반 과학 평가 모델 제안. ChatGLM 기반 "transformative research evaluation AI agent"와 Dify 플랫폼 기반 설계 시연</li>
+<li><strong>Scientific forecasting</strong>: 5개 주요 LLM(GPT-4o, DeepSeek-V3 등) 비교 후, DeepSeek-V3로 Subject-Action-Object 구조 추출 및 PyMnet 기반 multilayer network를 통한 research front 예측 방법 제안</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>방법론</strong>: 종합 리뷰 + 간단한 데모/proof-of-concept 시연</li>
+<li><strong>Entity extraction demo</strong>: Kimi LLM API를 호출하여 비구조화 텍스트에서 entity triplet 추출, networkX로 시각화 (코드 GitHub 공개)</li>
+<li><strong>LLM 비교</strong>: GPT-4o, DeepSeek-V3, Gemini-Pro-1.5, Moonshoot-V1-8k, QwQ-32B-Preview를 input/output 비용, topic relevance, 처리 속도, context length 기준으로 비교</li>
+<li><strong>Research front 탐지</strong>: DeepSeek-V3로 논문에서 Subject-Action-Object 구조 추출 → PyMnet toolkit으로 multilayer network 구축 → 시각화</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>SciSci 분야 연구자를 대상으로 LLM 기술을 접근성 높게 정리한 교육적 가치가 있는 리뷰</li>
+<li>AI agent 기반 과학 평가라는 새로운 방향을 제안하고 초기 프로토타입을 시연</li>
+<li>LLM 기반 multilayer network를 통한 research front 탐지라는 구체적 방법론 제안</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>지면 제한으로 LLM의 SciSci 적용 가능성 중 많은 영역(full-text analysis, sentiment analysis, citation analysis 강화 등)이 미탐구</li>
+<li>AI agent의 효과가 아직 상당한 개선이 필요하다고 인정</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>전반적으로 깊이보다 폭에 치중한 리뷰. LLM 기술 소개 부분(Section 1)이 일반적인 교과서 수준이며 SciSci 연구자에게 특화된 통찰이 부족</li>
+<li>제시된 데모와 방법론(entity extraction, research front detection)이 매우 초보적이며 성능 평가(정확도, recall, 기존 방법론과의 비교)가 전혀 없음</li>
+<li>GPT-4 파라미터를 "1.76 trillion, 120 layers"로 기술하나 이는 검증되지 않은 루머 수준의 정보</li>
+<li>SciSciGPT(Shao et al., 2025)와 같은 동시대 관련 연구와의 비교가 전혀 없음</li>
+<li>영어 교정이 필요한 부분이 다수 존재하며(예: "milion" 오타), 전반적인 학술적 완성도가 낮음</li>
+<li>arXiv preprint으로 peer review를 거치지 않은 상태</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>LLM 기반 entity extraction의 정확도를 기존 NER/RE 방법론과 체계적으로 비교</li>
+<li>AI agent 기반 과학 평가의 신뢰성 검증(전문가 평가와의 일치도)</li>
+<li>Multilayer network 기반 research front 탐지의 정량적 검증(기존 co-citation cluster 방법론 대비)</li>
+<li>Full-text 분석, multimodal SciSci 등 미탐구 영역의 구체화</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span><span class="eval-badge">Technical Soundness: 2/5</span><span class="eval-badge">Significance: 2/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 2/5</span></div>
+<p><strong>총평</strong>: LLM 기술과 SciSci의 교차점을 폭넓게 조망하려는 시도는 의미 있으나, 기술 소개가 피상적이고, 제안된 방법론의 평가가 부재하며, 학술적 완성도가 낮아 현재 상태로는 분야에 대한 실질적 기여가 제한적이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

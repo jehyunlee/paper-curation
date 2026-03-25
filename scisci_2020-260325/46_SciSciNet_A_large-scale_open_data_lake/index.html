@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SciSciNet: A large-scale open data lake for the science of science research</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>SciSciNet: A large-scale open data lake for the science of science research</h1>
+<blockquote>
+<p><strong>저자</strong>: Zihang Lin, Yian Yin, Lu Liu, Dashun Wang | <strong>날짜</strong>: 2023-06-01 | <strong>Journal</strong>: Scientific Data | <strong>DOI</strong>: 10.1038/s41597-023-02198-9</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>과학학(science of science) 연구를 위한 통합 데이터 인프라를 어떻게 구축할 수 있는가? SciSciNet은 1억 3,400만 편 이상의 과학 출판물과 펀딩(NIH, NSF), 특허 인용, 임상시험, 미디어/소셜미디어 언급 등 수백만 개의 외부 연결을 포괄하는 대규모 오픈 데이터 레이크다. 전처리 단계와 분석 선택을 상세히 문서화하고, 자주 사용되는 지표(disruption index, novelty, interdisciplinarity 등)를 사전 계산하여 제공함으로써, 진입 장벽 낮추기, 중복 노력 감소, 재현성 향상, 아이디어 다양성 확대에 기여한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>과학학 커뮤니티는 급격히 성장하면서 세 가지 핵심 도전에 직면했다: (1) 산재한 데이터셋과 그 연결을 추적하기 어려움, (2) 복잡한 전처리에서 연구자마다 다른 분석 선택이 재현성을 저해, (3) 정교한 지표 계산에 상당한 시간·자원 투자가 필요. 공통 데이터 자원이 없어 이러한 문제가 중복적으로 발생하고 있었다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>1억 3,400만+ 출판물</strong> 메타데이터 통합 (OpenAlex/MAG 기반)</li>
+<li><strong>상류-하류 연결</strong>: NIH/NSF 펀딩 → 출판물 → 특허 인용, 임상시험, 미디어 언급</li>
+<li><strong>사전 계산 지표</strong>: disruption index(CD₅), novelty(Uzzi et al. z-score), interdisciplinarity(Rao-Stirling), 팀 크기, 경력 연차 등</li>
+<li><strong>상세 문서화</strong>: 전처리 단계, 분석 선택, 데이터 검증 방법을 투명하게 공개</li>
+<li><strong>커뮤니티 기여 모델</strong>: 연구자들이 새로운 지표와 데이터를 추가할 수 있는 구조</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>핵심 데이터</strong>: OpenAlex/MAG 기반 출판물, 저자, 기관, 저널 메타데이터</li>
+<li><strong>외부 연결</strong>: NIH RePORTER, NSF Awards, PatentsView, ClinicalTrials.gov, Altmetric</li>
+<li><strong>지표 계산</strong>: Python 기반 대규모 계산, 검증을 위한 기존 연구 재현</li>
+<li><strong>배포</strong>: 공개 다운로드, 정기 업데이트 예정</li>
+<li><strong>검증</strong>: 여러 기존 연구의 주요 발견을 SciSciNet 데이터로 재현</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>과학학 연구를 위한 <strong>최초의 포괄적 오픈 데이터 레이크</strong> — 출판물, 펀딩, 사회적 영향을 하나로 통합</li>
+<li>"데이터 인프라"로서 <strong>사전 계산 지표 + 교차 연결 + 커뮤니티 기여</strong>를 결합한 모델</li>
+<li>전처리와 분석 선택의 투명한 문서화로 <strong>재현성 표준</strong> 제시</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>OpenAlex/MAG의 메타데이터 품질에 의존</li>
+<li>모든 기존 데이터셋을 포괄하지 못함</li>
+<li>지표 계산의 특정 분석 선택이 모든 연구 질문에 최적이 아닐 수 있음</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>MAG 서비스 종료(2021) 이후 OpenAlex로의 전환이 데이터 연속성에 미치는 영향 불확실</li>
+<li>지표의 사전 계산이 오히려 "블랙박스" 사용을 조장할 위험 — 연구자가 지표의 한계를 인식하지 못할 수 있음</li>
+<li>업데이트 주기와 지속가능성에 대한 구체적 계획이 불명확</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Scopus/WoS 등 상업적 데이터와의 교차 검증</li>
+<li>실시간 또는 정기적 데이터 업데이트 체계 구축</li>
+<li>표준화된 API를 통한 프로그래밍적 접근 확대</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 5/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: 과학학 연구의 데이터 인프라를 혁신적으로 통합한 커뮤니티 자원으로, 분야의 재현성과 접근성을 근본적으로 개선할 잠재력을 가진다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SciSciGPT: advancing human–AI collaboration in the science of science</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>SciSciGPT: advancing human–AI collaboration in the science of science</h1>
+<blockquote>
+<p><strong>저자</strong>: Erzhuo Shao, Yifang Wang, Yifan Qian, Zhenyu Pan, Han Liu, Dashun Wang | <strong>날짜</strong>: 2025-12-09 | <strong>Journal</strong>: Nature Computational Science | <strong>DOI</strong>: 10.1038/s43588-025-00906-6</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>SciSciGPT는 Science of Science(SciSci) 분야를 테스트베드로 활용한 오픈소스 multi-agent AI 연구 협력자 프로토타입이다. 5개 전문 에이전트(ResearchManager, LiteratureSpecialist, DatabaseSpecialist, AnalyticsSpecialist, EvaluationSpecialist)로 구성되어, 문헌 검색부터 데이터 추출, 분석, 시각화, 자체 평가까지 복잡한 연구 워크플로우를 자동화한다. 탐색적 파일럿 연구에서 숙련 연구자 대비 약 10%의 시간으로 동등 이상 품질의 결과를 산출했다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>SciSci 분야는 대규모 학술 데이터셋의 증가와 계산 방법의 급속한 진화로 인해 기술적 진입 장벽이 높아지고 있다. 동시에 개별 전문성은 점점 좁아지고(burden of knowledge), 학제 간 협력의 필요성은 커지고 있다. LLM의 코드 생성, 도구 사용, 추론, 계획 능력이 급속히 발전하면서, 이를 도메인 특화 연구 도구로 통합할 가능성이 열렸다. 기존 LLM 기반 데이터 에이전트(TaskWeaver, DS-Agent 등)는 주로 ML 태스크에 초점을 맞추었으며, 특정 연구 도메인의 문헌/데이터/방법론을 통합한 연구 협력자는 부재했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>Multi-agent 아키텍처 설계</strong>: ResearchManager가 연구 질문을 분해하여 4개 전문 에이전트에 위임하는 계층적 구조. EvaluationSpecialist의 다층 자기평가(ToolEval, VisualEval, TaskEval)로 반복적 품질 개선</li>
+<li><strong>Case Study 1</strong>: Ivy League 대학 간 공동연구 네트워크를 단일 프롬프트로 데이터 추출, 네트워크 구축, 시각화까지 자동 완료. 반복적 시각화 개선(0.75→0.85 점수)</li>
+<li><strong>Case Study 2</strong>: Wu et al. (2019) Nature 논문의 주요 그림을 스크린샷 업로드 + 자연어 지시만으로 9백만+ 논문 데이터에서 재현. OLS regression, propensity score matching 등 후속 분석도 대화형으로 수행</li>
+<li><strong>파일럿 비교</strong>: 동일 과제에서 SciSciGPT가 연구자 평균 시간의 ~10%로 완료. 전문가 평가자 3명이 5개 차원 모두에서 SciSciGPT 산출물에 더 높은 점수 부여(예: overall effectiveness 4.3 vs 3.5-3.8)</li>
+<li><strong>LLM Agent Capability Maturity Model</strong> 제안: functional capabilities → workflow orchestration → memory architecture → human-AI interaction의 4단계 발전 로드맵</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터 인프라</strong>: SciSciNet(1,340만+ 논문, Google BigQuery 기반, 미국 논문 1,100만+으로 제한) + SciSciCorpus(SciSci 논문 벡터 DB, GROBID 파싱 + OpenAI embedding)</li>
+<li><strong>에이전트 구현</strong>: Anthropic Claude API 기반. Meta-prompting으로 구조화된 추론(XML 태그: thinking, step, reflection, answer, reward). 컨텍스트 메모리 관리로 장기 대화 효율화</li>
+<li><strong>도구</strong>: Python/R/Julia 샌드박스, SQL 쿼리(BigQuery), embedding 기반 이름 검색, HyDE를 활용한 문헌 RAG</li>
+<li><strong>평가</strong>: (1) 3명 연구자(pre-doc, doc, post-doc) vs SciSciGPT 비교 파일럿. 3명 post-doc 평가자가 5점 척도로 품질 평가. (2) 3명 전문가 반구조화 인터뷰(10분 워크스루 + 30분 탐색 + 60분 인터뷰)</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>도메인 특화 AI 연구 협력자</strong>의 최초 사례 중 하나: 문헌 이해, 데이터 추출, 분석, 시각화, 자체 평가를 하나의 대화형 시스템에 통합</li>
+<li>완전 자동화(AI Scientist 등)가 아닌 <strong>인간-AI 협업</strong> 패러다임을 명시적으로 설계 — 연구자가 탐색적 단계에서 주도권 유지</li>
+<li><strong>EvaluationSpecialist</strong>를 통한 다층 자기평가 메커니즘이 반복적 품질 개선을 가능하게 함</li>
+<li>LLM Agent Capability Maturity Model은 향후 AI 연구 도구 개발의 체계적 로드맵 제공</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>프로토타입이며, 평가가 탐색적(exploratory) 수준에 머무름. 체계적 벤치마크 부족</li>
+<li>데이터가 미국 논문으로 제한(SciSciNet의 ~10%). 데이터 최신성 유지 과제</li>
+<li>LLM의 비결정성(non-determinism)으로 동일 프롬프트에 대한 결과 변동 존재</li>
+<li>고급 통계 모델(예: ERGM) 구현 불가. AnalyticsSpecialist의 분석 선택이 분야 관행과 불일치하는 경우 존재</li>
+<li>과도한 문서화로 인한 인지 부하 문제(전문가 피드백)</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>파일럿 비교의 표본이 매우 작음(연구자 3명, 평가자 3명). 통계적 일반화 불가</li>
+<li>Case study가 비교적 단순한 탐색적 과제에 한정. 실제 연구 논문 수준의 복잡한 분석(예: causal inference, 패널 데이터 분석)에서의 성능은 미검증</li>
+<li>SciSci라는 특정 도메인에 최적화되어, 다른 도메인으로의 일반화 가능성은 주장되나 실증되지 않음</li>
+<li>신뢰(trust)와 검증 비용에 대한 논의가 제한적 — 전문가들이 "내 이름이 논문에 올라가는데" 불편함을 표현했으나, 이에 대한 구조적 해법이 부족</li>
+<li>상용 LLM API(Claude) 의존으로 인한 비용, 프라이버시, 재현성 우려</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>대규모 사용자 연구를 통한 체계적 효과 평가</li>
+<li>다른 계산 사회과학/데이터 집약적 도메인으로의 확장 실증</li>
+<li>강화학습 기반 post-training으로 도메인 특화 분석 능력 향상</li>
+<li>사용자 데이터 업로드 및 외부 DB 통합 기능 강화</li>
+<li>Run-to-run variability를 의도적으로 활용하는 "탐색적 연구 에이전트" 설계</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: SciSci 분야를 테스트베드로 한 도메인 특화 AI 연구 협력자의 설득력 있는 프로토타입으로, multi-agent 아키텍처와 자기평가 메커니즘이 잘 설계되었으나, 탐색적 평가에 머물러 실제 연구 현장에서의 효용성과 신뢰성에 대한 보다 엄격한 검증이 필요하다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

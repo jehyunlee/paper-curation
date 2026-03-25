@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Rise of Large Language Models and the Direction and Impact of US Federal Res</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>The Rise of Large Language Models and the Direction and Impact of US Federal Research Funding</h1>
+<blockquote>
+<p><strong>저자</strong>: Yifan Qian, Zhe Wen, Alexander C. Furnas, Yue Bai, Erzhuo Shao, Dashun Wang | <strong>날짜</strong>: 2026-01-21 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: 10.48550/arXiv.2601.15485</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>LLM 사용이 미국 연방 연구비(NSF/NIH) 제안서와 수상 과제에 급속히 확산되고 있으며, 이는 아이디어의 동질화, 선정 결과, 그리고 연구 산출물에 기관별로 상이한 영향을 미친다. LLM 활용도가 높은 제안서는 semantic distinctiveness가 4-5 percentile point 낮고, NIH에서는 LLM 사용이 선정 확률 ~4%p 증가 및 논문 산출 ~5% 증가와 연관되나 고인용 논문에는 효과가 없으며, NSF에서는 어떤 유의한 연관도 관측되지 않았다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>연방 연구비는 미국 과학 생태계의 방향, 다양성, 장기 영향을 결정하는 핵심 메커니즘이다. LLM이 과학 글쓰기에 급속히 확산되고 있지만, 이것이 공공 연구비 생태계를 어떻게 변화시키는지는 거의 알려져 있지 않다. 특히 미선정 제안서는 기밀이어서 대규모 연구가 불가능했다. LLM은 과학적 탐색을 확장할 잠재력과 동시에 기존 패턴으로의 수렴(exploitation 편향)을 야기할 우려를 모두 갖고 있어, 연구비 파이프라인에서의 실증적 증거가 시급하다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>급속한 확산</strong>: 2023년부터 NSF/NIH 모두에서 LLM 사용(α)이 급증. 개인 grant 수준에서 bimodal 분포(거의 미사용 vs 10-15% 수준의 실질적 사용)가 관측됨</li>
+<li><strong>아이디어 동질화</strong>: 4개 데이터셋(private/public x NSF/NIH) 모두에서, 동일 연구자 내에서도 LLM 활용이 높을수록 semantic distinctiveness가 유의하게 낮음(최근 선정 과제에 더 가까움). NSF award 기준 25th→75th percentile α 이동 시 ~5 percentile point 감소</li>
+<li><strong>기관별 차등 효과(선정)</strong>: NIH에서 LLM 사용은 선정 확률 ~4%p 증가와 유의하게 연관(investigator FE 포함). NSF에서는 유의한 관계 없음</li>
+<li><strong>기관별 차등 효과(산출)</strong>: NIH에서 높은 α는 ~5% 더 많은 논문 산출과 연관되나, top 5%/1% 고인용 논문에서는 효과 소멸. NSF에서는 논문 산출과 무관</li>
+<li>다양한 robustness check(promotional words 제거, L2 distance, logistic/negative binomial regression, 분야별/하위기관별 분석) 통과</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: (D1) 2개 R1 대학 NSF 제안서 1.6K건(기밀, funded+unfunded), (D2) NIH 제안서 4.1K건(기밀), (D3) NSF 공개 수상 57K건, (D4) NIH 공개 수상 74K건. 모두 2021-2025 start date</li>
+<li><strong>LLM 탐지</strong>: Liang et al. (2025)의 distributional LLM-quantification framework 적용. 2021년 human-written 초록과 GPT-3.5-turbo로 rewrite한 초록의 단어 분포 비교로 α(LLM-modified 문장 비율) 추정. Corpus-level 및 individual grant-level 추정</li>
+<li><strong>Semantic distinctiveness</strong>: SPECTER2 embedding으로 각 grant 초록과 동일 기관 전년도 선정 과제 초록 간 평균 cosine distance 계산, within-year percentile 변환</li>
+<li><strong>회귀 분석</strong>: OLS with investigator, field, year fixed effects + log(funding) 통제. Proposal success(binary), log(# papers + 1), log(# hit papers + 1) 등 종속변수. 표준오차는 investigator 수준 clustering</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>최초의 연구비 파이프라인 전체 분석</strong>: 미선정 제안서를 포함한 기밀 데이터와 공개 수상 데이터를 결합하여, 제안서 작성 → 선정 → 연구 산출까지 LLM의 영향을 추적한 최초의 대규모 실증 연구</li>
+<li><strong>"Communication vs Execution" bottleneck 가설</strong> 제시: LLM의 생산성 이득이 글쓰기(communication) 가속에 주로 작용하며, 연구 실행(execution) 제약은 해소하지 못한다는 중요한 이론적 프레임워크</li>
+<li>NSF와 NIH의 차등 효과를 통해 기관 구조와 심사 규범이 기술 도입의 결과를 어떻게 조절하는지 보여줌</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>α 측정이 초록 텍스트의 LLM 흔적만 포착하며, ideation, 문헌 합성, 실험 설계 등에서의 LLM 사용은 감지 불가</li>
+<li>관측 연구이므로 인과 관계 주장에 한계(investigator FE로 완화하나 완전한 인과 추론은 아님)</li>
+<li>고영향 연구는 장기간 후에 나타날 수 있어 현재 follow-up window(2023-2024 시작 과제)가 충분하지 않을 수 있음</li>
+<li>Publication count가 NSF 산출(소프트웨어, 데이터셋, 교육 등)보다 NIH 산출을 더 잘 포착할 수 있음</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>Private data가 2개 R1 대학에 한정되어 대표성에 한계. 소규모 기관, 비R1 대학, 비영어권 연구자에서의 패턴은 다를 수 있음</li>
+<li>LLM 탐지 방법이 GPT-3.5 기반인데, Claude, Gemini 등 다른 모델의 사용 패턴이 다를 수 있으며 탐지 정확도의 한계가 있음</li>
+<li>NIH에서의 선정률 증가와 논문 증가 사이의 기전이 명확하지 않음 — LLM이 제안서 품질을 높여서인지, 심사자의 편향을 이용한 것인지 구분 불가</li>
+<li>"아이디어 동질화"가 실제로 과학적 다양성 감소로 이어지는지에 대한 직접적 증거는 부족(semantic distance 감소 = 다양성 감소?)</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>LLM 사용의 인과 효과 추정을 위한 자연실험 또는 RCT 설계</li>
+<li>장기(5-10년) follow-up을 통한 고영향 연구 산출 분석</li>
+<li>심사자 측의 LLM 사용과 그 영향 분석</li>
+<li>비미국 기관 및 다양한 기관 유형에서의 재현 연구</li>
+<li>Exploration-exploitation trade-off의 정량적 측정과 최적 포트폴리오 거버넌스 설계</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: LLM이 미국 연방 연구비 생태계를 어떻게 변화시키고 있는지를 기밀 제안서 데이터와 공개 수상 데이터를 결합하여 체계적으로 분석한 선구적 연구로, 아이디어 동질화와 기관별 차등 효과라는 핵심 발견은 과학 정책에 즉각적 함의를 갖는다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
