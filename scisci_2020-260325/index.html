@@ -54,13 +54,13 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 .timeline-bar .bar-count { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; font-weight: 700; color: #A62018; }
 .timeline-summary { font-size: 0.9rem; color: #444; line-height: 1.6; }
 .timeline-summary p { margin: 0.5rem 0; }
-/* Topic groups */
+/* Topic groups — unified grayscale */
 .topic-group { margin-bottom: 1rem; }
-.topic-header { background: white; border-radius: 12px; padding: 0.8rem 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); user-select: none; }
-.topic-header:hover { background: #f8f8f8; }
-.topic-name { font-weight: 700; font-size: 1rem; flex: 1; }
-.topic-count { font-size: 0.8rem; color: #888; }
-.topic-toggle { font-size: 0.8rem; color: #888; transition: transform 0.2s; }
+.topic-header { background: #f5f5f5; border-radius: 12px; padding: 0.8rem 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; border-left: 4px solid #999; user-select: none; transition: background 0.15s; }
+.topic-header:hover { background: #ebebeb; }
+.topic-name { font-weight: 700; font-size: 1rem; flex: 1; color: #444; }
+.topic-count { font-size: 0.8rem; color: #888; background: #e0e0e0; padding: 0.15rem 0.5rem; border-radius: 10px; }
+.topic-toggle { font-size: 0.8rem; color: #999; transition: transform 0.2s; }
 .topic-body { padding: 0.5rem 0 0 0; }
 .topic-body.collapsed { display: none; }
 .paper-date { font-size: 0.75rem; color: #999; }
@@ -103,8 +103,8 @@ img.lazy.loaded { opacity: 1; }
   <div id="cards">
   
     <div class="topic-group" data-topic="Citation & Impact">
-      <div class="topic-header" onclick="toggleTopic('topic-0')" style="border-left:4px solid #D63423">
-        <span class="topic-name" style="color:#D63423">Citation & Impact</span>
+      <div class="topic-header" onclick="toggleTopic('topic-0')">
+        <span class="topic-name">Citation & Impact</span>
         <span class="topic-count">15편</span>
         <span class="topic-toggle" id="toggle-topic-0">▼</span>
       </div>
@@ -158,7 +158,7 @@ img.lazy.loaded { opacity: 1; }
           </div>
           <h3><a href="25_Authorship_titles_and_open_access_as_dr/index.html">Authorship, titles and open access as drivers of citation performance in orthopaedics: a scientometric analysis</a></h3>
           <p class="meta"><strong>저자</strong>: Filippo Migliorini, Raju Vaishya, Fabrizio Rivera, Jörg Eschweiler, Philipp Kobbe, Marcel Betsch, Francesco Oliva, Nicola Maffulli | <strong>날짜</strong>: 2026-03-20 | <strong>Journal</strong>: Journal of Orthopaedics and Traumatology | <strong>DOI</strong>: <a href="https://doi.org/10.1186/s10195-026-00911-z" target="_blank">10.1186/s10195-026-00911-z</a></p>
-          
+          <div class="paper-fig"><img data-src="25_Authorship_titles_and_open_access_as_dr/figures/fig1.png" alt="Figure" class="lazy"></div>
           <div class="section">
             <div class="section-label">Essence</div>
             <p>정형외과 연구에서 저자 수, 제목 특성, OA 여부가 인용 성과를 좌우하는가? 그렇다, 다만 효과 크기는 작다. 97,806편의 정형외과 논문(2010-2020)을 분석한 결과, 저자 1명 추가 시 연간 인용 +0.108회, OA 논문은 +0.175회/년의 이점을 보였다. 제목에 콜론(+0.314)이나 대시(+0.187)가 있으면 인용이 증가했으나, 물음표(-0.476)나 전체 대문자 사용(평균 0.71회/년)은 인용을 감소시켰다. 연구 설계별로는 네트워크 메타분석(6.64회/년)이 최고, 코멘터리(0.25회/년)가 최저였다.</p>
@@ -198,7 +198,7 @@ img.lazy.loaded { opacity: 1; }
           </div>
           <h3><a href="31_Introducing_multiverse_analysis_to_bibli/index.html">Introducing multiverse analysis to bibliometrics: The case of team size effects on disruptive research</a></h3>
           <p class="meta"><strong>저자</strong>: Christian Leibel, Lutz Bornmann | <strong>날짜</strong>: 2026-03-23 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/10.1162/qss.a.475" target="_blank">10.1162/qss.a.475</a></p>
-          
+          <div class="paper-fig"><img data-src="31_Introducing_multiverse_analysis_to_bibli/figures/fig1.png" alt="Figure" class="lazy"></div>
           <div class="section">
             <div class="section-label">Essence</div>
             <p>소규모 팀이 대규모 팀보다 더 파괴적인(disruptive) 연구를 생산한다는 Wu et al.(2019)의 발견은 모델 선택에 따라 얼마나 달라지는가? Multiverse 분석으로 모든 합리적인 모델 조합을 검증한 결과, 팀 크기가 disruption score에 미치는 **부정적 효과 자체는 강건**했다(모든 모델에서 음의 계수). 그러나 **효과 크기는 모델 사양에 따라 상당히 변동**하며, 특히 인용 인플레이션(citation inflation) 통제 여부와 disruption index 조작화 방식이 결과에 가장 큰 영향을 미쳤다.</p>
@@ -398,7 +398,7 @@ img.lazy.loaded { opacity: 1; }
           </div>
           <h3><a href="06_Updated_science-wide_author_databases_of/index.html">Updated science-wide author databases of standardized citation indicators</a></h3>
           <p class="meta"><strong>저자</strong>: John P. A. Ioannidis, Kevin W. Boyack, Jeroen Baas | <strong>날짜</strong>: 2020 | <strong>Journal</strong>: PLOS Biology | <strong>DOI</strong>: <a href="https://doi.org/10.1371/journal.pbio.3000918" target="_blank">10.1371/journal.pbio.3000918</a></p>
-          
+          <div class="paper-fig"><img data-src="06_Updated_science-wide_author_databases_of/figures/fig1.png" alt="Figure" class="lazy"></div>
           <div class="section">
             <div class="section-label">Essence</div>
             <p>Scopus 데이터(2020년 5월 6일 기준)를 활용하여, **전 분야 상위 10만 명** 및 **각 세부 분야(subfield) 상위 2%** 과학자의 표준화된 인용 지표 데이터베이스를 업데이트하였다. 경력 전체(career-long, ~2019년 말) 및 단일 연도(2019년) 두 가지 버전을 제공하며, 자기인용 포함/제외 복합 인용 지수(composite citation index)와 세부 분야 내 순위를 새로 추가했다.</p>
@@ -412,8 +412,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="AI & LLM in Science">
-      <div class="topic-header" onclick="toggleTopic('topic-1')" style="border-left:4px solid #E8833A">
-        <span class="topic-name" style="color:#E8833A">AI & LLM in Science</span>
+      <div class="topic-header" onclick="toggleTopic('topic-1')">
+        <span class="topic-name">AI & LLM in Science</span>
         <span class="topic-count">10편</span>
         <span class="topic-toggle" id="toggle-topic-1">▼</span>
       </div>
@@ -621,8 +621,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Science Mapping">
-      <div class="topic-header" onclick="toggleTopic('topic-2')" style="border-left:4px solid #2E86AB">
-        <span class="topic-name" style="color:#2E86AB">Science Mapping</span>
+      <div class="topic-header" onclick="toggleTopic('topic-2')">
+        <span class="topic-name">Science Mapping</span>
         <span class="topic-count">8편</span>
         <span class="topic-toggle" id="toggle-topic-2">▼</span>
       </div>
@@ -790,8 +790,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Collaboration & Teams">
-      <div class="topic-header" onclick="toggleTopic('topic-3')" style="border-left:4px solid #A23B72">
-        <span class="topic-name" style="color:#A23B72">Collaboration & Teams</span>
+      <div class="topic-header" onclick="toggleTopic('topic-3')">
+        <span class="topic-name">Collaboration & Teams</span>
         <span class="topic-count">8편</span>
         <span class="topic-toggle" id="toggle-topic-3">▼</span>
       </div>
@@ -959,8 +959,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Gender & Diversity">
-      <div class="topic-header" onclick="toggleTopic('topic-4')" style="border-left:4px solid #F18F01">
-        <span class="topic-name" style="color:#F18F01">Gender & Diversity</span>
+      <div class="topic-header" onclick="toggleTopic('topic-4')">
+        <span class="topic-name">Gender & Diversity</span>
         <span class="topic-count">7편</span>
         <span class="topic-toggle" id="toggle-topic-4">▼</span>
       </div>
@@ -1108,8 +1108,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Funding & Policy">
-      <div class="topic-header" onclick="toggleTopic('topic-5')" style="border-left:4px solid #C73E1D">
-        <span class="topic-name" style="color:#C73E1D">Funding & Policy</span>
+      <div class="topic-header" onclick="toggleTopic('topic-5')">
+        <span class="topic-name">Funding & Policy</span>
         <span class="topic-count">6편</span>
         <span class="topic-toggle" id="toggle-topic-5">▼</span>
       </div>
@@ -1123,7 +1123,7 @@ img.lazy.loaded { opacity: 1; }
           </div>
           <h3><a href="64_Partisan_disparities_in_the_funding_of_s/index.html">Partisan disparities in the funding of science in the United States</a></h3>
           <p class="meta"><strong>저자</strong>: Alexander C. Furnas, Nic Fishman, Leah Rosenstiel, Dashun Wang | <strong>날짜</strong>: 2025-09-18 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.adx5154" target="_blank">10.1126/science.adx5154</a></p>
-          
+          <div class="paper-fig"><img data-src="64_Partisan_disparities_in_the_funding_of_s/figures/fig1.png" alt="Figure" class="lazy"></div>
           <div class="section">
             <div class="section-label">Essence</div>
             <p>1980-2020년 미국 연방정부의 과학 연구비 세출(appropriations) 데이터를 분석한 결과, 공화당이 하원이나 대통령직을 장악했을 때 과학 연구비가 민주당보다 오히려 더 많이 배정되었다. 공화당 하원 통제 시 연방 과학 펀더당 연간 약 7천만 달러 추가 지출이 관찰되며, 이러한 차이는 국방부뿐 아니라 NIH, CDC, NASA, NSF 등 다수 기관에 걸쳐 나타났다. 다만 분야별 연구비 배분 비율은 정당 통제와 무관하게 일정했다.</p>
@@ -1223,7 +1223,7 @@ img.lazy.loaded { opacity: 1; }
           </div>
           <h3><a href="15_Coevolution_of_policy_and_science_during/index.html">Coevolution of Policy and Science During the Pandemic</a></h3>
           <p class="meta"><strong>저자</strong>: Yian Yin, Jian Gao, Benjamin F. Jones, Dashun Wang | <strong>날짜</strong>: 2021 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.abe3084" target="_blank">10.1126/science.abe3084</a></p>
-          
+          <div class="paper-fig"><img data-src="15_Coevolution_of_policy_and_science_during/figures/fig1.png" alt="Figure" class="lazy"></div>
           <div class="section">
             <div class="section-label">Essence</div>
             <p>COVID-19 팬데믹 기간 정책 문서는 최신의, 동료심사를 거친, 고영향력 과학 연구를 상당히 활용하고 있다. 정책 문서가 인용한 코로나 연구는 인용하지 않은 연구 대비 과학계 내 피인용이 평균 40배 높으며(67.72 vs. 1.67), 과학 인용의 19.9%가 2020년 출판물로 통상 대비 10배 이상 최신 과학에 의존한다. 그러나 과학의 활용은 기관 유형에 따라 불균등하며, WHO 등 국제기구(IGO)에 집중되어 있고 국가 정부는 간접적으로만 과학을 소비한다.</p>
@@ -1237,8 +1237,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Other">
-      <div class="topic-header" onclick="toggleTopic('topic-6')" style="border-left:4px solid #3B1F2B">
-        <span class="topic-name" style="color:#3B1F2B">Other</span>
+      <div class="topic-header" onclick="toggleTopic('topic-6')">
+        <span class="topic-name">Other</span>
         <span class="topic-count">5편</span>
         <span class="topic-toggle" id="toggle-topic-6">▼</span>
       </div>
@@ -1346,8 +1346,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Open Science & Data">
-      <div class="topic-header" onclick="toggleTopic('topic-7')" style="border-left:4px solid #44803F">
-        <span class="topic-name" style="color:#44803F">Open Science & Data</span>
+      <div class="topic-header" onclick="toggleTopic('topic-7')">
+        <span class="topic-name">Open Science & Data</span>
         <span class="topic-count">4편</span>
         <span class="topic-toggle" id="toggle-topic-7">▼</span>
       </div>
@@ -1435,8 +1435,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Science Communication">
-      <div class="topic-header" onclick="toggleTopic('topic-8')" style="border-left:4px solid #5B5EA6">
-        <span class="topic-name" style="color:#5B5EA6">Science Communication</span>
+      <div class="topic-header" onclick="toggleTopic('topic-8')">
+        <span class="topic-name">Science Communication</span>
         <span class="topic-count">3편</span>
         <span class="topic-toggle" id="toggle-topic-8">▼</span>
       </div>
@@ -1504,8 +1504,8 @@ img.lazy.loaded { opacity: 1; }
   </div></div>
 
     <div class="topic-group" data-topic="Research Evaluation">
-      <div class="topic-header" onclick="toggleTopic('topic-9')" style="border-left:4px solid #9B2335">
-        <span class="topic-name" style="color:#9B2335">Research Evaluation</span>
+      <div class="topic-header" onclick="toggleTopic('topic-9')">
+        <span class="topic-name">Research Evaluation</span>
         <span class="topic-count">1편</span>
         <span class="topic-toggle" id="toggle-topic-9">▼</span>
       </div>
