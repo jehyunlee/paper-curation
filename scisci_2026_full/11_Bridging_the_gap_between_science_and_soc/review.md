@@ -1,0 +1,51 @@
+# Bridging the Gap between Science and Society: Mapping Libraries' Strategies for Engaging in the Research Impact Process through Semantic Analysis
+
+> **저자**: Wang Zuorong, Sun Jiaxuan, He Shan, Deng Sanhong, Wang Hao | **날짜**: 2026 | **DOI**: https://doi.org/10.47989/ir31iConf64195
+
+---
+
+## 핵심 요약
+본 논문은 영국 Research Excellence Framework(REF)의 465개 사례를 분석하여, 도서관이 과학 연구의 사회적 영향(societal impact) 창출 과정에서 수행하는 역할과 전략을 체계적으로 규명한다. LLM과 BERTopic을 결합한 하이브리드 접근법으로 다섯 가지 핵심 전략을 도출하였으며, 도서관의 기여가 Arts and Humanities(76%) 분야와 문화적 영향(67%)에 집중되어 있음을 밝혔다.
+
+## 연구 배경 및 동기
+과학 연구의 사회적 가치는 학계 밖으로의 지식 확산에 크게 의존하지만, 기존 연구는 대학, 기업, 정부, 일반 대중 등 지식 생산자와 소비자에 주로 집중해 왔다. 도서관과 같은 knowledge broker(지식 중개 기관)의 역할은 체계적으로 분석되지 않았으며, 이러한 기관이 어떻게 디지털 격차를 해소하고 연구의 도달 범위를 확장하는지에 대한 이해가 부족했다.
+
+## 방법론
+- **데이터**: UKRI API를 통해 수집한 REF2014(6,637건) 및 REF2021(6,361건) impact case studies
+- **도서관 목록**: Library Technology 웹사이트에서 웹 스크래핑으로 수집한 글로벌 도서관 정보
+- **전략 추출**: 도서관명을 REF 사례의 SI/DI 섹션에 exact matching한 후, GPT-4o를 사용하여 도서관 참여 전략을 추출 (precision 84%, recall 76%)
+- **전략 요약**: BERTopic 모델링으로 16개 초기 토픽 클러스터를 도출하고, Silhouette Score 최적화(w_s=0.8, w_e=0.2)를 거쳐 수동 병합으로 5개 핵심 전략 도출
+
+## 주요 결과
+- 도서관이 참여한 465개 impact case 중 76%가 Arts and Humanities(Main Panel D) 분야에 집중
+- 영향 유형별로는 문화적 영향(67%)과 사회적 영향(22%)이 지배적
+- 다섯 가지 핵심 전략 식별:
+  1. **Media Outreach and Public Engagement**: 전통 미디어와 디지털 플랫폼을 통한 연구 콘텐츠 확산
+  2. **Public Dialogue and Cultural Presentation**: 공개 강연, 패널 토론, 문화 전시 기획
+  3. **Artistic Collaboration and Live Experiences**: 예술가 및 커뮤니티와의 협업을 통한 몰입형 경험 제공
+  4. **Digital Content Creation and Knowledge Dissemination**: 디지털 아카이브, 오픈 교육 자료 개발
+  5. **Major Events and Public Programming**: 국제 컨퍼런스, 전시회 등 대규모 공공 행사 기획
+
+## 독창성 및 기여
+- 도서관을 research impact 생태계의 knowledge broker로 체계적으로 위치시킨 최초의 실증 연구
+- LLM(GPT-4o)과 BERTopic을 결합한 하이브리드 텍스트 분석 방법론의 적용
+- REF 데이터를 활용한 evidence-based framework 제시로, 도서관의 사회적 기여를 정량화
+
+## 한계 및 향후 연구
+- **저자 언급 한계**: REF 사례 데이터의 word-length 제한으로 도서관 유형별 세분화된 분석이 어려움; 영국 REF에 한정된 데이터로 다른 지역으로의 일반화 필요
+- **추가 지적**:
+  - 도서관명의 exact matching만 사용하여 도서관 참여가 명시적으로 언급되지 않은 사례를 놓칠 가능성이 있음
+  - STEM 분야에서의 도서관 역할이 과소 대표되었을 가능성 (Arts and Humanities 76% 편중)
+  - LLM 추출의 precision(84%)과 recall(76%)이 높지 않아 일부 전략이 누락되었을 수 있음
+  - Silhouette Score가 0.1788로 매우 낮아 클러스터링 품질에 의문
+
+## 평가
+| 항목 | 점수 (1-5) |
+|------|-----------|
+| Novelty | 3 |
+| Technical Soundness | 3 |
+| Significance | 3 |
+| Clarity | 4 |
+| Overall | 3 |
+
+**총평**: 도서관의 research impact 기여를 체계적으로 분석한 흥미로운 시도이나, 영국 REF에 국한된 데이터와 낮은 클러스터링 품질, 그리고 Arts and Humanities 편중이라는 한계가 결론의 일반화 가능성을 제약한다.

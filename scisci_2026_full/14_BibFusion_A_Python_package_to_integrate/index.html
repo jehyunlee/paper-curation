@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BibFusion: A Python Package to Integrate, Deduplicate, and H</title>
+<style>
+body { font-family: -apple-system, 'Malgun Gothic', sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.7; color: #333; }
+h1 { color: #1a1a2e; font-size: 1.4rem; border-bottom: 2px solid #4472C4; padding-bottom: .5rem; }
+h2 { color: #2E74B5; margin-top: 1.5rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th, td { border: 1px solid #ddd; padding: 8px 12px; }
+th { background: #f5f5f5; }
+blockquote { border-left: 3px solid #4472C4; margin: 1rem 0; padding: 0.5rem 1rem; background: #f8f9fa; }
+a { color: #2E74B5; }
+.back { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; }
+</style></head><body>
+<h1>BibFusion: A Python Package to Integrate, Deduplicate, and Harmonize Exported Bibliographic Records from Scopus and Web of Science for Bibliometric Analysis</h1>
+<blockquote>
+<p><strong>저자</strong>: Angelo Britto, Sebastian Robledo, Martha Zuluaga | <strong>날짜</strong>: 2026-02-15 | <strong>DOI</strong>: 10.47909/ijsmc.342</p>
+</blockquote>
+<hr />
+<h2>핵심 요약</h2>
+<p>본 논문은 Scopus와 Web of Science(WoS)의 서지 데이터를 통합, 중복 제거, 정규화하여 분석 가능한 단일 코퍼스를 생성하는 Python 패키지 BibFusion을 소개한다. DOI 기반 1차 매칭과 보수적 fallback 전략, OpenAlex를 통한 식별자 보강, 그리고 canonical PersonID 기반 저자 동음이의어 해소를 핵심 기능으로 하며, 7개의 관계형 엔티티 테이블과 감사 추적(audit artifact)을 산출한다.</p>
+<h2>연구 배경 및 동기</h2>
+<p>Bibliometric 분석의 신뢰성은 서지 메타데이터의 일관성에 의존하지만, Scopus와 WoS는 coverage, export 구조, 필드 완전성에서 상이하여 중복, 저자명 변이, 불완전한 소속 정보, 비표준화된 인용 문자열 등의 문제를 야기한다. 기존 도구들(bibliometrix, VOSviewer, CiteSpace 등)은 데이터 시각화와 분석에 강점이 있으나, 크로스 데이터베이스 통합 전처리에서는 별도의 수작업이 필요했다. 특히 (i) 명시적 entity-relationship(ER) 모델로 통합 결과를 구조화하고, (ii) 병합/동음이의어 해소 결정을 감사 가능하게 문서화하는 도구가 부재했다.</p>
+<h2>방법론</h2>
+<ul>
+<li><strong>입력</strong>: Scopus CSV + WoS TXT (full record with cited references)</li>
+<li><strong>정규화</strong>: ASCII/대문자 표준화, SR/SR_ref 키 정리, 소속 파싱 및 국가 추출</li>
+<li><strong>OpenAlex 보강</strong> (선택적): DOI 기반 resolution으로 OpenAlex work ID, ORCID, OpenAlexAuthorID 복구</li>
+<li><strong>중복 제거</strong>: DOI-first matching cascade + 보수적 fallback (title-year-first author)</li>
+<li><strong>저자 동음이의어 해소</strong>: canonical PersonID 계층 (ORCID &gt; OpenAlexAuthorID &gt; normalized name)</li>
+<li><strong>인용 정리</strong>: malformed reference 필터링, SR/SR_ref 키 재매핑</li>
+<li><strong>저널 통합</strong>: ISSN/EISSN 규칙 기반 저널/Scimago 정보 병합</li>
+<li><strong>출력</strong>: 7개 관계형 CSV (Articles, Authors, ArticleAuthor, Citation, Affiliation, Journal, Scimagodb) + 감사 파일</li>
+<li><strong>시연</strong>: "entrepreneurial marketing" 검색으로 436개 원본 -&gt; 253개 고유 main works, 8,569개 통합 레코드</li>
+</ul>
+<h2>주요 결과</h2>
+<ul>
+<li>253개 main records 중 72.3%(183건)가 양 DB에 존재, 23.3% Scopus 전용, 4.3% WoS 전용</li>
+<li>Main records의 DOI 커버리지: 87% (양 DB 결합 시 98.9%)</li>
+<li>17,219명의 동음이의어 해소된 저자, 24,392개의 방향성 인용 엣지, 34,488개의 소속 인스턴스 생성</li>
+<li>DOI-first 전략으로 중복 인플레이션과 메타데이터 단편화를 효과적으로 감소</li>
+</ul>
+<h2>독창성 및 기여</h2>
+<ul>
+<li>Scopus-WoS 통합을 명시적 ER 모델로 구조화하여 7개의 관계형 엔티티로 출력하는 최초의 Python 패키지</li>
+<li>감사 추적(aliases, potential conflicts, merge logs)을 통한 투명성 확보 - 기존 도구 대비 차별점</li>
+<li>OpenAlex 기반 식별자 보강과 canonical PersonID 계층을 결합한 저자 동음이의어 해소</li>
+<li>Cited reference 수준의 정리와 재매핑으로 citation network 분석의 신뢰성 향상</li>
+</ul>
+<h2>한계 및 향후 연구</h2>
+<ul>
+<li><strong>저자 언급 한계</strong>: OpenAlex 보강은 DOI 유효성에 의존; 외부 API rate limit에 의한 대규모 처리 제약; ORCID/OpenAlexAuthorID 커버리지가 불완전한 경우 저자 동음이의어 해소 한계</li>
+<li><strong>추가 지적</strong>:</li>
+<li>"entrepreneurial marketing"이라는 단일 검색어로만 시연하여 다양한 분야에서의 일반화 검증 부족</li>
+<li>Scopus와 WoS 두 DB에만 한정 - Dimensions, Semantic Scholar 등 다른 DB와의 통합 미지원</li>
+<li>Title-year-first author fallback 매칭의 false positive/negative 비율에 대한 정량적 평가 부재</li>
+<li>논문이 지나치게 서술적(descriptive)이며, 기존 도구(bibliometrix의 mergeDbSources 등)와의 정량적 성능 비교 없음</li>
+<li>코드의 실제 사용 편의성(API 설계, 에러 처리 등)에 대한 논의 부족</li>
+</ul>
+<h2>평가</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>점수 (1-5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Technical Soundness</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Overall</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>총평</strong>: Scopus-WoS 통합의 실질적 필요성을 다루는 유용한 소프트웨어 기여이나, 단일 사례 시연에 그치고 기존 도구와의 정량적 비교가 없어 실질적 우위를 입증하지 못하며, 논문의 서술이 반복적이고 기술적 깊이가 부족하다.</p>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body></html>
