@@ -1,0 +1,295 @@
+### THEME 1: EQUITY & DIVERSITY IN SCIENCE
+**Timeline: 2020-2026 | Papers: 12 | Status: DIVERGING & ACCELERATING**
+
+**Origin (2020):** 
+- Foundational work on diversity-innovation paradox and gender inequality in scientific careers
+- Initial focus: demographic representation (gender, race) and career outcomes
+- 2 papers establishing baseline measurements
+
+**Development (2021-2022):**
+- **2021**: Intersectionality framework introduced (Intersectional inequalities in science)
+- Gender-diverse teams study expanded to 6.6M medicine papers
+- **Divergence point**: Research splits into three sub-streams:
+  - *Sub-stream A (Gender focus)*: Gender inequality, team composition effects
+  - *Sub-stream B (Intersectionality)*: Race-gender-field interactions
+  - *Sub-stream C (Career trajectories)*: Tenure effects, early-career setbacks
+
+**Recent Evolution (2023-2026):**
+- **2023**: Tenure and research trajectories (12,000+ professors, 15 fields)
+- **2025**: Early career setback study extends to sports domain (novel domain transfer)
+- **2026**: Authorship patterns in orthopedic surgery (field-specific application)
+- Stream width: ACCELERATING (5 papers in 2023-2026 vs 3 in 2020-2022)
+
+**Key Branching:**
+- Gender → Intersectionality → Interdisciplinary effects
+- Career stage → Tenure → Early-career setback → Long-term achievement
+
+---
+
+### THEME 2: RESEARCH INFRASTRUCTURE & DATA ECOSYSTEMS
+**Timeline: 2020-2026 | Papers: 11 | Status: CONVERGING & CONSOLIDATING**
+
+**Origin (2020):**
+- S2ORC corpus (81.1M papers, structured annotations)
+- Updated citation indicator databases (Scopus-based)
+- Foundation: Large-scale, open, standardized data
+
+**Development (2021-2022):**
+- **2021**: Science Mapping methodological review (comprehensive framework)
+- **2022**: OpenAlex launches as MAG successor (100% open alternative)
+- **Convergence point**: Multiple data sources begin integration
+  - Scopus + WoS + OpenAlex ecosystem emerges
+  - Citation standardization across platforms
+
+**Recent Evolution (2023-2026):**
+- **2023**: SciSciNet (integrated data lake: publications + funding + impact)
+- **2023**: Open biomedical map of science (FAIR principles)
+- **2024**: Comparative science mapping with metadata refinement
+- **2025**: Knowledge Organization Systems survey (45 KOS systems)
+- **2026**: BibFusion (Scopus-WoS-OpenAlex integration tool)
+- **2026**: OpenAlex metadata quality assessment
+
+**Convergence Pattern:**
+- Separate databases → Integrated ecosystems → Quality assurance protocols
+- Open data principle becomes dominant (MAG→OpenAlex transition)
+- Stream width: STABLE but DEEPENING (infrastructure maturation)
+
+**Key Integration Points:**
+- Citation data + Funding data + Altmetrics → Unified knowledge graph
+- Multiple identifier systems (DOI, ORCID, ROR) → Cross-platform linking
+
+---
+
+### THEME 3: SCIENTIFIC IMPACT & DISRUPTION MEASUREMENT
+**Timeline: 2020-2026 | Papers: 13 | Status: DIVERGING & EVOLVING**
+
+**Origin (2020):**
+- Citation inequality analysis (global scale, 400M+ authors)
+- Normalized inflation-corrected citation scores (nics metric)
+- Focus: Concentration of citations, inequality trends
+
+**Development (2021-2023):**
+- **2021**: Global citation inequality rising (Gini coefficient 0.65→0.70)
+- **2023**: Papers and patents becoming less disruptive (60M papers, 3.9M patents)
+- **Divergence point**: Two competing frameworks emerge:
+  - *Sub-stream A (Disruption)*: CD index, novelty metrics, breakthrough prediction
+  - *Sub-stream B (Public impact)*: Policy use, news coverage, patent citations
+  - *Sub-stream C (Social attention)*: Altmetrics, Twitter, public engagement
+
+**Recent Evolution (2024-2026):**
+- **2024**: Predicting breakthroughs via citation cascade dynamics (von Neumann entropy)
+- **2025**: Disruptive papers vs. technology/society impact (paradox finding)
+- **2025**: Novel papers and social attention (7 altmetric dimensions)
+- **2026**: Real-world evidence in drug pricing (policy impact measurement)
+- **2026**: Information pathways in online science communication
+
+**Key Divergence:**
+- Citation disruption → Novelty → Social attention (separate measurement streams)
+- Academic impact ≠ Public impact (fundamental distinction)
+- Stream width: ACCELERATING (6 papers in 2024-2026 vs 4 in 2020-2023)
+
+**Paradigm Shift (2025):**
+- Recognition that disruption ≠ societal impact (counterintuitive finding)
+- Shift from single metrics to multi-dimensional impact assessment
+
+---
+
+### THEME 4: COLLABORATION, MOBILITY & NETWORKS
+**Timeline: 2020-2026 | Papers: 11 | Status: DIVERGING**
+
+**Origin (2020):**
+- COVID-19 pandemic effects on scientists (unequal impacts by gender, care burden)
+- Foundational: Collaboration disruption measurement
+
+**Development (2021-2023):**
+- **2021**: Coevolution of policy and science during pandemic
+- **2023**: Scholar migration patterns (U-shaped relationship with GDP)
+- **2023**: Impacts of inter-institutional mobility on AI researchers
+- **2023**: Unsupervised embedding of trajectories (Word2vec-gravity model equivalence)
+- **Divergence point**: Three sub-streams crystallize:
+  - *Sub-stream A (Geographic mobility)*: International migration, brain drain
+  - *Sub-stream B (Institutional mobility)*: Academic→industry transitions
+  - *Sub-stream C (Collaboration networks)*: Remote vs. in-person effects
+
+**Recent Evolution (2024-2026):**
+- **2024**: Remote collaboration fuses fewer breakthrough ideas (28%→22% disruption)
+- **2024**: Atlas of Science Collaboration 1971-2020 (50-year evolution, 15 fields)
+- **2025**: US-China science collaboration divergence (convergence→divergence shift)
+- **2026**: Modeling changing scientific concepts with networks
+
+**Key Branching:**
+- Pandemic disruption → Remote collaboration effects → Breakthrough innovation loss
+- International migration → Institutional mobility → Knowledge flow asymmetry
+- Stream width: STEADY (consistent 2-3 papers per year)
+
+**Turning Point (2024-2025):**
+- Shift from pandemic-specific to structural collaboration analysis
+- Geopolitical dimension emerges (US-China divergence)
+
+---
+
+### THEME 5: FUNDING, POLICY & SCIENCE-SOCIETY INTERFACE
+**Timeline: 2020-2026 | Papers: 10 | Status: CONVERGING & ACCELERATING**
+
+**Origin (2020):**
+- Public use and public funding alignment (triangular alignment discovery)
+- Foundational: Science-policy linkage measurement
+
+**Development (2021-2023):**
+- **2021**: Coevolution of policy and science (COVID-19 case study)
+- **2023**: Rethink funding by putting lottery first (funding bias reduction)
+- **2023**: Forecasting AI research directions (research planning)
+- **Convergence point**: Funding mechanisms and policy impact merge
+  - Funding allocation → Research direction → Policy application
+
+**Recent Evolution (2024-2026):**
+- **2025**: Partisan disparities in US science funding (40-year appropriations analysis)
+- **2025**: Funding the Frontier (multi-dimensional impact visualization)
+- **2025**: Sci2Pol (science-to-policy brief generation with LLMs)
+- **2026**: Real-world evidence in drug pricing (policy decision-making)
+- **2026**: Physics knowledge in policy (selective use mechanisms)
+- **2026**: Rise of LLMs in US federal research funding
+
+**Convergence Pattern:**
+- Funding allocation → Research output → Policy adoption → Societal impact
+- Stream width: ACCELERATING (4 papers in 2024-2026 vs 2 in 2020-2023)
+
+**Paradigm Shift (2025-2026):**
+- LLM integration into funding analysis and policy translation
+- Explicit measurement of science-policy feedback loops
+
+---
+
+### THEME 6: AI, AUTOMATION & COMPUTATIONAL METHODS
+**Timeline: 2023-2026 | Papers: 14 | Status: EMERGES & RAPIDLY DIVERGING**
+
+**Origin (2023):**
+- Forecasting AI research with machine learning (143K arXiv papers)
+- Foundational: AI as tool for science of science analysis
+- 2 papers establishing computational approaches
+
+**Development (2024-2025):**
+- **2024**: Identifying interdisciplinary emergence (BERTopic + Eigenvector centrality)
+- **2024**: Hierarchical classification of research fields (Deep learning, 44 disciplines)
+- **2024**: Science as exploration in knowledge landscape (GIS framework transfer)
+- **2024**: Mapping scientific communities at scale (link filtering strategy)
+- **2025**: Mapping scientific research with knowledge graphs and LLMs
+- **2025**: Diachronic periodical embedding (journal trajectory analysis)
+- **2025**: AI-Driven Automation as foundation for SoS research (5-level automation hierarchy)
+- **Divergence point**: Multiple AI application streams emerge:
+  - *Sub-stream A (NLP/Embeddings)*: Topic modeling, semantic analysis, trajectory embedding
+  - *Sub-stream B (Knowledge graphs)*: Concept extraction, relationship mapping
+  - *Sub-stream C (Prediction)*: Breakthrough forecasting, impact prediction
+  - *Sub-stream D (Automation)*: Agent-based simulation, autonomous research
+
+**Recent Evolution (2025-2026):**
+- **2025**: SciSciGPT (multi-agent AI research collaborator)
+- **2025**: LLMs empowering SoS research (comprehensive review + new methods)
+- **2026**: Which stylistic features fool ChatGPT (LLM evaluation bias)
+- **2026**: Sci2Pol benchmark (LLM fine-tuning for policy translation)
+- **2026**: Rise of LLMs in federal research funding (proposal homogenization)
+
+**Rapid Divergence Pattern:**
+- Single AI tool (2023) → Multiple specialized applications (2024) → Integrated AI ecosystem (2025-2026)
+- Stream width: RAPIDLY ACCELERATING (14 papers in 3 years, 5+ per year in 2025-2026)
+
+**Paradigm Shift (2025):**
+- AI4SoS formally defined as new research field
+- Shift from "AI as analysis tool" to "AI as research collaborator"
+- Recognition of LLM limitations (stylistic bias, homogenization effects)
+
+---
+
+### THEME 7: SCIENCE MAPPING & KNOWLEDGE ORGANIZATION
+**Timeline: 2021-2026 | Papers: 9 | Status: EVOLVING & METHODOLOGICALLY DEEPENING**
+
+**Origin (2021):**
+- Science Mapping and Science Maps (comprehensive methodological review)
+- Foundational: Neutral framework for mapping approaches
+
+**Development (2023-2024):**
+- **2023**: When text mining meets science mapping (mathematical formalization)
+- **2023**: Introducing open biomedical map of science (FAIR principles)
+- **2024**: Comparative science mapping with metadata (strategic diagram extension)
+- **2024**: Mapping knowledge with topic analysis (compositional data analysis integration)
+- **Convergence point**: Mapping methods integrate with data analysis techniques
+  - Co-occurrence analysis + Metadata refinement + Compositional analysis
+
+**Recent Evolution (2025-2026):**
+- **2025**: Knowledge Organization Systems survey (45 KOS systems, 5D framework)
+- **2025**: What's in your field (functional role-based concept categorization)
+- **2026**: Rethinking thematic evolution (fuzzy membership, relational framework)
+- **2026**: Bridging gap between science and society (library strategies mapping)
+
+**Evolution Pattern:**
+- Static mapping (2021) → Dynamic mapping (2024) → Longitudinal thematic evolution (2026)
+- Stream width: STEADY but DEEPENING (methodological sophistication increases)
+
+**Key Methodological Advances:**
+- Co-word networks → Metadata-enriched networks → Fuzzy relational structures
+- Snapshot analysis → Temporal evolution → Conceptual structure shifts
+
+---
+
+## TEMPORAL FLOW & TURNING POINTS
+
+### 2020: Foundation Year
+- Infrastructure establishment (S2ORC, citation databases)
+- Equity issues emerge (diversity-innovation paradox)
+- **Stream count: 2 major streams**
+
+### 2021: Consolidation & Expansion
+- Infrastructure consolidates (OpenAlex planning)
+- Science mapping methodologies systematized
+- Policy-science linkage discovered
+- **Stream count: 4 major streams**
+
+### 2022: Diversification
+- OpenAlex launches (infrastructure convergence)
+- Gender-diverse teams study (large-scale validation)
+- Scholarly knowledge ecosystem review (meta-synthesis)
+- **Stream count: 5 major streams**
+
+### 2023: Acceleration & Emergence
+- **TURNING POINT**: AI/computational methods emerge as major theme
+- SciSciNet data lake (infrastructure maturation)
+- Scholar migration patterns (mobility research expands)
+- Disruption measurement becomes systematic
+- **Stream count: 6 major streams**
+
+### 2024: Methodological Innovation
+- **TURNING POINT**: Science mapping becomes computationally sophisticated
+- Collaboration atlas (50-year longitudinal analysis)
+- Breakthrough prediction via dynamic citation cascades
+- Interdisciplinary emergence identification
+- **Stream count: 6 major streams (all active)**
+
+### 2025: AI Integration & Paradigm Shift
+- **MAJOR TURNING POINT**: AI becomes integrated across all themes
+- AI4SoS formally defined as research field
+- LLM-based policy translation (Sci2Pol)
+- Science-policy feedback loops explicitly modeled
+- US-China collaboration divergence (geopolitical dimension)
+- **Stream count: 6 major streams + AI meta-layer**
+
+### 2026: Consolidation & Complexity
+- **TURNING POINT**: Integration of previously separate streams
+- Multiverse analysis applied to bibliometrics (methodological rigor)
+- LLM evaluation bias documented (critical assessment)
+- Metadata quality assurance (infrastructure maturation)
+- Online science communication ecosystem mapped
+- **Stream count: 6 major streams + AI integration + Critical assessment layer**
+
+---
+
+## STREAM WIDTH INDICATORS (Relative Paper Volume)
+
+| Theme | 2020-2021 | 2022-2023 | 2024-2025 | 2026 | Trend |
+|-------|-----------|-----------|-----------|------|-------|
+| Equity & Diversity | ▓▓ | ▓▓▓ | ▓▓▓▓ | ▓▓▓ | ACCELERATING |
+| Infrastructure | ▓▓▓ | ▓▓▓▓ | ▓▓▓ | ▓▓▓▓ | STABLE/DEEPENING |
+| Impact & Disruption | ▓▓ | ▓▓▓ | ▓▓▓▓ | ▓▓▓ | ACCELERATING |
+| Collaboration & Mobility | ▓▓ | ▓▓▓ | ▓▓▓ | ▓▓ | STEADY |
+| Funding & Policy | ▓ | ▓▓ | ▓▓▓▓ | ▓▓▓ | ACCELERATING |
+| AI & Automation | — | ▓▓ | ▓▓▓▓▓ | ▓▓▓▓ | RAPIDLY ACCELERATING |
+| Science Mapping | — | ▓
