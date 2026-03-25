@@ -8,24 +8,27 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
-h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2563EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2563EB; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+blockquote { border-left: 4px solid #2563EB; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 
 /* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-/* Compact evaluation table */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2563EB; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+td:last-child { text-align: center; font-weight: 600; color: #2563EB; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF0FF; color: #1D4ED8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
 pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
@@ -35,7 +38,7 @@ img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; t
 em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #2E74B5; }
+a { color: #1D4ED8; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -50,12 +53,14 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Zohreh Zahedi, Yanqing Zhang, Zekun Han, Er-Te Zheng, Zhichao Fang | <strong>날짜</strong>: 2026 | <strong>DOI</strong>: https://doi.org/10.1177/01655515261421164</p>
 </blockquote>
-<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr />
 <div class="section-box"><h2>핵심 요약</h2>
 <p>본 논문은 GRID, ROR, Overton 등 조직 데이터베이스와 Altmetric, Crossref Event Data 등 altmetric 데이터를 연계하여 학술 출판물을 트윗한 9,842개의 연구 및 정책 관련 조직 계정을 식별하고, 이들의 소셜미디어 자본(social media capital), 트윗 활동(tweeting activity), 참여 수준(engagement level)을 분석한 대규모 연구이다. 조직 계정은 개인 사용자 대비 팔로워 기반과 학술 트윗 비율에서 우위를 보이나, 인용(quote)이나 답글(reply) 등 대화형 참여에서는 약세를 보인다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
 </div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>소셜미디어 메트릭스(altmetrics) 분야에서 학술 커뮤니케이션에 참여하는 사용자 유형을 파악하는 것은 소셜미디어 주목도의 의미를 해석하는 데 핵심적이다. 기존 연구는 개인 연구자, 학술지, 봇 계정에 대한 오픈 데이터셋은 구축했으나, 조직(기관) 계정에 대한 체계적 데이터셋은 부재했다. 이는 조직이 학술 담론 형성에 기여하는 제도적 역할을 실증적으로 연구하는 데 제약이 되었다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
 </div><div class="section-box"><h2>방법론</h2>
 <ul>
 <li><strong>데이터</strong>: GRID(106,149개 조직), ROR(138,546개), Overton(2,244개)에서 총 111,280개 고유 조직 목록 구축. Altmetric과 CED에서 150,586,368건의 학술 트윗과 10,119,331개 트위터 계정 데이터 수집.</li>
@@ -64,6 +69,7 @@ a { color: #2E74B5; }
 <li><strong>지표</strong>: 소셜미디어 자본(팔로워/팔로잉), 트윗 활동(연간 트윗, 학술 트윗, 독창성 비율, 학술 집중도), 참여 수준(평균 좋아요, 리트윗, 인용, 답글) 등 3차원 9개 지표.</li>
 <li><strong>분석</strong>: 전체 10,119,331개 계정 대비 백분위 순위(percentile rank) 산출.</li>
 </ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
 </div><div class="section-box"><h2>주요 결과</h2>
 <ul>
 <li>조직 계정은 전체 트위터 사용자 대비 팔로워 수에서 상위 10% 이내에 위치하며, 학술 트윗 비율과 독창적 콘텐츠 비율이 높다.</li>
@@ -85,36 +91,7 @@ a { color: #2E74B5; }
 <li><strong>추가 지적</strong>: 2023년 3월 시점의 트위터 데이터에 기반하여, 이후 X 플랫폼의 API 제한과 사용자 이탈이 결과의 현재 적용가능성을 제한할 수 있다. 또한 조직 계정의 트윗이 실제로 정책 결정이나 대중의 과학 이해에 미치는 영향에 대한 인과적 분석이 필요하다. 매칭 과정에서의 false positive/negative 비율에 대한 보다 체계적 평가도 향후 연구에서 보완되어야 한다.</li>
 </ul>
 </div><div class="section-box"><h2>평가</h2>
-<table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수 (1-5)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4</td>
-</tr>
-</tbody>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4</span><span class="eval-badge">Technical Soundness: 4</span><span class="eval-badge">Significance: 3</span><span class="eval-badge">Clarity: 5</span><span class="eval-badge">Overall: 4</span></div>
 <p><strong>총평</strong>: 학술 커뮤니케이션에 참여하는 조직 계정에 대한 체계적 데이터셋과 방법론을 최초로 제시한 의미 있는 연구이나, 트위터 플랫폼의 급격한 변화로 인해 결과의 시의성에 대한 고려가 필요하며, 기술적 분석(descriptive analysis)에 머물러 인과적 메커니즘에 대한 탐구가 부족하다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

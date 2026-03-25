@@ -8,24 +8,27 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
-h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2563EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2563EB; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+blockquote { border-left: 4px solid #2563EB; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 
 /* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-/* Compact evaluation table */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2563EB; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+td:last-child { text-align: center; font-weight: 600; color: #2563EB; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF0FF; color: #1D4ED8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
 pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
@@ -35,7 +38,7 @@ img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; t
 em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #2E74B5; }
+a { color: #1D4ED8; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -50,18 +53,21 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Sunwoo Lee, Wonsik Shim | <strong>날짜</strong>: 2026 | <strong>DOI</strong>: https://doi.org/10.47989/ir31iConf64133</p>
 </blockquote>
-<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr />
 <div class="section-box"><h2>핵심 요약</h2>
 <p>본 연구는 Web of Science에서 수집한 109,759편의 문헌정보학(LIS) 분야 학술 논문(2001-2024)을 분석하여, OA(Open Access) 논문의 인용 우위(citation advantage)가 LIS 분야에서는 조건부적(conditional)임을 밝혔다. 전체적으로 Non-OA 논문이 OA 논문보다 약간 더 높은 평균 인용(18.83 vs. 17.90)을 받았으나 효과 크기는 극히 미미하며, OA 유형별로는 Green OA가 가장 높은 인용(28.55)을 보였고, OA 인용 우위는 시간이 지남에 따라 크게 감소하고 있다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
 </div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>OA의 인용 우위(citation advantage)는 Eysenbach(2006) 이래 학술 커뮤니케이션의 핵심 논제였으나, 최근 연구들은 이 우위가 분야, 방법론, OA 유형에 따라 크게 달라짐을 보고하고 있다. 의학 및 생명과학 분야에서는 상대적으로 긍정적 결과가 보고되었으나, LIS 분야에서의 OA 인용 효과에 대한 실증 연구는 매우 부족했다. Khan et al.(2023)은 LIS 분야에서 Non-OA 저널이 더 높은 인용 영향력을 가진다고 보고하여, 분야별 심층 분석의 필요성이 제기되었다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
 </div><div class="section-box"><h2>방법론</h2>
 <ul>
 <li><strong>데이터</strong>: WoS Core Collection에서 Information Science &amp; Library Science 분야, 2001-2024년 학술지 논문(document type='J') 수집. 초기 426,090건에서 JCR quartile 매핑, Library Journal 제외, 인용 이상치 제거를 거쳐 최종 109,759건 분석.</li>
 <li><strong>변수</strong>: 독립변수 -- OA 상태(이진), OA 유형(Gold, Green, Hybrid, Bronze), 출판연도, WoS 분류(단일/다학제), JIF quartile. 종속변수 -- WoS Core 피인용 횟수.</li>
 <li><strong>분석 방법</strong>: Shapiro-Wilk 정규성 검정, Levene 등분산 검정, Welch t-test, Mann-Whitney U test, one-way ANOVA, Kruskal-Wallis test, Tukey HSD 사후검정, Cohen's d 효과크기 산출, 시계열 분석(5년 구간).</li>
 </ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
 </div><div class="section-box"><h2>주요 결과</h2>
 <ul>
 <li><strong>OA vs. Non-OA 전체</strong>: Non-OA(평균 18.83) &gt; OA(평균 17.90), 통계적으로 유의하나 Cohen's d = -0.024로 실질적 의미 없음.</li>
@@ -70,6 +76,7 @@ a { color: #2E74B5; }
 <li><strong>시간적 추이</strong>: OA 인용 우위가 2001-2004년 9.75건에서 2020-2024년 0.74건으로 13배 감소. Cohen's d도 0.196에서 0.029-0.039으로 하락.</li>
 <li><strong>저널 품질별</strong>: Q1, Q2 저널에서는 Non-OA가 유의하게 더 높은 인용, Q3, Q4에서는 OA가 미미하게 높으나 통계적 비유의.</li>
 </ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
 </div><div class="section-box"><h2>독창성 및 기여</h2>
 <ul>
 <li>LIS 분야에 특화된 OA 인용 효과의 <strong>포괄적 실증 분석</strong>으로, OA 유형, 학제간 범위, 시간적 추이, 저널 품질을 다차원적으로 검토.</li>
@@ -83,36 +90,7 @@ a { color: #2E74B5; }
 <li><strong>추가 지적</strong>: (1) 인용 횟수만을 종속변수로 사용하여 altmetrics, 다운로드 등 대안적 영향력 지표 미포함. (2) Self-selection bias -- 높은 품질의 논문이 Green OA로 아카이빙될 가능성을 통제하지 않음. (3) 인용 축적 시간(citation window)이 최근 출판물에 불리하게 작용하는 문제를 5년 구간 분석으로 부분적으로만 해결. (4) 개별 논문 수준의 인용 영향 요인(저자 명성, 연구 주제 인기도 등)에 대한 다변량 통제 미실시. (5) WoS의 OA 유형 분류 정확도에 대한 검증 없이 그대로 사용.</li>
 </ul>
 </div><div class="section-box"><h2>평가</h2>
-<table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수 (1-5)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>3</td>
-</tr>
-</tbody>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3</span><span class="eval-badge">Technical Soundness: 3</span><span class="eval-badge">Significance: 3</span><span class="eval-badge">Clarity: 4</span><span class="eval-badge">Overall: 3</span></div>
 <p><strong>총평</strong>: LIS 분야의 OA 인용 효과를 다각도로 분석한 유용한 기여이나, self-selection bias 등 핵심 교란변수의 미통제와 비교적 단순한 통계 분석(회귀 모델 없이 t-test/ANOVA 중심)으로 인해 분석적 깊이가 제한적이다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

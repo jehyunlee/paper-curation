@@ -8,24 +8,27 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
-h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2563EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2563EB; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+blockquote { border-left: 4px solid #2563EB; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 
 /* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-/* Compact evaluation table */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2563EB; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+td:last-child { text-align: center; font-weight: 600; color: #2563EB; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF0FF; color: #1D4ED8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
 pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
@@ -35,7 +38,7 @@ img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; t
 em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #2E74B5; }
+a { color: #1D4ED8; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -50,12 +53,14 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Minsu Park, Suman Kalyan Maity, Stefan Wuchty, Dashun Wang | <strong>날짜</strong>: 2026 (Advance access: 6 March 2026) | <strong>DOI</strong>: https://doi.org/10.1093/pnasnexus/pgag057</p>
 </blockquote>
-<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr />
 <div class="section-box"><h2>핵심 요약</h2>
 <p>본 논문은 26개국 164개 펀딩 기관의 350,000건 연구비와 이로부터 산출된 130만 편의 논문(1985-2009)을 분석하여, 학제간(interdisciplinary) 연구비가 의도대로 학제간 논문을 생산하지만, 그 영향력(impact)은 오히려 분과학문적(disciplinary) 연구비에 의해 지원된 학제간 논문에 비해 현저히 낮음을 발견했다. 깊은 분과학문적 기반(disciplinary anchor)을 가진 연구비가 지원한 학제간 논문이 자기 분야 내부와 외부 모두에서 불균형적으로 높은 인용을 획득한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
 </div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>학제간 연구는 혁신의 온상이자 복잡한 사회적 도전을 해결하는 핵심 접근법으로 인식되어, 펀딩 기관과 정책 입안자들은 학제간 연구비 프로그램을 점점 더 강조하고 있다. 그러나 학제간 연구비가 실제로 높은 영향력의 학제간 연구 성과를 산출하는지에 대한 체계적 이해는 부족했다. 기존 연구는 논문의 학제간성 측정과 연구비의 연구 성과 분석을 각각 독립적으로 진행해왔으나, 연구비의 학제간성과 논문의 영향력 간 관계를 통합적으로 분석하는 프레임워크가 결여되어 있었다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
 </div><div class="section-box"><h2>방법론</h2>
 <ul>
 <li><strong>데이터</strong>: Dimensions 데이터베이스에서 350,526건 연구비와 1,293,934편 논문 추출. Microsoft Academic Graph(MAG)와 병합하여 초록, 분야 레이블, 참고문헌/인용 정보 확보.</li>
@@ -65,6 +70,7 @@ a { color: #2E74B5; }
 <li><strong>영향력 측정</strong>: Hit rate(해당 분야와 연도에서 상위 5% 인용 논문에 속할 확률).</li>
 <li><strong>검증</strong>: Human rating, out-of-sample prediction, 다양한 펀딩 기관/시기/분야/국가별 robustness check 수행.</li>
 </ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
 </div><div class="section-box"><h2>주요 결과</h2>
 <ul>
 <li>학제간 연구비는 의도대로 학제간 논문을 생산하나, 평균적으로 더 적은 수의 논문을 산출한다.</li>
@@ -87,36 +93,7 @@ a { color: #2E74B5; }
 <li><strong>추가 지적</strong>: 분석 기간이 1985-2009년으로 상당히 오래되었으며, 최근의 학제간 연구 지원 정책 변화와 과학 생태계 변화를 반영하지 못한다. MAG 데이터의 분야 분류 정확성에 전체 분석이 의존하므로, 분류 오류의 영향에 대한 민감도 분석이 필요하다. 또한 "disciplinary anchor"가 연구비 수준에서의 학제간성인지 연구팀의 전문성 깊이인지 구분할 수 없어 메커니즘 해석에 한계가 있다.</li>
 </ul>
 </div><div class="section-box"><h2>평가</h2>
-<table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수 (1-5)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5</td>
-</tr>
-</tbody>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5</span><span class="eval-badge">Technical Soundness: 4</span><span class="eval-badge">Significance: 5</span><span class="eval-badge">Clarity: 5</span><span class="eval-badge">Overall: 5</span></div>
 <p><strong>총평</strong>: 학제간 연구비의 효과에 대한 통념을 대규모 데이터로 정면 도전한 매우 중요한 연구로, "분과학문적 연구비가 지원한 학제간 논문이 가장 높은 영향력을 획득한다"는 반직관적이면서도 강건한(robust) 발견은 과학정책에 실질적 함의를 가진다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

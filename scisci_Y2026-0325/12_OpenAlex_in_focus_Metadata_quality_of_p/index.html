@@ -8,24 +8,27 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
-h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #4472C4; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #4472C4; margin: 0 0 0.6rem; padding: 0; border: none; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Malgun Gothic', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2563EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2563EB; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; }
-blockquote { border-left: 4px solid #4472C4; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+blockquote { border-left: 4px solid #2563EB; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 
 /* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-/* Compact evaluation table */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 12px; text-align: left; }
-th { background: #4472C4; color: white; font-weight: 600; font-size: 0.82rem; }
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2563EB; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
-td:last-child { text-align: center; font-weight: 600; color: #4472C4; }
+td:last-child { text-align: center; font-weight: 600; color: #2563EB; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF0FF; color: #1D4ED8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
 pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
@@ -35,7 +38,7 @@ img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; t
 em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #2E74B5; }
+a { color: #1D4ED8; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -50,10 +53,11 @@ a { color: #2E74B5; }
 <blockquote>
 <p><strong>저자</strong>: Guleda Dogan, Ayca Nur Sezen | <strong>날짜</strong>: 2026 | <strong>DOI</strong>: https://doi.org/10.47989/ir31iConf64207</p>
 </blockquote>
-<div class="review-fig"><img src="figures/fig1.png" alt="Representative Figure"><p class="fig-caption">Representative Figure</p></div>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr />
 <div class="section-box"><h2>핵심 요약</h2>
 <p>본 논문은 OpenAlex의 메타데이터 품질을, publication type과 language 필드를 중심으로 실증적으로 검증한다. Open peer review 관련 6,640개 레코드를 수동 검증한 결과, 43%에서 publication type 불일치, 3.3%에서 language 불일치가 발견되었으며, OpenAlex가 이질적인 문서 유형을 'Article'로 과도하게 분류하는 구조적 경향을 밝혔다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
 </div><div class="section-box"><h2>연구 배경 및 동기</h2>
 <p>OpenAlex는 2022년 Microsoft Academic Graph(MAG)의 후속으로 출시된 무료 개방형 서지 데이터베이스로, bibliometric 연구와 scholarly communication 연구에 널리 사용된다. 그러나 기존 연구들이 OpenAlex의 institutional affiliation 누락, open access 상태 불일치, retracted publication 분류 오류 등의 메타데이터 한계를 보고해 왔다. Publication type과 language는 bibliometric 분석과 systematic review에서 필터링 및 eligibility 판단의 핵심 요소이므로, 이 필드의 정확성 검증이 필요했다.</p>
 </div><div class="section-box"><h2>방법론</h2>
@@ -87,36 +91,7 @@ a { color: #2E74B5; }
 <li>2024년 10월 OpenAlex rewrite 이후 개선 사항이 반영되지 않아 현재 시점의 타당성 확인 필요</li>
 </ul>
 </div><div class="section-box"><h2>평가</h2>
-<table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수 (1-5)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>3</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4</td>
-</tr>
-</tbody>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3</span><span class="eval-badge">Technical Soundness: 4</span><span class="eval-badge">Significance: 4</span><span class="eval-badge">Clarity: 4</span><span class="eval-badge">Overall: 4</span></div>
 <p><strong>총평</strong>: OpenAlex 메타데이터의 publication type 오류를 대규모 수동 검증으로 실증한 가치 있는 연구로, bibliometric 연구자들에게 데이터 전처리의 중요성을 환기시키며, 특히 43%라는 높은 불일치율은 OpenAlex 사용자들에게 실질적 경고를 제공한다.</p></div>
 <div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
