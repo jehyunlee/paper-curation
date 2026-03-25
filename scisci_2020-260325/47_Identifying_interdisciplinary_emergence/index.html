@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Identifying interdisciplinary emergence in the science of science: combination o</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Identifying interdisciplinary emergence in the science of science: combination of network analysis and BERTopic</h1>
+<blockquote>
+<p><strong>저자</strong>: Keungoui Kim, Dieter F. Kogler, Sira Maliphol | <strong>날짜</strong>: 2024-05-10 | <strong>Journal</strong>: Humanities and Social Sciences Communications | <strong>DOI</strong>: 10.1057/s41599-024-03044-y</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>네트워크 분석(Eigenvector centrality)과 BERTopic을 결합하여 글로벌 학제간 과학의 emergence를 식별하는 새로운 방법론을 제시한다. Web of Science 메타데이터 약 745만 건(2012-2017) 중 학제간 논문 119만여 건을 분석한 결과, dominant science와 growing science가 명확히 구분되며, growing-science의 Eigenvector centrality는 다음 기간에 평균 0.348로 기타(0.093) 대비 약 3.7배 높은 값을 보여, 성장하는 학제간 분야가 실제로 영향력이 커짐을 확인했다. 주요 emerging topic으로 green technology와 health-related technology가 전 학제간 카테고리에서 공통적으로 나타났다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>기존 지식</strong>: Science map과 bibliometric 분석은 과학 emergence를 탐지하는 데 널리 사용되어 왔으며, 빈도 기반 topic modeling(LDA 등)이 주요 도구였다.</li>
+<li><strong>한계/격차</strong>: 기존 연구는 (1) 특정 저널/분야에 한정된 local map에 집중하여 글로벌 맥락을 놓치고, (2) 빈도 기반 방법은 canonical bias에 취약하며 문맥을 무시하고, (3) 사전 정의된 주제 범위 내에서만 emergence를 탐지해 학제간 경계 변화를 포착하지 못했다.</li>
+<li><strong>접근</strong>: Schumpeterian knowledge recombination 관점에서 WoS 과학 카테고리 간 co-occurrence network를 구축하고, Eigenvector centrality의 성장률로 emerging field를 정의한 뒤, BERTopic(BERT embedding + UMAP + HDBSCAN + c-TF-IDF)으로 해당 분야의 latent topic을 비지도 학습으로 추출한다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>글로벌 학제간 과학 지도 구축</strong>: LSB-TE, LSB-PS, PS-TE, LSB-PS-TE 4개 학제간 분야에서 172개 subject, 1,137개 저널, 119만여 편의 네트워크를 생성</li>
+<li><strong>Dominant vs. Growing science의 명확한 구분</strong>: EIG 상위 10%와 EIG 성장률 상위 10%로 분류한 결과, 두 그룹이 거의 겹치지 않으며 growing-science가 다음 기간에 실제 영향력 증가 확인(평균 EIG 0.348 vs. 0.093)</li>
+<li><strong>BERTopic 기반 emerging topic 식별</strong>: 4개 학제간 분야에서 총 11개 주요 토픽 도출 (예: PS-TE의 수처리용 흡착/멤브레인, LSB-TE의 천연섬유 재료 등)</li>
+<li><strong>Green &amp; health technology의 범분야적 emergence 발견</strong>: "Green &amp; Sustainable Science &amp; Technology"가 dominant과 growing 양쪽에 동시 출현하여 사회적 영향력이 큰 분야로 확인</li>
+<li><strong>질적 검증(qualitative validation)</strong>: 대표 논문 분석을 통해 BERTopic 결과가 비전문가에게도 해석 가능한 수준임을 확인</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Web of Science Core Collection, 2012-2017년 STEM 분야 journal article, 약 745만 건 중 학제간(2개 이상 subheading) 119만 건 필터링</li>
+<li><strong>방법</strong>:</li>
+<li>Stage 1: 과학 카테고리-주제 co-occurrence network 구축 → Eigenvector centrality(EIG) 측정 → EIG 및 EIG 성장률 상위 10%로 dominant/growing science 분류</li>
+<li>Stage 2: Growing science 논문 필터링 → BERTopic 적용 (all-MiniLM-L6-v2 embedding, UMAP 차원 축소, HDBSCAN 클러스터링, c-TF-IDF 토픽 생성)</li>
+<li>Hyperparameter 최적화: n-gram range, topic 수, minimum topic size를 random search로 탐색, information entropy 최소화 기준</li>
+<li>질적 검증: 토픽별 대표 논문 3편씩 수작업 분석</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>Eigenvector centrality를 학제간 emergence의 <strong>영향력 지표</strong>로 사용한 최초 시도로, 기존 빈도/다양성 기반(Rao-Stirling diversity 등) 접근과 차별화</li>
+<li>BERTopic을 글로벌 학제간 과학 데이터셋에 적용한 초기 사례로, embedding 기반 topic modeling이 문맥 정보를 보존하면서 대규모 bibliometric 분석에 유효함을 입증</li>
+<li>Dominant science와 growing science를 개념적으로 분리하여, 이미 확립된 분야 vs. 미래 영향력이 커질 분야를 구분하는 프레임워크 제시</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>자동 생성된 토픽 수가 적어 추가 emerging topic이 존재할 가능성</li>
+<li>WoS journal article에 한정되어 사회 혁신이나 비STEM 분야의 학제간성 미반영</li>
+<li>NLP 접근에 상당한 연산 자원 필요, 일상적 정책 활용에 장벽</li>
+<li>San Francisco Declaration on Research Assessment 관점에서 보다 광범위한 impact 측정 필요</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li><strong>EIG 상위 10% 임계값의 자의성</strong>: 임계값 변경에 따른 결과 민감도 분석(sensitivity analysis)이 부재하여, 10%라는 기준의 robustness가 검증되지 않음</li>
+<li><strong>시간 해상도 한계</strong>: 3년 단위 2개 기간(2012-2014, 2015-2017)만 비교하여 emergence의 동적 궤적 추적이 어렵고, 일시적 변동 vs. 지속적 성장 구분 불가</li>
+<li><strong>인과적 설명 부재</strong>: Growing science가 '왜' 성장하는지에 대한 분석 없이 네트워크 구조 변화만 기술</li>
+<li><strong>BERTopic 토픽 수 제한</strong>: LSB-PS-TE의 경우 904편으로 2개 토픽만 도출되어 해석의 세밀함이 부족</li>
+<li><strong>비교 대상 부재</strong>: LDA 등 기존 topic modeling과의 체계적 비교 실험이 없어 BERTopic의 상대적 우위를 정량적으로 평가하기 어려움</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>시계열 확장을 통한 Dynamic BERTopic 적용으로 토픽 진화 궤적 추적</li>
+<li>Recursive clustering을 활용한 다단계 토픽 세분화</li>
+<li>인용 네트워크와 결합하여 emerging topic의 실제 scientific impact 측정</li>
+<li>사회과학/인문학 포함 전 학문 분야로 확장</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 3/5</span></div>
+<p><strong>총평</strong>: 네트워크 중심성과 BERTopic을 결합하여 글로벌 학제간 emergence를 탐지하는 독창적 프레임워크를 제시했으나, 임계값 민감도 분석 부재, 제한된 시간 범위, 기존 방법론과의 비교 실험 결여로 방법론적 엄밀성이 다소 부족하다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

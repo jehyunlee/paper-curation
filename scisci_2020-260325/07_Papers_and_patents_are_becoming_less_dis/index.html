@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Papers and patents are becoming less disruptive over time</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Papers and patents are becoming less disruptive over time</h1>
+<blockquote>
+<p><strong>저자</strong>: Michael Park, Erin Leahey, Russell J. Funk | <strong>날짜</strong>: 2023 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: 10.1038/s41586-022-05543-x</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>1945~2010년 사이 발표된 <strong>4,500만 편의 논문</strong>과 <strong>390만 건의 특허</strong>를 분석한 결과, 과학과 기술 전반에서 <strong>파괴적(disruptive) 연구의 비율이 지속적으로 감소</strong>하고 있다. CD index(consolidation-disruption index)로 측정한 파괴성은 모든 분야에서 일관되게 하락했으며, 이는 논문·특허의 양적 증가가 아닌 <strong>연구 관행의 질적 변화</strong>(좁은 범위의 선행연구 활용, 기존 지식의 점진적 확장 경향)에 기인한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: 과학 논문과 특허의 수는 지수적으로 증가해왔으며, 이는 과학적 진보의 가속화로 해석되어 왔다.</li>
+<li><strong>문제</strong>: 양적 성장에도 불구하고 과학의 질적 진보(특히 패러다임 전환적 발견)가 실제로 가속화되고 있는지에 대한 체계적 증거가 부족했다.</li>
+<li><strong>왜 중요한가</strong>: 과학 정책, 펀딩 배분, 대학 평가가 모두 과학적 생산성의 양적 지표에 의존하는 상황에서, 혁신의 질적 측면을 이해하는 것은 근본적으로 중요하다.</li>
+<li><strong>접근법</strong>: CD index를 핵심 지표로 활용하여, 수십 년에 걸친 대규모 서지 데이터를 분석하고, 다양한 대안 지표와 강건성 검증(robustness check)으로 결과를 확인했다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>보편적 파괴성 감소 확인</strong>: 1945~2010년간 사회과학, 자연과학, 의생명과학, 기술(특허) 등 모든 분야에서 CD index가 91~100% 이상 감소했다 (물리학, 생명과학 등 주요 분야에서 CD5 지수가 크게 하락).</li>
+<li><strong>양적 증가 요인 배제</strong>: 논문·특허 수의 증가, 참고문헌 수의 변화, 팀 규모의 증가 등 양적 요인을 통제한 후에도 파괴성 감소 추세가 유지됨을 확인했다.</li>
+<li><strong>텍스트 분석으로 교차 검증</strong>: 논문 제목과 초록의 언어 분석 결과, 시간이 지남에 따라 "creating(창조)", "producing(생산)" 등 파괴적 어휘의 사용이 줄고 "improving(개선)", "enhancing(강화)" 등 점진적 어휘가 증가했다.</li>
+<li><strong>인용 다양성 감소 발견</strong>: 연구자들이 점점 더 좁은 범위의 선행연구를 인용하며, 이전 문헌을 깊이 소화하기보다 최신의 제한된 문헌에 집중하는 경향이 강화되고 있음을 밝혔다.</li>
+<li><strong>연구 관행 변화 원인 제시</strong>: 파괴성 감소의 주된 원인으로 과학자들의 연구 관행 변화(폭넓은 독서 감소, 안전한 주제 선택, 점진적 확장 선호)를 지목했다.</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Web of Science(1945~2010, 약 4,500만 편 논문), USPTO 특허 데이터(1976~2010, 약 390만 건)</li>
+<li><strong>핵심 지표</strong>: CD index (CD5) -- 한 논문의 후속 인용이 해당 논문만 인용하고 그 선행연구는 인용하지 않는 정도를 측정 (-1: 완전 통합적, +1: 완전 파괴적)</li>
+<li><strong>보완 지표</strong>: 논문 제목/초록의 언어 분석(파괴적 vs. 통합적 어휘 빈도), 인용 다양성 지표</li>
+<li><strong>강건성 검증</strong>: 분야별·시기별·팀 규모별 하위분석, 참고문헌 수 통제, 대안적 CD index 변형(CD1, CD10 등), 자기인용 제외 분석</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>대규모 실증적 증거</strong>: "과학이 덜 파괴적으로 되고 있다"는 가설을 6,000만 건 이상의 논문·특허 데이터로 처음 체계적으로 검증한 연구.</li>
+<li><strong>분야 횡단적 보편성</strong>: 자연과학, 사회과학, 의생명과학, 기술(특허) 전반에 걸쳐 동일한 추세를 확인하여, 특정 분야에 국한되지 않는 구조적 현상임을 입증했다.</li>
+<li><strong>텍스트-인용 삼각 검증</strong>: 인용 네트워크 기반 CD index와 자연어 처리 기반 언어 분석을 결합하여 결론의 타당성을 다중적으로 확인한 방법론적 기여.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>CD index는 인용 패턴에 기반한 간접 지표이므로, "파괴성"의 정의와 측정에 본질적인 한계가 있다.</li>
+<li>시간에 따른 인용 관행 자체의 변화(참고문헌 수 증가 등)가 CD index에 영향을 줄 수 있다.</li>
+<li>데이터가 2010년까지로 제한되어 최근 추세를 반영하지 못한다.</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li><strong>CD index의 구조적 편향</strong>: CD index는 참고문헌 수가 많아질수록 기계적으로 낮아지는 경향이 있으며, 시간에 따른 참고문헌 수 증가를 완전히 통제했다고 보기 어렵다. 이 문제는 출판 후 여러 비판 논문에서 지적되었다.</li>
+<li><strong>인과 메커니즘 약함</strong>: "연구자들이 선행연구를 덜 읽는다"는 설명은 제안 수준에 머물며, 제도적 인센티브(publish-or-perish), 분야의 성숙도, 지식 축적의 자연적 귀결 등 대안적 설명에 대한 체계적 검증이 부족하다.</li>
+<li><strong>"파괴적 = 좋은 것"이라는 암묵적 전제</strong>: 통합적(consolidating) 연구도 과학 발전에 필수적인데, 파괴성 감소를 부정적으로 프레이밍하는 경향이 있다.</li>
+<li><strong>Nature 발표에 따른 과도한 일반화 우려</strong>: 미디어와 정책 담론에서 "과학이 죽어가고 있다"는 식의 과잉 해석이 발생했다.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>CD index의 구조적 한계를 보완한 대안적 파괴성 지표 개발 및 비교 연구가 필요하다.</li>
+<li>2010년 이후 데이터(특히 AI, 생명공학 등 급성장 분야)로의 분석 확장이 요구된다.</li>
+<li>파괴성 감소의 인과 메커니즘을 제도적·사회적·인지적 차원에서 체계적으로 규명하는 후속 연구가 가능하다.</li>
+<li>파괴적 연구를 촉진하는 펀딩·평가 제도의 효과를 실증적으로 검증하는 정책 연구가 필요하다.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 과학의 파괴성이 수십 년간 전 분야적으로 감소해왔다는 강력하고 도발적인 실증 결과를 제시한 기념비적 연구이나, CD index의 구조적 한계와 인과 메커니즘의 불충분한 규명이 결론의 해석에 주의를 요한다.</p>
+<hr />
+<p><em>참고: 원본 PDF 파일이 손상(HTML redirect)되어, 본 리뷰는 논문의 공개된 내용에 기반하여 작성되었습니다.</em></p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

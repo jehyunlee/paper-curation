@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generatio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation</h1>
+<blockquote>
+<p><strong>저자</strong>: Weimin Wu, Alexander C. Furnas, Eddie Yang, Gefei Liu, Akhil Pandey Akella, Xuefeng Song, Dashun Wang, Han Liu | <strong>날짜</strong>: 2025-09-25 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: 10.48550/arXiv.2509.21493</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>과학 논문에서 정책 브리프(policy brief)를 생성하는 LLM의 능력을 평가하고 향상시키기 위한 최초의 벤치마크(Sci2Pol-Bench, 18개 태스크)와 학습 데이터셋(Sci2Pol-Corpus, 639쌍)을 제시했다. 13개 LLM 평가 결과, 최첨단 모델(Grok, DeepSeek-R1 등)도 정책 브리프 생성에서 상당한 개선 여지가 있으며, Sci2Pol-Corpus로 파인튜닝한 Gemma-27B가 GPT-4o와 DeepSeek-V3(671B)를 능가하는 성능을 달성했다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: 과학적 증거를 정책에 반영하는 것은 기후변화, 공중보건 등 현대 사회의 핵심 과제이나, 대부분의 과학자는 정책 전문성이 부족하고 정책결정자는 밀도 높은 기술 논문을 실용적 지침으로 변환하기 어렵다.</li>
+<li><strong>갭</strong>: LLM이 강력한 범용 능력을 보이지만, 정책 브리프 생성에서는 핵심 내용 누락, 환각(hallucination), 부적절한 톤, 낮은 행동가능성(actionability) 등의 한계를 보인다. 이 과제에 특화된 벤치마크나 학습 데이터셋이 존재하지 않았다.</li>
+<li><strong>접근법</strong>: 인간 작성 프로세스를 반영한 5단계 분류체계(Autocompletion, Understanding, Summarization, Generation, Verification)에 기반한 18개 태스크 벤치마크를 구축하고, 560만 정책 문서에서 인용 기반으로 639쌍의 고품질 학습 데이터를 큐레이션한다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>Sci2Pol-Bench 구축</strong>: 85개 전문가 작성 논문-브리프 쌍(Nature Energy, Nature Climate Change 등)을 기반으로 5단계 18개 태스크를 설계하고, BERTScore/ROUGE의 한계를 입증하여 LLM-as-a-judge 기반 평가 지표를 개발했다.</li>
+<li><strong>13개 LLM 대규모 평가</strong>: Grok-3-beta가 평균 77.01로 1위, DeepSeek-R1(75.05) 2위, GPT-4o(72.12) 5위를 기록했으며, Autocompletion과 Understanding 태스크에서 모델 간 가장 큰 성능 차이가 관찰되었다.</li>
+<li><strong>Sci2Pol-Corpus 큐레이션</strong>: 560만 정책 문서 → 140,000 후보 쌍(인용 3편 이하 필터) → GPT-o3 조대/세밀 필터링 → 639쌍 선별 → in-context polishing의 체계적 파이프라인을 구축했다.</li>
+<li><strong>파인튜닝 효과 입증</strong>: LLaMA-3.1-8B(+7.64), Gemma-12B(+3.12), Gemma-27B(+2.03)의 일관된 성능 향상을 달성했으며, 파인튜닝된 Gemma-27B(73.43)가 GPT-4o(72.12)와 DeepSeek-V3(73.35)를 능가했다.</li>
+<li><strong>LLM 실패 모드 분석</strong>: 맥락 깊이 부족, 환각 위험, 가독성/톤 문제, 행동가능성 부족의 4가지 실패 유형을 구체적 사례와 함께 체계적으로 문서화했다.</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>벤치마크 데이터</strong>: 85개 전문가 작성 논문-브리프 쌍(Nature Energy 36, Nature Climate Change 25, JHSB 20 등), 기존 벤치마크(SciRIFF, MMLU-Pro) 통합</li>
+<li><strong>태스크 설계</strong>: 객관식(Micro F1) 및 자유 작성(Reference-free/Reference-based Score) 형식; Generation 태스크는 Gemini-2.5-Pro 기반 LLM-as-a-judge로 다차원 평가(맥락 깊이, 환각, 가독성, 행동가능성)</li>
+<li><strong>코퍼스 큐레이션</strong>: Overton.io 560만 정책 문서 → 인용 메타데이터로 140K 후보 쌍 → GPT-o3 조대 필터링(초록 기반, 1,407쌍) → 세밀 필터링(전문 기반, 639쌍) → 3개 전문가 작성 샘플 기반 in-context polishing</li>
+<li><strong>파인튜닝</strong>: LLaMA-Factory, LoRA(rank 8, alpha 32), 6 에포크, 4x A100 80GB; 95/5 train/val split</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<p>과학-정책 번역이라는 특수한 과제를 위한 최초의 체계적 벤치마크와 학습 데이터셋을 제시한 점이 핵심 기여이다. 특히 5단계 분류체계(Sci2Pol-Taxonomy)는 정책 브리프 작성의 인간 워크플로를 잘 반영하며, BERTScore/ROUGE의 한계를 실증적으로 보여준 후 태스크별 맞춤 LLM-judge 루브릭을 설계한 것이 방법론적으로 견실하다. 560만 정책 문서에서 639쌍을 큐레이션하는 대규모 파이프라인도 재현 가능한 기여이다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Sci2Pol-Bench와 Sci2Pol-Corpus의 규모가 제한적이다(85쌍 벤치마크, 639쌍 코퍼스).</li>
+<li>파인튜닝 결과가 아직 최고 상용 모델(Grok)을 능가하지 못한다.</li>
+<li>85개 쌍이 Nature Energy, Nature Climate Change 등 에너지/기후 분야에 편중되어 있어 다른 분야로의 일반화가 제한적이다.</li>
+<li>JHSB의 20개 샘플에서 Policy Problem과 Study Methods 섹션이 GPT-o3에 의해 재구성되어 신뢰성이 낮을 수 있다.</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>LLM-as-a-judge(Gemini-2.5-Pro)의 신뢰성 검증이 10개 샘플에 대한 소규모 혼동 행렬(5/5 완벽 일치)에 의존하여, 체계적 검증으로 보기 어렵다.</li>
+<li>Generation 태스크(11-15)의 평가가 전적으로 LLM 판정에 의존하므로, LLM 간 상호 편향(GPT-o3로 데이터 구축 후 Gemini로 평가)의 잠재적 문제가 있다. Section F.7의 circularity 분석이 Task 16에만 한정된 점이 아쉽다.</li>
+<li>에너지/기후 정책과 건강/사회 행동이라는 두 분야에 집중되어, 경제정책, 기술규제, 교육정책 등 다양한 정책 영역에 대한 적용 가능성이 검증되지 않았다.</li>
+<li>정책 전문가의 실제 사용성 평가(usability study)가 없어, 생성된 브리프가 실제 정책 결정에 어떤 가치를 제공하는지 알 수 없다.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>다학제/다언어 정책 브리프로의 확장 및 규모 확대</li>
+<li>강화학습(RLHF) 등 고급 학습 전략을 통한 상용 모델 수준 달성</li>
+<li>정책결정자를 대상으로 한 실제 사용성 및 신뢰성 평가</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 과학-정책 번역이라는 중요하고 과소 연구된 과제에 대해 체계적인 벤치마크와 학습 데이터셋을 최초로 제시한 견실한 연구로, 5단계 분류체계 설계, 대규모 LLM 평가, 도메인 특화 파인튜닝의 효과 입증 등 다방면의 기여가 돋보이나, 분야 편중과 소규모 데이터셋이라는 현실적 제약이 일반화 가능성을 제한한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

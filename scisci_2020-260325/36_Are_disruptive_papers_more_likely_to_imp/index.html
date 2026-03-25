@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Are disruptive papers more likely to impact technology and society?</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Are disruptive papers more likely to impact technology and society?</h1>
+<blockquote>
+<p><strong>저자</strong>: Alex J. Yang, Xiaohui Yan, Haotian Hu, Hanlin Hu, Jia Kong, Sanhong Deng | <strong>날짜</strong>: 03/2025 | <strong>Journal</strong>: Journal of the Association for Information Science and Technology | <strong>DOI</strong>: 10.1002/asi.24947</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>파괴적(disruptive) 논문이 기술과 사회에 더 큰 영향을 미치는가? 역설적이게도, CD index가 높은 논문은 특허 인용, 임상시험 활용, 뉴스 보도, 소셜미디어 확산 확률이 오히려 <strong>낮았다</strong>. 그러나 저자들이 제안한 "disruptive citation"(절대적 파괴적 인용 수) 지표로 측정하면, 파괴적 영향이 높은 논문은 기술·사회적 영역에 영향을 미칠 확률이 <strong>유의미하게 높았다</strong>. 이 차이는 CD index가 비율 지표로서 가지는 편향에 기인하며, 특히 최근 20년과 STEM 분야에서 두드러졌다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>과학적 발견은 기술 발전과 사회적 변화의 핵심 동력이지만, "파괴적" 과학이 실제로 기술과 사회에 더 큰 영향을 미치는지에 대한 실증적 증거는 부족했다. CD index는 파괴성의 표준 지표로 널리 사용되지만, 0 근처로의 중심화 경향, 인용 행태 편향 등 알려진 한계가 있어, CD index가 높은 논문이 반드시 높은 "파괴적 영향력"을 의미하는지가 불분명했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>CD index 역설</strong>: CD index가 높을수록 기술·사회적 영향 확률이 낮음 → CD index에 대한 "편향(bias)" 확인</li>
+<li><strong>Disruptive citation 제안</strong>: 절대적 파괴적 인용 수(= 초점 논문만 인용하고 그 참고문헌은 인용하지 않는 논문 수)</li>
+<li>Disruptive citation이 높은 논문은 <strong>특허 인용(+), 임상시험(+), 뉴스(+), 소셜미디어(+)</strong> 모두에서 높은 영향 확률</li>
+<li>CD index 편향은 <strong>최근 20년(2000-2020)</strong>과 <strong>STEM 분야</strong>에서 더 두드러짐</li>
+<li>총 인용 수를 통제해도 disruptive citation의 긍정적 효과는 유지</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Microsoft Academic Graph, 약 4,000만 편의 논문 (1950-2020), 전 분야</li>
+<li><strong>기술·사회적 영향 지표</strong>: (1) 특허 인용, (2) 임상시험 인용, (3) 주요 뉴스 매체 보도, (4) 소셜미디어 언급</li>
+<li><strong>분석</strong>: 로지스틱 회귀, 이질성 분석(연도별, 분야별), 대안 지표 로버스트니스 체크</li>
+<li><strong>핵심 개념</strong>: CD index(상대적 비율) vs disruptive citation(절대적 수)</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>CD index의 "공공 영향력 편향"을 <strong>4가지 사회적 영향 채널</strong>을 통해 최초로 실증</li>
+<li>"Disruptive citation"이라는 <strong>보완적 지표</strong> 제안으로 CD index의 한계를 해결</li>
+<li>과학의 파괴성과 사회적 영향력 사이의 관계를 분리하는 분석 프레임 제시</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>CD index의 한계가 disruptive citation으로 완전히 해결되지 않을 수 있음</li>
+<li>특허 인용, 뉴스 보도 등은 사회적 영향의 대리변수일 뿐</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>Disruptive citation은 총 인용 수와 높은 상관관계를 가질 수밖에 없어, 단순히 "많이 인용된 논문"의 변형일 가능성</li>
+<li>인과적 메커니즘(왜 파괴적 논문이 사회에 영향을 미치는가)에 대한 논의 부족</li>
+<li>"파괴적"이라는 개념의 조작적 정의가 여전히 인용 네트워크 구조에 의존</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Disruptive citation과 총 인용의 독립적 기여도 분석</li>
+<li>텍스트 기반 파괴성 지표와의 비교</li>
+<li>구체적 사례 연구를 통한 메커니즘 규명</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: CD index의 사회적 영향 측면에서의 편향을 대규모 데이터로 실증하고 보완 지표를 제안한 의미 있는 연구로, 과학의 파괴성 측정 논의에 중요한 기여를 한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

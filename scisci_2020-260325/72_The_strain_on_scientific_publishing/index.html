@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The strain on scientific publishing</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>The strain on scientific publishing</h1>
+<blockquote>
+<p><strong>저자</strong>: Mark A. Hanson, Pablo Gómez Barreiro, Paolo Crosetto, Dan Brockington | <strong>날짜</strong>: 2024-11-01 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: 10.1162/qss_a_00327</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>학술 출판물의 기하급수적 증가가 과학 인프라에 가하는 "strain"을 5개 데이터 기반 메트릭으로 정량화했다. 2022년 Scopus/WoS 색인 논문은 약 282만 편으로 2016년 대비 47% 증가했으나 연구자 수는 이에 비례하여 증가하지 않았다. 이 성장의 70% 이상이 5개 출판사(MDPI 27%, Elsevier 16%, Frontiers 11%, Springer 9.5%, Wiley 7%)에서 발생했으며, MDPI는 모든 메트릭에서 이상치였다: 논문 증가율 +1,080%, special issue 비율 88%, turnaround time 37일, 거절률 감소, 가장 높은 "impact inflation"(5.4).</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>학술 논문의 지수적 성장이 피어리뷰어 모집 난항, 과학자의 정보 과부하, paper mill 스캔들 등과 맞물려 과학 출판 시스템의 지속가능성을 위협하고 있다. "Publish or perish" 문화, gold open access APC 모델, 출판사의 수익 동기 등이 복합적으로 작용하지만, 어떤 출판사와 어떤 행동이 이 strain에 가장 크게 기여하는지는 체계적으로 분석되지 않았다. 기존 연구들이 개별 출판사나 단일 메트릭에 초점을 맞춘 반면, 다중 메트릭을 결합한 비교 분석이 필요했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>논문 성장 메커니즘의 이원화</strong>: 전통 출판사(Elsevier, Springer)는 저널 수 증가 + 저널당 소폭 증가로, 신생 OA 출판사(MDPI, Frontiers, Hindawi)는 소수 저널의 폭발적 논문 증가로 성장. 두 메커니즘의 strain 기여도는 비슷</li>
+<li><strong>Special issue의 역할 규명</strong>: MDPI(88%), Frontiers(69%), Hindawi(62%)는 special issue를 주요 출판 경로로 활용. Special issue 논문은 일반 논문 대비 turnaround time이 짧고 거절률이 낮으며 시간 분산도 작음 -- 처음으로 체계적으로 문서화</li>
+<li><strong>Turnaround time의 동질화</strong>: MDPI의 평균 37일(2022)은 다른 출판사(130-198일)와 현격한 차이. 더 중요하게, turnaround time 분포가 좌편향으로 변하며 점점 동질화 -- 논문의 고유한 필요에 맞춘 심사가 이루어지지 않음을 시사</li>
+<li><strong>"Impact inflation" 신규 메트릭 제안</strong>: IF/SJR 비율로 자기인용·인용 카르텔에 의한 IF 팽창 탐지. MDPI와 Hindawi가 유의하게 높은 impact inflation. MDPI 저널의 자기인용률(9.5%)도 다른 출판사 대비 유의하게 높음</li>
+<li><strong>비즈니스 모델과 strain의 관계</strong>: Gold OA 자체가 strain의 원인이 아님(PLOS, BMC는 정상적 메트릭). 특정 출판사의 특정 행동(special issue 남용, 낮은 거절률, 짧은 turnaround)이 핵심</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Scopus/Scimago(WoS 동시 색인 저널만), Clarivate IF 데이터(16,174 저널), 10개 출판사 웹스크래핑(500만+ 논문의 turnaround time), OECD PhD 통계, UNESCO 연구자 통계</li>
+<li><strong>메트릭</strong>: (1) 총 논문 수 및 출판사별 분해, (2) Special issue 논문 비율, (3) Turnaround time(투고→승인) 분포 및 추이, (4) 거절률 추이, (5) Impact inflation(Cites-per-doc/SJR 또는 IF/SJR)</li>
+<li><strong>분석</strong>: 출판사별 시계열 비교, ANOVA + Tukey HSD(impact inflation, 자기인용률), 상관분석(거절률 vs special issue 비율, 거절률 vs 저널 크기 등)</li>
+<li><strong>개념 프레임워크</strong>: "Love triangle" -- 출판사(수익), 연구비 기관(품질 신호), 연구자(publish or perish)의 상호작용</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>5개 메트릭의 통합 비교</strong>: 개별 메트릭이 아닌 다중 메트릭을 결합하여 출판사별 프로파일을 체계적으로 비교한 최초의 연구</li>
+<li><strong>"Impact inflation" 신규 지표</strong>: 공개 데이터만으로 인용 행동의 왜곡을 탐지하는 실용적 도구(IF/SJR ratio) 제안</li>
+<li><strong>Special issue 논문의 차별적 처리를 최초로 문서화</strong>: 더 낮은 거절률, 더 짧고 동질적인 turnaround time</li>
+<li>Strain이 OA 모델 자체가 아닌 특정 출판사의 행동에 기인함을 실증 -- 정책 대응의 정밀 타겟팅 근거 제공</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>웹스크래핑 기술적 한계로 Elsevier의 special issue 데이터 미포함, 일부 출판사의 거절률 데이터 미확보</li>
+<li>거절률 산출 방법이 출판사마다 달라 직접 비교에 주의 필요(추세 비교는 가능)</li>
+<li>Scopus/WoS 동시 색인 저널만 분석 → 실제 strain 과소추정</li>
+<li>저작권 문제로 웹스크래핑 데이터 공개 불가(R Shiny app으로 대체)</li>
+<li>논문 품질 자체를 직접 측정하지 못함(turnaround time, 거절률은 간접 지표)</li>
+</ul>
+<h3>리뷰어 판단 아쉬운 점</h3>
+<ul>
+<li>인과 추론이 부재 — 상관관계만 보여줌. 예: special issue 확대가 turnaround time 감소를 "야기"하는지, 동시에 발생하는지 구분 불가</li>
+<li>Global South의 논문 증가와 strain 사이의 관계를 충분히 구분하지 못함. 포용적 성장 vs 품질 저하의 경계가 불명확</li>
+<li>Preprint 서버(arXiv, bioRxiv 등)의 역할이 논의되지 않음 — 전통 출판과의 상호작용이 strain에 미치는 영향</li>
+<li>LLM의 등장(2023~)이 향후 논문 생산 속도에 미칠 영향에 대한 전망이 없음(2022년까지 데이터)</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>논문 품질의 직접 측정(재현성, 철회율 등)과 출판 성장의 관계 분석</li>
+<li>LLM 시대의 논문 생산 가속이 strain에 미치는 영향 추적</li>
+<li>Special issue의 피어리뷰 질 직접 평가(심사 보고서 분석 등)</li>
+<li>Impact inflation 메트릭의 분야별 검증 및 표준화</li>
+<li>연구비 기관의 정책 변화(narrative CV 도입 등)가 publish or perish 압력에 미치는 효과 평가</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 학술 출판의 지속가능성 위기를 다중 메트릭으로 체계적으로 진단한 시의적절하고 영향력 있는 연구로, "impact inflation" 신규 지표와 special issue의 차별적 처리 문서화가 특히 가치 있으며, 출판사-연구자-연구비 기관 삼각관계의 개념 프레임워크가 정책 논의의 토대를 제공한다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
