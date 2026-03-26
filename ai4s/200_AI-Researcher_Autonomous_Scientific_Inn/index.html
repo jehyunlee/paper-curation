@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI-Researcher: Autonomous Scientific Innovation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>AI-Researcher: Autonomous Scientific Innovation</h1>
+<blockquote>
+<p><strong>저자</strong>: Jiabin Tang, Lianghao Xia, Zhonghang Li, Chao Huang | <strong>날짜</strong>: 2025 | <strong>Link</strong>: <a href="https://arxiv.org/abs/2505.18705" target="_blank">https://arxiv.org/abs/2505.18705</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>문헌 리뷰부터 가설 생성, 알고리즘 구현, 출판 수준 논문 작성까지의 전체 연구 파이프라인을 최소한의 인간 개입으로 자율 수행하는 AI-Researcher 시스템과, 자율 연구 능력을 체계적으로 평가하는 Scientist-Bench 벤치마크를 제안한다.</p>
+</div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: LLM이 수학, 코딩에서 강력한 추론 능력을 보이며 agentic framework을 통한 복잡한 작업 자동화가 가능</li>
+<li><strong>Gap</strong>: 문헌 리뷰 → 가설 → 구현 → 논문 작성의 전체 연구 파이프라인을 자율적으로 수행하고 체계적으로 평가하는 시스템과 벤치마크 부재</li>
+<li><strong>왜 중요한가</strong>: 자율적 과학 혁신은 인간 연구자의 인지적 한계를 넘어 solution space를 체계적으로 탐색할 수 있는 가능성 제공</li>
+<li><strong>접근법</strong>: Complete research pipeline orchestration과 Scientist-Bench를 통한 guided innovation + open-ended exploration 평가</li>
+</ul>
+</div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li>Literature review → hypothesis → implementation → manuscript의 전체 파이프라인 자동화 달성</li>
+<li>다양한 AI 연구 도메인에서 높은 implementation success rate 달성</li>
+<li>생성된 연구 논문이 human-level quality에 근접하는 수준 달성</li>
+<li>Scientist-Bench: guided innovation과 open-ended exploration을 포괄하는 최초의 자율 연구 벤치마크 구축</li>
+</ol>
+</div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>Pipeline Orchestration</strong>: Literature review, hypothesis generation, algorithm implementation, manuscript preparation을 seamless하게 연결하는 자동화 시스템</li>
+<li><strong>Scientist-Bench</strong>: 다양한 AI 연구 도메인의 state-of-the-art 논문 기반, guided innovation과 open-ended exploration 두 가지 평가 모드 제공</li>
+<li><strong>Evaluation</strong>: Implementation success rate, 논문 품질(human-level 비교) 등 다차원 평가 수행</li>
+</ul>
+</div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>End-to-end Autonomous Research</strong>: 문헌 조사에서 논문 작성까지 전체 연구 프로세스를 단일 시스템으로 자율 수행하는 최초의 완결적 프레임워크</li>
+<li><strong>Scientist-Bench</strong>: 자율 연구 시스템의 능력을 guided와 open-ended 두 축으로 평가하는 최초의 체계적 벤치마크</li>
+<li><strong>Human-level Quality 접근</strong>: AI 생성 연구가 인간 수준 품질에 근접함을 실증한 선구적 결과</li>
+</ul>
+<p><strong>Abstract에서 추출된 독창성 문장</strong>: The powerful reasoning capabilities of Large Language Models (LLMs) in mathematics and coding, combined with their ability to automate complex tasks through agentic frameworks, present unprecedented opportunities for accelerating scientific innovation.. In this paper, we introduce AI-Researcher, a fully autonomous research system that transforms how AI-driven scientific discovery is conducted and evaluated.. Our framework seamlessly orchestrates the complete research pipeline--from literature review and hypothesis generation to algorithm implementation and publication-ready manuscript preparation--with minimal human intervention.. To rigorously assess autonomous research capabilities, we develop Scientist-Bench, a comprehensive benchmark comprising state-of-the-art papers across diverse AI research domains, featuring both guided innovation and open-ended exploration tasks.. Through extensive experiments, we demonstrate that AI-Researcher achieves remarkable implementation success rates and produces research papers that approach human-level quality.. This work establishes new foundations for autonomous scientific innovation that can complement human researchers by systematically exploring solution spaces beyond cognitive limitations.</p>
+</div>
+<div class="section-box"><h2>Limitation & Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>AI 연구 도메인에 초점이 맞춰져 있어, 실험 과학 분야로의 직접 확장에는 추가 연구 필요</li>
+<li>완전한 novelty 생성보다는 기존 방법의 조합/개선에 가까운 결과가 다수</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>Human-level quality 주장의 근거가 되는 평가 기준과 방법론의 세부 사항 부족</li>
+<li>생성된 논문이 실제 peer review를 통과할 수 있는지에 대한 검증 미수행</li>
+<li>Scientist-Bench의 task가 AI 분야에 편중되어 있어, 벤치마크 자체의 범용성에 한계</li>
+<li>Implementation success rate와 실질적 scientific contribution 간의 괴리에 대한 논의 부족</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>실험 과학(wet-lab, simulation 기반) 도메인으로의 확장</li>
+<li>생성 논문의 실제 학회 제출 및 peer review 결과를 통한 실전 검증</li>
+<li>Multi-agent collaboration을 통한 interdisciplinary research 자동화</li>
+</ul>
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 자율적 과학 연구의 비전을 end-to-end 시스템과 전용 벤치마크로 구체화한 의욕적 연구이다. 전체 연구 파이프라인 자동화와 Scientist-Bench의 기여가 크나, human-level 품질 주장의 검증 강화와 AI 외 도메인으로의 확장이 핵심 과제이다.</p>
+</div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

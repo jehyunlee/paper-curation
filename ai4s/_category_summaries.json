@@ -1,10 +1,2724 @@
 {
-  "Scientific Discovery & Foundation Models": "\"과학적 발견 및 Foundation Model\" 분야의 연구는 2021년 AlphaFold의 획기적인 등장을 기점으로 빠르게 발전해왔습니다. AlphaFold가 아미노산 서열로부터 단백질 3D 구조를 높은 정확도로 예측하며 계산 생물학에 혁명을 일으킨 이래, 2023년에는 Graph Neural Network와 Active Learning을 결합한 GNoME이 대규모 신소재 발굴에 성공하며 딥러닝의 적용 범위를 재료 과학으로 확장했습니다. 2025년부터는 화학, 재료 과학 및 신약 개발 분야에서 Foundation Model, Generative AI, 그리고 Agentic AI의 잠재력에 대한 관심이 증대되었고, 복잡한 분자 동역학 시뮬레이션 분석을 위한 AMDAT과 같은 전문 도구 개발이 활발히 진행되며, 이 기술들이 과학적 발견 과정을 근본적으로 변화시킬 새로운 패러다임으로 자리매김하고 있습니다.\n\n이 분야는 다양한 sub-category에서 고유한 문제들과 씨름하며 이를 해결하기 위한 혁신적인 노력을 기울이고 있습니다. 첫째, **단백질 구조 예측**에서는 아미노산 서열만으로 복잡한 3D 구조를 원자 수준의 정확도로 예측하는 것이 오랜 숙원이었으나, AlphaFold는 딥러닝을 통해 이 난제를 해결하며 생물학 연구에 큰 진전을 가져왔습니다. 그러나 MSA (Multiple Sequence Alignment) 깊이가 얕을 경우 정확도가 떨어지는 한계가 있습니다. 둘째, **신소재 발굴**에 있어서는 안정적이고 합성 가능한 무기 결정 물질을 효율적으로 찾아내는 것이 매우 중요하며, GNoME은 Graph Neural Network와 대규모 active learning을 결합하여 기존에 알려지지 않은 수십만 개의 새로운 물질을 예측함으로써 재료 탐색의 비용과 시간을 획기적으로 줄였습니다. 하지만 이 모델은 상전이, 동적 안정성 또는 유한 온도에서의 거동 예측에는 한계가 있습니다. 셋째, **신약 개발 가속화**는 Design-Make-Test-Analyze (DMTA) 사이클의 비효율성을 극복하는 것이 핵심 과제인데, Agentic AI는 멀티 에이전트 시스템을 활용하여 이 과정을 자동화하고 최적화하려는 시도를 보였습니다. 다만, 이러한 \"significant improvements\"에 대한 정량적 평가의 부재는 여전히 과제로 남아있습니다. 넷째, **화학 및 재료 과학 분야의 Foundation Model 적용**에 있어서는 방대한 데이터와 다양한 하위 분야를 아우르는 일반화된 AI 모델의 필요성이 대두되었고, Foundation Model은 이러한 다목적 추론 및 예측 능력을 제공하는 잠재적 해결책으로 주목받고 있습니다. 그러나 현재 Perspective 논문의 리뷰 범위가 주로 분자/결정 재료에 집중되어 표면, 계면, 비정질 재료 등은 상대적으로 소홀히 다루어지는 경향이 있습니다. 마지막으로, **분자 동역학 시뮬레이션 분석**에서는 방대한 시뮬레이션 데이터를 효율적이고 표준화된 방식으로 분석하는 것이 중요하며, AMDAT과 같은 오픈소스 도구의 개발은 이 과정을 간소화하고 연구자들이 더 깊이 있는 통찰을 얻을 수 있도록 돕고 있습니다.\n\n향후 이 분야의 연구는 각 방법론의 한계를 극복하고 적용 범위를 확장하는 데 중점을 둘 것입니다. AlphaFold의 경우, MSA 깊이가 얕을 때의 정확도 저하 문제를 해결하기 위해 희소한 서열 데이터에서도 강건하게 작동하는 모델 개발이 필요하며, GNoME과 같은 재료 발굴 모델은 정적 구조 예측을 넘어 상전이, 동적 안정성 (vibrational properties), 그리고 유한 온도에서의 재료 거동을 예측할 수 있도록 확장되어야 합니다. 또한, Agentic AI를 활용한 신약 개발 연구에서는 \"significant improvements\"에 대한 정량적 평가 프레임워크와 벤치마크를 마련하여 그 효과를 객관적으로 입증하는 것이 중요합니다. Foundation Model의 경우, 현재 주로 다루어지는 분자 및 결정 재료 외에 표면, 계면, 비정질 재료와 같은 다양한 물질 형태에 대한 적용 가능성을 모색하고, 개념적 논의를 넘어 실제적 구현 및 경험적 검증으로 나아가는 것이 다음 단계가 될 것입니다. 이러한 노력들은 과학적 발견의 속도와 깊이를 더욱 향상시킬 것입니다.",
-  "Domain Applications": "재료과학 분야의 \"Domain Applications\" 연구는 2023년부터 2026년에 걸쳐 인공지능, 특히 딥러닝과 대규모 언어 모델(LLM)을 활용하여 재료 발견 및 특성 분석 프로세스를 혁신하려는 광범위한 노력을 보여줍니다. 초기에는 Graph neural network (GNoME)와 같은 딥러닝 모델을 대규모 active learning과 결합하여 신소재를 발견하고, Self-Driving Laboratories (SDL) 및 자동화된 화학 합성 시스템을 구축하는 데 집중했습니다. 2024년경에는 ChemCrow나 MatPilot과 같이 LLM을 화학 및 재료과학에 접목하여 실험 설계와 과학적 추론을 돕는 연구가 활발히 진행되었으며, 이는 LLM 기반 에이전트의 잠재력을 탐색하는 시기로 이어졌습니다. 2025년과 2026년에는 MatterChat과 같이 원자 구조 데이터와 텍스트를 통합하는 멀티모달 LLM이 등장하고, DMFlow처럼 비정렬 결정 구조를 생성하는 심층 생성 프레임워크가 개발되는 등, 보다 전문적이고 복잡한 문제 해결로 연구의 폭이 확장되었습니다. 또한 AI 시대 재료 데이터의 무결성 문제와 파운데이션 모델의 역할에 대한 심층적인 분석도 이 시기에 이루어졌습니다.\n\n이 분야의 연구는 크게 몇 가지 하위 범주로 나뉘어 재료과학이 직면한 핵심 문제들을 해결하고자 노력하고 있습니다. 첫째, **신소재 발견 및 설계** 분야에서는 기존의 비효율적인 탐색 방식을 개선하기 위해 GNoME가 Graph neural network를 대규모 active learning과 결합하여 새로운 재료를 예측하고, DMFlow는 비정렬 물질의 복잡한 구조를 심층 생성 모델을 통해 자동 생성하여 실험적 한계를 극복하려 합니다. 둘째, **대규모 언어 모델(LLM)의 활용**은 재료과학의 다양한 단계에 통합되고 있습니다. MatterChat은 원자 구조 데이터와 텍스트 입력을 통합하여 질문 답변 및 재료 설계 지원을 목표로 하며, MatPilot과 ChemCrow는 각각 LLM을 재료 과학자 및 화학 에이전트로 활용하여 합성 경로 제안, 실험 계획 수립 등 복잡한 과학적 작업을 자율적으로 수행하도록 합니다. VASPilot은 LLM 기반 멀티 에이전트 시스템을 사용하여 VASP 시뮬레이션을 자동화함으로써 밀도범함수이론(DFT) 계산의 효율성을 높였습니다. 셋째, **실험실 자동화 및 Self-Driving Laboratories (SDL)** 분야에서는 Genesis, Self-Driving Laboratories, An automatic end-to-end chemical synthesis develop 등의 연구가 로봇 공학 및 AI를 활용하여 화학 합성 및 재료 특성화를 위한 완전 자동화 시스템을 구축하여 연구 속도를 가속화하고 있습니다. EAA는 컴퓨터 비전과 자동화를 통해 재료 특성화 과정을 효율화하고 있습니다. 넷째, **파운데이션 모델**은 재료과학 분야의 광범위한 데이터에 대한 일반화 능력을 기반으로 새로운 발견의 기반이 되고 있으며, 여러 논문에서 그 역할과 전망에 대해 심층적으로 다루고 있습니다. 마지막으로, **데이터 무결성 및 신뢰성**은 AI 기반 재료 연구의 핵심 과제로 인식되어, AI 시대 재료과학에서 데이터 무결성 위기를 분석하고 이를 해결하기 위한 체크리스트를 제안하는 등 데이터의 품질과 신뢰성을 확보하기 위한 노력이 이루어지고 있습니다. SPINONet과 같은 연구는 에너지 효율적인 spiki 신경망을 physics-informed operator learning에 적용하여 연산 효율성을 높이는 동시에 물리 법칙을 준수하는 모델 개발을 시도합니다.\n\n향후 연구 방향은 현재 모델 및 시스템의 한계를 극복하는 데 중점을 둘 것으로 보입니다. 많은 연구에서 특정 재료 시스템(예: 2H-MoS2, TMD, 이진 위치 무질서)에 국한된 벤치마크와 검증의 범위를 금속, 강상관 물질, 표면, 비정질 재료 등 더 넓은 범위로 확장할 필요성을 제기하고 있습니다. LLM 기반 시스템의 경우, 부정확한 응답으로 인한 실험 실패나 장비 손상의 위험을 줄이기 위해 LLM 응답의 신뢰성을 높이고, 신소재 발견 사례나 정량적 벤치마크 결과의 부족을 해소하여 실제 적용 가능성을 입증하는 것이 중요합니다. 또한, Self-Driving Laboratories의 높은 복잡성과 비용, 그리고 LLM 사용에 따른 비용 효율성 문제도 해결해야 할 과제입니다. 에너지 효율성 분석이 해석적 수준에 머무르지 않고 실제 신경망 구현에서 검증되어야 하며, 그래프-언어 정렬이 행동 수준을 넘어 완전한 개념 수준으로 발전하는 것이 요구됩니다. 데이터 무결성 체크리스트의 적용 범위를 확장하고, 다양한 도구의 수량과 품질을 향상시키는 것이 시스템 성능을 높이는 핵심이 될 것입니다.",
-  "Other": "최근 \"Other\" 카테고리의 연구들은 인공지능(AI)이 과학적 발견의 전 과정을 혁신적으로 변화시키고 있음을 보여준다. 2023년 이후 출판된 논문들이 대다수를 차지하며, AI가 가설 생성, 실험 설계, 데이터 해석 등 핵심 단계에 깊이 관여하여 과학 연구의 효율성과 발견 속도를 가속화하는 방향으로 발전하고 있음을 명확히 드러낸다. 초기에는 AI의 잠재력과 개념적 프레임워크를 탐구하는 경향이 있었으나, 점차 특정 도메인에 AI/ML 워크플로우를 통합하고, 대규모 과학 데이터 처리 및 인간-AI 협력 모델을 모색하는 구체적인 시도로 나아가고 있다.\n\nAI for Science 분야는 여러 하위 범주에서 고유한 도전과제를 마주하고 있으며, 이를 해결하기 위한 다각적인 노력이 진행 중이다. 첫째, **과학 발견 과정의 자동화 및 가속화** 측면에서는 AI가 가설 생성과 검증을 돕는 데 핵심적인 역할을 하지만, LLM의 '환각(hallucination)' 문제와 과학적 맥락에서의 해석 가능성(interpretability) 부족이 주된 한계로 지적된다. 이에 'Embodied Science'와 같이 물리적 세계와의 상호작용을 통한 closed-loop 발견 과정을 제시하거나, AI 도구 도입이 개별 과학자의 생산성과 영향력을 확대할 수 있음을 분석하는 연구가 진행되고 있다. 둘째, **AI 기반 과학 데이터 처리 및 지식화**에 있어서는 과학 데이터의 불완전성, 편향, 접근성 제한(privacy, safety) 문제가 지속적으로 제기된다. 이를 극복하기 위해 Scalable Cross-Facility Federated Learning을 통해 분산된 데이터를 안전하게 활용하고, 과학 논문의 그림과 텍스트 간의 의미적 격차(semantic gap)를 해소하기 위한 대규모 멀티모달 정렬 데이터셋(S1-MMAlign)을 구축하는 노력이 이어진다. 또한, LLM 체인을 활용하여 수십만 편의 논문에서 금속-유기 골격체(MOF) 합성 정보를 추출하는 L2M3와 같은 도구는 복잡한 과학 데이터로부터 지식을 효율적으로 생성하는 길을 열고 있다. 셋째, **과학 도메인 특화 AI/ML 모델 및 워크플로우 개발**에서는 고분자 브러시(polymer brush)와 같은 분야는 변수 공간이 너무 넓어 범용 알고리즘 개발이 어렵고, 로봇 보조 화학 반응 맵핑은 특정 UV-Vis 범위에 한정되는 등 도메인별 제약이 존재한다. 동역학 시스템 방정식 발견을 위한 LLM-ODE는 LLM 추론의 latency가 병목 현상을 일으키는 한계에 직면하며, 고전적 고유직교분해(POD/PCA)의 한계를 극복하기 위한 Neural-POD나 플로우/디퓨전 모델의 좁은 밀도 집중 문제를 해결하기 위한 Verifier-Constrained Flow Expansion 등 특화된 AI 모델 개발이 활발하다. 넷째, **인간-AI 협력 및 AI의 사회적 영향**에 대한 고민도 깊다. AI를 단순히 '사고의 도구(tools for thought)'가 아닌 '사고의 파트너(thought partners)'로 전환하려는 비전이 제시되며, AI 도입이 집단적 과학 탐구의 균형에 미칠 영향과 AI 시뮬레이션의 신뢰성 평가 문제 등 사회과학적 접근의 중요성도 부각되고 있다. 마지막으로, **AI 시스템의 신뢰성 및 평가**를 위한 노력이 계속되고 있다. 기존 ML 벤치마크가 도메인 연구자의 기대와 불일치하거나, API 상태 변화나 평가 무작위성으로 불안정한 문제를 해결하고자 AIRS-Bench와 StableToolBench 같은 새로운 벤치마크가 제안되고 있다. 특히 StableToolBench는 GPT-4를 시뮬레이터와 평가자로 활용하여 안정성을 높이는 동시에 높은 운영 비용이라는 새로운 과제를 안고 있다.\n\n향후 AI for Science 연구는 현재 시스템이 직면한 구체적인 한계들을 극복하는 방향으로 전개될 전망이다. 이는 모델의 적용 범위를 확장하고 신뢰성을 높이는 것뿐만 아니라, 인간-AI 협력의 새로운 패러다임을 구축하는 것을 포함한다. 예를 들어, Neural-POD의 적용 범위를 더 높은 레이놀즈 수(Re)를 갖는 복잡한 유체 역학 문제로 확장하거나, Verifier-Constrained Flow Expansion 모델에 실제 과학 발견에 활용될 수 있는 \"약한 검증기(weak verifiers)\"를 통합하려는 시도가 예상된다. 또한, LLM의 지연 시간(latency)을 줄여 동역학 시스템 발견의 효율성을 높이고, Embodied execution의 신뢰성 문제를 개선하여 과학적 발견의 closed-loop를 더욱 견고하게 만들려는 노력이 계속될 것이다. 더 나아가, AI가 과학자 개인의 영향력은 높이지만 집단적 탐구를 위축시킬 수 있다는 우려를 해소하기 위한 인간-AI 협력 모델에 대한 심층 연구와, 물리학 및 컴퓨터 과학에 편중된 S1-MMAlign 데이터셋을 다양한 학문 분야로 확장하여 범용성을 확보하는 방향으로 나아갈 것으로 보인다.",
-  "LLM Agents for Science": "제시된 2024년부터 2026년까지의 논문들은 과학 연구 분야에서 LLM 에이전트의 급부상과 미래 궤적을 생생하게 보여준다. 2024년에는 시스템 생물학과 병리학과 같은 특정 도메인에서의 초기 응용에 초점을 맞추어 생성형 AI가 \"코파일럿(copilot)\"으로서의 잠재력을 시사했다. 2025년에 들어서는 과학 실천의 자동화, 자율 에이전트의 역할 정의, 에이전트 시스템의 이론적 기반(예: 스케일링 법칙, SLM 대 LLM 논쟁), 그리고 노동 시장에 미치는 사회적 영향 감사에 대한 광범위한 조사 및 개념 논문들이 등장하며 이 분야가 크게 확장되었다. 2026년에는 연구가 물리학, 수학, 재료 과학, 신약 개발, 사회 및 인지 과학을 포함한 다양한 과학 분야의 고도로 전문화된 응용으로 다변화되는 동시에, 점점 더 복잡한 멀티 에이전트 과학 워크플로우를 지원하기 위한 더욱 강력한 프레임워크, 벤치마크 및 인프라를 개발하는 양상을 보인다. 이러한 연대기적 진행은 초기 개념 증명에서 포괄적인 이론적 이해, 그리고 광범위하고 도메인별 응용 개발로의 전환을 명확히 보여준다.\n\n이 분야의 연구는 크게 여러 하위 범주로 나눌 수 있다. 첫째, **일반 과학적 발견 및 자동화 프레임워크**는 가설 생성부터 실험 및 결론 도출까지 전체 과학적 발견 주기를 자동화하는 것을 목표로 한다. \"Autonomous Agents for Scientific Discovery\"와 \"Automating the practice of science\"는 이질적인 환경, 개방형 문제, 데이터 희소성 처리와 같은 어려움을 강조하며, 강력한 AI 에이전트의 필요성을 역설한다. 둘째, **실험 설계 및 워크플로우 관리 (SciOps)**는 유전체 데이터 분류를 위한 \"Agentomics-ML\"과 엔드투엔드 연구를 위한 \"ResearchGym\"과 같은 자율 실험 플랫폼을 구축하려는 노력을 보여준다. \"DataJoint 2.0\"은 재현성 및 확장성을 위한 \"SciOps\" 모델을 제안하지만, 현재의 행 지향 데이터베이스 백엔드 한계를 가진다. \"MAC-AMP\"와 \"EAA\"는 재료 특성화를 위한 폐쇄 루프 멀티 에이전트 협업에 중점을 두지만, 희귀 고장 모드에 대한 데이터 희소성 문제에 직면한다. 셋째, **수학 및 형식 과학 자동화** 분야에서는 \"M2F\"와 \"MerLean\"이 수학 문헌을 형식 증명 라이브러리(Lean 4)로 자동 형식화하는 것을 목표로 하며, 자연어 그라운딩(natural-language grounding)과 기존 라이브러리의 공백이 주요 병목으로 지적된다. \"AutoNumerics\"는 자율 편미분방정식(PDE) 해결에서 성과를 보이지만 고차원/고차 문제에서는 어려움을 겪으며, \"Towards Autonomous Mathematics Research\"는 전문 연구 수학 해결이 여전히 난제임을 인정한다. 넷째, **특정 도메인 응용** 분야에서는 바이오 제약 및 노화 연구(Hunt Globally, PersonaAI), 물리학 및 공학(AI-Native Particle Accelerator, Automated Extraction of Mechanical Constitutive Models), 사회 과학 및 인문학(From Labor to Collaboration, Scaling Reproducibility) 등에서 에이전트가 활용되지만, 환각(hallucination) 문제, in silico 검증에 국한되는 점, 데이터 편향, 안전 문제, 그리고 실험 문법(experimental grammar)의 한계와 같은 고유한 도메인별 문제에 직면한다. 다섯째, **에이전트 시스템 기본 및 신뢰성** 연구는 \"Towards a Science of Scaling Agent Systems\"에서 정량적 스케일링 원리를 탐색하고 \"Small Language Models are the Future of Agentic AI\"에서 SLM의 잠재력을 제시하지만, 스케일링을 위한 제한된 에이전트 수와 SLM의 실증적 벤치마크 부족이 한계로 언급된다. 전반적으로 \"Towards a Science of AI Agent Reliability\"에서 강조하듯이, 과학적 맥락에서 에이전트의 견고하고 신뢰할 수 있는 행동이 중요하다. 마지막으로 **연구 도구 및 인프라**로서 \"PaperBanana\"는 학술 삽화 자동화를 제공하지만, 래스터 이미지 출력의 한계로 인해 벡터 그래픽 대비 편집 가능성 및 확장성 문제가 제기된다.\n\n이 논문들에서 강조된 한계점들은 몇 가지 중요한 미래 방향을 제시한다. 특히 희귀 이벤트에 대한 데이터 희소성 및 환각(hallucination) 문제가 여전히 중요한 난제로 남아 있는 입자 가속기 및 신약 개발과 같은 안전에 중요한 응용 분야에서 견고성과 신뢰성을 향상시키는 데 강한 강조점이 있다. 도메인별 검증(예: 신약 개발에서 법률 또는 교육으로)을 넘어선 보다 일반화된 프레임워크와 in silico 계산 결과와 실험적(in vitro/wet-lab) 검증 간의 격차를 메울 필요성에 대한 명확한 요구가 있다. 미래 연구에는 형식 추론 시스템을 위한 \"natural-language grounding\" 개선, 더 넓은 과학적 탐색을 위한 보다 표현력 있는 \"experimental grammars\" 개발, 그리고 자동화된 데이터 추출에서 \"last mile\" 검증 문제 해결이 포함된다. 또한, 이 분야는 멀티 에이전트 협업의 정량적 스케일링 원리를 진정으로 이해하고 벤치마킹하기 위해 소규모 에이전트 시스템 실험을 넘어, 잠재적으로 멀티모달 추론을 통합하고 더 나은 학술 삽화를 위해 벡터 그래픽 출력을 처리해야 한다. 대형 및 소형 언어 모델 간의 논쟁은 과학 분야 에이전틱 AI를 위한 최적의 모델 선택을 정의하기 위한 실증적 벤치마크의 필요성 또한 시사한다.",
-  "Benchmarks & Evaluation": "\"Benchmarks & Evaluation\" 카테고리의 연구는 2023년 SciCap+와 같은 과학 분야의 기초 데이터셋 구축에서 시작하여, 과학 피규어-캡션 쌍과 지식 증강을 통한 과학 문헌 이해를 위한 토대를 마련했습니다. 2024년에는 SWE-bench와 SciCode를 통해 실제 소프트웨어 엔지니어링 문제 해결 및 과학 연구 코딩에 대한 LLM의 역량을 평가하고, RelevAI-Reviewer로 학술 논문의 관련성을 평가하는 AI 기반 리뷰어 벤치마킹으로 확장되었습니다. 2025년에 들어서는 AutoML 도구의 실용적 평가와 SciHorizon을 통한 \"AI for Science\" 준비도 측정, 그리고 Vending-Bench를 통한 대화 시스템의 장기적 일관성 평가 등 실제 적용에 대한 심층적인 분석이 이루어졌습니다. 가장 최근인 2026년에는 ResearchGym과 SciAgentGym을 통해 LLM 에이전트가 가설 제안부터 실험 설계, 구현, 평가에 이르는 end-to-end 과학 연구 프로세스 전체를 수행하는 능력을 벤치마킹하며, AI의 자율적이고 통합적인 연구 역량 강화로 연구 흐름이 진화하고 있음을 보여줍니다.\n\n이 분야의 연구는 여러 도전 과제에 직면하며, 이를 해결하기 위한 다양한 시도가 이루어지고 있습니다. 첫째, **과학 연구 자동화 및 LLM 에이전트** 분야에서는 LLM 에이전트가 가설 설정, 실험 설계, 코드 구현, 평가에 이르는 복잡한 end-to-end 과학 연구를 수행하는 능력을 평가하는 것이 중요하지만, 기존 벤치마크는 규모가 작고 multi-modal reasoning 능력을 측정하기 어렵다는 한계가 있었습니다. ResearchGym은 LLM 에이전트가 전체 연구 사이클을 수행하도록 평가하며, SciAgentGym은 multi-step 과학 태스크에 대한 벤치마킹을 제공하여 이러한 문제를 해결하려 합니다. 둘째, **과학 문헌 이해 및 생성**과 관련하여, 모델이 생성하는 캡션이 자동 메트릭에서는 양호해도 인간의 적절성 평가에서는 여전히 한계가 있었습니다. SciCap+는 지식 증강 데이터셋을 구축하여 과학 피규어-캡션 쌍의 이해도를 높이고 생성 품질을 개선하고자 노력했습니다. 셋째, **코드 생성 및 소프트웨어 개발** 영역에서는 LLM이 실제 소프트웨어 버그를 해결하고 기능을 구현하는 능력을 평가해야 하지만, Python에 국한되거나 통계적으로 신뢰할 만한 분야별 비교에 부족한 규모의 문제가 있었습니다. SWE-bench는 실제 소프트웨어 엔지니어링 문제를 다루고, SciCode는 과학자들에 의해 큐레이션된 연구 코딩 벤치마크를 제공하여 이 간극을 메웁니다. 넷째, **AI for Science 준비도 및 전문 도구 평가** 측면에서는 의료, 금융 등 전문 도메인의 데이터셋 부족으로 AutoML 도구의 일반화에 한계가 있었으며, AI의 과학 분야 적용 준비도를 종합적으로 평가할 기준이 필요했습니다. \"A practical evaluation of AutoML tools\"는 다양한 분류 및 회귀 태스크에서 AutoML 도구를 평가하고, SciHorizon은 \"AI for Science\"의 전반적인 준비도를 벤치마킹합니다. 다섯째, **대화 시스템의 장기적 일관성** 평가는 매우 어려우며, 단일 실행에 의존하는 인간 기준선의 약점이 통계적 비교를 어렵게 했습니다. Vending-Bench는 대화 시스템의 장기적 일관성을 측정하기 위한 전용 벤치마크를 제시하여 이 문제를 다룹니다. 마지막으로, **학술 논문 검토 및 관련성 평가**에서는 서베이 논문에만 한정되거나 제목, 초록 같은 제한된 정보만을 활용하는 AI 기반 리뷰어 벤치마크의 한계가 있었습니다. RelevAI-Reviewer는 서베이 논문의 \"관련성\" 평가를 4-class 분류 문제로 정식화하며 AI 리뷰어의 역량을 평가합니다.\n\n제시된 논문들의 한계점과 향후 연구 방향을 종합해 볼 때, \"Benchmarks & Evaluation\" 분야는 몇 가지 핵심적인 발전 방향을 모색하고 있습니다. 현재 소규모의 태스크에 국한된 벤치마크들을 multi-modal reasoning을 포함하는 대규모, 다중 도메인 환경으로 확장하는 것이 필수적입니다. 특히 의료, 금융, 사이버보안과 같은 전문 분야 데이터셋의 부족을 해결하여 AI 모델의 일반화 능력을 강화해야 합니다. 또한, 인간 성능을 정확하게 측정하고 통계적 비교가 가능한 robust한 인간 기준선을 구축하여, 자동 메트릭과 인간의 적절성 평가 사이의 간극을 줄여야 합니다. 프로그래밍 언어의 다양성을 확보하고, 서베이 논문뿐만 아니라 일반 연구 논문으로 확장하며, 제목과 초록을 넘어선 전체 논문 텍스트를 활용하는 등 벤치마크의 범위와 깊이를 심화할 필요가 있습니다. 마지막으로, 에이전트 기반 시스템의 단순 기준선을 넘어선 더욱 정교하고 복합적인 에이전트 평가 방법론 개발이 중요하게 제시되고 있습니다.",
-  "AI Ethics & Integrity": "AI 윤리 및 무결성 분야는 2024년부터 2026년까지 활발한 연구가 진행되며, 특히 AI 기술의 급속한 발전과 활용 증가에 따라 발생하는 다양한 문제점들을 해결하기 위한 노력이 심화되고 있음을 보여준다. 초기에는 거대 언어 모델(LLM)의 신뢰성 평가와 생성형 AI 텍스트 탐지에 대한 연구가 시작되었으며, 이후 과학 연구의 재현성과 데이터 무결성, 그리고 AI 모델 자체의 환각 현상 교정 및 조직 내 생성형 AI 활용 방안으로 연구 범위가 점차 확장되는 추세이다.\n\n이 분야 연구들은 여러 세부 영역에서 직면한 문제들을 명확히 규명하고 해결책을 모색하고 있다. 첫째, **과학 연구의 재현성 및 데이터 무결성** 측면에서, 이미지 기반 과학 분석에서 흔히 발생하는 재현성 문제를 해결하기 위해 지배적인 'semantics-first' 패러다임을 넘어 'criteria-first' 접근법을 제안하며, 실증 사회과학 연구의 대규모 재현성 검증을 위한 에이전트 AI 워크플로우를 개발하여 자동화를 시도한다. 또한, AI 시대 재료과학의 데이터 무결성 위기를 분석하고 XRD/Rietveld 및 전기화학 배터리 테스트에 특화된 체크리스트를 제시하며, 전산유체역학(CFD) 분야에서는 OpenFOAMGPT 2.0을 통해 신뢰할 수 있는 엔드투엔드 자동화를 구현하려는 노력을 보인다. 둘째, **AI 신뢰성 평가 및 투명성** 문제에 대응하기 위해, 대규모 언어 모델(LLM)의 신뢰도를 체계적으로 평가할 수 있는 프레임워크인 SciTrust가 개발되어 AI 시스템의 잠재적 위험을 이해하고 관리하는 데 기여한다. 셋째, **생성형 AI 콘텐츠 탐지 및 오남용 방지**를 위해, 교육 입학 과정에서 AI 생성 텍스트를 탐지하는 모델을 개발하여 윤리적 문제를 방지하고, LLM 요약의 Generalization Bias 문제를 분석하고 완화하는 방안을 연구한다. 넷째, **AI 환각(Hallucination) 및 오류 교정**과 관련해서는 Vision-LLM의 환각을 외부 시각 도구(예: YOLO/DETR)를 사용하여 교정하는 Pelican 시스템이 제안되어 AI 모델의 신뢰성을 향상시킨다. 마지막으로, **조직 내 생성형 AI 활용 및 위험 관리**에 있어서는 미국 국립연구소 사례를 통해 과학 및 운영 지식 근로자를 위한 생성형 AI의 사용 사례와 잠재적 위험을 분석하고, 기관 차원의 적절한 정책 및 가이드라인 마련의 필요성을 강조한다.\n\n향후 연구 방향과 새로운 시도들은 주로 현재 연구들의 한계를 극복하고 적용 범위를 확장하는 데 중점을 둔다. 많은 연구들이 경험적 검증의 부족이나 특정 분야, 단일 모델, 제한된 데이터셋에 의존하는 한계를 언급하며, 이를 보완하기 위한 노력들이 제안된다. 구체적으로는 순수 개념적 제안에 대한 **경험적 실험 검증** 강화, 정치학 IV 설계나 특정 재료과학 테스트(XRD/Rietveld, 전기화학 배터리)에 국한된 연구를 **다른 학문 분야 및 더 다양한 데이터 유형(비공개 데이터 포함)으로 확장**, 단일 조직 사례 연구를 넘어선 **다양한 산업 및 기관으로의 일반화**, 그리고 GPT-3.5 Turbo 같은 **단일 LLM 의존성을 벗어나 GPT-4, Claude 등 다양한 모델로의 테스트 확장** 등이 필수적이다. 또한, 프롬프트 다양성 부족을 해결하기 위한 **정교한 프롬프트 엔지니어링** 도입, Vision-LLM의 환각 교정에 사용되는 시각 도구의 작은 객체나 비정상적 문맥에서의 **취약성 개선**, 그리고 OpenFOAMGPT와 같은 자동화 도구의 **물리적 복잡도 처리 능력 향상**과 같은 기술적 한계 극복이 주요 과제로 제시된다. 이는 AI 윤리 및 무결성 연구가 이론을 넘어 실제 적용 가능성과 견고성을 확보하는 방향으로 나아가야 함을 시사한다.",
-  "Scientific Knowledge & NLP": "과학 지식 및 NLP 분야는 2018년 BERT의 등장과 함께 과학 텍스트에 특화된 SciBERT, scispaCy와 같은 언어 모델 연구로 그 기반을 다졌다. 초기에는 과학 논문의 극단적 요약(TLDR)과 지식 집약적 생성(RAG)을 위한 기술 개발에 집중하며 텍스트 기반 정보 처리의 효율성을 높였다. 이후 2021년부터는 과학 연구의 핵심인 시각 자료, 즉 과학 피규어와 차트 이해로 연구의 흐름이 확장되었다. SciCap을 시작으로 피규어 캡션 생성과 특허 도면 설명을 위한 연구(PatFig, SciCap+, FigCaps-HF)가 활발히 진행되었으며, 2023년부터는 차트 이해 및 추론을 위한 멀티모달 LLM(ChartLlama, MMC, ChartGemma)과 명령어 튜닝(ChartInstruct), 사용자 시선 제어(Chartist) 기술까지 발전하며 차트 해석의 깊이를 더했다. 최근에는 2026년 발표된 Agentic Personas와 PersonaAI 논문에서 보이듯이, 과학적 설명을 위한 에이전트 AI 프레임워크와 전문가의 인식론적 입장을 반영한 적응형 설명 생성으로 연구의 초점이 옮겨가며 지능적이고 상호작용적인 시스템 개발을 지향하고 있다.\n\n과학 지식 및 NLP 분야는 여러 하위 범주에서 고유한 문제에 직면하며 이를 해결하기 위한 노력을 지속해왔다. 첫째, **과학 도메인 언어 모델** 분야에서는 일반 목적 LLM인 BERT가 과학 텍스트의 복잡한 구조와 전문 용어를 완전히 처리하지 못하는 문제가 있었다. 이를 극복하기 위해 과학 코퍼스로 사전 학습된 SciBERT와 생의학/과학 텍스트에 특화된 NLP 파이프라인인 scispaCy가 개발되어 도메인 특화 성능을 향상시켰다. 하지만 BERT의 MLM 수렴 속도 문제와 SciBERT의 모델 크기 제한은 여전히 과제로 남아있다. 둘째, **과학 문서 요약**의 경우, 방대한 과학 논문에서 핵심 정보를 효율적으로 추출하는 것이 어려웠다. TLDR은 이를 해결하기 위해 논문을 단일 문장으로 극단적으로 압축하는 새로운 요약 태스크를 제안했으나, 추상(abstract) 또는 특정 입력 공간에 국한되는 한계를 보였다. 셋째, **지식 기반 텍스트 생성**에서는 생성 모델의 환각(hallucination)과 외부 지식 활용 능력 부족이 문제였다. Retrieval-Augmented Generation (RAG)은 외부 문서에서 관련 정보를 검색하여 생성에 활용함으로써 이 문제를 완화했으나, 학습 중 document encoder를 고정하는 방식은 유연성을 떨어뜨렸다. 넷째, **과학 피규어 및 특허 도면 캡션 생성**은 과학 논문의 피규어나 특허 도면에 대한 정확하고 설명적인 캡션을 자동으로 생성하는 데 어려움이 있었다. SciCap은 최초의 대규모 실세계 figure-caption 데이터셋을 구축하여 자동 캡션 생성의 발판을 마련했지만, BLEU-4 점수가 매우 낮은 초기 한계를 보였다. 이후 SciCap+는 지식 증강 데이터셋으로 모델 성능을 개선하려 했으나, 자동 메트릭에서는 양호해도 인간 평가에서는 여전히 미흡한 결과가 나타났다. PatFig는 특허 도면에 특화된 캡션 생성을 다루었으나 MiniGPT-4의 visual-spatial 추론 한계에 직면했으며, FigCaps-HF는 사용자 피드백을 활용하여 캡션 품질을 높였지만 다중 피드백을 동시에 활용하지 못하는 제약이 있었다. 다섯째, **멀티모달 차트 이해 및 추론** 분야에서는 다양한 차트 유형(막대, 꺾은선, 파이, 산점도 등)을 해석하고 추론하는 것이 난제였다. ChartLlama, MMC, ChartGemma는 멀티모달 LLM을 통해 차트 이해 능력을 향상시켰고, ChartInstruct는 명령어 튜닝으로 차트 이해 태스크를 확장했다. Reading and Reasoning over Chart Images는 차트 이미지에서 증거를 찾아 추론하는 방법을 제시했으며, Chartist는 사용자 시선 제어를 통해 태스크 기반 차트 이해를 시도했다. 그러나 이들 연구는 합성 데이터 의존성(ChartLlama), 특정 차트 유형(주로 막대 차트)에 국한되는 한계(Reading & Reasoning, Chartist), 독점 LLM 의존성(ChartGemma), 대규모 모델 실험의 어려움(MMC), 그리고 Chart-to-Table 변환 태스크 평가 부족(ChartInstruct)과 같은 문제점을 안고 있다. 마지막으로, **에이전트 AI 기반 과학 설명 및 발견** 분야에서는 전문가의 다양한 인식론적 입장을 반영하여 적응적 설명을 생성하고 과학적 발견 과정을 지원하는 지능형 에이전트 시스템을 구축하는 데 도전했다. Agentic Personas와 PersonaAI는 이 방향으로 나아가며 각각 지식 그래프 기반 설명 생성과 노화 연구를 위한 인터랙티브 에이전틱 AI 프레임워크를 제안했으나, 특정 도메인(약물 발견, 노화 연구)에서의 검증과 in silico 검증에만 국한되는 한계를 지적했다.\n\n향후 연구는 각 논문의 한계점에서 드러난 새로운 시도와 방향성을 제시한다. 첫째, 현재의 모델들이 특정 도메인(약물 발견, 노화 연구)이나 특정 차트 유형(막대 차트)에만 국한되어 검증된 점을 넘어, 법률, 교육, 기후 모델링, 그리고 파이/라인/산점도 차트 등 다양한 분야와 차트 유형으로 적용 범위를 확장하는 것이 중요하다고 강조된다. 특히 PersonaAI의 in silico 검증 한계는 실험적(in vitro) 검증의 필요성을 시사한다. 둘째, 모델의 규모와 다양성을 확장하는 노력이 필요하다. RAG의 document encoder를 업데이트하거나, MMC의 13B 이상의 대규모 모델 실험을 통해 성능 향상을 모색할 수 있다. 또한 ChartLlama에서 언급된 합성 데이터의 한계를 극복하기 위해 실세계 차트의 시각적 다양성을 반영한 데이터셋 구축이 요구된다. 셋째, 멀티모달 데이터의 통합 및 활용 능력을 심화해야 한다. ChartInstruct에서 다루지 못한 Chart-to-Table 태스크를 평가하고, FigCaps-HF의 다중 피드백 동시 활용 불가능 제약을 해소하며, PatFig의 visual-spatial 추론 능력 향상이 다음 단계로 제시된다. 넷째, 자동 메트릭과 인간 적절성 평가 간의 간극을 줄여 인간에 더 적합한 결과를 도출하고(SciCap+), TLDR에서 언급된 것처럼 abstract-only 입력 공간을 넘어 전체 논문 맥락을 활용한 요약 등 보다 포괄적인 정보 처리 접근 방식이 모색될 것이다. 마지막으로, ChartGemma에서 지적된 독점 LLM 의존성 문제를 해결하기 위한 개방형 대안 탐색과 같은 윤리적, 실용적 고려사항 또한 미래 연구의 중요한 방향이 될 것이다.",
-  "Scientific Writing & Peer Review": "과학 글쓰기 및 동료 심사 분야의 연구 흐름은 2019년 인공지능 기반의 초고 생성 모델 \"PaperRobot\"의 등장을 시작으로, 2023년을 기점으로 대규모 언어 모델(LLM)의 발전과 함께 급격히 변화했습니다. 특히 2023년에는 \"ReviewerGPT?\", \"Best Practices for Using AI When Writing Scientific\" 등 LLM의 잠재력과 활용 방안을 탐색하는 연구들이 다수 발표되었으며, 이는 AI가 과학 글쓰기와 동료 심사 과정에 미치는 영향에 대한 광범위한 논의를 촉발했습니다. 2024년에는 \"Reviewer2\", \"Peer Review as A Multi-Turn and Long-Context Dialogue\"와 같이 AI를 활용한 동료 심사 시스템의 최적화 및 평가 벤치마크 개발(\"RelevAI-Reviewer\")에 대한 구체적인 시도가 이어졌고, 2025년에는 \"Your Brain on ChatGPT\"와 같이 AI 사용이 인지 능력에 미치는 영향이나 \"AI is Transforming Peer Review\"와 같이 학술 생태계 전반의 변화를 다루는 연구로 확장되며, AI의 실질적인 적용과 파급 효과에 대한 심층적인 분석이 이루어지는 추세입니다.\n\n이 분야의 연구는 여러 도전 과제에 직면해 있으며, 이를 해결하기 위한 다양한 노력이 경주되고 있습니다. 첫째, **과학 글쓰기 지원**과 관련하여 AI의 초고 생성 능력이 주목받고 있지만, \"PaperRobot\"과 같은 초기 모델은 지식 추론 능력 부재로 인한 사실 오류를 보였고, \"People Who Frequently Use ChatGPT for Writing Task\" 연구는 AI를 빈번하게 사용하는 이들의 쓰기 능력 저하 가능성을 제기하는 한계를 드러냈습니다. 이에 \"Best Practices for Using AI When Writing Scientific\"와 같이 AI 활용의 모범 사례와 윤리적 가이드라인을 제시하려는 노력이 이루어졌습니다. 둘째, **AI 기반 동료 심사 시스템** 개발은 가장 활발한 영역 중 하나입니다. \"ReviewerGPT?\"는 LLM의 동료 심사 가능성을 탐색했으나 GPT-4의 8k 토큰 한계로 전체 논문을 처리하기 어려웠고, \"Peer Review as A Multi-Turn and Long-Context Dialogue\" 연구는 논문 내 그림/표를 데이터셋에 포함하지 못해 시각 정보가 배제되는 한계를 보였습니다. 이를 개선하기 위해 \"Reviewer2\"는 prompt 생성을 통해 리뷰 생성을 최적화하려 했고, \"RelevAI-Reviewer\"는 서베이 논문의 '관련성(relevance)' 평가를 벤치마킹하는 구체적인 시도를 통해 AI 심사자의 성능을 객관적으로 측정하려는 노력을 기울였습니다. 셋째, **LLM의 기술적 한계 및 인지적 영향**은 여전히 중요한 문제입니다. \"ChatGPT Outperforms Crowd Workers for Text-Annotat Task\"는 LLM이 텍스트 주석 작업에서 인간을 능가할 수 있음을 보여주었지만, 이는 단일 모델과 단일 언어(영어)에 한정된 결과였습니다. 또한, \"Your Brain on ChatGPT\"는 표본 크기 부족으로 AI 사용이 인지 부하에 미치는 영향을 일반화하기 어렵다는 한계를 지적했습니다. 넷째, **연구의 방법론적 엄밀성** 확보 또한 과제로 남아있습니다. \"AI is Transforming Peer Review\", \"The AI Writing on the Wall\", \"What ChatGPT and Generative AI Mean for Science\"와 같은 뉴스 피처 형식의 논문들은 전반적인 동향을 제시하지만, 체계적 데이터 분석이나 심층적인 논의가 부족하여 정량적 근거나 경험적 근거가 부족하다는 한계가 명확히 드러났습니다. 이러한 문제들을 해결하기 위해 연구자들은 AI 모델의 성능 개선, 데이터셋의 다양화, 인간-AI 상호작용에 대한 심층 연구 등 다각적인 접근을 시도하고 있습니다.\n\n향후 이 분야의 연구는 현재의 한계를 극복하고 새로운 지평을 열기 위한 다양한 방향으로 나아갈 것으로 예상됩니다. 표본 크기를 늘려 AI 사용이 인지 능력과 글쓰기 기술에 미치는 영향에 대한 연구 결과의 일반화를 높이고, 학술 논문, 소셜 미디어 등 다양한 도메인과 다국어 텍스트로 연구 범위를 확장하여 LLM의 적용 가능성을 넓히는 시도가 필요합니다. 또한, 현재 논문에서 누락된 그림/표와 같은 시각 정보를 데이터셋에 포함하여 AI 심사 모델의 종합적인 이해도를 높이고, LLM의 토큰 한계를 극복하기 위한 32k 버전 사용이나 멀티 스테이지 처리 방식이 적극적으로 탐색될 것입니다. 지식 추론 능력 부재로 인한 잘못된 정보 생성 문제를 해결하기 위한 AI 모델의 근본적인 개선과 함께, PGE(prompt generation)와 리뷰 생성 과정을 보다 통합적으로 접근하여 AI 동료 심사 시스템의 효율성을 증대시키는 연구가 진행될 것입니다. 마지막으로, 단편적인 사설이나 뉴스 피처 형태를 넘어 체계적인 데이터 분석과 실증 연구를 기반으로 AI의 영향과 활용에 대한 심층적이고 경험적인 근거를 마련하는 것이 중요한 미래 과제로 제시됩니다."
+  "generated": "2026-03-26",
+  "total_papers": 221,
+  "excluded": [
+    "059_Can_LLMs_Generate_Novel_Research_Id",
+    "060_Evaluating_Large_Language_Models_in"
+  ],
+  "categories": {
+    "LLM Agents for Science": {
+      "count": 64,
+      "summary": "<p>LLM Agents for Science 분야의 최근 연구는 대형 언어 모델(LLM)을 활용하여 과학 연구의 전 과정을 자율화하고 증강하는 데 중점을 둡니다. 이 연구들은 가설 생성부터 실험 설계, 수행, 데이터 분석, 결과 발표에 이르는 과학적 발견의 closed-loop 프로세스를 에이전트가 주도할 수 있도록 다양한 아키텍처와 방법론을 탐구하고 있습니다. 특히, 인간 과학자의 역할을 보완하거나 대체할 수 있는 지능형 에이전트 시스템을 구축하려는 시도가 활발하며, 특정 도메인에 특화된 자율 연구 환경을 조성하는 데 주목하고 있습니다.</p>\n\n<p>이 분야의 주요 문제 해결 노력은 여러 sub-category로 나눌 수 있습니다. 첫째, <strong>완전 자율 과학 발견(Full Autonomous Scientific Discovery)</strong>을 목표로 InternAgent, AI-Researcher, The AI Scientist 등이 가설 수립부터 논문 작성 및 피어 리뷰 통과에 이르는 과정을 자율화하며, 과학 실천 자동화의 한계(Automating the practice of science)를 체계적으로 평가합니다. 둘째, <strong>에이전트 시스템 아키텍처 및 협업(Agent System Architectures & Collaboration)</strong> 측면에서는 Agentomics-ML의 reflection feedback, AutoNumerics와 MerLean의 멀티 에이전트 시스템, PersonaAI의 RAG 기반 가설 생성 및 검증 등 복잡한 태스크를 위한 특화된 에이전트와 이들의 협업 메커니즘을 발전시킵니다. AgentRxiv는 공유 프리프린트 서버를 통한 협업을, Towards Autonomous Mathematics Research의 Aletheia는 Generator-Verifier-Reviser 구조를 통해 수학 연구의 자율화를 모색합니다. 셋째, <strong>도구 활용 및 실험 자동화(Tool Use & Lab Automation)</strong>는 Toolformer가 언어 모델의 자기지도 학습을 통한 도구 사용법 습득을 보여주었고, Coscientist는 인터넷 검색, 코드 실행, 로봇 제어 및 클라우드 실험실 연동을 통해 화학 합성을 자율화합니다. Embodied Science는 물리적 세계와의 상호작용을 통한 발견의 closed-loop를 강조하며, ToolUniverse는 AI 과학자 구축을 위한 도구 생태계를 제공합니다. 넷째, <strong>특정 과학 도메인 적용(Domain-Specific Applications)</strong>에서는 Agentomics-ML(유전체), Virtual Lab(나노바디), VASPilot(DFT 시뮬레이션), AutoNumerics(PDE 솔버), Hunt Globally(약물 자산 스카우팅) 등 생명과학, 화학, 물리학, 수학, 인문사회과학(From Labor to Collaboration), 데이터 과학(DeepAnalyze), 지구 관측(Earth-Agent) 등 광범위한 분야에 에이전트를 적용하고 있습니다. 다섯째, <strong>평가 및 벤치마킹(Evaluation & Benchmarking)</strong>을 위한 ResearchGym, AIRS-Bench, ScienceAgentBench 등은 LLM 에이전트의 end-to-end 연구 수행 능력 및 신뢰성을 객관적으로 측정합니다. 마지막으로, DataJoint 2.0은 <strong>연구 워크플로우 효율화(Research Workflow Streamlining)</strong>를 위한 SciOps 개념을 도입하며, PaperBanana는 학술 삽화를, ResearchCodeAgent와 AutoP2C는 연구 방법론의 코드화를 자동화하여 연구 생산성을 높이고 있습니다.</p>\n\n<p>이러한 연구들은 단순히 기존 과정을 자동화하는 것을 넘어, \"AI-native\" 입자 가속기처럼 설계 단계부터 AI를 내재화하거나, Embodied Science와 같이 물리적 세계와의 상호작용을 통한 새로운 과학 발견 패러다임을 제안하는 등 새로운 시도를 하고 있습니다. 또한, 멀티 에이전트 시스템의 스케일링 원리를 아키텍처-태스크 정합성에서 찾거나, 소형 언어 모델(SLM)의 잠재력을 강조하며 효율성과 경제성을 동시에 고려하는 방향으로 진화하고 있습니다. 앞으로는 에이전트의 신뢰성, 윤리적 고려사항, 그리고 인간-AI 협업의 최적화가 더욱 중요해질 것이며, LLM 에이전트가 과학 연구의 전 과정에서 핵심적인 역할을 수행하며 새로운 발견을 가속화할 것으로 기대됩니다.</p>",
+      "papers": [
+        {
+          "dir": "004_Automating_the_practice_of_science",
+          "title": "Automating the practice of science: Opportunities, challenges, and implications",
+          "date": "2025.01",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "005_Agentomics-ML_Autonomous_Machine_L",
+          "title": "Agentomics-ML: Autonomous Machine Learning Experimentation Agent for Genomic and Transcriptomic Data",
+          "date": "2025.06",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "007_Toward_a_Fully_Autonomous_AI-Nativ",
+          "title": "Toward a Fully Autonomous, AI-Native Particle Accelerator",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "008_From_Labor_to_Collaboration_A_Meth",
+          "title": "From Labor to Collaboration: A Methodological Experiment Using AI Agents to Augment Research Perspectives in Taiwan's Humanities and Social Sciences",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "009_ResearchGym_Evaluating_Language_Mo",
+          "title": "ResearchGym: Evaluating Language Model Agents on Real-World AI Research",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "012_AutoNumerics_An_Autonomous_PDE-Ag",
+          "title": "AutoNumerics: An Autonomous, PDE-Agnostic Multi-Agent Pipeline for Scientific Computing",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "015_MerLean_An_Agentic_Framework_for_A",
+          "title": "MerLean: An Agentic Framework for Autoformalization in Quantum Computation",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "016_DataJoint_20_A_Computational_Subs",
+          "title": "DataJoint 2.0: A Computational Substrate for Agentic Scientific Workflows",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "017_Hunt_Globally_Wide_Search_AI_Agent",
+          "title": "Hunt Globally: Wide Search AI Agents for Drug Asset Scouting in Investing, Business Development, and Competitive Intelligence",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "023_MAC-AMP_A_Closed-Loop_Multi-Agent",
+          "title": "MAC-AMP: A Closed-Loop Multi-Agent Collaboration System for Multi-Objective Antimicrobial Peptide Design",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "029_Embodied_Science_Closing_the_Disco",
+          "title": "Embodied Science: Closing the Discovery Loop with Agentic Embodied AI",
+          "date": "2026.03",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "031_Agentic_Personas_for_Adaptive_Scien",
+          "title": "Agentic Personas for Adaptive Scientific Explanations with Knowledge Graphs",
+          "date": "2026.03",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Knowledge & NLP",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "032_Revisiting_Gene_Ontology_Knowledge",
+          "title": "Revisiting Gene Ontology Knowledge Discovery with Hierarchical Feature Selection and Virtual Study Group of AI Agents",
+          "date": "2026.03",
+          "overall": 2,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "035_Towards_Autonomous_Mathematics_Rese",
+          "title": "Towards Autonomous Mathematics Research",
+          "date": "2026.02",
+          "overall": 5,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "037_AIRS-Bench_a_Suite_of_Tasks_for_Fr",
+          "title": "AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "038_Towards_a_Science_of_AI_Agent_Relia",
+          "title": "Towards a Science of AI Agent Reliability",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "043_PaperBanana_Automating_Academic_Il",
+          "title": "PaperBanana: Automating Academic Illustration for AI Scientists",
+          "date": "2026.01",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "052_A_Survey_on_Hypothesis_Generation_f",
+          "title": "A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "Scientific Knowledge & NLP",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "053_PersonaAI_An_Interactive_Agentic-A",
+          "title": "PersonaAI: An Interactive Agentic-AI Framework for Autonomous Hypothesis Generation and Validation in Aging",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "056_SCP_Accelerating_Discovery_with_a",
+          "title": "SCP: Accelerating Discovery with a Global Web of Autonomous Scientific Agents",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "057_Towards_a_Science_of_Scaling_Agent",
+          "title": "Towards a Science of Scaling Agent Systems",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "058_Generative_AI_Uses_and_Risks_for_Kn",
+          "title": "Generative AI Uses and Risks for Knowledge Workers in a Science Organization",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "061_From_AI_for_Science_to_Agentic_Scie",
+          "title": "From AI for Science to Agentic Science: A Survey on Autonomous Scientific Discovery",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "062_The_Adoption_and_Usage_of_AI_Agents",
+          "title": "The Adoption and Usage of AI Agents: Early Evidence from Perplexity",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "072_AI_for_social_science_and_social_sc",
+          "title": "AI for Social Science and Social Science of AI: A Survey",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "075_Future_of_Work_with_AI_Agents_Audi",
+          "title": "Future of Work with AI Agents: Auditing Automation and Augmentation Potential across the U.S. Workforce",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "076_Small_Language_Models_are_the_Futur",
+          "title": "Small Language Models are the Future of Agentic AI",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "078_RD-Agent_Automating_Data-Driven_A",
+          "title": "R&D-Agent: Automating Data-Driven AI Solution Building Through LLM-Powered Automated Research, Development, and Evolution",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "079_Accelerating_Drug_Discovery_Through",
+          "title": "Accelerating Drug Discovery Through Agentic AI: A Multi-Agent Approach to Laboratory Automation in the DMTA Cycle",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "080_VASPilot_MCP-Facilitated_Multi-Age",
+          "title": "VASPilot: MCP-Facilitated Multi-Agent Intelligence for Autonomous VASP Simulations",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "081_AgentRxiv_Towards_Collaborative_Au",
+          "title": "AgentRxiv: Towards Collaborative Autonomous Research",
+          "date": "2025.03",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "085_AnyTool_Self-Reflective_Hierarchi",
+          "title": "AnyTool: Self-Reflective, Hierarchical Agents for Large-Scale API Calls",
+          "date": "2024.02",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "086_Toolformer_Language_Models_Can_Tea",
+          "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+          "date": "2023.02",
+          "overall": 5,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "088_MechAgents_Large_language_model_mu",
+          "title": "MechAgents: Large language model multi-agent collaborations can solve mechanics problems, generate new data, and integrate knowledge",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "089_OWL_Optimized_Workforce_Learning_f",
+          "title": "OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "092_ScienceAgentBench_Toward_Rigorous",
+          "title": "ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "094_Agent_Laboratory_Using_LLM_Agents",
+          "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "097_Towards_an_AI_co-scientist",
+          "title": "Towards an AI co-scientist",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "099_Virtual_lab_powered_by_AI_scientis",
+          "title": "Virtual lab powered by 'AI scientists' super-charges biomedical research",
+          "date": "2024.12",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "100_The_Virtual_Lab_of_AI_agents_design",
+          "title": "The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies",
+          "date": "2025.01",
+          "overall": 5,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "102_AI4Research_A_Survey_of_Artificial",
+          "title": "AI4Research: A Survey of Artificial Intelligence for Scientific Research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "109_Vending-Bench_A_Benchmark_for_Long",
+          "title": "Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "110_AI_Agents_in_Engineering_Design_A",
+          "title": "AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerodynamic Car Design",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "111_SciAgents_Automating_Scientific_Di",
+          "title": "SciAgents: Automating Scientific Discovery Through Bioinspired Multi-Agent Intelligent Graph Reasoning",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "Scientific Knowledge & NLP",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "112_Language_agents_achieve_superhuman",
+          "title": "Language Agents Achieve Superhuman Synthesis of Scientific Knowledge",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation",
+            "Scientific Knowledge & NLP"
+          ]
+        },
+        {
+          "dir": "113_ResearchAgent_Iterative_Research_I",
+          "title": "ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "144_Autonomous_chemical_research_with_l",
+          "title": "Autonomous chemical research with large language models",
+          "date": "2023.12",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "168_MARG_Multi-Agent_Review_Generation",
+          "title": "MARG: Multi-Agent Review Generation for Scientific Papers",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "171_What_are_the_best_AI_tools_for_rese",
+          "title": "What are the best AI tools for research? Nature's guide",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "174_Virtual_lab_powered_by_AI_scientis",
+          "title": "Virtual lab powered by 'AI scientists' super-charges biomedical research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Scientific Discovery & Foundation Models",
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "175_Towards_end-to-end_automation_of_AI",
+          "title": "Towards end-to-end automation of AI research",
+          "date": "2026.01",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "189_Democratizing_AI_scientists_using_ToolUn",
+          "title": "Democratizing AI scientists using ToolUniverse",
+          "date": "2025.09",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "190_DeepAnalyze_Agentic_Large_Language_Mode",
+          "title": "DeepAnalyze: Agentic Large Language Models for Autonomous Data Science",
+          "date": "2025.10",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "192_MedAgentGym_A_Scalable_Agentic_Training",
+          "title": "MedAgentGym: A Scalable Agentic Training Environment for Code-Centric Reasoning in Biomedical Data Science",
+          "date": "2025.06",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "193_MedAgents_Large_Language_Models_as_Coll",
+          "title": "MedAgents: Large Language Models as Collaborators for Zero-shot Medical Reasoning",
+          "date": "2023.11",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "194_Earth-Agent_Unlocking_the_Full_Landscap",
+          "title": "Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents",
+          "date": "2025.09",
+          "overall": 0,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "199_InternAgent_When_Agent_Becomes_the_Scie",
+          "title": "InternAgent: When Agent Becomes the Scientist -- Building Closed-Loop System from Hypothesis to Verification",
+          "date": "2025.01",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "AI Ethics & Integrity",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "200_AI-Researcher_Autonomous_Scientific_Inn",
+          "title": "AI-Researcher: Autonomous Scientific Innovation",
+          "date": "2025.01",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "207_A_Survey_of_Scientific_Large_Language_Mo",
+          "title": "A Survey of Scientific Large Language Models: From Data Foundations to Agent Frontiers",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "209_Towards_Scientific_Intelligence_A_Surve",
+          "title": "Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "210_Agentic_AI_for_Scientific_Discovery_A_S",
+          "title": "Agentic AI for Scientific Discovery: A Survey of Progress, Challenges, and Future Directions",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "220_The_AI_Scientistv2_WorkshopLevel_Auto",
+          "title": "The AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search",
+          "date": "2025.04",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "222_ResearchCodeAgent_An_LLM_MultiAgent_Sy",
+          "title": "ResearchCodeAgent: An LLM Multi-Agent System for Automated Codification of Research Methodologies",
+          "date": "2025.04",
+          "overall": 5,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "223_AutoP2C_An_LLMBased_Agent_Framework_fo",
+          "title": "AutoP2C: An LLM-Based Agent Framework for Code Repository Generation from Multimodal Content in Academic Papers",
+          "date": "2025.04",
+          "overall": 4,
+          "primary_category": "LLM Agents for Science",
+          "all_categories": [
+            "LLM Agents for Science",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        }
+      ]
+    },
+    "Scientific Discovery & Foundation Models": {
+      "count": 14,
+      "summary": "<p>제시된 논문 목록은 AI, 특히 딥러닝과 파운데이션 모델이 과학적 발견을 근본적으로 변화시키는 현재의 중요한 흐름을 보여줍니다. 이 연구들은 단백질 구조 예측, 신물질 발견과 같은 특정 도메인의 난제를 해결하는 것을 넘어, 실험 설계, 가설 생성, 데이터 분석 등 과학적 발견의 전 과정을 자동화하고 가속화하려는 광범위한 노력을 담고 있습니다. 궁극적으로 AI는 단순한 도구를 넘어 과학적 사고와 발견의 주체로서 진화하며 인간의 지식 지평을 확장하고 있습니다.</p>\n\n<p>이 분야의 연구 노력은 크게 몇 가지 <strong>sub-category</strong>로 나눌 수 있습니다. 우선, <strong>도메인 특화 과학 발견</strong>에서는 AI가 이전에 불가능했던 발견을 가능하게 하며, 해당 분야의 한계를 확장하고 있습니다. 대표적으로 AlphaFold는 아미노산 서열만으로 단백질의 3D 구조를 원자 수준의 정확도로 예측하는 혁신을 가져와 생물학 연구의 패러다임을 변화시켰습니다. 또한, GNoME(Graph neural network)은 대규모 active learning을 통해 381,000개의 새로운 안정 결정 구조를 발견하며 인류가 알고 있는 안정 물질의 수를 약 10배 확장, 재료 과학 연구를 가속화했습니다. 이론 물리학 분야에서는 \"Chiral spin symmetry and hot QCD\"와 같이 QCD의 온도에 따른 질적 변화를 설명하는 새로운 대칭 프레임워크를 AI의 도움으로 제시하며 복잡한 물리 현상에 대한 이해를 심화하고 있습니다. <strong>인지 과학 및 신경 과학</strong>에서는 \"Transforming Behavioral Neuroscience Discovery\"가 in-context learning과 AI-enhanced tensor methods를 활용하여 행동 신경과학의 발견 과정을 혁신하려는 시도를 보여주며, 복잡한 데이터 패턴에서 통찰력을 도출하는 AI의 잠재력을 탐구합니다. 가장 두드러지는 흐름은 <strong>LLM 및 파운데이션 모델의 과학적 활용과 자동화</strong>입니다. \"Galactica\"와 \"What ChatGPT and Generative AI Mean for Science\" 같은 논문들은 LLM이 과학 연구에서 정보 검색, 가설 생성, 논문 작성 등을 보조하며 생산성을 높일 잠재력을 탐구하며, \"Generative AI and the Foundation Model Era: A Comprehensive Review\"는 이러한 흐름을 종합적으로 분석합니다. 나아가, \"The AI Scientist\"와 \"Can we automatize scientific discovery in the cognitive sciences?\"는 LLM을 기반으로 실험 설계(\"Experimentalist\")부터 데이터 분석, 모델 비교, 결론 도출에 이르는 과학적 발견 사이클 전체를 자동화하는 \"in silico science\" 비전을 제시하며, \"From Automation to Autonomy\"는 LLM의 역할 변화와 역량을 체계적으로 조망합니다. 이러한 대규모 모델의 활용을 위해 \"Scaling Deep Learning for Materials Discovery\" 및 \"Scalable Cross-Facility Federated Learning for Scientific Foundation Models\"와 같이 분산된 환경에서 대규모 AI 학습을 위한 기술적 노력도 활발히 이루어지고 있습니다. 이 모든 노력은 궁극적으로 \"Artificial Intelligence for Science — Bridging Data to Wisdom\"이라는 목표 아래, 데이터를 실질적인 과학적 지혜로 전환하려는 목적을 공유합니다.</p>\n\n<p>이러한 발전은 AI가 단순히 도구를 넘어 과학적 발견의 주체로 진화할 가능성을 보여줍니다. LLM 기반 \"Experimentalist\"가 새로운 실험 패러다임을 제안하고, \"Cognitive Foundation Model\"이 복잡한 데이터를 분석하는 \"in silico science of the mind\"와 같은 새로운 시도는 과학적 사고 과정 자체를 AI가 담당할 수 있음을 암시합니다. \"Unlocking the Potential of AI Researchers in Scientific Discovery: What Is Missing?\" 논문은 이러한 완전한 자율성을 위한 간극을 탐색하며, 미래에는 인간의 개입이 최소화된 \"fully automated open-ended scientific discovery\"가 가능해질 것으로 기대됩니다. 궁극적으로 AI는 인류가 알고 있는 지식의 경계를 빠르게 확장하고, 과학적 발견의 속도를 전례 없이 가속화하며, 인류의 난제를 해결하는 데 결정적인 역할을 할 것입니다.</p>",
+      "papers": [
+        {
+          "dir": "001_Highly_Accurate_Protein_Structure_P",
+          "title": "Highly Accurate Protein Structure Prediction with AlphaFold",
+          "date": "2021.01",
+          "overall": 5,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "002_Scaling_Deep_Learning_for_Materials",
+          "title": "Scaling Deep Learning for Materials Discovery",
+          "date": "2023.01",
+          "overall": 5,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "022_Transforming_Behavioral_Neuroscienc",
+          "title": "Transforming Behavioral Neuroscience Discovery with In-Context Learning and AI-Enhanced Tensor Methods",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "024_Generative_AI_and_the_Foundation_Mo",
+          "title": "Generative AI and the Foundation Model Era: A Comprehensive Review",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "025_Scalable_Cross-Facility_Federated_L",
+          "title": "Scalable Cross-Facility Federated Learning for Scientific Foundation Models on Multiple Supercomputers",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "030_Can_we_automatize_scientific_discov",
+          "title": "Can we automatize scientific discovery in the cognitive sciences?",
+          "date": "2026.03",
+          "overall": 3,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "LLM Agents for Science"
+          ]
+        },
+        {
+          "dir": "071_Unlocking_the_Potential_of_AI_Resea",
+          "title": "Unlocking the Potential of AI Researchers in Scientific Discovery: What Is Missing?",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "073_Artificial_intelligence_for_science",
+          "title": "Artificial Intelligence for Science — Bridging Data to Wisdom",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "147_The_AI_Scientist_Towards_Fully_Aut",
+          "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "156_Galactica_A_Large_Language_Model_f",
+          "title": "Galactica: A Large Language Model for Science",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "159_What_ChatGPT_and_generative_AI_mean",
+          "title": "What ChatGPT and Generative AI Mean for Science",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "173_Artificial_intelligence_for_science",
+          "title": "Artificial intelligence for science -- bridging data to wisdom",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science",
+            "Scientific Writing & Peer Review"
+          ]
+        },
+        {
+          "dir": "197_Chiral_spin_symmetry_and_hot_QCD",
+          "title": "Chiral spin symmetry and hot QCD",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "211_From_Automation_to_Autonomy_A_Survey_on",
+          "title": "From Automation to Autonomy: A Survey on Large Language Models in Scientific Discovery",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "Scientific Discovery & Foundation Models",
+          "all_categories": [
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        }
+      ]
+    },
+    "Scientific Writing & Peer Review": {
+      "count": 16,
+      "summary": "<p>AI, 특히 Large Language Models (LLMs)의 발전은 과학 글쓰기 및 Peer Review 분야에 혁명적인 변화를 가져오고 있다. 이 분야의 연구는 AI가 제공하는 효율성 증대 및 새로운 가능성 모색과 동시에, AI 사용으로 인한 윤리적 문제, 인지적 부채(cognitive debt), 그리고 Peer Review 시스템의 근본적인 변화에 대한 우려를 동시에 다루고 있다. 전반적으로 AI의 책임감 있는 활용을 위한 가이드라인과 최적화 방안을 모색하는 흐름을 보인다.</p>\n\n<p>AI의 발전은 크게 세 가지 주요 영역에서 학술 출판 환경에 영향을 미치고 있다. 첫째, <strong>AI in Scientific Writing</strong> 분야에서는 AI를 활용한 논문 작성의 효율성 증대와 함께 여러 도전 과제가 제기된다. \"Your Brain on ChatGPT\"는 AI 조수 사용 시 인지적 부채(cognitive debt) 축적 가능성을 경고하며 인간의 비판적 사고 능력 저하에 대한 우려를 제기한다. 또한, \"Is It OK for AI to Write Science Papers?\" 설문 조사 결과에서 연구자들은 AI의 저자 자격 여부에 대해 의견이 분분하며, 이는 학술적 진실성과 윤리적 경계에 대한 깊은 논의를 촉발한다. 이러한 문제의식 아래 \"Best Practices for Using AI When Writing Scientific Manuscripts\"와 같은 논문들은 AI 사용 시 주의, 신중함, 사려 깊은 접근의 중요성을 강조하며, 창의적인 과학을 위해 명확한 가이드라인의 필요성을 역설한다. AI가 생성한 텍스트를 탐지하는 능력에 대해서는 \"People Who Frequently Use ChatGPT for Writing Tasks Are Accurate and Robust Detectors of AI-Generated Text\"에서 흥미롭게도 AI 도구 사용자들의 탐지 능력이 높다는 결과가 보고되기도 했으며, 연구자들을 위한 \"AI for Research: The Ultimate Guide to Choosing the Right Tool\"과 같은 실용적인 도구 선택 가이드도 제공되고 있다.</p>\n\n<p>둘째, <strong>AI in Peer Review</strong> 과정에서 AI의 역할은 과학계의 큰 관심사이며 우려 또한 크다. \"AI is Transforming Peer Review — and Many Scientists Are Worried\"는 AI가 Peer Review를 변화시키고 있지만, 많은 과학자들이 우려하고 있음을 보여준다. LLM을 활용한 리뷰 생성 가능성을 탐색한 \"ReviewerGPT?\"는 AI가 리뷰 과정에 통합될 잠재력을 시사하며, \"Is Your Paper Being Reviewed by an LLM?\"은 AI가 생성한 리뷰 텍스트의 탐지 가능성을 조사하여 AI 활용의 투명성 문제를 제기한다. 이러한 문제 해결 노력의 일환으로 \"Reviewer2: Optimizing Review Generation Through Prompt Generation\"은 Prompt Generation을 통해 리뷰 생성을 최적화하는 방안을 제안하며, \"Three AI-powered steps to faster, smarter peer review\"는 더 빠르고 스마트한 Peer Review를 위한 AI 기반 단계를 제시한다. \"Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions\"와 \"What Can Natural Language Processing Do for Peer Review?\"는 각각 Multi-turn Dialogue와 NLP 기술을 활용하여 Peer Review 시스템을 개선하려는 시도를 보여준다.</p>\n\n<p>셋째, <strong>Broader Academic Publishing Practices</strong> 측면에서는 AI 중심의 변화와는 별개로, 학술 출판 환경 전반의 변화도 지속적으로 연구되고 있다. \"Attracting new users or business as usual?\"과 \"Discipline-specific open access publishing practices and barriers to change\"는 Open Access(OA) 전환이 저널의 접근성 및 이용자 유입에 미치는 영향을 분석하며, 학문 분야별 OA 출판 관행과 변화의 장벽을 탐구한다. 이는 과학 글쓰기와 Peer Review를 둘러싼 광범위한 생태계 변화의 한 축을 보여준다.</p>\n\n<p>이들 연구는 AI가 단순한 도구를 넘어 과학 글쓰기 및 Peer Review의 패러다임을 근본적으로 변화시킬 잠재력을 보여준다. 특히 \"CycleResearcher: Improving Automated Research via Automated Review\"와 같이 연구와 리뷰 과정을 자동화된 루프(Automated Review)로 연결하려는 시도는 AI가 학술 활동 전반에 걸쳐 통합적으로 기여할 미래를 그려볼 수 있게 한다. 향후 연구는 AI의 효율성을 극대화하면서도 인간의 고유한 통찰력과 윤리적 책임감을 보존할 수 있는 방안, 그리고 AI 기반 시스템의 공정성과 투명성을 확보하는 데 중점을 둘 것으로 예상된다.</p>",
+      "papers": [
+        {
+          "dir": "101_Your_Brain_on_ChatGPT_Accumulation",
+          "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "106_AI_is_transforming_peer_review__an",
+          "title": "AI is Transforming Peer Review — and Many Scientists Are Worried",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "107_Is_it_OK_for_AI_to_write_science_pa",
+          "title": "Is It OK for AI to Write Science Papers? Nature Survey Shows Researchers Are Split",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "116_AI_for_research_the_ultimate_guide",
+          "title": "AI for Research: The Ultimate Guide to Choosing the Right Tool",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "117_People_who_frequently_use_ChatGPT_f",
+          "title": "People Who Frequently Use ChatGPT for Writing Tasks Are Accurate and Robust Detectors of AI-Generated Text",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "120_Reviewer2_Optimizing_Review_Genera",
+          "title": "Reviewer2: Optimizing Review Generation Through Prompt Generation",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "121_Peer_Review_as_A_Multi-Turn_and_Lon",
+          "title": "Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "122_Is_Your_Paper_Being_Reviewed_by_an",
+          "title": "Is Your Paper Being Reviewed by an LLM? Investigating AI Text Detectability in Peer Review",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "123_ReviewerGPT_An_Exploratory_Study_o",
+          "title": "ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "124_Three_AI-powered_steps_to_faster_s",
+          "title": "Three AI-powered steps to faster, smarter peer review",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "140_CycleResearcher_Improving_Automate",
+          "title": "CycleResearcher: Improving Automated Research via Automated Review",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "149_Attracting_new_users_or_business_as",
+          "title": "Attracting new users or business as usual? A case study of converting academic subscription-based journals to open access",
+          "date": "2021.07",
+          "overall": 3,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "151_Discipline-specific_open_access_pub",
+          "title": "Discipline-specific open access publishing practices and barriers to change: an evidence-based review",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "157_Best_Practices_for_Using_AI_When_Wr",
+          "title": "Best Practices for Using AI When Writing Scientific Manuscripts: Caution, Care, and Consideration: Creative Science Depends on It",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "158_The_AI_writing_on_the_wall",
+          "title": "The AI Writing on the Wall",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "169_What_Can_Natural_Language_Processin",
+          "title": "What Can Natural Language Processing Do for Peer Review?",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Writing & Peer Review",
+          "all_categories": [
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        }
+      ]
+    },
+    "Scientific Knowledge & NLP": {
+      "count": 17,
+      "summary": "<p>Scientific Knowledge & NLP\" 카테고리의 AI for Science 연구들은 최신 NLP 기술, 특히 LLM과 멀티모달 모델을 과학 도메인에 적용하는 데 중점을 둔다. 이는 과학 지식의 표현, 이해, 그리고 생성을 향상시키는 것을 목표로 한다. 주요 연구 분야는 과학 텍스트, 그림, 차트 처리뿐만 아니라 새로운 연구 아이디어 발견 지원을 포함한다. 전반적으로, 이 분야는 과학 탐구의 다양한 단계를 자동화하고 증강하는 방향으로 나아가고 있다.</p>\n\n<p>이 분야의 연구들은 다양한 sub-category에서 핵심 문제들을 해결하기 위한 노력들을 보여준다. <strong>과학 문서 요약 및 정보 추출</strong> 분야에서는 복잡한 과학 논문을 효과적으로 요약하고 정보 편향을 줄이는 것이 핵심 문제이다. \"Generalization Bias in Large Language Model Summarization of Scientific Research\"는 LLM 기반 요약 모델의 일반화 편향을 지적했으며, \"TLDR\"은 극단적 요약이라는 새로운 태스크와 데이터셋(SciTLDR)을 도입하여 과학 논문을 단일 문장으로 압축하는 해결책을 제시했다. <strong>과학 NLP 기반 모델 및 도구</strong>의 경우, 특수 과학 텍스트에 대한 일반 NLP 모델의 성능 한계를 극복하기 위해, \"BERT\"가 제시한 Transformer 기반의 사전 학습 모델의 개념은 \"SciBERT\"에 의해 과학 문헌 전용으로 확장되었다. 또한, \"scispaCy\"는 생의학/과학 텍스트를 위한 POS tagging, dependency parsing, NER, entity linking 등을 포함하는 강력한 end-to-end NLP 파이프라인을 제공하며 도메인 특화된 솔루션의 중요성을 강조한다. <strong>과학 그림/차트 이해 및 추론</strong> 분야에서 과학 문서 내 시각 정보를 이해하고 추론하는 것은 중요한 문제로, 멀티모달 LLM과 Instruction Tuning이 적극적으로 활용된다. \"ChartInstruct,\" \"ChartGemma,\" \"ChartLlama,\" \"MMC\"는 차트 이해, 추론 및 생성 능력을 향상시키기 위해 대규모 Instruction Tuning에 집중하며, \"Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking\"은 이를 자동화된 사실 확인에 적용한다. \"Chartist\"는 차트 읽기 중 인간의 시선 움직임을 연구하여 기계 학습 모델에 대한 통찰을 제공한다. 특히 <strong>과학 Figure Captioning</strong>은 \"SciCap\"이 최초의 대규모 데이터셋을 구축했고, \"SciCap+\"는 기존 데이터셋을 mention-paragraph 및 OCR 토큰으로 보강하여 단순 image-to-caption을 넘어선 지식 기반 캡션 생성의 가능성을 탐구했다. \"PatFig\"는 특허 도면에 특화된 대규모 데이터셋과 함께 MiniGPT-4를 fine-tuning하여 특허 도면 캡션 생성에 적용하는 새로운 시도를 보여주었다. 마지막으로, <strong>과학 지식 생성 및 발견</strong> 분야에서는 방대한 과학 문헌에서 새로운 연구 아이디어를 발굴하고 복잡한 질문에 답하는 것이 핵심 동력이다. \"Interesting Scientific Idea Generation using Knowledge Graphs and LLMs\"는 Knowledge Graph와 LLM을 결합하여 흥미로운 과학 아이디어를 생성하는 가능성을 제시했다. \"SciMON\"은 Literature-Based Discovery(LBD)의 기존 이진 링크 예측 방식을 넘어, 배경 문맥을 기반으로 과학 문헌에서 \"영감\"을 검색하고 새로운 연구 방향을 자연어로 생성하는 프레임워크를 선보였다. 또한, \"Leveraging LLMs in Scholarly Knowledge Graph Question Answering\"은 LLM을 활용하여 학술 Knowledge Graph에서 자연어 질문에 효율적으로 답변하는 방법을 제시하며 LLM의 지식 질의 응답 능력을 입증했다.</p>\n\n<p>LLM과 멀티모달 기능(차트, 그림) 및 Knowledge Graph의 통합은 이 분야의 중요한 진전이다. 최근 연구들은 단순한 이해를 넘어 새로운 과학적 통찰, 아이디어, 그리고 상세한 캡션을 적극적으로 생성하는 데 초점을 맞추고 있다. 향후 연구는 LLM의 과학 발견 능력을 더욱 확장하여 미묘한 추론을 가능하게 하고, 편향을 줄이며, 더욱 자율적인 과학 탐구를 지원하는 방향으로 나아갈 것으로 예상된다. Instruction Tuning과 지식 증강 방식은 도메인 특화 태스크에서 특히 유망한 접근법으로 자리매김하고 있다.</p>",
+      "papers": [
+        {
+          "dir": "070_Interesting_Scientific_Idea_Generat",
+          "title": "Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "103_Generalization_Bias_in_Large_Langua",
+          "title": "Generalization Bias in Large Language Model Summarization of Scientific Research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "AI Ethics & Integrity",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "125_ChartInstruct_Instruction_Tuning_f",
+          "title": "ChartInstruct: Instruction Tuning for Chart Comprehension and Reasoning",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "126_ChartGemma_Visual_Instruction-tuni",
+          "title": "ChartGemma: Visual Instruction-tuning for Chart Reasoning in the Wild",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "127_ChartLlama_A_Multimodal_LLM_for_Ch",
+          "title": "ChartLlama: A Multimodal LLM for Chart Understanding and Generation",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "128_MMC_Advancing_Multimodal_Chart_Und",
+          "title": "MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "129_Reading_and_Reasoning_over_Chart_Im",
+          "title": "Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "131_Chartist_Task-driven_Eye_Movement",
+          "title": "Chartist: Task-driven Eye Movement Control for Chart Reading",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "133_PatFig_Generating_Short_and_Long_C",
+          "title": "PatFig: Generating Short and Long Captions for Patent Figures",
+          "date": "2023.01",
+          "overall": 3,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "134_SciCap_A_Knowledge_Augmented_Data",
+          "title": "SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Figure Captioning",
+          "date": "2023.01",
+          "overall": 3,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "135_BERT_Pre-training_of_Deep_Bidirect",
+          "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+          "date": "2018.01",
+          "overall": 5,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "136_ScispaCy_Fast_and_Robust_Models_fo",
+          "title": "ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing",
+          "date": "2019.08",
+          "overall": 4,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "137_TLDR_Extreme_Summarization_of_Scie",
+          "title": "TLDR: Extreme Summarization of Scientific Documents",
+          "date": "2020.01",
+          "overall": 4,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "138_SciBERT_A_Pretrained_Language_Mode",
+          "title": "SciBERT: A Pretrained Language Model for Scientific Text",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "143_SciCap_Generating_Captions_for_Sci",
+          "title": "SciCap: Generating Captions for Scientific Figures",
+          "date": "2021.01",
+          "overall": 3,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "148_SciMON_Scientific_Inspiration_Mach",
+          "title": "SciMON: Scientific Inspiration Machines Optimized for Novelty",
+          "date": "2024.01",
+          "overall": 4,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "221_Leveraging_LLMs_in_Scholarly_Knowledge_G",
+          "title": "Leveraging LLMs in Scholarly Knowledge Graph Question Answering",
+          "date": "2023.11",
+          "overall": 4,
+          "primary_category": "Scientific Knowledge & NLP",
+          "all_categories": [
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        }
+      ]
+    },
+    "Benchmarks & Evaluation": {
+      "count": 29,
+      "summary": "<p>AI for Science 분야의 \"Benchmarks & Evaluation\" 연구들은 AI 모델과 시스템의 과학 연구 적용 및 평가에 대한 광범위한 노력을 보여준다. 이들은 주로 과학 워크플로우의 자동화 및 재현성 향상, LLM 에이전트의 과학적 도구 활용 능력 벤치마킹, 과학 데이터와 콘텐츠의 이해 및 생성 능력 평가, 그리고 AI가 과학 생태계에 미치는 영향 분석 등을 다룬다. 궁극적으로는 AI를 단순한 도구를 넘어 과학 연구의 강력한 파트너로 발전시키기 위한 기반을 마련하고자 한다.</p>\n\n<p>이 연구 목록은 다양한 sub-category에 걸쳐 AI의 과학적 역량을 벤치마킹하고 평가하려는 노력을 보여준다. <strong>과학 연구 워크플로우 자동화 및 재현성</strong> 분야에서는 수학 문헌 형식화(M2F), 사회과학 연구 재현성 검증(Scaling Reproducibility), 이미지 기반 과학 분석의 구조 발견(Criteria-first, semantics-later) 등 AI를 통한 워크플로우 자동화 및 재현성 향상 노력이 활발하다. 과학자를 위한 코딩 벤치마크(SciCode)와 체계적 문헌고찰(Using Artificial Intelligence for Systematic Review), 화학 반응 공간 탐색(Robot-assisted mapping) 등에서 AI의 활용이 확장되며, 훈련 데이터 한계를 넘어선 발견을 위한 검증기 활용 방법(Verifier-Constrained Flow Expansion)도 제시된다. <strong>LLM 에이전트 및 과학 도구 활용 벤치마킹</strong> 분야에서는 LLM 에이전트의 다단계 과학 도구 사용(SciAgentGym) 및 Tool Learning의 안정적인 벤치마킹(StableToolBench) 프레임워크가 개발되었다. AI-for-Science의 전반적인 준비도(SciHorizon) 및 AI 리뷰어의 서베이 논문 관련성 평가(RelevAI-Reviewer) 벤치마크도 구축되었으며, LLM의 가설 생성(Scientific Hypothesis Generation and Validation) 및 연구 가속화(Accelerating Scientific Research with Gemini) 역할도 탐구된다. <strong>과학 데이터 및 콘텐츠 이해/생성 벤치마킹</strong> 분야에서는 과학 그림-텍스트 이해(S1-MMAlign)를 위한 대규모 멀티모달 데이터셋, 그림-캡션 생성(FigCaps-HF), 학술 웹페이지 생성(Paper2Web), 인간-AI 협업 글쓰기(CoAuthor)를 위한 벤치마크가 개발되었다. <strong>AI의 과학 연구 영향 및 역할 분석</strong> 측면에서는 AI 도구가 개별 과학자의 생산성을 높이지만 집단적 과학 탐구의 범위를 축소시킨다는 역설(Artificial intelligence tools expand scientists' impact but contract science's focus)이 밝혀졌고, AI의 R&D 전반에서의 역할(Artificial Intelligence in Research and Development)이 조명된다. 마지막으로 <strong>새로운 개념적 접근 및 협업 모델</strong> 분야에서는 대학 도서관 연구 지원 서비스 혁신을 위한 AI 개념적 기반(Towards AI for Science)과 더불어, AI를 단순한 도구가 아닌 \"사고의 파트너\"(Building Machines That Learn and Think with People)로 설계해야 한다는 비전이 제시된다.</p>\n\n<p>이러한 연구들은 AI를 활용하여 과학적 발견의 속도와 효율성을 높이고, 재현성을 강화하며, 복잡한 과학 데이터를 이해하고 새로운 지식을 생성하는 데 기여하고 있다. 특히, LLM의 발전과 함께 과학적 추론, 가설 생성, 도구 활용 능력 등 더욱 고차원적인 AI 역량에 대한 벤치마킹과 평가가 활발히 이루어지고 있다. 앞으로는 AI가 단순한 보조자를 넘어, 인간 과학자와 상호작용하며 복잡한 문제를 해결하는 \"사고의 파트너\"로서 기능할 수 있도록 개념적, 기술적 발전을 모색하는 방향으로 연구가 심화될 것으로 예상된다.</p>",
+      "papers": [
+        {
+          "dir": "010_Criteria-first_semantics-later_re",
+          "title": "Criteria-first, semantics-later: reproducible structure discovery in image-based sciences",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "013_M2F_Automated_Formalization_of_Mat",
+          "title": "M2F: Automated Formalization of Mathematical Literature at Scale",
+          "date": "2026.02",
+          "overall": 5,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "018_Scaling_Reproducibility_An_AI-Assi",
+          "title": "Scaling Reproducibility: An AI-Assisted Workflow for Large-Scale Reanalysis",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "019_Verifier-Constrained_Flow_Expansion",
+          "title": "Verifier-Constrained Flow Expansion for Discovery Beyond the Data",
+          "date": "2026.02",
+          "overall": 5,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "027_Towards_AI_for_science_developing",
+          "title": "Towards AI for Science: Developing a Conceptual Basis for Transforming Research Support Services in University Libraries",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "039_SciAgentGym_Benchmarking_Multi-Ste",
+          "title": "SciAgentGym: Benchmarking Multi-Step Scientific Tool-use in LLM Agents",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science"
+          ]
+        },
+        {
+          "dir": "040_Accelerating_Scientific_Research_wi",
+          "title": "Accelerating Scientific Research with Gemini: Case Studies and Common Techniques",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "051_Scientific_Hypothesis_Generation_an",
+          "title": "Scientific Hypothesis Generation and Validation: Methods, Datasets, and Future Directions",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "054_Artificial_intelligence_tools_expan",
+          "title": "Artificial intelligence tools expand scientists' impact but contract science's focus",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "055_S1-MMAlign_A_Large-Scale_Multi-Di",
+          "title": "S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Knowledge & NLP",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "063_Robot-assisted_mapping_of_chemical",
+          "title": "Robot-assisted mapping of chemical reaction hyperspaces and networks",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "064_Artificial_Intelligence_in_Research",
+          "title": "Artificial Intelligence in Research and Development",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "066_A_practical_evaluation_of_AutoML_to",
+          "title": "A practical evaluation of AutoML tools for binary, multiclass, and multilabel classification",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "068_Using_artificial_intelligence_for_s",
+          "title": "Using Artificial Intelligence for Systematic Review: The Example of Elicit",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "069_A_multimodal_generative_AI_copilot",
+          "title": "A Multimodal Generative AI Copilot for Human Pathology",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "074_SciHorizon_Benchmarking_AI-for-Sci",
+          "title": "SciHorizon: Benchmarking AI-for-Science Readiness from Scientific Data to Large Language Models",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "077_Building_machines_that_learn_and_th",
+          "title": "Building Machines That Learn and Think with People",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "084_StableToolBench_Towards_Stable_Lar",
+          "title": "StableToolBench: Towards Stable Large-Scale Benchmarking on Tool Learning of Large Language Models",
+          "date": "2025.03",
+          "overall": 4,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "132_FigCaps-HF_A_Figure-to-Caption_Gen",
+          "title": "FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "139_CoAuthor_Designing_a_Human-AI_Coll",
+          "title": "CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "150_Google_Scholar_to_overshadow_them_a",
+          "title": "Google Scholar to Overshadow Them All? Comparing the Sizes of 12 Academic Search Engines and Bibliographic Databases",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "153_SciCode_A_Research_Coding_Benchmar",
+          "title": "SciCode: A Research Coding Benchmark Curated by Scientists",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "165_ChatGPT_outperforms_crowd_workers_f",
+          "title": "ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "166_Best_humans_still_outperform_artifi",
+          "title": "Best humans still outperform artificial intelligence in a creative divergent thinking task",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "170_RelevAI-Reviewer_A_Benchmark_on_AI",
+          "title": "RelevAI-Reviewer: A Benchmark on AI Reviewers for Survey Paper Relevance",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review",
+            "Scientific Knowledge & NLP"
+          ]
+        },
+        {
+          "dir": "191_Paper2Web_Lets_Make_Your_Paper_Alive",
+          "title": "Paper2Web: Let's Make Your Paper Alive!",
+          "date": "2025.10",
+          "overall": 0,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science"
+          ]
+        },
+        {
+          "dir": "212_Transforming_Science_with_Large_Language",
+          "title": "Transforming Science with Large Language Models: A Survey on AI-assisted Scientific Discovery, Experimentation, Content Generation, and Evaluation",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Scientific Discovery & Foundation Models",
+            "Domain Applications",
+            "Scientific Writing & Peer Review",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "215_Align_then_Fusion_Generalized_Largesca",
+          "title": "Align then Fusion: Generalized Large-scale Multi-view Clustering with Anchor Matching Correspondences",
+          "date": "2022.05",
+          "overall": 4,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "216_SemiSupervised_2D_Human_Pose_Estimation",
+          "title": "Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module",
+          "date": "2023.03",
+          "overall": 4,
+          "primary_category": "Benchmarks & Evaluation",
+          "all_categories": [
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        }
+      ]
+    },
+    "AI Ethics & Integrity": {
+      "count": 8,
+      "summary": "<p>\n\"AI Ethics & Integrity\" 분야의 연구들은 인공지능, 특히 대규모 언어 모델(LLM)과 생성형 AI(GenAI)의 과학 및 학술 분야 통합이 가속화됨에 따라 발생하는 복잡한 윤리적 및 무결성(integrity) 문제에 집중하고 있습니다. 이 논문들은 데이터의 진위성, AI 생성 콘텐츠의 신뢰성, 그리고 AI가 연구 과정에 미치는 전반적인 영향 등 핵심적인 우려 사항들을 다루고 있습니다. 책임감 있는 AI 활용을 위한 감지, 교정 및 프레임워크 구축 노력을 조명하며, AI 연구의 미래 방향을 제시합니다.\n</p>\n\n<p>\n이 연구들은 여러 sub-category를 통해 주요 문제와 해결 노력을 탐색합니다. 첫째, <strong>데이터 무결성 및 콘텐츠 진위성 (Data Integrity & Content Authenticity)</strong> 측면에서, AI 시대 재료 과학에서의 데이터 무결성 위기는 AI 생성 현미경 이미지가 실제 데이터와 전문가조차 구별하기 어렵고(40-51% 정확도), 재료 특성화 분석에 20-30%의 기본 오류가 존재하며, GenAI가 물리 원리에 모순될 수 있음을 지적합니다. 이를 해결하기 위해 책임감 있는 과학과 혁신을 위한 다각적 프레임워크가 제안됩니다. 또한, 고등 교육 분야에서는 AI가 생성한 입학 지원 자료를 탐지하여 진정성을 확보하는 것이 중요한 과제로 부상했습니다. 둘째, <strong>LLM의 환각 및 신뢰성 (LLM Hallucination & Trustworthiness)</strong> 문제에 대응하여, LLM의 사실성(factuality)을 향상하고 환각(hallucination)을 줄이기 위해 Retrieval-Augmented Generation (RAG)과 같은 기법이 지식 집약적 자연어 처리(Knowledge-Intensive NLP) 태스크에서 효과를 보였습니다. Vision-LLM에서 발생하는 환각을 교정하기 위해 Claim Decomposition 및 Program of Thought Verification과 같은 새로운 검증 방법론 'Pelican'도 개발되었습니다. AAAI Presidential Panel Report에서도 AI 연구의 17개 핵심 미래 주제 중 하나로 'Factuality & Trustworthiness'가 강조되어 중요성을 뒷받침합니다. 셋째, <strong>연구 과정 내 LLM 활용 및 윤리적 함의 (LLM Utilization in Research & Ethical Implications)</strong>에 대한 논의도 활발합니다. AI 기반 리뷰 시스템 연구는 LLM이 학술 리뷰에서 확장성과 편향(bias) 인식을 어떻게 개선할 수 있는지 평가합니다. 또한, 연구자들의 LLM 활용 실태와 인식에 대한 대규모 설문 조사를 통해 LLM의 연구 도구로서의 역할을 탐색하며, 100명 이상의 NLP 연구자와 함께 진행된 대규모 인간 연구는 LLM이 새로운 연구 아이디어를 생성할 수 있는지에 대한 가능성과 유용성을 검증하려는 시도입니다.\n</p>\n\n<p>\n이러한 연구들은 AI 시스템의 신뢰성과 책임감을 강화하기 위한 새로운 시도와 향후 연구 방향을 제시합니다. 전문가조차 오인할 수 있는 AI 생성 데이터의 도전을 해결하기 위한 견고한 검증 메커니즘과 책임감 있는 AI 프레임워크의 필요성이 강조됩니다. LLM의 연구 도구로서의 잠재력을 탐색하면서도, 환각 및 편향 문제를 해결하고 인간 전문가의 판단을 보완하는 방향으로 AI를 발전시켜 과학 및 학술 무결성을 유지하는 데 주력해야 할 것입니다.\n</p>",
+      "papers": [
+        {
+          "dir": "045_Data_integrity_in_materials_science",
+          "title": "Data integrity in materials science in the era of AI: balancing accelerated discovery with responsible science and innovation",
+          "date": "2026.01",
+          "overall": 4,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "104_Admissions_in_the_age_of_AI_detect",
+          "title": "Admissions in the Age of AI: Detecting AI-Generated Application Materials in Higher Education",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "118_Retrieval-Augmented_Generation_for",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "119_AI-Driven_Review_Systems_Evaluatin",
+          "title": "AI-Driven Review Systems: Evaluating LLMs in Scalable and Bias-Aware Academic Reviews",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "142_Pelican_Correcting_Hallucination_i",
+          "title": "Pelican: Correcting Hallucination in Vision-LLMs via Claim Decomposition and Program of Thought Verification",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "145_AAAI_Presidential_Panel_Report_on_t",
+          "title": "AAAI Presidential Panel Report on the Future of AI Research",
+          "date": "2025.03",
+          "overall": 4,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "162_LLMs_as_Research_Tools_A_Large_Sca",
+          "title": "LLMs as Research Tools: A Large Scale Survey of Researchers' Usage and Perceptions",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "164_Can_LLMs_Generate_Novel_Research_Id",
+          "title": "Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers",
+          "date": "",
+          "overall": 0,
+          "primary_category": "AI Ethics & Integrity",
+          "all_categories": [
+            "AI Ethics & Integrity",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "Domain Applications"
+          ]
+        }
+      ]
+    },
+    "Domain Applications": {
+      "count": 72,
+      "summary": "<p>AI for Science 분야는 인공지능이 과학적 발견의 전 과정 -- 가설 생성, 실험 설계, 데이터 수집 및 해석, 결과 분석 -- 을 증강하고 가속하는 데 집중하며 빠르게 발전하고 있습니다. 이는 특히 Large Language Models (LLM), Physics-Informed Neural Networks (PINN), Neural Operators, 그리고 다양한 딥러닝 기법들을 활용하여 기존 과학 연구의 한계를 극복하려는 시도로 나타납니다. 궁극적으로는 연구 생산성을 혁신하고 자율적인 과학 발견 시스템을 구축하는 것을 목표로 합니다.</p>\n\n<p>이 분야의 주요 연구는 여러 sub-category로 나눌 수 있습니다. 첫째, <strong>AI 기반 과학적 발견 및 자동화 (LLM 중심)</strong>는 LLM을 핵심 도구로 활용합니다. 과학 문헌에서 역학적 구성 방정식이나 MOF(Metal-Organic Framework) 합성 조건 및 물성 데이터를 자동 추출하여(Automated Extraction, L2M3) 수동적인 데이터 수집의 문제를 해결하고, LLM 기반 에이전트는 가설 발견(Autonomous Agents, Large Language Models for Automated Open-domain Scientific Hypotheses Discovery), 실험 설계 및 실행, 결과 분석 전 주기에 걸쳐 과학자를 오케스트레이션합니다. 특히 ChemCrow나 MatPilot 같은 에이전트들은 화학 합성, 재료 연구, 심지어 컴퓨테이셔널 유체 역학(OpenFOAMGPT) 분야에서 도구 활용을 통한 자동화를 가능하게 합니다. 둘째, <strong>자율 주행 실험실(Self-Driving Laboratory, SDL)</strong>은 고분자 브러시 연구에서 합성-시뮬레이션-특성분석 전체 파이프라인에 AI/ML 워크플로우를 도입하여(Polymer Brushes and Grafted Polymers) 실험실의 완전한 자율화를 지향합니다. 셋째, <strong>과학적 머신러닝 (PINN 및 Neural Operator)</strong>은 고전적인 수치 해석 방법의 한계를 극복하려는 노력으로, Neural-POD는 고유직교분해(POD/PCA)의 선형성 및 격자 종속성 문제를 해결하기 위해 신경망 기반 비선형 직교 기저 함수를 제안합니다. SPINONet은 에너지 효율적인 spiking neural network(SNN)를 physics-informed operator learning에 통합하고, Lang-PINN은 LLM이 자연어 설명을 바탕으로 PINN을 직접 구축하게 하여 복잡한 물리 시스템 모델링을 가속화합니다. 넷째, <strong>재료 과학 및 화학</strong> 분야에서는 비정렬 결정 구조 생성(DMFlow)이나 원자 수준의 항체 설계(RFdiffusion), 그리고 무기 재료의 원자 구조 데이터와 텍스트 입력을 통합하는 멀티모달 LLM(MatterChat) 등을 통해 새로운 재료를 발견하고 특성을 예측합니다. 다섯째, <strong>생의학 및 생명 과학</strong> 분야에서는 AI 기반 교차 약물 반응 평가(DeepCRE)나 생체 분자 상호작용 모델링(Boltz-1), 그리고 LLM을 활용한 단일 세포 분석(Scaling Large Language Models for Next-Generation Single-Cell Analysis) 등으로 신약 개발과 생체 시스템 이해를 심화합니다. 마지막으로, <strong>AI 신뢰성 및 로드맵</strong> 관련 연구들은 LLM의 과학적 신뢰성 평가(SciTrust)나 과학적 머신러닝의 불확실성 정량화(Uncertainty quantification) 방법론을 제시하여 AI for Science 분야의 안정적인 발전을 위한 기반을 다집니다.</p>\n\n<p>이러한 연구들은 LLM 기반 에이전트의 다단계 추론 및 도구 활용 능력, 멀티모달 정보 통합, 그리고 human-AI 협업 프레임워크를 통해 과학적 발견의 새로운 지평을 열고 있습니다. 특히, 자연어를 통해 복잡한 과학적 문제를 해결하고, 자율적인 실험과 분석을 수행하는 시스템은 아직 초기 단계에 있지만, 데이터-중심 및 물리-인식 모델링의 융합을 통해 궁극적으로 완전 자율 과학 연구실(Self-Driving Laboratory)을 실현하는 방향으로 나아가고 있습니다. 미래에는 더욱 고도화된 AI 에이전트와 통합 플랫폼이 과학자들이 직면한 복잡한 문제들을 해결하고, 예측 불가능한 새로운 발견을 가능하게 할 것입니다.</p>",
+      "papers": [
+        {
+          "dir": "003_Scientific_discovery_in_the_age_of",
+          "title": "Scientific discovery in the age of artificial intelligence",
+          "date": "2023.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "LLM Agents for Science",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "006_Autonomous_Agents_for_Scientific_Di",
+          "title": "Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics",
+          "date": "2025.10",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "011_Polymer_Brushes_and_Grafted_Polymer",
+          "title": "Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "014_Automated_Extraction_of_Mechanical",
+          "title": "Automated Extraction of Mechanical Constitutive Models from Scientific Literature using Large Language Models: Applications in Cultural Heritage Conservation",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "020_Neural-POD_A_Plug-and-Play_Neural",
+          "title": "Neural-POD: A Plug-and-Play Neural Operator Framework for Infinite-Dimensional Functional Nonlinear Proper Orthogonal Decomposition",
+          "date": "2026.02",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "021_EAA_Automating_materials_character",
+          "title": "EAA: Automating Materials Characterization with Vision Language Model Agents",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "026_SLE-FNO_Single-Layer_Extensions_fo",
+          "title": "SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "028_SPINONet_Scalable_Spiking_Physics-",
+          "title": "SPINONet: Scalable Spiking Physics-informed Neural Operator for Computational Mechanics Applications",
+          "date": "2026.03",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "033_LLM-ODE_Data-driven_Discovery_of_D",
+          "title": "LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models",
+          "date": "2026.03",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "034_AI_for_Science_An_Emerging_Agenda",
+          "title": "AI for Science: An Emerging Agenda",
+          "date": "2023.03",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "036_SciTrust_Evaluating_the_Trustworth",
+          "title": "SciTrust: Evaluating the Trustworthiness of Large Language Models for Science",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "AI Ethics & Integrity",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "041_AMDAT_An_Open-Source_Molecular_Dyn",
+          "title": "AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "042_DMFlow_Disordered_Materials_Genera",
+          "title": "DMFlow: Disordered Materials Generation by Flow Matching",
+          "date": "2026.02",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "044_MatterChat_A_Multi-Modal_LLM_for_M",
+          "title": "MatterChat: A Multi-Modal LLM for Material Science",
+          "date": "2025.04",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "046_A_Survey_of_AI_for_Materials_Scienc",
+          "title": "A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "047_Knowledge-guided_large_language_mod",
+          "title": "Knowledge-guided Large Language Model for Material Science",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Knowledge & NLP",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "048_Large_Language_Model_in_Materials_S",
+          "title": "Large Language Model in Materials Science: Roles, Challenges, and Strategic Outlook",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "049_Genesis_Towards_the_Automation_of",
+          "title": "Genesis: Towards the Automation of Systems Biology Research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "050_Systematic_Framework_of_Application",
+          "title": "Systematic Framework of Application Methods for Large Language Models in Language Sciences",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "065_Discovery_of_Unstable_Singularities",
+          "title": "Discovery of Unstable Singularities",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review"
+          ]
+        },
+        {
+          "dir": "067_Self-Driving_Laboratories_for_Chemi",
+          "title": "Self-Driving Laboratories for Chemistry and Materials Science",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "082_Harnessing_Large_Language_Models_to",
+          "title": "Harnessing Large Language Models to Collect and Analyze Metal-Organic Framework Property Data Set",
+          "date": "2025.02",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "083_Large-Language-Model-Based_AI_Agent",
+          "title": "Large-Language-Model-Based AI Agent for Organic Semiconductor Device Research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "087_ToolLLM_Facilitating_Large_Languag",
+          "title": "ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "090_An_automatic_end-to-end_chemical_sy",
+          "title": "An automatic end-to-end chemical synthesis development platform powered by large language models",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "091_OpenFOAMGPT_20_end-to-end_trustw",
+          "title": "OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "AI Ethics & Integrity",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "093_DeepCRE_Transforming_Drug_RD_via",
+          "title": "DeepCRE: Transforming Drug R&D via AI-Driven Cross-drug Response Evaluation",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "095_MatPilot_an_LLM-enabled_AI_Materia",
+          "title": "MatPilot: an LLM-enabled AI Materials Scientist under the Framework of Human-Machine Collaboration",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "096_A_Perspective_on_Foundation_Models",
+          "title": "A Perspective on Foundation Models in Chemistry",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "098_Atomically_accurate_de_novo_design",
+          "title": "Atomically accurate de novo design of antibodies with RFdiffusion",
+          "date": "2025.01",
+          "overall": 5,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "105_Cross_sectional_pilot_study_on_clin",
+          "title": "Cross Sectional Pilot Study on Clinical Review Generation Using Large Language Models",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "108_Large_language_models_for_automated",
+          "title": "Large Language Models for Automated Scholarly Paper Review: A Survey",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "Scientific Writing & Peer Review"
+          ]
+        },
+        {
+          "dir": "114_Fine-tuning_large_language_models_f",
+          "title": "Fine-tuning Large Language Models for Domain Adaptation: Exploration of Training Strategies, Scaling, Model Merging and Synergistic Capabilities",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "115_Foundation_models_for_materials_dis",
+          "title": "Foundation Models for Materials Discovery -- Current State and Future Directions",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "LLM Agents for Science",
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "130_Large_language_models_for_automated",
+          "title": "Large Language Models for Automated Scholarly Paper Review: A Survey",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Writing & Peer Review",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "141_PaperRobot_Incremental_Draft_Gener",
+          "title": "PaperRobot: Incremental Draft Generation of Scientific Ideas",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Scientific Writing & Peer Review",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "146_Augmenting_large_language_models_wi",
+          "title": "Augmenting large language models with chemistry tools",
+          "date": "2024.05",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "152_SWE-bench_Can_Language_Models_Reso",
+          "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "LLM Agents for Science"
+          ]
+        },
+        {
+          "dir": "154_Do_Users_Write_More_Insecure_Code_w",
+          "title": "Do Users Write More Insecure Code with AI Assistants?",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "155_Productivity_assessment_of_neural_c",
+          "title": "Productivity Assessment of Neural Code Completion",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "160_Use_of_large_language_models_as_art",
+          "title": "Use of Large Language Models as Artificial Intelligence Tools in Academic Research and Publishing among Global Clinical Researchers",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "161_LLMs_Outperform_Outsourced_Human_Co",
+          "title": "LLMs Outperform Outsourced Human Coders on Complex Textual Analysis",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "163_LLM4SR_A_Survey_on_Large_Language",
+          "title": "LLM4SR: A Survey on Large Language Models for Scientific Research",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "167_Can_large_language_models_provide_u",
+          "title": "Can large language models provide useful feedback on research papers? A large-scale empirical analysis",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Knowledge & NLP",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "172_Foundation-Model_Surrogates_Enable",
+          "title": "Foundation-Model Surrogates Enable Data-Efficient Active Learning for Materials Discovery",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "177_The_frontier_of_simulationbased_inferen",
+          "title": "The frontier of simulation-based inference",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "178_Foundation_models_in_bioinformatics",
+          "title": "Foundation models in bioinformatics",
+          "date": "2025.03",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "179_Uncertainty_quantification_in_scientific",
+          "title": "Uncertainty quantification in scientific machine learning: Methods, metrics, and comparisons",
+          "date": "",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "181_Scaling_Large_Language_Models_for_NextG",
+          "title": "Scaling Large Language Models for Next-Generation Single-Cell Analysis",
+          "date": "2025.04",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "182_Simulations_in_the_era_of_exascale_compu",
+          "title": "Simulations in the era of exascale computing",
+          "date": "2023.03",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "183_Boltz1_Democratizing_Biomolecular_Inter",
+          "title": "Boltz-1 Democratizing Biomolecular Interaction Modeling",
+          "date": "2024.11",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "184_Architectures_variants_and_performance",
+          "title": "Architectures, variants, and performance of neural operators: A comparative review",
+          "date": "2025.10",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "185_Artificial_Intelligence_for_Direct_Predi",
+          "title": "Artificial Intelligence for Direct Prediction of Molecular Dynamics Across Chemical Space",
+          "date": "2025.05",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "185_LangPINN_From_Language_to_PhysicsInfo",
+          "title": "Lang-PINN: From Language to Physics-Informed Neural Networks via a Multi-Agent Framework",
+          "date": "2025.10",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science"
+          ]
+        },
+        {
+          "dir": "186_Nonlinear_stochastic_and_quantum_motion",
+          "title": "Nonlinear stochastic and quantum motion from Coulomb forces",
+          "date": "2025.11",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications"
+          ]
+        },
+        {
+          "dir": "187_Aviary_training_language_agents_on_chal",
+          "title": "Aviary: training language agents on challenging scientific tasks",
+          "date": "2024.12",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Scientific Discovery & Foundation Models"
+          ]
+        },
+        {
+          "dir": "188_TxAgent_An_AI_Agent_for_Therapeutic_Rea",
+          "title": "TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools",
+          "date": "2025.03",
+          "overall": 0,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "195_Large_Language_Models_for_Automated_Open",
+          "title": "Large Language Models for Automated Open-domain Scientific Hypotheses Discovery",
+          "date": "2023.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "196_State-Free_Inference_of_State-Space_Mode",
+          "title": "State-Free Inference of State-Space Models: The Transfer Function Approach",
+          "date": "2024.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "198_Distinguishing_Neutron_Star_vs_Low-Mass",
+          "title": "Distinguishing Neutron Star vs. Low-Mass Black Hole Binaries with Postmerger Gravitational Waves $-$ Sensitivity to Transmuted Black Holes and Non-Annihilating Dark Matter",
+          "date": "2025.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "201_A_Survey_on_Uncertainty_Quantification_M",
+          "title": "A Survey on Uncertainty Quantification Methods for Deep Learning",
+          "date": "2023.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "AI Ethics & Integrity",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "202_Foundation_Models_for_Environmental_Scie",
+          "title": "Foundation Models for Environmental Science: A Survey of Emerging Frontiers",
+          "date": "2025.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "203_From_Theory_to_Application_A_Practical",
+          "title": "From Theory to Application: A Practical Introduction to Neural Operators in Scientific Computing",
+          "date": "2025.01",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "204_Physics-Informed_Neural_Networks_and_Ext",
+          "title": "Physics-Informed Neural Networks and Extensions",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation",
+            "AI Ethics & Integrity"
+          ]
+        },
+        {
+          "dir": "205_Scientific_Machine_Learning_through_Phys",
+          "title": "Scientific Machine Learning through Physics-Informed Neural Networks: Where we are and What's next",
+          "date": "2022.01",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "206_Scientific_Large_Language_Models_A_Surv",
+          "title": "Scientific Large Language Models: A Survey on Biological & Chemical Domains",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "208_A_Comprehensive_Survey_of_Scientific_Lar",
+          "title": "A Comprehensive Survey of Scientific Large Language Models and Their Applications in Scientific Discovery",
+          "date": "2024.01",
+          "overall": 3,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Scientific Discovery & Foundation Models",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "213_Physics_Informed_Deep_Learning_Part_I",
+          "title": "Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations",
+          "date": "2017.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "214_Neural_Ordinary_Differential_Equations",
+          "title": "Neural Ordinary Differential Equations",
+          "date": "2018.01",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "217_Architecture_Design_for_HumanDriven_Sys",
+          "title": "Architecture Design for Human-Driven Systems",
+          "date": "2021.09",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "218_ChemCrow_Augmenting_largelanguage_mode",
+          "title": "ChemCrow: Augmenting large-language models with chemistry tools",
+          "date": "2023.04",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "LLM Agents for Science",
+            "Benchmarks & Evaluation"
+          ]
+        },
+        {
+          "dir": "219_SciBench_Evaluating_CollegeLevel_Scien",
+          "title": "SciBench: Evaluating College-Level Scientific Problem-Solving Abilities of Large Language Models",
+          "date": "2023.07",
+          "overall": 4,
+          "primary_category": "Domain Applications",
+          "all_categories": [
+            "Domain Applications",
+            "Benchmarks & Evaluation"
+          ]
+        }
+      ]
+    },
+    "Other": {
+      "count": 1,
+      "summary": "",
+      "papers": [
+        {
+          "dir": "180_AI_for_Science_2025",
+          "title": "AI for Science 2025",
+          "date": "2025.12",
+          "overall": 0,
+          "primary_category": "Other",
+          "all_categories": [
+            "Other"
+          ]
+        }
+      ]
+    }
+  }
 }
