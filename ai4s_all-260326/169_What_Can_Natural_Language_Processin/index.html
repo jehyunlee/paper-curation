@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>What Can Natural Language Processing Do for Peer Review?</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>What Can Natural Language Processing Do for Peer Review?</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Ilia Kuznetsov, Osama Mohammed Afzal, Koen Dercksen, Nils Dycke, Alexander Goldberg, Tom Hope, Dirk Hovy, Jonathan K. Kummerfeld, Anne Lauscher, Kevin Leyton-Brown, Sheng Lu, Mausam, Margot Mieskes, Aurelie Nevel, Danish Pruthi, Lizhen Qu, Roy Schwartz, Noah A. Smith, Thamar Solorio, Jingyan Wang, Xiaodan Zhu, Anna Rogers, Nihar B. Shah, Iryna Gurevych (24명)</li>
+<li><strong>저장소</strong>: arXiv:2405.06563 (2024)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2405.06563"><a href="https://doi.org/10.48550/arXiv.2405.06563" target="_blank">10.48550/arXiv.2405.06563</a></a></li>
+<li><strong>키워드</strong>: NLP, 피어 리뷰, 학술 품질 관리, LLM, 리뷰어-논문 매칭, 편향, 과학적 과정</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (본질)</h2>
+<p>Dagstuhl 세미나(24052)의 결과물로, <strong>피어 리뷰 과정 전체에 걸쳐 NLP가 기여할 수 있는 문제 공간을 체계적으로 매핑한 백서(white paper)</strong>이다. AI 학회의 피어 리뷰를 대표 사례로, 논문 제출부터 카메라 레디 수정까지의 전 과정을 "리뷰 전(Before)", "리뷰 중(During)", "리뷰 후(After)"의 3단계로 나누어 각 단계별 NLP 지원 기회와 도전 과제를 상세히 논의한다. 데이터 수집/라이선싱, 실험 방법론, 윤리적 문제를 포괄적으로 다루며, 피어 리뷰 관련 데이터셋을 모은 동반 리포지토리를 제공한다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>과학 출판의 급속한 성장으로 피어 리뷰가 규모, 비용, 편향, 저품질 리뷰, 전략적 행동이라는 다중 도전에 직면하고 있다. AAAI 같은 주요 AI 학회는 매년 1만 편 이상의 투고를 처리해야 하며, 피어 리뷰에 연간 수백만 시간 이상이 소요되는 것으로 추산된다. LLM의 등장으로 완전 자동화 피어 리뷰에 대한 관심이 높아지고 있으나, 실제로 어디에서 NLP가 도움이 되고 어디에서 물러서야 하는지에 대한 체계적 분석이 부재했다. NLP 커뮤니티가 직접 피어 리뷰를 실천하고 정책을 수립하는 당사자이기에, 이 도전을 해결할 독보적 위치에 있다.</p>
+<hr />
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>피어 리뷰 과정의 포괄적 NLP 문제 지도</strong>: 제출 준비(작문 지원, 메타데이터, 스크리닝), 리뷰어-논문 매칭(텍스트 유사도, 키워드, 입찰, 이해충돌), 평가(증강 읽기, 문헌 지원, 결함 탐지), 리뷰 작성(톤/명확성/근거, 구성, 점수 보정), 토론, 메타리뷰, 최종 결정, 수정 분석까지 수십 개의 구체적 NLP 과제를 식별하였다.</li>
+<li><strong>완전 자동화에 대한 신중한 입장</strong>: 피어 리뷰의 완전 자동화는 현재 기술로 불가능하며 윤리적으로도 바람직하지 않지만, 개별적으로 잘 정의된 하위 문제들은 해결 가능하며 해결해야 한다는 균형 잡힌 입장을 제시하였다.</li>
+<li><strong>데이터/방법론/윤리 프레임워크</strong>: 피어 리뷰 데이터의 복잡성(다문서, 멀티모달, 상호연결), 가용성 문제, GDPR 준수, 라이선싱 고려사항, ACL Rolling Review의 "Yes-Yes-Yes" 데이터 수집 워크플로를 구체적으로 기술하였다.</li>
+<li><strong>측정론적 관점</strong>: "리뷰 품질", "원고 품질", "전문성" 같은 구성개념(construct)을 명확히 정의하고 조작화(operationalize)해야 한다는 측정 이론적 접근을 도입하여, 서둘러 정의되고 부실하게 측정된 변수에 대해 경고하였다.</li>
+<li><strong>행동 촉구(Call for Action)</strong>: 과학자, NLP/AI 연구자, 정책 결정자, 연구비 지원 기관 각각에 대한 구체적인 실천 방안을 제시하였다.</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>구조</strong>: 피어 리뷰 과정을 시간 순서에 따라 3단계(Before/During/After Review)로 분류하고, 각 단계를 2-4개 하위 주제로 세분화. 총 10개 섹션으로 구성된 43페이지 백서</li>
+<li><strong>사례 연구</strong>: AI 학회(ACL, NeurIPS, ICLR, AAAI 등)의 실제 피어 리뷰 관행을 대표 사례로 활용</li>
+<li><strong>기존 연구 매핑</strong>: 각 하위 문제에 대해 기존 NLP 연구와 도구를 예시로 제시하며, 해결되지 않은 문제를 식별</li>
+<li><strong>동반 리포지토리</strong>: https://github.com/OAfzal/nlp-for-peer-review 에 피어 리뷰 관련 핵심 데이터셋을 집계</li>
+<li><strong>실험 설계 논의</strong>: 인간 평가, 골드 스탠다드, 실험실 실험, 관찰 연구, 자연 실험, 통제 실험의 6가지 실험 패러다임을 체계적으로 비교</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>피어 리뷰를 "단일 NLP 과제"가 아닌 "복합 프로세스"로 재정의</strong>: 피어 리뷰를 수십 개의 상호연결된 NLP 과제의 집합체로 분해하여, 전체 자동화의 비현실성과 부분 자동화의 가능성을 동시에 보여준 최초의 포괄적 로드맵이다.</li>
+<li><strong>24명의 다분야 전문가 협업</strong>: NLP, 게임 이론, 사회학, 메타과학, HCI 등 다양한 배경의 세계적 연구자들이 Dagstuhl 세미나에서 협업한 결과물로, 단일 연구그룹의 관점을 넘어선다.</li>
+<li><strong>측정 이론의 NLP 피어 리뷰 적용</strong>: 심리학/교육학의 구성개념(construct) 이론과 측정의 신뢰도/타당도 프레임워크를 NLP 피어 리뷰 연구에 체계적으로 도입한 것은 이 분야에서 독보적이다.</li>
+<li><strong>윤리-기술 통합 논의</strong>: 편향, 투명성, 대리성(agency), 프라이버시를 기술적 해결책과 함께 통합적으로 다루어, 기술 낙관주의와 기술 비관주의 양쪽을 넘어선다.</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ol>
+<li><strong>AI 학회 중심의 논의</strong>: 주로 CS/AI 학회의 피어 리뷰를 사례로 사용하여, 저널 리뷰나 다른 학문 분야(의학, 인문학 등)의 고유한 과제가 충분히 다뤄지지 않았다.</li>
+<li><strong>구체적 실험 결과 부재</strong>: 백서의 성격상 새로운 실험이나 시스템을 제시하지 않으며, 제안된 해결책들은 아직 열린 연구 질문이다.</li>
+<li><strong>기존 연구의 체계적 서베이가 아님</strong>: 저자들이 명시적으로 밝혔듯, 모든 선행 연구를 체계적으로 조사하지 않고 핵심 적용점과 도전을 예시 중심으로 논의한다.</li>
+<li><strong>데이터 가용성 근본 문제</strong>: 오픈 피어 리뷰 데이터가 극소수 학회(ICLR, F1000Research 등)에 제한되며, 대부분의 리뷰 데이터는 비공개로 남아있어 NLP 연구의 도메인 다양성이 본질적으로 제한된다.</li>
+<li><strong>LLM 시대의 급변하는 환경</strong>: 논문 작성 시점(2024년 5월) 이후 LLM 기술의 급속한 발전으로 일부 논의가 빠르게 구식화될 수 있다.</li>
+<li><strong>향후 방향</strong>: 개별 NLP 지원 도구의 실제 배포와 통제 실험을 통한 효과 검증, 분야 간 비교 연구, 프라이버시 보존 기법의 적용, 멀티모달 피어 리뷰 데이터 처리가 필요하다.</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>NLP 커뮤니티가 피어 리뷰 개선에 기여할 수 있는 방법을 가장 포괄적이고 체계적으로 매핑한 기념비적 백서이다. 24명의 세계적 전문가가 참여한 Dagstuhl 세미나의 산출물답게, 기술적 가능성과 윤리적 제약, 데이터 문제와 측정론적 엄밀성을 균형 있게 다룬다. "완전 자동화는 불가능하지만 부분 자동화는 가능하고 필요하다"는 핵심 메시지는 LLM 시대의 과장된 기대와 과도한 우려 양쪽에 건전한 대안을 제시한다. 피어 리뷰의 각 단계를 NLP 과제로 분해한 구조는 후속 연구자들에게 명확한 진입점을 제공하며, 동반 데이터셋 리포지토리는 실질적 기여이다. 다만, 구체적 실험 결과 없이 가능성을 제시하는 데 그치므로, 이 로드맵을 실현하기 위해서는 개별 과제에 대한 심층적인 후속 연구가 필수적이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

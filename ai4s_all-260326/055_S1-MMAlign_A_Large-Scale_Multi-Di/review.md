@@ -1,0 +1,60 @@
+# S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding
+
+## 메타 정보
+- **저자**: He Wang, Longteng Guo, Pengkang Huo, Xuanxu Lin, Yichen Yuan, Jie Jiang, Jing Liu
+- **소속**: Institute of Automation, Chinese Academy of Sciences
+- **출처**: arXiv preprint (2026-01-01)
+- **DOI**: [10.48550/arXiv.2601.00264](https://doi.org/10.48550/arXiv.2601.00264)
+
+---
+
+## Essence
+과학 논문의 그림(figure)과 텍스트 간의 심각한 의미적 격차(semantic gap)를 해소하기 위해, 250만 편의 오픈 액세스 논문에서 추출한 **1,550만 개의 이미지-텍스트 쌍**으로 구성된 대규모 멀티모달 데이터셋 **S1-MMAlign**을 공개한다. 핵심 기여는 Qwen-VL 멀티모달 대규모 모델을 활용하여 논문 초록과 인용 맥락을 합성함으로써 희소한 원본 캡션을 의미적으로 풍부한 설명으로 변환하는 **AI 기반 의미 강화(semantic enhancement) 파이프라인**이다.
+
+---
+
+## Motivation
+멀티모달 학습이 일반 도메인에서 큰 성공을 거두었으나, 과학적 발견에의 적용은 과학 이미지와 텍스트 설명 간의 근본적 의미 격차로 인해 제한된다. 일반 이미지의 캡션("고양이가 매트 위에 앉아 있다")과 달리, 과학 그림의 캡션은 "Figure 3: Ablation study results"처럼 맥락 의존적이고 희소(sparse)하여, 시각적 신호가 이론적 기반으로부터 분리되는 "지시적(indexical)" 성격을 띤다. 기존 데이터셋은 원시적이고 노이즈가 많은 쌍의 단순 집적에 불과하여 이 격차를 해소하기에 구조적 깊이가 부족하다.
+
+---
+
+## Achievement
+1. **대규모 데이터셋 구축**: 1,550만 개 이미지-텍스트 쌍, 250만 편 논문, 3.03 TB 규모. arXiv, bioRxiv, medRxiv, ChemRxiv, Nature Communications 등 다양한 오픈 액세스 소스에서 수집.
+2. **다분야 커버리지**: 물리학(33%), 컴퓨터과학(25%), 천문학(13%), 생물학(10%), 수학(9%), 공학, 지구과학 등.
+3. **의미 강화 효과**: 원본 캡션 평균 267자 -> 강화 캡션 평균 759자 (2.8배 확장). 변동계수(CV) 33%로 균질화.
+4. **정량적 품질 개선**: SciBERT 기반 pseudo-perplexity가 유의하게 감소(좌측 이동). CLIP score 평균 18.21% 향상, 분산 27.77% 감소.
+5. **CC-BY-4.0 라이선스로 Hugging Face에 공개**: 즉시 활용 가능한 JSONL + TAR 형식.
+
+---
+
+## How
+- **4단계 파이프라인**: (1) Data Ingestion -> (2) Preprocessing -> (3) Core AI Processing -> (4) Structured Output Generation.
+- **arXiv 추출**: LaTeX 소스 패키지에서 정규표현식 기반 파싱으로 `figure` 환경 추출. EPS/PDF를 PNG로 래스터화. 무결성 검증 후 약 20% 불량 아카이브 제거.
+- **PDF 추출** (bioRxiv 등): MinerU 문서 처리 엔진으로 레이아웃 탐지 -> 기하학적 근접성 기반 그림-캡션 매칭 -> 콘텐츠 추출 및 정제.
+- **의미 강화**: Qwen3-VL 아키텍처(SigLIP-2 인코더 + 2D-RoPE) 사용. 각 그림에 대해 논문 제목, 초록, 로컬 인용 맥락을 결합한 "전체적 의미 창(holistic semantic window)"을 구성하여 맥락 인식 재캡셔닝 수행.
+- **대규모 추론**: 8x H100 GPU 클러스터에서 vLLM 라이브러리(PagedAttention, continuous batching) 활용.
+- **품질 검증**: SciBERT pseudo-perplexity로 언어적 품질, CLIP score로 교차 모달 정합성 평가.
+- **데이터 무결성**: Xet 버전 관리(Merkle-tree 기반 중복 제거), SHA-256 체크섬.
+
+---
+
+## Originality
+- **과학 도메인 특화 의미 강화**: 단순한 대규모 수집이 아닌, VLM을 활용하여 희소한 과학 캡션을 "자기 충족적 지식 단위(self-contained knowledge units)"로 변환하는 접근. 그림이 어떻게 생겼는지(what)뿐 아니라 왜 과학적으로 중요한지(why)를 학습할 수 있게 함.
+- **맥락 주입 전략**: 논문 초록(전역 연구 목표)과 인용 맥락(지역 실험 분석)을 결합하여 시각적 패턴의 과학적 인과성을 캡처하는 다중 소스 프롬프트 설계.
+- **규모와 다양성의 결합**: 기존 과학 멀티모달 데이터셋(SciCap, PlotQA, SciOL 등) 대비 압도적 규모(1,550만 쌍)와 다분야 커버리지.
+
+---
+
+## Limitation & Further Study
+- **물리학/CS 편향**: 데이터의 58%가 물리학과 컴퓨터과학에 집중. 화학(2%), 의학(1%) 등은 과소 대표되어 분야별 균형에 한계.
+- **다운스트림 태스크 검증 부재**: 데이터셋의 품질이 pseudo-perplexity와 CLIP score로만 평가되며, 실제 과학 VQA, figure captioning, scientific reasoning 등 다운스트림 태스크에서의 효과는 검증되지 않음. "Work in progress" 상태의 프리프린트.
+- **재캡셔닝의 환각(hallucination) 위험**: Qwen-VL이 생성한 강화 캡션의 과학적 정확성에 대한 전문가 검증(human evaluation)이 없음. 모델이 잘못된 과학적 해석을 삽입할 가능성에 대한 체계적 평가 부재.
+- **복합 그림(composite figure) 처리**: 여러 서브패널을 포함하는 과학 그림의 개별 패널 분리 및 매칭에 대한 설명 부족.
+- **비영어 논문 배제**: 영어 논문 중심이며, 다국어 과학 문헌에 대한 커버리지 미고려.
+- **정적 데이터셋**: 지속적 업데이트 메커니즘이 명시되지 않아, 새로운 논문의 지속적 통합 방안 불분명.
+- **CLIP score의 한계**: CLIP 자체가 과학 도메인에 특화되지 않아, 과학 이미지-텍스트 정합성 측정의 프록시로서의 적합성에 의문.
+
+---
+
+## Evaluation
+AI for Science 시대의 핵심 인프라 자원으로서 의미 있는 기여를 하는 데이터셋 논문이다. 1,550만 쌍이라는 규모와 AI 기반 의미 강화라는 아이디어는 설득력 있으며, CLIP score 18.21% 향상은 파이프라인의 효과를 보여준다. 그러나 현재 단계에서는 데이터셋 구축과 기초적 품질 메트릭에 머물러 있어, 실제 과학적 멀티모달 추론 성능 향상에 기여하는지를 보여주는 다운스트림 실험이 필수적이다. 재캡셔닝된 텍스트의 과학적 정확성에 대한 인간 평가 부재는 가장 큰 약점이며, 물리학/CS 편향은 "AI for Science" 전반에의 활용을 제한할 수 있다. CC-BY-4.0 공개와 체계적인 데이터 구조는 커뮤니티 활용 측면에서 높이 평가할 만하다.

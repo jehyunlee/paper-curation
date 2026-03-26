@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Harnessing Large Language Models to Collect and Analyze Metal-Organic Framework </title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Harnessing Large Language Models to Collect and Analyze Metal-Organic Framework Property Data Set</h1>
+<blockquote>
+<p><strong>저자</strong>: Yeonghun Kang, Wonseok Lee, Taeun Bae, Seunghee Han, Huiwon Jang, Jihan Kim | <strong>날짜</strong>: 2025-02-05 | <strong>Journal</strong>: Journal of the American Chemical Society (JACS), 147(5), 3943-3958 | <strong>DOI</strong>: <a href="https://doi.org/10.1021/jacs.4c11085" target="_blank">10.1021/jacs.4c11085</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>L2M3(Large Language Model MOF Miner)는 LLM 체인을 활용하여 40,000편 이상의 MOF 논문에서 합성 조건과 물성 데이터를 자동 추출하고 구조화된 데이터베이스를 구축하는 시스템이다. 추출 정확도 F1 0.93 이상을 달성하였으며, 구축된 데이터를 활용하여 시뮬레이션-실험 데이터 간 괴리의 원인(잔류 종)을 규명하고, LLM 기반 합성 조건 추천 시스템(recommendation score 0.83)을 개발하였다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: MOF는 가스 저장, 분리, 촉매 등 다양한 응용 분야를 가진 다공성 소재로, 수만 편의 연구 논문이 축적되어 있음. 기존 rule-based 및 ML 기반 데이터 마이닝 기법이 MOF 데이터 추출에 활용되어 왔음</li>
+<li><strong>Gap</strong>: 기존 연구는 1-2개 물성만 추출하거나, 합성 조건만 추출하고 물성과 연결하지 못하는 한계. 또한 rule-based 방법은 새로운 대상 확장 시 높은 비용이 소요되며, 시뮬레이션 데이터와 실험 데이터 간 괴리의 원인이 체계적으로 규명되지 않음</li>
+<li><strong>왜 중요한가</strong>: 실험 데이터의 대규모 수집은 ML 기반 소재 발견의 정확도를 높이는 핵심 요소이며, structure-synthesis-property 관계 이해가 MOF 설계 최적화에 필수적</li>
+<li><strong>접근법</strong>: 다중 LLM 에이전트(categorization-inclusion-extraction 3단계 체인)를 통해 텍스트와 테이블 모두에서 32가지 물성과 21가지 합성 조건을 JSON 형식으로 자동 추출, CCDC 데이터베이스와 매칭</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>대규모 데이터 추출</strong>: 40,000편 이상의 논문에서 39,476편 분석 완료, 32가지 정의된 물성 + 21가지 합성 조건 카테고리 추출</li>
+<li><strong>높은 정확도</strong>: Categorization F1 &gt; 0.96, Inclusion F1 &gt; 0.94, Extraction F1 &gt; 0.93 달성 -- 테이블 마이닝은 F1 1.00</li>
+<li><strong>시뮬레이션-실험 괴리 규명</strong>: 실험 데이터로 학습한 ML 모델(R^2 = 0.803, XGBoost 밀도 예측)이 시뮬레이션 데이터 학습 모델(R^2 = 0.495)보다 현저히 우수함을 입증. SHAP 분석으로 잔류 종(residual species)이 주요 원인임을 규명</li>
+<li><strong>합성 조건 추천 시스템</strong>: GPT-4o/GPT-3.5 fine-tuning 기반 추천 시스템이 median recommendation score 0.83 달성, 향후 5년간의 합성 조건도 효과적으로 예측</li>
+<li><strong>ChatMOF 통합</strong>: L2M3 데이터베이스를 ChatMOF 챗봇과 연동하여 대화형 합성 정보 검색 기능 구현</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터 수집</strong>: ACS, Elsevier, RSC, Springer 4개 출판사에서 41,681편 수집. CSD MOF subset 기준 + Scopus 키워드 검색</li>
+<li><strong>LLM 체인 아키텍처</strong>: 3단계 파이프라인 -- (1) Categorization (GPT-3.5-turbo fine-tuned, 723 예시), (2) Inclusion (GPT-3.5-turbo fine-tuned, 681 예시), (3) Extraction (GPT-4 prompt engineering)</li>
+<li><strong>적응형 프롬프트</strong>: Inclusion 단계 결과에 따라 Extraction 프롬프트를 동적으로 구성하여 프롬프트 길이 감소 및 정확도 향상</li>
+<li><strong>데이터 통합</strong>: 메타데이터(이름, 심볼, 화학식, refcode, 격자상수) 기반 동일 물질 매칭, CCDC 데이터베이스와 구조 연결</li>
+<li><strong>ML 분석</strong>: Descriptor-based (RF, XGBoost, SVM, KNN) + CGCNN + MOFTransformer로 밀도 예측, SHAP 분석으로 feature importance 도출</li>
+<li><strong>합성 추천</strong>: 60,735개 합성 조건 중 9,044개를 정제하여 GPT-4o/GPT-3.5 fine-tuning, precursor 입력 기반 합성 조건 생성</li>
+<li><strong>비용</strong>: Langchain 기반 자동화, fine-tuning이 prompt engineering 대비 약 95% 비용 절감</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>Multi-LLM 체인 기반 대규모 소재 데이터 마이닝</strong>: 단일 LLM 대비 정확도와 비용 효율성 모두 우수한 3단계 LLM 체인 아키텍처를 MOF 분야에 최초로 적용하여 20개 이상 물성을 동시 추출</li>
+<li><strong>Structure-Synthesis-Property 삼각 연결</strong>: 합성 조건과 물성을 함께 추출하고 CCDC 구조 데이터와 연결하여, 기존에 불가능했던 삼각 관계 분석을 가능하게 함</li>
+<li><strong>시뮬레이션-실험 괴리의 정량적 원인 분석</strong>: 잔류 종(용매, modulator, counter ion)이 밀도 차이의 주요 원인임을 데이터 기반으로 규명하고, 분자량과 밀도 차이 간 상관관계(Pearson r = 0.64) 발견</li>
+<li><strong>LLM 기반 합성 조건 추천</strong>: 예측(prediction)이 아닌 추천(recommendation) 패러다임으로 합성 조건 생성 문제를 재정의하여, LLM의 생성 능력을 효과적으로 활용</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Extraction 단계에서 합성 방법 간 유사성(solvothermal vs chemical synthesis)으로 인한 분류 오류 존재</li>
+<li>GPT-4-32K API를 비용 문제로 도입하지 못하여 8000 토큰 초과 시 GPT-3.5-turbo로 대체</li>
+<li>오픈소스 LLM(Llama 등)이 GPT 대비 낮은 정확도를 보여 상용 API 의존성 존재</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>40,000편 규모에서의 전체 추출 비용에 대한 구체적 분석이 부족하여, 실제 재현 시 예산 규모를 가늠하기 어려움</li>
+<li>합성 조건 추천 시스템의 recommendation score가 published 조건과의 유사도이므로, 실제 합성 성공률과의 관계가 검증되지 않음 (wet-lab 검증 부재)</li>
+<li>Outlier 분석(Fig. 5b)의 6가지 유형 분류가 수동으로 이루어져 체계적 자동화가 되지 않음</li>
+<li>텍스트에서 추출한 물성값의 단위 통일 및 정규화 과정에 대한 상세 설명이 부족</li>
+<li>CCDC 매칭률이 명시적으로 보고되지 않아, 전체 데이터 중 구조-물성-합성이 모두 연결된 비율을 알기 어려움</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Wet-lab 검증을 통한 합성 조건 추천 시스템의 실제 성공률 평가</li>
+<li>오픈소스 LLM의 fine-tuning을 통한 상용 API 의존성 탈피</li>
+<li>MOF 이외 소재(제올라이트, COF, 페로브스카이트 등)로의 확장 (Note S6에서 가능성 시사)</li>
+<li>잔류 종 제거 전략과 MOF 성능 최적화 간 관계에 대한 심화 연구</li>
+<li>합성 데이터 증가에 따른 추천 시스템 성능 향상 추적</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 5/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: JACS에 게재된 본 연구는 LLM 체인을 활용하여 MOF 분야의 대규모 실험 데이터 마이닝을 성공적으로 자동화한 모범적 사례이다. 40,000편 이상의 논문에서 높은 정확도(F1 &gt; 0.93)로 물성과 합성 조건을 동시에 추출하고, 이를 구조 데이터와 연결하여 시뮬레이션-실험 괴리의 원인을 규명한 점이 핵심 기여이다. 합성 조건 추천 시스템까지 개발하여 실용적 가치를 높였으며, 프롬프트 조정만으로 다른 소재 분야로 쉽게 확장 가능한 점이 높이 평가된다. AI for Science에서 LLM 기반 과학 문헌 마이닝의 새로운 표준을 제시한 연구이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

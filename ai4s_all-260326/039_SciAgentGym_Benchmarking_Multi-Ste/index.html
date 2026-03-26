@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SciAgentGym: Benchmarking Multi-Step Scientific Tool-use in LLM Agents</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>SciAgentGym: Benchmarking Multi-Step Scientific Tool-use in LLM Agents</h1>
+<p><strong>저자:</strong> Yujiong Shen, Yajie Yang, Zhiheng Xi, Binze Hu, Huayu Sha, Jiazheng Zhang, Qiyuan Peng, Junlin Shang, Jixuan Huang, Yutao Fan, Jingqi Tong, Shihan Dou, Ming Zhang, Lei Bai, Zhenfei Yin, Tao Gui, Xingjun Ma, Qi Zhang, Xuanjing Huang, Yu-Gang Jiang
+<strong>출처:</strong> arXiv preprint (2026)
+<strong>DOI:</strong> <a href="https://doi.org/10.48550/arXiv.2602.12984" target="_blank">10.48550/arXiv.2602.12984</a>
+<strong>PDF:</strong> <a href="http://arxiv.org/abs/2602.12984">arXiv</a></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>4개 자연과학 분야의 1,780개 도메인 특화 도구를 갖춘 대규모 인터랙티브 환경 SciAgentGym과 계층적 평가 스위트 SciAgentBench를 구축하고, 의존성 그래프 기반 학습 데이터 합성(SciForge)으로 8B 모델이 235B 모델을 능가하는 과학 도구 사용 에이전트를 훈련한 연구.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<ul>
+<li>과학적 추론은 본질적으로 <strong>도메인 특화 도구(toolkit)</strong>의 정교한 통합을 요구하나, 기존 벤치마크는 에이전트의 도구 조율(orchestration) 능력을 간과</li>
+<li>현재 LLM 에이전트는 단일 도구 호출에는 능숙하나, <strong>다단계(multi-step) 워크플로에서 도구를 연쇄적으로 활용</strong>하는 능력이 크게 부족</li>
+<li>GPT-5 같은 최신 모델도 인터랙션 호라이즌이 늘어나면 성공률이 <strong>60.6%에서 30.9%로 급락</strong>하는 문제 확인</li>
+<li>과학 도구 사용 능력을 체계적으로 훈련할 수 있는 <strong>합성 데이터 생성 방법론</strong> 필요</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<ul>
+<li><strong>SciAgentGym:</strong> 4개 자연과학 분야에 걸쳐 <strong>1,780개 도메인 특화 도구</strong>를 갖춘 확장 가능한 인터랙티브 실행 환경 구축</li>
+<li><strong>SciAgentBench:</strong> 기본 동작부터 장기 호라이즌 워크플로까지 에이전트 역량을 <strong>계층적으로 스트레스 테스트</strong>하는 평가 스위트</li>
+<li><strong>핵심 병목 발견:</strong> SOTA 모델도 복잡한 과학 도구 사용에 어려움을 겪으며, 특히 <strong>다단계 워크플로 실행 실패</strong>가 주요 원인</li>
+<li><strong>SciForge:</strong> 도구 액션 공간을 <strong>의존성 그래프(dependency graph)</strong>로 모델링하여 논리 인식(logic-aware) 학습 궤적을 합성하는 데이터 생성 방법</li>
+<li><strong>SciAgent-8B:</strong> SciForge로 생성한 궤적으로 파인튜닝한 8B 모델이 <strong>Qwen3-VL-235B-Instruct를 능가</strong>하는 성과</li>
+<li>도메인 간 <strong>양의 전이(positive cross-domain transfer)</strong> 효과 확인</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<ol>
+<li><strong>환경 구축 (SciAgentGym):</strong></li>
+<li>4개 자연과학 분야(물리, 화학, 생물, 지구과학 등)에서 1,780개 도구 수집 및 표준화</li>
+<li>강건한 실행 인프라로 도구 호출의 인터랙티브 피드백 제공</li>
+<li><strong>평가 설계 (SciAgentBench):</strong></li>
+<li>계층적(tiered) 구조: 기본 도구 호출 → 복합 도구 체인 → 장기 호라이즌 워크플로</li>
+<li>각 계층에서 에이전트의 실패 모드를 세밀하게 분석 가능</li>
+<li><strong>데이터 합성 (SciForge):</strong></li>
+<li>도구 간 입출력 의존성을 <strong>그래프로 모델링</strong></li>
+<li>그래프 탐색을 통해 논리적으로 일관된 다단계 도구 사용 궤적을 자동 합성</li>
+<li>합성 데이터의 다양성과 복잡도를 체계적으로 제어</li>
+<li><strong>에이전트 훈련 (SciAgent-8B):</strong></li>
+<li>SciForge 합성 궤적으로 8B 규모 모델을 파인튜닝</li>
+<li>도메인 간 전이 학습 효과를 실험적으로 검증</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>도구 액션 공간의 의존성 그래프 모델링</strong>은 과학 워크플로의 논리적 구조를 학습 데이터에 반영하는 참신한 접근</li>
+<li>1,780개 도구의 대규모 환경 구축은 기존 벤치마크 대비 <strong>양적·질적으로 큰 도약</strong></li>
+<li>계층적 평가로 실패의 근본 원인을 <strong>단계별로 진단</strong>할 수 있게 한 것은 실용적</li>
+<li>8B 모델이 235B 모델을 능가한 결과는 <strong>데이터 품질 &gt; 모델 규모</strong>라는 중요한 시사점 제공</li>
+<li>양의 도메인 간 전이 효과는 범용 과학 에이전트 개발 가능성을 시사</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 (Limitation)</h2>
+<ul>
+<li>1,780개 도구가 실제 과학 연구에서 사용되는 도구의 <strong>복잡도와 다양성을 충분히 반영하는지</strong> 검증 필요 -- 실제 도구는 설정, 환경 의존성, 버전 문제 등이 복잡</li>
+<li>SciForge의 합성 궤적이 <strong>실제 연구자의 도구 사용 패턴</strong>과 얼마나 일치하는지 정량적 비교 부재</li>
+<li>8B vs 235B 비교는 인상적이나, <strong>동일 데이터로 235B를 파인튜닝한 경우</strong>와의 비교가 없어 데이터 효과와 모델 규모 효과의 분리가 불완전</li>
+<li>4개 자연과학 분야의 <strong>구체적 범위와 도구 분포</strong>에 대한 세부 정보 필요</li>
+<li>장기 호라이즌에서의 <strong>오류 누적 및 복구 전략</strong>에 대한 분석이 더 심화될 수 있음</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<p>SciAgentGym은 과학 도구 사용 에이전트 연구에 필요한 <strong>환경·벤치마크·훈련 파이프라인을 일괄 제공</strong>하는 포괄적 연구이다. 특히 의존성 그래프 기반 데이터 합성(SciForge)은 과학 워크플로의 논리적 구조를 학습에 반영한다는 점에서 방법론적으로 탁월하며, 8B 모델이 235B를 능가하는 결과는 학계에 강한 메시지를 던진다. 계층적 평가를 통해 "다단계 워크플로 실행이 핵심 병목"이라는 진단을 내린 것도 후속 연구 방향을 명확히 제시한다. 전반적으로 과학 AI 에이전트의 도구 사용 능력 연구에 있어 <strong>벤치마크, 방법론, 실증 결과 모두에서 높은 수준의 기여</strong>를 한 논문이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MARG: Multi-Agent Review Generation for Scientific Papers</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>MARG: Multi-Agent Review Generation for Scientific Papers</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Mike D'Arcy, Tom Hope, Larry Birnbaum, Doug Downey</li>
+<li><strong>소속</strong>: Northwestern University, The Hebrew University of Jerusalem, Allen Institute for AI</li>
+<li><strong>저장소</strong>: arXiv:2401.04259 (2024)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2401.04259"><a href="https://doi.org/10.48550/arXiv.2401.04259" target="_blank">10.48550/arXiv.2401.04259</a></a></li>
+<li><strong>키워드</strong>: 멀티에이전트, LLM, GPT-4, 피어 리뷰 생성, 과학 논문 피드백, 프롬프트 엔지니어링</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM(GPT-4)의 복수 인스턴스를 활용한 멀티에이전트 리뷰 생성 시스템 <strong>MARG</strong>를 제안한 연구이다. 논문 텍스트를 에이전트들에게 분배하여 기본 모델의 입력 길이 한계를 극복하고, 실험/명확성/영향력 등 코멘트 유형별로 전문화된 에이전트(expert agent)를 도입하여 피드백의 구체성과 유용성을 향상시켰다. 사용자 연구에서 기존 베이스라인 대비 2.2배 많은 "좋은" 코멘트(논문당 3.7개)를 생성하고, 일반적(generic) 코멘트 비율을 60%에서 29%로 감소시켰다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>LLM이 과학 논문에 대한 리뷰 피드백을 생성할 수 있는 잠재력이 있으나, 두 가지 핵심 도전이 존재한다. (1) 과학 논문이 수만 토큰에 달하여 LLM의 입력 토큰 한계를 초과하며, 긴 입력을 기술적으로 지원하는 모델도 실제로는 전체를 효과적으로 활용하지 못한다. (2) 단순 프롬프트로는 일반적이고 구체성이 떨어지는 코멘트가 생성되는 경향이 있다. 기존 연구(Liang et al., 2023)는 논문을 단순 잘라내거나 단일 프롬프트를 사용하여 이러한 문제를 해결하지 못했다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>구체성 대폭 향상</strong>: MARG-S 코멘트의 71%가 "specific" 또는 "very specific"으로 평가되었으며, 베이스라인(LiZCa, SARG-B)은 40%에 불과하였다. "Very specific" 비율은 다른 방법의 3배 이상(39% vs. 11-12%).</li>
+<li><strong>좋은 코멘트 수 2.2배 증가</strong>: 사용자 연구에서 MARG-S는 논문당 평균 3.7개의 "good" 코멘트를 생성하였으며, 최상 베이스라인(SARG-B)은 1.7개, LiZCa는 0.3개에 불과하였다.</li>
+<li><strong>자동 평가에서 최고 recall</strong>: MARG-S는 실제 리뷰어 코멘트와의 정렬 기반 recall에서 15.84%로 모든 베이스라인(최고 SARG-TP 10.62%)과 인간 리뷰어 기준선(9.42%)을 초과하였다.</li>
+<li><strong>입력 길이 한계 극복</strong>: 논문 텍스트를 에이전트별로 분배하여 기본 모델(GPT-4 8k 토큰)의 한계를 넘어서는 긴 논문도 처리 가능하게 하였다.</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>멀티에이전트 아키텍처</strong>: 리더(leader), 워커(worker), 전문가(expert)의 3종 에이전트로 구성. 워커는 논문 청크를 보유하고, 리더가 조율하며, 전문가가 특정 하위 작업을 수행</li>
+<li><strong>MARG-S (Specialized)</strong>: 3개 독립적 멀티에이전트 그룹이 각각 실험/평가, 명확성/재현성, 신규성/영향력에 대한 코멘트를 생성. 이후 정제(refinement) 단계에서 각 코멘트를 별도의 멀티에이전트 그룹이 검증/수정/제거</li>
+<li><strong>전문가 에이전트 설계</strong>:</li>
+<li>실험 전문가: "논문의 주장을 검증할 고품질 실험을 설계"하도록 프롬프트 (능동적 읽기 전략에서 영감)</li>
+<li>명확성 전문가: "매우 호기심이 많은" 역할로 리더에게 질문하여 논문의 모호한 부분 식별</li>
+<li>영향력 전문가: 논문에 회의적인 역할로 기여의 타당성을 검증</li>
+<li><strong>통신 프로토콜</strong>: "SEND MESSAGE:" 명령어를 통한 브로드캐스트 방식, 중복 메시지/루프 감지 및 오류 수정 메커니즘 내장</li>
+<li><strong>컨텍스트 관리</strong>: 에이전트별 차별화된 히스토리 프루닝 전략 (워커: 최근 3개 메시지, 리더: 수신 메시지만 프루닝)</li>
+<li><strong>평가</strong>: ARIES 코퍼스 30편 대상 자동 정렬 평가 + 9명 연구자 사용자 연구(3가지 방법 비교)</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>멀티에이전트를 입력 길이 확장에 최초 적용</strong>: 기존 멀티에이전트 LLM 연구가 추론 개선이나 사회 시뮬레이션에 집중한 반면, MARG는 입력 분산을 통한 컨텍스트 확장이라는 실용적 활용을 과학 리뷰 생성이라는 고도 기술적 과제에 최초로 적용하였다.</li>
+<li><strong>측면별 전문화 에이전트</strong>: 실험 설계를 위한 "가상 실험 생성 후 실제 실험과 비교"라는 전략은 인간의 능동적 읽기(active reading) 전략에서 영감을 받은 독창적 접근이다.</li>
+<li><strong>정제(refinement) 단계의 분리</strong>: 생성과 검증을 분리함으로써 모델의 자기 성찰(self-reflection) 한계를 우회하는 실용적 설계이다.</li>
+<li><strong>상세한 실패 분석</strong>: 70%의 대화에서 발생하는 통신 오류 유형을 체계적으로 분류(missing context 53%, misplaced SEND MESSAGE 47% 등)하여 멀티에이전트 시스템의 실질적 문제점을 투명하게 공개하였다.</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ol>
+<li><strong>높은 비용과 긴 실행 시간</strong>: MARG-S는 논문당 평균 1,236,344 입력 토큰을 소비하여 LiZCa(7,398 토큰) 대비 약 167배 많으며, 실행 시간도 약 1시간 더 소요된다. 비용 대비 성능의 수확 체감이 뚜렷하다.</li>
+<li><strong>여전히 높은 부정적 코멘트 비율</strong>: MARG-S에서도 47%의 코멘트가 "bad"로 평가되었으며, 38%가 중대한 부정확성(major inaccuracy)을 보였다.</li>
+<li><strong>시각 자료 미지원</strong>: 그림, 표, 수식을 처리하지 못하여 명확성 관련 코멘트에서 특히 성능이 저조하였다.</li>
+<li><strong>소규모 사용자 연구</strong>: 9명의 참가자로 제한되어, 통계적 검정력이 낮고 일반화에 한계가 있다.</li>
+<li><strong>관련 문헌 검색 미포함</strong>: 외부 문헌 데이터베이스를 참조하지 않아 관련 연구 비교 및 베이스라인 선택에 대한 심층적 비판이 불가능하다.</li>
+<li><strong>내부 통신 오류</strong>: 리더 에이전트의 컨텍스트 누락(53%), SEND MESSAGE 마커 오배치(47%) 등 빈번한 통신 오류가 코멘트 품질을 저하시킨다.</li>
+<li><strong>GPT-4 8k 모델 기반</strong>: 더 큰 컨텍스트 윈도를 가진 모델이 등장함에 따라 멀티에이전트 접근의 필요성이 변화할 수 있다.</li>
+<li><strong>향후 방향</strong>: 저비용 모델로의 동적 전환, 배경 문헌 통합, 메시지 압축/프루닝을 통한 효율 개선, 병렬화를 통한 실행 시간 단축(2-10배) 등이 제안된다.</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>LLM 기반 과학 리뷰 생성에서 "구체성"이라는 핵심 문제를 멀티에이전트 아키텍처와 측면별 전문화로 해결한 창의적 연구이다. 베이스라인 대비 구체적 코멘트 비율을 71%로 끌어올린 것은 인상적이며, 특히 "가상 실험 설계 후 실제 실험과 비교"라는 전략은 사람의 비판적 읽기 과정을 효과적으로 모방한다. 그러나 약 167배의 비용 증가에 비해 recall 향상은 6.1 포인트(15.84% vs. 9.67%)에 불과하여 효율성이 크게 떨어지며, 여전히 절반 가까운 코멘트가 "bad"로 평가된다는 점은 실용적 한계를 보여준다. 상세한 실패 분석은 학술적 투명성 측면에서 높이 평가할 만하다. 이 연구는 "LLM 하나로는 부족하다"는 문제의식과 "여러 LLM의 협업"이라는 해법을 구체적으로 검증한 선구적 작업이지만, 비용 효율성과 정확도 면에서 실질적 배포까지는 상당한 개선이 필요하다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

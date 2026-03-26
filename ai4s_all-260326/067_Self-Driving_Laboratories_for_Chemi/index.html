@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Self-Driving Laboratories for Chemistry and Materials Science</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Self-Driving Laboratories for Chemistry and Materials Science</h1>
+<ul>
+<li><strong>저자</strong>: Gary Tom, Stefan P. Schmid, Sterling G. Baird, Yang Cao, Kourosh Darvish, Han Hao, Stanley Lo, Sergio Pablo-García, Ella M. Rajaonson, Marta Skreta, Naruki Yoshikawa, Samantha Corapi, Gun Deniz Akkoc, Felix Strieth-Kalthoff, Martin Seifrid, Alán Aspuru-Guzik</li>
+<li><strong>학술지/출처</strong>: Chemical Reviews, 124(16), 9633-9732 (2024)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1021/acs.chemrev.4c00055"><a href="https://doi.org/10.1021/acs.chemrev.4c00055" target="_blank">10.1021/acs.chemrev.4c00055</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>자율주행 실험실(Self-Driving Laboratories, SDLs)의 화학 및 재료과학 분야 적용에 대한 포괄적 리뷰 논문이다. SDL의 하드웨어(로봇, 센서, 액체 처리 장치), 소프트웨어(오케스트레이션, 데이터 관리, AI 기반 실험 계획), 그리고 분석 공정 최적화, 반응 최적화, 약물 발견, 구조 재료, 광전자소자, 에너지 저장 재료 등 다양한 과학 영역에서의 실제 SDL 구현 사례를 100페이지에 걸쳐 체계적으로 정리하였다. SDL의 자동화 수준을 Level 0~5로 분류하는 계층적 프레임워크를 제시하여, 각 시스템의 자율성 정도를 명확히 구분한다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>기후변화, 에너지 지속가능성, 의료 위기 등 긴급한 글로벌 과제에 대응하기 위해 재료 및 화학 발견의 가속화가 필수적이다. 전통적 실험 방식은 점진적 진행, 재현성 문제, 부정적 결과의 미보고 등의 한계를 가진다. 실험 자동화와 데이터 기반 의사결정을 결합한 "폐쇄 루프(closed-loop)" 실험 시스템이 이러한 병목을 해소할 수 있으나, SDL 기술의 현재 상태와 응용 영역에 대한 종합적 조망이 부족하였다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>SDL 자율성 분류 체계 제시</strong>: 하드웨어와 소프트웨어 각각의 자동화 수준(category 0~3+)을 조합하여 Level 0~5까지 SDL을 분류하는 포괄적 프레임워크 정립</li>
+<li><strong>6대 응용 분야별 체계적 정리</strong>:</li>
+<li><strong>분석 공정 최적화</strong>: 시료 전처리, 분리/크로마토그래피 자동화</li>
+<li><strong>반응 최적화</strong>: 자기 최적화 유동 반응기(self-optimizing flow reactors), 이산/범주형 변수 최적화, 다단계 합성</li>
+<li><strong>약물 발견</strong>: 표적 식별, 히트 발견, 리드 최적화, 제형 최적화, 합성 생물학</li>
+<li><strong>구조 재료</strong>: 합금 설계, 콘크리트 배합, 적층제조, 접착제</li>
+<li><strong>광전자소자</strong>: 페로브스카이트, 나노입자, 박막, 디바이스</li>
+<li><strong>에너지 저장</strong>: 리튬이온 배터리, 레독스 플로우 배터리, 수소 연료</li>
+<li><strong>핵심 인프라 기술 총정리</strong>: 로봇 하드웨어(전용/범용/오픈소스), 소프트웨어 오케스트레이션(ChemOS, SiLA2 등), Bayesian optimization/active learning 기반 실험 계획, LLM 활용 등</li>
+<li>현존하는 대부분의 SDL이 Level 2~3 수준이며, Level 5(완전 자율)는 아직 달성되지 않았음을 확인</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li>체계적 문헌 리뷰: 화학, 재료과학, 로봇공학, AI/ML 분야의 방대한 문헌(700+ 참고문헌)을 종합</li>
+<li>SDL 자율성 평가 프레임워크: 자율주행 자동차 분류(SAE J3016)에서 영감을 받아, 하드웨어 자율성(수동 → 자동화 → 로봇 통합)과 소프트웨어 자율성(인간 기획 → ML 기반 → 생성형 AI 기반)의 2축으로 분류</li>
+<li>각 응용 분야별로 실제 SDL 구현 사례를 하드웨어 구성, 소프트웨어 아키텍처, 최적화 알고리즘, 성과 지표 측면에서 상세 분석</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>가장 포괄적인 SDL 리뷰</strong>: 하드웨어, 소프트웨어, 인프라부터 6개 주요 응용 분야까지 단일 논문에서 통합적으로 다룬 최초의 대규모 리뷰</li>
+<li><strong>자율성 수준 분류 체계</strong>: 자율주행차 분류에서 차용한 Level 0~5 프레임워크를 SDL에 맞게 재정의하여, 이 분야의 표준 용어로 자리잡을 가능성</li>
+<li><strong>실험 계획 알고리즘 비교표(Table 2)</strong>: Bayesian optimization, 유전 알고리즘, simplex 최적화, SNOBFIT 등 다양한 실험 계획 전략의 체계적 비교</li>
+<li><strong>오픈 하드웨어/소프트웨어 생태계 강조</strong>: 저비용 SDL 구축을 위한 3D 프린팅 기반 오픈소스 장비(FINDUS, OTTO 등)와 오케스트레이션 도구의 종합적 소개</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>현재 SDL의 복잡성과 비용</strong>: 대부분의 SDL 시스템이 매우 복잡하고 고가여서 접근성이 제한적</li>
+<li><strong>표준화 부재</strong>: 장비 제조사 간 표준 API 부재, 데이터 포맷 및 프로토콜의 비통일성이 확산의 주요 장벽</li>
+<li><strong>Level 5 자율성 미달</strong>: 완전 자율 SDL은 아직 실현되지 않았으며, 인간-루프(human-in-the-loop) Level 4 SDL이 당분간 실용적 대안</li>
+<li><strong>시뮬레이션-현실 간극(sim-to-real gap)</strong>: 디지털 트윈 기반 로봇 학습의 현실 환경 이전 문제가 미해결</li>
+<li><strong>윤리적 문제</strong>: SDL 기술의 악의적 사용 가능성에 대한 윤리 가이드라인 필요</li>
+<li><strong>교육 및 인력 개발</strong>: 화학/재료과학 교육 과정이 ML, 자동화, 데이터 과학을 충분히 반영하지 못하는 현실</li>
+<li>향후 SDL이 NMR, HPLC처럼 일상적 연구 도구로 전환되는 "패러다임 전환"을 전망하며, FAIR 데이터 원칙 준수와 오픈소스 생태계 구축이 핵심 과제임을 강조</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>화학 및 재료과학에서의 자율주행 실험실(SDL)에 관한 현존 가장 포괄적인 리뷰 논문이다. 100페이지, 700+개 참고문헌이라는 방대한 분량에도 불구하고, 하드웨어-소프트웨어-응용 분야로 이어지는 체계적 구조 덕분에 읽기에 명확하다. 특히 자율성 수준 분류 체계(Level 0~5)는 이 분야의 공통 언어로 기능할 수 있으며, 각 응용 분야별 실제 SDL 사례의 상세한 기술은 신규 연구자의 진입 장벽을 크게 낮춘다. 다만 100페이지 리뷰의 본질적 한계로, 개별 시스템에 대한 심층 비판적 분석보다는 서술적 정리에 가까우며, SDL 간 정량적 성능 비교가 부족하다. Aspuru-Guzik 그룹의 독보적 위치에서 작성된 만큼 자체 연구에 대한 편향 가능성도 고려해야 한다. 그럼에도 불구하고, AI for Science 연구자가 실험 자동화의 현재 지형을 파악하기 위한 필수 참고 문헌이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

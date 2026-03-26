@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Knowledge-guided Large Language Model for Material Science</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Knowledge-guided Large Language Model for Material Science</h1>
+<ul>
+<li><strong>저자</strong>: Guanjie Wang, Jingjing Hu, Jian Zhou, Sen Liu, Qingjiang Li, Zhimei Sun</li>
+<li><strong>출처</strong>: Review of Materials Research, Vol. 1, Issue 2, p. 100007 (2025-02-01)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1016/j.revmat.2025.100007" target="_blank">10.1016/j.revmat.2025.100007</a></li>
+<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Wang et al._2025_Knowledge-guided large language model for material science.pdf</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>재료과학에 특화된 도메인 지식 기반 LLM을 구축하기 위한 방법론(파인튜닝, RAG, 프롬프트 엔지니어링, AI 에이전트)과 응용(정보 추출, 물성 예측, 자율 실험실, 로보틱스)을 체계적으로 리뷰한 논문이다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>ChatGPT의 등장 이후 LLM이 과학 연구의 패러다임을 데이터 기반에서 AI 기반으로 전환시키고 있다. 그러나 범용 LLM은 재료과학의 전문 지식(결정 구조, 상태도, 합성 조건 등)을 충분히 반영하지 못하며, 도메인 특화 LLM 개발에는 여전히 과제가 남아 있다. 이 리뷰는 재료과학 도메인 지식을 LLM에 효과적으로 통합하는 방법론적 가이드라인을 제공하고자 한다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<ol>
+<li><strong>LLM 구축 가이드라인</strong> 제시: 목표 설정, 모델 아키텍처 설계, 데이터 큐레이션, 학습 및 평가 프레임워크를 단계별로 정리</li>
+<li><strong>도메인 특화 전략 4가지</strong> 체계화:</li>
+<li>파인튜닝(fine-tuning): 도메인 데이터로 사전학습 모델 적응</li>
+<li>검색 증강 생성(RAG): 외부 재료 데이터베이스 연결</li>
+<li>프롬프트 엔지니어링: 태스크별 최적 프롬프트 설계</li>
+<li>AI 에이전트: 도구 사용 및 자율적 의사결정</li>
+<li><strong>응용 분야별 현황 정리</strong>:</li>
+<li>구조화된 정보 추출(structured information extraction)</li>
+<li>물성 예측(property prediction)</li>
+<li>자율 실험실(autonomous laboratories)</li>
+<li>로보틱스(robotics)</li>
+<li><strong>도전 과제 식별</strong>: 컴퓨팅 자원, 데이터셋 품질, 벤치마킹, 환각(hallucination) 완화, AI 안전성</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<p>종합 리뷰 논문으로서 다음의 구조를 따른다:</p>
+<ul>
+<li><strong>LLM 발전 이정표 정리</strong>: GPT 시리즈, LLaMA, PaLM 등 주요 모델의 진화 과정 추적</li>
+<li><strong>도메인 적응 방법론 비교</strong>: 각 접근법(파인튜닝, RAG, 프롬프트 엔지니어링, 에이전트)의 기술적 구현 방식, 장단점, 적용 시나리오를 분석</li>
+<li><strong>파인튜닝</strong>: 전체 파인튜닝 vs. LoRA/QLoRA 등 파라미터 효율적 방법 비교</li>
+<li><strong>RAG</strong>: 벡터 데이터베이스 기반 검색 + LLM 생성 파이프라인 설명</li>
+<li><strong>프롬프트 엔지니어링</strong>: few-shot, chain-of-thought 등 기법 소개</li>
+<li><strong>AI 에이전트</strong>: 계획-실행-관찰 루프, 도구 통합 아키텍처 설명</li>
+<li><strong>응용 사례 분석</strong>: 각 응용 영역에서의 대표적 연구를 선별하여 기술적 접근과 성과를 요약</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>방법론 중심의 체계적 정리</strong>: 단순히 응용 사례를 나열하는 것이 아니라, LLM을 재료과학에 적용하기 위한 <strong>실무 가이드라인</strong>을 단계별로 제시한 점이 실용적</li>
+<li><strong>4가지 도메인 적응 전략의 통합적 비교</strong>: 파인튜닝, RAG, 프롬프트 엔지니어링, 에이전트를 하나의 프레임워크 안에서 비교하여 연구자의 상황(데이터 양, 컴퓨팅 자원, 태스크 복잡도)에 맞는 선택을 돕는 구성</li>
+<li><strong>자율 실험실 및 로보틱스 포함</strong>: LLM의 텍스트 처리 능력을 넘어 물리적 실험 자동화까지 스코프를 확장</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<ol>
+<li><strong>정량적 벤치마크 부재</strong>: 각 도메인 적응 전략의 성능을 동일 조건에서 비교한 실험이 없어, 어떤 방법이 어떤 상황에서 최적인지에 대한 정량적 근거가 부족</li>
+<li><strong>데이터 큐레이션의 구체성 부족</strong>: 재료과학 데이터의 이질성(실험 데이터, 시뮬레이션 데이터, 문헌 데이터)을 고려한 큐레이션 전략이 일반론에 그침</li>
+<li><strong>멀티모달 통합 논의 부족</strong>: 재료과학에서 중요한 이미지(현미경 사진, XRD 패턴), 스펙트럼 데이터와 텍스트의 멀티모달 통합에 대한 논의가 상대적으로 얕음</li>
+<li><strong>환각 문제의 해결책</strong>: 환각을 도전 과제로 지적하면서도, 재료과학 특화 환각 탐지/완화 기법에 대한 구체적 제안이 미흡</li>
+<li><strong>오픈소스 모델 생태계</strong>: 재료과학 특화 오픈소스 LLM(예: MatSciBERT, MaterialsBERT)에 대한 심층 분석이 부족</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>종합 평가 (Evaluation)</h2>
+<p>재료과학 연구자가 LLM을 자신의 연구에 도입하고자 할 때 실질적인 로드맵을 제공하는 유용한 리뷰다. 특히 4가지 도메인 적응 전략을 체계적으로 정리한 점은 실무적 가치가 높다. 다만 리뷰 논문의 한계로 자체 실험적 검증이 부재하며, 각 전략 간의 정량적 비교가 없어 연구자가 최적의 접근법을 선택하는 데는 추가 조사가 필요하다. 자율 실험실과 로보틱스까지 범위를 넓힌 것은 LLM의 미래 가능성을 보여주지만, 현재 기술 성숙도를 감안하면 아직 초기 단계의 비전에 가깝다. 전반적으로 재료과학 LLM 연구의 전체 그림을 파악하는 데 적합한 입문용 리뷰로 평가된다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

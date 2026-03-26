@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Virtual lab powered by 'AI scientists' super-charges biomedical research</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Virtual lab powered by 'AI scientists' super-charges biomedical research</h1>
+<ul>
+<li><strong>저자</strong>: Helena Kudiabor</li>
+<li><strong>출처</strong>: Nature 636, 532-533 (2024)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1038/d41586-024-01684-3"><a href="https://doi.org/10.1038/d41586-024-01684-3" target="_blank">10.1038/d41586-024-01684-3</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>Stanford 대학 James Zou 그룹이 개발한 "Virtual Lab" 시스템을 소개하는 Nature 뉴스 기사이다. Virtual Lab은 여러 LLM 기반 "AI 과학자" 에이전트를 결합하여 학제간 연구를 자동화하는 가상 연구소로, SARS-CoV-2를 표적으로 하는 나노바디(nanobody) 92개를 설계하고 실험적으로 검증한 사례를 다룬다.</p>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>기존 LLM 활용 연구는 좁은 범위의 실험에 집중되어 학제간 연구에서의 잠재력이 충분히 탐구되지 못했다. 과학 연구의 많은 돌파구가 서로 다른 분야의 전문성을 결합할 때 나오지만, 인간 연구팀이 모든 관련 분야의 전문성을 갖추기는 어렵다. 이를 해결하기 위해 서로 다른 전문 분야를 가진 AI 에이전트들이 협업하는 가상 연구소 개념이 제안되었다.</p>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>Virtual Lab 시스템 구축</strong>: PI(주 연구자) 에이전트, 과학 비평가(scientific critic), 면역학/계산생물학/기계학습 전문 에이전트 등 역할이 분화된 LLM 에이전트 팀 구성</li>
+<li><strong>나노바디 설계</strong>: 92개의 새로운 나노바디를 설계하여 90% 이상이 원래 SARS-CoV-2 변이체에 결합함을 검증</li>
+<li><strong>변이체 대응</strong>: 2개의 나노바디가 최신 변이체(JN.1, KP.3)에도 유망한 결합력을 보임</li>
+<li><strong>효율적 협업</strong>: 팀 회의는 여러 라운드의 "토론"으로 진행되지만 회당 5-10분 소요</li>
+</ol>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ul>
+<li><strong>에이전트 구성</strong>: 2개의 기본 LLM(PI + scientific critic)을 먼저 학습시킨 후, PI가 목표 달성을 위해 3개의 전문 분야별 에이전트(면역학, 계산생물학, 기계학습)를 추가 생성</li>
+<li><strong>작업 분배</strong>: PI가 에이전트들에게 매개변수 계산, ML 모델 코드 작성 등 개별 태스크를 할당</li>
+<li><strong>도구 활용</strong>: AlphaFold, Rosetta 등 기존 단백질 설계 AI 도구를 에이전트가 활용</li>
+<li><strong>인간 감독</strong>: 인간 연구자가 정기적 "팀 미팅"을 통해 고수준 피드백과 방향 제시</li>
+<li><strong>자율 토론</strong>: 에이전트들이 자체적으로 문제 정의, 접근법 선택, 구현 방법을 토론</li>
+</ul>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li>"AI를 단순한 도구가 아닌 협력자(collaborator)로 활용하는 새로운 패러다임"이라는 평가 (Yanjun Gao, U. Colorado)</li>
+<li>학제간 전문성을 가진 복수의 AI 에이전트가 팀으로 작동하는 구조는 단일 LLM 사용과 차별화</li>
+<li>인간은 고수준 방향 설정에 집중하고, AI 에이전트들이 세부 연구 실행을 자율적으로 수행하는 분업 구조</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>현 단계의 신뢰 한계</strong>: "현 단계에서 AI가 의사결정을 완전히 하도록 신뢰할 수는 없다" (Yanjun Gao)</li>
+<li><strong>LLM 오류/불일치 분석 필요</strong>: AI 과학자들이 실수하거나 서로 의견이 불일치하는 이유에 대한 심층 분석이 필요</li>
+<li><strong>안전성 및 평가</strong>: "인간-AI 협업의 미래에서 안전성과 평가를 더 많이 보고 싶다" (Yanjun Gao)</li>
+<li><strong>실세계 실험 검증 필수</strong>: 가설은 여전히 실제 실험을 통한 검증이 필요하며, 현재 결과는 in silico 설계 + 제한적 실험 검증에 그침</li>
+<li><strong>기사 형식의 한계</strong>: Nature News 기사이므로 방법론의 기술적 세부사항, 정량적 비교, 실패 사례 등이 생략됨</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>이 기사는 2024년 11월 bioRxiv에 프리프린트로 공개된 Virtual Lab 논문(Swanson et al.)을 Nature 독자에게 소개하는 뉴스 기사이다. AI 에이전트 팀이 실제로 실험 검증 가능한 나노바디를 설계했다는 성과는 인상적이며, "AI를 협력자로 활용하는 새 패러다임"이라는 평가는 AI for Science 흐름의 핵심을 잘 포착한다. 다만 뉴스 기사 특성상 기술적 깊이는 제한적이며, 원논문(Swanson et al., 이후 Nature에 정식 게재)을 함께 읽어야 시스템의 실체를 이해할 수 있다. Virtual Lab은 이후 Paper 5(Swanson et al., 2025, Nature)로 정식 출판되었으며, 이 기사는 해당 연구의 시의성과 사회적 맥락을 이해하는 데 유용한 보조 자료이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

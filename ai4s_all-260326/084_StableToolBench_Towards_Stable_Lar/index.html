@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StableToolBench: Towards Stable Large-Scale Benchmarking on Tool Learning of Lar</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>StableToolBench: Towards Stable Large-Scale Benchmarking on Tool Learning of Large Language Models</h1>
+<blockquote>
+<p><strong>저자</strong>: Zhicheng Guo, Sijie Cheng, Hao Wang, Shihao Liang, Yujia Qin, Peng Li, Zhiyuan Liu, Maosong Sun, Yang Liu | <strong>날짜</strong>: 2025-03-05 | <strong>arXiv</strong>: 2403.07714 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.07714" target="_blank">10.48550/arXiv.2403.07714</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>StableToolBench는 기존 ToolBench의 불안정성 문제(API 상태 변화, 평가 무작위성)를 해결하기 위해 가상 API 서버(캐싱 시스템 + LLM 기반 API 시뮬레이터)와 안정적 평가 시스템(Solvable Pass Rate/Win Rate + GPT-4 평가자)을 제안한 벤치마크이다. 50%의 API가 비가용 상태에서도 성능 변동이 분산 범위 내에 머물러, 대규모 tool learning 벤치마크의 재현성과 비교 가능성을 크게 향상시켰다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: LLM의 tool learning 능력 평가를 위한 벤치마크가 다수 제안되었으며, ToolBench는 16,000개 이상의 실제 API를 활용한 대표적 대규모 벤치마크</li>
+<li><strong>Gap</strong>: ToolBench의 실제 API 중 55.6%가 비가용 상태이며, gpt-3.5-turbo 기반 평가자의 판별 능력 부족으로 성능 재현이 불가능 (최대 40.4% 성능 하락). 이는 벤치마크의 핵심 요건인 시간적 일관성과 비교 가능성을 훼손</li>
+<li><strong>왜 중요한가</strong>: Tool learning은 LLM을 실세계 응용에 연결하는 핵심 능력이며, 안정적 벤치마크 없이는 기법 간 공정한 비교와 진보 측정이 불가능</li>
+<li><strong>접근법</strong>: 캐싱 시스템으로 API 응답 고정 + LLM(GPT-4-turbo) 시뮬레이터로 비가용 API 대체 + 3개 SOTA LLM 다수결로 solvable task 사전 필터링 + GPT-4 평가자로 교체</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>API 안정성 확보</strong>: 50% API 비가용 시에도 성능 변동이 분산 범위 내 (기존 ToolBench: 최대 40.4% 하락 vs StableToolBench: 유의미한 변화 없음)</li>
+<li><strong>높은 캐시 히트율</strong>: 기존 방법 재실행 시 96.5-97.0%, 새로운 모델에서도 75.8-91.4% 캐시 히트율 달성</li>
+<li><strong>API 시뮬레이터의 현실성</strong>: Turing Test에서 인간 평가자가 시뮬레이션 API를 실제 API와 구분하지 못함 (Overall: 67.1% tie, Format Accuracy: 94.3% tie). 문서 준수율 90%</li>
+<li><strong>평가 안정성</strong>: GPT-4 평가자가 task solvability 80%, answer solving 74%, comparison 78% 정확도 달성 (GPT-3.5: 각각 65%, 68%, 56%)</li>
+<li><strong>Solvable 태스크 필터링</strong>: 1,100개 중 765개 solvable 태스크를 사전 확정하여 unsolvable/unsure 태스크로 인한 무작위성 제거</li>
+</ol>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>캐싱 시스템</strong>: API 호출의 (category, tool, API name, arguments) 키로 응답 저장. ToolBench 학습/테스트 데이터 + 새 실험 데이터로 164,980개 유효 캐시 항목 구축. 유효하지 않은 응답은 키워드 기반 필터링으로 제거</li>
+<li><strong>API 시뮬레이터</strong>: GPT-4-turbo에 API 문서 + 캐시의 few-shot 실제 호출 예시(최대 5개)를 제공하여 API 동작 시뮬레이션. 캐시 미스 + 실제 API 비가용 시에만 호출</li>
+<li><strong>API 호출 규칙</strong>: Cache hit -&gt; 캐시 응답 반환; Cache miss -&gt; 실제 API 호출 시도; 실제 API 실패 -&gt; 시뮬레이터 호출. 결과는 항상 캐시 업데이트</li>
+<li><strong>Solvable 태스크 판별</strong>: GPT-4-turbo, Gemini-Pro, Claude-2 3개 모델 다수결 투표로 solvable 여부 사전 결정</li>
+<li><strong>평가 메트릭</strong>: SoPR(Solvable Pass Rate) -- Solved/Unsure/Unsolved에 1/0.5/0점 부여; SoWR(Solvable Win Rate) -- 쌍대 비교 기반. 모든 평가에 GPT-4-turbo 사용</li>
+<li><strong>다양성 검증</strong>: S-BERT 임베딩 + UMAP 시각화로 실제/시뮬레이션 API 응답 분포 유사성 확인</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>캐싱 + LLM 시뮬레이션의 상보적 결합</strong>: 캐시로 안정성을 확보하되, 캐시 미스 시 LLM 시뮬레이터로 API를 가상 구현하는 계층적 설계가 실용적이고 독창적</li>
+<li><strong>Solvable 태스크 사전 필터링</strong>: 다수 LLM 다수결로 unsolvable 태스크를 사전 제거하여 평가의 무작위성을 구조적으로 해결</li>
+<li><strong>API 시뮬레이터의 Turing Test 검증</strong>: 시뮬레이션 API의 현실성을 체계적으로 검증한 최초의 시도</li>
+<li><strong>벤치마크 안정성의 정량적 분석</strong>: API 비가용 비율별 성능 변화를 체계적으로 측정하여 안정성 문제를 정량화</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>GPT-4를 API 시뮬레이터와 평가자로 사용하여 벤치마크 운영 비용이 높음</li>
+<li>GPT-4 백본 LLM의 업그레이드가 시뮬레이션 결과에 영향을 줄 수 있음</li>
+<li>현재 오픈소스 LLM은 API 시뮬레이션 성능이 부족하여 상용 모델 의존 불가피</li>
+<li>새로운 방법론 등장 시 캐시 히트율이 낮아질 수 있어 지속적 캐시 업데이트 필요</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>시뮬레이션 API가 실시간 데이터를 필요로 하는 경우(날씨, 주가, 실시간 교통 등)의 한계가 충분히 논의되지 않음 -- "합리적" 응답이 실제 응용에서는 오류를 유발할 수 있음</li>
+<li>Solvable 태스크 필터링이 3개 특정 모델(GPT-4, Gemini, Claude)에 의존하여, 이 모델들의 bias가 태스크 선택에 반영될 수 있음</li>
+<li>캐시 시스템의 키가 exact match 기반이므로, argument의 사소한 변경(순서, 포맷)에도 캐시 미스가 발생할 수 있는 한계가 분석되지 않음</li>
+<li>Turing Test 샘플 크기(70개 API)가 16,000개 이상의 전체 API 규모에 비해 매우 작음</li>
+<li>ToolBench 이외의 다른 tool learning 벤치마크로의 일반화 가능성이 검증되지 않음</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>오픈소스 LLM 성능 향상에 맞춰 시뮬레이터/평가자를 오픈소스 모델로 전환</li>
+<li>캐시의 fuzzy matching 도입으로 유사 인수의 캐시 히트율 향상</li>
+<li>실시간 데이터 의존 API에 대한 별도 처리 전략 개발</li>
+<li>다른 tool learning 벤치마크(API-Bank, T-Eval 등)로의 프레임워크 확장</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: ToolBench의 재현성 문제를 캐싱과 LLM 시뮬레이션이라는 실용적 접근으로 해결한 엔지니어링 기여가 탁월한 논문이다. API 비가용률 50%에서도 안정적 성능을 유지하며, Turing Test를 통해 시뮬레이션의 현실성을 입증한 점이 인상적이다. 다만, GPT-4 의존성이 높아 비용과 재현성 측면에서 근본적 한계가 있으며, 실시간 데이터 의존 API 처리 등 해결해야 할 과제가 남아 있다. Tool learning 연구 커뮤니티에 안정적 벤치마킹 기반을 제공하는 중요한 인프라 수준의 기여이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

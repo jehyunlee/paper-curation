@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</h1>
+<p><strong>저자:</strong> Alisia Lupidi, Bhavul Gauri, Thomas Simon Foster, Bassel Al Omari, Despoina Magka, Alberto Pepe, Alexis Audran-Reiss, Muna Aghamelu, Nicolas Baldwin, Lucia Cipolina-Kun, Jean-Christophe Gagnon-Audet, Chee Hau Leow, Sandra Lefdal, Hossam Mossalam, Abhinav Moudgil, Saba Nazir, Emanuel Tewolde, Isabel Urrego, Jordi Armengol Estape, Amar Budhiraja, Gaurav Chaurasia, Abhishek Charnalia, Derek Dunfield, Karen Hambardzumyan, Daniel Izcovich, Martin Josifoski, Ishita Mediratta, Kelvin Niu, Parth Pathak, Michael Shvartsman, Edan Toledo, Anton Protopopov, Roberta Raileanu, Alexander Miller, Tatiana Shavrina, Jakob Foerster, Yoram Bachrach
+<strong>출처:</strong> arXiv preprint (2026)
+<strong>DOI:</strong> <a href="https://doi.org/10.48550/ARXIV.2602.06855" target="_blank">10.48550/ARXIV.2602.06855</a>
+<strong>PDF:</strong> <a href="https://arxiv.org/abs/2602.06855">arXiv</a></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>최신 ML 논문에서 추출한 20개 태스크로 구성된 AIRS-Bench를 제안하여, AI 에이전트의 아이디어 생성부터 실험 분석 및 반복 개선까지 전체 연구 생애주기에 걸친 에이전트 역량을 평가하는 벤치마크 연구.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<ul>
+<li>LLM 에이전트가 과학 연구를 가속화할 잠재력이 크지만, 실제 연구 워크플로 전반에 걸친 에이전트 역량을 평가할 <strong>종합적 벤치마크가 부재</strong></li>
+<li>기존 벤치마크는 단일 태스크나 특정 단계에 초점을 맞추며, <strong>아이디어 생성 → 실험 설계 → 분석 → 반복 개선</strong>이라는 연구의 전체 사이클을 다루지 못함</li>
+<li>베이스라인 코드를 제공하지 않는 조건에서 에이전트가 <strong>처음부터 독립적으로 연구를 수행</strong>할 수 있는지 평가할 필요성</li>
+<li>다양한 에이전트 프레임워크 간의 <strong>공정하고 엄격한 비교</strong>를 가능하게 하는 표준화된 평가 체계 필요</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<ul>
+<li>언어 모델링, 수학, 생물정보학, 시계열 예측 등 <strong>다양한 도메인을 아우르는 20개 태스크</strong> 구축</li>
+<li>베이스라인 코드 없이 전체 연구 생애주기를 평가하는 <strong>AIRS-Bench 태스크 포맷</strong> 설계</li>
+<li>Sequential 및 parallel scaffold를 사용한 frontier 모델 기반 <strong>베이스라인 결과</strong> 확립</li>
+<li>핵심 발견:</li>
+<li>에이전트가 <strong>4개 태스크에서 인간 SOTA를 초과</strong> 달성</li>
+<li>그러나 <strong>16개 태스크에서는 인간 SOTA에 미달</strong>, 벤치마크가 아직 포화되지 않음</li>
+<li>인간 벤치마크를 초과한 경우에도 <strong>이론적 성능 상한에는 도달하지 못함</strong></li>
+<li>태스크 정의 및 평가 코드를 오픈소스로 공개</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<ol>
+<li><strong>태스크 소싱:</strong> 최신 ML 논문(state-of-the-art)에서 실제 연구 문제를 추출하여 20개 태스크 구성</li>
+<li><strong>도메인 다양성:</strong> 언어 모델링, 수학, 생물정보학, 시계열 예측 등 다양한 분야 포괄</li>
+<li><strong>평가 설계:</strong> 베이스라인 코드를 제공하지 않아, 에이전트가 문제 이해 → 접근법 설계 → 구현 → 실험 → 분석의 전 과정을 독립적으로 수행해야 함</li>
+<li><strong>에이전트 scaffold:</strong> Frontier 모델에 sequential(순차적) 및 parallel(병렬) scaffold를 적용하여 베이스라인 확립</li>
+<li><strong>태스크 포맷:</strong> 새로운 태스크를 쉽게 추가하고 다양한 에이전트 프레임워크를 비교할 수 있는 범용적 포맷 설계</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>전체 연구 생애주기</strong>를 아우르는 벤치마크라는 점에서 기존의 단일 능력 평가 벤치마크와 근본적으로 차별화</li>
+<li>베이스라인 코드를 제공하지 않는 설계는 에이전트의 <strong>진정한 자율 연구 능력</strong>을 시험하는 도전적 설정</li>
+<li>인간 SOTA와의 비교뿐 아니라 <strong>이론적 성능 상한</strong>까지 설정하여 벤치마크의 남은 여지를 정량적으로 제시</li>
+<li>다양한 에이전트 프레임워크를 공정하게 비교할 수 있는 <strong>범용 태스크 포맷</strong>의 설계가 실용적</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 (Limitation)</h2>
+<ul>
+<li>20개 태스크가 주로 <strong>ML/CS 관련 분야에 편중</strong>되어 있으며, 실험과학(화학, 물리 실험 등)의 포괄 범위가 제한적</li>
+<li>베이스라인 코드 미제공이 현실적 연구 상황을 반영하는지 의문 -- 실제 연구자도 기존 코드를 참고하는 경우가 대부분</li>
+<li>평가 메트릭이 <strong>최종 성과(정량 스코어) 중심</strong>이며, 에이전트의 연구 과정(탐색 전략, 가설 수립 품질 등)에 대한 질적 평가가 부족할 수 있음</li>
+<li>Frontier 모델만 베이스라인으로 사용하여, 중소 규모 모델이나 오픈소스 에이전트의 성능 분포는 알 수 없음</li>
+<li>태스크 난이도의 균일성과 <strong>도메인 간 비교 가능성</strong>에 대한 논의가 필요</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<p>AIRS-Bench는 AI 연구 에이전트의 역량을 전체 연구 생애주기 관점에서 평가한다는 점에서 시의적절하고 야심찬 벤치마크이다. 4/20 태스크에서만 인간 SOTA를 초과한다는 결과는 현재 AI 에이전트의 자율 연구 능력에 대한 현실적 그림을 제시한다. 범용적 태스크 포맷과 오픈소스 공개는 커뮤니티의 후속 연구를 촉진할 것으로 기대된다. 다만 ML 분야 편중과 최종 성과 중심의 평가는 벤치마크의 범용성과 깊이를 동시에 확보하기 어려운 근본적 한계를 보인다. 전반적으로 <strong>자율 과학 연구 에이전트 평가의 중요한 이정표</strong>가 될 수 있는 연구이며, 태스크 확장과 과정 평가 도입이 향후 과제로 남아 있다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

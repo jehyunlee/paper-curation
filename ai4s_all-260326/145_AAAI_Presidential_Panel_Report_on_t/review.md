@@ -1,0 +1,75 @@
+# AAAI Presidential Panel Report on the Future of AI Research
+
+> **저자**: Francesca Rossi (Chair) 외 24명의 패널 멤버 + 추가 기여자 | **날짜**: 2025-03 | **Report**: AAAI | **URL**: https://aaai.org/wp-content/uploads/2025/03/AAAI-2025-PresPanel-Report_FINAL.pdf
+
+---
+
+## Essence
+
+AAAI 2025 Presidential Panel Report는 24명의 저명 AI 연구자가 2024년 여름부터 2025년 봄까지 작업하고, 475명의 AAAI 커뮤니티 설문을 포함하여 AI 연구의 미래를 17개 주제로 체계적으로 조망한 포괄적 보고서이다. AI Reasoning, Factuality & Trustworthiness, AI Agents, Evaluation, Ethics & Safety, Embodied AI, Cognitive Science, Hardware, Social Good, Sustainability, Scientific Discovery, AGI, Perception vs Reality, Research Diversity, 학제간 연구, 학계의 역할, 지정학적 함의를 다루며, 각 주제별로 역사적 맥락, 현재 동향, 연구 과제, 커뮤니티 의견을 구조적으로 정리했다.
+
+## Motivation
+
+- **알려진 것**: AI 능력이 급속히 발전하며 연구 주제, 방법론, 연구 커뮤니티, 작업 환경 등 다차원에서 빠르고 중대한 변혁이 진행 중
+- **Gap**: AI 연구의 궤적을 구조적으로 파악하고 현재 트렌드와 미해결 과제를 명확히 정의하는 체계적 노력이 필요하나, 기존에는 개별 주제별 서베이만 존재
+- **왜 중요한가**: LLM과 generative AI의 등장으로 AI가 사회기술적(socio-technical) 분야로 전환되면서, 연구자뿐 아니라 정책 입안자, 펀딩 기관, 언론, 일반 대중 모두에게 AI의 현재와 미래에 대한 구조화된 이해가 필요
+- **접근법**: 다양한 배경의 24명 패널 + 커뮤니티 설문(475명)을 통해 17개 핵심 주제를 역사-현황-도전과제-커뮤니티 의견 구조로 정리
+
+## Achievement
+
+1. **17개 핵심 주제의 체계적 조망**: AI Reasoning부터 지정학적 함의까지, AI 연구의 기술적-사회적-제도적 차원을 포괄하는 가장 광범위한 현황 보고서
+2. **커뮤니티 설문 통합**: 475명 응답(학계 67%, 기업 19%, 학생 20%)의 정량적 데이터를 각 챕터에 반영하여 커뮤니티 공감대와 이견을 투명하게 제시
+3. **AI for Scientific Discovery 챕터**: DENDRAL부터 AlphaFold2, Nobel Turing Challenge까지 AI의 과학적 발견 역할을 도구-협업자-자율 시스템의 스펙트럼으로 정리하고, AAAI 설문에서 47%가 생물학을, 45%가 2050년까지 노벨상급 AI 발견을 예측
+4. **연구 다양성 위기 경고**: 84%의 응답자가 neural approach만으로는 AGI 불충분하다고 답했고, 비신경망 연구에 최소 25% 이상 투자 필요하다는 합의 도출
+5. **학계 역할 위기 진단**: 민간 부문으로의 인재 유출, compute 자원 격차, 교육 수요 폭증 등 학계가 직면한 구조적 문제를 명확히 진단
+6. **비기술적 서술**: 정책 입안자, 타 분야 전문가, 일반 대중을 위해 의도적으로 비기술적 언어로 작성
+
+## How
+
+- **패널 구성**: Francesca Rossi(IBM Research, AAAI President) 주도, Rodney Brooks, Stuart Russell, Eric Horvitz, Yoshua Bengio, Peter Norvig 등 AI 분야 최고 권위자 24명 + 15명 추가 기여자
+- **작업 방식**: 2024년 여름~2025년 봄, 월례 온라인 회의 + 챕터별 팀 회의 + 2025년 1월 대면 전일 회의
+- **커뮤니티 설문**: 475명 응답, 학계 67%, 기업 19%, 북미 53%, 아시아 20%, 유럽 19%, 95%가 학제간 연구에 관심
+- **구조**: 각 챕터가 Context & History, Current State & Trends, Research Challenges, Community Opinion의 4단 구조로 통일
+- **주요 주제**: (1) AI Reasoning, (2) Factuality & Trustworthiness, (3) AI Agents, (4) Evaluation, (5) Ethics & Safety, (6) Embodied AI, (7) Cognitive Science, (8) Hardware & AI, (9) Social Good, (10) Sustainability, (11) Scientific Discovery, (12) AGI, (13) Perception vs Reality, (14) Research Diversity, (15) Beyond AI Community, (16) Role of Academia, (17) Geopolitical Aspects
+
+## Originality
+
+- **최초의 포괄적 AAAI 수준 미래 보고서**: 2008-2009 AAAI Presidential Panel on Long-Term AI Futures 이후 최초로, generative AI 시대의 AI 연구 전체를 조망하는 체계적 보고서
+- **커뮤니티 설문과 전문가 분석의 통합**: 각 주제에 대해 정량적 설문 데이터와 패널 전문가의 정성적 분석을 병행하여 균형 잡힌 시각 제공
+- **기술-사회-제도 삼각 구조**: 순수 기술적 주제(Reasoning, Hardware)와 사회적 주제(Ethics, Social Good, Sustainability)와 제도적 주제(Academia, Geopolitics)를 단일 프레임워크에서 다룸
+- **"AI for Science" 스펙트럼 정의**: 도구(Tool) - 협업자(Collaborator) - 자율 과학자(Autonomous Scientist)의 연속 스펙트럼으로 AI의 과학 발견 역할을 개념화
+
+## Limitation & Further Study
+
+### 저자들이 언급한 한계
+
+- 패널의 의견은 소속 기관이나 회사의 공식 입장이 아닌 개인 견해
+- 의도적으로 비기술적으로 작성하여, 깊이 있는 기술적 분석이 제한적
+
+### 자체판단 아쉬운 점
+
+- 설문 응답자가 475명으로, 전체 AI 커뮤니티 규모 대비 대표성에 한계가 있으며, 자기 선택 편향(self-selection bias)이 명시적으로 인정되나 보정되지 않음
+- 패널 멤버가 주로 미국/유럽 기반으로, 아시아(한국, 중국, 일본 등)와 Global South의 시각이 충분히 반영되지 않음
+- 각 챕터가 3-4페이지로 제한되어, 급변하는 분야의 깊이 있는 기술적 분석이 어려움 -- 예를 들어 AI for Scientific Discovery 챕터에서 최근 급부상한 AI agent for science 연구의 구체적 방법론 비교가 부재
+- 2025년 3월 기준으로 작성되었으나, DeepSeek-R1, Claude 3.5 등 2024-2025년 최신 모델의 영향 분석이 제한적
+- 벤치마크 포화, data contamination 등 AI 평가의 구체적 기술 문제에 대한 논의가 피상적
+
+### 후속 연구
+
+- 각 챕터 주제에 대한 보다 깊이 있는 기술적 서베이 논문 시리즈
+- Global South, 아시아 AI 커뮤니티의 시각을 포함한 확장 설문
+- AI for Scientific Discovery 분야의 구체적 로드맵 및 벤치마크 개발
+- 학계-산업 간 인재 흐름의 정량적 분석과 정책 제언
+- 2-3년 주기의 후속 보고서를 통한 예측 검증 및 트렌드 추적
+
+## Evaluation
+
+| 항목 | 점수 |
+|------|------|
+| Novelty | 3/5 |
+| Technical Soundness | 3/5 |
+| Significance | 5/5 |
+| Clarity | 5/5 |
+| Overall | 4/5 |
+
+**총평**: AAAI 2025 Presidential Panel Report는 generative AI 시대의 AI 연구 전체를 17개 주제로 체계적으로 조망한 가장 포괄적인 현황 보고서이다. Rodney Brooks, Stuart Russell, Eric Horvitz, Yoshua Bengio 등 세계 최고 권위자들의 집단 지성과 475명의 커뮤니티 설문을 결합하여, AI 연구의 기술적 도전과제뿐 아니라 사회적-제도적-지정학적 맥락까지 아우른다. 비기술적 서술로 인해 개별 주제의 깊이에 한계가 있으나, AI 연구의 현재 위치와 미래 방향에 대한 "조감도"로서 정책 입안자, 펀딩 기관, 타 분야 연구자에게 매우 유용하다. 특히 AI for Scientific Discovery 챕터는 도구-협업자-자율 과학자 스펙트럼을 제시하며, Nobel Turing Challenge라는 야심찬 비전을 통해 이 분야의 궁극적 목표를 명확히 한다.

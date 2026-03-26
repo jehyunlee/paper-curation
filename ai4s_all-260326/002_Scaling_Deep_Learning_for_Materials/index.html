@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scaling Deep Learning for Materials Discovery</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Scaling Deep Learning for Materials Discovery</h1>
+<blockquote>
+<p><strong>저자</strong>: Amil Merchant, Simon Batzner, Samuel S. Schoenholz, Muratahan Aykol, Gowoon Cheon, Ekin Dogus Cubuk | <strong>날짜</strong>: 2023 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-023-06735-9" target="_blank">10.1038/s41586-023-06735-9</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>Graph neural network (GNoME)을 대규모 active learning과 결합하여 기존 48,000개에서 381,000개의 새로운 안정 결정 구조를 발견, 인류가 알고 있는 안정 물질을 약 10배 확장했다. 총 2.2M 구조가 기존 convex hull 아래에 위치하며, hit rate를 기존 1%에서 구조 기반 80%, 조성 기반 33%로 향상시켰다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: ICSD에 약 20,000개의 computationally stable 구조가 등록되어 있고, Materials Project/OQMD 등 계산 데이터베이스를 통해 48,000개까지 확장됨</li>
+<li><strong>Gap</strong>: 실험적 접근은 비용/처리량/합성 문제로 확장 불가능하고, 기존 ML 기법은 convex hull 대비 stability (decomposition energy) 예측에 실패하여 실질적 재료 발견에 무력했음 (hit rate ~1%)</li>
+<li><strong>왜 중요한가</strong>: Clean energy, 반도체, 배터리, 태양전지 등 기술 혁신이 신규 무기 결정 재료 발견에 의존</li>
+<li><strong>접근법</strong>: (1) Symmetry-aware partial substitutions (SAPS)와 random structure search로 다양한 후보 생성, (2) GNN 기반 에너지 예측으로 필터링, (3) DFT 검증을 data flywheel로 활용하는 iterative active learning</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>381,000개 신규 안정 결정 구조</strong> 발견 -- 기존 대비 약 10배 확장, 총 421,000개 안정 결정</li>
+<li><strong>에너지 예측 정확도</strong>: MAE 11 meV/atom (기존 28 meV/atom에서 개선), hit rate 80% (구조 기반) / 33% (조성 기반)</li>
+<li><strong>Emergent out-of-distribution 일반화</strong>: 학습 데이터에 4원소까지만 포함했음에도 5+ 원소 물질에서 효과적 예측</li>
+<li><strong>실험적 검증</strong>: 736개 구조가 독립적으로 실험 합성 확인, r2SCAN 검증에서 84%가 stable 유지</li>
+<li><strong>범용 interatomic potential</strong>: GNoME 데이터셋으로 pretrain한 NequIP potential이 zero-shot으로 AIMD 수준 정확도 달성, 623개 미지 조성에서 superionic conductor 분류 가능</li>
+<li><strong>응용 시연</strong>: layered materials ~52,000개 (기존 ~1,000), Li-ion conductor 후보 528개 (25배 증가) 식별</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>후보 생성</strong>: (1) Structural pipeline -- 기존 결정에 ionic substitution + SAPS (대칭 인식 부분 치환)으로 10^9개 이상 후보 생성; (2) Compositional pipeline -- 조성 모델 예측 후 AIRSS (Ab initio Random Structure Searching)로 100개 랜덤 구조 초기화</li>
+<li><strong>GNoME 모델</strong>: Message-passing GNN, one-hot element embedding, 3-6 message passing layers, embedding dim 256, swish activation. Deep ensemble (n=10)과 volume-based test-time augmentation으로 불확실성 정량화</li>
+<li><strong>Active learning</strong>: 6라운드 반복 -- GNoME 필터링 -&gt; DFT (VASP, PBE functional) 검증 -&gt; 데이터 추가 -&gt; 모델 재학습. Power-law scaling 확인</li>
+<li><strong>Interatomic potential</strong>: E(3)-equivariant NequIP potential을 GNoME relaxation trajectory에서 pretrain. 5 layers, 128 scalars + 64 vectors + 32 tensors, radial cutoff 5 A, 16.24M parameters</li>
+<li><strong>검증</strong>: r2SCAN functional로 binary/ternary의 84%, quaternary의 86.8% stable 확인. ICSD 실험 구조와 736개 매칭</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>Data flywheel 개념</strong>: Active learning을 통해 ML 예측 -&gt; DFT 검증 -&gt; 학습 데이터 확장의 선순환 구조를 재료 발견에 최초로 대규모 적용</li>
+<li><strong>SAPS (Symmetry-Aware Partial Substitutions)</strong>: 결정 대칭의 Wyckoff position을 활용한 부분 치환으로, double perovskite 같은 기존 full substitution으로 발견 불가능한 구조 탐색 가능 (381,000개 중 232,477개가 SAPS 유래)</li>
+<li><strong>Neural scaling law의 재료과학 적용</strong>: 언어/비전 모델에서 관찰된 power-law scaling이 재료 에너지 예측에도 적용됨을 입증</li>
+<li><strong>Zero-shot universal potential</strong>: Relaxation trajectory만으로 학습한 potential이 AIMD, 고온, vacancy 등 미학습 분포에서도 작동하는 transferable MLIP 실현</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Phase transition, dynamic stability (vibrational profile), configurational entropy에 대한 이해가 부족</li>
+<li>Synthesizability (실제 합성 가능성)는 thermodynamic stability와 별개 문제</li>
+<li>AIRSS 초기화의 수렴 실패 문제 -- 특정 조성에서 DFT relaxation이 대부분 실패</li>
+<li>Spin ordering을 ferromagnetic으로만 가정하여 antiferromagnetic 물질의 정확한 에너지 계산 제한</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>PBE functional의 inherent 오류가 대규모로 전파될 가능성 -- r2SCAN 검증에서 16%가 unstable로 전환</li>
+<li>비정질(amorphous), 표면(surface), 결함(defect) 구조는 다루지 않아 실제 응용 환경과 괴리</li>
+<li>Bandgap 등 electronic property 예측은 별도 계산이 필요하여 기능성 재료 스크리닝의 통합적 접근이 부족</li>
+<li>Google DeepMind의 대규모 인프라(TPU, Apache Beam)에 의존하여 학계에서의 재현이 사실상 불가능</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Synthesizability prediction과 결합한 end-to-end 재료 발견 파이프라인</li>
+<li>Meta-stable phase와 kinetic barrier를 고려한 thermodynamic-kinetic 통합 안정성 평가</li>
+<li>Fine-tuning을 통한 domain-specific MLIP 개발 (촉매, 전극 등)</li>
+<li>다성분(5+ element) 화학 공간의 체계적 탐색 확대</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: Active learning 기반 data flywheel과 GNN의 scaling을 결합하여 안정 무기 결정 재료를 10배 확장한 기념비적 연구로, AI for Materials Science 분야의 AlphaFold 격 성과이다. 다만 PBE functional 의존성과 synthesizability 미고려가 실용화까지의 남은 과제이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Accelerating Scientific Research with Gemini: Case Studies and Common Techniques</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Accelerating Scientific Research with Gemini: Case Studies and Common Techniques</h1>
+<p><strong>저자:</strong> David P. Woodruff, Vincent Cohen-Addad, Lalit Jain, Jieming Mao, Song Zuo, MohammadHossein Bateni, Simina Branzei, Michael P. Brenner, Lin Chen, Ying Feng, Lance Fortnow, Gang Fu, Ziyi Guan, Zahra Hadizadeh, Mohammad T. Hajiaghayi, Mahdi JafariRaviz, Adel Javanmard, Karthik C. S, Ken-ichi Kawarabayashi, Ravi Kumar, Silvio Lattanzi, Euiwoong Lee, Yi Li, Ioannis Panageas, Dimitris Paparas, Benjamin Przybocki, Bernardo Subercaseaux, Ola Svensson, Shayan Taherijam, Xuan Wu, Eylon Yogev, Morteza Zadimoghaddam, Samson Zhou, Vahab Mirrokni
+<strong>출처:</strong> arXiv preprint (2026)
+<strong>DOI:</strong> <a href="https://doi.org/10.48550/arXiv.2602.03837" target="_blank">10.48550/arXiv.2602.03837</a>
+<strong>PDF:</strong> <a href="http://arxiv.org/abs/2602.03837">arXiv</a></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>Google Gemini 모델(특히 Gemini Deep Think)을 활용하여 이론 컴퓨터과학, 경제학, 최적화, 물리학 등 다양한 분야에서 미해결 문제 풀이, 추측 반증, 새로운 증명을 실현한 사례 연구 모음과, 이로부터 추출한 효과적인 인간-AI 협업 기법들을 정리한 연구.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<ul>
+<li>LLM이 일상적 연구 보조 업무에 점점 유용해지고 있으나, <strong>전문가 수준의 수학적 발견에 기여</strong>할 수 있는지는 잘 알려져 있지 않음</li>
+<li>LLM을 단순 자동화 도구가 아닌 <strong>과학적 발견의 창의적 파트너</strong>로 활용할 가능성 탐구</li>
+<li>실제 연구자들이 AI 모델과 <strong>어떻게 효과적으로 협업</strong>하는지에 대한 체계적 정리 필요</li>
+<li>표준 채팅 인터페이스를 넘어선 <strong>고급 활용 패턴</strong>(적대적 리뷰어, 뉴로-심볼릭 루프 등)의 가능성 제시</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<ul>
+<li><strong>미해결 문제 해결:</strong> 이론 CS, 경제학, 최적화, 물리학 등에서 <strong>오픈 프로블럼 풀이, 추측(conjecture) 반증, 새로운 증명</strong> 달성</li>
+<li><strong>공통 기법 추출:</strong> 성공적 인간-AI 협업에서 반복적으로 관찰되는 기법들을 체계화:</li>
+<li><strong>Iterative refinement (반복적 개선):</strong> 모델 출력을 단계적으로 정교화</li>
+<li><strong>Problem decomposition (문제 분해):</strong> 복잡한 문제를 하위 문제로 나누어 접근</li>
+<li><strong>Cross-disciplinary knowledge transfer (학제간 지식 전이):</strong> 다른 분야의 기법을 적용</li>
+<li><strong>고급 활용 사례:</strong></li>
+<li><strong>적대적 리뷰어(adversarial reviewer):</strong> 기존 증명의 미묘한 결함을 탐지하는 엄격한 검증자로 활용</li>
+<li><strong>뉴로-심볼릭 루프(neuro-symbolic loop):</strong> 모델이 자율적으로 코드를 작성·실행하여 복잡한 유도를 검증하는 방식</li>
+<li>대부분의 결과는 <strong>대화형(interactive, conversational) 방법론</strong>에서 도출</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<ol>
+<li><strong>사례 연구 기반:</strong> 다수의 연구자가 Gemini 모델(특히 Deep Think 및 고급 변형)과 실제 연구를 수행한 경험을 수집</li>
+<li><strong>대화형 협업:</strong> 대부분의 결과는 연구자와 모델 간의 반복적 대화를 통해 도출</li>
+<li>연구자가 문제를 제시 → 모델이 접근법 제안 → 연구자가 피드백 → 반복 개선</li>
+<li><strong>적대적 리뷰:</strong> 모델을 엄격한 리뷰어로 배치하여, 기존 논문이나 증명에서 <strong>미묘한 논리적 결함</strong> 탐지</li>
+<li><strong>뉴로-심볼릭 검증:</strong> 모델이 자율적으로 Python 등의 코드를 작성·실행하여, 분석적 유도의 정확성을 <strong>계산적으로 검증</strong></li>
+<li><strong>기법 추출:</strong> 다양한 사례에서 공통적으로 나타나는 성공 패턴을 분류·정리</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li>LLM의 과학 기여를 벤치마크 점수가 아닌 <strong>실제 미해결 문제 해결 사례</strong>로 입증한 점이 핵심적 차별화</li>
+<li>"도구로서의 AI"를 넘어 <strong>"창의적 파트너로서의 AI"</strong> 관점을 구체적 사례로 뒷받침</li>
+<li>적대적 리뷰어와 뉴로-심볼릭 루프는 표준 채팅 인터페이스를 넘어선 <strong>새로운 활용 패러다임</strong> 제시</li>
+<li>다분야 연구자 34명의 실제 경험을 체계적으로 수집·정리한 것은 <strong>질적 연구 방법</strong>으로서도 가치 있음</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 (Limitation)</h2>
+<ul>
+<li><strong>Google 연구진 주도</strong>의 Gemini 중심 논문으로, 다른 모델(GPT, Claude 등)과의 공정한 비교가 없어 <strong>모델 특이적 결과인지 일반적 현상인지</strong> 판단 곤란</li>
+<li>사례 연구 방법론의 특성상 <strong>재현성(reproducibility)이 낮음</strong> -- 동일 대화를 재현해도 같은 결과를 보장하지 않음</li>
+<li><strong>성공 사례 편향(survivorship bias):</strong> 실패한 시도나 모델이 도움이 되지 못한 사례에 대한 체계적 보고 부재</li>
+<li>수학/이론 CS 분야에 <strong>편중</strong>되어 있으며, 실험과학(물질 합성, 생물학적 실험 등)에서의 적용 가능성은 미확인</li>
+<li>"공통 기법"의 추출이 <strong>정성적 수준</strong>에 머물며, 어떤 기법이 어떤 문제 유형에 효과적인지에 대한 정량적 분석이 부족</li>
+<li>연구자의 전문성 수준에 따라 협업 효과가 크게 달라질 수 있으나, 이에 대한 분석 미흡</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<p>이 논문은 LLM이 과학적 발견에 실질적으로 기여할 수 있음을 미해결 문제 풀이라는 가장 설득력 있는 방식으로 보여준다. 반복적 개선, 문제 분해, 학제간 전이라는 공통 기법의 추출은 다른 연구자에게 실용적 가이드를 제공한다. 적대적 리뷰어와 뉴로-심볼릭 루프 같은 고급 활용 패턴은 LLM 활용의 새로운 가능성을 열어준다. 다만 Google/Gemini 중심의 구성과 성공 사례 편향은 결과의 일반화를 제약하며, 재현성 문제도 본질적 한계이다. 전반적으로 <strong>"AI as creative partner"</strong> 비전을 구체적 증거로 뒷받침하는 시의적절한 연구이며, 향후 다양한 모델과 분야로의 확장 및 실패 사례 분석이 보완되어야 할 것이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

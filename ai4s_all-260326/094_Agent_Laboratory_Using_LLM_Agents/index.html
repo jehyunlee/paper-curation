@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Agent Laboratory: Using LLM Agents as Research Assistants</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Agent Laboratory: Using LLM Agents as Research Assistants</h1>
+<ul>
+<li><strong>저자</strong>: Samuel Schmidgall, Yusheng Su, Ze Wang, Ximeng Sun, Jialian Wu, Xiaodong Yu, Jiang Liu, Michael Moor, Zicheng Liu, Emad Barsoum</li>
+<li><strong>소속</strong>: AMD, Johns Hopkins University, ETH Zurich</li>
+<li><strong>발표</strong>: arXiv preprint (2025)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.04227"><a href="https://doi.org/10.48550/arXiv.2501.04227" target="_blank">10.48550/arXiv.2501.04227</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM 에이전트를 활용하여 연구의 전 과정(문헌 조사 -&gt; 실험 -&gt; 보고서 작성)을 자동화하는 프레임워크 <strong>Agent Laboratory</strong>를 제안한다. 인간 연구자가 연구 아이디어를 입력하면, PhD/Postdoc/ML Engineer/SW Engineer/Professor 등의 역할을 가진 전문화된 LLM 에이전트들이 파이프라인을 통해 코드 저장소와 연구 보고서를 생성한다. 완전 자율 모드와 인간 피드백을 반영하는 co-pilot 모드를 모두 지원하며, 기존 자율 연구 방법 대비 84% 비용 절감(gpt-4o 기준 논문당 $2.33)을 달성한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>과학자들은 시간과 자원의 제약으로 탐구할 수 있는 연구 아이디어의 수가 제한되어, 많은 양질의 아이디어가 미탐구 상태로 남는다. 기존의 자율 연구 시스템(The AI Scientist 등)은 LLM이 독자적으로 아이디어를 생성하고 논문을 작성하는 방식으로, 인간 연구자의 의도와 괴리가 발생하고 비용이 높다. Agent Laboratory는 인간의 창의적 아이디어를 출발점으로 삼아 LLM이 저수준 코딩과 작성을 보조하는 "보완적(complementary)" 역할에 초점을 맞춘다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>3단계 연구 파이프라인 구현</strong>: 문헌 조사(arXiv API 기반), 실험(mle-solver를 통한 자율적 ML 코드 생성/최적화), 보고서 작성(paper-solver를 통한 LaTeX 보고서 생성)의 완전한 워크플로우.</li>
+<li><strong>인간 평가 결과</strong>: o1-preview 백엔드가 가장 높은 유용성(4.4/5)과 보고서 품질(3.4/5)을 달성. 인간 피드백을 포함한 co-pilot 모드에서 전체 점수가 자율 모드 대비 향상(NeurIPS 스타일 전체 점수 3.8 -&gt; 4.38/10).</li>
+<li><strong>비용 효율성</strong>: gpt-4o 백엔드 기준 전체 워크플로우 비용 $2.33으로, The AI Scientist($15)의 1/6 수준.</li>
+<li><strong>mle-solver 성능</strong>: MLE-Bench 10개 Kaggle 챌린지에서 MLAB, OpenHands, AIDE 대비 가장 많은 메달(금 2, 은 1, 동 1) 획득. 10개 중 6개에서 인간 중앙값 이상 성능.</li>
+<li><strong>높은 사용성</strong>: co-pilot 모드의 사용성 4.0/5, 유틸리티 3.5/5, 지속 사용 의향 3.75/5.</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>멀티 에이전트 아키텍처</strong>: PhD, Postdoc, ML Engineer, SW Engineer, Professor 역할의 에이전트가 단계별로 협업. 각 에이전트는 특화된 도구(arXiv API, Python 실행, HuggingFace 데이터셋 검색 등)를 사용.</li>
+<li><strong>mle-solver</strong>: ML 코드를 자율적으로 생성/테스트/개선하는 모듈. EDIT(부분 수정)과 REPLACE(전체 재생성) 연산을 반복하며, LLM 기반 자기 평가(scoring)와 자기 반성(self-reflection)을 통해 성능을 향상. 상위 프로그램 풀(top program pool)을 유지하여 탐색-활용 균형을 관리.</li>
+<li><strong>paper-solver</strong>: LaTeX 기반 학술 보고서를 scaffold -&gt; arXiv 조사 -&gt; 반복 편집 -&gt; LLM 리뷰 순으로 생성. NeurIPS 가이드라인 기반의 자동 리뷰 시스템으로 품질을 평가.</li>
+<li><strong>co-pilot 모드</strong>: 각 하위 과제 완료 시 인간 연구자가 피드백을 제공하거나 재실행을 요청할 수 있는 체크포인트 제공.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>인간-AI 협업 패러다임</strong>: 기존의 완전 자율 연구 시스템과 달리, 인간의 연구 아이디어를 입력으로 받아 인간의 창의성과 AI의 실행 능력을 결합하는 접근이 차별적.</li>
+<li><strong>역할 기반 멀티 에이전트 설계</strong>: 연구 과정의 각 단계를 학술 조직의 역할(PhD, Postdoc, Professor 등)에 매핑한 설계가 직관적이고 독창적.</li>
+<li><strong>mle-solver의 트리 탐색 방식</strong>: 프로그램 공간을 트리 탐색으로 탐색하며 상위 프로그램 풀을 유지하는 방식은 AIDE의 Solution Space Search를 일반화하여 연구 코드 전반에 적용.</li>
+<li><strong>자동 리뷰어 vs 인간 리뷰어 비교</strong>: LLM 자동 리뷰어가 인간 리뷰어보다 평균 2.3점 높은 점수를 부여한다는 발견은 자동 평가의 한계를 실증적으로 보여줌.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ol>
+<li><strong>자기 평가의 한계</strong>: LLM 기반 자동 리뷰어가 인간 리뷰어보다 일관되게 높은 점수를 부여하여(평균 +2.3점), 자동 평가만으로는 실제 연구 품질을 정확히 반영하지 못함. NeurIPS 2024 평균 수락 점수(5.85/10)에 비해 인간 평가 점수가 평균 2.05점 낮음.</li>
+<li><strong>할루시네이션 문제</strong>: gpt-4o 등 일부 모델에서 실제 수행하지 않은 실험 결과를 보고서에 기술하는 할루시네이션 발생. 자율 연구 도구의 신뢰성에 심각한 위험.</li>
+<li><strong>ML 분야 한정</strong>: 현재 프레임워크가 머신러닝 연구에 특화되어 있어, 실험 과학(화학, 생물학, 물리학 등)이나 이론적 연구로의 확장이 필요.</li>
+<li><strong>도구 사용의 제한</strong>: 이미지/그래프 생성 기능이 제한적이며, 리포지토리 수준의 코드 관리 불가. 문헌 조사 단계에서 instruction-following 실패율이 높음(20-40%).</li>
+<li><strong>co-pilot 모드의 역설</strong>: 인간 피드백이 전체 점수를 향상시키지만, 에이전트의 의도를 인간의 비전에 맞추는 데 어려움이 있어 사용자 만족도가 자율 모드보다 오히려 낮은 항목 존재.</li>
+<li><strong>재현성</strong>: 연구 주제에 따른 성능 변동이 크며(예: image noise 주제에서 gpt-4o vs o1-mini 실험 품질 1.5 vs 4.0), 결과의 일반화 가능성 검증이 필요.</li>
+</ol>
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>Agent Laboratory는 LLM 에이전트를 연구 보조 도구로 활용하는 <strong>실용적이고 체계적인 프레임워크</strong>이다. 인간의 연구 아이디어를 출발점으로 삼아 저수준 구현을 자동화한다는 설계 철학이 현실적이며, gpt-4o 기준 논문당 $2.33의 비용 효율성은 주목할 만하다. mle-solver의 MLE-Bench 성능은 자동 ML 코드 생성의 가능성을 보여준다. 그러나 NeurIPS 스타일 인간 평가 점수가 3.5-4.4/10 수준에 머무르고, 할루시네이션 문제가 해결되지 않은 점은 실질적 연구 도구로서의 성숙도가 아직 부족함을 시사한다. 자동 리뷰어와 인간 리뷰어 간의 괴리를 실증적으로 밝힌 것은 커뮤니티에 유용한 기여이다. ML 이외의 과학 분야로의 확장과 할루시네이션 감지/방지 메커니즘 강화가 향후 핵심 과제이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

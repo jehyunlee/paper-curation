@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents</h1>
+<ul>
+<li><strong>저자</strong>: Axel Backlund, Lukas Petersson</li>
+<li><strong>기관</strong>: Andon Labs</li>
+<li><strong>출처</strong>: arXiv:2502.15840 (2025-02-20)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.15840"><a href="https://doi.org/10.48550/arXiv.2502.15840" target="_blank">10.48550/arXiv.2502.15840</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM 기반 에이전트의 <strong>장기 일관성(long-term coherence)</strong>을 평가하기 위한 시뮬레이션 벤치마크이다. 자판기(vending machine) 운영이라는 단순하지만 장기적인 비즈니스 시나리오를 통해, 재고 관리, 주문, 가격 설정, 일일 비용 관리 등 개별적으로는 쉬운 작업들이 장시간(&gt;20M 토큰) 누적될 때 LLM의 의사결정 일관성이 어떻게 붕괴하는지를 측정한다. Claude 3.5 Sonnet과 o3-mini가 평균적으로 인간 기준선을 초과하는 성과를 보였으나, 모든 모델에서 극단적인 성능 분산과 "멜트다운(meltdown)" 현상이 관찰되었다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>LLM은 단기 과제에서 인상적인 성능을 보이지만, 장기간에 걸친 일관된 수행 능력은 검증되지 않았다. OpenAI 공동창립자 John Schulman은 "장기 일관성"이 AI 에이전트의 missing piece라고 지적한 바 있다.</li>
+<li>기존 벤치마크(METR 등)는 복잡한 과제(AI R&amp;D)에 집중하여, 과제 난이도와 장기 일관성 문제를 분리하기 어려웠다.</li>
+<li>단순한 과제를 장시간 수행하는 환경을 설계하여, 장기 일관성 자체를 독립적으로 측정할 필요가 있었다.</li>
+<li>AI 안전성 관점에서 자본 획득 능력(capital acquisition) 평가도 중요한 동기이다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>10개 LLM</strong>을 대상으로 각 5회 실행(총 ~25M 토큰/회, 실시간 5-10시간/회)하여 장기 일관성을 정량적으로 평가했다.</li>
+<li><strong>Claude 3.5 Sonnet</strong>: 평균 순자산 $2,218로 인간 기준선($844)을 크게 상회했으나, 최악 실행에서는 $476으로 급락했다.</li>
+<li><strong>o3-mini</strong>: 평균 $907로 2위, 인간 기준선과 유사한 수준이지만 역시 높은 분산을 보였다.</li>
+<li><strong>핵심 발견</strong>: 실패가 context window 한계 도달 시점과 상관관계가 없어, 메모리 제한이 아닌 <strong>추론 일관성 자체의 문제</strong>임을 시사한다.</li>
+<li><strong>멜트다운 유형 분류</strong>: 배송 일정 오해석, 주문 망각, 도구 호출 형식 망각, "FBI에 신고", "핵 법적 조치 위협" 등 다양한 tangential loop 패턴을 문서화했다.</li>
+<li>인간은 단일 실행에서 $844를 달성했으며, 모델들과 달리 파산 가능성이 극히 낮다고 자체 평가했다(분산이 훨씬 낮음).</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ol>
+<li><strong>에이전트 구현</strong>: AISI의 inspect-ai 프레임워크 기반 기본 루프. 마지막 30,000 토큰의 히스토리를 컨텍스트로 제공하고, scratchpad/key-value store/vector DB 메모리 도구를 부여했다.</li>
+<li><strong>과제 환경</strong>: 자판기 운영 시뮬레이션. 이메일 송수신, 웹 검색(Perplexity), 재고 확인, 잔액 확인 등의 도구와 물리적 작업을 위한 서브에이전트를 제공했다.</li>
+<li><strong>공급업체 시뮬레이션</strong>: 에이전트가 이메일로 도매업체에 주문하면, 실제 공급업체 정보를 Perplexity로 조회하여 GPT-4o가 현실적 응답을 생성한다.</li>
+<li><strong>고객 구매 시뮬레이션</strong>: 가격 탄력성 모델 기반. 요일/월별 변동, 날씨 영향, 상품 다양성 보너스 등을 반영한 일일 판매량 계산.</li>
+<li><strong>설정</strong>: 초기 자금 $500, 일일 수수료 $2, 2,000 메시지/실행, 4행x3열 자판기. 각 모델 5회 실행.</li>
+<li><strong>평가 지표</strong>: 순자산(현금 + 자판기 현금 + 재고 도매가), 판매량, 판매 중단까지 일수.</li>
+<li><strong>인간 기준선</strong>: 1명의 참가자가 채팅 인터페이스를 통해 5시간 동안 동일 과제를 수행했다.</li>
+</ol>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>"단순하지만 장기적인" 벤치마크 설계 철학</strong>이 독창적이다. 개별 하위 과제는 사소하지만 장기간 누적 시 일관성 붕괴를 관찰할 수 있도록 설계했다.</li>
+<li>LLM 에이전트의 <strong>멜트다운(meltdown) 현상</strong>을 체계적으로 문서화한 최초의 연구 중 하나이다. FBI 신고, "핵 법적 조치", 실존적 위기 독백 등 질적으로 풍부한 실패 사례를 제시했다.</li>
+<li>실패 시점과 context window 포화 시점 간 상관관계 부재를 보여, 장기 일관성 문제가 단순한 메모리 한계가 아님을 실증했다.</li>
+<li>AI 안전성(자본 획득 능력)과 장기 일관성 평가를 하나의 벤치마크에 통합한 점이 참신하다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+<ul>
+<li><strong>인간 기준선의 약점</strong>: 단 1명, 1회 실행으로 인간 성능의 분산을 측정할 수 없다. 통계적 비교의 신뢰도가 낮다.</li>
+<li><strong>환경 단순성</strong>: 자판기 운영은 현실 비즈니스의 복잡성(경쟁, 규제, 다중 이해관계자)을 반영하지 못한다. 일반화 가능성이 제한적이다.</li>
+<li><strong>시뮬레이션 의존성</strong>: 공급업체 응답과 고객 구매를 GPT-4o가 생성하므로, 시뮬레이션 자체의 현실성과 편향이 결과에 영향을 미칠 수 있다.</li>
+<li><strong>에이전트 설계 편향</strong>: 기본 루프 + 서브에이전트 구조가 특정 모델에 유리/불리할 수 있다. 더 정교한 에이전트 아키텍처(계획, 반성 등)의 효과는 미탐구이다.</li>
+<li><strong>멜트다운 원인 미규명</strong>: 멜트다운 현상을 풍부하게 문서화했으나, 근본 원인(attention 패턴, 토큰 분포 변화 등)에 대한 분석은 부재하다.</li>
+<li><strong>후속 연구 방향</strong>: (1) 다수의 인간 참가자를 포함한 통계적으로 견고한 비교, (2) 멜트다운 조기 탐지 및 복구 메커니즘, (3) 더 복잡한 장기 과제로의 확장, (4) 에이전트 아키텍처(메모리, 계획, 자기반성)가 장기 일관성에 미치는 영향 연구.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">점수 (1-5)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td style="text-align: center;">4</td>
+<td>"단순하지만 장기적인" 벤치마크 설계와 멜트다운 현상의 체계적 문서화가 독창적</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td style="text-align: center;">4</td>
+<td>LLM 에이전트 실용화의 핵심 병목인 장기 일관성을 직접 측정하는 시의적절한 연구</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td style="text-align: center;">5</td>
+<td>실험 설계, 결과, 트레이스 분석이 매우 명확하고 읽기 쉬움. 멜트다운 사례가 생생함</td>
+</tr>
+<tr>
+<td>Validity</td>
+<td style="text-align: center;">3</td>
+<td>모델당 5회 실행은 통계적으로 제한적. 인간 기준선 1회는 비교 신뢰도를 약화시킴</td>
+</tr>
+<tr>
+<td>Reproducibility</td>
+<td style="text-align: center;">4</td>
+<td>inspect-ai 기반 오픈소스 구현 제공. 단, Perplexity/GPT-4o 의존으로 완전 재현은 어려울 수 있음</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td style="text-align: center;"><strong>4.0</strong></td>
+<td>장기 일관성이라는 중요한 문제를 창의적이고 접근 가능한 방식으로 조명한 연구</td>
+</tr>
+</tbody>
+</table></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

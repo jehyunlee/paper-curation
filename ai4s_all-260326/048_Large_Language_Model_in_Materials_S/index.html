@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Large Language Model in Materials Science: Roles, Challenges, and Strategic Outl</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Large Language Model in Materials Science: Roles, Challenges, and Strategic Outlook</h1>
+<ul>
+<li><strong>저자</strong>: Jinglan Zhang, Xinyi Chen, Xu Ye, Yulin Yang, Bin Ai</li>
+<li><strong>출처</strong>: Advanced Intelligent Discovery, p. 202500085</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1002/aidi.202500085" target="_blank">10.1002/aidi.202500085</a></li>
+<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Zhang et al._Large Language Model in Materials Science Roles, Challenges, and Strategic Outlook.pdf</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>재료과학에서 LLM의 4가지 핵심 역할(Oracle, Surrogate, Quant, Arbiter)을 정의하고, 검증 가능하고 추적 가능한 연구 루프에 LLM을 통합하기 위한 전략적 방향을 제시하는 관점(perspective) 논문이다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>LLM이 자연어 이해, 멀티모달 정렬, few-shot 추론 등에서 강력한 능력을 보여주며 재료과학의 물성 예측, 합성 계획, 불확실성 정량화에 잠재력을 입증하고 있다. 그러나 단순히 모델 크기를 키우는 것만으로는 충분하지 않으며, 이러한 능력들을 <strong>검증 가능하고 추적 가능한 루프(verifiable, traceable loop)</strong>로 통합할 때 진정한 가치가 발생한다. 데이터 이질성, 해석 가능성 부족, 환각 제어, 과학적 태스크와의 불일치 등의 근본적 도전 과제를 해결하기 위한 체계적 프레임워크가 필요하다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<ol>
+<li><strong>LLM의 4가지 역할 정의</strong>:</li>
+<li><strong>Oracle</strong>: 지식 추출 -- 방대한 재료과학 문헌에서 구조화된 정보를 추출</li>
+<li><strong>Surrogate</strong>: 물성 추론 -- 비용이 높은 시뮬레이션/실험의 대리 모델로 활용</li>
+<li><strong>Quant</strong>: 리스크 평가 -- 불확실성 정량화 및 신뢰도 평가</li>
+<li><strong>Arbiter</strong>: 의사결정 -- 실험 설계, 재료 선택 등에서 판단 지원</li>
+<li><strong>3가지 전략적 미래 방향</strong> 제안:</li>
+<li>재료과학 맥락이 주입된 도메인 적응 파운데이션 모델 개발</li>
+<li>표준화된 크로스모달 데이터 인프라 구축</li>
+<li>전문가 피드백과 로봇 자동화 실험을 통합한 완전 추적 가능 연구 루프</li>
+<li><strong>인간-AI 협업</strong> 강조: LLM을 범용 언어 도구에서 과학적으로 인지하는 파트너(scientifically aware partners)로 전환</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<p>관점(perspective) 논문으로서 체계적 리뷰보다는 저자들의 분석과 비전을 중심으로 구성된다.</p>
+<ul>
+<li><strong>역할 기반 분류</strong>: 기존 LLM 재료과학 연구를 4가지 역할(Oracle, Surrogate, Quant, Arbiter)로 재해석하여 체계화</li>
+<li><strong>사례 분석</strong>: 각 역할에 해당하는 대표적 연구 사례를 선별하여 LLM의 실제 기여와 한계를 논의</li>
+<li><strong>도전 과제 분석</strong>: 데이터 이질성, 해석 가능성, 환각, 과학적 태스크 정렬의 4가지 핵심 과제를 구조적으로 분석</li>
+<li><strong>전략적 제안</strong>: 도메인 적응 모델, 데이터 인프라, 추적 가능 연구 루프의 3가지 방향을 구체적 구현 전략과 함께 제시</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>4가지 역할 분류(Oracle/Surrogate/Quant/Arbiter)</strong>: 기존 서베이가 응용 분야나 태스크 중심으로 분류한 것과 달리, LLM이 연구 과정에서 수행하는 <strong>기능적 역할</strong>을 기준으로 분류한 새로운 프레임워크 제시. 이는 연구자가 LLM을 어떤 목적으로 활용할지 전략적으로 사고하는 데 도움</li>
+<li><strong>검증-추적 루프 강조</strong>: 단순 성능 향상을 넘어 과학적 신뢰성과 재현성을 확보하기 위한 시스템적 접근을 강조한 점이 차별적</li>
+<li><strong>"모델 크기 &lt; 시스템 통합"이라는 메시지</strong>: 스케일링에 대한 맹신을 경계하고, 통합적 시스템 설계의 중요성을 역설</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<ol>
+<li><strong>구체적 구현 부재</strong>: 관점 논문의 특성상, 제안된 3가지 전략 방향에 대한 구체적 구현 사례나 프로토타입이 없음</li>
+<li><strong>정량적 증거 부족</strong>: 4가지 역할 분류의 유용성을 검증할 사용자 연구나 정량적 분석이 제시되지 않음</li>
+<li><strong>Quant 역할의 미성숙</strong>: 불확실성 정량화(UQ)에서 LLM의 역할은 아직 초기 단계이며, 기존 베이지안 방법론 대비 LLM의 명확한 이점이 충분히 논의되지 않음</li>
+<li><strong>자율 실험실 통합의 현실적 과제</strong>: 로봇 자동화 실험과 LLM 통합의 기술적, 비용적, 안전성 측면의 현실적 장벽에 대한 논의가 부족</li>
+<li><strong>환각 완화 전략의 구체성</strong>: 환각 문제를 핵심 도전으로 지적하면서도, 재료과학에 특화된 환각 탐지/완화 기법의 구체적 제안이 미흡</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>종합 평가 (Evaluation)</h2>
+<p>Oracle/Surrogate/Quant/Arbiter라는 4가지 역할 분류는 LLM의 재료과학 활용을 개념적으로 정리하는 데 효과적인 프레임워크다. 특히 "모델 크기 확장보다 검증 가능한 시스템 통합이 더 중요하다"는 메시지는 현재 AI 과잉 기대 속에서 의미 있는 관점이다. 다만 관점 논문의 한계로 구체적 구현이나 정량적 검증이 없어, 제안의 실현 가능성은 후속 연구에 의존한다. 3가지 전략 방향(도메인 적응, 데이터 인프라, 추적 가능 루프)은 방향성으로는 타당하나, 각각이 독립적인 대형 프로젝트 수준이어서 실행 우선순위나 로드맵이 추가로 필요하다. 재료과학 LLM 연구의 전략적 사고를 촉진하는 데 기여하는 논문이다.</p></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

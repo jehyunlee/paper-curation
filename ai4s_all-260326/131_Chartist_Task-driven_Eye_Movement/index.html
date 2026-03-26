@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chartist: Task-driven Eye Movement Control for Chart Reading</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Chartist: Task-driven Eye Movement Control for Chart Reading</h1>
+<ul>
+<li><strong>저자</strong>: Danqing Shi, Yao Wang, Yunpeng Bai, Andreas Bulling, Antti Oulasvirta</li>
+<li><strong>기관</strong>: Aalto University; University of Stuttgart; National University of Singapore</li>
+<li><strong>발행</strong>: CHI 2025 (ACM Conference on Human Factors in Computing Systems)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1145/3706598.3713128"><a href="https://doi.org/10.1145/3706598.3713128" target="_blank">10.1145/3706598.3713128</a></a></li>
+<li><strong>PDF</strong>: <a href="https://arxiv.org/abs/2502.03575">arXiv 2502.03575</a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>차트를 읽을 때 인간의 <strong>태스크 기반 시선 이동(scanpath)</strong>을 시뮬레이션하는 계산 모델 <strong>Chartist</strong>를 제안한다. 핵심은 <strong>2단계 계층적 제어 아키텍처</strong>로, 상위 레벨에서는 LLM이 지금까지 획득한 정보를 이해하고 다음 하위 목표를 선택하며, 하위 레벨에서는 강화학습(RL) 기반 정책이 실제 시선을 픽셀 수준에서 이동시킨다. 값 검색(Retrieve Value), 필터링(Filter), 극값 찾기(Find Extreme) 등 3가지 분석 태스크에서 인간과 유사한 scanpath를 예측하며, 기존 베이스라인(VQA, UMSS, DeepGaze III) 대비 Sequence Score와 Levenshtein 거리에서 최고 성능을 달성했다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (연구 동기)</h2>
+<ul>
+<li>데이터 시각화 디자인 개선을 위해 사용자의 시선 패턴 이해가 필수적이나, 실제 eye tracking 실험은 비용이 높고 규모 확장이 어렵다.</li>
+<li>기존 scanpath 예측 모델은 <strong>자유 관찰(free-viewing)</strong> 상황만 다루며, 특정 분석 태스크가 시선에 미치는 영향을 무시해왔다.</li>
+<li>차트 독해는 단순 시각 탐색을 넘어 고수준 추론이 필요한 인지 과정이므로, 태스크 의존적 시선 제어 모델이 필요하다.</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (주요 성과)</h2>
+<ol>
+<li><strong>최초의 태스크 기반 차트 scanpath 예측 모델</strong>: 분석 태스크에 따라 달라지는 인간의 시선 이동을 계산적으로 모델링한 첫 번째 연구</li>
+<li><strong>계층적 제어 아키텍처</strong>: LLM 기반 인지 컨트롤러(목표 설정) + RL 기반 안구 운동 컨트롤러(PPO로 학습)의 2단계 구조</li>
+<li><strong>인간 eye tracking 데이터 없이 학습</strong>: 훈련 과정에서 인간 시선 데이터를 사용하지 않고도 인간과 유사한 scanpath 생성</li>
+<li><strong>정량적 우수성</strong>: 3가지 태스크 모두에서 Sequence Score(mean 0.378~0.413)와 LEV 거리에서 베이스라인 대비 최고 성능</li>
+<li><strong>인지적 타당성</strong>: 고정 횟수, AOI 비율, 재방문 빈도, 고정 전환 등 세부 통계에서도 인간 데이터의 1표준편차 내 결과를 다수 달성</li>
+<li><strong>일반화 가능성 시연</strong>: 막대 차트 외에 꺾은선 차트, 산점도로의 확장 사례 제시</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>인지 컨트롤러 (High-level)</strong>: LLM이 내부 메모리(이전 고정에서 OCR로 추출한 텍스트 정보)를 요약하여 현재 상태를 파악하고, 3가지 사전 정의 연산(텍스트 레이블 탐색, 관련 마크 찾기, 관련 값 읽기) 중 하나를 선택하거나 답변을 결정</li>
+<li><strong>안구 운동 컨트롤러 (Low-level)</strong>: 차트 이미지를 320x320으로 리사이즈, 20x20 그리드로 이산화하여 POMDP로 정의. 4가지 특징(제한된 시야의 차트 이미지, 태스크 기반 saliency, 방문 이력, 목표 참조 위치)을 CNN으로 인코딩하고 PPO로 RL 정책 학습</li>
+<li><strong>메모리 모델</strong>: 인간의 제한된 시야와 기억 용량을 모사. 망각 확률은 Softmax(ρ·(t-t_i))로 계산 (ρ=0.1)</li>
+<li><strong>데이터</strong>: 실제 수집 차트 + Vega-Lite 기반 합성 차트, 규칙 기반 태스크 자동 생성</li>
+<li><strong>평가</strong>: DTW, Levenshtein 거리, Sequence Score + 고정 횟수, AOI별 고정 비율, 재방문 빈도 등 통계 지표</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>인지과학과 AI의 창의적 결합</strong>: 계층적 의사결정(인지과학)을 LLM(고수준 추론) + RL(저수준 운동 제어)로 구현한 아키텍처가 독창적</li>
+<li><strong>Computational Rationality 패러다임 적용</strong>: 인간의 인지적 제약(제한된 시야, 기억 용량, 망각)을 명시적으로 모델에 내장하여 인간 유사성을 확보</li>
+<li><strong>인간 데이터 불요 학습</strong>: eye tracking 훈련 데이터 없이도 인간과 유사한 시선 패턴을 생성할 수 있어, 데이터 수집 비용을 크게 절감</li>
+<li>시각화 디자인 평가/최적화, 설명 가능한 AI 등 실용적 응용 가능성을 구체적으로 제시</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>차트 유형 제한</strong>: 주로 막대 차트(bar chart)에서 평가되었으며, 꺾은선/산점도는 정성적 시연 수준에 그침. 히트맵, 네트워크 그래프, 트리맵 등 복잡한 시각화로의 확장이 필요</li>
+<li><strong>태스크 범위 제한</strong>: 3가지 기본 분석 태스크(RV, F, FE)만 다루며, 비교(Compare), 상관관계 파악, 추세 분석 등 고수준 추론 태스크는 미지원</li>
+<li><strong>고정 횟수 불일치</strong>: 인간 평균 ~89회 대비 모델 ~48회로 상당한 차이가 있어, 인간의 탐색적·확인적 시선 이동을 충분히 모사하지 못함</li>
+<li><strong>공간 추론 한계</strong>: LLM의 공간 지각 능력 부족으로 축 값 사이의 보간이 불가능하며, ChartQA 벤치마크 수준의 정확도에 미달</li>
+<li><strong>개인차 미반영</strong>: 개인별 시선 전략의 차이를 모델링하지 않아, 집단 평균 수준의 예측에 머무름</li>
+<li><strong>향후 방향</strong>: 멀티모달 LLM 통합(공간 추론 강화), 복잡 시각화/태스크 확장, 인간 sense-making 프레임워크 통합, 시각화 디자인 자동 최적화 루프 구축</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">점수 (1-10)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>참신성 (Novelty)</strong></td>
+<td style="text-align: center;">8</td>
+<td>태스크 기반 차트 scanpath 예측이라는 새로운 문제 정의와 LLM+RL 계층적 아키텍처가 독창적</td>
+</tr>
+<tr>
+<td><strong>기술적 깊이 (Technical Depth)</strong></td>
+<td style="text-align: center;">8</td>
+<td>인지 컨트롤러, 안구 운동 컨트롤러, 메모리 모델 등 각 구성요소가 인지과학적 근거를 갖추고 정교하게 설계됨</td>
+</tr>
+<tr>
+<td><strong>실용성 (Practicality)</strong></td>
+<td style="text-align: center;">7</td>
+<td>시각화 디자인 평가/최적화에 직접 활용 가능하나, 현재 차트 유형과 태스크 범위가 제한적</td>
+</tr>
+<tr>
+<td><strong>완성도 (Completeness)</strong></td>
+<td style="text-align: center;">7</td>
+<td>정량적 평가가 충실하나, 고정 횟수 불일치와 제한된 차트/태스크 범위가 아쉬움</td>
+</tr>
+<tr>
+<td><strong>영향력 (Impact)</strong></td>
+<td style="text-align: center;">7</td>
+<td>HCI, 정보 시각화, 인지 모델링 분야에 새로운 연구 방향을 제시하며, CHI 2025 발표로 가시성 높음</td>
+</tr>
+<tr>
+<td><strong>종합 (Overall)</strong></td>
+<td style="text-align: center;"><strong>7.5</strong></td>
+<td>인지과학적 통찰과 최신 AI 기술(LLM+RL)을 결합한 창의적 연구. 차트 독해 과정의 계산적 이해에 의미 있는 기여를 하며, 향후 확장 가능성이 풍부함</td>
+</tr>
+</tbody>
+</table></div>
+<div class="back"><a href="../index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
