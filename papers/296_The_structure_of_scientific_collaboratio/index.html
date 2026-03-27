@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Structure of Scientific Collaboration Networks</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1A56B0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1>The Structure of Scientific Collaboration Networks</h1>
+<blockquote>
+<p><strong>저자</strong>: M. E. J. Newman | <strong>날짜</strong>: 2001 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: 10.1073/pnas.98.2.404 | <strong>arXiv</strong>: -
+<strong>리뷰 모드</strong>: PDF</p>
+</blockquote>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>과학자들의 공동 저작 네트워크는 어떤 구조를 가지고 있는가? 이 논문은 MEDLINE(생의학), Los Alamos e-Print Archive(물리학), NCSTRL(컴퓨터 과학) 등 세 개 대형 데이터베이스를 분석하여 <strong>과학 협력 네트워크가 "작은 세계(small-world)" 구조를 형성하며, 임의로 선택된 두 과학자 사이의 평균 경로가 매우 짧다</strong>는 것을 실증했다. 동시에 분야별 협력 패턴의 차이(물리학의 대규모 그룹 vs. 생의학·컴퓨터과학의 소규모 팀)도 정량화했다.</p>
+<p><img alt="Figure 1" src="figures/fig1.png" />
+<em>Figure 1: 과학 협력 네트워크의 구조 분석 — 협력자 수 분포와 네트워크 특성</em></p>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li><strong>rule_base_novelty</strong>: 과학 공동 저작 네트워크에 대한 최초의 대규모 정량적 구조 분석</li>
+<li><strong>rule_base_finding</strong>: 세 분야 모두 소세계(small-world) 특성 확인 — 짧은 경로 길이, 높은 클러스터링 계수</li>
+<li><strong>rule_base_result</strong>: 물리학 네트워크가 생의학·CS보다 훨씬 높은 연결성과 대형 협력 그룹 보유</li>
+</ul>
+<div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터</strong>: MEDLINE(1995~1999, 2백만 저자), e-Print Archive(1995~1999, 5만 저자), NCSTRL(1995~1999, 1.1만 저자)</li>
+<li><strong>네트워크 구성</strong>: 논문을 공동 저작한 두 과학자를 연결 (가중 엣지 포함)</li>
+<li><strong>측정 지표</strong>: 평균 연결 수(degree), 클러스터링 계수, 평균 최단 경로 길이, 거대 연결 성분 크기</li>
+<li><strong>비교</strong>: 랜덤 그래프 모델과의 비교로 실제 네트워크의 특이성 규명</li>
+</ul>
+<div class="section-box"><h2>Why (중요성)</h2>
+<p>과학 협력 네트워크의 구조를 이해하는 것은 지식 확산, 연구비 배분, 연구 그룹 형성 정책의 근거가 된다. 소세계 구조는 아이디어와 정보가 과학 공동체 전반에 빠르게 전파될 수 있음을 의미한다.</p>
+<div class="section-box"><h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>1990년대 후반 데이터만 사용, 시간적 변화 미반영</li>
+<li>저자 동명이인(name disambiguation) 문제로 일부 오류 포함 가능</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>협력의 질(공동 아이디어 vs. 단순 기술 기여)을 네트워크 엣지로 구분하지 않음</li>
+<li>지리적 요인이 협력 네트워크 형성에 미치는 영향 분석 부재</li>
+</ul>
+<div class="section-box"><h2>Further Study</h2>
+<ul>
+<li>시간적 진화 — 인터넷 확산 이후 협력 네트워크 변화</li>
+<li>협력 네트워크 구조와 연구 성과(임팩트, 혁신성) 간 상관관계 분석</li>
+</ul>
+<div class="section-box"><h2>평가</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>점수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Technical Soundness</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Overall</td>
+<td>5/5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>총평</strong>: 과학 협력 네트워크 연구의 출발점이 된 고전적 논문으로, 소세계 구조와 분야별 차이를 최초로 엄밀하게 정량화한 기념비적 기여이다.</p></div></div></div></div></div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+</body>
+</html>

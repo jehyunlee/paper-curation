@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>What's In Your Field? Mapping Scientific Research with Knowledge Graphs and Large Language Models</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1a5aad; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>What's In Your Field? Mapping Scientific Research with Knowledge Graphs and Large Language Models</h1>
+<blockquote>
+<p><strong>저자</strong>: Abhipsha Das, Nicholas Lourie, Siavash Golkar, Mariel Pettee | <strong>날짜</strong>: 2025-05-29 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.09894">10.48550/arXiv.2503.09894</a>
+<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
+</blockquote>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>대규모 학술 문헌을 체계적으로 분석하려면 구조화된 지식 표현이 필요하지만, LLM 기반 비구조적 접근법은 수백만 건의 사실이 답변에 영향을 미칠 때 비용이 폭발적으로 증가한다. 이 논문은 LLM의 의미론적 이해와 구조화된 스키마를 결합하여 30,000편의 arXiv 논문(천체물리학·유체역학·진화생물학)으로부터 knowledge graph를 구축하는 시스템 "Surveyor"를 제시한다. 단 20개의 수동 주석 초록만으로 스키마를 학습시켜 분야 전체의 신흥 트렌드를 식별하고 지식 지형을 시각화하는 데 성공했다.</p>
+</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, action] "we try extracting structured representations using LLMs."</li>
+<li>[authorship, novelty] "By combining LLMs' semantic understanding with a schema of scientific concepts, we prototype a system that answers precise questions about the literature as a whole."</li>
+<li>[result] "Our schema applies across scientific fields and we extract concepts from it using only 20 manually annotated abstracts."</li>
+</ul>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터</strong>: arXiv 30,000편 논문 — 천체물리학, 유체역학, 진화생물학 3개 분야 포함</li>
+<li><strong>스키마 설계</strong>: 분야 횡단적으로 적용 가능한 과학적 개념 스키마 정의; 20개 수동 주석 초록으로 학습</li>
+<li><strong>LLM 기반 개념 추출</strong>: 정의된 스키마에 따라 LLM이 논문 초록에서 구조화된 개념과 관계를 추출</li>
+<li><strong>Knowledge Graph 구축</strong>: 추출된 개념-관계 쌍으로 전체 코퍼스에 걸친 구조화 DB 구축</li>
+<li><strong>시각화</strong>: Knowledge graph 탐색 인터페이스로 신흥 연구 트렌드 및 분야 지형 시각화</li>
+<li><strong>시연</strong>: HuggingFace Spaces(abby101/surveyor-0)에 데모 공개, GitHub 코드 오픈소스</li>
+</ul>
+</div><div class="section-box"><h2>Why (중요성)</h2>
+<ul>
+<li>학술 문헌의 지수적 증가로 연구자가 분야 전체를 파악하기 어려워지고 있으며, 기존 RAG 방식은 수백만 건 규모에서 비용 문제가 있음</li>
+<li>LLM 단독으로는 전체 코퍼스에 걸친 체계적 패턴 분석이 불가능하며, 구조화된 표현과의 결합이 필수적임</li>
+<li>20개 주석만으로 새로운 분야에 스키마를 적용할 수 있다면, 신흥 분야 모니터링의 비용이 획기적으로 낮아짐</li>
+<li>Science of Science 연구에서 대규모 지식 구조 자동 추출은 연구 동향 분석의 새 패러다임을 제시</li>
+</ul>
+</div><div class="section-box"><h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Abstract 기준으로 명시적 한계 서술이 제한적이나, "prototype"임을 명시하여 시스템의 초기 단계성을 인정</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>20개 주석 초록으로 학습한 스키마의 품질과 완전성에 대한 정량적 검증이 충분히 제시되었는지 불명확</li>
+<li>3개 분야(천체물리학·유체역학·진화생물학) 선택이 대표성 있는지 — 사회과학, 의학 등 다른 분야에서의 일반화 성능 미검증</li>
+<li>LLM 추출 오류의 누적이 knowledge graph 품질에 미치는 영향 분석 필요</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>스키마의 분야 독립성 검증 및 더 많은 학문 분야로 확장</li>
+<li>실시간 문헌 업데이트와 연동한 동적 knowledge graph 구축</li>
+<li>추출 정확도와 그래프 기반 분석 결과의 정량적 평가 체계 확립</li>
+</ul>
+</div><div class="section-box"><h2>평가</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>점수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td>4/5</td>
+</tr>
+<tr>
+<td>Technical Soundness</td>
+<td>3/5</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td>4/5</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td>4/5</td>
+</tr>
+<tr>
+<td>Overall</td>
+<td>4/5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>총평</strong>: 최소한의 수동 주석으로 대규모 학술 코퍼스의 구조화된 지식 표현을 자동 구축하는 실용적 시스템을 제시하며, LLM의 의미론적 능력과 구조화 표현의 장점을 효과적으로 결합했다. 프로토타입 단계의 한계가 있으나 Science of Science 자동화의 유망한 방향성을 제시한다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+</body>
+</html>

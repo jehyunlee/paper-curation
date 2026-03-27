@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Universality of citation distributions: Toward an objective measure of scientific impact</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 1.5rem 0 0.6rem; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; color: #2374D6; }</style>
+</head>
+<body>
+<h1>Universality of citation distributions: Toward an objective measure of scientific impact</h1>
+<blockquote><p><strong>저자</strong>: Filippo Radicchi, Santo Fortunato, Claudio Castellano | <strong>날짜</strong>: 2008 | <strong>Journal</strong>: PNAS | <strong>DOI</strong>: 10.1073/pnas.0806977105</p></blockquote>
+<blockquote><p><strong>리뷰 모드</strong>: PDF</p></blockquote>
+<hr>
+<h2>Essence</h2>
+<p>분야별 인용 분포는 절대 수치로는 큰 차이를 보이지만, 상대 지표 $c_f = c/c_0$(여기서 $c_0$는 해당 분야의 논문당 평균 인용 수)로 정규화하면 **모든 분야와 연도에 걸쳐 단일 보편 곡선(universal curve)으로 수렴**한다. 이는 $c_f$가 분야 간 비교에 편향 없는 citation 성과 지표임을 강력히 지지하며, 이를 기반으로 서로 다른 분야의 연구자를 비교 가능한 h-index 일반화를 제안한다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"></div>
+<p>*Figure 1: 다수 학문 분야에 걸친 상대 인용 지표 $c_f$의 분포. 절대 인용 수는 분야별로 크게 다르지만, $c_f$로 정규화하면 보편 곡선으로 수렴함을 보여줌.*</p>
+<h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, finding] "We show that the probability that an article is cited c times has large variations between different disciplines, but all distributions are rescaled on a universal curve when the relative indicator $c_f = c/c_0$ is considered, where $c_0$ is the average number of citations per article for the discipline."</li>
+<li>[authorship, finding] "These findings provide a strong validation of $c_f$ as an unbiased indicator for citation performance across disciplines and years."</li>
+<li>[authorship, action] "Based on this indicator, we introduce a generalization of the h-index suitable for comparing scientists working in different fields."</li>
+</ul>
+<h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터</strong>: 다수 학문 분야(물리학, 수학, 의학, 경제학 등)의 ISI Web of Science 인용 데이터</li>
+<li><strong>핵심 지표</strong>: $c_f = c/c_0$: 개별 논문의 인용 수 $c$를 해당 분야 동일 연도 논문의 평균 인용 수 $c_0$로 나눈 상대 지표</li>
+<li><strong>검증</strong>: 분야별·연도별 인용 분포를 $c_f$ 스케일로 변환 후 보편 곡선 수렴 여부 통계적 검증</li>
+<li><strong>응용</strong>: $c_f$ 기반으로 분야를 초월한 h-index 일반화 제안 — 개인의 모든 논문의 $c_f^j \geq h_f$인 논문 수로 정의</li>
+</ul>
+<h2>Why (중요성)</h2>
+<ul>
+<li>절대 인용 수 비교는 분야 간 인용 관행 차이로 심각한 편향 유발 — 수학자 vs. 의사 직접 비교 불가능</li>
+<li>기존 정규화 방법들(IF, percentile 등)은 임의적 기준선에 의존하거나 연도 효과를 제거하지 못함</li>
+<li>$c_f$의 보편성 발견은 인용 기반 평가의 이론적 기반을 제공하며, 특히 분야 간 연구자/기관 평가에 직접 적용 가능</li>
+</ul>
+<h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>$c_0$ 계산에 사용되는 동일 분야·연도 정의 방식에 따라 결과가 달라질 수 있음</li>
+<li>자기인용(self-citation) 효과가 보정되지 않음</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>보편 곡선의 정확한 함수형(log-normal, power-law 등)이 명시적으로 규정되지 않아 이론적 토대가 약함</li>
+<li>연구자가 여러 분야에 걸쳐 활동하는 경우 $c_f$ 적용 방법이 불명확</li>
+<li>최근 오픈 액세스·소셜 미디어 확산으로 인용 패턴이 변화했을 가능성</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>$c_f$ 기반 일반화 h-index의 대규모 적용 및 실용화</li>
+<li>분야 경계 정의의 영향 체계적 분석</li>
+<li>국가·기관 수준 평가에서의 $c_f$ 활용</li>
+</ul>
+<h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
+<p><strong>총평</strong>: 인용 분포의 분야 간 보편성을 처음 실증하고 편향 없는 상대 지표 $c_f$를 제안한 계량정보학의 이정표 논문으로, 단순하고 강력한 아이디어가 과학 평가 실무에 즉각 적용 가능한 솔루션을 제공한다.</p>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

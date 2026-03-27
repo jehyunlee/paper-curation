@@ -1,0 +1,1371 @@
+{
+  "categories": [
+    {
+      "name": "Citation & Impact Analysis",
+      "description": "Quantitative analysis of citation patterns, impact metrics, and bibliometric indicators.",
+      "not_here": "Studies primarily about collaboration networks or AI tools.",
+      "keywords": [
+        "citation",
+        "h-index",
+        "g-index",
+        "impact factor",
+        "bibliometric",
+        "scientometric",
+        "citation network",
+        "citation count",
+        "self-citation",
+        "highly cited",
+        "disruptive paper",
+        "disruption index",
+        "cd index",
+        "consolidation",
+        "scientific impact",
+        "sleeping beaut",
+        "scientific output",
+        "quantify",
+        "atypical combination",
+        "prize",
+        "scientific prize",
+        "metric"
+      ]
+    },
+    {
+      "name": "Scientific Collaboration & Networks",
+      "description": "Co-authorship, teams, network science methods applied to science.",
+      "not_here": "Citation impact metrics.",
+      "keywords": [
+        "collaboration",
+        "co-author",
+        "coauthor",
+        "team science",
+        "teamwork",
+        "research team",
+        "interdisciplin",
+        "transdisciplin",
+        "science network",
+        "community detection",
+        "small-world",
+        "network analysis",
+        "graph",
+        "louvain",
+        "large teams",
+        "small teams",
+        "co-production",
+        "communities",
+        "networks of"
+      ]
+    },
+    {
+      "name": "Gender, Diversity & Equity",
+      "description": "Representation, bias, and equity in the scientific workforce.",
+      "not_here": "General career studies without diversity focus.",
+      "keywords": [
+        "gender",
+        "women in science",
+        "diversity",
+        "equity",
+        "inclusion",
+        "inequality",
+        "inequalit",
+        "representation",
+        "bias",
+        "underrepresent",
+        "minority",
+        "racial",
+        "ethnic",
+        "intersectional",
+        "unequal effect",
+        "covid.*scientist",
+        "pandemic.*scientist"
+      ]
+    },
+    {
+      "name": "AI & LLM in Science",
+      "description": "AI/LLM/computational tools for scientific research and data infrastructure.",
+      "not_here": "AI as a research subject rather than tool.",
+      "keywords": [
+        "llm",
+        "language model",
+        "chatgpt",
+        "gpt-4",
+        "artificial intelligence",
+        "machine learning",
+        "deep learning",
+        "nlp",
+        "text mining",
+        "automated review",
+        "ai-assisted",
+        "computational",
+        "openalex",
+        "semantic scholar",
+        "s2orc",
+        "open research corpus",
+        "classification system",
+        "map of science",
+        "topic model"
+      ]
+    },
+    {
+      "name": "Science Policy & Funding",
+      "description": "Research funding, science policy, institutional governance, and peer review of proposals.",
+      "not_here": "Individual career decisions.",
+      "keywords": [
+        "funding",
+        "grant",
+        "policy",
+        "governance",
+        "research funding",
+        "science policy",
+        "r&d",
+        "government",
+        "nsf",
+        "nih",
+        "research investment",
+        "allocation",
+        "lottery",
+        "proposal",
+        "select the best",
+        "science panel"
+      ]
+    },
+    {
+      "name": "Research Careers & Mobility",
+      "description": "Academic careers, hiring, tenure, mobility, and workforce dynamics.",
+      "not_here": "Diversity-focused studies.",
+      "keywords": [
+        "career",
+        "hiring",
+        "faculty",
+        "tenure",
+        "academic job",
+        "mobility",
+        "brain drain",
+        "postdoc",
+        "early-career",
+        "productivity",
+        "research performance",
+        "prestige",
+        "migration",
+        "scholar",
+        "superstar",
+        "extinction",
+        "funeral",
+        "death of"
+      ]
+    },
+    {
+      "name": "Knowledge Production & Innovation",
+      "description": "Knowledge creation, innovation, breakthrough discoveries, and dynamics of failure/success.",
+      "not_here": "Citation metrics without knowledge focus.",
+      "keywords": [
+        "innovation",
+        "knowledge",
+        "breakthrough",
+        "discovery",
+        "novelty",
+        "hot streak",
+        "creative",
+        "exploration",
+        "exploitation",
+        "paradigm",
+        "scientific revolution",
+        "emergence",
+        "disrupt",
+        "failure",
+        "success",
+        "dynamics of",
+        "novel paper",
+        "social attention",
+        "technological change"
+      ]
+    },
+    {
+      "name": "Research Integrity & Publishing",
+      "description": "Peer review, reproducibility, retractions, publication systems, and science communication.",
+      "not_here": "Citation analysis without publishing focus.",
+      "keywords": [
+        "peer review",
+        "reproducib",
+        "replicat",
+        "retraction",
+        "misconduct",
+        "open access",
+        "preprint",
+        "publication bias",
+        "journal",
+        "editorial",
+        "predatory",
+        "open science",
+        "chaperone",
+        "false",
+        "oligopoly",
+        "publisher",
+        "academic publish",
+        "science communication",
+        "bridging",
+        "society",
+        "information pathway",
+        "replicab"
+      ]
+    },
+    {
+      "name": "Other",
+      "description": "Papers not fitting above categories.",
+      "not_here": "Any paper mappable to above.",
+      "keywords": []
+    }
+  ],
+  "assignments": [
+    {
+      "slug": "259_Remote_collaboration_fuses_fewer_breakth",
+      "title": "Remote collaboration fuses fewer breakthrough ideas",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "260_Women_are_credited_less_in_science_than",
+      "title": "Women are credited less in science than men",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "261_The_Burden_of_Knowledge_and_the_Death_of",
+      "title": "The Burden of Knowledge and the Death of the Renaissance Man",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "262_The_Increasing_Dominance_of_Teams_in_Pro",
+      "title": "The Increasing Dominance of Teams in Production of Knowledge",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "263_Systematic_Inequality_and_Hierarchy_in_F",
+      "title": "Systematic Inequality and Hierarchy in Faculty Hiring Networks",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "264_Principles_of_Scientific_Research_Team_F",
+      "title": "Principles of Scientific Research Team Formation and Evolution",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "265_A_General_Theory_of_Bibliometric_and_Oth",
+      "title": "A General Theory of Bibliometric and Other Cumulative Advantage Processes",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "266_Unsupervised_Word_Embeddings_Capture_Lat",
+      "title": "Unsupervised Word Embeddings Capture Latent Knowledge from Materials Science Literature",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "267_Growth_Rates_of_Modern_Science_Bibliome",
+      "title": "Growth Rates of Modern Science: Bibliometric Analysis Based on the Number of Publications and Cited References",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "268_Citation_Analysis_as_a_Tool_in_Journal_E",
+      "title": "Citation Analysis as a Tool in Journal Evaluation",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "269_Theory_and_Practice_of_the_g-index",
+      "title": "Theory and Practice of the g-index",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "270_Relative_Citation_Ratio_A_New_Metric_Th",
+      "title": "Relative Citation Ratio: A New Metric That Uses Citation Rates to Measure Influence at the Article Level",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "271_Bibliometrics_Global_Gender_Disparities",
+      "title": "Bibliometrics: Global Gender Disparities in Science",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "272_Quantifying_Long-term_Scientific_Impact",
+      "title": "Quantifying Long-term Scientific Impact",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "273_Co-Citation_Analysis_Bibliographic_Coupl",
+      "title": "Co-Citation Analysis Bibliographic Coupling and Direct Citation: Which Citation Approach Represents the Research Front Most Accurately",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "274_Design_and_Update_of_a_Classification_Sy",
+      "title": "Design and Update of a Classification System: The UCSD Map of Science",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "275_Community_Detection_in_Graphs",
+      "title": "Community Detection in Graphs",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "276_Fast_Unfolding_of_Communities_in_Large_N",
+      "title": "Fast Unfolding of Communities in Large Networks",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "277_Collective_Credit_Allocation_in_Science",
+      "title": "Collective Credit Allocation in Science",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "278_The_State_of_OA_A_Large-Scale_Analysis",
+      "title": "The State of OA: A Large-Scale Analysis of the Prevalence and Impact of Open Access Articles",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "279_The_Preeminence_of_Ethnic_Diversity_in_S",
+      "title": "The Preeminence of Ethnic Diversity in Scientific Collaboration",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "280_The_Diversity-Innovation_Paradox_in_Scie",
+      "title": "The Diversity-Innovation Paradox in Science",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "281_The_Chaperone_Effect_in_Scientific_Publi",
+      "title": "The Chaperone Effect in Scientific Publishing",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "282_Productivity_Prominence_and_the_Effects",
+      "title": "Productivity Prominence and the Effects of Academic Environment",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "283_Historical_Comparison_of_Gender_Inequali",
+      "title": "Historical Comparison of Gender Inequality in Scientific Careers Across Countries and Disciplines",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "284_The_Misleading_Narrative_of_the_Canonica",
+      "title": "The Misleading Narrative of the Canonical Faculty Productivity Trajectory",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "285_Estimating_the_Reproducibility_of_Psycho",
+      "title": "Estimating the Reproducibility of Psychological Science",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "286_Misconduct_Accounts_for_the_Majority_of",
+      "title": "Misconduct Accounts for the Majority of Retracted Scientific Publications",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "287_Big_Names_or_Big_Ideas_Do_Peer-Review_P",
+      "title": "Big Names or Big Ideas: Do Peer-Review Panels Select the Best Science Proposals",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "288_Does_Science_Advance_One_Funeral_at_a_Ti",
+      "title": "Does Science Advance One Funeral at a Time",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "289_Evaluating_the_Replicability_of_Social_S",
+      "title": "Evaluating the Replicability of Social Science Experiments in Nature and Science",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "290_Meta-assessment_of_Bias_in_Science",
+      "title": "Meta-assessment of Bias in Science",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "291_Rethink_Funding_by_Putting_the_Lottery_F",
+      "title": "Rethink Funding by Putting the Lottery First",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "292_Superstar_Extinction",
+      "title": "Superstar Extinction",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "293_OpenAlex_A_fully-open_index_of_scholarl",
+      "title": "OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "294_Hot_streaks_in_artistic_cultural_and_s",
+      "title": "Hot streaks in artistic, cultural, and scientific careers",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "295_The_Matthew_effect_in_science_funding",
+      "title": "The Matthew effect in science funding",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "296_The_structure_of_scientific_collaboratio",
+      "title": "The structure of scientific collaboration networks",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "297_Updated_science-wide_author_databases_of",
+      "title": "Updated science-wide author databases of standardized citation indicators",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "298_Papers_and_patents_are_becoming_less_dis",
+      "title": "Papers and patents are becoming less disruptive over time",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "299_Quantifying_the_dynamics_of_failure_acro",
+      "title": "Quantifying the dynamics of failure across science, startups and security",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation",
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "300_Atypical_Combinations_and_Scientific_Imp",
+      "title": "Atypical Combinations and Scientific Impact",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "301_S2ORC_The_Semantic_Scholar_Open_Researc",
+      "title": "S2ORC: The Semantic Scholar Open Research Corpus",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "302_Emergence_of_Scaling_in_Random_Networks",
+      "title": "Emergence of Scaling in Random Networks",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "303_Global_citation_inequality_is_on_the_ris",
+      "title": "Global citation inequality is on the rise",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "304_1500_scientists_lift_the_lid_on_reprodu",
+      "title": "1,500 scientists lift the lid on reproducibility",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "305_Scientific_production_in_the_era_of_larg",
+      "title": "Scientific production in the era of large language models",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "306_Intersectional_inequalities_in_science",
+      "title": "Intersectional inequalities in science",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "307_Software_survey_VOSviewer_a_computer_p",
+      "title": "Software survey: VOSviewer, a computer program for bibliometric mapping",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "308_Gender-diverse_teams_produce_more_novel",
+      "title": "Gender-diverse teams produce more novel and higher-impact scientific ideas",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "309_The_Oligopoly_of_Academic_Publishers_in",
+      "title": "The Oligopoly of Academic Publishers in the Digital Era",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "310_A_Dynamic_Network_Measure_of_Technologic",
+      "title": "A Dynamic Network Measure of Technological Change",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "311_Global_patterns_of_migration_of_scholars",
+      "title": "Global patterns of migration of scholars with economic development",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "312_Universality_of_citation_distributions",
+      "title": "Universality of citation distributions: Toward an objective measure of scientific impact",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "313_Networks_of_Scientific_Papers",
+      "title": "Networks of Scientific Papers",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "314_Early-career_setback_and_future_career_i",
+      "title": "Early-career setback and future career impact",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "315_Evolution_of_the_social_network_of_scien",
+      "title": "Evolution of the social network of scientific collaborations",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "316_Collective_dynamics_of_small-world_net",
+      "title": "Collective dynamics of ‘small-world’ networks",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "317_Scientific_prize_network_predicts_who_pu",
+      "title": "Scientific prize network predicts who pushes the boundaries of science",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "318_Why_Most_Published_Research_Findings_Are",
+      "title": "Why Most Published Research Findings Are False",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "319_Public_use_and_public_funding_of_science",
+      "title": "Public use and public funding of science",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "320_Coevolution_of_policy_and_science_during",
+      "title": "Coevolution of policy and science during the pandemic",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "321_An_index_to_quantify_an_individuals_sci",
+      "title": "An index to quantify an individual's scientific research output",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "322_Making_gender_diversity_work_for_scienti",
+      "title": "Making gender diversity work for scientific discovery and innovation",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "323_Defining_and_identifying_Sleeping_Beauti",
+      "title": "Defining and identifying Sleeping Beauties in science",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "324_A_network_approach_to_topic_models",
+      "title": "A network approach to topic models",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "325_Public_Profile_Matters_A_Scalable_Integ",
+      "title": "Public Profile Matters: A Scalable Integrated Approach to Recommend Citations in the Wild",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "326_Which_stylistic_features_fool_ChatGPT_re",
+      "title": "Which stylistic features fool ChatGPT research evaluations?",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "327_Polymer_Science_Research_in_India_A_Sci",
+      "title": "Polymer Science Research in India: A Scientometrics Study",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "328_Risk_and_Artificial_Intelligence_Adoptio",
+      "title": "Risk and Artificial Intelligence Adoption: A Scientometric and Thematic Evolution Analysis Based on Scopus and Web of Science (1990-2025)",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "329_Real-World_Evidence_in_the_First_Round_o",
+      "title": "Real-World Evidence in the First Round of the US Inflation Reduction Act Drug Price Negotiations: A Citation Analysis of CMS Maximum Fair Price Explanation Documents",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "330_Organisational_accounts_engaged_in_schol",
+      "title": "Organisational accounts engaged in scholarly communication on Twitter: Patterns of presence, activity and engagement",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "331_Modeling_Changing_Scientific_Concepts_wi",
+      "title": "Modeling Changing Scientific Concepts with Complex Networks: A Case Study on the Chemical Revolution",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "AI & LLM in Science",
+        "Research Careers & Mobility",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "332_Interdisciplinary_papers_supported_by_di",
+      "title": "Interdisciplinary papers supported by disciplinary grants garner deep and broad scientific impact",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Science Policy & Funding"
+      ]
+    },
+    {
+      "slug": "333_An_empirical_analysis_of_open_access_cit",
+      "title": "An empirical analysis of open access citation advantages in library and information science",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "334_Authorship_titles_and_open_access_as_dr",
+      "title": "Authorship, titles and open access as drivers of citation performance in orthopaedics: a scientometric analysis",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "335_A_bibliometric_analysis_of_bouldering_an",
+      "title": "A bibliometric analysis of bouldering and climbing research articles in the Scopus database",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "336_Mapping_Scholarly_Impact_Citation_Analy",
+      "title": "Mapping Scholarly Impact: Citation Analysis of Commerce Doctoral Dissertations at Maharshi Dayanand University, Rohtak",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "337_Dataset_Citation_Analysis_of_ICRC_Custo",
+      "title": "Dataset: Citation Analysis of ICRC Customary IHL Study Rules (Annex to 'Limits of Creation')",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "338_Bridging_the_gap_between_science_and_soc",
+      "title": "Bridging the gap between science and society: Mapping libraries' strategies for engaging in the research impact process through semantic analysis",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "339_OpenAlex_in_focus_Metadata_quality_of_p",
+      "title": "OpenAlex in focus: Metadata quality of publication type and language fields in an open peer review corpus",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "340_Introducing_multiverse_analysis_to_bibli",
+      "title": "Introducing multiverse analysis to bibliometrics: The case of team size effects on disruptive research",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "341_Information_Pathways_in_Online_Science_C",
+      "title": "Information Pathways in Online Science Communication: The Role of Platform Actors and News Media",
+      "primary_category": "Research Integrity & Publishing",
+      "all_categories": [
+        "Research Integrity & Publishing",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "342_BibFusion_A_Python_package_to_integrate",
+      "title": "BibFusion: A Python package to integrate, deduplicate, and harmonize exported bibliographic records from Scopus and Web of Science for bibliometric analysis",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "343_Rethinking_Thematic_Evolution_in_Science",
+      "title": "Rethinking Thematic Evolution in Science Mapping: An Integrated Framework for Longitudinal Analysis",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "344_Tenure_and_research_trajectories",
+      "title": "Tenure and research trajectories",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "345_Are_disruptive_papers_more_likely_to_imp",
+      "title": "Are disruptive papers more likely to impact technology and society?",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "Science Policy & Funding",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "346_Quantifying_spatialtemporal_citation_di",
+      "title": "Quantifying spatial–temporal citation diffusion of individual papers in knowledge space",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation",
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "347_Predicting_Scientific_Breakthroughs_Base",
+      "title": "Predicting Scientific Breakthroughs Based on Structural Dynamic of Citation Cascades",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "348_Do_novel_papers_attract_more_social_atte",
+      "title": "Do novel papers attract more social attention?",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "349_The_altering_landscape_of_USChina_scien",
+      "title": "The altering landscape of US–China science collaboration: from convergence to divergence",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "350_Forecasting_the_future_of_artificial_int",
+      "title": "Forecasting the future of artificial intelligence with machine learning-based link prediction in an exponentially growing knowledge network",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "351_SciSciNet_A_large-scale_open_data_lake",
+      "title": "SciSciNet: A large-scale open data lake for the science of science research",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity",
+        "Science Policy & Funding",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "352_Forecasting_high-impact_research_topics",
+      "title": "Forecasting high-impact research topics via machine learning on evolving knowledge graphs",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "AI & LLM in Science",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "353_The_Scholarly_Knowledge_Ecosystem_Chall",
+      "title": "The Scholarly Knowledge Ecosystem: Challenges and Opportunities for the Field of Information",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "354_Atlas_of_Science_Collaboration_1971202",
+      "title": "Atlas of Science Collaboration, 1971–2020",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "355_Introducing_the_open_biomedical_map_of_s",
+      "title": "Introducing the open biomedical map of science",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "AI & LLM in Science",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "356_Identifying_interdisciplinary_emergence",
+      "title": "Identifying interdisciplinary emergence in the science of science: combination of network analysis and BERTopic",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation",
+        "Citation & Impact Analysis",
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "357_Mapping_scientific_communities_at_scale",
+      "title": "Mapping scientific communities at scale",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "AI & LLM in Science",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "358_Science_Mapping_and_Science_Maps",
+      "title": "Science Mapping and Science Maps",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Science Policy & Funding",
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "359_When_text_mining_meets_science_mapping_i",
+      "title": "When text mining meets science mapping in the bibliometric analysis: A review and future opportunities",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "AI & LLM in Science",
+        "Science Policy & Funding",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "360_Comparative_science_mapping_a_novel_con",
+      "title": "Comparative science mapping: a novel conceptual structure analysis with metadata",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "Scientific Collaboration & Networks",
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "361_Mapping_Knowledge_Topic_Analysis_of_Sci",
+      "title": "Mapping Knowledge: Topic Analysis of Science Locates Researchers in Disciplinary Landscape",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding",
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "AI & LLM in Science",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "362_Hierarchical_Classification_of_Research",
+      "title": "Hierarchical Classification of Research Fields in the \"Web of Science\" Using Deep Learning",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "AI & LLM in Science",
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "363_A_Survey_on_Knowledge_Organization_Syste",
+      "title": "A Survey on Knowledge Organization Systems of Research Fields: Resources and Challenges",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "Science Policy & Funding",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "364_Whats_In_Your_Field_Mapping_Scientific",
+      "title": "What's In Your Field? Mapping Scientific Research with Knowledge Graphs and Large Language Models",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Scientific Collaboration & Networks",
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "365_Science_as_exploration_in_a_knowledge_la",
+      "title": "Science as exploration in a knowledge landscape: tracing hotspots or seeking opportunity?",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "366_Impacts_of_inter-institutional_mobility",
+      "title": "Impacts of inter-institutional mobility on scientific performance from research capital and social capital perspectives",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "367_Unsupervised_embedding_of_trajectories_c",
+      "title": "Unsupervised embedding of trajectories captures the latent structure of scientific migration",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Scientific Collaboration & Networks",
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "368_Mapping_the_changing_structure_of_scienc",
+      "title": "Mapping the changing structure of science through diachronic periodical embeddings",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "369_The_Price-Pareto_growth_model_of_network",
+      "title": "The Price-Pareto growth model of networks with community structure",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "370_AI-Driven_Automation_Can_Become_the_Foun",
+      "title": "AI-Driven Automation Can Become the Foundation of Next-Era Science of Science Research",
+      "primary_category": "Knowledge Production & Innovation",
+      "all_categories": [
+        "Knowledge Production & Innovation",
+        "AI & LLM in Science",
+        "Science Policy & Funding",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "371_Open_Datasets_in_Learning_Analytics_Tre",
+      "title": "Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "372_The_selective_use_of_physics_knowledge_i",
+      "title": "The selective use of physics knowledge in policy: how interdisciplinary physics bridges subfields and shapes policy influence",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation",
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "373_Partisan_disparities_in_the_funding_of_s",
+      "title": "Partisan disparities in the funding of science in the United States",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "374_Funding_the_Frontier_Visualizing_the_Br",
+      "title": "Funding the Frontier: Visualizing the Broad Impact of Science and Science Funding",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding",
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "375_Sci2Pol_Evaluating_and_Fine-tuning_LLMs",
+      "title": "Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Citation & Impact Analysis",
+        "Science Policy & Funding",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "376_Early_career_setback_and_future_achievem",
+      "title": "Early career setback and future achievement in professional sports",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "377_The_Rise_of_Large_Language_Models_and_th",
+      "title": "The Rise of Large Language Models and the Direction and Impact of US Federal Research Funding",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding",
+        "AI & LLM in Science",
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "378_Unequal_effects_of_the_COVID-19_pandemic",
+      "title": "Unequal effects of the COVID-19 pandemic on scientists",
+      "primary_category": "Gender, Diversity & Equity",
+      "all_categories": [
+        "Gender, Diversity & Equity"
+      ]
+    },
+    {
+      "slug": "379_Large_teams_develop_and_small_teams_disr",
+      "title": "Large teams develop and small teams disrupt science and technology",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "380_SciSciGPT_advancing_humanAI_collaborat",
+      "title": "SciSciGPT: advancing human–AI collaboration in the science of science",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "AI & LLM in Science",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "381_The_Empowerment_of_Science_of_Science_by",
+      "title": "The Empowerment of Science of Science by Large Language Models: New Tools and Methods",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "AI & LLM in Science",
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation"
+      ]
+    },
+    {
+      "slug": "382_Visualizing_the_context_of_citations_ref",
+      "title": "Visualizing the context of citations referencing papers published by Eugene Garfield: a new type of keyword co-occurrence analysis",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "383_Science_of_science",
+      "title": "Science of science",
+      "primary_category": "Scientific Collaboration & Networks",
+      "all_categories": [
+        "Scientific Collaboration & Networks",
+        "Knowledge Production & Innovation",
+        "Citation & Impact Analysis",
+        "Research Careers & Mobility",
+        "Science Policy & Funding",
+        "Gender, Diversity & Equity",
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "384_The_strain_on_scientific_publishing",
+      "title": "The strain on scientific publishing",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Integrity & Publishing",
+        "Science Policy & Funding"
+      ]
+    }
+  ]
+}

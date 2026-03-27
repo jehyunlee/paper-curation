@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Networks of Scientific Papers</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 1.5rem 0 0.6rem; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; color: #2374D6; }</style>
+</head>
+<body>
+<h1>Networks of Scientific Papers</h1>
+<blockquote><p><strong>저자</strong>: Derek J. de Solla Price | <strong>날짜</strong>: 1965 | <strong>Journal</strong>: Science | <strong>DOI</strong>: 10.1126/science.149.3683.510</p></blockquote>
+<blockquote><p><strong>리뷰 모드</strong>: Web-only (PDF 없음)</p></blockquote>
+<hr>
+<h2>Essence</h2>
+<p>과학 논문들은 인용 관계를 통해 **누적 우위(cumulative advantage) 구조**를 가진 네트워크를 형성하며, 인용 분포는 거듭제곱 법칙(power law)을 따른다. Price는 과학 문헌의 인용 네트워크 분석을 통해 &quot;전방(前方) 인용(bibliographic coupling)&quot;과 &quot;후방(後方) 인용(co-citation)&quot;의 개념 기초를 마련했으며, 논문당 평균 약 절반만이 현재 과학에 기여하는 &quot;live&quot; 참고문헌임을 보였다. 이 연구는 과학 계량학(scientometrics)과 복잡계 네트워크 연구의 지적 출발점으로 간주된다.</p>
+<h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[pioneering, finding] 과학 논문 인용 네트워크를 최초로 체계적으로 분석하고, 누적 우위 과정이 인용 분포의 heavy tail을 설명함을 제시</li>
+<li>[authorship, action] "live" 참고문헌(현재 과학에 직접 연결된 인용)과 "dead" 참고문헌의 구분 개념 도입</li>
+<li>[finding] 인용 네트워크의 클러스터 구조가 과학 분야의 경계를 반영함을 발견</li>
+</ul>
+<h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터</strong>: Science Citation Index(SCI) 초창기 데이터 — 수십만 건의 논문-인용 관계</li>
+<li><strong>분석</strong>: 인용 빈도 분포 분석(power law 확인), 인용 네트워크의 위상학적 구조 기술</li>
+<li><strong>핵심 개념</strong>: "Immediacy index"(최근성 지표)와 "Price index"(5년 내 참고문헌 비율) 도입</li>
+</ul>
+<h2>Why (중요성)</h2>
+<ul>
+<li>과학 문헌을 단순한 목록이 아닌 <strong>구조화된 네트워크</strong>로 처음 개념화함으로써 bibliometrics 분야의 이론적 토대를 제공</li>
+<li>후속 연구인 Price(1976)의 "Cumulative Advantage Processes"와 Barabási의 preferential attachment 이론으로 이어지는 지적 계보의 시작점</li>
+<li>인용 기반 과학 지도(map of science) 제작의 선구적 작업</li>
+</ul>
+<h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>1960년대 초 SCI 데이터로 제한되어 일반화에 한계</li>
+<li>인용이 지식 전달의 완전한 지표가 아님을 인지</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>네트워크 분석 방법론이 현대 기준에서는 매우 초보적 수준</li>
+<li>학문 분야별 인용 관행 차이가 고려되지 않음</li>
+<li>정량적 통계 검증 부재</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Price(1976)의 누적 우위 과정 이론으로 발전</li>
+<li>Small(1973) co-citation analysis, Kessler(1963) bibliographic coupling으로 이어짐</li>
+<li>현대의 PageRank, h-index 등 인용 기반 지표 개발의 기초</li>
+</ul>
+<h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
+<p><strong>총평</strong>: 과학 문헌을 네트워크로 보는 패러다임을 최초로 제시한 계량정보학의 시조 격 논문으로, 당시 방법론의 한계에도 불구하고 이후 수십 년간 과학학 연구의 토대가 된 개념적 기여는 타의 추종을 불허한다.</p>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

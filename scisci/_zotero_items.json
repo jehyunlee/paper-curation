@@ -1,0 +1,2983 @@
+{
+  "collection": "Science of Science",
+  "collection_key": "3KVIDDKH",
+  "total_items": 126,
+  "with_pdf": 95,
+  "without_pdf": 31,
+  "already_reviewed": 0,
+  "needs_review": 126,
+  "needs_topic_add": 0,
+  "items": [
+    {
+      "title": "Remote collaboration fuses fewer breakthrough ideas",
+      "key": "2RXDPSRJ",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Lin et al._2023_Remote collaboration fuses fewer breakthrough ideas.pdf",
+      "authors": [
+        "Yiling Lin",
+        "Carl Benedikt Frey",
+        "Lingfei Wu"
+      ],
+      "date": "2023-11-30",
+      "doi": "10.1038/s41586-023-06767-1",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Women are credited less in science than men",
+      "key": "5BVU7TL4",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Ross et al._2022_Women are credited less in science than men.pdf",
+      "authors": [
+        "Matthew B. Ross",
+        "Britta M. Glennon",
+        "Raviv Murciano-Goroff",
+        "Enrico G. Berkes",
+        "Bruce A. Weinberg",
+        "Julia I. Lane"
+      ],
+      "date": "2022-08-04",
+      "doi": "10.1038/s41586-022-04966-w",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            \n              There is a well-documented gap between the observed number of works produced by women and by men in science, with clear consequences for the retention and promotion of women\n              1\n              . The gap might be a result of productivity differences\n              2–5\n              , or it might be owing to women’s contributions not being acknowledged\n              6,7\n              . Here we find that at least part of this gap is the result of unacknowledged contributions: women in research teams are significantly less likely than men to be credited with authorship. The findings are consistent across three very different sources of data. Analysis of the first source—large-scale administrative data on research teams, team scientific output and attribution of credit—show that women are significantly less likely to be named on a given article or patent produced by their team relative to their male peers. The gender gap in attribution is present across most scientific fields and almost all career stages. The second source—an extensive survey of authors—similarly shows that women’s scientific contributions are systematically less likely to be recognized. The third source—qualitative responses—suggests that the reason that women are less likely to be credited is because their work is often not known, is not appreciated or is ignored. At least some of the observed gender gap in scientific output may be owing not to differences in scientific contribution, but rather to differences in attribution.",
+      "venue": "Nature",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Burden of Knowledge and the Death of the Renaissance Man",
+      "key": "2EGAPJBT",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Benjamin F. Jones"
+      ],
+      "date": "2009",
+      "doi": "10.1111/j.1467-937X.2009.00531.x",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "The Review of Economic Studies",
+      "item_type": "journalArticle",
+      "tags": [
+        "Foundational",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Increasing Dominance of Teams in Production of Knowledge",
+      "key": "EFQQIXQV",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Stefan Wuchty",
+        "Benjamin F. Jones",
+        "Brian Uzzi"
+      ],
+      "date": "2007",
+      "doi": "10.1126/science.1136099",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Foundational",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Systematic Inequality and Hierarchy in Faculty Hiring Networks",
+      "key": "RVTTPQ3Q",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Aaron Clauset",
+        "Samuel Arbesman",
+        "Daniel B. Larremore"
+      ],
+      "date": "2015",
+      "doi": "10.1126/sciadv.1400005",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science Advances",
+      "item_type": "journalArticle",
+      "tags": [
+        "Foundational",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Principles of Scientific Research Team Formation and Evolution",
+      "key": "RX2CQBID",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Staša Milojević"
+      ],
+      "date": "2014",
+      "doi": "10.1073/pnas.1309723111",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Foundational",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "A General Theory of Bibliometric and Other Cumulative Advantage Processes",
+      "key": "GTEMM3HN",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Derek De Solla Price"
+      ],
+      "date": "1976",
+      "doi": "10.1002/asi.4630270505",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of the American Society for Information Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Foundational",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Unsupervised Word Embeddings Capture Latent Knowledge from Materials Science Literature",
+      "key": "GVMX4DBC",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Unsupervised Word Embeddings Capture Latent Knowledge from Materials Science Lit.pdf",
+      "authors": [
+        "Vahe Tshitoyan",
+        "John Dagdelen",
+        "Leigh Weston",
+        "Alexander Dunn",
+        "Ziqin Rong",
+        "Olga Kononova",
+        "Kristin A. Persson",
+        "Gerbrand Ceder",
+        "Anubhav Jain"
+      ],
+      "date": "2019",
+      "doi": "10.1038/s41586-019-1335-8",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature",
+      "item_type": "journalArticle",
+      "tags": [
+        "AI_for_SciSci",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Growth Rates of Modern Science: Bibliometric Analysis Based on the Number of Publications and Cited References",
+      "key": "56SEF6KT",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Bornmann and Mutz_2015_Growth Rates of Modern Science Bibliometric Analysis Based on the Number of Publications and Cited.pdf",
+      "authors": [
+        "Lutz Bornmann",
+        "Rüdiger Mutz"
+      ],
+      "date": "2015",
+      "doi": "10.1002/asi.23329",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of the Association for Information Science and Technology",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Citation Analysis as a Tool in Journal Evaluation",
+      "key": "JDCDJ6H3",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\1972_Citation Analysis as a Tool in Journal Evaluation.pdf",
+      "authors": [
+        "Eugene Garfield"
+      ],
+      "date": "1972",
+      "doi": "10.1126/science.178.4060.471",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Theory and Practice of the g-index",
+      "key": "3G8S5II3",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\2006_Theory and Practice of the g-index.pdf",
+      "authors": [
+        "Leo Egghe"
+      ],
+      "date": "2006",
+      "doi": "10.1007/s11192-006-0144-7",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Scientometrics",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Relative Citation Ratio: A New Metric That Uses Citation Rates to Measure Influence at the Article Level",
+      "key": "KP32UKER",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Relative Citation Ratio A New Metric That Uses Citation Rates to Measure Influen.pdf",
+      "authors": [
+        "B. Ian Hutchins",
+        "Xin Yuan",
+        "James M. Anderson",
+        "George M. Santangelo"
+      ],
+      "date": "2016",
+      "doi": "10.1371/journal.pbio.1002541",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "PLOS Biology",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Bibliometrics: Global Gender Disparities in Science",
+      "key": "WZU3VD5I",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Bibliometrics Global Gender Disparities in Science.pdf",
+      "authors": [
+        "Vincent Larivière",
+        "Chaoqun Ni",
+        "Yves Gingras",
+        "Blaise Cronin",
+        "Cassidy R. Sugimoto"
+      ],
+      "date": "2013",
+      "doi": "10.1038/504211a",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Quantifying Long-term Scientific Impact",
+      "key": "4MDPUJQF",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Quantifying Long-term Scientific Impact.pdf",
+      "authors": [
+        "Dashun Wang",
+        "Chaoming Song",
+        "Albert-László Barabási"
+      ],
+      "date": "2013",
+      "doi": "10.1126/science.1237825",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Scientometrics",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Co-Citation Analysis Bibliographic Coupling and Direct Citation: Which Citation Approach Represents the Research Front Most Accurately",
+      "key": "I82EVH7J",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Kevin W. Boyack",
+        "Richard Klavans"
+      ],
+      "date": "2010",
+      "doi": "10.1002/asi.21419",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of the American Society for Information Science and Technology",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Design and Update of a Classification System: The UCSD Map of Science",
+      "key": "CTBHFDD7",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Katy Börner",
+        "Richard Klavans",
+        "Michael Patek",
+        "Angela M. Zoss",
+        "Joseph R. Biberstine",
+        "Robert P. Light",
+        "Vincent Larivière",
+        "Kevin W. Boyack"
+      ],
+      "date": "2012",
+      "doi": "10.1371/journal.pone.0039464",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "PLoS ONE",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Community Detection in Graphs",
+      "key": "QMUJDFG6",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Community Detection in Graphs.pdf",
+      "authors": [
+        "Santo Fortunato"
+      ],
+      "date": "2010",
+      "doi": "10.1016/j.physrep.2009.11.002",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Physics Reports",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Fast Unfolding of Communities in Large Networks",
+      "key": "MAK3DV6J",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Fast Unfolding of Communities in Large Networks.pdf",
+      "authors": [
+        "Vincent D Blondel",
+        "Jean-Loup Guillaume",
+        "Renaud Lambiotte",
+        "Etienne Lefebvre"
+      ],
+      "date": "2008",
+      "doi": "10.1088/1742-5468/2008/10/P10008",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of Statistical Mechanics: Theory and Experiment",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Collective Credit Allocation in Science",
+      "key": "MTWFHQXI",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Hua-Wei Shen",
+        "Albert-László Barabási"
+      ],
+      "date": "2014",
+      "doi": "10.1073/pnas.1401992111",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The State of OA: A Large-Scale Analysis of the Prevalence and Impact of Open Access Articles",
+      "key": "JHKFX3DR",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Heather Piwowar",
+        "Jason Priem",
+        "Vincent Larivière",
+        "Juan Pablo Alperin",
+        "Lisa Matthias",
+        "Bree Norlander",
+        "Ashley Farley",
+        "Jevin West",
+        "Stefanie Haustein"
+      ],
+      "date": "2018",
+      "doi": "10.7717/peerj.4375",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "PeerJ",
+      "item_type": "journalArticle",
+      "tags": [
+        "Knowledge_Discovery",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Preeminence of Ethnic Diversity in Scientific Collaboration",
+      "key": "4PSH8N52",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\The Preeminence of Ethnic Diversity in Scientific Collaboration.pdf",
+      "authors": [
+        "Bedoor K. AlShebli",
+        "Talal Rahwan",
+        "Wei Lee Woon"
+      ],
+      "date": "2018",
+      "doi": "10.1038/s41467-018-07634-8",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature Communications",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Diversity-Innovation Paradox in Science",
+      "key": "D67MEBNE",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Hofstra et al._2020_The Diversity-Innovation Paradox in Science.pdf",
+      "authors": [
+        "Bas Hofstra",
+        "Vivek V. Kulkarni",
+        "Sebastian Munoz-Najar Galvez",
+        "Bryan He",
+        "Dan Jurafsky",
+        "Daniel A. McFarland"
+      ],
+      "date": "2020",
+      "doi": "10.1073/pnas.1915378117",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Chaperone Effect in Scientific Publishing",
+      "key": "H5HGRRGK",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Vedran Sekara",
+        "Pierre Deville",
+        "Sebastian E. Ahnert",
+        "Albert-László Barabási",
+        "Roberta Sinatra",
+        "Sune Lehmann"
+      ],
+      "date": "2018",
+      "doi": "10.1073/pnas.1800471115",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Productivity Prominence and the Effects of Academic Environment",
+      "key": "EVE9F4WZ",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Samuel F. Way",
+        "Allison C. Morgan",
+        "Daniel B. Larremore",
+        "Aaron Clauset"
+      ],
+      "date": "2019",
+      "doi": "10.1073/pnas.1817431116",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Historical Comparison of Gender Inequality in Scientific Careers Across Countries and Disciplines",
+      "key": "VB4HANXC",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Huang et al._2020_Historical Comparison of Gender Inequality in Scientific Careers Across Countries and Disciplines.pdf",
+      "authors": [
+        "Junming Huang",
+        "Alexander J. Gates",
+        "Roberta Sinatra",
+        "Albert-László Barabási"
+      ],
+      "date": "2020",
+      "doi": "10.1073/pnas.1914221117",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Misleading Narrative of the Canonical Faculty Productivity Trajectory",
+      "key": "U5FSUNIF",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Samuel F. Way",
+        "Allison C. Morgan",
+        "Aaron Clauset",
+        "Daniel B. Larremore"
+      ],
+      "date": "2017",
+      "doi": "10.1073/pnas.1702121114",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Collaboration",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Estimating the Reproducibility of Psychological Science",
+      "key": "X6RTGHEG",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Open Science Collaboration"
+      ],
+      "date": "2015",
+      "doi": "10.1126/science.aac4716",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Misconduct Accounts for the Majority of Retracted Scientific Publications",
+      "key": "5C9RGNNV",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Ferric C. Fang",
+        "R. Grant Steen",
+        "Arturo Casadevall"
+      ],
+      "date": "2012",
+      "doi": "10.1073/pnas.1212247109",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Big Names or Big Ideas: Do Peer-Review Panels Select the Best Science Proposals",
+      "key": "X26BXPM9",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Danielle Li",
+        "Leila Agha"
+      ],
+      "date": "2015",
+      "doi": "10.1126/science.aaa0185",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Does Science Advance One Funeral at a Time",
+      "key": "PKVD8PCB",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Pierre Azoulay",
+        "Christian Fons-Rosen",
+        "Joshua S. Graff Zivin"
+      ],
+      "date": "2019",
+      "doi": "10.1257/aer.20161574",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "American Economic Review",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Evaluating the Replicability of Social Science Experiments in Nature and Science",
+      "key": "249RKN8V",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Evaluating the Replicability of Social Science Experiments in Nature and Science.pdf",
+      "authors": [
+        "Colin F. Camerer",
+        "Anna Dreber",
+        "Felix Holzmeister",
+        "Teck-Hua Ho",
+        "Jürgen Huber",
+        "Magnus Johannesson",
+        "Michael Kirchler",
+        "Gideon Nave",
+        "Brian A. Nosek",
+        "Thomas Pfeiffer",
+        "Adam Altmejd",
+        "Nick Buttrick",
+        "Taizan Chan",
+        "Yiling Chen",
+        "Eskil Forsell",
+        "Anup Gampa",
+        "Emma Heikensten",
+        "Lily Hummer",
+        "Taisuke Imai",
+        "Siri Isaksson",
+        "Dylan Manfredi",
+        "Julia Rose",
+        "Eric-Jan Wagenmakers",
+        "Hang Wu"
+      ],
+      "date": "2018",
+      "doi": "10.1038/s41562-018-0399-z",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature Human Behaviour",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Meta-assessment of Bias in Science",
+      "key": "HUV25P6F",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Daniele Fanelli",
+        "Rodrigo Costas",
+        "John P. A. Ioannidis"
+      ],
+      "date": "2017",
+      "doi": "10.1073/pnas.1618569114",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Rethink Funding by Putting the Lottery First",
+      "key": "BE2H75IC",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Luebber et al._2023_Rethink Funding by Putting the Lottery First.pdf",
+      "authors": [
+        "Finn Luebber",
+        "Sören Krach",
+        "Marina Martinez Mateo",
+        "Frieder M. Paulus",
+        "Lena Rademacher",
+        "Rima-Maria Rahal",
+        "Jule Specht"
+      ],
+      "date": "2023",
+      "doi": "10.1038/s41562-023-01649-y",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature Human Behaviour",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Superstar Extinction",
+      "key": "EIQV5CWN",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Pierre Azoulay",
+        "Joshua S. Graff Zivin",
+        "Jialan Wang"
+      ],
+      "date": "2010",
+      "doi": "10.1162/qjec.2010.125.2.549",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Quarterly Journal of Economics",
+      "item_type": "journalArticle",
+      "tags": [
+        "Policy",
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts",
+      "key": "VSHP5EC4",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\OpenAlex A fully-open index of scholarly works authors venues institutions and c.pdf",
+      "authors": [
+        "Jason Priem",
+        "Heather Piwowar",
+        "Richard Orr"
+      ],
+      "date": "2022",
+      "doi": "",
+      "arxiv_id": "2205.01833",
+      "abstract": "",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Hot streaks in artistic, cultural, and scientific careers",
+      "key": "VCGGXWH9",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Hot streaks in artistic cultural and scientific careers.pdf",
+      "authors": [
+        "Lu Liu",
+        "Yang Wang",
+        "Roberta Sinatra",
+        "C. Lee Giles",
+        "Chaoming Song",
+        "Dashun Wang"
+      ],
+      "date": "2018",
+      "doi": "10.1038/s41586-018-0315-8",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Matthew effect in science funding",
+      "key": "R7I96PKH",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Thijs Bol",
+        "Mathijs de Vaan",
+        "Arnout van de Rijt"
+      ],
+      "date": "2018",
+      "doi": "10.1073/pnas.1719557115",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The structure of scientific collaboration networks",
+      "key": "8ABEDSUA",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\The structure of scientific collaboration networks.pdf",
+      "authors": [
+        "M. E. J. Newman"
+      ],
+      "date": "2001",
+      "doi": "10.1073/pnas.98.2.404",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Updated science-wide author databases of standardized citation indicators",
+      "key": "P5Q45EMH",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Updated science-wide author databases of standardized citation indicators.pdf",
+      "authors": [
+        "John P. A. Ioannidis",
+        "Kevin W. Boyack",
+        "Jeroen Baas"
+      ],
+      "date": "2020",
+      "doi": "10.1371/journal.pbio.3000918",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Papers and patents are becoming less disruptive over time",
+      "key": "BICVW8RR",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Papers and patents are becoming less disruptive over time.pdf",
+      "authors": [
+        "Michael Park",
+        "Erin Leahey",
+        "Russell J. Funk"
+      ],
+      "date": "2023",
+      "doi": "10.1038/s41586-022-05543-x",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Quantifying the dynamics of failure across science, startups and security",
+      "key": "PPF5WU7C",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Quantifying the dynamics of failure across science startups and security.pdf",
+      "authors": [
+        "Yian Yin",
+        "Yang Wang",
+        "James A. Evans",
+        "Dashun Wang"
+      ],
+      "date": "2019",
+      "doi": "10.1038/s41586-019-1725-y",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Atypical Combinations and Scientific Impact",
+      "key": "FGN4IXFA",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Uzzi et al._2013_Atypical Combinations and Scientific Impact.pdf",
+      "authors": [
+        "Brian Uzzi",
+        "Satyam Mukherjee",
+        "Michael Stringer",
+        "Ben Jones"
+      ],
+      "date": "2013",
+      "doi": "10.1126/science.1240474",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "S2ORC: The Semantic Scholar Open Research Corpus",
+      "key": "TABXWBE8",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\S2ORC The Semantic Scholar Open Research Corpus.pdf",
+      "authors": [
+        "Kyle Lo",
+        "Lucy Lu Wang",
+        "Mark Neumann",
+        "Rodney Kinney",
+        "Daniel Weld"
+      ],
+      "date": "2020",
+      "doi": "10.18653/v1/2020.acl-main.447",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Emergence of Scaling in Random Networks",
+      "key": "FSWU5QAT",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Emergence of Scaling in Random Networks.pdf",
+      "authors": [
+        "Albert-László Barabási",
+        "Réka Albert"
+      ],
+      "date": "1999",
+      "doi": "10.1126/science.286.5439.509",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Global citation inequality is on the rise",
+      "key": "XT9EP6E7",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Global citation inequality is on the rise.pdf",
+      "authors": [
+        "Mathias Wullum Nielsen",
+        "Jens Peter Andersen"
+      ],
+      "date": "2021",
+      "doi": "10.1073/pnas.2012208118",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "1,500 scientists lift the lid on reproducibility",
+      "key": "9WI4CET4",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Monya Baker"
+      ],
+      "date": "2016",
+      "doi": "10.1038/533452a",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Scientific production in the era of large language models",
+      "key": "94BMIXMT",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Scientific production in the era of large language models.pdf",
+      "authors": [
+        "Keigo Kusumegi",
+        "Xinyu Yang",
+        "Paul Ginsparg",
+        "Mathijs de Vaan",
+        "Toby Stuart",
+        "Yian Yin"
+      ],
+      "date": "2025",
+      "doi": "10.1126/science.adw3000",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Intersectional inequalities in science",
+      "key": "W5SP2F8R",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Kozlowski et al._2022_Intersectional inequalities in science.pdf",
+      "authors": [
+        "Diego Kozlowski",
+        "Vincent Larivière",
+        "Cassidy R. Sugimoto",
+        "Thema Monroe-White"
+      ],
+      "date": "2022",
+      "doi": "10.1073/pnas.2113067119",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Software survey: VOSviewer, a computer program for bibliometric mapping",
+      "key": "TE3C364Q",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Software survey VOSviewer a computer program for bibliometric mapping.pdf",
+      "authors": [
+        "Nees Jan van Eck",
+        "Ludo Waltman"
+      ],
+      "date": "2009",
+      "doi": "10.1007/s11192-009-0146-3",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Gender-diverse teams produce more novel and higher-impact scientific ideas",
+      "key": "CDTHNPGA",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Yang et al._2022_Gender-diverse teams produce more novel and higher-impact scientific ideas.pdf",
+      "authors": [
+        "Yang Yang",
+        "Tanya Y. Tian",
+        "Teresa K. Woodruff",
+        "Benjamin F. Jones",
+        "Brian Uzzi"
+      ],
+      "date": "2022",
+      "doi": "10.1073/pnas.2200841119",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Oligopoly of Academic Publishers in the Digital Era",
+      "key": "GBWVZ935",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\The Oligopoly of Academic Publishers in the Digital Era.pdf",
+      "authors": [
+        "Vincent Larivière",
+        "Stefanie Haustein",
+        "Philippe Mongeon"
+      ],
+      "date": "2015",
+      "doi": "10.1371/journal.pone.0127502",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "A Dynamic Network Measure of Technological Change",
+      "key": "G3R6KVIM",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Russell J. Funk",
+        "Jason Owen-Smith"
+      ],
+      "date": "2017",
+      "doi": "10.1287/mnsc.2015.2366",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Global patterns of migration of scholars with economic development",
+      "key": "F95G5NGM",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Sanliturk et al._2023_Global patterns of migration of scholars with economic development.pdf",
+      "authors": [
+        "Ebru Sanliturk",
+        "Emilio Zagheni",
+        "Maciej J. Dańko",
+        "Tom Theile",
+        "Aliakbar Akbaritabar"
+      ],
+      "date": "2023",
+      "doi": "10.1073/pnas.2217937120",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Universality of citation distributions: Toward an objective measure of scientific impact",
+      "key": "XTVWJMV9",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Universality of citation distributions Toward an objective measure of scientific.pdf",
+      "authors": [
+        "Filippo Radicchi",
+        "Santo Fortunato",
+        "Claudio Castellano"
+      ],
+      "date": "2008",
+      "doi": "10.1073/pnas.0806977105",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Networks of Scientific Papers",
+      "key": "RV3ME6WG",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Derek J. de Solla Price"
+      ],
+      "date": "1965",
+      "doi": "10.1126/science.149.3683.510",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Early-career setback and future career impact",
+      "key": "KJVQBARA",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Early-career setback and future career impact.pdf",
+      "authors": [
+        "Yang Wang",
+        "Benjamin F. Jones",
+        "Dashun Wang"
+      ],
+      "date": "2019",
+      "doi": "10.1038/s41467-019-12189-3",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Evolution of the social network of scientific collaborations",
+      "key": "DG4T3E94",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Evolution of the social network of scientific collaborations.pdf",
+      "authors": [
+        "A.L Barabási",
+        "H Jeong",
+        "Z Néda",
+        "E Ravasz",
+        "A Schubert",
+        "T Vicsek"
+      ],
+      "date": "2002",
+      "doi": "10.1016/s0378-4371(02)00736-7",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Collective dynamics of ‘small-world’ networks",
+      "key": "5XBNF82V",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Duncan J. Watts",
+        "Steven H. Strogatz"
+      ],
+      "date": "1998",
+      "doi": "10.1038/30918",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Scientific prize network predicts who pushes the boundaries of science",
+      "key": "VHPSHSCA",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Scientific prize network predicts who pushes the boundaries of science.pdf",
+      "authors": [
+        "Yifang Ma",
+        "Brian Uzzi"
+      ],
+      "date": "2018",
+      "doi": "10.1073/pnas.1800485115",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Why Most Published Research Findings Are False",
+      "key": "Z2UG8G5F",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "John P. A. Ioannidis"
+      ],
+      "date": "2005",
+      "doi": "10.1371/journal.pmed.0020124",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Public use and public funding of science",
+      "key": "43QP55XM",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Yin et al._2022_Public use and public funding of science.pdf",
+      "authors": [
+        "Yian Yin",
+        "Yuxiao Dong",
+        "Kuansan Wang",
+        "Dashun Wang",
+        "Benjamin F. Jones"
+      ],
+      "date": "2022",
+      "doi": "10.1038/s41562-022-01397-5",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Coevolution of policy and science during the pandemic",
+      "key": "WEHV4TBP",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Yin et al._2021_Coevolution of policy and science during the pandemic.pdf",
+      "authors": [
+        "Yian Yin",
+        "Jian Gao",
+        "Benjamin F. Jones",
+        "Dashun Wang"
+      ],
+      "date": "2021",
+      "doi": "10.1126/science.abe3084",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "An index to quantify an individual's scientific research output",
+      "key": "JUPBHV6Q",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\An index to quantify an individuals scientific research output.pdf",
+      "authors": [
+        "J. E. Hirsch"
+      ],
+      "date": "2005",
+      "doi": "10.1073/pnas.0507655102",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Making gender diversity work for scientific discovery and innovation",
+      "key": "BA5RRSD7",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Mathias Wullum Nielsen",
+        "Carter Walter Bloch",
+        "Londa Schiebinger"
+      ],
+      "date": "2018",
+      "doi": "10.1038/s41562-018-0433-1",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Defining and identifying Sleeping Beauties in science",
+      "key": "WADDBKVD",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Qing Ke",
+        "Emilio Ferrara",
+        "Filippo Radicchi",
+        "Alessandro Flammini"
+      ],
+      "date": "2015",
+      "doi": "10.1073/pnas.1424329112",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "A network approach to topic models",
+      "key": "MGDDRPXK",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Martin Gerlach",
+        "Tiago P. Peixoto",
+        "Eduardo G. Altmann"
+      ],
+      "date": "2018",
+      "doi": "10.1126/sciadv.aaq1360",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "",
+      "item_type": "journalArticle",
+      "tags": [
+        "science-of-science-review"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Public Profile Matters: A Scalable Integrated Approach to Recommend Citations in the Wild",
+      "key": "HDGSZ3Z7",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Goyal et al._2026_Public Profile Matters A Scalable Integrated Approach to Recommend Citations in the Wild.pdf",
+      "authors": [
+        "Karan Goyal",
+        "Dikshant Kukreja",
+        "Vikram Goyal",
+        "Mukesh Mohania"
+      ],
+      "date": "2026-03-18",
+      "doi": "10.48550/arXiv.2603.17361",
+      "arxiv_id": "2603.17361",
+      "abstract": "Proper citation of relevant literature is essential for contextualising and validating scientific contributions. While current citation recommendation systems leverage local and global textual information, they often overlook the nuances of the human citation behaviour. Recent methods that incorporate such patterns improve performance but incur high computational costs and introduce systematic biases into downstream rerankers. To address this, we propose Profiler, a lightweight, non-learnable module that captures human citation patterns efficiently and without bias, significantly enhancing candidate retrieval. Furthermore, we identify a critical limitation in current evaluation protocol: the systems are assessed in a transductive setting, which fails to reflect real-world scenarios. We introduce a rigorous Inductive evaluation setting that enforces strict temporal constraints, simulating the recommendation of citations for newly authored papers in the wild. Finally, we present DAVINCI, a novel reranking model that integrates profiler-derived confidence priors with semantic information via an adaptive vector-gating mechanism. Our system achieves new state-of-the-art results across multiple benchmark datasets, demonstrating superior efficiency and generalisability.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Computation and Language",
+        "Computer Science - Information Retrieval",
+        "Computer Science - Social and Information Networks"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Which stylistic features fool ChatGPT research evaluations?",
+      "key": "KJ27ZCHZ",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Kousha and Thelwall_2026_Which stylistic features fool ChatGPT research eva.pdf",
+      "authors": [
+        "Kayvan Kousha",
+        "Mike Thelwall"
+      ],
+      "date": "2026-03-16",
+      "doi": "",
+      "arxiv_id": "2603.14919",
+      "abstract": "Large Language Models (LLMs) have the potential to be used to support research evaluation and have a moderate capability to estimate the research quality of a journal article from its title and abstract. This paper assesses whether there are language-related factors unrelated to the quality of the research that influence ChatGPT's scores. Using a dataset of 99,277 journal articles submitted to the UK-wide Research Excellence Framework (REF) 2021 assessments, we calculated several readability ind",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Polymer Science Research in India: A Scientometrics Study",
+      "key": "HBUZH6C9",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Mete and Wagh_2026_Polymer Science Research in India A Scientometrics.pdf",
+      "authors": [
+        "Kranti Mete",
+        "Sanjay Wagh"
+      ],
+      "date": "2026-03-09",
+      "doi": "10.26761/ijrls.12.1.2026.2043",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "International Journal of Research in Library Science",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Risk and Artificial Intelligence Adoption: A Scientometric and Thematic Evolution Analysis Based on Scopus and Web of Science (1990-2025)",
+      "key": "P3BU49H2",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Huong and Long_2026_Risk and Artificial Intelligence Adoption A Scient.pdf",
+      "authors": [
+        "Nguyen Lien Huong",
+        "Nguyen Ngoc Long"
+      ],
+      "date": "2026-03-14",
+      "doi": "10.62225/2583049x.2026.6.2.5981",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "International Journal of Advanced Multidisciplinary Research and Studies",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Real-World Evidence in the First Round of the US Inflation Reduction Act Drug Price Negotiations: A Citation Analysis of CMS Maximum Fair Price Explanation Documents",
+      "key": "XHGMA9BZ",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Winberg et al._2026_Real-World Evidence in the First Round of the US Inflation Reduction Act Drug Price Negotiations A.pdf",
+      "authors": [
+        "Debra Winberg",
+        "Liping Du",
+        "Lizheng Shi"
+      ],
+      "date": "2026-03-01",
+      "doi": "10.1016/j.jval.2026.03.006",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Value in Health",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Organisational accounts engaged in scholarly communication on Twitter: Patterns of presence, activity and engagement",
+      "key": "M38TJCIF",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Zahedi et al_2026_Organisational accounts engaged in scholarly commu.pdf",
+      "authors": [
+        "Zohreh Zahedi",
+        "Yanqing Zhang",
+        "Zekun Han",
+        "Er-Te Zheng",
+        "Zhichao Fang"
+      ],
+      "date": "2026-03-17",
+      "doi": "",
+      "arxiv_id": "2603.16637",
+      "abstract": "Organisational accounts are an integral part of the Twitter (now X) ecosystem. This study identified 9,842 research- and policy-related organisational accounts that had tweeted about scholarly publications by linking three global organisational databases (GRID, ROR, and Overton) with two altmetric databases containing Twitter data (Altmetric and the former Crossref Event Data). The resulting openly available dataset was used to examine organisational activity in scholarly communication across th",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Modeling Changing Scientific Concepts with Complex Networks: A Case Study on the Chemical Revolution",
+      "key": "CFMDLAJW",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Aguilar-Valdez and Degaetano-Ortlieb_2026_Modeling Changing Scientific Concepts with Complex Networks A Case Study on the Chemical Revolution.pdf",
+      "authors": [
+        "Sofía Aguilar-Valdez",
+        "Stefania Degaetano-Ortlieb"
+      ],
+      "date": "2026",
+      "doi": "10.48550/ARXIV.2603.17594",
+      "arxiv_id": "2603.17594",
+      "abstract": "While context embeddings produced by LLMs can be used to estimate conceptual change, these representations are often not interpretable nor time-aware. Moreover, bias augmentation in historical data poses a non-trivial risk to researchers in the Digital Humanities. Hence, to model reliable concept trajectories in evolving scholarship, in this work we develop a framework that represents prototypical concepts through complex networks based on topics. Utilizing the Royal Society Corpus, we analyzed two competing theories from the Chemical Revolution (phlogiston vs. oxygen) as a case study to show that onomasiological change is linked to higher entropy and topological density, indicating increased diversity of ideas and connectivity effort.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computation and Language (cs.CL)",
+        "FOS: Computer and information sciences",
+        "FOS: Physical sciences",
+        "I.2.7; J.4; J.5",
+        "Physics and Society (physics.soc-ph)"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Interdisciplinary papers supported by disciplinary grants garner deep and broad scientific impact",
+      "key": "8QSGT94X",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Park et al._2026_Interdisciplinary papers supported by disciplinary grants garner deep and broad scientific impact.pdf",
+      "authors": [
+        "Minsu Park",
+        "Suman Maity",
+        "Stefan Wuchty",
+        "Dashun Wang"
+      ],
+      "date": "2026-02-27",
+      "doi": "10.1093/pnasnexus/pgag057",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "PNAS Nexus",
+      "item_type": "journalArticle",
+      "tags": [
+        "VIP:Dashun Wang",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "An empirical analysis of open access citation advantages in library and information science",
+      "key": "GZBA9JW7",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Lee and Shim_2026_An empirical analysis of open access citation adva.pdf",
+      "authors": [
+        "Sunwoo Lee",
+        "Wonsik Shim"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.47989/ir31iconf64133",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Information Research an international electronic journal",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Authorship, titles and open access as drivers of citation performance in orthopaedics: a scientometric analysis",
+      "key": "IU4IPHJT",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Migliorini et al._2026_Authorship, titles and open access as drivers of citation performance in orthopaedics a scientometr.pdf",
+      "authors": [
+        "Filippo Migliorini",
+        "Raju Vaishya",
+        "Fabrizio Rivera",
+        "Jörg Eschweiler",
+        "Philipp Kobbe",
+        "Marcel Betsch",
+        "Francesco Oliva",
+        "Nicola Maffulli"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.1186/s10195-026-00911-z",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of Orthopaedics and Traumatology",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "A bibliometric analysis of bouldering and climbing research articles in the Scopus database",
+      "key": "NK265A7W",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "González Devesa, Daniel"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.5281/zenodo.17859553",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Zenodo (CERN European Organization for Nuclear Research)",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Mapping Scholarly Impact: Citation Analysis of Commerce Doctoral Dissertations at Maharshi Dayanand University, Rohtak",
+      "key": "EIPFN37Q",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "SEEMA SAINI"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.5281/zenodo.19138724",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Zenodo (CERN European Organization for Nuclear Research)",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Dataset: Citation Analysis of ICRC Customary IHL Study Rules (Annex to 'Limits of Creation')",
+      "key": "EZ9GZWS3",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Ilya Ivanov"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.5281/zenodo.19139621",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Zenodo (CERN European Organization for Nuclear Research)",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Bridging the gap between science and society: Mapping libraries' strategies for engaging in the research impact process through semantic analysis",
+      "key": "34CE2VH8",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Zuorong et al_2026_Bridging the gap between science and society Mappi.pdf",
+      "authors": [
+        "Wang Zuorong",
+        "Sun Jiaxuan",
+        "He Shan",
+        "Deng Sanhong",
+        "Wang Hao"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.47989/ir31iconf64195",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Information Research an international electronic journal",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "OpenAlex in focus: Metadata quality of publication type and language fields in an open peer review corpus",
+      "key": "K6MU7HWE",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Doǧan and Sezen_2026_OpenAlex in focus Metadata quality of publication.pdf",
+      "authors": [
+        "Güleda ed Doǧan",
+        "Ayça Nur Sezen"
+      ],
+      "date": "2026-03-20",
+      "doi": "10.47989/ir31iconf64207",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Information Research an international electronic journal",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Introducing multiverse analysis to bibliometrics: The case of team size effects on disruptive research",
+      "key": "URXTVRR8",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Leibel and Bornmann_2026_Introducing multiverse analysis to bibliometrics The case of team size effects on disruptive resear.pdf",
+      "authors": [
+        "Christian Leibel",
+        "Lutz Bornmann"
+      ],
+      "date": "2026-03-23",
+      "doi": "10.1162/qss.a.475",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Quantitative Science Studies",
+      "item_type": "journalArticle",
+      "tags": [
+        "auto-curated",
+        "scisci-curation"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Information Pathways in Online Science Communication: The Role of Platform Actors and News Media",
+      "key": "QAC8FU6Z",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Efstratiou et al_2026_Information Pathways in Online Science Communicati.pdf",
+      "authors": [
+        "Alexandros Efstratiou",
+        "Giuseppe Russo",
+        "Luca Luceri"
+      ],
+      "date": "2026-03-18",
+      "doi": "",
+      "arxiv_id": "2603.17249",
+      "abstract": "Online discussions of science involve complex interactions among experts, news media, and social media users as they interpret and disseminate scientific findings. While prior work has examined these actors in isolation, their interplay in shaping science communication remains poorly understood. Using the COVID-19 pandemic as a case study, we analyze 1.24M tweets and 211k news articles that reference pandemic-related scientific papers. We find that the most influential Twitter accounts in this discourse are predominantly individuals with medical or research credentials. However, we also identify a coordinated network that disproportionately amplifies a small set of prominent credentialed experts who advance contrarian, anti-consensus positions on vaccines, lockdowns, and related topics. The papers promoted by these influential actors substantially overlap with those covered by news media, but with key differences: pro-consensus experts primarily engage with studies featured by mainstream and medical outlets, whereas contrarian experts align more closely with papers promoted by low-quality, pseudoscientific, or conspiratorial sources. Notably, news outlets tend to report on scientific studies after they have been highlighted by social media superspreaders. Together, these findings reveal multi-level pathways of information flow and coordinated amplification structures that shape science communication across social media and news, offering new insights into the dynamics of the broader information ecosystem.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "cs.SI"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "BibFusion: A Python package to integrate, deduplicate, and harmonize exported bibliographic records from Scopus and Web of Science for bibliometric analysis",
+      "key": "6XKXRGCS",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Britto et al_2026_BibFusion A Python package to integrate, deduplica.pdf",
+      "authors": [
+        "Angelo Britto",
+        "Sebastian Robledo",
+        "Martha Zuluaga"
+      ],
+      "date": "2026-02-14",
+      "doi": "10.47909/ijsmc.342",
+      "arxiv_id": "",
+      "abstract": "Objective. The study presented BibFusion, a Python software package that harmonizes bibliographic exports from Scopus and Web of Science into a single, traceable, analysis-ready corpus for bibliometric and scientometric research.",
+      "venue": "Iberoamerican Journal of Science Measurement and Communication",
+      "item_type": "journalArticle",
+      "tags": [
+        "Python",
+        "bibliometrics"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Rethinking Thematic Evolution in Science Mapping: An Integrated Framework for Longitudinal Analysis",
+      "key": "KI4DJUMW",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Aria et al_2026_Rethinking Thematic Evolution in Science Mapping A.pdf",
+      "authors": [
+        "Massimo Aria",
+        "Luca D'Aniello",
+        "Michelangelo Misuraca",
+        "Maria Spano"
+      ],
+      "date": "2026-03-06",
+      "doi": "",
+      "arxiv_id": "2603.06436",
+      "abstract": "Strategic diagrams and co-word analysis are widely employed to examine the conceptual structure of scientific domains and their development over time. Yet a structural inconsistency characterises dominant longitudinal implementations: themes are detected through relational clustering in weighted networks, whereas their inter-temporal connections are commonly inferred from set-theoretic overlap among keywords or core documents. This study introduces a structurally integrated framework in which lineage reconstruction is embedded within the same weighted relational architecture that underpins cross-sectional detection. The approach models thematic continuity through graded document affiliation and a lineage-strength measure that combines directional coverage with centrality-weighted structural relevance, thereby conceptualising evolution as the reconfiguration of relational structures rather than simple lexical persistence. By aligning thematic detection and temporal modelling within a unified relational paradigm, the framework enhances the methodological coherence and interpretive robustness of longitudinal science mapping.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "cs.SI"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Tenure and research trajectories",
+      "key": "4ILSXA66",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Tripodi et al._2025_Tenure and research trajectories.pdf",
+      "authors": [
+        "Giorgio Tripodi",
+        "Xiang Zheng",
+        "Yifan Qian",
+        "Dakota Murray",
+        "Benjamin F. Jones",
+        "Chaoqun Ni",
+        "Dashun Wang"
+      ],
+      "date": "2025-07-29",
+      "doi": "10.1073/pnas.2500322122",
+      "arxiv_id": "",
+      "abstract": "Tenure is a cornerstone of the US academic system, yet its relationship to faculty research trajectories remains poorly understood. Conceptually, tenure systems may act as a selection mechanism, screening in high-output researchers; a dynamic incentive mechanism, encouraging high output prior to tenure but low output after tenure; and a creative search mechanism, encouraging tenured individuals to undertake high-risk work. Here, we integrate data from seven different sources to trace US tenure-line faculty and their research outputs at a remarkable scale and scope, covering over 12,000 researchers across 15 disciplines. Our analysis reveals that faculty publication rates typically increase sharply during the tenure track and peak just before obtaining tenure. Post-tenure trends, however, vary across disciplines: In lab-based fields, such as biology and chemistry, research output typically remains high post-tenure, whereas in non-lab-based fields, such as mathematics and sociology, research output typically declines substantially post-tenure. Turning to creative search, faculty increasingly produce novel, high-risk research after securing tenure. However, this shift toward novelty and risk-taking comes with a decline in impact, with post-tenure research yielding fewer highly cited papers. Comparing outcomes across common career ages but different tenure years or comparing research trajectories in tenure-based and non-tenure-based research settings underscores that breaks in the research trajectories are sharply tied to the individual’s tenure year. Overall, these findings provide an empirical basis for understanding the tenure system, individual research trajectories, and the shape of scientific output.",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Are disruptive papers more likely to impact technology and society?",
+      "key": "BP3QYN25",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Yang et al._2025_Are disruptive papers more likely to impact technology and society.pdf",
+      "authors": [
+        "Alex J. Yang",
+        "Xiaohui Yan",
+        "Haotian Hu",
+        "Hanlin Hu",
+        "Jia Kong",
+        "Sanhong Deng"
+      ],
+      "date": "03/2025",
+      "doi": "10.1002/asi.24947",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            In exploring the intersection of scholarly research with technological advancement and societal impact, our analysis delves into nearly 40 million research papers spanning from 1950 to 2020 across all fields of study in science. Our scrutiny reveals an intriguing phenomenon: papers characterized by a higher CD index, often considered transformative, paradoxically exhibit a diminished propensity to influence technological and societal domains. This observation suggests a latent bias against the CD index, prompting a deeper inquiry into its implications. To unravel this trend, we introduce the concept of “disruptive citation,” a nuanced metric gauging the absolute disruptive impact of papers. Notably, papers drawing higher disruptive citations exhibit a significantly higher probability to influence both technological and societal spheres. Upon examining the heterogeneity across years and fields, we identify a bias against the CD index predominantly in the last two decades and within STEM fields. However, the positive effects of disruptive impact remain consistent across all years and fields. Our findings remain robust even when employing alternative measures of disruptive impact and controlling for total citations. By shedding light on these dynamics, our study seeks to enrich discussions regarding the recognition and role of disruptive scientific endeavors in shaping our world.",
+      "venue": "Journal of the Association for Information Science and Technology",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Quantifying spatial–temporal citation diffusion of individual papers in knowledge space",
+      "key": "M5PQSBBE",
+      "pdf": false,
+      "pdf_path": "",
+      "authors": [
+        "Shuang Zhang",
+        "Feifan Liu",
+        "Haoxiang Xia"
+      ],
+      "date": "12/2025",
+      "doi": "10.1002/asi.70021",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            Despite extensive efforts to reveal temporal patterns of citation dynamics for individual papers, the spatial–temporal patterns, which reflect a coupled process involving the accumulation of citations over time and their concentration or dispersion in the high‐dimensional knowledge space, remain largely unexplored. Drawing on millions of papers in seven large‐scale disciplines, we apply document representation algorithms capturing semantic associations to construct citation diffusion trajectories in the embedded disciplinary knowledge landscape. We find a tendency toward semantically localized citation mobility patterns, characterized by Gaussian‐distributed citation scopes and exponentially distributed citation distances. Further analysis investigates the role of early citation diffusion characteristics in shaping citation accumulation, revealing a positive correlation between initial citation diffusion breadth and citation growth, which significantly amplifies long‐term impact among papers with comparable early citation counts. We identify distinct spatial–temporal citation diffusion patterns for novel and disruptive papers. While highly cited papers attract significant attention both in the early stages and over time, their citation diffusion typically follows conventional patterns, with most citations spanning shorter knowledge distances. Novel papers and disruptive papers, despite garnering fewer and delayed citations, tend to attract longer‐distance citations early on and generate more extensive and distant impacts within the knowledge space.",
+      "venue": "Journal of the Association for Information Science and Technology",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Predicting Scientific Breakthroughs Based on Structural Dynamic of Citation Cascades",
+      "key": "UUYEG6CE",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Yu et al._2024_Predicting Scientific Breakthroughs Based on Structural Dynamic of Citation Cascades.pdf",
+      "authors": [
+        "Houqiang Yu",
+        "Yian Liang",
+        "Yinghua Xie"
+      ],
+      "date": "2024-06-03",
+      "doi": "10.3390/math12111741",
+      "arxiv_id": "",
+      "abstract": "Predicting breakthrough papers holds great significance; however, prior studies encountered challenges in this task, indicating a need for substantial improvement. We propose that the failure to capture the dynamic structural-evolutionary features of citation networks is one of the major reasons. To overcome this limitation, this paper introduces a new method for constructing citation cascades of focus papers, allowing the creation of a time-series-like set of citation cascades. Then, through a thorough review, three types of structural indicators in these citation networks that could reflect breakthroughs are identified, including certain basic topological metrics, PageRank values, and the von Neumann graph entropy. Based on the time-series-like set of citation cascades, the dynamic trajectories of these indicators are calculated and employed as predictors. Using the Nobel Prize-winning papers as a landmark dataset, our prediction method yields approximately a 7% improvement in the ROC-AUC score compared to static-based prior methods. Additionally, our method advances in achieving earlier predictions than other previous methods. The main contribution of this paper is proposing a novel method for creating citation cascades in chronological order and confirming the significance of predicting breakthroughs from a dynamic structural perspective.",
+      "venue": "Mathematics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Do novel papers attract more social attention?",
+      "key": "TLTURCAW",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Cheng et al._2025_Do novel papers attract more social attention.pdf",
+      "authors": [
+        "Jiaqi Cheng",
+        "Yundong Xie",
+        "Qiang Wu"
+      ],
+      "date": "08/2025",
+      "doi": "10.1016/j.joi.2025.101710",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Journal of Informetrics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The altering landscape of US–China science collaboration: from convergence to divergence",
+      "key": "K5SJ36QV",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Kitajima and Okamura_2025_The altering landscape of US–China science collaboration from convergence to divergence.pdf",
+      "authors": [
+        "Kensei Kitajima",
+        "Keisuke Okamura"
+      ],
+      "date": "2025-03-03",
+      "doi": "10.1057/s41599-025-04550-3",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Humanities and Social Sciences Communications",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Forecasting the future of artificial intelligence with machine learning-based link prediction in an exponentially growing knowledge network",
+      "key": "UCUYPACC",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Krenn et al._2023_Forecasting the future of artificial intelligence with machine learning-based link prediction in an.pdf",
+      "authors": [
+        "Mario Krenn",
+        "Lorenzo Buffoni",
+        "Bruno Coutinho",
+        "Sagi Eppel",
+        "Jacob Gates Foster",
+        "Andrew Gritsevskiy",
+        "Harlin Lee",
+        "Yichao Lu",
+        "João P. Moutinho",
+        "Nima Sanjabi",
+        "Rishi Sonthalia",
+        "Ngoc Mai Tran",
+        "Francisco Valente",
+        "Yangxinyu Xie",
+        "Rose Yu",
+        "Michael Kopp"
+      ],
+      "date": "2023-10-16",
+      "doi": "10.1038/s42256-023-00735-0",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            A tool that could suggest new personalized research directions and ideas by taking insights from the scientific literature could profoundly accelerate the progress of science. A field that might benefit from such an approach is artificial intelligence (AI) research, where the number of scientific publications has been growing exponentially over recent years, making it challenging for human researchers to keep track of the progress. Here we use AI techniques to predict the future research directions of AI itself. We introduce a graph-based benchmark based on real-world data—the Science4Cast benchmark, which aims to predict the future state of an evolving semantic network of AI. For that, we use more than 143,000 research papers and build up a knowledge network with more than 64,000 concept nodes. We then present ten diverse methods to tackle this task, ranging from pure statistical to pure learning methods. Surprisingly, the most powerful methods use a carefully curated set of network features, rather than an end-to-end AI approach. These results indicate a great potential that can be unleashed for purely ML approaches without human knowledge. Ultimately, better predictions of new future research directions will be a crucial component of more advanced research suggestion tools.",
+      "venue": "Nature Machine Intelligence",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "SciSciNet: A large-scale open data lake for the science of science research",
+      "key": "TANDKTFD",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Lin et al._2023_SciSciNet A large-scale open data lake for the science of science research.pdf",
+      "authors": [
+        "Zihang Lin",
+        "Yian Yin",
+        "Lu Liu",
+        "Dashun Wang"
+      ],
+      "date": "2023-06-01",
+      "doi": "10.1038/s41597-023-02198-9",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            The science of science has attracted growing research interests, partly due to the increasing availability of large-scale datasets capturing the innerworkings of science. These datasets, and the numerous linkages among them, enable researchers to ask a range of fascinating questions about how science works and where innovation occurs. Yet as datasets grow, it becomes increasingly difficult to track available sources and linkages across datasets. Here we present SciSciNet, a large-scale open data lake for the science of science research, covering over 134M scientific publications and millions of external linkages to funding and public uses. We offer detailed documentation of pre-processing steps and analytical choices in constructing the data lake. We further supplement the data lake by computing frequently used measures in the literature, illustrating how researchers may contribute collectively to enriching the data lake. Overall, this data lake serves as an initial but useful resource for the field, by lowering the barrier to entry, reducing duplication of efforts in data processing and measurements, improving the robustness and replicability of empirical claims, and broadening the diversity and representation of ideas in the field.",
+      "venue": "Scientific Data",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Forecasting high-impact research topics via machine learning on evolving knowledge graphs",
+      "key": "FLCU2ADL",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Gu and Krenn_2025_Forecasting high-impact research topics via machine learning on evolving knowledge graphs.pdf",
+      "authors": [
+        "Xuemei Gu",
+        "Mario Krenn"
+      ],
+      "date": "2025-06-30",
+      "doi": "10.1088/2632-2153/add6ef",
+      "arxiv_id": "2402.08640",
+      "abstract": "The exponential growth in scientific publications poses a severe challenge for human researchers. It forces attention to more narrow sub-fields, which makes it challenging to discover new impactful research ideas and collaborations outside one's own field. While there are ways to predict a scientific paper's future citation counts, they need the research to be finished and the paper written, usually assessing impact long after the idea was conceived. Here we show how to predict the impact of onsets of ideas that have never been published by researchers. For that, we developed a large evolving knowledge graph built from more than 21 million scientific papers. It combines a semantic network created from the content of the papers and an impact network created from the historic citations of papers. Using machine learning, we can predict the dynamic of the evolving network into the future with high accuracy (AUC values beyond 0.9 for most experiments), and thereby the impact of new research directions. We envision that the ability to predict the impact of new ideas will be a crucial component of future artificial muses that can inspire new impactful and interesting scientific ideas.",
+      "venue": "Machine Learning: Science and Technology",
+      "item_type": "journalArticle",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Digital Libraries",
+        "Computer Science - Machine Learning"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Scholarly Knowledge Ecosystem: Challenges and Opportunities for the Field of Information",
+      "key": "9ENZQBH5",
+      "pdf": true,
+      "pdf_path": "[imported:YFFPWKD5]",
+      "authors": [
+        "Micah Altman",
+        "Philip N. Cohen"
+      ],
+      "date": "2022-1-31",
+      "doi": "10.3389/frma.2021.751553",
+      "arxiv_id": "",
+      "abstract": "The scholarly knowledge ecosystem presents an outstanding exemplar of the challenges of understanding, improving, and governing information ecosystems at scale. This article draws upon significant reports on aspects of the ecosystem to characterize the most important research challenges and promising potential approaches. The focus of this review article is the fundamental scientific research challenges related to developing a better understanding of the scholarly knowledge ecosystem. Across a range of disciplines, we identify reports that are conceived broadly, published recently, and written collectively. We extract the critical research questions, summarize these using quantitative text analysis, and use this quantitative analysis to inform a qualitative synthesis. Three broad themes emerge from this analysis: the need for multi-sectoral cooperation and coordination, for mixed methods analysis at multiple levels, and interdisciplinary collaboration. Further, we draw attention to an emerging consensus that scientific research in this area should by a set of core human values.",
+      "venue": "Frontiers in Research Metrics and Analytics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Atlas of Science Collaboration, 1971–2020",
+      "key": "ZDRE5MB4",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Okamura_2024_Atlas of Science Collaboration, 1971–2020.pdf",
+      "authors": [
+        "Keisuke Okamura"
+      ],
+      "date": "2024-06-11",
+      "doi": "10.1007/s42979-024-02973-4",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "SN Computer Science",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Introducing the open biomedical map of science",
+      "key": "6N6G7BLS",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Ginda et al._2023_Introducing the open biomedical map of science.pdf",
+      "authors": [
+        "Michael Ginda",
+        "Bruce W. Herr",
+        "Katy Börner"
+      ],
+      "date": "2023-10-4",
+      "doi": "10.3389/frma.2023.1274793",
+      "arxiv_id": "",
+      "abstract": "This article introduces work in progress to develop a new, open biomedical map of science (OBMS) using the PubMed citation database. The new science map represents bimodal network relationships between journals and medical subject heading (MeSH) descriptors, based on a journal's articles indexed in the MEDLINE component of PubMed. We review the current efforts to use PubMed data in science of science studies and science mapping. As part of the development process, we compare the journals indexed in PubMed with journals included in the 2011 UCSD map of science to establish a baseline of disciplinary coverage of PubMed for the period 2009–2019. Journal article frequency is analyzed to establish the minimum number of citations required by a journal for inclusion in a map of science. A prototype OBMS is presented, and we discuss the strengths and weaknesses of the OBMS, as well as the next steps for using and productizing this new open map for general and free usage.",
+      "venue": "Frontiers in Research Metrics and Analytics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Identifying interdisciplinary emergence in the science of science: combination of network analysis and BERTopic",
+      "key": "9T9C9AGP",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Kim et al._2024_Identifying interdisciplinary emergence in the science of science combination of network analysis a.pdf",
+      "authors": [
+        "Keungoui Kim",
+        "Dieter F. Kogler",
+        "Sira Maliphol"
+      ],
+      "date": "2024-05-10",
+      "doi": "10.1057/s41599-024-03044-y",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            Global scientific output is expanding exponentially, which in turn calls for a better understanding of the science of science and especially how the boundaries of scientific fields expand through processes of emergence. The present study proposes the application of embedded topic modeling techniques to identify new emerging science via knowledge recombination activities as evidenced through the analysis of research publication metadata. First, a dataset is constructed from metadata derived from the Web of Science Core Collection database. The dataset is then used to generate a global map representing a categorical scientific co-occurrence network. A research field is defined as interdisciplinary when multiple science categories are listed in its description. Second, the co-occurrence networks are subsequently compared between periods to determine changing patterns of influence in light of interdisciplinarity. Third, embedded topic modeling enables unsupervised association of interdisciplinary classification. We present the results of the analysis to demonstrate the emergence of global interdisciplinary sciences and further we perform qualitative validation on the results to identify what the sources of the emergent areas are. Based on these results, we discuss potential applications for identifying emergence through the merging of global interdisciplinary domains.",
+      "venue": "Humanities and Social Sciences Communications",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Mapping scientific communities at scale",
+      "key": "ZA7W3PFQ",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Barbier and Jeangirard_2025_Mapping scientific communities at scale.pdf",
+      "authors": [
+        "Victor Barbier",
+        "Eric Jeangirard"
+      ],
+      "date": "2025-01-17",
+      "doi": "10.48550/arXiv.2501.10035",
+      "arxiv_id": "2501.10035",
+      "abstract": "This study introduces a novel methodology for mapping scientific communities at scale, addressing challenges associated with network analysis in large bibliometric datasets. By leveraging enriched publication metadata from the French research portal scanR and applying advanced filtering techniques to prioritize the strongest interactions between entities, we construct detailed, scalable network maps. These maps are enhanced through systematic disambiguation of authors, affiliations, and topics using persistent identifiers and specialized algorithms. The proposed framework integrates Elasticsearch for efficient data aggregation, Graphology for network spatialization (Force Atltas2) and community detection (Louvain algorithm) and VOSviewer for network vizualization. A Large Language Model (Mistral Nemo) is used to label the communities detected and OpenAlex data helps to enrich the results with citation counts estimation to detect hot topics. This scalable approach enables insightful exploration of research collaborations and thematic structures, with potential applications for strategic decision-making in science policy and funding. These web tools are effective at the global (national) scale but are also available (and can be integrated via iframes) on the perimeter of any French research institution (from large research organisms to any laboratory). The scanR community analysis tool is available online [https://scanr.enseignementsup-recherche.gouv.fr/networks/get-started](https://scanr.enseignementsup-recherche.gouv.fr/networks/get-started). All tools and methodologies are open-source on the repo [https://github.com/dataesr/scanr-ui](https://github.com/dataesr/scanr-ui)",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Digital Libraries"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Science Mapping and Science Maps",
+      "key": "YBZICPSK",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Petrovich_2021_Science Mapping and Science Maps.pdf",
+      "authors": [
+        "Eugenio Petrovich"
+      ],
+      "date": "2021",
+      "doi": "10.5771/0943-7444-2021-7-8-535",
+      "arxiv_id": "",
+      "abstract": "Science maps are visual representations of the structure and dynamics of scholarly knowl­edge. They aim to show how fields, disciplines, journals, scientists, publications, and scientific terms relate to each other. Science mapping is the body of methods and techniques that have been developed for generating science maps. This entry is an introduction to science maps and science mapping. It focuses on the conceptual, theoretical, and methodological issues of science mapping, rather than on the mathematical formulation of science mapping techniques. After a brief history of science mapping, we describe the general procedure for building a science map, presenting the data sources and the methods to select, clean, and pre-process the data. Next, we examine in detail how the most common types of science maps, namely the citation-based and the term-based, are generated. Both are based on networks: the former on the network of publications connected by citations, the latter on the network of terms co-occurring in publications. We review the rationale behind these mapping approaches, as well as the techniques and methods to build the maps (from the extraction of the network to the visualization and enrichment of the map). We also present less-common types of science maps, including co-authorship networks, interlocking editorship networks, maps based on patents’ data, and geographic maps of science. Moreover, we consider how time can be represented in science maps to investigate the dynamics of science. We also discuss some epistemological and sociological topics that can help in the interpretation, contextualization, and assessment of science maps. Then, we present some possible applications of science maps in science policy. In the conclusion, we point out why science mapping may be interesting for all the branches of meta-science, from knowl­edge organization to epistemology.",
+      "venue": "KNOWLEDGE ORGANIZATION",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "When text mining meets science mapping in the bibliometric analysis: A review and future opportunities",
+      "key": "98Q4GRQC",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Chen et al._2023_When text mining meets science mapping in the bibliometric analysis A review and future opportuniti.pdf",
+      "authors": [
+        "Haojing Chen",
+        "Yp Tsang",
+        "Ch Wu"
+      ],
+      "date": "02/2023",
+      "doi": "10.1177/18479790231222349",
+      "arxiv_id": "",
+      "abstract": "The increasing volume of scientific publications has created a need for more efficient and effective literature review processes. Bibliometric analysis is a quantitative approach to analysing bibliographic data extracted from research studies to identify publishing patterns and trends within specific knowledge domains. Science mapping is a widespread technique in bibliometric analysis that enables researchers to reveal the structure of their respective fields and identify dominant themes. However, there is still a lack of clarity and transparency in describing the science mapping process, which can hinder continued refinement and improvement of this critical field of research. This study provides a comprehensive overview of science mapping in bibliometric analysis based on published review studies from prestigious international journals. It outlines the science mapping mechanism and explores challenges and opportunities, focusing on incorporating text mining approaches to support the analytical literature review process. The study sheds light on previously unexplored mechanisms in the literature of bibliometric analysis, revealing gaps in existing research. The study contributes to the growing body of research on bibliometric analysis by highlighting the need for continuous improvement and the deployment of text mining techniques to support the analysis of scientific publication data. This study offers valuable insights for researchers, policymakers, and practitioners seeking to enhance their understanding of science mapping and bibliometric analysis.",
+      "venue": "International Journal of Engineering Business Management",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Comparative science mapping: a novel conceptual structure analysis with metadata",
+      "key": "X6EC3NJB",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Aria et al._2024_Comparative science mapping a novel conceptual structure analysis with metadata.pdf",
+      "authors": [
+        "Massimo Aria",
+        "Corrado Cuccurullo",
+        "Luca D’Aniello",
+        "Michelangelo Misuraca",
+        "Maria Spano"
+      ],
+      "date": "11/2024",
+      "doi": "10.1007/s11192-024-05161-6",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            Textual analyses on scientific publications are increasingly employed in Bibliometrics to explore the conceptual structure of a research domain, often overlooking other rich metadata that can provide deeper insights into the scientific landscape of reference. This paper introduces an innovative technique to explore the conceptual structure of different observation units in a joint representation. The proposed strategy segments bibliographic datasets based on several metadata dimensions, such as the authors (and their characteristics), the corresponding institutions, or their geographical localisation. It provides detailed maps that depict multiple conceptual frameworks, allowing for detailed comparisons and insights in a joint visualisation. We employed these strategic diagrams to visualise and analyse the oncological research of Italian Academic Medical Centres (AMCs), particularly focusing on public institutions. The analysis focuses on how different AMCs specialise and interact, providing a comparative framework that aids AMCs themselves in directing their research strategies toward innovative fronts. Furthermore, these visualisations can assist policymakers and healthcare stakeholders in understanding the broader research environment, which is crucial for informed decision-making regarding funding and policy development related to the AMCs’ triple mission.",
+      "venue": "Scientometrics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Mapping Knowledge: Topic Analysis of Science Locates Researchers in Disciplinary Landscape",
+      "key": "UHXVLHKP",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Hladik and Renisio_2024_Mapping Knowledge Topic Analysis of Science Locates Researchers in Disciplinary Landscape.pdf",
+      "authors": [
+        "Radim Hladik",
+        "Yann Renisio"
+      ],
+      "date": "2024-02-22",
+      "doi": "10.31235/osf.io/94jd5",
+      "arxiv_id": "",
+      "abstract": "The study presents a new approach for constructing an epistemological coordinate system that locates individual researchers within the disciplinary landscape of science. Drawing on a comprehensive national dataset of scientific outputs, we build a topic model based on a semantic network of publications and terms derived from textual content comprising titles, abstracts, and keywords. Compositional data transformation applied to the topic model enables a geometric analysis of topics across disciplines. The design yields four important results for addressing the gap between knowledge and knowledge-producers. 1) Hierarchical clustering confirms an alignment between traditional disciplinary classification and our empirical, bottom-up topic model. 2) Principal component analysis reveals three axes — Culture- Nature, Life-Non-life, and Materials-Methods — that primarily structure this scientific knowledge space. 3) The projection of individual researchers via their topic portfolios allows to locate them relationally on these three continuous measures of epistemological distinctions. 4) The robustness of our approach is validated by examining the links between researchers’ topic orientation and supplementary variables such as publication practices, gender, institutional aﬀiliations, and funding sources. Our method could inform science policy and evaluation practices, as well as be extended to uncover associations between products and producers in other cultural fields.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Hierarchical Classification of Research Fields in the \"Web of Science\" Using Deep Learning",
+      "key": "WENUVK8E",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Rao et al._2024_Hierarchical Classification of Research Fields in the Web of Science Using Deep Learning.pdf",
+      "authors": [
+        "Susie Xi Rao",
+        "Peter H. Egger",
+        "Ce Zhang"
+      ],
+      "date": "2024-07-25",
+      "doi": "10.48550/arXiv.2302.00390",
+      "arxiv_id": "2302.00390",
+      "abstract": "This paper presents a hierarchical classification system that automatically categorizes a scholarly publication using its abstract into a three-tier hierarchical label set (discipline, field, subfield) in a multi-class setting. This system enables a holistic categorization of research activities in the mentioned hierarchy in terms of knowledge production through articles and impact through citations, permitting those activities to fall into multiple categories. The classification system distinguishes 44 disciplines, 718 fields and 1,485 subfields among 160 million abstract snippets in Microsoft Academic Graph (version 2018-05-17). We used batch training in a modularized and distributed fashion to address and allow for interdisciplinary and interfield classifications in single-label and multi-label settings. In total, we have conducted 3,140 experiments in all considered models (Convolutional Neural Networks, Recurrent Neural Networks, Transformers). The classification accuracy is > 90% in 77.13% and 78.19% of the single-label and multi-label classifications, respectively. We examine the advantages of our classification by its ability to better align research texts and output with disciplines, to adequately classify them in an automated way, and to capture the degree of interdisciplinarity. The proposed system (a set of pre-trained models) can serve as a backbone to an interactive system for indexing scientific publications in the future.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Digital Libraries",
+        "Computer Science - Machine Learning"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "A Survey on Knowledge Organization Systems of Research Fields: Resources and Challenges",
+      "key": "UMHA2SR6",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Salatino et al._2025_A Survey on Knowledge Organization Systems of Research Fields Resources and Challenges.pdf",
+      "authors": [
+        "Angelo Salatino",
+        "Tanay Aggarwal",
+        "Andrea Mannocci",
+        "Francesco Osborne",
+        "Enrico Motta"
+      ],
+      "date": "2025-06-20",
+      "doi": "10.1162/qss_a_00363",
+      "arxiv_id": "2409.04432",
+      "abstract": "Knowledge Organization Systems (KOSs), such as term lists, thesauri, taxonomies, and ontologies, play a fundamental role in categorising, managing, and retrieving information. In the academic domain, KOSs are often adopted for representing research areas and their relationships, primarily aiming to classify research articles, academic courses, patents, books, scientific venues, domain experts, grants, software, experiment materials, and several other relevant products and agents. These structured representations of research areas, widely embraced by many academic fields, have proven effective in empowering AI-based systems to i) enhance retrievability of relevant documents, ii) enable advanced analytic solutions to quantify the impact of academic research, and iii) analyse and forecast research dynamics. This paper aims to present a comprehensive survey of the current KOS for academic disciplines. We analysed and compared 45 KOSs according to five main dimensions: scope, structure, curation, usage, and links to other KOSs. Our results reveal a very heterogeneous scenario in terms of scope, scale, quality, and usage, highlighting the need for more integrated solutions for representing research knowledge across academic fields. We conclude by discussing the main challenges and the most promising future directions.",
+      "venue": "Quantitative Science Studies",
+      "item_type": "journalArticle",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Digital Libraries",
+        "Computer Science - Information Retrieval"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "What's In Your Field? Mapping Scientific Research with Knowledge Graphs and Large Language Models",
+      "key": "L55XTS2B",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Das et al._2025_What's In Your Field Mapping Scientific Research with Knowledge Graphs and Large Language Models.pdf",
+      "authors": [
+        "Abhipsha Das",
+        "Nicholas Lourie",
+        "Siavash Golkar",
+        "Mariel Pettee"
+      ],
+      "date": "2025-05-29",
+      "doi": "10.48550/arXiv.2503.09894",
+      "arxiv_id": "2503.09894",
+      "abstract": "The scientific literature's exponential growth makes it increasingly challenging to navigate and synthesize knowledge across disciplines. Large language models (LLMs) are powerful tools for understanding scientific text, but they fail to capture detailed relationships across large bodies of work. Unstructured approaches, like retrieval augmented generation, can sift through such corpora to recall relevant facts; however, when millions of facts influence the answer, unstructured approaches become cost prohibitive. Structured representations offer a natural complement -- enabling systematic analysis across the whole corpus. Recent work enhances LLMs with unstructured or semistructured representations of scientific concepts; to complement this, we try extracting structured representations using LLMs. By combining LLMs' semantic understanding with a schema of scientific concepts, we prototype a system that answers precise questions about the literature as a whole. Our schema applies across scientific fields and we extract concepts from it using only 20 manually annotated abstracts. To demonstrate the system, we extract concepts from 30,000 papers on arXiv spanning astrophysics, fluid dynamics, and evolutionary biology. The resulting database highlights emerging trends and, by visualizing the knowledge graph, offers new ways to explore the ever-growing landscape of scientific knowledge. Demo: abby101/surveyor-0 on HF Spaces. Code: https://github.com/chiral-carbon/kg-for-science.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Computation and Language"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Science as exploration in a knowledge landscape: tracing hotspots or seeking opportunity?",
+      "key": "V7T887IE",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Liu et al._2024_Science as exploration in a knowledge landscape tracing hotspots or seeking opportunity.pdf",
+      "authors": [
+        "Feifan Liu",
+        "Shuang Zhang",
+        "Haoxiang Xia"
+      ],
+      "date": "2024-04-02",
+      "doi": "10.1140/epjds/s13688-024-00468-z",
+      "arxiv_id": "",
+      "abstract": "Abstract\n            The selection of research topics by scientists can be viewed as an exploration process conducted by individuals with cognitive limitations traversing a complex cognitive landscape influenced by both individual and social factors. While existing theoretical investigations have provided valuable insights, the intricate and multifaceted nature of modern science hinders the implementation of empirical experiments. This study leverages advancements in Geographic Information System (GIS) techniques to investigate the patterns and dynamic mechanisms of topic-transition among scientists. By constructing the knowledge space across 6 large-scale disciplines, we depict the trajectories of scientists’ topic transitions within this space, measuring the flow and distance of research regions across different sub-spaces. Our findings reveal a predominantly conservative pattern of topic transition at the individual level, with scientists primarily exploring local knowledge spaces. Furthermore, simulation modeling analysis identifies research intensity, driven by the concentration of scientists within a specific region, as the key facilitator of topic transition. Conversely, the knowledge distance between fields serves as a significant barrier to exploration. Notably, despite potential opportunities for breakthrough discoveries at the intersection of subfields, empirical evidence suggests that these opportunities do not exert a strong pull on scientists, leading them to favor familiar research areas. Our study provides valuable insights into the exploration dynamics of scientific knowledge production, highlighting the influence of individual cognition, social factors, and the intrinsic structure of the knowledge landscape itself. These findings offer a framework for understanding and potentially shaping the course of scientific progress.",
+      "venue": "EPJ Data Science",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Impacts of inter-institutional mobility on scientific performance from research capital and social capital perspectives",
+      "key": "J89KMT99",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Chen et al._2023_Impacts of inter-institutional mobility on scientific performance from research capital and social c.pdf",
+      "authors": [
+        "Yitong Chen",
+        "Keye Wu",
+        "Yue Li",
+        "Jianjun Sun"
+      ],
+      "date": "06/2023",
+      "doi": "10.1007/s11192-023-04690-w",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Scientometrics",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Unsupervised embedding of trajectories captures the latent structure of scientific migration",
+      "key": "256U9H6R",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Murray et al._2023_Unsupervised embedding of trajectories captures the latent structure of scientific migration.pdf",
+      "authors": [
+        "Dakota Murray",
+        "Jisung Yoon",
+        "Sadamori Kojaku",
+        "Rodrigo Costas",
+        "Woo-Sung Jung",
+        "Staša Milojević",
+        "Yong-Yeol Ahn"
+      ],
+      "date": "2023-12-26",
+      "doi": "10.1073/pnas.2305414120",
+      "arxiv_id": "",
+      "abstract": "Human migration and mobility drives major societal phenomena including epidemics, economies, innovation, and the diffusion of ideas. Although human mobility and migration have been heavily constrained by geographic distance throughout the history, advances, and globalization are making other factors such as language and culture increasingly more important. Advances in neural embedding models, originally designed for natural language, provide an opportunity to tame this complexity and open new avenues for the study of migration. Here, we demonstrate the ability of the model word2vec to encode nuanced relationships between discrete locations from migration trajectories, producing an accurate, dense, continuous, and meaningful vector-space representation. The resulting representation provides a functional distance between locations, as well as a “digital double” that can be distributed, re-used, and itself interrogated to understand the many dimensions of migration. We show that the unique power of word2vec to encode migration patterns stems from its mathematical equivalence with the gravity model of mobility. Focusing on the case of scientific migration, we apply word2vec to a database of three million migration trajectories of scientists derived from the affiliations listed on their publication records. Using techniques that leverage its semantic structure, we demonstrate that embeddings can learn the rich structure that underpins scientific migration, such as cultural, linguistic, and prestige relationships at multiple levels of granularity. Our results provide a theoretical foundation and methodological framework for using neural embeddings to represent and understand migration both within and beyond science.",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Mapping the changing structure of science through diachronic periodical embeddings",
+      "key": "GR9ZTGSZ",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Lyu and Ke_2025_Mapping the changing structure of science through diachronic periodical embeddings.pdf",
+      "authors": [
+        "Zhuoqi Lyu",
+        "Qing Ke"
+      ],
+      "date": "12/2025",
+      "doi": "10.1016/j.chaos.2025.117295",
+      "arxiv_id": "2503.23285",
+      "abstract": "Understanding the changing structure of science over time is essential to elucidating how science evolves. We develop diachronic embeddings of scholarly periodicals to quantify \"semantic changes\" of periodicals across decades, allowing us to track the evolution of research topics and identify rapidly developing fields. By mapping periodicals within a physical-life-health triangle, we reveal an evolving interdisciplinary science landscape, finding an overall trend toward specialization for most periodicals but increasing interdisciplinarity for bioscience periodicals. Analyzing a periodical's trajectory within this triangle over time allows us to visualize how its research focus shifts. Furthermore, by monitoring the formation of local clusters of periodicals, we can identify emerging research topics such as AIDS research and nanotechnology in the 1980s. Our work offers novel quantification in the science of science and provides a quantitative lens to examine the evolution of science, which may facilitate future investigations into the emergence and development of research fields.",
+      "venue": "Chaos, Solitons & Fractals",
+      "item_type": "journalArticle",
+      "tags": [
+        "Computer Science - Digital Libraries",
+        "Computer Science - Social and Information Networks",
+        "Physics - Physics and Society"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Price-Pareto growth model of networks with community structure",
+      "key": "IXQDW2QT",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Brzozowski et al._2026_The Price-Pareto growth model of networks with community structure.pdf",
+      "authors": [
+        "Łukasz Brzozowski",
+        "Marek Gagolewski",
+        "Grzegorz Siudem",
+        "Barbara Żogała-Siudem"
+      ],
+      "date": "2026-02-23",
+      "doi": "10.48550/arXiv.2510.13392",
+      "arxiv_id": "2510.13392",
+      "abstract": "We introduce a new analytical framework for modelling degree sequences in individual communities of real-world networks, e.g., citations to papers in different fields. Our work is inspired by a recent modification of the Price's model, which assumes that citations are gained partly accidentally, and to some extent preferentially. Our work addresses the need to represent the heterogeneity of various scientific domains, as standard homogeneous models fail to capture the distinct growth ratios and citing cultures of different fields. Extending the model to networks with a community structure allows us to devise the analytical formulae for, amongst others, citation counts in each cluster and their inequality as described by the Gini index. We also show that a citation count distribution in each community tends to a Pareto type II distribution. Thanks to the derived model parameter estimators, the new model can be fitted to real citation and similar networks.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Social and Information Networks",
+        "Physics - Physics and Society",
+        "Statistics - Applications"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "AI-Driven Automation Can Become the Foundation of Next-Era Science of Science Research",
+      "key": "4NYXN8XX",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Chen et al._2025_AI-Driven Automation Can Become the Foundation of Next-Era Science of Science Research.pdf",
+      "authors": [
+        "Renqi Chen",
+        "Haoyang Su",
+        "Shixiang Tang",
+        "Zhenfei Yin",
+        "Qi Wu",
+        "Hui Li",
+        "Ye Sun",
+        "Nanqing Dong",
+        "Wanli Ouyang",
+        "Philip Torr"
+      ],
+      "date": "2025",
+      "doi": "10.48550/ARXIV.2505.12039",
+      "arxiv_id": "2505.12039",
+      "abstract": "The Science of Science (SoS) explores the mechanisms underlying scientific discovery, and offers valuable insights for enhancing scientific efficiency and fostering innovation. Traditional approaches often rely on simplistic assumptions and basic statistical tools, such as linear regression and rule-based simulations, which struggle to capture the complexity and scale of modern research ecosystems. The advent of artificial intelligence (AI) presents a transformative opportunity for the next generation of SoS, enabling the automation of large-scale pattern discovery and uncovering insights previously unattainable. This paper offers a forward-looking perspective on the integration of Science of Science with AI for automated research pattern discovery and highlights key open challenges that could greatly benefit from AI. We outline the advantages of AI over traditional methods, discuss potential limitations, and propose pathways to overcome them. Additionally, we present a preliminary multi-agent system as an illustrative example to simulate research societies, showcasing AI's ability to replicate real-world research patterns and accelerate progress in Science of Science research.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Artificial Intelligence (cs.AI)",
+        "Computation and Language (cs.CL)",
+        "FOS: Computer and information sciences",
+        "FOS: Physical sciences",
+        "Physics and Society (physics.soc-ph)"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE",
+      "key": "3RZR9RIN",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Švábenský et al._2026_Open Datasets in Learning Analytics Trends, Challenges, and Best PRACTICE.pdf",
+      "authors": [
+        "Valdemar Švábenský",
+        "Brendan Flanagan",
+        "Erwin Daniel López Zapata",
+        "Atsushi Shimada"
+      ],
+      "date": "2026-02-19",
+      "doi": "10.1145/3798096",
+      "arxiv_id": "2602.17314",
+      "abstract": "Open datasets play a crucial role in three research domains that intersect data science and education: learning analytics, educational data mining, and artificial intelligence in education. Researchers in these domains apply computational methods to analyze data from educational contexts, aiming to better understand and improve teaching and learning. Providing open datasets alongside research papers supports reproducibility, collaboration, and trust in research findings. It also provides individual benefits for authors, such as greater visibility, credibility, and citation potential. Despite these advantages, the availability of open datasets and the associated practices within the learning analytics research communities, especially at their flagship conference venues, remain unclear. We surveyed available datasets published alongside research papers in learning analytics. We manually examined 1,125 papers from three flagship conferences (LAK, EDM, and AIED) over the past five years. We discovered, categorized, and analyzed 172 datasets used in 204 publications. Our study presents the most comprehensive collection and analysis of open educational datasets to date, along with the most detailed categorization. Of the 172 datasets identified, 143 were not captured in any prior survey of open data in learning analytics. We provide insights into the datasets' context, analytical methods, use, and other properties. Based on this survey, we summarize the current gaps in the field. Furthermore, we list practical recommendations, advice, and 8-item guidelines under the acronym PRACTICE with a checklist to help researchers publish their data. Lastly, we share our original dataset: an annotated inventory detailing the discovered datasets and the corresponding publications. We hope these findings will support further adoption of open data practices in learning analytics communities and beyond.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Computers and Society",
+        "Computer Science - Databases",
+        "Computer Science - Machine Learning"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The selective use of physics knowledge in policy: how interdisciplinary physics bridges subfields and shapes policy influence",
+      "key": "255JTI4F",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Lee and Yoon_2026_The selective use of physics knowledge in policy how interdisciplinary physics bridges subfields an.pdf",
+      "authors": [
+        "Jeongmin Lee",
+        "Jisung Yoon"
+      ],
+      "date": "2026-02-11",
+      "doi": "10.48550/arXiv.2602.10427",
+      "arxiv_id": "2602.10427",
+      "abstract": "Scientific knowledge has become central to policymaking as societies face challenges related to technological change, climate risk, and public health. Despite the growing emphasis on evidence-based policy, a systematic understanding of how science is selectively used in policy, specifically which forms of knowledge are preferred and which scientific citations translate into influence, remains limited. We address these questions by constructing a novel dataset that links policy documents from the Overton database with publications from the American Physical Society, enabling an analysis of how physics knowledge enters and circulates in policy discourse. Using subfield classifications, we provide quantitative evidence for a gap between scientific communities and policymakers. First, we find that policy documents draw on broad and interdisciplinary areas of physics, such as General Physics and Interdisciplinary Physics, rather than mirroring the structure of physics research production. Second, we identify substantial institutional heterogeneity with systematic differences in subfield preferences across policy producing organizations and topics. Third, network analysis reveals that interdisciplinary areas of physics act as a central bridge connecting specialized subfields. Finally, regression analysis reveals a clear separation between policy visibility and policy influence. While interdisciplinary areas facilitate entry into policy discourse, it does not necessarily increase downstream policy influence. Conversely, documents citing geophysics are associated with approximately 24 percent higher policy influence, likely driven by the political salience of climate change policy. Our findings underscore the distinction between scientific visibility and policy influence, contributing to a deeper understanding of the complex relationship between scientific communities and policy system.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Physics - Physics and Society"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Partisan disparities in the funding of science in the United States",
+      "key": "M8AAGV47",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Furnas et al._2025_Partisan disparities in the funding of science in the United States.pdf",
+      "authors": [
+        "Alexander C. Furnas",
+        "Nic Fishman",
+        "Leah Rosenstiel",
+        "Dashun Wang"
+      ],
+      "date": "2025-09-18",
+      "doi": "10.1126/science.adx5154",
+      "arxiv_id": "",
+      "abstract": "Republican lawmakers consistently provided robust federal funding, often exceeding Democrats\n          , \n            \n              The increasing complexity and extended timelines involved in scientific research and technological innovation highlight the importance of consistent, reliable support for science. The United States government—the largest research funder in the world—plays a pivotal role, mobilizing resources domestically while also serving as a global leader, shaping strategies of international funders and policy-makers (\n              \n                1\n              \n              ,\n              \n                2\n              \n              ). Despite this central importance of the US government in global science, the relationship between its political control and science funding remains poorly understood. This gap in understanding is particularly pressing in an era of growing political polarization. Here we leverage a comprehensive database of appropriations—the funding levels denoted in statute and directly set by policy-makers—to capture federal support for science from 1980 to 2020. Despite occasional public skepticism of science (\n              \n                3\n              \n              ), Republican lawmakers consistently provided robust funding, often exceeding Democrats, underscoring the importance of bipartisan investments in science and research.",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Funding the Frontier: Visualizing the Broad Impact of Science and Science Funding",
+      "key": "YMXNJXR3",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Wang et al._2025_Funding the Frontier Visualizing the Broad Impact of Science and Science Funding.pdf",
+      "authors": [
+        "Yifang Wang",
+        "Yifan Qian",
+        "Xiaoyu Qi",
+        "Yian Yin",
+        "Shengqi Dang",
+        "Ziqing Qian",
+        "Benjamin F. Jones",
+        "Nan Cao",
+        "Dashun Wang"
+      ],
+      "date": "2025-09-19",
+      "doi": "10.48550/arXiv.2509.16323",
+      "arxiv_id": "2509.16323",
+      "abstract": "Understanding the broad impact of science and science funding is critical to ensuring that science investments and policies align with societal needs. Existing research links science funding to the output of scientific publications but largely leaves out the downstream uses of science and the myriad ways in which investing in science may impact human society. As funders seek to allocate scarce funding resources across a complex research landscape, there is an urgent need for informative and transparent tools that allow for comprehensive assessments and visualization of the impact of funding. Here we present Funding the Frontier (FtF), a visual analysis system for researchers, funders, policymakers, university leaders, and the broad public to analyze multidimensional impacts of funding and make informed decisions regarding research investments and opportunities. The system is built on a massive data collection that connects 7M research grants to 140M scientific publications, 160M patents, 10.9M policy documents, 800K clinical trials, and 5.8M newsfeeds, with 1.8B citation linkages among these entities, systematically linking science funding to its downstream impacts. As such, Funding the Frontier is distinguished by its multifaceted impact analysis framework. The system incorporates diverse impact metrics and predictive models that forecast future investment opportunities into an array of coordinated views, allowing for easy exploration of funding and its outcomes. We evaluate the effectiveness and usability of the system using case studies and expert interviews. Feedback suggests that our system not only fulfills the primary analysis needs of its target users, but the rich datasets of the complex science ecosystem and the proposed analysis framework also open new avenues for both visualization and the science of science research.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Human-Computer Interaction"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation",
+      "key": "ENAAFCLN",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Wu et al._2025_Sci2Pol Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation.pdf",
+      "authors": [
+        "Weimin Wu",
+        "Alexander C. Furnas",
+        "Eddie Yang",
+        "Gefei Liu",
+        "Akhil Pandey Akella",
+        "Xuefeng Song",
+        "Dashun Wang",
+        "Han Liu"
+      ],
+      "date": "2025-09-25",
+      "doi": "10.48550/arXiv.2509.21493",
+      "arxiv_id": "2509.21493",
+      "abstract": "We propose Sci2Pol-Bench and Sci2Pol-Corpus, the first benchmark and training dataset for evaluating and fine-tuning large language models (LLMs) on policy brief generation from a scientific paper. We build Sci2Pol-Bench on a five-stage taxonomy to mirror the human writing process: (i) Autocompletion, (ii) Understanding, (iii) Summarization, (iv) Generation, and (v) Verification. It features 18 tasks in multiple-choice and open-ended formats. Specifically, for the Generation stage, we show that BERTScore and ROUGE scores fail to capture the quality of brief writing, and introduce a new LLM-based evaluation metric aligned with expert judgement. Using this benchmark, we evaluate 13 leading open-source and commercial LLMs to uncover key limitations. To improve LLM performance on brief writing, we curate the Sci2Pol-Corpus for fine-tuning. We start by linking each cited scientific paper to its corresponding policy document, drawn from 5.6 million policy records. This produces 140,000 candidate pairs. We then employ an LLM-as-a-judge to filter high-quality examples, followed by in-context polishing using three expert-written samples as references. This process yields a final set of 639 new pairs. Finally, we fine-tune three models on Sci2Pol-Corpus: LLaMA-3.1-8B, Gemma-12B, and Gemma-27B. Fine-tuning leads to consistent performance improvements across Sci2Pol-Bench. Notably, after fine-tuning, Gemma-27B surpasses the much larger GPT-4o and DeepSeek-V3 (671B). These demonstrate the effectiveness of our corpus in bridging the gap between science and policy.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Computational Engineering, Finance, and Science"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Early career setback and future achievement in professional sports",
+      "key": "IAMMZZPJ",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Maity et al._2025_Early career setback and future achievement in professional sports.pdf",
+      "authors": [
+        "Suman Kalyan Maity",
+        "Yang Wang",
+        "Nima Dehmamy",
+        "Victoria Medvec",
+        "Brian Uzzi",
+        "Dashun Wang"
+      ],
+      "date": "2025-09-29",
+      "doi": "10.1038/s41598-025-17271-z",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Scientific Reports",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Rise of Large Language Models and the Direction and Impact of US Federal Research Funding",
+      "key": "A4C92UH4",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Qian et al._2026_The Rise of Large Language Models and the Direction and Impact of US Federal Research Funding.pdf",
+      "authors": [
+        "Yifan Qian",
+        "Zhe Wen",
+        "Alexander C. Furnas",
+        "Yue Bai",
+        "Erzhuo Shao",
+        "Dashun Wang"
+      ],
+      "date": "2026-01-21",
+      "doi": "10.48550/arXiv.2601.15485",
+      "arxiv_id": "2601.15485",
+      "abstract": "Federal research funding shapes the direction, diversity, and impact of the US scientific enterprise. Large language models (LLMs) are rapidly diffusing into scientific practice, holding substantial promise while raising widespread concerns. Despite growing attention to AI use in scientific writing and evaluation, little is known about how the rise of LLMs is reshaping the public funding landscape. Here, we examine LLM involvement at key stages of the federal funding pipeline by combining two complementary data sources: confidential National Science Foundation (NSF) and National Institutes of Health (NIH) proposal submissions from two large US R1 universities, including funded, unfunded, and pending proposals, and the full population of publicly released NSF and NIH awards. We find that LLM use rises sharply beginning in 2023 and exhibits a bimodal distribution, indicating a clear split between minimal and substantive use. Across both private submissions and public awards, higher LLM involvement is consistently associated with lower semantic distinctiveness, positioning projects closer to recently funded work within the same agency. The consequences of this shift are agency-dependent. LLM use is positively associated with proposal success and higher subsequent publication output at NIH, whereas no comparable associations are observed at NSF. Notably, the productivity gains at NIH are concentrated in non-hit papers rather than the most highly cited work. Together, these findings provide large-scale evidence that the rise of LLMs is reshaping how scientific ideas are positioned, selected, and translated into publicly funded research, with implications for portfolio governance, research diversity, and the long-run impact of science.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Computers and Society",
+        "Computer Science - Digital Libraries",
+        "Physics - Physics and Society"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Unequal effects of the COVID-19 pandemic on scientists",
+      "key": "F3WEP5AD",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Myers et al._2020_Unequal effects of the COVID-19 pandemic on scientists.pdf",
+      "authors": [
+        "Kyle R. Myers",
+        "Wei Yang Tham",
+        "Yian Yin",
+        "Nina Cohodes",
+        "Jerry G. Thursby",
+        "Marie C. Thursby",
+        "Peter Schiffer",
+        "Joseph T. Walsh",
+        "Karim R. Lakhani",
+        "Dashun Wang"
+      ],
+      "date": "2020-07-15",
+      "doi": "10.1038/s41562-020-0921-y",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature Human Behaviour",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Large teams develop and small teams disrupt science and technology",
+      "key": "7XIRFZKK",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Wu et al._2019_Large teams develop and small teams disrupt science and technology.pdf",
+      "authors": [
+        "Lingfei Wu",
+        "Dashun Wang",
+        "James A. Evans"
+      ],
+      "date": "2019-02-21",
+      "doi": "10.1038/s41586-019-0941-9",
+      "arxiv_id": "",
+      "abstract": "",
+      "venue": "Nature",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "SciSciGPT: advancing human–AI collaboration in the science of science",
+      "key": "9NGMRLWU",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Shao et al._2025_SciSciGPT advancing human–AI collaboration in the science of science.pdf",
+      "authors": [
+        "Erzhuo Shao",
+        "Yifang Wang",
+        "Yifan Qian",
+        "Zhenyu Pan",
+        "Han Liu",
+        "Dashun Wang"
+      ],
+      "date": "2025-12-09",
+      "doi": "10.1038/s43588-025-00906-6",
+      "arxiv_id": "",
+      "abstract": "SciSciGPT is an open-source prototype AI collaborator that explores the use of LLM research tools to automate workflows, support diverse analytical approaches and enhance reproducibility in the domain of science of science.",
+      "venue": "Nature Computational Science",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The Empowerment of Science of Science by Large Language Models: New Tools and Methods",
+      "key": "86KWAPVZ",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Liang et al._2025_The Empowerment of Science of Science by Large Language Models New Tools and Methods.pdf",
+      "authors": [
+        "Guoqiang Liang",
+        "Jingqian Gong",
+        "Mengxuan Li",
+        "Gege Lin",
+        "Shuo Zhang"
+      ],
+      "date": "2025-11-19",
+      "doi": "10.48550/arXiv.2511.15370",
+      "arxiv_id": "2511.15370",
+      "abstract": "Large language models (LLMs) have exhibited exceptional capabilities in natural language understanding and generation, image recognition, and multimodal tasks, charting a course towards AGI and emerging as a central issue in the global technological race. This manuscript conducts a comprehensive review of the core technologies that support LLMs from a user standpoint, including prompt engineering, knowledge-enhanced retrieval augmented generation, fine tuning, pretraining, and tool learning. Additionally, it traces the historical development of Science of Science (SciSci) and presents a forward looking perspective on the potential applications of LLMs within the scientometric domain. Furthermore, it discusses the prospect of an AI agent based model for scientific evaluation, and presents new research fronts detection and knowledge graph building methods with LLMs.",
+      "venue": "",
+      "item_type": "preprint",
+      "tags": [
+        "Computer Science - Artificial Intelligence",
+        "Computer Science - Computation and Language"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Visualizing the context of citations referencing papers published by Eugene Garfield: a new type of keyword co-occurrence analysis",
+      "key": "TMS826AC",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Bornmann et al._2018_Visualizing the context of citations referencing papers published by Eugene Garfield a new type of.pdf",
+      "authors": [
+        "Lutz Bornmann",
+        "Robin Haunschild",
+        "Sven E. Hug"
+      ],
+      "date": "2018-02-01",
+      "doi": "10.1007/s11192-017-2591-8",
+      "arxiv_id": "",
+      "abstract": "During Eugene Garfield’s (EG’s) lengthy career as information scientist, he published about 1500 papers. In this study, we use the impressive oeuvre of EG to introduce a new type of bibliometric networks: keyword co-occurrences networks based on the context of citations, which are referenced in a certain paper set (here: the papers published by EG). The citation context is defined by the words which are located around a specific citation. We retrieved the citation context from Microsoft Academic. To interpret and compare the results of the new network type, we generated two further networks: co-occurrence networks which are based on title and abstract keywords from (1) EG’s papers and (2) the papers citing EG’s publications. The comparison of the three networks suggests that papers of EG and citation contexts of papers citing EG are semantically more closely related to each other than to titles and abstracts of papers citing EG. This result accords with the use of citations in research evaluation that is based on the premise that citations reflect the cognitive influence of the cited on the citing publication.",
+      "venue": "Scientometrics",
+      "item_type": "journalArticle",
+      "tags": [
+        "Bibliometrics",
+        "Citation context analysis",
+        "Co-occurrence network",
+        "Eugene Garfield"
+      ],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "Science of science",
+      "key": "H5R4YYCS",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Fortunato et al._2018_Science of science.pdf",
+      "authors": [
+        "Santo Fortunato",
+        "Carl T. Bergstrom",
+        "Katy Börner",
+        "James A. Evans",
+        "Dirk Helbing",
+        "Staša Milojević",
+        "Alexander M. Petersen",
+        "Filippo Radicchi",
+        "Roberta Sinatra",
+        "Brian Uzzi",
+        "Alessandro Vespignani",
+        "Ludo Waltman",
+        "Dashun Wang",
+        "Albert-László Barabási"
+      ],
+      "date": "2018-03-02",
+      "doi": "10.1126/science.aao0185",
+      "arxiv_id": "",
+      "abstract": "The whys and wherefores of SciSci\n            \n              The science of science (SciSci) is based on a transdisciplinary approach that uses large data sets to study the mechanisms underlying the doing of science—from the choice of a research problem to career trajectories and progress within a field. In a Review, Fortunato\n              et al.\n              explain that the underlying rationale is that with a deeper understanding of the precursors of impactful science, it will be possible to develop systems and policies that improve each scientist's ability to succeed and enhance the prospects of science as a whole.\n            \n            \n              Science\n              , this issue p.\n              eaao0185\n            \n          , \n            \n              BACKGROUND\n              The increasing availability of digital data on scholarly inputs and outputs—from research funding, productivity, and collaboration to paper citations and scientist mobility—offers unprecedented opportunities to explore the structure and evolution of science. The science of science (SciSci) offers a quantitative understanding of the interactions among scientific agents across diverse geographic and temporal scales: It provides insights into the conditions underlying creativity and the genesis of scientific discovery, with the ultimate goal of developing tools and policies that have the potential to accelerate science. In the past decade, SciSci has benefited from an influx of natural, computational, and social scientists who together have developed big data–based capabilities for empirical analysis and generative modeling that capture the unfolding of science, its institutions, and its workforce. The value proposition of SciSci is that with a deeper understanding of the factors that drive successful science, we can more effectively address environmental, societal, and technological problems.\n            \n            \n              ADVANCES\n              Science can be described as a complex, self-organizing, and evolving network of scholars, projects, papers, and ideas. This representation has unveiled patterns characterizing the emergence of new scientific fields through the study of collaboration networks and the path of impactful discoveries through the study of citation networks. Microscopic models have traced the dynamics of citation accumulation, allowing us to predict the future impact of individual papers. SciSci has revealed choices and trade-offs that scientists face as they advance both their own careers and the scientific horizon. For example, measurements indicate that scholars are risk-averse, preferring to study topics related to their current expertise, which constrains the potential of future discoveries. Those willing to break this pattern engage in riskier careers but become more likely to make major breakthroughs. Overall, the highest-impact science is grounded in conventional combinations of prior work but features unusual combinations. Last, as the locus of research is shifting into teams, SciSci is increasingly focused on the impact of team research, finding that small teams tend to disrupt science and technology with new ideas drawing on older and less prevalent ones. In contrast, large teams tend to develop recent, popular ideas, obtaining high, but often short-lived, impact.\n            \n            \n              OUTLOOK\n              SciSci offers a deep quantitative understanding of the relational structure between scientists, institutions, and ideas because it facilitates the identification of fundamental mechanisms responsible for scientific discovery. These interdisciplinary data-driven efforts complement contributions from related fields such as scientometrics and the economics and sociology of science. Although SciSci seeks long-standing universal laws and mechanisms that apply across various fields of science, a fundamental challenge going forward is accounting for undeniable differences in culture, habits, and preferences between different fields and countries. This variation makes some cross-domain insights difficult to appreciate and associated science policies difficult to implement. The differences among the questions, data, and skills specific to each discipline suggest that further insights can be gained from domain-specific SciSci studies, which model and identify opportunities adapted to the needs of individual research fields.\n              \n                \n                  The complexity of science.\n                  Science can be seen as an expanding and evolving network of ideas, scholars, and papers. SciSci searches for universal and domain-specific laws underlying the structure and dynamics of science.\n                \n                \n                ILLUSTRATION: NICOLE SAMAY\n              \n            \n          , \n            Identifying fundamental drivers of science and developing predictive models to capture its evolution are instrumental for the design of policies that can improve the scientific enterprise—for example, through enhanced career paths for scientists, better performance evaluation for organizations hosting research, discovery of novel effective funding vehicles, and even identification of promising regions along the scientific frontier. The science of science uses large-scale data on the production of science to search for universal and domain-specific patterns. Here, we review recent developments in this transdisciplinary field.",
+      "venue": "Science",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    },
+    {
+      "title": "The strain on scientific publishing",
+      "key": "MU5B7443",
+      "pdf": true,
+      "pdf_path": "G:\\내 드라이브\\Zotero\\Hanson et al._2024_The strain on scientific publishing.pdf",
+      "authors": [
+        "Mark A. Hanson",
+        "Pablo Gómez Barreiro",
+        "Paolo Crosetto",
+        "Dan Brockington"
+      ],
+      "date": "2024-11-01",
+      "doi": "10.1162/qss_a_00327",
+      "arxiv_id": "",
+      "abstract": "Scientists are increasingly overwhelmed by the volume of articles being published. The total number of articles indexed in Scopus and Web of Science has grown exponentially in recent years; in 2022 the article total was ∼47% higher than in 2016, which has outpaced the limited growth—if any—in the number of practicing scientists. Thus, publication workload per scientist has increased dramatically. We define this problem as “the strain on scientific publishing.” To analyze this strain, we present five data-driven metrics showing publisher growth, processing times, and citation behaviors. We draw these data from web scrapes, and from publishers through their websites or upon request. Specific groups have disproportionately grown in their articles published per year, contributing to this strain. Some publishers enabled this growth by hosting “special issues” with reduced turnaround times. Given pressures on researchers to “publish or perish” to compete for funding, this strain was likely amplified by these offers to publish more articles. We also observed widespread year-over-year inflation of journal impact factors coinciding with this strain, which risks confusing quality signals. Such exponential growth cannot be sustained. The metrics we define here should enable this evolving conversation to reach actionable solutions to address the strain on scientific publishing.",
+      "venue": "Quantitative Science Studies",
+      "item_type": "journalArticle",
+      "tags": [],
+      "review_status": "needs_review"
+    }
+  ],
+  "manual_download": [
+    {
+      "title": "The Burden of Knowledge and the Death of the Renaissance Man",
+      "doi": "10.1111/j.1467-937X.2009.00531.x",
+      "arxiv_id": "",
+      "key": "2EGAPJBT"
+    },
+    {
+      "title": "The Increasing Dominance of Teams in Production of Knowledge",
+      "doi": "10.1126/science.1136099",
+      "arxiv_id": "",
+      "key": "EFQQIXQV"
+    },
+    {
+      "title": "Systematic Inequality and Hierarchy in Faculty Hiring Networks",
+      "doi": "10.1126/sciadv.1400005",
+      "arxiv_id": "",
+      "key": "RVTTPQ3Q"
+    },
+    {
+      "title": "Principles of Scientific Research Team Formation and Evolution",
+      "doi": "10.1073/pnas.1309723111",
+      "arxiv_id": "",
+      "key": "RX2CQBID"
+    },
+    {
+      "title": "A General Theory of Bibliometric and Other Cumulative Advantage Processes",
+      "doi": "10.1002/asi.4630270505",
+      "arxiv_id": "",
+      "key": "GTEMM3HN"
+    },
+    {
+      "title": "Co-Citation Analysis Bibliographic Coupling and Direct Citation: Which Citation Approach Represents the Research Front Most Accurately",
+      "doi": "10.1002/asi.21419",
+      "arxiv_id": "",
+      "key": "I82EVH7J"
+    },
+    {
+      "title": "Design and Update of a Classification System: The UCSD Map of Science",
+      "doi": "10.1371/journal.pone.0039464",
+      "arxiv_id": "",
+      "key": "CTBHFDD7"
+    },
+    {
+      "title": "Collective Credit Allocation in Science",
+      "doi": "10.1073/pnas.1401992111",
+      "arxiv_id": "",
+      "key": "MTWFHQXI"
+    },
+    {
+      "title": "The State of OA: A Large-Scale Analysis of the Prevalence and Impact of Open Access Articles",
+      "doi": "10.7717/peerj.4375",
+      "arxiv_id": "",
+      "key": "JHKFX3DR"
+    },
+    {
+      "title": "The Chaperone Effect in Scientific Publishing",
+      "doi": "10.1073/pnas.1800471115",
+      "arxiv_id": "",
+      "key": "H5HGRRGK"
+    },
+    {
+      "title": "Productivity Prominence and the Effects of Academic Environment",
+      "doi": "10.1073/pnas.1817431116",
+      "arxiv_id": "",
+      "key": "EVE9F4WZ"
+    },
+    {
+      "title": "The Misleading Narrative of the Canonical Faculty Productivity Trajectory",
+      "doi": "10.1073/pnas.1702121114",
+      "arxiv_id": "",
+      "key": "U5FSUNIF"
+    },
+    {
+      "title": "Estimating the Reproducibility of Psychological Science",
+      "doi": "10.1126/science.aac4716",
+      "arxiv_id": "",
+      "key": "X6RTGHEG"
+    },
+    {
+      "title": "Misconduct Accounts for the Majority of Retracted Scientific Publications",
+      "doi": "10.1073/pnas.1212247109",
+      "arxiv_id": "",
+      "key": "5C9RGNNV"
+    },
+    {
+      "title": "Big Names or Big Ideas: Do Peer-Review Panels Select the Best Science Proposals",
+      "doi": "10.1126/science.aaa0185",
+      "arxiv_id": "",
+      "key": "X26BXPM9"
+    },
+    {
+      "title": "Does Science Advance One Funeral at a Time",
+      "doi": "10.1257/aer.20161574",
+      "arxiv_id": "",
+      "key": "PKVD8PCB"
+    },
+    {
+      "title": "Meta-assessment of Bias in Science",
+      "doi": "10.1073/pnas.1618569114",
+      "arxiv_id": "",
+      "key": "HUV25P6F"
+    },
+    {
+      "title": "Superstar Extinction",
+      "doi": "10.1162/qjec.2010.125.2.549",
+      "arxiv_id": "",
+      "key": "EIQV5CWN"
+    },
+    {
+      "title": "The Matthew effect in science funding",
+      "doi": "10.1073/pnas.1719557115",
+      "arxiv_id": "",
+      "key": "R7I96PKH"
+    },
+    {
+      "title": "1,500 scientists lift the lid on reproducibility",
+      "doi": "10.1038/533452a",
+      "arxiv_id": "",
+      "key": "9WI4CET4"
+    },
+    {
+      "title": "A Dynamic Network Measure of Technological Change",
+      "doi": "10.1287/mnsc.2015.2366",
+      "arxiv_id": "",
+      "key": "G3R6KVIM"
+    },
+    {
+      "title": "Networks of Scientific Papers",
+      "doi": "10.1126/science.149.3683.510",
+      "arxiv_id": "",
+      "key": "RV3ME6WG"
+    },
+    {
+      "title": "Collective dynamics of ‘small-world’ networks",
+      "doi": "10.1038/30918",
+      "arxiv_id": "",
+      "key": "5XBNF82V"
+    },
+    {
+      "title": "Why Most Published Research Findings Are False",
+      "doi": "10.1371/journal.pmed.0020124",
+      "arxiv_id": "",
+      "key": "Z2UG8G5F"
+    },
+    {
+      "title": "Making gender diversity work for scientific discovery and innovation",
+      "doi": "10.1038/s41562-018-0433-1",
+      "arxiv_id": "",
+      "key": "BA5RRSD7"
+    },
+    {
+      "title": "Defining and identifying Sleeping Beauties in science",
+      "doi": "10.1073/pnas.1424329112",
+      "arxiv_id": "",
+      "key": "WADDBKVD"
+    },
+    {
+      "title": "A network approach to topic models",
+      "doi": "10.1126/sciadv.aaq1360",
+      "arxiv_id": "",
+      "key": "MGDDRPXK"
+    },
+    {
+      "title": "A bibliometric analysis of bouldering and climbing research articles in the Scopus database",
+      "doi": "10.5281/zenodo.17859553",
+      "arxiv_id": "",
+      "key": "NK265A7W"
+    },
+    {
+      "title": "Mapping Scholarly Impact: Citation Analysis of Commerce Doctoral Dissertations at Maharshi Dayanand University, Rohtak",
+      "doi": "10.5281/zenodo.19138724",
+      "arxiv_id": "",
+      "key": "EIPFN37Q"
+    },
+    {
+      "title": "Dataset: Citation Analysis of ICRC Customary IHL Study Rules (Annex to 'Limits of Creation')",
+      "doi": "10.5281/zenodo.19139621",
+      "arxiv_id": "",
+      "key": "EZ9GZWS3"
+    },
+    {
+      "title": "Quantifying spatial–temporal citation diffusion of individual papers in knowledge space",
+      "doi": "10.1002/asi.70021",
+      "arxiv_id": "",
+      "key": "M5PQSBBE"
+    }
+  ]
+}

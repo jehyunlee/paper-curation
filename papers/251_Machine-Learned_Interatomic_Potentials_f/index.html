@@ -2,233 +2,89 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>251. Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis</title>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
-  :root {
-    --accent: #D63423;
-    --accent-light: #fdf2f1;
-    --accent-border: #f5c6c1;
-    --text: #1a1a1a;
-    --text-muted: #555;
-    --bg: #ffffff;
-    --border: #e0e0e0;
-    --tag-bg: #f4f4f4;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif;
-    font-size: 16px;
-    line-height: 1.8;
-    color: var(--text);
-    background: var(--bg);
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
-  .back {
-    margin-bottom: 1.5rem;
-  }
-  .back a {
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  .back a:hover { text-decoration: underline; }
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-    color: var(--text);
-    border-left: 4px solid var(--accent);
-    padding-left: 0.8rem;
-  }
-  .meta {
-    background: var(--accent-light);
-    border: 1px solid var(--accent-border);
-    border-radius: 6px;
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-  }
-  .meta span { margin-right: 1.2rem; }
-  .mode-badge {
-    display: inline-block;
-    background: #fff3cd;
-    border: 1px solid #ffc107;
-    color: #856404;
-    font-size: 0.78rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
-  }
-  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-  h2 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin: 2rem 0 0.75rem;
-    padding-bottom: 0.3rem;
-    border-bottom: 2px solid var(--accent-border);
-  }
-  p { margin-bottom: 0.9rem; }
-  ul { padding-left: 1.4rem; margin-bottom: 0.9rem; }
-  li { margin-bottom: 0.35rem; }
-  .figure-block {
-    margin: 1.5rem 0;
-    text-align: center;
-  }
-  .figure-block img {
-    max-width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-  }
-  .figure-block figcaption {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 0.5rem;
-    font-style: italic;
-  }
-  .originality-item {
-    background: var(--tag-bg);
-    border-left: 3px solid var(--accent);
-    padding: 0.6rem 0.9rem;
-    margin-bottom: 0.6rem;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.9rem;
-  }
-  .tags {
-    display: inline-flex;
-    gap: 0.3rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.3rem;
-  }
-  .tag {
-    background: var(--accent);
-    color: white;
-    font-size: 0.72rem;
-    padding: 0.1rem 0.45rem;
-    border-radius: 3px;
-    font-weight: 500;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    font-size: 0.95rem;
-  }
-  th {
-    background: var(--accent);
-    color: white;
-    padding: 0.5rem 0.8rem;
-    text-align: left;
-    font-weight: 600;
-  }
-  td {
-    padding: 0.45rem 0.8rem;
-    border-bottom: 1px solid var(--border);
-  }
-  tr:nth-child(even) td { background: #fafafa; }
-  .score { font-weight: 700; color: var(--accent); }
-  .sogang {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: var(--accent-light);
-    border-radius: 6px;
-    font-size: 0.92rem;
-    border: 1px solid var(--accent-border);
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 1.5rem 0 0.6rem; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; color: #D63423; }
 </style>
 </head>
 <body>
-
-<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
-
 <h1>Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis</h1>
-
-<div class="meta">
-  <span><strong>저자</strong>: M. Polovinkin, N. Rybin, D. Maksimov, F. Valiev, A. Khudorozhkova, M. Laptev, A. Rudenko, A. Shapeev</span>
-  <span><strong>날짜</strong>: 2026-03-26</span>
-  <span><strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25330" target="_blank">2603.25330v1</a></span>
-</div>
-<div class="mode-badge">리뷰 모드: Web-only (abstract)</div>
-
+<blockquote><p><strong>저자</strong>: M. Polovinkin, N. Rybin, D. Maksimov, F. Valiev, A. Khudorozhkova, M. Laptev, A. Rudenko, A. Shapeev | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: — | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25330" target="_blank">2603.25330v1</a></p></blockquote>
+<blockquote><p><strong>리뷰 모드</strong>: Web-only (abstract)</p></blockquote>
 <hr>
-
 <h2>Essence</h2>
-<p>칼슘 전해 장치 설계에 필요한 용융 금속-염 시스템(Ca-Cu 합금 및 CaCl\(_2\)-KCl 전해질)의 열역학·수송 특성을, DFT 기반으로 훈련된 Moment Tensor Potentials(MTP)을 이용한 분자동역학 시뮬레이션으로 실험을 대체하여 정확하게 예측할 수 있음을 보인다. 밀도, 점도, 확산 계수 등 주요 물성치를 고온 실험 없이 효율적으로 산출함으로써 칼슘 전해 공정 최적화의 비용과 시간을 크게 줄일 수 있다.</p>
-
-<div class="figure-block">
-  <figure>
-    <img src="figures/fig1.png" alt="Figure 1">
-    <figcaption>Figure 1: 논문의 핵심 연구 흐름 — DFT 데이터 기반 MTP 훈련부터 MD 시뮬레이션을 통한 물성 예측까지의 워크플로우</figcaption>
-  </figure>
-</div>
-
+<p>칼슘 전해 장치 설계에 필요한 용융 금속-염 시스템(Ca-Cu 합금 및 CaCl$_2$-KCl 전해질)의 열역학·수송 특성을, DFT 기반으로 훈련된 Moment Tensor Potentials(MTP)을 이용한 분자동역학 시뮬레이션으로 실험을 대체하여 정확하게 예측할 수 있음을 보인다. 밀도, 점도, 확산 계수 등 주요 물성치를 고온 실험 없이 효율적으로 산출함으로써 칼슘 전해 공정 최적화의 비용과 시간을 크게 줄일 수 있다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"></div>
+<p>*Figure 1: 논문의 핵심 연구 흐름 — DFT 데이터 기반 MTP 훈련부터 MD 시뮬레이션을 통한 물성 예측까지의 워크플로우*</p>
+<hr>
 <h2>Originality (Abstract 기반)</h2>
-<div class="originality-item">
-  <div class="tags"><span class="tag">context</span></div>
-  <div>"The design of efficient electrolysis devices for pure metal production requires accurate data on the properties of the melts used in the process."</div>
-</div>
-<div class="originality-item">
-  <div class="tags"><span class="tag">authorship</span><span class="tag">approach</span></div>
-  <div>"This work focuses on two key systems for calcium production: the molten Ca-Cu alloy and the CaCl\(_2\)-KCl electrolyte."</div>
-</div>
-<div class="originality-item">
-  <div class="tags"><span class="tag">authorship</span><span class="tag">finding</span><span class="tag">result</span><span class="tag">learned</span></div>
-  <div>"High-temperature experiments are often expensive and time-consuming; however, we demonstrate that molecular dynamics (MD) simulations driven by machine-learned Moment Tensor Potentials (MTPs), trained on highly accurate density functional theory (DFT) calculations, can efficiently and accurately predict thermodynamic and transport properties such as density, viscosity, and diffusion coefficients for these systems."</div>
-</div>
-
+<ul>
+<li>[context] "The design of efficient electrolysis devices for pure metal production requires accurate data on the properties of the melts used in the process."</li>
+<li>[authorship, approach] "This work focuses on two key systems for calcium production: the molten Ca-Cu alloy and the CaCl$_2$-KCl electrolyte."</li>
+<li>[authorship, finding, result, learned] "High-temperature experiments are often expensive and time-consuming; however, we demonstrate that molecular dynamics (MD) simulations driven by machine-learned Moment Tensor Potentials (MTPs), trained on highly accurate density functional theory (DFT) calculations, can efficiently and accurately predict thermodynamic and transport properties such as density, viscosity, and diffusion coefficients for these systems."</li>
+</ul>
+<hr>
 <h2>How (방법론)</h2>
 <ul>
-  <li>고정밀 DFT 계산으로 훈련 데이터 생성</li>
-  <li>Moment Tensor Potentials(MTP) 모델을 DFT 데이터에 학습</li>
-  <li>훈련된 MTP로 분자동역학(MD) 시뮬레이션 수행</li>
-  <li>대상 시스템: 용융 Ca-Cu 합금 + CaCl\(_2\)-KCl 전해질</li>
-  <li>예측 물성: 밀도, 동점도(viscosity), 확산 계수(diffusion coefficients)</li>
+<li>고정밀 DFT 계산으로 훈련 데이터 생성</li>
+<li>Moment Tensor Potentials(MTP) 모델을 DFT 데이터에 학습</li>
+<li>훈련된 MTP로 분자동역학(MD) 시뮬레이션 수행</li>
+<li>대상 시스템: 용융 Ca-Cu 합금 + CaCl$_2$-KCl 전해질</li>
+<li>예측 물성: 밀도, 동점도(viscosity), 확산 계수(diffusion coefficients)</li>
 </ul>
-
+<hr>
 <h2>Why (중요성)</h2>
 <ul>
-  <li>칼슘 전해를 위한 용융 시스템 물성 데이터는 효율적 전해 장치 설계의 전제 조건</li>
-  <li>고온 실험은 비용이 크고 시간이 많이 소요됨</li>
-  <li>ML 포텐셜 기반 MD는 DFT 수준의 정확도를 실험 비용 없이 제공</li>
-  <li>순수 금속 생산(칼슘 제련) 공정 최적화에 직접 기여</li>
+<li>칼슘 전해를 위한 용융 시스템 물성 데이터는 효율적 전해 장치 설계의 전제 조건</li>
+<li>고온 실험은 비용이 크고 시간이 많이 소요됨</li>
+<li>ML 포텐셜 기반 MD는 DFT 수준의 정확도를 실험 비용 없이 제공</li>
+<li>순수 금속 생산(칼슘 제련) 공정 최적화에 직접 기여</li>
 </ul>
-
+<hr>
 <h2>Limitation</h2>
 <ul>
-  <li>Abstract 기반으로 정량적 정확도 수치(실험 대비 오차) 미확인</li>
-  <li>MTP 훈련 데이터의 커버리지 범위(온도, 조성 범위) 불명확</li>
-  <li>다른 금속-염 시스템으로의 전이 가능성(transferability) 미검증</li>
+<li>Abstract 기반으로 정량적 정확도 수치(실험 대비 오차) 미확인</li>
+<li>MTP 훈련 데이터의 커버리지 범위(온도, 조성 범위) 불명확</li>
+<li>다른 금속-염 시스템으로의 전이 가능성(transferability) 미검증</li>
 </ul>
-
+<hr>
 <h2>Further Study</h2>
 <ul>
-  <li>다양한 전해질 조성(다성분 시스템)으로 MTP 적용 확장</li>
-  <li>전기화학적 반응 경로 시뮬레이션과의 통합</li>
-  <li>실험 검증을 통한 MTP 예측 정확도의 체계적 정량화</li>
+<li>다양한 전해질 조성(다성분 시스템)으로 MTP 적용 확장</li>
+<li>전기화학적 반응 경로 시뮬레이션과의 통합</li>
+<li>실험 검증을 통한 MTP 예측 정확도의 체계적 정량화</li>
 </ul>
-
+<hr>
 <h2>평가</h2>
 <table>
-  <thead><tr><th>항목</th><th>점수</th></tr></thead>
-  <tbody>
-    <tr><td>Novelty</td><td class="score">3/5</td></tr>
-    <tr><td>Technical Soundness</td><td class="score">4/5</td></tr>
-    <tr><td>Significance</td><td class="score">4/5</td></tr>
-    <tr><td>Clarity</td><td class="score">4/5</td></tr>
-    <tr><td>Overall</td><td class="score">4/5</td></tr>
-  </tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
 </table>
-<div class="sogang">
-  <strong>총평</strong>: DFT 품질의 ML 포텐셜을 칼슘 전해 용융 시스템에 적용하여 고온 실험을 대체하는 실용적 접근으로, 산업적 파급력이 크나 방법론 자체의 독창성은 기존 MTP 프레임워크의 응용 수준에 머문다.
-</div>
-
+<p><strong>총평</strong>: DFT 품질의 ML 포텐셜을 칼슘 전해 용융 시스템에 적용하여 고온 실험을 대체하는 실용적 접근으로, 산업적 파급력이 크나 방법론 자체의 독창성은 기존 MTP 프레임워크의 응용 수준에 머문다.</p>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

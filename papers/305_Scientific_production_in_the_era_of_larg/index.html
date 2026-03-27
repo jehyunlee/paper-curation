@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scientific Production in the Era of Large Language Models</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1A56B0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1>Scientific Production in the Era of Large Language Models</h1>
+<blockquote>
+<p><strong>저자</strong>: Keigo Kusumegi, Xinyu Yang, Paul Ginsparg, Mathijs de Vaan, Toby Stuart, Yian Yin | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: Science | <strong>DOI</strong>: 10.1126/science.adw3000 | <strong>arXiv</strong>: -
+<strong>리뷰 모드</strong>: PDF</p>
+</blockquote>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>LLM은 과학 생산성을 높이는가, 아니면 과학의 질을 떨어뜨리는가? 이 논문은 210만 건의 프리프린트, 2만 8천 건의 동료 심사 보고서, 2억 4,600만 건의 온라인 접근 기록을 분석하여 <strong>LLM 채택 저자는 논문 생산량이 23.7~89.3% 증가하지만, 글쓰기 복잡성은 높아지고 실질적 내용은 오히려 빈약해지는 역설</strong>이 나타남을 밝혔다. 또한 LLM 채택자들은 더 다양한 선행 연구(책, 최신·비인용 문헌)를 참고하는 것으로 나타났다.</p>
+<p><img alt="Figure 1" src="figures/fig1.png" />
+<em>Figure 1: LLM 채택 여부 탐지 방법론과 주요 분석 프레임워크 — arXiv, bioRxiv, SSRN 세 데이터셋 기반</em></p>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li><strong>rule_base_novelty</strong>: LLM 사용이 과학 생산성·품질·다양성에 미치는 영향을 다중 대규모 데이터셋으로 동시 분석한 최초 연구</li>
+<li><strong>rule_base_finding</strong>: LLM 채택 후 생산성 23.7~89.3% 증가, 그러나 내용 수준은 하락 ("linguistically complex but substantively underwhelming")</li>
+<li><strong>rule_base_result</strong>: LLM 채택자의 인용 출처가 더 다양해짐 — 책, 젊고 덜 인용된 논문 포함</li>
+</ul>
+<div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터</strong>: arXiv(120만), bioRxiv(22.1만), SSRN(67.6만) 프리프린트 (2018년 1월~2024년 6월)</li>
+<li><strong>LLM 탐지</strong>: ChatGPT 이전 인간 작성 텍스트 vs. GPT-3.5 재작성 텍스트의 토큰 분포 비교 → 채택 임계값 설정</li>
+<li><strong>생산성 분석</strong>: 첫 LLM 채택 전후 월별 논문 제출 수 변화 (diff-in-differences 방식)</li>
+<li><strong>품질 평가</strong>: 동료 심사 점수, 온라인 접근 패턴, 언어적 복잡성 지표</li>
+</ul>
+<div class="section-box"><h2>Why (중요성)</h2>
+<p>LLM이 과학 글쓰기를 지원하면서 표면적 복잡성은 높이지만 실질적 기여는 줄이는 패턴은 저널, 연구비 기관, 테뉴어 위원회가 논문 평가 기준을 재설계해야 함을 시사한다. AI 시대 과학 생산 시스템 전반의 재고를 촉구하는 경고이다.</p>
+<div class="section-box"><h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>LLM 탐지 알고리즘이 완벽하지 않으며 오분류 가능성 존재</li>
+<li>핵심 AI 하위 분야 논문은 분석에서 제외 (AI 연구 폭발 효과 통제 목적)</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>논문의 "실질적 내용 수준"을 어떻게 측정하는지 방법론적 불명확성</li>
+<li>LLM 사용이 연구자의 독창적 사고를 대체하는지, 보조하는지 인과 구분 어려움</li>
+</ul>
+<div class="section-box"><h2>Further Study</h2>
+<ul>
+<li>LLM 사용 공시 의무화 및 탐지 도구의 정확도 향상</li>
+<li>LLM 채택 효과의 분야별·경력 단계별 이질성 분석</li>
+</ul>
+<div class="section-box"><h2>평가</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>점수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Technical Soundness</td>
+<td>4/5</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>Overall</td>
+<td>5/5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>총평</strong>: LLM 시대 과학 생산의 구조적 변화를 처음으로 대규모 실증한 시의적절한 연구로, AI 도구가 과학의 질과 다양성에 미치는 영향을 다층적으로 분석했다.</p></div></div></div></div></div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+</body>
+</html>
