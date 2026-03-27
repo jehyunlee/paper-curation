@@ -1,0 +1,53 @@
+## Category Timeline: Benchmarks & Evaluation (2023–2026)
+
+### SUB-THEME A: Core Scientific Problem Solving & Discovery (2023→2026, growing)
+Branches into:
+- **High-Level Scientific Reasoning** (2023–2024): Initial benchmarks like SciBench focus on evaluating college-level scientific problem-solving abilities and complex reasoning. This also includes assessing LLMs for generating novel research ideas and AI-for-Science readiness from scientific data, exemplified by SciHorizon.
+- **Domain-Specific Discovery & Experimentation** (2025–2026): Advances to scenario-grounded benchmarks evaluating LLMs across biology, chemistry, materials, and physics. MolQuest emerges to specifically assess multi-stage abductive reasoning and experimental interaction for chemical structure elucidation tasks.
+Interaction: This sub-theme FEED INTO "Agentic AI & Tool-Use Benchmarking" by defining the complex, multi-faceted scientific challenges that necessitate autonomous solutions.
+
+### SUB-THEME B: Agentic AI & Tool-Use Benchmarking (2024→2026, growing)
+Branches into:
+- **Multi-Step Agentic Behavior** (2024–2025): Dedicated platforms such as SciAgentGym benchmark multi-step scientific tool-use in LLM agents. ScienceAgentBench offers rigorous assessment for language agents in data-driven scientific discovery, complemented by Aviary as an extensible gymnasium for language agents.
+- **Tool Integration & Stability** (2024–2025): Initial agent tool-use evaluations are consolidated by StableToolBench in 2025, addressing instability issues in large-scale benchmarking of tool learning through virtual API servers and stable evaluation systems.
+- **End-to-End Scientific Agents** (2024–2026): Benchmarks like AIRS-Bench focus on frontier AI research science agents. Vending-Bench addresses long-term coherence for autonomous agents, while MedAgentGym provides a scalable environment for code-centric biomedical research agents. ResearchGym aims for end-to-end evaluation of LLM agents across the full research lifecycle (hypothesis generation, experiment design, implementation, evaluation) by 2026.
+Interaction: This sub-theme SPAWN from the growing demand to automate "Core Scientific Problem Solving & Discovery" and heavily UTILIZE capabilities from "Code Generation & Software Engineering Tasks". It directly ENABLE new levels of complex scientific automation.
+
+### SUB-THEME C: General AI System Utility & Trustworthiness (2024→2025, stable)
+Branches into:
+- **Human-AI Performance Benchmarking** (2024): Multiple studies directly compare LLM performance against human capabilities, such as LLMs Outperform Outsourced Human Coders on complex textual analysis and ChatGPT Outperforms Crowd Workers for text-annotation tasks, while also identifying areas where Best humans still outperform artificial intelligence in creative discovery.
+- **Trustworthiness & Academic Support** (2024–2025): SciTrust evaluates the trustworthiness of Large Language Models. RelevAI-Reviewer benchmarks AI reviewers for survey paper relevance, and Paper2Web introduces a multi-dimensional evaluation framework for assessing academic papers.
+- **Automated Tool Evaluation** (2024): This includes a practical evaluation of general AutoML tools for various classification problems, demonstrating a broader scope of AI system assessment.
+Interaction: This sub-theme ENABLE the development and evaluation of language models for both "Core Scientific Problem Solving & Discovery" and "Agentic AI & Tool-Use Benchmarking" by assessing foundational LLM capabilities and trustworthiness.
+
+### SUB-THEME D: Code Generation & Software Engineering Tasks (2024→2025, stable)
+Branches into:
+- **Scientific Code Production** (2024–2025): Benchmarks like SciCode, curated by scientists, focus on research coding. MedAgentGym further supports code-centric biomedical research, emphasizing an agent's ability to generate and utilize code within scientific contexts.
+- **Real-World Software Development** (2024): SWE-bench specifically evaluates if Language Models can resolve real-world GitHub issues, highlighting their practical utility in software engineering scenarios.
+Interaction: This sub-theme FEED INTO "Agentic AI & Tool-Use Benchmarking" by providing essential capabilities for tool interaction and the implementation of scientific experiments.
+
+### CROSS-CUTTING CONNECTIONS
+- The advancements in "General AI System Utility & Trustworthiness" through LLM evaluation significantly INFORM the design and foundational capabilities of agents within "Agentic AI & Tool-Use Benchmarking" and the core problem-solving approaches in "Core Scientific Problem Solving & Discovery".
+- The rigorous coding and software engineering evaluations within "Code Generation & Software Engineering Tasks" directly bolster the practical execution and tool-use abilities of agents within "Agentic AI & Tool-Use Benchmarking".
+- The increasingly complex problems identified in "Core Scientific Problem Solving & Discovery" act as the ultimate testbed, demanding integrated solutions from both "Agentic AI & Tool-Use Benchmarking" and advanced code generation capabilities.
+
+### KEY MILESTONES (annotation boxes)
+- **2024: Agentic AI Benchmarking Boom** — Multiple dedicated benchmarks such as AIRS-Bench, SciAgentGym, ScienceAgentBench, and Aviary emerge, signaling a critical shift towards rigorously evaluating autonomous AI in scientific and tool-use contexts.
+- **2024: Human-AI Performance Frontier Defined** — A flurry of papers, including LLMs Outperform Outsourced Human Coders, ChatGPT Outperforms Crowd Workers, and Best humans still outperform AI, collectively establish the immediate capabilities and limitations of LLMs against human performance across diverse tasks.
+- **2025: Stable & Scalable Agent Tool-Use** — StableToolBench highlights the growing recognition and need for robust, reliable, and large-scale evaluation of AI agent interaction with external tools, directly addressing previous instability issues in the field.
+- **2026: End-to-End Research Agent Evaluation** — ResearchGym marks a significant ambition to evaluate LLM agents across the entire scientific research lifecycle, from initial hypothesis generation and experimental design to implementation and final evaluation.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ Core Scientific Problem Solving & Discovery (2023) | ▶ Agentic AI & Tool-Use Benchmarking (2024) | ▶ General AI System Utility & Trustworthiness (2024) | ▶ Code Generation & Software Engineering Tasks (2024)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- ⚠️ NEVER use color names as text labels (no "blue", "green", "teal", "coral" etc.)
+- Band width should vary to suggest relative activity (wider = more active)

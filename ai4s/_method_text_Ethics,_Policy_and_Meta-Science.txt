@@ -1,0 +1,47 @@
+## Category Timeline: Ethics, Policy & Meta-Science (2015–2026)
+
+### SUB-THEME A: Open Science & Scholarly Communication (2015→2024, declining towards new focus)
+Branches into:
+- **"Evolving Open Access Models"** (2015–2024): Early efforts to disrupt subscription journal models ("Disrupting the subscription journals' business model"), case studies on OA conversion (e.g., 노르웨이 인문사회과학(SSH) 분야, analyzed with Bayesian Structural Time Series (BSTS) model), discussions on discipline-specific practices, and annual reviews of OA progress (e.g., "A year in review: open access at OUP").
+- **"Scholarly Discovery Platforms"** (2024–2024): Comparative analyses of academic search engines and their potential dominance (e.g., "Google Scholar to Overshadow Them All?").
+- **"AI in Peer Review & Publication Integrity"** (2024–2024): Addresses concerns and analyses regarding AI's role in peer review ("AI is Transforming Peer Review", "Is Your Paper Being Reviewed by an LLM?"), ethical implications of AI authorship ("Is It OK for AI to Write Science Papers?"), and the potential for Natural Language Processing (NLP) to assist peer review ("What Can Natural Language Processing Do for Peer Review?").
+Interaction: "Evolving Open Access Models" FEED INTO "AI in Peer Review & Publication Integrity" as the shift to open science creates new contexts and challenges for AI integration into publishing workflows. This sub-theme's initial scope on OA gradually MERGE INTO the broader impact of AI on scientific communication.
+
+### SUB-THEME B: Impact of AI on Scientific Workflows & Cognition (2023→2026, growing)
+Branches into:
+- **"Generative AI in Research Practice"** (2023–2024): Rapid exploration of ChatGPT's influence in education and science ("ChatGPT has entered the classroom", "ChatGPT and science"), practical applications and risks for knowledge workers (e.g., "Generative AI Uses and Risks for Knowledge Workers in a Science Organi" at Argonne National Laboratory), and surveys on Large Language Model (LLM) usage as research tools ("LLMs as Research Tools: A Large Scale Survey"). Includes best practices for AI use in writing scientific manuscripts ("Best Practices for Using AI When Writing Scientific Manuscripts: Cauti").
+- **"Productivity, Creativity & Cognitive Effects"** (2024–2024): Detailed analyses of the paradox where AI tools expand individual scientists' impact but potentially contract collective scientific inquiry ("Artificial intelligence tools expand scientists' impact but contract s"), productivity assessments of AI assistants (e.g., "Neural Code Completion"), and cognitive impacts such as the "Accumulation of Cognitive Debt when Using an AI" (ChatGPT).
+- **"AI as Thought Partner vs. Tool"** (2024–2024): Conceptual discussions advocating for the design of AI as "thought partners" rather than mere "tools for thought" ("Building Machines That Learn and Think with People").
+Interaction: "Generative AI in Research Practice" FEED INTO "Productivity, Creativity & Cognitive Effects" as the widespread adoption of AI tools naturally leads to assessments of their quantitative and qualitative impacts on researchers. This entire sub-theme SPAWNS "AI in Peer Review & Publication Integrity" (SUB-THEME A) as the widespread use of AI in writing directly raises questions about its role in the publishing process.
+
+### SUB-THEME C: Governance, Ethics & Future of AI in Science (2023→2026, growing)
+Branches into:
+- **"Foundational Frameworks & Agendas"** (2023–2024): Initial calls for an "Emerging Agenda" for AI for Science, developing conceptual bases for transforming research ("Towards AI for Science: Developing a Conceptual Basis for Transforming"), and bridging data to wisdom. Also includes general discussions on AI's transformative power and the need to "tame it" ("AI will transform science — now researchers must tame it").
+- **"AI Agent Reliability & Safety"** (2024–2025): Focus on building trustworthy and robust AI systems, including establishing a "Science of AI Agent Reliability" and comprehensive reports on the future of AI research, such as the AAAI Presidential Panel Report on the Future of AI Research (which includes 17 key areas identified by 24 AI researchers and a 475-community survey).
+- **"Integrity, Inventorship & Human Oversight"** (2024–2026): Addresses challenges such as detecting AI-generated application materials ("Admissions in the Age of AI"), ensuring data integrity in AI-accelerated fields (e.g., "Data integrity in materials science in the era of AI" discussing AI-generated microscopy images), and validating human inventorship in AI-augmented discovery ("Method and Platform for Validating Human Inventorship in AI-Augmented"). This also encompasses the "Social Science of AI" surveying AI's impact on society.
+Interaction: "Foundational Frameworks & Agendas" ENABLE the subsequent development of specific research directions and policies within "AI Agent Reliability & Safety" and "Integrity, Inventorship & Human Oversight". The widespread "Impact of AI on Scientific Workflows & Cognition" (SUB-THEME B) FEED INTO this sub-theme, particularly "Integrity, Inventorship & Human Oversight," by highlighting the urgent need for ethical guidelines and governance structures.
+
+### CROSS-CUTTING CONNECTIONS
+- The pervasive integration of Large Language Models (LLMs) discussed in "Generative AI in Research Practice" (SUB-THEME B) directly RESPOND TO the concerns raised in "AI in Peer Review & Publication Integrity" and "Integrity, Inventorship & Human Oversight" (SUB-THEME C), necessitating policy and detection methods for AI-generated content.
+- Insights from "Productivity, Creativity & Cognitive Effects" (SUB-THEME B) such as the paradox of individual gain versus collective contraction, INFORM the broader policy discussions within "Foundational Frameworks & Agendas" (SUB-THEME C) for shaping the future of AI in science.
+
+### KEY MILESTONES (annotation boxes)
+- **2015: Open Access Disruption Call** — An early and strong articulation for fundamentally changing scholarly publishing models with "Disrupting the subscription journals' business model for the necessary".
+- **2023: Generative AI Mainstream Adoption** — The advent of tools like ChatGPT rapidly shifts the research focus, prompting extensive discussions on its direct impact on scientific workflows and education ("ChatGPT has entered the classroom", "ChatGPT and science").
+- **2024: Focus on AI-Augmented Human Science** — Numerous studies emerge, deeply exploring the nuanced interplay between AI and human scientists, addressing productivity paradoxes, cognitive impacts, and ethical guidelines for AI-assisted research and writing.
+- **2026: Anticipating AI Integrity Crises** — Forward-looking research begins to systematically analyze and propose solutions for critical future challenges like data integrity in AI-generated scientific content and validating human inventorship in AI-augmented discovery.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- ⚠️ NEVER use color names as text labels (no "blue", "green", "teal", "coral" etc.)
+- Band width should vary to suggest relative activity (wider = more active)

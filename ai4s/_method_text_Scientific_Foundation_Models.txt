@@ -1,46 +1,60 @@
-## Category Timeline: Scientific Foundation Models
+## Category Timeline: Scientific Foundation Models (2018–2026)
 
-### SUB-THEME A: Scientific Language Pretraining & Knowledge Integration (2018→2024, CONVERGING)
+### SUB-THEME A: Foundation Model Genesis & Scientific Text Adaptation (2018→2024, stable)
 Branches into:
-- **"General-to-Scientific Adaptation"** (2018–2019): Transition from general-purpose bidirectional encoders like **BERT** to domain-specific models like **SciBERT**, which utilized 1.14M scientific papers to refine vocabulary for specialized nomenclature.
-- **"Non-Parametric Knowledge Retrieval"** (2020–2023): Integration of external knowledge bases through **Retrieval-Augmented Generation (RAG)**, combining BART’s parametric memory with Wikipedia-based dense vector indices to reduce hallucinations in knowledge-intensive tasks.
-- **"Large-Scale Scientific Synthesis"** (2022–2024): Development of massive models like **Galactica**, designed to store, combine, and reason over 48 million scientific papers, textbooks, and protein sequences as a unified knowledge interface.
-- **"Multimodal Data Foundations"** (2024–2025): A shift toward data-centric synthesis as seen in **A Survey of Scientific Large Language Models: From Data Foundations to Discovery**, focusing on how scientific language extends beyond text into chemical strings and biological sequences.
-Interaction: FEEDS Sub-theme B by providing the linguistic and structural backbone for domain-specific property prediction; ENABLES Sub-theme C through the development of reasoning capabilities.
+- **"General Purpose Language Models"** (2018–2018): The foundational architecture exemplified by BERT, which established pre-training and bidirectional contextual understanding.
+- **"Domain-Specific Language Models"** (2024–2024): The initial adaptation of general LLM architectures to scientific corpora, as seen with SciBERT and Galactica, enhancing performance on scientific text.
+Interaction: This sub-theme **FEEDS INTO** all other sub-themes by providing the core architectural and methodological paradigms. It **ENABLES** the development of enhanced capabilities and domain-specific applications.
 
-### SUB-THEME B: Domain-Specific Discovery & Material Intelligence (2022→2026, ACCELERATING)
+### SUB-THEME B: Enhancing Foundation Model Capabilities (2023→2026, growing)
 Branches into:
-- **"Chemical & Molecular Foundation Models"** (2022–2024): Systematic organization of models for property prediction and molecular design, as detailed in **A Perspective on Foundation Models in Chemistry**.
-- **"Materials Discovery Frameworks"** (2024–2025): Application of large-scale pretraining to crystal structures and material properties, highlighted in **Foundation Models for Materials Discovery -- Current State and Future Directions**.
-- **"Environmental & Earth Science Modeling"** (2025–2026): Expansion of foundation models into forward prediction and data assimilation for climate and ecology, as explored in **Foundation Models for Environmental Science**.
-- **"Cross-Domain Biological Synthesis"** (2024–2025): Methodical delineation of "scientific language" within biological and chemical domains to bridge the gap between raw data and actionable wisdom, as seen in **Scientific Large Language Models: A Survey on Biological & Chemical Domains**.
-Interaction: RESPONDS to Sub-theme A by applying language architectures to non-textual data; MERGES with Sub-theme C to automate the experimental validation of discovered materials.
+- **"Tool Integration & Augmentation"** (2023–2024): Focus on empowering language models with external functionalities, exemplified by Toolformer learning to use calculators and search engines, and the development of Retrieval-Augmented Generation (RAG) for knowledge-intensive tasks.
+- **"Discovery Beyond Training Data"** (2026–2026): Methods to overcome the limitations of pre-trained models by expanding discovery spaces beyond narrow training data, as seen with Verifier-Constrained Flow Expansion.
+Interaction: This sub-theme **RESPONDS TO** the inherent limitations of pure language modeling and **ENABLES** more reliable, accurate, and precise domain-specific applications. It **FEEDS INTO** the methodologies for scientific discovery.
 
-### SUB-THEME C: Autonomous Research Agents & Lifecycle Automation (2023→2026, EXPANDING)
+### SUB-THEME C: Domain-Specific Scientific Applications (2024→2025, growing)
 Branches into:
-- **"Self-Taught Tool Augmentation"** (2023–2024): Models learning to use external APIs (calculators, search engines) via self-supervised methods, pioneered by **Toolformer**.
-- **"Scientific Lifecycle Orchestration"** (2024–2025): Systematic automation of the entire research pipeline—from hypothesis generation to experimental execution—as categorized in **AI4Research** and **LLM4SR**.
-- **"AI-Assisted Scientific Transformation"** (2025–2026): Curated overview of core techniques for AI-driven discovery, focusing on the shift from human-led to AI-augmented science in **Transforming Science with Large Language Models**.
-- **"Case-Driven Research Acceleration"** (2024–2025): Practical deployment of frontier models like **Gemini** to accelerate real-world scientific workflows through case studies in diverse disciplines.
-Interaction: SPAWNS Sub-theme D by creating a demand for high-performance, distributed infrastructure to run autonomous research loops.
+- **"Chemistry & Materials Science"** (2024–2025): Application of foundation models for tasks like materials discovery, property prediction, and synthesis, discussed in "A Perspective on Foundation Models in Chemistry" and "Foundation Models for Materials Discovery" (both 2024 and 2025 papers).
+- **"Environmental Science"** (2025–2025): Exploration of foundation models for forward prediction, data generation, data assimilation, and downscaling in environmental contexts, as surveyed in "Foundation Models for Environmental Science".
+- **"General Scientific Research Acceleration"** (2024–2024): Demonstrations of how foundation models, such as Gemini, can accelerate various scientific research workflows through case studies.
+Interaction: This sub-theme **CONSUMES** foundational models from Sub-theme A and leverages enhanced capabilities from Sub-theme B. It **INFORMS** the research directions and evaluation criteria discussed in Survey & Future Outlook.
 
-### SUB-THEME D: Advanced Generative Architectures & Infrastructure (2025→2026, EMERGING)
+### SUB-THEME D: Survey, Conceptualization & Future Outlook (2024→2025, growing)
 Branches into:
-- **"Verifier-Constrained Flow Expansion"** (2026–2026): Overcoming the density limitations of diffusion models by using external verifiers to explore valid design spaces beyond training data, as seen in **Verifier-Constrained Flow Expansion for Discovery**.
-- **"Cross-Facility Federated Learning"** (2026–2026): Scaling foundation models across distributed scientific facilities while maintaining data privacy, as proposed in **Scalable Cross-Facility Federated Learning**.
-- **"Scientific Parallelism Techniques"** (2026–2026): Engineering breakthroughs in GPU parallelism specifically optimized for the unique computational demands of scientific LLMs, detailed in **From GPU Engineering to Scientific Discovery**.
-- **"Generative AI Era Consolidation"** (2025–2026): Comprehensive reviews of the foundation model era, synthesizing the transition from predictive to generative paradigms in **Generative AI and the Foundation Model Era**.
-Interaction: ENABLES the scaling of all previous sub-themes by providing the necessary computational efficiency and architectural robustness.
+- **"Early Landscape & Cross-Domain Surveys"** (2024–2024): Initial comprehensive reviews mapping the nascent field of scientific foundation models, including papers like "Generative AI and the Foundation Model Era," "AI4Research," "LLM4SR," and surveys on "Scientific Large Language Models" focusing on biological, chemical, cross-field, and cross-modal applications.
+- **"Data-Centric & Methodological Reviews"** (2025–2025): Deeper dives into the data foundations, core techniques, and evaluation practices for Sci-LLMs, as presented in "A Survey of Scientific Large Language Models: From Data Foundations to" and "Transforming Science with Large Language Models".
+- **"Strategic Roadmaps for AI in Science"** (2024–2025): Visionary papers outlining the future trajectory and potential of AI for science, such as "Artificial Intelligence for Science — Bridging Data to Wisdom" and "AI for Science 2025".
+Interaction: This sub-theme **REFLECTS ON** and **SYNTHESIZES** developments across all other sub-themes. It **SPAWNS** new research directions and **GUIDES** future efforts in scientific FM development.
+
+### SUB-THEME E: Scalability & Computational Infrastructure (2024→2026, growing)
+Branches into:
+- **"Distributed Learning for Scientific FMs"** (2024–2024): Addressing the computational demands of large models through distributed approaches like Scalable Cross-Facility Federated Learning for Scientific Foundation Models.
+- **"High-Performance Computing for LLMs"** (2026–2026): Focus on advanced parallelism techniques and GPU engineering for efficiently training and deploying large language models to enable scientific discovery, as explored in "From GPU Engineering to Scientific Discovery".
+Interaction: This sub-theme **ENABLES** the growth and practical deployment of all other sub-themes by addressing the significant computational and data privacy demands of large models. It **SUPPORTS** the scaling of foundational models and their applications.
 
 ### CROSS-CUTTING CONNECTIONS
-- **Data-to-Wisdom Pipeline**: The transition from raw scientific data (Sub-theme B) to structured knowledge (Sub-theme A) and finally to autonomous discovery (Sub-theme C) represents the core evolution of the field.
-- **Verification & Reliability**: As models move from simple text generation to proposing new materials (Sub-theme B) and autonomous experiments (Sub-theme C), the role of "Verifiers" (Sub-theme D) becomes the critical bottleneck for scientific validity.
+- Foundation Model Genesis & Scientific Text Adaptation (A) **FEEDS INTO** all other sub-themes by providing the core models and architectures.
+- Enhancing Foundation Model Capabilities (B) **ENABLES** more effective Domain-Specific Scientific Applications (C) and supports advanced methods for Discovery Beyond Data.
+- Scalability & Computational Infrastructure (E) **SUPPORTS** the expansion and practical deployment of all aspects of Foundation Model Genesis (A), Enhancing Capabilities (B), and Domain-Specific Applications (C).
+- Survey, Conceptualization & Future Outlook (D) **RESPONDS TO** and **SYNTHESIZES** progress from all other sub-themes, and in turn, **GUIDES** future research directions and resource allocation.
 
-### KEY MILESTONES
-- **2018: The Transformer Inflection** — **BERT** introduces bidirectional pretraining, establishing the architectural standard for all subsequent scientific language models.
-- **2022: The Knowledge Synthesis Shift** — **Galactica** demonstrates that LLMs can act as a primary interface for scientific knowledge, moving beyond simple text processing.
-- **2024: The Survey & Consolidation Wave** — A cluster of comprehensive surveys (**Scientific Large Language Models**, **AI4Research**) defines the "Scientific LLM" as a distinct research discipline.
-- **2026: The Autonomous Discovery Frontier** — Integration of **Flow Expansion** and **Federated Learning** marks the shift toward models that can discover novel scientific entities beyond the boundaries of their training data.
+### KEY MILESTONES (annotation boxes)
+- **2018: BERT's Genesis** — The introduction of BERT established the pre-training paradigm for deep bidirectional transformers, fundamentally shaping the future of large language models.
+- **2023: Tool Integration Emerges** — Toolformer demonstrates that language models can autonomously learn to use external tools, significantly expanding their utility and accuracy for complex tasks.
+- **2024: Scientific FM Proliferation** — A critical mass of domain-specific scientific foundation models (e.g., SciBERT, Galactica) and comprehensive surveys emerge, solidifying Scientific Foundation Models as a distinct research area.
+- **2026: Discovery Beyond Data Focus** — Research shifts towards overcoming inherent data limitations for true scientific discovery, exemplified by Verifier-Constrained Flow Expansion.
 
-▶ Scientific Language Pretraining emerges (2018)
-◀ General NLP absorbed into Scientific Foundation Models (2024)
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ Foundation Model Genesis (2018), ▶ Enhancing Foundation Model Capabilities (2023), ▶ Domain-Specific Scientific Applications (2024), ▶ Survey, Conceptualization & Future Outlook (2024), ▶ Scalability & Computational Infrastructure (2024) | Field decline: (None indicated in the provided data)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- ⚠️ NEVER use color names as text labels (no "blue", "green", "teal", "coral" etc.)
+- Band width should vary to suggest relative activity (wider = more active)

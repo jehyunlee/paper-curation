@@ -1,0 +1,49 @@
+## Category Timeline: Autonomous Agents & Research Workflow (2023–2026)
+
+### SUB-THEME A: Autonomous Scientific Discovery Agents (2023→2026, growing)
+Branches into:
+- **"Hypothesis Generation & Idea Exploration"** (2023–2025): Initial systems like "Large Language Models for Automated Open-domain Scientific Hypotheses" used LLMs for generating novel ideas from raw web corpora. Later, "SciMON" focused on optimizing for novelty from scientific literature, and "PaperRobot" explored incremental draft generation.
+- **"Experimental Design & Execution (Self-Driving Labs)"** (2023–2025): Pioneered by "Coscientist" (leveraging GPT-4 as a planner for chemical synthesis and robotic liquid handling) and "ChemCrow" (augmenting LLMs with chemistry tools for tasks like organic synthesis and drug discovery). This stream enabled practical lab automation, leading to concepts like "Self-Driving Laboratories".
+- **"Closed-Loop Research & Full Pipeline Automation"** (2024–2026): Moving beyond individual tasks, this sub-theme aims for end-to-end autonomous research. Early concepts like "The AI Scientist" paved the way for comprehensive systems such as "InternAgent" (closing the discovery loop from hypothesis to validation across 12 scientific tasks) and "AI-Researcher" (automating the full pipeline from literature review to publication). The "AI Scientist-v2" aims for entirely AI-generated peer-reviewed papers. The vision expands to "Embodied Science" where agents interact with the physical world.
+Interaction: This sub-theme is **ENABLED** by advancements in "Agent System Foundations & Tool Orchestration" (SUB-THEME B) and **FEEDS INTO** "Automated Scientific Communication & Validation" (SUB-THEME C) by producing research outputs.
+
+### SUB-THEME B: Agent System Foundations & Tool Orchestration (2023→2026, growing)
+Branches into:
+- **"LLM-Tool Integration & API Mastering"** (2023–2024): Began with agents like "HuggingGPT" integrating various AI models as tools. This rapidly evolved with systems such as "AnyTool" and "ToolLLM" demonstrating LLMs' ability to master and utilize thousands of real-world APIs, dramatically expanding their action space beyond text generation.
+- **"Multi-Agent Collaboration & Scaling Principles"** (2024–2025): Focus shifted to orchestrating multiple agents for complex tasks. "Towards a Science of Scaling Agent Systems" explored quantitative principles for multi-agent systems, while "OWL" investigated optimized workforce learning. "SciAgents" proposed bioinspired multi-agent frameworks, and "Small Language Models are the Future of Agentic AI" debated the optimal model size for agentic tasks.
+- **"Domain-Specific Agent Architectures"** (2025–2026): This stream specializes agent designs for particular scientific disciplines. Examples include "Lang-PINN" (for Physics-Informed Neural Networks from natural language), "TxAgent" (for therapeutic reasoning with biomedical knowledge), "Earth-Agent" (for Earth Observation data), and "Towards Autonomous Mathematics Research" (with Google DeepMind's Aletheia). "ToolUniverse" emerged as an ecosystem for building these specialized AI scientists. "Large language model agent for nuclear reactor operation assistance" shows application in critical infrastructure.
+Interaction: This sub-theme **ENABES** "Autonomous Scientific Discovery Agents" (SUB-THEME A) by providing the underlying capabilities for intelligent action and collaboration. It also **SPAWNS** new specialized applications that **MERGE INTO** the broader discovery efforts.
+
+### SUB-THEME C: Automated Scientific Communication & Validation (2024→2026, growing)
+Branches into:
+- **"AI-Assisted Scholarly Review"** (2024–2025): A significant surge of research, including multiple surveys like "Large Language Models for Automated Scholarly Paper Review", explored LLMs' potential for generating and evaluating peer reviews. Papers like "ReviewerGPT?" and "Can large language models provide useful feedback on research papers?" assessed the utility, while "MARG" introduced multi-agent review generation, and "CycleResearcher" integrated automated review to improve automated research.
+- **"Autonomous Paper Generation & Refinement"** (2024–2025): Focuses on agents directly contributing to the creation of scientific publications. "PaperRobot" worked on incremental draft generation of scientific ideas. "ResearchCodeAgent" and "AutoP2C" specifically address the automated codification and generation of code repositories from scientific papers, bridging text with executable research artifacts.
+- **"Autoformalization & Reproducibility"** (2025–2026): This emerging area aims to transform informal scientific text into formal, verifiable representations. "M2F" (Math-to-Formal) is a project-scale agentic framework for converting mathematical literature to formal proofs in Lean 4. "MerLean" applies this to quantum computation theory. Concurrently, "DataJoint 2.0" proposes a "SciOps" model for agentic scientific workflows, and "Scaling Reproducibility" focuses on AI-assisted workflows for large-scale reanalysis in social sciences, emphasizing the separation of scientific reasoning and computational execution. "SEVerA" addresses verified synthesis of self-evolving agents to ensure behavioral specifications.
+Interaction: This sub-theme **RESPONDS TO** outputs from "Autonomous Scientific Discovery Agents" (SUB-THEME A) by facilitating publication and validation. Its advancements in autoformalization **FEED BACK INTO** "Closed-Loop Research & Full Pipeline Automation" (A.3) to ensure verifiable and robust scientific processes.
+
+### CROSS-CUTTING CONNECTIONS
+- **Agent System Foundations & Tool Orchestration** (SUB-THEME B) **ENABLES** **Autonomous Scientific Discovery Agents** (SUB-THEME A) by providing the core capabilities for action and coordination.
+- **Autonomous Scientific Discovery Agents** (SUB-THEME A) **FEEDS INTO** **Automated Scientific Communication & Validation** (SUB-THEME C) as the source of scientific outputs.
+- **Automated Scientific Communication & Validation** (SUB-THEME C), particularly through automated review and formalization, **FEEDS BACK INTO** the development and refinement of **Autonomous Scientific Discovery Agents** (SUB-THEME A), fostering a more robust and verifiable research loop.
+- **Domain-Specific Agent Architectures** (B.3) **BRANCH INTO** specific applications that are integral to **Experimental Design & Execution (Self-Driving Labs)** (A.2) and **Closed-Loop Research & Full Pipeline Automation** (A.3).
+
+### KEY MILESTONES (annotation boxes)
+- **2023: Initial Agentic Lab Automation** — Papers like "Coscientist" and "ChemCrow" demonstrate LLMs moving from purely text-based tasks to orchestrating physical chemical experiments and robotic control, marking a pivotal step towards embodied AI in science.
+- **2024: Diversification of Agent Systems & Tool Orchestration** — Research on "AnyTool", "ToolLLM", and "Towards a Science of Scaling Agent Systems" establishes frameworks for robust multi-agent systems and comprehensive tool integration, broadening the scope of agentic AI.
+- **2025: Autonomous Closed-Loop Discovery Systems** — The introduction of systems like "InternAgent" and "AI-Researcher" signifies the shift from automating individual research steps to orchestrating entire, iterative scientific discovery pipelines with minimal human intervention.
+- **2026: Verification & Formalization of AI-Driven Science** — Projects like "M2F" and "MerLean" emerge, focusing on transforming informal scientific knowledge into formally verifiable proofs, addressing reproducibility and trustworthiness in AI-generated research.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- ⚠️ NEVER use color names as text labels (no "blue", "green", "teal", "coral" etc.)
+- Band width should vary to suggest relative activity (wider = more active)

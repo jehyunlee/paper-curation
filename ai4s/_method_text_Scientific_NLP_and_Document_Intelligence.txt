@@ -1,0 +1,48 @@
+## Category Timeline: Scientific NLP & Document Intelligence (2019–2026)
+
+### SUB-THEME A: Core Scientific NLP & Text Processing (2019→2026, growing)
+Branches into:
+- **"Foundational Scientific Text Processing"** (2019–2020): Establishes specialized NLP for scientific and biomedical text, exemplified by `ScispaCy` (2019) which builds upon the general-purpose `spaCy` (2020) library for tasks like POS tagging and NER.
+- **"Scientific Summarization & Information Retrieval"** (2020–2024): Initiated with `TLDR` (2020) for extreme summarization of scientific documents. This area later leverages AI for systematic review ("Using Artificial Intelligence for Systematic Review" (2024)), addresses generalization bias in LLM summarization ("Generalization Bias in Large Language Model Summarization of Scientific" (2024)), and explores the production of lay summaries ("Is AI ready to mass-produce lay summaries" (2024)) and AI-powered search ("How AI-powered science search engines" (2024)).
+- **"Specialized Text & Knowledge Extraction"** (2024–2026): Advances to more complex information extraction tasks, such as probing LLMs for generating suggestive limitations of research ("LimGen" (2024)) and the automated extraction of mechanical constitutive models from scientific literature ("Automated Extraction of Mechanical Constitutive Models from Scientific" (2026)).
+Interaction: FEEDS INTO Multimodal Scientific Document Understanding by providing essential text understanding capabilities. MERGES INTO LLM Integration & Agentic AI from 2023 onwards, as LLMs become central to advanced summarization, synthesis, and extraction tasks.
+
+### SUB-THEME B: Multimodal Scientific Document Understanding (2021→2026, rapidly growing)
+Branches into:
+- **"Figure Captioning & Dataset Development"** (2021–2024): Begins with the creation of `SciCap` (2021), the first large-scale real-world dataset for scientific figure caption generation. This expands to patent figures with `PatFig` (2023), and is enhanced with knowledge-augmented datasets like `SciCap+` (2023), and new large-scale figure-text alignment datasets such as `S1-MMAlign` (2024) and `FigCaps-HF` (2024).
+- **"Chart Comprehension & Reasoning"** (2023–2024): Emerges with frameworks like `ChartReader` (2023) for unified chart derendering and comprehension. This area sees rapid growth with multimodal LLMs and instruction-tuning approaches, including `ChartInstruct` (2024), `ChartGemma` (2024), `ChartLlama` (2024), `MMC` (2024), "Reading and Reasoning over Chart Images" (2024), `Chartist` (2024) and transformer-based data extraction ("Beyond Heuristics: Multimodal Transformer for Chart Data Extraction" (2024)).
+- **"Advanced Visual Content Analysis Paradigms"** (2024–2026): Addresses challenges like correcting hallucination in vision-LLMs ("Pelican: Correcting Hallucination in Vision-LLMs" (2024)) and proposes new paradigms for reproducible structure discovery in image-based scientific analysis ("Criteria-first, semantics-later" (2026)).
+Interaction: SPANS a wide range of visual modalities in scientific documents, from figures to complex charts. FEEDS INTO LLM Integration & Agentic AI by providing rich multimodal input for advanced reasoning and generation tasks. RESPONS to the challenge of extracting structured information and insights from complex unstructured visual data.
+
+### SUB-THEME C: LLM Integration & Agentic AI for Scientific Knowledge (2023→2026, explosively growing)
+Branches into:
+- **"LLMs for Knowledge Graph Interaction & Retrieval"** (2023–2024): This sub-theme begins with leveraging LLMs for scholarly Knowledge Graph Question Answering (2023), providing new ways to query and interact with structured scientific knowledge, alongside general frameworks for LLM application ("Systematic Framework of Application Methods for Large Language Models" (2024)).
+- **"Agentic Systems for Knowledge Synthesis & Generation"** (2024–2026): Witnesses the development of agent-based approaches for "superhuman synthesis of scientific knowledge" (2024), adaptive explanations with `Agentic Personas` (2026), automated extraction of constitutive models ("Automated Extraction of Mechanical Constitutive Models from Scientific" (2026)), and academic illustration generation with `PaperBanana` (2026).
+- **"Human-AI Collaborative Scientific Authoring"** (2024): Focuses on facilitating human-AI partnerships in scientific writing, including the development of collaborative writing datasets like `CoAuthor` (2024).
+Interaction: SPANS diverse applications leveraging the power of LLMs and agent architectures for higher-level scientific tasks. ENABLES more sophisticated automation and reasoning in scientific research workflows. MERGES WITH Core Scientific NLP & Text Processing and Multimodal Scientific Document Understanding, providing an advanced, intelligent layer for processing, analyzing, and generating scientific content.
+
+### CROSS-CUTTING CONNECTIONS
+- **LLMs as a Unifying Technology:** The rapid advancement and integration of Large Language Models (LLMs) from 2023 onwards (e.g., "Leveraging LLMs in Scholarly Knowledge Graph Question Answering") acts as a powerful catalyst. It MERGES capabilities from Core Scientific NLP (e.g., summarization, text extraction) and Multimodal Scientific Document Understanding (e.g., multimodal LLMs for charts and figure captioning) into a more powerful, integrated approach under the LLM Integration & Agentic AI theme.
+- **Dataset Development as Foundation:** The continuous creation of large-scale, specialized datasets (e.g., `SciCap` (2021), `PatFig` (2023), `SciCap+` (2023), `S1-MMAlign` (2024), `FigCaps-HF` (2024), `CoAuthor` (2024)) serves as a critical underpinning, FEEDING INTO model development, benchmarking, and the expansion of capabilities across all sub-themes.
+- **Agentic Frameworks for Automation:** The increasing prevalence of agent-based systems (e.g., "Language Agents Achieve Superhuman Synthesis" (2024), "Automated Extraction of Mechanical Constitutive Models" (2026), `Agentic Personas` (2026), `PaperBanana` (2026)) across various applications demonstrates a growing ambition for comprehensive automation and autonomous reasoning in scientific workflows.
+
+### KEY MILESTONES (annotation boxes)
+- **2019: Foundational Scientific NLP Establishment** — `ScispaCy` establishes specialized NLP for biomedical and scientific text, marking a crucial step beyond general-purpose models for domain-specific language processing.
+- **2021: Emergence of Multimodal Understanding** — `SciCap` introduces the first large-scale dataset for automatic figure captioning, signaling a pivotal shift towards integrating visual content with textual understanding in scientific documents.
+- **2023: LLM Integration & Paradigm Shift** — Large Language Models begin to be explicitly leveraged (e.g., "Leveraging LLMs in Scholarly Knowledge Graph Question Answering"), ushering in a major paradigm shift for knowledge synthesis, retrieval, and advanced reasoning across all domains.
+- **2024: Agentic AI & Multimodal Reasoning Flourishes** — Multiple papers (e.g., "Language Agents Achieve Superhuman Synthesis," `ChartLlama`, `ChartInstruct`) demonstrate the rapid adoption and advancement of LLM-powered agents and multimodal instruction tuning for complex scientific tasks.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- ⚠️ NEVER use color names as text labels (no "blue", "green", "teal", "coral" etc.)
+- Band width should vary to suggest relative activity (wider = more active)
