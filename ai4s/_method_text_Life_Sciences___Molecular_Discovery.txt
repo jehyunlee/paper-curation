@@ -1,0 +1,47 @@
+## Category Timeline: Life Sciences & Molecular Discovery
+
+### SUB-THEME A: Protein Engineering & Structural Biology (2021→2025, CONVERGING)
+Branches into:
+- **"Atomic-level Structure Prediction"** (2021–2024): Established by **AlphaFold**, providing the first computational method for predicting 3D protein structures with atomic accuracy, shifting the field from experimental-only to computation-first.
+- **"Biomolecular Interaction Modeling"** (2024–2025): Transition from static structures to dynamic interactions with **Boltz-1**, an open-source model democratizing the modeling of complex molecular interactions.
+- **"De Novo Antibody Design"** (2024–2025): Utilizing **RFdiffusion** to fine-tune generative models for the creation of VHH and scFv antibodies targeting specific epitopes with atomic precision.
+- **"Bioinformatics Foundation Models"** (2025–2025): The integration of large-scale **Foundation Models (FMs)** to unify disparate biological data types into shared latent spaces for downstream discovery.
+Interaction: **FEEDS** structural data into Drug Discovery pipelines and **ENABLES** the high-fidelity simulations used by Virtual Lab agents.
+
+### SUB-THEME B: Autonomous Drug Discovery & Asset Management (2022→2026, ACCELERATING)
+Branches into:
+- **"DMTA Cycle Automation"** (2022–2025): Implementation of the **Tippy** framework, utilizing a Multi-Agent approach (Supervisor, Manager, Worker) to automate the Design-Make-Test-Analyze cycle in the pharmaceutical industry.
+- **"Cross-drug Response Evaluation"** (2023–2025): Development of **DeepCRE** to transform R&D by evaluating multi-drug responses through AI-driven predictive modeling.
+- **"Global Asset Scouting"** (2025–2026): The emergence of the **Bioptic Agent**, a tree-based self-learning AI system designed for "Hunt Globally" missions to scout and evaluate drug assets for investment.
+- **"Closed-Loop Multi-Objective Optimization"** (2025–2026): Introduction of **MAC-AMP**, a closed-loop multi-agent collaboration system designed to balance conflicting objectives in molecular optimization.
+Interaction: **RESPONDS** to structural breakthroughs from Sub-theme A and **MERGES** with Agentic Genomics to validate therapeutic targets.
+
+### SUB-THEME C: Agentic Genomics & Systems Biology (2023→2026, EMERGING)
+Branches into:
+- **"Automated Systems Biology"** (2023–2025): Early frameworks like **Genesis** moving toward the full automation of systems biology research through iterative hypothesis generation.
+- **"Interactive Aging Research"** (2024–2026): The **PersonaAI** framework, utilizing RAG and 560,000+ documents to create an interactive agentic environment for autonomous aging hypotheses.
+- **"Single-Cell LLM Scaling"** (2025–2026): Scaling Large Language Models for next-generation analysis via **Cell2Sentence (C2S)**, representing scRNA-seq profiles as sequences for generative modeling.
+- **"Autonomous ML for Omics"** (2025–2026): **Agentomics-ML**, an autonomous machine learning agent that automates experimentation for genomic and transcriptomic classification.
+- **"Gene Ontology Discovery"** (2026–2026): Utilizing the **Virtual Study Group** and hierarchical feature selection to revisit and discover new knowledge within Gene Ontology (GO) terms.
+Interaction: **SPAWNS** specialized agents for behavioral neuroscience and **ENABLES** the "In Silico" science of the mind.
+
+### SUB-THEME D: Virtual Labs & Cognitive Automation (2024→2026, EXPANDING)
+Branches into:
+- **"Multimodal Pathology Copilots"** (2024–2025): Development of generative AI assistants for human pathology to integrate visual and textual clinical data.
+- **"Multi-Agent Nanobody Design"** (2024–2025): The **Virtual Lab** (Stanford/James Zou), where teams of AI agents (PI, Immunologist, Computational Biologist) design new SARS-CoV-2 nanobodies.
+- **"Behavioral Neuroscience Discovery"** (2025–2026): Transforming discovery through **In-Context Learning**, allowing agents to interpret complex behavioral data without extensive retraining.
+- **"In Silico Cognitive Science"** (2026–2026): The full automation of the cognitive science discovery cycle—from experimental design to data collection—aiming for a complete "science of the mind" within AI.
+Interaction: **ENABLES** end-to-end scientific discovery by integrating tools from all other sub-themes into a unified agentic workflow.
+
+### CROSS-CUTTING CONNECTIONS
+- **Agentic Orchestration**: The shift from single-model tools (AlphaFold) to multi-agent systems (Tippy, Virtual Lab) is the primary driver of acceleration across all themes.
+- **Data Democratization**: Open-source models like **Boltz-1** and **Agentomics-ML** are narrowing the gap between high-resource pharmaceutical labs and academic research.
+- **Clinical Validation**: The transition from "in silico" design to "clinical review" is bridged by LLM platforms that generate human-comparable clinical reviews.
+
+### KEY MILESTONES
+- **2021: AlphaFold Release** — The milestone of atomic-level protein structure prediction that catalyzed the computational biology revolution.
+- **2024: The Virtual Lab Launch** — The first successful demonstration of a multi-agent AI team designing viable SARS-CoV-2 nanobodies, marking the birth of the "AI Scientist."
+- **2026: Global Asset Scouting** — The deployment of **Bioptic Agent**, shifting AI's role from molecular design to the strategic management of global pharmaceutical assets.
+
+▶ **Agentic Science** emerges (**2024**)
+◀ **Manual DMTA Cycles** absorbed into **Autonomous Frameworks** (**2025**)

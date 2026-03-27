@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Langu</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Mina Lee, Percy Liang, Qian Yang (Stanford University, Cornell University)</li>
+<li><strong>출판</strong>: CHI Conference on Human Factors in Computing Systems (CHI '22), 2022</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1145/3491102.3502030"><a href="https://doi.org/10.1145/3491102.3502030" target="_blank">10.1145/3491102.3502030</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (본질)</h2>
+<p>대규모 언어모델(LM)의 생성 능력을 인터랙션 디자인 관점에서 체계적으로 이해하기 위해, 인간-AI 협업 글쓰기 데이터셋 CoAuthor를 제안한다. 63명의 작가와 GPT-3의 4가지 인스턴스 간 1,445개 글쓰기 세션의 풍부한 상호작용을 수집하여, GPT-3의 언어 능력, 아이디어 생성 능력, 협업 능력을 다양한 맥락에서 정량적으로 분석할 수 있는 재사용 가능한 리소스를 구축했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>LM의 생성 능력은 <strong>맥락에 크게 의존</strong>하여 특정 상황에서의 성능을 일반화하기 어렵고, <strong>주관적으로 해석</strong>될 수 있어 단일 평가 기준으로 포착하기 어렵다.</li>
+<li>기존 HCI 연구의 접근법(contextual inquiry, 인터뷰)은 풍부한 질적 통찰을 제공하지만 다양한 맥락을 커버하기 어렵고, NLP의 벤치마크 데이터셋은 인터랙티브 환경이 아닌 완전 자동화를 전제로 하여 글쓰기 "과정"을 포착하지 못한다.</li>
+<li>LM 기반 인터랙션 디자인에는 기술의 능력과 한계에 대한 <strong>총체적(holistic) 이해</strong>가 필요하며, 이를 위해 대규모 상호작용 데이터셋의 큐레이션과 분석이라는 새로운 방법론이 요구된다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>대규모 협업 글쓰기 데이터셋</strong>: 창작 글쓰기 830세션(58명 작가), 논증 글쓰기 615세션(49명 작가)으로 구성된 1,445개 세션을 수집했다. 평균 세션당 418단어, 11.8회 쿼리, 72.3% 수락률, 72.6%가 작가 직접 작성 텍스트였다.</li>
+<li><strong>GPT-3의 언어 능력 검증</strong>: GPT-3이 생성한 문장이 인간 작가보다 맞춤법/문법 오류가 적고(단어당 0.033 vs 0.037), 인간과 GPT-3이 함께 쓴 텍스트가 어휘 다양성(distinct-2: 0.923)이 가장 높았다.</li>
+<li><strong>아이디어 생성 능력 확인</strong>: 창작 글쓰기에서 수락된 제안의 13%가 새로운 고유명사(named entity)를 포함했고, 그 중 20%가 이후 작가의 글에서 재사용되었다.</li>
+<li><strong>협업 패턴 분석</strong>: equality(턴 분배의 균등성)와 mutuality(상호작용 수준)라는 지표를 정의하여, 협업 양상이 작가 간 차이에 크게 의존하며 프롬프트에는 상대적으로 덜 의존한다는 것을 밝혔다.</li>
+</ul>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ol>
+<li><strong>데이터셋 설계 원칙 4가지</strong>: (a) 다양한 맥락 커버(2종 글쓰기, 20개 프롬프트, 63명 작가), (b) 주관적 해석 지원(결과물/인식/행동 다층 측정), (c) 결과가 아닌 과정 포착(이벤트/이벤트 블록), (d) 재사용 및 확장 가능성.</li>
+<li><strong>데이터 수집</strong>: Amazon Mechanical Turk에서 모집한 63명의 작가가 텍스트 에디터에서 Tab 키로 GPT-3 제안을 요청하고, 자유롭게 쓰기/수락/편집/거부하는 방식으로 상호작용했다. 각 세션은 최소 10분 이상 작성.</li>
+<li><strong>GPT-3 설정</strong>: davinci 엔진, 파인튜닝 없이 사용. 디코딩 파라미터(temperature: 0.2~0.9, frequency penalty: 0~1)를 변화시켜 high/low randomness 4가지 인스턴스를 구성했다.</li>
+<li><strong>분석 프레임워크</strong>: 언어 능력(LanguageTool로 문법 오류 측정, distinct-2로 어휘 다양성), 아이디어 능력(Stanza로 고유명사 추출 후 재사용 추적), 협업 능력(Storch의 equality/mutuality 개념 적용)을 정량 분석했다.</li>
+<li><strong>설문 조사</strong>: 각 세션 후 유창성 기여, 아이디어 도움, 역량 인식, 소유감, 만족도 등에 대한 설문을 수집했다.</li>
+</ol>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>HCI와 NLP의 경계 객체(boundary object)로서의 데이터셋</strong>: 기존 NLP 벤치마크가 자동화를 전제로 하는 것과 달리, 인간-AI 상호작용 과정 자체를 포착하는 데이터셋 설계 방법론을 제시했다. 이는 LM 평가의 새로운 패러다임을 열었다.</li>
+<li><strong>과정 기반 분석</strong>: 글쓰기의 최종 결과물뿐 아니라 이벤트 단위(삽입, 삭제, 커서 이동, 제안 요청/수락/거부)로 상호작용 과정을 기록하여, 협업의 역동성을 세밀하게 분석할 수 있게 했다.</li>
+<li><strong>다중 관점 평가 프레임워크</strong>: "좋은 협업"의 정의를 단일하게 고정하지 않고, 생산성과 소유감 등 다양한 디자인 목표에 따라 유연하게 분석할 수 있는 구조를 설계했다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>작가 다양성의 한계</strong>: AMT 크라우드 워커를 대상으로 하여 전문 작가, 비영어권 사용자 등 다양한 사용자 집단의 대표성이 부족하다.</li>
+<li><strong>모델 한정</strong>: GPT-3(davinci) 단일 모델만 사용하여, 다른 LM이나 파인튜닝된 모델에 대한 일반화가 제한적이다. 현재 시점에서는 GPT-4, Claude 등 후속 모델과의 비교가 필요하다.</li>
+<li><strong>인터랙션 방식의 제약</strong>: Tab 키로 문장 단위 제안을 받는 단일 인터페이스만 사용했으며, 인라인 자동완성, 대화형 피드백 등 다양한 인터랙션 패턴은 미탐색이다.</li>
+<li><strong>아이디어 기여 측정의 한계</strong>: 고유명사(named entity) 기반의 아이디어 추적은 실제 아이디어 기여를 과소추정할 가능성이 높다. 대명사 사용, 개념적 영향 등 간접적 기여는 포착하지 못한다.</li>
+<li><strong>인과관계 미검증</strong>: 상관관계 기반의 분석이 주를 이루며, 인과적 가설 검증을 위한 통제 실험은 수행되지 않았다.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>CoAuthor는 <strong>인간-AI 협업 글쓰기 연구의 방법론적 이정표</strong>로 평가할 수 있다. LM의 능력을 단순히 "잘 쓰는가/못 쓰는가"가 아니라 "어떻게 인간과 함께 작업하는가"의 관점에서 체계적으로 분석할 수 있는 프레임워크를 제시한 점이 핵심 기여이다. 특히 데이터셋 설계의 4가지 원칙(맥락 다양성, 주관적 해석 지원, 과정 포착, 재사용성)은 후속 인간-AI 상호작용 데이터셋 설계의 표준적 지침이 될 수 있다. 1,445개 세션의 풍부한 상호작용 데이터는 GPT-3의 실제 협업 양상에 대한 정량적 근거를 제공하며, 특히 작가 개인차가 프롬프트보다 협업 패턴에 더 큰 영향을 미친다는 발견은 개인화된 AI 글쓰기 도구 설계에 중요한 시사점을 준다. 다만, CHI 2022 발표 이후 LM 기술이 급격히 발전한 점을 고려하면, 동일한 방법론을 최신 모델에 적용한 후속 연구가 필요하다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

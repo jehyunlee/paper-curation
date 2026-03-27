@@ -1,0 +1,67 @@
+{
+  "registered": [
+    {
+      "title": "Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes",
+      "key": "IBFFBCUN",
+      "pdf": false,
+      "pdf_path": null,
+      "pdf_source": null,
+      "arxiv_id": "",
+      "doi": "10.1016/j.icheatmasstransfer.2026.111105"
+    },
+    {
+      "title": "Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills",
+      "key": "PHT22KS5",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Sk.pdf",
+      "pdf_source": "arXiv",
+      "arxiv_id": "2603.25522",
+      "doi": ""
+    },
+    {
+      "title": "SEVerA: Verified Synthesis of Self-Evolving Agents",
+      "key": "DCXFFR25",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\SEVerA Verified Synthesis of Self-Evolving Agents.pdf",
+      "pdf_source": "arXiv",
+      "arxiv_id": "2603.25111",
+      "doi": ""
+    },
+    {
+      "title": "General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy",
+      "key": "CA79KHJU",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale.pdf",
+      "pdf_source": "arXiv",
+      "arxiv_id": "2603.25616v1",
+      "doi": ""
+    }
+  ],
+  "already_exists": [
+    {
+      "title": "Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis",
+      "existing_key": "T3KFBFHX"
+    },
+    {
+      "title": "MolQuest: A Benchmark for Agentic Evaluation of Abductive Reasoning in Chemical Structure Elucidation",
+      "existing_key": "VCJ584N4"
+    },
+    {
+      "title": "Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems",
+      "existing_key": "WRVM65GE"
+    },
+    {
+      "title": "Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning",
+      "existing_key": "IFUGWK59"
+    }
+  ],
+  "failed": [],
+  "manual_download": [
+    {
+      "title": "Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes",
+      "doi": "10.1016/j.icheatmasstransfer.2026.111105",
+      "arxiv_id": "",
+      "pdf_url": ""
+    }
+  ]
+}

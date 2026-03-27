@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PaperRobot: Incremental Draft Generation of Scientific Ideas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>PaperRobot: Incremental Draft Generation of Scientific Ideas</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Qingyun Wang, Lifu Huang, Zhiying Jiang, Kevin Knight, Heng Ji, Mohit Bansal, Yi Luan (RPI, DiDi Labs, UIUC, UNC Chapel Hill, UW)</li>
+<li><strong>출판</strong>: ACL 2019 (Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/P19-1191"><a href="https://doi.org/10.18653/v1/P19-1191" target="_blank">10.18653/v1/P19-1191</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (본질)</h2>
+<p>기존 바이오메디컬 논문으로부터 배경 지식 그래프(KG)를 구축하고, 그래프 어텐션과 텍스트 어텐션을 결합한 링크 예측으로 새로운 아이디어를 생성한 뒤, 메모리-어텐션 네트워크를 활용하여 논문의 핵심 요소(제목 -&gt; 초록 -&gt; 결론 및 향후 연구 -&gt; 후속 논문 제목)를 점진적으로 생성하는 자동 연구 보조 시스템 PaperRobot을 제안한다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>바이오메디컬 분야에서 연간 50만 편 이상의 논문이 출판되지만, 과학자의 연간 독서량은 평균 264편에 불과하여 지식 폭증과 인간의 처리 능력 간 극심한 격차가 존재한다.</li>
+<li>Foster et al. (2015)에 따르면 바이오메디컬과 화학 분야의 640만 편 논문 중 60% 이상이 점진적(incremental) 연구이므로, 기존 지식 그래프의 링크 예측을 통해 새로운 아이디어 생성을 자동화할 수 있는 잠재력이 크다.</li>
+<li>과학자들의 글쓰기 능력이 종종 부족하다는 문제(Pinker, 2014)를 해결하기 위해, 아이디어를 독자에게 명확히 전달하는 논문 작성 과정의 자동화가 필요하다.</li>
+</ul>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>튜링 테스트</strong>: 바이오메디컬 전문가가 시스템 출력과 인간 작성 텍스트를 비교한 결과, PaperRobot 생성 초록이 최대 30%, 결론 및 향후 연구가 24%, 새 제목이 12%의 확률로 인간 작성 텍스트보다 선호되었다.</li>
+<li><strong>자동 평가</strong>: 제목-초록 생성에서 perplexity 11.5, METEOR 13.0으로 Seq2seq(19.6/9.1), Editing Network(18.8/9.2), Pointer Network(146.7/8.5) 등 기존 방법을 크게 능가했다.</li>
+<li><strong>인간 후편집 평가</strong>: 전문가가 50개 초록을 편집하는 데 약 40분 소요(초록당 48초). 편집 전후 BLEU-4 55.4%, ROUGE 73.3%로, 대부분 문체적 수정만 필요했다.</li>
+<li><strong>표절 검사</strong>: 시스템 생성 초록에서 인간 입력 텍스트의 5-gram이 차지하는 비율이 1.46%에 불과하여, 단순 복사가 아닌 창의적 생성임을 확인했다.</li>
+</ul>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ol>
+<li><strong>배경 지식 추출</strong>: 168만 편의 바이오메디컬 논문에서 PubTator(Wei et al., 2013)를 사용하여 Disease, Chemical, Gene 3개 유형의 개체를 추출하고, Comparative Toxicogenomics Database(CTD)와 연결하여 133개 하위 관계 유형(Marker/Mechanism, Therapeutic, Increase Expression 등)의 KG를 구축(30,483 개체, 875,698 관계).</li>
+<li><strong>링크 예측</strong>: (a) <strong>그래프 구조 인코더</strong> -- 다중 헤드 self-attention(GAT)으로 이웃 노드의 중요도를 계산하여 구조 기반 표현 생성. (b) <strong>텍스트 인코더</strong> -- BiLSTM + bilinear attention으로 개체의 문맥 문장에서 텍스트 기반 표현 생성. (c) <strong>게이트 결합</strong> -- 학습 가능한 게이트로 그래프/텍스트 표현을 결합. TransE 기반 marginal loss로 학습하여 새로운 링크 예측.</li>
+<li><strong>논문 생성</strong>: (a) <strong>참조 인코더</strong> -- BiGRU로 입력 텍스트(제목 등)를 인코딩. (b) <strong>디코더 초기 상태</strong> -- 예측된 관련 개체를 메모리에 저장하고, 다중 홉 어텐션(3-hop)으로 관련성 높은 개체를 필터링하여 초기 상태 생성. (c) <strong>메모리 네트워크</strong> -- 디코딩 각 단계에서 개체별 어텐션을 다중 홉으로 정제하여 개체 기여도 산출. (d) <strong>하이브리드 생성기</strong> -- 언어 모델 확률(Pgen), 참조 복사 확률(P_tau), 개체 복사 확률(P_e)를 게이트로 결합. coverage loss와 beam search 기반 반복 제거 기법으로 반복 문제 완화.</li>
+</ol>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>지식 그래프 기반 아이디어 생성과 논문 작성의 통합</strong>: 링크 예측을 통한 새로운 아이디어 생성을 논문 작성에 직접 연결한 최초의 시도이다. 기존 연구가 개별 태스크(링크 예측 또는 텍스트 생성)에 집중했다면, PaperRobot은 "읽기-아이디어 생성-쓰기"의 전체 파이프라인을 구축했다.</li>
+<li><strong>점진적 논문 생성(Incremental Writing)</strong>: 제목 -&gt; 초록 -&gt; 결론/향후 연구 -&gt; 후속 제목의 계단식 생성 구조는 실제 연구자의 사고 과정을 모사하며, 각 단계의 출력이 다음 단계의 입력이 되는 자기 강화 구조를 구현했다.</li>
+<li><strong>그래프 어텐션과 텍스트 어텐션의 게이트 결합</strong>: 개체 표현에서 KG 구조 정보와 비정형 텍스트 문맥을 학습 가능한 게이트로 동적 결합하여, 단일 정보원에 의존하는 기존 방법의 한계를 극복했다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>지식 추론 능력의 부재</strong>: 언어 모델과 추출된 사실에 크게 의존하여, 잘못된 약어("Organophosphates(BA)"), 부정확한 수치("Group 1, Group B..."), 대명사 오류("63-year-old man... she was treated") 등의 오류가 발생한다.</li>
+<li><strong>도메인 이전 어려움</strong>: NLP 도메인에 적용했을 때 훈련 데이터 부족과 개체/관계 유형의 조립도 문제로 결과가 크게 저하되었다. 도메인별 정밀한 개체 추출 및 관계 정의가 선결 조건이다.</li>
+<li><strong>생성 텍스트의 제한적 범위</strong>: 초록, 결론, 제목만 생성하며, 서론, 관련 연구, 실험 방법론, 결과 분석 등 논문의 핵심 섹션은 다루지 못한다.</li>
+<li><strong>실험 수행 불가</strong>: 실제 실험 설계와 수행은 범위 밖이며, 이는 진정한 과학적 발견 자동화와의 근본적 간극을 의미한다.</li>
+<li><strong>Pre-LLM 시대의 기술적 한계</strong>: GRU/LSTM 기반 아키텍처로 120 토큰 이내의 짧은 텍스트만 처리 가능하며, 현재의 Transformer 기반 LLM 시대에는 기술적으로 구식이다.</li>
+<li><strong>평가의 한계</strong>: 튜링 테스트가 2명의 평가자(전문가 1명, 비전문가 1명)에 의해 50쌍만으로 수행되어 통계적 신뢰도가 제한적이다.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>PaperRobot은 <strong>"AI가 과학 논문을 쓸 수 있는가"라는 질문에 최초로 체계적으로 답하려 한 선구적 연구</strong>로서 학술사적 의의가 크다. 2019년 ACL에서 발표된 이 연구는 GPT-2조차 아직 초기 단계였던 시점에 지식 그래프와 뉴럴 텍스트 생성을 결합한 야심찬 시도였다. 특히 "60% 이상의 논문이 점진적 연구"라는 관찰에서 출발하여 링크 예측을 아이디어 생성의 형식화 도구로 활용한 것은 독창적이다. 튜링 테스트에서 초록이 30%의 확률로 인간 작성 텍스트보다 선호된 것은 인상적이나, 이는 주로 바이오메디컬 초록의 정형화된 구조(Background-Methods-Results) 덕분일 가능성이 높다. NLP 도메인 적용 실패 사례를 솔직히 보고한 점은 학술적 정직성 면에서 높이 평가할 만하다. 현재 시점에서 PaperRobot의 기술적 구성 요소(GRU, Mem2Seq, TransE)는 LLM에 의해 대체되었지만, "KG 기반 아이디어 생성 -&gt; 구조화된 논문 작성"이라는 프레임워크 설계는 여전히 유효한 패러다임이며, AI Scientist, CycleResearcher 등 후속 연구의 직접적 선행 연구로 자리매김한다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verifier-Constrained Flow Expansion for Discovery Beyond the Data</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Verifier-Constrained Flow Expansion for Discovery Beyond the Data</h1>
+<blockquote>
+<p><strong>저자</strong>: Riccardo De Santi, Kimon Protopapas, Ya-Ping Hsieh, Andreas Krause | <strong>날짜</strong>: 2026-02-17 | <strong>arXiv</strong>: 2602.15984 | <strong>분야</strong>: cs.LG | <strong>학회</strong>: ICLR 2026</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>사전 학습된 플로우/디퓨전 모델이 훈련 데이터의 좁은 영역에만 밀도를 집중시키는 한계를 극복하기 위해, 외부 검증기(verifier)를 활용하여 유효 설계 공간 전체로 모델의 밀도를 확장하는 Flow Expander(FE)를 제안한다. 강한 검증기(valid design space를 정확히 특성화)와 약한 검증기(필터 역할만 수행)를 형식적으로 구분하고, 각각에 대해 전역적(global) 및 국소적(local) 플로우 확장 문제를 검증기 제약 엔트로피 최대화로 정식화한다. FE는 플로우 프로세스의 노이즈 상태 공간에서 미러 디센트를 수행하며, 이상적/일반적 조건 하 수렴 보장을 제공한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 사실</strong>: 플로우/디퓨전 모델은 화학, 생물학, 로봇공학 등에서 고품질 샘플을 생성하지만, 훈련 데이터가 유효 설계 공간의 일부만 커버하므로 데이터 밖 영역의 유효한 설계를 생성하지 못함</li>
+<li><strong>격차(Gap)</strong>: 기존 매니폴드 탐색 방법(S-MEME, FDC)은 사전 학습 모델의 밀도를 재분배하여 다양성을 높이지만, 데이터 밖 영역에서는 학습된 유효성 신호가 약해져 무효한 샘플을 생성할 위험이 있음. 검증기 정보를 탐색 과정에 주입하는 원칙적 프레임워크가 부재</li>
+<li><strong>접근법</strong>: 검증기 제약 엔트로피 최대화를 확률 공간 최적화 문제로 정식화하고, Expand-then-Project 스킴을 통해 확장(엔트로피 증대)과 투영(검증기 제약 충족)을 교대 수행</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>형식적 문제 정의</strong>: 강한 검증기(Omega_v = Omega)와 약한 검증기(Omega_v superset Omega)를 정의하고, 각각에 대해 전역적 플로우 확장(Problem 5)과 국소적 플로우 확장(Problem 7, KL 정규화 포함)을 검증기 제약 엔트로피 최대화로 정식화</li>
+<li><strong>Flow Expander(FE) 알고리즘</strong>: 확률 공간에서의 미러 디센트 스킴으로, 플로우 프로세스의 전체 노이즈 상태 공간에 걸쳐 엔트로피를 최대화. 스코어 함수의 닫힌 형태 그래디언트를 활용하여 확장 가능</li>
+<li><strong>수렴 보장</strong>: 이상적 설정에서 O(1/K) 유한 시간 수렴(Theorem 5.1), 일반적 설정에서 Robbins-Monro 규칙 하 거의 확실한 점근 수렴(Theorem 5.2)</li>
+<li><strong>Noised Space Exploration(NSE)</strong>: FE의 비제약 변형으로, 투영 단계 없이도 기존 플로우 기반 탐색 방법(FDC)을 상회하는 성능</li>
+<li><strong>분자 설계 실험</strong>: QM9 및 GEOM-Drugs에서 FlowMol CTMC 모델을 확장하여 conformer 다양성(VENDI score)을 높이면서 유효성을 유지. L-FE가 FDC 대비 유사한 다양성(529 vs 508)에 더 높은 유효성(82% vs 66%)을 달성(GEOM-Drugs)</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>문제 정식화</strong>: 플로우 모델 정책 pi를 연속 시간 RL의 결정론적 정책으로 해석. 검증기 v: X -&gt; {0,1}에 의해 유도되는 검증기 집합 Omega_v 상에서 엔트로피 최대화</li>
+<li><strong>Expand-then-Project 스킴</strong>: (1) 확장 단계: 비제약 엔트로피 최대화로 밀도 확장 (Adjoint Matching 기반 fine-tuning), (2) 투영 단계: 보상 안내 fine-tuning으로 검증기 제약 충족</li>
+<li><strong>그래디언트 계산</strong>: 전역 FE의 경우 gradient = -s_t^pi (음의 스코어), 국소 FE의 경우 -s_t^pi - alpha_t(s_t^pi - s_t^pre) (KL 정규화 포함). 스코어를 학습된 속도장에서 선형 변환으로 계산(Eq. 19)</li>
+<li><strong>노이즈 상태 공간 탐색</strong>: 기존 방법이 t=1 시점의 말단 스코어만 사용하는 반면, FE는 전체 플로우 프로세스에 걸쳐 스코어 정보를 활용하여 t-&gt;1에서의 스코어 발산 문제를 자연스럽게 해결</li>
+<li><strong>실험</strong>: 2D 합성 데이터(시각적 해석 가능), QM9(10원자 분자), GEOM-Drugs(30원자 약물류 분자)에서 평가. 약한 검증기로 최소 원자간 거리 0.975A 필터 사용, 유효성은 RDKit sanitization + 원자간 거리 체크</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<p>과학적 발견을 위한 생성 모델의 근본적 한계(훈련 데이터 분포 밖으로의 확장)를 검증기 제약 엔트로피 최대화라는 원칙적 최적화 프레임워크로 해결한 점이 핵심 기여이다. 특히 (1) 강한/약한 검증기의 형식적 구분과 그에 따른 전역/국소 확장 문제의 자연스러운 도출, (2) 플로우 프로세스의 전체 노이즈 상태 공간으로의 리프팅(기존 말단 시점만 사용하던 방식의 한계 극복), (3) 미러 디센트 이론에 기반한 수렴 보장이 이론적으로 탄탄하면서도 실용적이다. ICLR 2026 정식 채택 논문답게 이론과 실험의 균형이 우수하다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>강한 검증기는 실제 과학 발견 응용에서 드물며, 대부분의 실험은 약한 검증기(원자간 거리 체크)에 의존</li>
+<li>분자 실험에서 사용한 검증기(최소 원자간 거리 0.975A)가 상당히 단순하여, 복잡한 화학적 유효성을 완전히 포착하지 못함</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li><strong>실험 규모와 도메인 한정</strong>: 분자 실험이 QM9(소분자)과 GEOM-Drugs에 한정되어 있으며, 단백질 설계나 재료 설계 등 더 복잡한 도메인에서의 검증이 없음</li>
+<li><strong>약한 검증기의 질적 차이에 대한 분석 부족</strong>: 검증기의 정밀도(Omega_v가 Omega를 얼마나 잘 근사하는지)에 따른 성능 변화를 체계적으로 분석하지 않음</li>
+<li><strong>하이퍼파라미터 민감도</strong>: alpha, gamma, eta, lambda_t 등 많은 하이퍼파라미터가 존재하며, 이들의 선택이 성능에 미치는 영향이 크다(ablation study에서 확인). 실무적 튜닝 가이드라인이 부족</li>
+<li><strong>유효성 지표의 한계</strong>: RDKit sanitization은 화학적 유효성의 최소 기준이며, 약물 가능성(drug-likeness)이나 합성 가능성(synthesizability)과 같은 실질적 지표는 미평가</li>
+<li><strong>계산 비용</strong>: 기존 방법(FDC)과 비슷한 수준이라고 보고하지만, 절대적 비용(GPU 시간)이 상당함</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>단백질 설계, 재료 설계 등 대규모 과학 발견 태스크에의 적용</li>
+<li>다중 약한 검증기의 합성(composition)을 통한 보다 정교한 유효성 필터링</li>
+<li>유틸리티 함수(binding affinity 등)와의 결합을 통한 검증기 제약 생성 최적화(generative optimization)</li>
+<li>유한 샘플 예산 하에서의 탐색 효율성 연구</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 5/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: 플로우/디퓨전 모델의 설계 공간 탐색이라는 AI for Science의 핵심 문제를 검증기 제약 엔트로피 최대화라는 수학적으로 엄밀한 프레임워크로 해결한 우수한 연구이다. 강한/약한 검증기의 형식적 구분, Expand-then-Project 스킴, 노이즈 상태 공간으로의 리프팅이라는 세 가지 핵심 아이디어가 자연스럽게 결합되어 있으며, O(1/K) 수렴 보장과 분자 설계 실험 결과가 이론적 주장을 뒷받침한다. ICLR 2026에 채택된 것이 납득되는 완성도 높은 논문이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

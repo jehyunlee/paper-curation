@@ -1,0 +1,2030 @@
+{
+  "categories": [
+    {
+      "name": "Life Sciences & Molecular Discovery",
+      "description": "Research focused on biological systems, protein folding, genomics, and the development of new pharmaceuticals.",
+      "not_here": "General foundation models or physical materials discovery without biological application.",
+      "keywords": [
+        "protein structure prediction",
+        "drug discovery",
+        "genomics",
+        "molecular modeling"
+      ]
+    },
+    {
+      "name": "Physical Sciences & Engineering",
+      "description": "Applications of AI in physics, chemistry, and materials science, including the modeling of physical laws and material properties.",
+      "not_here": "Biological molecules or purely linguistic scientific tools.",
+      "keywords": [
+        "materials discovery",
+        "physics-informed neural networks",
+        "PINNs",
+        "computational chemistry"
+      ]
+    },
+    {
+      "name": "Scientific NLP & Document Intelligence",
+      "description": "Tools and methods for processing, extracting, and understanding scientific text, charts, and figures.",
+      "not_here": "Autonomous agents that perform actions or general-purpose foundation models.",
+      "keywords": [
+        "scientific NLP",
+        "chart understanding",
+        "document extraction",
+        "scientific writing"
+      ]
+    },
+    {
+      "name": "Autonomous Agents & Research Workflow",
+      "description": "Systems designed to automate the scientific process, including coding, peer review, and laboratory experimentation.",
+      "not_here": "Static NLP analysis or manual benchmarking datasets.",
+      "keywords": [
+        "autonomous scientific agents",
+        "peer review automation",
+        "AI coding assistants",
+        "lab automation"
+      ]
+    },
+    {
+      "name": "Scientific Foundation Models",
+      "description": "Development and architecture of large-scale models pre-trained specifically on scientific corpora for cross-domain utility.",
+      "not_here": "Specific applications of models to a single field like drug discovery.",
+      "keywords": [
+        "foundation models",
+        "scientific LLMs",
+        "pre-training",
+        "multimodal science models"
+      ]
+    },
+    {
+      "name": "Benchmarks & Evaluation",
+      "description": "Standardized datasets and frameworks used to measure the performance of AI systems in scientific tasks.",
+      "not_here": "The introduction of new models or specific scientific discoveries.",
+      "keywords": [
+        "benchmarks",
+        "evaluation frameworks",
+        "datasets",
+        "leaderboards"
+      ]
+    },
+    {
+      "name": "Ethics, Policy & Meta-Science",
+      "description": "Studies on the impact of AI on the scientific community, including ethics, bibliometrics, and the sociology of science.",
+      "not_here": "Technical implementations of AI models or software tools.",
+      "keywords": [
+        "scientific writing ethics",
+        "bibliometrics",
+        "meta-science",
+        "AI policy"
+      ]
+    },
+    {
+      "name": "Other",
+      "description": "Outlier papers that do not fit into the specific domains of life/physical sciences, automation, or scientific infrastructure.",
+      "not_here": "Any paper that can be reasonably mapped to the above seven categories.",
+      "keywords": [
+        "miscellaneous",
+        "outliers",
+        "general AI"
+      ]
+    }
+  ],
+  "assignments": [
+    {
+      "slug": "001_Highly_Accurate_Protein_Structure_P",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "002_Scaling_Deep_Learning_for_Materials",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "003_Scientific_discovery_in_the_age_of",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "004_Automating_the_practice_of_science",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "005_Agentomics-ML_Autonomous_Machine_L",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "006_Autonomous_Agents_for_Scientific_Di",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "007_Toward_a_Fully_Autonomous_AI-Nativ",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "008_From_Labor_to_Collaboration_A_Meth",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Other"
+      ]
+    },
+    {
+      "slug": "009_ResearchGym_Evaluating_Language_Mo",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "010_Criteria-first_semantics-later_re",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "011_Polymer_Brushes_and_Grafted_Polymer",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "012_AutoNumerics_An_Autonomous_PDE-Ag",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "013_M2F_Automated_Formalization_of_Mat",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "014_Automated_Extraction_of_Mechanical",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "015_MerLean_An_Agentic_Framework_for_A",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "016_DataJoint_20_A_Computational_Subs",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "017_Hunt_Globally_Wide_Search_AI_Agent",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "018_Scaling_Reproducibility_An_AI-Assi",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "019_Verifier-Constrained_Flow_Expansion",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "020_Neural-POD_A_Plug-and-Play_Neural",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "021_EAA_Automating_materials_character",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "022_Transforming_Behavioral_Neuroscienc",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "023_MAC-AMP_A_Closed-Loop_Multi-Agent",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "024_Generative_AI_and_the_Foundation_Mo",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "025_Scalable_Cross-Facility_Federated_L",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "026_SLE-FNO_Single-Layer_Extensions_fo",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "027_Towards_AI_for_science_developing",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "028_SPINONet_Scalable_Spiking_Physics-",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "029_Embodied_Science_Closing_the_Disco",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "030_Can_we_automatize_scientific_discov",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "031_Agentic_Personas_for_Adaptive_Scien",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "032_Revisiting_Gene_Ontology_Knowledge",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "033_LLM-ODE_Data-driven_Discovery_of_D",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "034_AI_for_Science_An_Emerging_Agenda",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "035_Towards_Autonomous_Mathematics_Rese",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "036_SciTrust_Evaluating_the_Trustworth",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "037_AIRS-Bench_a_Suite_of_Tasks_for_Fr",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "038_Towards_a_Science_of_AI_Agent_Relia",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "039_SciAgentGym_Benchmarking_Multi-Ste",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "040_Accelerating_Scientific_Research_wi",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "041_AMDAT_An_Open-Source_Molecular_Dyn",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "042_DMFlow_Disordered_Materials_Genera",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "043_PaperBanana_Automating_Academic_Il",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "044_MatterChat_A_Multi-Modal_LLM_for_M",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "045_Data_integrity_in_materials_science",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "046_A_Survey_of_AI_for_Materials_Scienc",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "047_Knowledge-guided_large_language_mod",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "048_Large_Language_Model_in_Materials_S",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "049_Genesis_Towards_the_Automation_of",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "050_Systematic_Framework_of_Application",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "051_Scientific_Hypothesis_Generation_an",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "052_A_Survey_on_Hypothesis_Generation_f",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "053_PersonaAI_An_Interactive_Agentic-A",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "054_Artificial_intelligence_tools_expan",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "055_S1-MMAlign_A_Large-Scale_Multi-Di",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "056_SCP_Accelerating_Discovery_with_a",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "057_Towards_a_Science_of_Scaling_Agent",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "058_Generative_AI_Uses_and_Risks_for_Kn",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "061_From_AI_for_Science_to_Agentic_Scie",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "062_The_Adoption_and_Usage_of_AI_Agents",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "063_Robot-assisted_mapping_of_chemical",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "064_Artificial_Intelligence_in_Research",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "065_Discovery_of_Unstable_Singularities",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "066_A_practical_evaluation_of_AutoML_to",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "067_Self-Driving_Laboratories_for_Chemi",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "068_Using_artificial_intelligence_for_s",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "069_A_multimodal_generative_AI_copilot",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "070_Interesting_Scientific_Idea_Generat",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "071_Unlocking_the_Potential_of_AI_Resea",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "072_AI_for_social_science_and_social_sc",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Other"
+      ]
+    },
+    {
+      "slug": "073_Artificial_intelligence_for_science",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "074_SciHorizon_Benchmarking_AI-for-Sci",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "075_Future_of_Work_with_AI_Agents_Audi",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "076_Small_Language_Models_are_the_Futur",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "077_Building_machines_that_learn_and_th",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Other"
+      ]
+    },
+    {
+      "slug": "078_RD-Agent_Automating_Data-Driven_A",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "079_Accelerating_Drug_Discovery_Through",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "080_VASPilot_MCP-Facilitated_Multi-Age",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "081_AgentRxiv_Towards_Collaborative_Au",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "082_Harnessing_Large_Language_Models_to",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "083_Large-Language-Model-Based_AI_Agent",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "084_StableToolBench_Towards_Stable_Lar",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "085_AnyTool_Self-Reflective_Hierarchi",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "086_Toolformer_Language_Models_Can_Tea",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "087_ToolLLM_Facilitating_Large_Languag",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "088_MechAgents_Large_language_model_mu",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "089_OWL_Optimized_Workforce_Learning_f",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "090_An_automatic_end-to-end_chemical_sy",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "091_OpenFOAMGPT_20_end-to-end_trustw",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "092_ScienceAgentBench_Toward_Rigorous",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "093_DeepCRE_Transforming_Drug_RD_via",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "094_Agent_Laboratory_Using_LLM_Agents",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "095_MatPilot_an_LLM-enabled_AI_Materia",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "096_A_Perspective_on_Foundation_Models",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "097_Towards_an_AI_co-scientist",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "098_Atomically_accurate_de_novo_design",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "099_Virtual_lab_powered_by_AI_scientis",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "100_The_Virtual_Lab_of_AI_agents_design",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "101_Your_Brain_on_ChatGPT_Accumulation",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Other"
+      ]
+    },
+    {
+      "slug": "102_AI4Research_A_Survey_of_Artificial",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "103_Generalization_Bias_in_Large_Langua",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "104_Admissions_in_the_age_of_AI_detect",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Other"
+      ]
+    },
+    {
+      "slug": "105_Cross_sectional_pilot_study_on_clin",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "106_AI_is_transforming_peer_review__an",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "107_Is_it_OK_for_AI_to_write_science_pa",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "108_Large_language_models_for_automated",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "109_Vending-Bench_A_Benchmark_for_Long",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "110_AI_Agents_in_Engineering_Design_A",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "111_SciAgents_Automating_Scientific_Di",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "112_Language_agents_achieve_superhuman",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "113_ResearchAgent_Iterative_Research_I",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "114_Fine-tuning_large_language_models_f",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "115_Foundation_models_for_materials_dis",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "116_AI_for_research_the_ultimate_guide",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "117_People_who_frequently_use_ChatGPT_f",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Other"
+      ]
+    },
+    {
+      "slug": "118_Retrieval-Augmented_Generation_for",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "119_AI-Driven_Review_Systems_Evaluatin",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "120_Reviewer2_Optimizing_Review_Genera",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "121_Peer_Review_as_A_Multi-Turn_and_Lon",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "122_Is_Your_Paper_Being_Reviewed_by_an",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "123_ReviewerGPT_An_Exploratory_Study_o",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "124_Three_AI-powered_steps_to_faster_s",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "125_ChartInstruct_Instruction_Tuning_f",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "126_ChartGemma_Visual_Instruction-tuni",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "127_ChartLlama_A_Multimodal_LLM_for_Ch",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "128_MMC_Advancing_Multimodal_Chart_Und",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "129_Reading_and_Reasoning_over_Chart_Im",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "130_Large_language_models_for_automated",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "131_Chartist_Task-driven_Eye_Movement",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "132_FigCaps-HF_A_Figure-to-Caption_Gen",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "133_PatFig_Generating_Short_and_Long_C",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "134_SciCap_A_Knowledge_Augmented_Data",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "135_BERT_Pre-training_of_Deep_Bidirect",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "136_ScispaCy_Fast_and_Robust_Models_fo",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "137_TLDR_Extreme_Summarization_of_Scie",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "138_SciBERT_A_Pretrained_Language_Mode",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "139_CoAuthor_Designing_a_Human-AI_Coll",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "140_CycleResearcher_Improving_Automate",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "141_PaperRobot_Incremental_Draft_Gener",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "142_Pelican_Correcting_Hallucination_i",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "143_SciCap_Generating_Captions_for_Sci",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "144_Autonomous_chemical_research_with_l",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "145_AAAI_Presidential_Panel_Report_on_t",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "146_Augmenting_large_language_models_wi",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "147_The_AI_Scientist_Towards_Fully_Aut",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "148_SciMON_Scientific_Inspiration_Mach",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "149_Attracting_new_users_or_business_as",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "150_Google_Scholar_to_overshadow_them_a",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "151_Discipline-specific_open_access_pub",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "152_SWE-bench_Can_Language_Models_Reso",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "153_SciCode_A_Research_Coding_Benchmar",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "154_Do_Users_Write_More_Insecure_Code_w",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "155_Productivity_assessment_of_neural_c",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "156_Galactica_A_Large_Language_Model_f",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "157_Best_Practices_for_Using_AI_When_Wr",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "158_The_AI_writing_on_the_wall",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "159_What_ChatGPT_and_generative_AI_mean",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "160_Use_of_large_language_models_as_art",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "161_LLMs_Outperform_Outsourced_Human_Co",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "162_LLMs_as_Research_Tools_A_Large_Sca",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "163_LLM4SR_A_Survey_on_Large_Language",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "164_Can_LLMs_Generate_Novel_Research_Id",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "165_ChatGPT_outperforms_crowd_workers_f",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "166_Best_humans_still_outperform_artifi",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "167_Can_large_language_models_provide_u",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "168_MARG_Multi-Agent_Review_Generation",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "169_What_Can_Natural_Language_Processin",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "170_RelevAI-Reviewer_A_Benchmark_on_AI",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "171_What_are_the_best_AI_tools_for_rese",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "172_Foundation-Model_Surrogates_Enable",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "173_Artificial_intelligence_for_science",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "174_Virtual_lab_powered_by_AI_scientis",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "175_Towards_end-to-end_automation_of_AI",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "177_The_frontier_of_simulationbased_inferen",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "178_Foundation_models_in_bioinformatics",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "179_Uncertainty_quantification_in_scientific",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "180_AI_for_Science_2025",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "181_Scaling_Large_Language_Models_for_NextG",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "182_Simulations_in_the_era_of_exascale_compu",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "183_Boltz1_Democratizing_Biomolecular_Inter",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "184_Architectures_variants_and_performance",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "185_Artificial_Intelligence_for_Direct_Predi",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "185_LangPINN_From_Language_to_PhysicsInfo",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "186_Nonlinear_stochastic_and_quantum_motion",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "187_Aviary_training_language_agents_on_chal",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "188_TxAgent_An_AI_Agent_for_Therapeutic_Rea",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "189_Democratizing_AI_scientists_using_ToolUn",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "190_DeepAnalyze_Agentic_Large_Language_Mode",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "191_Paper2Web_Lets_Make_Your_Paper_Alive",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "192_MedAgentGym_A_Scalable_Agentic_Training",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "193_MedAgents_Large_Language_Models_as_Coll",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "194_Earth-Agent_Unlocking_the_Full_Landscap",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "195_Large_Language_Models_for_Automated_Open",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "196_State-Free_Inference_of_State-Space_Mode",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "197_Chiral_spin_symmetry_and_hot_QCD",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "198_Distinguishing_Neutron_Star_vs_Low-Mass",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "199_InternAgent_When_Agent_Becomes_the_Scie",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "200_AI-Researcher_Autonomous_Scientific_Inn",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "201_A_Survey_on_Uncertainty_Quantification_M",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "202_Foundation_Models_for_Environmental_Scie",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "203_From_Theory_to_Application_A_Practical",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "204_Physics-Informed_Neural_Networks_and_Ext",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "205_Scientific_Machine_Learning_through_Phys",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "206_Scientific_Large_Language_Models_A_Surv",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Life Sciences & Molecular Discovery",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "207_A_Survey_of_Scientific_Large_Language_Mo",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "208_A_Comprehensive_Survey_of_Scientific_Lar",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "209_Towards_Scientific_Intelligence_A_Surve",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "210_Agentic_AI_for_Scientific_Discovery_A_S",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "211_From_Automation_to_Autonomy_A_Survey_on",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "212_Transforming_Science_with_Large_Language",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "213_Physics_Informed_Deep_Learning_Part_I",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "214_Neural_Ordinary_Differential_Equations",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "215_Align_then_Fusion_Generalized_Largesca",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "216_SemiSupervised_2D_Human_Pose_Estimation",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "217_Architecture_Design_for_HumanDriven_Sys",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "218_ChemCrow_Augmenting_largelanguage_mode",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "219_SciBench_Evaluating_CollegeLevel_Scien",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "220_The_AI_Scientistv2_WorkshopLevel_Auto",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "221_Leveraging_LLMs_in_Scholarly_Knowledge_G",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "222_ResearchCodeAgent_An_LLM_MultiAgent_Sy",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "223_AutoP2C_An_LLMBased_Agent_Framework_fo",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "224_From_GPU_Engineering_to_Scientific_Disco",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "225_Evaluating_Large_Language_Models_in_Scie",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "226_If_in_a_Crowdsourced_Data_Annotation_Pip",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "227_Reason",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "228_A_year_in_review_open_access_at_OUP",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "229_Semantic_Scholar",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "230_Is_AI_ready_to_mass-produce_lay_summarie",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "231_Can_AI_review_the_scientific_literature",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "232_How_AI-powered_science_search_engines_ca",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "233_AI_will_transform_science_now_research",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "234_ChatGPT_has_entered_the_classroom_how_L",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "235_ChatGPT_and_science_the_AI_system_was_a",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "236_AI_tools_expand_scientists_impact_but_contract_sciences_focus",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "237_Artificial_intelligence_for_science_bridging_data_to_wisdom",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Scientific Foundation Models"
+      ]
+    },
+    {
+      "slug": "238_Virtual_lab_powered_by_AI_scientists_super-charges_biomedical_research",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "239_Foundation_models_for_materials_discovery",
+      "primary_category": "Scientific Foundation Models",
+      "all_categories": [
+        "Scientific Foundation Models",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "240_What_are_the_best_AI_tools_for_research_Natures_guide",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "241_Method_and_Platform_for_Validating_Human_Inventors",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science",
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "242_Large_language_model_agent_for_nuclear_reactor_ope",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow",
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "243_On_implementing_autonomous_supply_chains_A_multi-a",
+      "primary_category": "Other",
+      "all_categories": [
+        "Other"
+      ]
+    },
+    {
+      "slug": "244_LimGen_Probing_the_LLMs_for_Generating_Suggestive",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence",
+        "Benchmarks & Evaluation",
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "245_Beyond_Heuristics_Multimodal_Transformer_for_Chart",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "246_ChartReader_A_Unified_Framework_for_Chart_Derender",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "247_spaCy_Industrial-strength_Natural_Language_Process",
+      "primary_category": "Scientific NLP & Document Intelligence",
+      "all_categories": [
+        "Scientific NLP & Document Intelligence"
+      ]
+    },
+    {
+      "slug": "248_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_F",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "249_Disrupting_the_subscription_journals_business_mode",
+      "primary_category": "Ethics, Policy & Meta-Science",
+      "all_categories": [
+        "Ethics, Policy & Meta-Science"
+      ]
+    },
+    {
+      "slug": "250_Hormone_Therapy_for_Cancer_Treating_Hormone-Sensit",
+      "primary_category": "Life Sciences & Molecular Discovery",
+      "all_categories": [
+        "Life Sciences & Molecular Discovery"
+      ]
+    },
+    {
+      "slug": "251_Machine-Learned_Interatomic_Potentials_f",
+      "title": "Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "252_MolQuest_A_Benchmark_for_Agentic_Evalua",
+      "title": "MolQuest: A Benchmark for Agentic Evaluation of Abductive Reasoning in Chemical Structure Elucidation",
+      "primary_category": "Benchmarks & Evaluation",
+      "all_categories": [
+        "Benchmarks & Evaluation"
+      ]
+    },
+    {
+      "slug": "253_Physics-Informed_Neural_Operator_for_Ele",
+      "title": "Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "254_Incorporating_Continuous_Dependence_Qual",
+      "title": "Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "255_Physics-informed_neural_network_for_mult",
+      "title": "Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "256_Automating_Computational_Chemistry_Workf",
+      "title": "Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    },
+    {
+      "slug": "257_SEVerA_Verified_Synthesis_of_Self-Evolv",
+      "title": "SEVerA: Verified Synthesis of Self-Evolving Agents",
+      "primary_category": "Autonomous Agents & Research Workflow",
+      "all_categories": [
+        "Autonomous Agents & Research Workflow"
+      ]
+    },
+    {
+      "slug": "258_General-Purpose_Machine-Learned_Potentia",
+      "title": "General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy",
+      "primary_category": "Physical Sciences & Engineering",
+      "all_categories": [
+        "Physical Sciences & Engineering"
+      ]
+    }
+  ]
+}

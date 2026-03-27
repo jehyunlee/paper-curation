@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills</title>
+<link href="https://fonts.googleapis.com/css2?family=KoPub+Dotum:wght@300;400;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #222;
+    background: #f7f7f7;
+    padding: 20px;
+  }
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 44px 52px;
+  }
+  .back { margin-bottom: 24px; }
+  .back a { color: #D63423; text-decoration: none; font-size: 14px; font-weight: 700; }
+  .back a:hover { text-decoration: underline; }
+  h1 { font-size: 22px; font-weight: 700; line-height: 1.45; color: #111; margin-bottom: 18px; }
+  .meta {
+    background: #f9f9f9;
+    border-left: 4px solid #D63423;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 10px;
+    border-radius: 0 6px 6px 0;
+  }
+  .meta a { color: #D63423; }
+  .mode-badge {
+    display: inline-block;
+    background: #fff3f2;
+    color: #D63423;
+    border: 1px solid #D63423;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    margin-top: 6px;
+  }
+  hr { border: none; border-top: 1px solid #eee; margin: 28px 0; }
+  h2 { font-size: 17px; font-weight: 700; color: #D63423; margin: 32px 0 12px; padding-bottom: 5px; border-bottom: 2px solid #f2e0de; }
+  .essence-box {
+    background: #fff8f7;
+    border: 1px solid #f5c5be;
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+  p { margin-bottom: 14px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  .originality-item {
+    background: #f8f8f8;
+    border-left: 3px solid #D63423;
+    padding: 8px 14px;
+    margin-bottom: 8px;
+    border-radius: 0 5px 5px 0;
+    font-size: 14px;
+  }
+  .tag {
+    display: inline-block;
+    background: #D63423;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 6px;
+    margin-right: 4px;
+    letter-spacing: 0.03em;
+  }
+  .score-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  .score-table th { background: #D63423; color: #fff; padding: 9px 14px; text-align: left; font-weight: 700; }
+  .score-table td { padding: 9px 14px; border-bottom: 1px solid #eee; }
+  .score-table tr:last-child td { border-bottom: none; }
+  .score-badge {
+    display: inline-block;
+    min-width: 38px;
+    text-align: center;
+    background: #D63423;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 10px;
+  }
+  .summary-box { background: #fff3f2; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: #333; margin-top: 10px; }
+  figure { margin: 20px 0; text-align: center; }
+  figure img { max-width: 100%; border-radius: 6px; border: 1px solid #eee; }
+  figcaption { font-size: 13px; color: #666; margin-top: 7px; font-style: italic; }
+  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+
+  <h1>Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills</h1>
+
+  <div class="meta">
+    <strong>저자:</strong> Mingwei Ding, Chen Huang, Yibo Hu, Yifan Li, Zitian Lu, Xingtai Yu, Duo Zhang, Wenxi Zhai, Tong Zhu, Qiangqiang Gu, Jinzhe Zeng<br>
+    <strong>날짜:</strong> 2026-03-26 &nbsp;|&nbsp;
+    <strong>Journal:</strong> arXiv preprint &nbsp;|&nbsp;
+    <strong>DOI:</strong> N/A &nbsp;|&nbsp;
+    <strong>arXiv:</strong> <a href="https://arxiv.org/abs/2603.25522" target="_blank">2603.25522</a>
+    <br><span class="mode-badge">PDF</span>
+  </div>
+
+  <hr>
+
+  <h2>Essence</h2>
+  <div class="essence-box">
+    계산 화학 자동화의 핵심 장벽은 추론·워크플로 명세·소프트웨어 실행·HPC 실행이 단일 에이전트 안에 강하게 결합되어 있어 새 기능 추가 시 에이전트 전체를 재설계해야 한다는 점이다. 이 논문은 OpenClaw를 범용 제어 루프로 삼고, schema 기반 planning skill이 과학적 목표를 실행 가능한 task specification으로 변환하며, domain skill이 특정 화학 소프트웨어 절차를 캡슐화하고, DPDispatcher가 HPC 스케줄러를 추상화하는 <strong>분리형(decoupled) agent-skill 아키텍처</strong>를 제시한다. 메탄 산화 반응 MD 사례 연구에서 인간 개입 없이 다단계 크로스-툴 실행, 런타임 오류 복구, 반응 네트워크 추출을 완수하였다.
+  </div>
+
+  <figure>
+    <img src="figures/fig1.png" alt="Figure 1">
+    <figcaption>Figure 1: OpenClaw 기반 분리형 agent-skill 프레임워크 아키텍처. 중앙 제어 루프(OpenClaw), planning skill, domain skill, DPDispatcher의 역할 분담을 도식화.</figcaption>
+  </figure>
+
+  <h2>Originality (Abstract 기반)</h2>
+  <div class="originality-item">
+    <span class="tag">authorship</span><span class="tag">action</span><span class="tag">finding</span><span class="tag">learned</span>
+    "We demonstrate a decoupled agent-skill design for computational chemistry automation leveraging OpenClaw."
+  </div>
+  <div class="originality-item">
+    <span class="tag">finding</span>
+    "OpenClaw provides centralized control and supervision; schema-defined planning skills translate scientific goals into executable task specifications; domain skills encapsulate specific computational chemistry procedures; and DPDispatcher manages job execution across heterogeneous HPC environments."
+  </div>
+  <div class="originality-item">
+    <span class="tag">continuation</span>
+    "In a molecular dynamics case study of methane oxidation, the system completed cross-tool execution, bounded recovery from runtime failures, and reaction network extraction without human intervention."
+  </div>
+
+  <h2>How (방법론)</h2>
+  <ul>
+    <li><strong>분리형 설계:</strong> OpenClaw 제어 루프는 계산 화학 도메인 지식 없이 범용 조율을 담당; 도메인 로직은 skill 파일로 외재화</li>
+    <li><strong>Agent Taskboard Manifest:</strong> 자연어 태스크 설명을 명시적·실행 가능한 워크플로 명세(어떤 skill을, 어떤 순서로, 어떤 조건 하에)로 변환하는 planning skill</li>
+    <li><strong>Progressive skill loading:</strong> 현재 필요한 skill만 컨텍스트 창에 로드하여 토큰 낭비 방지 및 확장성 확보</li>
+    <li><strong>DPDispatcher 통합:</strong> Slurm, PBS, LSF 등 이기종 HPC 스케줄러를 단일 인터페이스로 추상화; 큐잉·모니터링·결과 수집을 워크플로 상태로 관리</li>
+    <li><strong>사례 연구 — 메탄 산화 MD:</strong> Open Babel → Gaussian(DFT 최적화) → dpdata → Packmol → LAMMPS + DeePMD-kit(반응 MD @ 3000 K) → ReacNetGenerator의 6단계 크로스-툴 파이프라인을 자율 완수</li>
+  </ul>
+
+  <h2>Why (중요성)</h2>
+  <ul>
+    <li>계산 화학 워크플로 자동화는 AI for Science 연구 가속화의 핵심 병목이며, 기존 접근(AiiDA, FireWorks 등)은 제어 흐름이 미리 고정되어 동적 복구나 새 소프트웨어 통합이 어렵다</li>
+    <li>Skill 교체만으로 새 소프트웨어를 통합할 수 있는 모듈식 구조는 유지보수 비용을 크게 낮추고, 대규모 계산 화학 커뮤니티가 공유·재사용할 수 있는 skill 생태계 구축 가능</li>
+    <li>런타임 오류 발생 시 bounded recovery(사용자 개입 요청 포함)를 지원함으로써 실제 HPC 환경의 불안정성을 프로덕션 수준에서 처리</li>
+  </ul>
+
+  <h2>Limitation</h2>
+  <ul>
+    <li>사례 연구가 단일 메탄 산화 시스템에 국한되어 있어 다양한 계산 화학 워크플로에 대한 범용성 검증 부족</li>
+    <li>Skill 작성 자체가 전문 지식을 요구하므로, 새 소프트웨어 통합이 쉬워졌다고는 해도 skill 생태계 구축에는 상당한 초기 투자가 필요</li>
+    <li>대규모 멀티-노드 HPC 환경에서의 성능 및 확장성(수백 개의 병렬 작업) 벤치마크가 제시되지 않음</li>
+  </ul>
+
+  <h2>Further Study</h2>
+  <ul>
+    <li>다양한 계산 화학 태스크(자유 에너지 계산, 단백질 폴딩, 소재 스크리닝)로 skill 저장소 확장</li>
+    <li>Skill 자동 생성 혹은 LLM 보조 skill 작성 도구 개발로 진입 장벽 완화</li>
+    <li>멀티-에이전트 병렬 실행 지원 및 대규모 HPC 클러스터에서의 수천 작업 동시 처리 검증</li>
+  </ul>
+
+  <h2>평가</h2>
+  <table class="score-table">
+    <tr><th>항목</th><th>점수</th></tr>
+    <tr><td>Novelty</td><td><span class="score-badge">3/5</span></td></tr>
+    <tr><td>Technical Soundness</td><td><span class="score-badge">4/5</span></td></tr>
+    <tr><td>Significance</td><td><span class="score-badge">4/5</span></td></tr>
+    <tr><td>Clarity</td><td><span class="score-badge">4/5</span></td></tr>
+    <tr><td>Overall</td><td><span class="score-badge">4/5</span></td></tr>
+  </table>
+  <div class="summary-box">
+    <strong>총평:</strong> 계산 화학 자동화의 결합 문제를 agent-skill 분리 아키텍처로 깔끔하게 해결하며, 실제 메탄 산화 MD 사례로 실행 가능성을 입증한 완성도 높은 시스템 논문이다. 단일 사례 연구의 한계가 있으나 재현 가능하고 확장 가능한 설계 원칙이 명확하여 AI for Science 자동화 플랫폼 연구에 중요한 기여를 한다.
+  </div>
+</div>
+</body>
+</html>

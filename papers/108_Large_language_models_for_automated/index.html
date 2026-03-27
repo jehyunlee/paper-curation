@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Large Language Models for Automated Scholarly Paper Review: A Survey</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Large Language Models for Automated Scholarly Paper Review: A Survey</h1>
+<ul>
+<li><strong>저자</strong>: Zhenzhen Zhuang, Jiandong Chen, Hongfeng Xu, Yuwen Jiang, Jialiang Lin</li>
+<li><strong>기관</strong>: Guangzhou Institute of Science and Technology; Guizhou Normal University</li>
+<li><strong>출처</strong>: arXiv:2501.10326 (2025-01-17)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.10326"><a href="https://doi.org/10.48550/arXiv.2501.10326" target="_blank">10.48550/arXiv.2501.10326</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM 시대에 자동화된 학술 논문 리뷰(Automated Scholarly Paper Review, ASPR)의 현황을 종합적으로 조망하는 서베이 논문이다. ASPR에 사용되는 LLM 종류, 기술적 병목 해소 현황, 새로운 방법론/데이터셋/소스코드/온라인 시스템, LLM의 성능과 한계, 출판사 및 학계의 반응과 정책, 그리고 미래 도전 과제를 체계적으로 정리한다. 현재 ASPR과 전통적 피어 리뷰가 공존하는 단계에 있으며, LLM이 ASPR의 실질적 구현을 위한 변혁적 잠재력을 지니고 있음을 강조한다.</p>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>학술 출판의 피어 리뷰 시스템은 리뷰어 부족, 리뷰 품질 불균일, 긴 리뷰 기간 등 구조적 문제를 안고 있다.</li>
+<li>ChatGPT 출시 이후 LLM을 피어 리뷰에 활용하는 연구가 폭발적으로 증가했으나, 이를 체계적으로 정리한 서베이가 부재했다.</li>
+<li>저자들은 이전 연구에서 ASPR 개념을 제안한 바 있으며, LLM 시대에 맞춰 ASPR의 기술적/정책적/윤리적 측면을 업데이트할 필요가 있었다.</li>
+</ul>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>26개 LLM</strong>의 ASPR 활용 현황을 정리하고, GPT 시리즈가 38.5%로 가장 빈번하게 사용됨을 확인했다.</li>
+<li>LLM이 해결한 <strong>4가지 기술적 병목</strong>: 긴 텍스트 처리(long text modeling), 멀티모달 입력, 다회차 대화(multi-round conversation), 실시간 지식 획득(instance knowledge acquisition).</li>
+<li>리뷰 리포트 생성을 위한 <strong>3가지 주요 방법론</strong> 분류: 프롬프트 엔지니어링, 지도 미세조정(supervised fine-tuning), 다중 인스턴스 프레임워크(multi-instance frameworks).</li>
+<li><strong>12개 새로운 데이터셋</strong>과 <strong>14개 소스코드/온라인 도구</strong>를 종합 정리했다.</li>
+<li>주요 출판사(Elsevier, Springer Nature, IEEE 등) <strong>16개 기관의 AIGC 도구 사용 정책</strong>을 수집하여 비교 분석했다.</li>
+<li>LLM의 ASPR 성능(리뷰 효율성 향상, 구조화된 코멘트 생성, 체크리스트 검증 86.6% 정확도, 기술적 오류 검출)과 <strong>5가지 핵심 문제점</strong>(전문지식 부족, 편향, 부정확한 코멘트, 프라이버시 위험, 약한 커스터마이제이션)을 체계적으로 정리했다.</li>
+</ul>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ol>
+<li><strong>문헌 수집 및 분류</strong>: ASPR 관련 LLM 활용 논문을 체계적으로 수집하여 LLM 종류별, 방법론별, 작업 단계별(스크리닝, 메인 리뷰, 코멘트 생성, 리뷰 품질 평가, 저자 응답)로 분류했다.</li>
+<li><strong>기술 분석</strong>: LLM의 발전이 기존 ASPR 병목(입력 길이 제한, 단일 모달리티, 단일 라운드 처리, 지식 단절)을 어떻게 해소했는지 분석했다.</li>
+<li><strong>방법론 유형화</strong>: 프롬프트 엔지니어링(직접 프롬프트 설계), 지도 미세조정(ReviewMT, REVIEWER2, LimGen 등), 다중 에이전트 프레임워크(SWIF2T, SEA, MARG, MAMORX 등)로 구분했다.</li>
+<li><strong>정책 조사</strong>: Elsevier, Springer Nature, IEEE, ACM, ACL 등 주요 출판사의 AIGC 도구 사용 정책을 수집하여 "사용 금지", "부분 허용", "자체 AI 도구 운영"의 3단계로 분류했다.</li>
+<li><strong>학계 반응 분석</strong>: 기존 리뷰 체계 내에서의 LLM 활용에 대한 학계의 태도를 규범 수립, 교육, 투명성 선언, 활용 방안, 가치 정렬의 5가지 측면에서 정리했다.</li>
+</ol>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li>ASPR을 하나의 독립된 연구 분야로 정의하고, LLM 시대의 ASPR 전반을 <strong>기술-방법-자원-성능-정책-학계반응-도전과제</strong>의 7가지 축으로 체계적으로 조망한 최초의 종합 서베이이다.</li>
+<li>출판사 정책과 학계 반응을 기술적 분석과 통합하여 다룬 점이 기존 서베이와 차별화된다.</li>
+<li>ASPR과 피어 리뷰의 "공존 단계(coexistence phase)"라는 개념적 프레임워크를 제시하여, 단순 대체가 아닌 상호보완적 발전 방향을 제안했다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+<ul>
+<li><strong>깊이 부족</strong>: 26개 LLM과 다수의 방법론을 다루지만, 각 방법론의 성능을 직접 실험적으로 비교하지 않아 정량적 비교가 어렵다. 서베이 특성상 기존 결과의 집약에 그친다.</li>
+<li><strong>시간적 한계</strong>: 2025년 1월 기준으로 GPT-4o, Claude 3 Opus 등 최신 모델까지 다루나, LLM 발전 속도를 고려하면 빠르게 outdated될 가능성이 있다.</li>
+<li><strong>멀티모달 ASPR 논의 부족</strong>: 논문 자체에서도 인정하듯, 멀티모달 데이터셋과 연구가 부족하며 이에 대한 심층 분석이 제한적이다.</li>
+<li><strong>비영어권 학술 리뷰</strong>: 대부분의 분석이 영어 기반 학술지와 컨퍼런스에 집중되어 있어, 비영어권 학술 환경에서의 ASPR 적용 가능성 논의가 부족하다.</li>
+<li><strong>후속 연구 방향</strong>: (1) 할루시네이션 교정 기법 개발, (2) 멀티모달 ASPR 데이터셋 구축 및 연구, (3) 저자원 환경에서의 프라이빗 호스팅 모델 배포 최적화, (4) 생성적 공격(adversarial attack)에 대한 보안 강화.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">점수 (1-5)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novelty</td>
+<td style="text-align: center;">3</td>
+<td>ASPR 분야의 첫 LLM 시대 종합 서베이로서 정리 가치가 높으나, 새로운 기법 제안은 없음</td>
+</tr>
+<tr>
+<td>Significance</td>
+<td style="text-align: center;">4</td>
+<td>LLM 기반 학술 리뷰 자동화라는 시의성 높은 주제를 기술-정책-학계 관점에서 통합 조망</td>
+</tr>
+<tr>
+<td>Clarity</td>
+<td style="text-align: center;">4</td>
+<td>체계적 구조(LLM 종류 → 기술 → 방법 → 자원 → 성능 → 정책 → 도전과제)로 읽기 쉬움</td>
+</tr>
+<tr>
+<td>Validity</td>
+<td style="text-align: center;">3</td>
+<td>직접 실험이 아닌 문헌 정리이므로 주장의 근거는 기존 연구에 의존</td>
+</tr>
+<tr>
+<td>Reproducibility</td>
+<td style="text-align: center;">N/A</td>
+<td>서베이 논문 특성상 해당 없음</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td style="text-align: center;"><strong>3.5</strong></td>
+<td>빠르게 변화하는 LLM-ASPR 분야의 현황을 체계적으로 파악하기 위한 유용한 참고 자료</td>
+</tr>
+</tbody>
+</table></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

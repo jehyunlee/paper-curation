@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 1.5rem 0 0.6rem; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; color: #D63423; }
+</style>
+</head>
+<body>
+<h1>Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning</h1>
+<blockquote><p><strong>저자</strong>: Guojie Li, Wuyue Yang, Liu Hong | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: — | <strong>arXiv</strong>: 2603.25122</p></blockquote>
+<blockquote><p><strong>리뷰 모드</strong>: Web-only (abstract)</p></blockquote>
+<hr>
+<h2>Essence</h2>
+<p>기존 PINN의 핵심 약점인 낮은 일반화 성능 문제를, PDE의 수학적 적분성(well-posedness)에서 보장되는 해의 연속 의존성(continuous dependence) 정보를 학습에 추가 반영함으로써 해결한다. 이 확장은 PINN이 단순한 PDE 솔버에서 나아가 operator learning 수준의 일반화 능력을 갖추도록 하며, PDE 해의 수학적 구조를 훈련 제약으로 활용하는 새로운 패러다임을 제시한다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"></div>
+<p>*Figure 1: 연속 의존성 조건을 통합한 확장 PINN 프레임워크 — 초기·경계 조건 변화에 대한 해의 민감도를 손실 함수에 반영하는 구조*</p>
+<hr>
+<h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, novelty, action] "Inspired by the rigorous mathematical statements on the well-posedness of PDEs, we develop a novel extension of PINNs by incorporating the additional information on the continuous dependence of solutions on initial and boundary conditions."</li>
+</ul>
+<hr>
+<h2>How (방법론)</h2>
+<ul>
+<li>기존 PINN에 PDE well-posedness의 연속 의존성 조건을 추가 제약으로 도입</li>
+<li>초기 조건 및 경계 조건의 변화에 대한 해의 민감도를 손실 함수에 반영</li>
+<li>수학적 엄밀성(Hadamard well-posedness)에서 영감을 얻은 훈련 프레임워크</li>
+<li>고차원 PDE 및 불규칙 경계를 갖는 문제에 적용</li>
+</ul>
+<hr>
+<h2>Why (중요성)</h2>
+<ul>
+<li>PINN의 낮은 일반화 성능은 실제 응용에서 가장 큰 걸림돌</li>
+<li>연속 의존성 조건은 수학적으로 보장된 well-posedness 성질에서 도출되어 이론적 근거가 명확</li>
+<li>Operator learning(DeepONet, FNO 등)과의 경쟁에서 PINN의 경쟁력 강화</li>
+<li>단일 솔루션 학습을 넘어 파라미터/조건 변화에 대한 robust 예측 가능</li>
+</ul>
+<hr>
+<h2>Limitation</h2>
+<ul>
+<li>Abstract 기반으로 구체적 PDE 유형 및 성능 개선 수치 미확인</li>
+<li>연속 의존성 정보를 손실 함수에 반영하는 구체적 구현 방식 불명확</li>
+<li>강한 비선형 PDE나 불연속 해(shock wave 등)에 대한 적용 가능성 미검토</li>
+</ul>
+<hr>
+<h2>Further Study</h2>
+<ul>
+<li>Navier-Stokes, 파동 방정식 등 다양한 물리 PDE에의 검증 확장</li>
+<li>DeepONet, FNO 등 기존 operator learning 방법과의 체계적 비교</li>
+<li>연속 의존성 이외의 well-posedness 조건(유일성, 존재성) 활용 탐색</li>
+</ul>
+<hr>
+<h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
+<p><strong>총평</strong>: PDE well-posedness의 수학적 구조를 PINN 훈련 제약으로 활용하는 아이디어는 이론적으로 우아하며, 일반화 성능 향상을 통해 PINN을 operator learning 수준으로 격상시키는 실질적 기여를 한다.</p>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

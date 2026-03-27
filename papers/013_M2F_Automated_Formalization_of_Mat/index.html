@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M2F: Automated Formalization of Mathematical Literature at Scale</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>M2F: Automated Formalization of Mathematical Literature at Scale</h1>
+<blockquote>
+<p><strong>저자</strong>: Zichen Wang, Wanli Ma, Zhenyu Ming, Gong Zhang, Kun Yuan, Zaiwen Wen | <strong>날짜</strong>: 2026-02-19 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2602.17016</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>수학 교과서와 연구 논문을 Lean 4 형식 증명 라이브러리로 자동 변환하는 최초의 프로젝트 규모(project-scale) 에이전틱 프레임워크 M2F(Math-to-Formal)를 제안한다. 2단계 파이프라인(Stage 1: 명제 컴파일, Stage 2: 증명 복구)과 검증기 인증 수정(VeriRefine) 원칙을 통해, 약 3주 만에 479페이지의 실해석학/볼록해석학 교과서로부터 153,853줄의 Lean 코드(241개 파일, 4,116개 선언)를 생성하여 end-to-end 빌드에 성공하였다. FATE-H 벤치마크에서 96% 증명 성공률을 달성하여 Seed-Prover 1.5(80%)를 16%p 상회하였다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 사실</strong>: 수학의 형식화(formalization)는 기계적 검증을 가능하게 하지만, 개별 정리 수준에 머물러 있으며 프로젝트 규모로의 확장은 거의 다루어지지 않음. mathlib 등 형식 라이브러리의 성장은 전문가 팀의 수개월~수년 노력에 의존</li>
+<li><strong>격차(Gap)</strong>: 기존 신경 정리 증명기(neural theorem prover)와 에이전틱 시스템은 잘 구성된 명제(well-formed statement) 하에서 개별 증명 목표를 닫는 데 집중하며, 파일 간 의존성 관리, import 해결, 프로젝트 전체 컴파일이라는 핵심 병목을 해결하지 못함</li>
+<li><strong>접근법</strong>: 문서를 원자적 블록으로 분해 -&gt; 의존성 추론 및 정렬 -&gt; 명제 스켈레톤 생성 및 반복 수정 -&gt; 증명 복구의 2단계 파이프라인으로, Lean 툴체인 피드백이 편집의 수락/거부를 결정하는 VeriRefine 프로토콜을 중심으로 구성</li>
+</ul>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>프로젝트 규모 형식화 달성</strong>: 실해석학(312p, 34,327 LoC), 볼록해석학(140p, 105,682 LoC), 연구 논문(27p, 13,844 LoC) 등 총 479페이지를 153,853줄 Lean 라이브러리로 변환, end-to-end 빌드 성공</li>
+<li><strong>매칭된 명제 하 100% 증명 성공</strong>: 감사(audit)를 통과한 875개 증명 의무를 모두 자동으로 해결 (PSR=100%)</li>
+<li><strong>FATE-H 벤치마크에서 SOTA</strong>: 96% 증명 성공률(완전 자동), 31개 보조정리 맵 추가 시 97%, Seed-Prover 1.5(80%) 대비 +16%p</li>
+<li><strong>벤치마크 오류 발견</strong>: FATE-H의 한 문제에서 Lean 명제 자체가 비일관적(inconsistent)임을 검증기 기반 추적으로 발견, GPT-5.2 Pro를 포함한 LLM 기반 의미 검사로는 탐지되지 않은 오류</li>
+<li><strong>VeriRefine의 단조성 보장</strong>: 수락된 패치 시퀀스가 단계 목적함수에 대해 단조 감소하여, 진동과 퇴행을 방지</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>Stage 1 (명제 컴파일)</strong>: LaTeX -&gt; JSON 전처리 -&gt; 원자적 블록 분해 -&gt; 의존성 추론 및 정렬 -&gt; LLM이 Lean 스켈레톤 생성(sorry 허용) -&gt; 파일별 VerifyFile 호출 -&gt; 오류 시 범위 지정 패치 제안 -&gt; VeriRefine으로 수락/거부. SCC=100%, ARR&lt;0.5 (대부분 1회 시도로 성공)</li>
+<li><strong>Stage 2 (증명 복구)</strong>: 컴파일 가능한 P1에서 시작 -&gt; sorry 위치 탐색 -&gt; 목표/컨텍스트 조회 -&gt; 증명 계획 수립 -&gt; 패치 제안 -&gt; VeriRefine으로 수락/거부 -&gt; 실패 시 재계획(replan). 검증기 호출 예산 내에서 반복</li>
+<li><strong>검증 메트릭</strong>: 파일 수준 오류 수 E(Delta_f), Stage 1에서는 범위 내 오류 수 L, Stage 2에서는 sorry 수 H를 우선순위 순서로 비교</li>
+<li><strong>인프라</strong>: Lean 4 v4.26.0-rc2, Codex CLI(reasoning effort="high"), LSP 기반 MCP 서버, Intel Xeon 6982P-C 16코어/128GiB RAM</li>
+<li><strong>검증</strong>: 명제 충실성은 도메인 전문가의 수동 감사(provenance-linked manual audit)로 보장</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<p>교과서/논문 규모의 수학 형식화를 "프로젝트 컴파일" 문제로 정식화하고, 검증기 인증 수정(VeriRefine)이라는 단조성 보장 원칙으로 장기 실행의 안정성을 확보한 최초의 시스템이다. 개별 정리 증명이 아닌 프로젝트 전체의 import/namespace/의존성 안정화를 핵심 과제로 설정한 관점 전환이 독창적이며, 검증기 피드백만으로 편집 수락을 결정하는 설계가 LLM 기반 제안과 형식 검증을 깔끔하게 분리한다. FATE-H 벤치마크 오류를 검증기 워크플로우로 발견한 사례는 형식 검증의 부가 가치를 잘 보여준다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>남은 병목은 자연어 그라운딩(natural-language grounding)과 라이브러리 탐색(library navigation)</li>
+<li>FATE-H에서 4개 미해결 문제 중 2개는 전문가 보조정리 맵 없이 자동 해결 불가</li>
+<li>명제 충실성 검증이 수동 감사에 의존하여 확장성에 한계</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>LLM 백엔드(Codex CLI)의 구체적 모델 버전과 비용이 명시되지 않아 재현성 판단이 어려움</li>
+<li>Stage 2에서 "매칭된 명제(matched statements)" 조건이 전제되므로, Stage 1에서 생성된 명제 자체의 의미적 정확성은 별도 문제로 남음</li>
+<li>볼록해석학의 105,682줄이 실해석학의 34,327줄 대비 과도하게 많은데, 코드 중복이나 불필요한 보조 정리 생성 가능성에 대한 분석이 부재</li>
+<li>정규 도메인(일반 위상, 대수, 조합론 등)으로의 일반화 가능성이 실증되지 않음</li>
+<li>전체 파이프라인의 end-to-end 실행 시간("약 3주")에 대한 세부 분석(LLM 호출 수, 비용 등)이 본문에서 부족</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>자동화된 명제 충실성 검증 방법론 개발 (수동 감사 대체)</li>
+<li>대수학, 위상수학, 조합론 등 다른 수학 분야로의 확장</li>
+<li>오픈소스 LLM 백엔드로의 이식성 검증</li>
+<li>mathlib에 직접 기여 가능한 코드 품질 달성을 위한 스타일 준수 및 중복 제거 자동화</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: 수학 형식화의 패러다임을 개별 정리에서 프로젝트 규모로 전환한 획기적 연구이다. VeriRefine의 단조성 보장 원칙은 장기 실행 안정성을 우아하게 해결하며, 479페이지에서 15만 줄 이상의 빌드 가능한 Lean 라이브러리를 생성한 성과는 수학 형식화 커뮤니티에 즉각적 영향을 줄 수 있다. FATE-H 벤치마크 오류 발견은 형식 검증이 LLM을 보완하는 독특한 가치를 보여준다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

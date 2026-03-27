@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ChemCrow: Augmenting large-language models with chemistry tools</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>ChemCrow: Augmenting large-language models with chemistry tools</h1>
+<blockquote>
+<p><strong>저자</strong>: Andres M Bran, Sam Cox, Oliver Schilter, Carlo Baldassari, Andrew D White, Philippe Schwaller | <strong>날짜</strong>: 2023-04-11 | <strong>Journal</strong>: arXiv | <strong>Link</strong>: <a href="https://arxiv.org/abs/2304.05376" target="_blank">https://arxiv.org/abs/2304.05376</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="essence-box"><h2>Essence</h2>
+<p>In this study, we introduce ChemCrow, an LLM chemistry agent designed to accomplish tasks across organic synthesis, drug discovery, and materials design.</p></div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Gap</strong>: Recently, large-language models (LLMs) have shown strong performance in tasks across domains, but struggle with chemistry-related problems.</li></ul>
+</div><div class="section-box"><h2>Achievement</h2>
+<ul>
+<li>Our evaluation, including both LLM and expert assessments, demonstrates ChemCrow&#x27;s effectiveness in automating a diverse set of chemical tasks.</li></ul>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li>Integrating them into a single platform with enhanced accessibility could help reaching their full potential by overcoming steep learning curves.</li>
+<li>Recently, large-language models (LLMs) have shown strong performance in tasks across domains, but struggle with chemistry-related problems.</li>
+<li>Moreover, these models lack access to external knowledge sources, limiting their usefulness in scientific applications.</li>
+<li>In this study, we introduce ChemCrow, an LLM chemistry agent designed to accomplish tasks across organic synthesis, drug discovery, and materials design.</li>
+<li>By integrating 18 expert-designed tools, ChemCrow augments the LLM performance in chemistry, and new capabilities emerge.</li></ul>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li>By integrating 18 expert-designed tools, ChemCrow augments the LLM performance in chemistry, and new capabilities emerge.</li>
+<li>Our agent autonomously planned and executed the syntheses of an insect repellent, three organocatalysts, and guided the discovery of a novel chromophore.</li>
+</ul>
+<p><strong>Trigger-based extraction</strong>: In this study, we introduce ChemCrow, an LLM chemistry agent designed to accomplish tasks across organic synthesis, drug discovery, and materials design.. By integrating 18 expert-designed tools, ChemCrow augments the LLM performance in chemistry, and new capabilities emerge.. Our agent autonomously planned and executed the syntheses of an insect repellent, three organocatalysts, and guided the discovery of a novel chromophore.. Our evaluation, including both LLM and expert assessments, demonstrates ChemCrow&#x27;s effectiveness in automating a diverse set of chemical tasks.. Surprisingly, we find that GPT-4 as an evaluator cannot distinguish between clearly wrong GPT-4 completions and Chemcrow&#x27;s performance.. Our work not only aids expert chemists and lowers barriers for non-experts, but also fosters scientific advancement by bridging the gap between experimental and computational chemistry.</p></div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Recently, large-language models (LLMs) have shown strong performance in tasks across domains, but struggle with chemistry-related problems.</li>
+<li>Moreover, these models lack access to external knowledge sources, limiting their usefulness in scientific applications.</li>
+<li>Surprisingly, we find that GPT-4 as an evaluator cannot distinguish between clearly wrong GPT-4 completions and Chemcrow&#x27;s performance.</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Integrating them into a single platform with enhanced accessibility could help reaching their full potential by overcoming steep learning curves.</li></ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: ChemCrow: Augmenting large-language models with chemistry tools은(는) our evaluation, including both llm and expert assessments, demonstrates chemcrow&#x27;s effectiveness in automating a diverse set of chemical tasks을 보여주는 연구이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

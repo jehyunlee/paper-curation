@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ResearchAgent: Iterative Research Idea Generation over Scientific Literature wit</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</h1>
+<ul>
+<li><strong>저자</strong>: Jinheon Baek, Sujay Kumar Jauhar, Silviu Cucerzan, Sung Ju Hwang</li>
+<li><strong>소속</strong>: KAIST, Microsoft Research, DeepAuto.ai</li>
+<li><strong>출처</strong>: arXiv:2404.07738 (2025-02-09)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2404.07738"><a href="https://doi.org/10.48550/arXiv.2404.07738" target="_blank">10.48550/arXiv.2404.07738</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM을 활용하여 과학 논문으로부터 자동으로 연구 아이디어(문제 정의, 방법론 제안, 실험 설계)를 생성하는 시스템 <strong>ResearchAgent</strong>를 제안한다. 핵심 논문에서 출발하여 인용 그래프 기반 관련 논문 탐색, entity-centric knowledge store를 통한 도메인 간 개념 연결, 그리고 LLM 기반 ReviewingAgent의 반복적 피드백을 통해 아이디어의 품질을 높인다. 인간 연구자의 아이디어 생성 프로세스(문헌 조사, 백과사전적 지식, 동료 리뷰)를 체계적으로 모방한 최초의 open-ended 연구 아이디어 생성 시스템이다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>과학 연구의 속도는 느리고, 연간 700만 편 이상의 논문이 출판되어 연구자가 모든 관련 지식을 종합하기 어렵다.</li>
+<li>기존 LLM 기반 과학 연구 지원은 실험 검증 단계(코드 작성, 화학 공간 탐색 등)에 집중되었으며, <strong>아이디어 생성(ideation)</strong> 단계는 거의 다뤄지지 않았다.</li>
+<li>기존 가설 생성(hypothesis generation) 연구는 두 변수 간 관계 예측이나 문장 수준 연결에 한정되어, 복잡한 실제 연구 문제를 포착하기에 부적합했다.</li>
+<li>LLM의 백과사전적 지식과 언어 추론 능력을 활용하면 도메인 간 아이디어 교차 수분(cross-pollination)이 가능하다는 착안이 있다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>다분야 300편 논문 벤치마크</strong>에서 인간 평가와 GPT-4 기반 모델 평가 모두에서 모든 baseline을 큰 차이로 능가하였다.</li>
+<li>특히 <strong>Originality</strong>(문제)와 <strong>Innovativeness</strong>(방법론) 지표에서 entity 증강의 효과가 두드러졌다.</li>
+<li>Pairwise 비교에서도 최고 승률을 기록하였다.</li>
+<li>인간-인간 주석자 간 일치도(Spearman 0.67~0.83)와 인간-모델 일치도(0.49~0.71)가 높아 평가의 신뢰성을 확보하였다.</li>
+<li>반복 정제(iterative refinement)는 3회까지 품질 향상에 기여하며, 이후 수확 체감이 발생한다.</li>
+<li>SciMON, Hypothesis Proposer 등 기존 가설 생성 방법 대비 Relevance(4.88 vs 4.37), Originality(4.77 vs 4.56), Significance(4.81 vs 4.15)에서 우수하였다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ol>
+<li><strong>Citation Graph 기반 문헌 조사</strong>: 핵심 논문(인용 수 기준 선택)에서 출발하여 인용/피인용 그래프를 통해 관련 논문을 수집하고, 초록 유사도로 필터링한다.</li>
+<li><strong>Entity-Centric Knowledge Store</strong>: 50,091편 논문의 제목/초록에서 BLINK entity linker로 개체를 추출하고, 공동출현(co-occurrence) 행렬 K를 구축한다. 핵심 논문 그룹에 포함되지 않는 외부 entity를 확률적으로 검색하여 도메인 간 교차 수분을 촉진한다.</li>
+<li><strong>3단계 아이디어 생성</strong>: 문제 식별(p) -&gt; 방법 개발(m) -&gt; 실험 설계(d)의 순차적 프로세스를 LLM 프롬프트 템플릿으로 구현한다.</li>
+<li><strong>ReviewingAgents</strong>: 15개 ReviewingAgent(3개 아이디어 x 5개 평가 기준)가 리뷰와 피드백을 제공하며, 인간 선호도 정렬된 평가 기준(10쌍의 인간 주석에서 유도)을 사용한다.</li>
+<li><strong>반복 정제</strong>: ResearchAgent가 ReviewingAgent의 피드백을 기반으로 아이디어를 점진적으로 개선한다.</li>
+<li><strong>평가</strong>: 5점 Likert 척도 기반 개별 평가와 pairwise 비교를 인간 전문가(논문 3편 이상 저자 10명)와 GPT-4로 수행한다.</li>
+</ol>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>Open-ended 연구 아이디어 생성 최초 시스템</strong>: 단순 가설(binary link) 수준이 아닌 문제-방법-실험의 완전한 연구 아이디어를 자동 생성하는 최초의 시도이다.</li>
+<li><strong>Entity-centric knowledge store</strong>: 논문 간 공동출현 entity 행렬을 통해 도메인 경계를 넘는 개념 연결을 가능하게 한 점이 새롭다. 예를 들어, 초파리 유전학 논문에 CRISPR 개념을 연결하여 새로운 연구 방향을 제시한다.</li>
+<li><strong>인간 선호도 정렬 평가 기준</strong>: 소수의 인간 주석(10쌍)으로부터 LLM 프롬프팅을 통해 세밀한 평가 기준을 유도하여 모델 평가를 인간 판단에 근접시킨 접근이 독특하다.</li>
+<li><strong>다중 ReviewingAgent 구조</strong>: 학술 피어 리뷰 프로세스를 LLM 에이전트로 시뮬레이션한 설계가 참신하다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>Knowledge store의 제한된 범위</strong>: 제목/초록만 대상으로 entity를 추출하며, BLINK linker는 논문당 평균 3개 entity만 식별하여 커버리지가 부족하다.</li>
+<li><strong>LLM 환각(hallucination)</strong>: 생성된 아이디어가 사실에 기반하지 않을 수 있으며, 추가 지식 증강으로 부분적으로만 완화된다. 실험을 통한 검증이 필수적이다.</li>
+<li><strong>평가 기준의 제한</strong>: 15개 ReviewingAgent가 도메인 전반의 다양한 관점을 충분히 포착하지 못할 수 있다.</li>
+<li><strong>이론 분야 부적합</strong>: 수학적 증명이 핵심인 이론 과학 분야에는 현 시스템이 최적이 아니다.</li>
+<li><strong>소형 LLM 한계</strong>: GPT-3.5, Mixtral에서는 knowledge augmentation의 효과가 미미하여, 복잡한 과학적 추론에 emergent ability가 필요함을 시사한다.</li>
+<li><strong>표절 위험</strong>: 학습 데이터의 회귀적 재생산으로 기존 연구와 유사한 아이디어가 생성될 수 있다.</li>
+<li><strong>향후 과제</strong>: knowledge store 확장, 실시간 문헌 업데이트, 다양한 도메인별 평가 기준 커스터마이징, reasoning 기반 모델 통합(이론 연구 지원) 등이 필요하다.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>ResearchAgent는 LLM 기반 과학 연구 자동화의 첫 단계를 체계적으로 제시한 의미 있는 연구이다. 인간 연구자의 워크플로우(문헌 조사 -&gt; 지식 통합 -&gt; 동료 리뷰)를 세 가지 모듈로 잘 모방하였으며, 300편 규모의 다분야 벤치마크에서 인간/모델 평가 모두 설득력 있는 결과를 보였다. 특히 entity-centric knowledge store를 통한 도메인 간 cross-pollination 메커니즘은 단순 RAG를 넘어선 창의적 접근이다. 다만, 생성된 아이디어의 <strong>실제 실행 가능성 검증</strong>이 빠져 있어, 좋은 점수를 받는 아이디어가 실제로 실행 가능하고 가치 있는 연구로 이어지는지는 불분명하다. 또한 GPT-4를 생성과 평가 모두에 사용한 점에서 self-evaluation bias 가능성이 있다. 향후 생성된 아이디어를 실제 연구로 이어가는 end-to-end 파이프라인(AI Scientist 등)과의 통합이 핵심 과제가 될 것이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

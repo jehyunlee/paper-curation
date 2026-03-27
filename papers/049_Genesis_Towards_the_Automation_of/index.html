@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Genesis: Towards the Automation of Systems Biology Research</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Genesis: Towards the Automation of Systems Biology Research</h1>
+<ul>
+<li><strong>저자</strong>: Ievgeniia A. Tiukova, Daniel Brunnsåker, Erik Y. Bjurström, Alexander H. Gower, Filip Kronström, Gabriel K. Reder, Ronald S. Reiserer, Konstantin Korovin, Larisa B. Soldatova, John P. Wikswo, Ross D. King</li>
+<li><strong>출처</strong>: arXiv:2408.10689 (2024-08-20)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2408.10689" target="_blank">10.48550/arXiv.2408.10689</a></li>
+<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Tiukova et al._2024_Genesis Towards the Automation of Systems Biology Research.pdf</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>수천 개의 인과 요소로 구성된 시스템 생물학 모델을 자동으로 개선하는 차세대 로봇 과학자 Genesis의 설계와 개발 진행 상황을 보고하는 논문으로, 하루 1,000회의 가설 주도 폐쇄 루프 실험 사이클을 목표로 한다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>과학 연구에 AI를 적용하는 최전선은 폐쇄 루프(closed-loop) 자동화, 즉 로봇 과학자(robot scientist)의 구현이다. 저자 그룹은 이전에 효모 기능 생물학용 'Adam'과 초기 약물 설계용 'Eve'라는 두 로봇 과학자를 개발한 바 있다. Genesis는 이들의 차세대 후속 시스템으로, <strong>로봇 과학자가 인간 과학자보다 명백히 더 빠르고 저렴하게</strong> 특정 과학 영역을 연구할 수 있음을 실증하는 것을 목표로 한다. 시스템 생물학은 수천 개의 상호작용하는 요소가 있는 복잡한 모델을 다루므로, 자동화의 이점이 극대화될 수 있는 영역이다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<ol>
+<li><strong>1,000개 컴퓨터 제어 마이크로바이오리액터(μ-bioreactors)</strong>: Genesis의 핵심 하드웨어로, 하루 1,000회의 병렬 실험 사이클을 가능하게 하는 물리적 인프라 개발</li>
+<li><strong>AutonoMS</strong>: 고처리량 실험을 자동으로 실행, 처리, 분석하는 통합 질량분석(Mass Spectrometry) 플랫폼 개발</li>
+<li><strong>Genesis-DB</strong>: 소프트웨어 에이전트가 대량의 구조화된 도메인 정보에 접근할 수 있도록 설계된 데이터베이스 시스템</li>
+<li><strong>RIMBO (Revisions for Improvements of Models in Biology Ontology)</strong>: 수십만 건의 모델 변경 사항을 기술하기 위한 온톨로지 개발</li>
+<li><strong>LGEM+</strong>: 게놈 규모 대사 모델(genome-scale metabolic models)의 자동 귀납적 개선(automated abductive improvement)을 위한 관계 학습(relational learning) 시스템</li>
+<li><strong>두 가지 관계 학습 생물정보학 프로젝트</strong>로 인프라의 유용성 실증</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<p>Genesis는 가설 주도 폐쇄 루프 과학 자동화를 위한 통합 시스템으로, 여러 서브시스템으로 구성된다:</p>
+<ul>
+<li><strong>하드웨어 플랫폼</strong>: 1,000개의 μ-bioreactor를 컴퓨터로 제어하여 병렬 배양 실험 수행. 각 바이오리액터는 독립적으로 조건을 설정하고 모니터링 가능</li>
+<li><strong>분석 플랫폼 (AutonoMS)</strong>: 질량분석 기반 고처리량 분석을 자동화. 실험 실행 → 데이터 수집 → 전처리 → 분석의 전 과정을 무인으로 수행</li>
+<li><strong>데이터 인프라 (Genesis-DB)</strong>: 구조화된 생물학적 지식을 저장하고, AI 에이전트가 쿼리할 수 있는 인터페이스 제공</li>
+<li><strong>온톨로지 (RIMBO)</strong>: 모델 수정 사항을 형식적으로 기술하기 위한 체계. 수십만 건의 가설적 모델 변경을 추적하고 관리</li>
+<li><strong>모델 개선 (LGEM+)</strong>: 관계 학습(relational learning)을 사용하여 게놈 규모 대사 모델의 오류를 식별하고, 귀납적 추론(abductive reasoning)으로 수정안을 자동 제안. 실험 결과와 모델 예측의 불일치를 탐지하고, 모델을 반복적으로 개선</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>규모의 전환</strong>: 기존 로봇 과학자(Adam, Eve)가 제한된 실험 처리량을 가진 반면, Genesis는 하루 1,000회 병렬 실험이라는 양적 도약을 추구. 이는 단순한 규모 확장이 아니라 연구 방법론 자체의 변화를 의미</li>
+<li><strong>완전 통합 시스템</strong>: 가설 생성 → 실험 설계 → 물리적 실험 수행 → 데이터 분석 → 모델 개선의 전 사이클을 하나의 통합 시스템으로 구현하려는 시도</li>
+<li><strong>귀납적 모델 개선(LGEM+)</strong>: 단순 데이터 피팅이 아닌, 논리적 추론에 기반한 모델 수정을 자동화하는 접근법. 관계 학습과 귀납적 추론의 결합은 과학적 발견 자동화에서 독특한 방법론</li>
+<li><strong>RIMBO 온톨로지</strong>: 모델 변경 사항을 형식적으로 기술하고 추적하는 체계는 과학 자동화의 재현성과 투명성을 높이는 기반</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<ol>
+<li><strong>아직 완성되지 않은 시스템</strong>: 논문 시점에서 Genesis는 개발 진행 중(progress report)이며, 전체 폐쇄 루프의 완전 자동 운영은 아직 실현되지 않음. 하루 1,000회 실험 목표의 실제 달성 여부는 미검증</li>
+<li><strong>시스템 통합의 복잡성</strong>: 각 서브시스템(μ-bioreactors, AutonoMS, Genesis-DB, RIMBO, LGEM+)은 독립적으로 보고되나, 이들 간의 원활한 통합과 자동 조율이 실제로 작동하는지에 대한 엔드투엔드 실증이 부족</li>
+<li><strong>일반화 가능성</strong>: 시스템이 효모(yeast) 대사 모델에 특화되어 있어, 다른 생물 시스템이나 과학 영역으로의 확장 가능성이 불분명</li>
+<li><strong>인간 과학자 대비 우위 미증명</strong>: 핵심 목표인 "인간보다 빠르고 저렴한 연구"는 아직 실증되지 않았으며, 비교 기준(baseline)도 명확하지 않음</li>
+<li><strong>LLM/FM 통합 부재</strong>: 2024년 논문임에도 최신 LLM이나 파운데이션 모델을 가설 생성이나 문헌 분석에 활용하는 것에 대한 논의가 거의 없음. LGEM+는 전통적 관계 학습에 기반</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>종합 평가 (Evaluation)</h2>
+<p>Genesis는 과학 연구 자동화의 야심찬 비전을 제시하는 프로젝트로, 하루 1,000회 병렬 폐쇄 루프 실험이라는 목표는 기존 로봇 과학자 대비 양적·질적 도약이다. 각 서브시스템(μ-bioreactors, AutonoMS, Genesis-DB, RIMBO, LGEM+)의 설계는 체계적이며, 특히 LGEM+의 귀납적 모델 개선 접근법은 과학적 발견 자동화의 핵심에 해당한다. 그러나 진행 보고서(progress report) 성격의 논문으로, 전체 시스템의 통합 운영이나 인간 대비 우위의 실증은 향후 과제로 남아 있다. 최신 LLM/FM 기술과의 통합이 부재한 점은 아쉬우며, 향후 가설 생성과 문헌 분석에 LLM을 접목한다면 시스템의 자율성이 크게 향상될 것이다. 과학 자동화 분야의 방향성을 보여주는 중요한 프로젝트이나, 최종 목표 달성까지는 상당한 엔지니어링 과제가 남아 있다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

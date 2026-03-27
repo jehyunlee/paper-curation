@@ -1,0 +1,183 @@
+{
+  "search_date": "2026-03-27",
+  "period": "2026-03-26 to 2026-03-27",
+  "sources": {
+    "arxiv": {
+      "searched": 200,
+      "found": 7
+    },
+    "semantic_scholar": {
+      "searched": 0,
+      "found": 0
+    },
+    "openalex": {
+      "searched": 10,
+      "found": 5
+    }
+  },
+  "total_raw": 216,
+  "after_dedup": 211,
+  "after_filter": 12,
+  "after_existing_check": 8,
+  "papers": [
+    {
+      "title": "Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis",
+      "abstract": "The design of efficient electrolysis devices for pure metal production requires accurate data on the properties of the melts used in the process. This work focuses on two key systems for calcium production: the molten Ca-Cu alloy and the CaCl$_2$-KCl electrolyte. High-temperature experiments are often expensive and time-consuming; however, we demonstrate that molecular dynamics (MD) simulations driven by machine-learned Moment Tensor Potentials (MTPs), trained on highly accurate density functional theory data, offer an effective and accurate alternative. Our MTP-driven MD simulations accurately reproduce the structural, thermodynamic, and transport properties across a range of temperatures and compositions relevant to electrolysis systems. We report calculated densities, radial distribution functions, heat capacities, thermal conductivities, ionic conductivities (for the electrolyte), viscosities, and diffusion coefficients, with deviations from experimental data within 20%. The strong agreement between calculations and experiments validates the proposed approach, establishing a robust framework for the computational exploration and optimization of liquid systems in metallurgical applications.",
+      "authors": [
+        "M. Polovinkin",
+        "N. Rybin",
+        "D. Maksimov",
+        "F. Valiev",
+        "A. Khudorozhkova",
+        "M. Laptev",
+        "A. Rudenko",
+        "A. Shapeev"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25330v1",
+      "doi": "",
+      "source": "arXiv",
+      "category": "cond-mat.mtrl-sci",
+      "relevance_score": 0.7,
+      "pdf_url": "https://arxiv.org/pdf/2603.25330v1.pdf",
+      "venue": ""
+    },
+    {
+      "title": "MolQuest: A Benchmark for Agentic Evaluation of Abductive Reasoning in Chemical Structure Elucidation",
+      "abstract": "Large language models (LLMs) hold considerable potential for advancing scientific discovery, yet systematic assessment of their dynamic reasoning in real-world research remains limited. Current scientific evaluation benchmarks predominantly rely on static, single-turn Question Answering (QA) formats, which are inadequate for measuring model performance in complex scientific tasks that require multi-step iteration and experimental interaction. To address this gap, we introduce MolQuest, a novel agent-based evaluation framework for molecular structure elucidation built upon authentic chemical experimental data. Unlike existing datasets, MolQuest formalizes molecular structure elucidation as a multi-turn interactive task, requiring models to proactively plan experimental steps, integrate heterogeneous spectral sources (e.g., NMR, MS), and iteratively refine structural hypotheses. This framework systematically evaluates LLMs' abductive reasoning and strategic decision-making abilities within a vast and complex chemical space. Empirical results reveal that contemporary frontier models exhibit significant limitations in authentic scientific scenarios: notably, even state-of-the-art (SOTA) models achieve an accuracy of only approximately 50%, while the performance of most other models remains below the 30% threshold. This work provides a reproducible and extensible framework for science-oriented LLM evaluation, our findings highlight the critical gap in current LLMs' strategic scientific reasoning, setting a clear direction for future research toward AI that can actively participate in the scientific process.",
+      "authors": [
+        "Taolin Han",
+        "Shuang Wu",
+        "Jinghang Wang",
+        "Yuhao Zhou",
+        "Renquan Lv",
+        "Bing Zhao",
+        "Wei Hu"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25253",
+      "doi": "",
+      "source": "arXiv",
+      "category": "cs.CL",
+      "relevance_score": 0.65,
+      "pdf_url": "https://arxiv.org/pdf/2603.25253.pdf",
+      "venue": ""
+    },
+    {
+      "title": "Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems",
+      "abstract": "This paper proposes a physics-informed neural operator (PINO) framework for solving inverse scattering problems, enabling rapid and accurate reconstructions under diverse measurement conditions. In the proposed approach, the dielectric property is represented as a learnable tensor, while a neural operator is employed to predict the induced current distribution. A hybrid loss function, consisting of the state loss, data loss and total-variation (TV) regularization, is constructed to establish a fully differentiable formulation for a joint optimization of network parameters and dielectric property. To demonstrate the framework's generality and flexibility, PINO is implemented using three representative neural operators, i.e., the Fourier Neural Operator (FNO), the enhanced Fourier Neural Operator (U-FNO) and the Factorized Fourier Neural Operator (F-FNO). Compared with conventional approaches, the proposed framework offers a simpler formulation and universal modeling capability, making it readily applicable to various measurement scenarios, including multi-frequency and phaseless inversion. Numerical simulations demonstrate that the proposed PINO achieves high accuracy and robust reconstruction across samples with and without phase information, under single-frequency and multi-frequency settings in the presence of noise. The results demonstrate that PINO consistently outperforms conventional contrast-source inversion (CSI) methods and provides an efficient, unified solution to complex electromagnetic inverse-scattering problems.",
+      "authors": [
+        "Q. C. Dong",
+        "Zi-Xuan Su",
+        "Qing Huo Liu",
+        "Wen Chen",
+        "Zhizhang",
+        "Chen"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25404",
+      "doi": "",
+      "source": "arXiv",
+      "category": "physics.comp-ph",
+      "relevance_score": 0.55,
+      "pdf_url": "https://arxiv.org/pdf/2603.25404.pdf",
+      "venue": ""
+    },
+    {
+      "title": "Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning",
+      "abstract": "Physics-informed neural networks (PINNs) have been proven as a promising way for solving various partial differential equations, especially high-dimensional ones and those with irregular boundaries. However, their capabilities in real applications are highly restricted by their poor generalization performance. Inspired by the rigorous mathematical statements on the well-posedness of PDEs, we develop a novel extension of PINNs by incorporating the additional information on the continuous dependence of PDE solutions with respect to parameters and initial/boundary values (abbreviated as cd-PINN). Extensive numerical experiments demonstrate that, with limited labeled data, cd-PINN achieves 1-3 orders of magnitude lower in test MSE than DeepONet and FNO. Therefore, incorporating the continuous dependence of PDE solutions provides a simple way for qualifying PINNs for operator learning.",
+      "authors": [
+        "Guojie Li",
+        "Wuyue Yang",
+        "Liu Hong"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25122",
+      "doi": "",
+      "source": "arXiv",
+      "category": "math.DS",
+      "relevance_score": 0.55,
+      "pdf_url": "https://arxiv.org/pdf/2603.25122.pdf",
+      "venue": ""
+    },
+    {
+      "title": "Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes",
+      "abstract": "",
+      "authors": [
+        "Gwangwoo Han",
+        "Jikyum Kim",
+        "Joo Hyun Moon",
+        "Young Jik Youn"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "",
+      "doi": "10.1016/j.icheatmasstransfer.2026.111105",
+      "source": "OpenAlex",
+      "category": "",
+      "relevance_score": 0.55,
+      "pdf_url": "",
+      "venue": "International Communications in Heat and Mass Transfer"
+    },
+    {
+      "title": "Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills",
+      "abstract": "Automating multistep computational chemistry tasks remains challenging because reasoning, workflow specification, software execution, and high-performance computing (HPC) execution are often tightly coupled. We demonstrate a decoupled agent-skill design for computational chemistry automation leveraging OpenClaw. Specifically, OpenClaw provides centralized control and supervision; schema-defined planning skills translate scientific goals into executable task specifications; domain skills encapsulate specific computational chemistry procedures; and DPDispatcher manages job execution across heterogeneous HPC environments. In a molecular dynamics (MD) case study of methane oxidation, the system completed cross-tool execution, bounded recovery from runtime failures, and reaction network extraction, illustrating a scalable and maintainable approach to multistep computational chemistry automation.",
+      "authors": [
+        "Mingwei Ding",
+        "Chen Huang",
+        "Yibo Hu",
+        "Yifan Li",
+        "Zitian Lu",
+        "Xingtai Yu",
+        "Duo Zhang",
+        "Wenxi Zhai",
+        "Tong Zhu",
+        "Qiangqiang Gu",
+        "Jinzhe Zeng"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25522",
+      "doi": "",
+      "source": "arXiv",
+      "category": "physics.chem-ph",
+      "relevance_score": 0.45,
+      "pdf_url": "https://arxiv.org/pdf/2603.25522.pdf",
+      "venue": ""
+    },
+    {
+      "title": "SEVerA: Verified Synthesis of Self-Evolving Agents",
+      "abstract": "Recent advances have shown the effectiveness of self-evolving LLM agents on tasks such as program repair and scientific discovery. In this paradigm, a planner LLM synthesizes an agent program that invokes parametric models, including LLMs, which are then tuned per task to improve performance. However, existing self-evolving agent frameworks provide no formal guarantees of safety or correctness. Because such programs are often executed autonomously on unseen inputs, this lack of guarantees raises reliability and security concerns. We formulate agentic code generation as a constrained learning problem, combining hard formal specifications with soft objectives capturing task utility. We introduce Formally Guarded Generative Models (FGGM), which allow the planner LLM to specify a formal output contract for each generative model call using first-order logic. Each FGGM call wraps the underlying model in a rejection sampler with a verified fallback, ensuring every returned output satisfies the contract for any input and parameter setting. Building on FGGM, we present SEVerA (Self-Evolving Verified Agents), a three-stage framework: Search synthesizes candidate parametric programs containing FGGM calls; Verification proves correctness with respect to hard constraints for all parameter values, reducing the problem to unconstrained learning; and Learning applies scalable gradient-based optimization, including GRPO-style fine-tuning, to improve the soft objective while preserving correctness. We evaluate SEVerA on Dafny program verification, symbolic math synthesis, and policy-compliant agentic tool use ($τ^2$-bench). Across tasks, SEVerA achieves zero constraint violations while improving performance over unconstrained and SOTA baselines, showing that formal behavioral constraints not only guarantee correctness but also steer synthesis toward higher-quality agents.",
+      "authors": [
+        "Debangshu Banerjee",
+        "Changming Xu",
+        "Gagandeep Singh"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25111",
+      "doi": "",
+      "source": "arXiv",
+      "category": "cs.LG",
+      "relevance_score": 0.35,
+      "pdf_url": "https://arxiv.org/pdf/2603.25111.pdf",
+      "venue": ""
+    },
+    {
+      "title": "General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy",
+      "abstract": "CrCoNi medium-entropy alloys exhibit exceptional mechanical properties arising from pronounced chemical complexity, including short-range order (SRO), and low stacking fault energy, posing challenges for large-scale atomistic simulations. While most models focus on equimolar compositions, deviations from equimolarity provide an effective route to tuning properties, requiring transferable interatomic potentials that capture composition-dependent behavior. Here we develop a general-purpose machine-learned interatomic potential for the CrCoNi system within the neuroevolution potential (NEP) framework, achieving near first-principles accuracy with high computational efficiency. Trained on a comprehensive dataset spanning pure elements, binary and ternary alloys across a wide compositional range, diverse crystal structures and thermodynamic conditions, and based on spin-polarized \\textit{ab initio} data, the model accurately reproduces equations of state, phonons, elastic constants, dislocation dissociation, surface and defect energies, melting temperatures and strain-induced phase transformations. It further captures SRO and its effect on stacking fault energies across both equimolar and non-equimolar compositions, in agreement with first-principles and experiments. In contrast to existing potentials, typically limited to equimolar alloys and less accurate for pure elements, the present model delivers consistent accuracy across the full compositional space while retaining superior efficiency. These results enable reliable atomistic simulations of composition-dependent behaviour and provide a framework for the design of non-equimolar CrCoNi alloys.",
+      "authors": [
+        "Yong-Chao Wu",
+        "Tero Mäkinen",
+        "Mikko Alava",
+        "Amin Esfandiarpour"
+      ],
+      "date": "2026-03-26",
+      "arxiv_id": "2603.25616v1",
+      "doi": "",
+      "source": "arXiv",
+      "category": "cond-mat.mtrl-sci",
+      "relevance_score": 0.3,
+      "pdf_url": "https://arxiv.org/pdf/2603.25616v1.pdf",
+      "venue": ""
+    }
+  ],
+  "notes": "Light submission day: only 8 AI4S papers found for 2026-03-26. Relevance threshold lowered to 0.3 to capture niche-but-relevant papers. S2 returned HTTP 429 (rate limited). OpenAlex date anomalies filtered out."
+}

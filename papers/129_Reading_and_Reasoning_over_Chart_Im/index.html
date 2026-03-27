@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checki</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking</h1>
+<ul>
+<li><strong>저자</strong>: Mubashara Akhtar, Oana Cocarascu, Elena Simperl</li>
+<li><strong>소속</strong>: Department of Informatics, King's College London</li>
+<li><strong>발표</strong>: arXiv:2301.11843, 2023</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2301.11843"><a href="https://doi.org/10.48550/ARXIV.2301.11843" target="_blank">10.48550/ARXIV.2301.11843</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>차트 이미지를 근거(evidence)로 활용한 자동 팩트체킹(Automated Fact-Checking, AFC)이라는 새로운 태스크를 제안하고, 이를 위한 최초의 모델 ChartBERT와 벤치마크 데이터셋 ChartFC(15,886개 차트-주장 쌍)를 구축한 논문이다. 텍스트 주장(claim)이 차트 이미지에 의해 지지(supports)되는지 반박(refutes)되는지를 판별하는 이진 분류 문제를 정의하고, OCR 기반 텍스트 추출과 구조적 임베딩을 결합한 BERT 확장 모델을 제시한다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<ul>
+<li>기존 AFC 연구는 텍스트, 테이블, 이미지(위변조 탐지) 중심이었으며, 차트 이미지를 근거로 한 주장 검증은 사실상 미탐구 영역이었다.</li>
+<li>차트는 뉴스, 보고서, 과학 논문, SNS에서 광범위하게 사용되며, COVID-19 팬데믹 시기 정책 결정과 대중 커뮤니케이션에 핵심적 역할을 했다.</li>
+<li>차트를 통한 미정보 전파는 의도적 왜곡 설계뿐 아니라 해석 과정(잘못된 비교, 상관/인과 혼동 등)에서도 발생하므로, 차트와 주장을 함께 이해하는 자동 검증 시스템이 필요하다.</li>
+<li>기존 vision-language 모델들은 차트 고유의 구조적 정보(축 레이블, 범례, 바 위치 등)를 종합적으로 처리하는 데 한계가 있다.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>ChartBERT 모델</strong>: OCR 기반 읽기 컴포넌트 + 시퀀스 생성 컴포넌트 + 구조적 임베딩이 추가된 BERT 인코더로 구성된 최초의 차트 팩트체킹 모델. 63.8% 테스트 정확도 달성.</li>
+<li><strong>ChartFC 데이터셋</strong>: TabFact를 시드로 자동 생성한 15,886개 차트-주장 쌍. 인간 평가에서 92% 검증 가능성 확인.</li>
+<li><strong>체계적 베이스라인 평가</strong>: 5개 비전 인코더 x 3개 언어 인코더 x 5개 퓨전 방법 = 75개 VL 베이스라인을 체계적으로 평가. 최고 VL 베이스라인(BERT+ResNet+concatenation)은 62.7% 정확도.</li>
+<li><strong>추론 유형 분석</strong>: 7가지 차트 추론 유형(retrieve value, filter, comparison, compute derived value, find extremum, determine range, find anomalies) 분류 체계를 적용하여, compute derived value에서 모델이 특히 취약함(38%)을 규명.</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ol>
+<li><strong>ChartBERT 아키텍처</strong>:</li>
+<li><strong>(1) Reading Component</strong>: Tesseract OCR로 차트 이미지에서 텍스트 영역과 바운딩 박스(x, y, w, h) 추출.</li>
+<li><strong>(2) Sequence Generation</strong>: 추출된 텍스트를 (a) 좌표 기반 연결(concatenation) 또는 (b) 템플릿 기반(tmp1~tmp3) 시퀀스로 변환. tmp3("athlete is usain bolt when rank is 1") 형태가 최고 성능.</li>
+<li><strong>(3) Encoding</strong>: BERT 아키텍처에 x좌표 임베딩, y좌표 임베딩, 레이블 임베딩(축 레이블 여부) 3가지 구조적 임베딩을 추가하여 차트의 공간적 구조 학습.</li>
+<li>
+<p><strong>(4) Classification</strong>: [CLS] 토큰 표현에 FC 레이어 + sigmoid로 supports/refutes 이진 분류.</p>
+</li>
+<li>
+<p><strong>ChartFC 데이터셋 구축</strong>:</p>
+</li>
+<li>TabFact(117k 주장, 16k Wikipedia 테이블)에서 출발.</li>
+<li>주장-테이블 열 링크 -&gt; 서브테이블 생성(최대 20행, 2열) -&gt; matplotlib/seaborn으로 바 차트 생성.</li>
+<li>
+<p>차트 변형: 방향(수평/수직), 바 색상(녹/청/분홍), 배경(그리드 유무, 흰색/회색).</p>
+</li>
+<li>
+<p><strong>VL 베이스라인 체계적 평가</strong>:</p>
+</li>
+<li>언어 인코더: BERT Embedder, LSTM, BERT</li>
+<li>비전 인코더: FC layer, AlexNet, ResNet-152, DenseNet, ViT</li>
+<li>퓨전: concatenation, multiplication, concatenation+GRU, MCB, Transformer layers</li>
+</ol>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>차트 기반 팩트체킹이라는 완전히 새로운 태스크</strong>를 정의한 최초의 연구. 기존 AFC(텍스트/테이블/이미지 위변조)와 차트 QA/요약과는 본질적으로 다른 문제를 제기.</li>
+<li>BERT에 차트 고유의 <strong>구조적 임베딩</strong>(x/y 좌표, 레이블 임베딩)을 추가하여, 차트의 공간적 배치 정보를 텍스트 표현에 통합하는 접근이 독창적.</li>
+<li>75개 VL 베이스라인의 <strong>대규모 체계적 비교</strong>를 통해, 인코더/퓨전 방법 선택이 성능에 미치는 영향을 정밀하게 분석한 점이 방법론적으로 의미 있다.</li>
+<li>차트 추론 유형 분류(Amar et al., 2005 기반)를 팩트체킹에 적용하여, 모델의 실패 패턴을 추론 능력별로 진단한 분석이 통찰력 있다.</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>바 차트만 포함</strong>: TabFact 시드 데이터의 특성상 바 차트에만 국한되며, 파이 차트, 라인 차트, 산점도 등 다양한 차트 유형으로의 확장이 필수적.</li>
+<li><strong>합성 차트 사용</strong>: matplotlib/seaborn으로 자동 생성된 차트만 사용하여 스타일 변화가 제한적. 실제 뉴스/보고서의 자연 차트는 훨씬 다양한 디자인 요소를 포함.</li>
+<li><strong>영어 전용</strong>: 다국어 미정보 확산 현실을 반영하지 못함.</li>
+<li><strong>정확도 63.8%의 한계</strong>: 최고 성능이 63.8%로, 실용적 배포에는 상당한 개선이 필요. 특히 compute derived value(38%) 등 수치 추론이 필요한 주장에서 취약.</li>
+<li><strong>이진 분류 한정</strong>: supports/refutes만 판별하며, "Not Enough Information" 등 더 세밀한 판정 라벨이 없음.</li>
+<li>향후 자연 차트 기반 데이터셋, 다중 차트 유형 확장, 수치 추론 강화 모델, 다국어 지원 등이 필요.</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>차트 이미지 기반 팩트체킹이라는 중요하고 시의적절한 새 태스크를 정의하고, 모델(ChartBERT)과 데이터셋(ChartFC)을 함께 제공한 선구적 연구이다. 75개 VL 베이스라인의 대규모 체계적 평가와 추론 유형별 오류 분석은 후속 연구에 귀중한 참고점을 제공한다. 다만 바 차트/합성 데이터에만 국한된 실험 설계와 63.8%라는 아직 낮은 정확도는 연구의 초기 단계를 반영하며, 실세계 차트의 복잡성과 다양성을 다루기 위한 상당한 후속 연구가 요구된다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

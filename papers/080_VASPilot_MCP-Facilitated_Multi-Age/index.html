@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>VASPilot: MCP-Facilitated Multi-Agent Intelligence for Autonomous VASP Simulatio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>VASPilot: MCP-Facilitated Multi-Agent Intelligence for Autonomous VASP Simulations</h1>
+<ul>
+<li><strong>저자</strong>: Jiaxuan Liu, Tiannian Zhu, Caiyuan Ye, Zhong Fang, Hongming Weng, Quansheng Wu</li>
+<li><strong>소속</strong>: Institute of Physics, Chinese Academy of Sciences; University of Chinese Academy of Sciences; Songshan Lake Materials Laboratory</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2508.07035"><a href="https://doi.org/10.48550/arXiv.2508.07035" target="_blank">10.48550/arXiv.2508.07035</a></a></li>
+<li><strong>발행일</strong>: 2025-08-09</li>
+<li><strong>키워드</strong>: VASP, DFT, Multi-Agent System, Model Context Protocol, CrewAI, Laboratory Automation, Computational Materials Science</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>VASP(Vienna Ab initio Simulation Package) 기반 밀도범함수이론(DFT) 시뮬레이션을 완전 자동화하는 오픈소스 멀티 에이전트 플랫폼 <strong>VASPilot</strong>을 소개한다. CrewAI 프레임워크와 Model Context Protocol(MCP)을 기반으로 구축되며, Manager Agent + 3개 특화 Worker Agent(Crystal Structure Agent, VASP Agent, Result Validation Agent)가 결정 구조 검색, 입력 파일 생성, Slurm 작업 제출, 오류 파싱 및 파라미터 자동 조정, 결과 시각화까지 전 과정을 수행한다. 2H-MoS2의 밴드 구조/DOS 계산, ENCUT 수렴 테스트, 다양한 van der Waals 보정에 따른 격자 상수 최적화, 전이금속 디칼코게나이드(TMD) 밴드갭 비교 등의 벤치마크에서 수동 개입 없이 성공적으로 완료되었다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>DFT 계산은 재료 과학에서 필수적이지만, VASP 워크플로는 입력 파일 준비, 작업 제출, 모니터링, 오류 처리, 후처리 등 상당한 수동 작업을 요구한다. VASPKIT, ASE, Pymatgen 등 기존 도구가 일부 부담을 덜어주지만, 다양한 물질/조건을 비교하는 복잡한 연구 시나리오에서는 여전히 반복적인 스크립트 작성과 작업 관리가 필요하다. LLM 기반 멀티 에이전트 시스템이 이 문제를 해결할 잠재력이 있으나, VASP에 특화된 MAF(Multi-Agent Framework)는 부재했다. 특히 zero-shot 미션(사전 예제 없는 복잡 태스크) 처리와 직관적 사용자 인터페이스가 미해결 과제이다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>VASP 전용 멀티 에이전트 자동화 플랫폼</strong>: CrewAI + MCP 기반으로 DFT 워크플로 전체를 자동화하는 최초의 VASP 특화 오픈소스 시스템</li>
+<li><strong>자동 오류 복구</strong>: VASP 실행 중 발생하는 오류(예: Bravais lattice 불일치)를 자동으로 파싱하고 파라미터(symprec 등)를 조정하여 재시작</li>
+<li><strong>Zero-shot 복합 미션 수행</strong>: 사전 예제 없이도 ENCUT 수렴 테스트, 다중 vdW 보정 비교, 교차 물질 밴드갭 비교 등 복잡한 워크플로 완료</li>
+<li><strong>직관적 웹 인터페이스</strong>: Flask 기반 UI로 자연어 미션 제출, 실시간 워크플로 추적, 에이전트/도구 실행 이력 드릴다운, 구조 시각화 제공</li>
+<li><strong>오픈소스 공개</strong>: GitHub에서 소스 코드와 문서 공개, MaterialsGalaxy 포털에서 대화형 데모 제공</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>How</h2>
+<h3>아키텍처 (3개 컴포넌트)</h3>
+<h4>1. CrewAI 기반 멀티 에이전트 코어</h4>
+<div class="eval-badges"><span class="eval-badge">Manager Agent: 미션 분해, 태스크 위임, 결과 종합</span><span class="eval-badge">Crystal Structure Agent: 결정 구조 검색/조작/분석</span><span class="eval-badge">VASP Agent: VASP 계산 실행/시각화</span><span class="eval-badge">Result Validation Agent: 계산 결과 정확도/신뢰성 검증</span></div>
+<ul>
+<li>모든 에이전트는 DeepSeek-V3-0324 기반 (교체 가능)</li>
+<li>각 Worker Agent는 독립적 컨텍스트와 시스템 프롬프트 유지</li>
+<li>RAG(Retrieval-Augmented Generation) 기반 메모리 풀로 이전 태스크 결과 활용</li>
+</ul>
+<h4>2. MCP(Model Context Protocol) 도구 서버</h4>
+<ul>
+<li><strong>입력 준비 도구</strong>: pymatgen으로 VASP 입력 파일 자동 생성, Slurm 스케줄러에 작업 제출, 고유 calculation ID로 추적</li>
+<li><strong>상태 조회 도구(check_calc_results)</strong>: 실패 시 VASP 오류 메시지 반환, 성공 시 전체 결과(총 에너지, 밴드갭, 페르미 에너지 등) 추출 및 DB 저장</li>
+<li><strong>시각화 도구(python_plot)</strong>: calculation ID 기반으로 데이터 검색, 에이전트가 생성한 Python 코드 실행하여 그래프 생성</li>
+<li>MCP 표준 준수로 다른 DFT 코드(Quantum Espresso 등)로의 확장이 MCP 서버 배포만으로 가능</li>
+</ul>
+<h4>3. Flask 기반 웹 인터페이스</h4>
+<ul>
+<li>자연어로 미션 제출, 실시간 플로우차트로 진행 상황 시각화</li>
+<li>Agent Execution / Tool Execution 로그의 드릴다운 검사</li>
+<li>결정 구조 파일 및 생성된 그래프의 즉시 미리보기</li>
+</ul>
+<h3>벤치마크 결과</h3>
+<ol>
+<li><strong>2H-MoS2 밴드 구조/DOS</strong>: Materials Project에서 구조 검색 -&gt; 구조 이완 -&gt; SCF (Bravais lattice 오류 자동 수정) -&gt; NSCF -&gt; 밴드 구조/DOS 플로팅, 모두 자동 완료</li>
+<li><strong>ENCUT 수렴 테스트</strong>: 300-500 eV 범위에서 총 에너지 계산 및 수렴 그래프 자동 생성</li>
+<li><strong>vdW 보정 비교</strong>: DFT-D2, DFT-D3(제로/BJ 댐핑), Tkatchenko-Scheffler, optB86, optB88, SCAN+rVV10, r2SCAN+rVV10, rVV10, optPBE-vdW 등 10가지 보정법으로 격자 상수 최적화 및 실험값 대비 비교</li>
+<li><strong>TMD 밴드갭 비교</strong>: MoS2, MoSe2, WS2, WSe2의 밴드갭 계산 및 비교 바 차트 생성</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>Originality</h2>
+<ol>
+<li><strong>VASP 특화 멀티 에이전트 시스템</strong>: 응축물질물리학에서 가장 널리 사용되는 VASP에 특화된 최초의 LLM 기반 자동화 플랫폼</li>
+<li><strong>MCP 기반 모듈형 도구 설계</strong>: VASP의 방대한 출력을 LLM이 처리할 수 있도록, 중앙 DB를 통한 calculation ID 기반 경량 인터페이스 설계 -- LLM의 I/O 한계를 우회하는 실용적 해결책</li>
+<li><strong>자동 오류 복구 메커니즘</strong>: VASP 오류 메시지를 파싱하여 symprec 등 파라미터를 자동 조정하고 재시작하는 에이전트 수준의 디버깅</li>
+<li><strong>Zero-shot 복합 미션</strong>: 태스크별 예제 없이도 다중 조건/물질 비교와 같은 복잡한 연구 시나리오를 자율적으로 완료</li>
+<li><strong>코드 확장성</strong>: MCP 서버만 추가하면 Quantum Espresso, CASTEP 등 다른 DFT 코드로 쉽게 확장 가능한 설계</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>한계</h3>
+<ul>
+<li><strong>벤치마크의 범위</strong>: 검증이 2H-MoS2와 TMD에 국한되어 있으며, 금속, 강상관 전자계, 자성체 등 더 도전적인 시스템에 대한 테스트 부재</li>
+<li><strong>단일 LLM 의존</strong>: DeepSeek-V3-0324에 대한 평가만 제시 -- 다른 LLM(GPT-4, Claude 등)에서의 성능 비교 없음</li>
+<li><strong>비용 및 효율성</strong>: LLM API 호출 비용과 수동 워크플로 대비 시간/비용 절감에 대한 정량 분석 부재</li>
+<li><strong>복잡한 워크플로 한계</strong>: phonon 계산, NEB(nudged elastic band), AIMD(ab initio molecular dynamics) 등 고급 VASP 워크플로에 대한 지원 미확인</li>
+<li><strong>오류 복구의 범위</strong>: symprec 조정 외에 수렴 실패, 메모리 부족, 잘못된 초기 구조 등 다양한 VASP 오류에 대한 자동 복구 범위 불명확</li>
+<li><strong>보안</strong>: Slurm 클러스터에 대한 에이전트의 직접 작업 제출이 보안 및 자원 관리 측면에서 우려</li>
+</ul>
+<h3>향후 연구</h3>
+<ul>
+<li>추가 에이전트/도구 통합으로 phonon, 전자수송, 광학 특성 계산 지원 확장</li>
+<li>MCP 서버 추가를 통한 Quantum Espresso, CASTEP 등 다른 DFT 코드 지원</li>
+<li>다양한 LLM 백엔드에 대한 성능 비교 연구</li>
+<li>고처리량(high-throughput) 계산 시나리오에서의 확장성 검증</li>
+<li>연구자 사용성 평가(user study)를 통한 UI/UX 개선</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation</h2>
+<h3>강점</h3>
+<ul>
+<li>VASP 사용자 커뮤니티의 실질적 고충(반복적 입력 준비, 오류 처리, 작업 관리)을 정확히 타겟팅</li>
+<li>MCP 기반 모듈형 설계가 다른 DFT 코드로의 확장을 구조적으로 보장</li>
+<li>자동 오류 복구(symprec 조정)가 실제 VASP 워크플로에서 빈번히 발생하는 문제를 해결</li>
+<li>Zero-shot으로 다중 vdW 보정 비교(10가지)를 성공적으로 수행한 것은 에이전트의 일반화 능력을 잘 보여줌</li>
+<li>오픈소스 공개와 웹 데모 제공으로 재현성과 접근성 확보</li>
+<li>웹 UI가 에이전트 실행의 투명성을 제공하여 연구자의 검증을 지원</li>
+</ul>
+<h3>약점</h3>
+<ul>
+<li>벤치마크가 비교적 단순한 반도체 시스템에 국한 -- 강상관 전자계, 자성체, 표면/인터페이스 등 실질적으로 도전적인 문제에 대한 검증 필요</li>
+<li>기존 자동화 도구(AiiDA, FireWorks, atomate 등)와의 체계적 비교 부재 -- LLM 기반 접근의 부가 가치가 명확하지 않음</li>
+<li>LLM의 환각(hallucination) 가능성에 대한 논의 없음 -- 잘못된 INCAR 파라미터 설정이나 부적절한 k-point 선택 등의 위험</li>
+<li>Result Validation Agent의 검증 깊이가 불분명 -- 결과의 물리적 타당성(예: 밴드갭이 합리적 범위인지)을 얼마나 판단할 수 있는지 미기술</li>
+</ul>
+<h3>총평</h3>
+<p>VASP 워크플로 자동화에 LLM 멀티 에이전트를 적용한 실용적이고 잘 설계된 오픈소스 시스템이다. MCP 기반 모듈형 아키텍처, 자동 오류 복구, zero-shot 복합 미션 처리는 계산 재료 과학 연구자에게 실질적 가치를 제공한다. 특히 웹 UI를 통한 투명한 워크플로 추적이 연구자의 신뢰 구축에 기여한다. 다만, 더 복잡한 물리 시스템과 고급 VASP 기능에 대한 검증, 기존 워크플로 관리 도구와의 비교, LLM 환각에 대한 안전장치 논의가 보완되면 영향력이 크게 높아질 것이다. 응축물질물리학/재료 과학 분야에서 AI for Science의 구체적 실현 사례로서 가치가 높다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

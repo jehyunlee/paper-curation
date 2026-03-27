@@ -1,0 +1,1738 @@
+[
+  {
+    "slug": "001_Highly_Accurate_Protein_Structure_P",
+    "title": "Highly Accurate Protein Structure Prediction with AlphaFold",
+    "essence": "AlphaFold는 아미노산 서열만으로 단백질 3D 구조를 원자 수준 정확도로 예측하는 최초의 computational method이다. CASP14에서 median backbone accuracy 0.96 A r.m.s.d.95를 달성하여, 차순위 방법(2.8 A)을 압도적으로 능가했으며, 이는 탄소 원자 폭(~1.4 A)에 근접하는 실험적 구조 수준의 ",
+    "score": 5.0,
+    "date": "2021"
+  },
+  {
+    "slug": "002_Scaling_Deep_Learning_for_Materials",
+    "title": "Scaling Deep Learning for Materials Discovery",
+    "essence": "Graph neural network (GNoME)을 대규모 active learning과 결합하여 기존 48,000개에서 381,000개의 새로운 안정 결정 구조를 발견, 인류가 알고 있는 안정 물질을 약 10배 확장했다. 총 2.2M 구조가 기존 convex hull 아래에 위치하며, hit rate를 기존 1%에서 구조 기반 80%, 조성 기반 33%",
+    "score": 5.0,
+    "date": "2023"
+  },
+  {
+    "slug": "003_Scientific_discovery_in_the_age_of",
+    "title": "Scientific discovery in the age of artificial intelligence",
+    "essence": "AI가 과학 발견의 전 과정 -- 가설 생성, 실험 설계, 데이터 수집/해석 -- 을 어떻게 augment하고 가속하는지를 체계적으로 정리한 종합 리뷰이다. Self-supervised learning, geometric deep learning, generative AI, reinforcement learning 등 핵심 기법이 물리학, 화학, 생물학, ",
+    "score": 4.0,
+    "date": "2023"
+  },
+  {
+    "slug": "004_Automating_the_practice_of_science",
+    "title": "Automating the practice of science: Opportunities, challenges, and implications",
+    "essence": "과학 실천(scientific practice)의 자동화 범위와 한계를 체계적으로 평가한 perspective 논문으로, 자동화의 goal-related bounds (규범적/인식론적 목표와의 정합성)와 technological bounds (입력 가용성, 계산 복잡도, 하드웨어 복잡도, 목표 주관성)를 분석 프레임워크로 제시한다. 현재 closed-loo",
+    "score": 4.0,
+    "date": "2025"
+  },
+  {
+    "slug": "005_Agentomics-ML_Autonomous_Machine_L",
+    "title": "Agentomics-ML: Autonomous Machine Learning Experimentation Agent for Genomic and Transcriptomic Data",
+    "essence": "Genomic/transcriptomic 데이터에 대한 classification 모델을 완전 자율적으로 생성하는 LLM 기반 agent 시스템으로, 사전 정의된 ML 실험 단계(데이터 탐색 -> 분할 -> 표현 -> 아키텍처 -> 학습 -> 추론)를 반복적으로 수행하며 reflection feedback을 통해 모델을 개선한다. 6개 벤치마크 데이터셋에서",
+    "score": 3.0,
+    "date": "2025-06-05"
+  },
+  {
+    "slug": "006_Autonomous_Agents_for_Scientific_Di",
+    "title": "Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics",
+    "essence": "LLM 기반 과학적 에이전트의 역할과 발전을 체계적으로 조망하는 서베이 논문이다. 과학적 발견의 전 주기를 가설 발견(Hypothesis Discovery), 실험 설계 및 실행(Experimental Design & Execution), 결과 분석 및 정제(Result Analysis & Refinement)의 3단계로 구조화하고, 각 단계에서 LLM 에",
+    "score": 4.0,
+    "date": "2025-10-10"
+  },
+  {
+    "slug": "007_Toward_a_Fully_Autonomous_AI-Nativ",
+    "title": "Toward a Fully Autonomous, AI-Native Particle Accelerator",
+    "essence": "입자 가속기를 AI가 처음부터 설계하고 운영하는 \"자율주행(self-driving)\" 시설로 전환하기 위한 비전과 로드맵을 제시하는 포지션 페이퍼이다. 기존 시설에 AI를 후속 장착(retrofitting)하는 방식이 아닌, 설계 단계부터 AI를 핵심 설계 원리로 내장하는 \"AI-native\" 패러다임을 주창한다. 이를 실현하기 위한 9가지 핵심 연구 축(",
+    "score": 3.0,
+    "date": "2026-02-19"
+  },
+  {
+    "slug": "008_From_Labor_to_Collaboration_A_Meth",
+    "title": "From Labor to Collaboration: A Methodological Experiment Using AI Agents to Augment Research Perspectives in Taiwan's Humanities and Social Sciences",
+    "essence": "인문사회과학 연구에 특화된 AI Agent 기반 협업 연구 워크플로우(Agentic Workflow)를 제안하고, 이를 Anthropic Economic Index(AEI) 대만 Claude.ai 사용 데이터(N=7,729)의 2차 데이터 분석에 실제 적용하여 검증하는 \"방법론 실험(methodological experiment)\"이다. 7단계 모듈형 워크",
+    "score": 3.0,
+    "date": "2026-02-19"
+  },
+  {
+    "slug": "009_ResearchGym_Evaluating_Language_Mo",
+    "title": "ResearchGym: Evaluating Language Model Agents on Real-World AI Research",
+    "essence": "ResearchGym은 LLM 에이전트가 end-to-end 연구(가설 제안, 실험 설계, 구현, 평가)를 수행할 수 있는지를 객관적으로 평가하는 벤치마크 및 실행 환경이다. ICML, ICLR, ACL의 oral/spotlight 논문 5편에서 핵심 방법론을 제거한 39개 sub-task를 구성하고, GPT-5 기반 에이전트를 평가한 결과 baseline",
+    "score": 4.0,
+    "date": "2026-02-16"
+  },
+  {
+    "slug": "010_Criteria-first_semantics-later_re",
+    "title": "Criteria-first, semantics-later: reproducible structure discovery in image-based sciences",
+    "essence": "이미지 기반 과학 분석에서 지배적인 \"semantics-first\" 패러다임(측정 데이터를 도메인 특화 라벨/온톨로지에 직접 매핑)의 근본적 한계를 지적하고, \"criteria-first, semantics-later\"라는 연역적 전환을 제안하는 개념 논문이다. 명시적 최적화 기준(robustness, scale coherence, compressibili",
+    "score": 3.0,
+    "date": "2026-02-17"
+  },
+  {
+    "slug": "011_Polymer_Brushes_and_Grafted_Polymer",
+    "title": "Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL",
+    "essence": "고분자 브러시(polymer brush) 및 그래프트 고분자 연구에 AI/ML 워크플로우를 도입하여, 합성-시뮬레이션-특성분석의 전체 파이프라인을 가속화하고 궁극적으로 자율 주행 실험실(Self-Driving Laboratory, SDL)로의 전환을 제안하는 포괄적 리뷰 논문이다. 52페이지에 걸쳐 고분자 브러시의 합성 경로(grafting-from, gr",
+    "score": 3.0,
+    "date": "2026-02-16"
+  },
+  {
+    "slug": "012_AutoNumerics_An_Autonomous_PDE-Ag",
+    "title": "AutoNumerics: An Autonomous, PDE-Agnostic Multi-Agent Pipeline for Scientific Computing",
+    "essence": "자연어로 기술된 편미분방정식(PDE) 문제를 입력받아, LLM 기반 멀티 에이전트 시스템이 자율적으로 수치 솔버를 설계-구현-디버깅-검증하는 프레임워크 AutoNumerics를 제안한다. 블랙박스 뉴럴 솔버와 달리 고전 수치해석에 기반한 해석 가능한(transparent) 솔버를 생성하며, coarse-to-fine 실행 전략과 잔차(residual) 기반",
+    "score": 4.0,
+    "date": "2026-02-19"
+  },
+  {
+    "slug": "013_M2F_Automated_Formalization_of_Mat",
+    "title": "M2F: Automated Formalization of Mathematical Literature at Scale",
+    "essence": "수학 교과서와 연구 논문을 Lean 4 형식 증명 라이브러리로 자동 변환하는 최초의 프로젝트 규모(project-scale) 에이전틱 프레임워크 M2F(Math-to-Formal)를 제안한다. 2단계 파이프라인(Stage 1: 명제 컴파일, Stage 2: 증명 복구)과 검증기 인증 수정(VeriRefine) 원칙을 통해, 약 3주 만에 479페이지의 실해",
+    "score": 5.0,
+    "date": "2026-02-19"
+  },
+  {
+    "slug": "014_Automated_Extraction_of_Mechanical",
+    "title": "Automated Extraction of Mechanical Constitutive Models from Scientific Literature using Large Language Models: Applications in Cultural Heritage Conservation",
+    "essence": "문화유산 보존을 위한 디지털 트윈 구축에 필요한 역학적 구성 방정식(constitutive model)과 보정 파라미터를 과학 문헌에서 자동 추출하는 2단계 에이전틱 프레임워크를 제안한다. 비용 효율적인 \"Gatekeeper\" 에이전트가 관련성을 필터링하고, 고성능 \"Analyst\" 에이전트가 Context-Aware Symbolic Grounding을 통",
+    "score": 3.0,
+    "date": "2026-02-18"
+  },
+  {
+    "slug": "015_MerLean_An_Agentic_Framework_for_A",
+    "title": "MerLean: An Agentic Framework for Autoformalization in Quantum Computation",
+    "essence": "양자 계산 이론 분야의 연구 논문을 LaTeX 소스로부터 Lean 4 형식 증명 코드로 완전 자동 변환하는 에이전틱 프레임워크 MerLean을 제안한다. 추출-형식화-검증의 autoformalization 파이프라인과 검증된 코드를 다시 사람이 읽을 수 있는 LaTeX로 역변환하는 autoinformalization 파이프라인을 결합하여, 양방향 검증을 가",
+    "score": 4.0,
+    "date": "2026-02-18"
+  },
+  {
+    "slug": "016_DataJoint_20_A_Computational_Subs",
+    "title": "DataJoint 2.0: A Computational Substrate for Agentic Scientific Workflows",
+    "essence": "과학 데이터 파이프라인에 DevOps에 해당하는 \"SciOps\"를 구현하기 위한 관계형 워크플로우 모델(relational workflow model)을 제안한다. DataJoint 2.0은 테이블을 워크플로우 단계로, 행(row)을 산출물(artifact)로, 외래 키(foreign key)를 실행 순서로 해석하여, 데이터 구조/계산 의존성/무결성 제약을",
+    "score": 3.0,
+    "date": "2026-02-18"
+  },
+  {
+    "slug": "017_Hunt_Globally_Wide_Search_AI_Agent",
+    "title": "Hunt Globally: Wide Search AI Agents for Drug Asset Scouting in Investing, Business Development, and Competitive Intelligence",
+    "essence": "바이오제약 분야에서 글로벌 약물 자산 스카우팅(drug asset scouting)을 위한 트리 기반 자기학습 AI 에이전트 시스템(Bioptic Agent)과 완전성 중심 벤치마크(Completeness Benchmark)를 제안한다. 핵심 문제는 신약 혁신의 상당 부분이 미국 외, 비영어권 지역에서 발생하는데 기존 Deep Research AI 에이전트",
+    "score": 4.0,
+    "date": "2026-02-16"
+  },
+  {
+    "slug": "018_Scaling_Reproducibility_An_AI-Assi",
+    "title": "Scaling Reproducibility: An AI-Assisted Workflow for Large-Scale Reanalysis",
+    "essence": "실증 사회과학 연구의 대규모 재현성 검증을 자동화하는 에이전트 AI 워크플로우를 개발하고 평가한다. 핵심 설계 원칙은 \"과학적 추론과 계산 실행의 분리\"로, 인간 연구자가 진단 템플릿(estimand, estimator, robustness check)을 사전 설계하면, AI 워크플로우가 복제 자료의 획득, 환경 재구성, 코드 실행, 분석 데이터셋 추출, ",
+    "score": 4.0,
+    "date": "2026-02-17"
+  },
+  {
+    "slug": "019_Verifier-Constrained_Flow_Expansion",
+    "title": "Verifier-Constrained Flow Expansion for Discovery Beyond the Data",
+    "essence": "사전 학습된 플로우/디퓨전 모델이 훈련 데이터의 좁은 영역에만 밀도를 집중시키는 한계를 극복하기 위해, 외부 검증기(verifier)를 활용하여 유효 설계 공간 전체로 모델의 밀도를 확장하는 Flow Expander(FE)를 제안한다. 강한 검증기(valid design space를 정확히 특성화)와 약한 검증기(필터 역할만 수행)를 형식적으로 구분하고, ",
+    "score": 5.0,
+    "date": "2026-02-17"
+  },
+  {
+    "slug": "020_Neural-POD_A_Plug-and-Play_Neural",
+    "title": "Neural-POD: A Plug-and-Play Neural Operator Framework for Infinite-Dimensional Functional Nonlinear Proper Orthogonal Decomposition",
+    "essence": "고전적 고유직교분해(POD/PCA)의 선형, 격자 종속, L2 고정 최적성이라는 세 가지 한계를 극복하기 위해, 신경망으로 매개변수화된 비선형 직교 기저 함수를 무한 차원 함수 공간에서 학습하는 Neural-POD 프레임워크를 제안한다. 순차적 잔차 최소화(Gram-Schmidt 직교화에 대응)를 통해 모드를 하나씩 학습하며, 학습된 기저는 해상도 독립적이",
+    "score": 3.0,
+    "date": "2026-02-17"
+  },
+  {
+    "slug": "021_EAA_Automating_materials_character",
+    "title": "EAA: Automating Materials Characterization with Vision Language Model Agents",
+    "essence": "",
+    "score": 3.0,
+    "date": "2026-02-17"
+  },
+  {
+    "slug": "022_Transforming_Behavioral_Neuroscienc",
+    "title": "Transforming Behavioral Neuroscience Discovery with In-Context Learning and AI-Enhanced Tensor Methods",
+    "essence": "",
+    "score": 3.0,
+    "date": "2026-02-19"
+  },
+  {
+    "slug": "023_MAC-AMP_A_Closed-Loop_Multi-Agent",
+    "title": "MAC-AMP: A Closed-Loop Multi-Agent Collaboration System for Multi-Objective Antimicrobial Peptide Design",
+    "essence": "",
+    "score": 4.0,
+    "date": "2026-02-16"
+  },
+  {
+    "slug": "024_Generative_AI_and_the_Foundation_Mo",
+    "title": "Generative AI and the Foundation Model Era: A Comprehensive Review",
+    "essence": "",
+    "score": 2.3,
+    "date": "2026-03-20"
+  },
+  {
+    "slug": "025_Scalable_Cross-Facility_Federated_L",
+    "title": "Scalable Cross-Facility Federated Learning for Scientific Foundation Models on Multiple Supercomputers",
+    "essence": "",
+    "score": 3.3,
+    "date": "2026-03-20"
+  },
+  {
+    "slug": "026_SLE-FNO_Single-Layer_Extensions_fo",
+    "title": "SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators",
+    "essence": "",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "027_Towards_AI_for_science_developing",
+    "title": "Towards AI for Science: Developing a Conceptual Basis for Transforming Research Support Services in University Libraries",
+    "essence": "",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "028_SPINONet_Scalable_Spiking_Physics-",
+    "title": "SPINONet: Scalable Spiking Physics-informed Neural Operator for Computational Mechanics Applications",
+    "essence": "SPINONet은 physics-informed operator learning에 에너지 효율적인 spiking neural network(SNN)를 통합한 최초의 프레임워크이다. Separable DeepONet 아키텍처에서 branch network(입력 함수 인코딩)에만 Variable Spiking Neuron(VSN)을 배치하고, trunk net",
+    "score": 4.0,
+    "date": "2026-03-23"
+  },
+  {
+    "slug": "029_Embodied_Science_Closing_the_Disco",
+    "title": "Embodied Science: Closing the Discovery Loop with Agentic Embodied AI",
+    "essence": "과학적 발견을 \"물리적 세계와의 지속적 상호작용을 통한 closed-loop 과정\"으로 재정의하는 \"Embodied Science\" 패러다임을 제안하는 Perspective 논문이다. Perception-Language-Action-Discovery (PLAD) 프레임워크를 통해 agentic embodied AI가 실험 환경을 감지하고, 과학적 지식을 기",
+    "score": 3.0,
+    "date": "2026-03-20"
+  },
+  {
+    "slug": "030_Can_we_automatize_scientific_discov",
+    "title": "Can we automatize scientific discovery in the cognitive sciences?",
+    "essence": "인지과학의 발견 사이클(실험 설계 -> 데이터 수집 -> 모델 비교 -> 결론 도출)을 LLM 기반으로 완전 자동화하는 \"in silico science of the mind\" 비전을 제시하는 짧은 Perspective 논문이다. LLM이 실험 패러다임을 제안하고(Experimentalist), cognitive foundation model(Centaur",
+    "score": 3.0,
+    "date": "2026-03-22"
+  },
+  {
+    "slug": "031_Agentic_Personas_for_Adaptive_Scien",
+    "title": "Agentic Personas for Adaptive Scientific Explanations with Knowledge Graphs",
+    "essence": "Knowledge graph 기반 설명 생성에서 전문가의 다양한 인식론적 입장(epistemic stance)을 반영하는 적응형 설명(adaptive explanation) 프레임워크를 제안한 연구이다. \"Agentic persona\"라는 개념을 도입하여, 전문가 피드백으로부터 클러스터링과 LLM 합성을 통해 해석 전략의 구조적 표현을 만들고, 이를 강화학",
+    "score": 3.0,
+    "date": "2026-03-23"
+  },
+  {
+    "slug": "032_Revisiting_Gene_Ontology_Knowledge",
+    "title": "Revisiting Gene Ontology Knowledge Discovery with Hierarchical Feature Selection and Virtual Study Group of AI Agents",
+    "essence": "Hierarchical feature selection으로 선별된 노화 관련 Gene Ontology(GO) term들을 LLM 기반 multi-agent \"Virtual Study Group(VSG)\"이 자동으로 생물학적 해석하는 agentic AI 프레임워크를 제안한 연구이다. 4개 모델 생물(예쁜꼬마선충, 초파리, 마우스, 효모)의 노화 관련 GO t",
+    "score": 2.0,
+    "date": "2026-03-20"
+  },
+  {
+    "slug": "033_LLM-ODE_Data-driven_Discovery_of_D",
+    "title": "LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models",
+    "essence": "동역학 시스템의 지배 방정식(ODE)을 관측 궤적 데이터로부터 자동 발견하기 위해 LLM을 genetic programming(GP)의 진화 연산자로 활용하는 하이브리드 프레임워크 LLM-ODE를 제안한다. 기존 GP의 무작위 mutation/crossover를 LLM이 생성하는 구조적으로 informed된 제안으로 대체하여, 기호식(symbolic exp",
+    "score": 4.0,
+    "date": "2026-03-21"
+  },
+  {
+    "slug": "034_AI_for_Science_An_Emerging_Agenda",
+    "title": "AI for Science: An Emerging Agenda",
+    "essence": "2022년 9월 Dagstuhl Seminar 22382 \"Machine Learning for Science: Bridging Data-Driven and Mechanistic Modelling\"의 논의를 종합한 로드맵 보고서이다. AI for Science 분야의 핵심 연구 주제로 (1) 시뮬레이션 및 에뮬레이션, (2) 인과 추론, (3) 도메인 지식",
+    "score": 4.0,
+    "date": "2023-03-07"
+  },
+  {
+    "slug": "035_Towards_Autonomous_Mathematics_Rese",
+    "title": "Towards Autonomous Mathematics Research",
+    "essence": "Google DeepMind이 개발한 수학 연구 에이전트 Aletheia를 소개하고, 경시대회 수학에서 전문 연구 수학으로의 전환을 시도한 연구이다. Aletheia는 Gemini Deep Think 기반의 Generator-Verifier-Reviser 구조로, 자연어 기반 end-to-end 수학 추론을 수행한다. 주요 성과로 (A) 인간 개입 없이 생",
+    "score": 5.0,
+    "date": "2026-02-10"
+  },
+  {
+    "slug": "036_SciTrust_Evaluating_the_Trustworth",
+    "title": "SciTrust: Evaluating the Trustworthiness of Large Language Models for Science",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "037_AIRS-Bench_a_Suite_of_Tasks_for_Fr",
+    "title": "AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents",
+    "essence": "",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "038_Towards_a_Science_of_AI_Agent_Relia",
+    "title": "Towards a Science of AI Agent Reliability",
+    "essence": "",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "039_SciAgentGym_Benchmarking_Multi-Ste",
+    "title": "SciAgentGym: Benchmarking Multi-Step Scientific Tool-use in LLM Agents",
+    "essence": "",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "040_Accelerating_Scientific_Research_wi",
+    "title": "Accelerating Scientific Research with Gemini: Case Studies and Common Techniques",
+    "essence": "",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "041_AMDAT_An_Open-Source_Molecular_Dyn",
+    "title": "AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "042_DMFlow_Disordered_Materials_Genera",
+    "title": "DMFlow: Disordered Materials Generation by Flow Matching",
+    "essence": "DMFlow는 비정렬(disordered) 결정 구조를 생성하기 위해 설계된 최초의 심층 생성 프레임워크이다. 치환 무질서(Substitutional Disorder, SD)와 위치 무질서(Positional Disorder, PD)를 통합적으로 표현하는 방식을 제안하고, simplex 제약조건을 만족시키기 위해 구면 재매개변수화(spherical repa",
+    "score": 4.0,
+    "date": "2026-02-04"
+  },
+  {
+    "slug": "043_PaperBanana_Automating_Academic_Il",
+    "title": "PaperBanana: Automating Academic Illustration for AI Scientists",
+    "essence": "PaperBanana는 학술 논문의 방법론 다이어그램과 통계 플롯을 자동 생성하는 에이전트 기반 프레임워크이다. Retriever, Planner, Stylist, Visualizer, Critic의 5개 특화 에이전트가 협업하여 참조 검색, 콘텐츠/스타일 계획, 이미지 렌더링, 반복적 자기 비평을 수행한다. NeurIPS 2025 논문에서 큐레이션한 Pa",
+    "score": 4.0,
+    "date": "2026-01-30"
+  },
+  {
+    "slug": "044_MatterChat_A_Multi-Modal_LLM_for_M",
+    "title": "MatterChat: A Multi-Modal LLM for Material Science",
+    "essence": "MatterChat는 무기 재료의 원자 구조 데이터와 텍스트 입력을 통합하는 구조 인식(structure-aware) 멀티모달 대형 언어 모델이다. 사전학습된 범용 기계학습 원자간 포텐셜(CHGNet)과 사전학습된 LLM(Mistral 7B)을 BLIP-2 스타일의 경량 브릿지 모듈로 연결하여, 재료 물성 예측(분류 6종 + 수치 3종)과 인간-AI 상호작",
+    "score": 4.0,
+    "date": "2025-04-26"
+  },
+  {
+    "slug": "045_Data_integrity_in_materials_science",
+    "title": "Data integrity in materials science in the era of AI: balancing accelerated discovery with responsible science and innovation",
+    "essence": "AI 시대 재료과학에서의 데이터 무결성(data integrity) 위기를 체계적으로 분석하고, 이를 해결하기 위한 다각적 프레임워크를 제안하는 관점(perspective) 논문이다. 전문가도 AI 생성 현미경 이미지를 실제 실험 데이터와 구별하지 못하며(40-51% 정확도), 재료 특성화 분석의 20-30%에 기본 오류가 존재하고, GenAI가 물리 원리",
+    "score": 4.0,
+    "date": "2026"
+  },
+  {
+    "slug": "046_A_Survey_of_AI_for_Materials_Scienc",
+    "title": "A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools",
+    "essence": "",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "047_Knowledge-guided_large_language_mod",
+    "title": "Knowledge-guided Large Language Model for Material Science",
+    "essence": "",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "048_Large_Language_Model_in_Materials_S",
+    "title": "Large Language Model in Materials Science: Roles, Challenges, and Strategic Outlook",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "049_Genesis_Towards_the_Automation_of",
+    "title": "Genesis: Towards the Automation of Systems Biology Research",
+    "essence": "",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "050_Systematic_Framework_of_Application",
+    "title": "Systematic Framework of Application Methods for Large Language Models in Language Sciences",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "051_Scientific_Hypothesis_Generation_an",
+    "title": "Scientific Hypothesis Generation and Validation: Methods, Datasets, and Future Directions",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "052_A_Survey_on_Hypothesis_Generation_f",
+    "title": "A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models",
+    "essence": "LLM 시대에 과학적 가설 생성(Scientific Hypothesis Generation, SHG)을 위한 방법론을 체계적으로 정리한 서베이 논문이다. 전통적 문헌 기반 발견(Literature-Based Discovery, LBD)부터 텍스트 마이닝, 지도학습, 그래프 기반 방법, 그리고 최신 LLM 기반 접근법(프롬프팅, 파인튜닝, RAG, 지식 그래",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "053_PersonaAI_An_Interactive_Agentic-A",
+    "title": "PersonaAI: An Interactive Agentic-AI Framework for Autonomous Hypothesis Generation and Validation in Aging",
+    "essence": "노화(aging) 연구를 위한 인터랙티브 에이전틱 AI 프레임워크 **PersonaAI**를 제안한다. 56만 편 이상의 노화 관련 문헌을 RAG(Retrieval-Augmented Generation) 기반으로 합성하여 메커니즘적 가설을 생성하고, 이를 single-cell RNA-seq 데이터로 자율적으로 in silico 검증하는 이중 구조(dual-",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "054_Artificial_intelligence_tools_expan",
+    "title": "Artificial intelligence tools expand scientists' impact but contract science's focus",
+    "essence": "AI 도구의 과학 연구 도입이 **개별 과학자에게는 생산성과 영향력을 확대**하지만, **집단적 과학 탐구의 범위는 축소**시킨다는 역설(paradox)을 4,130만 편의 자연과학 논문 분석을 통해 실증적으로 입증한 대규모 계량서지학(scientometrics) 연구이다. AI를 활용하는 과학자는 3.02배 더 많은 논문을 발표하고 4.84배 더 많은 인",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "055_S1-MMAlign_A_Large-Scale_Multi-Di",
+    "title": "S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding",
+    "essence": "과학 논문의 그림(figure)과 텍스트 간의 심각한 의미적 격차(semantic gap)를 해소하기 위해, 250만 편의 오픈 액세스 논문에서 추출한 **1,550만 개의 이미지-텍스트 쌍**으로 구성된 대규모 멀티모달 데이터셋 **S1-MMAlign**을 공개한다. 핵심 기여는 Qwen-VL 멀티모달 대규모 모델을 활용하여 논문 초록과 인용 맥락을 합성",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "056_SCP_Accelerating_Discovery_with_a",
+    "title": "SCP: Accelerating Discovery with a Global Web of Autonomous Scientific Agents",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "057_Towards_a_Science_of_Scaling_Agent",
+    "title": "Towards a Science of Scaling Agent Systems",
+    "essence": "LLM 기반 에이전트 시스템의 **정량적 스케일링 원리**를 도출한 연구이다. \"More agents is all you need\"라는 기존 주장에 반대하여, 멀티 에이전트 시스템(MAS)의 효과는 에이전트 수가 아닌 **아키텍처-태스크 정합성(architecture-task alignment)**에 의해 결정됨을 180개 통제된 구성(3개 LLM 패밀리 ",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "058_Generative_AI_Uses_and_Risks_for_Kn",
+    "title": "Generative AI Uses and Risks for Knowledge Workers in a Science Organization",
+    "essence": "미국 국립연구소(Argonne National Laboratory)의 Science 및 Operations 직원들을 대상으로 생성형 AI의 실제 활용 사례와 인식된 위험을 조사한 혼합 방법(mixed-methods) 연구이다. 설문(N=66), 심층 인터뷰(N=22), 그리고 내부 생성형 AI 인터페이스 \"Argo\"(GPT-3.5 Turbo 비공개 인스턴스",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "061_From_AI_for_Science_to_Agentic_Scie",
+    "title": "From AI for Science to Agentic Science: A Survey on Autonomous Scientific Discovery",
+    "essence": "\"AI for Science\"에서 \"Agentic Science\"로의 전환을 체계적으로 정리한 포괄적 서베이 논문이다. AI 시스템이 단순 계산 도구(Computational Oracle)에서 자율적 연구 파트너(Autonomous Scientific Partner)로 진화하는 과정을 4단계 프레임워크로 정의하고, 생명과학·화학·재료과학·물리학 4개 도메인",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "062_The_Adoption_and_Usage_of_AI_Agents",
+    "title": "The Adoption and Usage of AI Agents: Early Evidence from Perplexity",
+    "essence": "범용 AI 에이전트의 채택(adoption)과 사용(usage) 패턴을 대규모 현장 데이터로 실증 분석한 최초의 연구이다. Perplexity가 개발한 AI 브라우저 Comet과 그 내장 에이전트 Comet Assistant의 수억 건 익명화된 사용자 상호작용 데이터를 분석하여, \"누가 AI 에이전트를 쓰는가?\", \"얼마나 집중적으로 쓰는가?\", \"무엇에 ",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "063_Robot-assisted_mapping_of_chemical",
+    "title": "Robot-assisted mapping of chemical reaction hyperspaces and networks",
+    "essence": "저비용(~$25K) 로봇 플랫폼과 UV-Vis 기반 spectral unmixing 알고리즘을 결합하여, 화학 반응의 다차원 조건 공간(hyperspace)을 수천 개의 조건에서 체계적으로 스캔하고, 수율 분포를 정량적으로 재구성하는 방법론을 제시한다. 총 9,000개 이상의 반응 조건을 탐색하여, (1) 연속 변수(농도, 온도)에 대한 개별 수율 분포가 ",
+    "score": 5.0,
+    "date": ""
+  },
+  {
+    "slug": "064_Artificial_Intelligence_in_Research",
+    "title": "Artificial Intelligence in Research and Development",
+    "essence": "AI가 R&D(연구개발) 과정에 미치는 영향을 평가하기 위한 경제학적 프레임워크를 제시하는 이론 논문이다. R&D를 이질적 \"태스크(task)\"의 집합으로 모델링하고, AI의 영향을 결정하는 세 가지 핵심 요인을 식별한다: (a) AI가 수행할 수 있는 연구 태스크의 비율(gamma), (b) 해당 태스크에서의 AI 생산성(M), (c) 아이디어 생산에서의",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "065_Discovery_of_Unstable_Singularities",
+    "title": "Discovery of Unstable Singularities",
+    "essence": "유체 역학의 지배 방정식(3D Euler, Navier-Stokes, IPM, Boussinesq)에서 **불안정 특이점(unstable singularities)**의 새로운 군(families)을 최초로 체계적으로 발견한 연구이다. 불안정 특이점은 무한한 정밀도로 조율된 초기 조건을 요구하여, 미세한 섭동으로도 blow-up 궤적에서 이탈하는 극도로 포",
+    "score": 5.0,
+    "date": ""
+  },
+  {
+    "slug": "066_A_practical_evaluation_of_AutoML_to",
+    "title": "A practical evaluation of AutoML tools for binary, multiclass, and multilabel classification",
+    "essence": "16개의 AutoML 프레임워크(AutoGluon, AutoSklearn, TPOT, PyCaret, Lightwood 등)를 binary, multiclass, multilabel 분류 과제에 걸쳐 체계적으로 벤치마크한 대규모 비교 연구이다. 21개 실제 OpenML 데이터셋에 5분 시간 제약 조건을 적용하고, weighted F1 score와 학습 시간",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "067_Self-Driving_Laboratories_for_Chemi",
+    "title": "Self-Driving Laboratories for Chemistry and Materials Science",
+    "essence": "자율주행 실험실(Self-Driving Laboratories, SDLs)의 화학 및 재료과학 분야 적용에 대한 포괄적 리뷰 논문이다. SDL의 하드웨어(로봇, 센서, 액체 처리 장치), 소프트웨어(오케스트레이션, 데이터 관리, AI 기반 실험 계획), 그리고 분석 공정 최적화, 반응 최적화, 약물 발견, 구조 재료, 광전자소자, 에너지 저장 재료 등 다양",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "068_Using_artificial_intelligence_for_s",
+    "title": "Using Artificial Intelligence for Systematic Review: The Example of Elicit",
+    "essence": "",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "069_A_multimodal_generative_AI_copilot",
+    "title": "A Multimodal Generative AI Copilot for Human Pathology",
+    "essence": "",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "070_Interesting_Scientific_Idea_Generat",
+    "title": "Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders",
+    "essence": "5,800만 편의 과학 논문에서 구축한 지식 그래프(knowledge graph)와 GPT-4를 결합하여 개인화된 연구 아이디어를 생성하는 시스템 **SciMuse**를 소개한다. 110명의 Max Planck Society 연구그룹 리더가 4,400개 이상의 AI 생성 연구 제안을 평가한 대규모 인간 평가를 수행하여, AI가 생성한 연구 아이디어의 흥미도",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "071_Unlocking_the_Potential_of_AI_Resea",
+    "title": "Unlocking the Potential of AI Researchers in Scientific Discovery: What Is Missing?",
+    "essence": "AI for Science(AI4Science)의 성장 현황을 Nature Index 145개 저널에 게재된 20,401편의 AI 관련 논문을 분석하여 정량적으로 파악하고, AI 연구자들이 과학적 발견에서 주도적 역할을 하지 못하는 현실적 간극을 진단한 논문이다. 혁신의 확산(Diffusion of Innovation) 이론에 기반하여 AI4Science의",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "072_AI_for_social_science_and_social_sc",
+    "title": "AI for Social Science and Social Science of AI: A Survey",
+    "essence": "AI와 사회과학의 결합을 두 방향으로 체계적으로 분류한 포괄적 서베이 논문이다. (1) **AI for social science** -- AI(특히 LLM)를 사회과학 연구의 가설 생성, 실험, 설문, 비반응적 연구 등 전 단계에서 도구로 활용하는 방향과, (2) **Social science of AI** -- AI 에이전트를 사회적 존재로 간주하여 심",
+    "score": 3.0,
+    "date": "2024"
+  },
+  {
+    "slug": "073_Artificial_intelligence_for_science",
+    "title": "Artificial Intelligence for Science — Bridging Data to Wisdom",
+    "essence": "",
+    "score": 2.0,
+    "date": ""
+  },
+  {
+    "slug": "074_SciHorizon_Benchmarking_AI-for-Sci",
+    "title": "SciHorizon: Benchmarking AI-for-Science Readiness from Scientific Data to Large Language Models",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "075_Future_of_Work_with_AI_Agents_Audi",
+    "title": "Future of Work with AI Agents: Auditing Automation and Augmentation Potential across the U.S. Workforce",
+    "essence": "AI 에이전트가 미국 노동시장에 미치는 영향을 **노동자 관점**에서 체계적으로 감사(audit)하는 최초의 대규모 연구이다. 미국 노동부 O\\*NET 데이터베이스의 844개 직업 과업(104개 직종)에 대해 1,500명의 현직 노동자와 52명의 AI 전문가로부터 자동화 욕구(automation desire)와 기술적 역량(technological capa",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "076_Small_Language_Models_are_the_Futur",
+    "title": "Small Language Models are the Future of Agentic AI",
+    "essence": "에이전틱 AI 시스템에서 대형 언어 모델(LLM)을 소형 언어 모델(SLM, ~10B 파라미터 이하)로 대체해야 한다는 포지션 페이퍼이다. SLM이 (V1) 에이전틱 작업에 **충분한 성능**을 보유하고, (V2) 운영적으로 **더 적합**하며, (V3) **더 경제적**이라는 세 가지 핵심 주장을 전개한다. 범용 대화 능력이 필요한 경우에는 SLM을 기본",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "077_Building_machines_that_learn_and_th",
+    "title": "Building Machines That Learn and Think with People",
+    "essence": "AI를 단순한 \"사고의 도구(tools for thought)\"가 아닌 **\"사고의 파트너(thought partners)\"**로 설계해야 한다는 비전을 제시하는 Perspective 논문이다. 효과적인 사고 파트너의 세 가지 요건으로 (1) **나를 이해하는 시스템** (사용자의 목표, 신념, 자원 제약 모델링), (2) **내가 이해할 수 있는 시스템*",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "078_RD-Agent_Automating_Data-Driven_A",
+    "title": "R&D-Agent: Automating Data-Driven AI Solution Building Through LLM-Powered Automated Research, Development, and Evolution",
+    "essence": "",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "079_Accelerating_Drug_Discovery_Through",
+    "title": "Accelerating Drug Discovery Through Agentic AI: A Multi-Agent Approach to Laboratory Automation in the DMTA Cycle",
+    "essence": "제약 산업의 Design-Make-Test-Analyze (DMTA) 사이클을 자동화하기 위한 멀티 에이전트 AI 프레임워크 **Tippy**를 소개한다. Supervisor, Molecule, Lab, Analysis, Report의 5개 특화 에이전트와 Safety Guardrail 에이전트로 구성되며, Artificial 플랫폼 위에 배포되어 분자 설",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "080_VASPilot_MCP-Facilitated_Multi-Age",
+    "title": "VASPilot: MCP-Facilitated Multi-Agent Intelligence for Autonomous VASP Simulations",
+    "essence": "VASP(Vienna Ab initio Simulation Package) 기반 밀도범함수이론(DFT) 시뮬레이션을 완전 자동화하는 오픈소스 멀티 에이전트 플랫폼 **VASPilot**을 소개한다. CrewAI 프레임워크와 Model Context Protocol(MCP)을 기반으로 구축되며, Manager Agent + 3개 특화 Worker Agent(",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "081_AgentRxiv_Towards_Collaborative_Au",
+    "title": "AgentRxiv: Towards Collaborative Autonomous Research",
+    "essence": "AgentRxiv는 LLM 기반 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 연구 결과를 업로드, 검색, 상호 참조하며 협업적으로 연구를 수행할 수 있게 하는 프레임워크이다. 단일 실험실이 MATH-500에서 gpt-4o mini 기준 70.2%에서 78.2%로 11.4% 상대적 성능 향상을 달성했으며, 3개 병렬 실험실 운영 시 79.8%(13.7",
+    "score": 3.0,
+    "date": "2025-03-23"
+  },
+  {
+    "slug": "082_Harnessing_Large_Language_Models_to",
+    "title": "Harnessing Large Language Models to Collect and Analyze Metal-Organic Framework Property Data Set",
+    "essence": "L2M3(Large Language Model MOF Miner)는 LLM 체인을 활용하여 40,000편 이상의 MOF 논문에서 합성 조건과 물성 데이터를 자동 추출하고 구조화된 데이터베이스를 구축하는 시스템이다. 추출 정확도 F1 0.93 이상을 달성하였으며, 구축된 데이터를 활용하여 시뮬레이션-실험 데이터 간 괴리의 원인(잔류 종)을 규명하고, LLM ",
+    "score": 4.0,
+    "date": "2025-02-05"
+  },
+  {
+    "slug": "083_Large-Language-Model-Based_AI_Agent",
+    "title": "Large-Language-Model-Based AI Agent for Organic Semiconductor Device Research",
+    "essence": "",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "084_StableToolBench_Towards_Stable_Lar",
+    "title": "StableToolBench: Towards Stable Large-Scale Benchmarking on Tool Learning of Large Language Models",
+    "essence": "StableToolBench는 기존 ToolBench의 불안정성 문제(API 상태 변화, 평가 무작위성)를 해결하기 위해 가상 API 서버(캐싱 시스템 + LLM 기반 API 시뮬레이터)와 안정적 평가 시스템(Solvable Pass Rate/Win Rate + GPT-4 평가자)을 제안한 벤치마크이다. 50%의 API가 비가용 상태에서도 성능 변동이 분산",
+    "score": 4.0,
+    "date": "2025-03-05"
+  },
+  {
+    "slug": "085_AnyTool_Self-Reflective_Hierarchi",
+    "title": "AnyTool: Self-Reflective, Hierarchical Agents for Large-Scale API Calls",
+    "essence": "AnyTool은 GPT-4의 function calling 기능을 활용하여 16,000개 이상의 API 풀에서 계층적 에이전트 구조(meta-agent -> category agent -> tool agent)로 관련 API를 검색하고, self-reflection 메커니즘으로 실패한 쿼리를 반복 재시도하는 plug-and-play tool learning",
+    "score": 4.0,
+    "date": "2024-02-06"
+  },
+  {
+    "slug": "086_Toolformer_Language_Models_Can_Tea",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "essence": "Toolformer는 언어 모델이 외부 도구(계산기, QA 시스템, 검색 엔진, 번역기, 달력)의 사용법을 자기지도 학습 방식으로 스스로 학습하는 방법론이다. LM이 텍스트 내 잠재적 API 호출 위치와 인수를 생성하고, perplexity 감소 기준으로 유용한 호출만 필터링한 데이터셋으로 fine-tuning하여, 6.7B 파라미터 GPT-J 기반으로 1",
+    "score": 5.0,
+    "date": "2023-02-09"
+  },
+  {
+    "slug": "087_ToolLLM_Facilitating_Large_Languag",
+    "title": "ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs",
+    "essence": "오픈소스 LLM(예: LLaMA)이 외부 API 도구를 활용하는 능력에서 폐쇄형 모델(ChatGPT, GPT-4)에 크게 뒤처지는 문제를 해결하기 위한 **범용 도구 사용 프레임워크**다. RapidAPI Hub에서 수집한 16,464개의 실제 REST API를 기반으로, 데이터 구축(ToolBench), 모델 학습(ToolLLaMA), 자동 평가(Tool",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "088_MechAgents_Large_language_model_mu",
+    "title": "MechAgents: Large language model multi-agent collaborations can solve mechanics problems, generate new data, and integrate knowledge",
+    "essence": "LLM 기반 멀티 에이전트 시스템을 활용하여 **고체역학 문제를 자율적으로 풀 수 있는 물리 기반 생성형 AI 플랫폼** MechAgents를 제안한다. GPT-4를 기반으로 한 AI 에이전트들이 탄성 문제를 유한요소법(FEM)으로 정식화하고, Python/FEniCS 코드를 작성, 실행, 디버깅하며, 결과를 분석하는 전 과정을 자율적인 대화를 통해 수행한",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "089_OWL_Optimized_Workforce_Learning_f",
+    "title": "OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation",
+    "essence": "LLM 기반 멀티 에이전트 시스템의 **도메인 간 전이성(cross-domain transferability)** 문제를 해결하기 위한 계층적 멀티 에이전트 프레임워크 WORKFORCE와, 도메인 비종속적(domain-agnostic) Planner를 강화학습으로 최적화하는 학습 패러다임 OWL(Optimized Workforce Learning)을 제안한",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "090_An_automatic_end-to-end_chemical_sy",
+    "title": "An automatic end-to-end chemical synthesis development platform powered by large language models",
+    "essence": "GPT-4 기반의 6개 전문 LLM 에이전트로 구성된 **LLM-RDF(LLM-based Reaction Development Framework)**를 개발하여, 화학 합성 개발의 전 과정을 자연어 인터페이스로 수행할 수 있는 end-to-end 플랫폼을 구현했다. 문헌 검색부터 기질 범위 스크리닝, 반응 동역학 연구, 조건 최적화, 스케일업, 생성물 정제",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "091_OpenFOAMGPT_20_end-to-end_trustw",
+    "title": "OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics",
+    "essence": "자연어 질의로부터 **전처리-시뮬레이션-후처리까지 완전 자동화된 end-to-end CFD 시뮬레이션**을 수행하는 최초의 멀티 에이전트 프레임워크를 제안한다. 4개의 전문 에이전트(Pre-processing, Prompt Generation, OpenFOAMGPT, Post-processing)가 Claude-3.7-Sonnet을 기반으로 협력하며, Po",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "092_ScienceAgentBench_Toward_Rigorous",
+    "title": "ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+    "essence": "LLM 기반 언어 에이전트가 데이터 기반 과학적 발견(data-driven scientific discovery)을 실제로 자동화할 수 있는지를 엄밀하게 평가하기 위한 벤치마크 **ScienceAgentBench**를 제안한다. 4개 분야(생물정보학, 전산화학, 지리정보과학, 심리학/인지신경과학)의 44편 피어리뷰 논문에서 추출한 102개 과제를 포함하며,",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "093_DeepCRE_Transforming_Drug_RD_via",
+    "title": "DeepCRE: Transforming Drug R&D via AI-Driven Cross-drug Response Evaluation",
+    "essence": "",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "094_Agent_Laboratory_Using_LLM_Agents",
+    "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
+    "essence": "LLM 에이전트를 활용하여 연구의 전 과정(문헌 조사 -> 실험 -> 보고서 작성)을 자동화하는 프레임워크 **Agent Laboratory**를 제안한다. 인간 연구자가 연구 아이디어를 입력하면, PhD/Postdoc/ML Engineer/SW Engineer/Professor 등의 역할을 가진 전문화된 LLM 에이전트들이 파이프라인을 통해 코드 저장소와",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "095_MatPilot_an_LLM-enabled_AI_Materia",
+    "title": "MatPilot: an LLM-enabled AI Materials Scientist under the Framework of Human-Machine Collaboration",
+    "essence": "MatPilot은 LLM 기반 멀티 에이전트 시스템을 활용하여 인간-기계 협업 프레임워크 하에서 재료 과학 연구를 수행하는 AI 재료 과학자 시스템이다. 인지 모듈(cognition module)과 실행 모듈(execution module)로 구성되며, 자연어 상호작용을 통해 과학적 가설 생성, 실험 설계, 자동화 실험 수행, 반복적 최적화를 통합한 플랫폼",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "096_A_Perspective_on_Foundation_Models",
+    "title": "A Perspective on Foundation Models in Chemistry",
+    "essence": "화학 및 재료 과학 분야에서 파운데이션 모델(foundation model)의 최근 발전을 체계적으로 정리한 관점(perspective) 논문이다. 물성 예측(property prediction), 기계학습 원자간 포텐셜(MLIP), 역설계(inverse design)의 세 가지 핵심 도메인에 걸쳐 \"작은 파운데이션 모델(small FM)\"과 \"큰 파운데이",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "097_Towards_an_AI_co-scientist",
+    "title": "Towards an AI co-scientist",
+    "essence": "Google이 Gemini 2.0 기반으로 개발한 AI co-scientist는 과학자의 가설 생성 과정을 증강(augment)하기 위한 멀티 에이전트 시스템이다. \"생성-토론-진화(generate, debate, evolve)\" 접근법을 통해 과학적 방법론을 모방하며, test-time compute 스케일링으로 가설의 품질을 반복적으로 개선한다. 약물 ",
+    "score": 4.7,
+    "date": ""
+  },
+  {
+    "slug": "098_Atomically_accurate_de_novo_design",
+    "title": "Atomically accurate de novo design of antibodies with RFdiffusion",
+    "essence": "RFdiffusion을 항체 설계에 특화하여 fine-tuning함으로써, 사용자가 지정한 epitope에 원자 수준 정확도로 결합하는 de novo 항체(VHH 및 scFv)를 완전히 computational하게 설계한 최초의 연구이다. Cryo-EM 구조 분석으로 설계된 CDR 루프 구조와 결합 모드가 계산 모델과 원자 수준에서 일치함을 실험적으로 검증",
+    "score": 5.0,
+    "date": "2025"
+  },
+  {
+    "slug": "099_Virtual_lab_powered_by_AI_scientis",
+    "title": "Virtual lab powered by 'AI scientists' super-charges biomedical research",
+    "essence": "Stanford 대학 James Zou 그룹이 LLM 기반 \"AI 과학자\" 에이전트 팀으로 구성된 \"Virtual Lab\"을 개발하여, SARS-CoV-2 최신 변이체를 표적으로 하는 나노바디 92개를 설계하고 실험 검증까지 완료한 사례를 소개하는 Nature 뉴스 기사이다. 설계된 나노바디의 90% 이상이 원래 변이체에 결합했고, 2개는 최신 변이체(JN",
+    "score": 3.0,
+    "date": "2024-12-19"
+  },
+  {
+    "slug": "100_The_Virtual_Lab_of_AI_agents_design",
+    "title": "The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies",
+    "essence": "Virtual Lab은 LLM(GPT-4o) 기반 멀티 에이전트 시스템과 인간 연구자의 협업으로 학제간 과학 연구를 수행하는 프레임워크이다. PI 에이전트가 면역학자·계산생물학자·ML 전문가 에이전트를 이끌며, ESM + AlphaFold-Multimer + Rosetta를 조합한 나노바디 설계 파이프라인을 에이전트가 자체적으로 설계했다. 4개 시작 나노바",
+    "score": 5.0,
+    "date": "2025"
+  },
+  {
+    "slug": "101_Your_Brain_on_ChatGPT_Accumulation",
+    "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+    "essence": "LLM(ChatGPT) 보조 에세이 작성이 인간의 뇌 연결성과 인지 기능에 미치는 영향을 EEG 기반 신경생리학적 분석과 NLP 분석, 행동 인터뷰를 통해 4개월에 걸쳐 종단적으로 조사한 연구이다. 54명의 참가자를 LLM 그룹, 검색엔진 그룹, Brain-only(도구 미사용) 그룹으로 나누어 3회의 에세이 세션을 진행하고, 4번째 세션에서는 조건을 교차",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "102_AI4Research_A_Survey_of_Artificial",
+    "title": "AI4Research: A Survey of Artificial Intelligence for Scientific Research",
+    "essence": "AI가 과학 연구의 전 생애주기(scientific research lifecycle)를 어떻게 지원하고 자동화할 수 있는지를 체계적으로 정리한 포괄적 서베이 논문이다. 연구 과정을 5가지 핵심 영역 -- (1) 과학 문헌 이해(Scientific Comprehension), (2) 학술 서베이(Academic Survey), (3) 과학적 발견(Scien",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "103_Generalization_Bias_in_Large_Langua",
+    "title": "Generalization Bias in Large Language Model Summarization of Scientific Research",
+    "essence": "LLM이 과학 논문을 요약할 때 원문보다 더 넓은 범위의 일반화(overgeneralization)를 체계적으로 생성하며, 최신 모델일수록 이 경향이 심화된다는 것을 4,900개 요약문 분석으로 실증한 연구.\n\n---",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "104_Admissions_in_the_age_of_AI_detect",
+    "title": "Admissions in the Age of AI: Detecting AI-Generated Application Materials in Higher Education",
+    "essence": "대학원 입학 서류(추천서/학업계획서)에 특화된 도메인 특정 AI 텍스트 탐지 모델이 범용 탐지기보다 훨씬 높은 정확도(99%+)를 달성할 수 있으며, AI 생성 텍스트와 AI 수정 텍스트 모두 효과적으로 식별 가능함을 실증한 연구.\n\n---",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "105_Cross_sectional_pilot_study_on_clin",
+    "title": "Cross Sectional Pilot Study on Clinical Review Generation Using Large Language Models",
+    "essence": "LLM 기반 리뷰 생성 플랫폼과 13개 주요 LLM이 작성한 2,169편의 임상 리뷰를 인간 작성 리뷰와 체계적으로 비교한 결과, AI 리뷰는 참고문헌 수, 포괄성, 논리적 일관성, 혁신성에서 인간에 크게 미치지 못하며, 기존 표절/AIGC 탐지 시스템도 AI 생성 리뷰를 효과적으로 차단하지 못한다는 것을 밝힌 대규모 파일럿 연구.\n\n---",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "106_AI_is_transforming_peer_review__an",
+    "title": "AI is Transforming Peer Review — and Many Scientists Are Worried",
+    "essence": "AI가 동료심사(peer review) 과정에 빠르게 침투하고 있으며, 출판사와 연구자들이 AI 보조 도구를 시험하는 한편, 인간 심사자의 역할 축소와 학술 심사의 사회적 계약 붕괴에 대한 우려가 커지고 있다는 현황 보고.\n\n---",
+    "score": 2.3,
+    "date": "AI 피어 리뷰 동향을 소개하는 저널리즘 기사로, 현장 연구자들의 다양한 시각을 균형 있게 전달하지만 학술적 분석이나 독자적 기여는 없다."
+  },
+  {
+    "slug": "107_Is_it_OK_for_AI_to_write_science_pa",
+    "title": "Is It OK for AI to Write Science Papers? Nature Survey Shows Researchers Are Split",
+    "essence": "Nature가 전 세계 약 5,000명의 연구자를 대상으로 실시한 설문에서, 과학 논문 작성과 동료심사에 AI를 사용하는 것에 대한 윤리적 견해가 크게 갈리며, 대다수가 AI 사용에 호의적이면서도 실제 채택률은 낮고 공개(disclosure) 여부에 대한 합의가 부재함을 확인한 대규모 조사.\n\n---",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "108_Large_language_models_for_automated",
+    "title": "Large Language Models for Automated Scholarly Paper Review: A Survey",
+    "essence": "LLM 시대에 자동화된 학술 논문 리뷰(Automated Scholarly Paper Review, ASPR)의 현황을 종합적으로 조망하는 서베이 논문이다. ASPR에 사용되는 LLM 종류, 기술적 병목 해소 현황, 새로운 방법론/데이터셋/소스코드/온라인 시스템, LLM의 성능과 한계, 출판사 및 학계의 반응과 정책, 그리고 미래 도전 과제를 체계적으로 정",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "109_Vending-Bench_A_Benchmark_for_Long",
+    "title": "Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents",
+    "essence": "LLM 기반 에이전트의 **장기 일관성(long-term coherence)**을 평가하기 위한 시뮬레이션 벤치마크이다. 자판기(vending machine) 운영이라는 단순하지만 장기적인 비즈니스 시나리오를 통해, 재고 관리, 주문, 가격 설정, 일일 비용 관리 등 개별적으로는 쉬운 작업들이 장시간(>20M 토큰) 누적될 때 LLM의 의사결정 일관성이 어",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "110_AI_Agents_in_Engineering_Design_A",
+    "title": "AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerodynamic Car Design",
+    "essence": "자동차 설계 프로세스에 AI \"Design Agents\"를 도입하여, 컨셉 스케치에서 스타일링, 3D 형상 검색/생성, CFD 메싱, 공기역학 시뮬레이션까지의 전 과정을 자동화하는 멀티에이전트 프레임워크를 제안한 연구이다. Vision-Language Model(VLM), LLM, 기하학적 딥러닝(DeepSDF, PointNet, RegDGCNN, Trip",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "111_SciAgents_Automating_Scientific_Di",
+    "title": "SciAgents: Automating Scientific Discovery Through Bioinspired Multi-Agent Intelligent Graph Reasoning",
+    "essence": "대규모 온톨로지 지식 그래프(knowledge graph)와 LLM 기반 멀티에이전트 시스템을 결합하여 과학적 발견을 자동화하는 프레임워크 **SciAgents**를 제안한 연구이다. 약 1,000편의 생체모방 재료(bio-inspired materials) 논문으로 구축된 지식 그래프에서 개념 간 경로를 샘플링하고, Ontologist, Scientist",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "112_Language_agents_achieve_superhuman",
+    "title": "Language Agents Achieve Superhuman Synthesis of Scientific Knowledge",
+    "essence": "과학 문헌 연구의 세 가지 핵심 과제 -- 정보 검색(retrieval), 요약(summarization), 모순 탐지(contradiction detection) -- 에서 LLM 기반 에이전트 **PaperQA2**가 도메인 전문가(PhD 수준)의 성능을 매칭하거나 초과함을 엄밀한 인간-AI 비교 방법론으로 실증한 연구이다. PaperQA2는 RAG(R",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "113_ResearchAgent_Iterative_Research_I",
+    "title": "ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models",
+    "essence": "LLM을 활용하여 과학 논문으로부터 자동으로 연구 아이디어(문제 정의, 방법론 제안, 실험 설계)를 생성하는 시스템 **ResearchAgent**를 제안한다. 핵심 논문에서 출발하여 인용 그래프 기반 관련 논문 탐색, entity-centric knowledge store를 통한 도메인 간 개념 연결, 그리고 LLM 기반 ReviewingAgent의 반복",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "114_Fine-tuning_large_language_models_f",
+    "title": "Fine-tuning Large Language Models for Domain Adaptation: Exploration of Training Strategies, Scaling, Model Merging and Synergistic Capabilities",
+    "essence": "재료과학 도메인에 특화된 LLM을 개발하기 위한 fine-tuning 전략(CPT, SFT, DPO, ORPO)과 모델 병합(SLERP)의 효과를 체계적으로 탐구한 연구이다. 핵심 발견은 SLERP(Spherical Linear Interpolation)를 통한 모델 병합이 단순 평균을 크게 초월하는 **비선형적 시너지 효과**를 발휘하여, 개별 부모 모델",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "115_Foundation_models_for_materials_dis",
+    "title": "Foundation Models for Materials Discovery -- Current State and Future Directions",
+    "essence": "Foundation model(LLM을 포함하는 대규모 사전학습 모델의 총칭)이 재료 발견(materials discovery) 분야에 어떻게 적용되고 있는지를 조망하는 perspective 논문이다. 데이터 추출, 물성 예측, 분자 생성, 합성 계획의 네 가지 핵심 과제에서의 현황을 리뷰하고, 향후 멀티모달 모델, 새로운 데이터 캡처 방식, 멀티피델리티(",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "116_AI_for_research_the_ultimate_guide",
+    "title": "AI for Research: The Ultimate Guide to Choosing the Right Tool",
+    "essence": "연구자와 대학원생이 연구 과정의 각 단계에서 AI 도구를 활용하는 방법을 실용적으로 안내하는 Nature의 Career Feature 기사이다. 문헌 조사, 가설 생성, 통계/코딩, 학술 글쓰기의 네 단계로 나누어 현재 사용 가능한 AI 플랫폼들을 소개하고, 실제 PhD 학생 및 연구자들의 사용 사례를 인터뷰 형식으로 전달한다.",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "117_People_who_frequently_use_ChatGPT_f",
+    "title": "People Who Frequently Use ChatGPT for Writing Tasks Are Accurate and Robust Detectors of AI-Generated Text",
+    "essence": "LLM을 글쓰기에 자주 사용하는 사람들이 별도의 훈련 없이도 AI 생성 텍스트를 거의 완벽하게 탐지할 수 있음을 밝힌 연구이다. 5명의 \"전문가\" 주석자의 다수결은 300편의 기사 중 단 1편만 오분류하여(TPR 99.3%, FPR 0%), paraphrasing과 humanization 회피 전술에도 강건하며, Pangram을 제외한 모든 상용/오픈소스 ",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "118_Retrieval-Augmented_Generation_for",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "essence": "사전학습된 seq2seq 모델(BART)의 parametric memory와 Wikipedia 기반 dense vector index의 non-parametric memory를 결합한 **Retrieval-Augmented Generation (RAG)** 프레임워크를 제안한다. 입력 쿼리에 대해 DPR(Dense Passage Retriever)로 관련 ",
+    "score": 5.0,
+    "date": ""
+  },
+  {
+    "slug": "119_AI-Driven_Review_Systems_Evaluatin",
+    "title": "AI-Driven Review Systems: Evaluating LLMs in Scalable and Bias-Aware Academic Reviews",
+    "essence": "LLM 기반 학술 논문 자동 리뷰 시스템의 구축, 대규모 운영, 그리고 체계적 평가를 다룬 종합적 연구이다. 세 가지 시스템(OpenReviewer, Papers with Reviews, Reviewer Arena)과 네 가지 평가 방법(인간 평가, LLM 자동 평가, 인간 선호도 예측, LLM 리뷰 한계 자동 발견)을 제안하며, LLM 리뷰의 품질과 한계",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "120_Reviewer2_Optimizing_Review_Genera",
+    "title": "Reviewer2: Optimizing Review Generation Through Prompt Generation",
+    "essence": "LLM 기반 학술 논문 리뷰 자동 생성에서 **구체성(specificity)과 커버리지(coverage) 부족** 문제를 해결하기 위해, aspect prompt 생성과 리뷰 생성을 분리한 2단계 프레임워크 REVIEWER2를 제안한다. 첫 번째 LLM(Mp)이 논문을 분석하여 리뷰가 다룰 관점(aspect prompt)을 생성하고, 두 번째 LLM(Mr)",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "121_Peer_Review_as_A_Multi-Turn_and_Lon",
+    "title": "Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions",
+    "essence": "학술 피어 리뷰 프로세스를 **multi-turn, long-context, role-based dialogue**로 재정식화(reformulate)하는 새로운 관점을 제안한다. 기존의 \"논문 -> 리뷰\" 단방향 생성이 아닌, Reviewer(초기 리뷰) -> Author(rebuttal) -> Reviewer(최종 리뷰) -> Decision Maker(",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "122_Is_Your_Paper_Being_Reviewed_by_an",
+    "title": "Is Your Paper Being Reviewed by an LLM? Investigating AI Text Detectability in Peer Review",
+    "essence": "피어 리뷰에서 LLM이 생성한 텍스트를 **개별 리뷰 수준에서 탐지**하는 문제를 최초로 체계적으로 조사한 연구이다. GPT-4o와 Llama-3.1-70B로 ICLR 논문에 대한 16,000개의 AI 리뷰를 생성하고, 기존 AI 텍스트 탐지 방법(RoBERTa, Longformer, Originality AI, LLM-as-judge)의 성능을 평가한 결",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "123_ReviewerGPT_An_Exploratory_Study_o",
+    "title": "ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing",
+    "essence": "LLM(특히 GPT-4)이 과학 논문의 피어 리뷰 과정에서 어떤 역할을 수행할 수 있는지를 탐색적으로 연구한 논문이다. 세 가지 리뷰 관련 태스크(오류 탐지, 체크리스트 검증, 더 나은 논문 선택)에 대해 GPT-4의 성능을 체계적으로 평가하여, LLM이 특정 리뷰 보조 작업에는 유망하지만 독립적 리뷰어로서는 아직 부족함을 보여준다.",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "124_Three_AI-powered_steps_to_faster_s",
+    "title": "Three AI-powered steps to faster, smarter peer review",
+    "essence": "피어 리뷰에 소요되는 시간을 대폭 줄이면서도 리뷰 품질을 유지할 수 있는 AI 보조 워크플로우를 제안하는 실용적 칼럼이다. \"Scan-Dictate-Refine\"의 3단계 방법론을 통해, 기존 반나절 소요되던 리뷰를 30~40분으로 단축한 개인 경험을 공유하며, 특히 오프라인 LLM(GPT4ALL) 활용을 통한 기밀성 보장을 강조한다.",
+    "score": 2.0,
+    "date": ""
+  },
+  {
+    "slug": "125_ChartInstruct_Instruction_Tuning_f",
+    "title": "ChartInstruct: Instruction Tuning for Chart Comprehension and Reasoning",
+    "essence": "차트 이해 및 추론을 위한 범용 비전-언어 모델(VLM)을 구축하기 위해, 71K개의 실세계 차트로부터 191K개의 instruction-following 데이터셋을 자동 생성하고, 이를 활용한 두 가지 시스템(end-to-end 모델과 pipeline 모델)을 제안하여 4개 벤치마크에서 SOTA를 달성한 연구이다.",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "126_ChartGemma_Visual_Instruction-tuni",
+    "title": "ChartGemma: Visual Instruction-tuning for Chart Reasoning in the Wild",
+    "essence": "기존 차트 이해 모델들이 데이터 테이블 기반으로 instruction 데이터를 생성하고, 약하게 정렬된 비전-언어 백본을 사용하는 두 가지 핵심 한계를 해결하기 위해, 차트 이미지로부터 직접 instruction 데이터를 생성하고 강하게 정렬된 PaliGemma(3B)를 백본으로 활용하는 ChartGemma를 제안한다. 5개 벤치마크에서 SOTA를 달성하면",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "127_ChartLlama_A_Multimodal_LLM_for_Ch",
+    "title": "ChartLlama: A Multimodal LLM for Chart Understanding and Generation",
+    "essence": "GPT-4의 언어 및 코딩 능력을 활용하여 차트 데이터 생성, 차트 그림 생성, instruction 데이터 생성의 3단계 파이프라인으로 고품질 합성 instruction-tuning 데이터셋(11K 차트, 160K instruction, 10개 차트 유형, 7개 태스크)을 구축하고, 이를 기반으로 차트 이해와 생성을 동시에 수행하는 멀티모달 LLM인 Ch",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "128_MMC_Advancing_Multimodal_Chart_Und",
+    "title": "MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning",
+    "essence": "차트 이미지 이해에 특화된 대규모 instruction tuning 데이터셋(MMC-Instruction, 600k 인스턴스)과 인간 주석 벤치마크(MMC-Benchmark, 9개 태스크), 그리고 이를 기반으로 학습한 멀티모달 차트 어시스턴트 모델(MMCA)을 제안하는 논문이다. 기존 LMM(Large Multimodal Model)들이 자연 이미지에는 ",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "129_Reading_and_Reasoning_over_Chart_Im",
+    "title": "Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking",
+    "essence": "차트 이미지를 근거(evidence)로 활용한 자동 팩트체킹(Automated Fact-Checking, AFC)이라는 새로운 태스크를 제안하고, 이를 위한 최초의 모델 ChartBERT와 벤치마크 데이터셋 ChartFC(15,886개 차트-주장 쌍)를 구축한 논문이다. 텍스트 주장(claim)이 차트 이미지에 의해 지지(supports)되는지 반박(ref",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "130_Large_language_models_for_automated",
+    "title": "Large Language Models for Automated Scholarly Paper Review: A Survey",
+    "essence": "LLM 시대의 **자동화된 학술 논문 리뷰(Automated Scholarly Paper Review, ASPR)**에 대한 포괄적 서베이 논문이다. LLM이 ASPR에 어떻게 활용되고 있는지를 기술적 병목 해소, 새로운 방법론(프롬프트 엔지니어링, 지도 학습 미세조정, 멀티에이전트 프레임워크), 데이터셋, 소스코드/온라인 시스템, 성능 및 한계, 출판사·",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "131_Chartist_Task-driven_Eye_Movement",
+    "title": "Chartist: Task-driven Eye Movement Control for Chart Reading",
+    "essence": "차트를 읽을 때 인간의 **태스크 기반 시선 이동(scanpath)**을 시뮬레이션하는 계산 모델 **Chartist**를 제안한다. 핵심은 **2단계 계층적 제어 아키텍처**로, 상위 레벨에서는 LLM이 지금까지 획득한 정보를 이해하고 다음 하위 목표를 선택하며, 하위 레벨에서는 강화학습(RL) 기반 정책이 실제 시선을 픽셀 수준에서 이동시킨다. 값 검색",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "132_FigCaps-HF_A_Figure-to-Caption_Gen",
+    "title": "FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback",
+    "essence": "과학 논문의 **그림(figure)에 대한 캡션 자동 생성**을 독자 선호도에 맞춰 최적화하는 프레임워크 **FigCaps-HF**를 제안한다. 핵심은 두 가지로, (1) 소량의 도메인 전문가 피드백으로 학습한 **인간 피드백 예측 모델**(Human Feedback Prediction Model)이 대규모 데이터셋 전체의 캡션 품질을 자동으로 평가하고, ",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "133_PatFig_Generating_Short_and_Long_C",
+    "title": "PatFig: Generating Short and Long Captions for Patent Figures",
+    "essence": "Qatent PatFig는 11,000건 이상의 유럽 특허 출원에서 추출한 30,000+개의 특허 도면으로 구성된 최초의 대규모 특허 도면 캡셔닝 데이터셋이다. 각 도면에 대해 짧은/긴 캡션, 참조 번호(reference numerals)와 대응 용어, 최소 청구항 집합을 제공하며, MiniGPT-4를 fine-tuning하여 특허 도면의 자동 캡션 생성 ",
+    "score": 3.0,
+    "date": "2023"
+  },
+  {
+    "slug": "134_SciCap_A_Knowledge_Augmented_Data",
+    "title": "SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Figure Captioning",
+    "essence": "SciCap+는 기존 SciCap 데이터셋(414K 과학 figure-caption 쌍)을 mention-paragraph(본문에서 해당 figure를 언급하는 단락)과 OCR 토큰(figure 내 텍스트 및 위치 정보)으로 확장한 knowledge-augmented 데이터셋이다. 과학 figure captioning을 단순 image-to-caption이",
+    "score": 3.0,
+    "date": "2023"
+  },
+  {
+    "slug": "135_BERT_Pre-training_of_Deep_Bidirect",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "essence": "BERT(Bidirectional Encoder Representations from Transformers)는 Masked Language Model(MLM)과 Next Sentence Prediction(NSP)이라는 두 가지 비지도 사전학습 목표를 통해 깊은 양방향 Transformer 표현을 학습하는 언어 모델이다. 사전학습된 BERT에 단일 출력 ",
+    "score": 5.0,
+    "date": "2018"
+  },
+  {
+    "slug": "136_ScispaCy_Fast_and_Robust_Models_fo",
+    "title": "ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing",
+    "essence": "scispaCy는 spaCy 라이브러리 위에 구축된 생의학/과학 텍스트 전용 NLP 파이프라인으로, POS tagging, dependency parsing, NER, sentence segmentation, entity linking candidate generation을 포함하는 end-to-end 도구이다. GENIA 코퍼스와 OntoNotes 5.0",
+    "score": 4.0,
+    "date": "2019-08"
+  },
+  {
+    "slug": "137_TLDR_Extreme_Summarization_of_Scie",
+    "title": "TLDR: Extreme Summarization of Scientific Documents",
+    "essence": "TLDR generation은 과학 논문을 단일 문장(평균 21단어)으로 극단적 압축하는 새로운 요약 태스크이다. 이를 위해 3,229편의 CS 논문에 대해 5,411개의 multi-target TLDR을 포함하는 SciTLDR 데이터셋을 구축하고, 논문 제목 생성을 보조 scaffold task로 활용하는 CATTS(Controlled Abstractio",
+    "score": 4.0,
+    "date": "2020"
+  },
+  {
+    "slug": "138_SciBERT_A_Pretrained_Language_Mode",
+    "title": "SciBERT: A Pretrained Language Model for Scientific Text",
+    "essence": "과학 텍스트에 특화된 사전학습 언어모델 SciBERT를 제안한다. BERT와 동일한 아키텍처를 사용하되, Semantic Scholar에서 수집한 1.14M 편의 과학 논문(바이오메디컬 82%, 컴퓨터과학 18%) 전문(full text)으로 사전학습하고, 과학 도메인에 최적화된 새로운 어휘(SCIVOCAB)를 구축하여 다양한 과학 NLP 태스크에서 BER",
+    "score": 4.7,
+    "date": ""
+  },
+  {
+    "slug": "139_CoAuthor_Designing_a_Human-AI_Coll",
+    "title": "CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities",
+    "essence": "대규모 언어모델(LM)의 생성 능력을 인터랙션 디자인 관점에서 체계적으로 이해하기 위해, 인간-AI 협업 글쓰기 데이터셋 CoAuthor를 제안한다. 63명의 작가와 GPT-3의 4가지 인스턴스 간 1,445개 글쓰기 세션의 풍부한 상호작용을 수집하여, GPT-3의 언어 능력, 아이디어 생성 능력, 협업 능력을 다양한 맥락에서 정량적으로 분석할 수 있는 재",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "140_CycleResearcher_Improving_Automate",
+    "title": "CycleResearcher: Improving Automated Research via Automated Review",
+    "essence": "오픈소스 LLM을 활용하여 과학 연구의 전체 생명주기(문헌 조사 - 논문 작성 - 피어 리뷰 - 수정)를 자동화하는 반복적 강화학습 프레임워크를 제안한다. 정책 모델(CycleResearcher)이 연구 논문을 생성하고, 보상 모델(CycleReviewer)이 피어 리뷰를 시뮬레이션하여 피드백을 제공하며, 이 과정을 Iterative SimPO로 반복 최적",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "141_PaperRobot_Incremental_Draft_Gener",
+    "title": "PaperRobot: Incremental Draft Generation of Scientific Ideas",
+    "essence": "기존 바이오메디컬 논문으로부터 배경 지식 그래프(KG)를 구축하고, 그래프 어텐션과 텍스트 어텐션을 결합한 링크 예측으로 새로운 아이디어를 생성한 뒤, 메모리-어텐션 네트워크를 활용하여 논문의 핵심 요소(제목 -> 초록 -> 결론 및 향후 연구 -> 후속 논문 제목)를 점진적으로 생성하는 자동 연구 보조 시스템 PaperRobot을 제안한다.",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "142_Pelican_Correcting_Hallucination_i",
+    "title": "Pelican: Correcting Hallucination in Vision-LLMs via Claim Decomposition and Program of Thought Verification",
+    "essence": "대규모 비전-언어 모델(LVLM)의 환각(hallucination)을 탐지하고 교정하기 위한 구조화된 파이프라인 Pelican을 제안한다. LVLM의 시각적 주장(claim)을 1차 술어(first-order predicate) 기반의 원자적 하위 주장으로 분해하고, Program-of-Thought 프롬프팅으로 Python 코드를 생성하여 외부 시각 도구",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "143_SciCap_Generating_Captions_for_Sci",
+    "title": "SciCap: Generating Captions for Scientific Figures",
+    "essence": "SciCap은 과학 논문의 figure에 대한 자동 캡션 생성을 위해 구축된 최초의 대규모 실세계 figure-caption 데이터셋이다. arXiv 컴퓨터과학 논문 290,000편 이상에서 200만 개 이상의 figure를 추출하고, figure type 분류, subfigure 제거, 텍스트 정규화 등 체계적 전처리 파이프라인을 통해 graph plot",
+    "score": 3.0,
+    "date": "2021"
+  },
+  {
+    "slug": "144_Autonomous_chemical_research_with_l",
+    "title": "Autonomous chemical research with large language models",
+    "essence": "Coscientist는 GPT-4를 핵심 Planner로 활용하여 인터넷 검색, 문서 탐색, 코드 실행, 실험 자동화 도구를 통합한 multi-LLM 기반 AI 에이전트 시스템으로, 화학 합성 계획부터 로봇 liquid handler 제어, 클라우드 실험실 연동, 반응 조건 최적화까지 6가지 과제를 (반)자율적으로 수행한다. 특히 palladium 촉매 c",
+    "score": 4.0,
+    "date": "2023-12-21"
+  },
+  {
+    "slug": "145_AAAI_Presidential_Panel_Report_on_t",
+    "title": "AAAI Presidential Panel Report on the Future of AI Research",
+    "essence": "AAAI 2025 Presidential Panel Report는 24명의 저명 AI 연구자가 2024년 여름부터 2025년 봄까지 작업하고, 475명의 AAAI 커뮤니티 설문을 포함하여 AI 연구의 미래를 17개 주제로 체계적으로 조망한 포괄적 보고서이다. AI Reasoning, Factuality & Trustworthiness, AI Agents, ",
+    "score": 4.0,
+    "date": "2025-03"
+  },
+  {
+    "slug": "146_Augmenting_large_language_models_wi",
+    "title": "Augmenting large language models with chemistry tools",
+    "essence": "ChemCrow는 GPT-4에 18개의 전문가 설계 화학 도구를 통합한 LLM 화학 에이전트로, 유기 합성, 약물 발견, 재료 설계 전반에 걸쳐 화학 과제를 자동화한다. ReAct 프레임워크 기반의 Thought-Action-Observation 반복 루프를 통해 LLM을 \"과잉 자신감의 정보원\"에서 \"도구를 활용하는 추론 엔진\"으로 전환시키며, 곤충 기피",
+    "score": 4.0,
+    "date": "2024-05-08"
+  },
+  {
+    "slug": "147_The_AI_Scientist_Towards_Fully_Aut",
+    "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+    "essence": "**완전 자동화된 과학적 발견**을 위한 최초의 포괄적 프레임워크 **The AI Scientist**를 제안한다. LLM이 (1) 연구 아이디어 생성, (2) 코드 작성 및 실험 수행, (3) 결과 시각화, (4) LaTeX 논문 작성, (5) 자동 피어 리뷰까지 과학 연구의 전 과정을 독립적으로 수행한다. 확산 모델, 트랜스포머 언어 모델, 학습 역학(",
+    "score": 4.7,
+    "date": ""
+  },
+  {
+    "slug": "148_SciMON_Scientific_Inspiration_Mach",
+    "title": "SciMON: Scientific Inspiration Machines Optimized for Novelty",
+    "essence": "SciMON은 과학 문헌으로부터 새로운 연구 방향을 자연어로 생성하는 프레임워크로, 기존의 이진 링크 예측(binary link prediction) 방식의 Literature-Based Discovery(LBD)를 근본적으로 탈피한다. 배경 문맥(문제, 동기, 실험 설정)을 입력으로 받아 과거 논문에서 \"영감(inspiration)\"을 검색하고, 반복적 ",
+    "score": 4.0,
+    "date": "2024"
+  },
+  {
+    "slug": "149_Attracting_new_users_or_business_as",
+    "title": "Attracting new users or business as usual? A case study of converting academic subscription-based journals to open access",
+    "essence": "노르웨이 인문사회과학(SSH) 분야 11개 학술지의 구독 기반에서 오픈 액세스(OA)로의 전환 효과를 Bayesian Structural Time Series(BSTS) 모델로 분석한 사례 연구이다. 2017년 동시 전환 후 방문 수가 64% 증가했으며(p < .001), 이 증가는 기존 구독 기관(고등교육기관)이 아닌 외부 이용자에 의한 것으로 확인되었다",
+    "score": 3.0,
+    "date": "2021-07-15"
+  },
+  {
+    "slug": "150_Google_Scholar_to_overshadow_them_a",
+    "title": "Google Scholar to Overshadow Them All? Comparing the Sizes of 12 Academic Search Engines and Bibliographic Databases",
+    "essence": "12개 주요 **학술 검색 엔진 및 서지 데이터베이스(ASEBDs)**의 규모를 비교 추정하는 계량서지학 연구이다. **반복적 쿼리 최적화(iterative query optimization)** 방법을 통해 각 데이터베이스에서 **쿼리 히트 카운트(QHC)**의 최댓값을 식별하여 규모를 추정한다. 주요 발견으로, **Google Scholar가 약 3억 ",
+    "score": 3.0,
+    "date": "Orduna-Malea et al.(2015)의 방법론을 계승·확장. \"the\", \"a\", \""
+  },
+  {
+    "slug": "151_Discipline-specific_open_access_pub",
+    "title": "Discipline-specific open access publishing practices and barriers to change: an evidence-based review",
+    "essence": "학술 출판에서 Open Access(OA)의 채택이 학문 분야별로 왜, 어떻게 다른지를 체계적으로 분석한 메타합성(meta-synthesis) 연구이다. 11개의 대규모 계량서지학(bibliometric) 연구를 종합하고, \"기술의 사회적 형성(Social Shaping of Technology)\" 관점에서 의학, 자연과학, 사회과학, 인문학, 법학 5개 ",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "152_SWE-bench_Can_Language_Models_Reso",
+    "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+    "essence": "실제 GitHub 리포지토리의 이슈와 풀 리퀘스트(PR)를 기반으로, 언어 모델(LM)이 실세계 소프트웨어 엔지니어링 문제를 해결할 수 있는지 평가하는 벤치마크 **SWE-bench**를 제안한다. 12개 인기 Python 리포지토리에서 수집한 2,294개의 과제로 구성되며, 모델은 이슈 설명과 코드베이스를 입력받아 문제를 해결하는 패치를 생성해야 한다.",
+    "score": 0,
+    "date": "- Stage I: 12개 인기 Python 리포지토리에서 ~90,000 PR 수집"
+  },
+  {
+    "slug": "153_SciCode_A_Research_Coding_Benchmar",
+    "title": "SciCode: A Research Coding Benchmark Curated by Scientists",
+    "essence": "자연과학 분야(수학, 물리, 화학, 생물, 재료과학)의 실제 연구 코딩 문제를 과학자들이 직접 큐레이션한 벤치마크 **SciCode**를 제안한다. 80개 주요 문제(main problem)가 338개 하위 문제(subproblem)로 분해되며, 각 문제는 과학적 배경지식 회상, 추론, 코드 합성을 동시에 요구한다. 가장 현실적인 평가 설정에서 최고 성능 ",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "154_Do_Users_Write_More_Insecure_Code_w",
+    "title": "Do Users Write More Insecure Code with AI Assistants?",
+    "essence": "AI 코드 어시스턴트(OpenAI Codex 기반)를 사용하는 개발자가 보안 관련 프로그래밍 과제에서 **더 취약한 코드를 작성하는지**를 측정한 최초의 대규모 사용자 연구이다. 47명의 참가자가 Python, JavaScript, C로 5개 보안 관련 과제를 수행했으며, AI 어시스턴트에 접근할 수 있었던 실험군이 대조군보다 유의미하게 덜 안전한 코드를 ",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "155_Productivity_assessment_of_neural_c",
+    "title": "Productivity Assessment of Neural Code Completion",
+    "essence": "GitHub Copilot 사용자의 **체감 생산성(perceived productivity)**과 실제 사용 지표 간의 관계를 분석한 사례 연구이다. 2,631명의 설문 응답과 IDE 텔레메트리 데이터를 매칭하여, 제안 **수락률(acceptance rate)**이 코드의 지속성(persistence)이나 기여량 등 더 정교한 지표보다 체감 생산성을 더 ",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "156_Galactica_A_Large_Language_Model_f",
+    "title": "Galactica: A Large Language Model for Science",
+    "essence": "과학 문헌과 데이터의 폭발적 증가로 인한 정보 과부하 문제를 해결하기 위해, 과학 지식을 저장·결합·추론할 수 있는 대규모 언어 모델 **Galactica**를 제안한다. 4,800만 편의 논문, 교과서, 강의 노트, 수백만 개의 화합물 및 단백질 서열, 과학 웹사이트, 백과사전 등 총 1,060억 토큰의 고품질 큐레이션 과학 코퍼스로 학습하여, 기존 범용",
+    "score": 4.7,
+    "date": ""
+  },
+  {
+    "slug": "157_Best_Practices_for_Using_AI_When_Wr",
+    "title": "Best Practices for Using AI When Writing Scientific Manuscripts: Caution, Care, and Consideration: Creative Science Depends on It",
+    "essence": "ChatGPT로 대표되는 AI 언어 도구가 과학 논문 작성에 미치는 영향을 분석하고, 과학 커뮤니티를 위한 AI 사용 모범 사례(Best Practices)를 제시하는 ACS Nano 편집위원 44명의 합의 사설이다. AI 언어 봇의 강점 9가지와 우려 사항 10가지를 체계적으로 정리하고, 10가지 구체적 권고안을 제시하여 과학 논문 작성에서의 책임 있는 ",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "158_The_AI_writing_on_the_wall",
+    "title": "The AI Writing on the Wall",
+    "essence": "ChatGPT와 같은 생성형 AI 도구가 과학 글쓰기의 지형을 근본적으로 변화시키고 있으며, 과학 출판에서의 합법적·비합법적 AI 활용을 구분하는 가이드라인이 시급히 필요하다는 Nature Machine Intelligence의 사설이다. AI 생성 도구의 긍정적 활용 가능성과 남용 위험을 동시에 지적하면서, 과학 출판 시스템에 대한 신뢰 훼손 우려를 제기",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "159_What_ChatGPT_and_generative_AI_mean",
+    "title": "What ChatGPT and Generative AI Mean for Science",
+    "essence": "ChatGPT를 비롯한 생성형 AI 도구가 과학과 사회를 어떻게 변화시킬 수 있는지를 다각도로 탐구하는 Nature의 뉴스 피처 기사이다. 다수의 연구자, 기술 전문가, 윤리학자, 법학자의 인터뷰를 통해 LLM의 과학 연구 활용 가능성과 위험성 -- 허위 정보 생성, 편향 전파, 저작권 문제, 탐지 기술 등 -- 을 포괄적으로 조망하며, \"변혁적 기술이라 ",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "160_Use_of_large_language_models_as_art",
+    "title": "Use of Large Language Models as Artificial Intelligence Tools in Academic Research and Publishing among Global Clinical Researchers",
+    "essence": "하버드 의과대학 Global Clinical Scholars Research Training (GCSRT) 프로그램에 참여한 59개국, 65개 전문 분야의 의료·보건 연구자 226명을 대상으로 LLM의 인지도, 사용 현황, 미래 영향에 대한 인식을 횡단면 조사한 연구이다. 87.6%가 LLM을 인지하고 있으나 실제 출판에 사용한 비율은 18.7%에 불과하며",
+    "score": 2.3,
+    "date": ""
+  },
+  {
+    "slug": "161_LLMs_Outperform_Outsourced_Human_Co",
+    "title": "LLMs Outperform Outsourced Human Coders on Complex Textual Analysis",
+    "essence": "스페인어 뉴스 기사 210편을 대상으로 5가지 NLP 태스크(개체명 인식, 개수 세기, 비판 존재 여부, 비판 출처, 비판 대상)에서 LLM(GPT-3.5-turbo, GPT-4-turbo, Claude 3 Opus, Claude 3.5 Sonnet)과 외주 인간 코더(ESADE 대학생 146명)의 성능을 체계적으로 비교한 연구. LLM이 모든 태스크에서 ",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "162_LLMs_as_Research_Tools_A_Large_Sca",
+    "title": "LLMs as Research Tools: A Large Scale Survey of Researchers' Usage and Perceptions",
+    "essence": "Semantic Scholar에서 검증된 논문 저자 816명을 대상으로 한 최초의 대규모 설문조사로, 연구자들이 LLM을 연구 워크플로우에 어떻게 활용하고 있으며 그에 대해 어떻게 인식하는지를 6가지 활용 유형(정보 탐색, 편집, 아이디어/프레이밍, 직접 작성, 데이터 분석, 데이터 생성)과 5가지 인구통계학적 배경(인종, 성별, 모국어, 경력, 분야)에 ",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "163_LLM4SR_A_Survey_on_Large_Language",
+    "title": "LLM4SR: A Survey on Large Language Models for Scientific Research",
+    "essence": "LLM이 과학 연구의 전 주기에 걸쳐 어떻게 활용되고 있는지를 체계적으로 정리한 최초의 포괄적 서베이 논문. 연구 파이프라인을 (1) 과학적 가설 발견, (2) 실험 계획 및 수행, (3) 논문 작성, (4) 피어 리뷰의 4단계로 구분하고, 각 단계별 방법론, 벤치마크, 평가 기준을 상세히 분류하여 제시한다. GitHub 리포지토리(https://githu",
+    "score": 3.3,
+    "date": "주로 컴퓨터과학 학회에 발표된 연구를 중심으로 정리하여, 자연과학/의학 등 다른 분야 연구자들의 기여가 누락되었을 가능성"
+  },
+  {
+    "slug": "164_Can_LLMs_Generate_Novel_Research_Id",
+    "title": "Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers",
+    "essence": "100명 이상의 NLP 연구자를 모집하여 LLM 기반 아이디어 생성 에이전트와 인간 전문가의 연구 아이디어를 최초로 대규모 블라인드 비교한 연구. 7개 NLP 주제에 걸쳐 3가지 조건(인간 아이디어 49개, AI 아이디어 49개, AI+인간 재랭킹 아이디어 49개)을 79명의 전문 리뷰어가 블라인드 평가한 결과, AI가 생성한 아이디어가 인간 전문가 아이디",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "165_ChatGPT_outperforms_crowd_workers_f",
+    "title": "ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks",
+    "essence": "4개 데이터셋(트윗 및 뉴스 기사, n=6,183)을 사용하여 ChatGPT(gpt-3.5-turbo)의 zero-shot 텍스트 분류 성능을 Amazon Mechanical Turk(MTurk) 크라우드 워커 및 훈련된 어노테이터(연구보조원)와 체계적으로 비교한 연구. ChatGPT가 관련성, 입장, 주제, 프레임 탐지를 포함한 대부분의 어노테이션 태스크",
+    "score": 4.0,
+    "date": ""
+  },
+  {
+    "slug": "166_Best_humans_still_outperform_artifi",
+    "title": "Best humans still outperform artificial intelligence in a creative divergent thinking task",
+    "essence": "인간(n=256)과 AI 챗봇(ChatGPT3.5, ChatGPT4, Copy.Ai) 3종의 창의적 발산적 사고(divergent thinking) 능력을 **대안적 용도 과제(Alternate Uses Task, AUT)**로 비교한 연구이다. 일상 사물(밧줄, 상자, 연필, 양초)에 대해 독창적이고 창의적인 용도를 생성하도록 요청한 뒤, **의미적 거리",
+    "score": 3.0,
+    "date": ""
+  },
+  {
+    "slug": "167_Can_large_language_models_provide_u",
+    "title": "Can large language models provide useful feedback on research papers? A large-scale empirical analysis",
+    "essence": "GPT-4를 활용한 과학 논문 자동 피드백 생성 파이프라인을 구축하고, 그 유용성을 **대규모 회고적 분석**(Nature 계열 15개 저널 3,096편, ICLR 학회 1,709편)과 **전향적 사용자 연구**(미국 110개 기관 308명 연구자)를 통해 체계적으로 평가한 연구이다. 핵심 발견은 GPT-4 피드백과 인간 리뷰어 피드백의 중첩도(Nature",
+    "score": 4.3,
+    "date": ""
+  },
+  {
+    "slug": "168_MARG_Multi-Agent_Review_Generation",
+    "title": "MARG: Multi-Agent Review Generation for Scientific Papers",
+    "essence": "LLM(GPT-4)의 복수 인스턴스를 활용한 멀티에이전트 리뷰 생성 시스템 **MARG**를 제안한 연구이다. 논문 텍스트를 에이전트들에게 분배하여 기본 모델의 입력 길이 한계를 극복하고, 실험/명확성/영향력 등 코멘트 유형별로 전문화된 에이전트(expert agent)를 도입하여 피드백의 구체성과 유용성을 향상시켰다. 사용자 연구에서 기존 베이스라인 대비",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "169_What_Can_Natural_Language_Processin",
+    "title": "What Can Natural Language Processing Do for Peer Review?",
+    "essence": "Dagstuhl 세미나(24052)의 결과물로, **피어 리뷰 과정 전체에 걸쳐 NLP가 기여할 수 있는 문제 공간을 체계적으로 매핑한 백서(white paper)**이다. AI 학회의 피어 리뷰를 대표 사례로, 논문 제출부터 카메라 레디 수정까지의 전 과정을 \"리뷰 전(Before)\", \"리뷰 중(During)\", \"리뷰 후(After)\"의 3단계로 나누",
+    "score": 3.3,
+    "date": ""
+  },
+  {
+    "slug": "170_RelevAI-Reviewer_A_Benchmark_on_AI",
+    "title": "RelevAI-Reviewer: A Benchmark on AI Reviewers for Survey Paper Relevance",
+    "essence": "서베이 논문의 \"관련성(relevance)\" 평가를 4-class 분류 문제로 정식화하고, 이를 위한 벤치마크 데이터셋(25,164 인스턴스, 총 100,656 prompt-paper 쌍)과 베이스라인 시스템(RelevAI-Reviewer)을 제안한 연구이다. BERT + thermometer encoding 조합이 Kendall's Tau 0.928을 달",
+    "score": 3.0,
+    "date": "2024"
+  },
+  {
+    "slug": "171_What_are_the_best_AI_tools_for_rese",
+    "title": "What are the best AI tools for research? Nature's guide",
+    "essence": "연구자들이 활용할 수 있는 주요 AI 대규모 언어 모델(LLM)들을 용도별로 비교 정리한 Nature의 가이드 기사이다. OpenAI의 o3-mini(추론 특화), DeepSeek-R1(범용/오픈웨이트), Meta의 Llama(커스터마이징 워크호스), Anthropic의 Claude 3.5 Sonnet(코딩 특화), Allen Institute의 OLMo ",
+    "score": 0,
+    "date": ""
+  },
+  {
+    "slug": "172_Foundation-Model_Surrogates_Enable",
+    "title": "Foundation-Model Surrogates Enable Data-Efficient Active Learning for Materials Discovery",
+    "essence": "재료 탐색을 위한 능동 학습(Active Learning, AL)에서 기존 대리 모델(surrogate model)인 Gaussian Process(GP)와 Random Forest(RF)가 가진 근본적 한계를 해결하기 위해, transformer 기반 파운데이션 모델 **TabPFN**을 대리 모델로 활용하는 **In-Context Active Learn",
+    "score": 3.7,
+    "date": ""
+  },
+  {
+    "slug": "173_Artificial_intelligence_for_science",
+    "title": "Artificial intelligence for science -- bridging data to wisdom",
+    "essence": "AI for Science (AI4Science)의 개념을 \"데이터에서 지혜로의 가교(bridging data to wisdom)\"로 정의하는 짧은 에디토리얼이다. 과학 연구 패러다임의 역사적 진화 -- 경험적 패러다임(1600년대) -> 이론적 패러다임(1950년대) -> 계산 패러다임(2000년대) -> 데이터 주도 패러다임(2020년대) -> AI4S",
+    "score": 1.3,
+    "date": ""
+  },
+  {
+    "slug": "174_Virtual_lab_powered_by_AI_scientis",
+    "title": "Virtual lab powered by 'AI scientists' super-charges biomedical research",
+    "essence": "Stanford 대학의 James Zou 연구팀이 개발한 **\"Virtual Lab\"** 시스템을 소개하는 Nature 뉴스 기사이다. 이 시스템은 여러 대규모 언어 모델(LLM)에 각각 특정 과학 분야의 전문가 역할(면역학, 계산 생물학, 머신러닝)을 부여하여 \"AI 과학자\" 에이전트로 구성하고, 이들이 인간 연구자의 고수준 지도 아래 협업하여 과학적 문",
+    "score": 2.7,
+    "date": ""
+  },
+  {
+    "slug": "175_Towards_end-to-end_automation_of_AI",
+    "title": "Towards end-to-end automation of AI research",
+    "essence": "AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학 연구의 전 과정을 자율적으로 수행할 수 있는가? 본 논문은 \"The AI Scientist\"라는 파이프라인을 통해 이 질문에 최초의 실증적 답변을 제시한다. AI가 생성한 논문이 실제 top-tier ML 학회 워크숍의 피어리뷰를 통과했으며, 모델 성능과 추론 시 컴퓨트 투입량이 증가할수록 논문",
+    "score": 4.0,
+    "date": "2026.03"
+  },
+  {
+    "slug": "177_The_frontier_of_simulationbased_inferen",
+    "title": "The frontier of simulation-based inference",
+    "essence": "Many domains of science have developed complex simulations to describe phenomena of interest. While these simulations provide high-fidelity models, they are poorly suited for inference and lead to cha",
+    "score": 2.0,
+    "date": "12/2020"
+  },
+  {
+    "slug": "178_Foundation_models_in_bioinformatics",
+    "title": "Foundation models in bioinformatics",
+    "essence": "ABSTRACT\n            With the adoption of foundation models (FMs), artificial intelligence (AI) has become increasingly significant in bioinformatics and has successfully addressed many historical cha",
+    "score": 4.0,
+    "date": "2025-03-07"
+  },
+  {
+    "slug": "179_Uncertainty_quantification_in_scientific",
+    "title": "Uncertainty quantification in scientific machine learning: Methods, metrics, and comparisons",
+    "essence": "In this work, we present a comprehensive framework that includes uncertainty modeling, new and existing solution methods, as well as evaluation metrics and post-hoc improvement approaches. To demonstr",
+    "score": 4.0,
+    "date": "03/2023"
+  },
+  {
+    "slug": "180_AI_for_Science_2025",
+    "title": "AI for Science 2025",
+    "essence": "AI for Science 2025 논문에 대한 상세 리뷰. Abstract가 제공되지 않아 PDF 본문 기반 분석 필요.",
+    "score": 3.0,
+    "date": "2025-12-31"
+  },
+  {
+    "slug": "181_Scaling_Large_Language_Models_for_NextG",
+    "title": "Scaling Large Language Models for Next-Generation Single-Cell Analysis",
+    "essence": "In this work, we build upon the Cell2Sentence (C2S) framework, which represents scRNA-seq profiles as textual “cell sentences,” to train Large Language Models (LLMs) on a corpus comprising over one bi",
+    "score": 4.0,
+    "date": "2025-04-17"
+  },
+  {
+    "slug": "182_Simulations_in_the_era_of_exascale_compu",
+    "title": "Simulations in the era of exascale computing",
+    "essence": "Simulations in the era of exascale computing 논문에 대한 상세 리뷰. Abstract가 제공되지 않아 PDF 본문 기반 분석 필요.",
+    "score": 3.0,
+    "date": "2023-03-13"
+  },
+  {
+    "slug": "183_Boltz1_Democratizing_Biomolecular_Inter",
+    "title": "Boltz-1 Democratizing Biomolecular Interaction Modeling",
+    "essence": "In this paper, we introduce B\n            oltz\n            -1, an open-source deep learning model incorporating innovations in model architecture, speed optimization, and data processing achieving A\n ",
+    "score": 4.0,
+    "date": "2024-11-20"
+  },
+  {
+    "slug": "184_Architectures_variants_and_performance",
+    "title": "Architectures, variants, and performance of neural operators: A comparative review",
+    "essence": "This paper provides a comprehensive summary and analysis of neural operators.",
+    "score": 3.0,
+    "date": "2025-10-01"
+  },
+  {
+    "slug": "185_Artificial_Intelligence_for_Direct_Predi",
+    "title": "Artificial Intelligence for Direct Prediction of Molecular Dynamics Across Chemical Space",
+    "essence": "We present a novel neural network architecture, MDtrajNet, and a pre-trained foundational model, MDtrajNet-1, that directly generates MD trajectories across chemical space, bypassing force calculation",
+    "score": 4.0,
+    "date": "2025-05-22"
+  },
+  {
+    "slug": "185_LangPINN_From_Language_to_PhysicsInfo",
+    "title": "Lang-PINN: From Language to Physics-Informed Neural Networks via a Multi-Agent Framework",
+    "essence": "We present Lang-PINN, an LLM-driven multi-agent system that builds trainable PINNs directly from natural language task descriptions.",
+    "score": 3.0,
+    "date": "2025-10-03"
+  },
+  {
+    "slug": "186_Nonlinear_stochastic_and_quantum_motion",
+    "title": "Nonlinear stochastic and quantum motion from Coulomb forces",
+    "essence": "We show that after eliminating the harmonic part of the Coulomb force by an auxiliary linear force, the remaining reciprocal nonlinear part results in a directly observable non-reciprocal nonlinear ef",
+    "score": 3.0,
+    "date": "2025-11-23"
+  },
+  {
+    "slug": "187_Aviary_training_language_agents_on_chal",
+    "title": "Aviary: training language agents on challenging scientific tasks",
+    "essence": "Here, we introduce Aviary, an extensible gymnasium for language agents.\n\n![Figure 1](figures/fig1.png)",
+    "score": 3.0,
+    "date": "2024-12-30"
+  },
+  {
+    "slug": "188_TxAgent_An_AI_Agent_for_Therapeutic_Rea",
+    "title": "TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools",
+    "essence": "We introduce TxAgent, an AI agent that leverages multi-step reasoning and real-time biomedical knowledge retrieval across a toolbox of 211 tools to analyze drug interactions, contraindications, and pa",
+    "score": 4.0,
+    "date": "2025-03-14"
+  },
+  {
+    "slug": "189_Democratizing_AI_scientists_using_ToolUn",
+    "title": "Democratizing AI scientists using ToolUniverse",
+    "essence": "We present ToolUniverse, an ecosystem for building AI scientists from any language or reasoning model across open- and closed-weight models.\n\n![Figure 1](figures/fig1.png)",
+    "score": 3.0,
+    "date": "2025-09-27"
+  },
+  {
+    "slug": "190_DeepAnalyze_Agentic_Large_Language_Mode",
+    "title": "DeepAnalyze: Agentic Large Language Models for Autonomous Data Science",
+    "essence": "In this paper, we introduce DeepAnalyze-8B, the first agentic LLM designed for autonomous data science, capable of automatically completing the end-toend pipeline from data sources to analyst-grade de",
+    "score": 4.0,
+    "date": "2025-10-19"
+  },
+  {
+    "slug": "191_Paper2Web_Lets_Make_Your_Paper_Alive",
+    "title": "Paper2Web: Let's Make Your Paper Alive!",
+    "essence": "In this paper, we introduce Paper2Web, a benchmark dataset and multi-dimensional evaluation framework for assessing academic webpage generation.\n\n![Figure 1](figures/fig1.png)",
+    "score": 4.0,
+    "date": "2025-10-17"
+  },
+  {
+    "slug": "192_MedAgentGym_A_Scalable_Agentic_Training",
+    "title": "MedAgentGym: A Scalable Agentic Training Environment for Code-Centric Reasoning in Biomedical Data Science",
+    "essence": "We introduce MedAgentGym, a scalable and interactive training environment designed to enhance coding-based biomedical reasoning capabilities in large language model (LLM) agents.\n\n![Figure 1](figures/",
+    "score": 4.0,
+    "date": "2025-06-04"
+  },
+  {
+    "slug": "193_MedAgents_Large_Language_Models_as_Coll",
+    "title": "MedAgents: Large Language Models as Collaborators for Zero-shot Medical Reasoning",
+    "essence": "To address these issues, we propose MedAgents, a novel multi-disciplinary collaboration framework for the medical domain.\n\n![Figure 1](figures/fig1.png)",
+    "score": 4.0,
+    "date": "2023-11-16"
+  },
+  {
+    "slug": "194_Earth-Agent_Unlocking_the_Full_Landscap",
+    "title": "Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents",
+    "essence": "To overcome these limitations, we introduce Earth-Agent, the first agentic framework that unifies RGB and spectral EO data within an MCP-based tool ecosystem, enabling cross-modal, multi-step, and qua",
+    "score": 4.0,
+    "date": "2025-09-27"
+  },
+  {
+    "slug": "195_Large_Language_Models_for_Automated_Open",
+    "title": "Large Language Models for Automated Open-domain Scientific Hypotheses Discovery",
+    "essence": "LLM을 활용하여 open-domain raw web corpus로부터 자동으로 과학적 가설을 생성하는 최초의 시스템을 제안한 연구이다. 기존의 closed-domain, commonsense 수준 가설 생성과 달리, 사회과학 분야에서 '문헌에 존재하지 않는' novel하고 valid한 가설을 LLM이 생성할 수 있음을 GPT-4 및 전문가 평가를 통해 최",
+    "score": 4.0,
+    "date": "2023"
+  },
+  {
+    "slug": "196_State-Free_Inference_of_State-Space_Mode",
+    "title": "State-Free Inference of State-Space Models: The Transfer Function Approach",
+    "essence": "State-space model(SSM)의 dual representation인 transfer function 관점에서 접근하여, state size 증가에 따른 메모리/계산 비용이 없는 state-free inference 알고리즘을 제안한다. Frequency domain parametrization을 통해 단일 FFT로 convolutional ke",
+    "score": 4.0,
+    "date": "2024"
+  },
+  {
+    "slug": "197_Chiral_spin_symmetry_and_hot_QCD",
+    "title": "Chiral spin symmetry and hot QCD",
+    "essence": "QCD(양자 색역학)의 온도에 따른 세 가지 질적으로 다른 regime -- hadron gas, stringy fluid, quark-gluon plasma -- 의 존재를 overview하고, chiral spin symmetry를 통해 confining regime과 그 소멸을 구별하는 새로운 대칭 프레임워크를 제시한다.",
+    "score": 3.0,
+    "date": "2024"
+  },
+  {
+    "slug": "198_Distinguishing_Neutron_Star_vs_Low-Mass",
+    "title": "Distinguishing Neutron Star vs. Low-Mass Black Hole Binaries with Postmerger Gravitational Waves $-$ Sensitivity to Transmuted Black Holes and Non-Annihilating Dark Matter",
+    "essence": "저질량 compact binary coalescence(1-2.5 M_sun)에서 binary neutron star(BNS)와 binary low-mass black hole(LMBH) merger를 postmerger 중력파 파형의 차이를 통해 구별하는 방법을 제시한다. 차세대 검출기(NEMO, CE, ET)에서의 검출 가능성을 예측하고, LMBH fr",
+    "score": 4.0,
+    "date": "2025"
+  },
+  {
+    "slug": "199_InternAgent_When_Agent_Becomes_the_Scie",
+    "title": "InternAgent: When Agent Becomes the Scientist -- Building Closed-Loop System from Hypothesis to Verification",
+    "essence": "과학 연구의 전 과정(가설 → 검증)을 자율적으로 수행하는 통합 closed-loop multi-agent framework인 InternAgent를 제안한다. 12개 과학 연구 태스크에서 scalability, interactivity, efficiency의 세 가지 핵심 장점을 갖추며, reaction yield prediction(27.6%→35.4%",
+    "score": 4.0,
+    "date": "2025"
+  },
+  {
+    "slug": "200_AI-Researcher_Autonomous_Scientific_Inn",
+    "title": "AI-Researcher: Autonomous Scientific Innovation",
+    "essence": "문헌 리뷰부터 가설 생성, 알고리즘 구현, 출판 수준 논문 작성까지의 전체 연구 파이프라인을 최소한의 인간 개입으로 자율 수행하는 AI-Researcher 시스템과, 자율 연구 능력을 체계적으로 평가하는 Scientist-Bench 벤치마크를 제안한다.",
+    "score": 4.0,
+    "date": "2025"
+  },
+  {
+    "slug": "201_A_Survey_on_Uncertainty_Quantification_M",
+    "title": "A Survey on Uncertainty Quantification Methods for Deep Learning",
+    "essence": "DNN의 uncertainty quantification(UQ) 방법론을 uncertainty source(data uncertainty vs model uncertainty)에 기반하여 체계적으로 분류하는 새로운 taxonomy를 제시하는 survey이다. 기존 survey가 network architecture나 Bayesian formulation 중",
+    "score": 4.0,
+    "date": "2023"
+  },
+  {
+    "slug": "202_Foundation_Models_for_Environmental_Scie",
+    "title": "Foundation Models for Environmental Science: A Survey of Emerging Frontiers",
+    "essence": "환경 과학에서의 foundation model 적용을 포괄적으로 정리한 survey로, forward prediction, data generation, data assimilation, downscaling, inverse modeling, model ensembling, decision-making의 7가지 주요 use case에 걸친 최신 동향과 모델",
+    "score": 4.0,
+    "date": "2025"
+  },
+  {
+    "slug": "203_From_Theory_to_Application_A_Practical",
+    "title": "From Theory to Application: A Practical Introduction to Neural Operators in Scientific Computing",
+    "essence": "Parametric PDE의 solution을 근사하는 neural operator 아키텍처(DeepONet, PCANet, FNO)를 high-level 개념과 실용적 구현 전략 중심으로 비교 review하고, Bayesian inference에서의 surrogate로서의 활용을 시연한다. Poisson equation과 linear elastic def",
+    "score": 3.0,
+    "date": "2025"
+  },
+  {
+    "slug": "204_Physics-Informed_Neural_Networks_and_Ext",
+    "title": "Physics-Informed Neural Networks and Extensions",
+    "essence": "Scientific machine learning의 핵심 방법론인 Physics-Informed Neural Networks(PINNs)를 review하고, 최근의 practical extensions를 소개하며, governing differential equation의 data-driven discovery에 대한 구체적 예시를 제공한다.",
+    "score": 3.0,
+    "date": "2024"
+  },
+  {
+    "slug": "205_Scientific_Machine_Learning_through_Phys",
+    "title": "Scientific Machine Learning through Physics-Informed Neural Networks: Where we are and What's next",
+    "essence": "This article provides a comprehensive review of the literature on PINNs: while the primary goal of the study was to characterize these networks and their related advantages and disadvantages.",
+    "score": 3.0,
+    "date": "2022.01"
+  },
+  {
+    "slug": "206_Scientific_Large_Language_Models_A_Surv",
+    "title": "Scientific Large Language Models: A Survey on Biological & Chemical Domains",
+    "essence": "In this paper, we endeavor to methodically delineate the concept of \"scientific language\", whilst providing a thorough review of the latest advancements in scientific LLMs. By offering a comprehensive",
+    "score": 3.0,
+    "date": "2024.01"
+  },
+  {
+    "slug": "207_A_Survey_of_Scientific_Large_Language_Mo",
+    "title": "A Survey of Scientific Large Language Models: From Data Foundations to Agent Frontiers",
+    "essence": "This survey presents a comprehensive, data-centric synthesis that reframes the development of Sci-LLMs as a co-evolution between models and their underlying data substrate.",
+    "score": 3.0,
+    "date": "2025.08"
+  },
+  {
+    "slug": "208_A_Comprehensive_Survey_of_Scientific_Lar",
+    "title": "A Comprehensive Survey of Scientific Large Language Models and Their Applications in Scientific Discovery",
+    "essence": "In this paper, we aim to provide a more holistic view of the research landscape by unveiling cross-field and cross-modal connections between scientific LLMs regarding their architectures and pre-train",
+    "score": 3.0,
+    "date": "2024.06"
+  },
+  {
+    "slug": "209_Towards_Scientific_Intelligence_A_Surve",
+    "title": "Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents",
+    "essence": "This survey provides a focused review of the architectures, design, benchmarks, applications, and ethical considerations surrounding LLM-based scientific agents. By examining their development and cha",
+    "score": 3.0,
+    "date": "2025.03"
+  },
+  {
+    "slug": "210_Agentic_AI_for_Scientific_Discovery_A_S",
+    "title": "Agentic AI for Scientific Discovery: A Survey of Progress, Challenges, and Future Directions",
+    "essence": "This survey provides a comprehensive overview of Agentic AI for scientific discovery, categorizing existing systems and tools, and highlighting recent progress across fields such as chemistry, biology",
+    "score": 3.0,
+    "date": "2025.03"
+  },
+  {
+    "slug": "211_From_Automation_to_Autonomy_A_Survey_on",
+    "title": "From Automation to Autonomy: A Survey on Large Language Models in Scientific Discovery",
+    "essence": "This survey systematically charts this burgeoning field, placing a central focus on the changing roles and escalating capabilities of LLMs in science. Overall, this survey provides a conceptual archit",
+    "score": 3.0,
+    "date": "2025.05"
+  },
+  {
+    "slug": "212_Transforming_Science_with_Large_Language",
+    "title": "Transforming Science with Large Language Models: A Survey on AI-assisted Scientific Discovery, Experimentation, Content Generation, and Evaluation",
+    "essence": "In this survey, we provide a curated overview of literature representative of the core techniques, evaluation practices, and emerging trends in AI-assisted scientific discovery. We aim for this survey",
+    "score": 3.0,
+    "date": "2025.02"
+  },
+  {
+    "slug": "213_Physics_Informed_Deep_Learning_Part_I",
+    "title": "Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations",
+    "essence": "We introduce physics informed neural networks -- neural networks that are trained to solve supervised learning tasks while respecting any given law of physics described by general nonlinear partial di",
+    "score": 4.0,
+    "date": "2017.11"
+  },
+  {
+    "slug": "214_Neural_Ordinary_Differential_Equations",
+    "title": "Neural Ordinary Differential Equations",
+    "essence": "We introduce a new family of deep neural network models. We demonstrate these properties in continuous-depth residual networks and continuous-time latent variable models.",
+    "score": 4.0,
+    "date": "2018.06"
+  },
+  {
+    "slug": "215_Align_then_Fusion_Generalized_Largesca",
+    "title": "Align then Fusion: Generalized Large-scale Multi-view Clustering with Anchor Matching Correspondences",
+    "essence": "To solve this challenging issue, we propose the first study of the generalized and flexible anchor graph fusion framework termed Fast Multi-View Anchor-Correspondence Clustering (FMVACC).",
+    "score": 4.0,
+    "date": "2022-05-30"
+  },
+  {
+    "slug": "216_SemiSupervised_2D_Human_Pose_Estimation",
+    "title": "Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module",
+    "essence": "In this paper, we delve into semi-supervised 2D human pose estimation. To solve the problems mentioned above, we propose a semi-supervised 2D human pose estimation framework driven by a position incon",
+    "score": 4.0,
+    "date": "2023-03-08"
+  },
+  {
+    "slug": "217_Architecture_Design_for_HumanDriven_Sys",
+    "title": "Architecture Design for Human-Driven Systems",
+    "essence": "This paper highlights humans' social and mobility behaviors' role in the continuous engineering of sustainable socio-technical systems.",
+    "score": 4.0,
+    "date": "2021-09-21"
+  },
+  {
+    "slug": "218_ChemCrow_Augmenting_largelanguage_mode",
+    "title": "ChemCrow: Augmenting large-language models with chemistry tools",
+    "essence": "In this study, we introduce ChemCrow, an LLM chemistry agent designed to accomplish tasks across organic synthesis, drug discovery, and materials design.",
+    "score": 4.0,
+    "date": "2023-04-11"
+  },
+  {
+    "slug": "219_SciBench_Evaluating_CollegeLevel_Scien",
+    "title": "SciBench: Evaluating College-Level Scientific Problem-Solving Abilities of Large Language Models",
+    "essence": "To systematically examine the reasoning capabilities required for solving complex scientific problems, we introduce an expansive benchmark suite SciBench for LLMs.",
+    "score": 4.0,
+    "date": "2023-07-20"
+  },
+  {
+    "slug": "220_The_AI_Scientistv2_WorkshopLevel_Auto",
+    "title": "The AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search",
+    "essence": "We introduce The AI Scientist-v2, an end-to-end agentic system capable of producing the first entirely AI generated peer-review-accepted workshop paper.",
+    "score": 4.0,
+    "date": "2025-04-10"
+  },
+  {
+    "slug": "221_Leveraging_LLMs_in_Scholarly_Knowledge_G",
+    "title": "Leveraging LLMs in Scholarly Knowledge Graph Question Answering",
+    "essence": "This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.",
+    "score": 4.0,
+    "date": "2023-11-16"
+  },
+  {
+    "slug": "222_ResearchCodeAgent_An_LLM_MultiAgent_Sy",
+    "title": "ResearchCodeAgent: An LLM Multi-Agent System for Automated Codification of Research Methodologies",
+    "essence": "In this paper we introduce ResearchCodeAgent, a novel multi-agent system leveraging large language models (LLMs) agents to automate the codification of research methodologies described in machine lear",
+    "score": 5.0,
+    "date": "2025-04-28"
+  },
+  {
+    "slug": "223_AutoP2C_An_LLMBased_Agent_Framework_fo",
+    "title": "AutoP2C: An LLM-Based Agent Framework for Code Repository Generation from Multimodal Content in Academic Papers",
+    "essence": "We introduce ``Paper-to-Code'' (P2C), a novel task that transforms the multimodal content of scientific publications into fully executable code repositories, which extends beyond the existing formulat",
+    "score": 4.0,
+    "date": "2025-04-28"
+  },
+  {
+    "slug": "224_From_GPU_Engineering_to_Scientific_Disco",
+    "title": "From GPU Engineering to Scientific Discovery: Parallelism Techniques for Large Language Models",
+    "essence": "From GPU Engineering to Scientific Discovery: Parallelism Techniques for Large Language Models",
+    "score": 3.0,
+    "date": "2026-03-20"
+  },
+  {
+    "slug": "225_Evaluating_Large_Language_Models_in_Scie",
+    "title": "Evaluating Large Language Models in Scientific Discovery",
+    "essence": "We introduce a scenario-grounded benchmark that evaluates LLMs across biology, chemistry, materials, and physics, where domain experts define research projects of genuine interest and decompose them i",
+    "score": 4.0,
+    "date": "2025-12-17"
+  },
+  {
+    "slug": "226_If_in_a_Crowdsourced_Data_Annotation_Pip",
+    "title": "If in a Crowdsourced Data Annotation Pipeline, a GPT-4 | Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems",
+    "essence": "If in a Crowdsourced Data Annotation Pipeline, a GPT-4 | Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems",
+    "score": 3.0,
+    "date": "Unknown"
+  },
+  {
+    "slug": "227_Reason",
+    "title": "Reason",
+    "essence": "Reason is the capacity of consciously applying logic by drawing valid conclusions from new or existing information, with the aim of seeking the truth. It is associated with such characteristically hum",
+    "score": 3.0,
+    "date": "2025-02-17T02:18:36Z"
+  },
+  {
+    "slug": "228_A_year_in_review_open_access_at_OUP",
+    "title": "A year in review: open access at OUP",
+    "essence": "To mark International Open Access Week 2024, we reflect on the open access progress that we have made so far.",
+    "score": 3.0,
+    "date": "2024-10-21"
+  },
+  {
+    "slug": "229_Semantic_Scholar",
+    "title": "Semantic Scholar",
+    "essence": "Semantic Scholar",
+    "score": 3.0,
+    "date": "Unknown"
+  },
+  {
+    "slug": "230_Is_AI_ready_to_mass-produce_lay_summarie",
+    "title": "Is AI ready to mass-produce lay summaries of research articles?",
+    "essence": "A surge in tools that generate text is allowing research papers to be summarized for a broad audience, and in any language. But scientists caution that major challenges remain.",
+    "score": 3.0,
+    "date": "2024-03-20"
+  },
+  {
+    "slug": "231_Can_AI_review_the_scientific_literature",
+    "title": "Can AI review the scientific literature — and figure out what it all means?",
+    "essence": "Artificial intelligence could help speedily summarize research. But it comes with risks.",
+    "score": 3.0,
+    "date": "2024-11-13"
+  },
+  {
+    "slug": "232_How_AI-powered_science_search_engines_ca",
+    "title": "How AI-powered science search engines can speed up your research",
+    "essence": "Artificial-intelligence tools offer a variety of approaches to help scientists to sift through the literature — how can researchers use them responsibly?",
+    "score": 3.0,
+    "date": "2024-10-10"
+  },
+  {
+    "slug": "233_AI_will_transform_science_now_research",
+    "title": "AI will transform science — now researchers must tame it",
+    "essence": "AI will transform science — now researchers must tame it",
+    "score": 3.0,
+    "date": "2023-09-27"
+  },
+  {
+    "slug": "234_ChatGPT_has_entered_the_classroom_how_L",
+    "title": "ChatGPT has entered the classroom: how LLMs could transform education",
+    "essence": "ChatGPT has entered the classroom: how LLMs could transform education",
+    "score": 3.0,
+    "date": "2023-11-15"
+  },
+  {
+    "slug": "235_ChatGPT_and_science_the_AI_system_was_a",
+    "title": "ChatGPT and science: the AI system was a force in 2023 — for good and bad",
+    "essence": "The poster child for generative AI software is a startling human mimic. It represents a potential new era in research, but brings risks.",
+    "score": 3.0,
+    "date": "2023-12-13"
+  },
+  {
+    "slug": "236_AI_tools_expand_scientists_impact_but_contract_sciences_focus",
+    "title": "Artificial intelligence tools expand scientists' impact but contract science's focus",
+    "essence": "AI 도구 사용이 과학자 개인의 생산성과 영향력을 높이지만, 연구 주제의 다양성을 줄여 과학의 탐색 영역(frontier)을 축소시킨다는 역설적 효과를 대규모 실증 분석으로 밝힌 연구.",
+    "score": 5.0,
+    "date": "2026-01-14"
+  },
+  {
+    "slug": "237_Artificial_intelligence_for_science_bridging_data_to_wisdom",
+    "title": "Artificial intelligence for science—bridging data to wisdom",
+    "essence": "데이터에서 지식, 지식에서 지혜로 이어지는 AI-과학 통합의 계층적 로드맵을 제시하며, AI가 과학적 발견의 전 주기를 어떻게 가속화할 수 있는지를 논한 포괄적 리뷰.",
+    "score": 4.0,
+    "date": "2023-11-13"
+  },
+  {
+    "slug": "238_Virtual_lab_powered_by_AI_scientists_super-charges_biomedical_research",
+    "title": "Virtual lab powered by 'AI scientists' super-charges biomedical research",
+    "essence": "복수의 'AI 과학자' 에이전트가 협력하는 가상 실험실(virtual lab) 시스템이 실제 생의학 연구의 가설 생성·실험 설계·결과 해석 속도를 크게 단축시켰다는 사례 보고.",
+    "score": 4.0,
+    "date": "2024-12-04"
+  },
+  {
+    "slug": "239_Foundation_models_for_materials_discovery",
+    "title": "Foundation models for materials discovery – current state and future directions",
+    "essence": "재료 발견을 위한 파운데이션 모델의 현황을 체계적으로 정리하고, 데이터 부족·다중 스케일 물리·설명 가능성 등 핵심 과제를 식별하며 향후 방향을 제시한 종합 리뷰.",
+    "score": 4.0,
+    "date": "2025-03-06"
+  },
+  {
+    "slug": "240_What_are_the_best_AI_tools_for_research_Natures_guide",
+    "title": "What are the best AI tools for research? Nature's guide",
+    "essence": "Nature가 연구자들의 실제 사용 경험을 바탕으로 문헌 검색, 글쓰기, 데이터 분석, 코딩 등 연구 단계별 최적 AI 도구를 비교·평가한 실용 가이드.",
+    "score": 3.0,
+    "date": "2025-02-17"
+  },
+  {
+    "slug": "241_Method_and_Platform_for_Validating_Human_Inventors",
+    "title": "Method and Platform for Validating Human Inventorship in AI-Augmented Molecular Discovery via Iterative Audit Gates",
+    "essence": "AI가 보조한 분자 발견 과정에서 인간 발명자의 기여를 반복적 감사 게이트(Audit Gate)를 통해 법적으로 검증·문서화하는 방법론 및 플랫폼을 USPTO 임시특허 명세서 형태로 제안한다.",
+    "score": 4.0,
+    "date": "2026-03-23"
+  },
+  {
+    "slug": "242_Large_language_model_agent_for_nuclear_reactor_ope",
+    "title": "Large language model agent for nuclear reactor operation assistance",
+    "essence": "외부 도구·문서·예측 모듈을 통합한 LLM 에이전트 아키텍처를 통해 원자력 발전소 시뮬레이터에서 이상 진단 및 운전 절차 자동 생성을 수행함으로써, 원자력 운전 보조 AI의 실현 가능성을 입증한다.",
+    "score": 4.0,
+    "date": "2025-12-01"
+  },
+  {
+    "slug": "243_On_implementing_autonomous_supply_chains_A_multi-a",
+    "title": "On implementing autonomous supply chains: A multi-agent system approach",
+    "essence": "멀티에이전트 시스템(MAS)을 활용해 자율 공급망(ASC)을 설계·구현하는 방법론(A2SC)을 제시하고, 자율 육류 공급망 사례 연구로 실용성을 검증한다.",
+    "score": 3.0,
+    "date": "2024-10-01"
+  },
+  {
+    "slug": "244_LimGen_Probing_the_LLMs_for_Generating_Suggestive",
+    "title": "LimGen: Probing the LLMs for Generating Suggestive Limitations of Research Papers",
+    "essence": "LLM이 연구 논문의 한계점(limitations)을 자동으로 제안·생성할 수 있는지를 탐색하는 LimGen 시스템을 제안한다.",
+    "score": 3.0,
+    "date": "2024"
+  },
+  {
+    "slug": "245_Beyond_Heuristics_Multimodal_Transformer_for_Chart",
+    "title": "Beyond Heuristics: Multimodal Transformer for Chart Data Extraction",
+    "essence": "휴리스틱 규칙에 의존하지 않고 멀티모달 트랜스포머를 이용해 차트 이미지에서 데이터를 자동 추출하는 방법을 제안한다.",
+    "score": 2.0,
+    "date": "2024-08-26"
+  },
+  {
+    "slug": "246_ChartReader_A_Unified_Framework_for_Chart_Derender",
+    "title": "ChartReader: A Unified Framework for Chart Derendering and Comprehension without Heuristic Rules",
+    "essence": "휴리스틱 규칙 없이 차트 역렌더링(derendering)과 이해(comprehension)를 통합 처리하는 단일 프레임워크 ChartReader를 ICCV 2023에서 제안한다.",
+    "score": 4.0,
+    "date": "2023-10-01"
+  },
+  {
+    "slug": "247_spaCy_Industrial-strength_Natural_Language_Process",
+    "title": "spaCy: Industrial-strength Natural Language Processing in Python",
+    "essence": "산업 수준의 성능과 사용성을 갖춘 Python NLP 라이브러리 spaCy를 소개하며, 과학 텍스트 처리 및 정보 추출을 위한 실용적 NLP 인프라를 제공한다.",
+    "score": 4.0,
+    "date": "2020"
+  },
+  {
+    "slug": "248_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_F",
+    "title": "HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging Face",
+    "essence": "ChatGPT를 작업 계획자(planner)로, Hugging Face의 다양한 전문 모델들을 실행자(executor)로 활용하여 복잡한 AI 작업을 자동으로 분해·해결하는 HuggingGPT 에이전트 시스템을 제안한다.",
+    "score": 5.0,
+    "date": "2023"
+  },
+  {
+    "slug": "249_Disrupting_the_subscription_journals_business_mode",
+    "title": "Disrupting the subscription journals' business model for the necessary large-scale transformation to open access",
+    "essence": "학술지 구독 모델의 총 비용이 전 세계 오픈액세스 전환을 충당하기에 충분하다는 재정 분석을 통해 대규모 오픈액세스 전환의 경제적 실현 가능성을 논증한다.",
+    "score": 4.0,
+    "date": "2015"
+  },
+  {
+    "slug": "250_Hormone_Therapy_for_Cancer_Treating_Hormone-Sensit",
+    "title": "Hormone Therapy for Cancer: Treating Hormone-Sensitive Tumors",
+    "essence": "호르몬 민감성 종양에 대한 호르몬 치료 방법을 다루는 의학 리뷰 논문으로, AI4S 컬렉션과의 연관성이 불명확하다.",
+    "score": 0,
+    "date": "2023-03-26"
+  }
+]

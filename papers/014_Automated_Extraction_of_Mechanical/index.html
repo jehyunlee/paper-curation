@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Automated Extraction of Mechanical Constitutive Models from Scientific Literatur</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Automated Extraction of Mechanical Constitutive Models from Scientific Literature using Large Language Models: Applications in Cultural Heritage Conservation</h1>
+<blockquote>
+<p><strong>저자</strong>: Rui Hu, Yue Wu, Tianhao Su, Yin Wang, Shunbo Hu, Jizhong Huang | <strong>날짜</strong>: 2026-02-18 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2602.16551</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>문화유산 보존을 위한 디지털 트윈 구축에 필요한 역학적 구성 방정식(constitutive model)과 보정 파라미터를 과학 문헌에서 자동 추출하는 2단계 에이전틱 프레임워크를 제안한다. 비용 효율적인 "Gatekeeper" 에이전트가 관련성을 필터링하고, 고성능 "Analyst" 에이전트가 Context-Aware Symbolic Grounding을 통해 수학적 모호성을 해결하며 정밀 추출을 수행한다. 2,000편 이상의 논문에서 113편의 핵심 문헌을 선별하여 185개 구성 모델 인스턴스와 450개 이상의 보정 파라미터로 구성된 구조화 데이터베이스를 구축하였으며, 추출 정밀도 80.4%, F1 점수 81.9%를 달성하였다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 사실</strong>: 문화유산의 디지털 트윈은 구조적 거동 예측을 위해 유한요소해석(FEA)과 정확한 역학적 구성 모델을 필요로 함. 수십 년간 로마 콘크리트, 비잔틴 석조, 역사적 목재 등의 재료 특성 연구가 축적되어 있음</li>
+<li><strong>격차(Gap)</strong>: 이 지식이 수천 편의 PDF 논문에 분산되어 있고, 명명법/방정식 형식/파라미터 정의가 비일관적이며, 통합 데이터베이스가 부재하여 "데이터 사일로" 문제 발생. 수학 기호의 문맥 의존적 의미(예: E가 영률/활성화 에너지/총에너지 중 어느 것인지)를 해결하는 symbolic grounding이 핵심 기술적 난제</li>
+<li><strong>접근법</strong>: LLM 기반 2단계 에이전트(Gatekeeper + Analyst)로, coarse-to-fine 필터링과 Context-Aware Symbolic Grounding을 통해 비구조화 문헌을 구조화 데이터베이스로 변환</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>대규모 문헌 필터링 및 추출</strong>: 2,000편 이상에서 113편 핵심 문헌 선별, 185개 구성 모델 인스턴스 및 450+ 보정 파라미터 추출</li>
+<li><strong>정량적 성능</strong>: Precision 80.4%, Recall 83.3%, F1 81.9%, AUC 0.782, FPR 3.3%로 데이터베이스 오염 최소화</li>
+<li><strong>수작업 90% 절감</strong>: Human-in-the-loop 워크플로우로 전문가의 수동 문헌 검토 시간을 약 90% 감소</li>
+<li><strong>물리적 타당성 추론 시연</strong>: 점토 현탁액 논문에서 표 헤더의 스케일링 모호성(eta_inf x 10^3)을 물리적 도메인 지식으로 올바르게 해석하는 정성적 사례 제시</li>
+<li><strong>웹 기반 플랫폼 구현</strong>: 자동 수집(PDF 업로드 -&gt; 자동 추출) 및 의미적 검색(재료 유형/역학 속성별 쿼리)을 지원하는 Heritage Materials Constitutive Database Platform 개발</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>Stage I (Gatekeeper)</strong>: 저비용 LLM이 논문 앞부분 ~8,000자를 읽고, 도메인 관련성(문화유산 재료), 이론적 내용(구성 모델 존재), 실험적 검증(파라미터 보정) 3가지 기준으로 이진 분류</li>
+<li><strong>Stage II (Analyst)</strong>: 고성능 LLM이 전문(full-text)을 처리하여 (1) 유도 과정/기준 모델을 필터링하고 최종 구성 방정식 식별, (2) Context-Aware Symbolic Grounding으로 수학 기호-물리적 의미 매핑, (3) Schema-Constrained Decoding으로 5-tuple JSON 출력 (방정식, 기호 맵, 재료 메타데이터, 파라미터, 검증 방법)</li>
+<li><strong>오류 처리</strong>: JSON 스키마 위반 시 오류 신호를 모델 컨텍스트에 피드백하는 폐루프 자기 수정</li>
+<li><strong>평가</strong>: 113편 전체에 대해 고체역학 전문가가 222개 GT 엔티티 수동 주석, TP/FP/FN 기반 Precision/Recall/F1 산출</li>
+<li><strong>데이터 소스</strong>: arXiv 물리/공학 카테고리에서 문화유산+고체역학 교차 키워드 검색</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<p>문화유산 재료의 역학적 구성 모델이라는 고도로 전문화된 도메인에 LLM 기반 자동 추출을 적용한 최초의 시도이다. 핵심 기여는 Context-Aware Symbolic Grounding으로, 수학 기호의 물리적 의미를 문맥으로부터 확률적으로 해석하는 메커니즘이 기존 규칙 기반/NER 기반 추출과 차별화된다. Gatekeeper-Analyst의 2단계 coarse-to-fine 설계는 대규모 코퍼스 처리의 비용 효율성을 높이며, 추출 결과를 웹 플랫폼으로 연결한 end-to-end 워크플로우가 실용적이다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>F1 점수 ~82%로 완벽하지 않으며, 최종 데이터의 "마지막 1마일" 검증은 여전히 인간 전문가에게 의존</li>
+<li>잔여 오류의 주요 원인은 오래된 PDF의 비표준 표 구조 파싱 실패이며, LLM의 의미적 추론 실패보다는 입력 품질 문제</li>
+<li>문화유산 재료 도메인은 데이터가 희소하여("Data Poverty"), LLM의 사전 학습 지식에 의존하는 zero/few-shot 접근이 불가피</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>Gatekeeper와 Analyst에 사용된 구체적 LLM 모델명과 비용이 명시되지 않아 재현성이 부족</li>
+<li>arXiv만을 데이터 소스로 사용하여, 문화유산 보존의 핵심 문헌이 많이 게재되는 전문 저널(Construction and Building Materials, Journal of Cultural Heritage 등)이 누락됨</li>
+<li>기존 materials informatics 도구(ChemDataExtractor, MatKG 등)나 다른 LLM 기반 추출 방법과의 비교 실험이 없음</li>
+<li>Symbolic Grounding의 정확도가 별도로 측정되지 않아, 기호 해석 오류와 방정식 식별 오류의 분리된 평가가 불가능</li>
+<li>185개 모델/450개 파라미터라는 규모가 수십 년 문헌 축적량 대비 상당히 적어, arXiv 소스의 한계가 반영된 것으로 보임</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>Scopus/WoS 등 전문 저널 데이터베이스로 소스 확장</li>
+<li>멀티모달 입력(그림, 응력-변형률 곡선 등)의 직접 해석 통합</li>
+<li>추출된 구성 모델의 FEA 시뮬레이션 자동 연결 검증</li>
+<li>다른 재료 도메인(현대 건설 재료, 생체 재료 등)으로의 프레임워크 일반화</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
+<p><strong>총평</strong>: 문화유산 재료의 역학적 구성 모델 추출이라는 실용적이고 의미 있는 문제를 LLM 기반 에이전틱 프레임워크로 해결한 논문으로, 도메인 전문성과 AI 기술의 결합이 돋보인다. 그러나 arXiv 전용 소스의 한계, 기존 추출 도구와의 비교 부재, 구체적 모델 정보 미공개 등이 연구의 완성도를 낮추며, F1 82%의 성능도 자동 데이터베이스 구축에는 아직 human-in-the-loop 의존도가 높은 수준이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

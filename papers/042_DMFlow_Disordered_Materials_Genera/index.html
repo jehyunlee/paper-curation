@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DMFlow: Disordered Materials Generation by Flow Matching</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>DMFlow: Disordered Materials Generation by Flow Matching</h1>
+<blockquote>
+<p><strong>저자</strong>: Liming Wu, Rui Jiao, Qi Li, Mingze Li, Songyou Li, Shifeng Jin, Wenbing Huang | <strong>날짜</strong>: 2026-02-04 | <strong>Repository</strong>: arXiv | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2602.04734" target="_blank">10.48550/arXiv.2602.04734</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>DMFlow는 비정렬(disordered) 결정 구조를 생성하기 위해 설계된 최초의 심층 생성 프레임워크이다. 치환 무질서(Substitutional Disorder, SD)와 위치 무질서(Positional Disorder, PD)를 통합적으로 표현하는 방식을 제안하고, simplex 제약조건을 만족시키기 위해 구면 재매개변수화(spherical reparameterization)를 활용한 Riemannian flow matching을 적용하여, Crystal Structure Prediction(CSP)과 De Novo Generation(DNG) 모두에서 기존 ordered crystal 생성 모델 대비 유의미한 성능 향상을 달성했다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: 심층 생성 모델(DiffCSP, FlowMM, MatterGen 등)이 ordered crystal 생성에서 큰 성과를 거두었으나, 이들은 완벽한 주기성을 전제로 설계됨</li>
+<li><strong>Gap</strong>: 고엔트로피 합금, 고체 전해질, 초전도체 등 기술적으로 중요한 비정렬 결정 재료(disordered crystals)를 다루는 생성 모델이 부재하며, 공개 벤치마크도 존재하지 않음</li>
+<li><strong>왜 중요한가</strong>: 비정렬 결정은 확률적 사이트 점유(probabilistic site occupancy)와 위치 편차를 본질적으로 포함하여, 기존 one-hot/deterministic 표현으로는 생성이 불가능</li>
+<li><strong>접근법</strong>: 정렬/SD/PD 결정을 하나의 튜플 (si, fi, wi, f'i)로 통합 표현하고, disorder weight에 대해 simplex 위의 Riemannian flow matching을 적용</li>
+</ul>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>통합 표현 체계</strong>: 정렬, SD, PD, 혼합(SPD) 결정을 단일 프레임워크로 표현 가능한 최초의 통합 표현(unified representation) 제안</li>
+<li><strong>CSP 성능</strong>: COD-SPD-50에서 Match Rate 45.87% (FlowMM-Prob 44.00% 대비 향상), RMSE 0.0725 (FlowMM-Prob 0.0887 대비 18% 개선)</li>
+<li><strong>DNG 성능</strong>: COD-SD-20에서 구조 유효성(structural validity) 88.14%, 조성 유효성(compositional validity) 69.06% 달성 -- L1-Norm 대비 조성 유효성 2.3배 향상</li>
+<li><strong>데이터 증강 효과</strong>: 정렬 결정(MP-20) 데이터 추가 시 CSP Match Rate 70.57% → 77.40%, RMSE 47% 감소 (0.0738 → 0.0391)</li>
+<li><strong>벤치마크 구축</strong>: COD 기반 SD/PD/SPD 벤치마크 4종(COD-SD-20/50, COD-SPD-20/50) 최초 공개</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Crystallography Open Database(COD)에서 disorder annotation이 있는 구조를 파싱하여 3~50 원자 단위셀 필터링. COD-SD-20(5,701), COD-SD-50(9,096), COD-SPD-20(6,127), COD-SPD-50(11,746) 구조</li>
+<li><strong>통합 표현</strong>: 각 결정학적 사이트 i를 (si, fi, wi, f'i) 튜플로 표현. si∈Δ^(D-1)은 치환 벡터, fi는 주 분율 좌표, wi∈Δ^1은 위치 벡터, f'i는 이차 위치 좌표</li>
+<li><strong>Flow Matching</strong>: 격자(lattice)와 분율 좌표는 FlowMM 방식(Euclidean/torus), disorder weight는 Fisher-Rao metric 기반 simplex → 구면 재매개변수화(π(μ)=√μ)를 통해 SD^(D-1)_+ 위에서 Riemannian flow matching 수행</li>
+<li><strong>GNN 아키텍처</strong>: 연속 disorder weight를 초기 feature로 사용(φ_prob), PD 사이트 간 모든 위치 조합(a,b∈{0,1})에 대해 joint occupancy probability wi,a·wj,b로 가중된 거리/방향 edge embedding 생성 (multiple interaction)</li>
+<li><strong>이산화(Discretization)</strong>: 2단계 -- (1) 최대/차순위 확률 비율로 정렬 사이트 탐지, (2) 5가지 heuristic(Top-k, 고정 임계값, 백분위, 적응 임계값, 엔트로피 기반)의 앙상블 투표로 비정렬 사이트의 multi-hot 원자 할당</li>
+<li><strong>학습</strong>: 전체 loss = λ_l·L_l + λ_F·L_F + λ_F'·L_F' + λ_S·L_S + λ_W·L_W, CSP에서는 조성이 주어지므로 λ_S=λ_W=0</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>비정렬 결정 생성의 최초 프레임워크</strong>: 기존 생성 모델이 완전히 무시해온 disordered crystal을 체계적으로 다루는 최초의 연구</li>
+<li><strong>Simplex 위 Riemannian Flow Matching</strong>: Fisher-Rao metric의 경계 발산 문제를 구면 재매개변수화로 우회하여, 확률 simplex 제약을 자연스럽게 만족시키는 생성 경로 설계</li>
+<li><strong>Multiple Interaction Edge Embedding</strong>: PD 사이트 간 모든 위치 조합의 joint occupancy를 가중치로 사용하는 새로운 기하학적 edge feature 설계</li>
+<li><strong>앙상블 투표 이산화</strong>: 5가지 상보적 heuristic의 다수결 투표로 단일 heuristic의 편향을 완화하는 robust한 이산화 전략</li>
+<li><strong>통합 표현을 통한 cross-domain 학습</strong>: 정렬 결정 데이터로 비정렬 모델을 증강할 수 있는 표현의 유연성</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>위치 무질서(PD)를 이진(binary) 경우로 제한하여, 3개 이상의 위치를 갖는 고차 PD는 부록에서 확장 가능성만 언급</li>
+<li>기존 ordered crystal 생성 모델과의 직접 비교가 불가능하여, 적응(adaptation)된 baseline만 사용</li>
+<li>소스 코드를 출판 시 공개 예정이나, 현재 미공개 상태</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>벤치마크가 COD 단일 소스에서만 구축되어, Materials Project나 ICSD 등 다른 데이터베이스의 비정렬 구조와의 교차 검증이 부족</li>
+<li>DNG에서 생성된 비정렬 구조의 열역학적 안정성(stability) 검증이 없으며, DFT 계산을 통한 실질적 물성 평가가 수행되지 않음</li>
+<li>조성 유효성(compositional validity)이 최대 69%대로, 실용적 재료 설계에는 아직 부족한 수준</li>
+<li>SD와 PD의 상호작용(correlation)을 명시적으로 모델링하지 않으며, 각각의 flow를 독립적으로 학습</li>
+<li>Space group 대칭 제약조건이 생성 과정에 반영되지 않아, 물리적으로 비현실적인 구조가 생성될 가능성</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>고차 PD(3개 이상 위치)로의 확장 및 동적 무질서(dynamic disorder) 모델링</li>
+<li>DFT/MLIP 기반 안정성 검증을 포함한 closed-loop 재료 발견 파이프라인 구축</li>
+<li>Space group constrained generation과의 통합</li>
+<li>대규모 데이터셋(ICSD, Materials Project disorder entries)으로의 확장 및 전이 학습</li>
+<li>비정렬 재료의 특정 물성(이온 전도도, 초전도 전이온도 등) 조건부 생성</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 기존 심층 생성 모델이 전혀 다루지 못했던 비정렬 결정 생성이라는 새로운 문제를 정의하고, simplex 위 Riemannian flow matching이라는 수학적으로 우아한 해법을 제시한 선구적 연구이다. 벤치마크 구축과 통합 표현의 설계가 돋보이며, 후속 연구의 기반을 마련했다는 점에서 의의가 크다. 다만 실질적 재료 발견으로의 연결(안정성 검증, 물성 예측)이 부재하여 실용성 측면에서의 검증은 향후 과제로 남아 있다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

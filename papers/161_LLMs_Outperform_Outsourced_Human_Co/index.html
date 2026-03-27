@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LLMs Outperform Outsourced Human Coders on Complex Textual Analysis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>LLMs Outperform Outsourced Human Coders on Complex Textual Analysis</h1>
+<ul>
+<li><strong>저자</strong>: Vicente J. Bermejo, Andres Gago, Ramiro H. Galvez, Nicolas Harari</li>
+<li><strong>출처</strong>: SSRN (2024)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.2139/ssrn.5020034"><a href="https://doi.org/10.2139/ssrn.5020034" target="_blank">10.2139/ssrn.5020034</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (핵심)</h2>
+<p>스페인어 뉴스 기사 210편을 대상으로 5가지 NLP 태스크(개체명 인식, 개수 세기, 비판 존재 여부, 비판 출처, 비판 대상)에서 LLM(GPT-3.5-turbo, GPT-4-turbo, Claude 3 Opus, Claude 3.5 Sonnet)과 외주 인간 코더(ESADE 대학생 146명)의 성능을 체계적으로 비교한 연구. LLM이 모든 태스크에서 인간 코더를 일관되게 능가하며, 특히 깊은 맥락 이해가 필요한 복잡한 태스크에서 그 격차가 더 크다는 것을 실증적으로 보여준다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>사회과학 연구에서 텍스트 데이터 분석의 중요성이 커지고 있으나, 대규모 텍스트 처리에는 비용과 확장성 문제가 존재한다. 기존 접근법인 수작업 코딩은 비용이 높고, 사전 기반 방법은 정확도가 낮으며, 지도학습 기반 ML은 높은 코딩 능력과 라벨링된 학습 데이터를 요구한다. LLM이 프로그래밍 전문지식 없이도 zero-shot 방식으로 복잡한 텍스트 분석을 수행할 수 있는지 체계적으로 검증할 필요가 있었다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ul>
+<li><strong>모든 LLM이 모든 태스크에서 외주 인간 코더를 능가</strong>: Claude 3.5 Sonnet이 전반적으로 최고 성능을 기록하며, 5개 태스크 전부 정답 비율이 52.6%로 인간 코더의 20.2%를 크게 상회</li>
+<li><strong>복잡하고 긴 기사에서도 LLM 우위 유지</strong>: 최신 LLM(Claude 3.5 Sonnet, GPT-4-turbo)은 어려운 기사에서도 인간 코더가 쉬운 기사에서 달성한 것보다 높은 성능을 보임</li>
+<li><strong>내적 일관성에서 압도적 우위</strong>: LLM의 반복 응답 일치도가 인간 코더(예: T3 accuracy 0.581)보다 훨씬 높음(예: Claude 3 Opus T3 accuracy 1.000)</li>
+<li><strong>비용 효율성</strong>: 전체 분석 비용이 GPT-3.5는 $0.20, Claude 3.5 Sonnet은 $2.28로 극히 저렴</li>
+</ul>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ol>
+<li><strong>데이터</strong>: Bermejo et al.(2023)의 스페인 지방자치단체 재정건전화 관련 뉴스 21,627편 중 210편 무작위 추출</li>
+<li><strong>태스크 설계</strong>: T1(지자체명 나열, NER), T2(지자체 수 카운팅), T3(비판 존재 이진 분류), T4(비판 출처 다중 레이블 분류), T5(비판 대상 다중 레이블 분류) -- 난이도가 순차적으로 증가</li>
+<li><strong>Gold standard</strong>: 저자들의 합의 기반 전문 코딩(inter-coder agreement 81.9~91.4%)</li>
+<li><strong>LLM 평가</strong>: 4개 모델 x 210편 x 2회 반복 = 1,680회 API 호출, zero-shot, temperature=0</li>
+<li><strong>인간 코더 평가</strong>: ESADE 대학생 146명, 각 3편 읽고 5개 태스크 수행, attention check 포함</li>
+<li><strong>성능 지표</strong>: T1은 macro-averaged F1, T2는 MAE, T3~T5는 accuracy, OLS 회귀분석으로 통계적 유의성 검증</li>
+</ol>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li>기존 연구(Gilardi et al., 2023)가 주로 트윗/소셜미디어의 단순 분류 태스크를 다룬 반면, 본 연구는 <strong>깊은 맥락적 지식이 필요한 복잡한 태스크</strong>(정치적 비판의 출처/대상 식별)까지 확장</li>
+<li><strong>개체명 인식(NER)</strong> 태스크를 LLM vs. 인간 비교에 최초로 포함</li>
+<li><strong>비영어권(스페인어)</strong> 텍스트에서의 비교를 수행하여, 영어에서는 더 큰 성능 격차가 예상됨을 시사</li>
+<li>단순 정확도 비교를 넘어 <strong>기사 난이도</strong>, <strong>텍스트 길이</strong>, <strong>코더 역량 수준별</strong> 분석과 <strong>내적 일관성</strong> 평가를 체계적으로 수행</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>샘플 크기</strong>: 210편의 뉴스 기사로 제한적이며, 도메인이 스페인 지방자치단체 재정 문제에 한정</li>
+<li><strong>인간 코더 모집단</strong>: ESADE 대학생으로, 전문 연구보조원이나 해당 분야 전문가와의 비교가 부재 -- 크라우드소싱 플랫폼(MTurk, Prolific) 작업자보다는 유능하지만 진정한 전문가는 아님</li>
+<li><strong>모델 버전 변동</strong>: GPT-3.5-turbo의 시간에 따른 성능 변화(Table C5)가 확인되어, LLM 기반 연구의 재현성 문제 제기</li>
+<li><strong>zero-shot만 평가</strong>: few-shot, chain-of-thought 등 프롬프트 엔지니어링 기법의 효과 미탐구</li>
+<li><strong>다중 레이블 태스크에서 단일 답변만 요청</strong>: T4, T5에서 복수 정답이 가능하나 하나만 선택하도록 제한</li>
+<li>향후 다양한 언어, 도메인, 태스크 유형으로 확장하고, 최신 모델(GPT-4o, Claude 3.5 등 이후 세대)에서의 추가 검증이 필요</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>체계적이고 잘 설계된 벤치마크 연구로, 사회과학 텍스트 분석에서 LLM의 실용적 가치를 설득력 있게 입증한다. Gold standard 라벨링의 엄밀성(다단계 합의 과정), 내적 일관성 분석, 난이도/길이별 세분화 분석이 강점이다. 다만 단일 도메인(스페인 지방재정)에 한정된 점, 최신 모델 포함 범위가 2024년 중반까지인 점, 그리고 프롬프트 최적화 없는 기본 zero-shot만 평가한 점은 일반화에 주의가 필요하다. 전반적으로 "프로그래밍 전문지식 없는 연구자도 LLM API로 고품질 텍스트 분석이 가능하다"는 실질적 메시지가 명확하고 근거가 충분하다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MerLean: An Agentic Framework for Autoformalization in Quantum Computation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>MerLean: An Agentic Framework for Autoformalization in Quantum Computation</h1>
+<blockquote>
+<p><strong>저자</strong>: Yuanjie Ren, Jinzheng Li, Yidi Qi | <strong>날짜</strong>: 2026-02-18 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2602.16554</p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>양자 계산 이론 분야의 연구 논문을 LaTeX 소스로부터 Lean 4 형식 증명 코드로 완전 자동 변환하는 에이전틱 프레임워크 MerLean을 제안한다. 추출-형식화-검증의 autoformalization 파이프라인과 검증된 코드를 다시 사람이 읽을 수 있는 LaTeX로 역변환하는 autoinformalization 파이프라인을 결합하여, 양방향 검증을 가능하게 한다. 3편의 양자 계산 논문(114개 명제)에서 2,050개 Lean 선언, 41,000줄 이상의 검증된 코드를 생성하여 end-to-end 형식화에 성공하였으며, 인간 개입 없이 완전 자동으로 수행되었다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 사실</strong>: Autoformalization은 자연어 수학을 형식 검증 가능한 코드로 변환하는 것이 목표이며, LLM이 이 작업에 적합함이 입증됨. 양자 계산 이론은 선형대수, 그래프이론, 대수적 위상수학과 깊은 연결을 가지며, arXiv quant-ph의 연간 11,891편(2025년)이라는 검증 병목이 존재</li>
+<li><strong>격차(Gap)</strong>: 기존 autoformalization 연구는 개별 정리/경쟁 문제 수준에 머물며, 전체 논문의 상호 연결된 정의-보조정리-정리를 end-to-end로 형식화하는 것은 미해결. Ax-Prover, Numina-Lean-Agent 등 최근 에이전틱 시스템도 인간 가이던스에 의존</li>
+<li><strong>접근법</strong>: Claude Opus 4.5를 추론 엔진으로, lean-lsp-mcp를 통한 Lean 언어 서버 도구(goal 검사, hover info, semantic search)를 활용하여, compile-fix-verify 루프로 전체 논문을 자동 형식화</li>
+</ul>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>3편 논문의 완전 자동 end-to-end 형식화</strong>: Balanced Product Codes(44 명제, 14,997줄), Fault-Tolerant QC(47 명제, 18,557줄), Quantum Topology(23 명제, 미공개, 7,761줄)</li>
+<li><strong>총 114개 명제에서 2,050개 Lean 선언 생성</strong>: 평균 명제당 18.0개 선언, 21분 54초, 13.0회 컴파일 시도</li>
+<li><strong>인간 개입 없는 형식화</strong>: 기존 Ax-Prover, Numina-Lean-Agent와 달리 형식화 과정에서 human-in-the-loop 불필요</li>
+<li><strong>데이터 오염 없는 검증</strong>: Paper C(Quantum Topology)는 미공개 원고로 LLM 학습 데이터에 포함될 수 없음을 보장</li>
+<li><strong>자동 보조 정리 발견</strong>: 원논문에 명시되지 않은 중간 단계 보조 정리(edgeBoundary_card_eq_edgeCount, weight_inequality_core 등)를 에이전트가 자율적으로 도입</li>
+<li><strong>연구 오류 발견</strong>: Quantum Topology 논문의 모호한 정의에서 암묵적 가정 누락을 형식화 과정에서 발견, 저자가 수정 후 완전 형식화 성공</li>
+</ol>
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>Autoformalization 파이프라인</strong>: (1) LaTeX 소스에서 수학적 명제 추출 및 다중 패스 정제(모호한 표현 구체화, 의존성 정렬) -&gt; (2) 각 명제에 대해 compile-fix 루프(Lean 4 코드 생성 -&gt; 컴파일 -&gt; 오류 시 진단 피드백으로 수정, 최대 30회) -&gt; (3) 컴파일 성공 후 faithfulness checking(원문 의미 반영 여부 자기 점검) -&gt; (4) 최대 시도 초과 시 axiom phase(차단 subgoal을 공리로 변환)</li>
+<li><strong>Autoinformalization 파이프라인</strong>: 검증된 Lean 코드를 사람이 읽을 수 있는 LaTeX "blueprint"로 역변환하여 의미적 정합성 검토 지원</li>
+<li><strong>도구</strong>: Claude Opus 4.5(추론 엔진), lean-lsp-mcp(Model Context Protocol 서버, goal 검사/type signature/semantic search), leansearch/loogle(Mathlib 정리 검색), grep(Mathlib 소스 탐색)</li>
+<li><strong>Axiom 처리</strong>: Mathlib에 없는 결과(Kunneth formula, spectral sequence 등)는 명시적 공리로 선언, sorry(불완전 증명)와 구분</li>
+</ul>
+</div><div class="section-box"><h2>Originality</h2>
+<p>연구 논문 전체를 인간 개입 없이 완전 자동으로 형식화한 최초의 시스템이다. Ax-Prover나 Numina-Lean-Agent가 인간 가이던스(정의/정리/증명 전략 제공)에 의존하는 것과 달리, MerLean은 LaTeX 소스만으로 추출-형식화-검증-역변환의 전 과정을 자동화한다. 특히 autoinformalization을 통한 양방향 파이프라인은 형식화의 충실성(faithfulness)을 비전문가도 검토할 수 있게 하며, 미공개 원고에서의 오류 발견 사례는 형식화 기반 peer review의 실용적 가능성을 보여준다.</p>
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>Mathlib의 공백(gaps)으로 인해 일부 명제(Balanced Product Codes의 9.1%)가 공리에 의존</li>
+<li>기존 autoformalization 벤치마크(miniF2F, ProofNet)가 개별 정리 수준이어서 직접 비교가 불가능</li>
+<li>양자 계산의 수학적 기반(선형대수, 함수해석)이 Mathlib에서 상대적으로 성숙하여, 다른 분야로의 일반화는 미검증</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>정량적 비교 대상이 없어 성능의 상대적 위치를 판단하기 어려움 (M2F의 FATE-H 96%와 같은 외부 벤치마크 결과 부재)</li>
+<li>Faithfulness checking이 LLM의 자기 점검(self-reflection)에 의존하여, 체계적 오류의 탐지 보장이 없음. Autoinformalization이 이를 보완하나, 최종적으로 인간 검토에 의존</li>
+<li>114개 명제 중 실제 "정리(theorem)"는 15개에 불과하고 나머지는 정의(49), 비고(26), 보조정리(20), 따름정리(4)로, 증명 난이도가 높은 핵심 결과의 비중이 제한적</li>
+<li>3편 논문 모두 양자 계산 이론이라는 단일 도메인이므로, 대수기하, 정수론 등 다른 수학 분야에서의 성능은 미지수</li>
+<li>공리(axiom) 선언의 적절성 판단이 수동 검토에 의존하며, 과도한 공리화로 형식화가 사실상 무의미해질 위험에 대한 체계적 제어가 없음</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>기존 autoformalization 벤치마크(miniF2F, ProofNet, FATE-H)에서의 정량적 평가</li>
+<li>대수기하, 정수론 등 Mathlib 지원이 약한 분야로의 확장</li>
+<li>논문 간 교차 형식화(여러 관련 논문의 결과를 하나의 통합 라이브러리로)</li>
+<li>형식화 기반 자동 peer review 워크플로우의 실제 적용 및 평가</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 연구 논문 전체의 완전 자동 형식화라는 의미 있는 마일스톤을 달성한 논문이다. 인간 개입 없이 3편의 양자 계산 논문을 41,000줄 이상의 검증된 Lean 코드로 변환한 성과는 인상적이며, autoinformalization을 통한 양방향 파이프라인과 미공개 원고에서의 오류 발견 사례는 형식화의 실용적 가치를 잘 보여준다. 다만 단일 도메인(양자 계산), 외부 벤치마크 부재, faithfulness의 자기 점검 의존성이 주요 한계이다. M2F와 비교하면 규모는 작지만(41K vs 154K LoC), 완전 자동이라는 점에서 차별화된다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

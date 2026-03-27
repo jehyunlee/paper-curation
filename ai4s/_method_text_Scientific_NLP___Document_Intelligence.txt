@@ -1,0 +1,45 @@
+## Category Timeline: Scientific NLP & Document Intelligence
+
+### SUB-THEME A: Scientific Knowledge Extraction & Structured Mining (2019→2026, CONVERGING)
+Branches into:
+- **"Foundational NLP Infrastructure"** (2019–2021): Development of robust, domain-specific pipelines like **scispaCy** and **spaCy** to handle specialized biomedical and technical vocabularies.
+- **"Extreme Summarization & Metadata"** (2020–2023): Transition from full-text indexing to high-compression formats like **TLDR** generation and the scaling of discovery platforms like **Semantic Scholar**.
+- **"Scholarly Knowledge Graphs & QA"** (2023–2025): Integration of Large Language Models (LLMs) with structured data, exemplified by **Scholarly KGQA** to answer complex bibliographic queries.
+- **"Agentic Domain-Specific Extraction"** (2025–2026): Emergence of autonomous frameworks for deep technical mining, such as the **Automated Extraction of Mechanical Constitutive Models** and **Agentic Personas** for adaptive explanations.
+Interaction: **FEEDS** high-quality structured data into Sub-theme C to facilitate automated literature reviews and **ENABLES** the grounding of multimodal models in Sub-theme B.
+
+### SUB-THEME B: Multimodal Document Intelligence & Chart Reasoning (2021→2026, ACCELERATING)
+Branches into:
+- **"Large-scale Figure Captioning"** (2021–2023): Initial dataset creation for scientific imagery, including **SciCap**, **PatFig** (patent drawings), and knowledge-augmented versions like **SciCap+**.
+- **"Visual Instruction Tuning"** (2023–2024): Rapid expansion of multimodal LLMs specialized for charts, featuring **ChartInstruct**, **ChartGemma**, **ChartLlama**, and the **MMC** dataset.
+- **"Evidence-based Fact Checking"** (2024–2025): Utilizing visual data as primary evidence for verification, led by the **Chart-AFC** framework and hallucination correction via **Pelican**.
+- **"Automated Scientific Illustration"** (2025–2026): Shift from understanding to generation with **PaperBanana** for automated diagramming and **Chartist** for task-driven visual control.
+Interaction: **SPAWNS** new verification requirements for Sub-theme C by providing visual evidence that must be reconciled with textual claims.
+
+### SUB-THEME C: Automated Synthesis & Research Lifecycle Support (2022→2026, CONVERGING)
+Branches into:
+- **"Human-AI Collaborative Writing"** (2022–2024): Early exploration of interactive drafting using the **CoAuthor** dataset and preference-optimized captioning in **FigCaps-HF**.
+- **"Systematic Review & Synthesis Agents"** (2023–2025): Deployment of **Language Agents** for superhuman synthesis and specialized tools for **Systematic Review (El)**.
+- **"Bias & Hallucination Mitigation"** (2024–2025): Critical analysis of **Generalization Bias** in scientific summaries and the development of **LimGen** for generating research limitations.
+- **"Research Workflow Optimization"** (2024–2026): Practical integration of AI into the lab, as seen in **Nature's Guide to AI Tools** and AI-powered science search engines.
+Interaction: **RESPONDS** to the extraction capabilities of Sub-theme A and the visual insights of Sub-theme B to produce comprehensive, multi-source scientific narratives.
+
+### CROSS-CUTTING CONNECTIONS
+- **Multimodal Grounding**: The convergence of text-based extraction (Sub-theme A) and chart reasoning (Sub-theme B) allows for "Criteria-first" structure discovery in scientific images.
+- **Agentic Autonomy**: Agent-based frameworks are unifying the pipeline from raw document mining to the final synthesis of "AI Scientists."
+
+### KEY MILESTONES
+- **2019: The scispaCy Release** — Established the first industrial-strength NLP infrastructure specifically tuned for scientific literature.
+- **2023: The Multimodal Shift** — Transition from text-only analysis to unified chart/figure understanding with the launch of **ChartReader** and **ChartLlama**.
+- **2026: Agentic Synthesis** — The emergence of **PaperBanana** and **Agentic Personas** marks the shift from AI as a tool to AI as an autonomous research collaborator.
+▶ Scientific NLP emerges (2019)
+◀ Manual Systematic Review absorbed into Agentic Synthesis (2025)
+
+### ABSOLUTE VISUAL RULES
+- The timeline is represented as a horizontal flow from left (2019) to right (2026).
+- Each sub-theme (Scientific Knowledge Extraction, Multimodal Document Intelligence, Automated Synthesis) is a distinct, organic ribbon.
+- Ribbon widths expand during "ACCELERATING" phases (e.g., Sub-theme B in 2024) and narrow during "CONVERGING" phases.
+- Sub-sub-themes are depicted as smaller branches or "streams" within the larger ribbons.
+- All labels are in sans-serif English text.
+- The background is white, maintaining a 16:9 aspect ratio.
+- No color names, watercolor effects, or paper counts are included.

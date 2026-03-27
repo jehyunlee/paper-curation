@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Towards an AI co-scientist</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Towards an AI co-scientist</h1>
+<ul>
+<li><strong>저자</strong>: Juraj Gottweis, Wei-Hung Weng, Alexander Daryin, Tao Tu 외 다수 (Google Research / DeepMind / Cloud AI Research, Houston Methodist, Sequome, Imperial College London, Stanford University)</li>
+<li><strong>출처</strong>: Google Blog / arXiv preprint (2025-02-18)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.18864"><a href="https://doi.org/10.48550/arXiv.2502.18864" target="_blank">10.48550/arXiv.2502.18864</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>Google이 Gemini 2.0 기반으로 개발한 AI co-scientist는 과학자의 가설 생성 과정을 증강(augment)하기 위한 멀티 에이전트 시스템이다. "생성-토론-진화(generate, debate, evolve)" 접근법을 통해 과학적 방법론을 모방하며, test-time compute 스케일링으로 가설의 품질을 반복적으로 개선한다. 약물 재창출(drug repurposing), 신규 치료 타겟 발견, 항생제 내성 메커니즘 규명의 세 가지 생의학 영역에서 in vitro 실험 검증까지 수행한 end-to-end 시스템이다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>현대 생의학 연구는 깊이(depth)와 넓이(breadth)의 딜레마에 직면해 있다. 분야별 전문성이 심화되는 동시에 학제간 통찰이 중요한 돌파구를 만들지만, 급증하는 논문과 고처리량 분석 기술의 발전으로 한 연구자가 양쪽을 모두 마스터하기 어렵다. CRISPR(2020 노벨화학상)이나 인공지능(2024 노벨물리학상) 같은 학제간 성과가 이를 잘 보여준다. LLM의 추론 능력과 에이전트 행동(agentic behavior) 발전에 힘입어, AI가 과학자의 창의적 가설 생성을 보조하는 협력자(co-scientist)로 기능할 수 있는 시점에 도달했다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>멀티 에이전트 아키텍처</strong>: Generation, Reflection, Ranking, Proximity, Evolution, Meta-review의 6개 전문 에이전트 + Supervisor 에이전트로 구성된 비동기 태스크 실행 프레임워크</li>
+<li><strong>토너먼트 진화 프로세스</strong>: Elo 기반 토너먼트에서 가설을 쌍별 비교(과학적 토론 시뮬레이션)하여 순위를 매기고, 상위 가설을 진화시키는 자기개선 루프</li>
+<li><strong>Test-time compute 스케일링 효과</strong>: 203개 연구 목표에 걸쳐 계산 시간 증가에 따른 가설 품질(Elo) 향상을 입증. 15개 전문가 큐레이션 연구 목표에서 Gemini 2.0 Pro, OpenAI o1, o3-mini, DeepSeek R1 및 인간 전문가를 능가</li>
+<li><strong>GPQA 벤치마크</strong>: Top-1 정확도 78.4% 달성, Elo 등급과 정확도 간 양의 상관관계 확인</li>
+<li><strong>Drug repurposing (AML)</strong>: 전문가가 선별한 5개 약물 중 Binimetinib(IC50 7nM), Pacritinib, Cerivastatin이 AML 세포주에서 종양 억제 확인. 완전 신규 후보로 KIRA6이 3개 AML 세포주에서 nM 범위 IC50으로 세포 생존율 억제</li>
+<li><strong>간섬유증 치료 타겟</strong>: 3개 신규 후위유전적(epigenetic) 타겟 제안, 그중 2개 타겟 약물이 인간 간 오르가노이드에서 유의한 항섬유화 활성 확인(1개는 FDA 승인 약물로 재창출 가능성)</li>
+<li><strong>항균 내성 메커니즘</strong>: cf-PICI가 다양한 파지 꼬리와 상호작용하여 숙주 범위를 확장한다는 가설을 독립적으로 제안 -- 미공개 실험 결과를 2일 만에 재현(in silico)</li>
+</ol>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ul>
+<li><strong>핵심 설계 원리</strong>: 과학적 방법론(가설 생성 -&gt; 비판적 검토 -&gt; 진화적 개선)을 멀티 에이전트 시스템으로 구현</li>
+<li><strong>Generation agent</strong>: 웹 검색 기반 문헌 탐색, 시뮬레이션 과학 토론(self-play), 반복적 가정 식별, 연구 확장</li>
+<li><strong>Reflection agent</strong>: 초기 리뷰(도구 없이 빠른 필터링), 풀 리뷰(웹 검색 포함), 심층 검증(가설을 하위 가정으로 분해하여 독립 평가), 관찰 리뷰, 시뮬레이션 리뷰, 토너먼트 리뷰 등 6종류의 리뷰 수행</li>
+<li><strong>Ranking agent</strong>: Elo 기반 토너먼트에서 멀티턴 과학 토론을 통한 쌍별 비교 및 순위화</li>
+<li><strong>Evolution agent</strong>: 그라운딩 강화, 일관성/실현 가능성 개선, 기존 가설에서 영감, 조합, 단순화, 틀 밖의 사고 등 다양한 전략으로 기존 가설을 개선한 새 가설 생성</li>
+<li><strong>Meta-review agent</strong>: 토너먼트 패턴 종합, 피드백 루프 활성화, 연구 개요 생성</li>
+<li><strong>Expert-in-the-loop</strong>: 자연어로 연구 목표 정의, 피드백 제공, 자체 가설 투입, 방향 조정 가능</li>
+<li><strong>도구 활용</strong>: 웹 검색, 도메인 DB(DepMap 등), 전문 AI 모델(AlphaFold) 연동</li>
+</ul>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>과학적 방법론의 에이전트화</strong>: 단순한 LLM 질의응답이나 문헌 요약을 넘어, 과학적 방법론의 핵심 단계(가설 생성, 비판적 검토, 경쟁적 선별, 진화적 개선)를 각각의 전문 에이전트로 분리하여 구현한 최초의 대규모 시스템</li>
+<li><strong>토너먼트 기반 자기개선</strong>: Elo 등급 시스템과 과학 토론 시뮬레이션을 결합한 가설 순위화 메커니즘은 기존 AI 과학자 시스템(The AI Scientist, Virtual Lab 등)과 차별화되는 핵심 설계</li>
+<li><strong>Test-time compute의 과학적 추론 적용</strong>: AlphaGo에서 시작된 test-time compute 패러다임을 과학적 가설 생성에 대규모 적용, 포화 없는 품질 향상 확인</li>
+<li><strong>End-to-end 실험 검증</strong>: 세 가지 서로 다른 복잡도의 생의학 문제에서 in vitro 실험까지 수행한 것은 AI 과학 시스템 논문 중 가장 포괄적인 검증</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>Elo 자기평가의 한계</strong>: 핵심 평가 지표인 Elo가 시스템 자체의 auto-evaluation이므로, 시스템이 선호하는 특성이 과학적 정확성이나 전문가 선호와 일치하지 않을 수 있음 (논문에서도 반복 인정)</li>
+<li><strong>오픈 액세스 문헌 의존</strong>: 접근 가능한 공개 문헌에만 의존하여 중요한 선행 연구를 놓칠 수 있으며, 미발표 부정적 결과(negative results)에 대한 접근이 부재</li>
+<li><strong>LLM 고유 한계 전파</strong>: 환각(hallucination), 사실성 오류, 편향이 시스템 전체에 전파될 수 있음</li>
+<li><strong>제한적 검증 규모</strong>: 3개 생의학 주제의 in vitro 실험에 국한되며, in vivo 효능이나 임상 성공을 보장하지 않음. 전문가 평가도 11개 연구 목표, 단일 기관 종양학자 6명으로 소규모</li>
+<li><strong>멀티모달 추론 한계</strong>: 논문의 그림/차트에 포함된 데이터를 최적으로 활용하지 못하며, 다중 오믹스 데이터셋이나 지식 그래프와의 통합은 미평가</li>
+<li><strong>안전성/이중용도</strong>: 1200개 적대적 예제에 대한 예비 안전 분석만 수행. 장기적으로 에이전트 시스템의 자체 목표 개발, AI 조작에 대한 인간 취약성 등 근본적 위험이 존재</li>
+<li><strong>범용성 미확인</strong>: 생의학 중심 검증으로, 물리학/화학/수학 등 다른 과학 분야로의 일반화 가능성은 불명확</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>Google의 AI co-scientist는 현재까지 발표된 AI 과학 시스템 중 가장 야심적이고 포괄적으로 검증된 사례이다. 과학적 방법론을 멀티 에이전트 아키텍처로 충실히 구현하고, test-time compute 스케일링이 과학적 추론에도 유효함을 보인 점은 매우 인상적이다. 특히 AML 약물 재창출에서 KIRA6라는 완전 신규 후보 발견, 간섬유증에서 FDA 승인 약물의 재창출 가능성 확인, 미공개 항균 내성 메커니즘의 독립적 재현은 AI 과학 시스템의 실용적 가치를 강력히 시사한다. 그러나 Elo 자기평가의 순환성, 소규모 전문가 평가, in vitro에서 임상까지의 긴 거리 등은 냉정하게 인식해야 할 한계이다. "AI가 과학자를 대체하는 것이 아니라 증강한다"는 설계 철학은 현 시점에서 적절하며, 향후 더 다양한 분야와 더 엄격한 검증을 통해 이 시스템의 진정한 가치가 판명될 것이다. 70페이지에 달하는 방대한 논문으로, AI for Science 분야의 이정표적 연구이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+## Category Timeline: Autonomous Agents & Research Workflow
+
+### SUB-THEME A: End-to-End Research Automation & Discovery Loops (2023→2026, ACCELERATING)
+Branches into:
+- **"Hypothesis Generation & Ideation"** (2023–2024): Early systems focusing on literature-based discovery and link prediction, such as **SciMON** and **PaperRobot**, which transitioned from simple knowledge graph mining to LLM-driven novelty optimization.
+- **"Autonomous Research Pipelines"** (2024–2025): The emergence of fully integrated systems like **The AI Scientist** and **Agent Laboratory** that automate the entire lifecycle from ideation to code execution and paper drafting.
+- **"Iterative Refinement & Closed-Loop Discovery"** (2024–2026): Development of frameworks like **CycleResearcher** and **InternAgent** that utilize feedback loops to refine research outputs, moving toward "Agentic Science" where the AI manages the full experimental cycle.
+- **"Advanced Innovation Engines"** (2025–2026): High-tier systems such as **AI-Researcher** and **The AI Scientist-v2** capable of workshop-level discovery and autonomous algorithmic innovation with minimal human intervention.
+- **"Embodied Science & Physical Loops"** (2026): The final frontier where digital agents integrate with physical hardware, as seen in **Embodied Science**, to close the loop between computational hypothesis and robotic experimentation.
+Interaction: **ENABLES** Sub-theme D by providing the raw research outputs that require formal verification and **FEEDS** Sub-theme C with specific task requirements for tool execution.
+
+### SUB-THEME B: Multi-Agent Orchestration & Collaborative Intelligence (2023→2026, ACCELERATING)
+Branches into:
+- **"Task Decomposition & Planning"** (2023): Initial frameworks like **HuggingGPT** that used LLMs as central planners to orchestrate specialized expert models for complex scientific tasks.
+- **"Multi-Disciplinary Collaboration"** (2023–2024): Systems like **MedAgents** and **SciAgents** that simulate "expert panels" or bio-inspired agent swarms to solve cross-domain problems through dialogue and consensus.
+- **"Virtual Laboratories & Shared Workspaces"** (2024–2025): The rise of environments like the **Virtual Lab** and **AgentRxiv**, where multiple agents collaborate, search, and reference each other's work via shared preprint-style servers.
+- **"Agentic Scaling & Workforce Learning"** (2024–2026): Research into the quantitative principles of agent systems, such as **Towards a Science of Scaling Agent Systems** and **OWL (Optimized Workforce Learning)**, focusing on how agent populations improve performance.
+- **"Human-Agent Collaborative Workflows"** (2025–2026): Methodological shifts in social sciences and humanities, exemplified by the **Anthropic Economic Index (AEI)** experiments, moving from AI-as-labor to AI-as-collaborator.
+Interaction: **SPAWNS** the complex organizational structures used in Sub-theme A and **RESPONDS** to the scaling needs identified in Sub-theme C.
+
+### SUB-THEME C: Tool-Use, API Integration & Domain Execution (2023→2025, CONVERGING)
+Branches into:
+- **"Chemical & Material Science Agents"** (2023–2024): Early domain-specific successes like **ChemCrow** and **Coscientist**, which integrated LLMs with robotic lab equipment and chemical databases.
+- **"Universal Tool & API Frameworks"** (2023–2025): Efforts to scale agent capabilities to thousands of real-world tools, led by **ToolLLM**, **AnyTool**, and the **ToolUniverse** ecosystem.
+- **"Code-Centric Research Agents"** (2025): Specialized agents for the "Paper-to-Code" transition, such as **ResearchCodeAgent** and **AutoP2C**, focusing on the technical implementation of scientific ideas.
+- **"Specialized Scientific Verticals"** (2025): The diversification of agents into niche fields, including **Earth-Agent** for observation data, **Lang-PINN** for physics-informed neural networks, and **TxAgent** for therapeutic reasoning.
+- **"Autonomous Data Science"** (2025): The convergence of data analysis and agentic reasoning in systems like **DeepAnalyze-8B**, designed for end-to-end autonomous data exploration.
+Interaction: **MERGES** with Sub-theme A to provide the functional "hands" for autonomous labs and **ENABLES** Sub-theme B by expanding the library of skills available to agent swarms.
+
+### SUB-THEME D: Formal Verification, Math & Scientific Rigor (2024→2026, EMERGING)
+Branches into:
+- **"Automated Scholarly Review (ASPR)"** (2024–2025): Systems like **ReviewerGPT**, **MARG**, and **Reviewer2** that automate the peer-review process, focusing on bias reduction and coverage.
+- **"Mathematical Discovery & Reasoning"** (2025–2026): Transition from competition math to professional research math, highlighted by DeepMind’s **Aletheia** agent.
+- **"Auto-formalization & Proofs"** (2026): Frameworks like **MerLean** and **M2F (Math-to-Formal)** that automatically convert LaTeX research papers into Lean 4 formal verification code.
+- **"SciOps & Reproducibility"** (2026): The implementation of DevOps principles in science, such as **DataJoint 2.0** and **Scaling Reproducibility** workflows, ensuring that agent-generated research is verifiable and reproducible.
+Interaction: **RESPONDS** to the high volume of output from Sub-theme A by acting as a quality gate and **ENABLES** the "Embodied Science" phase of Sub-theme A through rigorous safety and verification protocols.
+
+### CROSS-CUTTING CONNECTIONS
+- **The Feedback Loop**: Sub-theme D (Review) provides the critical reinforcement signal for Sub-theme A (Automation) to improve its generative quality over time.
+- **The Tool-Agent Interface**: Sub-theme C (Tools) provides the necessary infrastructure for Sub-theme B (Orchestration) to move beyond text-based dialogue into real-world action.
+- **The Scaling Paradox**: Insights from Sub-theme B regarding agent scaling laws directly influence the architectural design of the end-to-end systems in Sub-theme A.
+
+### KEY MILESTONES
+- **2024: The Birth of the AI Scientist** — The release of **The AI Scientist** marks the first successful demonstration of a fully automated, open-ended scientific discovery loop.
+- **2025: The Agentic Shift** — Multiple comprehensive surveys (e.g., **"From AI for Science to Agentic Science"**) codify the transition from AI as a computational tool to AI as an autonomous scientific agent.
+- **2026: Formalization at Scale** — The launch of **M2F** and **Aletheia** signals the move toward a future where scientific literature is automatically verified and formalized upon publication.
+
+▶ **Agentic Science** emerges (**2024**)
+◀ **Computational AI for Science** absorbed into **Autonomous Agentic Workflows** (**2025**)

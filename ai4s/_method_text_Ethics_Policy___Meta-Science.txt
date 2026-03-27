@@ -1,0 +1,56 @@
+## Category Timeline: Ethics, Policy & Meta-Science
+
+### SUB-THEME A: AI Impact on Scientific Practice (2022→2026, DIVERGING)
+Branches into:
+- **"The Productivity-Diversity Paradox"** (2023–2026): Investigates the tension where AI tools expand individual scientist impact but contract the collective scope of inquiry, as evidenced by the analysis of 41.3 million papers showing a narrowing of the "scientific frontier."
+- **"Cognitive Debt & Neuro-impact"** (2023–2025): Longitudinal neurophysiological studies using EEG and NLP to measure how LLM-assisted writing affects human brain connectivity and long-term cognitive functions.
+- **"AI4Science Conceptual Frameworks"** (2022–2024): Establishing the "Data-to-Wisdom" hierarchy and the Dagstuhl 22382 agenda for bridging data-driven and mechanistic modeling.
+- **"Social Science of AI"** (2024–2025): A dual-pathway survey classifying AI as both a tool for social science research and a subject of sociological study.
+- **"Economic R&D Task Modeling"** (2023–2025): Theoretical frameworks modeling R&D as a set of heterogeneous tasks to evaluate AI’s impact on innovation economics.
+- **"Domain-Specific Adoption Surveys"** (2023–2024): Large-scale usage tracking (e.g., Semantic Scholar authors, Harvard Medical School) to map how researchers integrate LLMs into workflows.
+Interaction: **FEEDS** into Peer Review Automation by providing the volume of AI-generated content that necessitates automated oversight.
+
+### SUB-THEME B: Peer Review Automation & Integrity (2023→2025, CONVERGING)
+Branches into:
+- **"LLM Detection & Forensics"** (2023–2025): Systematic investigation of AI-generated text in ICLR reviews and the development of 99%+ accuracy domain-specific detectors for admissions materials.
+- **"NLP Problem Space Mapping"** (2024–2025): The Dagstuhl 24052 white paper effort to categorize every stage of the peer review process where NLP can contribute or intervene.
+- **"Ethical Sentiment & Policy"** (2023–2024): Global surveys (e.g., Nature’s 5,000-researcher study) revealing deep divisions in the community regarding the legitimacy of AI in manuscript evaluation.
+- **"Data Integrity Frameworks"** (2024–2026): Development of multi-faceted frameworks to combat the "integrity crisis" in fields like materials science caused by AI-accelerated data fabrication.
+- **"Automated Admissions Screening"** (2023–2025): Specialized research into detecting AI-modified vs. AI-generated personal statements and recommendation letters.
+Interaction: **RESPONDS** to the "Productivity Paradox" by attempting to filter the resulting surge in scientific output.
+
+### SUB-THEME C: AI Agent Reliability & Human-AI Collaboration (2024→2026, EMERGING)
+Branches into:
+- **"Reliability Science for Agents"** (2024–2026): The transition from simple LLM tools to a formal "Science of AI Agent Reliability" focusing on predictable behavior in autonomous research agents.
+- **"Human-AI Thought Partnership"** (2024–2026): Designing AI not as a tool for thought but as a "thought partner" capable of collaborative reasoning and learning.
+- **"Labor Market & Agent Audits"** (2024–2025): Large-scale audits of 844 occupations using the O*NET database to distinguish between task automation and human augmentation.
+- **"AI-Augmented Inventorship Law"** (2025–2026): Methodologies for validating human inventorship in AI-driven molecular discovery through "Audit Gates" for patent documentation.
+- **"Security & Code Vulnerability"** (2023–2025): Empirical studies on OpenAI Codex and GitHub Copilot showing that AI assistants can lead developers to produce more insecure code.
+Interaction: **SPAWNS** from the maturation of LLMs into agentic workflows, requiring new legal and safety standards.
+
+### SUB-THEME D: Open Access & Publishing Reform (2015→2024, CONVERGING)
+Branches into:
+- **"OA Economic Feasibility"** (2015–2024): Long-term financial analysis proving that global subscription budgets are sufficient to cover a total transition to Open Access.
+- **"Disciplinary Barriers Meta-synthesis"** (2023–2024): Analysis of 11 bibliometric studies identifying why OA adoption varies across academic disciplines.
+- **"Search Engine Hegemony"** (2018–2024): Comparative studies of 12 academic databases (ASEBDs) showing Google Scholar’s increasing dominance over traditional citation indexes.
+- **"Institutional Transition Models"** (2021–2024): Case studies of Norwegian SSH journals and Oxford University Press (OUP) reflecting the shift from subscription to OA.
+Interaction: **ENABLES** the AI Impact theme by providing the massive, open-access datasets required for training AI4Science models.
+
+### CROSS-CUTTING CONNECTIONS
+- **Data Integrity ↔ AI Agents**: The rise of autonomous agents (Sub-theme C) creates new challenges for data integrity (Sub-theme B), as agents may inadvertently hallucinate or bypass human verification steps.
+- **Open Access ↔ AI Impact**: The success of OA publishing (Sub-theme D) provides the raw material for the AI-driven expansion of scientific impact (Sub-theme A), but also facilitates the "contraction" of research diversity through algorithmic bias.
+
+### KEY MILESTONES
+- **2015: The OA Financial Proof** — Demonstration that the subscription model's total cost could fully fund a global Open Access ecosystem, triggering a decade of policy shifts.
+- **2023: The Generative Shock** — Nature declares ChatGPT a "force for good and evil," marking the point where LLMs moved from niche tools to central scientific disruptors.
+- **2025: AAAI Presidential Panel Report** — 24 leading experts and 475 community members formalize the future roadmap for AI research ethics and policy.
+
+▶ **AI Agent Reliability** emerges as a distinct scientific discipline (**2024**)
+◀ **Subscription Publishing** absorbed into **Open Access Models** (**2024**)
+
+### ABSOLUTE VISUAL RULES (FOR IMPLEMENTATION)
+- Every ribbon MUST have its sub-theme name labeled.
+- English only, horizontal left→right, years on top.
+- River delta style, organic flowing ribbons.
+- White background, sans-serif.
+- Show band WIDTH changes to reflect paper volume/intensity.

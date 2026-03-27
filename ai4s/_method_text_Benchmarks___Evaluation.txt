@@ -1,0 +1,54 @@
+## Category Timeline: Benchmarks & Evaluation
+
+### SUB-THEME A: Scientific Reasoning & Discovery Benchmarks (2023→2026, CONVERGING)
+Branches into:
+- **"Foundational Scientific Reasoning"** (2023–2024): Focuses on systematic examination of college-level problem-solving and reasoning capabilities using datasets like **SciBench**.
+- **"Research-Grade Coding & Data Readiness"** (2024–2025): Transitions from general reasoning to domain-specific implementation, utilizing **SciCode** for scientist-curated coding problems and **SciHorizon** for assessing AI-for-Science data readiness.
+- **"Trustworthiness & Rigorous Assessment"** (2024–2025): Establishes frameworks for evaluating the reliability of LLMs in scientific contexts through **SciTrust** and **ScienceAgentBench**, focusing on data-driven discovery automation.
+- **"Scenario-Grounded Multi-Disciplinary Discovery"** (2025–2026): Culminates in comprehensive evaluations across biology, chemistry, and materials science as seen in **Evaluating Large Language Models in Scientific Discovery**.
+Interaction: This sub-theme FEEDS into Agentic Environments by providing the ground-truth logic required for autonomous experimentation.
+
+### SUB-THEME B: Autonomous Agent & Tool-Use Environments (2023→2026, ACCELERATING)
+Branches into:
+- **"Software Engineering & Issue Resolution"** (2023–2024): Initial focus on real-world problem solving in GitHub repositories using **SWE-bench**.
+- **"Scientific Tool-Use Gymnasiums"** (2024–2025): Development of interactive environments like **Aviary** and **SciAgentGym** to benchmark multi-step tool manipulation in research settings.
+- **"Stable Tool Learning & Scalability"** (2025–2025): Addressing API instability and evaluation randomness through **StableToolBench** and scaling to domain-specific coding in **MedAgentGym**.
+- **"Long-Term Coherence & Autonomous Operations"** (2025–2026): Testing agent persistence in simulated environments like **Vending-Bench** and **AIRS-Bench**.
+- **"End-to-End Research Autonomy"** (2026–2026): The emergence of **ResearchGym**, enabling full-cycle hypothesis generation, experimental design, and evaluation.
+Interaction: This sub-theme SPAWNS from Software Engineering benchmarks and ENABLES the transition from passive evaluation to active research agents.
+
+### SUB-THEME C: Human-AI Comparative Performance (2023→2025, STABILIZING)
+Branches into:
+- **"Annotation & Classification Efficiency"** (2023–2024): Comparing LLMs against crowd workers for text-annotation tasks, showing **ChatGPT** outperforming traditional human-in-the-loop methods.
+- **"Complex Textual & Linguistic Analysis"** (2024–2024): Evaluating LLMs against outsourced human coders for specialized tasks like NLP-based news analysis.
+- **"Creative & Divergent Thinking"** (2024–2025): Assessing the limits of AI in creative tasks like the **Alternative Uses Task**, where top-tier humans still maintain an edge over chatbots.
+- **"Novelty in Research Idea Generation"** (2025–2025): Large-scale human studies comparing LLM-generated research ideas against expert NLP researchers to determine "blind" quality scores.
+Interaction: This sub-theme RESPONDS to the benchmarks in Sub-theme A by providing a human-centric baseline for "novelty" and "creativity."
+
+### SUB-THEME D: Specialized Automation & Utility Benchmarking (2024→2026, DIVERSIFYING)
+Branches into:
+- **"AutoML Framework Assessment"** (2024–2024): Practical evaluation of 16 **AutoML tools** (AutoGluon, TPOT, etc.) across diverse classification tasks.
+- **"Academic Workflow Automation"** (2024–2025): Benchmarking AI as peer reviewers for survey paper relevance via **RelevAI-Reviewer**.
+- **"Content Transformation & Accessibility"** (2025–2026): Evaluating the conversion of static research into interactive formats through **Paper2Web**.
+Interaction: This sub-theme MERGES with Agentic Environments to provide specialized "skills" for the end-to-end research pipeline.
+
+### CROSS-CUTTING CONNECTIONS
+- **Agentic Integration**: The shift from static benchmarks (**SciBench**) to interactive environments (**ResearchGym**) represents a fundamental move toward evaluating "doing" rather than just "knowing."
+- **Human-Baseline Calibration**: Comparative studies (Human vs. AI) are increasingly used to validate the "rigor" of new scientific benchmarks like **ScienceAgentBench**.
+- **Stability in Evaluation**: The move from **ToolBench** to **StableToolBench** highlights a field-wide push for reproducible and reliable agent evaluation metrics.
+
+### KEY MILESTONES
+- **2023: The Software Engineering Pivot** — **SWE-bench** establishes that LLMs can be evaluated on real-world, multi-file GitHub issues, moving beyond isolated code snippets.
+- **2024: The Scientific Tool-Use Explosion** — The release of **Aviary** and **SciAgentGym** marks the transition of LLM agents from general assistants to specialized scientific instruments.
+- **2026: Full-Cycle Research Autonomy** — **ResearchGym** emerges as the first comprehensive environment for evaluating the entire scientific method (Hypothesis → Evaluation) within a single framework.
+
+▶ Scientific Agentic Research emerges (2024)
+◀ Human-only annotation absorbed into LLM-driven pipelines (2024)
+
+### ABSOLUTE VISUAL RULES
+- Every ribbon MUST have its sub-theme name labeled
+- English only, horizontal left→right, years on top
+- River delta style, organic flowing ribbons
+- White background, sans-serif, 16:9
+- NO title, NO watercolor, NO paper counts, NO paper titles
+- Show band WIDTH changes

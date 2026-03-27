@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scalable Cross-Facility Federated Learning for Scientific Foundation Models on M</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Scalable Cross-Facility Federated Learning for Scientific Foundation Models on Multiple Supercomputers</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Yijiang Li, Zilinghan Li, Kyle Chard, Ian Foster, Todd Munson, Ravi Madduri, Kibaek Kim</li>
+<li><strong>소속</strong>: Argonne National Laboratory (MCS Division, DSL Division), University of Chicago</li>
+<li><strong>arXiv</strong>: 2603.19544</li>
+<li><strong>날짜</strong>: 2026-03-20</li>
+<li><strong>키워드</strong>: federated learning, HPC, cross-facility, scientific foundation model, LLM fine-tuning</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>4개의 미국 DOE 리더십급 슈퍼컴퓨터(Polaris, Aurora, Frontier, Perlmutter)에서 연합학습(FL)을 실행하는 교차 시설 프레임워크를 설계하고, 화학 instruction 데이터셋에서 Llama2-7B를 연합 파인튜닝하여 이기종 HPC 환경에서의 FL 실행 가능성과 알고리즘 선택의 중요성을 실증한 연구.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>과학 응용을 위한 AI는 개인정보 보호, 데이터 주권, 데이터 규모 등의 이유로 중앙 집중화할 수 없는 데이터에 대한 대규모 모델 학습이 필요하다. 연합학습(FL)은 원시 데이터 이동 없이 협력 학습을 가능하게 하지만, HPC 환경은 예측 불가능한 작업 스케줄러 큐잉 지연, 이기종 가속기 아키텍처, 시설별 독립적 보안 정책 등 클라우드/기업 환경과 근본적으로 다른 도전을 제기한다. 기존 FL 프레임워크(FATE, OpenFL, NVIDIA FLARE 등)는 이러한 HPC 특유의 제약을 다루지 않는다.</p>
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<ul>
+<li><strong>4개 DOE 슈퍼컴퓨터에서의 대규모 FL 실증</strong>: 1,700+ GPU를 활용한 64노드/시설 동기 실행 및 2노드/시설 큐 기반 비동기 실행</li>
+<li><strong>글로벌 모델 성능</strong>: FedAvg로 8라운드 만에 test loss 1.39 -&gt; 0.37 달성, 글로벌 모델이 모든 개별 클라이언트 모델보다 일관되게 우수</li>
+<li><strong>4개 FL 알고리즘 비교</strong> (FedAvg, FedAsync, FedBuff, FedCompass): 현실적 큐잉 조건에서 FedCompass가 최저 최종 loss(0.4345) 달성, FedAvg 대비 4.5%, FedAsync 대비 19.3% 개선</li>
+<li><strong>처리량 이질성 정량화</strong>: Aurora(2,100 samples/s)에서 Polaris(250 samples/s)까지 8배 이상 차이, GPU 메모리 용량이 DeepSpeed ZeRO 최적화 전략을 결정하는 핵심 요인</li>
+<li><strong>통신 비용 분석</strong>: Globus Transfer로 시설 간 모델 전송 속도 특성화, co-location 시설(Aurora, Polaris)이 원격 시설(Perlmutter) 대비 최대 200 MB/s 빠른 전송</li>
+</ul>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<ul>
+<li><strong>프레임워크</strong>: APPFL(Advanced Privacy-Preserving Federated Learning) + Globus Compute(작업 디스패치) + Globus Transfer/ProxyStore(모델 파라미터 전송) + DeepSpeed(분산 학습)</li>
+<li><strong>과학적 사용 사례</strong>: SMolInstruct 화학 instruction 데이터셋(330만 샘플, 14개 태스크) 기반 Llama2-7B 연합 파인튜닝</li>
+<li><strong>데이터 분배</strong>: 태스크 그룹 기반 non-IID 분배 - Perlmutter(이름 변환), Polaris(물성 예측), Aurora(화학 반응), Frontier(분자 설명)</li>
+<li><strong>이중 실험 설계</strong>: (1) 64노드 예약 기반 co-scheduled 동기 실행으로 상한 성능 측정, (2) 2노드 큐 기반 실행으로 현실적 조건 하 알고리즘 비교</li>
+</ul>
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ul>
+<li><strong>HPC 환경 특유의 이질성을 체계적으로 정량화한 최초의 교차 시설 FL 연구</strong>: 계산 처리량, 통신 비용, 큐잉 동역학의 세 차원에서 이질성을 분석하고, 이들이 FL 알고리즘 성능에 미치는 영향을 실증</li>
+<li><strong>스케줄러 인식(scheduler-aware) 알고리즘 설계의 필요성 제기</strong>: 기존 FL 알고리즘이 큐 대기 시간 가변성이나 시설별 스케줄링 정책을 모델링하지 못함을 보이고, 이를 핵심 미해결 과제로 식별</li>
+<li><strong>3-엔진 아키텍처</strong>: Globus Compute MPI Engine의 한계를 극복하기 위한 클라이언트측/서버측 Globus Compute Engine + MPI Engine의 설계</li>
+<li>Perlmutter의 40GB vs 80GB 구성 비교를 통해 <strong>GPU 메모리가 최적화 전략(ZeRO-3 vs ZeRO-1)을 결정하고, 이것이 처리량에 4배 이상 차이를 만든다</strong>는 실용적 통찰 제공</li>
+</ul>
+</div><div class="section-box"><h2>한계점 (Limitation)</h2>
+<ul>
+<li><strong>수렴까지 학습하지 않음</strong>: 8라운드(대규모) / 40 로컬 라운드(소규모)만 실행하여 기능 시연에 초점. 화학 LLM의 최종 성능이나 downstream 태스크 정확도 평가 없음</li>
+<li><strong>과학적 검증의 깊이 부족</strong>: 화학 instruction 데이터셋을 사용했으나, 생성된 모델의 화학적 정확도(분자 유효성, 반응 예측 정확도 등)에 대한 평가가 전무</li>
+<li><strong>4개 시설 고정 구성</strong>: 시설 수, 데이터 분배 방식, 노드 수 등의 하이퍼파라미터에 대한 sensitivity analysis가 제한적</li>
+<li><strong>재현성 제한</strong>: 4개 DOE 슈퍼컴퓨터에 대한 접근 권한이 필요하며, 큐 대기 시간의 비결정적 특성으로 인해 정확한 재현이 어려움</li>
+<li><strong>프라이버시 보호 기법 미적용</strong>: APPFL이 differential privacy와 secure aggregation을 지원하나, 본 실험에서는 프라이버시 보호 없이 평문 모델 업데이트만 교환</li>
+</ul>
+</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<p>과학 연구를 위한 연합학습의 인프라적 기반을 다진 중요한 시스템 연구이다. 4개의 서로 다른 아키텍처(NVIDIA A100, Intel Max, AMD MI250X)를 가진 리더십급 슈퍼컴퓨터에서 실제로 FL을 실행하고 성능을 체계적으로 분석한 점에서 높은 실증적 가치를 지닌다. 특히 GPU 메모리 용량이 최적화 전략을 결정하여 처리량에 4배 이상 영향을 미친다는 발견, 그리고 FedCompass가 계산 이질성 적응을 통해 다른 알고리즘을 능가한다는 결과는 실질적으로 유용하다. 다만 화학 LLM의 과학적 성능 평가가 없고, 프라이버시 보호 기법이 미적용된 점에서 "privacy-preserving"이라는 프레임워크 명칭과 실험 내용 사이에 간극이 있다. 향후 scheduler-aware FL 알고리즘과 계층적 집계 전략의 개발로 이어질 수 있는 유망한 연구 방향을 제시한다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

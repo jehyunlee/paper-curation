@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools</title>
+<script>MathJax = {tex: {inlineMath: [['$','$'],['\\(','\\)']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+  body { font-family: 'Nanum Gothic', 'Segoe UI', sans-serif; max-width: 820px; margin: 2em auto; padding: 0 1.5em; color: #23272f; line-height: 1.7; }
+  h1 { font-size: 1.5em; border-bottom: 2px solid #4472C4; padding-bottom: 0.3em; }
+  h2 { color: #4472C4; font-size: 1.15em; margin-top: 1.5em; }
+  blockquote { background: #f8f9fa; border-left: 4px solid #4472C4; padding: 0.7em 1em; margin: 1em 0; font-size: 0.95em; }
+  table { border-collapse: collapse; margin: 1em 0; }
+  th, td { border: 1px solid #dee2e6; padding: 0.5em 1em; text-align: center; }
+  th { background: #4472C4; color: white; }
+  code { background: #e9ecef; padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.9em; }
+  a { color: #4472C4; }
+  .back { margin-top: 2em; padding-top: 1em; border-top: 1px solid #dee2e6; font-size: 0.9em; }
+  .figure { text-align: center; }
+  ul { padding-left: 1.5em; }
+  li { margin-bottom: 0.5em; }
+</style>
+</head>
+<body>
+<h1>TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools</h1>
+<blockquote>
+<strong>저자</strong>: Shanghua Gao, Richard Zhu, ... Marinka Zitnik (8명) | <strong>날짜</strong>: 2025-03-14 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.10970" target="_blank">https://arxiv.org/abs/2503.10970</a><br>
+<strong>리뷰 모드</strong>: PDF
+</blockquote>
+<hr>
+<h2>Essence</h2>
+<p>We introduce TxAgent, an AI agent that leverages multi-step reasoning and real-time biomedical knowledge retrieval across a toolbox of 211 tools to analyze drug interactions, contraindications, and patient-specific treatment strategies.</p>
+<div class="figure"><img src="figures/fig1.png" alt="Figure 1" style="max-width:100%;border:1px solid #e0e0e0;border-radius:8px;margin:1em 0;"></div>
+<h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>We introduce TxAgent, an AI agent that leverages multi-step reasoning and real-time biomedical knowledge retrieval across a toolbox of 211 tools to analyze drug interactions, contraindications, and patient-specific treatment strategies. [<code>authorship</code>, <code>action</code>, <code>approach</code>]</li>
+<li>TxAgent evaluates how drugs interact at molecular, pharmacokinetic, and clinical levels, identifies contraindications based on patient comorbidities and concurrent medications, and tailors treatment strategies to individual patient characteristics. [<code>finding</code>, <code>learned</code>]</li>
+<li>It retrieves and synthesizes evidence from multiple biomedical sources, assesses interactions between drugs and patient conditions, and refines treatment recommendations through iterative reasoning. [<code>action</code>, <code>finding</code>]</li>
+<li>It selects tools based on task objectives and executes structured function calls to solve therapeutic tasks that require clinical reasoning and cross-source validation. [<code>finding</code>]</li>
+<li>The ToolUniverse consolidates 211 tools from trusted sources, including all US FDA-approved drugs since 1939 and validated clinical insights from Open Targets. [<code>finding</code>]</li>
+<li>TxAgent outperforms leading LLMs, tool-use models, and reasoning agents across five new benchmarks: DrugPC, BrandPC, GenericPC, TreatmentPC, and DescriptionPC, covering 3,168 drug reasoning tasks and 456 personalized treatment scenarios. [<code>novelty</code>, <code>result</code>, <code>approach</code>]</li>
+<li>It achieves 92.1% accuracy in open-ended drug reasoning tasks, surpassing GPT-4o and outperforming DeepSeek-R1 (671B) in structured multi-step reasoning. [<code>result</code>]</li>
+<li>TxAgent generalizes across drug name variants and descriptions. [<code>continuation</code>]</li>
+<li>By integrating multi-step inference, real-time knowledge grounding, and tool-assisted decision-making, TxAgent ensures that treatment recommendations align with established clinical guidelines and real-world evidence, reducing the risk of adverse events and improving therapeutic decision-making. [<code>action</code>, <code>learned</code>]</li>
+</ul>
+<h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Overall</td><td>4</td></tr>
+</table>
+<p><strong>총평</strong>: AI for Science 분야에서 주목할 만한 기여를 보이는 연구.</p>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

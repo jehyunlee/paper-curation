@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerod</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerodynamic Car Design</h1>
+<ul>
+<li><strong>저자</strong>: Mohamed Elrefaie, Janet Qian, Raina Wu, Qian Chen, Angela Dai, Faez Ahmed</li>
+<li><strong>기관</strong>: MIT (Mechanical Engineering, EECS), Technical University of Munich (Computer Science)</li>
+<li><strong>출처</strong>: arXiv:2503.23315 (2025)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.23315"><a href="https://doi.org/10.48550/arXiv.2503.23315" target="_blank">10.48550/arXiv.2503.23315</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>자동차 설계 프로세스에 AI "Design Agents"를 도입하여, 컨셉 스케치에서 스타일링, 3D 형상 검색/생성, CFD 메싱, 공기역학 시뮬레이션까지의 전 과정을 자동화하는 멀티에이전트 프레임워크를 제안한 연구이다. Vision-Language Model(VLM), LLM, 기하학적 딥러닝(DeepSDF, PointNet, RegDGCNN, TripNet)을 AutoGen 프레임워크로 오케스트레이션하여, 기존 수 주~수 일 소요되던 설계 반복 주기를 <strong>수 분</strong> 단위로 단축하며, 8,000개의 산업 표준 자동차 설계를 포함하는 DrivAerNet++ 데이터셋을 기반으로 실용적 결과를 도출하였다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>자동차 설계는 공학적 성능(공기역학)과 미적 매력(스타일링)을 동시에 균형 맞추어야 하는 다학제적 과정이다. 전통적 워크플로우는 반복적인 스케치-평가-수정 사이클로 이루어지며, 각 단계(CFD 메시 생성, 시뮬레이션 등)에 상당한 시간과 전문 인력이 필요하다. 기존 연구들은 주로 설계의 개별 단계(이미지 생성, 형상 최적화 등)에 AI를 적용했으나, 대규모 멀티모달 데이터셋이 부족하여 미학과 성능 평가를 통합적으로 연결하는 데 한계가 있었다. 본 연구는 DrivAerNet++ 데이터셋과 멀티에이전트 시스템을 결합하여 이 격차를 해소하고자 했다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>4개 전문 에이전트 시스템 구축</strong>:</li>
+<li><strong>Styling Agent</strong>: SDXL + ControlNet 기반, 2D 스케치 + 텍스트 프롬프트로 다양한 고해상도 포토리얼리스틱 렌더링 생성</li>
+<li><strong>CAD Agent</strong>: DeepSDF 기반 잠재 공간에서 3D 자동차 형상 검색, 생성, 보간(interpolation) 수행</li>
+<li><strong>Meshing Agent</strong>: OpenFOAM snappyHexMesh와 LLM 인터페이스를 통한 CFD 메시 자동 생성 및 품질 검증</li>
+<li>
+<p><strong>Simulation Agent</strong>: TripNet 서로게이트 모델을 활용한 실시간 공기역학 예측 (항력계수 등)</p>
+</li>
+<li>
+<p><strong>정량적 검증 결과</strong>:</p>
+</li>
+<li>CAD Agent 검색 성공률: 대부분 자동차 형상에서 상위 1% 내 정확 검색 달성</li>
+<li>Simulation Agent: 1,200개 미학습 테스트 셋에서 CFD 대비 항력계수 차이(ΔC_D) 예측이 0.001 이내 오차</li>
+<li>
+<p>3회 반복 메시 품질 검증: 모든 기하/위상 품질 지표(비직교성, 왜도, 종횡비 등) 통과</p>
+</li>
+<li>
+<p><strong>DrivAerNet++ 데이터셋 확장</strong>: SDF 표현, 멀티뷰 이미지, 스케치 데이터를 추가하여 8,000개 산업 표준 설계의 멀티모달 데이터셋 확장.</p>
+</li>
+</ol>
+<hr />
+<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>AutoGen 오케스트레이션</strong>: Microsoft AutoGen 프레임워크를 사용하여 4개 에이전트 간 순차적/계층적/하이브리드 방식의 자연어 기반 협업 구현.</li>
+<li><strong>스케치 생성</strong>: CLIPasso(벡터 스케치 추상화) + Canny 엣지 검출로 DrivAerNet++의 8,000개 3D 모델에서 대응하는 2D 스케치 데이터셋 생성.</li>
+<li><strong>3D 형상 표현</strong>: DeepSDF를 자동차 설계에 맞게 수정 (Fourier 위치 인코딩, 잠재 벡터 차원 256→16 축소). L1 손실 + L2 정규화로 훈련.</li>
+<li><strong>형상 검색</strong>: CNN이 스케치에서 DeepSDF 잠재 코드를 예측하고, L2 거리로 가장 유사한 3D 메시 검색. 대안으로 ResNet-50 특징 기반 코사인 유사도 검색도 구현.</li>
+<li><strong>CFD 메싱</strong>: GPT-3.5-turbo를 OpenFOAM Python 스크립트와 연동하여 자연어 명령으로 blockMeshDict, snappyHexMesh, checkMesh 실행 자동화.</li>
+<li><strong>서로게이트 모델</strong>: TripNet(tri-plane 신경 아키텍처)으로 3D 자동차 형상에서 직접 항력계수, 표면 압력 분포, 체적 유동장을 실시간 예측.</li>
+</ul>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>엔드투엔드 설계 파이프라인의 AI 에이전트화</strong>: 스케치→스타일링→3D 형상→메싱→시뮬레이션의 전 과정을 멀티에이전트로 통합한 최초의 시도. 기존 연구가 개별 단계에 집중한 것과 차별화.</li>
+<li><strong>미학과 공기역학의 통합</strong>: 8,000개 대규모 고충실도 CFD 데이터셋(DrivAerNet++)을 기반으로 스타일링과 공기역학 성능을 동시에 탐색 가능.</li>
+<li><strong>인간-AI 협업 워크플로우</strong>: 자연어 프롬프트를 통해 설계자/엔지니어가 AI 에이전트와 대화형으로 상호작용하며, Blender/OpenFOAM/ParaView 등 산업 도구와 직접 연동.</li>
+<li><strong>잠재 공간 보간을 통한 신규 설계 생성</strong>: DeepSDF 잠재 공간에서 두 자동차 형상 간 부드러운 보간으로 중간 설계를 생성하는 능력.</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+<h3>한계</h3>
+<ul>
+<li><strong>메시 평가의 불완전성</strong>: 현재 메시 품질 평가가 기하/위상 지표(checkMesh)에 한정되며, 실제 CFD 시뮬레이션 결과, 실험 데이터와의 비교 검증이 부재.</li>
+<li><strong>미적 평가의 주관성</strong>: 스타일링 결과의 시각적 매력에 대한 정량적 사용자 평가(설문 등)가 수행되지 않음.</li>
+<li><strong>초기 설계 단계에 한정</strong>: 프로토타이핑, 제조, 시장 분석 등 후속 설계 단계로의 확장은 미래 과제로 남아 있음.</li>
+<li><strong>AutoGen 의존성</strong>: 단일 오케스트레이션 프레임워크에 의존하며, 대안 프레임워크와의 비교가 없음.</li>
+<li><strong>DeepSDF 해상도 한계</strong>: 잠재 벡터 차원을 16으로 축소하여 효율성은 향상했으나, 미세한 형상 디테일의 재현에 제한이 있을 수 있음.</li>
+</ul>
+<h3>후속 연구 방향</h3>
+<ul>
+<li>실제 CFD/풍동 실험 데이터와의 교차 검증</li>
+<li>설계자/엔지니어/사용자 대상 미적 평가 설문 수행</li>
+<li>대안 멀티에이전트 오케스트레이션 프레임워크 비교</li>
+<li>프로토타이핑, 제조 가능성, 시장 분석으로의 파이프라인 확장</li>
+<li>항공우주, 선박 등 타 공학 분야로의 일반화</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th style="text-align: center;">점수 (5점 만점)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>참신성 (Novelty)</strong></td>
+<td style="text-align: center;">4.0</td>
+<td>엔드투엔드 설계 에이전트 통합은 독창적이나, 개별 구성요소는 기존 모델 활용</td>
+</tr>
+<tr>
+<td><strong>기술적 완성도 (Soundness)</strong></td>
+<td style="text-align: center;">3.5</td>
+<td>서로게이트 모델 검증은 견고하나, 메시/스타일 평가가 불완전</td>
+</tr>
+<tr>
+<td><strong>실용성 (Practicality)</strong></td>
+<td style="text-align: center;">4.5</td>
+<td>산업 표준 도구(OpenFOAM, Blender)와의 직접 연동으로 높은 실용적 가치</td>
+</tr>
+<tr>
+<td><strong>데이터셋 기여 (Dataset)</strong></td>
+<td style="text-align: center;">4.5</td>
+<td>8,000개 산업 표준 설계 + 멀티모달 확장은 매우 귀중한 자원</td>
+</tr>
+<tr>
+<td><strong>표현 (Presentation)</strong></td>
+<td style="text-align: center;">4.0</td>
+<td>대화형 사용 사례(Figure 3, 4, 10)가 직관적이고 명료</td>
+</tr>
+<tr>
+<td><strong>종합 (Overall)</strong></td>
+<td style="text-align: center;">4.0</td>
+<td>공학 설계에서 AI 에이전트의 실용적 가능성을 설득력 있게 보여주는 연구</td>
+</tr>
+</tbody>
+</table>
+<h3>총평</h3>
+<p>AI 에이전트를 자동차 설계의 전체 파이프라인에 통합한 실용적이고 야심 찬 연구이다. 특히 자연어 기반 인간-AI 협업 워크플로우와 DrivAerNet++의 대규모 산업 표준 데이터셋은 이 분야의 중요한 기여이다. 개별 에이전트(Styling, CAD, Meshing, Simulation)가 각각 견고한 기술적 기반 위에 구축되어 있으며, 설계 반복 주기를 수 주에서 수 분으로 단축한다는 점에서 실질적 가치가 높다. 다만, 생성된 설계의 미적 품질에 대한 사용자 평가와 실제 시뮬레이션/실험 데이터와의 교차 검증이 보완되면 더욱 설득력 있는 연구가 될 것이다. 공학 설계 자동화의 미래를 엿볼 수 있는 의미 있는 프레임워크 제안이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

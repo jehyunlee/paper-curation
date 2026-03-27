@@ -1,0 +1,49 @@
+## Category Timeline: Physical Sciences & Engineering
+
+### SUB-THEME A: Physics-Informed Machine Learning & Operators (2017→2026, CONVERGING)
+Branches into:
+- **"Foundational PINNs"** (2017–2022): Establishment of Physics-Informed Neural Networks for solving supervised learning tasks while respecting the law of physics (nonlinear PDEs).
+- **"Neural Operator Frameworks"** (2020–2025): Development of DeepONet, FNO, and PCANet to approximate solution operators for parametric PDEs, moving beyond point-wise approximations.
+- **"Uncertainty & Simulation Inference"** (2020–2023): Integration of simulation-based inference (SBI) and comprehensive uncertainty quantification (UQ) frameworks for scientific ML.
+- **"Infinite-Dimensional & Spiking Operators"** (2025–2026): Emergence of Neural-POD for mesh-independent nonlinear bases and SPINONet for energy-efficient spiking physics-informed operators.
+- **"Continual & Task-Agnostic Learning"** (2024–2026): Implementation of SLE-FNO (Single-Layer Extensions) to allow neural operators to adapt to new physical tasks without forgetting.
+Interaction: **FEEDS** Sub-theme C by providing the surrogate models necessary for real-time autonomous control and optimization.
+
+### SUB-THEME B: AI-Accelerated Materials Discovery (2019→2026, ACCELERATING)
+Branches into:
+- **"Large-Scale Structural Discovery"** (2023–2024): Massive expansion of stable crystal structures using GNoME and active learning, scaling from thousands to hundreds of thousands of candidates.
+- **"Domain-Specific Foundation Models"** (2024–2025): Development of MatterChat (multi-modal LLM) and specialized fine-tuning (CPT, SFT, ORPO) for material science adaptation.
+- **"Generative Matter Modeling"** (2025–2026): Introduction of DMFlow for disordered materials generation and MDtrajNet for direct prediction of molecular dynamics trajectories.
+- **"Automated Knowledge Extraction"** (2025–2026): Use of LLM chains like L2M3 to mine synthesis conditions and properties from tens of thousands of legacy papers (e.g., MOFs).
+- **"Polymer & Semiconductor Workflows"** (2024–2026): Integration of AI/ML into the synthesis-simulation-characterization pipeline for polymer brushes and organic semiconductor devices.
+Interaction: **MERGES** with Sub-theme C as generative designs are directly fed into robotic synthesis platforms.
+
+### SUB-THEME C: Autonomous Scientific Agents & Labs (2023→2026, EMERGING)
+Branches into:
+- **"Multi-Agent Simulation Orchestration"** (2024–2025): Frameworks like VASPilot, OpenFOAMGPT 2.0, and MechAgents that use LLM agents to automate end-to-end CFD, DFT, and solid mechanics workflows.
+- **"Autonomous Chemical Synthesis"** (2023–2025): Development of LLM-RDF and low-cost robotic platforms for mapping chemical reaction hyperspaces and automating synthesis development.
+- **"AI-Native Physical Facilities"** (2025–2026): Transitioning large-scale hardware, such as particle accelerators, into fully autonomous, self-driving facilities.
+- **"Automated Code & Solver Engineering"** (2025–2026): AutoNumerics and LLM-ODE systems that autonomously design, debug, and implement numerical solvers for complex dynamical systems.
+- **"Vision-Language Characterization"** (2026): Use of EAA (Automating Materials Characterization) to interpret experimental data through multi-modal vision-language models.
+Interaction: **RESPONDS** to the data explosion from Sub-theme B by providing the throughput necessary to validate AI-generated hypotheses.
+
+### SUB-THEME D: Computational Physics & Exascale Dynamics (2020→2025, EVOLVING)
+Branches into:
+- **"Exascale Simulation Paradigms"** (2023–2025): Adapting complex physical simulations to utilize the next generation of exascale computing architectures.
+- **"Quantum & High-Energy Phenomena"** (2024–2025): Investigating chiral spin symmetry in hot QCD and nonlinear stochastic motion derived from Coulomb forces.
+- **"Astrophysical Signal Inference"** (2024–2025): Utilizing post-merger signal analysis to distinguish between neutron stars and low-mass black hole binaries.
+- **"Molecular Dynamics Toolkits"** (2024–2025): Development of open-source toolkits like AMDAT for specialized analysis of supercooled liquids and molecular systems.
+Interaction: **SPAWNS** the high-fidelity datasets required to train the foundation models in Sub-theme A and B.
+
+### CROSS-CUTTING CONNECTIONS
+- **Surrogate-Driven Discovery**: Neural operators (Sub-theme A) replace expensive solvers in materials discovery loops (Sub-theme B), enabling million-fold speedups in screening.
+- **Agentic Simulation**: LLM agents (Sub-theme C) now act as the interface for complex computational physics codes (Sub-theme D), lowering the barrier for multi-physics optimization.
+- **Data-Centric Feedback**: Autonomous labs (Sub-theme C) generate structured experimental data that is fed back into domain-specific LLMs (Sub-theme B) to refine predictive accuracy.
+
+### KEY MILESTONES
+- **2017: The PINN Breakthrough** — Introduction of Physics-Informed Neural Networks, bridging deep learning with differential equations.
+- **2023: Scaling Materials Discovery** — GNoME demonstrates that deep learning can discover stable materials at a scale orders of magnitude beyond human capability.
+- **2026: The AI-Native Facility** — Transition from "AI-assisted" to "AI-native" infrastructure, where particle accelerators and labs operate autonomously from design to execution.
+
+▶ Physics-Informed Machine Learning emerges (2017)
+◀ Manual Simulation Setup absorbed into Multi-Agent Automation (2025)

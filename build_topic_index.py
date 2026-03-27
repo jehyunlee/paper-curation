@@ -1,0 +1,506 @@
+"""
+Unified topic index builder for paper-curation.
+Reads reviews from papers/ central repo, generates {topic}/index.html.
+
+Usage: PYTHONUTF8=1 python build_topic_index.py <topic>
+  e.g. PYTHONUTF8=1 python build_topic_index.py ai4s
+       PYTHONUTF8=1 python build_topic_index.py scisci
+"""
+import json, os, re, sys
+from html import escape
+from collections import defaultdict
+from datetime import datetime, timezone, timedelta
+
+KST = timezone(timedelta(hours=9))
+TODAY = datetime.now(KST).strftime("%Y-%m-%d")
+
+REPO_DIR = r"C:\Users\jehyu\Arbeitplatz\paper-curation"
+PAPERS_DIR = os.path.join(REPO_DIR, "papers")
+
+def get_topic():
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    return "ai4s"
+
+TOPIC = get_topic()
+TOPIC_DIR = os.path.join(REPO_DIR, TOPIC)
+
+# Theme colors per topic
+THEME = {
+    "ai4s": {
+        "gradient": "linear-gradient(135deg, #2a0f0d 0%, #5c1a14 50%, #A62018 100%)",
+        "accent": "#D63423", "accent_dark": "#A62018", "accent_light": "#F06050",
+        "title": "AI for Science",
+        "subtitle_prefix": "AI assisted Research",
+    },
+    "scisci": {
+        "gradient": "linear-gradient(135deg, #0d1a2a 0%, #14385c 50%, #1866A6 100%)",
+        "accent": "#2374D6", "accent_dark": "#1856A0", "accent_light": "#50A0F0",
+        "title": "Science of Science",
+        "subtitle_prefix": "Bibliometrics & Scientometrics",
+    },
+}
+theme = THEME.get(TOPIC, THEME["ai4s"])
+
+# Load data
+with open(os.path.join(PAPERS_DIR, "_papers_index.json"), encoding="utf-8") as f:
+    papers_index = json.load(f)
+
+cls_path = os.path.join(TOPIC_DIR, "_new_classification.json")
+narr_path = os.path.join(TOPIC_DIR, "_timeline_narrative.json")
+
+if os.path.exists(cls_path):
+    with open(cls_path, encoding="utf-8") as f:
+        cls_data = json.load(f)
+    categories = cls_data.get("categories", [])
+    assignments = cls_data.get("assignments", [])
+else:
+    categories = []
+    assignments = []
+
+if os.path.exists(narr_path):
+    with open(narr_path, encoding="utf-8") as f:
+        narrative = json.load(f)
+    category_analyses = narrative.get("category_analyses", {})
+    executive_summary = narrative.get("executive_summary_ko", "")
+else:
+    category_analyses = {}
+    executive_summary = ""
+
+# Filter papers for this topic
+topic_papers = [p for p in papers_index if TOPIC in p.get("topics", [])]
+slug_to_index = {p["slug"]: p for p in topic_papers}
+
+# Assignment slug → category mapping
+slug_to_cat = {}
+for a in assignments:
+    slug_to_cat[a["slug"]] = a.get("primary_category", "Other")
+
+# Available paper directories in papers/
+actual_dirs = sorted(
+    d for d in os.listdir(PAPERS_DIR)
+    if os.path.isdir(os.path.join(PAPERS_DIR, d)) and len(d) >= 3 and d[:3].isdigit()
+)
+
+def find_dir_for_slug(slug):
+    if slug in actual_dirs:
+        return slug
+    for d in actual_dirs:
+        if d.startswith(slug[:35]):
+            return d
+    num = slug[:3]
+    candidates = [d for d in actual_dirs if d.startswith(num + "_")]
+    if len(candidates) == 1:
+        return candidates[0]
+    return None
+
+def parse_review_md(slug):
+    dir_name = find_dir_for_slug(slug)
+    if not dir_name:
+        return {}, None
+    md_path = os.path.join(PAPERS_DIR, dir_name, "review.md")
+    if not os.path.exists(md_path):
+        return {}, dir_name
+    with open(md_path, encoding="utf-8") as f:
+        text = f.read()
+    result = {}
+    m = re.search(r"^#\s+(.+)", text, re.MULTILINE)
+    if m: result["title"] = m.group(1).strip()
+    hm = re.search(r"^>\s*\*\*저자\*\*:\s*(.+)", text, re.MULTILINE)
+    if hm:
+        hl = hm.group(1)
+        result["authors"] = hl.split("|")[0].strip()
+        dm = re.search(r"\*\*날짜\*\*:\s*([^\|]+)", hl)
+        if dm: result["date"] = dm.group(1).strip()
+        jm = re.search(r"\*\*Journal\*\*:\s*([^\|]+)", hl)
+        if jm: result["journal"] = jm.group(1).strip()
+        doi_m = re.search(r"\*\*DOI\*\*:\s*([^\|]+)", hl)
+        if doi_m: result["doi"] = doi_m.group(1).strip()
+        ax_m = re.search(r"\*\*arXiv\*\*:\s*([^\|]+)", hl)
+        if ax_m: result["arxiv"] = ax_m.group(1).strip()
+    em = re.search(r"## Essence\s*\n+([\s\S]+?)(?=\n## |\Z)", text)
+    if em: result["essence"] = em.group(1).strip()
+    om = re.search(r"\|\s*Overall\s*\|\s*(\d+(?:\.\d+)?)/5\s*\|", text)
+    if om: result["overall_score"] = float(om.group(1))
+    for label, key in [("Novelty", "novelty"), ("Technical Soundness", "technical_soundness"),
+                        ("Significance", "significance"), ("Clarity", "clarity")]:
+        sm = re.search(rf"\|\s*{label}\s*\|\s*(\d+(?:\.\d+)?)/5\s*\|", text)
+        if sm: result[key] = int(sm.group(1))
+    vm = re.search(r"\*\*총평\*\*:\s*([\s\S]+?)(?=\n##|\Z)", text)
+    if vm: result["verdict"] = vm.group(1).strip()
+    return result, dir_name
+
+def normalize_date(ds):
+    if not ds: return ""
+    ds = str(ds).strip()
+    m = re.match(r"^(\d{4})-(\d{2})-\d{2}$", ds)
+    if m: return f"{m.group(1)}.{m.group(2)}"
+    m = re.match(r"^(\d{4})-(\d{2})$", ds)
+    if m: return f"{m.group(1)}.{m.group(2)}"
+    if re.match(r"^\d{4}\.\d{2}$", ds): return ds
+    if re.match(r"^\d{4}$", ds): return ds
+    return ds
+
+# Build category → papers mapping
+cat_order = [c["name"] for c in categories] if categories else ["Other"]
+cat_papers = defaultdict(list)
+unmatched = []
+
+for p_idx in topic_papers:
+    slug = p_idx["slug"]
+    primary_cat = slug_to_cat.get(slug, p_idx.get("primary_category", "Other"))
+    review, dir_name = parse_review_md(slug)
+    if dir_name is None:
+        unmatched.append(slug)
+        continue
+    title = review.get("title") or p_idx.get("title", slug)
+    authors = review.get("authors", "")
+    raw_date = review.get("date") or str(p_idx.get("date", ""))
+    date_fmt = normalize_date(raw_date)
+    journal = review.get("journal", "")
+    doi = review.get("doi") or p_idx.get("doi", "")
+    arxiv = review.get("arxiv", "")
+    essence = review.get("essence") or p_idx.get("essence", "")
+    overall_score = review.get("overall_score") or p_idx.get("score") or 0
+    has_fig = os.path.exists(os.path.join(PAPERS_DIR, dir_name, "figures", "fig1.png"))
+    cat_papers[primary_cat].append({
+        "dir": dir_name, "slug": slug, "title": title, "authors": authors,
+        "date": date_fmt, "journal": journal, "doi": doi, "arxiv": arxiv,
+        "essence": essence, "overall_score": float(overall_score) if overall_score else 0,
+        "novelty": review.get("novelty"), "technical_soundness": review.get("technical_soundness"),
+        "significance": review.get("significance"), "clarity": review.get("clarity"),
+        "verdict": review.get("verdict", ""),
+        "has_fig": has_fig,
+        # Path relative to topic dir: ../papers/{slug}/figures/fig1.png
+        "fig_src": f"../papers/{dir_name}/figures/fig1.png" if has_fig else None,
+    })
+
+if unmatched:
+    print(f"WARNING unmatched: {unmatched}")
+for cat in cat_papers:
+    cat_papers[cat].sort(key=lambda p: p["overall_score"], reverse=True)
+total_papers = sum(len(v) for v in cat_papers.values())
+print(f"Total papers for {TOPIC}: {total_papers}")
+for cn in cat_order:
+    print(f"  {cn}: {len(cat_papers.get(cn, []))}")
+
+# --- HTML Rendering ---
+
+def esc(s):
+    return escape(str(s)) if s else ""
+
+def make_doi_link(doi, arxiv):
+    if doi:
+        if doi.startswith("http"):
+            return f'<a href="{esc(doi)}" target="_blank">{esc(doi)}</a>'
+        return f'<a href="https://doi.org/{esc(doi)}" target="_blank">{esc(doi)}</a>'
+    if arxiv:
+        return esc(arxiv)
+    return ""
+
+def render_paper_card(paper, num, cat_slug):
+    score = paper["overall_score"]
+    score_disp = f"{int(score)}/5" if score and score > 0 else "N/A"
+    score_val = score if score else 0
+    meta_parts = []
+    if paper["authors"]: meta_parts.append(f'<strong>\uc800\uc790</strong>: {esc(paper["authors"])}')
+    if paper["date"]: meta_parts.append(f'<strong>\ub0a0\uc9dc</strong>: {esc(paper["date"])}')
+    if paper["journal"]: meta_parts.append(f'<strong>Journal</strong>: {esc(paper["journal"])}')
+    dl = make_doi_link(paper["doi"], paper["arxiv"])
+    if dl: meta_parts.append(f'<strong>DOI</strong>: {dl}')
+    meta_html = " | ".join(meta_parts)
+    badges = []
+    for label, key in [("Novelty", "novelty"), ("Technical Soundness", "technical_soundness"),
+                        ("Significance", "significance"), ("Clarity", "clarity")]:
+        val = paper.get(key)
+        if val is not None: badges.append(f'<span class="score-badge">{label}: {val}</span>')
+    if score and score > 0: badges.append(f'<span class="score-badge">Overall: {int(score)}</span>')
+    badges_html = " ".join(badges)
+    fig_html = ""
+    if paper["has_fig"]:
+        fig_html = (
+            '\n          <div class="paper-fig">'
+            f'<img data-src="{esc(paper["fig_src"])}" alt="Figure" class="lazy">'
+            '</div>'
+        )
+    essence_html = ""
+    if paper["essence"]:
+        essence_html = (
+            '\n          <div class="section">'
+            '\n            <div class="section-label">Essence</div>'
+            f'\n            <p>{esc(paper["essence"])}</p>'
+            '\n          </div>'
+        )
+    eval_html = ""
+    if badges or paper["verdict"]:
+        inner = ""
+        if badges_html: inner += f'<div class="scores">{badges_html}</div>\n            '
+        if paper["verdict"]: inner += f'<p class="verdict">{esc(paper["verdict"])}</p>'
+        eval_html = (
+            '\n          <div class="section">'
+            '\n            <div class="section-label">Evaluation</div>'
+            f'\n            {inner}'
+            '\n          </div>'
+        )
+    # Link to ../papers/{slug}/index.html
+    link_href = f"../papers/{esc(paper['dir'])}/index.html"
+    return (
+        f'        <div class="paper-card" data-date="{esc(paper["date"])}"'
+        f' data-score="{score_val}" data-topic="{esc(cat_slug)}">\n'
+        f'          <div class="paper-header">\n'
+        f'            <span class="paper-num">#{num}</span>\n'
+        f'            <span class="paper-date">{esc(paper["date"])}</span>\n'
+        f'            <span class="paper-score">{score_disp}</span>\n'
+        f'          </div>\n'
+        f'          <h3><a href="{link_href}">{esc(paper["title"])}</a></h3>\n'
+        f'          <p class="meta">{meta_html}</p>'
+        f'{fig_html}{essence_html}{eval_html}\n'
+        f'        </div>'
+    )
+
+def render_category_narrative(cat_name):
+    ca = category_analyses.get(cat_name, {})
+    if not ca: return ""
+    sub_themes = ca.get("sub_themes", [])
+    html_parts = []
+    for st in sub_themes:
+        name = st.get("name", ""); desc = st.get("description", "")
+        start = st.get("start_year", ""); peak = st.get("peak_year", "")
+        status = st.get("status", "")
+        if name and desc:
+            yr = f"{start}~{peak}" if start and peak else str(start or peak or "")
+            status_str = f" &mdash; <em>{esc(status)}</em>" if status else ""
+            html_parts.append(
+                f'<p><strong>{esc(name)}</strong>'
+                + (f' ({esc(yr)})' if yr else '')
+                + f': {esc(desc)}{status_str}</p>'
+            )
+    return "\n".join(html_parts)
+
+def render_exec_summary(text):
+    if not text: return ""
+    paras = [p.strip() for p in text.split("\n\n") if p.strip()]
+    return "\n    ".join(f"<p>{esc(p)}</p>" for p in paras)
+
+# CSS with theme
+accent = theme["accent"]
+accent_dark = theme["accent_dark"]
+accent_light = theme["accent_light"]
+gradient = theme["gradient"]
+
+CSS = f"""* {{ margin: 0; padding: 0; box-sizing: border-box; }}
+body {{ font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #333; line-height: 1.6; }}
+.container {{ max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }}
+.hero {{ background: {gradient}; color: white; padding: 3rem 2rem; border-radius: 16px; margin-bottom: 2rem; }}
+.hero h1 {{ font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }}
+.hero .subtitle {{ opacity: 0.85; font-size: 1rem; }}
+.hero .stats {{ margin-top: 1rem; display: flex; gap: 2rem; }}
+.hero .stat {{ text-align: center; }}
+.hero .stat-num {{ font-size: 2rem; font-weight: 700; color: {accent_light}; }}
+.hero .stat-label {{ font-size: 0.8rem; opacity: 0.7; }}
+.paper-card {{ background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid {accent}; transition: transform 0.15s, box-shadow 0.15s; }}
+.paper-card:hover {{ transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }}
+.paper-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }}
+.paper-num {{ font-size: 0.85rem; color: #888; font-weight: 600; }}
+.paper-score {{ background: {accent}; color: white; padding: 0.2rem 0.7rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }}
+.paper-card h3 {{ font-size: 1.05rem; color: #1a1a2e; margin-bottom: 0.3rem; }}
+.paper-card h3 a {{ color: #1a1a2e; text-decoration: none; }}
+.paper-card h3 a:hover {{ color: {accent}; }}
+.meta {{ font-size: 0.8rem; color: #888; margin-bottom: 0.8rem; }}
+.section {{ margin-top: 0.8rem; }}
+.section-label {{ font-weight: 700; font-size: 0.85rem; color: {accent}; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; border-bottom: 1px solid #e8edf3; padding-bottom: 0.2rem; }}
+.section p {{ font-size: 0.92rem; color: #444; }}
+.scores {{ display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }}
+.score-badge {{ background: #e8edf3; color: {accent_dark}; padding: 0.15rem 0.6rem; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }}
+.verdict {{ font-style: normal; color: #444; font-size: 0.9rem; }}
+.paper-fig {{ margin: 0.8rem 0; text-align: center; }}
+.paper-fig img {{ max-width: min(100%, 600px); border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }}
+.excluded {{ background: #fff3cd; border-radius: 12px; padding: 1.2rem; margin-top: 1.5rem; }}
+.excluded h3 {{ color: #856404; font-size: 1rem; margin-bottom: 0.5rem; }}
+.excluded li {{ font-size: 0.85rem; color: #856404; margin: 0.3rem 0; }}
+.credit {{ text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e0e0e0; }}
+.sort-bar {{ display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }}
+.sort-btn {{ background: white; border: 1px solid {accent}; color: {accent}; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }}
+.sort-btn:hover, .sort-btn.active {{ background: {accent}; color: white; }}
+.timeline-section {{ background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }}
+.timeline-section h2 {{ color: {accent_dark}; font-size: 1.1rem; margin-bottom: 1rem; }}
+.timeline-summary {{ font-size: 0.9rem; color: #444; line-height: 1.6; }}
+.timeline-summary p {{ margin: 0.5rem 0; }}
+.topic-group {{ margin-bottom: 1rem; }}
+.topic-header {{ background: #f5f5f5; border-radius: 12px; padding: 0.8rem 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; border-left: 4px solid #999; user-select: none; transition: background 0.15s; }}
+.topic-header:hover {{ background: #ebebeb; }}
+.topic-name {{ font-weight: 700; font-size: 1rem; flex: 1; color: #444; }}
+.topic-count {{ font-size: 0.8rem; color: #888; background: #e0e0e0; padding: 0.15rem 0.5rem; border-radius: 10px; }}
+.topic-toggle {{ font-size: 0.8rem; color: #999; transition: transform 0.2s; }}
+.topic-body {{ padding: 0.5rem 0 0 0; }}
+.topic-body.collapsed {{ display: none; }}
+.category-timeline {{ margin: 0.5rem 0 1rem; text-align: center; }}
+.category-timeline img {{ max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
+.category-summary {{ background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-size: 0.9rem; line-height: 1.7; color: #444; }}
+.category-summary p {{ margin: 0.6rem 0; }}
+.paper-date {{ font-size: 0.75rem; color: #999; }}
+img.lazy {{ opacity: 0; transition: opacity 0.3s; }}
+img.lazy.loaded {{ opacity: 1; }}"""
+
+JS = """function toggleTopic(id) {
+  const body = document.getElementById(id);
+  const toggle = document.getElementById('toggle-' + id);
+  body.classList.toggle('collapsed');
+  toggle.textContent = body.classList.contains('collapsed') ? '\\u25B6' : '\\u25BC';
+  if (!body.classList.contains('collapsed')) setTimeout(lazyLoad, 100);
+}
+function sortCards(key, order) {
+  document.querySelectorAll('.topic-body').forEach(body => {
+    const cards = [...body.querySelectorAll('.paper-card')];
+    cards.sort((a, b) => {
+      let va, vb;
+      if (key === 'date') { va = a.dataset.date || ''; vb = b.dataset.date || ''; }
+      else { va = parseFloat(a.dataset.score) || 0; vb = parseFloat(b.dataset.score) || 0; }
+      if (order === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
+      return va < vb ? 1 : va > vb ? -1 : 0;
+    });
+    cards.forEach(c => body.appendChild(c));
+  });
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  setTimeout(lazyLoad, 100);
+}
+function lazyLoad() {
+  const imgs = document.querySelectorAll('img.lazy:not(.loaded)');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const img = e.target; img.src = img.dataset.src;
+          img.classList.add('loaded'); obs.unobserve(img);
+        }
+      });
+    }, {rootMargin: '200px'});
+    imgs.forEach(img => obs.observe(img));
+  } else { imgs.forEach(img => { img.src = img.dataset.src; img.classList.add('loaded'); }); }
+}
+document.addEventListener('DOMContentLoaded', lazyLoad);"""
+
+# Build topic groups
+topic_groups_parts = []
+global_num = 1
+for cat_idx, cat_name in enumerate(cat_order):
+    papers = cat_papers.get(cat_name, [])
+    if not papers:
+        continue
+    topic_id = f"topic-{cat_idx}"
+    cat_slug = cat_name.replace(" ", "_").replace("&", "and")
+    narr_html = render_category_narrative(cat_name)
+
+    # Category timeline image (in topic dir)
+    cat_tl_file = f"category_timeline_{cat_slug}.png"
+    cat_tl_exists = os.path.exists(os.path.join(TOPIC_DIR, cat_tl_file))
+    cat_tl_html = ""
+    if cat_tl_exists:
+        cat_tl_html = (
+            f'\n<div class="category-timeline">'
+            f'<img data-src="{cat_tl_file}" alt="{esc(cat_name)} Timeline" class="lazy">'
+            f'</div>'
+        )
+
+    summary_block = ""
+    if narr_html or cat_tl_html:
+        summary_block = f'\n<div class="category-summary">{cat_tl_html}{narr_html}</div>'
+
+    cards_parts = []
+    for paper in papers:
+        cards_parts.append(render_paper_card(paper, global_num, cat_slug))
+        global_num += 1
+
+    group = (
+        f'<div class="topic-group" data-topic="{esc(cat_name)}">\n'
+        f'      <div class="topic-header" onclick="toggleTopic(\'{topic_id}\')">\n'
+        f'        <span class="topic-name">{esc(cat_name)}</span>\n'
+        f'        <span class="topic-count">{len(papers)}\ud3b8</span>\n'
+        f'        <span class="topic-toggle" id="toggle-{topic_id}">&#x25B6;</span>\n'
+        f'      </div>\n'
+        f'      <div class="topic-body collapsed" id="{topic_id}">{summary_block}\n'
+        + "\n".join(cards_parts) + "\n"
+        + '      </div>\n'
+        + '    </div>'
+    )
+    topic_groups_parts.append(group)
+
+exec_html = render_exec_summary(executive_summary)
+num_cats = len([c for c in cat_order if cat_papers.get(c)])
+
+# Determine date range
+dates = [p.get("date", "") for cat in cat_papers.values() for p in cat]
+dates = [d for d in dates if d]
+date_range = f"{min(dates)} ~ {max(dates)}" if dates else ""
+
+# Research timeline
+has_research_tl = os.path.exists(os.path.join(TOPIC_DIR, "research_timeline.png"))
+research_tl_html = ""
+if has_research_tl:
+    research_tl_html = (
+        '<div class="timeline-section">\n'
+        '  <h2>Research Timeline</h2>\n'
+        '  <div style="text-align:center;margin:1rem 0">'
+        '<img src="research_timeline.png" alt="Research Timeline"'
+        ' style="max-width:100%;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)">'
+        '</div>\n'
+    )
+    if exec_html:
+        research_tl_html += f'  <div class="timeline-summary">\n    {exec_html}\n  </div>\n'
+    research_tl_html += '</div>\n\n\n'
+
+HTML = (
+    '<!DOCTYPE html>\n'
+    '<html lang="ko">\n'
+    '<head>\n'
+    '<meta charset="UTF-8">\n'
+    '<meta name="viewport" content="width=device-width,initial-scale=1.0">\n'
+    f'<title>{esc(theme["title"])} &#8212; {total_papers} Papers</title>\n'
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">\n'
+    '<script>window.MathJax={tex:{inlineMath:[[\'$\',\'$\'],[\'\\\\(\',\'\\\\)\']],displayMath:[[\'$$\',\'$$\'],[\'\\\\[\',\'\\\\]\']]}};</script>\n'
+    '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>\n'
+    f'<style>\n{CSS}\n</style>\n'
+    '</head>\n'
+    '<body>\n'
+    '<div class="container">\n'
+    '  <div class="hero">\n'
+    f'    <h1>{esc(theme["title"])} &#8212; {total_papers} Papers</h1>\n'
+    f'    <p class="subtitle">Collection: {esc(theme["subtitle_prefix"])} | Period: {esc(date_range)}</p>\n'
+    '    <div class="stats">\n'
+    f'      <div class="stat"><div class="stat-num">{total_papers}</div><div class="stat-label">\ub9ac\ubdf0 \uc644\ub8cc</div></div>\n'
+    f'      <div class="stat"><div class="stat-num">{num_cats}</div><div class="stat-label">MECE \uce74\ud14c\uace0\ub9ac</div></div>\n'
+    f'      <div class="stat"><div class="stat-num">{TODAY}</div><div class="stat-label">\ud050\ub808\uc774\uc158 \uc77c\uc790</div></div>\n'
+    '    </div>\n'
+    '  </div>\n\n\n'
+    + research_tl_html
+    + '  <div class="sort-bar">\n'
+    '    <button class="sort-btn" onclick="sortCards(\'date\',\'asc\')">\ucd9c\ud310\uc77c &#x25B2;</button>\n'
+    '    <button class="sort-btn" onclick="sortCards(\'date\',\'desc\')">\ucd9c\ud310\uc77c &#x25BC;</button>\n'
+    '    <button class="sort-btn" onclick="sortCards(\'score\',\'asc\')">\ud3c9\uc810 &#x25B2;</button>\n'
+    '    <button class="sort-btn" onclick="sortCards(\'score\',\'desc\')">\ud3c9\uc810 &#x25BC;</button>\n'
+    '  </div>\n\n'
+    '  <div id="cards">\n\n'
+    + "\n\n".join(topic_groups_parts) + "\n\n"
+    + '  </div>\n'
+    '  <div class="credit">\n'
+    f'    Generated by Claude Code &middot; {esc(theme["title"])} Paper Curation &middot; {TODAY}\n'
+    '  </div>\n\n'
+    '</div>\n\n'
+    f'<script>\n{JS}\n</script>\n\n'
+    '</body>\n</html>'
+)
+
+out_path = os.path.join(TOPIC_DIR, "index.html")
+with open(out_path, "w", encoding="utf-8") as f:
+    f.write(HTML)
+print(f"Written: {out_path} ({len(HTML):,} chars)")
+
+# Verify no old-style paths
+old_paths = re.findall(r'(?:href|src)="(\d{3}_[^"]*)"', HTML)
+if old_paths:
+    print(f"WARNING: {len(old_paths)} old-style paths found (should use ../papers/ prefix):")
+    for p in old_paths[:5]:
+        print(f"  {p}")
+else:
+    print("OK: All paths use ../papers/ prefix")

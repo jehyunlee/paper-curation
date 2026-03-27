@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Generative AI Uses and Risks for Knowledge Workers in a Science Organization</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Generative AI Uses and Risks for Knowledge Workers in a Science Organization</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Kelly B. Wagman, Matthew T. Dearing, Marshini Chetty</li>
+<li><strong>소속</strong>: University of Chicago / Argonne National Laboratory</li>
+<li><strong>출처</strong>: CHI 2025 (ACM Conference on Human Factors in Computing Systems)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.1145/3706598.3713827"><a href="https://doi.org/10.1145/3706598.3713827" target="_blank">10.1145/3706598.3713827</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence</h2>
+<p>미국 국립연구소(Argonne National Laboratory)의 Science 및 Operations 직원들을 대상으로 생성형 AI의 실제 활용 사례와 인식된 위험을 조사한 혼합 방법(mixed-methods) 연구이다. 설문(N=66), 심층 인터뷰(N=22), 그리고 내부 생성형 AI 인터페이스 "Argo"(GPT-3.5 Turbo 비공개 인스턴스)의 8개월간 사용 데이터를 분석하여, 활용 사례를 <strong>copilot</strong>(대화형 보조)과 <strong>workflow agent</strong>(자율/반자율 작업 자동화) 두 모달리티로 분류하고, 데이터 보안, 학술 출판, 고용 영향 등의 우려를 식별한다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation</h2>
+<p>생성형 AI가 과학적 발견을 가속화할 잠재력을 가지지만, 과학 조직에서의 실세계 응용과 인식된 위험은 불확실하다. 기존 연구는 과학 연구 태스크 자체(과학 특화 LLM, 복잡한 과학 태스크 자동화)에 집중하거나 전문 직종(법률, 마케팅 등)의 지식 노동자를 대상으로 하고 있으며, 과학 조직 내 Science와 Operations 직원 모두를 포괄하는 연구는 전무하다. 특히 국립연구소와 같이 기밀 데이터를 다루는 조직 특유의 개인정보 보호 및 보안 우려에 초점을 맞춘 연구가 부재하다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>Achievement</h2>
+<ol>
+<li>
+<p><strong>Argo 사용 추이</strong>: 배포 후 8개월간 월별 고유 사용자가 증가 추세(월 평균 19.2% 증가). Science 사용자가 Operations보다 26% 많으나, Operations의 월간 증가율이 더 높음(21.2% vs 19.3%). 전체 직원의 10% 미만이 월간 사용.</p>
+</li>
+<li>
+<p><strong>Copilot 활용 사례</strong>:</p>
+</li>
+<li><strong>현재 사용</strong>: 구조화된 텍스트/코드 작성(이메일 톤 조절, 보고서 형식화, 논문 서론 초안, 코드 작성). 검증 가능한 결과물 중심.</li>
+<li>
+<p><strong>구상 사용</strong>: 대규모 비정형 텍스트 데이터에서 인사이트 추출(과학 문헌 요약, 조직 규정 검색, 팀 데이터 분석, 공개 데이터 모니터링).</p>
+</li>
+<li>
+<p><strong>Workflow Agent 활용 사례</strong>:</p>
+</li>
+<li><strong>현재</strong>: 과학 장비 운영 자동화(렌즈리스 이미징 데이터 재구성), 레거시 소프트웨어 자동화, 데이터 분석 파이프라인.</li>
+<li>
+<p><strong>구상</strong>: "AI Scientist"(가설 생성-시뮬레이션-수정 피드백 루프), 복합 프로젝트 관리 자동화.</p>
+</li>
+<li>
+<p><strong>위험 및 우려</strong>:</p>
+</li>
+<li>신뢰성/환각(44% 언급), 과의존(21%), 학술 출판 윤리(20%), 프라이버시/보안(42%), 고용 영향(5%).</li>
+<li>미발표 연구 데이터의 상용 LLM 공유에 대한 의견 분분. 내부 Argo 사용 시 보안 우려 완화되나, 기능 제한으로 외부 도구 선호 경향.</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>연구 설계</strong>: 혼합 방법 사례 연구. 설문(Qualtrics, 66명), 반구조화 인터뷰(Zoom, 22명, 각 30분), Argo 사용 메타데이터 분석(2024년 1-8월).</li>
+<li><strong>참여자</strong>: Science(48%)와 Operations(47%) 균등 분포. 과학자, 소프트웨어 엔지니어, 운영 관리자, 사이버보안 등 다양한 역할. 백인 남성 편향(연구소 인구 반영).</li>
+<li><strong>데이터 분석</strong>: 인터뷰 전사본의 주제 분석(thematic analysis). MAXQDA로 코딩, 축 코딩(axial coding)으로 하위 코드 할당. 두 명의 연구자 간 코드 검토 및 불일치 해소. 설문 자유 응답도 동일 코드북으로 분석.</li>
+<li><strong>Argo 메타데이터</strong>: 인증된 사용자명(조직 부서로 롤업), 사용 시간, 토큰 수 등. 쿼리/응답 텍스트 내용은 저장하지 않음.</li>
+<li><strong>윤리</strong>: IRB 승인. 연방 직원 금전 보상 불가(법적 제한).</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>과학 조직 내 Science+Operations 통합 조사</strong>: 기존 연구가 과학자만 또는 비과학 지식 노동자만 대상으로 한 것과 달리, 한 조직 내 과학 연구자와 운영 직원 모두를 포괄하여 역할 간 유사점과 차이점을 비교.</li>
+<li><strong>Copilot vs Workflow Agent 이원 프레임워크</strong>: 생성형 AI 활용 사례를 대화형 보조(copilot)와 자율 작업 자동화(workflow agent) 두 모달리티로 체계적으로 분류하여 조직 설계에 대한 실용적 지침 제공.</li>
+<li><strong>조직 수준의 내부 LLM 배포 데이터</strong>: Argo라는 비공개 GPT-3.5 인스턴스의 실제 조직 전체 배포 및 초기 채택 데이터를 제공하는 최초 사례 중 하나.</li>
+<li><strong>과학 조직 특유의 보안 우려</strong>: 기밀/미발표 데이터, 수출 통제(export control), 학술 출판 윤리 등 과학 조직에 특수한 위험을 구체적으로 식별.</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>단일 조직 사례 연구</strong>: Argonne National Lab 한 곳만 대상. 대학, 산업 연구소, 다른 국립연구소 등과의 비교가 없어 일반화에 한계.</li>
+<li><strong>소규모 표본</strong>: 설문 66명, 인터뷰 22명으로 수천 명 규모의 연구소를 대표하기에 부족. 초기 채택자(early adopter) 편향으로 기술에 관심 없는 직원의 관점 미반영.</li>
+<li><strong>인구학적 편향</strong>: 백인 남성 편중. 다양한 인구통계학적 배경에 따른 활용 패턴 및 우려 차이 미분석.</li>
+<li><strong>외부 LLM 사용 미포착</strong>: Argo 사용 데이터만 수집하고, 직원들의 ChatGPT 등 상용 LLM 사용은 정량적으로 추적하지 못해 총 사용량을 과소 추정.</li>
+<li><strong>GPT-3.5 시점</strong>: 데이터 수집 시점에 Argo는 GPT-3.5 Turbo 기반. GPT-4 이후의 향상된 능력이 활용 패턴과 우려를 변화시킬 가능성이 높으나 반영되지 않음.</li>
+<li><strong>종단 추적 부재</strong>: 8개월간의 스냅샷이며, 장기적 채택 곡선, 생산성 영향, 조직 문화 변화 등은 미측정.</li>
+<li><strong>정량적 생산성 측정 부재</strong>: 참여자의 인식과 자기 보고에 의존하며, 실제 생산성 향상에 대한 객관적 측정 없음.</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation</h2>
+<p>CHI 2025에 게재된 시의적절한 HCI 연구로, "AI for Science"의 현장 실태를 인간 중심 관점에서 포착한다. Science와 Operations 직원을 함께 조사하여 copilot/workflow agent 프레임워크로 정리한 것은 조직 차원의 AI 도입 전략에 실용적 가치를 제공한다. 특히 내부 비공개 LLM(Argo) 배포의 실제 채택 데이터는 희소한 자원이다. 다만, 소규모 표본과 단일 조직 한정, GPT-3.5 시점이라는 기술적 한계로 인해 발견의 깊이와 일반화 가능성에 제약이 있다. 참여자들의 목소리가 생생하게 전달되는 질적 데이터의 풍부함은 강점이나, 정량적 생산성 측정이 동반되었다면 더 설득력 있었을 것이다. 과학 조직 특유의 보안 우려(미발표 연구, 수출 통제)에 대한 논의는 유사한 환경의 조직에 직접 적용 가능한 가치를 지닌다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

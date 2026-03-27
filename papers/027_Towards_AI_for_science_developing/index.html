@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Towards AI for Science: Developing a Conceptual Basis for Transforming Research </title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Towards AI for Science: Developing a Conceptual Basis for Transforming Research Support Services in University Libraries</h1>
+<ul>
+<li><strong>저자</strong>: Lihong Zhou, Hanyu Miao, Tim Zijlstra, Zengmin Wang</li>
+<li><strong>기관</strong>: Wuhan University, NHS Tayside</li>
+<li><strong>발표</strong>: Information Research, Vol. 31 No. iConf (2026), DOI: <a href="https://doi.org/10.47989/ir31iConf64182" target="_blank">10.47989/ir31iConf64182</a></li>
+<li><strong>키워드</strong>: AI for Science, Library Transformation, Research Support Service, Systematic Review, University Libraries</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>대학 도서관이 AI for Science(AI4S) 연구 프로젝트를 지원하기 위해 어떤 연구지원서비스(RSS)를 제공할 수 있는지를 체계적 문헌 리뷰를 통해 분석하고, 5개 주제와 21개 서비스로 구성된 개념 모델을 제시한 논문이다.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>AI for Science(AI4S)가 지배적 연구 패러다임으로 부상하면서 연구자의 정보 요구와 행동이 근본적으로 변화하고 있다. 대학 도서관은 전통적으로 학술 컬렉션 구축과 정보 검색 서비스에 집중해왔으나, AI4S 시대에는 보다 능동적이고 지능적인 연구지원서비스가 필요하다. 그러나 도서관 커뮤니티는 AI 기술 도입에 늦고 느리며, AI4S를 위한 연구지원서비스 개발에 대한 체계적 연구가 부재하다. 특히 중국 대학 도서관의 맥락에서 이러한 전환을 위한 이론적 기반이 필요하다.</p>
+<hr />
+</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<ol>
+<li><strong>체계적 문헌 리뷰 수행</strong>: 영어(Web of Science, Scopus)와 중국어(CNKI) 학술 데이터베이스에서 검색하여 67편의 논문을 주제 분석 및 질적 코딩으로 분석</li>
+<li><strong>21개 도서관 연구지원서비스 도출</strong>: AI4S 프로젝트를 지원하기 위한 구체적 서비스 항목 식별</li>
+<li><strong>5대 주제의 개념 모델 제시</strong>:</li>
+<li>AI 준비도 촉진 (Promoting AI readiness)</li>
+<li>연구 아이디어 구상 (Formulating research ideas)</li>
+<li>협력 네트워크 구축 (Building collaborative networks)</li>
+<li>연구 수행 (Conducting research)</li>
+<li>결과 출판 (Publishing results)</li>
+<li><strong>핵심 과제 2가지 식별</strong>: (1) AI4S 패러다임이 빠르게 성장 중이나 아직 완전히 정립되지 않음, (2) 도서관이 AI 기술 도입에 늦고 느림</li>
+<li><strong>PRISMA 흐름도 기반의 체계적 문헌 선별 과정</strong> 제시</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>방법론 (How)</h2>
+<h3>연구 설계</h3>
+<ul>
+<li>2단계 체계적 문헌 리뷰(Systematic Literature Review) 접근법 채택</li>
+<li><strong>1단계</strong> (2024.10~12): 일반 문헌 리뷰로 이론적 발전 개관, RSS 실무 파악, 연구 질문 타당성 확인</li>
+<li><strong>2단계</strong> (2025.01~03): 구조화된 엄밀한 리뷰 수행</li>
+</ul>
+<h3>검색 전략</h3>
+<ul>
+<li><strong>데이터베이스</strong>: Web of Science, Scopus (영어), CNKI (중국어)</li>
+<li><strong>검색식</strong>: ('AI' OR 'AI for Science' OR 'AI4S' OR 'artificial intelligence' OR 'machine learning' OR 'data mining') AND ('research support' OR 'data management' OR 'digital scholarship' OR 'digital humanities') AND librar*</li>
+</ul>
+<h3>분석 방법</h3>
+<ul>
+<li>PRISMA 흐름도에 따른 문헌 포함/배제 과정</li>
+<li>최종 67편 선정</li>
+<li>주제 분석(Thematic Analysis) 및 질적 코딩(Qualitative Coding) 적용</li>
+</ul>
+<h3>개념 모델 구축</h3>
+<ul>
+<li>귀납적 코딩을 통해 21개 개별 서비스 도출</li>
+<li>5개 상위 주제로 그룹화하여 개념 모델 구성</li>
+<li>연구 생애주기(research lifecycle)에 맞춘 서비스 배치</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<ol>
+<li><strong>AI4S와 도서관 서비스의 교차 영역</strong>: AI for Science라는 새로운 패러다임과 대학 도서관 연구지원서비스를 명시적으로 연결한 최초의 체계적 연구</li>
+<li><strong>이중 언어 문헌 분석</strong>: 영어와 중국어 학술 문헌을 모두 포함하여, 서구와 중국의 관점을 통합</li>
+<li><strong>실용적 개념 모델</strong>: 향후 연구와 실무를 위한 이론적 기반으로 활용 가능한 구조화된 프레임워크 제공</li>
+<li><strong>도서관의 AI 스튜어드십 역할 강조</strong>: 도서관을 단순한 정보 제공자가 아닌 AI4S 생태계의 중심 행위자로 재정의</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>한계 (Limitation)</h2>
+<ol>
+<li><strong>기술적 깊이 부족</strong>: AI4S의 기술적 측면(모델 학습, 데이터 파이프라인 등)에 대한 깊이 있는 분석 없이 도서관 서비스 관점에만 집중</li>
+<li><strong>실증 검증 미비</strong>: 개념 모델이 문헌 리뷰에만 기반하며, 실제 도서관에서의 구현이나 효과성에 대한 경험적 검증이 부재</li>
+<li><strong>중국 맥락 편향</strong>: 주로 중국 대학 도서관을 대상으로 하여, 다른 국가/문화권에의 일반화 가능성 미확인</li>
+<li><strong>AI4S 정의의 모호성</strong>: AI4S 패러다임 자체가 아직 완전히 정립되지 않았음을 인정하면서도, 이에 기반한 서비스 모델을 제시하는 순환적 한계</li>
+<li><strong>서비스 우선순위 미제시</strong>: 21개 서비스 간의 상대적 중요도, 구현 난이도, 자원 요구량 등에 대한 분석 부재</li>
+<li><strong>과학 분야 특수성 미고려</strong>: AI4S가 분야별로 매우 다른 양상을 보이나(예: 생물학 vs 물리학 vs 사회과학), 분야별 차별화된 서비스 모델 미제시</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<p>AI for Science라는 새로운 연구 패러다임 하에서 대학 도서관의 역할 재정의를 시도한 시의적절한 연구이다. 체계적 문헌 리뷰를 통해 21개 서비스와 5개 주제로 구성된 개념 모델을 제시한 점은 해당 분야의 이론적 기반 구축에 기여한다. 그러나 이 논문은 본질적으로 도서관 정보학(Library and Information Science) 관점의 연구로서, AI4S의 기술적 실체나 과학적 발견 과정에 대한 깊이 있는 이해보다는 서비스 분류 체계 구축에 집중하고 있다. 문헌 리뷰 기반의 개념 모델은 향후 경험적 검증과 실무 적용을 통한 정교화가 필수적이다. AI for Science 연구자보다는 대학 도서관 관리자와 정책 입안자에게 더 유용한 논문이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

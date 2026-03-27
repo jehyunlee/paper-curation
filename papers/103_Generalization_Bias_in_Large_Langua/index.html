@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Generalization Bias in Large Language Model Summarization of Scientific Research</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Generalization Bias in Large Language Model Summarization of Scientific Research</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Uwe Peters (Utrecht University), Benjamin Chin-Yee (Western University / University of Cambridge)</li>
+<li><strong>저널/출처</strong>: Royal Society Open Science (forthcoming), arXiv:2504.00025</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.00025"><a href="https://doi.org/10.48550/arXiv.2504.00025" target="_blank">10.48550/arXiv.2504.00025</a></a></li>
+<li><strong>발표일</strong>: 2025-03-28</li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (한 줄 요약)</h2>
+<p>LLM이 과학 논문을 요약할 때 원문보다 더 넓은 범위의 일반화(overgeneralization)를 체계적으로 생성하며, 최신 모델일수록 이 경향이 심화된다는 것을 4,900개 요약문 분석으로 실증한 연구.</p>
+<hr />
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Motivation (연구 동기)</h2>
+<ul>
+<li>LLM 챗봇(ChatGPT, DeepSeek 등)이 과학 논문 요약 도구로 급속히 확산되고 있으나, 요약 과정에서 한정어(qualifier)나 범위 제한(limitation)을 누락하여 원문보다 과도하게 일반화된 결론을 생성할 위험이 제기됨</li>
+<li>과학자와 기자도 연구 결과를 과잉 일반화하는 경향이 알려져 있으나, LLM이 이를 악화시키는지 완화시키는지에 대한 체계적 연구가 부재</li>
+<li>특히 의학 분야에서 임상시험 결과의 과잉 일반화는 부적절한 처방이나 정책 결정으로 이어질 수 있어 위험성이 큼</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Achievement (주요 성과)</h2>
+<ul>
+<li><strong>10개 주요 LLM</strong> (GPT-3.5 Turbo, GPT-4 Turbo, ChatGPT-4o, ChatGPT-4.5, LLaMA 2 70B, LLaMA 3.3 70B, Claude 2, Claude 3.5 Sonnet, Claude 3.7 Sonnet, DeepSeek)을 대상으로 <strong>4,900개 요약문</strong>을 분석</li>
+<li>LLM 요약문은 원문 대비 <strong>2배 높은 확률</strong>로 일반화된 결론을 포함 (OR = 2.0)</li>
+<li>인간 작성 요약(NEJM Journal Watch)과 비교 시 LLM 요약은 <strong>약 5배 높은 확률</strong>로 과잉 일반화 (OR = 4.85, 95% CI [3.06, 7.70])</li>
+<li><strong>최신 모델의 악화 경향</strong>: ChatGPT-4o(9배), LLaMA 3.3 70B(39배)로 이전 모델 대비 과잉 일반화가 급증</li>
+<li><strong>Claude 모델은 예외적으로 원문과 유의미한 차이 없음</strong> (Claude 2, 3.5, 3.7 모두)</li>
+<li>낮은 temperature(0)에서 일반화된 결론 발생이 <strong>76% 감소</strong></li>
+<li>"정확하게 요약하라"는 프롬프트가 오히려 과잉 일반화를 <strong>2배 증가</strong>시키는 역설적 결과 발견</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>How (방법론)</h2>
+<ol>
+<li><strong>텍스트 수집</strong>: Science, Nature, NEJM, Lancet 등 상위 저널에서 초록 200편 + 전문 논문 100편 선정</li>
+<li><strong>일반화 유형 분류</strong>: 세 가지 과잉 일반화 패턴을 코딩 기준으로 설정</li>
+<li><strong>(1) Generic generalization</strong>: 정량적 진술 → 일반적 진술 전환 (예: "참가자의 75%에서" → "사람들에게서")</li>
+<li><strong>(2) Present tense generalization</strong>: 과거시제 → 현재시제 전환 (특정 실험 결과를 보편적 사실처럼 기술)</li>
+<li><strong>(3) Action guiding generalization</strong>: 서술적 결과 → 권고/행동 지침으로 전환</li>
+<li><strong>프롬프트 3종 비교</strong>: Simple (단순 요약), Systematic ("step-by-step"), Accuracy ("정확하게, 부정확함 배제")</li>
+<li><strong>온도 설정</strong>: temperature 0 vs 0.7 vs UI 기본값</li>
+<li><strong>통계 분석</strong>: Generalized Linear Mixed Models (GLMM), 이항 분포 + logit link, Bonferroni 보정</li>
+<li><strong>신뢰성 검증</strong>: 2인 전문가 코딩 + 맹검 제3 연구자, 평가자간 일치도 kappa = 0.79~0.95</li>
+</ol>
+<hr />
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>"Algorithmic overgeneralization"이라는 새로운 개념</strong>을 정의하고 체계적으로 측정한 최초의 연구</li>
+<li>LLM의 과잉 일반화를 언어학적 관점(generic, tense, descriptive vs. prescriptive)에서 세분화하여 분석</li>
+<li>최신 모델이 더 정확해질 것이라는 직관에 반하여 <strong>최신 모델일수록 과잉 일반화가 심화</strong>된다는 반직관적 발견</li>
+<li>"정확하게 요약하라"는 프롬프트가 오히려 역효과를 낳는다는 <strong>algorithmic ironic rebound effect</strong> 가설 제시</li>
+<li>RLHF(인간 피드백 강화학습)가 "유용하고 자신감 있는" 응답을 선호하게 하여 과잉 일반화를 조장할 수 있다는 메커니즘적 설명 제공</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>프롬프트 다양성 부족</strong>: 3종의 프롬프트만 테스트; 더 정교한 프롬프트 엔지니어링이 완화 효과를 가질 수 있음</li>
+<li><strong>도메인 편향</strong>: 주로 의학 논문에 집중; 기초과학, 공학 등 다른 분야에서의 일반화 패턴은 미검증</li>
+<li><strong>인간 비교군 제한</strong>: NEJM Journal Watch 전문가 요약만 비교 대상; 대학 홍보실이나 언론 등 다른 유형의 인간 요약과 비교 필요</li>
+<li><strong>Gemini 등 미포함</strong>: Google Gemini, Mistral 등 주요 모델이 테스트에서 제외됨</li>
+<li><strong>역할 프롬프트 미테스트</strong>: "당신은 의학 전문가입니다"와 같은 역할 설정 프롬프트의 영향은 미탐구</li>
+<li><strong>향후 연구 방향</strong>: Shadow prompting을 통한 과거시제 강제, LLM 일반화 정확도 벤치마크(OAO score) 개발 및 표준화</li>
+</ul>
+<hr />
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<p>이 연구는 LLM의 과학 요약 능력에 대한 중요한 경고를 제시한다. 4,900개 요약문이라는 대규모 데이터, 10개 모델의 비교, 다중 프롬프트/온도 조건, 인간-LLM 직접 비교 등 <strong>실험 설계의 체계성</strong>이 돋보인다. 특히 "최신 모델이 더 부정확하다"는 발견과 "정확성 요구가 역효과를 낳는다"는 발견은 LLM 활용에 대한 실용적 시사점이 크다. Claude 모델이 일관되게 원문에 충실한 요약을 생성한다는 결과도 모델 선택에 참고할 만한 가치가 있다. 다만, 과잉 일반화가 항상 "오류"인지에 대한 논의는 다소 단순화되어 있으며, 독자의 정보 요구(맥락적 일반화가 더 유용한 경우)를 고려한 평가 체계가 보완되면 더 완성도 높은 연구가 될 것이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

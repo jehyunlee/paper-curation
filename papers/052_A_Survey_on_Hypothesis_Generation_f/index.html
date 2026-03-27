@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large L</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models</h1>
+<div class="section-box"><h2>메타 정보</h2>
+<ul>
+<li><strong>저자</strong>: Atilla Kaan Alkan, Shashwat Sourav, Maja Jablonska, Simone Astarita, Rishabh Chakrabarty, Nikhil Garuda, Pranav Khetarpal, Maciej Pióro, Dimitrios Tanoglidis, Kartheik G. Iyer, Mugdha S. Polimera, Michael J. Smith, Tirthankar Ghosal, Marc Huertas-Company, Sandor Kruk, Kevin Schawinski, Ioana Ciuca (UniverseTBD 등 17개 기관)</li>
+<li><strong>출처</strong>: arXiv:2504.05496 (Preprint, under review), 2025-04-07</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.05496"><a href="https://doi.org/10.48550/arXiv.2504.05496" target="_blank">10.48550/arXiv.2504.05496</a></a></li>
+<li><strong>PDF</strong>: <a href="C:\Users\jehyu\GoogleDrive\Zotero\Alkan et al._2025_A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models.pdf">C:\Users\jehyu\GoogleDrive\Zotero\Alkan et al._2025_A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models.pdf</a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Essence (본질)</h2>
+<p>LLM 시대에 과학적 가설 생성(Scientific Hypothesis Generation, SHG)을 위한 방법론을 체계적으로 정리한 서베이 논문이다. 전통적 문헌 기반 발견(Literature-Based Discovery, LBD)부터 텍스트 마이닝, 지도학습, 그래프 기반 방법, 그리고 최신 LLM 기반 접근법(프롬프팅, 파인튜닝, RAG, 지식 그래프 통합, 멀티 에이전트 시스템)까지를 아우르는 분류 체계(taxonomy)를 제시한다. 생성된 가설의 품질 평가 방법론(전문가 평가, 자동화 메트릭, 신규성 평가, 분야별 평가)도 종합하며, 환각(hallucination), 해석 가능성, 편향, 멀티모달 통합, 인간-AI 협업 등 핵심 도전과제와 미래 방향을 논의한다.</p>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>과학 문헌의 폭발적 증가와 학문 분야 간 분절화(disciplinary fragmentation)로 인해, 연구자가 분야를 횡단하며 새로운 가설을 도출하기 어려워지고 있다. LLM이 방대한 과학 텍스트를 처리·종합하여 가설 생성을 보조할 가능성이 부각되었으나, 이 분야의 방법론, 평가 전략, 도전과제를 체계적으로 정리한 참고 문헌이 부재했다.</p>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>분류 체계 제시</strong>: SHG 방법론을 Human-Centric → LBD → Text-Mining → Supervised Learning → Graph-Based → LLM-Driven (Prompting / Fine-Tuning / RAG / Knowledge Graphs / Multi-Agent)으로 계층적으로 분류</li>
+<li><strong>LLM 기반 파이프라인 정리</strong>: 직접/적대적 프롬프팅, 도메인 파인튜닝, 지식 그래프 통합(KG-CoI), 멀티 에이전트 시스템 등 최신 기법을 구조화</li>
+<li><strong>평가 방법론 종합</strong>: 전문가 평가(블라인드 리뷰, 쌍대 비교), 자동화 평가(텍스트 관련성, 모델 기반 메트릭, 신규성 평가), 분야별 평가(생의학, 화학, 천문학, 사회과학)를 망라</li>
+<li><strong>미래 방향 제시</strong>: RAG 기반 환각 저감, chain-of-thought 추론 경로 추적, 멀티 에이전트 협업 프레임워크, 메타러닝 기반 교차 도메인 전이, 윤리적 거버넌스 등</li>
+</ol>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ul>
+<li>arXiv API를 통해 cs.CL 분류 하 2005~2025년 논문을 체계적으로 검색 (핵심 개념, 최신 기법, 전통 기법별 검색어 사용)</li>
+<li>제목·초록 기반 1차 필터링 후 수동 스크리닝으로 방법론 패러다임, 과학 도메인, 가설 표현 방식별 분류</li>
+<li>시계열적 진화 추적: Swanson(1986)의 LBD부터 현재 LLM 멀티 에이전트 시스템까지의 발전 흐름을 도식화 (Figure 1: 분류 체계, Figure 2: LLM 파이프라인)</li>
+</ul>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li>SHG를 위한 최초의 <strong>포괄적 분류 체계(taxonomy)</strong>를 제시하여, 전통적 LBD와 LLM 기반 방법을 하나의 통합 프레임워크로 연결</li>
+<li>가설 품질 향상 기법(novelty boosting, structured reasoning)과 평가 전략을 별도 축으로 분리하여 분석한 점이 기존 서베이 대비 차별화</li>
+<li>천문학, 화학, 사회과학 등 다양한 도메인별 평가 기준의 차이를 명시적으로 다룸</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+<h3>저자가 인정한 한계</h3>
+<ul>
+<li>LLM의 환각 문제가 과학적 맥락에서 특히 위험하며, 해석 가능성(interpretability) 부족으로 가설의 근거 추적이 어려움</li>
+<li>훈련 데이터의 편향이 생성되는 가설의 방향을 왜곡할 수 있음</li>
+<li>도메인 파인튜닝 시 과적합(overfitting) 위험으로 범용성이 저하될 수 있음</li>
+<li>AI 생성 가설의 저작권, 책임 소재, 오용 가능성 등 윤리적 문제가 미해결</li>
+</ul>
+<h3>자체 판단 한계</h3>
+<ul>
+<li><strong>검색 범위의 제한</strong>: arXiv cs.CL 분류로 한정하여, 생의학(PubMed), 재료과학, 물리학 등 도메인 특화 저널에서의 가설 생성 연구가 누락되었을 가능성이 높음</li>
+<li><strong>실증적 비교 부재</strong>: 각 방법론의 성능을 동일 벤치마크에서 정량적으로 비교한 실험이 없어, 어떤 접근법이 어떤 조건에서 우수한지 판단하기 어려움</li>
+<li><strong>최신 에이전트 프레임워크 부족</strong>: 2024~2025년 급부상한 AI Scientist, SciMON, ResearchAgent 등 구체적 시스템에 대한 심층 분석이 부족</li>
+<li><strong>멀티모달 가설 생성</strong>: 이미지, 분자 구조, 실험 데이터 등 비텍스트 모달리티를 활용한 가설 생성에 대한 논의가 피상적</li>
+</ul>
+<h3>후속 연구 방향</h3>
+<ul>
+<li>동일 벤치마크(예: OpenReview 논문 데이터셋)에서 프롬프팅, RAG, 파인튜닝, 멀티 에이전트의 정량적 비교 실험</li>
+<li>멀티모달 LLM(GPT-4V, Gemini)을 활용한 실험 데이터 → 가설 생성 파이프라인 구축</li>
+<li>생성된 가설의 장기 추적 평가: 실제 연구로 이어지는 가설의 비율 측정</li>
+<li>도메인별 가설 생성 품질 평가를 위한 표준화된 벤치마크 데이터셋 구축</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<div class="eval-badges"><span class="eval-badge">신규성 (Novelty): 5</span><span class="eval-badge">기술적 깊이 (Technical Depth): 5</span><span class="eval-badge">실험적 검증 (Experimental Validation): 3</span><span class="eval-badge">재현 가능성 (Reproducibility): 4</span><span class="eval-badge">실용적 영향력 (Practical Impact): 6</span><span class="eval-badge">표현 명확성 (Clarity): 7</span></div>
+<p><strong>총평</strong>: LLM 기반 과학적 가설 생성이라는 시의적절한 주제를 다루며, 전통적 LBD부터 최신 LLM 기법까지의 진화를 일관된 분류 체계로 정리한 유용한 참고 문헌이다. 그러나 서베이 논문으로서 검색 범위가 arXiv cs.CL로 한정된 점, 각 방법론 간 정량적 비교 실험이 부재한 점, 그리고 2024~2025년의 급속한 발전(AI Scientist, SciMON 등)을 충분히 반영하지 못한 점이 아쉽다. 과학적 가설 생성 연구의 입문자에게는 좋은 출발점이 될 수 있으나, 실무적 가이드라인을 기대하는 독자에게는 구체성이 부족하다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MatPilot: an LLM-enabled AI Materials Scientist under the Framework of Human-Mac</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+
+/* Section boxes */
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+/* Compact evaluation table - hidden, replaced by badges */
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+/* Score badges for review pages */
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+/* Essence box - dark red border */
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
+em { font-style: italic; }  /* normal em */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>MatPilot: an LLM-enabled AI Materials Scientist under the Framework of Human-Machine Collaboration</h1>
+<ul>
+<li><strong>저자</strong>: Ziqi Ni, Yahao Li, Kaijia Hu, Kunyuan Han, Ming Xu, Xingyu Chen, Fengqi Liu, Yicong Ye, Shuxin Bai</li>
+<li><strong>출처</strong>: arXiv preprint (2024-11-10)</li>
+<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2411.08063"><a href="https://doi.org/10.48550/arXiv.2411.08063" target="_blank">10.48550/arXiv.2411.08063</a></a></li>
+</ul>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence (본질)</h2>
+<p>MatPilot은 LLM 기반 멀티 에이전트 시스템을 활용하여 인간-기계 협업 프레임워크 하에서 재료 과학 연구를 수행하는 AI 재료 과학자 시스템이다. 인지 모듈(cognition module)과 실행 모듈(execution module)로 구성되며, 자연어 상호작용을 통해 과학적 가설 생성, 실험 설계, 자동화 실험 수행, 반복적 최적화를 통합한 플랫폼이다.</p>
+<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
+</div><div class="section-box"><h2>Motivation (동기)</h2>
+<p>기존 데이터 기반 재료 과학 AI는 선형적 로직에 의존하는 반폐쇄적(semi-closed) 시스템으로, 해석 가능성, 데이터 학습 효율성, 복잡한 구조-물성 관계 규명에 한계가 있다. 특히 상관관계(correlation)에만 집중하고 인과관계(causality)를 간과하는 문제가 있다. LLM의 등장으로 자연어 기반 인간-기계 협업이 가능해졌으며, 인간의 직관과 경험을 AI의 데이터 처리 능력과 결합하여 이러한 한계를 극복하고자 한다.</p>
+<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
+</div><div class="section-box"><h2>Achievement (성과)</h2>
+<ol>
+<li><strong>인지 모듈</strong>: RAG(Retrieval-Augmented Generation) 기반 지식 획득 시스템 구축 — 문헌 스크리닝, 데이터 추출, 지식 증류, 지식 그래프 구축의 4단계 파이프라인</li>
+<li><strong>혁신 생성 프레임워크</strong>: 탐색 에이전트(divergent thinking), 평가 에이전트(feasibility analysis), 통합 에이전트(synthesis)로 구성된 멀티 에이전트 + 인간-기계 토론 협업 프레임워크</li>
+<li><strong>실행 모듈</strong>: 세라믹 재료의 고상소결(solid-state sintering) 전 과정 자동화 — 칭량, 볼밀링, 소결, 성형, 특성 평가</li>
+<li><strong>체화 지능(Embodied Intelligence)</strong>: ALOHA, ReKep 등의 기술을 활용한 자율 실험 계획 제시</li>
+</ol>
+<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
+</div><div class="section-box"><h2>How (방법)</h2>
+<ul>
+<li><strong>아키텍처</strong>: 인지 모듈(두뇌)과 실행 모듈(신체)의 이분 구조</li>
+<li><strong>지식 획득</strong>: 고품질 지식 베이스 + RAG 방식으로 LLM에 재료 과학 전문 지식 제공. 표, 증류된 텍스트, 관계 그래프 등 다양한 정보 유형 통합</li>
+<li><strong>혁신 생성</strong>: 구조적 지능 이론(structural intelligence theory)에 기반한 발산적/수렴적 사고의 시너지. 3종류의 전문 에이전트가 대화와 적응적 조정을 통해 협업</li>
+<li><strong>자동화 실험</strong>: 세라믹 소결 워크플로우의 각 단계에 자동화 워크스테이션 통합 (dispensing, ball milling, sintering, molding, DMS, DHM)</li>
+<li><strong>반복 최적화</strong>: 가설 생성 → 실험 수행 → 피드백 통합의 진화적 최적화 사이클</li>
+</ul>
+</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li>"인간이 루프 안에 있는(human-in-the-loop)" 멀티 에이전트 시스템으로, AI가 인간을 대체하는 것이 아니라 <strong>증강(augmentation)</strong>하는 접근법이 핵심</li>
+<li>인지(사고)와 실행(행동)을 통합한 전주기(full-cycle) 재료 연구 플랫폼 설계</li>
+<li>체화 지능을 재료 실험 자동화에 적용하려는 비전 제시 (ALOHA, ReKep 활용)</li>
+<li>멀티 에이전트 토론 프레임워크를 통한 혁신 생성 메커니즘</li>
+</ul>
+</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<ul>
+<li><strong>실증 결과 부족</strong>: 구체적인 신소재 발견 사례나 정량적 벤치마크 결과가 제시되지 않음. 시스템이 "encouraging abilities"를 보였다고만 언급</li>
+<li><strong>체화 지능 미구현</strong>: 자율 실험을 위한 체화 지능 기술은 "1-2년 내 구현 예정"으로 현재 개발 초기 단계</li>
+<li><strong>범용성 미검증</strong>: 에너지 저장 세라믹에 대한 예시만 제시되어 다른 재료 시스템으로의 확장성이 불명확</li>
+<li><strong>지식 그래프 품질</strong>: RAG 기반 접근의 효과가 지식 베이스 품질에 크게 의존하나, 구축 과정의 자동화/확장 방법에 대한 구체적 논의 부족</li>
+<li><strong>비교 연구 없음</strong>: 기존 autonomous lab 시스템(A-Lab 등)과의 비교가 없어 상대적 우위 판단 어려움</li>
+</ul>
+</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<p>본 논문은 LLM 기반 멀티 에이전트 시스템을 재료 과학 전주기 연구에 적용하는 비전과 아키텍처를 제시한 <strong>포지션 페이퍼(position paper)</strong> 성격이 강하다. 인지-실행 이분 구조, 멀티 에이전트 혁신 생성, 자동화 실험 플랫폼의 통합이라는 큰 그림은 매력적이나, 실제 신소재 발견 성과나 정량적 평가가 부재하여 시스템의 실효성을 판단하기 어렵다. 체화 지능 적용 비전은 흥미롭지만 아직 개발 초기 단계이다. 인간-기계 협업을 통한 재료 연구의 미래 방향을 제시하는 데 의의가 있으며, 향후 구체적 발견 사례와 벤치마크 결과가 보완된다면 더 큰 영향력을 가질 수 있을 것이다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

@@ -1,270 +1,353 @@
 {
   "themes": [
     {
-      "name": "LLM-Powered Scientific Agents",
-      "name_ko": "LLM 기반 과학적 에이전트",
-      "color": "#FF5733",
-      "description": "LLM을 두뇌로 활용하여 가설 생성, 실험 설계, 코드 구현 및 결과 분석을 자율적으로 수행하는 멀티 에이전트 시스템의 급격한 발전.",
-      "start_year": 2023,
-      "peak_year": 2026,
-      "status": "ACCELERATING",
-      "key_papers": [
-        "Autonomous chemical research with large language models",
-        "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
-        "ChemCrow: Augmenting large-language models with chemistry tools"
-      ]
-    },
-    {
-      "name": "Physics-Informed & Neural Operators",
+      "name": "Physics-Informed & Neural Operator Methods",
       "name_ko": "물리 기반 신경망 및 신경 연산자",
-      "color": "#33FF57",
-      "description": "물리 법칙을 신경망 구조에 내재화하여 데이터 효율성을 높이고 편미분방정식을 해결하는 과학 컴퓨팅의 패러다임 전환.",
+      "description": "2017년 Physics-Informed Neural Networks(PINNs)와 Neural ODE의 등장으로 시작된 이 흐름은, 물리 법칙을 신경망 구조에 내재화하여 편미분방정식과 동역학계를 데이터 효율적으로 해석하는 방향으로 발전했다. 2020년대 초 FNO, DeepONet 등 신경 연산자 계열이 빠르게 성숙하며 계산 과학의 패러다임을 바꿨고, 2025년 이후에는 Spiking Neural Operator 등 에너지 효율 모델로 분화하는 수렴 단계에 진입하고 있다.",
       "start_year": 2017,
-      "peak_year": 2025,
+      "peak_year": 2023,
       "status": "CONVERGING",
       "key_papers": [
         "Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations",
         "Neural Ordinary Differential Equations",
-        "Architectures, variants, and performance of neural operators: A comparative review"
+        "Architectures, variants, and performance of neural operators: A comparative review",
+        "SPINONet: Scalable Spiking Physics-informed Neural Operator for Computational Mechanics Applications"
       ]
     },
     {
-      "name": "Scientific Foundation Models",
-      "name_ko": "과학 분야 기초 모델",
-      "color": "#3357FF",
-      "description": "단백질 구조, 재료 물성, 유전체 데이터 등 도메인 특화 대규모 데이터를 사전 학습하여 과학적 발견의 속도를 가속화하는 파운데이션 모델.",
-      "start_year": 2021,
+      "name": "Scientific Foundation Models & Representation Learning",
+      "name_ko": "과학 분야 기초 모델 및 표현 학습",
+      "description": "2018년 BERT의 등장과 함께 과학 텍스트 특화 모델(SciBERT, Galactica)이 태동했고, 2021년 AlphaFold·GNoME 등 구조 예측 모델의 성공이 이 흐름을 물성·생체 도메인으로 폭발적으로 확장시켰다. RAG, Tool-use(Toolformer), Federated Learning 등 확장성 기법이 결합되며 도메인 전반을 아우르는 범용 과학 기초 모델 구축이 가속화되고 있다.",
+      "start_year": 2018,
+      "peak_year": 2025,
+      "status": "ACCELERATING",
+      "key_papers": [
+        "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+        "Highly Accurate Protein Structure Prediction with AlphaFold",
+        "Scaling Deep Learning for Materials Discovery",
+        "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+        "Toolformer: Language Models Can Teach Themselves to Use Tools"
+      ]
+    },
+    {
+      "name": "Autonomous Agents for Scientific Discovery",
+      "name_ko": "과학 발견을 위한 자율 에이전트",
+      "description": "2023년 LLM의 Tool-use 능력이 임계점을 넘으며 ChemCrow, HuggingGPT 등 도메인 특화 에이전트가 등장했고, 2024~2025년 AI Scientist, Virtual Lab, AgentRxiv 등 '완전 자율 연구' 시스템이 연이어 발표되며 패러다임 전환을 이끌었다. 수학 자동 형식화(M2F, MerLean), 폐루프 실험실(Self-Driving Lab), 코드 생성 에이전트(ResearchCodeAgent)가 수렴하는 지점에서 'AI 과학자' 개념이 구체화되고 있으며, 2026년 현재 멀티 에이전트 오케스트레이션이 핵심 경쟁 축이 되었다.",
+      "start_year": 2023,
       "peak_year": 2026,
       "status": "ACCELERATING",
       "key_papers": [
-        "Highly Accurate Protein Structure Prediction with AlphaFold",
-        "Scaling Deep Learning for Materials Discovery",
-        "Foundation models in bioinformatics"
+        "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+        "Towards Autonomous Mathematics Research",
+        "M2F: Automated Formalization of Mathematical Literature at Scale",
+        "Towards an AI co-scientist",
+        "AgentRxiv: Towards Collaborative Autonomous Research"
       ]
     },
     {
-      "name": "AI-Enhanced Peer Review & Writing",
-      "name_ko": "AI 기반 동료 심사 및 학술 작문",
-      "color": "#FF33A8",
-      "description": "학술 논문 작성, 그림 생성, 피어 리뷰 자동화 등 연구 프로세스의 효율성을 높이고 무결성을 검증하기 위한 도구 및 윤리 연구.",
+      "name": "Scientific NLP, Document Intelligence & Benchmarks",
+      "name_ko": "과학 NLP·문서 지능 및 벤치마크",
+      "description": "2019년 ScispaCy·SciBERT를 시작으로 과학 문헌의 구조적 이해가 발전했고, 2022년 이후 차트·그림·수식을 처리하는 멀티모달 문서 지능이 급성장했다. 에이전트 연구가 성숙해지면서 그 성능을 엄밀히 측정하기 위한 ScienceAgentBench, SciAgentGym, ResearchGym 등 벤치마크 생태계가 2024~2026년 사이 집중적으로 형성되었다. 문서 지능은 에이전트의 '눈'이 되어 자율 연구 흐름에 편입되는 FEED INTO 관계를 보인다.",
+      "start_year": 2019,
+      "peak_year": 2025,
+      "status": "CONVERGING",
+      "key_papers": [
+        "ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing",
+        "TLDR: Extreme Summarization of Scientific Documents",
+        "PaperBanana: Automating Academic Illustration for AI Scientists",
+        "ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+        "Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers"
+      ]
+    },
+    {
+      "name": "Ethics, Policy & Meta-Science of AI",
+      "name_ko": "AI의 과학 영향과 윤리·정책",
+      "description": "AI 도구가 연구 현장에 확산됨에 따라, 그 사회적·인식론적 영향을 추적하는 메타과학 연구가 2022년부터 빠르게 증가했다. ChatGPT의 학계 유입, 피어 리뷰 자동화, AI 저작권, 학문적 집중 편향(AI가 과학의 범위를 좁힌다는 경고) 등이 주요 의제로 부상했다. 자율 에이전트의 신뢰성·데이터 무결성·재현성 문제가 Ethics 스트림에 새롭게 편입되면서 이 흐름은 기술 발전의 거울 역할을 수행하고 있다.",
       "start_year": 2022,
       "peak_year": 2025,
-      "status": "EMERGES",
+      "status": "DIVERGING",
       "key_papers": [
-        "Large Language Models for Automated Scholarly Paper Review: A Survey",
-        "PaperBanana: Automating Academic Illustration for AI Scientists",
-        "Best Practices for Using AI When Writing Scientific Manuscripts"
+        "Artificial intelligence tools expand scientists' impact but contract science's focus",
+        "Artificial Intelligence in Research and Development",
+        "AI for Science: An Emerging Agenda",
+        "Towards a Science of AI Agent Reliability",
+        "Your Brain on ChatGPT: Accumulation of AI-Usage Does Not Enhance but Decreases Novel Thinking"
       ]
     }
   ],
   "turning_points": [
     {
+      "year": 2019,
+      "label": "Scientific NLP Foundation",
+      "label_ko": "과학 NLP 기반 구축",
+      "description": "SciBERT, ScispaCy 등 과학 텍스트 특화 사전학습 모델이 등장하며 이후 모든 과학 AI 시스템의 언어 이해 기반이 마련됨."
+    },
+    {
       "year": 2021,
       "label": "AlphaFold Breakthrough",
       "label_ko": "AlphaFold의 단백질 구조 예측 돌파구",
-      "description": "단백질 구조 예측의 정확도가 실험 수준에 도달하며 AI가 과학적 발견의 핵심 도구로 자리 잡는 기폭제가 됨."
+      "description": "실험 수준의 단백질 구조 예측 성공이 AI 기초 모델의 과학적 가치를 증명하며, 재료·생명 분야 대규모 모델 개발의 도화선이 됨."
     },
     {
       "year": 2023,
       "label": "Agentic Turn",
       "label_ko": "에이전트적 전환",
-      "description": "LLM이 단순한 텍스트 생성기에서 도구 사용(Tool-use)을 통해 실험실 환경과 상호작용하는 자율적 에이전트로 진화하기 시작함."
+      "description": "Tool-use(Toolformer, HuggingGPT, ChemCrow)가 현실화되며 LLM이 수동적 언어 모델에서 실험실·코드베이스와 능동적으로 상호작용하는 자율 에이전트로 진화."
+    },
+    {
+      "year": 2024,
+      "label": "AI Scientist Era",
+      "label_ko": "AI 과학자 시대 개막",
+      "description": "The AI Scientist, AI co-scientist, Virtual Lab 등 end-to-end 자율 연구 시스템이 실제 논문·신약 후보 생성에 성공하며 'AI 과학자' 개념이 실체화됨."
     },
     {
       "year": 2025,
-      "label": "Closed-Loop Discovery",
-      "label_ko": "폐루프 과학적 발견 확산",
-      "description": "가설 설정부터 실험 데이터 수집 및 모델 검증까지 전 과정을 인간 개입 없이 AI가 수행하는 자율 연구 시스템이 본격화됨."
+      "label": "Benchmark & Trust Reckoning",
+      "label_ko": "벤치마크·신뢰성 정착",
+      "description": "자율 에이전트의 실제 연구 역량을 객관적으로 측정하기 위한 ScienceAgentBench, SciAgentGym, ResearchGym 등 평가 인프라가 집중 구축되고, 신뢰성·재현성·윤리 논의가 본격화됨."
     }
   ],
-  "executive_summary_ko": "AI for Science 연구는 초기 데이터 기반의 단순 예측 모델에서, 물리 법칙을 내재화한 신경 연산자 모델을 거쳐, 이제는 인간 연구자의 의사결정 과정을 대행하는 자율적 에이전트 시스템으로 급격히 진화하고 있습니다. 특히 2021년 AlphaFold의 성공 이후 대규모 기초 모델이 과학적 발견의 토대를 마련했으며, 2023년 이후 LLM 에이전트가 실험 자동화와 통합되면서 'AI 과학자'라는 새로운 패러다임이 연구의 중심축으로 부상하고 있습니다.\n\n향후 연구 방향은 자율적 발견의 생산성을 넘어, AI가 생성한 과학적 결과물의 신뢰성(Trustworthiness)과 데이터 무결성(Data Integrity)을 확보하는 데 집중될 것입니다. 또한, 인문사회과학부터 기초 자연과학까지 AI 도구가 광범위하게 도입됨에 따라, AI가 연구의 범위를 확장함과 동시에 어떻게 과학적 탐구의 본질을 보존할 것인지에 대한 윤리적·인식론적 성찰이 더욱 중요해질 전망입니다.",
+  "executive_summary_ko": "AI for Science 연구는 세 개의 큰 파도가 중첩되며 진화해왔다. 첫 파도(2017~2021)는 물리 법칙을 신경망에 내재화한 PINNs·신경 연산자와 대규모 사전학습 모델(BERT, SciBERT)이 과학 계산·언어 이해의 토대를 놓았다. 두 번째 파도(2021~2023)는 AlphaFold·GNoME 등 도메인 특화 기초 모델이 단백질·재료 과학에 혁명을 일으키며 AI가 실질적 과학적 발견의 주체가 될 수 있음을 입증했다. 세 번째 파도(2023~현재)는 Tool-use 에이전트에서 시작해 멀티 에이전트 오케스트레이션, 완전 자율 연구 시스템으로 가속화되며 'AI 과학자'의 출현을 현실화하고 있다.\n\n세 흐름은 서로 독립적이지 않다. 물리 기반 모델은 자율 에이전트의 시뮬레이터·검증기가 되고, 과학 NLP는 에이전트의 문헌 이해 엔진이 되며, 기초 모델은 에이전트의 추론 핵심이 된다. 동시에 이 기술들의 확산은 과학의 집중 편향, 재현성 위기, 저작권·신뢰 문제를 낳으며 메타과학·윤리 연구를 촉발하고 있다. 2025~2026년은 에이전트의 성능을 검증하는 벤치마크 생태계가 구축되고 신뢰성 담론이 본격화되는 결산의 해로, AI for Science가 '도구'를 넘어 '연구 파트너'로 자리매김하는 임계점에 서 있다.",
   "category_analyses": {
-    "LLM Agents for Science": {
+    "Autonomous Agents & Research Workflow": {
       "sub_themes": [
         {
-          "name": "Autonomous Scientific Discovery & Closed-Loop Systems",
-          "description": "Focuses on building end-to-end autonomous systems that handle the full research lifecycle from hypothesis generation and literature review to experimental design, simulation, and verification.",
-          "start_year": 2023,
-          "peak_year": 2026,
-          "status": "ACCELERATING",
-          "paper_count": 28
-        },
-        {
-          "name": "Agentic Benchmarking & Methodological Standardization",
-          "description": "Development of evaluation frameworks, benchmarks (ResearchGym, ScienceAgentBench, AIRS-Bench), and reliability metrics to standardize how agentic performance in scientific tasks is measured.",
+          "name": "End-to-End Research Automation",
+          "description": "Systems that autonomously execute the full research cycle: hypothesis, experiment, analysis, paper",
           "start_year": 2024,
           "peak_year": 2026,
           "status": "ACCELERATING",
-          "paper_count": 16
-        },
-        {
-          "name": "Domain-Specific Agentic Collaboration",
-          "description": "Specialized multi-agent frameworks tailored for specific scientific domains such as drug discovery (MedAgents), material science, earth observation, and quantum computation.",
-          "start_year": 2023,
-          "peak_year": 2026,
-          "status": "DIVERGING",
           "paper_count": 20
-        }
-      ],
-      "narrative_ko": "LLM 기반 과학 에이전트 연구는 초기 '도구 사용' 중심의 단순 보조 시스템에서 시작하여, 현재는 가설 설정부터 실험 데이터 분석 및 검증까지 전체 연구 주기를 자동화하는 '자율 과학자' 모델로 급격히 진화하고 있습니다. 특히 연구의 재현성과 신뢰성을 확보하기 위한 표준화된 벤치마크 설계와, 생명과학, 화학, 물리 등 특정 도메인에 특화된 다중 에이전트 협업 시스템이 핵심 연구 흐름으로 자리 잡으며, AI가 단순한 도구에서 능동적인 연구 파트너로 전환되는 거대한 패러다임 변화를 보여주고 있습니다."
-    },
-    "Scientific Discovery & Foundation Models": {
-      "sub_themes": [
-        {
-          "name": "Domain-Specific Foundation Models",
-          "description": "The development of specialized AI models for complex scientific tasks such as protein folding, materials discovery, and physics simulations.",
-          "start_year": 2021,
-          "peak_year": 2024,
-          "status": "ACCELERATING",
-          "paper_count": 6
         },
         {
-          "name": "Autonomous Scientific Discovery",
-          "description": "Research shifting from AI-assisted analysis to fully autonomous agents capable of formulating hypotheses, conducting experiments, and iterating on scientific workflows.",
+          "name": "Multi-Agent Orchestration",
+          "description": "Frameworks where specialized agents collaborate via communication protocols",
           "start_year": 2023,
           "peak_year": 2026,
           "status": "ACCELERATING",
+          "paper_count": 18
+        },
+        {
+          "name": "Tool-Use & API Integration",
+          "description": "LLM agents learning to call external tools, APIs, and code execution environments",
+          "start_year": 2023,
+          "peak_year": 2025,
+          "status": "CONVERGING",
+          "paper_count": 12
+        },
+        {
+          "name": "Self-Driving Laboratories",
+          "description": "Physical lab automation integrating robotic systems with AI decision-making",
+          "start_year": 2023,
+          "peak_year": 2026,
+          "status": "EMERGING",
           "paper_count": 8
+        },
+        {
+          "name": "Formal Verification & Math Agents",
+          "description": "Automated formalization of mathematical proofs and theorems (Lean, Coq)",
+          "start_year": 2025,
+          "peak_year": 2026,
+          "status": "EMERGING",
+          "paper_count": 5
         }
       ],
-      "narrative_ko": "과학적 발견을 위한 파운데이션 모델 분야는 초기 AlphaFold와 같은 특정 도메인 중심의 혁신적인 예측 모델 개발에서 시작하여, 점차 대규모 언어 모델을 활용한 범용 과학 연구 보조 및 완전 자동화된 과학적 탐구 에이전트로 진화하고 있습니다. 데이터에서 지혜를 추출하려는 시도는 이제 단순한 자동화를 넘어 AI가 스스로 가설을 세우고 실험을 설계하는 자율적 연구 시스템 구축으로 중심축이 이동하고 있으며, 이는 향후 과학 연구의 패러다임을 근본적으로 변화시킬 것으로 기대됩니다."
+      "narrative_ko": "이 카테고리는 2023년 Tool-use 에이전트(HuggingGPT, ChemCrow)로 시작해, 2024~2025년 완전 자율 연구(AI Scientist, AI co-scientist, AgentRxiv)로 빠르게 고도화됐다. 멀티 에이전트 협업 구조가 표준이 되었고, 수학 자동 형식화(M2F, MerLean)라는 새로운 분지가 2026년에 급속히 성장 중이다. 자율 에이전트는 인접한 모든 카테고리—물리 시뮬레이션, 생명과학, NLP 문서 처리, 벤치마크—의 소비자이자 통합자 역할을 수행한다."
     },
-    "Scientific Writing & Peer Review": {
+    "Ethics, Policy & Meta-Science": {
       "sub_themes": [
         {
-          "name": "AI-Assisted Scientific Writing & Ethics",
-          "description": "Exploration of the impact of LLMs on manuscript creation, cognitive dependency, and the development of best practices for maintaining scientific integrity.",
+          "name": "AI Impact on Scientific Practice",
+          "description": "Studies measuring how AI tools change research productivity, focus, and quality",
+          "start_year": 2022,
+          "peak_year": 2025,
+          "status": "DIVERGING",
+          "paper_count": 14
+        },
+        {
+          "name": "Peer Review Automation & Integrity",
+          "description": "AI-generated reviews, detection of AI authorship, review quality standards",
+          "start_year": 2023,
+          "peak_year": 2025,
+          "status": "CONVERGING",
+          "paper_count": 12
+        },
+        {
+          "name": "Open Access & Publishing Reform",
+          "description": "AI disruption of subscription models, scholarly communication transformation",
+          "start_year": 2015,
+          "peak_year": 2024,
+          "status": "CONVERGING",
+          "paper_count": 7
+        },
+        {
+          "name": "AI Agent Reliability & Safety",
+          "description": "Trustworthiness, failure modes, and governance frameworks for autonomous AI agents",
+          "start_year": 2024,
+          "peak_year": 2026,
+          "status": "EMERGING",
+          "paper_count": 7
+        }
+      ],
+      "narrative_ko": "초기에는 AI 글쓰기 도구의 학계 수용과 피어 리뷰 자동화가 주 관심사였다면, 2024년 이후 자율 에이전트의 신뢰성·오류 전파·편향 증폭 문제가 새로운 윤리 담론을 형성했다. 'AI가 과학의 범위를 좁힌다'는 경고와 'AI가 과학자의 영향력을 확대한다'는 상반된 분석이 공존하며, 이 흐름은 기술 발전의 속도에 비례해 더욱 넓어지고 있다(DIVERGING)."
+    },
+    "Physical Sciences & Engineering": {
+      "sub_themes": [
+        {
+          "name": "Physics-Informed Neural Networks",
+          "description": "Embedding physical laws (PDEs, conservation) directly into neural network architectures",
+          "start_year": 2017,
+          "peak_year": 2023,
+          "status": "CONVERGING",
+          "paper_count": 12
+        },
+        {
+          "name": "Materials Discovery & Generative Design",
+          "description": "ML-guided discovery of new crystals, alloys, and functional materials",
+          "start_year": 2019,
+          "peak_year": 2025,
+          "status": "ACCELERATING",
+          "paper_count": 15
+        },
+        {
+          "name": "Autonomous Physical Labs",
+          "description": "AI-native particle accelerators, self-driving chemistry labs, robotic synthesis",
+          "start_year": 2023,
+          "peak_year": 2026,
+          "status": "EMERGING",
+          "paper_count": 8
+        },
+        {
+          "name": "Neural Operators & Surrogates",
+          "description": "Data-efficient surrogate models for PDE solvers and scientific simulation",
+          "start_year": 2020,
+          "peak_year": 2024,
+          "status": "CONVERGING",
+          "paper_count": 10
+        }
+      ],
+      "narrative_ko": "2017년 PINNs로 시작된 물리 기반 ML이 FNO·DeepONet 등 신경 연산자로 다양화되며 계산 과학의 중추가 됐다. GNoME(2023)로 대표되는 대규모 재료 발견이 이 흐름을 더욱 강화했으며, 2025년 이후에는 로봇·AI 통합 자율 실험실이 신흥 분지로 부상하고 있다. 물리 과학 흐름은 자율 에이전트 흐름에 시뮬레이터·검증기를 제공하는 FEED INTO 관계를 형성한다."
+    },
+    "Scientific NLP & Document Intelligence": {
+      "sub_themes": [
+        {
+          "name": "Scientific Text Mining & Extraction",
+          "description": "NLP tools for named entity recognition, relation extraction, and summarization of scientific literature",
+          "start_year": 2019,
+          "peak_year": 2024,
+          "status": "CONVERGING",
+          "paper_count": 12
+        },
+        {
+          "name": "Chart & Figure Understanding",
+          "description": "Multimodal models for interpreting scientific charts, plots, and figures",
           "start_year": 2022,
           "peak_year": 2025,
           "status": "ACCELERATING",
-          "paper_count": 6
+          "paper_count": 12
         },
         {
-          "name": "Automated Peer Review & LLM Integration",
-          "description": "Research into leveraging AI for reviewer assistance, automated feedback generation, and the systemic risks of using AI to evaluate scientific contributions.",
+          "name": "AI-Assisted Academic Writing",
+          "description": "Tools for paper drafting, illustration generation, and writing assistance",
           "start_year": 2022,
           "peak_year": 2025,
+          "status": "CONVERGING",
+          "paper_count": 9
+        }
+      ],
+      "narrative_ko": "SciBERT·ScispaCy로 시작된 과학 NLP가 2022년 이후 차트·수식·그림을 다루는 멀티모달 문서 지능으로 확장됐다. PaperBanana(2025)처럼 논문 작성 자동화까지 포괄하며 자율 에이전트의 '눈과 손'이 되고 있다. 이 흐름은 독립적 연구 도구에서 에이전트 생태계의 핵심 하위 컴포넌트로 수렴하는 중이다."
+    },
+    "Scientific Foundation Models": {
+      "sub_themes": [
+        {
+          "name": "Scientific Language Pretraining",
+          "description": "Domain-specific pretraining on scientific corpora (SciBERT, Galactica, SciLLM)",
+          "start_year": 2018,
+          "peak_year": 2023,
+          "status": "CONVERGING",
+          "paper_count": 10
+        },
+        {
+          "name": "Generative & Flow-Based Models for Science",
+          "description": "Diffusion, flow matching, and generative models applied to molecular and material design",
+          "start_year": 2022,
+          "peak_year": 2026,
           "status": "ACCELERATING",
           "paper_count": 7
         },
         {
-          "name": "Open Access & Scholarly Publishing Evolution",
-          "description": "Investigation into structural changes in publishing models, such as the transition to open access and discipline-specific publishing barriers.",
-          "start_year": 2021,
-          "peak_year": 2023,
+          "name": "Tool-Augmented & RAG Models",
+          "description": "Foundation models enhanced with retrieval, tool-use, and external knowledge sources",
+          "start_year": 2020,
+          "peak_year": 2024,
           "status": "CONVERGING",
-          "paper_count": 3
+          "paper_count": 5
         }
       ],
-      "narrative_ko": "과학적 글쓰기 및 동료 심사 분야는 최근 몇 년간 전통적인 오픈 액세스 출판 모델의 확산에서 생성형 AI의 급격한 도입으로 중심축이 이동했습니다. 초기에는 학술지 출판의 구조적 변화와 접근성에 집중했으나, 현재는 LLM이 논문 작성 및 동료 심사 과정에 깊숙이 관여함에 따라 발생하는 윤리적 딜레마, AI 탐지 기술, 그리고 인간-AI 협업의 효율성에 대한 연구가 주를 이루고 있습니다. 이는 단순한 도구 도입을 넘어 학술 커뮤니케이션의 본질과 신뢰성을 재정의하는 전환점에 있습니다."
-    },
-    "Scientific Knowledge & NLP": {
-      "sub_themes": [
-        {
-          "name": "Scientific Language Modeling & Summarization",
-          "description": "Foundational work in adapting transformer architectures (BERT, SciBERT) for domain-specific tasks like biomedical NLP and extreme document summarization.",
-          "start_year": 2018,
-          "peak_year": 2021,
-          "status": "CONVERGING",
-          "paper_count": 6
-        },
-        {
-          "name": "Scientific Multimodal Chart Understanding",
-          "description": "Advanced instruction tuning and visual reasoning models designed to interpret, caption, and fact-check data-driven scientific figures and charts.",
-          "start_year": 2023,
-          "peak_year": 2025,
-          "status": "ACCELERATING",
-          "paper_count": 8
-        },
-        {
-          "name": "Knowledge-Augmented Research Discovery",
-          "description": "Integration of Knowledge Graphs and LLMs to facilitate scientific idea generation, novelty optimization, and scholarly question answering.",
-          "start_year": 2023,
-          "peak_year": 2025,
-          "status": "ACCELERATING",
-          "paper_count": 3
-        }
-      ],
-      "narrative_ko": "과학 기술 및 NLP 분야의 연구는 초기 BERT와 SciBERT를 중심으로 한 도메인 특화 언어 모델의 구축에서 시작하여, 점차 과학적 문맥을 이해하고 요약하는 고도화된 언어 모델로 진화했습니다. 최근에는 텍스트를 넘어 차트와 도표를 해석하는 멀티모달 이해 능력과, 지식 그래프를 결합하여 연구 아이디어를 생성하거나 학술적 질문에 답하는 지능형 연구 보조 도구로 연구의 중심축이 빠르게 이동하고 있습니다."
+      "narrative_ko": "BERT(2018)에서 출발한 과학 언어 모델이 SciBERT·Galactica를 거쳐 멀티모달·멀티도메인 기초 모델로 진화했다. Toolformer와 RAG가 외부 지식을 통합하는 방향을 열었고, DMFlow·Verifier-Constrained Flow 같은 생성 모델이 신소재·신약 설계에 직접 적용되고 있다. 기초 모델 흐름은 자율 에이전트의 '뇌'로 기능하며 MERGE 관계를 이룬다."
     },
     "Benchmarks & Evaluation": {
       "sub_themes": [
         {
-          "name": "Scientific Agent & Tool Benchmarking",
-          "description": "Focuses on developing benchmarks and frameworks to evaluate LLM-based agents in multi-step scientific reasoning, tool use, and automated experimentation.",
+          "name": "Agent Capability Benchmarks",
+          "description": "Evaluating LLM agents on multi-step scientific tasks, coding, and tool-use",
           "start_year": 2023,
           "peak_year": 2026,
           "status": "ACCELERATING",
           "paper_count": 12
         },
         {
-          "name": "AI-Assisted Research Workflow & Reproducibility",
-          "description": "Explores the integration of AI in systematic reviews, formalization of literature, and large-scale reanalysis to improve research transparency and reproducibility.",
-          "start_year": 2024,
-          "peak_year": 2026,
-          "status": "ACCELERATING",
+          "name": "Scientific Reasoning Evaluation",
+          "description": "Datasets for testing scientific problem-solving, hypothesis generation, and novelty",
+          "start_year": 2023,
+          "peak_year": 2025,
+          "status": "CONVERGING",
           "paper_count": 9
-        },
+        }
+      ],
+      "narrative_ko": "2023년 이전에는 과학 AI의 성능을 평가하는 표준 벤치마크가 없었다. 자율 에이전트의 급증과 함께 ScienceAgentBench, SciAgentGym, ResearchGym, SciCode 등이 2024~2026년 집중 출시되며 독립적인 평가 인프라 생태계가 형성됐다. 이 흐름은 자율 에이전트 흐름에 RESPOND하며 신뢰성 담론과 연결된다."
+    },
+    "Life Sciences & Molecular Discovery": {
+      "sub_themes": [
         {
-          "name": "Multimodal Scientific Content Understanding",
-          "description": "Advancements in processing and evaluating scientific figure-text understanding, multimodal generative copilots, and cross-disciplinary data alignment.",
-          "start_year": 2022,
+          "name": "Protein Structure & Design",
+          "description": "AlphaFold-era protein structure prediction and de novo protein/antibody design",
+          "start_year": 2021,
           "peak_year": 2025,
-          "status": "DIVERGING",
+          "status": "CONVERGING",
           "paper_count": 8
-        }
-      ],
-      "narrative_ko": "최근 벤치마크 및 평가 분야는 단순한 텍스트 분석을 넘어, AI가 과학적 발견의 전 과정에 능동적으로 참여하는 '과학적 에이전트'의 역량을 측정하는 방향으로 급격히 진화하고 있습니다. 초기에는 데이터셋 구축과 특정 도구의 성능 평가에 집중했으나, 점차 AI의 결과물에 대한 재현성 확보, 인간과의 협업 모델 검증, 그리고 복잡한 과학적 추론 과정을 평가하기 위한 구조화된 벤치마킹 프레임워크가 핵심 연구 의제로 자리 잡고 있습니다."
-    },
-    "AI Ethics & Integrity": {
-      "sub_themes": [
-        {
-          "name": "AI-Assisted Research Integrity & Verification",
-          "description": "Focuses on the challenges of maintaining scientific rigor, detecting AI-generated content in academia, and verifying the accuracy of AI-driven research outputs.",
-          "start_year": 2024,
-          "peak_year": 2026,
-          "status": "ACCELERATING",
-          "paper_count": 4
         },
         {
-          "name": "Human-AI Collaborative Discovery Frameworks",
-          "description": "Explores the integration of LLMs into the research lifecycle, from generating novel hypotheses to scalable, bias-aware peer review systems.",
+          "name": "Drug Discovery & Virtual Screening",
+          "description": "AI-accelerated drug candidate identification, ADMET prediction, and clinical translation",
+          "start_year": 2022,
+          "peak_year": 2026,
+          "status": "ACCELERATING",
+          "paper_count": 7
+        },
+        {
+          "name": "Genomics & Biomedical Agents",
+          "description": "LLM agents for genomic data analysis, gene ontology interpretation, and clinical AI",
           "start_year": 2023,
           "peak_year": 2026,
-          "status": "ACCELERATING",
-          "paper_count": 4
+          "status": "EMERGING",
+          "paper_count": 5
         }
       ],
-      "narrative_ko": "AI 윤리 및 무결성 분야는 초기 연구 도구로서의 LLM 도입에서 시작하여, 현재는 학술적 진실성을 보존하기 위한 검증 메커니즘 개발과 인간과 AI의 생산적 협업 모델을 구축하는 단계로 진화하고 있습니다. 특히 데이터 무결성과 환각 현상 해결이 핵심 과제로 부상하면서, 기술적 견고함과 연구 윤리라는 두 축이 상호 보완적으로 발전하는 양상을 보이고 있습니다."
+      "narrative_ko": "AlphaFold(2021)·RFdiffusion으로 대표되는 단백질 구조 예측·설계가 이 흐름의 닻이다. 2023년 이후 Virtual Lab, MAC-AMP 같은 멀티 에이전트 시스템이 신약 설계에 직접 투입되며 생명과학 에이전트 분지가 급성장하고 있다. 이 흐름은 기초 모델 흐름으로부터 SPAWN되어 자율 에이전트 흐름과 MERGE하는 경로를 보인다."
     },
-    "Domain Applications": {
+    "Other": {
       "sub_themes": [
         {
-          "name": "Physics-Informed Scientific Computing",
-          "description": "The evolution of neural operators, physics-informed neural networks (PINNs), and neural ODEs to solve complex differential equations and simulate physical systems.",
-          "start_year": 2017,
-          "peak_year": 2025,
-          "status": "ACCELERATING",
-          "paper_count": 22
-        },
-        {
-          "name": "LLM-Driven Scientific Discovery Agents",
-          "description": "The shift from passive models to autonomous agent frameworks that orchestrate tools, code, and reasoning to automate experimentation, synthesis, and hypothesis generation.",
-          "start_year": 2023,
-          "peak_year": 2026,
-          "status": "ACCELERATING",
-          "paper_count": 35
-        },
-        {
-          "name": "Domain-Specific Foundation Models",
-          "description": "Development of specialized foundation models and multi-modal LLMs for materials science, chemistry, and biology to handle complex molecular and structural data.",
-          "start_year": 2024,
-          "peak_year": 2025,
-          "status": "ACCELERATING",
-          "paper_count": 15
+          "name": "General ML Foundations",
+          "description": "Core ML methods (Neural ODE, SSMs, uncertainty quantification) cited across domains",
+          "start_year": 2018,
+          "peak_year": 2022,
+          "status": "CONVERGING",
+          "paper_count": 10
         }
       ],
-      "narrative_ko": "과학 분야의 AI 연구는 초기 물리 기반 신경망(PINN)과 신경 미분 방정식(Neural ODE)을 활용한 수치 해석 및 시뮬레이션의 고도화에서 시작되었습니다. 이후 대규모 언어 모델(LLM)의 급격한 발전과 함께, 단순한 데이터 분석을 넘어 도구 사용, 실험 자동화, 가설 생성까지 수행하는 자율적 과학 에이전트(Autonomous Agents) 체계로 패러다임이 이동했습니다. 최근에는 재료 과학, 생물학 등 특정 도메인에 특화된 파운데이션 모델이 구축되면서, AI가 실질적인 과학적 발견의 과정을 오케스트레이션하는 차세대 연구 환경으로 빠르게 진화하고 있습니다."
+      "narrative_ko": "Neural ODE, SSM, 불확실성 정량화 등 특정 과학 도메인에 귀속되지 않지만 여러 흐름의 공통 기반이 되는 핵심 ML 방법론 논문들로 구성된다. 독립 흐름이라기보다 다른 모든 스트림에 기반 기술을 공급하는 저층 인프라에 해당한다."
     }
   }
 }

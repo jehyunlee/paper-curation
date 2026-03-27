@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Large Language Models for Automated Open-domain Scientific Hypotheses Discovery</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
+th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+pre code { background: none; color: inherit; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Large Language Models for Automated Open-domain Scientific Hypotheses Discovery</h1>
+<blockquote>
+<p><strong>저자</strong>: Zonglin Yang, Xinya Du, Junxian Li, Jie Zheng, Soujanya Poria, Erik Cambria | <strong>날짜</strong>: 2023 | <strong>Link</strong>: <a href="https://arxiv.org/abs/2309.02726" target="_blank">https://arxiv.org/abs/2309.02726</a></p>
+</blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr />
+<div class="section-box"><h2>Essence</h2>
+<p>LLM을 활용하여 open-domain raw web corpus로부터 자동으로 과학적 가설을 생성하는 최초의 시스템을 제안한 연구이다. 기존의 closed-domain, commonsense 수준 가설 생성과 달리, 사회과학 분야에서 '문헌에 존재하지 않는' novel하고 valid한 가설을 LLM이 생성할 수 있음을 GPT-4 및 전문가 평가를 통해 최초로 입증했다.</p>
+</div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>알려진 것</strong>: 가설적 귀납(hypothetical induction)은 과학자가 관찰로부터 설명을 제안하는 핵심 추론 유형으로 인식됨</li>
+<li><strong>Gap</strong>: 기존 연구는 수동 선별된 관찰 문장(closed-domain)과 상식 수준의 가설에 한정되어, 실제 과학적 발견과 거리가 있음</li>
+<li><strong>왜 중요한가</strong>: Raw web corpus에서 자동으로 novel한 과학적 가설을 생성할 수 있다면, 과학적 발견의 속도를 획기적으로 가속화 가능</li>
+<li><strong>접근법</strong>: Open-domain raw web corpus를 관찰 데이터로 사용하고, multi-module framework에 3가지 feedback mechanism을 결합하여 가설 생성 품질을 향상</li>
+</ul>
+</div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li>사회과학 분야 최초의 academic hypothesis discovery dataset 구축 -- open-domain raw web corpus 기반</li>
+<li>GPT-4 기반 평가와 전문가 평가 모두에서 기존 방법 대비 우수한 가설 생성 성능 달성</li>
+<li>3가지 feedback mechanism (self-reflection, retrieval-augmented, iterative refinement)을 통한 체계적 성능 향상</li>
+<li>LLM이 '문헌에 존재하지 않는(novel)' 동시에 '현실을 반영하는(valid)' 과학적 가설을 생성할 수 있음을 최초 입증</li>
+</ol>
+</div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>데이터</strong>: Open-domain raw web corpus를 관찰 소스로 활용, 사회과학 분야 가설-관찰 쌍으로 구성된 새로운 벤치마크 데이터셋 구축</li>
+<li><strong>Multi-module Framework</strong>: 관찰 추출 → 패턴 인식 → 가설 생성의 파이프라인 구조로, 각 단계에서 LLM의 추론 능력을 활용</li>
+<li><strong>Feedback Mechanisms</strong>: Self-reflection, retrieval-augmented verification, iterative refinement의 3가지 피드백으로 가설 품질 개선</li>
+<li><strong>평가 체계</strong>: GPT-4 자동 평가와 domain expert 수동 평가를 병행하여 novelty, validity, helpfulness를 다각도로 검증</li>
+</ul>
+</div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>Open-domain Scientific Hypothesis Discovery</strong>: 수동 큐레이션 없이 raw web corpus에서 직접 가설을 도출하는 최초의 task 정의로, 기존 closed-domain 설정의 근본적 한계를 극복</li>
+<li><strong>Novel + Valid 가설 생성</strong>: LLM이 단순 상식이 아닌 학술 문헌에 없는 새로운 가설을 생성하면서도 현실 반영성을 유지할 수 있음을 실증</li>
+<li><strong>Multi-feedback Framework</strong>: Self-reflection, retrieval-augmented, iterative refinement을 결합한 체계적 가설 품질 향상 메커니즘 설계</li>
+</ul>
+<p><strong>Abstract에서 추출된 독창성 문장</strong>: In this work, we tackle these problems by proposing the first dataset for social science academic hypotheses discovery, with the final goal to create systems that automatically generate valid, novel, and helpful scientific hypotheses, given only a pile of raw web corpus.. Unlike previous settings, the new dataset requires (1) using open-domain data (raw web corpus) as observations; and (2) proposing hypotheses even new to humanity.. A multi-module framework is developed for the task, including three different feedback mechanisms to boost performance, which exhibits superior performance in terms of both GPT-4 based and expert-based evaluation.. To the best of our knowledge, this is the first work showing that LLMs are able to generate novel (''not existing in literature'') and valid (''reflecting reality'') scientific hypotheses.</p>
+</div>
+<div class="section-box"><h2>Limitation & Further Study</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>사회과학 분야에 한정된 실험으로, 자연과학 등 다른 분야로의 일반화 검증이 부족</li>
+<li>Generated hypothesis의 실험적 검증(empirical validation)까지 수행하지 못함</li>
+<li>GPT-4 기반 자동 평가의 신뢰성에 대한 추가 검증 필요</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>Web corpus의 품질과 편향이 생성되는 가설에 미치는 영향에 대한 분석이 부족</li>
+<li>생성된 가설의 falsifiability(반증 가능성) 평가가 없어, 과학적 가설로서의 엄밀한 자격 검증이 미흡</li>
+<li>Human expert 평가의 규모가 제한적이며, inter-annotator agreement에 대한 보고가 불충분</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>자연과학, 공학 등 다양한 도메인으로의 확장 및 domain-specific knowledge integration</li>
+<li>생성된 가설의 자동 실험 설계 및 검증 파이프라인 구축</li>
+<li>Multi-modal data (이미지, 표, 그래프)를 관찰 소스로 활용하는 확장</li>
+</ul>
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: Open-domain에서 LLM 기반 과학적 가설 자동 생성이라는 새로운 연구 방향을 개척한 의미 있는 work이다. Task 정의와 dataset 구축의 기여가 크나, 생성된 가설의 실증적 검증과 도메인 일반화에 대한 후속 연구가 필요하다.</p>
+</div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>
