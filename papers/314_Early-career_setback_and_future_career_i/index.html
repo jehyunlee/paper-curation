@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Yang Wang, Benjamin F. Jones, Dashun Wang | <strong>날짜</strong>: 2019 | <strong>Journal</strong>: Nature Communications | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41467-019-12189-3" target="_blank">10.1038/s41467-019-12189-3</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>초기 경력 실패(NIH R01 그랜트 탈락)는 <strong>단기적으로 탈락률을 10% 이상 높이지만, 살아남은 연구자들은 장기적으로 성공(narrow win) 집단을 능가한다</strong>. 펀딩 문턱 바로 아래와 위의 지원자를 준실험적으로 비교한 결과(regression discontinuity), near-miss 집단은 5년 후 논문 인용 영향력에서 narrow-win 집단보다 유의하게 높은 성과를 보였으며, 이는 선별 효과(screening)를 넘어 실패 자체가 성과를 인과적으로 향상시키는 증거와 일치한다. "나를 죽이지 않는 것이 나를 더 강하게 만든다"는 가설이 과학 경력에서 실증적으로 지지된다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -89,16 +91,24 @@ a { color: #1856A0; }
 <li>타국·타 펀딩 시스템에서의 재현 연구</li>
 <li>실패 효과의 젠더·분야별 이질성 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 준실험 설계로 "실패가 강화한다"는 가설을 과학 경력에서 처음 인과적으로 검증한 탁월한 연구로, Matthew effect 패러다임에 강력한 반증을 제시하며 과학 정책과 연구자 지원 방식에 실질적 함의를 남긴다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

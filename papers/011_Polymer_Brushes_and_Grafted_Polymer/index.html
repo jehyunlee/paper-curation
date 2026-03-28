@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Rigoberto C. Advincula, Jihua Chen | <strong>날짜</strong>: 2026-02-16 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2602.14362</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>고분자 브러시(polymer brush) 및 그래프트 고분자 연구에 AI/ML 워크플로우를 도입하여, 합성-시뮬레이션-특성분석의 전체 파이프라인을 가속화하고 궁극적으로 자율 주행 실험실(Self-Driving Laboratory, SDL)로의 전환을 제안하는 포괄적 리뷰 논문이다. 52페이지에 걸쳐 고분자 브러시의 합성 경로(grafting-from, grafting-onto, grafting-through), 다양한 특성분석 기법(AFM, SPR, ellipsometry, XRR/NR, QCM, XPS, FTIR, EIS), 시뮬레이션 방법론(MD, SCFT, coarse-grained), 그리고 각 영역에서 ML이 어떻게 적용될 수 있는지를 체계적으로 정리하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -92,15 +94,23 @@ a { color: #A62018; }
 <li>멀티모달 특성분석 데이터(AFM + SPR + QCM 동시 측정) 통합 ML 모델 개발</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>2/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 고분자 브러시 연구에 AI/ML 및 SDL 패러다임을 도입하는 비전을 체계적으로 제시한 리뷰이나, 새로운 실험/벤치마크 없이 기존 문헌을 나열하는 수준에 그치며, 저자 그룹의 연구에 과도하게 편중된 서사가 객관성을 약화시킨다. 해당 분야의 입문자에게는 합성-특성분석-시뮬레이션의 전체 지형을 파악하는 데 유용하나, AI/ML 적용의 깊이와 구체성은 부족하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

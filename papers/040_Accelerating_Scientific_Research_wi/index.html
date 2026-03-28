@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Accelerating Scientific Research with Gemini: Case Studies and Common Techniques</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Google Gemini 모델(특히 Gemini Deep Think)을 활용하여 이론 컴퓨터과학, 경제학, 최적화, 물리학 등 다양한 분야에서 미해결 문제 풀이, 추측 반증, 새로운 증명을 실현한 사례 연구 모음과, 이로부터 추출한 효과적인 인간-AI 협업 기법들을 정리한 연구.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -98,15 +101,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>이 논문은 LLM이 과학적 발견에 실질적으로 기여할 수 있음을 미해결 문제 풀이라는 가장 설득력 있는 방식으로 보여준다. 반복적 개선, 문제 분해, 학제간 전이라는 공통 기법의 추출은 다른 연구자에게 실용적 가이드를 제공한다. 적대적 리뷰어와 뉴로-심볼릭 루프 같은 고급 활용 패턴은 LLM 활용의 새로운 가능성을 열어준다. 다만 Google/Gemini 중심의 구성과 성공 사례 편향은 결과의 일반화를 제약하며, 재현성 문제도 본질적 한계이다. 전반적으로 <strong>"AI as creative partner"</strong> 비전을 구체적 증거로 뒷받침하는 시의적절한 연구이며, 향후 다양한 모델과 분야로의 확장 및 실패 사례 분석이 보완되어야 할 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Gemini를 활용한 과학 연구 사례 연구 모음이나 생존 편향과 체계적 평가 부재로 인해 학술적 신뢰성이 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

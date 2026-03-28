@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -118,34 +121,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<h3>강점</h3>
-<ul>
-<li>DMTA 사이클이라는 명확한 도메인 프레임워크에 에이전틱 AI를 매핑한 실용적 접근</li>
-<li>Safety Guardrail Agent의 포함이 제약 연구의 안전성 요구를 반영</li>
-<li>COVID 약물 발견 시나리오를 통한 end-to-end 워크플로 시연이 직관적</li>
-<li>기존 실험실 인프라(LIMS, ELN)와의 통합을 고려한 점진적 도입 전략</li>
-<li>MCP를 통한 표준화된 인터페이스 설계</li>
-</ul>
-<h3>약점</h3>
-<ul>
-<li>가장 큰 약점은 정량적 벤치마크 부재 -- 기존 방법 대비 효율성 향상을 수치로 입증하지 못함</li>
-<li>6페이지 본문 + 3페이지 데모로 구성된 짧은 논문으로, 기술적 깊이가 부족</li>
-<li>모든 저자가 Artificial, Inc. 소속으로 중립성 의문 -- 사실상 제품 소개에 가까움</li>
-<li>분자 생성이 MolMIM에 의존하나, 생성된 분자의 약물 유사성이나 합성 가능성에 대한 평가가 피상적</li>
-<li>"first production-ready implementation" 주장의 근거가 약함 -- 기존 자율 실험실(self-driving lab) 연구와의 체계적 비교 없음</li>
-<li>에이전트 간 갈등 해결, 오류 복구, 예외 상황 처리에 대한 논의가 부족</li>
-</ul>
-<h3>총평</h3>
-<p>DMTA 사이클에 멀티 에이전트 AI를 적용하는 실용적 시스템을 소개하는 논문으로, 개념적으로는 설득력이 있으나 학술적 엄밀성이 부족하다. 정량적 평가, 기존 자율 실험실 시스템과의 비교, 재현 가능한 실험 프로토콜이 보완되어야 연구 기여로서의 가치가 높아질 것이다. 현재 상태로는 기업 기술 보고서(technical report) 또는 제품 데모에 가까우며, 제약 산업에서 에이전틱 AI 적용의 개념 증명(proof of concept) 수준으로 평가된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 멀티 에이전트 DMTA 사이클 자동화 시스템 Tippy를 소개한 기업 논문으로 개념은 유망하나 독립적 검증과 방법론 투명성이 부족하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

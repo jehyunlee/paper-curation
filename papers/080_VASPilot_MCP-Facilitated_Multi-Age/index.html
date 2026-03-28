@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -124,33 +127,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<h3>강점</h3>
-<ul>
-<li>VASP 사용자 커뮤니티의 실질적 고충(반복적 입력 준비, 오류 처리, 작업 관리)을 정확히 타겟팅</li>
-<li>MCP 기반 모듈형 설계가 다른 DFT 코드로의 확장을 구조적으로 보장</li>
-<li>자동 오류 복구(symprec 조정)가 실제 VASP 워크플로에서 빈번히 발생하는 문제를 해결</li>
-<li>Zero-shot으로 다중 vdW 보정 비교(10가지)를 성공적으로 수행한 것은 에이전트의 일반화 능력을 잘 보여줌</li>
-<li>오픈소스 공개와 웹 데모 제공으로 재현성과 접근성 확보</li>
-<li>웹 UI가 에이전트 실행의 투명성을 제공하여 연구자의 검증을 지원</li>
-</ul>
-<h3>약점</h3>
-<ul>
-<li>벤치마크가 비교적 단순한 반도체 시스템에 국한 -- 강상관 전자계, 자성체, 표면/인터페이스 등 실질적으로 도전적인 문제에 대한 검증 필요</li>
-<li>기존 자동화 도구(AiiDA, FireWorks, atomate 등)와의 체계적 비교 부재 -- LLM 기반 접근의 부가 가치가 명확하지 않음</li>
-<li>LLM의 환각(hallucination) 가능성에 대한 논의 없음 -- 잘못된 INCAR 파라미터 설정이나 부적절한 k-point 선택 등의 위험</li>
-<li>Result Validation Agent의 검증 깊이가 불분명 -- 결과의 물리적 타당성(예: 밴드갭이 합리적 범위인지)을 얼마나 판단할 수 있는지 미기술</li>
-</ul>
-<h3>총평</h3>
-<p>VASP 워크플로 자동화에 LLM 멀티 에이전트를 적용한 실용적이고 잘 설계된 오픈소스 시스템이다. MCP 기반 모듈형 아키텍처, 자동 오류 복구, zero-shot 복합 미션 처리는 계산 재료 과학 연구자에게 실질적 가치를 제공한다. 특히 웹 UI를 통한 투명한 워크플로 추적이 연구자의 신뢰 구축에 기여한다. 다만, 더 복잡한 물리 시스템과 고급 VASP 기능에 대한 검증, 기존 워크플로 관리 도구와의 비교, LLM 환각에 대한 안전장치 논의가 보완되면 영향력이 크게 높아질 것이다. 응축물질물리학/재료 과학 분야에서 AI for Science의 구체적 실현 사례로서 가치가 높다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: MCP 기반 멀티 에이전트로 DFT 계산을 자동화하는 VASPilot은 실용적 접근이나 평가 규모와 오류 처리 강건성에서 개선이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

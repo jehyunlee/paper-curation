@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>AI for Research: The Ultimate Guide to Choosing the Right Tool</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>연구자와 대학원생이 연구 과정의 각 단계에서 AI 도구를 활용하는 방법을 실용적으로 안내하는 Nature의 Career Feature 기사이다. 문헌 조사, 가설 생성, 통계/코딩, 학술 글쓰기의 네 단계로 나누어 현재 사용 가능한 AI 플랫폼들을 소개하고, 실제 PhD 학생 및 연구자들의 사용 사례를 인터뷰 형식으로 전달한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -96,17 +99,27 @@ a { color: #A62018; }
 <li><strong>윤리적 고려 부족</strong>: AI 생성 텍스트의 학술 윤리, 표절 문제, 저널별 AI 사용 정책 차이에 대한 논의가 얕다.</li>
 <li><strong>AI 과의존 위험</strong>: 비판적 사고 약화 설문 결과를 언급하지만 깊이 있는 분석은 없다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>Nature에 게재된 실용적이고 접근성 높은 가이드 기사로, AI를 연구에 도입하려는 초기 단계의 연구자나 대학원생에게 훌륭한 출발점이 된다. 문헌 조사 -> 가설 생성 -> 코딩/분석 -> 글쓰기라는 연구 워크플로우에 따라 도구를 분류한 점이 직관적이며, 실제 PhD 학생들의 목소리를 통해 현장감을 전달한다. 특히 CRESt(실험 자동화 AI 동료), CatalyzeX(오픈소스 코드 재활용), Thesify(grant writing 교육) 등 잘 알려지지 않은 도구를 소개한 점이 가치 있다. 다만 학술 논문이 아닌 기사이므로 체계적 비교나 정량적 근거는 기대하기 어렵고, 빠르게 변하는 AI 도구 시장의 특성상 유효 기간이 제한적이다. 연구자가 자신의 워크플로우에 AI를 통합하는 첫 걸음을 내딛는 데 유용한 참고 자료이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 연구자를 위한 AI 도구 활용 가이드를 담은 Nature Career Feature로, 실용적 조언을 폭넓게 제공하지만 학술적 기여나 체계적 평가는 없는 저널리즘 기사이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

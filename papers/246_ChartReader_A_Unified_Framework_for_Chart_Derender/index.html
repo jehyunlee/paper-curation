@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ChartReader: A Unified Framework for Chart Derendering and Comprehension without Heuristic Rules</h1>
 <blockquote><p><strong>저자</strong>: Zhi-Qi Cheng, Qi Dai, Alexander G. Hauptmann | <strong>날짜</strong>: 2023-10-01 | <strong>DOI/URL</strong>: https://doi.org/<a href="https://doi.org/10.1109/ICCV51070.2023.02029" target="_blank">10.1109/ICCV51070.2023.02029</a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>휴리스틱 규칙 없이 차트 역렌더링(derendering)과 이해(comprehension)를 통합 처리하는 단일 프레임워크 ChartReader를 ICCV 2023에서 제안한다.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -54,14 +57,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>Summary (요약)</h2>
 <p>ChartReader는 차트 이미지를 입력으로 받아 원본 데이터 추출(역렌더링)과 차트 기반 질의응답(이해) 두 작업을 휴리스틱 없이 통합 수행하는 프레임워크이다. ICCV 2023이라는 최고 수준의 컴퓨터비전 학술대회에 발표되었으며, 과학 문헌의 시각 정보 자동 파싱이라는 실용적 문제를 정면으로 다룬다. Abstract가 Zotero에 저장되지 않았으나 컨퍼런스 위상과 페이지 수(12페이지)로 볼 때 충실한 실험적 검증을 갖춘 연구로 추정된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 차트 역렌더링과 이해를 통합한 규칙 없는 프레임워크로 ICCV 2023에 발표된 수준 높은 연구이며, 과학 문헌 자동 파싱 인프라에 실질적 기여를 한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

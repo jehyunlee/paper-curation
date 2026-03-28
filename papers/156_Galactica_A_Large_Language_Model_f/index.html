@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Galactica: A Large Language Model for Science</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 문헌과 데이터의 폭발적 증가로 인한 정보 과부하 문제를 해결하기 위해, 과학 지식을 저장·결합·추론할 수 있는 대규모 언어 모델 <strong>Galactica</strong>를 제안한다. 4,800만 편의 논문, 교과서, 강의 노트, 수백만 개의 화합물 및 단백질 서열, 과학 웹사이트, 백과사전 등 총 1,060억 토큰의 고품질 큐레이션 과학 코퍼스로 학습하여, 기존 범용 LLM과 차별화된 과학 특화 언어 모델을 구현하였다. 검색 엔진 중심의 기존 과학 지식 접근 방식을 넘어, 언어 모델이 과학의 새로운 인터페이스가 될 수 있음을 보여주는 선구적 연구이다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -123,19 +126,27 @@ a { color: #A62018; }
 <li>검색 증강(retrieval augmentation)과의 결합</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>Galactica는 과학 분야에 특화된 LLM이라는 새로운 패러다임을 제시한 기념비적 연구이다. "큐레이션된 고품질 데이터 + 과학 특화 토큰화"라는 간결한 전략으로 훨씬 큰 범용 모델들을 능가하는 성과를 달성했다는 점이 핵심 메시지이다. 특히 <code><work></code> 토큰을 통한 단계별 추론, 인용 예측에서의 검색 대체 가능성, SMILES·단백질 서열의 자연어 통합은 과학 AI 연구의 방향성을 제시한다.</p>
-<p>다만, 이 논문이 발표 직후 공개 데모에서 hallucination 문제로 인해 큰 논란을 겪었다는 점은 시사적이다. 벤치마크 성능과 실제 사용 간의 괴리, 그리고 과학 분야에서 요구되는 높은 정확도 기준을 감안하면, hallucination 문제에 대한 보다 근본적인 해결책이 필요하다. 또한 2,048 토큰의 컨텍스트 윈도우는 현재 기준으로는 매우 제한적이다.</p>
-<p>그럼에도 불구하고, 데이터 큐레이션의 중요성, 멀티모달 과학 토큰화, 작업 메모리 개념 등 이 논문이 제시한 핵심 아이디어들은 이후 과학 AI 연구에 깊은 영향을 미쳤으며, 과학 지식의 새로운 인터페이스로서 LLM의 가능성을 처음으로 체계적으로 탐구한 중요한 연구로 평가된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>5</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학 지식에 특화된 106B 토큰 대규모 언어 모델로 수식·코드·인용을 통합 처리하는 Meta AI의 야심찬 연구로, 조기 철회 논란에도 불구하고 과학 전용 LLM 연구의 이정표가 되었다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

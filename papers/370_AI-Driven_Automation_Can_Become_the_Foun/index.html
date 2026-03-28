@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Renqi Chen, Haoyang Su, Shixiang Tang, Zhenfei Yin, Qi Wu, Hui Li, Ye Sun, Nanqing Dong, Wanli Ouyang, Philip Torr | <strong>날짜</strong>: 2025-05-17 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2505.12039"" target="_blank">10.48550/arXiv.2505.12039"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2505.12039" target="_blank">10.48550/arXiv.2505.12039</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AI는 Science of Science(SoS) 연구의 다음 세대를 어떻게 바꿀 수 있는가? 이 논문은 AI4SoS라는 새로운 학제간 연구 방향을 정의하고, 기존 인간 주도 연구 프로세스(수동 데이터 처리 → 서지계량 분석 → 규칙 기반 시뮬레이션 → 실세계 패턴 검증)를 AI 기반 파이프라인으로 대체하는 비전을 제시한다. 핵심 실증으로, <strong>100만 에이전트 규모의 LLM 기반 멀티에이전트 시스템</strong>으로 가상 연구 사회를 시뮬레이션하여 실제 2010년 데이터의 인용 패턴(민족 다양성·소속 다양성·대학 랭킹과 인용 수 간 상관관계)을 성공적으로 복제했다. 100만 에이전트 시뮬레이션은 32개 NVIDIA A100 GPU로 약 1주일이면 완료된다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -95,16 +97,24 @@ a { color: #1856A0; }
 <li>시뮬레이션 결과의 인과 메커니즘 분석 — 관측 데이터에서 검증 불가능한 반사실적 시나리오 탐색</li>
 <li>다양한 학문 분야와 국가 맥락에서의 범용 SoS 시뮬레이션 프레임워크 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: AI4SoS를 독립적 연구 영역으로 처음 정의하고 100만 에이전트 규모의 연구 사회 시뮬레이션이라는 인상적인 개념 증명을 제시한 비전 논문이다. 실증 실험의 깊이보다 광범위한 프레임워크 제시에 방점이 찍혀 있어 기술적 엄밀성은 다소 제한적이나, Science of Science의 AI 기반 자동화라는 새로운 연구 의제를 설득력 있게 제안한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

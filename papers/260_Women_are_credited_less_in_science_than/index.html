@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Matthew B. Ross, Britta M. Glennon, Raviv Murciano-Goroff, Enrico G. Berkes, Bruce A. Weinberg, Julia I. Lane | <strong>날짜</strong>: 2022 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41586-022-04966-w"" target="_blank">10.1038/s41586-022-04966-w"</a> target="_blank"><a href="https://doi.org/10.1038/s41586-022-04966-w" target="_blank">10.1038/s41586-022-04966-w</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학에서 여성의 기여는 체계적으로 과소 인정된다. 대규모 행정 데이터(NIH 연구팀), 저자 설문조사, 정성적 인터뷰 세 가지 독립적 데이터 소스를 분석한 결과, 같은 팀에서 동일한 기여를 해도 여성이 남성보다 논문·특허 저자로 포함될 확률이 유의미하게 낮았다. 이 크레딧 gap은 거의 모든 과학 분야와 경력 단계에 걸쳐 일관되게 나타났으며, 관찰된 성별 생산성 격차의 상당 부분이 실제 기여 차이가 아닌 귀속(attribution) 차이에서 비롯됨을 시사한다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #1856A0; }
 <li>저자 순서(first/last authorship) 내 성별 편향 심층 분석</li>
 <li>저자 기재 관행 개선(CRediT taxonomy 등)의 실제 효과 평가</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 세 가지 독립 데이터로 여성 과학자의 기여가 체계적으로 저평가됨을 증명하여, 관찰된 성별 생산성 격차의 원인이 능력 차이가 아닌 구조적 귀속 편향임을 실증한 과학정책 분야의 중요 연구다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

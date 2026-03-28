@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Mingmeng Geng, Yuhang Dong, Thierry Poibeau | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25638" target="_blank">2603.25638</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>학술 논문에서 LLM의 영향은 어떻게 측정할 수 있으며 실제로 어느 정도인가? arXiv 논문 분석을 통해 LLM이 구동하는 단어 사용 패턴 변화를 포착했다. 제목에서는 "beyond"와 "via"의 빈도가 증가하고, 초록에서는 "the"와 "of"의 빈도가 감소한다. 현재 분류기들은 어떤 특정 모델이 텍스트를 생성했는지 멀티클래스 분류에서 정확히 판별하기 어렵다 — LLM들이 서로 비슷하기 때문이다. 해석 가능한 선형 접근법을 채택하고 모델·프롬프트 차이를 보정하여, 실세계 LLM 사용이 <strong>이질적이고 동적</strong>임을 정량적으로 보였다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -90,16 +92,24 @@ a { color: #1856A0; }
 <li>분야별(CS, 물리학, 생물학) LLM 영향 패턴 비교</li>
 <li>LLM 사용 모니터링을 위한 실시간 단어 빈도 기반 지수 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: LLM 영향의 어휘 지표를 간결하고 해석 가능하게 제시한 탐색적 연구이나, 인과 관계 확립과 특정 LLM 귀속의 어려움은 향후 해결해야 할 핵심 과제다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

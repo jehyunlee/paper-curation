@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Jiaqi Cheng, Yundong Xie, Qiang Wu | <strong>날짜</strong>: 08/2025 | <strong>Journal</strong>: Journal of Informetrics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1016/j.joi.2025.101710"" target="_blank">10.1016/j.joi.2025.101710"</a> target="_blank"><a href="https://doi.org/10.1016/j.joi.2025.101710" target="_blank">10.1016/j.joi.2025.101710</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>참신한 논문은 실제로 더 많은 사회적 주목을 받는가? 경제·경영 분야 <strong>31만 건 이상</strong>의 논문(2012-2019)을 대상으로 Altmetric Attention Score, Mendeley, Twitter, Blogs, News, Facebook, Wikipedia 등 7개 소셜 미디어 지표를 분석한 결과, <strong>"그렇다"</strong>는 답이 도출되었다. 참신한 연구는 모든 플랫폼에서 더 높은 사회적 주목을 받으며, 특히 <strong>상위 저널 논문</strong>과 <strong>오픈 액세스 논문</strong>에서 효과가 두드러진다. 이 결과는 대안적 참신성 지표와 인용수 통제 후에도 견고하다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #1856A0; }
 <li>오픈 액세스 매개 효과의 인과 구조 분석 (OA가 확산 경로인지 vs. 참신성 선택 효과인지)</li>
 <li>소셜 미디어 플랫폼별 메커니즘 차이 — 전문가 네트워크(Mendeley)와 일반 공중(Facebook) 비교</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 참신성과 사회적 주목의 정(+)의 관계를 다중 Altmetric 플랫폼에서 일관되게 입증한 탄탄한 실증 연구다. 경제·경영 단일 분야 한정이라는 한계가 있으나, 오픈 액세스와의 상호작용 발견 등 정책적으로 유용한 함의를 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

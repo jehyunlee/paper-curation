@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: M. E. J. Newman | <strong>날짜</strong>: 2001 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.98.2.404" target="_blank">10.1073/pnas.98.2.404</a> | <strong>arXiv</strong>: -</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학자들의 공동 저작 네트워크는 어떤 구조를 가지고 있는가? 이 논문은 MEDLINE(생의학), Los Alamos e-Print Archive(물리학), NCSTRL(컴퓨터 과학) 등 세 개 대형 데이터베이스를 분석하여 <strong>과학 협력 네트워크가 "작은 세계(small-world)" 구조를 형성하며, 임의로 선택된 두 과학자 사이의 평균 경로가 매우 짧다</strong>는 것을 실증했다. 동시에 분야별 협력 패턴의 차이(물리학의 대규모 그룹 vs. 생의학·컴퓨터과학의 소규모 팀)도 정량화했다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #1856A0; }
 <li>시간적 진화 — 인터넷 확산 이후 협력 네트워크 변화</li>
 <li>협력 네트워크 구조와 연구 성과(임팩트, 혁신성) 간 상관관계 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 과학 협력 네트워크 연구의 출발점이 된 고전적 논문으로, 소세계 구조와 분야별 차이를 최초로 엄밀하게 정량화한 기념비적 기여이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Towards AI for Science: Developing a Conceptual Basis for Transforming Research Support Services in University Libraries</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>대학 도서관이 AI for Science(AI4S) 연구 프로젝트를 지원하기 위해 어떤 연구지원서비스(RSS)를 제공할 수 있는지를 체계적 문헌 리뷰를 통해 분석하고, 5개 주제와 21개 서비스로 구성된 개념 모델을 제시한 논문이다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -109,15 +112,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>AI for Science라는 새로운 연구 패러다임 하에서 대학 도서관의 역할 재정의를 시도한 시의적절한 연구이다. 체계적 문헌 리뷰를 통해 21개 서비스와 5개 주제로 구성된 개념 모델을 제시한 점은 해당 분야의 이론적 기반 구축에 기여한다. 그러나 이 논문은 본질적으로 도서관 정보학(Library and Information Science) 관점의 연구로서, AI4S의 기술적 실체나 과학적 발견 과정에 대한 깊이 있는 이해보다는 서비스 분류 체계 구축에 집중하고 있다. 문헌 리뷰 기반의 개념 모델은 향후 경험적 검증과 실무 적용을 통한 정교화가 필수적이다. AI for Science 연구자보다는 대학 도서관 관리자와 정책 입안자에게 더 유용한 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>2</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 도서관 과학 관점에서 AI4S 데이터 관리를 논하는 시론적 논문으로 AI4S 연구자에게 직접적 기여는 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

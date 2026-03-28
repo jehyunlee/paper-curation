@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Beyond Heuristics: Multimodal Transformer for Chart Data Extraction</h1>
 <blockquote><p><strong>저자</strong>: Yumeng Wang | <strong>날짜</strong>: 2024-08-26 | <strong>DOI/URL</strong>: https://doi.org/<a href="https://doi.org/10.1109/CIPAE64326.2024.00033" target="_blank">10.1109/CIPAE64326.2024.00033</a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>휴리스틱 규칙에 의존하지 않고 멀티모달 트랜스포머를 이용해 차트 이미지에서 데이터를 자동 추출하는 방법을 제안한다.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -54,14 +57,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>Summary (요약)</h2>
 <p>본 논문은 IEEE CIPAE 2024에서 발표된 단저자 단문 논문(4페이지)으로, 차트 데이터 추출에서 규칙 기반 접근을 벗어나 멀티모달 트랜스포머를 적용하는 아이디어를 제시한다. 공개된 abstract가 없고 페이지 수가 적어 방법론의 깊이를 판단하기 어려우나, 차트 이해(chart comprehension) 분야의 딥러닝 전환 흐름을 반영하는 연구이다. ChartReader 등 동시대 연구들과 유사한 방향성을 공유한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Significance</td><td>2</td></tr>
-<tr><td>Overall</td><td>2</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 차트 데이터 추출의 딥러닝 전환을 다루는 짧은 컨퍼런스 논문으로, abstract 부재와 제한된 분량으로 인해 기여도 평가에 한계가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

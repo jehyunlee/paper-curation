@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Daniil A. Boiko, Robert MacKnight, Ben Kline, Gabe Gomes | <strong>날짜</strong>: 2023-12-21 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-023-06792-0" target="_blank">10.1038/s41586-023-06792-0</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Coscientist는 GPT-4를 핵심 Planner로 활용하여 인터넷 검색, 문서 탐색, 코드 실행, 실험 자동화 도구를 통합한 multi-LLM 기반 AI 에이전트 시스템으로, 화학 합성 계획부터 로봇 liquid handler 제어, 클라우드 실험실 연동, 반응 조건 최적화까지 6가지 과제를 (반)자율적으로 수행한다. 특히 palladium 촉매 cross-coupling 반응(Suzuki-Miyaura, Sonogashira)의 자율 설계 및 실행과, 기존 데이터 기반 반응 조건 최적화에서 Bayesian optimization을 능가하는 성능을 실증했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -108,15 +110,23 @@ a { color: #A62018; }
 <li>Multi-modal 입력(스펙트럼 이미지, 실험 영상 등)을 직접 처리하는 시스템으로의 진화</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: Coscientist는 LLM을 화학 실험의 자율적 설계-실행에 적용한 선구적 연구로, "AI가 실제 물리적 실험을 수행한다"는 패러다임을 Nature에서 처음으로 대규모 실증했다. 모듈형 아키텍처 설계, 문서 기반 API 학습, 반응 최적화에서의 chemical reasoning 정량화 등 기술적 기여가 탄탄하며, 특히 GC-MS 검증을 통해 실제 화학 반응 생성물 형성을 확인한 점이 설득력 있다. 다만, 실험 규모와 다양성이 제한적이고, data contamination 우려가 완전히 해소되지 않아 후속 연구의 여지가 크다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

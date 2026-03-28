@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>From AI for Science to Agentic Science: A Survey on Autonomous Scientific Discovery</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>"AI for Science"에서 "Agentic Science"로의 전환을 체계적으로 정리한 포괄적 서베이 논문이다. AI 시스템이 단순 계산 도구(Computational Oracle)에서 자율적 연구 파트너(Autonomous Scientific Partner)로 진화하는 과정을 4단계 프레임워크로 정의하고, 생명과학·화학·재료과학·물리학 4개 도메인에서의 자율적 과학 발견(Autonomous Scientific Discovery) 사례를 종합적으로 리뷰한다. 기존 서베이들이 프로세스·자율성·메커니즘 관점을 개별적으로 다루었던 것과 달리, 이 세 관점을 통합하는 프레임워크를 제시한 것이 핵심 차별점이다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>LLM과 멀티모달 시스템의 급속한 발전으로 AI가 가설 생성, 실험 설계, 실행, 분석, 반복적 개선까지 수행할 수 있게 되었으나, 이러한 "Agentic Science" 패러다임을 체계적으로 이해하고 설계하기 위한 통합 프레임워크가 부재했다. 기존 서베이들은 워크플로우, 자율성 수준, 또는 아키텍처를 각각 독립적으로 다루어 파편화된 시각만 제공하고 있었다.</p></div>
@@ -77,17 +80,27 @@ a { color: #A62018; }
 <li><strong>윤리적 거버넌스</strong>: 이중 용도(dual-use) 위험, 책임 소재, 과학 노동 구조 변화 등의 윤리적 문제를 지적하지만, 구체적 해결 메커니즘은 향후 과제로 남김</li>
 <li><strong>향후 연구 방향</strong>: 자율적 발명(Autonomous Invention), 학제간 대규모 합성(Interdisciplinary Synthesis at Scale), 글로벌 협력 연구 에이전트(Global Cooperation Research Agent) 생태계 구축</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AI for Science에서 Agentic Science로의 패러다임 전환을 가장 포괄적으로 정리한 서베이로, 이 분야에 진입하거나 전체 그림을 파악하려는 연구자에게 필수적인 참고 자료이다. 통합 프레임워크의 구조적 명확성과 4개 도메인에 걸친 폭넓은 커버리지가 강점이다. 다만, 서베이의 본질적 한계로서 각 시스템에 대한 깊이 있는 기술적 분석보다는 분류와 매핑에 초점을 두고 있어, 개별 시스템의 실제 성능이나 작동 방식에 대해서는 원 논문을 참조해야 한다. "Nobel-Turing Test"와 같은 도발적 제안은 연구 커뮤니티의 장기적 비전 설정에 기여하나, 단기적으로 실현 가능한 로드맵은 부족하다. 전체적으로, Agentic Science라는 신생 분야의 <strong>지형도(landscape map)</strong>로서 높은 완성도를 보여주는 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI4Science에서 Agentic Science로의 패러다임 전환을 체계적으로 정리한 포괄적 서베이로 분야 전체를 조망하는 중요한 참고 문헌이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

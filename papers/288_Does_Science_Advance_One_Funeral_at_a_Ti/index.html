@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Does Science Advance One Funeral at a Time</h1>
 <blockquote><p><strong>저자</strong>: Pierre Azoulay, Christian Fons-Rosen, Joshua S. Graff Zivin | <strong>날짜</strong>: 2019 | <strong>Journal</strong>: American Economic Review | <strong>DOI</strong>: <a href="https://doi.org/10.1257/aer.20161574" target="_blank">10.1257/aer.20161574</a> | <strong>arXiv</strong>: -</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>"과학은 장례식 하나씩 발전한다"는 Max Planck의 명언은 실제로 맞는가? 이 논문은 452명의 저명 생의학 과학자(엘리트 연구자) 사망 데이터를 분석하여 <strong>엘리트 과학자의 사망 후, 그가 지배하던 연구 분야에서 새로운 진입자(outsiders)의 논문 출판이 8.6% 증가하고, 그 논문들이 더 높은 피인용을 받는다</strong>는 것을 실증했다. Planck의 가설을 처음으로 체계적으로 검증한 연구이다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -78,16 +80,24 @@ a { color: #1856A0; }
 <li>은퇴(retirement)가 사망과 유사한 효과를 갖는지 비교</li>
 <li>물리학, 사회과학 등 다른 분야에서의 검증</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: Planck의 격언을 자연 실험으로 최초 실증한 걸작으로, 과학 생태계에서 엘리트 지배가 실제로 지식 진보를 지연시킴을 보여주는 매우 중요한 연구이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

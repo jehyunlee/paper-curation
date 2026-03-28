@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Fourier Neural Operator(FNO)에 단일 태스크별 레이어를 추가하는 SLE-FNO를 제안하여, 과학적 기계학습 서로게이트 모델의 지속적 학습(continual learning) 시 catastrophic forgetting 없이 새로운 분포 외(OOD) 태스크에 효율적으로 적응하는 방법론이다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -116,15 +119,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>과학적 기계학습에서 상대적으로 덜 탐구된 continual learning 문제를 체계적으로 다루었다는 점에서 의의가 크다. FNO의 스펙트럴 구조를 활용한 SLE-FNO 설계는 직관적이면서도 효과적이며, 태스크당 1.5~4.4% 파라미터 추가만으로 zero forgetting을 달성한 것은 인상적이다. 특히 EWC, LwF, OGD, GEM, Replay, PiggyBack, LoRA 등 주요 CL 방법론을 동일 조건에서 비교한 포괄적 벤치마크는 SciML 커뮤니티에 유용한 참조점을 제공한다. KPCA 기반 task-agnostic 라우팅의 100% 정확도도 주목할 만하다. 다만, 단일 응용 문제와 소수 태스크에 한정된 실험으로 일반화 가능성에 대한 의문이 남으며, 장기적 태스크 축적 시의 확장성에 대한 추가 연구가 필요하다. 전반적으로 SciML에서의 CL 연구의 좋은 출발점을 제시하는 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: FNO에 지속학습을 적용하는 SLE 프레임워크로 SciML에서의 catastrophic forgetting 문제를 체계적으로 다룬 탄탄한 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

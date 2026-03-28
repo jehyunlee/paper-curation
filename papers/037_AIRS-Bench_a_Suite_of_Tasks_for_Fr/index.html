@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>최신 ML 논문에서 추출한 20개 태스크로 구성된 AIRS-Bench를 제안하여, AI 에이전트의 아이디어 생성부터 실험 분석 및 반복 개선까지 전체 연구 생애주기에 걸친 에이전트 역량을 평가하는 벤치마크 연구.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -95,15 +98,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>AIRS-Bench는 AI 연구 에이전트의 역량을 전체 연구 생애주기 관점에서 평가한다는 점에서 시의적절하고 야심찬 벤치마크이다. 4/20 태스크에서만 인간 SOTA를 초과한다는 결과는 현재 AI 에이전트의 자율 연구 능력에 대한 현실적 그림을 제시한다. 범용적 태스크 포맷과 오픈소스 공개는 커뮤니티의 후속 연구를 촉진할 것으로 기대된다. 다만 ML 분야 편중과 최종 성과 중심의 평가는 벤치마크의 범용성과 깊이를 동시에 확보하기 어려운 근본적 한계를 보인다. 전반적으로 <strong>자율 과학 연구 에이전트 평가의 중요한 이정표</strong>가 될 수 있는 연구이며, 태스크 확장과 과정 평가 도입이 향후 과제로 남아 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI 연구 에이전트의 프론티어 역량을 평가하는 체계적 벤치마크로 범위와 설계가 우수하나 평가 자동화에 추가 보완이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

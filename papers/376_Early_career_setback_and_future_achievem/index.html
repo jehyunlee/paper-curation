@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Early career setback and future achievement in professional sports</h1>
 <blockquote><p><strong>저자</strong>: Suman Kalyan Maity, Yang Wang, Nima Dehmamy, Victoria Medvec, Brian Uzzi, Dashun Wang | <strong>날짜</strong>: 2025-09-29 | <strong>Journal</strong>: Scientific Reports | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41598-025-17271-z"" target="_blank">10.1038/s41598-025-17271-z"</a> target="_blank"><a href="https://doi.org/10.1038/s41598-025-17271-z" target="_blank">10.1038/s41598-025-17271-z</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>초기 커리어에서의 좌절(setback)은 장기적 성취에 어떤 영향을 미치는가? 이 논문은 Wang 연구팀의 "early-career setback" 연구 프로그램을 프로 스포츠 맥락에 적용한다. 과학·사업·스포츠에 걸쳐 반복적으로 확인된 패턴 — 초기 실패가 일부에게는 이후 더 큰 성공의 발판이 된다는 것 — 이 프로 스포츠의 선수 발전 궤적에서도 성립하는지를 검증한다. 프로 스포츠 데이터의 장점은 성과 지표가 객관적이고, 이적/부상/팀 변화 등 외생적 충격을 통제하기 용이하다는 점이다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -84,16 +86,24 @@ a { color: #1856A0; }
 <li>코치·팀 환경이 setback 극복에 미치는 중재 효과 분석</li>
 <li>과학자·사업가·운동선수 세 집단의 setback-recovery 패턴 직접 비교</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: Wang 연구팀의 early-career setback 프레임워크를 프로 스포츠로 확장한 연구로, 이론적 누적성은 있으나 스포츠 도메인 자체의 독창적 기여는 제한적이다. Abstract 미제공으로 방법론적 엄밀성과 주요 발견을 직접 평가하기 어려우며, 프로 스포츠의 특수한 선발 편향 처리가 논문의 신뢰성을 결정하는 핵심 요소일 것이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

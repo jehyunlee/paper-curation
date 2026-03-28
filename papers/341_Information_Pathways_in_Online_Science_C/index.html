@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Alexandros Efstratiou, Giuseppe Russo, Luca Luceri | <strong>날짜</strong>: 2026-03-18 | <strong>Journal</strong>: arXiv preprint | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.17249" target="_blank">2603.17249</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>온라인 과학 커뮤니케이션에서 정보는 어떤 경로로 흐르는가, 그리고 반-합의(anti-consensus) 콘텐츠는 어떻게 확산되는가? COVID-19 관련 논문을 인용한 <strong>124만 건의 트윗과 21만 1천 건의 뉴스 기사</strong>를 분석한 결과, 세 가지 핵심 발견이 나왔다: (1) Twitter에서 가장 영향력 있는 계정들은 주로 의학·연구 자격증을 가진 전문가들이다. (2) 그러나 이들 중 일부는 백신, 록다운 등에 대한 반-합의 입장을 가진 전문가를 <strong>조직적으로 증폭</strong>하는 협력 네트워크를 형성하고 있다. (3) <strong>뉴스 매체는 소셜 미디어 superspreader들이 먼저 공유한 논문을 사후에 보도하는 경향</strong>이 있어, Twitter가 뉴스 어젠다를 선행한다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #1856A0; }
 <li>반-합의 전문가 네트워크의 자금 구조 및 조직적 기반 분석</li>
 <li>알고리즘 추천 시스템이 반-합의 콘텐츠 증폭에 미치는 영향</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: COVID-19 과학 커뮤니케이션 생태계를 대규모 데이터로 분석하여 뉴스 미디어가 소셜 미디어 superspreader를 뒤따른다는 새로운 정보 흐름 패턴을 실증한 영향력 있는 연구다. 반-합의 전문가들의 조직적 증폭 구조를 발견한 것은 미디어 리터러시와 플랫폼 거버넌스에 직접적 함의를 지닌다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

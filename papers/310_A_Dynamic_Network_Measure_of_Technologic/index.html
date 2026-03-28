@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>A Dynamic Network Measure of Technological Change</h1>
 <blockquote><p><strong>저자</strong>: Russell J. Funk, Jason Owen-Smith | <strong>날짜</strong>: 2017 | <strong>Journal</strong>: Management Science | <strong>DOI</strong>: <a href="https://doi.org/10.1287/mnsc.2015.2366" target="_blank">10.1287/mnsc.2015.2366</a> | <strong>arXiv</strong>: -</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>기술 특허가 기존 기술 궤적을 강화(consolidate)하는가, 아니면 새로운 방향을 열어젖히는(disrupt)가? 이 논문은 <strong>CD(Consolidation-Disruption) 지수</strong>라는 새로운 동적 네트워크 지표를 개발하여, 특허가 이후 발명가들에게 기존 피인용 기술을 계속 인용하게 하는지(consolidation) 아니면 우회하게 하는지(disruption)를 측정했다. 이 지표는 이후 Park et al.(2023)의 과학·특허 혁신성 분석에서 핵심 도구로 채택되었다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -79,16 +81,24 @@ a { color: #1856A0; }
 <li>과학 논문으로 확장 → Park et al.(2023)에서 실현됨</li>
 <li>CD 지수와 기업 시장 성과, 기술 확산 속도 간 관계 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 기술 혁신의 성격을 인용 네트워크 구조에서 포착하는 CD 지수를 개발한 방법론적 기여로, 이후 과학 혁신성 연구의 핵심 도구가 된 영향력 높은 논문이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

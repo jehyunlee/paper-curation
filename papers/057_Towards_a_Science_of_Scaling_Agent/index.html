@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -109,16 +112,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<p>에이전트 시스템 설계를 휴리스틱에서 원리 기반(principled) 접근으로 전환시키는 시의적절하고 중요한 연구이다. 180개 통제 구성의 실험 규모, 혼동 요인 제거를 위한 방법론적 엄밀성, 그리고 "에이전트 수가 아닌 아키텍처-태스크 정합성이 핵심"이라는 실용적 메시지 모두 높이 평가할 만하다. 특히 Finance Agent(+81%)와 PlanCraft(-70%)의 극적 대비는 태스크 분해 가능성이라는 핵심 변수를 설득력 있게 보여준다. R^2=0.524는 "과학"이라기보다 "과학을 향한(towards)" 수준이지만, 이 분야에서 최초의 체계적 정량화라는 점에서 의의가 크다. GPT-5.2 out-of-sample 검증은 일반화 가능성을 강화하나, SAS 과대 예측은 프레임워크의 외삽 한계를 솔직히 드러낸다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 180개 구성 조합으로 에이전트 스케일링의 아키텍처-태스크 정렬 원칙을 도출한 체계적 실증 연구로 에이전트 설계에 실용적 지침을 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

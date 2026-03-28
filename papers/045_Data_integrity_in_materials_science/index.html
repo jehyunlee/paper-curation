@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nik Reeves-McLaren, Sarah Moth-Lund Christensen | <strong>날짜</strong>: 2026 | <strong>Journal</strong>: Journal of Materials Chemistry A | <strong>DOI</strong>: <a href="https://doi.org/10.1039/D5TA05512A" target="_blank">10.1039/D5TA05512A</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AI 시대 재료과학에서의 데이터 무결성(data integrity) 위기를 체계적으로 분석하고, 이를 해결하기 위한 다각적 프레임워크를 제안하는 관점(perspective) 논문이다. 전문가도 AI 생성 현미경 이미지를 실제 실험 데이터와 구별하지 못하며(40-51% 정확도), 재료 특성화 분석의 20-30%에 기본 오류가 존재하고, GenAI가 물리 원리를 위반하는 그럴듯한 데이터 조작 코드를 1시간 내에 생성할 수 있다는 구체적 증거를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -102,15 +104,23 @@ a { color: #A62018; }
 <li>다양한 특성화 기법(SEM/TEM, XPS, Raman, NMR 등)으로의 기법별 검증 모듈 확장</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: AI가 재료과학을 혁신하는 시점에서 데이터 무결성이라는 근본적 문제를 정면으로 다룬 시의적절하고 중요한 관점 논문이다. GenAI의 데이터 조작 위험을 구체적 사례로 입증하고, 임상 연구의 검증 방법론을 재료과학에 적용한 모듈식 체크리스트는 실용적 가치가 높다. 다만 perspective 논문의 특성상 제안의 실증적 검증이 부재하며, "garbage in, garbage out"의 경고를 넘어 구체적 해결 도구의 개발과 배치가 후속 과제로 남는다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Foundation models for materials discovery – current state and future directions</h1>
 <blockquote><p><strong>저자</strong>: Pyzer-Knapp et al. | <strong>날짜</strong>: 2025-03-06 | <strong>DOI/URL</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41524-025-01560-4"" target="_blank">10.1038/s41524-025-01560-4"</a> target="_blank">https://doi.org/<a href="https://doi.org/10.1038/s41524-025-01560-4" target="_blank">10.1038/s41524-025-01560-4</a></a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>재료 발견을 위한 파운데이션 모델의 현황을 체계적으로 정리하고, 데이터 부족·다중 스케일 물리·설명 가능성 등 핵심 과제를 식별하며 향후 방향을 제시한 종합 리뷰.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -67,15 +70,24 @@ a { color: #A62018; }
 <li>벤치마크 비교에서 공정한 평가 기준 부재</li>
 <li>산업 적용 사례 및 스케일업 경험 부족</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 재료 발견용 파운데이션 모델의 현황과 도전 과제를 잘 정리한 리뷰로, 해당 분야 연구자와 입문자 모두에게 유용한 참고 자료이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The altering landscape of US–China science collaboration: from convergence to divergence</h1>
 <blockquote><p><strong>저자</strong>: Kensei Kitajima, Keisuke Okamura | <strong>날짜</strong>: 2025-03-03 | <strong>Journal</strong>: Humanities and Social Sciences Communications | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1057/s41599-025-04550-3"" target="_blank">10.1057/s41599-025-04550-3"</a> target="_blank"><a href="https://doi.org/10.1057/s41599-025-04550-3" target="_blank">10.1057/s41599-025-04550-3</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>미중 과학 협력은 지정학적 긴장이 고조된 최근 몇 년간 수렴에서 분기로 전환되었는가? 이 연구는 수십 년간의 공동저자 데이터를 분석하여 미중 과학 협력이 한동안 지속적으로 증가하다가 <strong>최근 들어 감소 또는 정체 추세로 전환</strong>되었음을 보여준다. 이 변화는 양국의 기술 경쟁, 수출 통제, 비자 제한 등 정치경제적 요인과 시기적으로 일치하며, 과학의 탈동조화(decoupling)가 단순한 수사가 아닌 측정 가능한 현실임을 시사한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -75,16 +77,24 @@ a { color: #1856A0; }
 <li>분야별 탈동조화 패턴 비교 (반도체 vs. 생명과학 vs. 기초과학)</li>
 <li>미중 이외의 국가쌍(EU-중국, 일본-중국)으로 확장 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 미중 과학 협력의 수렴-분기 전환이라는 시의적절한 주제를 다룬 연구로, 지정학과 과학학의 교차점에서 정책적 함의가 크다. 다만 PDF 없이 abstract만으로 방법론의 엄밀성을 평가하기 어렵다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

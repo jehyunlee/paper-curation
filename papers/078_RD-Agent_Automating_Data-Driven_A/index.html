@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>R&amp;D-Agent: Automating Data-Driven AI Solution Building Through LLM-Powered Automated Research, Development, and Evolution</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 Researcher-Developer 이중 에이전트 프레임워크를 통해 데이터 과학 문제의 반복적 탐색-개발 사이클을 자동화하고, 다중 병렬 탐색 트레이스(Multi-Trace)의 융합으로 MLE-Bench에서 최고 성능을 달성한 ML 엔지니어링 에이전트 시스템이다.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>데이터 과학 프로젝트는 본질적으로 반복적(iterative)이다. 피처 엔지니어링, 모델 선택, 하이퍼파라미터 튜닝 등 매 단계에서 피드백을 기반으로 전략을 수정해야 하며, 이는 높은 수준의 전문성과 시간을 요구한다. 기존 LLM 기반 에이전트들은 단일 경로 탐색에 의존하여 최적해에 수렴하지 못하거나 조기 수렴(premature convergence) 문제를 보였다. Kaggle 등 크라우드소싱 플랫폼에서도 여전히 고난도 데이터 과학 문제는 전문가 수준에 못 미치는 자동화 성능을 나타내고 있었다.</p></div>
@@ -86,15 +89,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>R&D-Agent는 "인간 R&D 팀의 분업 구조를 LLM 에이전트로 재현한다"는 직관적이면서도 강력한 아이디어를 제시하며, MLE-Bench에서의 SOTA 달성으로 그 효과를 입증했다. 특히 역할별 이종 모델 배정과 Multi-Trace 융합은 향후 LLM 기반 자동화 연구의 중요한 설계 패턴이 될 수 있다. 다만, 현 시점에서는 기술 보고서 수준으로 실험적 검증의 깊이가 부족하며, 비용 효율성과 다양한 도메인에서의 일반화 가능성이 추가로 검증되어야 한다. Microsoft Research의 후속 연구가 기대되는 프레임워크이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Researcher-Developer 이중 에이전트로 데이터 기반 AI 연구를 자동화하는 RD-Agent은 MLE-Bench SOTA를 달성했으나 적용 범위가 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

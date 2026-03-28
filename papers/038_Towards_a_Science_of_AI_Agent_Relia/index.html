@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Towards a Science of AI Agent Reliability</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI 에이전트의 신뢰성을 단일 성공률이 아닌 consistency, robustness, predictability, safety의 4가지 차원, 12개 구체적 메트릭으로 분해하여 평가하는 체계를 제안하고, 14개 에이전트 모델 평가를 통해 최근의 성능 향상이 신뢰성 개선으로 이어지지 않음을 입증한 연구.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -95,15 +98,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>이 논문은 AI 에이전트 평가에서 가장 간과되어 온 측면인 "신뢰성"을 정면으로 다루는 중요한 연구이다. 단일 accuracy 메트릭의 한계를 지적하고 4차원 12개 메트릭의 구체적 대안을 제시한 점은 학술적으로나 실무적으로 가치가 높다. 특히 "capability 향상이 reliability 향상으로 자동 전이되지 않는다"는 실증 결과는 현재 AI 에이전트 개발 방향에 대한 근본적인 재고를 촉구한다. Princeton/Narayanan 그룹의 이전 연구(AI Snake Oil 등)와 맥을 같이하는 <strong>비판적이면서도 건설적인 기여</strong>로, AI 에이전트의 실용적 배포를 위한 평가 표준의 기초가 될 수 있는 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI 에이전트 신뢰성을 4차원 12지표로 체계화한 프레임워크로 과학 에이전트 배포의 실용적 기준을 제시한 중요한 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

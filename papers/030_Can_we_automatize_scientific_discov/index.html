@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Akshay K. Jagadish, Milena Rmus, Kristin Witte, Marvin Mathony, Marcel Binz, Eric Schulz | <strong>날짜</strong>: 2026-03-22 | <strong>arXiv</strong>: 2603.20988 | <strong>분야</strong>: cs.AI</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 2/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인지과학의 발견 사이클(실험 설계 -> 데이터 수집 -> 모델 비교 -> 결론 도출)을 LLM 기반으로 완전 자동화하는 "in silico science of the mind" 비전을 제시하는 짧은 Perspective 논문이다. LLM이 실험 패러다임을 제안하고(Experimentalist), cognitive foundation model(Centaur)이 합성 행동 데이터를 생성하며, LLM 기반 program synthesis가 인지 모델을 대규모 탐색하고(Modeller), LLM-critic이 "interestingness"를 평가하여 루프를 닫는 4단계 자동 발견 엔진을 구상한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -102,15 +104,23 @@ a { color: #A62018; }
 <li>발견 루프에서 생성된 가설의 재현성(reproducibility) 검증 프레임워크 개발</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>2/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 2/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 인지과학의 발견 사이클을 LLM과 cognitive foundation model로 완전 자동화하겠다는 대담한 비전을 제시한 짧은 Perspective 논문이다. 특히 Centaur를 in-loop data generator로 사용하고, LLM program synthesis로 인지 모델을 대규모 탐색한다는 아이디어는 인지과학과 AI의 교차점에서 참신하다. 그러나 5페이지 분량의 제약으로 각 구성 요소의 기술적 깊이가 부족하고, 통합 구현이 없으며, 실패 모드(특히 LLM에 의한 interestingness 평가의 순환성)가 핵심 위험으로 남아 있다. "In silico science of the mind"라는 방향성 자체는 AI4Science 커뮤니티에서 주목할 가치가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

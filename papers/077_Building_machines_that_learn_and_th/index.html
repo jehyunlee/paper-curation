@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -107,32 +110,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<h3>강점</h3>
-<ul>
-<li>Nature Human Behaviour에 게재된 만큼, 인지과학과 AI의 교차점에서 매우 풍부한 학제적 통찰 제공</li>
-<li>인지과학의 성숙한 이론적 기반(베이지안 인지, 마음 이론, 합리적 화행 등)을 AI 설계 원칙으로 번역하는 시도가 설득력 있음</li>
-<li>4개 도메인(프로그래밍, 체화, 스토리텔링, 의학)의 구체적 사례 연구가 추상적 비전을 실체화</li>
-<li>위험 요소(과의존, 의인화, 정렬 오류)에 대한 솔직한 논의와 인프라 수준의 해결책 제시</li>
-<li>Cambridge, Princeton, MIT, NYU의 선도적 인지과학/AI 연구자 13명의 종합적 관점</li>
-</ul>
-<h3>약점</h3>
-<ul>
-<li>제안된 베이지안 접근법의 실질적 스케일링 가능성에 대한 의문 -- 확률적 프로그래밍이 현실 세계의 복잡성과 대규모 사용자 기반을 감당할 수 있는지 불분명</li>
-<li>LLM의 암묵적 세계 모델 vs. 명시적 구조화 모델의 상대적 장단점에 대한 공정한 비교 부재</li>
-<li>사례 연구들이 아직 프로토타입 수준이며, 실제 사용자와의 대규모 상호작용 실험 결과가 부족</li>
-<li>"사고 파트너"라는 용어 자체가 의인화를 촉진할 위험이 있으나, 이에 대한 대응이 다소 소략</li>
-</ul>
-<h3>총평</h3>
-<p>인간-AI 협력의 미래에 대해 인지과학에 깊이 뿌리내린 체계적 비전을 제시하는 영향력 높은 Perspective 논문이다. "사고의 도구"에서 "사고의 파트너"로의 전환이라는 핵심 주장은 LLM 시대의 AI 설계 철학에 중요한 방향 제시를 한다. 특히 베이지안 마음 이론, 합리적 화행, 자원 합리성 등의 인지과학 모티프를 공학적 설계 원칙으로 구조화한 "Bayesian Thought Partner Toolkit"은 향후 인간 중심 AI 연구의 참조 프레임워크가 될 잠재력이 크다. 다만, 확률적 프로그래밍 기반 접근의 현실적 확장성은 향후 대규모 실증 연구를 통해 검증되어야 할 과제로 남는다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 베이지안 인지과학에서 영감을 받아 AI를 진정한 사고 파트너로 설계하는 비전을 제시한 Nature Human Behaviour 논문으로 AI 설계 철학에 중요한 기여를 한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

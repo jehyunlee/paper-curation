@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Vardan Adibekyan, Olivier Demangeon, Tiago Campante, Nuno Santos, Susana Barros, Artur Hakobyan | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25349" target="_blank">2603.25349</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>천문학에서 저널 인용 편향은 얼마나 심각하며, 어떤 패턴으로 나타나는가? 2000-2025년 사이 출판된 약 255,000편의 천문학 논문을 분석한 결과, <strong>다학제 저널(Nature, Science 등)은 논문 점유율 대비 최대 9배 더 많은 인용</strong>을 받는다. 저자가 특정 저널에 논문을 게재하면 그 저널에 대한 인용도 유의미하게 증가하는 '자기 기여 편향(self-contribution bias)'은 다학제 저널에서 특히 두드러진다. 이 효과는 지난 10년간 감소 추세이나 여전히 유의미하다. 이는 주제 클러스터링, 기관/개인 출판 습관, 편집 기대에 부응하기 위한 전략적 참조 행동의 복합적 결과로 해석된다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -92,16 +94,24 @@ a { color: #1856A0; }
 <li>arXiv 인용 패턴과 저널 인용 패턴 간의 비교로 오픈 액세스의 편향 완화 효과 검증</li>
 <li>저자들이 권장하는 공정한 참조 선택을 위한 실천 가이드라인 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 천문학 분야 25년치 255,000편 논문으로 저널 인용 편향의 규모(최대 9배)와 자기 기여 편향을 정량화했으며, citation-based 지표를 더 비판적으로 해석해야 한다는 실증적 근거를 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

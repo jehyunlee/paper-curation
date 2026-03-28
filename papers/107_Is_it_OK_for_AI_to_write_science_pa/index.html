@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>발표일</strong>: 2025-05-14</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (한 줄 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Nature가 전 세계 약 5,000명의 연구자를 대상으로 실시한 설문에서, 과학 논문 작성과 동료심사에 AI를 사용하는 것에 대한 윤리적 견해가 크게 갈리며, 대다수가 AI 사용에 호의적이면서도 실제 채택률은 낮고 공개(disclosure) 여부에 대한 합의가 부재함을 확인한 대규모 조사.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -119,17 +122,27 @@ a { color: #A62018; }
 <li><strong>향후 필요</strong>: (1) AI 공개 정책의 표준화(STM 분류 체계 채택), (2) "개선(refine)" vs "생성(generate)"의 경계에 대한 학계 합의 도출, (3) AI 사용과 논문 품질의 인과 관계 연구, (4) 비영어권 연구자 대상 AI 활용의 형평성 효과 정량 평가</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>5,000명 이상의 글로벌 연구자를 대상으로 한 이 설문은, 학술 AI 사용에 대한 <strong>현재 학계의 분열된 인식 지형도</strong>를 가장 포괄적으로 그려낸 자료다. 특히 "편집은 괜찮지만 초안 작성은 논란, 결과 섹션은 금기"라는 세분화된 태도 패턴, 그리고 "호의적이지만 실제로는 안 씀"이라는 태도-행동 괴리는 학술 출판 정책 수립에 직접적으로 유용한 통찰이다. 다만, Nature News Feature의 성격상 통계적 엄밀성(신뢰구간, 다변량 분석 등)보다는 기술적 요약에 치중하며, 응답 편향과 중국 과소 대표 문제는 결과 해석 시 주의가 필요하다. 연구자들의 자유 응답에서 드러난 양극단의 목소리 -- "AI는 계산기와 같다" vs "AI 사용은 사기" -- 는 이 문제가 단순한 기술 채택을 넘어 <strong>과학의 정체성과 가치</strong>에 대한 근본적 논쟁임을 보여준다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 5,000명 연구자 설문을 통해 AI 과학 논문 작성에 대한 인식을 파악한 Nature 기사로, 광범위한 표본의 현황 데이터를 제공하지만 심층 분석이나 처방적 제언은 부족하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

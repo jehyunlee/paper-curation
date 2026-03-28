@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Changhong Mou, Binghang Lu, Guang Lin | <strong>날짜</strong>: 2026-02-17 | <strong>arXiv</strong>: 2602.15632 | <strong>분야</strong>: physics.comp-ph</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>고전적 고유직교분해(POD/PCA)의 선형, 격자 종속, L2 고정 최적성이라는 세 가지 한계를 극복하기 위해, 신경망으로 매개변수화된 비선형 직교 기저 함수를 무한 차원 함수 공간에서 학습하는 Neural-POD 프레임워크를 제안한다. 순차적 잔차 최소화(Gram-Schmidt 직교화에 대응)를 통해 모드를 하나씩 학습하며, 학습된 기저는 해상도 독립적이고, L1/L2/H1 등 임의 노름에서 최적화 가능하며, Galerkin 투영 기반 축소 모델(ROM)과 DeepONet 프레임워크 모두에 플러그앤플레이로 통합된다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -96,15 +98,23 @@ a { color: #A62018; }
 <li>복잡 기하학(비정형 메시)에 대한 확장</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 고전 POD의 한계(선형성, 격자 종속성, L2 고정)를 신경망 기반 비선형 기저 학습으로 극복하려는 방향성은 타당하며, Galerkin ROM과 DeepONet 양쪽에 플러그앤플레이로 통합되는 실용적 설계가 장점이다. 그러나 실험이 비교적 단순한 문제(1D Burgers, 2D 층류 NSE)에 한정되어 있고, 기존 비선형 차원 축소 방법과의 비교가 부재하며, 이론적 보장이 없어 기여의 깊이가 아쉽다. 교육적 도구로서의 가치는 인정되지만, 고난이도 과학 문제에서의 실질적 우위를 입증하기 위한 추가 실험이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Genesis: Towards the Automation of Systems Biology Research</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>수천 개의 인과 요소로 구성된 시스템 생물학 모델을 자동으로 개선하는 차세대 로봇 과학자 Genesis의 설계와 개발 진행 상황을 보고하는 논문으로, 하루 1,000회의 가설 주도 폐쇄 루프 실험 사이클을 목표로 한다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -89,15 +92,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>Genesis는 과학 연구 자동화의 야심찬 비전을 제시하는 프로젝트로, 하루 1,000회 병렬 폐쇄 루프 실험이라는 목표는 기존 로봇 과학자 대비 양적·질적 도약이다. 각 서브시스템(μ-bioreactors, AutonoMS, Genesis-DB, RIMBO, LGEM+)의 설계는 체계적이며, 특히 LGEM+의 귀납적 모델 개선 접근법은 과학적 발견 자동화의 핵심에 해당한다. 그러나 진행 보고서(progress report) 성격의 논문으로, 전체 시스템의 통합 운영이나 인간 대비 우위의 실증은 향후 과제로 남아 있다. 최신 LLM/FM 기술과의 통합이 부재한 점은 아쉬우며, 향후 가설 생성과 문헌 분석에 LLM을 접목한다면 시스템의 자율성이 크게 향상될 것이다. 과학 자동화 분야의 방향성을 보여주는 중요한 프로젝트이나, 최종 목표 달성까지는 상당한 엔지니어링 과제가 남아 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 시스템 생물학을 위한 로봇 과학자 자동화를 지향하는 선구적 연구로 비전과 초기 구현 모두 흥미롭지만 완성도는 진행 중이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

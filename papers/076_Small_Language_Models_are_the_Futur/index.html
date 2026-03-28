@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -105,32 +108,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<h3>강점</h3>
-<ul>
-<li>논증 구조가 매우 체계적이며, 주장(V1-V3), 논거(A1-A7), 반론(AV1-AV3), 반박의 4층 구조로 논리적 완결성이 높음</li>
-<li>업계 현실(인프라 투자, 시장 규모, 산업 관성)을 솔직하게 인정하면서도 근본적 비효율을 지적</li>
-<li>SLM 기술의 최신 발전(Phi, Nemotron-H, Hymba, DeepSeek-R1-Distill 등)을 포괄적으로 정리</li>
-<li>실용적 변환 알고리즘(S1-S6)이 구체적이고 따라할 수 있는 수준</li>
-<li>개방적 토론 촉구와 반론 공개 약속이 학술적 정직성을 보여줌</li>
-</ul>
-<h3>약점</h3>
-<ul>
-<li>실증적 비교 실험 부재가 가장 큰 약점 -- "충분하다"는 주장을 개별 모델의 벤치마크 성능으로만 뒷받침</li>
-<li>NVIDIA 제품(ChatRTX, Dynamo, Nemotron-H, Hymba)이 빈번히 언급되어 중립성 의문</li>
-<li>SLM 파인튜닝의 누적 비용(다수의 전문가 모델 관리)이 단일 LLM 엔드포인트 대비 실제로 경제적인지 정량 분석 부재</li>
-<li>에이전틱 과업의 "복잡도" 분류 기준이 모호하여, 어떤 호출이 SLM/LLM에 적합한지 판단하기 어려움</li>
-</ul>
-<h3>총평</h3>
-<p>에이전틱 AI의 미래 아키텍처에 대한 중요한 방향 제시를 하는 시의적절한 포지션 페이퍼이다. LLM 중심 패러다임의 비효율을 체계적으로 지적하고, SLM-first 아키텍처로의 전환 논거를 잘 구성했다. 다만 포지션 페이퍼 특성상 실증 데이터가 부족하며, NVIDIA 소속 저자의 사업적 이해와의 정렬이 순수 학술적 관점에서 주의를 요한다. 향후 에이전틱 SLM 벤치마크와 대규모 비교 실험이 이 포지션의 타당성을 검증하는 핵심이 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 에이전트 AI에서 SLM 우선 접근을 주장하는 포지션 페이퍼로 논거는 설득력 있으나 실증적 검증이 없어 주장의 근거가 약하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

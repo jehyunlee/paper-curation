@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>학술 피어 리뷰 프로세스를 <strong>multi-turn, long-context, role-based dialogue</strong>로 재정식화(reformulate)하는 새로운 관점을 제안한다. 기존의 "논문 -> 리뷰" 단방향 생성이 아닌, Reviewer(초기 리뷰) -> Author(rebuttal) -> Reviewer(최종 리뷰) -> Decision Maker(결정)의 4턴 대화로 모델링한다. 이를 위해 ICLR(2017-2024)와 Nature Communications(2023)에서 26,841편 논문, 92,017개 리뷰, 5.67억 토큰 규모의 ReviewMT 데이터셋을 구축하고, 7개 오픈소스 LLM을 zero-shot과 supervised fine-tuning으로 벤치마크한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -109,19 +112,27 @@ a { color: #A62018; }
 <li>편향 감지 및 완화 기법 적용</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>본 논문의 가장 큰 기여는 피어 리뷰를 <strong>multi-turn, role-based dialogue로 재정식화</strong>한 개념적 프레임워크이다. 기존의 "논문 -> 리뷰" 단방향 패러다임에서 벗어나, 리뷰어-저자-결정자의 상호작용을 포착한다는 아이디어는 실제 학술 리뷰 프로세스의 본질에 더 부합하며, LLM 리뷰 시스템의 발전 방향을 제시한다.</p>
-<p>데이터셋 구축 면에서 26,841편/92,017리뷰/5.67억 토큰의 규모와 ICLR+Nature Communications의 다학제적 범위는 의미 있으나, multi-turn 데이터가 완전한 것은 ICLR 부분뿐이라는 점은 아쉽다. 7개 LLM에 대한 벤치마크는 현재 모델들의 한계(zero-shot review hit rate < 20%)와 SFT의 효과를 잘 보여주지만, 실험 분석의 깊이가 다소 부족하다. 특히 "왜 특정 모델이 특정 메트릭에서 우수한가"에 대한 분석이나, 생성된 리뷰의 질적 분석이 없다.</p>
-<p>평가 메트릭 측면에서 BLEU/ROUGE 같은 텍스트 유사도 메트릭은 리뷰 품질의 프록시로서 한계가 크며, 리뷰의 건설성이나 기술적 정확성을 반영하지 못한다. 또한 Figure를 포함하지 않은 점은 실용적 한계로 작용한다. 그럼에도, 피어 리뷰 자동화 연구의 방향을 정적 생성에서 동적 대화로 전환시키는 중요한 개념적 기여를 한 논문으로 평가할 수 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 피어 리뷰를 다중 턴 대화로 재정의하고 26K 논문의 ReviewMT 데이터셋을 구축한 연구로, 대화형 피어 리뷰 모델링의 새 프레임워크를 제시하지만 생성 품질 평가가 표면적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

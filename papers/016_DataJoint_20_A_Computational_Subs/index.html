@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Dimitri Yatsenko, Thinh T. Nguyen | <strong>날짜</strong>: 2026-02-18 | <strong>arXiv</strong>: 2602.16585 | <strong>분야</strong>: cs.DB</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 데이터 파이프라인에 DevOps에 해당하는 "SciOps"를 구현하기 위한 관계형 워크플로우 모델(relational workflow model)을 제안한다. DataJoint 2.0은 테이블을 워크플로우 단계로, 행(row)을 산출물(artifact)로, 외래 키(foreign key)를 실행 순서로 해석하여, 데이터 구조/계산 의존성/무결성 제약을 하나의 쿼리 가능한 형식 체계로 통합한다. 이를 통해 AI 에이전트가 데이터 손상 없이 과학 워크플로우에 참여할 수 있는 계산 기반(computational substrate)을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -95,15 +97,23 @@ a { color: #A62018; }
 <li>다중 에이전트 협업 시 충돌 해결 및 동시성 제어 메커니즘</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: DataJoint의 관계형 워크플로우 모델을 "에이전트 시대"의 과학 데이터 관리 패러다임으로 재정립하려는 시의적절한 시도이다. 개념적 프레이밍(SciOps, active schema)과 기술적 설계(OAS, semantic matching)가 명확하고 설득력 있게 기술되어 있으나, 새로운 알고리즘이나 실험적 검증 없이 기존 시스템의 확장판을 소개하는 형태이므로 학술적 기여는 제한적이다. 특히 "agentic workflow" 지원을 핵심 주장으로 내세우면서도, 실제 에이전트 통합 실험이 없는 점이 가장 큰 약점이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

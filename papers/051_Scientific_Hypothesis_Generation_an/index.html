@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Scientific Hypothesis Generation and Validation: Methods, Datasets, and Future Directions</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 과학적 가설 생성(hypothesis generation) 및 검증(validation)의 전체 파이프라인을 체계적으로 정리한 대규모 서베이 논문으로, 초기 기호 기반 발견 시스템(BACON, KEKADA)부터 현대 LLM 파이프라인, 멀티에이전트 아키텍처까지를 아우른다.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <ul>
@@ -84,15 +87,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>LLM을 활용한 과학적 가설 생성 및 검증 분야의 <strong>가장 포괄적인 서베이</strong> 중 하나로, 이 분야에 진입하는 연구자들에게 훌륭한 참고 자료가 된다. 특히 9+10개의 세부 방법론 분류 체계, 30개 이상의 데이터셋 매핑, 그리고 가설 품질 평가의 수학적 프레임워크는 후속 연구의 토대가 될 수 있다. 다만, 넓은 범위를 다루는 대가로 개별 방법론에 대한 깊이가 부족하며, 실증적 비교 실험 없이 문헌 정리에 머무는 점이 아쉽다. AI for Science 연구자가 "어떤 방법론이 있는지" 전체 지형도를 파악하는 데는 매우 유용하지만, "어떤 방법론을 선택해야 하는지"에 대한 실질적 가이드로는 한계가 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM 기반 과학적 가설 생성의 방법론과 평가를 종합한 서베이로 연구 지형도 파악에 유용하나 정량적 비교가 부재하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

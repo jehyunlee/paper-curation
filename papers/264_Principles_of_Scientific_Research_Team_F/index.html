@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Principles of Scientific Research Team Formation and Evolution</h1>
 <blockquote><p><strong>저자</strong>: Staša Milojević | <strong>날짜</strong>: 2014 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1073/pnas.1309723111"" target="_blank">10.1073/pnas.1309723111"</a> target="_blank"><a href="https://doi.org/10.1073/pnas.1309723111" target="_blank">10.1073/pnas.1309723111</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 연구팀의 형성과 진화는 두 가지 메커니즘—Poisson(무작위) 과정과 power-law 성장 과정—의 혼합으로 설명된다. Milojević(2014)는 천문학·경제학·수학 등 5개 분야 50만 편 논문 팀 데이터를 분석해, 소규모 팀은 무작위로 형성되지만 대규모 팀은 복잡한 협업 네트워크의 성장 메커니즘을 따름을 보였다. 팀 규모 분포는 분야마다 특유의 패턴을 가지며, 이는 해당 분야 과학 문제의 복잡성과 연구 인프라 요구를 반영한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -75,16 +77,24 @@ a { color: #1856A0; }
 <li>팀 해체 및 재형성 패턴의 수리 모델 개발</li>
 <li>디지털 협업 플랫폼이 팀 형성 메커니즘에 미치는 영향</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 과학 연구팀 규모 분포를 Poisson+power-law 혼합 모델로 수리적으로 모델링하여 팀 형성의 보편 원리와 분야 특수성을 통합 설명한 독창적인 계량과학 연구다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

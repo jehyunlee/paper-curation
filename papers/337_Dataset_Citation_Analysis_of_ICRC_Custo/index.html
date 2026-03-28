@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Dataset: Citation Analysis of ICRC Customary IHL Study Rules (Annex to &#x27;Limits of Creation&#x27;)</h1>
 <blockquote><p><strong>저자</strong>: Ilya Ivanov | <strong>날짜</strong>: 2026-03-20 | <strong>Journal</strong>: Zenodo (CERN European Organization for Nuclear Research) | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.5281/zenodo.19139621"" target="_blank">10.5281/zenodo.19139621"</a> target="_blank"><a href="https://doi.org/10.5281/zenodo.19139621" target="_blank">10.5281/zenodo.19139621</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 2/5</span> <span class="eval-badge">Clarity: 2/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>이 항목은 논문이 아닌 <strong>데이터셋</strong>이다. 'Limits of Creation'이라는 논문의 부속 자료로, ICRC(국제적십자위원회) 관습 국제인도법(Customary IHL) 연구 규칙들에 대한 인용 분석 데이터셋을 제공한다. 구체적으로 각 규칙별로 어떤 문헌이 인용되었는지, 인용 패턴은 어떠한지를 정량적으로 정리한 자료다. 논문 자체의 과학적 발견보다는 후속 법학·과학학 연구에서 인용 패턴 분석에 활용될 수 있는 원자료를 제공하는 것이 목적이다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -73,16 +75,24 @@ a { color: #1856A0; }
 <li>ICRC IHL 규칙 인용 네트워크의 시계열 분석</li>
 <li>법학 분야 citation 패턴과 자연과학 분야 패턴 비교 연구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>2/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>2/5</td></tr>
-<tr><td>Clarity</td><td>2/5</td></tr>
-<tr><td>Overall</td><td>2/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 2/5</span> <span class="eval-badge">Clarity: 2/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <p><strong>총평</strong>: 논문의 부속 데이터셋으로, 독립적인 과학적 기여보다는 모 논문의 재현성 지원에 목적이 있는 자료다. Science of Science 관점에서의 직접적 기여는 제한적이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

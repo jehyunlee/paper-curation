@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #A62018; }
 <h1>Towards end-to-end automation of AI research</h1>
 <blockquote><p><strong>저자</strong>: Chris Lu, Cong Lu, Robert Tjarko Lange, Yutaro Yamada, Shengran Hu, Jakob Foerster, David Ha & Jeff Clune | <strong>날짜</strong>: 2026.03 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41586-026-10265-5"" target="_blank">10.1038/s41586-026-10265-5"</a> target="_blank"><a href="https://doi.org/10.1038/s41586-026-10265-5" target="_blank">10.1038/s41586-026-10265-5</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학 연구의 전 과정을 자율적으로 수행할 수 있는가? 본 논문은 "The AI Scientist"라는 파이프라인을 통해 이 질문에 최초의 실증적 답변을 제시한다. AI가 생성한 논문이 실제 top-tier ML 학회 워크숍의 피어리뷰를 통과했으며, 모델 성능과 추론 시 컴퓨트 투입량이 증가할수록 논문 품질이 체계적으로 향상됨을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -104,25 +106,35 @@ a { color: #A62018; }
 <li>AI의 장기 작업(long task) 수행 능력 향상 — 현재 7개월마다 2배씩 증가 추세(METR 보고서)</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
-<p><strong>총평</strong>: AI 연구의 전 과정 자동화라는 야심 찬 비전을 최초로 실증한 이정표적 논문으로, Nature 게재에 걸맞은 역사적 의의를 지닌다. 다만 실제 검증이 워크숍 수준에 그치고, AI-평가-AI 순환 구조의 한계, 비용 효율성 분석 부재 등 기술적 엄밀성에서 아쉬움이 남는다.</p>
-<hr>
-<h3>Figures</h3>
-<table>
-<tr><th>Figure</th><th>설명</th></tr>
-<tr><td>![Fig 1](figures/figure_1_pipeline_scaling.png)</td><td>**Fig. 1**: (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 AI Scientist 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 모드의 Automated Reviewer 점수 분포</td></tr>
-<tr><td>![Fig 2](figures/figure_2_accepted_paper.png)</td><td>**Fig. 2**: 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌</td></tr>
-<tr><td>![Fig 3](figures/figure_3_tree_search.png)</td><td>**Fig. 3**: (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계</td></tr>
-<tr><td>![Table 1](figures/figure_5_table1.png)</td><td>**Table 1**: Automated Reviewer vs 인간 리뷰어 일관성 비교 (balanced accuracy, F1 score)</td></tr>
-<tr><td>![Methods](figures/figure_4_methods.png)</td><td>**Methods**: Tree search 실행 사이클 상세 — 코드 생성, 실행, 플로팅, VLM 비평, 노드 확장 전략</td></tr>
-</table></div>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: AI 연구의 전 과정 자동화라는 야심 찬 비전을 최초로 실증한 이정표적 논문으로, Nature 게재에 걸맞은 역사적 의의를 지닌다. 다만 실제 검증이 워크숍 수준에 그치고, AI-평가-AI 순환 구조의 한계, 비용 효율성 분석 부재 등 기술적 엄밀성에서 아쉬움이 남는다.
+
+---
+
+### Figures
+
+| Figure | 설명 |
+|--------|------|
+| ![Fig 1](figures/figure_1_pipeline_scaling.png) | <strong>Fig. 1</strong>: (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 AI Scientist 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 모드의 Automated Reviewer 점수 분포 |
+| ![Fig 2](figures/figure_2_accepted_paper.png) | <strong>Fig. 2</strong>: 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌 |
+| ![Fig 3](figures/figure_3_tree_search.png) | <strong>Fig. 3</strong>: (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계 |
+| ![Table 1](figures/figure_5_table1.png) | <strong>Table 1</strong>: Automated Reviewer vs 인간 리뷰어 일관성 비교 (balanced accuracy, F1 score) |
+| ![Methods](figures/figure_4_methods.png) | <strong>Methods</strong>: Tree search 실행 사이클 상세 — 코드 생성, 실행, 플로팅, VLM 비평, 노드 확장 전략 |</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

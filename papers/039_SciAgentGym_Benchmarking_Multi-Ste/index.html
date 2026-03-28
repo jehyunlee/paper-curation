@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SciAgentGym: Benchmarking Multi-Step Scientific Tool-use in LLM Agents</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>4개 자연과학 분야의 1,780개 도메인 특화 도구를 갖춘 대규모 인터랙티브 환경 SciAgentGym과 계층적 평가 스위트 SciAgentBench를 구축하고, 의존성 그래프 기반 학습 데이터 합성(SciForge)으로 8B 모델이 235B 모델을 능가하는 과학 도구 사용 에이전트를 훈련한 연구.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -102,15 +105,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>SciAgentGym은 과학 도구 사용 에이전트 연구에 필요한 <strong>환경·벤치마크·훈련 파이프라인을 일괄 제공</strong>하는 포괄적 연구이다. 특히 의존성 그래프 기반 데이터 합성(SciForge)은 과학 워크플로의 논리적 구조를 학습에 반영한다는 점에서 방법론적으로 탁월하며, 8B 모델이 235B를 능가하는 결과는 학계에 강한 메시지를 던진다. 계층적 평가를 통해 "다단계 워크플로 실행이 핵심 병목"이라는 진단을 내린 것도 후속 연구 방향을 명확히 제시한다. 전반적으로 과학 AI 에이전트의 도구 사용 능력 연구에 있어 <strong>벤치마크, 방법론, 실증 결과 모두에서 높은 수준의 기여</strong>를 한 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 1780개 도구 환경과 SciForge 에이전트로 과학적 작업 자동화를 실증한 연구로 8B 모델이 235B를 능가하는 놀라운 결과를 보였다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

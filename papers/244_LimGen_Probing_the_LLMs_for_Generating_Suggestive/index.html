@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>LimGen: Probing the LLMs for Generating Suggestive Limitations of Research Papers</h1>
 <blockquote><p><strong>저자</strong>: Abdur Rahman Bin Mohammed Faizullah, Ashok Urlana, Rahul Mishra | <strong>날짜</strong>: 2024 | <strong>DOI/URL</strong>: https://doi.org/<a href="https://doi.org/10.1007/978-3-031-70344-7_7" target="_blank">10.1007/978-3-031-70344-7_7</a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM이 연구 논문의 한계점(limitations)을 자동으로 제안·생성할 수 있는지를 탐색하는 LimGen 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -54,14 +57,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>Summary (요약)</h2>
 <p>LimGen은 LLM이 연구 논문을 읽고 그 한계점을 자동으로 제안하도록 하는 시스템으로, ECML-PKDD 2024의 Machine Learning and Knowledge Discovery in Databases 트랙에 발표되었다. 공개된 abstract가 없어 구체적 방법론 파악에는 한계가 있으나, 제목과 컨퍼런스 맥락으로 볼 때 AI 보조 논문 비평/리뷰 자동화 연구의 일환으로 보인다. 과학 논문 작성 및 동료 심사 자동화 흐름과 맥을 같이 하는 연구이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 연구 한계 자동 생성이라는 틈새 문제를 다루는 실용적 연구이나, abstract 부재로 방법론 및 평가의 엄밀성을 판단하기 어렵다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

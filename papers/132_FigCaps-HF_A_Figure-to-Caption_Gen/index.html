@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 논문의 <strong>그림(figure)에 대한 캡션 자동 생성</strong>을 독자 선호도에 맞춰 최적화하는 프레임워크 <strong>FigCaps-HF</strong>를 제안한다. 핵심은 두 가지로, (1) 소량의 도메인 전문가 피드백으로 학습한 <strong>인간 피드백 예측 모델</strong>(Human Feedback Prediction Model)이 대규모 데이터셋 전체의 캡션 품질을 자동으로 평가하고, (2) <strong>오프라인 Upside-Down RL(UDRL)</strong> 기반 RLHF를 통해 생성 모델을 독자 선호에 맞춰 미세조정한다. BLIP을 기반 모델로 사용할 때 ROUGE-L 16.9%, BLEU 35.7%, METEOR 9%의 성능 향상을 달성했으며, 133,543개 그림-캡션 쌍에 대한 피드백 점수를 포함하는 벤치마크 데이터셋을 공개하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -91,25 +94,27 @@ a { color: #A62018; }
 <li><strong>향후 방향</strong>: 다중 보상 신호 통합, 멀티모달 피드백 모델(그림+텍스트 결합 인코딩), 연속 보상 활용 방법, 다양한 도메인/데이터 분포로의 일반화 검증</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>6</td><td>오프라인 UDRL의 그림 캡션 RLHF 적용은 새롭지만, 개별 기법(UDRL, 제어 토큰)은 기존 연구의 직접 적용</td></tr>
-<tr><td>**기술적 깊이 (Technical Depth)**</td><td>6</td><td>프레임워크 설계는 명확하나, 피드백 예측 모델이 단순 MLP 회귀이고 시각 정보 활용이 제한적</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>7</td><td>소량 레이블로 대규모 피드백 추론하는 파이프라인은 실용적. 벤치마크 데이터셋 공개도 유용</td></tr>
-<tr><td>**완성도 (Completeness)**</td><td>7</td><td>다양한 ablation(양자화 수준, 피드백 종류, 임베딩 모델, 위치)을 수행했으나 인간 평가 부재</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>6</td><td>과학 그림 캡션이라는 니치 영역에서 의미 있으나, 절대 성능과 일반화 측면에서 영향력 제한적</td></tr>
-<tr><td>**종합 (Overall)**</td><td>**6.5**</td><td>소량 전문가 피드백을 효율적으로 활용하는 실용적 프레임워크와 벤치마크 기여는 의미 있으나, 기술적 깊이와 절대 성능 면에서 아쉬움</td></tr>
-</table></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 소량 전문가 피드백으로 과학 그림 캡션 생성을 RLHF 방식으로 최적화하는 실용적 프레임워크로, 공개 벤치마크 기여도가 있으나 절대 성능은 아직 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

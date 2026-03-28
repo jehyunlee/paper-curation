@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Hierarchical Classification of Research Fields in the &quot;Web of Science&quot; Using Deep Learning</h1>
 <blockquote><p><strong>저자</strong>: Susie Xi Rao, Peter H. Egger, Ce Zhang | <strong>날짜</strong>: 2024-07-25 | <strong>Journal</strong>: arXiv preprint | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2302.00390" target="_blank">2302.00390</a> | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2302.00390"" target="_blank">10.48550/arXiv.2302.00390"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2302.00390" target="_blank">10.48550/arXiv.2302.00390</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>논문 초록으로부터 3계층(discipline, field, subfield) 계층적 분류를 딥러닝으로 자동화할 수 있는가? Microsoft Academic Graph(MAG, 2018-05-17) 기준 <strong>1억 6천만 건</strong>의 초록 스니펫을 대상으로, 44개 discipline · 718개 field · 1,485개 subfield의 계층적 레이블을 CNN, RNN, Transformer로 분류한 결과: 단일 레이블 및 다중 레이블 분류 모두에서 <strong>77~78%의 실험에서 90% 이상의 정확도</strong>를 달성했다. 총 3,140개의 실험을 수행하여 모델 성능을 체계적으로 평가했으며, 미래 과학 논문 인덱싱 시스템의 백본으로 제안된다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>LLM(Large Language Model) 기반 제로샷/퓨샷 분류와의 성능 비교</li>
 <li>새롭게 출현하는 학제 분야에 대한 오픈 집합 분류(open-set classification) 확장</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 1억 6천만 건 규모의 논문을 3계층 계층적 분류로 자동화하는 대규모 딥러닝 시스템을 체계적으로 구축한 공학적으로 탄탄한 논문이다. MAG 데이터 의존성이 장기 활용의 제약이나, 과학 논문의 자동 분류 인프라로서의 잠재적 가치는 상당하다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

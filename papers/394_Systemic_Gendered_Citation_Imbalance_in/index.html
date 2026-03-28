@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Kazuki Nakajima, Yuya Sasaki, Sohei Tokuno, George Fletcher | <strong>날짜</strong>: 2026-03-24 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.23273" target="_blank">2603.23273</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>컴퓨터과학의 컨퍼런스 중심 출판 문화는 성별 인용 불균형을 어떻게 증폭시키는가? 컴퓨터과학의 여성 제1저자/마지막 저자 논문은 기대치보다 인용이 적으며, 이는 동종선호(homophilic citation tendency) — 저자들이 자신과 유사한 특성을 공유하는 논문을 인용하려는 경향 — 에 부분적으로 기인한다. 이 불균형은 <strong>컨퍼런스 논문에서 특히 두드러지며, 특히 최상위 컨퍼런스에서 더 심하다.</strong> 저널 논문 대비 컨퍼런스 논문의 불균형이 더 크다는 발견은, 컴퓨터과학의 독특한 컨퍼런스 중심 문화가 성별 불균형을 구조적으로 강화한다는 새로운 통찰을 제공한다. 제1저자·마지막 저자의 명성(prominence)과 로컬 공저자 네트워크 구조도 불균형의 잠재적 동인으로 확인됐다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -95,16 +97,24 @@ a { color: #1856A0; }
 <li>프로그램 위원회(PC) 성별 구성이 선택된 논문의 인용 패턴에 미치는 영향 분석</li>
 <li>컴퓨터과학 외 컨퍼런스 중심 분야(의학, 물리학 일부)와의 비교</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 컴퓨터과학의 컨퍼런스 중심 문화가 성별 인용 불균형을 저널보다 심하게 증폭시킨다는 발견은 분야 특수성을 반영한 중요한 기여이며, 동종선호 메커니즘의 정량화는 형평성 정책 설계에 직접적 근거를 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

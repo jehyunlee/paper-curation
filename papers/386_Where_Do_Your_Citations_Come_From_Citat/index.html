@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Mahbub Ul Alam | <strong>날짜</strong>: 2026-03-25 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.24216" target="_blank">2603.24216</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인용은 어디서 오는가 — 진정한 외부 인정인가, 아니면 사회적 네트워크의 증폭 효과인가? Citation-Constellation은 이 질문에 답하는 오픈소스 도구다. BARON(Boundary-Anchored Research Outreach Network score)은 협업 네트워크 외부에서 온 인용만 엄격하게 카운트하는 이진 지표이고, HEROCON(Holistic Equilibrated Research Outreach CONstellation score)은 관계 근접도에 따라 단계적 가중치를 부여하는 지표다. 두 점수의 차이(gap)는 "내부 집단 의존도"의 진단 지표가 된다. ORCID 검증 기반 저자 식별, ROR 기반 기관 소속 매칭, 완전한 감사 추적(audit trail)을 갖춘 4단계 파이프라인으로 구현되며, 프로그래밍 없이 웹 인터페이스에서 즉시 이용 가능하다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -89,16 +91,24 @@ a { color: #1856A0; }
 <li>Phase 4 저널 거버넌스 데이터베이스 완성 및 배포</li>
 <li>다양한 분야·경력 단계 연구자에 대한 BARON/HEROCON 점수 분포 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 인용의 사회적 근접도를 정량화하는 실용적이고 투명한 오픈소스 도구로, 책임있는 연구 평가 운동에 직접 기여한다. HEROCON 가중치 보정과 독립 검증이 향후 신뢰도의 관건이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

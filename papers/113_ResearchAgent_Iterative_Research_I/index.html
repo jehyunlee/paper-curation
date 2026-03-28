@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM을 활용하여 과학 논문으로부터 자동으로 연구 아이디어(문제 정의, 방법론 제안, 실험 설계)를 생성하는 시스템 <strong>ResearchAgent</strong>를 제안한다. 핵심 논문에서 출발하여 인용 그래프 기반 관련 논문 탐색, entity-centric knowledge store를 통한 도메인 간 개념 연결, 그리고 LLM 기반 ReviewingAgent의 반복적 피드백을 통해 아이디어의 품질을 높인다. 인간 연구자의 아이디어 생성 프로세스(문헌 조사, 백과사전적 지식, 동료 리뷰)를 체계적으로 모방한 최초의 open-ended 연구 아이디어 생성 시스템이다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -88,17 +91,27 @@ a { color: #A62018; }
 <li><strong>표절 위험</strong>: 학습 데이터의 회귀적 재생산으로 기존 연구와 유사한 아이디어가 생성될 수 있다.</li>
 <li><strong>향후 과제</strong>: knowledge store 확장, 실시간 문헌 업데이트, 다양한 도메인별 평가 기준 커스터마이징, reasoning 기반 모델 통합(이론 연구 지원) 등이 필요하다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>ResearchAgent는 LLM 기반 과학 연구 자동화의 첫 단계를 체계적으로 제시한 의미 있는 연구이다. 인간 연구자의 워크플로우(문헌 조사 -> 지식 통합 -> 동료 리뷰)를 세 가지 모듈로 잘 모방하였으며, 300편 규모의 다분야 벤치마크에서 인간/모델 평가 모두 설득력 있는 결과를 보였다. 특히 entity-centric knowledge store를 통한 도메인 간 cross-pollination 메커니즘은 단순 RAG를 넘어선 창의적 접근이다. 다만, 생성된 아이디어의 <strong>실제 실행 가능성 검증</strong>이 빠져 있어, 좋은 점수를 받는 아이디어가 실제로 실행 가능하고 가치 있는 연구로 이어지는지는 불분명하다. 또한 GPT-4를 생성과 평가 모두에 사용한 점에서 self-evaluation bias 가능성이 있다. 향후 생성된 아이디어를 실제 연구로 이어가는 end-to-end 파이프라인(AI Scientist 등)과의 통합이 핵심 과제가 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 반복적 연구 아이디어 생성을 위한 LLM 에이전트 프레임워크를 300편 벤치마크로 평가한 KAIST/Microsoft 연구로, 도구 사용과 지식 검색을 통합한 반복 개선 구조가 차별점이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

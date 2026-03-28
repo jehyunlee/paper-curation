@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>발표일</strong>: 2025-03-28</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (한 줄 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM이 과학 논문을 요약할 때 원문보다 더 넓은 범위의 일반화(overgeneralization)를 체계적으로 생성하며, 최신 모델일수록 이 경향이 심화된다는 것을 4,900개 요약문 분석으로 실증한 연구.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -105,17 +108,27 @@ a { color: #A62018; }
 <li><strong>향후 연구 방향</strong>: Shadow prompting을 통한 과거시제 강제, LLM 일반화 정확도 벤치마크(OAO score) 개발 및 표준화</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>이 연구는 LLM의 과학 요약 능력에 대한 중요한 경고를 제시한다. 4,900개 요약문이라는 대규모 데이터, 10개 모델의 비교, 다중 프롬프트/온도 조건, 인간-LLM 직접 비교 등 <strong>실험 설계의 체계성</strong>이 돋보인다. 특히 "최신 모델이 더 부정확하다"는 발견과 "정확성 요구가 역효과를 낳는다"는 발견은 LLM 활용에 대한 실용적 시사점이 크다. Claude 모델이 일관되게 원문에 충실한 요약을 생성한다는 결과도 모델 선택에 참고할 만한 가치가 있다. 다만, 과잉 일반화가 항상 "오류"인지에 대한 논의는 다소 단순화되어 있으며, 독자의 정보 요구(맥락적 일반화가 더 유용한 경우)를 고려한 평가 체계가 보완되면 더 완성도 높은 연구가 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM이 과학 요약에서 원인-결과 관계를 과잉 일반화한다는 체계적 편향을 4,900개 요약 분석으로 정량화하여, AI 기반 과학 커뮤니케이션의 신뢰성 문제를 실증적으로 제기한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

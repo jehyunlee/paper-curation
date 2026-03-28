@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qingyun Wang, Doug Downey, Heng Ji, Tom Hope | <strong>날짜</strong>: 2024 | <strong>Conference</strong>: ACL 2024 (Long Papers) | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/2024.acl-long.18" target="_blank">10.18653/v1/2024.acl-long.18</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>SciMON은 과학 문헌으로부터 새로운 연구 방향을 자연어로 생성하는 프레임워크로, 기존의 이진 링크 예측(binary link prediction) 방식의 Literature-Based Discovery(LBD)를 근본적으로 탈피한다. 배경 문맥(문제, 동기, 실험 설정)을 입력으로 받아 과거 논문에서 "영감(inspiration)"을 검색하고, 반복적 novelty boosting을 통해 기존 연구와 차별화된 아이디어를 생성한다. GPT-4가 전반적으로 낮은 기술적 깊이와 참신성을 보이는 문제를 부분적으로 완화하는 데 성공했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -105,15 +107,23 @@ a { color: #A62018; }
 <li>더 큰 규모의 LLM(GPT-4급 이상) 및 도메인 특화 모델과의 결합</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 과학적 가설 생성을 이진 링크 예측에서 자연어 기반 개방형 생성으로 전환한 선구적 연구로, 문제 설정 자체의 참신성이 높다. Iterative novelty boosting과 다중 소스 영감 검색이라는 구체적 방법론을 제시하고, GPT-4의 과학적 아이디어 생성 능력을 최초로 체계적으로 평가한 점에서 AI for Science 분야에 중요한 기여를 했다. 다만, 생성된 아이디어가 실제 논문 대비 현저히 낮은 품질을 보이는 근본적 한계를 드러냈으며, 이는 LLM 기반 과학적 창의성의 현주소를 솔직하게 보여주는 의미 있는 결과이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

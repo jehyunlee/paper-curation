@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Estimating the Reproducibility of Psychological Science</h1>
 <blockquote><p><strong>저자</strong>: Open Science Collaboration | <strong>날짜</strong>: 2015 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.aac4716" target="_blank">10.1126/science.aac4716</a> | <strong>arXiv</strong>: -</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>심리학 연구의 재현성은 얼마나 되는가? 이 논문은 심리학 저명 저널에 게재된 100편의 실험을 체계적으로 재현한 결과, <strong>36%만이 통계적으로 유의미한 원래 방향의 효과를 재현</strong>했음을 보였다. 효과 크기도 평균적으로 원래의 절반 수준으로 감소했다. 심리학계 전체에 "재현성 위기(replication crisis)"를 공식적으로 선언한 이정표 논문이다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -79,16 +81,24 @@ a { color: #1856A0; }
 <li>다른 과학 분야(경제학, 사회과학, 의학)의 대규모 재현 프로젝트로 확장</li>
 <li>재현 실패의 원인 요인(연구설계, 출판 편향 등) 체계적 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 심리학의 재현성 위기를 처음으로 대규모로 실증한 역사적 논문으로, 과학 전반의 연구 관행 개혁을 촉발한 이정표 연구이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

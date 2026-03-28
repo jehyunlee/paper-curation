@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Science of science</h1>
 <blockquote><p><strong>저자</strong>: Santo Fortunato, Carl T. Bergstrom, Katy Börner, James A. Evans, Dirk Helbing, Staša Milojević, Alexander M. Petersen, Filippo Radicchi, Roberta Sinatra, Brian Uzzi, Alessandro Vespignani, Ludo Waltman, Dashun Wang, Albert-László Barabási | <strong>날짜</strong>: 2018-03-02 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1126/science.aao0185"" target="_blank">10.1126/science.aao0185"</a> target="_blank"><a href="https://doi.org/10.1126/science.aao0185" target="_blank">10.1126/science.aao0185</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Science of Science(SciSci)는 무엇이며, 왜 중요한가? 이 논문은 Barabási, Wang 등 분야 최고의 연구자 14명이 공동 저술한 SciSci 분야의 정의적(definitional) 리뷰 논문으로, Science 지에 게재되어 분야의 이정표가 되었다. 핵심 주장: 학술 입력·출력 데이터의 디지털화로 과학의 구조와 진화를 대규모로 연구할 수 있게 되었으며, 이를 통해 창의성의 조건, 과학적 발견의 기원, 최적 경력 경로를 이해하고 과학 가속화를 위한 정책을 설계할 수 있다. 주요 발견들: (1) 과학자들은 위험 회피적이며 현재 전문성에 집중하는 경향이 있지만, 이를 깨는 연구자가 획기적 발견을 할 가능성이 높다; (2) 가장 영향력 있는 과학은 기존 연구의 전통적 조합에 기반하지만 비범한 조합을 특징으로 한다; (3) 소형 팀은 파괴적 혁신, 대형 팀은 기존 아이디어 발전 경향이 있다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -91,16 +93,24 @@ a { color: #1856A0; }
 <li>글로벌 사우스와 비영어권 과학 생태계를 포괄하는 SciSci 연구</li>
 <li>AI·LLM 시대의 새로운 SciSci 연구 주제(AI 기반 과학 발견, AI와 인간 과학자의 협업)</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 14명의 SciSci 최고 권위자들이 공동으로 작성하여 Science 지에 게재된 이 리뷰는 분야의 이정표이자 정의적 논문으로, SciSci를 독립적인 연구 분야로 공식화한 기념비적 기여다. 개별 실험적 발견보다는 분야 전체의 체계적 종합과 방향 제시에 초점이 맞춰져 있으며, 지금도 모든 SciSci 연구의 필수 참고문헌으로 기능한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

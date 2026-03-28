@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -107,16 +110,26 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Evaluation</h2>
-<p>CHI 2025에 게재된 시의적절한 HCI 연구로, "AI for Science"의 현장 실태를 인간 중심 관점에서 포착한다. Science와 Operations 직원을 함께 조사하여 copilot/workflow agent 프레임워크로 정리한 것은 조직 차원의 AI 도입 전략에 실용적 가치를 제공한다. 특히 내부 비공개 LLM(Argo) 배포의 실제 채택 데이터는 희소한 자원이다. 다만, 소규모 표본과 단일 조직 한정, GPT-3.5 시점이라는 기술적 한계로 인해 발견의 깊이와 일반화 가능성에 제약이 있다. 참여자들의 목소리가 생생하게 전달되는 질적 데이터의 풍부함은 강점이나, 정량적 생산성 측정이 동반되었다면 더 설득력 있었을 것이다. 과학 조직 특유의 보안 우려(미발표 연구, 수출 통제)에 대한 논의는 유사한 환경의 조직에 직접 적용 가능한 가치를 지닌다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Argonne 국립연구소의 지식 노동자 GenAI 활용을 혼합 방법으로 조사한 HCI 연구로 소규모지만 과학 연구 맥락의 실용적 통찰을 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

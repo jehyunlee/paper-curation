@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>LLMs Outperform Outsourced Human Coders on Complex Textual Analysis</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>스페인어 뉴스 기사 210편을 대상으로 5가지 NLP 태스크(개체명 인식, 개수 세기, 비판 존재 여부, 비판 출처, 비판 대상)에서 LLM(GPT-3.5-turbo, GPT-4-turbo, Claude 3 Opus, Claude 3.5 Sonnet)과 외주 인간 코더(ESADE 대학생 146명)의 성능을 체계적으로 비교한 연구. LLM이 모든 태스크에서 인간 코더를 일관되게 능가하며, 특히 깊은 맥락 이해가 필요한 복잡한 태스크에서 그 격차가 더 크다는 것을 실증적으로 보여준다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>사회과학 연구에서 텍스트 데이터 분석의 중요성이 커지고 있으나, 대규모 텍스트 처리에는 비용과 확장성 문제가 존재한다. 기존 접근법인 수작업 코딩은 비용이 높고, 사전 기반 방법은 정확도가 낮으며, 지도학습 기반 ML은 높은 코딩 능력과 라벨링된 학습 데이터를 요구한다. LLM이 프로그래밍 전문지식 없이도 zero-shot 방식으로 복잡한 텍스트 분석을 수행할 수 있는지 체계적으로 검증할 필요가 있었다.</p></div>
@@ -80,17 +83,27 @@ a { color: #A62018; }
 <li><strong>다중 레이블 태스크에서 단일 답변만 요청</strong>: T4, T5에서 복수 정답이 가능하나 하나만 선택하도록 제한</li>
 <li>향후 다양한 언어, 도메인, 태스크 유형으로 확장하고, 최신 모델(GPT-4o, Claude 3.5 등 이후 세대)에서의 추가 검증이 필요</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>체계적이고 잘 설계된 벤치마크 연구로, 사회과학 텍스트 분석에서 LLM의 실용적 가치를 설득력 있게 입증한다. Gold standard 라벨링의 엄밀성(다단계 합의 과정), 내적 일관성 분석, 난이도/길이별 세분화 분석이 강점이다. 다만 단일 도메인(스페인 지방재정)에 한정된 점, 최신 모델 포함 범위가 2024년 중반까지인 점, 그리고 프롬프트 최적화 없는 기본 zero-shot만 평가한 점은 일반화에 주의가 필요하다. 전반적으로 "프로그래밍 전문지식 없는 연구자도 LLM API로 고품질 텍스트 분석이 가능하다"는 실질적 메시지가 명확하고 근거가 충분하다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM이 스페인어 텍스트 어노테이션에서 161명 학생 코더를 능가함을 보인 연구로, 비영어권 언어 및 학생 코더와의 비교라는 차별적 설계로 ChatGPT 어노테이터 연구를 확장한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

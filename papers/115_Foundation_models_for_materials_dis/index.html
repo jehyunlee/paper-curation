@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Foundation Models for Materials Discovery -- Current State and Future Directions</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Foundation model(LLM을 포함하는 대규모 사전학습 모델의 총칭)이 재료 발견(materials discovery) 분야에 어떻게 적용되고 있는지를 조망하는 perspective 논문이다. 데이터 추출, 물성 예측, 분자 생성, 합성 계획의 네 가지 핵심 과제에서의 현황을 리뷰하고, 향후 멀티모달 모델, 새로운 데이터 캡처 방식, 멀티피델리티(multi-fidelity) 접근법이 이 분야의 방향을 결정할 것이라 전망한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -85,17 +88,27 @@ a { color: #A62018; }
 <li><strong>모델 전이가능성/적절성 평가</strong>: model roughness 같은 평가 기법이 등장하고 있으나 아직 미해결 문제이다.</li>
 <li><strong>향후 과제</strong>: 대규모 고품질 멀티모달 재료 데이터셋 구축, FAIR 원칙에 따른 실험 데이터 표준화, 멀티피델리티 foundation model 개발, 실험실 자동 문서화 시스템 실용화 등이 필요하다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>IBM Research 팀이 작성한 이 perspective는 foundation model의 재료 발견 응용을 10페이지의 간결한 분량에 잘 정리한 유용한 개관이다. 특히 데이터 추출부터 합성까지의 전 파이프라인을 foundation model 관점에서 일관되게 조망한 점, MLIP를 foundation model 프레임워크에 포함시킨 점, 멀티피델리티 모델의 중요성을 강조한 점이 차별화된다. 다만 IBM의 자체 연구(Molecular Transformer, GT4SD, Text-chem T5 등)에 대한 인용이 비중 있게 다뤄져 있어 다소 자기 참조적인 면이 있고, 최신 LLM(GPT-4, Claude 등)의 in-context learning이나 에이전트(agent) 기반 접근에 대한 논의가 상대적으로 얕다. 재료과학에서 AI를 활용하려는 연구자에게 분야 전체의 지형을 파악하는 입문 자료로 적합하다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: IBM Research의 재료 발견을 위한 파운데이션 모델 관점 논문으로, 현황과 미래 방향을 개괄적으로 정리했지만 구체적 실험 근거나 독창적 방법론 없이 비전 제시에 그친다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

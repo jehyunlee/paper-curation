@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Large teams develop and small teams disrupt science and technology</h1>
 <blockquote><p><strong>저자</strong>: Lingfei Wu, Dashun Wang, James A. Evans | <strong>날짜</strong>: 2019-02-21 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41586-019-0941-9"" target="_blank">10.1038/s41586-019-0941-9"</a> target="_blank"><a href="https://doi.org/10.1038/s41586-019-0941-9" target="_blank">10.1038/s41586-019-0941-9</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>대형 팀과 소형 팀은 과학에서 근본적으로 다른 역할을 하는가? 이 논문은 4,500만 편 이상의 논문과 특허를 분석하여 <strong>대형 팀은 기존 지식을 발전(develop)시키고, 소형 팀은 기존 패러다임을 파괴(disrupt)한다</strong>는 보편적 패턴을 발견했다. 파괴적 혁신을 측정하기 위해 CD(Consolidation-Disruption) 지수를 사용한다: 해당 논문이 인용될 때 이전 참고문헌들이 함께 인용되면 통합적(consolidating), 참고문헌들이 대체되면 파괴적(disrupting)으로 분류한다. 소형 팀의 논문은 오래되고 덜 대중적인 아이디어를 결합하는 경향이 있으며, 이는 분야를 새로운 방향으로 이동시킨다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -90,16 +92,24 @@ a { color: #1856A0; }
 <li>팀 규모와 다양성(학문적·인구통계적)의 상호작용이 혁신에 미치는 영향</li>
 <li>디지털 협업 환경에서 팀 규모-혁신 관계의 변화 추적</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 4,500만 편의 논문과 특허를 분석하여 팀 규모에 따른 과학적 혁신의 비대칭적 역할 분담을 실증한 Science of Science의 기념비적 논문이다. CD 지수라는 강력한 방법론 도구와 Nature 게재라는 공신력을 갖추었으며, 현대 과학 정책 논의에서 거의 모든 팀 연구 논문이 참조하는 핵심 참고문헌이 되었다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Best Practices for Using AI When Writing Scientific Manuscripts: Caution, Care, and Consideration: Creative Science Depends on It</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>ChatGPT로 대표되는 AI 언어 도구가 과학 논문 작성에 미치는 영향을 분석하고, 과학 커뮤니티를 위한 AI 사용 모범 사례(Best Practices)를 제시하는 ACS Nano 편집위원 44명의 합의 사설이다. AI 언어 봇의 강점 9가지와 우려 사항 10가지를 체계적으로 정리하고, 10가지 구체적 권고안을 제시하여 과학 논문 작성에서의 책임 있는 AI 활용 방향을 제안한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -124,19 +127,27 @@ a { color: #A62018; }
 <li>AI 사용 공개 정책의 실효성 평가</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>이 사설은 ChatGPT 등장 직후 과학 커뮤니티가 직면한 AI 활용 문제에 대해 저명한 편집위원진이 신속하게 대응한 중요한 문서이다. 장점과 우려를 균형 있게 정리하고, 금지가 아닌 책임 있는 사용을 권고하는 실용적 접근은 이후 다수의 학술지와 기관이 AI 사용 정책을 수립하는 데 중요한 참고 틀이 되었다.</p>
-<p>특히 "비영어권 연구자의 형평성 제고"라는 AI의 긍정적 측면과 "파괴적 과학 혁신 감소 가속화" 우려라는 독특한 관점은 단순한 기술 논의를 넘어 과학의 본질에 대한 깊은 성찰을 담고 있다.</p>
-<p>다만, 3페이지 사설의 본질적 한계로 인해 각 논점이 깊이 있게 다루어지지 못하며, 2023년 초의 시점적 한계도 분명하다. 이후 AI 기술의 급속한 발전(GPT-4, Claude, Gemini 등)과 과학 연구에서의 AI 활용 확대를 고려하면, 이 사설의 권고안은 지속적 업데이트가 필요한 살아있는 문서(living document)로 기능해야 할 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: ACS Nano 편집자 44명의 합의로 도출한 AI 글쓰기 10가지 모범 사례 에디토리얼로, 실용적 가이드라인을 권위 있게 제시하지만 체계적 연구나 데이터 기반 검증은 없다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>PDF</strong>: [C:\Users\jehyu\GoogleDrive\Zotero\Jones, Benjamin_2025_Artificial Intelligence in Research and Development.pdf](C:\Users\jehyu\GoogleDrive\Zotero\Jones, Benjamin_2025_Artificial Intelligence in Research and Development.pdf)</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI가 R&D(연구개발) 과정에 미치는 영향을 평가하기 위한 경제학적 프레임워크를 제시하는 이론 논문이다. R&D를 이질적 "태스크(task)"의 집합으로 모델링하고, AI의 영향을 결정하는 세 가지 핵심 요인을 식별한다: (a) AI가 수행할 수 있는 연구 태스크의 비율(gamma), (b) 해당 태스크에서의 AI 생산성(M), (c) 아이디어 생산에서의 병목(bottleneck) 강도(theta). 핵심 결론은 병목 효과가 매우 강력하여, 초지능(superintelligence) 수준의 AI라 하더라도 연구 태스크의 넓은 범위를 자동화하지 못하면 진보 속도의 가속은 제한적이라는 것이다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>AI 능력의 급속한 발전에 따라, AI가 단순 재화/서비스 생산을 넘어 "아이디어 생산 함수(ideas production function)" 자체를 변혁할 가능성이 대두되었다. Dario Amodei(Anthropic CEO)의 "지능의 한계수익(marginal returns to intelligence)" 개념처럼, 매우 강력한 AI가 진보 속도를 얼마나 가속할 수 있는지에 대한 체계적 분석 프레임워크가 필요했다. 기존 경제 성장 모델은 일반균형 맥락에 집중했으나, 개별 연구 분야 수준의 미시적 분석 도구가 부재했다.</p></div>
@@ -107,26 +110,27 @@ a { color: #A62018; }
 <li>일반균형 맥락에서의 요소 가격 변화(AI 확산에 따른 인건비/계산 비용 변동)까지 포함하는 동적 모델</li>
 <li>구체적 연구 분야(신약 개발, 소프트웨어 공학, 재료 과학)에 대한 실증적 사례 연구</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th></tr>
-<tr><td>신규성 (Novelty)</td><td>8</td></tr>
-<tr><td>기술적 깊이 (Technical Depth)</td><td>8</td></tr>
-<tr><td>실험적 검증 (Experimental Validation)</td><td>3</td></tr>
-<tr><td>재현 가능성 (Reproducibility)</td><td>7</td></tr>
-<tr><td>실용적 영향력 (Practical Impact)</td><td>9</td></tr>
-<tr><td>표현 명확성 (Clarity)</td><td>9</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Stanford SIEPR 워크숍에서 발표된 이 예비 초안은 AI가 R&D에 미치는 영향을 평가하는 데 있어 가장 명확하고 실용적인 경제학적 프레임워크를 제공한다. 핵심 통찰은 단순하지만 강력하다: 병목(bottleneck)이 지배하는 세계에서, 초지능보다 자동화 범위가 훨씬 중요하다. "무한한 지능으로도 진보 속도가 2.25배밖에 증가하지 않을 수 있다"는 결과는, AI에 대한 과도한 기대와 과소평가 모두에 대해 정량적 근거를 제공한다. Dario Amodei의 "Machines of Loving Grace" 에세이에 대한 학술적 응답으로서, 정책 입안자와 연구 관리자에게 필수적인 사고 도구가 될 것이다. 실증적 검증은 향후 과제로 남아 있으나, 개념적 기여만으로도 높은 가치를 지닌다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 병목 구조 하에서 초지능보다 자동화 범위가 더 중요하다는 반직관적 결론을 수학적으로 도출한 AI R&D 경제학 프레임워크의 핵심 기여 논문이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

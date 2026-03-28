@@ -71,10 +71,12 @@ else:
 topic_papers = [p for p in papers_index if TOPIC in p.get("topics", [])]
 slug_to_index = {p["slug"]: p for p in topic_papers}
 
-# Assignment slug → category mapping
-slug_to_cat = {}
+# Assignment slug → category mapping (multi-class)
+slug_to_cat = {}       # slug → primary_category (str)
+slug_to_all_cats = {}  # slug → all_categories (list)
 for a in assignments:
     slug_to_cat[a["slug"]] = a.get("primary_category", "Other")
+    slug_to_all_cats[a["slug"]] = a.get("all_categories", [a.get("primary_category", "Other")])
 
 # Available paper directories in papers/
 actual_dirs = sorted(
@@ -118,14 +120,22 @@ def parse_review_md(slug):
         if doi_m: result["doi"] = doi_m.group(1).strip()
         ax_m = re.search(r"\*\*arXiv\*\*:\s*([^\|]+)", hl)
         if ax_m: result["arxiv"] = ax_m.group(1).strip()
-    em = re.search(r"## Essence\s*\n+([\s\S]+?)(?=\n## |\Z)", text)
+    em = re.search(r"## (?:Essence|한줄 요약)[^\n]*\s*\n+([\s\S]+?)(?=\n## |\Z)", text)
     if em: result["essence"] = em.group(1).strip()
-    om = re.search(r"\|\s*Overall\s*\|\s*(\d+(?:\.\d+)?)/5\s*\|", text)
-    if om: result["overall_score"] = float(om.group(1))
+    # Parse scores from table format OR list format
     for label, key in [("Novelty", "novelty"), ("Technical Soundness", "technical_soundness"),
-                        ("Significance", "significance"), ("Clarity", "clarity")]:
-        sm = re.search(rf"\|\s*{label}\s*\|\s*(\d+(?:\.\d+)?)/5\s*\|", text)
-        if sm: result[key] = int(sm.group(1))
+                        ("Significance", "significance"), ("Clarity", "clarity"), ("Overall", "overall_score")]:
+        # Table: | Label | X/5 |
+        sm = re.search(rf"\|\s*{label}\s*\|\s*(\d+(?:\.\d+)?)\s*/\s*5\s*\|", text)
+        if not sm:
+            # List: - Label: X/5
+            sm = re.search(rf"-\s*{label}\s*:\s*(\d+(?:\.\d+)?)\s*/\s*5", text)
+        if sm:
+            val = float(sm.group(1))
+            if key == "overall_score":
+                result[key] = val
+            else:
+                result[key] = int(val)
     vm = re.search(r"\*\*총평\*\*:\s*([\s\S]+?)(?=\n##|\Z)", text)
     if vm: result["verdict"] = vm.group(1).strip()
     return result, dir_name
@@ -148,7 +158,9 @@ unmatched = []
 
 for p_idx in topic_papers:
     slug = p_idx["slug"]
-    primary_cat = slug_to_cat.get(slug, p_idx.get("primary_category", "Other"))
+    all_cats = slug_to_all_cats.get(slug, p_idx.get("all_categories", [p_idx.get("primary_category", "Other")]))
+    if not all_cats:
+        all_cats = [slug_to_cat.get(slug, "Other")]
     review, dir_name = parse_review_md(slug)
     if dir_name is None:
         unmatched.append(slug)
@@ -163,7 +175,33 @@ for p_idx in topic_papers:
     essence = review.get("essence") or p_idx.get("essence", "")
     overall_score = review.get("overall_score") or p_idx.get("score") or 0
     has_fig = os.path.exists(os.path.join(PAPERS_DIR, dir_name, "figures", "fig1.png"))
-    cat_papers[primary_cat].append({
+    # Extract fig1 caption from pdffigures2 JSON or review.md
+    fig_caption = ""
+    pf2_json = os.path.join(PAPERS_DIR, dir_name, "figures", "pdffigures2",
+                            os.listdir(os.path.join(PAPERS_DIR, dir_name, "figures", "pdffigures2"))[0]) \
+                if os.path.isdir(os.path.join(PAPERS_DIR, dir_name, "figures", "pdffigures2")) \
+                and any(f.endswith(".json") for f in os.listdir(os.path.join(PAPERS_DIR, dir_name, "figures", "pdffigures2"))) \
+                else None
+    if pf2_json and pf2_json.endswith(".json"):
+        try:
+            import json as _json
+            with open(pf2_json, "r", encoding="utf-8") as _f:
+                figs_meta = _json.load(_f)
+            if figs_meta and isinstance(figs_meta, list):
+                fig_caption = figs_meta[0].get("caption", "")
+        except Exception:
+            pass
+    if not fig_caption:
+        # Fallback: extract from review.md (line after ![Figure 1])
+        md_path = os.path.join(PAPERS_DIR, dir_name, "review.md")
+        if os.path.exists(md_path):
+            with open(md_path, "r", encoding="utf-8") as _f:
+                md_text = _f.read()
+            import re as _re
+            cap_m = _re.search(r'!\[.*?\]\(figures/fig1.*?\)\s*\n+\*(.+?)\*', md_text)
+            if cap_m:
+                fig_caption = cap_m.group(1).strip()
+    paper_data = {
         "dir": dir_name, "slug": slug, "title": title, "authors": authors,
         "date": date_fmt, "journal": journal, "doi": doi, "arxiv": arxiv,
         "essence": essence, "overall_score": float(overall_score) if overall_score else 0,
@@ -171,9 +209,13 @@ for p_idx in topic_papers:
         "significance": review.get("significance"), "clarity": review.get("clarity"),
         "verdict": review.get("verdict", ""),
         "has_fig": has_fig,
-        # Path relative to topic dir: ../papers/{slug}/figures/fig1.png
         "fig_src": f"../papers/{dir_name}/figures/fig1.png" if has_fig else None,
-    })
+        "fig_caption": fig_caption,
+    }
+    # Multi-class: add to ALL matching categories
+    for cat in all_cats:
+        if cat in cat_order or cat == "Other":
+            cat_papers[cat].append(paper_data)
 
 if unmatched:
     print(f"WARNING unmatched: {unmatched}")
@@ -218,10 +260,12 @@ def render_paper_card(paper, num, cat_slug):
     badges_html = " ".join(badges)
     fig_html = ""
     if paper["has_fig"]:
+        cap = paper.get("fig_caption", "")
+        cap_html = f'<p class="fig-caption">{esc(cap)}</p>' if cap else ""
         fig_html = (
             '\n          <div class="paper-fig">'
             f'<img data-src="{esc(paper["fig_src"])}" alt="Figure" class="lazy">'
-            '</div>'
+            f'{cap_html}</div>'
         )
     essence_html = ""
     if paper["essence"]:
@@ -315,6 +359,7 @@ body {{ font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto San
 .verdict {{ font-style: normal; color: #444; font-size: 0.9rem; }}
 .paper-fig {{ margin: 0.8rem 0; text-align: center; }}
 .paper-fig img {{ max-width: min(100%, 600px); border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }}
+.paper-fig .fig-caption {{ font-size: 0.78rem; color: #888; margin-top: 0.3rem; font-style: italic; line-height: 1.4; }}
 .excluded {{ background: #fff3cd; border-radius: 12px; padding: 1.2rem; margin-top: 1.5rem; }}
 .excluded h3 {{ color: #856404; font-size: 1rem; margin-bottom: 0.5rem; }}
 .excluded li {{ font-size: 0.85rem; color: #856404; margin: 0.3rem 0; }}
@@ -340,7 +385,16 @@ body {{ font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto San
 .category-summary p {{ margin: 0.6rem 0; }}
 .paper-date {{ font-size: 0.75rem; color: #999; }}
 img.lazy {{ opacity: 0; transition: opacity 0.3s; }}
-img.lazy.loaded {{ opacity: 1; }}"""
+img.lazy.loaded {{ opacity: 1; }}
+.search-box {{ background: white; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }}
+.search-box input {{ width: 100%; padding: 0.6rem 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s; }}
+.search-box input:focus {{ border-color: {accent}; }}
+.search-box .search-hint {{ font-size: 0.75rem; color: #aaa; margin-top: 0.3rem; }}
+.search-box .search-count {{ font-size: 0.8rem; color: {accent}; font-weight: 600; margin-top: 0.3rem; display: none; }}
+.lightbox {{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }}
+.lightbox.active {{ display: flex; }}
+.lightbox img {{ max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }}
+.paper-fig img, .category-timeline img, .timeline-section img {{ cursor: zoom-in; }}"""
 
 JS = """function toggleTopic(id) {
   const body = document.getElementById(id);
@@ -379,7 +433,72 @@ function lazyLoad() {
     imgs.forEach(img => obs.observe(img));
   } else { imgs.forEach(img => { img.src = img.dataset.src; img.classList.add('loaded'); }); }
 }
-document.addEventListener('DOMContentLoaded', lazyLoad);"""
+document.addEventListener('DOMContentLoaded', lazyLoad);
+
+// Search
+function searchPapers(query) {
+  const q = query.trim().toLowerCase();
+  const groups = document.querySelectorAll('.topic-group');
+  const countEl = document.querySelector('.search-count');
+  if (!q) {
+    groups.forEach(g => { g.style.display = '';
+      g.querySelectorAll('.paper-card').forEach(c => c.style.display = '');
+      const body = g.querySelector('.topic-body');
+      if (body) { body.classList.add('collapsed'); }
+      const toggle = g.querySelector('.topic-toggle');
+      if (toggle) toggle.textContent = '\\u25B6';
+    });
+    if (countEl) countEl.style.display = 'none';
+    return;
+  }
+  let total = 0;
+  groups.forEach(g => {
+    const cards = g.querySelectorAll('.paper-card');
+    let matched = 0;
+    cards.forEach(c => {
+      const text = c.textContent.toLowerCase();
+      if (text.includes(q)) { c.style.display = ''; matched++; }
+      else { c.style.display = 'none'; }
+    });
+    if (matched > 0) {
+      g.style.display = '';
+      // Keep collapsed — just update count badge
+      const badge = g.querySelector('.topic-count');
+      if (badge) badge.textContent = matched + '\\ud3b8';
+      total += matched;
+    } else {
+      g.style.display = 'none';
+    }
+  });
+  if (countEl) { countEl.textContent = total + ' results'; countEl.style.display = 'block'; }
+  setTimeout(lazyLoad, 100);
+}
+let searchTimer;
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('search-input');
+  if (input) input.addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => searchPapers(this.value), 300);
+  });
+});
+
+// Lightbox
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  if (!lb || !lbImg) return;
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.paper-fig img, .category-timeline img, .timeline-section img');
+    if (img) {
+      const src = img.dataset.src || img.src;
+      if (src) { lbImg.src = src; lb.classList.add('active'); }
+    }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});"""
 
 # Build topic groups
 topic_groups_parts = []
@@ -474,6 +593,11 @@ HTML = (
     '    </div>\n'
     '  </div>\n\n\n'
     + research_tl_html
+    + '  <div class="search-box">\n'
+    '    <input type="text" id="search-input" placeholder="Search papers by title, DOI, keyword...">\n'
+    '    <div class="search-hint">Enter title, DOI, author name, or keyword to filter</div>\n'
+    '    <div class="search-count" id="search-count"></div>\n'
+    '  </div>\n\n'
     + '  <div class="sort-bar">\n'
     '    <button class="sort-btn" onclick="sortCards(\'date\',\'asc\')">\ucd9c\ud310\uc77c &#x25B2;</button>\n'
     '    <button class="sort-btn" onclick="sortCards(\'date\',\'desc\')">\ucd9c\ud310\uc77c &#x25BC;</button>\n'
@@ -487,6 +611,7 @@ HTML = (
     f'    Generated by Claude Code &middot; {esc(theme["title"])} Paper Curation &middot; {TODAY}\n'
     '  </div>\n\n'
     '</div>\n\n'
+    '<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>\n\n'
     f'<script>\n{JS}\n</script>\n\n'
     '</body>\n</html>'
 )

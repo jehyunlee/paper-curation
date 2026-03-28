@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Artificial intelligence for science—bridging data to wisdom</h1>
 <blockquote><p><strong>저자</strong>: Xu et al. | <strong>날짜</strong>: 2023-11-13 | <strong>DOI/URL</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1093/nsr/nwad267"" target="_blank">10.1093/nsr/nwad267"</a> target="_blank">https://doi.org/<a href="https://doi.org/10.1093/nsr/nwad267" target="_blank">10.1093/nsr/nwad267</a></a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>데이터에서 지식, 지식에서 지혜로 이어지는 AI-과학 통합의 계층적 로드맵을 제시하며, AI가 과학적 발견의 전 주기를 어떻게 가속화할 수 있는지를 논한 포괄적 리뷰.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <p>(Abstract에서 originality 자동 추출 불가 — 본문 기반 수동 분석)</p></div>
@@ -62,15 +65,24 @@ a { color: #A62018; }
 <li>'지혜' 수준 달성 방법론에 대한 구체적 제안 부족</li>
 <li>일부 분야(사회과학, 인문학적 과학)는 다루지 않음</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI와 과학 연구의 통합을 DIKW 계층으로 체계화한 유용한 리뷰로, 분야 진입자와 정책 입안자 모두에게 좋은 참고 자료이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

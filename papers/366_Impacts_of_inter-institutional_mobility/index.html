@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Impacts of inter-institutional mobility on scientific performance from research capital and social capital perspectives</h1>
 <blockquote><p><strong>저자</strong>: Yitong Chen, Keye Wu, Yue Li, Jianjun Sun | <strong>날짜</strong>: 2023-06 | <strong>Journal</strong>: Scientometrics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1007/s11192-023-04690-w"" target="_blank">10.1007/s11192-023-04690-w"</a> target="_blank"><a href="https://doi.org/10.1007/s11192-023-04690-w" target="_blank">10.1007/s11192-023-04690-w</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>기관 간 이동(inter-institutional mobility)은 과학자의 성과에 어떤 영향을 미치는가? 이 논문은 연구 자본(research capital)과 사회 자본(social capital) 두 관점에서 기관 간 이동이 과학자의 논문 출판 및 인용 성과에 미치는 효과를 분석한다. 이동을 통해 얻는 새로운 연구 자원과 네트워크(사회 자본)가 단기적 생산성 저하를 상쇄하고 장기적으로 성과 향상에 기여하는지를 규명하는 것이 핵심 질문이다. 기존 연구들이 이동의 효과를 단순 비교에 그쳤던 것과 달리, 이 논문은 두 가지 자본 이론을 통합한 프레임워크로 이동의 복합적 영향을 설명한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -86,16 +88,24 @@ a { color: #1856A0; }
 <li>이동 후 협력 네트워크 변화를 직접 측정하는 소셜 네트워크 분석 적용</li>
 <li>이동 타이밍(커리어 초기 vs. 중기 vs. 후기)에 따른 차별적 효과 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 기관 간 이동 효과를 연구 자본과 사회 자본의 통합 프레임워크로 분석하는 이론적으로 체계적인 접근이 장점이나, Abstract가 제공되지 않아 방법론적 엄밀성과 주요 발견을 직접 평가하기 어렵다. 이동성의 내생성 문제 처리 여부가 논문의 신뢰성을 결정하는 핵심 요소일 것이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

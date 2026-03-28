@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yong-Chao Wu, Tero Mäkinen, Mikko Alava, Amin Esfandiarpour | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: 2603.25616v1</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>CrCoNi medium-entropy alloy(MEA)는 우수한 기계적 성질로 주목받지만, SRO(short-range order)와 조성 변화를 동시에 다루는 대규모 원자론적 시뮬레이션이 어렵다. 이 논문은 NEP(neuroevolution potential) 프레임워크를 이용해 CrCoNi 삼원계 전 조성 범위를 커버하는 범용 머신러닝 포텐셜을 개발하였다. NEP는 힘 RMSE 106.1 meV/Å(훈련셋), 에너지 RMSE 2.45 meV/atom으로 DFT 수준 정확도를 달성하며, MTP 대비 CPU에서 약 2배, Tesla V100 GPU 단일 카드에서 <strong>48배</strong> 빠른 속도로 수백만 원자 규모 MD 시뮬레이션을 가능하게 한다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #A62018; }
 <li>비등몰비 조성 공간 전체에 걸친 SFE, 항복 강도 등 기계적 성질 ternary plot 체계적 탐색</li>
 <li>NEP 프레임워크를 활용한 4원계 CrCoNiMn, HEA(high-entropy alloy)로의 일반화된 MLIP 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: CrCoNi MEA를 위한 최초의 조성 전이 가능 범용 MLIP를 NEP 기반으로 개발하고, DFT 수준 정확도와 GPU 기반 대규모 시뮬레이션 가능성을 수십 가지 물성 검증으로 철저히 입증한 고신뢰도 재료 시뮬레이션 논문이다. 방법론적 독창성은 제한적이나 CrCoNi 연구 공동체에 즉시 활용 가능한 고품질 포텐셜을 제공한다는 점에서 실용적 가치가 크다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

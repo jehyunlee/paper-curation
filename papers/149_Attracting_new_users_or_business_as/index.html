@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lars Wenaas | <strong>날짜</strong>: 2021-07-15 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/10.1162/qss_a_00126" target="_blank">10.1162/qss_a_00126</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>노르웨이 인문사회과학(SSH) 분야 11개 학술지의 구독 기반에서 오픈 액세스(OA)로의 전환 효과를 Bayesian Structural Time Series(BSTS) 모델로 분석한 사례 연구이다. 2017년 동시 전환 후 방문 수가 64% 증가했으며(p < .001), 이 증가는 기존 구독 기관(고등교육기관)이 아닌 외부 이용자에 의한 것으로 확인되었다. 전환 전 발행된 유료 기사(back list)에는 spillover 효과가 없었다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -107,15 +109,23 @@ a { color: #A62018; }
 <li>다른 국가/언어/학문 분야의 학술지 전환 효과와의 비교 연구</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 노르웨이 정부의 OA 의무화 정책이라는 준자연실험 상황을 잘 활용하여, BSTS 모델 기반의 엄밀한 인과 추론으로 학술지 전환의 방문 증가 효과를 실증한 연구이다. 특히 back list 폐쇄를 활용한 설계와 HEI/non-HEI 분리 분석은 OA 전환이 새로운 이용자에게 도달한다는 핵심 정책 논거를 뒷받침한다. 다만, SSH 분야 노르웨이어 학술지라는 매우 특수한 맥락, 방문 수라는 제한적 지표, 그리고 AI for Science와의 직접적 관련성이 약하다는 점에서 본 큐레이션의 핵심 주제와는 거리가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

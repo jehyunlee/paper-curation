@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yi-Chih Huang | <strong>날짜</strong>: 2026-02-19 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2602.17221</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인문사회과학 연구에 특화된 AI Agent 기반 협업 연구 워크플로우(Agentic Workflow)를 제안하고, 이를 Anthropic Economic Index(AEI) 대만 Claude.ai 사용 데이터(N=7,729)의 2차 데이터 분석에 실제 적용하여 검증하는 "방법론 실험(methodological experiment)"이다. 7단계 모듈형 워크플로우를 설계하고(연구 기획, 문헌 수집, 문헌 분석, 데이터 탐색, 데이터 분석, 논문 작성, 참고문헌 관리), 각 단계에서의 인간-AI 분업 경계를 반성적으로 문서화하여 3가지 협업 운영 모드(직접 실행형, 반복 수정형, 인간 주도형)를 도출한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -97,15 +99,23 @@ a { color: #A62018; }
 <li>인문사회과학 내 학문 분야별 차이 비교</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>2/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 인문사회과학 연구를 위한 AI Agent 협업 워크플로우를 체계적으로 설계하고, 실제 적용 과정을 반성적으로 문서화한 실천적 기여가 있는 논문이다. 특히 각 단계별 prompt 예시와 인간 개입 지점의 상세한 기록은 후속 연구자들에게 유용한 참조 자료가 된다. 그러나 통제 비교 없는 단일 사례 시연이라는 방법론적 한계, 과도한 분량, 그리고 AEI 데이터 분석의 피상성이 논문의 학술적 기여를 제약한다. "방법론 실험"이라기보다는 "방법론 제안 및 시연"으로 보는 것이 적절하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

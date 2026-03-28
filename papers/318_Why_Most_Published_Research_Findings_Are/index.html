@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Why Most Published Research Findings Are False</h1>
 <blockquote><p><strong>저자</strong>: John P. A. Ioannidis | <strong>날짜</strong>: 2005 | <strong>Journal</strong>: PLOS Medicine | <strong>DOI</strong>: <a href="https://doi.org/10.1371/journal.pmed.0020124" target="_blank">10.1371/journal.pmed.0020124</a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>간단한 확률 모델을 통해, <strong>현행 연구 관행(낮은 사전 확률, 작은 표본, 유연한 분석, 편향, 이해충돌 등)이 결합되면 대부분의 발표된 연구 결과가 거짓일 가능성이 높다</strong>는 것이 수학적으로 도출된다. 특히 연구 분야가 핫할수록, 효과 크기가 작을수록, 설계 유연성이 클수록, 여러 팀이 동시에 경쟁할수록 거짓 발견의 확률이 증가한다. 이 논문은 재현성 위기(replication crisis) 논의의 가장 중요한 이론적 출발점이 되었다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -84,16 +86,24 @@ a { color: #1856A0; }
 <li>메타분석 체계화, 사전 등록, 오픈 데이터 운동으로 이어짐</li>
 <li>Ioannidis 본인의 후속 연구: 분야별 재현성 비교, 과학적 편향 측정</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 과학 연구의 신뢰성 위기를 수학적으로 이론화한 혁명적 논문으로, 현대 메타과학과 오픈 사이언스 운동의 이론적 토대를 제공했으며 의학·심리학·사회과학 전반에 패러다임 전환을 촉발시켰다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

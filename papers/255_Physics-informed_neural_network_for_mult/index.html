@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #A62018; }
 <h1>Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes</h1>
 <blockquote><p><strong>저자</strong>: Gwangwoo Han, Jikyum Kim, Joo Hyun Moon, Young Jik Youn | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: International Communications in Heat and Mass Transfer | <strong>DOI</strong>: https://doi.org/<a href="https://doi.org/10.1016/j.icheatmasstransfer.2026.111105" target="_blank">10.1016/j.icheatmasstransfer.2026.111105</a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>PINN(Physics-Informed Neural Network) 기반 surrogate 모델을 이용하여 wickless thermal ground plane(TGP)의 다목적 설계 최적화를 수행하였다. 물리 법칙을 손실 함수에 직접 내재화함으로써 CFD 시뮬레이션 대비 대폭 빠른 속도로 Pareto 최적 설계를 탐색하며, 열저항 최소화와 경량화를 동시에 달성하는 설계 조건을 도출하였다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -79,16 +81,24 @@ a { color: #A62018; }
 <li>동적 열 부하 조건에서의 과도 열 거동 최적화로 적용 범위 확대</li>
 <li>다양한 유체 작동 물질 및 3D 형상을 아우르는 범용 TGP 설계 플랫폼 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: PINN과 다목적 최적화를 열관리 소자 설계에 결합한 실용적 연구이나, 초록 부재로 구체적 성과 수치 확인이 불가하여 정밀한 평가에 한계가 있다. 전자 냉각 설계 자동화 측면에서 산업적 활용 가능성이 기대된다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

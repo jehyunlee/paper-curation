@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Bedoor K. AlShebli, Talal Rahwan, Wei Lee Woon | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: Nature Communications | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41467-018-07634-8"" target="_blank">10.1038/s41467-018-07634-8"</a> target="_blank"><a href="https://doi.org/10.1038/s41467-018-07634-8" target="_blank">10.1038/s41467-018-07634-8</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 협업에서 민족 다양성이 가장 강력한 성과 예측 변수다. AlShebli et al.(2018)은 Nature Communications에 발표된 연구에서 WoS 논문 약 900만 편을 분석해, 다른 다양성 지표(성별, 경력 단계, 소속 기관 위신)보다 민족 다양성이 높을수록 논문의 피인용도가 더 높음을 발견했다. 다양한 배경의 연구자들이 더 넓은 관점과 네트워크를 가져와 연구 영향력을 높인다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -82,16 +84,24 @@ a { color: #1856A0; }
 <li>민족 다양성 외 인지 다양성, 전공 다양성의 영향 비교</li>
 <li>팀 내 민족 다양성과 협업 네트워크 구조의 상호작용 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>2/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>2/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <p><strong>총평</strong>: 과학팀의 민족 다양성이 연구 영향력의 핵심 예측 변수임을 주장했으나, 2022년 방법론적 오류로 철회된 논문으로, 다양성 연구에서 측정 방법의 엄밀성이 얼마나 중요한지를 보여주는 사례다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

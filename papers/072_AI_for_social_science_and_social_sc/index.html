@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ruoxi Xu, Yingfei Sun, Mengjie Ren, Shiguang Guo, Ruotong Pan, Hongyu Lin, Le Sun, Xianpei Han | <strong>날짜</strong>: 2024 | <strong>Journal</strong>: Preprint (Elsevier) | <strong>소속</strong>: Chinese Academy of Sciences</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AI와 사회과학의 결합을 두 방향으로 체계적으로 분류한 포괄적 서베이 논문이다. (1) <strong>AI for social science</strong> -- AI(특히 LLM)를 사회과학 연구의 가설 생성, 실험, 설문, 비반응적 연구 등 전 단계에서 도구로 활용하는 방향과, (2) <strong>Social science of AI</strong> -- AI 에이전트를 사회적 존재로 간주하여 심리학, 사회학, 경제학, 정치학, 언어학 관점에서 그 행동 특성을 탐구하는 방향을 구분하고, 각 분야의 연구 현황, 한계, 미래 방향을 정리했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -103,15 +105,23 @@ a { color: #A62018; }
 <li>AI-인간 상호작용이 인간 사회 행동에 미치는 영향에 대한 체계적 연구 (제3 교차점)</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: AI와 사회과학의 결합을 "AI for social science"와 "social science of AI"라는 두 방향으로 명확히 구분한 개념적 프레임워크가 이 논문의 핵심 기여이다. 광범위한 문헌을 체계적으로 정리하여 이 분야에 입문하는 연구자에게 유용한 로드맵을 제공한다. 다만 정량적 메타 분석이 없고, LLM 발전 속도를 고려하면 시의성이 빠르게 감소할 수 있으며, 서술적 리뷰의 깊이가 개별 분과에서는 다소 얕은 편이다. 시뮬레이션 플랫폼 비교와 미래 방향 제시는 실용적 가치가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

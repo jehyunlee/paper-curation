@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Parth Sarin, Juan Pablo Alperin, Adam Buttrick, Dione Mentis | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: CiteX 2026 (Conference Paper) | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25640" target="_blank">2603.25640</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인용 파싱(citation parsing) 시스템을 공정하고 재현 가능하게 평가할 표준 벤치마크가 존재하는가? 기존 평가 방법은 합성 데이터 기반이거나, 특정 시스템에 한정되거나, 공개되지 않아 일반화가 어렵다. RenoBench는 SciELO, Redalyc, Public Knowledge Project, Open Research Europe 등 <strong>4개 오픈 액세스 출판 생태계의 PDF에서 출처한 10,000개 인용 파싱 벤치마크 데이터셋</strong>이다. 161,000개 주석 인용으로 시작해 자동 검증과 특성 기반 샘플링을 거쳐 다국어·다출판유형·다플랫폼을 포괄한다. 파인튜닝된 언어 모델이 가장 강한 성능을 보임을 실험으로 확인했다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -91,16 +93,24 @@ a { color: #1856A0; }
 <li>인용 파싱 오류가 downstream 과학계량학 분석에 미치는 영향 정량화</li>
 <li>다국어 파인튜닝 전략의 최적화 연구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 인용 파싱 연구의 오랜 재현성·일반화 문제를 해결하는 공공 도메인 벤치마크로, 특히 비영어권과 오픈 액세스 출판물의 포함은 기존 도구들의 편향을 드러내는 데 기여한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

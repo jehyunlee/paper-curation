@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>1,500 Scientists Lift the Lid on Reproducibility</h1>
 <blockquote><p><strong>저자</strong>: Monya Baker | <strong>날짜</strong>: 2016 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/533452a" target="_blank">10.1038/533452a</a> | <strong>arXiv</strong>: -</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학자들 자신은 재현성 위기를 얼마나 심각하게 받아들이고, 그 원인이 무엇이라고 생각하는가? Nature가 1,576명의 연구자를 대상으로 설문한 결과, <strong>70% 이상이 다른 연구자의 실험을 재현하는 데 실패한 경험이 있고, 50% 이상이 자신의 실험조차 재현하지 못했다</strong>고 답했다. 과학자 대다수가 재현성 위기를 인정하면서도 게재된 논문을 신뢰한다는 역설적 결과가 나타났다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>국가별, 분야별 재현성 위기 인식 차이 체계적 분석</li>
 <li>사전등록 의무화 등 제도 도입 전후 재현성 변화 추적</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 재현성 위기에 대한 과학자 커뮤니티의 인식을 처음으로 대규모로 정량화한 영향력 있는 보고서로, 과학 개혁 논의의 주요 참조 자료가 되었다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

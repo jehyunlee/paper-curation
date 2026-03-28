@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Mapping the changing structure of science through diachronic periodical embeddings</h1>
 <blockquote><p><strong>저자</strong>: Zhuoqi Lyu, Qing Ke | <strong>날짜</strong>: 2025-12 | <strong>Journal</strong>: Chaos, Solitons & Fractals | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1016/j.chaos.2025.117295"" target="_blank">10.1016/j.chaos.2025.117295"</a> target="_blank"><a href="https://doi.org/10.1016/j.chaos.2025.117295" target="_blank">10.1016/j.chaos.2025.117295</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 구조의 시간적 변화를 정량화하기 위해, 이 논문은 학술 정기간행물(periodical)에 대한 통시적(diachronic) 임베딩을 개발한다. 핵심 발견은 물리학-생명과학-보건과학 삼각형 공간 내에서 대부분의 정기간행물이 <strong>전문화(specialization)</strong> 방향으로 진화하지만, 생명과학 분야 정기간행물은 <strong>학제간화(interdisciplinarity)</strong> 방향으로 증가한다는 것이다. 또한, 정기간행물의 국지적 클러스터 형성을 모니터링함으로써 AIDS 연구(1980년대)와 나노기술(1980년대) 같은 신흥 연구 주제를 사전 식별할 수 있음을 실증했다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -87,16 +89,24 @@ a { color: #1856A0; }
 <li>신흥 분야의 실시간 모니터링 시스템 구축 및 사전 예측 성능 평가</li>
 <li>정기간행물 수준의 분석과 개별 논문 수준의 분석 통합</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 통시적 임베딩을 통해 과학 구조의 수십 년에 걸친 진화를 정량화하고, 전문화와 학제간화의 비대칭적 트렌드를 발견하며, 신흥 분야의 사전 식별 가능성을 실증한 방법론적으로 견고한 연구다. 삼각형 공간의 분야 편향이 주요 한계이나, Science of Science의 동적 분석 도구로서 실용적 가치가 높다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

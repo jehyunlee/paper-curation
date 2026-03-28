@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Cen Wan, Alex A. Freitas | <strong>날짜</strong>: 2026-03-20 | <strong>arXiv</strong>: 2603.20132</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 2/5</span> <span class="eval-badge">Significance: 2/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Hierarchical feature selection으로 선별된 노화 관련 Gene Ontology(GO) term들을 LLM 기반 multi-agent "Virtual Study Group(VSG)"이 자동으로 생물학적 해석하는 agentic AI 프레임워크를 제안한 연구이다. 4개 모델 생물(예쁜꼬마선충, 초파리, 마우스, 효모)의 노화 관련 GO term에 대해 junior researcher, critic, senior researcher, principal investigator 역할의 AI agent들이 계층적으로 지식을 생성하고 비판적 검토를 수행한다. 대부분의 AI 생성 주장이 기존 문헌으로 검증 가능함을 보였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -101,15 +103,23 @@ a { color: #A62018; }
 <li>정량적 평가 체계 구축 및 다양한 LLM 조합의 체계적 비교</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>2/5</td></tr>
-<tr><td>Technical Soundness</td><td>2/5</td></tr>
-<tr><td>Significance</td><td>2/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>2/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical Soundness: 2/5</span> <span class="eval-badge">Significance: 2/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <p><strong>총평</strong>: 학술 연구그룹의 계층적 토론 구조를 AI agent 시스템에 적용한다는 아이디어는 직관적이나, 실행과 평가 측면에서 크게 부족하다. 정량적 평가 지표가 전무하고, AI가 생성한 지식이 기존 문헌의 재서술을 넘어서는 새로운 발견인지 불분명하며, LLM 선택의 근거와 재현성에 대한 논의가 없다. 비판적 리뷰 agent가 항상 동일한 패턴(oversimplifies/overstates 비판)을 보이고 senior가 거의 항상 동조하는 것은 실제 과학적 토론의 복잡성을 충분히 모사하지 못한다. Proof-of-concept 수준의 탐색적 연구로서의 가치는 있으나, 기술적 엄밀성과 실용적 기여 측면에서 개선이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

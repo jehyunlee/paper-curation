@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SciHorizon: Benchmarking AI-for-Science Readiness from Scientific Data to Large Language Models</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI4Science의 준비도(readiness)를 <strong>과학 데이터 품질</strong>과 <strong>LLM 역량</strong> 두 축에서 종합적으로 평가하는 프레임워크 SciHorizon을 제안하고, 약 1,500개 데이터셋과 20개 이상 LLM에 대한 벤치마크 결과를 공개 플랫폼(www.scihorizon.cn)으로 제공한다.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <ul>
@@ -85,15 +88,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>SciHorizon은 AI4Science의 성숙도를 데이터 품질과 모델 역량의 양면에서 체계적으로 진단하려는 야심찬 시도이다. 특히 LLM의 과학 연구 윤리 정렬도(Values)를 벤치마크에 포함시킨 것은 시의적절하며, 5개 과학 분야 x 5개 평가 차원의 세밀한 매트릭스는 모델 선택 시 유용한 참조점을 제공한다. DeepSeek-V3가 종합 1위, O1-Mini가 추론 특화, Claude-3.5-Sonnet이 화학·윤리 분야 강세라는 발견은 실용적 가치가 높다. 다만 평가 방식이 객관식 정답률에 크게 의존하여 실제 과학 연구 맥락에서의 AI 활용 능력을 충분히 반영하지 못하며, 데이터 평가 범위가 두 분야에 한정된 점은 향후 확장이 필요하다. 온라인 플랫폼을 통한 지속적 업데이트 가능성은 이 벤치마크의 장기적 가치를 높이는 요소이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI 능력과 과학 이해 양 측면을 평가하는 이중 관점 AI4S 벤치마크로 균형 잡힌 설계를 보이나 도메인 커버리지에 제한이 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

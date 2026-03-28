@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Riccardo De Santi, Kimon Protopapas, Ya-Ping Hsieh, Andreas Krause | <strong>날짜</strong>: 2026-02-17 | <strong>arXiv</strong>: 2602.15984 | <strong>분야</strong>: cs.LG | <strong>학회</strong>: ICLR 2026</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>사전 학습된 플로우/디퓨전 모델이 훈련 데이터의 좁은 영역에만 밀도를 집중시키는 한계를 극복하기 위해, 외부 검증기(verifier)를 활용하여 유효 설계 공간 전체로 모델의 밀도를 확장하는 Flow Expander(FE)를 제안한다. 강한 검증기(valid design space를 정확히 특성화)와 약한 검증기(필터 역할만 수행)를 형식적으로 구분하고, 각각에 대해 전역적(global) 및 국소적(local) 플로우 확장 문제를 검증기 제약 엔트로피 최대화로 정식화한다. FE는 플로우 프로세스의 노이즈 상태 공간에서 미러 디센트를 수행하며, 이상적/일반적 조건 하 수렴 보장을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -94,15 +96,23 @@ a { color: #A62018; }
 <li>유한 샘플 예산 하에서의 탐색 효율성 연구</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 플로우/디퓨전 모델의 설계 공간 탐색이라는 AI for Science의 핵심 문제를 검증기 제약 엔트로피 최대화라는 수학적으로 엄밀한 프레임워크로 해결한 우수한 연구이다. 강한/약한 검증기의 형식적 구분, Expand-then-Project 스킴, 노이즈 상태 공간으로의 리프팅이라는 세 가지 핵심 아이디어가 자연스럽게 결합되어 있으며, O(1/K) 수렴 보장과 분자 설계 실험 결과가 이론적 주장을 뒷받침한다. ICLR 2026에 채택된 것이 납득되는 완성도 높은 논문이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

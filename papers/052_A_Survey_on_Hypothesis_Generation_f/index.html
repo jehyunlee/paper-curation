@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>PDF</strong>: [C:\Users\jehyu\GoogleDrive\Zotero\Alkan et al._2025_A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models.pdf](C:\Users\jehyu\GoogleDrive\Zotero\Alkan et al._2025_A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models.pdf)</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 시대에 과학적 가설 생성(Scientific Hypothesis Generation, SHG)을 위한 방법론을 체계적으로 정리한 서베이 논문이다. 전통적 문헌 기반 발견(Literature-Based Discovery, LBD)부터 텍스트 마이닝, 지도학습, 그래프 기반 방법, 그리고 최신 LLM 기반 접근법(프롬프팅, 파인튜닝, RAG, 지식 그래프 통합, 멀티 에이전트 시스템)까지를 아우르는 분류 체계(taxonomy)를 제시한다. 생성된 가설의 품질 평가 방법론(전문가 평가, 자동화 메트릭, 신규성 평가, 분야별 평가)도 종합하며, 환각(hallucination), 해석 가능성, 편향, 멀티모달 통합, 인간-AI 협업 등 핵심 도전과제와 미래 방향을 논의한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>과학 문헌의 폭발적 증가와 학문 분야 간 분절화(disciplinary fragmentation)로 인해, 연구자가 분야를 횡단하며 새로운 가설을 도출하기 어려워지고 있다. LLM이 방대한 과학 텍스트를 처리·종합하여 가설 생성을 보조할 가능성이 부각되었으나, 이 분야의 방법론, 평가 전략, 도전과제를 체계적으로 정리한 참고 문헌이 부재했다.</p></div>
@@ -97,26 +100,27 @@ a { color: #A62018; }
 <li>생성된 가설의 장기 추적 평가: 실제 연구로 이어지는 가설의 비율 측정</li>
 <li>도메인별 가설 생성 품질 평가를 위한 표준화된 벤치마크 데이터셋 구축</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th></tr>
-<tr><td>신규성 (Novelty)</td><td>5</td></tr>
-<tr><td>기술적 깊이 (Technical Depth)</td><td>5</td></tr>
-<tr><td>실험적 검증 (Experimental Validation)</td><td>3</td></tr>
-<tr><td>재현 가능성 (Reproducibility)</td><td>4</td></tr>
-<tr><td>실용적 영향력 (Practical Impact)</td><td>6</td></tr>
-<tr><td>표현 명확성 (Clarity)</td><td>7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM 기반 과학적 가설 생성이라는 시의적절한 주제를 다루며, 전통적 LBD부터 최신 LLM 기법까지의 진화를 일관된 분류 체계로 정리한 유용한 참고 문헌이다. 그러나 서베이 논문으로서 검색 범위가 arXiv cs.CL로 한정된 점, 각 방법론 간 정량적 비교 실험이 부재한 점, 그리고 2024~2025년의 급속한 발전(AI Scientist, SciMON 등)을 충분히 반영하지 못한 점이 아쉽다. 과학적 가설 생성 연구의 입문자에게는 좋은 출발점이 될 수 있으나, 실무적 가이드라인을 기대하는 독자에게는 구체성이 부족하다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM 시대 과학적 가설 생성 방법론을 전통 LBD부터 멀티 에이전트까지 통합 분류한 서베이로 입문 참고 자료로서 가치가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

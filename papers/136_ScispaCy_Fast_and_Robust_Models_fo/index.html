@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mark Neumann, Daniel King, Iz Beltagy, Waleed Ammar | <strong>날짜</strong>: 2019-08 | <strong>학회</strong>: BioNLP 2019 (ACL Workshop) | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/W19-5034" target="_blank">10.18653/v1/W19-5034</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>scispaCy는 spaCy 라이브러리 위에 구축된 생의학/과학 텍스트 전용 NLP 파이프라인으로, POS tagging, dependency parsing, NER, sentence segmentation, entity linking candidate generation을 포함하는 end-to-end 도구이다. GENIA 코퍼스와 OntoNotes 5.0을 결합하여 학습함으로써, 생의학 텍스트에서 SOTA에 근접한 성능을 유지하면서 C++/Java 기반 도구에 필적하는 처리 속도(abstract당 32-33ms)를 달성하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -103,15 +105,23 @@ a { color: #A62018; }
 <li>임상 노트, 임상시험 보고서 등 다양한 생의학 텍스트 유형에 대한 직접 평가</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 학술적 혁신보다는 실용적 가치에 집중한 시스템 논문으로, spaCy의 검증된 아키텍처를 생의학 도메인에 맞게 재학습하고 통합 파이프라인으로 공개한 것이 핵심 기여이다. GENIA+OntoNotes 혼합 학습을 통한 domain robustness, 9개 NER 데이터셋에 대한 체계적 벤치마크, UMLS 기반 candidate generation 등 실용적 완성도가 높으며, 생의학 NLP 연구의 인프라로서 널리 채택되었다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

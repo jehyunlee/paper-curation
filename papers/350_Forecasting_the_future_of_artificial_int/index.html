@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Forecasting the future of artificial intelligence with machine learning-based link prediction in an exponentially growing knowledge network</h1>
 <blockquote><p><strong>저자</strong>: Mario Krenn, Lorenzo Buffoni, Bruno Coutinho, Sagi Eppel, Jacob Gates Foster, Andrew Gritsevskiy, Harlin Lee, Yichao Lu, João P. Moutinho, Nima Sanjabi, Rishi Sonthalia, Ngoc Mai Tran, Francisco Valente, Yangxinyu Xie, Rose Yu, Michael Kopp | <strong>날짜</strong>: 2023-10-16 | <strong>Journal</strong>: Nature Machine Intelligence | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s42256-023-00735-0"" target="_blank">10.1038/s42256-023-00735-0"</a> target="_blank"><a href="https://doi.org/10.1038/s42256-023-00735-0" target="_blank">10.1038/s42256-023-00735-0</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AI 연구의 미래 방향을 AI 자신을 이용해 예측할 수 있는가? AI 분야 <strong>14만 3천 건</strong> 이상의 논문으로 구성된 의미 지식 네트워크(6만 4천 개 이상의 개념 노드)인 <strong>Science4Cast 벤치마크</strong>를 구축하고 10가지 다양한 예측 방법을 비교한 결과, 놀랍게도 <strong>네트워크 특성을 정교하게 큐레이션한 통계 방법이 end-to-end 딥러닝 방법보다 더 강력</strong>했다. 이는 순수 ML 접근법이 인간 지식 없이도 탁월해질 수 있는 잠재력이 있음을 시사하며, AI 연구 방향 제안 도구의 핵심 구성요소로 활용될 수 있다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>예측된 연결이 실제로 중요한 연구 방향으로 발전하는지 사후 검증</li>
 <li>개인화된 연구 방향 추천 시스템으로의 응용</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: AI로 AI의 미래 연구 방향을 예측하는 Science4Cast 벤치마크를 구축한 창의적이고 영향력 있는 연구다. "정교한 네트워크 특성 기반 방법이 end-to-end 딥러닝을 능가한다"는 반직관적 발견은 AI 연구 자체에 대한 메타적 통찰을 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

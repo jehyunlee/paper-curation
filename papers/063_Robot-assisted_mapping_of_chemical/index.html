@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>PDF</strong>: [C:\Users\jehyu\GoogleDrive\Zotero\Jia et al._2025_Robot-assisted mapping of chemical reaction hyperspaces and networks.pdf](C:\Users\jehyu\GoogleDrive\Zotero\Jia et al._2025_Robot-assisted mapping of chemical reaction hyperspaces and networks.pdf)</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>저비용(~$25K) 로봇 플랫폼과 UV-Vis 기반 spectral unmixing 알고리즘을 결합하여, 화학 반응의 다차원 조건 공간(hyperspace)을 수천 개의 조건에서 체계적으로 스캔하고, 수율 분포를 정량적으로 재구성하는 방법론을 제시한다. 총 9,000개 이상의 반응 조건을 탐색하여, (1) 연속 변수(농도, 온도)에 대한 개별 수율 분포가 일반적으로 완만(slow-varying)하다는 수학적 증명, (2) 예상치 못한 반응성 영역과 주요 생성물 간 전환(switchover) 현상의 발견, (3) 100년 이상 연구된 반응에서도 숨겨진 중간체와 생성물의 노출을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>화학 반응의 결과가 다차원 조건 공간에서 어떻게 변화하는지는 수십 년간의 연구에도 불구하고 불분명하다. 기존 자동화 플랫폼은 수천 개의 반응을 병렬 생성할 수 있지만, 정제 및 수율 정량화가 여전히 병목으로 남아 있다. NMR이나 LC-MS 같은 분석 기술은 시간당 수 샘플 수준의 처리량에 불과하여, 대부분의 학술 그룹에서 대규모 반응 공간 탐색이 비현실적이었다.</p></div>
@@ -104,26 +107,27 @@ a { color: #A62018; }
 <li>고체 분주 및 글로브박스 통합으로 적용 가능 반응 범위 확대</li>
 <li>Raman/IR 분광법 통합으로 UV-Vis 미감지 생성물까지 포함하는 범용 플랫폼 구축</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th></tr>
-<tr><td>신규성 (Novelty)</td><td>9</td></tr>
-<tr><td>기술적 깊이 (Technical Depth)</td><td>9</td></tr>
-<tr><td>실험적 검증 (Experimental Validation)</td><td>10</td></tr>
-<tr><td>재현 가능성 (Reproducibility)</td><td>8</td></tr>
-<tr><td>실용적 영향력 (Practical Impact)</td><td>9</td></tr>
-<tr><td>표현 명확성 (Clarity)</td><td>8</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Nature에 게재된 이 연구는 화학 반응 공간을 수학적 객체로 다루는 패러다임 전환적 접근을 제시한다. ~$25K의 저비용 로봇과 UV-Vis spectral unmixing의 조합으로 9,000개 이상 조건을 체계적으로 탐색하여, 수율 분포의 수학적 성질(slow-varying)을 증명하고, 150년 된 Hantzsch 반응에서 9개의 새로운 생성물을 발견한 성과는 매우 인상적이다. 하드웨어 설계도와 코드를 모두 공개(Zenodo)하여 재현성도 우수하다. IBS CARS(울산)에서 수행된 연구로, 한국 기관 소속 연구라는 점도 주목할 만하다. 반응 자동화와 화학 AI의 교차점에서 핵심 참조 문헌이 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>5</td></tr>
-<tr><td>Technical Soundness</td><td>5</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>5.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 저비용 로봇과 UV-Vis spectral unmixing으로 9000개 이상 반응 조건을 탐색해 Hantzsch 반응에서 9개 새 생성물을 발견한 Nature 게재 패러다임 전환 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

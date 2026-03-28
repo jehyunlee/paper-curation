@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Predicting Scientific Breakthroughs Based on Structural Dynamic of Citation Cascades</h1>
 <blockquote><p><strong>저자</strong>: Houqiang Yu, Yian Liang, Yinghua Xie | <strong>날짜</strong>: 2024-06-03 | <strong>Journal</strong>: Mathematics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.3390/math12111741"" target="_blank">10.3390/math12111741"</a> target="_blank"><a href="https://doi.org/10.3390/math12111741" target="_blank">10.3390/math12111741</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인용 네트워크의 정적 구조가 아닌 <strong>동적 구조적 진화</strong>를 포착하면 과학적 돌파구 논문을 더 잘 예측할 수 있는가? 노벨상 수상 논문을 landmark 데이터셋으로 사용하여 검증한 결과, 시계열적 인용 캐스케이드 구조를 활용한 이 방법은 기존 정적 기반 방법 대비 ROC-AUC에서 <strong>약 7% 향상</strong>을 달성했으며, 더 이른 시점에서 예측이 가능하다. 핵심 지표로는 기본 위상 지표, PageRank 값, 그리고 <strong>von Neumann graph entropy</strong>를 활용하였다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>분야별로 인용 캐스케이드 진화 패턴의 차이 분석</li>
 <li>실시간 예측 시스템 구현을 위한 계산 효율화</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 인용 캐스케이드의 동적 구조적 진화를 돌파구 예측에 활용한 창의적 접근법으로, von Neumann entropy라는 이색적 지표 도입이 흥미롭다. 그러나 노벨상이라는 협소한 데이터셋과 7% 개선이라는 제한적 성과로 실용적 가치가 아직 제한적이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

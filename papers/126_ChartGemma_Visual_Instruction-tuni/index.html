@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ChartGemma: Visual Instruction-tuning for Chart Reasoning in the Wild</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>기존 차트 이해 모델들이 데이터 테이블 기반으로 instruction 데이터를 생성하고, 약하게 정렬된 비전-언어 백본을 사용하는 두 가지 핵심 한계를 해결하기 위해, 차트 이미지로부터 직접 instruction 데이터를 생성하고 강하게 정렬된 PaliGemma(3B)를 백본으로 활용하는 ChartGemma를 제안한다. 5개 벤치마크에서 SOTA를 달성하면서도 기존 모델(7B~13B) 대비 현저히 작은 크기를 유지한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>차트 이해를 위한 기존 instruction-tuned 모델들은 두 가지 축에서 근본적 약점이 있다. (1) <strong>데이터 테이블 의존성:</strong> instruction 데이터가 차트의 기저 데이터 테이블로부터 생성되어, 차트 이미지에 담긴 시각적 트렌드, 패턴, 색상, 범례 등 고수준 정보를 포착하지 못한다. Table 1에서 동일 LLM(Gemini Flash 1.5)이 데이터 테이블과 차트 이미지를 각각 입력받았을 때, 이미지 기반이 훨씬 풍부하고 맥락적인 요약을 생성함을 보여준다. (2) <strong>약한 비전-언어 정렬:</strong> 기존 방법들이 제한된 데이터나 아키텍처로 약하게 정렬된 VLM을 백본으로 사용하여, 실세계 복잡한 차트에 대한 일반화가 제한된다.</p></div>
@@ -81,17 +84,27 @@ a { color: #A62018; }
 <li><strong>복잡한 시각적 스타일 차트:</strong> 전문 웹사이트(Pew, Statista) 차트 대비 웹 크롤링 차트에서 사실 정확성과 정보성이 상대적으로 낮음</li>
 <li><strong>향후 연구:</strong> 인간 작성 instruction을 포함한 더 다양한 데이터셋 구축, 복잡한 시각 요소에 특화된 벤치마크와 차트 관련 평가 메트릭 제안</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>ChartGemma는 ChartInstruct의 저자 그룹이 자체 한계를 정면으로 인식하고 해결한 후속 연구로, "데이터 테이블 대신 차트 이미지에서 직접 instruction 생성"이라는 핵심 아이디어가 간결하면서도 효과적임을 설득력 있게 보여준다. Table 1의 동일 LLM 비교 실험은 이 접근의 당위성을 직관적으로 입증하며, ablation 연구(Table 3)가 instruction 데이터와 백본 모델 각각의 기여를 명확히 분리한 점은 실험 설계의 강점이다. 3B 파라미터로 13B 모델을 능가하는 효율성은 실용적 가치가 높다. 다만, GPT-4 기반 평가의 재현성 문제, 독점 모델(Gemini) 의존성, 그리고 human evaluation에서 Cohen's Kappa 0.538의 중간 동의도는 한계로 지적된다. 또한 Open-ended 태스크에서 BLEU를 명시적으로 배제하고 GPT-4 평가만 사용한 것은 기존 연구와의 직접 비교를 어렵게 만든다. 전반적으로, 차트 이미지 직접 활용이라는 패러다임 전환과 효율적 모델 설계를 통해 차트 이해 분야를 한 단계 발전시킨 연구이며, 코드/모델/데이터의 공개로 후속 연구에 대한 기여도가 높다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: PaliGemma 3B 백본에 이미지 기반 인스트럭션 튜닝을 적용해 효율적 차트 이해를 달성한 연구로, 소형 모델로 대형 모델에 필적하는 성능을 보인 데이터 효율성이 핵심 기여이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

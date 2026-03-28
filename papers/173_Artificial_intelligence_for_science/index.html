@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,7 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongjun Xu, Fei Wang, Zhulin An, Qi Wang, Zhao Zhang</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI for Science (AI4Science)의 개념을 "데이터에서 지혜로의 가교(bridging data to wisdom)"로 정의하는 짧은 에디토리얼이다. 과학 연구 패러다임의 역사적 진화 -- 경험적 패러다임(1600년대) -> 이론적 패러다임(1950년대) -> 계산 패러다임(2000년대) -> 데이터 주도 패러다임(2020년대) -> AI4Science(2023~) -- 를 조망하며, AI가 과학적 발견의 새로운 패러다임으로 부상하고 있음을 주장한다. AI4Science의 핵심 특성으로 <strong>기계 추론(machine conjecture)</strong>, <strong>지식 창출(knowledge creation)</strong>, <strong>지능 창발(intelligence emergence)</strong>을 제시한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -92,27 +95,27 @@ a { color: #A62018; }
 <li>"human-in-the-loop" vs. "AI-in-the-loop" 과학 연구의 효율성 비교 연구</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>2.0</td><td>AI4Science 패러다임 자체는 저자의 2021년 선행 연구에서 제안; 본 에디토리얼은 간략한 업데이트</td></tr>
-<tr><td>**기술적 완성도 (Technical Soundness)**</td><td>1.5</td><td>에디토리얼이므로 기술적 방법론이나 검증이 없음</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>2.0</td><td>고수준 개념 정리로서 입문자에게 유용하나, 실행 가능한 구체적 지침 부재</td></tr>
-<tr><td>**표현력 (Clarity)**</td><td>3.5</td><td>Figure 1의 시각화가 효과적이며 간결한 서술. 다만 내용이 피상적</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>2.5</td><td>The Innovation 저널의 에디토리얼로서 일정 가시성은 있으나, 학술적 깊이 부족</td></tr>
-<tr><td>**재현성 (Reproducibility)**</td><td>N/A</td><td>해당 없음 (에디토리얼)</td></tr>
-</table>
-<p><strong>종합 점수: 2.3 / 5.0</strong></p>
-<p>AI4Science의 거시적 비전을 "데이터에서 지혜로"라는 간결한 프레이밍으로 제시하는 짧은 에디토리얼이다. 과학 연구 패러다임의 역사적 진화를 시각적으로 정리한 Figure 1은 교육적 가치가 있으나, 2페이지의 분량 제약으로 인해 AI4Science의 기술적 과제, 윤리적 함의, 구체적 방법론에 대한 논의가 전혀 없다. 같은 시기에 Nature에 게재된 Wang et al. (2023)의 포괄적 리뷰("Scientific discovery in the age of artificial intelligence")와 비교하면 학술적 기여도가 매우 제한적이다. AI4Science 분야의 입문적 개관이 필요한 독자에게 간략한 출발점으로서의 가치가 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>1</td></tr>
-<tr><td>Technical Soundness</td><td>1</td></tr>
-<tr><td>Significance</td><td>2</td></tr>
-<tr><td>Overall</td><td>1.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI4Science의 거시적 비전을 2페이지로 압축한 에디토리얼로, 패러다임 진화 시각화는 교육적이나 기술적 깊이와 비판적 관점이 전혀 없어 학술 기여도가 매우 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Francesca Rossi (Chair) 외 24명의 패널 멤버 + 추가 기여자 | <strong>날짜</strong>: 2025-03 | <strong>Report</strong>: AAAI | <strong>URL</strong>: https://aaai.org/wp-content/uploads/2025/03/AAAI-2025-PresPanel-Report_FINAL.pdf</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AAAI 2025 Presidential Panel Report는 24명의 저명 AI 연구자가 2024년 여름부터 2025년 봄까지 작업하고, 475명의 AAAI 커뮤니티 설문을 포함하여 AI 연구의 미래를 17개 주제로 체계적으로 조망한 포괄적 보고서이다. AI Reasoning, Factuality & Trustworthiness, AI Agents, Evaluation, Ethics & Safety, Embodied AI, Cognitive Science, Hardware, Social Good, Sustainability, Scientific Discovery, AGI, Perception vs Reality, Research Diversity, 학제간 연구, 학계의 역할, 지정학적 함의를 다루며, 각 주제별로 역사적 맥락, 현재 동향, 연구 과제, 커뮤니티 의견을 구조적으로 정리했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -102,15 +104,23 @@ a { color: #A62018; }
 <li>2-3년 주기의 후속 보고서를 통한 예측 검증 및 트렌드 추적</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: AAAI 2025 Presidential Panel Report는 generative AI 시대의 AI 연구 전체를 17개 주제로 체계적으로 조망한 가장 포괄적인 현황 보고서이다. Rodney Brooks, Stuart Russell, Eric Horvitz, Yoshua Bengio 등 세계 최고 권위자들의 집단 지성과 475명의 커뮤니티 설문을 결합하여, AI 연구의 기술적 도전과제뿐 아니라 사회적-제도적-지정학적 맥락까지 아우른다. 비기술적 서술로 인해 개별 주제의 깊이에 한계가 있으나, AI 연구의 현재 위치와 미래 방향에 대한 "조감도"로서 정책 입안자, 펀딩 기관, 타 분야 연구자에게 매우 유용하다. 특히 AI for Scientific Discovery 챕터는 도구-협업자-자율 과학자 스펙트럼을 제시하며, Nobel Turing Challenge라는 야심찬 비전을 통해 이 분야의 궁극적 목표를 명확히 한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

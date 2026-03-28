@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SciTrust: Evaluating the Trustworthiness of Large Language Models for Science</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 분야에서 LLM의 신뢰성을 체계적으로 평가하기 위한 종합 프레임워크 SciTrust를 제안하고, 컴퓨터과학·화학·생물학·물리학 4개 분야의 오픈엔디드 벤치마크를 통해 5개 LLM의 truthfulness, accuracy, hallucination, sycophancy를 다면적으로 분석한 연구.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -97,15 +100,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>SciTrust는 과학 분야 LLM의 신뢰성을 체계적으로 평가하려는 의미 있는 시도이다. Truthfulness, accuracy, hallucination, sycophancy의 4가지 축을 제시한 것은 향후 과학 AI 벤치마크 연구의 좋은 출발점이 된다. 다만 워크숍 논문의 분량 제약으로 인해 벤치마크 설계의 깊이와 실험의 규모가 다소 제한적이며, 최신 상용 모델과의 비교가 없는 점이 아쉽다. 오픈소스 공개는 후속 연구를 위한 긍정적 기여이나, 프레임워크의 실질적 활용과 커뮤니티 채택 여부는 향후 확인이 필요하다. 전반적으로 과학 AI 신뢰성이라는 중요한 주제에 대한 <strong>기초적이지만 가치 있는 프레임워크 연구</strong>로 평가할 수 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학적 LLM 신뢰성 평가 프레임워크를 제안한 워크숍 논문으로 방향성은 중요하나 규모와 검증 깊이에서 한계가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

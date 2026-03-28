@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>재료과학 분야에서 파운데이션 모델(FM), LLM 에이전트, 데이터셋, 도구의 현황을 포괄적으로 정리한 서베이 논문으로, 6가지 핵심 응용 영역에 걸친 태스크 기반 분류 체계를 제시한다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -92,15 +95,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>재료과학에서 AI/FM의 현재 지형을 빠르게 파악하기에 유용한 참고 자료다. 6가지 태스크 기반 분류 체계는 연구자가 자신의 문제에 맞는 접근법을 탐색하는 데 실질적 가이드를 제공한다. 다만 서베이의 본질적 한계로 정량적 비교나 자체 실험적 검증이 없으며, 급변하는 분야 특성상 최신성 유지가 도전 과제다. LLM 에이전트와 자율 실험 플랫폼까지 포함한 넓은 스코프는 강점이자 약점으로, 각 영역의 깊이 있는 분석이 필요한 독자에게는 보완 문헌이 필요하다. 재료과학 AI 연구를 시작하는 연구자에게 좋은 출발점이 될 수 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 재료과학 AI의 전반적 지형도를 제공하는 서베이로 입문자에게 유용하나 기존 서베이 대비 차별화된 통찰이 부족하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

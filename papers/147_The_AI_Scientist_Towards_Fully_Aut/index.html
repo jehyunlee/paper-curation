@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p><strong>완전 자동화된 과학적 발견</strong>을 위한 최초의 포괄적 프레임워크 <strong>The AI Scientist</strong>를 제안한다. LLM이 (1) 연구 아이디어 생성, (2) 코드 작성 및 실험 수행, (3) 결과 시각화, (4) LaTeX 논문 작성, (5) 자동 피어 리뷰까지 과학 연구의 전 과정을 독립적으로 수행한다. 확산 모델, 트랜스포머 언어 모델, 학습 역학(Grokking) 3개 ML 하위 분야에서 시연하였으며, 논문당 약 $15의 비용으로 수백 편의 논문을 생성했다. 자동 리뷰어는 ICLR 2022 데이터에서 인간 수준에 근접하는 65% balanced accuracy를 달성했고, 일부 생성 논문은 자동 리뷰어 기준 ML 학회 수락 임계값(점수 6)을 초과했다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -92,25 +95,27 @@ a { color: #A62018; }
 <li><strong>향후 방향</strong>: 멀티모달 모델 통합, 인간 피드백 루프, 더 복잡한 실험 환경(대규모 데이터셋), 안전한 코드 실행 환경, ML 외 다른 과학 분야로의 확장</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>9</td><td>과학 연구 전 과정의 자동화라는 전례 없는 비전과 구현. 시스템 수준의 혁신</td></tr>
-<tr><td>**기술적 깊이 (Technical Depth)**</td><td>7</td><td>개별 구성요소(Aider, 프롬프트, self-reflection)는 기존 기술의 조합이나, 통합과 검증이 체계적</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>7</td><td>$15/논문의 저비용, 오픈소스 공개. 단, 현재는 &quot;유망한 아이디어 힌트&quot; 수준이며 결과를 액면 그대로 신뢰하기 어려움</td></tr>
-<tr><td>**완성도 (Completeness)**</td><td>8</td><td>3개 도메인, 4개 LLM, 자동 리뷰어 검증, 심층 사례 연구, 광범위한 한계/윤리 논의까지 포괄적</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>9</td><td>AI for Science 분야에 새로운 패러다임을 제시. 학술 커뮤니티에 큰 반향을 일으켰으며, 후속 연구를 촉발하는 랜드마크 논문</td></tr>
-<tr><td>**종합 (Overall)**</td><td>**8.0**</td><td>과학 연구의 완전 자동화라는 야심찬 비전을 최초로 구현하고 체계적으로 검증한 기념비적 연구. 생성 결과의 품질은 아직 초기 수준이나, 방향성과 잠재력은 매우 인상적</td></tr>
-</table></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>5</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 아이디어 생성부터 피어 리뷰까지 과학 연구 전 과정을 최초로 완전 자동화한 랜드마크 논문으로, AI for Science 분야의 새로운 패러다임을 제시했다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>What are the best AI tools for research? Nature&#x27;s guide</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>연구자들이 활용할 수 있는 주요 AI 대규모 언어 모델(LLM)들을 용도별로 비교 정리한 Nature의 가이드 기사이다. OpenAI의 o3-mini(추론 특화), DeepSeek-R1(범용/오픈웨이트), Meta의 Llama(커스터마이징 워크호스), Anthropic의 Claude 3.5 Sonnet(코딩 특화), Allen Institute의 OLMo 2(완전 오픈소스) 등 5개 LLM을 연구자 인터뷰 기반으로 소개하며, 각 모델의 장단점과 적합한 연구 활용 시나리오를 제시한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -76,16 +79,24 @@ a { color: #A62018; }
 <li><strong>멀티모달/에이전트 기능 미흡</strong>: 2025년 이후 급부상한 AI 에이전트(agentic AI), 멀티모달 기능에 대한 논의가 제한적이다.</li>
 </ol>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>**Novelty**</td><td>3</td><td>뉴스 기사로서 새로운 연구 결과 없음; 기존 정보의 재정리</td></tr>
-<tr><td>**Significance**</td><td>6</td><td>연구자를 위한 실용적 AI 도구 가이드로서 참고 가치 있음</td></tr>
-<tr><td>**Rigor**</td><td>4</td><td>전문가 인터뷰 기반이나 정량적 비교/분석 부재</td></tr>
-<tr><td>**Clarity**</td><td>9</td><td>비전문가도 이해 가능한 명확한 구조와 서술</td></tr>
-<tr><td>**Breadth**</td><td>6</td><td>주요 5개 모델을 다루나 도메인별 세분화 부족</td></tr>
-<tr><td>**Overall**</td><td>5</td><td>2025년 초 시점의 유용한 스냅샷이나, 연구 논문이 아닌 뉴스 기사의 한계가 명확함</td></tr>
-</table></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

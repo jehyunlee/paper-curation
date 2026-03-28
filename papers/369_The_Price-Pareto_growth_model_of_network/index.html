@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The Price-Pareto growth model of networks with community structure</h1>
 <blockquote><p><strong>저자</strong>: Łukasz Brzozowski, Marek Gagolewski, Grzegorz Siudem, Barbara Żogała-Siudem | <strong>날짜</strong>: 2026-02-23 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2510.13392"" target="_blank">10.48550/arXiv.2510.13392"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2510.13392" target="_blank">10.48550/arXiv.2510.13392</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>현실 네트워크(특히 인용 네트워크)는 분야별로 다른 성장률과 인용 문화를 가지므로, 단일 동질적 모델로는 커뮤니티 구조를 포착하지 못한다. 이 논문은 Price 모델(우선적 연결)의 최근 수정판을 확장하여 커뮤니티 구조를 가진 네트워크의 분석 틀을 개발한다. 핵심 결과는 각 커뮤니티 내 인용 수 분포가 <strong>Pareto 타입 II 분포</strong>로 수렴한다는 해석적 증명이며, Gini 지수로 측정된 불평등도에 대한 해석적 공식도 도출된다. 모델 파라미터 추정기를 통해 실제 인용 네트워크에 피팅이 가능하다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -87,16 +89,24 @@ a { color: #1856A0; }
 <li>동적 커뮤니티 구조(분야 출현·소멸·합병)를 포함한 모델 확장</li>
 <li>커뮤니티 간 인용 교환(cross-community citations) 모델링</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: Price 모델을 커뮤니티 구조로 엄밀하게 확장하여 각 클러스터 내 인용 분포의 Pareto 수렴과 불평등 지수의 해석적 공식을 유도한 수학적으로 견고한 이론 논문이다. 실용적 파라미터 추정기까지 제공하지만, 실제 다양한 분야 네트워크에 대한 대규모 검증이 향후 과제로 남는다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

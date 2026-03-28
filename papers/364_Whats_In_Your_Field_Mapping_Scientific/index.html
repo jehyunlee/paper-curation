@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>What&#x27;s In Your Field? Mapping Scientific Research with Knowledge Graphs and Large Language Models</h1>
 <blockquote><p><strong>저자</strong>: Abhipsha Das, Nicholas Lourie, Siavash Golkar, Mariel Pettee | <strong>날짜</strong>: 2025-05-29 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2503.09894"" target="_blank">10.48550/arXiv.2503.09894"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2503.09894" target="_blank">10.48550/arXiv.2503.09894</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>대규모 학술 문헌을 체계적으로 분석하려면 구조화된 지식 표현이 필요하지만, LLM 기반 비구조적 접근법은 수백만 건의 사실이 답변에 영향을 미칠 때 비용이 폭발적으로 증가한다. 이 논문은 LLM의 의미론적 이해와 구조화된 스키마를 결합하여 30,000편의 arXiv 논문(천체물리학·유체역학·진화생물학)으로부터 knowledge graph를 구축하는 시스템 "Surveyor"를 제시한다. 단 20개의 수동 주석 초록만으로 스키마를 학습시켜 분야 전체의 신흥 트렌드를 식별하고 지식 지형을 시각화하는 데 성공했다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -86,16 +88,24 @@ a { color: #1856A0; }
 <li>실시간 문헌 업데이트와 연동한 동적 knowledge graph 구축</li>
 <li>추출 정확도와 그래프 기반 분석 결과의 정량적 평가 체계 확립</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 최소한의 수동 주석으로 대규모 학술 코퍼스의 구조화된 지식 표현을 자동 구축하는 실용적 시스템을 제시하며, LLM의 의미론적 능력과 구조화 표현의 장점을 효과적으로 결합했다. 프로토타입 단계의 한계가 있으나 Science of Science 자동화의 유망한 방향성을 제시한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

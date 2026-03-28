@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2310.06770"" target="_blank">10.48550/arXiv.2310.06770"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2310.06770" target="_blank">10.48550/arXiv.2310.06770</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>실제 GitHub 리포지토리의 이슈와 풀 리퀘스트(PR)를 기반으로, 언어 모델(LM)이 실세계 소프트웨어 엔지니어링 문제를 해결할 수 있는지 평가하는 벤치마크 <strong>SWE-bench</strong>를 제안한다. 12개 인기 Python 리포지토리에서 수집한 2,294개의 과제로 구성되며, 모델은 이슈 설명과 코드베이스를 입력받아 문제를 해결하는 패치를 생성해야 한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>기존 코딩 벤치마크(HumanEval 등)는 자기완결적(self-contained)이고 몇 줄로 해결 가능한 단순 문제에 국한되어 있어, SOTA LM의 실제 능력 한계를 측정하기에 부족하다. 실세계 소프트웨어 엔지니어링은 대규모 리포지토리 탐색, 파일 간 상호작용 이해, 복잡한 추론 등을 요구하며, 이는 LM의 프론티어 능력을 평가하는 풍부하고 지속 가능한 테스트베드가 될 수 있다.</p></div>
@@ -97,15 +100,24 @@ a { color: #A62018; }
 <li><strong>멀티모달 이슈</strong>: 일부 이슈(matplotlib 32%)에 이미지가 포함되어 있어 비전-언어 이해 필요</li>
 <li>후속 연구 방향: 에이전트 기반 접근, 실행 환경과의 상호작용, 다국어/다언어 확장</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>참신성 (Novelty)</td><td>9</td><td>실세계 SE를 LM 벤치마크로 체계화한 선구적 연구</td></tr>
-<tr><td>기술적 완성도 (Soundness)</td><td>9</td><td>3단계 자동 파이프라인, 실행 기반 검증, 풍부한 분석</td></tr>
-<tr><td>유의미성 (Significance)</td><td>10</td><td>AI 코딩 에이전트 연구의 사실상 표준 벤치마크로 자리잡음</td></tr>
-<tr><td>재현성 (Reproducibility)</td><td>9</td><td>전체 코드, 데이터, 모델 가중치 공개</td></tr>
-<tr><td>종합 (Overall)</td><td>9</td><td>LM의 실세계 코딩 능력 평가를 근본적으로 변화시킨 핵심 벤치마크</td></tr>
-</table></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

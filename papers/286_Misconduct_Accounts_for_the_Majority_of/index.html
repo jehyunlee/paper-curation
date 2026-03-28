@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Misconduct Accounts for the Majority of Retracted Scientific Publications</h1>
 <blockquote><p><strong>저자</strong>: Ferric C. Fang, R. Grant Steen, Arturo Casadevall | <strong>날짜</strong>: 2012 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.1212247109" target="_blank">10.1073/pnas.1212247109</a> | <strong>arXiv</strong>: -</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 논문의 철회(retraction)는 주로 실수(error) 때문인가, 아니면 고의적 부정행위(misconduct) 때문인가? 이 논문은 2,047건의 철회 논문을 분석하여 <strong>67.4%가 부정행위(사기, 중복출판, 표절)에서 비롯되었음</strong>을 밝혔다. 사기(fraud)만으로도 43.4%를 차지하며, 단순 오류는 21.3%에 불과하다. 철회의 주원인이 실수가 아닌 의도적 부정행위임을 처음으로 대규모로 실증했다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -78,16 +80,24 @@ a { color: #1856A0; }
 <li>철회 후 해당 논문을 인용한 후속 연구의 영향 분석</li>
 <li>부정행위 예방을 위한 제도적 개입 효과 연구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 과학 철회의 주원인이 실수가 아닌 부정행위임을 처음으로 대규모 실증한 논문으로, 연구 무결성 정책 논의의 중요한 근거를 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

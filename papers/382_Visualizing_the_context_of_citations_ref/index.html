@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Visualizing the context of citations referencing papers published by Eugene Garfield: a new type of keyword co-occurrence analysis</h1>
 <blockquote><p><strong>저자</strong>: Lutz Bornmann, Robin Haunschild, Sven E. Hug | <strong>날짜</strong>: 2018-02-01 | <strong>Journal</strong>: Scientometrics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1007/s11192-017-2591-8"" target="_blank">10.1007/s11192-017-2591-8"</a> target="_blank"><a href="https://doi.org/10.1007/s11192-017-2591-8" target="_blank">10.1007/s11192-017-2591-8</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인용 맥락(citation context) — 특정 인용 주변의 텍스트 — 을 키워드 공출현 분석에 활용하면 기존 방법과 어떻게 다른 통찰을 제공하는가? 이 논문은 Eugene Garfield(EG)의 약 1,500편 논문을 대상으로 세 가지 키워드 공출현 네트워크를 비교한다: (1) EG 논문의 제목·초록 키워드, (2) EG 논문을 인용한 논문들의 제목·초록 키워드, (3) EG 논문을 인용한 논문들의 <strong>인용 맥락</strong> 키워드. 핵심 발견은 인용 맥락 키워드가 EG 논문 자체와 의미론적으로 더 밀접하게 연결되며, 이는 인용이 피인용 논문의 인지적 영향력을 반영한다는 가정과 일치한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -86,16 +88,24 @@ a { color: #1856A0; }
 <li>Semantic Scholar, OpenAlex 등 현재 가용한 인용 맥락 데이터 소스로의 방법론 이전</li>
 <li>인용 맥락의 긍정·부정·중립 극성(sentiment) 분석과 결합한 인용 품질 연구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 인용 맥락 기반 키워드 공출현 네트워크라는 새로운 bibliometric 방법론을 Eugene Garfield의 방대한 저작을 통해 시연한 방법론적으로 창의적인 논문이다. 단일 사례 연구의 한계와 Microsoft Academic 종료에 따른 재현 제약이 있으나, 인용 맥락 분석을 계량서지학에 도입한 선구적 기여로 평가된다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

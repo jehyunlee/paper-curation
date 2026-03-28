@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yeonghun Kang, Wonseok Lee, Taeun Bae, Seunghee Han, Huiwon Jang, Jihan Kim | <strong>날짜</strong>: 2025-02-05 | <strong>Journal</strong>: Journal of the American Chemical Society (JACS), 147(5), 3943-3958 | <strong>DOI</strong>: <a href="https://doi.org/10.1021/jacs.4c11085" target="_blank">10.1021/jacs.4c11085</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>L2M3(Large Language Model MOF Miner)는 LLM 체인을 활용하여 40,000편 이상의 MOF 논문에서 합성 조건과 물성 데이터를 자동 추출하고 구조화된 데이터베이스를 구축하는 시스템이다. 추출 정확도 F1 0.93 이상을 달성하였으며, 구축된 데이터를 활용하여 시뮬레이션-실험 데이터 간 괴리의 원인(잔류 종)을 규명하고, LLM 기반 합성 조건 추천 시스템(recommendation score 0.83)을 개발하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -104,15 +106,23 @@ a { color: #A62018; }
 <li>합성 데이터 증가에 따른 추천 시스템 성능 향상 추적</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: JACS에 게재된 본 연구는 LLM 체인을 활용하여 MOF 분야의 대규모 실험 데이터 마이닝을 성공적으로 자동화한 모범적 사례이다. 40,000편 이상의 논문에서 높은 정확도(F1 > 0.93)로 물성과 합성 조건을 동시에 추출하고, 이를 구조 데이터와 연결하여 시뮬레이션-실험 괴리의 원인을 규명한 점이 핵심 기여이다. 합성 조건 추천 시스템까지 개발하여 실용적 가치를 높였으며, 프롬프트 조정만으로 다른 소재 분야로 쉽게 확장 가능한 점이 높이 평가된다. AI for Science에서 LLM 기반 과학 문헌 마이닝의 새로운 표준을 제시한 연구이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

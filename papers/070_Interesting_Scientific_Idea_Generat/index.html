@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>5,800만 편의 과학 논문에서 구축한 지식 그래프(knowledge graph)와 GPT-4를 결합하여 개인화된 연구 아이디어를 생성하는 시스템 <strong>SciMuse</strong>를 소개한다. 110명의 Max Planck Society 연구그룹 리더가 4,400개 이상의 AI 생성 연구 제안을 평가한 대규모 인간 평가를 수행하여, AI가 생성한 연구 아이디어의 흥미도를 실증적으로 검증하고, 지식 그래프 특성과 LLM을 이용한 흥미도 예측 방법론을 제시하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -87,17 +90,27 @@ a { color: #A62018; }
 <li>향후 자동화된 과학 실험(automated experimentation)과의 통합, LLM 발전에 따른 예측 품질 향상, 대규모 과학 조직·펀딩 기관의 학제간 협업 발굴 도구로의 활용 가능성 제시</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AI 기반 연구 아이디어 생성의 실용성을 대규모 인간 평가로 검증한 선구적 연구이다. 110명의 연구그룹 리더라는 평가자 규모와 4,400+개 아이디어라는 데이터 규모는 이 분야에서 독보적이며, "AI가 생성한 아이디어가 경험 많은 과학자에게 실제로 매력적인가?"라는 핵심 질문에 정량적 답변을 제공한다. 약 25%의 높은 흥미도 비율은 고무적이다. 다만, 개념 쌍 선택 전략 간 차이가 없다는 결과는 지식 그래프의 실질적 기여에 대한 의문을 남기며, 흥미도와 실제 연구 성과 간의 괴리는 후속 연구로 검증이 필요하다. "덜 탐색된 영역 간의 연결이 더 흥미롭다"는 발견은 직관적이면서도 데이터로 뒷받침되어 학제간 연구 기획에 실질적 가이드라인을 제공한다. AI for Science의 "아이디어 생성" 단계에 관심 있는 연구자에게 필수 참고 문헌이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 110명의 연구 리더와 함께 AI 아이디어 생성 도구 SciMuse를 평가한 연구로 현장 피드백이 풍부하나 도구 자체의 기술적 기여가 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

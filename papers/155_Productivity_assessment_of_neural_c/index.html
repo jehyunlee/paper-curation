@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1145/3520312.3534864"" target="_blank">10.1145/3520312.3534864"</a> target="_blank"><a href="https://doi.org/10.1145/3520312.3534864" target="_blank">10.1145/3520312.3534864</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>GitHub Copilot 사용자의 <strong>체감 생산성(perceived productivity)</strong>과 실제 사용 지표 간의 관계를 분석한 사례 연구이다. 2,631명의 설문 응답과 IDE 텔레메트리 데이터를 매칭하여, 제안 <strong>수락률(acceptance rate)</strong>이 코드의 지속성(persistence)이나 기여량 등 더 정교한 지표보다 체감 생산성을 더 잘 예측한다는 것을 발견했다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>신경망 기반 코드 완성 시스템(GitHub Copilot, Kite, TabNine 등)이 개발자 생산성을 높인다고 표방하지만, 이를 직접 측정하기 어렵다. 오프라인 평가(HumanEval 등)와 실제 IDE 사용 간에는 상당한 괴리가 있으며(예: IntelliCode의 Recall@5가 오프라인 90%에서 온라인 70%로 하락), 작업 완료 시간 같은 전통적 생산성 지표는 AI 코딩 도구의 이점을 충분히 포착하지 못한다. 사용자가 느끼는 생산성을 객관적 사용 데이터로 설명할 수 있는 지표를 찾는 것이 필요했다.</p></div>
@@ -94,15 +97,24 @@ a { color: #A62018; }
 <li><strong>설문 편향</strong>: 커뮤니케이션 수신에 동의한 사용자만 대상, 자기선택 편향 가능</li>
 <li>후속 연구: 챗봇 평가 방법론 차용, 대화적 코드 생성 품질 평가, 다중 시스템 비교</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>참신성 (Novelty)</td><td>7</td><td>사용 지표-체감 생산성 연결 최초 확립, 지속성 지표 도입</td></tr>
-<tr><td>기술적 완성도 (Soundness)</td><td>7</td><td>대규모 데이터(2,047명), PLS 회귀 등 체계적 분석, 다만 설명력 한계</td></tr>
-<tr><td>유의미성 (Significance)</td><td>8</td><td>AI 코딩 도구 평가 및 제품 지표 설계에 실질적 영향</td></tr>
-<tr><td>재현성 (Reproducibility)</td><td>7</td><td>집계 데이터 공개, 다만 원시 텔레메트리 비공개</td></tr>
-<tr><td>종합 (Overall)</td><td>7</td><td>AI 코드 완성 도구의 가치 측정 방법론에 대한 실용적이고 통찰력 있는 산업 연구</td></tr>
-</table></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

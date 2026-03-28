@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,7 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jeffrey Hu, Rongzhi Dong, Ying Feng, Ming Hu, Jianjun Hu</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>재료 탐색을 위한 능동 학습(Active Learning, AL)에서 기존 대리 모델(surrogate model)인 Gaussian Process(GP)와 Random Forest(RF)가 가진 근본적 한계를 해결하기 위해, transformer 기반 파운데이션 모델 <strong>TabPFN</strong>을 대리 모델로 활용하는 <strong>In-Context Active Learning (ICAL)</strong> 프레임워크를 제안한다. TabPFN은 수백만 개의 합성 회귀 과제로 사전 학습된 메타 학습 사전 확률(meta-learned prior)을 활용하여, 데이터셋별 재학습 없이 단일 순전파(forward pass)로 확률적 추론을 수행한다. 10개 재료 벤치마크 데이터셋에서 GP 대비 평균 52%, RF 대비 29.77%의 추가 평가 횟수 절감을 달성하며, 소규모 데이터 환경에서의 재료 발견 효율을 크게 향상시켰다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -119,27 +122,27 @@ a { color: #A62018; }
 <li><strong>전향적(prospective) 실험 검증</strong>: 실제 합성 루프에서의 ICAL 효과 입증</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>3.5</td><td>TabPFN 자체는 기존 모델이며, AL 대리 모델로의 적용이 주요 기여. 개념적으로 자연스러운 확장이나 체계적 검증에 가치</td></tr>
-<tr><td>**기술적 완성도 (Technical Soundness)**</td><td>4.0</td><td>10개 데이터셋, 19단계 초기화, 다중 탐색 함수의 광범위한 벤치마크. 불확실성 보정 메커니즘 분석이 설득력 있음</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>4.0</td><td>재학습 불필요, 구현 용이, 실험 비용 절감 효과가 정량적으로 제시됨</td></tr>
-<tr><td>**표현력 (Clarity)**</td><td>3.5</td><td>논문이 다소 장황하고 반복적이나, 각 데이터셋에 대한 상세한 분석은 유용</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>3.5</td><td>소규모 데이터 실험 과학 전반(재료, 화학, 생물)에 파급 가능성. 다만 TabPFN의 입력 제약이 실용 범위를 한정</td></tr>
-<tr><td>**재현성 (Reproducibility)**</td><td>3.0</td><td>코드 공개 예정이나 아직 미공개. LTC 데이터셋은 요청 시 제공</td></tr>
-</table>
-<p><strong>종합 점수: 3.6 / 5.0</strong></p>
-<p>파운데이션 모델을 재료 발견 능동 학습의 대리 모델로 활용하는 실용적이고 체계적인 연구. 특히 <strong>불확실성 보정 품질이 AL 성능의 핵심 동인</strong>이라는 메커니즘적 통찰과, <strong>특징 표현이 회귀 정확도와 독립적으로 AL 성능에 영향을 미친다</strong>는 비직관적 발견이 가치 있다. 다만, TabPFN 자체의 기술적 기여가 아닌 "기존 모델의 새로운 적용"이라는 점, 전향적 실험 검증의 부재, 비교 대상의 한정이 주요 약점이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: TabPFN을 재료 발견 능동 학습의 대리 모델로 적용하여 불확실성 보정이 AL 성능의 핵심임을 실증한 실용적 연구로, 소규모 실험 과학 전반에 파급 가능성이 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

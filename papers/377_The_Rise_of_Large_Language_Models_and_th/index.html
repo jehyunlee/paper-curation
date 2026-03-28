@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The Rise of Large Language Models and the Direction and Impact of US Federal Research Funding</h1>
 <blockquote><p><strong>저자</strong>: Yifan Qian, Zhe Wen, Alexander C. Furnas, Yue Bai, Erzhuo Shao, Dashun Wang | <strong>날짜</strong>: 2026-01-21 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2601.15485"" target="_blank">10.48550/arXiv.2601.15485"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2601.15485" target="_blank">10.48550/arXiv.2601.15485</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>LLM의 부상이 미국 연방 연구 펀딩의 방향과 영향력을 어떻게 바꾸고 있는가? 이 논문은 NSF와 NIH에 제출된 기밀 제안서(펀딩된 것, 탈락한 것, 심사 중인 것 모두 포함)와 공개 수상 데이터를 결합하여, LLM이 연구 제안 작성에 미치는 영향을 체계적으로 분석한 최초의 대규모 연구다. 핵심 발견: (1) 2023년부터 LLM 사용이 급격히 증가하고 이분포(bimodal) 패턴을 보임; (2) LLM 사용이 높을수록 제안서의 의미론적 독특성이 낮아져 최근 펀딩된 연구와 유사해짐; (3) NIH에서는 LLM 사용이 제안 성공률과 논문 생산성 향상과 연관되지만, NSF에서는 그렇지 않다; (4) 생산성 향상이 최고 인용 논문보다 일반 논문에 집중됨.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -91,16 +93,24 @@ a { color: #1856A0; }
 <li>LLM이 실제로 제안서 내용을 변화시키는지(내용 분석)에 대한 질적 연구 보완</li>
 <li>장기적으로 LLM 확산이 과학 포트폴리오 다양성에 미치는 영향 추적</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 기밀 펀딩 제안서 데이터를 활용하여 LLM이 연방 연구 펀딩 파이프라인에 미치는 영향을 최초로 대규모로 분석한 시의적절하고 중요한 연구다. LLM이 의미론적 독특성을 낮추고 NIH에서만 성공률을 높인다는 발견은 AI 시대 과학 포트폴리오 거버넌스에 직접적 함의를 가지며, 데이터 접근의 희귀성이 연구의 가치를 더욱 높인다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

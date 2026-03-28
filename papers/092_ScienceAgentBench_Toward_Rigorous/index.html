@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 언어 에이전트가 데이터 기반 과학적 발견(data-driven scientific discovery)을 실제로 자동화할 수 있는지를 엄밀하게 평가하기 위한 벤치마크 <strong>ScienceAgentBench</strong>를 제안한다. 4개 분야(생물정보학, 전산화학, 지리정보과학, 심리학/인지신경과학)의 44편 피어리뷰 논문에서 추출한 102개 과제를 포함하며, 각 과제의 목표 출력을 독립 실행 가능한 Python 프로그램으로 통일하여 체계적으로 평가한다. 최고 성능 에이전트(Claude-3.5-Sonnet + self-debug)도 32.4%의 과제만 독립적으로 해결할 수 있어, 현재 LLM 에이전트의 과학 자동화 능력에 대한 과장된 주장에 경종을 울린다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>최근 LLM 기반 에이전트가 과학 연구의 전 과정(아이디어 생성 -> 실험 -> 논문 작성)을 자동화할 수 있다는 대담한 주장들이 등장하였으나, 개별 과제 수준에서의 엄밀한 평가가 부족했다. 기존 벤치마크(SWE-Bench, MLAgentBench 등)는 소프트웨어 엔지니어링 위주이거나, 실제 과학 연구의 다양성과 복잡성을 반영하지 못하며, 데이터 오염(data contamination)과 에이전트의 편법(shortcut) 문제에 대한 대응이 미흡했다. 과학 연구 자동화를 주장하기 전에, 워크플로우의 개별 단계에서 에이전트의 실질적 능력을 먼저 검증해야 한다는 문제의식에서 출발한다.</p></div>
@@ -81,17 +84,27 @@ a { color: #A62018; }
 <li><strong>전문가 지식 활용의 비효율성</strong>: 전문가 제공 지식이 SR을 소폭 향상시키지만 VER은 오히려 감소하는 현상에 대한 심층 분석과 해결책이 필요.</li>
 </ol>
 <p>6. <strong>비용-성능 트레이드오프</strong>: o1-preview가 높은 SR을 달성하나 비용이 10배 이상 증가하는 문제에 대한 효율적 추론 전략 연구가 필요.</p></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>ScienceAgentBench는 LLM 에이전트의 과학 연구 자동화 능력을 현실적으로 평가하기 위한 <strong>시의적절하고 엄밀한 벤치마크</strong>이다. 과학 연구의 개별 단계별 능력을 분리하여 측정한다는 접근법은 방법론적으로 건전하며, 데이터 오염 방지와 편법 차단 전략은 벤치마크의 신뢰성을 높인다. 최고 성능 에이전트도 전체 과제의 1/3 수준만 해결할 수 있다는 결과는, 현재의 AI 과학 자동화 주장에 대한 건설적인 반론을 제공한다. 다만, 과학 연구의 본질인 가설 생성과 창의적 사고는 평가 범위 밖이며, 벤치마크의 지속적 확장과 업데이트가 과제로 남는다. ICLR 2025에 채택된 것이 당연한 수준의 완성도를 갖춘 연구이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>5</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 데이터 주도 과학 연구의 LLM 에이전트 역량을 5개 도메인·102개 실제 과제로 엄밀하게 평가한 ICLR 2025 벤치마크로, 최고 에이전트의 32.4% 성공률이 현재 한계를 명확히 드러낸다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

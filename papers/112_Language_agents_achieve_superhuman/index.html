@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Language Agents Achieve Superhuman Synthesis of Scientific Knowledge</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 문헌 연구의 세 가지 핵심 과제 -- 정보 검색(retrieval), 요약(summarization), 모순 탐지(contradiction detection) -- 에서 LLM 기반 에이전트 <strong>PaperQA2</strong>가 도메인 전문가(PhD 수준)의 성능을 매칭하거나 초과함을 엄밀한 인간-AI 비교 방법론으로 실증한 연구이다. PaperQA2는 RAG(Retrieval-Augmented Generation)을 에이전트 기반 다단계 과정으로 분해하여 사실성(factuality)을 최적화하였으며, 이를 활용한 WikiCrow(위키피디아 스타일 요약 생성)와 ContraCrow(문헌 내 모순 대규모 탐지) 시스템을 구축하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -121,18 +124,24 @@ a { color: #A62018; }
 <li>Closed-loop 연구 자동화(가설 생성 → 문헌 검증 → 실험 설계)로의 확장</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (5점 만점)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>4.5</td><td>엄밀한 인간-AI 비교와 대규모 모순 탐지는 매우 독창적</td></tr>
-<tr><td>**기술적 완성도 (Soundness)**</td><td>4.5</td><td>체계적 어블레이션, 통계적 검정, 인간 전문가 검증이 철저</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>4.5</td><td>오픈소스(paperqa), 즉시 활용 가능한 도구; 비용이 유일한 장벽</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>5.0</td><td>&quot;AI가 과학 문헌 합성에서 초인적&quot;이라는 주장을 실증; 과학 연구 방식의 패러다임 전환 시사</td></tr>
-<tr><td>**표현 (Presentation)**</td><td>4.5</td><td>명확한 도식(Figure 1-4), 정량적 비교, 투명한 방법론</td></tr>
-<tr><td>**종합 (Overall)**</td><td>4.5</td><td>AI 기반 과학 문헌 연구의 현재 수준을 가장 설득력 있게 보여주는 랜드마크 논문</td></tr>
-</table>
-<h3>총평</h3>
-<p>PaperQA2가 과학 문헌의 검색, 요약, 모순 탐지에서 PhD 수준 전문가를 매칭하거나 초과한다는 결과는, AI 기반 과학 연구의 가능성을 가장 설득력 있게 보여주는 성과이다. 특히 인간에게 아무런 제약을 두지 않은(인터넷, 도구, 시간 무제한) 공정한 비교 방법론, 체계적 어블레이션, 그리고 인간 전문가의 직접 검증이 결과의 신뢰성을 크게 높인다. ContraCrow를 통한 대규모 모순 탐지(논문당 평균 1.64개의 검증된 모순)는 과학 문헌의 일관성과 재현성 문제에 대한 새로운 시각을 제공한다. RAG의 에이전트화와 맥락적 재순위화(RCS)라는 기술적 혁신은 향후 다양한 지식 집약적 AI 시스템에 적용될 수 있는 핵심 설계 원리를 제시한다. FutureHouse(비영리)가 코드를 오픈소스로 공개한 점도 높이 평가할 만하다.</p></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

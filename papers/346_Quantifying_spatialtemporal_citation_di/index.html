@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Quantifying spatial–temporal citation diffusion of individual papers in knowledge space</h1>
 <blockquote><p><strong>저자</strong>: Shuang Zhang, Feifan Liu, Haoxiang Xia | <strong>날짜</strong>: 12/2025 | <strong>Journal</strong>: Journal of the Association for Information Science and Technology | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1002/asi.70021"" target="_blank">10.1002/asi.70021"</a> target="_blank"><a href="https://doi.org/10.1002/asi.70021" target="_blank">10.1002/asi.70021</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>논문 인용이 지식 공간에서 시간과 함께 어떻게 확산되는가? 7개 대규모 학문 분야에서 수백만 건의 논문을 대상으로 document representation 알고리즘을 사용해 인용 확산 궤적을 분석한 결과, 세 가지 핵심 패턴이 발견되었다: (1) 인용 확산은 <strong>가우시안 분포</strong>를 따르는 범위와 <strong>지수 분포</strong>를 따르는 거리를 보이며 의미적으로 국소화되는 경향이 있다. (2) 초기 인용 확산의 폭은 장기적 인용 축적과 <strong>양의 상관관계</strong>를 보여, 초기 광범위한 확산이 장기 임팩트를 증폭시킨다. (3) 참신하고 파괴적인 논문은 더 적고 지연된 인용을 받지만, 더 먼 지식 거리의 인용을 유인하며 장기적으로 더 광범위한 영향을 미친다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>초기 인용 확산 폭을 활용한 논문 장기 임팩트 예측 모델 개발</li>
 <li>지식 공간에서의 인용 확산과 실제 연구자 협력 네트워크의 관계 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 인용 역학에 공간적 차원을 추가하여 지식 공간에서의 인용 확산 궤적을 체계적으로 분석한 독창적 연구다. 참신하고 파괴적인 논문이 더 먼 지식 거리에서 인용을 받는다는 발견은 과학적 혁신의 확산 메커니즘에 대한 새로운 통찰을 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

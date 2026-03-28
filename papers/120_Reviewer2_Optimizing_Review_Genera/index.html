@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Reviewer2: Optimizing Review Generation Through Prompt Generation</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 학술 논문 리뷰 자동 생성에서 <strong>구체성(specificity)과 커버리지(coverage) 부족</strong> 문제를 해결하기 위해, aspect prompt 생성과 리뷰 생성을 분리한 2단계 프레임워크 REVIEWER2를 제안한다. 첫 번째 LLM(Mp)이 논문을 분석하여 리뷰가 다룰 관점(aspect prompt)을 생성하고, 두 번째 LLM(Mr)이 해당 관점에 기반한 리뷰를 생성한다. 이를 위해 기존 리뷰 데이터셋에 aspect prompt를 자동 어노테이션하는 PGE(Prompt Generation with Evaluation) 파이프라인을 개발하고, 27k 논문 / 99k 리뷰의 대규모 데이터셋을 구축하여 공개한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -103,19 +106,27 @@ a { color: #A62018; }
 <li>실제 저자를 대상으로 한 유용성 사용자 연구</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>REVIEWER2는 LLM 리뷰 생성의 핵심 문제인 "generic review 생성"을 <strong>정확히 진단하고 원리적으로 해결</strong>한 논문이다. 리뷰 생성이 under-specified task라는 통찰과, aspect prompt를 통해 리뷰어 간 관점 다양성을 명시적으로 모델링한다는 아이디어는 기술적으로 건전하며 직관적이다. Figure 2의 기하학적 직관과 Figure 6의 t-SNE 시각화가 이를 설득력 있게 뒷받침한다.</p>
-<p>실험 설계는 체계적이며, 6개 학회에 걸친 in-domain/cross-domain 평가, SPE/COV라는 새로운 메트릭, 다양한 ablation을 통해 각 구성요소의 기여를 명확히 분리하였다. 27k/99k 규모의 aspect prompt 어노테이션 데이터셋의 공개도 커뮤니티에 대한 중요한 기여이다.</p>
-<p>다만, 실제 리뷰 품질의 절대적 수준(저자에게 실질적으로 유용한지)에 대한 검증이 부족하고, 최신 대형 모델로의 확장 실험이 없는 점은 아쉽다. 또한 PGE의 자기 평가가 실제로 고품질 prompt를 보장하는지에 대한 인간 검증이 100개 초기 예시 외에는 체계적으로 이루어지지 않았다. 그럼에도, 리뷰 생성의 구조적 문제를 원리적으로 해결하는 접근은 후속 연구의 중요한 토대가 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 측면별 프롬프트 생성으로 리뷰 구체성을 높이는 Cornell의 Reviewer2 시스템으로, 27K 논문 데이터셋과 인간 평가를 통한 검증이 설득력 있으나 실제 배포 효과는 미검증이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

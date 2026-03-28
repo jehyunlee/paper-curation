@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Use of Large Language Models as Artificial Intelligence Tools in Academic Research and Publishing among Global Clinical Researchers</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>하버드 의과대학 Global Clinical Scholars Research Training (GCSRT) 프로그램에 참여한 59개국, 65개 전문 분야의 의료·보건 연구자 226명을 대상으로 LLM의 인지도, 사용 현황, 미래 영향에 대한 인식을 횡단면 조사한 연구이다. 87.6%가 LLM을 인지하고 있으나 실제 출판에 사용한 비율은 18.7%에 불과하며, 사용자의 40.5%는 논문에 AI 사용을 공개하지 않았다. 연구자들의 과반수(50.8%)가 LLM의 긍정적 미래 영향을 예측하면서도, 78.3%는 남용 방지를 위한 규제가 필요하다고 답하여, 기대와 우려가 공존하는 글로벌 연구자 인식의 스냅샷을 제공한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -138,19 +141,27 @@ a { color: #A62018; }
 <li>비서구권·저소득국가 연구자의 AI 접근성 격차 조사</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>이 연구는 학술 연구에서의 LLM 사용에 대한 글로벌 연구자 인식을 실증적으로 조사한 시의적절한 연구이다. 59개국, 65개 전문 분야를 포괄하는 다양한 표본은 이 분야에서 가장 넓은 지리적 범위를 가진 조사 중 하나이며, 특히 비서구권 연구자의 관점이 포함된 점이 의미 있다.</p>
-<p>가장 주목할 만한 발견은 두 가지이다. 첫째, LLM 인지와 출판 실적 간의 유의한 연관성은 AI 도구 접근성이 연구 생산성 격차를 심화시킬 수 있다는 우려를 뒷받침한다 (비록 인과 방향은 불확실하지만). 둘째, 사용자의 40.5%가 AI 사용을 공개하지 않는다는 발견은 현행 투명성 정책의 한계를 적나라하게 드러내며, 학술지와 기관이 보다 실효성 있는 공개 메커니즘을 개발해야 함을 시사한다.</p>
-<p>다만, 횡단면 설계, GCSRT 프로그램이라는 특수 집단, 자기 보고 방식의 한계는 결과 해석에 주의를 요한다. 또한 LLM의 주요 사용이 문법·서식 교정에 집중되어 있다는 결과는, 현재 연구자들이 AI를 깊은 수준의 과학적 사고 도구라기보다 "고급 편집 보조" 수준으로 인식하고 있음을 보여준다. AI의 과학적 활용이 진화함에 따라, 이러한 인식이 어떻게 변화하는지를 추적하는 종단 연구가 향후 핵심 과제가 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>2</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 59개국 226명 임상 연구자를 대상으로 LLM 활용 현황을 조사한 글로벌 설문 연구로, 광범위한 국제적 표본이 강점이나 자기보고 편향과 단면 설계의 한계로 인과 추론이 어렵다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

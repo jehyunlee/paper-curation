@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>LLM4SR: A Survey on Large Language Models for Scientific Research</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM이 과학 연구의 전 주기에 걸쳐 어떻게 활용되고 있는지를 체계적으로 정리한 최초의 포괄적 서베이 논문. 연구 파이프라인을 (1) 과학적 가설 발견, (2) 실험 계획 및 수행, (3) 논문 작성, (4) 피어 리뷰의 4단계로 구분하고, 각 단계별 방법론, 벤치마크, 평가 기준을 상세히 분류하여 제시한다. GitHub 리포지토리(https://github.com/du-nlp-lab/LLM4SR)를 통해 관련 자원을 공개한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>LLM의 급속한 발전으로 과학 연구의 각 단계에서 전례 없는 지원이 가능해졌으나, 기존 서베이들은 특정 단계(예: 과학적 발견, 자동화, 피어 리뷰)에만 초점을 맞추거나, LLM에 특화되지 않은 일반적 접근을 다루는 데 그쳤다. 과학 연구 워크플로우 전체를 관통하는 LLM 활용의 통합적 조망이 필요했다.</p></div>
@@ -79,17 +82,27 @@ a { color: #A62018; }
 <li><strong>윤리적 논의 부족</strong>: LLM의 학술 연구 활용에 따른 윤리적 함의(저작권, 학술 무결성, 피어 리뷰 공정성 등)에 대한 심층 논의가 상대적으로 제한적</li>
 <li>향후 자동화 실험 실행(로보틱스 연계), LLM의 과학적 발견 능력 증강 방법, 분야별 특화 벤치마크 확장이 핵심 연구 방향</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>LLM 기반 과학 연구 자동화 분야의 현황을 파악하기 위한 필수적 참고 자료. 연구 파이프라인 전체를 4단계로 나누어 방법론, 벤치마크, 평가 방법을 체계적으로 분류한 구조가 명확하고, 특히 가설 발견 분야의 방법론 발전 궤적 추적(Table 1)은 이 빠르게 성장하는 분야의 지형도를 이해하는 데 매우 유용하다. 다만 CS 중심의 시각이 강하고, 자연과학 실험 자동화나 윤리적 측면에 대한 논의가 상대적으로 얕다. 전반적으로 연구자들이 LLM을 자신의 연구 워크플로우에 통합하고자 할 때 출발점으로 삼기에 적합한 포괄적 서베이이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학 연구를 위한 LLM을 4단계 파이프라인 분류체계로 체계화한 서베이로, 광범위한 문헌을 종합하는 지도 역할을 하지만 비판적 분석보다는 나열에 치우친 한계가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The selective use of physics knowledge in policy: how interdisciplinary physics bridges subfields and shapes policy influence</h1>
 <blockquote><p><strong>저자</strong>: Jeongmin Lee, Jisung Yoon | <strong>날짜</strong>: 2026-02-11 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2602.10427"" target="_blank">10.48550/arXiv.2602.10427"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2602.10427" target="_blank">10.48550/arXiv.2602.10427</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 지식이 정책에 어떻게 선택적으로 유입되는가? 이 논문은 미국물리학회(APS) 출판물과 Overton 정책 데이터베이스를 연결한 새로운 데이터셋으로 물리학 지식의 정책 유입 메커니즘을 분석한다. 핵심 발견은 세 가지다: (1) 정책 문서는 물리학 연구 생산 구조를 그대로 반영하지 않고 일반물리학·학제간 물리학을 선호한다; (2) 학제간 물리학은 특화된 하위 분야들을 잇는 <strong>중심 브릿지</strong> 역할을 한다; (3) 학제간 물리학은 정책 가시성(visibility)은 높이지만 정책 영향력(influence)을 반드시 높이지는 않으며, 지구물리학을 인용한 논문은 약 <strong>24% 높은 정책 영향력</strong>을 보인다(기후 정책의 정치적 중요성 때문).</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -91,16 +93,24 @@ a { color: #1856A0; }
 <li>시간 추세 분석 — 기후 위기 담론 강화와 지구물리학 정책 영향력 변화의 시계열 관계</li>
 <li>정책 영향력을 인용 이외의 다양한 지표(정책 채택, 법률 반영)로 측정하는 보완 연구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: APS-Overton 연결 데이터셋을 새롭게 구축하여 물리학 지식의 선택적 정책 유입 메커니즘을 정량화하고, 정책 가시성과 정책 영향력의 분리라는 핵심 통찰을 제시한 시의적절하고 중요한 연구다. 분석 대상이 물리학에 한정된 점이 아쉬우나, Science-Policy 인터페이스 연구의 방법론적 모델을 제시한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

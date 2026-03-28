@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Angelo Britto, Sebastian Robledo, Martha Zuluaga | <strong>날짜</strong>: 2026-02-14 | <strong>Journal</strong>: Iberoamerican Journal of Science Measurement and Communication | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.47909/ijsmc.342"" target="_blank">10.47909/ijsmc.342"</a> target="_blank"><a href="https://doi.org/10.47909/ijsmc.342" target="_blank">10.47909/ijsmc.342</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>BibFusion은 무엇이고 어떤 문제를 해결하는가? Scopus CSV와 Web of Science TXT 파일을 단일의 추적 가능한 분석-준비 코퍼스로 통합하는 Python 패키지다. 핵심 기능: (1) DOI 우선 중복 제거(DOI 없으면 제목-연도-제1저자 fallback), (2) ASCII/대문자 표준화, (3) OpenAlex를 통한 식별자(ORCID, OpenAlex ID) 보강, (4) ORCID → OpenAlexAuthorID → 정규화된 이름의 계층적 저자 disambiguation. 실증 시연에서 기업가적 마케팅 쿼리 436건 → <strong>253개 고유 논문</strong> 통합, 8,569건 인용 코퍼스 구성에 성공했다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -82,16 +84,24 @@ a { color: #1856A0; }
 <li>퍼지 매칭(fuzzy matching) 기반 중복 제거 정확도 향상</li>
 <li>자동화된 품질 지표(precision/recall) 평가 프레임워크 통합</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: Scopus-WoS 통합이라는 실용적이고 반복적인 문제를 체계적으로 해결하는 Python 패키지로, 감사 가능한 파이프라인과 OpenAlex 보강이 강점이다. 범용 bibliometric 도구로서의 독창성은 제한적이나 실용적 가치가 높다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

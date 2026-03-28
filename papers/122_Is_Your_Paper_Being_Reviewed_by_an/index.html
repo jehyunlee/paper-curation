@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Is Your Paper Being Reviewed by an LLM? Investigating AI Text Detectability in Peer Review</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>피어 리뷰에서 LLM이 생성한 텍스트를 <strong>개별 리뷰 수준에서 탐지</strong>하는 문제를 최초로 체계적으로 조사한 연구이다. GPT-4o와 Llama-3.1-70B로 ICLR 논문에 대한 16,000개의 AI 리뷰를 생성하고, 기존 AI 텍스트 탐지 방법(RoBERTa, Longformer, Originality AI, LLM-as-judge)의 성능을 평가한 결과, 낮은 false positive rate(FPR)에서 GPT-4o 리뷰 탐지가 매우 어렵다는 것을 발견한다. 이를 해결하기 위해 <strong>Anchor Embeddings Detection</strong> 방법을 제안하여, FPR 5%에서 GPT-4o 리뷰의 97%를 탐지하는 성과를 달성한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -105,19 +108,27 @@ a { color: #A62018; }
 <li>편향 완화를 위한 공정성 고려 탐지 모델 개발</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>본 논문은 피어 리뷰에서의 AI 텍스트 탐지라는 <strong>시의적절하고 실용적으로 중요한 문제</strong>를 다룬다. 기존 AI 텍스트 탐지 방법들이 피어 리뷰 맥락에서 어떤 한계를 보이는지를 체계적으로 실증하고, 특히 GPT-4o 리뷰의 탐지가 낮은 FPR에서 극히 어렵다는 발견은 학술 커뮤니티에 중요한 경고를 제공한다.</p>
-<p>제안된 Anchor Embeddings 방법은 직관적이면서도 효과적이다. "동일 논문에 대한 AI 리뷰들은 의미적으로 수렴한다"는 가정이 실험적으로 잘 뒷받침되며, FPR 5%에서 97% TPR이라는 결과는 기존 방법 대비 월등하다. 다만 이 방법은 완전 AI 생성 리뷰에 최적화되어 있으며, 인간이 AI 출력을 편집한 혼합 리뷰에 대한 성능은 미지수이다.</p>
-<p>LLM judge의 판단 근거 분석(Table S4)은 특히 가치 있다. AI 판정이 "awkward sentence structure", "non-native language use"에 의존한다는 발견은 AI 탐지 도구가 비영어권 연구자를 차별할 수 있음을 시사하며, 이는 탐지 기술 개발에서 공정성 고려가 필수적임을 강조한다. 논문의 범위가 비교적 좁고(4페이지 본문) 실험이 ICLR에 한정되지만, 문제 정의와 방법론의 명확성, 그리고 실용적 시사점이 뛰어난 연구이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Anchor Embeddings 기법으로 AI 작성 피어 리뷰를 탐지하는 Intel Labs 연구로, 학술 무결성 보호라는 실질적 필요에 응답하는 기술적으로 견고한 접근을 제시한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

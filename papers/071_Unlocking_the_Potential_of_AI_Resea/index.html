@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Unlocking the Potential of AI Researchers in Scientific Discovery: What Is Missing?</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI for Science(AI4Science)의 성장 현황을 Nature Index 145개 저널에 게재된 20,401편의 AI 관련 논문을 분석하여 정량적으로 파악하고, AI 연구자들이 과학적 발견에서 주도적 역할을 하지 못하는 현실적 간극을 진단한 논문이다. 혁신의 확산(Diffusion of Innovation) 이론에 기반하여 AI4Science의 점유율이 2024년 3.57%에서 2050년 약 25%로 성장할 것으로 전망하며, AI 연구자를 "도구 제공자"에서 "핵심 기여자"로 전환하기 위한 세 가지 전략적 방향과 구체적 워크플로우를 제안한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -91,17 +94,27 @@ a { color: #A62018; }
 <li>향후 LLM 기반 자동화 실험 플랫폼의 발전, AI 연구자와 실험 과학자 간 협업 모델의 정교화, 분야별 AI4Science 워크플로우의 구체화가 필요</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AI4Science의 현재 상태를 "AI 연구자의 참여 부족"이라는 독특하고 시의적절한 관점에서 진단한 논문이다. 20,401편의 논문 분석을 통해 "AI 논문의 90%가 실험 과학자 주도"라는 정량적 증거는 설득력 있으며, NeurIPS'24에서의 AI 연구자 불안감이라는 현실적 맥락과 맞물려 강한 공감을 유발한다. 세 가지 전략적 방향과 워크플로우 제안은 AI 연구자에게 실질적 로드맵을 제공한다. 다만, 2050년 25% 전망은 단순 로지스틱 모델에 의존하여 불확실성이 크며, 제안된 전략들의 실효성에 대한 실증적 근거가 부족하다. 또한 기관 소속 기반의 "AI 연구자" 정의는 학제간 연구가 일상화된 현실에서 다소 조잡한 분류이다. 그럼에도, AI for Science 분야에 진입하려는 AI 연구자에게 유용한 방향 설정 문서로서의 가치가 있으며, 연구 정책 수립자에게도 AI 인재 활용의 구조적 병목을 환기시키는 참고 자료가 될 수 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI 연구자의 AI4Science 참여 현황과 장벽을 분석한 메타 연구로 분야 발전 방향에 대한 실용적 시사점을 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

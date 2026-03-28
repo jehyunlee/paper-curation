@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Science as exploration in a knowledge landscape: tracing hotspots or seeking opportunity?</h1>
 <blockquote><p><strong>저자</strong>: Feifan Liu, Shuang Zhang, Haoxiang Xia | <strong>날짜</strong>: 2024-04-02 | <strong>Journal</strong>: EPJ Data Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1140/epjds/s13688-024-00468-z"" target="_blank">10.1140/epjds/s13688-024-00468-z"</a> target="_blank"><a href="https://doi.org/10.1140/epjds/s13688-024-00468-z" target="_blank">10.1140/epjds/s13688-024-00468-z</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학자들은 연구 주제를 탐색할 때 핫스팟을 추적하는가, 아니면 새로운 기회를 개척하는가? 이 논문은 GIS 기법을 활용해 6개 대규모 학문 분야의 지식 공간을 구축하고, 과학자들의 주제 전환 궤적을 분석한 결과 <strong>압도적으로 보수적인 패턴</strong>이 확인됨을 밝혔다. 과학자들은 주로 익숙한 지역 지식 공간을 탐색하며, 연구 강도(특정 영역의 과학자 집중도)가 주제 전환의 핵심 촉진 요인인 반면, 하위 분야 간 지식 거리는 가장 큰 장벽으로 작용한다. 특히, 하위 분야 교차점에서 혁신적 발견의 기회가 존재함에도 과학자들은 이를 강하게 추구하지 않는다는 점이 실증적으로 확인되었다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -87,16 +89,24 @@ a { color: #1856A0; }
 <li>연구비 구조·기관 인센티브와 주제 전환 보수성 간의 인과 관계 분석</li>
 <li>지식 공간 교차점에서 성공적으로 혁신을 이룬 소수 과학자들의 특성 규명</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>3/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: GIS 기법을 지식 탐색 분석에 창의적으로 적용하여 과학자들의 보수적 주제 전환 패턴과 그 메커니즘을 실증한 독창적 연구다. 핫스팟 추적 vs. 기회 개척의 이분법적 질문에 명확한 경험적 답을 제시하지만, 6개 분야 데이터의 대표성과 인과 추론의 한계가 주요 약점이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

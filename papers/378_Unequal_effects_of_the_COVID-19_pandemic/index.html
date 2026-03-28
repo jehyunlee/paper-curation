@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Unequal effects of the COVID-19 pandemic on scientists</h1>
 <blockquote><p><strong>저자</strong>: Kyle R. Myers, Wei Yang Tham, Yian Yin, Nina Cohodes, Jerry G. Thursby, Marie C. Thursby, Peter Schiffer, Joseph T. Walsh, Karim R. Lakhani, Dashun Wang | <strong>날짜</strong>: 2020-07-15 | <strong>Journal</strong>: Nature Human Behaviour | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41562-020-0921-y"" target="_blank">10.1038/s41562-020-0921-y"</a> target="_blank"><a href="https://doi.org/10.1038/s41562-020-0921-y" target="_blank">10.1038/s41562-020-0921-y</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>COVID-19 팬데믹은 과학자들에게 동등하게 영향을 미쳤는가? 이 논문은 팬데믹 초기(2020년 4월) 대규모 설문 조사를 통해 과학자들의 연구 생산성 변화를 실시간으로 포착한 선구적 연구다. 핵심 발견은 팬데믹 효과가 <strong>극도로 불평등</strong>하다는 것이다: 어린 자녀를 둔 과학자(특히 여성), 초기 커리어 연구자, 실험 기반 연구자들이 가장 큰 타격을 받았으며, 이론 및 계산 분야 연구자는 상대적으로 덜 영향을 받거나 일부는 생산성이 증가했다. 이 연구는 팬데믹이 기존의 젠더·커리어 단계 격차를 심화시켰음을 실증한 최초의 대규모 실증 연구 중 하나다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -85,16 +87,24 @@ a { color: #1856A0; }
 <li>2년 이상의 종단 추적으로 젠더·커리어 단계별 회복 격차 측정</li>
 <li>각국의 지원 정책(보육 지원, 연구비 연장)과 생산성 회복 간의 관계 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 팬데믹 초기에 4,500명 이상의 연구자를 대상으로 불균등한 영향을 즉각적으로 포착한 선구적 연구로, Nature Human Behaviour 게재에 걸맞은 사회적 중요성을 갖는다. 자기 보고 데이터의 한계에도 불구하고, 어린 자녀를 둔 여성 과학자와 초기 커리어 연구자의 특별한 취약성을 실증하여 팬데믹 이후 과학 인력 정책 논의의 핵심 참고문헌이 되었다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM(ChatGPT) 보조 에세이 작성이 인간의 뇌 연결성과 인지 기능에 미치는 영향을 EEG 기반 신경생리학적 분석과 NLP 분석, 행동 인터뷰를 통해 4개월에 걸쳐 종단적으로 조사한 연구이다. 54명의 참가자를 LLM 그룹, 검색엔진 그룹, Brain-only(도구 미사용) 그룹으로 나누어 3회의 에세이 세션을 진행하고, 4번째 세션에서는 조건을 교차(LLM→Brain, Brain→LLM)하여 <strong>"인지적 부채(Cognitive Debt)"</strong> 의 축적과 회복 가능성을 탐구하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -92,18 +95,24 @@ a { color: #A62018; }
 <li>LLM 미사용 쓰기 샘플 기반 개인 "핑거프린트" 개발</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (5점 만점)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>4.5</td><td>EEG 종단 연구 + 조건 교차 설계는 매우 독창적</td></tr>
-<tr><td>**기술적 완성도 (Soundness)**</td><td>3.5</td><td>dDTF 분석은 견고하나, 표본 크기가 작고 스펙트럼 파워 분석 미포함</td></tr>
-<tr><td>**실험 설계 (Experimental Design)**</td><td>4.0</td><td>3그룹 × 4세션 + 교차 설계는 우수하나, 검색엔진 그룹의 세션 4 부재</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>4.5</td><td>AI 교육 정책에 직접적 시사점을 제공하는 시의적절한 연구</td></tr>
-<tr><td>**표현 (Presentation)**</td><td>3.5</td><td>206페이지의 방대한 분량; 핵심 메시지가 다소 분산</td></tr>
-<tr><td>**종합 (Overall)**</td><td>4.0</td><td>LLM 사용의 인지적 비용에 대한 신경과학적 근거를 최초로 제시한 중요 연구</td></tr>
-</table>
-<h3>총평</h3>
-<p>AI 보조 도구의 편리함 이면에 숨겨진 인지적 비용을 신경과학적 수준에서 처음으로 실증한 선구적 연구이다. 특히 세션 4의 조건 교차 실험은 "인지적 부채"가 축적되며, 사전 자립적 학습 경험이 이를 완충할 수 있음을 보여주는 핵심 발견이다. 다만, 표본 규모의 한계와 과제 특수성은 결과의 일반화에 주의를 요한다. 교육 현장에서 AI 도구 도입 전략을 수립할 때 반드시 참고해야 할 연구로, 후속 fMRI 연구와 대규모 종단 연구가 기대된다.</p></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

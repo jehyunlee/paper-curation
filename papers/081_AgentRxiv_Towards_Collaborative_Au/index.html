@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Samuel Schmidgall, Michael Moor | <strong>날짜</strong>: 2025-03-23 | <strong>arXiv</strong>: 2503.18102 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.18102" target="_blank">10.48550/arXiv.2503.18102</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>AgentRxiv는 LLM 기반 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 연구 결과를 업로드, 검색, 상호 참조하며 협업적으로 연구를 수행할 수 있게 하는 프레임워크이다. 단일 실험실이 MATH-500에서 gpt-4o mini 기준 70.2%에서 78.2%로 11.4% 상대적 성능 향상을 달성했으며, 3개 병렬 실험실 운영 시 79.8%(13.7% 상대 향상)까지 도달하여, 에이전트 간 누적적 지식 공유가 고립된 연구보다 우월함을 입증했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -106,15 +108,23 @@ a { color: #A62018; }
 <li>연구 과정에서의 plan adjustment 허용 (실험 중 계획 수정 가능)</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 협업적으로 연구를 수행하는 매력적인 비전을 제시한 논문이다. 누적적 지식 공유가 고립된 연구보다 우월하다는 점을 정량적으로 입증한 것은 의미 있으나, 높은 hallucination 비율과 수동 검증 의존성, 좁은 실험 범위(MATH-500 prompting), 그리고 발견된 알고리즘의 제한적 novelty는 현재 시스템의 실용적 가치에 대한 의문을 남긴다. 자율 과학 연구의 미래 방향을 탐색하는 시의적절한 연구이지만, 신뢰성 확보를 위한 후속 개선이 필수적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>The AI Writing on the Wall</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>ChatGPT와 같은 생성형 AI 도구가 과학 글쓰기의 지형을 근본적으로 변화시키고 있으며, 과학 출판에서의 합법적·비합법적 AI 활용을 구분하는 가이드라인이 시급히 필요하다는 Nature Machine Intelligence의 사설이다. AI 생성 도구의 긍정적 활용 가능성과 남용 위험을 동시에 지적하면서, 과학 출판 시스템에 대한 신뢰 훼손 우려를 제기한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -107,19 +110,27 @@ a { color: #A62018; }
 <li>LLM의 편향 전파 메커니즘에 대한 심층 연구</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>이 사설은 ChatGPT 출시 약 2개월 후, Nature Machine Intelligence가 과학 출판 커뮤니티에 보내는 조기 경보(early warning)로서의 역할을 충실히 수행한다. 1페이지라는 짧은 분량에도 불구하고, AI 생성 도구가 과학 글쓰기에 미치는 영향의 핵심 쟁점들 -- 표절 탐지 무력화, 신뢰 훼손, 큐레이터형 글쓰기, 편향 전파 -- 을 간결하게 짚어낸다.</p>
-<p>특히 "통계적 평균 의견의 생산자"로서의 LLM 본질에 대한 지적과, 전 세계가 ChatGPT라는 "대규모 실험"에 참여하고 있다는 비유는 이후 AI 윤리 논의에서 반복적으로 인용되었다. "가이드라인이 필요하다"는 주장 자체는 새롭지 않으나, Nature 계열 저널의 편집부가 공식적으로 이 입장을 천명한 것은 학술 커뮤니티의 대응 촉구에 실질적 영향력을 가졌다.</p>
-<p>다만 구체적 해법 제시가 부재하고, ChatGPT 등장 초기의 시점적 제약이 크다는 점에서, 이 사설은 문제 제기의 출발점으로서 의미를 가지며, 이후 보다 구체적인 가이드라인 개발의 촉매 역할을 한 문서로 평가된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학 논문 AI 작성에 대한 조기 경고를 담은 Nature Machine Intelligence 에디토리얼로, 문제 의식의 선구성은 있으나 1페이지 분량의 제약으로 심층 분석이나 구체적 대안 제시가 어렵다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

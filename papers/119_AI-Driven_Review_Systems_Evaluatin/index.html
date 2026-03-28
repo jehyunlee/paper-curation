@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>AI-Driven Review Systems: Evaluating LLMs in Scalable and Bias-Aware Academic Reviews</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 학술 논문 자동 리뷰 시스템의 구축, 대규모 운영, 그리고 체계적 평가를 다룬 종합적 연구이다. 세 가지 시스템(OpenReviewer, Papers with Reviews, Reviewer Arena)과 네 가지 평가 방법(인간 평가, LLM 자동 평가, 인간 선호도 예측, LLM 리뷰 한계 자동 발견)을 제안하며, LLM 리뷰의 품질과 한계를 체계적으로 매핑한다. 매일 500편의 arXiv 논문과 월 1000편의 Nature 오픈액세스 논문을 자동 리뷰하여 공개하는 대규모 시스템을 운영한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -107,19 +110,27 @@ a { color: #A62018; }
 <li>더 다양한 학문 분야(인문, 사회과학 등)로의 확장 검증</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>본 논문은 LLM 기반 학술 리뷰의 <strong>가능성과 한계를 가장 포괄적으로 탐구한 시스템 논문</strong>이다. OpenReviewer, Papers with Reviews, Reviewer Arena라는 세 가지 실제 운영 시스템을 구축하고, 네 가지 평가 방법을 통해 LLM 리뷰의 품질을 다각도로 검증한 점은 높이 평가할 만하다. 특히 의도적 오류 주입을 통한 LLM 리뷰 한계 매핑은 실용적 가치가 매우 높다.</p>
-<p>그러나 논문의 범위가 지나치게 넓어 개별 기여의 깊이가 다소 얕으며, 핵심 실험(Reviewer Arena)의 규모가 150편으로 제한적이다. GPT-4 Turbo가 인간보다 선호된다는 결과는 흥미롭지만, LLM 리뷰가 "인상적으로 보이는" 포맷과 세부사항 때문에 실질적 인사이트와 무관하게 선호될 수 있다는 가능성에 대한 심층 분석이 부족하다. 또한 LLM이 ethical concerns와 technical errors를 잘 탐지하지 못한다는 발견은 자동 리뷰의 실용적 한계를 명확히 보여준다.</p>
-<p>전체적으로, 학술 리뷰 자동화의 현재 수준과 한계를 파악하는 데 유용한 참고 자료이며, 특히 컨텍스트 ablation과 오류 주입 실험은 LLM 리뷰 시스템 설계 시 반드시 참고할 가치가 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: OpenReviewer, Papers with Reviews, Reviewer Arena 세 AI 리뷰 시스템을 비교 평가한 연구로, 현황 파악에 유용하지만 방법론적 엄밀성과 독창적 기여가 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

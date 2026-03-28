@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: LLM, GPT-4, 피어 리뷰, 과학적 피드백, 자동 리뷰 생성, 인간-AI 비교</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>GPT-4를 활용한 과학 논문 자동 피드백 생성 파이프라인을 구축하고, 그 유용성을 <strong>대규모 회고적 분석</strong>(Nature 계열 15개 저널 3,096편, ICLR 학회 1,709편)과 <strong>전향적 사용자 연구</strong>(미국 110개 기관 308명 연구자)를 통해 체계적으로 평가한 연구이다. 핵심 발견은 GPT-4 피드백과 인간 리뷰어 피드백의 중첩도(Nature 30.85%, ICLR 39.23%)가 인간 리뷰어 간 중첩도(Nature 28.58%, ICLR 35.25%)와 비슷한 수준이며, 연구자의 57.4%가 LLM 피드백이 도움이 된다고 응답했다는 것이다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -99,17 +102,27 @@ a { color: #A62018; }
 <p>7. <strong>오용 우려</strong>: LLM 피드백을 실제 리뷰로 직접 사용하면 엄격한 평가 과정을 훼손할 수 있으며, 투고 전 자가 점검 도구로만 활용해야 한다.</p>
 <p>8. <strong>향후 방향</strong>: 오류 탐지/교정 능력 평가, visual LLM 통합, 비영어 논문 평가, fine-tuning을 통한 성능 개선이 제안된다.</p>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>LLM의 과학적 피드백 생성 능력에 대해 가장 포괄적이고 체계적인 실증 근거를 제공하는 연구이다. 회고적 분석과 전향적 사용자 연구를 결합한 이중 설계, 4,805편의 대규모 데이터셋, 셔플링 실험을 통한 논문 특이성 검증 등 방법론적으로 탄탄하다. 핵심 시사점은 LLM 피드백이 인간 리뷰어 한 명의 피드백과 비슷한 수준의 정보를 제공할 수 있으나, 방법론 심층 비판이나 신규성 평가에서는 여전히 인간 전문가에 크게 미치지 못한다는 것이다. "인간 리뷰의 대체가 아닌 보완"이라는 균형 잡힌 결론이 신뢰성을 높이며, 특히 투고 전 자가 점검이나 자원이 부족한 연구자를 위한 1차 피드백 도구로서의 활용 가능성이 높다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>5</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: GPT-4의 논문 피드백을 Nature 및 ICLR 4,805편에서 대규모로 분석하여 구체성·실행 가능성·구조적 분포를 정량화한 연구로, LLM 리뷰 품질의 체계적 근거를 제공한 방법론적으로 견고한 기여이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

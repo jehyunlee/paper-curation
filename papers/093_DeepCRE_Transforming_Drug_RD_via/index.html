@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -53,7 +56,7 @@ a { color: #A62018; }
 <li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Wu et al._2024_DeepCRE Transforming Drug R&D via AI-Driven Cross-drug Response Evaluation.pdf</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>약물 R&D 후기 단계에서 교차 약물 반응 평가(Cross-drug Response Evaluation, CRE)를 수행하는 AI 모델 DeepCRE를 제안하여, 환자 수준 및 적응증 수준의 약물 반응을 예측하고 신규 약물 후보를 발굴한다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -103,17 +106,27 @@ a { color: #A62018; }
 <li><strong>분자 표현의 제한</strong>: GNN 기반 SMILES 임베딩만 사용하며, 3D 구조나 약동학적 특성 등의 추가 약물 정보가 반영되지 않음.</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>평가 (Evaluation)</h2>
-<p>DeepCRE는 약물 R&D의 근본적인 병목인 "후기 단계 교차 약물 반응 평가"라는 명확한 문제를 설정하고, 세포주에서 환자로의 전이학습이라는 현실적인 접근으로 이를 해결하였다. 환자 수준 17.7% 성능 향상과 적응증 수준 5배 향상이라는 정량적 성과가 인상적이며, 특히 오가노이드 실험을 통한 wet-lab 검증이 AI 기반 약물 발굴 연구의 신뢰성을 크게 높인다. 다만, 이진 분류 한정, 단일 약물만 고려, 제한된 실험 규모 등은 실용화까지의 과제로 남는다. Domain separation과 tumor-type adaptive pretraining이라는 기법 자체는 기존 전이학습의 응용이지만, 이를 약물 R&D 파이프라인에 맞게 체계적으로 조합한 점에서 실용적 가치가 높다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 교차 약물 반응 예측에 AI를 적용하고 실제 습식 실험으로 검증한 실용적 연구로, 기존 단일 약물 모델의 한계를 넘어 신약 R&D 가속화 가능성을 제시한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

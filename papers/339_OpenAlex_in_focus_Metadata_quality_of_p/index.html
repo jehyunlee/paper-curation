@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Güleda Doğan, Ayça Nur Sezen | <strong>날짜</strong>: 2026-03-20 | <strong>Journal</strong>: Information Research | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.47989/ir31iconf64207"" target="_blank">10.47989/ir31iconf64207"</a> target="_blank"><a href="https://doi.org/10.47989/ir31iconf64207" target="_blank">10.47989/ir31iconf64207</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>OpenAlex는 오픈 액세스 학술 데이터베이스로서 bibliometric 연구에 널리 활용되지만, 메타데이터 품질에 심각한 문제가 있는가? 오픈 피어 리뷰를 주제로 OpenAlex에서 검색한 <strong>6,640건</strong>의 레코드를 수동 검증한 결과: (1) <strong>43%</strong>(2,878건)에서 문서 유형 불일치가 발견되었으며, 'Article'이 가장 빈번히 오분류되었다. (2) <strong>3.3%</strong>(222건)에서 언어 불일치가 발생했으며, 비영어 논문이 영어로 잘못 표기된 경우가 많았다. Crossref는 넓은 범주에서 OpenAlex와 유사하지만 수동 검증과는 차이를 보였다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -79,16 +81,24 @@ a { color: #1856A0; }
 <li>자동화된 메타데이터 정제 파이프라인 개발을 통한 오류율 감소</li>
 <li>언어 다양성(비영어권 연구) 표현의 정확성 개선 방안</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: OpenAlex를 사용하는 연구자에게 실질적 주의사항을 제공하는 실용적 연구로, 6,640건의 수동 검증을 통해 43% 문서 유형 오분류라는 충격적인 수치를 제시하여 오픈 데이터베이스의 신뢰성에 대한 중요한 경고를 전달한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

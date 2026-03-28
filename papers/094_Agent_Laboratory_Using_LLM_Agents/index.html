@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Agent Laboratory: Using LLM Agents as Research Assistants</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 에이전트를 활용하여 연구의 전 과정(문헌 조사 -> 실험 -> 보고서 작성)을 자동화하는 프레임워크 <strong>Agent Laboratory</strong>를 제안한다. 인간 연구자가 연구 아이디어를 입력하면, PhD/Postdoc/ML Engineer/SW Engineer/Professor 등의 역할을 가진 전문화된 LLM 에이전트들이 파이프라인을 통해 코드 저장소와 연구 보고서를 생성한다. 완전 자율 모드와 인간 피드백을 반영하는 co-pilot 모드를 모두 지원하며, 기존 자율 연구 방법 대비 84% 비용 절감(gpt-4o 기준 논문당 $2.33)을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>과학자들은 시간과 자원의 제약으로 탐구할 수 있는 연구 아이디어의 수가 제한되어, 많은 양질의 아이디어가 미탐구 상태로 남는다. 기존의 자율 연구 시스템(The AI Scientist 등)은 LLM이 독자적으로 아이디어를 생성하고 논문을 작성하는 방식으로, 인간 연구자의 의도와 괴리가 발생하고 비용이 높다. Agent Laboratory는 인간의 창의적 아이디어를 출발점으로 삼아 LLM이 저수준 코딩과 작성을 보조하는 "보완적(complementary)" 역할에 초점을 맞춘다.</p></div>
@@ -79,17 +82,27 @@ a { color: #A62018; }
 <li><strong>co-pilot 모드의 역설</strong>: 인간 피드백이 전체 점수를 향상시키지만, 에이전트의 의도를 인간의 비전에 맞추는 데 어려움이 있어 사용자 만족도가 자율 모드보다 오히려 낮은 항목 존재.</li>
 </ol>
 <p>6. <strong>재현성</strong>: 연구 주제에 따른 성능 변동이 크며(예: image noise 주제에서 gpt-4o vs o1-mini 실험 품질 1.5 vs 4.0), 결과의 일반화 가능성 검증이 필요.</p></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>Agent Laboratory는 LLM 에이전트를 연구 보조 도구로 활용하는 <strong>실용적이고 체계적인 프레임워크</strong>이다. 인간의 연구 아이디어를 출발점으로 삼아 저수준 구현을 자동화한다는 설계 철학이 현실적이며, gpt-4o 기준 논문당 $2.33의 비용 효율성은 주목할 만하다. mle-solver의 MLE-Bench 성능은 자동 ML 코드 생성의 가능성을 보여준다. 그러나 NeurIPS 스타일 인간 평가 점수가 3.5-4.4/10 수준에 머무르고, 할루시네이션 문제가 해결되지 않은 점은 실질적 연구 도구로서의 성숙도가 아직 부족함을 시사한다. 자동 리뷰어와 인간 리뷰어 간의 괴리를 실증적으로 밝힌 것은 커뮤니티에 유용한 기여이다. ML 이외의 과학 분야로의 확장과 할루시네이션 감지/방지 메커니즘 강화가 향후 핵심 과제이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM 에이전트 기반 자율 연구 프레임워크를 체계적으로 구현하고 $2.33/논문의 비용 효율을 제시했으나, 환각 문제와 인간 피드백 의존성이 실용화의 주요 장벽으로 남는다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

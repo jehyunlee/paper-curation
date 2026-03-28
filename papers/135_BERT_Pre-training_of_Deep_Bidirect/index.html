@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova | <strong>날짜</strong>: 2018 | <strong>학회</strong>: arXiv (NAACL 2019 발표) | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.1810.04805" target="_blank">10.48550/ARXIV.1810.04805</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>BERT(Bidirectional Encoder Representations from Transformers)는 Masked Language Model(MLM)과 Next Sentence Prediction(NSP)이라는 두 가지 비지도 사전학습 목표를 통해 깊은 양방향 Transformer 표현을 학습하는 언어 모델이다. 사전학습된 BERT에 단일 출력 레이어만 추가하여 fine-tuning하면, 11개 NLP 태스크에서 동시에 SOTA를 달성하며, task-specific architecture 설계의 필요성을 근본적으로 감소시켰다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -106,15 +108,23 @@ a { color: #A62018; }
 <li>BERT의 attention 패턴 해석 연구 (BERTology)</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: NLP 분야의 패러다임을 근본적으로 전환시킨 landmark 논문이다. MLM이라는 개념적으로 단순한 혁신을 통해 깊은 양방향 사전학습을 가능하게 하고, "pre-train then fine-tune" 패러다임을 확립하여 task-specific architecture 설계의 시대를 종식시켰다. 11개 벤치마크에서의 압도적 성능 향상, 풍부한 ablation study, 그리고 코드/모델 공개를 통해 후속 연구의 폭발적 성장을 촉발한 점에서 NLP 역사상 가장 영향력 있는 논문 중 하나이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

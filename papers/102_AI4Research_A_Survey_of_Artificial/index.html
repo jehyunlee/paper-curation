@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>AI4Research: A Survey of Artificial Intelligence for Scientific Research</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI가 과학 연구의 전 생애주기(scientific research lifecycle)를 어떻게 지원하고 자동화할 수 있는지를 체계적으로 정리한 포괄적 서베이 논문이다. 연구 과정을 5가지 핵심 영역 -- (1) 과학 문헌 이해(Scientific Comprehension), (2) 학술 서베이(Academic Survey), (3) 과학적 발견(Scientific Discovery), (4) 학술 논문 작성(Academic Writing), (5) 학술 피어 리뷰(Academic Peer Reviewing) -- 으로 분류하는 <strong>AI4Research 택소노미</strong>를 제안하고, 각 영역의 최신 연구 동향, 도구, 데이터셋, 벤치마크를 120페이지에 걸쳐 집대성하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -92,18 +95,24 @@ a { color: #A62018; }
 <li><strong>멀티모달/다국어 통합</strong>: 텍스트-이미지-코드-시계열 통합, 저자원 언어 지원</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (5점 만점)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>3.5</td><td>기존 서베이 대비 범위 확장이 주 기여; 새로운 방법론 제안은 아님</td></tr>
-<tr><td>**포괄성 (Comprehensiveness)**</td><td>5.0</td><td>120페이지, 수백 편 논문 커버; 연구 생애주기 전체를 아우름</td></tr>
-<tr><td>**구조화 (Organization)**</td><td>4.5</td><td>5영역 택소노미와 계층적 분류가 체계적이고 명료</td></tr>
-<tr><td>**실용성 (Utility)**</td><td>4.5</td><td>연구자를 위한 핵심 자원 카탈로그로서 높은 참조 가치</td></tr>
-<tr><td>**깊이 (Depth)**</td><td>3.0</td><td>방대한 범위 커버로 인해 개별 영역의 심층 분석은 다소 부족</td></tr>
-<tr><td>**종합 (Overall)**</td><td>4.0</td><td>AI4Research 분야의 현재 지형도를 한눈에 조망할 수 있는 귀중한 레퍼런스</td></tr>
-</table>
-<h3>총평</h3>
-<p>AI가 과학 연구의 전 과정을 어떻게 변화시키고 있는지를 문헌 이해부터 피어 리뷰까지 총망라한 가장 포괄적인 서베이이다. 5영역 택소노미는 이 분야의 연구 지형도를 이해하는 데 매우 유용한 프레임워크를 제공한다. 다만 서베이 논문의 특성상 개별 시스템의 심층 비교나 실험적 검증은 부재하며, 분야의 빠른 발전으로 시의성이 빠르게 감소할 수 있다. AI4Research에 입문하거나 전체 그림을 파악하고자 하는 연구자에게 필수적인 출발점으로 추천한다.</p></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

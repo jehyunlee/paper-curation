@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>자연어 질의로부터 <strong>전처리-시뮬레이션-후처리까지 완전 자동화된 end-to-end CFD 시뮬레이션</strong>을 수행하는 최초의 멀티 에이전트 프레임워크를 제안한다. 4개의 전문 에이전트(Pre-processing, Prompt Generation, OpenFOAMGPT, Post-processing)가 Claude-3.7-Sonnet을 기반으로 협력하며, Poiseuille 유동, 다공성 매질 유동, 공기역학 해석 등 다양한 사례에서 <strong>450회 이상의 시뮬레이션에서 100% 성공률과 재현성</strong>을 달성했다. "대화 기반 시뮬레이션(conversation-to-simulation)" 워크플로우를 통해 CFD의 진입 장벽을 크게 낮추면서도 수치적 엄밀성을 유지했다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -114,17 +117,27 @@ a { color: #A62018; }
 <li>다른 계산 도메인(구조역학, 전자기학 등)으로의 아키텍처 확장</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>OpenFOAMGPT 2.0은 "자연어로 CFD 시뮬레이션을 수행한다"는 비전을 높은 신뢰성으로 실현한 연구다. 450회 이상의 시뮬레이션에서 100% 성공률과 재현성을 달성한 것은, Temperature=0 설정, 독립 프롬프트 생성, 자기 수정 루프 등 신중한 엔지니어링 결정의 결과다. 특히 다중 파라미터 스터디(격자 독립성, REV 결정, 유동 체계 특성화)를 완전 자율적으로 수행한 점은 인상적이다. 다만 테스트 범위가 비교적 표준적인 CFD 문제에 한정되어 있고, "잘 정의된 질의"라는 전제조건이 있어, 실제 산업 환경에서의 적용 가능성은 추가 검증이 필요하다. 그럼에도 CFD 분야에서 LLM 기반 자동화의 실용 가능성을 가장 설득력 있게 보여준 연구 중 하나로, 계산 과학의 민주화에 기여하는 중요한 이정표다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 자연어-CFD 워크플로우 자동화를 end-to-end로 구현하고 100% 성공률을 실증한 실용적 연구로, 멀티에이전트 아키텍처와 OpenFOAM 통합이 유사 도구 대비 차별화된다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

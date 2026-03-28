@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Unsupervised embedding of trajectories captures the latent structure of scientific migration</h1>
 <blockquote><p><strong>저자</strong>: Dakota Murray, Jisung Yoon, Sadamori Kojaku, Rodrigo Costas, Woo-Sung Jung, Staša Milojević, Yong-Yeol Ahn | <strong>날짜</strong>: 2023-12-26 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1073/pnas.2305414120"" target="_blank">10.1073/pnas.2305414120"</a> target="_blank"><a href="https://doi.org/10.1073/pnas.2305414120" target="_blank">10.1073/pnas.2305414120</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>인간 이동의 복잡한 패턴을 포착하기 위해, 이 논문은 자연어 처리의 word2vec 모델을 이동 궤적 데이터에 적용한다. 핵심 발견은 word2vec이 중력 모델(gravity model of mobility)과 수학적으로 동치라는 것이다 — 이는 언어 모델이 왜 이동 패턴을 잘 포착하는지에 대한 이론적 근거를 제공한다. 300만 명의 과학자 이동 궤적(논문 소속 정보 기반)에 적용한 결과, 임베딩이 문화적·언어적·위신 관계를 다중 입도로 자동 학습함이 밝혀졌다. 이는 이동 연구에 신경망 임베딩을 적용하기 위한 이론적 토대와 방법론적 프레임워크를 제공한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -89,16 +91,24 @@ a { color: #1856A0; }
 <li>임베딩 공간에서 brain drain 패턴 및 인재 유출 위험 국가/기관 식별</li>
 <li>Transformer 기반 모델로 확장하여 장거리 궤적 의존성 포착 개선</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: word2vec과 중력 모델의 수학적 동치 증명이라는 이론적 통찰과 300만 과학자 궤적에 대한 대규모 실증 검증을 결합한 탁월한 논문으로, 이동성 연구에 신경 임베딩 방법론의 이론적 토대를 확립했다. PNAS 게재에 걸맞은 방법론적 엄밀성과 결과의 광범위한 함의를 갖춘 주요 기여다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

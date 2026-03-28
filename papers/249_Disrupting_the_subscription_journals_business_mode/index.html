@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Disrupting the subscription journals&#x27; business model for the necessary large-scale transformation to open access</h1>
 <blockquote><p><strong>저자</strong>: Ralf Schimmer, Kai Karin Geschuhn, Andreas Vogler | <strong>날짜</strong>: 2015 | <strong>DOI/URL</strong>: https://doi.org/<a href="https://doi.org/10.17617/1.3" target="_blank">10.17617/1.3</a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>학술지 구독 모델의 총 비용이 전 세계 오픈액세스 전환을 충당하기에 충분하다는 재정 분석을 통해 대규모 오픈액세스 전환의 경제적 실현 가능성을 논증한다.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -54,14 +57,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>Summary (요약)</h2>
 <p>Max Planck Digital Library에서 발표한 이 백서는 기관들이 지불하는 저널 구독료 총액이 이미 모든 연구 논문의 OA 출판 비용을 커버하기에 충분하다는 것을 보여주며, 구독에서 OA로의 비용 흐름 전환(offset model)을 제안한다. 이 분석은 이후 Springer Nature, Elsevier 등과의 전환 계약(transformative agreement) 협상의 이론적 토대가 되었다. AI4S 큐레이션 맥락에서는 AI 보조 과학의 성과물이 오픈하게 유통되어야 한다는 정책적 배경 자료로 참조된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 오픈액세스 전환의 재정적 근거를 처음으로 체계적으로 제시한 영향력 높은 정책 문서이나, AI4S 핵심 주제와는 간접적 관련성만 가진다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

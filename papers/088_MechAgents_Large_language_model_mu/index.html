@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>MechAgents: Large language model multi-agent collaborations can solve mechanics problems, generate new data, and integrate knowledge</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 멀티 에이전트 시스템을 활용하여 <strong>고체역학 문제를 자율적으로 풀 수 있는 물리 기반 생성형 AI 플랫폼</strong> MechAgents를 제안한다. GPT-4를 기반으로 한 AI 에이전트들이 탄성 문제를 유한요소법(FEM)으로 정식화하고, Python/FEniCS 코드를 작성, 실행, 디버깅하며, 결과를 분석하는 전 과정을 자율적인 대화를 통해 수행한다. 2-에이전트 팀의 자기 수정(self-correction)과 다중 에이전트 그룹의 상호 수정(mutual correction)이라는 두 가지 조직 구조를 비교하며, 분업(division of labor)이 복잡한 공학 문제 해결에 미치는 효과를 실증한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -120,17 +123,27 @@ a { color: #A62018; }
 <li>역할 설계 및 채팅 토폴로지의 최적화</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>MechAgents는 LLM 멀티 에이전트가 전통적인 공학 시뮬레이션 워크플로우를 자율적으로 수행할 수 있음을 보여준 선구적 연구다. 특히 동일한 LLM을 사용하면서도 조직 구조(2-에이전트 vs 다중 에이전트)에 따라 성능이 크게 달라진다는 발견은, AI 시스템 설계에서 "에이전트 간 상호작용 구조"의 중요성을 시사한다. Critic 에이전트가 물리적 직관에 기반하여 코드 에러 없는 개념적 오류를 식별하는 사례는 인상적이다. 다만 2D 탄성 문제라는 제한된 범위, 정량적 평가의 부재, GPT-4에 대한 강한 의존성은 한계로 남아 있으며, 이 연구가 제시한 비전이 실제로 복잡한 공학 문제에까지 확장되려면 상당한 추가 연구가 필요하다. 그럼에도 AI for Science에서 "LLM이 수치 시뮬레이션 도구를 자율적으로 운용한다"는 패러다임을 개척한 중요한 기여다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 멀티 에이전트로 유한요소 역학 문제를 자동화한 선구적 연구로 에이전트 협업 설계의 가능성을 보였으나 평가 범위 확대가 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

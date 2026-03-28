@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Google Scholar to Overshadow Them All? Comparing the Sizes of 12 Academic Search Engines and Bibliographic Databases</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>12개 주요 <strong>학술 검색 엔진 및 서지 데이터베이스(ASEBDs)</strong>의 규모를 비교 추정하는 계량서지학 연구이다. <strong>반복적 쿼리 최적화(iterative query optimization)</strong> 방법을 통해 각 데이터베이스에서 <strong>쿼리 히트 카운트(QHC)</strong>의 최댓값을 식별하여 규모를 추정한다. 주요 발견으로, <strong>Google Scholar가 약 3억 8,900만 건</strong>의 레코드를 보유하여 가장 포괄적인 학술 검색 엔진임을 확인했으며, 이는 기존 추정치(1억 7,600만 건, Orduna-Malea et al., 2015)보다 <strong>50% 이상 크다</strong>는 것을 보여준다. ProQuest(2억 8,000만)와 WorldWideScience(3억 2,300만, 단 불안정)가 뒤를 이으며, BASE(1억 1,800만), Web of Science(1억 600만), EbscoHost(1억 300만) 등의 규모도 최초로 비교 제시했다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -92,25 +95,27 @@ a { color: #A62018; }
 <li><strong>향후 방향</strong>: 종단적 규모 추적, 중복 레코드 비율 추정, 분야별 커버리지 비교, API 기반 자동화된 규모 모니터링 시스템 구축</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>6</td><td>기존 QHC 방법론의 확장이며, 반복적 최적화와 12개 ASEBD 동시 비교라는 규모가 차별점</td></tr>
-<tr><td>**기술적 깊이 (Technical Depth)**</td><td>5</td><td>방법론이 본질적으로 쿼리 변형의 경험적 탐색에 의존하며, 통계적 엄밀성(신뢰구간, 반복 측정)이 부족</td></tr>
-<tr><td>**실용성 (Practicality)**</td><td>8</td><td>도서관 사서, 정보 전문가, 체계적 문헌 리뷰 수행자에게 ASEBD 선택의 실질적 근거 제공. 재현 가능한 쿼리 공개</td></tr>
-<tr><td>**완성도 (Completeness)**</td><td>7</td><td>12개 ASEBD 포괄, 상세한 타당성 검증, 쿼리별 결과 공개. 그러나 4개 ASEBD 추정 실패와 품질 차원 미평가가 한계</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>7</td><td>Scientometrics 분야에서 널리 인용되는 참고 자료. Google Scholar 규모에 대한 기준점 재설정에 기여</td></tr>
-<tr><td>**종합 (Overall)**</td><td>**6.5**</td><td>학술 정보 검색 생태계의 규모를 실증적으로 비교한 유용한 연구. 방법론의 한계(불안정한 QHC, 영어 편향)에도 불구하고, 12개 ASEBD를 체계적으로 비교한 실용적 가치가 높음</td></tr>
-</table></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 12개 학술 검색 데이터베이스 규모를 반복적 쿼리 최적화로 비교한 실용적 연구로, 통계적 엄밀성이 부족하나 Google Scholar 규모 재추정이라는 실질적 기여가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

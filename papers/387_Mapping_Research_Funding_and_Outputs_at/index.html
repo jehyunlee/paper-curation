@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries</h1>
 <blockquote><p><strong>저자</strong>: Gard B. Jenset | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: Figshare (Poster, NWB 2025) | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.6084/m9.figshare.31861333"" target="_blank">10.6084/m9.figshare.31861333"</a> target="_blank"><a href="https://doi.org/10.6084/m9.figshare.31861333" target="_blank">10.6084/m9.figshare.31861333</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 2/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>북유럽 국가들의 연구 자금 지원과 산출물은 주제 수준에서 어떻게 연결되는가? 이 포스터는 Springer Nature의 Nature Research Intelligence 팀이 수행한 연구로, 연구의 사회경제적 영향 측정 프로젝트의 일환으로 Dimensions 데이터베이스를 활용해 북유럽 국가들의 연구 펀딩과 논문 산출물을 주제(topic) 단위로 매핑한다. 초록이 매우 제한적이어서 구체적 수치와 발견은 확인 불가하나, 연구 자금의 주제별 집중도와 산출물 분포 간의 관계를 시각화하는 것이 핵심 목표다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -77,16 +79,24 @@ a { color: #1856A0; }
 <li>북유럽 외 국가들과의 비교 분석을 통한 지역별 펀딩-산출물 패턴 일반화</li>
 <li>Dimensions 외 OpenAlex, WoS 등 복수 데이터베이스를 활용한 결과 교차 검증</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>2/5</td></tr>
-<tr><td>Technical Soundness</td><td>2/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>2/5</td></tr>
-<tr><td>Overall</td><td>2/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical Soundness: 2/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 2/5</span> <span class="eval-badge">Overall: 2/5</span></div>
 <p><strong>총평</strong>: 포스터 초록만으로는 연구 내용을 실질적으로 평가하기 어려우며, 데이터 소스의 이해충돌 문제와 방법론적 투명성 부족이 아쉽다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

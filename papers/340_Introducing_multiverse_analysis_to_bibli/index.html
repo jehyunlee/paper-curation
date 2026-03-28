@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Christian Leibel, Lutz Bornmann | <strong>날짜</strong>: 2026-03-23 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1162/qss.a.475"" target="_blank">10.1162/qss.a.475"</a> target="_blank"><a href="https://doi.org/10.1162/qss.a.475" target="_blank">10.1162/qss.a.475</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>팀 크기가 disruptive research에 미치는 영향에 대한 Wu et al.(2019)의 "소규모 팀이 더 파괴적인 연구를 낳는다"는 주장은 얼마나 견고한가? 이 논문은 <strong>multiverse analysis</strong>를 bibliometrics에 처음 도입해 그 질문에 답한다. 결론은 "효과의 방향(음의 방향)은 견고하지만, 효과 크기는 모델 설정에 따라 크게 달라진다"는 것이다. 즉, 소규모 팀이 더 disruptive하다는 결론 자체는 유지되지만, 그 효과의 실질적 크기와 정책적 함의는 분석 선택에 크게 의존하므로 단일 모델 결과에 과신하지 말아야 한다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -80,16 +82,24 @@ a { color: #1856A0; }
 <li>Multiverse analysis의 자동화 도구 개발로 bibliometrics 재현성 표준화</li>
 <li>Specification curve를 통한 연구자 공동체의 "대표적 모델" 합의 프로세스 설계</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: Multiverse analysis를 bibliometrics에 최초 도입한 방법론적 혁신 논문으로, 단일 모델 결과에 대한 과신 문제를 실증적으로 해결하는 강력한 도구를 제시한다. Wu et al.(2019)의 팀 크기-파괴성 관계라는 고전적 논쟁을 사례로 활용하여 설득력 있게 개념을 전달한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

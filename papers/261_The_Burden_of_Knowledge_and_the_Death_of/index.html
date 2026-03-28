@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The Burden of Knowledge and the Death of the Renaissance Man</h1>
 <blockquote><p><strong>저자</strong>: Benjamin F. Jones | <strong>날짜</strong>: 2009 | <strong>Journal</strong>: The Review of Economic Studies | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1111/j.1467-937X.2009.00531.x"" target="_blank">10.1111/j.1467-937X.2009.00531.x"</a> target="_blank"><a href="https://doi.org/10.1111/j.1467-937X.2009.00531.x" target="_blank">10.1111/j.1467-937X.2009.00531.x</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>지식의 최전선은 계속 확장되어 신진 연구자들이 그 경계에 도달하기까지 더 많은 시간과 교육이 필요하다—이것이 '지식의 부담(burden of knowledge)'이다. Jones(2009)는 이 부담 때문에 르네상스 인(Renaissance Man)—혼자서 여러 분야를 혁신하는 천재—은 사실상 사라졌으며, 그 결과 팀 연구 증가, 전문화 심화, 혁신 연령 상승이라는 세 가지 구조적 변화가 20세기 내내 일어났음을 특허 및 노벨상 데이터로 실증했다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -76,16 +78,24 @@ a { color: #1856A0; }
 <li>학제간 연구가 지식 부담을 어떻게 우회하는지 분석</li>
 <li>AI 보조 연구가 르네상스 인의 부활을 가능하게 하는지 탐구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 혁신의 최전선에 도달하는 데 더 많은 교육이 필요해지는 '지식의 부담'이 팀 연구 증가·전문화·혁신 연령 상승을 유발함을 실증한 과학의 과학 분야 고전 논문이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,7 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Gibney | <strong>날짜</strong>: 2025-02-17 | <strong>DOI/URL</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/d41586-025-00408-7"" target="_blank">10.1038/d41586-025-00408-7"</a> target="_blank">https://doi.org/<a href="https://doi.org/10.1038/d41586-025-00408-7" target="_blank">10.1038/d41586-025-00408-7</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Nature가 연구자들의 실제 사용 경험을 바탕으로 문헌 검색, 글쓰기, 데이터 분석, 코딩 등 연구 단계별 최적 AI 도구를 비교·평가한 실용 가이드.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <p>(Abstract에서 originality 자동 추출 불가 — 본문 기반 수동 분석)</p></div>
@@ -63,15 +66,24 @@ a { color: #A62018; }
 <li>정량적 성능 비교보다 주관적 인상에 의존하는 부분 있음</li>
 <li>비영어권 연구자의 경험 반영 제한적</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 연구자가 AI 도구를 선택할 때 즉시 참고할 수 있는 실용적 가이드로, 도구 홍수 속에서 방향을 잡는 데 유용하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

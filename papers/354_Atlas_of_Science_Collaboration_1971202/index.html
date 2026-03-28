@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Keisuke Okamura | <strong>날짜</strong>: 2024-06-11 | <strong>Journal</strong>: SN Computer Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1007/s42979-024-02973-4"" target="_blank">10.1007/s42979-024-02973-4"</a> target="_blank"><a href="https://doi.org/10.1007/s42979-024-02973-4" target="_blank">10.1007/s42979-024-02973-4</a></a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>1971년부터 2020년까지 50년간 자연과학 15개 분야에서 기관 간 연구 협력은 어떻게 진화했는가? OpenAlex 오픈 데이터를 기반으로 공저 관계를 분석하여 세계 지도와 다이어그램으로 시각화한 <strong>협력 지도책(atlas)</strong>을 제시한다. 주요 과학 생산국과 그 협력 관계의 변화, 분야별 국제·기관 간 협력의 현황을 한눈에 파악할 수 있도록 설계된 실용 참고 자료로, 과학 정책 입안자, 외교관, 기관 연구부서를 주요 독자로 한다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -80,16 +82,24 @@ a { color: #1856A0; }
 <li>사회과학·공학 분야로의 확장</li>
 <li>국가 수준의 과학 외교 정책과 협력 패턴 간 상관관계 분석</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: 50년간 15개 자연과학 분야의 기관 간 협력을 오픈 데이터로 시각화한 실용적 참고 자료다. 새로운 방법론적 기여보다는 정책 입안자·외교관·기관 연구부서에 즉시 활용 가능한 시각 정보 제공이 핵심 가치다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

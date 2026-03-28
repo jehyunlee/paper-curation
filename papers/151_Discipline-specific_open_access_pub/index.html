@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.12688/f1000research.17328.2"" target="_blank">10.12688/f1000research.17328.2"</a> target="_blank"><a href="https://doi.org/10.12688/f1000research.17328.2" target="_blank">10.12688/f1000research.17328.2</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>학술 출판에서 Open Access(OA)의 채택이 학문 분야별로 왜, 어떻게 다른지를 체계적으로 분석한 메타합성(meta-synthesis) 연구이다. 11개의 대규모 계량서지학(bibliometric) 연구를 종합하고, "기술의 사회적 형성(Social Shaping of Technology)" 관점에서 의학, 자연과학, 사회과학, 인문학, 법학 5개 분야의 OA 출판 관행과 장벽을 분석하였다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>OA가 모든 분야에서 균질하게 확산될 것이라는 초기 기대와 달리, 최근 대규모 계량서지학 연구들은 분야별 OA 채택률에 상당한 차이가 있음을 보여주었다. 그러나 기존 연구들은 대부분 기술적(descriptive) 수준에 머물러, <strong>왜</strong> 이러한 차이가 발생하는지에 대한 분석은 부족했다. 방대한 자원이 OA 인프라에 투입되는 상황에서, 분야별 장벽과 잠재력을 파악하는 것이 정책 수립에 필수적이었다.</p></div>
@@ -90,15 +93,24 @@ a { color: #A62018; }
 <li><strong>저자 설문의 한계</strong>: 자기보고와 실제 행동 간 괴리 가능성</li>
 <li>후속 연구에서는 하위 분야 수준의 세밀한 분석과, Bronze OA·ASN의 지속가능성 문제를 다룰 필요</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>참신성 (Novelty)</td><td>6</td><td>최초의 포괄적 분야별 OA 리뷰이나, 원천 데이터 생산은 아님</td></tr>
-<tr><td>기술적 완성도 (Soundness)</td><td>7</td><td>체계적 검색 + 이론적 프레임워크 적용, 다만 연구 간 이질성 해소 미흡</td></tr>
-<tr><td>유의미성 (Significance)</td><td>7</td><td>OA 정책 수립에 실질적 참고가 되는 분야별 장벽 분석</td></tr>
-<tr><td>재현성 (Reproducibility)</td><td>6</td><td>검색 전략은 문서화되었으나 내러티브 리뷰의 재현성은 제한적</td></tr>
-<tr><td>종합 (Overall)</td><td>7</td><td>학술출판 정책 연구에 유용한 종합 레퍼런스, 다만 2018년 이후 급변한 OA 환경 미반영</td></tr>
-</table></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>4개 데이터셋(트윗 및 뉴스 기사, n=6,183)을 사용하여 ChatGPT(gpt-3.5-turbo)의 zero-shot 텍스트 분류 성능을 Amazon Mechanical Turk(MTurk) 크라우드 워커 및 훈련된 어노테이터(연구보조원)와 체계적으로 비교한 연구. ChatGPT가 관련성, 입장, 주제, 프레임 탐지를 포함한 대부분의 어노테이션 태스크에서 크라우드 워커를 평균 약 25 퍼센트 포인트 상회하며, 코더 간 일치도(intercoder agreement)에서는 크라우드 워커와 훈련된 어노테이터 모두를 능가하고, 비용은 건당 약 $0.003로 MTurk 대비 약 30배 저렴함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>NLP 연구에서 텍스트 어노테이션은 분류기 학습이나 비지도 모델 평가를 위해 필수적이지만, 훈련된 어노테이터는 비용이 높고, MTurk 크라우드 워커는 품질 저하 우려가 있으며, CrowdFlower/Figure Eight 등 대안 플랫폼은 학술 연구에 더 이상 적합하지 않은 상황이었다. ChatGPT의 텍스트 어노테이션 가능성에 대한 초기 증거가 있었으나 체계적 평가가 부재했다.</p></div>
@@ -80,17 +83,27 @@ a { color: #A62018; }
 <li><strong>Gold standard의 한계</strong>: 훈련된 어노테이터의 합의를 gold standard로 사용하나, 이 자체의 한계는 논의하지 않음</li>
 <li>향후 다국어 텍스트, few-shot 학습, 반자동 라벨링 시스템 구축, chain-of-thought 프롬프팅, 다양한 LLM 간 비교가 필요</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>PNAS에 게재된 간결하고 영향력 있는 연구로, LLM이 텍스트 어노테이션 관행을 근본적으로 변화시킬 잠재력을 설득력 있게 보여준다. 동일 코드북을 ChatGPT, MTurk, 훈련된 어노테이터에 적용하여 공정한 비교를 수행한 설계가 단순하면서도 효과적이며, "평균 25 퍼센트 포인트 정확도 우위 + 30배 저렴한 비용"이라는 결과는 실질적 함의가 크다. 다만 Brief Report 형식의 한계로 분석의 깊이가 제한적이고, 단일 모델/단일 언어/단일 도메인이라는 범위 제약이 있다. 이 논문은 후속 연구(Bermejo et al. 2024 등)에서 더 다양한 태스크와 모델로 확장되는 기초 참조점 역할을 한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: ChatGPT가 MTurk 크라우드 워커 대비 평균 25pp 높은 정확도와 30배 낮은 비용으로 텍스트 어노테이션을 수행함을 PNAS에 발표한 영향력 있는 연구로, 사회과학 연구 방법론의 전환점이 되었다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

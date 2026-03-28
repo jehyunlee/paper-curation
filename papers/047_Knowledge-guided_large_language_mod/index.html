@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Knowledge-guided Large Language Model for Material Science</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>재료과학에 특화된 도메인 지식 기반 LLM을 구축하기 위한 방법론(파인튜닝, RAG, 프롬프트 엔지니어링, AI 에이전트)과 응용(정보 추출, 물성 예측, 자율 실험실, 로보틱스)을 체계적으로 리뷰한 논문이다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -96,15 +99,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>재료과학 연구자가 LLM을 자신의 연구에 도입하고자 할 때 실질적인 로드맵을 제공하는 유용한 리뷰다. 특히 4가지 도메인 적응 전략을 체계적으로 정리한 점은 실무적 가치가 높다. 다만 리뷰 논문의 한계로 자체 실험적 검증이 부재하며, 각 전략 간의 정량적 비교가 없어 연구자가 최적의 접근법을 선택하는 데는 추가 조사가 필요하다. 자율 실험실과 로보틱스까지 범위를 넓힌 것은 LLM의 미래 가능성을 보여주지만, 현재 기술 성숙도를 감안하면 아직 초기 단계의 비전에 가깝다. 전반적으로 재료과학 LLM 연구의 전체 그림을 파악하는 데 적합한 입문용 리뷰로 평가된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 지식 그래프 기반 LLM으로 재료 문헌을 리뷰하는 접근은 유용하나 방법론적 깊이와 검증 범위에서 한계를 보인다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

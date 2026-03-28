@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -54,7 +57,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: antimicrobial peptide, multi-agent collaboration, reinforcement learning, multi-objective optimization, LLM</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 다중 에이전트 피어 리뷰 시스템과 적응형 강화학습을 결합한 폐루프(closed-loop) 프레임워크 MAC-AMP를 제안하여, 항균 활성, 독성, 구조적 안정성, 신규성을 동시에 최적화하는 항균 펩타이드(AMP) 설계를 달성한 연구.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>항균제 내성(AMR)은 2021년에만 약 114만 명의 직접 사망을 야기한 글로벌 보건 위기이며, 항균 펩타이드(AMP)는 유망한 대안이지만 독성, 안정성, 제조 가능성 등의 병목이 존재한다. 기존 AI 기반 AMP 설계 모델은 대부분 항균 활성 단일 목표만 최적화하거나, 다목적 최적화 시 정적 가중치/임계값에 의존하여 reward hacking이나 diversity collapse가 발생한다. 또한 기존 멀티 에이전트 시스템은 대부분 개방 루프(open-loop)로 운영되어 자연어 출력을 실행 가능한 학습 신호로 변환하는 메커니즘이 부재하다.</p></div>
@@ -93,15 +96,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>ICLR 2026에 게재된 만큼 학술적 완성도가 높은 논문이다. 멀티 에이전트 합의를 실행 가능한 보상 함수로 변환하는 아키텍처는 AI4Science에서 LLM 에이전트 활용의 새로운 패러다임을 제시한다. 특히 3개 Reviewer 에이전트 각각의 역할 분석(potency driver, safety gatekeeper, structural mediator)과 광범위한 ablation study(Property Prediction, Peer Review, RL 각 모듈)는 시스템 설계의 합리성을 강하게 뒷받침한다. 다만 모든 검증이 in silico에 머물고 있어 실제 신약 개발 파이프라인으로의 translation은 향후 과제이며, MIC 예측기의 자기 참조적 평가 구조는 방법론적 우려 사항이다. 그럼에도 불구하고, 복잡한 다목적 분자 설계 문제에 대한 체계적이고 감사 가능한(auditable) 접근법으로서 높은 가치를 지닌다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 멀티 에이전트 합의 기반 항균 펩타이드 설계 프레임워크로 ICLR 2026 수준의 완성도와 체계적 ablation을 갖춘 우수한 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

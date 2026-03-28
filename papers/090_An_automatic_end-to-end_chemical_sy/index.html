@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>An automatic end-to-end chemical synthesis development platform powered by large language models</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>GPT-4 기반의 6개 전문 LLM 에이전트로 구성된 <strong>LLM-RDF(LLM-based Reaction Development Framework)</strong>를 개발하여, 화학 합성 개발의 전 과정을 자연어 인터페이스로 수행할 수 있는 end-to-end 플랫폼을 구현했다. 문헌 검색부터 기질 범위 스크리닝, 반응 동역학 연구, 조건 최적화, 스케일업, 생성물 정제까지 합성 개발의 5단계를 LLM 에이전트가 보조하며, 화학자가 코딩 없이 자연어만으로 자동화 실험 장비와 상호작용할 수 있게 했다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -114,17 +117,27 @@ a { color: #A62018; }
 <li>더 다양한 반응 유형 및 멀티스텝 합성으로의 확장</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>LLM-RDF는 LLM 에이전트가 화학 합성 개발의 실질적 파트너가 될 수 있음을 Nature Communications 수준에서 실증한 중요한 연구다. 특히 자연어 인터페이스를 통해 코딩 경험 없는 화학자도 자동화 실험 장비를 활용할 수 있게 한 점은 실용적 가치가 크다. 6개 에이전트가 각각 문헌 검색, 실험 설계, 장비 제어, 스펙트럼 분석, 분리 최적화, 결과 해석이라는 명확한 역할을 수행하며, Cu/TEMPO 산화 반응에서 실제로 915mg의 고순도 생성물을 얻어낸 것은 설득력 있는 시연이다. 다만 GPT-4의 심층 화학 지식 부족(메커니즘 해석 실패), 안전성을 위한 인간 검증 필수, 폐쇄형 모델 의존성은 분명한 한계다. 향후 도메인 특화 LLM과 에이전트 간 자율 통신이 결합되면, 진정한 자율적 합성 개발 플랫폼으로 진화할 잠재력이 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 6개 LLM 에이전트로 화학 합성 개발 전 과정을 자연어 인터페이스로 수행한 Nature Communications 논문으로 실제 86% 수율 생성물을 얻은 설득력 있는 시연이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

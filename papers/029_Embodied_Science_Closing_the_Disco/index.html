@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiang Zhuang, Chenyi Zhou, Kehua Feng, Zhihui Zhu, Yunfan Gao, Yijie Zhong, Yichi Zhang, Junjie Huang, Keyan Ding, Lei Bai, Haofen Wang, Qiang Zhang, Huajun Chen | <strong>날짜</strong>: 2026-03-20 | <strong>arXiv</strong>: 2603.19782 | <strong>분야</strong>: cs.AI</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학적 발견을 "물리적 세계와의 지속적 상호작용을 통한 closed-loop 과정"으로 재정의하는 "Embodied Science" 패러다임을 제안하는 Perspective 논문이다. Perception-Language-Action-Discovery (PLAD) 프레임워크를 통해 agentic embodied AI가 실험 환경을 감지하고, 과학적 지식을 기반으로 추론하며, 물리적 개입을 실행하고, 결과를 내재화하여 장기적 자율 과학 발견(long-horizon autonomous scientific discovery)을 가능하게 하는 로드맵을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -106,15 +108,23 @@ a { color: #A62018; }
 <li>Long-horizon knowledge accumulation을 위한 scientific knowledge graph의 자동 구축 및 업데이트 메커니즘</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>3/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: AI4Science에서 cognition(추론)과 execution(실행)의 구조적 단절을 "Embodied Science"라는 통합 패러다임으로 진단하고 PLAD 프레임워크를 제안한 시의적절한 Perspective 논문이다. 현 landscape의 체계적 분류와 도전 과제 식별은 유용하나, 실험적 검증이 전무하고 기존 closed-loop 시스템(A-Lab, Coscientist 등)과의 차별점이 명확하지 않다는 한계가 있다. "과학적 발견은 embodied process"라는 핵심 주장은 올바르지만, 이를 실현하기 위한 기술적 경로가 아직 추상적 수준에 머물러 있어, 향후 구체적 구현과 실증이 이 비전의 가치를 결정할 것이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

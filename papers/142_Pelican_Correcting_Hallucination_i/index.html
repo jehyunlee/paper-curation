@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/ARXIV.2407.02352"" target="_blank">10.48550/ARXIV.2407.02352"</a> target="_blank"><a href="https://doi.org/10.48550/ARXIV.2407.02352" target="_blank">10.48550/ARXIV.2407.02352</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>대규모 비전-언어 모델(LVLM)의 환각(hallucination)을 탐지하고 교정하기 위한 구조화된 파이프라인 Pelican을 제안한다. LVLM의 시각적 주장(claim)을 1차 술어(first-order predicate) 기반의 원자적 하위 주장으로 분해하고, Program-of-Thought 프롬프팅으로 Python 코드를 생성하여 외부 시각 도구(객체 탐지, VQA)를 유연하게 조합해 검증한 뒤, LLM의 추론 능력으로 최종 판정 및 교정을 수행한다. MMHal-Bench에서 환각률을 기존 최선 방법 대비 27% 감소시켰다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -89,17 +92,27 @@ a { color: #A62018; }
 <li><strong>추론 비용</strong>: LLaVA-1.5 대비 MMHal-Bench에서 약 300배 느린 추론 시간(1.185초 vs 5분 58초). 실시간 응용에는 부적합하다.</li>
 <li><strong>GPT-4o 의존</strong>: 파이프라인의 주요 단계(주장 분해, 코드 생성, 통합 검증)가 GPT-4o에 의존하여, 비용과 재현성 측면에서 제약이 있다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>Pelican은 <strong>LVLM 환각 문제에 대한 가장 체계적이고 구조화된 사후 교정(post-hoc correction) 프레임워크</strong> 중 하나이다. 핵심 강점은 복잡한 시각적 주장을 원자적 하위 주장으로 분해하고, 코드 생성을 통해 시각 도구를 유연하게 조합하며, 하위 주장 간 계산을 공유하는 일관된 파이프라인 설계에 있다. MMHal-Bench에서 Woodpecker 대비 38%, Volcano-13B 대비 27%의 환각률 감소는 이 접근법의 효과를 실증한다. 특히 count와 position 같은 도전적 범주에서 40% 이상의 향상은, 중간 변수와 공유 계산이 다중 객체 추론에 핵심적임을 보여준다. 다만, 시각 도구의 취약성이라는 근본적 한계가 여전하며, 논문 스스로 이를 솔직히 인정한 점은 높이 평가할 만하다. GPT-4o 의존성과 높은 추론 비용은 실용적 배포의 주요 장벽이며, 향후 경량화된 로컬 모델로의 대체와 도구 호출의 병렬화가 필요하다. 전반적으로, NLP의 fact-checking 패러다임을 멀티모달 환각 교정에 성공적으로 적용한 의미 있는 연구로, 신뢰할 수 있는 LVLM 구축을 위한 중요한 빌딩 블록을 제공한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 주장 분해와 지식 그래프 검증을 통해 비전-LLM 환각을 27% 감소시킨 실용적 연구로, 모듈형 보정 파이프라인이 기존 모델에 적용 가능하다는 장점이 있으나 계산 비용이 상당하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

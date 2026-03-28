@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>A practical evaluation of AutoML tools for binary, multiclass, and multilabel classification</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>16개의 AutoML 프레임워크(AutoGluon, AutoSklearn, TPOT, PyCaret, Lightwood 등)를 binary, multiclass, multilabel 분류 과제에 걸쳐 체계적으로 벤치마크한 대규모 비교 연구이다. 21개 실제 OpenML 데이터셋에 5분 시간 제약 조건을 적용하고, weighted F1 score와 학습 시간을 기준으로 다층(per-dataset, across-datasets, all-datasets) 통계 검증을 수행하여 AutoML 도구 간 정확도-속도 트레이드오프를 정량적으로 규명하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -91,17 +94,27 @@ a { color: #A62018; }
 <li>향후 연구로 <strong>메타 AutoML 프레임워크</strong>(과제에 따라 동적으로 도구를 선택), 강화학습/메타러닝 통합, 편향 완화 및 해석가능성 강화 제안</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AutoML 도구 선택에 실질적 가이드라인을 제공하는 포괄적이고 체계적인 벤치마크 연구이다. 16개 프레임워크 × 21개 데이터셋 × 20회 반복이라는 대규모 실험 설계와 3계층 통계 검증이 인상적이며, 특히 multilabel 분류에 대한 심층 분석은 기존 연구에서 소홀히 다루었던 영역을 보완한다. 다만, 5분이라는 단일 시간 제약과 기본 설정만을 사용한 점은 실제 활용 환경에서의 적용 가능성을 다소 제한한다. "최고 성능 도구가 아닌, 문제 특성과 자원 제약에 맞는 도구 선택"이라는 메시지는 실무자에게 유용한 관점이며, AutoGluon을 범용 추천 도구로 제시한 결론은 실험 데이터로 잘 뒷받침된다. 과학 연구에서 AutoML 도구를 도입하려는 연구자에게 필수 참고 문헌이 될 수 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AutoML 도구들의 실용적 성능을 체계적으로 벤치마킹한 연구로 실무 적용 지침을 제공하나 방법론적 신규성은 낮다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

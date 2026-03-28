@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Dawei Zhu, Rui Meng, Yale Song, Xiyu Wei, Sujian Li, Tomas Pfister, Jinsung Yoon | <strong>날짜</strong>: 2026-01-30 | <strong>Repository</strong>: arXiv | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2601.23265" target="_blank">10.48550/arXiv.2601.23265</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>PaperBanana는 학술 논문의 방법론 다이어그램과 통계 플롯을 자동 생성하는 에이전트 기반 프레임워크이다. Retriever, Planner, Stylist, Visualizer, Critic의 5개 특화 에이전트가 협업하여 참조 검색, 콘텐츠/스타일 계획, 이미지 렌더링, 반복적 자기 비평을 수행한다. NeurIPS 2025 논문에서 큐레이션한 PaperBananaBench(292 테스트 케이스)에서 faithfulness(+2.8%), conciseness(+37.2%), readability(+12.9%), aesthetics(+6.6%)로 기존 baseline을 일관되게 능가했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -106,15 +108,23 @@ a { color: #A62018; }
 <li>맞춤형 reward model 학습을 통한 미적 선호 정렬 개선</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: AI 과학자 파이프라인에서 시각적 커뮤니케이션이라는 간과된 병목을 정면으로 다룬 시의적절한 연구이다. 5개 에이전트의 체계적 파이프라인 설계와 자동 스타일 가이드라인 합성은 실용적 가치가 높으며, PaperBananaBench는 이 분야의 표준 평가 기준으로 기능할 잠재력이 있다. 다만 특정 상용 모델(Nano-Banana-Pro)에 대한 높은 의존도와 faithfulness 미달은 범용 도구로의 발전을 위해 해결해야 할 과제이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Large language model agent for nuclear reactor operation assistance</h1>
 <blockquote><p><strong>저자</strong>: Yoon Pyo Lee, Joowon Cha, Yonggyun Yu, Seung Geun Kim | <strong>날짜</strong>: 2025-12-01 | <strong>DOI/URL</strong>: https://doi.org/<a href="https://doi.org/10.1016/j.net.2025.103842" target="_blank">10.1016/j.net.2025.103842</a></p></blockquote>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>외부 도구·문서·예측 모듈을 통합한 LLM 에이전트 아키텍처를 통해 원자력 발전소 시뮬레이터에서 이상 진단 및 운전 절차 자동 생성을 수행함으로써, 원자력 운전 보조 AI의 실현 가능성을 입증한다.</p></div>
 <div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
@@ -54,14 +57,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>Summary (요약)</h2>
 <p>본 연구는 LLM 에이전트가 원자력 운전 시뮬레이터에서 붕소 농도 이상을 탐지·대응하고, 기존 매뉴얼을 기반으로 추가 학습 없이 새로운 운전 절차를 생성할 수 있음을 실험적으로 보여준다. 에이전트는 명령 실행과 운전 파라미터 조정이 가능해 안전하고 비용 효율적인 자동화된 원전 운전의 가능성을 제시한다. 원자력이라는 고위험 도메인에 LLM 에이전트를 적용했다는 점에서 AI4S의 도메인 응용 범위를 넓히는 의미 있는 연구이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 고위험 도메인인 원자력 운전에 LLM 에이전트를 실증 적용한 선도적 연구로, 안전성 검증의 엄밀성이 향후 과제이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

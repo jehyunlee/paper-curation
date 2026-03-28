@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/ARXIV.2411.00816"" target="_blank">10.48550/ARXIV.2411.00816"</a> target="_blank"><a href="https://doi.org/10.48550/ARXIV.2411.00816" target="_blank">10.48550/ARXIV.2411.00816</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>오픈소스 LLM을 활용하여 과학 연구의 전체 생명주기(문헌 조사 - 논문 작성 - 피어 리뷰 - 수정)를 자동화하는 반복적 강화학습 프레임워크를 제안한다. 정책 모델(CycleResearcher)이 연구 논문을 생성하고, 보상 모델(CycleReviewer)이 피어 리뷰를 시뮬레이션하여 피드백을 제공하며, 이 과정을 Iterative SimPO로 반복 최적화한다. CycleReviewer는 개별 인간 리뷰어 대비 MAE 26.89% 개선을 달성했고, CycleResearcher-12B가 생성한 논문은 시뮬레이션 리뷰에서 평균 5.36점(프리프린트 5.24점 초과, 학회 수락 논문 5.69점에 근접)을 기록했다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -89,17 +92,27 @@ a { color: #A62018; }
 <li><strong>텍스트 전용 모델</strong>: 그림, 표, 수식 렌더링 등 시각적 요소를 처리하지 못하며, 이는 실제 논문 품질의 중요한 부분을 배제한다.</li>
 <li><strong>윤리적 우려</strong>: 학술 부정행위 도구로 악용될 가능성이 크며, 탐지 도구와 워터마킹만으로는 충분한 안전장치가 되기 어렵다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>CycleResearcher는 <strong>과학 연구 자동화의 야심찬 비전을 제시하지만, 현재 시점에서는 "논문 작성 자동화"에 가깝다</strong>는 점에서 냉정한 평가가 필요하다. 핵심 기여는 연구-리뷰-수정 사이클을 RL 프레임워크로 공식화한 방법론적 설계에 있으며, CycleReviewer가 개별 인간 리뷰어를 능가하는 점수 예측 일관성을 보인 것은 주목할 만하다. 그러나 <strong>실험 결과가 날조된 논문이 "preprint 수준"이라는 평가를 받았다는 사실은, CycleReviewer 자체의 평가 능력에 의문을 제기</strong>하게 만든다. 실제 실험 수행 없이 생성된 논문이 높은 점수를 받는다면, 이는 리뷰 모델이 표면적 글쓰기 품질만을 평가하고 과학적 실질(scientific substance)을 포착하지 못한다는 증거일 수 있다. 학술 윤리 관점에서도 논란의 여지가 크며, 논문 상단의 경고("THIS WORK IS NOT ADVOCATING THE USE OF LLMs FOR PAPER WRITING")에도 불구하고 기술 자체가 오용 가능성을 내포한다. 향후 실제 실험 실행 에이전트와의 통합, 다분야 확장, 그리고 reward hacking 방지 메커니즘의 고도화가 필요하다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 연구-리뷰-수정 사이클을 강화학습 프레임워크로 공식화한 독창적 시도이나, 실험 결과를 날조한 논문이 높은 평가를 받는다는 점에서 CycleReviewer의 평가 신뢰성에 근본적 의문이 제기된다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

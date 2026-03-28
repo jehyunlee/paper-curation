@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.18653/v1/P19-1191"" target="_blank">10.18653/v1/P19-1191"</a> target="_blank"><a href="https://doi.org/10.18653/v1/P19-1191" target="_blank">10.18653/v1/P19-1191</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>기존 바이오메디컬 논문으로부터 배경 지식 그래프(KG)를 구축하고, 그래프 어텐션과 텍스트 어텐션을 결합한 링크 예측으로 새로운 아이디어를 생성한 뒤, 메모리-어텐션 네트워크를 활용하여 논문의 핵심 요소(제목 -> 초록 -> 결론 및 향후 연구 -> 후속 논문 제목)를 점진적으로 생성하는 자동 연구 보조 시스템 PaperRobot을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -87,17 +90,27 @@ a { color: #A62018; }
 <li><strong>Pre-LLM 시대의 기술적 한계</strong>: GRU/LSTM 기반 아키텍처로 120 토큰 이내의 짧은 텍스트만 처리 가능하며, 현재의 Transformer 기반 LLM 시대에는 기술적으로 구식이다.</li>
 <li><strong>평가의 한계</strong>: 튜링 테스트가 2명의 평가자(전문가 1명, 비전문가 1명)에 의해 50쌍만으로 수행되어 통계적 신뢰도가 제한적이다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>PaperRobot은 <strong>"AI가 과학 논문을 쓸 수 있는가"라는 질문에 최초로 체계적으로 답하려 한 선구적 연구</strong>로서 학술사적 의의가 크다. 2019년 ACL에서 발표된 이 연구는 GPT-2조차 아직 초기 단계였던 시점에 지식 그래프와 뉴럴 텍스트 생성을 결합한 야심찬 시도였다. 특히 "60% 이상의 논문이 점진적 연구"라는 관찰에서 출발하여 링크 예측을 아이디어 생성의 형식화 도구로 활용한 것은 독창적이다. 튜링 테스트에서 초록이 30%의 확률로 인간 작성 텍스트보다 선호된 것은 인상적이나, 이는 주로 바이오메디컬 초록의 정형화된 구조(Background-Methods-Results) 덕분일 가능성이 높다. NLP 도메인 적용 실패 사례를 솔직히 보고한 점은 학술적 정직성 면에서 높이 평가할 만하다. 현재 시점에서 PaperRobot의 기술적 구성 요소(GRU, Mem2Seq, TransE)는 LLM에 의해 대체되었지만, "KG 기반 아이디어 생성 -> 구조화된 논문 작성"이라는 프레임워크 설계는 여전히 유효한 패러다임이며, AI Scientist, CycleResearcher 등 후속 연구의 직접적 선행 연구로 자리매김한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 지식 그래프 기반 점진적 논문 초안 생성을 제안한 ACL 2019 선구적 연구로, LLM 이전 시대의 창의적 접근이지만 현재 LLM 기반 방법론과 비교시 기술적 성숙도는 낮다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

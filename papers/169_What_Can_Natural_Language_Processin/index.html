@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: NLP, 피어 리뷰, 학술 품질 관리, LLM, 리뷰어-논문 매칭, 편향, 과학적 과정</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Dagstuhl 세미나(24052)의 결과물로, <strong>피어 리뷰 과정 전체에 걸쳐 NLP가 기여할 수 있는 문제 공간을 체계적으로 매핑한 백서(white paper)</strong>이다. AI 학회의 피어 리뷰를 대표 사례로, 논문 제출부터 카메라 레디 수정까지의 전 과정을 "리뷰 전(Before)", "리뷰 중(During)", "리뷰 후(After)"의 3단계로 나누어 각 단계별 NLP 지원 기회와 도전 과제를 상세히 논의한다. 데이터 수집/라이선싱, 실험 방법론, 윤리적 문제를 포괄적으로 다루며, 피어 리뷰 관련 데이터셋을 모은 동반 리포지토리를 제공한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -94,17 +97,27 @@ a { color: #A62018; }
 </ol>
 <p>6. <strong>향후 방향</strong>: 개별 NLP 지원 도구의 실제 배포와 통제 실험을 통한 효과 검증, 분야 간 비교 연구, 프라이버시 보존 기법의 적용, 멀티모달 피어 리뷰 데이터 처리가 필요하다.</p>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>NLP 커뮤니티가 피어 리뷰 개선에 기여할 수 있는 방법을 가장 포괄적이고 체계적으로 매핑한 기념비적 백서이다. 24명의 세계적 전문가가 참여한 Dagstuhl 세미나의 산출물답게, 기술적 가능성과 윤리적 제약, 데이터 문제와 측정론적 엄밀성을 균형 있게 다룬다. "완전 자동화는 불가능하지만 부분 자동화는 가능하고 필요하다"는 핵심 메시지는 LLM 시대의 과장된 기대와 과도한 우려 양쪽에 건전한 대안을 제시한다. 피어 리뷰의 각 단계를 NLP 과제로 분해한 구조는 후속 연구자들에게 명확한 진입점을 제공하며, 동반 데이터셋 리포지토리는 실질적 기여이다. 다만, 구체적 실험 결과 없이 가능성을 제시하는 데 그치므로, 이 로드맵을 실현하기 위해서는 개별 과제에 대한 심층적인 후속 연구가 필수적이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 24명 전문가가 참여한 Dagstuhl 백서로 NLP가 피어 리뷰 전 과정에 기여할 수 있는 문제 공간을 포괄적으로 매핑했으며, 완전 자동화의 한계와 부분 자동화의 가능성을 균형 있게 제시한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

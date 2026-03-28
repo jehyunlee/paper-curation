@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>차트 이미지를 근거(evidence)로 활용한 자동 팩트체킹(Automated Fact-Checking, AFC)이라는 새로운 태스크를 제안하고, 이를 위한 최초의 모델 ChartBERT와 벤치마크 데이터셋 ChartFC(15,886개 차트-주장 쌍)를 구축한 논문이다. 텍스트 주장(claim)이 차트 이미지에 의해 지지(supports)되는지 반박(refutes)되는지를 판별하는 이진 분류 문제를 정의하고, OCR 기반 텍스트 추출과 구조적 임베딩을 결합한 BERT 확장 모델을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -96,17 +99,27 @@ a { color: #A62018; }
 <li><strong>이진 분류 한정</strong>: supports/refutes만 판별하며, "Not Enough Information" 등 더 세밀한 판정 라벨이 없음.</li>
 <li>향후 자연 차트 기반 데이터셋, 다중 차트 유형 확장, 수치 추론 강화 모델, 다국어 지원 등이 필요.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>차트 이미지 기반 팩트체킹이라는 중요하고 시의적절한 새 태스크를 정의하고, 모델(ChartBERT)과 데이터셋(ChartFC)을 함께 제공한 선구적 연구이다. 75개 VL 베이스라인의 대규모 체계적 평가와 추론 유형별 오류 분석은 후속 연구에 귀중한 참고점을 제공한다. 다만 바 차트/합성 데이터에만 국한된 실험 설계와 63.8%라는 아직 낮은 정확도는 연구의 초기 단계를 반영하며, 실세계 차트의 복잡성과 다양성을 다루기 위한 상당한 후속 연구가 요구된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 차트 팩트 체킹이라는 새 과제를 정의하고 15,886쌍의 ChartFC 데이터셋과 ChartBERT 모델을 제시한 연구로, 과제 정의의 독창성은 높으나 모델 성능과 데이터 다양성의 한계가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

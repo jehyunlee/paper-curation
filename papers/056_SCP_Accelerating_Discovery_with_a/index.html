@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SCP: Accelerating Discovery with a Global Web of Autonomous Scientific Agents</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 연구의 자율 에이전트 간 협업을 위한 오픈소스 프로토콜 표준 <strong>SCP(Science Context Protocol)</strong>를 제안하여, 이질적인 계산 도구·AI 모델·데이터셋·실험 장비를 하나의 통합된 인터페이스로 연결하고 실험 전 주기를 관리하는 인프라를 구축함.</p></div>
 <div class="section-box"><h2>동기 (Motivation)</h2>
 <ul>
@@ -82,17 +85,27 @@ a { color: #A62018; }
 <li>보안 및 인증 체계(OAuth2.1)의 구체적 구현 세부사항과 <strong>다기관 거버넌스</strong> 시나리오에 대한 심층 분석 부족</li>
 <li>오픈소스 공개를 표방하나, 실제 커뮤니티 채택 및 생태계 성장에 대한 전략이 불분명</li>
 </ul></div>
-<div class="section-box"><h2>평가 (Evaluation)</h2>
-<p>SCP는 과학 연구의 자율화·자동화를 위한 <strong>인프라 수준의 비전</strong>을 제시한다는 점에서 야심찬 프로젝트이다. MCP의 한계를 명확히 분석하고, 과학 실험에 특화된 프로토콜 확장을 체계적으로 설계한 점은 높이 평가할 만하다. 특히 dry-wet 통합 워크플로우라는 개념은 자율 과학 에이전트의 실용화를 위해 반드시 해결해야 할 과제를 정면으로 다룬다. 그러나 현 단계에서는 <strong>비전과 아키텍처 설계에 치중</strong>되어 있으며, 실제 다기관 협업 환경에서의 검증, 정량적 성능 지표, 기존 시스템 대비 통합 오버헤드 감소에 대한 실증적 근거가 부족하다. 1,600개 도구 생태계의 규모는 인상적이나, 도구 품질과 실제 활용도에 대한 분석이 동반되어야 설득력이 높아질 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학 컨텍스트 프로토콜이라는 비전 논문으로 AI-과학 인프라 표준화 방향을 제시하나 구체적 구현과 검증이 부재하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

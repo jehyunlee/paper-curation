@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>What ChatGPT and Generative AI Mean for Science</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (핵심)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>ChatGPT를 비롯한 생성형 AI 도구가 과학과 사회를 어떻게 변화시킬 수 있는지를 다각도로 탐구하는 Nature의 뉴스 피처 기사이다. 다수의 연구자, 기술 전문가, 윤리학자, 법학자의 인터뷰를 통해 LLM의 과학 연구 활용 가능성과 위험성 -- 허위 정보 생성, 편향 전파, 저작권 문제, 탐지 기술 등 -- 을 포괄적으로 조망하며, "변혁적 기술이라 믿는다면 동시에 불안해해야 한다"는 연구자들의 양가적 반응을 생생하게 전달한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -121,19 +124,27 @@ a { color: #A62018; }
 <li>AI 생성 콘텐츠의 저작권·지적재산권에 대한 법적 프레임워크 정립</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>이 기사는 ChatGPT 출시 직후의 과학 커뮤니티 반응을 가장 포괄적이고 균형 있게 포착한 저널리즘의 좋은 사례이다. Casey Greene의 실제 논문 편집 실험부터 Galactica 데모 철수, Stack Overflow 금지, Turnitin의 AI 탐지 개발, 저임금 콘텐츠 중재자의 트라우마까지 -- 생성형 AI가 과학에 미치는 영향의 전 스펙트럼을 4페이지 안에 담아낸 밀도 높은 보도이다.</p>
-<p>특히 "이 기술이 변혁적이라 믿는다면 동시에 불안해야 한다"는 Casey Greene의 발언은 당시 연구자들의 양가적 감정을 정확히 포착한다. 또한 AI의 편향 문제를 기술적 차원을 넘어 "LLM을 만드는 기업들이 대부분 특정 문화권에 속해 있다"는 구조적 차원으로 확장한 Shobita Parthasarathy의 관점은 이후 AI 윤리 논의의 핵심 쟁점이 되었다.</p>
-<p>2023년 초라는 시점적 제약에도 불구하고, 이 기사가 제기한 핵심 쟁점들 -- 사실성 vs 유창성, AI 탐지의 한계, 저작권 회색 지대, 노동 윤리 -- 은 2026년 현재에도 여전히 해결되지 않은 채 진행 중인 논의이며, 그 의미에서 이 기사는 역사적 기록으로서도 가치를 갖는다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 생성형 AI가 과학에 미치는 의미를 다룬 2023년 초 Nature News Feature로, 다양한 전문가 시각을 균형 있게 소개하며 초기 담론 형성에 기여했으나 학술적 분석은 없다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

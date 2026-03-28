@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Towards an AI co-scientist</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Google이 Gemini 2.0 기반으로 개발한 AI co-scientist는 과학자의 가설 생성 과정을 증강(augment)하기 위한 멀티 에이전트 시스템이다. "생성-토론-진화(generate, debate, evolve)" 접근법을 통해 과학적 방법론을 모방하며, test-time compute 스케일링으로 가설의 품질을 반복적으로 개선한다. 약물 재창출(drug repurposing), 신규 치료 타겟 발견, 항생제 내성 메커니즘 규명의 세 가지 생의학 영역에서 in vitro 실험 검증까지 수행한 end-to-end 시스템이다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>현대 생의학 연구는 깊이(depth)와 넓이(breadth)의 딜레마에 직면해 있다. 분야별 전문성이 심화되는 동시에 학제간 통찰이 중요한 돌파구를 만들지만, 급증하는 논문과 고처리량 분석 기술의 발전으로 한 연구자가 양쪽을 모두 마스터하기 어렵다. CRISPR(2020 노벨화학상)이나 인공지능(2024 노벨물리학상) 같은 학제간 성과가 이를 잘 보여준다. LLM의 추론 능력과 에이전트 행동(agentic behavior) 발전에 힘입어, AI가 과학자의 창의적 가설 생성을 보조하는 협력자(co-scientist)로 기능할 수 있는 시점에 도달했다.</p></div>
@@ -86,17 +89,27 @@ a { color: #A62018; }
 <li><strong>안전성/이중용도</strong>: 1200개 적대적 예제에 대한 예비 안전 분석만 수행. 장기적으로 에이전트 시스템의 자체 목표 개발, AI 조작에 대한 인간 취약성 등 근본적 위험이 존재</li>
 <li><strong>범용성 미확인</strong>: 생의학 중심 검증으로, 물리학/화학/수학 등 다른 과학 분야로의 일반화 가능성은 불명확</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>Google의 AI co-scientist는 현재까지 발표된 AI 과학 시스템 중 가장 야심적이고 포괄적으로 검증된 사례이다. 과학적 방법론을 멀티 에이전트 아키텍처로 충실히 구현하고, test-time compute 스케일링이 과학적 추론에도 유효함을 보인 점은 매우 인상적이다. 특히 AML 약물 재창출에서 KIRA6라는 완전 신규 후보 발견, 간섬유증에서 FDA 승인 약물의 재창출 가능성 확인, 미공개 항균 내성 메커니즘의 독립적 재현은 AI 과학 시스템의 실용적 가치를 강력히 시사한다. 그러나 Elo 자기평가의 순환성, 소규모 전문가 평가, in vitro에서 임상까지의 긴 거리 등은 냉정하게 인식해야 할 한계이다. "AI가 과학자를 대체하는 것이 아니라 증강한다"는 설계 철학은 현 시점에서 적절하며, 향후 더 다양한 분야와 더 엄격한 검증을 통해 이 시스템의 진정한 가치가 판명될 것이다. 70페이지에 달하는 방대한 논문으로, AI for Science 분야의 이정표적 연구이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>5</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Google의 Gemini 2.0 기반 다중 에이전트 AI 공동과학자 시스템으로 생물의학 가설 생성에서 in vitro 검증까지 달성한 랜드마크 연구로, AI 과학 자동화의 새 패러다임을 제시한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

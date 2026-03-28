@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: 창의성, 발산적 사고, AI 챗봇, Alternate Uses Task, 인간-AI 비교</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>인간(n=256)과 AI 챗봇(ChatGPT3.5, ChatGPT4, Copy.Ai) 3종의 창의적 발산적 사고(divergent thinking) 능력을 <strong>대안적 용도 과제(Alternate Uses Task, AUT)</strong>로 비교한 연구이다. 일상 사물(밧줄, 상자, 연필, 양초)에 대해 독창적이고 창의적인 용도를 생성하도록 요청한 뒤, <strong>의미적 거리(semantic distance)</strong>와 <strong>인간 평가자의 주관적 창의성 평점</strong> 두 가지 척도로 평가하였다. 핵심 발견은 AI 챗봇이 평균적으로 인간을 능가하지만, 최상위 인간의 아이디어는 여전히 AI와 대등하거나 이를 초과한다는 것이다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -95,17 +98,27 @@ a { color: #A62018; }
 <p>6. <strong>시간적 한계</strong>: 2023년 3-4월 기준 AI 모델 테스트이며, AI 기술의 급속한 발전으로 결과가 빠르게 변할 수 있다.</p>
 <p>7. <strong>향후 연구 방향</strong>: 기존 아이디어가 존재하지 않는 완전히 새로운 테스트 개발, AI를 인간 창의성 증강 도구로 활용하는 방안 탐구가 필요하다.</p>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>잘 설계된 실험 연구로, AI와 인간의 창의성 비교에서 "평균 대 최고"라는 중요한 구분을 제시한다. 의미적 거리와 주관적 평가의 이중 측정은 방법론적 강점이다. 그러나 AUT라는 단일 과제에 의존하며, AI 샘플이 상대적으로 작고, 2023년 초반 모델 기준이라는 시의성 한계가 있다. AI가 일관되게 "나쁘지 않은" 응답을 생성하는 반면, 인간은 극단적 변동성(매우 저품질부터 최고 수준까지)을 보인다는 발견은 인간-AI 협업 창의성 연구의 중요한 출발점을 제공한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 대안적 사용 과제(AUT)에서 최우수 인간이 AI와 동등한 발산적 사고 능력을 가짐을 보인 Scientific Reports 연구로, AI 창의성의 상한선을 인간과 비교 맥락에서 제시하는 균형 잡힌 시각을 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

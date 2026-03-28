@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>Networks of Scientific Papers</h1>
 <blockquote><p><strong>저자</strong>: Derek J. de Solla Price | <strong>날짜</strong>: 1965 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.149.3683.510" target="_blank">10.1126/science.149.3683.510</a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학 논문들은 인용 관계를 통해 <strong>누적 우위(cumulative advantage) 구조</strong>를 가진 네트워크를 형성하며, 인용 분포는 거듭제곱 법칙(power law)을 따른다. Price는 과학 문헌의 인용 네트워크 분석을 통해 "전방(前方) 인용(bibliographic coupling)"과 "후방(後方) 인용(co-citation)"의 개념 기초를 마련했으며, 논문당 평균 약 절반만이 현재 과학에 기여하는 "live" 참고문헌임을 보였다. 이 연구는 과학 계량학(scientometrics)과 복잡계 네트워크 연구의 지적 출발점으로 간주된다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -83,16 +85,24 @@ a { color: #1856A0; }
 <li>Small(1973) co-citation analysis, Kessler(1963) bibliographic coupling으로 이어짐</li>
 <li>현대의 PageRank, h-index 등 인용 기반 지표 개발의 기초</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 과학 문헌을 네트워크로 보는 패러다임을 최초로 제시한 계량정보학의 시조 격 논문으로, 당시 방법론의 한계에도 불구하고 이후 수십 년간 과학학 연구의 토대가 된 개념적 기여는 타의 추종을 불허한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

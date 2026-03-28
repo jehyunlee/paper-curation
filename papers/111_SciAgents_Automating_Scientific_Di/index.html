@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>SciAgents: Automating Scientific Discovery Through Bioinspired Multi-Agent Intelligent Graph Reasoning</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>대규모 온톨로지 지식 그래프(knowledge graph)와 LLM 기반 멀티에이전트 시스템을 결합하여 과학적 발견을 자동화하는 프레임워크 <strong>SciAgents</strong>를 제안한 연구이다. 약 1,000편의 생체모방 재료(bio-inspired materials) 논문으로 구축된 지식 그래프에서 개념 간 경로를 샘플링하고, Ontologist, Scientist 1/2, Critic 등 역할이 분화된 LLM 에이전트 팀이 자율적으로 연구 가설을 생성, 확장, 비평, 개선하는 "군집 지능(swarm of intelligence)" 접근법을 구현한다. 실증으로 실크-민들레 색소 기반 바이오복합재를 제안하여, 기존 실크 대비 기계적 강도 50% 향상(1.5 GPa) 및 에너지 소비 30% 절감을 예측하였다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -106,18 +109,24 @@ a { color: #A62018; }
 <li>오픈소스 LLM을 활용한 재현성 및 비용 효율성 개선</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (5점 만점)</th><th>비고</th></tr>
-<tr><td>**참신성 (Novelty)**</td><td>4.5</td><td>지식 그래프 + 멀티에이전트 + 랜덤 경로 샘플링의 독창적 조합</td></tr>
-<tr><td>**기술적 완성도 (Soundness)**</td><td>3.0</td><td>프레임워크 설계는 견고하나, 실험적 검증 없이 AI 예측에 의존</td></tr>
-<tr><td>**프레임워크 설계 (Framework)**</td><td>4.5</td><td>역할 분화 에이전트, 계층적 확장, 비평 루프 등 체계적 설계</td></tr>
-<tr><td>**영향력 (Impact)**</td><td>4.0</td><td>Advanced Materials 게재; AI 기반 과학 발견의 새로운 패러다임 제시</td></tr>
-<tr><td>**재현성 (Reproducibility)**</td><td>2.5</td><td>GPT-4 API 의존, 실험 검증 부재, 프롬프트 세부사항 일부 보충자료에 한정</td></tr>
-<tr><td>**종합 (Overall)**</td><td>3.5</td><td>비전과 프레임워크 설계가 뛰어나지만, 실험적 검증이 뒷받침되어야 함</td></tr>
-</table>
-<h3>총평</h3>
-<p>온톨로지 지식 그래프와 멀티에이전트 LLM 시스템을 결합하여 과학적 발견을 자동화한다는 비전이 매우 야심 차고 독창적이다. 특히 랜덤 경로 샘플링을 통해 "기존에 무관하다고 여겨졌던" 개념들을 연결하여 학제 간 가설을 생성하는 접근은 인간 연구자의 사고를 넘어서는 탐색 공간 확장을 가능케 한다. 실크-민들레 복합재 사례는 구체적이고 흥미롭지만, 모든 정량적 예측이 AI 생성값에 머물러 있어 실험적 검증이 시급하다. Advanced Materials라는 탁월한 저널에 게재된 만큼 학계의 주목을 받고 있으며, 후속 실험 연구가 뒷받침된다면 AI 기반 재료 발견의 중요한 이정표가 될 수 있다.</p></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>The Empowerment of Science of Science by Large Language Models: New Tools and Methods</h1>
 <blockquote><p><strong>저자</strong>: Guoqiang Liang, Jingqian Gong, Mengxuan Li, Gege Lin, Shuo Zhang | <strong>날짜</strong>: 2025-11-19 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2511.15370"" target="_blank">10.48550/arXiv.2511.15370"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2511.15370" target="_blank">10.48550/arXiv.2511.15370</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>LLM은 Science of Science(SciSci) 연구를 어떻게 강화하는가? 이 논문은 사용자 관점에서 LLM 핵심 기술(프롬프트 엔지니어링, RAG, 파인튜닝, 사전학습, 도구 학습)을 포괄적으로 검토하고, SciSci의 역사적 발전을 추적하며, LLM의 계량서지학 분야 잠재적 응용에 대한 전망을 제시한다. 특히 AI 에이전트 기반 과학 평가 모델, LLM 기반 신흥 연구 분야 탐지, 지식 그래프 구축 방법론 등 새로운 연구 프론트를 식별한다. 이 논문은 LLM 기술 입문과 SciSci 응용 가능성을 연결하는 포괄적 리뷰 역할을 한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -91,16 +93,24 @@ a { color: #1856A0; }
 <li>LLM 기반 신흥 연구 분야 탐지 방법론의 실증적 평가</li>
 <li>SciSci 특화 사전학습 언어 모델 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>2/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: LLM 핵심 기술과 SciSci 역사를 연결한 포괄적 리뷰로, LLM을 SciSci에 활용하려는 연구자들에게 유용한 입문 가이드를 제공한다. 그러나 독창적인 방법론 기여보다는 기존 내용의 종합에 머물며, 제안된 새로운 연구 방향들도 구체적 구현 방안보다는 비전 수준에 그친다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

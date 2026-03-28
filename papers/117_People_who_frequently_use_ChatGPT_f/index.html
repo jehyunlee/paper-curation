@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>People Who Frequently Use ChatGPT for Writing Tasks Are Accurate and Robust Detectors of AI-Generated Text</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM을 글쓰기에 자주 사용하는 사람들이 별도의 훈련 없이도 AI 생성 텍스트를 거의 완벽하게 탐지할 수 있음을 밝힌 연구이다. 5명의 "전문가" 주석자의 다수결은 300편의 기사 중 단 1편만 오분류하여(TPR 99.3%, FPR 0%), paraphrasing과 humanization 회피 전술에도 강건하며, Pangram을 제외한 모든 상용/오픈소스 자동 탐지기를 크게 능가한다. 전문가들의 판단 근거를 14개 범주로 체계적으로 분석하여 AI 텍스트의 특징적 "서명"을 밝힌다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -86,17 +89,27 @@ a { color: #A62018; }
 <li><strong>비용과 확장성</strong>: 기사당 $2.82의 인간 탐지 비용은 대규모 적용에 한계가 있다.</li>
 <li><strong>향후 과제</strong>: 전문가에 대한 명시적 훈련을 통한 성능 향상, 자동 탐지기(Pangram 등)와 인간 전문가의 하이브리드 시스템, 다양한 도메인/언어로의 확장, humanization 기법의 공개 연구 촉진 등이 제안된다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AI 생성 텍스트 탐지 분야에서 매우 시의적절하고 실용적인 기여를 한 연구이다. 핵심 발견인 "LLM 글쓰기 빈번 사용자가 최고의 탐지자"라는 결과는 단순하지만 설득력 있으며, 학술 부정행위 탐지, 가짜 뉴스 식별 등 high-stakes 상황에서의 실용적 함의가 크다. 실험 설계가 체계적이며(5단계 난이도 증가, minimal pair, within-subjects), 1,500개의 문단 길이 설명과 14개 범주 분류 체계는 AI 텍스트의 고유 특성에 대한 귀중한 질적 데이터를 제공한다. 특히 Table 12의 "AI vocabulary" 목록과 Table 4의 탐지 단서 분류 체계는 교육/실무 자료로서의 가치가 높다. 다만, O1-Pro humanization에서 Annotator 3이 TPR 0%를 기록한 것처럼 개별 전문가의 편차가 크며, 이는 다수결이 아닌 개인 판단에 의존할 경우의 위험을 시사한다. LLM 기반 프롬프트 탐지기가 인간 전문가에 크게 못 미친다는 결과는, 자동 탐지와 인간 탐지 사이의 여전히 큰 간극을 보여주며, 향후 하이브리드 접근법의 필요성을 잘 보여준다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM 고빈도 사용자가 AI 생성 텍스트 탐지에서 99.3% TPR을 달성함을 보인 연구로, 사용 경험이 탐지 능력을 향상시킨다는 직관적이지만 중요한 발견을 실증한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

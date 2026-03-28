@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Large Language Model in Materials Science: Roles, Challenges, and Strategic Outlook</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>재료과학에서 LLM의 4가지 핵심 역할(Oracle, Surrogate, Quant, Arbiter)을 정의하고, 검증 가능하고 추적 가능한 연구 루프에 LLM을 통합하기 위한 전략적 방향을 제시하는 관점(perspective) 논문이다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -91,15 +94,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>Oracle/Surrogate/Quant/Arbiter라는 4가지 역할 분류는 LLM의 재료과학 활용을 개념적으로 정리하는 데 효과적인 프레임워크다. 특히 "모델 크기 확장보다 검증 가능한 시스템 통합이 더 중요하다"는 메시지는 현재 AI 과잉 기대 속에서 의미 있는 관점이다. 다만 관점 논문의 한계로 구체적 구현이나 정량적 검증이 없어, 제안의 실현 가능성은 후속 연구에 의존한다. 3가지 전략 방향(도메인 적응, 데이터 인프라, 추적 가능 루프)은 방향성으로는 타당하나, 각각이 독립적인 대형 프로젝트 수준이어서 실행 우선순위나 로드맵이 추가로 필요하다. 재료과학 LLM 연구의 전략적 사고를 촉진하는 데 기여하는 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: LLM의 역할을 Oracle/Surrogate/Quantifier/Arbiter 4가지로 분류한 재료과학 관점 프레임워크로 개념적 정리에 기여한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

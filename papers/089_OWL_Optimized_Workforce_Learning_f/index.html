@@ -36,14 +36,17 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation</h1>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM 기반 멀티 에이전트 시스템의 <strong>도메인 간 전이성(cross-domain transferability)</strong> 문제를 해결하기 위한 계층적 멀티 에이전트 프레임워크 WORKFORCE와, 도메인 비종속적(domain-agnostic) Planner를 강화학습으로 최적화하는 학습 패러다임 OWL(Optimized Workforce Learning)을 제안한다. 핵심 설계 원칙은 "안정적인 코어(Planner), 교체 가능한 주변부(Worker Nodes)"로, 새로운 도메인에 적응할 때 Worker만 교체하면 되도록 전략적 계획과 도메인별 실행을 분리한 것이다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -122,17 +125,27 @@ a { color: #A62018; }
 <li>안전성 및 위험 행동 방지를 위한 에이전트 거버넌스 프레임워크</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>OWL/WORKFORCE는 멀티 에이전트 시스템의 실용적 설계 원칙을 제시한 중요한 연구다. 특히 "Planner만 학습하면 된다"는 핵심 통찰은 멀티 에이전트 학습의 효율성을 크게 높이며, Worker만 학습하면 오히려 성능이 하락한다는 발견은 "효과적인 과제 분해가 개별 실행 능력보다 중요하다"는 시사점을 제공한다. 오픈소스 시스템으로서 OpenAI Deep Research를 넘어선 것은 의미 있는 성과이나, Level 3 과제에서의 약점과 도구 의존성은 여전히 해결해야 할 과제다. CAMEL-AI 기반의 완전 오픈소스 공개는 커뮤니티 기여를 촉진할 수 있는 긍정적 요소다. 향후 AI for Science 영역에서 WORKFORCE를 과학적 도구(시뮬레이션, 실험 자동화 등)와 결합하면 흥미로운 확장이 가능할 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: GAIA 벤치마크 SOTA를 달성한 OWL 멀티 에이전트 프레임워크로 적응적 역할 분담과 이종 모달리티 처리에서 실질적 기여를 보인다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

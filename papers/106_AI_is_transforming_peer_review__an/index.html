@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -52,7 +55,7 @@ a { color: #A62018; }
 <li><strong>발표일</strong>: 2025-03-26</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (한 줄 요약)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI가 동료심사(peer review) 과정에 빠르게 침투하고 있으며, 출판사와 연구자들이 AI 보조 도구를 시험하는 한편, 인간 심사자의 역할 축소와 학술 심사의 사회적 계약 붕괴에 대한 우려가 커지고 있다는 현황 보고.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (연구 동기)</h2>
@@ -91,17 +94,27 @@ a { color: #A62018; }
 <li><strong>향후 핵심 과제</strong>: (1) AI 심사의 투명성 기준 마련(사용 모델, 프롬프트, 날짜 공개), (2) AI "사전 심사(pre-review)" + 인간 심사의 이중 구조 설계, (3) AI 심사 탐지의 기술적 한계 극복, (4) AI 심사가 과학적 다양성과 창의성에 미치는 장기적 영향 연구</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>AI가 동료심사에 미치는 영향을 <strong>균형 잡힌 시각</strong>으로 조명한 우수한 과학 저널리즘이다. 단순히 "AI가 심사를 대체할 것인가"라는 이분법을 넘어, 문체 교정부터 전면 자동 심사까지의 <strong>연속적 스펙트럼</strong>을 제시하고, 각 단계에 대한 찬반론을 균등하게 배치한 점이 돋보인다. 특히 "Writing is thinking"이라는 Bergstrom의 지적은, AI 보조가 심사의 효율성은 높이되 깊이는 낮출 수 있다는 핵심 딜레마를 간결하게 포착한다. 다만, 뉴스 피처의 성격상 체계적 증거보다는 일화와 의견에 의존하며, AI 심사 도구의 실제 성능에 대한 독립적 평가가 부재하다는 점은 아쉽다. Hosseini가 강조한 "AI 심사의 모든 세부 사항을 공개해야 한다"는 투명성 원칙은 이 분야의 향후 규범 설정에 중요한 출발점이 될 것이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>2</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: AI 피어 리뷰 동향을 소개하는 저널리즘 기사로, 현장 연구자들의 다양한 시각을 균형 있게 전달하지만 학술적 분석이나 독자적 기여는 없다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

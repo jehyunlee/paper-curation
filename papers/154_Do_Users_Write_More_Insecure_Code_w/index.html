@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1145/3576915.3623157"" target="_blank">10.1145/3576915.3623157"</a> target="_blank"><a href="https://doi.org/10.1145/3576915.3623157" target="_blank">10.1145/3576915.3623157</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>AI 코드 어시스턴트(OpenAI Codex 기반)를 사용하는 개발자가 보안 관련 프로그래밍 과제에서 <strong>더 취약한 코드를 작성하는지</strong>를 측정한 최초의 대규모 사용자 연구이다. 47명의 참가자가 Python, JavaScript, C로 5개 보안 관련 과제를 수행했으며, AI 어시스턴트에 접근할 수 있었던 실험군이 대조군보다 유의미하게 덜 안전한 코드를 작성했고, 동시에 자신의 코드가 안전하다고 더 강하게 믿는 <strong>과신(overconfidence)</strong> 경향을 보였다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>GitHub Copilot 같은 AI 코드 어시스턴트가 생산성을 향상시킬 수 있다는 연구는 있었지만, 실제 사용자가 AI와 상호작용하는 맥락에서 보안 취약점이 어떻게 도입되는지에 대한 체계적 연구는 부재했다. 기존 연구(Pearce et al., 2022)는 합성 프롬프트에 한정되어 실제 개발자 행동을 반영하지 못했고, 유일한 사용자 연구(Sandoval et al., 2022)는 C 언어에 한정되어 결론이 불분명했다. 다양한 언어와 보안 영역을 아우르는 통제된 실험이 필요했다.</p></div>
@@ -96,15 +99,24 @@ a { color: #A62018; }
 <li><strong>C 언어 과제(Q5)</strong>: AI가 C 코드 생성에 어려움을 겪어 결과 해석이 복잡</li>
 <li>후속 연구: ChatGPT/Copilot 등 최신 모델에서의 반복, 실무 개발자 대상 연구, 보안 피드백 메커니즘 설계, RLHF 기반 보안 지향 강화학습</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
-<tr><td>참신성 (Novelty)</td><td>8</td><td>사용자 행동 맥락에서 AI 코드 보안을 측정한 선구적 연구</td></tr>
-<tr><td>기술적 완성도 (Soundness)</td><td>7</td><td>체계적 실험 설계, 다만 표본 크기가 작아 일부 결과의 통계적 검정력 부족</td></tr>
-<tr><td>유의미성 (Significance)</td><td>9</td><td>AI 코드 어시스턴트의 보안 위험과 과신 문제를 실증적으로 입증</td></tr>
-<tr><td>재현성 (Reproducibility)</td><td>8</td><td>UI 코드, 익명화 데이터, 프롬프트 모두 공개</td></tr>
-<tr><td>종합 (Overall)</td><td>8</td><td>AI 코딩 도구의 보안 설계에 핵심적 시사점을 제공하는 중요한 실증 연구</td></tr>
-</table></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

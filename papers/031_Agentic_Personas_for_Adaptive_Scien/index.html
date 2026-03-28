@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Susana Nunes, Tiago Guerreiro, Catia Pesquita | <strong>날짜</strong>: 2026-03-23 | <strong>arXiv</strong>: 2603.21846</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Knowledge graph 기반 설명 생성에서 전문가의 다양한 인식론적 입장(epistemic stance)을 반영하는 적응형 설명(adaptive explanation) 프레임워크를 제안한 연구이다. "Agentic persona"라는 개념을 도입하여, 전문가 피드백으로부터 클러스터링과 LLM 합성을 통해 해석 전략의 구조적 표현을 만들고, 이를 강화학습의 보상 함수에 통합하여 사용자별 맞춤형 KG 경로 설명을 생성한다. Drug discovery 도메인에서 22명 대상 사용자 연구 결과, persona 기반 적응형 설명이 비적응형 baseline 대비 63.3-76.0% 선호되었다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -98,15 +100,23 @@ a { color: #A62018; }
 <li>Real-time 상호작용을 통한 persona 정제 및 개인화 심화</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>3/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>3/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
 <p><strong>총평</strong>: XAI에서 전문가의 인식론적 다양성을 포착하여 맞춤형 설명을 생성한다는 개념적 기여가 인상적이다. 그러나 11명의 극소 표본에서 도출한 2개 persona의 대표성, LLM evaluator의 태스크 의존적 변동성, 그리고 verbalization과 경로 선택의 효과 분리 부재 등 방법론적 한계가 있다. Drug discovery라는 특정 도메인에서의 초기 검증으로서 가치가 있으나, 확장성과 일반화에 대한 더 엄밀한 검증이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

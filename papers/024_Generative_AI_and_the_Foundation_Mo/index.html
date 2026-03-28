@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -54,7 +57,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: foundation models, generative AI, multimodal learning, GPT, LLaMA, diffusion models</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>Generative AI와 Foundation Model의 아키텍처(Transformer, Diffusion, Multimodal), 학습 전략(사전학습, 파인튜닝), 10개 응용 분야를 체계적으로 정리하고, 통합 분류 프레임워크와 교차 도메인 비교 차원을 제안한 포괄적 서베이 논문.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>GenAI와 foundation model이 NLP, 컴퓨터 비전, 로보틱스, 바이오의학 등 다양한 분야에 급속히 확산되고 있으나, 기존 서베이들은 개별 도메인에 한정되어 교차 도메인 비교가 어렵다. 모델 아키텍처, 학습 방법론, 평가 방식, 윤리적 문제를 하나의 분석 프레임워크 안에서 통합적으로 조망할 필요가 있다.</p></div>
@@ -87,15 +90,24 @@ a { color: #A62018; }
 </ul></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>10개 응용 도메인에 걸친 GenAI의 현황을 한눈에 파악할 수 있는 참고 자료로서의 가치가 있으며, 제안된 통합 분류 프레임워크는 향후 연구의 체계화에 기여할 수 있다. 그러나 새로운 기술적 통찰이나 실험적 검증이 없고, AI4Science 큐레이션의 관점에서는 과학적 발견에 직접 기여하는 내용이 제한적이다. 빠르게 변화하는 분야 특성상 2025년 이후의 최신 모델(GPT-5 등)에 대한 논의가 피상적이며, 비공개 모델에 대한 재현성 한계를 스스로 인정하고 있다. 전반적으로 연구자들이 GenAI 전체 지형도를 조감하는 데 유용하나, 특정 주제에 대한 심층 분석을 위해서는 도메인 특화 서베이를 참조해야 한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>2</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>2</td></tr>
-<tr><td>Overall</td><td>2.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 10개 도메인에 걸친 GenAI 현황을 조감하는 참고 자료로서 유용하나 새로운 기술적 기여나 실험적 검증이 없는 서베이 논문이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

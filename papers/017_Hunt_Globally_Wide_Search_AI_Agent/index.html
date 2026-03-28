@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Alisa Vinogradova, Vlad Vinogradov, Luba Greenwood, Ilya Yasny, Dmitry Kobyzev, Shoman Kasbekar, Kong Nguyen, Dmitrii Radkevich, Roman Doronin, Andrey Doronichev | <strong>날짜</strong>: 2026-02-16 | <strong>arXiv</strong>: 2602.15019 | <strong>분야</strong>: cs.AI</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>바이오제약 분야에서 글로벌 약물 자산 스카우팅(drug asset scouting)을 위한 트리 기반 자기학습 AI 에이전트 시스템(Bioptic Agent)과 완전성 중심 벤치마크(Completeness Benchmark)를 제안한다. 핵심 문제는 신약 혁신의 상당 부분이 미국 외, 비영어권 지역에서 발생하는데 기존 Deep Research AI 에이전트들이 이러한 다국어/이질적 소스에서의 포괄적 자산 발견에 한계를 보인다는 것이다. Bioptic Agent는 UCB(Upper Confidence Bound) 기반 트리 탐색, 다국어 병렬 조사, 전문가 정렬 검증을 결합하여 F1 79.7%를 달성, Claude Opus 4.6(56.2%), Gemini 3 Pro Deep Research(50.6%), GPT-5.2 Pro(46.6%) 등을 크게 상회한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -94,15 +96,23 @@ a { color: #A62018; }
 <li>실제 BD/투자 전문가와의 블라인드 비교 연구</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 바이오제약 자산 스카우팅이라는 실무적으로 중요하고 학술적으로 미개척된 문제를 정식화하고, 트리 기반 자기학습 에이전트로 기존 SOTA Deep Research 시스템을 크게 상회하는 성능을 보인 의미 있는 연구이다. 벤치마크 역생성 방법론과 UCB 기반 탐색 제어가 기술적으로 잘 설계되어 있다. 다만 테스트셋 규모(22개)가 매우 작고, 벤치마크와 시스템이 모두 자사 설계라는 이해충돌이 결과 해석에 주의를 요한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

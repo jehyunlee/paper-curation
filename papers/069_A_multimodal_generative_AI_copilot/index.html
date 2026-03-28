@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,7 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ming Y. Lu, Bowen Chen, Drew F. K. Williamson, Richard J. Chen, Melissa Zhao, Aaron K. Chow, Kenji Ikemura, Ahrong Kim, Dimitra Pouli, Ankush Patel, Amr Soliman, Chengkuan Chen, Tong Ding, Judy J. Wang, Georg Gerber, Ivy Liang, Long Phi Le, Anil V. Parwani, Luca L. Weishaupt, Faisal Mahmood</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>병리학 전용 멀티모달 대규모 언어 모델(MLLM)인 PathChat을 개발하여, 조직병리 이미지와 자연어 질의를 동시에 처리하는 AI 코파일럿을 구현하고, 다지선다형 진단 및 개방형 질의응답에서 GPT-4V를 포함한 기존 모델을 크게 능가하는 성능을 입증하였다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -91,15 +94,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>Nature에 게재된 이 연구는 생성형 AI를 병리학 실무에 접목하는 패러다임 전환적 연구로서, 도메인 특화 비전 인코더(UNI) + 대규모 인스트럭션 튜닝 + 엄밀한 전문가 평가라는 세 축을 견고하게 구성했다. 특히 이미지 기반 질문에서 GPT-4V를 50% 포인트 이상 능가하는 결과는 도메인 특화 MLLM의 가치를 강력히 입증한다. 다만, WSI 전체 입력 미지원, hallucination 위험, 모델 비공개 등은 향후 극복해야 할 과제이다. 병리학 AI 코파일럿의 교육적, 연구적, 임상적 활용 가능성을 개척한 중요한 이정표적 연구이며, RLHF를 통한 정렬 개선, RAG를 통한 최신 지식 갱신, WSI 수준 입력 확장 등 후속 연구의 방향도 명확하게 제시하고 있다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 병리학 전용 멀티모달 AI 공동 연구자 PathChat을 Nature에 발표한 연구로 대규모 임상 검증과 전문가 비교 평가를 갖춘 완성도 높은 작업이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

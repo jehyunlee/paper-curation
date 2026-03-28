@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -53,7 +56,7 @@ a { color: #A62018; }
 <li><strong>키워드</strong>: 멀티에이전트, LLM, GPT-4, 피어 리뷰 생성, 과학 논문 피드백, 프롬프트 엔지니어링</li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM(GPT-4)의 복수 인스턴스를 활용한 멀티에이전트 리뷰 생성 시스템 <strong>MARG</strong>를 제안한 연구이다. 논문 텍스트를 에이전트들에게 분배하여 기본 모델의 입력 길이 한계를 극복하고, 실험/명확성/영향력 등 코멘트 유형별로 전문화된 에이전트(expert agent)를 도입하여 피드백의 구체성과 유용성을 향상시켰다. 사용자 연구에서 기존 베이스라인 대비 2.2배 많은 "좋은" 코멘트(논문당 3.7개)를 생성하고, 일반적(generic) 코멘트 비율을 60%에서 29%로 감소시켰다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -100,17 +103,27 @@ a { color: #A62018; }
 <p>7. <strong>GPT-4 8k 모델 기반</strong>: 더 큰 컨텍스트 윈도를 가진 모델이 등장함에 따라 멀티에이전트 접근의 필요성이 변화할 수 있다.</p>
 <p>8. <strong>향후 방향</strong>: 저비용 모델로의 동적 전환, 배경 문헌 통합, 메시지 압축/프루닝을 통한 효율 개선, 병렬화를 통한 실행 시간 단축(2-10배) 등이 제안된다.</p>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>LLM 기반 과학 리뷰 생성에서 "구체성"이라는 핵심 문제를 멀티에이전트 아키텍처와 측면별 전문화로 해결한 창의적 연구이다. 베이스라인 대비 구체적 코멘트 비율을 71%로 끌어올린 것은 인상적이며, 특히 "가상 실험 설계 후 실제 실험과 비교"라는 전략은 사람의 비판적 읽기 과정을 효과적으로 모방한다. 그러나 약 167배의 비용 증가에 비해 recall 향상은 6.1 포인트(15.84% vs. 9.67%)에 불과하여 효율성이 크게 떨어지며, 여전히 절반 가까운 코멘트가 "bad"로 평가된다는 점은 실용적 한계를 보여준다. 상세한 실패 분석은 학술적 투명성 측면에서 높이 평가할 만하다. 이 연구는 "LLM 하나로는 부족하다"는 문제의식과 "여러 LLM의 협업"이라는 해법을 구체적으로 검증한 선구적 작업이지만, 비용 효율성과 정확도 면에서 실질적 배포까지는 상당한 개선이 필요하다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.3</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 다중 에이전트 협업으로 피어 리뷰 생성 품질을 2.2배 향상시킨 Northwestern/Hebrew U/AI2 연구로, 전문화된 에이전트 역할 분담의 효과를 실증하지만 계산 비용과 확장성 문제가 남는다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

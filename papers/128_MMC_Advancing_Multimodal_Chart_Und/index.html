@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>차트 이미지 이해에 특화된 대규모 instruction tuning 데이터셋(MMC-Instruction, 600k 인스턴스)과 인간 주석 벤치마크(MMC-Benchmark, 9개 태스크), 그리고 이를 기반으로 학습한 멀티모달 차트 어시스턴트 모델(MMCA)을 제안하는 논문이다. 기존 LMM(Large Multimodal Model)들이 자연 이미지에는 강하지만 차트의 추상적 요소(추세선, 범례, 축 레이블 등)를 제대로 해석하지 못하는 문제를 체계적으로 해결하고자 한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -93,17 +96,27 @@ a { color: #A62018; }
 <li><strong>GPT-4 의존적 데이터 생성</strong>: instruction tuning 데이터의 상당 부분이 GPT-4 생성이므로, GPT-4 자체의 한계(hallucination 포함)가 데이터 품질에 영향을 줄 수 있음.</li>
 <li>향후 고해상도 비전 인코더, 세그멘테이션 기반 차트 요소 인식, 더 큰 규모의 LLM 백본 적용 등이 유망한 연구 방향.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>차트 이해라는 상대적으로 과소 연구된 영역에 대해 <strong>데이터(MMC-Instruction), 벤치마크(MMC-Benchmark), 모델(MMCA)</strong> 세 축을 모두 체계적으로 구축한 포괄적 연구이다. 특히 GPT-4V를 포함한 최신 모델들의 차트 이해 한계를 정량적으로 드러내고, 오류 유형을 세밀하게 분석한 점이 실용적 가치가 높다. 다만 7B 모델에 국한된 실험과 Chart-to-DataTable/Json의 근본적 한계 해결 방안이 미흡한 점은 아쉬움으로 남는다. 전반적으로 차트 멀티모달 이해 분야의 기반을 다진 중요한 기여로 평가된다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 600K 멀티모달 차트 인스트럭션 데이터셋 MMC를 구축하고 이를 활용한 MMC-Instruction 모델로 차트 이해 분야의 데이터 부족 문제를 해소한 메릴랜드 대학의 실용적 기여이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

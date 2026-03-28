@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM(특히 GPT-4)이 과학 논문의 피어 리뷰 과정에서 어떤 역할을 수행할 수 있는지를 탐색적으로 연구한 논문이다. 세 가지 리뷰 관련 태스크(오류 탐지, 체크리스트 검증, 더 나은 논문 선택)에 대해 GPT-4의 성능을 체계적으로 평가하여, LLM이 특정 리뷰 보조 작업에는 유망하지만 독립적 리뷰어로서는 아직 부족함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>피어 리뷰 시스템은 제출 논문 수의 급증과 리뷰어 과부하로 심각한 압박을 받고 있다. 연간 수백만 시간의 연구자 시간이 리뷰에 소비되며, 통제 실험들에서 인간 리뷰어도 결함 있는 논문을 빈번히 통과시키는 것으로 확인되었다. LLM의 급속한 발전에 따라, 이러한 리뷰 과정의 부담을 줄이고 품질을 보완할 수 있는지 체계적으로 검증할 필요가 있다.</p></div>
@@ -80,17 +83,27 @@ a { color: #A62018; }
 <li><strong>오픈소스 모델 성능 저조:</strong> GPT-4 외의 오픈소스 모델들은 모든 태스크에서 크게 뒤처져, 파인튜닝을 통한 개선이 필요하나 아직 도전적</li>
 <li><strong>향후 방향:</strong> CONSORT 체크리스트 등 타 분야 적용, 리뷰어-논문 전문성 매칭(유사도 계산)에 LLM 활용, 특정 리뷰 목적의 LLM 파인튜닝</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>본 논문은 LLM을 피어 리뷰에 활용하는 것에 대한 균형 잡힌 시각을 제공하는 중요한 탐색적 연구이다. 세 가지 태스크를 통해 LLM의 강점(특정 오류 탐지, 체크리스트 검증)과 약점(전체적 논문 평가, 비교 판단)을 명확히 분리하여 보여준 점이 뛰어나다. 특히 합성 논문과 초록을 직접 구축하여 ground truth를 확보한 실험 설계가 엄밀하며, 프롬프트 인젝션 공격이나 과장된 언어 등에 대한 LLM 취약성 분석은 실용적으로 중요한 시사점을 제공한다. 다만 평가 규모가 작고 GPT-4 단일 모델에 집중된 점, 그리고 실제 학회 리뷰 환경에서의 검증이 부재한 점은 한계로 지적할 수 있다. "LLM은 리뷰 보조자로서 유망하나 독립 리뷰어로서는 아직 준비되지 않았다"는 결론은 당시 기준으로 적절하며, 이후 LLM 기반 리뷰 시스템 연구의 기초 참고 문헌으로 가치가 높다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: GPT-4 피어 리뷰 능력을 탐색한 CMU의 초기 연구로, 소규모이지만 선구적 실험을 통해 LLM 리뷰어의 가능성과 한계를 제시하여 후속 연구의 기반을 마련했다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

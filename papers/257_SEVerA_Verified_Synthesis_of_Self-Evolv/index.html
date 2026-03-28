@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Debangshu Banerjee, Changming Xu, Gagandeep Singh | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: 2603.25111</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>자기진화(self-evolving) LLM 에이전트는 프로그램을 자동 합성하고 파라미터를 스스로 튜닝하지만, 이 과정에서 <strong>행동 사양(behavioral specification)이 보장되지 않는다</strong>는 치명적 공백이 있다. SEVerA는 이를 해결하기 위해 Search-Verify-Learn 3단계를 도입하였다: planner LLM이 <strong>FGGM(Formally-Guaranteed Generative Model)</strong> 추상화를 활용해 에이전트 프로그램을 합성하고, Dafny 검증기가 모든 파라미터 값에 대해 사양 충족을 형식적으로 증명하며, 검증된 프로그램에서 unconstrained 최적화로 파라미터를 학습한다. Dafny 프로그램 검증(HumanEvalDafny) 태스크에서 기존 방법 대비 Verif. & NoDiff 정확도를 +10.1%p(97.0%) 향상시키고 violation을 0%로 낮추었으며, GSM-Symbolic 수학 추론에서는 +21.3%p(66.0%) 정확도 향상과 violation 0%를 동시에 달성하였다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -81,16 +83,24 @@ a { color: #A62018; }
 <li>사양 자동 생성(specification mining) 또는 LLM 보조 사양 작성으로 진입 장벽 완화</li>
 <li>더 큰 코드베이스와 복잡한 멀티-에이전트 시스템에서의 확장성 검증</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 자기진화 LLM 에이전트에 형식적 정확성 보장을 최초로 부여한 이론적·실험적으로 탄탄한 연구로, FGGM 추상화와 Search-Verify-Learn 파이프라인은 안전한 AI 에이전트 합성을 위한 새로운 패러다임을 제시한다. 현재 Dafny 문법 제약이 실용적 한계이나, 기초 프레임워크로서의 기여는 매우 높다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -51,16 +51,23 @@ a {{ color: {t['link_color']}; }}
 .back a {{ font-weight: 600; text-decoration: none; }}
 .back a:hover {{ text-decoration: underline; }}
 .review-fig {{ text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }}
-.review-fig img {{ max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
+.review-fig img {{ max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }}
+.lightbox {{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }}
+.lightbox.active {{ display: flex; }}
+.lightbox img {{ max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }}
 .fig-caption {{ font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }}"""
 
 
 def parse_scores(md):
-    """Extract evaluation scores from markdown table."""
+    """Extract evaluation scores from markdown table or list format."""
     scores = {}
     for label, key in [("Novelty", "novelty"), ("Technical Soundness", "tech"),
                         ("Significance", "sig"), ("Clarity", "clarity"), ("Overall", "overall")]:
+        # Table: | Label | X/5 |
         m = re.search(rf'\|\s*{label}\s*\|\s*(\d+(?:\.\d+)?)\s*/\s*5\s*\|', md)
+        if not m:
+            # List: - Label: X/5
+            m = re.search(rf'-\s*{label}\s*:\s*(\d+(?:\.\d+)?)\s*/\s*5', md)
         if m:
             scores[key] = m.group(1)
     return scores
@@ -222,27 +229,28 @@ def convert_review(md_path, topic, slug_dir):
 
     body_parts.append('<hr>')
 
-    # Score badges
-    if scores:
-        badges = []
-        for label, key in [("Novelty", "novelty"), ("Technical", "tech"),
-                           ("Significance", "sig"), ("Clarity", "clarity"), ("Overall", "overall")]:
-            if key in scores:
-                badges.append(f'<span class="eval-badge">{label}: {scores[key]}/5</span>')
-        if badges:
-            body_parts.append(f'<div class="eval-badges">{" ".join(badges)}</div>')
-
-    # Sections
+    # Sections (eval badges moved INTO Evaluation section)
     for sec_title, sec_body in parsed_sections:
         sec_html = md_section_to_html(sec_body)
-        if not sec_html.strip():
-            continue
 
-        if sec_title.startswith('Essence'):
-            body_parts.append(f'<div class="essence-box"><h2>{esc(sec_title)}</h2>\n{sec_html}</div>')
+        if sec_title.startswith('Essence') or '한줄 요약' in sec_title:
+            if not sec_html.strip():
+                continue
+            body_parts.append(f'<div class="essence-box"><h2>Essence</h2>\n{sec_html}</div>')
         elif sec_title.startswith('평가') or sec_title.lower().startswith('eval'):
-            # Evaluation section - render table + 총평
-            body_parts.append(f'<div class="section-box"><h2>{esc(sec_title)}</h2>\n{sec_html}</div>')
+            # Evaluation section — render as badges (not table)
+            badges = []
+            for label, key in [("Novelty", "novelty"), ("Technical Soundness", "tech"),
+                               ("Significance", "sig"), ("Clarity", "clarity"), ("Overall", "overall")]:
+                if key in scores:
+                    badges.append(f'<span class="eval-badge">{label}: {scores[key]}/5</span>')
+            badges_html = f'<div class="eval-badges">{" ".join(badges)}</div>' if badges else ""
+            # Extract 총평 from section body
+            verdict_html = ""
+            vm = re.search(r'\*\*총평\*\*:\s*([\s\S]+?)(?:\Z)', sec_body)
+            if vm:
+                verdict_html = f'<p><strong>총평</strong>: {_inline(vm.group(1).strip())}</p>'
+            body_parts.append(f'<div class="section-box"><h2>Evaluation</h2>\n{badges_html}\n{verdict_html}</div>')
         else:
             body_parts.append(f'<div class="section-box"><h2>{esc(sec_title)}</h2>\n{sec_html}</div>')
 
@@ -266,6 +274,21 @@ def convert_review(md_path, topic, slug_dir):
 </head>
 <body>
 {chr(10).join(body_parts)}
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {{
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {{
+    const img = e.target.closest('.review-fig img');
+    if (img) {{ lbImg.src = img.src; lb.classList.add('active'); }}
+  }});
+  lb.addEventListener('click', function() {{ lb.classList.remove('active'); lbImg.src = ''; }});
+  document.addEventListener('keydown', function(e) {{
+    if (e.key === 'Escape' && lb.classList.contains('active')) {{ lb.classList.remove('active'); lbImg.src = ''; }}
+  }});
+}});
+</script>
 </body>
 </html>"""
     return html

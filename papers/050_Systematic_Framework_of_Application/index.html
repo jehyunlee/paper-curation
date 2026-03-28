@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Systematic Framework of Application Methods for Large Language Models in Language Sciences</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>언어과학(language sciences)에서 LLM을 체계적으로 활용하기 위한 두 가지 방법론적 프레임워크를 제안하는 논문으로, 방법 선택 프레임워크와 다단계 연구 파이프라인 구성 프레임워크를 통해 재현 가능하고 검증 가능한 연구를 지원한다.</p>
 <hr></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
@@ -95,15 +98,24 @@ a { color: #A62018; }
 <hr></div>
 <div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>언어과학에서 LLM 활용의 방법론적 혼란을 정리하려는 시의적절한 시도다. 연구 목적(탐색적/확증적/정량적)에 따라 적절한 LLM 접근법(프롬프트/파인튜닝/임베딩)을 선택하는 의사결정 체계는 직관적이고 실용적이다. 특히 회고적 분석, 전향적 적용, 전문가 평가의 3단계 검증은 프레임워크 논문으로서 높은 수준의 실증적 뒷받침을 제공한다. 다만 프레임워크가 언어과학에 특화되어 있어 타 분야로의 확장에는 추가 작업이 필요하며, 급변하는 LLM 생태계에서 프레임워크의 지속적 업데이트가 과제다. 재현성과 체계성을 중시하는 연구 문화를 촉진한다는 점에서 의미 있는 기여이며, 유사한 방법론적 프레임워크가 다른 과학 분야에서도 개발되기를 기대한다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>3</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 언어과학에서 LLM 응용을 체계화한 프레임워크로 해당 분야 입문자에게 유용하나 광범위한 커버리지에 비해 개별 분석 깊이가 얕다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>ChartInstruct: Instruction Tuning for Chart Comprehension and Reasoning</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>차트 이해 및 추론을 위한 범용 비전-언어 모델(VLM)을 구축하기 위해, 71K개의 실세계 차트로부터 191K개의 instruction-following 데이터셋을 자동 생성하고, 이를 활용한 두 가지 시스템(end-to-end 모델과 pipeline 모델)을 제안하여 4개 벤치마크에서 SOTA를 달성한 연구이다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <p>차트는 데이터 분석과 의사결정에 핵심적인 시각화 도구이지만, 기존 차트 관련 모델들은 두 가지 근본적 한계가 있다. 첫째, 일반 비전-언어 모델을 파인튜닝한 방식은 차트 고유의 구조(바, 범례, 축 간 관계)를 간과하여 성능이 제한적이다. 둘째, UniChart, MatCha 등 차트 전용 모델은 한정된 소스와 좁은 태스크 범위에 집중하여 실제 다양한 사용 시나리오에 대응하지 못한다. 실세계 광범위 채택을 위해서는 모델이 사전에 정의되지 않은 다양한 태스크에도 대응할 수 있는 범용성이 필요하며, instruction tuning이 이에 대한 유망한 해법이다.</p></div>
@@ -85,17 +88,27 @@ a { color: #A62018; }
 <li><strong>값 추정과 비교의 어려움:</strong> 밀집되거나 세부 정보가 부족한 차트에서 시각 요소와 값의 매칭, 값 추정, 시각적 속성 기반 비교에서 오류</li>
 <li><strong>향후 연구:</strong> 더 큰 규모의 LLM 적용, 멀티모달 입력(GPT-4V 등) 활용, 데이터 품질 개선을 위한 필터링 파이프라인, 더 다양한 차트 유형(3D, 지도 등) 지원</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>ChartInstruct는 차트 이해 분야에서 instruction tuning 패러다임을 본격적으로 도입한 의미 있는 연구이다. 191K 규모의 다양한 instruction 데이터셋 구축과 4개 벤치마크에서의 일관된 SOTA 달성은 접근법의 유효성을 강하게 뒷받침한다. 특히 UniChart 비전 인코더를 LLaVA에 통합한 설계와, LLM이 자동으로 신규 태스크를 제안하도록 한 데이터 생성 전략은 독창적이다. End-to-end와 pipeline 두 시스템의 비교 분석은 실용적 관점에서 가치가 높으며, Flan-T5-XL(3B)이 Llama2(7B)와 유사한 성능을 보인 점은 계산 자원 제약 환경에서의 활용 가능성을 시사한다. 다만 생성 데이터의 정확도(61%)가 상대적으로 낮고, human evaluation이 저자 및 협력자에 의해 수행되어 평가 편향 가능성이 있다. Cohen's Kappa 0.447의 중간 수준 동의도도 평가의 주관성을 반영한다. 전반적으로 차트 이해 분야의 범용화를 위한 중요한 기반 연구로, 후속 연구(ChartGemma 등)에 직접적 영향을 미친 논문이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>3</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 191K 차트 인스트럭션 데이터셋과 LLM 기반 미세조정으로 4개 벤치마크 SOTA를 달성한 연구로, 체계적 파이프라인과 광범위한 평가가 차트 이해 분야의 견고한 기여를 이룬다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

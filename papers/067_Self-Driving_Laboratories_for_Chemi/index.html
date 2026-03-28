@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Self-Driving Laboratories for Chemistry and Materials Science</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>자율주행 실험실(Self-Driving Laboratories, SDLs)의 화학 및 재료과학 분야 적용에 대한 포괄적 리뷰 논문이다. SDL의 하드웨어(로봇, 센서, 액체 처리 장치), 소프트웨어(오케스트레이션, 데이터 관리, AI 기반 실험 계획), 그리고 분석 공정 최적화, 반응 최적화, 약물 발견, 구조 재료, 광전자소자, 에너지 저장 재료 등 다양한 과학 영역에서의 실제 SDL 구현 사례를 100페이지에 걸쳐 체계적으로 정리하였다. SDL의 자동화 수준을 Level 0~5로 분류하는 계층적 프레임워크를 제시하여, 각 시스템의 자율성 정도를 명확히 구분한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
@@ -90,17 +93,27 @@ a { color: #A62018; }
 <li>향후 SDL이 NMR, HPLC처럼 일상적 연구 도구로 전환되는 "패러다임 전환"을 전망하며, FAIR 데이터 원칙 준수와 오픈소스 생태계 구축이 핵심 과제임을 강조</li>
 </ul>
 <hr></div>
-<div class="section-box"><h2>Evaluation (총평)</h2>
-<p>화학 및 재료과학에서의 자율주행 실험실(SDL)에 관한 현존 가장 포괄적인 리뷰 논문이다. 100페이지, 700+개 참고문헌이라는 방대한 분량에도 불구하고, 하드웨어-소프트웨어-응용 분야로 이어지는 체계적 구조 덕분에 읽기에 명확하다. 특히 자율성 수준 분류 체계(Level 0~5)는 이 분야의 공통 언어로 기능할 수 있으며, 각 응용 분야별 실제 SDL 사례의 상세한 기술은 신규 연구자의 진입 장벽을 크게 낮춘다. 다만 100페이지 리뷰의 본질적 한계로, 개별 시스템에 대한 심층 비판적 분석보다는 서술적 정리에 가까우며, SDL 간 정량적 성능 비교가 부족하다. Aspuru-Guzik 그룹의 독보적 위치에서 작성된 만큼 자체 연구에 대한 편향 가능성도 고려해야 한다. 그럼에도 불구하고, AI for Science 연구자가 실험 자동화의 현재 지형을 파악하기 위한 필수 참고 문헌이다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.0</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: Chemical Reviews에 게재된 자율 실험실 분야의 포괄적 리뷰로 SDL 설계 원칙과 현황을 체계적으로 정리한 필수 참고 문헌이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

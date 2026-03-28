@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>SciSciGPT: advancing human–AI collaboration in the science of science</h1>
 <blockquote><p><strong>저자</strong>: Erzhuo Shao, Yifang Wang, Yifan Qian, Zhenyu Pan, Han Liu, Dashun Wang | <strong>날짜</strong>: 2025-12-09 | <strong>Journal</strong>: Nature Computational Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s43588-025-00906-6"" target="_blank">10.1038/s43588-025-00906-6"</a> target="_blank"><a href="https://doi.org/10.1038/s43588-025-00906-6" target="_blank">10.1038/s43588-025-00906-6</a></a></p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Science of Science(SciSci) 연구에서 인간-AI 협업은 어떻게 가능한가? SciSciGPT는 LLM 기반 연구 도구를 활용하여 워크플로우 자동화, 다양한 분석 접근법 지원, 재현성 강화를 목표로 하는 오픈소스 AI 협업자 프로토타입이다. 이 시스템은 SciSci 연구자가 데이터 수집, 분석, 해석 과정에서 AI와 협업할 수 있는 구체적인 인터페이스를 제공한다. Nature Computational Science 게재는 이 시스템이 단순한 도구가 아니라 SciSci 연구 방법론의 패러다임 전환을 제안하는 것으로 인정받았음을 시사한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -87,16 +89,24 @@ a { color: #1856A0; }
 <li>연구자 대상 사용자 연구로 효과성·사용성 정량적 평가</li>
 <li>SciSciGPT 기반 완전 자동화 SciSci 연구 파이프라인 개발</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>4/5</td></tr>
-<tr><td>Technical Soundness</td><td>3/5</td></tr>
-<tr><td>Significance</td><td>4/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>4/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: SciSci 도메인에 특화된 LLM 기반 연구 협업 시스템을 처음으로 구현하고 오픈소스로 공개한 실용적 기여로, Nature Computational Science 게재로 분야 내 가시성을 확보했다. 프로토타입 단계의 한계가 있으나, 인간-AI 협업 기반 SciSci 연구 자동화의 중요한 개념 증명이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

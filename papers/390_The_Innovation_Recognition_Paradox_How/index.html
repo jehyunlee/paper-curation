@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: C. Biliotti, M. Riccaboni, J. W. Lockhart, J. A. Evans | <strong>날짜</strong>: 2026-03-21 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.20597" target="_blank">2603.20597</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>과학은 왜 여성이 생산하는 경계 초월 연구를 과소평가하는가? 261,452편의 미국 연구자 단독 저술 논문을 분석한 결과, <strong>여성은 원거리 학문 간 연결(context novelty)을, 남성은 분야 내 개념 재조합(content novelty)을 더 자주 추구한다.</strong> 역설적으로, 여성의 학제간 혁신은 더 파괴적이고 더 선견지명이 있지만, 과학은 이를 처벌한다. 동등한 수준의 혁신적 연구임에도 여성 논문은 더 낮은 위신의 저널에 게재되고 인용 크레딧을 덜 받는다. 이 격차는 극단적 novelty 수준에서만 좁아지는데, 이는 여성이 동등한 인정을 받으려면 예외적으로 놀라운 연구를 해야 함을 의미한다. 이는 여성의 기여 부족이 아니라, 분야를 가장 변혁시킬 경계 초월 연구를 체계적으로 평가절하하는 <strong>보상 구조의 문제</strong>임이 밝혀졌다.</p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
@@ -93,16 +95,24 @@ a { color: #1856A0; }
 <li>심사 및 편집 과정에서의 편향 메커니즘을 직접 추적하는 연구</li>
 <li>학제간 연구에 적합한 평가 시스템 설계 방안 탐색</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>4/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: content/context novelty의 구분이라는 혁신적 프레임워크로 성별 혁신 패턴의 차이와 보상 구조의 비대칭성을 261,452편의 대규모 데이터로 설득력 있게 규명했다. 과학 평가 시스템 개혁 논의에 핵심적인 실증적 기반을 제공한다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

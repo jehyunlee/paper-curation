@@ -36,7 +36,10 @@ a { color: #1856A0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,6 @@ a { color: #1856A0; }
 <h1>A General Theory of Bibliometric and Other Cumulative Advantage Processes</h1>
 <blockquote><p><strong>저자</strong>: Derek De Solla Price | <strong>날짜</strong>: 1976 | <strong>Journal</strong>: Journal of the American Society for Information Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1002/asi.4630270505"" target="_blank">10.1002/asi.4630270505"</a> target="_blank"><a href="https://doi.org/10.1002/asi.4630270505" target="_blank">10.1002/asi.4630270505</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>'부익부(Matthew effect)'는 과학에서 보편적이다. Price(1976)는 인용 네트워크에서 이미 많이 인용된 논문이 더 많이 인용되는 누적 우위(cumulative advantage) 과정이 수학적으로 power-law 분포(Pareto 분포)를 생성함을 이론적으로 증명했다. 이 발견은 h-index, 저널 임팩트 팩터 등 후속 계량과학 지표의 이론적 토대가 되었으며, 과학 내 불평등의 필연적 구조적 기원을 설명한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
@@ -75,16 +77,24 @@ a { color: #1856A0; }
 <li>오픈 액세스가 누적 우위 구조를 변화시키는지 분석</li>
 <li>AI 추천 시스템이 인용 편향을 강화하는지 탐구</li>
 </ul></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>4/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: 과학 내 누적 우위(Matthew effect)의 수학적 구조를 확률 과정으로 최초 공식화하여 power-law 인용 분포의 이론적 기원을 밝힌 계량과학의 고전 논문이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

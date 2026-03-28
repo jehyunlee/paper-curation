@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -51,7 +54,7 @@ a { color: #A62018; }
 <li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/ARXIV.1903.10676"" target="_blank">10.48550/ARXIV.1903.10676"</a> target="_blank"><a href="https://doi.org/10.48550/ARXIV.1903.10676" target="_blank">10.48550/ARXIV.1903.10676</a></a></li>
 </ul>
 <hr></div>
-<div class="essence-box"><h2>Essence (본질)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 텍스트에 특화된 사전학습 언어모델 SciBERT를 제안한다. BERT와 동일한 아키텍처를 사용하되, Semantic Scholar에서 수집한 1.14M 편의 과학 논문(바이오메디컬 82%, 컴퓨터과학 18%) 전문(full text)으로 사전학습하고, 과학 도메인에 최적화된 새로운 어휘(SCIVOCAB)를 구축하여 다양한 과학 NLP 태스크에서 BERT-Base를 유의미하게 능가하는 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
@@ -86,17 +89,27 @@ a { color: #A62018; }
 <li><strong>사전학습 목적 함수</strong>: 표준 BERT 학습 목표(MLM + NSP)만 사용했으며, 과학 텍스트에 특화된 학습 목표(예: 인용 관계 예측, 수식 이해)는 고려하지 않았다.</li>
 <li><strong>최신 모델과의 비교 부재</strong>: 2019년 논문으로, 이후 등장한 RoBERTa, ALBERT, DeBERTa 등 개선된 사전학습 기법과의 비교가 없다.</li>
 </ul></div>
-<div class="section-box"><h2>Evaluation (평가)</h2>
-<p>SciBERT는 과학 NLP 분야에서 <strong>도메인 적응형 사전학습의 효과를 실증적으로 입증한 기념비적 연구</strong>이다. 일반 도메인 BERT를 과학 코퍼스로 재학습하는 단순하면서도 효과적인 접근법이 광범위한 태스크에서 일관된 성능 향상을 가져온다는 것을 보여주었다. 특히 BioBERT 대비 1/6 수준의 코퍼스로도 동등하거나 우수한 성능을 달성한 점은, 전문 텍스트(full text) 활용과 도메인 어휘의 시너지를 시사한다. 다만 현재 시점에서는 GPT 계열, LLaMA 등 대규모 언어모델의 등장으로 BERT 기반 접근법의 실용적 가치는 다소 줄어든 상태이며, 본 연구의 가치는 "도메인 특화 사전학습"이라는 방법론적 원칙을 확립한 데에 있다. 과학 텍스트 처리의 기초 연구로서 후속 모델(ScholarBERT, Galactica 등)에 중요한 영감을 제공했다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>4</td></tr>
-<tr><td>Technical Soundness</td><td>5</td></tr>
-<tr><td>Significance</td><td>5</td></tr>
-<tr><td>Overall</td><td>4.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: 과학 텍스트 특화 BERT 사전학습 모델을 제시한 AllenAI의 2019년 기념비적 연구로, 다양한 과학 NLP 과제에서 일관된 성능 향상을 실증하며 도메인 특화 사전학습의 표준을 확립했다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

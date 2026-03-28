@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -45,7 +48,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli, Luke Zettlemoyer, Nicola Cancedda, Thomas Scialom | <strong>날짜</strong>: 2023-02-09 | <strong>arXiv</strong>: 2302.04761 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2302.04761" target="_blank">10.48550/arXiv.2302.04761</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
 <p>Toolformer는 언어 모델이 외부 도구(계산기, QA 시스템, 검색 엔진, 번역기, 달력)의 사용법을 자기지도 학습 방식으로 스스로 학습하는 방법론이다. LM이 텍스트 내 잠재적 API 호출 위치와 인수를 생성하고, perplexity 감소 기준으로 유용한 호출만 필터링한 데이터셋으로 fine-tuning하여, 6.7B 파라미터 GPT-J 기반으로 175B GPT-3를 다수 태스크에서 능가하는 zero-shot 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -105,15 +107,23 @@ a { color: #A62018; }
 <li>실제로 이 방법론은 이후 Gorilla, ToolLLM, AnyTool 등 대규모 tool learning 연구의 기반이 됨</li>
 </ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<table>
-<tr><th>항목</th><th>점수</th></tr>
-<tr><td>Novelty</td><td>5/5</td></tr>
-<tr><td>Technical Soundness</td><td>5/5</td></tr>
-<tr><td>Significance</td><td>5/5</td></tr>
-<tr><td>Clarity</td><td>5/5</td></tr>
-<tr><td>Overall</td><td>5/5</td></tr>
-</table>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
 <p><strong>총평</strong>: Tool learning 분야의 선구적 연구로, LM이 자기지도 학습 방식으로 외부 도구의 사용법을 스스로 학습할 수 있음을 최초로 체계적으로 입증했다. "perplexity 감소 = 유용한 API 호출"이라는 간결하면서도 강력한 원칙에 기반한 필터링 메커니즘이 핵심 혁신이며, 6.7B 모델이 175B GPT-3를 능가하는 결과는 도구 활용이 단순한 모델 스케일링의 대안이 될 수 있음을 보여준다. 도구 체이닝과 interactive 사용의 한계는 이후 연구들(AnyTool, ToolLLM 등)이 해결 방향을 제시했으나, Toolformer의 self-supervised 학습 패러다임은 여전히 이 분야의 근본적 토대로 남아 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>

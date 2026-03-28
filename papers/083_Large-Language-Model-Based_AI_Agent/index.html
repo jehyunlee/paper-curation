@@ -36,7 +36,10 @@ a { color: #A62018; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
@@ -44,7 +47,7 @@ a { color: #A62018; }
 <h1>Large-Language-Model-Based AI Agent for Organic Semiconductor Device Research</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<div class="essence-box"><h2>Essence</h2>
 <p>GPT-4와 머신러닝을 결합한 AI 에이전트를 설계하여 유기 전계효과 트랜지스터(OFET) 문헌에서 소자 파라미터를 자동 추출하고, 이를 기반으로 소자 성능 예측 및 실험 최적화 가이드를 제공하는 시스템을 구축하였다.</p></div>
 <div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>유기 반도체 소자(OFET)의 성능 최적화는 재료 선택, 공정 조건, 소자 구조 등 다양한 설계 파라미터가 복합적으로 작용하여 기존의 시행착오 방식으로는 비효율적이다. 수십 년간 축적된 학술 문헌에 이미 이러한 관계 정보가 내재되어 있으나, 텍스트/표/이미지에 분산된 정보를 체계적으로 추출하여 활용하는 것이 핵심 과제였다. 기존 NLP 도구(ChemDataExtractor 등)는 수작업 입력이 필요하고 이미지 처리가 불가능한 한계가 있었다.</p></div>
@@ -80,17 +83,27 @@ a { color: #A62018; }
 <li><strong>일반화 가능성</strong>: DP-DTT 한 종의 재료에 대한 실험 검증만 수행되어, 에이전트의 권고가 다양한 유기 반도체 시스템에 일반적으로 유효한지는 미검증이다.</li>
 <li><strong>비용과 재현성</strong>: GPT-4 API 비용이 언급되지 않았으며, 모델 버전 업데이트에 따른 재현성 문제가 존재한다.</li>
 </ul></div>
-<div class="section-box"><h2>평가 (Evaluation)</h2>
-<p>Advanced Materials에 게재된 만큼 LLM의 과학 분야 실질 적용이라는 시의성과 실험 검증이라는 완결성 측면에서 높은 수준의 연구이다. GPT-4의 멀티모달 능력을 유기 소자 문헌 마이닝에 체계적으로 적용하고, 추출 데이터로 ML 모델을 훈련한 뒤 해석 결과를 실험적으로 검증한 end-to-end 파이프라인은 "AI for Science" 패러다임의 모범 사례이다. 다만 데이터 규모의 제한, 이진 분류의 단순성, 단일 재료 검증이라는 한계가 있으며, 향후 데이터베이스 확장과 연속적 성능 예측 모델로의 발전이 기대된다. OFET 분야에 특화된 사례이지만, 유사한 프레임워크가 OLED, 페로브스카이트 태양전지 등 다른 소자 연구에도 확장 가능하다는 점에서 방법론적 기여가 크다.</p></div>
-<div class="section-box"><h2>평가</h2>
-<table>
-<tr><th>항목</th><th>점수 (1-5)</th></tr>
-<tr><td>Novelty</td><td>3</td></tr>
-<tr><td>Technical Soundness</td><td>4</td></tr>
-<tr><td>Significance</td><td>4</td></tr>
-<tr><td>Overall</td><td>3.7</td></tr>
-</table>
+<div class="section-box"><h2>Evaluation</h2>
+
+</div>
+<div class="section-box"><h2>Evaluation</h2>
+
 <p><strong>총평</strong>: GPT-4 에이전트로 OFET 소자 연구를 자동화한 Advanced Materials 논문으로 실제 실험 결과와의 대응이 설득력 있는 도메인 특화 AI4S 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
 </body>
 </html>
