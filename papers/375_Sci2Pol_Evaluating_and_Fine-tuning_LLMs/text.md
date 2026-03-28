@@ -1,0 +1,2412 @@
+Last Update: September 29, 2025
+
+### arXiv:2509.21493v1[cs.CE]25 Sep 2025
+
+## Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation
+
+Weimin Wu† Alexander C. Furnas‡ Eddie Yang‡ Gefei Liu♮ Akhil Pandey Akella‡ Xuefeng Song† Dashun Wang‡∗ Han Liu†§∗
+
+† Center for Foundation Models and Generative AI, Northwestern University, Evanston, IL 60208, USA
+
+Department of Computer Science, Northwestern University, Evanston, IL 60208, USA
+
+‡ Center for Science of Science and Innovation, Northwestern University, Evanston, IL 60208, USA
+
+Kellogg School of Management, Northwestern University, Evanston, IL 60208, USA ♮ Department of Computer Science, Brown University, Providence, RI 02912, USA § Department of Statistics and Data Science, Northwestern University, Evanston, IL 60208, USA
+
+We propose Sci2Pol-Bench and Sci2Pol-Corpus, the first benchmark and training dataset for evaluating and fine-tuning large language models (LLMs) on policy brief generation from a scientific paper. We build Sci2Pol-Bench on a five-stage taxonomy to mirror the human writing process: (i) Autocompletion, (ii) Understanding, (iii) Summarization, (iv) Generation, and (v) Verification. It features 18 tasks in multiple-choice and open-ended formats. Specifically, for the Generation stage, we show that BERTScore and ROUGE scores fail to capture the quality of brief writing, and introduce a new LLM-based evaluation metric aligned with expert judgement. Using this benchmark, we evaluate 13 leading open-source and commercial LLMs to uncover key limitations. To improve LLM performance on brief writing, we curate the Sci2Pol-Corpus for fine-tuning. We start by linking each cited scientific paper to its corresponding policy document, drawn from 5.6 million policy records. This produces 140,000 candidate pairs. We then employ an LLM-as-a-judge to filter high-quality examples, followed by in-context polishing using three expert-written samples as references. This process yields a final set of 639 new pairs. Finally, we fine-tune three models on Sci2Pol-Corpus: LLaMA-3.1-8B, Gemma-12B, and Gemma-27B. Fine-tuning leads to consistent performance improvements across Sci2Pol-Bench. Notably, after fine-tuning, Gemma-27B surpasses the much larger GPT-4o and DeepSeek-V3 (671B). These demonstrate the effectiveness of our corpus in bridging the gap between science and policy.
+
+Project Page: https://github.com/WeiminWu2000/Sci2Pol Sci2Pol-Bench Dataset: https://huggingface.co/datasets/Weimin2000/Sci2Pol-Bench Sci2Pol-Corpus Dataset: https://huggingface.co/datasets/Weimin2000/Sci2Pol-Corpus Keywords: Benchmark, Dataset, Science, Policy, LLM
+
+*Co-corresponding authors. wwm@u.northwestern.edu dashun.wang@kellogg.northwestern.edu, hanliu@northwestern.edu
+
+#### Contents
+
+- 1 Introduction 3
+- 2 Sci2Pol-Bench 5
+
+- 2.1 Design Principle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+- 2.2 Data Collection and Processing . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+- 2.3 Task Definition and Dataset Summary . . . . . . . . . . . . . . . . . . . . . . . 6
+- 2.4 Evaluation Metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+
+- 3 Sci2Pol-Corpus 12
+
+- 3.1 Candidate Pair Retrieval . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+- 3.2 LLM-based Quality Filtering . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+- 3.3 In-context Polishing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+
+
+- 4 Experimental Studies 14
+
+- 4.1 LLMs Performance on Sci2Pol-Bench . . . . . . . . . . . . . . . . . . . . . . . 14
+- 4.2 Supervised Fine-tuning on Sci2Pol-Corpus . . . . . . . . . . . . . . . . . . . . . 16
+
+
+- 5 Conclusion 16
+
+
+- A Preliminaries 20
+
+- A.1 Policy Brief . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+- A.2 Comparison with Full Scientific Paper, Paper Introduction and Abstract . . . . . 20
+
+
+- B Limitations and Future Work 21
+- C Related Works 22
+
+- C.1 Scientific and Political Benchmarks . . . . . . . . . . . . . . . . . . . . . . . . 22
+- C.2 Scientific and Political Datasets . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+
+- D How LLMs Fail in Policy Brief Generation 24
+
+- D.1 Contextual Depth . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+- D.2 Hallucination Risk . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+- D.3 Readability and Tone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+- D.4 Actionability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+
+- E Experimental Details 30
+
+- E.1 Detailed Experimental Settings . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+- E.2 LLM Performance on Sci2Pol-Bench . . . . . . . . . . . . . . . . . . . . . . . . 31
+- E.3 Supervised Fine-tuning on Sci2Pol-Corpus . . . . . . . . . . . . . . . . . . . . . 32
+
+
+- F Additional Experimental Analysis 33
+
+- F.1 Limitations of BERTScore and ROUGE Scores for Tasks 11-15 . . . . . . . . . . 33
+- F.2 Impact of Prompt Length for Tasks 1-4 . . . . . . . . . . . . . . . . . . . . . . . 36
+- F.3 Reliability of the Gemini-2.5-Pro-based Reference-free Judge in Tasks 7-10 . . . 37
+- F.4 Why Tasks 11-14 Beyond Task 15: Section vs. Full Brief Generation . . . . . . . 38
+- F.5 Over-endorsement Analysis on Tasks 16 and 18 . . . . . . . . . . . . . . . . . . 43
+- F.6 Information Leakage Check of In-context Polishing in Section 3.3 . . . . . . . . 45
+- F.7 Potential Circularity: GPT vs. DeepSeek Family . . . . . . . . . . . . . . . . . . 46
+- F.8 Comparison of Writing from an Abstract, an Introduction, and a Full Paper . . . . 47
+
+
+- G Details of 85 Expert-written Paper-brief Pairs 52
+
+
+- G.1 List of 85 Expert-written Paper-brief Pairs . . . . . . . . . . . . . . . . . . . . . 52
+- G.2 Publication Year Distribution of 85 Policy Briefs . . . . . . . . . . . . . . . . . 54
+
+
+- H Examples for Tasks 1-18 55
+- I Prompts for Sci2Pol-Bench Evaluation and Dataset Curation 65
+
+- I.1 Tasks 7-10 Prompt for Reference-free Score . . . . . . . . . . . . . . . . . . . . 65
+- I.2 Task 11 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 66
+- I.3 Task 12 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 68
+- I.4 Task 13 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 69
+- I.5 Task 14 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 70
+- I.6 Task 15 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 71
+- I.7 Task 5 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+- I.8 Task 11 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 73
+- I.9 Task 13 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 74
+- I.10 Task 16 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 75
+- I.11 Task 18 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 76
+
+
+- J Prompts for Sci2Pol-Corpus Curation 77
+
+
+#### 1 Introduction
+
+We propose Sci2Pol-Bench and Sci2Pol-Corpus, the first benchmark and training dataset for evaluating and fine-tuning LLMs on scientific-to-policy brief generation. A policy brief is a concise article that distills the content of a technical scientific paper for a policymaker audience (Section A). Turning scientific evidence into policy remains critical and difficult for both policymakers and scientists. Today’s major challenges (e.g., climate change, public health, and rapid technological shifts) require timely input from science [Wang and Barabási, 2021]. Yet policymakers often struggle to convert dense, technical research into clear and usable guidance. This issue is also relevant to the scientific community, as it underscores the essential role of science in shaping societal outcomes. However, most scientists lack policy expertise. This gap limits how science informs real-world decisions [Straf et al., 2012]. With the rise of powerful LLMs, we ask two key questions: (i) To what extent can LLMs assist in scientific-to-policy brief generation? (ii) How can their performance be further improved? To address these, we introduce Sci2Pol-Bench and Sci2Pol-Corpus. Sci2Pol-Bench offers the first comprehensive benchmark for fine-grained evaluation of scientific-to-policy generation. Sci2Pol-Corpus provides the first targeted training dataset to enhance LLM performance on this task.
+
+Although LLMs demonstrate strong general capabilities, they struggle with generating policy briefs from scientific papers. We start with expert-reviewed examples and highlight four key limitations (Section D): (i) Missing core content: LLMs often fail to capture a study’s essential details, including its quantitative findings, methods, and broader context. They omit key facts or add irrelevant information (see Section D.1). (ii) Hallucinated claims: LLMs invent numbers or causal statements that do not appear in the source paper (see Section D.2). (iii) Inappropriate tone: Even when accurate, the language is often too technical or overly verbose for policy audiences (see
+
+- Section D.3). (iv) Low actionability: Recommendations tend to be vague and weakly supported by evidence (see Section D.4).
+
+
+Rigorous evaluation in this domain requires a clear decomposition of the writing process and a dataset that challenges models with authentic, domain-matched targets. To this end, we define the Scientific-to-Policy Taxonomy (Sci2Pol-Taxonomy, Figure 1a), a five-stage framework for the brief writing workflow: (i) Autocompletion: Completing missing content in scientific or policy texts; (ii) Understanding: Identifying and interpreting key claims, caveats, and methods; (iii) Summarization: Condensing technical passages into language accessible to policy audiences; (iv) Generation: Drafting coherent, persuasive prose that integrates evidence with policy context; (v) Verification: Checking factual consistency of claims or drafts against the source literature.
+
+Grounded in this taxonomy, we build Sci2Pol-Bench, a suite of 18 diverse tasks for evaluating model performance in generating policy briefs from scientific research. We construct domainspecific targets from 85 expert-written paper-brief pairs, representing the complete set of published pairs. These pairs are drawn from high-impact venues, including Nature Energy, Nature Climate Change, Nature Cities, Nature Sustainability, and the Journal of Health and Social Behavior. Figure 1b presents summary statistics of these pairs. Each task takes the form of either a multiple-choice probe or an open-ended format. They enable fine-grained evaluation along both
+
+|Sci2Pol-Taxonomy: 5 Stages|
+|---|
+
+
+Assessing the factual consistency of claims or drafts against the source literature
+
+Verification
+
+Drafting coherent, persuasive prose that integrates evidence with policy context
+
+text
+
+Generation
+
+Condensing technical scientific passages into audience?appropriate language
+
+Summarization
+
+Locating and interpreting key claims, caveats, and methodological elements
+
+Understanding
+
+Predicting and completing missing content within scientific or political texts
+
+Autocompletion
+
+(a) Sci2Pol-Taxonomy
+
+Dataset Source
+
+Nature Climate
+
+Nature Cities
+
+Nature Sustainability
+
+25
+
+2
+
+2
+
+JHSB 20
+
+36
+
+Nature Energy
+
+(b) Dataset Source
+
+- Figure 1: Overview of Sci2Pol-Taxonomy and Dataset Source. (a) Sci2Pol-Taxonomy defines a five-stage decomposition of the brief writing process. (b) Complete set of published 85 pairs.
+
+
+correctness and writing quality. For the Generation stage, we show that BERTScore and ROUGE scores fail to capture the quality of the brief writing, and we design a dedicated evaluation metric using an LLM-as-a-judge approach. We then conduct the first large-scale evaluation of scientificto-policy brief generation across 13 LLMs, covering both open-source and commercial models. Our results show that even advanced LLMs such as Grok and DeepSeek-R1 leave substantial room for improvement. These findings highlight concrete research opportunities in controllable generation and domain adaptation for policy applications.
+
+To further improve LLM performance on policy brief generation, we introduce Sci2Pol-Corpus, the first training dataset designed for this task. The construction process consists of two resourceintensive steps followed by a novel polishing step. (i) Retrieving candidate science-policy pairs: We begin with a large-scale collection of 5.6 million policies indexed by Overton.io and scraped as PDFs from the public websites that published them (e.g., Government Printing Office, Congress.gov, The Brookings Institution, The World Bank) [Szomszor and Adie, 2022, Furnas et al., 2025]. From these, we construct 140,000 citation-based candidate pairs by linking policy documents to their cited scientific papers. To ensure tighter relevance, we filter for policy files that cite no more than three papers and treat each citation as a potential paper-brief pair. (ii) Filtering high-quality pairs with an LLM-as-a-judge approach: We employ GPT-o3 to evaluate whether each policy document is centered on the cited scientific paper. This two-stage filtering process yields 639 high-quality pairs. (iii) Refining briefs through in-context revision: To further align the collected briefs with the style and structure of expert-written examples, we select three high-quality samples from the 85 published pairs. We then use GPT-o3 in an in-context learning setup to revise the 639 identified policy briefs. This step ensures their tone, structure, and clarity match the expert-written briefs. Finally, we use Sci2Pol-Corpus to fine-tune three open-source LLMs: LLaMA-3.1-8B-Instruct, Gemma-12B-Instruct, and Gemma-27B-Instruct. Fine-tuning on Sci2Pol-Corpus leads to consistent performance improvements across Sci2Pol-Bench. Notably, after supervised fine-tuning, Gemma-27B-Instruct surpasses the much larger GPT-4o and DeepSeek-V3 (671B). These demonstrate the effectiveness of our Sci2Pol-Corpus.
+
+In summary, we have the following three contributions:
+
+- • We propose Sci2Pol-Bench, the first comprehensive benchmark for evaluating LLMs on policy brief generation from scientific papers. We build the benchmark on a five-stage workflow framework, Sci2Pol-Taxonomy, and include the complete set of 85 published expert-written paper-brief pairs. It features 18 tasks and provides the first large-scale evaluation across 13 LLMs.
+- • We curate Sci2Pol-Corpus, the first training dataset for fine-tuning LLMs on policy brief generation. It consists of two resource-intensive steps followed by a novel polishing step: (i) retrieving 140,000 candidate science-policy pairs by linking cited scientific papers across 5.6 million policy documents; (ii) selecting 639 high-quality pairs using an LLM-as-a-judge filtering method; and (iii) enhancing these pairs via in-context revision to improve clarity and alignment.
+- • We use Sci2Pol-Corpus to fine-tune three open-source LLMs: LLaMA-3.1-8B-Instruct, Gemma-12B-Instruct, and Gemma-27B-Instruct. Fine-tuning leads to consistent performance improvements across Sci2Pol-Bench. Notably, after supervised fine-tuning, Gemma-27B-Instruct surpasses the much larger GPT-4o and DeepSeek-V3 (671B). These demonstrate the effectiveness of Sci2Pol-Corpus in enhancing LLM capabilities for scientific-to-policy brief generation.
+
+
+Organization. Section 2 introduces Sci2Pol-Bench. Section 3 details the Sci2Pol-Corpus. Section 4 shows the evaluation results across 13 LLMs, and supervised fine-tuning results.
+
+#### 2 Sci2Pol-Bench
+
+We detail our Sci2Pol-Bench here. Section 2.1 outlines the core design principles. Section 2.2 describes the data collection and processing pipeline. Section 2.3 presents the task definitions and summarizes the dataset. Section 2.4 details the evaluation metrics, with a particular focus on an LLM-based evaluation metric for Generation-related tasks to better align with expert judgement.
+
+##### 2.1 Design Principle
+
+The overall goal of Sci2Pol-Bench is to provide researchers and practitioners with a transparent, fine-grained assessment of how well LLMs can translate dense scientific research into actionable policy briefs. Inspired by the progressive, ability-oriented evaluation framework of Li et al. [2024a], we introduce a five-stage Sci2Pol-Taxonomy to mirror the workflow of brief writing.
+
+- As illustrated in Figure 1a, the taxonomy defines five levels of ability: (i) Autocompletion tasks require LLMs to predict continuations or recombine sentences. This tests their grasp of local cohesion and textual fluency. (ii) Understanding tasks involve classifying sentence intent and answering multiple-choice questions. This evaluates the model’s factual comprehension and ability to process complex research narratives. (iii) Summarization tasks focus on distilling scientific text into concise summaries. These tasks assess the ability to extract salient points and deliver
+
+
+them. (iv) Generation tasks ask LLMs to compose new policy brief content from scratch. This requires synthesizing scientific evidence, contextual understanding, and persuasive framing into coherent, structured writing. (v) Verification tasks challenge models to fact-check scientific or policy-related claims against the source literature. This is critical for mitigating hallucinations. Following the five stages, Sci2Pol-Bench provides a robust framework to evaluate the LLMs in bridging science and policy.
+
+##### 2.2 Data Collection and Processing
+
+Data Sources. Sci2Pol-Bench draws from two sources: (i) Existing benchmarks: We incorporate tasks from established datasets focused on scientific understanding, including SciRIFF [Wadden et al., 2024] and MMLU-Pro [Wang et al., 2024]. (ii) Newly collected pairs: We curate the expert-authored paper-brief pairs published across top journals, as summarized in Figure 1b. To ensure data quality, we apply a strict inclusion criterion: the policy brief must be written by the same authors as the original scientific paper. This guarantees that the policy content reflects authentic expert interpretation. The final collection consists of 85 high-quality pairs (see Section G.1 for the full list).
+
+Data Processing and Annotation. We download each article’s metadata and full text to maintain quality control. Most policy briefs share titles with their corresponding scientific articles, so we face little disambiguation. We apply OCR to extract text from PDFs and use a light preprocessing script to remove tabs, extra spaces, and stray characters. We store all data in structured JSON format.
+
+##### 2.3 Task Definition and Dataset Summary
+
+Guided by the Sci2Pol-Taxonomy, we construct 18 evaluation tasks (Table 1). Two tasks come from existing datasets, and experts construct the remaining sixteen. We describe each task in detail below.
+
+###### 2.3.1 Autocompletion (Tasks1-4)
+
+These tasks probe local coherence: given a short scientific or policy passage, the model selects the next sentence (multiple choice) or restores a shuffled sequence.
+
+- Task 1: Scientific Text Autocompletion (Multiple Choice). This task tests local discourse coherence in scientific writing. The dataset contains 255 items drawn from 85 articles, with 3 items selected per paper. We construct each example in two steps: (i) Extract a sequence of three consecutive sentences from the article. Use the first two sentences as the prompt and the third as the gold (correct) continuation. (ii) Construct five candidate continuations for each prompt: one gold sentence (the true continuation) and four distractor sentences sampled from the nearby context in the same paper. We ask the model to choose the correct answer from five options. See Table 28 for an example.
+
+
+- Table 1: Summary of Sci2Pol-Bench. Sci2Pol-Bench comprises 18 tasks. Each task specifies an ID, task description, data source, sample size, and evaluation metric.
+
+
+Taxonomy ID Task Description Source Size Metric
+
+- 1 Scientific Text Autocompletion Our Dataset 255 Micro F1
+- 2 Political Text Autocompletion Our Dataset 255 Micro F1
+- 3 Scientific Sentence Reordering Our Dataset 255 Micro F1
+- 4 Political Sentence Reordering Our Dataset 255 Micro F1
+
+Understanding
+
+- 5 Sentence Classification Our Dataset 1200 Micro F1
+- 6 Scientific Knowledge Understanding MMLU-Pro 1000 Micro F1
+
+Summarization
+
+- 7 Policy Problem Summarization Our Dataset 200 Reference-free Score
+- 8 Research Findings Summarization Our Dataset 200 Reference-free Score
+- 9 Study Methods Summarization Our Dataset 200 Reference-free Score
+- 10 Policy Implications Summarization Our Dataset 200 Reference-free Score
+
+Generation
+
+- 11 Policy Problem Generation Our Dataset 85 Reference-based Score
+- 12 Research Findings Generation Our Dataset 85 Reference-based Score
+- 13 Study Methods Generation Our Dataset 85 Reference-based Score
+- 14 Policy Implications Generation Our Dataset 85 Reference-based Score
+- 15 Policy Brief Generation Our Dataset 85 Reference-based Score
+
+Verification
+
+- 16 Scientific Claims Verification Our Dataset 850 Micro F1
+- 17 Scientific Claims Verification 2 SciRIFF 1000 Micro F1
+- 18 Policy Implications Verification Our Dataset 700 Micro F1
+
+
+Autocompletion
+
+- Task 2: Political Text Autocompletion (Multiple Choice). This task tests coherence in policy writing. The dataset contains 255 items from 85 professional policy briefs, with 3 items selected per brief. We construct each example in two steps: (i) Extract a sequence of three consecutive sentences from the brief. Use the first two sentences as the prompt and the third as the gold (correct) continuation. (ii) Construct five candidate continuations for each prompt: one gold sentence (the true continuation) and four distractor sentences sampled from the nearby context in the same brief. We ask the model to choose the correct answer from five options. See Table 29 for an example.
+- Task 3: Scientific Sentence Reordering (Recombination). This task probes discourse-level coherence in scientific writing. We reuse the 255 three-sentence triplets from Task 1, shuffle each triplet, and ask the model to restore the original order. See Table 30 for an example.
+- Task 4: Political Sentence Reordering (Recombination). This task probes discourse coherence in policy briefs. We reuse the 255 three-sentence triplets from Task 2, shuffle each triplet, and ask the model to restore the original order. See Table 31 for an example.
+
+
+###### 2.3.2 Understanding (Tasks5-6)
+
+Tasks 5-6 evaluate sentence-level comprehension and scientific knowledge. Task 5 classifies sentences from scientific papers into five policy brief-relevant categories. Task 6 evaluates scientific
+
+knowledge.
+
+- Task 5: Sentence Classification (Multiple Choice). This task assesses the classification of policy brief-relevant sentences by rhetorical role or content. The dataset includes 1,200 manually verified samples from paper-brief pairs. We curate in three steps: (i) For each pair, use a templated prompt (see Section I.7) to generate 15 labeled examples with GPT-o3; (ii) Political experts manually review labels and language quality; (iii) Select a random subset of 1,200 samples. Each instance consists of one sentence and a label from a fixed set (e.g., Policy Problem, Scientific Research Findings, Scientific Research Study Methods, Policy Implications, None). See Table 32 for an example.
+- Task 6: Scientific Knowledge Understanding (Multiple Choice). This task evaluates broad scientific knowledge with multiple-choice questions from MMLU-Pro [Wang et al., 2024]. The full subset contains 3,511 questions across health, chemistry, economics, and biology. We treat these as one task and sample 1,000 questions randomly for evaluation. This baseline enables comparison between general-purpose and science-specialized models. See Table 33 for an example.
+
+2.3.3 Summarization (Tasks7-10) Tasks 7-10 evaluate policy-oriented summarization. We show the details as follows.
+
+- Task 7: Policy Problem Summarization (Writing). We evaluate the ability to identify and summarize the policy problem motivating a study. The dataset includes 200 examples. We curate the dataset following three steps: (i) For each pair, select up to three paragraphs relevant to the brief’s policy problem; (ii) If fewer exist, include all reliably matched paragraphs; (iii) From the final 233 paragraph sets, sample 200 randomly for evaluation. See Table 34 for an example.
+- Task 8: Research Findings Summarization (Writing). We evaluate the summarization of core scientific findings. The dataset includes 200 examples. We curate the dataset following two steps: (i) For each pair, select three paragraphs aligned with the brief’s findings; (ii) From 255 sets, sample 200 randomly for evaluation. See Table 35 for an example.
+- Task 9: Study Methods Summarization (Writing). We evaluate the summarization of methods in policy brief-relevant terms. The dataset includes 200 examples. We curate it following two steps: (i) For each pair, select three paragraphs that describe the methodology reflected in the brief; (ii) From 255 sets, sample 200 randomly for evaluation. See Table 36 for an example.
+- Task 10: Policy Implications Summarization (Writing). We evaluate the articulation of policy implications grounded in the source paper. The dataset includes 200 examples. We curate the dataset following three steps: (i) For each pair, select up to three paragraphs that support the brief’s implications; (ii) If fewer exist, include all reliably matched paragraphs; (iii) From 222 sets, sample 200 randomly for evaluation. See Table 37 for an example.
+
+
+###### 2.3.4 Generation (Tasks11-15)
+
+These tasks evaluate brief generation: policy problem, findings, methods, implications, and full brief. We provide a detailed justification for separating section-by-section generation (Tasks 1114) from full-brief generation (Task 15) in Section F.4. In short, Tasks 11-14 complement Task 15 by disentangling factual precision from holistic coherence. Section-level generation emphasizes accurate grounding, while full-brief generation assesses overall readability. Evaluating both provides a more comprehensive view of LLM performance and uncovers trade-offs that Task 15 alone can not capture.
+
+- Task 11: Policy Problem Generation (Writing). We generate the Policy Problem section from the full scientific paper (85 examples). For each pair, we extract the brief’s Policy Problem as a reference and provide the full paper as input. For 20 Journal of Health and Social Behavior pairs, they lack a clear Policy Problem section. We prompt GPT-o3 (see Section I.8) to construct the Policy Problem section with inputs: the full paper, the brief’s Research Problem & Data section, and three in-context expert-written examples from the remaining 65 Nature journals. See Table 38 for an example.
+- Task 12: Research Findings Generation (Writing). We generate the Research Findings section from the full paper (85 examples). For each pair, we extract the brief’s Research Findings as reference and provide the full paper as input. See Table 39 for an example.
+- Task 13: Study Methods Generation (Writing). We generate the Research Study section (85 examples). For each pair, we extract the brief’s Research Study as reference and provide the full paper as input. For 20 Journal of Health and Social Behavior pairs, the briefs lack a clear Research Study section. We prompt GPT-o3 (see Section I.9) to construct the Research Study section using the full paper, the brief’s Research Problem & Data section, and three in-context expert-written examples from the remaining 65 Nature journals. See Table 40 for an example.
+- Task 14: Policy Implications Generation (Writing). We generate the Policy Implications section (85 examples). For each pair, we extract the ground-truth policy implications as a reference and provide the full scientific paper as input. See Table 41 for an example.
+- Task 15: Policy Brief Generation (Writing). We generate an entire policy brief (85 examples). For each pair, we build the reference by concatenating Title, Policy Problem, Research Findings, Research Study, and Policy Implications. Input provided to the LLM is the full paper. See Table 42 for an example.
+
+
+###### 2.3.5 Verification (Tasks16-18)
+
+Tasks 16-18 assess consistency between claims (research findings or policy implications) and the source paper.
+
+- Task 16: Scientific Claims Verification (Multiple Choice). We evaluate whether a scientific claim is supported by the paper (850 samples). We construct in two steps: (i) For each paper, prompt GPT-o3 (see Section I.10) to generate 10 labeled samples (total 850); (ii) Our political experts manually review all samples and correct three issues. See Table 43 for an example.
+- Task 17: Scientific Claims Verification 2 (Multiple Choice). We evaluate claim-evidence entailment using SciRIFF subsets [Wadden et al., 2024]: covidfact entailment, healthver entailment, and scifact entailment (1,220 samples). We sample 1,000 randomly for evaluation. Each instance presents a claim (e.g., support) and associated evidence. See Table 44 for an example.
+- Task 18: Policy Implications Verification (Multiple Choice). We evaluate whether a policy implication follows from the paper (700 samples). We construct in four steps: (i) Extract all implications from each brief and label them support; (ii) Prompt GPT-o3 to generate contradicted implications (see Section I.11) and label them contradict after manual review of our experts; (iii) Combine to yield 706 samples; (iv) Sample 700 randomly for evaluation. Each instance includes a paper, a policy implication, and a label (support or contradict). See Table 45 for an example.
+
+
+- 2.4 Evaluation Metrics We report detailed evaluation metrics for each task, with a particular focus on Tasks 11-15.
+
+
+Micro F1 (Tasks 1-6, 16-18). We compute per-item correctness and use Micro-F1 as the main score. We choose this metric for classification tasks with a firm correct answer. This group includes autocompletion (Tasks 1-4), understanding (Tasks 5-6), and verification (Tasks 16-18).
+
+Reference-free Score (Tasks 7-10). We use Gemini-2.5-Pro as an LLM judge to score section summaries. The judge evaluates four dimensions of a summary: clarity, accuracy, coverage, and overall quality. We select this metric because these tasks involve free-form writing without a single referenced correct answer. See Section I.1 for the full prompt and calculation details.
+
+For Tasks 11–15, we first demonstrate the limitations of BERTScore and ROUGE scores, and then introduce a task-specific reference-based score for more accurate evaluation.
+
+Limitations in BERTScore and ROUGE Scores for Tasks 11-15. As shown in Section F.1, BERTScore remains high even when key sections are missing, as overlapping words inflate similarity. ROUGE scores penalize paraphrasing and drop sharply with minor grammatical changes, despite preserved meaning. Neither metric captures reasoning, structure, or evidence linkage.
+
+Reference-based Score (Tasks 11-15). We evaluate the generation tasks using content-aware LLM judging, guided by paper-grounded rubrics that rely on both the paper and policy brief sections.
+
+- Task 11 (Policy Problem). We score by content and structure because a policy problem contains linked and causal sentences. We describe five parts as the full space of content in a policy problem, but any subset may appear, and the order may vary. (i) Background sets the scene. (ii) Existing problem states the current obstacle. (iii) Consequences describe risks if the problem stays unsolved. (iv) Attention problem names the issue that calls for action. (v) Supporting detail adds facts, numbers, or sources that help this flow. For each part, we judge two things: its importance in the paper and its quality in the candidate. This checks what to say and how well it is said, balancing relevance and quality. See Section I.2 for the full prompt and calculation details.
+- Task 12 (Research Findings). We score by content only because findings are mostly independent. The judge rates five aspects. We check (i) completeness, (ii) importance, and (iii) accuracy of the candidate findings. (iv) Summarizing findings checks if the text highlights the key results rather than a long list. (v) Specification to findings checks scope, context, and limits. This rubric rewards correct, essential, and well-focused content. See Section I.3 for the full prompt and calculation details.
+- Task 13 (Study Methods). We score by content only because method points are independent. The LLM judge rates three aspects. (i) Clarity and purpose checks if the text explains what method is used and why, in a clear output. (ii) Technicality appropriateness checks if the level of detail fits a policy audience without jargon. (iii) Explanation of terms checks if models, data, and acronyms are explained in plain words. Note that clarity and purpose and technicality appropriateness carry more weight in evaluation, because explanation of terms only serves as an extra signal. This rubric rewards clear intent, appropriate detail, and good definitions. See Section I.4 for the full prompt and calculation details.
+- Task 14 (Policy Implications). We score by content only because implications are written as separate points. The LLM judge rates four aspects. (i) Accuracy checks if the implications are supported by the paper without speculation or hallucination. (ii) Coverage checks if all major implications are included. (iii) Conciseness and distinctness checks if each implication is concise and non-redundant. (iv) Alignment with paper intent checks if the implications match the paper’s main message, such as a recommendation, warning, or call to awareness. This rubric rewards grounded, complete, and actionable implications. See Section I.5 for the full prompt and calculation details.
+- Task 15 (Full Policy Brief). We score by content and style together. The LLM judge rates four aspects. (i) Contextual depth checks if the brief captures key findings, methods, and context without missing facts or adding fluff. (ii) Hallucination risk checks if every claim is traceable to the paper, with penalties for unsupported numbers or causal links. (iii) Readability tone checks if the text is concise, structured, active, and suitable for policymakers. (iv) Actionability checks if the implications are concrete, tied to evidence, and useful for policy. This rubric rewards briefs that are accurate, clear, and practical. See Section I.6 for the prompt and calculation details.
+
+
+(I) Candidate Pair Retrieval (II) LLM-based Quality Filtering (III) In-context Polishing
+
+|639 High-quality Pairs<br><br>![image 1](Wu et al._2025_Sci2Pol Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation_images/imageFile1.png)<br><br>Fine-grained filtering<br><br>Filter on alignment: full scientific paper v.s. policy document<br><br>Coarse-grained filtering<br><br>![image 2](Wu et al._2025_Sci2Pol Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation_images/imageFile2.png)<br><br>GPT-o3<br><br>Filter on alignment: scientific paper abstract v.s. policy document| |
+|---|---|
+| | |
+| | |
+
+
+|5.6M Policy Documents| |
+|---|---|
+| | |
+| | |
+| | |
+| | |
+
+
+Sci2PolBench
+
+3 References
+
+![image 3](Wu et al._2025_Sci2Pol Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief Generation_images/imageFile3.png)
+
+Structure and style policy document into a policy brief.
+
+Overton Citation Metadata
+
+citations < 3
+
+639 Paper-brief Pairs
+
+|140K Candidate Science-policy Pairs| |
+|---|---|
+| | |
+
+
+1 S
+
+Sci2Pol-Corpus
+
+- Figure 2: Overview of the Sci2Pol-Corpus Curation Process. It consists of 639 high-quality paper–brief pairs. Pair retrieval relies on the original policy documents and the scientific papers they cite as candidates.
+- 3 Sci2Pol-Corpus
+
+
+In this section, we give the details of the Sci2Pol-Corpus. It comprises 639 high-quality paperbrief pairs curated from 5.6 million policy documents. It includes three steps: (i) Retrieving candidate science-policy pairs (Section 3.1); (ii) Filtering high-quality pairs with an LLM-as-ajudge approach (Section 3.2); (iii) Polishing briefs through in-context revision (Section 3.3).
+
+##### 3.1 Candidate Pair Retrieval
+
+We begin with a large-scale political dataset collection. This collection is derived from documents indexed by Overton, the world’s largest database of policy literature [Szomszor and Adie, 2022, Furnas et al., 2025, Yin et al., 2022]. From there, we retrieve PDF and HTML policy documents from the public websites of the original publishing organizations and the United States Government Printing Office, IGOs like the OECD, the UN, and the WHO, and numerous think tanks like the Brookings Institution and the Heritage Foundation. They provide a rich foundation for identifying scientific publications cited in real-world policy contexts. Leveraging Overton’s citation metadata, we identify the scientific papers cited by each policy document. Each citation forms a candidate paper-brief pair and links a scientific publication to a policy document that references it. To prioritize relevance, we apply a heuristic: The fewer scientific papers a policy document cites, the more likely it is to focus on each one. This assumption increases the likelihood that the policy document reflects or interprets the cited scientific content. Based on this insight, we retain only policy documents that cite no more than three scientific papers. This yields a high-quality pool of 140,000 candidate pairs for further filtering.
+
+##### 3.2 LLM-based Quality Filtering
+
+In this stage, we employ GPT-o3 for automated quality filtering to assess whether the policy document centers on the scientific content. It extracts 639 high-quality pairs from 140,000 candidate pairs with two steps: (i) Coarse-grained filtering based on the alignment between the scientific paper abstract and the policy document, and (ii) Fine-grained filtering based on the alignment between the full scientific paper and the policy document. The rationale for this design is to reduce the filtering cost.
+
+Coarse-grained Filtering. Scientific papers are often long, typically over 10 pages, and sometimes more than 30. Assuming 500 words per page, this corresponds to about 5,000 to 15,000 words per paper. Assuming each word maps to one token in the GPT-o3 embedding layer, the total token count for 140,000 papers exceeds 700 million. At a rate of $2 per million tokens, the cost of processing full texts becomes very high. To reduce cost while preserving essential information, we use only the paper abstracts in this filtering stage. We extract these abstracts from SciSciNet [Lin et al., 2023]. If a paper is not found in SciSciNet, we discard the corresponding candidate pair. Given a scientific paper abstract and its associated policy document, we prompt GPT-o3 to assess whether the policy document centers on the scientific content described in the abstract. See Table 58 for the detailed prompt of GPT-o3. As a result, we obtain 1,407 potential high-quality pairs from this step.
+
+After the GPT-o3-based filtering, we observe that some policy documents are too long and exceed 10 pages. For standard policy briefs, we prefer shorter documents, typically fewer than 10 pages. Among the 1,407 pairs, 777 pairs contain policy documents under 10 pages, while 630 pairs involve longer documents. To make use of the 630 longer policy documents, we manually extract their executive summaries when available and treat these as the pseudo-policy briefs. For each such case, we constructed two pairs: (i) the executive summary paired with the corresponding scientific paper, and (ii) the executive summary paired with the remaining portion of the policy document. In the second case, the remaining text serves as a pseudo-scientific paper, since it often delivers science-related technical details. If a long policy document did not contain a summary, we discarded it. After this process, we retain 234 usable pairs from the long policy documents. Combined with the 777 pairs involving policy documents under 10 pages, this yields a total of 1,011 curated pairs.
+
+Fine-grained Filtering. We use GPT-o3 with the full scientific paper and the policy document for fine-grained filtering. The main goal is still to verify whether the policy document centers on the scientific content. However, some pairs originate from the same long policy document, where the executive summary serves as a policy brief and the remaining content acts as a proxy for the scientific paper. We need to avoid these pairs if the two texts are too similar. To handle this, we add a new criterion that measures similarity between the paper and the policy document. This step goes beyond the original metrics used in coarse-grained filtering. See Table 59 for the detailed GPT-o3 prompt.
+
+Autocompletion
+
+Autocompletion
+
+90
+
+90
+
+80
+
+80
+
+70
+
+70
+
+60
+
+60
+
+50
+
+50
+
+Understanding
+
+Understanding
+
+Verification
+
+Verification
+
+40
+
+40
+
+30
+
+30
+
+Deepseek-R1 Qwen3-235B Deepseek-V3 Gemma-3-27B Mistral-Large LLaMA-3.3-70B-IT LLaMA-4-Maverick Gemma-3-12B Qwen3-8B LLaMA-3.1-8B-IT
+
+20
+
+20
+
+Grok-3-beta GPT-4o Claude-3.7-Sonnet
+
+Summarization Generation
+
+Summarization Generation
+
+(a) Commercial LLMs
+
+(b) Open-Source LLMs
+
+Figure 3: Visualization of Performance of 13 LLMs on Sci2Pol Bench. We show the average performance of commercial and open source LLMs across the five categories of the Sci2Pol-Taxonomy.
+
+##### 3.3 In-context Polishing
+
+The last step polishes the policy document. Our policy documents come from official organizations and focus on policy, not briefs. Their format and style do not match a standard policy brief. We propose in-context polishing to align them. We select three expert-written paper-brief pairs from the 85 pairs in Sci2Pol-Bench as references. We then provide the scientific paper and the policy document to GPT-o3 and ask it to revise the document into a standard policy brief while preserving facts and citations. See Table 60 for the detailed prompt. This step does not inject scientific or political content from the three expert-written paper-brief pairs. It only follows their writing style and format. To further validate that this step does not introduce information leakage from Sci2Pol-Bench, we conduct additional experiments, with details provided in Section F.6.
+
+#### 4 Experimental Studies
+
+In this part, we present the performance of LLMs on Sci2Pol-Bench (Section 4.1) and demonstrate the performance gains achieved through supervised fine-tuning on Sci2Pol-Corpus (Section 4.2).
+
+##### 4.1 LLMs Performance on Sci2Pol-Bench
+
+We evaluate 13 models, including both commercial and open-source models: (1) ChatGPT-4o, (2) Claude-3.7-Sonnet, (3) Gemma-3-27B, (4) Gemma-3-12b, (5) Grok-3-beta, (6) DeepSeek-R1, (7) DeepSeek-V3, (8) Qwen3-235B-A22B, (9) Qwen3-8B, (10) Mistral-Large (11) LLaMA-4Maverick-17B-128E, (12) LLaMA-3.3-70B-Instruct, and (13) LLaMA-3.1-8B-Instruct. For each setting, we conduct 1,000-iteration bootstrap significance tests (seed = 42) and report the mean and standard deviation. We summarize average performance scores across the Sci2Pol-Taxonomy
+
+- Table 2: Performance of LLMs on Sci2Pol-Bench. We report average scores for 13 LLMs across the five categories of Sci2Pol-Taxonomy. Tasks 1-6 and 16-18 use Micro F1. Tasks 7-10 use a reference-free score, while Tasks 11-15 use a reference-based score. Both of these scores are judged on Gemini-2.5-Pro.
+
+Sci2Pol-Taxonomy Avg. Rank Model Auto. (1-4) Under. (5-6) Sum. (7-10) Gene. (11-15) Ver. (16-18)
+
+Grok-3-beta 50.77±2.89 80.12±1.22 83.26±0.05 86.70±0.98 85.45±0.86 77.01±1.20 1 DeepSeek-R1 44.76±3.11 86.61±1.04 80.83±0.04 84.75±1.26 83.84±1.05 75.05±1.34 2 Qwen3-235B 47.22±3.03 87.19±0.94 77.02±0.15 84.80±1.30 83.76±0.99 74.81±1.34 3 DeepSeek-V3 39.54±3.06 79.35±1.28 78.97±0.05 86.23±1.26 85.48±0.85 73.35±1.33 4 GPT-4o 52.17±3.00 77.17±1.32 74.23±0.06 76.39±1.28 85.45±0.82 72.12±1.32 5 Gemma-3-27B 43.60±2.83 67.82±1.42 74.55±0.05 84.82±1.16 84.29±0.98 71.40±1.28 6 Claude-3.7-Sonnet 44.06±3.00 80.06±1.19 82.71±0.05 73.59±3.61 83.24±1.04 71.38±1.99 7 Mistral-Large 44.09±2.92 76.27±1.23 78.57±0.05 75.09±1.42 81.87±1.11 70.23±1.38 8 LLaMA-3.3-70B-IT 53.16±2.72 74.14±1.38 71.22±0.06 69.89±1.62 85.71±0.87 69.58±1.37 9 LLaMA-4-Maverick 38.74±2.90 83.81±1.01 72.47±0.06 74.95±1.38 84.16±0.95 68.87±1.31 10 Qwen3-8B 35.15±2.88 80.84±1.21 74.08±0.17 77.79±1.49 81.87±1.01 68.51±1.39 11 Gemma-3-12B 42.96±2.79 69.61±1.28 71.79±0.05 77.34±1.44 82.51±1.06 68.47±1.35 12 LLaMA-3.1-8B-IT 27.12±2.53 47.74±1.54 64.42±0.05 65.78±1.71 76.25±1.27 56.63±1.43 13
+
+in Table 2 and visualize the performance of open-source and commercial models in Figure 3. Section E.2 provides full results for all 18 tasks, and see Section E.1 for the experimental details.
+
+We include further analysis in Section F, covering: (i) the impact of prompt length on performance for Tasks 1-4 (Section F.2); (ii) the reliability of the Gemini-2.5-Pro-based reference-free judge in Tasks 7-10 (Section F.3); (iii) whether models tend to over-endorse in Tasks 16 and 18
+
+- (Section F.5); (iv) evidence that in-context polishing does not introduce information leakage (Section F.6); (v) potential circularity in benchmark construction, examined via GPT and DeepSeek family comparisons on Task 16 (Section F.7); (vi) trade-offs in generating briefs from abstracts, introductions, or full papers, in terms of LLM input context length and performance (Section F.8).
+
+
+- Table 3: Performance of LLMs after Supervised Fine-tuning (SFT) on Sci2Pol-Corpus. We fine-tune three models: LLaMA-3.1-8B-Instruct, Gemma-3-12B, and Gemma-3-27B on Sci2Pol-Corpus, and report their average performance across the Sci2Pol-Taxonomy before and after fine-tuning.
+
+
+Sci2Pol-Taxonomy Avg. Gain Model Auto. (1-4) Under. (5-6) Sum. (7-10) Gene. (11-15) Ver. (16-18) LLaMA-3.1-8B-IT 27.12±2.53 47.74±1.54 64.42±0.05 65.78±1.71 76.25±1.27 56.63±1.43 LLaMA-3.1-8B-SFT 31.27±2.90 44.34±1.48 78.28±1.25 77.62±1.55 80.59±1.08 64.27±1.70 +7.64 Gemma-3-12B 42.96±2.79 69.61±1.28 71.79±0.05 77.34±1.44 82.51±1.06 68.47±1.35 Gemma-3-12B-SFT 43.14±2.86 69.53±1.25 84.19±1.19 78.57±1.53 82.48±1.05 71.59±1.64 +3.12 Gemma-3-27B 43.60±2.83 67.82±1.42 74.55±0.05 84.82±1.16 84.29±0.98 71.40±1.28 Gemma-3-27B-SFT 45.39±2.90 67.44±1.36 86.36±1.06 81.53±1.60 84.06±0.96 73.43±1.64 +2.03
+
+DeepSeek-V3 39.54±3.06 79.35±1.28 78.97±0.05 86.23±1.19 85.48±0.85 73.35±1.33 GPT-4o 52.17±3.00 77.17±1.32 74.23±0.06 76.39±1.28 85.45±0.82 72.12±1.32 -
+
+Our experiments lead to three main findings:
+
+- • Current LLMs struggle to generate high-quality policy briefs from scientific papers, even though they likely encounter academic content during pretraining. These results reveal a persistent gap between general language capability and task-specific policy reasoning.
+- • Sci2Pol-Bench exposes new weaknesses not captured by traditional LLM benchmarks. As shown in Table 2 and Table 8, tasks in Autocompletion and Understanding produce the widest F1 range across models, highlighting instability in predicting coherent and grounded continuations.
+- • Larger models generally perform better, but size alone doesn’t guarantee robustness. For instance, Gemma-3-12B outperforms the larger Gemma-3-27B on several tasks, e.g., Task 2 (see Table 2 and Table 8). Similarly, commercial models that dominate benchmarks like GPQA [Phan et al., 2025] often underperform on early-stage Sci2Pol tasks such as Task 1 and Task 4.
+
+
+##### 4.2 Supervised Fine-tuning on Sci2Pol-Corpus
+
+We validate the effectiveness of Sci2Pol-Corpus by fine-tuning three models: (1) LLaMA-3.18B-Instruct, (2) Gemma-3-12B, and (3) Gemma-3-27B. Table 3 shows the results. All fine-tuned models show consistent improvements across Sci2Pol-Bench. Notably, fine-tuned Gemma-3-27B outperforms both GPT-4o and DeepSeek-V3 (671B), despite their significantly larger scale or broader capabilities. These findings highlight the value of domain-specific supervision in Sci2PolCorpus. It indeed captures policy-relevant reasoning. See Section E.1 for the experimental details.
+
+#### 5 Conclusion
+
+We introduce Sci2Pol-Bench and Sci2Pol-Corpus, the first benchmark and dataset for evaluating and fine-tuning LLMs on scientific-to-policy brief generation. Sci2Pol-Bench defines a fivestage taxonomy and 18 tasks to assess model capabilities. Experiments across 13 LLMs reveal that even frontier models struggle with policy brief generation. Fine-tuning on Sci2Pol-Corpus yields consistent gains, with Gemma3-27B-SFT outperforming larger models like GPT-4o and DeepSeek-V3 (671B). We also provide limitations and future work in Section B, and related works in Section C. Our work provides a foundation for scientific-to-policy translation.
+
+#### Broader Impact
+
+This work advances understanding of the critical connection between science and policymaking. Science provides evidence and authoritative knowledge essential for informed decisions and sustaining public trust. Its role grows as pressing challenges such as climate change, public health crises, and rapid technological change demand the timely integration of new findings.
+
+Sci2Pol-Bench directly addresses a persistent bottleneck in this pipeline: policymakers’ difficulty in translating dense, nuanced scientific evidence into actionable guidance. By decomposing the brief writing process into five stages and providing 18 fine-grained tasks, it offers the first systematic evaluation framework tailored to scientific-to-policy communication. This benchmark exposes weaknesses in even frontier language models and creates opportunities to build models that are not only accurate but also clear, consistent, and persuasive for policy audiences.
+
+Sci2Pol-Corpus complements this evaluation framework by supplying the first domain-specific training dataset for policy brief generation. Curated from millions of policy documents and refined through quality filtering and in-context revision, it provides 639 high-quality papers to brief pairs. Fine-tuning on this corpus leads to consistent gains across Sci2Pol-Bench, even enabling smaller open source models to surpass frontier-scale models. This demonstrates the importance of targeted supervision for capturing the communicative intent of scientific-to-policy translation.
+
+Together, these resources have a significant and lasting societal impact worldwide. They empower scientists, policymakers, and institutional leaders with practical tools to measure and improve the policy relevance of scientific communication. They strengthen accountability and reduce serious risks of misinformation by encouraging accurate, structured, and transparent communication of evidence. They also highlight the vital and growing role of science in shaping societal outcomes and help ensure that policy decisions remain grounded in rigorous research rather than speculation.
+
+- At a time of political polarization, resource constraints, and global competition, the ability to generate clear, accurate, and actionable policy briefs is vital. Sci2Pol-Bench and Sci2Pol-Corpus provide foundational infrastructure for developing models that meet this challenge, supporting evidence-based decision-making and enhancing public trust in science and governance.
+
+
+#### Ethic Statement
+
+Human-in-the-loop Annotation Process. All reviewers involved in task development and verification are postdoctoral researchers or research faculty in political science. They are co-authors of this paper and serve as domain experts throughout the benchmark and dataset construction. No monetary compensation is provided; their participation is motivated by scholarly collaboration and a shared commitment to advancing evidence-based policymaking.
+
+Copyright and Use of Scientific Papers. The benchmark and dataset are built from publicly accessible content such as article metadata. No copyrighted full-text content is redistributed.
+
+Derived tasks (e.g., summarization in Sci2Pol-Bench) are constructed from reformulated excerpts for non-commercial academic purposes, which we consider fair use. For transparency, we provide the detailed list of 85 paper-brief pairs in Section G.1.
+
+#### Acknowledgments
+
+We acknowledge grant support from the National Science Foundation (award no. 2404035). Han Liu is partially supported by NIH R01LM1372201, NSF AST-2421845, Simons Foundation MPSAI-00010513, AbbVie, Dolby, and Chan Zuckerberg Biohub Chicago Spoke Award. This research was supported in part through the computational resources and staff contributions provided for the Quest high-performance computing facility at Northwestern University, which is jointly supported by the Office of the Provost, the Office for Research, and Northwestern University Information Technology. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+
+# Supplementary Material
+
+- A Preliminaries 20
+
+- A.1 Policy Brief . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+- A.2 Comparison with Full Scientific Paper, Paper Introduction and Abstract . . . . . 20
+
+
+- B Limitations and Future Work 21
+- C Related Works 22
+
+- C.1 Scientific and Political Benchmarks . . . . . . . . . . . . . . . . . . . . . . . . 22
+- C.2 Scientific and Political Datasets . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+
+- D How LLMs Fail in Policy Brief Generation 24
+
+- D.1 Contextual Depth . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+- D.2 Hallucination Risk . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+- D.3 Readability and Tone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+- D.4 Actionability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+
+- E Experimental Details 30
+
+- E.1 Detailed Experimental Settings . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+- E.2 LLM Performance on Sci2Pol-Bench . . . . . . . . . . . . . . . . . . . . . . . . 31
+- E.3 Supervised Fine-tuning on Sci2Pol-Corpus . . . . . . . . . . . . . . . . . . . . . 32
+
+
+- F Additional Experimental Analysis 33
+
+- F.1 Limitations of BERTScore and ROUGE Scores for Tasks 11-15 . . . . . . . . . . 33
+- F.2 Impact of Prompt Length for Tasks 1-4 . . . . . . . . . . . . . . . . . . . . . . . 36
+- F.3 Reliability of the Gemini-2.5-Pro-based Reference-free Judge in Tasks 7-10 . . . 37
+- F.4 Why Tasks 11-14 Beyond Task 15: Section vs. Full Brief Generation . . . . . . . 38
+- F.5 Over-endorsement Analysis on Tasks 16 and 18 . . . . . . . . . . . . . . . . . . 43
+- F.6 Information Leakage Check of In-context Polishing in Section 3.3 . . . . . . . . 45
+- F.7 Potential Circularity: GPT vs. DeepSeek Family . . . . . . . . . . . . . . . . . . 46
+- F.8 Comparison of Writing from an Abstract, an Introduction, and a Full Paper . . . . 47
+
+
+- G Details of 85 Expert-written Paper-brief Pairs 52
+
+- G.1 List of 85 Expert-written Paper-brief Pairs . . . . . . . . . . . . . . . . . . . . . 52
+- G.2 Publication Year Distribution of 85 Policy Briefs . . . . . . . . . . . . . . . . . 54
+
+
+- H Examples for Tasks 1-18 55
+- I Prompts for Sci2Pol-Bench Evaluation and Dataset Curation 65
+
+- I.1 Tasks 7-10 Prompt for Reference-free Score . . . . . . . . . . . . . . . . . . . . 65
+- I.2 Task 11 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 66
+- I.3 Task 12 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 68
+- I.4 Task 13 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 69
+- I.5 Task 14 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 70
+- I.6 Task 15 Prompt for Reference-based Score . . . . . . . . . . . . . . . . . . . . . 71
+- I.7 Task 5 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+- I.8 Task 11 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 73
+- I.9 Task 13 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 74
+- I.10 Task 16 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 75
+- I.11 Task 18 Prompt for Data Curation . . . . . . . . . . . . . . . . . . . . . . . . . 76
+
+
+- J Prompts for Sci2Pol-Corpus Curation 77
+
+
+#### A Preliminaries
+
+In this section, we present preliminaries on the policy brief (Section A.1) and compare it with the full scientific paper, paper introduction, and paper abstract (Section A.2).
+
+##### A.1 Policy Brief
+
+The policy brief is first introduced by Nature Energy to provide concise, policy-relevant summaries written by the original researchers. Each brief cites its source article using clear metadata (e.g., “based on: title doi”), enabling reliable paper-brief alignment. It includes five parts:
+
+- • Title: A concise one-line headline that states the policy issue.
+- • Policy Problem: A short paragraph (fewer than five sentences) framing the societal risk.
+- • Scientific Research Findings: One or two compact paragraphs (about 150 words) clearly summarizing the study’s core quantitative results and key empirical insights.
+- • Scientific Research Study Methods: A single paragraph (about 100 words) briefly explaining the dataset and modelling approach in clear, accessible, and lay terms.
+- • Policy Implications: Four to six bullet points (about 25 words each), drawn strictly from the paper’s authors, highlighting concrete conclusions directly relevant to policymakers. No added recommendations, speculation, or external examples.
+
+
+##### A.2 Comparison with Full Scientific Paper, Paper Introduction and Ab-stract
+
+We provide a comparison between the policy brief and the full paper, introduction, and abstract.
+
+- • Purpose: A research paper provides full evidence and methods for experts; its introduction frames the knowledge gap and aims; the abstract compresses aims, methods, and key results. A policy brief removes technical detail and distills only policy-relevant insights for decision makers.
+- • Structure: Papers follow IMRaD (Introduction, Methods, Results, Discussion) with references; abstracts compress these into one paragraph. Policy briefs replace IMRaD with Policy Problem, Scientific Research Findings, Scientific Research Study Methods, and Policy Implications.
+- • Tone and Jargon: Papers, introductions, and abstracts use technical language and equations. A policy brief avoids jargon and equations, relying on plain prose accessible to nonexperts.
+- • Focus: Full papers emphasize evidence and methodological rigor; introductions stress scholarly significance; abstracts distill what is done and found. Policy briefs highlight why findings matter for policy, and repeat only the author’s stated implications.
+- • Audience Takeaway: Researchers consult full papers for replicable detail, introductions for rationale, and abstracts for a quick overview. Policymakers rely on briefs to grasp the problem, key evidence, methodological credibility, and policy implications.
+
+
+#### B Limitations and Future Work
+
+In this section, we present the limitations and future work.
+
+- • Sci2Pol-Bench and Sci2Pol-Corpus remain modest in size. Unlike efforts that rely on synthetic summaries or crowd-sourced approximations, our datasets reflect the communicative intent and expertise of scientists writing for policy audiences. We will continue to incorporate newly published briefs and their corresponding papers to expand coverage.
+- • Although supervised fine-tuning on Sci2Pol-Corpus yields consistent gains, it does not yet surpass state-of-the-art commercial models, e.g., Grok. Future work should explore improved training strategies and better use of Sci2Pol-Corpus to close this gap.
+- • The existing 85 published policy briefs come from Nature Energy, Nature Climate Change, Nature Cities, Nature Sustainability, and the Journal of Health and Social Behavior (JHSB). Expanding Sci2Pol-Bench and Sci2Pol-Corpus to additional disciplines and languages will enable broader generalization as new paper-brief pairs appear.
+- • 20 samples in Tasks 11 and 13 are drawn from the Journal of Health and Social Behavior (JHSB). For these cases, the Policy Problem and Study Methods sections are revised by GPT-o3 based on the Research Problem & Data section. This step may not be as reliable as for the remaining 65 samples. However, our experts review them, and we chose to retain these cases because they account for more than 20% of the total sample set.
+
+
+#### C Related Works
+
+We review related work on benchmarks and datasets in the scientific and political domains.
+
+##### C.1 Scientific and Political Benchmarks
+
+Recently, LLMs [Team et al., 2024, Liu et al., 2024a, Touvron et al., 2023, Achiam et al., 2023, Bai et al., 2023] have attracted significant attention due to their impressive performance. There have been several benchmarks to evaluate their performance in scientific and political domains.
+
+Scientific Benchmarks. In the scientific domain, benchmarks such as SciRIFF [Wadden et al., 2024], MMLU-Pro [Wang et al., 2024], SciInstruct [Zhang et al., 2024a], SciLitLLM [Li et al., 2024c], and SciRepEval [Singh et al., 2023] test models on tasks like summarization, question answering, and claim verification. These benchmarks focus on instruction-following and comprehension of scientific content. Most use single-step tasks with scientific inputs, typically full papers or extended passages.
+
+Political Benchmarks. In the political domain, benchmarks assess how models reason about political science, ideology, and value alignment. Political Science QA [Li et al., 2024b] tests factual knowledge and reasoning. Röttger et al. [2024] and Ren et al. [2024] probe value orientation and political opinions. Motoki et al. [2024] measure political bias. These tasks often use short prompts and rely on multiple-choice formats. Political-LLM [Li et al., 2024b] contributes a useful taxonomy and discussion of use cases, but offers no benchmark or annotated data.
+
+However, existing scientific and political benchmarks overlook the dual challenge of scienceinformed policy communication: understanding complex research and translating it into actionable language. SciRIFF and SciInstruct focus on instruction-following for scientific tasks, while MMLU-Pro tests expert-level reasoning with multiple-choice questions. Political benchmarks such as ValueBench or Political-LLM probe ideology and values but do not address policy generation or scientific grounding. To fill this gap, Sci2Pol-Bench evaluates LLMs on generating policy briefs from full-length scientific papers, pairing them with expert-written briefs and introducing a five-stage pipeline. We compare against three representative efforts. SciRIFF and MMLUPro are the closest scientific benchmarks: SciRIFF covers single-step tasks like summarization, QA, and claim verification, while MMLU-Pro measures reasoning breadth but not policy translation. Political-LLM provides the first principled framework for computational political science, offering a taxonomy but no annotated tasks. Together, these works form the strongest prior art in scientific comprehension and political reasoning. Sci2Pol-Bench builds on them but uniquely combines scientific fidelity with direct policy relevance, making it the first benchmark to evaluate LLMs on producing accurate, actionable policy briefs.
+
+##### C.2 Scientific and Political Datasets
+
+Beyond evaluation benchmarks, several open-source fine-tuning datasets adapt LLMs to scientific and political domains through supervised instruction tuning or continued pre-training.
+
+Scientific Datasets. Researchers have curated domain-specific corpora to enhance scientific reasoning. SciInstruct [Zhang et al., 2024a] provides curated instructions across physics, chemistry, math, and formal proofs, improving models’ performance on college-level problems. SciLitLLM [Li et al., 2024c] combines continual pre-training on research papers with supervised tuning. It introduces SciLitIns, a collection of instructions targeting underrepresented fields. Largescale corpora have also been used. For example, Galactica [Taylor et al., 2022] is trained on 48 million science documents. This shows how domain-specific training endows models with broad scientific knowledge. Together, these datasets demonstrate the effectiveness of specialized fine-tuning.
+
+Political Datasets. In the political domain, fine-tuning datasets emphasizes factual knowledge, ideology, explicit opinions, and bias alignment. PoliTune [Agiza et al., 2024] creates ideologyspecific instruction data from social media, while Vendetti et al. [2025] fine-tune the existing LLMs on curated Reddit discourse to model polarized political commentary. These efforts show how targeted fine-tuning can steer models toward particular political knowledge or stances.
+
+However, existing datasets in both domains overlook the dual challenge of science-informed policy communication. Scientific datasets like SciInstruct and SciLitIns strengthen technical reasoning but exclude crucial policy text, while political datasets such as PoliTune emphasize ideological alignment yet ignore underlying scientific evidence. Sci2Pol-Corpus fills this important gap by linking full-length research papers to expert-written policy briefs. It trains models to extract key findings and translate them into clear, actionable recommendations for policymakers.
+
+#### D How LLMs Fail in Policy Brief Generation
+
+In this section, we present representative examples that highlight the limitations of existing LLMs in scientific-to-policy brief generation. Using the prompt in Table 42, we instruct different LLMs to generate policy briefs from the scientific papers listed in Section G, and then compare their outputs with the expert-written published briefs. The results reveal issues in four key areas: contextual depth, hallucination risk, readability and tone, and actionability. We provide one illustrative example for each issue in Section D.1, Section D.2, Section D.3, and Section D.4.
+
+##### D.1 Contextual Depth
+
+- Table 4 is an example where LLM output contains a contextual-depth issue. The issue is evident because the published brief gives precise quantitative findings such as “an additional 0.5
+
+
+GtCO2/yr by 2030 and 1.9 GtCO2/yr by 2050” and compares these against Paris Agreement scenarios to highlight the “CDR gap”. However, the LLM output only provides a broad summary about reliance on land-based removals and a lack of novel technologies. It does not capture the specific numerical evidence and scenario-based reasoning that are central to the paper’s findings.
+
+Table 4: Expert- vs. LLM-written Policy Brief Excerpts: Contextual Depth Issue. Paper: The carbon dioxide removal gap [Lamb et al., 2024a]. LLM: GPT-4o. Presented Brief Section: Scientific Research Findings.
+
+###### Expert-written Brief LLM Output
+
+Research indicates that current national proposals for CDR are not aligned with integrated assessment model scenarios, which project the levels necessary to achieve the 1.5°C temperature limit. The study shows that while afforestation and land-based removal methods are in use, there is a lack of commitment to scaling novel CDR technologies like bioenergy carbon capture and storage (BECCS) or direct air carbon capture and storage (DACCS). Most proposed CDR efforts remain heavily reliant on landbased removals, which are not sufficient on their own to meet the required targets.
+
+In our study we found that compared with 2020, the most ambitious national proposals for CDR imply an additional 0.5 GtCO2yr-1 of removals by 2030, and 1.9 GtCO2yr-1 by 2050. Compared with CDR scaling in Paris Agreement-consistent scenarios, we found that these national CDR proposals tend to fall short by hundreds of megatonnes of carbon dioxide in 2030 to several gigatonnes of carbon dioxide in 2050, highlighting a ‘CDR gap’. However, we find that the most ambitious proposals do come close to levels in a low-energy-demand scenario where CDR requirements are minimized, suggesting that if countries pledge more ambitious emissions reductions consistent with these scenarios, the CDR gap will be closed. As levels of reporting vary, our evaluation of proposed CDR does assume that a number of countries simply maintain their current levels of (conventional) removals. In addition, it remains unknown to what extent firm CDR policies will follow these proposals.
+
+##### D.2 Hallucination Risk
+
+Table 5 shows a risk of hallucination. In this case, the LLM reads the paper as endorsing public or cooperative ownership, progressive tax swaps, cross-border subsidies, and profit-cap rules. The paper does not state these. The human brief stays close to the source and lists the core points: trillion-dollar scale, windfall profits under unregulated markets, trade-offs from profit caps, regional distribution effects, and the near-term need to scale NETs. The LLM adds new policies and causal claims, so it may mislead readers.
+
+###### Table 5: Expert- vs. LLM-written Policy Brief Excerpts: Hallucination Issue. Paper: Inequality repercussions of financing negative emissions [Andreoni et al., 2024b]. LLM: Qwen3-8B. Presented Brief Section: Policy Implication.
+
+###### Expert-written Brief LLM Output
+
+- 1. Equitable Ownership Structures: Policymakers should consider public ownership or cooperative frameworks for NETs to prevent disproportionate benefits to private capital holders. This could mitigate the ownership effect and ensure that profits from carbon removal are distributed more fairly.
+- 2. Progressive Taxation and Redistribution: Replacing regressive carbon taxes with progressive income taxes after netzero, or using redistribution mechanisms, could counteract inequality risks. Prenet-zero taxation reforms might also reduce adverse impacts, though they could compromise economic growth.
+- 3. International Financial Transfers: Implementing cross-border carbon removal credits or subsidies for low-income countries could address global inequality. However, these transfers may still benefit high-income groups within recipient nations, necessitating targeted redistribution policies.
+- 4. Regulating Profit Margins: Introducing profit caps or alternative pricing schemes for NETs within a single carbon market could balance incentivizing deployment with equity. Yet, such measures must avoid distorting markets or discouraging investment.
+- 5. Integrated Policy Design: Climate strategies must explicitly account for distributional impacts in policy frameworks. This includes designing carbon pricing, ownership rules, and revenue allocation mechanisms to align with equity goals while maintaining the viability of NETs as part of a low-carbon transition.
+
+
+- • In a net-zero emissions world, NETs could become a trillion-dollar business globally.
+- • If financed through an unregulated carbon market, the owners of these companies would enjoy windfall profits, potentially leading to a large increase in economic inequality.
+- • Market regulation, such as profit caps, could reduce the inequality increase, but at the risk of stimulating too much or too little carbon removal - policymakers should be aware of this trade-off.
+- • Concentrating removal efforts in the Global North or transferring resources to the Global South could, to some extent, offset the increase in inequality at the global level.
+- • These dynamics mostly apply to a netzero and post-net-zero world. The current priority of policymakers should remain to provide adequate resources to scale up NETs towards technology maturity.
+
+
+##### D.3 Readability and Tone
+
+Table 6 is an example where the LLM output has readability and tone issues. The expert-written brief is logically ordered, uses active voice, and speaks to policymakers. It defines the study design, maps three strategies to plain descriptions, and explains how the team built and compared scenarios. By contrast, the LLM output contains unexplained jargon in bullet points. It also introduces acronyms without setup, which raises the barrier for non-expert readers.
+
+- Table 6: Expert- vs. LLM-written Policy Brief Excerpts: Readability and Tone Issue. Paper: Demand-side strategies enable rapid and deep cuts in buildings and transport emissions to 2050 [van Heerden et al., 2025a]. LLM: DeepSeek-V3. Presented Brief Section: Scientific Research Study Methods.
+
+
+###### Expert-written Brief LLM Output
+
+Our study uses quantitative scenarios generated with global integrated assessment models (IAMs) that are specifically designed to capture the interactions within and between the energy system, the economy, and the environment. We developed three scenarios that each capture the impact of a specific strategy targeting energy use. In the first scenario end users reduce or change energy-using activities, in the second they adopt more efficient technologies, and in the third they switch to electrification or alternative energy carriers as substitutes to fossil fuels. Using a structured questionnaire, we also gathered inputs from policymakers and experts in demand sectors to refine the scenarios. We quantitatively interpreted and quantified the scenarios through 2050 using seven IAMs. Finally, we compared the resulting emission reductions per strategy across the set of models and scenarios and analysed the results to better understand the main factors driving these reductions.
+
+The study used an ensemble of seven global integrated assessment models (IAMs) to simulate three intervention strategies:
+
+- 1. Activity-focused (ACT): Policies promoting shared mobility, reduced travel, and smaller living spaces.
+- 2. Technology-optimizing (TEC): Enhanced building insulation, vehicle efficiency standards, and retrofits.
+- 3. Electrification-focused (ELE): Widespread adoption of heat pumps, electric vehicles, and renewable energy.
+
+
+Scenarios were compared against a “current policies” baseline and a 1.5°C-aligned pathway, accounting for regional variations and model uncertainties.
+
+##### D.4 Actionability
+
+- Table 7 shows weak actionability. The LLM states broad aims: “reconsider approaches”, “build public support”, and “prioritize durable reforms”. It does not say who does what, when, or how to track success. The expert-written brief gives steps and targets: start with the most damaging fuels, especially coal; invest in transit and support EVs; use fuel-efficiency rules; and choose measures that survive political shocks. The LLM repeats goals but omits scope, sequence, and levers, so a policymaker cannot act.
+
+
+Table 7: Expert- vs. LLM-written Policy Brief Excerpts: Actionability Issue. Paper: Fossil fuel subsidy reforms have become more fragile [Mahdavi et al., 2025a]. LLM: Gemma3-12B. Presented Brief Section: Policy Implication.
+
+###### Expert-written Brief LLM Output
+
+The findings suggest that current strategies for reducing fossil fuel subsidies are failing. Policymakers should reconsider their approaches, prioritizing:
+
+- • While fossil fuel subsidies are harmful, efforts to remove them fail more than 90% of the time. Low-cost fuel is popular and hard to change.
+- • Reforms are only beneficial if they endure. While price reforms are fragile, other kinds of policies — such as investments in clean transportation and support for electric vehicles are more durable.
+- • Since subsidies are politically difficult to remove, governments should concentrate their efforts on the most damaging types of fuel, especially coal.
+- • Governments should look for alternative ways to reduce the demand for subsidized fuel, for example, by using regulatory measures to enhance fuel efficiency, investing in public transit and promoting electric vehicles.
+
+
+- • Long-Term Strategies: Focus on policies that reduce demand for subsidized fuel (e.g., fuel efficiency standards, electric vehicle incentives, improved public transit) alongside, rather than in place of, subsidy reductions.
+- • Political Feasibility: Recognize the political challenges of subsidy reform and build public support through clear communication, targeted compensation for vulnerable populations, and a gradual, phased approach.
+- • Durable Reforms: Prioritize reforms like shifting to floating prices that are not easily eroded by inflationary pressures or exchange rate fluctuations, even if initially less popular.
+
+
+#### E Experimental Details
+
+We provide: (i) the detailed experimental settings for LLM evaluation on Sci2Pol-Bench and supervised fine-tuning (Section E.1); (ii) the performance of 13 LLMs across all Sci2Pol-Bench tasks (Section E.2); and (iii) the supervised fine-tuning results of three LLMs (Section E.3).
+
+- E.1 Detailed Experimental Settings We present the detailed experimental settings.
+
+
+Evaluate LLMs on Sci2Pol-Bench. We evaluate 13 LLMs through API calls. For Grok, GPT4o, and Claude, we use their respective private APIs. For all other models, we rely on the Novita API.
+
+Supervised Fine-tuning. Our supervised fine-tuning uses LLaMA-Factory [Zheng et al., 2024]. We apply lightweight Low-rank Adaptation (LoRA) [Shen et al., 2022] under the following setup. The base models are LLaMA-3.1-8B-Instruct, Gemma-3-12B-IT, and Gemma-3-27B-IT. LoRA uses rank 8, alpha 32, and dropout 0.05, applied to the query and value projection matrices of all attention layers. Training runs for six epochs with a batch size of 8, a cosine learning rate schedule, a peak learning rate of 1e-4, and a 5% warmup phase. FlashAttention-2 [Dao, 2024] and the Liger kernel [Hsu et al., 2025] are enabled for efficient long-context training. We split Sci2Pol-Corpus into 95% training and 5% validation, and select the checkpoint with the lowest validation loss. We run all experiments on 4 NVIDIA A100 80GB Tensor Core GPUs.
+
+- E.2 LLM Performance on Sci2Pol-Bench We show the detailed performance of 13 LLMs across all tasks in Table 8.
+
+
+###### Table 8: Detailed Performance of 13 LLMs on Sci2Pol-Bench.
+
+###### Autocompletion Understanding Summarization
+
+Model T1 (F1) T2 (F1) T3 (F1) T4 (F1) T5 (F1) T6 (F1) T7 (Gem.) Grok-3-beta 71.05±2.77 63.76±2.79 33.12±2.92 35.15±3.08 90.42±0.80 69.83±1.64 83.45±0.05 DeepSeek-R1 47.92±2.91 44.42±2.83 40.45±3.53 46.26±3.18 89.83±0.78 83.39±1.29 82.91±0.04 Qwen3-235B 53.14±2.95 51.75±2.81 39.64±3.20 44.33±3.16 87.81±0.76 86.58±1.11 77.48±0.15 DeepSeek-V3 41.62±2.90 38.39±3.26 39.91±3.28 38.23±2.79 88.99±0.84 69.72±1.72 80.30±0.05 GPT-4o 73.74±2.81 63.33±2.82 31.59±3.27 40.01±3.09 90.56±0.80 63.77±1.84 75.63±0.06 Claude-3.7-Sonnet 60.13±2.53 44.08±3.26 34.38±2.93 37.67±3.27 93.72±0.73 66.41±1.65 83.38±0.05 Gemma-3-27B 64.52±3.11 58.80±2.74 25.56±2.85 25.51±2.63 82.07±1.09 53.57±1.75 77.61±0.05 Mistral-Large 62.46±2.81 55.01±3.01 29.64±3.38 29.25±2.46 89.45±0.82 63.08±1.65 81.90±0.05 LLaMA-3.3-70B-IT 72.51±2.35 70.99±2.68 32.26±2.72 36.89±3.14 87.62±0.99 60.66±1.76 75.15±0.06 LLaMA-4-Maverick 55.41±3.04 43.82±2.78 25.27±2.88 30.46±2.90 86.10±0.82 81.52±1.21 75.48±0.06 Gemma-3-12B 64.18±3.02 60.11±3.18 25.47±2.59 22.09±2.39 88.19±0.88 51.04±1.68 73.81±0.05 Qwen3-8B 33.49±2.86 32.46±2.70 33.76±3.00 40.90±2.95 87.24±0.99 74.45±1.42 75.80±0.17 LLaMA-3.1-8B-IT 37.53±2.92 32.08±2.47 16.44±2.41 22.44±2.30 55.08±1.42 40.41±1.66 67.38±0.05
+
+###### Summarization Generation
+
+Model T8 (Gem.) T9 (Gem.) T10 (Gem.) T11 (Gem.) T12 (Gem.) T13 (Gem.) T14 (Gem.) Grok-3-beta 86.88±0.05 83.55±0.05 79.15±0.05 92.35±0.63 79.50±0.86 82.67±1.40 89.38±1.06 DeepSeek-R1 86.30±0.04 76.73±0.04 77.36±0.04 92.77±0.74 79.10±0.98 88.02±1.52 84.64±1.44 Qwen3-235B 80.38±0.15 74.63±0.15 75.60±0.15 93.55±0.85 77.74±1.39 90.40±1.46 86.67±1.24 DeepSeek-V3 80.95±0.05 76.90±0.05 77.72±0.05 91.50±0.93 78.24±1.46 90.29±0.99 87.62±1.28 GPT-4o 75.20±0.06 71.38±0.06 74.70±0.06 89.17±0.98 72.69±1.05 72.81±1.50 78.36±1.54 Claude-3.7-Sonnet 86.38±0.05 77.85±0.05 83.23±0.05 81.29±3.37 66.62±3.34 68.14±3.95 77.08±3.58 Gemma-3-27B 75.98±0.05 68.57±0.05 76.03±0.05 91.33±0.87 75.23±1.12 88.12±1.32 88.54±1.24 Mistral-Large 79.90±0.05 74.75±0.05 77.72±0.05 87.64±0.92 73.02±1.06 64.10±1.93 77.53±1.88 LLaMA-3.3-70B-IT 71.85±0.06 66.15±0.06 71.75±0.06 81.40±1.44 71.55±1.19 60.02±2.07 70.86±2.01 LLaMA-4-Maverick 75.48±0.06 70.60±0.06 68.33±0.06 82.37±1.59 74.52±0.95 62.45±1.74 82.53±1.50 Gemma-3-12B 71.18±0.05 65.45±0.05 76.71±0.05 85.60±1.02 70.22±1.15 70.69±2.29 84.46±1.29 Qwen3-8B 77.48±0.17 72.08±0.17 70.94±0.17 91.59±1.00 72.62±1.17 77.50±1.76 79.91±1.84 LLaMA-3.1-8B-IT 67.38±0.05 59.03±0.05 63.88±0.05 82.35 ±1.55 64.62 ±1.65 55.12 ±1.90 67.74±1.89
+
+Generation Verification Model T15 (Gem.) T16 (F1) T17 (F1) T18 (F1) Average Rank
+
+Grok-3-beta 89.58±0.94 98.60±0.42 59.26±1.67 98.48±0.50 77.01±1.20 1 DeepSeek-R1 79.23±1.63 94.55±0.86 59.74±1.61 97.23±0.69 75.05±1.34 2 Qwen3-235B 75.65±1.57 95.36±0.73 58.51±1.65 97.41±0.60 74.81±1.34 3 DeepSeek-V3 83.51±1.65 98.97±0.37 59.52±1.61 97.94±0.57 73.35±1.33 4 GPT-4o 68.93±1.31 98.61±0.39 60.25±1.47 97.49±0.59 72.12±1.32 5 Gemma-3-27B 80.89±1.26 98.25±0.46 59.88±1.52 94.74±0.95 71.40±1.28 6 Claude-3.7-Sonnet 74.82±3.82 98.35±0.47 57.92±1.47 93.44±1.17 71.38±1.99 7 Mistral-Large 73.15±1.31 95.57±0.66 59.22±1.56 90.83±1.12 70.23±1.38 8 LLaMA-3.3-70B-IT 65.60±1.41 99.07±0.32 61.10±1.59 96.96±0.69 69.58±1.37 9 LLaMA-4-Maverick 72.86±1.11 96.94±0.61 57.99±1.60 97.54±0.65 68.87±1.31 10 Qwen3-8B 67.32±1.69 92.26±0.78 57.51±1.44 95.85±0.82 68.51±1.39 11 Gemma-3-12B 75.71±1.43 95.85±0.59 57.43±1.75 94.26±0.84 68.47±1.35 12 LLaMA-3.1-8B-IT 59.05±1.55 88.57±1.08 54.40±1.64 85.79±1.08 56.63±1.43 13
+
+- E.3 Supervised Fine-tuning on Sci2Pol-Corpus We report the detailed supervised fine-tuning performance of three LLMs in Table 9.
+
+
+###### Table 9: Detailed Performance of LLMs with Supervised Fine-tuning (SFT) on Sci2Pol-Corpus.
+
+###### Autocompletion Understanding Summarization
+
+Model T1 (F1) T2 (F1) T3 (F1) T4 (F1) T5 (F1) T6 (F1) T7 (Gem.) LLaMA-3.1-8B-IT 37.53±2.92 32.08±2.47 16.44±2.41 22.44±2.30 55.08±1.42 40.41±1.66 67.38±0.05 LLaMA-3.1-8B-SFT 38.82±3.13 33.73±3.03 27.45±2.80 25.10±2.63 42.58±1.36 46.10±1.59 81.25±1.30 Gemma-3-12B 64.18±3.02 60.11±3.18 25.47±2.59 22.09±2.39 88.19±0.88 51.04±1.68 73.81±0.05 Gemma-3-12B-SFT 63.14±2.99 56.47±2.97 27.45±2.75 25.49±2.74 88.67±0.88 50.40±1.61 87.47±1.12 Gemma-3-27B 64.52±3.11 58.80±2.74 25.56±2.85 25.51±2.63 82.07±1.09 53.57±1.75 77.61±0.05 Gemma-3-27B-SFT 69.02±2.98 55.29±2.92 27.45±2.82 29.80±2.86 80.08±1.14 54.80±1.59 89.30±1.08 DeepSeek-V3 41.62±2.90 38.39±3.26 39.91±3.28 38.23±2.79 88.99±0.84 69.72±1.72 80.30±0.05 GPT-4o 73.74±2.81 63.33±2.82 31.59±3.27 40.01±3.09 90.56±0.80 63.77±1.84 75.63±0.06
+
+###### Summarization Generation
+
+Model T8 (Gem.) T9 (Gem.) T10 (Gem.) T11 (Gem.) T12 (Gem.) T13 (Gem.) T14 (Gem.) LLaMA-3.1-8B-IT 67.38±0.05 59.03±0.05 63.88±0.05 82.35 ±1.55 64.62 ±1.65 55.12 ±1.90 67.74±1.89 LLaMA-3.1-8B-SFT 71.17±1.45 76.00±1.14 84.72±1.10 86.66±1.11 71.10±1.47 74.19±1.83 83.41±1.61 Gemma-3-12B 71.18±0.05 65.45±0.05 76.71±0.05 85.60±1.02 70.22±1.15 70.69±2.29 84.46±1.29 Gemma-3-12B-SFT 79.17±1.39 81.75±1.22 88.38±1.03 89.76±1.00 71.93±1.39 70.92±2.08 84.18±1.52 Gemma-3-27B 75.98±0.05 68.57±0.05 76.03±0.05 91.33±0.87 75.23±1.12 88.12±1.32 88.54±1.24 Gemma-3-27B-SFT 85.42±1.15 83.40±1.03 87.30±1.00 91.76±0.90 78.26±1.35 67.34±2.45 86.65±1.53 DeepSeek-V3 80.95±0.05 76.90±0.05 77.72±0.05 91.50±0.93 78.24±1.46 90.29±0.99 87.62±1.28 GPT-4o 75.20±0.06 71.38±0.06 74.70±0.06 89.17±0.98 72.69±1.05 72.81±1.50 78.36±1.54
+
+Generation Verification Model T15 (Gem.) T16 (F1) T17 (F1) T18 (F1) Average Gain LLaMA-3.1-8B-IT 59.05±1.55 88.57±1.08 54.40±1.64 85.79±1.08 56.63±1.43 LLaMA-3.1-8B-SFT 72.76±1.75 93.29±0.84 53.20±1.59 95.29±0.81 64.27±1.70 +7.64 Gemma-3-12B 75.71±1.43 95.85±0.59 57.43±1.75 94.26±0.84 68.47±1.35 Gemma-3-12B-SFT 76.06±1.66 97.18±0.55 57.70±1.56 92.57±1.03 71.59±1.64 +3.12 Gemma-3-27B 80.89±1.26 98.25±0.46 59.88±1.52 94.74±0.95 71.40±1.28 Gemma-3-27B-SFT 83.65±1.75 97.76±0.51 60.00±1.54 94.43±0.84 73.43±1.64 +2.03
+
+DeepSeek-V3 83.51±1.65 98.97±0.37 59.52±1.61 97.94±0.57 73.35±1.33 GPT-4o 68.93±1.31 98.61±0.39 60.25±1.47 97.49±0.59 72.12±1.32 -
+
+#### F Additional Experimental Analysis
+
+In this section, we examine the following aspects in Sci2Pol-Bench and Sci2Pol-Corpus. (1) We provide evidence for the limitations of BERTScore and ROUGE when applied to Tasks 11-15 (Section F.1). (2) We test the impact of prompt length on performance for Tasks 1-4 (Section F.2). (3) We assess the reliability of the Gemini-2.5-Pro-based reference-free judge in Tasks 7-10 (Section F.3). (4) We contrast section-by-section versus full-brief generation to explain the need for Tasks 11-14 in addition to Task 15 (Section F.4). (5) We analyze whether models show a tendency to over-endorse by studying the distribution of false positives and false negatives in Tasks 16 and 18 (Section F.5). (6) We validate that in-context polishing does not introduce information leakage
+
+- (Section F.6). (7) We evaluate potential circularity in benchmark construction by comparing GPT and DeepSeek families on Task 16 (Section F.7). (8) We compare brief generation from abstracts, introductions, and full papers to analyze trade-offs in context length (Section F.8). Together, these studies clarify the robustness and fairness of our Sci2Pol-Bench and Sci2Pol-Corpus.
+
+
+- F.1 Limitations of BERTScore and ROUGE Scores for Tasks 11-15 We provide evidence for why BERTScore and ROUGE scores fail to evaluate Tasks 11-15.
+
+
+Consider one example: the LLaMA-3.1-8B-Instruct-generated policy brief for the scientific paper How Central Banks Address Climate and Transition Risks (Paper [Shears et al., 2025a]; Brief [Shears et al., 2025b]). For BERTScore, we demonstrate that deleting large portions of the candidate brief hardly changes the score against the true brief. Using Table 10, we define “brief completeness” by removing sections of the candidate brief to create 75%, 50%, 25%, and title-only variants. Table 11 then reports the BERTScore trend as completeness falls.
+
+For ROUGE scores, we show that simple grammatical or paraphrasing changes cause the scores to drop sharply, even when meaning is preserved. Table 12 presents example texts, and Table 13 reports ROUGE-1/2/L scores between them. The results reveal low scores despite semantic equivalence, highlighting ROUGE’s sensitivity to surface form.
+
+Together, these findings illustrate two failure modes: BERTScore remains high under major deletions, while ROUGE collapses under harmless paraphrases. Consequently, for Tasks 11-15, we rely on task-specific LLM-judge scores, which verify section coverage, reasoning flow, and evidence linkage.
+
+- Table 10: Deriving Completeness Subsets from LLM Outputs. Sections are removed sequentially in the order: Policy Implications → Methods → Findings → Policy Problem. The table indicates which sections remain at each completeness level. Percentages reflect the proportion of content retained.
+
+Completeness Policy Problem Findings Methods Policy Implications
+
+100% (Full) ✓ ✓ ✓ ✓ 75% ✓ ✓ ✓ ✗ 50% ✓ ✓ ✗ ✗ 25% ✓ ✗ ✗ ✗ Title Only ✗ ✗ ✗ ✗
+
+- Table 11: BERTScore under Progressive Section Deletions from an LLM Brief. Scores remain high despite missing sections. See Table 10 for the definition of percentage levels.
+
+
+###### Brief Completeness BERT Precision BERT Recall BERT F1 Score
+
+Full Brief 0.8689 0.8599 0.8644 75% 0.8721 0.8612 0.8666 50% 0.8829 0.8551 0.8688 25% 0.8828 0.8174 0.8489 Title Only 0.8738 0.7839 0.8264
+
+- Table 12: Original vs. Grammar-alternated Policy Implications. We present two semantically equivalent versions of the same “Policy Implications” section side by side: the left column is the original expert wording, and the right column rewrites sentences by alternating grammar/phrasing only (no change in meaning). This pairing is used to evaluate whether shallow changes alone depress ROUGE scores.
+
+Original Text Grammar-alternated (Rephrased) Text Policy Implications
+
+- • Central banks vary substantially in the extent to which they re-risk stranded asset and physical climate risks and de-risk clean energy investments.
+- • Central bank actions on climate risks are positively associated with their country’s climate policy stringency and public concern with climate change and less with its underlying economic risks.
+- • Despite their autonomy, central banks do not substitute for the lack of national climate policy but complement existing national policies promoting the clean energy transition.
+- • The political nature of central bank actions to manage transition and physical risks raises concerns about unmanaged risks in the global economy, specifically stranded asset risks.
+- • A central bank climate index could increase transparency of the risk mitigation gap; international institutions governing central banks could set standards for climate and transition risk management.
+
+
+Policy Implications
+
+- • Substantial variation exists across central banks in how they re-risk stranded asset and physical climate risks while de-risking clean energy investments.
+- • Their actions on climate risks are linked more strongly with national climate policy stringency and public concern over climate change, and less strongly with economic fundamentals.
+- • National climate policy is not replaced by central banks, even with their autonomy; rather, it is supported and complemented in advancing the clean energy transition.
+- • The political character of central bank efforts to handle transition and physical risks raises concerns about unmanaged threats to the global economy, especially stranded asset risks.
+- • Transparency of the risk-mitigation gap could be improved by a central bank climate index, and international institutions governing central banks could set standards for climate and transition risk management.
+
+
+- Table 13: ROUGE on Original vs. Grammar-alternated Paraphrase. We report ROUGE-1/2/L F1 scores between the two columns in Table 12. Despite identical meaning, scores are low. These illustrate ROUGE’s sensitivity to word order and phrasing rather than semantic equivalence.
+
+
+###### Pair ROUGE-1 F1 ROUGE-2 F1 ROUGE-L F1 Original vs. Rephrased 0.4058 0.1606 0.2319
+
+##### F.2 Impact of Prompt Length for Tasks 1-4
+
+For Tasks 1-4, we test whether two sentences of context are sufficient for a model to predict the next sentence. Using Task 1 as an example, we evaluate 50 samples with 2-, 3-, and 4-sentence prompts, nesting shorter prompts within the 4-sentence version for fairness. Results in Table 14 suggest that prompt length has a limited effect on model accuracy.
+
+Table 14: Impact of Prompt Length for Task1.
+
+Task 1 Model Len = 2 (F1) Len = 3 (F1) Len = 4 (F1)
+
+Grok-3-beta 80.22±5.19 87.20±5.02 82.18±4.99 DeepSeek-R1 71.10±7.09 72.32±6.72 75.04±6.49 Qwen3-235B 40.84±6.60 44.70±7.73 50.08±8.71 GPT-4o 64.08±8.19 65.84±7.62 61.94±7.52 Claude-3.7-Sonnet 82.60±4.95 80.18±6.01 82.30±5.24 LLaMA-3.3-70B-IT 46.06±7.52 54.68±7.80 56.52±8.23 Mistral-Large 49.70±7.15 49.68±8.62 49.42±7.62 DeepSeek-V3 62.88±6.98 68.34±7.25 66.84±7.10 LLaMA-4-Maverick 60.18±7.23 59.58±7.46 60.02±6.93 Gemma-3-27B 56.68±7.96 57.96±7.85 55.86±8.01 Gemma-3-12B 46.88±6.94 50.58±7.83 43.78±7.82 Qwen3-8B 50.16±7.72 58.28±7.57 56.38±7.82 LLaMA-3.1-8B-IT 31.18±6.41 35.92±6.80 27.84±5.78
+
+##### F.3 Reliability of the Gemini-2.5-Pro-based Reference-free Judge inTasks 7-10
+
+To assess the reliability of the reference-free judge based on Gemini-2.5-Pro, we evaluate its scoring of LLaMA-4-Maverick outputs on Task 7 as a toy example. Specifically, we select the five samples that receive the highest scores and the five that receive the lowest scores from Gemini2.5-Pro. We then ask our political expert to review these ten samples and determine which are "good" or "bad" summarizations (5 "good" and 5 "bad" summarizations). We show the confusion matrix in Table 15, and the results show that our reference-free method is indeed reliable.
+
+- Table 15: Confusion Matrix of the Gemini-2.5-Pro-based Reference-free Judge. We evaluate Gemini’s scoring of LLaMA-4-Maverick outputs on Task 7 as a toy example. Specifically, we select the five samples that receive the highest scores and the five that receive the lowest scores from Gemini-2.5-Pro. We then ask our political expert to review these ten samples and determine which are "good" or "bad" summarizations (5 "good" and 5 "bad" summarizations). The confusion matrix shows the reliability of this method.
+
+
+Expert Judgment Predicted Good Predicted Bad
+
+Good 5 0 Bad 0 5
+
+##### F.4 Why Tasks 11-14 Beyond Task 15: Section vs. Full Brief Generation
+
+We provide a concrete example comparing LLM output generated section-by-section versus as a full policy brief. Specifically, we use LLaMA-3.1-8B-Instruct on the paper European battery selfsufficiency [Link et al., 2025a]. We show the results in Table 16, Table 17, Table 18, and Table 19. This example illustrates why Tasks 11–14 are necessary in addition to Task 15 in Sci2Pol-Bench.
+
+- • Task 15 evaluates end-to-end policy brief generation, but Tasks 11-14 aim to capture complementary dimensions of model ability. When LLMs generate briefs one section at a time, they often include more technical detail: precise figures, dataset sizes, or methodological constructs. This section-wise mode highlights a model’s capacity to reproduce fine-grained scientific evidence. However, the sections may drift in terminology, exaggerate findings, or fail to connect implications back to results. The outputs are accurate in isolation but lack global coherence.
+- • In contrast, full-brief generation produces more fluent and coherent outputs. The narrative flows smoothly from the policy problem to the findings, methods, and implications, often with organized recommendations and a consistent tone. Yet this approach tends to sacrifice technical precision. Numbers are simplified, mechanisms skipped, and caveats dropped. These lead to overconfident or generic claims that weaken policy relevance.
+- • Thus, Tasks 11-14 complement Task 15 by disentangling precision from coherence. Section-level generation stresses factual grounding and attention to detail, while full-brief generation stresses holistic structure and readability. Evaluating both provides a fuller picture of LLM performance and reveals trade-offs that Task 15 alone cannot capture. These comparisons justify the inclusion of Tasks 11-14 as critical complements to Task 15.
+
+
+- Table 16: Section-by-section vs. Full-brief Generation. We use LLaMA-3.1-8B-Instruct on the paper European battery self-sufficiency [Link et al., 2025a]. The full brief (Task 15) shows smoother narrative and coherence, while the section-by-section outputs (Tasks 11–14) surface fine-grained technical precision.
+
+
+Task 15: Full brief Tasks 11–14: Sections
+
+Policy Problem: The European Union’s ambition to strengthen national capabilities and selfsufficiency in battery production is at risk due to uncertain demand and production growth rates. The study highlights the need for stakeholders to accelerate production capacities and reckon with demand growth post-2030 to support Europe’s battery prospects.
+
+Task 11 (Policy Problem): The European Union’s ambition to strengthen national capabilities and self-sufficiency in battery production is at odds with the growing demand for batteries in the region. By 2030, European battery demand is projected to exceed 1.0 TWh/yr, far outpacing domestic production capacity, which will require highly ambitious growth rates of 31–68%/yr. Our research suggests that while Europe can cover at least 50–60% of its demand via domestic production by 2030, 90% self-sufficiency seems feasible but far from certain. This exposes Europe to the risk of domestic production shortfalls, decreased competitiveness, and reliance on imports, threatening to undermine the region’s net-zero goals and climate change mitigation efforts. Immediate attention is needed from policymakers and industry leaders to overcome these production challenges, strengthen supply chains, and ensure sustainable battery development.
+
+(Sets stakes succinctly and frames the policy arc; coherence-first framing without tying to modelling choices yet.)
+
+(Numbers and risks front-loaded; standalone problem statement precise but disconnected from other sections.)
+
+Table 17: Section-by-section vs. Full-brief Generation (Continued from Table 16).
+
+###### Task 15: Full brief Tasks 11–14: Sections
+
+Scientific Research Findings: The study uses probabilistic modeling to project future battery demand and domestic production in Europe, covering the EU, EFTA, and the United Kingdom. The results indicate that:
+
+Task 12 (Findings): The study finds that Europe is likely to experience ambitious growth in battery demand, reaching at least 1.0 TWh by 2030, with a high probability of surpassing 1.0 TWh by 2026. However, domestic production capacities are more likely to fall behind terawatt hour scales by 2030, with momentum increasing after 2025. Despite this, it is very likely that Europe can cover at least 50–60% of its demand via domestic production by 2030, and even 90% self-sufficiency seems feasible but far from certain. The study emphasizes the urgent need for reliable policies to ensure domestic production and develop a comprehensive battery ecosystem, including localization of raw material production and recycling. To achieve this, stakeholders must accelerate the materialization of production capacities and consider the potential for ambitious growth rates in production capacity.
+
+- • European demand is likely to exceed 1.0 TWh/yr by 2030, outpacing domestic production.
+- • Domestic production capacity is more likely to fall behind terawatt hour scales by 2030, with momentum increasing after 2025.
+- • At least 50–60% of demand can be covered by domestic production by 2030.
+- • 90% self-sufficiency by 2030 seems fea-
+
+
+sible but far from certain.
+
+(Aggregates key quantities clearly for readability; scenario granularity and caveats are compressed compared to section-level detail.)
+
+(High technical precision in probabilities, thresholds, and timelines; but no linking back to policy problem or methods.)
+
+- Table 18: Section-by-section vs. Full-brief Generation (Continued from Table 17).
+
+
+###### Task 15: Full brief (continued) Tasks 11–14: Sections (continued)
+
+Scientific Research Study Methods: The study employed a probabilistic modeling approach, using the latest empirical data to project future battery demand and domestic production in Europe. The model was implemented in Python, and the results were based on a Monte Carlo simulation (N=1,000) to construct feasibility spaces and classify findings by probability.
+
+Task 13 (Methods): This study projects future battery demand and domestic production capacity in Europe using probabilistic modelling. The research design combines empirical data with a Monte Carlo simulation (N=1,000) to create feasibility spaces and probabilistic statements. The model evaluates Europe’s prospects towards battery self-sufficiency and was implemented in Python. The study focuses on high-energy batteries for battery electric vehicles (BEVs), which are the main demand driver. European demand is projected to increase, but domestic production capacity is likely to fall behind, indicating a risk of domestic production shortfalls. The study also analyzes the European battery value chain, including raw material sourcing and recycling, and highlights the importance of reliable industrial policies to support Europe’s competitiveness in the battery industry.
+
+(Method summarized compactly; omits modelling artifacts and domain specifics that appear explicitly in Task 13.)
+
+(Technical scaffolding explicit here: modelling approach, simulation size, demand drivers. This detail is absent in Task 15’s smoother summary.)
+
+- Table 19: Section-by-section vs. Full-brief Generation (Continued from Table 18).
+
+
+Task 15: Full brief (continued) Tasks 11–14: Sections (continued) Policy Implications:
+
+Task 14 (Policy Implications): To ensure a competitive and sustainable battery ecosystem in Europe, policymakers and industry stakeholders must take immediate action to support domestic production expansion and address potential risks. Our study highlights the need for industrial policies that balance trade protectionism and global competitiveness, creating attractive and predictable home markets that reduce risks for industry players. Reliable policies are crucial to lower risks and ensure certain predictability. To achieve 90% self-sufficiency by 2030, stakeholders must accelerate the materialization of production capacities and consider demand growth post-2030. Investments in local battery production are necessary to avoid shortages in domestic production while keeping track of international developments.
+
+- • Accelerate production capacities to meet growing demand and support Europe’s battery prospects.
+- • Reckon with demand growth post-2030 to ensure a stable and sustainable battery ecosystem.
+- • Implement industrial policies that balance trade protectionism and global competitiveness to create attractive, predictable home markets.
+- • Invest in local battery production to avoid shortages in domestic production and keep track of international developments.
+- • Prioritize establishing fully scaled and sustainable value chains.
+- • Use net materialized production capacities as a basis for projections rather than
+
+
+(Concrete recommendations are explicit but disconnected from modelling details or numerical findings. Lacks coherence across sections.)
+
+announced capacities.
+
+(Actionable storyline; recommendations not explicitly re-anchored to each numerical threshold or method assumption.)
+
+##### F.5 Over-endorsement Analysis on Tasks 16 and 18
+
+We take Tasks 16 and 18 as examples to conduct an over-endorsement analysis by comparing predicted labels ("SUPPORT" or "CONTRADICT") against ground-truth annotations. Specifically, we compute the number of false positives—instances where the model predicts "SUPPORT" despite the true label being "CONTRADICT"—as well as false negatives, where the model fails to endorse a true "SUPPORT" case by predicting "CONTRADICT". For each task, we calculate the false positive rate (FPR), defined as the proportion of CONTRADICT-labeled instances that are incorrectly predicted as SUPPORT, and the false negative rate (FNR), defined as the proportion of SUPPORT-labeled instances that are incorrectly predicted as CONTRADICT. We also compute the ratio of false positives to false negatives (FPR/FNR ratio). A high FPR/FNR ratio indicates a model’s propensity to over-endorse, potentially overstating the strength of scientific support behind science and policy claims. This analysis provides insight into models’ decision biases, which is critical for assessing their reliability in science and policy-relevant contexts.
+
+We show the detailed results in Table 20, and we have the following findings:
+
+- • The FPR/FNR ratios show consistent results across Tasks 16 and 18, with the exception of the model DeepSeek-V3, which exhibits divergent behavior.
+- • Most advanced models do not exhibit over-endorsement, whereas smaller models such as LLaMA-3.3-70B-IT, Gemma-3-27B, Gemma-3-12B, and LLaMA-3.1-8B-IT demonstrate a tendency to over-endorse scientific claims and policy implications.
+
+
+- Table 20: Over-endorsement Analysis on Tasks 16 and 18. We compute the number of false positives—instances where the model predicts "SUPPORT" despite the true label being "CONTRADICT"—as well as false negatives, where the model fails to endorse a true "SUPPORT" case by predicting "CONTRADICT". For each task, the false positive rate (FPR) is defined as the proportion of CONTRADICT-labeled instances that are incorrectly predicted as SUPPORT, and the false negative rate (FNR) is defined as the proportion of SUPPORT-labeled instances that are incorrectly predicted as CONTRADICT. We also show the ratio of false positives to false negatives (FPR/FNR ratio). A high FPR/FNR ratio indicates a model’s propensity to over-endorse, potentially overstating the strength of scientific support behind science and policy claims.
+
+
+Task 16 Task 18 Model FPR FNR FPR / FNR FPR FNR FPR / FNR
+
+Grok-3-beta 0.47 2.34 0.2000 0.57 2.56 0.2222 DeepSeek-R1 0.95 10.05 0.0930 1.72 3.99 0.4286 Qwen3-235B 0.00 8.88 0.0000 0.86 4.56 0.1875 GPT-4o 0.24 2.57 0.0909 0.29 4.84 0.0588 Claude-3.7-Sonnet 0.24 3.04 0.0769 0.29 2.85 0.1000 LLaMA-3.3-70B-IT 0.95 0.93 1.0000 4.01 2.28 1.7500 Mistral-Large 0.95 7.94 0.1176 2.58 16.24 0.1579 DeepSeek-V3 0.95 1.17 0.8000 2.29 1.71 1.3333 LLaMA-4-Maverick 0.71 5.37 0.1304 1.72 3.42 0.5000 Gemma-3-27B 2.13 1.4 1.5000 8.31 2.56 3.2222 Gemma-3-12B 5.92 2.34 2.5000 10.60 0.85 12.3333 Qwen3-8B 0.24 14.49 0.0161 1.43 7.12 0.2000 LLaMA-3.1-8B-IT 18.01 1.87 9.5000 18.34 2.85 6.4000
+
+##### F.6 Information Leakage Check of In-context Polishing in Section 3.3
+
+When applying in-context polishing to revise policy briefs (Section 3.3), we use three reference samples from the 85 expert-written briefs. The three reference samples are
+
+- • Reliable industrial policies required to support the ramp-up of European battery production
+
+– Paper [Link et al., 2025a]; Brief [Link et al., 2025b].
+
+- • How central banks address climate and transition risks – Paper [Shears et al., 2025a]; Brief [Shears et al., 2025b].
+- • Faster deployment of renewables stabilizes electricity prices in Europe – Paper [Navia Simon and Diaz Anadon, 2025b]; Brief [Navia Simon and Diaz Anadon, 2025a].
+
+
+Although the prompt for GPT-o3 instructs the model to mimic only writing style and format (Table 60), there remains a risk of information leakage. To validate that this step does not introduce leakage, we exclude the three samples from Task 15 and use Task 15 for justification. We show the results in Table 21. Gains remain stable, and this shows that in-context polishing does not induce leakage.
+
+- Table 21: Information Leakage Check of In-context Polishing in Section 3.3. Performance on Task 15 with all 85 pairs vs. with the three reference samples removed (82 pairs). Gains remain stable, and this shows that in-context polishing does not induce leakage.
+
+
+85 Expert-written Pairs 82 Expert-written Pairs Model T15 (Reference-based Score) Gain T15 (Reference-based Score) Gain LLaMA-3.1-8B-IT 59.05±1.55 - 58.77±1.62 LLaMA-3.1-8B-SFT 72.76±1.75 +13.71 72.32±1.90 +13.55 Gemma-3-12B 75.71±1.43 - 75.49±1.47 Gemma-3-12B-SFT 76.06±1.66 +0.35 76.10±1.75 +0.61 Gemma-3-27B 80.89±1.26 - 80.30±1.30 Gemma-3-27B-SFT 83.65±1.75 +2.76 83.54±1.76 +3.24
+
+##### F.7 Potential Circularity: GPT vs. DeepSeek Family
+
+A common concern in benchmark design is potential circularity when GPT family models e.g., GPT-o3) generate intermediate data, such as classification labels or gold prompts for tasks where other GPT family models (e.g., GPT-4o) are later evaluated. This “athlete as judge” setup could favor models from the same family because of shared training signals and writing style.
+
+To test whether this issue affects Sci2Pol-Bench, we conduct a controlled comparison on Task 16. We evaluate GPT-4o and DeepSeek-V3 on datasets generated either by GPT-o3 or by a different lineage model, DeepSeek-R1. As shown in Table 22, DeepSeek-V3 consistently outperforms GPT-4o, and both models drop 10-12 points when prompts come from DeepSeek-R1 instead of GPT-o3. DeepSeek-R1 prompts are harder. This demonstrates that any benefit from GPT-o3 prompts applies broadly across models rather than giving GPT-family models a special advantage, and it confirms that the “athlete as judge” concern does not affect our setting.
+
+- Table 22: GPT vs. DeepSeek Family on Task 16. DeepSeek-V3 consistently outperforms GPT4o, and both models drop 10-12 points when prompts come from DeepSeek-R1 instead of GPTo3. DeepSeek-R1 prompts are harder. This demonstrates that any benefit from GPT-o3 prompts applies broadly across models rather than giving GPT family models a special advantage, and it confirms that the “athlete as judge” concern does not affect our setting.
+
+
+###### Model Dataset (GPT-o3) Dataset (DeepSeek-R1)
+
+GPT-4o 98.61 ± 0.39 86.93 ± 1.26 DeepSeek-V3 98.97 ± 0.37 89.00 ± 1.06
+
+##### F.8 Comparison of Writing from an Abstract, an Introduction, and a FullPaper
+
+We compare policy brief generation when the input is the abstract, the introduction, or the full scientific paper. Writing from the full paper requires a much longer input context. This increases inference cost, fine-tuning cost, and technical difficulty. At the same time, it offers richer information for grounding policy-relevant insights.
+
+We first present a concrete example using Grok-3-beta to generate policy briefs for the paper How central banks address climate and transition risks [Shears et al., 2025a], based on three input scopes: (i) the full paper, (ii) the introduction only, and (iii) the abstract only. We show the generated outputs in Table 23, Table 24, Table 25, and Table 26. The outputs enable a detailed comparison across input settings as follows.
+
+- • When a model writes from the abstract only, it captures the headline claim, the main outcome, and the high-level implications. The tone reads confident, and the structure feels clean. However, the draft lacks mechanism, methods detail, and scope limits. Numbers, when present, drift toward round values, and uncertainty language fades. Policy advice turns generic, because the draft does not anchor actions to specific evidence or design choices. The abstract frames motivation and result, but it does not carry the caveats that make a brief credible, so the model tends to overstate precision and under-specify risks.
+- • When a model writes from the introduction only, it provides better context. The draft states the policy stakes, defines terms, and maps the debate. The flow improves, and the problem framing reads stronger. Yet, the introduction centers motivation and gaps, not verification. Methods remain thin, and heterogeneity across cases stays offstage. Claims may adopt the paper’s persuasive setup, which can tilt the brief toward advocacy language. Without the full evidence base, the draft still softens uncertainty, skips mechanism, and treats recommendations at the slogan level, not at the instrument level.
+- • When a model writes from the full paper, it can link evidence to tools. The draft cites methods, describes mechanisms, and carries uncertainty statements. It notes limits, and it distinguishes what is feasible from what is likely. The narrative supports actionable advice, because the draft can name concrete instruments, timing, and trade-offs. Here, the main risks shift. The model can drown readers in detail, mix minor numbers into the main thread, or copy framing that belongs in a technical appendix. If the paper is dense, the model may misread tables or blend results, so careful summarization still matters.
+
+
+- Table 23: Task 16 Outputs Across Input Scopes. We use Grok-3-beta to generate the policy brief for How central banks address climate and transition risks [Shears et al., 2025a] from three input scopes: (i) full paper, (ii) introduction only, and (iii) abstract only. This comparison supports our analysis in Section F.8. The table illustrates how source scope affects Task 15 output quality.
+
+
+###### (i) Full Paper (ii) Introduction Only (iii) Abstract Only Policy Problem
+
+Electricity price volatility, driven by unpredictable fluctuations in global fossil fuel markets, poses a significant economic risk to households, businesses, and national economies. As Europe transitions its energy system, a critical question for policymakers is whether a high share of intermittent renewables, like solar and wind, will increase or decrease this price instability. Understanding this relationship is essential for designing resilient and cost-effective long-term energy strategies.
+
+Climate change and the global transition to clean energy create significant risks for the financial system, including "stranded assets" (devalued fossil fuel investments) and the uncertainties of new clean energy technologies. These risks threaten the stability of national and global economies. Central banks have been identified as key institutions for managing these financial risks, yet their response has been highly inconsistent across countries. This uneven approach creates a critical policy challenge: understanding what drives central banks to act on climate risk is essential for ensuring financial stability and supporting an orderly energy transition.
+
+Climate change and the global transition away from fossil fuels present substantial risks to economic and financial stability. These include "transition risks" (e.g., losses on fossil fuel assets becoming obsolete, known as stranded assets) and "physical risks" (e.g., economic damage from storms, droughts). Central banks, responsible for financial stability, have begun addressing these climate-related risks. However, their actions vary significantly across countries, leading to uncertainty about whether these crucial institutions are effectively managing the underlying economic dangers or are primarily influenced by other factors. This inconsistency creates a potential gap in mitigating systemic financial risks related to climate change.
+
+- Table 24: Task 15 Outputs Across Input Scopes (Continued from Table 23).
+
+
+###### (i) Full Paper (ii) Introduction Only (iii) Abstract Only Scientific Research Findings
+
+- The research demonstrates that renewable energy sources have a powerful stabilizing effect on electricity prices. Key findings include:
+- * By 2030, under current national energy plans, the European power system will be significantly less vulnerable to natural gas price shocks. A e1 increase in the price of natural gas is projected to raise the average electricity price by only e1, a substantial reduction from the current impact of e1.40.
+- * More ambitious renewable deployment yields even greater stability. Increasing the deployment of solar and wind by 30% beyond the 2030 targets would slash the sensitivity to gas prices even further, to less than C0.50 for every C1 increase.
+
+- * This price stabilization effect creates a tangible economic benefit for society, which the study terms an "insurance value." By buffering consumers and industries from fossil fuel price spikes, renewables provide a form of economic insurance.
+
+
+- The study reveals that central bank actions on climate risk are not primarily driven by the magnitude of the underlying economic threats. Instead, political factors are the most significant driver.
+- * Political Will is Crucial: Central banks are far more likely to implement climate risk management measures in countries that already have strong national climate policies and where public opinion shows high concern about climate change.
+- * Economic Risks are Overlooked: There is no significant statistical link between the scale of a country’s transition risks (such as exposure to stranded fossil fuel assets or the need for clean energy investment) and the actions taken by its central bank.
+- * A "Risk Mitigation Gap" Exists: The disconnect between economic risk exposure and central bank action means that financial systems in countries with high climate-related economic risks but low political will are likely being left unprotected.
+
+
+The study reveals considerable differences in how central banks in major economies (OECD and G20) are managing climate risks. Researchers categorized actions into "re-risking" (integrating climate risks into financial supervision, targeting fossil fuels and physical impacts) and "de-risking" (reducing investment risks for clean energy). Key findings indicate:
+
+- * Central bank actions are not significantly associated with the country’s economic exposure to transition risks, such as the size of its fossil fuel sector or the growth rate of its renewable energy industry.
+- * Exposure to physical climate risks showed a statistically significant, though unexpected, positive correlation only with de-risking activities (promoting clean energy), not with re-risking (managing existing climate/fossil fuel risks).
+- * Instead, central bank climate actions are significantly linked to the political context:
+- * Countries with stronger national climate policies tend to have central banks more engaged in re-risking fossil fuel investments and physical climate impacts.
+- * Countries with higher public concern about climate change tend to have central banks more involved in de-risking clean energy investments.
+- * This suggests central banks may be reinforcing national policy directions rather than acting independently as purely technocratic risk managers or compensating for weak national climate policies.
+
+
+- Table 25: Task 15 Outputs Across Input Scopes (Continued from Table 24).
+
+
+###### (i) Full Paper (ii) Introduction Only (iii) Abstract Only Scientific Research Study Methods
+
+The findings are based on a sophisticated computer simulation of the European power markets as they are projected to operate in 2030. The model incorporated the energy infrastructure and renewable capacity targets outlined in Europe’s National Energy and Climate Plans. To test the resilience of this future system, researchers subjected the model to the real-world historical variability of weather patterns, electricity demand, and volatile fossil fuel prices. The study introduced a new metric, "β-sensitivity," to precisely measure how much the average electricity price would change in response to a one-euro change in the price of natural gas.
+
+The researchers conducted a systematic analysis of 47 central banks across the Organization for Economic Co-operation and Development (OECD) and Group of 20 (G20) nations. They created a comprehensive new dataset of central bank actions and developed a novel classification system to distinguish between two key functions:
+
+The findings are based on an original dataset compiled by the researchers, documenting climaterelated policies enacted by central banks across 47 Organization for Economic Co-operation and Development (OECD) and Group of 20 (G20) countries up to August 2023. Policies were systematically classified as primarily "re-risking," "derisking," or both. Composite scores for re-risking and de-risking activity were calculated for each country, weighting policies based on their potential impact and cost. The researchers then used statistical linear regression analysis to test the correlation between these scores and various national indicators, including measures of economic risk (fossil fuel sector size, financial sector size, renewable energy growth, physical climate risk exposure) and political factors (climate policy stringency index, public opinion data on climate concern). The analysis controlled for other country-level variables like GDP, central bank independence, and institutional mandates.
+
+- 1. Re-risking: Actions that integrate the financial risks of fossil fuel investments into standard risk management, discouraging "brown" assets.
+- 2. De-risking: Actions that reduce the investment risks associated with new clean energy technologies, facilitating "green" assets. The study then statistically tested whether these actions were more closely associated with measures of economic risk or with indicators of political pressure, such as existing climate laws and public polling data.
+
+
+- Table 26: Task 15 Outputs Across Input Scopes (Continued from Table 25).
+
+
+###### (i) Full Paper (ii) Introduction Only (iii) Abstract Only Policy Implications
+
+The “insurance value” of renewables is a public good that is not currently recognized or rewarded by market mechanisms. This leads to an undervaluing of renewable energy in investment and policy decisions. To correct this, policymakers should:
+
+- These findings suggest that policymakers cannot assume central banks will act as autonomous, technocratic first responders to climaterelated financial threats.
+- * National Governments Must Lead: Central banks tend to *reinforce* existing national climate policy, not substitute for it. To ensure financial stability, governments must enact clear, strong, and credible climate and energy transition policies. This provides the political legitimacy central banks appear to require before they will act.
+- * Do Not Depend on Central Banks to Fill Policy Gaps: Hopes that central banks could compensate for a lack of political action on decarbonization are misplaced. Their role is more responsive than proactive.
+- * Close the Risk Mitigation Gap: In jurisdictions with weak climate policy, other financial regulators and government bodies must step in to address the unmanaged financial risks of the energy transition. Relying solely on the central bank in these situations could leave the economy vulnerable.
+- * Clarify Central Bank Mandates: Governments can empower central banks by explicitly including the management of climate-related financial risks within their official mandates, thereby reducing ambiguity and concerns over "mission creep."
+
+
+The research suggests that policymakers should not expect central banks to proactively fill gaps left by inadequate national climate policy, particularly concerning the risks of stranded fossil fuel assets. Key implications include:
+
+- * Central banks tend to complement, not substitute: Central bank actions on climate risk appear influenced by, and aligned with, existing national climate policy strength and public sentiment. They are more likely to amplify existing political will than to counteract its absence.
+- * Potential risk mitigation gap: In countries with significant exposure to climate-related financial risks (especially transition risks) but weak climate policies or low public concern, central banks may not be taking sufficient action, leaving substantial risks unmanaged.
+- * Transparency and international standards may help: Increasing transparency about central bank climate actions (e.g., via comparative indices) could create pressure on laggards. Furthermore, developing stronger international standards or best practices through bodies like the Bank for International Settlements (BIS) or the Financial Stability Board (FSB) could encourage more consistent climate risk management across countries, regardless of domestic political headwinds.
+
+
+- 1. Explicitly factor the pricestabilizing benefits of renewables into policy and planning. Costbenefit analyses for energy projects and support schemes should go beyond direct generation costs to include the economic value of reduced price volatility.
+- 2. Pursue and potentially exceed current 2030 renewable energy targets. The research provides a strong economic case that accelerating the deployment of solar and wind power is a direct investment in national economic stability and resilience against fossil fuel market shocks.
+- 3. Design market and support mechanisms that recognize this insurance value. This could inform the structure of renewable energy auctions or other incentives, ensuring that the full societal benefit of renewables is captured, leading to a more efficient and secure energy transition.
+
+
+#### G Details of 85 Expert-written Paper-brief Pairs
+
+We provide the detailed list of pairs in Section G.1 and their yearly distribution in Section G.2.
+
+##### G.1 List of 85 Expert-written Paper-brief Pairs
+
+We document the 85 expert-written scientific paper-policy brief pairs included in Sci2Pol-Bench, citing each source to ensure transparency and reproducibility.
+
+- 1. Paper [Link et al., 2025a]; Brief [Link et al., 2025b].
+- 2. Paper [Shears et al., 2025a]; Brief [Shears et al., 2025b].
+- 3. Paper [Navia Simon and Diaz Anadon, 2025b]; Brief [Navia Simon and Diaz Anadon, 2025a].
+- 4. Paper [van Heerden et al., 2025a]; Brief [van Heerden et al., 2025b].
+- 5. Paper [Millinger et al., 2025b]; Brief [Millinger et al., 2025a].
+- 6. Paper [Odenweller and Ueckerdt, 2025b]; Brief [Odenweller and Ueckerdt, 2025a].
+- 7. Paper [Caggiano et al., 2024b]; Brief [Caggiano et al., 2024a].
+- 8. Paper [O’Shaughnessy et al., 2024b]; Brief [O’Shaughnessy et al., 2024a].
+- 9. Paper [Kennedy et al., 2024a]; Brief [Kennedy et al., 2024b].
+- 10. Paper [Sitarz et al., 2024a]; Brief [Sitarz et al., 2024b].
+- 11. Paper [Link et al., 2024b]; Brief [Link et al., 2024a].
+- 12. Paper [White et al., 2024a]; Brief [White et al., 2024b].
+- 13. Paper [Wolske et al., 2023b]; Brief [Wolske et al., 2023a].
+- 14. Paper [Deshmukh et al., 2023a]; Brief [Deshmukh et al., 2023b].
+- 15. Paper [Gars et al., 2022a]; Brief [Gars et al., 2022b].
+- 16. Paper [Gruber et al., 2022a]; Brief [Gruber et al., 2022b].
+- 17. Paper [Longden et al., 2022a]; Brief [Longden et al., 2022b].
+- 18. Paper [Pachauri et al., 2021a]; Brief [Pachauri et al., 2021b].
+- 19. Paper [Hall et al., 2021b]; Brief [Hall et al., 2021a].
+- 20. Paper [Kitzing et al., 2020a]; Brief [Kitzing et al., 2020b].
+- 21. Paper [Bonan et al., 2020b]; Brief [Bonan et al., 2020a].
+- 22. Paper [Goldstein et al., 2020a]; Brief [Goldstein et al., 2020b].
+- 23. Paper [Mani et al., 2020a]; Brief [Mani et al., 2020b].
+- 24. Paper [Casey et al., 2020b]; Brief [Casey et al., 2020a].
+- 25. Paper [Kontokosta et al., 2020a]; Brief [Kontokosta et al., 2020b].
+- 26. Paper [Kaufmann and Connelly, 2020b]; Brief [Kaufmann and Connelly, 2020a].
+- 27. Paper [Braunholtz-Speight et al., 2020a]; Brief [Braunholtz-Speight et al., 2020b].
+
+
+- 28. Paper [Kar et al., 2019]; Brief [Kar et al., 2020].
+- 29. Paper [Liu and Rajagopal, 2019]; Brief [Rajagopal and Liu, 2020].
+- 30. Paper [White and Sintov, 2020a]; Brief [White and Sintov, 2020b].
+- 31. Paper [Rinscheid and Wüstenhagen, 2019b]; Brief [Rinscheid and Wüstenhagen, 2019a].
+- 32. Paper [Mays et al., 2019a]; Brief [Mays et al., 2019b].
+- 33. Paper [Egli et al., 2018]; Brief [Egli et al., 2019].
+- 34. Paper [Tiefenbeck et al., 2019b]; Brief [Tiefenbeck et al., 2019a].
+- 35. Paper [Azarova et al., 2018]; Brief [Azarova et al., 2019].
+- 36. Paper [Apostoleris et al., 2018]; Brief [Apostoleris et al., 2019].
+- 37. Paper [Mahdavi et al., 2025a]; Brief [Mahdavi et al., 2025b].
+- 38. Paper [Ogier et al., 2025b]; Brief [Ogier et al., 2025a].
+- 39. Paper [Liu et al., 2025a]; Brief [Liu et al., 2025b].
+- 40. Paper [Tang et al., 2024a]; Brief [Tang et al., 2024b].
+- 41. Paper [Druckenmiller et al., 2024a]; Brief [Druckenmiller et al., 2024b].
+- 42. Paper [Nowak et al., 2024b]; Brief [Nowak et al., 2024a].
+- 43. Paper [Lamb et al., 2024a]; Brief [Lamb et al., 2024b].
+- 44. Paper [Gasparini et al., 2024b]; Brief [Gasparini et al., 2024a].
+- 45. Paper [Duan et al., 2024a]; Brief [Duan et al., 2024b].
+- 46. Paper [Andreoni et al., 2024b]; Brief [Andreoni et al., 2024a].
+- 47. Paper [Linsenmeier et al., 2023a]; Brief [Linsenmeier et al., 2023b].
+- 48. Paper [Merfort et al., 2023a]; Brief [Merfort et al., 2023b].
+- 49. Paper [Cerf et al., 2023a]; Brief [Cerf et al., 2023b].
+- 50. Paper [Buck et al., 2023b]; Brief [Buck et al., 2023a].
+- 51. Paper [Harring et al., 2023a]; Brief [Harring et al., 2023b].
+- 52. Paper [Basheer et al., 2023a]; Brief [Basheer et al., 2023b].
+- 53. Paper [Iyer et al., 2022b]; Brief [Iyer et al., 2022a].
+- 54. Paper [de Ruig et al., 2022b]; Brief [de Ruig et al., 2022a].
+- 55. Paper [Bjørn et al., 2022a]; Brief [Bjørn et al., 2022b].
+- 56. Paper [Mildenberger et al., 2022a]; Brief [Mildenberger et al., 2022b].
+- 57. Paper [Budolfson et al., 2021a]; Brief [Budolfson et al., 2021b].
+- 58. Paper [Janssens et al., 2020]; Brief [Janssens et al., 2021].
+- 59. Paper [Moffette et al., 2021b]; Brief [Moffette et al., 2021a].
+- 60. Paper [Bechtel et al., 2020]; Brief [Bechtel et al., 2021].
+- 61. Paper [Peng et al., 2021b]; Brief [Peng et al., 2021a].
+- 62. Paper [Tran et al., 2024]; Brief [Ivanov et al., 2024].
+
+
+- 63. Paper [Diezmartínez et al., 2024b]; Brief [Diezmartínez et al., 2024a].
+- 64. Paper [Mollborn et al., 2025a]; Brief [Mollborn et al., 2025b].
+- 65. Paper [Moinester and Stanhope, 2024a]; Brief [Moinester and Stanhope, 2024b].
+- 66. Paper [Han et al., 2024a]; Brief [Han et al., 2024b].
+- 67. Paper [Dore et al., 2024a]; Brief [Dore et al., 2024b].
+- 68. Paper [McFarland et al., 2023a]; Brief [McFarland et al., 2023b].
+- 69. Paper [Masters et al., 2023a]; Brief [Masters et al., 2023b].
+- 70. Paper [Parbst and Wheaton, 2023a]; Brief [Parbst and Wheaton, 2023b].
+- 71. Paper [Czarnecki et al., 2023a]; Brief [Czarnecki et al., 2023b].
+- 72. Paper [McCabe, 2022a]; Brief [McCabe, 2022b].
+- 73. Paper [Vuolo et al., 2022a]; Brief [Vuolo et al., 2022b].
+- 74. Paper [Anderson and Ray-Warren, 2022a]; Brief [Anderson and Ray-Warren, 2022b].
+- 75. Paper [Augustine, 2021a]; Brief [Augustine, 2021b].
+- 76. Paper [Manzer and Bell, 2021a]; Brief [Manzer and Bell, 2021b].
+- 77. Paper [Berg et al., 2021a]; Brief [Berg et al., 2021b].
+- 78. Paper [Schnittker and Do, 2020a]; Brief [Schnittker and Do, 2020b].
+- 79. Paper [Owens, 2020a]; Brief [Owens, 2020b].
+- 80. Paper [Thombs et al., 2020a]; Brief [Thombs et al., 2020b].
+- 81. Paper [Bierman and Schieman, 2020a]; Brief [Bierman and Schieman, 2020b].
+- 82. Paper [Zhang et al., 2025b]; Brief [Zhang et al., 2025a].
+- 83. Paper [Azar, 2024a]; Brief [Azar, 2024b].
+- 84. Paper [Rapp et al., 2022a]; Brief [Rapp et al., 2022b].
+- 85. Paper [Ci et al., 2024b]; Brief [Ci et al., 2024a].
+
+
+##### G.2 Publication Year Distribution of 85 Policy Briefs
+
+As shown in Table 27, the number of policy briefs grows steadily. This trend highlights the increasing availability of high-quality published data. This suggests strong potential for expanding Sci2Pol-Bench and Sci2Pol-Corpus in the future.
+
+###### Table 27: Publication Year Distribution of the 85 Expert-written Policy Briefs.
+
+Year 2019 2020 2021 2022 2023 2024 2025 Num. of Pairs 6 15 10 11 12 20 11
+
+#### H Examples for Tasks 1-18
+
+In this section, we provide examples for Tasks 1-18, as show in Tables 28 to 45.
+
+###### Table 28: Example for Task 1: Scientific Text Autocompletion.
+
+Prompt: You are given the start of a paragraph from a scientific research paper, ending in “...”. Choose the most coherent continuation from the options below. Query: We do not find an association between exposure to climate hazards and re-risking. Instead, we find that de-risking is positively and significantly correlated with higher exposure to physical climate risks. ...
+
+Options:
+
+- A. This is puzzling and requires further analysis.
+- B. Similarly, a large financial sector increases the direct exposure of an economy to stranded asset risks, which could threaten financial stability.
+- C. It follows that if a country is highly exposed to physical climate risks, it would adopt these practices.
+- D. In fact, prior research has demonstrated a correlation between physical risks and central bank management of climate risks.
+- E. We measure climate hazard exposure by using the exposure component of the Notre Dame Global Adaptation Initiative (ND-Gain) country index. Answer with the letter (A-E) corresponding to the best continuation. Strictly follow this format–do not include any explanations or additional text.
+
+
+- Answer: A
+
+Table 29: Example for Task 2: Political Text Autocompletion.
+
+Prompt: You are given the start of a paragraph from a policy brief, ending in “...”. Choose the most coherent continuation from the options below. Query: The rapid diffusion of battery electric vehicles, in addition to the decarbonization of the energy sector—requires an increasing number of batteries. However, the EU’s goal to cover 90% of its battery demand from domestic production by 2030 is at risk, as projected demand will likely exceed 1.0 TWh per year and outpace production capacity despite highly ambitious growth rates. ... Options:
+
+- A. If Europe fails to scale up production, it may face severe economic and geopolitical risks, due to increased dependence on external suppliers, weakened industrial competitiveness and potential for delayed decarbonization.
+- B. An urgent question is therefore whether Europe can realistically meet its future battery demand through domestic production, and what policy actions are needed to ensure success.
+- C. We find that European battery cell demand will likely surpass 1.0 TWh per year by 2030, whereas domestic production capacity is expected to fall short, creating a risk of supply constraints.
+- D. Although Europe can be expected to meet at least 50-60% of its demand through domestic production by 2030, achieving the EU’s 90% self-sufficiency target is feasible but uncertain, as nearly half of our modelled scenarios fail to meet this target (Fig. 1).
+- E. If Europe wants more independence from battery cell imports, our findings highlight the urgency of accelerating production capacity expansion, scaling up a battery supply chain, and implementing strong industrial policies to support competitiveness and supply sovereignty.
+
+
+Answer with the letter (A-E) corresponding to the best continuation. Strictly follow this format–do not include any explanations or additional text.
+
+- Answer: B
+
+
+###### Table 30: Example for Task 3: Scientific Sentence Reordering.
+
+Prompt: You are given three shuffled sentences that originally formed a coherent paragraph from a scientific research paper. Your task is to determine the correct order by selecting the most logical and coherent sequence.
+
+Shuffled Sentences:
+
+- A. Other key markets, such as the United States and China, have also set ambitious ZEV targets from the 2030s.
+- B. Accordingly, BEVs prevail in the future portfolios of car manufacturers and several European countries will enforce 100% zero-emission vehicle (ZEV) sales for cars by at least 2035, banning large-scale sales of conventional vehicles as sufficient quantities of sustainable fuels are unlikely.
+- C. While some studies have emphasized the difficulties involved in decarbonizing transport, there is robust evidence that battery electric vehicles (BEVs) will form the backbone of future low-carbon road transport.
+
+
+Answer with a permutation of A, B, and C that best restores the original paragraph (e.g., BAC, CAB). Strictly follow this format–do not include any explanations or additional text. Answer: CBA
+
+###### Table 31: Example for Task 4: Political Sentence Reordering.
+
+Prompt: You are given three shuffled sentences that originally formed a coherent paragraph from a policy brief document. Your task is to determine the correct order by selecting the most logical and coherent sequence.
+
+Shuffled Sentences:
+
+- A. Our approach accounts for uncertain ties such as construction delays, utilization rates, and evolving market conditions, and assesses corresponding raw material needs.
+- B. Our study uses probabilistic modelling to project future battery demand and domestic production in Europe and evaluates Europe’s pathway towards battery self-sufficiency via probabilistic statements.
+- C. We independently model demand and supply using S-shaped diffusion curves based on historical data, actual announced production capacities, and practice-oriented findings about how these announced capacities materialize over time.
+
+
+Answer with a permutation of A, B, and C that best restores the original paragraph (e.g., BAC, CAB). Strictly follow this format–do not include any explanations or additional text. Answer: CAB
+
+###### Table 32: Example for Task 5: Sentence Classification.
+
+Prompt: You are given a sentence or paragraph from a scientific research paper. Classify the text into one of the following five categories relevant to policy briefs:
+
+- 1. Policy Problem - Describes the societal or strategic issue that the research aims to address.
+- 2. Scientific Research Findings - Reports key empirical results, model outcomes, or discoveries from the study.
+- 3. Scientific Research Study Methods - Details the data sources, methodologies, models, or analytical procedures used.
+- 4. Policy Implications - Explains how the research findings can inform, influence, or support policy decisions.
+- 5. None - Does not fit into any of the above categories.
+
+
+Your response must be exactly one of the following: Policy Problem | Scientific Research Findings | Scientific Research Study Methods | Policy Implications | None
+
+Text: Batteries are critical to mitigate global warming, with battery electric vehicles as the backbone of low-carbon transport and the main driver of advances and demand for battery technology. However, the future demand and production of batteries remain uncertain, while the ambition to strengthen national capabilities and self-sufficiency is gaining momentum. In this study, leveraging probabilistic modelling, we assessed Europe’s capability to meet its future demand for high-energy batteries via domestic cell production. We found that demand in Europe is likely to exceed 1.0 TWh yr-1 by 2030 and thereby outpace domestic production, with production required to grow at highly ambitious growth rates of 31-68% yr-1. European production is very likely to cover at least 50-60% of the domestic demand by 2030, while 90% self-sufficiency seems feasible but far from certain. Thus, domestic production shortfalls are more likely than not.
+
+Category: Answer: Policy Problem
+
+###### Table 33: Example for Task 6: Scientific Knowledge Understanding.
+
+Prompt: You are given a multiple-choice question. Read the question carefully and select the best answer from the provided options. Each option is labeled with a capital letter (A, B, C, ...). Only one answer is correct. Provide your response as a single letter (e.g., A, B, C, ...).
+
+Question: An ileostomy opening should be:
+
+Options:
+
+- A. less than 1cm in length.
+- B. invisible to the naked eye.
+- C. 3-5cm in length.
+- D. below skin level.
+- E. protruding 10cm from the skin.
+- F. over 10cm in length.
+- G. over 5cm in length.
+
+
+Answer with a single letter (e.g., A, B, C, ...). Strictly follow this format–do not include any explanations or additional text.
+
+- Answer: C
+
+
+###### Table 34: Example for Task 7: Policy Problem Summarization.
+
+Prompt: You are given a passage from a scientific paper that describes part of the policy problem motivating the research. Summarize the specific issue mentioned in the passage using policy-brief style sentences. Your output should:
+
+- - Highlight the problem or challenge described
+- - Use accessible, non-technical language (technical terms are allowed when necessary)
+- - Focus only on what is present in the passage
+
+
+Scientific Text: Research shows that restrictive immigration policies and practices are associated with poor health, but far less is known about the relationship between inclusive immigration policies and health. Using data from the United States natality files, we estimate associations between state laws granting undocumented immigrants access to driver’s licenses and perinatal outcomes among 4,047,067 singleton births to Mexican and Central American immigrant birthing people (2008-2021). Fitting multivariable log binomial and linear models, we find that the implementation of a license law is associated with improvements in low birthweight and mean birthweight. Replicating these analyses among U.S.-born non-Hispanic White birthing people, we find no association between the implementation of a license law and birthweight. These findings support the hypothesis that states’ extension of legal rights to immigrants improves the health of the next generation.
+
+Summary: Answer: None (Use Gemini-2.5-Pro as the judge).
+
+###### Table 35: Example for Task 8: Research Findings Summarization.
+
+Prompt: You are given a passage from a scientific paper that describes part of the research findings. Summarize the specific findings using policy-brief style sentences. Your output should:
+
+- - Clearly state the result(s) presented in the passage
+- - Use plain and direct language (technical terms are allowed when necessary)
+- - Focus only on what is present in the passage
+
+
+Scientific Text: Table 2 displays the results of the ordered logistic regression analyses of community distrust and subjective social isolation. Model 1 shows that, independent of the controls, respondents in 2020 evidenced a significantly increased risk of community distrust. Being a respondent in the 2020 survey was associated with almost 50% greater odds of reporting a higher level of distrust than being a respondent in the 2019 sample. However, these between-wave differences did not vary by age; the interaction between wave of survey and age in Model 2 is not significant.
+
+Summary: Answer: None (Use Gemini-2.5-Pro as the judge).
+
+###### Table 36: Example for Task 9: Study Methods Summarization.
+
+Prompt: You are given a passage from a scientific paper that describes part of the research study’s methodology. Summarize the method or approach using policy-brief style sentences. Your output should:
+
+- - Describe the model, data, or procedure mentioned in the passage
+- - Use clear and accessible language (technical terms are allowed when necessary)
+- - Focus only on what is present in the passage
+
+
+Scientific Text: The survey data were collected by the Energy Institute at the Johannes Kepler University Linz, following high European Union standards of data protection and voluntary study participation. The methodology used in this paper does not require institutional ethical approval according to the guidelines set out by the Energy Institute at the Johannes Kepler University Linz. Confidentiality and anonymity of participants were ensured, and informed written consent was obtained from all the interviewees.
+
+Summary: Answer: None (Use Gemini-2.5-Pro as the judge).
+
+###### Table 37: Example for Task 10: Policy Implications Summarization.
+
+Prompt: You are given a passage from a scientific paper that describes part of the policy implications of the research findings.
+
+Summarize the implication using policy-brief style sentences. Your output should: - Explain how the described result or observation could inform or influence policy - Use accessible language (technical terms are allowed when necessary)
+
+- Focus only on what is present in the passage Scientific Text: This study was conducted in Chicago, Illinois. Although these data were collected before recreational marijuana use was legalized in Illinois, it is possible that attitudes toward marijuana use are generally more permissive in Chicago relative to other parts of the country. Future research should examine regional variations in responses to substance use in perinatal care settings. In addition, this analysis is premised on the uptake of legal tasks by individual providers in settings where testing is based on provider discretion. Studies examining how law shapes provider-patient interactions in systems where universal drug testing is carried out may reveal different patterns and outcomes. Another limitation of this study is that the data reflect providers’ interpretations and perceptions of hospital testing protocol. In the future, researchers should examine official, documented hospital protocols to understand how formal organizational policy shapes provider practices. Finally, given sample size limitations and the wide range of state and organizational responses to substance use during pregnancy, these findings are not intended to capture practices in perinatal care by and large. Rather, these findings reflect dilemmas workers may contend with in settings where they are given latitude over the degree to which they adopt legal tasks or not. Summary: Answer: None (Use Gemini-2.5-Pro as the judge).
+
+###### Table 38: Example for Task 11: Policy Problem Generation.
+
+Prompt: You are given the full text of a scientific research paper. Identify and summarize the policy problem that this research addresses. Your response should:
+
+- - Clearly state the societal, environmental, or strategic issue motivating the study
+- - Be written in accessible, policy-brief style sentences
+- - Focus on the core challenge the research aims to solve
+- - Avoid excessive detail or technical jargon unless necessary for clarity Write a short paragraph suitable for inclusion under the “Policy Problem” section of a policy brief.
+
+
+Scientific Research Paper: {Scientific paper text}
+
+Policy Problem:
+
+Answer: The rapid diffusion of battery electric vehicles — in addition to the decarbonization of the energy sector — requires an increasing number of batteries. However, the EU’s goal to cover 90% of its battery demand from domestic production by 2030 is at risk, as projected demand will likely exceed 1.0 TWh per year and outpace production capacity despite highly ambitious growth rates. If Europe fails to scale up production, it may face severe economic and geopolitical risks, due to increased dependence on external suppliers, weakened industrial competitiveness and potential for delayed decarbonization. An urgent question is therefore whether Europe can realistically meet its future battery demand through domestic production, and what policy actions are needed to ensure success.
+
+###### Table 39: Example for Task 12: Research Findings Generation.
+
+Prompt: You are given the full text of a scientific research paper. Summarize the paper’s key research findings in the style of a policy brief. Your response should:
+
+- - Focus on the major empirical or model-based results
+- - Present findings that are policy-relevant and supported by the study
+- - Use concise, non-technical language with essential technical terms as needed
+- - Avoid quoting directly or summarizing minor details Write a short, clear paragraph appropriate for the “Scientific Research Findings” section of a policy brief.
+
+
+Scientific Research Paper: {Scientific paper text}
+
+Scientific Research Findings:
+
+Answer: We find that European battery cell demand will likely surpass 1.0 TWh per year by 2030, whereas domestic production capacity is expected to fall short, creating a risk of supply constraints. Although Europe can be expected to meet at least 50-60% of its demand through domestic production by 2030, achieving the EU’s 90% self-sufficiency target is feasible but uncertain, as nearly half of our modelled scenarios fail to meet this target. If Europe wants more independence from battery cell imports, our findings highlight the urgency of accelerating production capacity expansion, scaling up a battery supply chain, and implementing strong industrial policies to support competitiveness and supply sovereignty. Our approach is broadly applicable to regions aiming for battery self-sufficiency and should be examined with interacting factors such as policy support and supply chain resilience. However, our analysis does not account for disruptive market shifts, policy reversals, or unexpected technological breakthroughs, which could substantially alter production and demand trajectories.
+
+###### Table 40: Example for Task 13: Study Methods Generation.
+
+Prompt: You are given the full text of a scientific research paper. Summarize the research methods used in the study in a way that is informative for policy audiences. Your response should:
+
+- - Describe the overall study design, data sources, tools, and models used
+- - Avoid unnecessary technical details or equations
+- - Use accessible but precise language Write a short paragraph suitable for the “Scientific Research Study Methods” section of a policy brief.
+
+
+Scientific Research Paper: {Scientific paper text}
+
+Scientific Research Study Methods:
+
+Answer: Our study uses probabilistic modelling to project future battery demand and domestic production in Europe and evaluates Europe’s pathway towards battery self-sufficiency via probabilistic statements. We independently model demand and supply using S-shaped diffusion curves based on historical data, actual announced production capacities, and practice-oriented findings about how these announced capacities materialize over time. Our approach accounts for uncertainties such as construction delays, utilization rates and evolving market conditions, and assesses corresponding raw material needs. This study is particularly relevant given Europe’s policy push toward climate neutrality and striving for resilient, sustainable battery value chains with domestic production and global competitiveness. By applying an established technology diffusion framework, we provide a robust, scenario-based outlook rather than relying on overly optimistic industry projections. Our method is suitable for evaluating long-term industrial transformation and supply chain resilience, making it applicable to other regions with similar ambitions.
+
+###### Table 41: Example for Task 14: Policy Implications Generation.
+
+Prompt: You are given the full text of a scientific research paper. Summarize the study’s policy implications—how the research findings can inform policy or decision-making. Your response should:
+
+- - Interpret what the results suggest for governments, regulators, or institutions
+- - Highlight potential actions, strategies, or decisions informed by the study
+- - Use policy-appropriate language without speculation beyond the study’s conclusions
+- - Be clear, practical, and informative Write a short paragraph for the “Policy Implications” section of a policy brief.
+
+
+Scientific Research Paper: {Scientific paper text}
+
+Policy Implications: Answer:
+
+- • Focus on net materialized production capacities rather than mere corporate announcements to ensure realistic policy planning and avoid overestimations, while ensuring a minimal level of production by local companies utilizing domestic intellectual property.
+- • Create predictable and reliable framework conditions for industry and end users to stimulate market demand and allow capacity announcements to materialize.
+- • Strengthen public-private partnerships to de-risk investments and streamline European regulations to accelerate the scale-up of battery production and regional supply chains.
+- • Create a competitive differentiation and level playing field via de-risking industrial policies, sustainability criteria, and local content requirements at the European level, and carefully balance trade policies to foster competitiveness with options for global collaboration and learning.
+- • Ensure continuous policy support and cascade research and development policies with industrial policies in terms of timing and scope in accordance with the scale-up of battery production and an evolving battery value chain.
+
+
+###### Table 42: Example for Task 15: Policy Brief Generation.
+
+Prompt: You are given the full text of a scientific research paper. Your task is to generate a structured policy brief that includes the following components:
+
+- - A concise, descriptive title that captures the central theme or policy issue addressed in the paper (do not label it with “Title:”).
+- - Policy Problem - What societal or strategic challenge is the paper addressing?
+- - Scientific Research Findings - What are the key results relevant to this issue?
+- - Scientific Research Study Methods - What methodology or data supports these findings?
+- - Policy Implications - How might the findings guide or influence policy?
+
+
+Write each section in a clear, accessible style suitable for policymakers. Avoid overly technical language, but use essential terms when necessary. Structure the output as a labeled five-part policy brief document.
+
+Scientific Research Paper: {Scientific paper text}
+
+Policy Brief: Answer: {Full Policy brief text}
+
+###### Table 43: Example for Task 16: Scientific Claims Verification.
+
+Prompt: You are given a passage from a scientific paper and a research finding derived from it. Your task is to determine whether the finding is fully supported by the information provided in the passage. Respond with one word: SUPPORT - if the finding is clearly and accurately justified by the passage CONTRADICT - if the finding misrepresents, exaggerates, or is not derivable from the passage Do not make assumptions beyond the provided text. Use only the given evidence. Scientific Text: Fuelled by substantial BEV diffusion up to 2035, European battery demand is likely to surpass 1.0 TWhyr-1 by 2030 (in 69% of all scenarios). The interquartile range (IQR) in 2030 is 0.97-1.2 TWh yr-1. Some high-demand scenarios may exceed the 1 TWh threshold as early as 2026 and even approach 1.6 TWh yr-1 by 2030, with the top 10% exceeding 1.30 TWh yr-1. Claimed Finding: In around 69% of model runs, European battery demand exceeds 1 TWh per year by 2030. Answer with SUPPORT or CONTRADICT. Strictly follow this format–do not include any explanations or additional text. Answer (SUPPORT / CONTRADICT): Answer: SUPPORT
+
+###### Table 44: Example for Task 17: Scientific Claims Verification 2.
+
+Prompt: You will be shown a claim related to the COVID-19 pandemic and the abstract of a biomedical research paper. Each sentence from the abstract will be on a separate line. Your task is to return a JSON object with two fields:
+
+- - "verdict": The fact-checking verdict. If the information in the abstract supports the claim, write "SUPPORT". If the abstract contradicts the claim, write "CONTRADICT".
+- - "evidence": An array of sentences providing evidence for the verdict. Please copy all relevant sentences verbatim from the abstract.
+
+
+For instance, if the model were given the claim "the COVID vaccine is safe for healthy adults", the output might be {
+
+"verdict": "SUPPORT", "evidence": ["Our findings indicate that the risks of severe COVID vaccine side effects are low for healthy adults."]
+
+} Claim: The d614g mutation in the sars-cov2 spike protein reduces infectivity in an ace2 receptor-dependent manner Abstract: The SARS-CoV2 coronavirus responsible for the current COVID19 pandemic has been reported to have a relatively low mutation rate. Nevertheless, a few prevalent variants have arisen that give the appearance of undergoing positive selection as they are becoming increasingly widespread over time. Most prominent among these is the D614G amino acid substitution in the SARS-CoV2 Spike protein, which mediates viral entry. The D614G substitution, however, is in linkage disequilibrium with the ORF1b P314L mutation, where both mutations almost invariably co-occur, making functional inferences problematic. In addition, the possibility of repeated new introductions of the mutant strain does not allow one to distinguish between a founder effect and an intrinsic genetic property of the virus. Here, we synthesized and expressed the WT and D614G variant SARS-Cov2 Spike protein, and report that using a SARS-CoV2 Spike protein pseudotyped lentiviral vector we observe that the D614G variant Spike has >1/2 log(10) increased infectivity in human cells expressing the human ACE2 protein as the viral receptor. Answer: {
+
+"verdict": "CONTRADICT", "evidence": [
+
+"Most prominent among these is the D614G amino acid substitution in the SARS-CoV2 Spike protein, which mediates viral entry.", "The increased binding/fusion activity of the D614G Spike protein was corroborated in a cell fusion assay using Spike and ACE2 proteins
+
+expressed in different cells.", }
+
+###### Table 45: Example for Task 18: Policy Implications Verification.
+
+Prompt: You are given the full text of a scientific research paper and a proposed policy implication. Your task is to determine whether the policy implication is fully supported by the scientific research paper. Respond with one word: SUPPORT - if the implication clearly follows from the paper’s results and interpretations CONTRADICT - if the implication misrepresents, overstates, or is not justified by the evidence or conclusions Base your judgment only on what the paper states. Do not speculate beyond the provided content. Full Scientific Paper: {Scientific paper text} Policy Implication: If Europe wants more independence from battery cell imports, our findings highlight the urgency of accelerating production capacity expansion, scaling up a battery supply chain, and implementing strong industrial policies to support competitiveness and supply sovereignty. Answer with SUPPORT or CONTRADICT. Strictly follow this format—do not include any explanations or additional text. Answer (SUPPORT / CONTRADICT): Answer: SUPPORT
+
+#### I Prompts for Sci2Pol-Bench Evaluation and Dataset Curation
+
+We provide detailed prompts used for LLM evaluation and dataset curation for Sci2Pol-Bench.
+
+##### I.1 Tasks 7-10 Prompt for Reference-free Score
+
+We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge for Tasks 7-10 in Table 46. We average the scores from the JSON output and multiply the result by 20 to scale it to a 0–100 range.
+
+###### Table 46: Prompt for LLM-based Judge for Summarization Tasks.
+
+Prompt: You are a strict and critical evaluator of summaries. Evaluate the summary on the following dimensions using a 1-5 scale (1 = very poor, 5
+
+= excellent). Be conservative in your judgments: do not give high scores unless the summary is genuinely outstanding.
+
+- (1) Clarity: whether the summary is reader-friendly and expresses ideas clearly.
+- (2) Accuracy: whether the summary contains the same information as the source document.
+- (3) Coverage: how well the summary covers the important information from the source document.
+- (4) Overall quality: how good the summary is overall at representing the source document; a good summary is a shorter piece of text that has the essence of the original and tries to convey the same information as the source document.
+
+
+Return only a JSON object in this format: {
+
+"clarity": <1-5>, "accuracy": <1-5>, "coverage": <1-5>, "overall_quality": <1-5>
+
+} – Source Passage:
+
+{source passage text} Summary: {summary text}
+
+##### I.2 Task 11 Prompt for Reference-based Score
+
+We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge for Tasks 11 (Policy Problem Generation) in Table 47 and Table 48.
+
+Let prob_imp and prob_qual be their respective JSON outputs, and define the component set
+
+C = {background, existing_problem, consequence, attention_problem, supporting_detail}. We compute the raw score of Task 11 as
+
+Sraw =
+
+prob_imp[c] · prob_qual[c]
+
+c∈C
+
+We then multiply the raw score by 20 to scale it to a maximum value of 100. Table 47: Prompt for LLM-based Judge for Task 11: Policy Problem Generation (Importance).
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER, assign an importance score to each structural component for effectively communicating the policy problem, based only on the PAPER.
+
+###### Components:
+
+- (1) background — what drives the problem (e.g., scientific, environmental, or economic context).
+- (2) existing_problem — the current obstacle, mismatch, or challenge.
+- (3) consequence — potential risks if the problem is not addressed.
+- (4) attention_problem — the key policy issue or question requiring urgent attention.
+- (5) supporting_detail — clarification or elaboration of any of the above. Scoring Instructions:
+
+
+- • Assign an importance score between 0.0 and 1.0 for each component.
+- • A higher score means the component is essential for understanding the policy problem described in the PAPER.
+- • A lower score means the component is optional, minor, or not clearly relevant.
+- • If a component is not justified by the PAPER, assign 0.0. Strict-grading Instructions:
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on the PAPER—no external references or assumptions.
+- • Return exactly the JSON object below (no explanations, no extra keys).
+
+
+Return only a JSON object in this format: {
+
+"background": <0.0-1.0>, "existing_problem": <0.0-1.0>, "consequence": <0.0-1.0>, "attention_problem": <0.0-1.0>, "supporting_detail": <0.0-1.0>
+
+} – PAPER:
+
+{full PAPER text}
+
+###### Table 48: Prompt for LLM-based Judge for Task 11: Policy Problem Generation (Quality).
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER and the CANDIDATE’s policy problem paragraph, assign quality scores to five aspects of how well the problems are conveyed in CANDIDATE_POLICY_PROBLEM. Components:
+
+- (1) background — what drives the problem (e.g., scientific, environmental, or economic context).
+- (2) existing_problem — the current obstacle, mismatch, or challenge.
+- (3) consequence — potential risks if the problem is not addressed.
+- (4) attention_problem — the key policy issue or question requiring urgent attention.
+- (5) supporting_detail — clarification or elaboration of any of the above. Scoring Instructions:
+
+
+- • Assign a quality score between 0.0 and 1.0 for each component.
+- • A higher score means the content is clear, logical, and strongly aligned with the PAPER.
+- • A lower score means the content is vague, incorrect, poorly structured, or missing.
+- • If a component is not addressed, assign 0.0. Strict-grading Instructions:
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on comparisons between PAPER and CANDIDATE.
+- • Return exactly the JSON object below (no explanations, no extra keys).
+- • Only evaluate content in CANDIDATE_POLICY_PROBLEM.
+
+
+Return only a JSON object in this format: {
+
+"background": <0.0-1.0>, "existing_problem": <0.0-1.0>, "consequence": <0.0-1.0>, "attention_problem": <0.0-1.0>, "supporting_detail": <0.0-1.0>
+
+} – PAPER:
+
+{full PAPER text} CANDIDATE_POLICY_PROBLEM: {candidate policy problem paragraph}
+
+##### I.3 Task 12 Prompt for Reference-based Score
+
+We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge for Task 12 (Research Findings Generation) in Section I.3. We average the scores from the JSON output and multiply the result by 100 to scale it to a 0–100 range.
+
+###### Table 49: Prompt for LLM-based Judge for Task 12: Research Findings Generation.
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER and the CANDIDATE’s findings section, assign quality scores to five aspects of how well the findings are conveyed in CANDIDATE_FINDINGS.
+
+###### Criteria:
+
+- (1) completeness — does the section include all important findings from the PAPER?
+- (2) importance — are the findings mentioned actually important according to the PAPER?
+- (3) accuracy — are the described findings factually correct and consistent with the PAPER?
+- (4) summarizing_findings — does the section effectively emphasize and summarize the key messages or implications from the data, rather than just listing facts?
+- (5) specification_to_findings — does the section clarify the scope, context, or limitations of the findings, including conditions under which they apply? Scoring Instructions:
+
+
+- • Assign a score between 0.0 and 1.0 for each criterion.
+- • A higher score means the section performs well on that criterion.
+- • A lower score means the section is vague, misleading, incomplete, or missing that dimension. Strict-grading Instructions:
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on comparisons between PAPER and CANDIDATE.
+- • Return exactly the JSON object below (no explanations, no extra keys).
+
+
+Return only a JSON object in this format: {
+
+"completeness": <0.0-1.0>, "importance": <0.0-1.0>, "accuracy": <0.0-1.0>, "summarizing_findings": <0.0-1.0>, "specification_to_findings": <0.0-1.0>
+
+} – PAPER:
+
+{full PAPER text} CANDIDATE_FINDINGS: {candidate findings section}
+
+- I.4 Task 13 Prompt for Reference-based Score We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge
+
+
+- for Task 13 (Study Methods Generation) in Table 50. We use a weighted rubric with the scores from the JSON output. We give greater weight to the first two criteria, because they carry more information, while the third serves only as an auxiliary signal.
+
+
+Sraw =2 × methods_clarity_and_purpose
+
++ 2 × methods_technicality_appropriateness
+
++ methods_explanation_of_terms
+
+We average the above score by 5 and multiply the result by 100 to scale it to a 0–100 range. Table 50: Prompt for LLM-based Judge for Task 13: Study Methods Generation.
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER and the CANDIDATE’s methods section, assign quality scores to three core aspects of how the methodology is described. Each score should be a float between 0.0 and 1.0.
+
+###### Criteria:
+
+- (1) clarity_and_purpose — Is the method described in a clear, structured way that highlights what was done and why, rather than simply listing tools or data sources?
+- (2) technicality_appropriateness — Is the level of technical detail appropriate for a policy audience without excessive jargon, complexity, or irrelevant detail?
+- (3) explanation_of_terms — Are technical terms, models, or data sources explained in accessible language and context without unexplained acronyms or unclear references? Scoring Instructions:
+
+
+- • Assign a score between 0.0 and 1.0 for each criterion.
+- • A higher score means the section performs well on that criterion.
+- • A lower score means the section is vague, overly technical, unexplained, or missing that dimension. Strict-grading Instructions:
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on comparisons between PAPER and CANDIDATE.
+- • Return exactly the JSON object below (no explanations, no extra keys).
+
+
+Return only a JSON object in this format: {
+
+"clarity_and_purpose": <0.0-1.0>, "technicality_appropriateness": <0.0-1.0>, "explanation_of_terms": <0.0-1.0>
+
+} – PAPER:
+
+{full PAPER text} CANDIDATE_METHOD: {candidate methods section}
+
+- I.5 Task 14 Prompt for Reference-based Score We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge
+
+
+- for Task 14 (Policy Implications Generation) in Table 51. We average the scores from the JSON output and multiply the result by 100 to scale it to a 0–100 range.
+
+
+###### Table 51: Prompt for LLM-based Judge for Task 14: Policy Implications Generation.
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER and the CANDIDATE’s policy implications section, assign quality scores to the following four criteria. Dimensions:
+
+- (1) accuracy — Are the implications explicitly supported by the PAPER without speculative or hallucinated claims?
+- (2) coverage — Does the section capture all major implications stated in the PAPER?
+- (3) conciseness_and_distinctness — Are the implications concise and non-redundant? Each point should make a distinct contribution.
+- (4) alignment_with_paper_intent — Does the implication reflect the PAPER’s main message or takeaway (e.g., recommendation, warning, scientific insight, call to awareness)? Scoring Instructions:
+
+
+- • Assign a score between 0.0 and 1.0 for each dimension.
+- • A higher score means the section performs well on that dimension.
+- • A lower score means the section is vague, incorrect, redundant, or misaligned. Strict-grading Instructions:
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on comparisons between PAPER and CANDIDATE.
+- • Return exactly the JSON object below (no explanations, no extra keys).
+
+
+Return only a JSON object in this format: {
+
+"accuracy": <0.0-1.0>, "coverage": <0.0-1.0>, "conciseness_and_distinctness": <0.0-1.0>, "alignment_with_paper_intent": <0.0-1.0>
+
+} – PAPER:
+
+{full PAPER text} CANDIDATE_IMPLICATION: {candidate policy implications section}
+
+##### I.6 Task 15 Prompt for Reference-based Score
+
+We present the detailed prompt used for Gemini-2.5-Pro when serving as the evaluation judge for Task 15 (Policy Brief Generation) in Table 52. We average the scores from the JSON output and multiply the result by 100 to scale it to a 0–100 range.
+
+###### Table 52: Prompt for LLM-based Judge for Task 15: Policy Brief Generation.
+
+Prompt: You are a strict policy-brief evaluator. Given the full scientific PAPER, an EXPERT-written reference brief, and a CANDIDATE brief, grade the CANDIDATE on four dimensions and produce a compact JSON report.
+
+Evaluation dimensions & conservative 0-5 rubric Start each score at 0 and add points only when the brief clearly meets the criterion. Reserve 4 or 5 for near-flawless performance; 3 means “solid but with notable gaps”; 2 or below signals clear problems. 0 = disastrous 1 = poor 2 = fair 3 = good 4 = very good 5 = excellent
+
+- (1) ContextualDepth: Does the CANDIDATE capture the study’s essential quantitative findings, methods, and broader context (e.g., rawmaterial outlook, scenario count) without missing key facts or adding fluff?
+- (2) HallucinationRisk: Are all claims traceable to the PAPER (or universally known)? Deduct heavily for any unsupported number or causal claim.
+- (3) ReadabilityTone: Is the brief concise, logically ordered, written in active voice, and appropriate for policymakers? Penalize lengthy sentences or jargon.
+- (4) Actionability: Are policy implications concrete, tied directly to evidence, and immediately useful? Vague or speculative advice ≤ 2.
+
+
+Output format (MUST be valid JSON; numeric scores only, no prose): {
+
+"contextual_depth": <0-5>, "hallucination_risk": <0-5>, "readability_tone": <0-5>, "actionability": <0-5>
+
+} Strict-grading instructions:
+
+- • Score conservatively: if unsure, choose the lower score.
+- • Base each score only on comparisons between PAPER and CANDIDATE; EXPERT_BRIEF is reference context.
+- • Return exactly the JSON object above (no explanations, no extra keys).
+
+
+– PAPER:
+
+{full PAPER text} EXPERT_BRIEF: {expert-written brief}
+
+CANDIDATE_BRIEF: {candidate brief}
+
+###### I.7 Task 5 Prompt for Data CurationWe present the detailed prompt used with GPT-o3 when curating the dataset for Task 5 in Table 53.
+
+###### Table 53: Prompt for the Data Curation in Task 5.
+
+Prompt: You are given a scientific paper and a corresponding policy brief. The policy brief includes four components:
+
+- 1. Policy Problem
+- 2. Scientific Research Findings
+- 3. Scientific Research Study Methods
+- 4. Policy Implications
+
+
+Your task is to extract valuable, content-rich passages from the scientific paper that correspond to each of these components, as reflected in the policy brief. Each sample should preferably contain three or more coherent and consecutive sentences, copied verbatim from the scientific paper. However, shorter excerpts are acceptable if they are highly informative. Avoid random, trivial, or disjointed selections.
+
+Assign one of the following five labels to each extracted sample:
+
+- (1) Policy Problem
+- (2) Scientific Research Findings
+- (3) Scientific Research Study Methods (e.g., experimental design, data sources, modeling, and implementation details)
+- (4) Policy Implications
+- (5) None: for content unrelated to the policy translation task (including acknowledgments, author contributions, and institutional affiliations) Return exactly:
+
+
+- - 1 sample for Policy Problem
+- - 5 samples for Scientific Research Findings
+- - 5 samples for Scientific Research Study Methods
+- - 2 samples for Policy Implications
+- - 2 samples for None Output the result as a JSON array of objects, each with the following fields:
+- - "label": one of ["Policy Problem", "Scientific Research Findings", "Scientific Research Study Methods", "Policy Implications", "None"]
+- - "text": the extracted passage copied verbatim from the scientific paper Do not paraphrase. Do not include commentary. Only output a valid JSON array of labeled, verbatim text segments.
+
+
+##### I.8 Task 11 Prompt for Data Curation
+
+We present the detailed prompt used with GPT-o3 when curating the dataset for Task 11 in Table 54.
+
+###### Table 54: Prompt for the Data Curation in Task 11.
+
+Prompt: In the following, you will see three examples. Each example includes a scientific research paper and a paragraph describing the policy problem that the research addresses, as written for a policy brief.
+
+Your task is to write a new policy problem paragraph for a different scientific paper that I will provide.
+
+Note: I will also give you an additional paragraph related to the policy problem for the new paper. You may refer to it for context, but it is not the desired output.
+
+- Example 1: Scientific paper: {scientific paper text} Policy problem paragraph: {policy problem text}
+- Example 2: Scientific paper: {scientific paper text} Policy problem paragraph: {policy problem text}
+- Example 3: Scientific paper: {scientific paper text} Policy problem paragraph: {policy problem text}
+
+
+New Paper: {scientific paper text} Related paragraph for policy problem: {related policy problem text} Policy problem paragraph:
+
+##### I.9 Task 13 Prompt for Data Curation
+
+We present the detailed prompt used with GPT-o3 when curating the dataset for Task 13 in Table 55.
+
+###### Table 55: Prompt for the Data Curation in Task 13.
+
+Prompt: In the following, you will see three examples. Each example includes a scientific research paper and a paragraph describing the scientific research study method that the research addresses, as written for a policy brief.
+
+Your task is to write a new scientific research study method paragraph for a different scientific paper that I will provide. Note: I will also give you an additional paragraph related to the scientific research study method for the new paper. You may refer to it for context, but it is not the desired output. Example 1: Scientific paper: {scientific paper text} Scientific research study method paragraph: {scientific research study method text} Example 2: Scientific paper: {scientific paper text} Scientific research study method paragraph: {scientific research study method text} Example 3: Scientific paper: {scientific paper text} Scientific research study method paragraph: {scientific research study method text} New Paper: {scientific paper text} Related paragraph for scientific research study method: {scientific research study method text} Scientific research study method paragraph:
+
+###### I.10 Task 16 Prompt for Data CurationWe present the prompt used with GPT-o3 when curating the dataset for Task 16 in Table 56.
+
+###### Table 56: Prompt for the Data Curation in Task 16.
+
+Prompt: You are given a scientific research paper. Your task is to generate ten query-answer pairs for the following binary classification task: > Determine whether a stated research finding is fully supported by the research results reported in the scientific paper. Each query-answer pair must include:
+
+- 1. research_results - Copy one or two consecutive paragraphs verbatim from the paper that present empirical findings, statistics, or core observations.
+- 2. research_finding - Write a concise sentence that either:
+
+- - Accurately follows from the results (SUPPORT)
+- - Sounds plausible, but is not actually supported, misstates causal direction, overgeneralizes, or infers something beyond the evidence (CONTRADICT)
+
+
+- 3. answer - Either "SUPPORT" or "CONTRADICT" Requirements:
+
+
+- - Return exactly 10 entries in total.
+- - Include 5 SUPPORT and 5 CONTRADICT examples–no more, no fewer.
+- - Use a different results passage for each entry–do not reuse.
+- - Make the distinction between SUPPORT and CONTRADICT subtle and challenging (e.g., include plausible misinterpretations, causal reversals, or logical overextensions).
+- - Reproduce all paper text exactly as written–no paraphrasing, truncation, or ellipses.
+- - Output only a valid JSON file containing a list of 10 dictionaries.
+- - Each dictionary must contain exactly the following keys: "research_results", "research_finding", and "answer".
+
+
+Output JSON format: {[
+
+{
+
+"research_results": "<verbatim paragraph(s)>", "research_finding": "<concise sentence>", "answer": "SUPPORT" | "CONTRADICT"
+
+}, ...
+
+]}
+
+##### I.11 Task 18 Prompt for Data Curation
+
+We present the detailed prompt used with GPT-o3 when curating the dataset for Task 18 in Table 57.
+
+###### Table 57: Prompt for the Data Curation in Task 18.
+
+Prompt: Please rewrite each of the following policy recommendations to express the opposite meaning as clearly and thoroughly as possible.
+
+Policy Implications: {policy implication text}
+
+#### J Prompts for Sci2Pol-Corpus Curation
+
+In this section, we present the detailed prompts used for Sci2Pol-Corpus curation: (i) the coarsegrained filtering prompt in Section 3.2 (Table 58); (ii) the fine-grained filtering prompt in Section 3.2 (Table 59); and (iii) the in-context polishing prompt in Section 3.3 (Table 60).
+
+###### Table 58: Prompt for the Coarse-grained Filtering Step in Section 3.2
+
+Prompt: I will give you a policy document and a scientific article abstract. Your task is to evaluate whether the policy document is primarily about the scientific article it cites. Consider the following criteria:
+
+- 1. Discussion of the Article’s Content: The policy document must explicitly discuss the findings, methodology, or conclusions of the scientific article in detail.
+- 2. Policy Implications: The document must connect the scientific article to policy decisions, recommendations, or implications for policymakers.
+- 3. Central Focus: The scientific article should be a key focus of the policy document, rather than being just one of many references or a minor supporting citation. Evaluation Steps:
+
+
+- - Read the scientific article abstract to understand its key points.
+- - Analyze the policy document to determine whether it engages with the article’s content, its implications, and whether the article is a central focus.
+- - Score the policy document on the following dimensions:
+
+- • Relevance (0-5): How central is the scientific article to the policy document? (0 = only briefly mentioned, 5 = core focus).
+- • Depth of Discussion (0-5): To what extent does the policy document engage with the scientific article’s content (e.g., findings, methodology, conclusions)? (0 = minimal detail, 5 = in-depth discussion).
+- • Policy Connection (0-5): How well does the policy document translate the scientific article into policy implications or recommendations? (0 = no connection, 5 = strong, explicit connection).
+- • Citation Frequency & Emphasis (0-5): How frequently and prominently is the article referenced in the policy document? (0 = one
+
+
+minor mention, 5 = referenced throughout as a key source).
+
+- - Provide a final verdict on whether the policy document is primarily about the scientific article.
+- - Return the output in a valid JSON format. Output JSON format: {[
+
+
+{
+
+"verdict": "Yes" | "No", "scores": {
+
+"relevance": 0-5, "depth_of_discussion": 0-5, "policy_connection": 0-5, "citation_frequency_emphasis": 0-5
+
+}, "justification": "<3-5 sentence explanation>"
+
+} ]}
+
+###### Table 59: Prompt for the Fine-grained Filtering Step in Section 3.2
+
+Prompt: I will give you a policy document and a scientific article. Your task is to evaluate whether the policy document is primarily about the scientific article. Consider the following criteria:
+
+- 1. Discussion of the Article’s Content: The policy document must explicitly discuss the findings, methodology, or conclusions of the scientific article in detail.
+- 2. Policy Implications: The document must connect the scientific article to policy decisions, recommendations, or implications for policymakers.
+- 3. Central Focus: The scientific article should be a key focus of the policy document, rather than being just one of many references or a minor supporting citation. Evaluation Steps:
+
+
+- - Read the scientific article to understand its key points.
+- - Analyze the policy document to determine whether it engages with the article’s content, its implications, and whether the article is a central focus.
+- - Score the policy document on the following dimensions:
+
+- • Relevance (0-5): How central is the scientific article to the policy document? (0 = only briefly mentioned, 5 = core focus).
+- • Depth of Discussion (0-5): To what extent does the policy document engage with the scientific article’s content (e.g., findings, methodology, conclusions)? (0 = minimal detail, 5 = in-depth discussion).
+- • Policy Connection (0-5): How well does the policy document translate the scientific article into policy implications or recommendations? (0 = no connection, 5 = strong, explicit connection).
+- • Citation Frequency & Emphasis (0-5): How frequently and prominently is the article referenced in the policy document? (0 = one minor mention, 5 = referenced throughout as a key source)
+- • Document Similarity (0-5): Are the policy document and the scientific article almost exactly the same with only minor formatting differences? (0 = the text of policy document is very different from the scientific article, 5 = the two documents are nearly
+
+
+identical).
+
+- - Provide a final verdict on whether the policy document is primarily about the scientific article.
+- - Return the output in a valid JSON format. Output Format: {[
+
+
+{
+
+"verdict": "Yes" | "No", "scores": {
+
+"relevance": 0-5, "depth_of_discussion": 0-5, "policy_connection": 0-5, "citation_frequency_emphasis": 0-5, "doc_similarity": 0-5
+
+}, "justification": "<3-5 sentence explanation>"
+
+} ]}
+
+###### Table 60: Prompt for the In-context Polishing Step in Section 3.3.
+
+###### Prompt:
+
+You are a professional editor specializing in policy briefs based on scientific research. Use the sample scientific papers and their corresponding policy briefs as the standard for tone, structure, and formatting. Based on this reference, revise the draft policy brief for the target scientific paper. Ensure the revised brief is clear, accurate, concise, and policy-relevant, matching the quality of the samples.
+
+- Sample Scientific Paper 1: {scientific paper text}
+
+- Sample Policy Brief 1: {policy brief text}
+
+Sample Scientific Paper 2: {scientific paper text}
+
+- Sample Policy Brief 2: {policy brief text}
+
+Sample Scientific Paper 3: {scientific paper text}
+
+- Sample Policy Brief 3: {policy brief text}
+
+
+
+
+Target Scientific Paper: {scientific paper text} Draft Policy Brief: {policy brief text}
+
+Respond with the revised policy brief only, using the following format:
+
+- - Policy Problem: Concise and precise, aligned with sample quality.
+- - Scientific Research Findings: Comprehensive and coherent (no bullet points), matching the structure of the original paper.
+- - Scientific Research Study Methods: Narrative format (no point form), at the same level of generality and technicality as the samples.
+- - Policy Implications: Bullet points only; grounded strictly in the paper’s findings without speculation or external examples. Requirements:
+- - Maintain the same functional length as the samples: each section should be long enough to reflect the depth and structure of the specific paper, not artificially extended or shortened to match sample length. Do not pad with filler, overexplain to match longer samples, or oversimplify to match shorter ones.
+- - Use a professional, policy-oriented voice for a scientifically literate audience.
+- - Ensure strict factual alignment with the target scientific paper.
+
+
+#### References
+
+Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, et al. Gpt-4 technical report. arXiv preprint arXiv:2303.08774, 2023.
+
+Ahmed Agiza, Mohamed Mostagir, and Sherief Reda. Politune: Analyzing the impact of data selection and fine-tuning on economic and political biases in large language models. In Proceedings of the 2024 AAAI/ACM Conference on AI, Ethics, and Society, pages 2–12, 2024.
+
+Kathryn Freeman Anderson and Darra Ray-Warren. Racial-ethnic residential clustering and early covid-19 vaccine allocations in five urban texas counties. Journal of health and social behavior,
+
+- 63(4):472–490, 2022a. doi: 10.1177/00221465221074915.
+
+Kathryn Freeman Anderson and Darra Ray-Warren. Racial-ethnic residential clustering and early covid-19 vaccine allocations in five urban texas counties. Journal of health and social behavior,
+
+- 63(4):472–490, 2022b. doi: 10.1177/00221465221130917.
+
+
+Pietro Andreoni, Johannes Emmerling, and Massimo Tavoni. Financing negative emissions leads to windfall profits and inequality at net zero. nature climate change, 14(1):20–21, 2024a.
+
+Pietro Andreoni, Johannes Emmerling, and Massimo Tavoni. Inequality repercussions of financing negative emissions. Nature Climate Change, 14(1):48–54, 2024b.
+
+Harry Apostoleris, Sgouris Sgouridis, Marco Stefancich, and Matteo Chiesa. Evaluating the factors that led to low-priced solar electricity projects in the middle east. Nature Energy, 3(12): 1109–1114, 2018.
+
+Harry Apostoleris, Sgouris Sgouridis, Marco Stefancich, and Matteo Chiesa. Utility solar prices will continue to drop all over the world even without subsidies. Nature Energy, 4(10):833–834, 2019.
+
+Diana Arnautu and Christian Dagenais. Use and effectiveness of policy briefs as a knowledge transfer tool: a scoping review. Humanities and Social Sciences Communications, 8(1):1–14, 2021.
+
+Jennifer March Augustine. Mothers’ out-of-sequence postsecondary education and their health and health behaviors. Journal of health and social behavior, 62(1):2–18, 2021a. doi: 10.1177/ 0022146520979664.
+
+Jennifer March Augustine. Mothers’ out-of-sequence postsecondary education and their health and health behaviors. Journal of health and social behavior, 62(1):2–18, 2021b. doi: 10.1177/ 0022146520986008.
+
+Ariel Azar. Work–family life course trajectories and women’s mental health: The moderating role
+
+of defamilization policies in 15 european territories. Journal of health and social behavior, 65
+
+- (4):468–488, 2024a. doi: 10.1177/00221465241265435.
+
+Ariel Azar. Work–family life course trajectories and women’s mental health: The moderating role of defamilization policies in 15 european territories. Journal of health and social behavior, 65
+
+- (4):468–488, 2024b. doi: 10.1177/00221465241291690.
+
+
+Valeriya Azarova, Dominik Engel, Cornelia Ferner, Andrea Kollmann, and Johannes Reichl. Exploring the impact of network tariffs on household electricity expenditures using load profiles and socio-economic characteristics. Nature Energy, 3(4):317–325, 2018.
+
+Valeriya Azarova, Dominik Engel, Cornelia Ferner, Andrea Kollmann, and Johannes Reichl. Transition to peak-load-based tariffs can be disruptive for different groups of consumers. Nature Energy, 4(10):829–830, 2019.
+
+Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, Yang Fan, Wenbin Ge, Yu Han, Fei Huang, et al. Qwen technical report. arXiv preprint arXiv:2309.16609, 2023.
+
+Christopher Barrie, Alexis Palmer, and Arthur Spirling. Replication for language models problems, principles, and best practice for political science. URL: https://arthurspirling. org/documents/BarriePalmerSpirling TrustMeBro. pdf, 2024.
+
+Mohammed Basheer, Victor Nechifor, Alvaro Calzadilla, Solomon Gebrechorkos, David Pritchard, Nathan Forsythe, Jose M Gonzalez, Justin Sheffield, Hayley J Fowler, and Julien J Harou. Cooperative adaptive management of the nile river with climate and socio-economic uncertainties. Nature Climate Change, 13(1):48–57, 2023a.
+
+Mohammed Basheer, Victor Nechifor, Alvaro Calzadilla, Solomon Gebrechorkos, David Pritchard, Nathan Forsythe, Jose M Gonzalez, Justin Sheffield, Hayley J Fowler, and Julien J Harou. Negotiating nile infrastructure management should consider climate change uncertainties. nature climate change, 13(1):17–19, 2023b.
+
+Michael M Bechtel, Kenneth F Scheve, and Elisabeth van Lieshout. Constant carbon pricing increases support for climate action compared to ramping up costs over time. Nature Climate Change, 10(11):1004–1009, 2020.
+
+Michael M Bechtel, Kenneth F Scheve, and Elisabeth van Lieshout. Most people prefer constant carbon costs over increasing cost schedules even if costs are high. Nature Climate Change, 11
+
+(11):909–910, 2021.
+
+Mark T Berg, Ethan M Rogers, Man-Kit Lei, and Ronald L Simons. Losing years doing time: Incarceration exposure and accelerated biological aging among african american adults. Journal
+
+- of health and social behavior, 62(4):460–476, 2021a. doi: 10.1177/00221465211052568.
+
+
+Mark T Berg, Ethan M Rogers, Man-Kit Lei, and Ronald L Simons. Losing years doing time:
+
+Incarceration exposure and accelerated biological aging among african american adults. Journal
+
+- of health and social behavior, 62(4):460–476, 2021b. doi: 10.1177/00221465211055925.
+
+
+Alex Bierman and Scott Schieman. Social estrangement and psychological distress before and during the covid-19 pandemic: Patterns of change in canadian workers. Journal of health and
+
+- social behavior, 61(4):398–417, 2020a. doi: 10.1177/0022146520970190.
+
+Alex Bierman and Scott Schieman. Social estrangement and psychological distress before and during the covid-19 pandemic: Patterns of change in canadian workers. Journal of health and
+
+- social behavior, 61(4):398–417, 2020b. doi: 10.1177/0022146520968770.
+
+
+Anders Bjørn, Shannon M Lloyd, Matthew Brander, and H Damon Matthews. Renewable energy certificates threaten the integrity of corporate science-based targets. Nature Climate Change, 12(6):539–546, 2022a.
+
+Anders Bjørn, Shannon M Lloyd, Matthew Brander, and H Damon Matthews. Renewable energy certificates allow companies to overstate their emission reductions. Nature Climate Change, 12
+
+(6):508–509, 2022b.
+
+Jacopo Bonan, Cristina Cattaneo, Giovanna d’Adda, and Massimo Tavoni. Combining information on others’ energy usage and their approval of energy conservation promotes energy saving behaviour. Nature Energy, 5(11):832–833, 2020a.
+
+Jacopo Bonan, Cristina Cattaneo, Giovanna d’Adda, and Massimo Tavoni. The interaction of descriptive and injunctive social norms in promoting energy conservation. Nature Energy, 5
+
+(11):900–909, 2020b.
+
+Tim Braunholtz-Speight, Maria Sharmina, Edward Manderson, Carly McLachlan, Matthew Hannon, Jeff Hardy, and Sarah Mander. Business models and financial characteristics of community energy in the uk. Nature Energy, 5(2):169–177, 2020a.
+
+Tim Braunholtz-Speight, Maria Sharmina, Edward Manderson, Carly McLachlan, Matthew Hannon, Jeff Hardy, and Sarah Mander. Price support allows communities to raise low-cost citizen finance for renewable energy projects. Nature Energy, 5(2):127–128, 2020b.
+
+Holly Jean Buck, Wim Carton, Jens Friis Lund, and Nils Markusson. Countries’ long-term climate strategies fail to define residual emissions. Nature Climate Change, 13(4):317–319, 2023a.
+
+Holly Jean Buck, Wim Carton, Jens Friis Lund, and Nils Markusson. Why residual emissions matter right now. Nature Climate Change, 13(4):351–358, 2023b.
+
+Mark Budolfson, Francis Dennig, Frank Errickson, Simon Feindt, Maddalena Ferranna, Marc Fleurbaey, David Klenert, Ulrike Kornek, Kevin Kuruc, Aurélie Méjean, et al. Climate action with revenue recycling has benefits for poverty, inequality and well-being. Nature Climate Change, 11(12):1111–1116, 2021a.
+
+Mark Budolfson, Francis Dennig, Frank Errickson, Simon Feindt, Maddalena Ferranna, Marc Fleurbaey, David Klenert, Ulrike Kornek, Kevin Kuruc, Aurélie Méjean, et al. Protecting the poor with a carbon tax and equal per capita dividend. Nature Climate Change, 11(12):1025– 1026, 2021b.
+
+Holly Caggiano, Sara M Constantino, Chris Greig, and Elke U Weber. Community benefits can build bipartisan support for large-scale energy infrastructure. Nature Energy, 9(10):1187–1188, 2024a.
+
+Holly Caggiano, Sara M Constantino, Chris Greig, and Elke U Weber. Public and local policymaker preferences for large-scale energy project characteristics. Nature Energy, 9(10):1230– 1240, 2024b.
+
+Joan A Casey, Jason G Su, Lucas RF Henneman, Corwin Zigler, Andreas M Neophytou, Ralph Catalano, Rahul Gondalia, Yu-Ting Chen, Leanne Kaye, Sarah S Moyer, et al. Coal-fired power plant closures and retrofits reduce asthma morbidity in the local population. Nature Energy, 5 (5):365–366, 2020a.
+
+- Joan A Casey, Jason G Su, Lucas RF Henneman, Corwin Zigler, Andreas M Neophytou, Ralph Catalano, Rahul Gondalia, Yu-Ting Chen, Leanne Kaye, Sarah S Moyer, et al. Improved asthma outcomes observed in the vicinity of coal power plant retirement, retrofit and conversion to natural gas. Nature energy, 5(5):398–408, 2020b.
+
+
+Moran Cerf, Sandra C Matz, and Malcolm A MacIver. Participating in a climate prediction market increases concern about global warming. Nature Climate Change, 13(6):523–531, 2023a.
+
+Moran Cerf, Sandra C Matz, and Malcolm A MacIver. Participating in a climate futures market increases support for costly climate policies. nature climate change, 13(6):511–512, 2023b.
+
+Zhijia Ci, Wenjie Shen, Baowei Chen, Yanbin Li, Yongguang Yin, Xiaoshan Zhang, and Yong Cai. Mercury risk in blue carbon ecosystems. Nature Sustainability, 7(12):1560–1561, 2024a.
+
+Zhijia Ci, Wenjie Shen, Baowei Chen, Yanbin Li, Yongguang Yin, Xiaoshan Zhang, and Yong Cai. Potential increase of neurotoxic mercury risk in global blue carbon nature-based solutions. Nature Sustainability, 7(12):1592–1595, 2024b.
+
+Danielle Czarnecki, Danielle Bessett, Hillary J Gyuras, Alison H Norris, and Michelle L McGowan. State of confusion: Ohio’s restrictive abortion landscape and the production of uncertainty in reproductive health care. Journal of health and social behavior, 64(4):470–485,
+
+- 2023a. doi: 10.1177/00221465231172177.
+
+Danielle Czarnecki, Danielle Bessett, Hillary J Gyuras, Alison H Norris, and Michelle L McGowan. State of confusion: Ohio’s restrictive abortion landscape and the production of uncertainty in reproductive health care. Journal of health and social behavior, 64(4):470–485,
+
+- 2023b. doi: 10.1177/00221465231209380.
+
+
+Tri Dao. Flashattention-2: Faster attention with better parallelism and work partitioning. In International Conference on Learning Representations, 2024.
+
+Lars T de Ruig, Toon Haer, Hans de Moel, Samuel D Brody, WJ Wouter Botzen, Jeffrey Czajkowski, and Jeroen CJH Aerts. Climate-proofing the national flood insurance program. nature climate change, 12(11):975–976, 2022a.
+
+Lars T de Ruig, Toon Haer, Hans de Moel, Samuel D Brody, WJ Wouter Botzen, Jeffrey Czajkowski, and Jeroen CJH Aerts. How the usa can benefit from risk-based premiums combined with flood protection. Nature Climate Change, 12(11):995–998, 2022b.
+
+Ranjit Deshmukh, Paige Weber, Olivier Deschenes, Danae Hernandez-Cortes, Tia Kordell, Ruiwen Lee, Christopher Malloy, Tracey Mangin, Measrainsey Meng, Sandy Sum, et al. Equitable low-carbon transition pathways for california’s oil extraction. Nature Energy, 8(6):597–609, 2023a.
+
+Ranjit Deshmukh, Paige Weber, Olivier Deschenes, Danae Hernandez-Cortes, Tia Kordell, Ruiwen Lee, Christopher Malloy, Tracey Mangin, Measrainsey Meng, Sandy Sum, et al. Well setbacks limit california’s oil supply with larger health benefits and employment losses than excise and carbon taxes. Nature Energy, 8(6):562–564, 2023b.
+
+Claudia V Diezmartínez, Benjamin K Sovacool, and Anne G Short Gianotti. Implementing climate justice in boston’s building performance standard. Nature Cities, 1(10):628–630, 2024a.
+
+Claudia V Diezmartínez, Benjamin K Sovacool, and Anne G Short Gianotti. Operationalizing climate justice in the implementation of boston’s building performance standard. Nature Cities, 1(10):665–676, 2024b.
+
+Emily C Dore, Surbhi Shrivastava, and Patricia Homan. Structural sexism and preventive health care use in the united states. Journal of health and social behavior, 65(1):2–19, 2024a. doi: 10.1177/00221465231194043.
+
+Emily C Dore, Surbhi Shrivastava, and Patricia Homan. Structural sexism and preventive health care use in the united states. Journal of health and social behavior, 65(1):2–19, 2024b. doi: 10.1177/00221465241226808.
+
+Hannah Druckenmiller, Yanjun Liao, Sophie Pesek, Margaret Walls, and Shan Zhang. Removing development incentives in risky areas promotes climate adaptation. Nature Climate Change, 14
+
+(9):936–942, 2024a.
+
+Hannah Druckenmiller, Yanjun Liao, Sophie Pesek, Margaret Walls, and Shan Zhang. Removing development incentives in risky areas reduces climate damages and yields co-benefits. Nature Climate Change, 14(9):901–902, 2024b.
+
+James N Druckman. Communicating policy-relevant science. PS: Political Science & Politics, 48 (S1):58–69, 2015.
+
+Yuwan Duan, Zengkai Zhang, Yuze Li, Shouyang Wang, Cuihong Yang, and Yi Lu. Global corporate tax competition challenges climate change mitigation. Nature Climate Change, 14
+
+(4):353–356, 2024a.
+
+Yuwan Duan, Zengkai Zhang, Yuze Li, Shouyang Wang, Cuihong Yang, and Yi Lu. Global corporate tax competition leads to unintended yet non-negligible climate impacts. Nature Climate Change, 14(4):314–315, 2024b.
+
+Florian Egli, Bjarne Steffen, and Tobias S Schmidt. A dynamic analysis of financing conditions for renewable energy technologies. Nature Energy, 3(12):1084–1092, 2018.
+
+Florian Egli, Bjarne Steffen, and Tobias S Schmidt. Learning in the financial sector is essential for reducing renewable energy costs. Nature Energy, 4(10):835–836, 2019.
+
+Alexander C. Furnas, Timothy M. LaPira, and Dashun Wang. Partisan disparities in the use of science in policy. Science, 388(6745):362–367, 2025. doi: 10.1126/science.adk2321.
+
+Johan Gars, Daniel Spiro, and Henrik Wachtmeister. The effect of european fuel-tax cuts on the oil income of russia. Nature Energy, 7(10):989–997, 2022a.
+
+Johan Gars, Daniel Spiro, and Henrik Wachtmeister. European fuel tax cuts increase russian oil profits. Nature Energy, 7(10):912–913, 2022b.
+
+Matteo Gasparini, Matthew Ives, Ben Carr, Sophie Fry, and Eric Beinhocker. Model-based financial regulation challenges for the net-zero transition. Nature Climate Change, 14(5):434–435, 2024a.
+
+Matteo Gasparini, Matthew C Ives, Ben Carr, Sophie Fry, and Eric Beinhocker. Model-based financial regulations impair the transition to net-zero carbon emissions. Nature Climate Change, 14(5):476–481, 2024b.
+
+Anna Goldstein, Claudia Doblinger, Erin Baker, and Laura Díaz Anadón. Patenting and business outcomes for cleantech startups funded by the advanced research projects agency-energy. Nature Energy, 5(10):803–810, 2020a.
+
+Anna Goldstein, Claudia Doblinger, Erin Baker, and Laura Díaz Anadón. Startups supported by arpa-e were more innovative than others but an investment gap may remain. Nature Energy, 5
+
+(10):741–742, 2020b.
+
+Katharina Gruber, Tobias Gauster, Gregor Laaha, Peter Regner, and Johannes Schmidt. Profitability and investment risk of texan power system winterization. Nature Energy, 7(5):409–416,
+
+- 2022a.
+
+Katharina Gruber, Tobias Gauster, Gregor Laaha, Peter Regner, and Johannes Schmidt. Winterizing power plants pays off for risk-neutral investors in texas. Nature Energy, 7(5):398–399,
+
+- 2022b.
+
+
+Stephen Hall, Jillian Anable, Jeffrey Hardy, Mark Workman, Christoph Mazur, and Yvonne Matthews. Innovative energy business models appeal to specific consumer groups but may exacerbate existing inequalities for the disengaged. Nature Energy, 6(4):337–338, 2021a.
+
+Stephen Hall, Jillian Anable, Jeffrey Hardy, Mark Workman, Christoph Mazur, and Yvonne Matthews. Matching consumer segments to innovative utility business models. Nature Energy, 6(4):349–361, 2021b.
+
+Xiaowen Han, Tom VanHeuvelen, Jeylan T Mortimer, and Zachary Parolin. Cumulative unionization and physical health disparities among older adults. Journal of health and social behavior,
+
+- 65(2):162–181, 2024a. doi: 10.1177/00221465231205266.
+
+Xiaowen Han, Tom VanHeuvelen, Jeylan T Mortimer, and Zachary Parolin. Cumulative unionization and physical health disparities among older adults. Journal of health and social behavior,
+
+- 65(2):162–181, 2024b. doi: 10.1177/00221465241248972.
+
+
+Niklas Harring, Erik Jönsson, Simon Matti, Gabriela Mundaca, and Sverker C Jagers. Crossnational analysis of attitudes towards fossil fuel subsidy removal. Nature Climate Change, 13
+
+(3):244–249, 2023a.
+
+Niklas Harring, Erik Jönsson, Simon Matti, Gabriela Mundaca, and Sverker C Jagers. Public acceptance of fossil fuel subsidy removal can be reinforced with revenue recycling. nature climate change, 13(3):214–215, 2023b.
+
+Pin-Lun Hsu, Yun Dai, Vignesh Kothapalli, Qingquan Song, Shao Tang, Siyu Zhu, Steven Shimizu, Shivam Sahni, Haowen Ning, Yanning Chen, and Zhipeng Wang. Liger-kernel: Efficient triton kernels for LLM training. In Championing Open-source DEvelopment in ML Workshop @ ICML25, 2025. URL https://openreview.net/forum?id=36SjAIT42G.
+
+Yue Huang, Zhengqing Yuan, Yujun Zhou, Kehan Guo, Xiangqi Wang, Haomin Zhuang, Weixiang Sun, Lichao Sun, Jindong Wang, Yanfang Ye, et al. Social science meets llms: How reliable are large language models in social simulations? arXiv preprint arXiv:2410.23426, 2024.
+
+Yue Huang, Chujie Gao, Siyuan Wu, Haoran Wang, Xiangqi Wang, Yujun Zhou, Yanbo Wang, Jiayi Ye, Jiawen Shi, Qihui Zhang, et al. On the trustworthiness of generative foundation models: Guideline, assessment, and perspective. arXiv preprint arXiv:2502.14296, 2025.
+
+Valeriy Y Ivanov, Vinh Ngoc Tran, Weichen Huang, Kevin Murphy, Fariborz Daneshvar, Jeff H Bednar, G Aaron Alexander, Jongho Kim, and Daniel B Wright. Urban flooding is intensified by outdated design guidelines and a lack of a systems approach. Nature Cities, 1(10):626–627, 2024.
+
+Gokul Iyer, Yang Ou, James Edmonds, Allen A Fawcett, Nathan Hultman, James McFarland, Jay Fuhrman, Stephanie Waldhoff, and Haewon McJeon. The path to 1.5 c requires ratcheting of climate pledges. Nature climate change, 12(12):1092–1093, 2022a.
+
+Gokul Iyer, Yang Ou, James Edmonds, Allen A Fawcett, Nathan Hultman, James McFarland, Jay Fuhrman, Stephanie Waldhoff, and Haewon McJeon. Ratcheting of climate pledges needed to limit peak global warming. Nature Climate Change, 12(12):1129–1135, 2022b.
+
+Charlotte Janssens, Petr Havlík, Tamás Krisztin, Justin Baker, Stefan Frank, Tomoko Hasegawa, David Leclère, Sara Ohrel, Shaun Ragnauth, Erwin Schmid, et al. Global hunger and climate change adaptation through international trade. Nature climate change, 10(9):829–835, 2020.
+
+Charlotte Janssens, Petr Havlík, Tamás Krisztin, Justin Baker, Stefan Frank, Tomoko Hasegawa, David Leclère, Sara Ohrel, Shaun Ragnauth, Erwin Schmid, et al. International trade is a key component of climate change adaptation. Nature Climate Change, 11(11):915–916, 2021.
+
+Abhishek Kar, Shonali Pachauri, Rob Bailis, and Hisham Zerriffi. Using sales data to assess cooking gas adoption and the impact of india’s ujjwala programme in rural karnataka. Nature Energy, 4(9):806–814, 2019.
+
+Abhishek Kar, Shonali Pachauri, Rob Bailis, and Hisham Zerriffi. Capital cost subsidies through india’s ujjwala cooking gas programme promote rapid adoption of liquefied petroleum gas but not regular use. Nature Energy, 5(2):125–126, 2020.
+
+Robert K Kaufmann and Caitlin Connelly. Non-market forces significantly affect oil prices. Nature Energy, 5(2):129–130, 2020a.
+
+Robert K Kaufmann and Caitlin Connelly. Oil price regimes and their role in price diversions from market fundamentals. Nature Energy, 5(2):141–149, 2020b.
+
+Kathleen M Kennedy, Morgan R Edwards, Claudia Doblinger, Zachary H Thomas, Maria A Borrero, Ellen D Williams, Nathan E Hultman, and Kavita Surana. The effects of corporate investment and public grants on climate and energy startup outcomes. Nature Energy, 9(7):883–893, 2024a.
+
+Kathleen M Kennedy, Morgan R Edwards, Claudia Doblinger, Zachary H Thomas, Maria A Borrero, Ellen D Williams, Nathan E Hultman, and Kavita Surana. Rapid rise in corporate climate-tech investments complements support from public grants. Nature Energy, 9(7):773– 774, 2024b.
+
+Lena Kitzing, Morten Kofoed Jensen, Thomas Telsnig, and Eric Lantz. Multifaceted drivers for onshore wind energy repowering and their implications for energy transition. Nature Energy, 5
+
+(12):1012–1021, 2020a.
+
+Lena Kitzing, Morten Kofoed Jensen, Thomas Telsnig, and Eric Lantz. Multifaceted political and social drivers inform wind energy repowering decisions and potential. Nature Energy, 5(12): 950–951, 2020b.
+
+Constantine E Kontokosta, Danielle Spiegel-Feld, and Sokratis Papadopoulos. The impact of mandatory energy audits on building energy use. Nature Energy, 5(4):309–316, 2020a.
+
+Constantine E Kontokosta, Danielle Spiegel-Feld, and Sokratis Papadopoulos. Mandatory building energy audits alone are insufficient to meet climate goals. Nature Energy, 5(4):282–283, 2020b.
+
+William F Lamb, Thomas Gasser, Rosa M Roman-Cuesta, Giacomo Grassi, Matthew J Gidden, Carter M Powis, Oliver Geden, Gregory Nemet, Yoga Pratama, Keywan Riahi, et al. The carbon dioxide removal gap. Nature Climate Change, 14(6):644–651, 2024a.
+
+William F Lamb, Thomas Gasser, Rosa M Roman-Cuesta, Giacomo Grassi, Matthew J Gidden, Carter M Powis, Oliver Geden, Gregory Nemet, Yoga Pratama, Keywan Riahi, et al. Current national proposals are off track to meet carbon dioxide removal needs. Nature Climate Change, 14(6):555–556, 2024b.
+
+Haitao Li, You Chen, Qingyao Ai, Yueyue Wu, Ruizhe Zhang, and Yiqun Liu. Lexeval: A comprehensive chinese legal benchmark for evaluating large language models. In The Thirtyeighth Annual Conference on Neural Information Processing Systems, 2024a.
+
+Lincan Li, Jiaqi Li, Catherine Chen, Fred Gui, Hongjia Yang, Chenxiao Yu, Zhengguang Wang, Jianing Cai, Junlong Aaron Zhou, Bolin Shen, et al. Political-llm: Large language models in political science. arXiv preprint arXiv:2412.06864, 2024b.
+
+Sihang Li, Jin Huang, Jiaxi Zhuang, Yaorui Shi, Xiaochen Cai, Mingjun Xu, Xiang Wang, Linfeng Zhang, Guolin Ke, and Hengxing Cai. Scilitllm: How to adapt llms for scientific literature understanding. arXiv preprint arXiv:2408.15545, 2024c.
+
+Zihang Lin, Yian Yin, Lu Liu, and Dashun Wang. Sciscinet: A large-scale open data lake for the science of science research. Scientific Data, 10(1):315, 2023.
+
+Steffen Link, Annegret Stephan, Daniel Speth, and Patrick Plötz. Declining costs imply fast market uptake of zero-emission trucks. Nature Energy, 9(8):924–925, 2024a.
+
+Steffen Link, Annegret Stephan, Daniel Speth, and Patrick Plötz. Rapidly declining costs of truck batteries and fuel cells enable large-scale road freight electrification. Nature Energy, 9
+
+(8):1032–1039, 2024b.
+
+Steffen Link, Lara Schneider, Annegret Stephan, Lukas Weymann, and Patrick Plötz. Feasibility of meeting future battery demand via domestic cell production in europe. Nature Energy, pages 1–9, 2025a.
+
+Steffen Link, Lara Schneider, Annegret Stephan, Lukas Weymann, and Patrick Plötz. Reliable industrial policies required to support the ramp-up of european battery production. Nature Energy, pages 1–2, 2025b.
+
+Manuel Linsenmeier, Adil Mohommad, and Gregor Schwerhoff. Global benefits of the international diffusion of carbon pricing policies. Nature Climate Change, 13(7):679–684, 2023a.
+
+Manuel Linsenmeier, Adil Mohommad, and Gregor Schwerhoff. Leadership in carbon pricing encourages other countries to follow. nature climate change, 13(7):613–614, 2023b.
+
+Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bochao Wu, Chengda Lu, Chenggang Zhao, Chengqi Deng, Chenyu Zhang, Chong Ruan, et al. Deepseek-v3 technical report. arXiv preprint arXiv:2412.19437, 2024a.
+
+Bo Liu and Deepak Rajagopal. Life-cycle energy and climate benefits of energy recovery from wastes and biomass residues in the united states. Nature Energy, 4(8):700–708, 2019.
+
+Yixin Liu, Alexander Richard Fabbri, Jiawen Chen, Yilun Zhao, Simeng Han, Shafiq Joty, Pengfei Liu, Dragomir Radev, Chien-Sheng Wu, and Arman Cohan. Benchmarking generation and evaluation capabilities of large language models for instruction controllable summarization. In Findings of the Association for Computational Linguistics: NAACL 2024, pages 4481–4501, 2024b.
+
+Yu Liu, Mingxi Du, Lingyu Yang, Qi Cui, Yawen Liu, Xinbei Li, Nenggao Zhu, Ying Li, Chen Jiang, Peng Zhou, et al. Mitigation policies interactions delay the achievement of carbon neutrality in china. Nature Climate Change, 15(2):147–152, 2025a.
+
+Yu Liu, Mingxi Du, Lingyu Yang, Qi Cui, Yawen Liu, Xinbei Li, Nenggao Zhu, Ying Li, Chen Jiang, Peng Zhou, et al. Policy interactions make achieving carbon neutrality in china more challenging. Nature Climate Change, 15(2):134–135, 2025b.
+
+Thomas Longden, Simon Quilty, Brad Riley, Lee V White, Michael Klerck, Vanessa Napaltjari Davis, and Norman Frank Jupurrurla. Energy insecurity during temperature extremes in remote australia. Nature Energy, 7(1):43–54, 2022a.
+
+Thomas Longden, Simon Quilty, Brad Riley, Lee V White, Michael Klerck, Vanessa Napaltjarri Davis, and Norman Frank Jupurrurla. Temperature extremes exacerbate energy insecurity for indigenous communities in remote australia. Nature Energy, 7(1):11–12, 2022b.
+
+Paasha Mahdavi, Michael L Ross, and Evelyn Simoni. Fossil fuel subsidy reforms have become more fragile. Nature Climate Change, pages 1–6, 2025a.
+
+Paasha Mahdavi, Michael L Ross, and Evelyn Simoni. Government efforts to reduce fossil fuel subsidies have failed at a very high rate. Nature Climate Change, pages 1–2, 2025b.
+
+Sunil Mani, Abhishek Jain, Saurabh Tripathi, and Carlos F Gould. The drivers of sustained use of liquified petroleum gas in india. Nature Energy, 5(6):450–457, 2020a.
+
+Sunil Mani, Abhishek Jain, Saurabh Tripathi, and Carlos F Gould. Sustained lpg use requires progress on broader development outcomes. Nature energy, 5(6):430–431, 2020b.
+
+Jamie L Manzer and Ann V Bell. “we’re a little biased”: Medicine and the management of bias through the case of contraception. Journal of Health and Social Behavior, 62(2):120–135,
+
+- 2021a. doi: 10.1177/00221465211003232.
+
+
+Jamie L Manzer and Ann V Bell. “we’re a little biased”: Medicine and the management of bias through the case of contraception. Journal of Health and Social Behavior, 62(2):120–135,
+
+- 2021b. doi: 10.1177/00221465211008328.
+
+
+Ryan K Masters, Andrea M Tilstra, Daniel H Simon, and Kate Coleman-Minahan. Differences in determinants: racialized obstetric care and increases in us state labor induction rates. Journal
+
+- of health and social behavior, 64(2):174–191, 2023a. doi: 10.1177/00221465231165284.
+
+Ryan K Masters, Andrea M Tilstra, Daniel H Simon, and Kate Coleman-Minahan. Differences in determinants: racialized obstetric care and increases in us state labor induction rates. Journal
+
+- of health and social behavior, 64(2):174–191, 2023b. doi: 10.1177/00221465231171627.
+
+
+Jacob Mays, David P Morton, and Richard P O’Neill. Asymmetric risk and fuel neutrality in electricity capacity markets. Nature Energy, 4(11):948–956, 2019a.
+
+Jacob Mays, David P Morton, and Richard P O’Neill. Decarbonizing electricity requires reevaluating capacity mechanisms. Nature Energy, 4(11):912–913, 2019b.
+
+Katharine McCabe. Criminalization of care: drug testing pregnant patients. Journal of Health and Social Behavior, 63(2):162–176, 2022a. doi: 10.1177/00221465211058152.
+
+Katharine McCabe. Criminalization of care: drug testing pregnant patients. Journal of Health and Social Behavior, 63(2):162–176, 2022b. doi: 10.1177/00221465221097453.
+
+Nolan McCarty, Keith T Poole, and Howard Rosenthal. Polarized America: The dance of ideology and unequal riches. mit Press, 2016.
+
+Michael J McFarland, Terrence D Hill, and Jennifer Karas Montez. Income inequality and population health: examining the role of social policy. Journal of health and social behavior, 64(1):
+
+- 2–20, 2023a. doi: 10.1177/00221465221109202.
+
+Michael J McFarland, Terrence D Hill, and Jennifer Karas Montez. Income inequality and population health: examining the role of social policy. Journal of health and social behavior, 64(1):
+
+- 2–20, 2023b. doi: 10.1177/00221465221150307.
+
+
+Leon Merfort, Nico Bauer, Florian Humpenöder, David Klein, Jessica Strefler, Alexander Popp, Gunnar Luderer, and Elmar Kriegler. Bioenergy-induced land-use-change emissions with sectorally fragmented policies. Nature Climate Change, 13(7):685–692, 2023a.
+
+Leon Merfort, Nico Bauer, Florian Humpenöder, David Klein, Jessica Strefler, Alexander Popp, Gunnar Luderer, and Elmar Kriegler. State of global land regulation inadequate to control biofuel land-use-change emissions. Nature Climate Change, 13(7):610–612, 2023b.
+
+Matto Mildenberger, Erick Lachapelle, Kathryn Harrison, and Isabelle Stadelmann-Steffen. Limited impacts of carbon tax rebate programmes on public support for carbon pricing. Nature Climate Change, 12(2):141–147, 2022a.
+
+Matto Mildenberger, Erick Lachapelle, Kathryn Harrison, and Isabelle Stadelmann-Steffen. Limited evidence that carbon tax rebates have increased public support for carbon pricing. Nature climate change, 12(2):121–122, 2022b.
+
+Markus Millinger, F Hedenus, E Zeyen, F Neumann, L Reichenberg, and G Berndes. Biomass exclusion must be weighed against benefits of carbon supply in european energy system. Nature Energy, 10(2):159–161, 2025a.
+
+Markus Millinger, Fredrik Hedenus, E Zeyen, Fabian Neumann, L Reichenberg, and Göran Berndes. Diversity of biomass usage pathways to achieve emissions targets in the european energy system. Nature Energy, 10(2):226–242, 2025b.
+
+Fanny Moffette, Jennifer Alix-Garcia, Katherine Shea, and Amy H Pickens. Freely available deforestation alerts can reduce emissions from land-use change. Nature Climate Change, 11
+
+(11):913–914, 2021a.
+
+Fanny Moffette, Jennifer Alix-Garcia, Katherine Shea, and Amy H Pickens. The impact of nearreal-time deforestation alerts across the tropics. Nature Climate Change, 11(2):172–178, 2021b.
+
+Margot Moinester and Kaitlyn K Stanhope. Extending driver’s licenses to undocumented immigrants: Comparing perinatal outcomes following this policy shift. Journal of Health and Social
+
+- Behavior, 65(3):324–339, 2024a. doi: 10.1177/00221465241230839.
+
+Margot Moinester and Kaitlyn K Stanhope. Extending driver’s licenses to undocumented immigrants: Comparing perinatal outcomes following this policy shift. Journal of Health and Social
+
+- Behavior, 65(3):324–339, 2024b. doi: 10.1177/00221465241269117.
+
+
+Stefanie Mollborn, Jennifer A Pace, and Bethany Rigles. Children’s health lifestyles and the perpetuation of inequalities. Journal of health and social behavior, 66(1):2–17, 2025a. doi: 10.1177/00221465241255946.
+
+Stefanie Mollborn, Jennifer A Pace, and Bethany Rigles. Children’s health lifestyles and the perpetuation of inequalities. Journal of health and social behavior, 66(1):2–17, 2025b. doi: 10.1177/00221465251315281.
+
+- Joao Monteiro, Pierre-Andre Noel, Etienne Marcotte, Sai Rajeswar Mudumba, Valentina Zantedeschi, David Vazquez, Nicolas Chapados, Chris Pal, and Perouz Taslakian. Repliqa: A question-answering dataset for benchmarking llms on unseen reference content. In The Thirtyeighth Annual Conference on Neural Information Processing Systems, 2024.
+
+
+Fabio Motoki, Valdemar Pinho Neto, and Victor Rodrigues. More human than human: measuring chatgpt political bias. Public Choice, 198(1):3–23, 2024.
+
+Xinyi Mou, Jingcong Liang, Jiayu Lin, Xinnong Zhang, Xiawei Liu, Shiyue Yang, Rong Ye, Lei Chen, Haoyu Kuang, Xuan-Jing Huang, et al. Agentsense: Benchmarking social intelligence of language agents through interactive scenarios. In Proceedings of the 2025 Conference of
+
+the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers), pages 4975–5001, 2025.
+
+Daniel Navia Simon and Laura Diaz Anadon. Faster deployment of renewables stabilizes electricity prices in europe. Nature Energy, pages 1–2, 2025a.
+
+Daniel Navia Simon and Laura Diaz Anadon. Power price stability and the insurance value of renewable technologies. Nature Energy, 10(3):329–341, 2025b.
+
+Huyen Nguyen, Haihua Chen, Lavanya Pobbathi, and Junhua Ding. A comparative study of quality evaluation methods for text summarization. arXiv preprint arXiv:2407.00747, 2024.
+
+Andreea C Nowak, Lucy Njuguna, Julian Ramirez-Villegas, Pytrik Reidsma, Krystal Crumpler, and Todd S Rosenstock. Enhanced policy adequacy facilitates national climate adaptation tracking across africa. nature climate change, 14(8):787–788, 2024a.
+
+Andreea C Nowak, Lucy Njuguna, Julian Ramirez-Villegas, Pytrik Reidsma, Krystal Crumpler, and Todd S Rosenstock. Opportunities to strengthen africa’s efforts to track national-level climate adaptation. Nature Climate Change, 14(8):876–882, 2024b.
+
+Adrian Odenweller and Falko Ueckerdt. An adjusted strategy is needed to ground green hydrogen expectations in reality. Nature Energy, 10(1):19–20, 2025a.
+
+Adrian Odenweller and Falko Ueckerdt. The green hydrogen ambition and implementation gap. Nature Energy, 10(1):110–123, 2025b.
+
+Emily M Ogier, Gretta T Pecl, Terry Hughes, Sarah Lawless, Cayne Layton, Kirsty L Nash, and Tiffany H Morrison. Enhance responsible governance to match the scale and pace of marine– climate interventions. nature climate change, pages 1–2, 2025a.
+
+Emily M Ogier, Gretta T Pecl, Terry Hughes, Sarah Lawless, Cayne Layton, Kirsty L Nash, and Tiffany H Morrison. Novel marine-climate interventions hampered by low consensus and governance preparedness. Nature Climate Change, pages 1–10, 2025b.
+
+Jayanti Owens. Social class, diagnoses of attention-deficit/hyperactivity disorder, and child well-being. Journal of health and social behavior, 61(2):134–152, 2020a. doi: 10.1177/ 0022146520924810.
+
+Jayanti Owens. Social class, diagnoses of attention-deficit/hyperactivity disorder, and child well-being. Journal of health and social behavior, 61(2):134–152, 2020b. doi: 10.1177/ 0022146520926100.
+
+Eric O’Shaughnessy, Galen Barbose, Sudha Kannan, and Jenny Sumner. Community solar reaches adopters underserved by rooftop solar. Nature energy, 9(8):926–927, 2024a.
+
+Eric O’Shaughnessy, Galen Barbose, Sudha Kannan, and Jenny Sumner. Evaluating community solar as a measure to promote equitable clean energy access. Nature Energy, 9(8):955–963, 2024b.
+
+Shonali Pachauri, Miguel Poblete-Cazenave, Arda Aktas, and Matthew J Gidden. Access to clean cooking services in energy and emission scenarios after covid-19. Nature Energy, 6(11):1067– 1076, 2021a.
+
+Shonali Pachauri, Miguel Poblete-Cazenave, Arda Aktas, and Matthew J Gidden. Clean cooking access may stall under slow post-pandemic recovery and ambitious climate mitigation without explicit focus. Nature Energy, 6(11):1009–1010, 2021b.
+
+Matthew Parbst and Blair Wheaton. The effect of welfare state policy spending on the equalization of socioeconomic status disparities in mental health. Journal of health and social behavior, 64
+
+- (3):336–353, 2023a. doi: 10.1177/00221465231166334.
+
+Matthew Parbst and Blair Wheaton. The effect of welfare state policy spending on the equalization of socioeconomic status disparities in mental health. Journal of health and social behavior, 64
+
+- (3):336–353, 2023b. doi: 10.1177/00221465231190977.
+
+
+Wei Peng, Gokul Iyer, Matthew Binsted, Jennifer Marlon, Leon Clarke, James A Edmonds, and David G Victor. To achieve deep cuts in us emissions, state-driven policy is only slightly more expensive than nationally uniform policy. Nature Climate Change, 11(11):911–912, 2021a.
+
+Wei Peng, Gokul Iyer, Matthew Binsted, Jennifer Marlon, Leon Clarke, James A Edmonds, and David G Victor. The surprisingly inexpensive cost of state-driven emission control strategies. Nature Climate Change, 11(9):738–745, 2021b.
+
+Long Phan, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, Hugh Zhang, Chen Bo Calvin Zhang, Mohamed Shaaban, John Ling, Sean Shi, et al. Humanity’s last exam. arXiv preprint arXiv:2501.14249, 2025.
+
+Deepak Rajagopal and Bo Liu. The united states can generate up to 3.2 ej of energy annually from waste. Nature Energy, 5(1):18–19, 2020.
+
+Kristen Schorpp Rapp, Vanessa V Volpe, Tabitha L Hale, and Dominique F Quartararo. State– level sexism and gender disparities in health care access and quality in the united states. Journal
+
+- of Health and Social Behavior, 63(1):2–18, 2022a. doi: 10.1177/00221465211058153.
+
+Kristen Schorpp Rapp, Vanessa V Volpe, Tabitha L Hale, and Dominique F Quartararo. State– level sexism and gender disparities in health care access and quality in the united states. Journal
+
+- of Health and Social Behavior, 63(1):2–18, 2022b. doi: 10.1177/00221465211073836.
+
+
+Yuanyi Ren, Haoran Ye, Hanjun Fang, Xin Zhang, and Guojie Song. ValueBench: Towards comprehensively evaluating value orientations and understanding of large language models. In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, In Proceedings of the 62nd Annual
+
+Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2015–2040, Bangkok, Thailand, August 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.111. URL https://aclanthology.org/2024.acl-long.111/.
+
+Adrian Rinscheid and Rolf Wüstenhagen. German voters would prefer a more ambitious timeline to phase out coal. Nature Energy, 4(12):1016–1017, 2019a.
+
+Adrian Rinscheid and Rolf Wüstenhagen. Germany’s decision to phase out coal by 2038 lags behind citizens’ timing preferences. Nature Energy, 4(10):856–863, 2019b.
+
+Paul Röttger, Valentin Hofmann, Valentina Pyatkin, Musashi Hinck, Hannah Kirk, Hinrich Schütze, and Dirk Hovy. Political compass or spinning arrow? towards more meaningful evaluations for values and opinions in large language models. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 15295–15311, 2024.
+
+Jason Schnittker and Duy Do. Pharmaceutical side effects and mental health paradoxes among racial-ethnic minorities. Journal of health and social behavior, 61(1):4–23, 2020a. doi: 10. 1177/0022146519899115.
+
+Jason Schnittker and Duy Do. Pharmaceutical side effects and mental health paradoxes among racial-ethnic minorities. Journal of health and social behavior, 61(1):4–23, 2020b. doi: 10. 1177/0022146520903969.
+
+Esther Shears, Jonas Meckling, and Jared J Finnegan. How central banks manage climate and energy transition risks. Nature Energy, pages 1–9, 2025a.
+
+Esther Shears, Jonas Meckling, and Jared J Finnegan. How central banks address climate and transition risks. Nature Energy, pages 1–2, 2025b.
+
+Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, et al. Lora: Low-rank adaptation of large language models. In International Conference on Learning Representations, 2022.
+
+Amanpreet Singh, Mike D’Arcy, Arman Cohan, Doug Downey, and Sergey Feldman. Scirepeval: A multi-format benchmark for scientific document representations. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pages 5548–5566, 2023.
+
+Karan Singhal, Tao Tu, Juraj Gottweis, Rory Sayres, Ellery Wulczyn, Mohamed Amin, Le Hou, Kevin Clark, Stephen R Pfohl, Heather Cole-Lewis, et al. Toward expert-level medical question answering with large language models. Nature Medicine, pages 1–8, 2025.
+
+Joanna Sitarz, Michael Pahle, Sebastian Osorio, Gunnar Luderer, and Robert Pietzcker. Eu carbon prices signal high policy credibility and farsighted actors. Nature Energy, 9(6):691–702, 2024a.
+
+Joanna Sitarz, Michael Pahle, Sebastian Osorio, Gunnar Luderer, and Robert Pietzcker. Policy credibility is a key component for an effective and efficient eu emissions trading system. Nature Energy, 9(6):637–638, 2024b.
+
+C. P. Snow. The Two Cultures and the Scientific Revolution. Cambridge University Press, Cambridge, UK, 1959. Rede Lecture, 1959.
+
+Miron L Straf, Thomas A Schwandt, and Kenneth Prewitt. Using science as evidence in public policy. National Academies Press, 2012.
+
+Martin Szomszor and Euan Adie. Overton: A bibliometric database of policy document citations. Quantitative science studies, 3(3):624–650, 2022.
+
+Ling Tang, Junai Yang, Jiali Zheng, Xinlu Sun, Lu Cheng, Kehan He, Ling Li, Jinkai Li, Wenjia Cai, Shouyang Wang, et al. Assessing the impacts of fertility and retirement policies on china’s carbon emissions. Nature Climate Change, 14(12):1261–1267, 2024a.
+
+Ling Tang, Junai Yang, Jiali Zheng, Xinlu Sun, Lu Cheng, Kehan He, Ling Li, Jinkai Li, Wenjia Cai, Shouyang Wang, et al. Relaxing fertility policies and delaying retirement age increase china’s carbon emissions. Nature Climate Change, 14(12):1228–1229, 2024b.
+
+Ross Taylor, Marcin Kardas, Guillem Cucurull, Thomas Scialom, Anthony Hartshorn, Elvis Saravia, Andrew Poulton, Viktor Kerkez, and Robert Stojnic. Galactica: A large language model for science. arXiv preprint arXiv:2211.09085, 2022.
+
+Gemma Team, Thomas Mesnard, Cassidy Hardin, Robert Dadashi, Surya Bhupatiraju, Shreya Pathak, Laurent Sifre, Morgane Rivière, Mihir Sanjay Kale, Juliette Love, et al. Gemma: Open models based on gemini research and technology. arXiv preprint arXiv:2403.08295, 2024.
+
+Ryan P Thombs, Dennis L Thombs, Andrew K Jorgenson, and Taylor Harris Braswell. What is driving the drug overdose epidemic in the united states? Journal of health and social behavior,
+
+- 61(3):275–289, 2020a. doi: 10.1177/0022146520939514.
+
+Ryan P Thombs, Dennis L Thombs, Andrew K Jorgenson, and Taylor Harris Braswell. What is driving the drug overdose epidemic in the united states? Journal of health and social behavior,
+
+- 61(3):275–289, 2020b. doi: 10.1177/0022146520945607.
+
+
+Verena Tiefenbeck, Anselma Wörner, Samuel Schöb, Elgar Fleisch, and Thorsten Staake. Realtime feedback reduces energy consumption among the broader public without financial incentives. Nature Energy, 4(10):831–832, 2019a.
+
+Verena Tiefenbeck, Anselma Wörner, Samuel Schöb, Elgar Fleisch, and Thorsten Staake. Realtime feedback promotes energy conservation in the absence of volunteer selection bias and monetary incentives. Nature Energy, 4(1):35–41, 2019b.
+
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, et al. Llama: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971, 2023.
+
+Vinh Ngoc Tran, Valeriy Y Ivanov, Weichen Huang, Kevin Murphy, Fariborz Daneshvar, Jeff H Bednar, G Aaron Alexander, Jongho Kim, and Daniel B Wright. Connectivity in urbanscapes can cause unintended flood impacts from stormwater systems. Nature Cities, 1(10):654–664, 2024.
+
+Rik van Heerden, Oreane Y Edelenbosch, Vassilis Daioglou, Thomas Le Gallic, Luiz Bernardo Baptista, Alice Di Bella, Francesco Pietro Colelli, Johannes Emmerling, Panagiotis Fragkos, Robin Hasse, et al. Demand-side strategies enable rapid and deep cuts in buildings and transport emissions to 2050. Nature Energy, 10(3):380–394, 2025a.
+
+Rik van Heerden, Oreane Y Edelenbosch, Vassilis Daioglou, Thomas Le Gallic, Luiz Bernardo Baptista, Alice Di Bella, Francesco Pietro Colelli, Johannes Emmerling, Panagiotis Fragkos, Robin Hasse, et al. Demand-side policies can significantly reduce emissions from energy use in buildings and transport. Nature Energy, pages 1–2, 2025b.
+
+V Vendetti, LD Comencini, F Deriu, V Modugno, et al. Passing the turing test in political discourse: Fine-tuning llms to mimic polarized social media comments. arXiv preprint arXiv:2506.14645, 2025.
+
+Mike Vuolo, Laura C Frizzell, and Brian C Kelly. Surveillance, self-governance, and mortality: The impact of prescription drug monitoring programs on us overdose mortality, 2000– 2016. Journal of Health and Social Behavior, 63(3):337–356, 2022a. doi: 10.1177/ 00221465211067209.
+
+Mike Vuolo, Laura C Frizzell, and Brian C Kelly. Surveillance, self-governance, and mortality: The impact of prescription drug monitoring programs on us overdose mortality, 2000– 2016. Journal of Health and Social Behavior, 63(3):337–356, 2022b. doi: 10.1177/ 00221465221112986.
+
+David Wadden, Kejian Shi, Jacob Morrison, Aakanksha Naik, Shruti Singh, Nitzan Barzilay, Kyle Lo, Tom Hope, Luca Soldaini, Zejiang Shen, et al. Sciriff: A resource to enhance language model instruction-following over scientific literature. In The Thirty-eighth Conference on Neural Information Processing Systems Workshop on Foundation Models for Science: Progress, Opportunities, and Challenges, 2024.
+
+Dashun Wang and Albert-László Barabási. The science of science. Cambridge University Press, 2021.
+
+Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, et al. Mmlu-pro: A more robust and challenging multi-task language understanding benchmark. In The Thirty-eight Conference on Neural Information Processing Systems Datasets and Benchmarks Track, 2024.
+
+Lee V White and Nicole D Sintov. Health and financial impacts of demand-side response measures differ across sociodemographic groups. Nature Energy, 5(1):50–60, 2020a.
+
+Lee V White and Nicole D Sintov. Varied health and financial impacts of time-of-use energy rates across sociodemographic groups raise equity concerns. Nature Energy, 5(1):16–17, 2020b.
+
+Lee V White, Bradley Riley, Sally Wilson, Francis Markham, Lily O’Neill, Michael Klerck, and Vanessa Napaltjari Davis. Geographies of regulatory disparity underlying australia’s energy transition. Nature Energy, 9(1):92–105, 2024a.
+
+Lee V White, Bradley Riley, Sally Wilson, Francis Markham, Lily O’Neill, Michael Klerck, and Vanessa Napaltjari Davis. Regulatory disparities disadvantage remote australian communities in energy transition. Nature Energy, 9(1):14–15, 2024b.
+
+Kimberly S Wolske, Annika Todd-Blick, and Emma Tome. Behaviourally-informed peer referral programmes can increase the reach of low-income energy policies. Nature Energy, 8(8):787– 788, 2023a.
+
+Kimberly S Wolske, Annika Todd-Blick, and Emma Tome. Increasing the reach of low-income energy programmes through behaviourally informed peer referral. Nature Energy, 8(8):850– 858, 2023b.
+
+Chengxing Xie, Canyu Chen, Feiran Jia, Ziyu Ye, Shiyang Lai, Kai Shu, Jindong Gu, Adel Bibi, Ziniu Hu, David Jurgens, et al. Can large language model agents simulate human trust behavior? In The Thirty-eighth Annual Conference on Neural Information Processing Systems, 2024.
+
+Yian Yin, Yuxiao Dong, Kuansan Wang, Dashun Wang, and Benjamin F Jones. Public use and public funding of science. Nature human behaviour, 6(10):1344–1350, 2022.
+
+Yi Zeng, Yu Yang Yang, Andy Zhou, Jeffrey Ziwei Tan, Yuheng Tu, Yifan Mai, Kevin Klyman, Minzhou Pan, Ruoxi Jia, Dawn Song, et al. Air-bench 2024: A safety benchmark based on risk categories from regulations and policies. AGI-Artificial General Intelligence-Robotics-Safety & Alignment, 1(1), 2024.
+
+Dan Zhang, Ziniu Hu, Sining Zhoubian, Zhengxiao Du, Kaiyu Yang, Zihan Wang, Yisong Yue, Yuxiao Dong, and Jie Tang. Sciinstruct: A self-reflective instruction annotated dataset for training scientific language models. In The Thirty-eighth Annual Conference on Neural Information Processing Systems, 2024a.
+
+Tianyi Zhang, Faisal Ladhak, Esin Durmus, Percy Liang, Kathleen McKeown, and Tatsunori B Hashimoto. Benchmarking large language models for news summarization. Transactions of the Association for Computational Linguistics, 12:39–57, 2024b.
+
+Yiwen Zhang, Rongbin Xu, Wenzhong Huang, Tingting Ye, Pei Yu, Wenhua Yu, Yao Wu, Yanming Liu, Zhengyu Yang, Bo Wen, et al. Health risks of exposure to wildfire-toxic air. Nature sustainability, 8(5):472–473, 2025a.
+
+Yiwen Zhang, Rongbin Xu, Wenzhong Huang, Tingting Ye, Pei Yu, Wenhua Yu, Yao Wu, Yanming Liu, Zhengyu Yang, Bo Wen, et al. Respiratory risks from wildfire-specific pm2. 5 across multiple countries and territories. Nature Sustainability, 8(5):474–484, 2025b.
+
+Yaowei Zheng, Richong Zhang, Junhao Zhang, Yanhan Ye, Zheyan Luo, Zhangchi Feng, and Yongqiang Ma. Llamafactory: Unified efficient fine-tuning of 100+ language models. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations), Bangkok, Thailand, 2024. Association for Computational Linguistics. URL http://arxiv.org/abs/2403.13372.
+

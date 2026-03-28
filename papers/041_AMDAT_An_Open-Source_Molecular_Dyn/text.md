@@ -1,0 +1,1961 @@
+AMDAT: An Open-Source Molecular Dynamics
+Analysis Toolkit for Supercooled Liquids,
+Glass-Forming Materials, and Complex Fluids
+Pierre Kawak,† William F. Drayer,†,‡ and David S. Simmons∗,†
+†Department of Chemical, Biological, and Materials Engineering, University of South
+Florida, Tampa, Florida
+‡Department of Materials Science and Engineering, University of Pennsylvania,
+Philadelphia, Pennsylvania
+E-mail: dssimmons@usf.edu
+Abstract
+AMDAT (Amorphous Molecular Dynamics Analysis Toolkit) is an open-source
+C++ toolkit for post-processing molecular dynamics trajectories, focused on high-
+performance static and dynamic analyses of amorphous, glassy, and polymer materials,
+including supercooled liquids and complex fluids. In this paper, we describe AMDAT’s
+design for efficient long-timescale analysis via in-memory trajectory handling and ex-
+ponential time sampling, and we demonstrate representative workflows for widely used
+observables such as radial distribution functions, structure factors, intermediate scat-
+tering functions, and neighbor correlations.
+1
+arXiv:2602.05865v1  [cond-mat.mtrl-sci]  5 Feb 2026
+
+Introduction
+The last 30 years have seen the maturation of molecular dynamics (MD) simulation methods,
+with the development of a substantial number of well-validated, open-source software pack-
+ages for systems ranging from biomolecules to simple physics models.1–6 These tools lower
+the barrier to entry for new practitioners, reduce duplicated effort by providing shared, ex-
+tensible codebases, and enable published simulation work to be reproduced when authors
+report the precise software version and input configurations used.
+In contrast, software for analysis of MD simulations has generally lagged behind simula-
+tion engines. For much of the history of the field, many research groups have relied on hetero-
+geneous collections of some analysis tools-some built into the simulation packages themselves,
+some integrated into visualization software, and some maintained as in-house codes. As a
+result, published analyses are often difficult to reproduce exactly, many reported quantities
+rely on code that has not been broadly validated, and early-career researchers routinely
+spend substantial time re-implementing basic analysis functionality for their groups.
+In recent years, several packages for MD analysis have been released.7–17 The most
+progress has been made in packages targeting analysis of protein and biomolecular simu-
+lations13–16 and in tools that provide a versatile coding environment for simulation anal-
+ysis8,9,17–19 (e.g., python-based tools for trajectory file reading and atom selection) rather
+than in broadly validated implementations of complete analysis methods themselves. This
+presents a particular limitation for molecular simulations in the fields of soft matter physics,
+polymer physics, and supercooled liquids, and in studies of glass formation, where properties
+depend on subtle structural and dynamical correlations.20 For these systems, there remains
+a paucity of widely adopted, well-tested software for calculating the structural and dynamic
+properties most relevant to polymer structure and dynamics, glass formation, and spatially
+heterogeneous properties.
+In this paper, we introduce the Amorphous Molecular Dynamics Analysis Toolkit (AMDAT),
+an open-source molecular dynamics trajectory analysis toolkit designed to fill this gap. AM-
+2
+
+DAT focuses on versatile and efficient implementation of analysis tools for characterizing
+structure and dynamics in equilibrium and non-equilibrium simulations of polymers, super-
+cooled liquids, glass-forming materials, and other complex fluids.
+Why AMDAT?
+AMDAT is a molecular dynamics simulation trajectory analysis toolkit designed primarily
+for polymers, soft-matter, glass-forming liquids, and complex fluids. Its design emphasizes
+in-memory handling of trajectories, efficient sampling over many decades of simulation time,
+and modular data structures that make it straightforward to assemble customized analy-
+sis workflows. These choices, as follows, distinguish AMDAT from many existing analysis
+packages and make it well suited to computing the structural and dynamical observables
+commonly probed in studies of supercooled liquids and complex fluids.
+1. In-memory trajectory handling for rapid analysis: AMDAT reads the full molec-
+ular trajectory into memory upon initialization, greatly reducing file input/output op-
+erations and enabling efficient reuse of the same data across many analyses. While
+this approach increases memory requirements (a typical memory footprint is on the
+order of 2–3× the trajectory file size), it allows near-instantaneous access to stored
+frames and significantly accelerates cross-frame calculations. As discussed below, an
+efficient time-sampling scheme helps keep this upfront memory cost tractable while
+still enabling analysis over long simulation times. This is particularly advantageous for
+two-time dynamical observables that compare configurations at different points along
+the trajectory, without repetitive data retrieval steps.
+2. Exponential time sampling for long-timescale dynamics: Standard operation
+of AMDAT involves reading and analyzing frames spaced exponentially in time. This
+strategy allows dense sampling at short times and progressively coarser sampling at
+longer times, enabling efficient analysis of molecular dynamics spanning many orders of
+3
+
+magnitude in time without requiring prohibitively large trajectory files. We illustrate
+these benefits in the examples below in the section on the “Benefits of Exponential
+Time Scaling.”
+3. Modular and flexible data abstractions: AMDAT implements data structures such
+as trajectory lists, neighbor lists, multibody lists, and value lists that can be combined,
+filtered, and manipulated to construct complex analyses. This modular approach makes
+it straightforward to tailor analyses to diverse molecular systems without modifying
+core code.
+4. Extensive, tested suite of structural and dynamical observables: AMDAT
+provides a broad set of well-tested routines, including calculations of structure factors,
+intermediate scattering functions, neighbor correlations, radial distribution functions,
+and a variety of other structural and dynamic correlation functions relevant to amor-
+phous and glassy systems. These capabilities have been developed and maintained
+within our group for more than 15 years and have been used in dozens of published
+studies on polymers, supercooled liquids, and complex fluids.21–65 This long-term use
+and comparison with established results underpins our confidence that the routines
+yield reliable, publication-quality results across diverse molecular systems.
+5. Scriptable workflows: Analyses are specified via input scripts that support loops,
+conditionals, and variable evaluation, enabling reproducible and automated analysis
+pipelines. Outputs are written as plain-text, tab-delimited files or modified trajectory
+files compatible with Python, Matlab, OVITO, VMD, etc., such that analysis scripts
+can easily hand off to downstream tools.
+6. Flexible file format support: AMDAT reads standard and custom LAMMPS dump,
+standard xyz, and GROMACS xtc trajectory file formats. It can also be configured
+to read multiple per-atom properties for downstream analysis. Because of its object-
+oriented nature, read-in from other trajectory file styles can be readily implemented in
+4
+
+future development.
+In the following sections, we describe AMDAT’s software design, discuss these features
+in greater depth, and illustrate the software’s use with concrete examples and practical
+applications.
+Software Design and Implementation
+Design Philosophy
+While applicable to a wide variety of simulated systems, AMDAT is designed to address the
+needs of researchers studying the structure and dynamics of non-crystalline materials such
+as supercooled liquids, polymers, and other glass-forming systems. Accordingly, its design
+emphasizes computational efficiency for long-time, correlation-based observables, rather than
+visualization or graphical interactivity.
+Building on the considerations outlined above, AMDAT adopts an in-memory, fast-compute
+model in which the trajectory is loaded into memory at runtime. This reduces repeated file
+input/output and enables rapid access to particle coordinates and metadata across all stored
+time frames, which is particularly advantageous for analyses involving long-time correlations,
+exponential time spacing, or dynamic selection of particle subsets. Although this choice in-
+creases memory usage, it substantially accelerates analysis workflows.
+AMDAT is implemented in C++ using an object-oriented, modular architecture.
+Core
+classes represent the simulated system and its trajectories, while higher-level abstractions
+organize particles into reusable data objects that can be passed between analysis routines.
+This separation between core data structures and analysis logic makes the codebase easier to
+extend and to support the addition of new observables without intrusive changes to existing
+code.
+A further guiding principle is that AMDAT is operated as a scriptable, non-interactive
+analysis engine. Users interact with the software via a command-line interface and text-based
+5
+
+input files, using a LAMMPS-like scripting language to specify system metadata, trajectory
+format, time scheme, selections, and analysis commands. The input language supports basic
+control structures (loops, conditionals, variable evaluation), enabling complex workflows to
+be encoded in a transparent and reproducible manner while leaving visualization and post-
+processing to external tools better suited for those tasks.
+Core Architecture
+The architecture of AMDAT is built around a set of object-oriented data structures that
+enable flexible, composable analysis of molecular dynamics trajectories.
+At the heart of
+this design is a hierarchy of classes that represent particles, molecules, and their trajectories,
+together with higher-level abstractions that organize these entities into reusable data objects
+for selection and analysis.
+System and Trajectory Classes
+The foundational class in AMDAT is the System object, which is responsible for reading
+trajectory files, storing metadata (e.g., box size, time scheme), and managing collections
+of particles and molecules. Each particle or molecule is represented by a Trajectory ob-
+ject, which stores a time series of Coordinate instances.
+Specialized subclasses such as
+Atom Trajectory and Molecule extend this base class to represent atomic and molecular
+entities, respectively.
+The System class also provides looping mechanisms over time frames, which are used by
+many analysis routines. Loops over particles generally operate on user-defined subsets of
+particles via the trajectory list abstraction, described below.
+trajectory list and trajectory bin list
+The trajectory list is the central data object for analysis in AMDAT. It stores a collection
+of particle trajectories, which may be static (fixed set of particles) or dynamic (membership
+6
+
+varying with simulation frame). Lists can be created explicitly (e.g., by designating particles
+of a given type or species) or generated by analysis routines (e.g., by selecting the most
+mobile particles at each time step).
+For spatially resolved analyses, AMDAT provides the trajectory bin list, which parti-
+tions particles into spatial bins based on their coordinates. Analyses can then be performed
+independently on each bin, enabling the study of interfacial gradients, local dynamics, and
+spatial heterogeneity.
+multibody list
+The multibody list abstraction represents groups of particles (e.g., molecules, functional
+groups, or particle clusters), the collective motion or internal structure of which are of
+interest.
+AMDAT supports the creation of multibodies based on molecular connectivity,
+spatial proximity, or dynamic correlations (e.g., string-like motion).64,66–73 Once defined,
+these multibodies can be analyzed for properties such as radius of gyration, orientational
+correlations, and reorientation dynamics.
+value list and neighbor list
+The value list is a versatile data object that stores scalar values for each particle at each
+time step. These values can be computed during analysis (e.g., displacement magnitude)
+or read directly from trajectory files.
+value list objects can be used to generate new
+trajectory list objects via thresholding or percentile selection, and can also be exported
+to xyz or pdb files for visualization (e.g., coloring particle by mobility or coordination num-
+ber).61
+The neighbor list is a specialized subclass of value list that tracks the number and
+identity of neighboring particles for each particle as a function of time. Neighbor lists can
+be constructed using either distance-based cutoffs or Voronoi tessellation and are used in
+analyses such as neighbor decorrelation and persistent neighbor tracking. Pairs of particles
+7
+
+can also be read in as a neighbor list to facilitate tracking of entities such as dynamic
+covalent bonds.
+Data Flow and Composability
+A key feature of AMDAT’s architecture is the composability of these data objects. Many
+analysis routines take one or more data objects as input (e.g., a trajectory list or
+multibody list) and produce new objects as output (e.g., a value list or trajectory bin list).
+These outputs can then be passed to subsequent analyses. In this way, complex workflows can
+be constructed from simple components, and users can iteratively refine analysis pipelines
+by chaining together selections and observables. For example, a value list containing per-
+particle displacements can be thresholded to generate a new trajectory list of “mobile”
+particles, which can then be analyzed for clustering or spatial correlations.
+Input and Control System
+AMDAT is operated via a command-line interface that reads a user-defined input file. This
+input file serves as the central script for specifying the i) system to be analyzed, ii) trajectory
+location and format, iii) time scheme, iv) composition of constituents, and v) sequence of
+selections and analyses to be performed. The design of the input system emphasizes trans-
+parency, reproducibility, and composability, enabling users to construct complex workflows
+using a straightforward, readable syntax.
+Algorithm 1: Pseudocode structure for system, composition, selection, and analysis blocks
+in an AMDAT input file
+# --- SYSTEM BLOCK ---
+<system_type>
+<trajectory_file_type>
+<filename1> [<filename2> ...]
+<time_scheme>
+8
+
+# --- COMPOSITION BLOCK ---
+<species1> <count1>
+<species2> <count2>
+...
+<speciesK> <countK>
+<type1>
+<type2>
+...
+<typeL>
+<type1 in species1>
+<type2 in species1>
+...
+<typeL in species1>
+<type1 in species2>
+<type2 in species2>
+...
+<typeL in species2>
+...
+...
+...
+...
+...
+...
+...
+...
+<type1 in speciesK>
+<type2 in speciesK>
+...
+<typeL in speciesK>
+# --- SELECTION AND ANALYSIS BLOCKS ---
+# These can appear in any order and quantity
+# --- SELECTION BLOCK ---
+# Create a list of atoms in species <species1>
+create_list
+s1_list
+species
+<species1>
+# Create a list of atoms in species <species2> of type <type2>
+create_list
+s2t2_list
+type_species
+<species2>
+<type2>
+# Create a list of centers of mass for all molecules
+create_multibodies all_mlist coms centroid all_molecule
+# --- ANALYSIS BLOCK ---
+msd msd_s1.dat
+list s1_list
+9
+
+rdf data/rdf_s2t2_s1.dat asymmetric 100 -1 0
+list s2t2_list
+list s1_list
+gyration_radius Rg_all.dat all_mlist
+# --- MIXED BLOCK ---
+create_distance_neighborlist my_neighbor_list 1.3 ./pair_distances.txt
+The System Block: System and Trajectory Specification
+The input file, illustrated schematically in Algorithm 1, begins with a block that defines
+the system type, trajectory file format, and associated metadata. AMDAT supports both
+constant-volume (<system type>=system nv) and non-constant-volume (<system type>=
+system np) systems, although some analyses are currently limited to the former. Supported
+trajectory formats include LAMMPS-style dump xyz and dump custom files, as well as limited
+support for GROMACS xtc files. The custom manual format allows users to map arbitrary
+columns in a trajectory file to values stored in a value list object, enabling flexible inte-
+gration of auxiliary per-atom data. This could include, for example, velocities or per-atom
+energies or forces.
+The <time scheme> line specifies how time frames are sampled from the underlying
+trajectory. Available schemes include snapshot (single-frame analysis), linear (uniform
+time spacing), and exponential (blocked, exponentially spaced frames). The exponential
+scheme is particularly useful for time-correlation analyses spanning many orders of magnitude
+in time in glassy or supercooled systems (see the “Benefits of Exponential Time Scaling”
+section for further details).
+10
+
+The Composition Block: Atom Types and Molecule Definitions
+Following the system block, the input file may contain a composition block describing
+the molecular makeup of the system.
+The need for these lines depends on the specific
+<trajectory file type> used. The first line lists the number of distinct species and their
+counts. For example, a system with 15 polymer chains and 1000 solvent molecules would
+begin: polymer 15 solvent 1000. A header line then lists all atom types present in the
+trajectory, followed by one row per species that specifies how many atoms of each type ap-
+pear in a single molecule of that species. In the polymer/solvent example, the composition
+block shown in Algorithm 2 assigns two atom types to each molecule:
+Algorithm 2: Example composition block for a system with 15 polymer and 1000 solvent
+molecules.
+polymer 15
+solvent 1000
+1
+2
+3
+10
+5
+0
+0
+1
+2
+Here, each polymer molecule contains 10, 5, and 0 atoms of types 1, 2, and 3, respectively.
+Similarly, each one of the 1000 solvent molecules contains 0, 1, and 2 atoms of types 1, 2,
+and 3, respectively.
+Users can define the composition in ways that best support their analysis. For example,
+when molecular connectivity is unimportant, all atoms can be grouped into a single molecule.
+As another illustration, the “Benefits of Exponential Time Scaling” section presents
+three distinct composition specifications for a trajectory containing 20 atomistic polystyrene
+molecules. AMDAT assumes that atoms are sorted in a consistent order across frames, does
+not currently support trajectories with varying compositions or particle counts in time, and
+does not natively read bonds, angles, or dihedrals.
+11
+
+The Selection Block: Data Object Management
+After the system and composition are specified, the input file typically contains a sequence
+of commands that create and manipulate the core data objects defined in the Core Architec-
+ture section (trajectory list, trajectory bin list, multibody list, value list, and
+neighbor list). For clarity, we refer to this part of the script as the selection block, al-
+though many commands play a dual role by both selecting particles and computing derived
+quantities (e.g., spatial binning creates a trajectory list of interfacial atoms), and in fact
+selection commands and analysis commands can alternate through the script.
+Selection commands usually follow a simple pattern: a command that creates or modifies
+a named data object, followed by one or more lines that specify how that object is defined.
+Lists support selection by atom index, molecule index, species type, atom type, or any com-
+bination of these. For example, the two create list commands in Algorithm 1 create two
+trajectory list objects: s1 list, containing all atoms in <species1>, and s2t2 list,
+containing atoms of type <type2> in <species2>. Similarly, the create multibodies com-
+mand constructs a multibody list in which each multibody is comprised of a specified set
+of particles.
+The Analysis Block: Scripted Analysis and Control Structures
+Once the desired data objects have been defined, analysis commands are used to compute
+observables based on them. As illustrated in Algorithm 1, these commands usually operate
+on named data objects. Most analyses consist of a first line that specifies the analysis type
+and output file, followed by one or more “target” lines that identify the data objects to be
+analyzed.
+For example, the msd command in Algorithm 1 sets the output file for mean-square
+displacement analysis via msd msd s1.dat and then specifies the target trajectory list
+via list s1 list, which in this case contains all atoms in <species1> as defined by the
+composition block. The rdf command exemplifies an analysis that operates on two lists,
+12
+
+computing the radial distribution function for atoms in s2t2 list around neighbors in
+s1 list. The gyration radius command targets the multibody list of molecule centroids
+and writes radius-of-gyration statistics to Rg all.dat.
+Some commands both analyze existing data and create new data objects. For instance,
+the create distance neighborlist command in Algorithm 1 constructs a distance-based
+neighbor list with a cutoff of 1.3 and stores the resulting neighbor list as my neighbor list
+for use in subsequent analyses.
+The scripting language supports a modest set of control structures, including for loops,
+if...else conditionals, and variable assignment via constant and evaluate. These fea-
+tures allow users to automate repetitive tasks, perform parameter sweeps, and construct
+adaptive workflows. Additional commands such as print, wait, and user input provide
+further flexibility for debugging and interactive execution. AMDAT also accepts variables on
+the command line via the -var flag, enabling input scripts to incorporate externally specified
+parameters (e.g., running AMDAT with /PATH/TO/AMDAT -i ./amdat.in -var cmd var 3
+makes $cmd var available as a variable in ./amdat.in).
+Extensibility and Development
+AMDAT is designed to be extensible, enabling researchers to implement new analysis meth-
+ods, data structures, or input/output formats with minimal disruption to the existing code-
+base. This is supported by a modular C++ architecture that separates data representation
+from analysis logic and encourages the use of well-defined interfaces.
+As described in the Core Architecture subsection, AMDAT distinguishes between a data-
+structure layer, which manages the simulated system and its trajectories, and an analysis
+layer, which operates on these data structures to compute observables and, where appropri-
+ate, create new data objects or output files. Most analysis routines are implemented as classes
+that inherit from a common Analysis base class and operate on the standard data objects
+(trajectory list, trajectory bin list, multibody list, value list, neighbor list)
+13
+
+defined in the Core Architecture section. By interacting primarily with these abstractions,
+new analyses can be developed largely independently of the underlying trajectory format or
+system configuration.
+For example, a new analysis class that computes a time-correlation function can be
+implemented to accept a trajectory list as input and produce a value list as output.
+The resulting value list can then be passed to existing routines for thresholding, statistical
+analysis, or visualization. Similarly, multibody-based analyses can be built on top of the
+multibody list abstraction to study collective motion or internal structural dynamics.
+The AMDAT codebase is hosted on GitHub74 (https://github.com/dssimmons-codes/
+AMDAT) and structured to facilitate collaborative development. Developer-oriented documen-
+tation (https://dssimmons-codes.github.io/AMDAT/) outlines the key classes and inter-
+faces required to implement new analyses, with each analysis class typically defined in its
+own header and source files following a consistent pattern for initialization, data access, and
+output generation. Contributors are encouraged to follow the existing modular design and
+to build on the standard data objects described above. Planned future improvements in-
+clude expanded developer documentation, an importable Python interface, and support for
+multithreaded execution of analysis routines.
+Representative Systems
+To demonstrate AMDAT’s versatility across diverse molecular contexts, we focus on six sys-
+tems that span simple glass-forming liquids, reduced-dimensional models, coarse-grained
+polymers, polymer composites, and atomistic polymers. Together, these systems provide a
+distinct set of structural and dynamical challenges and span a wide range of compositional
+and topological heterogeneity, length scales, and relaxation times, enabling us to showcase
+AMDAT’s breadth and capability to compute both static and dynamic observables for a
+variety of systems.
+14
+
+Binary Lennard-Jones fluid (binLJ)
+This classic glass-forming mixture consists of two particle species interacting via Lennard-
+Jones (LJ) potentials. We focus on the lowest equilibrium temperature reported in our prior
+works,47,75 at a reduced Lennard-Jones temperature of T ∗= 0.3347 and zero pressure. At
+this state point, the system exhibits extremely slow dynamics, with a relaxation time of
+approximately 105.94 τLJ, among the longest equilibrium segmental relaxation times accessed
+in simulation. The trajectory was generated in the NPT ensemble at P = 0, with N1 = 6400
+particles of type 1 and N2 = 1600 particles of type 2. Particles interact via the 12-6 binary
+Lennard Jones potential with energy and distance parameters ε and σ. These parameters
+are both 1 for particles of type 1, are 0.50 and 0.88, respectively, for particles of type 2, and
+are 1.5 and 0.8, respectively, for cross-interactions. These conditions and interactions yield
+a number density of ∼1.17.
+Two-dimensional binary Lennard-Jones fluid (binLJ2D)
+This system mirrors the composition and interaction scheme of binLJ but is confined to two
+dimensions, providing a test of AMDAT’s ability to handle reduced dimensionality. Simulated
+under conditions analogous to binLJ, this model highlights how structural and dynamical
+signatures evolve when dimensional constraints are imposed.
+Kremer–Grest polymer chain (KG)
+A widely used coarse-grained bead-spring polymer model, the KG system captures essential
+features of polymer dynamics while remaining computationally tractable. Here, we analyze
+the lowest temperature reported in our previous studies,47,75 at T ∗= 0.3854, where the
+relaxation time reaches 106.88 τLJ, placing it among the most sluggish equilibrium states
+probed for any simulated glass-former. The system comprises 400 chains with 20 monomers
+per chain, simulated in the NPT ensemble at P = 0.
+15
+
+Nanoparticle Filled End-Crosslinked KG (PNC)
+This system is used in our recent work to study the mechanical deformation of filled elas-
+tomers21–23,76,77 and enables illustration of how AMDAT analyzes heterogeneous systems. It
+contains 5000 chains with 20 KG beads each, 2500 crosslinker beads, and 50 distinct clus-
+ters of 7 icosahedral particles with each particle containing 147 KG beads (center bead with
+three surrounding shells). The KG chains contain two chain ends that crosslink to up to 2
+crosslinker beads, while crosslinker beads have a functionality of 4. The system is crosslinked
+to 95% of all possible crosslinks, forming a well-formed elastomer network. Filler clusters are
+dispersed throughout the elastomer. Finally, to show how attractive nanoparticle surfaces
+impact the dynamics of neighboring polymer segments, the polymer–filler LJ interaction
+strength is three times stronger than self interactions. This trajectory was prepared using
+an MD simulation in the NPT ensemble at a unit reduced temperature and zero pressure.
+For more details on the preparation protocol, we invite the reader to review the methods
+section of our earlier publication.23
+Atomistic polystyrene 30-mer (PS-30mer)
+This all-atom representation of polystyrene (PS) employs the OPLS force field to simulate
+atomistic polystyrene as described in our prior publications50,75 and provides an exemplar
+for AMDAT’s ability to handle chemically detailed systems. The trajectory corresponds to
+30 monomers per chain and 13978 total atoms, simulated in the NPT ensemble at T = 483
+K.
+Atomistic polystyrene 100-mer (PS-100mer)
+This all-atom representation of PS is identical to the system above but contains 100 monomers
+of styrene (32040 total atoms) and was simulated at T = 478 K.
+16
+
+Capabilities and Features
+In this section, we summarize the main classes of observables that AMDAT computes, illus-
+trated for the representative systems described above.
+System-Average Static Structural Properties
+AMDAT computes a range of real-space and reciprocal-space structural observables that char-
+acterize packing, composition, and molecular shape. Unless otherwise noted, these analyses
+operate on user-defined trajectory list or trajectory bin list objects.
+Pair structure and composition.
+Real-space structure is quantified via the radial distri-
+bution function g(r) and the related radial neighbor count, a non-volume-normalized measure
+of neighbors as a function of distance (commands rdf and rnf, respectively). Composition
+analysis (composition, composition vs time) provides counts of particles by species or
+type, either as time-averaged system-wide statistics or, when applied to binned trajectories,
+as spatially resolved density or composition profiles.
+Clustering and connectivity.
+Distance-based cluster identification (clustered list)
+can be used to determine which particles satisfy a specified clustering criterion. The resulting
+lists can then be analyzed with the composition tools to quantify, for example, cluster size
+distributions or the fraction of particles in clusters of a given type.
+Reciprocal-space structure.
+The static structure factor S(q) can be computed in two
+ways. The structure factor command evaluates S(q) via the inverse-density approach
+using all particles in the simulation box (currently limited to fixed-dimension cubic boxes),
+while structure factor from rdf performs a radially symmetric discrete Fourier transform
+of a previously computed g(r), yielding an S(q) that is applicable in more general geometries
+at the cost of somewhat lower statistical strength.
+17
+
+Molecular shape and orientational order.
+For molecular or multibody entities, AM-
+DAT provides system- and time-averaged measures of shape and orientation. The gyration radius
+command, applied to a multibody list, computes radii of gyration for molecules or clusters.
+Orientational correlations with respect to an externally defined vector can be evaluated via
+the orientational correlation command, enabling, for example, quantification of align-
+ment relative to a field or interface normal.
+1
+2
+3
+Distance, r
+0
+1
+2
+3
+4
+5
+6
+RDF, g(r)
+binLJ
+all
+1
+2
+12
+1
+2
+3
+Distance, r
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+KG
+all
+1
+2
+3
+Distance, r (Å)
+0.0
+2.5
+5.0
+7.5
+10.0
+12.5
+15.0
+PS-30mer
+all
+1
+2
+12
+0
+5
+10
+15
+Wave Vector, q
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+Structure Factor, S(q)
+0
+5
+10
+15
+Wave Vector, q
+0
+1
+2
+3
+0
+2
+4
+6
+Wave Vector, q
+0.50
+0.75
+1.00
+1.25
+1.50
+1.75
+Figure 1: Radial distribution functions (top) and structure factors (bottom) for binLJ, KG,
+and PS-30mer systems from left to right.
+Figure 1 illustrates several of these static observables for representative systems. For
+binLJ and binLJ2D, radial distribution functions are shown for all particles and for indi-
+vidual species, including asymmetric RDFs for cross interactions. For PS-30mer, RDFs are
+decomposed by carbon and hydrogen atom types. Structure factors S(q) are computed for
+all particles in each system.
+18
+
+System-Average Dynamical Properties
+AMDAT provides a suite of tools for probing translational, rotational, and neighbor-shell dy-
+namics, including both widely used measures and observables tailored to glass-forming liquids
+and polymers. Unless otherwise noted, these analyses operate on user-defined trajectory list
+objects.
+Single-particle translational dynamics.
+The mean-square displacement (MSD) is com-
+puted via the msd command, with options for three-dimensional displacements or projections
+onto a two-dimensional plane. Complementary quantities include the mean displacement
+and its incremental form as functions of time (mean displacement, incremental mean
+displacement), which can also be evaluated on binned trajectories (trajectory bin list)
+for spatially resolved analyses. The non-Gaussian parameter (ngp) and particle displace-
+ment distribution (displacement dist) quantify deviations from diffusive, Gaussian behav-
+ior. Distributions of Debye–Waller factors and their inverse “stiffness” values (u2 dist and
+stiffness dist, respectively) provide additional measures of caging and local vibrational
+confinement.
+Scattering and correlation functions.
+In reciprocal space, the self part of the intermedi-
+ate scattering function Fs(q, t) is computed via the isfs command over user-specified ranges
+of wavevectors. The full intermediate scattering function is computed via the isf list com-
+mand, although this is currently only fully implemented for fixed-size, cubic systems due to
+a shared underlying architecture with the inverse space structure factor calculation. In real
+space, the self, distinct, and total parts of the Van Hove correlation function G(r, t) are ob-
+tained using the vhs, vhd, and vht commands, respectively. Reorientational autocorrelation
+functions for molecular or multibody vectors are computed via the raf command applied to
+a multibody list, enabling analysis of rotational relaxation.
+19
+
+Neighbor-shell dynamics.
+Neighbor-shell dynamics are characterized by the neighbor
+decorrelation function, computed with neighbor decorrelation function from a precon-
+structed neighbor list and a corresponding trajectory list. This observable monitors
+the persistence and turnover of local coordination shells in time.
+10
+3
+10
+1
+101
+MSD, 
+r( )2
+binLJ
+all
+1
+2
+10
+4
+10
+2
+100
+102
+binLJ2D
+all
+1
+2
+10
+4
+10
+3
+10
+2
+10
+1
+100
+KG
+all
+10
+2
+10
+1
+100
+101
+102
+PS-30mer
+all
+1
+2
+0.00
+0.25
+0.50
+0.75
+1.00
+ISFS, Fs(q0, )
+all
+1
+2
+0.00
+0.25
+0.50
+0.75
+1.00
+all
+1
+2
+0.00
+0.25
+0.50
+0.75
+1.00
+all
+0.00
+0.25
+0.50
+0.75
+1.00
+all
+1
+2
+0
+5
+10
+15
+NGP, 
+2( )
+all
+1
+2
+0
+2
+4
+6
+all
+1
+2
+0
+2
+4
+all
+0.0
+0.5
+1.0
+1.5
+all
+1
+2
+10
+2 101
+104
+107
+Time Delay, 
+0
+5
+10
+15
+NDF
+all
+1
+2
+10
+2 101
+104
+107
+Time Delay, 
+0
+2
+4
+6
+8
+all
+1
+2
+10
+3
+101
+105
+109
+Time Delay, 
+2.5
+5.0
+7.5
+10.0
+12.5
+all
+100
+103
+106
+109
+Time Delay, 
+15
+20
+25
+30
+all
+1
+2
+Figure 2: Dynamical properties (MSD, ISFS, NGP, NDF) for binLJ, binLJ2D, KG, and
+PS-30mer systems from left to right.
+Figure 2 illustrates several of these time-dependent properties with species-level resolution
+20
+
+0.0
+0.5
+1.0
+1.5
+2.0
+Distance, r
+10
+7
+10
+6
+10
+5
+10
+4
+10
+3
+self Van Hove, Gs(r, t)
+100
+101
+102
+103
+104
+105
+106
+Figure 3: Self part of the Van Hove correlation function for the KG system. The figure shows
+isochronous curves versus distance colored by time according to the displayed color bar.
+for the representative systems. Mean-square displacement, the self part of the intermediate
+scattering function, the non-Gaussian parameter, and the neighbor decorrelation function
+are shown for binLJ, binLJ2D, KG, and PS-30mer. Figure 3 shows the self part of the Van
+Hove correlation function for the KG system as isochronous curves of Gs(r, t) versus distance,
+colored by time.
+Local and Per-Bead Analyses
+All of the metrics presented thus far are averaged properties across the entire system or on
+a subset of atoms defined by species or type. AMDAT also supports computation of per-
+particle quantities that can be used for spatially resolved analysis, thresholding, or external
+visualization.
+Several analysis routines produce per-atom fields stored in value list objects (e.g.,
+displacements, local order parameters, or coordination numbers). These value lists can
+be exported alongside atomic coordinates, for example as the β column of a pdb file, and
+visualized with molecular visualization software such as VM or OVITO.
+Figures 4 and 5 illustrate such per-particle visualizations for the 3D and 2D binary LJ
+systems, respectively. In both figures, all panels show the same snapshot colored by different
+21
+
+a)
+b)
+c)
+d)
+Figure 4: Configurations of the binary Lennard-Jones system, colored by different per-
+particle properties. Panels show a) atom type, b) displacement after 1211.42 τLJ, c) number
+of neighbors within a 1.4 σLJ cutoff, and d) number of neighbors in a Voronoi-tessellated
+cell. Visualization was performed using OVITO.19
+per-particle properties, with panel (a) indicating the two atom types.
+Panel (b) colors particles by their displacement over a specified time interval in the
+exponential time scheme. This field is generated by the displacement list command, which
+constructs a value list containing per-particle displacements at a selected time delay. The
+resulting value list can be written to a pdb file using value list write pdb, enabling
+direct visualization of mobile and immobile regions.
+Panels (c)–(e) demonstrate additional per-particle fields constructed within AMDAT. The
+nfold command computes the 2D 6-fold hexatic order parameter,78 while create distance
+neighborlist and create voronoi neighborlist generate neighbor lists from which coor-
+dination numbers are obtained based on distance cutoffs or Voronoi tessellation, respectively.
+22
+
+a)
+b)
+c)
+d)
+e)
+Figure 5: Configurations of the 2D binary Lennard-Jones system, colored by different per-
+particle properties. Panels show a) atom type, b) displacement after 1211.42 τLJ, c) 2D
+(xy) 6-fold hexatic order parameter, d) number of neighbors within a 1.4 σLJ cutoff, and
+e) number of neighbors in a Voronoi-tessellated box.
+Visualization was performed using
+OVITO.19
+Each of these quantities is stored in a value list and exported via value list write pdb
+to produce the corresponding visualizations.
+Together, these examples highlight how AMDAT’s per-particle analyses and value list-
+based workflows can be combined with external visualization tools to reveal spatial hetero-
+geneity in structure, dynamics, and local environment.
+Neighbor- and Multibody-Based Metrics
+Beyond system-averaged observables and per-particle fields, AMDAT provides tools for char-
+acterizing local environments, multibody structure, and cooperative motion. These quan-
+23
+
+tities are built on the neighbor- and multibody-based data objects described in the Core
+Architecture section.
+Neighbor statistics and decorrelation.
+Neighbor lists can be constructed using either
+distance-based cutoffs or Voronoi tessellation via the create distance neighborlist and
+create voronoi neighborlist commands. The resulting neighbor list objects encode
+both the number and identity of neighbors for each particle as a function of time and can
+be used to compute static and dynamic measures of local environment.
+8
+12
+16
+20
+Number of neighbors
+0
+0.1
+0.2
+0.3
+Frequency
+Distance
+Voronoi
+Figure 6: Histogram of number of neighbors for the binLJ system from two neighbors lists
+constructed using distance criteria (1.4σLJ) and Voronoi tessellation. Dashed lines indicate
+the average coordination number for each distribution.
+Static neighbor statistics, such as distributions of coordination number, can be obtained
+directly from a neighbor list. Figure 6 shows an example for the binLJ system, comparing
+histograms of neighbor counts obtained from distance-based and Voronoi-based neighbor
+definitions.
+Temporal evolution of local environments is quantified by the neighbor decorrelation func-
+tion, computed via the neighbor decorrelation function command using a neighbor list
+together with a corresponding trajectory list. This measure monitors the persistence and
+turnover of each particle’s neighbor shell and is particularly useful for studying cage break-
+ing and cooperative rearrangements in glass-forming systems. Persistent neighbors and their
+24
+
+clustering can be further analyzed through the persistent neighbors command, which
+constructs multibodies from particles that remain neighbors over user-specified time inter-
+vals.
+Multibody size, shape, and cooperative motion.
+For molecular or cluster-level analy-
+ses, AMDAT builds on multibody list objects that group particles into molecules, clusters,
+or dynamically defined structures. Several analyses characterize these multibodies:
+• gyration radius: Computes radius-of-gyration statistics for multibodies (e.g., poly-
+mer chains, clusters).
+• size statistics: Reports size distributions of multibodies, such as cluster size dis-
+tributions in systems with dynamic aggregation.
+• orientational correlation, raf: Evaluate orientational and reorientational correla-
+tion functions for vectors defined within each multibody, enabling analysis of rotational
+relaxation and alignment.
+• string multibodies, clustered list: Identify and analyze collective motion and
+clustering, for example by constructing multibodies corresponding to string-like mo-
+tions or spatial clusters of highly mobile particles.
+These neighbor- and multibody-based metrics complement global observables by resolving
+the structure and dynamics of local environments and cooperative rearrangements.
+Advanced Workflows
+Many of AMDAT’s capabilities are designed to be combined into flexible analysis pipelines.
+In addition to the specialized commands above, several features facilitate more advanced or
+system-specific workflows.
+Custom inputs, local resolution, and dynamic subsets.
+The custom manual trajec-
+tory format allows users to map arbitrary columns of a trajectory file to value list objects,
+25
+
+making it straightforward to incorporate auxiliary per-atom data (e.g., local stress, order
+parameters, or externally computed fields) into subsequent analyses.
+Spatial resolution can be introduced via trajectory bin list objects, which support
+binning along Cartesian axes or relative to reference particles or molecules. Many observables
+described above (e.g., composition, MSD, or local structure metrics) can be computed on
+these binned lists to obtain profiles across interfaces, gradients, or confinement geometries.
+Intricate selections and dynamic subsets are supported by combining selection commands
+with per-particle fields. For example, asymmetric radial distribution functions and dynamic
+properties can be computed for specific atom types, molecular substructures, or subsets de-
+fined by mobility thresholds. Lists of the fastest or slowest particles over a given time interval
+can be identified from displacement-based value lists and then analyzed for clustering, lo-
+cal environment, or multibody statistics.
+Generic auto- and cross-correlation of value lists.
+Many of the decorrelation and
+correlation functions described earlier (e.g., neighbor decorrelation, reorientational relax-
+ation, displacement-based statistics) can be viewed as specific cases of a more general frame-
+work for correlating scalar fields in time. AMDAT exposes this framework through two generic
+commands:
+• autocorrelate value list: Computes time autocorrelation functions of a single value
+list, enabling users to define and analyze arbitrary time-correlation functions of per-
+particle scalar quantities.
+• crosscorrelate value lists: Computes cross-correlation functions between two value
+list objects, allowing, for example, correlations between local mobility and local
+structure, or between two independently computed fields.
+Any property that can be stored in a value list—whether read in from a trajectory file,
+constructed from neighbor information, or generated by previous analyses—can be passed to
+these routines. In practice, this provides a recipe for defining and computing a wide range of
+26
+
+time correlation and cross-correlation functions without writing new analysis code, making
+AMDAT a flexible platform for user-defined correlation analyses.
+Examples, Use Cases, and Applications
+Benefits of Exponential Time Scaling
+For glass-forming liquids and polymers with slow relaxation, exponential time blocking pro-
+vides markedly better statistical efficiency and time-range coverage than uniform (linear)
+output. In a linear scheme with T frames spaced by ∆n integration steps, the number of
+frame pairs available at delay τ decreases as S(τ) = T −τ/∆n, leading to excessive redun-
+dancy at short delays and poor statistics at long delays. By contrast, blocked exponential
+spacing keeps a fixed number of start times per block for all delays within a block, yielding
+more uniform statistical quality across multiple decades of time while requiring fewer total
+pair evaluations.
+The exponential blocking scheme also limits the analysis to a single trajectory. Without
+this scheme, the standard is to save multiple trajectories with different spacings to permit
+analysis of multiple decades of dynamics. To illustrate this with an example, if a researcher
+is interested in 8 decades from 10−3 to 105 picoseconds, a single trajectory would require a
+spacing of 10−3 picoseconds and result in 108 snapshots! Therefore, a linear scheme necessi-
+tates multiple trajectories with different spacings to appropriately span multiple decades in a
+tractable manner. In contrast, an exponential scheme, with a small initial spacing increasing
+exponentially, has all of the time frame pairs necessary to analyze dynamics across multiple
+decades in time spacings.
+Below we show the minimal differences in LAMMPS input scripts that produce (i) a
+linearly spaced trajectory (Algorithm 3) and (ii) an exponentially blocked trajectory (Algo-
+rithm 4). We do so for the PS-100mer system, where the integration time step is 1 picosecond
+(ps). The linear script dumps every fixed number of steps; the exponential script computes
+27
+
+the next output time on-the-fly using a base b, a per-block size K, and a number of blocks
+I. The corresponding <time scheme> line in the AMDAT input must match the way frames
+were written using LAMMPS.
+Algorithm 3: LAMMPS input (linear spacing): output every 13,529 MD steps over a fixed
+run.
+# --- dump evenly spaced (linear) trajectory frames ---
+dump linear all custom 13529 ./linear.traj type x y z ix iy iz
+dump_modify linear first yes append yes sort id
+In this example, the dump stride is 13,529 ps. This number was chosen to yield 771 frames,
+equal to the number of frames in the exponential scheme below. Given that the syntax for
+the linear time scheme in AMDAT is linear <number of snapshots> <time spacing>,
+the corresponding <time scheme> line in the AMDAT input script for this situation is linear
+771 13600.
+Linear spacing is in general a poor way to study dynamical correlations. For each time
+delay, dynamical correlations use all (or a subset of all) frames that are separated by that
+time delay. For any time delay, ∆t, the number of frames available for correlation computes
+is S(∆t) = T −∆t
+∆τ , where ∆τ is the even spacing used (13529 ps above) and T is the total
+number of frames. This has two important consequences: small separations are oversampled
+with many possible frame pairs, while large time delays feature a few possible pairs of
+frames. The former problem results in a large analysis time for minimal additional statistical
+accuracy. To illustrate this problem with the example above, for separations of 105, 106,
+and 107, there are 762, 696, and 30 total pairs, respectively, for correlation analysis. The
+latter problem of large time delays is exacerbated by the fact that possible unique pairs are
+correlated (e.g., with T = 1000, ∆τ = 103, time delay ∆t = 997 × 103 has S = 3 possible
+pairs for analysis but they are frames (0, 997), (1, 998), and (2, 999), resulting in highly
+correlated results).
+Next, we present the modifications necessary in the LAMMPS script to provide an expo-
+28
+
+nentially spaced trajectory for analysis using AMDAT in Algorithm 4.
+Algorithm 4: LAMMPS input (exponential blocking): compute the next output step via
+variables (base b, block size K, blocks I).
+dump exp all custom 1 ./exp.traj type x y z ix iy iz
+dump_modify exp append yes first yes sort id
+# --- variables controlling exponential spacing ---
+# Expected to be set upstream or via command-line -var flag:
+#
+exp_base = b, blocksize = K, blocknumber = I
+# Example: lmp -var exp_base 1.2 -var blocksize 77 -var blocknumber 10
+thermo_modify line yaml
+thermo_modify flush yes
+variable lastinner
+equal "floor(v_exp_base^(v_blocksize-1))"
+variable lastouter
+equal "v_lastinner * v_blocknumber"
+variable getstep
+equal step
+variable innerstep
+equal "v_getstep % v_lastinner"
+variable blockindex
+equal "floor(v_getstep / v_lastinner)"
+# logic for log spacing within each block
+variable nextlinear
+equal "v_innerstep + 1"
+variable nextlogindex
+equal "1 + ceil(ln(v_nextlinear)/ln(v_exp_base))"
+variable nextinnerindex
+equal "ternary(v_nextlinear < v_nextlogindex,
+v_nextlinear, v_nextlogindex)"
+variable nextloginnerstep
+equal "floor(v_exp_base^(v_nextinnerindex - 1))"
+variable nextinnerstep
+equal "ternary(v_nextinnerindex > v_nextloginnerstep,
+v_nextinnerindex, v_nextloginnerstep)"
+variable nextoutput
+equal "v_nextinnerstep + v_blockindex * v_lastinner"
+29
+
+thermo
+v_nextoutput
+dump_modify
+exp every v_nextoutput
+# total integration steps = last step in a block * number of blocks
+run v_lastouter
+This script outputs frames at times that are exponentially spaced, repeated across I =
+10 blocks; the total run length is the last time in one block times the number of blocks
+(v lastouter= 1041776 × 10). The corresponding <time scheme> line in the AMDAT input
+script is exponential 10 77 1.2 0 0 1.0.
+To postprocess the resulting trajectories using AMDAT, we utilize the script in Algo-
+rithm 5.
+Algorithm 5: AMDAT input (exponential blocking): Read-in an exponential block trajectory
+with 20 chains with 100 Styrene monomers
+system_np
+custom
+./exp.traj
+exponential 10 77 1.2 0 0 1.0
+polymer 20
+1 2 3 4 5 6 7 8 9
+99 99 500 500 100 1 100 3 200
+#create a list of all atoms in the system
+create_list all
+all
+#compute the mean square displacement of all particles as a function of time and
+save to a file named msd.dat
+30
+
+msd ./msd.dat
+list all
+In Algorithm 5, we choose system np and custom to match the fix npt and dump custom
+commands in LAMMPS. After the trajectory name, we outline the exponential block pa-
+rameterization. Specifically, exponential I K b frt a0 ∆τ in AMDAT maps to LAMMPS
+variables blocknumber (I), blocksize (K), and exp base (b). Here we use frt = 0 (treat
+the last frame of a block as the first of the next for pairing), a0 = 0 (first exponent index),
+and ∆τ = 1.0 ps. Unlike linearly spaced trajectories, ∆τ for this scheme is the timestep
+employed in LAMMPS. For the linear trajectory, we replace the exponential line with linear
+T ∆t. In AMDAT, this corresponds to T frames separated by ∆τ integration steps (in time
+units) in LAMMPS (here, T = 771, ∆t = 13529).
+Next, the “composition block” lines tell AMDAT what particles to expect and how to
+define molecules and their composition for analysis. In the above example in Algorithm 5,
+we define 20 polymers with the name polymer, with 9 atom types (1 to 9) with their counts
+per polymer chain. There are in general many ways to define the composition block for any
+trajectory. For example, if one is not interested in per chain behavior, the entire composition
+can be defined as a single molecule (Algorithm 6).
+Finally, we create a list of all atoms using create list all\n all and calculate the
+mean-square displacement using the AMDAT msd command.
+Algorithm 6: Alternative for AMDAT composition block in Algorithm 5 with all atom types
+in a single molecule
+all 1
+1 2 3 4 5 6 7 8 9
+1980 1980 10000 10000 2000 20 2000 60 4000
+In Fig. 7, we present this analysis for the PS-100mer system with the linear and exponen-
+tial time schemes. Despite employing the same number of frames in both trajectories, the
+31
+
+exponential scheme probes more than double the logarithmic time span of the linear scheme.
+The exponential scheme achieves (a) broader time coverage, (b) higher short-time resolution,
+and (c) markedly fewer time-pair evaluations for comparable or better uncertainty at long
+delays, compared with linear spacing at the same total run length. In practice, this yields
+faster execution and improved statistical power for MSD and other correlation functions
+across the full time window.
+100
+101
+102
+103
+104
+105
+106
+107
+Time Delay,  [femtoseconds]
+10
+3
+10
+2
+10
+1
+100
+101
+Mean Squared Displacement [Å2]
+Exponential
+Linear
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1e7
+0
+10
+20
+30
+40
+Figure 7: MSD comparison between linear and exponential time spaced trajectories from
+the same MD simulation of PS-100mer.
+32
+
+Local Resolution and Per-Atom Properties in a Model Polymer
+Nanocomposite (PNC)
+Polymer nanocomposites (PNCs) exhibit spatially heterogeneous properties due to the pres-
+ence of rigid fillers and the effects of polymer–filler attractions. In such systems, polymer
+segments near filler surfaces often display markedly slower dynamics than those in the bulk.
+Here we demonstrate some of AMDAT’s capabilities spatially resolved analysis on an end-
+crosslinked Kremer–Grest (KG) network dispersed with carbon-black-like clusters, and show
+how to reproduce the workflow using AMDAT commands.
+The PNC comprises end-crosslinked KG chains, with 5000 chains of strand length 20
+and 2500 crosslinker particles; approximately 95% of all possible end crosslinks are formed.
+Rigid filler clusters mimic carbon black with each cluster consisting of 7 primary icosahedral
+particles. Each icosahedral particle contains 147 beads starting with a center bead, inner
+shell, middle shell, and outer shell. We load the elastomer with 50 such clusters or 26.1%
+filler by volume. This system is similar to the systems studied in references 21, 22, and 23.
+Critically, the polymer–filler cross-interaction strength is set to 3× the polymer (and filler)
+self-interaction strength, ensuring a strong interphase where chains are substantially slowed
+relative to the bulk polymer.
+Locally resolved ISFS
+We use a LAMMPS simulation to output an exponentially spaced trajectory (Algorithm 4)
+with a single block (I=1), block size K=103, base b=1.2, and base time unit ∆τ=0.001
+(AMDAT time scheme line: exponential 1 103 1.2 0 0 0.001). Given this setup, the
+AMDAT script begins with Algorithm 7.
+Algorithm 7: AMDAT PNC ISFS analysis part 1: System and composition blocks for PNC
+system
+system_np
+custom
+33
+
+./exp.traj
+exponential 1 103 1.2 0 0 0.001
+polymer 1 xlinkr 1 filler 50
+1 2 3 4 5 6 7 8 9
+90000 500 0 0 0 0 0 9500 0
+0 0 326 0 0 0 0 0 2174
+0 0 0 644 294 84 7 0 0
+In the above setup, particle types 1, 2, and 8 are polymer internal bead, polymer end bead
+with less than two bonded crosslinkers, and polymer end bead with two bonded crosslinkers,
+respectively. Further, particle types 3 and 9 are crosslinker bead with fewer than four bonds
+with chain ends and exactly four bonds with chain ends, respectively. Finally, there are 50
+separate filler clusters with 7 icosahedral clusters each, resulting in 7 center beads (type 4),
+84 inner-shell beads (type 5), 294 middle-shell beads (type 6), and 644 outer-shell beads
+(type 7). Unlike for the polymer and crosslinker molecules, it is important to distinguish
+between distinct clusters for our desired analysis, and thus filler beads are segregated into
+separate molecules in AMDAT. Another feature of AMDAT implicitly shown above is that
+one can define all polymer chains as a single molecule - this treatment is appropriate for the
+highly crosslinked elastomer probed here. One could instead treat each strand within the
+matrix as a separate molecule, although this would introduce complexities surrounding the
+distinct atom types within each strand on the basis of crosslinking state.
+We use the self-intermediate scattering function (ISFS) to probe how different parts
+of the filled elastomer relaxes.
+Because filler particles are solid, their ISFS do not fully
+decay over the times we simulate. Interfacial polymer segments are expected to relax far
+more slowly than bulk segments due to the presence of dynamical gradients near a rigid
+particle.30,79–81 Spatially resolved ISFS provides a sensitive probe of interphase dynamics
+and connectivity.
+AMDAT enables this type of local analysis via distance-based binning
+(trajectory bin list), proximity selections, and region-specific dynamic properties.
+34
+
+We begin by computing the ISFS for the readily available species/types defined in the
+trajectory, as in Algorithm 8. In Algorithm 8, we select polymer, filler, and center lists, and
+evaluate the ISFS at a wavevector of 7.07 (in dimensionless inverse LJ distance units) for
+each list. For ISFS calculations, the wavevector is determined as follows. Wavenumber bins
+of index m are centered at positions of qm = π
+L + mπ
+L = π
+L(1 + m). For distinct two-point
+correlations, L must be the actual dimension of the box to yield accurate values. For self-
+correlations such as ISFS, there is no strict limit on L. In this example algorithm, we set L
+to 12.4825. The equation above then yields a wavevecotr of 7.07 when m is 26. In general,
+this command allows for simultaneous calculation over a range of wavenumber indexes; here
+we have set both the lowest and highest indices to 26 to compute values for only a single
+wavenumber. The last option is a flag (0 or 1) that tells AMDAT whether to use the full
+block in its analysis or not. This only affects time-frame pairs in separate blocks; a value of
+zero only uses the first time frames in two blocks as pairs, whereas a unit value compares all
+possible time-frame pairs for a time delay in cross-block analysis.
+Algorithm 8: AMDAT PNC ISFS analysis part 2: Creating polymer, filler, and center lists
+and evaluating ISFS
+create_list polymer
+species polymer species xlinkr
+isfs ./data/isfs/polymer.isfs.stats 26 26 xyz 12.4385 0
+list polymer
+create_list filler
+species filler
+isfs ./data/isfs/filler.isfs.stats 26 26 xyz 12.4385 0
+list filler
+35
+
+create_list center
+type_system 7
+isfs ./data/isfs/center.isfs.stats 26 26 xyz 12.4385 0
+list center
+Five regions are identified using AMDAT: a) interfacial polymer, b) second-shell polymer,
+c) bulk polymer, d) interfiller polymer, and e) contacting filler. (a), (b), and (c) belong
+to shells around a filler particle with increasing distance from the surface as per Figure 8a.
+As we will demonstrate, AMDAT’s create bin list with options distance trajectory is
+well-suited to identify and isolate such domains. (d) and (e), shown in Figure 8b and 8c,
+respectively, are identified using different parameterizations of the find between command.
+a)
+b)
+c)
+Figure 8: Schematic of the various kinds of dynamically defined local resolution that AMDAT
+can identify and isolate for analysis: a) Interface, b) Intermolecular regions, and c) Molecular
+contact.
+Interfacial polymer.
+These are polymer segments that exist in the first shell around filler
+particles, characterized by a distance of a single bead’s diameter separation from the outer
+shell of the filler particles. The second and third (bulk) shells are identified similarly (with
+polymer segments 1-2 and 2-3 bead diameters away from the filler surface, respectively).
+36
+
+The third shell is characterized as the bulk because we expect that dynamic slowing down
+near the filler surface will extend only two bead diameters away given that these simula-
+tions are far above the system’s glass transition temperature.26 In AMDAT, interface shells
+are generated via a trajectory bin list with distance-based binning (3 shells, 1.0 unit
+thick) anchored on the filler outer list, then converted into named trajectory lists using
+traj list from bin list, as in Algorithm 9.
+Algorithm 9: AMDAT PNC ISFS analysis part 3: Create a bin list of polymer segments
+based on distance from the outer filler shell and then print the ISFS of each shell region.
+create_list outer
+type_system 4
+# create a bin list called interface_1_3 with 3 shells
+# filled with polymer segments based on unit increments
+# of distance from outer-shell filler beads
+create_bin_list interface_1_3
+distance trajectory polymer outer 1.0 3
+# create a trajectory list called interface_0-1
+# from interface_1_3 with only the first shell
+# of polymer segments to target for ISFS analysis
+traj_list_from_bin_list interface_0-1 interface_1_3 0 0 0
+isfs data/isfs/interface_0-1.isfs.stats 26 26 xyz 12.4385 0
+list interface_0-1
+traj_list_from_bin_list interface_1-2 interface_1_3 0 0 1
+isfs data/isfs/interface_1-2.isfs.stats 26 26 xyz 12.4385 0
+list interface_1-2
+37
+
+traj_list_from_bin_list interface_2-3 interface_1_3 0 0 2
+isfs data/isfs/interface_2-3.isfs.stats 26 26 xyz 12.4385 0
+list interface_2-3
+The syntax for the create bin list distance command is
+create_bin_list <name of bin list to create> \n
+distance trajectory <list to bin> <list to compute distances from>
+<bin thickness> <number of bins>.
+For clarity, here the only new line is represented by \n. The second and third line would
+comprise a single line in the input file.
+In addition to the distance trajectory option, one can also use the same method to
+bin into any number of bins in three dimensions based on position (all), position within a
+rectangular region (region), radial position around a fixed center point (distance point),
+or based on normal distances and directions from a fixed plane (distance plane).
+Interfiller polymer.
+In the PNC literature, there is much interest in the specific nature
+of the interface. Is it similar to a glassy shell, uniformly distributed around a filler particle,
+or is it an inter-particle phenomena where polymer segments are impinged by two distinct
+filler particles? To study this, we can use the find between AMDAT command to isolate
+polymer segments that live between two distinct filler particles, as illustrated in Figure 9.
+Algorithm 10: AMDAT PNC ISFS analysis part 4: Create a trajectory list of polymer
+segments that reside between two distinct filler particle clusters and evaluate ISFS.
+# create a trajectory list called interfiller with beads from polymer list
+# based on two distance vectors with two distinct filler cluster centers
+# that sum up to a maximum of 4.25 and have a maximum angle of π-0.0
+find_between interfiller 4.25 0.0 1
+list polymer
+list center
+38
+
+a)
+b)
+c)
+d)
+Figure 9: 2D illustration of the find between command with two particles (blue) separated
+by a distance of 3. The red-colored region is the selected region by find between with (dc,
+cos θc) options: a) (4.0, 0.0), b) (4.0, -0.5), c) (5.0, 0.0), and d) (5.0, 0.5). dc and cos θc are
+set by the third and fourth arguments of the find between command. The labeled point in
+panel (a) is an example and shows the vectors and angles that AMDAT uses in the selection of
+particles. Specifically, selected particles will form ∥v1∥+∥v2∥
+2
+< dc and cos θ =
+v1·v2
+∥v1∥∥v2∥< cos θc
+isfs data/isfs/interfiller.isfs.stats 26 26 xyz 12.4385 0
+list interfiller
+The syntax for the find between command is
+find_between <name of trajectory list to create>
+<total magnitude of two distance vectors> <angle of two distance vectors>
+<exclude between the same molecule> \n
+<list to fill from>\n
+<list to find between>.
+In Algorithm 10, the trajectory list called interfiller will contain all polymer beads
+39
+
+that form vectors with two distinct clusters (<exclude between the same molecule>=1)
+that sum to less than 4.25σLJ and form an angle whose cosine is less than 0.0. To accomplish
+this, AMDAT loops over all polymer beads, computes distance vectors with all (filler) center
+beads to find the first vector that is lower than 4.25, and then attempts to find a second
+center bead from distinct filler clusters with a second vector that, together with the first
+vector, satisfy the criteria above.
+The criteria on the angle formed allows exclusion of
+particles that form distances that sum to less than 4.25 but reside above or below the pair
+of filler centers.
+Contacting filler.
+Another matter of debate in the PNC literature is the role that contact-
+ing filler clusters play in load bearing, compression resistance, and dissipation. Accordingly,
+we utilize the find between command to identify contacting filler beads (also from distinct
+clusters), as per Algorithm 11.
+Algorithm 11: AMDAT PNC ISFS analysis part 4: Create a trajectory list of filler beads
+that reside between two distinct contacting filler particle clusters and evaluate ISFS.
+find_between contactfiller 3.75 0.0 1
+list outer
+list center
+isfs data/isfs/contactfiller.isfs.stats 26 26 xyz 12.4385 0
+list contactfiller
+By choosing the first target as the outer shell and the second target as the center bead, this
+command identifies surface beads in filler particles that are in direct contact with another
+particle. Because each filler icosahedral particle has a diameter of ∼3.5, we set the distance
+cut off above to a value of 3.75. We also limit the choice to surface beads between distinct
+particles (as we did for the interfiller polymer) to avoid picking up intra-cluster contacts that
+do not contribute to inter-cluster friction.
+40
+
+As demonstrated by its use for these distinct objectives, the find between command is
+a versatile command that can be used to identify dynamic regions with varying complexity
+with ease
+10
+3
+10
+2
+10
+1
+100
+101
+102
+103
+104
+105
+Time Delay, 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Self Intermediate Scattering Function, Fs(q = q*, )
+Filler
+Centers
+Contacts
+Polymer
+Interfiller
+1st/Interface
+2nd Shell
+3rd/Bulk
+Figure 10: Self-intermediate scattering function Fs(q∗, t) for PNC regions (polymer, filler,
+centers, interphase shells, interfiller, and contacts).
+Put together, Algorithms 7, 8, 9, 10, and 11 form an AMDAT script that selects polymer,
+filler, and center lists, constructs distance-binned interfacial shells, extracts interfiller and
+contact subsets, and computes Self Intermediate Scattering Functions (ISFS) for all regions.
+The resulting ISFS are graphed in Figure 10. The Filler and Center curves correspond to
+rigid cluster beads and their geometric centers; as expected for rigid entities, their ISFS does
+41
+
+not decay to zero over the simulated window. The same is true for contacting filler particles
+and there is no visible difference in the ISFS of these groups. In contrast, all polymer groups
+relax within the simulation time, but the rate depends strongly on location: 1st/Interphase
+(interface 0-1) and Interfiller subsets relax much more slowly than the 3rd/Bulk polymer,
+consistent with the three-fold stronger polymer–filler attraction that immobilizes chains near
+the filler surface. In this system, local proximity to the filler governs relaxation.
+Per-atom property read-in
+The per-atom property read-in method in AMDAT, i.e., the custom manual trajectory file
+type, enables the user to compute averages of properties in different regions during postpro-
+cessing, among other capabilities. Although LAMMPS provides powerful syntax to define
+different groups of atoms for on-the-fly calculations of spatially averaged properties, its
+region-based selection is more limited than the geometrically complex calculations reported
+in the previous section (e.g., interfiller or interface polymer regions in a PNC). AMDAT’s
+custom manual trajectory file read-in method solves this issue by reading in per-atom proper-
+ties written by LAMMPS to a trajectory file into a value list, which then enables AMDAT
+to analyze these properties in various ways. In a recent study, we use this method to show
+that contacting filler regions exhibit larger normal pressures in a deforming filled elastomer,21
+which mechanistically reinforces the material similar to a pillar holding together a structure
+by resisting compression. Here, we demonstrate this capability using the PNC system with
+a linearly spaced trajectory to obtain per-region counts and average potential energies.
+To obtain a trajectory with per-atom properties in LAMMPS, we can employ LAMMPS
+compute and fix ave/atom commands to prepare the properties and dump custom to print
+them along with the trajectory. In Algorithm 12, we show the setup that we use in this
+section to print per-atom potential energies for AMDAT postprocessing.
+Algorithm 12: LAMMPS input script to dump per-atom potential energies.
+# compute potential energies per atom
+42
+
+compute pe_atom all pe/atom
+# fix ave/atom enables the user to average values over time before dumping;
+# Here, the "1 1 200000" configuration samples values every 200000 MD steps
+# and does no time averaging
+fix pe_atom_avg all ave/atom 1 1 200000 c_pe_atom
+# Next, we dump the pe_atom_avg per-atom property using dump custom
+dump
+dump1 all custom 200000 pe.traj mol type x y z f_pe_atom_avg
+dump_modify dump1 append yes sort id
+The setup in Algorithm 12 will lead to a linearly spaced trajectory, separated by 2×105
+MD steps, with columns for the molecule ID, particle type, Cartesian coordinates, and the
+time-averaged potential energy calculated using compute pe/atom and time-averaged using
+fix ave/atom. In the above example, no time averaging is used in the LAMMPS script
+itself. We employ linear rather than exponential time spacing because only static structural
+properties, not two-time properties, are studied in this example, and because this approach
+is sometimes more suitable to a system under deformation.
+Then, with a few changes to the input script in the previous section, AMDAT can read
+in these per-atom potential energies (PE) and postprocess them to provide the data neces-
+sary for Figure 11 for the same regions. We first begin with Algorithm 13 by defining the
+custom manual trajectory read-in method.
+Algorithm 13: AMDAT PNC manual config example part 1
+system_np
+custom_manual
+./pe.traj manual_config
+linear 41 2000
+polymer 1 xlinkr 1 filler 50
+1 2 3 4 5 6 7 8 9
+90000 500 0 0 0 0 0 9500 0
+43
+
+Filler
+Center
+Contact
+103
+104
+Count
+Filler
+Center
+Contact
+0
+20
+40
+60
+80
+100
+120
+Potential Energy
+Polymer
+Interfiller
+1st/Interface
+2nd Shell
+3rd/Bulk
+103
+104
+105
+Count
+Polymer
+Interfiller
+1st/Interface
+2nd Shell
+3rd/Bulk
+0
+2
+4
+6
+8
+10
+12
+14
+16
+Potential Energy
+Figure
+11:
+Average
+counts
+and
+potential
+energies
+of
+different
+subsets/regions
+within
+the
+PNC
+computed
+using
+AMDAT’s
+custom manual
+read-in
+method
+and
+create bin list/find between methods for identifying contacting filler, interfiller polymer,
+and polymer shell regions. Each bar has a standard error from the average measurements at
+different frames.
+44
+
+0 0 326 0 0 0 0 0 2174
+0 0 0 644 294 84 7 0 0
+In Algorithm 13, we provide AMDAT with the trajectory and add another file names that
+maps the columns to value list names. For this example, the manual config file is shown
+in Algorithm 14.
+Algorithm 14: manual config file for mapping trajectory columns to AMDAT value list
+objects
+unwrapped x y z
+f_pe_atom_avg pe
+Algorithm 14 instructs AMDAT to expect unwrapped position coordinates and one additional
+column called f pe atom avg and to map it to a value list called pe.
+Then, the remainder of the AMDAT script can refer to pe as a value list, providing
+access to AMDAT’s rich syntax for postprocessing. For example, to obtain the metrics used
+in Figure 11, we can use the value statistics pertime command to obtain a time series of
+counts, mean, and standard deviation, as shown by Algorithm 15. Because the analysis here
+is performed on a quiescent NPT simulation, we further postprocess these space-separated
+values to averages for each group and plot them in Figure 11.
+Algorithm 15: AMDAT PNC manual config example part 2: Printing time series of per-
+atom properties.
+# get time series of count, PE mean, and PE standard deviation for filler beads
+create_list filler
+species filler
+value_statistics_pertime ./stats/filler.pe.stats pe 3 filler
+# get time series of count, PE mean, and PE standard deviation for the
+45
+
+# first shell of polymer around filler particles (interface)
+create_bin_list interface_1_3
+distance trajectory polymer outer 1.0 3
+traj_list_from_bin_list interface_0-1 interface_1_3 0 0 0
+value_statistics_pertime ./stats/interface/interface_0-1_center.pe.stats pe 3
+interface_0-1
+# get time series of count, PE mean, and PE standard deviation for the
+# contacting filler region
+find_between contactfiller 3.75 0.0 1
+list outer
+list center
+value_statistics_pertime ./stats/contact/contactfiller.pe.stats pe 3
+contactfiller
+The syntax for the value statistics pertime command is value statistics pertime
+<name of output file> <value list to compute statistics for> <number of moments
+of distribution to output> <trajectory list to target>. This read-in method al-
+lows the user to combine AMDAT’s powerful local resolution with property reductions to
+further characterize the trajectories’ regions and extract essential physics.
+Finally, one can utilize AMDAT’s write list trajectory command to print the re-
+gions to an xyz file for further processing or visualization purposes. For example, to ex-
+tract a trajectory of only contacting filler beads at all times, we can utilize the command
+write list trajectory contactfiller ./xyz/contactfiller.xyz. The same command
+was used to extract trajectories for interfiller beads (also using find between) and each of
+the polymer shell bins (from create bin list) and we visualize these trajectories using
+46
+
+OVITO in Figure 12.
+a)
+b)
+c)
+d)
+Figure 12: Configurations of PNC system rendered using OVITO.19 a) Filler particles il-
+lustrated using different colors of gray, polymer beads using green, and crosslinker beads
+in sky blue.
+b) Only filler beads are shown with contacting beads (determined using
+AMDAT create bin list distance method) shown in red. c) Interfiller polymer, deter-
+mined using find between, are highlighted in apple green. d) Shells around filler particles
+(find between) are shown in different colors.
+To accomplish the four visualizations of the same snapshot in the panels of Figure 12, we
+loaded the entire trajectory first (pe.traj) and then added (to the OVITO pipeline) each of
+47
+
+the xyz trajectory files created using write list trajectory and distinguished them using
+color. Figure 12a shows the three components in the filled elastomer with polymer in green,
+crosslinker in cyan, and distinct filler clusters colored in different shades of gray. Figure 12b
+only shows filler beads with contacting filler particles labeled in red.
+Figure 12c shows
+interfiller polymer regions that reside between two distinct filler clusters. Finally, Figure 12d
+returns to the shades-of-gray coloring scheme for filler clusters but colors polymer beads
+according to the shell that they reside in; yellow is used for the first two shells with unit
+thickness and the next three shells are colored using different colors.
+Collectively, these examples illustrate AMDAT’s rich ability to enable spatially resolved
+analysis and visualization.
+Conclusion
+AMDAT, Amorphous Molecular Dynamics Analysis Toolkit, provides a solution for analysis
+of trajectories of molecular dynamics simulations for polymers, glass-forming, and other soft
+matter systems, with a focus on amorphous systems and systems where dynamics over many
+decades of time are of interest. It incorporates versatile particle-selection capabilities and
+numerous static and dynamic analysis tools with capabilities in exponential time-spacing and
+in-memory trajectory analysis to allow for efficient and versatile trajectory analysis. AMDAT
+is written in C++ in a highly object-oriented manner to facilitate straightforward extensibility
+of its codebase with additional analysis tools. It is designed to combine effectively with
+widely-used simulation software such as LAMMPS, and with popular visualization software
+such as VMD or OVITO. For research groups with a focus on molecular dynamics simulation
+of amorphous systems, AMDAT may thus provide a valuable alternative to in-house analysis
+tool development or to in-simulation-package analysis capabilities.
+48
+
+Software Availability
+AMDAT is distributed with a GNU GPLv3.0 license as an open-source package. Installation
+details, documentation, and examples can be found within the GitHub repository74 https:
+//github.com/dssimmons-codes/AMDAT.
+Acknowledgement
+Development of various elements of AMDAT has been supported by multiple grants, includ-
+ing support from the W. M. Keck Foundation (early algorithmic improvements), support
+from National Science Foundation grants DMR - 131043 (early implementation of spatially
+resolved analysis), DMR - 1849594 (early architectural improvements), CBET - 1854308 (ad-
+ditions to spatially resolved analysis), and DMR – 2312324 (additions to spatially resolved
+multibody analysis), support from AFOSR FA9550-22-1-042 (algorithmic improvements and
+improvements to data read-in), and support from Department of Energy Basic Energy Sci-
+ences Grant DE-SC0022329 (implementation of custom read in and other associated capa-
+bilities).
+49
+
+References
+(1) Thompson, A. P.; Aktulga, H. M.; Berger, R.; Bolintineanu, D. S.; Brown, W. M.;
+Crozier, P. S.; in ’t Veld, P. J.; Kohlmeyer, A.; Moore, S. G.; Nguyen, T. D.; Shan, R.;
+Stevens, M. J.; Tranchida, J.; Trott, C.; Plimpton, S. J. LAMMPS - a flexible simulation
+tool for particle-based materials modeling at the atomic, meso, and continuum scales.
+Comp. Phys. Comm. 2022, 271, 108171, DOI: 10.1016/j.cpc.2021.108171.
+(2) Bekker, H.; Berendsen, H. J. C.; Dijkstra, E. J.; Achterop, S.; Van Drunen, R.; Van
+Der Spoel, D.; Sijbers, A.; Keegstra, H.; Renardus, M. K. R. In Physics computing;
+de Groot, R. A., Nadrchal, J., Eds.; World Scientific Publishing, 1993; Vol. 92; pp
+252–256.
+(3) Phillips, J. C. et al. Scalable molecular dynamics on CPU and GPU architec-
+tures with NAMD. The Journal of Chemical Physics 2020, 153, 044130, DOI:
+10.1063/5.0014475.
+(4) Recent Developments in Amber Biomolecular Simulations. Journal of Chemical Infor-
+mation and Modeling 2025, 65, 7835–7843, DOI: 10.1021/acs.jcim.5c01063.
+(5) Brooks, B. R.; Bruccoleri, R. E.; Olafson, B. D.; States, D. J.; Swaminathan, S.;
+Karplus, M. CHARMM: A program for macromolecular energy, minimization, and
+dynamics calculations. Journal of Computational Chemistry 1983, 4, 187–217, DOI:
+10.1002/jcc.540040211.
+(6) Eastman, P. et al. OpenMM 8: Molecular Dynamics Simulation with Machine Learn-
+ing Potentials. The Journal of Physical Chemistry. B 2024, 128, 109–116, DOI:
+10.1021/acs.jpcb.3c06662.
+(7) Hinsen, K. The molecular modeling toolkit: A new approach to molecular simulations.
+Journal of Computational Chemistry 2000, 21, 79–85.
+50
+
+(8) Michaud-Agrawal, N.; Denning, E. J.; Woolf, T. B.; Beckstein, O. MDAnalysis: A
+toolkit for the analysis of molecular dynamics simulations. Journal of Computational
+Chemistry 2011, 32, 2319–2327.
+(9) Richard J. Gowers; Max Linke; Jonathan Barnoud; Tyler J. E. Reddy; Manuel N. Melo;
+Sean L. Seyler; Jan Doma´nski; David L. Dotson; S´ebastien Buchoux; Ian M. Kenney;
+Oliver Beckstein MDAnalysis: A Python Package for the Rapid Analysis of Molecular
+Dynamics Simulations. Proceedings of the 15th Python in Science Conference. 2016;
+pp 98 – 105.
+(10) Seeber, M.; Cecchini, M.; Rao, F.; Settanni, G.; Caflisch, A. Wordom: a program for
+efficient analysis of molecular dynamics simulations. Bioinformatics 2007, 23, 2625–
+2627.
+(11) Seeber, M.; Felline, A.; Raimondi, F.; Muff, S.; Friedman, R.; Rao, F.; Caflisch, A.;
+Fanelli, F. Wordom: A user-friendly program for the analysis of molecular structures,
+trajectories, and free energy surfaces. Journal of Computational Chemistry 2011, 32,
+1183–1194.
+(12) Felline, A.; Conti, S.; Seeber, M.; Cecchini, M.; Fanelli, F. Wordom update 2: A user-
+friendly program for the analysis of molecular structures and conformational ensembles.
+Computational and Structural Biotechnology Journal 2023, 21, 1390–1402.
+(13) Romo, T. D.; Grossfield, A. LOOS: An extensible platform for the structural analysis of
+simulations. 2009 Annual International Conference of the IEEE Engineering in Medicine
+and Biology Society. 2009; pp 2332–2335.
+(14) Romo, T. D.; Leioatts, N.; Grossfield, A. Lightweight object oriented structure anal-
+ysis: Tools for building tools to analyze molecular dynamics simulations. Journal of
+Computational Chemistry 2014, 35, 2305–2318.
+51
+
+(15) Roe, D. R.; Cheatham, T. E. I. PTRAJ and CPPTRAJ: Software for Processing and
+Analysis of Molecular Dynamics Trajectory Data. Journal of Chemical Theory and
+Computation 2013, 9, 3084–3095.
+(16) Roe, D. R.; Cheatham III, T. E. Parallelization of CPPTRAJ enables large scale analy-
+sis of molecular dynamics trajectory data. Journal of Computational Chemistry 2018,
+39, 2110–2117.
+(17) McGibbon, R. T.; Beauchamp, K. A.; Harrigan, M. P.; Klein, C.; Swails, J. M.;
+Hern´andez, C. X.; Schwantes, C. R.; Wang, L.-P.; Lane, T. J.; Pande, V. S. MD-
+Traj: A Modern Open Library for the Analysis of Molecular Dynamics Trajectories.
+Biophysical Journal 2015, 109, 1528 – 1532.
+(18) Humphrey, W.; Dalke, A.; Schulten, K. VMD: Visual molecular dynamics. Journal of
+Molecular Graphics 1996, 14, 33–38, DOI: 10.1016/0263-7855(96)00018-5.
+(19) Stukowski, A. Visualization and analysis of atomistic simulation data with OVITO–the
+Open Visualization Tool. Modelling and Simulation in Materials Science and Engineer-
+ing 2010, 18, 015012, DOI: 10.1088/0965-0393/18/1/015012.
+(20) Cavagna, A. Supercooled liquids for pedestrians. Physics Reports-Review Section
+of Physics Letters 2009, 476, 51–124, DOI: 10.1016/j.physrep.2009.03.003,
+WOS:000267351200001.
+(21) Pierre Kawak; Bhapkar, H.; Simmons, D. S. Central role of filler-polymer interplay
+in nonlinear reinforcement of elastomeric nanocomposites. Macromolecules 2024, 57,
+DOI: 10.1021/acs.macromol.4c00489.
+(22) Pierre Kawak; Bhapkar, H.; Simmons, D. S. Origin of Heating-Induced Softening and
+Enthalpic Reinforcement in Elastomeric Nanocomposites. ACS Macro Letters 2025,
+DOI: 10.1021/acsmacrolett.5c00442.
+52
+
+(23) Pierre Kawak; Bhapkar, H.; Simmons, D. S. Glassy interphases reinforce elastomeric
+nanocomposites by enhancing percolation-driven volume expansion under strain. 2025,
+DOI: 10.48550/arXiv.2509.04755.
+(24) Simmons, D. S.; Douglas, J. F. Nature and interrelations of fast dynamic properties in
+a coarse-grained glass-forming polymer melt. Soft Matter 2011, 7, 11010–11020, DOI:
+10.1039/c1sm06189e.
+(25) Simmons, D. S.; Cicerone, M. T.; Zhong, Q.; Tyagi, M.; Douglas, J. F. Generalized
+localization model of relaxation in glass-forming liquids. Soft Matter 2012, 8, 11455–
+11461, DOI: 10.1039/c2sm26694f.
+(26) Lang, R. J.; Simmons, D. S. Interfacial Dynamic Length Scales in the Glass Transition
+of a Model Freestanding Polymer Film and Their Connection to Cooperative Motion.
+Macromolecules 2013, 46, 9818–9825, DOI: 10.1021/ma401525q.
+(27) Simmons, D. S.; Cicerone, M. T.; Douglas, J. F. Response to Comment on Generalized
+Localization Model of Relaxation in Glass-Forming Liquids by A. Ottochian et al. Soft
+Matter 2013, 9, 7892–7899, DOI: 10.1039/C3SM51316E.
+(28) Mackura, M. E.; Simmons, D. S. Enhancing heterogenous crystallization resistance in
+a bead-spring polymer model by modifying bond length. Journal of Polymer Science
+Part B: Polymer Physics 2014, 52, 134–140, DOI: 10.1002/polb.23398.
+(29) Marvin, M. D.; Lang, R. J.; Simmons, D. S. Nanoconfinement effects on the fragility of
+glass formation of a model freestanding polymer film. Soft Matter 2014, 10, 3166–3170,
+DOI: 10.1039/C3SM53160K.
+(30) Simmons, D. S. An Emerging Unified View of Dynamic Interphases in Polymers. Macro-
+molecular Chemistry and Physics 2016, 217, 137–148, DOI: 10.1002/macp.201500284.
+53
+
+(31) Mangalara, J. H.; Simmons, D. S. Tuning Polymer Glass Formation Behavior and Me-
+chanical Properties with Oligomeric Diluents of Varying Stiffness. ACS Macro Letters
+2015, 4, 1134–1138, DOI: 10.1021/acsmacrolett.5b00635.
+(32) Lang, R. J.; Merling, W. L.; Simmons, D. S. Combined Dependence of Nanoconfined
+Tg on Interfacial Energy and Softness of Confinement. ACS Macro Letters 2014, 3,
+758–762, DOI: 10.1021/mz500361v.
+(33) Ruan,
+D.;
+Simmons,
+D.
+S.
+Glass
+Formation
+near
+Covalently
+Grafted
+Inter-
+faces:
+Ionomers as a Model Case. Macromolecules 2015, 48, 2313–2323, DOI:
+10.1021/acs.macromol.5b00025.
+(34) Diaz-Vela, D.; Hung, J.-H.; Simmons, D. S. Temperature-Independent Rescaling of the
+Local Activation Barrier Drives Free Surface Nanoconfinement Effects on Segmental-
+Scale Translational Dynamics near Tg. ACS Macro Letters 2018, 7, 1295–1301, DOI:
+10.1021/acsmacrolett.8b00695.
+(35) Merling, W. L.; Mileski, J. B.; Douglas, J. F.; Simmons, D. S. The Glass Tran-
+sition of a Single Macromolecule. Macromolecules 2016,
+49,
+7597–7604,
+DOI:
+10.1021/acs.macromol.6b01461.
+(36) Ruan, D.; Simmons, D. S. Roles of chain stiffness and segmental rattling in ionomer
+glass formation. Journal of Polymer Science Part B: Polymer Physics 2015, 53, 1458–
+1469, DOI: 10.1002/polb.23788.
+(37) Ye, C.; Weiner, C. G.; Tyagi, M.; Uhrig, D.; Orski, S. V.; Soles, C. L.; Vogt, B. D.;
+Simmons, D. S. Understanding the Decreased Segmental Dynamics of Supported Thin
+Polymer Films Reported by Incoherent Neutron Scattering. Macromolecules 2015, 48,
+801–808, DOI: 10.1021/ma501780g.
+(38) Mangalara, J. H.; Marvin, M. D.; Simmons, D. S. Three-Layer Model for the Emer-
+54
+
+gence of Ultra-Stable Glasses from the Surfaces of Supercooled Liquids. The Journal of
+Physical Chemistry B 2016, 120, 4861–4865, DOI: 10.1021/acs.jpcb.6b04736.
+(39) Cheng, Y.; Yang, J.; Hung, J.-H.; Patra, T. K.; Simmons, D. S. Design Rules for Highly
+Conductive Polymeric Ionic Liquids from Molecular Dynamics Simulations. Macro-
+molecules 2018, 51, 6630–6644, DOI: 10.1021/acs.macromol.8b00572.
+(40) Lee, J.; Mangalara, J. H.; Simmons, D. S. Correspondence between the rigid amorphous
+fraction and nanoconfinement effects on glass formation. Journal of Polymer Science
+Part B: Polymer Physics 2017, 55, 907–918, DOI: 10.1002/polb.24324.
+(41) Smith, S. M.; Simmons, D. S. Horizons for design of filled rubber informed by molec-
+ular dynamics simulation. Rubber Chemistry and Technology 2017, 90, 238–263, DOI:
+10.5254/rct.17.82668.
+(42) Mangalara, J. H.; Mackura, M. E.; Marvin, M. D.; Simmons, D. S. The relationship
+between dynamic and pseudo-thermodynamic measures of the glass transition tempera-
+ture in nanostructured materials. The Journal of Chemical Physics 2017, 146, 203316,
+DOI: 10.1063/1.4977520.
+(43) Mangalara, J. H.; Marvin, M. D.; Wiener, N. R.; Mackura, M. E.; Simmons, D. S. Does
+fragility of glass formation determine the strength of Tg-nanoconfinement effects? The
+Journal of Chemical Physics 2017, 146, 104902, DOI: 10.1063/1.4976521.
+(44) Chowdhury, M.; Guo, Y.; Wang, Y.; Merling, W. L.; Mangalara, J. H.; Simmons, D. S.;
+Priestley, R. D. Spatially Distributed Rheological Properties in Confined Polymers by
+Noncontact Shear. The Journal of Physical Chemistry Letters 2017, 1229–1234, DOI:
+10.1021/acs.jpclett.7b00214.
+(45) Meenakshisundaram, V.;
+Hung, J.-H.;
+Patra, T. K.;
+Simmons, D. S. Design-
+ing Sequence-Specific Copolymer Compatibilizers Using a Molecular-Dynamics-
+55
+
+Simulation-Based Genetic Algorithm. Macromolecules 2017, 50, 1155–1166, DOI:
+10.1021/acs.macromol.6b01747.
+(46) Hung, J.-H.; Mangalara, J. H.; Simmons, D. S. Heterogeneous Rouse Model Predicts
+Polymer Chain Translational Normal Mode Decoupling. Macromolecules 2018, 51,
+2887–2898, DOI: 10.1021/acs.macromol.8b00135.
+(47) Hung, J.-H.; Simmons, D. S. Do String-like Cooperative Motions Predict Relaxation
+Times in Glass-Forming Liquids? The Journal of Physical Chemistry B 2019, 124,
+266–276, DOI: 10.1021/acs.jpcb.9b09468.
+(48) Meenakshisundaram, V.; Hung, J.-H.; Simmons, D. S. Design rules for glass forma-
+tion from model molecules designed by a neural-network-biased genetic algorithm. Soft
+Matter 2019, 15, 7795–7808, DOI: 10.1039/C9SM01486A.
+(49) Diaz Vela, D.; Simmons, D. S. The microscopic origins of stretched exponential re-
+laxation in two model glass-forming liquids as probed by simulations in the isocon-
+figurational ensemble. The Journal of Chemical Physics 2020, 153, 234503, DOI:
+10.1063/5.0035609.
+(50) Hung, J.-H.; Patra, T. K.; Simmons, D. S. Forecasting the experimental glass transition
+from short time relaxation data. Journal of Non-Crystalline Solids 2020, 544, 120205,
+DOI: 10.1016/j.jnoncrysol.2020.120205.
+(51) Vela, D.; Ghanekarade, A.; Simmons, D. S. Probing the Metrology and Chemistry De-
+pendences of the Onset Condition of Strong ”Nanoconfinement” Effects on Dynamics.
+Macromolecules 2020, 53, 4158–4171, DOI: 10.1021/acs.macromol.9b02693.
+(52) Rahman, T.; Simmons, D. S. Near-Substrate Gradients in Chain Relaxation and Viscos-
+ity in a Model Low-Molecular Weight Polymer. Macromolecules 2021, 54, 5935–5949,
+DOI: 10.1021/acs.macromol.0c02888.
+56
+
+(53) Hao, Z.; Ghanekarade, A.; Zhu, N.; Randazzo, K.; Kawaguchi, D.; Tanaka, K.;
+Wang, X.; Simmons, D. S.; Priestley, R. D.; Zuo, B. Mobility gradients yield
+rubbery surfaces on top of polymer glasses. Nature 2021, 596, 372–376, DOI:
+10.1038/s41586-021-03733-7.
+(54) Drayer,
+W.
+F.;
+Simmons,
+D.
+S.
+Sequence
+Effects
+on
+the
+Glass
+Transition
+of a Model Copolymer System. Macromolecules
+2022,
+55,
+5926–5937,
+DOI:
+10.1021/acs.macromol.2c00664.
+(55) Ghanekarade, A.; Simmons, D. S. Combined Mixing and Dynamical Origins of Tg Al-
+terations Near Polymer–Polymer Interfaces. Macromolecules 2022, 56, 379–392, DOI:
+10.1021/acs.macromol.2c01621.
+(56) Jaeger, T. D.; Simmons, D. S. Temperature dependence of aging dynamics in highly
+non-equilibrium model polymer glasses. The Journal of Chemical Physics 2022, 156,
+114504, DOI: 10.1063/5.0080717.
+(57) Ghanekarade, A.; Phan, A. D.; Schweizer, K. S.; Simmons, D. S. Nature of dy-
+namic gradients, glass formation, and collective effects in ultrathin freestanding films.
+Proceedings of the National Academy of Sciences 2021, 118, e2104398118, DOI:
+10.1073/pnas.2104398118.
+(58) Tulsi, D. K.; Simmons, D. S. Hierarchical Shape-Specified Model Polymer Nanopar-
+ticles via Copolymer Sequence Control. Macromolecules 2022, 55, 1957–1969, DOI:
+10.1021/acs.macromol.1c02215.
+(59) Ghanekarade, A.; Phan, A. D.; Schweizer, K. S.; Simmons, D. S. Signature of collective
+elastic glass physics in surface-induced long-range tails in dynamical gradients. Nature
+Physics 2023, 19, 800–806, DOI: 10.1038/s41567-023-01995-8.
+(60) Ghanekarade, A.; Simmons, D. S. Glass formation and dynamics of model polymer films
+with one versus two active interfaces. Soft Matter 2023, DOI: 10.1039/D3SM00719G.
+57
+
+(61) Hartley, A. D.; Drayer, W. F.; Ghanekarade, A.; Simmons, D. S. Interplay between
+dynamic heterogeneity and interfacial gradients in a model polymer film. The Journal
+of Chemical Physics 2023, 159, 204905, DOI: 10.1063/5.0165650.
+(62) Drayer, W. F.; Simmons, D. S. Is the Molecular Weight Dependence of the Glass
+Transition Temperature Driven by a Chain End Effect? Macromolecules 2024, DOI:
+10.1021/acs.macromol.4c00419.
+(63) Xu, J.; Ghanekarade, A.; Li, L.; Zhu, H.; Yuan, H.; Yan, J.; Simmons, D. S.;
+Tsui, O. K. C.; Wang, X. Mixed equilibrium/nonequilibrium effects govern surface
+mobility in polymer glasses. Proceedings of the National Academy of Sciences 2024,
+121, e2406262121, DOI: 10.1073/pnas.2406262121.
+(64) Hung, J.-H.;
+Simmons, D. S. Does the Naive Mode-Coupling Power Law Di-
+vergence Provide an Objective Determination of the Crossover Temperature in
+Glass Formation Behavior?
+The Journal of Physical Chemistry B 2025, DOI:
+10.1021/acs.jpcb.4c06623.
+(65) Yue,
+P.;
+Simmons,
+D.
+S.
+Quantitatively
+Connecting
+Experimental
+Time–Temperature–Superposition–Breakdown of Polymers near the Glass Tran-
+sition to Dynamic Heterogeneity Via the Heterogeneous Rouse Model. Macromolecules
+2024, DOI: 10.1021/acs.macromol.4c00751.
+(66) Donati, C.; Douglas, J. F.; Kob, W.; Plimpton, S. J.; Poole, P. H.; Glotzer, S. C.
+Stringlike Cooperative Motion in a Supercooled Liquid. Phys. Rev. Lett. 1998, 80,
+2338–2341.
+(67) Pazmi˜no Betancourt, B. A.; Starr, F. W.; Douglas, J. F. String-like collective motion
+in the α- and β-relaxation of a coarse-grained polymer melt. The Journal of Chemical
+Physics 2018, 148, 104508, DOI: 10.1063/1.5009442.
+58
+
+(68) Zhang, H.; Zhong, C.; Douglas, J. F.; Wang, X.; Cao, Q.; Zhang, D.; Jiang, J.-Z.
+Role of string-like collective atomic motion on diffusion and structural relaxation in
+glass forming Cu-Zr alloys. The Journal of Chemical Physics 2015, 142, 164506, DOI:
+10.1063/1.4918807.
+(69) Betancourt, B. A. P.; Douglas, J. F.; Starr, F. W. String model for the dynam-
+ics of glass-forming liquids. Journal of Chemical Physics 2014, 140, 204509, DOI:
+10.1063/1.4878502.
+(70) Zhang, H.;
+Kalvapalle, P.;
+Douglas, J. F. String-like collective atomic motion
+in the interfacial dynamics of nanoparticles. Soft Matter 2010, 6, 5944, DOI:
+10.1039/c0sm00356e.
+(71) Gebremichael, Y.; Vogel, M.; Glotzer, S. C. Particle dynamics and the development of
+string-like motion in a simulated monoatomic supercooled liquid. Journal of Chemical
+Physics 2004, 120, 4415–4427, DOI: Article.
+(72) Appignanesi, G. A.; Frechero, M. A.; Alarcon, L. M.; Fris, J. A. R.; Montani, R. A.
+Ballistic displacements within string-like motions in a supercooled liquid. Physica A:
+Stat. Mech. App. 2004, 339, 469–481.
+(73) Giovambattista, N.; Buldyrev, S. V.; Starr, F. W.; Stanley, H. E. Connection between
+Adam-Gibbs Theory and Spatially Heterogeneous Dynamics. Physical Review Letters
+2003, 90, 085506.
+(74) Simmons, D.; Kawak, P.; Drayer, W.; Mackura, M. Amorphous Molecular Dynamics
+Analysis Toolkit (AMDAT). 2025; https://doi.org/10.5281/zenodo.17417167.
+(75) Hung, J.-H.; Patra, T. K.; Meenakshisundaram, V.; Mangalara, J. H.; Simmons, D. S.
+Universal localization transition accompanying glass formation: insights from efficient
+molecular dynamics simulations of diverse supercooled liquids. Soft Matter 2018, 15,
+1223–1242, DOI: 10.1039/C8SM02051E.
+59
+
+(76) Smith, S. M.; Simmons, D. S. Horizons for design of filled rubber informed by molec-
+ular dynamics simulation. Rubber Chemistry and Technology 2017, 90, 238–263, DOI:
+10.5254/rct.17.82668.
+(77) Smith, S. M.;
+Simmons, D. S. Poisson ratio mismatch drives low-strain rein-
+forcement in elastomeric nanocomposites. Soft Matter 2019, 15, 656–670, DOI:
+10.1039/C8SM02333F.
+(78) Tanaka, H.; Kawasaki, T.; Shintani, H.; Watanabe, K. Critical-like behavior of glass-
+forming liquids. Nature Materials 2010, 9, 324–331.
+(79) Richert, R. Dynamics of Nanoconfined Supercooled Liquids. Annual Review of Physical
+Chemistry 2011, 62, 65–84, DOI: 10.1146/annurev-physchem-032210-103343.
+(80) Schweizer, K. S.; Simmons, D. S. Progress towards a phenomenological picture
+and theoretical understanding of glassy dynamics and vitrification near interfaces
+and under nanoconfinement. Journal of Chemical Physics 2019, 151, 240901, DOI:
+10.1063/1.5129405.
+(81) B. Roth, C. Polymers under nanoconfinement:
+where are we now in understand-
+ing local property changes?
+Chemical Society Reviews 2021, 50, 8050–8066, DOI:
+10.1039/D1CS00054C.
+60

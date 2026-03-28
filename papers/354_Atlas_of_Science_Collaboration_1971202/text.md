@@ -1,0 +1,28149 @@
+August 2023 [v1]
+Atlas of Science Collaboration, 1971–2020
+Keisuke Okamura ∗,†; 1, 2
+1Institute for Future Initiatives (IFI), The University of Tokyo,
+7-3-1 Hongo, Bunkyo-ku, Tokyo 113-0033, Japan.
+2SciREX Center, National Graduate Institute for Policy Studies (GRIPS),
+7-22-1 Roppongi, Minato-ku, Tokyo 106-8677, Japan.
+Abstract.
+The evolving landscape of interinstitutional collaborative research across 15 natural science disci-
+plines is explored using the open data sourced from OpenAlex. This extensive exploration spans the years from
+1971 to 2020, facilitating a thorough investigation of leading scientific output producers and their collaborative
+relationships based on coauthorships. The findings are visually presented on world maps and other diagrams,
+offering a clear and insightful portrayal of notable variations in both national and international collaboration
+patterns across various fields and time periods. These visual representations serve as valuable resources for
+science policymakers, diplomats and institutional researchers, providing them with a comprehensive overview
+of global collaboration and aiding their intuitive grasp of the evolving nature of these partnerships over time.
+Keywords.
+International / interinstitutional research collaboration | OpenAlex | Open Bibliometrics
+∗okamura@ifi.u-tokyo.ac.jp
+† orcid.org/0000-0002-0988-6392
+arXiv:2308.16810v1  [cs.DL]  22 Aug 2023
+
+Table of Contents
+User Guide and Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+iii
+1
+Artificial Intelligence. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+2
+Quantum Science . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3
+Biotechnology. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+4
+Nanotechnology . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+5
+Agricultural Engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+6
+Particle Physics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+7
+Aerospace Engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+8
+Nuclear Engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+9
+Marine Engineering. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+10
+Neuroscience . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+11
+Condensed Matter Physics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 81
+12
+Environmental Engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 89
+13
+Earth Science . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 97
+14
+Astronomy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+15
+Pure Mathematics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 113
+References . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 121
+This booklet presents a preliminary set of illustrative diagrams and tables on international and interinstitutional
+research at a global scale, posted on arXiv and Zenodo (DOI:10.5281/zenodo.8266166). The source data is
+retrieved from OpenAlex (https://openalex.org) as of August 2023.
+
+User Guide and Notes
+User Guide and Notes
+User Guide and Notes
+Atlas of Science Collaboration: User Guide and Notes
+Intended Readership
+▶This booklet, entitled ‘Atlas of Science Collaboration’, aims to offer a broad overview of international
+and interinstitutional research collaboration, shedding light on its present status and evolution on a global
+scale. While it might not delve into intricate scholarly or academic data analysis, it remains a valuable
+resource for those seeking a general understanding of the collaborative relationships that have been
+established between research institutions in the world of science.
+▶The intended readership includes science and technology (S&T) policymakers and diplomats, government
+research and development (R&D) agencies, international organisations, S&T think tanks, as well as
+institutional research divisions of universities or R&D institutions.
+Data Source
+▶The Atlas of Science Collaboration is based on data retrieved from OpenAlex [1],1 a free and open (the
+CC0 license) catalogue of the world’s scholarly papers, researchers, journals and institutions. Launched
+in January 2022, OpenAlex replaced Microsoft Academic Graph (MAG),2 which retired at the beginning
+of 2022.
+▶OpenAlex collects information on scientific publications, including journal articles, non-journal articles,
+preprints, conference papers, books and datasets—hereafter collectively referred to as ‘works’—from
+various platforms such as Crossref,3 ORCID,4 ROR,5 PubMed,6 preprint servers like arXiv,7 and institu-
+tional or disciplinary repositories like Zenodo.8 For comparison with other scholarly data sources such
+as Scopus,9 Web of Science10 and Dimensions,11 please refer to OpenAlex’s website.12
+▶OpenAlex offers extensive coverage of meta-information across a diverse spectrum of works, encompass-
+ing not only journal publications but also non-journal works, non-English works and contributions from
+the Global South. This attribute proves beneficial by providing a more precise augmentation of the extent
+of R&D activities, along with their associated scholarly outputs. This is especially crucial in fields where
+journals are not the predominant channel for disseminating research outcomes. Furthermore, OpenAlex
+effectively captures outputs in the preprint format, which might persist for varying durations, spanning
+from months to years or even indefinitely, without necessarily transitioning into journal publications.
+▶The present edition (August 2023) of the Atlas of Science Collaboration was compiled using data
+obtained via the OpenAlex API13 during the period from the 12th to the 15th of August 2023. It is
+essential to note that OpenAlex is an ongoing project, continuously updating its data and improving its
+system. Consequently, the visualisations in this booklet may not provide the most comprehensive view
+or accurate data. Expect more accurate results when acquiring data in the future as OpenAlex undergoes
+further upgrades. Revised editions of the Atlas of Science Collaboration may be made available on
+Zenodo or other open platforms beyond this release.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+iii
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+iii
+
+User Guide and Notes
+User Guide and Notes
+User Guide and Notes
+Table 0 | R&D disciplines and the associated OpenAlex concept IDs.
+R&D discipline
+Key OpenAlex ID
+1.
+Artificial Intelligence
+C154945302
+2.
+Quantum Science
+C62520636
+3.
+Biotechnology
+C150903083
+4.
+Nanotechnology
+C171250308
+5.
+Agricultural Engineering
+C88463610
+6.
+Particle Physics
+C109214941
+7.
+Aerospace Engineering
+C146978453
+8.
+Nuclear Engineering
+C116915560
+9.
+Marine Engineering
+C199104240
+10.
+Neuroscience
+C169760540
+11.
+Condensed Matter Physics
+C26873012
+12.
+Environmental Engineering
+C87717796
+13.
+Earth Science
+C1965285
+14.
+Astronomy
+C1276947
+15.
+Pure Mathematics
+C202444582
+R&D Disciplines
+▶In this current edition, the primary focus centres around the level-1 ‘concepts’ listed in Table 0 sourced
+from the OpenAlex classification, as previously explored in Ref. [2]. Each level-1 concept is accompanied
+by ‘related concepts’, which can offer a finer or broader delineation compared to the level-1 concept.
+Using this characteristic, an enhanced notion of R&D discipline is constructed by including all associated
+subconcepts of level 2 or higher for each of the 15 level-1 concepts. For instance, the defined discipline of
+‘Artificial Intelligence’ includes OpenAlex’s level-2 concepts of ‘Artificial Neural Network’ and ‘Deep
+Learning’, but not the level-0 concepts of ‘Computer Science’ or ‘Mathematics’.
+Analysis and Visualisation
+▶First, the World Map of Science Collaboration divides the period from 1971 to 2020 into four intervals:
+1971–1990, 1991–2000, 2001–2010 and 2011–2020. For each period and discipline, bubbles represent
+the top 199 research institutions in terms of work production. Additionally, for the top 50 research
+institutions, their locations are connected on the world map using great circle curves (the shortest route
+between them) to illustrate bilateral coauthorship relationships. Coauthorship relationships with fewer
+than five coauthored papers are not displayed.
+The background world map utilises the world data
+from the maps package14 in R. The connection visualisation between two research institutions leverages
+the gcIntermediate() function from the geosphere package15 in R. The sizes of the bubbles are
+proportional to the volume of work and can be compared across the different period panels.
+▶Second, the Top 30 Productive Institutions on the World Map displays the leading 30 institutions in terms
+of work production on the World Map for each discipline and the three respective periods: 1991–2000,
+2001–2010 and 2011–2020. The background world map employs the world data from the maps package
+in R along with the ggplot2 package16 in R. The sizes of the bubbles are proportional to the volume of
+work, standardised within each period panel, and cannot be compared across panels.
+▶Third, the Interregional Collaboration Matrix Diagram exhibits a half-matrix diagram at the country
+level for each discipline and the three respective periods: 1991–2000, 2001–2010 and 2011–2020. It
+iv
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+iv
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+User Guide and Notes
+User Guide and Notes
+User Guide and Notes
+counts the number of bilateral coauthorship relationships represented on the World Map. Each bubble’s
+size (area) displayed in the matrix cell is proportional to the number of bilateral coauthorship relationships.
+This edition particularly focuses on five pivotal parties: the US, China, EU27, the UK and Japan. These
+parties were specifically selected due to their substantial contributions to work production across all
+scientific fields from 1971 to 2020. These choices also align with the nations acclaimed as the ‘Big 5
+science nations’ (the US, China, Germany, the UK and Japan) in the Nature Index [3]. Please note that
+the Matrix Diagram only takes into account the top 50 institutions in terms of work production for each
+period and discipline. Therefore, if a cell shows zero (as small dots), it does not necessarily imply the
+absence of coauthorship relationships for the corresponding bilateral pair.
+▶Forth, the Interinstitutional Collaboration Dendrogram elucidates the development and evolution of
+interinstitutional research collaboration clusters spanning the last five decades. This is accomplished
+through hierarchical clustering analysis of institutions, considering the top 50 institutions in terms of
+work production across the four periods: 1971–1990, 1991–2000, 2001–2010 and 2011–2020.
+– The method used for hierarchical clustering analysis is the same as developed in Ref. [2]. The distance
+between institutions X and Y is defined as the number of works with nationalities from both X and Y
+divided by the total number of works with nationalities from at least one of X and Y, subtracted from
+1. Hierarchical clustering analysis was performed on the distance matrix using the hclust function
+implemented in R with the ward.D2 option (i.e. the original Ward’s method) specified.
+– The method of dendrogram visualisation is primarily derived from an example detailed on the
+dendextend website.17 Circular dendrograms were created using the dendextend18 and circlize19
+packages in R. As one moves inward from the outer edge of the circle towards its centre, institutions
+or clusters of institutions that are in closer proximity to each other merge earlier.
+– To indicate the country where the institutions are located, the country names are included at the
+beginning of the terms of research institutions, using the two-letter ISO 3166-1 alpha-2 code.20 The
+accompanied circularised bar graphs represent the number of works for the institutions involved. RORs
+are used as the canonical identifiers of the research institutions. Readers of this booklet in PDF format
+can click on the ROR-based URL (‘https://ror.org/...’) in the diagrams to view the corresponding ROR
+webpage from their browser.
+▶Additionally, for each discipline and the respective periods of 1991–2000, 2001–2010 and 2011–2020,
+the top 100 institutions in terms of work production are displayed in tabular format, showing their
+respective country codes and production volumes. If multiple research institutions have equal production
+volumes during each period, they are organised alphabetically by country codes and then by organisation
+names. Even if distinct rankings are shown, they lack significance and are treated as ties.
+Important Notes
+▶It is worth reiterating that the data from OpenAlex used to compile the Atlas of Science Collaboration, even
+when incorporating bibliometric data related to past works, lacks consistent finality. As of the data acquisition
+for this version (August 2023), OpenAlex encompassed information regarding approximately 240 million
+works, with an additional influx of about 50,000 new data entries related to works being added daily.
+Furthermore, for a substantial portion of these works, information regarding the corresponding institution
+to which the authors belong remains unknown. As a result, should the same analyses as those embedded
+within this booklet be replicated in the future, although the qualitative extent of change remains uncertain,
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+v
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+v
+
+User Guide and Notes
+User Guide and Notes
+User Guide and Notes
+it is undeniable that quantitatively distinct data will be acquired. Nonetheless, for individuals seeking
+an understanding of the global scope and evolution of international and interinstitutional collaborative
+research, the potential availability of this booklet or an enhanced, continuously updated evidence base
+holds inherent value.
+▶Further, it is worth reiterating that the term ‘works’ encompasses a wide variety of scholarly publications.
+The analyses conducted in the compilation of this booklet do not take into consideration whether these works are
+peer-reviewed articles or not, nor do they encompass considerations of their prominence, impact or quality. It is
+emphasised thattheprimaryintentbehindthevisualisationsinthisbookletistoquantitativelycapturethemomentum
+of scholarly knowledge production outputs from diverse research institutions, and to identify how productive
+institutions collaborate internationally and interinstitutionally. Caution must be exercised, with acknowledgment
+that relying solely on the quantity of scholarly output produced by institutions falls short in encompassing
+discussions about their research potential, contributions to academia, or their relative superiority or inferiority.
+Further, it is recommended to consider the limitations discussed in Ref. [2] when using this booklet.
+Miscellaneous
+▶It is important to note that some research institutions may encounter difficulties in accurately assessing the
+actual production volume at the institutional level within each analysis period due to challenges related
+to name disambiguation and the influence of historical organisational changes in bibliometric databases.
+▶For the Interinstitutional Collaboration Dendrograms and the rankings of the top 100 productive in-
+stitutions, entities like universities and R&D institutions are primarily identified using the nomencla-
+ture employed in OpenAlex. However, certain portions have been presented through abbreviations or
+acronyms, both for illustrative purposes and to effectively accommodate limited space. For instance,
+‘University of’ is abbreviated as ‘U.’, ‘Institution’ and ‘Institute’ as ‘Inst’, ‘National Laboratory’ as ‘NL’,
+and ‘Science’ and ‘Technology’ as ‘Sci’ and ‘Tech’, correspondingly, among others. Should readers
+possess more fitting suggestions for abbreviations specific to particular organisations, or any other ideas
+aimed at enhancing the content of this booklet, the author would greatly appreciate their input.
+List of URLs
+1https://docs.openalex.org/
+2https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/
+3https://www.crossref.org/
+4https://orcid.org/
+5https://ror.org/
+6https://pubmed.ncbi.nlm.nih.gov
+7https://arxiv.org/
+8https://zenodo.org/
+9https://www.scopus.com/
+10https://clarivate.com/products/scientific-and-academic-research/research-discovery-and-workflow-solutions/webofscience-platform/
+11https://www.dimensions.ai/
+12https://openalex.org/about#comparison
+13https://docs.openalex.org/how-to-use-the-api/api-overview
+14https://CRAN.R-project.org/package=maps
+15https://CRAN.R-project.org/package=geosphere
+16https://CRAN.R-project.org/package=ggplot2
+17https://cran.r-project.org/web/packages/dendextend/vignettes/dendextend.html
+18https://CRAN.R-project.org/package=dendextend
+19https://CRAN.R-project.org/package=circlize
+20https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+vi
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+vi
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+1. Artificial Intelligence
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+World Map of Artificial Intelligence Collaboration | 1971–2020
+Figure 1(a) | The World Map of Artificial Intelligence Collaboration. The bubbles represent the top 199 institutions
+in terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+2
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+2
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Top 30 Productive Institutions on the World Map: Artificial Intelligence | 1991–2020
+Chinese Acad of Sci
+Tsinghua U.
+Harbin Inst of Tech
+Shanghai Jiao Tong U.
+Beihang U.
+Stanford U.
+Harvard U.
+Zhejiang U.
+U. Toronto
+U. Oxford
+U. Michigan
+Carnegie Mellon U.
+MIT
+Nanyang Tech U.
+Huazhong U. Sci & Tech
+Beijing Inst of Tech
+UC Berkeley
+U. College London
+NW Polytechnical U.
+U. Elec Sci & Tech of China
+U. Tokyo
+Peking U.
+U. Cambridge
+Nat'l U. Singapore
+U. Chinese Acad of Sci
+Georgia Inst of Tech
+Nat'l U. Defense Tech
+Xi'an Jiaotong U.
+U. Washington
+U. Illinois UC
+Artificial Intelligence [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Tsinghua U.
+Harbin Inst of Tech
+Shanghai Jiao Tong U.
+Zhejiang U.
+Stanford U.
+Carnegie Mellon U.
+U. Tokyo
+Chinese Acad of Sci
+UC Berkeley
+Georgia Inst of Tech
+U. Illinois UC
+U. Michigan
+Nanyang Tech U.
+Huazhong U. Sci & Tech
+Nat'l U. Singapore
+U. Toronto
+MIT
+NW Polytechnical U.
+Penn State U.
+Harvard U.
+U. Southern California
+Wuhan U.
+UC San Diego
+U. Maryland
+U. Washington
+Columbia U.
+Beihang U.
+U. Cambridge
+Hong Kong Polytechnic U.
+INRIA
+Artificial Intelligence [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+UC Berkeley
+Stanford U.
+U. Michigan
+MIT
+Carnegie Mellon U.
+U. Illinois UC
+U. Maryland
+Penn State U.
+U. Toronto
+Ohio State U.
+U. Tokyo
+Georgia Inst of Tech
+U. Washington
+U. Cambridge
+UCLA
+UT Austin
+U. Southern California
+U. Penn
+Harvard U.
+U. Wisconsin−Madison
+UC San Diego
+U. Arizona
+Cornell U.
+U. Minnesota
+Purdue U. West Lafayette
+U. Oxford
+Nat'l U. Singapore
+U. Pittsburgh
+Rutgers U.
+Texas A&M U.
+Artificial Intelligence [1991−2000]
+Figure 1(b) | The top 30 productive institutions on the World Map: Artificial Intelligence. The bubbles represent the
+top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+3
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+3
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Interregional Artificial Intelligence Collaboration | 1991–2020
+120
+284
+32
+64
+16
+128
+190
+28
+72
+16
+152
+16
+32
+28
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+171
+87
+42
+59
+29
+87
+108
+19
+11
+51
+11
+10
+19
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+462
+25
+13
+116
+14
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 1(c) | The Interregional Artificial Intelligence Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+4
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+4
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Interinstitutional Artificial Intelligence Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      U. Toronto      
+      U. British Columbia      
+      Penn State U.      
+      U. Illinois UC      
+      Carnegie Mellon U.      
+      Georgia Inst of Tech      
+      ETH Zurich      
+      KU Leuven      
+      U. Tokyo      
+      Tech U. Munich      
+      Nanyang Tech U.      
+      Nat'l U. Singapore      
+      Beijing Inst of Tech      
+      Beijing U. Posts & Telecom      
+      Peking U.      
+      Tsinghua U.      
+      Beihang U.      
+      Huazhong U. Sci & Tech      
+      Wuhan U.      
+      Southeast U.      
+      U. Elec Sci & Tech of China      
+      Nanjing U. of Aero & Astro      
+      NW Polytechnical U.      
+      Xi'an Jiaotong U.      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Harvard U.      
+      MIT      
+      UC San Diego      
+      U. Southern California      
+      UCLA      
+      Stanford U.      
+      UC Berkeley      
+      Johns Hopkins U.      
+      U. Penn      
+      Columbia U.      
+      U. Michigan      
+      U. Washington      
+      Nat'l U. Defense Tech      
+      Harbin Inst of Tech      
+      Tianjin U.      
+      Shanghai Jiao Tong U.      
+      Zhejiang U.      
+      U. Cambridge      
+      Imperial College London      
+      U. Oxford      
+      U. College London      
+      U. Melbourne      
+      UNSW Sydney      
+      U. Sydney      
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/04p491231
+https://ror.org/047426m28
+https://ror.org/05x2bcf33
+https://ror.org/01zkghx44
+https://ror.org/05a28rw58
+https://ror.org/05f950310
+https://ror.org/057zh3y96
+https://ror.org/02kkvpp62
+https://ror.org/02e7b5302
+https://ror.org/01tgyzw49
+https://ror.org/01skt4w74
+https://ror.org/04w9fbh59
+https://ror.org/02v51f717
+https://ror.org/03cve4549
+https://ror.org/00wk2mp56
+https://ror.org/00p991c53
+https://ror.org/033vjfk17
+https://ror.org/04ct4d772
+https://ror.org/04qr3zq92
+https://ror.org/01scyh794
+https://ror.org/01y0j0j86
+https://ror.org/017zhmm22
+https://ror.org/05d2yfz11
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/03vek6s52
+https://ror.org/042nb2s44
+https://ror.org/0168r3w48
+https://ror.org/03taz7m60
+https://ror.org/046rm7j60
+https://ror.org/00f54p054
+https://ror.org/01an7q238
+https://ror.org/00za53h95
+https://ror.org/00b30xv10
+https://ror.org/00hj8s172
+https://ror.org/00jmfr291
+https://ror.org/00cvxb145
+https://ror.org/01yqg2h08
+https://ror.org/012tb2g32
+https://ror.org/0220qvk04
+https://ror.org/00a2xv884
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+https://ror.org/052gg0110
+https://ror.org/02jx3x895
+https://ror.org/01ej9dk98
+https://ror.org/03r8z3t63
+https://ror.org/0384j8v12
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [BE]  
+  [JP]  
+  [DE]  
+  [SG]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [AU]  
+  [AU]  
+  [AU]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      U. Toronto      
+      U. British Columbia      
+      Carnegie Mellon U.      
+      Georgia Inst of Tech      
+      U. Illinois UC      
+      U. Michigan      
+      Ohio State U.      
+      Penn State U.      
+      U. Maryland      
+      UT Austin      
+      U. Minnesota      
+      U. Southern California      
+      UCLA      
+      Stanford U.      
+      UC Berkeley      
+      UC San Diego      
+      U. Washington      
+      Columbia U.      
+      U. Penn      
+      U. Manchester      
+      U. Cambridge      
+      U. College London      
+      U. Oxford      
+      Tokyo Inst of Tech      
+      U. Tokyo      
+      MIT      
+      Harvard U.      
+      U. Alberta      
+      Osaka U.      
+      Nanyang Tech U.      
+      Nat'l U. Singapore      
+      INRIA      
+      Delft U. Tech      
+      KU Leuven      
+      NW Polytechnical U.      
+      Xi'an Jiaotong U.      
+      Tianjin U.      
+      Northeastern U.      
+      Nat'l U. Defense Tech      
+      Tsinghua U.      
+      Beihang U.      
+      Huazhong U. Sci & Tech      
+      Wuhan U.      
+      South China U. Tech      
+      Harbin Inst of Tech      
+      Hong Kong Polytechnic U.      
+      Chinese Acad of Sci      
+      Chinese U. Hong Kong      
+      Shanghai Jiao Tong U.      
+      Zhejiang U.      
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/05x2bcf33
+https://ror.org/01zkghx44
+https://ror.org/047426m28
+https://ror.org/00jmfr291
+https://ror.org/00rs6vg23
+https://ror.org/04p491231
+https://ror.org/047s2c258
+https://ror.org/00hj54h04
+https://ror.org/017zqws13
+https://ror.org/03taz7m60
+https://ror.org/046rm7j60
+https://ror.org/00f54p054
+https://ror.org/01an7q238
+https://ror.org/0168r3w48
+https://ror.org/00cvxb145
+https://ror.org/00hj8s172
+https://ror.org/00b30xv10
+https://ror.org/027m9bs27
+https://ror.org/013meh722
+https://ror.org/02jx3x895
+https://ror.org/052gg0110
+https://ror.org/0112mx960
+https://ror.org/057zh3y96
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/0160cpw27
+https://ror.org/035t8zc32
+https://ror.org/02e7b5302
+https://ror.org/01tgyzw49
+https://ror.org/02kvxyf05
+https://ror.org/02e2c7k09
+https://ror.org/05f950310
+https://ror.org/01y0j0j86
+https://ror.org/017zhmm22
+https://ror.org/012tb2g32
+https://ror.org/03awzbc87
+https://ror.org/05d2yfz11
+https://ror.org/03cve4549
+https://ror.org/00wk2mp56
+https://ror.org/00p991c53
+https://ror.org/033vjfk17
+https://ror.org/0530pts50
+https://ror.org/01yqg2h08
+https://ror.org/0030zas98
+https://ror.org/034t30j35
+https://ror.org/00t33hh48
+https://ror.org/0220qvk04
+https://ror.org/00a2xv884
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [CA]  
+  [JP]  
+  [SG]  
+  [SG]  
+  [FR]  
+  [NL]  
+  [BE]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+Figure 1 (d) | The Interinstitutional Artificial Intelligence Collaboration Dendrogram. The top 50 institutions in
+terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+5
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+5
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Interinstitutional Artificial Intelligence Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      MIT      
+      Harvard U.      
+      Boston U.      
+      U. Tokyo      
+      Osaka U.      
+      Kyoto U.      
+      U. Manchester      
+      U. Sheffield      
+      U. College London      
+      U. Edinburgh      
+      U. Cambridge      
+      U. Oxford      
+      Carnegie Mellon U.      
+      U. Pittsburgh      
+      Technion − Israel Inst of Tech      
+      Tel Aviv U.      
+      Rutgers U.      
+      Columbia U.      
+      AT&T (US)      
+      U. Toronto      
+      U. Penn      
+      Yale U.      
+      U. Michigan      
+      U. Washington      
+      Ohio State U.      
+      U. Minnesota      
+      McGill U.      
+      U. British Columbia      
+      UCLA      
+      U. Southern California      
+      Texas A&M U.      
+      Virginia Tech      
+      U. Florida      
+      U. Maryland      
+      Arizona State U.      
+      UC San Diego      
+      U. Arizona      
+      UC Berkeley      
+      Stanford U.      
+      Cornell U.      
+      U. Illinois UC      
+      Princeton U.      
+      Delft U. Tech      
+      Nat'l U. Singapore      
+      Johns Hopkins U.      
+      U. Wisconsin−Madison      
+      Purdue U. West Lafayette      
+      Georgia Inst of Tech      
+      UT Austin      
+      Penn State U.      
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/05qwgg493
+https://ror.org/057zh3y96
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/027m9bs27
+https://ror.org/05krs5044
+https://ror.org/02jx3x895
+https://ror.org/01nrxwf90
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/05x2bcf33
+https://ror.org/01an3r305
+https://ror.org/03qryx823
+https://ror.org/04mhzgx49
+https://ror.org/05vt9qd57
+https://ror.org/00hj8s172
+https://ror.org/02bbd5539
+https://ror.org/03dbr7087
+https://ror.org/03v76x132
+https://ror.org/00jmfr291
+https://ror.org/00cvxb145
+https://ror.org/00rs6vg23
+https://ror.org/017zqws13
+https://ror.org/01pxwe438
+https://ror.org/03rmrcq20
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/01f5ytq51
+https://ror.org/02smfhw86
+https://ror.org/02y3ad647
+https://ror.org/047s2c258
+https://ror.org/03efmqc40
+https://ror.org/0168r3w48
+https://ror.org/03m2x1q45
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/05bnh6r87
+https://ror.org/047426m28
+https://ror.org/00hx57361
+https://ror.org/02e2c7k09
+https://ror.org/01tgyzw49
+https://ror.org/00za53h95
+https://ror.org/01y2jtd41
+https://ror.org/02dqehb95
+https://ror.org/01zkghx44
+https://ror.org/00hj54h04
+https://ror.org/04p491231
+https://ror.org/00b30xv10
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [IL]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [NL]  
+  [SG]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      U. Oxford      
+      U. Toronto      
+      U. Waterloo      
+      U. Alberta      
+      U. British Columbia      
+      McGill U.      
+      Langley Res Center      
+      Virginia Tech      
+      Columbia U.      
+      New York U.      
+      AT&T (US)      
+      Princeton U.      
+      Rutgers U.      
+      Carnegie Mellon U.      
+      U. Pittsburgh      
+      U. Minnesota      
+      U. Florida      
+      Penn State U.      
+      U. Penn      
+      UC San Diego      
+      Johns Hopkins U.      
+      U. Illinois UC      
+      Purdue U. West Lafayette      
+      UT Austin      
+      U. Maryland      
+      Jet Propulsion Lab      
+      Caltech      
+      UCLA      
+      U. Southern California      
+      U. Tokyo      
+      Kyoto U.      
+      Osaka U.      
+      U. Manchester      
+      U. Cambridge      
+      Yale U.      
+      Cornell U.      
+      Georgia Inst of Tech      
+      State U. New York      
+      Ohio State U.      
+      U. Iowa      
+      U. Michigan      
+      U. Washington      
+      U. Chicago      
+      U. Wisconsin−Madison      
+      U. Arizona      
+      MIT      
+      Harvard U.      
+      UC Berkeley      
+      Stanford U.      
+      Ames Res Center      
+https://ror.org/052gg0110
+https://ror.org/03dbr7087
+https://ror.org/01aff2v68
+https://ror.org/0160cpw27
+https://ror.org/03rmrcq20
+https://ror.org/01pxwe438
+https://ror.org/0399mhs52
+https://ror.org/02smfhw86
+https://ror.org/00hj8s172
+https://ror.org/0190ak572
+https://ror.org/02bbd5539
+https://ror.org/00hx57361
+https://ror.org/05vt9qd57
+https://ror.org/05x2bcf33
+https://ror.org/01an3r305
+https://ror.org/017zqws13
+https://ror.org/02y3ad647
+https://ror.org/04p491231
+https://ror.org/00b30xv10
+https://ror.org/0168r3w48
+https://ror.org/00za53h95
+https://ror.org/047426m28
+https://ror.org/02dqehb95
+https://ror.org/00hj54h04
+https://ror.org/047s2c258
+https://ror.org/027k65916
+https://ror.org/05dxps055
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/027m9bs27
+https://ror.org/013meh722
+https://ror.org/03v76x132
+https://ror.org/05bnh6r87
+https://ror.org/01zkghx44
+https://ror.org/01q1z8k08
+https://ror.org/00rs6vg23
+https://ror.org/036jqmy94
+https://ror.org/00jmfr291
+https://ror.org/00cvxb145
+https://ror.org/024mw5h28
+https://ror.org/01y2jtd41
+https://ror.org/03m2x1q45
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/02acart68
+  [GB]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 1(d) | The Interinstitutional Artificial Intelligence Collaboration Dendrogram. (Cont.)
+6
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+6
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Table 1 | The top 100 productive institutions: Artificial Intelligence.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+University of California, Berkeley
+US
+4,734
+Tsinghua University
+CN
+16,391
+Chinese Academy of Sciences
+CN
+36,084
+2
+Stanford University
+US
+4,607
+Harbin Institute of Technology
+CN
+12,701
+Tsinghua University
+CN
+29,571
+3
+University of Michigan–Ann Arbor
+US
+4,348
+Shanghai Jiao Tong University
+CN
+12,218
+Harbin Institute of Technology
+CN
+24,414
+4
+Massachusetts Institute of Technology
+US
+4,210
+Zhejiang University
+CN
+11,593
+Shanghai Jiao Tong University
+CN
+22,843
+5
+Carnegie Mellon University
+US
+4,129
+Stanford University
+US
+11,390
+Beihang University
+CN
+22,449
+6
+University of Illinois Urbana-Champaign
+US
+3,901
+Carnegie Mellon University
+US
+11,186
+Stanford University
+US
+20,870
+7
+University of Maryland, College Park
+US
+3,661
+The University of Tokyo
+JP
+10,888
+Harvard University
+US
+20,113
+8
+Pennsylvania State University
+US
+3,541
+Chinese Academy of Sciences
+CN
+9,980
+Zhejiang University
+CN
+19,766
+9
+University of Toronto
+CA
+3,520
+University of California, Berkeley
+US
+9,898
+University of Toronto
+CA
+18,885
+10
+The Ohio State University
+US
+3,450
+Georgia Institute of Technology
+US
+9,882
+University of Oxford
+GB
+18,412
+11
+The University of Tokyo
+JP
+3,208
+University of Illinois Urbana-Champaign
+US
+9,729
+University of Michigan–Ann Arbor
+US
+17,543
+12
+Georgia Institute of Technology
+US
+3,122
+University of Michigan–Ann Arbor
+US
+9,618
+Carnegie Mellon University
+US
+17,449
+13
+University of Washington
+US
+3,006
+Nanyang Technological University
+SG
+9,602
+Massachusetts Institute of Technology
+US
+17,309
+14
+University of Cambridge
+GB
+2,982
+Huazhong University of Science and Technology
+CN
+9,482
+Nanyang Technological University
+SG
+17,125
+15
+University of California, Los Angeles
+US
+2,876
+National University of Singapore
+SG
+9,464
+Huazhong University of Science and Technology
+CN
+16,712
+16
+The University of Texas at Austin
+US
+2,866
+University of Toronto
+CA
+9,415
+Beĳing Institute of Technology
+CN
+16,383
+17
+University of Southern California
+US
+2,833
+Massachusetts Institute of Technology
+US
+8,975
+University of California, Berkeley
+US
+16,366
+18
+University of Pennsylvania
+US
+2,752
+Northwestern Polytechnical University
+CN
+8,417
+University College London
+GB
+16,243
+19
+Harvard University
+US
+2,727
+Pennsylvania State University
+US
+8,129
+Northwestern Polytechnical University
+CN
+15,893
+20
+University of Wisconsin–Madison
+US
+2,697
+Harvard University
+US
+8,087
+University of Electronic Science and Technology of China
+CN
+15,805
+21
+University of California, San Diego
+US
+2,671
+University of Southern California
+US
+7,923
+The University of Tokyo
+JP
+15,665
+22
+University of Arizona
+US
+2,631
+Wuhan University
+CN
+7,919
+Peking University
+CN
+15,180
+23
+University of Minnesota
+US
+2,570
+University of California, San Diego
+US
+7,678
+University of Cambridge
+GB
+15,013
+24
+Cornell University
+US
+2,551
+University of Maryland, College Park
+US
+7,563
+National University of Singapore
+SG
+14,757
+25
+Purdue University West Lafayette
+US
+2,547
+University of Washington
+US
+7,524
+University of Chinese Academy of Sciences
+CN
+14,486
+26
+University of Oxford
+GB
+2,491
+Columbia University
+US
+7,274
+Georgia Institute of Technology
+US
+14,466
+27
+National University of Singapore
+SG
+2,468
+Beihang University
+CN
+7,173
+National University of Defense Technology
+CN
+14,185
+28
+University of Pittsburgh
+US
+2,444
+University of Cambridge
+GB
+7,110
+Xi’an Jiaotong University
+CN
+14,163
+29
+Rutgers, The State University of New Jersey
+US
+2,410
+Hong Kong Polytechnic University
+CN
+7,086
+University of Washington
+US
+14,110
+30
+Texas A&M University
+US
+2,357
+French Institute for Research in Computer Science and Automation
+FR
+7,060
+University of Illinois Urbana-Champaign
+US
+14,064
+31
+Columbia University
+US
+2,352
+The Ohio State University
+US
+6,900
+Imperial College London
+GB
+13,928
+32
+McGill University
+CA
+2,350
+University of British Columbia
+CA
+6,863
+Southeast University
+CN
+13,744
+33
+AT&T (United States)
+US
+2,297
+University of California, Los Angeles
+US
+6,837
+University of California, San Diego
+US
+13,720
+34
+Yale University
+US
+2,259
+The University of Texas at Austin
+US
+6,834
+ETH Zurich
+CH
+13,581
+35
+Boston University
+US
+2,224
+Xi’an Jiaotong University
+CN
+6,829
+Wuhan University
+CN
+13,376
+36
+University of Manchester
+GB
+2,221
+University College London
+GB
+6,822
+KU Leuven
+BE
+13,307
+37
+University of British Columbia
+CA
+2,196
+Delft University of Technology
+NL
+6,713
+University of Pennsylvania
+US
+12,942
+38
+Virginia Tech
+US
+2,176
+Osaka University
+JP
+6,656
+UNSW Sydney
+AU
+12,771
+39
+Johns Hopkins University
+US
+2,152
+University of Pennsylvania
+US
+6,618
+University of Southern California
+US
+12,756
+40
+Technion – Israel Institute of Technology
+IL
+2,117
+University of Oxford
+GB
+6,608
+Columbia University
+US
+12,605
+41
+Osaka University
+JP
+2,072
+University of Minnesota
+US
+6,477
+University of California, Los Angeles
+US
+12,603
+42
+Delft University of Technology
+NL
+2,044
+Tianjin University
+CN
+6,351
+Johns Hopkins University
+US
+12,558
+43
+Arizona State University
+US
+2,042
+KU Leuven
+BE
+6,340
+Technical University of Munich
+DE
+12,400
+44
+University College London
+GB
+2,028
+Northeastern University
+CN
+6,313
+Beĳing University of Posts and Telecommunications
+CN
+12,382
+45
+University of Florida
+US
+2,011
+University of Manchester
+GB
+6,310
+Nanjing University of Aeronautics and Astronautics
+CN
+12,362
+46
+Tel Aviv University
+IL
+1,999
+Tokyo Institute of Technology
+JP
+6,287
+Tianjin University
+CN
+12,358
+47
+University of Edinburgh
+GB
+1,997
+National University of Defense Technology
+CN
+6,232
+University of British Columbia
+CA
+12,152
+48
+Princeton University
+US
+1,970
+University of Alberta
+CA
+6,174
+University of Sydney
+AU
+12,117
+49
+University of Sheffield
+GB
+1,954
+South China University of Technology
+CN
+6,133
+University of Melbourne
+AU
+12,091
+50
+Kyoto University
+JP
+1,935
+Chinese University of Hong Kong
+CN
+6,045
+Pennsylvania State University
+US
+12,031
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+7
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+7
+
+1. Artificial Intelligence
+1. Artificial Intelligence
+1. Artificial Intelligence
+Table 1 | The top 100 productive institutions: Artificial Intelligence. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+École Polytechnique Fédérale de Lausanne
+CH
+1,934
+Beĳing Institute of Technology
+CN
+6,012
+Xidian University
+CN
+11,994
+52
+California Institute of Technology
+US
+1,889
+Imperial College London
+GB
+5,915
+Delft University of Technology
+NL
+11,634
+53
+KU Leuven
+BE
+1,866
+McGill University
+CA
+5,818
+The University of Texas at Austin
+US
+11,558
+54
+Tokyo Institute of Technology
+JP
+1,840
+École Polytechnique Fédérale de Lausanne
+CH
+5,804
+McGill University
+CA
+11,382
+55
+Korea Advanced Institute of Science and Technology
+KR
+1,819
+University of Waterloo
+CA
+5,778
+New York University
+US
+11,334
+56
+University of Amsterdam
+NL
+1,807
+Cornell University
+US
+5,773
+South China University of Technology
+CN
+11,254
+57
+Sapienza University of Rome
+IT
+1,797
+University of Melbourne
+AU
+5,757
+Universidade de São Paulo
+BR
+11,242
+58
+University of Chicago
+US
+1,791
+Kyoto University
+JP
+5,748
+University of Science and Technology of China
+CN
+11,227
+59
+University of Iowa
+US
+1,786
+Texas A&M University
+US
+5,739
+North China Electric Power University
+CN
+10,848
+60
+University of Waterloo
+CA
+1,782
+University of Florida
+US
+5,680
+Chinese University of Hong Kong
+CN
+10,812
+61
+New York University
+US
+1,745
+UNSW Sydney
+AU
+5,657
+King’s College London
+GB
+10,706
+62
+Imperial College London
+GB
+1,740
+Southeast University
+CN
+5,653
+Tongji University
+CN
+10,626
+63
+French Institute for Research in Computer Science and Automation
+FR
+1,735
+Peking University
+CN
+5,636
+Dalian University of Technology
+CN
+10,552
+64
+University of California, Davis
+US
+1,715
+Johns Hopkins University
+US
+5,602
+Hong Kong Polytechnic University
+CN
+10,526
+65
+Duke University
+US
+1,712
+University of Wisconsin–Madison
+US
+5,572
+University of Maryland, College Park
+US
+10,505
+66
+University of California, Santa Barbara
+US
+1,704
+City University of Hong Kong
+CN
+5,556
+The Ohio State University
+US
+10,473
+67
+Jet Propulsion Laboratory
+US
+1,691
+Seoul National University
+KR
+5,545
+Northeastern University
+CN
+10,443
+68
+University of Sydney
+AU
+1,690
+University of Pittsburgh
+US
+5,506
+University of Edinburgh
+GB
+10,441
+69
+University of California, Irvine
+US
+1,683
+North China Electric Power University
+CN
+5,466
+Boston University
+US
+10,436
+70
+Michigan State University
+US
+1,611
+Arizona State University
+US
+5,365
+University of Wisconsin–Madison
+US
+10,359
+71
+University of North Carolina at Chapel Hill
+US
+1,601
+Nanjing University of Aeronautics and Astronautics
+CN
+5,233
+Arizona State University
+US
+10,245
+72
+Iowa State University
+US
+1,595
+Virginia Tech
+US
+5,230
+Chongqing University
+CN
+10,113
+73
+UNSW Sydney
+AU
+1,592
+Chongqing University
+CN
+5,192
+University of Waterloo
+CA
+10,026
+74
+Nanyang Technological University
+SG
+1,588
+University of Sydney
+AU
+5,138
+Beĳing Jiaotong University
+CN
+10,022
+75
+State University of New York
+US
+1,567
+Purdue University West Lafayette
+US
+5,123
+Seoul National University
+KR
+10,013
+76
+University of Virginia
+US
+1,566
+Xidian University
+CN
+5,101
+Nanjing University of Science and Technology
+CN
+10,000
+77
+University of Melbourne
+AU
+1,554
+Boston University
+US
+5,076
+University of Minnesota
+US
+9,834
+78
+University of Wales
+GB
+1,553
+National Taiwan University
+TW
+5,075
+University of Alberta
+CA
+9,803
+79
+University of Alberta
+CA
+1,542
+Xiaomi (China)
+CN
+5,069
+Yale University
+US
+9,801
+80
+Northwestern University
+US
+1,526
+Universitat Politècnica de Catalunya
+ES
+5,041
+École Polytechnique Fédérale de Lausanne
+CH
+9,707
+81
+Ames Research Center
+US
+1,496
+Yale University
+US
+5,016
+Duke University
+US
+9,627
+82
+Tsinghua University
+CN
+1,479
+Central South University
+CN
+4,970
+University of Manchester
+GB
+9,598
+83
+North Carolina State University
+US
+1,461
+University of Electronic Science and Technology of China
+CN
+4,939
+University of Pittsburgh
+US
+9,522
+84
+Tohoku University
+JP
+1,440
+National Yang Ming Chiao Tung University
+TW
+4,913
+Shandong University
+CN
+9,383
+85
+Case Western Reserve University
+US
+1,433
+University of Edinburgh
+GB
+4,908
+University of Tehran
+IR
+9,342
+86
+University of Southampton
+GB
+1,423
+Korea Advanced Institute of Science and Technology
+KR
+4,864
+Korea Advanced Institute of Science and Technology
+KR
+9,286
+87
+Washington University in St. Louis
+US
+1,408
+University of Arizona
+US
+4,861
+University of Amsterdam
+NL
+9,279
+88
+Langley Research Center
+US
+1,389
+New York University
+US
+4,825
+Monash University
+AU
+9,244
+89
+National Yang Ming Chiao Tung University
+TW
+1,385
+Universidade de São Paulo
+BR
+4,808
+Google (United States)
+US
+9,108
+90
+University of Massachusetts Amherst
+US
+1,383
+University of Southampton
+GB
+4,808
+Cornell University
+US
+9,068
+91
+Australian National University
+AU
+1,375
+Rutgers, The State University of New Jersey
+US
+4,792
+Sapienza University of Rome
+IT
+9,067
+92
+Nagoya University
+JP
+1,375
+Tohoku University
+JP
+4,738
+University of Queensland
+AU
+9,019
+93
+University of Queensland
+AU
+1,371
+University of Sheffield
+GB
+4,725
+Politecnico di Milano
+IT
+9,013
+94
+University of Colorado Boulder
+US
+1,361
+Jilin University
+CN
+4,715
+University of Florida
+US
+8,917
+95
+University of Illinois at Chicago
+US
+1,360
+Dalian University of Technology
+CN
+4,697
+Central South University
+CN
+8,774
+96
+Seoul National University
+KR
+1,332
+Michigan State University
+US
+4,693
+Texas A&M University
+US
+8,704
+97
+University of Rochester
+US
+1,331
+Beĳing Jiaotong University
+CN
+4,681
+Inserm
+FR
+8,650
+98
+Rensselaer Polytechnic Institute
+US
+1,324
+University of Science and Technology of China
+CN
+4,669
+French Institute for Research in Computer Science and Automation
+FR
+8,553
+99
+University of Leeds
+GB
+1,318
+Duke University
+US
+4,665
+Jilin University
+CN
+8,505
+100
+Hitachi (Japan)
+JP
+1,309
+Princeton University
+US
+4,660
+Osaka University
+JP
+8,426
+8
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+8
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+2. Quantum Science
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+World Map of Quantum Science Collaboration | 1971–2020
+Figure 2(a) | The World Map of Quantum Science Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+10
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+10
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Top 30 Productive Institutions on the World Map: Quantum Science | 1991–2020
+Chinese Acad of Sci
+Tsinghua U.
+U. Tokyo
+U. Chinese Acad of Sci
+Harbin Inst of Tech
+Shanghai Jiao Tong U.
+Zhejiang U.
+MIT
+UC Berkeley
+U. Sci & Tech of China
+Peking U.
+Kyoto U.
+Huazhong U. Sci & Tech
+U. Oxford
+U. Cambridge
+Stanford U.
+U. Michigan
+Xi'an Jiaotong U.
+Beihang U.
+ETH Zurich
+Osaka U.
+Tohoku U.
+Lomonosov Moscow State U.
+Imperial College London
+Nanyang Tech U.
+Nat'l U. Singapore
+N. China Elec Power U.
+Tianjin U.
+U. Elec Sci & Tech of China
+Russian Acad of Sci
+Quantum Science [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Chinese Acad of Sci
+U. Tokyo
+Tsinghua U.
+Osaka U.
+Tohoku U.
+Kyoto U.
+UC Berkeley
+MIT
+Stanford U.
+U. Michigan
+U. Cambridge
+Lomonosov Moscow State U.
+Tokyo Inst of Tech
+Russian Acad of Sci
+Zhejiang U.
+U. Illinois UC
+Los Alamos NL
+U. Maryland
+Shanghai Jiao Tong U.
+Penn State U.
+Harbin Inst of Tech
+U. Oxford
+Imperial College London
+AIST
+Georgia Inst of Tech
+Princeton U.
+Nat'l U. Singapore
+Nagoya U.
+Lawrence Berkeley NL
+U. Toronto
+Quantum Science [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+UC Berkeley
+Kyoto U.
+Tohoku U.
+Osaka U.
+MIT
+Los Alamos NL
+Stanford U.
+U. Illinois UC
+U. Cambridge
+U. Maryland
+U. Michigan
+U. Oxford
+Penn State U.
+Lawrence Berkeley NL
+Lomonosov Moscow State U.
+Princeton U.
+UT Austin
+Tokyo Inst of Tech
+US Naval Research Lab
+UCLA
+Cornell U.
+Nagoya U.
+Argonne NL
+U. Wisconsin−Madison
+Chinese Acad of Sci
+UC Santa Barbara
+Russian Acad of Sci
+U. Minnesota
+U. Arizona
+Quantum Science [1991−2000]
+Figure 2(b) | The top 30 productive institutions on the World Map: Quantum Science. The bubbles represent the
+top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+11
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+11
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Interregional Quantum Science Collaboration | 1991–2020
+78
+248
+26
+52
+51
+101
+190
+31
+77
+75
+120
+16
+16
+32
+32
+27
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+210
+109
+20
+62
+139
+180
+27
+14
+42
+45
+24
+29
+28
+63
+34
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+434
+69
+87
+130
+107
+11
+17
+16
+13
+14
+21
+19
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 2 (c) | The Interregional Quantum Science Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+12
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+12
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Interinstitutional Quantum Science Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Beihang U.      
+      Tsinghua U.      
+      Beijing Inst of Tech      
+      Tianjin U.      
+      Xi'an Jiaotong U.      
+      North China Electric Power U.      
+      U. Elec Sci & Tech of China      
+      Huazhong U. Sci & Tech      
+      Shanghai Jiao Tong U.      
+      Zhejiang U.      
+      U. de Sao Paulo      
+      Shandong U.      
+      Harbin Inst of Tech      
+      Jilin U.      
+      U. Cambridge      
+      U. Oxford      
+      Imperial College London      
+      U. College London      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      ETH Zurich      
+      EPFL      
+      Tech U. Munich      
+      Karlsruhe Inst of Tech      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Tohoku U.      
+      Osaka U.      
+      U. Tokyo      
+      Kyoto U.      
+      Nanyang Tech U.      
+      Nat'l U. Singapore      
+      Southeast U.      
+      U. Sci & Tech of China      
+      Nanjing U.      
+      Peking U.      
+      MIT      
+      Harvard U.      
+      U. Toronto      
+      Stanford U.      
+      Princeton U.      
+      Penn State U.      
+      U. Illinois UC      
+      Georgia Inst of Tech      
+      UT Austin      
+      U. Maryland      
+      U. Michigan      
+      UCLA      
+https://ror.org/00wk2mp56
+https://ror.org/03cve4549
+https://ror.org/01skt4w74
+https://ror.org/012tb2g32
+https://ror.org/017zhmm22
+https://ror.org/04qr5t414
+https://ror.org/04qr3zq92
+https://ror.org/00p991c53
+https://ror.org/0220qvk04
+https://ror.org/00a2xv884
+https://ror.org/036rp1748
+https://ror.org/0207yh398
+https://ror.org/01yqg2h08
+https://ror.org/00js3aw79
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/02jx3x895
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/05a28rw58
+https://ror.org/02s376052
+https://ror.org/02kkvpp62
+https://ror.org/04t3en479
+https://ror.org/042nb2s44
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/02e7b5302
+https://ror.org/01tgyzw49
+https://ror.org/04ct4d772
+https://ror.org/04c4dkn09
+https://ror.org/01rxvg760
+https://ror.org/02v51f717
+https://ror.org/03vek6s52
+https://ror.org/03dbr7087
+https://ror.org/00f54p054
+https://ror.org/00hx57361
+https://ror.org/04p491231
+https://ror.org/047426m28
+https://ror.org/01zkghx44
+https://ror.org/00hj54h04
+https://ror.org/047s2c258
+https://ror.org/00jmfr291
+https://ror.org/046rm7j60
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [BR]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [RU]  
+  [RU]  
+  [CH]  
+  [CH]  
+  [DE]  
+  [DE]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [SG]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      U. Oxford      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      ETH Zurich      
+      EPFL      
+      MIT      
+      Harvard U.      
+      Seoul Nat'l U.      
+      Nat'l Taiwan U.      
+      Zhejiang U.      
+      Georgia Inst of Tech      
+      Huazhong U. Sci & Tech      
+      Harbin Inst of Tech      
+      U. de Sao Paulo      
+      Los Alamos NL      
+      UC San Diego      
+      U. Toronto      
+      Stanford U.      
+      Caltech      
+      UCLA      
+      Princeton U.      
+      Texas A&M U.      
+      UT Austin      
+      U. Michigan      
+      U. Wisconsin−Madison      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Tokyo Inst of Tech      
+      Nagoya U.      
+      Tohoku U.      
+      U. Tokyo      
+      AIST      
+      Kyushu U.      
+      Osaka U.      
+      Kyoto U.      
+      Imperial College London      
+      U. Cambridge      
+      U. Maryland      
+      Max Planck Society      
+      U. Illinois UC      
+      Cornell U.      
+      Penn State U.      
+      Ohio State U.      
+      Nat'l U. Singapore      
+      Nanyang Tech U.      
+      Shanghai Jiao Tong U.      
+      U. Sci & Tech of China      
+      Tsinghua U.      
+      Chinese Acad of Sci      
+      Peking U.      
+https://ror.org/052gg0110
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/05a28rw58
+https://ror.org/02s376052
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/04h9pn542
+https://ror.org/05bqach95
+https://ror.org/00a2xv884
+https://ror.org/01zkghx44
+https://ror.org/00p991c53
+https://ror.org/01yqg2h08
+https://ror.org/036rp1748
+https://ror.org/01e41cf67
+https://ror.org/0168r3w48
+https://ror.org/03dbr7087
+https://ror.org/00f54p054
+https://ror.org/05dxps055
+https://ror.org/046rm7j60
+https://ror.org/00hx57361
+https://ror.org/01f5ytq51
+https://ror.org/00hj54h04
+https://ror.org/00jmfr291
+https://ror.org/01y2jtd41
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/0112mx960
+https://ror.org/04chrp450
+https://ror.org/01dq60k83
+https://ror.org/057zh3y96
+https://ror.org/01703db54
+https://ror.org/00p4k0j84
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/047s2c258
+https://ror.org/01hhn8329
+https://ror.org/047426m28
+https://ror.org/05bnh6r87
+https://ror.org/04p491231
+https://ror.org/00rs6vg23
+https://ror.org/01tgyzw49
+https://ror.org/02e7b5302
+https://ror.org/0220qvk04
+https://ror.org/04c4dkn09
+https://ror.org/03cve4549
+https://ror.org/034t30j35
+https://ror.org/02v51f717
+  [GB]  
+  [RU]  
+  [RU]  
+  [CH]  
+  [CH]  
+  [US]  
+  [US]  
+  [KR]  
+  [TW]  
+  [CN]  
+  [US]  
+  [CN]  
+  [CN]  
+  [BR]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [GB]  
+  [GB]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [SG]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+Figure 2(d) | The Interinstitutional Quantum Science Collaboration Dendrogram. The top 50 institutions in terms
+of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+13
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+13
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Interinstitutional Quantum Science Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      U. Wisconsin−Madison      
+      U. Illinois UC      
+      Argonne NL      
+      U. Paris−Sud      
+      U. Toronto      
+      Tech U. Munich      
+      Chinese Acad of Sci      
+      Kyushu U.      
+      U. Florida      
+      Princeton U.      
+      AT&T (US)      
+      Cornell U.      
+      U. Minnesota      
+      UT Austin      
+      Penn State U.      
+      Ohio State U.      
+      U. Washington      
+      Stanford U.      
+      UCLA      
+      UC Santa Barbara      
+      Caltech      
+      U. Michigan      
+      U. Arizona      
+      US Naval Research Lab      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Polish Acad of Sci      
+      Inst of Physics      
+      U. Tokyo      
+      Tohoku U.      
+      Kyoto U.      
+      Osaka U.      
+      Tokyo Inst of Tech      
+      Nagoya U.      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      MIT      
+      Harvard U.      
+      Los Alamos NL      
+      Lawrence Livermore NL      
+      Oak Ridge NL      
+      UC San Diego      
+      U. Maryland      
+      NIST      
+      U. Manchester      
+      Eur Org for Nucl Res      
+      Tel Aviv U.      
+      U. Cambridge      
+      U. Oxford      
+      Imperial College London      
+https://ror.org/01y2jtd41
+https://ror.org/047426m28
+https://ror.org/05gvnxz63
+https://ror.org/028rypz17
+https://ror.org/03dbr7087
+https://ror.org/02kkvpp62
+https://ror.org/034t30j35
+https://ror.org/00p4k0j84
+https://ror.org/02y3ad647
+https://ror.org/00hx57361
+https://ror.org/02bbd5539
+https://ror.org/05bnh6r87
+https://ror.org/017zqws13
+https://ror.org/00hj54h04
+https://ror.org/04p491231
+https://ror.org/00rs6vg23
+https://ror.org/00cvxb145
+https://ror.org/00f54p054
+https://ror.org/046rm7j60
+https://ror.org/02t274463
+https://ror.org/05dxps055
+https://ror.org/00jmfr291
+https://ror.org/03m2x1q45
+https://ror.org/04d23a975
+https://ror.org/047s2c258
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/01dr6c206
+https://ror.org/000sfad56
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/0112mx960
+https://ror.org/04chrp450
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/01e41cf67
+https://ror.org/041nk4h53
+https://ror.org/01qz5mb56
+https://ror.org/0168r3w48
+https://ror.org/05xpvk416
+https://ror.org/027m9bs27
+https://ror.org/01ggx4157
+https://ror.org/04mhzgx49
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [CA]  
+  [DE]  
+  [CN]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [PL]  
+  [PL]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [RU]  
+  [RU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [CH]  
+  [IL]  
+  [GB]  
+  [GB]  
+  [GB]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      U. Oxford      
+      Eur Org for Nucl Res      
+      Imperial College London      
+      Argonne NL      
+      U. Chicago      
+      Oak Ridge NL      
+      Lawrence Livermore NL      
+      U. Minnesota      
+      Los Alamos NL      
+      UT Austin      
+      MIT      
+      Harvard U.      
+      Princeton U.      
+      AT&T (US)      
+      Stanford U.      
+      Cornell U.      
+      U. Illinois UC      
+      IBM T.J. Watson Res Center      
+      Penn State U.      
+      U. Penn      
+      Ohio State U.      
+      Purdue U. West Lafayette      
+      U. Michigan      
+      UC San Diego      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Nagoya U.      
+      Kyoto U.      
+      Osaka U.      
+      Tokyo Inst of Tech      
+      U. Tokyo      
+      Tohoku U.      
+      NIST      
+      US Naval Research Lab      
+      U. Maryland      
+      Goddard Space Flight Center      
+      Brookhaven NL      
+      State U. New York      
+      Caltech      
+      Jet Propulsion Lab      
+      UCLA      
+      U. Southern California      
+      U. Manchester      
+      U. Cambridge      
+      U. Wisconsin−Madison      
+      U. Arizona      
+      U. Toronto      
+      U. Washington      
+      Yale U.      
+      U. Paris−Sud      
+https://ror.org/052gg0110
+https://ror.org/01ggx4157
+https://ror.org/041kmwe10
+https://ror.org/05gvnxz63
+https://ror.org/024mw5h28
+https://ror.org/01qz5mb56
+https://ror.org/041nk4h53
+https://ror.org/017zqws13
+https://ror.org/01e41cf67
+https://ror.org/00hj54h04
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00hx57361
+https://ror.org/02bbd5539
+https://ror.org/00f54p054
+https://ror.org/05bnh6r87
+https://ror.org/047426m28
+https://ror.org/0265w5591
+https://ror.org/04p491231
+https://ror.org/00b30xv10
+https://ror.org/00rs6vg23
+https://ror.org/02dqehb95
+https://ror.org/00jmfr291
+https://ror.org/0168r3w48
+https://ror.org/01y2jtd41
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/04chrp450
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/0112mx960
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/05xpvk416
+https://ror.org/04d23a975
+https://ror.org/047s2c258
+https://ror.org/0171mag52
+https://ror.org/02ex6cf31
+https://ror.org/01q1z8k08
+https://ror.org/05dxps055
+https://ror.org/027k65916
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/027m9bs27
+https://ror.org/013meh722
+https://ror.org/03m2x1q45
+https://ror.org/03dbr7087
+https://ror.org/00cvxb145
+https://ror.org/03v76x132
+https://ror.org/028rypz17
+  [GB]  
+  [CH]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [FR]  
+Figure 2(d) | The Interinstitutional Quantum Science Collaboration Dendrogram. (Cont.)
+14
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+14
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Table 2 | The top 100 productive institutions: Quantum Science.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+The University of Tokyo
+JP
+13,688
+Chinese Academy of Sciences
+CN
+27,417
+Chinese Academy of Sciences
+CN
+66,552
+2
+University of California, Berkeley
+US
+8,849
+The University of Tokyo
+JP
+24,020
+Tsinghua University
+CN
+29,227
+3
+Kyoto University
+JP
+8,592
+Tsinghua University
+CN
+16,092
+The University of Tokyo
+JP
+28,241
+4
+Tohoku University
+JP
+8,554
+Osaka University
+JP
+15,442
+University of Chinese Academy of Sciences
+CN
+22,786
+5
+Osaka University
+JP
+8,106
+Tohoku University
+JP
+15,412
+Harbin Institute of Technology
+CN
+20,551
+6
+Massachusetts Institute of Technology
+US
+8,058
+Kyoto University
+JP
+14,430
+Shanghai Jiao Tong University
+CN
+20,248
+7
+Los Alamos National Laboratory
+US
+7,420
+University of California, Berkeley
+US
+13,128
+Zhejiang University
+CN
+19,643
+8
+Stanford University
+US
+7,237
+Massachusetts Institute of Technology
+US
+12,402
+Massachusetts Institute of Technology
+US
+19,161
+9
+University of Illinois Urbana-Champaign
+US
+7,151
+Stanford University
+US
+12,086
+University of California, Berkeley
+US
+18,428
+10
+University of Cambridge
+GB
+7,115
+University of Michigan–Ann Arbor
+US
+11,562
+University of Science and Technology of China
+CN
+18,236
+11
+University of Maryland, College Park
+US
+6,191
+University of Cambridge
+GB
+11,360
+Peking University
+CN
+18,082
+12
+University of Michigan–Ann Arbor
+US
+6,092
+Lomonosov Moscow State University
+RU
+11,219
+Kyoto University
+JP
+17,655
+13
+University of Oxford
+GB
+5,744
+Tokyo Institute of Technology
+JP
+11,207
+Huazhong University of Science and Technology
+CN
+17,257
+14
+Pennsylvania State University
+US
+5,734
+Russian Academy of Sciences
+RU
+10,990
+University of Oxford
+GB
+16,993
+15
+Lawrence Berkeley National Laboratory
+US
+5,657
+Zhejiang University
+CN
+10,839
+University of Cambridge
+GB
+16,936
+16
+Lomonosov Moscow State University
+RU
+5,620
+University of Illinois Urbana-Champaign
+US
+10,513
+Stanford University
+US
+16,898
+17
+Princeton University
+US
+5,571
+Los Alamos National Laboratory
+US
+10,079
+University of Michigan–Ann Arbor
+US
+16,695
+18
+The University of Texas at Austin
+US
+5,515
+University of Maryland, College Park
+US
+9,709
+Xi’an Jiaotong University
+CN
+16,502
+19
+Tokyo Institute of Technology
+JP
+5,338
+Shanghai Jiao Tong University
+CN
+9,701
+Beihang University
+CN
+15,995
+20
+United States Naval Research Laboratory
+US
+5,206
+Pennsylvania State University
+US
+9,602
+ETH Zurich
+CH
+15,783
+21
+University of California, Los Angeles
+US
+5,178
+Harbin Institute of Technology
+CN
+9,289
+Osaka University
+JP
+15,647
+22
+Nagoya University
+JP
+5,117
+University of Oxford
+GB
+9,169
+Tohoku University
+JP
+15,546
+23
+Cornell University
+US
+5,102
+Imperial College London
+GB
+9,070
+Lomonosov Moscow State University
+RU
+15,460
+24
+Argonne National Laboratory
+US
+5,046
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+9,012
+Imperial College London
+GB
+15,419
+25
+University of Wisconsin–Madison
+US
+4,911
+Georgia Institute of Technology
+US
+8,910
+Nanyang Technological University
+SG
+14,764
+26
+Chinese Academy of Sciences
+CN
+4,899
+Princeton University
+US
+8,828
+National University of Singapore
+SG
+14,434
+27
+University of California, Santa Barbara
+US
+4,876
+National University of Singapore
+SG
+8,821
+North China Electric Power University
+CN
+14,088
+28
+Russian Academy of Sciences
+RU
+4,831
+Nagoya University
+JP
+8,662
+Tianjin University
+CN
+13,702
+29
+University of Minnesota
+US
+4,775
+Lawrence Berkeley National Laboratory
+US
+8,641
+University of Electronic Science and Technology of China
+CN
+13,632
+30
+University of Arizona
+US
+4,744
+University of Toronto
+CA
+8,538
+Russian Academy of Sciences
+RU
+13,428
+31
+California Institute of Technology
+US
+4,675
+California Institute of Technology
+US
+8,365
+Southeast University
+CN
+13,397
+32
+The Ohio State University
+US
+4,671
+The University of Texas at Austin
+US
+8,241
+Nanjing University
+CN
+13,123
+33
+National Institute of Standards and Technology
+US
+4,647
+University of California, Los Angeles
+US
+8,116
+University of Toronto
+CA
+12,679
+34
+AT&T (United States)
+US
+4,609
+Peking University
+CN
+8,112
+University of Illinois Urbana-Champaign
+US
+12,653
+35
+University of Paris-Sud
+FR
+4,588
+ETH Zurich
+CH
+7,925
+The University of Texas at Austin
+US
+12,512
+36
+Lawrence Livermore National Laboratory
+US
+4,581
+University of Science and Technology of China
+CN
+7,856
+University of Maryland, College Park
+US
+12,456
+37
+Imperial College London
+GB
+4,550
+University of California, San Diego
+US
+7,793
+Beĳing Institute of Technology
+CN
+12,373
+38
+Oak Ridge National Laboratory
+US
+4,495
+Huazhong University of Science and Technology
+CN
+7,782
+Georgia Institute of Technology
+US
+12,358
+39
+European Organization for Nuclear Research
+CH
+4,480
+Texas A&M University
+US
+7,735
+École Polytechnique Fédérale de Lausanne
+CH
+12,284
+40
+Polish Academy of Sciences
+PL
+4,400
+Cornell University
+US
+7,728
+University College London
+GB
+12,190
+41
+University of California, San Diego
+US
+4,357
+Kyushu University
+JP
+7,717
+Harvard University
+US
+12,153
+42
+University of Toronto
+CA
+4,345
+École Polytechnique Fédérale de Lausanne
+CH
+7,712
+Universidade de São Paulo
+BR
+12,125
+43
+Technical University of Munich
+DE
+4,132
+Nanyang Technological University
+SG
+7,558
+Jilin University
+CN
+12,023
+44
+Kyushu University
+JP
+4,078
+Seoul National University
+KR
+7,556
+Shandong University
+CN
+11,989
+45
+Harvard University
+US
+4,071
+University of Wisconsin–Madison
+US
+7,542
+Pennsylvania State University
+US
+11,860
+46
+University of Florida
+US
+4,058
+Max Planck Society
+DE
+7,454
+Lawrence Berkeley National Laboratory
+US
+11,778
+47
+Institute of Physics
+PL
+4,057
+National Taiwan University
+TW
+7,291
+Princeton University
+US
+11,657
+48
+University of Washington
+US
+4,051
+The Ohio State University
+US
+7,256
+University of California, Los Angeles
+US
+11,652
+49
+Tel Aviv University
+IL
+3,959
+Harvard University
+US
+7,102
+Technical University of Munich
+DE
+11,533
+50
+University of Manchester
+GB
+3,931
+Universidade de São Paulo
+BR
+7,085
+Karlsruhe Institute of Technology
+DE
+11,524
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+15
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+15
+
+2. Quantum Science
+2. Quantum Science
+2. Quantum Science
+Table 2 | The top 100 productive institutions: Quantum Science. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Rutgers, The State University of New Jersey
+US
+3,791
+University of California, Santa Barbara
+US
+7,084
+Dalian University of Technology
+CN
+11,507
+52
+Texas A&M University
+US
+3,716
+University of Florida
+US
+6,985
+Northwestern Polytechnical University
+CN
+11,362
+53
+École Polytechnique Fédérale de Lausanne
+CH
+3,604
+KU Leuven
+BE
+6,976
+University of California, San Diego
+US
+11,167
+54
+Forschungszentrum Jülich
+DE
+3,549
+Japan Science and Technology Agency (JST)
+JP
+6,958
+Nagoya University
+JP
+10,976
+55
+Max Planck Society
+DE
+3,535
+University of Paris-Sud
+FR
+6,936
+Tokyo Institute of Technology
+JP
+10,818
+56
+Brookhaven National Laboratory
+US
+3,504
+Nanjing University
+CN
+6,893
+KU Leuven
+BE
+10,774
+57
+Goddard Space Flight Center
+US
+3,499
+University of Washington
+US
+6,886
+South China University of Technology
+CN
+10,709
+58
+Columbia University
+US
+3,463
+University of Manchester
+GB
+6,870
+Sapienza University of Rome
+IT
+10,574
+59
+Tokyo University of Science
+JP
+3,455
+University of Minnesota
+US
+6,870
+Seoul National University
+KR
+10,545
+60
+Iowa State University
+US
+3,442
+National Academy of Sciences of Ukraine
+UA
+6,864
+Texas A&M University
+US
+10,520
+61
+Purdue University West Lafayette
+US
+3,432
+Delft University of Technology
+NL
+6,839
+University of Manchester
+GB
+10,437
+62
+University of Tsukuba
+JP
+3,427
+Petersburg Nuclear Physics Institute
+RU
+6,640
+Delft University of Technology
+NL
+10,398
+63
+Sapienza University of Rome
+IT
+3,424
+Polish Academy of Sciences
+PL
+6,622
+Chongqing University
+CN
+10,360
+64
+Hokkaido University
+JP
+3,408
+University of Arizona
+US
+6,574
+Wuhan University
+CN
+10,331
+65
+University of Chicago
+US
+3,392
+Argonne National Laboratory
+US
+6,490
+University of Washington
+US
+10,220
+66
+University of Colorado Boulder
+US
+3,369
+Sapienza University of Rome
+IT
+6,418
+UNSW Sydney
+AU
+10,131
+67
+Technion – Israel Institute of Technology
+IL
+3,368
+Columbia University
+US
+6,352
+Los Alamos National Laboratory
+US
+10,102
+68
+University of Pennsylvania
+US
+3,335
+National Institute of Standards and Technology
+US
+6,351
+Fudan University
+CN
+10,069
+69
+Hitachi (Japan)
+JP
+3,316
+Hokkaido University
+JP
+6,136
+University of Wisconsin–Madison
+US
+10,015
+70
+ETH Zurich
+CH
+3,294
+University College London
+GB
+6,124
+Columbia University
+US
+9,879
+71
+Georgia Institute of Technology
+US
+3,225
+Technical University of Munich
+DE
+6,106
+Royal Institute of Technology
+SE
+9,775
+72
+KU Leuven
+BE
+3,206
+Tianjin University
+CN
+5,975
+The Ohio State University
+US
+9,706
+73
+University of British Columbia
+CA
+3,176
+Xi’an Jiaotong University
+CN
+5,961
+Tongji University
+CN
+9,686
+74
+Chalmers University of Technology
+SE
+3,157
+United States Naval Research Laboratory
+US
+5,932
+California Institute of Technology
+US
+9,681
+75
+Johns Hopkins University
+US
+3,156
+Oak Ridge National Laboratory
+US
+5,896
+Nanjing University of Aeronautics and Astronautics
+CN
+9,609
+76
+Delft University of Technology
+NL
+3,113
+University of California, Davis
+US
+5,885
+National Taiwan University
+TW
+9,576
+77
+Northwestern University
+US
+3,103
+Goddard Space Flight Center
+US
+5,847
+University of British Columbia
+CA
+9,420
+78
+Yale University
+US
+3,093
+University of British Columbia
+CA
+5,841
+University of Paris-Saclay
+FR
+9,387
+79
+University of California, Davis
+US
+3,079
+Institute of Physics
+PL
+5,803
+University of Minnesota
+US
+9,365
+80
+University of Southern California
+US
+3,054
+Purdue University West Lafayette
+US
+5,758
+University of Waterloo
+CA
+9,294
+81
+State University of New York
+US
+3,048
+University of Southampton
+GB
+5,749
+University of Sydney
+AU
+9,202
+82
+Australian National University
+AU
+3,027
+Jilin University
+CN
+5,672
+Sichuan University
+CN
+9,108
+83
+University of Stuttgart
+DE
+3,004
+Tel Aviv University
+IL
+5,670
+Politecnico di Milano
+IT
+9,093
+84
+McGill University
+CA
+2,984
+National Yang Ming Chiao Tung University
+TW
+5,634
+University of Southampton
+GB
+8,975
+85
+University of Rochester
+US
+2,983
+University of Bologna
+IT
+5,619
+Central South University
+CN
+8,908
+86
+Université Paris Cité
+FR
+2,933
+Tokyo University of Science
+JP
+5,603
+Oak Ridge National Laboratory
+US
+8,891
+87
+Uppsala University
+SE
+2,897
+Wuhan University
+CN
+5,568
+Purdue University West Lafayette
+US
+8,867
+88
+Arizona State University
+US
+2,885
+University of Alberta
+CA
+5,563
+University of Colorado Boulder
+US
+8,851
+89
+Universidade de São Paulo
+BR
+2,882
+Rutgers, The State University of New Jersey
+US
+5,516
+Cornell University
+US
+8,786
+90
+University of Amsterdam
+NL
+2,872
+University of Waterloo
+CA
+5,504
+Argonne National Laboratory
+US
+8,775
+91
+Boston University
+US
+2,848
+Royal Institute of Technology
+SE
+5,450
+Kyushu University
+JP
+8,716
+92
+Jet Propulsion Laboratory
+US
+2,843
+Australian National University
+AU
+5,445
+National University of Defense Technology
+CN
+8,709
+93
+North Carolina State University
+US
+2,826
+University of Tsukuba
+JP
+5,430
+Technical University of Denmark
+DK
+8,705
+94
+Stony Brook University
+US
+2,814
+Dalian University of Technology
+CN
+5,413
+Nanjing University of Science and Technology
+CN
+8,626
+95
+University College London
+GB
+2,805
+Shandong University
+CN
+5,410
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+8,461
+96
+Ruhr University Bochum
+DE
+2,788
+Arizona State University
+US
+5,384
+RWTH Aachen University
+DE
+8,437
+97
+University of Southampton
+GB
+2,781
+Lawrence Livermore National Laboratory
+US
+5,384
+University of Alberta
+CA
+8,379
+98
+Hiroshima University
+JP
+2,778
+Korea Advanced Institute of Science and Technology
+KR
+5,343
+McGill University
+CA
+8,376
+99
+Weizmann Institute of Science
+IL
+2,774
+North China Electric Power University
+CN
+5,332
+Universidad Nacional Autónoma de México
+MX
+8,374
+100
+Hebrew University of Jerusalem
+IL
+2,748
+Iowa State University
+US
+5,322
+University of Paris-Sud
+FR
+8,299
+16
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+16
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+3. Biotechnology
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+World Map of Biotechnology Collaboration | 1971–2020
+Figure 3 (a) | The World Map of Biotechnology Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+18
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+18
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Top 30 Productive Institutions on the World Map: Biotechnology | 1991–2020
+Chinese Acad of Sci
+Harvard U.
+Inserm
+NIH
+Stanford U.
+U. Chinese Acad of Sci
+U. Oxford
+Shanghai Jiao Tong U.
+U. Michigan
+Zhejiang U.
+U. de Sao Paulo
+U. Toronto
+U. Cambridge
+Johns Hopkins U.
+U. Washington
+U. Tokyo
+U. Penn
+Cornell U.
+UC San Diego
+U. Copenhagen
+UC San Francisco
+Howard Hughes Medical Inst
+U. Florida
+UC Davis
+Yale U.
+U. Melbourne
+Chinese Acad of Agri Sci
+Seoul Nat'l U.
+UCLA
+Imperial College London
+Biotechnology [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Harvard U.
+Inserm
+NIH
+Chinese Acad of Sci
+U. Tokyo
+Howard Hughes Medical Inst
+Johns Hopkins U.
+U. Washington
+U. Penn
+Kyoto U.
+U. Michigan
+Stanford U.
+Cornell U.
+U. Toronto
+NamesforLife (US)
+U. Oxford
+U. Wisconsin−Madison
+Osaka U.
+UC San Francisco
+U. Cambridge
+UC Davis
+Yale U.
+UC San Diego
+UCLA
+Nat'l Cancer Inst
+U. Minnesota
+Ohio State U.
+Karolinska Instt
+U. Florida
+U. N. Carolina at Chapel Hill
+Biotechnology [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Inserm
+Harvard U.
+NIH
+U. Tokyo
+Howard Hughes Medical Inst
+Kyoto U.
+Johns Hopkins U.
+Osaka U.
+U. Washington
+U. Michigan
+UC San Francisco
+U. Wisconsin−Madison
+U. Toronto
+U. Penn
+Cornell U.
+Yale U.
+Nat'l Cancer Inst
+Stanford U.
+Karolinska Instt
+U. Cambridge
+UC Davis
+UC Berkeley
+U. Minnesota
+UC San Diego
+Washington U. in St. Louis
+Inst Pasteur
+Baylor College of Medicine
+U. Oxford
+UCLA
+Columbia U.
+Biotechnology [1991−2000]
+Figure 3(b) | The top 30 productive institutions on the World Map: Biotechnology. The bubbles represent the top 30
+institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+19
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+19
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Interregional Biotechnology Collaboration | 1991–2020
+300
+195
+75
+125
+50
+200
+28
+24
+37
+15
+56
+15
+24
+10
+10
+40
+16
+27
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+458
+48
+91
+121
+136
+155
+10
+12
+14
+14
+19
+19
+10
+21
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+507
+123
+84
+110
+87
+14
+12
+15
+21
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 3(c) | The Interregional Biotechnology Collaboration Matrix Diagram. The bubble size represents the number
+of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or greater
+than 10, it is displayed inside the bubble.
+20
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+20
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Interinstitutional Biotechnology Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Washington U. in St. Louis      
+      U. Michigan      
+      U. Penn      
+      Ohio State U.      
+      UTMDACC      
+      Yale U.      
+      UC San Diego      
+      UCLA      
+      U. Edinburgh      
+      U. Oxford      
+      Imperial College London      
+      U. Cambridge      
+      U. College London      
+      U. Tokyo      
+      Kyoto U.      
+      Nanjing Medical U.      
+      Shanghai Jiao Tong U.      
+      Fudan U.      
+      U. Melbourne      
+      U. Queensland      
+      U. Minnesota      
+      U. Wisconsin−Madison      
+      U. Florida      
+      UC Davis      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Boston U.      
+      Harvard U.      
+      Massachusetts General Hospital      
+      Stanford U.      
+      Howard Hughes Medical Inst      
+      UC San Francisco      
+      UC Berkeley      
+      NIH      
+      Johns Hopkins U.      
+      U. Washington      
+      U. N. Carolina at Chapel Hill      
+      U. Pittsburgh      
+      Cornell U.      
+      Zhejiang U.      
+      Chinese Acad of Agri Sci      
+      U. de Sao Paulo      
+      Seoul Nat'l U.      
+      Nat'l U. Singapore      
+      Peking U.      
+      U. Toronto      
+      U. British Columbia      
+      Inserm      
+      U. Copenhagen      
+      Karolinska Instt      
+https://ror.org/01yc7t268
+https://ror.org/00jmfr291
+https://ror.org/00b30xv10
+https://ror.org/00rs6vg23
+https://ror.org/04twxam07
+https://ror.org/03v76x132
+https://ror.org/0168r3w48
+https://ror.org/046rm7j60
+https://ror.org/01nrxwf90
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/02jx3x895
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/059gcgy73
+https://ror.org/0220qvk04
+https://ror.org/013q1eq08
+https://ror.org/01ej9dk98
+https://ror.org/00rqy9422
+https://ror.org/017zqws13
+https://ror.org/01y2jtd41
+https://ror.org/02y3ad647
+https://ror.org/05rrcem69
+https://ror.org/05bnh6r87
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/05qwgg493
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/00f54p054
+https://ror.org/006w34k90
+https://ror.org/043mz5j54
+https://ror.org/01an7q238
+https://ror.org/01cwqze88
+https://ror.org/00za53h95
+https://ror.org/00cvxb145
+https://ror.org/0130frc33
+https://ror.org/01an3r305
+https://ror.org/00a2xv884
+https://ror.org/0313jb750
+https://ror.org/036rp1748
+https://ror.org/04h9pn542
+https://ror.org/01tgyzw49
+https://ror.org/02v51f717
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/02vjkv261
+https://ror.org/035b05819
+https://ror.org/056d84691
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [AU]  
+  [AU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [BR]  
+  [KR]  
+  [SG]  
+  [CN]  
+  [CA]  
+  [CA]  
+  [FR]  
+  [DK]  
+  [SE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      U. Oxford      
+      Imperial College London      
+      U. Cambridge      
+      U. College London      
+      UTMDACC      
+      Baylor College of Medicine      
+      U. British Columbia      
+      U. Toronto      
+      McGill U.      
+      Chinese Acad of Sci      
+      Zhejiang U.      
+      KU Leuven      
+      Inserm      
+      Karolinska Instt      
+      NamesforLife (US)      
+      U. de Sao Paulo      
+      Seoul Nat'l U.      
+      U. Wisconsin−Madison      
+      U. Illinois UC      
+      Agri Res Service      
+      Ohio State U.      
+      U. Florida      
+      U. Minnesota      
+      U. Washington      
+      Boston U.      
+      Harvard U.      
+      Massachusetts General Hospital 
+      NIH      
+      Nat'l Cancer Inst      
+      Kyoto U.      
+      U. Tokyo      
+      Osaka U.      
+      Hokkaido U.      
+      Kyushu U.      
+      Howard Hughes Medical Inst      
+      Yale U.      
+      Stanford U.      
+      UC San Francisco      
+      UC Berkeley      
+      Washington U. in St. Louis      
+      U. Michigan      
+      Johns Hopkins U.      
+      U. Penn      
+      U. N. Carolina at Chapel Hill      
+      U. Pittsburgh      
+      Cornell U.      
+      Columbia U.      
+      UC Davis      
+      UC San Diego      
+      UCLA      
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/02jx3x895
+https://ror.org/04twxam07
+https://ror.org/02pttbw34
+https://ror.org/03rmrcq20
+https://ror.org/03dbr7087
+https://ror.org/01pxwe438
+https://ror.org/034t30j35
+https://ror.org/00a2xv884
+https://ror.org/05f950310
+https://ror.org/02vjkv261
+https://ror.org/056d84691
+https://ror.org/01z05qp51
+https://ror.org/036rp1748
+https://ror.org/04h9pn542
+https://ror.org/01y2jtd41
+https://ror.org/047426m28
+https://ror.org/02d2m2044
+https://ror.org/00rs6vg23
+https://ror.org/02y3ad647
+https://ror.org/017zqws13
+https://ror.org/00cvxb145
+https://ror.org/01yc7t268
+https://ror.org/05qwgg493
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/01cwqze88
+https://ror.org/040gcmg81
+https://ror.org/02kpeqv85
+https://ror.org/057zh3y96
+https://ror.org/035t8zc32
+https://ror.org/02e16g702
+https://ror.org/00p4k0j84
+https://ror.org/006w34k90
+https://ror.org/03v76x132
+https://ror.org/00f54p054
+https://ror.org/043mz5j54
+https://ror.org/01an7q238
+https://ror.org/00jmfr291
+https://ror.org/00za53h95
+https://ror.org/00b30xv10
+https://ror.org/0130frc33
+https://ror.org/01an3r305
+https://ror.org/05bnh6r87
+https://ror.org/00hj8s172
+https://ror.org/05rrcem69
+https://ror.org/0168r3w48
+https://ror.org/046rm7j60
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [CN]  
+  [CN]  
+  [BE]  
+  [FR]  
+  [SE]  
+  [US]  
+  [BR]  
+  [KR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 3(d) | The Interinstitutional Biotechnology Collaboration Dendrogram. The top 50 institutions in terms of
+work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+21
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+21
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Interinstitutional Biotechnology Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      McGill U.      
+      U. Florida      
+      U. N. Carolina at Chapel Hill      
+      U. Pittsburgh      
+      Penn State U.      
+      Cornell U.      
+      UC Davis      
+      Columbia U.      
+      Rutgers U.      
+      U. Washington      
+      U. British Columbia      
+      UC San Diego      
+      UCLA      
+      U. Chicago      
+      U. Michigan      
+      U. Penn      
+      U. Iowa      
+      Johns Hopkins U.      
+      Washington U. in St. Louis      
+      U. College London      
+      U. Cambridge      
+      U. Oxford      
+      U. Helsinki      
+      Karolinska Instt      
+      NIH      
+      Nat'l Cancer Inst      
+      Harvard U.      
+      Massachusetts General Hospital      
+      U. Tokyo      
+      Kyoto U.      
+      Osaka U.      
+      Kyushu U.      
+      Hokkaido U.      
+      Nagoya U.      
+      Tohoku U.      
+      Inserm      
+      Inst Pasteur      
+      Baylor College of Medicine      
+      Howard Hughes Medical Inst      
+      Yale U.      
+      Stanford U.      
+      UC San Francisco      
+      UC Berkeley      
+      U. Wisconsin−Madison      
+      U. Minnesota      
+      Agri Res Service      
+      Ohio State U.      
+      U. Illinois UC      
+      U. Toronto      
+      Lund U.      
+https://ror.org/01pxwe438
+https://ror.org/02y3ad647
+https://ror.org/0130frc33
+https://ror.org/01an3r305
+https://ror.org/04p491231
+https://ror.org/05bnh6r87
+https://ror.org/05rrcem69
+https://ror.org/00hj8s172
+https://ror.org/05vt9qd57
+https://ror.org/00cvxb145
+https://ror.org/03rmrcq20
+https://ror.org/0168r3w48
+https://ror.org/046rm7j60
+https://ror.org/024mw5h28
+https://ror.org/00jmfr291
+https://ror.org/00b30xv10
+https://ror.org/036jqmy94
+https://ror.org/00za53h95
+https://ror.org/01yc7t268
+https://ror.org/02jx3x895
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/040af2s02
+https://ror.org/056d84691
+https://ror.org/012a77v79
+https://ror.org/01cwqze88
+https://ror.org/040gcmg81
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/00p4k0j84
+https://ror.org/02e16g702
+https://ror.org/04chrp450
+https://ror.org/01dq60k83
+https://ror.org/02vjkv261
+https://ror.org/0495fxg12
+https://ror.org/02pttbw34
+https://ror.org/006w34k90
+https://ror.org/03v76x132
+https://ror.org/00f54p054
+https://ror.org/043mz5j54
+https://ror.org/01an7q238
+https://ror.org/01y2jtd41
+https://ror.org/017zqws13
+https://ror.org/02d2m2044
+https://ror.org/00rs6vg23
+https://ror.org/047426m28
+https://ror.org/03dbr7087
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [FI]  
+  [SE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [FR]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [SE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      MIT      
+      State U. New York      
+      New York U.      
+      Rutgers U.      
+      Yale U.      
+      Columbia U.      
+      Hebrew U. Jerusalem      
+      Weizmann Inst of Sci      
+      U. Wisconsin−Madison      
+      U. Minnesota      
+      U. Florida      
+      U. Illinois UC      
+      Agri Res Service      
+      UC Davis      
+      UC Berkeley      
+      UC San Francisco      
+      U. Cambridge      
+      U. Oxford      
+      Karolinska Instt      
+      U. Amsterdam      
+      U. Toronto      
+      U. Chicago      
+      Baylor College of Medicine      
+      Stanford U.      
+      NIH      
+      Nat'l Cancer Inst      
+      Inserm      
+      Inst Pasteur      
+      Kyushu U.      
+      Hokkaido U.      
+      Tohoku U.      
+      Kyoto U.      
+      Osaka U.      
+      U. Tokyo      
+      Nagoya U.      
+      UCLA      
+      US Dept of Veterans Affairs      
+      Harvard U.      
+      UC San Diego      
+      Johns Hopkins U.      
+      U. N. Carolina at Chapel Hill      
+      U. Michigan      
+      Michigan State U.      
+      Washington U. in St. Louis      
+      Ohio State U.      
+      Purdue U. West Lafayette      
+      U. Washington      
+      U. Penn      
+      Cornell U.      
+      Penn State U.      
+https://ror.org/042nb2s44
+https://ror.org/01q1z8k08
+https://ror.org/0190ak572
+https://ror.org/05vt9qd57
+https://ror.org/03v76x132
+https://ror.org/00hj8s172
+https://ror.org/03qxff017
+https://ror.org/0316ej306
+https://ror.org/01y2jtd41
+https://ror.org/017zqws13
+https://ror.org/02y3ad647
+https://ror.org/047426m28
+https://ror.org/02d2m2044
+https://ror.org/05rrcem69
+https://ror.org/01an7q238
+https://ror.org/043mz5j54
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/056d84691
+https://ror.org/04dkp9463
+https://ror.org/03dbr7087
+https://ror.org/024mw5h28
+https://ror.org/02pttbw34
+https://ror.org/00f54p054
+https://ror.org/0168r3w48
+https://ror.org/01cwqze88
+https://ror.org/040gcmg81
+https://ror.org/02vjkv261
+https://ror.org/0495fxg12
+https://ror.org/00p4k0j84
+https://ror.org/02e16g702
+https://ror.org/01dq60k83
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/057zh3y96
+https://ror.org/04chrp450
+https://ror.org/046rm7j60
+https://ror.org/05rsv9s98
+https://ror.org/03vek6s52
+https://ror.org/00za53h95
+https://ror.org/0130frc33
+https://ror.org/00jmfr291
+https://ror.org/05hs6h993
+https://ror.org/01yc7t268
+https://ror.org/00rs6vg23
+https://ror.org/02dqehb95
+https://ror.org/00cvxb145
+https://ror.org/00b30xv10
+https://ror.org/05bnh6r87
+https://ror.org/04p491231
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [IL]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [SE]  
+  [NL]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [FR]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 3(d) | The Interinstitutional Biotechnology Collaboration Dendrogram. (Cont.)
+22
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+22
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Table 3 | The top 100 productive institutions: Biotechnology.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Inserm
+FR
+15,837
+Harvard University
+US
+26,878
+Chinese Academy of Sciences
+CN
+61,036
+2
+Harvard University
+US
+14,595
+Inserm
+FR
+22,131
+Harvard University
+US
+45,412
+3
+National Institutes of Health
+US
+14,350
+National Institutes of Health
+US
+21,905
+Inserm
+FR
+37,370
+4
+The University of Tokyo
+JP
+11,083
+Chinese Academy of Sciences
+CN
+18,722
+National Institutes of Health
+US
+26,148
+5
+Howard Hughes Medical Institute
+US
+10,541
+The University of Tokyo
+JP
+17,775
+Stanford University
+US
+22,565
+6
+Kyoto University
+JP
+8,381
+Howard Hughes Medical Institute
+US
+13,378
+University of Chinese Academy of Sciences
+CN
+22,495
+7
+Johns Hopkins University
+US
+7,576
+Johns Hopkins University
+US
+13,091
+University of Oxford
+GB
+22,314
+8
+Osaka University
+JP
+7,376
+University of Washington
+US
+12,896
+Shanghai Jiao Tong University
+CN
+22,090
+9
+University of Washington
+US
+7,334
+University of Pennsylvania
+US
+12,889
+University of Michigan–Ann Arbor
+US
+21,508
+10
+University of Michigan–Ann Arbor
+US
+7,184
+Kyoto University
+JP
+12,802
+Zhejiang University
+CN
+21,451
+11
+University of California, San Francisco
+US
+7,166
+University of Michigan–Ann Arbor
+US
+12,491
+Universidade de São Paulo
+BR
+21,371
+12
+University of Wisconsin–Madison
+US
+6,999
+Stanford University
+US
+12,417
+University of Toronto
+CA
+21,242
+13
+University of Toronto
+CA
+6,931
+University of Toronto
+CA
+12,101
+University of Cambridge
+GB
+20,538
+14
+University of Pennsylvania
+US
+6,917
+NamesforLife (United States)
+US
+11,926
+Johns Hopkins University
+US
+20,333
+15
+Yale University
+US
+6,775
+Cornell University
+US
+11,868
+University of Washington
+US
+20,315
+16
+National Cancer Institute
+US
+6,719
+University of Oxford
+GB
+11,309
+The University of Tokyo
+JP
+20,230
+17
+Cornell University
+US
+6,576
+University of Wisconsin–Madison
+US
+10,904
+University of Pennsylvania
+US
+20,154
+18
+Stanford University
+US
+6,414
+Osaka University
+JP
+10,897
+University of California, San Diego
+US
+19,442
+19
+Karolinska Institutet
+SE
+6,158
+University of California, San Francisco
+US
+10,778
+University of Copenhagen
+DK
+18,132
+20
+University of Cambridge
+GB
+5,643
+University of Cambridge
+GB
+10,602
+University of California, San Francisco
+US
+17,984
+21
+University of California, Davis
+US
+5,613
+University of California, Davis
+US
+10,558
+Howard Hughes Medical Institute
+US
+17,725
+22
+University of California, Berkeley
+US
+5,612
+Yale University
+US
+10,263
+University of Florida
+US
+17,488
+23
+University of Minnesota
+US
+5,581
+University of California, San Diego
+US
+10,229
+University of California, Davis
+US
+17,468
+24
+University of California, San Diego
+US
+5,554
+University of California, Los Angeles
+US
+10,004
+Cornell University
+US
+17,388
+25
+Washington University in St. Louis
+US
+5,552
+National Cancer Institute
+US
+9,891
+Yale University
+US
+16,410
+26
+Institut Pasteur
+FR
+5,506
+University of Minnesota
+US
+9,586
+University of Melbourne
+AU
+16,054
+27
+Baylor College of Medicine
+US
+5,453
+The Ohio State University
+US
+9,548
+Seoul National University
+KR
+15,825
+28
+University of Oxford
+GB
+5,394
+Karolinska Institutet
+SE
+9,410
+Chinese Academy of Agricultural Sciences
+CN
+15,821
+29
+University of California, Los Angeles
+US
+5,245
+University of Florida
+US
+9,268
+University of California, Los Angeles
+US
+15,725
+30
+Columbia University
+US
+5,142
+University of North Carolina at Chapel Hill
+US
+9,250
+Imperial College London
+GB
+15,714
+31
+Kyushu University
+JP
+5,007
+University of California, Berkeley
+US
+9,186
+University of Queensland
+AU
+15,554
+32
+University of North Carolina at Chapel Hill
+US
+4,921
+Zhejiang University
+CN
+8,953
+The Ohio State University
+US
+15,547
+33
+McGill University
+CA
+4,890
+Universidade de São Paulo
+BR
+8,886
+University of Minnesota
+US
+15,462
+34
+Hokkaido University
+JP
+4,870
+Seoul National University
+KR
+8,886
+University of North Carolina at Chapel Hill
+US
+15,410
+35
+The Ohio State University
+US
+4,792
+Washington University in St. Louis
+US
+8,777
+Fudan University
+CN
+15,388
+36
+Nagoya University
+JP
+4,788
+Columbia University
+US
+8,607
+The University of Texas MD Anderson Cancer Center
+US
+15,355
+37
+University of Florida
+US
+4,572
+University College London
+GB
+8,340
+University of Wisconsin–Madison
+US
+15,328
+38
+Lund University
+SE
+4,521
+The University of Texas MD Anderson Cancer Center
+US
+8,273
+Kyoto University
+JP
+15,233
+39
+Agricultural Research Service
+US
+4,485
+University of British Columbia
+CA
+8,213
+University of British Columbia
+CA
+15,043
+40
+University of Illinois Urbana-Champaign
+US
+4,303
+Baylor College of Medicine
+US
+8,163
+University College London
+GB
+14,793
+41
+Massachusetts General Hospital
+US
+4,302
+Imperial College London
+GB
+8,090
+Massachusetts General Hospital
+US
+14,696
+42
+University College London
+GB
+4,272
+University of Pittsburgh
+US
+8,072
+Karolinska Institutet
+SE
+14,445
+43
+University of British Columbia
+CA
+4,242
+University of Illinois Urbana-Champaign
+US
+7,856
+Boston University
+US
+14,229
+44
+University of Chicago
+US
+4,214
+McGill University
+CA
+7,689
+University of Pittsburgh
+US
+13,705
+45
+Tohoku University
+JP
+4,182
+Massachusetts General Hospital
+US
+7,614
+University of California, Berkeley
+US
+13,696
+46
+University of Pittsburgh
+US
+4,068
+Hokkaido University
+JP
+7,572
+National University of Singapore
+SG
+13,628
+47
+Pennsylvania State University
+US
+4,015
+Agricultural Research Service
+US
+7,541
+Peking University
+CN
+13,619
+48
+University of Iowa
+US
+3,977
+Boston University
+US
+7,535
+Nanjing Medical University
+CN
+13,403
+49
+Rutgers, The State University of New Jersey
+US
+3,940
+Kyushu University
+JP
+7,322
+University of Edinburgh
+GB
+13,297
+50
+University of Helsinki
+FI
+3,917
+KU Leuven
+BE
+7,274
+Washington University in St. Louis
+US
+13,189
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+23
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+23
+
+3. Biotechnology
+3. Biotechnology
+3. Biotechnology
+Table 3 | The top 100 productive institutions: Biotechnology. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Case Western Reserve University
+US
+3,851
+Pennsylvania State University
+US
+7,213
+Consejo Nacional de Investigaciones Científicas y Técnicas
+AR
+13,062
+52
+State University of New York
+US
+3,850
+Lund University
+SE
+7,178
+KU Leuven
+BE
+13,002
+53
+Johns Hopkins Medicine
+US
+3,840
+University of Helsinki
+FI
+7,147
+Brigham and Women’s Hospital
+US
+12,959
+54
+Massachusetts Institute of Technology
+US
+3,826
+Tohoku University
+JP
+7,109
+Huazhong University of Science and Technology
+CN
+12,845
+55
+The University of Texas MD Anderson Cancer Center
+US
+3,819
+GTx (United States)
+US
+7,061
+China Agricultural University
+CN
+12,786
+56
+Duke Medical Center
+US
+3,762
+Brigham and Women’s Hospital
+US
+7,044
+Nanjing Agricultural University
+CN
+12,762
+57
+The University of Texas Southwestern Medical Center
+US
+3,702
+Emory University
+US
+6,804
+Sun Yat-sen University
+CN
+12,720
+58
+University of Milan
+IT
+3,670
+University of Edinburgh
+GB
+6,768
+Baylor College of Medicine
+US
+12,438
+59
+Leiden University
+NL
+3,646
+University of Chicago
+US
+6,759
+Columbia University
+US
+12,412
+60
+Texas A&M University
+US
+3,635
+Huazhong University of Science and Technology
+CN
+6,744
+University of Sydney
+AU
+12,380
+61
+KU Leuven
+BE
+3,596
+University of Copenhagen
+DK
+6,737
+McGill University
+CA
+12,359
+62
+University of Alberta
+CA
+3,566
+Nagoya University
+JP
+6,706
+Massachusetts Institute of Technology
+US
+12,349
+63
+University of Arizona
+US
+3,565
+University of Queensland
+AU
+6,532
+University of Illinois Urbana-Champaign
+US
+12,336
+64
+Michigan State University
+US
+3,538
+Massachusetts Institute of Technology
+US
+6,484
+Emory University
+US
+12,206
+65
+University of Amsterdam
+NL
+3,531
+Rutgers, The State University of New Jersey
+US
+6,482
+Shandong University
+CN
+11,967
+66
+Boston University
+US
+3,526
+University of Southern California
+US
+6,469
+Osaka University
+JP
+11,596
+67
+Hebrew University of Jerusalem
+IL
+3,434
+University of Melbourne
+AU
+6,346
+Agricultural Research Service
+US
+11,583
+68
+Scripps Research Institute
+US
+3,423
+University of Milan
+IT
+6,247
+University of Helsinki
+FI
+11,580
+69
+University of Utah
+US
+3,398
+University of Utah
+US
+6,239
+Wageningen University & Research
+NL
+11,525
+70
+University of Edinburgh
+GB
+3,382
+Vanderbilt University
+US
+6,205
+Tsinghua University
+CN
+11,421
+71
+University of Alabama at Birmingham
+US
+3,358
+National University of Singapore
+SG
+6,183
+Iowa State University
+US
+11,343
+72
+Vanderbilt University
+US
+3,328
+New York University
+US
+6,133
+Duke University
+US
+11,335
+73
+New York University
+US
+3,324
+University of Manchester
+GB
+6,101
+Sichuan University
+CN
+11,321
+74
+University of Southern California
+US
+3,290
+Scripps Research Institute
+US
+6,095
+King’s College London
+GB
+11,297
+75
+Utrecht University
+NL
+3,266
+Duke University
+US
+6,069
+University of Milan
+IT
+11,249
+76
+Brigham and Women’s Hospital
+US
+3,262
+University of Alberta
+CA
+5,978
+National Cancer Institute
+US
+11,233
+77
+University of Zurich
+CH
+3,082
+Michigan State University
+US
+5,969
+Pennsylvania State University
+US
+10,999
+78
+Albert Einstein College of Medicine
+US
+3,078
+Charité – Universitätsmedizin Berlin
+DE
+5,930
+Michigan State University
+US
+10,977
+79
+Duke University Hospital
+US
+3,052
+Texas A&M University
+US
+5,906
+University of Southern California
+US
+10,969
+80
+Tokyo University of Science
+JP
+3,025
+University of Iowa
+US
+5,906
+Rutgers, The State University of New Jersey
+US
+10,927
+81
+Emory University
+US
+3,014
+Uppsala University
+SE
+5,850
+University of Chicago
+US
+10,904
+82
+Ludwig-Maximilians-Universität München
+DE
+3,009
+Case Western Reserve University
+US
+5,820
+Ghent University
+BE
+10,873
+83
+Uppsala University
+SE
+2,962
+University of Alabama at Birmingham
+US
+5,806
+Huazhong Agricultural University
+CN
+10,756
+84
+Sapienza University of Rome
+IT
+2,954
+Johns Hopkins Medicine
+US
+5,791
+University of Zurich
+CH
+10,228
+85
+Purdue University West Lafayette
+US
+2,917
+Ludwig-Maximilians-Universität München
+DE
+5,789
+University of Manchester
+GB
+10,209
+86
+Wayne State University
+US
+2,876
+University of Arizona
+US
+5,767
+ETH Zurich
+CH
+10,178
+87
+University of Würzburg
+DE
+2,847
+Northwestern University
+US
+5,752
+Technical University of Munich
+DE
+10,159
+88
+Rockefeller University
+US
+2,842
+Wageningen University & Research
+NL
+5,737
+Johns Hopkins Medicine
+US
+10,119
+89
+Freie Universität Berlin
+DE
+2,831
+Institut Pasteur
+FR
+5,724
+Northwestern University
+US
+10,108
+90
+University of Georgia
+US
+2,827
+Shanghai Jiao Tong University
+CN
+5,693
+Monash University
+AU
+9,973
+91
+Iowa State University
+US
+2,824
+Duke Medical Center
+US
+5,631
+University of Alberta
+CA
+9,970
+92
+Hiroshima University
+JP
+2,817
+Ghent University
+BE
+5,596
+Jilin University
+CN
+9,761
+93
+University of California, Irvine
+US
+2,817
+The University of Texas Southwestern Medical Center
+US
+5,577
+University of Utah
+US
+9,758
+94
+University of Queensland
+AU
+2,809
+King’s College London
+GB
+5,445
+North West Agriculture and Forestry University
+CN
+9,755
+95
+University of Manchester
+GB
+2,808
+University of Sydney
+AU
+5,404
+São Paulo State University
+BR
+9,691
+96
+University of Virginia
+US
+2,779
+Iowa State University
+US
+5,343
+Dana-Farber Cancer Institute
+US
+9,671
+97
+Northwestern University
+US
+2,746
+University of Zurich
+CH
+5,305
+Texas A&M University
+US
+9,628
+98
+Radboud University Nĳmegen
+NL
+2,689
+Fudan University
+CN
+5,281
+Icahn School of Medicine at Mount Sinai
+US
+9,607
+99
+Tel Aviv University
+IL
+2,687
+Peking University
+CN
+5,194
+Universidad Nacional Autónoma de México
+MX
+9,573
+100
+University of Copenhagen
+DK
+2,671
+University of California, Irvine
+US
+5,164
+Capital Medical University
+CN
+9,549
+24
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+24
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+4. Nanotechnology
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+World Map of Nanotechnology Collaboration | 1971–2020
+Figure 4 (a) | The World Map of Nanotechnology Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+26
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+26
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Top 30 Productive Institutions on the World Map: Nanotechnology | 1991–2020
+Chinese Acad of Sci
+U. Chinese Acad of Sci
+Tsinghua U.
+U. Tokyo
+Zhejiang U.
+Nanyang Tech U.
+U. Sci & Tech of China
+Peking U.
+Jilin U.
+Shanghai Jiao Tong U.
+Nat'l U. Singapore
+MIT
+Harbin Inst of Tech
+Osaka U.
+Nanjing U.
+Tohoku U.
+South China U. Tech
+Seoul Nat'l U.
+Harvard U.
+Huazhong U. Sci & Tech
+Tianjin U.
+Georgia Inst of Tech
+Kyoto U.
+Fudan U.
+Stanford U.
+U. Cambridge
+Soochow U.
+Sichuan U.
+Xi'an Jiaotong U.
+UC Berkeley
+Nanotechnology [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Chinese Acad of Sci
+U. Tokyo
+Osaka U.
+Tohoku U.
+AIST
+Tokyo Inst of Tech
+Kyoto U.
+Tsinghua U.
+MIT
+Nat'l U. Singapore
+UC Berkeley
+U. Cambridge
+Georgia Inst of Tech
+Seoul Nat'l U.
+JST
+U. Illinois UC
+Stanford U.
+Russian Acad of Sci
+Harvard U.
+Nanyang Tech U.
+Nagoya U.
+U. Michigan
+Zhejiang U.
+Penn State U.
+Kyushu U.
+EPFL
+Nanjing U.
+NIMS
+Nat'l Taiwan U.
+Peking U.
+Nanotechnology [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+Osaka U.
+Tohoku U.
+Kyoto U.
+Tokyo Inst of Tech
+UC Berkeley
+MIT
+U. Illinois UC
+Chinese Acad of Sci
+Stanford U.
+U. Cambridge
+Harvard U.
+Penn State U.
+Nagoya U.
+Lawrence Berkeley NL
+AT&T (US)
+U. Minnesota
+U. Michigan
+Cornell U.
+Oak Ridge NL
+North Carolina State U.
+US Naval Research Lab
+UC Santa Barbara
+U. Oxford
+EPFL
+Russian Acad of Sci
+U. Wisconsin−Madison
+U. Florida
+Kyushu U.
+NIH
+Nanotechnology [1991−2000]
+Figure 4(b) | The top 30 productive institutions on the World Map: Nanotechnology. The bubbles represent the top
+30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+27
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+27
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Interregional Nanotechnology Collaboration | 1991–2020
+36
+198
+27
+69
+72
+253
+65
+156
+146
+24
+24
+28
+63
+28
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+118
+69
+25
+81
+126
+36
+57
+43
+21
+18
+55
+62
+34
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+289
+29
+17
+32
+14
+44
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 4 (c) | The Interregional Nanotechnology Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+28
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+28
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Interinstitutional Nanotechnology Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      MIT      
+      Harvard U.      
+      Nanyang Tech U.      
+      Nat'l U. Singapore      
+      Stanford U.      
+      U. Illinois UC      
+      U. Michigan      
+      Georgia Inst of Tech      
+      U. Surgical Associates      
+      Tianjin U.      
+      Nankai U.      
+      Shanghai Jiao Tong U.      
+      Fudan U.      
+      Nanjing U.      
+      Soochow U.      
+      Harbin Inst of Tech      
+      Jilin U.      
+      Dalian U. Tech      
+      Shandong U.      
+      Tsinghua U.      
+      U. Sci & Tech of China      
+      Zhejiang U.      
+      South China U. Tech      
+      Nat'l Taiwan U.      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Peking U.      
+      Beijing NL for Molecular Sci      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Nagoya U.      
+      Osaka U.      
+      Kyoto U.      
+      Tokyo Inst of Tech      
+      Tohoku U.      
+      NIMS      
+      U. Tokyo      
+      AIST      
+      Sichuan U.      
+      Central South U.      
+      Huazhong U. Sci & Tech      
+      Xi'an Jiaotong U.      
+      KAIST      
+      Seoul Nat'l U.      
+      Sungkyunkwan U.      
+      ETH Zurich      
+      EPFL      
+      Imperial College London      
+      U. Cambridge      
+      U. Oxford      
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/02e7b5302
+https://ror.org/01tgyzw49
+https://ror.org/00f54p054
+https://ror.org/047426m28
+https://ror.org/00jmfr291
+https://ror.org/01zkghx44
+https://ror.org/00sx7n004
+https://ror.org/012tb2g32
+https://ror.org/01y1kjr75
+https://ror.org/0220qvk04
+https://ror.org/013q1eq08
+https://ror.org/01rxvg760
+https://ror.org/05t8y2r12
+https://ror.org/01yqg2h08
+https://ror.org/00js3aw79
+https://ror.org/023hj5876
+https://ror.org/0207yh398
+https://ror.org/03cve4549
+https://ror.org/04c4dkn09
+https://ror.org/00a2xv884
+https://ror.org/0530pts50
+https://ror.org/05bqach95
+https://ror.org/011ashp19
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/02v51f717
+https://ror.org/02601yx74
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/04chrp450
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/0112mx960
+https://ror.org/01dq60k83
+https://ror.org/026v1ze26
+https://ror.org/057zh3y96
+https://ror.org/01703db54
+https://ror.org/00f1zfq44
+https://ror.org/00p991c53
+https://ror.org/017zhmm22
+https://ror.org/05apxxy63
+https://ror.org/04h9pn542
+https://ror.org/04q78tk20
+https://ror.org/05a28rw58
+https://ror.org/02s376052
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/052gg0110
+  [US]  
+  [US]  
+  [SG]  
+  [SG]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [TW]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [KR]  
+  [KR]  
+  [KR]  
+  [CH]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [GB]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Tokyo Inst of Tech      
+      NIMS      
+      Tohoku U.      
+      AIST      
+      U. Tokyo      
+      JST      
+      Hokkaido U.      
+      Osaka U.      
+      Kyoto U.      
+      Nagoya U.      
+      Cornell U.      
+      U. Michigan      
+      Penn State U.      
+      UT Austin      
+      Stanford U.      
+      UC Santa Barbara      
+      U. Toronto      
+      U. Washington      
+      U. Florida      
+      EPFL      
+      ETH Zurich      
+      U. Cambridge      
+      U. Oxford      
+      Kyushu U.      
+      Nat'l Cheng Kung U.      
+      Nat'l Taiwan U.      
+      Nat'l Yang Ming Chiao Tung U.      
+      Nat'l Tsing Hua U.      
+      MIT      
+      Harvard U.      
+      Nat'l U. Singapore      
+      Nanyang Tech U.      
+      Jilin U.      
+      Tsinghua U.      
+      Chinese Acad of Sci      
+      Peking U.      
+      Zhejiang U.      
+      Shanghai Jiao Tong U.      
+      Nanjing U.      
+      U. Sci & Tech of China      
+      Russian Acad of Sci      
+      Lomonosov Moscow State U.      
+      Seoul Nat'l U.      
+      KAIST      
+      NW U.      
+      UCLA      
+      Georgia Inst of Tech      
+      U. Illinois UC      
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/0112mx960
+https://ror.org/026v1ze26
+https://ror.org/01dq60k83
+https://ror.org/01703db54
+https://ror.org/057zh3y96
+https://ror.org/00097mb19
+https://ror.org/02e16g702
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/04chrp450
+https://ror.org/05bnh6r87
+https://ror.org/00jmfr291
+https://ror.org/04p491231
+https://ror.org/00hj54h04
+https://ror.org/00f54p054
+https://ror.org/02t274463
+https://ror.org/03dbr7087
+https://ror.org/00cvxb145
+https://ror.org/02y3ad647
+https://ror.org/02s376052
+https://ror.org/05a28rw58
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/00p4k0j84
+https://ror.org/01b8kcc49
+https://ror.org/05bqach95
+https://ror.org/00se2k293
+https://ror.org/00zdnkx70
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/01tgyzw49
+https://ror.org/02e7b5302
+https://ror.org/00js3aw79
+https://ror.org/03cve4549
+https://ror.org/034t30j35
+https://ror.org/02v51f717
+https://ror.org/00a2xv884
+https://ror.org/0220qvk04
+https://ror.org/01rxvg760
+https://ror.org/04c4dkn09
+https://ror.org/05qrfxd25
+https://ror.org/010pmpe69
+https://ror.org/04h9pn542
+https://ror.org/05apxxy63
+https://ror.org/000e0be47
+https://ror.org/046rm7j60
+https://ror.org/01zkghx44
+https://ror.org/047426m28
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [CH]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [TW]  
+  [TW]  
+  [TW]  
+  [TW]  
+  [US]  
+  [US]  
+  [SG]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [RU]  
+  [RU]  
+  [KR]  
+  [KR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 4(d) | The Interinstitutional Nanotechnology Collaboration Dendrogram. The top 50 institutions in terms of
+work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+29
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+29
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Interinstitutional Nanotechnology Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Sandia Nat'l Labs      
+      MIT      
+      Harvard U.      
+      Russian Acad of Sci      
+      Lomonosov Moscow State U.      
+      UCLA      
+      Caltech      
+      US Naval Research Lab      
+      NIST      
+      NIH      
+      Johns Hopkins U.      
+      UC Santa Barbara      
+      Los Alamos NL      
+      U. Minnesota      
+      Penn State U.      
+      Cornell U.      
+      UT Austin      
+      Ohio State U.      
+      U. Illinois UC      
+      U. Michigan      
+      Chinese Acad of Sci      
+      U. Toronto      
+      Stanford U.      
+      Max Planck Society      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      U. Tokyo      
+      Tokyo U. Sci      
+      NW U.      
+      Argonne NL      
+      Tohoku U.      
+      Hitachi (Japan)      
+      Nagoya U.      
+      Kyushu U.      
+      Osaka U.      
+      Kyoto U.      
+      Tokyo Inst of Tech      
+      Hokkaido U.      
+      AT&T (US)      
+      U. Florida      
+      U. Cambridge      
+      U. Oxford      
+      Oak Ridge NL      
+      North Carolina State U.      
+      U. Wisconsin−Madison      
+      EPFL      
+      Polish Acad of Sci      
+      Tech U. Munich      
+      U. Paris−Sud      
+      Forschungszentrum Julich      
+https://ror.org/01apwpt12
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/05qrfxd25
+https://ror.org/010pmpe69
+https://ror.org/046rm7j60
+https://ror.org/05dxps055
+https://ror.org/04d23a975
+https://ror.org/05xpvk416
+https://ror.org/01cwqze88
+https://ror.org/00za53h95
+https://ror.org/02t274463
+https://ror.org/01e41cf67
+https://ror.org/017zqws13
+https://ror.org/04p491231
+https://ror.org/05bnh6r87
+https://ror.org/00hj54h04
+https://ror.org/00rs6vg23
+https://ror.org/047426m28
+https://ror.org/00jmfr291
+https://ror.org/034t30j35
+https://ror.org/03dbr7087
+https://ror.org/00f54p054
+https://ror.org/01hhn8329
+https://ror.org/013meh722
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/057zh3y96
+https://ror.org/05sj3n476
+https://ror.org/000e0be47
+https://ror.org/05gvnxz63
+https://ror.org/01dq60k83
+https://ror.org/02exqgm79
+https://ror.org/04chrp450
+https://ror.org/00p4k0j84
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/0112mx960
+https://ror.org/02e16g702
+https://ror.org/02bbd5539
+https://ror.org/02y3ad647
+https://ror.org/052gg0110
+https://ror.org/01qz5mb56
+https://ror.org/04tj63d06
+https://ror.org/01y2jtd41
+https://ror.org/02s376052
+https://ror.org/01dr6c206
+https://ror.org/02kkvpp62
+https://ror.org/028rypz17
+https://ror.org/02nv7yv05
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CA]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [PL]  
+  [DE]  
+  [FR]  
+  [DE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      NIST      
+      US Naval Research Lab      
+      U. Cambridge      
+      U. Oxford      
+      U. Toronto      
+      NRC Canada      
+      U. Florida      
+      AT&T (US)      
+      Cornell U.      
+      Penn State U.      
+      U. Penn      
+      Ohio State U.      
+      Stanford U.      
+      Caltech      
+      UCLA      
+      UT Austin      
+      U. Michigan      
+      U. Utah      
+      U. Wisconsin−Madison      
+      Oak Ridge NL      
+      U. Illinois UC      
+      Purdue U. West Lafayette      
+      Yale U.      
+      Columbia U.      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      NIH      
+      Nat'l Cancer Inst      
+      Nagoya U.      
+      Kyushu U.      
+      Osaka U.      
+      Kyoto U.      
+      NTT (Japan)      
+      U. Tokyo      
+      Tokyo Inst of Tech      
+      Tohoku U.      
+      Hitachi (Japan)      
+      State U. New York      
+      IBM T.J. Watson Res Center      
+      IBM (US)      
+      MIT      
+      Harvard U.      
+      Argonne NL      
+      U. Chicago      
+      U. Minnesota      
+      Los Alamos NL      
+      Johns Hopkins U.      
+      Inserm      
+      U. Washington      
+      UC San Francisco      
+https://ror.org/05xpvk416
+https://ror.org/04d23a975
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/03dbr7087
+https://ror.org/04mte1k06
+https://ror.org/02y3ad647
+https://ror.org/02bbd5539
+https://ror.org/05bnh6r87
+https://ror.org/04p491231
+https://ror.org/00b30xv10
+https://ror.org/00rs6vg23
+https://ror.org/00f54p054
+https://ror.org/05dxps055
+https://ror.org/046rm7j60
+https://ror.org/00hj54h04
+https://ror.org/00jmfr291
+https://ror.org/03r0ha626
+https://ror.org/01y2jtd41
+https://ror.org/01qz5mb56
+https://ror.org/047426m28
+https://ror.org/02dqehb95
+https://ror.org/03v76x132
+https://ror.org/00hj8s172
+https://ror.org/02vjkv261
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/01cwqze88
+https://ror.org/040gcmg81
+https://ror.org/04chrp450
+https://ror.org/00p4k0j84
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/00berct97
+https://ror.org/057zh3y96
+https://ror.org/0112mx960
+https://ror.org/01dq60k83
+https://ror.org/02exqgm79
+https://ror.org/01q1z8k08
+https://ror.org/0265w5591
+https://ror.org/05hh8d621
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/05gvnxz63
+https://ror.org/024mw5h28
+https://ror.org/017zqws13
+https://ror.org/01e41cf67
+https://ror.org/00za53h95
+https://ror.org/00cvxb145
+https://ror.org/043mz5j54
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [US]  
+  [US]  
+Figure 4(d) | The Interinstitutional Nanotechnology Collaboration Dendrogram. (Cont.)
+30
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+30
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Table 4 | The top 100 productive institutions: Nanotechnology.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+The University of Tokyo
+JP
+5,507
+Chinese Academy of Sciences
+CN
+21,443
+Chinese Academy of Sciences
+CN
+67,495
+2
+Osaka University
+JP
+4,365
+The University of Tokyo
+JP
+13,354
+University of Chinese Academy of Sciences
+CN
+21,935
+3
+Tohoku University
+JP
+4,076
+Osaka University
+JP
+10,393
+Tsinghua University
+CN
+19,028
+4
+Kyoto University
+JP
+4,042
+Tohoku University
+JP
+10,212
+The University of Tokyo
+JP
+15,433
+5
+Tokyo Institute of Technology
+JP
+3,666
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+9,197
+Zhejiang University
+CN
+15,151
+6
+University of California, Berkeley
+US
+3,474
+Tokyo Institute of Technology
+JP
+8,332
+Nanyang Technological University
+SG
+14,901
+7
+Massachusetts Institute of Technology
+US
+3,372
+Kyoto University
+JP
+8,150
+University of Science and Technology of China
+CN
+14,084
+8
+University of Illinois Urbana-Champaign
+US
+3,170
+Tsinghua University
+CN
+7,507
+Peking University
+CN
+13,798
+9
+Chinese Academy of Sciences
+CN
+3,125
+Massachusetts Institute of Technology
+US
+7,233
+Jilin University
+CN
+13,753
+10
+Stanford University
+US
+2,909
+National University of Singapore
+SG
+6,965
+Shanghai Jiao Tong University
+CN
+13,569
+11
+University of Cambridge
+GB
+2,811
+University of California, Berkeley
+US
+6,544
+National University of Singapore
+SG
+13,161
+12
+Harvard University
+US
+2,688
+University of Cambridge
+GB
+6,302
+Massachusetts Institute of Technology
+US
+12,896
+13
+Pennsylvania State University
+US
+2,565
+Georgia Institute of Technology
+US
+6,219
+Harbin Institute of Technology
+CN
+12,319
+14
+Nagoya University
+JP
+2,401
+Seoul National University
+KR
+6,193
+Osaka University
+JP
+12,148
+15
+Lawrence Berkeley National Laboratory
+US
+2,362
+Japan Science and Technology Agency (JST)
+JP
+6,126
+Nanjing University
+CN
+11,670
+16
+AT&T (United States)
+US
+2,342
+University of Illinois Urbana-Champaign
+US
+5,886
+Tohoku University
+JP
+11,186
+17
+University of Minnesota
+US
+2,338
+Stanford University
+US
+5,794
+South China University of Technology
+CN
+10,714
+18
+University of Michigan–Ann Arbor
+US
+2,319
+Russian Academy of Sciences
+RU
+5,752
+Seoul National University
+KR
+10,670
+19
+Cornell University
+US
+2,293
+Harvard University
+US
+5,717
+Harvard University
+US
+10,600
+20
+Oak Ridge National Laboratory
+US
+2,257
+Nanyang Technological University
+SG
+5,647
+Huazhong University of Science and Technology
+CN
+10,546
+21
+North Carolina State University
+US
+2,246
+Nagoya University
+JP
+5,640
+Tianjin University
+CN
+10,496
+22
+United States Naval Research Laboratory
+US
+2,244
+University of Michigan–Ann Arbor
+US
+5,594
+Georgia Institute of Technology
+US
+10,479
+23
+University of Oxford
+GB
+2,171
+Zhejiang University
+CN
+5,512
+Kyoto University
+JP
+10,269
+24
+University of California, Santa Barbara
+US
+2,170
+Pennsylvania State University
+US
+5,224
+Fudan University
+CN
+10,166
+25
+Russian Academy of Sciences
+RU
+2,150
+Kyushu University
+JP
+5,215
+Stanford University
+US
+9,831
+26
+University of Wisconsin–Madison
+US
+2,127
+Nanjing University
+CN
+5,191
+University of Cambridge
+GB
+9,826
+27
+École Polytechnique Fédérale de Lausanne
+CH
+2,121
+National Institute for Materials Science (NIMS)
+JP
+5,138
+Soochow University
+CN
+9,688
+28
+University of Florida
+US
+2,091
+École Polytechnique Fédérale de Lausanne
+CH
+5,125
+Sichuan University
+CN
+9,436
+29
+Kyushu University
+JP
+2,043
+National Taiwan University
+TW
+5,078
+Xi’an Jiaotong University
+CN
+9,409
+30
+National Institutes of Health
+US
+2,000
+Peking University
+CN
+4,921
+University of California, Berkeley
+US
+9,320
+31
+The University of Texas at Austin
+US
+1,992
+Lawrence Berkeley National Laboratory
+US
+4,761
+Shandong University
+CN
+9,317
+32
+University of California, Los Angeles
+US
+1,917
+Jilin University
+CN
+4,731
+Korea Advanced Institute of Science and Technology
+KR
+8,953
+33
+National Institute of Standards and Technology
+US
+1,912
+Shanghai Jiao Tong University
+CN
+4,576
+ETH Zurich
+CH
+8,716
+34
+Hitachi (Japan)
+JP
+1,906
+Korea Advanced Institute of Science and Technology
+KR
+4,454
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+8,685
+35
+Polish Academy of Sciences
+PL
+1,906
+University of Science and Technology of China
+CN
+4,390
+National Taiwan University
+TW
+8,552
+36
+Technical University of Munich
+DE
+1,892
+University of Oxford
+GB
+4,385
+National Institute for Materials Science (NIMS)
+JP
+8,514
+37
+Tokyo University of Science
+JP
+1,857
+The University of Texas at Austin
+US
+4,363
+École Polytechnique Fédérale de Lausanne
+CH
+8,309
+38
+California Institute of Technology
+US
+1,806
+Lomonosov Moscow State University
+RU
+4,344
+Tokyo Institute of Technology
+JP
+8,287
+39
+University of Toronto
+CA
+1,789
+National Cheng Kung University
+TW
+4,300
+Beĳing National Laboratory for Molecular Sciences
+CN
+8,202
+40
+Northwestern University
+US
+1,789
+Cornell University
+US
+4,183
+University of Michigan–Ann Arbor
+US
+8,122
+41
+Hokkaido University
+JP
+1,784
+University of California, Santa Barbara
+US
+4,153
+Sungkyunkwan University
+KR
+8,043
+42
+Lomonosov Moscow State University
+RU
+1,743
+National Yang Ming Chiao Tung University
+TW
+4,115
+University of Oxford
+GB
+7,934
+43
+Sandia National Laboratories
+US
+1,738
+Northwestern University
+US
+4,113
+Imperial College London
+GB
+7,910
+44
+University of Paris-Sud
+FR
+1,737
+National Tsing Hua University
+TW
+4,109
+Central South University
+CN
+7,824
+45
+Los Alamos National Laboratory
+US
+1,715
+University of Toronto
+CA
+4,098
+University Surgical Associates
+US
+7,720
+46
+Argonne National Laboratory
+US
+1,704
+Hokkaido University
+JP
+3,959
+Lawrence Berkeley National Laboratory
+US
+7,669
+47
+Max Planck Society
+DE
+1,696
+University of Washington
+US
+3,946
+Dalian University of Technology
+CN
+7,653
+48
+The Ohio State University
+US
+1,683
+University of Florida
+US
+3,903
+Nankai University
+CN
+7,632
+49
+Johns Hopkins University
+US
+1,682
+University of California, Los Angeles
+US
+3,856
+University of Illinois Urbana-Champaign
+US
+7,521
+50
+Forschungszentrum Jülich
+DE
+1,671
+ETH Zurich
+CH
+3,760
+Nagoya University
+JP
+7,483
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+31
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+31
+
+4. Nanotechnology
+4. Nanotechnology
+4. Nanotechnology
+Table 4 | The top 100 productive institutions: Nanotechnology. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Arizona State University
+US
+1,666
+Fudan University
+CN
+3,749
+Sun Yat-sen University
+CN
+7,477
+52
+University of Washington
+US
+1,646
+Harbin Institute of Technology
+CN
+3,748
+Russian Academy of Sciences
+RU
+7,465
+53
+University of Pennsylvania
+US
+1,632
+Oak Ridge National Laboratory
+US
+3,735
+Southeast University
+CN
+7,393
+54
+University of California, San Diego
+US
+1,621
+University of Minnesota
+US
+3,631
+The University of Texas at Austin
+US
+7,382
+55
+University of Arizona
+US
+1,618
+Yonsei University
+KR
+3,625
+Beihang University
+CN
+7,367
+56
+IBM Research - Thomas J. Watson Research Center
+US
+1,574
+Purdue University West Lafayette
+US
+3,613
+Karlsruhe Institute of Technology
+DE
+7,361
+57
+Imperial College London
+GB
+1,540
+National Institute of Standards and Technology
+US
+3,601
+Xiamen University
+CN
+7,318
+58
+Purdue University West Lafayette
+US
+1,533
+University of Wisconsin–Madison
+US
+3,588
+Lomonosov Moscow State University
+RU
+7,243
+59
+Technical University of Berlin
+DE
+1,521
+Polish Academy of Sciences
+PL
+3,571
+Wuhan University
+CN
+7,204
+60
+Inserm
+FR
+1,517
+Carnegie Mellon University
+US
+3,563
+Beĳing Institute of Technology
+CN
+7,189
+61
+Yale University
+US
+1,512
+Hanyang University
+KR
+3,545
+Yonsei University
+KR
+7,095
+62
+University of Utah
+US
+1,506
+The Ohio State University
+US
+3,541
+Korea University
+KR
+7,079
+63
+Rutgers, The State University of New Jersey
+US
+1,474
+Imperial College London
+GB
+3,512
+University of Toronto
+CA
+6,820
+64
+KU Leuven
+BE
+1,456
+Tokyo University of Science
+JP
+3,490
+Kyushu University
+JP
+6,803
+65
+University of Tsukuba
+JP
+1,433
+Shandong University
+CN
+3,479
+Hanyang University
+KR
+6,764
+66
+Carnegie Mellon University
+US
+1,425
+KU Leuven
+BE
+3,439
+Northwestern University
+US
+6,758
+67
+Uppsala University
+SE
+1,412
+Samsung (South Korea)
+KR
+3,434
+Beĳing University of Chemical Technology
+CN
+6,753
+68
+Georgia Institute of Technology
+US
+1,409
+University of Tsukuba
+JP
+3,348
+Pennsylvania State University
+US
+6,672
+69
+University of North Carolina at Chapel Hill
+US
+1,406
+Arizona State University
+US
+3,340
+University of Electronic Science and Technology of China
+CN
+6,618
+70
+Columbia University
+US
+1,399
+University of California, San Diego
+US
+3,302
+Northwestern Polytechnical University
+CN
+6,515
+71
+National University of Singapore
+SG
+1,386
+University of Pennsylvania
+US
+3,240
+Hunan University
+CN
+6,513
+72
+Korea Advanced Institute of Science and Technology
+KR
+1,384
+National Institutes of Health
+US
+3,223
+University of Science and Technology Beĳing
+CN
+6,506
+73
+University of Maryland, College Park
+US
+1,383
+North Carolina State University
+US
+3,222
+Shanghai University
+CN
+6,415
+74
+Max Planck Institute for Solid State Research
+DE
+1,367
+Technical University of Munich
+DE
+3,213
+UNSW Sydney
+AU
+6,399
+75
+RIKEN
+JP
+1,342
+California Institute of Technology
+US
+3,203
+University College London
+GB
+6,362
+76
+Princeton University
+US
+1,335
+Universidade de São Paulo
+BR
+3,153
+National Tsing Hua University
+TW
+6,300
+77
+Lund University
+SE
+1,294
+Argonne National Laboratory
+US
+3,148
+Universidade de São Paulo
+BR
+6,252
+78
+Texas A&M University
+US
+1,289
+Max Planck Society
+DE
+3,119
+Changchun Institute of Applied Chemistry
+CN
+6,191
+79
+Freie Universität Berlin
+DE
+1,283
+Johns Hopkins University
+US
+3,108
+University of California, Los Angeles
+US
+6,121
+80
+Lawrence Livermore National Laboratory
+US
+1,281
+University of Maryland, College Park
+US
+3,086
+East China University of Science and Technology
+CN
+6,119
+81
+Chalmers University of Technology
+SE
+1,271
+Pohang University of Science and Technology
+KR
+3,039
+Argonne National Laboratory
+US
+6,112
+82
+University of Stuttgart
+DE
+1,262
+Nankai University
+CN
+3,022
+Oak Ridge National Laboratory
+US
+6,103
+83
+University of Manchester
+GB
+1,250
+University of California, Davis
+US
+2,960
+City University of Hong Kong
+CN
+6,092
+84
+ETH Zurich
+CH
+1,242
+Texas A&M University
+US
+2,952
+National Yang Ming Chiao Tung University
+TW
+6,018
+85
+State University of New York
+US
+1,236
+University of Paris-Sud
+FR
+2,925
+University of Washington
+US
+6,005
+86
+Howard Hughes Medical Institute
+US
+1,233
+Korea University
+KR
+2,909
+University of California, San Diego
+US
+5,996
+87
+University of Erlangen-Nuremberg
+DE
+1,229
+Delft University of Technology
+NL
+2,902
+KU Leuven
+BE
+5,982
+88
+Hebrew University of Jerusalem
+IL
+1,225
+University of Manchester
+GB
+2,896
+Purdue University West Lafayette
+US
+5,939
+89
+Seoul National University
+KR
+1,221
+Columbia University
+US
+2,865
+Technical University of Munich
+DE
+5,933
+90
+Nanjing University
+CN
+1,217
+Institute of Chemistry
+CN
+2,856
+Chongqing University
+CN
+5,915
+91
+Case Western Reserve University
+US
+1,216
+Los Alamos National Laboratory
+US
+2,840
+Pohang University of Science and Technology
+KR
+5,888
+92
+NEC (Japan)
+JP
+1,213
+United States Naval Research Laboratory
+US
+2,826
+Cornell University
+US
+5,804
+93
+Hiroshima University
+JP
+1,211
+University of Southern California
+US
+2,783
+University of Tehran
+IR
+5,765
+94
+University of Würzburg
+DE
+1,194
+Huazhong University of Science and Technology
+CN
+2,775
+King Abdulaziz University
+SA
+5,750
+95
+Institute of Physics
+PL
+1,187
+Sungkyunkwan University
+KR
+2,738
+Italian Institute of Technology
+IT
+5,741
+96
+University of Southern California
+US
+1,186
+Korea Institute of Science and Technology
+KR
+2,729
+King Saud University
+SA
+5,723
+97
+IBM Research - Almaden
+US
+1,183
+Eindhoven University of Technology
+NL
+2,723
+Japan Science and Technology Agency (JST)
+JP
+5,709
+98
+University of Barcelona
+ES
+1,179
+Indian Institute of Science Bangalore
+IN
+2,706
+Korea Institute of Science and Technology
+KR
+5,685
+99
+Leiden University
+NL
+1,179
+National Academy of Sciences of Ukraine
+UA
+2,703
+Zhengzhou University
+CN
+5,680
+100
+University of California, Davis
+US
+1,179
+University College London
+GB
+2,692
+Wuhan University of Technology
+CN
+5,657
+32
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+32
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+5. Agricultural Engineering
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+World Map of Agricultural Engineering Collaboration | 1971–2020
+Figure 5(a) | The World Map of Agricultural Engineering Collaboration. The bubbles represent the top 199 institutions
+in terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+34
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+34
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Top 30 Productive Institutions on the World Map: Agricultural Engineering | 1991–2020
+Wageningen U. & Res
+Chinese Acad of Sci
+Iowa State U.
+China Agri U.
+U. Florida
+Michigan State U.
+U. Chinese Acad of Sci
+Int'l Food Policy Res Inst
+Cornell U.
+Swedish U. Agri Sci
+Agri Res Service
+UC Davis
+IGSNRR
+Embrapa
+CSIRO
+Bogor Agri U.
+U. Queensland
+U. Copenhagen
+Cirad
+U. Illinois UC
+U. Bonn
+Nanjing Agri U.
+NW Agri & Forestry U.
+Ohio State U.
+Chinese Acad of Agri Sci
+U. de Sao Paulo
+UMR Territoires
+U. Oxford
+U. Gottingen
+U. Minnesota
+Agricultural Engineering [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Wageningen U. & Res
+Chinese Acad of Sci
+Iowa State U.
+China Agri U.
+Cornell U.
+U. Florida
+UC Davis
+Nanjing Agri U.
+Agri Res Service
+CGIAR
+Michigan State U.
+World Bank
+Huazhong Agri U.
+Ohio State U.
+Xiaomi (China)
+NW Agri & Forestry U.
+IGSNRR
+CSIRO
+UMR Territoires
+Agri & Appl Econ Assoc
+Northeast Agri U.
+Swedish U. Agri Sci
+Int'l Food Policy Res Inst
+U. Illinois UC
+Zhejiang U.
+U. Nebraska−Lincoln
+U. Minnesota
+Econ Res Service
+Southwest U.
+Agri & Agri−Food Canada
+Agricultural Engineering [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Iowa State U.
+Agri & Appl Econ Assoc
+Agri Res Service
+Cornell U.
+UC Davis
+Ohio State U.
+Michigan State U.
+Wageningen U. & Res
+Econ Res Service
+U. Florida
+U. Wisconsin−Madison
+U. Reading
+World Bank
+U. Minnesota
+UC Berkeley
+U. Pretoria
+Int'l Rice Res Inst
+Texas A&M U.
+U. Illinois UC
+North Carolina State U.
+U. Nebraska−Lincoln
+Int'l Food Policy Res Inst
+U. Guelph
+Agri & Agri−Food Canada
+Penn State U.
+CSIRO
+Colorado State U.
+Swedish U. Agri Sci
+US Dept of Agri
+Kansas State U.
+Agricultural Engineering [1991−2000]
+Figure 5(b) | The top 30 productive institutions on the World Map: Agricultural Engineering. The bubbles represent
+the top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+35
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+35
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Interregional Agricultural Engineering Collaboration | 1991–2020
+114
+63
+70
+63
+31
+37
+32
+50
+52
+22
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+93
+17
+13
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+52
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 5(c) | The Interregional Agricultural Engineering Collaboration Matrix Diagram. The bubble size represents
+the number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal
+to or greater than 10, it is displayed inside the bubble.
+36
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+36
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Interinstitutional Agricultural Engineering Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      UC Berkeley      
+      Ohio State U.      
+      Iowa State U.      
+      U. Minnesota      
+      U. Illinois UC      
+      U. Nebraska−Lincoln      
+      Michigan State U.      
+      U. Wisconsin−Madison      
+      U. Florida      
+      Texas A&M U.      
+      Agri Res Service      
+      Colorado State U.      
+      Cornell U.      
+      Penn State U.      
+      Sao Paulo State U.      
+      Embrapa      
+      U. de Sao Paulo      
+      UMR Territoires      
+      Cirad      
+      Agro ParisTech      
+      NW Agri & Forestry U.      
+      Huazhong Agri U.      
+      Beijing Normal U.      
+      Nanjing Agri U.      
+      China Agri U.      
+      IGSNRR      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      CSIRO      
+      U. Queensland      
+      Agri & Food      
+      UC Davis      
+      Chinese Acad of Agri Sci      
+      U. Tehran      
+      Ghent U.      
+      U. Liege      
+      U. Copenhagen      
+      Aarhus U.      
+      Agri & Agri−Food Canada      
+      U. Guelph      
+      U. Hohenheim      
+      Swedish U. Agri Sci      
+      U. Gottingen      
+      Wageningen U. & Res      
+      U. Bonn      
+      Int'l Food Policy Res Inst      
+      U. Oxford      
+      Bogor Agri U.      
+      Gadjah Mada U.      
+      Australian Nat'l U.      
+https://ror.org/01an7q238
+https://ror.org/00rs6vg23
+https://ror.org/04rswrd78
+https://ror.org/017zqws13
+https://ror.org/047426m28
+https://ror.org/043mer456
+https://ror.org/05hs6h993
+https://ror.org/01y2jtd41
+https://ror.org/02y3ad647
+https://ror.org/01f5ytq51
+https://ror.org/02d2m2044
+https://ror.org/03k1gpj17
+https://ror.org/05bnh6r87
+https://ror.org/04p491231
+https://ror.org/00987cb86
+https://ror.org/0482b5b22
+https://ror.org/036rp1748
+https://ror.org/026tc4g97
+https://ror.org/05kpkpg04
+https://ror.org/02kbmgc12
+https://ror.org/0051rme32
+https://ror.org/023b72294
+https://ror.org/022k4wk35
+https://ror.org/05td3s095
+https://ror.org/04v3ywz14
+https://ror.org/04t1cdb72
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/03qn8fb07
+https://ror.org/00rqy9422
+https://ror.org/03n17ds51
+https://ror.org/05rrcem69
+https://ror.org/0313jb750
+https://ror.org/05vf56z40
+https://ror.org/00cv9y106
+https://ror.org/00afp2z80
+https://ror.org/035b05819
+https://ror.org/01aj84f44
+https://ror.org/051dzs374
+https://ror.org/01r7awg59
+https://ror.org/00b1c9541
+https://ror.org/02yy8x990
+https://ror.org/01y9bpm73
+https://ror.org/04qw24q55
+https://ror.org/041nas322
+https://ror.org/03pxz9p87
+https://ror.org/052gg0110
+https://ror.org/05smgpd89
+https://ror.org/03ke6d638
+https://ror.org/019wvm592
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [BR]  
+  [BR]  
+  [BR]  
+  [FR]  
+  [FR]  
+  [FR]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [US]  
+  [CN]  
+  [IR]  
+  [BE]  
+  [BE]  
+  [DK]  
+  [DK]  
+  [CA]  
+  [CA]  
+  [DE]  
+  [SE]  
+  [DE]  
+  [NL]  
+  [DE]  
+  [US]  
+  [GB]  
+  [ID]  
+  [ID]  
+  [AU]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Chinese Acad of Sci      
+      IGSNRR      
+      KU Leuven      
+      Penn State U.      
+      CGIAR      
+      World Bank      
+      Int'l Food Policy Res Inst      
+      U. Illinois UC      
+      Cornell U.      
+      Michigan State U.      
+      U. Florida      
+      Ohio State U.      
+      Econ Res Service      
+      UC Davis      
+      UC Berkeley      
+      Iowa State U.      
+      U. Minnesota      
+      U. Wisconsin−Madison      
+      Agri & Agri−Food Canada      
+      U. Guelph      
+      Agri Res Service      
+      Washington State U.      
+      Kansas State U.      
+      U. Nebraska−Lincoln      
+      Colorado State U.      
+      Ghent U.      
+      Australian Nat'l U.      
+      CSIRO      
+      U. Queensland      
+      NW Agri & Forestry U.      
+      Inst of Soil & Water Conservation      
+      UMR Territoires      
+      Cirad      
+      Food & Agri Org of the UN      
+      U. Reading      
+      U. Copenhagen      
+      Wageningen U. & Res      
+      Swedish U. Agri Sci      
+      China Agri U.      
+      U. Hohenheim      
+      Northeast Agri U.      
+      Zhejiang U.      
+      Huazhong Agri U.      
+      Hunan Agri U.      
+      Hebei Agri U.      
+      South China Agri U.      
+      Southwest U.      
+      Nanjing Agri U.      
+      Xiaomi (China)      
+      Agri & Appl Econ Assoc      
+https://ror.org/034t30j35
+https://ror.org/04t1cdb72
+https://ror.org/05f950310
+https://ror.org/04p491231
+https://ror.org/04c4bm785
+https://ror.org/00ae7jd04
+https://ror.org/03pxz9p87
+https://ror.org/047426m28
+https://ror.org/05bnh6r87
+https://ror.org/05hs6h993
+https://ror.org/02y3ad647
+https://ror.org/00rs6vg23
+https://ror.org/05ycxzd89
+https://ror.org/05rrcem69
+https://ror.org/01an7q238
+https://ror.org/04rswrd78
+https://ror.org/017zqws13
+https://ror.org/01y2jtd41
+https://ror.org/051dzs374
+https://ror.org/01r7awg59
+https://ror.org/02d2m2044
+https://ror.org/05dk0ce17
+https://ror.org/05p1j8758
+https://ror.org/043mer456
+https://ror.org/03k1gpj17
+https://ror.org/00cv9y106
+https://ror.org/019wvm592
+https://ror.org/03qn8fb07
+https://ror.org/00rqy9422
+https://ror.org/0051rme32
+https://ror.org/013wv8d67
+https://ror.org/026tc4g97
+https://ror.org/05kpkpg04
+https://ror.org/00pe0tf51
+https://ror.org/05v62cm79
+https://ror.org/035b05819
+https://ror.org/04qw24q55
+https://ror.org/02yy8x990
+https://ror.org/04v3ywz14
+https://ror.org/00b1c9541
+https://ror.org/0515nd386
+https://ror.org/00a2xv884
+https://ror.org/023b72294
+https://ror.org/01dzed356
+https://ror.org/009fw8j44
+https://ror.org/05v9jqt67
+https://ror.org/01kj4z117
+https://ror.org/05td3s095
+https://ror.org/029f7bn57
+https://ror.org/04e5cyn06
+  [CN]  
+  [CN]  
+  [BE]  
+  [US]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [BE]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [CN]  
+  [CN]  
+  [FR]  
+  [FR]  
+  [IT]  
+  [GB]  
+  [DK]  
+  [NL]  
+  [SE]  
+  [CN]  
+  [DE]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+Figure 5(d) | The Interinstitutional Agricultural Engineering Collaboration Dendrogram. The top 50 institutions in
+terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+37
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+37
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Interinstitutional Agricultural Engineering Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Agri Res Service      
+      US Dept of Agri      
+      U. Reading      
+      Agri & Appl Econ Assoc      
+      Colorado State U.      
+      U. Guelph      
+      Agri & Agri−Food Canada      
+      U. Saskatchewan      
+      UC Berkeley      
+      U. Maryland      
+      CSIRO      
+      U. Queensland      
+      Wageningen U. & Res      
+      Int'l Rice Res Inst      
+      Cornell U.      
+      Int'l Food Policy Res Inst      
+      World Bank      
+      Australian Nat'l U.      
+      Kyoto U.      
+      Public Econs      
+      INRAE      
+      U. Oxford      
+      U. East Anglia      
+      U. London      
+      U. Cambridge      
+      U. Pretoria      
+      U. Georgia      
+      U. Georgia      
+      Econ Res Service      
+      Virginia Tech      
+      North Carolina State U.      
+      Kansas State U.      
+      UC Davis      
+      U. Arizona      
+      U. Florida      
+      Purdue U. West Lafayette      
+      Iowa State U.      
+      U. Missouri      
+      Penn State U.      
+      Texas A&M U.      
+      U. Illinois UC      
+      Ohio State U.      
+      Michigan State U.      
+      U. Wisconsin−Madison      
+      U. Kentucky      
+      Washington State U.      
+      Oregon State U.      
+      U. Minnesota      
+      Swedish U. Agri Sci      
+      U. Nebraska−Lincoln      
+https://ror.org/02d2m2044
+https://ror.org/01na82s61
+https://ror.org/05v62cm79
+https://ror.org/04e5cyn06
+https://ror.org/03k1gpj17
+https://ror.org/01r7awg59
+https://ror.org/051dzs374
+https://ror.org/010x8gc63
+https://ror.org/01an7q238
+https://ror.org/047s2c258
+https://ror.org/03qn8fb07
+https://ror.org/00rqy9422
+https://ror.org/04qw24q55
+https://ror.org/0593p4448
+https://ror.org/05bnh6r87
+https://ror.org/03pxz9p87
+https://ror.org/00ae7jd04
+https://ror.org/019wvm592
+https://ror.org/02kpeqv85
+https://ror.org/02z9j6m75
+https://ror.org/003vg9w96
+https://ror.org/052gg0110
+https://ror.org/026k5mg93
+https://ror.org/04cw6st05
+https://ror.org/013meh722
+https://ror.org/00g0p6g84
+https://ror.org/02bjhwk41
+https://ror.org/00te3t702
+https://ror.org/05ycxzd89
+https://ror.org/02smfhw86
+https://ror.org/04tj63d06
+https://ror.org/05p1j8758
+https://ror.org/05rrcem69
+https://ror.org/03m2x1q45
+https://ror.org/02y3ad647
+https://ror.org/02dqehb95
+https://ror.org/04rswrd78
+https://ror.org/02ymw8z06
+https://ror.org/04p491231
+https://ror.org/01f5ytq51
+https://ror.org/047426m28
+https://ror.org/00rs6vg23
+https://ror.org/05hs6h993
+https://ror.org/01y2jtd41
+https://ror.org/02k3smh20
+https://ror.org/05dk0ce17
+https://ror.org/00ysfqy60
+https://ror.org/017zqws13
+https://ror.org/02yy8x990
+https://ror.org/043mer456
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [AU]  
+  [AU]  
+  [NL]  
+  [PH]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [JP]  
+  [FR]  
+  [FR]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [ZA]  
+  [GE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [SE]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Econ Res Service      
+      Oklahoma State U.      
+      Experimental Station      
+      CSIRO      
+      Australian Nat'l U.      
+      Hokkaido U.      
+      Kyoto U.      
+      U. Guelph      
+      Kyushu U.      
+      U. Reading      
+      World Bank      
+      UC Davis      
+      UC Berkeley      
+      Texas A&M U.      
+      Oregon State U.      
+      U. Illinois UC      
+      U. Arizona      
+      Purdue U. System      
+      U. Nebraska−Lincoln      
+      Purdue U. West Lafayette      
+      Ohio State U.      
+      U. Wisconsin−Madison      
+      Colorado State U.      
+      Iowa State U.      
+      U. London      
+      Wye College      
+      U. Tokyo      
+      Tokyo U. Agri      
+      Agri Res Service      
+      US Dept of Agri      
+      Agri Research Org      
+      Hebrew U. Jerusalem      
+      EPSs      
+      U. Birmingham      
+      Agri & Appl Econ Assoc      
+      Cornell U.      
+      U. Cambridge      
+      U. Sussex      
+      U. East Anglia      
+      U. Missouri      
+      U. Georgia      
+      U. Georgia      
+      U. Florida      
+      North Carolina State U.      
+      U. Minnesota      
+      Michigan State U.      
+      U. Kentucky      
+      Washington State U.      
+      Penn State U.      
+      Virginia Tech      
+https://ror.org/05ycxzd89
+https://ror.org/01g9vbr38
+https://ror.org/01pvt8a36
+https://ror.org/03qn8fb07
+https://ror.org/019wvm592
+https://ror.org/02e16g702
+https://ror.org/02kpeqv85
+https://ror.org/01r7awg59
+https://ror.org/00p4k0j84
+https://ror.org/05v62cm79
+https://ror.org/00ae7jd04
+https://ror.org/05rrcem69
+https://ror.org/01an7q238
+https://ror.org/01f5ytq51
+https://ror.org/00ysfqy60
+https://ror.org/047426m28
+https://ror.org/03m2x1q45
+https://ror.org/05p8z3f47
+https://ror.org/043mer456
+https://ror.org/02dqehb95
+https://ror.org/00rs6vg23
+https://ror.org/01y2jtd41
+https://ror.org/03k1gpj17
+https://ror.org/04rswrd78
+https://ror.org/02y3ad647
+https://ror.org/04cw6st05
+https://ror.org/003b78q25
+https://ror.org/057zh3y96
+https://ror.org/05crbcr45
+https://ror.org/02d2m2044
+https://ror.org/01na82s61
+https://ror.org/05hbrxp80
+https://ror.org/03qxff017
+https://ror.org/00dztkz65
+https://ror.org/03angcq70
+https://ror.org/04e5cyn06
+https://ror.org/05bnh6r87
+https://ror.org/013meh722
+https://ror.org/00ayhx656
+https://ror.org/026k5mg93
+https://ror.org/02ymw8z06
+https://ror.org/02bjhwk41
+https://ror.org/00te3t702
+https://ror.org/04tj63d06
+https://ror.org/017zqws13
+https://ror.org/05hs6h993
+https://ror.org/02k3smh20
+https://ror.org/05dk0ce17
+https://ror.org/04p491231
+https://ror.org/02smfhw86
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [AU]  
+  [JP]  
+  [JP]  
+  [CA]  
+  [JP]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [IL]  
+  [IL]  
+  [NL]  
+  [GB]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [GE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 5(d) | The Interinstitutional Agricultural Engineering Collaboration Dendrogram. (Cont.)
+38
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+38
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Table 5 | The top 100 productive institutions: Agricultural Engineering.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Iowa State University
+US
+588
+Wageningen University & Research
+NL
+1,467
+Wageningen University & Research
+NL
+3,146
+2
+Agricultural & Applied Economics Association
+US
+399
+Chinese Academy of Sciences
+CN
+1,031
+Chinese Academy of Sciences
+CN
+3,015
+3
+Agricultural Research Service
+US
+362
+Iowa State University
+US
+1,003
+Iowa State University
+US
+2,421
+4
+University of California, Davis
+US
+322
+China Agricultural University
+CN
+910
+China Agricultural University
+CN
+1,818
+5
+Cornell University
+US
+319
+University of Florida
+US
+699
+University of Florida
+US
+1,573
+6
+The Ohio State University
+US
+291
+Cornell University
+US
+696
+Michigan State University
+US
+1,435
+7
+Michigan State University
+US
+271
+University of California, Davis
+US
+680
+University of Chinese Academy of Sciences
+CN
+1,402
+8
+Wageningen University & Research
+NL
+268
+Nanjing Agricultural University
+CN
+672
+International Food Policy Research Institute
+US
+1,394
+9
+Economic Research Service
+US
+244
+Agricultural Research Service
+US
+662
+Swedish University of Agricultural Sciences
+SE
+1,275
+10
+University of Florida
+US
+232
+CGIAR
+FR
+582
+Cornell University
+US
+1,269
+11
+University of Reading
+GB
+217
+Michigan State University
+US
+572
+Agricultural Research Service
+US
+1,257
+12
+University of Wisconsin–Madison
+US
+217
+World Bank
+US
+540
+University of California, Davis
+US
+1,250
+13
+World Bank
+US
+215
+Huazhong Agricultural University
+CN
+538
+Institute of Geographic Sciences and Natural Resources Research
+CN
+1,213
+14
+University of Minnesota
+US
+212
+The Ohio State University
+US
+533
+Brazilian Agricultural Research Corporation
+BR
+1,153
+15
+University of California, Berkeley
+US
+210
+Xiaomi (China)
+CN
+519
+Commonwealth Scientific and Industrial Research Organisation
+AU
+1,144
+16
+University of Pretoria
+ZA
+201
+North West Agriculture and Forestry University
+CN
+516
+Bogor Agricultural University
+ID
+1,132
+17
+International Rice Research Institute
+PH
+188
+Institute of Geographic Sciences and Natural Resources Research
+CN
+500
+University of Queensland
+AU
+1,089
+18
+Texas A&M University
+US
+186
+Commonwealth Scientific and Industrial Research Organisation
+AU
+493
+University of Copenhagen
+DK
+1,060
+19
+University of Illinois Urbana-Champaign
+US
+181
+UMR Territoires
+FR
+479
+Centre de Coopération Internationale en Recherche Agronomique pour le Développement FR
+1,032
+20
+North Carolina State University
+US
+180
+Agricultural & Applied Economics Association
+US
+457
+University of Bonn
+DE
+978
+21
+University of Nebraska–Lincoln
+US
+178
+Northeast Agricultural University
+CN
+454
+University of Illinois Urbana-Champaign
+US
+978
+22
+University of Guelph
+CA
+176
+Swedish University of Agricultural Sciences
+SE
+439
+Nanjing Agricultural University
+CN
+947
+23
+International Food Policy Research Institute
+US
+176
+International Food Policy Research Institute
+US
+427
+North West Agriculture and Forestry University
+CN
+947
+24
+Agriculture and Agri-Food Canada
+CA
+175
+University of Illinois Urbana-Champaign
+US
+419
+Chinese Academy of Agricultural Sciences
+CN
+946
+25
+Commonwealth Scientific and Industrial Research Organisation
+AU
+169
+Zhejiang University
+CN
+399
+The Ohio State University
+US
+946
+26
+Pennsylvania State University
+US
+169
+University of Nebraska–Lincoln
+US
+398
+Universidade de São Paulo
+BR
+942
+27
+Colorado State University
+US
+168
+University of Minnesota
+US
+395
+UMR Territoires
+FR
+941
+28
+Swedish University of Agricultural Sciences
+SE
+155
+Economic Research Service
+US
+389
+University of Oxford
+GB
+935
+29
+United States Department of Agriculture
+US
+154
+Agriculture and Agri-Food Canada
+CA
+387
+University of Göttingen
+DE
+931
+30
+Kansas State University
+US
+153
+Southwest University
+CN
+386
+University of Minnesota
+US
+925
+31
+University of Arizona
+US
+146
+Colorado State University
+US
+376
+Aarhus University
+DK
+903
+32
+University of Queensland
+AU
+142
+University of Wisconsin–Madison
+US
+375
+Pennsylvania State University
+US
+903
+33
+Washington State University
+US
+142
+South China Agricultural University
+CN
+369
+University of Wisconsin–Madison
+US
+870
+34
+Virginia Tech
+US
+139
+Australian National University
+AU
+357
+University of Nebraska–Lincoln
+US
+836
+35
+University of Oxford
+GB
+138
+KU Leuven
+BE
+356
+Beĳing Normal University
+CN
+822
+36
+Oregon State University
+US
+135
+University of Copenhagen
+DK
+356
+Huazhong Agricultural University
+CN
+822
+37
+University of Maryland, College Park
+US
+132
+University of California, Berkeley
+US
+356
+Colorado State University
+US
+809
+38
+Purdue University West Lafayette
+US
+121
+Food and Agriculture Organization of the United Nations
+IT
+344
+Ghent University
+BE
+805
+39
+Public Economics
+FR
+120
+University of Queensland
+AU
+337
+Agriculture and Food
+AU
+804
+40
+Australian National University
+AU
+119
+Pennsylvania State University
+US
+337
+Gadjah Mada University
+ID
+794
+41
+Kyoto University
+JP
+114
+University of Reading
+GB
+332
+São Paulo State University
+BR
+778
+42
+University of London
+GB
+113
+University of Hohenheim
+DE
+331
+University of Liège
+BE
+761
+43
+University of Georgia
+GE
+112
+Centre de Coopération Internationale en Recherche Agronomique pour le Développement FR
+330
+University of Tehran
+IR
+761
+44
+University of Kentucky
+US
+112
+Kansas State University
+US
+327
+Texas A&M University
+US
+755
+45
+University of Georgia
+US
+111
+Washington State University
+US
+321
+University of California, Berkeley
+US
+752
+46
+University of Cambridge
+GB
+110
+Hebei Agricultural University
+CN
+320
+Australian National University
+AU
+747
+47
+University of East Anglia
+GB
+110
+Ghent University
+BE
+312
+University of Hohenheim
+DE
+746
+48
+National Research Institute for Agriculture, Food and Environment
+FR
+108
+Hunan Agricultural University
+CN
+310
+Agro ParisTech
+FR
+731
+49
+University of Missouri
+US
+108
+University of Guelph
+CA
+309
+Agriculture and Agri-Food Canada
+CA
+725
+50
+University of Saskatchewan
+CA
+104
+Institute of Soil and Water Conservation
+CN
+308
+University of Guelph
+CA
+717
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+39
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+39
+
+5. Agricultural Engineering
+5. Agricultural Engineering
+5. Agricultural Engineering
+Table 5 | The top 100 productive institutions: Agricultural Engineering. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Silsoe Research Institute
+GB
+103
+University of Oxford
+GB
+303
+University of Melbourne
+AU
+715
+52
+Newcastle University
+GB
+102
+Shenyang Agricultural University
+CN
+300
+University of KwaZulu-Natal
+ZA
+708
+53
+Kyushu University
+JP
+99
+North Carolina State University
+US
+299
+Food and Agriculture Organization of the United Nations
+IT
+703
+54
+Rothamsted Research
+GB
+98
+Texas A&M University
+US
+298
+Indian Agricultural Research Institute
+IN
+702
+55
+Graduate School Experimental Plant Sciences
+NL
+95
+Beĳing Normal University
+CN
+296
+Warsaw University of Life Sciences
+PL
+699
+56
+UMR Territoires
+FR
+94
+University of Göttingen
+DE
+287
+University of British Columbia
+CA
+698
+57
+Centre d’Economie et de Sociologie Appliquées à l’Agriculture et aux Espaces Ruraux FR
+93
+Brazilian Agricultural Research Corporation
+BR
+283
+North Carolina State University
+US
+693
+58
+The University of Tokyo
+JP
+93
+Chinese Academy of Agricultural Sciences
+CN
+283
+Washington State University
+US
+693
+59
+University College London
+GB
+89
+University of Debrecen
+HU
+282
+KU Leuven
+BE
+691
+60
+University of Bristol
+GB
+89
+The University of Tokyo
+JP
+276
+University of Western Australia
+AU
+688
+61
+Agricultural Research Organization
+IL
+89
+United States Department of Agriculture
+US
+271
+Zhejiang University
+CN
+683
+62
+Hebrew University of Jerusalem
+IL
+89
+China Tobacco
+CN
+270
+University of Cambridge
+GB
+681
+63
+University of Edinburgh
+GB
+88
+Fujian Agriculture and Forestry University
+CN
+266
+Consejo Nacional de Investigaciones Científicas y Técnicas
+AR
+673
+64
+Institut National de la Recherche Agronomique du Niger
+NE
+87
+University of Missouri
+US
+263
+McGill University
+CA
+671
+65
+University of Alberta
+CA
+86
+Oregon State University
+US
+256
+Bangladesh Agricultural University
+BD
+669
+66
+Chinese Academy of Sciences
+CN
+85
+Agricultural Research Center
+EG
+252
+University of Pretoria
+ZA
+652
+67
+Département Environnement et Agronomie
+FR
+84
+Wuhan University
+CN
+247
+Agroecology
+FR
+647
+68
+Utah State University
+US
+84
+Henan Agricultural University
+CN
+246
+University of Sydney
+AU
+629
+69
+Rutgers, The State University of New Jersey
+US
+83
+University of Bonn
+DE
+245
+Kansas State University
+US
+625
+70
+KU Leuven
+BE
+82
+Nanjing University
+CN
+244
+The University of Tokyo
+JP
+624
+71
+Auburn University
+US
+82
+University of Cambridge
+GB
+240
+Agricultural & Applied Economics Association
+US
+621
+72
+Tokyo University of Agriculture
+JP
+79
+University of Adelaide
+AU
+237
+World Bank
+US
+614
+73
+World Agroforestry Centre
+KE
+79
+Mississippi State University
+US
+237
+China Tobacco
+CN
+612
+74
+University of Melbourne
+AU
+78
+Renmin University of China
+CN
+236
+Purdue University West Lafayette
+US
+603
+75
+University of New England
+AU
+78
+University of Melbourne
+AU
+232
+University of Maryland, College Park
+US
+603
+76
+University of Tsukuba
+JP
+78
+Montpellier Interdisciplinary center on Sustainable Agri-food systems FR
+231
+Agricultural Research Center
+EG
+598
+77
+Environmental Protection Agency
+US
+77
+Kyoto University
+JP
+228
+United States Department of Agriculture
+US
+580
+78
+University of Adelaide
+AU
+76
+University of Pretoria
+ZA
+228
+South China Agricultural University
+CN
+578
+79
+Stanford University
+US
+76
+Gansu Agricultural University
+CN
+223
+Stanford University
+US
+576
+80
+University of British Columbia
+CA
+75
+University of Chinese Academy of Sciences
+CN
+223
+University of Natural Resources and Life Sciences, Vienna
+AT
+575
+81
+University of Manchester
+GB
+75
+University of Arizona
+US
+221
+University of Missouri
+US
+570
+82
+International Center for Agricultural Research in the Dry Areas
+SY
+75
+Newcastle University
+GB
+219
+ETH Zurich
+CH
+568
+83
+University of Western Australia
+AU
+74
+Beĳing Forestry University
+CN
+218
+Peking University
+CN
+568
+84
+University of Sheffield
+GB
+74
+Peking University
+CN
+218
+University of Adelaide
+AU
+566
+85
+Agricultural Development Advisory Service (United Kingdom)
+GB
+73
+Rothamsted Research
+GB
+217
+Columbia University
+US
+562
+86
+Making View (Norway)
+NO
+73
+University of Western Australia
+AU
+216
+Norwegian University of Life Sciences
+NO
+549
+87
+University of Wales
+GB
+71
+Imperial College London
+GB
+214
+Humboldt-Universität zu Berlin
+DE
+546
+88
+University of Tennessee at Knoxville
+US
+71
+University of Sydney
+AU
+209
+Arizona State University
+US
+545
+89
+University of Sussex
+GB
+70
+Virginia Tech
+US
+208
+Universiti Putra Malaysia
+MY
+542
+90
+Asian Institute of Technology
+TH
+70
+Shihezi University
+CN
+207
+University of Michigan–Ann Arbor
+US
+538
+91
+University of Zimbabwe
+ZW
+70
+University of British Columbia
+CA
+206
+Indian Council of Agricultural Research
+IN
+533
+92
+University of Sydney
+AU
+69
+Yunnan Agricultural University
+CN
+205
+University of Edinburgh
+GB
+528
+93
+University of Hohenheim
+DE
+68
+University of Maryland, College Park
+US
+205
+University of Ghana
+GH
+528
+94
+University of Leicester
+GB
+68
+Lanzhou University
+CN
+201
+Stellenbosch University
+ZA
+528
+95
+University of Birmingham
+GB
+67
+University of Georgia
+GE
+201
+University of Reading
+GB
+524
+96
+Oklahoma State University
+US
+67
+McGill University
+CA
+200
+Harvard University
+US
+523
+97
+Cranfield University
+GB
+66
+Universidade de São Paulo
+BR
+199
+Lund University
+SE
+521
+98
+GTx (United States)
+US
+66
+Guizhou University
+CN
+198
+University of Life Sciences in Lublin
+PL
+518
+99
+Natural Resources Conservation Service
+US
+66
+Shanxi Agricultural University
+CN
+198
+Oregon State University
+US
+514
+100
+University of Arkansas at Fayetteville
+US
+66
+Aarhus University
+DK
+195
+Universidade Federal de Viçosa
+BR
+511
+40
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+40
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+6. Particle Physics
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+World Map of Particle Physics Collaboration | 1971–2020
+Figure 6 (a) | The World Map of Particle Physics Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+42
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+42
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Top 30 Productive Institutions on the World Map: Particle Physics | 1991–2020
+Chinese Acad of Sci
+U. Tokyo
+Eur Org for Nucl Res
+MIT
+U. Sci & Tech of China
+Lawrence Berkeley NL
+Kyoto U.
+UC Berkeley
+U. Oxford
+Peking U.
+U. Rajasthan
+U. Chinese Acad of Sci
+Tsinghua U.
+Lomonosov Moscow State U.
+Osaka U.
+Stanford U.
+Russian Acad of Sci
+Tohoku U.
+Joint Inst for Nucl Res
+Los Alamos NL
+ETH Zurich
+U. Cambridge
+Brookhaven NL
+U. Maryland
+Princeton U.
+U. Michigan
+Tech U. Munich
+Imperial College London
+Fermilab
+Argonne NL
+Particle Physics [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+Chinese Acad of Sci
+Eur Org for Nucl Res
+Osaka U.
+Tohoku U.
+Russian Acad of Sci
+Kyoto U.
+Lawrence Berkeley NL
+Lomonosov Moscow State U.
+Los Alamos NL
+MIT
+UC Berkeley
+U. Cambridge
+Stanford U.
+Brookhaven NL
+Argonne NL
+U. Oxford
+Joint Inst for Nucl Res
+Fermilab
+U. Maryland
+KEK
+U. Michigan
+Princeton U.
+Tokyo Inst of Tech
+U. Paris−Sud
+U. Sci & Tech of China
+Caltechy
+Inst of Physics
+Max Planck Society
+Nagoya U.
+Particle Physics [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Eur Org for Nucl Res
+U. Tokyo
+Los Alamos NL
+Kyoto U.
+Osaka U.
+MIT
+Tohoku U.
+Lawrence Berkeley NL
+UC Berkeley
+U. Cambridge
+Argonne NL
+Stanford U.
+Brookhaven NL
+U. Illinois UC
+U. Oxford
+U. Maryland
+Fermilab
+Russian Acad of Sci
+Joint Inst for Nucl Res
+Lomonosov Moscow State U.
+Princeton U.
+UC Santa Barbara
+Oak Ridge NL
+US Naval Research Lab
+KEK
+U. Michigan
+Rutherford Appleton Lab
+Tech U. Munich
+Forschungszentrum Julich
+U. Paris−Sud
+Particle Physics [1991−2000]
+Figure 6(b) | The top 30 productive institutions on the World Map: Particle Physics. The bubbles represent the top
+30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+43
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+43
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Interregional Particle Physics Collaboration | 1991–2020
+136
+116
+133
+68
+98
+121
+21
+52
+27
+40
+44
+28
+32
+48
+60
+24
+31
+15
+46
+23
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+248
+54
+102
+66
+157
+79
+11
+27
+11
+15
+16
+42
+29
+21
+13
+45
+34
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+344
+51
+75
+123
+73
+12
+16
+15
+12
+28
+18
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 6 (c) | The Interregional Particle Physics Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+44
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+44
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Interinstitutional Particle Physics Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      Brookhaven NL      
+      Fermilab      
+      Argonne NL      
+      U. Oxford      
+      Imperial College London      
+      U. Cambridge      
+      U. College London      
+      ETH Zurich      
+      Eur Org for Nucl Res      
+      EPFL      
+      Karlsruhe Inst of Tech      
+      Tech U. Munich      
+      Forschungszentrum Julich      
+      MIT      
+      Harvard U.      
+      UCLA      
+      Los Alamos NL      
+      Oak Ridge NL      
+      Sapienza U. Rome      
+      Princeton U.      
+      Caltech      
+      U. Rajasthan      
+      Nat'l U. Singapore      
+      Stanford U.      
+      SLAC Nat'l Accelerator Lab      
+      U. Paris−Saclay      
+      U. Paris−Sud      
+      IN2P3      
+      Nagoya U.      
+      U. Tokyo      
+      Tohoku U.      
+      Kyoto U.      
+      Osaka U.      
+      KEK      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Russian Acad of Sci      
+      Lomonosov Moscow State U.      
+      Joint Inst for Nucl Res      
+      Moscow Engr Phys Inst      
+      U. Maryland      
+      NIST      
+      U. Sci & Tech of China      
+      Nanjing U.      
+      Tsinghua U.      
+      Peking U.      
+      Shanghai Jiao Tong U.      
+      U. Michigan      
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/02ex6cf31
+https://ror.org/020hgte69
+https://ror.org/05gvnxz63
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/02jx3x895
+https://ror.org/05a28rw58
+https://ror.org/01ggx4157
+https://ror.org/02s376052
+https://ror.org/04t3en479
+https://ror.org/02kkvpp62
+https://ror.org/02nv7yv05
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/046rm7j60
+https://ror.org/01e41cf67
+https://ror.org/01qz5mb56
+https://ror.org/02be6w209
+https://ror.org/00hx57361
+https://ror.org/05dxps055
+https://ror.org/05arfhc56
+https://ror.org/01tgyzw49
+https://ror.org/00f54p054
+https://ror.org/05gzmn429
+https://ror.org/03xjwb503
+https://ror.org/028rypz17
+https://ror.org/03fd77x13
+https://ror.org/04chrp450
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/01g5y5k24
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/05qrfxd25
+https://ror.org/010pmpe69
+https://ror.org/044yd9t77
+https://ror.org/04w8z7f34
+https://ror.org/047s2c258
+https://ror.org/05xpvk416
+https://ror.org/04c4dkn09
+https://ror.org/01rxvg760
+https://ror.org/03cve4549
+https://ror.org/02v51f717
+https://ror.org/0220qvk04
+https://ror.org/00jmfr291
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [CH]  
+  [CH]  
+  [CH]  
+  [DE]  
+  [DE]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [IT]  
+  [US]  
+  [US]  
+  [IN]  
+  [SG]  
+  [US]  
+  [US]  
+  [FR]  
+  [FR]  
+  [FR]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Russian Acad of Sci      
+      Lomonosov Moscow State U.      
+      Joint Inst for Nucl Res      
+      Imperial College London      
+      U. Cambridge      
+      U. Oxford      
+      U. Paris−Sud      
+      CEA Saclay      
+      Tech U. Munich      
+      Eur Org for Nucl Res      
+      ETH Zurich      
+      Los Alamos NL      
+      Oak Ridge NL      
+      US Naval Research Lab      
+      U. Maryland      
+      NIST      
+      U. Illinois UC      
+      Argonne NL      
+      Fermilab      
+      U. Michigan      
+      U. Wisconsin−Madison      
+      UC Santa Barbara      
+      MIT      
+      Harvard U.      
+      JST      
+      AIST      
+      Tokyo Inst of Tech      
+      KEK      
+      U. Tokyo      
+      RIKEN      
+      Nagoya U.      
+      Tohoku U.      
+      Osaka U.      
+      Kyoto U.      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      Tsinghua U.      
+      Peking U.      
+      Chinese Acad of Sci      
+      U. Sci & Tech of China      
+      Inst of Physics      
+      Forschungszentrum Julich      
+      Princeton U.      
+      Caltech      
+      Stanford U.      
+      UCLA      
+      Brookhaven NL      
+      U. Washington      
+      Max Planck Society      
+      Penn State U.      
+https://ror.org/05qrfxd25
+https://ror.org/010pmpe69
+https://ror.org/044yd9t77
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/028rypz17
+https://ror.org/03n15ch10
+https://ror.org/02kkvpp62
+https://ror.org/01ggx4157
+https://ror.org/05a28rw58
+https://ror.org/01e41cf67
+https://ror.org/01qz5mb56
+https://ror.org/04d23a975
+https://ror.org/047s2c258
+https://ror.org/05xpvk416
+https://ror.org/047426m28
+https://ror.org/05gvnxz63
+https://ror.org/020hgte69
+https://ror.org/00jmfr291
+https://ror.org/01y2jtd41
+https://ror.org/02t274463
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00hx57361
+https://ror.org/00097mb19
+https://ror.org/01703db54
+https://ror.org/0112mx960
+https://ror.org/01g5y5k24
+https://ror.org/057zh3y96
+https://ror.org/01sjwvz98
+https://ror.org/04chrp450
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/03cve4549
+https://ror.org/02v51f717
+https://ror.org/034t30j35
+https://ror.org/04c4dkn09
+https://ror.org/000sfad56
+https://ror.org/02nv7yv05
+https://ror.org/05dxps055
+https://ror.org/00f54p054
+https://ror.org/046rm7j60
+https://ror.org/02ex6cf31
+https://ror.org/00cvxb145
+https://ror.org/01hhn8329
+https://ror.org/04p491231
+  [RU]  
+  [RU]  
+  [RU]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [FR]  
+  [FR]  
+  [DE]  
+  [CH]  
+  [CH]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [PL]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [US]  
+Figure 6(d) | The Interinstitutional Particle Physics Collaboration Dendrogram. The top 50 institutions in terms of
+work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+45
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+45
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Interinstitutional Particle Physics Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      Fermilab      
+      Brookhaven NL      
+      Stony Brook U.      
+      UT Austin      
+      Los Alamos NL      
+      Lawrence Livermore NL      
+      US Naval Research Lab      
+      Oak Ridge NL      
+      NIST      
+      Caltech      
+      U. Washington      
+      Cornell U.      
+      Penn State U.      
+      Princeton U.      
+      Stanford U.      
+      UC Santa Barbara      
+      Argonne NL      
+      U. Illinois UC      
+      MIT      
+      Harvard U.      
+      UCLA      
+      U. Michigan      
+      U. Wisconsin−Madison      
+      U. Chicago      
+      Nagoya U.      
+      Tokyo Inst of Tech      
+      Kyoto U.      
+      Osaka U.      
+      KEK      
+      U. Tsukuba      
+      U. Tokyo      
+      Tohoku U.      
+      U. Maryland      
+      Tel Aviv U.      
+      Eur Org for Nucl Res      
+      U. Oxford      
+      Rutherford Appleton Lab      
+      U. Cambridge      
+      Imperial College London      
+      U. Paris−Sud      
+      Inst of Physics      
+      Joint Inst for Nucl Res      
+      Lomonosov Moscow State U.      
+      China Center of Adv Sci & Tech      
+      Tech U. Munich      
+      Forschungszentrum Julich      
+      Russian Acad of Sci      
+      MPI − Solid State Res      
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/020hgte69
+https://ror.org/02ex6cf31
+https://ror.org/05qghxh33
+https://ror.org/00hj54h04
+https://ror.org/01e41cf67
+https://ror.org/041nk4h53
+https://ror.org/04d23a975
+https://ror.org/01qz5mb56
+https://ror.org/05xpvk416
+https://ror.org/05dxps055
+https://ror.org/00cvxb145
+https://ror.org/05bnh6r87
+https://ror.org/04p491231
+https://ror.org/00hx57361
+https://ror.org/00f54p054
+https://ror.org/02t274463
+https://ror.org/05gvnxz63
+https://ror.org/047426m28
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/046rm7j60
+https://ror.org/00jmfr291
+https://ror.org/01y2jtd41
+https://ror.org/024mw5h28
+https://ror.org/04chrp450
+https://ror.org/0112mx960
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/01g5y5k24
+https://ror.org/02956yf07
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/047s2c258
+https://ror.org/04mhzgx49
+https://ror.org/01ggx4157
+https://ror.org/052gg0110
+https://ror.org/03gq8fr08
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+https://ror.org/028rypz17
+https://ror.org/000sfad56
+https://ror.org/044yd9t77
+https://ror.org/010pmpe69
+https://ror.org/02egfyg20
+https://ror.org/02kkvpp62
+https://ror.org/02nv7yv05
+https://ror.org/05qrfxd25
+https://ror.org/005bk2339
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [IL]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [FR]  
+  [PL]  
+  [RU]  
+  [RU]  
+  [CN]  
+  [DE]  
+  [DE]  
+  [RU]  
+  [DE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Stanford U.      
+      Stanford Synchrotron Radiation Lightsource      
+      SLAC Nat'l Accelerator Lab      
+      State U. New York      
+      Stony Brook U.      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      Fermilab      
+      U. Chicago      
+      Yale U.      
+      U. Wisconsin−Madison      
+      U. Penn      
+      Princeton U.      
+      AT&T (US)      
+      IBM T.J. Watson Res Center      
+      U. Illinois UC      
+      UC Santa Barbara      
+      Oak Ridge NL      
+      Lawrence Livermore NL      
+      Caltech      
+      U. Washington      
+      Forschungszentrum Julich      
+      Tech U. Munich      
+      U. Paris−Sud      
+      Joint Inst for Nucl Res      
+      Nagoya U.      
+      Kyoto U.      
+      Osaka U.      
+      U. Tokyo      
+      Tohoku U.      
+      UCLA      
+      U. Minnesota      
+      Los Alamos NL      
+      UT Austin      
+      Imperial College London      
+      ICTP      
+      Eur Org for Nucl Res      
+      U. Oxford      
+      U. Cambridge      
+      Tel Aviv U.      
+      NIST      
+      U. Maryland      
+      US Naval Research Lab      
+      MIT      
+      Harvard U.      
+      Cornell U.      
+      U. Rochester      
+      Argonne NL      
+      U. Michigan      
+      Brookhaven NL      
+https://ror.org/00f54p054
+https://ror.org/02vzbm991
+https://ror.org/05gzmn429
+https://ror.org/01q1z8k08
+https://ror.org/05qghxh33
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/020hgte69
+https://ror.org/024mw5h28
+https://ror.org/03v76x132
+https://ror.org/01y2jtd41
+https://ror.org/00b30xv10
+https://ror.org/00hx57361
+https://ror.org/02bbd5539
+https://ror.org/0265w5591
+https://ror.org/047426m28
+https://ror.org/02t274463
+https://ror.org/01qz5mb56
+https://ror.org/041nk4h53
+https://ror.org/05dxps055
+https://ror.org/00cvxb145
+https://ror.org/02nv7yv05
+https://ror.org/02kkvpp62
+https://ror.org/028rypz17
+https://ror.org/044yd9t77
+https://ror.org/04chrp450
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/046rm7j60
+https://ror.org/017zqws13
+https://ror.org/01e41cf67
+https://ror.org/00hj54h04
+https://ror.org/041kmwe10
+https://ror.org/009gyvm78
+https://ror.org/01ggx4157
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/04mhzgx49
+https://ror.org/05xpvk416
+https://ror.org/047s2c258
+https://ror.org/04d23a975
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/05bnh6r87
+https://ror.org/022kthw22
+https://ror.org/05gvnxz63
+https://ror.org/00jmfr291
+https://ror.org/02ex6cf31
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [DE]  
+  [FR]  
+  [RU]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [IT]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 6(d) | The Interinstitutional Particle Physics Collaboration Dendrogram. (Cont.)
+46
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+46
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Table 6 | The top 100 productive institutions: Particle Physics.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+European Organization for Nuclear Research
+CH
+5,367
+The University of Tokyo
+JP
+7,970
+Chinese Academy of Sciences
+CN
+14,559
+2
+The University of Tokyo
+JP
+5,308
+Chinese Academy of Sciences
+CN
+6,555
+The University of Tokyo
+JP
+9,871
+3
+Los Alamos National Laboratory
+US
+3,304
+European Organization for Nuclear Research
+CH
+6,273
+European Organization for Nuclear Research
+CH
+8,375
+4
+Kyoto University
+JP
+3,024
+Osaka University
+JP
+4,925
+Massachusetts Institute of Technology
+US
+5,919
+5
+Osaka University
+JP
+2,927
+Tohoku University
+JP
+4,596
+University of Science and Technology of China
+CN
+5,764
+6
+Massachusetts Institute of Technology
+US
+2,904
+Russian Academy of Sciences
+RU
+4,390
+Lawrence Berkeley National Laboratory
+US
+5,541
+7
+Tohoku University
+JP
+2,798
+Kyoto University
+JP
+4,348
+Kyoto University
+JP
+5,493
+8
+Lawrence Berkeley National Laboratory
+US
+2,723
+Lawrence Berkeley National Laboratory
+US
+4,231
+University of California, Berkeley
+US
+5,385
+9
+University of California, Berkeley
+US
+2,585
+Lomonosov Moscow State University
+RU
+3,972
+University of Oxford
+GB
+5,218
+10
+University of Cambridge
+GB
+2,491
+Los Alamos National Laboratory
+US
+3,908
+Peking University
+CN
+5,182
+11
+Argonne National Laboratory
+US
+2,386
+Massachusetts Institute of Technology
+US
+3,860
+University of Rajasthan
+IN
+5,179
+12
+Stanford University
+US
+2,347
+University of California, Berkeley
+US
+3,518
+University of Chinese Academy of Sciences
+CN
+5,025
+13
+Brookhaven National Laboratory
+US
+2,290
+University of Cambridge
+GB
+3,440
+Tsinghua University
+CN
+4,953
+14
+University of Illinois Urbana-Champaign
+US
+2,281
+Stanford University
+US
+3,405
+Lomonosov Moscow State University
+RU
+4,845
+15
+University of Oxford
+GB
+2,273
+Brookhaven National Laboratory
+US
+3,368
+Osaka University
+JP
+4,779
+16
+University of Maryland, College Park
+US
+2,241
+Argonne National Laboratory
+US
+3,318
+Stanford University
+US
+4,693
+17
+Fermilab
+US
+2,154
+University of Oxford
+GB
+3,314
+Russian Academy of Sciences
+RU
+4,545
+18
+Russian Academy of Sciences
+RU
+2,132
+Joint Institute for Nuclear Research
+RU
+3,262
+Tohoku University
+JP
+4,532
+19
+Joint Institute for Nuclear Research
+RU
+2,116
+Fermilab
+US
+3,226
+Joint Institute for Nuclear Research
+RU
+4,354
+20
+Lomonosov Moscow State University
+RU
+2,095
+University of Maryland, College Park
+US
+3,111
+Los Alamos National Laboratory
+US
+4,254
+21
+Princeton University
+US
+2,017
+High Energy Accelerator Research Organization (KEK)
+JP
+3,072
+ETH Zurich
+CH
+4,244
+22
+University of California, Santa Barbara
+US
+1,941
+University of Michigan–Ann Arbor
+US
+2,974
+University of Cambridge
+GB
+4,154
+23
+Oak Ridge National Laboratory
+US
+1,917
+Princeton University
+US
+2,897
+Brookhaven National Laboratory
+US
+3,997
+24
+United States Naval Research Laboratory
+US
+1,874
+Tokyo Institute of Technology
+JP
+2,775
+University of Maryland, College Park
+US
+3,995
+25
+High Energy Accelerator Research Organization (KEK)
+JP
+1,825
+University of Science and Technology of China
+CN
+2,676
+Princeton University
+US
+3,854
+26
+University of Michigan–Ann Arbor
+US
+1,821
+University of Paris-Sud
+FR
+2,657
+University of Michigan–Ann Arbor
+US
+3,763
+27
+Rutherford Appleton Laboratory
+GB
+1,804
+California Institute of Technology
+US
+2,657
+Technical University of Munich
+DE
+3,713
+28
+Technical University of Munich
+DE
+1,800
+Institute of Physics
+PL
+2,585
+Imperial College London
+GB
+3,628
+29
+Forschungszentrum Jülich
+DE
+1,715
+Max Planck Society
+DE
+2,560
+Fermilab
+US
+3,622
+30
+University of Paris-Sud
+FR
+1,694
+Nagoya University
+JP
+2,521
+Argonne National Laboratory
+US
+3,612
+31
+Lawrence Livermore National Laboratory
+US
+1,687
+Imperial College London
+GB
+2,473
+University of Paris-Saclay
+FR
+3,470
+32
+Institute of Physics
+PL
+1,660
+Technical University of Munich
+DE
+2,470
+Karlsruhe Institute of Technology
+DE
+3,412
+33
+Nagoya University
+JP
+1,647
+Tsinghua University
+CN
+2,430
+Harvard University
+US
+3,369
+34
+California Institute of Technology
+US
+1,611
+University of Illinois Urbana-Champaign
+US
+2,405
+Nagoya University
+JP
+3,347
+35
+University of California, Los Angeles
+US
+1,581
+University of California, Santa Barbara
+US
+2,395
+Oak Ridge National Laboratory
+US
+3,339
+36
+Imperial College London
+GB
+1,569
+Japan Science and Technology Agency (JST)
+JP
+2,355
+National University of Singapore
+SG
+3,335
+37
+University of Washington
+US
+1,542
+ETH Zurich
+CH
+2,295
+California Institute of Technology
+US
+3,313
+38
+China Center of Advanced Science and Technology
+CN
+1,538
+National Institute of Standards and Technology
+US
+2,294
+University of Paris-Sud
+FR
+3,260
+39
+The University of Texas at Austin
+US
+1,509
+Peking University
+CN
+2,188
+Shanghai Jiao Tong University
+CN
+3,231
+40
+National Institute of Standards and Technology
+US
+1,496
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+2,173
+Nanjing University
+CN
+3,006
+41
+Stony Brook University
+US
+1,493
+Harvard University
+US
+2,142
+National Institute of Standards and Technology
+US
+2,990
+42
+Pennsylvania State University
+US
+1,474
+Oak Ridge National Laboratory
+US
+2,142
+Moscow Engineering Physics Institute
+RU
+2,988
+43
+University of Tsukuba
+JP
+1,466
+CEA Saclay
+FR
+2,115
+High Energy Accelerator Research Organization (KEK)
+JP
+2,964
+44
+University of Wisconsin–Madison
+US
+1,450
+United States Naval Research Laboratory
+US
+2,106
+SLAC National Accelerator Laboratory
+US
+2,944
+45
+Cornell University
+US
+1,435
+University of Wisconsin–Madison
+US
+2,080
+University College London
+GB
+2,911
+46
+Tel Aviv University
+IL
+1,425
+Forschungszentrum Jülich
+DE
+2,077
+Forschungszentrum Jülich
+DE
+2,896
+47
+Max Planck Institute for Solid State Research
+DE
+1,402
+University of Washington
+US
+2,076
+University of California, Los Angeles
+US
+2,892
+48
+Tokyo Institute of Technology
+JP
+1,397
+RIKEN
+JP
+2,062
+École Polytechnique Fédérale de Lausanne
+CH
+2,884
+49
+University of Chicago
+US
+1,388
+University of California, Los Angeles
+US
+2,061
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+2,853
+50
+Harvard University
+US
+1,383
+Pennsylvania State University
+US
+2,046
+Sapienza University of Rome
+IT
+2,797
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+47
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+47
+
+6. Particle Physics
+6. Particle Physics
+6. Particle Physics
+Table 6 | The top 100 productive institutions: Particle Physics. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+University of Minnesota
+US
+1,382
+Cornell University
+US
+2,031
+University of Chicago
+US
+2,722
+52
+P.N. Lebedev Physical Institute of the Russian Academy of Sciences
+RU
+1,373
+Physico-Technical Institute
+RU
+2,010
+University of Illinois Urbana-Champaign
+US
+2,706
+53
+University of Arizona
+US
+1,313
+Institute of Theoretical Physics
+CN
+2,008
+University of California, Santa Barbara
+US
+2,684
+54
+The Ohio State University
+US
+1,310
+Polish Academy of Sciences
+PL
+1,989
+Universidade de São Paulo
+BR
+2,679
+55
+Johannes Gutenberg University Mainz
+DE
+1,306
+University of Tsukuba
+JP
+1,971
+Institute of Theoretical Physics
+CN
+2,664
+56
+AT&T (United States)
+US
+1,302
+National Academy of Sciences of Ukraine
+UA
+1,964
+Quantum Group (United States)
+US
+2,610
+57
+University of California, San Diego
+US
+1,284
+Lawrence Livermore National Laboratory
+US
+1,963
+Moscow Institute of Physics and Technology
+RU
+2,597
+58
+ETH Zurich
+CH
+1,278
+Rutherford Appleton Laboratory
+GB
+1,953
+Johannes Gutenberg University Mainz
+DE
+2,562
+59
+Weizmann Institute of Science
+IL
+1,253
+Karlsruhe Institute of Technology
+DE
+1,941
+St Petersburg University
+RU
+2,538
+60
+Rutgers, The State University of New Jersey
+US
+1,247
+Texas A&M University
+US
+1,918
+Tokyo Institute of Technology
+JP
+2,521
+61
+State University of New York
+US
+1,246
+Tokyo University of Science
+JP
+1,892
+University of Valencia
+ES
+2,519
+62
+Polish Academy of Sciences
+PL
+1,241
+Universidade de São Paulo
+BR
+1,852
+University of Toronto
+CA
+2,516
+63
+Université Paris Cité
+FR
+1,231
+The University of Texas at Austin
+US
+1,852
+The University of Texas at Austin
+US
+2,486
+64
+Tokyo University of Science
+JP
+1,227
+Sapienza University of Rome
+IT
+1,850
+Perimeter Institute
+CA
+2,485
+65
+Chinese Academy of Sciences
+CN
+1,226
+Laboratoire de Physique Théorique
+FR
+1,834
+Heidelberg University
+DE
+2,482
+66
+Karlsruhe Institute of Technology
+DE
+1,223
+University of Toronto
+CA
+1,821
+P.N. Lebedev Physical Institute of the Russian Academy of Sciences
+RU
+2,446
+67
+Texas A&M University
+US
+1,209
+P.N. Lebedev Physical Institute of the Russian Academy of Sciences
+RU
+1,818
+Texas A&M University
+US
+2,443
+68
+University of Pennsylvania
+US
+1,191
+Ruhr University Bochum
+DE
+1,802
+University of Waterloo
+CA
+2,441
+69
+University of Rochester
+US
+1,177
+The Ohio State University
+US
+1,788
+Universidad Nacional Autónoma de México
+MX
+2,434
+70
+Columbia University
+US
+1,170
+Columbia University
+US
+1,785
+Pennsylvania State University
+US
+2,434
+71
+University of Manchester
+GB
+1,163
+University of Arizona
+US
+1,766
+Kurchatov Institute
+RU
+2,396
+72
+Universität Hamburg
+DE
+1,155
+National Taiwan University
+TW
+1,733
+University of Wisconsin–Madison
+US
+2,379
+73
+RIKEN
+JP
+1,141
+University of California, San Diego
+US
+1,726
+Institute of Physics
+CN
+2,343
+74
+Yale University
+US
+1,141
+École Polytechnique Fédérale de Lausanne
+CH
+1,725
+University of Washington
+US
+2,342
+75
+Uppsala University
+SE
+1,128
+Weizmann Institute of Science
+IL
+1,710
+Max Planck Society
+DE
+2,331
+76
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+1,124
+University of Chicago
+US
+1,706
+Deutsches Elektronen-Synchrotron DESY
+DE
+2,326
+77
+Kurchatov Institute
+RU
+1,123
+Seoul National University
+KR
+1,680
+Zhejiang University
+CN
+2,323
+78
+Ruhr University Bochum
+DE
+1,110
+Petersburg Nuclear Physics Institute
+RU
+1,675
+National Taiwan University
+TW
+2,287
+79
+The Abdus Salam International Centre for Theoretical Physics (ICTP) IT
+1,108
+National University of Singapore
+SG
+1,674
+University of California, San Diego
+US
+2,286
+80
+Lund University
+SE
+1,100
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+1,636
+Paul Scherrer Institute
+CH
+2,281
+81
+Max Planck Society
+DE
+1,096
+University of Valencia
+ES
+1,628
+Ludwig-Maximilians-Universität München
+DE
+2,275
+82
+University of British Columbia
+CA
+1,090
+Stony Brook University
+US
+1,618
+University of Manchester
+GB
+2,274
+83
+Goethe University Frankfurt
+DE
+1,089
+Johannes Gutenberg University Mainz
+DE
+1,592
+University of Geneva
+CH
+2,273
+84
+Technion – Israel Institute of Technology
+IL
+1,080
+École Polytechnique
+FR
+1,591
+Institute of Physics
+PL
+2,242
+85
+Florida State University
+US
+1,067
+Institute for Theoretical and Experimental Physics
+RU
+1,589
+University of Colorado Boulder
+US
+2,232
+86
+Sapienza University of Rome
+IT
+1,055
+Institute of High Energy Physics
+CN
+1,576
+Columbia University
+US
+2,212
+87
+Chalmers University of Technology
+SE
+1,055
+Tel Aviv University
+IL
+1,575
+Consejo Nacional de Investigaciones Científicas y Técnicas
+AR
+2,208
+88
+University of Florida
+US
+1,054
+University of Florida
+US
+1,568
+Institute of High Energy Physics
+CN
+2,193
+89
+Istituto Nazionale per la Fisica della Materia
+IT
+1,050
+University of California, Davis
+US
+1,562
+Goethe University Frankfurt
+DE
+2,184
+90
+École Polytechnique
+FR
+1,045
+Kyushu University
+JP
+1,556
+Universität Hamburg
+DE
+2,168
+91
+Stanford Synchrotron Radiation Lightsource
+US
+1,035
+Uppsala University
+SE
+1,551
+Novosibirsk State University
+RU
+2,165
+92
+University of Valencia
+ES
+1,000
+University of Bonn
+DE
+1,543
+École Polytechnique
+FR
+2,161
+93
+Autonomous University of Madrid
+ES
+999
+St Petersburg University
+RU
+1,541
+Autonomous University of Madrid
+ES
+2,141
+94
+University of California, Davis
+US
+993
+University of Minnesota
+US
+1,538
+Australian National University
+AU
+2,133
+95
+Heidelberg University
+DE
+992
+Universidad Nacional Autónoma de México
+MX
+1,530
+Uppsala University
+SE
+2,122
+96
+Iowa State University
+US
+990
+Yale University
+US
+1,520
+The Ohio State University
+US
+2,121
+97
+Hiroshima University
+JP
+986
+University College London
+GB
+1,504
+Harbin Institute of Technology
+CN
+2,110
+98
+Hokkaido University
+JP
+986
+Boston University
+US
+1,499
+Nanyang Technological University
+SG
+2,110
+99
+Universidade de São Paulo
+BR
+976
+Hokkaido University
+JP
+1,472
+University of Southampton
+GB
+2,106
+100
+Humboldt-Universität zu Berlin
+DE
+974
+Hiroshima University
+JP
+1,471
+National Institute for Materials Science (NIMS)
+JP
+2,106
+48
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+48
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+7. Aerospace Engineering
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+World Map of Aerospace Engineering Collaboration | 1971–2020
+Figure 7(a) | The World Map of Aerospace Engineering Collaboration. The bubbles represent the top 199 institutions
+in terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+50
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+50
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Top 30 Productive Institutions on the World Map: Aerospace Engineering | 1991–2020
+Beihang U.
+Chinese Acad of Sci
+NW Polytechnical U.
+Harbin Inst of Tech
+German Aerospace Center
+Jet Propulsion Lab
+Goddard Space Flight Center
+Tsinghua U.
+Nat'l U. Defense Tech
+Langley Res Center
+Ames Res Center
+Nanjing U. of Aero & Astro
+Beijing Inst of Tech
+Delft U. Tech
+U. Michigan
+Shanghai Jiao Tong U.
+Glenn Res Center
+Johnson Space Center
+Marshall Space Flight Center
+Georgia Inst of Tech
+MIT
+U. Tokyo
+U. Chinese Acad of Sci
+JAXA
+U. Maryland
+Penn State U.
+Tongji U.
+Tech U. Munich
+Politecnico di Milano
+China Acad of Space Tech
+Aerospace Engineering [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Jet Propulsion Lab
+Langley Res Center
+Goddard Space Flight Center
+NW Polytechnical U.
+Glenn Res Center
+Harbin Inst of Tech
+Beihang U.
+Marshall Space Flight Center
+Ames Res Center
+Johnson Space Center
+German Aerospace Center
+U. Tokyo
+Tsinghua U.
+Georgia Inst of Tech
+U. Michigan
+MIT
+Penn State U.
+JAXA
+US Air Force Research Lab
+Chinese Acad of Sci
+Nat'l U. Defense Tech
+U. Maryland
+Delft U. Tech
+Stanford U.
+UC Berkeley
+Virginia Tech
+Shanghai Jiao Tong U.
+Beijing Inst of Tech
+Nanjing U. of Aero & Astro
+U. Illinois UC
+Aerospace Engineering [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Langley Res Center
+Glenn Res Center
+Ames Res Center
+Jet Propulsion Lab
+Goddard Space Flight Center
+Marshall Space Flight Center
+Johnson Space Center
+Penn State U.
+MIT
+U. Maryland
+Georgia Inst of Tech
+Stanford U.
+U. Michigan
+Lockheed Martin (US)
+Boeing (US)
+Virginia Tech
+UC Berkeley
+Ohio State U.
+UT Austin
+Purdue U. West Lafayette
+U. Illinois UC
+ESTEC
+U. Tokyo
+U. Alabama in Huntsville
+Rockwell Automation (US)
+Texas A&M U.
+Caltechy
+The Aerospace Corporation
+U. Cambridge
+Los Alamos NL
+Aerospace Engineering [1991−2000]
+Figure 7(b) | The top 30 productive institutions on the World Map: Aerospace Engineering. The bubbles represent
+the top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+51
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+51
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Interregional Aerospace Engineering Collaboration | 1991–2020
+222
+71
+68
+25
+26
+100
+24
+12
+10
+18
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+244
+15
+12
+18
+16
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+233
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 7(c) | The Interregional Aerospace Engineering Collaboration Matrix Diagram. The bubble size represents
+the number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal
+to or greater than 10, it is displayed inside the bubble.
+52
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+52
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Interinstitutional Aerospace Engineering Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Jet Propulsion Lab      
+      Goddard Space Flight Center      
+      U. Maryland      
+      Langley Res Center      
+      Ames Res Center      
+      Glenn Res Center      
+      Johnson Space Center      
+      Marshall Space Flight Center      
+      U. Tokyo      
+      JAXA      
+      Ohio State U.      
+      U. Michigan      
+      US Air Force Research Lab      
+      Georgia Inst of Tech      
+      U. Colorado Boulder      
+      Virginia Tech      
+      Purdue U. West Lafayette      
+      Texas A&M U.      
+      Penn State U.      
+      U. Illinois UC      
+      Imperial College London      
+      U. Cambridge      
+      UT Austin      
+      Stanford U.      
+      MIT      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      UC Berkeley      
+      Tech U. Munich      
+      Politecnico di Milano      
+      Delft U. Tech      
+      German Aerospace Center      
+      ESTEC      
+      Zhejiang U.      
+      Nanjing U. of Aero & Astro      
+      Shanghai Jiao Tong U.      
+      Tsinghua U.      
+      Beijing Inst of Tech      
+      Beihang U.      
+      China Acad of Space Tech      
+      NW Polytechnical U.      
+      Xi'an Jiaotong U.      
+      Harbin Inst of Tech      
+      Harbin Engineering U.      
+      Sapienza U. Rome      
+      Polytechnic U. Turin      
+      Tongji U.      
+      Nat'l U. Defense Tech      
+      Wuhan U.      
+      UNSW Sydney      
+https://ror.org/027k65916
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/0399mhs52
+https://ror.org/02acart68
+https://ror.org/059fqnc42
+https://ror.org/04xx4z452
+https://ror.org/02epydz83
+https://ror.org/057zh3y96
+https://ror.org/059yhyy33
+https://ror.org/00rs6vg23
+https://ror.org/00jmfr291
+https://ror.org/02e2egq70
+https://ror.org/01zkghx44
+https://ror.org/02ttsq026
+https://ror.org/02smfhw86
+https://ror.org/02dqehb95
+https://ror.org/01f5ytq51
+https://ror.org/04p491231
+https://ror.org/047426m28
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/00hj54h04
+https://ror.org/00f54p054
+https://ror.org/042nb2s44
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/01an7q238
+https://ror.org/02kkvpp62
+https://ror.org/01nffqt88
+https://ror.org/02e2c7k09
+https://ror.org/04bwf3e34
+https://ror.org/03h3jqn23
+https://ror.org/00a2xv884
+https://ror.org/01scyh794
+https://ror.org/0220qvk04
+https://ror.org/03cve4549
+https://ror.org/01skt4w74
+https://ror.org/00wk2mp56
+https://ror.org/025397a59
+https://ror.org/01y0j0j86
+https://ror.org/017zhmm22
+https://ror.org/01yqg2h08
+https://ror.org/03x80pn82
+https://ror.org/02be6w209
+https://ror.org/00bgk9508
+https://ror.org/03rc6as71
+https://ror.org/05d2yfz11
+https://ror.org/033vjfk17
+https://ror.org/03r8z3t63
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [US]  
+  [DE]  
+  [IT]  
+  [NL]  
+  [DE]  
+  [NL]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [IT]  
+  [IT]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [AU]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Tohoku U.      
+      U. Illinois UC      
+      U. Washington      
+      Ames Res Center      
+      Stanford U.      
+      U. Southampton      
+      U. Cambridge      
+      Imperial College London      
+      Delft U. Tech      
+      German Aerospace Center      
+      ESTEC      
+      Beihang U.      
+      Tsinghua U.      
+      Chinese Acad of Sci      
+      Shanghai Jiao Tong U.      
+      Tongji U.      
+      NW Polytechnical U.      
+      Air Force Engineering U.      
+      Harbin Inst of Tech      
+      Beijing Inst of Tech      
+      Nanjing U. of Aero & Astro      
+      Zhejiang U.      
+      Kyushu U.      
+      Nat'l U. Defense Tech      
+      Xiaomi (China)      
+      U. Tokyo      
+      JAXA      
+      Glenn Res Center      
+      Marshall Space Flight Center      
+      Boeing (US)      
+      Langley Res Center      
+      Johnson Space Center      
+      Lockheed Martin (US)      
+      Goddard Space Flight Center      
+      U. Maryland      
+      U. Arizona      
+      Jet Propulsion Lab      
+      Caltech      
+      US Air Force Research Lab      
+      Ohio State U.      
+      Purdue U. West Lafayette      
+      Georgia Inst of Tech      
+      Penn State U.      
+      Virginia Tech      
+      U. Florida      
+      Texas A&M U.      
+      UT Austin      
+      MIT      
+      UC Berkeley      
+      U. Michigan      
+https://ror.org/01dq60k83
+https://ror.org/047426m28
+https://ror.org/00cvxb145
+https://ror.org/02acart68
+https://ror.org/00f54p054
+https://ror.org/01ryk1543
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+https://ror.org/02e2c7k09
+https://ror.org/04bwf3e34
+https://ror.org/03h3jqn23
+https://ror.org/00wk2mp56
+https://ror.org/03cve4549
+https://ror.org/034t30j35
+https://ror.org/0220qvk04
+https://ror.org/03rc6as71
+https://ror.org/01y0j0j86
+https://ror.org/00seraz22
+https://ror.org/01yqg2h08
+https://ror.org/01skt4w74
+https://ror.org/01scyh794
+https://ror.org/00a2xv884
+https://ror.org/00p4k0j84
+https://ror.org/05d2yfz11
+https://ror.org/029f7bn57
+https://ror.org/057zh3y96
+https://ror.org/059yhyy33
+https://ror.org/059fqnc42
+https://ror.org/02epydz83
+https://ror.org/04sm5zn07
+https://ror.org/0399mhs52
+https://ror.org/04xx4z452
+https://ror.org/026er9r08
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/03m2x1q45
+https://ror.org/027k65916
+https://ror.org/05dxps055
+https://ror.org/02e2egq70
+https://ror.org/00rs6vg23
+https://ror.org/02dqehb95
+https://ror.org/01zkghx44
+https://ror.org/04p491231
+https://ror.org/02smfhw86
+https://ror.org/02y3ad647
+https://ror.org/01f5ytq51
+https://ror.org/00hj54h04
+https://ror.org/042nb2s44
+https://ror.org/01an7q238
+https://ror.org/00jmfr291
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [NL]  
+  [DE]  
+  [NL]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 7(d) | The Interinstitutional Aerospace Engineering Collaboration Dendrogram. The top 50 institutions in
+terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+53
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+53
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Interinstitutional Aerospace Engineering Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Cornell U.      
+      Princeton U.      
+      Arizona State U.      
+      U. Arizona      
+      German Aerospace Center      
+      UCLA      
+      U. Colorado Boulder      
+      Imperial College London      
+      U. Cambridge      
+      U. Oxford      
+      Texas A&M U.      
+      Virginia Tech      
+      U. Florida      
+      Boeing (US)      
+      Glenn Res Center      
+      Rockwell Automation (US)      
+      Georgia Inst of Tech      
+      MIT      
+      Armstrong Flight Res Center      
+      Purdue U. West Lafayette      
+      Wright−Patterson Air Force Base      
+      Ohio State U.      
+      UT Austin      
+      U. Illinois UC      
+      Marshall Space Flight Center      
+      U. Alabama in Huntsville      
+      Langley Res Center      
+      Old Dominion U.      
+      Los Alamos NL      
+      Lawrence Livermore NL      
+      The Aerospace Corporation      
+      US Naval Research Lab      
+      Goddard Space Flight Center      
+      U. Maryland      
+      U. Michigan      
+      UC Berkeley      
+      ESTEC      
+      U. Washington      
+      Ames Res Center      
+      Stanford U.      
+      North Carolina State U.      
+      U. Wisconsin−Madison      
+      U. Tokyo      
+      Penn State U.      
+      Technion − Israel Inst of Tech      
+      Johnson Space Center      
+      Lockheed Martin (US)      
+      Space Information Labs (US)      
+      Jet Propulsion Lab      
+      Caltech      
+https://ror.org/05bnh6r87
+https://ror.org/00hx57361
+https://ror.org/03efmqc40
+https://ror.org/03m2x1q45
+https://ror.org/04bwf3e34
+https://ror.org/046rm7j60
+https://ror.org/02ttsq026
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/01f5ytq51
+https://ror.org/02smfhw86
+https://ror.org/02y3ad647
+https://ror.org/04sm5zn07
+https://ror.org/059fqnc42
+https://ror.org/01sx1pm50
+https://ror.org/01zkghx44
+https://ror.org/042nb2s44
+https://ror.org/03em45j53
+https://ror.org/02dqehb95
+https://ror.org/0097e1k27
+https://ror.org/00rs6vg23
+https://ror.org/00hj54h04
+https://ror.org/047426m28
+https://ror.org/04tj63d06
+https://ror.org/02epydz83
+https://ror.org/02zsxwr40
+https://ror.org/0399mhs52
+https://ror.org/04zjtrb98
+https://ror.org/01e41cf67
+https://ror.org/041nk4h53
+https://ror.org/01ar9e455
+https://ror.org/04d23a975
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/00jmfr291
+https://ror.org/01an7q238
+https://ror.org/03h3jqn23
+https://ror.org/00cvxb145
+https://ror.org/02acart68
+https://ror.org/00f54p054
+https://ror.org/01y2jtd41
+https://ror.org/057zh3y96
+https://ror.org/04p491231
+https://ror.org/03qryx823
+https://ror.org/04xx4z452
+https://ror.org/026er9r08
+https://ror.org/03qj9zv39
+https://ror.org/027k65916
+https://ror.org/05dxps055
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [NL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      UC Berkeley      
+      U. Wisconsin−Madison      
+      Penn State U.      
+      Princeton U.      
+      Ohio State U.      
+      U. Toronto      
+      UT Austin      
+      U. Illinois UC      
+      Texas A&M U.      
+      The Aerospace Corporation      
+ Wright−Patterson Air Force Base      
+      Boeing (Australia)      
+      U. Washington      
+      Armstrong Flight Res Center      
+      General Dynamics (US)      
+      Georgia Inst of Tech      
+      Cornell U.      
+      Stanford U.      
+      Lockheed Martin (US)      
+      ACA      
+      Marshall Space Flight Center      
+      Boeing (US)      
+      Goddard Space Flight Center      
+      U. Maryland      
+      Glenn Res Center      
+      NASA      
+      Johnson Space Center      
+      Rockwell Automation (US)      
+      Ames Res Center      
+      US Army      
+      Virginia Tech      
+      Langley Res Center      
+      Old Dominion U.      
+      Purdue U. West Lafayette      
+      General Motors (US)      
+      U. Tokyo      
+      U. Cambridge      
+      Imperial College London      
+      Technion − Israel Inst of Tech      
+      Colorado State U.      
+      General Electric (US)      
+      HRL Labs (US)      
+      MIT      
+      UCLA      
+      U. Michigan      
+      US Naval Research Lab      
+      Jet Propulsion Lab      
+      Caltech      
+      U. Arizona      
+      U. Kansas      
+https://ror.org/01an7q238
+https://ror.org/01y2jtd41
+https://ror.org/04p491231
+https://ror.org/00hx57361
+https://ror.org/00rs6vg23
+https://ror.org/03dbr7087
+https://ror.org/00hj54h04
+https://ror.org/047426m28
+https://ror.org/01f5ytq51
+https://ror.org/01ar9e455
+https://ror.org/0097e1k27
+https://ror.org/0346ase89
+https://ror.org/00cvxb145
+https://ror.org/03em45j53
+https://ror.org/05pyq8e17
+https://ror.org/01zkghx44
+https://ror.org/05bnh6r87
+https://ror.org/00f54p054
+https://ror.org/026er9r08
+https://ror.org/04md3b668
+https://ror.org/02epydz83
+https://ror.org/04sm5zn07
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/04d23a975
+https://ror.org/059fqnc42
+https://ror.org/027ka1x80
+https://ror.org/04xx4z452
+https://ror.org/01sx1pm50
+https://ror.org/02acart68
+https://ror.org/00afsp483
+https://ror.org/02smfhw86
+https://ror.org/0399mhs52
+https://ror.org/04zjtrb98
+https://ror.org/02dqehb95
+https://ror.org/05addee68
+https://ror.org/057zh3y96
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+https://ror.org/03qryx823
+https://ror.org/03k1gpj17
+https://ror.org/013msgt25
+https://ror.org/05p7te762
+https://ror.org/042nb2s44
+https://ror.org/046rm7j60
+https://ror.org/00jmfr291
+https://ror.org/027k65916
+https://ror.org/05dxps055
+https://ror.org/03m2x1q45
+https://ror.org/001tmjg57
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [GB]  
+  [GB]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 7(d) | The Interinstitutional Aerospace Engineering Collaboration Dendrogram. (Cont.)
+54
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+54
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Table 7 | The top 100 productive institutions: Aerospace Engineering.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Langley Research Center
+US
+3,016
+Jet Propulsion Laboratory
+US
+3,616
+Beihang University
+CN
+6,290
+2
+Glenn Research Center
+US
+2,569
+Langley Research Center
+US
+3,136
+Chinese Academy of Sciences
+CN
+6,104
+3
+Ames Research Center
+US
+2,169
+Goddard Space Flight Center
+US
+3,066
+Northwestern Polytechnical University
+CN
+4,888
+4
+Jet Propulsion Laboratory
+US
+1,927
+Northwestern Polytechnical University
+CN
+2,743
+Harbin Institute of Technology
+CN
+4,585
+5
+Goddard Space Flight Center
+US
+1,534
+Glenn Research Center
+US
+2,679
+German Aerospace Center
+DE
+4,447
+6
+Marshall Space Flight Center
+US
+1,487
+Harbin Institute of Technology
+CN
+2,455
+Jet Propulsion Laboratory
+US
+3,983
+7
+Johnson Space Center
+US
+1,107
+Beihang University
+CN
+2,203
+Goddard Space Flight Center
+US
+3,937
+8
+Pennsylvania State University
+US
+950
+Marshall Space Flight Center
+US
+2,188
+Tsinghua University
+CN
+3,898
+9
+Massachusetts Institute of Technology
+US
+904
+Ames Research Center
+US
+2,012
+National University of Defense Technology
+CN
+3,690
+10
+University of Maryland, College Park
+US
+797
+Johnson Space Center
+US
+1,957
+Langley Research Center
+US
+3,676
+11
+Georgia Institute of Technology
+US
+771
+German Aerospace Center
+DE
+1,856
+Ames Research Center
+US
+3,578
+12
+Stanford University
+US
+753
+The University of Tokyo
+JP
+1,851
+Nanjing University of Aeronautics and Astronautics
+CN
+3,317
+13
+University of Michigan–Ann Arbor
+US
+751
+Tsinghua University
+CN
+1,799
+Beĳing Institute of Technology
+CN
+3,195
+14
+Lockheed Martin (United States)
+US
+723
+Georgia Institute of Technology
+US
+1,794
+Delft University of Technology
+NL
+2,954
+15
+Boeing (United States)
+US
+722
+University of Michigan–Ann Arbor
+US
+1,776
+University of Michigan–Ann Arbor
+US
+2,926
+16
+Virginia Tech
+US
+688
+Massachusetts Institute of Technology
+US
+1,742
+Shanghai Jiao Tong University
+CN
+2,903
+17
+University of California, Berkeley
+US
+640
+Pennsylvania State University
+US
+1,701
+Glenn Research Center
+US
+2,742
+18
+The Ohio State University
+US
+594
+Japan Aerospace Exploration Agency (JAXA)
+JP
+1,610
+Johnson Space Center
+US
+2,695
+19
+The University of Texas at Austin
+US
+587
+United States Air Force Research Laboratory
+US
+1,609
+Marshall Space Flight Center
+US
+2,631
+20
+Purdue University West Lafayette
+US
+551
+Chinese Academy of Sciences
+CN
+1,601
+Georgia Institute of Technology
+US
+2,617
+21
+University of Illinois Urbana-Champaign
+US
+547
+National University of Defense Technology
+CN
+1,428
+Massachusetts Institute of Technology
+US
+2,584
+22
+European Space Research and Technology Centre
+NL
+529
+University of Maryland, College Park
+US
+1,419
+The University of Tokyo
+JP
+2,558
+23
+The University of Tokyo
+JP
+504
+Delft University of Technology
+NL
+1,367
+University of Chinese Academy of Sciences
+CN
+2,488
+24
+University of Alabama in Huntsville
+US
+496
+Stanford University
+US
+1,345
+Japan Aerospace Exploration Agency (JAXA)
+JP
+2,457
+25
+Rockwell Automation (United States)
+US
+494
+University of California, Berkeley
+US
+1,337
+University of Maryland, College Park
+US
+2,286
+26
+Texas A&M University
+US
+485
+Virginia Tech
+US
+1,298
+Pennsylvania State University
+US
+2,144
+27
+California Institute of Technology
+US
+468
+Shanghai Jiao Tong University
+CN
+1,248
+Tongji University
+CN
+2,133
+28
+The Aerospace Corporation
+US
+449
+Beĳing Institute of Technology
+CN
+1,247
+Technical University of Munich
+DE
+2,124
+29
+University of Cambridge
+GB
+447
+Nanjing University of Aeronautics and Astronautics
+CN
+1,235
+Politecnico di Milano
+IT
+2,027
+30
+Los Alamos National Laboratory
+US
+421
+University of Illinois Urbana-Champaign
+US
+1,189
+China Academy of Space Technology
+CN
+1,945
+31
+Lawrence Livermore National Laboratory
+US
+418
+California Institute of Technology
+US
+1,155
+Virginia Tech
+US
+1,945
+32
+Old Dominion University
+US
+418
+European Space Research and Technology Centre
+NL
+1,152
+Stanford University
+US
+1,928
+33
+Technion – Israel Institute of Technology
+IL
+415
+The Ohio State University
+US
+1,104
+University of California, Berkeley
+US
+1,918
+34
+North Carolina State University
+US
+413
+Tohoku University
+JP
+1,064
+Zhejiang University
+CN
+1,846
+35
+Cornell University
+US
+402
+Boeing (United States)
+US
+1,035
+United States Air Force Research Laboratory
+US
+1,845
+36
+German Aerospace Center
+DE
+398
+Texas A&M University
+US
+1,012
+Wuhan University
+CN
+1,788
+37
+Arizona State University
+US
+395
+Lockheed Martin (United States)
+US
+989
+University of Colorado Boulder
+US
+1,745
+38
+University of Arizona
+US
+391
+Xiaomi (China)
+CN
+985
+The Ohio State University
+US
+1,740
+39
+Princeton University
+US
+378
+Tongji University
+CN
+983
+University of Illinois Urbana-Champaign
+US
+1,738
+40
+University of Washington
+US
+375
+Air Force Engineering University
+CN
+974
+Harbin Engineering University
+CN
+1,708
+41
+Armstrong Flight Research Center
+US
+368
+The University of Texas at Austin
+US
+974
+Purdue University West Lafayette
+US
+1,705
+42
+United States Naval Research Laboratory
+US
+368
+Zhejiang University
+CN
+924
+Imperial College London
+GB
+1,699
+43
+Wright-Patterson Air Force Base
+US
+363
+University of Cambridge
+GB
+893
+Texas A&M University
+US
+1,683
+44
+Space Information Laboratories (United States)
+US
+357
+University of Florida
+US
+886
+University of Cambridge
+GB
+1,672
+45
+University of Florida
+US
+356
+Kyushu University
+JP
+865
+The University of Texas at Austin
+US
+1,655
+46
+University of Wisconsin–Madison
+US
+354
+Imperial College London
+GB
+859
+Sapienza University of Rome
+IT
+1,623
+47
+University of California, Los Angeles
+US
+352
+University of Southampton
+GB
+833
+Xi’an Jiaotong University
+CN
+1,612
+48
+University of Colorado Boulder
+US
+345
+University of Washington
+US
+832
+European Space Research and Technology Centre
+NL
+1,568
+49
+Imperial College London
+GB
+344
+Purdue University West Lafayette
+US
+826
+UNSW Sydney
+AU
+1,558
+50
+University of Oxford
+GB
+344
+University of Arizona
+US
+824
+Polytechnic University of Turin
+IT
+1,551
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+55
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+55
+
+7. Aerospace Engineering
+7. Aerospace Engineering
+7. Aerospace Engineering
+Table 7 | The top 100 productive institutions: Aerospace Engineering. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Johns Hopkins University
+US
+343
+Wuhan University
+CN
+821
+Nanjing University of Science and Technology
+CN
+1,544
+52
+Naval Postgraduate School
+US
+343
+Sapienza University of Rome
+IT
+787
+University of Oxford
+GB
+1,536
+53
+Office National d’Études et de Recherches Aérospatiales
+FR
+339
+Seoul National University
+KR
+781
+University of Toronto
+CA
+1,510
+54
+University of Minnesota
+US
+335
+University of Colorado Boulder
+US
+768
+Nanyang Technological University
+SG
+1,510
+55
+United States Army
+US
+333
+Politecnico di Milano
+IT
+759
+University of Southampton
+GB
+1,478
+56
+University of California, Davis
+US
+332
+Cornell University
+US
+753
+Tianjin University
+CN
+1,454
+57
+Institute of Space and Astronautical Science (ISAS)
+JP
+328
+Cranfield University
+GB
+731
+Iowa State University
+US
+1,450
+58
+University of Southampton
+GB
+316
+Carnegie Mellon University
+US
+730
+ETH Zurich
+CH
+1,428
+59
+Delft University of Technology
+NL
+312
+Arizona State University
+US
+729
+RWTH Aachen University
+DE
+1,409
+60
+Tohoku University
+JP
+311
+Huazhong University of Science and Technology
+CN
+726
+Peking University
+CN
+1,399
+61
+Duke University
+US
+305
+Kyoto University
+JP
+721
+Huazhong University of Science and Technology
+CN
+1,394
+62
+University of Manchester
+GB
+304
+University of Toronto
+CA
+715
+University of Stuttgart
+DE
+1,393
+63
+United States Air Force Research Laboratory
+US
+301
+Tokyo Institute of Technology
+JP
+705
+University of Washington
+US
+1,387
+64
+University of British Columbia
+CA
+294
+University of Wisconsin–Madison
+US
+704
+National University of Singapore
+SG
+1,385
+65
+University of Toronto
+CA
+290
+North Carolina State University
+US
+703
+Seoul National University
+KR
+1,375
+66
+Iowa State University
+US
+287
+Nanyang Technological University
+SG
+696
+Dalian University of Technology
+CN
+1,350
+67
+Kyoto University
+JP
+286
+Harbin Engineering University
+CN
+684
+Cranfield University
+GB
+1,342
+68
+Naval Surface Warfare Center
+US
+286
+Hong Kong Polytechnic University
+CN
+677
+Technical University of Denmark
+DK
+1,334
+69
+Rensselaer Polytechnic Institute
+US
+286
+University of California, Los Angeles
+US
+676
+California Institute of Technology
+US
+1,333
+70
+Science Applications International Corporation (United States)
+US
+286
+Technical University of Munich
+DE
+672
+Jilin University
+CN
+1,332
+71
+Kyushu University
+JP
+271
+University of Oxford
+GB
+670
+Tohoku University
+JP
+1,324
+72
+Cranfield University
+GB
+269
+Osaka University
+JP
+660
+Arizona State University
+US
+1,320
+73
+Sapienza University of Rome
+IT
+269
+National University of Singapore
+SG
+649
+University of Florida
+US
+1,306
+74
+Sandia National Laboratories
+US
+267
+Princeton University
+US
+649
+University of Electronic Science and Technology of China
+CN
+1,265
+75
+Carnegie Mellon University
+US
+266
+Office National d’Études et de Recherches Aérospatiales
+FR
+645
+Southeast University
+CN
+1,255
+76
+University of Stuttgart
+DE
+265
+Xi’an Jiaotong University
+CN
+644
+Norwegian University of Science and Technology
+NO
+1,255
+77
+Osaka University
+JP
+265
+ETH Zurich
+CH
+638
+Korea Advanced Institute of Science and Technology
+KR
+1,249
+78
+DEVCOM Army Research Laboratory
+US
+262
+Polytechnic University of Turin
+IT
+632
+KU Leuven
+BE
+1,226
+79
+Rutgers, The State University of New Jersey
+US
+260
+University of British Columbia
+CA
+631
+Karlsruhe Institute of Technology
+DE
+1,224
+80
+University of Cincinnati
+US
+256
+University of Manchester
+GB
+630
+University of Naples Federico II
+IT
+1,214
+81
+University College London
+GB
+249
+Technion – Israel Institute of Technology
+IL
+629
+Chalmers University of Technology
+SE
+1,208
+82
+National Aeronautics and Space Administration
+US
+249
+University of Stuttgart
+DE
+627
+University of Wisconsin–Madison
+US
+1,208
+83
+University of Southern California
+US
+242
+University of California, Davis
+US
+627
+University of Technology Malaysia
+MY
+1,202
+84
+Johns Hopkins University Applied Physics Laboratory
+US
+241
+University of Minnesota
+US
+627
+Universidade de São Paulo
+BR
+1,197
+85
+Defense Systems (United States)
+US
+240
+Boeing (Australia)
+AU
+624
+University of Arizona
+US
+1,195
+86
+Loughborough University
+GB
+231
+Jilin University
+CN
+620
+Air Force Engineering University
+CN
+1,194
+87
+National Cheng Kung University
+TW
+231
+Nagoya University
+JP
+620
+Universitat Politècnica de Catalunya
+ES
+1,188
+88
+Daimler (Germany)
+DE
+228
+Tianjin University
+CN
+617
+Central South University
+CN
+1,167
+89
+University of Virginia
+US
+228
+Korea Advanced Institute of Science and Technology
+KR
+613
+Engineering (Italy)
+IT
+1,153
+90
+University of Surrey
+GB
+227
+UNSW Sydney
+AU
+605
+Universidad Politdécnica de Madrid
+ES
+1,148
+91
+Ford Motor Company (United States)
+US
+227
+United States Naval Research Laboratory
+US
+600
+Office National d’Études et de Recherches Aérospatiales
+FR
+1,144
+92
+University of Glasgow
+GB
+225
+École Polytechnique Fédérale de Lausanne
+CH
+599
+Harvard University
+US
+1,124
+93
+Centre National d’Études Spatiales
+FR
+224
+Peking University
+CN
+598
+Hong Kong Polytechnic University
+CN
+1,115
+94
+University of California, San Diego
+US
+223
+McGill University
+CA
+597
+University of Science and Technology of China
+CN
+1,105
+95
+McGill University
+CA
+221
+University of California, San Diego
+US
+574
+China Aerodynamics Research and Development Center
+CN
+1,102
+96
+École Polytechnique Fédérale de Lausanne
+CH
+220
+Johns Hopkins University Applied Physics Laboratory
+US
+572
+Southwest Jiaotong University
+CN
+1,098
+97
+University of Sheffield
+GB
+220
+Nanjing University of Science and Technology
+CN
+571
+Université de Toulouse
+FR
+1,092
+98
+University of Wales
+GB
+219
+Institute of Space and Astronautical Science (ISAS)
+JP
+571
+University of California, Los Angeles
+US
+1,092
+99
+University of Sydney
+AU
+218
+University of Sheffield
+GB
+564
+Wuhan University of Technology
+CN
+1,087
+100
+Tokyo Institute of Technology
+JP
+212
+Chongqing University
+CN
+563
+École Polytechnique Fédérale de Lausanne
+CH
+1,086
+56
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+56
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+8. Nuclear Engineering
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+World Map of Nuclear Engineering Collaboration | 1971–2020
+Figure 8(a) | The World Map of Nuclear Engineering Collaboration. The bubbles represent the top 199 institutions
+in terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+58
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+58
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Top 30 Productive Institutions on the World Map: Nuclear Engineering | 1991–2020
+Chinese Acad of Sci
+JAEA
+Oak Ridge NL
+Los Alamos NL
+Tsinghua U.
+Karlsruhe Inst of Tech
+Xi'an Jiaotong U.
+MPI − Plasma Phys
+KAERI
+Idaho NL
+Lawrence Livermore NL
+ENEA
+Bhabha Atomic Res Center
+CEA Cadarache
+CGNP
+Joint Inst for Nucl Res
+Kurchatov Inst
+Argonne NL
+U. Tokyo
+Paul Scherrer Inst
+Eur Org for Nucl Res
+Moscow Engr Phys Inst
+U. Sci & Tech of China
+Forschungszentrum Julich
+Kyoto U.
+Inst of Plasma Physics
+N. China Elec Power U.
+Shanghai Jiao Tong U.
+ITER
+U. Chinese Acad of Sci
+Nuclear Engineering [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Petersburg Nucl Phys Inst
+JAEA
+Oak Ridge NL
+Los Alamos NL
+KAERI
+Lawrence Livermore NL
+Argonne NL
+Joint Inst for Nucl Res
+Tsinghua U.
+U. Tokyo
+MPI − Plasma Phys
+Kurchatov Inst
+Chinese Acad of Sci
+Tohoku U.
+CEA Cadarache
+Paul Scherrer Inst
+Inst Laue−Langevin
+ENEA
+Lawrence Berkeley NL
+Eur Org for Nucl Res
+Idaho NL
+CEA Saclay
+Tokyo Inst of Tech
+Res Center for Info Tech
+Kyoto U.
+Forschungszentrum Julich
+Bhabha Atomic Res Center
+Osaka U.
+KEK
+Rutherford Appleton Lab
+Nuclear Engineering [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Los Alamos NL
+Oak Ridge NL
+Argonne NL
+JAEA
+Lawrence Livermore NL
+U. Tokyo
+MPI − Plasma Phys
+Inst Laue−Langevin
+Brookhaven NL
+Joint Inst for Nucl Res
+Tohoku U.
+Rutherford Appleton Lab
+Lawrence Berkeley NL
+Kurchatov Inst
+Sandia Nat'l Labs
+Pacific NW NL
+Kyoto U.
+Forschungszentrum Julich
+Res Center for Info Tech
+NIST
+MIT
+Westinghouse Elec (US)
+Eur Org for Nucl Res
+Hitachi (Japan)
+Tokyo Inst of Tech
+Osaka U.
+ENEA
+Idaho NL
+Toshiba (Japan)
+Glenn Res Center
+Nuclear Engineering [1991−2000]
+Figure 8(b) | The top 30 productive institutions on the World Map: Nuclear Engineering. The bubbles represent the
+top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+59
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+59
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Interregional Nuclear Engineering Collaboration | 1991–2020
+63
+38
+67
+10
+52
+35
+41
+35
+15
+16
+44
+15
+45
+54
+28
+22
+17
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+78
+10
+64
+12
+51
+42
+48
+12
+35
+42
+54
+19
+17
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+93
+35
+26
+24
+33
+16
+21
+62
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 8(c) | The Interregional Nuclear Engineering Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+60
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+60
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Interinstitutional Nuclear Engineering Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      KAERI      
+      Bhabha Atomic Res Center      
+      Xi'an Jiaotong U.      
+      CGNP      
+      Shanghai Jiao Tong U.      
+      U. Chinese Acad of Sci      
+      China Inst of Atomic Energy      
+      Tsinghua U.      
+      North China Electric Power U.      
+ GSI Helmholtz C. for Heavy Ion Res      
+      Eur Org for Nucl Res      
+      IN2P3      
+      Inst Laue−Langevin      
+      Rutherford Appleton Lab      
+      Paul Scherrer Inst      
+      Tech U. Munich      
+      Oak Ridge NL      
+      U. Tennessee at Knoxville      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      MIT      
+      Los Alamos NL      
+      Lawrence Livermore NL      
+      U. Michigan      
+      U. Sci & Tech of China      
+      Chinese Acad of Sci      
+      Inst of Plasma Physics      
+      JAEA      
+      Tokyo Inst of Tech      
+      Kyoto U.      
+      Tohoku U.      
+      KEK      
+      Kyushu U.      
+      U. Tokyo      
+      Osaka U.      
+      Joint Inst for Nucl Res      
+      Kurchatov Inst      
+      Moscow Engr Phys Inst      
+      Russian Acad of Sci      
+      Pacific NW NL      
+      Idaho NL      
+      Argonne NL      
+      CEA Cadarache      
+      Direction de L'Energie Nucleaire      
+      Karlsruhe Inst of Tech      
+      ENEA      
+      ITER      
+      Forschungszentrum Julich      
+      MPI − Plasma Phys      
+      Culham Sci Centre      
+https://ror.org/01xb4fs50
+https://ror.org/05w6wfp17
+https://ror.org/017zhmm22
+https://ror.org/00fpj7t66
+https://ror.org/0220qvk04
+https://ror.org/05qbk4x57
+https://ror.org/00v5gqm66
+https://ror.org/03cve4549
+https://ror.org/04qr5t414
+https://ror.org/02k8cbn47
+https://ror.org/01ggx4157
+https://ror.org/03fd77x13
+https://ror.org/01xtjs520
+https://ror.org/03gq8fr08
+https://ror.org/03eh3y714
+https://ror.org/02kkvpp62
+https://ror.org/01qz5mb56
+https://ror.org/020f3ap87
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/042nb2s44
+https://ror.org/01e41cf67
+https://ror.org/041nk4h53
+https://ror.org/00jmfr291
+https://ror.org/05h992307
+https://ror.org/04c4dkn09
+https://ror.org/034t30j35
+https://ror.org/033cbzv42
+https://ror.org/05nf86y53
+https://ror.org/0112mx960
+https://ror.org/02kpeqv85
+https://ror.org/01dq60k83
+https://ror.org/01g5y5k24
+https://ror.org/00p4k0j84
+https://ror.org/057zh3y96
+https://ror.org/035t8zc32
+https://ror.org/044yd9t77
+https://ror.org/00n1nz186
+https://ror.org/04w8z7f34
+https://ror.org/05qrfxd25
+https://ror.org/00ty2a548
+https://ror.org/05gvnxz63
+https://ror.org/01rs1gy10
+https://ror.org/03cwzta72
+https://ror.org/04t3en479
+https://ror.org/02an8es95
+https://ror.org/01d7n9638
+https://ror.org/02nv7yv05
+https://ror.org/03taest98
+https://ror.org/00mdktv23
+  [KR]  
+  [IN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [DE]  
+  [CH]  
+  [FR]  
+  [FR]  
+  [GB]  
+  [CH]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [FR]  
+  [DE]  
+  [IT]  
+  [FR]  
+  [DE]  
+  [DE]  
+  [GB]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Kyushu U.      
+      JAEA      
+      U. Tokyo      
+      Tohoku U.      
+      KEK      
+      Adv Sci Res Center      
+      Nagoya U.      
+      CEA Cadarache      
+      ENEA      
+      Culham Sci Centre      
+      Res Center for Info Tech      
+      Forschungszentrum Julich      
+      Lawrence Livermore NL      
+      Lawrence Berkeley NL      
+      Sandia Nat'l Labs      
+      MIT      
+      General Atomics (US)      
+      Princeton Plasma Physics Lab      
+      Rutherford Appleton Lab      
+      Paul Scherrer Inst      
+      Inst Laue−Langevin      
+      Tech U. Munich      
+      Eur Org for Nucl Res      
+      Michigan State U.      
+      CEA      
+      MPI − Plasma Phys      
+      Max Planck Society      
+      Tokyo Inst of Tech      
+      Kyoto U.      
+      Osaka U.      
+      CEA Saclay      
+      IN2P3      
+      Brookhaven NL      
+      Argonne NL      
+      Idaho NL      
+      Pacific NW NL      
+      NIST      
+      Oak Ridge NL      
+      Los Alamos NL      
+      Joint Inst for Nucl Res      
+      Kurchatov Inst      
+      Petersburg Nucl Phys Inst      
+      Russian Acad of Sci      
+      Shanghai Jiao Tong U.      
+      Tsinghua U.      
+      Chinese Acad of Sci      
+      China Inst of Atomic Energy      
+      Hitachi (Japan)      
+      KAERI      
+      Bhabha Atomic Res Center      
+https://ror.org/00p4k0j84
+https://ror.org/05nf86y53
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/01g5y5k24
+https://ror.org/05xrbcc66
+https://ror.org/04chrp450
+https://ror.org/01rs1gy10
+https://ror.org/02an8es95
+https://ror.org/00mdktv23
+https://ror.org/04kdh6x72
+https://ror.org/02nv7yv05
+https://ror.org/041nk4h53
+https://ror.org/02jbv0t02
+https://ror.org/01apwpt12
+https://ror.org/042nb2s44
+https://ror.org/03ngjpk76
+https://ror.org/03vn1ts68
+https://ror.org/03gq8fr08
+https://ror.org/03eh3y714
+https://ror.org/01xtjs520
+https://ror.org/02kkvpp62
+https://ror.org/01ggx4157
+https://ror.org/05hs6h993
+https://ror.org/00jjx8s55
+https://ror.org/03taest98
+https://ror.org/01hhn8329
+https://ror.org/0112mx960
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/03n15ch10
+https://ror.org/03fd77x13
+https://ror.org/02ex6cf31
+https://ror.org/05gvnxz63
+https://ror.org/00ty2a548
+https://ror.org/05h992307
+https://ror.org/05xpvk416
+https://ror.org/01qz5mb56
+https://ror.org/01e41cf67
+https://ror.org/044yd9t77
+https://ror.org/00n1nz186
+https://ror.org/037styt87
+https://ror.org/05qrfxd25
+https://ror.org/0220qvk04
+https://ror.org/03cve4549
+https://ror.org/034t30j35
+https://ror.org/00v5gqm66
+https://ror.org/02exqgm79
+https://ror.org/01xb4fs50
+https://ror.org/05w6wfp17
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [FR]  
+  [IT]  
+  [GB]  
+  [DE]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [CH]  
+  [FR]  
+  [DE]  
+  [CH]  
+  [US]  
+  [FR]  
+  [DE]  
+  [DE]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [FR]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [KR]  
+  [IN]  
+Figure 8 (d) | The Interinstitutional Nuclear Engineering Collaboration Dendrogram. The top 50 institutions in
+terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+61
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+61
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Interinstitutional Nuclear Engineering Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Princeton Plasma Physics Lab      
+      Princeton U.      
+      Tokyo Inst of Tech      
+      Hitachi (Japan)      
+      Toshiba (Japan)      
+      Adv Sci Res Center      
+      U. Tokyo      
+      Tohoku U.      
+      JAEA      
+      Kyushu U.      
+      Kyoto U.      
+      KEK      
+      Osaka U.      
+      Nagoya U.      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      CEA      
+      ENEA      
+      CEA Cadarache      
+      Argonne NL      
+      Idaho NL      
+      Lawrence Livermore NL      
+      MIT      
+      U. Wisconsin−Madison      
+      Oak Ridge NL      
+      General Atomics (US)      
+      Forschungszentrum Julich      
+      MPI − Plasma Phys      
+      Joint Eur Torus      
+      Rutherford Appleton Lab      
+      Inst Laue−Langevin      
+      Laboratoire Leon Brillouin      
+      Tech U. Munich      
+      Eur Org for Nucl Res      
+      IN2P3      
+      Brookhaven NL      
+      NIST      
+      Los Alamos NL      
+      Sandia Nat'l Labs      
+      Joint Inst for Nucl Res      
+      Delft U. Tech      
+      Paul Scherrer Inst      
+      Kurchatov Inst      
+      Res Center for Info Tech      
+      Atomic Energy (Canada)      
+      KAERI      
+      Glenn Res Center      
+      Bhabha Atomic Res Center      
+      Pacific NW NL      
+      Westinghouse Electric (US)      
+https://ror.org/03vn1ts68
+https://ror.org/00hx57361
+https://ror.org/0112mx960
+https://ror.org/02exqgm79
+https://ror.org/0326v3z14
+https://ror.org/05xrbcc66
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/05nf86y53
+https://ror.org/00p4k0j84
+https://ror.org/02kpeqv85
+https://ror.org/01g5y5k24
+https://ror.org/035t8zc32
+https://ror.org/04chrp450
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/00jjx8s55
+https://ror.org/02an8es95
+https://ror.org/01rs1gy10
+https://ror.org/00ty2a548
+https://ror.org/041nk4h53
+https://ror.org/042nb2s44
+https://ror.org/01y2jtd41
+https://ror.org/01qz5mb56
+https://ror.org/03ngjpk76
+https://ror.org/02nv7yv05
+https://ror.org/03taest98
+https://ror.org/0019h1k84
+https://ror.org/03gq8fr08
+https://ror.org/01xtjs520
+https://ror.org/029rmm934
+https://ror.org/02kkvpp62
+https://ror.org/01ggx4157
+https://ror.org/03fd77x13
+https://ror.org/02ex6cf31
+https://ror.org/05xpvk416
+https://ror.org/01e41cf67
+https://ror.org/01apwpt12
+https://ror.org/044yd9t77
+https://ror.org/02e2c7k09
+https://ror.org/03eh3y714
+https://ror.org/00n1nz186
+https://ror.org/04kdh6x72
+https://ror.org/019ja9e37
+https://ror.org/01xb4fs50
+https://ror.org/059fqnc42
+https://ror.org/05w6wfp17
+https://ror.org/05h992307
+https://ror.org/04p8w0f39
+https://ror.org/05gvnxz63
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [FR]  
+  [IT]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [DE]  
+  [GB]  
+  [GB]  
+  [FR]  
+  [FR]  
+  [DE]  
+  [CH]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [NL]  
+  [CH]  
+  [RU]  
+  [DE]  
+  [CA]  
+  [KR]  
+  [US]  
+  [IN]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Tohoku U.      
+      Nagoya U.      
+      Osaka U.      
+      Kyoto U.      
+      Hitachi (Japan)      
+      Toshiba (Japan)      
+      Atomic Energy (Canada)      
+      UK Atomic Energy Authority      
+      Battelle      
+      Pacific NW NL      
+      Forschungszentrum Julich      
+      Inst Laue−Langevin      
+      Tech U. Munich      
+      Joint Inst for Nucl Res      
+      Eur Org for Nucl Res      
+      Inst de Physique      
+      General Electric (US)      
+      Westinghouse Electric (US)      
+      Electric Power Res Inst      
+      Jet Propulsion Lab      
+      Rockwell Automation (US)      
+      Glenn Res Center      
+      Fermilab      
+      Texas A&M U.      
+      Res Center for Info Tech      
+      Princeton U.      
+      Princeton Plasma Physics Lab      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      JAEA      
+      Tokyo Inst of Tech      
+      U. Tokyo      
+      MPI − Plasma Phys      
+      Bhabha Atomic Res Center      
+      Making View (Norway)      
+      Argonne NL      
+      Idaho NL      
+      NIST      
+      U. Maryland      
+      Brookhaven NL      
+      MIT      
+      U. Illinois UC      
+      U. Michigan      
+      Oak Ridge NL      
+      Los Alamos NL      
+      Lawrence Livermore NL      
+      General Atomics (US)      
+      Sandia Nat'l Labs      
+      U. Wisconsin−Madison      
+      UCLA      
+https://ror.org/01dq60k83
+https://ror.org/04chrp450
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/02exqgm79
+https://ror.org/0326v3z14
+https://ror.org/019ja9e37
+https://ror.org/0361bwx64
+https://ror.org/01h5tnr73
+https://ror.org/05h992307
+https://ror.org/02nv7yv05
+https://ror.org/01xtjs520
+https://ror.org/02kkvpp62
+https://ror.org/044yd9t77
+https://ror.org/01ggx4157
+https://ror.org/00z54nq84
+https://ror.org/013msgt25
+https://ror.org/04p8w0f39
+https://ror.org/02dqztz06
+https://ror.org/027k65916
+https://ror.org/01sx1pm50
+https://ror.org/059fqnc42
+https://ror.org/020hgte69
+https://ror.org/01f5ytq51
+https://ror.org/04kdh6x72
+https://ror.org/00hx57361
+https://ror.org/03vn1ts68
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/05nf86y53
+https://ror.org/0112mx960
+https://ror.org/057zh3y96
+https://ror.org/03taest98
+https://ror.org/05w6wfp17
+https://ror.org/0108yh543
+https://ror.org/05gvnxz63
+https://ror.org/00ty2a548
+https://ror.org/05xpvk416
+https://ror.org/047s2c258
+https://ror.org/02ex6cf31
+https://ror.org/042nb2s44
+https://ror.org/047426m28
+https://ror.org/00jmfr291
+https://ror.org/01qz5mb56
+https://ror.org/01e41cf67
+https://ror.org/041nk4h53
+https://ror.org/03ngjpk76
+https://ror.org/01apwpt12
+https://ror.org/01y2jtd41
+https://ror.org/046rm7j60
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [CA]  
+  [GB]  
+  [US]  
+  [US]  
+  [DE]  
+  [FR]  
+  [DE]  
+  [RU]  
+  [CH]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [DE]  
+  [IN]  
+  [NO]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 8(d) | The Interinstitutional Nuclear Engineering Collaboration Dendrogram. (Cont.)
+62
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+62
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Table 8 | The top 100 productive institutions: Nuclear Engineering.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Los Alamos National Laboratory
+US
+1,450
+Petersburg Nuclear Physics Institute
+RU
+5,898
+Chinese Academy of Sciences
+CN
+3,607
+2
+Oak Ridge National Laboratory
+US
+1,360
+Japan Atomic Energy Agency (JAEA)
+JP
+2,519
+Japan Atomic Energy Agency (JAEA)
+JP
+3,583
+3
+Argonne National Laboratory
+US
+1,252
+Oak Ridge National Laboratory
+US
+2,104
+Oak Ridge National Laboratory
+US
+3,173
+4
+Japan Atomic Energy Agency (JAEA)
+JP
+1,142
+Los Alamos National Laboratory
+US
+2,040
+Los Alamos National Laboratory
+US
+3,085
+5
+Lawrence Livermore National Laboratory
+US
+894
+Korea Atomic Energy Research Institute
+KR
+1,404
+Tsinghua University
+CN
+2,284
+6
+The University of Tokyo
+JP
+778
+Lawrence Livermore National Laboratory
+US
+1,347
+Karlsruhe Institute of Technology
+DE
+1,986
+7
+Max Planck Institute for Plasma Physics
+DE
+704
+Argonne National Laboratory
+US
+1,248
+Xi’an Jiaotong University
+CN
+1,935
+8
+Institut Laue-Langevin
+FR
+689
+Joint Institute for Nuclear Research
+RU
+1,204
+Max Planck Institute for Plasma Physics
+DE
+1,885
+9
+Brookhaven National Laboratory
+US
+686
+Tsinghua University
+CN
+1,144
+Korea Atomic Energy Research Institute
+KR
+1,829
+10
+Joint Institute for Nuclear Research
+RU
+659
+The University of Tokyo
+JP
+1,097
+Idaho National Laboratory
+US
+1,781
+11
+Tohoku University
+JP
+614
+Max Planck Institute for Plasma Physics
+DE
+1,002
+Lawrence Livermore National Laboratory
+US
+1,692
+12
+Rutherford Appleton Laboratory
+GB
+596
+Kurchatov Institute
+RU
+973
+National Agency for New Technologies, Energy and Sustainable Economic Development
+IT
+1,580
+13
+Lawrence Berkeley National Laboratory
+US
+575
+Chinese Academy of Sciences
+CN
+945
+Bhabha Atomic Research Centre
+IN
+1,535
+14
+Kurchatov Institute
+RU
+555
+Tohoku University
+JP
+945
+CEA Cadarache
+FR
+1,521
+15
+Sandia National Laboratories
+US
+547
+CEA Cadarache
+FR
+930
+China General Nuclear Power Corporation (China)
+CN
+1,489
+16
+Pacific Northwest National Laboratory
+US
+525
+Paul Scherrer Institute
+CH
+916
+Joint Institute for Nuclear Research
+RU
+1,468
+17
+Kyoto University
+JP
+519
+Institut Laue-Langevin
+FR
+910
+Kurchatov Institute
+RU
+1,433
+18
+Forschungszentrum Jülich
+DE
+510
+National Agency for New Technologies, Energy and Sustainable Economic Development
+IT
+907
+Argonne National Laboratory
+US
+1,430
+19
+Research Center for Information Technology
+DE
+496
+Lawrence Berkeley National Laboratory
+US
+899
+The University of Tokyo
+JP
+1,413
+20
+National Institute of Standards and Technology
+US
+476
+European Organization for Nuclear Research
+CH
+898
+European Organization for Nuclear Research
+CH
+1,389
+21
+Massachusetts Institute of Technology
+US
+474
+Idaho National Laboratory
+US
+872
+Paul Scherrer Institute
+CH
+1,389
+22
+Westinghouse Electric (United States)
+US
+453
+CEA Saclay
+FR
+862
+Moscow Engineering Physics Institute
+RU
+1,360
+23
+European Organization for Nuclear Research
+CH
+446
+Tokyo Institute of Technology
+JP
+844
+University of Science and Technology of China
+CN
+1,283
+24
+Hitachi (Japan)
+JP
+435
+Research Center for Information Technology
+DE
+833
+Forschungszentrum Jülich
+DE
+1,219
+25
+Tokyo Institute of Technology
+JP
+432
+Kyoto University
+JP
+832
+Kyoto University
+JP
+1,212
+26
+National Agency for New Technologies, Energy and Sustainable Economic Development
+IT
+431
+Forschungszentrum Jülich
+DE
+784
+Institute of Plasma Physics
+CN
+1,208
+27
+Osaka University
+JP
+431
+Bhabha Atomic Research Centre
+IN
+780
+North China Electric Power University
+CN
+1,198
+28
+Idaho National Laboratory
+US
+428
+Osaka University
+JP
+779
+Shanghai Jiao Tong University
+CN
+1,192
+29
+Toshiba (Japan)
+JP
+427
+High Energy Accelerator Research Organization (KEK)
+JP
+749
+ITER
+FR
+1,172
+30
+Glenn Research Center
+US
+409
+Rutherford Appleton Laboratory
+GB
+728
+University of Chinese Academy of Sciences
+CN
+1,095
+31
+Advanced Science Research Center
+JP
+408
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+656
+Tohoku University
+JP
+1,010
+32
+Laboratoire Léon Brillouin
+FR
+396
+Kyushu University
+JP
+616
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+1,008
+33
+Technical University of Munich
+DE
+393
+China Institute of Atomic Energy
+CN
+610
+Massachusetts Institute of Technology
+US
+1,000
+34
+Bhabha Atomic Research Centre
+IN
+388
+Brookhaven National Laboratory
+US
+610
+Institut Laue-Langevin
+FR
+974
+35
+Kyushu University
+JP
+375
+Technical University of Munich
+DE
+608
+University of Tennessee at Knoxville
+US
+948
+36
+Institut National de Physique Nucléaire et de Physique des Particules
+FR
+373
+Massachusetts Institute of Technology
+US
+592
+Direction de L’Énergie Nucléaire
+FR
+945
+37
+University of California, Berkeley
+US
+356
+Max Planck Society
+DE
+590
+Osaka University
+JP
+934
+38
+Nagoya University
+JP
+353
+National Institute of Standards and Technology
+US
+589
+Pacific Northwest National Laboratory
+US
+923
+39
+Paul Scherrer Institute
+CH
+340
+Atomic Energy and Alternative Energies Commission
+FR
+582
+Technical University of Munich
+DE
+899
+40
+Atomic Energy (Canada)
+CA
+337
+Sandia National Laboratories
+US
+582
+Russian Academy of Sciences
+RU
+861
+41
+Korea Atomic Energy Research Institute
+KR
+336
+Advanced Science Research Center
+JP
+571
+Kyushu University
+JP
+830
+42
+Princeton Plasma Physics Laboratory
+US
+332
+General Atomics (United States)
+US
+552
+University of Michigan–Ann Arbor
+US
+822
+43
+Delft University of Technology
+NL
+328
+Russian Academy of Sciences
+RU
+546
+Tokyo Institute of Technology
+JP
+818
+44
+Atomic Energy and Alternative Energies Commission
+FR
+319
+Pacific Northwest National Laboratory
+US
+536
+Lawrence Berkeley National Laboratory
+US
+804
+45
+High Energy Accelerator Research Organization (KEK)
+JP
+314
+Shanghai Jiao Tong University
+CN
+518
+Rutherford Appleton Laboratory
+GB
+801
+46
+General Atomics (United States)
+US
+310
+Culham Science Centre
+GB
+509
+China Institute of Atomic Energy
+CN
+796
+47
+Joint European Torus
+GB
+308
+Princeton Plasma Physics Laboratory
+US
+508
+Culham Science Centre
+GB
+792
+48
+University of Wisconsin–Madison
+US
+308
+Michigan State University
+US
+506
+High Energy Accelerator Research Organization (KEK)
+JP
+792
+49
+CEA Cadarache
+FR
+304
+Hitachi (Japan)
+JP
+502
+GSI Helmholtz Centre for Heavy Ion Research
+DE
+739
+50
+Princeton University
+US
+302
+Nagoya University
+JP
+491
+University of California, Berkeley
+US
+728
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+63
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+63
+
+8. Nuclear Engineering
+8. Nuclear Engineering
+8. Nuclear Engineering
+Table 8 | The top 100 productive institutions: Nuclear Engineering. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+CEA Saclay
+FR
+301
+Pennsylvania State University
+US
+488
+Michigan State University
+US
+724
+52
+China Institute of Atomic Energy
+CN
+277
+University of California, Berkeley
+US
+472
+Texas A&M University
+US
+707
+53
+Pennsylvania State University
+US
+276
+National Institute for Fusion Science
+JP
+467
+Nagoya University
+JP
+672
+54
+Max Planck Society
+DE
+275
+Toshiba (Japan)
+JP
+465
+Brookhaven National Laboratory
+US
+664
+55
+National Institute for Fusion Science
+JP
+263
+Culham Centre for Fusion Energy
+GB
+460
+Atomic Energy and Alternative Energies Commission
+FR
+654
+56
+University of Illinois Urbana-Champaign
+US
+253
+RIKEN
+JP
+453
+Tianjin University
+CN
+651
+57
+University of California, Los Angeles
+US
+252
+Hokkaido University
+JP
+448
+Harbin Institute of Technology
+CN
+646
+58
+Michigan State University
+US
+251
+Xi’an Jiaotong University
+CN
+443
+Huazhong University of Science and Technology
+CN
+639
+59
+Texas A&M University
+US
+246
+China General Nuclear Power Corporation (China)
+CN
+440
+Politecnico di Milano
+IT
+631
+60
+Petersburg Nuclear Physics Institute
+RU
+243
+Glenn Research Center
+US
+440
+University of Wisconsin–Madison
+US
+630
+61
+RIKEN
+JP
+242
+Institute of Plasma Physics
+CN
+436
+China Academy of Engineering Physics
+CN
+615
+62
+University of Maryland, College Park
+US
+241
+Fermilab
+US
+423
+Max Planck Society
+DE
+614
+63
+Fraunhofer Institute for Telecommunications, Heinrich Hertz Institute DE
+236
+Institute for Physics and Power Engineering
+RU
+419
+Centro de Investigaciones Energéticas, Medioambientales y Tecnológicas
+ES
+612
+64
+University of Tennessee at Knoxville
+US
+232
+Delft University of Technology
+NL
+415
+CEA Saclay
+FR
+610
+65
+Fusion (United States)
+US
+231
+Royal Institute of Technology
+SE
+415
+University of Paris-Saclay
+FR
+610
+66
+Institute for Physics and Power Engineering
+RU
+228
+University of Wisconsin–Madison
+US
+415
+Hokkaido University
+JP
+609
+67
+Tsinghua University
+CN
+224
+Direction de L’Énergie Nucléaire
+FR
+410
+Korea Advanced Institute of Science and Technology
+KR
+605
+68
+Chalmers University of Technology
+SE
+222
+University of Michigan–Ann Arbor
+US
+407
+Sandia National Laboratories California
+US
+605
+69
+Johannes Gutenberg University Mainz
+DE
+218
+GSI Helmholtz Centre for Heavy Ion Research
+DE
+402
+École Polytechnique Fédérale de Lausanne
+CH
+603
+70
+Kyoto University Research Reactor Institute
+JP
+212
+University of Tennessee at Knoxville
+US
+401
+National Institute of Standards and Technology
+US
+601
+71
+North Carolina State University
+US
+211
+Princeton University
+US
+400
+Beihang University
+CN
+600
+72
+University of Warsaw
+PL
+208
+Central Research Institute of Electric Power Industry
+JP
+389
+University of Manchester
+GB
+598
+73
+CEA Grenoble
+FR
+206
+University of Maryland, College Park
+US
+378
+Sandia National Laboratories
+US
+596
+74
+Ricardo AEA (United Kingdom)
+GB
+206
+Belgian Nuclear Research Centre
+BE
+363
+Peking University
+CN
+593
+75
+Royal Institute of Technology
+SE
+205
+National Superconducting Cyclotron Laboratory
+US
+363
+Harbin Engineering University
+CN
+592
+76
+Uppsala University
+SE
+204
+Seoul National University
+KR
+352
+Institut de Radioprotection et de Sûreté Nucléaire
+FR
+587
+77
+Siemens (Germany)
+DE
+197
+Fusion (United States)
+US
+349
+National Nuclear Energy Agency of Indonesia
+ID
+581
+78
+The University of Texas at Austin
+US
+196
+University of Manchester
+GB
+348
+National Institute for Fusion Science
+JP
+580
+79
+Central Research Institute of Electric Power Industry
+JP
+193
+Texas A&M University
+US
+343
+Seoul National University
+KR
+577
+80
+Fusion Academy
+US
+190
+TEPCO (Japan)
+JP
+341
+Belgian Nuclear Research Centre
+BE
+568
+81
+University of Oxford
+GB
+187
+North China Electric Power University
+CN
+339
+Princeton Plasma Physics Laboratory
+US
+567
+82
+Fermilab
+US
+187
+Uppsala University
+SE
+337
+Royal Institute of Technology
+SE
+564
+83
+Institut de Physique
+FR
+186
+North Carolina State University
+US
+336
+Fermilab
+US
+564
+84
+TEPCO (Japan)
+JP
+185
+Kyoto University Research Reactor Institute
+JP
+333
+Pennsylvania State University
+US
+557
+85
+Russian Academy of Sciences
+RU
+182
+China Academy of Engineering Physics
+CN
+332
+General Atomics (United States)
+US
+554
+86
+Joint Research Centre
+IT
+178
+University of Pisa
+IT
+330
+Technical University of Darmstadt
+DE
+551
+87
+University of Manchester
+GB
+177
+Marshall Space Flight Center
+US
+322
+Institute for Physics and Power Engineering
+RU
+550
+88
+University of Michigan–Ann Arbor
+US
+176
+Fusion Academy
+US
+320
+University of Padua
+IT
+549
+89
+United States Nuclear Regulatory Commission
+US
+175
+Westinghouse Electric (United States)
+US
+316
+Indira Gandhi Centre for Atomic Research
+IN
+543
+90
+University of Missouri
+US
+175
+Helmholtz-Zentrum Dresden-Rossendorf
+DE
+315
+University of Tsukuba
+JP
+543
+91
+National Superconducting Cyclotron Laboratory
+US
+174
+Institut de Radioprotection et de Sûreté Nucléaire
+FR
+315
+Institute of Modern Physics
+CN
+541
+92
+University of Birmingham
+GB
+168
+Georgia Institute of Technology
+US
+315
+Savannah River National Laboratory
+US
+540
+93
+Science Applications International Corporation (United States)
+US
+168
+Savannah River National Laboratory
+US
+304
+Tomsk Polytechnic University
+RU
+538
+94
+Hokkaido University
+JP
+167
+Peking University
+CN
+295
+Imperial College London
+GB
+535
+95
+Lockheed Martin (United States)
+US
+165
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+292
+Czech Technical University in Prague
+CZ
+532
+96
+Nordic Laboratory for Luminescence Dating
+DK
+163
+GANIL
+FR
+290
+Fusion for Energy
+ES
+528
+97
+Korea Advanced Institute of Science and Technology
+KR
+162
+International Atomic Energy Agency
+AT
+289
+University of Ontario Institute of Technology
+CA
+527
+98
+Imperial College London
+GB
+160
+Chalmers University of Technology
+SE
+289
+Georgia Institute of Technology
+US
+526
+99
+Hungarian Academy of Sciences
+HU
+158
+Institut de Physique
+FR
+286
+North Carolina State University
+US
+518
+100
+University of Liverpool
+GB
+155
+Korea Advanced Institute of Science and Technology
+KR
+282
+University of Maryland, College Park
+US
+509
+64
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+64
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+9. Marine Engineering
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+World Map of Marine Engineering Collaboration | 1971–2020
+Figure 9(a) | The World Map of Marine Engineering Collaboration. The bubbles represent the top 199 institutions
+in terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+66
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+66
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Top 30 Productive Institutions on the World Map: Marine Engineering | 1991–2020
+Harbin Engineering U.
+Shanghai Jiao Tong U.
+Norwegian U. Sci & Tech
+Dalian U. Tech
+Wuhan U. Tech
+Delft U. Tech
+Tianjin U.
+Dalian Maritime U.
+Tech U. Denmark
+NW Polytechnical U.
+Chinese Acad of Sci
+Zhejiang U.
+Harbin Inst of Tech
+U. Tokyo
+U. Strathclyde
+Ocean U. China
+Shanghai Ocean U.
+Tsinghua U.
+Naval U. Engineering
+Beihang U.
+Seoul Nat'l U.
+N. China Elec Power U.
+China U. Petroleum, Beijing
+Wuhan Ship Dev & Design Inst
+Hohai U.
+U. Southampton
+U. Lisbon
+Tongji U.
+CNOOC
+Huazhong U. Sci & Tech
+Marine Engineering [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Harbin Engineering U.
+Shanghai Jiao Tong U.
+U. Tokyo
+Naval U. Engineering
+Dalian U. Tech
+Wuhan Ship Dev & Design Inst
+Petrobras (Brazil)
+Norwegian U. Sci & Tech
+NW Polytechnical U.
+Dalian Maritime U.
+Delft U. Tech
+Wuhan U. Tech
+WHOI
+Xiaomi (China)
+Equinor (Norway)
+Kyushu U.
+Texas A&M U.
+Harbin Inst of Tech
+Langley Res Center
+Tongji U.
+Seoul Nat'l U.
+Naval Surface Warfare Center
+Tianjin U.
+MIT
+Tsinghua U.
+Glenn Res Center
+Schlumberger (British Virgin Islands)
+US Naval Acad
+Tech U. Denmark
+China U. Petroleum, Beijing
+Marine Engineering [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Glenn Res Center
+Langley Res Center
+Petrobras (Brazil)
+Naval Surface Warfare Center
+Ames Res Center
+Equinor (Norway)
+Naval Sea Systems Command
+U. Tokyo
+Marymount U.
+ExxonMobil (US)
+BP (UK)
+MIT
+U. Michigan
+Texas A&M U.
+Shell (Netherlands)
+U. Hull
+Kyushu U.
+Marshall Space Flight Center
+Penn State U.
+Naval Postgraduate School
+Boeing (US)
+US Coast Guard
+Halliburton (UK)
+Delft U. Tech
+UT Austin
+Tech U. Denmark
+NRC Canada
+Virginia Tech
+UC Berkeley
+Georgia Inst of Tech
+Marine Engineering [1991−2000]
+Figure 9(b) | The top 30 productive institutions on the World Map: Marine Engineering. The bubbles represent the
+top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+67
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+67
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Interregional Marine Engineering Collaboration | 1991–2020
+85
+11
+17
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 9(c) | The Interregional Marine Engineering Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+68
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+68
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Interinstitutional Marine Engineering Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Wuhan U. Tech      
+      Delft U. Tech      
+      U. Southampton      
+      Politecnico di Milano      
+      Seoul Nat'l U.      
+      Pusan Nat'l U.      
+      U. Tokyo      
+      Kyushu U.      
+      Sepuluh Nopember Inst of Tech      
+      U. Tech Malaysia      
+      Memorial U. Newfoundland      
+      Tianjin U.      
+      Ocean U. China      
+      Schlumberger (BVI)      
+      NW Polytechnical U.      
+      Naval U. Engineering      
+      Nat'l U. Singapore      
+      MIT      
+      Langley Res Center      
+      Indian Inst of Tech Madras      
+      Texas A&M U.      
+      China U. Petroleum, Beijing      
+      CNOOC      
+      Chinese Acad of Sci      
+      Beihang U.      
+      Shanghai Jiao Tong U.      
+      Shanghai Ocean U.      
+      Federal U. Rio de Janeiro      
+      Petrobras (Brazil)      
+      Norwegian U. Sci & Tech      
+      SINTEF      
+      Wuhan Ship Dev & Design Inst      
+      Huazhong U. Sci & Tech      
+      Aalborg U.      
+      Tech U. Denmark      
+      Nat'l Renewable Energy Lab      
+      U. Lisbon      
+      Tsinghua U.      
+      North China Electric Power U.      
+      Tongji U.      
+      Shanghai Maritime U.      
+      Zhejiang U.      
+      Hohai U.      
+      Nanjing U. of Aero & Astro      
+      Dalian U. Tech      
+      Dalian Maritime U.      
+      U. Strathclyde      
+      Jiangsu U. Sci & Tech      
+      Harbin Engineering U.      
+      Harbin Inst of Tech      
+https://ror.org/03fe7t173
+https://ror.org/02e2c7k09
+https://ror.org/01ryk1543
+https://ror.org/01nffqt88
+https://ror.org/04h9pn542
+https://ror.org/01an57a31
+https://ror.org/057zh3y96
+https://ror.org/00p4k0j84
+https://ror.org/05kbmmt89
+https://ror.org/026w31v75
+https://ror.org/04haebc03
+https://ror.org/012tb2g32
+https://ror.org/04rdtx186
+https://ror.org/01ydfc370
+https://ror.org/01y0j0j86
+https://ror.org/056vyez31
+https://ror.org/01tgyzw49
+https://ror.org/042nb2s44
+https://ror.org/0399mhs52
+https://ror.org/03v0r5n49
+https://ror.org/01f5ytq51
+https://ror.org/041qf4r12
+https://ror.org/054dq0621
+https://ror.org/034t30j35
+https://ror.org/00wk2mp56
+https://ror.org/0220qvk04
+https://ror.org/04n40zv07
+https://ror.org/03490as77
+https://ror.org/0235kyq22
+https://ror.org/05xg72x27
+https://ror.org/01f677e56
+https://ror.org/02mcdae06
+https://ror.org/00p991c53
+https://ror.org/04m5j1k67
+https://ror.org/04qtj9h94
+https://ror.org/036266993
+https://ror.org/01c27hj86
+https://ror.org/03cve4549
+https://ror.org/04qr5t414
+https://ror.org/03rc6as71
+https://ror.org/04z7qrj66
+https://ror.org/00a2xv884
+https://ror.org/01wd4xt90
+https://ror.org/01scyh794
+https://ror.org/023hj5876
+https://ror.org/002b7nr53
+https://ror.org/00n3w3b69
+https://ror.org/00tyjp878
+https://ror.org/03x80pn82
+https://ror.org/01yqg2h08
+  [CN]  
+  [NL]  
+  [GB]  
+  [IT]  
+  [KR]  
+  [KR]  
+  [JP]  
+  [JP]  
+  [ID]  
+  [MY]  
+  [CA]  
+  [CN]  
+  [CN]  
+  [VG]  
+  [CN]  
+  [CN]  
+  [SG]  
+  [US]  
+  [US]  
+  [IN]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [BR]  
+  [BR]  
+  [NO]  
+  [NO]  
+  [CN]  
+  [CN]  
+  [DK]  
+  [DK]  
+  [US]  
+  [PT]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [GB]  
+  [CN]  
+  [CN]  
+  [CN]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Petrobras (Brazil)      
+      Federal U. Rio de Janeiro      
+      Norwegian U. Sci & Tech      
+      Equinor (Norway)      
+      Halliburton (UK)      
+      BP (UK)      
+      Schlumberger (BVI)      
+      Shell (Netherlands)      
+      Tohoku U.      
+      U. Tokyo      
+      JAMSTEC      
+      Kyushu U.      
+      Osaka U.      
+      Dalian U. Tech      
+      Harbin Inst of Tech      
+      China U. Petroleum, Beijing      
+      CNOOC      
+      US Naval Acad      
+      WHOI      
+      MIT      
+      Glenn Res Center      
+      Langley Res Center      
+      U. Michigan      
+      Texas A&M U.      
+      Seoul Nat'l U.      
+      Tianjin U.      
+      Naval Surface Warfare Center      
+      Penn State U.      
+      Pusan Nat'l U.      
+      UT Austin      
+      Chinese Acad of Sci      
+      Tsinghua U.      
+      Beihang U.      
+      Wuhan U. Tech      
+      Huazhong U. Sci & Tech      
+      Shanghai Jiao Tong U.      
+      Wuhan Ship Dev & Design Inst     
+      Harbin Engineering U.      
+      Dalian Maritime U.      
+      Zhejiang U.      
+      Tongji U.      
+      Tech U. Denmark      
+      Delft U. Tech      
+      Hohai U.      
+      NW Polytechnical U.      
+      U. Southampton      
+      Naval U. Engineering      
+      Wuhan U.      
+      Jiangsu U. Sci & Tech      
+      Xiaomi (China)      
+https://ror.org/0235kyq22
+https://ror.org/03490as77
+https://ror.org/05xg72x27
+https://ror.org/017mte255
+https://ror.org/01jn7ba52
+https://ror.org/01zctcs90
+https://ror.org/01ydfc370
+https://ror.org/00b5m4j81
+https://ror.org/01dq60k83
+https://ror.org/057zh3y96
+https://ror.org/059qg2m13
+https://ror.org/00p4k0j84
+https://ror.org/035t8zc32
+https://ror.org/023hj5876
+https://ror.org/01yqg2h08
+https://ror.org/041qf4r12
+https://ror.org/054dq0621
+https://ror.org/00znex860
+https://ror.org/03zbnzt98
+https://ror.org/042nb2s44
+https://ror.org/059fqnc42
+https://ror.org/0399mhs52
+https://ror.org/00jmfr291
+https://ror.org/01f5ytq51
+https://ror.org/04h9pn542
+https://ror.org/03d4ecn10
+https://ror.org/04p491231
+https://ror.org/01an57a31
+https://ror.org/00hj54h04
+https://ror.org/034t30j35
+https://ror.org/03cve4549
+https://ror.org/00wk2mp56
+https://ror.org/03fe7t173
+https://ror.org/00p991c53
+https://ror.org/0220qvk04
+https://ror.org/02mcdae06
+https://ror.org/03x80pn82
+https://ror.org/002b7nr53
+https://ror.org/00a2xv884
+https://ror.org/03rc6as71
+https://ror.org/04qtj9h94
+https://ror.org/02e2c7k09
+https://ror.org/01wd4xt90
+https://ror.org/01y0j0j86
+https://ror.org/01ryk1543
+https://ror.org/056vyez31
+https://ror.org/033vjfk17
+https://ror.org/00tyjp878
+https://ror.org/029f7bn57
+https://ror.org/012tb2g32
+  [BR]  
+  [BR]  
+  [NO]  
+  [NO]  
+  [GB]  
+  [GB]  
+  [VG]  
+  [NL]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [KR]  
+  [CN]  
+  [US]  
+  [US]  
+  [KR]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [DK]  
+  [NL]  
+  [CN]  
+  [CN]  
+  [GB]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+Figure 9(d) | The Interinstitutional Marine Engineering Collaboration Dendrogram. The top 50 institutions in terms
+of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+69
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+69
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Interinstitutional Marine Engineering Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Naval Surface Warfare Center      
+    Naval Sea Systems Command      
+      U. Tokyo      
+      NRC Canada      
+      Memorial U. Newfoundland      
+      MIT      
+      WHOI      
+      Boeing (US)      
+      Langley Res Center      
+      Ames Res Center      
+      U. Michigan      
+      US Coast Guard      
+      Petrobras (Brazil)      
+      Halliburton (UK)      
+      U. Strathclyde      
+      UC Berkeley      
+      Stanford U.      
+      Norwegian U. Sci & Tech      
+      DNV GL (Norway)      
+      Equinor (Norway)      
+      SINTEF      
+      Shell (Netherlands)      
+      Shell (UK)      
+      Norsk Hydro (Germany)      
+      BP (UK)      
+      Schlumberger (BVI)      
+      U. Cambridge      
+      Marymount U.      
+      Kyushu U.      
+      Hiroshima U.      
+      Georgia Inst of Tech      
+      U. Maryland      
+      U. Illinois UC      
+      U. Southampton      
+      Penn State U.      
+      Virginia Tech      
+      Texas A&M U.      
+      Glenn Res Center      
+      Marshall Space Flight Center      
+      Loughborough U.      
+      U. College London      
+      Delft U. Tech      
+      U. British Columbia      
+      ExxonMobil (US)      
+      ConocoPhillips (US)      
+      U. Hull      
+      U. Glasgow      
+      Naval Postgraduate School      
+      UT Austin      
+      Tech U. Denmark      
+https://ror.org/03d4ecn10
+https://ror.org/03dm1p143
+https://ror.org/057zh3y96
+https://ror.org/04mte1k06
+https://ror.org/04haebc03
+https://ror.org/042nb2s44
+https://ror.org/03zbnzt98
+https://ror.org/04sm5zn07
+https://ror.org/0399mhs52
+https://ror.org/02acart68
+https://ror.org/00jmfr291
+https://ror.org/00zyc7969
+https://ror.org/0235kyq22
+https://ror.org/01jn7ba52
+https://ror.org/00n3w3b69
+https://ror.org/00f54p054
+https://ror.org/05xg72x27
+https://ror.org/04c235406
+https://ror.org/017mte255
+https://ror.org/01f677e56
+https://ror.org/00b5m4j81
+https://ror.org/05p330p21
+https://ror.org/04gcecg21
+https://ror.org/01zctcs90
+https://ror.org/01ydfc370
+https://ror.org/013meh722
+https://ror.org/0008kv292
+https://ror.org/00p4k0j84
+https://ror.org/03t78wx29
+https://ror.org/01zkghx44
+https://ror.org/047s2c258
+https://ror.org/047426m28
+https://ror.org/01ryk1543
+https://ror.org/04p491231
+https://ror.org/02smfhw86
+https://ror.org/01f5ytq51
+https://ror.org/059fqnc42
+https://ror.org/02epydz83
+https://ror.org/04vg4w365
+https://ror.org/02jx3x895
+https://ror.org/02e2c7k09
+https://ror.org/03rmrcq20
+https://ror.org/01xcepn55
+https://ror.org/04hadnb81
+https://ror.org/04nkhwh30
+https://ror.org/00vtgdb53
+https://ror.org/033yfkj90
+https://ror.org/00hj54h04
+https://ror.org/04qtj9h94
+https://ror.org/01an7q238
+  [US]  
+  [US]  
+  [JP]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [BR]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [NO]  
+  [NO]  
+  [NO]  
+  [NO]  
+  [NL]  
+  [GB]  
+  [DE]  
+  [GB]  
+  [VG]  
+  [GB]  
+  [US]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [NL]  
+  [CA]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [DK]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      US Dept of the Navy      
+      Naval Sea Systems Command      
+      Naval Postgraduate School      
+      US Coast Guard      
+      US Naval Acad      
+      Scripps Inst of Oceanography      
+      U. Washington      
+      US Geological Survey      
+      Oregon State U.      
+      MIT      
+      WHOI      
+      Delft U. Tech      
+      Maritime Res Inst Netherlands      
+      ConocoPhillips (US)      
+      DNV GL (Norway)      
+      U. Tokyo      
+      NOAA      
+      U. Cambridge      
+      Rockwell Automation (US)      
+      Marshall Space Flight Center      
+      U. Southampton      
+      Shell (Netherlands)      
+      Glenn Res Center      
+      General Electric (US)      
+      Boeing (US)      
+      Texas A&M U.      
+      U. College London      
+      US Naval Research Lab      
+      U. Rhode Island      
+      Penn State U.      
+      California Maritime Acad      
+      Memorial U. Newfoundland      
+      U. British Columbia      
+      Lockheed Martin (US)      
+      Jet Propulsion Lab      
+      U. Michigan      
+      Purdue U. West Lafayette      
+      Langley Res Center      
+      Virginia Tech      
+      Mitsubishi Heavy Industries (Germ
+      ExxonMobil (US)      
+      UC Berkeley      
+      Newcastle U.      
+      NRC Canada      
+      The Aerospace Corporation      
+      U. Hull      
+      General Dynamics (US)      
+      Boeing (Australia)      
+      Ames Res Center      
+      US Army      
+https://ror.org/03ar0mv07
+https://ror.org/03dm1p143
+https://ror.org/033yfkj90
+https://ror.org/00zyc7969
+https://ror.org/00znex860
+https://ror.org/04v7hvq31
+https://ror.org/00cvxb145
+https://ror.org/035a68863
+https://ror.org/00ysfqy60
+https://ror.org/042nb2s44
+https://ror.org/03zbnzt98
+https://ror.org/02e2c7k09
+https://ror.org/01fkbmk11
+https://ror.org/04hadnb81
+https://ror.org/04c235406
+https://ror.org/057zh3y96
+https://ror.org/02z5nhe81
+https://ror.org/013meh722
+https://ror.org/01sx1pm50
+https://ror.org/02epydz83
+https://ror.org/01ryk1543
+https://ror.org/00b5m4j81
+https://ror.org/013msgt25
+https://ror.org/04sm5zn07
+https://ror.org/01f5ytq51
+https://ror.org/02jx3x895
+https://ror.org/04d23a975
+https://ror.org/013ckk937
+https://ror.org/04p491231
+https://ror.org/051rrf637
+https://ror.org/04haebc03
+https://ror.org/03rmrcq20
+https://ror.org/026er9r08
+https://ror.org/027k65916
+https://ror.org/00jmfr291
+https://ror.org/02dqehb95
+https://ror.org/0399mhs52
+https://ror.org/02smfhw86
+https://ror.org/043tqah33
+https://ror.org/01xcepn55
+https://ror.org/01an7q238
+https://ror.org/01kj2bm70
+https://ror.org/04mte1k06
+https://ror.org/01ar9e455
+https://ror.org/04nkhwh30
+https://ror.org/05pyq8e17
+https://ror.org/0346ase89
+https://ror.org/02acart68
+https://ror.org/00afsp483
+https://ror.org/059fqnc42
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [NL]  
+  [NL]  
+  [US]  
+  [NO]  
+  [JP]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [GB]  
+  [NL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [GB]  
+  [CA]  
+  [US]  
+  [GB]  
+  [US]  
+  [AU]  
+  [US]  
+  [US]  
+Figure 9(d) | The Interinstitutional Marine Engineering Collaboration Dendrogram. (Cont.)
+70
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+70
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Table 9 | The top 100 productive institutions: Marine Engineering.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Glenn Research Center
+US
+213
+Harbin Engineering University
+CN
+600
+Harbin Engineering University
+CN
+1,842
+2
+Langley Research Center
+US
+190
+Shanghai Jiao Tong University
+CN
+578
+Shanghai Jiao Tong University
+CN
+1,602
+3
+Petrobras (Brazil)
+BR
+171
+The University of Tokyo
+JP
+433
+Norwegian University of Science and Technology
+NO
+1,457
+4
+Naval Surface Warfare Center
+US
+169
+Naval University of Engineering
+CN
+386
+Dalian University of Technology
+CN
+978
+5
+Ames Research Center
+US
+159
+Dalian University of Technology
+CN
+371
+Wuhan University of Technology
+CN
+921
+6
+Equinor (Norway)
+NO
+129
+Wuhan Ship Development & Design Institute
+CN
+368
+Tianjin University
+CN
+802
+7
+The University of Tokyo
+JP
+126
+Petrobras (Brazil)
+BR
+353
+Delft University of Technology
+NL
+801
+8
+Naval Sea Systems Command
+US
+126
+Norwegian University of Science and Technology
+NO
+350
+Dalian Maritime University
+CN
+778
+9
+Marymount University
+US
+124
+Northwestern Polytechnical University
+CN
+328
+Technical University of Denmark
+DK
+721
+10
+ExxonMobil (United States)
+US
+114
+Dalian Maritime University
+CN
+317
+Northwestern Polytechnical University
+CN
+714
+11
+BP (United Kingdom)
+GB
+113
+Delft University of Technology
+NL
+302
+Chinese Academy of Sciences
+CN
+699
+12
+Massachusetts Institute of Technology
+US
+103
+Wuhan University of Technology
+CN
+287
+Zhejiang University
+CN
+690
+13
+Texas A&M University
+US
+98
+Woods Hole Oceanographic Institution
+US
+278
+Harbin Institute of Technology
+CN
+682
+14
+University of Michigan–Ann Arbor
+US
+98
+Xiaomi (China)
+CN
+255
+The University of Tokyo
+JP
+638
+15
+University of Hull
+GB
+95
+Equinor (Norway)
+NO
+255
+China University of Petroleum, Beĳing
+CN
+637
+16
+Shell (Netherlands)
+NL
+95
+Kyushu University
+JP
+251
+University of Strathclyde
+GB
+626
+17
+Kyushu University
+JP
+90
+Texas A&M University
+US
+250
+Ocean University of China
+CN
+622
+18
+Marshall Space Flight Center
+US
+85
+Harbin Institute of Technology
+CN
+246
+Shanghai Ocean University
+CN
+618
+19
+Pennsylvania State University
+US
+83
+Langley Research Center
+US
+244
+Tsinghua University
+CN
+596
+20
+Boeing (United States)
+US
+82
+Tongji University
+CN
+240
+Naval University of Engineering
+CN
+584
+21
+Naval Postgraduate School
+US
+82
+Seoul National University
+KR
+227
+Beihang University
+CN
+573
+22
+Halliburton (United Kingdom)
+GB
+79
+Naval Surface Warfare Center
+US
+224
+Seoul National University
+KR
+564
+23
+United States Coast Guard
+US
+79
+Tianjin University
+CN
+216
+North China Electric Power University
+CN
+556
+24
+Delft University of Technology
+NL
+76
+Massachusetts Institute of Technology
+US
+215
+Wuhan Ship Development & Design Institute
+CN
+527
+25
+The University of Texas at Austin
+US
+76
+Tsinghua University
+CN
+210
+Hohai University
+CN
+482
+26
+Technical University of Denmark
+DK
+71
+Glenn Research Center
+US
+209
+University of Southampton
+GB
+480
+27
+National Research Council Canada
+CA
+66
+Schlumberger (British Virgin Islands)
+VG
+205
+Tongji University
+CN
+479
+28
+University of California, Berkeley
+US
+64
+United States Naval Academy
+US
+198
+China National Offshore Oil Corporation (China)
+CN
+478
+29
+Virginia Tech
+US
+64
+China University of Petroleum, Beĳing
+CN
+194
+University of Lisbon
+PT
+478
+30
+University of British Columbia
+CA
+63
+Technical University of Denmark
+DK
+194
+Huazhong University of Science and Technology
+CN
+458
+31
+Georgia Institute of Technology
+US
+63
+Shell (Netherlands)
+NL
+189
+Indian Institute of Technology Madras
+IN
+450
+32
+DNV GL (Norway)
+NO
+60
+University of Southampton
+GB
+185
+SINTEF
+NO
+439
+33
+Woods Hole Oceanographic Institution
+US
+60
+Hohai University
+CN
+183
+Jiangsu University of Science and Technology
+CN
+435
+34
+Loughborough University
+GB
+59
+Pennsylvania State University
+US
+177
+National University of Singapore
+SG
+427
+35
+University of Strathclyde
+GB
+55
+Osaka University
+JP
+175
+Aalborg University
+DK
+424
+36
+Norwegian University of Science and Technology
+NO
+55
+Federal University of Rio de Janeiro
+BR
+160
+National Renewable Energy Laboratory
+US
+411
+37
+Schlumberger (British Virgin Islands)
+VG
+54
+China National Offshore Oil Corporation (China)
+CN
+160
+Pusan National University
+KR
+408
+38
+Stanford University
+US
+53
+Jiangsu University of Science and Technology
+CN
+160
+Politecnico di Milano
+IT
+379
+39
+University of Glasgow
+GB
+52
+Zhejiang University
+CN
+160
+Federal University of Rio de Janeiro
+BR
+377
+40
+Norsk Hydro (Germany)
+DE
+51
+Tohoku University
+JP
+160
+Shanghai Maritime University
+CN
+377
+41
+University of Cambridge
+GB
+50
+Pusan National University
+KR
+160
+Massachusetts Institute of Technology
+US
+376
+42
+University of Southampton
+GB
+50
+Halliburton (United Kingdom)
+GB
+158
+Sepuluh Nopember Institute of Technology
+ID
+374
+43
+Memorial University of Newfoundland
+CA
+48
+University of Michigan–Ann Arbor
+US
+157
+Texas A&M University
+US
+374
+44
+Shell (United Kingdom)
+GB
+47
+BP (United Kingdom)
+GB
+156
+Schlumberger (British Virgin Islands)
+VG
+368
+45
+University College London
+GB
+46
+The University of Texas at Austin
+US
+156
+Petrobras (Brazil)
+BR
+366
+46
+SINTEF
+NO
+45
+Japan Agency for Marine-Earth Science and Technology (JAMSTEC)
+JP
+155
+University of Technology Malaysia
+MY
+360
+47
+ConocoPhillips (United States)
+US
+45
+Wuhan University
+CN
+154
+Nanjing University of Aeronautics and Astronautics
+CN
+359
+48
+University of Maryland, College Park
+US
+45
+Beihang University
+CN
+152
+Memorial University of Newfoundland
+CA
+358
+49
+Hiroshima University
+JP
+44
+Chinese Academy of Sciences
+CN
+150
+Kyushu University
+JP
+356
+50
+University of Illinois Urbana-Champaign
+US
+44
+Huazhong University of Science and Technology
+CN
+148
+Langley Research Center
+US
+353
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+71
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+71
+
+9. Marine Engineering
+9. Marine Engineering
+9. Marine Engineering
+Table 9 | The top 100 productive institutions: Marine Engineering. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+National Technical University of Athens
+GR
+43
+DNV GL (Norway)
+NO
+148
+Osaka University
+JP
+347
+52
+Naval Undersea Warfare Center
+US
+43
+Hong Kong Polytechnic University
+CN
+147
+Zhejiang Ocean University
+CN
+340
+53
+University of New Orleans
+US
+43
+Ocean University of China
+CN
+145
+Equinor (Norway)
+NO
+333
+54
+Hong Kong Polytechnic University
+CN
+42
+Georgia Institute of Technology
+US
+145
+Chalmers University of Technology
+SE
+332
+55
+Yokohama National University
+JP
+42
+Virginia Tech
+US
+144
+Japan Agency for Marine-Earth Science and Technology (JAMSTEC)
+JP
+324
+56
+Federal University of Rio de Janeiro
+BR
+41
+Memorial University of Newfoundland
+CA
+141
+Amirkabir University of Technology
+IR
+323
+57
+Newcastle University
+GB
+41
+Shanghai Maritime University
+CN
+141
+University of Genoa
+IT
+322
+58
+University of Nottingham
+GB
+40
+Universidade de São Paulo
+BR
+140
+University of Western Australia
+AU
+314
+59
+Lockheed Martin (United States)
+US
+40
+Central South University
+CN
+139
+DNV GL (Norway)
+NO
+314
+60
+University of Washington
+US
+40
+Tokyo Institute of Technology
+JP
+139
+University of Tasmania
+AU
+313
+61
+Jøtul (Norway)
+NO
+39
+German Aerospace Center
+DE
+131
+Hong Kong Polytechnic University
+CN
+308
+62
+United States Naval Academy
+US
+39
+University of Strathclyde
+GB
+131
+German Aerospace Center
+DE
+307
+63
+Ifremer
+FR
+38
+Aalborg University
+DK
+130
+Engineering (Italy)
+IT
+302
+64
+Nihon University
+JP
+38
+National Maritime Research Institute
+JP
+129
+The University of Texas at Austin
+US
+301
+65
+Baker Hughes (United States)
+US
+38
+American Bureau of Shipping
+US
+128
+Korea Maritime and Ocean University
+KR
+299
+66
+Heriot-Watt University
+GB
+37
+Kobe University
+JP
+127
+Southwest Jiaotong University
+CN
+298
+67
+United States Geological Survey
+US
+37
+National Technical University of Athens
+GR
+126
+Central South University
+CN
+296
+68
+Mitsubishi Heavy Industries (Germany)
+DE
+36
+North China Electric Power University
+CN
+124
+National Technical University of Athens
+GR
+291
+69
+Aalborg University
+DK
+36
+Tokyo University of Marine Science and Technology
+JP
+124
+Newcastle University
+GB
+288
+70
+United States Army
+US
+36
+Total (France)
+FR
+122
+Technical University of Munich
+DE
+286
+71
+United States Naval Research Laboratory
+US
+36
+University of Cambridge
+GB
+119
+Cranfield University
+GB
+285
+72
+University of Iowa
+US
+36
+Indian Institute of Technology Madras
+IN
+119
+University of Stuttgart
+DE
+283
+73
+Weatherford College
+US
+36
+Hokkaido University
+JP
+118
+Universidade de São Paulo
+BR
+282
+74
+Indian Institute of Technology Madras
+IN
+35
+Kyushu Institute of Technology
+JP
+117
+Diponegoro University
+ID
+281
+75
+Saga University
+JP
+35
+Shanghai University
+CN
+116
+Virginia Tech
+US
+278
+76
+American Bureau of Shipping
+US
+35
+University of Lisbon
+PT
+115
+Chongqing University
+CN
+276
+77
+Johnson Space Center
+US
+35
+United States Department of the Navy
+US
+115
+Nanyang Technological University
+SG
+275
+78
+North Carolina State University
+US
+35
+Ifremer
+FR
+114
+University of Michigan–Ann Arbor
+US
+273
+79
+National Cheng Kung University
+TW
+34
+Nanyang Technological University
+SG
+114
+Beĳing Institute of Technology
+CN
+269
+80
+McDermott International (United States)
+US
+34
+Tianjin Research Institute of Water Transport Engineering
+CN
+113
+University of Edinburgh
+GB
+269
+81
+OT Energy Services (Czechia)
+CZ
+33
+Ames Research Center
+US
+113
+Wuhan University
+CN
+268
+82
+Queen’s University Belfast
+GB
+33
+TechnipFMC (United States)
+US
+113
+National Maritime Research Institute
+JP
+266
+83
+National University of Singapore
+SG
+33
+California Maritime Academy
+US
+112
+Glenn Research Center
+US
+265
+84
+Oregon State University
+US
+33
+Sinopec (China)
+CN
+111
+Georgia Institute of Technology
+US
+260
+85
+University of Hawaii System
+US
+33
+Tokai University
+JP
+111
+Shandong University
+CN
+257
+86
+Whitney Museum of American Art
+US
+33
+National University of Singapore
+SG
+110
+South China University of Technology
+CN
+253
+87
+BP (Germany)
+DE
+32
+National Research Council Canada
+CA
+109
+Xi’an Jiaotong University
+CN
+251
+88
+General Electric (United States)
+US
+32
+National Renewable Energy Laboratory
+US
+109
+Collaborative Innovation Centre for Advanced Ship and Deep-Sea Exploration CN
+250
+89
+Shanghai University
+CN
+31
+Tokyo University of Science
+JP
+108
+Woods Hole Oceanographic Institution
+US
+250
+90
+Technical University of Berlin
+DE
+31
+University of Washington
+US
+107
+Gdańsk University of Technology
+PL
+248
+91
+Norwegian Marine Technology Research Institute
+NO
+31
+Yokohama National University
+JP
+106
+National Cheng Kung University
+TW
+248
+92
+California Maritime Academy
+US
+31
+Stennis Space Center
+US
+106
+United States Naval Academy
+US
+248
+93
+Louisiana State University
+US
+31
+National Cheng Kung University
+TW
+104
+University of Stavanger
+NO
+245
+94
+National Renewable Energy Laboratory
+US
+31
+Shanghai Harbour Engineering Design & Research Institute
+CN
+103
+Universitat Politècnica de Catalunya
+ES
+244
+95
+Rockwell Automation (United States)
+US
+31
+South China University of Technology
+CN
+103
+Tohoku University
+JP
+242
+96
+United States Department of the Navy
+US
+31
+Hyundai Heavy Industries (South Korea)
+KR
+103
+Maritime Research Institute Netherlands
+NL
+241
+97
+Seoul National University
+KR
+30
+University of Western Australia
+AU
+101
+University of Chinese Academy of Sciences
+CN
+238
+98
+University of Gdańsk
+PL
+30
+Paderborn University
+DE
+101
+Pennsylvania State University
+US
+235
+99
+Job Performance Systems (United States)
+US
+30
+Job Performance Systems (United States)
+US
+101
+Korea Advanced Institute of Science and Technology
+KR
+229
+100
+Imperial College London
+GB
+29
+Naval Aeronautical and Astronautical University
+CN
+99
+Universidad Politdécnica de Madrid
+ES
+228
+72
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+72
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+10. Neuroscience
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+World Map of Neuroscience Collaboration | 1971–2020
+Figure 10 (a) | The World Map of Neuroscience Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+74
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+74
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Top 30 Productive Institutions on the World Map: Neuroscience | 1991–2020
+Harvard U.
+Inserm
+U. Toronto
+U. College London
+Stanford U.
+U. Oxford
+Johns Hopkins U.
+UC San Diego
+U. Penn
+U. Cambridge
+King's College London
+U. Michigan
+Yale U.
+McGill U.
+UCLA
+Columbia U.
+Chinese Acad of Sci
+Massachusetts General Hospital
+U. Melbourne
+U. Washington
+UC San Francisco
+U. Pittsburgh
+Boston U.
+New York U.
+U. British Columbia
+NIH
+U. Sydney
+Karolinska Instt
+KU Leuven
+Washington U. in St. Louis
+Neuroscience [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Harvard U.
+Inserm
+U. College London
+U. Toronto
+Johns Hopkins U.
+UC San Diego
+Columbia U.
+U. Penn
+UCLA
+NIH
+Yale U.
+Stanford U.
+U. Washington
+U. Michigan
+U. Oxford
+U. Cambridge
+U. Pittsburgh
+McGill U.
+UC San Francisco
+Boston U.
+U. Tokyo
+New York U.
+U. British Columbia
+King's College London
+U. Melbourne
+Karolinska Instt
+Washington U. in St. Louis
+Massachusetts General Hospital
+U. Wisconsin−Madison
+U. Florida
+Neuroscience [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Harvard U.
+Inserm
+Yale U.
+NIH
+Johns Hopkins U.
+UC San Diego
+UCLA
+U. Toronto
+U. Washington
+U. Penn
+McGill U.
+U. Michigan
+Columbia U.
+U. Pittsburgh
+Karolinska Instt
+U. Oxford
+Stanford U.
+U. College London
+UC San Francisco
+U. Cambridge
+Boston U.
+U. Wisconsin−Madison
+Ohio State U.
+Howard Hughes Medical Inst
+U. Tokyo
+Kyoto U.
+Cornell U.
+Washington U. in St. Louis
+U. California, Irvine
+New York U.
+Neuroscience [1991−2000]
+Figure 10(b) | The top 30 productive institutions on the World Map: Neuroscience. The bubbles represent the top 30
+institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+75
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+75
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Interregional Neuroscience Collaboration | 1991–2020
+378
+28
+138
+168
+26
+279
+10
+30
+49
+15
+60
+10
+45
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+592
+62
+133
+32
+168
+10
+13
+10
+33
+16
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+539
+35
+37
+11
+57
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 10(c) | The Interregional Neuroscience Collaboration Matrix Diagram. The bubble size represents the number
+of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or greater
+than 10, it is displayed inside the bubble.
+76
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+76
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Interinstitutional Neuroscience Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      New York U.      
+      Duke U.      
+      U. N. Carolina at Chapel Hill      
+      U. Wisconsin−Madison      
+      U. Minnesota      
+      U. Florida      
+      Yale U.      
+      Emory U.      
+      Johns Hopkins U.      
+      NIH      
+      U. Pittsburgh      
+      U. Penn      
+      U. Michigan      
+      NW U.      
+      U. Washington      
+      Washington U. in St. Louis      
+      U. Oxford      
+      Imperial College London      
+      U. College London      
+      King's College London      
+      U. Cambridge      
+      U. Edinburgh      
+      U. British Columbia      
+      U. Toronto      
+      Boston U.      
+      Harvard U.      
+      Massachusetts General Hospital 
+      U. Melbourne      
+      Monash U.      
+      U. Sydney      
+      UNSW Sydney      
+      UCLA      
+      U. Southern California      
+      UC Davis      
+      UC San Francisco      
+      UC Berkeley      
+      Stanford U.      
+      UC San Diego      
+      Columbia U.      
+      McGill U.      
+      KU Leuven      
+      Radboud U. Nijmegen      
+      Inserm      
+      Karolinska Instt      
+      Chinese Acad of Sci      
+      U. Queensland      
+      U. de Sao Paulo      
+      U. Zurich      
+      U. Tokyo      
+      MIT      
+https://ror.org/0190ak572
+https://ror.org/00py81415
+https://ror.org/0130frc33
+https://ror.org/01y2jtd41
+https://ror.org/017zqws13
+https://ror.org/02y3ad647
+https://ror.org/03v76x132
+https://ror.org/03czfpz43
+https://ror.org/00za53h95
+https://ror.org/01cwqze88
+https://ror.org/01an3r305
+https://ror.org/00b30xv10
+https://ror.org/00jmfr291
+https://ror.org/000e0be47
+https://ror.org/00cvxb145
+https://ror.org/01yc7t268
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/02jx3x895
+https://ror.org/0220mzb33
+https://ror.org/013meh722
+https://ror.org/01nrxwf90
+https://ror.org/03rmrcq20
+https://ror.org/03dbr7087
+https://ror.org/01pxwe438
+https://ror.org/05qwgg493
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/01ej9dk98
+https://ror.org/02bfwt286
+https://ror.org/0384j8v12
+https://ror.org/03r8z3t63
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/05rrcem69
+https://ror.org/043mz5j54
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/0168r3w48
+https://ror.org/00hj8s172
+https://ror.org/05f950310
+https://ror.org/016xsfp80
+https://ror.org/02vjkv261
+https://ror.org/056d84691
+https://ror.org/034t30j35
+https://ror.org/00rqy9422
+https://ror.org/036rp1748
+https://ror.org/02crff812
+https://ror.org/057zh3y96
+https://ror.org/042nb2s44
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [BE]  
+  [NL]  
+  [FR]  
+  [SE]  
+  [CN]  
+  [AU]  
+  [BR]  
+  [CH]  
+  [JP]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      UC San Francisco      
+      UC Berkeley      
+      U. California, Irvine      
+      UCLA      
+      U. Southern California      
+      Duke U.      
+      U. N. Carolina at Chapel Hill      
+      Johns Hopkins U.      
+      NIH      
+      Washington U. in St. Louis      
+      UC San Diego      
+      U. Washington      
+      U. Penn      
+      U. Michigan      
+      U. Pittsburgh      
+      NW U.      
+      Yale U.      
+      Vanderbilt U.      
+      U. Wisconsin−Madison      
+      U. Minnesota      
+      Ohio State U.      
+      Case Western Reserve U.      
+      Penn State U.      
+      U. Florida      
+      Boston U.      
+      Harvard U.      
+      Massachusetts General Hospital 
+      U. Manchester      
+      U. College London      
+      King's College London      
+      U. Oxford      
+      U. Cambridge      
+      Stanford U.      
+      Howard Hughes Medical Inst      
+      MIT      
+      Cornell U.      
+      Columbia U.      
+      New York U.      
+      UC Davis      
+      Emory U.      
+      U. Tokyo      
+      Kyoto U.      
+      U. British Columbia      
+      U. Toronto      
+      McGill U.      
+      U. Melbourne      
+      U. Sydney      
+      U. de Sao Paulo      
+      Inserm      
+      Karolinska Instt      
+https://ror.org/043mz5j54
+https://ror.org/01an7q238
+https://ror.org/04gyf1771
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/00py81415
+https://ror.org/0130frc33
+https://ror.org/00za53h95
+https://ror.org/01cwqze88
+https://ror.org/01yc7t268
+https://ror.org/0168r3w48
+https://ror.org/00cvxb145
+https://ror.org/00b30xv10
+https://ror.org/00jmfr291
+https://ror.org/01an3r305
+https://ror.org/000e0be47
+https://ror.org/03v76x132
+https://ror.org/02vm5rt34
+https://ror.org/01y2jtd41
+https://ror.org/017zqws13
+https://ror.org/00rs6vg23
+https://ror.org/051fd9666
+https://ror.org/04p491231
+https://ror.org/02y3ad647
+https://ror.org/03czfpz43
+https://ror.org/05qwgg493
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/027m9bs27
+https://ror.org/02jx3x895
+https://ror.org/0220mzb33
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/00f54p054
+https://ror.org/006w34k90
+https://ror.org/042nb2s44
+https://ror.org/05bnh6r87
+https://ror.org/00hj8s172
+https://ror.org/0190ak572
+https://ror.org/05rrcem69
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/03rmrcq20
+https://ror.org/03dbr7087
+https://ror.org/01pxwe438
+https://ror.org/01ej9dk98
+https://ror.org/0384j8v12
+https://ror.org/036rp1748
+https://ror.org/02vjkv261
+https://ror.org/056d84691
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [AU]  
+  [AU]  
+  [BR]  
+  [FR]  
+  [SE]  
+Figure 10(d) | The Interinstitutional Neuroscience Collaboration Dendrogram. The top 50 institutions in terms of
+work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+77
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+77
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Interinstitutional Neuroscience Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      U. College London      
+      U. N. Carolina at Chapel Hill      
+      Duke Medical Center      
+      McGill U.      
+      U. Toronto      
+      U. British Columbia      
+      U. Chicago      
+      NW U.      
+      New York U.      
+      State U. New York      
+      U. Wisconsin−Madison      
+      U. Illinois UC      
+      U. Washington      
+      UC San Diego      
+      U. Arizona      
+      Washington U. in St. Louis      
+      U. Iowa      
+      Yale U.      
+      Stanford U.      
+      Rutgers U.      
+      U. Pittsburgh      
+      Cornell U.      
+      NIH      
+      Case Western Reserve U.      
+      Johns Hopkins U.      
+      Johns Hopkins Medicine      
+      Harvard U.      
+      Massachusetts General Hospital 
+      UC Berkeley      
+      UC San Francisco      
+      Columbia U.      
+      Howard Hughes Medical Inst      
+      U. Tokyo      
+      Kyoto U.      
+      Osaka U.      
+      U. California, Irvine      
+      UCLA      
+      U. Southern California      
+      U. Cambridge      
+      U. Oxford      
+      U. Penn      
+      U. Michigan      
+      Inserm      
+      Karolinska Instt      
+      U. Minnesota      
+      Boston U.      
+      Emory U.      
+      U. Sydney      
+      Ohio State U.      
+      U. Florida      
+https://ror.org/02jx3x895
+https://ror.org/0130frc33
+https://ror.org/03njmea73
+https://ror.org/01pxwe438
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/024mw5h28
+https://ror.org/000e0be47
+https://ror.org/0190ak572
+https://ror.org/01q1z8k08
+https://ror.org/01y2jtd41
+https://ror.org/047426m28
+https://ror.org/00cvxb145
+https://ror.org/0168r3w48
+https://ror.org/03m2x1q45
+https://ror.org/01yc7t268
+https://ror.org/036jqmy94
+https://ror.org/03v76x132
+https://ror.org/00f54p054
+https://ror.org/05vt9qd57
+https://ror.org/01an3r305
+https://ror.org/05bnh6r87
+https://ror.org/01cwqze88
+https://ror.org/051fd9666
+https://ror.org/00b30xv10
+https://ror.org/00za53h95
+https://ror.org/037zgn354
+https://ror.org/03vek6s52
+https://ror.org/002pd6e78
+https://ror.org/01an7q238
+https://ror.org/043mz5j54
+https://ror.org/00hj8s172
+https://ror.org/006w34k90
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/04gyf1771
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/00jmfr291
+https://ror.org/02vjkv261
+https://ror.org/056d84691
+https://ror.org/017zqws13
+https://ror.org/05qwgg493
+https://ror.org/03czfpz43
+https://ror.org/0384j8v12
+https://ror.org/00rs6vg23
+https://ror.org/02y3ad647
+  [GB]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [FR]  
+  [SE]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Western U.      
+      U. Toronto      
+      U. British Columbia      
+      Columbia U.      
+      Albert Einstein College of Medicine      
+      Yale U.      
+      U. Rochester      
+      Cornell U.      
+      Washington U. in St. Louis      
+      U. Penn      
+      Rutgers U.      
+      MIT      
+      U. Michigan      
+      State U. New York      
+      Inserm      
+      U. Illinois UC      
+      U. College London      
+      Osaka U.      
+      U. Washington      
+      U. N. Carolina at Chapel Hill      
+      U. Florida      
+      U. Minnesota      
+      U. Pittsburgh      
+      Penn State U.      
+      Johns Hopkins U.      
+      Johns Hopkins Medicine      
+      Harvard U.      
+      Boston U.      
+      NIH      
+      Nat'l Inst of Mental Health      
+      UC San Diego      
+      Stanford U.      
+      US Dept of Veterans Affairs      
+      U. California, Irvine      
+      UCLA      
+      U. Southern California      
+      UC Davis      
+      UC Berkeley      
+      UC San Francisco      
+      McGill U.      
+      U. Chicago      
+      NW U.      
+      Ohio State U.      
+      U. Wisconsin−Madison      
+      U. Iowa      
+      Karolinska Instt      
+      New York U.      
+      U. Oxford      
+      U. Cambridge      
+      Lund U.      
+https://ror.org/02grkyz14
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/00hj8s172
+https://ror.org/05cf8a891
+https://ror.org/03v76x132
+https://ror.org/022kthw22
+https://ror.org/05bnh6r87
+https://ror.org/01yc7t268
+https://ror.org/00b30xv10
+https://ror.org/05vt9qd57
+https://ror.org/042nb2s44
+https://ror.org/00jmfr291
+https://ror.org/01q1z8k08
+https://ror.org/02vjkv261
+https://ror.org/047426m28
+https://ror.org/02jx3x895
+https://ror.org/035t8zc32
+https://ror.org/00cvxb145
+https://ror.org/0130frc33
+https://ror.org/02y3ad647
+https://ror.org/017zqws13
+https://ror.org/01an3r305
+https://ror.org/04p491231
+https://ror.org/024mw5h28
+https://ror.org/00za53h95
+https://ror.org/037zgn354
+https://ror.org/03vek6s52
+https://ror.org/05qwgg493
+https://ror.org/01cwqze88
+https://ror.org/04xeg9z08
+https://ror.org/0168r3w48
+https://ror.org/00f54p054
+https://ror.org/05rsv9s98
+https://ror.org/04gyf1771
+https://ror.org/046rm7j60
+https://ror.org/03taz7m60
+https://ror.org/05rrcem69
+https://ror.org/01an7q238
+https://ror.org/043mz5j54
+https://ror.org/01pxwe438
+https://ror.org/000e0be47
+https://ror.org/00rs6vg23
+https://ror.org/01y2jtd41
+https://ror.org/036jqmy94
+https://ror.org/056d84691
+https://ror.org/0190ak572
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/012a77v79
+  [CA]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [US]  
+  [GB]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [SE]  
+  [US]  
+  [GB]  
+  [GB]  
+  [SE]  
+Figure 10(d) | The Interinstitutional Neuroscience Collaboration Dendrogram. (Cont.)
+78
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+78
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Table 10 | The top 100 productive institutions: Neuroscience.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Harvard University
+US
+4,585
+Harvard University
+US
+10,292
+Harvard University
+US
+23,906
+2
+Inserm
+FR
+4,379
+Inserm
+FR
+7,149
+Inserm
+FR
+16,215
+3
+Yale University
+US
+3,378
+University College London
+GB
+7,075
+University of Toronto
+CA
+15,897
+4
+National Institutes of Health
+US
+3,218
+University of Toronto
+CA
+6,596
+University College London
+GB
+15,006
+5
+Johns Hopkins University
+US
+3,046
+Johns Hopkins University
+US
+6,081
+Stanford University
+US
+12,900
+6
+University of California, San Diego
+US
+3,042
+University of California, San Diego
+US
+5,744
+University of Oxford
+GB
+12,388
+7
+University of California, Los Angeles
+US
+2,825
+Columbia University
+US
+5,655
+Johns Hopkins University
+US
+12,226
+8
+University of Toronto
+CA
+2,824
+University of Pennsylvania
+US
+5,583
+University of California, San Diego
+US
+11,810
+9
+University of Washington
+US
+2,741
+University of California, Los Angeles
+US
+5,489
+University of Pennsylvania
+US
+11,672
+10
+University of Pennsylvania
+US
+2,703
+National Institutes of Health
+US
+5,362
+University of Cambridge
+GB
+11,084
+11
+McGill University
+CA
+2,645
+Yale University
+US
+5,352
+King’s College London
+GB
+10,910
+12
+University of Michigan–Ann Arbor
+US
+2,536
+Stanford University
+US
+5,172
+University of Michigan–Ann Arbor
+US
+10,542
+13
+Columbia University
+US
+2,498
+University of Washington
+US
+5,116
+Yale University
+US
+10,497
+14
+University of Pittsburgh
+US
+2,407
+University of Michigan–Ann Arbor
+US
+5,073
+McGill University
+CA
+10,270
+15
+Karolinska Institutet
+SE
+2,392
+University of Oxford
+GB
+4,913
+University of California, Los Angeles
+US
+10,128
+16
+University of Oxford
+GB
+2,378
+University of Cambridge
+GB
+4,685
+Columbia University
+US
+10,047
+17
+Stanford University
+US
+2,332
+University of Pittsburgh
+US
+4,598
+Chinese Academy of Sciences
+CN
+9,922
+18
+University College London
+GB
+2,314
+McGill University
+CA
+4,554
+Massachusetts General Hospital
+US
+9,785
+19
+University of California, San Francisco
+US
+2,295
+University of California, San Francisco
+US
+4,362
+University of Melbourne
+AU
+9,684
+20
+University of Cambridge
+GB
+2,182
+Boston University
+US
+4,325
+University of Washington
+US
+9,592
+21
+Boston University
+US
+1,942
+The University of Tokyo
+JP
+4,260
+University of California, San Francisco
+US
+9,553
+22
+University of Wisconsin–Madison
+US
+1,937
+New York University
+US
+4,224
+University of Pittsburgh
+US
+9,387
+23
+The Ohio State University
+US
+1,932
+University of British Columbia
+CA
+4,100
+Boston University
+US
+9,089
+24
+Howard Hughes Medical Institute
+US
+1,930
+King’s College London
+GB
+3,979
+New York University
+US
+8,621
+25
+The University of Tokyo
+JP
+1,924
+University of Melbourne
+AU
+3,822
+University of British Columbia
+CA
+8,441
+26
+Kyoto University
+JP
+1,914
+Karolinska Institutet
+SE
+3,755
+National Institutes of Health
+US
+8,128
+27
+Washington University in St. Louis
+US
+1,883
+Washington University in St. Louis
+US
+3,643
+University of Sydney
+AU
+8,085
+28
+Cornell University
+US
+1,837
+Massachusetts General Hospital
+US
+3,620
+Karolinska Institutet
+SE
+7,320
+29
+University of California, Irvine
+US
+1,827
+University of Wisconsin–Madison
+US
+3,580
+KU Leuven
+BE
+7,271
+30
+New York University
+US
+1,804
+University of Florida
+US
+3,438
+Washington University in St. Louis
+US
+7,252
+31
+University of Southern California
+US
+1,791
+University of California, Berkeley
+US
+3,321
+University of Southern California
+US
+7,217
+32
+University of British Columbia
+CA
+1,723
+University of Minnesota
+US
+3,298
+University of Queensland
+AU
+7,161
+33
+State University of New York
+US
+1,707
+Emory University
+US
+3,266
+UNSW Sydney
+AU
+7,011
+34
+Massachusetts General Hospital
+US
+1,674
+University of Sydney
+AU
+3,257
+Universidade de São Paulo
+BR
+7,009
+35
+University of California, Berkeley
+US
+1,665
+Kyoto University
+JP
+3,248
+Emory University
+US
+6,956
+36
+University of Minnesota
+US
+1,660
+University of California, Irvine
+US
+3,234
+University of Florida
+US
+6,951
+37
+Case Western Reserve University
+US
+1,653
+Northwestern University
+US
+3,194
+Duke University
+US
+6,941
+38
+University of North Carolina at Chapel Hill
+US
+1,591
+Cornell University
+US
+3,191
+University of Wisconsin–Madison
+US
+6,930
+39
+Emory University
+US
+1,572
+Howard Hughes Medical Institute
+US
+3,176
+The University of Tokyo
+JP
+6,902
+40
+Osaka University
+JP
+1,571
+The Ohio State University
+US
+3,154
+Monash University
+AU
+6,818
+41
+University of Iowa
+US
+1,555
+University of California, Davis
+US
+3,148
+University of California, Berkeley
+US
+6,816
+42
+Rutgers, The State University of New Jersey
+US
+1,546
+University of Southern California
+US
+3,078
+Northwestern University
+US
+6,713
+43
+University of Illinois Urbana-Champaign
+US
+1,522
+Pennsylvania State University
+US
+3,039
+Radboud University Nĳmegen
+NL
+6,710
+44
+University of Florida
+US
+1,504
+Vanderbilt University
+US
+2,983
+University of Edinburgh
+GB
+6,677
+45
+Duke Medical Center
+US
+1,503
+Universidade de São Paulo
+BR
+2,975
+University of North Carolina at Chapel Hill
+US
+6,666
+46
+University of Arizona
+US
+1,501
+University of Manchester
+GB
+2,973
+University of Minnesota
+US
+6,647
+47
+Johns Hopkins Medicine
+US
+1,480
+Duke University
+US
+2,958
+University of California, Davis
+US
+6,546
+48
+University of Chicago
+US
+1,471
+University of North Carolina at Chapel Hill
+US
+2,889
+Massachusetts Institute of Technology
+US
+6,350
+49
+University of Sydney
+AU
+1,422
+Massachusetts Institute of Technology
+US
+2,806
+University of Zurich
+CH
+6,264
+50
+Northwestern University
+US
+1,404
+Case Western Reserve University
+US
+2,805
+Imperial College London
+GB
+6,225
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+79
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+79
+
+10. Neuroscience
+10. Neuroscience
+10. Neuroscience
+Table 10 | The top 100 productive institutions: Neuroscience. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Pennsylvania State University
+US
+1,393
+University of Queensland
+AU
+2,796
+Sapienza University of Rome
+IT
+6,164
+52
+Duke University
+US
+1,352
+University of Illinois Urbana-Champaign
+US
+2,769
+University of Amsterdam
+NL
+6,145
+53
+University of California, Davis
+US
+1,334
+UNSW Sydney
+AU
+2,767
+Johns Hopkins Medicine
+US
+6,120
+54
+Massachusetts Institute of Technology
+US
+1,333
+Université de Montréal
+CA
+2,762
+Université de Montréal
+CA
+5,964
+55
+Baylor College of Medicine
+US
+1,321
+University of Iowa
+US
+2,741
+Charité – Universitätsmedizin Berlin
+DE
+5,855
+56
+Sapienza University of Rome
+IT
+1,317
+Johns Hopkins Medicine
+US
+2,708
+Shanghai Jiao Tong University
+CN
+5,852
+57
+University of Virginia
+US
+1,304
+University of Edinburgh
+GB
+2,698
+The Ohio State University
+US
+5,831
+58
+Université de Montréal
+CA
+1,281
+KU Leuven
+BE
+2,634
+Pennsylvania State University
+US
+5,796
+59
+University of Milan
+IT
+1,261
+Rutgers, The State University of New Jersey
+US
+2,631
+Indiana University
+US
+5,686
+60
+National Institute of Neurological Disorders and Stroke
+US
+1,249
+Osaka University
+JP
+2,627
+University of California, Irvine
+US
+5,638
+61
+National Hospital for Neurology and Neurosurgery
+GB
+1,233
+Sapienza University of Rome
+IT
+2,544
+University of Tübingen
+DE
+5,592
+62
+National Institute of Mental Health
+US
+1,227
+University of Chicago
+US
+2,542
+Vanderbilt University
+US
+5,590
+63
+University of Melbourne
+AU
+1,225
+University of Amsterdam
+NL
+2,488
+Icahn School of Medicine at Mount Sinai
+US
+5,545
+64
+Albert Einstein College of Medicine
+US
+1,224
+University of Alberta
+CA
+2,451
+University of Copenhagen
+DK
+5,514
+65
+University of Amsterdam
+NL
+1,213
+University of Zurich
+CH
+2,440
+University of Manchester
+GB
+5,456
+66
+Tel Aviv University
+IL
+1,201
+Max Planck Society
+DE
+2,436
+Howard Hughes Medical Institute
+US
+5,322
+67
+Duke University Hospital
+US
+1,189
+Indiana University
+US
+2,435
+University of Calgary
+CA
+5,304
+68
+University of Edinburgh
+GB
+1,160
+The University of Texas at Austin
+US
+2,421
+University of Illinois Urbana-Champaign
+US
+5,248
+69
+The University of Texas at Austin
+US
+1,147
+Ludwig-Maximilians-Universität München
+DE
+2,389
+Rutgers, The State University of New Jersey
+US
+5,205
+70
+Kyushu University
+JP
+1,145
+Oregon Health & Science University
+US
+2,389
+The University of Texas at Austin
+US
+5,173
+71
+University of Tübingen
+DE
+1,137
+Chinese Academy of Sciences
+CN
+2,387
+Tsinghua University
+CN
+5,096
+72
+University of Miami
+US
+1,134
+University of Calgary
+CA
+2,371
+Istituti di Ricovero e Cura a Carattere Scientifico
+IT
+5,072
+73
+Lund University
+SE
+1,132
+Charité – Universitätsmedizin Berlin
+DE
+2,345
+National University of Singapore
+SG
+5,071
+74
+Neurological Surgery
+US
+1,132
+University of Utah
+US
+2,311
+Cornell University
+US
+5,062
+75
+University of Manchester
+GB
+1,121
+Tel Aviv University
+IL
+2,310
+Peking University
+CN
+4,929
+76
+Western University
+CA
+1,112
+University of Arizona
+US
+2,304
+Seoul National University
+KR
+4,906
+77
+Tohoku University
+JP
+1,108
+Monash University
+AU
+2,272
+Maastricht University
+NL
+4,896
+78
+University of Utah
+US
+1,098
+Imperial College London
+GB
+2,268
+Brigham and Women’s Hospital
+US
+4,889
+79
+University of Queensland
+AU
+1,092
+University of Tübingen
+DE
+2,263
+Kyoto University
+JP
+4,867
+80
+University of Kentucky
+US
+1,082
+Duke Medical Center
+US
+2,255
+Western University
+CA
+4,858
+81
+University of Alberta
+CA
+1,057
+Baylor College of Medicine
+US
+2,220
+Zhejiang University
+CN
+4,845
+82
+Vanderbilt University
+US
+1,056
+Tohoku University
+JP
+2,147
+Ludwig-Maximilians-Universität München
+DE
+4,805
+83
+Wayne State University
+US
+1,055
+Icahn School of Medicine at Mount Sinai
+US
+2,145
+Tel Aviv University
+IL
+4,799
+84
+University of Bristol
+GB
+1,033
+University of Bristol
+GB
+2,134
+University of Utah
+US
+4,751
+85
+Oregon Health & Science University
+US
+1,024
+National Hospital for Neurology and Neurosurgery
+GB
+2,133
+Baylor College of Medicine
+US
+4,597
+86
+University of Calgary
+CA
+1,020
+University of Illinois at Chicago
+US
+2,105
+University of Alberta
+CA
+4,591
+87
+Indiana University
+US
+996
+Western University
+CA
+2,099
+ETH Zurich
+CH
+4,566
+88
+Hokkaido University
+JP
+994
+University of Helsinki
+FI
+2,076
+University of Groningen
+NL
+4,560
+89
+Nagoya University
+JP
+981
+Zhejiang University
+CN
+2,073
+Utrecht University
+NL
+4,533
+90
+Radboud University Nĳmegen
+NL
+981
+Michigan State University
+US
+2,026
+University of Padua
+IT
+4,479
+91
+Stony Brook University
+US
+978
+Utrecht University
+NL
+2,012
+University of Chicago
+US
+4,461
+92
+University of Alabama at Birmingham
+US
+978
+Nagoya University
+JP
+1,966
+Chinese University of Hong Kong
+CN
+4,437
+93
+Ludwig-Maximilians-Universität München
+DE
+977
+University of Kentucky
+US
+1,952
+University of Barcelona
+ES
+4,406
+94
+University of Maryland, College Park
+US
+969
+University of Virginia
+US
+1,949
+University of Chinese Academy of Sciences
+CN
+4,334
+95
+Max Planck Society
+DE
+968
+Wayne State University
+US
+1,940
+University of Iowa
+US
+4,316
+96
+University of Helsinki
+FI
+960
+Lund University
+SE
+1,929
+University of Milan
+IT
+4,255
+97
+University of Wales
+GB
+958
+National University of Singapore
+SG
+1,925
+Heidelberg University
+DE
+4,251
+98
+Hebrew University of Jerusalem
+IL
+949
+University of Birmingham
+GB
+1,918
+Huazhong University of Science and Technology
+CN
+4,249
+99
+California Institute of Technology
+US
+949
+Chinese University of Hong Kong
+CN
+1,902
+Michigan State University
+US
+4,208
+100
+University of Zurich
+CH
+944
+Maastricht University
+NL
+1,900
+University of Helsinki
+FI
+4,202
+80
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+80
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+11. Condensed Matter Physics
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+World Map of Condensed Matter Physics Collaboration | 1971–2020
+Figure 11 (a) | The World Map of Condensed Matter Physics Collaboration. The bubbles represent the top 199
+institutions in terms of work production, with their sizes proportional to the work volume. The connecting lines depict
+coauthorship relationships among the top 50 institutions.
+82
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+82
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Top 30 Productive Institutions on the World Map: Condensed Matter Physics | 1991–2020
+Chinese Acad of Sci
+U. Tokyo
+U. Chinese Acad of Sci
+Tohoku U.
+Tsinghua U.
+U. Sci & Tech of China
+Peking U.
+Nanjing U.
+Inst Polytechnique de Paris
+Osaka U.
+Russian Acad of Sci
+NIMS
+Kyoto U.
+MIT
+Lawrence Berkeley NL
+U. Cambridge
+Nanyang Tech U.
+Lomonosov Moscow State U.
+Inst of Physics
+UC Berkeley
+Zhejiang U.
+Nat'l U. Singapore
+Oak Ridge NL
+Los Alamos NL
+Shanghai Jiao Tong U.
+Xi'an Jiaotong U.
+Stanford U.
+Grenoble Alpes U.
+ETH Zurich
+Argonne NL
+Condensed Matter Physics [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+Chinese Acad of Sci
+Tohoku U.
+Osaka U.
+Russian Acad of Sci
+Kyoto U.
+Tokyo Inst of Tech
+Los Alamos NL
+AIST
+JST
+Lomonosov Moscow State U.
+Lawrence Berkeley NL
+NIMS
+U. Cambridge
+Inst of Physics
+Polish Acad of Sci
+Argonne NL
+UC Berkeley
+MIT
+U. Paris−Sud
+Inst Polytechnique de Paris
+Tsinghua U.
+Nagoya U.
+Stanford U.
+Physico−Tech Inst
+Inst of Physics
+Nat'l Acad of Sci of Ukraine
+Nanjing U.
+U. Maryland
+U. Oxford
+Condensed Matter Physics [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+Tohoku U.
+Osaka U.
+Kyoto U.
+Los Alamos NL
+Argonne NL
+Inst of Physics
+Russian Acad of Sci
+MIT
+U. Illinois UC
+U. Cambridge
+Polish Acad of Sci
+U. Paris−Sud
+Tokyo Inst of Tech
+Lawrence Berkeley NL
+US Naval Research Lab
+UC Berkeley
+U. Oxford
+AT&T (US)
+MPI − Solid State Res
+Lomonosov Moscow State U.
+Nagoya U.
+Forschungszentrum Julich
+Oak Ridge NL
+Inst Polytechnique de Paris
+UC Santa Barbara
+Stanford U.
+U. Maryland
+Chinese Acad of Sci
+U. Tsukuba
+Condensed Matter Physics [1991−2000]
+Figure 11 (b) | The top 30 productive institutions on the World Map: Condensed Matter Physics. The bubbles
+represent the top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+83
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+83
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Interregional Condensed Matter Physics Collaboration | 1991–2020
+55
+168
+63
+33
+82
+69
+120
+60
+45
+102
+74
+15
+18
+47
+40
+24
+19
+28
+52
+18
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+104
+62
+78
+29
+123
+67
+15
+16
+50
+19
+21
+14
+64
+42
+21
+12
+78
+57
+18
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+181
+94
+27
+69
+56
+37
+15
+31
+48
+10
+45
+18
+11
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 11 (c) | The Interregional Condensed Matter Physics Collaboration Matrix Diagram.
+The bubble size
+represents the number of coauthorship relationships for the top 50 institutions in terms of work production. If the number
+is equal to or greater than 10, it is displayed inside the bubble.
+84
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+84
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Interinstitutional Condensed Matter Physics Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      MIT      
+      Stanford U.      
+      U. Maryland      
+      Los Alamos NL      
+      UCLA      
+      UT Austin      
+      U. Michigan      
+      ETH Zurich      
+      EPFL      
+      U. Cambridge      
+      U. Oxford      
+      Imperial College London      
+      Nanyang Tech U.      
+      Nat'l U. Singapore      
+      Russian Acad of Sci      
+      Lomonosov Moscow State U.      
+      Tsinghua U.      
+      Peking U.      
+      Zhejiang U.      
+      Shanghai Jiao Tong U.      
+      U. Sci & Tech of China      
+      Fudan U.      
+      Karlsruhe Inst of Tech      
+      Polish Acad of Sci      
+      Nanjing U.      
+      CICAM      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      Inst of Physics      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Nagoya U.      
+      Osaka U.      
+      Kyoto U.      
+      Tokyo Inst of Tech      
+      U. Tokyo      
+      Tohoku U.      
+      NIMS      
+      AIST      
+      U. Paris−Sud      
+      U. Paris−Saclay      
+      Oak Ridge NL      
+      Argonne NL      
+      Seoul Nat'l U.      
+      Nat'l Taiwan U.      
+      Harbin Inst of Tech      
+      Jilin U.      
+      Xi'an Jiaotong U.      
+      Huazhong U. Sci & Tech      
+      U. Elec Sci & Tech of China      
+https://ror.org/042nb2s44
+https://ror.org/00f54p054
+https://ror.org/047s2c258
+https://ror.org/01e41cf67
+https://ror.org/046rm7j60
+https://ror.org/00hj54h04
+https://ror.org/00jmfr291
+https://ror.org/05a28rw58
+https://ror.org/02s376052
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/02e7b5302
+https://ror.org/01tgyzw49
+https://ror.org/05qrfxd25
+https://ror.org/010pmpe69
+https://ror.org/03cve4549
+https://ror.org/02v51f717
+https://ror.org/00a2xv884
+https://ror.org/0220qvk04
+https://ror.org/04c4dkn09
+https://ror.org/013q1eq08
+https://ror.org/04t3en479
+https://ror.org/01dr6c206
+https://ror.org/04h9pn542
+https://ror.org/01rxvg760
+https://ror.org/04ttadj76
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/05cvf7v30
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/04chrp450
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/0112mx960
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/026v1ze26
+https://ror.org/01703db54
+https://ror.org/028rypz17
+https://ror.org/03xjwb503
+https://ror.org/01qz5mb56
+https://ror.org/05gvnxz63
+https://ror.org/05bqach95
+https://ror.org/01yqg2h08
+https://ror.org/00js3aw79
+https://ror.org/017zhmm22
+https://ror.org/00p991c53
+https://ror.org/04qr3zq92
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [SG]  
+  [SG]  
+  [RU]  
+  [RU]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [DE]  
+  [PL]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [FR]  
+  [FR]  
+  [US]  
+  [US]  
+  [KR]  
+  [TW]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Tsinghua U.      
+      Peking U.      
+      Nat'l Taiwan U.      
+      Nat'l U. Singapore      
+      Nanjing U.      
+      U. Sci & Tech of China      
+      ETH Zurich      
+      EPFL      
+      Nat'l Acad of Sci of Ukraine      
+      FZU      
+      Forschungszentrum Julich      
+      U. Paris−Sud      
+     Lomonosov Moscow State U.      
+      Max Planck Society      
+      U. Maryland      
+      NIST      
+      Stanford U.      
+      MIT      
+      UC Santa Barbara      
+      U. Michigan      
+      US Naval Research Lab      
+      Penn State U.      
+      Princeton U.      
+      U. Cambridge      
+      Russian Acad of Sci      
+      Physico−Tech Inst      
+      Nagoya U.      
+      Hokkaido U.      
+      Kyushu U.      
+      Osaka U.      
+      Kyoto U.      
+      U. Tokyo      
+      Tokyo U. Sci      
+      NIMS      
+      U. Tsukuba      
+      Tokyo Inst of Tech      
+      Tohoku U.      
+      AIST      
+      JST      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      Inst of Physics      
+      Polish Acad of Sci      
+      Chinese Acad of Sci      
+      Inst of Physics      
+      U. Oxford      
+      Argonne NL      
+      U. Illinois UC      
+      Los Alamos NL      
+      Oak Ridge NL      
+https://ror.org/03cve4549
+https://ror.org/02v51f717
+https://ror.org/05bqach95
+https://ror.org/01tgyzw49
+https://ror.org/01rxvg760
+https://ror.org/04c4dkn09
+https://ror.org/05a28rw58
+https://ror.org/02s376052
+https://ror.org/00je4t102
+https://ror.org/02yhj4v17
+https://ror.org/02nv7yv05
+https://ror.org/028rypz17
+https://ror.org/010pmpe69
+https://ror.org/01hhn8329
+https://ror.org/047s2c258
+https://ror.org/05xpvk416
+https://ror.org/00f54p054
+https://ror.org/042nb2s44
+https://ror.org/02t274463
+https://ror.org/00jmfr291
+https://ror.org/04d23a975
+https://ror.org/04p491231
+https://ror.org/00hx57361
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/05qrfxd25
+https://ror.org/02jj4k517
+https://ror.org/04chrp450
+https://ror.org/02e16g702
+https://ror.org/00p4k0j84
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/057zh3y96
+https://ror.org/05sj3n476
+https://ror.org/026v1ze26
+https://ror.org/02956yf07
+https://ror.org/0112mx960
+https://ror.org/01dq60k83
+https://ror.org/01703db54
+https://ror.org/00097mb19
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/000sfad56
+https://ror.org/01dr6c206
+https://ror.org/034t30j35
+https://ror.org/05cvf7v30
+https://ror.org/05gvnxz63
+https://ror.org/047426m28
+https://ror.org/01e41cf67
+https://ror.org/01qz5mb56
+  [CN]  
+  [CN]  
+  [TW]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CH]  
+  [CH]  
+  [UA]  
+  [CZ]  
+  [DE]  
+  [FR]  
+  [RU]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [RU]  
+  [RU]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [PL]  
+  [PL]  
+  [CN]  
+  [CN]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 11(d) | The Interinstitutional Condensed Matter Physics Collaboration Dendrogram. The top 50 institutions
+in terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+85
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+85
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Interinstitutional Condensed Matter Physics Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      MIT      
+      Brookhaven NL      
+      AT&T (US)      
+      Princeton U.      
+      Argonne NL      
+      U. Illinois UC      
+      Stanford U.      
+      Lawrence Livermore NL      
+      Oak Ridge NL      
+      Los Alamos NL      
+      UC San Diego      
+     Lomonosov Moscow State U.      
+      Tokyo Inst of Tech      
+      Chalmers U. Tech      
+      UC Santa Barbara      
+      Penn State U.      
+      Cornell U.      
+      U. Minnesota      
+      Eur Org for Nucl Res      
+      ETH Zurich      
+      U. Cambridge      
+      U. Oxford      
+      EPFL      
+      INFM      
+      Lawrence Berkeley NL      
+      UC Berkeley      
+      U. Paris−Sud      
+      Lab of Solid State Physics      
+      Inst of Physics      
+      Polish Acad of Sci      
+      Chinese Acad of Sci      
+      Inst of Physics      
+      Russian Acad of Sci      
+      Physico−Tech Inst      
+      U. Tokyo      
+      Tokyo U. Sci      
+      MPI − Solid State Res      
+      Max Planck Society      
+      Osaka U.      
+      Kyoto U.      
+      Tohoku U.      
+      U. Tsukuba      
+      Kyushu U.      
+      Nagoya U.      
+      Hitachi (Japan)      
+      US Naval Research Lab      
+      U. Maryland      
+      NIST      
+      Forschungszentrum Julich      
+      Tech U. Munich      
+https://ror.org/042nb2s44
+https://ror.org/02ex6cf31
+https://ror.org/02bbd5539
+https://ror.org/00hx57361
+https://ror.org/05gvnxz63
+https://ror.org/047426m28
+https://ror.org/00f54p054
+https://ror.org/041nk4h53
+https://ror.org/01qz5mb56
+https://ror.org/01e41cf67
+https://ror.org/0168r3w48
+https://ror.org/010pmpe69
+https://ror.org/0112mx960
+https://ror.org/040wg7k59
+https://ror.org/02t274463
+https://ror.org/04p491231
+https://ror.org/05bnh6r87
+https://ror.org/017zqws13
+https://ror.org/01ggx4157
+https://ror.org/05a28rw58
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/02s376052
+https://ror.org/02kswma64
+https://ror.org/02nv7yv05
+https://ror.org/02jbv0t02
+https://ror.org/01an7q238
+https://ror.org/028rypz17
+https://ror.org/02dyaew97
+https://ror.org/000sfad56
+https://ror.org/01dr6c206
+https://ror.org/034t30j35
+https://ror.org/05cvf7v30
+https://ror.org/05qrfxd25
+https://ror.org/02jj4k517
+https://ror.org/057zh3y96
+https://ror.org/05sj3n476
+https://ror.org/005bk2339
+https://ror.org/01hhn8329
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/01dq60k83
+https://ror.org/02956yf07
+https://ror.org/00p4k0j84
+https://ror.org/04chrp450
+https://ror.org/02exqgm79
+https://ror.org/04d23a975
+https://ror.org/047s2c258
+https://ror.org/05xpvk416
+https://ror.org/02kkvpp62
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [JP]  
+  [SE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [CH]  
+  [GB]  
+  [GB]  
+  [CH]  
+  [IT]  
+  [US]  
+  [US]  
+  [FR]  
+  [FR]  
+  [PL]  
+  [PL]  
+  [CN]  
+  [CN]  
+  [RU]  
+  [RU]  
+  [JP]  
+  [JP]  
+  [DE]  
+  [DE]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [DE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Iowa State U.      
+      U. Illinois UC      
+      Argonne NL      
+      U. Chicago      
+      U. Oxford      
+      Imperial College London      
+      Eur Org for Nucl Res      
+      U. Cambridge      
+      Forschungszentrum Julich      
+      Tech U. Munich      
+      FZU      
+      Physico−Tech Inst      
+      Caltech      
+      Stanford U.      
+      Lawrence Livermore NL      
+      Los Alamos NL      
+      UC San Diego      
+      UCLA      
+      UC Santa Barbara      
+      IBM T.J. Watson Res Center      
+      IBM (US)      
+      Cornell U.      
+      MIT      
+      Harvard U.      
+      Universite Paris Cite      
+      Lab of Solid State Physics      
+      U. Paris−Sud      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      MPI − Solid State Res      
+      Max Planck Society      
+      Inst of Physics      
+      Polish Acad of Sci      
+      U. Tokyo      
+      Tohoku U.      
+      Osaka U.      
+      Kyoto U.      
+      Tokyo Inst of Tech      
+      Nagoya U.      
+      Kyushu U.      
+      NIST      
+      US Naval Research Lab      
+      U. Maryland      
+      Brookhaven NL      
+      State U. New York      
+      U. Wisconsin−Madison      
+      Oak Ridge NL      
+      U. Penn      
+      AT&T (US)      
+      Princeton U.      
+https://ror.org/04rswrd78
+https://ror.org/047426m28
+https://ror.org/05gvnxz63
+https://ror.org/024mw5h28
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/01ggx4157
+https://ror.org/013meh722
+https://ror.org/02nv7yv05
+https://ror.org/02kkvpp62
+https://ror.org/02yhj4v17
+https://ror.org/02jj4k517
+https://ror.org/05dxps055
+https://ror.org/00f54p054
+https://ror.org/041nk4h53
+https://ror.org/01e41cf67
+https://ror.org/0168r3w48
+https://ror.org/046rm7j60
+https://ror.org/02t274463
+https://ror.org/0265w5591
+https://ror.org/05hh8d621
+https://ror.org/05bnh6r87
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00b30xv10
+https://ror.org/05f82e368
+https://ror.org/02dyaew97
+https://ror.org/028rypz17
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/005bk2339
+https://ror.org/01hhn8329
+https://ror.org/000sfad56
+https://ror.org/01dr6c206
+https://ror.org/057zh3y96
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/02kpeqv85
+https://ror.org/0112mx960
+https://ror.org/04chrp450
+https://ror.org/00p4k0j84
+https://ror.org/05xpvk416
+https://ror.org/04d23a975
+https://ror.org/047s2c258
+https://ror.org/02ex6cf31
+https://ror.org/01q1z8k08
+https://ror.org/01y2jtd41
+https://ror.org/01qz5mb56
+https://ror.org/02bbd5539
+https://ror.org/00hx57361
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [CH]  
+  [GB]  
+  [DE]  
+  [DE]  
+  [CZ]  
+  [RU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [FR]  
+  [FR]  
+  [US]  
+  [US]  
+  [DE]  
+  [DE]  
+  [PL]  
+  [PL]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 11(d) | The Interinstitutional Condensed Matter Physics Collaboration Dendrogram. (Cont.)
+86
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+86
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Table 11 | The top 100 productive institutions: Condensed Matter Physics.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+The University of Tokyo
+JP
+8,443
+The University of Tokyo
+JP
+11,371
+Chinese Academy of Sciences
+CN
+29,323
+2
+Tohoku University
+JP
+6,108
+Chinese Academy of Sciences
+CN
+10,374
+The University of Tokyo
+JP
+12,228
+3
+Osaka University
+JP
+4,446
+Tohoku University
+JP
+9,116
+University of Chinese Academy of Sciences
+CN
+9,092
+4
+Kyoto University
+JP
+3,872
+Osaka University
+JP
+7,277
+Tohoku University
+JP
+8,637
+5
+Los Alamos National Laboratory
+US
+3,635
+Russian Academy of Sciences
+RU
+6,508
+Tsinghua University
+CN
+8,475
+6
+Argonne National Laboratory
+US
+3,298
+Kyoto University
+JP
+5,608
+University of Science and Technology of China
+CN
+7,962
+7
+Institute of Physics
+PL
+3,285
+Tokyo Institute of Technology
+JP
+5,118
+Peking University
+CN
+7,708
+8
+Russian Academy of Sciences
+RU
+3,258
+Los Alamos National Laboratory
+US
+4,997
+Nanjing University
+CN
+7,054
+9
+Massachusetts Institute of Technology
+US
+3,201
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+4,839
+Osaka University
+JP
+6,592
+10
+University of Illinois Urbana-Champaign
+US
+3,100
+Japan Science and Technology Agency (JST)
+JP
+4,552
+Russian Academy of Sciences
+RU
+6,513
+11
+University of Cambridge
+GB
+3,030
+Lomonosov Moscow State University
+RU
+4,492
+National Institute for Materials Science (NIMS)
+JP
+6,338
+12
+Polish Academy of Sciences
+PL
+3,026
+Lawrence Berkeley National Laboratory
+US
+4,478
+Kyoto University
+JP
+6,336
+13
+University of Paris-Sud
+FR
+2,989
+National Institute for Materials Science (NIMS)
+JP
+4,465
+Massachusetts Institute of Technology
+US
+6,272
+14
+Tokyo Institute of Technology
+JP
+2,960
+University of Cambridge
+GB
+4,372
+Lawrence Berkeley National Laboratory
+US
+5,949
+15
+Lawrence Berkeley National Laboratory
+US
+2,757
+Institute of Physics
+PL
+4,264
+University of Cambridge
+GB
+5,753
+16
+United States Naval Research Laboratory
+US
+2,757
+Polish Academy of Sciences
+PL
+4,200
+Nanyang Technological University
+SG
+5,694
+17
+University of California, Berkeley
+US
+2,753
+Argonne National Laboratory
+US
+4,023
+Lomonosov Moscow State University
+RU
+5,634
+18
+University of Oxford
+GB
+2,747
+Massachusetts Institute of Technology
+US
+3,825
+Institute of Physics
+CN
+5,576
+19
+AT&T (United States)
+US
+2,706
+University of California, Berkeley
+US
+3,821
+University of California, Berkeley
+US
+5,507
+20
+Max Planck Institute for Solid State Research
+DE
+2,634
+University of Paris-Sud
+FR
+3,638
+Zhejiang University
+CN
+5,435
+21
+Lomonosov Moscow State University
+RU
+2,604
+Tsinghua University
+CN
+3,596
+National University of Singapore
+SG
+5,183
+22
+Nagoya University
+JP
+2,565
+Nagoya University
+JP
+3,527
+Oak Ridge National Laboratory
+US
+5,084
+23
+Forschungszentrum Jülich
+DE
+2,540
+Stanford University
+US
+3,507
+Los Alamos National Laboratory
+US
+4,956
+24
+Oak Ridge National Laboratory
+US
+2,536
+Physico-Technical Institute
+RU
+3,492
+Shanghai Jiao Tong University
+CN
+4,932
+25
+University of California, Santa Barbara
+US
+2,511
+Institute of Physics
+CN
+3,475
+Xi’an Jiaotong University
+CN
+4,910
+26
+Stanford University
+US
+2,510
+National Academy of Sciences of Ukraine
+UA
+3,469
+Stanford University
+US
+4,851
+27
+University of Maryland, College Park
+US
+2,492
+Nanjing University
+CN
+3,371
+ETH Zurich
+CH
+4,728
+28
+Chinese Academy of Sciences
+CN
+2,369
+University of Maryland, College Park
+US
+3,369
+Argonne National Laboratory
+US
+4,664
+29
+University of Tsukuba
+JP
+2,188
+University of Oxford
+GB
+3,244
+Huazhong University of Science and Technology
+CN
+4,663
+30
+National Institute of Standards and Technology
+US
+2,161
+Oak Ridge National Laboratory
+US
+3,210
+University of Oxford
+GB
+4,617
+31
+Princeton University
+US
+2,076
+National Institute of Standards and Technology
+US
+2,953
+Harbin Institute of Technology
+CN
+4,492
+32
+Tokyo University of Science
+JP
+2,047
+ETH Zurich
+CH
+2,905
+Tokyo Institute of Technology
+JP
+4,441
+33
+Brookhaven National Laboratory
+US
+2,035
+Pennsylvania State University
+US
+2,889
+Jilin University
+CN
+4,257
+34
+European Organization for Nuclear Research
+CH
+1,971
+University of Illinois Urbana-Champaign
+US
+2,849
+National Institute of Advanced Industrial Science and Technology (AIST)
+JP
+4,245
+35
+Cornell University
+US
+1,949
+Tokyo University of Science
+JP
+2,841
+Fudan University
+CN
+4,215
+36
+Laboratory of Solid State Physics
+FR
+1,939
+Princeton University
+US
+2,834
+École Polytechnique Fédérale de Lausanne
+CH
+4,204
+37
+Institute of Physics
+CN
+1,889
+Max Planck Society
+DE
+2,829
+Karlsruhe Institute of Technology
+DE
+4,064
+38
+Technical University of Munich
+DE
+1,882
+University of California, Santa Barbara
+US
+2,790
+Collaborative Innovation Center of Advanced Microstructures
+CN
+4,058
+39
+Lawrence Livermore National Laboratory
+US
+1,863
+Peking University
+CN
+2,775
+University of Maryland, College Park
+US
+3,898
+40
+Max Planck Society
+DE
+1,848
+University of Science and Technology of China
+CN
+2,754
+Nagoya University
+JP
+3,896
+41
+École Polytechnique Fédérale de Lausanne
+CH
+1,819
+Czech Academy of Sciences, Institute of Physics
+CZ
+2,744
+Imperial College London
+GB
+3,867
+42
+Istituto Nazionale per la Fisica della Materia
+IT
+1,806
+University of Michigan–Ann Arbor
+US
+2,704
+Seoul National University
+KR
+3,814
+43
+Pennsylvania State University
+US
+1,768
+École Polytechnique Fédérale de Lausanne
+CH
+2,659
+University of Paris-Sud
+FR
+3,776
+44
+Kyushu University
+JP
+1,763
+United States Naval Research Laboratory
+US
+2,649
+University of Electronic Science and Technology of China
+CN
+3,767
+45
+University of California, San Diego
+US
+1,746
+University of Tsukuba
+JP
+2,621
+University of Paris-Saclay
+FR
+3,719
+46
+Chalmers University of Technology
+SE
+1,744
+National Taiwan University
+TW
+2,570
+Polish Academy of Sciences
+PL
+3,719
+47
+Physico-Technical Institute
+RU
+1,735
+Hokkaido University
+JP
+2,562
+The University of Texas at Austin
+US
+3,656
+48
+Hitachi (Japan)
+JP
+1,726
+Kyushu University
+JP
+2,554
+University of California, Los Angeles
+US
+3,625
+49
+ETH Zurich
+CH
+1,720
+Forschungszentrum Jülich
+DE
+2,515
+University of Michigan–Ann Arbor
+US
+3,611
+50
+Czech Academy of Sciences, Institute of Physics
+CZ
+1,704
+National University of Singapore
+SG
+2,510
+National Taiwan University
+TW
+3,588
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+87
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+87
+
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+11. Condensed Matter Physics
+Table 11 | The top 100 productive institutions: Condensed Matter Physics. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+University of Minnesota
+US
+1,704
+Brookhaven National Laboratory
+US
+2,494
+Pennsylvania State University
+US
+3,557
+52
+Hokkaido University
+JP
+1,691
+Seoul National University
+KR
+2,450
+Japan Science and Technology Agency (JST)
+JP
+3,538
+53
+University of Michigan–Ann Arbor
+US
+1,689
+RIKEN
+JP
+2,402
+Tianjin University
+CN
+3,513
+54
+University of California, Los Angeles
+US
+1,687
+Max Planck Institute for Solid State Research
+DE
+2,389
+Ioffe Institute
+RU
+3,480
+55
+Iowa State University
+US
+1,656
+Cornell University
+US
+2,338
+Shandong University
+CN
+3,447
+56
+Nanjing University
+CN
+1,588
+University of California, San Diego
+US
+2,338
+National Institute of Standards and Technology
+US
+3,445
+57
+Imperial College London
+GB
+1,566
+Technical University of Munich
+DE
+2,206
+Princeton University
+US
+3,430
+58
+International Superconductivity Technology Center
+JP
+1,542
+University of California, Los Angeles
+US
+2,198
+Brookhaven National Laboratory
+US
+3,401
+59
+IBM Research - Thomas J. Watson Research Center
+US
+1,523
+The University of Texas at Austin
+US
+2,178
+National Academy of Sciences of Ukraine
+UA
+3,330
+60
+Hiroshima University
+JP
+1,511
+Imperial College London
+GB
+2,168
+Beihang University
+CN
+3,300
+61
+French National Centre for Scientific Research
+FR
+1,501
+Iowa State University
+US
+2,152
+University of Illinois Urbana-Champaign
+US
+3,295
+62
+University of Wisconsin–Madison
+US
+1,495
+Hiroshima University
+JP
+2,141
+Institute of Physics
+PL
+3,268
+63
+Technical University of Berlin
+DE
+1,474
+Lawrence Livermore National Laboratory
+US
+2,082
+TU Dresden
+DE
+3,265
+64
+China Center of Advanced Science and Technology
+CN
+1,463
+Harvard University
+US
+2,034
+Harvard University
+US
+3,259
+65
+California Institute of Technology
+US
+1,437
+California Institute of Technology
+US
+2,027
+Forschungszentrum Jülich
+DE
+3,244
+66
+University of Stuttgart
+DE
+1,430
+European Organization for Nuclear Research
+CH
+2,001
+Southeast University
+CN
+3,170
+67
+RIKEN
+JP
+1,419
+University of Florida
+US
+1,981
+Sichuan University
+CN
+3,169
+68
+The University of Texas at Austin
+US
+1,414
+Karlsruhe Institute of Technology
+DE
+1,974
+University of California, Santa Barbara
+US
+3,100
+69
+Johannes Gutenberg University Mainz
+DE
+1,409
+Northwestern University
+US
+1,974
+Czech Academy of Sciences, Institute of Physics
+CZ
+3,097
+70
+National Academy of Sciences of Ukraine
+UA
+1,393
+High Energy Accelerator Research Organization (KEK)
+JP
+1,947
+Northwestern University
+US
+3,093
+71
+Université Paris Cité
+FR
+1,391
+Universidade de São Paulo
+BR
+1,934
+University of Tsukuba
+JP
+3,021
+72
+The Ohio State University
+US
+1,359
+Uppsala University
+SE
+1,918
+Georgia Institute of Technology
+US
+3,000
+73
+University of Florida
+US
+1,345
+KU Leuven
+BE
+1,877
+Sungkyunkwan University
+KR
+2,994
+74
+Florida State University
+US
+1,344
+TU Wien
+AT
+1,870
+Royal Institute of Technology
+SE
+2,978
+75
+Rutgers, The State University of New Jersey
+US
+1,342
+CEA Saclay
+FR
+1,856
+Korea Advanced Institute of Science and Technology
+KR
+2,971
+76
+Northwestern University
+US
+1,329
+National Yang Ming Chiao Tung University
+TW
+1,855
+Paul Scherrer Institute
+CH
+2,964
+77
+Kurchatov Institute
+RU
+1,324
+Georgia Institute of Technology
+US
+1,852
+Moscow Institute of Physics and Technology
+RU
+2,938
+78
+University of Amsterdam
+NL
+1,323
+Ruhr University Bochum
+DE
+1,850
+Kyushu University
+JP
+2,929
+79
+Weizmann Institute of Science
+IL
+1,316
+Rutgers, The State University of New Jersey
+US
+1,837
+Technical University of Munich
+DE
+2,922
+80
+Institut Laue-Langevin
+FR
+1,305
+Delft University of Technology
+NL
+1,835
+Iowa State University
+US
+2,881
+81
+High Energy Accelerator Research Organization (KEK)
+JP
+1,304
+National Tsing Hua University
+TW
+1,785
+University of Science and Technology Beĳing
+CN
+2,857
+82
+Ames Laboratory
+US
+1,296
+Nanyang Technological University
+SG
+1,773
+University of Manchester
+GB
+2,815
+83
+Arizona State University
+US
+1,293
+Japan Atomic Energy Agency (JAEA)
+JP
+1,769
+Shanghai University
+CN
+2,806
+84
+CEA Grenoble
+FR
+1,291
+Arizona State University
+US
+1,769
+University of California, San Diego
+US
+2,800
+85
+Freie Universität Berlin
+DE
+1,290
+University of Wisconsin–Madison
+US
+1,765
+Soochow University
+CN
+2,792
+86
+TU Wien
+AT
+1,270
+Royal Institute of Technology
+SE
+1,762
+Indian Institute of Science Bangalore
+IN
+2,787
+87
+Tel Aviv University
+IL
+1,261
+Leibniz Institute for Solid State and Materials Research
+DE
+1,757
+Uppsala University
+SE
+2,785
+88
+Sandia National Laboratories
+US
+1,261
+Florida State University
+US
+1,757
+Pohang University of Science and Technology
+KR
+2,779
+89
+P.N. Lebedev Physical Institute of the Russian Academy of Sciences
+RU
+1,258
+Zhejiang University
+CN
+1,712
+St Petersburg University
+RU
+2,778
+90
+Karlsruhe Institute of Technology
+DE
+1,247
+Pohang University of Science and Technology
+KR
+1,712
+Purdue University West Lafayette
+US
+2,765
+91
+Joint Institute for Nuclear Research
+RU
+1,243
+Sapienza University of Rome
+IT
+1,700
+Hokkaido University
+JP
+2,740
+92
+University of Rochester
+US
+1,237
+Rutherford Appleton Laboratory
+GB
+1,690
+Wuhan University
+CN
+2,714
+93
+Delft University of Technology
+NL
+1,228
+Ames Laboratory
+US
+1,688
+University College London
+GB
+2,694
+94
+Uppsala University
+SE
+1,222
+Chalmers University of Technology
+SE
+1,684
+Ural Federal University
+RU
+2,656
+95
+Harvard University
+US
+1,217
+University of Toronto
+CA
+1,675
+Sun Yat-sen University
+CN
+2,633
+96
+University of Pennsylvania
+US
+1,214
+Kurchatov Institute
+RU
+1,669
+Grenoble Alpes University
+FR
+2,623
+97
+KU Leuven
+BE
+1,207
+University of Minnesota
+US
+1,664
+TU Wien
+AT
+2,615
+98
+Stony Brook University
+US
+1,205
+University of Stuttgart
+DE
+1,642
+Moscow Engineering Physics Institute
+RU
+2,610
+99
+State University of New York
+US
+1,201
+University of California, Davis
+US
+1,639
+European Organization for Nuclear Research
+CH
+2,605
+100
+University of Arizona
+US
+1,196
+Joint Institute for Nuclear Research
+RU
+1,637
+SLAC National Accelerator Laboratory
+US
+2,593
+88
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+88
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+12. Environmental Engineering
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+World Map of Environmental Engineering Collaboration | 1971–2020
+Figure 12 (a) | The World Map of Environmental Engineering Collaboration. The bubbles represent the top 199
+institutions in terms of work production, with their sizes proportional to the work volume. The connecting lines depict
+coauthorship relationships among the top 50 institutions.
+90
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+90
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Top 30 Productive Institutions on the World Map: Environmental Engineering | 1991–2020
+Chinese Acad of Sci
+Tsinghua U.
+Harbin Inst of Tech
+U. Chinese Acad of Sci
+Tongji U.
+Zhejiang U.
+State Key Lab of PC & RR
+Delft U. Tech
+Res Center for Eco−Env Sci
+U. de Sao Paulo
+Hohai U.
+Tianjin U.
+U. Tehran
+U. Queensland
+Beijing Normal U.
+Peking U.
+Tech U. Denmark
+Shanghai Jiao Tong U.
+U. Tech Malaysia
+Beijing U. Tech
+CRAES
+Nanjing U.
+SKJLESPC
+Nat'l U. Singapore
+Chongqing U.
+South China U. Tech
+U. Tech Sydney
+UC Berkeley
+Ghent U.
+U. Politecnica de Catalunya
+Environmental Engineering [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Tsinghua U.
+Chinese Acad of Sci
+Harbin Inst of Tech
+Zhejiang U.
+Tongji U.
+Xiaomi (China)
+Env Protection Agency
+Delft U. Tech
+Shanghai Jiao Tong U.
+South China U. Tech
+U. Tokyo
+Chongqing U.
+State Key Lab of PC & RR
+Penn State U.
+UC Berkeley
+Tianjin U.
+U. Florida
+Wuhan U.
+Huazhong U. Sci & Tech
+U. de Sao Paulo
+GTx (US)
+Carnegie Mellon U.
+Nat'l U. Singapore
+Beijing U. Tech
+US Geological Survey
+Georgia Inst of Tech
+Peking U.
+Res Center for Eco−Env Sci
+Ghent U.
+Nat'l Taiwan U.
+Environmental Engineering [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Env Protection Agency
+UC Berkeley
+GTx (US)
+U. Tokyo
+Tech U. Denmark
+U. Michigan
+US Geological Survey
+Carnegie Mellon U.
+Imperial College London
+Delft U. Tech
+Stanford U.
+U. Florida
+MIT
+U. Arizona
+Cornell U.
+Penn State U.
+U. Illinois UC
+Env & Climate Change Canada
+U. Waterloo
+U. British Columbia
+U. Toronto
+U. Washington
+UC Davis
+Louisiana State U.
+U. Leeds
+Wageningen U. & Res
+North Carolina State U.
+U. Maryland
+U. Minnesota
+Georgia Inst of Tech
+Environmental Engineering [1991−2000]
+Figure 12 (b) | The top 30 productive institutions on the World Map: Environmental Engineering. The bubbles
+represent the top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+91
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+91
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Interregional Environmental Engineering Collaboration | 1991–2020
+22
+39
+15
+184
+22
+76
+12
+16
+18
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+22
+33
+12
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 12 (c) | The Interregional Environmental Engineering Collaboration Matrix Diagram.
+The bubble size
+represents the number of coauthorship relationships for the top 50 institutions in terms of work production. If the number
+is equal to or greater than 10, it is displayed inside the bubble.
+92
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+92
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Interinstitutional Environmental Engineering Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      US Geological Survey      
+      Ghent U.      
+      Delft U. Tech      
+      Wageningen U. & Res      
+      Nat'l U. Singapore      
+      Nanyang Tech U.      
+      U. Queensland      
+      UNSW Sydney      
+      U. Politecnica de Catalunya      
+      Politecnico di Milano      
+      MIT      
+      ETH Zurich      
+      Virginia Tech      
+      Penn State U.      
+      Tech U. Denmark      
+      UC Berkeley      
+      North China Electric Power U.      
+      Tianjin U.      
+      Peking U.      
+      Hohai U.      
+      Wuhan U.      
+      Chongqing U.      
+      South China U. Tech      
+      Zhejiang U.      
+      Res Center for Eco−Env Sci      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Nanjing U.      
+      Tongji U.      
+      State Key Lab of PC & RR      
+      Tsinghua U.      
+      SKJLESPC      
+      Beijing Normal U.      
+      CRAES      
+      Harbin Inst of Tech      
+      Beijing U. Tech      
+      U. Tech Sydney      
+      Shandong U.      
+      Env Protection Agency      
+      U. Alberta      
+      U. Tehran      
+      U. Tech Malaysia      
+      U. Lisbon      
+      U. de Sao Paulo      
+      U. Illinois UC      
+      China U. Mining & Tech      
+      China U. Petroleum, Beijing      
+      Dalian U. Tech      
+      Shanghai Jiao Tong U.      
+      U. Florida      
+https://ror.org/035a68863
+https://ror.org/00cv9y106
+https://ror.org/02e2c7k09
+https://ror.org/04qw24q55
+https://ror.org/01tgyzw49
+https://ror.org/02e7b5302
+https://ror.org/00rqy9422
+https://ror.org/03r8z3t63
+https://ror.org/03mb6wj31
+https://ror.org/01nffqt88
+https://ror.org/042nb2s44
+https://ror.org/05a28rw58
+https://ror.org/02smfhw86
+https://ror.org/04p491231
+https://ror.org/04qtj9h94
+https://ror.org/01an7q238
+https://ror.org/04qr5t414
+https://ror.org/012tb2g32
+https://ror.org/02v51f717
+https://ror.org/01wd4xt90
+https://ror.org/033vjfk17
+https://ror.org/023rhb549
+https://ror.org/0530pts50
+https://ror.org/00a2xv884
+https://ror.org/0160cpw27
+https://ror.org/03rpsvy57
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/01rxvg760
+https://ror.org/03rc6as71
+https://ror.org/00073tb80
+https://ror.org/03cve4549
+https://ror.org/03ckpzr37
+https://ror.org/022k4wk35
+https://ror.org/05t8xvx87
+https://ror.org/01yqg2h08
+https://ror.org/037b1pp87
+https://ror.org/03f0f6041
+https://ror.org/0207yh398
+https://ror.org/03tns0030
+https://ror.org/05vf56z40
+https://ror.org/026w31v75
+https://ror.org/01c27hj86
+https://ror.org/036rp1748
+https://ror.org/047426m28
+https://ror.org/01xt2dr21
+https://ror.org/041qf4r12
+https://ror.org/023hj5876
+https://ror.org/0220qvk04
+https://ror.org/02y3ad647
+  [US]  
+  [BE]  
+  [NL]  
+  [NL]  
+  [SG]  
+  [SG]  
+  [AU]  
+  [AU]  
+  [ES]  
+  [IT]  
+  [US]  
+  [CH]  
+  [US]  
+  [US]  
+  [DK]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [AU]  
+  [CN]  
+  [US]  
+  [CA]  
+  [IR]  
+  [MY]  
+  [PT]  
+  [BR]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Chinese Acad of Sci      
+      Res Center for Eco−Env Sci      
+      Tongji U.      
+      State Key Lab of PC & RR      
+      Harbin Inst of Tech      
+      Beijing U. Tech      
+      Env Protection Agency      
+      U. Cincinnati      
+      Ghent U.      
+      Tech U. Denmark      
+      Delft U. Tech      
+      Wageningen U. & Res      
+      UNSW Sydney      
+      GTx (US)      
+      U. Queensland      
+      Penn State U.      
+      U. Florida      
+      Virginia Tech      
+      MIT      
+      US Geological Survey      
+      U. Illinois UC      
+      U. de Sao Paulo      
+      Tianjin U.      
+      Chongqing U.      
+      Xiaomi (China)      
+      South China U. Tech      
+      UC Davis      
+      Seoul Nat'l U.      
+      Georgia Inst of Tech      
+      U. Michigan      
+      Carnegie Mellon U.      
+      UC Berkeley      
+      Stanford U.      
+      Nat'l U. Singapore      
+      Nanyang Tech U.      
+      Dalian U. Tech      
+      Peking U.      
+      Tsinghua U.      
+      Nat'l Taiwan U.      
+      Wuhan U.      
+      Huazhong U. Sci & Tech      
+      U. British Columbia      
+      Hong Kong Polytechnic U.      
+      Imperial College London      
+      Nat'l U. Defense Tech      
+      Zhejiang U.      
+      Shanghai Jiao Tong U.      
+      Hohai U.      
+      U. Tokyo      
+      U. Toronto      
+https://ror.org/034t30j35
+https://ror.org/03rpsvy57
+https://ror.org/03rc6as71
+https://ror.org/00073tb80
+https://ror.org/01yqg2h08
+https://ror.org/037b1pp87
+https://ror.org/03tns0030
+https://ror.org/01e3m7079
+https://ror.org/00cv9y106
+https://ror.org/04qtj9h94
+https://ror.org/02e2c7k09
+https://ror.org/04qw24q55
+https://ror.org/03r8z3t63
+https://ror.org/0400j3f74
+https://ror.org/00rqy9422
+https://ror.org/04p491231
+https://ror.org/02y3ad647
+https://ror.org/02smfhw86
+https://ror.org/042nb2s44
+https://ror.org/035a68863
+https://ror.org/047426m28
+https://ror.org/012tb2g32
+https://ror.org/023rhb549
+https://ror.org/029f7bn57
+https://ror.org/0530pts50
+https://ror.org/05rrcem69
+https://ror.org/04h9pn542
+https://ror.org/01zkghx44
+https://ror.org/00jmfr291
+https://ror.org/05x2bcf33
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/01tgyzw49
+https://ror.org/02e7b5302
+https://ror.org/023hj5876
+https://ror.org/02v51f717
+https://ror.org/03cve4549
+https://ror.org/05bqach95
+https://ror.org/033vjfk17
+https://ror.org/00p991c53
+https://ror.org/03rmrcq20
+https://ror.org/0030zas98
+https://ror.org/041kmwe10
+https://ror.org/05d2yfz11
+https://ror.org/00a2xv884
+https://ror.org/0220qvk04
+https://ror.org/01wd4xt90
+https://ror.org/057zh3y96
+https://ror.org/03dbr7087
+https://ror.org/036rp1748
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [BE]  
+  [DK]  
+  [NL]  
+  [NL]  
+  [AU]  
+  [US]  
+  [AU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [BR]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [KR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [SG]  
+  [SG]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [TW]  
+  [CN]  
+  [CN]  
+  [CA]  
+  [CN]  
+  [GB]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [CA]  
+Figure 12(d) | The Interinstitutional Environmental Engineering Collaboration Dendrogram. The top 50 institutions
+in terms of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+93
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+93
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Interinstitutional Environmental Engineering Collaboration | 1971–2000
+(continued from previous
+page)
+[1991–2000]
+      UC Davis      
+      Cornell U.      
+      Louisiana State U.      
+      Georgia Inst of Tech      
+      Oak Ridge NL      
+      Stanford U.      
+      U. Arizona      
+      Penn State U.      
+      Virginia Tech      
+      EPFL      
+      U. Florida      
+      Texas A&M U.      
+      US Geological Survey      
+      U. Wisconsin−Madison      
+      U. Minnesota      
+      U. Illinois UC      
+      North Carolina State U.      
+      U. British Columbia      
+      U. Alberta      
+      UT Austin      
+      U. Washington      
+      Lund U.      
+      GTx (US)      
+      McGill U.      
+      Env Protection Agency      
+      U. Cincinnati      
+      U. Waterloo      
+      Env & Climate Change Canada      
+      U. Toronto      
+      Delft U. Tech      
+      Wageningen U. & Res      
+      Ghent U.      
+      U. Tokyo      
+      Tech U. Denmark      
+      U. Leeds      
+      U. Sheffield      
+      MIT      
+      UC Berkeley      
+      Nat'l U. Singapore      
+      Kyoto U.      
+      Imperial College London      
+      Newcastle U.      
+      Lancaster U.      
+      U. Queensland      
+      Making View (Norway)      
+      U. Maryland      
+      Nat'l Taiwan U.      
+      Carnegie Mellon U.      
+      U. Michigan      
+      U. Southern California      
+https://ror.org/05rrcem69
+https://ror.org/05bnh6r87
+https://ror.org/05ect4e57
+https://ror.org/01zkghx44
+https://ror.org/01qz5mb56
+https://ror.org/00f54p054
+https://ror.org/03m2x1q45
+https://ror.org/04p491231
+https://ror.org/02smfhw86
+https://ror.org/02s376052
+https://ror.org/02y3ad647
+https://ror.org/01f5ytq51
+https://ror.org/035a68863
+https://ror.org/01y2jtd41
+https://ror.org/017zqws13
+https://ror.org/047426m28
+https://ror.org/04tj63d06
+https://ror.org/03rmrcq20
+https://ror.org/0160cpw27
+https://ror.org/00hj54h04
+https://ror.org/00cvxb145
+https://ror.org/012a77v79
+https://ror.org/0400j3f74
+https://ror.org/01pxwe438
+https://ror.org/01tgyzw49
+https://ror.org/03tns0030
+https://ror.org/01e3m7079
+https://ror.org/01aff2v68
+https://ror.org/026ny0e17
+https://ror.org/03dbr7087
+https://ror.org/02e2c7k09
+https://ror.org/04qw24q55
+https://ror.org/00cv9y106
+https://ror.org/057zh3y96
+https://ror.org/04qtj9h94
+https://ror.org/024mrxd33
+https://ror.org/05krs5044
+https://ror.org/042nb2s44
+https://ror.org/01an7q238
+https://ror.org/02kpeqv85
+https://ror.org/041kmwe10
+https://ror.org/01kj2bm70
+https://ror.org/04f2nsd36
+https://ror.org/00rqy9422
+https://ror.org/0108yh543
+https://ror.org/047s2c258
+https://ror.org/05bqach95
+https://ror.org/05x2bcf33
+https://ror.org/00jmfr291
+https://ror.org/03taz7m60
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [SE]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [NL]  
+  [NL]  
+  [BE]  
+  [JP]  
+  [DK]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [SG]  
+  [JP]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [AU]  
+  [NO]  
+  [US]  
+  [TW]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      U. Toronto      
+      Env & Climate Change Canada      
+      U. Michigan      
+      Rutgers U.      
+      UCLA      
+      UC Berkeley      
+      Cornell U.      
+      MIT      
+      UT Austin      
+      Purdue U. West Lafayette      
+      Ohio State U.      
+      U. British Columbia      
+      U. Tokyo      
+      U. Maryland      
+      Langley Res Center      
+      Making View (Norway)      
+      Kyoto U.      
+      Virginia Tech      
+      CSIRO      
+      Oak Ridge NL      
+      Battelle      
+      Technion − Israel Inst of Tech      
+      U. Massachusetts Amherst      
+      US Geological Survey      
+      Env Protection Agency      
+      Res Triangle Park Foundation      
+      Carnegie Mellon U.      
+      Stanford U.      
+      Agri Res Service      
+      North Carolina State U.      
+      U. Arizona      
+      U. Minnesota      
+      U. Florida      
+      U. Wisconsin−Madison      
+      Imperial College London      
+      WRc (UK)      
+      U. Birmingham      
+      U. Waterloo      
+      U. Washington      
+      Texas A&M U.      
+      Oregon State U.      
+      U. Illinois UC      
+      Georgia Inst of Tech      
+      Colorado State U.      
+      Louisiana State U.      
+      Penn State U.      
+      Iowa State U.      
+      UC Davis      
+      Harvard U.      
+      U. Pittsburgh      
+https://ror.org/03dbr7087
+https://ror.org/026ny0e17
+https://ror.org/00jmfr291
+https://ror.org/05vt9qd57
+https://ror.org/046rm7j60
+https://ror.org/01an7q238
+https://ror.org/05bnh6r87
+https://ror.org/042nb2s44
+https://ror.org/00hj54h04
+https://ror.org/02dqehb95
+https://ror.org/00rs6vg23
+https://ror.org/03rmrcq20
+https://ror.org/057zh3y96
+https://ror.org/047s2c258
+https://ror.org/0399mhs52
+https://ror.org/0108yh543
+https://ror.org/02kpeqv85
+https://ror.org/02smfhw86
+https://ror.org/03qn8fb07
+https://ror.org/01qz5mb56
+https://ror.org/01h5tnr73
+https://ror.org/03qryx823
+https://ror.org/0072zz521
+https://ror.org/035a68863
+https://ror.org/00cvxb145
+https://ror.org/03tns0030
+https://ror.org/03eqttr49
+https://ror.org/05x2bcf33
+https://ror.org/00f54p054
+https://ror.org/02d2m2044
+https://ror.org/04tj63d06
+https://ror.org/03m2x1q45
+https://ror.org/017zqws13
+https://ror.org/02y3ad647
+https://ror.org/01y2jtd41
+https://ror.org/041kmwe10
+https://ror.org/03v4j1n69
+https://ror.org/03angcq70
+https://ror.org/01aff2v68
+https://ror.org/01f5ytq51
+https://ror.org/00ysfqy60
+https://ror.org/047426m28
+https://ror.org/01zkghx44
+https://ror.org/03k1gpj17
+https://ror.org/05ect4e57
+https://ror.org/04p491231
+https://ror.org/04rswrd78
+https://ror.org/05rrcem69
+https://ror.org/03vek6s52
+https://ror.org/01an3r305
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [JP]  
+  [US]  
+  [US]  
+  [NO]  
+  [JP]  
+  [US]  
+  [AU]  
+  [US]  
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 12(d) | The Interinstitutional Environmental Engineering Collaboration Dendrogram. (Cont.)
+94
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+94
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Table 12 | The top 100 productive institutions: Environmental Engineering.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Environmental Protection Agency
+US
+672
+Tsinghua University
+CN
+1,805
+Chinese Academy of Sciences
+CN
+5,705
+2
+University of California, Berkeley
+US
+331
+Chinese Academy of Sciences
+CN
+1,694
+Tsinghua University
+CN
+3,362
+3
+GTx (United States)
+US
+303
+Harbin Institute of Technology
+CN
+1,306
+Harbin Institute of Technology
+CN
+2,447
+4
+The University of Tokyo
+JP
+292
+Zhejiang University
+CN
+1,168
+University of Chinese Academy of Sciences
+CN
+2,244
+5
+Technical University of Denmark
+DK
+279
+Tongji University
+CN
+1,139
+Tongji University
+CN
+2,096
+6
+University of Michigan–Ann Arbor
+US
+279
+Xiaomi (China)
+CN
+882
+Zhejiang University
+CN
+1,750
+7
+United States Geological Survey
+US
+267
+Environmental Protection Agency
+US
+847
+State Key Laboratory of Pollution Control and Resource Reuse
+CN
+1,555
+8
+Carnegie Mellon University
+US
+264
+Delft University of Technology
+NL
+775
+Delft University of Technology
+NL
+1,542
+9
+Imperial College London
+GB
+254
+Shanghai Jiao Tong University
+CN
+753
+Research Center for Eco-Environmental Sciences
+CN
+1,404
+10
+Delft University of Technology
+NL
+250
+South China University of Technology
+CN
+742
+Universidade de São Paulo
+BR
+1,401
+11
+Stanford University
+US
+244
+The University of Tokyo
+JP
+741
+Hohai University
+CN
+1,352
+12
+University of Florida
+US
+242
+Chongqing University
+CN
+738
+Tianjin University
+CN
+1,317
+13
+Massachusetts Institute of Technology
+US
+235
+State Key Laboratory of Pollution Control and Resource Reuse
+CN
+703
+University of Queensland
+AU
+1,314
+14
+University of Arizona
+US
+232
+Pennsylvania State University
+US
+675
+University of Tehran
+IR
+1,313
+15
+Pennsylvania State University
+US
+227
+University of California, Berkeley
+US
+663
+Beĳing Normal University
+CN
+1,295
+16
+University of Illinois Urbana-Champaign
+US
+217
+Tianjin University
+CN
+655
+Peking University
+CN
+1,184
+17
+Environment and Climate Change Canada
+CA
+216
+University of Florida
+US
+650
+Technical University of Denmark
+DK
+1,171
+18
+Cornell University
+US
+203
+Wuhan University
+CN
+643
+Shanghai Jiao Tong University
+CN
+1,147
+19
+University of Waterloo
+CA
+201
+Huazhong University of Science and Technology
+CN
+625
+University of Technology Malaysia
+MY
+1,147
+20
+University of British Columbia
+CA
+200
+Universidade de São Paulo
+BR
+618
+Beĳing University of Technology
+CN
+1,112
+21
+University of Toronto
+CA
+194
+GTx (United States)
+US
+599
+Chinese Research Academy of Environmental Sciences
+CN
+1,108
+22
+University of California, Davis
+US
+191
+National University of Singapore
+SG
+575
+State Key Joint Laboratory of Environment Simulation and Pollution Control
+CN
+1,101
+23
+University of Washington
+US
+191
+Carnegie Mellon University
+US
+575
+Nanjing University
+CN
+1,100
+24
+Louisiana State University
+US
+190
+Beĳing University of Technology
+CN
+569
+National University of Singapore
+SG
+1,088
+25
+University of Leeds
+GB
+187
+United States Geological Survey
+US
+567
+Chongqing University
+CN
+1,076
+26
+Wageningen University & Research
+NL
+187
+Georgia Institute of Technology
+US
+553
+South China University of Technology
+CN
+1,061
+27
+North Carolina State University
+US
+186
+Peking University
+CN
+548
+University of Technology Sydney
+AU
+1,031
+28
+University of Maryland, College Park
+US
+184
+Research Center for Eco-Environmental Sciences
+CN
+547
+University of California, Berkeley
+US
+974
+29
+University of Minnesota
+US
+182
+Ghent University
+BE
+545
+Ghent University
+BE
+967
+30
+Georgia Institute of Technology
+US
+181
+National Taiwan University
+TW
+543
+Universitat Politècnica de Catalunya
+ES
+958
+31
+Virginia Tech
+US
+181
+University of California, Davis
+US
+533
+Nanyang Technological University
+SG
+941
+32
+University of Cincinnati
+US
+178
+Hong Kong Polytechnic University
+CN
+528
+Politecnico di Milano
+IT
+934
+33
+The University of Texas at Austin
+US
+177
+University of Illinois Urbana-Champaign
+US
+516
+China University of Mining and Technology
+CN
+933
+34
+Oak Ridge National Laboratory
+US
+173
+University of Queensland
+AU
+504
+Environmental Protection Agency
+US
+923
+35
+Texas A&M University
+US
+169
+Wageningen University & Research
+NL
+503
+UNSW Sydney
+AU
+915
+36
+University of Alberta
+CA
+168
+Nanyang Technological University
+SG
+492
+University of Lisbon
+PT
+913
+37
+École Polytechnique Fédérale de Lausanne
+CH
+164
+University of Cincinnati
+US
+492
+Massachusetts Institute of Technology
+US
+908
+38
+National Taiwan University
+TW
+164
+Hohai University
+CN
+491
+China University of Petroleum, Beĳing
+CN
+891
+39
+National University of Singapore
+SG
+160
+University of British Columbia
+CA
+479
+University of Florida
+US
+878
+40
+University of Southern California
+US
+159
+Imperial College London
+GB
+479
+University of Alberta
+CA
+875
+41
+University of Queensland
+AU
+158
+University of Michigan–Ann Arbor
+US
+478
+ETH Zurich
+CH
+871
+42
+Ghent University
+BE
+158
+Virginia Tech
+US
+477
+Wageningen University & Research
+NL
+871
+43
+McGill University
+CA
+158
+Technical University of Denmark
+DK
+476
+North China Electric Power University
+CN
+864
+44
+University of Sheffield
+GB
+158
+UNSW Sydney
+AU
+461
+Wuhan University
+CN
+862
+45
+Lund University
+SE
+158
+Stanford University
+US
+461
+Dalian University of Technology
+CN
+860
+46
+University of Wisconsin–Madison
+US
+153
+Massachusetts Institute of Technology
+US
+457
+United States Geological Survey
+US
+860
+47
+Newcastle University
+GB
+152
+University of Toronto
+CA
+448
+Shandong University
+CN
+858
+48
+Kyoto University
+JP
+152
+National University of Defense Technology
+CN
+448
+University of Illinois Urbana-Champaign
+US
+857
+49
+Lancaster University
+GB
+151
+Seoul National University
+KR
+444
+Virginia Tech
+US
+856
+50
+Making View (Norway)
+NO
+151
+Dalian University of Technology
+CN
+443
+Pennsylvania State University
+US
+854
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+95
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+95
+
+12. Environmental Engineering
+12. Environmental Engineering
+12. Environmental Engineering
+Table 12 | The top 100 productive institutions: Environmental Engineering. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+The Ohio State University
+US
+149
+KU Leuven
+BE
+434
+The University of Tokyo
+JP
+850
+52
+Rutgers, The State University of New Jersey
+US
+146
+Arizona State University
+US
+433
+Xi’an University of Architecture and Technology
+CN
+847
+53
+Technion – Israel Institute of Technology
+IL
+145
+Universitat Politècnica de Catalunya
+ES
+428
+University of Toronto
+CA
+825
+54
+University of California, Irvine
+US
+144
+The University of Texas at Austin
+US
+428
+University of British Columbia
+CA
+799
+55
+Hong Kong Polytechnic University
+CN
+142
+University of Waterloo
+CA
+424
+Stanford University
+US
+797
+56
+Iowa State University
+US
+141
+Wuhan University of Technology
+CN
+424
+University of Melbourne
+AU
+794
+57
+University College London
+GB
+140
+University of Arizona
+US
+421
+Universitat Politècnica de València
+ES
+793
+58
+Loughborough University
+GB
+139
+University of Minnesota
+US
+416
+Imperial College London
+GB
+789
+59
+National Technical University of Athens
+GR
+135
+Nanjing University
+CN
+405
+Huazhong University of Science and Technology
+CN
+788
+60
+Swiss Federal Institute of Aquatic Science and Technology
+CH
+134
+Texas A&M University
+US
+402
+Texas A&M University
+US
+782
+61
+Purdue University West Lafayette
+US
+134
+North Carolina State University
+US
+395
+University of Michigan–Ann Arbor
+US
+780
+62
+Research Triangle Park Foundation
+US
+134
+Beĳing Normal University
+CN
+390
+KU Leuven
+BE
+779
+63
+University of California, Los Angeles
+US
+134
+Swiss Federal Institute of Aquatic Science and Technology
+CH
+389
+University of California, Davis
+US
+771
+64
+University of Manchester
+GB
+133
+Cranfield University
+GB
+385
+University of Porto
+PT
+758
+65
+University of Birmingham
+GB
+132
+Kyoto University
+JP
+385
+Seoul National University
+KR
+745
+66
+Commonwealth Scientific and Industrial Research Organisation
+AU
+129
+University of Southern California
+US
+384
+Georgia Institute of Technology
+US
+743
+67
+University of Cambridge
+GB
+128
+TU Wien
+AT
+382
+Sapienza University of Rome
+IT
+736
+68
+Technical University of Berlin
+DE
+127
+National Technical University of Athens
+GR
+382
+Technical University of Munich
+DE
+734
+69
+Technical University of Munich
+DE
+127
+Environment and Climate Change Canada
+CA
+374
+University of Waterloo
+CA
+730
+70
+Cranfield University
+GB
+127
+University of Maryland, College Park
+US
+373
+Polytechnic University of Turin
+IT
+727
+71
+WRc (United Kingdom)
+GB
+127
+University of California, Irvine
+US
+370
+National Taiwan University
+TW
+721
+72
+UNSW Sydney
+AU
+126
+Istanbul Technical University
+TR
+369
+Aarhus University
+DK
+718
+73
+KU Leuven
+BE
+126
+China University of Mining and Technology
+CN
+362
+China Agricultural University
+CN
+717
+74
+Istanbul Technical University
+TR
+126
+Beĳing University of Posts and Telecommunications
+CN
+361
+Hong Kong Polytechnic University
+CN
+712
+75
+University of Colorado Boulder
+US
+126
+University of Technology Sydney
+AU
+359
+National University of Malaysia
+MY
+710
+76
+Tsinghua University
+CN
+124
+Jilin University
+CN
+358
+Carnegie Mellon University
+US
+710
+77
+Tohoku University
+JP
+124
+Hunan University
+CN
+357
+The University of Texas at Austin
+US
+709
+78
+Columbia University
+US
+124
+Cornell University
+US
+357
+Arizona State University
+US
+694
+79
+ExxonMobil (United States)
+US
+122
+University of Washington
+US
+355
+Royal Institute of Technology
+SE
+693
+80
+Hong Kong University of Science and Technology
+CN
+119
+University of Edinburgh
+GB
+354
+University of Bologna
+IT
+689
+81
+University of Liverpool
+GB
+119
+Universitat Politècnica de València
+ES
+351
+São Paulo State University
+BR
+688
+82
+Aalborg University
+DK
+118
+Central South University
+CN
+350
+University College London
+GB
+684
+83
+University of Amsterdam
+NL
+117
+Sinopec (China)
+CN
+350
+Ocean University of China
+CN
+679
+84
+Kyushu University
+JP
+116
+École Polytechnique Fédérale de Lausanne
+CH
+349
+Jilin University
+CN
+673
+85
+AT&T (United States)
+US
+116
+Southeast University
+CN
+349
+Norwegian University of Science and Technology
+NO
+673
+86
+Hokkaido University
+JP
+113
+Columbia University
+US
+349
+University of Malaya
+MY
+667
+87
+National Institute for Environmental Studies
+JP
+113
+University of Melbourne
+AU
+348
+Universidad Politdécnica de Madrid
+ES
+663
+88
+Arizona State University
+US
+113
+Universidad Politdécnica de Madrid
+ES
+347
+North Carolina State University
+US
+663
+89
+Colorado State University
+US
+111
+Monash University
+AU
+346
+Sun Yat-sen University
+CN
+662
+90
+Harvard University
+US
+110
+ETH Zurich
+CH
+345
+Universidade Estadual de Campinas
+BR
+660
+91
+Royal Institute of Technology
+SE
+109
+China University of Petroleum, Beĳing
+CN
+344
+Hunan University
+CN
+653
+92
+Michigan State University
+US
+109
+Technical University of Munich
+DE
+344
+Queensland University of Technology
+AU
+648
+93
+Politecnico di Milano
+IT
+108
+Technical University of Berlin
+DE
+342
+Universiti Putra Malaysia
+MY
+646
+94
+Norwegian University of Science and Technology
+NO
+107
+National Cheng Kung University
+TW
+342
+Swiss Federal Institute of Aquatic Science and Technology
+CH
+642
+95
+Agricultural Research Service
+US
+107
+Politecnico di Milano
+IT
+341
+University of Science and Technology Beĳing
+CN
+638
+96
+Sapienza University of Rome
+IT
+106
+The Ohio State University
+US
+336
+Southeast University
+CN
+634
+97
+Tokyo Institute of Technology
+JP
+106
+Xi’an Jiaotong University
+CN
+333
+China University of Geosciences
+CN
+628
+98
+University of Pittsburgh
+US
+106
+University of Wisconsin–Madison
+US
+331
+Cornell University
+US
+628
+99
+Aristotle University of Thessaloniki
+GR
+104
+University of Calgary
+CA
+328
+Monash University
+AU
+626
+100
+Universidad Nacional Autónoma de México
+MX
+104
+University of Alberta
+CA
+327
+University of Minnesota
+US
+626
+96
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+96
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+13. Earth Science
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+World Map of Earth Science Collaboration | 1971–2020
+Figure 13 (a) | The World Map of Earth Science Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+98
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+98
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Top 30 Productive Institutions on the World Map: Earth Science | 1991–2020
+Chinese Acad of Sci
+Wageningen U. & Res
+U. Queensland
+US Geological Survey
+U. Oxford
+U. de Sao Paulo
+U. Cambridge
+U. Chinese Acad of Sci
+Arizona State U.
+U. British Columbia
+ETH Zurich
+UNAMo
+UC Berkeley
+Australian Nat'l U.
+Russian Acad of Sci
+Imperial College London
+U. Copenhagen
+Swedish U. Agri Sci
+U. Melbourne
+U. Florida
+U. Lisbon
+es Cientificas y Tecnicas
+U. Helsinki
+Aarhus U.
+U. Leeds
+U. Tokyo
+U. Washington
+UC Davis
+U. Western Australia
+U. College London
+Earth Science [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Chinese Acad of Sci
+US Geological Survey
+Wageningen U. & Res
+Australian Nat'l U.
+U. Oxford
+UC Berkeley
+Russian Acad of Sci
+Natural Resources Canada
+U. Arizona
+U. British Columbia
+Goddard Space Flight Center
+CSIRO
+U. Cambridge
+Arizona State U.
+Imperial College London
+Stanford U.
+U. Tokyo
+U. Queensland
+Jet Propulsion Lab
+ETH Zurich
+UC Davis
+Cornell U.
+U. Michigan
+Penn State U.
+U. Washington
+UNAMo
+Planetary Sci Inst
+U. Florida
+Yale U.
+U. Melbourne
+Earth Science [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+US Geological Survey
+U. Michigan
+Natural Resources Canada
+Australian Nat'l U.
+U. Cambridge
+CSIRO
+U. Arizona
+UC Berkeley
+Ames Res Center
+Goddard Space Flight Center
+Jet Propulsion Lab
+Chinese Acad of Sci
+U. Oxford
+Cornell U.
+U. Tokyo
+Penn State U.
+U. Washington
+U. British Columbia
+Oregon State U.
+Stanford U.
+U. Toronto
+Geological Survey of Canada
+MIT
+Arizona State U.
+UC Davis
+The Open U.
+U. Edinburgh
+U. Illinois UC
+Harvard U.
+U. College London
+Earth Science [1991−2000]
+Figure 13(b) | The top 30 productive institutions on the World Map: Earth Science. The bubbles represent the top
+30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+99
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+99
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Interregional Earth Science Collaboration | 1991–2020
+91
+21
+132
+78
+13
+168
+17
+11
+22
+65
+68
+127
+15
+76
+81
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+161
+19
+29
+18
+10
+26
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+37
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 13 (c) | The Interregional Earth Science Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+100
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+100
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Interinstitutional Earth Science Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      U. Washington      
+      Oregon State U.      
+      U. Florida      
+      UC Berkeley      
+      UC Davis      
+      Penn State U.      
+      U. Michigan      
+      U. British Columbia      
+      Stanford U.      
+      Cornell U.      
+      U. Minnesota      
+      U. Wisconsin−Madison      
+      Imperial College London      
+      U. College London      
+      U. Leeds      
+      U. Oxford      
+      U. Cambridge      
+      U. Copenhagen      
+      Aarhus U.      
+      U. Helsinki      
+      Lund U.      
+      Swedish U. Agri Sci      
+      Stockholm U.      
+      UNAMo      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      U. Western Australia      
+      Curtin U.      
+      CSIRO      
+      U. Queensland      
+      James Cook U.      
+      UNSW Sydney      
+      U. Tasmania      
+      Australian Nat'l U.      
+      U. Melbourne      
+      Arizona State U.      
+      US Geological Survey      
+      U. Arizona      
+      U. de Sao Paulo      
+      es Cientificas y Tecnicas      
+      China U. Geosciences      
+      Russian Acad of Sci      
+      U. Tokyo      
+      U. Lisbon      
+      Ghent U.      
+      Wageningen U. & Res      
+      Utrecht U.      
+      ETH Zurich      
+      Helmholtz Centre for Env Research 
+      U. Gottingen      
+https://ror.org/00cvxb145
+https://ror.org/00ysfqy60
+https://ror.org/02y3ad647
+https://ror.org/01an7q238
+https://ror.org/05rrcem69
+https://ror.org/04p491231
+https://ror.org/00jmfr291
+https://ror.org/03rmrcq20
+https://ror.org/00f54p054
+https://ror.org/05bnh6r87
+https://ror.org/017zqws13
+https://ror.org/01y2jtd41
+https://ror.org/041kmwe10
+https://ror.org/02jx3x895
+https://ror.org/024mrxd33
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/035b05819
+https://ror.org/01aj84f44
+https://ror.org/040af2s02
+https://ror.org/012a77v79
+https://ror.org/02yy8x990
+https://ror.org/05f0yaq80
+https://ror.org/01tmp8f25
+https://ror.org/036rp1748
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/047272k79
+https://ror.org/02n415q13
+https://ror.org/03qn8fb07
+https://ror.org/00rqy9422
+https://ror.org/04gsp2c11
+https://ror.org/03r8z3t63
+https://ror.org/01nfmeh72
+https://ror.org/019wvm592
+https://ror.org/01ej9dk98
+https://ror.org/03efmqc40
+https://ror.org/035a68863
+https://ror.org/03m2x1q45
+https://ror.org/03cqe8w59
+https://ror.org/04gcegc37
+https://ror.org/05qrfxd25
+https://ror.org/057zh3y96
+https://ror.org/01c27hj86
+https://ror.org/00cv9y106
+https://ror.org/04qw24q55
+https://ror.org/04pp8hn57
+https://ror.org/05a28rw58
+https://ror.org/000h6jb29
+https://ror.org/01y9bpm73
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [DK]  
+  [DK]  
+  [FI]  
+  [SE]  
+  [SE]  
+  [SE]  
+  [MX]  
+  [CN]  
+  [CN]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [US]  
+  [US]  
+  [US]  
+  [BR]  
+  [AR]  
+  [CN]  
+  [RU]  
+  [JP]  
+  [PT]  
+  [BE]  
+  [NL]  
+  [NL]  
+  [CH]  
+  [DE]  
+  [DE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      Monash U.      
+      Australian Nat'l U.      
+      CSIRO      
+      U. Queensland      
+      Wageningen U. & Res      
+      Swedish U. Agri Sci      
+      Imperial College London      
+      U. Sheffield      
+      U. Oxford      
+      U. Cambridge      
+      Columbia U.      
+      U. Leeds      
+      U. Bristol      
+      U. Tokyo      
+      ETH Zurich      
+      Penn State U.      
+      U. Edinburgh      
+      U. Florida      
+      Yale U.      
+      Ohio State U.      
+      Cornell U.      
+      Smithsonian Inst      
+      Russian Acad of Sci      
+      Natural Resources Canada      
+      Chinese Acad of Sci      
+      Inst of Geology & Geophysics     
+      UC Berkeley      
+      Planetary Sci Inst      
+      MIT      
+      Goddard Space Flight Center      
+      Jet Propulsion Lab      
+      Arizona State U.      
+      U. Arizona      
+      Ames Res Center      
+      Macquarie U.      
+      China U. Geosciences      
+      U. Western Australia      
+      U. Melbourne      
+      UNAMo      
+      U. Washington      
+      Oregon State U.      
+      U. Minnesota      
+      U. Michigan      
+      U. Wisconsin−Madison      
+      U. Colorado Boulder      
+      US Geological Survey      
+      Stanford U.      
+      U. Toronto      
+      U. British Columbia      
+      UC Davis      
+https://ror.org/02bfwt286
+https://ror.org/019wvm592
+https://ror.org/03qn8fb07
+https://ror.org/00rqy9422
+https://ror.org/04qw24q55
+https://ror.org/02yy8x990
+https://ror.org/041kmwe10
+https://ror.org/05krs5044
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/00hj8s172
+https://ror.org/024mrxd33
+https://ror.org/0524sp257
+https://ror.org/057zh3y96
+https://ror.org/05a28rw58
+https://ror.org/04p491231
+https://ror.org/01nrxwf90
+https://ror.org/02y3ad647
+https://ror.org/03v76x132
+https://ror.org/00rs6vg23
+https://ror.org/05bnh6r87
+https://ror.org/01pp8nd67
+https://ror.org/05qrfxd25
+https://ror.org/05hepy730
+https://ror.org/01tmp8f25
+https://ror.org/034t30j35
+https://ror.org/030vmwa78
+https://ror.org/01an7q238
+https://ror.org/05vvg9554
+https://ror.org/042nb2s44
+https://ror.org/0171mag52
+https://ror.org/027k65916
+https://ror.org/03efmqc40
+https://ror.org/03m2x1q45
+https://ror.org/02acart68
+https://ror.org/01sf06y89
+https://ror.org/04gcegc37
+https://ror.org/047272k79
+https://ror.org/01ej9dk98
+https://ror.org/00cvxb145
+https://ror.org/00ysfqy60
+https://ror.org/017zqws13
+https://ror.org/00jmfr291
+https://ror.org/01y2jtd41
+https://ror.org/02ttsq026
+https://ror.org/035a68863
+https://ror.org/00f54p054
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/05rrcem69
+  [AU]  
+  [AU]  
+  [AU]  
+  [AU]  
+  [NL]  
+  [SE]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [CH]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [CA]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [CN]  
+  [AU]  
+  [AU]  
+  [MX]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+Figure 13(d) | The Interinstitutional Earth Science Collaboration Dendrogram. The top 50 institutions in terms of
+work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+101
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+101
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Interinstitutional Earth Science Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Jet Propulsion Lab      
+      Ames Res Center      
+      Arizona State U.      
+      Imperial College London      
+      Natural History Museum      
+      British Geological Survey      
+      U. Sheffield      
+      U. College London      
+      U. East Anglia      
+      U. Cambridge      
+      The Open U.      
+      U. Cape Town      
+      U. Edinburgh      
+      U. Leeds      
+      Australian Nat'l U.      
+      CSIRO      
+      U. Oxford      
+      U. British Columbia      
+      Geological Survey of Canada      
+      U. Tennessee at Knoxville      
+      Johnson Space Center      
+      U. Michigan      
+      U. Tokyo      
+      U. Illinois UC      
+      Env Protection Agency      
+      Harvard U.      
+      Planetary Sci Inst      
+      U. Arizona      
+      U. Wisconsin−Madison      
+      U. Toronto      
+      U. Minnesota      
+      Natural Resources Canada      
+      Chinese Acad of Sci      
+      Texas A&M U.      
+      UT Austin      
+      MIT      
+      Goddard Space Flight Center      
+      U. Maryland      
+      Penn State U.      
+      US Geological Survey      
+      Cornell U.      
+      Utrecht U.      
+      Oregon State U.      
+      Scripps Inst of Oceanography      
+      UC Berkeley      
+      Stanford U.      
+      U. Washington      
+      U. Colorado Boulder      
+      UC Davis      
+      Ohio State U.      
+https://ror.org/027k65916
+https://ror.org/02acart68
+https://ror.org/03efmqc40
+https://ror.org/041kmwe10
+https://ror.org/039zvsn29
+https://ror.org/04a7gbp98
+https://ror.org/05krs5044
+https://ror.org/02jx3x895
+https://ror.org/026k5mg93
+https://ror.org/013meh722
+https://ror.org/05mzfcs16
+https://ror.org/03p74gp79
+https://ror.org/01nrxwf90
+https://ror.org/024mrxd33
+https://ror.org/019wvm592
+https://ror.org/03qn8fb07
+https://ror.org/052gg0110
+https://ror.org/03rmrcq20
+https://ror.org/03wm7z656
+https://ror.org/020f3ap87
+https://ror.org/04xx4z452
+https://ror.org/00jmfr291
+https://ror.org/057zh3y96
+https://ror.org/047426m28
+https://ror.org/03tns0030
+https://ror.org/03vek6s52
+https://ror.org/05vvg9554
+https://ror.org/03m2x1q45
+https://ror.org/01y2jtd41
+https://ror.org/03dbr7087
+https://ror.org/017zqws13
+https://ror.org/05hepy730
+https://ror.org/034t30j35
+https://ror.org/01f5ytq51
+https://ror.org/00hj54h04
+https://ror.org/042nb2s44
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/04p491231
+https://ror.org/035a68863
+https://ror.org/05bnh6r87
+https://ror.org/04pp8hn57
+https://ror.org/00ysfqy60
+https://ror.org/04v7hvq31
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/00cvxb145
+https://ror.org/02ttsq026
+https://ror.org/05rrcem69
+https://ror.org/00rs6vg23
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [ZA]  
+  [GB]  
+  [GB]  
+  [AU]  
+  [AU]  
+  [GB]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [CA]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [NL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Australian Nat'l U.      
+      Mineral Resources      
+      UC Berkeley      
+      U. Washington      
+      U. Liverpool      
+      Caltech      
+      Brown U.      
+      State U. New York      
+      Harvard U.      
+      Penn State U.      
+      Cornell U.      
+      Stanford U.      
+      UC Santa Barbara      
+      U. Toronto      
+      U. Leicester      
+      Carnegie Inst for Sci      
+      U. Wisconsin−Madison      
+      Ohio State U.      
+      U. Michigan      
+      Western U.      
+      Natural Resources Canada      
+      Geological Survey of Canada      
+Czech Acad of Sci, Inst of Geology      
+      Geological Inst      
+      Lamont−Doherty Earth Observatory      
+      Columbia U.      
+      UCLA      
+      Planetary Sci Inst      
+      Scripps Inst of Oceanography      
+      UC San Diego      
+      US Geological Survey      
+      Denver Federal Center      
+      Ames Res Center      
+      Johnson Space Center      
+      Lunar & Planetary Inst      
+      Arizona State U.      
+      Goddard Space Flight Center      
+      U. Arizona      
+      Jet Propulsion Lab      
+      MIT      
+      WHOI      
+      Oregon State U.      
+      U. Rhode Island      
+      CSIRO      
+      IGEM      
+      The Open U.      
+      U. Oxford      
+      U. Tokyo      
+      U. Cambridge      
+      Imperial College London      
+https://ror.org/019wvm592
+https://ror.org/039b65w79
+https://ror.org/01an7q238
+https://ror.org/00cvxb145
+https://ror.org/04xs57h96
+https://ror.org/05dxps055
+https://ror.org/05gq02987
+https://ror.org/01q1z8k08
+https://ror.org/03vek6s52
+https://ror.org/04p491231
+https://ror.org/05bnh6r87
+https://ror.org/00f54p054
+https://ror.org/02t274463
+https://ror.org/03dbr7087
+https://ror.org/04h699437
+https://ror.org/04jr01610
+https://ror.org/01y2jtd41
+https://ror.org/00rs6vg23
+https://ror.org/00jmfr291
+https://ror.org/02grkyz14
+https://ror.org/05hepy730
+https://ror.org/03wm7z656
+https://ror.org/04wh80b80
+https://ror.org/02f0cra24
+https://ror.org/054xffa50
+https://ror.org/02e2tgs60
+https://ror.org/00hj8s172
+https://ror.org/046rm7j60
+https://ror.org/05vvg9554
+https://ror.org/04v7hvq31
+https://ror.org/0168r3w48
+https://ror.org/035a68863
+https://ror.org/05pxjag90
+https://ror.org/02acart68
+https://ror.org/04xx4z452
+https://ror.org/01r4eh644
+https://ror.org/03efmqc40
+https://ror.org/0171mag52
+https://ror.org/03m2x1q45
+https://ror.org/027k65916
+https://ror.org/042nb2s44
+https://ror.org/03zbnzt98
+https://ror.org/00ysfqy60
+https://ror.org/013ckk937
+https://ror.org/03qn8fb07
+https://ror.org/05mzfcs16
+https://ror.org/052gg0110
+https://ror.org/057zh3y96
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+  [AU]  
+  [AU]  
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [CZ]  
+  [RU]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [AU]  
+  [RU]  
+  [GB]  
+  [GB]  
+  [JP]  
+  [GB]  
+  [GB]  
+Figure 13(d) | The Interinstitutional Earth Science Collaboration Dendrogram. (Cont.)
+102
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+102
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Table 13 | The top 100 productive institutions: Earth Science.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+United States Geological Survey
+US
+394
+Chinese Academy of Sciences
+CN
+1,299
+Chinese Academy of Sciences
+CN
+4,436
+2
+University of Michigan–Ann Arbor
+US
+225
+United States Geological Survey
+US
+878
+Wageningen University & Research
+NL
+1,839
+3
+Natural Resources Canada
+CA
+214
+Wageningen University & Research
+NL
+552
+University of Queensland
+AU
+1,671
+4
+Australian National University
+AU
+199
+Australian National University
+AU
+551
+United States Geological Survey
+US
+1,662
+5
+Commonwealth Scientific and Industrial Research Organisation
+AU
+194
+University of Oxford
+GB
+537
+University of Oxford
+GB
+1,630
+6
+University of Cambridge
+GB
+194
+University of California, Berkeley
+US
+521
+Universidade de São Paulo
+BR
+1,578
+7
+University of Arizona
+US
+192
+Russian Academy of Sciences
+RU
+505
+University of Cambridge
+GB
+1,463
+8
+Ames Research Center
+US
+187
+Natural Resources Canada
+CA
+489
+University of Chinese Academy of Sciences
+CN
+1,433
+9
+University of California, Berkeley
+US
+187
+University of Arizona
+US
+483
+Arizona State University
+US
+1,388
+10
+Goddard Space Flight Center
+US
+182
+University of British Columbia
+CA
+472
+University of British Columbia
+CA
+1,385
+11
+Jet Propulsion Laboratory
+US
+162
+Goddard Space Flight Center
+US
+453
+ETH Zurich
+CH
+1,290
+12
+Chinese Academy of Sciences
+CN
+159
+Commonwealth Scientific and Industrial Research Organisation
+AU
+451
+Universidad Nacional Autónoma de México
+MX
+1,271
+13
+University of Oxford
+GB
+155
+University of Cambridge
+GB
+451
+University of California, Berkeley
+US
+1,261
+14
+Cornell University
+US
+144
+Arizona State University
+US
+441
+Australian National University
+AU
+1,259
+15
+The University of Tokyo
+JP
+140
+Imperial College London
+GB
+434
+Russian Academy of Sciences
+RU
+1,234
+16
+Pennsylvania State University
+US
+133
+Stanford University
+US
+430
+Imperial College London
+GB
+1,220
+17
+University of British Columbia
+CA
+130
+The University of Tokyo
+JP
+426
+University of Copenhagen
+DK
+1,209
+18
+University of Washington
+US
+130
+University of Queensland
+AU
+425
+Swedish University of Agricultural Sciences
+SE
+1,179
+19
+Oregon State University
+US
+129
+Jet Propulsion Laboratory
+US
+424
+University of Melbourne
+AU
+1,176
+20
+Stanford University
+US
+124
+ETH Zurich
+CH
+419
+University of Florida
+US
+1,155
+21
+University of Toronto
+CA
+123
+University of California, Davis
+US
+396
+University of Lisbon
+PT
+1,131
+22
+Geological Survey of Canada
+CA
+121
+University of Michigan–Ann Arbor
+US
+392
+Consejo Nacional de Investigaciones Científicas y Técnicas
+AR
+1,117
+23
+Massachusetts Institute of Technology
+US
+118
+Pennsylvania State University
+US
+389
+University of Helsinki
+FI
+1,101
+24
+Arizona State University
+US
+115
+Universidad Nacional Autónoma de México
+MX
+385
+Aarhus University
+DK
+1,100
+25
+The Open University
+GB
+110
+University of Washington
+US
+385
+University of Leeds
+GB
+1,095
+26
+University of Edinburgh
+GB
+110
+Cornell University
+US
+384
+The University of Tokyo
+JP
+1,067
+27
+University of California, Davis
+US
+109
+Planetary Science Institute
+US
+366
+University of Washington
+US
+1,054
+28
+University of Illinois Urbana-Champaign
+US
+109
+University of Florida
+US
+356
+University of California, Davis
+US
+1,040
+29
+Harvard University
+US
+108
+Yale University
+US
+332
+University of Western Australia
+AU
+1,029
+30
+University College London
+GB
+105
+University of Melbourne
+AU
+330
+University College London
+GB
+1,027
+31
+University of Leeds
+GB
+102
+Swedish University of Agricultural Sciences
+SE
+330
+Utrecht University
+NL
+1,016
+32
+University of Minnesota
+US
+102
+Ames Research Center
+US
+330
+Pennsylvania State University
+US
+1,002
+33
+British Geological Survey
+GB
+101
+China University of Geosciences
+CN
+326
+Stockholm University
+SE
+1,001
+34
+University of Wisconsin–Madison
+US
+99
+Massachusetts Institute of Technology
+US
+326
+James Cook University
+AU
+999
+35
+University of Sheffield
+GB
+96
+Oregon State University
+US
+326
+University of Arizona
+US
+996
+36
+Utrecht University
+NL
+95
+University of Toronto
+CA
+320
+University of Michigan–Ann Arbor
+US
+994
+37
+University of East Anglia
+GB
+94
+Macquarie University
+AU
+317
+China University of Geosciences
+CN
+956
+38
+Scripps Institution of Oceanography
+US
+93
+Smithsonian Institution
+US
+317
+Helmholtz Centre for Environmental Research
+DE
+942
+39
+University of Tennessee at Knoxville
+US
+93
+University of Minnesota
+US
+315
+University of Göttingen
+DE
+929
+40
+University of Cape Town
+ZA
+91
+University of Wisconsin–Madison
+US
+309
+Curtin University
+AU
+925
+41
+Imperial College London
+GB
+90
+University of Leeds
+GB
+307
+Stanford University
+US
+924
+42
+Planetary Science Institute
+US
+90
+University of Sheffield
+GB
+305
+Ghent University
+BE
+918
+43
+University of Maryland, College Park
+US
+90
+Monash University
+AU
+304
+University of Minnesota
+US
+914
+44
+Johnson Space Center
+US
+89
+University of Western Australia
+AU
+300
+University of Tasmania
+AU
+911
+45
+Texas A&M University
+US
+89
+Institute of Geology and Geophysics
+CN
+300
+Lund University
+SE
+910
+46
+Natural History Museum
+GB
+88
+The Ohio State University
+US
+299
+UNSW Sydney
+AU
+905
+47
+The Ohio State University
+US
+88
+University of Bristol
+GB
+296
+Cornell University
+US
+900
+48
+The University of Texas at Austin
+US
+86
+University of Colorado Boulder
+US
+296
+Oregon State University
+US
+896
+49
+University of Colorado Boulder
+US
+86
+University of Edinburgh
+GB
+291
+Commonwealth Scientific and Industrial Research Organisation
+AU
+892
+50
+California Institute of Technology
+US
+85
+Columbia University
+US
+291
+University of Wisconsin–Madison
+US
+885
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+103
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+103
+
+13. Earth Science
+13. Earth Science
+13. Earth Science
+Table 13 | The top 100 productive institutions: Earth Science. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Environmental Protection Agency
+US
+85
+University of California, Santa Barbara
+US
+287
+University of Exeter
+GB
+878
+52
+University of California, Los Angeles
+US
+84
+University of Alberta
+CA
+283
+Stellenbosch University
+ZA
+876
+53
+Woods Hole Oceanographic Institution
+US
+84
+University of Copenhagen
+DK
+281
+University of Alberta
+CA
+871
+54
+University of Queensland
+AU
+83
+The Open University
+GB
+275
+Sapienza University of Rome
+IT
+865
+55
+University of Hawaii System
+US
+83
+University of East Anglia
+GB
+274
+Michigan State University
+US
+857
+56
+University of Wales
+GB
+82
+University of Helsinki
+FI
+271
+University of Colorado Boulder
+US
+852
+57
+University of Florida
+US
+82
+Lund University
+SE
+269
+McGill University
+CA
+843
+58
+University of Amsterdam
+NL
+81
+University of Maryland, College Park
+US
+269
+Griffith University
+AU
+841
+59
+Columbia University
+US
+81
+University of Cape Town
+ZA
+269
+University of Sydney
+AU
+835
+60
+Oak Ridge National Laboratory
+US
+81
+University of Göttingen
+DE
+264
+Yale University
+US
+831
+61
+University of Adelaide
+AU
+80
+Stockholm University
+SE
+261
+University of Adelaide
+AU
+828
+62
+University of Alberta
+CA
+80
+Colorado State University
+US
+260
+China University of Geosciences (Beĳing)
+CN
+828
+63
+Virginia Tech
+US
+80
+Michigan State University
+US
+260
+Columbia University
+US
+825
+64
+University of Liverpool
+GB
+79
+University of Sydney
+AU
+258
+Monash University
+AU
+821
+65
+Los Alamos National Laboratory
+US
+79
+Delft University of Technology
+NL
+258
+University of Toronto
+CA
+821
+66
+University of California, Santa Barbara
+US
+77
+Lomonosov Moscow State University
+RU
+257
+Lomonosov Moscow State University
+RU
+789
+67
+University of Bristol
+GB
+76
+Natural History Museum
+GB
+255
+University of Manchester
+GB
+782
+68
+University of Reading
+GB
+76
+University College London
+GB
+253
+University of Bristol
+GB
+781
+69
+University of California, San Diego
+US
+76
+Utrecht University
+NL
+249
+Delft University of Technology
+NL
+774
+70
+University of Western Australia
+AU
+75
+Peking University
+CN
+244
+Planetary Science Institute
+US
+773
+71
+Russian Academy of Sciences
+RU
+75
+Curtin University
+AU
+241
+University of Edinburgh
+GB
+772
+72
+Vrĳe Universiteit Amsterdam
+NL
+74
+University of Reading
+GB
+241
+Macquarie University
+AU
+771
+73
+Royal Holloway University of London
+GB
+73
+Harvard University
+US
+241
+University of Maryland, College Park
+US
+769
+74
+Universidad Nacional Autónoma de México
+MX
+73
+Cardiff University
+GB
+240
+Colorado State University
+US
+761
+75
+University of Copenhagen
+DK
+72
+California Institute of Technology
+US
+240
+University of Southampton
+GB
+757
+76
+Colorado State University
+US
+72
+Universidade de São Paulo
+BR
+239
+University of Bern
+CH
+755
+77
+Michigan State University
+US
+72
+James Cook University
+AU
+238
+Goddard Space Flight Center
+US
+746
+78
+University of Bern
+CH
+70
+University of Liège
+BE
+237
+University of Zurich
+CH
+743
+79
+Lamont-Doherty Earth Observatory
+US
+70
+Ghent University
+BE
+235
+National University of Singapore
+SG
+739
+80
+Rutgers, The State University of New Jersey
+US
+70
+The University of Texas at Austin
+US
+235
+Beĳing Normal University
+CN
+731
+81
+Kiel University
+DE
+69
+Johnson Space Center
+US
+233
+Jet Propulsion Laboratory
+US
+728
+82
+Yale University
+US
+69
+Griffith University
+AU
+232
+University of Sheffield
+GB
+723
+83
+Macquarie University
+AU
+67
+University of California, Los Angeles
+US
+232
+The University of Texas at Austin
+US
+720
+84
+Newcastle University
+GB
+67
+Helmholtz Centre for Environmental Research
+DE
+230
+KU Leuven
+BE
+717
+85
+Wageningen University & Research
+NL
+67
+Duke University
+US
+230
+University of Liège
+BE
+713
+86
+Stockholm University
+SE
+67
+University of Manchester
+GB
+229
+University of Illinois Urbana-Champaign
+US
+707
+87
+Max Planck Institute for Chemistry
+DE
+66
+Texas A&M University
+US
+229
+Texas A&M University
+US
+706
+88
+Swedish University of Agricultural Sciences
+SE
+66
+University of Hawaii System
+US
+229
+São Paulo State University
+BR
+700
+89
+Max Planck Society
+DE
+65
+McGill University
+CA
+228
+University of Cape Town
+ZA
+700
+90
+University of Manchester
+GB
+64
+Princeton University
+US
+225
+Harvard University
+US
+699
+91
+Lund University
+SE
+64
+University of Illinois Urbana-Champaign
+US
+224
+University of Porto
+PT
+694
+92
+Brown University
+US
+64
+China University of Geosciences (Beĳing)
+CN
+223
+Massachusetts Institute of Technology
+US
+689
+93
+US Forest Service
+US
+64
+University of Adelaide
+AU
+222
+University of Bologna
+IT
+686
+94
+Lunar and Planetary Institute
+US
+63
+Woods Hole Oceanographic Institution
+US
+221
+University of Oslo
+NO
+671
+95
+Princeton University
+US
+63
+Nanjing University
+CN
+219
+Peking University
+CN
+667
+96
+Lomonosov Moscow State University
+RU
+61
+University of Oslo
+NO
+218
+Natural History Museum
+GB
+667
+97
+University of New Mexico
+US
+61
+University of Tasmania
+AU
+217
+University of Florence
+IT
+665
+98
+University of Sydney
+AU
+60
+Vrĳe Universiteit Amsterdam
+NL
+216
+University of Auckland
+NZ
+663
+99
+University of Tasmania
+AU
+60
+University of Tennessee at Knoxville
+US
+216
+The Ohio State University
+US
+652
+100
+ETH Zurich
+CH
+60
+Sapienza University of Rome
+IT
+215
+Norwegian University of Science and Technology
+NO
+651
+104
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+104
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+14. Astronomy
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+World Map of Astronomy Collaboration | 1971–2020
+Figure 14(a) | The World Map of Astronomy Collaboration. The bubbles represent the top 199 institutions in terms of
+work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship relationships
+among the top 50 institutions.
+106
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+106
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Top 30 Productive Institutions on the World Map: Astronomy | 1991–2020
+Chinese Acad of Sci
+Goddard Space Flight Center
+Caltechy
+U. Tokyo
+Jet Propulsion Lab
+Harvard−Smithsonian CfA
+UC Berkeley
+U. Cambridge
+U. Arizona
+U. Chinese Acad of Sci
+U. Michigan
+U. Oxford
+MPI − Astronomy
+MIT
+Leiden U.
+U. Maryland
+Space Telescope Sci Inst
+MPI − Extraterrestrial Phys
+Insto de Astrofisica de Canarias
+U. College London
+Princeton U.
+Stanford U.
+Penn State U.
+Nat'l Inst for Astrophys
+NAOJ
+Max Planck Society
+Delegation Paris 7
+Lomonosov Moscow State U.
+Eur Southern Observatory
+Peking U.
+Astronomy [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Goddard Space Flight Center
+Caltechy
+Chinese Acad of Sci
+Harvard−Smithsonian CfA
+Jet Propulsion Lab
+U. Tokyo
+UC Berkeley
+U. Arizona
+Max Planck Society
+MPI − Extraterrestrial Phys
+U. Cambridge
+Space Telescope Sci Inst
+Penn State U.
+Paris Observatory
+MIT
+U. Michigan
+Kyoto U.
+U. Oxford
+U. Maryland
+NAOJ
+Johns Hopkins U.
+MPI − Astronomy
+Princeton U.
+Nat'l Inst for Astrophys
+U. Chicago
+MPI − Astrophys
+Nat'l Astro Observatories
+Stanford U.
+LESIA
+UT Austin
+Astronomy [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Goddard Space Flight Center
+Jet Propulsion Lab
+Caltechy
+UC Berkeley
+U. Tokyo
+U. Arizona
+Harvard−Smithsonian CfA
+Space Telescope Sci Inst
+Paris Observatory
+Kyoto U.
+U. Cambridge
+Ames Res Center
+MPI − Extraterrestrial Phys
+U. Maryland
+MIT
+U. Michigan
+Tohoku U.
+Stanford U.
+US Naval Research Lab
+Penn State U.
+Cornell U.
+UT Austin
+Johns Hopkins U.
+Princeton U.
+U. Chicago
+Marshall Space Flight Center
+U. Illinois UC
+U. Oxford
+Los Alamos NL
+Osaka U.
+Astronomy [1991−2000]
+Figure 14(b) | The top 30 productive institutions on the World Map: Astronomy. The bubbles represent the top 30
+institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+107
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+107
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Interregional Astronomy Collaboration | 1991–2020
+210
+105
+294
+63
+63
+104
+10
+69
+15
+15
+24
+91
+42
+42
+70
+15
+15
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+349
+42
+233
+108
+113
+72
+18
+36
+36
+35
+30
+15
+11
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+466
+87
+94
+68
+47
+16
+11
+15
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 14(c) | The Interregional Astronomy Collaboration Matrix Diagram. The bubble size represents the number
+of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or greater
+than 10, it is displayed inside the bubble.
+108
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+108
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Interinstitutional Astronomy Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      Princeton U.      
+      Harvard−Smithsonian CfA      
+      UC Berkeley      
+      UT Austin      
+      U. Arizona      
+      U. California, Santa Cruz      
+      Ames Res Center      
+      U. Washington      
+      Penn State U.      
+      Ohio State U.      
+      Kyoto U.      
+      U. Tokyo      
+      NAOJ      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      Peking U.      
+      Tsinghua U.      
+      U. Geneva      
+      Inst d'Astrophysique de Paris      
+      Nat'l Inst for Astrophys      
+      Delegation Paris 7      
+      U. Oxford      
+      U. Cambridge      
+      U. College London      
+      Insto de Astrofisica de Canarias      
+      U. La Laguna      
+      Nat'l Astro Observatories      
+      Chinese Acad of Sci      
+      U. Chinese Acad of Sci      
+      Space Telescope Sci Inst      
+      Johns Hopkins U.      
+      Caltech      
+      Jet Propulsion Lab      
+      Goddard Space Flight Center      
+      U. Maryland      
+      UCLA      
+      U. Colorado Boulder      
+      U. Michigan      
+      Stanford U.      
+      U. Toronto      
+      MIT      
+      MPI − Extraterrestrial Phys      
+      Max Planck Society      
+      MPI − Radio Astronomy      
+      UNAMo      
+      ETH Zurich      
+      Heidelberg U.      
+      Leiden U.      
+      MPI − Astronomy      
+      Eur Southern Observatory      
+https://ror.org/00hx57361
+https://ror.org/03c3r2d17
+https://ror.org/01an7q238
+https://ror.org/00hj54h04
+https://ror.org/03m2x1q45
+https://ror.org/03s65by71
+https://ror.org/02acart68
+https://ror.org/00cvxb145
+https://ror.org/04p491231
+https://ror.org/00rs6vg23
+https://ror.org/02kpeqv85
+https://ror.org/057zh3y96
+https://ror.org/052rrw050
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/02v51f717
+https://ror.org/03cve4549
+https://ror.org/01swzsf04
+https://ror.org/022bnxw24
+https://ror.org/02gh4kt33
+https://ror.org/00bw5n526
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/02jx3x895
+https://ror.org/00e4bwe12
+https://ror.org/03cmntr54
+https://ror.org/01r9z8p25
+https://ror.org/058pyyv44
+https://ror.org/034t30j35
+https://ror.org/05qbk4x57
+https://ror.org/036f5mx38
+https://ror.org/00za53h95
+https://ror.org/05dxps055
+https://ror.org/027k65916
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/046rm7j60
+https://ror.org/02ttsq026
+https://ror.org/00jmfr291
+https://ror.org/00f54p054
+https://ror.org/03dbr7087
+https://ror.org/042nb2s44
+https://ror.org/01hhn8329
+https://ror.org/04jvemc39
+https://ror.org/01tmp8f25
+https://ror.org/05a28rw58
+https://ror.org/038t36y30
+https://ror.org/027bh9e22
+https://ror.org/01vhnrs90
+https://ror.org/01qtasp15
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [RU]  
+  [RU]  
+  [CN]  
+  [CN]  
+  [CH]  
+  [FR]  
+  [IT]  
+  [FR]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [ES]  
+  [ES]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [US]  
+  [DE]  
+  [DE]  
+  [DE]  
+  [MX]  
+  [CH]  
+  [DE]  
+  [NL]  
+  [DE]  
+  [DE]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      MPI − Astrophys      
+      Max Planck Society      
+      MPI − Extraterrestrial Phys      
+      Chinese Acad of Sci      
+      Nat'l Astro Observatories      
+      Tohoku U.      
+      Kyoto U.      
+      U. Tokyo      
+      NAOJ      
+      Paris Observatory      
+      LESIA      
+      MPI − Astronomy      
+      Eur Southern Observatory      
+      Nat'l Inst for Astrophys      
+      Insto de Astrofisica de Canarias      
+      U. College London      
+      Imperial College London      
+      U. Cambridge      
+      U. Oxford      
+      Stanford U.      
+      U. Colorado Boulder      
+      US Naval Research Lab      
+      UNAMo      
+      U. Toronto      
+      UT Austin      
+      U. Wisconsin−Madison      
+      Space Telescope Sci Inst      
+      Johns Hopkins U.      
+      Ohio State U.      
+      U. Washington      
+      Penn State U.      
+      Princeton U.      
+      U. Chicago      
+      Caltech      
+      Jet Propulsion Lab      
+      Harvard−Smithsonian CfA      
+      U. Arizona      
+      Goddard Space Flight Center      
+      U. Maryland      
+      MIT      
+      UCLA      
+      Columbia U.      
+      UC Berkeley      
+      U. California, Santa Cruz      
+      U. Michigan      
+      Los Alamos NL      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      Cornell U.      
+      Ames Res Center      
+https://ror.org/017qcv467
+https://ror.org/01hhn8329
+https://ror.org/00e4bwe12
+https://ror.org/034t30j35
+https://ror.org/058pyyv44
+https://ror.org/01dq60k83
+https://ror.org/02kpeqv85
+https://ror.org/057zh3y96
+https://ror.org/052rrw050
+https://ror.org/029nkcm90
+https://ror.org/02eptjh02
+https://ror.org/01vhnrs90
+https://ror.org/01qtasp15
+https://ror.org/02gh4kt33
+https://ror.org/03cmntr54
+https://ror.org/02jx3x895
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/02ttsq026
+https://ror.org/04d23a975
+https://ror.org/01tmp8f25
+https://ror.org/03dbr7087
+https://ror.org/00hj54h04
+https://ror.org/01y2jtd41
+https://ror.org/036f5mx38
+https://ror.org/00za53h95
+https://ror.org/00rs6vg23
+https://ror.org/00cvxb145
+https://ror.org/04p491231
+https://ror.org/00hx57361
+https://ror.org/024mw5h28
+https://ror.org/05dxps055
+https://ror.org/027k65916
+https://ror.org/03c3r2d17
+https://ror.org/03m2x1q45
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/042nb2s44
+https://ror.org/046rm7j60
+https://ror.org/00hj8s172
+https://ror.org/01an7q238
+https://ror.org/03s65by71
+https://ror.org/00jmfr291
+https://ror.org/01e41cf67
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/05bnh6r87
+https://ror.org/02acart68
+https://ror.org/00f54p054
+  [DE]  
+  [DE]  
+  [DE]  
+  [CN]  
+  [CN]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [FR]  
+  [FR]  
+  [DE]  
+  [DE]  
+  [IT]  
+  [ES]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [MX]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [US]  
+  [US]  
+Figure 14(d) | The Interinstitutional Astronomy Collaboration Dendrogram. The top 50 institutions in terms of work
+production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+109
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+109
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Interinstitutional Astronomy Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      Tohoku U.      
+      Kyoto U.      
+      Osaka U.      
+      Nagoya U.      
+      U. Tokyo      
+      NAOJ      
+      UC Berkeley      
+      Lawrence Berkeley NL      
+      U. College London      
+      Chinese Acad of Sci      
+      Paris Observatory      
+      U. Colorado Boulder      
+      U. Toronto      
+      U. Illinois UC      
+      U. Michigan      
+      U. Chicago      
+      Penn State U.      
+      Princeton U.      
+      UT Austin      
+      U. Wisconsin−Madison      
+      MPI − Astrophys      
+      U. Arizona      
+      U. California, Santa Cruz      
+      Ohio State U.      
+      UCLA      
+      Space Telescope Sci Inst      
+      Johns Hopkins U.      
+      U. Cambridge      
+      Inst of Astronomy      
+      MPI − Extraterrestrial Phys      
+      Max Planck Society      
+      Jet Propulsion Lab      
+      Caltech      
+      Ames Res Center      
+      Cornell U.      
+      US Naval Research Lab      
+      Goddard Space Flight Center      
+      U. Maryland      
+      Stanford U.      
+      Marshall Space Flight Center      
+      Columbia U.      
+      Harvard−Smithsonian CfA      
+      MIT      
+      U. Oxford      
+      U. Washington      
+      Lawrence Livermore NL      
+      UC San Diego      
+      Los Alamos NL      
+      Imperial College London      
+      U. Manchester      
+https://ror.org/01dq60k83
+https://ror.org/02kpeqv85
+https://ror.org/035t8zc32
+https://ror.org/04chrp450
+https://ror.org/057zh3y96
+https://ror.org/052rrw050
+https://ror.org/01an7q238
+https://ror.org/02jbv0t02
+https://ror.org/02jx3x895
+https://ror.org/034t30j35
+https://ror.org/029nkcm90
+https://ror.org/02ttsq026
+https://ror.org/03dbr7087
+https://ror.org/047426m28
+https://ror.org/00jmfr291
+https://ror.org/024mw5h28
+https://ror.org/04p491231
+https://ror.org/00hx57361
+https://ror.org/00hj54h04
+https://ror.org/01y2jtd41
+https://ror.org/017qcv467
+https://ror.org/03m2x1q45
+https://ror.org/03s65by71
+https://ror.org/00rs6vg23
+https://ror.org/046rm7j60
+https://ror.org/036f5mx38
+https://ror.org/00za53h95
+https://ror.org/013meh722
+https://ror.org/01whksa54
+https://ror.org/00e4bwe12
+https://ror.org/01hhn8329
+https://ror.org/027k65916
+https://ror.org/05dxps055
+https://ror.org/02acart68
+https://ror.org/05bnh6r87
+https://ror.org/04d23a975
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/00f54p054
+https://ror.org/02epydz83
+https://ror.org/00hj8s172
+https://ror.org/03c3r2d17
+https://ror.org/042nb2s44
+https://ror.org/052gg0110
+https://ror.org/00cvxb145
+https://ror.org/041nk4h53
+https://ror.org/0168r3w48
+https://ror.org/01e41cf67
+https://ror.org/041kmwe10
+https://ror.org/027m9bs27
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [US]  
+  [GB]  
+  [CN]  
+  [FR]  
+  [US]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [RU]  
+  [DE]  
+  [DE]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [GB]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      Lawrence Berkeley NL      
+      U. Cambridge      
+      Inst of Astronomy      
+      NIST      
+      U. Colorado Boulder      
+      Nagoya U.      
+      U. Tokyo      
+      Kyoto U.      
+      Tohoku U.      
+      Osaka U.      
+      CSIRO      
+      Australian Nat'l U.      
+      Imperial College London      
+      U. College London      
+      U. Oxford      
+      Stanford U.      
+      Marshall Space Flight Center      
+      Langley Res Center      
+      U. Michigan      
+      U. Washington      
+      UCLA      
+      Ohio State U.      
+      U. Florida      
+      UC San Diego      
+      US Naval Research Lab      
+      UC Berkeley      
+      Los Alamos NL      
+      U. Manchester      
+      U. Toronto      
+      Yale U.      
+      U. Chicago      
+      U. Illinois UC      
+      Columbia U.      
+      Penn State U.      
+      UT Austin      
+      Princeton U.      
+      U. Wisconsin−Madison      
+      Goddard Space Flight Center      
+      U. Maryland      
+      Jet Propulsion Lab      
+      Caltech      
+      Ames Res Center      
+      Cornell U.      
+      MIT      
+      Harvard−Smithsonian CfA      
+      Smithsonian Astrophys Obs      
+      U. Arizona      
+      Kitt Peak Nat'l Observatory      
+      Paris Observatory      
+      State U. New York      
+https://ror.org/02jbv0t02
+https://ror.org/013meh722
+https://ror.org/01whksa54
+https://ror.org/05xpvk416
+https://ror.org/02ttsq026
+https://ror.org/04chrp450
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/03qn8fb07
+https://ror.org/019wvm592
+https://ror.org/041kmwe10
+https://ror.org/02jx3x895
+https://ror.org/052gg0110
+https://ror.org/00f54p054
+https://ror.org/02epydz83
+https://ror.org/0399mhs52
+https://ror.org/00jmfr291
+https://ror.org/00cvxb145
+https://ror.org/046rm7j60
+https://ror.org/00rs6vg23
+https://ror.org/02y3ad647
+https://ror.org/0168r3w48
+https://ror.org/04d23a975
+https://ror.org/01an7q238
+https://ror.org/01e41cf67
+https://ror.org/027m9bs27
+https://ror.org/03dbr7087
+https://ror.org/03v76x132
+https://ror.org/024mw5h28
+https://ror.org/047426m28
+https://ror.org/00hj8s172
+https://ror.org/04p491231
+https://ror.org/00hj54h04
+https://ror.org/00hx57361
+https://ror.org/01y2jtd41
+https://ror.org/0171mag52
+https://ror.org/047s2c258
+https://ror.org/027k65916
+https://ror.org/05dxps055
+https://ror.org/02acart68
+https://ror.org/05bnh6r87
+https://ror.org/042nb2s44
+https://ror.org/03c3r2d17
+https://ror.org/04mh52z70
+https://ror.org/03m2x1q45
+https://ror.org/0135fch82
+https://ror.org/029nkcm90
+https://ror.org/01q1z8k08
+  [US]  
+  [GB]  
+  [RU]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [AU]  
+  [AU]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [GB]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [FR]  
+  [US]  
+Figure 14(d) | The Interinstitutional Astronomy Collaboration Dendrogram. (Cont.)
+110
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+110
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Table 14 | The top 100 productive institutions: Astronomy.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+Goddard Space Flight Center
+US
+4,783
+Goddard Space Flight Center
+US
+8,442
+Chinese Academy of Sciences
+CN
+14,968
+2
+Jet Propulsion Laboratory
+US
+3,162
+California Institute of Technology
+US
+7,064
+Goddard Space Flight Center
+US
+10,596
+3
+California Institute of Technology
+US
+2,942
+Chinese Academy of Sciences
+CN
+5,800
+California Institute of Technology
+US
+9,298
+4
+University of California, Berkeley
+US
+2,906
+Center for Astrophysics Harvard & Smithsonian
+US
+5,686
+The University of Tokyo
+JP
+8,570
+5
+The University of Tokyo
+JP
+2,876
+Jet Propulsion Laboratory
+US
+5,536
+Jet Propulsion Laboratory
+US
+8,249
+6
+University of Arizona
+US
+2,458
+The University of Tokyo
+JP
+5,253
+Center for Astrophysics Harvard & Smithsonian
+US
+7,948
+7
+Center for Astrophysics Harvard & Smithsonian
+US
+2,318
+University of California, Berkeley
+US
+5,002
+University of California, Berkeley
+US
+7,567
+8
+Space Telescope Science Institute
+US
+1,998
+University of Arizona
+US
+4,498
+University of Cambridge
+GB
+6,539
+9
+Paris Observatory
+FR
+1,970
+Max Planck Society
+DE
+4,051
+University of Arizona
+US
+6,070
+10
+Kyoto University
+JP
+1,886
+Max Planck Institute for Extraterrestrial Physics
+DE
+3,637
+University of Chinese Academy of Sciences
+CN
+5,824
+11
+University of Cambridge
+GB
+1,782
+University of Cambridge
+GB
+3,428
+University of Michigan–Ann Arbor
+US
+5,490
+12
+Ames Research Center
+US
+1,683
+Space Telescope Science Institute
+US
+3,221
+University of Oxford
+GB
+5,120
+13
+Max Planck Institute for Extraterrestrial Physics
+DE
+1,636
+Pennsylvania State University
+US
+3,174
+Max Planck Institute for Astronomy
+DE
+5,049
+14
+University of Maryland, College Park
+US
+1,593
+Massachusetts Institute of Technology
+US
+3,139
+Massachusetts Institute of Technology
+US
+5,029
+15
+Massachusetts Institute of Technology
+US
+1,553
+Paris Observatory
+FR
+3,134
+Leiden University
+NL
+4,993
+16
+University of Michigan–Ann Arbor
+US
+1,450
+University of Michigan–Ann Arbor
+US
+3,033
+University of Maryland, College Park
+US
+4,916
+17
+Tohoku University
+JP
+1,440
+Kyoto University
+JP
+2,998
+Space Telescope Science Institute
+US
+4,774
+18
+Stanford University
+US
+1,436
+University of Oxford
+GB
+2,955
+Max Planck Institute for Extraterrestrial Physics
+DE
+4,707
+19
+United States Naval Research Laboratory
+US
+1,426
+University of Maryland, College Park
+US
+2,888
+Instituto de Astrofísica de Canarias
+ES
+4,572
+20
+Pennsylvania State University
+US
+1,414
+National Astronomical Observatory of Japan
+JP
+2,780
+University College London
+GB
+4,400
+21
+The University of Texas at Austin
+US
+1,406
+Johns Hopkins University
+US
+2,661
+Princeton University
+US
+4,350
+22
+Cornell University
+US
+1,372
+Max Planck Institute for Astronomy
+DE
+2,641
+Stanford University
+US
+4,286
+23
+Johns Hopkins University
+US
+1,368
+Princeton University
+US
+2,626
+Pennsylvania State University
+US
+4,199
+24
+Princeton University
+US
+1,363
+National Institute for Astrophysics
+IT
+2,572
+National Institute for Astrophysics
+IT
+4,149
+25
+University of Chicago
+US
+1,338
+University of Chicago
+US
+2,547
+Max Planck Society
+DE
+4,138
+26
+Marshall Space Flight Center
+US
+1,301
+Max Planck Institute for Astrophysics
+DE
+2,533
+National Astronomical Observatory of Japan
+JP
+4,131
+27
+University of Illinois Urbana-Champaign
+US
+1,259
+National Astronomical Observatories
+CN
+2,523
+Délégation Paris 7
+FR
+4,019
+28
+University of Oxford
+GB
+1,226
+Stanford University
+US
+2,478
+Lomonosov Moscow State University
+RU
+4,005
+29
+Los Alamos National Laboratory
+US
+1,218
+The University of Texas at Austin
+US
+2,457
+European Southern Observatory
+DE
+3,994
+30
+Osaka University
+JP
+1,193
+University of California, Los Angeles
+US
+2,447
+Peking University
+CN
+3,983
+31
+Max Planck Society
+DE
+1,191
+Laboratory of Space Studies and Instrumentation in Astrophysics
+FR
+2,430
+Kyoto University
+JP
+3,979
+32
+Chinese Academy of Sciences
+CN
+1,181
+Tohoku University
+JP
+2,409
+University of Toronto
+CA
+3,912
+33
+Nagoya University
+JP
+1,160
+Instituto de Astrofísica de Canarias
+ES
+2,402
+National Astronomical Observatories
+CN
+3,881
+34
+University of Colorado Boulder
+US
+1,158
+Universidad Nacional Autónoma de México
+MX
+2,394
+The University of Texas at Austin
+US
+3,879
+35
+Institute of Astronomy
+RU
+1,155
+European Southern Observatory
+DE
+2,384
+Johns Hopkins University
+US
+3,846
+36
+University of Washington
+US
+1,150
+Cornell University
+US
+2,234
+University of La Laguna
+ES
+3,705
+37
+Lawrence Livermore National Laboratory
+US
+1,131
+University College London
+GB
+2,209
+University of California, Santa Cruz
+US
+3,654
+38
+University of Wisconsin–Madison
+US
+1,121
+University of Toronto
+CA
+2,193
+University of California, Los Angeles
+US
+3,627
+39
+The Ohio State University
+US
+1,098
+University of California, Santa Cruz
+US
+2,179
+Ames Research Center
+US
+3,616
+40
+University of California, Los Angeles
+US
+1,055
+Los Alamos National Laboratory
+US
+2,172
+University of Colorado Boulder
+US
+3,568
+41
+Columbia University
+US
+1,030
+Imperial College London
+GB
+2,159
+University of Geneva
+CH
+3,539
+42
+University of Toronto
+CA
+1,024
+University of Wisconsin–Madison
+US
+2,154
+Max Planck Institute for Radio Astronomy
+DE
+3,486
+43
+National Astronomical Observatory of Japan
+JP
+1,014
+The Ohio State University
+US
+2,140
+ETH Zurich
+CH
+3,453
+44
+University of Manchester
+GB
+1,010
+University of Washington
+US
+2,120
+Universidad Nacional Autónoma de México
+MX
+3,449
+45
+University of California, San Diego
+US
+1,005
+University of Colorado Boulder
+US
+2,100
+Tsinghua University
+CN
+3,422
+46
+Max Planck Institute for Astrophysics
+DE
+967
+United States Naval Research Laboratory
+US
+2,096
+Heidelberg University
+DE
+3,418
+47
+Lawrence Berkeley National Laboratory
+US
+952
+Ames Research Center
+US
+2,095
+The Ohio State University
+US
+3,378
+48
+University College London
+GB
+950
+Lomonosov Moscow State University
+RU
+2,087
+University of Washington
+US
+3,353
+49
+University of California, Santa Cruz
+US
+940
+Russian Academy of Sciences
+RU
+2,086
+Institut d’Astrophysique de Paris
+FR
+3,351
+50
+Imperial College London
+GB
+928
+Columbia University
+US
+2,056
+Russian Academy of Sciences
+RU
+3,345
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+111
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+111
+
+14. Astronomy
+14. Astronomy
+14. Astronomy
+Table 14 | The top 100 productive institutions: Astronomy. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Lomonosov Moscow State University
+RU
+918
+Osaka University
+JP
+2,014
+Nagoya University
+JP
+3,338
+52
+National Radio Astronomy Observatory
+US
+912
+University of Hawaii System
+US
+1,963
+Australian National University
+AU
+3,290
+53
+Max Planck Institute for Astronomy
+DE
+886
+Nagoya University
+JP
+1,959
+University of Chicago
+US
+3,263
+54
+University of Hawaii System
+US
+883
+Institut d’Astrophysique de Paris
+FR
+1,956
+Osservatorio Astronomico di Padova
+IT
+3,261
+55
+European Space Research and Technology Centre
+NL
+882
+Max Planck Institute for Radio Astronomy
+DE
+1,868
+University of Science and Technology of China
+CN
+3,232
+56
+Institute of Space and Astronautical Science (ISAS)
+JP
+865
+University of Manchester
+GB
+1,866
+Columbia University
+US
+3,208
+57
+Durham University
+GB
+846
+Osservatorio Astronomico di Padova
+IT
+1,854
+Durham University
+GB
+3,151
+58
+Fermilab
+US
+821
+Leiden University
+NL
+1,843
+University of Edinburgh
+GB
+3,112
+59
+University of Florida
+US
+804
+University of Illinois Urbana-Champaign
+US
+1,836
+University of Manchester
+GB
+3,103
+60
+Tokyo Institute of Technology
+JP
+786
+National Radio Astronomy Observatory
+US
+1,835
+Imperial College London
+GB
+3,044
+61
+European Southern Observatory
+DE
+777
+Institute of Astronomy
+RU
+1,818
+Aix-Marseille University
+FR
+3,039
+62
+Instituto de Astrofísica de Canarias
+ES
+773
+University of Leicester
+GB
+1,791
+University of Sydney
+AU
+3,009
+63
+University of California, Santa Barbara
+US
+773
+European Space Research and Technology Centre
+NL
+1,784
+Lawrence Berkeley National Laboratory
+US
+2,972
+64
+University of Amsterdam
+NL
+771
+University of Padua
+IT
+1,761
+University of Amsterdam
+NL
+2,956
+65
+Tel Aviv University
+IL
+759
+Lawrence Berkeley National Laboratory
+US
+1,760
+Planetary Science Institute
+US
+2,946
+66
+Australian National University
+AU
+757
+European Southern Observatory
+CL
+1,739
+University of Wisconsin–Madison
+US
+2,926
+67
+University of Leicester
+GB
+756
+University of Florida
+US
+1,681
+Sapienza University of Rome
+IT
+2,853
+68
+University of Paris-Sud
+FR
+749
+Durham University
+GB
+1,679
+University of Bologna
+IT
+2,826
+69
+University of Alabama in Huntsville
+US
+748
+Tsinghua University
+CN
+1,656
+Cornell University
+US
+2,823
+70
+National Institute of Standards and Technology
+US
+738
+Tokyo Institute of Technology
+JP
+1,646
+Max Planck Institute for Astrophysics
+DE
+2,798
+71
+Yale University
+US
+735
+Lawrence Livermore National Laboratory
+US
+1,634
+University of Copenhagen
+DK
+2,794
+72
+University of Virginia
+US
+734
+Laboratoire d’Astrophysique de Marseille
+FR
+1,630
+Tohoku University
+JP
+2,786
+73
+European Organization for Nuclear Research
+CH
+730
+University of Bologna
+IT
+1,590
+Harbin Institute of Technology
+CN
+2,756
+74
+University of Sydney
+AU
+729
+University of California, San Diego
+US
+1,574
+University of Liège
+BE
+2,754
+75
+Polish Academy of Sciences
+PL
+722
+Arcetri Astrophysical Observatory
+IT
+1,573
+University of Padua
+IT
+2,747
+76
+Russian Academy of Sciences
+RU
+716
+University of Virginia
+US
+1,540
+University of Southampton
+GB
+2,720
+77
+Max Planck Institute for Radio Astronomy
+DE
+708
+University of Amsterdam
+NL
+1,512
+Stockholm University
+SE
+2,716
+78
+Institut d’Astrophysique de Paris
+FR
+706
+Institute of Space and Astronautical Science (ISAS)
+JP
+1,505
+Yale University
+US
+2,694
+79
+University of Minnesota
+US
+703
+Marshall Space Flight Center
+US
+1,503
+Instituto de Astrofísica de Andalucía
+ES
+2,683
+80
+Universidad Nacional Autónoma de México
+MX
+698
+CEA Saclay
+FR
+1,492
+Université de Toulouse
+FR
+2,676
+81
+Rutherford Appleton Laboratory
+GB
+695
+ETH Zurich
+CH
+1,485
+Laboratoire d’Astrophysique de Marseille
+FR
+2,667
+82
+Langley Research Center
+US
+693
+Australian National University
+AU
+1,483
+Beihang University
+CN
+2,659
+83
+Sapienza University of Rome
+IT
+684
+Fermilab
+US
+1,476
+Harvard University
+US
+2,651
+84
+Universities Space Research Association
+US
+682
+University of Sydney
+AU
+1,474
+Universidade de São Paulo
+BR
+2,643
+85
+Arizona State University
+US
+679
+University of Southampton
+GB
+1,450
+Nanjing University
+CN
+2,641
+86
+Boston University
+US
+678
+Tokyo University of Science
+JP
+1,450
+National Radio Astronomy Observatory
+US
+2,639
+87
+RIKEN
+JP
+676
+Universidade de São Paulo
+BR
+1,436
+University of California, San Diego
+US
+2,624
+88
+University of Padua
+IT
+663
+Osservatorio astronomico di Bologna
+IT
+1,432
+European Southern Observatory
+CL
+2,602
+89
+University of Liège
+BE
+655
+University of Liège
+BE
+1,421
+Laboratory of Space Studies and Instrumentation in Astrophysics
+FR
+2,597
+90
+University of Bonn
+DE
+653
+Leibniz Institute for Astrophysics Potsdam
+DE
+1,416
+German Aerospace Center
+DE
+2,568
+91
+Johnson Space Center
+US
+648
+Instituto de Astrofísica de Andalucía
+ES
+1,416
+Kavli Institute for the Physics and Mathematics of the Universe (IPMU) JP
+2,563
+92
+University of Pennsylvania
+US
+647
+University of California, Santa Barbara
+US
+1,406
+University of Illinois Urbana-Champaign
+US
+2,561
+93
+Queen Mary University of London
+GB
+644
+Yale University
+US
+1,405
+Kavli Institute for Particle Astrophysics and Cosmology
+US
+2,499
+94
+National Astronomical Observatories
+CN
+642
+Sapienza University of Rome
+IT
+1,379
+Max Planck Institute for Solar System Research
+DE
+2,483
+95
+Tokyo University of Science
+JP
+639
+Japan Aerospace Exploration Agency (JAXA)
+JP
+1,373
+KU Leuven
+BE
+2,462
+96
+Leiden University
+NL
+627
+University of Paris-Sud
+FR
+1,363
+Arizona State University
+US
+2,448
+97
+University of British Columbia
+CA
+616
+Brera Astronomical Observatory
+IT
+1,348
+Arcetri Astrophysical Observatory
+IT
+2,432
+98
+Kitt Peak National Observatory
+US
+597
+University of British Columbia
+CA
+1,345
+University of Paris-Saclay
+FR
+2,423
+99
+Universidade de São Paulo
+BR
+588
+University of Edinburgh
+GB
+1,344
+Paris Observatory
+FR
+2,411
+100
+University of Sussex
+GB
+586
+University of Bonn
+DE
+1,335
+Leibniz Institute for Astrophysics Potsdam
+DE
+2,367
+112
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+112
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+15. Pure Mathematics
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+World Map of Pure Mathematics Collaboration | 1971–2020
+Figure 15(a) | The World Map of Pure Mathematics Collaboration. The bubbles represent the top 199 institutions in
+terms of work production, with their sizes proportional to the work volume. The connecting lines depict coauthorship
+relationships among the top 50 institutions.
+114
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+114
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Top 30 Productive Institutions on the World Map: Pure Mathematics | 1991–2020
+Chinese Acad of Sci
+U. Tokyo
+Lomonosov Moscow State U.
+U. Oxford
+Tsinghua U.
+MIT
+UC Berkeley
+Inst Polytechnique de Paris
+U. Michigan
+Stanford U.
+U. Cambridge
+ETH Zurich
+Russian Acad of Sci
+Imperial College London
+U. Toronto
+U. de Sao Paulo
+Inst of Mathematics
+U. Illinois UC
+Kyoto U.
+Penn State U.
+HSE U.
+Zhejiang U.
+Princeton U.
+Peking U.
+Shanghai Jiao Tong U.
+St Petersburg U.
+Sapienza U. Rome
+U. Vienna
+KU Leuven
+Harbin Inst of Tech
+Pure Mathematics [2011−2020]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Chinese Acad of Sci
+U. Tokyo
+Lomonosov Moscow State U.
+Tsinghua U.
+UC Berkeley
+MIT
+U. Michigan
+Kyoto U.
+U. Illinois UC
+Stanford U.
+U. Cambridge
+Zhejiang U.
+Inst of Mathematics
+Penn State U.
+Shanghai Jiao Tong U.
+U. Toronto
+Russian Acad of Sci
+U. Oxford
+Princeton U.
+Peking U.
+Imperial College London
+Departement de Mathematiques
+Rutgers U.
+KU Leuven
+U. Wisconsin−Madison
+U. de Sao Paulo
+U. Maryland
+Georgia Inst of Tech
+Laboratoire de Mathematiques
+Sapienza U. Rome
+Pure Mathematics [2001−2010]
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+U. Tokyo
+UC Berkeley
+Lomonosov Moscow State U.
+U. Cambridge
+Kyoto U.
+MIT
+Penn State U.
+U. Michigan
+U. Illinois UC
+Rutgers U.
+Inst of Mathematics
+U. Maryland
+Princeton U.
+Stanford U.
+UT Austin
+Universite Paris Cite
+Cornell U.
+Departement de Mathematiques
+Tel Aviv U.
+U. Toronto
+Ohio State U.
+Technion − Israel Inst of Tech
+Harvard U.
+U. Oxford
+Osaka U.
+U. Minnesota
+Inst Polytechnique de Paris
+U. Wisconsin−Madison
+Sapienza U. Rome
+Imperial College London
+Pure Mathematics [1991−2000]
+Figure 15(b) | The top 30 productive institutions on the World Map: Pure Mathematics. The bubbles represent the
+top 30 institutions in terms of work production, with their sizes proportional to the work volume.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+115
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+115
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Interregional Pure Mathematics Collaboration | 1991–2020
+135
+72
+66
+47
+24
+97
+28
+18
+10
+10
+25
+24
+22
+44
+25
+31
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2011−2020]       
+128
+24
+26
+27
+12
+57
+19
+11
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[2001−2010]       
+112
+13
+14
+40
+16
+10
+US
+China
+EU27
+UK
+Japan
+Other
+US
+China EU27
+UK
+Japan Other
+[1991−2000]       
+Figure 15(c) | The Interregional Pure Mathematics Collaboration Matrix Diagram. The bubble size represents the
+number of coauthorship relationships for the top 50 institutions in terms of work production. If the number is equal to or
+greater than 10, it is displayed inside the bubble.
+116
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+116
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Interinstitutional Pure Mathematics Collaboration | 2001–2020
+(continued to next page)
+[2011–2020]
+      U. Tokyo      
+      Kyoto U.      
+      U. Bologna      
+      U. Padua      
+      Sapienza U. Rome      
+      Politecnico di Milano      
+      Beihang U.      
+      Tsinghua U.      
+      Peking U.      
+      Shanghai Jiao Tong U.      
+      MPI − Mathematics      
+      Harbin Inst of Tech      
+      Zhejiang U.      
+      Nat'l U. Singapore      
+      U. Cambridge      
+      U. Oxford      
+      Imperial College London      
+      U. Waterloo      
+      U. Toronto      
+      U. British Columbia      
+      Ohio State U.      
+      U. Illinois UC      
+      Penn State U.      
+      Texas A&M U.      
+      St Petersburg U.      
+      HSE U.      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      Chinese Acad of Sci      
+      U. Sci & Tech of China      
+      Princeton U.      
+      Rutgers U.      
+      MIT      
+      Harvard U.      
+      U. Washington      
+      UC Berkeley      
+      Stanford U.      
+      U. Michigan      
+      U. Wisconsin−Madison      
+      UC San Diego      
+      UT Austin      
+      Columbia U.      
+      Georgia Inst of Tech      
+      Tech U. Munich      
+      KU Leuven      
+      ETH Zurich      
+      U. Vienna      
+      U. de Sao Paulo      
+      Inst of Mathematics      
+      Laboratoire de Mathematiques      
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/01111rn36
+https://ror.org/00240q980
+https://ror.org/02be6w209
+https://ror.org/01nffqt88
+https://ror.org/00wk2mp56
+https://ror.org/03cve4549
+https://ror.org/02v51f717
+https://ror.org/0220qvk04
+https://ror.org/02dh8ja68
+https://ror.org/01yqg2h08
+https://ror.org/00a2xv884
+https://ror.org/01tgyzw49
+https://ror.org/013meh722
+https://ror.org/052gg0110
+https://ror.org/041kmwe10
+https://ror.org/01aff2v68
+https://ror.org/03dbr7087
+https://ror.org/03rmrcq20
+https://ror.org/00rs6vg23
+https://ror.org/047426m28
+https://ror.org/04p491231
+https://ror.org/01f5ytq51
+https://ror.org/01zkghx44
+https://ror.org/023znxa73
+https://ror.org/055f7t516
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/034t30j35
+https://ror.org/04c4dkn09
+https://ror.org/00hx57361
+https://ror.org/05vt9qd57
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00cvxb145
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/00jmfr291
+https://ror.org/01y2jtd41
+https://ror.org/0168r3w48
+https://ror.org/00hj54h04
+https://ror.org/00hj8s172
+https://ror.org/02kkvpp62
+https://ror.org/05f950310
+https://ror.org/05a28rw58
+https://ror.org/03prydq77
+https://ror.org/036rp1748
+https://ror.org/04hrrh248
+https://ror.org/05sd5r855
+  [JP]  
+  [JP]  
+  [IT]  
+  [IT]  
+  [IT]  
+  [IT]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [DE]  
+  [CN]  
+  [CN]  
+  [SG]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [CA]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [RU]  
+  [CN]  
+  [CN]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [DE]  
+  [BE]  
+  [CH]  
+  [AT]  
+  [BR]  
+  [PL]  
+  [FR]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[2001–2010]
+      U. Oxford      
+      Tel Aviv U.      
+      Technion − Israel Inst of Tech      
+      UT Austin      
+      Texas A&M U.      
+      Penn State U.      
+      U. Michigan      
+      U. Illinois UC      
+      Shanghai Jiao Tong U.      
+      Harbin Inst of Tech      
+      Zhejiang U.      
+      Nat'l U. Singapore      
+      KU Leuven      
+      INRIA      
+      ETH Zurich      
+      Inst of Mathematics      
+      Ohio State U.      
+      U. de Sao Paulo      
+      Wuhan U.      
+      MPI − Mathematics      
+      U. Toronto      
+      U. Waterloo      
+      U. Washington      
+      Cornell U.      
+      Tokyo Inst of Tech      
+      Tohoku U.      
+      Osaka U.      
+      U. Tokyo      
+      Kyoto U.      
+      Beijing Normal U.      
+      Tsinghua U.      
+      Chinese Acad of Sci      
+      Peking U.      
+      Departement de Mathematiques    
+      Laboratoire de Mathematiques      
+      UCLA      
+      UC Berkeley      
+      Stanford U.      
+      U. Wisconsin−Madison      
+      MIT      
+      Princeton U.      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      Imperial College London      
+      U. Cambridge      
+      Sapienza U. Rome      
+      Rutgers U.      
+      U. Maryland      
+      Georgia Inst of Tech      
+      U. Minnesota      
+https://ror.org/052gg0110
+https://ror.org/04mhzgx49
+https://ror.org/03qryx823
+https://ror.org/00hj54h04
+https://ror.org/01f5ytq51
+https://ror.org/04p491231
+https://ror.org/00jmfr291
+https://ror.org/047426m28
+https://ror.org/0220qvk04
+https://ror.org/01yqg2h08
+https://ror.org/00a2xv884
+https://ror.org/01tgyzw49
+https://ror.org/05f950310
+https://ror.org/02kvxyf05
+https://ror.org/05a28rw58
+https://ror.org/04hrrh248
+https://ror.org/00rs6vg23
+https://ror.org/036rp1748
+https://ror.org/033vjfk17
+https://ror.org/02dh8ja68
+https://ror.org/03dbr7087
+https://ror.org/01aff2v68
+https://ror.org/00cvxb145
+https://ror.org/05bnh6r87
+https://ror.org/02be6w209
+https://ror.org/0112mx960
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/022k4wk35
+https://ror.org/03cve4549
+https://ror.org/034t30j35
+https://ror.org/02v51f717
+https://ror.org/03ab0zs98
+https://ror.org/05sd5r855
+https://ror.org/046rm7j60
+https://ror.org/01an7q238
+https://ror.org/00f54p054
+https://ror.org/01y2jtd41
+https://ror.org/042nb2s44
+https://ror.org/00hx57361
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/041kmwe10
+https://ror.org/013meh722
+https://ror.org/05vt9qd57
+https://ror.org/047s2c258
+https://ror.org/01zkghx44
+https://ror.org/017zqws13
+  [GB]  
+  [IL]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [SG]  
+  [BE]  
+  [FR]  
+  [CH]  
+  [PL]  
+  [US]  
+  [BR]  
+  [CN]  
+  [DE]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [CN]  
+  [FR]  
+  [FR]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [GB]  
+  [GB]  
+  [IT]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 15(d) | The Interinstitutional Pure Mathematics Collaboration Dendrogram. The top 50 institutions in terms
+of work production, indicated by the circularised bar graphs, are displayed.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+117
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+117
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Interinstitutional Pure Mathematics Collaboration | 1971–2000
+(continued from previous page)
+[1991–2000]
+      U. Maryland      
+      Tel Aviv U.      
+      Stanford U.      
+      U. Wisconsin−Madison      
+      Technion − Israel Inst of Tech      
+      U. Minnesota      
+      UT Austin      
+      Texas A&M U.      
+      Eur Org for Nucl Res      
+      UCLA      
+      UC Santa Barbara      
+      KU Leuven      
+      U. Amsterdam      
+      U. Toronto      
+      U. Waterloo      
+      Departement de Mathematiques      
+      Sapienza U. Rome      
+      Czech Acad of Sci, Inst of Mathematics      
+      Penn State U.      
+      Ohio State U.      
+      U. Florida      
+      U. Illinois UC      
+      Nat'l U. Singapore      
+      U. Chicago      
+      U. Warsaw      
+      Inst of Mathematics      
+      Polish Acad of Sci      
+      Universite Paris Cite      
+      U. Paris−Sud      
+      Tohoku U.      
+      Osaka U.      
+      U. Tokyo      
+      Kyoto U.      
+      Rutgers U.      
+      Hebrew U. Jerusalem      
+      MIT      
+      Harvard U.      
+      Princeton U.      
+      Cornell U.      
+      Lomonosov Moscow State U.      
+      Russian Acad of Sci      
+      U. Oxford      
+      U. Cambridge      
+      Imperial College London      
+      Purdue U. West Lafayette      
+      Yale U.      
+      UC Berkeley      
+      Caltechy      
+      U. Michigan      
+      UC San Diego      
+https://ror.org/047s2c258
+https://ror.org/04mhzgx49
+https://ror.org/00f54p054
+https://ror.org/01y2jtd41
+https://ror.org/03qryx823
+https://ror.org/017zqws13
+https://ror.org/00hj54h04
+https://ror.org/01f5ytq51
+https://ror.org/01ggx4157
+https://ror.org/046rm7j60
+https://ror.org/02t274463
+https://ror.org/05f950310
+https://ror.org/04dkp9463
+https://ror.org/03dbr7087
+https://ror.org/01aff2v68
+https://ror.org/03ab0zs98
+https://ror.org/02be6w209
+https://ror.org/02tv1yf50
+https://ror.org/04p491231
+https://ror.org/00rs6vg23
+https://ror.org/02y3ad647
+https://ror.org/047426m28
+https://ror.org/01tgyzw49
+https://ror.org/024mw5h28
+https://ror.org/03v76x132
+https://ror.org/039bjqg32
+https://ror.org/04hrrh248
+https://ror.org/01dr6c206
+https://ror.org/05f82e368
+https://ror.org/028rypz17
+https://ror.org/01dq60k83
+https://ror.org/035t8zc32
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/05vt9qd57
+https://ror.org/03qxff017
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00hx57361
+https://ror.org/05bnh6r87
+https://ror.org/010pmpe69
+https://ror.org/05qrfxd25
+https://ror.org/052gg0110
+https://ror.org/013meh722
+https://ror.org/041kmwe10
+https://ror.org/02dqehb95
+https://ror.org/01an7q238
+https://ror.org/05dxps055
+https://ror.org/00jmfr291
+https://ror.org/0168r3w48
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [CH]  
+  [US]  
+  [US]  
+  [BE]  
+  [NL]  
+  [CA]  
+  [CA]  
+  [FR]  
+  [IT]  
+  [CZ]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [SG]  
+  [US]  
+  [PL]  
+  [PL]  
+  [PL]  
+  [FR]  
+  [FR]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [JP]  
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [RU]  
+  [RU]  
+  [GB]  
+  [GB]  
+  [GB]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+[1971–1990]
+      State U. New York      
+      Stony Brook U.      
+      U. Cambridge      
+      Applied Mathematics (US)      
+      Nagoya U.      
+      Mathematical Inst      
+      U. Tokyo      
+      Kyoto U.      
+      U. Minnesota      
+      U. Toronto      
+      U. Waterloo      
+      Penn State U.      
+      U. Florida      
+      Ohio State U.      
+      U. Alberta      
+      Australian Nat'l U.      
+      U. Bonn      
+      Eur Org for Nucl Res      
+      Imperial College London      
+      Universite Paris Cite      
+      U. Wisconsin−Madison      
+      U. Michigan      
+      Inst of Mathematics      
+      Lomonosov Moscow State U.      
+      Purdue U. West Lafayette      
+      Osaka U.      
+      Princeton U.      
+      Inst for Adv Study      
+      Tel Aviv U.      
+      Technion − Israel Inst of Tech      
+      U. Maryland      
+      UT Austin      
+      MIT      
+      Harvard U.      
+      Stanford U.      
+      U. Southern California      
+      UC Berkeley      
+      Caltechy      
+      Rutgers U.      
+      Hebrew U. Jerusalem      
+      Columbia U.      
+      Yale U.      
+      Cornell U.      
+      Los Alamos NL      
+      UC San Diego      
+      U. Illinois UC      
+      UC Santa Barbara      
+      UCLA      
+      U. Washington      
+      U. Chicago      
+https://ror.org/01q1z8k08
+https://ror.org/05qghxh33
+https://ror.org/013meh722
+https://ror.org/03seew607
+https://ror.org/04chrp450
+https://ror.org/02fhy7464
+https://ror.org/057zh3y96
+https://ror.org/02kpeqv85
+https://ror.org/017zqws13
+https://ror.org/03dbr7087
+https://ror.org/01aff2v68
+https://ror.org/04p491231
+https://ror.org/02y3ad647
+https://ror.org/00rs6vg23
+https://ror.org/0160cpw27
+https://ror.org/019wvm592
+https://ror.org/041nas322
+https://ror.org/01ggx4157
+https://ror.org/041kmwe10
+https://ror.org/05f82e368
+https://ror.org/01y2jtd41
+https://ror.org/00jmfr291
+https://ror.org/04hrrh248
+https://ror.org/010pmpe69
+https://ror.org/02dqehb95
+https://ror.org/035t8zc32
+https://ror.org/00hx57361
+https://ror.org/00f809463
+https://ror.org/04mhzgx49
+https://ror.org/03qryx823
+https://ror.org/047s2c258
+https://ror.org/00hj54h04
+https://ror.org/042nb2s44
+https://ror.org/03vek6s52
+https://ror.org/00f54p054
+https://ror.org/03taz7m60
+https://ror.org/01an7q238
+https://ror.org/05dxps055
+https://ror.org/05vt9qd57
+https://ror.org/03qxff017
+https://ror.org/00hj8s172
+https://ror.org/03v76x132
+https://ror.org/05bnh6r87
+https://ror.org/01e41cf67
+https://ror.org/0168r3w48
+https://ror.org/047426m28
+https://ror.org/02t274463
+https://ror.org/046rm7j60
+https://ror.org/00cvxb145
+https://ror.org/024mw5h28
+  [US]  
+  [US]  
+  [GB]  
+  [US]  
+  [JP]  
+  [SK]  
+  [JP]  
+  [JP]  
+  [US]  
+  [CA]  
+  [CA]  
+  [US]  
+  [US]  
+  [US]  
+  [CA]  
+  [AU]  
+  [DE]  
+  [CH]  
+  [GB]  
+  [FR]  
+  [US]  
+  [US]  
+  [PL]  
+  [RU]  
+  [US]  
+  [JP]  
+  [US]  
+  [US]  
+  [IL]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [IL]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+  [US]  
+Figure 15(d) | The Interinstitutional Pure Mathematics Collaboration Dendrogram. (Cont.)
+118
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+118
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Table 15 | The top 100 productive institutions: Pure Mathematics.
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+1
+The University of Tokyo
+JP
+1,604
+Chinese Academy of Sciences
+CN
+2,881
+Chinese Academy of Sciences
+CN
+5,153
+2
+University of California, Berkeley
+US
+1,557
+The University of Tokyo
+JP
+2,716
+The University of Tokyo
+JP
+3,541
+3
+Lomonosov Moscow State University
+RU
+1,458
+Lomonosov Moscow State University
+RU
+2,642
+Lomonosov Moscow State University
+RU
+3,490
+4
+University of Cambridge
+GB
+1,399
+Tsinghua University
+CN
+2,401
+University of Oxford
+GB
+3,476
+5
+Kyoto University
+JP
+1,262
+University of California, Berkeley
+US
+2,243
+Tsinghua University
+CN
+3,440
+6
+Massachusetts Institute of Technology
+US
+1,248
+Massachusetts Institute of Technology
+US
+2,051
+Massachusetts Institute of Technology
+US
+3,333
+7
+Pennsylvania State University
+US
+1,171
+University of Michigan–Ann Arbor
+US
+2,038
+University of California, Berkeley
+US
+3,160
+8
+University of Michigan–Ann Arbor
+US
+1,144
+Kyoto University
+JP
+2,012
+University of Michigan–Ann Arbor
+US
+2,914
+9
+University of Illinois Urbana-Champaign
+US
+1,141
+University of Illinois Urbana-Champaign
+US
+2,000
+Stanford University
+US
+2,883
+10
+Rutgers, The State University of New Jersey
+US
+1,108
+Stanford University
+US
+1,844
+University of Cambridge
+GB
+2,819
+11
+Institute of Mathematics
+PL
+1,071
+University of Cambridge
+GB
+1,830
+ETH Zurich
+CH
+2,777
+12
+University of Maryland, College Park
+US
+1,055
+Zhejiang University
+CN
+1,813
+Russian Academy of Sciences
+RU
+2,744
+13
+Princeton University
+US
+1,045
+Institute of Mathematics
+PL
+1,803
+Imperial College London
+GB
+2,733
+14
+Stanford University
+US
+1,043
+Pennsylvania State University
+US
+1,785
+University of Toronto
+CA
+2,655
+15
+The University of Texas at Austin
+US
+1,012
+Shanghai Jiao Tong University
+CN
+1,724
+Universidade de São Paulo
+BR
+2,642
+16
+Cornell University
+US
+974
+University of Toronto
+CA
+1,704
+Institute of Mathematics
+PL
+2,640
+17
+Département de Mathématiques
+FR
+968
+Russian Academy of Sciences
+RU
+1,597
+University of Illinois Urbana-Champaign
+US
+2,568
+18
+Tel Aviv University
+IL
+965
+University of Oxford
+GB
+1,580
+Kyoto University
+JP
+2,468
+19
+University of Toronto
+CA
+942
+Princeton University
+US
+1,580
+Pennsylvania State University
+US
+2,416
+20
+The Ohio State University
+US
+936
+Peking University
+CN
+1,544
+National Research University Higher School of Economics
+RU
+2,415
+21
+Technion – Israel Institute of Technology
+IL
+912
+Imperial College London
+GB
+1,505
+Zhejiang University
+CN
+2,339
+22
+Université Paris Cité
+FR
+911
+Rutgers, The State University of New Jersey
+US
+1,503
+Princeton University
+US
+2,330
+23
+Harvard University
+US
+873
+Département de Mathématiques
+FR
+1,494
+Peking University
+CN
+2,290
+24
+University of Oxford
+GB
+870
+KU Leuven
+BE
+1,464
+Shanghai Jiao Tong University
+CN
+2,266
+25
+Osaka University
+JP
+857
+University of Wisconsin–Madison
+US
+1,463
+St Petersburg University
+RU
+2,236
+26
+University of Minnesota
+US
+849
+Universidade de São Paulo
+BR
+1,459
+Sapienza University of Rome
+IT
+2,231
+27
+Sapienza University of Rome
+IT
+804
+University of Maryland, College Park
+US
+1,420
+University of Vienna
+AT
+2,221
+28
+University of Wisconsin–Madison
+US
+804
+Georgia Institute of Technology
+US
+1,416
+KU Leuven
+BE
+2,183
+29
+Imperial College London
+GB
+799
+Laboratoire de Mathématiques
+FR
+1,410
+Harbin Institute of Technology
+CN
+2,167
+30
+KU Leuven
+BE
+798
+Sapienza University of Rome
+IT
+1,395
+The University of Texas at Austin
+US
+2,113
+31
+Hebrew University of Jerusalem
+IL
+798
+The University of Texas at Austin
+US
+1,392
+Texas A&M University
+US
+2,083
+32
+University of California, Los Angeles
+US
+764
+French Institute for Research in Computer Science and Automation
+FR
+1,383
+Laboratoire de Mathématiques
+FR
+2,082
+33
+Czech Academy of Sciences, Institute of Mathematics
+CZ
+755
+Tohoku University
+JP
+1,382
+University of Science and Technology of China
+CN
+2,029
+34
+University of Chicago
+US
+754
+Osaka University
+JP
+1,364
+Columbia University
+US
+2,029
+35
+University of Amsterdam
+NL
+751
+Texas A&M University
+US
+1,335
+Harvard University
+US
+2,001
+36
+European Organization for Nuclear Research
+CH
+748
+National University of Singapore
+SG
+1,322
+University of Waterloo
+CA
+1,958
+37
+University of California, Santa Barbara
+US
+744
+Harbin Institute of Technology
+CN
+1,311
+Georgia Institute of Technology
+US
+1,941
+38
+Texas A&M University
+US
+741
+Wuhan University
+CN
+1,311
+Rutgers, The State University of New Jersey
+US
+1,930
+39
+National University of Singapore
+SG
+726
+The Ohio State University
+US
+1,311
+University of British Columbia
+CA
+1,903
+40
+University of Paris-Sud
+FR
+709
+University of Waterloo
+CA
+1,279
+Technical University of Munich
+DE
+1,869
+41
+Purdue University West Lafayette
+US
+699
+Tokyo Institute of Technology
+JP
+1,274
+University of Washington
+US
+1,863
+42
+University of California, San Diego
+US
+691
+University of California, Los Angeles
+US
+1,265
+Max Planck Institute for Mathematics
+DE
+1,861
+43
+California Institute of Technology
+US
+690
+Max Planck Institute for Mathematics
+DE
+1,255
+University of Wisconsin–Madison
+US
+1,861
+44
+University of Warsaw
+PL
+689
+University of Washington
+US
+1,213
+The Ohio State University
+US
+1,860
+45
+University of Waterloo
+CA
+685
+Tel Aviv University
+IL
+1,208
+Politecnico di Milano
+IT
+1,844
+46
+Yale University
+US
+683
+Technion – Israel Institute of Technology
+IL
+1,202
+National University of Singapore
+SG
+1,843
+47
+Russian Academy of Sciences
+RU
+681
+ETH Zurich
+CH
+1,201
+Beihang University
+CN
+1,841
+48
+Tohoku University
+JP
+675
+Beĳing Normal University
+CN
+1,195
+University of California, San Diego
+US
+1,826
+49
+Polish Academy of Sciences
+PL
+665
+University of Minnesota
+US
+1,193
+University of Bologna
+IT
+1,817
+50
+University of Florida
+US
+659
+Cornell University
+US
+1,191
+University of Padua
+IT
+1,815
+(continued to next page)
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+119
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+119
+
+15. Pure Mathematics
+15. Pure Mathematics
+15. Pure Mathematics
+Table 15 | The top 100 productive institutions: Pure Mathematics. (Cont.)
+1991–2000
+No. Works
+2001–2010
+No. Works
+2011–2020
+No. Works
+51
+Stony Brook University
+US
+656
+Steklov Mathematical Institute
+RU
+1,183
+Institut de Mathématiques de Jussieu
+FR
+1,795
+52
+McGill University
+CA
+641
+University of Science and Technology of China
+CN
+1,179
+Steklov Mathematical Institute
+RU
+1,785
+53
+University of Washington
+US
+636
+Fudan University
+CN
+1,178
+University of California, Los Angeles
+US
+1,785
+54
+University of Manchester
+GB
+617
+California Institute of Technology
+US
+1,175
+Wuhan University
+CN
+1,783
+55
+University of Alberta
+CA
+615
+Columbia University
+US
+1,165
+King Abdulaziz University
+SA
+1,766
+56
+University of Pennsylvania
+US
+611
+University of Paris-Sud
+FR
+1,163
+École Polytechnique Fédérale de Lausanne
+CH
+1,763
+57
+Nagoya University
+JP
+609
+Harvard University
+US
+1,152
+University of Chinese Academy of Sciences
+CN
+1,761
+58
+Columbia University
+US
+605
+University of California, San Diego
+US
+1,148
+University of Minnesota
+US
+1,743
+59
+ETH Zurich
+CH
+602
+University of Chicago
+US
+1,148
+University College London
+GB
+1,739
+60
+Kyushu University
+JP
+601
+University of Bologna
+IT
+1,142
+University of Lisbon
+PT
+1,729
+61
+Tokyo Institute of Technology
+JP
+598
+Kyushu University
+JP
+1,139
+University of Maryland, College Park
+US
+1,721
+62
+Delft University of Technology
+NL
+596
+University of Pisa
+IT
+1,099
+Beĳing Institute of Technology
+CN
+1,711
+63
+Utrecht University
+NL
+596
+Nanjing University
+CN
+1,085
+Universidad Nacional Autónoma de México
+MX
+1,711
+64
+Los Alamos National Laboratory
+US
+591
+Delft University of Technology
+NL
+1,080
+Fudan University
+CN
+1,707
+65
+Chinese Academy of Sciences
+CN
+586
+University of Florida
+US
+1,077
+Tel Aviv University
+IL
+1,686
+66
+University of Pisa
+IT
+575
+University of Alberta
+CA
+1,071
+University of Warsaw
+PL
+1,677
+67
+University of Edinburgh
+GB
+574
+St Petersburg University
+RU
+1,055
+University of Chicago
+US
+1,677
+68
+University of Southern California
+US
+570
+Ghent University
+BE
+1,054
+University of Warwick
+GB
+1,674
+69
+University of Iowa
+US
+564
+University of Manchester
+GB
+1,053
+Polish Academy of Sciences
+PL
+1,670
+70
+Eötvös Loránd University
+HU
+562
+University of Bonn
+DE
+1,045
+UNSW Sydney
+AU
+1,653
+71
+University of British Columbia
+CA
+561
+École Polytechnique Fédérale de Lausanne
+CH
+1,042
+Delft University of Technology
+NL
+1,640
+72
+Steklov Mathematical Institute
+RU
+561
+Dalian University of Technology
+CN
+1,040
+University of Granada
+ES
+1,629
+73
+University of Arizona
+US
+560
+University of Granada
+ES
+1,038
+Département de Mathématiques
+FR
+1,617
+74
+University of Bonn
+DE
+559
+University of California, Santa Barbara
+US
+1,036
+Tohoku University
+JP
+1,615
+75
+Michigan State University
+US
+558
+Carnegie Mellon University
+US
+1,015
+Carnegie Mellon University
+US
+1,603
+76
+Australian National University
+AU
+551
+Universidad Nacional Autónoma de México
+MX
+1,011
+French Institute for Research in Computer Science and Automation
+FR
+1,601
+77
+State University of New York
+US
+550
+Michigan State University
+US
+1,010
+Technion – Israel Institute of Technology
+IL
+1,600
+78
+Universidade de São Paulo
+BR
+548
+University of British Columbia
+CA
+1,009
+Ghent University
+BE
+1,592
+79
+Georgia Institute of Technology
+US
+544
+Universidad Complutense de Madrid
+ES
+1,000
+Tongji University
+CN
+1,590
+80
+Carnegie Mellon University
+US
+542
+Hebrew University of Jerusalem
+IL
+1,000
+University of Pennsylvania
+US
+1,587
+81
+University of Warwick
+GB
+537
+University of Warsaw
+PL
+1,000
+University of Amsterdam
+NL
+1,569
+82
+Bielefeld University
+DE
+536
+University of Edinburgh
+GB
+986
+Cornell University
+US
+1,557
+83
+Weizmann Institute of Science
+IL
+526
+Polish Academy of Sciences
+PL
+984
+Dalian University of Technology
+CN
+1,556
+84
+China Center of Advanced Science and Technology
+CN
+524
+Huazhong University of Science and Technology
+CN
+982
+University of Bonn
+DE
+1,553
+85
+Ruhr University Bochum
+DE
+524
+University of Amsterdam
+NL
+982
+Osaka University
+JP
+1,548
+86
+Hokkaido University
+JP
+523
+Xi’an Jiaotong University
+CN
+972
+University of Sydney
+AU
+1,543
+87
+Universidad Complutense de Madrid
+ES
+521
+Purdue University West Lafayette
+US
+968
+Nanyang Technological University
+SG
+1,539
+88
+Institute for Advanced Study
+US
+519
+Institut de Mathématiques de Jussieu
+FR
+966
+California Institute of Technology
+US
+1,536
+89
+University of Milan
+IT
+515
+TU Wien
+AT
+962
+Beĳing Normal University
+CN
+1,533
+90
+TU Wien
+AT
+514
+Xiaomi (China)
+CN
+958
+Michigan State University
+US
+1,530
+91
+University of Stuttgart
+DE
+514
+University of Pennsylvania
+US
+958
+Consejo Nacional de Investigaciones Científicas y Técnicas
+AR
+1,527
+92
+École Polytechnique
+FR
+511
+Seoul National University
+KR
+954
+Shandong University
+CN
+1,521
+93
+Technical University of Munich
+DE
+510
+Nagoya University
+JP
+949
+University of Edinburgh
+GB
+1,512
+94
+Ben-Gurion University of the Negev
+IL
+509
+Max Planck Society
+DE
+948
+TU Wien
+AT
+1,508
+95
+Boston University
+US
+507
+Sichuan University
+CN
+945
+University of Alberta
+CA
+1,504
+96
+Max Planck Institute for Mathematics
+DE
+504
+Ben-Gurion University of the Negev
+IL
+936
+Huazhong University of Science and Technology
+CN
+1,504
+97
+Iowa State University
+US
+501
+Beĳing Institute of Technology
+CN
+927
+University of Electronic Science and Technology of China
+CN
+1,499
+98
+Peking University
+CN
+500
+University of Vienna
+AT
+926
+University of Manchester
+GB
+1,497
+99
+Applied Mathematics (United States)
+US
+500
+University of Padua
+IT
+911
+University of Paris-Sud
+FR
+1,487
+100
+French Institute for Research in Computer Science and Automation
+FR
+499
+Yale University
+US
+908
+McGill University
+CA
+1,485
+120
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+120
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+
+REFERENCES
+REFERENCES
+REFERENCES
+Acknowledgements.
+The contents of this booklet solely reflect the views of the author and should not be interpreted
+as necessarily representing the official policies or endorsements, either expressed or implied, of any of the organisations
+with which the author is currently or has been affiliated in the past.
+Disclaimer.
+The author does not assume any legal responsibility for errors, omissions, or claims, nor does the author
+offer any warranty, express or implied, concerning the information present herein and in the associated data repository.
+Additionally, the author is not liable should this report be utilised for a purpose other than its intended use.
+Author Contributions.
+Keisuke Okamura: Conceptualisation, Methodology, Software, Validation, Formal analysis,
+Investigation, Data curation, Writing (Original Draft, Review & Editing), Visualisation, Project administration.
+Competing Interests.
+The author has no competing interests.
+Funding Information.
+The author did not receive any funding for this research.
+Data Availability.
+The datasets and figures generated and/or analysed during this study can be found in the Zenodo
+repository at https://doi.org/10.5281/zenodo.8266166.
+References
+[1] Jason Priem, Heather Piwowar, and Richard Orr. (2022). OpenAlex: A fully-open index of scholarly works, authors,
+venues, institutions, and concepts. In From Global Indicators to Local Applications. https://doi.org/10.48550/arXiv
+.2205.01833.
+[2] Keisuke Okamura. (2023). A half-century of global collaboration in science and the ‘Shrinking World’. Accepted
+for publication in Quantitative Science Studies. https://doi.org/10.48550/arXiv.2211.04429.
+[3] Bec Crew. (2022). Collaboration drives success for leading science nations: The ‘Big 5’ countries in the Nature
+Index share a passion for partnership as linchpins of the global research landscape. Nature, 603:S5.
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+121
+Atlas of Science Collaboration (v1; August 2023) | https://doi.org/10.5281/zenodo.8266166
+121

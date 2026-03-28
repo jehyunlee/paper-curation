@@ -92,27 +92,55 @@ def try_unpaywall(doi):
 
 # ── Main pipeline ─────────────────────────────────────────────────────────────
 
-INPUT_PATH  = r"C:\Users\jehyu\Arbeitplatz\paper-curation\ai4s\_search_results.json"
-OUTPUT_PATH = r"C:\Users\jehyu\Arbeitplatz\paper-curation\ai4s\_zotero_results.json"
+INPUT_PATH  = r"C:\Users\jehyu\Arbeitplatz\paper-curation\ai4s\_refs_to_add.json"
+OUTPUT_PATH = r"C:\Users\jehyu\Arbeitplatz\paper-curation\ai4s\_refs_zotero_results.json"
 
 with open(INPUT_PATH, encoding="utf-8") as f:
     data = json.load(f)
-papers = data["papers"]
+# _refs_to_add.json is a plain list of papers (no wrapper dict)
+if isinstance(data, list):
+    papers = data
+else:
+    papers = data.get("papers", data)
 print(f"Loaded {len(papers)} papers\n")
 
-results = {"registered": [], "already_exists": [], "failed": [], "manual_download": []}
+# Load existing results to resume from where we left off
+if os.path.exists(OUTPUT_PATH):
+    with open(OUTPUT_PATH, encoding="utf-8") as f:
+        results = json.load(f)
+    # Build set of titles already handled (registered + already_exists + manual_download)
+    done_titles = set()
+    for r in results["registered"]:
+        done_titles.add(r["title"].lower().strip())
+    for r in results["already_exists"]:
+        done_titles.add(r["title"].lower().strip())
+    for r in results["manual_download"]:
+        done_titles.add(r["title"].lower().strip())
+    # Clear failed list - we'll retry those
+    results["failed"] = []
+    print(f"Resuming: {len(done_titles)} already done, retrying failed papers\n")
+else:
+    results = {"registered": [], "already_exists": [], "failed": [], "manual_download": []}
+    done_titles = set()
+
+consecutive_failures = 0
 
 for idx, paper in enumerate(papers):
     title   = paper["title"]
-    arxiv_id= paper.get("arxiv_id", "")
-    doi     = paper.get("doi", "")
-    pdf_url = paper.get("pdf_url", "")
+    arxiv_id= paper.get("arxiv_id", "") or ""
+    doi     = paper.get("doi", "") or ""
+    pdf_url = paper.get("pdf_url", "") or ""
     authors = paper.get("authors", [])
-    abstract= paper.get("abstract", "")
-    date    = paper.get("date", "")
+    abstract= paper.get("abstract", "") or ""
+    date    = str(paper.get("date", "") or paper.get("year", "") or "")
     category= paper.get("category", "AI4S")
 
     print(f"\n[{idx+1}/{len(papers)}] {title[:70]}")
+
+    # Skip papers already successfully processed in a previous run
+    if title.lower().strip() in done_titles:
+        print(f"  [SKIP] Already processed in previous run")
+        continue
 
     # ── Step 1: Duplicate check ──────────────────────────────────────────────
     query = title[:40]
@@ -199,9 +227,14 @@ for idx, paper in enumerate(papers):
         item["repository"]= "arXiv"
     if doi:
         item["DOI"] = doi
-    venue = paper.get("venue", "")
-    if venue and item_type == "journalArticle":
-        item["publicationTitle"] = venue
+    venue = paper.get("venue", "") or ""
+    if venue:
+        if item_type == "journalArticle":
+            item["publicationTitle"] = venue
+        else:
+            # preprint uses 'repository' for venue; don't overwrite arXiv
+            if not item.get("repository"):
+                item["repository"] = venue
 
     try:
         resp = zotero_post("/items", [item])
@@ -209,6 +242,10 @@ for idx, paper in enumerate(papers):
     except Exception as e:
         print(f"  [ERROR] Zotero POST failed: {e}")
         results["failed"].append({"title": title, "error": f"Zotero POST: {e}"})
+        consecutive_failures += 1
+        if consecutive_failures >= 5:
+            print("\n[ABORT] 5 consecutive failures - stopping")
+            break
         continue
 
     # Extract parent key
@@ -249,6 +286,7 @@ for idx, paper in enumerate(papers):
             print(f"  [WARN] Attachment error: {e}")
 
     # ── Record result ────────────────────────────────────────────────────────
+    consecutive_failures = 0
     results["registered"].append({
         "title":    title,
         "key":      parent_key,
@@ -260,8 +298,11 @@ for idx, paper in enumerate(papers):
     })
 
 # ── Save output ───────────────────────────────────────────────────────────────
-with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-    json.dump(results, f, ensure_ascii=False, indent=2)
+def save_results():
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+
+save_results()
 
 print(f"\n{'='*60}")
 print(f"DONE")
