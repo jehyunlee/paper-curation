@@ -21,9 +21,9 @@ Virtual Lab은 LLM(GPT-4o) 기반 멀티 에이전트 시스템과 인간 연구
 
 ## Achievement
 
-![Figure 5](figures/fig5.png)
+![Figure 4](figures/fig4.png)
 
-*Fig. 5 | 나노바디 실험 검증 결과. (a) 발현량 히스토그램. (b-e) Wuhan/BA.2/JN.1/KP.3 RBD 결합 프로파일링 ELISA 결과.*
+*Fig. 4 | 나노바디 실험 검증 결과. (a) 발현량 히스토그램. (b) ELISA 결합 프로파일. (c-d) 최신 변이체 결합 후보의 구조 모델링.*
 
 1. **자기설계 파이프라인**: AI 에이전트가 ESM(단백질 언어 모델) + AlphaFold-Multimer(구조 예측) + Rosetta(결합 에너지)를 통합한 반복적 돌연변이 최적화 워크플로우를 자체 설계. 가중 점수 공식 WS = 0.2*(ESM LLR) + 0.5*(AF ipLDDT) - 0.3*(RS dG)도 에이전트가 결정
 2. **뛰어난 발현 성공률**: 92개 돌연변이 나노바디 중 93.5%(86/92)가 >5 mg/L 발현량, 38%(35/92)가 >25 mg/L의 높은 발현량을 시현
@@ -39,24 +39,20 @@ Virtual Lab은 LLM(GPT-4o) 기반 멀티 에이전트 시스템과 인간 연구
 
 ![Figure 3](figures/fig3.png)
 
-*Fig. 3 | Nb21 나노바디 분석. 각 라운드의 ESM LLR, AlphaFold ipLDDT, Rosetta dG 점수와 가중 점수(WS) 기반 후보 선택 과정.*
+*Fig. 3 | Nb21 나노바디 분석. 각 라운드의 ESM LLR, AlphaFold ipLDDT, Rosetta dG 점수 진화와 가중 점수(WS) 기반 후보 선택 과정.*
 
 - **에이전트 아키텍처**: GPT-4o 기반. PI(AI for research 전문) + Scientific Critic(오류 검증) + 3명의 과학자 에이전트(면역학, 계산생물학, ML). 각 에이전트는 Title, Expertise, Goal, Role 4가지 기준으로 정의
 - **5단계 워크플로우**: (1) 팀 선발 — PI가 개별 미팅에서 과학자 에이전트 자동 생성. (2) 프로젝트 사양 — 팀 미팅에서 나노바디 vs 항체, 대상 변이체(KP.3) 등 결정. (3) 도구 선택 — ESM, AlphaFold-Multimer, Rosetta 선정. (4) 도구 구현 — 개별 미팅에서 코드 작성. (5) 워크플로우 설계 — 3개 도구 통합
 - **반복적 최적화**: 4개 시작 나노바디에서 4라운드 반복. 각 라운드: ESM LLR → 상위 20개 → AlphaFold-Multimer ipLDDT → Rosetta dG → WS로 상위 5개 선택 → 다음 라운드. 최종 나노바디당 23개(총 92개) 선택
 - **병렬 미팅**: 동일 미팅을 높은 temperature(0.8)로 여러 번 병렬 실행 후, 낮은 temperature(0.2)로 merge하여 창의성과 일관성을 동시 확보
 
-![Figure 4](figures/fig4.png)
-
-*Fig. 4 | 나노바디 실험 검증 워크플로우. 발현, 정제, 결합 프로파일링, 친화도 측정의 4단계 검증 과정.*
-
 - **실험 검증**: E. coli 발현 → 용해성 단백질 periplasm 분리 → ELISA로 Wuhan/BA.2/JN.1/KP.2.3/KP.3 RBD 패널 결합 프로파일링
 
 ## Originality
 
-![Figure 6](figures/fig6.png)
+![Figure 5](figures/fig5.png)
 
-*Fig. 6 | Virtual Lab 토론 분석. (a) 팀 미팅 발췌. (b) 에이전트별 기여도 분석. (c) Scientific Critic의 비평 패턴.*
+*Fig. 5 | Virtual Lab 토론 분석. (a) 팀 미팅 발췌. (b) 에이전트별 기여도 분석. (c) Scientific Critic의 비평 패턴.*
 
 - **AI를 도구가 아닌 연구 설계자로**: 기존 접근법은 AlphaFold 등을 인간이 선택한 도구로 사용하는 반면, Virtual Lab에서는 LLM 에이전트가 어떤 도구를 어떻게 조합할지 고수준 의사결정을 자체적으로 수행하는 패러다임 전환
 - **에이전트 정체성의 효과**: 서로 다른 과학적 배경을 가진 에이전트들이 다각적 관점에서 토론하여 포괄적 답변 도출. Ablation 실험에서 배경 없는 일반 에이전트보다 우수한 결과 확인
