@@ -13,29 +13,25 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1A5CA8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-.essence-box { border: 2px solid #1A5CA8; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F5F8FE; }
-.essence-box h2 { color: #1A5CA8; margin: 0 0 0.5rem; border: none; padding: 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A5CA8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -46,50 +42,41 @@ a { color: #1A5CA8; }
 </head>
 <body>
 <h1>The Chaperone Effect in Scientific Publishing</h1>
-<blockquote>
-<p><strong>저자</strong>: Vedran Sekara, Pierre Deville, Sebastian E. Ahnert, Albert-László Barabási, Roberta Sinatra, Sune Lehmann | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.1800471115" target="_blank">10.1073/pnas.1800471115</a> | <strong>arXiv</strong>: N/A</p>
-<p><strong>리뷰 모드</strong>: Web-only</p>
-</blockquote>
-<hr />
-
-<div class="section-box essence-box"><h2>Essence</h2>
-<p>샤프롱 효과(chaperone effect): 젊은 과학자의 첫 논문이 저명한 선임 과학자와 공동 저술될 경우, 그 선임의 명성이 논문의 게재 성공률과 영향력에 통계적으로 유의한 양의 효과를 미친다. Sekara et al.(2018)은 PNAS 논문 데이터로 이 효과를 정량화했으며, 이는 과학 커리어 초기에 좋은 지도자를 갖는 것이 단순 능력 이상으로 중요하다는 구조적 불평등을 시사한다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Vedran Sekara, Pierre Deville, Sebastian E. Ahnert, Albert-László Barabási, Roberta Sinatra, Sune Lehmann | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1073/pnas.1800471115"" target="_blank">10.1073/pnas.1800471115"</a> target="_blank"><a href="https://doi.org/10.1073/pnas.1800471115" target="_blank">10.1073/pnas.1800471115</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>샤프롱 효과(chaperone effect): 젊은 과학자의 첫 논문이 저명한 선임 과학자와 공동 저술될 경우, 그 선임의 명성이 논문의 게재 성공률과 영향력에 통계적으로 유의한 양의 효과를 미친다. Sekara et al.(2018)은 PNAS 논문 데이터로 이 효과를 정량화했으며, 이는 과학 커리어 초기에 좋은 지도자를 갖는 것이 단순 능력 이상으로 중요하다는 구조적 불평등을 시사한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[novelty] "최초로 공동저자 명성의 '샤프롱 효과'를 대규모 데이터로 정량화함"</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: PNAS 논문 저자 네트워크 및 피인용 데이터</li>
 <li><strong>설계</strong>: 신진 연구자(첫 논문 저자)와 공동 저술한 선임 저자의 명성(h-index, 피인용 수) 측정</li>
 <li><strong>결과 지표</strong>: 논문 게재 확률(PNAS 심사 통과율), 이후 피인용도</li>
 <li><strong>통제</strong>: 논문 분야, 연도, 신진 연구자 자체 특성</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>과학 커리어에서 지도자·멘토의 구조적 중요성 실증</li>
 <li>명문 기관 출신 편향(prestige bias)의 메커니즘 규명</li>
 <li>진정한 능력주의적 과학 커뮤니티 구현을 위한 개입 설계 근거</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>PNAS 단일 저널로 일반화 한계</li>
 <li>역인과 가능성: 좋은 연구가 좋은 멘토를 끌어당기는지 구분 어려움</li>
 <li>명성을 h-index로 측정하는 한계</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>다저널 비교 분석으로 샤프롱 효과의 범용성 검증</li>
 <li>성별·인종별 샤프롱 효과의 차이 분석</li>
 <li>샤프롱 없이 성공한 혁신적 논문의 특성</li>
-</ul>
-</div>
-<div class="section-box"><h2>평가</h2><div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
 <tr><th>항목</th><th>점수</th></tr>
 <tr><td>Novelty</td><td>4/5</td></tr>

@@ -5,53 +5,68 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Why Most Published Research Findings Are False</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-<style>* { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #2374D6; margin: 1.5rem 0 0.6rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
-th { background: #2374D6; color: white; font-weight: 600; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 .essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
-.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }</style>
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
 </head>
 <body>
 <h1>Why Most Published Research Findings Are False</h1>
-<blockquote><p><strong>저자</strong>: John P. A. Ioannidis | <strong>날짜</strong>: 2005 | <strong>Journal</strong>: PLOS Medicine | <strong>DOI</strong>: 10.1371/journal.pmed.0020124</p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Web-only (PDF 없음)</p></blockquote>
+<blockquote><p><strong>저자</strong>: John P. A. Ioannidis | <strong>날짜</strong>: 2005 | <strong>Journal</strong>: PLOS Medicine | <strong>DOI</strong>: <a href="https://doi.org/10.1371/journal.pmed.0020124" target="_blank">10.1371/journal.pmed.0020124</a></p></blockquote>
 <hr>
-<h2>Essence</h2>
-<p>간단한 확률 모델을 통해, **현행 연구 관행(낮은 사전 확률, 작은 표본, 유연한 분석, 편향, 이해충돌 등)이 결합되면 대부분의 발표된 연구 결과가 거짓일 가능성이 높다**는 것이 수학적으로 도출된다. 특히 연구 분야가 핫할수록, 효과 크기가 작을수록, 설계 유연성이 클수록, 여러 팀이 동시에 경쟁할수록 거짓 발견의 확률이 증가한다. 이 논문은 재현성 위기(replication crisis) 논의의 가장 중요한 이론적 출발점이 되었다.</p>
-<h2>Originality (Abstract 기반)</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>간단한 확률 모델을 통해, <strong>현행 연구 관행(낮은 사전 확률, 작은 표본, 유연한 분석, 편향, 이해충돌 등)이 결합되면 대부분의 발표된 연구 결과가 거짓일 가능성이 높다</strong>는 것이 수학적으로 도출된다. 특히 연구 분야가 핫할수록, 효과 크기가 작을수록, 설계 유연성이 클수록, 여러 팀이 동시에 경쟁할수록 거짓 발견의 확률이 증가한다. 이 논문은 재현성 위기(replication crisis) 논의의 가장 중요한 이론적 출발점이 되었다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[pioneering, finding] 연구 결과의 사후 양성 예측도(Positive Predictive Value, PPV)를 통계적 검정력, 편향, 연구 간 이해충돌의 함수로 표현하는 수학 프레임워크 최초 제시</li>
 <li>[finding] PPV < 0.5인 시나리오가 현실 연구에서 일반적임을 다양한 분야 예시로 제시</li>
 <li>[conclusion] 소규모·탐색적·유연한 연구일수록 거짓 발견 위험이 급증</li>
-</ul>
-<h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>핵심 수식</strong>: $PPV = \frac{(1-\beta)R}{R - \beta R + \alpha}$ (여기서 $R$ = 참 관계의 사전 오즈, $\alpha$ = 유의 수준, $\beta$ = 2종 오류 확률)</li>
 <li><strong>편향 보정</strong>: 편향 확률 $u$를 포함한 확장 모델로 출판 편향, 데이터 조작 등 반영</li>
 <li><strong>시나리오 분석</strong>: 분야·설계·상황별 PPV 계산 (예: 임상시험 PPV ≈ 0.85 vs. 탐색적 연구 PPV ≈ 0.10)</li>
 <li><strong>경쟁 팀 효과</strong>: $n$개 팀이 동일 가설을 검증할 때 PPV가 더 감소함을 모델화</li>
-</ul>
-<h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>개별 연구의 통계적 유의성이 진실 발견을 보장하지 않음을 이론적으로 증명 — 유의성 기준(p < 0.05) 자체의 한계 부각</li>
 <li>사전 등록(pre-registration), 대규모 샘플, 독립 재현 등의 필요성에 강력한 이론적 근거 제공</li>
 <li>재현성 위기 논의의 기폭제 역할 — 이후 Open Science Collaboration(2015), 메타과학 연구 붐 촉발</li>
-</ul>
-<h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>모델이 실제 분포가 아닌 이진(참/거짓) 가설 체계를 가정</li>
@@ -68,8 +83,8 @@ th { background: #2374D6; color: white; font-weight: 600; }
 <li>Open Science Collaboration(2015): 심리학 100편 재현 → 36–39% 재현 성공</li>
 <li>메타분석 체계화, 사전 등록, 오픈 데이터 운동으로 이어짐</li>
 <li>Ioannidis 본인의 후속 연구: 분야별 재현성 비교, 과학적 편향 측정</li>
-</ul>
-<h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
 <tr><th>항목</th><th>점수</th></tr>
 <tr><td>Novelty</td><td>5/5</td></tr>
@@ -78,7 +93,7 @@ th { background: #2374D6; color: white; font-weight: 600; }
 <tr><td>Clarity</td><td>5/5</td></tr>
 <tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: 과학 연구의 신뢰성 위기를 수학적으로 이론화한 혁명적 논문으로, 현대 메타과학과 오픈 사이언스 운동의 이론적 토대를 제공했으며 의학·심리학·사회과학 전반에 패러다임 전환을 촉발시켰다.</p>
+<p><strong>총평</strong>: 과학 연구의 신뢰성 위기를 수학적으로 이론화한 혁명적 논문으로, 현대 메타과학과 오픈 사이언스 운동의 이론적 토대를 제공했으며 의학·심리학·사회과학 전반에 패러다임 전환을 촉발시켰다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

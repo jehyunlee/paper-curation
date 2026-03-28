@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,21 +42,19 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE</h1>
-<blockquote>
-<p><strong>저자</strong>: Valdemar Švábenský, Brendan Flanagan, Erwin Daniel López Zapata, Atsushi Shimada | <strong>날짜</strong>: 2026-02-19 | <strong>Journal</strong>: ACM (LAK 2025) | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3798096">10.1145/3798096</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>학습 분석(learning analytics), 교육 데이터 마이닝, AI in Education 분야에서 오픈 데이터셋은 재현성·협업·신뢰성의 핵심이지만, 실제 공개 현황은 불명확했다. 이 논문은 LAK, EDM, AIED 3개 주요 학술대회 최근 5년간 1,125편 논문을 수동 검토하여 172개 데이터셋을 발굴·분류·분석했다. 주요 발견은 172개 중 143개가 이전 어떤 조사에도 포착되지 않았던 새로운 데이터셋이라는 것이다. 논문은 PRACTICE 약어로 구성된 8항목 가이드라인과 체크리스트를 제시하여 연구자들이 데이터를 공개하는 데 실질적 지침을 제공한다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Valdemar Švábenský, Brendan Flanagan, Erwin Daniel López Zapata, Atsushi Shimada | <strong>날짜</strong>: 2026-02-19 | <strong>Journal</strong>: ACM (LAK 2025) | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1145/3798096"" target="_blank">10.1145/3798096"</a> target="_blank"><a href="https://doi.org/10.1145/3798096" target="_blank">10.1145/3798096</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>학습 분석(learning analytics), 교육 데이터 마이닝, AI in Education 분야에서 오픈 데이터셋은 재현성·협업·신뢰성의 핵심이지만, 실제 공개 현황은 불명확했다. 이 논문은 LAK, EDM, AIED 3개 주요 학술대회 최근 5년간 1,125편 논문을 수동 검토하여 172개 데이터셋을 발굴·분류·분석했다. 주요 발견은 172개 중 143개가 이전 어떤 조사에도 포착되지 않았던 새로운 데이터셋이라는 것이다. 논문은 PRACTICE 약어로 구성된 8항목 가이드라인과 체크리스트를 제시하여 연구자들이 데이터를 공개하는 데 실질적 지침을 제공한다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty] "We surveyed available datasets published alongside research papers in learning analytics."</li>
 <li>[result, finding] "Our study presents the most comprehensive collection and analysis of open educational datasets to date, along with the most detailed categorization."</li>
 <li>[novelty] "Of the 172 datasets identified, 143 were not captured in any prior survey of open data in learning analytics."</li>
 <li>[authorship, contribution] "we list practical recommendations, advice, and 8-item guidelines under the acronym PRACTICE with a checklist to help researchers publish their data."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: LAK(Learning Analytics and Knowledge), EDM(Educational Data Mining), AIED(AI in Education) 3개 플래그십 컨퍼런스의 최근 5년간 논문 1,125편</li>
 <li><strong>수동 검토</strong>: 1,125편 논문을 수동 검토하여 데이터셋이 공개된 논문 204편 및 172개 데이터셋 식별</li>
@@ -66,15 +62,15 @@ a { color: #1a5aad; }
 <li><strong>비교 분석</strong>: 기존 오픈 데이터 조사 연구와의 비교를 통해 새로운 데이터셋(143개) 식별</li>
 <li><strong>PRACTICE 가이드라인</strong>: 데이터 공개를 위한 8항목 실용 지침 개발 및 체크리스트 제공</li>
 <li><strong>산출물</strong>: 발굴된 데이터셋과 관련 논문의 주석 목록(annotated inventory) 데이터셋으로 공개</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>교육 데이터는 학생 개인정보 문제로 공개가 특히 어려워, 분야 내 재현성 위기가 심각한 상황</li>
 <li>오픈 데이터셋의 실제 현황을 파악해야 분야의 재현성 수준과 협업 잠재력을 평가할 수 있음</li>
 <li>143개의 미발굴 데이터셋 발견은 기존 조사의 한계를 드러내며, 통합 카탈로그의 필요성을 실증</li>
 <li>PRACTICE 가이드라인은 연구자들이 데이터 공개 결정 시 직면하는 실질적 장벽을 낮추는 데 직접 기여</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>3개 플래그십 컨퍼런스에 한정된 범위 — 저널 논문이나 다른 컨퍼런스의 데이터셋은 포함되지 않음</li>
@@ -90,39 +86,17 @@ a { color: #1a5aad; }
 <li>저널 논문 및 더 넓은 컨퍼런스로 조사 범위 확대</li>
 <li>발굴된 데이터셋의 실제 재사용 빈도와 연구 영향력 추적</li>
 <li>PRACTICE 가이드라인 도입 효과를 종단적으로 평가하는 후속 연구</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
 </table>
 <p><strong>총평</strong>: 학습 분석 분야의 오픈 데이터 현황을 가장 포괄적으로 조사하고, 143개의 미발굴 데이터셋을 새로 식별하며, PRACTICE 가이드라인이라는 실용적 기여를 제공한 견실한 서베이 논문이다. 범위가 3개 컨퍼런스에 한정된 점이 아쉬우나, 분야 인프라 개선에 실질적 공헌을 한다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

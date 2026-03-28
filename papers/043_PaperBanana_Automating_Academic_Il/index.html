@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,51 +42,46 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>PaperBanana: Automating Academic Illustration for AI Scientists</h1>
-<blockquote>
-<p><strong>저자</strong>: Dawei Zhu, Rui Meng, Yale Song, Xiyu Wei, Sujian Li, Tomas Pfister, Jinsung Yoon | <strong>날짜</strong>: 2026-01-30 | <strong>Repository</strong>: arXiv | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2601.23265" target="_blank">10.48550/arXiv.2601.23265</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Dawei Zhu, Rui Meng, Yale Song, Xiyu Wei, Sujian Li, Tomas Pfister, Jinsung Yoon | <strong>날짜</strong>: 2026-01-30 | <strong>Repository</strong>: arXiv | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2601.23265" target="_blank">10.48550/arXiv.2601.23265</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>PaperBanana는 학술 논문의 방법론 다이어그램과 통계 플롯을 자동 생성하는 에이전트 기반 프레임워크이다. Retriever, Planner, Stylist, Visualizer, Critic의 5개 특화 에이전트가 협업하여 참조 검색, 콘텐츠/스타일 계획, 이미지 렌더링, 반복적 자기 비평을 수행한다. NeurIPS 2025 논문에서 큐레이션한 PaperBananaBench(292 테스트 케이스)에서 faithfulness(+2.8%), conciseness(+37.2%), readability(+12.9%), aesthetics(+6.6%)로 기존 baseline을 일관되게 능가했다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>PaperBanana는 학술 논문의 방법론 다이어그램과 통계 플롯을 자동 생성하는 에이전트 기반 프레임워크이다. Retriever, Planner, Stylist, Visualizer, Critic의 5개 특화 에이전트가 협업하여 참조 검색, 콘텐츠/스타일 계획, 이미지 렌더링, 반복적 자기 비평을 수행한다. NeurIPS 2025 논문에서 큐레이션한 PaperBananaBench(292 테스트 케이스)에서 faithfulness(+2.8%), conciseness(+37.2%), readability(+12.9%), aesthetics(+6.6%)로 기존 baseline을 일관되게 능가했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: LLM 기반 자율 AI 과학자(AI Scientist, Co-Scientist 등)가 문헌 리뷰, 아이디어 생성, 실험 반복을 자동화하고 있음</li>
 <li><strong>Gap</strong>: 학술 논문의 시각적 커뮤니케이션, 특히 방법론 다이어그램 생성은 여전히 노동 집약적 병목으로 남아 있으며, 코드 기반 접근(TikZ, Python-PPTX)은 표현력 한계, 이미지 생성 모델은 학술 표준 미달</li>
 <li><strong>왜 중요한가</strong>: 복잡한 기술 개념을 정확하고 미적으로 우수하게 시각화하는 것은 과학적 발견의 효과적 소통에 필수적이나, 전문 디자인 도구 숙련도가 요구되어 연구자에게 부담</li>
 <li><strong>접근법</strong>: VLM과 이미지 생성 모델을 활용한 다중 에이전트 파이프라인으로, 참조 기반 학습과 반복적 자기 비평을 통해 출판 수준의 학술 일러스트 자동 생성</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>전체 성능</strong>: PaperBananaBench에서 Overall score 60.2% 달성 (Vanilla Nano-Banana-Pro 43.2%, Human 50.0% 대비)</li>
 <li><strong>Conciseness 대폭 향상</strong>: Vanilla 대비 +37.2%p로 가장 큰 개선 -- 에이전트 워크플로우가 핵심 정보 추출에 효과적임을 입증</li>
 <li><strong>인간 평가 검증</strong>: 50건 blind evaluation에서 PaperBanana 승률 72.7% / 무승부 20.7% / 패배 6.6%</li>
 <li><strong>통계 플롯 확장</strong>: 코드 기반 Visualizer로 전환하여 통계 플롯 생성에서도 인간 수준을 근접/초과 (Conciseness, Readability, Aesthetics에서 인간 상회)</li>
 <li><strong>인간 다이어그램 개선</strong>: 기존 인간 작성 다이어그램의 미적 품질 향상에서 56.2% 승률 달성</li>
-<li><strong>벤치마크 구축</strong>: NeurIPS 2025에서 큐레이션한 292개 테스트 + 292개 참조 세트의 PaperBananaBench 공개</li>
 </ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+<p>6. <strong>벤치마크 구축</strong>: NeurIPS 2025에서 큐레이션한 292개 테스트 + 292개 참조 세트의 PaperBananaBench 공개</p></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>데이터</strong>: NeurIPS 2025 논문 2,000편에서 MinerU 툴킷으로 방법론 섹션, 다이어그램, 캡션 추출. 종횡비 필터링(1.5~2.5) 후 인간 큐레이션을 거쳐 584개 샘플 확보, 292 테스트/292 참조로 분할</li>
 <li><strong>Retriever Agent</strong>: VLM(Gemini-3-Pro)이 연구 도메인과 다이어그램 유형을 기준으로 참조 세트에서 가장 관련 높은 N개 예시를 생성적 검색(generative retrieval)</li>
 <li><strong>Planner Agent</strong>: 소스 컨텍스트, 커뮤니케이티브 인텐트, 검색된 예시를 통한 in-context learning으로 상세한 텍스트 설명(P) 생성</li>
 <li><strong>Stylist Agent</strong>: 전체 참조 컬렉션을 순회하여 색상, 레이아웃, 타이포그래피 등의 Aesthetic Guideline(G)을 자동 요약하고, 초기 설명을 스타일 최적화 버전(P*)으로 정제</li>
 <li><strong>Visualizer + Critic Loop</strong>: 이미지 생성 모델(Nano-Banana-Pro)로 렌더링 후, Critic이 원본 컨텍스트 대비 사실 정합성, 시각적 결함을 평가하여 수정된 설명 제공. T=3회 반복</li>
-<li><strong>평가</strong>: VLM-as-a-Judge 방식으로 faithfulness, conciseness, readability, aesthetics 4차원 참조 비교 평가. 계층적 집계(content &gt; presentation)</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+<li><strong>평가</strong>: VLM-as-a-Judge 방식으로 faithfulness, conciseness, readability, aesthetics 4차원 참조 비교 평가. 계층적 집계(content > presentation)</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>학술 일러스트 특화 에이전트 프레임워크</strong>: 과학 논문 다이어그램 생성을 위해 검색-계획-스타일-시각화-비평의 5단계 파이프라인을 최초로 체계화</li>
 <li><strong>자동 Aesthetic Guideline 요약</strong>: 참조 컬렉션 전체를 VLM으로 분석하여 학술 스타일 가이드라인을 자동 합성하는 새로운 접근</li>
 <li><strong>방법론 다이어그램 + 통계 플롯 통합</strong>: 동일 프레임워크에서 Visualizer만 교체(이미지 생성 → 코드 생성)하여 두 유형 모두 지원</li>
 <li><strong>계층적 평가 프로토콜</strong>: Faithfulness/Readability를 1차, Conciseness/Aesthetics를 2차로 구분하는 계층적 VLM-as-a-Judge 프로토콜 설계</li>
 <li><strong>PaperBananaBench</strong>: NeurIPS 2025 기반 학술 다이어그램 생성 전용 벤치마크 최초 구축</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>출력이 래스터 이미지로, 벡터 그래픽 대비 편집 불가능하고 확장성 제한</li>
@@ -121,9 +104,16 @@ a { color: #A62018; }
 <li>Test-time scaling을 통한 다양한 스타일 후보 생성 및 사용자 선택 워크플로우</li>
 <li>Fine-grained 구조 기반 평가 메트릭(그래프 기반 정확도 등) 개발</li>
 <li>맞춤형 reward model 학습을 통한 미적 선호 정렬 개선</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: AI 과학자 파이프라인에서 시각적 커뮤니케이션이라는 간과된 병목을 정면으로 다룬 시의적절한 연구이다. 5개 에이전트의 체계적 파이프라인 설계와 자동 스타일 가이드라인 합성은 실용적 가치가 높으며, PaperBananaBench는 이 분야의 표준 평가 기준으로 기능할 잠재력이 있다. 다만 특정 상용 모델(Nano-Banana-Pro)에 대한 높은 의존도와 faithfulness 미달은 범용 도구로의 발전을 위해 해결해야 할 과제이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

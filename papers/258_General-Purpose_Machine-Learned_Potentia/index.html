@@ -2,192 +2,95 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</title>
-<link href="https://fonts.googleapis.com/css2?family=KoPub+Dotum:wght@300;400;700&display=swap" rel="stylesheet">
-<script>
-window.MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    color: #222;
-    background: #f7f7f7;
-    padding: 20px;
-  }
-  .container {
-    max-width: 820px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    padding: 44px 52px;
-  }
-  .back { margin-bottom: 24px; }
-  .back a { color: #D63423; text-decoration: none; font-size: 14px; font-weight: 700; }
-  .back a:hover { text-decoration: underline; }
-  h1 { font-size: 22px; font-weight: 700; line-height: 1.45; color: #111; margin-bottom: 18px; }
-  .meta {
-    background: #f9f9f9;
-    border-left: 4px solid #D63423;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #444;
-    margin-bottom: 10px;
-    border-radius: 0 6px 6px 0;
-  }
-  .meta a { color: #D63423; }
-  .mode-badge {
-    display: inline-block;
-    background: #fff3f2;
-    color: #D63423;
-    border: 1px solid #D63423;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 2px 8px;
-    margin-top: 6px;
-  }
-  hr { border: none; border-top: 1px solid #eee; margin: 28px 0; }
-  h2 { font-size: 17px; font-weight: 700; color: #D63423; margin: 32px 0 12px; padding-bottom: 5px; border-bottom: 2px solid #f2e0de; }
-  .essence-box {
-    background: #fff8f7;
-    border: 1px solid #f5c5be;
-    border-radius: 8px;
-    padding: 18px 22px;
-    font-size: 15px;
-    line-height: 1.85;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-  }
-  p { margin-bottom: 14px; }
-  ul, ol { padding-left: 22px; margin-bottom: 14px; }
-  li { margin-bottom: 6px; }
-  .originality-item {
-    background: #f8f8f8;
-    border-left: 3px solid #D63423;
-    padding: 8px 14px;
-    margin-bottom: 8px;
-    border-radius: 0 5px 5px 0;
-    font-size: 14px;
-  }
-  .tag {
-    display: inline-block;
-    background: #D63423;
-    color: #fff;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 1px 6px;
-    margin-right: 4px;
-    letter-spacing: 0.03em;
-  }
-  .score-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-  .score-table th { background: #D63423; color: #fff; padding: 9px 14px; text-align: left; font-weight: 700; }
-  .score-table td { padding: 9px 14px; border-bottom: 1px solid #eee; }
-  .score-table tr:last-child td { border-bottom: none; }
-  .score-badge {
-    display: inline-block;
-    min-width: 38px;
-    text-align: center;
-    background: #D63423;
-    color: #fff;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 2px 10px;
-  }
-  .summary-box { background: #fff3f2; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: #333; margin-top: 10px; }
-  figure { margin: 20px 0; text-align: center; }
-  figure img { max-width: 100%; border-radius: 6px; border: 1px solid #eee; }
-  figcaption { font-size: 13px; color: #666; margin-top: 7px; font-style: italic; }
-  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
-  .highlight { color: #D63423; font-weight: 700; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
-
-  <h1>General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</h1>
-
-  <div class="meta">
-    <strong>저자:</strong> Yong-Chao Wu, Tero Mäkinen, Mikko Alava, Amin Esfandiarpour<br>
-    <strong>날짜:</strong> 2026-03-26 &nbsp;|&nbsp;
-    <strong>Journal:</strong> arXiv preprint &nbsp;|&nbsp;
-    <strong>DOI:</strong> N/A &nbsp;|&nbsp;
-    <strong>arXiv:</strong> <a href="https://arxiv.org/abs/2603.25616" target="_blank">2603.25616v1</a>
-    <br><span class="mode-badge">PDF</span>
-  </div>
-
-  <hr>
-
-  <h2>Essence</h2>
-  <div class="essence-box">
-    CrCoNi medium-entropy alloy(MEA)는 우수한 기계적 성질로 주목받지만, SRO(short-range order)와 조성 변화를 동시에 다루는 대규모 원자론적 시뮬레이션이 어렵다. 이 논문은 NEP(neuroevolution potential) 프레임워크를 이용해 CrCoNi 삼원계 전 조성 범위를 커버하는 범용 머신러닝 포텐셜을 개발하였다. NEP는 힘 RMSE <span class="highlight">106.1 meV/Å</span>(훈련셋), 에너지 RMSE <span class="highlight">2.45 meV/atom</span>으로 DFT 수준 정확도를 달성하며, MTP 대비 CPU에서 약 2배, Tesla V100 GPU 단일 카드에서 <span class="highlight">48배</span> 빠른 속도로 수백만 원자 규모 MD 시뮬레이션을 가능하게 한다.
-  </div>
-
-  <figure>
-    <img src="figures/fig1.png" alt="Figure 1">
-    <figcaption>Figure 1: NEP, EAM1/2, MEAM, MTP가 예측한 에너지·힘·응력의 DFT 대비 pairwise 비교(NEP, MTP, 검증 데이터셋)와 NEP descriptor 기반 PCA. NEP가 모든 데이터셋에서 가장 낮은 RMSE를 달성함.</figcaption>
-  </figure>
-
-  <h2>Originality (Abstract 기반)</h2>
-  <div class="originality-item">
-    <span class="tag">authorship</span><span class="tag">action</span><span class="tag">conclusion</span>
-    "Here we develop a general-purpose machine-learned potential for the CrCoNi system using the neuroevolution potential (NEP) framework."
-  </div>
-  <div class="originality-item">
-    <span class="tag">novelty</span><span class="tag">result</span>
-    "The potential achieves first-principles accuracy for a wide range of properties and enables large-scale simulations with significant speedup over DFT."
-  </div>
-
-  <h2>How (방법론)</h2>
-  <ul>
-    <li><strong>NEP 훈련 데이터셋 구축:</strong> SOAP 기반 PCA에서 farthest point sampling으로 2,000개 대표 구조 선별 후 DFT 레이블링; active learning으로 원소계(0~3,000 K), 점결함(300~1,000 K), 적층 결함, 비등몰비 삼원계 구조를 반복적으로 추가</li>
-    <li><strong>NEP 학습:</strong> 뉴로에볼루션(진화 알고리즘 기반 학습) 방식으로 파라미터 최적화; GPU 병렬화에 최적화된 구현</li>
-    <li><strong>비교 벤치마크:</strong> EAM1, EAM2, MEAM(경험적 포텐셜), MTP(기존 MLIP)와 에너지·힘·응력 RMSE 정량 비교</li>
-    <li><strong>검증 특성:</strong> 격자 상수, 탄성 상수, 표면/공공 형성 에너지, 그레인 바운더리 에너지, SFE, 포논 분산, Warren-Cowley SRO 파라미터, 용융 온도(고액 공존 MD), 변형 유도 상변태, 전위 해리</li>
-    <li><strong>대규모 시뮬레이션:</strong> hybrid MC/MD로 SRO 평형화 후 150개 독립 구성에서 SFE 통계 계산; 전위 쌍극자(edge) 및 사중극자(screw) 모델로 적층 결함 에너지 및 전위 해리 분석</li>
-  </ul>
-
-  <h2>Why (중요성)</h2>
-  <ul>
-    <li>CrCoNi의 SFE는 DFT 계산에서도 실험값과 부호가 반대($-26$ ~ $-60$ mJ/m² vs 양수)이며, SRO의 역할(강화 vs 무효과)에 대한 논쟁이 지속되고 있어 대규모 원자론적 시뮬레이션이 필수</li>
-    <li>비등몰비 조성은 성질 조율의 유효한 경로이나 기존 포텐셜들은 등몰 조성에 집중되어 있어 조성 전이 가능(transferable) 모델이 결여되어 있었음</li>
-    <li>GPU 1장으로 MTP 대비 48배 속도 향상은 수백만 원자, 수십 ns 시뮬레이션을 현실적으로 가능하게 하여 나노스케일 변형 메커니즘 연구의 패러다임을 바꿈</li>
-  </ul>
-
-  <h2>Limitation</h2>
-  <ul>
-    <li>SFE 계산에서 NEP는 $-52$ mJ/m²를 예측하지만, 실험값이 양수인 이유(SRO 기여, 강한 용질-전위 상호작용 등)에 대한 논쟁은 이 논문으로도 해소되지 않음</li>
-    <li>훈련 데이터가 특정 DFT 설정(PBE 범함수, PAW, VASP)에 의존하므로, 다른 DFT 레벨로의 transferability는 검증되지 않음</li>
-    <li>4원계 이상(CrCoNiMn, CrCoNiFe 등)으로의 확장은 별도의 새 훈련이 필요하며 현재 구현 범위 밖</li>
-  </ul>
-
-  <h2>Further Study</h2>
-  <ul>
-    <li>SRO가 전위 운동 및 강화 메커니즘에 미치는 영향을 수백만 원자 규모에서 직접 시뮬레이션으로 규명</li>
-    <li>비등몰비 조성 공간 전체에 걸친 SFE, 항복 강도 등 기계적 성질 ternary plot 체계적 탐색</li>
-    <li>NEP 프레임워크를 활용한 4원계 CrCoNiMn, HEA(high-entropy alloy)로의 일반화된 MLIP 개발</li>
-  </ul>
-
-  <h2>평가</h2>
-  <table class="score-table">
-    <tr><th>항목</th><th>점수</th></tr>
-    <tr><td>Novelty</td><td><span class="score-badge">3/5</span></td></tr>
-    <tr><td>Technical Soundness</td><td><span class="score-badge">5/5</span></td></tr>
-    <tr><td>Significance</td><td><span class="score-badge">4/5</span></td></tr>
-    <tr><td>Clarity</td><td><span class="score-badge">4/5</span></td></tr>
-    <tr><td>Overall</td><td><span class="score-badge">4/5</span></td></tr>
-  </table>
-  <div class="summary-box">
-    <strong>총평:</strong> CrCoNi MEA를 위한 최초의 조성 전이 가능 범용 MLIP를 NEP 기반으로 개발하고, DFT 수준 정확도와 GPU 기반 대규모 시뮬레이션 가능성을 수십 가지 물성 검증으로 철저히 입증한 고신뢰도 재료 시뮬레이션 논문이다. 방법론적 독창성은 제한적이나 CrCoNi 연구 공동체에 즉시 활용 가능한 고품질 포텐셜을 제공한다는 점에서 실용적 가치가 크다.
-  </div>
-</div>
+<h1>General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</h1>
+<blockquote><p><strong>저자</strong>: Yong-Chao Wu, Tero Mäkinen, Mikko Alava, Amin Esfandiarpour | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: 2603.25616v1</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>CrCoNi medium-entropy alloy(MEA)는 우수한 기계적 성질로 주목받지만, SRO(short-range order)와 조성 변화를 동시에 다루는 대규모 원자론적 시뮬레이션이 어렵다. 이 논문은 NEP(neuroevolution potential) 프레임워크를 이용해 CrCoNi 삼원계 전 조성 범위를 커버하는 범용 머신러닝 포텐셜을 개발하였다. NEP는 힘 RMSE 106.1 meV/Å(훈련셋), 에너지 RMSE 2.45 meV/atom으로 DFT 수준 정확도를 달성하며, MTP 대비 CPU에서 약 2배, Tesla V100 GPU 단일 카드에서 <strong>48배</strong> 빠른 속도로 수백만 원자 규모 MD 시뮬레이션을 가능하게 한다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: NEP, EAM1/2, MEAM, MTP가 예측한 에너지·힘·응력의 DFT 대비 pairwise 비교(NEP, MTP, 검증 데이터셋)와 NEP descriptor 기반 PCA. NEP가 모든 데이터셋에서 가장 낮은 RMSE를 달성함.</em></p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, action, conclusion] "Here we develop a general-purpose machine-learned potential for the CrCoNi system using the neuroevolution potential (NEP) framework."</li>
+<li>[novelty, result] "The potential achieves first-principles accuracy for a wide range of properties and enables large-scale simulations with significant speedup over DFT."</li>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>NEP 훈련 데이터셋 구축</strong>: SOAP 기반 PCA에서 farthest point sampling으로 2,000개 대표 구조 선별 후 DFT 레이블링; 이후 active learning으로 원소계(0~3,000 K), 점결함(300~1,000 K), 적층 결함, 비등몰비 삼원계 구조를 반복적으로 추가</li>
+<li><strong>NEP 학습</strong>: 뉴로에볼루션(진화 알고리즘 기반 학습) 방식으로 파라미터 최적화; GPU 병렬화에 최적화된 구현</li>
+<li><strong>비교 벤치마크</strong>: EAM1, EAM2, MEAM(경험적 포텐셜), MTP(기존 MLIP)와 에너지·힘·응력 RMSE 정량 비교</li>
+<li><strong>검증 특성</strong>: 격자 상수, 탄성 상수, 표면/공공 형성 에너지, 그레인 바운더리 에너지, SFE, 포논 분산, Warren-Cowley SRO 파라미터, 용융 온도(고액 공존 MD), 변형 유도 상변태, 전위 해리</li>
+<li><strong>대규모 시뮬레이션</strong>: hybrid MC/MD로 SRO 평형화 후 150개 독립 구성에서 SFE 통계 계산; 전위 쌍극자(edge) 및 사중극자(screw) 모델로 적층 결함 에너지 및 전위 해리 분석</li>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
+<ul>
+<li>CrCoNi의 SFE는 DFT 계산에서도 실험값과 부호가 반대(-26 ~ -60 mJ/m² vs 양수)이며, SRO의 역할(강화 vs 무효과)에 대한 논쟁이 지속되고 있어 대규모 원자론적 시뮬레이션이 필수</li>
+<li>비등몰비 조성은 성질 조율의 유효한 경로이나 기존 포텐셜들은 등몰 조성에 집중되어 있어 조성 전이 가능(transferable) 모델이 결여되어 있었음</li>
+<li>GPU 1장으로 MTP 대비 48배 속도 향상은 수백만 원자, 수십 ns 시뮬레이션을 현실적으로 가능하게 하여 나노스케일 변형 메커니즘 연구의 패러다임을 바꿈</li>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
+<ul>
+<li>SFE 계산에서 NEP는 -52 mJ/m²를 예측하지만, 실험값이 양수인 이유(SRO 기여, 강한 용질-전위 상호작용 등)에 대한 논쟁은 이 논문으로도 해소되지 않음</li>
+<li>훈련 데이터가 특정 DFT 설정(PBE 범함수, PAW, VASP)에 의존하므로, 다른 DFT 레벨로의 transferability는 검증되지 않음</li>
+<li>4원계 이상(CrCoNiMn, CrCoNiFe 등)으로의 확장은 별도의 새 훈련이 필요하며 현재 구현 범위 밖</li>
+</ul></div>
+<div class="section-box"><h2>Further Study</h2>
+<ul>
+<li>SRO가 전위 운동 및 강화 메커니즘에 미치는 영향을 수백만 원자 규모에서 직접 시뮬레이션으로 규명</li>
+<li>비등몰비 조성 공간 전체에 걸친 SFE, 항복 강도 등 기계적 성질 ternary plot 체계적 탐색</li>
+<li>NEP 프레임워크를 활용한 4원계 CrCoNiMn, HEA(high-entropy alloy)로의 일반화된 MLIP 개발</li>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>5/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
+<p><strong>총평</strong>: CrCoNi MEA를 위한 최초의 조성 전이 가능 범용 MLIP를 NEP 기반으로 개발하고, DFT 수준 정확도와 GPU 기반 대규모 시뮬레이션 가능성을 수십 가지 물성 검증으로 철저히 입증한 고신뢰도 재료 시뮬레이션 논문이다. 방법론적 독창성은 제한적이나 CrCoNi 연구 공동체에 즉시 활용 가능한 고품질 포텐셜을 제공한다는 점에서 실용적 가치가 크다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

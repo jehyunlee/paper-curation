@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,51 +42,44 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Large Language Models for Automated Scholarly Paper Review: A Survey</h1>
-<ul>
-<li><strong>저자</strong>: Zhenzhen Zhuang, Jiandong Chen, Hongfeng Xu, Yuwen Jiang, Jialiang Lin</li>
-<li><strong>기관</strong>: Guangzhou Institute of Science and Technology; Guizhou Normal University</li>
-<li><strong>발행</strong>: arXiv, 2025</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2501.10326"><a href="https://doi.org/10.48550/ARXIV.2501.10326" target="_blank">10.48550/ARXIV.2501.10326</a></a></li>
-<li><strong>PDF</strong>: <a href="https://arxiv.org/abs/2501.10326">arXiv 2501.10326</a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
 <p>LLM 시대의 <strong>자동화된 학술 논문 리뷰(Automated Scholarly Paper Review, ASPR)</strong>에 대한 포괄적 서베이 논문이다. LLM이 ASPR에 어떻게 활용되고 있는지를 기술적 병목 해소, 새로운 방법론(프롬프트 엔지니어링, 지도 학습 미세조정, 멀티에이전트 프레임워크), 데이터셋, 소스코드/온라인 시스템, 성능 및 한계, 출판사·학계의 태도와 정책, 그리고 미래 도전과제까지 전 과정을 체계적으로 정리하였다. GPT-4가 ASPR 문헌에서 가장 빈번하게 사용되며, 오픈소스 모델이 클로즈드소스 대비 약 2.7배 비중을 차지함을 보고한다.</p>
-<hr />
-</div><div class="section-box"><h2>Motivation (연구 동기)</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation (연구 동기)</h2>
 <ul>
 <li>학술 출판에서 피어 리뷰는 품질 보증의 핵심이나, 논문 수의 폭증으로 리뷰어 부담이 급격히 증가하고 있다.</li>
 <li>LLM의 등장으로 ASPR의 실질적 구현 가능성이 열렸으나, 새로운 이슈(환각, 편향, 데이터 보안)와 도전과제가 동반되었다.</li>
 <li>이전 연구(Lin et al., 2023a)에서 ASPR 개념을 제안한 후, LLM 기반 ASPR이 빠르게 발전하여 이를 체계적으로 정리할 필요가 대두되었다.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Achievement (주요 성과)</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement (주요 성과)</h2>
 <ol>
 <li><strong>ASPR에 사용되는 LLM 전수 조사</strong>: 20개 이상의 LLM을 오픈소스/클로즈드소스, 아키텍처별(Encoder-Decoder, Decoder-Only, MoE 등)로 분류하고 인용 빈도를 시각화</li>
 <li><strong>기술적 병목 해소 정리</strong>: 긴 텍스트 처리(16k→64k+ 토큰), 멀티모달 입력, 멀티턴 대화, 실시간 지식 획득 등 4대 기술적 돌파구 분석</li>
 <li><strong>새로운 방법론 3가지 체계화</strong>: 프롬프트 엔지니어링, 지도 학습 미세조정(ReviewMT, REVIEWER2, LimGen 등), 멀티에이전트 프레임워크(AgentReview, MARG, MAMORX 등)</li>
 <li><strong>15개 이상의 신규 데이터셋과 14개 소스코드/온라인 시스템</strong> 종합 정리</li>
 <li><strong>출판사 정책 분류</strong>: 12개 출판사의 금지 정책, 부분 허용(ACL, ACM, JAMA), 자체 AI 도구 개발(Frontiers AIRA, Wiley Research Exchange) 등을 표로 정리</li>
-<li><strong>LLM의 5대 한계</strong> 구체적 분석: 지식·이해 부족, 편향된 리뷰, 부정확한 코멘트(환각), 데이터 보안 위협, 제한된 커스터마이제이션</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>How (방법론)</h2>
+<p>6. <strong>LLM의 5대 한계</strong> 구체적 분석: 지식·이해 부족, 편향된 리뷰, 부정확한 코멘트(환각), 데이터 보안 위협, 제한된 커스터마이제이션</p>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>문헌 조사 방식</strong>: 2023~2024년 발표된 LLM 기반 ASPR 관련 논문을 체계적으로 수집·분석하는 서베이 방법론 채택</li>
 <li><strong>분석 프레임워크</strong>: ASPR 파이프라인의 각 단계(스크리닝 → 본 리뷰 → 코멘트 생성 → 저자 응답)별로 기술·방법·데이터셋·시스템을 매핑</li>
 <li><strong>비교 분석</strong>: 오픈소스 vs 클로즈드소스 LLM의 투명성, 커스터마이제이션, 성능을 다차원적으로 비교 (GPT-4, Claude 3, Gemini 1.5 vs Llama 3, Qwen2, Mistral)</li>
 <li><strong>정책 조사</strong>: 주요 학술 출판사(Elsevier, Springer Nature, IEEE, ACM, ACL 등)의 AIGC 도구 사용 정책을 직접 수집·분류</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+<hr></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li>ASPR이라는 개념을 이전 연구에서 처음 제안한 저자들이 LLM 시대에 맞춰 업데이트한 <strong>연속성 있는 서베이</strong>로서, 기존 ASPR 프레임워크와 LLM 발전을 유기적으로 연결</li>
 <li>단순 기술 리뷰를 넘어 <strong>출판사 정책과 학계의 태도</strong>까지 포괄하여 기술-제도-윤리를 통합적으로 조망한 점이 차별적</li>
 <li>멀티에이전트 프레임워크(AgentReview, MARG, MAMORX 등)를 ASPR 맥락에서 체계적으로 분류한 최초의 시도</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>시간적 범위 제약</strong>: 2023~2024년 문헌에 한정되어 2025년 이후의 급속한 발전(DeepSeek-R1, GPT-o1 등의 추론 모델)이 충분히 반영되지 못함</li>
 <li><strong>실증적 비교 부재</strong>: 다양한 ASPR 시스템 간 동일 조건에서의 직접적 성능 비교 실험이 없으며, 서베이 특성상 기존 보고 결과를 종합하는 데 그침</li>
@@ -106,49 +87,26 @@ a { color: #A62018; }
 <li><strong>멀티모달 ASPR의 미성숙</strong>: 현존 데이터셋이 대부분 텍스트에 국한되어 있으며, 그림·테이블·코드를 포함한 멀티모달 리뷰 데이터셋 구축이 시급</li>
 <li><strong>향후 방향</strong>: 환각 교정, 멀티모달 통합, 개인화된 리뷰 스타일 반영, 프라이버시 보존형 ASPR(로컬 LLM 배포), 장기적 리뷰 일관성 확보가 주요 과제로 제시됨</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th style="text-align: center;">점수 (1-10)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>참신성 (Novelty)</strong></td>
-<td style="text-align: center;">5</td>
-<td>서베이 논문으로서 신규 기법 제안은 아니나, ASPR 개념의 지속적 발전이라는 맥락에서 의미 있음</td>
-</tr>
-<tr>
-<td><strong>기술적 깊이 (Technical Depth)</strong></td>
-<td style="text-align: center;">6</td>
-<td>LLM 아키텍처와 학습 전략에 대한 배경 설명은 충실하나, 개별 방법론의 기술적 세부 분석은 피상적</td>
-</tr>
-<tr>
-<td><strong>실용성 (Practicality)</strong></td>
-<td style="text-align: center;">8</td>
-<td>출판사 정책 분류, 소스코드/시스템 목록, 데이터셋 정리 등 실무적으로 활용 가치가 높음</td>
-</tr>
-<tr>
-<td><strong>완성도 (Completeness)</strong></td>
-<td style="text-align: center;">7</td>
-<td>기술-제도-윤리를 포괄하는 넓은 범위를 다루나, 시간적 제약과 실증 비교 부재가 아쉬움</td>
-</tr>
-<tr>
-<td><strong>영향력 (Impact)</strong></td>
-<td style="text-align: center;">7</td>
-<td>AI-assisted peer review라는 시의성 높은 주제로 연구자·편집자 모두에게 참고자료로 유용</td>
-</tr>
-<tr>
-<td><strong>종합 (Overall)</strong></td>
-<td style="text-align: center;"><strong>6.5</strong></td>
-<td>체계적이고 포괄적인 서베이로서 ASPR 분야의 현황 파악에 유용하나, 독자적 실험이나 새로운 프레임워크 제안이 없어 기여도에 한계</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
+<tr><td>**참신성 (Novelty)**</td><td>5</td><td>서베이 논문으로서 신규 기법 제안은 아니나, ASPR 개념의 지속적 발전이라는 맥락에서 의미 있음</td></tr>
+<tr><td>**기술적 깊이 (Technical Depth)**</td><td>6</td><td>LLM 아키텍처와 학습 전략에 대한 배경 설명은 충실하나, 개별 방법론의 기술적 세부 분석은 피상적</td></tr>
+<tr><td>**실용성 (Practicality)**</td><td>8</td><td>출판사 정책 분류, 소스코드/시스템 목록, 데이터셋 정리 등 실무적으로 활용 가치가 높음</td></tr>
+<tr><td>**완성도 (Completeness)**</td><td>7</td><td>기술-제도-윤리를 포괄하는 넓은 범위를 다루나, 시간적 제약과 실증 비교 부재가 아쉬움</td></tr>
+<tr><td>**영향력 (Impact)**</td><td>7</td><td>AI-assisted peer review라는 시의성 높은 주제로 연구자·편집자 모두에게 참고자료로 유용</td></tr>
+<tr><td>**종합 (Overall)**</td><td>**6.5**</td><td>체계적이고 포괄적인 서베이로서 ASPR 분야의 현황 파악에 유용하나, 독자적 실험이나 새로운 프레임워크 제안이 없어 기여도에 한계</td></tr>
 </table></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>2</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: LLM 시대 자동 논문 리뷰의 기술·데이터셋·출판 정책을 광범위하게 정리한 서베이로, 실증 비교 없이 문헌 종합에 그치지만 실무적 참고 가치가 높다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

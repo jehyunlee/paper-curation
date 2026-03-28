@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,23 +42,15 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Language Agents Achieve Superhuman Synthesis of Scientific Knowledge</h1>
-<ul>
-<li><strong>저자</strong>: Michael D. Skarlinski, Sam Cox, Jon M. Laurent, James D. Braza, Michaela Hinks, Michael J. Hammerling, Manvitha Ponnapati, Samuel G. Rodriques, Andrew D. White</li>
-<li><strong>기관</strong>: FutureHouse Inc., University of Rochester, Francis Crick Institute</li>
-<li><strong>출처</strong>: arXiv:2409.13740 (2024)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.13740"><a href="https://doi.org/10.48550/arXiv.2409.13740" target="_blank">10.48550/arXiv.2409.13740</a></a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
 <p>과학 문헌 연구의 세 가지 핵심 과제 -- 정보 검색(retrieval), 요약(summarization), 모순 탐지(contradiction detection) -- 에서 LLM 기반 에이전트 <strong>PaperQA2</strong>가 도메인 전문가(PhD 수준)의 성능을 매칭하거나 초과함을 엄밀한 인간-AI 비교 방법론으로 실증한 연구이다. PaperQA2는 RAG(Retrieval-Augmented Generation)을 에이전트 기반 다단계 과정으로 분해하여 사실성(factuality)을 최적화하였으며, 이를 활용한 WikiCrow(위키피디아 스타일 요약 생성)와 ContraCrow(문헌 내 모순 대규모 탐지) 시스템을 구축하였다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
 <p>LLM은 과학 연구에서 문헌 검색, 합성, 요약을 지원할 잠재력이 있으나, 환각(hallucination), 세부 사항 간과, 벤치마크 미흡이라는 세 가지 근본적 한계가 있다. 기존 벤치마크들은 초록만 대상으로 하거나, 고정된 코퍼스에서의 검색이거나, 관련 논문이 직접 제공되는 등 실제 과학 연구 상황을 반영하지 못하며, 특히 인간 성능과의 직접 비교가 부재하다. 이로 인해 LLM/에이전트가 과학 연구에 실제로 활용 가능한 수준인지 판단하기 어려웠다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <h3>1. LitQA2 벤치마크 및 질의응답</h3>
 <ul>
 <li><strong>LitQA2</strong>: 248개의 과학 문헌 기반 다지선다형 질문 벤치마크 구축 (초록이 아닌 본문에만 답이 존재하는 난이도 높은 질문)</li>
@@ -82,7 +62,7 @@ a { color: #A62018; }
 <ul>
 <li>240개의 인간 단백질 코딩 유전자에 대한 위키피디아 스타일 기사 생성</li>
 <li>"인용 있으나 미지지(cited and unsupported)" 오류: WikiCrow <strong>13.5%</strong> vs 위키피디아 <strong>24.9%</strong> (p=0.0075)</li>
-<li>미인용 문장: WikiCrow <strong>3.5%</strong> vs 위키피디아 <strong>13.6%</strong> (p&lt;0.001, 3.9배 우수)</li>
+<li>미인용 문장: WikiCrow <strong>3.5%</strong> vs 위키피디아 <strong>13.6%</strong> (p<0.001, 3.9배 우수)</li>
 <li>추론 오류(reasoning errors): WikiCrow가 위키피디아 대비 유의미하게 적음 (12 vs 26, p=0.0144)</li>
 </ul>
 <h3>3. ContraCrow (문헌 내 모순 탐지)</h3>
@@ -92,34 +72,28 @@ a { color: #A62018; }
 <li>ContraDetect 벤치마크에서 ROC AUC <strong>0.842</strong>, 정밀도 <strong>88%</strong>, 위양성률 <strong>7%</strong></li>
 <li>논문당 검증된 모순 하한값: <strong>1.64개</strong></li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How (방법론)</h2>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>PaperQA2 아키텍처</strong>: RAG를 에이전트 기반 다단계 도구로 분해</li>
 <li><strong>Paper Search</strong>: 키워드 검색으로 후보 논문 식별 → Grobid 파싱 → 청크 분할</li>
 <li><strong>Gather Evidence</strong>: top-k 밀집 벡터 검색 + LLM 재순위화 및 맥락적 요약(RCS, Relevance Contextual Summary)</li>
 <li><strong>Citation Traversal</strong>: 인용 그래프를 계층적 인덱싱으로 활용하여 추가 관련 논문 발견</li>
-<li>
-<p><strong>Generate Answer</strong>: 상위 증거 요약을 프롬프트에 포함하여 최종 답변 생성</p>
-</li>
-<li>
-<p><strong>인간-AI 비교 방법론</strong>:</p>
-</li>
-<li>PhD 보유/재학 중 전문가에게 인터넷, 검색 도구, 시간 제한 없이 동일 과제 수행 (질문당 $3-12 인센티브, 약 1주 시간)</li>
-<li>
-<p>블라인드 평가: WikiCrow vs 위키피디아 문장을 섞어 전문가가 인용 정확성 평가</p>
-</li>
-<li>
-<p><strong>ContraCrow</strong>: 논문에서 LLM으로 주장(claim) 추출 → PaperQA2에 모순 탐지 프롬프트 → 11점 Likert 스케일로 모순 정도 평가</p>
-</li>
-<li>
-<p><strong>어블레이션 연구</strong>: 에이전트 vs 비에이전트, RCS 유무, 인용 탐색 유무, LLM 모델 변경, top-k 깊이 등 체계적 파라미터 연구</p>
-</li>
+<li><strong>Generate Answer</strong>: 상위 증거 요약을 프롬프트에 포함하여 최종 답변 생성</li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+<ul>
+<li><strong>인간-AI 비교 방법론</strong>:</li>
+<li>PhD 보유/재학 중 전문가에게 인터넷, 검색 도구, 시간 제한 없이 동일 과제 수행 (질문당 $3-12 인센티브, 약 1주 시간)</li>
+<li>블라인드 평가: WikiCrow vs 위키피디아 문장을 섞어 전문가가 인용 정확성 평가</li>
+</ul>
+<ul>
+<li><strong>ContraCrow</strong>: 논문에서 LLM으로 주장(claim) 추출 → PaperQA2에 모순 탐지 프롬프트 → 11점 Likert 스케일로 모순 정도 평가</li>
+</ul>
+<ul>
+<li><strong>어블레이션 연구</strong>: 에이전트 vs 비에이전트, RCS 유무, 인용 탐색 유무, LLM 모델 변경, top-k 깊이 등 체계적 파라미터 연구</li>
+</ul>
+<hr></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>엄밀한 인간-AI 비교 방법론</strong>: 인간에게 아무런 제약(도구, 시간, 인터넷)을 두지 않은 상태에서 동일 과제로 직접 비교한 최초의 체계적 연구. 기존 벤치마크의 비현실적 제약을 극복.</li>
 <li><strong>RAG의 에이전트화</strong>: RAG를 고정된 파이프라인이 아닌 에이전트 도구 세트로 분해하여, 검색 쿼리 수정, 인용 그래프 탐색 등 반복적 탐색을 가능케 한 설계.</li>
@@ -127,8 +101,8 @@ a { color: #A62018; }
 <li><strong>대규모 모순 탐지의 실현</strong>: 인간에게는 비현실적인 "모든 논문 vs 모든 문헌" 비교를 AI 에이전트로 실현하여, 과학적으로 중요하지만 불가능했던 과제를 해결.</li>
 <li><strong>LitQA2 벤치마크</strong>: 초록이 아닌 본문에서만 답을 찾을 수 있고, 대안 출처가 없는 질문만을 포함하는 고난도 벤치마크.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
 <h3>한계</h3>
 <ul>
 <li><strong>비용</strong>: 질문당 $1-3, WikiCrow 기사당 $4.48로 상용 시스템 대비 비용이 높음.</li>
@@ -146,48 +120,16 @@ a { color: #A62018; }
 <li>모순 탐지 결과를 활용한 과학적 재현성(reproducibility) 평가 자동화</li>
 <li>Closed-loop 연구 자동화(가설 생성 → 문헌 검증 → 실험 설계)로의 확장</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th style="text-align: center;">점수 (5점 만점)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>참신성 (Novelty)</strong></td>
-<td style="text-align: center;">4.5</td>
-<td>엄밀한 인간-AI 비교와 대규모 모순 탐지는 매우 독창적</td>
-</tr>
-<tr>
-<td><strong>기술적 완성도 (Soundness)</strong></td>
-<td style="text-align: center;">4.5</td>
-<td>체계적 어블레이션, 통계적 검정, 인간 전문가 검증이 철저</td>
-</tr>
-<tr>
-<td><strong>실용성 (Practicality)</strong></td>
-<td style="text-align: center;">4.5</td>
-<td>오픈소스(paperqa), 즉시 활용 가능한 도구; 비용이 유일한 장벽</td>
-</tr>
-<tr>
-<td><strong>영향력 (Impact)</strong></td>
-<td style="text-align: center;">5.0</td>
-<td>"AI가 과학 문헌 합성에서 초인적"이라는 주장을 실증; 과학 연구 방식의 패러다임 전환 시사</td>
-</tr>
-<tr>
-<td><strong>표현 (Presentation)</strong></td>
-<td style="text-align: center;">4.5</td>
-<td>명확한 도식(Figure 1-4), 정량적 비교, 투명한 방법론</td>
-</tr>
-<tr>
-<td><strong>종합 (Overall)</strong></td>
-<td style="text-align: center;">4.5</td>
-<td>AI 기반 과학 문헌 연구의 현재 수준을 가장 설득력 있게 보여주는 랜드마크 논문</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수 (5점 만점)</th><th>비고</th></tr>
+<tr><td>**참신성 (Novelty)**</td><td>4.5</td><td>엄밀한 인간-AI 비교와 대규모 모순 탐지는 매우 독창적</td></tr>
+<tr><td>**기술적 완성도 (Soundness)**</td><td>4.5</td><td>체계적 어블레이션, 통계적 검정, 인간 전문가 검증이 철저</td></tr>
+<tr><td>**실용성 (Practicality)**</td><td>4.5</td><td>오픈소스(paperqa), 즉시 활용 가능한 도구; 비용이 유일한 장벽</td></tr>
+<tr><td>**영향력 (Impact)**</td><td>5.0</td><td>&quot;AI가 과학 문헌 합성에서 초인적&quot;이라는 주장을 실증; 과학 연구 방식의 패러다임 전환 시사</td></tr>
+<tr><td>**표현 (Presentation)**</td><td>4.5</td><td>명확한 도식(Figure 1-4), 정량적 비교, 투명한 방법론</td></tr>
+<tr><td>**종합 (Overall)**</td><td>4.5</td><td>AI 기반 과학 문헌 연구의 현재 수준을 가장 설득력 있게 보여주는 랜드마크 논문</td></tr>
 </table>
 <h3>총평</h3>
 <p>PaperQA2가 과학 문헌의 검색, 요약, 모순 탐지에서 PhD 수준 전문가를 매칭하거나 초과한다는 결과는, AI 기반 과학 연구의 가능성을 가장 설득력 있게 보여주는 성과이다. 특히 인간에게 아무런 제약을 두지 않은(인터넷, 도구, 시간 무제한) 공정한 비교 방법론, 체계적 어블레이션, 그리고 인간 전문가의 직접 검증이 결과의 신뢰성을 크게 높인다. ContraCrow를 통한 대규모 모순 탐지(논문당 평균 1.64개의 검증된 모순)는 과학 문헌의 일관성과 재현성 문제에 대한 새로운 시각을 제공한다. RAG의 에이전트화와 맥락적 재순위화(RCS)라는 기술적 혁신은 향후 다양한 지식 집약적 AI 시스템에 적용될 수 있는 핵심 설계 원리를 제시한다. FutureHouse(비영리)가 코드를 오픈소스로 공개한 점도 높이 평가할 만하다.</p></div>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,19 +42,13 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>ChartLlama: A Multimodal LLM for Chart Understanding and Generation</h1>
-<p><strong>저자:</strong> Yucheng Han, Chi Zhang, Xin Chen, Xu Yang, Zhibin Wang, Gang Yu, Bin Fu, Hanwang Zhang
-<strong>소속:</strong> NTU Singapore, Tencent, Southeast University
-<strong>출처:</strong> arXiv:2311.16483 (2023.11)
-<strong>DOI:</strong> <a href="https://doi.org/10.48550/ARXIV.2311.16483"><a href="https://doi.org/10.48550/ARXIV.2311.16483" target="_blank">10.48550/ARXIV.2311.16483</a></a></p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
-<p>GPT-4의 언어 및 코딩 능력을 활용하여 차트 데이터 생성, 차트 그림 생성, instruction 데이터 생성의 3단계 파이프라인으로 고품질 합성 instruction-tuning 데이터셋(11K 차트, 160K instruction, 10개 차트 유형, 7개 태스크)을 구축하고, 이를 기반으로 차트 이해와 생성을 동시에 수행하는 멀티모달 LLM인 ChartLlama를 제안한 연구이다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>GPT-4V 등장 이후에도 멀티모달 LLM은 차트와 같은 특화된 시각적 표현의 해석에 현저한 한계를 보인다. 기존 차트 데이터셋들은 두 가지 근본적 문제가 있다. (1) 웹 크롤러로 수집한 차트에 수동 어노테이션을 의존하여 데이터 품질이 낮고 어노테이션이 불완전하다. (2) 기존 데이터셋은 단순 QA나 캡셔닝 위주로, 차트의 고수준 이해(트렌드 분석, 데이터 해석)나 차트 생성/편집 등 실세계 활용 시나리오를 포괄하지 못한다. 특히 차트 생성 태스크는 Python 코드 어노테이션의 부재로 기존 방법으로는 지도 학습이 사실상 불가능했다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
+<p>GPT-4의 언어 및 코딩 능력을 활용하여 차트 데이터 생성, 차트 그림 생성, instruction 데이터 생성의 3단계 파이프라인으로 고품질 합성 instruction-tuning 데이터셋(11K 차트, 160K instruction, 10개 차트 유형, 7개 태스크)을 구축하고, 이를 기반으로 차트 이해와 생성을 동시에 수행하는 멀티모달 LLM인 ChartLlama를 제안한 연구이다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>GPT-4V 등장 이후에도 멀티모달 LLM은 차트와 같은 특화된 시각적 표현의 해석에 현저한 한계를 보인다. 기존 차트 데이터셋들은 두 가지 근본적 문제가 있다. (1) 웹 크롤러로 수집한 차트에 수동 어노테이션을 의존하여 데이터 품질이 낮고 어노테이션이 불완전하다. (2) 기존 데이터셋은 단순 QA나 캡셔닝 위주로, 차트의 고수준 이해(트렌드 분석, 데이터 해석)나 차트 생성/편집 등 실세계 활용 시나리오를 포괄하지 못한다. 특히 차트 생성 태스크는 Python 코드 어노테이션의 부재로 기존 방법으로는 지도 학습이 사실상 불가능했다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ol>
 <li><strong>전통적 벤치마크 SOTA:</strong></li>
 <li>ChartQA: Human 48.96%, Augmented 90.36%, 평균 69.66%로 당시 기존 최고 UniChart(66.24%) 대비 +3.42%p</li>
@@ -75,9 +57,8 @@ a { color: #A62018; }
 <li><strong>신규 태스크에서 LLaVA-1.5 대비 대폭 개선:</strong> Detailed Description 74.2 vs 67.2, Chart-to-chart 성공률 73% vs 46%, Text-to-chart 성공률 81% vs 77%, Chart-editing 성공률 71% vs 38%</li>
 <li><strong>신규 차트 유형 QA 능력:</strong> Funnel(70.59%), Gantt(56.64%), Heatmap(53.18%), Scatter(54.97%) 등 기존 모델이 지원하지 않던 차트 유형에서 UniChart 및 Baseline 대비 압도적 성능</li>
 <li><strong>10개 차트 유형, 7개 태스크 지원:</strong> bar, line, pie, polar, funnel, gantt, heatmap, scatter, box, candlestick</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How (방법)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법)</h2>
 <ul>
 <li><strong>3단계 데이터 생성 파이프라인 (전적으로 GPT-4 활용):</strong></li>
 <li><strong>Chart Data Generation:</strong> GPT-4에 차트 주제, 데이터 트렌드, 행/열 크기, 차트 유형 등을 지정하여 합성 테이블 데이터 생성. 기존 차트 데이터셋을 참조하여 다양성 보강</li>
@@ -85,16 +66,15 @@ a { color: #A62018; }
 <li><strong>Instruction Data Generation:</strong> 차트 설명, 원시 데이터, 차트 코드를 종합하여 GPT-4로 QA, 요약, 데이터 추출, 상세 설명, chart-to-chart, text-to-chart, chart-editing 등 7가지 태스크의 instruction 데이터 생성</li>
 <li><strong>모델 아키텍처:</strong> LLaVA-1.5 기반. CLIP ViT-L/14@336px 비전 인코더 + 2-layer MLP projection + LLM (LoRA rank 128로 효율적 학습)</li>
 <li><strong>평가:</strong> 전통적 태스크(ChartQA, Chart-to-text, Chart extraction)는 기존 메트릭 사용, 신규 태스크는 GPT-4 기반 평가 메트릭 설계</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>차트 이해와 생성의 통합:</strong> 기존 연구가 차트 "이해"에만 집중한 반면, chart-to-chart(디렌더링), text-to-chart(생성), chart-editing(편집)을 포함하여 이해와 생성을 하나의 모델에서 동시에 수행하는 최초의 시도</li>
-<li><strong>완전 합성 데이터 파이프라인:</strong> 웹 크롤링이나 수동 어노테이션 없이 GPT-4만으로 데이터 테이블 -&gt; 차트 이미지 -&gt; instruction 데이터를 end-to-end로 생성. 이 방법은 차트 유형이나 태스크를 쉽게 확장할 수 있는 유연성 제공</li>
+<li><strong>완전 합성 데이터 파이프라인:</strong> 웹 크롤링이나 수동 어노테이션 없이 GPT-4만으로 데이터 테이블 -> 차트 이미지 -> instruction 데이터를 end-to-end로 생성. 이 방법은 차트 유형이나 태스크를 쉽게 확장할 수 있는 유연성 제공</li>
 <li><strong>10개 차트 유형 지원:</strong> 기존 데이터셋이 bar/line/pie 3종에 한정된 반면, polar, funnel, gantt, heatmap, scatter, box, candlestick을 추가. 특히 GPT-4의 코드 생성 능력으로 비표준 차트 유형도 자동 생성 가능</li>
 <li><strong>GPT-4 기반 평가 메트릭 설계:</strong> Chart-to-text의 BLEU-4 한계를 지적하고, 태스크별 맞춤형 GPT-4 평가 프롬프트를 설계</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>합성 데이터의 한계:</strong> 모든 차트가 GPT-4로 합성되어, 실세계 차트의 시각적 다양성(폰트, 레이아웃, 해상도 변이)을 완전히 재현하지 못할 수 있음. 후속 연구인 ChartInstruct와 ChartGemma가 실세계 차트 활용으로 이 문제를 해결</li>
 <li><strong>다국어 OCR 미지원:</strong> 비전 인코더가 다국어 OCR을 처리하지 못하여 비영어 텍스트를 포함하는 차트에서 활용이 제한됨</li>
@@ -102,9 +82,18 @@ a { color: #A62018; }
 <li><strong>13B 모델 크기:</strong> 후속 연구(ChartGemma 3B)에 비해 대형이며, 실세계 배포에 불리</li>
 <li><strong>Chart-to-text 평가의 BLEU-4 한계:</strong> ground truth가 적은 상황에서 BLEU-4의 불합리성을 인식하면서도, GPT-4 평가의 재현성 문제는 동일하게 존재</li>
 <li><strong>향후 연구:</strong> 다국어 OCR 지원 비전 인코더 개발, 더 효과적인 자동 스크리닝 메커니즘, 다른 도메인(과학 도표, 의료 이미지 등)으로의 파이프라인 확장</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <p>ChartLlama는 차트 도메인에서 instruction tuning을 위한 완전 합성 데이터 파이프라인이라는 중요한 방법론적 기여를 한 선구적 연구이다. GPT-4의 언어-코드 능력을 3단계로 분리 활용하는 파이프라인 설계는 직관적이면서도 효과적이며, 차트 유형과 태스크의 확장이 용이하다는 점은 큰 실용적 가치가 있다. 특히 차트 "생성"과 "편집"을 이해와 함께 통합한 것은 이 분야에서 독창적인 시도이다. ChartQA, Chart-to-text, Chart extraction에서의 SOTA 달성과, 6개 비표준 차트 유형에 대한 QA 성능은 파이프라인의 유효성을 뒷받침한다. 다만 합성 데이터만 사용한 점은 실세계 차트에 대한 일반화에 본질적 한계가 있으며, 이는 후속 연구(ChartInstruct의 실세계 차트 수집, ChartGemma의 이미지 직접 활용)에서 개선된다. 또한 GPT-4 의존적 데이터 생성은 비용과 재현성 측면에서 과제가 남으며, 신규 태스크 평가가 LLaVA-1.5 단일 베이스라인과의 비교에 그친 점은 아쉬움으로 지적된다. 전반적으로 차트 이해/생성 분야의 instruction tuning 패러다임을 개척한 중요한 연구로, ChartInstruct 및 ChartGemma와 함께 이 분야의 기초를 형성한 논문이다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>4</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.3</td></tr>
+</table>
+<p><strong>총평</strong>: 합성 데이터 파이프라인으로 차트 이해와 생성을 동시에 가능하게 한 NTU/Tencent 연구로, 이해-생성 통합 접근이 차별적이나 합성 데이터 품질의 실제 평가 한계가 있다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

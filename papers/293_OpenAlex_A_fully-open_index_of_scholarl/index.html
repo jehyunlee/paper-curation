@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>OpenAlex: A Fully-Open Index of Scholarly Works, Authors, Venues, Institutions, and Concepts</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,46 +13,49 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A56B0; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>OpenAlex: A Fully-Open Index of Scholarly Works, Authors, Venues, Institutions, and Concepts</h1>
-<blockquote>
-<p><strong>저자</strong>: Jason Priem, Heather Piwowar, Richard Orr | <strong>날짜</strong>: 2022 | <strong>Journal</strong>: arXiv | <strong>DOI</strong>: - | <strong>arXiv</strong>: 2205.01833
-<strong>리뷰 모드</strong>: PDF</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
+<blockquote><p><strong>저자</strong>: Jason Priem, Heather Piwowar, Richard Orr | <strong>날짜</strong>: 2022 | <strong>Journal</strong>: arXiv | <strong>DOI</strong>: - | <strong>arXiv</strong>: 2205.01833</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>Microsoft Academic Graph(MAG) 중단 이후 완전 무료·공개 학술 데이터베이스 공백을 무엇으로 메울 수 있는가? OpenAlex는 2억 9백만 편의 논문, 2억 1,300만 명의 저자, 12만 4천 개 학술지, 10만 9천 개 기관, 6만 5천 개 개념을 포함하는 <strong>100% 오픈 학술 지식 그래프</strong>로서 MAG의 직접 대체재로 설계되었다. 완전한 데이터 공개, 오픈 API, 오픈소스 코드를 통해 학술 메타데이터의 민주화를 추구한다.</p>
-<p><img alt="Figure 1" src="figures/fig1.png" />
-<em>Figure 1: OpenAlex 그래프 데이터 모델 — Works, Authors, Venues, Institutions, Concepts 5종 엔티티와 연결 구조</em></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: OpenAlex 그래프 데이터 모델 — Works, Authors, Venues, Institutions, Concepts 5종 엔티티와 연결 구조</em></p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li><strong>rule_base_novelty</strong>: MAG 종료 이후 완전 오픈(데이터·API·코드) 학술 지식 그래프를 최초로 구축</li>
 <li><strong>rule_base_action</strong>: 5가지 엔티티 유형(Works, Authors, Venues, Institutions, Concepts)에 persistent ID 부여</li>
 <li><strong>rule_base_result</strong>: 2억 9백만 편 논문 인덱싱, 매일 5만 편 추가</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터 수집</strong>: Crossref, PubMed, arXiv, 기관 저장소 등 수백 개 소스 통합</li>
@@ -60,9 +63,9 @@ a { color: #1A56B0; }
 <li><strong>기관 연결</strong>: NLP 기반 affiliation 파싱 + ROR ID 연결 (94% 커버리지)</li>
 <li><strong>개념 분류</strong>: MAG 기반 개념 트리 + CNN 기반 딥러닝 분류기 (위키피디아 학습)</li>
 <li><strong>오픈 인프라</strong>: REST API, 전체 데이터 스냅샷 다운로드, PostgreSQL/Elasticsearch 지원</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
-<p>Scopus, Web of Science 같은 상용 데이터베이스는 접근 비용이 높아 저소득 국가와 소규모 기관의 연구 평가·분석을 제한한다. 완전 무료·오픈 학술 그래프는 과학 측정학(scientometrics), 연구 평가, 지식 발견의 민주화를 가능하게 한다.</p>
+<p>Scopus, Web of Science 같은 상용 데이터베이스는 접근 비용이 높아 저소득 국가와 소규모 기관의 연구 평가·분석을 제한한다. 완전 무료·오픈 학술 그래프는 과학 측정학(scientometrics), 연구 평가, 지식 발견의 민주화를 가능하게 한다.</p></div>
 <div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
@@ -74,44 +77,22 @@ a { color: #1A56B0; }
 <ul>
 <li>개념 분류 정확도에 대한 체계적 검증 데이터가 부족</li>
 <li>2022년 논문 기준으로 이후 확장/개선 현황이 반영되지 않음</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>저자 모호성 해소 정확도 향상을 위한 ML 모델 고도화</li>
 <li>OpenAlex 기반 연구 평가 표준 지표 개발</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: 학술 메타데이터의 완전 개방화를 실현한 중요한 인프라 논문으로, 과학 측정학 연구의 접근성을 근본적으로 개선하는 기여를 했다.</p></div></div></div></div></div></div></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<p><strong>총평</strong>: 학술 메타데이터의 완전 개방화를 실현한 중요한 인프라 논문으로, 과학 측정학 연구의 접근성을 근본적으로 개선하는 기여를 했다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

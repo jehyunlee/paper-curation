@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,20 +42,17 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>Mapping scientific communities at scale</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
-<blockquote><p><strong>저자</strong>: Victor Barbier, Eric Jeangirard | <strong>날짜</strong>: 2025-01-17 | <strong>Journal</strong>: arXiv preprint | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2501.10035" target="_blank">2501.10035</a> | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.10035" target="_blank">10.48550/arXiv.2501.10035</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Abstract only (PDF 없음)</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>대규모 서지 데이터셋에서 과학 커뮤니티를 확장 가능하게 시각화하고 분석하려면 어떤 방법이 필요한가? 프랑스 연구 포털 <strong>scanR</strong>의 메타데이터를 활용하여 저자, 소속, 토픽 간의 상호작용 네트워크를 구축하고, Elasticsearch(집계), Graphology(Force Atlas2 공간화 + Louvain 커뮤니티 탐지), VOSviewer(시각화), Mistral Nemo LLM(커뮤니티 레이블링), OpenAlex(인용 수 보강)를 통합한 확장 가능한 프레임워크를 제시한다. 전국 및 개별 기관 수준에서 모두 활용 가능하며 iframe으로 임베딩 가능한 웹 도구로 구현했다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Victor Barbier, Eric Jeangirard | <strong>날짜</strong>: 2025-01-17 | <strong>Journal</strong>: arXiv preprint | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2501.10035" target="_blank">2501.10035</a> | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2501.10035"" target="_blank">10.48550/arXiv.2501.10035"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2501.10035" target="_blank">10.48550/arXiv.2501.10035</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>대규모 서지 데이터셋에서 과학 커뮤니티를 확장 가능하게 시각화하고 분석하려면 어떤 방법이 필요한가? 프랑스 연구 포털 <strong>scanR</strong>의 메타데이터를 활용하여 저자, 소속, 토픽 간의 상호작용 네트워크를 구축하고, Elasticsearch(집계), Graphology(Force Atlas2 공간화 + Louvain 커뮤니티 탐지), VOSviewer(시각화), Mistral Nemo LLM(커뮤니티 레이블링), OpenAlex(인용 수 보강)를 통합한 확장 가능한 프레임워크를 제시한다. 전국 및 개별 기관 수준에서 모두 활용 가능하며 iframe으로 임베딩 가능한 웹 도구로 구현했다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty, action] "This study introduces a novel methodology for mapping scientific communities at scale, addressing challenges associated with network analysis in large bibliometric datasets."</li>
 <li>[novelty] "A Large Language Model (Mistral Nemo) is used to label the communities detected and OpenAlex data helps to enrich the results with citation counts estimation to detect hot topics."</li>
 <li>[result] "All tools and methodologies are open-source."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: scanR(프랑스 연구 포털) 논문 메타데이터 + OpenAlex 인용 수 보강</li>
@@ -65,32 +61,34 @@ a { color: #1558A8; }
 <li><strong>시각화</strong>: VOSviewer 통합</li>
 <li><strong>LLM 레이블링</strong>: Mistral Nemo로 탐지된 커뮤니티에 자동 레이블 부여</li>
 <li><strong>배포</strong>: 오픈소스(GitHub), iframe 임베딩 가능한 웹 도구</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>대규모 bibliometric 데이터에서 의미 있는 연구 커뮤니티 구조를 추출하는 것이 과학 정책과 전략적 의사결정에 필수적이나, 기존 방법들은 확장성이 부족</li>
 <li>LLM을 커뮤니티 자동 레이블링에 활용하는 것은 전문가 수동 레이블링의 병목을 해소하는 새로운 접근</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>scanR의 프랑스 연구에 특화된 데이터로, 글로벌 적용을 위해서는 다른 데이터 소스로의 교체가 필요</li>
 <li>LLM 레이블링의 정확도와 일관성 검증이 충분히 제시되지 않음</li>
 <li>Force Atlas2 + Louvain의 파라미터 설정에 따른 결과 민감성 불명확</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>다른 국가 연구 데이터베이스로 프레임워크 이식</li>
 <li>시계열 커뮤니티 진화 추적 기능 추가</li>
 <li>LLM 레이블링의 정확도를 전문가 평가와 비교 검증</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>3/5</td></tr><tr><td>Technical Soundness</td><td>3/5</td></tr><tr><td>Significance</td><td>3/5</td></tr><tr><td>Clarity</td><td>4/5</td></tr><tr><td>Overall</td><td>3/5</td></tr></table>
-<p><strong>총평</strong>: 여러 오픈 도구를 효과적으로 통합하고 LLM 자동 레이블링을 추가하여 과학 커뮤니티 매핑의 실용적 워크플로를 제시한 시스템 논문이다. 프랑스 국가 연구 포털의 구체적 구현 사례로 오픈소스 공개가 가장 큰 강점이다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
+<p><strong>총평</strong>: 여러 오픈 도구를 효과적으로 통합하고 LLM 자동 레이블링을 추가하여 과학 커뮤니티 매핑의 실용적 워크플로를 제시한 시스템 논문이다. 프랑스 국가 연구 포털의 구체적 구현 사례로 오픈소스 공개가 가장 큰 강점이다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

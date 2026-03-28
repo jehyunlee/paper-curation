@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,22 +42,20 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, Karthik Narasimhan</li>
 <li><strong>출판</strong>: ICLR 2024 (Conference Paper)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2310.06770"><a href="https://doi.org/10.48550/arXiv.2310.06770" target="_blank">10.48550/arXiv.2310.06770</a></a></li>
+<li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2310.06770"" target="_blank">10.48550/arXiv.2310.06770"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2310.06770" target="_blank">10.48550/arXiv.2310.06770</a></a></li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Essence (본질)</h2>
-<p>실제 GitHub 리포지토리의 이슈와 풀 리퀘스트(PR)를 기반으로, 언어 모델(LM)이 실세계 소프트웨어 엔지니어링 문제를 해결할 수 있는지 평가하는 벤치마크 <strong>SWE-bench</strong>를 제안한다. 12개 인기 Python 리포지토리에서 수집한 2,294개의 과제로 구성되며, 모델은 이슈 설명과 코드베이스를 입력받아 문제를 해결하는 패치를 생성해야 한다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>기존 코딩 벤치마크(HumanEval 등)는 자기완결적(self-contained)이고 몇 줄로 해결 가능한 단순 문제에 국한되어 있어, SOTA LM의 실제 능력 한계를 측정하기에 부족하다. 실세계 소프트웨어 엔지니어링은 대규모 리포지토리 탐색, 파일 간 상호작용 이해, 복잡한 추론 등을 요구하며, 이는 LM의 프론티어 능력을 평가하는 풍부하고 지속 가능한 테스트베드가 될 수 있다.</p>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr></div>
+<div class="essence-box"><h2>Essence (본질)</h2>
+<p>실제 GitHub 리포지토리의 이슈와 풀 리퀘스트(PR)를 기반으로, 언어 모델(LM)이 실세계 소프트웨어 엔지니어링 문제를 해결할 수 있는지 평가하는 벤치마크 <strong>SWE-bench</strong>를 제안한다. 12개 인기 Python 리포지토리에서 수집한 2,294개의 과제로 구성되며, 모델은 이슈 설명과 코드베이스를 입력받아 문제를 해결하는 패치를 생성해야 한다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>기존 코딩 벤치마크(HumanEval 등)는 자기완결적(self-contained)이고 몇 줄로 해결 가능한 단순 문제에 국한되어 있어, SOTA LM의 실제 능력 한계를 측정하기에 부족하다. 실세계 소프트웨어 엔지니어링은 대규모 리포지토리 탐색, 파일 간 상호작용 이해, 복잡한 추론 등을 요구하며, 이는 LM의 프론티어 능력을 평가하는 풍부하고 지속 가능한 테스트베드가 될 수 있다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
 <li><strong>벤치마크 구축</strong>: 90,000개 PR에서 3단계 필터링(속성 필터 + 실행 기반 검증)을 거쳐 2,294개 고품질 과제 인스턴스 생성</li>
 <li><strong>기준선 성능 확립</strong>: 최고 성능 모델 Claude 2가 BM25 검색 기준 <strong>1.96%</strong>, Oracle 검색 기준 <strong>4.8%</strong>만 해결 -- 극히 도전적</li>
@@ -80,9 +66,8 @@ a { color: #A62018; }
 <li>모델은 짧고 단순한 편집만 생성하는 경향 (gold patch 평균 74.5줄 vs 모델 생성 30.1줄)</li>
 <li>이슈 해결 날짜와 성능 간 상관관계 없음 (암기에 의한 "치팅" 가능성 낮음)</li>
 <li>서로 다른 모델이 해결하는 문제 집합이 상이 (Claude 2와 SWE-Llama 13b 간 42%만 겹침)</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ol>
 <li><strong>데이터 수집 파이프라인</strong> (3단계):</li>
 <li>Stage I: 12개 인기 Python 리포지토리에서 ~90,000 PR 수집</li>
@@ -90,19 +75,19 @@ a { color: #A62018; }
 <li>Stage III: 실행 기반 필터링 -- fail-to-pass 테스트가 있는 인스턴스만 보존</li>
 <li><strong>평가 설정</strong>:</li>
 <li>BM25 희소 검색 또는 Oracle 검색으로 관련 파일을 컨텍스트로 제공</li>
-<li>모델이 .patch 파일을 생성 -&gt; 코드베이스에 적용 -&gt; 단위/시스템 테스트 실행</li>
+<li>모델이 .patch 파일을 생성 -> 코드베이스에 적용 -> 단위/시스템 테스트 실행</li>
 <li>해결률(% Resolved) = 모든 fail-to-pass 및 pass-to-pass 테스트 통과 비율</li>
 <li><strong>SWE-Llama 훈련</strong>: 37개 추가 리포지토리에서 19,000개 이슈-PR 쌍으로 CodeLlama를 LoRA 미세조정</li>
-</ol>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>실세계 소프트웨어 엔지니어링을 LM 벤치마크로 체계화</strong>한 최초의 대규모 시도</li>
 <li>GitHub의 이슈-PR 파이프라인을 활용한 <strong>자동화된 데이터 수집 및 실행 기반 검증</strong> 프레임워크</li>
 <li>단순 코드 생성이 아닌 <strong>리포지토리 규모의 코드 편집</strong>(평균 1.7개 파일, 3개 함수, 32.8줄 수정)을 요구</li>
 <li><strong>지속적 업데이트 가능</strong>: 새 PR이 생성됨에 따라 최소 인간 개입으로 벤치마크 확장 가능</li>
 <li>다양한 접근법(검색, 긴 컨텍스트 모델, 에이전트 기반 방법 등)을 비교할 수 있는 열린 평가 플랫폼</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
 <ul>
 <li><strong>Python 전용</strong>: 다른 프로그래밍 언어로의 확장 필요</li>
 <li><strong>단순 기준선만 제시</strong>: 에이전트 기반 접근, 도구 활용 LM 등 고급 방법론 미탐색 (후속 연구에서 SWE-agent, Devin 등으로 크게 향상됨)</li>
@@ -111,43 +96,15 @@ a { color: #A62018; }
 <li><strong>미세조정 모델의 컨텍스트 분포 이동 민감성</strong>: SWE-Llama가 Oracle 컨텍스트로 훈련되어 BM25 컨텍스트에서 성능 급락</li>
 <li><strong>멀티모달 이슈</strong>: 일부 이슈(matplotlib 32%)에 이미지가 포함되어 있어 비전-언어 이해 필요</li>
 <li>후속 연구 방향: 에이전트 기반 접근, 실행 환경과의 상호작용, 다국어/다언어 확장</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th style="text-align: center;">점수 (1-10)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>참신성 (Novelty)</td>
-<td style="text-align: center;">9</td>
-<td>실세계 SE를 LM 벤치마크로 체계화한 선구적 연구</td>
-</tr>
-<tr>
-<td>기술적 완성도 (Soundness)</td>
-<td style="text-align: center;">9</td>
-<td>3단계 자동 파이프라인, 실행 기반 검증, 풍부한 분석</td>
-</tr>
-<tr>
-<td>유의미성 (Significance)</td>
-<td style="text-align: center;">10</td>
-<td>AI 코딩 에이전트 연구의 사실상 표준 벤치마크로 자리잡음</td>
-</tr>
-<tr>
-<td>재현성 (Reproducibility)</td>
-<td style="text-align: center;">9</td>
-<td>전체 코드, 데이터, 모델 가중치 공개</td>
-</tr>
-<tr>
-<td>종합 (Overall)</td>
-<td style="text-align: center;">9</td>
-<td>LM의 실세계 코딩 능력 평가를 근본적으로 변화시킨 핵심 벤치마크</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
+<tr><td>참신성 (Novelty)</td><td>9</td><td>실세계 SE를 LM 벤치마크로 체계화한 선구적 연구</td></tr>
+<tr><td>기술적 완성도 (Soundness)</td><td>9</td><td>3단계 자동 파이프라인, 실행 기반 검증, 풍부한 분석</td></tr>
+<tr><td>유의미성 (Significance)</td><td>10</td><td>AI 코딩 에이전트 연구의 사실상 표준 벤치마크로 자리잡음</td></tr>
+<tr><td>재현성 (Reproducibility)</td><td>9</td><td>전체 코드, 데이터, 모델 가중치 공개</td></tr>
+<tr><td>종합 (Overall)</td><td>9</td><td>LM의 실세계 코딩 능력 평가를 근본적으로 변화시킨 핵심 벤치마크</td></tr>
 </table></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

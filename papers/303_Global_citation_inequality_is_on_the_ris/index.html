@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Global Citation Inequality Is on the Rise</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,55 +13,58 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A56B0; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>Global Citation Inequality Is on the Rise</h1>
-<blockquote>
-<p><strong>저자</strong>: Mathias Wullum Nielsen, Jens Peter Andersen | <strong>날짜</strong>: 2021 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: 10.1073/pnas.2012208118 | <strong>arXiv</strong>: -
-<strong>리뷰 모드</strong>: PDF</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
+<blockquote><p><strong>저자</strong>: Mathias Wullum Nielsen, Jens Peter Andersen | <strong>날짜</strong>: 2021 | <strong>Journal</strong>: Proceedings of the National Academy of Sciences | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.2012208118" target="_blank">10.1073/pnas.2012208118</a> | <strong>arXiv</strong>: -</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학에서 피인용 불평등은 증가하고 있는가, 감소하고 있는가? 이 논문은 400만 명의 저자와 2,600만 편의 논문 데이터를 분석하여 <strong>상위 1%의 최다 인용 과학자들이 전체 인용의 점유율을 2000~2015년 동안 14%에서 21%로 확대</strong>했음을 밝혔다. Gini 계수도 0.65에서 0.70으로 상승했다. 불평등은 자연과학, 의학, 농업과학 전반에서 증가하고 있으며, 엘리트 과학자들이 더 많은 협력과 출판을 통해 격차를 벌이고 있다.</p>
-<p><img alt="Figure 1" src="figures/fig1.png" />
-<em>Figure 1: 2000~2015년 과학자 인용 점유율 분포 변화 — 상위 1%의 점유율 증가와 Gini 계수 상승</em></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: 2000~2015년 과학자 인용 점유율 분포 변화 — 상위 1%의 점유율 증가와 Gini 계수 상승</em></p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li><strong>rule_base_novelty</strong>: 15년 × 118개 학문 분야에 걸친 저자 수준 인용 불평등의 최초 종단 분석</li>
 <li><strong>rule_base_finding</strong>: 상위 1% 인용 점유율 14% → 21% (2000→2015), Gini 계수 0.65 → 0.70</li>
 <li><strong>rule_base_result</strong>: 상위 1% 엘리트는 협력 증가로 전체 논문 수·인용 수를 동시 확대, 일반 과학자는 협력은 늘었지만 개인 기여(fractional output)는 감소</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: Web of Science 기반 400만 저자, 2,600만 논문 (2000~2015)</li>
 <li><strong>불평등 지표</strong>: Gini 계수, 상위 1%·10% 인용 점유율</li>
 <li><strong>구분 분석</strong>: 전체 인용(full-count) vs. 분수 인용(fractional-count, 공저자 수 보정)</li>
 <li><strong>지리 분석</strong>: 상위 인용 과학자의 기관·국가별 분포 변화</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
-<p>인용 불평등 증가는 Matthew 효과의 심화를 나타내며, 과학 생태계에서 소수 엘리트 집중과 다양성 감소를 의미한다. 이는 연구비 배분, 대학 순위, 학문 공동체의 형평성 논의에 직접적 함의를 갖는다.</p>
+<p>인용 불평등 증가는 Matthew 효과의 심화를 나타내며, 과학 생태계에서 소수 엘리트 집중과 다양성 감소를 의미한다. 이는 연구비 배분, 대학 순위, 학문 공동체의 형평성 논의에 직접적 함의를 갖는다.</p></div>
 <div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
@@ -72,44 +75,22 @@ a { color: #1A56B0; }
 <ul>
 <li>인용 불평등 증가가 능력 차이 증가인지 시스템 편향인지 구분 불가</li>
 <li>성별·인종과 인용 불평등 교차 분석 부재</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>OpenAlex 등 오픈 데이터로 인문학·비영어권 포함 확장</li>
 <li>인용 불평등과 연구 영향력(사회적 임팩트) 간 관계 분석</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
 </table>
-<p><strong>총평</strong>: 과학계 인용 불평등의 장기적 심화를 처음으로 대규모 종단 분석으로 실증한 연구로, 과학 생태계의 구조적 불평등 논의에 중요한 실증적 기반을 제공한다.</p></div></div></div></div></div></div></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<p><strong>총평</strong>: 과학계 인용 불평등의 장기적 심화를 처음으로 대규모 종단 분석으로 실증한 연구로, 과학 생태계의 구조적 불평등 논의에 중요한 실증적 기반을 제공한다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>A Survey on Knowledge Organization Systems of Research Fields: Resources and Challenges</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,34 +42,32 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>A Survey on Knowledge Organization Systems of Research Fields: Resources and Challenges</h1>
-<blockquote>
-<p><strong>저자</strong>: Angelo Salatino, Tanay Aggarwal, Andrea Mannocci, Francesco Osborne, Enrico Motta | <strong>날짜</strong>: 2025-06-20 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/10.1162/qss_a_00363">10.1162/qss_a_00363</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>학술 분야를 체계적으로 표현하는 Knowledge Organization System(KOS)은 연구 분야 분류·관리·검색의 핵심 인프라다. 이 논문은 45개 KOS를 5개 차원(범위·구조·큐레이션·활용·상호연결)으로 체계적으로 분석·비교한 최초의 종합 조사 연구다. 주요 발견은 현존 KOS들이 범위·규모·품질·활용 면에서 매우 이질적이며, 학술 지식을 통합적으로 표현하는 솔루션이 여전히 부재하다는 것이다. 이 논문은 KOS 기반 AI 시스템이 문서 검색 강화, 연구 영향력 정량화, 연구 동향 분석·예측에 활용될 수 있음을 강조한다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Angelo Salatino, Tanay Aggarwal, Andrea Mannocci, Francesco Osborne, Enrico Motta | <strong>날짜</strong>: 2025-06-20 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1162/qss_a_00363"" target="_blank">10.1162/qss_a_00363"</a> target="_blank"><a href="https://doi.org/10.1162/qss_a_00363" target="_blank">10.1162/qss_a_00363</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>학술 분야를 체계적으로 표현하는 Knowledge Organization System(KOS)은 연구 분야 분류·관리·검색의 핵심 인프라다. 이 논문은 45개 KOS를 5개 차원(범위·구조·큐레이션·활용·상호연결)으로 체계적으로 분석·비교한 최초의 종합 조사 연구다. 주요 발견은 현존 KOS들이 범위·규모·품질·활용 면에서 매우 이질적이며, 학술 지식을 통합적으로 표현하는 솔루션이 여전히 부재하다는 것이다. 이 논문은 KOS 기반 AI 시스템이 문서 검색 강화, 연구 영향력 정량화, 연구 동향 분석·예측에 활용될 수 있음을 강조한다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action] "This paper aims to present a comprehensive survey of the current KOS for academic disciplines."</li>
 <li>[authorship, finding] "We analysed and compared 45 KOSs according to five main dimensions: scope, structure, curation, usage, and links to other KOSs."</li>
 <li>[result, conclusion] "Our results reveal a very heterogeneous scenario in terms of scope, scale, quality, and usage, highlighting the need for more integrated solutions for representing research knowledge across academic fields."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: 학술 분야를 표현하는 45개 KOS 수집 (term list, thesaurus, taxonomy, ontology 등 다양한 유형 포함)</li>
 <li><strong>분석 프레임워크</strong>: 5개 주요 차원 — Scope(다루는 학문 범위), Structure(계층·관계 구조), Curation(관리 방식·갱신 주기), Usage(적용 용례), Links(타 KOS와의 연결)</li>
 <li><strong>비교 분석</strong>: 45개 KOS 각각에 대해 5개 차원별 속성을 체계적으로 코딩·비교</li>
 <li><strong>활용 사례 검토</strong>: 연구 논문 분류, 학술 강의, 특허, 도서, 학술 장소, 전문가, 연구비, 소프트웨어 등 다양한 학술 산출물 분류에 KOS가 사용되는 방식 검토</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>KOS는 AI 기반 학술 정보 시스템의 핵심 인프라로, 연구 논문 검색, 영향력 평가, 연구 동향 분석에 직접 활용됨</li>
 <li>기존 KOS들이 서로 이질적이고 상호 연결이 부족하여, 분야 간 지식 통합과 비교 분석이 어려운 문제가 지속되어 왔음</li>
 <li>Science of Science 연구에서 연구 영역의 경계와 진화를 정량화하기 위해 표준화된 KOS가 필수적임</li>
 <li>학술 AI 시스템(검색 엔진, 추천 시스템, 연구 분석 도구)의 성능이 기반 KOS의 품질에 직접 의존</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>45개 KOS의 이질성으로 인해 공정한 비교 기준 설정이 어려움</li>
@@ -88,39 +84,17 @@ a { color: #1a5aad; }
 <li>이질적인 KOS들 간의 자동 매핑 및 통합 프레임워크 개발</li>
 <li>LLM 기반 KOS 자동 갱신·확장 방법론 탐색</li>
 <li>KOS 품질과 하위 AI 시스템 성능 간의 정량적 관계 규명</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>3/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
 </table>
 <p><strong>총평</strong>: 학술 분야 KOS에 대한 가장 포괄적인 비교 조사 연구로, 45개 KOS의 이질성을 체계적으로 드러내어 통합된 연구 지식 표현 인프라의 필요성을 설득력 있게 주장한다. 그러나 조사 연구 특성상 방법론적 독창성은 제한적이며, 실용적 가이드라인 제시에 더 초점이 맞춰져 있다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

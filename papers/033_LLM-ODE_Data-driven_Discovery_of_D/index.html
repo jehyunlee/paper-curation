@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,32 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</h1>
-<blockquote>
-<p><strong>저자</strong>: Amirmohammad Ziaei Bideh, Jonathan Gryak | <strong>날짜</strong>: 2026-03-21 | <strong>arXiv</strong>: 2603.20910 | <strong>학회</strong>: GECCO '26</p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Amirmohammad Ziaei Bideh, Jonathan Gryak | <strong>날짜</strong>: 2026-03-21 | <strong>arXiv</strong>: 2603.20910 | <strong>학회</strong>: GECCO '26</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>동역학 시스템의 지배 방정식(ODE)을 관측 궤적 데이터로부터 자동 발견하기 위해 LLM을 genetic programming(GP)의 진화 연산자로 활용하는 하이브리드 프레임워크 LLM-ODE를 제안한다. 기존 GP의 무작위 mutation/crossover를 LLM이 생성하는 구조적으로 informed된 제안으로 대체하여, 기호식(symbolic expression) 탐색 효율을 크게 향상시켰다. 91개 동역학 시스템(1~4차원, 혼돈 역학 포함) 벤치마크에서 LLM-ODE가 PySR, SINDy, ODEFormer를 탐색 효율과 Pareto front 품질 측면에서 일관적으로 능가한다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>동역학 시스템의 지배 방정식(ODE)을 관측 궤적 데이터로부터 자동 발견하기 위해 LLM을 genetic programming(GP)의 진화 연산자로 활용하는 하이브리드 프레임워크 LLM-ODE를 제안한다. 기존 GP의 무작위 mutation/crossover를 LLM이 생성하는 구조적으로 informed된 제안으로 대체하여, 기호식(symbolic expression) 탐색 효율을 크게 향상시켰다. 91개 동역학 시스템(1~4차원, 혼돈 역학 포함) 벤치마크에서 LLM-ODE가 PySR, SINDy, ODEFormer를 탐색 효율과 Pareto front 품질 측면에서 일관적으로 능가한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: GP 기반 symbolic regression이 데이터로부터 해석 가능한 방정식을 발견하는 가장 정확한 방법 중 하나이나, 기호식 공간의 비효율적 탐색으로 수렴이 느리고 확장성이 부족. SINDy는 선형 조합 가정이 제한적이고, Transformer 기반 방법(ODEFormer)은 직접적 추론 정확도에 한계</li>
 <li><strong>Gap</strong>: 기존 LLM 기반 symbolic regression은 단일 방정식 발견에 국한되었으며, 연립 미분방정식(coupled ODE system)으로의 확장이 부재</li>
 <li><strong>왜 중요한가</strong>: 물리, 생물, 화학, 공학 등 다양한 과학 분야에서 동역학 시스템의 지배 방정식 자동 발견은 과학적 이해와 예측의 핵심 과제</li>
 <li><strong>접근법</strong>: LLM의 generative prior를 GP의 진화 연산자로 통합하여, elite 후보 방정식의 패턴을 학습한 구조적 제안으로 탐색 효율 향상</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>광범위한 벤치마크 우위</strong>: 91개 동역학 시스템에서 LLM-ODE 변형들이 거의 모든 차원/정밀도 조건에서 PySR 대비 높거나 동등한 발견율 달성</li>
 <li><strong>빠른 수렴</strong>: LLM-ODE가 50 iteration 내에 달성하는 발견율을 PySR는 200 iteration 후에도 도달하지 못하는 경우가 다수 (예: NMSE 10^-3, 10^-5)</li>
 <li><strong>고차원 확장성</strong>: D=4에서 SINDy 성능이 붕괴하는 반면, LLM-ODE는 여러 시스템을 성공적으로 복원. PySR 대비도 현저한 우위</li>
 <li><strong>Pareto front 다양성</strong>: 초기 학습 단계에서 LLM-ODE가 PySR 대비 훨씬 풍부한 시스템 Pareto front를 생성하여, 더 효과적인 탐색 공간 커버리지 시사</li>
 <li><strong>다중 LLM 검증</strong>: Qwen, Mistral, Olmo 3종 LLM 모두에서 일관된 개선 확인</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>프레임워크</strong>: Island-based evolutionary strategy + LLM-guided evolution</li>
 <li>4개 독립 island, 각 2개 seed expression으로 초기화, 200 iteration 진화</li>
@@ -90,15 +74,14 @@ a { color: #A62018; }
 <li><strong>Memorization 방지</strong>: 시스템 설명, 변수명, 물리적 단위 등 메타데이터를 프롬프트에서 완전 제거</li>
 <li><strong>평가 지표</strong>: Normalized MSE(NMSE) 기반 발견 성공률, 수렴 속도, Pareto front 크기</li>
 <li><strong>Baseline</strong>: PySR (GP), SINDy (선형 모델), ODEFormer (Transformer LSPT)</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>연립 ODE 발견을 위한 최초의 LLM-GP 하이브리드</strong>: 기존 LLM-SR이 단일 방정식에 국한된 것을 시스템 수준으로 확장한 최초의 연구. Cartesian product 기반 시스템 조합과 2단계 Pareto front 선택이 핵심</li>
 <li><strong>LLM as Evolutionary Operator</strong>: 무작위 mutation/crossover 대신 LLM의 in-context learning을 활용하여 구조적으로 의미 있는 변형을 제안하는 방식. 기존 GP의 탐색 비효율성을 직접적으로 해결</li>
 <li><strong>Memorization-aware 실험 설계</strong>: 변수명 등 의미 정보를 제거하여 LLM의 기억 활용을 방지한 공정한 평가 프로토콜</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>LLM 추론의 latency가 computational bottleneck으로, 비LLM GP 대비 실행 속도가 느림</li>
@@ -117,9 +100,16 @@ a { color: #A62018; }
 <li>실제 미지의 과학 시스템에 적용하되, 시스템 메타데이터를 LLM에 제공하여 도메인 지식 활용</li>
 <li>노이즈 있는 실험 데이터에서의 robustness 검증</li>
 <li>LLM 추론 비용 절감을 위한 경량 모델 및 캐싱 전략 개발</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: GP의 무작위 진화 연산자를 LLM의 구조적 제안으로 대체한다는 아이디어가 명확하고 효과적이며, 91개 동역학 시스템에 대한 포괄적 벤치마크와 3종 LLM 비교가 실험의 신뢰성을 높인다. 연립 ODE 시스템 발견으로의 확장이 기존 LLM-SR 대비 중요한 진전이다. 고차원에서의 절대 성능과 실험 데이터 적용 가능성은 향후 과제로 남지만, LLM을 과학적 방정식 발견의 지능형 탐색 도구로 활용하는 방향성을 잘 제시한 연구이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

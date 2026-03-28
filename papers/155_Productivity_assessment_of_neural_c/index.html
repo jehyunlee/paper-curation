@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,41 +42,40 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Productivity Assessment of Neural Code Completion</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: Albert Ziegler, Eirini Kalliamvakou, X. Alice Li, Andrew Rice, Devon Rifkin, Shawn Simister, Ganesh Sittampalam, Edward Aftandilian</li>
 <li><strong>출판</strong>: MAPS 2022 (ACM SIGPLAN International Symposium on Machine Programming)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.1145/3520312.3534864"><a href="https://doi.org/10.1145/3520312.3534864" target="_blank">10.1145/3520312.3534864</a></a></li>
+<li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1145/3520312.3534864"" target="_blank">10.1145/3520312.3534864"</a> target="_blank"><a href="https://doi.org/10.1145/3520312.3534864" target="_blank">10.1145/3520312.3534864</a></a></li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Essence (본질)</h2>
-<p>GitHub Copilot 사용자의 <strong>체감 생산성(perceived productivity)</strong>과 실제 사용 지표 간의 관계를 분석한 사례 연구이다. 2,631명의 설문 응답과 IDE 텔레메트리 데이터를 매칭하여, 제안 <strong>수락률(acceptance rate)</strong>이 코드의 지속성(persistence)이나 기여량 등 더 정교한 지표보다 체감 생산성을 더 잘 예측한다는 것을 발견했다.</p>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>신경망 기반 코드 완성 시스템(GitHub Copilot, Kite, TabNine 등)이 개발자 생산성을 높인다고 표방하지만, 이를 직접 측정하기 어렵다. 오프라인 평가(HumanEval 등)와 실제 IDE 사용 간에는 상당한 괴리가 있으며(예: IntelliCode의 Recall@5가 오프라인 90%에서 온라인 70%로 하락), 작업 완료 시간 같은 전통적 생산성 지표는 AI 코딩 도구의 이점을 충분히 포착하지 못한다. 사용자가 느끼는 생산성을 객관적 사용 데이터로 설명할 수 있는 지표를 찾는 것이 필요했다.</p>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr></div>
+<div class="essence-box"><h2>Essence (본질)</h2>
+<p>GitHub Copilot 사용자의 <strong>체감 생산성(perceived productivity)</strong>과 실제 사용 지표 간의 관계를 분석한 사례 연구이다. 2,631명의 설문 응답과 IDE 텔레메트리 데이터를 매칭하여, 제안 <strong>수락률(acceptance rate)</strong>이 코드의 지속성(persistence)이나 기여량 등 더 정교한 지표보다 체감 생산성을 더 잘 예측한다는 것을 발견했다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>신경망 기반 코드 완성 시스템(GitHub Copilot, Kite, TabNine 등)이 개발자 생산성을 높인다고 표방하지만, 이를 직접 측정하기 어렵다. 오프라인 평가(HumanEval 등)와 실제 IDE 사용 간에는 상당한 괴리가 있으며(예: IntelliCode의 Recall@5가 오프라인 90%에서 온라인 70%로 하락), 작업 완료 시간 같은 전통적 생산성 지표는 AI 코딩 도구의 이점을 충분히 포착하지 못한다. 사용자가 느끼는 생산성을 객관적 사용 데이터로 설명할 수 있는 지표를 찾는 것이 필요했다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
-<li><strong>핵심 발견</strong>: 수락률(accepted_per_shown, 평균 27%)이 체감 생산성과 가장 높은 상관관계 (Pearson r=0.24, p&lt;0.0001)</li>
+<li><strong>핵심 발견</strong>: 수락률(accepted_per_shown, 평균 27%)이 체감 생산성과 가장 높은 상관관계 (Pearson r=0.24, p<0.0001)</li>
 <li>지속성 지표(30초~600초 후 코드 변경 여부)는 수락률보다 낮은 상관관계 -- 짧은 기간의 지속성이 긴 기간보다 약간 나음</li>
 <li>PLS 회귀에서 첫 번째 성분(43.2% 설명)은 모든 지표의 양의 기여, 두 번째 성분(13.1%)은 수락률 vs 변경률 이분법 포착</li>
 <li>수락률에 추가로 shown_per_hour, accepted_char_per_hour 등을 결합하면 예측력 향상</li>
 <li><strong>프로그래밍 언어별 차이</strong>: Python, JavaScript가 TypeScript보다 높은 수락률 -- 비정적 타입 언어에서 신경망 도구의 상대적 강점 시사</li>
-<li><strong>시간 패턴 발견</strong>: 주중 근무시간(21.2%) &lt; 비근무시간(23%) &lt; 주말(23.5%) 수락률, 단 이는 시간대 자체가 아닌 <strong>사용자의 평소 활동 시간대</strong> 여부에 의해 결정됨</li>
+<li><strong>시간 패턴 발견</strong>: 주중 근무시간(21.2%) < 비근무시간(23%) < 주말(23.5%) 수락률, 단 이는 시간대 자체가 아닌 <strong>사용자의 평소 활동 시간대</strong> 여부에 의해 결정됨</li>
 <li>평균 DCPU(일별 수락 완성 수) 31회 이상</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ol>
-<li><strong>사용 지표 수집</strong>: GitHub Copilot IDE 플러그인에서 완성 퍼널 이벤트 기록 (기회 -&gt; 표시 -&gt; 수락 -&gt; 지속 여부 at 30/120/300/600초)</li>
+<li><strong>사용 지표 수집</strong>: GitHub Copilot IDE 플러그인에서 완성 퍼널 이벤트 기록 (기회 -> 표시 -> 수락 -> 지속 여부 at 30/120/300/600초)</li>
 <li><strong>생산성 설문</strong>: SPACE 프레임워크 기반 (Satisfaction, Performance, Communication, Efficiency) 4개 차원 + 전반적 생산성 포함 12개 Likert 문항, 17,420명에게 발송하여 2,047명 매칭 가능 응답 수집</li>
 <li><strong>분석</strong>:</li>
 <li>Pearson 상관계수 + F-통계 p값으로 개별 지표와 체감 생산성 간 관계 분석</li>
 <li>PLS(Projection on Latent Structures) 회귀로 다중공선성 하에서 지표 결합 분석</li>
 <li>증분적 피처 선택(incremental feature selection)으로 지표 순위화</li>
 <li>시간대/요일별 수락률 패턴 분석 (부트스트랩 재표본)</li>
-</ol>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li>코드 제안 도구에서 <strong>사용 지표와 개발자 생산성/만족도 간 명확한 연결</strong>을 확립한 최초의 연구</li>
 <li>수락 이후의 <strong>지속성(persistence)</strong> 지표를 도입하여 수락률과 비교 -- 직관에 반하는 결과 제시</li>
@@ -96,8 +83,8 @@ a { color: #A62018; }
 <li>"코딩은 타이핑이 아니다" -- 유용한 템플릿으로서의 제안이 완벽한 코드 자동 생성보다 더 가치 있을 수 있다는 통찰</li>
 <li>IDE 내 코드 제안을 <strong>챗봇과의 대화</strong>에 비유하는 새로운 관점 제시</li>
 <li>데이터셋 공개 (https://github.com/wunderalbert/prod-neural-materials)</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 후속 연구)</h2>
 <ul>
 <li><strong>상관관계만 확인</strong>: 인과관계 미확립 -- 수락률이 높아서 생산적인지, 생산적인 사용자가 수락률이 높은지 구분 불가</li>
 <li><strong>낮은 설명력</strong>: 최고 지표(수락률)도 Pearson r=0.24로 상당한 미설명 분산 존재</li>
@@ -106,43 +93,15 @@ a { color: #A62018; }
 <li><strong>대리 지표 최적화 위험</strong>: 수락률만 최적화하면 제안을 분할하는 등 실제 가치 없는 개선이 가능</li>
 <li><strong>설문 편향</strong>: 커뮤니케이션 수신에 동의한 사용자만 대상, 자기선택 편향 가능</li>
 <li>후속 연구: 챗봇 평가 방법론 차용, 대화적 코드 생성 품질 평가, 다중 시스템 비교</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th style="text-align: center;">점수 (1-10)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>참신성 (Novelty)</td>
-<td style="text-align: center;">7</td>
-<td>사용 지표-체감 생산성 연결 최초 확립, 지속성 지표 도입</td>
-</tr>
-<tr>
-<td>기술적 완성도 (Soundness)</td>
-<td style="text-align: center;">7</td>
-<td>대규모 데이터(2,047명), PLS 회귀 등 체계적 분석, 다만 설명력 한계</td>
-</tr>
-<tr>
-<td>유의미성 (Significance)</td>
-<td style="text-align: center;">8</td>
-<td>AI 코딩 도구 평가 및 제품 지표 설계에 실질적 영향</td>
-</tr>
-<tr>
-<td>재현성 (Reproducibility)</td>
-<td style="text-align: center;">7</td>
-<td>집계 데이터 공개, 다만 원시 텔레메트리 비공개</td>
-</tr>
-<tr>
-<td>종합 (Overall)</td>
-<td style="text-align: center;">7</td>
-<td>AI 코드 완성 도구의 가치 측정 방법론에 대한 실용적이고 통찰력 있는 산업 연구</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
+<tr><td>참신성 (Novelty)</td><td>7</td><td>사용 지표-체감 생산성 연결 최초 확립, 지속성 지표 도입</td></tr>
+<tr><td>기술적 완성도 (Soundness)</td><td>7</td><td>대규모 데이터(2,047명), PLS 회귀 등 체계적 분석, 다만 설명력 한계</td></tr>
+<tr><td>유의미성 (Significance)</td><td>8</td><td>AI 코딩 도구 평가 및 제품 지표 설계에 실질적 영향</td></tr>
+<tr><td>재현성 (Reproducibility)</td><td>7</td><td>집계 데이터 공개, 다만 원시 텔레메트리 비공개</td></tr>
+<tr><td>종합 (Overall)</td><td>7</td><td>AI 코드 완성 도구의 가치 측정 방법론에 대한 실용적이고 통찰력 있는 산업 연구</td></tr>
 </table></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Science of science</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,21 +42,19 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>Science of science</h1>
-<blockquote>
-<p><strong>저자</strong>: Santo Fortunato, Carl T. Bergstrom, Katy Börner, James A. Evans, Dirk Helbing, Staša Milojević, Alexander M. Petersen, Filippo Radicchi, Roberta Sinatra, Brian Uzzi, Alessandro Vespignani, Ludo Waltman, Dashun Wang, Albert-László Barabási | <strong>날짜</strong>: 2018-03-02 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.aao0185">10.1126/science.aao0185</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>Science of Science(SciSci)는 무엇이며, 왜 중요한가? 이 논문은 Barabási, Wang 등 분야 최고의 연구자 14명이 공동 저술한 SciSci 분야의 정의적(definitional) 리뷰 논문으로, Science 지에 게재되어 분야의 이정표가 되었다. 핵심 주장: 학술 입력·출력 데이터의 디지털화로 과학의 구조와 진화를 대규모로 연구할 수 있게 되었으며, 이를 통해 창의성의 조건, 과학적 발견의 기원, 최적 경력 경로를 이해하고 과학 가속화를 위한 정책을 설계할 수 있다. 주요 발견들: (1) 과학자들은 위험 회피적이며 현재 전문성에 집중하는 경향이 있지만, 이를 깨는 연구자가 획기적 발견을 할 가능성이 높다; (2) 가장 영향력 있는 과학은 기존 연구의 전통적 조합에 기반하지만 비범한 조합을 특징으로 한다; (3) 소형 팀은 파괴적 혁신, 대형 팀은 기존 아이디어 발전 경향이 있다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Santo Fortunato, Carl T. Bergstrom, Katy Börner, James A. Evans, Dirk Helbing, Staša Milojević, Alexander M. Petersen, Filippo Radicchi, Roberta Sinatra, Brian Uzzi, Alessandro Vespignani, Ludo Waltman, Dashun Wang, Albert-László Barabási | <strong>날짜</strong>: 2018-03-02 | <strong>Journal</strong>: Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1126/science.aao0185"" target="_blank">10.1126/science.aao0185"</a> target="_blank"><a href="https://doi.org/10.1126/science.aao0185" target="_blank">10.1126/science.aao0185</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>Science of Science(SciSci)는 무엇이며, 왜 중요한가? 이 논문은 Barabási, Wang 등 분야 최고의 연구자 14명이 공동 저술한 SciSci 분야의 정의적(definitional) 리뷰 논문으로, Science 지에 게재되어 분야의 이정표가 되었다. 핵심 주장: 학술 입력·출력 데이터의 디지털화로 과학의 구조와 진화를 대규모로 연구할 수 있게 되었으며, 이를 통해 창의성의 조건, 과학적 발견의 기원, 최적 경력 경로를 이해하고 과학 가속화를 위한 정책을 설계할 수 있다. 주요 발견들: (1) 과학자들은 위험 회피적이며 현재 전문성에 집중하는 경향이 있지만, 이를 깨는 연구자가 획기적 발견을 할 가능성이 높다; (2) 가장 영향력 있는 과학은 기존 연구의 전통적 조합에 기반하지만 비범한 조합을 특징으로 한다; (3) 소형 팀은 파괴적 혁신, 대형 팀은 기존 아이디어 발전 경향이 있다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action] "we review recent developments in this transdisciplinary field."</li>
 <li>[novelty] 계량서지학, 과학경제학, 과학사회학에서 독립적으로 발전해 온 연구들을 SciSci라는 통합 프레임워크 아래 처음으로 체계적으로 정리</li>
 <li>[result, finding] "The highest-impact science is grounded in conventional combinations of prior work but features unusual combinations."</li>
 <li>[result] "small teams tend to disrupt science and technology with new ideas drawing on older and less prevalent ones. In contrast, large teams tend to develop recent, popular ideas."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>접근법</strong>: 대규모 데이터 기반 실증 분석과 생성적 모델링(generative modeling)의 결합</li>
 <li><strong>데이터 유형</strong>: 연구비, 생산성, 협력 관계, 논문 인용, 과학자 이동성 데이터 포함</li>
@@ -69,15 +65,15 @@ a { color: #1a5aad; }
 <li>과학자의 위험 회피와 경력 전략</li>
 <li>팀 연구의 영향력(크기, 다양성)</li>
 <li>학제간 연구와 돌파구 발견의 관계</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>과학 시스템 자체를 연구 대상으로 삼는 SciSci는 과학 정책 설계, 연구비 배분, 과학자 경력 지원을 위한 증거 기반을 제공하는 메타과학으로서 독립적 가치를 가짐</li>
 <li>디지털화된 대규모 학술 데이터(Web of Science, Scopus, PubMed 등)의 출현이 SciSci를 처음으로 대규모 실증 연구로 가능하게 했음</li>
 <li>Science 리뷰 논문으로서 분야의 공식적 정의, 주요 발견의 종합, 앞으로의 방향을 동시에 제시하여 SciSci를 독립 연구 분야로 공고히 함</li>
 <li>14명의 최고 연구자가 공동으로 작성했다는 사실은 이 논문이 공동체의 합의를 반영하는 선언적 성격을 가짐을 시사</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>"accounting for undeniable differences in culture, habits, and preferences between different fields and countries" — 분야·국가 간 차이로 인해 보편적 법칙 적용의 한계 인정</li>
@@ -94,39 +90,17 @@ a { color: #1a5aad; }
 <li>분야 및 국가별 차이를 명시적으로 모델링하는 도메인 특화 SciSci 연구</li>
 <li>글로벌 사우스와 비영어권 과학 생태계를 포괄하는 SciSci 연구</li>
 <li>AI·LLM 시대의 새로운 SciSci 연구 주제(AI 기반 과학 발견, AI와 인간 과학자의 협업)</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>5/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
 </table>
 <p><strong>총평</strong>: 14명의 SciSci 최고 권위자들이 공동으로 작성하여 Science 지에 게재된 이 리뷰는 분야의 이정표이자 정의적 논문으로, SciSci를 독립적인 연구 분야로 공식화한 기념비적 기여다. 개별 실험적 발견보다는 분야 전체의 체계적 종합과 방향 제시에 초점이 맞춰져 있으며, 지금도 모든 SciSci 연구의 필수 참고문헌으로 기능한다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

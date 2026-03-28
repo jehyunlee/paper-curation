@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,52 +42,51 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>Quantifying spatial–temporal citation diffusion of individual papers in knowledge space</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 4/5</span></div>
-<blockquote><p><strong>저자</strong>: Shuang Zhang, Feifan Liu, Haoxiang Xia | <strong>날짜</strong>: 12/2025 | <strong>Journal</strong>: Journal of the Association for Information Science and Technology | <strong>DOI</strong>: <a href="https://doi.org/10.1002/asi.70021" target="_blank">10.1002/asi.70021</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Abstract only (PDF 없음)</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>논문 인용이 지식 공간에서 시간과 함께 어떻게 확산되는가? 7개 대규모 학문 분야에서 수백만 건의 논문을 대상으로 document representation 알고리즘을 사용해 인용 확산 궤적을 분석한 결과, 세 가지 핵심 패턴이 발견되었다: (1) 인용 확산은 <strong>가우시안 분포</strong>를 따르는 범위와 <strong>지수 분포</strong>를 따르는 거리를 보이며 의미적으로 국소화되는 경향이 있다. (2) 초기 인용 확산의 폭은 장기적 인용 축적과 <strong>양의 상관관계</strong>를 보여, 초기 광범위한 확산이 장기 임팩트를 증폭시킨다. (3) 참신하고 파괴적인 논문은 더 적고 지연된 인용을 받지만, 더 먼 지식 거리의 인용을 유인하며 장기적으로 더 광범위한 영향을 미친다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Shuang Zhang, Feifan Liu, Haoxiang Xia | <strong>날짜</strong>: 12/2025 | <strong>Journal</strong>: Journal of the Association for Information Science and Technology | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1002/asi.70021"" target="_blank">10.1002/asi.70021"</a> target="_blank"><a href="https://doi.org/10.1002/asi.70021" target="_blank">10.1002/asi.70021</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>논문 인용이 지식 공간에서 시간과 함께 어떻게 확산되는가? 7개 대규모 학문 분야에서 수백만 건의 논문을 대상으로 document representation 알고리즘을 사용해 인용 확산 궤적을 분석한 결과, 세 가지 핵심 패턴이 발견되었다: (1) 인용 확산은 <strong>가우시안 분포</strong>를 따르는 범위와 <strong>지수 분포</strong>를 따르는 거리를 보이며 의미적으로 국소화되는 경향이 있다. (2) 초기 인용 확산의 폭은 장기적 인용 축적과 <strong>양의 상관관계</strong>를 보여, 초기 광범위한 확산이 장기 임팩트를 증폭시킨다. (3) 참신하고 파괴적인 논문은 더 적고 지연된 인용을 받지만, 더 먼 지식 거리의 인용을 유인하며 장기적으로 더 광범위한 영향을 미친다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty, action] "We apply document representation algorithms capturing semantic associations to construct citation diffusion trajectories in the embedded disciplinary knowledge landscape."</li>
 <li>[finding] "A positive correlation between initial citation diffusion breadth and citation growth, which significantly amplifies long-term impact among papers with comparable early citation counts."</li>
 <li>[novelty] "We identify distinct spatial–temporal citation diffusion patterns for novel and disruptive papers."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: 7개 대형 학문 분야의 수백만 편 논문</li>
 <li><strong>지식 공간 구성</strong>: document representation 알고리즘(예: doc2vec 또는 유사 기법)으로 논문을 고차원 임베딩 공간에 배치</li>
 <li><strong>인용 확산 궤적</strong>: 각 논문에 대해 시간 순서별로 인용 논문들의 지식 공간 위치를 추적</li>
 <li><strong>통계 분석</strong>: 인용 범위(scope), 인용 거리(distance)의 분포 적합, 초기 확산과 장기 임팩트 상관 분석</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>기존 인용 역학 연구는 시간적 패턴(인용 축적)에만 집중했으나, 지식 공간에서의 공간적 확산을 함께 분석한 연구는 드물었음</li>
 <li>초기 인용 확산 폭이 장기 임팩트의 선행 지표가 될 수 있다면, 조기 과학적 영향 예측에 새로운 차원을 제공함</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>Document representation 알고리즘의 선택에 따라 지식 공간 구조가 크게 달라질 수 있어 방법론적 의존성이 높음</li>
 <li>7개 분야 선택 기준과 분야별 대표성 불명확</li>
 <li>초기 인용 확산 폭과 장기 임팩트 간의 인과관계 해석에 주의 필요 (공통 원인 가능성)</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>인용 확산 패턴의 분야별 차이와 학제 간 연구의 특성 분석</li>
 <li>초기 인용 확산 폭을 활용한 논문 장기 임팩트 예측 모델 개발</li>
 <li>지식 공간에서의 인용 확산과 실제 연구자 협력 네트워크의 관계 분석</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>4/5</td></tr><tr><td>Technical Soundness</td><td>4/5</td></tr><tr><td>Significance</td><td>4/5</td></tr><tr><td>Clarity</td><td>3/5</td></tr><tr><td>Overall</td><td>4/5</td></tr></table>
-<p><strong>총평</strong>: 인용 역학에 공간적 차원을 추가하여 지식 공간에서의 인용 확산 궤적을 체계적으로 분석한 독창적 연구다. 참신하고 파괴적인 논문이 더 먼 지식 거리에서 인용을 받는다는 발견은 과학적 혁신의 확산 메커니즘에 대한 새로운 통찰을 제공한다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>3/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
+<p><strong>총평</strong>: 인용 역학에 공간적 차원을 추가하여 지식 공간에서의 인용 확산 궤적을 체계적으로 분석한 독창적 연구다. 참신하고 파괴적인 논문이 더 먼 지식 거리에서 인용을 받는다는 발견은 과학적 혁신의 확산 메커니즘에 대한 새로운 통찰을 제공한다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

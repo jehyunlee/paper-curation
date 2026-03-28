@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text</title>
+<title>S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,53 +42,50 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: He Wang, Longteng Guo, Pengkang Huo, Xuanxu Lin, Yichen Yuan, Jie Jiang, Jing Liu</li>
 <li><strong>소속</strong>: Institute of Automation, Chinese Academy of Sciences</li>
 <li><strong>출처</strong>: arXiv preprint (2026-01-01)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2601.00264"><a href="https://doi.org/10.48550/arXiv.2601.00264" target="_blank">10.48550/arXiv.2601.00264</a></a></li>
+<li><strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2601.00264"" target="_blank">10.48550/arXiv.2601.00264"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2601.00264" target="_blank">10.48550/arXiv.2601.00264</a></a></li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Essence</h2>
+<hr></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>과학 논문의 그림(figure)과 텍스트 간의 심각한 의미적 격차(semantic gap)를 해소하기 위해, 250만 편의 오픈 액세스 논문에서 추출한 <strong>1,550만 개의 이미지-텍스트 쌍</strong>으로 구성된 대규모 멀티모달 데이터셋 <strong>S1-MMAlign</strong>을 공개한다. 핵심 기여는 Qwen-VL 멀티모달 대규모 모델을 활용하여 논문 초록과 인용 맥락을 합성함으로써 희소한 원본 캡션을 의미적으로 풍부한 설명으로 변환하는 <strong>AI 기반 의미 강화(semantic enhancement) 파이프라인</strong>이다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation</h2>
 <p>멀티모달 학습이 일반 도메인에서 큰 성공을 거두었으나, 과학적 발견에의 적용은 과학 이미지와 텍스트 설명 간의 근본적 의미 격차로 인해 제한된다. 일반 이미지의 캡션("고양이가 매트 위에 앉아 있다")과 달리, 과학 그림의 캡션은 "Figure 3: Ablation study results"처럼 맥락 의존적이고 희소(sparse)하여, 시각적 신호가 이론적 기반으로부터 분리되는 "지시적(indexical)" 성격을 띤다. 기존 데이터셋은 원시적이고 노이즈가 많은 쌍의 단순 집적에 불과하여 이 격차를 해소하기에 구조적 깊이가 부족하다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: 1,550만 개 이미지-텍스트 쌍, 250만 편 논문, 3.03 TB 규모. arXiv, bioRxiv, medRxiv, ChemRxiv, Nature Communications 등 다양한 오픈 액세스 소스에서 수집.</li>
 <li><strong>다분야 커버리지</strong>: 물리학(33%), 컴퓨터과학(25%), 천문학(13%), 생물학(10%), 수학(9%), 공학, 지구과학 등.</li>
-<li><strong>의미 강화 효과</strong>: 원본 캡션 평균 267자 -&gt; 강화 캡션 평균 759자 (2.8배 확장). 변동계수(CV) 33%로 균질화.</li>
+<li><strong>의미 강화 효과</strong>: 원본 캡션 평균 267자 -> 강화 캡션 평균 759자 (2.8배 확장). 변동계수(CV) 33%로 균질화.</li>
 <li><strong>정량적 품질 개선</strong>: SciBERT 기반 pseudo-perplexity가 유의하게 감소(좌측 이동). CLIP score 평균 18.21% 향상, 분산 27.77% 감소.</li>
 <li><strong>CC-BY-4.0 라이선스로 Hugging Face에 공개</strong>: 즉시 활용 가능한 JSONL + TAR 형식.</li>
 </ol>
-<hr />
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>How</h2>
+<hr></div>
+<div class="section-box"><h2>How</h2>
 <ul>
-<li><strong>4단계 파이프라인</strong>: (1) Data Ingestion -&gt; (2) Preprocessing -&gt; (3) Core AI Processing -&gt; (4) Structured Output Generation.</li>
+<li><strong>4단계 파이프라인</strong>: (1) Data Ingestion -> (2) Preprocessing -> (3) Core AI Processing -> (4) Structured Output Generation.</li>
 <li><strong>arXiv 추출</strong>: LaTeX 소스 패키지에서 정규표현식 기반 파싱으로 <code>figure</code> 환경 추출. EPS/PDF를 PNG로 래스터화. 무결성 검증 후 약 20% 불량 아카이브 제거.</li>
-<li><strong>PDF 추출</strong> (bioRxiv 등): MinerU 문서 처리 엔진으로 레이아웃 탐지 -&gt; 기하학적 근접성 기반 그림-캡션 매칭 -&gt; 콘텐츠 추출 및 정제.</li>
+<li><strong>PDF 추출</strong> (bioRxiv 등): MinerU 문서 처리 엔진으로 레이아웃 탐지 -> 기하학적 근접성 기반 그림-캡션 매칭 -> 콘텐츠 추출 및 정제.</li>
 <li><strong>의미 강화</strong>: Qwen3-VL 아키텍처(SigLIP-2 인코더 + 2D-RoPE) 사용. 각 그림에 대해 논문 제목, 초록, 로컬 인용 맥락을 결합한 "전체적 의미 창(holistic semantic window)"을 구성하여 맥락 인식 재캡셔닝 수행.</li>
 <li><strong>대규모 추론</strong>: 8x H100 GPU 클러스터에서 vLLM 라이브러리(PagedAttention, continuous batching) 활용.</li>
 <li><strong>품질 검증</strong>: SciBERT pseudo-perplexity로 언어적 품질, CLIP score로 교차 모달 정합성 평가.</li>
 <li><strong>데이터 무결성</strong>: Xet 버전 관리(Merkle-tree 기반 중복 제거), SHA-256 체크섬.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Originality</h2>
+<hr></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>과학 도메인 특화 의미 강화</strong>: 단순한 대규모 수집이 아닌, VLM을 활용하여 희소한 과학 캡션을 "자기 충족적 지식 단위(self-contained knowledge units)"로 변환하는 접근. 그림이 어떻게 생겼는지(what)뿐 아니라 왜 과학적으로 중요한지(why)를 학습할 수 있게 함.</li>
 <li><strong>맥락 주입 전략</strong>: 논문 초록(전역 연구 목표)과 인용 맥락(지역 실험 분석)을 결합하여 시각적 패턴의 과학적 인과성을 캡처하는 다중 소스 프롬프트 설계.</li>
 <li><strong>규모와 다양성의 결합</strong>: 기존 과학 멀티모달 데이터셋(SciCap, PlotQA, SciOL 등) 대비 압도적 규모(1,550만 쌍)와 다분야 커버리지.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <ul>
 <li><strong>물리학/CS 편향</strong>: 데이터의 58%가 물리학과 컴퓨터과학에 집중. 화학(2%), 의학(1%) 등은 과소 대표되어 분야별 균형에 한계.</li>
 <li><strong>다운스트림 태스크 검증 부재</strong>: 데이터셋의 품질이 pseudo-perplexity와 CLIP score로만 평가되며, 실제 과학 VQA, figure captioning, scientific reasoning 등 다운스트림 태스크에서의 효과는 검증되지 않음. "Work in progress" 상태의 프리프린트.</li>
@@ -110,9 +95,18 @@ a { color: #A62018; }
 <li><strong>정적 데이터셋</strong>: 지속적 업데이트 메커니즘이 명시되지 않아, 새로운 논문의 지속적 통합 방안 불분명.</li>
 <li><strong>CLIP score의 한계</strong>: CLIP 자체가 과학 도메인에 특화되지 않아, 과학 이미지-텍스트 정합성 측정의 프록시로서의 적합성에 의문.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation</h2>
 <p>AI for Science 시대의 핵심 인프라 자원으로서 의미 있는 기여를 하는 데이터셋 논문이다. 1,550만 쌍이라는 규모와 AI 기반 의미 강화라는 아이디어는 설득력 있으며, CLIP score 18.21% 향상은 파이프라인의 효과를 보여준다. 그러나 현재 단계에서는 데이터셋 구축과 기초적 품질 메트릭에 머물러 있어, 실제 과학적 멀티모달 추론 성능 향상에 기여하는지를 보여주는 다운스트림 실험이 필수적이다. 재캡셔닝된 텍스트의 과학적 정확성에 대한 인간 평가 부재는 가장 큰 약점이며, 물리학/CS 편향은 "AI for Science" 전반에의 활용을 제한할 수 있다. CC-BY-4.0 공개와 체계적인 데이터 구조는 커뮤니티 활용 측면에서 높이 평가할 만하다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: 1550만 개 과학 이미지-텍스트 쌍 데이터셋 구축 작업으로 방향성은 중요하나 아직 진행 중인 연구로 완성도가 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -5,53 +5,68 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Collective dynamics of &#x27;small-world&#x27; networks</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-<style>* { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #2374D6; margin: 1.5rem 0 0.6rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
-th { background: #2374D6; color: white; font-weight: 600; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 .essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
-.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }</style>
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
 </head>
 <body>
 <h1>Collective dynamics of &#x27;small-world&#x27; networks</h1>
-<blockquote><p><strong>저자</strong>: Duncan J. Watts, Steven H. Strogatz | <strong>날짜</strong>: 1998 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: 10.1038/30918</p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Web-only (PDF 없음)</p></blockquote>
+<blockquote><p><strong>저자</strong>: Duncan J. Watts, Steven H. Strogatz | <strong>날짜</strong>: 1998 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/30918" target="_blank">10.1038/30918</a></p></blockquote>
 <hr>
-<h2>Essence</h2>
-<p>규칙적 격자(regular lattice)와 무작위 그래프(random graph) 사이에 **&#x27;small-world&#x27; 네트워크**라는 중간 영역이 존재한다. 아주 소수의 무작위 연결(rewiring)만 추가해도 높은 클러스터링 계수(C)는 유지되면서 평균 경로 길이(L)가 급격히 감소하여 6단계 분리(six degrees of separation) 현상이 나타난다. 이 small-world 구조는 뇌 신경망, 전력망, C. elegans 신경망 등 실제 복잡계에서 광범위하게 발견되며, 전염병 전파 속도를 극적으로 높이는 등 집합적 동역학에 중요한 영향을 미친다.</p>
-<h2>Originality (Abstract 기반)</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>규칙적 격자(regular lattice)와 무작위 그래프(random graph) 사이에 <strong>'small-world' 네트워크</strong>라는 중간 영역이 존재한다. 아주 소수의 무작위 연결(rewiring)만 추가해도 높은 클러스터링 계수(C)는 유지되면서 평균 경로 길이(L)가 급격히 감소하여 6단계 분리(six degrees of separation) 현상이 나타난다. 이 small-world 구조는 뇌 신경망, 전력망, C. elegans 신경망 등 실제 복잡계에서 광범위하게 발견되며, 전염병 전파 속도를 극적으로 높이는 등 집합적 동역학에 중요한 영향을 미친다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[pioneering, finding] Small-world 구조(높은 클러스터링 + 짧은 평균 경로)가 규칙 격자와 무작위 그래프 사이의 중간 체제에서 광범위하게 존재함을 최초로 정형화·실증</li>
 <li>[authorship, action] 재연결 확률 $p$를 조절하는 Watts-Strogatz 모델 제안</li>
 <li>[finding] 실제 네트워크(전력망·C. elegans·배우 네트워크) 세 개 모두 small-world 특성 확인</li>
-</ul>
-<h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>모델</strong>: n개 노드, k개 인접 이웃 규칙 격자에서 각 링크를 확률 $p$로 임의 재연결</li>
 <li><strong>측정 지표</strong>: 클러스터링 계수 $C(p)$, 특성 경로 길이 $L(p)$의 $p$ 의존성</li>
 <li><strong>실제 데이터</strong>: C. elegans 신경망(282 뉴런), 서부 미국 전력망(4,941 노드), 영화 배우 공연 네트워크(225,226 노드)</li>
 <li><strong>Small-world 조건</strong>: $C(p) \gg C_{random}$이면서 $L(p) \approx L_{random}$인 $p$ 범위 존재 확인</li>
-</ul>
-<h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>"모든 네트워크는 규칙적이거나 무작위적이다"는 이분법을 깨고 현실 네트워크의 중간 구조를 이론화</li>
 <li>네트워크 구조와 집합적 동역학(전파, 동기화, 계산) 사이의 연결 고리를 최초로 제시</li>
 <li>Barabási-Albert 모델(1999)과 함께 복잡계 네트워크 과학의 초석이 됨</li>
-</ul>
-<h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>실제 네트워크가 small-world인지 판단하는 정확한 임계 기준 미정의</li>
@@ -68,8 +83,8 @@ th { background: #2374D6; color: white; font-weight: 600; }
 <li>Newman(2003) 네트워크 과학 총괄 리뷰</li>
 <li>전파 역학, 동기화, 게임 이론에서의 small-world 효과 분석</li>
 <li>뇌 connectome 연구에서의 small-world 적용</li>
-</ul>
-<h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
 <tr><th>항목</th><th>점수</th></tr>
 <tr><td>Novelty</td><td>5/5</td></tr>
@@ -78,7 +93,7 @@ th { background: #2374D6; color: white; font-weight: 600; }
 <tr><td>Clarity</td><td>5/5</td></tr>
 <tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: 단순한 모델로 현실 복잡계 네트워크의 보편적 구조를 포착한 20세기 과학의 걸작 중 하나로, 복잡계 네트워크 과학이라는 분야 자체를 창시한 논문이다.</p>
+<p><strong>총평</strong>: 단순한 모델로 현실 복잡계 네트워크의 보편적 구조를 포착한 20세기 과학의 걸작 중 하나로, 복잡계 네트워크 과학이라는 분야 자체를 창시한 논문이다.</p></div>
 <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

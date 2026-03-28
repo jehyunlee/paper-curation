@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RenoBench: A Citation Parsing Benchmark</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>RenoBench: A Citation Parsing Benchmark</h1>
+<blockquote><p><strong>저자</strong>: Parth Sarin, Juan Pablo Alperin, Adam Buttrick, Dione Mentis | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: CiteX 2026 (Conference Paper) | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25640" target="_blank">2603.25640</a></p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>인용 파싱(citation parsing) 시스템을 공정하고 재현 가능하게 평가할 표준 벤치마크가 존재하는가? 기존 평가 방법은 합성 데이터 기반이거나, 특정 시스템에 한정되거나, 공개되지 않아 일반화가 어렵다. RenoBench는 SciELO, Redalyc, Public Knowledge Project, Open Research Europe 등 <strong>4개 오픈 액세스 출판 생태계의 PDF에서 출처한 10,000개 인용 파싱 벤치마크 데이터셋</strong>이다. 161,000개 주석 인용으로 시작해 자동 검증과 특성 기반 샘플링을 거쳐 다국어·다출판유형·다플랫폼을 포괄한다. 파인튜닝된 언어 모델이 가장 강한 성능을 보임을 실험으로 확인했다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: RenoBench 데이터셋 구축 파이프라인 — 4개 출판 생태계에서 PDF 수집, 주석, 자동 검증, 특성 기반 샘플링까지</em></p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, action] "We introduce RenoBench, a public domain benchmark for citation parsing, sourced from PDFs released on four publishing ecosystems: SciELO, Redalyc, the Public Knowledge Project, and Open Research Europe."</li>
+<li>[authorship, finding, approach] "Starting from 161,000 annotated citations, we apply automated validation and feature-based sampling to produce a dataset of 10,000 citations spanning multiple languages, publication types, and platforms."</li>
+<li>[authorship, finding] "We then evaluate a variety of citation parsing systems and report field-level precision and recall."</li>
+<li>[finding, conclusion] "Our results show strong performance from language models, particularly when fine-tuned."</li>
+<li>[finding] "RenoBench enables reproducible, standardized evaluation of citation parsing systems, and provides a foundation for advancing automated citation parsing and metascientific research."</li>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>데이터 수집</strong>: SciELO, Redalyc, PKP(Public Knowledge Project), Open Research Europe 4개 플랫폼 PDF에서 참조문헌 추출</li>
+<li><strong>주석(annotation)</strong>: 출판사 제공 구조화 메타데이터를 ground truth로 활용, 161,000개 인용 주석</li>
+<li><strong>품질 관리</strong>: 자동 검증(형식 일관성, 필드 완전성) + 특성 기반 샘플링으로 10,000개 균형 데이터셋 구성</li>
+<li><strong>다양성 확보</strong>: 다국어(영어, 스페인어, 포르투갈어 등), 다출판 유형(저널, 학위논문, 회의록), 다플랫폼</li>
+<li><strong>평가</strong>: 여러 인용 파싱 시스템에 대해 필드 단위(저자, 제목, 연도, 저널 등) precision/recall 측정</li>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
+<ul>
+<li>인용 파싱은 학술 지식 그래프, 서지 데이터베이스, 메타과학 연구의 기반 인프라이나 평가 방법 표준화가 미흡</li>
+<li>기존 벤치마크의 합성 데이터 편향과 비공개 문제는 재현 가능한 비교를 불가능하게 함</li>
+<li>오픈 액세스 플랫폼 중심의 데이터셋은 Global South 및 비영어권 학술 출판물의 포함으로 대표성 확보</li>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
+<h3>저자들이 언급한 한계</h3>
+<ul>
+<li>4개 오픈 액세스 플랫폼에 한정되어 구독 기반 저널(Elsevier, Springer 등) 포함 불가</li>
+<li>특성 기반 샘플링이 실제 인용 분포를 완전히 반영하지 못할 수 있음</li>
+<li>일부 언어의 인용 수가 불균형할 수 있음</li>
+</ul>
+<h3>자체판단 아쉬운 점</h3>
+<ul>
+<li>161,000개에서 10,000개로의 샘플링 과정에서 정보 손실 가능성 — 희귀 인용 형식의 과소 대표</li>
+<li>파인튜닝 LM이 최고 성능이라는 발견은 특정 시스템(AnystyleParser, GROBID 등)과의 직접 수치 비교 없이는 맥락화 어려움</li>
+<li>시간에 따른 인용 형식 변화(구 논문 vs. 최신 논문)를 처리하는 방식 미명시</li>
+</ul>
+<h3>후속 연구</h3>
+<ul>
+<li>구독 기반 및 회색 문헌(gray literature) 포함으로 벤치마크 확장</li>
+<li>인용 파싱 오류가 downstream 과학계량학 분석에 미치는 영향 정량화</li>
+<li>다국어 파인튜닝 전략의 최적화 연구</li>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
+<p><strong>총평</strong>: 인용 파싱 연구의 오랜 재현성·일반화 문제를 해결하는 공공 도메인 벤치마크로, 특히 비영어권과 오픈 액세스 출판물의 포함은 기존 도구들의 편향을 드러내는 데 기여한다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+</body>
+</html>

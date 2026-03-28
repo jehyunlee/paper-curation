@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,28 +42,19 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Large-Language-Model-Based AI Agent for Organic Semiconductor Device Research</h1>
-<ul>
-<li><strong>저자</strong>: Qian Zhang, Yongxu Hu, Jiaxin Yan, Hengyue Zhang, Xinyi Xie, Jie Zhu, Huchao Li, Xinxin Niu, Liqiang Li, Yajing Sun, Wenping Hu</li>
-<li><strong>학술지</strong>: Advanced Materials, 2024, 36, 2405163</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.1002/adma.202405163"><a href="https://doi.org/10.1002/adma.202405163" target="_blank">10.1002/adma.202405163</a></a></li>
-<li><strong>키워드</strong>: large language models, machine learning, organic field-effect transistors, accelerated design</li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
+<hr>
 <div class="section-box"><h2>한줄 요약 (Essence)</h2>
-<p>GPT-4와 머신러닝을 결합한 AI 에이전트를 설계하여 유기 전계효과 트랜지스터(OFET) 문헌에서 소자 파라미터를 자동 추출하고, 이를 기반으로 소자 성능 예측 및 실험 최적화 가이드를 제공하는 시스템을 구축하였다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
-<p>유기 반도체 소자(OFET)의 성능 최적화는 재료 선택, 공정 조건, 소자 구조 등 다양한 설계 파라미터가 복합적으로 작용하여 기존의 시행착오 방식으로는 비효율적이다. 수십 년간 축적된 학술 문헌에 이미 이러한 관계 정보가 내재되어 있으나, 텍스트/표/이미지에 분산된 정보를 체계적으로 추출하여 활용하는 것이 핵심 과제였다. 기존 NLP 도구(ChemDataExtractor 등)는 수작업 입력이 필요하고 이미지 처리가 불가능한 한계가 있었다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<p>GPT-4와 머신러닝을 결합한 AI 에이전트를 설계하여 유기 전계효과 트랜지스터(OFET) 문헌에서 소자 파라미터를 자동 추출하고, 이를 기반으로 소자 성능 예측 및 실험 최적화 가이드를 제공하는 시스템을 구축하였다.</p></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>유기 반도체 소자(OFET)의 성능 최적화는 재료 선택, 공정 조건, 소자 구조 등 다양한 설계 파라미터가 복합적으로 작용하여 기존의 시행착오 방식으로는 비효율적이다. 수십 년간 축적된 학술 문헌에 이미 이러한 관계 정보가 내재되어 있으나, 텍스트/표/이미지에 분산된 정보를 체계적으로 추출하여 활용하는 것이 핵심 과제였다. 기존 NLP 도구(ChemDataExtractor 등)는 수작업 입력이 필요하고 이미지 처리가 불가능한 한계가 있었다.</p></div>
+<div class="section-box"><h2>주요 성과 (Achievement)</h2>
 <ul>
 <li>GPT-4 기반 텍스트 마이닝으로 277편의 논문에서 709개 OFET 구성의 14종 핵심 파라미터를 추출하여 10,000개 이상의 파라미터를 포함하는 구조화 데이터베이스를 구축하였다. 정밀도(precision)와 재현율(recall) 모두 92% 이상을 달성하였다.</li>
 <li>XGBoost 기반 이진 분류 모델이 F1 score 0.88, AUROC 0.92를 기록하였다.</li>
 <li>SHAP 해석과 Lab Advisor의 권고를 바탕으로 DP-DTT OFET의 전하 이동도를 0.42에서 1.10 cm2 V-1 s-1로 약 3배 향상시키는 실험적 검증에 성공하였다.</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>방법론 (How)</h2>
+</ul></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <ol>
 <li><strong>데이터 추출 파이프라인</strong>: PDF를 텍스트/표/이미지로 분해하는 파일 파서를 구축하고, GPT-4V(gpt-4-1106-vision-preview)로 멀티모달 정보를 처리하였다. DECIMER를 이용해 분자 구조 이미지를 SMILES로 변환하고, 화학 도메인 지식을 프롬프트에 통합하였다.</li>
 <li><strong>Human-in-the-loop 프롬프트 엔지니어링</strong>: 초기 프롬프트를 반복적으로 개선하며 GPT-4의 OFET 파라미터 추출 정확도를 높이는 전략을 채택하였다. GPT-4의 128K 토큰 입력 용량 덕분에 논문 전문과 Supporting Information을 한 번에 처리할 수 있었다.</li>
@@ -84,16 +63,15 @@ a { color: #A62018; }
 <li><strong>Performance Predictor</strong>: MACCS + Morgan 분자 지문 + 소자 공정 파라미터를 입력으로 XGBoost 분류 모델을 훈련하고, SHAP으로 원자 수준/공정 수준의 기여도를 해석</li>
 <li><strong>Lab Advisor</strong>: OpenAI Assistants API 기반으로 OFET 데이터베이스를 도메인 지식으로 활용하여 맞춤형 실험 설계 조언을 제공</li>
 <li><strong>실험 검증</strong>: SHAP 분석 결과(물리적 증착법 + p-doped Si 게이트가 유리)와 Lab Advisor 권고를 반영하여 DP-DTT 단결정 OFET를 physical vapor transport 방식으로 제작하였다.</li>
-</ol>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+</ul></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li><strong>멀티모달 LLM을 유기 소자 분야에 최초 적용</strong>: 텍스트뿐 아니라 표와 소자 구조 이미지에서 공정 파라미터를 추출하는 종합적 접근은 기존 텍스트 마이닝 연구와 차별화된다.</li>
 <li><strong>분자 지문과 공정 파라미터의 통합 모델링</strong>: MACCS + Morgan 지문을 소자 공정 파라미터와 결합하여 재료-공정-성능의 관계를 하나의 ML 모델로 포착한 점이 독창적이다.</li>
 <li><strong>SHAP 해석의 원자 수준 매핑</strong>: Morgan 지문의 SHAP 값을 분자 내 각 원자로 역매핑하여 전하 수송에 기여하는 구조적 특성을 시각화한 방법이 참신하다.</li>
-<li><strong>End-to-end 파이프라인</strong>: 문헌 추출 -&gt; 데이터베이스 구축 -&gt; ML 예측 -&gt; 해석 -&gt; 실험 검증의 완결된 사이클을 하나의 AI 에이전트로 통합하였다.</li>
-</ul>
-</div><div class="section-box"><h2>한계점 (Limitation)</h2>
+<li><strong>End-to-end 파이프라인</strong>: 문헌 추출 -> 데이터베이스 구축 -> ML 예측 -> 해석 -> 실험 검증의 완결된 사이클을 하나의 AI 에이전트로 통합하였다.</li>
+</ul></div>
+<div class="section-box"><h2>한계점 (Limitation)</h2>
 <ul>
 <li><strong>데이터 규모와 편향</strong>: 277편/709개 OFET로 구성된 데이터베이스는 유기 반도체 전체 문헌에 비해 제한적이며, 출판사별 편향(Wiley 37.6%, ACS 23.8%)이 존재한다.</li>
 <li><strong>이진 분류의 단순성</strong>: 이동도를 1 cm2 V-1 s-1 기준으로 high/low만 구분하는 이진 분류는 연속적 성능 예측이나 세밀한 최적화 가이드에는 한계가 있다.</li>
@@ -101,9 +79,18 @@ a { color: #A62018; }
 <li><strong>테이블/이미지 추출 정확도</strong>: GPT-4V의 OCR 기반 표 추출 정확도가 텍스트 직접 추출보다 낮아 threshold voltage, on/off ratio 등의 추출 성능이 상대적으로 떨어진다.</li>
 <li><strong>일반화 가능성</strong>: DP-DTT 한 종의 재료에 대한 실험 검증만 수행되어, 에이전트의 권고가 다양한 유기 반도체 시스템에 일반적으로 유효한지는 미검증이다.</li>
 <li><strong>비용과 재현성</strong>: GPT-4 API 비용이 언급되지 않았으며, 모델 버전 업데이트에 따른 재현성 문제가 존재한다.</li>
-</ul>
-</div><div class="section-box"><h2>평가 (Evaluation)</h2>
+</ul></div>
+<div class="section-box"><h2>평가 (Evaluation)</h2>
 <p>Advanced Materials에 게재된 만큼 LLM의 과학 분야 실질 적용이라는 시의성과 실험 검증이라는 완결성 측면에서 높은 수준의 연구이다. GPT-4의 멀티모달 능력을 유기 소자 문헌 마이닝에 체계적으로 적용하고, 추출 데이터로 ML 모델을 훈련한 뒤 해석 결과를 실험적으로 검증한 end-to-end 파이프라인은 "AI for Science" 패러다임의 모범 사례이다. 다만 데이터 규모의 제한, 이진 분류의 단순성, 단일 재료 검증이라는 한계가 있으며, 향후 데이터베이스 확장과 연속적 성능 예측 모델로의 발전이 기대된다. OFET 분야에 특화된 사례이지만, 유사한 프레임워크가 OLED, 페로브스카이트 태양전지 등 다른 소자 연구에도 확장 가능하다는 점에서 방법론적 기여가 크다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>3.7</td></tr>
+</table>
+<p><strong>총평</strong>: GPT-4 에이전트로 OFET 소자 연구를 자동화한 Advanced Materials 논문으로 실제 실험 결과와의 대응이 설득력 있는 도메인 특화 AI4S 연구다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,43 +42,36 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>The Adoption and Usage of AI Agents: Early Evidence from Perplexity</h1>
-<ul>
-<li><strong>저자</strong>: Jeremy Yang (Harvard University), Noah Yonack, Kate Zyskowski, Denis Yarats, Johnny Ho, Jerry Ma (Perplexity)</li>
-<li><strong>출판</strong>: arXiv:2512.07828 (2025.12.10)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2512.07828"><a href="https://doi.org/10.48550/arXiv.2512.07828" target="_blank">10.48550/arXiv.2512.07828</a></a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
-<p>범용 AI 에이전트의 채택(adoption)과 사용(usage) 패턴을 대규모 현장 데이터로 실증 분석한 최초의 연구이다. Perplexity가 개발한 AI 브라우저 Comet과 그 내장 에이전트 Comet Assistant의 수억 건 익명화된 사용자 상호작용 데이터를 분석하여, "누가 AI 에이전트를 쓰는가?", "얼마나 집중적으로 쓰는가?", "무엇에 쓰는가?"라는 세 가지 근본적 질문에 답한다. 에이전트 사용 사례를 체계화하는 계층적 분류 체계(Agentic Taxonomy)를 새로 제안한 것이 핵심 기여이다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>2025년은 "에이전틱 AI의 해"로 불리며, AI가 대화형 챗봇에서 행동 지향적 에이전트로 전환하고 있다. 그러나 실제 사용자들이 범용 AI 에이전트를 어떻게 채택하고 사용하는지에 대한 체계적 행동 증거는 거의 없었다. 기존 연구는 비대표적 기업 설문이나 코딩 에이전트 같은 특화 에이전트에 한정되었다. Comet이라는 실제 상용 제품의 대규모 데이터를 통해 이 공백을 메우고자 했다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
+<p>범용 AI 에이전트의 채택(adoption)과 사용(usage) 패턴을 대규모 현장 데이터로 실증 분석한 최초의 연구이다. Perplexity가 개발한 AI 브라우저 Comet과 그 내장 에이전트 Comet Assistant의 수억 건 익명화된 사용자 상호작용 데이터를 분석하여, "누가 AI 에이전트를 쓰는가?", "얼마나 집중적으로 쓰는가?", "무엇에 쓰는가?"라는 세 가지 근본적 질문에 답한다. 에이전트 사용 사례를 체계화하는 계층적 분류 체계(Agentic Taxonomy)를 새로 제안한 것이 핵심 기여이다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>2025년은 "에이전틱 AI의 해"로 불리며, AI가 대화형 챗봇에서 행동 지향적 에이전트로 전환하고 있다. 그러나 실제 사용자들이 범용 AI 에이전트를 어떻게 채택하고 사용하는지에 대한 체계적 행동 증거는 거의 없었다. 기존 연구는 비대표적 기업 설문이나 코딩 에이전트 같은 특화 에이전트에 한정되었다. Comet이라는 실제 상용 제품의 대규모 데이터를 통해 이 공백을 메우고자 했다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ol>
 <li><strong>채택 패턴 규명</strong>: 초기 채택자(pre-GA)가 전체 사용자의 30%이지만 에이전트 채택자의 50%, 에이전틱 쿼리의 70%를 차지. 첫 번째 코호트(7월 9일) 사용자는 GA 코호트 대비 채택 확률 2배, 쿼리량 9배</li>
 <li><strong>국가 수준 분석</strong>: 1인당 GDP(r=0.85)와 평균 교육연수(r=0.75)가 에이전트 채택과 강한 양의 상관관계</li>
 <li><strong>직업 클러스터 분석</strong>: Digital Technology(채택자 28%), 학생, 금융, 마케팅, 기업가 순으로 높은 채택률. 마케팅(AUR=1.46)과 기업가(AUR=1.38)가 채택 대비 사용 강도가 특히 높음</li>
 <li><strong>계층적 에이전틱 분류 체계</strong>: 7개 토픽 → 25개 서브토픽 → 90개 태스크의 3단계 분류 체계 개발. 생산성(36%)과 학습(21%)이 전체 쿼리의 57% 차지</li>
 <li><strong>사용 맥락 분석</strong>: 개인 55%, 직업 30%, 교육 16%. 시간 경과에 따라 인지 지향적 토픽(생산성, 학습, 커리어)으로 이동하는 경향</li>
-<li><strong>환경(웹사이트) 집중도</strong>: docs.google.com(12%), 이메일 서비스(11%), linkedin.com(9%)이 상위 환경. 서브토픽별 집중도 편차가 큼(음악 97% vs 계정관리 28%)</li>
 </ol>
-</div><div class="section-box"><h2>How (방법론)</h2>
+<p>6. <strong>환경(웹사이트) 집중도</strong>: docs.google.com(12%), 이메일 서비스(11%), linkedin.com(9%)이 상위 환경. 서브토픽별 집중도 편차가 큼(음악 97% vs 계정관리 28%)</p></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>3개 표본 설계</strong>: (A) 전체 Comet 사용자 모집단(수백만 명, 수억 건 쿼리)으로 채택·사용 강도 분석, (B) 10만 명 무작위 표본으로 O*NET 직업 클러스터 분류, (C) 10만 명 에이전트 사용자 표본으로 전체 에이전틱 쿼리의 사용 사례 분류</li>
 <li><strong>분류 체계 개발</strong>: 상향식(bottom-up) 3단계 접근 -- 탐색(임베딩 + K-means 클러스터링) → 정제(수동 검토·병합·분할) → 분류(쿼리 분류 모델 적용). 1,000건 골든 데이터셋 대비 토픽 89%, 서브토픽 83%, 태스크 81% 정확도</li>
 <li><strong>에이전틱 쿼리 정의</strong>: 브라우저 제어 또는 MCP/API를 통한 외부 앱 조작이 포함된 쿼리만 해당. 단순 웹 검색이나 코드 인터프리터는 제외(정보 교환 vs 환경 조작 구분)</li>
 <li><strong>채택·사용 지표</strong>: Agent Adoption Ratio(AAR)와 Agent Usage Ratio(AUR)를 정의하여 세그먼트별 과대/과소 대표성 정량화</li>
-</ul>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>최초의 대규모 현장 연구</strong>: AI 에이전트(챗봇이 아닌)의 실제 사용 행동을 수억 건 데이터로 분석한 최초 사례</li>
-<li><strong>에이전틱 vs Q&amp;A 구분</strong>: 기존 LLM 사용 연구가 정보 교환 중심의 Q&amp;A 쿼리를 다룬 것과 달리, 외부 환경을 실제로 조작하는 에이전틱 쿼리에 초점</li>
+<li><strong>에이전틱 vs Q&A 구분</strong>: 기존 LLM 사용 연구가 정보 교환 중심의 Q&A 쿼리를 다룬 것과 달리, 외부 환경을 실제로 조작하는 에이전틱 쿼리에 초점</li>
 <li><strong>계층적 분류 체계의 범용성</strong>: Comet 특화가 아닌, 다른 에이전틱 제품에도 적용 가능하도록 설계된 분류 체계</li>
 <li><strong>직업-사용사례 교차 분석</strong>: 직업 클러스터별 토픽 분포, 태스크 분포, 환경 분포를 체계적으로 매핑한 것은 기존 연구에 없던 시도</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>초기 채택자 편향</strong>: Comet이 신제품이므로 표본이 기술 친화적 사용자에 치우쳐 있으며, 일반 인구 대표성은 부족</li>
 <li><strong>짧은 관찰 기간</strong>: 2025년 7월 9일~10월 22일(약 3.5개월)로, 장기적 사용 패턴 변화를 체계적으로 분석하기에 불충분</li>
@@ -98,9 +79,18 @@ a { color: #A62018; }
 <li><strong>자동화 vs 증강 구분 불가</strong>: 사용자가 전체 태스크를 위임했는지, 일부만 위임했는지 구분할 수 없어 자동화/증강 비율 추정 불가</li>
 <li><strong>단일 플랫폼 한계</strong>: Perplexity Comet 사용자만 대상이므로, OpenAI Operator나 Anthropic Computer Use 등 다른 에이전트 제품과의 비교 불가</li>
 <li><strong>향후 연구</strong>: 모바일/크로스플랫폼 분석, 생산성 영향 측정, 에이전트 간 협업(A2A 프로토콜) 효과, 사용자 학습 곡선과 에이전트 활용 능력(agent literacy) 연구</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (총평)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (총평)</h2>
 <p>AI 에이전트의 실제 사용 행동에 대한 최초의 대규모 실증 연구로서, 이론적 추측이 아닌 수억 건의 실데이터에 기반한다는 점에서 독보적 가치를 지닌다. 계층적 에이전틱 분류 체계(7 토픽 → 25 서브토픽 → 90 태스크)는 향후 에이전트 사용 연구의 표준 프레임워크가 될 잠재력이 있다. 생산성과 학습이 에이전트 사용의 핵심 영역이라는 발견, 지식 집약 직종에서의 높은 채택률, GDP/교육 수준과의 강한 상관관계 등은 정책 입안자와 기업 모두에게 유용한 인사이트를 제공한다. 다만, Harvard 연구자와 Perplexity 내부 팀의 공동 연구라는 점에서 플랫폼 특화적 편향 가능성이 있으며, 기술적으로는 서술적(descriptive) 분석에 머물러 인과관계 추론은 제공하지 않는다. 전반적으로, "2025년 에이전틱 AI의 해"를 데이터로 기록한 중요한 시대적 문서(zeitgeist document)로서의 의의가 크다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>4</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>3.7</td></tr>
+</table>
+<p><strong>총평</strong>: Perplexity Comet의 실제 사용 데이터로 AI 연구 에이전트 도입 패턴을 분석한 최초의 대규모 실증 연구로 현장 통찰이 풍부하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,50 +42,46 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>TLDR: Extreme Summarization of Scientific Documents</h1>
-<blockquote>
-<p><strong>저자</strong>: Isabel Cachola, Kyle Lo, Arman Cohan, Daniel S. Weld | <strong>날짜</strong>: 2020 | <strong>학회</strong>: arXiv (EMNLP 2020 Findings) | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2004.15011" target="_blank">10.48550/ARXIV.2004.15011</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Isabel Cachola, Kyle Lo, Arman Cohan, Daniel S. Weld | <strong>날짜</strong>: 2020 | <strong>학회</strong>: arXiv (EMNLP 2020 Findings) | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2004.15011" target="_blank">10.48550/ARXIV.2004.15011</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>TLDR generation은 과학 논문을 단일 문장(평균 21단어)으로 극단적 압축하는 새로운 요약 태스크이다. 이를 위해 3,229편의 CS 논문에 대해 5,411개의 multi-target TLDR을 포함하는 SciTLDR 데이터셋을 구축하고, 논문 제목 생성을 보조 scaffold task로 활용하는 CATTS(Controlled Abstraction for TLDRs with Title Scaffolding) 학습 전략을 제안하여 BART 기반 baseline 대비 자동 메트릭과 인간 평가 모두에서 성능을 향상시켰다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>TLDR generation은 과학 논문을 단일 문장(평균 21단어)으로 극단적 압축하는 새로운 요약 태스크이다. 이를 위해 3,229편의 CS 논문에 대해 5,411개의 multi-target TLDR을 포함하는 SciTLDR 데이터셋을 구축하고, 논문 제목 생성을 보조 scaffold task로 활용하는 CATTS(Controlled Abstraction for TLDRs with Title Scaffolding) 학습 전략을 제안하여 BART 기반 baseline 대비 자동 메트릭과 인간 평가 모두에서 성능을 향상시켰다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: 과학 문서 요약(ArXiv, PubMed, SciSummNet 등)은 150-220단어 수준의 abstract 생성에 집중하며, 뉴스 도메인에서는 XSUM이 extreme summarization을 다룸</li>
 <li><strong>Gap</strong>: 과학 논문에 대한 extreme summarization(단일 문장, 압축비 238:1)은 미탐구 영역이며, 기존 데이터셋은 단일 gold summary만 제공하여 인간 요약의 변동성을 반영하지 못함</li>
 <li><strong>왜 중요한가</strong>: 출판 속도의 기하급수적 증가 속에서 연구자들이 논문의 핵심을 빠르게 파악할 수 있는 TLDR은 과학 커뮤니케이션의 효율성을 근본적으로 개선</li>
 <li><strong>접근법</strong>: OpenReview의 저자 작성 TLDR과 peer review 코멘트 재작성 TLDR을 결합한 multi-target 데이터셋 구축 + 제목 생성을 control code 기반 scaffold task로 활용</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>SciTLDR 데이터셋</strong>: 3,229편 논문, 5,411개 TLDR (train 1,992 / dev 619+1,452 / test 618+1,967), 압축비 238.1로 기존 데이터셋 대비 최고 수준</li>
-<li><strong>CATTS 성능 향상</strong>: AIC 입력 기준 CATTS가 BART 대비 Rouge-1 +2.0, Rouge-2 +1.8, Rouge-L +2.2 유의미한 향상 (p&lt;0.05)</li>
+<li><strong>CATTS 성능 향상</strong>: AIC 입력 기준 CATTS가 BART 대비 Rouge-1 +2.0, Rouge-2 +1.8, Rouge-L +2.2 유의미한 향상 (p<0.05)</li>
 <li><strong>Human evaluation</strong>: CATTS_XSUM이 BART_XSUM 대비 informativeness에서 MRR 0.54 vs 0.42로 우세, gold TLDR-Auth(0.53)와 동등 수준</li>
 <li><strong>Correctness 평가</strong>: 원저자 29명의 직접 평가에서 CATTS_XSUM과 BART_XSUM 모두 평균 2.5/3.0 (partially accurate ~ mostly correct)</li>
 <li><strong>Nugget 분석</strong>: TLDR의 정보 유형을 6가지(Area, Problem, Contribution, Details, Results, Value)로 체계화하고, 저자 vs 리뷰어 TLDR의 관점 차이를 정량적으로 분석</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>TLDR-Auth 수집</strong>: OpenReview API로 저자가 작성한 논문-TLDR 쌍 수집, S2ORC 파이프라인으로 PDF를 구조화된 전문으로 변환</li>
 <li><strong>TLDR-PR 수집</strong>: 28명 CS 학부생이 peer review 코멘트의 첫 128단어를 15-25단어의 TLDR로 재작성, 수동 품질 검수 후 20명 선별 ($20/hr)</li>
-<li><strong>CATTS</strong>: SciTLDR(Paper→TLDR)와 arXiv 20K(Paper→Title) 데이터를 혼합, 각 소스에 <code>&lt;|TLDR|&gt;</code> / <code>&lt;|TITLE|&gt;</code> control code 부착 후 BART에 jointly 학습. TLDR 인스턴스를 title 수에 맞춰 upsampling</li>
+<li><strong>CATTS</strong>: SciTLDR(Paper→TLDR)와 arXiv 20K(Paper→Title) 데이터를 혼합, 각 소스에 <code><|TLDR|></code> / <code><|TITLE|></code> control code 부착 후 BART에 jointly 학습. TLDR 인스턴스를 title 수에 맞춰 upsampling</li>
 <li><strong>모델</strong>: BART-large (Fairseq), lr=3e-5, max tokens/batch 1024, beam search (size 2-8) + length penalty (0.2-1.0) grid search</li>
 <li><strong>입력 공간</strong>: Abstract-only (159 words, 압축비 7.6) vs AIC (Abstract+Intro+Conclusion, 993 words, 압축비 47.3)</li>
 <li><strong>Extractive baselines</strong>: PACSUM (비지도, BERT encoder), BERTSumExt (지도), MatchSum (Siamese BERT)</li>
 <li><strong>평가</strong>: Multi-target max Rouge (각 gold TLDR 중 최고 Rouge 선택), nugget 기반 informativeness (MRR), 원저자 correctness 평가 (1-3 scale)</li>
-</ul>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>Extreme summarization for science</strong>: 과학 논문 도메인에서 단일 문장 수준의 극단적 요약 태스크를 최초로 정의하고 벤치마크화</li>
 <li><strong>Peer review 재작성 annotation protocol</strong>: 논문 전체를 읽지 않고도 고품질 요약을 생성할 수 있는 효율적 annotation 방법 -- peer review의 자연적 요약 활용</li>
 <li><strong>Multi-target 평가 프레임워크</strong>: 저자(TLDR-Auth)와 리뷰어(TLDR-PR)의 다양한 관점을 반영하는 복수 gold summary, 요약 평가의 변동성 문제를 완화</li>
 <li><strong>Title scaffolding (CATTS)</strong>: 논문 제목이라는 자연적으로 풍부한 신호를 control code 기반 scaffold task로 활용하여 데이터 부족 문제를 해결하는 간단하면서 효과적인 접근</li>
 <li><strong>Nugget 기반 정보 유형 분석</strong>: TLDR의 정보 구성요소를 체계적으로 분류하고 저자 vs 리뷰어 관점의 차이를 정량화</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>실험이 abstract-only와 AIC 입력 공간에 한정되며, full text 활용 실험은 oracle 분석에 그침</li>
@@ -119,9 +103,16 @@ a { color: #A62018; }
 <li>다른 학문 분야(생의학, 물리학 등)로의 확장 및 분야별 TLDR 특성 분석</li>
 <li>Faithfulness/hallucination 감소를 위한 제약 기반 생성</li>
 <li>Semantic Scholar TLDR 기능으로 실제 대규모 배포 (실제로 후속 구현됨)</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: 과학 논문의 extreme summarization이라는 실용적이면서 학술적으로도 흥미로운 새 태스크를 정의하고, peer review 재작성이라는 창의적 annotation protocol과 multi-target 평가 프레임워크를 제안한 것이 핵심 기여이다. CATTS의 title scaffolding 아이디어는 단순하면서 효과적이며, 풍부한 데이터 분석(nugget 분류, 변동성 분석)과 다각적 평가(자동 메트릭 + nugget informativeness + 원저자 correctness)가 논문의 완성도를 높인다. Semantic Scholar의 TLDR 기능으로 실제 대규모 서비스에 적용되어 실용적 영향력도 입증되었다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

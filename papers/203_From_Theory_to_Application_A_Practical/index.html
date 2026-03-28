@@ -13,13 +13,13 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
@@ -28,11 +28,7 @@ td:last-child { text-align: center; font-weight: 600; color: #D63423; }
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
@@ -46,47 +42,41 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>From Theory to Application: A Practical Introduction to Neural Operators in Scientific Computing</h1>
-<blockquote>
-<p><strong>저자</strong>: Prashant K. Jha | <strong>날짜</strong>: 2025 | <strong>Link</strong>: <a href="https://arxiv.org/abs/2503.05598" target="_blank">https://arxiv.org/abs/2503.05598</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Prashant K. Jha | <strong>날짜</strong>: 2025 | <strong>Link</strong>: <a href="https://arxiv.org/abs/2503.05598" target="_blank">https://arxiv.org/abs/2503.05598</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>Parametric PDE의 solution을 근사하는 neural operator 아키텍처(DeepONet, PCANet, FNO)를 high-level 개념과 실용적 구현 전략 중심으로 비교 review하고, Bayesian inference에서의 surrogate로서의 활용을 시연한다. Poisson equation과 linear elastic deformation에서의 구현 예제를 통해 scientific computing workflow 통합 가이드를 제공한다.</p>
-</div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>Parametric PDE의 solution을 근사하는 neural operator 아키텍처(DeepONet, PCANet, FNO)를 high-level 개념과 실용적 구현 전략 중심으로 비교 review하고, Bayesian inference에서의 surrogate로서의 활용을 시연한다. Poisson equation과 linear elastic deformation에서의 구현 예제를 통해 scientific computing workflow 통합 가이드를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: Parametric PDE의 반복적 풀이는 과학/공학 계산에서 핵심이나, 전통적 수치 방법은 각 parameter 조합마다 재계산 필요</li>
 <li><strong>Gap</strong>: Neural operator 방법론이 빠르게 발전하고 있으나, 실용적 구현 관점에서의 비교와 scientific computing workflow 통합 가이드 부족</li>
 <li><strong>왜 중요한가</strong>: Neural operator를 surrogate로 활용하면 Bayesian inference 등 반복 계산이 필요한 문제에서 수천 배 가속 가능</li>
 <li><strong>접근법</strong>: DeepONet, PCANet, FNO의 핵심 방법론을 비교하고, classical PDE 문제 및 Bayesian inference에서의 실용적 적용을 시연</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Achievement</h2>
 <ol>
 <li>DeepONet, PCANet, FNO의 core methodology를 unified perspective에서 비교 분석</li>
 <li>Poisson equation과 linear elastic deformation에서의 실용적 구현 시연</li>
 <li>Neural operator를 Bayesian inference의 surrogate로 활용하여 posterior inference 가속화 달성</li>
 <li>Residual-based error correction, multi-level training 등 예측 정확도/일반화 향상 전략 정리</li>
-</ol>
-</div>
+</ul></div>
 <div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>아키텍처 비교</strong>: DeepONet(branch-trunk 구조), PCANet(PCA 기반 차원 축소), FNO(Fourier 변환 기반 spectral layer)의 원리와 특성 비교</li>
 <li><strong>벤치마크 문제</strong>: Poisson equation(elliptic PDE)과 linear elasticity(boundary value problem)에서의 구현 및 성능 비교</li>
 <li><strong>Bayesian Inference</strong>: Neural operator surrogate를 활용한 posterior sampling 가속화 시연</li>
 <li><strong>향후 전략</strong>: Residual-based a posteriori error correction, multi-level/multi-fidelity training 등 개선 방향 제시</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>실용 중심 비교 Review</strong>: 이론보다 구현 전략과 실용적 적용에 초점을 맞춘 neural operator review로, 연구자/실무자에게 직접적 가이드 제공</li>
 <li><strong>Bayesian Inference 통합</strong>: Neural operator를 surrogate로 한 Bayesian inference 활용을 체계적으로 시연하여 두 분야의 bridge 역할</li>
 <li><strong>Error Correction 전략</strong>: Residual-based error correction과 multi-level training을 neural operator 맥락에서 정리한 향후 전략 제시</li>
 </ul>
-<p><strong>Abstract에서 추출된 독창성 문장</strong>: This focused review explores a range of neural operator architectures for approximating solutions to parametric partial differential equations (PDEs), emphasizing high-level concepts and practical implementation strategies.. The study covers foundational models such as Deep Operator Networks (DeepONet), Principal Component Analysis-based Neural Networks (PCANet), and Fourier Neural Operators (FNO), providing comparative insights into their core methodologies and performance.. These architectures are demonstrated on two classical linear parametric PDEs: the Poisson equation and linear elastic deformation.. Beyond forward problem-solving, the review delves into applying neural operators as surrogates in Bayesian inference problems, showcasing their effectiveness in accelerating posterior inference while maintaining accuracy.. The paper concludes by discussing current challenges, particularly in controlling prediction accuracy and generalization.. It outlines emerging strategies to address these issues, such as residual-based error correction and multi-level training.. This review can be seen as a comprehensive guide to implementing neural operators and integrating them into scientific computing workflows.</p>
-</div>
-<div class="section-box"><h2>Limitation & Further Study</h2>
+<p><strong>Abstract에서 추출된 독창성 문장</strong>: This focused review explores a range of neural operator architectures for approximating solutions to parametric partial differential equations (PDEs), emphasizing high-level concepts and practical implementation strategies.. The study covers foundational models such as Deep Operator Networks (DeepONet), Principal Component Analysis-based Neural Networks (PCANet), and Fourier Neural Operators (FNO), providing comparative insights into their core methodologies and performance.. These architectures are demonstrated on two classical linear parametric PDEs: the Poisson equation and linear elastic deformation.. Beyond forward problem-solving, the review delves into applying neural operators as surrogates in Bayesian inference problems, showcasing their effectiveness in accelerating posterior inference while maintaining accuracy.. The paper concludes by discussing current challenges, particularly in controlling prediction accuracy and generalization.. It outlines emerging strategies to address these issues, such as residual-based error correction and multi-level training.. This review can be seen as a comprehensive guide to implementing neural operators and integrating them into scientific computing workflows.</p></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>Linear PDE에 한정된 실험으로, nonlinear/complex PDE에서의 성능 비교 미수행</li>
@@ -104,12 +94,17 @@ a { color: #A62018; }
 <li>Nonlinear, multi-scale PDE에서의 neural operator 성능 비교</li>
 <li>Physics-informed training과 결합한 hybrid neural operator 개발</li>
 <li>Large-scale 산업/공학 문제에서의 실전 적용 사례 연구</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 3/5</span></div>
-<p><strong>총평</strong>: Neural operator의 실용적 구현과 scientific computing 통합에 초점을 맞춘 교육적 가치가 높은 review이다. DeepONet, PCANet, FNO의 비교와 Bayesian inference 활용 시연이 유용하나, simple linear PDE에 한정된 실험과 최신 방법론 미포함이 아쉬운 점이다.</p>
-</div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>2/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
+<p><strong>총평</strong>: Neural operator의 실용적 구현과 scientific computing 통합에 초점을 맞춘 교육적 가치가 높은 review이다. DeepONet, PCANet, FNO의 비교와 Bayesian inference 활용 시연이 유용하나, simple linear PDE에 한정된 실험과 최신 방법론 미포함이 아쉬운 점이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

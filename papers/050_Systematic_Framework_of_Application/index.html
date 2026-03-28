@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Systematic Framework of Application Methods for Large Language Models in Languag</title>
+<title>Systematic Framework of Application Methods for Large Language Models in Language Sciences</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,21 +42,15 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Systematic Framework of Application Methods for Large Language Models in Language Sciences</h1>
-<ul>
-<li><strong>저자</strong>: Kun Sun, Rong Wang</li>
-<li><strong>출처</strong>: arXiv:2512.09552 (2025-12-10)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2512.09552" target="_blank">10.48550/arXiv.2512.09552</a></li>
-<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Sun and Wang_2025_Systematic Framework of Application Methods for Large Language Models in Language Sciences.pdf</li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
+<hr>
 <div class="section-box"><h2>한줄 요약 (Essence)</h2>
 <p>언어과학(language sciences)에서 LLM을 체계적으로 활용하기 위한 두 가지 방법론적 프레임워크를 제안하는 논문으로, 방법 선택 프레임워크와 다단계 연구 파이프라인 구성 프레임워크를 통해 재현 가능하고 검증 가능한 연구를 지원한다.</p>
-<hr />
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<hr></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>LLM이 언어과학을 변혁하고 있으나, 현재 활용은 방법론적 파편화(methodological fragmentation)와 체계적 엄밀성의 부재로 어려움을 겪고 있다. 연구자들이 프롬프트 기반 상호작용, 파인튜닝, 임베딩 추출 등 다양한 접근법을 비체계적으로 사용하고 있어, 연구의 재현성과 비교 가능성이 저해되고 있다. 연구 질문과 적절한 LLM 방법론의 전략적 정렬(strategic alignment)을 보장하는 체계적 프레임워크가 필요하다.</p>
-<hr />
-</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<hr></div>
+<div class="section-box"><h2>핵심 성과 (Achievement)</h2>
 <ol>
 <li><strong>방법 선택 프레임워크(Method-Selection Framework)</strong> -- 3가지 상호보완적 접근법 정의:</li>
 <li><strong>프롬프트 기반 상호작용</strong>: 범용 모델을 활용한 탐색적 분석 및 가설 생성</li>
@@ -78,27 +60,31 @@ a { color: #A62018; }
 <li><strong>실증적 검증</strong>: 회고적 분석(retrospective analysis), 전향적 적용(prospective application), 전문가 평가 설문(expert evaluation survey)을 통한 프레임워크 검증</li>
 <li><strong>패러다임 전환 기여</strong>: 전통 언어학의 ad-hoc 활용에서 검증 가능하고 견고한 과학으로의 전환을 위한 구조적 기반 제공</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>방법론 (How)</h2>
+<hr></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <p>논문은 프레임워크 설계와 실증적 검증의 두 축으로 구성된다.</p>
-<p><strong>프레임워크 설계:</strong>
-- <strong>접근법 1 (프롬프트 기반)</strong>: GPT-4, Claude 등 범용 모델에 프롬프트를 설계하여 탐색적 분석 수행. 연구 초기 단계의 가설 생성, 패턴 발견에 적합. 기술적 장벽이 낮으나 재현성과 통제력이 제한적
-- <strong>접근법 2 (파인튜닝)</strong>: LLaMA, Mistral 등 오픈소스 모델을 도메인 데이터로 파인튜닝. 확증적 연구에 적합하며, 모델 동작에 대한 완전한 통제 가능. 컴퓨팅 자원과 기술적 전문성 필요
-- <strong>접근법 3 (임베딩 추출)</strong>: BERT, GPT 등에서 문맥화된 임베딩을 추출하여 정량적 분석에 활용. 의미 유사성 분석, 클러스터링, 모델 내부 표상(representation) 분석에 적합</p>
-<p><strong>실증적 검증:</strong>
-- <strong>회고적 분석</strong>: 기존 언어과학 LLM 연구를 프레임워크 기준으로 재분류하여 방법론적 적절성을 평가
-- <strong>전향적 적용</strong>: 새로운 연구 과제에 프레임워크를 적용하여 실제 효용성 검증
-- <strong>전문가 평가</strong>: 언어과학 전문가 설문을 통해 프레임워크의 실용성과 유용성 평가</p>
-<hr />
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<p><strong>프레임워크 설계:</strong></p>
+<ul>
+<li><strong>접근법 1 (프롬프트 기반)</strong>: GPT-4, Claude 등 범용 모델에 프롬프트를 설계하여 탐색적 분석 수행. 연구 초기 단계의 가설 생성, 패턴 발견에 적합. 기술적 장벽이 낮으나 재현성과 통제력이 제한적</li>
+<li><strong>접근법 2 (파인튜닝)</strong>: LLaMA, Mistral 등 오픈소스 모델을 도메인 데이터로 파인튜닝. 확증적 연구에 적합하며, 모델 동작에 대한 완전한 통제 가능. 컴퓨팅 자원과 기술적 전문성 필요</li>
+<li><strong>접근법 3 (임베딩 추출)</strong>: BERT, GPT 등에서 문맥화된 임베딩을 추출하여 정량적 분석에 활용. 의미 유사성 분석, 클러스터링, 모델 내부 표상(representation) 분석에 적합</li>
+</ul>
+<p><strong>실증적 검증:</strong></p>
+<ul>
+<li><strong>회고적 분석</strong>: 기존 언어과학 LLM 연구를 프레임워크 기준으로 재분류하여 방법론적 적절성을 평가</li>
+<li><strong>전향적 적용</strong>: 새로운 연구 과제에 프레임워크를 적용하여 실제 효용성 검증</li>
+<li><strong>전문가 평가</strong>: 언어과학 전문가 설문을 통해 프레임워크의 실용성과 유용성 평가</li>
+</ul>
+<hr></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li><strong>방법론적 체계화</strong>: 언어과학에서 LLM 활용이 산발적으로 이루어지던 상황에서, 연구 목적에 따른 <strong>방법 선택의 의사결정 체계</strong>를 최초로 제시</li>
 <li><strong>탐색적-확증적 연구의 구분</strong>: 프롬프트 기반(탐색적) vs. 파인튜닝(확증적)이라는 명확한 구분은 연구 설계의 엄밀성을 높이는 데 기여</li>
 <li><strong>3단계 검증</strong>: 회고적, 전향적, 전문가 평가의 다각적 검증은 프레임워크 논문에서 보기 드문 수준의 실증적 뒷받침</li>
 <li><strong>임베딩 기반 분석의 독립적 위상 부여</strong>: 흔히 파인튜닝의 부산물로 취급되는 임베딩 추출을 독립적 연구 방법론으로 격상시킨 점</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<hr></div>
+<div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
 <ol>
 <li><strong>언어과학 특화</strong>: 프레임워크가 언어과학에 특화되어 있어, 다른 과학 분야(자연과학, 사회과학 등)로의 직접적 적용 가능성이 제한적. 일반화를 위한 추가 연구 필요</li>
 <li><strong>기술적 세부사항의 깊이</strong>: 3가지 접근법 각각의 기술적 구현에 대한 설명이 입문 수준에 그칠 수 있음. 실제 구현을 위해서는 보다 상세한 튜토리얼이 필요</li>
@@ -106,9 +92,18 @@ a { color: #A62018; }
 <li><strong>멀티모달 언어 연구 미반영</strong>: 음성, 제스처, 수화 등 비텍스트 언어 데이터와 LLM의 결합에 대한 논의가 부족</li>
 <li><strong>전문가 평가의 규모</strong>: 전문가 설문의 참여자 수와 대표성이 프레임워크의 일반적 유용성을 주장하기에 충분한지 검토 필요</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>종합 평가 (Evaluation)</h2>
+<hr></div>
+<div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>언어과학에서 LLM 활용의 방법론적 혼란을 정리하려는 시의적절한 시도다. 연구 목적(탐색적/확증적/정량적)에 따라 적절한 LLM 접근법(프롬프트/파인튜닝/임베딩)을 선택하는 의사결정 체계는 직관적이고 실용적이다. 특히 회고적 분석, 전향적 적용, 전문가 평가의 3단계 검증은 프레임워크 논문으로서 높은 수준의 실증적 뒷받침을 제공한다. 다만 프레임워크가 언어과학에 특화되어 있어 타 분야로의 확장에는 추가 작업이 필요하며, 급변하는 LLM 생태계에서 프레임워크의 지속적 업데이트가 과제다. 재현성과 체계성을 중시하는 연구 문화를 촉진한다는 점에서 의미 있는 기여이며, 유사한 방법론적 프레임워크가 다른 과학 분야에서도 개발되기를 기대한다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: 언어과학에서 LLM 응용을 체계화한 프레임워크로 해당 분야 입문자에게 유용하나 광범위한 커버리지에 비해 개별 분석 깊이가 얕다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

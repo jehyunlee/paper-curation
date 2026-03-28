@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,48 +42,43 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Towards Autonomous Mathematics Research</h1>
-<blockquote>
-<p><strong>저자</strong>: Tony Feng, Trieu H. Trinh, Garrett Bingham, Dawsen Hwang, Yuri Chervonyi, Junehyuk Jung, Joonkyung Lee, Carlo Pagano, Sang-hyun Kim, Federico Pasqualotto, Sergei Gukov, Demis Hassabis, Quoc V. Le, Thang Luong 외 | <strong>날짜</strong>: 2026-02-10 | <strong>arXiv</strong>: 2602.10177</p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Tony Feng, Trieu H. Trinh, Garrett Bingham, Dawsen Hwang, Yuri Chervonyi, Junehyuk Jung, Joonkyung Lee, Carlo Pagano, Sang-hyun Kim, Federico Pasqualotto, Sergei Gukov, Demis Hassabis, Quoc V. Le, Thang Luong 외 | <strong>날짜</strong>: 2026-02-10 | <strong>arXiv</strong>: 2602.10177</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>Google DeepMind이 개발한 수학 연구 에이전트 Aletheia를 소개하고, 경시대회 수학에서 전문 연구 수학으로의 전환을 시도한 연구이다. Aletheia는 Gemini Deep Think 기반의 Generator-Verifier-Reviser 구조로, 자연어 기반 end-to-end 수학 추론을 수행한다. 주요 성과로 (A) 인간 개입 없이 생성된 출판 수준 논문(산술 기하학의 eigenweight 계산), (B) 인간-AI 협업 연구 논문, (C) Erdos 미해결 문제 700개 체계적 평가(4개 자율 해결), (D) FirstProof 벤치마크 선도 성적(10문제 중 6문제 해결)을 달성했다. 동시에 "Autonomous Mathematics Research Levels" 분류 체계와 "Human-AI Interaction Card"를 제안하여 AI 기여의 투명한 문서화를 촉구한다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>Google DeepMind이 개발한 수학 연구 에이전트 Aletheia를 소개하고, 경시대회 수학에서 전문 연구 수학으로의 전환을 시도한 연구이다. Aletheia는 Gemini Deep Think 기반의 Generator-Verifier-Reviser 구조로, 자연어 기반 end-to-end 수학 추론을 수행한다. 주요 성과로 (A) 인간 개입 없이 생성된 출판 수준 논문(산술 기하학의 eigenweight 계산), (B) 인간-AI 협업 연구 논문, (C) Erdos 미해결 문제 700개 체계적 평가(4개 자율 해결), (D) FirstProof 벤치마크 선도 성적(10문제 중 6문제 해결)을 달성했다. 동시에 "Autonomous Mathematics Research Levels" 분류 체계와 "Human-AI Interaction Card"를 제안하여 AI 기여의 투명한 문서화를 촉구한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: AI가 2025 IMO에서 금메달 수준을 달성하여 경시대회 수학에서의 추론 능력이 입증됨. 그러나 경시대회 문제는 자기 완결적이고 고등학교 교과서 범위의 정리만 활용</li>
 <li><strong>Gap</strong>: 연구 수학은 방대한 문헌의 고급 기법 종합이 필요하고, 수십 페이지에 달하는 긴 추론 체인이 요구됨. Foundation model의 전문 분야 이해가 훈련 데이터 부족으로 피상적이며, hallucination이 빈번</li>
 <li><strong>왜 중요한가</strong>: AI가 자율적으로 새로운 수학 정리를 발견하고 증명할 수 있는지는 AI 기반 과학적 발견의 핵심 질문. 수학은 공리와 추론 규칙이 명확하여 AI 연구 능력 평가에 이상적 도메인</li>
 <li><strong>접근법</strong>: IMO Gold 수준 Deep Think에 agentic harness(Generator-Verifier-Reviser)를 추가하고, 추론 시간 scaling law + 도구 사용(Google Search, 웹 브라우징)을 결합</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>자율 연구 논문 (Feng26)</strong>: 산술 기하학의 eigenweight를 인간 개입 없이 완전 자율적으로 계산. 인간 저자에게 익숙하지 않은 대수적 조합론 기법을 활용한 우아한 해법 도출</li>
 <li><strong>Erdos 문제 체계적 평가</strong>: 700개 미해결 문제에 Aletheia 배포. 212개 후보 해답 중 63개(31.5%) 기술적 정확, 13개(6.5%) 의미 있는 정답. 4개 문제를 자율적으로 해결</li>
 <li><strong>FirstProof 선도 성적</strong>: 학계 수학자가 출제한 10개 연구 수준 문제 중 6개 해결 (best-of-2). 특히 Problem 7은 출판 수준으로 평가</li>
 <li><strong>Inference-time scaling law</strong>: Olympiad에서 PhD 수준까지 확장되는 추론 시간 스케일링 법칙 발견. 2026년 1월 모델이 IMO Gold 모델 대비 약 100배 추론 효율 향상</li>
 <li><strong>IMO 2025 P6 해결</strong>: 이전 IMO Gold 모델이 실패했던 극난이도 문제를 extreme scale에서 해결</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>Aletheia 아키텍처</strong>: 3개 하위 에이전트 (Generator, Verifier, Reviser)가 반복 상호작용. Verifier가 승인하거나 시도 제한에 도달할 때까지 순환. 각 하위 에이전트는 Gemini base model 호출을 내부적으로 조율</li>
 <li><strong>핵심 설계 원칙</strong>: 추론 모델의 최종 출력을 중간 thinking token과 분리하고, 검증 단계를 명시적으로 분리. 확장된 thinking trace가 오류의 조건부 확률을 인위적으로 높일 수 있다는 관찰에 기반</li>
 <li><strong>도구 사용</strong>: Google Search + 웹 브라우징으로 citation hallucination 대폭 감소. Python 도구는 marginal 개선만 제공</li>
 <li><strong>평가</strong>: (1) IMO-Proof Bench Advanced (30문제, 93% 점수), (2) FutureMath Basic (PhD 수준, 조건부 정확도 82%), (3) Erdos 문제 700개 체계적 배포, (4) FirstProof 10문제 (6/10 해결)</li>
 <li><strong>Ablation</strong>: 동일 base model의 Gemini Deep Think (IMO scale) 대비 Aletheia가 더 낮은 compute에서 더 높은 성능 달성</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>경시대회에서 연구 수학으로의 최초 체계적 전환</strong>: IMO 금메달 수준에서 출판 가능한 연구 결과로의 전환을 처음으로 체계적으로 시도하고 문서화. 단순 문제 풀이를 넘어 새로운 정리를 자율적으로 발견하고 증명</li>
 <li><strong>Autonomous Mathematics Research Levels</strong>: SAE 자율주행 레벨에서 영감을 받아, 자율성 축(H/C/A)과 수학적 중요도 축(Level 0-4)의 2차원 분류 체계 제안. AI 수학 연구의 투명한 소통을 위한 프레임워크</li>
 <li><strong>Human-AI Interaction Card</strong>: 각 연구 성과에 대해 인간과 AI의 기여를 명시적으로 문서화하는 표준 양식 제안. AI 기반 과학 연구의 책임 있는 소통을 위한 실용적 도구</li>
 <li><strong>솔직한 한계 인정</strong>: 성공 사례만 보고하는 관행에서 벗어나, 68.5%의 근본적 오류율, specification gaming 경향, 지속적 hallucination 문제를 투명하게 보고</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>AI가 연구 수학을 일관되게 풀 수 있다는 해석은 부적절. 성공 사례는 드물고, 자율 능력의 한계를 아는 직관이 현재로서는 중요</li>
@@ -116,9 +99,16 @@ a { color: #A62018; }
 <li>Formal verification과의 통합으로 증명의 완전한 정확성 보장</li>
 <li>더 심층적이고 장기적인 수학 연구 프로젝트에서의 AI 협업 실험</li>
 <li>AI 수학 연구의 표준 문서화 체계 커뮤니티 합의 도출</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 5/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
 <p><strong>총평</strong>: 경시대회 수학에서 전문 연구 수학으로의 전환이라는 근본적 도전을 체계적으로 문서화한 landmark 논문이다. 인간 개입 없는 출판 수준 연구(Feng26), 700개 Erdos 문제의 체계적 평가, FirstProof 선도 성적 등 다층적 마일스톤이 인상적이다. 특히 68.5% 오류율과 hallucination 문제를 투명하게 보고하고, Autonomous Mathematics Research Levels와 HAI Card를 통해 AI 수학 연구의 책임 있는 소통 프레임워크를 제안한 점이 높이 평가된다. 현재 자율 결과가 "major advance" 수준에 도달하지 못했음을 명시적으로 인정하는 지적 정직성도 돋보인다. AI for Science의 가장 중요한 발전 중 하나로, 수학 연구에서 인간-AI 협업의 미래를 구체적으로 제시한 연구이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

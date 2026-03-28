@@ -5,74 +5,88 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MolQuest: A Benchmark for Agentic Evaluation of Abductive Reasoning in Chemical Structure Elucidation</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-h2 { font-size: 1.1rem; color: #D63423; margin: 1.5rem 0 0.6rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
 p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
-th { background: #D63423; color: white; font-weight: 600; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
-.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
-.review-fig img { max-width: min(100%, 800px); border-radius: 8px; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #D63423; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>MolQuest: A Benchmark for Agentic Evaluation of Abductive Reasoning in Chemical Structure Elucidation</h1>
-<blockquote><p><strong>저자</strong>: Taolin Han, Shuang Wu, Jinghang Wang, Yuhao Zhou, Renquan Lv, Bing Zhao, Wei Hu | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: — | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.25253" target="_blank">2603.25253</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Web-only (abstract)</p></blockquote>
+<blockquote><p><strong>저자</strong>: Taolin Han, Shuang Wu, Jinghang Wang, Yuhao Zhou, Renquan Lv, Bing Zhao, Wei Hu | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: — | <strong>arXiv</strong>: 2603.25253</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
 <hr>
-<h2>Essence</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>LLM이 실제 화학 구조 결정(chemical structure elucidation) 과제에서 다단계 추론과 실험적 상호작용을 얼마나 잘 수행하는지 평가할 수 있는 기존 벤치마크가 없었다. MolQuest는 이 공백을 메우기 위해 귀납적 추론(abductive reasoning) 기반의 에이전틱 벤치마크를 새롭게 제시하며, 정적 단일 QA가 아닌 멀티스텝 반복·실험 상호작용 포맷으로 LLM의 동적 과학 추론 능력을 측정한다.</p>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"></div>
-<p>*Figure 1: MolQuest 벤치마크 구조 — 화학 구조 결정 태스크에서 에이전트의 다단계 추론 및 실험 상호작용 평가 프레임워크*</p>
-<hr>
-<h2>Originality (Abstract 기반)</h2>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: MolQuest 벤치마크 구조 — 화학 구조 결정 태스크에서 에이전트의 다단계 추론 및 실험 상호작용 평가 프레임워크</em></p>
+<hr></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty, action, finding] "To address this gap, we introduce MolQuest, a novel agentic benchmark designed to evaluate LLMs on abductive reasoning in chemical structure elucidation."</li>
 </ul>
-<hr>
-<h2>How (방법론)</h2>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li>화학 구조 결정(structure elucidation) 시나리오 기반 태스크 설계</li>
 <li>귀납적 추론(abductive reasoning) 능력을 측정하는 에이전틱 평가 프레임워크</li>
 <li>단일 QA가 아닌 멀티스텝 반복·실험 상호작용 포맷 채용</li>
 <li>다양한 LLM을 동일 벤치마크에서 동적으로 평가</li>
 </ul>
-<hr>
-<h2>Why (중요성)</h2>
+<hr></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>LLM의 과학 발견 잠재력을 실제 연구 시나리오에서 체계적으로 평가할 필요성</li>
 <li>기존 정적 QA 벤치마크는 복잡한 과학 태스크의 동적·반복적 특성을 포착 불가</li>
 <li>화학 구조 결정은 귀납적 추론과 실험 피드백이 필수인 대표적 실제 연구 문제</li>
 <li>AI for Science 분야에서 모델 능력의 현실적 한계를 파악하는 데 기여</li>
 </ul>
-<hr>
-<h2>Limitation</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>Abstract 기반으로 벤치마크 태스크의 규모(문제 수, 분자 다양성) 미확인</li>
 <li>평가 지표의 구체적 정의 및 인간 전문가 대비 LLM 성능 수치 미파악</li>
 <li>화학 구조 결정 외 다른 과학 분야로의 확장성 불명확</li>
 </ul>
-<hr>
-<h2>Further Study</h2>
+<hr></div>
+<div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>벤치마크를 NMR, MS 등 다양한 분광 기법 통합 시나리오로 확장</li>
 <li>인간 화학자와 LLM 에이전트의 협업 성능 비교 연구</li>
 <li>실험실 자동화 시스템과의 실제 통합 평가</li>
 </ul>
-<hr>
-<h2>평가</h2>
+<hr></div>
+<div class="section-box"><h2>평가</h2>
 <table>
 <tr><th>항목</th><th>점수</th></tr>
 <tr><td>Novelty</td><td>4/5</td></tr>
@@ -81,7 +95,7 @@ th { background: #D63423; color: white; font-weight: 600; }
 <tr><td>Clarity</td><td>4/5</td></tr>
 <tr><td>Overall</td><td>4/5</td></tr>
 </table>
-<p><strong>총평</strong>: 화학 구조 결정이라는 현실적·고난도 과학 태스크에서 LLM의 에이전틱 추론을 평가하는 최초의 체계적 벤치마크로, AI for Science 평가 인프라에 실질적 기여를 한다.</p>
+<p><strong>총평</strong>: 화학 구조 결정이라는 현실적·고난도 과학 태스크에서 LLM의 에이전틱 추론을 평가하는 최초의 체계적 벤치마크로, AI for Science 평가 인프라에 실질적 기여를 한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>The strain on scientific publishing</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,22 +42,20 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>The strain on scientific publishing</h1>
-<blockquote>
-<p><strong>저자</strong>: Mark A. Hanson, Pablo Gómez Barreiro, Paolo Crosetto, Dan Brockington | <strong>날짜</strong>: 2024-11-01 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/10.1162/qss_a_00327">10.1162/qss_a_00327</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>학술 출판 시스템은 지속 불가능한 수준으로 과부하가 걸려 있는가? 이 논문은 "scientific publishing의 부담(strain)"이라는 개념을 정의하고, 5가지 데이터 기반 지표로 이를 측정한다. 핵심 발견: Scopus와 Web of Science에서 인덱스된 논문 총수가 2022년 기준 2016년 대비 <strong>약 47% 증가</strong>했으나, 과학자 수는 이에 비해 거의 증가하지 않아 과학자 1인당 출판 워크로드가 급격히 증가했다. 특정 출판사들이 불균형적으로 성장을 주도했으며, '특별호(special issues)'를 통해 심사 처리 시간을 단축하여 이 성장을 가능하게 했다. 동시에 저널 영향지수(journal impact factor)의 연도별 인플레이션이 광범위하게 발생하고 있어 품질 신호가 왜곡되고 있다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Mark A. Hanson, Pablo Gómez Barreiro, Paolo Crosetto, Dan Brockington | <strong>날짜</strong>: 2024-11-01 | <strong>Journal</strong>: Quantitative Science Studies | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1162/qss_a_00327"" target="_blank">10.1162/qss_a_00327"</a> target="_blank"><a href="https://doi.org/10.1162/qss_a_00327" target="_blank">10.1162/qss_a_00327</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>학술 출판 시스템은 지속 불가능한 수준으로 과부하가 걸려 있는가? 이 논문은 "scientific publishing의 부담(strain)"이라는 개념을 정의하고, 5가지 데이터 기반 지표로 이를 측정한다. 핵심 발견: Scopus와 Web of Science에서 인덱스된 논문 총수가 2022년 기준 2016년 대비 <strong>약 47% 증가</strong>했으나, 과학자 수는 이에 비해 거의 증가하지 않아 과학자 1인당 출판 워크로드가 급격히 증가했다. 특정 출판사들이 불균형적으로 성장을 주도했으며, '특별호(special issues)'를 통해 심사 처리 시간을 단축하여 이 성장을 가능하게 했다. 동시에 저널 영향지수(journal impact factor)의 연도별 인플레이션이 광범위하게 발생하고 있어 품질 신호가 왜곡되고 있다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty] "We define this problem as 'the strain on scientific publishing.'"</li>
 <li>[authorship, action] "we present five data-driven metrics showing publisher growth, processing times, and citation behaviors."</li>
 <li>[result, finding] "in 2022 the article total was ~47% higher than in 2016, which has outpaced the limited growth—if any—in the number of practicing scientists."</li>
 <li>[result] "Some publishers enabled this growth by hosting 'special issues' with reduced turnaround times."</li>
 <li>[result, finding] "We also observed widespread year-over-year inflation of journal impact factors coinciding with this strain, which risks confusing quality signals."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터 수집</strong>: 웹 스크래핑 + 출판사로부터 직접 요청(웹사이트 또는 요청)으로 데이터 수집</li>
 <li><strong>5개 측정 지표</strong>:</li>
@@ -70,15 +66,15 @@ a { color: #1a5aad; }
 <li>특별호(special issues) 비중 및 처리 속도</li>
 <li><strong>비교 기준</strong>: 2016-2022년 시계열 분석; Scopus/WoS 전체 논문 수 대비 과학자 수 증가율 비교</li>
 <li><strong>출판사별 분석</strong>: 특정 출판사의 불균형적 성장 기여도 분석</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>학술 출판량의 지수적 증가는 리뷰어 부족, 논문 품질 저하, 연구자 번아웃이라는 구체적 사회적 문제로 이어짐</li>
 <li>과학자 수는 거의 증가하지 않으면서 출판량만 47% 증가했다는 것은 "publish or perish" 압력이 구조적으로 심화되고 있음을 실증</li>
 <li>JIF 인플레이션은 연구 평가의 신뢰성을 훼손하여 펀딩, 채용, 승진 결정의 왜곡으로 이어질 수 있음</li>
 <li>특별호를 통한 처리 시간 단축이 품질 저하와 어떻게 연결되는지를 정량화함으로써, 출판 시스템 개혁의 구체적 지점을 식별</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>웹 스크래핑과 출판사 직접 요청에 의존하여 데이터 완전성이 출판사 협조에 달려 있음</li>
@@ -95,39 +91,17 @@ a { color: #1a5aad; }
 <li>출판량 증가와 실제 연구 품질(재현성, 인용 지속성) 간의 관계 규명</li>
 <li>특별호와 일반 게재 논문의 장기적 인용·영향력 비교</li>
 <li>"strain" 완화를 위한 구체적 정책 개입(프리프린트 강화, 등록 보고 확대, 출판 인센티브 개혁) 효과 분석</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
 </table>
 <p><strong>총평</strong>: "scientific publishing의 부담"이라는 개념을 정의하고 5개 데이터 기반 지표로 체계적으로 측정한 시의적절한 연구로, Quantitative Science Studies 게재에 걸맞은 방법론적 엄밀성을 갖춘다. 출판량의 지수적 증가, JIF 인플레이션, 특별호 남용이라는 세 가지 구조적 문제를 실증하여 출판 시스템 개혁 논의의 핵심 참고문헌이 될 것이다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,41 +42,36 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks</h1>
-<ul>
-<li><strong>저자</strong>: Fabrizio Gilardi, Meysam Alizadeh, Maël Kubli</li>
-<li><strong>출처</strong>: Proceedings of the National Academy of Sciences (PNAS), Vol. 120, No. 30 (2023)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.2305016120"><a href="https://doi.org/10.1073/pnas.2305016120" target="_blank">10.1073/pnas.2305016120</a></a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (핵심)</h2>
-<p>4개 데이터셋(트윗 및 뉴스 기사, n=6,183)을 사용하여 ChatGPT(gpt-3.5-turbo)의 zero-shot 텍스트 분류 성능을 Amazon Mechanical Turk(MTurk) 크라우드 워커 및 훈련된 어노테이터(연구보조원)와 체계적으로 비교한 연구. ChatGPT가 관련성, 입장, 주제, 프레임 탐지를 포함한 대부분의 어노테이션 태스크에서 크라우드 워커를 평균 약 25 퍼센트 포인트 상회하며, 코더 간 일치도(intercoder agreement)에서는 크라우드 워커와 훈련된 어노테이터 모두를 능가하고, 비용은 건당 약 $0.003로 MTurk 대비 약 30배 저렴함을 보여준다.</p>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>NLP 연구에서 텍스트 어노테이션은 분류기 학습이나 비지도 모델 평가를 위해 필수적이지만, 훈련된 어노테이터는 비용이 높고, MTurk 크라우드 워커는 품질 저하 우려가 있으며, CrowdFlower/Figure Eight 등 대안 플랫폼은 학술 연구에 더 이상 적합하지 않은 상황이었다. ChatGPT의 텍스트 어노테이션 가능성에 대한 초기 증거가 있었으나 체계적 평가가 부재했다.</p>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (핵심)</h2>
+<p>4개 데이터셋(트윗 및 뉴스 기사, n=6,183)을 사용하여 ChatGPT(gpt-3.5-turbo)의 zero-shot 텍스트 분류 성능을 Amazon Mechanical Turk(MTurk) 크라우드 워커 및 훈련된 어노테이터(연구보조원)와 체계적으로 비교한 연구. ChatGPT가 관련성, 입장, 주제, 프레임 탐지를 포함한 대부분의 어노테이션 태스크에서 크라우드 워커를 평균 약 25 퍼센트 포인트 상회하며, 코더 간 일치도(intercoder agreement)에서는 크라우드 워커와 훈련된 어노테이터 모두를 능가하고, 비용은 건당 약 $0.003로 MTurk 대비 약 30배 저렴함을 보여준다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>NLP 연구에서 텍스트 어노테이션은 분류기 학습이나 비지도 모델 평가를 위해 필수적이지만, 훈련된 어노테이터는 비용이 높고, MTurk 크라우드 워커는 품질 저하 우려가 있으며, CrowdFlower/Figure Eight 등 대안 플랫폼은 학술 연구에 더 이상 적합하지 않은 상황이었다. ChatGPT의 텍스트 어노테이션 가능성에 대한 초기 증거가 있었으나 체계적 평가가 부재했다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
 <li><strong>정확도</strong>: 4개 데이터셋 전반에서 ChatGPT의 zero-shot 정확도가 MTurk를 평균 약 25 퍼센트 포인트 상회 -- 관련성 태스크에서 59~83%, 입장/주제/프레임 등 복잡한 태스크에서도 우위</li>
 <li><strong>코더 간 일치도</strong>: MTurk 평균 56%, 훈련된 어노테이터 79%, ChatGPT(temp=1) 91%, ChatGPT(temp=0.2) 97% -- ChatGPT가 모든 태스크에서 인간 어노테이터를 능가</li>
 <li><strong>비용 효율성</strong>: ChatGPT 건당 약 $0.003으로 MTurk 대비 약 30배 저렴</li>
 <li><strong>Temperature 효과</strong>: 낮은 temperature(0.2)가 정확도를 떨어뜨리지 않으면서 일관성을 높임 (일치도와 정확도 간 양의 상관, r=0.36)</li>
 <li><strong>복잡한 태스크에서 더 큰 우위</strong>: ChatGPT의 MTurk 대비 성능 격차가 훈련된 어노테이터의 코더 간 일치도와 음의 상관(r=-0.37) -- 어려운 태스크일수록 상대적 우위 큼</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ol>
 <li><strong>데이터셋</strong>: (i) 콘텐츠 모더레이션 관련 트윗 2,382건(2020-2021), (ii) 미국 의회 트윗 1,856건(2017-2022), (iii) 콘텐츠 모더레이션 뉴스 기사 1,606건(2020-2021), (iv) 2023년 트윗 339건(암기화 우려 통제용)</li>
 <li><strong>태스크</strong>: 관련성(이진 분류), 입장 탐지(3클래스), 주제 탐지(6클래스), 일반 프레임(3클래스), 정책 프레임(14클래스) -- 동일 코드북을 ChatGPT, MTurk, 훈련된 어노테이터에 적용</li>
 <li><strong>ChatGPT 설정</strong>: gpt-3.5-turbo API, temperature 1.0과 0.2 각각 2회씩 총 4회 어노테이션, 트윗별 새 세션 생성, ChatGPT 특화 프롬프트 없이 동일 지시문 사용</li>
 <li><strong>MTurk 품질 관리</strong>: MTurk Masters 자격, 승인율 90% 이상, 미국 거주자, 단일 태스크 20% 이상 어노테이션 제한</li>
 <li><strong>평가 지표</strong>: 정확도(훈련된 어노테이터를 gold standard로), 코더 간 일치도(동일 레이블 할당 비율)</li>
-</ol>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>최초의 체계적 비교</strong>: ChatGPT의 텍스트 어노테이션 능력에 대한 개별적 보고가 있었으나, 다수 태스크, 다수 데이터셋, 3가지 어노테이터 유형(ChatGPT, MTurk, 훈련된 어노테이터)을 동일 코드북으로 체계적으로 비교한 최초의 연구</li>
 <li><strong>실무적 프레임워크</strong>: 연구자를 위한 실용적 가이드라인 제시 -- 동일한 코드북을 LLM에 그대로 적용하는 간단한 접근이 크라우드소싱보다 우수할 수 있음을 실증</li>
 <li><strong>암기화 통제</strong>: 2023년 신규 수집 트윗으로 ChatGPT 학습 데이터 오염 가능성을 직접 검증</li>
 <li><strong>PNAS 게재</strong>: 정치과학 분야에서 LLM의 텍스트 분석 잠재력을 주류 학술지에 소개한 선구적 연구</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>단일 모델, 단일 언어</strong>: gpt-3.5-turbo만 평가하며, 영어 텍스트에 한정 -- 다국어 성능, GPT-4 등 후속 모델 비교 미수행</li>
 <li><strong>도메인 제한</strong>: 콘텐츠 모더레이션이라는 특정 도메인 중심으로, 다양한 학문 분야(의학, 법학 등)로의 일반화 미검증</li>
@@ -96,9 +79,18 @@ a { color: #A62018; }
 <li><strong>간략한 분석</strong>: PNAS Brief Report 형식(3페이지)으로 인해 오류 분석, 태스크별 심층 분석이 제한적</li>
 <li><strong>Gold standard의 한계</strong>: 훈련된 어노테이터의 합의를 gold standard로 사용하나, 이 자체의 한계는 논의하지 않음</li>
 <li>향후 다국어 텍스트, few-shot 학습, 반자동 라벨링 시스템 구축, chain-of-thought 프롬프팅, 다양한 LLM 간 비교가 필요</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <p>PNAS에 게재된 간결하고 영향력 있는 연구로, LLM이 텍스트 어노테이션 관행을 근본적으로 변화시킬 잠재력을 설득력 있게 보여준다. 동일 코드북을 ChatGPT, MTurk, 훈련된 어노테이터에 적용하여 공정한 비교를 수행한 설계가 단순하면서도 효과적이며, "평균 25 퍼센트 포인트 정확도 우위 + 30배 저렴한 비용"이라는 결과는 실질적 함의가 크다. 다만 Brief Report 형식의 한계로 분석의 깊이가 제한적이고, 단일 모델/단일 언어/단일 도메인이라는 범위 제약이 있다. 이 논문은 후속 연구(Bermejo et al. 2024 등)에서 더 다양한 태스크와 모델로 확장되는 기초 참조점 역할을 한다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>4</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>4.0</td></tr>
+</table>
+<p><strong>총평</strong>: ChatGPT가 MTurk 크라우드 워커 대비 평균 25pp 높은 정확도와 30배 낮은 비용으로 텍스트 어노테이션을 수행함을 PNAS에 발표한 영향력 있는 연구로, 사회과학 연구 방법론의 전환점이 되었다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

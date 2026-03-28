@@ -13,13 +13,13 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
@@ -29,6 +29,7 @@ td:last-child { text-align: center; font-weight: 600; color: #D63423; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
@@ -41,35 +42,47 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Leveraging LLMs in Scholarly Knowledge Graph Question Answering</h1>
-<blockquote>
-<p><strong>저자</strong>: Tilahun Abedissa Taffa, Ricardo Usbeck | <strong>날짜</strong>: 2023-11-16 | <strong>Journal</strong>: arXiv | <strong>Link</strong>: <a href="https://arxiv.org/abs/2311.09841" target="_blank">https://arxiv.org/abs/2311.09841</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Tilahun Abedissa Taffa, Ricardo Usbeck | <strong>날짜</strong>: 2023-11-16 | <strong>Journal</strong>: arXiv | <strong>Link</strong>: <a href="https://arxiv.org/abs/2311.09841" target="_blank">https://arxiv.org/abs/2311.09841</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <div class="essence-box"><h2>Essence</h2>
-<p>This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.</p></div><div class="section-box"><h2>Motivation</h2>
+<p>This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
-<li><strong>Gap</strong>: Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li></ul>
-</div><div class="section-box"><h2>Achievement</h2>
-<ul>
-<li>Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li></ul>
-</div><div class="section-box"><h2>How</h2>
+<li><strong>Gap</strong>: Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li>Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li>This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.</li>
 <li>The model initially identifies the top-n similar training questions related to a given test question via a BERT-based sentence encoder and retrieves their corresponding SPARQL.</li>
 <li>Using the top-n similar question-SPARQL pairs as an example and the test question creates a prompt.</li>
-<li>Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li></ul>
-</div><div class="section-box"><h2>Originality</h2>
-<p><strong>Trigger-based extraction</strong>: This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.. The model initially identifies the top-n similar training questions related to a given test question via a BERT-based sentence encoder and retrieves their corresponding SPARQL.. Using the top-n similar question-SPARQL pairs as an example and the test question creates a prompt.. Then pass the prompt to the LLM and generate a SPARQL.. Finally, runs the SPARQL against the underlying KG - ORKG (Open Research KG) endpoint and returns an answer.. Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</p></div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<li>Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<p><strong>Trigger-based extraction</strong>: This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner.. The model initially identifies the top-n similar training questions related to a given test question via a BERT-based sentence encoder and retrieves their corresponding SPARQL.. Using the top-n similar question-SPARQL pairs as an example and the test question creates a prompt.. Then pass the prompt to the LLM and generate a SPARQL.. Finally, runs the SPARQL against the underlying KG - ORKG (Open Research KG) endpoint and returns an answer.. Our system achieves an F1 score of 99.0%, on SciQA - one of the Scholarly-QALD-23 challenge benchmarks.</p></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>Abstract에서 명시적 한계 언급 없음</li>
 </ul>
 <h3>후속 연구</h3>
 <ul>
-<li>해당 연구의 확장 및 다른 도메인 적용 가능성 탐구</li></ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+<li>해당 연구의 확장 및 다른 도메인 적용 가능성 탐구</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: This paper presents a scholarly Knowledge Graph Question Answering (KGQA) that answers bibliographic natural language questions by leveraging a large language model (LLM) in a few-shot manner을 다룬 연구로, AI for Science 관점에서 의미 있는 기여를 한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

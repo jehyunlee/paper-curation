@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,32 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Using Artificial Intelligence for Systematic Review: The Example of Elicit</h1>
-<blockquote>
-<p><strong>저자</strong>: Nathan Bernard, Yoshimasa Sagawa Jr, Nathalie Bier, Thomas Lihoreau, Lionel Pazart, Thomas Tannou
-<strong>학술지</strong>: BMC Medical Research Methodology, 25(1):75, 2025
-<strong>DOI</strong>: <a href="https://doi.org/10.1186/s12874-025-02528-y"><a href="https://doi.org/10.1186/s12874-025-02528-y" target="_blank">10.1186/s12874-025-02528-y</a></a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Nathan Bernard, Yoshimasa Sagawa Jr, Nathalie Bier, Thomas Lihoreau, Lionel Pazart, Thomas Tannou</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
+<hr>
 <div class="section-box"><h2>한줄 요약 (Essence)</h2>
 <p>AI 기반 연구 보조 도구 Elicit이 체계적 문헌 고찰(systematic review)의 스크리닝 단계에서 기존 방법론을 대체할 수 있는지를 반복성(repeatability), 정확성(accuracy), 신뢰성(reliability)의 세 기준으로 평가한 연구이다.</p>
-<hr />
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<hr></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <ul>
 <li>체계적 문헌 고찰은 높은 완결성을 요구하는 시간 집약적 과정으로, AI 도구가 스크리닝, 비뚤림 평가, 데이터 추출 등에 활용되고 있다.</li>
 <li>GPT-3 기반의 Elicit은 의미적 유사성(semantic similarity)을 활용해 키워드 없이도 관련 논문을 검색하고 요약을 생성하는 독특한 기능을 제공한다.</li>
 <li>기존에 AI 없이 수행한 umbrella review와 Elicit 기반 검색을 동일 조건으로 비교함으로써, AI 보조 스크리닝의 부가가치를 정량적으로 검증하고자 하였다.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<hr></div>
+<div class="section-box"><h2>핵심 성과 (Achievement)</h2>
 <ul>
 <li><strong>반복성 부족</strong>: 동일 질의를 3회 반복했을 때 각각 246, 169, 172건으로 결과가 크게 변동하였으며, 3회 합산 후 중복 제거 시 241건이 확인됨.</li>
 <li><strong>정확성</strong>: 241건 중 제목/초록 스크리닝 후 29건이 전문 검토 대상이 되었고, 최종 6건이 포함됨. Elicit이 찾은 논문은 모두 연구 질문에 관련성이 높았다.</li>
 <li><strong>신뢰성</strong>: 기존 umbrella review에서 최종 포함된 17건 중 Elicit이 식별한 것은 3건(17.6%)에 불과. 반면 Elicit만이 발견한 3건의 추가 논문이 있었으나, 이들은 umbrella review의 결론을 변경하지 못함.</li>
 <li>AI 도구는 보완적(complementary) 역할로는 유용하지만, 기존 방법론을 완전히 대체하기에는 부족하다는 결론.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>방법론 (How)</h2>
+<hr></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <ol>
 <li><strong>검색 설계</strong>: Elicit에 기존 umbrella review와 동일한 연구 질문("What is the effectiveness of smart living environments in supporting ageing in place?")을 입력하고, 논문 유형(systematic review)과 출판 연도(2005~2021) 필터를 적용.</li>
 <li><strong>연도별 분할 검색</strong>: 9개 연도별로 검색을 반복하여 Elicit의 "8건 우선 표시" 제한을 우회하고, "show more"로 추가 논문을 모두 수집.</li>
@@ -87,15 +71,15 @@ a { color: #A62018; }
 <li><strong>정확성 평가</strong>: Elicit 검색 결과를 기존 umbrella review와 동일한 포함/배제 기준으로 수동 선별.</li>
 <li><strong>신뢰성 평가</strong>: 각 선별 단계(제목/초록, 전문, 최종 포함)에서 Elicit과 기존 방법의 결과를 Venn diagram 방식으로 비교.</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<hr></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li>AI 도구의 체계적 문헌 고찰 활용을 <strong>반복성, 정확성, 신뢰성이라는 세 가지 독립적 기준</strong>으로 분리하여 평가한 최초의 체계적 비교 연구 중 하나이다.</li>
 <li>실제 출판된 umbrella review를 ground truth로 삼아 Elicit의 성능을 정량적으로 벤치마킹한 점이 실용적이다.</li>
 <li>Elicit이 Semantic Scholar 단일 데이터베이스에 의존한다는 구조적 한계를 실증적으로 드러냈다.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>한계점 (Limitation)</h2>
+<hr></div>
+<div class="section-box"><h2>한계점 (Limitation)</h2>
 <ul>
 <li><strong>단일 연구 질문</strong>: 하나의 umbrella review 주제("smart living environments for ageing in place")에 대해서만 평가하여 일반화에 한계가 있다.</li>
 <li><strong>단일 AI 도구</strong>: Elicit만 평가하였으며, 다른 AI 스크리닝 도구(ASReview, Rayyan 등)와의 비교가 없다.</li>
@@ -103,9 +87,18 @@ a { color: #A62018; }
 <li><strong>질문 민감도</strong>: 연구 질문의 문구를 약간 바꾸면 Elicit의 결과와 인용 논문이 달라지는 문제를 지적했으나, 이에 대한 체계적 분석은 수행하지 않았다.</li>
 <li>Elicit이 umbrella review의 프로토콜 논문을 잘못 인용한 사례를 발견했으나, 이러한 hallucination 문제에 대한 심층 분석이 부족하다.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+<hr></div>
+<div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>AI 도구를 체계적 문헌 고찰에 적용할 때의 현실적 기대치를 설정하는 데 유용한 실증 연구이다. Elicit이 기존 방법으로 놓친 3건의 관련 논문을 추가로 발견한 점은 보완적 가치를 입증하지만, 17.6%라는 낮은 재현율과 반복 시 결과 변동성은 AI 단독 사용의 위험성을 명확히 보여준다. 다만, 연구 규모가 작고(단일 주제, 단일 도구) 2023년 시점의 평가라는 점에서 현재의 급속히 발전하는 AI 도구 생태계에 대한 일반화에는 주의가 필요하다. 향후 PRISMA-AI 가이드라인의 정립과 함께, 다양한 AI 도구를 복수의 연구 주제에 걸쳐 비교하는 대규모 벤치마크 연구가 기대된다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>2</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>2.7</td></tr>
+</table>
+<p><strong>총평</strong>: Elicit를 활용한 체계적 문헌 검토의 가능성과 한계를 소규모로 평가한 연구로 실무적 참고는 되나 학술적 기여는 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

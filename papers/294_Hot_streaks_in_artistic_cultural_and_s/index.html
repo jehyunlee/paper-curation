@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Hot Streaks in Artistic, Cultural, and Scientific Careers</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,55 +13,58 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A56B0; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>Hot Streaks in Artistic, Cultural, and Scientific Careers</h1>
-<blockquote>
-<p><strong>저자</strong>: Lu Liu, Yang Wang, Roberta Sinatra, C. Lee Giles, Chaoming Song, Dashun Wang | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: 10.1038/s41586-018-0315-8 | <strong>arXiv</strong>: -
-<strong>리뷰 모드</strong>: PDF</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
+<blockquote><p><strong>저자</strong>: Lu Liu, Yang Wang, Roberta Sinatra, C. Lee Giles, Chaoming Song, Dashun Wang | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-018-0315-8" target="_blank">10.1038/s41586-018-0315-8</a> | <strong>arXiv</strong>: -</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>창의적 경력에서 "hot streak"(연속 히트 구간)는 실제로 존재하는가, 아니면 무작위적 성공의 환상인가? 이 논문은 예술가(3,480명), 영화감독(6,233명), 과학자(20,040명)의 대규모 경력 데이터를 분석하여 <strong>hot streak가 실재하며, 대다수 개인이 적어도 한 번의 hot streak를 경험한다</strong>는 것을 밝혔다. Hot streak는 생산성 증가 없이 발생하고, 경력 내 무작위 시점에 출현하며, 그 기간 동안 생산된 작품이 경력 전체 성과를 좌우한다.</p>
-<p><img alt="Figure 1" src="figures/fig1.png" />
-<em>Figure 1: 과학자·예술가·영화감독의 경력에서 hot streak 탐지를 위한 HMM 기반 분석 프레임워크</em></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: 과학자·예술가·영화감독의 경력에서 hot streak 탐지를 위한 HMM 기반 분석 프레임워크</em></p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li><strong>rule_base_novelty</strong>: 세 가지 창의적 도메인(미술, 영화, 과학)에서 hot streak의 보편성을 처음으로 정량적으로 입증</li>
 <li><strong>rule_base_action</strong>: Hidden Markov Model(HMM)로 연속적 임팩트 변화에서 hot streak 구간을 자동 탐지</li>
 <li><strong>rule_base_finding</strong>: Hot streak는 경력 내 무작위로 출현하고, 생산성 증가 없이 발생하며, 대부분 1회에 그침</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: D1(경매 기록 3,480명 화가), D2(IMDB 6,233명 감독), D3(WoS+Google Scholar 20,040명 과학자)</li>
 <li><strong>임팩트 지표</strong>: 예술품 경매 hammer price, 영화 IMDB 평점, 논문 C10(10년 피인용 수)</li>
 <li><strong>모델</strong>: Hidden Markov Model(HMM) — 2-state (normal vs. hot) 상태 자동 분류</li>
 <li><strong>검증</strong>: 합성 데이터로 HMM 탐지 정확도 검증, 분야별 강건성 확인</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
-<p>Hot streak가 무작위가 아니라 실재한다면, 이 시기를 사전에 식별하고 지원하는 것이 개인의 잠재력 극대화에 중요하다. 또한 hot streak가 생산성 증가 없이 발생한다는 발견은 단순히 많이 쓰는 것이 아니라 "집중과 탐구" 간 균형에서 성과가 발생함을 시사한다.</p>
+<p>Hot streak가 무작위가 아니라 실재한다면, 이 시기를 사전에 식별하고 지원하는 것이 개인의 잠재력 극대화에 중요하다. 또한 hot streak가 생산성 증가 없이 발생한다는 발견은 단순히 많이 쓰는 것이 아니라 "집중과 탐구" 간 균형에서 성과가 발생함을 시사한다.</p></div>
 <div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
@@ -72,44 +75,22 @@ a { color: #1A56B0; }
 <ul>
 <li>Hot streak가 왜 시작되고 끝나는지 원인 메커니즘 규명이 부족</li>
 <li>개인의 심리적 상태, 협력 패턴, 환경 변화와 hot streak의 관계 분석 없음</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>Hot streak 시작 전 선행 지표(탐색 vs. 활용 패턴) 분석</li>
 <li>Hot streak 예측 모델 개발로 펀딩·멘토링 정책에 활용</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: 창의적 경력의 hot streak 현상을 세 도메인에서 대규모로 실증하고, 이것이 생산성이 아닌 집중도의 변화에서 비롯됨을 밝힌 중요한 연구이다.</p></div></div></div></div></div></div></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<p><strong>총평</strong>: 창의적 경력의 hot streak 현상을 세 도메인에서 대규모로 실증하고, 이것이 생산성이 아닌 집중도의 변화에서 비롯됨을 밝힌 중요한 연구이다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

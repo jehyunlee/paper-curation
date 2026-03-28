@@ -2,192 +2,95 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SEVerA: Verified Synthesis of Self-Evolving Agents</title>
-<link href="https://fonts.googleapis.com/css2?family=KoPub+Dotum:wght@300;400;700&display=swap" rel="stylesheet">
-<script>
-window.MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    color: #222;
-    background: #f7f7f7;
-    padding: 20px;
-  }
-  .container {
-    max-width: 820px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    padding: 44px 52px;
-  }
-  .back { margin-bottom: 24px; }
-  .back a { color: #D63423; text-decoration: none; font-size: 14px; font-weight: 700; }
-  .back a:hover { text-decoration: underline; }
-  h1 { font-size: 22px; font-weight: 700; line-height: 1.45; color: #111; margin-bottom: 18px; }
-  .meta {
-    background: #f9f9f9;
-    border-left: 4px solid #D63423;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #444;
-    margin-bottom: 10px;
-    border-radius: 0 6px 6px 0;
-  }
-  .meta a { color: #D63423; }
-  .mode-badge {
-    display: inline-block;
-    background: #fff3f2;
-    color: #D63423;
-    border: 1px solid #D63423;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 2px 8px;
-    margin-top: 6px;
-  }
-  hr { border: none; border-top: 1px solid #eee; margin: 28px 0; }
-  h2 { font-size: 17px; font-weight: 700; color: #D63423; margin: 32px 0 12px; padding-bottom: 5px; border-bottom: 2px solid #f2e0de; }
-  .essence-box {
-    background: #fff8f7;
-    border: 1px solid #f5c5be;
-    border-radius: 8px;
-    padding: 18px 22px;
-    font-size: 15px;
-    line-height: 1.85;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-  }
-  p { margin-bottom: 14px; }
-  ul, ol { padding-left: 22px; margin-bottom: 14px; }
-  li { margin-bottom: 6px; }
-  .originality-item {
-    background: #f8f8f8;
-    border-left: 3px solid #D63423;
-    padding: 8px 14px;
-    margin-bottom: 8px;
-    border-radius: 0 5px 5px 0;
-    font-size: 14px;
-  }
-  .tag {
-    display: inline-block;
-    background: #D63423;
-    color: #fff;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 1px 6px;
-    margin-right: 4px;
-    letter-spacing: 0.03em;
-  }
-  .score-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-  .score-table th { background: #D63423; color: #fff; padding: 9px 14px; text-align: left; font-weight: 700; }
-  .score-table td { padding: 9px 14px; border-bottom: 1px solid #eee; }
-  .score-table tr:last-child td { border-bottom: none; }
-  .score-badge {
-    display: inline-block;
-    min-width: 38px;
-    text-align: center;
-    background: #D63423;
-    color: #fff;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 2px 10px;
-  }
-  .summary-box { background: #fff3f2; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: #333; margin-top: 10px; }
-  figure { margin: 20px 0; text-align: center; }
-  figure img { max-width: 100%; border-radius: 6px; border: 1px solid #eee; }
-  figcaption { font-size: 13px; color: #666; margin-top: 7px; font-style: italic; }
-  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
-  .highlight { color: #D63423; font-weight: 700; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
-
-  <h1>SEVerA: Verified Synthesis of Self-Evolving Agents</h1>
-
-  <div class="meta">
-    <strong>저자:</strong> Debangshu Banerjee, Changming Xu, Gagandeep Singh<br>
-    <strong>날짜:</strong> 2026-03-26 &nbsp;|&nbsp;
-    <strong>Journal:</strong> arXiv preprint &nbsp;|&nbsp;
-    <strong>DOI:</strong> N/A &nbsp;|&nbsp;
-    <strong>arXiv:</strong> <a href="https://arxiv.org/abs/2603.25111" target="_blank">2603.25111</a>
-    <br><span class="mode-badge">PDF</span>
-  </div>
-
-  <hr>
-
-  <h2>Essence</h2>
-  <div class="essence-box">
-    자기진화(self-evolving) LLM 에이전트는 프로그램을 자동 합성하고 파라미터를 스스로 튜닝하지만, 이 과정에서 <strong>행동 사양(behavioral specification)이 보장되지 않는다</strong>는 치명적 공백이 있다. SEVerA는 이를 해결하기 위해 Search-Verify-Learn 3단계를 도입하였다: planner LLM이 <strong>FGGM(Formally-Guaranteed Generative Model)</strong> 추상화를 활용해 에이전트 프로그램을 합성하고, Dafny 검증기가 모든 파라미터 값에 대해 사양 충족을 형식적으로 증명하며, 검증된 프로그램에서 unconstrained 최적화로 파라미터를 학습한다. Dafny 프로그램 검증(HumanEvalDafny) 태스크에서 기존 방법 대비 Verif. &amp; NoDiff 정확도를 <span class="highlight">+10.1%p(97.0%)</span> 향상시키고 violation을 <span class="highlight">0%</span>로 낮추었으며, GSM-Symbolic 수학 추론에서는 <span class="highlight">+21.3%p(66.0%)</span> 정확도 향상과 violation 0%를 동시에 달성하였다.
-  </div>
-
-  <figure>
-    <img src="figures/fig1.png" alt="Figure 1">
-    <figcaption>Figure 1: SEVerA의 3단계 파이프라인 개요. (1) Search: planner LLM이 FGGM 추상화를 사용해 후보 에이전트 프로그램 합성, (2) Verify: Dafny 검증기가 행동 사양 충족 여부를 형식 증명, (3) Learn: 검증된 프로그램에서 파라미터 최적화.</figcaption>
-  </figure>
-
-  <h2>Originality (Abstract 기반)</h2>
-  <div class="originality-item">
-    <span class="tag">authorship</span><span class="tag">action</span><span class="tag">finding</span><span class="tag">approach</span>
-    "We introduce SEVerA, a framework for verified synthesis of self-evolving agents."
-  </div>
-  <div class="originality-item">
-    <span class="tag">action</span><span class="tag">finding</span><span class="tag">conclusion</span>
-    "SEVerA operates in three steps: Search, where a planner LLM synthesizes agent programs using formally-guaranteed generative model (FGGM) abstractions; Verify, where a formal verifier proves the program satisfies behavioral specifications; and Learn, where verified programs are optimized without sacrificing correctness guarantees."
-  </div>
-
-  <h2>How (방법론)</h2>
-  <ul>
-    <li><strong>FGGM (Formally-Guaranteed Generative Model):</strong> LLM 등 확률적 generative model 호출을 Dafny 함수로 감싸 사전조건($\Phi_l$)과 사후조건($\Psi_l$)을 형식적으로 명세; rejection sampler가 조건 불충족 출력을 필터링하고, 필터링 실패 시 사전 검증된 fallback 함수가 실행</li>
-    <li><strong>Search 단계:</strong> planner LLM이 제한된 Dafny 문법 내에서 FGGM을 포함하는 에이전트 프로그램을 합성; 직접적인 generative model 호출은 불허</li>
-    <li><strong>Verify 단계:</strong> Dafny 내장 검증기가 모든 파라미터 값에 대해 전역 사양($\Phi$, $\Psi$)의 충족 여부를 정적으로 증명; 검증 실패 시 에러 피드백으로 재합성 유도</li>
-    <li><strong>Learn 단계:</strong> 검증된 프로그램은 hard constraint를 이미 만족하므로, loss $L$에 대한 unconstrained gradient 최적화로 파라미터 튜닝 가능</li>
-    <li><strong>평가 벤치마크:</strong> HumanEvalDafny, DafnyBench, GSM-Symbolic(수학 추론), $\tau^2$-bench(도구 사용 에이전트), 심볼릭 회귀 5개 태스크</li>
-  </ul>
-
-  <h2>Why (중요성)</h2>
-  <ul>
-    <li>LLM 에이전트가 미지 입력에 대해 자율 실행될 때 형식적 안전 보장 부재는 단순 성능 문제가 아닌 신뢰성(reliability)과 배포 가능성(deployability)의 근본적 장벽</li>
-    <li>기존 방법들은 LLM 출력을 사후 필터링하거나 휴리스틱 체크에 의존하여 verification cheating(변수 초기화 조작 등)을 탐지하지 못했으나, SEVerA는 AST 기반 diff checker와 formal verifier를 결합해 이를 원천 차단</li>
-    <li>FGGM 추상화는 검증과 학습의 분리를 가능하게 하여, 기존의 constrained optimization 접근과 달리 확장 가능한 gradient 기반 학습이 가능</li>
-  </ul>
-
-  <h2>Limitation</h2>
-  <ul>
-    <li>Dafny 검증기의 timeout 제약으로 인해 복잡한 사양에서는 검증이 실패(false negative)할 수 있으며, 검증 시간이 태스크 복잡도에 따라 크게 증가</li>
-    <li>현재 지원 문법이 제한된 Dafny 부분집합으로 한정되어 있어, 임의의 Python 에이전트 코드에는 직접 적용 불가</li>
-    <li>사양($\Phi$, $\Psi$) 자체를 사용자가 수동으로 정의해야 하므로, 실제 응용에서는 사양 작성의 부담이 상당하며 사양 오류(specification bug)의 가능성이 잔존</li>
-  </ul>
-
-  <h2>Further Study</h2>
-  <ul>
-    <li>제한된 Dafny 문법을 넘어 Python 등 범용 언어로의 verified synthesis 확장</li>
-    <li>사양 자동 생성(specification mining) 또는 LLM 보조 사양 작성으로 진입 장벽 완화</li>
-    <li>더 큰 코드베이스와 복잡한 멀티-에이전트 시스템에서의 확장성 검증</li>
-  </ul>
-
-  <h2>평가</h2>
-  <table class="score-table">
-    <tr><th>항목</th><th>점수</th></tr>
-    <tr><td>Novelty</td><td><span class="score-badge">5/5</span></td></tr>
-    <tr><td>Technical Soundness</td><td><span class="score-badge">5/5</span></td></tr>
-    <tr><td>Significance</td><td><span class="score-badge">4/5</span></td></tr>
-    <tr><td>Clarity</td><td><span class="score-badge">4/5</span></td></tr>
-    <tr><td>Overall</td><td><span class="score-badge">5/5</span></td></tr>
-  </table>
-  <div class="summary-box">
-    <strong>총평:</strong> 자기진화 LLM 에이전트에 형식적 정확성 보장을 최초로 부여한 이론적·실험적으로 탄탄한 연구로, FGGM 추상화와 Search-Verify-Learn 파이프라인은 안전한 AI 에이전트 합성을 위한 새로운 패러다임을 제시한다. 현재 Dafny 문법 제약이 실용적 한계이나, 기초 프레임워크로서의 기여는 매우 높다.
-  </div>
-</div>
+<h1>SEVerA: Verified Synthesis of Self-Evolving Agents</h1>
+<blockquote><p><strong>저자</strong>: Debangshu Banerjee, Changming Xu, Gagandeep Singh | <strong>날짜</strong>: 2026-03-26 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: N/A | <strong>arXiv</strong>: 2603.25111</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>자기진화(self-evolving) LLM 에이전트는 프로그램을 자동 합성하고 파라미터를 스스로 튜닝하지만, 이 과정에서 <strong>행동 사양(behavioral specification)이 보장되지 않는다</strong>는 치명적 공백이 있다. SEVerA는 이를 해결하기 위해 Search-Verify-Learn 3단계를 도입하였다: planner LLM이 <strong>FGGM(Formally-Guaranteed Generative Model)</strong> 추상화를 활용해 에이전트 프로그램을 합성하고, Dafny 검증기가 모든 파라미터 값에 대해 사양 충족을 형식적으로 증명하며, 검증된 프로그램에서 unconstrained 최적화로 파라미터를 학습한다. Dafny 프로그램 검증(HumanEvalDafny) 태스크에서 기존 방법 대비 Verif. & NoDiff 정확도를 +10.1%p(97.0%) 향상시키고 violation을 0%로 낮추었으며, GSM-Symbolic 수학 추론에서는 +21.3%p(66.0%) 정확도 향상과 violation 0%를 동시에 달성하였다.</p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: SEVerA의 3단계 파이프라인 개요. (1) Search: planner LLM이 FGGM 추상화를 사용해 후보 에이전트 프로그램 합성, (2) Verify: Dafny 검증기가 행동 사양 충족 여부를 형식 증명, (3) Learn: 검증된 프로그램에서 파라미터 최적화.</em></p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<ul>
+<li>[authorship, action, finding, approach] "We introduce SEVerA, a framework for verified synthesis of self-evolving agents."</li>
+<li>[action, finding, conclusion] "SEVerA operates in three steps: Search, where a planner LLM synthesizes agent programs using formally-guaranteed generative model (FGGM) abstractions; Verify, where a formal verifier proves the program satisfies behavioral specifications; and Learn, where verified programs are optimized without sacrificing correctness guarantees."</li>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
+<ul>
+<li><strong>FGGM (Formally-Guaranteed Generative Model)</strong>: LLM 등 확률적 generative model 호출을 Dafny 함수로 감싸 사전조건(Φ_l)과 사후조건(Ψ_l)을 형식적으로 명세; rejection sampler가 조건 불충족 출력을 필터링하고, 필터링 실패 시 사전 검증된 fallback 함수가 실행</li>
+<li><strong>Search 단계</strong>: planner LLM이 제한된 Dafny 문법 내에서 FGGM을 포함하는 에이전트 프로그램을 합성; 직접적인 generative model 호출은 불허</li>
+<li><strong>Verify 단계</strong>: Dafny 내장 검증기가 모든 파라미터 값에 대해 전역 사양(Φ, Ψ)의 충족 여부를 정적으로 증명; 검증 실패 시 에러 피드백으로 재합성 유도</li>
+<li><strong>Learn 단계</strong>: 검증된 프로그램은 hard constraint를 이미 만족하므로, loss $L$에 대한 unconstrained gradient 최적화로 파라미터 튜닝이 가능</li>
+<li><strong>평가 벤치마크</strong>: HumanEvalDafny(Dafny 프로그램 검증), DafnyBench, GSM-Symbolic(수학 추론), τ²-bench(도구 사용 에이전트), 심볼릭 회귀 5개 태스크</li>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
+<ul>
+<li>LLM 에이전트가 미지 입력에 대해 자율 실행될 때 형식적 안전 보장 부재는 단순 성능 문제가 아닌 신뢰성(reliability)과 배포 가능성(deployability)의 근본적 장벽</li>
+<li>기존 방법들은 LLM 출력을 사후 필터링하거나 휴리스틱 체크에 의존하여 verification cheating(변수 초기화 조작 등)을 탐지하지 못했으나, SEVerA는 AST 기반 diff checker와 formal verifier를 결합해 이를 원천 차단</li>
+<li>FGGM 추상화는 검증과 학습의 분리를 가능하게 하여, 기존의 constrained optimization 접근과 달리 확장 가능한 gradient 기반 학습이 가능</li>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
+<ul>
+<li>Dafny 검증기의 timeout 제약으로 인해 복잡한 사양에서는 검증이 실패(false negative)할 수 있으며, 검증 시간이 태스크 복잡도에 따라 크게 증가</li>
+<li>현재 지원 문법이 제한된 Dafny 부분집합으로 한정되어 있어, 임의의 Python 에이전트 코드에는 직접 적용 불가</li>
+<li>사양(Φ, Ψ) 자체를 사용자가 수동으로 정의해야 하므로, 실제 응용에서는 사양 작성의 부담이 상당하며 사양 오류(specification bug)의 가능성이 잔존</li>
+</ul></div>
+<div class="section-box"><h2>Further Study</h2>
+<ul>
+<li>제한된 Dafny 문법을 넘어 Python 등 범용 언어로의 verified synthesis 확장</li>
+<li>사양 자동 생성(specification mining) 또는 LLM 보조 사양 작성으로 진입 장벽 완화</li>
+<li>더 큰 코드베이스와 복잡한 멀티-에이전트 시스템에서의 확장성 검증</li>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>5/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
+<p><strong>총평</strong>: 자기진화 LLM 에이전트에 형식적 정확성 보장을 최초로 부여한 이론적·실험적으로 탄탄한 연구로, FGGM 추상화와 Search-Verify-Learn 파이프라인은 안전한 AI 에이전트 합성을 위한 새로운 패러다임을 제시한다. 현재 Dafny 문법 제약이 실용적 한계이나, 기초 프레임워크로서의 기여는 매우 높다.</p></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

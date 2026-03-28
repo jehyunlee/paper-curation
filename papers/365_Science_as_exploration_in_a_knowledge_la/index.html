@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Science as exploration in a knowledge landscape: tracing hotspots or seeking opportunity?</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,36 +42,34 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>Science as exploration in a knowledge landscape: tracing hotspots or seeking opportunity?</h1>
-<blockquote>
-<p><strong>저자</strong>: Feifan Liu, Shuang Zhang, Haoxiang Xia | <strong>날짜</strong>: 2024-04-02 | <strong>Journal</strong>: EPJ Data Science | <strong>DOI</strong>: <a href="https://doi.org/10.1140/epjds/s13688-024-00468-z">10.1140/epjds/s13688-024-00468-z</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>과학자들은 연구 주제를 탐색할 때 핫스팟을 추적하는가, 아니면 새로운 기회를 개척하는가? 이 논문은 GIS 기법을 활용해 6개 대규모 학문 분야의 지식 공간을 구축하고, 과학자들의 주제 전환 궤적을 분석한 결과 <strong>압도적으로 보수적인 패턴</strong>이 확인됨을 밝혔다. 과학자들은 주로 익숙한 지역 지식 공간을 탐색하며, 연구 강도(특정 영역의 과학자 집중도)가 주제 전환의 핵심 촉진 요인인 반면, 하위 분야 간 지식 거리는 가장 큰 장벽으로 작용한다. 특히, 하위 분야 교차점에서 혁신적 발견의 기회가 존재함에도 과학자들은 이를 강하게 추구하지 않는다는 점이 실증적으로 확인되었다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Feifan Liu, Shuang Zhang, Haoxiang Xia | <strong>날짜</strong>: 2024-04-02 | <strong>Journal</strong>: EPJ Data Science | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1140/epjds/s13688-024-00468-z"" target="_blank">10.1140/epjds/s13688-024-00468-z"</a> target="_blank"><a href="https://doi.org/10.1140/epjds/s13688-024-00468-z" target="_blank">10.1140/epjds/s13688-024-00468-z</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>과학자들은 연구 주제를 탐색할 때 핫스팟을 추적하는가, 아니면 새로운 기회를 개척하는가? 이 논문은 GIS 기법을 활용해 6개 대규모 학문 분야의 지식 공간을 구축하고, 과학자들의 주제 전환 궤적을 분석한 결과 <strong>압도적으로 보수적인 패턴</strong>이 확인됨을 밝혔다. 과학자들은 주로 익숙한 지역 지식 공간을 탐색하며, 연구 강도(특정 영역의 과학자 집중도)가 주제 전환의 핵심 촉진 요인인 반면, 하위 분야 간 지식 거리는 가장 큰 장벽으로 작용한다. 특히, 하위 분야 교차점에서 혁신적 발견의 기회가 존재함에도 과학자들은 이를 강하게 추구하지 않는다는 점이 실증적으로 확인되었다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action] "This study leverages advancements in Geographic Information System (GIS) techniques to investigate the patterns and dynamic mechanisms of topic-transition among scientists."</li>
 <li>[authorship, novelty] "By constructing the knowledge space across 6 large-scale disciplines, we depict the trajectories of scientists' topic transitions within this space."</li>
 <li>[result, finding] "Our findings reveal a predominantly conservative pattern of topic transition at the individual level, with scientists primarily exploring local knowledge spaces."</li>
 <li>[result] "simulation modeling analysis identifies research intensity, driven by the concentration of scientists within a specific region, as the key facilitator of topic transition."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: 6개 대규모 학문 분야의 대규모 출판 데이터; 저자-논문-주제 연결 정보 활용</li>
 <li><strong>지식 공간 구축</strong>: GIS 기법 적용 — 연구 주제를 지리적 지역처럼 매핑하여 '지식 지형' 구성; 서로 다른 하위 공간 간의 흐름(flow)과 거리(distance) 측정</li>
 <li><strong>주제 전환 궤적 분석</strong>: 개별 과학자의 커리어에 걸친 연구 주제 변화 궤적을 지식 공간 내 이동 경로로 표현</li>
 <li><strong>시뮬레이션 모델링</strong>: 주제 전환에 영향을 미치는 요인(연구 강도, 지식 거리) 식별을 위한 시뮬레이션 분석</li>
 <li><strong>하위 공간 교차점 분석</strong>: 혁신 기회가 존재하는 하위 분야 경계 지역에 대한 실증 분석</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>과학자의 주제 선택 메커니즘 이해는 혁신 촉진 정책 설계의 기초 — 보수적 패턴이 지배적이라면 학제간 연구 장려 정책의 효과가 제한적일 수 있음</li>
 <li>지식 공간의 교차점이 잠재적 혁신 기회임에도 과학자들이 이를 외면한다면, 구조적·인센티브적 장벽이 존재함을 시사</li>
 <li>GIS 기법의 지식 탐색 연구 적용은 방법론적으로 새로운 분석 틀을 제공하며, Science of Science에 공간 분석 패러다임을 도입</li>
 <li>연구 강도(과학자 집중도)가 주제 전환을 촉진한다는 발견은 '핫스팟 추적' 행동의 메커니즘을 정량화</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>현대 과학의 복잡성이 실증 실험 구현을 방해함을 인정</li>
@@ -90,39 +86,17 @@ a { color: #1a5aad; }
 <li>다양한 국가·기관 맥락에서 주제 전환 패턴의 비교 연구</li>
 <li>연구비 구조·기관 인센티브와 주제 전환 보수성 간의 인과 관계 분석</li>
 <li>지식 공간 교차점에서 성공적으로 혁신을 이룬 소수 과학자들의 특성 규명</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>3/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>3/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
 </table>
 <p><strong>총평</strong>: GIS 기법을 지식 탐색 분석에 창의적으로 적용하여 과학자들의 보수적 주제 전환 패턴과 그 메커니즘을 실증한 독창적 연구다. 핫스팟 추적 vs. 기회 개척의 이분법적 질문에 명확한 경험적 답을 제시하지만, 6개 분야 데이터의 대표성과 인과 추론의 한계가 주요 약점이다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

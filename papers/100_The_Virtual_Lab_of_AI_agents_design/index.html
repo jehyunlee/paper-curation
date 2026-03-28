@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,32 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies</h1>
-<blockquote>
-<p><strong>저자</strong>: Kyle Swanson, Wesley Wu, Nash L. Bulaong, John E. Pak, James Zou | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-025-09442-9" target="_blank">10.1038/s41586-025-09442-9</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Kyle Swanson, Wesley Wu, Nash L. Bulaong, John E. Pak, James Zou | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-025-09442-9" target="_blank">10.1038/s41586-025-09442-9</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>Virtual Lab은 LLM(GPT-4o) 기반 멀티 에이전트 시스템과 인간 연구자의 협업으로 학제간 과학 연구를 수행하는 프레임워크이다. PI 에이전트가 면역학자·계산생물학자·ML 전문가 에이전트를 이끌며, ESM + AlphaFold-Multimer + Rosetta를 조합한 나노바디 설계 파이프라인을 에이전트가 자체적으로 설계했다. 4개 시작 나노바디(Ty1, H11-D4, Nb21, VHH-72)에서 92개 돌연변이 나노바디를 생성하여 실험 검증한 결과, 93.5%가 양호한 발현량(&gt;5 mg/L)을 보였고, H11-D4/Nb21 시리즈의 96%가 Wuhan RBD 결합력을 유지했으며, Nb21 돌연변이(I77V-L59E-Q87A-R37Q)가 JN.1 RBD에 결합(EC50 2.0 ng/mL)하고 KP.3 RBD에도 결합 증거를 보였다. 전체 미팅 과정은 1-2시간($10-20 GPT-4o 비용)에 완료되었다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>Virtual Lab은 LLM(GPT-4o) 기반 멀티 에이전트 시스템과 인간 연구자의 협업으로 학제간 과학 연구를 수행하는 프레임워크이다. PI 에이전트가 면역학자·계산생물학자·ML 전문가 에이전트를 이끌며, ESM + AlphaFold-Multimer + Rosetta를 조합한 나노바디 설계 파이프라인을 에이전트가 자체적으로 설계했다. 4개 시작 나노바디(Ty1, H11-D4, Nb21, VHH-72)에서 92개 돌연변이 나노바디를 생성하여 실험 검증한 결과, 93.5%가 양호한 발현량(>5 mg/L)을 보였고, H11-D4/Nb21 시리즈의 96%가 Wuhan RBD 결합력을 유지했으며, Nb21 돌연변이(I77V-L59E-Q87A-R37Q)가 JN.1 RBD에 결합(EC50 2.0 ng/mL)하고 KP.3 RBD에도 결합 증거를 보였다. 전체 미팅 과정은 1-2시간($10-20 GPT-4o 비용)에 완료되었다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: 학제간 과학 연구는 점점 더 큰 팀과 다양한 전문성을 요구하며(AlphaFold 2 논문 저자 34명), LLM은 과학적 질문 답변에서 인간 과학자를 match하거나 능가하는 능력을 보임</li>
 <li><strong>Gap</strong>: 기존 LLM 연구 도구들(ChemCrow, Coscientist, AI Scientist)은 좁은 단일 도메인에 국한되거나 실세계 실험 검증이 없었음. 개방형 학제간 연구 문제에 LLM을 적용한 사례가 부재</li>
 <li><strong>왜 중요한가</strong>: 모든 연구자가 여러 분야의 전문가에 접근할 수 있는 것은 아니며, 특히 자원이 부족한 그룹에게 학제간 협업은 심각한 장벽. SARS-CoV-2는 빠르게 기존 항체/나노바디 치료에 내성을 획득하고 있어 신속한 신규 나노바디 개발이 필수적</li>
 <li><strong>접근법</strong>: LLM 에이전트 팀(PI, Scientific Critic, 분야별 과학자)이 팀 미팅과 개별 미팅을 통해 연구 설계부터 코드 구현까지 수행하고, 인간 연구자가 고수준 방향 제시 및 실험 검증을 담당하는 AI-인간 협업 프레임워크</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>자기설계 파이프라인</strong>: AI 에이전트가 ESM(단백질 언어 모델) + AlphaFold-Multimer(구조 예측) + Rosetta(결합 에너지)를 통합한 반복적 돌연변이 최적화 워크플로우를 자체 설계. 가중 점수 공식 WS = 0.2<em>(ESM LLR) + 0.5</em>(AF ipLDDT) - 0.3*(RS dG)도 에이전트가 결정</li>
-<li><strong>뛰어난 발현 성공률</strong>: 92개 돌연변이 나노바디 중 93.5%(86/92)가 &gt;5 mg/L 발현량, 38%(35/92)가 &gt;25 mg/L의 높은 발현량을 시현</li>
+<li><strong>뛰어난 발현 성공률</strong>: 92개 돌연변이 나노바디 중 93.5%(86/92)가 >5 mg/L 발현량, 38%(35/92)가 >25 mg/L의 높은 발현량을 시현</li>
 <li><strong>원래 결합력 유지</strong>: H11-D4/Nb21 시리즈의 96%(44/46)가 Wuhan RBD 결합력 유지</li>
 <li><strong>최신 변이체 결합 후보 발견</strong>: Nb21 돌연변이(I77V-L59E-Q87A-R37Q)가 JN.1 RBD에 결합(EC50 2.0 vs Wuhan 0.2 ng/mL) + KP.3 RBD에 결합 증거(intensity 3.5 vs 다른 돌연변이 평균 0.06). Ty1 돌연변이(V32F-G59D-N54S-F32S)가 Wuhan RBD 결합력 향상 + JN.1 RBD에 중간 수준 결합 획득</li>
 <li><strong>극도의 효율성</strong>: 전체 미팅 1-2시간, $10-20 비용. 인간 입력은 전체 텍스트의 1.3%(1,596단어). 파이프라인 설계에 수일(인간 단독 대비 수주), 계산 파이프라인 실행 약 1주, 합성 약 6주, 결합 실험 약 2주</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>에이전트 아키텍처</strong>: GPT-4o 기반. PI(AI for research 전문) + Scientific Critic(오류 검증) + 3명의 과학자 에이전트(면역학, 계산생물학, ML). 각 에이전트는 title, expertise, goal, role 4가지 기준으로 정의</li>
 <li><strong>5단계 워크플로우</strong>:</li>
@@ -91,16 +75,15 @@ a { color: #A62018; }
 <li><strong>반복적 최적화</strong>: 4개 시작 나노바디에서 4라운드 반복. 각 라운드: ESM LLR → 상위 20개 → AlphaFold-Multimer ipLDDT → Rosetta dG → WS로 상위 5개 선택 → 다음 라운드. 최종 나노바디당 23개(총 92개)를 수정된 가중 점수(WSWT)로 선택</li>
 <li><strong>병렬 미팅</strong>: 동일 미팅을 높은 temperature(0.8)로 여러 번 병렬 실행 후, 낮은 temperature(0.2)로 merge하여 창의성과 일관성을 동시 확보</li>
 <li><strong>실험 검증</strong>: E. coli 발현 → 용해성 단백질 periplasm 분리 → ELISA로 Wuhan/BA.2/JN.1/KP.2.3/KP.3 RBD 패널 결합 프로파일링</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>AI를 도구가 아닌 연구 설계자로</strong>: 기존 접근법은 AlphaFold 등을 인간이 선택한 도구로 사용하는 반면, Virtual Lab에서는 LLM 에이전트가 어떤 도구를 어떻게 조합할지 고수준 의사결정을 자체적으로 수행하는 패러다임 전환</li>
 <li><strong>에이전트 정체성의 효과</strong>: 서로 다른 과학적 배경을 가진 에이전트들이 다각적 관점에서 토론하여 포괄적 답변 도출. Ablation 실험에서 배경 없는 일반 에이전트보다 우수한 결과 확인</li>
 <li><strong>Scientific Critic 메커니즘</strong>: 전담 비평 에이전트가 다른 에이전트의 답변을 지속적으로 검증하여 품질 향상. Chain-of-thought prompting을 다중 에이전트 관점과 human-in-the-loop로 확장한 구조</li>
 <li><strong>Nature 게재의 이정표</strong>: LLM 멀티 에이전트 시스템이 실험 검증까지 완료하여 Nature에 게재된 최초 사례로, AI for Science 분야의 중요한 이정표</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li><strong>LLM 지식 단절(knowledge cutoff)</strong>: AlphaFold 3 대신 AlphaFold-Multimer를 사용한 것처럼 에이전트가 최신 도구/문헌을 인식하지 못할 수 있음. RAG나 파인튜닝으로 완화 가능</li>
@@ -123,9 +106,16 @@ a { color: #A62018; }
 <li>샌드박스 환경에서 에이전트가 독립적으로 도구 설치, 코드 작성, 실행, 디버깅까지 수행하는 완전 자율 시스템으로 발전</li>
 <li>Google의 AI co-scientist(가설 생성/검증 중심)와의 통합 또는 비교 연구를 통한 상호 보완적 발전</li>
 <li>유망 후보 나노바디 2개에 대한 추가 최적화 및 in vivo 효능/안전성 검증</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
 <p><strong>총평</strong>: LLM 멀티 에이전트 시스템이 학제간 연구 설계부터 실험 검증까지 완수하여 Nature에 게재된 최초의 사례로, $10-20 비용과 1-2시간의 AI 토론으로 실세계 과학적 발견을 이끌어낸 AI for Science 분야의 중요한 이정표이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

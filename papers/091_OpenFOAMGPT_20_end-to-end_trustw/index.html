@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dyna</title>
+<title>OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,38 +42,35 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics</h1>
-<ul>
-<li><strong>저자</strong>: Jingsen Feng, Ran Xu, Xu Chu</li>
-<li><strong>소속</strong>: University of Exeter, University of Stuttgart</li>
-<li><strong>출판</strong>: arXiv preprint (2025.04)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.19338"><a href="https://doi.org/10.48550/arXiv.2504.19338" target="_blank">10.48550/arXiv.2504.19338</a></a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
 <p>자연어 질의로부터 <strong>전처리-시뮬레이션-후처리까지 완전 자동화된 end-to-end CFD 시뮬레이션</strong>을 수행하는 최초의 멀티 에이전트 프레임워크를 제안한다. 4개의 전문 에이전트(Pre-processing, Prompt Generation, OpenFOAMGPT, Post-processing)가 Claude-3.7-Sonnet을 기반으로 협력하며, Poiseuille 유동, 다공성 매질 유동, 공기역학 해석 등 다양한 사례에서 <strong>450회 이상의 시뮬레이션에서 100% 성공률과 재현성</strong>을 달성했다. "대화 기반 시뮬레이션(conversation-to-simulation)" 워크플로우를 통해 CFD의 진입 장벽을 크게 낮추면서도 수치적 엄밀성을 유지했다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
 <ol>
 <li><strong>CFD의 높은 진입 장벽</strong>: 전산유체역학은 정밀한 수치 사양, 복잡한 형상 처리, 전문적인 물리 모델링, 특수한 결과 해석이 필요하여, 전문가가 아니면 접근이 어렵다.</li>
 <li><strong>LLM-CFD 통합의 도전</strong>: LLM의 강력한 자연어 이해 능력에도 불구하고, OpenFOAM의 엄격한 구문 요구사항, 복잡한 파라미터 상호작용, 무결점(zero-tolerance) 시뮬레이션 환경에서의 신뢰성 확보가 핵심 과제였다.</li>
 <li><strong>기존 시스템의 부분적 커버리지</strong>: 선행 연구인 OpenFOAMGPT 1.0은 시뮬레이션 실행에 초점을 두었으나, 전처리와 후처리를 포함한 end-to-end 워크플로우는 구현하지 못했다.</li>
 </ol>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
 <li><strong>100% 성공률 및 재현성</strong>: 5가지 사례 연구에서 총 455회 이상의 시뮬레이션을 수행하여, 단일/다중 케이스 파라미터 스터디 모두에서 100% 성공률과 완벽한 재현성을 달성했다.</li>
 <li><strong>다양한 물리 현상 커버</strong>: 단상 Poiseuille 유동, 다상 Poiseuille 유동, 단상/다상 다공성 매질 유동, 오토바이 공기역학(난류) 등 광범위한 CFD 문제를 처리했다.</li>
 <li><strong>자동 파라미터 스터디</strong>: 격자 독립성 연구, REV 크기 결정, 접촉각/유입 속도/점도비 변화 연구 등 복잡한 파라미터 스터디를 인간 개입 없이 자율적으로 수행했다.</li>
 <li><strong>자동 해석적 검증</strong>: Post-processing Agent가 Poiseuille 유동의 해석해를 자발적으로 계산하여 수치해와 비교하는 등, 결과 검증까지 자동화했다.</li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How (방법론)</h2>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <h3>4개 전문 에이전트 구조</h3>
-<div class="eval-badges"><span class="eval-badge"><strong>Pre-processing Agent</strong>: 사용자 질의 분석</span><span class="eval-badge"><strong>Prompt Generation Agent</strong>: 시뮬레이션별 프롬프트 생성</span><span class="eval-badge"><strong>OpenFOAMGPT</strong>: 핵심 시뮬레이션 엔진</span><span class="eval-badge"><strong>Post-processing Agent</strong>: 결과 시각화 및 분석</span></div>
+<table>
+<tr><th>에이전트</th><th>역할</th><th>핵심 기능</th></tr>
+<tr><td>**Pre-processing Agent**</td><td>사용자 질의 분석</td><td>단일/다중 케이스 판별, 메쉬 전략 선택 (blockMesh vs snappyHexMesh)</td></tr>
+<tr><td>**Prompt Generation Agent**</td><td>시뮬레이션별 프롬프트 생성</td><td>파라미터 분해, Prompt Pool 관리, 케이스별 독립 프롬프트 생성</td></tr>
+<tr><td>**OpenFOAMGPT**</td><td>핵심 시뮬레이션 엔진</td><td>설정 파일 생성 -&gt; 자동 실행 -&gt; 에러 기반 반복 수정 (self-correcting loop)</td></tr>
+<tr><td>**Post-processing Agent**</td><td>결과 시각화 및 분석</td><td>Python 스크립트 자동 생성, Paraview VTK, 출판 품질 그래프</td></tr>
+</table>
 <h3>핵심 설계 결정</h3>
 <ul>
 <li><strong>Temperature = 0</strong>: OpenFOAM 설정 파일의 엄격한 구문 요구사항에 대응하여, LLM의 "thinking" 기능을 비활성화하고 결정론적 출력을 보장</li>
@@ -95,71 +80,24 @@ a { color: #A62018; }
 </ul>
 <h3>신뢰성 검증 (Table 1 요약)</h3>
 <table>
-<thead>
-<tr>
-<th>사례</th>
-<th>반복 횟수</th>
-<th>연속 시뮬레이션</th>
-<th>총 시뮬레이션</th>
-<th>성공률</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>단상 Poiseuille</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-<td>100%</td>
-</tr>
-<tr>
-<td>다상 Poiseuille</td>
-<td>10</td>
-<td>4</td>
-<td>40</td>
-<td>100%</td>
-</tr>
-<tr>
-<td>단상 다공성 매질</td>
-<td>10</td>
-<td>8</td>
-<td>80</td>
-<td>100%</td>
-</tr>
-<tr>
-<td>다상 다공성 매질</td>
-<td>5</td>
-<td>5</td>
-<td>25</td>
-<td>100%</td>
-</tr>
-<tr>
-<td>오토바이 공기역학</td>
-<td>10</td>
-<td>10</td>
-<td>100</td>
-<td>100%</td>
-</tr>
-<tr>
-<td>100연속 시뮬레이션</td>
-<td>2</td>
-<td>100</td>
-<td>200</td>
-<td>100%</td>
-</tr>
-</tbody>
+<tr><th>사례</th><th>반복 횟수</th><th>연속 시뮬레이션</th><th>총 시뮬레이션</th><th>성공률</th></tr>
+<tr><td>단상 Poiseuille</td><td>10</td><td>1</td><td>10</td><td>100%</td></tr>
+<tr><td>다상 Poiseuille</td><td>10</td><td>4</td><td>40</td><td>100%</td></tr>
+<tr><td>단상 다공성 매질</td><td>10</td><td>8</td><td>80</td><td>100%</td></tr>
+<tr><td>다상 다공성 매질</td><td>5</td><td>5</td><td>25</td><td>100%</td></tr>
+<tr><td>오토바이 공기역학</td><td>10</td><td>10</td><td>100</td><td>100%</td></tr>
+<tr><td>100연속 시뮬레이션</td><td>2</td><td>100</td><td>200</td><td>100%</td></tr>
 </table>
-<hr />
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+<hr></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ol>
-<li><strong>CFD 최초의 멀티 에이전트 end-to-end 프레임워크</strong>: 자연어 -&gt; 전처리 -&gt; 시뮬레이션 -&gt; 후처리 -&gt; 시각화/분석까지 전 과정을 자동화한 최초의 CFD 시스템이다.</li>
+<li><strong>CFD 최초의 멀티 에이전트 end-to-end 프레임워크</strong>: 자연어 -> 전처리 -> 시뮬레이션 -> 후처리 -> 시각화/분석까지 전 과정을 자동화한 최초의 CFD 시스템이다.</li>
 <li><strong>Zero-tolerance 환경에서의 100% 신뢰성</strong>: 과학 계산에서 요구되는 무결점 수준의 신뢰성을 멀티 에이전트 시스템으로 달성한 것은 주목할 만하다. Temperature=0 설정, 케이스별 독립 프롬프트, 자기 수정 루프 등 신중한 설계가 이를 가능하게 했다.</li>
 <li><strong>Prompt Pool 기반 파라미터 스터디</strong>: 파일 수정 방식이 아닌 독립 프롬프트 생성 방식으로 다중 파라미터 변화를 처리한 접근은, OpenFOAM의 엄격한 구문 요구사항에 대한 효과적인 해결책이다.</li>
 <li><strong>자발적 해석해 비교</strong>: Post-processing Agent가 명시적 지시 없이도 Poiseuille 유동의 해석해를 자체적으로 구현하여 수치해와 비교한 점은 LLM의 물리 지식 활용 가능성을 보여준다.</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <h3>한계</h3>
 <ol>
 <li><strong>제한된 물리 복잡도</strong>: 테스트한 사례들이 비교적 표준적인 CFD 문제(층류, 단순 난류)에 한정되어 있으며, 산업 수준의 복잡한 문제(연소, 화학 반응, 유체-구조 상호작용 등)에 대한 검증이 없다.</li>
@@ -175,9 +113,18 @@ a { color: #A62018; }
 <li>시뮬레이션 결과에 기반한 자동 설계 최적화 루프 구현</li>
 <li>다른 계산 도메인(구조역학, 전자기학 등)으로의 아키텍처 확장</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation (총평)</h2>
 <p>OpenFOAMGPT 2.0은 "자연어로 CFD 시뮬레이션을 수행한다"는 비전을 높은 신뢰성으로 실현한 연구다. 450회 이상의 시뮬레이션에서 100% 성공률과 재현성을 달성한 것은, Temperature=0 설정, 독립 프롬프트 생성, 자기 수정 루프 등 신중한 엔지니어링 결정의 결과다. 특히 다중 파라미터 스터디(격자 독립성, REV 결정, 유동 체계 특성화)를 완전 자율적으로 수행한 점은 인상적이다. 다만 테스트 범위가 비교적 표준적인 CFD 문제에 한정되어 있고, "잘 정의된 질의"라는 전제조건이 있어, 실제 산업 환경에서의 적용 가능성은 추가 검증이 필요하다. 그럼에도 CFD 분야에서 LLM 기반 자동화의 실용 가능성을 가장 설득력 있게 보여준 연구 중 하나로, 계산 과학의 민주화에 기여하는 중요한 이정표다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>4</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.7</td></tr>
+</table>
+<p><strong>총평</strong>: 자연어-CFD 워크플로우 자동화를 end-to-end로 구현하고 100% 성공률을 실증한 실용적 연구로, 멀티에이전트 아키텍처와 OpenFOAM 통합이 유사 도구 대비 차별화된다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

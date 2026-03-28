@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,32 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>AgentRxiv: Towards Collaborative Autonomous Research</h1>
-<blockquote>
-<p><strong>저자</strong>: Samuel Schmidgall, Michael Moor | <strong>날짜</strong>: 2025-03-23 | <strong>arXiv</strong>: 2503.18102 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.18102" target="_blank">10.48550/arXiv.2503.18102</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Samuel Schmidgall, Michael Moor | <strong>날짜</strong>: 2025-03-23 | <strong>arXiv</strong>: 2503.18102 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.18102" target="_blank">10.48550/arXiv.2503.18102</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>AgentRxiv는 LLM 기반 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 연구 결과를 업로드, 검색, 상호 참조하며 협업적으로 연구를 수행할 수 있게 하는 프레임워크이다. 단일 실험실이 MATH-500에서 gpt-4o mini 기준 70.2%에서 78.2%로 11.4% 상대적 성능 향상을 달성했으며, 3개 병렬 실험실 운영 시 79.8%(13.7% 상대 향상)까지 도달하여, 에이전트 간 누적적 지식 공유가 고립된 연구보다 우월함을 입증했다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>AgentRxiv는 LLM 기반 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 연구 결과를 업로드, 검색, 상호 참조하며 협업적으로 연구를 수행할 수 있게 하는 프레임워크이다. 단일 실험실이 MATH-500에서 gpt-4o mini 기준 70.2%에서 78.2%로 11.4% 상대적 성능 향상을 달성했으며, 3개 병렬 실험실 운영 시 79.8%(13.7% 상대 향상)까지 도달하여, 에이전트 간 누적적 지식 공유가 고립된 연구보다 우월함을 입증했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: AI Scientist, Agent Laboratory, Virtual Lab 등 LLM 에이전트 기반 자율 연구 시스템이 등장하여 end-to-end 연구 수행이 가능해졌음</li>
 <li><strong>Gap</strong>: 기존 자율 연구 프레임워크들은 각각 독립적으로 작동하며, 이전 에이전트의 연구 결과를 참조하거나 누적적으로 발전시키는 메커니즘이 부재</li>
 <li><strong>왜 중요한가</strong>: 실제 과학 발전은 수백 명의 연구자가 점진적으로 기여하는 누적적 과정이므로, 자율 에이전트도 이러한 협업적 지식 축적 구조를 갖추어야 진정한 연구 가속화가 가능</li>
 <li><strong>접근법</strong>: arXiv를 모델로 한 중앙 집중식 프리프린트 서버(AgentRxiv)를 구축하여, 에이전트 실험실 간 비동기적 연구 공유 및 검색 기반 참조 체계를 구현</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>단일 실험실 점진적 향상</strong>: 40편의 논문 생성을 통해 MATH-500 정확도가 70.2%에서 78.2%로 꾸준히 증가 (+11.4% 상대 향상)</li>
 <li><strong>발견 알고리즘의 일반화</strong>: 최고 성능 기법 Simultaneous Divergence Averaging(SDA)가 GPQA (+6.8%), MMLU-Pro (+12.2%), MedQA (+8.9%) 등 타 벤치마크에서도 평균 +9.3% 향상</li>
 <li><strong>모델 간 일반화</strong>: SDA가 gpt-4o mini, gpt-4o, DeepSeek-v3, Gemini-1.5 Pro, Gemini-2.0 Flash 등 5개 모델에서 평균 +3.3% 향상</li>
 <li><strong>병렬 실험실 가속</strong>: 3개 병렬 실험실이 협업하여 79.8% 달성 (13.7% 상대 향상), 순차 실행 대비 7편 만에 76.2% 도달 (순차: 23편 필요)</li>
 <li><strong>이전 연구 참조의 중요성</strong>: 이전 논문 참조 제거 시 73.8%에서 정체 vs. 참조 시 78.2% 달성 (+6.0% 차이)</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>기반 시스템</strong>: Agent Laboratory (Schmidgall et al., 2025) -- Literature Review, Experimentation, Report Writing 3단계 파이프라인의 multi-agent 시스템</li>
 <li><strong>AgentRxiv 서버</strong>: 로컬 웹 애플리케이션으로 구현. 논문 업로드 시 텍스트/메타데이터 추출, SentenceTransformer 기반 임베딩 생성, cosine similarity 기반 검색</li>
@@ -88,16 +72,15 @@ a { color: #A62018; }
 <li><strong>논문 참조</strong>: 각 세대에서 AgentRxiv 5편 + arXiv 5편을 리뷰하여 이전 연구 기반으로 새로운 기법 개발</li>
 <li><strong>병렬 실험</strong>: 3개 독립 Agent Laboratory 인스턴스를 동시 실행, 비동기적으로 AgentRxiv를 통해 결과 공유</li>
 <li><strong>비용</strong>: 논문당 평균 $3.11, 순차 실험 총 $92.0, 병렬 실험 총 $279.6</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>에이전트 간 프리프린트 서버</strong>: 자율 연구 에이전트들이 arXiv와 유사한 공유 플랫폼을 통해 연구를 축적하고 상호 참조하는 최초의 프레임워크</li>
 <li><strong>연구 방향 기반 자율 아이디어 생성</strong>: 구체적 아이디어 대신 연구 방향만 제공하여 에이전트가 스스로 아이디어를 발전시키는 패러다임 전환</li>
 <li><strong>에이전트의 자연발생적 누적 연구</strong>: 명시적 지시 없이도 에이전트가 이전 기법(예: Meta-Mirror Prompting)을 자연스럽게 개선하여 v2를 만드는 현상 발견</li>
 <li><strong>병렬 자율 연구의 속도-효율 트레이드오프 분석</strong>: 다수 실험실 병렬 운영의 wall-clock 시간 단축 효과와 자원 중복 사용 문제를 정량적으로 분석</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li><strong>높은 hallucination 비율</strong>: Agent Laboratory가 실험 결과를 hallucinate하거나, code repair 메커니즘이 핵심 코드를 placeholder로 대체하는 문제가 빈번하게 발생하여 수동 검증 필수</li>
@@ -121,9 +104,16 @@ a { color: #A62018; }
 <li>Exploration reward 기반 연구 다양성 유도 및 ELO/tournament 기반 연구 계획 필터링</li>
 <li>MATH-500 이외의 open-ended 과학 연구 방향으로의 확장</li>
 <li>연구 과정에서의 plan adjustment 허용 (실험 중 계획 수정 가능)</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
 <p><strong>총평</strong>: 자율 연구 에이전트들이 공유 프리프린트 서버를 통해 협업적으로 연구를 수행하는 매력적인 비전을 제시한 논문이다. 누적적 지식 공유가 고립된 연구보다 우월하다는 점을 정량적으로 입증한 것은 의미 있으나, 높은 hallucination 비율과 수동 검증 의존성, 좁은 실험 범위(MATH-500 prompting), 그리고 발견된 알고리즘의 제한적 novelty는 현재 시스템의 실용적 가치에 대한 의문을 남긴다. 자율 과학 연구의 미래 방향을 탐색하는 시의적절한 연구이지만, 신뢰성 확보를 위한 후속 개선이 필수적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

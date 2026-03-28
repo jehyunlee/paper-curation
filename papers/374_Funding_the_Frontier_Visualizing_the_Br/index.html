@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Funding the Frontier: Visualizing the Broad Impact of Science and Science Funding</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,20 +42,18 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>Funding the Frontier: Visualizing the Broad Impact of Science and Science Funding</h1>
-<blockquote>
-<p><strong>저자</strong>: Yifang Wang, Yifan Qian, Xiaoyu Qi, Yian Yin, Shengqi Dang, Ziqing Qian, Benjamin F. Jones, Nan Cao, Dashun Wang | <strong>날짜</strong>: 2025-09-19 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2509.16323">10.48550/arXiv.2509.16323</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>과학 펀딩의 광범위한 사회적 영향을 어떻게 가시화할 수 있는가? 이 논문은 700만 연구과제를 1억 4천만 논문, 1억 6천만 특허, 1,090만 정책 문서, 80만 임상시험, 580만 뉴스피드와 연결하고 18억 인용 링크를 통합한 대규모 데이터 컬렉션 위에 시각 분석 시스템 <strong>"Funding the Frontier(FtF)"</strong>를 구축했다. 전문가 인터뷰와 사례 연구를 통한 평가에서, FtF는 연구자·펀더·정책 입안자·대학 지도자의 핵심 분석 수요를 충족하면서 예측 모델까지 통합하는 다면적 영향 분석 플랫폼으로 검증되었다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Yifang Wang, Yifan Qian, Xiaoyu Qi, Yian Yin, Shengqi Dang, Ziqing Qian, Benjamin F. Jones, Nan Cao, Dashun Wang | <strong>날짜</strong>: 2025-09-19 | <strong>Journal</strong>: arXiv preprint | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.48550/arXiv.2509.16323"" target="_blank">10.48550/arXiv.2509.16323"</a> target="_blank"><a href="https://doi.org/10.48550/arXiv.2509.16323" target="_blank">10.48550/arXiv.2509.16323</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>과학 펀딩의 광범위한 사회적 영향을 어떻게 가시화할 수 있는가? 이 논문은 700만 연구과제를 1억 4천만 논문, 1억 6천만 특허, 1,090만 정책 문서, 80만 임상시험, 580만 뉴스피드와 연결하고 18억 인용 링크를 통합한 대규모 데이터 컬렉션 위에 시각 분석 시스템 <strong>"Funding the Frontier(FtF)"</strong>를 구축했다. 전문가 인터뷰와 사례 연구를 통한 평가에서, FtF는 연구자·펀더·정책 입안자·대학 지도자의 핵심 분석 수요를 충족하면서 예측 모델까지 통합하는 다면적 영향 분석 플랫폼으로 검증되었다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty] "we present Funding the Frontier (FtF), a visual analysis system for researchers, funders, policymakers, university leaders, and the broad public."</li>
 <li>[authorship, action] "The system is built on a massive data collection that connects 7M research grants to 140M scientific publications, 160M patents, 10.9M policy documents, 800K clinical trials, and 5.8M newsfeeds, with 1.8B citation linkages among these entities."</li>
 <li>[novelty] "The system incorporates diverse impact metrics and predictive models that forecast future investment opportunities into an array of coordinated views."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터 통합</strong>: 700만 연구과제 → 논문(1.4억) + 특허(1.6억) + 정책문서(1,090만) + 임상시험(80만) + 뉴스피드(580만), 18억 인용 링크로 연결</li>
 <li><strong>시각화 프레임워크</strong>: Coordinated Multiple Views — 다양한 영향 지표와 예측 모델을 연동된 시각화 뷰들로 통합</li>
@@ -69,15 +65,15 @@ a { color: #1a5aad; }
 <li>미디어 영향력: 뉴스피드 언급</li>
 <li><strong>예측 모델</strong>: 미래 투자 기회 예측 모델을 시각화 인터페이스에 통합</li>
 <li><strong>평가</strong>: 전문가 인터뷰 + 사례 연구로 시스템 효과성 및 사용성 검증</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>기존 과학 펀딩 영향 연구는 논문 출판에만 초점을 맞추어 특허·정책·임상·미디어로의 downstream 영향을 무시해 왔음</li>
 <li>펀더가 희소 자원을 복잡한 연구 환경에 배분할 때 투명하고 포괄적인 영향 평가 도구가 필요하지만 현재 존재하지 않음</li>
 <li>18억 인용 링크로 연결된 다분야 데이터 통합은 과학적 지식이 사회 전반에 파급되는 복잡한 경로를 처음으로 체계적으로 가시화</li>
 <li>예측 모델 통합으로 사후 영향 평가를 넘어 사전 투자 기회 발굴이라는 새로운 펀딩 분석 패러다임 제시</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>전문가 인터뷰와 사례 연구 기반 평가는 소규모 사용자 집단에 한정 — 대규모 사용자 연구 필요</li>
@@ -94,39 +90,17 @@ a { color: #1a5aad; }
 <li>다양한 사용자 집단(연구자, 정책 입안자, 대중)에 대한 대규모 사용성 연구</li>
 <li>예측 모델의 장기적 정확도 추적 및 개선</li>
 <li>다국적 펀딩 시스템으로 확장하여 글로벌 과학 투자 지형도 구축</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>4/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
 </table>
 <p><strong>총평</strong>: 700만 연구과제와 다양한 downstream 영향 지표를 18억 인용 링크로 통합한 전례 없는 규모의 과학 영향 분석 플랫폼으로, 과학 펀딩의 광범위한 사회적 파급을 처음으로 체계적으로 가시화한다. 데이터 품질과 예측 모델 검증의 엄밀성이 향후 과제이나, Science of Science와 과학 정책 연구의 인프라 혁신에 중요한 기여를 한다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

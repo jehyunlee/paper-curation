@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Papers and Patents Are Becoming Less Disruptive Over Time</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,55 +13,58 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A56B0; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>Papers and Patents Are Becoming Less Disruptive Over Time</h1>
-<blockquote>
-<p><strong>저자</strong>: Michael Park, Erin Leahey, Russell J. Funk | <strong>날짜</strong>: 2023 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: 10.1038/s41586-022-05543-x | <strong>arXiv</strong>: -
-<strong>리뷰 모드</strong>: PDF</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
+<blockquote><p><strong>저자</strong>: Michael Park, Erin Leahey, Russell J. Funk | <strong>날짜</strong>: 2023 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-022-05543-x" target="_blank">10.1038/s41586-022-05543-x</a> | <strong>arXiv</strong>: -</p></blockquote>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>지식이 폭발적으로 증가하고 있는데, 왜 과학과 기술은 오히려 덜 혁신적이 되고 있는가? 이 논문은 6개 대형 데이터셋의 4,500만 편의 논문과 390만 건의 특허를 분석하여 <strong>CD 지수(Consolidation-Disruption index)로 측정한 논문·특허의 혁신성이 지난 60년간 지속적으로 하락</strong>했음을 실증했다. 이 하락은 모든 분야에서 보편적이며, 점점 좁아지는 지식 활용 범위(narrower knowledge use)가 핵심 원인으로 지목된다.</p>
-<p><img alt="Figure 1" src="figures/fig1.png" />
-<em>Figure 1: CD 지수 측정 방법론 개요 — 논문이 기존 인용 네트워크를 파괴(disrupt)하는지 통합(consolidate)하는지 측정</em></p>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: CD 지수 측정 방법론 개요 — 논문이 기존 인용 네트워크를 파괴(disrupt)하는지 통합(consolidate)하는지 측정</em></p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li><strong>rule_base_novelty</strong>: CD 지수를 이용해 과학·기술 혁신성의 60년 추세를 처음으로 전 분야 규모로 정량화</li>
 <li><strong>rule_base_finding</strong>: 혁신성(disruption) 하락이 모든 분야에서 보편적이고 강건함</li>
 <li><strong>rule_base_result</strong>: 하락 원인은 출판 품질 변화나 인용 관행이 아닌, 점점 좁아지는 지식 활용 범위</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: APS, JSTOR, MAG, PatentsView, PubMed, WoS — 4,500만 논문 + 390만 특허 (6개 소스)</li>
 <li><strong>지표</strong>: CD 지수 $CD_5 = \frac{n_f - n_b}{n_f + n_b + n_0}$ — 이후 논문이 초점 논문을 인용할 때 이전 피인용 논문도 함께 인용하는지 여부 측정</li>
 <li><strong>보조 지표</strong>: 텍스트 기반 신규성 지표, 어휘 다양성 지표</li>
 <li><strong>통제 분석</strong>: 인용 관행 변화, 출판 품질, 분야별 요인 등 대안 설명 검토</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
-<p>지식 성장이 과학 진보를 자동으로 보장하지 않는다는 것을 실증적으로 보여준다. 연구 평가 시스템, 연구비 배분, 출판 관행이 혁신보다 점진적 발전을 장려하는 방향으로 작동하고 있음을 시사하며, 과학 정책의 근본적 재고를 촉구한다.</p>
+<p>지식 성장이 과학 진보를 자동으로 보장하지 않는다는 것을 실증적으로 보여준다. 연구 평가 시스템, 연구비 배분, 출판 관행이 혁신보다 점진적 발전을 장려하는 방향으로 작동하고 있음을 시사하며, 과학 정책의 근본적 재고를 촉구한다.</p></div>
 <div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
@@ -72,44 +75,22 @@ a { color: #1A56B0; }
 <ul>
 <li>"지식 활용 범위 축소"의 원인(연구자 인센티브 vs. 인식론적 변화)을 구분하지 않음</li>
 <li>비서구권 과학의 혁신성 추세가 포함되지 않을 수 있음</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>혁신성 하락의 제도적 원인(인센티브, 평가 시스템) 규명</li>
 <li>학제간 연구가 혁신성 회복에 기여하는지 분석</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>5/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: 과학·기술의 혁신성 감소를 전례 없는 규모로 실증하고 그 원인을 지식 활용 범위 축소로 귀착시킨 이정표 논문으로, 과학 정책 전반에 깊은 함의를 갖는다.</p></div></div></div></div></div></div></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<p><strong>총평</strong>: 과학·기술의 혁신성 감소를 전례 없는 규모로 실증하고 그 원인을 지식 활용 범위 축소로 귀착시킨 이정표 논문으로, 과학 정책 전반에 깊은 함의를 갖는다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

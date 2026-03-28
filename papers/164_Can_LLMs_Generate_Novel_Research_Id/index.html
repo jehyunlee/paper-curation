@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP </title>
+<title>Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,45 +42,37 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers</h1>
-<ul>
-<li><strong>저자</strong>: Chenglei Si, Diyi Yang, Tatsunori Hashimoto</li>
-<li><strong>출처</strong>: arXiv (2024)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.04109"><a href="https://doi.org/10.48550/arXiv.2409.04109" target="_blank">10.48550/arXiv.2409.04109</a></a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (핵심)</h2>
-<p>100명 이상의 NLP 연구자를 모집하여 LLM 기반 아이디어 생성 에이전트와 인간 전문가의 연구 아이디어를 최초로 대규모 블라인드 비교한 연구. 7개 NLP 주제에 걸쳐 3가지 조건(인간 아이디어 49개, AI 아이디어 49개, AI+인간 재랭킹 아이디어 49개)을 79명의 전문 리뷰어가 블라인드 평가한 결과, AI가 생성한 아이디어가 인간 전문가 아이디어보다 통계적으로 유의하게 더 참신하다(p&lt;0.05)는 결론을 도출했으나, 실현가능성에서는 다소 약한 것으로 나타났다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>LLM의 과학적 발견 가능성에 대한 낙관론이 커지고 있으나, LLM이 전문가 수준의 참신한 연구 아이디어를 생성할 수 있는지에 대한 엄밀한 실증 평가가 부재했다. 기존 연구들은 소규모 전문가 평가, 아이디어의 상세도 제한, 또는 LLM-as-a-judge에 의존하는 등 대리 지표에 의존해 이 근본적 질문에 답하지 못했다. 1년에 걸친 고비용 대규모 전문가 평가가 필요했다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (핵심)</h2>
+<p>100명 이상의 NLP 연구자를 모집하여 LLM 기반 아이디어 생성 에이전트와 인간 전문가의 연구 아이디어를 최초로 대규모 블라인드 비교한 연구. 7개 NLP 주제에 걸쳐 3가지 조건(인간 아이디어 49개, AI 아이디어 49개, AI+인간 재랭킹 아이디어 49개)을 79명의 전문 리뷰어가 블라인드 평가한 결과, AI가 생성한 아이디어가 인간 전문가 아이디어보다 통계적으로 유의하게 더 참신하다(p<0.05)는 결론을 도출했으나, 실현가능성에서는 다소 약한 것으로 나타났다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>LLM의 과학적 발견 가능성에 대한 낙관론이 커지고 있으나, LLM이 전문가 수준의 참신한 연구 아이디어를 생성할 수 있는지에 대한 엄밀한 실증 평가가 부재했다. 기존 연구들은 소규모 전문가 평가, 아이디어의 상세도 제한, 또는 LLM-as-a-judge에 의존하는 등 대리 지표에 의존해 이 근본적 질문에 답하지 못했다. 1년에 걸친 고비용 대규모 전문가 평가가 필요했다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
-<li><strong>핵심 발견</strong>: AI 생성 아이디어가 인간 전문가 아이디어보다 참신성(novelty)에서 통계적으로 유의하게 우수 -- AI Ideas 평균 5.64 vs. Human Ideas 4.84 (p&lt;0.01), 3가지 서로 다른 통계 검정에서 일관되게 유지</li>
+<li><strong>핵심 발견</strong>: AI 생성 아이디어가 인간 전문가 아이디어보다 참신성(novelty)에서 통계적으로 유의하게 우수 -- AI Ideas 평균 5.64 vs. Human Ideas 4.84 (p<0.01), 3가지 서로 다른 통계 검정에서 일관되게 유지</li>
 <li><strong>다차원 평가</strong>: 참신성과 흥미도(excitement)에서 AI 우위, 실현가능성(feasibility)에서는 유의한 차이 없으나 약간 열세 경향, 전체 점수(overall)에서는 AI+Human Rerank만 유의</li>
 <li><strong>LLM 자기평가의 한계 발견</strong>: 최고 성능 LLM 평가자(Claude-3.5 pairwise)도 53.3%의 일치도로, 인간 리뷰어 간 일치도(56.1%)에 미달</li>
 <li><strong>아이디어 다양성 한계 발견</strong>: 4,000개 시드 아이디어 중 비중복 아이디어는 약 200개(5%)에 불과 -- inference-time scaling의 근본적 병목</li>
 <li><strong>AI 아이디어의 공통 실패 모드 식별</strong>: 구현 세부사항 모호함, 데이터셋 오용, 부적절한 베이스라인, 비현실적 가정, 과도한 리소스 요구, 동기 부족, 기존 모범사례 미준수</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ol>
 <li><strong>실험 설계</strong>: NLP 프롬프팅 연구를 테스트베드로 선정, 7개 주제(Bias, Coding, Safety, Multilingual, Factuality, Math, Uncertainty)를 정의하여 주제 선택 편향 통제</li>
 <li><strong>LLM 에이전트</strong>: Claude-3.5-Sonnet 기반, RAG(Semantic Scholar API로 논문 검색) + 대량 생성(주제당 4,000개 시드 아이디어) + 랭킹(Swiss system tournament 기반 pairwise 비교)의 3단계 파이프라인</li>
 <li><strong>인간 참가자</strong>: 49명 아이디어 작성자(26개 기관, 평균 논문 12편, 인용 477회), 79명 리뷰어(32개 기관, 평균 h-index 7), 총 104명, Stanford IRB 승인</li>
 <li><strong>교란 변수 통제</strong>: 아이디어 템플릿 표준화(제목, 문제정의, 동기, 방법, 실험계획, 테스트케이스, 대안계획), LLM 기반 스타일 정규화(50% 식별 정확도 달성), 주제 분포 매칭</li>
 <li><strong>평가</strong>: 5개 지표(참신성, 흥미도, 실현가능성, 예상 효과성, 전체 점수) 1-10 척도 + 자유 텍스트, 총 298건 리뷰, Welch's t-test + Bonferroni 보정, 3가지 독립적 통계 검정(리뷰 단위, 아이디어 단위, 리뷰어 단위) + linear mixed-effects model</li>
-</ol>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>최초의 대규모 인간-LLM 아이디어 생성 비교</strong>: 기존 연구 에이전트 논문들이 소규모 평가나 LLM-as-a-judge에 의존한 것과 달리, 100+ 전문가에 의한 블라인드 평가로 통계적으로 엄밀한 결론 도출</li>
 <li><strong>체계적 교란 변수 통제</strong>: 스타일 정규화, 주제 분포 매칭, 3가지 독립적 통계 검정 등 연구 아이디어 평가의 주관성을 최소화하기 위한 방법론적 엄밀성</li>
 <li><strong>평가 중심 접근</strong>: 방법론 혁신보다 "현재 LLM이 할 수 있는 것"의 정확한 측정에 집중하는 평가 중심(evaluation-centric) 접근으로, 향후 방법론 연구의 기준선 제공</li>
 <li><strong>LLM 한계의 정직한 보고</strong>: 아이디어 다양성 부족과 자기평가 실패를 inference-time scaling의 근본적 한계로 식별</li>
 <li><strong>end-to-end 연구 설계 제안</strong>: 아이디어 평가를 넘어 실제 프로젝트 실행까지 포함하는 후속 연구 설계를 사전 등록(pre-registration)</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>범위 제한</strong>: NLP 프롬프팅 연구에 한정되어 다른 분야(자연과학, 의학 등)로의 일반화에 주의 필요</li>
 <li><strong>인간 베이스라인의 대표성</strong>: 참가자 자체 평가에 따르면 제출된 아이디어는 "상위 43%" 수준으로 최고 수준은 아님 -- 37명이 10일 내 즉석에서 고안</li>
@@ -100,9 +80,18 @@ a { color: #A62018; }
 <li><strong>리뷰어의 참신성 편향</strong>: 전체 점수와 참신성의 상관(r=0.725)이 실현가능성과의 상관(r=0.097)보다 압도적으로 높아, 리뷰어가 참신성에 과도한 가중치를 부여할 가능성</li>
 <li><strong>단일 LLM 에이전트</strong>: Claude-3.5-Sonnet 기반의 단일 에이전트만 평가하여, 다른 모델이나 더 정교한 에이전트 설계의 효과는 미탐구</li>
 <li>향후 아이디어를 실제 프로젝트로 실행하는 end-to-end 평가, 다른 연구 분야로의 확장, LLM 아이디어의 다양성 향상 방법, 인간-AI 협업 아이디어 생성 등이 핵심 연구 방향</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <p>LLM의 연구 아이디어 생성 능력에 대한 최초의 대규모 엄밀한 실증 연구로, 방법론적 투명성과 통계적 엄밀성이 뛰어나다. 3가지 독립적 통계 검정과 linear mixed-effects model을 통해 "AI 아이디어가 더 참신하다"는 결론을 강건하게 뒷받침하며, 동시에 실현가능성 약점, 다양성 부족, 자기평가 실패 등 LLM의 한계를 정직하게 보고한다. 다만 NLP 프롬프팅이라는 좁은 범위, 인간 베이스라인이 최고 수준이 아닐 수 있다는 점, 리뷰어의 참신성 편향 가능성은 결론의 일반화에 주의를 요한다. "참신하게 들리는 아이디어"와 "실제로 성공하는 연구"의 간극을 메우는 후속 실행 연구가 이 논문의 발견을 완성할 핵심 과제이다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>4</td></tr>
+<tr><td>Technical Soundness</td><td>5</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>4.3</td></tr>
+</table>
+<p><strong>총평</strong>: 100명 이상 NLP 연구자의 블라인드 평가로 AI 생성 아이디어가 인간보다 통계적으로 유의미하게 더 참신함을 입증한 연구로, 엄밀한 실험 설계가 AI 창의성 논쟁에 강력한 실증적 근거를 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

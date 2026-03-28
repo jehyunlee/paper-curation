@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,32 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Atomically accurate de novo design of antibodies with RFdiffusion</h1>
-<blockquote>
-<p><strong>저자</strong>: Nathaniel R. Bennett, Joseph L. Watson, Robert J. Ragotte, Andrew J. Borst, DéJenaé L. See, Connor Weidle, Riti Biswas, Yutong Yu, Ellen L. Shrock, Russell Ault, Philip J. Y. Leung, Buwei Huang, Inna Goreshnik, John Tam, Kenneth D. Carr, Benedikt Singer, Cameron Criswell, Basile I. M. Wicky, Dionne Vafeados, Mariana Garcia Sanchez, Ho Min Kim, Susana Vázquez Torres, Sidney Chan, Shirley M. Sun, Timothy Spear, Yi Sun, Keelan O'Reilly, John M. Maris, Nikolaos G. Sgourakis, Roman A. Melnyk, Chang C. Liu, David Baker | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: bioRxiv | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2024.03.14.585103" target="_blank">10.1101/2024.03.14.585103</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Nathaniel R. Bennett, Joseph L. Watson, Robert J. Ragotte, Andrew J. Borst, DéJenaé L. See, Connor Weidle, Riti Biswas, Yutong Yu, Ellen L. Shrock, Russell Ault, Philip J. Y. Leung, Buwei Huang, Inna Goreshnik, John Tam, Kenneth D. Carr, Benedikt Singer, Cameron Criswell, Basile I. M. Wicky, Dionne Vafeados, Mariana Garcia Sanchez, Ho Min Kim, Susana Vázquez Torres, Sidney Chan, Shirley M. Sun, Timothy Spear, Yi Sun, Keelan O'Reilly, John M. Maris, Nikolaos G. Sgourakis, Roman A. Melnyk, Chang C. Liu, David Baker | <strong>날짜</strong>: 2025 | <strong>Journal</strong>: bioRxiv | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2024.03.14.585103" target="_blank">10.1101/2024.03.14.585103</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>RFdiffusion을 항체 설계에 특화하여 fine-tuning함으로써, 사용자가 지정한 epitope에 원자 수준 정확도로 결합하는 de novo 항체(VHH 및 scFv)를 완전히 computational하게 설계한 최초의 연구이다. Cryo-EM 구조 분석으로 설계된 CDR 루프 구조와 결합 모드가 계산 모델과 원자 수준에서 일치함을 실험적으로 검증했다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>RFdiffusion을 항체 설계에 특화하여 fine-tuning함으로써, 사용자가 지정한 epitope에 원자 수준 정확도로 결합하는 de novo 항체(VHH 및 scFv)를 완전히 computational하게 설계한 최초의 연구이다. Cryo-EM 구조 분석으로 설계된 CDR 루프 구조와 결합 모드가 계산 모델과 원자 수준에서 일치함을 실험적으로 검증했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: 항체는 현대 의학의 핵심 치료제(글로벌 160개 이상 허가, 시장가치 $445B 전망)이나, 발견 과정은 동물 면역화나 무작위 라이브러리 스크리닝에 의존</li>
 <li><strong>Gap</strong>: 특정 epitope에 결합하는 항체를 순수하게 in silico에서 설계하는 방법이 존재하지 않았음. 기존 deep learning 기반 항체 서열 설계 방법들은 구조적으로 정확한 de novo 항체 설계에 실패</li>
 <li><strong>왜 중요한가</strong>: Epitope-specific 항체 설계가 가능해지면, 수용체-리간드 상호작용 차단, 비면역우세 epitope 타겟팅 등 치료적으로 중요한 응용이 가능</li>
 <li><strong>접근법</strong>: RFdiffusion을 항체 복합체 구조에 fine-tuning하여 CDR 루프와 rigid-body docking을 동시에 설계하고, yeast display screening으로 검증</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>다중 타겟 VHH 설계 성공</strong>: Influenza HA, C. difficile TcdB, SARS-CoV-2 RBD, RSV 등 질병 관련 타겟에 대해 epitope-specific VHH binder 생성 (TcdB: KD = 260 nM, HA: KD = 78 nM)</li>
 <li><strong>원자 수준 구조 정확도</strong>: Cryo-EM으로 검증한 anti-HA VHH(VHH_flu_01)의 backbone RMSD = 1.45 A, CDR3 RMSD = 0.8 A</li>
 <li><strong>Affinity maturation</strong>: OrthoRep을 이용한 in vivo 지속적 돌연변이로 초기 설계 대비 ~100배 친화도 향상, single-digit nanomolar 수준 달성</li>
 <li><strong>scFv 설계 확장</strong>: 6개 CDR 전체를 de novo로 설계한 scFv에서 TcdB 타겟 최고 KD = 72 nM 달성. Cryo-EM(3.6 A)으로 6개 CDR 모두 near-atomic precision 확인 (각 CDR backbone RMSD: 0.2~1.1 A)</li>
 <li><strong>Phox2b-MHC 타겟팅</strong>: 신경모세포종 관련 peptide-MHC 복합체에 대한 scFv binder 설계 (KD = 400 nM), 펩타이드 특이적 결합 확인</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>RFdiffusion Fine-tuning</strong>: PDB의 항체 복합체 구조로 fine-tuning. 항체 framework 구조/서열은 template track을 통해 2D pairwise distance/dihedral matrix로 제공 (global-frame-invariant). CDR 루프와 rigid-body dock만 diffusion으로 생성</li>
 <li><strong>Epitope 지정</strong>: One-hot encoded "hotspot" feature로 타겟 단백질의 결합 epitope 잔기를 지정</li>
@@ -88,19 +72,18 @@ a { color: #A62018; }
 <li><strong>실험 스크리닝</strong>: Yeast surface display (타겟당 9,000개 설계) 또는 E. coli 발현 + SPR (타겟당 95개). 경쟁 결합 실험으로 epitope 특이성 확인</li>
 <li><strong>Combinatorial scFv 라이브러리</strong>: 유사한 결합 모드를 가진 설계들의 heavy/light chain CDR을 structure-aware하게 조합하여 라이브러리 다양성 확보</li>
 <li><strong>Affinity maturation</strong>: OrthoRep 시스템으로 yeast 내 연속적 hypermutation 수행</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>최초의 epitope-specific de novo 항체 설계</strong>: 기존 방법과 달리 기존 항체 구조에 의존하지 않고, 지정된 epitope에 대해 CDR 루프를 완전히 새로 생성하는 최초의 computational 프레임워크</li>
 <li><strong>CDR-focused diffusion training</strong>: Framework를 global-frame-invariant template로 제공하면서 CDR만 noising/denoising하는 training regime으로, 항체 특유의 CDR-mediated 상호작용 설계를 가능하게 함</li>
 <li><strong>Structure-aware combinatorial assembly</strong>: 동일한 binding mode의 설계들에서 heavy/light chain을 구조적으로 호환 가능한 조합으로 재구성하는 전략으로, 6개 CDR 동시 설계의 조합적 어려움을 극복</li>
 <li><strong>Cryo-EM 기반 원자 수준 검증</strong>: De novo 설계 항체의 구조적 정확도를 cryo-EM으로 최초 검증하여, 설계-실험 간 원자 수준 일치를 입증</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
-<li>실험적 성공률이 상당히 낮아 (iPTM &gt; 0.6인 설계가 전체의 9%에 불과) 대규모 high-throughput 스크리닝이 필수적</li>
+<li>실험적 성공률이 상당히 낮아 (iPTM > 0.6인 설계가 전체의 9%에 불과) 대규모 high-throughput 스크리닝이 필수적</li>
 <li>SARS-CoV-2 RBD VHH는 올바른 epitope에 결합했으나 binding mode가 설계와 달라 설계 실패로 분류</li>
 <li>초기 설계의 친화도가 modest하여 OrthoRep을 통한 affinity maturation이 필수적</li>
 <li>Glycan 등 비단백질 원자를 설계 과정에서 고려하지 못함 (HA의 sub-stoichiometric binding 원인)</li>
@@ -119,9 +102,16 @@ a { color: #A62018; }
 <li>인간 CDR 서열 분포에 가까운 서열 설계를 위한 ProteinMPNN 개선 (면역원성 저감)</li>
 <li>scFv에서 full antibody (IgG) 형식으로의 전환 및 developability 최적화</li>
 <li>Affinity maturation 없이 high-affinity binder를 직접 설계하는 one-shot 방법론 개발</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 5/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
+</table>
 <p><strong>총평</strong>: 항체 설계의 패러다임을 근본적으로 전환시킬 잠재력을 가진 획기적 연구이다. RFdiffusion을 항체에 특화시켜 사용자 지정 epitope에 원자 수준 정확도로 결합하는 de novo 항체를 설계하고, cryo-EM으로 이를 검증한 최초의 사례로서 의의가 크다. 다만 낮은 실험 성공률과 affinity maturation 의존성은 향후 개선이 필요하며, AlphaFold3 기반 필터링과 all-atom 모델링의 통합이 이 분야의 다음 도약을 이끌 것으로 기대된다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

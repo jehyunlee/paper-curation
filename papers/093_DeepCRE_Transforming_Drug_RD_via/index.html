@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DeepCRE: Transforming Drug R&D via AI-Driven Cross-drug Response Evaluation</title>
+<title>DeepCRE: Transforming Drug R&amp;D via AI-Driven Cross-drug Response Evaluation</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,31 +42,29 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>DeepCRE: Transforming Drug R&amp;D via AI-Driven Cross-drug Response Evaluation</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: Yushuai Wu, Ting Zhang, Hao Zhou, Hainan Wu, Hanwen Sunchu, Lei Hu, Xiaofang Chen, Suyuan Zhao, Gaochao Liu, Tao Sun, Jiahuan Zhang, Yizhen Luo, Peng Liu, Zaiqing Nie</li>
 <li><strong>기관</strong>: Tsinghua University (AIR), Beihang University, Peking University Third Hospital</li>
 <li><strong>출처</strong>: arXiv:2403.03768 (2024)</li>
 <li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.03768" target="_blank">10.48550/arXiv.2403.03768</a></li>
-<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Wu et al._2024_DeepCRE Transforming Drug R&amp;D via AI-Driven Cross-drug Response Evaluation.pdf</li>
+<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Wu et al._2024_DeepCRE Transforming Drug R&D via AI-Driven Cross-drug Response Evaluation.pdf</li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>한줄 요약 (Essence)</h2>
-<p>약물 R&amp;D 후기 단계에서 교차 약물 반응 평가(Cross-drug Response Evaluation, CRE)를 수행하는 AI 모델 DeepCRE를 제안하여, 환자 수준 및 적응증 수준의 약물 반응을 예측하고 신규 약물 후보를 발굴한다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<hr></div>
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>약물 R&D 후기 단계에서 교차 약물 반응 평가(Cross-drug Response Evaluation, CRE)를 수행하는 AI 모델 DeepCRE를 제안하여, 환자 수준 및 적응증 수준의 약물 반응을 예측하고 신규 약물 후보를 발굴한다.</p>
+<hr></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <ul>
-<li>약물 R&amp;D 분야에서 "Eroom's Law"로 불리는 현상, 즉 기술 발전에도 불구하고 신약 개발 효율이 지속적으로 하락하는 문제가 존재한다.</li>
+<li>약물 R&D 분야에서 "Eroom's Law"로 불리는 현상, 즉 기술 발전에도 불구하고 신약 개발 효율이 지속적으로 하락하는 문제가 존재한다.</li>
 <li>기존 in-silico 교차 약물 반응 평가(CRE) 모델은 타겟 수준이나 세포주(cell-line) 수준 등 약물 개발 초기 단계에만 적용 가능하여, 임상 성공률 향상에 기여하는 데 한계가 있다.</li>
 <li>Single-Drug Learning(SDL) 모델은 약물별 독립 모델을 사용하므로 교차 비교가 불가능하고, Multi-Drug Learning(MDL) 모델은 세포주 수준에 국한되어 환자 수준 예측에 부적합하다.</li>
 <li>약물 개발 후기 단계(환자 수준, 적응증 수준)에서의 정확한 CRE가 임상 시험 실패율을 낮추고 치료 대안을 확대하는 데 핵심적이다.</li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<hr></div>
+<div class="section-box"><h2>핵심 성과 (Achievement)</h2>
 <ul>
 <li><strong>환자 수준 CRE</strong>: 기존 최고 모델 대비 평균 17.7% 성능 향상 달성.</li>
 <li><strong>적응증 수준 CRE</strong>: 기존 모델 대비 5배 성능 증가.</li>
@@ -86,9 +72,8 @@ a { color: #A62018; }
 <li><strong>소라페닙(Sorafenib) 재발굴</strong>: DeepCRE가 대장암에서 Sorafenib의 효능을 예측했고, 오가노이드 실험에서 이를 검증. 약물 재배치(drug repurposing) 가능성 입증.</li>
 <li><strong>GSK1059615 발견</strong>: PI3K/mTOR 경로의 새로운 유망 약물 후보를 발굴하고, 기존 동일 경로 억제제와의 차별화된 약리 프로파일을 확인.</li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>방법론 (How)</h2>
+<hr></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <ol>
 <li><strong>데이터 통합</strong>: GDSC(Genomics of Drug Sensitivity in Cancer) 데이터베이스의 세포주 약물 반응 데이터와 TCGA(The Cancer Genome Atlas)의 환자 유전자 발현 프로파일(GEP)을 통합.</li>
 <li><strong>모델 구조</strong>:</li>
@@ -98,18 +83,18 @@ a { color: #A62018; }
 <li><strong>Domain Separation Network(DSN)</strong>: 세포주와 환자 간 도메인 차이를 극복하기 위해, 공유/개인 인코더를 사용하고 MMD(Maximum Mean Discrepancy) 및 적대적 손실로 도메인 분포 차이를 최소화.</li>
 <li><strong>Tumor-type Adaptive Pretraining</strong>: 범암종 이질성을 고려하여, 특정 종양 유형의 환자 GEP만으로 사전훈련하는 전략 적용.</li>
 <li><strong>Zero-shot Transfer</strong>: 세포주 데이터로 미세조정한 모델을 환자 데이터에 직접 적용 (zero-shot testing).</li>
-<li><strong>모델 앙상블(Model Zoo)</strong>: 8개 변형 모델을 포함하는 모델 동물원을 구축하여, 모델 선택 기반 최적 예측 수행.</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<p>6. <strong>모델 앙상블(Model Zoo)</strong>: 8개 변형 모델을 포함하는 모델 동물원을 구축하여, 모델 선택 기반 최적 예측 수행.</p>
+<hr></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
-<li><strong>후기 단계 CRE</strong>: 기존 연구가 초기 단계(타겟/세포주)에 집중한 반면, DeepCRE는 환자 수준과 적응증 수준이라는 약물 R&amp;D 후기 단계의 CRE를 최초로 체계적으로 다룸.</li>
+<li><strong>후기 단계 CRE</strong>: 기존 연구가 초기 단계(타겟/세포주)에 집중한 반면, DeepCRE는 환자 수준과 적응증 수준이라는 약물 R&D 후기 단계의 CRE를 최초로 체계적으로 다룸.</li>
 <li><strong>도메인 적응 전략</strong>: 세포주→환자 간 전이학습에서 domain separation과 적대적 학습을 결합하여, 레이블이 없는 환자 데이터에 대한 zero-shot 예측을 가능하게 함.</li>
 <li><strong>종양 유형별 적응적 사전훈련</strong>: 범암종 데이터 대신 종양 특이적 데이터로 사전훈련하여 이질성 문제를 완화.</li>
 <li><strong>Wet-lab 검증 포함</strong>: 오가노이드 실험을 통해 AI 예측을 실험적으로 검증한 점이 순수 계산 연구를 넘어서는 차별점.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<hr></div>
+<div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
 <ul>
 <li><strong>이진 분류 한정</strong>: 약물 반응을 중앙값 기준으로 이진화(반응/비반응)하므로, 연속적인 반응 정도의 세밀한 예측이 불가능.</li>
 <li><strong>단일 약물 치료만 고려</strong>: 병용요법(combination therapy)은 분석 대상에서 제외되어, 실제 임상 환경의 복잡성을 완전히 반영하지 못함.</li>
@@ -117,9 +102,18 @@ a { color: #A62018; }
 <li><strong>오가노이드 실험의 규모</strong>: 8개 오가노이드에서의 검증은 임상적 일반화에 한계가 있으며, 더 대규모의 전임상/임상 검증이 필요.</li>
 <li><strong>분자 표현의 제한</strong>: GNN 기반 SMILES 임베딩만 사용하며, 3D 구조나 약동학적 특성 등의 추가 약물 정보가 반영되지 않음.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>평가 (Evaluation)</h2>
-<p>DeepCRE는 약물 R&amp;D의 근본적인 병목인 "후기 단계 교차 약물 반응 평가"라는 명확한 문제를 설정하고, 세포주에서 환자로의 전이학습이라는 현실적인 접근으로 이를 해결하였다. 환자 수준 17.7% 성능 향상과 적응증 수준 5배 향상이라는 정량적 성과가 인상적이며, 특히 오가노이드 실험을 통한 wet-lab 검증이 AI 기반 약물 발굴 연구의 신뢰성을 크게 높인다. 다만, 이진 분류 한정, 단일 약물만 고려, 제한된 실험 규모 등은 실용화까지의 과제로 남는다. Domain separation과 tumor-type adaptive pretraining이라는 기법 자체는 기존 전이학습의 응용이지만, 이를 약물 R&amp;D 파이프라인에 맞게 체계적으로 조합한 점에서 실용적 가치가 높다.</p></div>
+<hr></div>
+<div class="section-box"><h2>평가 (Evaluation)</h2>
+<p>DeepCRE는 약물 R&D의 근본적인 병목인 "후기 단계 교차 약물 반응 평가"라는 명확한 문제를 설정하고, 세포주에서 환자로의 전이학습이라는 현실적인 접근으로 이를 해결하였다. 환자 수준 17.7% 성능 향상과 적응증 수준 5배 향상이라는 정량적 성과가 인상적이며, 특히 오가노이드 실험을 통한 wet-lab 검증이 AI 기반 약물 발굴 연구의 신뢰성을 크게 높인다. 다만, 이진 분류 한정, 단일 약물만 고려, 제한된 실험 규모 등은 실용화까지의 과제로 남는다. Domain separation과 tumor-type adaptive pretraining이라는 기법 자체는 기존 전이학습의 응용이지만, 이를 약물 R&D 파이프라인에 맞게 체계적으로 조합한 점에서 실용적 가치가 높다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>4</td></tr>
+<tr><td>Overall</td><td>3.7</td></tr>
+</table>
+<p><strong>총평</strong>: 교차 약물 반응 예측에 AI를 적용하고 실제 습식 실험으로 검증한 실용적 연구로, 기존 단일 약물 모델의 한계를 넘어 신약 R&D 가속화 가능성을 제시한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

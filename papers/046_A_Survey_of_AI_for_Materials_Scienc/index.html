@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, a</title>
+<title>A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,25 +42,18 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</h1>
-<ul>
-<li><strong>저자</strong>: Minh-Hao Van, Prateek Verma, Chen Zhao, Xintao Wu</li>
-<li><strong>출처</strong>: arXiv:2506.20743 (2025-06-25)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2506.20743" target="_blank">10.48550/arXiv.2506.20743</a></li>
-<li><strong>PDF</strong>: C:\Users\jehyu\GoogleDrive\Zotero\Van et al._2025_A Survey of AI for Materials Science Foundation Models, LLM Agents, Datasets, and Tools.pdf</li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
+<hr>
 <div class="section-box"><h2>한줄 요약 (Essence)</h2>
 <p>재료과학 분야에서 파운데이션 모델(FM), LLM 에이전트, 데이터셋, 도구의 현황을 포괄적으로 정리한 서베이 논문으로, 6가지 핵심 응용 영역에 걸친 태스크 기반 분류 체계를 제시한다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<hr></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <p>재료과학은 원자 수준 시뮬레이션부터 거시적 물성 예측까지 다양한 데이터 유형과 스케일을 아우르는 분야다. 기존 머신러닝 모델은 특정 태스크에 국한된 좁은 범위의 모델로, 태스크별 엔지니어링이 필요했다. 파운데이션 모델은 도메인 간 일반화(cross-domain generalization)와 창발적 능력(emergent capabilities)을 제공하여 이러한 한계를 극복할 잠재력이 있다. 그러나 이 분야의 급속한 발전에도 불구하고, FM의 재료과학 적용을 체계적으로 정리한 종합 서베이가 부재했다.</p>
-<hr />
-</div><div class="section-box"><h2>핵심 성과 (Achievement)</h2>
+<hr></div>
+<div class="section-box"><h2>핵심 성과 (Achievement)</h2>
 <ol>
 <li><strong>태스크 기반 분류 체계(task-driven taxonomy)</strong> 제시: 재료과학 FM 응용을 6가지 영역으로 구분</li>
-<li>데이터 추출, 해석 및 Q&amp;A</li>
+<li>데이터 추출, 해석 및 Q&A</li>
 <li>원자 수준 시뮬레이션(atomistic simulation)</li>
 <li>물성 예측(property prediction)</li>
 <li>재료 구조, 설계 및 발견</li>
@@ -82,8 +63,8 @@ a { color: #A62018; }
 <li><strong>표준화된 데이터셋, 오픈소스 도구, 자율 실험 플랫폼</strong>의 생태계를 체계적으로 정리</li>
 <li>FM의 초기 성공 사례와 함께 일반화 가능성, 해석 가능성, 데이터 불균형, 안전성, 멀티모달 융합의 <strong>지속적 한계</strong>를 식별</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>방법론 (How)</h2>
+<hr></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <p>본 서베이는 체계적 문헌 조사(systematic literature review) 방식을 채택한다.</p>
 <ul>
 <li><strong>분류 체계</strong>: 연구 목표(task)를 중심으로 6개 대분류를 설정하고, 각 분류 아래 관련 FM/LLM 접근법을 매핑</li>
@@ -92,15 +73,15 @@ a { color: #A62018; }
 <li><strong>인프라 리뷰</strong>: 학습용 데이터셋(Materials Project, OQMD, NOMAD 등), 오픈소스 도구(ASE, LAMMPS, DeePMD 등), 자율 실험 플랫폼의 현황을 정리</li>
 <li><strong>미래 방향</strong>: 확장 가능한 사전학습(scalable pretraining), 지속 학습(continual learning), 데이터 거버넌스, 신뢰성(trustworthiness) 중심의 연구 방향을 제안</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+<hr></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li><strong>포괄적 범위</strong>: 기존 서베이가 특정 하위 영역(예: 물성 예측, 분자 설계)에 집중한 반면, 본 논문은 FM, LLM 에이전트, 데이터셋, 도구를 모두 아우르는 최초의 종합 서베이를 지향</li>
 <li><strong>태스크 중심 분류</strong>: 모델 아키텍처가 아닌 재료과학 연구의 실제 태스크를 기준으로 분류하여, 연구자가 자신의 문제에 적합한 접근법을 찾기 용이하게 설계</li>
 <li><strong>에이전트 시스템 포함</strong>: 단순 예측 모델을 넘어 LLM 에이전트의 자율적 연구 수행 능력을 별도로 다룬 점이 시의적절</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+<hr></div>
+<div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
 <ol>
 <li><strong>서베이의 구조적 한계</strong>: 급변하는 분야에서 서베이는 출판 시점에 이미 최신성을 잃을 수 있음. 특히 2025년 하반기 이후 급증한 멀티모달 FM과 에이전트 연구를 반영하기 어려움</li>
 <li><strong>정량적 비교 부재</strong>: 각 접근법의 성능을 동일 벤치마크에서 정량적으로 비교하지 않고, 주로 정성적 논의에 그침</li>
@@ -108,9 +89,18 @@ a { color: #A62018; }
 <li><strong>실험적 검증 부재</strong>: 서베이 논문 특성상 자체 실험이나 벤치마킹이 없어, 저자들의 주장이 문헌에 의존</li>
 <li><strong>멀티모달 융합의 구체적 해결책 부족</strong>: 한계로 멀티모달 융합을 지목하면서도, 구체적인 기술적 해결 방향 제시가 미흡</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>종합 평가 (Evaluation)</h2>
+<hr></div>
+<div class="section-box"><h2>종합 평가 (Evaluation)</h2>
 <p>재료과학에서 AI/FM의 현재 지형을 빠르게 파악하기에 유용한 참고 자료다. 6가지 태스크 기반 분류 체계는 연구자가 자신의 문제에 맞는 접근법을 탐색하는 데 실질적 가이드를 제공한다. 다만 서베이의 본질적 한계로 정량적 비교나 자체 실험적 검증이 없으며, 급변하는 분야 특성상 최신성 유지가 도전 과제다. LLM 에이전트와 자율 실험 플랫폼까지 포함한 넓은 스코프는 강점이자 약점으로, 각 영역의 깊이 있는 분석이 필요한 독자에게는 보완 문헌이 필요하다. 재료과학 AI 연구를 시작하는 연구자에게 좋은 출발점이 될 수 있다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>2</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>2.7</td></tr>
+</table>
+<p><strong>총평</strong>: 재료과학 AI의 전반적 지형도를 제공하는 서베이로 입문자에게 유용하나 기존 서베이 대비 차별화된 통찰이 부족하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,30 +42,24 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>What ChatGPT and Generative AI Mean for Science</h1>
-<ul>
-<li><strong>저자</strong>: Chris Stokel-Walker, Richard Van Noorden</li>
-<li><strong>출처</strong>: Nature, 2023, 614, 214-216 (News Feature)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.1038/d41586-023-00340-6"><a href="https://doi.org/10.1038/d41586-023-00340-6" target="_blank">10.1038/d41586-023-00340-6</a></a></li>
-<li><strong>발행일</strong>: 2023-02-09</li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (핵심)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (핵심)</h2>
 <p>ChatGPT를 비롯한 생성형 AI 도구가 과학과 사회를 어떻게 변화시킬 수 있는지를 다각도로 탐구하는 Nature의 뉴스 피처 기사이다. 다수의 연구자, 기술 전문가, 윤리학자, 법학자의 인터뷰를 통해 LLM의 과학 연구 활용 가능성과 위험성 -- 허위 정보 생성, 편향 전파, 저작권 문제, 탐지 기술 등 -- 을 포괄적으로 조망하며, "변혁적 기술이라 믿는다면 동시에 불안해해야 한다"는 연구자들의 양가적 반응을 생생하게 전달한다.</p>
-<hr />
-</div><div class="section-box"><h2>Motivation (동기)</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
 <ul>
 <li>ChatGPT가 2022년 11월 출시 후 폭발적 인기를 얻으면서, 과학 커뮤니티에서 기대와 우려가 동시에 분출되고 있다.</li>
 <li>실제 연구자들이 이미 LLM을 논문 편집, 코드 작성, 아이디어 브레인스토밍 등에 일상적으로 활용하기 시작했다.</li>
 <li>Microsoft의 OpenAI 100억 달러 투자, 구독 서비스 출시 등으로 LLM의 범용 소프트웨어 통합이 기정사실화되었다.</li>
 <li>Meta의 Galactica가 부정확성과 인종차별 문제로 공개 데모를 철수한 사례 등, 학술용 AI의 위험성이 이미 현실화되었다.</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <p>이 기사는 생성형 AI와 과학의 교차점에 대한 가장 포괄적인 초기 보도 중 하나로, 다음의 핵심 주제를 다룬다:</p>
 <h3>1. 실제 활용 사례</h3>
 <ul>
-<li><strong>Casey Greene &amp; Milton Pividori</strong>: GPT-3로 연구 논문 3편 편집. 문서당 5분, 비용 $0.50 미만. 수식 참조 오류까지 발견. 최종 원고의 가독성 향상</li>
+<li><strong>Casey Greene & Milton Pividori</strong>: GPT-3로 연구 논문 3편 편집. 문서당 5분, 비용 $0.50 미만. 수식 참조 오류까지 발견. 최종 원고의 가독성 향상</li>
 <li><strong>Hafsteinn Einarsson</strong>: 프레젠테이션, 시험, 과제 문제 작성, 학생 논문의 논문 전환에 매일 LLM 활용</li>
 <li><strong>Tom Tumiel</strong>: 코드 작성 보조로 매일 활용 ("Stack Overflow보다 나은 도구")</li>
 <li><strong>Kareem Carr</strong>: 20개 제안 중 19개는 의미 없었지만, 1개의 통계 용어가 새로운 문헌 영역으로 안내</li>
@@ -108,11 +90,11 @@ a { color: #A62018; }
 <li>OpenAI/Microsoft/GitHub에 대한 Copilot 소프트웨어 저작권 소송</li>
 <li>현행 저작권법은 직접 복사만 다루며, AI가 학습 데이터를 기반으로 생성한 "스타일 모방"은 법적 회색 지대</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>How (방법론)</h2>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <p>Nature의 뉴스 피처(News Feature) 형식으로, 다수의 분야 전문가(컴퓨터 과학자, 생물학자, 신경과학자, 법학자, 윤리학자, 기업 관계자) 인터뷰를 기반으로 한 심층 저널리즘이다. 실제 사례와 전문가 의견을 교차 배치하여 균형 잡힌 시각을 제시한다.</p>
-<hr />
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+<hr></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ol>
 <li><strong>"약속과 위험"의 균형 잡힌 종합</strong>: 단순한 찬반 구도를 넘어, 실제 사용자의 경험과 전문가의 우려를 교차 제시하여 입체적 조망을 제공한다.</li>
 <li><strong>Galactica 사태의 맥락화</strong>: Meta의 Galactica 데모 철수 사건을 과학 AI의 안전성 문제라는 더 넓은 맥락에서 분석한다.</li>
@@ -120,8 +102,8 @@ a { color: #A62018; }
 <li><strong>AI 탐지 기술의 기술적 설명</strong>: GPTZero의 "당혹도"와 "폭발성" 분석, OpenAI의 워터마킹 등 탐지 기술의 작동 원리를 비전문가도 이해할 수 있게 설명한다.</li>
 <li><strong>"학술적 거부" 관점 포함</strong>: Iris van Rooij 등 AI 도구 사용 자체를 거부해야 한다는 급진적 입장도 소개하여 논의의 스펙트럼을 넓힌다.</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <h3>한계</h3>
 <ul>
 <li><strong>저널리즘적 한계</strong>: 체계적 분석이나 실증 연구가 아닌 뉴스 피처 형식으로, 깊이보다 넓이에 치중한다.</li>
@@ -138,11 +120,20 @@ a { color: #A62018; }
 <li>학술 출판에서 AI 사용 공개 정책의 준수율과 실효성 추적</li>
 <li>AI 생성 콘텐츠의 저작권·지적재산권에 대한 법적 프레임워크 정립</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation (총평)</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation (총평)</h2>
 <p>이 기사는 ChatGPT 출시 직후의 과학 커뮤니티 반응을 가장 포괄적이고 균형 있게 포착한 저널리즘의 좋은 사례이다. Casey Greene의 실제 논문 편집 실험부터 Galactica 데모 철수, Stack Overflow 금지, Turnitin의 AI 탐지 개발, 저임금 콘텐츠 중재자의 트라우마까지 -- 생성형 AI가 과학에 미치는 영향의 전 스펙트럼을 4페이지 안에 담아낸 밀도 높은 보도이다.</p>
 <p>특히 "이 기술이 변혁적이라 믿는다면 동시에 불안해야 한다"는 Casey Greene의 발언은 당시 연구자들의 양가적 감정을 정확히 포착한다. 또한 AI의 편향 문제를 기술적 차원을 넘어 "LLM을 만드는 기업들이 대부분 특정 문화권에 속해 있다"는 구조적 차원으로 확장한 Shobita Parthasarathy의 관점은 이후 AI 윤리 논의의 핵심 쟁점이 되었다.</p>
 <p>2023년 초라는 시점적 제약에도 불구하고, 이 기사가 제기한 핵심 쟁점들 -- 사실성 vs 유창성, AI 탐지의 한계, 저작권 회색 지대, 노동 윤리 -- 은 2026년 현재에도 여전히 해결되지 않은 채 진행 중인 논의이며, 그 의미에서 이 기사는 역사적 기록으로서도 가치를 갖는다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>2</td></tr>
+<tr><td>Technical Soundness</td><td>2</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>2.3</td></tr>
+</table>
+<p><strong>총평</strong>: 생성형 AI가 과학에 미치는 의미를 다룬 2023년 초 Nature News Feature로, 다양한 전문가 시각을 균형 있게 소개하며 초기 담론 형성에 기여했으나 학술적 분석은 없다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

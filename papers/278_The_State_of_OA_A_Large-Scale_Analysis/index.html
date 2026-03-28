@@ -13,29 +13,25 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1A5CA8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-.essence-box { border: 2px solid #1A5CA8; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F5F8FE; }
-.essence-box h2 { color: #1A5CA8; margin: 0 0 0.5rem; border: none; padding: 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A5CA8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
@@ -46,51 +42,42 @@ a { color: #1A5CA8; }
 </head>
 <body>
 <h1>The State of OA: A Large-Scale Analysis of the Prevalence and Impact of Open Access Articles</h1>
-<blockquote>
-<p><strong>저자</strong>: Heather Piwowar, Jason Priem, Vincent Larivière, Juan Pablo Alperin, Lisa Matthias, Bree Norlander, Ashley Farley, Jevin West, Stefanie Haustein | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: PeerJ | <strong>DOI</strong>: <a href="https://doi.org/10.7717/peerj.4375" target="_blank">10.7717/peerj.4375</a> | <strong>arXiv</strong>: N/A</p>
-<p><strong>리뷰 모드</strong>: Web-only</p>
-</blockquote>
-<hr />
-
-<div class="section-box essence-box"><h2>Essence</h2>
-<p>오픈 액세스(OA) 논문은 전체 논문의 약 28%(2015년 기준)를 차지하며, OA 논문은 비OA 논문보다 더 많이 인용된다. Piwowar et al.(2018)은 Unpaywall, Crossref, Web of Science 등 여러 소스를 결합하여 OA 현황을 분석했다. OA 방식에 따라 골드(출판사 OA), 그린(기관 저장소), 하이브리드 등이 있으며, 그린 OA 논문이 인용 이득이 가장 크다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Heather Piwowar, Jason Priem, Vincent Larivière, Juan Pablo Alperin, Lisa Matthias, Bree Norlander, Ashley Farley, Jevin West, Stefanie Haustein | <strong>날짜</strong>: 2018 | <strong>Journal</strong>: PeerJ | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.7717/peerj.4375"" target="_blank">10.7717/peerj.4375"</a> target="_blank"><a href="https://doi.org/10.7717/peerj.4375" target="_blank">10.7717/peerj.4375</a></a> | <strong>arXiv</strong>: N/A</p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>오픈 액세스(OA) 논문은 전체 논문의 약 28%(2015년 기준)를 차지하며, OA 논문은 비OA 논문보다 더 많이 인용된다. Piwowar et al.(2018)은 Unpaywall, Crossref, Web of Science 등 여러 소스를 결합하여 OA 현황을 분석했다. OA 방식에 따라 골드(출판사 OA), 그린(기관 저장소), 하이브리드 등이 있으며, 그린 OA 논문이 인용 이득이 가장 크다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action] "We present a large-scale analysis of the prevalence and impact of open access articles using a novel combination of data sources."</li>
 <li>[finding] "OA articles receive 18% more citations on average than non-OA articles."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: Unpaywall(OA 여부), Crossref(메타데이터), Web of Science(인용), Scopus</li>
 <li><strong>표본</strong>: 약 730만 편 논문(2009–2015)</li>
 <li><strong>분류</strong>: Gold OA, Green OA, Hybrid, Bronze(비허가 무료), Closed로 5분류</li>
 <li><strong>분석</strong>: OA 여부별 피인용도 비교(분야·연도 통제), OA 증가 추세 분석</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>OA 정책 효과를 실증적으로 검증하는 최초의 대규모 분석</li>
 <li>연구비 지원 기관, 출판사, 대학의 OA 정책 설계에 증거 제공</li>
 <li>지식 민주화와 연구 영향력의 관계 이해</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>OA 여부 탐지의 정확도 한계(Unpaywall 커버리지 불완전)</li>
 <li>인용 이득의 인과성 미확립—OA를 선택한 논문이 원래 더 좋은 논문일 수 있음(selection bias)</li>
 <li>분야별 OA 관행 차이가 통제되지 않을 수 있음</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>OA 의무화 정책(Plan S 등) 도입 후 OA 비율 및 인용 이득 변화 추적</li>
 <li>개도국 연구자에 대한 OA 접근성 향상 효과 분석</li>
 <li>프리프린트 서버(arXiv, bioRxiv) 경유 그린 OA의 영향 비교</li>
-</ul>
-</div>
-<div class="section-box"><h2>평가</h2><div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
 <tr><th>항목</th><th>점수</th></tr>
 <tr><td>Novelty</td><td>3/5</td></tr>

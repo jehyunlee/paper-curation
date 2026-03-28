@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,51 +42,50 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>The Scholarly Knowledge Ecosystem: Challenges and Opportunities for the Field of Information</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
-<blockquote><p><strong>저자</strong>: Micah Altman, Philip N. Cohen | <strong>날짜</strong>: 2022-01-31 | <strong>Journal</strong>: Frontiers in Research Metrics and Analytics | <strong>DOI</strong>: <a href="https://doi.org/10.3389/frma.2021.751553" target="_blank">10.3389/frma.2021.751553</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Abstract only (PDF 없음)</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>학술 지식 생태계를 이해·개선·거버넌스하는 데 있어 가장 중요한 연구 과제는 무엇인가? 여러 분야의 주요 보고서들을 계량 텍스트 분석으로 분석한 결과, 세 가지 광범위한 주제가 부상했다: (1) <strong>다부문 협력과 조율의 필요성</strong>, (2) <strong>복수 수준에서의 혼합 방법론 분석</strong>, (3) <strong>학제 간 협력</strong>. 또한 이 분야의 과학 연구는 <strong>핵심 인간적 가치</strong>의 집합에 의해 안내받아야 한다는 신흥 합의가 나타났다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Micah Altman, Philip N. Cohen | <strong>날짜</strong>: 2022-01-31 | <strong>Journal</strong>: Frontiers in Research Metrics and Analytics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.3389/frma.2021.751553"" target="_blank">10.3389/frma.2021.751553"</a> target="_blank"><a href="https://doi.org/10.3389/frma.2021.751553" target="_blank">10.3389/frma.2021.751553</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>학술 지식 생태계를 이해·개선·거버넌스하는 데 있어 가장 중요한 연구 과제는 무엇인가? 여러 분야의 주요 보고서들을 계량 텍스트 분석으로 분석한 결과, 세 가지 광범위한 주제가 부상했다: (1) <strong>다부문 협력과 조율의 필요성</strong>, (2) <strong>복수 수준에서의 혼합 방법론 분석</strong>, (3) <strong>학제 간 협력</strong>. 또한 이 분야의 과학 연구는 <strong>핵심 인간적 가치</strong>의 집합에 의해 안내받아야 한다는 신흥 합의가 나타났다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action, novelty] "We extract the critical research questions, summarize these using quantitative text analysis, and use this quantitative analysis to inform a qualitative synthesis."</li>
 <li>[finding] "Three broad themes emerge from this analysis: the need for multi-sectoral cooperation and coordination, for mixed methods analysis at multiple levels, and interdisciplinary collaboration."</li>
 <li>[conclusion] "Scientific research in this area should by a set of core human values."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: 다분야에서 광범위하게 구성되고 최근 발표된 집단적 보고서들을 선별</li>
 <li><strong>분석</strong>: 계량 텍스트 분석(quantitative text analysis)으로 핵심 연구 질문 추출</li>
 <li><strong>통합</strong>: 정량 분석 결과로 질적 종합을 안내하는 혼합 방법론 접근</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>학술 지식 생태계는 오픈 사이언스, AI 활용, 재현성 위기, 출판 독과점 등 다중 도전에 직면해 있으며, 체계적인 연구 의제 설정이 필요</li>
 <li>정보 분야(information studies)가 이 복잡한 생태계 연구에서 핵심 역할을 할 수 있는 기회를 명확히 제시</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>"중요한" 보고서 선택 기준의 주관성이 결과에 영향을 줄 수 있음</li>
 <li>2022년 발표 이후 AI의 급격한 성장으로 인해 현재 과제 맵과 차이가 있을 수 있음</li>
 <li>리뷰 논문의 한계: 새로운 실증 데이터를 생성하지 않음</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>제안된 세 가지 주제에 대한 구체적인 연구 프로그램 개발</li>
 <li>학술 지식 생태계의 핵심 인간적 가치를 조작화할 수 있는 측정 지표 개발</li>
 <li>AI 기반 연구 도구가 학술 생태계에 미치는 영향의 후속 분석</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>2/5</td></tr><tr><td>Technical Soundness</td><td>3/5</td></tr><tr><td>Significance</td><td>3/5</td></tr><tr><td>Clarity</td><td>4/5</td></tr><tr><td>Overall</td><td>3/5</td></tr></table>
-<p><strong>총평</strong>: 학술 지식 생태계 연구의 과제를 체계적으로 정리한 리뷰 논문으로, 연구 의제 설정에 유용하나 새로운 실증적 발견보다는 기존 보고서들의 종합에 그치는 한계가 있다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>2/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
+<p><strong>총평</strong>: 학술 지식 생태계 연구의 과제를 체계적으로 정리한 리뷰 논문으로, 연구 의제 설정에 유용하나 새로운 실증적 발견보다는 기존 보고서들의 종합에 그치는 한계가 있다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,6 +42,8 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>EAA: Automating Materials Characterization with Vision Language Model Agents</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: Ming Du, Yanqi Luo, Srutarshi Banerjee, Michael Wojcik, Jelena Popovic, Mathew J. Cherukara</li>
@@ -62,16 +52,12 @@ a { color: #A62018; }
 <li><strong>날짜</strong>: 2026-02-17</li>
 <li><strong>키워드</strong>: agentic system, vision language model, autonomous experimentation, synchrotron beamline, MCP</li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>한줄 요약 (Essence)</h2>
-<p>Vision Language Model(VLM) 기반 에이전트 시스템 EAA를 개발하여, 싱크로트론 빔라인에서의 현미경 조작(초점 조정, 특징 탐색, 대화형 데이터 수집)을 자동화한 연구.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
-<p>싱크로트론 빔라인 운영은 광학 튜닝, 관심 영역 탐색 등 반복적이고 시간 소모적인 작업을 필요로 하며, 고정된 규칙 기반 자동화로는 맥락적/의미적 이미지 해석이 필요한 과제를 처리하기 어렵다. 또한 초보 사용자에게는 복잡한 장비 제어 시스템이 큰 진입 장벽이 된다. VLM의 이미지 이해 능력과 도구 사용 능력을 활용하면 이러한 문제를 해결할 수 있다.</p>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+<hr></div>
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>Vision Language Model(VLM) 기반 에이전트 시스템 EAA를 개발하여, 싱크로트론 빔라인에서의 현미경 조작(초점 조정, 특징 탐색, 대화형 데이터 수집)을 자동화한 연구.</p></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<p>싱크로트론 빔라인 운영은 광학 튜닝, 관심 영역 탐색 등 반복적이고 시간 소모적인 작업을 필요로 하며, 고정된 규칙 기반 자동화로는 맥락적/의미적 이미지 해석이 필요한 과제를 처리하기 어렵다. 또한 초보 사용자에게는 복잡한 장비 제어 시스템이 큰 진입 장벽이 된다. VLM의 이미지 이해 능력과 도구 사용 능력을 활용하면 이러한 문제를 해결할 수 있다.</p></div>
+<div class="section-box"><h2>주요 성과 (Achievement)</h2>
 <ul>
 <li><strong>EAA (Experiment Automation Agents)</strong> 시스템을 설계하고 Advanced Photon Source 빔라인 2-ID-D에서 실증</li>
 <li>세 가지 사례 연구를 성공적으로 수행:</li>
@@ -79,9 +65,8 @@ a { color: #A62018; }
 <li><strong>자연어 기반 특징 탐색</strong>: "Siemens star" 설명만으로 8단계 만에 해당 구조를 자동 탐색</li>
 <li><strong>대화형 데이터 수집</strong>: 사용자가 스크린샷을 붙여넣으면 에이전트가 좌표를 파악하여 정밀 스캔 수행</li>
 <li>GPT-4o, GPT-5, Gemini 2.5 Pro, Gemini 3 Pro Preview 등 여러 VLM에 대한 벤치마크 수행</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>방법론 (How)</h2>
+</ul></div>
+<div class="section-box"><h2>방법론 (How)</h2>
 <ul>
 <li><strong>Task Manager 아키텍처</strong>: 세 가지 수준의 LLM 관여도를 지원</li>
 <li>Logic-driven: Python 코드가 프로세스를 주도하고 LLM은 서브루틴으로만 호출</li>
@@ -91,23 +76,32 @@ a { color: #A62018; }
 <li><strong>이미지 반환 도구 지원</strong>: 도구가 이미지를 반환하면 base64 인코딩하여 VLM 컨텍스트에 주입</li>
 <li><strong>장기 기억</strong>: RAG 기반 벡터 데이터베이스로 세션 간 지식 축적</li>
 <li><strong>안전 가드레일</strong>: 모터 범위 하드 체크, 인간 승인 옵션, 컨테이너 격리 실행</li>
-</ul>
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+</ul></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li>VLM의 <strong>비전 능력을 실험 장비 제어에 직접 통합</strong>한 점이 핵심 차별점. 기존 CALMS(텍스트 기반)나 VISION(코딩 서브에이전트)과 달리, 이미지를 도구 출력으로 직접 받아 에이전트의 추론 루프에 포함시킴</li>
 <li><strong>Logic-driven부터 Agent-driven까지 유연한 워크플로우 스펙트럼</strong>을 단일 시스템에서 지원하여, hallucination 위험이 높은 작업에는 로직 기반 제어를, 탐색적 작업에는 에이전트 자율성을 부여</li>
 <li>MCP 양방향 호환으로 Claude Code, Gemini CLI 등 외부 클라이언트와 도구 생태계를 공유</li>
-</ul>
-</div><div class="section-box"><h2>한계점 (Limitation)</h2>
+</ul></div>
+<div class="section-box"><h2>한계점 (Limitation)</h2>
 <ul>
 <li><strong>정량적 비전 분석 능력 부족</strong>: 특징 탐색에서 Siemens star 중심을 정확히 FOV 중앙에 맞추지 못함 (인간은 축 눈금을 읽어 한 번에 가능)</li>
 <li><strong>VLM 벤치마크가 매우 단순</strong>: 4개 이미지 그리드 촬영, 마커 좌표 읽기 두 가지만 테스트하여 실제 복잡한 실험 시나리오의 성능 평가가 부족</li>
 <li><strong>GPT-5 단일 모델에만 실험 의존</strong>: 실제 사례 연구는 모두 GPT-5로만 수행되어 모델 일반성 검증이 약함</li>
 <li><strong>정량적 성능 지표 부재</strong>: 초점 조정의 수렴 속도, 특징 탐색의 효율성 등을 인간 기준선과 비교하지 않음</li>
 <li><strong>재현성 제한</strong>: 특정 빔라인(2-ID-D)의 특정 장비에 맞춤된 도구 세트로, 다른 시설 적용 시 상당한 맞춤화 필요</li>
-</ul>
-</div><div class="section-box"><h2>총평 (Evaluation)</h2>
+</ul></div>
+<div class="section-box"><h2>총평 (Evaluation)</h2>
 <p>싱크로트론 빔라인이라는 고도로 전문화된 영역에서 VLM 에이전트의 실용적 가치를 잘 보여주는 시스템 논문이다. Logic/Hybrid/Agent-driven의 세 단계 워크플로우 설계는 LLM의 hallucination 문제와 자율성 사이의 균형을 맞추는 현실적인 접근이며, MCP 양방향 호환은 도구 생태계 확장성 측면에서 의미 있다. 다만 정량적 평가가 부족하고, 실제 빔라인 효율성 향상에 대한 체계적 측정(시간 절감, 오류율 감소 등)이 없어 학술적 기여도에는 한계가 있다. 엔지니어링 완성도와 실증 경험은 우수하나, 과학적 novelty보다는 시스템 구현 및 데모에 무게가 실린 논문이다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: VLM 에이전트 기반 싱크로트론 빔라인 자동화 시스템으로 실용적 가치는 있으나 정량적 평가가 부족한 시스템 데모 논문이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

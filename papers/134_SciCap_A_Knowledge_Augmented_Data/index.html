@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Fig</title>
+<title>SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Figure Captioning</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,31 +42,28 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Figure Captioning</h1>
-<blockquote>
-<p><strong>저자</strong>: Zhishen Yang, Raj Dabre, Hideki Tanaka, Naoaki Okazaki | <strong>날짜</strong>: 2023 | <strong>학회</strong>: arXiv (AAAI format) | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2306.03491" target="_blank">10.48550/ARXIV.2306.03491</a></p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Zhishen Yang, Raj Dabre, Hideki Tanaka, Naoaki Okazaki | <strong>날짜</strong>: 2023 | <strong>학회</strong>: arXiv (AAAI format) | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2306.03491" target="_blank">10.48550/ARXIV.2306.03491</a></p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>SciCap+는 기존 SciCap 데이터셋(414K 과학 figure-caption 쌍)을 mention-paragraph(본문에서 해당 figure를 언급하는 단락)과 OCR 토큰(figure 내 텍스트 및 위치 정보)으로 확장한 knowledge-augmented 데이터셋이다. 과학 figure captioning을 단순 image-to-caption이 아닌 multimodal summarization task으로 재정의하고, M4C-Captioner를 통해 맥락 지식이 캡션 생성 품질을 대폭 향상시킴을 실증하였다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>SciCap+는 기존 SciCap 데이터셋(414K 과학 figure-caption 쌍)을 mention-paragraph(본문에서 해당 figure를 언급하는 단락)과 OCR 토큰(figure 내 텍스트 및 위치 정보)으로 확장한 knowledge-augmented 데이터셋이다. 과학 figure captioning을 단순 image-to-caption이 아닌 multimodal summarization task으로 재정의하고, M4C-Captioner를 통해 맥락 지식이 캡션 생성 품질을 대폭 향상시킴을 실증하였다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>알려진 것</strong>: SciCap(Hsu et al., 2021)이 arXiv CS 논문에서 추출한 대규모 과학 figure captioning 데이터셋을 제공하였으나, figure-to-caption 단일 매핑으로 한정</li>
 <li><strong>Gap</strong>: 과학 figure는 자연 이미지와 달리 텍스트와 데이터 포인트가 핵심 시각 객체이며, 캡션이 단순 객체 기술이 아닌 과학적 발견의 해석을 담아야 하므로 배경 지식 없이는 적절한 캡션 생성이 불가능</li>
 <li><strong>왜 중요한가</strong>: 과학 논문의 figure 캡션 자동 생성은 논문 작성 지원과 과학 커뮤니케이션 품질 향상에 직결</li>
 <li><strong>접근법</strong>: SciCap에 mention-paragraph와 OCR 토큰을 추가하여 SciCap+를 구축하고, multimodal transformer 기반 M4C-Captioner로 다양한 modality 조합의 효과를 검증</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: 394,005/10,336/10,468 (train/test/val) 규모의 SciCap+ 데이터셋, document-level 분할로 기존 SciCap의 data leakage 문제 해결</li>
 <li><strong>Mention-paragraph의 결정적 효과</strong>: Figure-only CIDEr 4.6 → Mention-only CIDEr 49.0 (약 10배 향상), 전체 feature 결합 시 CIDEr 55.8</li>
 <li><strong>Figure 이미지 불필요 발견</strong>: Mention + OCR만 사용 시 CIDEr 56.4로 전체 feature(55.8)보다 오히려 높아, figure 시각 정보가 현재 모델에서는 noise에 가까움</li>
 <li><strong>Human evaluation 실시</strong>: 인간 평가자도 figure-only 조건에서 모델과 유사한 수준의 저조한 캡션 생성 (annotator CIDEr 14.6~23.8 vs. 모델 18.7), 배경 지식의 필요성을 실증</li>
 <li><strong>적절성 평가</strong>: Ground-truth 캡션조차 평균 적절성 점수 ~2.0/4.0으로 낮아, 과학 figure captioning의 본질적 난이도를 정량적으로 확인</li>
-</ol>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>데이터 확장</strong>: Kaggle arXiv dataset에서 PDF 확보 → PDFFigures 2.0으로 본문 추출 → 정규표현식으로 figure 번호 기반 mention-paragraph 매칭 → Google Vision OCR API로 OCR 토큰(텍스트 + bounding box) 추출</li>
 <li><strong>데이터 품질 검증</strong>: 200개 figure에 대해 2명의 CS PhD 평가자가 mention-paragraph/OCR 토큰과 캡션의 관련성 1-5점 평가 (64%/79.5%가 3점 이상, Cohen's kappa 0.28)</li>
@@ -86,15 +71,15 @@ a { color: #A62018; }
 <li><strong>인코더</strong>: ResNet-152 (figure), SciBERT 3-layer (mention-paragraph), FastText + PHOC + Faster R-CNN fc6/fc7 (OCR 토큰)</li>
 <li><strong>학습</strong>: 8x V100 GPU, batch 128, Adam lr=0.001, CIDEr 기반 early stopping, max decoding 67 steps</li>
 <li><strong>평가</strong>: BLEU-4, METEOR, ROUGE-L, SPICE, CIDEr + human generation task (100 figures) + appropriateness evaluation (1-4 scale)</li>
-</ul>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>Task 재정의</strong>: 과학 figure captioning을 knowledge-augmented image captioning (multimodal summarization)으로 최초 재정의 -- figure 이미지만이 아닌 mention-paragraph와 OCR 토큰이라는 cross-modal knowledge의 필요성을 공식화</li>
 <li><strong>Mention-paragraph 활용</strong>: 본문 내 figure 언급 단락을 명시적 지식 소스로 추출하여 captioning에 활용하는 접근은 기존 figure captioning 연구에서 시도되지 않은 방법</li>
 <li><strong>Document-level 분할</strong>: 기존 SciCap의 figure-level 분할이 야기하는 정보 누출 문제를 지적하고 document-level로 재분할</li>
 <li><strong>Human vs. Machine 직접 비교</strong>: 동일 조건에서 인간 캡션 생성과 모델 캡션 생성을 정량적으로 비교하여 task 난이도를 객관적으로 측정</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>모델 생성 캡션이 자동 메트릭에서는 양호하나 인간 적절성 평가에서는 여전히 낮은 수준 (~2/4)</li>
@@ -115,9 +100,16 @@ a { color: #A62018; }
 <li>과학 figure 전용 vision encoder 학습</li>
 <li>다양한 학문 분야 및 figure 유형으로의 확장</li>
 <li>캡션 작성 가이드라인 수립 및 캡션 품질 개선 연구</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 3/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>3/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
 <p><strong>총평</strong>: 과학 figure captioning을 knowledge-augmented task으로 재정의하고 mention-paragraph의 결정적 기여를 실증한 것은 의미 있는 통찰이나, 단일 모델(M4C-Captioner) 실험과 CS graph plot 한정이라는 범위 제약이 아쉽다. "Figure 이미지가 noise"라는 발견은 visual encoder의 한계를 반영할 뿐 figure 시각 정보 자체의 무용성을 의미하지 않으며, 이 점에 대한 심층 분석이 필요하다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

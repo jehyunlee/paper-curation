@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquid</title>
+<title>AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,46 +42,47 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>AMDAT: An Open-Source Molecular Dynamics Analysis Toolkit for Supercooled Liquids, Glass-Forming Materials, and Complex Fluids</h1>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
 <div class="section-box"><h2>메타 정보</h2>
 <ul>
 <li><strong>저자</strong>: Pierre Kawak, William F. Drayer, David S. Simmons (University of South Florida)</li>
 <li><strong>출처</strong>: arXiv:2602.05865 [cond-mat.mtrl-sci], 2026년 2월</li>
 <li><strong>키워드</strong>: molecular dynamics, trajectory analysis, glass-forming materials, supercooled liquids, polymers, open-source toolkit</li>
 </ul>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-</div><div class="section-box"><h2>한줄 요약 (Essence)</h2>
-<p>비정질/유리질 재료 및 고분자 시스템의 분자동역학(MD) 시뮬레이션 궤적을 효율적으로 분석하기 위한 오픈소스 C++ 툴킷 AMDAT을 소개하며, 인메모리 궤적 처리와 지수적 시간 샘플링을 핵심 설계로 채택하여 장시간 동역학 분석의 효율성을 극대화한다.</p>
-</div><div class="section-box"><h2>연구 동기 (Motivation)</h2>
+<hr></div>
+<div class="section-box"><h2>한줄 요약 (Essence)</h2>
+<p>비정질/유리질 재료 및 고분자 시스템의 분자동역학(MD) 시뮬레이션 궤적을 효율적으로 분석하기 위한 오픈소스 C++ 툴킷 AMDAT을 소개하며, 인메모리 궤적 처리와 지수적 시간 샘플링을 핵심 설계로 채택하여 장시간 동역학 분석의 효율성을 극대화한다.</p></div>
+<div class="section-box"><h2>연구 동기 (Motivation)</h2>
 <ul>
 <li>MD 시뮬레이션 엔진은 LAMMPS, GROMACS 등 잘 정립된 오픈소스가 많지만, <strong>분석 소프트웨어는 상대적으로 발전이 더딤</strong></li>
 <li>기존 분석 도구들은 주로 생체분자(protein) 분석에 집중되어 있으며, 비정질 재료/과냉각 액체/고분자 분야에서 필요한 <strong>구조-동역학 상관 분석 도구가 부족</strong></li>
 <li>많은 연구 그룹이 자체 개발한 코드에 의존하여 재현성이 낮고 검증이 불충분</li>
 <li>유리 전이 근처에서 10^5~10^9 시간 단위에 걸친 장시간 동역학 분석을 효율적으로 수행할 도구 필요</li>
-</ul>
-</div><div class="section-box"><h2>주요 성과 (Achievement)</h2>
+</ul></div>
+<div class="section-box"><h2>주요 성과 (Achievement)</h2>
 <ul>
 <li><strong>AMDAT 오픈소스 출시</strong>: 15년 이상 개발/검증된 C++ 기반 분석 툴킷을 GitHub에 공개 (GNU GPLv3.0)</li>
 <li><strong>6가지 대표 시스템</strong>에서 작동 검증: binary Lennard-Jones (3D/2D), Kremer-Grest 고분자, 나노입자 충전 엘라스토머, 원자 수준 폴리스티렌 (30-mer, 100-mer)</li>
 <li>기존 50편 이상의 논문에서 활용된 <strong>검증된 분석 루틴</strong> 제공</li>
 <li>지수적 시간 샘플링으로 선형 샘플링 대비 <strong>2배 이상의 로그 시간 범위</strong> 커버 및 계산 효율 대폭 향상</li>
-</ul>
-</div><div class="section-box"><h2>핵심 방법론 (How)</h2>
+</ul></div>
+<div class="section-box"><h2>핵심 방법론 (How)</h2>
 <ol>
 <li><strong>인메모리 궤적 처리</strong>: 전체 궤적을 메모리에 로드하여 반복적 파일 I/O를 제거, 교차 프레임 계산 가속화</li>
 <li><strong>지수적 시간 블록 샘플링</strong>: 짧은 시간에서는 조밀하게, 긴 시간에서는 성기게 샘플링하여 여러 자릿수(decade)에 걸친 동역학을 단일 궤적으로 분석 가능</li>
 <li><strong>모듈식 데이터 추상화</strong>: <code>trajectory_list</code>, <code>neighbor_list</code>, <code>multibody_list</code>, <code>value_list</code> 등 조합 가능한 데이터 객체로 복잡한 분석 워크플로우 구성</li>
 <li><strong>스크립트 기반 실행</strong>: LAMMPS 유사 문법의 입력 파일로 루프/조건문/변수 지원, 재현 가능한 파이프라인 구축</li>
 <li><strong>다양한 분석 기능</strong>: RDF, 구조인자 S(q), MSD, 중간 산란 함수 F_s(q,t), Van Hove 상관 함수, 비가우시안 파라미터, 이웃 상관 함수, 회전 이완 등</li>
-</ol>
-</div><div class="section-box"><h2>독창성 (Originality)</h2>
+</ul></div>
+<div class="section-box"><h2>독창성 (Originality)</h2>
 <ul>
 <li>비정질 재료/유리 전이 연구에 <strong>특화된</strong> 최초의 종합 오픈소스 분석 툴킷</li>
 <li><strong>지수적 시간 블록 샘플링</strong>을 LAMMPS와 직접 연동하여 시뮬레이션-분석 워크플로우를 일원화</li>
 <li><code>value_list</code> 기반의 <strong>일반적 자기/교차 상관 함수</strong> 프레임워크로, 새 분석 코드 없이도 사용자 정의 상관 분석 가능</li>
 <li>공간 분해(binning), 동적 부분집합 선택, 다체(multibody) 분석을 조합하여 <strong>공간적 비균질성</strong>(dynamic heterogeneity) 연구에 최적화</li>
-</ul>
-</div><div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
+</ul></div>
+<div class="section-box"><h2>한계 및 개선점 (Limitation)</h2>
 <ul>
 <li><strong>인메모리 방식</strong>으로 궤적 파일 크기의 2~3배 메모리가 필요하여 대규모 시스템에서 메모리 제약 발생 가능</li>
 <li>일부 분석(구조인자 등)은 <strong>고정 크기 큐빅 박스에만</strong> 지원</li>
@@ -102,8 +91,8 @@ a { color: #A62018; }
 <li><strong>멀티스레드 실행 미지원</strong> (향후 계획으로만 언급)</li>
 <li>Python 인터페이스 미구현 (향후 계획)</li>
 <li>GUI 없이 순수 커맨드라인 도구로, 진입 장벽이 다소 높을 수 있음</li>
-</ul>
-</div><div class="section-box"><h2>논문 평가 (Evaluation)</h2>
+</ul></div>
+<div class="section-box"><h2>논문 평가 (Evaluation)</h2>
 <ul>
 <li><strong>완성도</strong>: 15년간 축적된 코드 기반으로 기능이 풍부하고 실전 검증이 충분함. 6가지 다양한 시스템에서의 데모가 설득력 있음.</li>
 <li><strong>기여도</strong>: 비정질 재료 MD 분석 분야에서 오랫동안 부재했던 표준 도구를 제공한다는 점에서 커뮤니티 기여가 큼.</li>
@@ -111,6 +100,15 @@ a { color: #A62018; }
 <li><strong>제한점</strong>: 성능 벤치마크(실행 시간, 메모리 사용량)에 대한 정량적 비교가 부족. 기존 도구(MDAnalysis, freud 등)와의 직접 비교가 없음.</li>
 <li><strong>영향력</strong>: 유리/고분자 시뮬레이션 커뮤니티에서 표준 분석 도구로 자리잡을 가능성이 높으나, Python 생태계와의 통합 부재가 채택에 걸림돌이 될 수 있음.</li>
 </ul></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>2</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: 15년간 축적된 MD 분석 툴킷으로 성숙한 소프트웨어 공학적 완성도를 보이나 새로운 과학적 방법론 기여는 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

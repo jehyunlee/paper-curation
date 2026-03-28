@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,21 +42,20 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>Rethinking Thematic Evolution in Science Mapping: An Integrated Framework for Longitudinal Analysis</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 4/5</span></div>
 <blockquote><p><strong>저자</strong>: Massimo Aria, Luca D'Aniello, Michelangelo Misuraca, Maria Spano | <strong>날짜</strong>: 2026-03-06 | <strong>Journal</strong>: arXiv preprint | <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.06436" target="_blank">2603.06436</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: PDF</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
 <p>종단적 science mapping에서 주제 탐지와 주제 연계가 서로 다른 논리(관계 클러스터링 vs. 어휘 중복)를 사용하는 구조적 불일치 문제를 어떻게 해결하는가? 이 논문은 <strong>구조적으로 통합된 프레임워크</strong>를 제안한다: 주제 탐지와 시계열 연계를 모두 동일한 가중치 관계 아키텍처 내에서 수행한다. 핵심 혁신은 두 가지다: (1) 그라디드 문서 소속(graded document affiliation)으로 이분법적 주제 할당을 대체하고, (2) 방향성 커버리지와 centrality 가중 구조적 관련성을 결합한 <strong>lineage-strength measure</strong>로 주제 연속성을 측정한다. 이를 통해 어휘적 지속성이 아닌 관계 구조의 재구성으로 주제 진화를 개념화한다.</p>
-<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1: 제안된 통합 프레임워크의 구조 - 공-단어 네트워크에서의 횡단면 주제 탐지와 종단 연계가 동일한 가중치 관계 패러다임 내에서 수행되는 방식</p></div>
-</div>
+<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
+<p class="fig-caption"><em>Figure 1: 제안된 통합 프레임워크의 구조 - 공-단어 네트워크에서의 횡단면 주제 탐지와 종단 연계가 동일한 가중치 관계 패러다임 내에서 수행되는 방식</em></p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty, action] "This study introduces a structurally integrated framework in which lineage reconstruction is embedded within the same weighted relational architecture that underpins cross-sectional detection."</li>
 <li>[novelty] "The approach models thematic continuity through graded document affiliation and a lineage-strength measure that combines directional coverage with centrality-weighted structural relevance."</li>
 <li>[conclusion] "By aligning thematic detection and temporal modelling within a unified relational paradigm, the framework enhances the methodological coherence and interpretive robustness of longitudinal science mapping."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>기반</strong>: Callon et al.의 전략적 다이어그램(strategic diagram)과 co-word analysis 전통에서 출발</li>
@@ -65,32 +63,34 @@ a { color: #1558A8; }
 <li><strong>Lineage-strength measure</strong>: 연속 시기 간 주제 연계 강도를 방향성 커버리지(directional coverage) × centrality 가중 구조적 관련성으로 정의</li>
 <li><strong>구현</strong>: R 패키지 bibliometrix의 개발 버전에 알고리즘 구현 (GitHub 공개)</li>
 <li><strong>검증</strong>: 시뮬레이션 또는 실제 학술 데이터셋에 적용하여 기존 어휘 중복 방식과 비교</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>기존 종단적 science mapping은 주제를 관계 클러스터링으로 탐지하면서도 시기 간 연계는 어휘 중복(keyword overlap)으로 추론하는 이중 기준을 사용해, 어휘보다 구조가 더 많이 변화하는 경우 잘못된 연계를 낳을 수 있음</li>
 <li>오늘날 학제 간 연구가 증가하면서 하나의 연구가 여러 주제에 걸쳐 있는 경우가 많아, 이분법적 주제 할당은 현실을 왜곡함</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>저자들이 언급한 한계: 프리프린트 단계로 실증적 검증이 제한적이며, 매개변수(lineage-strength threshold 등) 설정에 대한 민감도 분석이 충분히 제시되지 않음</li>
 <li>lineage-strength measure의 가중치 설계에 주관적 판단이 개입할 수 있음</li>
 <li>계산 비용이 대규모 co-word 네트워크에서 얼마나 증가하는지 불명확</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>다양한 학문 분야에 적용하여 기존 방법 대비 주제 연계 차이 실증 비교</li>
 <li>동적 커뮤니티 탐지(dynamic community detection)나 임베딩 기반 방법과의 체계적 비교</li>
 <li>bibliometrix 패키지를 통한 사용자 친화적 도구화 및 재현 가능 워크플로 배포</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>4/5</td></tr><tr><td>Technical Soundness</td><td>4/5</td></tr><tr><td>Significance</td><td>4/5</td></tr><tr><td>Clarity</td><td>3/5</td></tr><tr><td>Overall</td><td>4/5</td></tr></table>
-<p><strong>총평</strong>: 종단적 science mapping의 오래된 방법론적 불일치를 명확히 진단하고, 관계 구조 내에서의 통합 프레임워크를 제안한 이론적으로 탄탄한 연구다. bibliometrix 구현을 통한 실용적 보급이 예정되어 있어 과학 지식 지형 연구에 실질적 영향이 기대된다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>3/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
+<p><strong>총평</strong>: 종단적 science mapping의 오래된 방법론적 불일치를 명확히 진단하고, 관계 구조 내에서의 통합 프레임워크를 제안한 이론적으로 탄탄한 연구다. bibliometrix 구현을 통한 실용적 보급이 예정되어 있어 과학 지식 지형 연구에 실질적 영향이 기대된다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

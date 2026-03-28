@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Fe</title>
+<title>FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,38 +42,29 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</h1>
-<ul>
-<li><strong>저자</strong>: Ashish Singh, Prateek Agarwal, Zixuan Huang, Arpita Singh, Tong Yu, Sungchul Kim, Victor Bursztyn, Nikos Vlassis, Ryan A. Rossi</li>
-<li><strong>기관</strong>: University of Massachusetts Amherst; Adobe Research</li>
-<li><strong>발행</strong>: arXiv, 2023</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2307.10867"><a href="https://doi.org/10.48550/ARXIV.2307.10867" target="_blank">10.48550/ARXIV.2307.10867</a></a></li>
-<li><strong>PDF</strong>: <a href="https://arxiv.org/abs/2307.10867">arXiv 2307.10867</a></li>
-</ul>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
 <p>과학 논문의 <strong>그림(figure)에 대한 캡션 자동 생성</strong>을 독자 선호도에 맞춰 최적화하는 프레임워크 <strong>FigCaps-HF</strong>를 제안한다. 핵심은 두 가지로, (1) 소량의 도메인 전문가 피드백으로 학습한 <strong>인간 피드백 예측 모델</strong>(Human Feedback Prediction Model)이 대규모 데이터셋 전체의 캡션 품질을 자동으로 평가하고, (2) <strong>오프라인 Upside-Down RL(UDRL)</strong> 기반 RLHF를 통해 생성 모델을 독자 선호에 맞춰 미세조정한다. BLIP을 기반 모델로 사용할 때 ROUGE-L 16.9%, BLEU 35.7%, METEOR 9%의 성능 향상을 달성했으며, 133,543개 그림-캡션 쌍에 대한 피드백 점수를 포함하는 벤치마크 데이터셋을 공개하였다.</p>
-<hr />
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (연구 동기)</h2>
+<hr></div>
+<div class="section-box"><h2>Motivation (연구 동기)</h2>
 <ul>
 <li>과학 논문의 그림 캡션은 연구 내용 전달에 핵심적이나, 실제로는 50% 이상이 독자에게 도움이 되지 않는 저품질 캡션으로 작성됨 (arXiv cs.CL 논문 기준)</li>
 <li>기존 캡션 생성 모델은 논문에서 추출한 그림-캡션 쌍으로 학습하기 때문에, 원본 캡션의 저품질이 생성 모델에 그대로 전파됨</li>
 <li>독자의 선호도(도움됨, 핵심 메시지, 시각적 설명력, OCR 내용)를 반영한 학습 프레임워크가 부재하여, 생성된 캡션이 독자 기대와 괴리됨</li>
 </ul>
-<hr />
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (주요 성과)</h2>
+<hr></div>
+<div class="section-box"><h2>Achievement (주요 성과)</h2>
 <ol>
 <li><strong>RLHF 기반 그림 캡션 생성 프레임워크</strong>: 도메인 전문가 피드백을 활용한 최초의 과학 그림 캡션 생성 RLHF 프레임워크</li>
 <li><strong>효율적 피드백 예측 모델</strong>: 단 400개의 전문가 레이블로 106,834개 캡션의 품질 점수를 정확히 추론 (median 정합도 높음)</li>
 <li><strong>오프라인 UDRL 적용</strong>: 기존 on-policy RLHF 대비 계산 효율적이면서 동등 이상의 성능. 보상 모델이 훈련 후 불필요</li>
 <li><strong>일관된 성능 향상</strong>: BLIP-RLHF에서 ROUGE-L 15.2(+16.9%), BLEU 1.9(+35.7%), METEOR 14.5(+9%) 달성</li>
 <li><strong>다양한 ablation</strong>: 피드백 양자화 수준(binary vs multi-level), 피드백 메트릭 종류(Takeaway/Visual이 Helpfulness보다 효과적), 임베딩 모델 선택, 피드백 위치(prepend vs append) 등 체계적 분석</li>
-<li><strong>공개 벤치마크</strong>: 133,543개 그림-캡션 쌍 + 4가지 품질 메트릭 점수 데이터셋 공개</li>
 </ol>
-<hr />
-</div><div class="section-box"><h2>How (방법론)</h2>
+<p>6. <strong>공개 벤치마크</strong>: 133,543개 그림-캡션 쌍 + 4가지 품질 메트릭 점수 데이터셋 공개</p>
+<hr></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>인간 피드백 예측 모델</strong>: 400개 그림-캡션 쌍에 대해 도메인 전문가가 4가지 메트릭(Helpfulness, Takeaway, Visual-descriptiveness, OCR) 1-5점 평가 → MCSE 임베딩 + 2-layer MLP 회귀 모델 학습 → 전체 데이터셋에 점수 추론</li>
 <li><strong>Upside-Down RL (오프라인 RLHF)</strong>: 예측된 보상 점수를 이진화(good/bad) 또는 다단계 양자화하여 제어 토큰으로 변환 → 캡션 앞에 제어 토큰을 붙여 조건부 언어 모델링으로 미세조정 (수식: L_HF = cross-entropy with control token prepended)</li>
@@ -93,16 +72,16 @@ a { color: #A62018; }
 <li><strong>기반 모델</strong>: BLIP(vision-language 사전학습), ViT+GPT2 등 다양한 아키텍처에서 실험</li>
 <li><strong>평가 지표</strong>: ROUGE-L, BLEU, METEOR</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+<hr></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>오프라인 UDRL의 RLHF 적용</strong>: 기존 RLHF가 주로 on-policy PPO를 사용하는 데 반해, 오프라인 보상 조건부 행동 복제(reward-conditioned behavioral cloning)를 적용하여 훨씬 단순하고 효율적인 프레임워크 구축</li>
 <li><strong>소량 전문가 피드백의 확장</strong>: 400개 레이블만으로 10만 건 이상의 피드백을 추론하는 2단계 파이프라인은 실용적이며, 다른 도메인에도 일반화 가능</li>
 <li><strong>다차원 품질 메트릭</strong>: 단일 점수가 아닌 4가지 독립적 품질 축(Helpfulness, Takeaway, Visual, OCR)을 정의하여 세밀한 피드백 제공</li>
 <li>다만, 기법 자체(UDRL, 제어 토큰)는 기존 방법론의 직접적 적용에 가까움</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+<hr></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>다중 피드백 동시 활용 불가</strong>: 현재 프레임워크는 한 번에 하나의 피드백 메트릭만 사용 가능하며, 여러 보상 신호를 복합적으로 활용하는 메커니즘이 없음</li>
 <li><strong>보상 양자화의 제약</strong>: 연속 보상 점수를 이산 토큰으로 변환해야 하므로 정보 손실이 발생하며, 세밀한 품질 구분이 어려움</li>
@@ -111,49 +90,26 @@ a { color: #A62018; }
 <li><strong>평가의 한계</strong>: 자동 메트릭(ROUGE, BLEU, METEOR)만 사용하며, 인간 평가나 LLM 기반 평가가 부재</li>
 <li><strong>향후 방향</strong>: 다중 보상 신호 통합, 멀티모달 피드백 모델(그림+텍스트 결합 인코딩), 연속 보상 활용 방법, 다양한 도메인/데이터 분포로의 일반화 검증</li>
 </ul>
-<hr />
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+<hr></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th style="text-align: center;">점수 (1-10)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>참신성 (Novelty)</strong></td>
-<td style="text-align: center;">6</td>
-<td>오프라인 UDRL의 그림 캡션 RLHF 적용은 새롭지만, 개별 기법(UDRL, 제어 토큰)은 기존 연구의 직접 적용</td>
-</tr>
-<tr>
-<td><strong>기술적 깊이 (Technical Depth)</strong></td>
-<td style="text-align: center;">6</td>
-<td>프레임워크 설계는 명확하나, 피드백 예측 모델이 단순 MLP 회귀이고 시각 정보 활용이 제한적</td>
-</tr>
-<tr>
-<td><strong>실용성 (Practicality)</strong></td>
-<td style="text-align: center;">7</td>
-<td>소량 레이블로 대규모 피드백 추론하는 파이프라인은 실용적. 벤치마크 데이터셋 공개도 유용</td>
-</tr>
-<tr>
-<td><strong>완성도 (Completeness)</strong></td>
-<td style="text-align: center;">7</td>
-<td>다양한 ablation(양자화 수준, 피드백 종류, 임베딩 모델, 위치)을 수행했으나 인간 평가 부재</td>
-</tr>
-<tr>
-<td><strong>영향력 (Impact)</strong></td>
-<td style="text-align: center;">6</td>
-<td>과학 그림 캡션이라는 니치 영역에서 의미 있으나, 절대 성능과 일반화 측면에서 영향력 제한적</td>
-</tr>
-<tr>
-<td><strong>종합 (Overall)</strong></td>
-<td style="text-align: center;"><strong>6.5</strong></td>
-<td>소량 전문가 피드백을 효율적으로 활용하는 실용적 프레임워크와 벤치마크 기여는 의미 있으나, 기술적 깊이와 절대 성능 면에서 아쉬움</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수 (1-10)</th><th>비고</th></tr>
+<tr><td>**참신성 (Novelty)**</td><td>6</td><td>오프라인 UDRL의 그림 캡션 RLHF 적용은 새롭지만, 개별 기법(UDRL, 제어 토큰)은 기존 연구의 직접 적용</td></tr>
+<tr><td>**기술적 깊이 (Technical Depth)**</td><td>6</td><td>프레임워크 설계는 명확하나, 피드백 예측 모델이 단순 MLP 회귀이고 시각 정보 활용이 제한적</td></tr>
+<tr><td>**실용성 (Practicality)**</td><td>7</td><td>소량 레이블로 대규모 피드백 추론하는 파이프라인은 실용적. 벤치마크 데이터셋 공개도 유용</td></tr>
+<tr><td>**완성도 (Completeness)**</td><td>7</td><td>다양한 ablation(양자화 수준, 피드백 종류, 임베딩 모델, 위치)을 수행했으나 인간 평가 부재</td></tr>
+<tr><td>**영향력 (Impact)**</td><td>6</td><td>과학 그림 캡션이라는 니치 영역에서 의미 있으나, 절대 성능과 일반화 측면에서 영향력 제한적</td></tr>
+<tr><td>**종합 (Overall)**</td><td>**6.5**</td><td>소량 전문가 피드백을 효율적으로 활용하는 실용적 프레임워크와 벤치마크 기여는 의미 있으나, 기술적 깊이와 절대 성능 면에서 아쉬움</td></tr>
 </table></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: 소량 전문가 피드백으로 과학 그림 캡션 생성을 RLHF 방식으로 최적화하는 실용적 프레임워크로, 공개 벤치마크 기여도가 있으나 절대 성능은 아직 제한적이다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

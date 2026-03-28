@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Visualizing the context of citations referencing papers published by Eugene Garfield: a new type of keyword co-occurrence analysis</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\(','\)']],displayMath:[['$$','$$'],['\[','\]']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,29 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: auto; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EBF2FD; color: #1a5aad; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1a5aad; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -44,20 +42,18 @@ a { color: #1a5aad; }
 </head>
 <body>
 <h1>Visualizing the context of citations referencing papers published by Eugene Garfield: a new type of keyword co-occurrence analysis</h1>
-<blockquote>
-<p><strong>저자</strong>: Lutz Bornmann, Robin Haunschild, Sven E. Hug | <strong>날짜</strong>: 2018-02-01 | <strong>Journal</strong>: Scientometrics | <strong>DOI</strong>: <a href="https://doi.org/10.1007/s11192-017-2591-8">10.1007/s11192-017-2591-8</a>
-<strong>리뷰 모드</strong>: Abstract 기반 (PDF 없음)</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>인용 맥락(citation context) — 특정 인용 주변의 텍스트 — 을 키워드 공출현 분석에 활용하면 기존 방법과 어떻게 다른 통찰을 제공하는가? 이 논문은 Eugene Garfield(EG)의 약 1,500편 논문을 대상으로 세 가지 키워드 공출현 네트워크를 비교한다: (1) EG 논문의 제목·초록 키워드, (2) EG 논문을 인용한 논문들의 제목·초록 키워드, (3) EG 논문을 인용한 논문들의 <strong>인용 맥락</strong> 키워드. 핵심 발견은 인용 맥락 키워드가 EG 논문 자체와 의미론적으로 더 밀접하게 연결되며, 이는 인용이 피인용 논문의 인지적 영향력을 반영한다는 가정과 일치한다.</p>
-</div><div class="section-box"><h2>Originality (Abstract 기반)</h2>
+<blockquote><p><strong>저자</strong>: Lutz Bornmann, Robin Haunschild, Sven E. Hug | <strong>날짜</strong>: 2018-02-01 | <strong>Journal</strong>: Scientometrics | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1007/s11192-017-2591-8"" target="_blank">10.1007/s11192-017-2591-8"</a> target="_blank"><a href="https://doi.org/10.1007/s11192-017-2591-8" target="_blank">10.1007/s11192-017-2591-8</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>인용 맥락(citation context) — 특정 인용 주변의 텍스트 — 을 키워드 공출현 분석에 활용하면 기존 방법과 어떻게 다른 통찰을 제공하는가? 이 논문은 Eugene Garfield(EG)의 약 1,500편 논문을 대상으로 세 가지 키워드 공출현 네트워크를 비교한다: (1) EG 논문의 제목·초록 키워드, (2) EG 논문을 인용한 논문들의 제목·초록 키워드, (3) EG 논문을 인용한 논문들의 <strong>인용 맥락</strong> 키워드. 핵심 발견은 인용 맥락 키워드가 EG 논문 자체와 의미론적으로 더 밀접하게 연결되며, 이는 인용이 피인용 논문의 인지적 영향력을 반영한다는 가정과 일치한다.</p></div>
+<div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty] "we use the impressive oeuvre of EG to introduce a new type of bibliometric networks: keyword co-occurrences networks based on the context of citations."</li>
 <li>[authorship, action] "We retrieved the citation context from Microsoft Academic."</li>
 <li>[result, finding] "The comparison of the three networks suggests that papers of EG and citation contexts of papers citing EG are semantically more closely related to each other than to titles and abstracts of papers citing EG."</li>
-</ul>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: Eugene Garfield의 약 1,500편 논문; 이 논문들을 인용한 후속 논문들; Microsoft Academic에서 수집한 인용 맥락 텍스트</li>
 <li><strong>네트워크 1</strong>: EG 논문 제목·초록 키워드 공출현 네트워크</li>
@@ -65,15 +61,15 @@ a { color: #1a5aad; }
 <li><strong>네트워크 3</strong>: EG 논문을 인용한 논문들의 인용 맥락(인용 주변 텍스트) 키워드 공출현 네트워크</li>
 <li><strong>비교 분석</strong>: 세 네트워크의 클러스터 구조, 의미론적 근접성 비교</li>
 <li><strong>EG 선택 이유</strong>: 정보과학 분야 선구자로서 광범위한 인용 이력과 다양한 주제를 포괄하는 이상적인 케이스 스터디 대상</li>
-</ul>
-</div><div class="section-box"><h2>Why (중요성)</h2>
+</ul></div>
+<div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>기존 인용 분석은 인용 사실(누가 누구를 인용했는가)에만 주목했으나, <strong>왜, 어떤 맥락에서</strong> 인용했는지를 포착하는 인용 맥락 분석이 중요한 새 연구 방향</li>
 <li>인용 맥락이 피인용 논문과 의미론적으로 더 가깝다는 발견은 인용이 단순한 참조가 아닌 실질적 인지적 영향을 반영한다는 citation theory를 지지하는 경험적 증거</li>
 <li>Microsoft Academic의 인용 맥락 데이터를 bibliometric 분석에 활용한 방법론 시연은 다른 연구자들이 유사한 분석을 수행할 수 있는 경로 제시</li>
 <li>Eugene Garfield 자신이 정보과학과 인용 분석의 창시자라는 점에서, 그의 연구를 인용 맥락 분석으로 검토하는 것이 메타적 의미를 가짐</li>
-</ul>
-</div><div class="section-box"><h2>Limitation</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>Microsoft Academic에서 추출한 인용 맥락 데이터의 완전성과 정확성에 의존 — 모든 인용의 맥락이 정확히 추출되었는지 보장 어려움</li>
@@ -89,39 +85,17 @@ a { color: #1a5aad; }
 <li>다양한 분야와 학자들을 대상으로 인용 맥락 키워드 분석의 일반성 검증</li>
 <li>Semantic Scholar, OpenAlex 등 현재 가용한 인용 맥락 데이터 소스로의 방법론 이전</li>
 <li>인용 맥락의 긍정·부정·중립 극성(sentiment) 분석과 결합한 인용 품질 연구</li>
-</ul>
-</div><div class="section-box"><h2>평가</h2>
+</ul></div>
+<div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>3/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>3/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
 </table>
 <p><strong>총평</strong>: 인용 맥락 기반 키워드 공출현 네트워크라는 새로운 bibliometric 방법론을 Eugene Garfield의 방대한 저작을 통해 시연한 방법론적으로 창의적인 논문이다. 단일 사례 연구의 한계와 Microsoft Academic 종료에 따른 재현 제약이 있으나, 인용 맥락 분석을 계량서지학에 도입한 선구적 기여로 평가된다.</p></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

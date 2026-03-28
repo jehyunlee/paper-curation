@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Superstar Extinction</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]}};</script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,53 +13,55 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1A56B0; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
 <h1>Superstar Extinction</h1>
-<blockquote>
-<p><strong>저자</strong>: Pierre Azoulay, Joshua S. Graff Zivin, Jialan Wang | <strong>날짜</strong>: 2010 | <strong>Journal</strong>: Quarterly Journal of Economics | <strong>DOI</strong>: 10.1162/qjec.2010.125.2.549 | <strong>arXiv</strong>: -
-<strong>리뷰 모드</strong>: Web-only</p>
-</blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>뛰어난 과학자(superstar)의 갑작스러운 죽음은 그 분야의 동료 연구자들에게 어떤 영향을 미치는가? 이 논문은 <strong>엘리트 생의학 과학자 112명의 조기 사망이 협력자(collaborators)의 논문 생산성을 평균 5~8% 감소</strong>시킴을 보였다. Superstar는 단순한 공동 저자가 아니라 지식의 촉매자(catalyst)로서 협력 생태계의 생산성을 지속적으로 높이는 존재이다.</p>
+<blockquote><p><strong>저자</strong>: Pierre Azoulay, Joshua S. Graff Zivin, Jialan Wang | <strong>날짜</strong>: 2010 | <strong>Journal</strong>: Quarterly Journal of Economics | <strong>DOI</strong>: <a href="https://doi.org/10.1162/qjec.2010.125.2.549" target="_blank">10.1162/qjec.2010.125.2.549</a> | <strong>arXiv</strong>: -</p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 5/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>뛰어난 과학자(superstar)의 갑작스러운 죽음은 그 분야의 동료 연구자들에게 어떤 영향을 미치는가? 이 논문은 <strong>엘리트 생의학 과학자 112명의 조기 사망이 협력자(collaborators)의 논문 생산성을 평균 5~8% 감소</strong>시킴을 보였다. Superstar는 단순한 공동 저자가 아니라 지식의 촉매자(catalyst)로서 협력 생태계의 생산성을 지속적으로 높이는 존재이다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li><strong>rule_base_novelty</strong>: Superstar 과학자 사망을 자연 실험으로 활용한 최초의 인과적 분석</li>
 <li><strong>rule_base_finding</strong>: 협력자의 생산성이 superstar 사망 후 5~8% 감소</li>
 <li><strong>rule_base_result</strong>: 효과가 지리적으로 가까운 협력자에게 더 강하게 나타남 (암묵적 지식 이전의 중요성)</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: HHMI 수혜자, NAS 회원 등 엘리트 생의학 연구자 112명 사망 데이터 + PubMed 논문 기록</li>
 <li><strong>방법</strong>: 사망 전후 협력자 논문 생산성의 차이분석(event study design)</li>
 <li><strong>비교군</strong>: 사망하지 않은 유사 엘리트 연구자의 협력자와 비교</li>
 <li><strong>조절 변수</strong>: 지리적 근접성, 협력 강도, 연구 분야</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
-<p>Superstar의 기여가 출판된 논문을 통한 공식 지식 이전에만 국한되지 않고, 비공식적 상호작용(mentoring, 아이디어 교환, 암묵적 지식)을 통해서도 이루어짐을 시사한다. 인재 집중 vs. 분산 배치, 연구 클러스터 형성 등 과학 정책에 함의가 크다.</p>
+<p>Superstar의 기여가 출판된 논문을 통한 공식 지식 이전에만 국한되지 않고, 비공식적 상호작용(mentoring, 아이디어 교환, 암묵적 지식)을 통해서도 이루어짐을 시사한다. 인재 집중 vs. 분산 배치, 연구 클러스터 형성 등 과학 정책에 함의가 크다.</p></div>
 <div class="section-box"><h2>Limitation</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
@@ -70,44 +72,22 @@ a { color: #1A56B0; }
 <ul>
 <li>비협력자(independent) 연구자들의 영향은 분석하지 않음</li>
 <li>Superstar의 기여가 지식 vs. 사회적 자본(연결망) 중 무엇인지 구분 불충분</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>은퇴 또는 기관 이동의 효과와 비교</li>
 <li>산업계 스타 과학자의 이직이 기업 혁신에 미치는 유사 효과 분석</li>
-</ul>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
 <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>점수</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Novelty</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Technical Soundness</td>
-<td>5/5</td>
-</tr>
-<tr>
-<td>Significance</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Clarity</td>
-<td>4/5</td>
-</tr>
-<tr>
-<td>Overall</td>
-<td>5/5</td>
-</tr>
-</tbody>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>5/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>5/5</td></tr>
 </table>
-<p><strong>총평</strong>: Superstar 과학자가 공식 논문 외 암묵적 지식 이전을 통해 협력 생태계의 생산성을 높인다는 것을 자연 실험으로 엄밀하게 입증한 뛰어난 연구이다.</p></div></div></div></div></div></div></div>
-<div class="back"><a href="../../scisci/index.html">&larr; Science of Science 목록으로</a></div>
+<p><strong>총평</strong>: Superstar 과학자가 공식 논문 외 암묵적 지식 이전을 통해 협력 생태계의 생산성을 높인다는 것을 자연 실험으로 엄밀하게 입증한 뛰어난 연구이다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

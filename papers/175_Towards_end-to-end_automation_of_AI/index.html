@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,49 +42,45 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Towards end-to-end automation of AI research</h1>
-<blockquote>
-<p><strong>저자</strong>: Chris Lu, Cong Lu, Robert Tjarko Lange, Yutaro Yamada, Shengran Hu, Jakob Foerster, David Ha &amp; Jeff Clune | <strong>날짜</strong>: 2026.03 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-026-10265-5"><a href="https://doi.org/10.1038/s41586-026-10265-5" target="_blank">10.1038/s41586-026-10265-5</a></a></p>
-</blockquote>
-<div class="review-fig"><img src="figures/figure_1_pipeline_scaling.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학 연구의 전 과정을 자율적으로 수행할 수 있는가? 본 논문은 "The AI Scientist"라는 파이프라인을 통해 이 질문에 최초의 실증적 답변을 제시한다. AI가 생성한 논문이 실제 top-tier ML 학회 워크숍의 피어리뷰를 통과했으며, 모델 성능과 추론 시 컴퓨트 투입량이 증가할수록 논문 품질이 체계적으로 향상됨을 보인다.</p>
-<div class="review-fig"><img src="figures/figure_2_accepted_paper.png" alt="Figure ure_2_accepted_paper"><p class="fig-caption">Figure ure_2_accepted_paper</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
+<blockquote><p><strong>저자</strong>: Chris Lu, Cong Lu, Robert Tjarko Lange, Yutaro Yamada, Shengran Hu, Jakob Foerster, David Ha & Jeff Clune | <strong>날짜</strong>: 2026.03 | <strong>Journal</strong>: Nature | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1038/s41586-026-10265-5"" target="_blank">10.1038/s41586-026-10265-5"</a> target="_blank"><a href="https://doi.org/10.1038/s41586-026-10265-5" target="_blank">10.1038/s41586-026-10265-5</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학 연구의 전 과정을 자율적으로 수행할 수 있는가? 본 논문은 "The AI Scientist"라는 파이프라인을 통해 이 질문에 최초의 실증적 답변을 제시한다. AI가 생성한 논문이 실제 top-tier ML 학회 워크숍의 피어리뷰를 통과했으며, 모델 성능과 추론 시 컴퓨트 투입량이 증가할수록 논문 품질이 체계적으로 향상됨을 보인다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
 <ul>
 <li><strong>Known</strong>: AI는 이미 신약 설계, 단백질 구조 예측, 재료 탐색 등 과학의 개별 단계를 자동화하는 데 성공해 왔다. LLM의 등장으로 가설 생성, 문헌 리뷰, 코딩 실험 등 더 넓은 연구 활동에 AI가 활용되기 시작했다.</li>
 <li><strong>Gap</strong>: 그러나 아이디어 구상에서 논문 출판까지의 전체 연구 생명주기를 자율적으로 수행하는 시스템은 존재하지 않았다. 개별 단계의 자동화와 전 과정의 통합 자동화 사이에는 본질적인 차이가 있다.</li>
 <li><strong>Why</strong>: 전체 과정을 자동화할 수 있다면, 과학적 발견의 속도를 극적으로 가속할 수 있다. 특히 ML 연구는 실험이 전적으로 컴퓨터 내에서 이루어지므로 자동화에 적합하다.</li>
 <li><strong>Approach</strong>: Foundation model 기반의 복잡한 에이전틱 시스템을 구축하여 아이디어 생성, 실험, 시각화, 논문 작성, 자동 피어리뷰를 순차적으로 수행한다. Template-based와 template-free 두 가지 모드를 제시한다.</li>
-</ul>
-<div class="review-fig"><img src="figures/figure_3_tree_search.png" alt="Figure ure_3_tree_search"><p class="fig-caption">Figure ure_3_tree_search</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>피어리뷰 통과</strong>: AI가 생성한 논문이 ICLR 2025 ICBINB 워크숍(acceptance rate 70%)의 블라인드 피어리뷰를 최초로 통과 — "AI Scientist 튜링 테스트"의 첫 번째 성공 사례</li>
-<li><strong>모델 스케일링 효과</strong>: 2023년 GPT-4부터 2026년 Gemini-2.5/Sonnet-4/o3까지, 모델이 발전할수록 생성 논문의 품질이 체계적으로 향상 (Fig. 1b, R² = 0.517, P &lt; 0.00001)</li>
+<li><strong>모델 스케일링 효과</strong>: 2023년 GPT-4부터 2026년 Gemini-2.5/Sonnet-4/o3까지, 모델이 발전할수록 생성 논문의 품질이 체계적으로 향상 (Fig. 1b, R² = 0.517, P < 0.00001)</li>
 <li><strong>Automated Reviewer 성능</strong>: 자동 리뷰어가 ICLR 논문 수락/거절 판정에서 인간 리뷰어와 동등한 수준의 balanced accuracy(69% vs 66%)와 더 높은 F1 score(0.62 vs 0.49)를 달성</li>
 <li><strong>Template-free 모드</strong>: 인간이 제공하는 코드 템플릿 없이도, agentic tree search를 통해 독립적으로 코드를 생성하고 실험을 수행하는 개방형 탐색이 가능함을 입증</li>
 <li><strong>컴퓨트-품질 상관관계</strong>: 논문 당 투입 컴퓨트와 결과물 품질 사이에 강한 양의 상관관계 존재 (Fig. 3c)</li>
-</ol>
-<div class="review-fig"><img src="figures/figure_4_methods.png" alt="Figure ure_4_methods"><p class="fig-caption">Figure ure_4_methods</p></div>
-</div><div class="section-box"><h2>How</h2>
-<p><strong>시스템 구성 (4단계 파이프라인)</strong>:
-- <strong>Phase 1 - Ideation</strong>: LLM이 연구 방향/가설 아카이브를 반복적으로 확장. Semantic Scholar API로 기존 문헌과 유사도를 검사하여 노벨티 필터링 (최대 10라운드 검색)
-- <strong>Phase 2 - Experimentation</strong>:
-  - <em>Template-based</em>: 인간 제공 코드 템플릿 위에서 Aider 코딩 에이전트가 실험 수행 (최대 5단계, 오류 시 4회 자동 디버깅)
-  - <em>Template-free</em>: Claude Sonnet 4가 코드를 직접 생성, tree search로 탐색. Best-first search(GPT-4o 평가), 버그/비버그 노드 분기, 병렬 실행. Hyperparameter/ablation/replication/aggregation 노드 타입 활용
-- <strong>Phase 3 - Write-up</strong>: LaTeX 템플릿에 섹션별로 채움. Semantic Scholar API로 20라운드에 걸쳐 관련 문헌 검색 및 인용 추가
-- <strong>Phase 4 - Automated Review</strong>: 5개 독립 리뷰의 앙상블 + 메타리뷰(area chair 역할). NeurIPS 가이드라인 기반 평가</p>
-<p><strong>검증</strong>: ICLR OpenReview 데이터셋(1,000편, 2017-2024 + 2025 clean set)으로 자동 리뷰어 검증. IRB 승인(H24-02652) 하에 ICLR 2025 워크숍에 3편 실제 제출.</p>
-<div class="review-fig"><img src="figures/figure_5_table1.png" alt="Figure ure_5_table1"><p class="fig-caption">Figure ure_5_table1</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<p><strong>시스템 구성 (4단계 파이프라인)</strong>:</p>
+<ul>
+<li><strong>Phase 1 - Ideation</strong>: LLM이 연구 방향/가설 아카이브를 반복적으로 확장. Semantic Scholar API로 기존 문헌과 유사도를 검사하여 노벨티 필터링 (최대 10라운드 검색)</li>
+<li><strong>Phase 2 - Experimentation</strong>:</li>
+<li><em>Template-based</em>: 인간 제공 코드 템플릿 위에서 Aider 코딩 에이전트가 실험 수행 (최대 5단계, 오류 시 4회 자동 디버깅)</li>
+<li><em>Template-free</em>: Claude Sonnet 4가 코드를 직접 생성, tree search로 탐색. Best-first search(GPT-4o 평가), 버그/비버그 노드 분기, 병렬 실행. Hyperparameter/ablation/replication/aggregation 노드 타입 활용</li>
+<li><strong>Phase 3 - Write-up</strong>: LaTeX 템플릿에 섹션별로 채움. Semantic Scholar API로 20라운드에 걸쳐 관련 문헌 검색 및 인용 추가</li>
+<li><strong>Phase 4 - Automated Review</strong>: 5개 독립 리뷰의 앙상블 + 메타리뷰(area chair 역할). NeurIPS 가이드라인 기반 평가</li>
+</ul>
+<p><strong>검증</strong>: ICLR OpenReview 데이터셋(1,000편, 2017-2024 + 2025 clean set)으로 자동 리뷰어 검증. IRB 승인(H24-02652) 하에 ICLR 2025 워크숍에 3편 실제 제출.</p></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>End-to-end 통합</strong>: 기존 연구가 개별 단계(아이디어 생성, 코딩, 리뷰 등)의 자동화에 집중한 반면, 전체 파이프라인을 하나의 시스템으로 통합한 최초의 시도</li>
 <li><strong>Template-free tree search</strong>: 코드 생성부터 실험까지 인간 개입 없이 agentic tree search로 수행하는 방식은 기존의 linear execution을 넘어선 새로운 접근. 버그 노드 우선 탐색, VLM 기반 시각화 검증 등 정교한 탐색 전략 포함</li>
 <li><strong>AI Scientist 튜링 테스트</strong>: 실제 학회 피어리뷰에 AI 생성 논문을 제출한 최초의 공식 실험으로, IRB 승인과 학회 협력 하에 수행된 점에서 방법론적으로도 의미 있음</li>
 <li><strong>Automated Reviewer의 체계적 벤치마킹</strong>: 인간 리뷰어 일관성 데이터(NeurIPS 2021)와의 직접 비교, data contamination 분석 포함</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>3편 중 1편만 수락됨. 워크숍(acceptance rate 70%)이므로 메인 컨퍼런스(32%) 기준에는 미달</li>
@@ -118,41 +102,26 @@ a { color: #A62018; }
 <li>AI 생성 연구물의 공시(disclosure) 및 평가를 위한 커뮤니티 규범 수립</li>
 <li>Open-ended exploratory AI의 안전성 및 인간 가치 정렬(alignment) 연구</li>
 <li>AI의 장기 작업(long task) 수행 능력 향상 — 현재 7개월마다 2배씩 증가 추세(METR 보고서)</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 5/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>5/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>5/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: AI 연구의 전 과정 자동화라는 야심 찬 비전을 최초로 실증한 이정표적 논문으로, Nature 게재에 걸맞은 역사적 의의를 지닌다. 다만 실제 검증이 워크숍 수준에 그치고, AI-평가-AI 순환 구조의 한계, 비용 효율성 분석 부재 등 기술적 엄밀성에서 아쉬움이 남는다.</p>
-<hr />
+<hr>
 <h3>Figures</h3>
 <table>
-<thead>
-<tr>
-<th>Figure</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img alt="Fig 1" src="figures/figure_1_pipeline_scaling.png" /></td>
-<td><strong>Fig. 1</strong>: (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 AI Scientist 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 모드의 Automated Reviewer 점수 분포</td>
-</tr>
-<tr>
-<td><img alt="Fig 2" src="figures/figure_2_accepted_paper.png" /></td>
-<td><strong>Fig. 2</strong>: 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌</td>
-</tr>
-<tr>
-<td><img alt="Fig 3" src="figures/figure_3_tree_search.png" /></td>
-<td><strong>Fig. 3</strong>: (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계</td>
-</tr>
-<tr>
-<td><img alt="Table 1" src="figures/figure_5_table1.png" /></td>
-<td><strong>Table 1</strong>: Automated Reviewer vs 인간 리뷰어 일관성 비교 (balanced accuracy, F1 score)</td>
-</tr>
-<tr>
-<td><img alt="Methods" src="figures/figure_4_methods.png" /></td>
-<td><strong>Methods</strong>: Tree search 실행 사이클 상세 — 코드 생성, 실행, 플로팅, VLM 비평, 노드 확장 전략</td>
-</tr>
-</tbody>
+<tr><th>Figure</th><th>설명</th></tr>
+<tr><td>![Fig 1](figures/figure_1_pipeline_scaling.png)</td><td>**Fig. 1**: (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 AI Scientist 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 모드의 Automated Reviewer 점수 분포</td></tr>
+<tr><td>![Fig 2](figures/figure_2_accepted_paper.png)</td><td>**Fig. 2**: 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌</td></tr>
+<tr><td>![Fig 3](figures/figure_3_tree_search.png)</td><td>**Fig. 3**: (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계</td></tr>
+<tr><td>![Table 1](figures/figure_5_table1.png)</td><td>**Table 1**: Automated Reviewer vs 인간 리뷰어 일관성 비교 (balanced accuracy, F1 score)</td></tr>
+<tr><td>![Methods](figures/figure_4_methods.png)</td><td>**Methods**: Tree search 실행 사이클 상세 — 코드 생성, 실행, 플로팅, VLM 비평, 노드 확장 전략</td></tr>
 </table></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>

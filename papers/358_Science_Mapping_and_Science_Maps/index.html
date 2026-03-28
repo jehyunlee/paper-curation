@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,50 +42,49 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>Science Mapping and Science Maps</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span><span class="eval-badge">Technical Soundness: 4/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 5/5</span><span class="eval-badge">Overall: 3/5</span></div>
-<blockquote><p><strong>저자</strong>: Eugenio Petrovich | <strong>날짜</strong>: 2021 | <strong>Journal</strong>: KNOWLEDGE ORGANIZATION | <strong>DOI</strong>: <a href="https://doi.org/10.5771/0943-7444-2021-7-8-535" target="_blank">10.5771/0943-7444-2021-7-8-535</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Abstract only (PDF 없음)</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>Science mapping이란 무엇이며, 과학 지도를 어떻게 만드는가? 이 논문은 science mapping의 개념·이론·방법론적 이슈에 대한 포괄적 입문 개요를 제공한다. 과학 지도의 간략한 역사로 시작하여 지도 구축의 일반 절차(데이터 소스 선택, 정제, 전처리)를 설명하고, 가장 일반적인 두 유형인 <strong>인용 기반 지도</strong>(인용 네트워크)와 <strong>용어 기반 지도</strong>(공-출현 네트워크)를 상세히 다룬다. 공저 네트워크, 인터록킹 편집위원 네트워크, 특허 기반 지도, 지리적 지도 등 덜 일반적인 유형과 시간적 표현, 인식론적·사회학적 해석 주제, 과학 정책 응용도 포괄한다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Eugenio Petrovich | <strong>날짜</strong>: 2021 | <strong>Journal</strong>: KNOWLEDGE ORGANIZATION | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.5771/0943-7444-2021-7-8-535"" target="_blank">10.5771/0943-7444-2021-7-8-535"</a> target="_blank"><a href="https://doi.org/10.5771/0943-7444-2021-7-8-535" target="_blank">10.5771/0943-7444-2021-7-8-535</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 2/5</span> <span class="eval-badge">Technical: 4/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>Science mapping이란 무엇이며, 과학 지도를 어떻게 만드는가? 이 논문은 science mapping의 개념·이론·방법론적 이슈에 대한 포괄적 입문 개요를 제공한다. 과학 지도의 간략한 역사로 시작하여 지도 구축의 일반 절차(데이터 소스 선택, 정제, 전처리)를 설명하고, 가장 일반적인 두 유형인 <strong>인용 기반 지도</strong>(인용 네트워크)와 <strong>용어 기반 지도</strong>(공-출현 네트워크)를 상세히 다룬다. 공저 네트워크, 인터록킹 편집위원 네트워크, 특허 기반 지도, 지리적 지도 등 덜 일반적인 유형과 시간적 표현, 인식론적·사회학적 해석 주제, 과학 정책 응용도 포괄한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, action] 이 논문은 science mapping의 개념·방법론·응용을 포괄적으로 리뷰하는 encyclopedia entry 형식의 학술 논문</li>
 <li>[novelty] 수학적 공식화보다 개념적·이론적·방법론적 이슈에 집중하여 다양한 science mapping 독자층(지식 조직, 인식론, 과학 정책)을 아우름</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>형식</strong>: 백과사전 항목 스타일의 포괄적 리뷰</li>
 <li><strong>구조</strong>: 역사 → 일반 절차 → 인용 기반 지도 → 용어 기반 지도 → 기타 유형 → 시간적 표현 → 인식론·사회학 → 과학 정책 응용</li>
 <li><strong>접근</strong>: 수학적 공식화보다 개념적 이해와 비판적 해석에 중점</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>Science mapping은 수십 년간 발전해 왔으나 개념·이론·방법론을 통합적으로 다루는 포괄적 입문서가 부재했음</li>
 <li>지식 조직, 인식론, 과학학, 정책 등 다양한 분야의 독자들이 science mapping을 이해하고 활용할 수 있도록 공통 기반 마련</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>2021년 발표 이후 AI·LLM 기반 과학 지도 방법론의 빠른 발전을 반영하지 못함</li>
 <li>리뷰 논문의 특성상 새로운 방법론적 기여가 없음</li>
 <li>Knowledge Organization 저널의 특정 독자층을 전제하여 일부 개념이 그 맥락에서만 충분히 이해될 수 있음</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>AI/LLM 기반 과학 지도 방법론을 포함한 업데이트된 리뷰 작성</li>
 <li>Science mapping의 인식론적 타당성과 한계에 대한 심층 분석</li>
 <li>각 mapping 기법의 비교 평가 프레임워크 개발</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>2/5</td></tr><tr><td>Technical Soundness</td><td>4/5</td></tr><tr><td>Significance</td><td>3/5</td></tr><tr><td>Clarity</td><td>5/5</td></tr><tr><td>Overall</td><td>3/5</td></tr></table>
-<p><strong>총평</strong>: Science mapping의 개념과 방법론을 체계적으로 정리한 고품질 입문 리뷰로, 분야 입문자에게 탁월한 참고 자료다. 새로운 기여보다는 기존 지식의 명확한 정리에 가치가 있으며, 특히 수학적 공식 없이 개념 중심으로 접근한 점이 넓은 독자층에게 유용하다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>2/5</td></tr>
+<tr><td>Technical Soundness</td><td>4/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>5/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
+<p><strong>총평</strong>: Science mapping의 개념과 방법론을 체계적으로 정리한 고품질 입문 리뷰로, 분야 입문자에게 탁월한 참고 자료다. 새로운 기여보다는 기존 지식의 명확한 정리에 가치가 있으며, 특히 수학적 공식 없이 개념 중심으로 접근한 점이 넓은 독자층에게 유용하다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

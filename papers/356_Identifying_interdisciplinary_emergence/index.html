@@ -13,28 +13,27 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
-.eval-badge { background: #EEF4FD; color: #1558A8; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-em { font-style: italic; }
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
-a { color: #1558A8; }
+a { color: #1856A0; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
-.back a { font-weight: 600; text-decoration: none; color: #2374D6; }
+.back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -43,20 +42,17 @@ a { color: #1558A8; }
 </head>
 <body>
 <h1>Identifying interdisciplinary emergence in the science of science: combination of network analysis and BERTopic</h1>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 3/5</span><span class="eval-badge">Clarity: 3/5</span><span class="eval-badge">Overall: 3/5</span></div>
-<blockquote><p><strong>저자</strong>: Keungoui Kim, Dieter F. Kogler, Sira Maliphol | <strong>날짜</strong>: 2024-05-10 | <strong>Journal</strong>: Humanities and Social Sciences Communications | <strong>DOI</strong>: <a href="https://doi.org/10.1057/s41599-024-03044-y" target="_blank">10.1057/s41599-024-03044-y</a></p></blockquote>
-<blockquote><p><strong>리뷰 모드</strong>: Abstract only (PDF 없음)</p></blockquote>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>학제 간 지식 재조합을 통해 새로운 과학 분야가 어떻게 출현하는가를 어떻게 체계적으로 탐지할 수 있는가? Web of Science 메타데이터에서 구축한 <strong>글로벌 과학 카테고리 공-출현 네트워크</strong>와 <strong>BERTopic 임베딩 토픽 모델링</strong>을 결합하여, 학제적 분류의 교집합에서 신흥 분야를 비지도학습으로 식별하는 방법을 제안한다. 시기 간 네트워크 비교를 통해 영향력 변화 패턴을 탐지하고, 질적 검증으로 신흥 영역의 출처를 확인한다.</p>
-</div>
+<blockquote><p><strong>저자</strong>: Keungoui Kim, Dieter F. Kogler, Sira Maliphol | <strong>날짜</strong>: 2024-05-10 | <strong>Journal</strong>: Humanities and Social Sciences Communications | <strong>DOI</strong>: <a href="https://doi.org/<a href="https://doi.org/10.1057/s41599-024-03044-y"" target="_blank">10.1057/s41599-024-03044-y"</a> target="_blank"><a href="https://doi.org/10.1057/s41599-024-03044-y" target="_blank">10.1057/s41599-024-03044-y</a></a></p></blockquote>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 3/5</span> <span class="eval-badge">Clarity: 3/5</span> <span class="eval-badge">Overall: 3/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>학제 간 지식 재조합을 통해 새로운 과학 분야가 어떻게 출현하는가를 어떻게 체계적으로 탐지할 수 있는가? Web of Science 메타데이터에서 구축한 <strong>글로벌 과학 카테고리 공-출현 네트워크</strong>와 <strong>BERTopic 임베딩 토픽 모델링</strong>을 결합하여, 학제적 분류의 교집합에서 신흥 분야를 비지도학습으로 식별하는 방법을 제안한다. 시기 간 네트워크 비교를 통해 영향력 변화 패턴을 탐지하고, 질적 검증으로 신흥 영역의 출처를 확인한다.</p></div>
 <div class="section-box"><h2>Originality (Abstract 기반)</h2>
 <ul>
 <li>[authorship, novelty, action] "The present study proposes the application of embedded topic modeling techniques to identify new emerging science via knowledge recombination activities."</li>
 <li>[novelty] "A research field is defined as interdisciplinary when multiple science categories are listed in its description. The co-occurrence networks are subsequently compared between periods to determine changing patterns of influence."</li>
 <li>[finding] "We present the results of the analysis to demonstrate the emergence of global interdisciplinary sciences and further we perform qualitative validation on the results."</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>How (방법론)</h2>
 <ul>
 <li><strong>데이터</strong>: Web of Science Core Collection 메타데이터</li>
@@ -64,32 +60,34 @@ a { color: #1558A8; }
 <li><strong>토픽 모델링</strong>: BERTopic(임베딩 기반 비지도 토픽 모델)으로 학제적 출현 분야 분류</li>
 <li><strong>시기 비교</strong>: 복수 시기의 네트워크를 비교하여 영향력 변화 패턴 탐지</li>
 <li><strong>검증</strong>: 질적 검증으로 신흥 분야의 실제 출처 확인</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Why (중요성)</h2>
 <ul>
 <li>과학 산출물이 기하급수적으로 증가하는 상황에서 어느 분야가 지식 재조합을 통해 새롭게 출현하는지를 자동으로 식별하는 방법이 필요</li>
 <li>학제적 융합 탐지는 연구비 배분, 대학 학과 구조 개편, 혁신 정책에서 핵심 정보로 활용 가능</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Limitation</h2>
 <ul>
 <li>WoS의 과학 카테고리 분류 체계가 새로운 학제 분야를 신속히 반영하지 못해 탐지에 지연이 발생할 수 있음</li>
 <li>BERTopic의 임베딩 모델 선택과 파라미터 설정에 따라 결과가 달라질 수 있는 민감성</li>
 <li>질적 검증의 범위와 기준이 명확히 기술되어야 재현성이 보장됨</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>Further Study</h2>
 <ul>
 <li>탐지된 신흥 학제 분야가 이후 실제로 독립 분야로 성장하는지 추적 연구</li>
 <li>다양한 데이터베이스(OpenAlex, Scopus)와의 교차 검증</li>
 <li>실시간 또는 준실시간 신흥 분야 탐지 시스템 개발</li>
-</ul>
-</div>
+</ul></div>
 <div class="section-box"><h2>평가</h2>
-<table><tr><th>항목</th><th>점수</th></tr><tr><td>Novelty</td><td>4/5</td></tr><tr><td>Technical Soundness</td><td>3/5</td></tr><tr><td>Significance</td><td>3/5</td></tr><tr><td>Clarity</td><td>3/5</td></tr><tr><td>Overall</td><td>3/5</td></tr></table>
-<p><strong>총평</strong>: 네트워크 분석과 BERTopic을 결합하여 학제적 출현을 비지도학습으로 탐지하는 방법을 제안한 탐색적 연구다. 과학 분야 진화의 자동 탐지라는 중요한 문제를 다루지만, 방법론의 일반화 가능성과 강건성 검증이 보강될 필요가 있다.</p>
-</div>
-<div class="back"><a href="../../scisci/index.html">← Science of Science 목록으로</a></div>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>3/5</td></tr>
+<tr><td>Clarity</td><td>3/5</td></tr>
+<tr><td>Overall</td><td>3/5</td></tr>
+</table>
+<p><strong>총평</strong>: 네트워크 분석과 BERTopic을 결합하여 학제적 출현을 비지도학습으로 탐지하는 방법을 제안한 탐색적 연구다. 과학 분야 진화의 자동 탐지라는 중요한 문제를 다루지만, 방법론의 일반화 가능성과 강건성 검증이 보강될 필요가 있다.</p></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

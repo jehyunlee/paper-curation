@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Revie</title>
+<title>ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,38 +42,35 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</h1>
-<p><strong>저자:</strong> Ryan Liu, Nihar Shah (Carnegie Mellon University)
-<strong>출처:</strong> arXiv:2306.00622 (2023.06)
-<strong>DOI:</strong> <a href="https://doi.org/10.48550/arXiv.2306.00622"><a href="https://doi.org/10.48550/arXiv.2306.00622" target="_blank">10.48550/arXiv.2306.00622</a></a></p>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (본질)</h2>
-<p>LLM(특히 GPT-4)이 과학 논문의 피어 리뷰 과정에서 어떤 역할을 수행할 수 있는지를 탐색적으로 연구한 논문이다. 세 가지 리뷰 관련 태스크(오류 탐지, 체크리스트 검증, 더 나은 논문 선택)에 대해 GPT-4의 성능을 체계적으로 평가하여, LLM이 특정 리뷰 보조 작업에는 유망하지만 독립적 리뷰어로서는 아직 부족함을 보여준다.</p>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>피어 리뷰 시스템은 제출 논문 수의 급증과 리뷰어 과부하로 심각한 압박을 받고 있다. 연간 수백만 시간의 연구자 시간이 리뷰에 소비되며, 통제 실험들에서 인간 리뷰어도 결함 있는 논문을 빈번히 통과시키는 것으로 확인되었다. LLM의 급속한 발전에 따라, 이러한 리뷰 과정의 부담을 줄이고 품질을 보완할 수 있는지 체계적으로 검증할 필요가 있다.</p>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (본질)</h2>
+<p>LLM(특히 GPT-4)이 과학 논문의 피어 리뷰 과정에서 어떤 역할을 수행할 수 있는지를 탐색적으로 연구한 논문이다. 세 가지 리뷰 관련 태스크(오류 탐지, 체크리스트 검증, 더 나은 논문 선택)에 대해 GPT-4의 성능을 체계적으로 평가하여, LLM이 특정 리뷰 보조 작업에는 유망하지만 독립적 리뷰어로서는 아직 부족함을 보여준다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>피어 리뷰 시스템은 제출 논문 수의 급증과 리뷰어 과부하로 심각한 압박을 받고 있다. 연간 수백만 시간의 연구자 시간이 리뷰에 소비되며, 통제 실험들에서 인간 리뷰어도 결함 있는 논문을 빈번히 통과시키는 것으로 확인되었다. LLM의 급속한 발전에 따라, 이러한 리뷰 과정의 부담을 줄이고 품질을 보완할 수 있는지 체계적으로 검증할 필요가 있다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ol>
 <li><strong>오류 탐지 실험:</strong> 의도적으로 오류를 삽입한 13개의 짧은 CS 논문에서 GPT-4가 7개의 오류를 성공적으로 탐지함 (수학적 오류, 논리적 오류 포함). 다른 LLM(Bard, Vicuna, Koala, Alpaca, LLaMa, Dolly, OpenAssistant, StableLM)은 단 하나의 오류도 탐지하지 못함.</li>
 <li><strong>체크리스트 검증:</strong> NeurIPS 2022 논문 15편에 대해 119개의 {체크리스트 질문, 논문} 쌍을 평가한 결과, GPT-4가 86.6% 정확도를 달성. 흥미롭게도 저자 응답의 정확도(86.6%)와 동일하며, GPT-4의 오답 중 50%는 텍스트가 아닌 그림 정보가 필요한 경우였음.</li>
 <li><strong>더 나은 논문 선택:</strong> 의도적으로 한쪽이 우월하게 설계된 10쌍의 초록에서 GPT-4가 6쌍에서 오류를 범함. 긍정적 결과 편향, 하한 오해석, 프롬프트 인젝션 공격, 과장된 언어 등에 취약함을 확인.</li>
-</ol>
-</div><div class="section-box"><h2>How (방법)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법)</h2>
 <ul>
 <li><strong>모델 선택:</strong> 파일럿 실험을 통해 9개 LLM 비교 후 GPT-4 선정</li>
 <li><strong>프롬프팅 전략:</strong> 세 가지 프롬프트 설계 -- (1) Prompt-Direct (직접 오류 탐지 요청), (2) Prompt-OneShot (예시 포함), (3) Prompt-Parts (논문을 문장 단위로 순차 제공). 특정 질문 기반 프롬프팅이 단순 리뷰 작성 요청보다 우수함을 확인</li>
 <li><strong>오류 탐지:</strong> 13개 합성 논문(편향/공정성, 비모수 회귀, 정렬, 분류, 게임이론, 오류정정코드, 최적화, 클러스터링 등) 각각에 의도적 오류 삽입, 프롬프트당 3회 응답 생성</li>
 <li><strong>체크리스트 검증:</strong> GPT-4 API(8k 토큰), 관련 섹션만 추출하여 제공, temperature=1.0, top_p=1.0, 질문당 3회 응답의 다수결</li>
 <li><strong>논문 비교:</strong> 10쌍의 합성 초록에 다양한 "교란 요소"(긍정 결과 편향, 파라미터 범위, 상/하한, 프롬프트 인젝션, 과장된 언어, 알고리즘 이름, 버즈워드, 저자 정체성) 삽입</li>
-</ul>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li>LLM의 리뷰 능력을 <strong>구체적 태스크별로 분해</strong>하여 평가한 최초의 체계적 연구 중 하나</li>
 <li>의도적 오류가 삽입된 <strong>합성 논문 데이터셋</strong>(13편)을 직접 구축하여 "gold standard" 평가 기준 마련</li>
 <li>"리뷰를 작성하라"는 일반적 프롬프트보다 <strong>특정 질문 기반 프롬프팅</strong>이 효과적임을 실증</li>
 <li>프롬프트 인젝션 공격, 과장된 언어, 알고리즘 이름 등 <strong>LLM의 다양한 편향 취약점</strong>을 체계적으로 드러냄</li>
 <li>LLM이 오류 탐지에서 인간 리뷰어와 비슷한 수준(7/13)을 보이면서도, 논문 간 비교 능력은 현저히 떨어짐을 보여, <strong>human-AI 협업</strong>의 적절한 경계를 제시</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>토큰 한계:</strong> GPT-4의 8k 토큰 제약으로 전체 논문을 입력할 수 없었음 (32k 버전이나 멀티모달 입력이 해결책이 될 수 있음)</li>
 <li><strong>그림 처리 불가:</strong> 텍스트 전용 LLM이라 그림에 포함된 정보를 활용하지 못해 체크리스트 정확도가 제한됨</li>
@@ -94,9 +79,18 @@ a { color: #A62018; }
 <li><strong>False Positive 문제:</strong> LLM이 간혹 정확한 주장을 오류로 지적하는 오탐(false alarm) 발생</li>
 <li><strong>오픈소스 모델 성능 저조:</strong> GPT-4 외의 오픈소스 모델들은 모든 태스크에서 크게 뒤처져, 파인튜닝을 통한 개선이 필요하나 아직 도전적</li>
 <li><strong>향후 방향:</strong> CONSORT 체크리스트 등 타 분야 적용, 리뷰어-논문 전문성 매칭(유사도 계산)에 LLM 활용, 특정 리뷰 목적의 LLM 파인튜닝</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <p>본 논문은 LLM을 피어 리뷰에 활용하는 것에 대한 균형 잡힌 시각을 제공하는 중요한 탐색적 연구이다. 세 가지 태스크를 통해 LLM의 강점(특정 오류 탐지, 체크리스트 검증)과 약점(전체적 논문 평가, 비교 판단)을 명확히 분리하여 보여준 점이 뛰어나다. 특히 합성 논문과 초록을 직접 구축하여 ground truth를 확보한 실험 설계가 엄밀하며, 프롬프트 인젝션 공격이나 과장된 언어 등에 대한 LLM 취약성 분석은 실용적으로 중요한 시사점을 제공한다. 다만 평가 규모가 작고 GPT-4 단일 모델에 집중된 점, 그리고 실제 학회 리뷰 환경에서의 검증이 부재한 점은 한계로 지적할 수 있다. "LLM은 리뷰 보조자로서 유망하나 독립 리뷰어로서는 아직 준비되지 않았다"는 결론은 당시 기준으로 적절하며, 이후 LLM 기반 리뷰 시스템 연구의 기초 참고 문헌으로 가치가 높다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>3</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.0</td></tr>
+</table>
+<p><strong>총평</strong>: GPT-4 피어 리뷰 능력을 탐색한 CMU의 초기 연구로, 소규모이지만 선구적 실험을 통해 LLM 리뷰어의 가능성과 한계를 제시하여 후속 연구의 기반을 마련했다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

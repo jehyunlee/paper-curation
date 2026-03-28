@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LLMs as Research Tools: A Large Scale Survey of Researchers' Usage and Perceptio</title>
+<title>LLMs as Research Tools: A Large Scale Survey of Researchers&#x27; Usage and Perceptions</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,86 +13,65 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
 </style>
 </head>
 <body>
-<h1>LLMs as Research Tools: A Large Scale Survey of Researchers' Usage and Perceptions</h1>
-<ul>
-<li><strong>저자</strong>: Zhehui Liao, Maria Antoniak, Inyoung Cheong, Evie Yu-Yen Cheng, Ai-Heng Lee, Kyle Lo, Joseph Chee Chang, Amy X. Zhang</li>
-<li><strong>출처</strong>: arXiv (2024)</li>
-<li><strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2411.05025"><a href="https://doi.org/10.48550/arXiv.2411.05025" target="_blank">10.48550/arXiv.2411.05025</a></a></li>
-</ul>
+<h1>LLMs as Research Tools: A Large Scale Survey of Researchers&#x27; Usage and Perceptions</h1>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence (핵심)</h2>
-<p>Semantic Scholar에서 검증된 논문 저자 816명을 대상으로 한 최초의 대규모 설문조사로, 연구자들이 LLM을 연구 워크플로우에 어떻게 활용하고 있으며 그에 대해 어떻게 인식하는지를 6가지 활용 유형(정보 탐색, 편집, 아이디어/프레이밍, 직접 작성, 데이터 분석, 데이터 생성)과 5가지 인구통계학적 배경(인종, 성별, 모국어, 경력, 분야)에 걸쳐 정량적·정성적으로 분석한 연구. 81%의 연구자가 이미 LLM을 연구에 활용하고 있으며, 전통적 소수자 집단(비백인, 주니어, 비영어 모국어 연구자)이 더 높은 사용률과 혜택 인식을 보고한다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation (동기)</h2>
-<p>LLM의 급속한 대중화로 연구자들이 실제로 이 도구를 어떻게 사용하는지에 대한 체계적 이해가 필요했다. 기존 연구는 특정 분야에 한정(HCI, 심리학, ML 등)되거나 소규모 인터뷰/설문(N=20~72)에 그쳤으며, 다양한 분야와 인구통계학적 배경을 아우르는 대규모 정량적 조사가 부재했다. 특히 LLM 사용이 학계의 기존 구조적 불평등에 어떤 영향을 미치는지, 인구통계학적 집단별 사용 패턴과 인식이 어떻게 다른지를 이해하는 것이 시급한 과제였다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement (성과)</h2>
+<hr>
+<div class="essence-box"><h2>Essence (핵심)</h2>
+<p>Semantic Scholar에서 검증된 논문 저자 816명을 대상으로 한 최초의 대규모 설문조사로, 연구자들이 LLM을 연구 워크플로우에 어떻게 활용하고 있으며 그에 대해 어떻게 인식하는지를 6가지 활용 유형(정보 탐색, 편집, 아이디어/프레이밍, 직접 작성, 데이터 분석, 데이터 생성)과 5가지 인구통계학적 배경(인종, 성별, 모국어, 경력, 분야)에 걸쳐 정량적·정성적으로 분석한 연구. 81%의 연구자가 이미 LLM을 연구에 활용하고 있으며, 전통적 소수자 집단(비백인, 주니어, 비영어 모국어 연구자)이 더 높은 사용률과 혜택 인식을 보고한다.</p></div>
+<div class="section-box"><h2>Motivation (동기)</h2>
+<p>LLM의 급속한 대중화로 연구자들이 실제로 이 도구를 어떻게 사용하는지에 대한 체계적 이해가 필요했다. 기존 연구는 특정 분야에 한정(HCI, 심리학, ML 등)되거나 소규모 인터뷰/설문(N=20~72)에 그쳤으며, 다양한 분야와 인구통계학적 배경을 아우르는 대규모 정량적 조사가 부재했다. 특히 LLM 사용이 학계의 기존 구조적 불평등에 어떤 영향을 미치는지, 인구통계학적 집단별 사용 패턴과 인식이 어떻게 다른지를 이해하는 것이 시급한 과제였다.</p></div>
+<div class="section-box"><h2>Achievement (성과)</h2>
 <ul>
 <li><strong>81%의 연구자가 LLM을 연구에 활용</strong>: 정보 탐색(49%)과 편집(45%)이 가장 빈번하며, 데이터 분석(31%)과 데이터 생성(27%)은 상대적으로 적음</li>
-<li><strong>형평성(equity) 효과 발견</strong>: 비백인 연구자(평균 사용빈도 2.68 vs. 백인 2.06, p&lt;.0001), 주니어 연구자, 비영어 모국어 연구자가 더 높은 사용빈도와 혜택 인식을 보고 -- "경쟁의 장을 평탄하게 하는 game-changer"</li>
+<li><strong>형평성(equity) 효과 발견</strong>: 비백인 연구자(평균 사용빈도 2.68 vs. 백인 2.06, p<.0001), 주니어 연구자, 비영어 모국어 연구자가 더 높은 사용빈도와 혜택 인식을 보고 -- "경쟁의 장을 평탄하게 하는 game-changer"</li>
 <li><strong>성별·경력에 따른 윤리적 우려 차이</strong>: 여성·비이진 연구자(윤리 수용성 평균 3.24 vs. 남성 3.60, p=0.0017)와 고경력 연구자가 더 큰 윤리적 우려를 표명</li>
 <li><strong>분야별 공개 편안도 차이</strong>: 컴퓨터과학 연구자가 사회과학·인문학 및 생물·의학 연구자보다 LLM 사용 공개에 유의하게 더 편안함</li>
 <li><strong>오픈소스/비영리 모델 선호</strong>: 59%의 응답자가 비영리/오픈소스 LLM을 선호하며, 영리 기업 선호는 3%에 불과</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How (방법론)</h2>
+</ul></div>
+<div class="section-box"><h2>How (방법론)</h2>
 <ol>
 <li><strong>모집</strong>: Semantic Scholar의 검증된 저자 107,346명에게 이메일 발송, 1,226건 수집 후 필터링하여 816건 분석</li>
 <li><strong>설문 설계</strong>: 6가지 LLM 활용 유형별로 사용빈도(Likert 1-5), 혜택, 위험, 윤리, 동료 공개 편안도, 리뷰어 공개 편안도를 측정 -- 참가자당 최대 36개 Likert 평점</li>
 <li><strong>정량 분석</strong>: Linear mixed-effects model(lme4 in R)로 인구통계 변수와 사용/인식 간 관계 분석, random intercept로 참가자별 효과 통제, Holm-Bonferroni 다중비교 보정, emmeans 사후 검정</li>
 <li><strong>정성 분석</strong>: 자유 텍스트 응답에 대한 반복적 개방 주제 분석(iterative open thematic analysis), 3명 저자 독립 코딩 후 합의</li>
 <li><strong>인구통계</strong>: 성별(남 79%, 여/비이진/기타 21%), 인종(백인 61%, 비백인 39%), 경력(11년+ 57%), 모국어(영어 62%), 분야(CS 40%, 사회과학 24%, 자연과학 21%, 생물의학 15%)</li>
-</ol>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality (독창성)</h2>
+</ul></div>
+<div class="section-box"><h2>Originality (독창성)</h2>
 <ul>
 <li><strong>최초의 대규모 분야횡단 설문</strong>: 기존 소규모 인터뷰(Morris 2023, N=20)나 소규모 설문(Fecher et al. 2023, N=72)을 넘어 816명의 검증된 저자를 대상으로 한 최초의 대규모 정량 조사</li>
 <li><strong>인구통계학적 교차 분석</strong>: LLM 사용 패턴을 인종, 성별, 모국어, 경력, 분야의 5가지 축으로 체계적으로 분석하여, 학계 형평성과 LLM의 관계를 정량적으로 입증한 최초 연구</li>
 <li><strong>위험 vs. 윤리 분리</strong>: "현재 LLM의 한계로 인한 위험(risk)"과 "LLM이 완벽해져도 남는 윤리적 수용성(ethics)"을 명시적으로 구분하여 측정</li>
 <li><strong>"나는 아닌데 남들이" 효과 발견</strong>: 자신의 LLM 사용은 제한적이라 인식하면서 타인의 과도한 사용을 우려하는 심리학적 현상(above-average effect, third-person effect)을 학술 맥락에서 포착</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study (한계 및 향후 연구)</h2>
 <ul>
 <li><strong>표본 편향</strong>: CS 분야 연구자가 40%로 과대대표, 남성이 79%로 기존 학계 성비 불균형 반영 -- Semantic Scholar 기반 모집의 한계</li>
 <li><strong>자기보고 의존</strong>: 실제 사용 행태가 아닌 자기보고 데이터로, 사회적 바람직성 편향(social desirability bias) 가능</li>
@@ -100,9 +79,18 @@ a { color: #A62018; }
 <li><strong>인과관계 미확립</strong>: 인구통계와 사용/인식 간 상관관계만 확인하며, 인과적 메커니즘은 미규명</li>
 <li><strong>LLM 사용의 장기적 효과 미탐구</strong>: 연구 품질, 창의성, 기술 발달에 대한 장기적 영향은 종단적 연구가 필요</li>
 <li>향후 관찰 데이터(실제 논문의 LLM 사용 흔적 등)와 결합한 연구, 분야별 LLM 사용 가이드라인의 효과 평가, 비영어권 연구자에 대한 심층 조사가 필요</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation (평가)</h2>
+</ul></div>
+<div class="section-box"><h2>Evaluation (평가)</h2>
 <p>학계에서 LLM 사용의 현황과 인식을 인구통계학적 관점에서 체계적으로 조명한 시의적절하고 의미 있는 연구. 816명의 검증된 저자를 대상으로 한 대규모 설문은 기존 소규모 질적 연구의 발견을 정량적으로 뒷받침하며, 특히 소수자 집단이 LLM으로부터 더 큰 혜택을 인식한다는 형평성 관련 발견은 정책적 함의가 크다. 다만 CS 분야 과대대표와 자기보고 기반이라는 방법론적 한계가 있으며, 급변하는 LLM 환경에서 스냅샷적 성격을 가진다. "나는 편집용으로만 쓰지만 남들이 논문 전체를 쓸까 두렵다"는 자기 vs. 타인 인식 불일치의 발견은 학계의 LLM 규범 형성 과정을 이해하는 데 흥미로운 통찰을 제공한다.</p></div>
+<div class="section-box"><h2>평가</h2>
+<table>
+<tr><th>항목</th><th>점수 (1-5)</th></tr>
+<tr><td>Novelty</td><td>3</td></tr>
+<tr><td>Technical Soundness</td><td>4</td></tr>
+<tr><td>Significance</td><td>3</td></tr>
+<tr><td>Overall</td><td>3.3</td></tr>
+</table>
+<p><strong>총평</strong>: Semantic Scholar 연구자 816명을 대상으로 LLM 연구 도구 사용 현황과 인식을 분석한 대규모 설문으로, 인구통계별 세분화 분석이 연구자 AI 도입 패턴의 구체적 근거를 제공한다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
 </html>

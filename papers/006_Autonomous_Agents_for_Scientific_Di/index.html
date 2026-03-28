@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, </title>
+<title>Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
@@ -13,40 +13,28 @@ body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans
 h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
 h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
 h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
-p { margin: 0.4rem 0; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
 blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
 ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
 li { margin: 0.2rem 0; font-size: 0.93rem; }
-
-/* Section boxes */
 .section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-
-/* Compact evaluation table - hidden, replaced by badges */
-table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; display: none; }
-th, td { border: 1px solid #e0e0e0; padding: 4px 10px; text-align: left; }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
 th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
 tr:nth-child(even) { background: #f8f9fa; }
 td:last-child { text-align: center; font-weight: 600; color: #D63423; }
-/* Score badges for review pages */
 .eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
 .eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
-/* Essence box - dark red border */
 .essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
 .essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
-
 code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
-pre { background: #1a1a2e; color: #e0e0e0; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
-pre code { background: none; color: inherit; }
 img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-img + em, p > em:only-child { font-size: 0.85rem; color: #888; display: block; text-align: center; }  /* figure captions only */
-em { font-style: italic; }  /* normal em */
 hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
 strong { color: #1a1a2e; }
 a { color: #A62018; }
 .back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
 .back a { font-weight: 600; text-decoration: none; }
 .back a:hover { text-decoration: underline; }
-
 .review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
 .review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -54,48 +42,43 @@ a { color: #A62018; }
 </head>
 <body>
 <h1>Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics</h1>
-<blockquote>
-<p><strong>저자</strong>: Lianhao Zhou, Hongyi Ling, Cong Fu, Yepeng Huang, Michael Sun, Wendi Yu, Xiaoxuan Wang, Xiner Li, Xingyu Su, Junkai Zhang, Xiusi Chen, Chenxing Liang, Xiaofeng Qian, Heng Ji, Wei Wang, Marinka Zitnik, Shuiwang Ji | <strong>날짜</strong>: 2025-10-10 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2510.09901</p>
-</blockquote>
+<blockquote><p><strong>저자</strong>: Lianhao Zhou, Hongyi Ling, Cong Fu, Yepeng Huang, Michael Sun, Wendi Yu, Xiaoxuan Wang, Xiner Li, Xingyu Su, Junkai Zhang, Xiusi Chen, Chenxing Liang, Xiaofeng Qian, Heng Ji, Wei Wang, Marinka Zitnik, Shuiwang Ji | <strong>날짜</strong>: 2025-10-10 | <strong>Repository</strong>: arXiv | <strong>arXiv ID</strong>: 2510.09901</p></blockquote>
 <div class="review-fig"><img src="figures/fig1.png" alt="Figure 1"><p class="fig-caption">Figure 1</p></div>
-<hr />
-<div class="section-box"><h2>Essence</h2>
-<p>LLM 기반 과학적 에이전트의 역할과 발전을 체계적으로 조망하는 서베이 논문이다. 과학적 발견의 전 주기를 가설 발견(Hypothesis Discovery), 실험 설계 및 실행(Experimental Design &amp; Execution), 결과 분석 및 정제(Result Analysis &amp; Refinement)의 3단계로 구조화하고, 각 단계에서 LLM 에이전트가 인간 과학자, 자연어, 컴퓨터 언어, 물리 정보를 어떻게 오케스트레이션하는지를 정보 이론적 프레임워크를 통해 분석한다. 생명과학, 화학, 재료과학, 물리학 등 7개 도메인에 걸친 100여 개 이상의 과학 에이전트 시스템을 포괄적으로 분류한다.</p>
-<div class="review-fig"><img src="figures/fig2.png" alt="Figure 2"><p class="fig-caption">Figure 2</p></div>
-</div><div class="section-box"><h2>Motivation</h2>
-<p>과학적 발견은 전통적으로 인간의 직관과 반복적 실험에 의존해 왔으나, 데이터의 복잡성과 규모가 급증하면서 인간 주도 방식의 한계(높은 비용, 인지적 편향, 방대한 가설 공간 탐색의 어려움)가 부각되고 있다. LLM의 추론, 계획, 멀티모달 처리 능력이 비약적으로 발전하면서, 이를 과학적 발견에 활용하는 에이전트 연구가 폭발적으로 증가했다. 그러나 기존 서베이들은 범용 LLM 에이전트에 초점을 맞추거나, 과학적 에이전트를 다루더라도 단편적인 분류에 머물러, 과학적 발견 프로세스의 각 단계에서 정보가 어떻게 변환되는지에 대한 통합적 분석 프레임워크가 부재했다.</p>
-<div class="review-fig"><img src="figures/fig3.png" alt="Figure 3"><p class="fig-caption">Figure 3</p></div>
-</div><div class="section-box"><h2>Achievement</h2>
+<hr>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<div class="essence-box"><h2>Essence</h2>
+<p>LLM 기반 과학적 에이전트의 역할과 발전을 체계적으로 조망하는 서베이 논문이다. 과학적 발견의 전 주기를 가설 발견(Hypothesis Discovery), 실험 설계 및 실행(Experimental Design & Execution), 결과 분석 및 정제(Result Analysis & Refinement)의 3단계로 구조화하고, 각 단계에서 LLM 에이전트가 인간 과학자, 자연어, 컴퓨터 언어, 물리 정보를 어떻게 오케스트레이션하는지를 정보 이론적 프레임워크를 통해 분석한다. 생명과학, 화학, 재료과학, 물리학 등 7개 도메인에 걸친 100여 개 이상의 과학 에이전트 시스템을 포괄적으로 분류한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<p>과학적 발견은 전통적으로 인간의 직관과 반복적 실험에 의존해 왔으나, 데이터의 복잡성과 규모가 급증하면서 인간 주도 방식의 한계(높은 비용, 인지적 편향, 방대한 가설 공간 탐색의 어려움)가 부각되고 있다. LLM의 추론, 계획, 멀티모달 처리 능력이 비약적으로 발전하면서, 이를 과학적 발견에 활용하는 에이전트 연구가 폭발적으로 증가했다. 그러나 기존 서베이들은 범용 LLM 에이전트에 초점을 맞추거나, 과학적 에이전트를 다루더라도 단편적인 분류에 머물러, 과학적 발견 프로세스의 각 단계에서 정보가 어떻게 변환되는지에 대한 통합적 분석 프레임워크가 부재했다.</p></div>
+<div class="section-box"><h2>Achievement</h2>
 <ol>
 <li><strong>정보 이론적 프레임워크 제안</strong>: Information Entropy, Verifiability, Dissipation의 세 가지 정보 속성을 기반으로, 과학적 발견의 각 단계에서 Human Intent → Natural Language → Computer Language → Physical Information으로의 정보 변환 과정을 체계적으로 분석. 각 단계의 자동화 난이도를 엔트로피/소산 수준으로 정량화</li>
 <li><strong>5단계 자율성 프레임워크</strong>: Human-Led Model(Level 1)에서 Full AI Autonomy(Level 5)까지 과학 에이전트의 자율성을 5단계로 분류하는 체계 제시. 기존 역할 기반 분류보다 정보 처리 능력에 근거한 세밀한 구분</li>
 <li><strong>포괄적 방법론 분류</strong>: 가설 발견(Knowledge Extraction, Hypothesis Generation, Screening/Validation), 실험 설계/실행(Tool Use 4가지 전략, Tool Creation), 결과 분석/정제(3가지 패러다임, 3가지 검증 전략)의 전체 파이프라인에 걸친 방법론 분류 체계(taxonomy)</li>
 <li><strong>도메인별 에이전트 카탈로그</strong>: Genomics, Protein, Medicine, Chemistry, Materials, Physics 등 7개 분야에 걸친 100+ 에이전트 시스템의 상세 리뷰 및 성과 정리</li>
 <li><strong>핵심 논의</strong>: LLM에서 에이전트로의 도약 필요성("Humanity's Knowledge Closure" 개념), Agentic RL의 과학 적용 시 4가지 핵심 문제(Environment, Action, Observation, Reward), 세렌디피티의 역할</li>
-</ol>
-<div class="review-fig"><img src="figures/fig4.png" alt="Figure 4"><p class="fig-caption">Figure 4</p></div>
-</div><div class="section-box"><h2>How</h2>
+</ul></div>
+<div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>분석 프레임워크</strong>: 정보 이론(Shannon entropy)과 열역학 제2법칙, Landauer 원리를 결합하여, 과학적 발견을 개방 시스템에서의 비가역적 엔트로피 감소 과정으로 모델링</li>
 <li><strong>분류 방법론</strong>: 과학적 발견 3단계 x 정보 유형 4가지의 매트릭스를 구성하고, 각 셀의 엔트로피 수준과 전체 소산 정도를 히트맵 및 레이더 차트로 시각화</li>
 <li><strong>문헌 조사</strong>: 260+ 과학 LLM을 다룬 기존 서베이들과 최신 에이전트 시스템 논문들을 체계적으로 수집하여, 방법론별/도메인별 분류표 작성</li>
 <li><strong>비교 분석</strong>: Scientific Agent vs General LLM Agent의 6가지 차원(목적, 지식 기반, 추론, 도구 사용, 메모리, 평가 메트릭) 비교</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.png" alt="Figure 5"><p class="fig-caption">Figure 5</p></div>
-</div><div class="section-box"><h2>Originality</h2>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>정보 이론에 기반한 과학적 발견 분석</strong>이 이 논문의 가장 차별화된 기여. 기존 서베이들이 역할 기반 또는 태스크 기반 분류에 머문 반면, 엔트로피-검증가능성-소산의 삼중 렌즈를 통해 각 단계의 자동화 난이도를 정량적으로 분석한 최초의 시도</li>
 <li><strong>Tool Creation을 독립적인 핵심 단계로 부각</strong>: 기존 문헌에서 Tool Use에 부수적으로 다뤄지던 Tool Creation을 "가장 높은 엔트로피와 소산을 가진 최난이도 단계"로 명시적으로 격상</li>
 <li><strong>LLM의 Knowledge Closure 개념</strong>: LLM이 기존 인류 지식 내부에서만 추론할 수 있는 본질적 한계를, 에이전트의 물리적 세계와의 상호작용을 통해 극복해야 한다는 명확한 논증</li>
-</ul>
-</div><div class="section-box"><h2>Limitation &amp; Further Study</h2>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
 <h3>저자들이 언급한 한계</h3>
 <ul>
 <li>Agentic RL을 과학적 발견에 적용할 때의 4대 난제: 이질적 환경(Environment), 무한한 행동 공간(Action), 멀티모달 관찰(Observation), 희소하고 모호한 보상(Reward)</li>
 <li>LLM의 likelihood 최적화 학습 특성이 세렌디피티(우연한 발견)를 구조적으로 방해</li>
 <li>물리적 법칙에 대한 깊은 이해, 물리적 도구와의 강건한 통합, 실험 환경과의 정교한 상호작용 메커니즘이 아직 미성숙</li>
 </ul>
-<h3>자체판단 아쉬운 점</h3>
+<h3>리뷰어 판단 아쉬운 점</h3>
 <ul>
 <li>정보 이론적 프레임워크가 <strong>개념적 수준에 머물러 정량적 검증이 부재</strong>. "Very High / High / Medium / Low" 수준의 정성적 분류이며, 실제 엔트로피 값을 계산하거나 실증적으로 측정한 결과가 없음</li>
 <li>5단계 자율성 프레임워크 역시 <strong>경험적 근거 없이 제안된 개념적 모델</strong>. 실제 에이전트 시스템을 이 프레임워크에 매핑하여 검증하는 사례 연구가 없음</li>
@@ -110,9 +93,16 @@ a { color: #A62018; }
 <li>물리적 실험 장비와의 안전하고 강건한 인터페이스 설계</li>
 <li>세렌디피티를 촉진하는 확률적 탐색 전략의 에이전트 통합</li>
 <li>표준화된 과학 에이전트 벤치마크 개발</li>
-</ul>
-</div><div class="section-box"><h2>Evaluation</h2>
-<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span><span class="eval-badge">Technical Soundness: 3/5</span><span class="eval-badge">Significance: 4/5</span><span class="eval-badge">Clarity: 4/5</span><span class="eval-badge">Overall: 4/5</span></div>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<table>
+<tr><th>항목</th><th>점수</th></tr>
+<tr><td>Novelty</td><td>4/5</td></tr>
+<tr><td>Technical Soundness</td><td>3/5</td></tr>
+<tr><td>Significance</td><td>4/5</td></tr>
+<tr><td>Clarity</td><td>4/5</td></tr>
+<tr><td>Overall</td><td>4/5</td></tr>
+</table>
 <p><strong>총평</strong>: 과학적 발견을 위한 LLM 기반 에이전트를 정보 이론적 관점에서 체계적으로 조망한 포괄적 서베이로, 특히 엔트로피-검증가능성-소산 프레임워크와 5단계 자율성 모델은 이 분야의 사고 틀에 기여하는 독창적 제안이다. 다만 이론적 프레임워크가 정성적 수준에 머물고 실증적 검증이 부재하며, 도메인별 에이전트 리뷰가 비판적 비교보다는 성과 나열에 치우친 점이 아쉽다.</p></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 </body>
