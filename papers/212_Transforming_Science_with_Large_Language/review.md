@@ -53,11 +53,3 @@ With the advent of large multimodal language models, science is now at a thresho
 | Overall | 3/5 |
 
 **총평**: 관련 분야의 포괄적 서베이로서 연구자들에게 유용한 참고 자료를 제공하나, 서베이 논문 특성상 독창적 기여는 제한적이다.
-
----
-
-### Figures
-
-| Figure | 설명 |
-|--------|------|
-| ![Fig 1](figures/fig1.png) | **Fig. 1**: 논문의 핵심 프레임워크 또는 방법론 개요 |

@@ -73,15 +73,3 @@ AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학
 | Overall | 4/5 |
 
 **총평**: AI 연구의 전 과정 자동화라는 야심 찬 비전을 최초로 실증한 이정표적 논문으로, Nature 게재에 걸맞은 역사적 의의를 지닌다. 다만 실제 검증이 워크숍 수준에 그치고, AI-평가-AI 순환 구조의 한계, 비용 효율성 분석 부재 등 기술적 엄밀성에서 아쉬움이 남는다.
-
----
-
-### Figures
-
-| Figure | 설명 |
-|--------|------|
-| ![Fig 1](figures/figure_1_pipeline_scaling.png) | **Fig. 1**: (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 AI Scientist 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 모드의 Automated Reviewer 점수 분포 |
-| ![Fig 2](figures/figure_2_accepted_paper.png) | **Fig. 2**: 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌 |
-| ![Fig 3](figures/figure_3_tree_search.png) | **Fig. 3**: (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계 |
-| ![Table 1](figures/figure_5_table1.png) | **Table 1**: Automated Reviewer vs 인간 리뷰어 일관성 비교 (balanced accuracy, F1 score) |
-| ![Methods](figures/figure_4_methods.png) | **Methods**: Tree search 실행 사이클 상세 — 코드 생성, 실행, 플로팅, VLM 비평, 노드 확장 전략 |

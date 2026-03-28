@@ -57,11 +57,3 @@ We introduce a new family of deep neural network models. Instead of specifying a
 | Overall | 4/5 |
 
 **총평**: 해당 분야에 의미 있는 기여를 하는 논문으로, 기술적 건전성과 실험적 검증이 돋보인다.
-
----
-
-### Figures
-
-| Figure | 설명 |
-|--------|------|
-| ![Fig 1](figures/fig1.png) | **Fig. 1**: 논문의 핵심 프레임워크 또는 방법론 개요 |
