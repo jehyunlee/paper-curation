@@ -129,16 +129,24 @@ def md_section_to_html(text):
             out.append('</ul>' if '<ul>' in '\n'.join(out[max(0,len(out)-20):]) else '</ol>')
             in_list = False
 
-        # Image
+        # Image — render without auto-caption; next italic line provides caption
         m = re.match(r'!\[([^\]]*)\]\(([^)]+)\)', s)
         if m:
-            out.append(f'<div class="review-fig"><img src="{esc(m.group(2))}" alt="{esc(m.group(1))}">'
-                       f'<p class="fig-caption">{esc(m.group(1))}</p></div>')
+            out.append(f'<div class="review-fig"><img src="{esc(m.group(2))}" alt="{esc(m.group(1))}">')
+            # Check if next non-empty line is italic caption → attach it
+            j = lines.index(line) + 1 if line in lines else -1
+            # Will be handled by italic-only line below
+            out.append('</div>')
             continue
 
-        # Italic-only line (figure caption)
+        # Italic-only line (figure caption) — attaches to preceding review-fig
         if s.startswith('*') and s.endswith('*') and not s.startswith('**'):
-            out.append(f'<p class="fig-caption">{_inline(s)}</p>')
+            # Merge caption into the preceding review-fig div if present
+            if out and out[-1] == '</div>' and len(out) >= 2 and 'review-fig' in out[-2]:
+                out.pop()  # remove closing </div>
+                out.append(f'<p class="fig-caption">{_inline(s)}</p></div>')
+            else:
+                out.append(f'<p class="fig-caption">{_inline(s)}</p>')
             continue
 
         # HR
@@ -171,8 +179,9 @@ def _inline(text):
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'(?<!\*)\*([^*]+?)\*(?!\*)', r'<em>\1</em>', text)
     text = re.sub(r'\[([^\]]+)\]\((https?://[^)]+)\)', r'<a href="\2" target="_blank">\1</a>', text)
-    # DOI auto-link
-    text = re.sub(r'(?<!href=")(10\.\d{4,}/[^\s<]+)', r'<a href="https://doi.org/\1" target="_blank">\1</a>', text)
+    # DOI auto-link — skip if already inside an <a> tag (href or link text)
+    text = re.sub(r'(?<!href=")(?<!doi\.org/)(?<![">])(10\.\d{4,}/[^\s<"]+)(?!</a>)',
+                  r'<a href="https://doi.org/\1" target="_blank">\1</a>', text)
     return text
 
 
@@ -207,10 +216,6 @@ def convert_review(md_path, topic, slug_dir):
         sec_body = lines[1] if len(lines) > 1 else ""
         parsed_sections.append((sec_title, sec_body))
 
-    # Check for figures
-    fig_dir = os.path.join(os.path.dirname(md_path), "figures")
-    has_fig1 = os.path.exists(os.path.join(fig_dir, "fig1.png"))
-
     # Build HTML body
     body_parts = []
 
@@ -221,11 +226,6 @@ def convert_review(md_path, topic, slug_dir):
     if meta_line:
         meta_html = _inline(meta_line)
         body_parts.append(f'<blockquote><p>{meta_html}</p></blockquote>')
-
-    # Figure 1 after metadata
-    if has_fig1:
-        body_parts.append('<div class="review-fig"><img src="figures/fig1.png" alt="Figure 1">'
-                         '<p class="fig-caption">Figure 1</p></div>')
 
     body_parts.append('<hr>')
 

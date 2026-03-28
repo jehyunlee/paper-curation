@@ -67,6 +67,27 @@ else:
     category_analyses = {}
     executive_summary = ""
 
+# Merge _category_summaries.json (has description + papers per category)
+cat_sum_path = os.path.join(TOPIC_DIR, "_category_summaries.json")
+if os.path.exists(cat_sum_path):
+    with open(cat_sum_path, encoding="utf-8") as f:
+        cat_summaries = json.load(f)
+    for cs in cat_summaries:
+        cat_name_cs = cs.get("category", "")
+        if cat_name_cs not in category_analyses:
+            category_analyses[cat_name_cs] = {}
+        if cs.get("description"):
+            category_analyses[cat_name_cs]["description"] = cs["description"]
+        if cs.get("description_ko"):
+            category_analyses[cat_name_cs]["description_ko"] = cs["description_ko"]
+        if cs.get("sub_themes_ko"):
+            category_analyses[cat_name_cs]["sub_themes_ko"] = cs["sub_themes_ko"]
+        if cs.get("papers"):
+            category_analyses[cat_name_cs]["papers"] = cs["papers"]
+        # Merge sub_themes if not already present from narrative
+        if not category_analyses[cat_name_cs].get("sub_themes") and cs.get("sub_themes"):
+            category_analyses[cat_name_cs]["sub_themes"] = cs["sub_themes"]
+
 # Filter papers for this topic
 topic_papers = [p for p in papers_index if TOPIC in p.get("topics", [])]
 slug_to_index = {p["slug"]: p for p in topic_papers}
@@ -302,23 +323,95 @@ def render_paper_card(paper, num, cat_slug):
         f'        </div>'
     )
 
+def _match_papers_to_subtheme(st_name, st_desc, papers):
+    """Match papers to a sub-theme by keyword overlap in title."""
+    keywords = set((st_name + " " + st_desc).lower().split())
+    scored = []
+    for p in papers:
+        title_words = set(p.get("title", "").lower().split())
+        overlap = len(keywords & title_words)
+        if overlap >= 2:
+            scored.append((overlap, p))
+    scored.sort(key=lambda x: (-x[0], -x[1].get("score", 0)))
+    return [s[1] for s in scored[:4]]  # max 4 papers per sub-theme
+
+
 def render_category_narrative(cat_name):
     ca = category_analyses.get(cat_name, {})
     if not ca: return ""
+    overview = ca.get("description", "")
     sub_themes = ca.get("sub_themes", [])
+    cat_papers = ca.get("papers", [])
     html_parts = []
-    for st in sub_themes:
-        name = st.get("name", ""); desc = st.get("description", "")
-        start = st.get("start_year", ""); peak = st.get("peak_year", "")
-        status = st.get("status", "")
-        if name and desc:
-            yr = f"{start}~{peak}" if start and peak else str(start or peak or "")
-            status_str = f" &mdash; <em>{esc(status)}</em>" if status else ""
+
+    # Build slug number → paper info lookup (used for [NNN] → link conversion)
+    import re as _re
+    num_to_paper = {}
+    for p in cat_papers:
+        slug = p.get("dir", p.get("slug", ""))
+        title = p.get("title", "")
+        num = slug.split("_")[0] if "_" in slug else slug[:3]
+        num_to_paper[num] = (slug, title)
+
+    def _refs_to_links(text_html):
+        """Convert [NNN] markers to <a> links."""
+        def _repl(m):
+            num = m.group(1)
+            if num in num_to_paper:
+                slug, title = num_to_paper[num]
+                return f'<a href="../papers/{esc(slug)}/index.html" title="{esc(title)}">[{num}]</a>'
+            return m.group(0)
+        return _re.sub(r'\[(\d{3})\]', _repl, text_html)
+
+    # Category Overview (한글 우선)
+    overview_ko = ca.get("description_ko", "")
+    if overview_ko:
+        overview_html = _refs_to_links(esc(overview_ko))
+        html_parts.append(f'<h4>Category Overview</h4>\n<p>{overview_html}</p>')
+    elif overview:
+        html_parts.append(f'<h4>Category Overview</h4>\n<p>{esc(overview)}</p>')
+
+    # Sub-category bullets with paper links (한글 우선)
+    # sub_themes_ko can be list of dicts or dict of {snake_case_key: desc}
+    raw_stko = ca.get("sub_themes_ko", [])
+    _stko_map = {}
+    if isinstance(raw_stko, dict):
+        for k, v in raw_stko.items():
+            _stko_map[k.lower().replace("_", " ").replace("-", " ")] = v
+    elif isinstance(raw_stko, list):
+        for s in raw_stko:
+            if isinstance(s, dict):
+                n = s.get("name", "")
+                _stko_map[n.lower().replace("_", " ").replace("-", " ")] = s.get("description_ko", "")
+
+    def _get_stko(st_name):
+        norm = st_name.lower().replace("_", " ").replace("-", " ").replace("&", "and")
+        # Exact match
+        if norm in _stko_map:
+            return _stko_map[norm]
+        # Fuzzy: word overlap
+        nw = set(norm.split())
+        for k, v in _stko_map.items():
+            kw = set(k.split())
+            if len(kw & nw) >= min(3, len(kw)):
+                return v
+        return ""
+
+    if sub_themes:
+        html_parts.append('<ul class="subcategory-list">')
+        for st in sub_themes:
+            name = st.get("name", "")
+            desc_en = st.get("description", "")
+            desc = _get_stko(name) or desc_en
+            if not name or not desc:
+                continue
+            # Convert [NNN] markers to hyperlinks
+            desc_html = _refs_to_links(esc(desc))
             html_parts.append(
-                f'<p><strong>{esc(name)}</strong>'
-                + (f' ({esc(yr)})' if yr else '')
-                + f': {esc(desc)}{status_str}</p>'
+                f'<li><strong>{esc(name)}</strong>: {desc_html}</li>'
             )
+        html_parts.append('</ul>')
+
     return "\n".join(html_parts)
 
 def render_exec_summary(text):
@@ -383,6 +476,11 @@ body {{ font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto San
 .category-timeline img {{ max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
 .category-summary {{ background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-size: 0.9rem; line-height: 1.7; color: #444; }}
 .category-summary p {{ margin: 0.6rem 0; }}
+.category-summary h4 {{ font-size: 0.95rem; color: {accent_dark}; margin: 0 0 0.4rem; }}
+.category-summary .subcategory-list {{ margin: 0.6rem 0 0.2rem 1.2rem; padding: 0; }}
+.category-summary .subcategory-list li {{ margin: 0.5rem 0; line-height: 1.6; }}
+.category-summary .subcategory-list a {{ color: {accent}; text-decoration: none; font-weight: 500; }}
+.category-summary .subcategory-list a:hover {{ text-decoration: underline; }}
 .paper-date {{ font-size: 0.75rem; color: #999; }}
 img.lazy {{ opacity: 0; transition: opacity 0.3s; }}
 img.lazy.loaded {{ opacity: 1; }}
@@ -585,7 +683,6 @@ HTML = (
     '<div class="container">\n'
     '  <div class="hero">\n'
     f'    <h1>{esc(theme["title"])} &#8212; {total_papers} Papers</h1>\n'
-    f'    <p class="subtitle">Collection: {esc(theme["subtitle_prefix"])} | Period: {esc(date_range)}</p>\n'
     '    <div class="stats">\n'
     f'      <div class="stat"><div class="stat-num">{total_papers}</div><div class="stat-label">\ub9ac\ubdf0 \uc644\ub8cc</div></div>\n'
     f'      <div class="stat"><div class="stat-num">{num_cats}</div><div class="stat-label">MECE \uce74\ud14c\uace0\ub9ac</div></div>\n'

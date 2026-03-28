@@ -5,6 +5,10 @@
 
 ## Essence
 
+![Figure 1](figures/fig1.png)
+
+*Figure 1. (a) AI Scientist 파이프라인 — Ideation, Experimentation, Write-up, Review 4단계. (b) 모델 발전에 따른 논문 품질 향상 추세 (R²=0.517). (c) Template-based vs Template-free 점수 분포*
+
 AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학 연구의 전 과정을 자율적으로 수행할 수 있는가? 본 논문은 "The AI Scientist"라는 파이프라인을 통해 이 질문에 최초의 실증적 답변을 제시한다. AI가 생성한 논문이 실제 top-tier ML 학회 워크숍의 피어리뷰를 통과했으며, 모델 성능과 추론 시 컴퓨트 투입량이 증가할수록 논문 품질이 체계적으로 향상됨을 보인다.
 
 ## Motivation
@@ -16,6 +20,10 @@ AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학
 
 ## Achievement
 
+![Figure 2](figures/fig2.png)
+
+*Figure 2. 피어리뷰를 통과한 AI 생성 논문의 주요 섹션 — 제목/초록, 기술 방법론, 데이터 시각화, 참고문헌*
+
 1. **피어리뷰 통과**: AI가 생성한 논문이 ICLR 2025 ICBINB 워크숍(acceptance rate 70%)의 블라인드 피어리뷰를 최초로 통과 — "AI Scientist 튜링 테스트"의 첫 번째 성공 사례
 2. **모델 스케일링 효과**: 2023년 GPT-4부터 2026년 Gemini-2.5/Sonnet-4/o3까지, 모델이 발전할수록 생성 논문의 품질이 체계적으로 향상 (Fig. 1b, R² = 0.517, P < 0.00001)
 3. **Automated Reviewer 성능**: 자동 리뷰어가 ICLR 논문 수락/거절 판정에서 인간 리뷰어와 동등한 수준의 balanced accuracy(69% vs 66%)와 더 높은 F1 score(0.62 vs 0.49)를 달성
@@ -23,6 +31,10 @@ AI가 아이디어 구상부터 실험, 논문 작성, 피어리뷰까지 과학
 5. **컴퓨트-품질 상관관계**: 논문 당 투입 컴퓨트와 결과물 품질 사이에 강한 양의 상관관계 존재 (Fig. 3c)
 
 ## How
+
+![Figure 3](figures/fig3.png)
+
+*Figure 3. (a) Template-free 모드의 agentic tree search 구조. (b) 탐색 트리 예시 — 버그/비버그 노드 분기. (c) 컴퓨트 투입량 대비 논문 품질 상관관계*
 
 **시스템 구성 (4단계 파이프라인)**:
 - **Phase 1 - Ideation**: LLM이 연구 방향/가설 아카이브를 반복적으로 확장. Semantic Scholar API로 기존 문헌과 유사도를 검사하여 노벨티 필터링 (최대 10라운드 검색)

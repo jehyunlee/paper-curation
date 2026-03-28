@@ -392,7 +392,6 @@ HTML = (
     '<div class="container">\n'
     '  <div class="hero">\n'
     '    <h1>AI for Science &#8212; 248 Papers</h1>\n'
-    '    <p class="subtitle">Collection: Science of Science | Period: 2017-11 ~ 2026-03</p>\n'
     '    <div class="stats">\n'
     '      <div class="stat"><div class="stat-num">248</div><div class="stat-label">\ub9ac\uBDF0 \uc644\ub8cc</div></div>\n'
     '      <div class="stat"><div class="stat-num">8</div><div class="stat-label">MECE \uce74\ud14c\uace0\ub9ac</div></div>\n'
