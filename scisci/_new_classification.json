@@ -1366,6 +1366,117 @@
         "Research Integrity & Publishing",
         "Science Policy & Funding"
       ]
+    },
+    {
+      "slug": "385_Redefining_Academic_Performance_The_Dev",
+      "title": "Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Careers & Mobility",
+        "Scientific Collaboration & Networks"
+      ]
+    },
+    {
+      "slug": "386_Where_Do_Your_Citations_Come_From_Citat",
+      "title": "Where Do Your Citations Come From? Citation-Constellation: A Free, Open-Source, No-Code, and Auditable Tool for Citation Network Decomposition with Complementary BARON and HEROCON Scores",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Science Policy & Funding",
+        "Research Careers & Mobility",
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "387_Mapping_Research_Funding_and_Outputs_at",
+      "title": "Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries",
+      "primary_category": "Science Policy & Funding",
+      "all_categories": [
+        "Science Policy & Funding",
+        "Citation & Impact Analysis"
+      ]
+    },
+    {
+      "slug": "388_Linking_Global_Science_Funding_to_Resear",
+      "title": "Linking Global Science Funding to Research Publications",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Gender, Diversity & Equity",
+        "Science Policy & Funding",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "389_Do_Large_Language_Models_Reduce_Research",
+      "title": "Do Large Language Models Reduce Research Novelty? Evidence from Information Systems Journals",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science",
+        "Research Careers & Mobility",
+        "Gender, Diversity & Equity",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "390_The_Innovation_Recognition_Paradox_How",
+      "title": "The Innovation Recognition Paradox: How Science Undervalues the Boundary-Crossing Work Women Produce",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation",
+        "Citation & Impact Analysis",
+        "Scientific Collaboration & Networks",
+        "Science Policy & Funding",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "391_RenoBench_A_Citation_Parsing_Benchmark",
+      "title": "RenoBench: A Citation Parsing Benchmark",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "AI & LLM in Science",
+        "Research Careers & Mobility",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
+    },
+    {
+      "slug": "392_Reinforcing_Prestige_Journal_Citation_B",
+      "title": "Reinforcing Prestige: Journal Citation Biases in Astronomy",
+      "primary_category": "Citation & Impact Analysis",
+      "all_categories": [
+        "Citation & Impact Analysis",
+        "Research Integrity & Publishing",
+        "Gender, Diversity & Equity",
+        "Research Careers & Mobility"
+      ]
+    },
+    {
+      "slug": "393_Beyond_Via_Analysis_and_Estimation_of_t",
+      "title": "Beyond Via: Analysis and Estimation of the Impact of Large Language Models in Academic Papers",
+      "primary_category": "AI & LLM in Science",
+      "all_categories": [
+        "AI & LLM in Science"
+      ]
+    },
+    {
+      "slug": "394_Systemic_Gendered_Citation_Imbalance_in",
+      "title": "Systemic Gendered Citation Imbalance in Computer Science: Evidence from Conferences and Journals",
+      "primary_category": "Research Careers & Mobility",
+      "all_categories": [
+        "Research Careers & Mobility",
+        "Scientific Collaboration & Networks",
+        "Gender, Diversity & Equity",
+        "Citation & Impact Analysis",
+        "Knowledge Production & Innovation",
+        "Research Integrity & Publishing"
+      ]
     }
   ]
 }

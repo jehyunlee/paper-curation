@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index</title>
+<link href="https://fonts.googleapis.com/css2?family=KoPub+Dotum:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --accent: #2374D6;
+    --accent-light: #EBF3FF;
+    --text: #1a1a1a;
+    --muted: #555;
+    --border: #dde3ed;
+    --bg: #f8f9fc;
+    --card: #fff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; font-size: 15px; }
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back { margin-bottom: 1.5rem; }
+  .back a { color: var(--accent); text-decoration: none; font-size: 14px; font-weight: 700; }
+  .back a:hover { text-decoration: underline; }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 1rem; }
+  .meta { background: var(--accent-light); border-left: 4px solid var(--accent); padding: 0.75rem 1rem; border-radius: 0 6px 6px 0; font-size: 13px; color: var(--muted); line-height: 1.8; }
+  .meta strong { color: var(--text); }
+  .meta a { color: var(--accent); text-decoration: none; }
+  .meta a:hover { text-decoration: underline; }
+  .mode-badge { display: inline-block; background: #ff9900; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
+  .mode-badge.pdf { background: var(--accent); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  section { margin-bottom: 2rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--accent-light); }
+  p { margin-bottom: 0.75rem; }
+  ul { padding-left: 1.4rem; margin-bottom: 0.75rem; }
+  ul li { margin-bottom: 0.4rem; }
+  .originality-item { background: var(--accent-light); border-radius: 6px; padding: 0.6rem 0.9rem; margin-bottom: 0.5rem; font-size: 14px; }
+  .tag { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-right: 4px; font-weight: 700; }
+  .tag.finding { background: #28a745; }
+  .tag.novelty { background: #e67e22; }
+  .tag.action { background: #8e44ad; }
+  .tag.conclusion { background: #c0392b; }
+  .tag.continuation { background: #7f8c8d; }
+  .tag.approach { background: #16a085; }
+  .tag.learned { background: #2c3e50; }
+  .tag.context { background: #95a5a6; }
+  .tag.authorship { background: #2980b9; }
+  .tag.result { background: #d35400; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 14px; }
+  th { background: var(--accent); color: #fff; padding: 0.5rem 0.75rem; text-align: left; }
+  td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--accent-light); }
+  .total-comment { margin-top: 0.75rem; padding: 0.75rem 1rem; background: #fff8e1; border-left: 4px solid #f39c12; border-radius: 0 6px 6px 0; font-size: 14px; }
+  blockquote { border-left: 3px solid var(--border); margin: 0.75rem 0; padding: 0.5rem 1rem; color: var(--muted); font-style: italic; }
+  h3 { font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.5rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+  <header>
+    <h1>Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index</h1>
+    <div class="meta">
+      <strong>저자</strong>: Nalan Sabır Taştan &nbsp;|&nbsp;
+      <strong>날짜</strong>: 2026-03-26 &nbsp;|&nbsp;
+      <strong>Journal</strong>: Pamukkale Eğitim Dergisi &nbsp;|&nbsp;
+      <strong>DOI</strong>: <a href="https://doi.org/10.30586/pek.1821958" target="_blank">10.30586/pek.1821958</a> &nbsp;|&nbsp;
+      <strong>모드</strong>: <span class="mode-badge">Web-only</span>
+    </div>
+  </header>
+  <hr>
+
+  <section>
+    <h2>Essence</h2>
+    <p>NK index란 무엇이며 기존 bibliometric 지표의 어떤 문제를 해결하는가? h-index, 총 인용수, 논문 수 등 기존 지표는 경력 기간 차이, 공저자 기여 불균등, 출판 유형의 이질성을 무시한다. NK index는 (i) 광범위한 인용 가능 학술 산출물, (ii) 출판·인용 유형별 가중 점수, (iii) 저자 기여 계수, (iv) 학술 연령 및 생산 기간 파라미터를 통합한 <strong>시간·기여 조정형 복합 지수</strong>다. 단일 정규화 점수로 출력량과 인용 임팩트를 결합하여, 다양한 경력 궤적을 가진 연구자 간의 공정한 비교를 목표로 한다.</p>
+  </section>
+
+  <section>
+    <h2>Originality (Abstract 기반)</h2>
+    <div class="originality-item">
+      <span class="tag authorship">authorship</span><span class="tag action">action</span><span class="tag finding">finding</span>
+      "To address these issues, this study proposes the NK index as a time- and contribution-adjusted composite scholarly performance measure that integrates (i) a broader set of citable scholarly outputs, (ii) publication- and citation-type scores, (iii) author contribution coefficients, and (iv) academic age and productive duration parameters."
+    </div>
+    <div class="originality-item">
+      <span class="tag learned">learned</span>
+      "By combining output volume and citation impact within a single normalised score, the NK index aims to enable fairer comparisons across academics with different career trajectories when only bibliometric data are available."
+    </div>
+  </section>
+
+  <section>
+    <h2>How (방법론)</h2>
+    <ul>
+      <li>기존 bibliometric 지표(h-index, 총 인용수, 논문 수)의 한계를 문헌 검토를 통해 체계적으로 분석</li>
+      <li>네 가지 구성 요소(출판 유형 점수, 인용 유형 점수, 저자 기여 계수, 학술 연령 파라미터)를 설계하고 공식화</li>
+      <li>학술 연령(academic age)과 생산 기간(productive duration)을 반영하여 경력 단계별 불균형 보정</li>
+      <li>단일 정규화 점수로 출력량(output volume)과 인용 임팩트(citation impact)를 통합</li>
+      <li>다양한 경력 궤적의 연구자에게 적용 가능한 공정 비교 프레임워크로 제안</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Why (중요성)</h2>
+    <ul>
+      <li>h-index 등 기존 지표는 인용 조작에 취약하고 경력 기간을 고려하지 않아 신진·중견 연구자에게 불공정</li>
+      <li>승진·보상·평가 시스템에서 단일 지표 의존은 학문적 성과의 다차원성을 왜곡</li>
+      <li>공정하고 투명한 학술 평가 도구 개발은 고등교육 품질 보증의 핵심 과제</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Limitation</h2>
+    <ul>
+      <li>Web-only 모드로 리뷰: 전체 논문에 접근하지 못해 실증 검증 결과를 확인할 수 없음</li>
+      <li>NK index의 각 파라미터 가중치 설정에 대한 경험적 근거가 초록에서는 불명확</li>
+      <li>기존 지표 대비 NK index의 우월성을 보여주는 실제 데이터 검증 결과를 초록에서 확인 불가</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Further Study</h2>
+    <ul>
+      <li>실제 연구자 집단에 NK index를 적용하여 기존 지표와의 순위 상관관계 및 차이 분석</li>
+      <li>분야별(자연과학, 인문사회과학, 예술) NK index 적용 가능성 및 파라미터 조정 연구</li>
+      <li>기여 계수(author contribution coefficient) 산출을 위한 표준화된 데이터 소스 확립</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>평가</h2>
+    <table>
+      <tr><th>항목</th><th>점수</th></tr>
+      <tr><td>Novelty</td><td>3/5</td></tr>
+      <tr><td>Technical Soundness</td><td>3/5</td></tr>
+      <tr><td>Significance</td><td>3/5</td></tr>
+      <tr><td>Clarity</td><td>3/5</td></tr>
+      <tr><td>Overall</td><td>3/5</td></tr>
+    </table>
+    <div class="total-comment">기존 bibliometric 지표의 명확한 한계를 짚고 다차원 복합 지수를 제안한 실용적 연구이나, Web-only 모드로 실증 검증의 깊이와 방법론적 엄밀성을 평가하기 어렵다.</div>
+  </section>
+</div>
+</body>
+</html>

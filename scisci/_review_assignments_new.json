@@ -1,0 +1,170 @@
+[
+  {
+    "slug": "385_Redefining_Academic_Performance_The_Dev",
+    "num": 385,
+    "title": "Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index",
+    "abstract": "The evaluation of academic performance using bibliometric indicators is central to quality assurance, promotion, and reward systems in higher education. However, widely used metrics, such as publication counts, total citations, and the h-index, face persistent limitations, including selective coverage of scholarly outputs, susceptibility to citation manipulation, insufficient adjustment for career length and publication continuity, and the uniform treatment of heterogeneous publication types and co-author contributions. To address these issues, this study proposes the NK index as a time- and contribution-adjusted composite scholarly performance measure that integrates (i) a broader set of citable scholarly outputs, (ii) publication- and citation-type scores, (iii) author contribution coefficients, and (iv) academic age and productive duration parameters. By combining output volume and citation impact within a single normalised score, the NK index aims to enable fairer comparisons across academics with different career trajectories when only bibliometric data are available.",
+    "authors": [
+      "Nalan Sabır Taştan"
+    ],
+    "date": "2026-03-26",
+    "arxiv_id": "",
+    "doi": "10.30586/pek.1821958",
+    "zotero_key": "9NRIM2RV",
+    "pdf_path": "",
+    "has_pdf": false
+  },
+  {
+    "slug": "386_Where_Do_Your_Citations_Come_From_Citat",
+    "num": 386,
+    "title": "Where Do Your Citations Come From? Citation-Constellation: A Free, Open-Source, No-Code, and Auditable Tool for Citation Network Decomposition with Complementary BARON and HEROCON Scores",
+    "abstract": "Standard citation metrics treat all citations as equal, obscuring the social and structural pathways through which scholarly influence propagates. I introduce Citation-Constellation, a freely available no-code tool for citation network analysis with two complementary bibliometric scores that decompose a researcher's citation profile by network proximity between citing and cited authors. BARON (Boundary-Anchored Research Outreach Network score) is a strict binary metric counting only citations from outside the detected collaborative network. HEROCON (Holistic Equilibrated Research Outreach CONstellation score) applies graduated weights assigning partial credit to in-group citations based on relationship proximity. The gap between scores serves as a diagnostic of inner-circle dependence. An extended abstract with full details appears in the paper.   The tool implements this through a phased architecture: (1) self-citation analysis, (2) co-authorship graph traversal, (3) temporal institutional affiliation matching via ROR, and (4) AI-agent-driven venue governance extraction using a local LLM. Phases 1-3 are fully operational; Phase 4 is under development. Key design choices include ORCID-validated author identity resolution, an UNKNOWN classification for citations with insufficient metadata, and comprehensive audit trails documenting every classification decision. A no-code web interface enables researchers to compute scores without programming, installation, or registration.   I present these scores as structural diagnostics, not quality indicators. BARON and HEROCON describe where in the social graph citations originate. They should not be used for hiring, promotion, or funding decisions. HEROCON weights are experimental and require empirical calibration.",
+    "authors": [
+      "Mahbub Ul Alam"
+    ],
+    "date": "2026-03-25",
+    "arxiv_id": "2603.24216v1",
+    "doi": "",
+    "zotero_key": "JMGRRMD8",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Where Do Your Citations Come From Citation-Constellation A Free Open-Source No-C.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "387_Mapping_Research_Funding_and_Outputs_at",
+    "num": 387,
+    "title": "Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries",
+    "abstract": "This poster was presented at the 30<sup>th</sup> Nordic Workshop on Bibliometrics and Research Policy (NWB 2025), in Bergen, Norway (https://www.nifu.no/nwb2025/). The research presented here was carried out within Springer Nature's Nature Research Intelligence team, in a broader project on measuring the socio-economic impact of research, led by Daren Howell. The author is grateful to the project group members for feedback and discussion of early versions of this work: James Bayliss, Jack England, Daren Howell, Alison Mercer, Vera Nienaber, Roland Payton, Inês Pote, and Alex Rubleva.<b>Competing interests</b>The research was created, and shared, as part of regular work duties at Springer Nature. Springer Nature is part-owned by the Holtzbrinck Group which also owns Digital Science, the provider of the Dimensions database used for this research and an owner of Figshare. This historical affiliation should not be taken to suggest any present or continuing connection with Springer Nature, or the Holtzbrinck Group, on the part of the author(s) beyond any conclusion of their employment.",
+    "authors": [
+      "Gard B. Jenset"
+    ],
+    "date": "2026-03-26",
+    "arxiv_id": "",
+    "doi": "10.6084/m9.figshare.31861333",
+    "zotero_key": "HFHMVKSK",
+    "pdf_path": "",
+    "has_pdf": false
+  },
+  {
+    "slug": "388_Linking_Global_Science_Funding_to_Resear",
+    "num": 388,
+    "title": "Linking Global Science Funding to Research Publications",
+    "abstract": "Funding acknowledgments in scholarly publications provide large-scale trace data on organizations that support scientific research. We present a dataset for linking global science funding organizations to research publications by systematically disambiguating unique funding acknowledgment strings extracted from publication metadata. Funder names are matched to standardized organizational identifiers using a multi-stage pipeline that combines lexical normalization, similarity-based clustering, rule-based matching, named entity recognition assistance, and manual validation. The resulting dataset links 1.9 million unique funder strings to canonical organization identifiers and records match types and unresolved cases to support transparency. Technical validation includes paper-level comparisons across bibliometric sources and manual verification against full-text acknowledgment sections, with reported recall and precision metrics. This dataset supports analyses of funding flows, institutional funding portfolios, regional representation, and concentration patterns in the global research system.",
+    "authors": [
+      "Jacob Aarup Dalsgaard",
+      "Filipi Nascimento Silva",
+      "Jin AI"
+    ],
+    "date": "2026-03-25",
+    "arxiv_id": "2603.24147v1",
+    "doi": "",
+    "zotero_key": "KS3G29PG",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Linking Global Science Funding to Research Publications.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "389_Do_Large_Language_Models_Reduce_Research",
+    "num": 389,
+    "title": "Do Large Language Models Reduce Research Novelty? Evidence from Information Systems Journals",
+    "abstract": "Large language models such as ChatGPT have increased scholarly output, but whether this productivity boost produces genuine intellectual advancement remains untested. I address this gap by measuring the semantic novelty of 13,847 articles published between 2020 and 2025 in 44 Information Systems journals. Using SPECTER2 embeddings, I operationalize novelty as the cosine distance between each paper and its nearest prior neighbors. A difference-in-differences design with the November 2022 release of ChatGPT as the treatment break reveals a heterogeneous pattern: authors affiliated with institutions in non-English-dominant countries show a 0.18 standard deviation decline in relative novelty compared to authors in English-dominant countries (beta = -0.176, p < 0.001), equivalent to a 7-percentile-point drop in the novelty distribution. This finding is robust across alternative novelty specifications, treatment break dates, and sub-samples, and survives a placebo test at a pre-treatment break. I interpret these results through the lens of construal level theory, proposing that LLMs function as proximity tools that shift researchers from abstract, exploratory thinking toward concrete, convention-following execution. The paper contributes to the growing debate on whether LLM-driven productivity gains come at the cost of intellectual diversity.",
+    "authors": [
+      "Ali Safari"
+    ],
+    "date": "2026-03-23",
+    "arxiv_id": "2603.22510v1",
+    "doi": "",
+    "zotero_key": "PAWVKJT6",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Do Large Language Models Reduce Research Novelty Evidence from Information Syste.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "390_The_Innovation_Recognition_Paradox_How",
+    "num": 390,
+    "title": "The Innovation Recognition Paradox: How Science Undervalues the Boundary-Crossing Work Women Produce",
+    "abstract": "Women and men pursue different but complementary forms of scientific innovation. Analyzing 261,452 solo-authored papers by U.S. scholars, with patterns confirmed by millions of multi-authored articles, we show that women more often bridge distant disciplines through novel reference combinations, while men more often recombine concepts within fields. Women's interdisciplinary innovations prove more disruptive and more prescient, yet science penalizes them for it. For equally innovative work, women's papers land in lower-prestige journals and tend to receive less downstream citation credit, though their disruptive impact is greater. These gaps narrow only at extreme levels of novelty, suggesting women must produce exceptionally surprising work to achieve parity. Men's within-field concept innovations, by contrast, attract recognition from disciplinary gatekeepers who control careers. The asymmetry reveals not a deficit in women's contributions but a reward structure that systematically undervalues the boundary-crossing work most likely to transform fields.",
+    "authors": [
+      "C. Biliotti",
+      "M. Riccaboni",
+      "J. W. Lockhart",
+      "J. A. Evans"
+    ],
+    "date": "2026-03-21",
+    "arxiv_id": "2603.20597v1",
+    "doi": "",
+    "zotero_key": "J63EF6KE",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\The Innovation Recognition Paradox How Science Undervalues the Boundary-Crossing.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "391_RenoBench_A_Citation_Parsing_Benchmark",
+    "num": 391,
+    "title": "RenoBench: A Citation Parsing Benchmark",
+    "abstract": "Accurate parsing of citations is necessary for machine-readable scholarly infrastructure. But, despite sustained interest in this problem, existing evaluation techniques are often not generalizable, based on synthetic data, or not publicly available. We introduce RenoBench, a public domain benchmark for citation parsing, sourced from PDFs released on four publishing ecosystems: SciELO, Redalyc, the Public Knowledge Project, and Open Research Europe. Starting from 161,000 annotated citations, we apply automated validation and feature-based sampling to produce a dataset of 10,000 citations spanning multiple languages, publication types, and platforms. We then evaluate a variety of citation parsing systems and report field-level precision and recall. Our results show strong performance from language models, particularly when fine-tuned. RenoBench enables reproducible, standardized evaluation of citation parsing systems, and provides a foundation for advancing automated citation parsing and metascientific research.",
+    "authors": [
+      "Parth Sarin",
+      "Juan Pablo Alperin",
+      "Adam Buttrick",
+      "Dione Mentis"
+    ],
+    "date": "2026-03-26",
+    "arxiv_id": "2603.25640v1",
+    "doi": "",
+    "zotero_key": "MU3T4DMW",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\RenoBench A Citation Parsing Benchmark.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "392_Reinforcing_Prestige_Journal_Citation_B",
+    "num": 392,
+    "title": "Reinforcing Prestige: Journal Citation Biases in Astronomy",
+    "abstract": "Citations are essential for recognizing scientific contributions, yet citation behavior is shaped by more than just relevance or quality. We analyzed approximately 255,000 refereed astronomy articles published between 2000 and 2025 to investigate how journals are cited relative to their publication volume and authorship context. We find that multidisciplinary journals receive disproportionately more citations, up to nine times higher than their share of articles, while field-specific journals are cited less frequently in proportion to their output. Citations to a journal also increase significantly when authors publish within it, a bias particularly pronounced in multidisciplinary journals. Although this effect has declined over the past decade, it remains notable. These patterns likely arise from a combination of topical clustering, institutional/individual publishing habits, and strategic referencing to align with editorial expectations. Our findings reveal persistent structural biases in scientific visibility and suggest that citation-based metrics should be used with greater awareness of the publishing context they reflect. We encourage authors, reviewers, and editors to remain mindful of these dynamics and strive for fairness and inclusivity when selecting references.",
+    "authors": [
+      "Vardan Adibekyan",
+      "Olivier Demangeon",
+      "Tiago Campante",
+      "Nuno Santos",
+      "Susana Barros",
+      "Artur Hakobyan"
+    ],
+    "date": "2026-03-26",
+    "arxiv_id": "2603.25349v1",
+    "doi": "",
+    "zotero_key": "54597HGC",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Reinforcing Prestige Journal Citation Biases in Astronomy.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "393_Beyond_Via_Analysis_and_Estimation_of_t",
+    "num": 393,
+    "title": "Beyond Via: Analysis and Estimation of the Impact of Large Language Models in Academic Papers",
+    "abstract": "Through an analysis of arXiv papers, we report several shifts in word usage that are likely driven by large language models (LLMs) but have not previously received sufficient attention, such as the increased frequency of \"beyond\" and \"via\" in titles and the decreased frequency of \"the\" and \"of\" in abstracts. Due to the similarities among different LLMs, experiments show that current classifiers struggle to accurately determine which specific model generated a given text in multi-class classification tasks. Meanwhile, variations across LLMs also result in evolving patterns of word usage in academic papers. By adopting a direct and highly interpretable linear approach and accounting for differences between models and prompts, we quantitatively assess these effects and show that real-world LLM usage is heterogeneous and dynamic.",
+    "authors": [
+      "Mingmeng Geng",
+      "Yuhang Dong",
+      "Thierry Poibeau"
+    ],
+    "date": "2026-03-26",
+    "arxiv_id": "2603.25638v1",
+    "doi": "",
+    "zotero_key": "7E2KRQIU",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Beyond Via Analysis and Estimation of the Impact of Large Language Models in Aca.pdf",
+    "has_pdf": true
+  },
+  {
+    "slug": "394_Systemic_Gendered_Citation_Imbalance_in",
+    "num": 394,
+    "title": "Systemic Gendered Citation Imbalance in Computer Science: Evidence from Conferences and Journals",
+    "abstract": "Gender imbalance persists across science, technology, engineering, and mathematics (STEM) fields, including computer science, where it appears in researcher demographics, productivity, recognition, hiring, and career progression. Given computer science's rapid expansion and global influence, addressing this imbalance is essential for broadening participation and fueling innovation. Although journal-oriented disciplines exhibit consistent gender imbalances in citation practices, it remains unclear whether similar patterns arise in the conference-centric culture of computer science. Here, we systematically investigate gender imbalance in citations of conference and journal papers in computer science. We find that papers for which a woman is listed as either first or last author receive fewer citations than expected, partly because of homophilic citation tendencies (i.e., authors tend to cite papers that share specific attributes). This imbalance is especially pronounced for conference papers--particularly those published at top-tier venues--relative to journals. Moreover, we find that the prominence of the first or last author and the structure of their local co-authorship networks are potential drivers of these imbalances. By exploring how conference-centric publishing practices can amplify systemic imbalances in computer science, our study offers insights that may inform efforts to foster more equitable representation in academia.",
+    "authors": [
+      "Kazuki Nakajima",
+      "Yuya Sasaki",
+      "Sohei Tokuno",
+      "George Fletcher"
+    ],
+    "date": "2026-03-24",
+    "arxiv_id": "2603.23273v1",
+    "doi": "",
+    "zotero_key": "HQCA3EZ6",
+    "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Systemic Gendered Citation Imbalance in Computer Science Evidence from Conferenc.pdf",
+    "has_pdf": true
+  }
+]

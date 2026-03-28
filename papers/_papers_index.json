@@ -9727,5 +9727,294 @@
     "has_pdf": false,
     "has_figures": false,
     "review_date": "2026-03-27"
+  },
+  {
+    "slug": "385_Redefining_Academic_Performance_The_Dev",
+    "title": "Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index",
+    "authors": [
+      "Nalan Sabır Taştan"
+    ],
+    "date": "2026-03-26",
+    "doi": "10.30586/pek.1821958",
+    "arxiv_id": "",
+    "zotero_key": "9NRIM2RV",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Citation & Impact Analysis",
+    "all_categories": [
+      "Citation & Impact Analysis",
+      "Research Careers & Mobility",
+      "Scientific Collaboration & Networks"
+    ],
+    "score": 3.0,
+    "essence": "NK index란 무엇이며 기존 bibliometric 지표의 어떤 문제를 해결하는가? h-index, 총 인용수, 논문 수 등 기존 지표는 경력 기간 차이, 공저자 기여 불균등, 출판 유형의 이질성을 무시한다. NK index는 (i) 광범위한 인용 가능 학술 산출물, (ii) 출판·인용 유형별 가중 점수, (iii) 저자 기여 계수, (iv) 학술 연령",
+    "has_pdf": false,
+    "has_figures": false,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "386_Where_Do_Your_Citations_Come_From_Citat",
+    "title": "Where Do Your Citations Come From? Citation-Constellation: A Free, Open-Source, No-Code, and Auditable Tool for Citation Network Decomposition with Complementary BARON and HEROCON Scores",
+    "authors": [
+      "Mahbub Ul Alam"
+    ],
+    "date": "2026-03-25",
+    "doi": "",
+    "arxiv_id": "2603.24216v1",
+    "zotero_key": "JMGRRMD8",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Citation & Impact Analysis",
+    "all_categories": [
+      "Citation & Impact Analysis",
+      "Scientific Collaboration & Networks",
+      "Science Policy & Funding",
+      "Research Careers & Mobility",
+      "AI & LLM in Science"
+    ],
+    "score": 4.0,
+    "essence": "인용은 어디서 오는가 — 진정한 외부 인정인가, 아니면 사회적 네트워크의 증폭 효과인가? Citation-Constellation은 이 질문에 답하는 오픈소스 도구다. BARON(Boundary-Anchored Research Outreach Network score)은 협업 네트워크 외부에서 온 인용만 엄격하게 카운트하는 이진 지표이고, HEROCON(H",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "387_Mapping_Research_Funding_and_Outputs_at",
+    "title": "Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries",
+    "authors": [
+      "Gard B. Jenset"
+    ],
+    "date": "2026-03-26",
+    "doi": "10.6084/m9.figshare.31861333",
+    "arxiv_id": "",
+    "zotero_key": "HFHMVKSK",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Science Policy & Funding",
+    "all_categories": [
+      "Science Policy & Funding",
+      "Citation & Impact Analysis"
+    ],
+    "score": 2.0,
+    "essence": "북유럽 국가들의 연구 자금 지원과 산출물은 주제 수준에서 어떻게 연결되는가? 이 포스터는 Springer Nature의 Nature Research Intelligence 팀이 수행한 연구로, 연구의 사회경제적 영향 측정 프로젝트의 일환으로 Dimensions 데이터베이스를 활용해 북유럽 국가들의 연구 펀딩과 논문 산출물을 주제(topic) 단위로 매핑한다",
+    "has_pdf": false,
+    "has_figures": false,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "388_Linking_Global_Science_Funding_to_Resear",
+    "title": "Linking Global Science Funding to Research Publications",
+    "authors": [
+      "Jacob Aarup Dalsgaard",
+      "Filipi Nascimento Silva",
+      "Jin AI"
+    ],
+    "date": "2026-03-25",
+    "doi": "",
+    "arxiv_id": "2603.24147v1",
+    "zotero_key": "KS3G29PG",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Citation & Impact Analysis",
+    "all_categories": [
+      "Citation & Impact Analysis",
+      "Gender, Diversity & Equity",
+      "Science Policy & Funding",
+      "Research Careers & Mobility"
+    ],
+    "score": 4.0,
+    "essence": "전 지구적 과학 펀딩을 연구 논문과 어떻게 연결할 수 있는가? 이 논문은 Web of Science에서 추출한 **740만 개의 고유 펀딩 감사(acknowledgment) 문자열**을 OpenAlex와 ROR의 표준 기관 식별자에 매핑한 대규모 데이터셋을 제시한다. 렉시컬 정규화, MinHash 유사도 클러스터링, 규칙 기반 매칭, 개체명 인식(NER),",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "389_Do_Large_Language_Models_Reduce_Research",
+    "title": "Do Large Language Models Reduce Research Novelty? Evidence from Information Systems Journals",
+    "authors": [
+      "Ali Safari"
+    ],
+    "date": "2026-03-23",
+    "doi": "",
+    "arxiv_id": "2603.22510v1",
+    "zotero_key": "PAWVKJT6",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "AI & LLM in Science",
+    "all_categories": [
+      "AI & LLM in Science",
+      "Research Careers & Mobility",
+      "Gender, Diversity & Equity",
+      "Knowledge Production & Innovation",
+      "Research Integrity & Publishing"
+    ],
+    "score": 4.0,
+    "essence": "LLM은 연구의 새로움을 실제로 줄이는가? 답은 조건부 '예'다. ChatGPT 출시(2022년 11월)를 자연 실험으로 활용한 이중차분(difference-in-differences) 분석에서, **비영어권 국가 소속 연구자들은 영어권 연구자 대비 상대적 novelty가 0.18 표준편차 감소**했다 (β = -0.176, p < 0.001, 7 백분위점",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "390_The_Innovation_Recognition_Paradox_How",
+    "title": "The Innovation Recognition Paradox: How Science Undervalues the Boundary-Crossing Work Women Produce",
+    "authors": [
+      "C. Biliotti",
+      "M. Riccaboni",
+      "J. W. Lockhart",
+      "J. A. Evans"
+    ],
+    "date": "2026-03-21",
+    "doi": "",
+    "arxiv_id": "2603.20597v1",
+    "zotero_key": "J63EF6KE",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Research Careers & Mobility",
+    "all_categories": [
+      "Research Careers & Mobility",
+      "Knowledge Production & Innovation",
+      "Citation & Impact Analysis",
+      "Scientific Collaboration & Networks",
+      "Science Policy & Funding",
+      "Research Integrity & Publishing"
+    ],
+    "score": 5.0,
+    "essence": "과학은 왜 여성이 생산하는 경계 초월 연구를 과소평가하는가? 261,452편의 미국 연구자 단독 저술 논문을 분석한 결과, **여성은 원거리 학문 간 연결(context novelty)을, 남성은 분야 내 개념 재조합(content novelty)을 더 자주 추구한다.** 역설적으로, 여성의 학제간 혁신은 더 파괴적이고 더 선견지명이 있지만, 과학은 이를 ",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "391_RenoBench_A_Citation_Parsing_Benchmark",
+    "title": "RenoBench: A Citation Parsing Benchmark",
+    "authors": [
+      "Parth Sarin",
+      "Juan Pablo Alperin",
+      "Adam Buttrick",
+      "Dione Mentis"
+    ],
+    "date": "2026-03-26",
+    "doi": "",
+    "arxiv_id": "2603.25640v1",
+    "zotero_key": "MU3T4DMW",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Citation & Impact Analysis",
+    "all_categories": [
+      "Citation & Impact Analysis",
+      "AI & LLM in Science",
+      "Research Careers & Mobility",
+      "Knowledge Production & Innovation",
+      "Research Integrity & Publishing"
+    ],
+    "score": 4.0,
+    "essence": "인용 파싱(citation parsing) 시스템을 공정하고 재현 가능하게 평가할 표준 벤치마크가 존재하는가? 기존 평가 방법은 합성 데이터 기반이거나, 특정 시스템에 한정되거나, 공개되지 않아 일반화가 어렵다. RenoBench는 SciELO, Redalyc, Public Knowledge Project, Open Research Europe 등 **4개",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "392_Reinforcing_Prestige_Journal_Citation_B",
+    "title": "Reinforcing Prestige: Journal Citation Biases in Astronomy",
+    "authors": [
+      "Vardan Adibekyan",
+      "Olivier Demangeon",
+      "Tiago Campante",
+      "Nuno Santos",
+      "Susana Barros",
+      "Artur Hakobyan"
+    ],
+    "date": "2026-03-26",
+    "doi": "",
+    "arxiv_id": "2603.25349v1",
+    "zotero_key": "54597HGC",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Citation & Impact Analysis",
+    "all_categories": [
+      "Citation & Impact Analysis",
+      "Research Integrity & Publishing",
+      "Gender, Diversity & Equity",
+      "Research Careers & Mobility"
+    ],
+    "score": 4.0,
+    "essence": "천문학에서 저널 인용 편향은 얼마나 심각하며, 어떤 패턴으로 나타나는가? 2000-2025년 사이 출판된 약 255,000편의 천문학 논문을 분석한 결과, **다학제 저널(Nature, Science 등)은 논문 점유율 대비 최대 9배 더 많은 인용**을 받는다. 저자가 특정 저널에 논문을 게재하면 그 저널에 대한 인용도 유의미하게 증가하는 '자기 기여 편",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "393_Beyond_Via_Analysis_and_Estimation_of_t",
+    "title": "Beyond Via: Analysis and Estimation of the Impact of Large Language Models in Academic Papers",
+    "authors": [
+      "Mingmeng Geng",
+      "Yuhang Dong",
+      "Thierry Poibeau"
+    ],
+    "date": "2026-03-26",
+    "doi": "",
+    "arxiv_id": "2603.25638v1",
+    "zotero_key": "7E2KRQIU",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "AI & LLM in Science",
+    "all_categories": [
+      "AI & LLM in Science"
+    ],
+    "score": 3.0,
+    "essence": "학술 논문에서 LLM의 영향은 어떻게 측정할 수 있으며 실제로 어느 정도인가? arXiv 논문 분석을 통해 LLM이 구동하는 단어 사용 패턴 변화를 포착했다. 제목에서는 \"beyond\"와 \"via\"의 빈도가 증가하고, 초록에서는 \"the\"와 \"of\"의 빈도가 감소한다. 현재 분류기들은 어떤 특정 모델이 텍스트를 생성했는지 멀티클래스 분류에서 정확히 판별하기",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
+  },
+  {
+    "slug": "394_Systemic_Gendered_Citation_Imbalance_in",
+    "title": "Systemic Gendered Citation Imbalance in Computer Science: Evidence from Conferences and Journals",
+    "authors": [
+      "Kazuki Nakajima",
+      "Yuya Sasaki",
+      "Sohei Tokuno",
+      "George Fletcher"
+    ],
+    "date": "2026-03-24",
+    "doi": "",
+    "arxiv_id": "2603.23273v1",
+    "zotero_key": "HQCA3EZ6",
+    "topics": [
+      "scisci"
+    ],
+    "primary_topic": "scisci",
+    "primary_category": "Research Careers & Mobility",
+    "all_categories": [
+      "Research Careers & Mobility",
+      "Scientific Collaboration & Networks",
+      "Gender, Diversity & Equity",
+      "Citation & Impact Analysis",
+      "Knowledge Production & Innovation",
+      "Research Integrity & Publishing"
+    ],
+    "score": 4.0,
+    "essence": "컴퓨터과학의 컨퍼런스 중심 출판 문화는 성별 인용 불균형을 어떻게 증폭시키는가? 컴퓨터과학의 여성 제1저자/마지막 저자 논문은 기대치보다 인용이 적으며, 이는 동종선호(homophilic citation tendency) — 저자들이 자신과 유사한 특성을 공유하는 논문을 인용하려는 경향 — 에 부분적으로 기인한다. 이 불균형은 **컨퍼런스 논문에서 특히 두",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-28"
   }
 ]

@@ -1,0 +1,110 @@
+{
+  "registered": [
+    {
+      "title": "Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index",
+      "key": "9NRIM2RV",
+      "pdf": false,
+      "pdf_path": "",
+      "attached": false,
+      "arxiv_id": "",
+      "doi": "10.30586/pek.1821958"
+    },
+    {
+      "title": "Where Do Your Citations Come From? Citation-Constellation: A Free, Open-Source, No-Code, and Auditable Tool for Citation Network Decomposition with Complementary BARON and HEROCON Scores",
+      "key": "JMGRRMD8",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Where Do Your Citations Come From Citation-Constellation A Free Open-Source No-C.pdf",
+      "attached": true,
+      "arxiv_id": "2603.24216v1",
+      "doi": ""
+    },
+    {
+      "title": "Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries",
+      "key": "HFHMVKSK",
+      "pdf": false,
+      "pdf_path": "",
+      "attached": false,
+      "arxiv_id": "",
+      "doi": "10.6084/m9.figshare.31861333"
+    },
+    {
+      "title": "Linking Global Science Funding to Research Publications",
+      "key": "KS3G29PG",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Linking Global Science Funding to Research Publications.pdf",
+      "attached": true,
+      "arxiv_id": "2603.24147v1",
+      "doi": ""
+    },
+    {
+      "title": "Do Large Language Models Reduce Research Novelty? Evidence from Information Systems Journals",
+      "key": "PAWVKJT6",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Do Large Language Models Reduce Research Novelty Evidence from Information Syste.pdf",
+      "attached": true,
+      "arxiv_id": "2603.22510v1",
+      "doi": ""
+    },
+    {
+      "title": "The Innovation Recognition Paradox: How Science Undervalues the Boundary-Crossing Work Women Produce",
+      "key": "J63EF6KE",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\The Innovation Recognition Paradox How Science Undervalues the Boundary-Crossing.pdf",
+      "attached": true,
+      "arxiv_id": "2603.20597v1",
+      "doi": ""
+    },
+    {
+      "title": "RenoBench: A Citation Parsing Benchmark",
+      "key": "MU3T4DMW",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\RenoBench A Citation Parsing Benchmark.pdf",
+      "attached": true,
+      "arxiv_id": "2603.25640v1",
+      "doi": ""
+    },
+    {
+      "title": "Reinforcing Prestige: Journal Citation Biases in Astronomy",
+      "key": "54597HGC",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Reinforcing Prestige Journal Citation Biases in Astronomy.pdf",
+      "attached": true,
+      "arxiv_id": "2603.25349v1",
+      "doi": ""
+    },
+    {
+      "title": "Beyond Via: Analysis and Estimation of the Impact of Large Language Models in Academic Papers",
+      "key": "7E2KRQIU",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Beyond Via Analysis and Estimation of the Impact of Large Language Models in Aca.pdf",
+      "attached": true,
+      "arxiv_id": "2603.25638v1",
+      "doi": ""
+    },
+    {
+      "title": "Systemic Gendered Citation Imbalance in Computer Science: Evidence from Conferences and Journals",
+      "key": "HQCA3EZ6",
+      "pdf": true,
+      "pdf_path": "C:\\Users\\jehyu\\GoogleDrive\\Zotero\\Systemic Gendered Citation Imbalance in Computer Science Evidence from Conferenc.pdf",
+      "attached": true,
+      "arxiv_id": "2603.23273v1",
+      "doi": ""
+    }
+  ],
+  "already_exists": [],
+  "failed": [],
+  "manual_download": [
+    {
+      "title": "Redefining Academic Performance: The Development of the NK Composite Scholarly Performance Index",
+      "arxiv_id": "",
+      "doi": "10.30586/pek.1821958",
+      "pdf_url": "https://doi.org/10.30586/pek.1821958"
+    },
+    {
+      "title": "Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries",
+      "arxiv_id": "",
+      "doi": "10.6084/m9.figshare.31861333",
+      "pdf_url": "https://doi.org/10.6084/m9.figshare.31861333"
+    }
+  ]
+}

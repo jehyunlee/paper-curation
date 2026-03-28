@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linking Global Science Funding to Research Publications</title>
+<link href="https://fonts.googleapis.com/css2?family=KoPub+Dotum:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root { --accent: #2374D6; --accent-light: #EBF3FF; --text: #1a1a1a; --muted: #555; --border: #dde3ed; --bg: #f8f9fc; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'KoPub Dotum', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; font-size: 15px; }
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back { margin-bottom: 1.5rem; }
+  .back a { color: var(--accent); text-decoration: none; font-size: 14px; font-weight: 700; }
+  .back a:hover { text-decoration: underline; }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 1rem; }
+  .meta { background: var(--accent-light); border-left: 4px solid var(--accent); padding: 0.75rem 1rem; border-radius: 0 6px 6px 0; font-size: 13px; color: var(--muted); line-height: 1.8; }
+  .meta strong { color: var(--text); }
+  .meta a { color: var(--accent); text-decoration: none; }
+  .meta a:hover { text-decoration: underline; }
+  .mode-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  section { margin-bottom: 2rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--accent-light); }
+  h3 { font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.5rem; color: var(--muted); }
+  p { margin-bottom: 0.75rem; }
+  ul { padding-left: 1.4rem; margin-bottom: 0.75rem; }
+  ul li { margin-bottom: 0.4rem; }
+  .fig-wrap { margin: 1.5rem 0; text-align: center; }
+  .fig-wrap img { max-width: 100%; border: 1px solid var(--border); border-radius: 6px; }
+  .fig-caption { font-size: 13px; color: var(--muted); margin-top: 0.5rem; font-style: italic; }
+  .originality-item { background: var(--accent-light); border-radius: 6px; padding: 0.6rem 0.9rem; margin-bottom: 0.5rem; font-size: 14px; }
+  .tag { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-right: 4px; font-weight: 700; }
+  .tag.finding { background: #28a745; }
+  .tag.novelty { background: #e67e22; }
+  .tag.action { background: #8e44ad; }
+  .tag.authorship { background: #2980b9; }
+  .tag.continuation { background: #7f8c8d; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 14px; }
+  th { background: var(--accent); color: #fff; padding: 0.5rem 0.75rem; text-align: left; }
+  td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--accent-light); }
+  .total-comment { margin-top: 0.75rem; padding: 0.75rem 1rem; background: #fff8e1; border-left: 4px solid #f39c12; border-radius: 0 6px 6px 0; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+  <header>
+    <h1>Linking Global Science Funding to Research Publications</h1>
+    <div class="meta">
+      <strong>저자</strong>: Jacob Aarup Dalsgaard, Filipi Nascimento Silva, Jin AI &nbsp;|&nbsp;
+      <strong>날짜</strong>: 2026-03-25 &nbsp;|&nbsp;
+      <strong>Journal</strong>: arXiv preprint &nbsp;|&nbsp;
+      <strong>arXiv</strong>: <a href="https://arxiv.org/abs/2603.24147" target="_blank">2603.24147</a> &nbsp;|&nbsp;
+      <strong>모드</strong>: <span class="mode-badge pdf">PDF</span>
+    </div>
+  </header>
+  <hr>
+
+  <section>
+    <h2>Essence</h2>
+    <p>전 지구적 과학 펀딩을 연구 논문과 어떻게 연결할 수 있는가? 이 논문은 Web of Science에서 추출한 <strong>740만 개의 고유 펀딩 감사(acknowledgment) 문자열</strong>을 OpenAlex와 ROR의 표준 기관 식별자에 매핑한 대규모 데이터셋을 제시한다. 렉시컬 정규화, MinHash 유사도 클러스터링, 규칙 기반 매칭, 개체명 인식(NER), 수동 검증을 결합한 다단계 파이프라인을 통해 <strong>190만 개의 고유 펀더 문자열</strong>을 표준 식별자에 연결했다. Dimensions은 고소득 국가 펀더에 편중되고, WoS는 더 광범위한 지리적 커버리지를 가짐이 처음으로 정량적으로 확인됐다.</p>
+
+    <div class="fig-wrap">
+      <img src="figures/fig1.png" alt="Figure 1">
+      <div class="fig-caption">Figure 1: 다단계 펀더 명칭 disambiguation 파이프라인 — 렉시컬 정규화부터 수동 검증까지의 처리 흐름</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Originality (Abstract 기반)</h2>
+    <div class="originality-item">
+      <span class="tag authorship">authorship</span><span class="tag novelty">novelty</span><span class="tag action">action</span>
+      "We present a dataset for linking global science funding organizations to research publications by systematically disambiguating unique funding acknowledgment strings extracted from publication metadata."
+    </div>
+    <div class="originality-item">
+      <span class="tag novelty">novelty</span><span class="tag finding">finding</span>
+      "The resulting dataset links 1.9 million unique funder strings to canonical organization identifiers and records match types and unresolved cases to support transparency."
+    </div>
+    <div class="originality-item">
+      <span class="tag finding">finding</span>
+      "Technical validation includes paper-level comparisons across bibliometric sources and manual verification against full-text acknowledgment sections, with reported recall and precision metrics."
+    </div>
+    <div class="originality-item">
+      <span class="tag continuation">continuation</span>
+      "This dataset supports analyses of funding flows, institutional funding portfolios, regional representation, and concentration patterns in the global research system."
+    </div>
+  </section>
+
+  <section>
+    <h2>How (방법론)</h2>
+    <ul>
+      <li><strong>데이터 소스</strong>: Web of Science 출판 메타데이터에서 740만 개 펀딩 감사 문자열 추출</li>
+      <li><strong>다단계 disambiguation 파이프라인</strong>: 렉시컬 정규화 → MinHash LSH 클러스터링 → 규칙 기반 매칭 → NER 보조 → 유사도 폴백 → 수동 검증</li>
+      <li><strong>매핑 대상</strong>: OpenAlex 및 ROR(Research Organization Registry) 표준 식별자</li>
+      <li>모호성을 보존하는 접근: 미매핑 및 복수 매핑 문자열도 투명하게 보존</li>
+      <li><strong>검증</strong>: 서지 소스 간 논문 단위 비교, 전문 acknowledgment 섹션 수동 검증, recall·precision 지표 보고</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Why (중요성)</h2>
+    <ul>
+      <li>펀딩 감사 문자열의 비표준화로 인한 측정 오류는 과학 정책 연구의 신뢰성을 심각하게 훼손</li>
+      <li>Dimensions과 WoS 간 Global South 펀더 커버리지 차이를 처음으로 정량화 — 데이터베이스 선택이 분석 결론에 영향</li>
+      <li>190만 개 펀더-식별자 매핑 데이터셋은 글로벌 과학 펀딩 연구의 핵심 공공 인프라</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Limitation</h2>
+    <h3>저자들이 언급한 한계</h3>
+    <ul>
+      <li>포괄적 통합보다 모호성을 보존하는 접근으로, 일부 매핑은 미해결 상태로 남음</li>
+      <li>WoS 데이터에 기반하여 OpenAlex 등 다른 소스와의 커버리지 차이 존재</li>
+      <li>Global South 지역의 메타데이터 불완전성으로 해당 지역 펀더 커버리지 제한</li>
+    </ul>
+    <h3>자체판단 아쉬운 점</h3>
+    <ul>
+      <li>다단계 파이프라인의 각 단계별 기여도가 명확히 분리되지 않음</li>
+      <li>NER 모델의 구체적 아키텍처와 훈련 데이터가 불명확</li>
+      <li>시간에 따른 펀더 명칭 변화(기관 합병, 명칭 변경)에 대한 처리 방식 미명시</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Further Study</h2>
+    <ul>
+      <li>데이터셋을 활용한 글로벌 펀딩 집중도 및 지역 형평성 분석</li>
+      <li>펀딩-산출물 연계를 통한 특정 펀더의 연구 임팩트 추적</li>
+      <li>다른 bibliometric 데이터베이스로 파이프라인 확장</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>평가</h2>
+    <table>
+      <tr><th>항목</th><th>점수</th></tr>
+      <tr><td>Novelty</td><td>4/5</td></tr>
+      <tr><td>Technical Soundness</td><td>4/5</td></tr>
+      <tr><td>Significance</td><td>5/5</td></tr>
+      <tr><td>Clarity</td><td>4/5</td></tr>
+      <tr><td>Overall</td><td>4/5</td></tr>
+    </table>
+    <div class="total-comment">글로벌 과학 펀딩 연구의 핵심 인프라 문제를 체계적으로 해결한 데이터 논문으로, 190만 개 펀더 매핑 데이터셋과 데이터베이스 간 편향의 정량적 비교는 과학계량학 및 과학 정책 연구의 중요한 기반이 된다.</div>
+  </section>
+</div>
+</body>
+</html>
