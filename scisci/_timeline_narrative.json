@@ -1,0 +1,182 @@
+{
+  "executive_summary_ko": "과학의 과학(Science of Science) 분야는 1965년 초기 계량서지학적 기초 이론과 인용 분석에서 시작하여, 과학 네트워크의 구조와 동학, 그리고 과학의 사회적・윤리적 측면에 대한 심층 연구로 진화해왔습니다. 2000년대에는 h-index, g-index 등 새로운 영향력 지표가 등장하고 복잡계 네트워크 과학이 발전하면서 과학 협업과 팀 연구의 중요성이 부각되었습니다. 2010년대 중반부터는 재현성 위기, 연구 부정행위, 그리고 젠더 및 다양성 불평등 문제가 주요 논의 대상으로 떠오르며 과학 시스템의 건전성과 형평성에 대한 비판적 성찰이 활발해졌습니다. 2020년대에는 S2ORC, OpenAlex, SciSciNet과 같은 대규모 오픈 학술 데이터베이스가 구축되며 연구의 데이터 기반이 크게 확장되었고, 최근 대규모 언어 모델(LLM)의 등장은 AI를 활용한 과학 예측 및 평가 연구라는 새로운 지평을 열며 이 분야의 가장 중요한 동력으로 부상하고 있습니다.\n\n이 분야의 주목할 만한 연구로는 \"Why Most Published Research Findings Are False\" (Ioannidis, 2005)가 현행 연구 관행이 초래하는 재현성 문제를 경고하며 큰 파장을 일으켰습니다. \"The Increasing Dominance of Teams in Production of Knowledge\" (Wuchty et al., 2007)는 팀 연구가 개인 연구보다 더 큰 영향력을 가진다는 것을 실증하여 과학 협업의 중요성을 강조했습니다. 최근 연구에서는 \"Large teams develop and small teams disrupt science and technology\" (Wu et al., 2019)와 같이 팀 규모에 따른 과학적 역할의 차이를 밝혀냈으며, \"Papers and patents are becoming less disruptive over time\" (Park et al., 2023)는 혁신의 감소라는 중요 현상을 정량화했습니다. 특히 ",
+  "category_analyses": {
+    "Scientific Collaboration & Networks": {
+      "sub_themes": [
+        {
+          "name": "Foundational Network Structures & Dynamics",
+          "start_year": "1998",
+          "peak_year": "2014"
+        },
+        {
+          "name": "Advanced Methodologies for Mapping & Analysis",
+          "start_year": "2008",
+          "peak_year": "2025"
+        },
+        {
+          "name": "Collaboration Mechanisms, Innovation & Impact",
+          "start_year": "2019",
+          "peak_year": "2026"
+        },
+        {
+          "name": "The Science of Science (SciSci) in a Global Context",
+          "start_year": "2018",
+          "peak_year": "2025"
+        }
+      ]
+    },
+    "Research Careers & Mobility": {
+      "sub_themes": [
+        {
+          "name": "Individual Career Dynamics & Productivity",
+          "start_year": "2009",
+          "peak_year": "2025"
+        },
+        {
+          "name": "Academic Environment & Social Capital",
+          "start_year": "2010",
+          "peak_year": "2020"
+        },
+        {
+          "name": "Scholar Mobility & Network Dynamics",
+          "start_year": "2020",
+          "peak_year": "2023"
+        },
+        {
+          "name": "Equity, Bias, & Recognition",
+          "start_year": "2022",
+          "peak_year": "2022"
+        }
+      ]
+    },
+    "Knowledge Production & Innovation": {
+      "sub_themes": [
+        {
+          "name": "Dynamics of Knowledge Creation & Structure",
+          "start_year": "1999",
+          "peak_year": "2024"
+        },
+        {
+          "name": "Human & Organizational Dimensions of Innovation",
+          "start_year": "2007",
+          "peak_year": "2020"
+        },
+        {
+          "name": "Advanced Methodologies & AI in Science of Science",
+          "start_year": "2019",
+          "peak_year": "2026"
+        }
+      ]
+    },
+    "Gender, Diversity & Equity": {
+      "sub_themes": [
+        {
+          "name": "Systemic Structures of Inequality",
+          "start_year": "2015",
+          "peak_year": "2021"
+        },
+        {
+          "name": "Diversity's Impact on Scientific Productivity & Innovation",
+          "start_year": "2018",
+          "peak_year": "2022"
+        },
+        {
+          "name": "Nuancing Bias, Paradoxes & Intersectional Disadvantage",
+          "start_year": "2017",
+          "peak_year": "2022"
+        },
+        {
+          "name": "Advancing Science of Science Methodology & Infrastructure",
+          "start_year": "2023",
+          "peak_year": "2026"
+        }
+      ]
+    },
+    "Citation & Impact Analysis": {
+      "sub_themes": [
+        {
+          "name": "Foundational Theories & Core Citation Metrics",
+          "start_year": "1965",
+          "peak_year": "2026"
+        },
+        {
+          "name": "Visualizing & Mapping Knowledge Structures",
+          "start_year": "2009",
+          "peak_year": "2026"
+        },
+        {
+          "name": "Advanced Impact Dynamics & Predictive Analytics",
+          "start_year": "2013",
+          "peak_year": "2026"
+        },
+        {
+          "name": "Computational & AI-Driven Scientometrics",
+          "start_year": "2018",
+          "peak_year": "2026"
+        }
+      ]
+    },
+    "AI & LLM in Science": {
+      "sub_themes": [
+        {
+          "name": "Foundational Scholarly Data Systems & Infrastructure",
+          "start_year": "2012",
+          "peak_year": "2026"
+        },
+        {
+          "name": "Methodological Advancements for Scientific Insight",
+          "start_year": "2012",
+          "peak_year": "2025"
+        },
+        {
+          "name": "LLMs' Applications in Science of Science & Communication",
+          "start_year": "2023",
+          "peak_year": "2026"
+        },
+        {
+          "name": "Critical Assessment & Ethical Implications of LLM Adoption",
+          "start_year": "2025",
+          "peak_year": "2026"
+        }
+      ]
+    },
+    "Science Policy & Funding": {
+      "sub_themes": [
+        {
+          "name": "Funding Allocation, Equity & Reform",
+          "start_year": "2014",
+          "peak_year": "2023"
+        },
+        {
+          "name": "Science Impact, Public Value & Assessment",
+          "start_year": "2022",
+          "peak_year": "2025"
+        },
+        {
+          "name": "External Forces & Shaping Dynamics of Science",
+          "start_year": "2021",
+          "peak_year": "2026"
+        }
+      ]
+    },
+    "Research Integrity & Publishing": {
+      "sub_themes": [
+        {
+          "name": "Diagnosing the Crisis in Research Validity",
+          "start_year": "2005",
+          "peak_year": "2018"
+        },
+        {
+          "name": "Evolving Landscape of Scholarly Publishing",
+          "start_year": "2015",
+          "peak_year": "2018"
+        },
+        {
+          "name": "Broader Science Engagement & Communication in the Digital Age",
+          "start_year": "2026",
+          "peak_year": "2026"
+        }
+      ]
+    }
+  }
+}

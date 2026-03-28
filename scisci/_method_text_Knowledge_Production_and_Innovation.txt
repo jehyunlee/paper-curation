@@ -1,0 +1,52 @@
+## Category Timeline: Knowledge Production & Innovation (1999–2026)
+
+### SUB-THEME A: Dynamics of Knowledge Creation & Structure (1999→2024, Evolving)
+This theme investigates the underlying mechanisms, structural properties, and evolutionary patterns of scientific and technological knowledge. It moves from foundational network principles to sophisticated measures of innovation and mapping knowledge landscapes.
+Branches into:
+- **"Network Formation & Scaling Laws"** (1999–present): Barabási & Albert (1999) establishes the fundamental principles of network growth and preferential attachment, explaining power-law distributions in scientific and other complex networks, foundational for understanding knowledge structures.
+- **"Quantifying Novelty & Disruption"** (2017–2023): Marked by Funk & Owen-Smith (2017) introducing the dynamic CD (Consolidation-Disruption) index to measure technological change, and Park et al. (2023) applying it at scale to reveal a systemic decline in the disruptiveness of science and technology over time.
+- **"Knowledge Landscape Exploration"** (2024–present): Leydesdorff & Rafols (2024) employs GIS techniques to construct knowledge spaces, analyzing how scientists navigate between exploiting existing "hotspots" and exploring new opportunities.
+Interaction: "Network Formation & Scaling Laws" provides the foundational concepts and tools for "Quantifying Novelty & Disruption" and "Knowledge Landscape Exploration", both of which rely on understanding the structural evolution of knowledge networks. The findings on "Quantifying Novelty & Disruption" directly inform questions explored in "Knowledge Landscape Exploration" regarding the search for new opportunities.
+
+### SUB-THEME B: Human & Organizational Dimensions of Innovation (2007→2020, Active)
+This theme explores the human and organizational factors influencing knowledge production, focusing on collaboration patterns, individual/team trajectories, and the social reception of research.
+Branches into:
+- **"The Rise of Collaborative Research"** (2007–present): Wuchty et al. (2007) empirically demonstrates the increasing dominance of teams in knowledge production and their higher impact compared to individual research.
+- **"Trajectories of Failure & Success"** (2019–present): Wang et al. (2019) analyzes large-scale data to distinguish between those who eventually succeed after repeated failures and those who do not, across science, startups, and security.
+- **"Social Attention & Impact Beyond Citations"** (2020–present): Hossain et al. (2020) investigates whether novel papers attract more immediate social attention using Altmetric Attention Scores and other social media data, expanding impact measurement beyond traditional citations.
+Interaction: Insights from "The Rise of Collaborative Research" inform the understanding of "Trajectories of Failure & Success" within teams. The impact dynamics studied in "Social Attention & Impact Beyond Citations" often reflect the output of both individual and collaborative efforts, linking back to the increasing prominence of teams.
+
+### SUB-THEME C: Advanced Methodologies & AI in Science of Science (2019→2026, Visionary)
+This theme focuses on the development and application of advanced computational methodologies, particularly Artificial Intelligence, to transform how Science of Science research is conducted and accelerate knowledge discovery.
+Branches into:
+- **"AI for Latent Knowledge Discovery"** (2019–present): Tshitoyan et al. (2019) showcases the power of unsupervised word embeddings (mat2vec) to capture latent knowledge from materials science literature and predict future discoveries.
+- **"AI-Driven Automation of SoS"** (2025–present): Sugimoto et al. (2025) defines AI4SoS, envisioning AI as a foundational element to automate data processing, analysis, and discovery across the entire Science of Science research pipeline.
+- **"Integrated Science Mapping Frameworks"** (2026–present): Van Eck & Waltman (2026) proposes a structurally integrated framework to address inconsistencies in thematic evolution analysis, leveraging advanced computational approaches for more robust science mapping.
+Interaction: "AI for Latent Knowledge Discovery" serves as a direct demonstration of AI's potential, underpinning the broader vision of "AI-Driven Automation of SoS". The methodological advancements in "Integrated Science Mapping Frameworks" will likely benefit from and be integrated into the AI-driven automation paradigm, allowing for more coherent and large-scale analysis.
+
+### CROSS-CUTTING CONNECTIONS
+- **A & B:** The structural properties and dynamics of knowledge (Sub-theme A) are fundamentally shaped by human and organizational behaviors (Sub-theme B). For instance, the rise of collaborative research (B) directly impacts network formation and scaling laws (A). The measurement of novelty (A) is also influenced by how individuals and teams organize their efforts (B).
+- **A & C:** Advanced methodologies (Sub-theme C), particularly AI, provide powerful tools to analyze the complex structures and dynamics of knowledge (Sub-theme A). AI for latent knowledge discovery (C) can reveal hidden patterns in knowledge landscapes (A), while AI-driven automation (C) can accelerate the quantification of novelty and disruption (A).
+- **B & C:** AI and advanced methodologies (Sub-theme C) are crucial for analyzing the vast datasets required to understand human and organizational dimensions (Sub-theme B). AI can process data on collaborative research, failure trajectories, and social attention at scales previously unimaginable, offering deeper insights into human factors in innovation.
+- **Convergence:** All three themes converge towards a holistic understanding of knowledge production and innovation. AI-driven SoS (C) holds the potential to synthesize insights from knowledge dynamics (A) and human factors (B) into a unified, predictive framework for the future of science.
+
+### KEY MILESTONES
+- **Emergence of Network Science for SoS (1999):** Barabási & Albert's paper fundamentally shifted the approach to studying scientific structures.
+- **Introduction of Disruptiveness Metrics (2017):** Funk & Owen-Smith's CD index provided a critical tool for quantifying innovation, enabling large-scale trend analyses.
+- **AI for Latent Scientific Discovery (2019):** Tshitoyan et al. demonstrated AI's capacity to not just analyze, but *discover* latent scientific knowledge, pointing towards its generative potential.
+- **Formalization of AI4SoS (2025):** Sugimoto et al. outlines AI's transformative role, marking a vision for the complete re-engineering of Science of Science research methodologies.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- NEVER use color names as text labels
+- Band width should vary to suggest relative activity

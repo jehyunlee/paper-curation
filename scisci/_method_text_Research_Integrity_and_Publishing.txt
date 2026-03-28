@@ -1,0 +1,48 @@
+## Category Timeline: Research Integrity & Publishing (2005–2026)
+
+### SUB-THEME A: Diagnosing the Crisis in Research Validity (2005→2018, Ongoing Challenge)
+This stream tracks the identification and empirical validation of fundamental issues impacting the trustworthiness of scientific findings, from theoretical models of false discoveries to large-scale assessments of reproducibility and misconduct.
+Branches into:
+-   **"Theoretical Foundations of False Findings"** (2005–2005): This branch highlights the foundational theoretical work by Ioannidis (2005), which mathematically demonstrated how prevailing research practices (low prior probability, small samples, analytical flexibility, bias) significantly increase the likelihood that most published research findings are false.
+-   **"Empirical Evidence of Research Misconduct"** (2012–2012): Fang et al. (2012) represents the first large-scale empirical analysis of retracted scientific publications, revealing that intentional misconduct (e.g., fraud, duplicate publication) accounts for the majority of retractions, rather than honest error.
+-   **"Large-scale Reproducibility Assessments"** (2015–2018): This branch encompasses systematic efforts to empirically test the reproducibility of published findings. Key examples include the Open Science Collaboration (2015) which found a low rate of reproducibility for psychological science experiments, and Camerer et al. (2018) which evaluated social science experiments in high-impact journals, showing mixed but concerning reproducibility rates.
+-   **"Researcher Perspectives on Reproducibility"** (2016–2016): The Nature survey (2016) captures the scientific community's direct experience and perception of the reproducibility crisis, indicating that a significant majority of researchers have failed to reproduce others' experiments.
+
+### SUB-THEME B: Evolving Landscape of Scholarly Publishing (2015→2018, Shifting Dynamics)
+This stream explores the structural changes, economic forces, and social dynamics shaping how research is published and disseminated in the digital era, and responses to calls for greater access and transparency.
+Branches into:
+-   **"Market Concentration & Publisher Oligopoly"** (2015–2015): Larivière et al. (2015) revealed that despite the digital revolution, academic publishing has become increasingly concentrated in the hands of a few major commercial publishers (e.g., Reed-Elsevier, Wiley-Blackwell), forming an oligopoly.
+-   **"Open Access Adoption & Impact"** (2018–2018): Piwowar et al. (2018) provided a large-scale analysis demonstrating the growing prevalence of Open Access (OA) articles and their significant citation advantage over non-OA counterparts. This analysis leveraged tools like Unpaywall, Crossref, and Web of Science.
+-   **"Social Dynamics in Publishing"** (2018–2018): Sekara et al. (2018) uncovered the "Chaperone Effect," showing that a prominent senior scientist's co-authorship significantly boosts the publication success and influence of a young scientist's first paper.
+
+### SUB-THEME C: Broader Science Engagement & Communication in the Digital Age (2026→2026, Emerging Horizons)
+This forward-looking stream anticipates new challenges and strategies concerning the interface between scientific knowledge, society, and public understanding in an increasingly complex online information environment.
+Branches into:
+-   **"Libraries as Knowledge Brokers for Impact"** (2026–2026): A hypothetical 2026 paper explores how libraries are strategically positioning themselves as intermediaries to bridge the science-society gap and generate research impact, leveraging tools such as Large Language Models (LLM) and bibliometrics.
+-   **"Online Information Pathways & Anti-Consensus Content"** (2026–2026): A hypothetical 2026 paper investigates the flow of scientific information and the spread of anti-consensus content in online science communication, analyzing vast datasets of tweets and news citations related to scientific topics.
+
+### CROSS-CUTTING CONNECTIONS
+-   **Problem-Solution Linkage**: The critical issues identified in "Diagnosing the Crisis in Research Validity" (e.g., lack of transparency, questionable research practices) directly fuel the demand for and evolution of open science practices within "Evolving Landscape of Scholarly Publishing" (e.g., Open Access as a means to enhance transparency and accessibility).
+-   **Integrity-Trust Dynamic**: Concerns about the integrity and validity of research (Sub-theme A) and the accessibility of findings (Sub-theme B) fundamentally impact public trust in science and the effectiveness of "Broader Science Engagement & Communication in the Digital Age" (Sub-theme C). The spread of misinformation (Sub-theme C) can erode public confidence further when foundational integrity is questioned.
+-   **Publishing as a Mediator**: The structure and practices within "Evolving Landscape of Scholarly Publishing" (e.g., publisher models, social gatekeeping, publication pressure) influence both the perpetuation of research integrity issues (Sub-theme A) and the efficiency and equity of science communication and societal engagement efforts (Sub-theme C).
+
+### KEY MILESTONES
+-   **2005: Theoretical Foundation of the Validity Crisis**: Ioannidis's seminal paper "Why Most Published Research Findings Are False" provides a robust theoretical framework, shifting the scientific community's latent concerns into a quantifiable, urgent agenda.
+-   **2015: Empirical Validation of the Reproducibility Crisis**: The Open Science Collaboration's large-scale study on psychological science, combined with the growing awareness from documented misconduct (Fang et al. 2012), concretely demonstrated the scale of the reproducibility problem, moving it from theoretical debate to empirical fact.
+-   **2018: Rise of Open Science as a Dominant Solution**: Piwowar et al.'s analysis on Open Access showcases the tangible benefits and increasing adoption of open practices, signaling a critical shift towards community-driven solutions for integrity and access.
+-   **2026: Anticipated Focus on Societal Impact & Online Communication**: The hypothetical 2026 papers signify a forward shift in focus from internal scientific integrity mechanisms to external societal engagement, knowledge brokering, and managing complex online information environments.
+
+### ABSOLUTE VISUAL RULES
+-   Language: English only
+-   Layout: horizontal, left-to-right, years on top axis
+-   Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+-   Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+-   ALL branches MUST have topic name labels — NO unnamed ribbons
+-   Text labels: sub-category/topic names ONLY. NO individual paper titles.
+-   Important events: annotation boxes
+-   Field emergence: ▶ Reproducibility & Research Integrity Movement (2005) | ▶ Large-scale Open Science Initiatives (2015) | ▶ Studies on Online Science Communication & Misinformation (2026)
+-   Background: white, sans-serif font, NO title text in image, NO watercolor effects
+-   Aspect ratio: 16:9
+-   NO numbers: no paper counts, no statistics
+-   NEVER use color names as text labels
+-   Band width should vary to suggest relative activity

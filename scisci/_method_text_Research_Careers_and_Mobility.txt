@@ -1,0 +1,56 @@
+## Category Timeline: Research Careers & Mobility (2009–2025)
+
+### SUB-THEME A: Individual Career Dynamics & Productivity (2009→2025, Evolving)
+Branches into:
+-   **"Debunking Productivity Myths"** (2009–2018): Challenges conventional wisdom about research career progression, productivity trajectories, and success patterns. Jones (2009) introduces 'burden of knowledge' on new researchers, while Way et al. (2017) uses large-scale data to debunk the parabolic productivity narrative. This is further explored by the identification of "hot streaks" (2018) in creative careers.
+-   **"Resilience and Setbacks"** (2019–2025): Investigates how early career failures or adversities impact long-term success. The Wang research team's pioneering work (2019) uses quasi-experimental design on NIH R01 grant data to show that initial setbacks can lead to greater long-term achievement, a program extended to professional sports contexts (2025).
+-   **"Institutional Milestones & Impact"** (2025–2025): Examines the specific influence of career milestones, such as tenure, on scholars' research behaviors and output. Research in 2025 analyzes how tenure shapes individual research trajectories across various fields.
+
+Interaction: Research on "Institutional Milestones & Impact" directly influences individual career paths, demonstrating a strong connection between the academic environment (SUB-THEME B) and individual trajectories. Similarly, insights from "Resilience and Setbacks" inform understanding of how individuals navigate challenges inherent in any academic setting.
+
+### SUB-THEME B: Academic Environment & Social Capital (2010→2020, Established)
+Branches into:
+-   **"Impact of Elite Mortality"** (2010–2019): Studies the ripple effects of the death of prominent scientists on their collaborators and entire research fields. Papers investigate how the sudden death of a "superstar" scientist affects collaborators' productivity (2010) and whether "science advances one funeral at a time" by opening up fields dominated by elite researchers (2019, referencing Max Planck's aphorism).
+-   **"Institutional Prestige & Productivity"** (2019–2020): Focuses on how the academic institution's environment, reputation, and embedded social capital influence an individual's research output and success. Way et al. (2019) show that moving to a more prestigious institution positively impacts productivity, a finding reinforced by studies on inter-institutional mobility (2020) examining research and social capital transfer.
+
+Interaction: The findings in "Institutional Prestige & Productivity" illustrate how the environment directly shapes individual outcomes, forging a strong link with "Individual Career Dynamics & Productivity" (SUB-THEME A). The impact of institutional environments is also a key driver for "Scholar Mobility & Network Dynamics" (SUB-THEME C), as scholars often move to optimize their access to capital.
+
+### SUB-THEME C: Scholar Mobility & Network Dynamics (2020→2023, Emerging)
+Branches into:
+-   **"Drivers and Effects of Mobility"** (2020–2020): Analyzes the factors prompting scholars to move between institutions and the subsequent impacts on their scientific performance. The 2020 paper specifically investigates the roles of research capital and social capital in mediating outcomes of inter-institutional mobility.
+-   **"Global Migration Patterns"** (2023–2023): Investigates large-scale international migration trends among scholars, revealing macro-level relationships with economic development. Analysis of Scopus data (2023) uncovers a "U-shaped relationship" between scholar migration rates and a country's GDP per capita.
+-   **"Methodological Advancements in Mobility"** (2023–2023): Introduces innovative computational methods to analyze complex patterns of human and scholarly movement. A 2023 paper applies the natural language processing technique word2vec model to scientific mobility trajectories, capturing latent structures more effectively than traditional gravity models.
+
+Interaction: "Drivers and Effects of Mobility" directly links to "Individual Career Dynamics & Productivity" (SUB-THEME A) by showing how movement alters individual performance. Global migration patterns inherently affect the composition and dynamics of "Academic Environment & Social Capital" (SUB-THEME B) by redistributing human and intellectual capital worldwide.
+
+### SUB-THEME D: Equity, Bias, & Recognition (2022→2022, Emerging)
+Branches into:
+-   **"Systemic Bias in Credit Allocation"** (2022–2022): Uncovers and quantifies pervasive biases in how credit and recognition are attributed to scientific contributions, particularly along gender lines. Through large-scale administrative data (NIH), surveys, and interviews, a 2022 study rigorously demonstrates that women are systematically credited less than men for identical contributions within scientific teams.
+
+Interaction: The evidence from "Systemic Bias in Credit Allocation" highlights critical structural issues within the "Academic Environment & Social Capital" (SUB-THEME B) that directly impede the "Individual Career Dynamics & Productivity" (SUB-THEME A) of underrepresented groups, affecting their accumulated capital and overall trajectory.
+
+### CROSS-CUTTING CONNECTIONS
+*   **Environment-Individual Feedback Loop:** The influence of the "Academic Environment & Social Capital" (SUB-THEME B) on "Individual Career Dynamics & Productivity" (SUB-THEME A) is a recurring theme, particularly regarding institutional prestige (Way et al., 2019) and career milestones like tenure (2025).
+*   **Mobility as a Career Catalyst:** "Scholar Mobility & Network Dynamics" (SUB-THEME C) frequently acts as a mechanism connecting scholars to new "Academic Environment & Social Capital" (SUB-THEME B) that can then enhance "Individual Career Dynamics & Productivity" (SUB-THEME A) through capital accumulation (2020 paper).
+*   **Bias Undermining Trajectories:** "Equity, Bias, & Recognition" (SUB-THEME D) reveals how systemic issues within the academic environment negatively impact individual recognition and career progression, demonstrating a fundamental challenge that cuts across all other themes.
+
+### KEY MILESTONES
+*   **▶ Data-driven Career Analytics (2017):** Way et al. (2017) initiates a rigorous data-driven approach to debunking long-held assumptions about faculty productivity trajectories.
+*   **▶ Early Career Setback as a Research Program (2019):** The Wang research team's 2019 paper establishes a robust quasi-experimental methodology to study the long-term benefits of initial career setbacks, creating a new line of inquiry.
+*   **▶ Systemic Equity Research (2022):** The 2022 paper on gender credit disparities provides compelling, multi-faceted evidence of systemic bias, marking a critical point for empirical work in equity within science.
+*   **▶ Computational Mobility Modeling (2023):** The application of the word2vec model (2023) represents a significant methodological leap in analyzing complex scholar mobility patterns using advanced computational techniques.
+
+### ABSOLUTE VISUAL RULES
+-   Language: English only
+-   Layout: horizontal, left-to-right, years on top axis
+-   Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+-   Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+-   ALL branches MUST have topic name labels — NO unnamed ribbons
+-   Text labels: sub-category/topic names ONLY. NO individual paper titles.
+-   Important events: annotation boxes (for Key Milestones and Emergence/Decline events)
+-   Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+-   Background: white, sans-serif font, NO title text in image, NO watercolor effects
+-   Aspect ratio: 16:9
+-   NO numbers: no paper counts, no statistics
+-   NEVER use color names as text labels
+-   Band width should vary to suggest relative activity

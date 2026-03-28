@@ -1,0 +1,56 @@
+## Category Timeline: AI & LLM in Science (2012–2026)
+
+### SUB-THEME A: Foundational Scholarly Data Systems & Infrastructure (2012→2026, Maturing & Scrutinized)
+This stream tracks the development of large-scale datasets, classification systems, and open data initiatives that underpin AI and LLM applications in the science of science. It highlights the evolution from initial mapping efforts to the creation of vast open corpora, culminating in a critical examination of their quality and impact.
+Branches into:
+-   **"Early Science Mapping & Classification"** (2012): The "UCSD Map of Science" (Börner e) established a pioneering network-based system for categorizing scientific fields using millions of papers, setting the precedent for data-driven analysis of science.
+-   **"Large-Scale Open Scholarly Corpora"** (2020–2022): The emergence of "S2ORC" and "OpenAlex" provided massive, openly accessible full-text and metadata corpora for millions of scholarly works, becoming indispensable resources for training and deploying AI/LLMs.
+-   **"Data Quality & Reproducibility Scrutiny"** (2026): Papers such as "OpenAlex in focus" and "Open Datasets in Learning Analytics" critically assess the metadata quality and reproducibility challenges of these foundational open datasets, highlighting their direct impact on the trustworthiness of subsequent AI/LLM applications.
+
+### SUB-THEME B: Methodological Advancements for Scientific Insight (2012→2025, Expanding & Hybridizing)
+This stream focuses on the evolution of analytical techniques used to understand scientific landscapes, ranging from network-based topic models to the integration of AI for predictive analytics and the sophisticated combination of LLMs with knowledge graphs.
+Branches into:
+-   **"Network-Based Topic Discovery"** (2012–2018): Building on the "UCSD Map of Science"'s network approach, "A network approach to topic models" further refined techniques to uncover inherent thematic structures and relationships within scientific literature.
+-   **"AI-Driven Science Forecasting"** (2023): The "Forecasting the future of artificial intelligence with machine learning" paper, utilizing the **Science4Cast benchmark**, pioneered the application of advanced machine learning to predict research trends and identify emerging concepts within science itself.
+-   **"LLM-Enhanced Knowledge Graph Mapping"** (2025): "What's In Your Field? Mapping Scientific Research with Knowledge Graph" introduced innovative hybrid methodologies that combine the semantic understanding capabilities of LLMs with structured knowledge graphs for more robust and scalable scientific field mapping.
+
+### SUB-THEME C: LLMs' Applications in Science of Science & Communication (2023→2026, Emerging & Specializing)
+This stream explores the direct application of AI and LLMs to tasks within the science of science, including predicting research trajectories, translating complex scientific findings for policy, and supporting research evaluation processes.
+Branches into:
+-   **"AI for Science Trend Forecasting"** (2023): The "Forecasting the future of artificial intelligence with machine learning" paper (Science4Cast benchmark) marked a significant shift, demonstrating the initial use of advanced AI, including precursor ML models to LLMs, to predict and analyze scientific trajectories.
+-   **"LLMs for Science-to-Policy Translation"** (2025): "Sci2Pol: Evaluating and Fine-tuning LLMs on Scientific-to-Policy Brief" introduced the **Sci2Pol-Bench** and **Sci2Pol-Corpus**, dedicated to enabling LLMs to effectively synthesize complex research into actionable policy recommendations.
+-   **"LLMs in Research Evaluation Support"** (2026): "Which stylistic features fool ChatGPT research evaluations?" investigates the potential and limitations of LLMs, specifically **ChatGPT**, to assist in evaluating research, shedding light on their analytical capabilities and vulnerabilities in this critical domain.
+
+### SUB-THEME D: Critical Assessment & Ethical Implications of LLM Adoption (2025→2026, Intensifying & Addressing Challenges)
+This stream addresses the burgeoning discussion surrounding the practical impact, potential risks, and ethical considerations of integrating LLMs into scientific practice, scrutinizing their effects on productivity, quality, and the necessity for robust data foundations.
+Branches into:
+-   **"LLM Impact on Scientific Production & Quality"** (2025): "Scientific production in the era of large language models" empirically analyzed the effects of LLM adoption on researchers' output and the perceived quality of scientific work, initiating a crucial dialogue on their overall contribution.
+-   **"Vulnerabilities in LLM-Based Research Assessment"** (2026): "Which stylistic features fool ChatGPT research evaluations?" delves into the susceptibility of LLMs, such as **ChatGPT**, to stylistic manipulation when performing research evaluation, raising concerns about fairness and reliability.
+-   **"Reliance on High-Quality Open Data for LLM Trustworthiness"** (2026): Papers like "OpenAlex in focus" and "Open Datasets in Learning Analytics" highlight the fundamental requirement for accurate, transparent, and high-quality open data to ensure the reliability, ethical application, and trustworthiness of LLMs in all scientific contexts.
+
+### CROSS-CUTTING CONNECTIONS
+*   **Data Foundation to Methodological Advancement:** The streams **Foundational Scholarly Data Systems & Infrastructure** and **Methodological Advancements for Scientific Insight** are intrinsically linked, with early mapping efforts (UCSD Map of Science) providing initial data, and later large-scale corpora (S2ORC, OpenAlex) enabling the development of advanced network-based analysis, AI-driven forecasting (Science4Cast benchmark), and LLM-enhanced mapping techniques.
+*   **Methodology Informs LLM Application:** **Methodological Advancements for Scientific Insight** directly informs **LLMs' Applications in Science of Science & Communication**. The evolution of network analysis and AI forecasting methods laid the conceptual and technical groundwork for LLMs to be applied in forecasting and specialized tasks like policy translation (Sci2Pol-Bench).
+*   **LLM Application Drives Critical Scrutiny:** As LLMs gained direct applications in **LLMs' Applications in Science of Science & Communication**, this immediately fueled the concerns addressed in **Critical Assessment & Ethical Implications of LLM Adoption**. The ability of LLMs to assist in evaluation (ChatGPT research evaluations) spurred examination of their robustness and ethical considerations.
+*   **Data Quality Underpins LLM Trustworthiness:** The issues identified in **Critical Assessment & Ethical Implications of LLM Adoption**, particularly regarding LLM reliability and ethical use, feedback directly into **Foundational Scholarly Data Systems & Infrastructure**. Papers like "OpenAlex in focus" demonstrate that the integrity and trustworthiness of LLM outputs are fundamentally dependent on the quality of the underlying scholarly data they are trained on or interact with.
+
+### KEY MILESTONES
+*   **▶ Foundational Scholarly Data Systems (2012):** The publication of the "UCSD Map of Science" marks the emergence of systematic, large-scale, network-based approaches to mapping science.
+*   **▶ Open Scholarly Corpora (2020):** The release of **S2ORC** signifies a turning point in the availability of massive, open, full-text scholarly data essential for AI/LLM development.
+*   **▶ AI for Science of Science Prediction (2023):** "Forecasting the future of artificial intelligence with machine learning" (Science4Cast benchmark) is a critical milestone, establishing AI's role in predicting scientific trends.
+*   **▶ Widespread LLM Integration & Scrutiny (2025):** Multiple papers (Scientific production in the era of large language models, Sci2Pol, What's In Your Field?) collectively mark the rapid adoption and subsequent immediate critical assessment of LLMs across diverse scientific workflows.
+
+### ABSOLUTE VISUAL RULES
+-   Language: English only
+-   Layout: horizontal, left-to-right, years on top axis
+-   Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+-   Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+-   ALL branches MUST have topic name labels — NO unnamed ribbons
+-   Text labels: sub-category/topic names ONLY. NO individual paper titles.
+-   Important events: annotation boxes
+-   Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+-   Background: white, sans-serif font, NO title text in image, NO watercolor effects
+-   Aspect ratio: 16:9
+-   NO numbers: no paper counts, no statistics
+-   NEVER use color names as text labels
+-   Band width should vary to suggest relative activity

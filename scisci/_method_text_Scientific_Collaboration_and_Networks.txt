@@ -1,0 +1,56 @@
+## Category Timeline: Scientific Collaboration & Networks (1998–2026)
+
+### SUB-THEME A: Foundational Network Structures & Dynamics (1998→2014, Evolving)
+This sub-theme traces the initial theoretical and empirical explorations into the underlying structures and dynamic principles governing scientific collaboration networks. It establishes core concepts that later studies build upon.
+Branches into:
+-   **"Early Network Models"** (1998–2002): This branch covers the introduction of seminal network models, such as the concept of 'small-world' networks (1998), and early empirical investigations into the structural properties of scientific collaboration networks (2001). It also includes the identification of 'scale-free' topologies and 'preferential attachment' mechanisms in these evolving networks (2002).
+-   **"Team Formation & Evolution Principles"** (2014): This branch focuses on the mechanistic understanding of how scientific research teams form and evolve over time. It describes models that explain team growth as a blend of random (Poisson) processes and power-law scaling (Milojević, 2014), providing insights into the lifecycle of collaborative units.
+
+### SUB-THEME B: Advanced Methodologies for Mapping & Analysis (2008→2025, Expanding)
+This sub-theme focuses on the continuous development and refinement of computational tools and analytical approaches necessary for understanding and visualizing complex scientific collaboration and knowledge structures, moving from foundational algorithms to AI-driven methods.
+Branches into:
+-   **"Community Detection & Science Mapping Basics"** (2008–2021): This branch encompasses the development of efficient algorithms for detecting communities or clusters within large networks, such as the Louvain algorithm (Blondel et al., 2008), and comprehensive reviews consolidating these methods (Fortunato, 2010). It also includes the conceptual and methodological frameworks for "Science Mapping" as a distinct analytical approach (2021).
+-   **"Large-Scale Data & AI-Driven Approaches"** (2024–2025): This branch highlights the application of cutting-edge computational techniques, including deep learning for hierarchical classification of research fields from vast bibliographic datasets (2024 Hierarchical Classification), and scalable methods for visualizing and analyzing scientific communities (2025 Mapping scientific communities at scale). It culminates in the emergence of AI-powered tools like SciSciGPT (2025) designed to enhance human-AI collaboration in SciSci research.
+
+### SUB-THEME C: Collaboration Mechanisms, Innovation & Impact (2019→2026, Deepening)
+This sub-theme investigates the specific characteristics of scientific collaboration, how these characteristics influence innovation, and the broader impact of scientific knowledge, including its interdisciplinary aspects and transfer to policy.
+Branches into:
+-   **"Team Composition & Innovation Outcomes"** (2019–2023): This branch explores how different aspects of team composition, such as team size (large vs. small teams, 2019) and modes of interaction (remote vs. in-person collaboration, 2023), lead to distinct outcomes in terms of scientific development, disruption, and the generation of breakthrough ideas.
+-   **"Interdisciplinarity & Knowledge Transfer"** (2024–2026): This branch delves into the mechanisms of knowledge recombination that lead to the emergence of interdisciplinary fields, using methods like co-occurrence networks and BERT models (2024 Identifying interdisciplinary emergence). It also analyzes how scientific knowledge, particularly from interdisciplinary contexts, is selectively used and translated into policy decisions (2026).
+
+### SUB-THEME D: The Science of Science (SciSci) in a Global Context (2018→2025, Consolidating)
+This sub-theme provides a meta-perspective, defining the Science of Science field itself, contextualizing scholarly activity within broader ecosystems, and examining the influence of external factors like geopolitics on global scientific collaboration.
+Branches into:
+-   **"Defining & Framing SciSci"** (2018–2022): This branch signifies the formal establishment and review of "Science of Science" (SciSci) as a distinct and important research domain (Barabási et al., 2018). It also encompasses a broader understanding of the "Scholarly Knowledge Ecosystem," identifying key challenges and opportunities, particularly emphasizing the critical role of multi-sector collaboration (2022).
+-   **"Global Collaboration & Geopolitical Shifts"** (2024–2025): This branch maps large-scale trends in international scientific cooperation, providing comprehensive visualizations of institutional collaborations across various fields over decades (Atlas of Science Collaboration, 2024). It also scrutinizes the impact of geopolitical dynamics on these collaborations, such as the observed shifts from convergence to divergence in US-China scientific partnerships (2025 US-China collaboration).
+
+### CROSS-CUTTING CONNECTIONS
+*   **Methodological Foundation:** Early insights from **Sub-theme A** regarding network structures (e.g., small-world, scale-free) directly inform the development of advanced community detection and mapping algorithms in **Sub-theme B**.
+*   **Empirical Enablement:** The powerful analytical and mapping methodologies developed in **Sub-theme B** (e.g., large-scale data processing, AI tools) are essential for conducting the detailed, data-intensive empirical studies on collaboration dynamics, innovation, and interdisciplinarity found in **Sub-theme C**.
+*   **Impact and Context:** Findings from **Sub-theme C** regarding the impact of team composition and the mechanisms of knowledge transfer provide crucial evidence and insights that enrich the broader understanding of the scholarly ecosystem and policy implications explored in **Sub-theme D**.
+*   **Application-Driven Development:** The formalization of SciSci and the identification of key challenges within the broader scholarly ecosystem in **Sub-theme D** act as a guiding force, driving the demand for and development of more sophisticated and targeted analytical tools and methodologies in **Sub-theme B** (e.g., SciSciGPT specifically for SciSci research).
+
+### KEY MILESTONES
+*   **Turning Point 1: ~2008-2010 – Rise of Scalable Network Algorithms & Review:** The advent of highly efficient community detection algorithms like Louvain (2008) and comprehensive reviews of these methods (2010) significantly enhanced the ability to analyze and map large-scale collaboration networks, moving beyond basic structural characterization to detailed partitioning.
+*   **Turning Point 2: ~2018 – Formalization of "Science of Science" (SciSci):** The publication of Barabási, Wang et al. (2018) formally defined SciSci as a distinct, interdisciplinary field, consolidating previous research under a unified identity and propelling focused exploration into the scientific enterprise itself.
+*   **Turning Point 3: ~2023-2024 – Data Deluge & AI Integration:** The increasing availability of massive open bibliographic datasets (e.g., OpenAlex for 2024 Atlas) coupled with the rapid integration of advanced AI and Large Language Models (LLMs) into research (e.g., BERTo for interdisciplinarity 2024, SciSciGPT 2025) marks a new era of unprecedented scale, sophistication, and automation in SciSci analysis.
+
+### ABSOLUTE VISUAL RULES
+-   Language: English only
+-   Layout: horizontal, left-to-right, years on top axis
+-   Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+-   Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+-   ALL branches MUST have topic name labels — NO unnamed ribbons
+-   Text labels: sub-category/topic names ONLY. NO individual paper titles.
+-   Important events: annotation boxes for Key Milestones and Emergence events.
+-   Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+    *   ▶ **Small-World Networks** (1998)
+    *   ▶ **Scale-Free Networks & Preferential Attachment** (2002)
+    *   ▶ **Community Detection Algorithms** (2008)
+    *   ▶ **Science of Science (SciSci) as a Field** (2018)
+    *   ▶ **AI/LLM Tools for SciSci** (2025)
+-   Background: white, sans-serif font, NO title text in image, NO watercolor effects
+-   Aspect ratio: 16:9
+-   NO numbers: no paper counts, no statistics
+-   NEVER use color names as text labels
+-   Band width should vary to suggest relative activity or growth within each stream.

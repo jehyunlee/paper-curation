@@ -1,0 +1,74 @@
+## Category Timeline: Citation & Impact Analysis (1965–2026)
+
+### SUB-THEME A: Foundational Theories & Core Citation Metrics (1965→2026, Enduring & Evolving)
+This theme encompasses the fundamental theoretical constructs explaining citation behavior and the development of widely adopted quantitative measures for scientific impact at various levels.
+Branches into:
+- **"Theoretical Underpinnings of Citation Networks"** (1965–1976): Focuses on early theories explaining the structure and growth of scientific literature.
+  *Description*: Price (1965) first proposed that scientific papers form networks with a **cumulative advantage structure** (power law distribution of citations), later formalized with the 'Matthew effect' by Price (1976). These theories provide the basis for understanding preferential attachment and "rich-get-richer" dynamics in scientific knowledge accumulation.
+- **"Standardized Journal & Author-Level Metrics"** (1972–2020): Covers the creation and refinement of metrics to quantify impact at journal and individual researcher levels.
+  *Description*: Garfield (1972) formally introduced the **Journal Impact Factor (JIF)**, establishing a key journal evaluation tool based on the Science Citation Index. Decades later, the **h-index** (Hirsch 2005) and **g-index** (Egghe 2006) emerged to quantify individual researcher output, addressing limitations of simple citation counts. This branch culminates in efforts like the **Ioannidis et al. (2020) databases** to provide standardized, field-normalized author citation metrics.
+- **"Relative & Field-Normalized Impact"** (2008–2016): Addresses the need for context-aware citation metrics that account for field-specific citation cultures and age.
+  *Description*: Recognizing that absolute citation counts are field-dependent, this sub-theme focuses on normalizing impact. Bornmann & Mutz (2008) highlighted the **universality of citation distributions** when normalized by field average. This led to the development of paper-level metrics like the **Relative Citation Ratio (RCR)** (Hutchins et al. 2016), which normalizes citations against a field-specific peer group, providing a more equitable comparison of impact across disciplines.
+Interaction: The "Theoretical Underpinnings" informed the conceptualization of both journal and author-level metrics, and later, the need for "Relative & Field-Normalized Impact" arose directly from the limitations observed in the earlier "Standardized Journal & Author-Level Metrics."
+
+### SUB-THEME B: Visualizing & Mapping Knowledge Structures (2009→2026, Evolving)
+This theme explores methodologies and tools for graphically representing the structure of scientific fields, identifying relationships between papers, authors, journals, and research domains.
+Branches into:
+- **"Network & Map Construction Methodologies"** (2009–2010): Focuses on the techniques for building visual maps of scientific relationships.
+  *Description*: This period saw the formal comparison of methods like **co-citation, bibliographic coupling, and direct citation** to determine their effectiveness in representing research frontiers (Boyack & Klavans 2010). Concurrently, the **VOSviewer** software (van Eck & Waltman 2009) emerged as a powerful tool for visually constructing large-scale bibliometric maps based on these similarity measures.
+- **"Diachronic & Comparative Science Mapping"** (2020–2020): Extends mapping beyond static structures to analyze temporal evolution and compare different units of analysis.
+  *Description*: This sub-theme addresses the dynamic nature of science, developing methods for mapping **changing structures through diachronic periodical embeddings** (Leydesdorff & Bornmann 2020). It also includes **comparative science mapping** (Bornmann et al. 2020) to analyze and contrast the conceptual structures of various observational units (e.g., authors, institutions, regions) simultaneously within a dataset.
+- **"Specialized & Open Science Maps"** (2023–2026): Focuses on creating domain-specific and publicly accessible mapping resources.
+  *Description*: Responding to the need for tailored mapping solutions, this branch involves the creation of specialized knowledge maps for particular fields, such as the **Open Biomedical Map of Science (OBMS)** (Chen et al. 2023) using PubMed data. These maps serve as open infrastructure for navigating specific scientific domains.
+Interaction: "Network & Map Construction" provides the fundamental techniques that are then applied and extended in "Diachronic & Comparative Science Mapping." "Specialized & Open Science Maps" represent an application of these established mapping techniques to specific, community-driven contexts, often leveraging the software tools developed in the first branch.
+
+### SUB-THEME C: Advanced Impact Dynamics & Predictive Analytics (2013→2026, Emerging & Evolving)
+This theme investigates the complex temporal patterns of scientific impact beyond simple cumulative counts and develops methods for forecasting future research trends and breakthroughs.
+Branches into:
+- **"Temporal & Atypical Impact Patterns"** (2013–2015): Explores non-linear citation trajectories and unusual forms of long-term impact.
+  *Description*: Research in this area moved beyond immediate impact to understand **long-term scientific impact**, including the identification of "sleeping beauty" phenomena (Wang et al. 2013, van Raan 2015), where papers gain significant recognition only years after publication. It also includes the analysis of **atypical combinations** of knowledge and their effect on impact (Uzzi et al. 2013).
+- **"Disruptive Research Quantification"** (2020–2026): Focuses on defining and measuring the extent to which research fundamentally changes a field.
+  *Description*: This sub-theme introduces metrics like the **CD index** to quantify "disruptiveness" – the degree to which a paper renders prior work obsolete or shifts the research landscape. Studies here examine whether disruptive papers indeed lead to greater technological or societal impact (Park et al. 2020) and how factors like team size might influence disruptiveness (multiverse analysis approach, Bornmann & Marx 2026).
+- **"Predicting Future Impact & Breakthroughs"** (2024–2025): Develops methods to forecast high-impact research topics and identify potential scientific breakthroughs.
+  *Description*: This cutting-edge area leverages advanced modeling, including the **structural dynamic of citation networks** (Fortunato et al. 2024), to predict scientific breakthroughs, often using Nobel Prize-winning papers as benchmarks. It also involves machine learning approaches on **evolving knowledge graphs** to forecast high-impact research topics before they are published (Wang et al. 2025).
+Interaction: "Temporal & Atypical Impact Patterns" laid the groundwork for understanding the nuances of impact, which then naturally led to the more specific task of "Disruptive Research Quantification." Both these areas feed into and provide empirical validation for the development of sophisticated "Predicting Future Impact & Breakthroughs" methodologies.
+
+### SUB-THEME D: Computational & AI-Driven Scientometrics (2018→2026, Rapidly Emerging)
+This theme represents the increasing integration of advanced computational techniques, including natural language processing and artificial intelligence, to enhance the analysis and understanding of scientific information.
+Branches into:
+- **"Citation Context & Text Mining"** (2018–2020): Focuses on extracting deeper meaning from the textual content surrounding citations.
+  *Description*: Moving beyond mere citation counts, this area leverages **text mining to analyze the context of citations** (Bornmann & Haunschild 2018), understanding *why* a paper is cited. It represents a crucial step in integrating qualitative textual information with quantitative bibliometric analysis (Li et al. 2020), offering richer insights into intellectual connections.
+- **"Data Integration & Standardization Tools"** (2025–2026): Develops software and systems for managing, harmonizing, and organizing heterogeneous scientific data.
+  *Description*: As data sources proliferate, tools like **BibFusion** (Park et al. 2026) emerge to integrate, deduplicate, and harmonize bibliometric data from various platforms (e.g., Scopus, Web of Science). This branch also includes the study and survey of **Knowledge Organization Systems (KOS)** (Bornmann et al. 2025) as critical infrastructure for classifying and managing research fields.
+- **"Large Language Models (LLMs) for Science of Science"** (2025→2026): Explores the transformative potential of advanced AI in scientific analysis and recommendation.
+  *Description*: This frontier sub-theme investigates how **LLMs can empower SciSci research** (Wang et al. 2025) by enhancing tasks like literature review, knowledge extraction, and intelligent recommendation of relevant literature (Wang et al. 2026). It promises to redefine how scientific information is processed, analyzed, and synthesized.
+Interaction: "Citation Context & Text Mining" represents an early foray into leveraging textual data, which naturally merges into the more comprehensive capabilities offered by "Large Language Models (LLMs) for Science of Science." "Data Integration & Standardization Tools" underpin both, ensuring that the raw data is ready for advanced computational analysis.
+
+### CROSS-CUTTING CONNECTIONS
+*   **Foundations & Core Metrics** provide the base data and initial theoretical frameworks that are often visualized by **Visualizing & Mapping Knowledge Structures** and further analyzed in **Advanced Impact Dynamics**.
+*   All themes increasingly rely on the methods and tools developed in **Computational & AI-Driven Scientometrics**, particularly with the rise of text mining and LLMs for processing vast datasets and uncovering subtle patterns.
+*   The concepts of **cumulative advantage** (from Foundations) and **disruptiveness** (from Advanced Impact Dynamics) are frequently explored through **network analysis** (from Visualizing & Mapping) and modeled with **computational approaches**.
+*   The growing need for **standardized data and KOS** (from Computational & AI-Driven) directly supports accurate **field normalization** in all metric-driven analyses (from Foundations).
+
+### KEY MILESTONES
+*   **1972: Journal Impact Factor Formalized (Garfield):** Established a dominant journal evaluation metric and laid the groundwork for large-scale citation databases (SCI).
+*   **2005-2006: Emergence of Author-Level Metrics (h-index, g-index):** Shifted focus to individual researcher impact, sparking a new wave of metric development and academic discourse.
+*   **2009: VOSviewer Release (van Eck & Waltman):** Provided an accessible and powerful tool for visual science mapping, democratizing network analysis for bibliometricians.
+*   **2016: Relative Citation Ratio (RCR) Introduction (Hutchins et al.):** Marked a significant advancement in field-normalized, paper-level impact assessment, offering a more equitable comparison.
+*   **2020: Disruptive Research Quantification (CD-index):** Introduced a novel approach to measuring radical scientific change, sparking new research into innovation dynamics.
+*   **2025: LLMs for Science of Science (Wang et al.):** Signifies a pivotal moment where AI promises to transform how scientific knowledge is processed, discovered, and analyzed.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- NEVER use color names as text labels
+- Band width should vary to suggest relative activity

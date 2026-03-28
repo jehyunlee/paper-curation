@@ -1,0 +1,63 @@
+## Category Timeline: Gender, Diversity & Equity (2015–2026)
+
+### SUB-THEME A: Systemic Structures of Inequality (2015→2021, Established & Ongoing)
+This theme investigates the deeply embedded hierarchies and mechanisms that perpetuate inequality within scientific institutions and careers.
+Branches into:
+-   **"Hiring & Career Progression Barriers"** (2015–2020): This branch highlights initial research exposing severe inequalities and hierarchical structures in faculty hiring networks (2015, *Systematic Inequality and Hierarchy in Faculty Hiring Networks*), showing how a small fraction of elite institutions disproportionately supply faculty. Later, it encompasses longitudinal analyses revealing differential early career attrition for women across various fields and countries (2020, *Historical Comparison of Gender Inequality in Scientific Careers Acros*).
+    Interaction: This branch identifies the foundational structural issues that directly impact career trajectories, creating conditions that other forms of inequality manifest upon. It interacts with Sub-theme C by providing the structural context for the "Diversity-Innovation Paradox" and intersectional disadvantages.
+-   **"Unequal Reward & Recognition Systems"** (2021): Focuses on the skewed distribution of scientific rewards, specifically the increasing concentration of citations among a tiny elite of top scientists globally (2021, *Global citation inequality is on the rise*). This demonstrates how achievement and visibility become concentrated, exacerbating existing disparities.
+    Interaction: Directly linked to "Hiring & Career Progression Barriers" as a consequence of biased pipeline and selection. It also connects with Sub-theme C's "Diversity-Innovation Paradox" by illustrating how recognition barriers hinder the impact of diverse contributions.
+-   **"Exacerbation by External Crises"** (2020): Examines how unforeseen external events, such as the COVID-19 pandemic, disproportionately affect different groups of scientists, particularly women and caregivers, leading to unequal impacts on research productivity (2020, *Unequal effects of the COVID-19 pandemic on scientists*).
+    Interaction: This branch illustrates how existing systemic inequalities render certain groups more vulnerable to external shocks, thereby reinforcing and widening pre-existing gaps identified in "Hiring & Career Progression Barriers" and "Unequal Reward & Recognition Systems."
+
+### SUB-THEME B: Diversity's Impact on Scientific Productivity & Innovation (2018→2022, Maturing & Deepening)
+This theme explores the positive influence of various forms of diversity on the quality, novelty, and impact of scientific outputs and collaborations.
+Branches into:
+-   **"Ethnic Diversity & Collaboration Outcomes"** (2018): Pioneering research demonstrating that ethnic diversity within scientific collaborations is a strong predictor of higher scientific performance and impact (2018, *The Preeminence of Ethnic Diversity in Scientific Collaboration*).
+    Interaction: Provides concrete evidence for the benefits of diversity that are then challenged or nuanced by findings in Sub-theme C's "Diversity-Innovation Paradox." It supports the general premise that diversity enhances science.
+-   **"Gender Diversity & Novelty Generation"** (2018–2022): This branch tracks the understanding of gender diversity's role in scientific progress. Initially, a broader discussion on how gender diversity enables discovery and innovation (2018, *Making gender diversity work for scientific discovery and innovation*), it later includes large-scale empirical validation showing that gender-diverse teams consistently produce more novel and higher-impact scientific ideas (2022, *Gender-diverse teams produce more novel and higher-impact scientific i*).
+    Interaction: Directly related to "Ethnic Diversity & Collaboration Outcomes" as another facet of diversity enhancing scientific output. However, its findings are critically examined by Sub-theme C, which explores why these benefits might not translate into equitable recognition.
+
+### SUB-THEME C: Nuancing Bias, Paradoxes & Intersectional Disadvantage (2017→2022, Emerging & Critical)
+This theme delves into the complexities, hidden biases, and compounded disadvantages that prevent diversity from fully translating into equitable outcomes.
+Branches into:
+-   **"Detecting and Quantifying Bias in Research"** (2017): A foundational meta-assessment identifying the widespread prevalence of biases, particularly positive result bias, across various scientific fields, highlighting the need for vigilance and mitigation strategies (2017, *Meta-assessment of Bias in Science*).
+    Interaction: Establishes a broader context of bias that underpins the more specific challenges found in other branches of this sub-theme and contributes to the understanding of systemic issues in Sub-theme A.
+-   **"Diversity-Innovation Paradox"** (2020): Uncovers a critical challenge where minority researchers, despite being more likely to generate novel concepts, face systemic barriers to their ideas being adopted and recognized compared to majority researchers (2020, *The Diversity-Innovation Paradox in Science*).
+    Interaction: Directly interacts with Sub-theme B by presenting a major caveat to the positive impacts of diversity, showing that while diversity brings innovation, structural biases (as seen in Sub-theme A) can prevent equitable recognition. It is a key bridge linking the benefits of diversity with the realities of inequality.
+-   **"Intersectional Identity Disparities"** (2022): Advances the understanding of inequality beyond single-axis analyses (e.g., gender *or* race) by demonstrating that combined social identities (e.g., race × gender) lead to unique and compounded disadvantages in areas like research topic choice and citation rates (2022, *Intersectional inequalities in science*).
+    Interaction: Represents a critical evolution in the analysis of inequality, offering a more granular understanding that directly informs and refines the broader systemic issues identified in Sub-theme A and explains the complexities of the "Diversity-Innovation Paradox."
+
+### SUB-THEME D: Advancing Science of Science Methodology & Infrastructure (2023→2026, Emerging & Future-Oriented)
+This theme focuses on the development of new tools, datasets, and computational methods that enable more sophisticated and large-scale analyses within the science of science.
+Branches into:
+-   **"Large-Scale Open Data Infrastructure"** (2023): Marks the creation of vast, integrated open data lakes (e.g., SciSciNet in 2023, *SciSciNet: A large-scale open data lake for the science of science res*) that consolidate massive amounts of scientific publications, funding data, and external links, significantly enhancing the analytical capacity for science of science research.
+    Interaction: This branch acts as a foundational enabler, providing the necessary data resources for all other sub-themes to conduct more robust, large-scale, and longitudinal studies. It underpins the empirical rigor for investigating inequalities, diversity impacts, and biases.
+-   **"AI/ML for Conceptual Change Modeling"** (2026): Anticipates the future application of advanced computational techniques, specifically using Large Language Models (LLMs) and complex networks, to model and understand the evolution of scientific concepts (2026, *Modeling Changing Scientific Concepts with Complex Networks: A Case St*).
+    Interaction: While future-looking, this branch represents the cutting edge of methodological innovation. It has the potential to provide new analytical lenses for understanding how diverse perspectives contribute to conceptual shifts or how biased language might impact concept adoption, thus indirectly influencing Sub-themes B and C.
+
+### CROSS-CUTTING CONNECTIONS
+*   **Methodological Empowerment (D --> A, B, C):** Sub-theme D, particularly the development of **SciSciNet** (2023), serves as a critical enabler for all other sub-themes. Its large-scale data and advanced analytical tools are essential for uncovering systemic inequalities (A), quantifying diversity's impact (B), and dissecting complex biases and intersectional disadvantages (C). The future application of **LLMs** (2026) promises even deeper textual and conceptual analysis across all areas.
+*   **The Paradox of Progress (B <-> C):** While Sub-theme B consistently highlights the *benefits* of diversity for innovation, Sub-theme C's **"Diversity-Innovation Paradox"** (2020) and **"Intersectional Identity Disparities"** (2022) reveal the systemic barriers and biases that prevent these benefits from translating into equitable recognition and career progression. This dynamic tension defines a core challenge in the field.
+*   **Structural Roots of Disadvantage (A <-> C):** The fundamental systemic inequalities identified in Sub-theme A (e.g., hiring hierarchies, citation inequality) are profoundly elaborated and contextualized by the nuanced analyses in Sub-theme C, especially the concept of **"Intersectional Identity Disparities"** (2022). Sub-theme C provides the analytical lens to understand *how* and *why* structural inequalities disproportionately affect specific groups.
+
+### KEY MILESTONES
+*   **Turning Point 1 (2017): Systematic Quantification of Bias:** The publication of *Meta-assessment of Bias in Science* in 2017 marks a shift from general awareness to systematic, large-scale empirical quantification of bias across science, setting the stage for more focused interventions.
+*   **Turning Point 2 (2020): Challenging the Diversity Dividend:** The *Diversity-Innovation Paradox in Science* (2020) introduces a crucial complexity, highlighting that merely increasing diversity is insufficient without addressing the systemic biases that hinder the recognition and adoption of minority researchers' novel contributions. This pivoted the field toward deeper structural critiques.
+*   **Turning Point 3 (2022): Intersectional Analysis as Standard:** The study on *Intersectional inequalities in science* (2022) represents a maturation in the study of inequality, moving beyond single-axis analyses to rigorously demonstrate compounded disadvantages, becoming a new standard for comprehensive equity research.
+*   **Turning Point 4 (2023): Data Infrastructure for Next-Gen SciSci:** The release of **SciSciNet** (2023) signifies a monumental leap in the field's data infrastructure, enabling unprecedented scale and integration for research on gender, diversity, and equity across scientific systems.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- NEVER use color names as text labels
+- Band width should vary to suggest relative activity

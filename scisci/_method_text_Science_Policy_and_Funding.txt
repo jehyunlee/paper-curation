@@ -1,0 +1,52 @@
+## Category Timeline: Science Policy & Funding (2014–2026)
+
+### SUB-THEME A: Funding Allocation, Equity & Reform (2014→2023, Ongoing Evolution)
+This stream explores how scientific funding is distributed, the biases inherent in these processes, and proposals for more equitable and effective mechanisms. It highlights a continuous effort to scrutinize and improve the foundational aspects of science funding.
+Branches into:
+- **"Credit & Authorship Biases"** (2014–2014): Research highlighted how collective credit allocation in science is often highly unequal, irrespective of author order (e.g., *Shen & Barabási, 2014*). This early finding underscored fundamental inequalities in scientific recognition.
+- **"Peer Review Effectiveness"** (2015–2015): Analysis of NIH data revealed a weak correlation between peer review scores and subsequent research productivity (e.g., *Big Names or Big Ideas, 2015*), sparking critical discussions on the reliability and predictive power of traditional review processes.
+- **"Funding Inequality (Matthew Effect)"** (2018–2018): Empirical evidence from competitive research grants confirmed the Matthew effect, demonstrating that prior funding success significantly increases the likelihood of receiving future grants (e.g., *The Matthew effect in science funding, 2018*), thus reinforcing cumulative advantage.
+- **"Innovative Funding Mechanisms"** (2023–2023): New approaches, such as placing a "Pre-lottery" at the initial stage of the grant application process (e.g., *Rethink Funding by Putting the Lottery First, 2023*), were proposed to mitigate biases and enhance fairness in funding allocation, signaling a shift towards structural reforms.
+Interaction: This stream critically interacts with 'Science Impact, Public Value & Assessment' as biased or ineffective funding allocation can hinder the realization of public value. It also connects with 'External Forces & Shaping Dynamics' as political mandates or new technological capabilities can drive or constrain efforts for funding reform.
+
+### SUB-THEME B: Science Impact, Public Value & Assessment (2022→2025, Growing Focus)
+This stream investigates the tangible and intangible returns on scientific investment, how science is utilized by the public, and the development of sophisticated methods to measure and visualize its broader societal impact.
+Branches into:
+- **"Public Use & Utilization"** (2022–2022): Studies demonstrated that public-funded science is more broadly utilized in public domains like policy documents, patents, and clinical trials compared to privately funded research (e.g., *Public use and public funding of science, 2022*), highlighting a strong alignment between public investment and public benefit.
+- **"Holistic Impact Visualization"** (2025–2025): The development of comprehensive frameworks to visualize the broad societal impact of science funding emerged, connecting millions of research grants to a vast array of outputs including publications, patents, policy documents, clinical trials, and public media (e.g., *Funding the Frontier, 2025*). This signifies a significant move towards multi-faceted, data-driven impact assessment.
+Interaction: This stream often merges with 'External Forces & Shaping Dynamics' as external demands (e.g., during a pandemic) or the advent of new computational tools drive the need for better impact assessment. It is also a direct outcome stream of 'Funding Allocation, Equity & Reform', as effective and equitable funding aims to maximize public value and utilization.
+
+### SUB-THEME C: External Forces & Shaping Dynamics of Science (2021→2026, Emerging & Critical)
+This stream focuses on the political, societal, and technological factors originating outside the scientific community that significantly influence the direction, content, and funding of scientific research.
+Branches into:
+- **"Policy-Science Coevolution"** (2021–2021): Research analyzed the dynamic, reciprocal relationship between policy decisions and scientific developments, particularly evident during urgent global crises like the pandemic (e.g., *Coevolution of policy and science during the pandemic, 2021*), underscoring the interconnectedness of science and governance.
+- **"Computational Science Mapping"** (2024–2024): The development of epistemological coordinate systems using text-based topic models from scientific outputs (e.g., *Mapping Knowledge, 2024*) provides new computational tools to strategically position individual researchers within the academic landscape, aiding in understanding scientific fields.
+- **"Political Influences on Funding"** (2025–2025): Analysis uncovered partisan disparities in US federal science funding, revealing that increased Republican congressional representation correlated with reduced appropriations for scientific research (e.g., *Partisan disparities in the funding of science in the United States, 2025*), highlighting significant external political pressures.
+- **"Technological Disruptors (LLMs)"** (2026–2026): Anticipation and analysis of how the rise of Large Language Models (LLMs) will fundamentally alter the direction and impact of federal research funding, based on confidential proposal data (e.g., *The Rise of Large Language Models, 2026*), demonstrating the profound influence of emerging technologies.
+Interaction: This stream significantly influences 'Funding Allocation, Equity & Reform' by introducing political biases, new research priorities, or technological shifts that necessitate changes in funding strategies. It also shapes 'Science Impact, Public Value & Assessment' by defining the urgent societal challenges science must address and providing advanced tools for impact assessment.
+
+### CROSS-CUTTING CONNECTIONS
+- **Funding Effectiveness Loop:** The effectiveness and fairness of 'Funding Allocation, Equity & Reform' (A) are continuously evaluated through insights gained from 'Science Impact, Public Value & Assessment' (B), creating a vital feedback loop for ongoing policy refinement and strategic adjustments.
+- **External Shaping of Policy:** 'External Forces & Shaping Dynamics of Science' (C), particularly political influences and the emergence of new technologies, profoundly dictate the priorities, mechanisms, and overall landscape within 'Funding Allocation, Equity & Reform' (A), demonstrating how external factors directly translate into internal policy adjustments.
+- **Impact Measurement & Drivers:** New methodologies from 'Computational Science Mapping' and the influence of 'Technological Disruptors' (C) significantly enhance the ability to perform 'Holistic Impact Visualization' (B), while events like 'Policy-Science Coevolution' (C) during crises underscore the urgent need for robust 'Public Use & Utilization' (B).
+
+### KEY MILESTONES
+- **2021: Pandemic-Driven Policy-Science Coevolution:** The COVID-19 pandemic acted as a major turning point, forcing an unprecedented direct and accelerated interplay between scientific research and policy-making, shifting focus towards immediate, impactful societal solutions (paper 2021).
+- **2023: Structural Funding Reform Proposed:** The introduction of the "Pre-lottery" funding model (paper 2023) marked a conceptual turning point in funding allocation, advocating for radical structural changes to address inherent biases rather than incremental adjustments.
+- **2024-2025: Advanced Computational Science of Science Emergence:** The development of sophisticated tools for 'Mapping Knowledge' (2024) and 'Holistic Impact Visualization' (2025 – "Funding the Frontier") signifies a turning point where big data analytics and advanced computational methods become central to understanding and managing the scientific ecosystem.
+- **2026: AI's Direct Influence on Funding Trajectory:** The analysis of Large Language Models' (LLMs) direct impact on federal funding direction (paper 2026) highlights a critical turning point where powerful emerging technologies are seen as direct drivers reshaping research priorities and resource allocation strategies within science policy.
+
+### ABSOLUTE VISUAL RULES
+- Language: English only
+- Layout: horizontal, left-to-right, years on top axis
+- Shape: organic curved ribbons/river flow — NO straight arrows, NO rigid boxes
+- Stream interactions MANDATORY: branching, merging, connections — NO simple parallel bands
+- ALL branches MUST have topic name labels — NO unnamed ribbons
+- Text labels: sub-category/topic names ONLY. NO individual paper titles.
+- Important events: annotation boxes
+- Field emergence: ▶ FieldName (year) | Field decline: ◀ FieldName (year)
+- Background: white, sans-serif font, NO title text in image, NO watercolor effects
+- Aspect ratio: 16:9
+- NO numbers: no paper counts, no statistics
+- NEVER use color names as text labels
+- Band width should vary to suggest relative activity
