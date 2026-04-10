@@ -978,9 +978,15 @@ document.getElementById("hl-reset").onclick=function(){{
 
 // Reset View: restore zoom/pan to the initial (identity) transform so the
 // graph snaps back to the canonical layout regardless of how the user has
-// zoomed, dragged or scrolled around.
+// zoomed, dragged or scrolled around. Covers both 2D SVG and 3D Three.js:
+//   * 2D — animate svg zoom transform back to d3.zoomIdentity
+//   * 3D — OrbitControls.reset() restores the camera position/target/zoom
+//          captured when the controls were instantiated (position 0,0,160;
+//          target 0,0,0). Safe to call even when not currently in 3D mode,
+//          but guarded so we do not error before 3D is ever initialized.
 document.getElementById("view-reset").onclick=function(){{
   svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
+  if(controls3) controls3.reset();
 }};
 
 // Force controls
