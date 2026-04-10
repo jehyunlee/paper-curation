@@ -18,6 +18,7 @@
 
 # Documentation (whitelist specific service files below)
 !docs/
+!docs/index.html
 !docs/setup-guide.md
 
 # GitHub Pages deployment (under docs/)
