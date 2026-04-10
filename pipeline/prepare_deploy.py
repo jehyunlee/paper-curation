@@ -1,11 +1,15 @@
 """
 배포 준비: PNG→WebP 변환 + text.md gitignore + HTML 경로 업데이트.
 
+Cloudflare Workers(Static Assets)가 master 브랜치의 docs/ 를 자동으로
+배포한다. 따라서 이 스크립트는 docs/ 만 master에 commit/push 한다.
+(구 gh-pages subtree 방식은 제거됨)
+
 Usage:
   PYTHONUTF8=1 python prepare_deploy.py --topic ai4s
   PYTHONUTF8=1 python prepare_deploy.py --topic ai4s --quality 90    # WebP 품질 (기본 90)
   PYTHONUTF8=1 python prepare_deploy.py --topic ai4s --dry-run       # 변환 없이 크기 예상만
-  PYTHONUTF8=1 python prepare_deploy.py --topic ai4s --push          # 변환 후 git push까지
+  PYTHONUTF8=1 python prepare_deploy.py --topic ai4s --push          # 변환 후 master push (Cloudflare 자동 배포)
 
 단계:
   1. .gitignore에 text.md 추가
@@ -13,7 +17,7 @@ Usage:
   3. papers/*/index.html, papers/*/review.md에서 .png → .webp 경로 업데이트
   4. {topic}/index.html에서 .png → .webp 경로 업데이트 (figure 참조만, 타임라인은 PNG 유지)
   5. 원본 PNG 삭제
-  6. (선택) git add + commit + push
+  6. (선택) git add docs/ + commit + push origin master  → Cloudflare 자동 배포
 """
 
 import argparse
@@ -191,12 +195,11 @@ def main():
             deleted += 1
     print(f"  Deleted: {deleted} PNGs")
 
-    # Step 6: Push to gh-pages branch
+    # Step 6: Commit docs/ changes and push to master (Cloudflare auto-deploys)
     if args.push:
-        print("\nStep 6: Git push to gh-pages...")
+        print("\nStep 6: Git commit + push to master (Cloudflare will auto-deploy)...")
         os.chdir(REPO)
 
-        # Commit docs/ changes on master first
         subprocess.run(["git", "add", "docs/"], check=True)
         result = subprocess.run(
             ["git", "diff", "--cached", "--quiet"],
@@ -208,30 +211,10 @@ def main():
                             f"{total_orig // 1048576}→{total_webp // 1048576}MB\n\n"
                             f"Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"],
                            check=True)
-
-        # Push docs/ subtree to gh-pages branch
-        # Create gh-pages if it doesn't exist on remote
-        check_remote = subprocess.run(
-            ["git", "ls-remote", "--heads", "origin", "gh-pages"],
-            capture_output=True, text=True
-        )
-        if not check_remote.stdout.strip():
-            # First time: create gh-pages from docs/ subtree
-            subprocess.run(
-                ["git", "subtree", "split", "--prefix=docs", "-b", "gh-pages"],
-                check=True
-            )
-            subprocess.run(
-                ["git", "push", "origin", "gh-pages"],
-                check=True
-            )
+            subprocess.run(["git", "push", "origin", "master"], check=True)
+            print("  Pushed to master — Cloudflare Workers will auto-deploy")
         else:
-            # Update existing gh-pages
-            subprocess.run(
-                ["git", "subtree", "push", "--prefix=docs", "origin", "gh-pages"],
-                check=True
-            )
-        print("  Pushed to gh-pages!")
+            print("  No staged changes to commit")
     else:
         print("\n(--push 없이 실행됨. git push는 수동으로)")
 
