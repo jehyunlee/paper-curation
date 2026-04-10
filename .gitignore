@@ -10,6 +10,7 @@
 !config.example.json
 !wrangler.toml
 !CLAUDE.md
+!workflow.png
 
 # Pipeline scripts
 !pipeline/

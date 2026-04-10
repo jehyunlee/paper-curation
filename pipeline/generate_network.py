@@ -373,6 +373,10 @@ svg {{ width:100vw;height:100vh; }}
     <span class="hl-btn" id="hl-bridge">Bridge</span>
     <span class="hl-btn" id="hl-reset">Reset</span>
   </div>
+  <h3>View</h3>
+  <div id="view-btns">
+    <span class="hl-btn" id="view-reset" title="Reset zoom, pan and position to the initial layout">Reset View</span>
+  </div>
   <h3>Layout</h3>
   <div id="layout-btns">
     <span class="hl-btn active" id="layout-umap">UMAP 2D</span>
@@ -450,10 +454,13 @@ const has3D = {'true' if has3D else 'false'};
 let useUMAP = hasUMAP;
 let use3D = false;
 
-// SVG setup
+// SVG setup — fixed coordinate system so layout is INDEPENDENT of browser size.
+// The SVG element still fills the viewport (CSS: width:100vw; height:100vh),
+// but viewBox + preserveAspectRatio make the content scale uniformly while
+// keeping the same aspect ratio and identical force-simulation geometry.
 const svg = d3.select("#graph");
-const W = window.innerWidth, H = window.innerHeight;
-svg.attr("viewBox",[0,0,W,H]);
+const W = 1600, H = 1000;  // fixed logical canvas (16:10)
+svg.attr("viewBox",[0,0,W,H]).attr("preserveAspectRatio","xMidYMid meet");
 const defs = svg.append("defs");
 const glowFilter = defs.append("filter").attr("id","glow").attr("x","-50%").attr("y","-50%").attr("width","200%").attr("height","200%");
 glowFilter.append("feGaussianBlur").attr("in","SourceGraphic").attr("stdDeviation","5").attr("result","blur1");
@@ -967,6 +974,13 @@ document.getElementById("hl-reset").onclick=function(){{
   document.querySelectorAll(".hl-btn").forEach(b=>b.classList.remove("active"));
   info.classList.remove("open");
   render();
+}};
+
+// Reset View: restore zoom/pan to the initial (identity) transform so the
+// graph snaps back to the canonical layout regardless of how the user has
+// zoomed, dragged or scrolled around.
+document.getElementById("view-reset").onclick=function(){{
+  svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
 }};
 
 // Force controls
