@@ -1,0 +1,1 @@
+Here we show that graph networks trained at scale can reach unprecedented levels of generalization, improving the efficiency of materials discovery by an order of magnitude.. Building on 48,000 stable crystals identified in continuing studies15–17, improved efficiency enables the discovery of 2.2 million structures below the

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Robot-assisted mapping of chemical reaction hyperspaces and networks</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Robot-assisted mapping of chemical reaction hyperspaces and networks</h1>
+<blockquote><p><strong>저자</strong>: Yankai Jia, Rafał Frydrych, Yaroslav I. Sobolev, Wai-Shing Wong, Bibek Prajapati, Daniel Matuszczyk, Yasemin Bilgi, Louis Gadina, Juan Carlos Ahumada, Galymzhan Moldagulov, Namhun Kim, Eric S. Larsen, Maxence Deschamps, Yanqiu Jiang, Bartosz A. Grzybowski | <strong>날짜</strong>: 2025-09 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-025-09490-1" target="_blank">10.1038/s41586-025-09490-1</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>저비용 로봇 플랫폼과 광학 검출을 통해 수천 개의 반응 조건에서 화학반응의 초공간(hyperspace) 전체를 매핑하여, 예측 불가능했던 반응 수율 분포, 숨겨진 중간체, 주생성물 전환점을 체계적으로 발견하는 새로운 방법론을 제시한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 화학반응의 결과는 농도, 온도, 기질 비율 등 다차원 초공간의 반응 조건에 따라 결정되지만, 인간 화학자는 극히 제한된 조건만 탐색 가능함</li>
+<li><strong>Gap</strong>: 기존 자동화 플랫폼은 수천 개 반응은 생성할 수 있으나, 정제(purification)와 수율 정량화가 병목. NMR, LC-MS 등 분석 기법은 처리량이 시간당 수 개로 제한되어 반응 초공간의 전체 그림을 얻기 어려움</li>
+<li><strong>Why</strong>: 반응 초공간이 매끄러운지 울퉁불퉁한지, 예상 외 반응성 영역이나 주생성물 전환이 존재하는지, 부산물로 숨겨진 중간체가 있는지 알려지지 않음</li>
+<li><strong>Approach</strong>: UV-Vis 분광법을 기반으로 하는 저비용 로봇 플랫폼 개발. 스펙트럼 언믹싱(spectral unmixing) 알고리즘으로 복잡한 혼합물 분석, 이상 탐지 알고리즘으로 예기치 않은 반응 감지</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 자동화 반응 플랫폼 및 광학 수율 측정">
+<p class="fig-caption"><em>그림 1: (a) 약 $25K의 저비용 로봇 시스템 주요 구성. (b) N차원 초공간에서 조건을 설정하고 UV-Vis 스펙트럼 획득. 모든 초공간 지점의 조정된 혼합물을 결합. (c) HPLC로 정제한 순수 생성물의 농도-흡수 보정곡선. (d) 각 초공간 지점의 UV-Vis 스펙트럼을 기준 스펙트럼의 선형 조합으로 분해. (e-i) 화학량론 제약 조건, 다중공선성 진단, 적합성 검증을 위한 잔차 분석.</em></p></div>
+<ol>
+<li><strong>저비용 고처리량 플랫폼</strong>: 약 $25K 로봇으로 하루 1,000개 반응 실행 가능. UV-Vis 검출 (~100 샘플/시간, 샘플당 수 센트)로 NMR/LC-MS의 비용·시간 병목 회피. 전체 9,000개 이상의 조정된 혼합물 분석</li>
+<li><strong>스펙트럼 언믹싱 기반 정량화</strong>: 모든 초공간 샘플을 하나로 합치고 한 번의 HPLC/NMR/MS로 '기저 성분 집합(basis set)' 확인 후, 각 초공간 지점의 복잡한 UV-Vis 스펙트럼을 벡터 분해로 분해. 상대 표준 편차 5% 내 정확도 달성</li>
+<li><strong>반응 초공간의 수학적 특성 규명</strong>: 연속 변수(농도, 온도)에 대해 개별 수율 분포는 일반적으로 천천히 변함(slow-varying). 동시에 예상 외 반응성 영역과 주생성물 전환점 발견</li>
+<li><strong>숨겨진 중간체·생성물 노출</strong>: 반응 기질 비율을 체계적으로 변화시킴으로써 반응 네트워크 재구성. 1세기 이상 연구된 반응에서도 미알려진 중간체·생성물 발견</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: E1 및 SN1 반응 초공간의 수율 분포">
+<p class="fig-caption"><em>그림 2: (a,b) E1 및 SN1 반응 메커니즘. (c,d) 3차원 초공간에서 온도 및 [HBr]₀에 따른 생성물 수율 분포 (마커 크기·색깔이 수율에 비례). (e,f) 기구론 모델 곡선과 실험값 비교.</em></p></div>
+<ul>
+<li><strong>로봇 플랫폼 설계</strong>: 수평 갠트리, 액체 취급 모듈, 54-바이알 플레이트, UV-Vis 분광계 통합. 각 점에서 ~8초 스펙트럼 획득 + ~50초 피펫팅·세척·건조</li>
+<li><strong>스펙트럼 언믹싱 프로토콜</strong>:
+<ul>
+<li>초공간 모든 조정 샘플 결합 → HPLC/NMR/MS로 생성물 동정</li>
+<li>각 생성물의 농도별 UV-Vis 스펙트럼 측정</li>
+<li>각 초공간 지점의 실험 스펙트럼 = Σ(참조 스펙트럼 × 농도) 형태로 맞춤</li>
+<li>화학량론 부등식으로 물리적으로 불가능한 해 제거</li>
+</ul>
+</li>
+<li><strong>이상 탐지 알고리즘</strong>:
+<ul>
+<li>실험값과 모델링 스펙트럼의 오차 추적</li>
+<li>잔차의 자기상관을 Durbin-Watson 통계량으로 평가</li>
+<li>RMS 잔차 > 0.01 흡수도 또는 DW 통계 이상 시 → 예기치 않은 생성물 신호</li>
+</ul>
+</li>
+<li><strong>적용 범위</strong>: 커플링, 축합, 환가산, 재배열(8개 주요 반응)에서 검증. R² = 0.96으로 수동 정제·분석 결과와 상관</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>혁신적 분석 전략</strong>: NMR/LC-MS 병목 우회하면서도 부산물 포함 전체 성분 정량화. 기존 자동화는 최적화(몇 수십∼수백 조건)에만 집중했으나, 본 연구는 초공간 '완전 초상화(complete portrait)' 추구</li>
+<li><strong>수학적 엄밀성</strong>: 화학량론 제약, 다중공선성 진단, Durbin-Watson 자기상관 검사로 언믹싱 안정성 보장. 연속 변수에 대한 수율 분포의 '느린 변화' 성질 증명</li>
+<li><strong>기구론 통합</strong>: E1/SN1 반응에서 실험 초공간을 온도-반응계수 의존성이 있는 기구론 모델로 적합(fitting)하여 검증</li>
+<li><strong>실용적 확장성</strong>: 저비용($25K), 개방형 설계(블루프린트·코드 공개), 다양한 유기 용매·가혹한 시약 지원으로 학계 접근성 확보</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>방법론 한계</strong>:
+<ul>
+<li>자외-가시선 흡수가 220 nm 이상에서 나타나지 않는 지방족 화합물에 부적합</li>
+<li>반응물/용매 피크가 생성물을 가리는 경계 사례 존재 (논문의 반응 9-12 범주)</li>
+<li>생성물 수 증가 시 다중공선성 문제 악화 가능</li>
+</ul>
+</li>
+<li><strong>후속 연구</strong>:
+<ul>
+<li>적외선(IR), 라만(Raman) 등 타 분광법 결합으로 범위 확대</li>
+<li>기계 학습으로 스펙트럼 언믹싱 안정성 향상</li>
+<li>수율 분포의 '느린 변화' 성질을 초공간 토폴로지(topology)와 연결하는 수학 이론 발전</li>
+<li>자율 의사결정 알고리즘과 결합하여 반응 네트워크 발견 자동화</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 5/5</span></div>
+<p><strong>총평</strong>: 본 논문은 자동화 로봇과 광학 분광법, 스펙트럼 분해 알고리즘을 창의적으로 결합하여 화학 초공간의 '완전한 지도 제작(complete mapping)'이라는 오랫동안 달성 불가능했던 목표를 현실화했다. 저비용·고처리량 특성으로 학계 접근성을 극대화하면서 숨겨진 반응성과 중간체를 체계적으로 노출시킴으로써 합성 화학의 패러다임을 획기적으로 전환할 수 있는 기초 연구 성과이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../138_Autonomous_chemical_research_with_large_language_models/index.html">Autonomous chemical research with large language models</a></div><div class="conn-reason">LLM 기반 화학 실험 설계가 로봇 기반 반응 매핑의 인지적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1126_Autonomous_platform_for_solution_processing_of_electronic_po/index.html">Autonomous platform for solution processing of electronic polymers</a></div><div class="conn-reason">화학 반응 하이퍼공간 로봇 지원 매핑이 자동화 플랫폼의 기반 제공</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../099_An_autonomous_laboratory_for_the_accelerated_synthesis_of_in/index.html">An autonomous laboratory for the accelerated synthesis of inorganic materials</a></div><div class="conn-reason">둘 다 자율 실험실 개념이지만 A-Lab은 무기재료, 이 논문은 화학반응에 특화되어 있다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../099_An_autonomous_laboratory_for_the_accelerated_synthesis_of_in/index.html">An autonomous laboratory for the accelerated synthesis of inorganic materials</a></div><div class="conn-reason">화학반응 매핑과 재료 합성 자동화라는 서로 다른 자율실험실 응용분야를 다룬다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">실시간 실험-이론 폐루프 시스템의 다른 구현 방식을 보여준다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">실험-이론 통합을 재료 vs 화학반응 매핑에 각각 적용한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../138_Autonomous_chemical_research_with_large_language_models/index.html">Autonomous chemical research with large language models</a></div><div class="conn-reason">LLM 기반 화학 자동화를 로봇 플랫폼으로 확장하여 더 체계적인 반응 매핑을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../096_An_automatic_end-to-end_chemical_synthesis_development_platf/index.html">An automatic end-to-end chemical synthesis development platform powered by large language models</a></div><div class="conn-reason">종단간 합성 개발을 로봇 기반 반응 매핑으로 확장한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

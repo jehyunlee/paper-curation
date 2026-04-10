@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts</h1>
+<blockquote><p><strong>저자</strong>: Jason Priem, Heather Piwowar, Richard Orr | <strong>날짜</strong>: 2022 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2205.01833" target="_blank">https://arxiv.org/abs/2205.01833</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: Sketch of the OpenAlex graph data model.</em></p></div>
+<p>Microsoft Academic Graph 종료에 따라 학술 메타데이터의 완전 개방형(오픈 데이터, API, 소스코드) 대체 시스템으로 OpenAlex를 개발하였으며, 209M개 논문, 213M명 저자, 124K개 학술지 등 5개 엔티티 타입으로 구성된 학술 지식 그래프(Scientific Knowledge Graph)를 제공한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: Microsoft Academic Graph (MAG)가 학술 메타데이터의 주요 무료 자원이었으나 2022년 1월 서비스 종료되었고, 기존의 OpenCitations, Semantic Scholar 등 부분 개방형 SKG들이 존재했다.</li>
+<li><strong>Gap</strong>: MAG 종료로 인한 학술 메타데이터 접근성 공백이 발생했으며, 기존 시스템들이 완전한 개방성(데이터, API, 코드)을 동시에 제공하지 못하고 있었다.</li>
+<li><strong>Why</strong>: 완전 개방형 학술 메타데이터는 연구 평가의 투명성 향상, 학술 자원의 민주적 접근, 오픈 사이언스 인프라 구축에 필수적이다.</li>
+<li><strong>Approach</strong>: MAG를 기반으로 하면서도 완전 개방형 구조를 채택하여, Crossref, PubMed, arXiv 등 다양한 소스에서 데이터를 수집하고, 규칙 기반 및 머신러닝 기반 알고리즘으로 엔티티 파싱, 정규화, 중복 제거를 수행한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: Sketch of the OpenAlex graph data model.</em></p></div>
+<ul>
+<li><strong>완전 개방형 인프라 구축</strong>: 100% 오픈 데이터, 제한 없는 REST API, 오픈 소스 코드로 제공하며 Open Scholarly Infrastructure 원칙 준수</li>
+<li><strong>대규모 학술 지식 그래프 구성</strong>: 209M개 works, 213M명 authors, 124K개 venues, 109K개 institutions, 65K개 concepts를 포함한 종합 메타데이터 데이터베이스</li>
+<li><strong>다중 식별자 지원</strong>: 각 엔티티 타입별 표준 ID(DOI, ORCID, ISSN-L, ROR, Wikidata) 할당으로 상호운용성 극대화</li>
+<li><strong>정교한 엔티티 매칭</strong>: 저자 명확화(disambiguation), 기관 파싱, 문서 버전 추적 등을 위한 머신러닝 알고리즘 개발</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li>Crossref, PubMed, arXiv, 기관 저장소 등 다양한 소스에서 구조화/비구조화 메타데이터 수집</li>
+<li>규칙 기반 및 머신러닝 2단계 알고리즘으로 기관 소속 문자열 추출 및 정규화</li>
+<li>MAG에서 학습된 분류기로 논문 제목과 초록으로부터 개념 자동 할당 (85% 적용률)</li>
+<li>지문(fingerprinting) 알고리즘으로 preprint, VoR 등 다중 버전 문서 매칭 및 식별</li>
+<li>영구적 OpenAlex ID를 웹 기반 URL로 제공하여 HTML/JSON 양식 접근 지원</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>MAG 종료 후 완전한 오픈 기반의 첫 번째 상용급 학술 지식 그래프 제공</li>
+<li>기존 SKG들과 달리 데이터, API, 소스코드 모두 100% 개방하는 차별화된 모델</li>
+<li>다양한 소스의 이질적 메타데이터를 통합하는 포괄적 엔티티 매칭 파이프라인</li>
+<li>Wikidata 기반 계층적 개념 구조로 표준화된 의미론적 표현</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>엔티티 정확성 미검증</strong>: 저자 및 기관 파싱/정규화 정확도가 미흡하며 고위험 평가 맥락에서의 신뢰성 부족</li>
+<li><strong>메타데이터 누락</strong>: 자금 출처(funding sources), 교신저자(corresponding authors) 정보 미포함</li>
+<li><strong>비교 연구 부재</strong>: 타 도구와의 정확성/완전성 비교 검증 필요</li>
+<li><strong>초기 단계의 제한</strong>: 프로젝트 초창기로 데이터 품질 개선 및 대규모 검증 작업 필요</li>
+<li><strong>후속 연구</strong>: 엔티티 정확도 개선, 결측 메타데이터 추가, 대규모 정확성 벤치마킹, 신뢰도 평가 체계 수립</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: OpenAlex는 MAG 종료로 인한 학술 인프라 공백을 메우면서 완전 개방형 모델을 제시한 중요한 프로젝트로, 규모와 개방성 측면에서 획기적이나 초기 단계로 엔티티 정확도 및 데이터 완전성 개선이 시급하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../969_Hierarchical_Classification_of_Research_Fields_in_the_Web_of/index.html">Hierarchical Classification of Research Fields in the &quot;Web of Science&quot; Using Deep Learning</a></div><div class="conn-reason">학술 메타데이터 시스템에 대한 다른 접근법을 제시한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../991_Open_Datasets_in_Learning_Analytics_Trends_Challenges_and_Be/index.html">Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE</a></div><div class="conn-reason">OpenAlex 시스템을 학습분석 연구 데이터 수집에 실제 적용한다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

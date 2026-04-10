@@ -1,0 +1,1 @@
+Here we present GeneAgent, an LLM-based AI agent for gene-set analysis that reduces hallucinations by autonomously interacting with biological databases to verify its own output.. Evaluation of 1,106 gene sets collected from different sources demonstrates that GeneAgent is consistent

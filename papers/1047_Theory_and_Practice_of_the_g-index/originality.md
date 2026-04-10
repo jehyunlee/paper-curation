@@ -1,0 +1,1 @@
+We prove the unique existence of g for any set of articles and we have that g ≥h.. The general Lotkaian theory of the g-index

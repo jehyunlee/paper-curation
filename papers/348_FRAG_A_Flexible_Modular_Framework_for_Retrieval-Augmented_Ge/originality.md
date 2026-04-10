@@ -1,0 +1,1 @@
+In this paper, we propose a novel flexible modu- lar KG-RAG framework, termed FRAG, which synergizes the advantages of both approaches.. FRAG estimates the hop range of reasoning paths based solely on the query and classify it as either simple or complex.. To match the complexity of the query, tailored pipelines are applied to e

@@ -1,0 +1,1 @@
+To solve this challenging issue, we propose the first study of the generalized and flexible an- chor graph fusion framework termed Fast Multi-View Anchor-Correspondence Clustering (FMVACC).. Specifically, we show how to find anchor correspondence with both feature and structure information, after w

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ReAct: Synergizing Reasoning and Acting in Language Models</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>ReAct: Synergizing Reasoning and Acting in Language Models</h1>
+<blockquote><p><strong>저자</strong>: Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2210.03629" target="_blank">10.48550/arXiv.2210.03629</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: 4가지 프롬프팅 방식 비교 - (a) 표준, (b) 사고의 연쇄(CoT), (c) 행동만, (d) ReAct (reasoning+acting). HotpotQA와 AlfWorld 작업 해결 과정 시연</em></p></div>
+<p>본 논문은 대규모 언어 모델(LLM)의 추론(reasoning)과 행동(acting)을 상호작용적으로 결합하여 복잡한 작업을 해결하는 ReAct 패러다임을 제시한다. 모델이 사고(thought)와 행동(action)을 번갈아 생성하면서 외부 환경과 상호작용하여 동적 추론을 수행하고 오류 전파 및 환각(hallucination)을 완화한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>:
+<ul>
+<li>LLM의 사고의 연쇄(Chain-of-Thought, CoT) 프롬프팅은 추론 능력을 보여주었으나, 내부 표현만 사용하여 외부 세계와 단절됨</li>
+<li>최근 연구는 LLM을 환경과 상호작용하는 에이전트로 활용하지만, 고수준의 목표에 대한 추상적 추론이 부족함</li>
+</ul>
+</li>
+<li><strong>Gap</strong>:
+<ul>
+<li>기존 방식들은 추론과 행동을 독립적으로 연구했으며, 두 능력이 상호 보강될 수 있다는 가정이 검증되지 않음</li>
+<li>CoT는 사실 확인이 불가능하고 오류 전파에 취약함</li>
+<li>행동만으로는 복잡한 논리적 계획을 수립하기 어려움</li>
+</ul>
+</li>
+<li><strong>Why</strong>:
+<ul>
+<li>인간 지능은 추론과 행동을 긴밀히 통합하여(요리 예시) 자기조절, 전략 수립, 작업기억 관리를 수행함</li>
+<li>이러한 통합이 불확실성 하에서 견고한 의사결정을 가능케 함</li>
+</ul>
+</li>
+<li><strong>Approach</strong>:
+<ul>
+<li>에이전트의 행동 공간을 Â = A ∪ L로 확장 (L은 언어 공간)</li>
+<li>사고(언어 행동)는 환경 피드백을 생성하지 않으면서도 문맥을 업데이트하여 향후 추론/행동을 지원</li>
+<li>고정된 PaLM-540B를 몇-샷(few-shot) 프롬프팅으로 사용하여 도메인 특화 행동과 자유형식 사고 동시 생성</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>Figure 2: HotpotQA와 Fever에서 프롬프팅 결과 비교 (PaLM-540B)</em></p></div>
+<ol>
+<li><strong>질의응답(QA) 및 사실검증 작업에서 우수한 성능</strong>:
+<ul>
+<li>HotpotQA: ReAct가 Wikipedia API 접근 권한 하에서 행동만 수행하는 기준선을 능가하고, CoT와 경쟁력 있는 성능 달성</li>
+<li>Fever: 사실검증 정확도에서 뚜렷한 개선으로 환각 문제 완화 실증</li>
+<li>ReAct + CoT 결합 방식이 최고 성능 달성 (내부 지식과 외부 정보 활용)</li>
+</ul>
+</li>
+<li><strong>대화형 의사결정 작업에서 기존 학습 방식 압도</strong>:
+<ul>
+<li>ALFWorld: 1-2샷 프롬프팅으로 103~105개 샘플로 학습한 모방학습(imitation learning)과 강화학습(RL) 방법을 34% 절대 성공률로 능가</li>
+<li>WebShop: 10% 절대 성공률 개선으로 RL 기반선 방법들을 초과 성능</li>
+</ul>
+</li>
+<li><strong>해석가능성과 신뢰성 향상</strong>:
+<ul>
+<li>모델의 내부 지식 vs. 외부 환경 정보 구분 명확</li>
+<li>추론 궤적(reasoning trace)을 통한 의사결정 근거 검사 가능</li>
+<li>진단 가능성(diagnosability) 증대로 신뢰성 강화</li>
+</ul>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>Figure 3: HotpotQA에서 프롬프팅 및 파인튜닝 스케일링 결과 비교</em></p></div>
+<p><strong>ReAct 프레임워크의 핵심 구성 요소</strong>:</p>
+<ul>
+<li><strong>확장된 행동 공간</strong>: 기존 도메인 행동(A)에 언어 기반 사고(L) 추가로 정책 π(âₜ|cₜ)의 암묵적 매핑 문제 완화</li>
+<li><strong>문맥 업데이트 메커니즘</strong>:
+<ul>
+<li>각 시간 단계 t에서 관찰 oₜ과 행동 aₜ으로 구성된 문맥 cₜ = (o₁, a₁, ..., oₜ)를 유지</li>
+<li>사고 âₜ ∈ L 생성으로 cₜ₊₁ = (cₜ, âₜ) 업데이트하되 환경 피드백 없음</li>
+</ul>
+</li>
+<li><strong>추론-행동 교대 생성</strong>:
+<ul>
+<li>추론 중심 작업(HotpotQA, Fever): 사고-행동-관찰(Thought-Action-Observation) 순환</li>
+<li>의사결정 중심 작업(ALFWorld, WebShop): 사고가 필요한 지점에 비동기적으로 삽입</li>
+</ul>
+</li>
+<li><strong>프롬프팅 전략</strong>:
+<ul>
+<li>각 문맥 내 예시(in-context example)는 인간 해결 궤적(action, thought, observation)으로 구성</li>
+<li>최소 샘플(1-2샷)로 목표 작업 해결 방향 제시</li>
+</ul>
+</li>
+<li><strong>환경 상호작용</strong>:
+<ul>
+<li>Wikipedia API 연동으로 외부 지식 검색 가능 (QA/사실검증)</li>
+<li>텍스트 기반 환경(시뮬레이터) 상호작용으로 행동 피드백 수집</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>새로운 프롬프팅 패러다임</strong>: 추론과 행동의 상호작용적 통합이라는 개념적 혁신으로, 기존의 분리된 접근(CoT vs. 행동 생성)을 통합</li>
+<li><strong>인간 인지에서 영감</strong>: Vygotsky의 내적 언어(inner speech) 이론과 작업기억(working memory) 개념을 LLM 에이전트에 구현</li>
+<li><strong>광범위한 작업 범위의 일관성</strong>: 언어 추론(HotpotQA, Fever)과 대화형 의사결정(ALFWorld, WebShop) 모두에 동일 패러다임 적용으로 범용성 입증</li>
+<li><strong>확장 가능한 설계</strong>: 특정 도메인에 맞춰 사고의 빈도와 유형을 조정 가능한 유연한 구조</li>
+<li><strong>해석가능성 기여</strong>: 기존 블랙박스형 LLM 추론에 명시적 추론 궤적을 추가하여 투명성 향상</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>프롬프팅 설정의 한계</strong>:
+<ul>
+<li>동결된(frozen) 모델에만 의존하여 도메인 특화 행동과 사고 능력의 향상에 한계</li>
+<li>문맥 길이 제약으로 장시간 작업에서 성능 저하 가능성</li>
+<li>프롬프트 설계에 따른 성능 민감도 미분석</li>
+</ul>
+</li>
+<li><strong>정량화되지 않은 사고의 질</strong>:
+<ul>
+<li>어떤 유형의 사고가 가장 효과적인지에 대한 체계적 분석 부족</li>
+<li>비합리적이거나 모순된 추론이 도입될 수 있는 위험성</li>
+</ul>
+</li>
+<li><strong>외부 도구 의존성</strong>:
+<ul>
+<li>Wikipedia API와 같은 고품질 외부 자원 접근 필요</li>
+<li>도메인별로 적절한 환경 인터페이스 구축 비용</li>
+</ul>
+</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>파인튜닝을 통한 ReAct 성능 극대화 (초기 실험에서 가능성 시현)</li>
+<li>강화학습과의 결합으로 정책 최적화</li>
+<li>더 많은 작업과 도메인에 대한 스케일링</li>
+<li>사고 생성의 동적 제어 메커니즘 개발</li>
+<li>오류 있는 외부 정보 처리 방안 연구</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: ReAct는 대규모 언어 모델의 추론과 행동을 상호작용적으로 통합하여 복잡한 작업 해결 능력을 획기적으로 향상시킨 매우 영향력 있는 연구이다. 광범위한 벤치마크(HotpotQA, Fever, ALFWorld, WebShop)에서 기존 방식을 압도하는 성능을 보였으며, 특히 해석가능성과 신뢰성의 동시 개선이라는 부가 이점을 제공한다. 다만 동결된 모델에 대한 프롬프팅 의존, 외부 자원 필요성, 사고의 질적 분석 부족 등이 한계로 남으나, 파인튜닝 실험을 통해 개선 가능성을 시사하고 있다. LLM 기반 에이전트 개발의 실질적 표준이 될 수 있는 중요한 기여라고 평가된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../655_ReAct_Synergizing_Reasoning_and_Acting_in_Language_Models/index.html">ReAct: Synergizing Reasoning and Acting in Language Models</a></div><div class="conn-reason">OpenHands가 채택한 핵심 아키텍처인 추론과 행동의 상호작용적 결합의 이론적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../120_AutoGen_Enabling_Next-Gen_LLM_Applications_via_Multi-Agent_C/index.html">AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation</a></div><div class="conn-reason">ReAct의 추론-행동 결합 패러다임이 AutoGen의 에이전트 간 대화형 문제 해결 메커니즘의 기본적인 설계 원리를 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../310_Embodied_Science_Closing_the_Discovery_Loop_with_Agentic_Emb/index.html">Embodied Science: Closing the Discovery Loop with Agentic Embodied AI</a></div><div class="conn-reason">ReAct의 추론과 행동 통합 패러다임은 Embodied Science의 PLAD 프레임워크에서 언어-행동 통합의 기초가 된다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../813_Toolformer_Language_Models_Can_Teach_Themselves_to_Use_Tools/index.html">Toolformer: Language Models Can Teach Themselves to Use Tools</a></div><div class="conn-reason">도구 사용 학습에서 추론과 행동을 결합한 더 포괄적인 에이전트 프레임워크로 발전한 연구입니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../325_Executable_Code_Actions_Elicit_Better_LLM_Agents/index.html">Executable Code Actions Elicit Better LLM Agents</a></div><div class="conn-reason">ReAct의 추론-행동 패러다임을 코드 실행 기반으로 구체화하여 실행 가능한 행동으로 확장한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../429_Infiagent-dabench_Evaluating_agents_on_data_analysis_tasks/index.html">InfiAgent-DABench: Evaluating Agents on Data Analysis Tasks</a></div><div class="conn-reason">ReAct 패러다임을 데이터 분석 작업에 적용하여 구체적인 성능 평가 방법을 제시한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

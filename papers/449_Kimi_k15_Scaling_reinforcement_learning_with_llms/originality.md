@@ -1,0 +1,1 @@
+Long context scaling and improved policy optimization methods are key ingredients of our approach, which establishes a simplistic, effective RL framework without relying on more complex techniques such as Monte Carlo tree search, value functions, and process reward models.. Notably, our system achieves state-of-the-art reasoning pe

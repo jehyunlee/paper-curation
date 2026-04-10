@@ -1,0 +1,1 @@
+To address these challenges, we propose ChartCoder, the first dedicated chart-to-code MLLM, which leverages Code LLMs as the language backbone to enhance the executability of the generated code.. Fur- thermore, we introduce Chart2Code-160k, the first large-scale and diverse dataset for cha

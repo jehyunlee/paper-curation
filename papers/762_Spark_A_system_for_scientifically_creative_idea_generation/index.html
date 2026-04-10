@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Spark: A system for scientifically creative idea generation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Spark: A system for scientifically creative idea generation</h1>
+<blockquote><p><strong>저자</strong>: Asiem Sanyal, Samuel Schapiro, Sumuk Shashidhar, Royce Moon, Lav R. Varshney, Dilek Hakkani‐Tür | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="SPARK의_end-to-end_파이프라인.png" alt="Figure 1">
+<p class="fig-caption"><em>SPARK의 end-to-end 파이프라인: XPLOR는 임베딩 기반 재귀적 문헌 검색을 수행하고, SPARK Idea Generator는 체인-오브-소트 프롬팅으로 연구 제안을 합성하며, SPARK Filter는 지도학습 미세조정된 JUDGE 모델을 통해 자동화된 동료평가 및 순위 매김을 수행한다.</em></p></div>
+<p>대규모 언어 모델(LLM)과 계산 창의성(CC) 원칙을 결합하여 과학적 아이디어를 자동 생성하고 평가하는 통합 시스템을 제시한다. OpenReview의 600K 과학 리뷰로 훈련된 JUDGE 평가 모델을 통해 생성된 아이디어의 창의성을 자동 검토한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 최근 LLM이 신규 연구 아이디어 생성에 유망한 능력을 보여주고 있으며, AI Scientist와 같은 자율 연구 시스템이 개발되고 있다. 그러나 기존 시스템(SciMON, VirSci)은 주로 참신성(novelty)에만 초점을 맞추고 실험적 유용성이나 창의성 평가를 간과한다.</li>
+<li><strong>Gap</strong>: 과학적 아이디어 생성을 계산 창의성의 기초 원칙에 기반하여 체계적으로 접근한 연구가 부족하다. 특히 생성된 아이디어를 비판적으로 평가할 수 있는 신뢰할 수 있는 평가 모델이 없다.</li>
+<li><strong>Why</strong>: 기존 LLM(GPT 계열)은 감정적 동의를 우선시하는 경향이 있어 과학적 아이디어에 대한 엄격한 비판 검토에 적합하지 않다. 따라서 학술적 표준에 맞춰 비판적으로 사고하도록 훈련된 전문 평가 모델이 필요하다.</li>
+<li><strong>Approach</strong>: 문헌 검색(XPLOR) → 아이디어 생성(SPARK Idea Generator) → 아이디어 평가(SPARK Filter + JUDGE)의 3단계 파이프라인을 구축하고, 600K OpenReview 데이터셋으로 JUDGE 모델을 훈련한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="Spark_아이디어_생성_파이프라인.png" alt="Figure 2">
+<p class="fig-caption"><em>Spark 아이디어 생성 파이프라인: (A) 입력 개념 및 문제, (B) 구조화된 프롬트, (C) LLM 응답, (D) 생성된 아이디어</em></p></div>
+<div class="review-fig"><img src="Spark_Filter_파이프라인.png" alt="Figure 3">
+<p class="fig-caption"><em>Spark Filter 파이프라인: 생성된 아이디어에 대해 JUDGE 모델이 다중 비평을 생성하고, 별도의 LLM이 최종 수락/거절 결정과 유용성 점수를 종합한다.</em></p></div>
+<ol>
+<li><strong>통합 시스템 구현</strong>: 문헌 검색, 아이디어 생성, 평가를 통합한 완전한 파이프라인 구축으로 10,000개 이상의 AI 중심 연구 아이디어를 성공적으로 생성 및 필터링</li>
+<li><strong>전문 평가 모델 개발</strong>: OpenReview의 600K 과학 리뷰를 활용하여 JUDGE 모델 훈련. 추상(abstract)만 사용하고 실험 결과를 제거한 "아이디어 추상(Aidea)" 데이터 변환으로 편향 완화</li>
+<li><strong>공개 데이터셋 제공</strong>: OpenReview 주석 데이터셋을 공개하여 학술 커뮤니티의 재현성 및 후속 연구 지원</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>XPLOR 문헌 검색</strong>: OpenAI text-embedding-3-large로 문서 벡터화(1536차원), FAISS 인덱싱으로 빠른 검색, MMR(최대주변관련도)로 다양성과 관련성 균형 유지</li>
+<li><strong>재귀적 에이전트 기반 검색</strong>: 사용자 쿼리 → 문서 분할 및 임베딩 → LLM 요약으로 관련성 점수 매김(1-10) → 새로운 정제된 쿼리 자동 생성 → 최소 5개 다중 출처의 증거 확보까지 반복</li>
+<li><strong>개념 추출 및 문제 합성</strong>: XPLOR 검색 결과에서 개방된 연구 문제와 핵심 개념 추출 → 문제 중심 프롬트 구성 → 구조화된 추론 계획, 신규 개념, 제목, 초록 생성</li>
+<li><strong>다중 작업 훈련 프레임워크</strong>: JUDGE 모델을 4가지 특화된 작업으로 훈련하여 과학적 담론의 평가 및 생성 측면 모두 포착</li>
+<li><strong>아이디어 데이터 정제</strong>: DeepSeek-V3를 자동 주석자로 활용하여 원본 추상(Aorig)에서 아이디어 추상(Aidea) 생성(구체적 결과/구현 세부사항 제거), 원본 리뷰(Rorig)에서 개념 기반 리뷰(Ridea) 추출로 경험적 성과의 긍정적 편향 제거</li>
+<li><strong>의사 동료평가(Simulated Peer Review)</strong>: JUDGE 모델이 각 아이디어마다 다중 비평 생성 → 별도 LLM이 이들을 종합하여 최종 결정(수락/거절), 결정 이유, 유용성 점수(0-1) 생성</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>계산 창의성 원칙의 체계적 적용</strong>: 기존 과학 아이디어 생성 연구가 참신성만 추구한 반면, 본 논문은 CC 기초 원칙(문제 정의, 개념 결합, 평가)을 명시적으로 통합</li>
+<li><strong>비판적 평가 모델 개발</strong>: 기존 LLM의 동의-지향적 성향을 극복하기 위해 학술 리뷰 데이터로 특화 훈련된 JUDGE 모델 창안</li>
+<li><strong>편향 완화를 위한 데이터 변환</strong>: 원본 추상과 리뷰에서 경험적 결과를 제거한 "아이디어 추상" 변환 방식으로 실험 결과 기반 긍정적 편향 제거</li>
+<li><strong>재현성을 위한 공개 데이터셋</strong>: OpenReview 600K 주석 데이터셋 공개로 학술 커뮤니티의 후속 연구 가능성 제시</li>
+<li><strong>다단계 재귀적 검색 기법</strong>: 단순 벡터 검색을 넘어 LLM 기반 정제된 쿼리 자동 생성으로 포괄적 문헌 수집 구현</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>아이디어 다양성 제한</strong>: 논문에서 생성된 아이디어의 창의성 및 다양성 향상을 위한 기법 개발이 필요함을 인정하며, Si et al.(2024)과 Wang et al.(2024)의 접근법 탐색을 제안</li>
+<li><strong>평가 모델의 일관성</strong>: JUDGE 모델의 평가 신뢰도 및 인간 평가와의 상관관계에 대한 정량적 검증 부재. 모델의 비판 기준이 학술 표준을 얼마나 충실히 반영하는지 불명확</li>
+<li><strong>생성 단계에서의 실험적 유용성 부재</strong>: 아이디어 생성 단계에서 실현 가능성(feasibility)을 명시적으로 최적화하지 않아, SciMON이 지적한 '낮은 실험적 유용성' 문제가 여전히 존재할 가능성</li>
+<li><strong>도메인 제한</strong>: 현재 AI 중심 연구 아이디어에 초점을 맞춰 다른 과학 분야(생물학, 화학 등)에 대한 일반화 가능성 미검증</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>JUDGE 모델과 인간 리뷰어의 평가 일치도 정량화</li>
+<li>생성 단계에서 피드백 루프를 통한 반복적 개선</li>
+<li>다학제 도메인으로의 확장 및 도메인별 평가 모델 개발</li>
+<li>아이디어의 실제 연구 구현 가능성 검증</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 계산 창의성 원칙에 기반한 과학 아이디어 생성 시스템의 개념적 기여와 공개 데이터셋 제공으로 의미 있는 작업이나, JUDGE 모델의 평가 신뢰도 검증 부재와 기술적 세부 사항 부족으로 인해 완전성이 떨어진다. 향후 인간 평가와의 상관관계 분석 및 다양한 도메인으로의 확장 검증이 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../216_Chimera_A_knowledge_base_of_idea_recombination_in_scientific/index.html">Chimera: A knowledge base of idea recombination in scientific literature</a></div><div class="conn-reason">과학적 아이디어 재조합에 대한 지식 기반을 제공하여 창의적 아이디어 생성의 토대를 마련한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../419_Hypothesis_Generation_with_Large_Language_Models/index.html">Hypothesis Generation with Large Language Models</a></div><div class="conn-reason">LLM을 사용한 가설 생성이라는 유사한 목표를 다른 방법론으로 접근한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../194_Chain_of_ideas_Revolutionizing_research_via_novel_idea_devel/index.html">Chain of Ideas: Revolutionizing research via novel idea development with llm agents</a></div><div class="conn-reason">과학적 아이디어 생성에서 체인 구조 vs 창의적 시스템의 다른 접근법을 비교할 수 있다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">LLM의 과학적 창의성과 아이디어 품질을 평가하는 벤치마크를 제공한다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

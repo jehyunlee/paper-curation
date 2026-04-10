@@ -1,0 +1,1 @@
+We systematically explore these limitations and contend that enhancing the capabilities of large language models, or any forthcoming advancements in AI-based mathematical assistants (copilots or “thought partners”), necessitates a course correction both in the design of mathematical datasets and the evaluation crite

@@ -1,0 +1,554 @@
+{
+  "executive_summary_ko": "과학의 과학(Science of Science) 분야는 1964년 유진 가필드(Eugene Garfield)의 과학인용색인(Science Citation Index) 개발을 시작으로 과학 연구 자체를 정량적으로 분석하는 학문으로 발전해왔다. 초기에는 단순한 인용 분석과 네트워크 위상 연구에 집중했으나, 2005년 요안니디스(Ioannidis)의 \"왜 발표된 연구 결과의 대부분이 거짓인가\"라는 논문이 재현성 위기(Reproducibility Crisis)를 촉발하면서 과학 연구의 근본적 문제들이 주목받기 시작했다. 2010년대에 들어서면서 빅데이터와 기계학습 기술의 발전으로 대규모 계량서지학적 분석이 가능해졌고, 특히 2019년 타셰브스카야(Tshitoyan) 등이 Word2vec을 활용해 과학 문헌에 내재된 암묵적 지식을 추출할 수 있음을 보여준 연구는 AI 기반 과학 발견의 가능성을 열었다. 2020년 S2ORC 코퍼스가 8,110만 편의 논문을 공개하면서 전례 없는 규모의 계산 분석이 가능해졌고, 2022년 OpenAlex가 마이크로소프트 아카데믹 그래프를 대체하며 완전한 오픈 사이언스 인프라가 구축되었다. 2023년은 ChatGPT의 등장으로 과학 연구 방법론에 근본적 전환점을 맞았는데, 언어모델이 연구 작성과 가설 생성을 가속화하면서 동시에 의미적 참신성(Semantic Novelty)의 감소와 이해의 환상(Illusions of Understanding)이라는 새로운 문제를 야기했다. 현재 이 분야는 다섯 가지 주요 연구 영역으로 분화되어 있다. 첫째, AI 지원 과학 발견 분야는 인간 전문성을 통합한 AI가 예측 정확도를 400% 향상시킨 사례를 보여주며 자동화된 과학 발견의 가능성을 탐구하고 있다. 둘째, 학술 영향력과 이동성 연구는 2015년 클라셋(Clauset) 등이 밝힌 대학 간 위계 구조와 2026년 도입된 다중우주 분석(Multiverse Analysis)을 통해 계량서지학적 발견의 강건성을 검증하고 있다. 셋째, 계산 계량서지학 분석은 전통적 인용 네트워크 분석에서 대규모 언어모델과 지식 그래프를 결합한 다중 에이전트 시스템으로 진화했다. 넷째, 오픈 액세스 출판 분석은 2018년 전체 문헌의 28%가 오픈 액세스로 확인되고 18%의 인용 이점이 검증되면서 학술 출판의 패러다임 전환을 추적하고 있다. 다섯째, 과학 정책과 연구 역학 분야는 성별 인용 불균형, 팀 과학의 부상, 파괴적 혁신의 감소 등 현대 과학의 구조적 문제를 다루고 있다. 특히 2023년 박과 동료들이 발견한 과학과 기술 분야의 파괴성 지수(Disruption Index) 감소는 현대 과학이 점진적 개선에 치중하고 있음을 보여준다. 향후 이 분야는 AI가 과학적 이해를 능가하는 속도로 발견을 자동화하는 \"과학 이후 시대(After Science Era)\"의 도래, 연구 재현성과 검증 병목 현상의 심화, 그리고 인간-AI 협업 프레임워크 개발이라는 세 가지 핵심 과제에 직면해 있다. 2026년 현재 과학의 과학은 단순한 측정과 분석을 넘어 AI 시대 과학 연구의 본질과 미래를 재정의하는 중요한 전환점에 서 있다.",
+  "category_analyses": {
+    "AI-Assisted Scientific Discovery": {
+      "sub_themes": [
+        {
+          "name": "Topic Modeling & Knowledge Extraction",
+          "paper_count": 6,
+          "start": "2017",
+          "end": "2025",
+          "status": "ACCELERATING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Network-based topic models (hSBM)",
+            "Word embeddings capture latent scientific knowledge",
+            "LLM usage detection frameworks"
+          ],
+          "representative_tools": [
+            "hSBM",
+            "Word2vec",
+            "Population-level LLM detection"
+          ]
+        },
+        {
+          "name": "Scientific Language Model Development",
+          "paper_count": 5,
+          "start": "2023",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Foundation models for scientific discovery",
+            "Open-source language models",
+            "Science-to-policy translation"
+          ],
+          "representative_tools": [
+            "OLMo",
+            "KG-CoI",
+            "Sci2Pol",
+            "DAVINCI"
+          ]
+        },
+        {
+          "name": "AI-Driven Scientific Discovery",
+          "paper_count": 5,
+          "start": "2017",
+          "end": "2025",
+          "status": "ACCELERATING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Human-aware AI improves predictions by 400%",
+            "AI4SoS automation framework",
+            "Post-science era conceptualization"
+          ],
+          "representative_tools": [
+            "Human-aware AI",
+            "AI4SoS",
+            "A-lab critique"
+          ]
+        },
+        {
+          "name": "AI-Human Creativity Taxonomy",
+          "paper_count": 4,
+          "start": "2024",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Illusions of understanding concept",
+            "3D creativity assessment model",
+            "AI Scientist methodology framework"
+          ],
+          "representative_tools": [
+            "3D Creativity Model",
+            "AI Scientist Survey"
+          ]
+        },
+        {
+          "name": "Materials Science Dataset",
+          "paper_count": 3,
+          "start": "2021",
+          "end": "2025",
+          "status": "STABLE",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Open Catalyst datasets",
+            "Biomedical knowledge graphs"
+          ],
+          "representative_tools": [
+            "OC20",
+            "OC22",
+            "iKraph"
+          ]
+        },
+        {
+          "name": "AI-Generated Research Hypotheses",
+          "paper_count": 2,
+          "start": "2017",
+          "end": "2023",
+          "status": "DECLINING",
+          "relative_size": "SMALL",
+          "key_developments": [
+            "MOLIERE biomedical hypothesis system",
+            "Empirical methods review"
+          ],
+          "representative_tools": [
+            "MOLIERE"
+          ]
+        },
+        {
+          "name": "Computer Science Knowledge Graphs",
+          "paper_count": 2,
+          "start": "2025",
+          "end": "2025",
+          "status": "EMERGING",
+          "relative_size": "SMALL",
+          "key_developments": [
+            "Large-scale CS knowledge graphs",
+            "Educational AI tools"
+          ],
+          "representative_tools": [
+            "CS-KG 2.0",
+            "GoAI"
+          ]
+        }
+      ]
+    },
+    "Academic Impact and Mobility": {
+      "sub_themes": [
+        {
+          "name": "Thematic Network Detection",
+          "paper_count": 8,
+          "start": "2019",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Deep learning classification systems",
+            "Knowledge space GIS mapping",
+            "Diachronic journal embeddings",
+            "Link-based scalable frameworks"
+          ],
+          "representative_tools": [
+            "Microsoft Academic Graph",
+            "Elasticsearch/Graphology/VOSviewer",
+            "BERTopic",
+            "Word2vec embeddings"
+          ]
+        },
+        {
+          "name": "Scholar Mobility Patterns",
+          "paper_count": 6,
+          "start": "2019",
+          "end": "2026",
+          "status": "STABLE",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "International migration tracking",
+            "Academia-industry flow analysis",
+            "Neural trajectory embeddings",
+            "Interdisciplinary funding paradox"
+          ],
+          "representative_tools": [
+            "Scopus database",
+            "PSM causal analysis",
+            "Word2vec neural networks",
+            "SciEvo dataset"
+          ]
+        },
+        {
+          "name": "Scholarly Impact Metrics",
+          "paper_count": 5,
+          "start": "2006",
+          "end": "2026",
+          "status": "STABLE",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Universal citation distributions",
+            "g-index development",
+            "Relative Citation Ratio",
+            "NK Composite Index"
+          ],
+          "representative_tools": [
+            "RCR co-citation networks",
+            "Citation Constellation",
+            "BARON/HEROCON indicators"
+          ]
+        },
+        {
+          "name": "Statistical Robustness Mapping",
+          "paper_count": 5,
+          "start": "2023",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Text mining integration",
+            "Multiverse analysis introduction",
+            "Bilateral collaboration tracking",
+            "Altmetrics validation"
+          ],
+          "representative_tools": [
+            "Multiverse analysis framework",
+            "Bibliometric-NLP hybrid methods",
+            "Topic-level mapping systems"
+          ]
+        },
+        {
+          "name": "Mathematical Topology Indexing",
+          "paper_count": 4,
+          "start": "2002",
+          "end": "2018",
+          "status": "DECLINING",
+          "relative_size": "SMALL",
+          "key_developments": [
+            "Scale-free network discovery",
+            "Sleeping Beauty indicators",
+            "Matthew effect quantification",
+            "Citation cascade predictors"
+          ],
+          "representative_tools": [
+            "Parameter-free detection algorithms",
+            "Preferential attachment models",
+            "Dynamic structure analysis"
+          ]
+        },
+        {
+          "name": "Scholarly Social Media Engagement",
+          "paper_count": 3,
+          "start": "2026",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "SMALL",
+          "key_developments": [
+            "Library mediation strategies",
+            "COVID information pathways",
+            "Organizational account patterns"
+          ],
+          "representative_tools": [
+            "LLM+BERTopic analysis",
+            "Twitter network mapping",
+            "REF case analysis"
+          ]
+        }
+      ]
+    },
+    "Computational Bibliometric Analysis": {
+      "sub_themes": [
+        {
+          "name": "Bibliometric Science Mapping",
+          "paper_count": 5,
+          "start": "2010",
+          "end": "2023",
+          "status": "STABLE",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "VOSviewer launch",
+            "UCSD Map of Science",
+            "Open biomedical maps"
+          ],
+          "representative_tools": [
+            "VOSviewer",
+            "UCSD Map of Science",
+            "OBMS"
+          ]
+        },
+        {
+          "name": "Academic Language Model Evaluation",
+          "paper_count": 5,
+          "start": "2025",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "LLM-KG integration",
+            "Multi-agent frameworks",
+            "Bias detection"
+          ],
+          "representative_tools": [
+            "Paper Circle",
+            "ChatGPT evaluation systems"
+          ]
+        },
+        {
+          "name": "Academic Text Normalization",
+          "paper_count": 4,
+          "start": "2018",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "S2ORC corpus",
+            "BibFusion integration",
+            "Funding linkage"
+          ],
+          "representative_tools": [
+            "S2ORC",
+            "BibFusion"
+          ]
+        },
+        {
+          "name": "Semantic Physics Concept Networks",
+          "paper_count": 3,
+          "start": "2020",
+          "end": "2025",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "SemNet prediction",
+            "OpenAlex launch",
+            "Science4Cast benchmark"
+          ],
+          "representative_tools": [
+            "OpenAlex",
+            "SemNet",
+            "Science4Cast"
+          ]
+        },
+        {
+          "name": "Citation Network Analysis",
+          "paper_count": 2,
+          "start": "2018",
+          "end": "2025",
+          "status": "DECLINING",
+          "relative_size": "SMALL",
+          "key_developments": [
+            "Context visualization",
+            "Impact forecasting"
+          ],
+          "representative_tools": [
+            "Citation context networks",
+            "Evolving knowledge graphs"
+          ]
+        }
+      ]
+    },
+    "Open Access Publication Analytics": {
+      "sub_themes": [
+        {
+          "name": "Polymer Science Publication Analytics",
+          "paper_count": 4,
+          "start": "2015",
+          "end": "2026",
+          "status": "STABLE",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Publisher oligopoly documentation",
+            "Science growth rate measurement",
+            "Interdisciplinary emergence detection",
+            "Regional productivity analysis"
+          ],
+          "representative_tools": [
+            "Segmented regression analysis",
+            "BERTopic",
+            "Network analysis",
+            "Scientometrics"
+          ]
+        },
+        {
+          "name": "Open Access Publishing",
+          "paper_count": 2,
+          "start": "2018",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "28% OA prevalence documented",
+            "18% citation advantage confirmed",
+            "Policy impact analysis",
+            "Field-specific effects"
+          ],
+          "representative_tools": [
+            "oaDOI service",
+            "Citation analysis",
+            "Real-world evidence analysis"
+          ]
+        },
+        {
+          "name": "Open Access Citation Analysis",
+          "paper_count": 2,
+          "start": "2021",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "6-database comparison",
+            "252 field analysis",
+            "OA advantage verification",
+            "Alternative metrics"
+          ],
+          "representative_tools": [
+            "Google Scholar",
+            "Microsoft Academic",
+            "Scopus",
+            "Dimensions",
+            "Web of Science",
+            "OpenCitations COCI"
+          ]
+        },
+        {
+          "name": "Academic Dataset Construction",
+          "paper_count": 2,
+          "start": "2026",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "172 learning analytics datasets",
+            "OpenAlex quality assessment",
+            "PRACTICE checklist",
+            "Cross-database integration"
+          ],
+          "representative_tools": [
+            "OpenAlex",
+            "PRACTICE framework",
+            "LAK/EDM/AIED datasets"
+          ]
+        }
+      ]
+    },
+    "Science Policy and Research Dynamics": {
+      "sub_themes": [
+        {
+          "name": "Citation and Impact Metrics",
+          "paper_count": 12,
+          "start": "1964",
+          "end": "2026",
+          "status": "STABLE",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Science Citation Index creation",
+            "h-index development",
+            "Global citation inequality rise",
+            "Disruption index critique"
+          ],
+          "representative_tools": [
+            "Science Citation Index",
+            "h-index",
+            "CDt index",
+            "Gini coefficient for citations"
+          ]
+        },
+        {
+          "name": "Research Reproducibility Crisis",
+          "paper_count": 8,
+          "start": "2005",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "LARGE",
+          "key_developments": [
+            "Ioannidis false findings paper",
+            "Psychology replication crisis",
+            "REFORMS ML checklist"
+          ],
+          "representative_tools": [
+            "REFORMS checklist",
+            "Meta-assessment frameworks",
+            "Replication studies"
+          ]
+        },
+        {
+          "name": "Team Science and Collaboration",
+          "paper_count": 12,
+          "start": "1998",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Small-world networks",
+            "Team dominance over solo authors",
+            "Remote collaboration limitations"
+          ],
+          "representative_tools": [
+            "Network analysis",
+            "SciSciGPT",
+            "Collaboration metrics"
+          ]
+        },
+        {
+          "name": "Gender and Diversity in Science",
+          "paper_count": 10,
+          "start": "2013",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Global gender disparities mapping",
+            "Credit attribution bias",
+            "Diversity-innovation paradox"
+          ],
+          "representative_tools": [
+            "Bibliometric gender analysis",
+            "Credit allocation algorithms",
+            "Diversity metrics"
+          ]
+        },
+        {
+          "name": "AI Transformation of Science",
+          "paper_count": 6,
+          "start": "2023",
+          "end": "2026",
+          "status": "EMERGING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "LLM writing acceleration",
+            "Semantic novelty decline",
+            "Verification bottleneck"
+          ],
+          "representative_tools": [
+            "ChatGPT",
+            "SciSciGPT",
+            "LLM detection tools"
+          ]
+        },
+        {
+          "name": "Innovation and Disruption Analysis",
+          "paper_count": 8,
+          "start": "2017",
+          "end": "2026",
+          "status": "STABLE",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "CDt disruption index",
+            "Declining disruptiveness finding",
+            "Superstar extinction effects"
+          ],
+          "representative_tools": [
+            "CDt index",
+            "Disruption metrics",
+            "Patent analysis tools"
+          ]
+        },
+        {
+          "name": "Science Funding and Policy",
+          "paper_count": 13,
+          "start": "2015",
+          "end": "2026",
+          "status": "ACCELERATING",
+          "relative_size": "MEDIUM",
+          "key_developments": [
+            "Peer review limitations exposed",
+            "Lottery funding proposals",
+            "Open data infrastructure"
+          ],
+          "representative_tools": [
+            "GrantInq simulation",
+            "SciSciNet",
+            "FtF visualization"
+          ]
+        }
+      ]
+    }
+  }
+}

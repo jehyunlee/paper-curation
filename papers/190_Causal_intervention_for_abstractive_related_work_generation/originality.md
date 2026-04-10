@@ -1,0 +1,1 @@
+In this study, we ar- gue that causal intervention can address these limitations and improve the quality and coher- ence of the generated related works.. To this end, we propose a nove

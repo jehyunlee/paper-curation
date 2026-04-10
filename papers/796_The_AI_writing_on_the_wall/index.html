@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The AI writing on the wall</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>The AI writing on the wall</h1>
+<blockquote><p><strong>저자</strong>: Nature Machine Intelligence Editorial | <strong>날짜</strong>: 2023-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s42256-023-00613-9" target="_blank">10.1038/s42256-023-00613-9</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>ChatGPT와 같은 생성형 AI 도구가 과학 저술 분야에 미치는 긍정적·부정적 영향을 분석하고, 과학 출판 생태계에서 이를 적절히 활용하기 위한 명확한 가이드라인의 필요성을 촉구하는 사설이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 대규모 언어모델(Large Language Model, LLM)인 ChatGPT가 인간 수준의 텍스트를 생성할 수 있으며, 이미 여러 산업에 영향을 미치고 있다.</li>
+<li><strong>Gap</strong>: 과학 출판 분야에서 생성형 AI 도구의 사용에 대한 명확한 지침이 부재하고, 이로 인한 잠재적 위험성이 제대로 논의되지 않고 있다.</li>
+<li><strong>Why</strong>: ChatGPT의 등장으로 AI 생성 논문의 증가, 표절 탐지 회피, 허위 정보 확산 등 출판 윤리 문제가 심화될 우려가 있다.</li>
+<li><strong>Approach</strong>: 생성형 AI의 긍정적 활용 사례와 부정적 위험 요소를 균형있게 제시하고, 과학 출판계의 선제적 대응과 가이드라인 수립을 촉구한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>생성형 AI의 위험 요소 식별</strong>:
+<ul>
+<li>표절 탐지 불가능성 증가</li>
+<li>사실 검증 불가능한 대량의 그럴듯한 콘텐츠 생성</li>
+<li>기존 출판 품질관리 시스템의 한계 노출</li>
+</ul>
+</li>
+<li><strong>긍정적 활용 방안 제시</strong>:
+<ul>
+<li>고급 초안의 가독성 개선 및 편집 지원</li>
+<li>비모국어 사용자를 위한 작성 보조</li>
+<li>과학 텍스트 요약 생성</li>
+<li>아이디어 브레인스토밍 도구로 활용</li>
+</ul>
+</li>
+<li><strong>구조적 문제점 지적</strong>:
+<ul>
+<li>ChatGPT의 통계적 평균화로 인한 창의성 부재</li>
+<li>학습 데이터에 내재된 편향(bias) 위험성</li>
+<li>사용자의 검증 없는 부정확한 참고문헌 인용 가능성</li>
+</ul>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>탐지 기술 개발</strong>: GPTZero 같은 AI 생성 텍스트 탐지 앱 개발 진행 중</li>
+<li><strong>정책 수립</strong>: ICML 등 주요 학술 회의에서 LLM 전체 생성 논문 금지 정책 도입</li>
+<li><strong>신중한 활용</strong>: ChatGPT 편집 텍스트의 사실 확인 및 참고문헌 검증 필수</li>
+<li><strong>교육 패러다임 변화</strong>: 대학 논문 작성 과제 방식의 재정의 필요</li>
+<li><strong>업계 논의 활성화</strong>: 출판사, 학술지, 학회 간 가이드라인 개발 협력</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>단순 기술 소개가 아닌 <strong>출판 윤리 관점의 비판적 분석</strong></li>
+<li>위험성만이 아닌 <strong>양면적 관점</strong>의 균형잡힌 논의</li>
+<li>대형 출판사의 선제적 정책 대응 입장 표현</li>
+<li>LLM의 근본적 한계(이해 부재, 창의성 부재)에 대한 명확한 지적</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>한계</strong>:
+<ul>
+<li>구체적인 가이드라인 초안 제시 부재</li>
+<li>탐지 기술의 실효성에 대한 회의적 전망만 제시</li>
+<li>학제 간 또는 국가 간 규제의 이질성에 대한 논의 미흡</li>
+</ul>
+</li>
+<li><strong>후속 연구/논의 필요</strong>:
+<ul>
+<li>탐지 기술과 LLM 진화 간의 '군비경쟁' 해결 방안</li>
+<li>국제 표준 가이드라인 개발</li>
+<li>ChatGPT 활용 사례의 체계적 모니터링 및 영향 평가</li>
+<li>학문 분야별 맞춤형 정책 개발</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 3/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 이 사설은 ChatGPT 등장 초기에 과학 출판계가 직면한 실질적 문제를 명확히 인식하고 선제적 대응을 촉구하는 시의적이고 중요한 의견 제시이나, 구체적인 해결책이나 실행 가능한 가이드라인 초안 제시는 부족하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../414_Human-llm_coevolution_Evidence_from_academic_writing/index.html">Human-LLM Coevolution: Evidence from Academic Writing</a></div><div class="conn-reason">학술 작문에서 AI 사용의 기본적인 현상과 패턴이 인간-LLM 공진화 분석의 이론적 기반을 제공합니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../875_What_are_the_best_AI_tools_for_research_Natures_guide/index.html">What are the best AI tools for research? Nature&#x27;s guide</a></div><div class="conn-reason">생성형 AI의 과학 저술 영향 분석이 연구자들의 AI 도구 선택과 활용 방안에 대한 기본적인 이해와 가이드라인을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../478_Large_language_models_penetration_in_scholarly_writing_and_p/index.html">Large language models penetration in scholarly writing and peer review</a></div><div class="conn-reason">과학 저술 분야의 생성형 AI 영향과 학술 글쓰기 침투 현상은 서로 다른 관점에서 AI의 학술 환경 변화를 분석한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../900_ChatGPT_has_entered_the_classroom_how_LLMs_could_transform_e/index.html">ChatGPT has entered the classroom: how LLMs could transform education</a></div><div class="conn-reason">과학 저술에서의 AI 활용을 교육 영역으로 확장하여 더 광범위한 학술 환경에서의 생성형 AI 영향을 포괄적으로 분석한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../875_What_are_the_best_AI_tools_for_research_Natures_guide/index.html">What are the best AI tools for research? Nature&#x27;s guide</a></div><div class="conn-reason">생성형 AI의 과학 저술 영향에 대한 기본 이해를 바탕으로 연구자들이 실제로 활용할 수 있는 구체적인 AI 도구 가이드를 제공한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

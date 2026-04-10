@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MerLean: An Agentic Framework for Autoformalization in Quantum Computation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>MerLean: An Agentic Framework for Autoformalization in Quantum Computation</h1>
+<blockquote><p><strong>저자</strong>: Yuanjie Ren, Jinzheng Li, Yidi Qi | <strong>날짜</strong>: 2026-02-18 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>MerLean 아키텍처: LaTeX 논문에서 명제를 추출하고 Lean 4로 형식화한 후 다시 LaTeX로 변환하는 양방향 자동형식화 프레임워크</em></p></div>
+<p>본 논문은 양자계산 이론 논문을 자동으로 기계검증 가능한 Lean 4 코드로 변환하는 완전 자동화 에이전트 프레임워크 MerLean을 제시한다. 3개 양자계산 논문에서 114개 명제로부터 2,050개 Lean 선언을 생성하며 전체 논문의 자동형식화에 성공했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 최근 LLM 기반 자동형식화(autoformalization)와 멀티에이전트 정리증명 시스템이 경쟁 수준의 문제들에서 성과를 보였음. Ax-Prover, Numina-Lean-Agent 등이 인간의 지도하에 연구급 수학을 형식화함.</li>
+<li><strong>Gap</strong>: 기존 접근법들은 모두 <strong>인간의 개입(human-in-the-loop)</strong>을 필요로 함. 정의, 정리, 증명 전략을 수동으로 제공해야 하며, 전체 논문 규모에서 완전 자동화된 형식화는 실현되지 않음.</li>
+<li><strong>Why</strong>: 양자계산 분야는 연간 11,891개 arXiv 논문 투고로 인한 검증 병목 현상 발생. 동시에 선형대수, 그래프 이론, 위상수학 등 강력한 수학적 기초를 가지므로 신경기호적 검증에 적합함.</li>
+<li><strong>Approach</strong>: 완전 자동화된 에이전트 프레임워크로 LaTeX 논문에서 명제를 추출→형식화→검증하고, 역으로 형식화된 코드를 인간이 읽을 수 있는 자연언어로 변환하는 양방향 파이프라인 구축.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>명제별 컴파일 시도 횟수 분포: 대부분의 명제는 1-10회 시도로 해결되지만 장기 꼬리를 형성하는 '어려운' 명제들이 존재</em></p></div>
+<ol>
+<li><strong>완전 자동화 전체 논문 형식화</strong>: 3개 이질적 양자계산 논문(균형 곱 코드, 내결함 양자계산, 양자위상수학)에서 인간 개입 없이 114개 명제를 모두 형식화 성공. 특히 공개되지 않은 미발표 원고 포함으로 훈련 데이터 오염 완전 배제.</li>
+<li><strong>규모있는 형식화 결과</strong>: 총 42시간 내에 2,050개 Lean 선언 생성 (균형 곱 코드: 14,997행/730선언, 내결함 QC: 18,557행/923선언, 양자위상: 7,761행/397선언).</li>
+<li><strong>투명한 가정 처리</strong>: 미포함된 Mathlib 기능(스펙트럼 수열, Künneth 동형사상)에 대해 명시적 공리로 선언하여 의도적 가정과 미완성 증명을 구별. Balanced Product 논문의 9.1%만 공리화 필요.</li>
+<li><strong>양방향 검증 가능성</strong>: 형식화된 Lean 코드를 다시 자연언어로 변환하여 인간 전문가가 의미적 일관성을 검토할 수 있는 blueprint 제공.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>명제 추출(Statement Extraction)</strong>: LaTeX 논문에서 정의, 정리, 보조정리 등 수학 명제를 구조화된 JSON으로 추출. 다단계 반복 처리로 모호한 표현("표준 논증으로"→구체 증명단계)을 명확화하고 의존성 순서 정렬.</li>
+<li><strong>반복적 형식화(Iterative Formalization)</strong>: 각 명제마다 컴파일-수정 루프 실행. 컴파일 오류 메시지를 에이전트에 피드백하여 자동 수정. 최대 시도 횟수 도달 시 공리화 단계로 전환.</li>
+<li><strong>도구 활용</strong>: lean-lsp-mcp를 통해 Lean 언어 서버 기능 직접 노출. lean goal로 증명 상태 검사, lean hover info로 타입 시그니처 확인, leansearch/loogle로 관련 Mathlib 보조정리 발견.</li>
+<li><strong>충실성 검사(Faithfulness Checking)</strong>: 타입 검사 성공 후 형식화된 결과가 원래 의미를 올바르게 표현하는지 LLM이 재검토. 의미적 불일치 시 재시도.</li>
+<li><strong>자동비형식화(Autoinformalization)</strong>: 검증된 Lean 4 코드를 LLM이 자연언어로 역변환. 형식화 수행 모델이 해당 분야 전문성을 보였으므로 역방향도 가능. leanblueprint 호환 대화형 출력 및 교과서 스타일 서사 제공.</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>완전 자동화의 실현</strong>: 기존 Ax-Prover, Numina-Lean-Agent 등은 인간이 정의/정리/전략을 제공해야 하나, MerLean은 문장 추출부터 형식화까지 완전 자동화. 이는 <strong>연구급 수학에서 처음 달성한 결과</strong>.</li>
+<li><strong>양방향 형식화</strong>: 단방향 형식화가 아닌 양방향 파이프라인으로 기계검증성과 인간검증 가능성을 동시 확보. 의미적 일관성 검토를 위한 blueprint 생성은 새로운 기여.</li>
+<li><strong>영역 확장성</strong>: 양자계산 한정이 아닌 "엄밀한 수학 및 이론물리 모든 분야"로 일반화 가능함을 명시. Lean-QuantumInfo 등 기존 라이브러리와 시너지 창출.</li>
+<li><strong>투명한 가정 처리</strong>: sorry(불완전 증명)와 구별되는 명시적 공리 선언으로 미해결 과제를 투명하게 표시. Mathlib 확장에 따라 점진적으로 채울 수 있는 구조.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>Mathlib 의존성</strong>: 고급 대수기계(스펙트럼 수열, 특정 계수환에 대한 Künneth)가 Mathlib에 미포함되면 공리화 필요. 논문 도메인이 확대될수록 공리화 비율 증가 가능성.</li>
+<li><strong>인간 검토 부담</strong>: 새로운 정의와 공리에 대한 "수동 검토"가 여전히 필요함. 완전 자동화가 아닌 "검증 부담 감소"에 그침. 정의의 적절성까지 자동검증하는 메커니즘 부재.</li>
+<li><strong>평가 규모 제한</strong>: 3개 논문만 평가. 다양한 도메인, 복잡도, 길이의 논문에서의 확장성 미검증. 특히 기하학, 해석학 등 다른 분야에서의 성능 불명확.</li>
+<li><strong>세밀한 오류 분석 부족</strong>: 공리화되거나 실패한 명제들의 원인을 상세히 분류하지 않음. "왜" 어려운지(Mathlib 부족 vs 형식표현 난제 vs 에이전트 능력 한계)에 대한 깊이 있는 분석 부재.</li>
+<li><strong>후속 연구</strong>: (1) 동적 공리 재검증 방식 개발, (2) 다중 도메인 벤치마크 구축, (3) 합성 데이터 품질 평가 및 추론 모델 학습 파이프라인 완성.</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: MerLean은 LLM 에이전트가 인간 개입 없이 실제 연구 논문을 대규모로 형식화할 수 있음을 최초로 입증한 주목할 만한 연구다. 양방향 설계로 기계검증과 인간검증을 결합하는 실용적 접근이 인상적이며, 양자계산을 넘어 수학·물리 전반으로의 확장 가능성도 높다. 다만 새로운 정의/공리의 인간 검토 필요성, 제한된 평가 범위, 미명확한 기술 상세사항이 보완 필요 영역이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../533_Meta-designing_quantum_experiments_with_language_models/index.html">Meta-designing quantum experiments with language models</a></div><div class="conn-reason">양자계산 도메인에서 MerLean의 자동형식화가 메타 실험 설계의 기초가 됨</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../239_CRISPR-GPT_for_agentic_automation_of_gene-editing_experiment/index.html">CRISPR-GPT for agentic automation of gene-editing experiments</a></div><div class="conn-reason">둘 다 자동화된 과학 연구를 다루지만 MerLean은 형식화에, CRISPR-GPT는 실험에 특화</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../533_Meta-designing_quantum_experiments_with_language_models/index.html">Meta-designing quantum experiments with language models</a></div><div class="conn-reason">MerLean의 이론적 자동형식화를 실제 양자 실험 설계로 확장한 응용 연구</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../288_Draft_sketch_and_prove_Guiding_formal_theorem_provers_with_i/index.html">Draft, sketch, and prove: Guiding formal theorem provers with informal proofs</a></div><div class="conn-reason">비형식에서 형식으로의 증명 변환 방법론을 양자계산 분야에 특화하여 완전 자동화</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../288_Draft_sketch_and_prove_Guiding_formal_theorem_provers_with_i/index.html">Draft, sketch, and prove: Guiding formal theorem provers with informal proofs</a></div><div class="conn-reason">비형식에서 형식으로의 변환 방법론이 MerLean의 자동형식화 프레임워크에 적용됨</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../133_Automating_quantum_computing_laboratory_experiments_with_an/index.html">Automating quantum computing laboratory experiments with an agent-based AI framework</a></div><div class="conn-reason">MerLean의 자동형식화 기술이 양자컴퓨팅 실험 자동화에 이론적 기반 제공</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

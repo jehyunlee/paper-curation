@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</h1>
+<blockquote><p><strong>저자</strong>: Siyuan Guo, Cheng Deng, Ying Wen, Hechang Chen, Yi Chang, Jun Wang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>DS-Agent의 개요: (a) CBR 기반 LLM의 구조, (b) 반복 단계에 따른 성능 개선</em></p></div>
+<p>대규모 언어모델(LLM)의 사례 기반 추론(Case-Based Reasoning, CBR)을 결합하여 자동화된 데이터 과학 작업을 수행하는 DS-Agent 프레임워크를 제시한다. 개발 단계에서는 Kaggle의 전문가 지식을 활용한 반복적 개선을, 배포 단계에서는 저자원 환경에서의 효율적 코드 생성을 달성한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM 기반 에이전트는 자연언어 처리 등 다양한 분야에서 성공을 거두었으나, 데이터 과학 자동화 작업에서는 여전히 저조한 완료율을 보임 (AutoGPT, LangChain, ResearchAgent 등)</li>
+<li><strong>Gap</strong>: 기존 LLM 에이전트들은 합리적인 실험 계획 수립 능력 부족과 환각(hallucination) 문제로 인해 데이터 과학 시나리오에서 높은 작업 완료율을 달성하지 못함</li>
+<li><strong>Why</strong>: 파인튜닝을 통한 해결은 자동화 데이터 과학 작업의 피드백 수집(코드 실행 필요)에 소요되는 막대한 시간과 계산 비용 때문에 비실용적임</li>
+<li><strong>Approach</strong>: Kaggle의 방대한 기술 보고서와 코드 저장소를 활용하여 CBR 프레임워크와 LLM을 통합하고, 인간의 전문 지식을 체계적으로 활용 및 반복 개선하는 파이프라인 구성</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4-5">
+<p class="fig-caption"><em>개발 단계에서의 성공률 및 배포 단계에서의 원패스율</em></p></div>
+<ol>
+<li><strong>개발 단계 성능</strong>: GPT-4 기반 DS-Agent는 12개 개발 작업에서 100% 성공률 달성; 반복 단계 증가에 따른 지속적 성능 개선 입증</li>
+<li><strong>배포 단계 성능</strong>:
+<ul>
+<li>GPT-3.5 및 GPT-4의 원패스율(one pass rate)이 각각 85%, 99%로 기준(baseline) 56%, 60% 대비 현저한 개선</li>
+<li>Mixtral-8x7b-Instruct 같은 오픈소스 LLM의 성능을 6%에서 31%로 5배 이상 향상</li>
+</ul>
+</li>
+<li><strong>효율성</strong>: 표준 시나리오에서 GPT-3.5/GPT-4당 실행 비용 $0.06/$1.60; 저자원 시나리오에서 $0.0045/$0.135로 감소</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2-3">
+<p class="fig-caption"><em>CBR 기반 LLM의 구조: RAG와의 비교</em></p></div>
+<h3>개발 단계: 자동 반복 파이프라인</h3>
+<ul>
+<li><strong>인간 지식 사례 수집 (Human Insight Case Collection)</strong>:
+<ul>
+<li>Kaggle 완료된 경쟁에서 우승팀의 기술 보고서 및 상위 랭크 코드 수집</li>
+<li>텍스트, 시계열, 테이블형 데이터 3가지 모달리티 포함</li>
+<li>기술 보고서 정제 및 GPT-3.5를 통한 코드 요약으로 통찰력 추출</li>
+</ul>
+</li>
+<li><strong>Step 1 - Retrieve (검색)</strong>:
+<ul>
+<li>사전학습된 임베딩 모델을 사용하여 작업 설명과 사례 간 코사인 유사도 계산</li>
+<li>상위-k개 가장 유사한 사례 검색</li>
+</ul>
+</li>
+<li><strong>Step 2 - ReviseRank (순위 재조정)</strong>:
+<ul>
+<li>검색된 사례의 순위를 실행 피드백에 기반하여 동적으로 조정</li>
+<li>파인튜닝 대신 LLM의 피드백 해석 능력을 활용하여 검색기 재조정 (계산 효율성 향상)</li>
+</ul>
+</li>
+<li><strong>Step 3-6 - Reuse, Execute, Evaluate, Retain (재사용, 실행, 평가, 보유)</strong>:
+<ul>
+<li>재조정된 사례를 바탕으로 실험 계획 생성 및 파이썬 코드 작성</li>
+<li>코드 실행 후 검증 세트에서 성능 평가</li>
+<li>성공한 솔루션을 사례 은행에 저장하여 향후 재사용</li>
+</ul>
+</li>
+<li><strong>반복 메커니즘</strong>: 피드백 기반 반복을 통해 일관된 성능 개선 달성</li>
+</ul>
+<h3>배포 단계: 저자원 배포</h3>
+<ul>
+<li><strong>단순화된 CBR</strong>: 반복적 피드백 없이 과거 성공 솔루션 직접 적용</li>
+<li><strong>지식 이전</strong>: 개발 단계에서 축적된 성공 사례를 새로운 작업에 직접 적응</li>
+<li><strong>최소 수정 필요</strong>: 유사 솔루션 컨텍스트로 인해 LLM의 기초 역량 요구 최소화</li>
+</ul>
+<h3>수학적 프레임워크</h3>
+<p>$$p_{CBR}(y^t|\tau) = \sum_{l^{t-1}} p_E(l^{t-1}|\tau) \sum_{c^t} p_R(c^t|\tau, l^{t-1})p_{LLM}(y^t|c^t, \tau, l^{t-1})$$</p>
+<ul>
+<li>CBR 기반 LLM은 이전 단계의 피드백(l^{t-1})과 검색된 사례(c^t)로 해결책 분포를 수렴</li>
+<li>RAG와 달리 반복 루프와 평가 피드백을 통합하여 동적 개선 가능</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>CBR 패러다임과 LLM 통합</strong>: 고전적 AI 방법론(CBR)과 현대적 LLM을 결합한 새로운 접근 방식으로, RAG 기반 방식의 일회성 검색 한계를 극복</li>
+<li><strong>데이터 과학 자동화에 특화된 설계</strong>: 두 단계(개발/배포) 분리를 통해 학습과 실운영의 서로 다른 요구사항 동시 충족</li>
+<li><strong>파인튜닝 회피</strong>: 계산 비용이 많이 드는 파인튜닝 대신 사례 보유 메커니즘으로 유연한 학습 달성</li>
+<li><strong>Kaggle 데이터 활용</strong>: 전문가 지식의 체계적 수집 및 구조화로 LLM의 선행 지식 부족 보완</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>작업 범위 제한</strong>: 평가가 30개 데이터 과학 작업으로 제한되어 있으며, 더 다양한 도메인 및 데이터 모달리티에 대한 확장성 검증 필요</li>
+<li><strong>Kaggle 의존성</strong>: 사례 수집이 Kaggle에 국한되어 있으며, 다른 데이터 과학 리소스나 내부 조직 지식 통합 메커니즘 부재</li>
+<li><strong>검색 메커니즘의 단순성</strong>: 코사인 유사도 기반 검색은 복잡한 작업 간 의미적 유사성을 충분히 포착하지 못할 가능성 존재</li>
+<li><strong>LLM 의존성</strong>: 성능이 기저 LLM의 능력에 크게 좌우되며, 더 약한 LLM에서의 성능 개선 여지 있음</li>
+<li><strong>향후 연구 방향</strong>:
+<ul>
+<li>계층적 검색이나 하이브리드 유사도 메트릭 도입으로 검색 정확도 개선</li>
+<li>다양한 데이터 과학 프로젝트 저장소(GitHub 등) 통합</li>
+<li>도메인별 특화 사례 은행 구축</li>
+<li>배포 단계에서의 동적 반복 메커니즘 추가 탐색</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: DS-Agent는 LLM과 CBR의 효과적 결합을 통해 데이터 과학 자동화의 실질적 성능 개선을 달성한 의미 있는 연구이다. 특히 저자원 환경에서의 배포 가능성과 오픈소스 LLM 성능 향상은 실용적 가치가 높으나, 제한된 평가 범위와 단순한 검색 메커니즘이 향후 개선 대상이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../253_Data_Interpreter_An_LLM_Agent_For_Data_Science/index.html">Data Interpreter: An LLM Agent For Data Science</a></div><div class="conn-reason">Data Interpreter의 데이터 과학 작업 해석 능력이 DS-Agent의 자동화된 데이터 분석 및 코드 생성 기능의 기본적인 기술적 토대이다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../146_Autosdt_Scaling_data-driven_discovery_tasks_toward_open_co-s/index.html">AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists</a></div><div class="conn-reason">AutoSDT가 제공하는 데이터 발견 태스크가 DS-Agent 같은 데이터 사이언스 에이전트 학습의 기반이 됨</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../463_Large_language_model_agent_for_hyper-parameter_optimization/index.html">Large language model agent for hyper-parameter optimization</a></div><div class="conn-reason">DS-Agent의 사례 기반 추론을 통한 데이터 과학 자동화와 하이퍼파라미터 최적화에 특화된 LLM 에이전트는 같은 문제를 다른 범위에서 해결하는 접근이다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../463_Large_language_model_agent_for_hyper-parameter_optimization/index.html">Large language model agent for hyper-parameter optimization</a></div><div class="conn-reason">하이퍼파라미터 최적화에 특화된 LLM 에이전트와 DS-Agent의 포괄적 데이터 과학 자동화는 같은 영역을 다른 범위에서 다루는 접근이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../594_OSDA_Agent_Leveraging_Large_Language_Models_for_De_Novo_Desi/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">개선된 DS-Agent가 기존 Kaggle 기반 자동 데이터 과학 프레임워크를 더 강화된 사례 기반 추론과 배포 최적화로 발전시킨 확장 버전이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../259_DeepAnalyze_Agentic_Large_Language_Models_for_Autonomous_Dat/index.html">DeepAnalyze: Agentic Large Language Models for Autonomous Data Science</a></div><div class="conn-reason">DS-Agent의 기본 데이터 사이언스 자동화를 분석가 수준의 심층 연구로 발전시킴</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">데이터 사이언스 자동화 에이전트 DS-Agent의 성능을 ML 실험 관점에서 평가</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

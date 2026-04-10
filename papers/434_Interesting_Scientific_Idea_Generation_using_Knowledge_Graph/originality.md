@@ -1,0 +1,1 @@
+We extract concepts from the publications of Researchers A and B, refine them using GPT-4, and identify relevant sub-networks in the knowledg

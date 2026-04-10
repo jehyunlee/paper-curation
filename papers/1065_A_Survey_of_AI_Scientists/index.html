@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>A Survey of AI Scientists</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>A Survey of AI Scientists</h1>
+<blockquote><p><strong>저자</strong>: Guiyao Tie, Pan Zhou, Lichao Sun | <strong>날짜</strong>: 2026-01-17 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2510.23045" target="_blank">10.48550/arXiv.2510.23045</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1:</em></p></div>
+<p>본 논문은 2022-2025년 AI 과학자(AI Scientist) 시스템의 급속한 발전을 종합적으로 분석하며, 문헌 검토부터 논문 생성까지 6단계 방법론 프레임워크를 통해 자율적 과학 발견의 전체 워크플로우를 체계화한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: AI는 전통적으로 패턴 인식, 데이터 마이닝 등 특정 분석 작업의 계산 도구로 활용되었으며, LLM(Large Language Model), 멀티 에이전트 아키텍처, 로봇 자동화 기술의 발전이 선행되어 있다.</li>
+<li><strong>Gap</strong>: AI 과학자 시스템의 급속한 확산으로 인해 연구 환경이 분절되어 있으며, 통일된 이론적 프레임워크, 단계별 방법론 원칙, 도메인 간 전이 가능성에 대한 종합적 분석이 부재한 상태이다.</li>
+<li><strong>Why</strong>: AI가 과학 지식의 자율적 생성자로 전환되는 패러다임 변화는 과학 발견의 속도와 규모를 근본적으로 재편할 수 있으나, 체계적인 종합 분석 없이는 신뢰성 있는 발전이 어렵기 때문이다.</li>
+<li><strong>Approach</strong>: 50개 이상의 대표 시스템을 2022-2025년 기간에 걸쳐 분석하고, 6단계 방법론 프레임워크(문헌 검토, 아이디어 생성, 실험 준비, 실험 실행, 과학 저술, 논문 생성)와 4개 추상화 계층(도메인, 작업, 아키텍처, 능력)의 4×6 분류 행렬을 구축하여 체계적 매핑을 수행한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1:</em></p></div>
+<ul>
+<li><strong>통일된 6단계 방법론 프레임워크</strong>: 자율 과학 연구 파이프라인을 문헌 검토, 아이디어 생성, 실험 준비, 실험 실행, 과학 저술, 논문 생성으로 형식화하여 정보 의존성과 단계별 능력을 명확히 함</li>
+<li><strong>진화 단계의 명확화</strong>: 기초 모듈(2022-2023) → 폐쇄 루프 통합(2024) → 확장성·영향력·인간-AI 협력(2025-현재)의 3단계 발전 궤적을 체계적으로 추적</li>
+<li><strong>포괄적 체계적 분류</strong>: 화학·생물학·물리학·메타과학 등 다양한 도메인에서 50개 이상의 시스템을 분석하여 방법론적 패턴과 능력 분포 파악</li>
+<li><strong>실용적 로드맵 제시</strong>: 강건성, 일반화 가능성, 윤리적 거버넌스 등 미해결 과제에 대한 향후 연구 방향 제시</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1:</em></p></div>
+<ul>
+<li>4×6 분류 행렬 기반 체계적 매핑: 6개 방법론 단계를 수평축, 도메인·작업·아키텍처·능력을 수직축으로 하여 다차원 분류</li>
+<li>시간 추적 패널(Timeline Panel): 2022-2025년 기간의 대표 시스템들을 3개 진화 단계로 분류하여 발전 궤적 시각화</li>
+<li>도메인 간 비교 분석: 화학, 생물학, 물리학, 메타과학 등 분야별 구현 사례를 통해 이전 가능한 인사이트 도출</li>
+<li>능력 평가 프로토콜: 신규성, 인과관계, 재현성 등 다양한 평가 지표로 시스템 품질 메트릭 정립</li>
+<li>문헌 회고적 분석: 아카이브(arXiv) 등에서 수집한 50개 이상의 주요 연구를 체계적으로 검토 및 분류</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>최초의 포괄적 통합 프레임워크: 기존 도메인 특화 리뷰와 달리 자율 과학의 전체 워크플로우를 단일 프레임워크로 통합</li>
+<li>6단계 방법론의 형식화: 과학적 발견 과정을 정보 흐름 관점에서 처음으로 체계적으로 분해 및 재구성</li>
+<li>다층 추상화 구조: 응용에서 모델까지 4개 계층을 구분하여 기술 심층(LLM, VLM, RL)과 고수준 응용의 관계를 명확화</li>
+<li>진화 단계의 명확한 구분: 시스템 복잡도와 기능 통합 수준에 따른 3단계 발전 궤적을 처음으로 명시적으로 제시</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>분석 깊이의 불균형</strong>: 일부 단계(예: 아이디어 생성)에 대해서는 다양한 사례가 분석되었으나, 다른 단계(예: 과학 저술)는 상대적으로 덜 개발된 상태</li>
+<li><strong>평가 메트릭의 표준화 부재</strong>: 논문에서 제시한 강건성, 일반화 가능성 등의 개념은 정의되었으나 정량적 평가 프로토콜이 미흡</li>
+<li><strong>실제 과학적 영향 평가 부족</strong>: 대부분 시스템의 성과가 벤치마크 기반이며, 실제 피어 리뷰된 논문 발표로 검증된 사례는 제한적</li>
+<li><strong>도메인 간 일반화의 한계</strong>: 화학·생물학 중심의 사례가 많고, 사회과학·인문학 등 정성적 과학 영역에서의 적용 가능성 논의 부족</li>
+<li><strong>후속 연구 방향</strong>: (1) 각 6단계별 오픈 소스 벤치마크 표준화, (2) 다학제 도메인에서의 성능 평가 프레임워크 개발, (3) 인간-AI 협력의 정성적 효과 측정 방법론 정립, (4) 윤리적 거버넌스 프로토콜의 구체화 필요</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 본 논문은 AI 과학자라는 신흥 분야를 최초로 포괄적으로 종합한 중요한 리뷰 논문으로, 6단계 통합 프레임워크와 3단계 진화 모델을 통해 산재된 연구를 체계화하였다. 명확한 구조와 풍부한 사례 분석이 강점이나, 정량적 평가 메트릭 표준화와 실제 과학적 영향 검증이 강화되면 더욱 영향력 있는 기여가 될 수 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1117_Human-Modeling_in_Sequential_Decision-Making_An_Analysis_thr/index.html">Human-Modeling in Sequential Decision-Making: An Analysis through the Lens of Human-Aware AI</a></div><div class="conn-reason">인간-인식형 AI 시스템 설계에 필요한 AI와 사회의 상호작용에 대한 이론적 토대를 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1113_Definition_and_Value_Reconstruction_of_Human_Creativity_in_t/index.html">Definition and Value Reconstruction of Human Creativity in the AI Era</a></div><div class="conn-reason">AI 시대 인간 창의성 재정의에 필요한 과학기술 발전과 사회적 영향에 대한 이론적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1022_SciSciGPT_advancing_humanAI_collaboration_in_the_science_of/index.html">SciSciGPT: advancing human–AI collaboration in the science of science</a></div><div class="conn-reason">AI 과학자 시스템의 발전과 자율적 과학 발견이라는 공통된 연구 영역의 기반을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../935_Atlas_of_Science_Collaboration_19712020/index.html">Atlas of Science Collaboration, 1971–2020</a></div><div class="conn-reason">국제 과학 협력 패턴의 시각화와 분석을 더욱 심화하거나 확장한 연구이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1113_Definition_and_Value_Reconstruction_of_Human_Creativity_in_t/index.html">Definition and Value Reconstruction of Human Creativity in the AI Era</a></div><div class="conn-reason">AI 기반 과학 연구 자동화의 기존 연구를 포괄적인 워크플로우 프레임워크로 확장한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1033_The_Empowerment_of_Science_of_Science_by_Large_Language_Mode/index.html">The Empowerment of Science of Science by Large Language Models: New Tools and Methods</a></div><div class="conn-reason">LLM 기술을 과학 연구 분석에 실제 적용하는 구체적 사례를 보여준다.</div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../1068_Artificial_intelligence_and_illusions_of_understanding_in_sc/index.html">Artificial intelligence and illusions of understanding in scientific research</a></div><div class="conn-reason">AI 과학자 시스템의 발전에 대해 생산성 향상보다는 이해의 환상이라는 위험성을 강조한다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

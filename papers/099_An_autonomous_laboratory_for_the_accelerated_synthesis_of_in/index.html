@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>An autonomous laboratory for the accelerated synthesis of inorganic materials</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>An autonomous laboratory for the accelerated synthesis of inorganic materials</h1>
+<blockquote><p><strong>저자</strong>: N. Szymanski, Bernardus Rendy, Yuxing Fei, Rishi E. Kumar, T. He | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-023-06734-w" target="_blank">10.1038/s41586-023-06734-w</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>A-Lab(자율 실험실)은 계산화학, 기계학습, 능동 학습을 통합한 로봇 시스템으로, 17일간의 연속 운영을 통해 57개 목표 재료 중 36개(63% 성공률)의 무기 분말 화합물 합성에 성공하였다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 고처리량(high-throughput) 계산 스크리닝을 통해 새로운 물질을 대규모로 발굴할 수 있지만, 이들의 실험적 실현은 어렵고 시간이 많이 소요된다.</li>
+<li><strong>Gap</strong>: 계산 화면(screening)의 속도와 실험적 검증 속도 사이의 큰 차이가 존재한다. 기존 자율 연구 사례들은 특정 최적화 영역(광기전력, 촉매활성 등)에만 국한되어 있다.</li>
+<li><strong>Why</strong>: 인간 연구자는 풍부한 배경 지식을 통합하여 의사결정하는데, 이를 기계학습과 활용 데이터, 능동 학습으로 구현해야 한다.</li>
+<li><strong>Approach</strong>: 로봇공학, ab initio 데이터베이스, 문헌 채굴 기반 ML 모델(합성 제안), 능동 학습(ARROWS3)을 통합한 자율 실험실 플랫폼 개발.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figure1.png" alt="A-Lab 자율 재료 합성 시스템 개요. DFT 계산 convex hull에서 공기 안정 목표 물질을 선정하고, 문헌 기반 ML 모델로 합성 조리법을 제안한 후, 로봇 실험실에서 실행 및 특성화. 높은 수율을 얻지 못하면 능동 학습 알고리즘이 반응 경로를 최적화.">
+</div>
+<ol>
+<li><strong>높은 성공률 달성</strong>: 57개 목표 물질 중 36개 합성 성공(63%), 33개 원소와 40개 구조 원형(structural prototype)을 포함</li>
+<li><strong>문헌 기반 초기 조리법의 효과</strong>: 353개 테스트된 합성 조리법 중 30%만 성공했으나, ML 모델이 제안한 처음 5개 조리법으로 30개 재료 합성 가능 (문헌에서 유사 재료를 효과적으로 판별)</li>
+<li><strong>능동 학습의 개선 효과</strong>: ARROWS3 알고리즘을 통해 9개 목표 물질 최적화, 이 중 6개는 초기 조리법에서 0% 수율이었으나 개선됨</li>
+<li><strong>계산 화면의 신뢰성 증명</strong>: 분해 에너지(decomposition energy) 범위에서 열역학적 안정성과 합성 성공 사이 명확한 상관관계 부재 → 계산만으로 합성 가능성을 충분히 예측하기 어려움을 시사</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figure1.png" alt="A-Lab 작동 흐름도. (1) 분말 투여 및 혼합, (2) 샘플 가열, (3) XRD 특성화. 각 단계는 로봇팔로 자동 연결. ML 모델이 XRD 패턴을 분석하고 Rietveld 정제로 확인.">
+</div>
+<ul>
+<li><strong>재료 선정</strong>: Materials Project 및 Google DeepMind convex hull에서 공기 안정 물질(<10 meV/atom) 선정, O₂/CO₂/H₂O와 반응하지 않는 물질만 포함</li>
+<li><strong>초기 조리법 생성</strong>: 문헌에서 추출한 대규모 합성 데이터셋으로 학습한 ML 모델이 목표 물질과 유사한 기존 물질 기반의 조리법 제안 (최대 5개), 별도 ML 모델이 가열 온도 예측</li>
+<li><strong>자동 합성 수행</strong>:
+<ul>
+<li>Station 1: 전구체 분말 투여·혼합 및 알루미나 도가니로 이송</li>
+<li>Station 2: 4개 박스 로를 이용한 가열</li>
+<li>Station 3: 분쇄 및 XRD 측정</li>
+</ul>
+</li>
+<li><strong>XRD 분석 및 피드백</strong>:
+<ul>
+<li>확률적 ML 모델(ICSD 학습)이 XRD 패턴에서 상(phase) 및 중량 분율 추출</li>
+<li>계산 구조로부터 시뮬레이션된 회절 패턴과 비교 (DFT 오차 보정)</li>
+<li>자동 Rietveld 정제로 확인</li>
+</ul>
+</li>
+<li><strong>능동 학습</strong>: 목표 수율 50% 미달 시, ARROWS3 알고리즘이 (1) 쌍대 반응 가정과 (2) 최소 구동력 중간 상태 회피를 통해 개선된 경로 제시</li>
+<li><strong>의사결정 자동화</strong>: API 기반 통합으로 인간 개입 없이 실시간 의사결정 및 작업 제출 가능</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>자동화에서 자율성으로의 도약</strong>: 단순 로봇 자동화가 아닌, ML과 능동 학습으로 데이터 해석 및 의사결정을 수행하는 진정한 자율 시스템 구현</li>
+<li><strong>고체 분말 합성의 고유한 과제 해결</strong>: 액체 취급 기반 유기화학의 자율 워크플로우와 달리, 고체 분말의 밀도, 유동성, 입자 크기 등 다양한 물리적 성질 대응</li>
+<li><strong>다층적 지식 통합</strong>: ab initio 계산, 문헌 텍스트 마이닝, 구조 데이터베이스, 열역학 기반 능동 학습을 단일 플랫폼에 결합</li>
+<li><strong>상업화 친화적 설계</strong>: 다중 그램 샘플 생산으로 소자 수준 테스트 가능, 고체 분말 형태는 스케일업 및 제조에 유리</li>
+<li><strong>미처리 대상에 대한 첫 시도</strong>: 모든 목표 물질이 훈련 데이터에 미포함된 신규 화합물로, 일반화 능력 증명</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>샘플 순도 문제</strong>: 4시간 유지(hold time)로 인해 불완전한 반응으로 많은 부산물 포함. 더 긴 유지 시간과 간헐적 재분쇄로 상 순도 개선 가능</li>
+<li><strong>자동 XRD 해석의 한계</strong>: 다중 상 혼합물을 결정적으로 식별하기 어렵지만, 주 상(majority phase) 식별은 신뢰성 있음. 4개 재료는 주관적 재검토 결과 불확실</li>
+<li><strong>계산 실패 모드</strong>: 17개 미합성 재료 중 일부는 계산 예측 오류로 인한 실패. DFT 구조의 부분 무질서(partial disorder) 표현 불가</li>
+<li><strong>알고리즘 개선 여지</strong>: 의사결정 알고리즘의 경미한 수정으로 67% 성공률, 계산 기법 개선으로 70% 달성 예상</li>
+<li><strong>향후 연구 방향</strong>:
+<ul>
+<li>액체 취급 자동화 추가로 화학 다양성 확대</li>
+<li>더 정교한 활성 학습으로 반응 경로 최적화</li>
+<li>소자 특성화(device-level characterization) 통합</li>
+<li>구조 무질서 표현 능력 향상</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4.5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4.5/5</span> <span class="eval-badge">Overall: 4.8/5</span></div>
+<p><strong>총평</strong>: 본 논문은 계산 화면과 실험 검증 사이의 병목을 해결하는 획기적인 자율 실험실을 제시하며, ab initio 계산, 기계학습, 능동 학습의 통합을 통해 63%의 높은 합성 성공률을 입증하였다. 고체 분말 합성의 고유한 과제를 해결하고 향후 AI 기반 재료 발굴의 새로운 패러다임을 제시한다는 점에서 재료과학 분야의 중요한 이정표이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../134_Automating_the_practice_of_science_Opportunities_challenges/index.html">Automating the practice of science: Opportunities, challenges, and implications</a></div><div class="conn-reason">과학 자동화의 일반적 프레임워크가 자율 실험실 구현의 이론적 기반을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">재료 탐색의 실시간 폐루프 vs 자율 합성이라는 서로 다른 자동화 접근법을 보여준다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../684_Robot-assisted_mapping_of_chemical_reaction_hyperspaces_and/index.html">Robot-assisted mapping of chemical reaction hyperspaces and networks</a></div><div class="conn-reason">화학반응 매핑과 재료 합성 자동화라는 서로 다른 자율실험실 응용분야를 다룬다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../684_Robot-assisted_mapping_of_chemical_reaction_hyperspaces_and/index.html">Robot-assisted mapping of chemical reaction hyperspaces and networks</a></div><div class="conn-reason">둘 다 자율 실험실 개념이지만 A-Lab은 무기재료, 이 논문은 화학반응에 특화되어 있다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../745_Self-driving_laboratories_to_autonomously_navigate_the_prote/index.html">Self-driving laboratories to autonomously navigate the protein fitness landscape</a></div><div class="conn-reason">단백질 특화 자동화를 더 넓은 화학 합성 자동화로 확장하여 포괄적인 자율 실험실 구축 방향을 제시한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">AMASE의 실시간 폐루프 개념을 재료 합성 최적화에 적용할 수 있다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../043_Accelerating_Drug_Discovery_Through_Agentic_AI_A_Multi-Agent/index.html">Accelerating drug discovery with artificial: a whole-lab orchestration and scheduling system for self-driving labs</a></div><div class="conn-reason">자율 실험실의 무기 고체 합성 자동화가 Artificial 플랫폼의 신약 개발 워크플로우 조정 능력을 소재 과학으로 확장함</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1126_Autonomous_platform_for_solution_processing_of_electronic_po/index.html">Autonomous platform for solution processing of electronic polymers</a></div><div class="conn-reason">무기 재료의 가속 합성을 위한 자율 실험실은 Polybot의 전자 고분자 최적화 방법론을 더 넓은 재료 합성 영역으로 확장한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

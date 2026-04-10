@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/jehyu/Arbeitplatz/**)",
+      "Bash(python -c \":*)",
+      "Bash(PYTHONUTF8=1 python -c \":*)",
+      "Bash(ls C:/Users/jehyu/Arbeitplatz/paper-curation/docs/papers/*/text.md)",
+      "Bash(shuf)"
+    ]
+  }
+}

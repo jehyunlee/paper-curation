@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</h1>
+<blockquote><p><strong>저자</strong>: Xiaojin Gao, Jiacheng Ruan, Zongyun Zhang, Jingsheng Gao, Ting Liu, Yuzhuo Fu | <strong>날짜</strong>: 2025 | <strong>기관</strong>: Shanghai Jiao Tong University</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>대규모 언어모델(LLM)을 활용하여 학술 논문 심사를 자동화하되, 인간 심사자의 다단계 추론 과정을 모방한 다중 에이전트 프레임워크를 제안한다. 구조화된 사고(Chain-of-Thought) 방식과 관련 논문 인식(relevant-paper-aware) 학습을 통해 AI 생성 심사의 품질을 인간 심사에 가깝게 향상시킨다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM이 복잡한 텍스트 이해 및 추론 능력을 보유하고 있으며, 학술 심사 자동화에 잠재력이 있다는 점이 알려져 있음</li>
+<li><strong>Gap</strong>: 기존 LLM 기반 접근법은 심사 의견을 직접 생성하는 단순화된 방식으로, 인간 심사자의 실제 인지 과정(논문 요약 → 강점/약점 분석 → 결론 도출 → 메타리뷰)을 반영하지 못함. 따라서 생성된 의견이 인간 심사자의 판단과 큰 괴리가 발생</li>
+<li><strong>Why</strong>: 실제 심사 과정은 (1) 다단계 추론, (2) 다중 역할 참여(심사자, 영역 의장), (3) 최신 관련 문헌 참고를 포함하므로, 이를 모방해야 더 일관되고 신뢰할 수 있는 자동화 심사가 가능</li>
+<li><strong>Approach</strong>: (1) 142k개 심사 의견을 구조화된 형식으로 변환한 Review-CoT 데이터셋 구축, (2) 관련 논문 인식 학습법 적용, (3) 다중 에이전트 심사 프레임워크(ReviewAgents) 개발, (4) 자동 생성 심사의 품질 평가를 위한 ReviewBench 벤치마크 제안</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>Review-CoT 데이터셋</strong>: ICLR(2017-2024), NeurIPS(2016-2024)의 37,403개 논문과 142,324개 심사 의견을 구조화된 형식으로 정제. 제출 시점까지의 최신 관련 논문 정보를 포함한 최초의 대규모 구조화 심사 데이터셋</li>
+<li><strong>ReviewAgents 프레임워크</strong>: 세 단계 구조화 추론(요약→분석→결론)을 거쳐 인간 심사자의 인지 과정을 모방하는 다중 역할, 다중 에이전트 심사 시스템. 기존 LLM 기반 접근법 대비 인간 심사와의 정렬도(alignment) 향상</li>
+<li><strong>ReviewBench 벤치마크</strong>: LLM 생성 심사 의견의 품질을 4개 차원에서 정량적으로 평가하는 전문 벤치마크. 최신 심사 데이터로 구성하여 기존 LLM 사전학습 데이터 오염 문제 회피</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: 사전 정의된 구조화 사고 과정에 따른 심사 의견 변환 프로세스 (요약→분석→결론)</em></p></div>
+<h3>데이터셋 구축</h3>
+<ul>
+<li><strong>메타데이터 수집</strong>: OpenReview, NeurIPS Proceedings에서 논문 전문, 심사 의견, 메타리뷰, 채택 여부 등 원본 정보 수집</li>
+<li><strong>구조화 변환(Transcription)</strong>: 고급 LLM을 이용해 기존 심사 의견을 세 단계로 재구성
+<ul>
+<li><code><SUMMARY></code>: 논문의 주요 기여도 및 방법론 요약</li>
+<li><code><STRENGTHS_AND_WEAKNESSES></code>: 강점 및 약점 분석</li>
+<li><code><CONCLUSION></code>: 최종 평가 및 결론</li>
+<li>원본 의미 보존하면서 명시적 구조 부가</li>
+</ul>
+</li>
+<li><strong>관련 논문 검색</strong>: Semantic Scholar API를 통해 제출 시점까지의 관련 논문 검색, 유사도 기반으로 상위 2개 논문 추출. 인간 심사자의 신규성(novelty) 평가 과정 모방</li>
+</ul>
+<h3>ReviewAgents 프레임워크</h3>
+<ul>
+<li><strong>심사자 에이전트(Reviewer Agent)</strong>: 구조화된 3단계 추론을 수행하여 개별 심사 의견 생성</li>
+<li><strong>영역 의장 에이전트(Area Chair Agent)</strong>: 다수 심사자의 의견을 종합하여 메타리뷰 작성</li>
+<li><strong>다중 심사자 통합</strong>: 여러 심사자 에이전트의 독립적 평가 후 영역 의장이 종합, 개별 심사자 편향(bias) 완화</li>
+</ul>
+<h3>학습 및 평가 방법</h3>
+<ul>
+<li><strong>관련-논문-인식 학습(Relevant-Paper-Aware Training)</strong>: 논문 본문 + 관련 논문 정보를 입력으로 하여 모델 학습. 시간 변화에 따른 신규성 판단의 일관성 향상</li>
+<li><strong>ReviewBench 평가</strong>: 자동생성 심사의 품질을 인간 심사와 비교하는 다차원 평가 체계</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>최초의 구조화 심사 데이터셋</strong>: 단순 심사 텍스트 수집 수준을 넘어 인간의 인지 과정(요약→분석→결론)을 명시적으로 구조화한 첫 대규모 데이터셋</li>
+<li><strong>관련 논문 인식 학습</strong>: 심사 시점의 최신 문헌 정보를 학습 데이터에 포함하여, 시간축에서의 신규성 판단 일관성 확보 (기존 방법 미비점 보완)</li>
+<li><strong>다중 역할 에이전트 설계</strong>: 실제 심사 제도(심사자→영역 의장)의 다단계 구조를 그대로 모방하여 개별 편향 완화 및 인간 심사 절차의 신뢰성 있는 자동화</li>
+<li><strong>전문 벤치마크 제시</strong>: 생성 심사 평가를 위한 표준화된 다차원 평가 체계로 향후 연구의 기준점 제공</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>데이터 시간성</strong>: 데이터셋 구축 이후 급속도로 증가하는 신규 논문에 대한 적응 메커니즘 필요. 온라인 학습(online learning) 또는 점진적 업데이트 전략 검토 필요</li>
+<li><strong>언어 및 도메인 제한</strong>: ICLR, NeurIPS 중심의 영어권 머신러닝 논문에 편중. 타 학문 분야(생물학, 화학 등) 및 다국어 확장 미흡</li>
+<li><strong>인간-AI 협업 모델 부재</strong>: 완전 자동화 심사 대신 인간 심사자를 보조하는 상호작용 설계 미비. 심사자가 AI 생성 의견을 수정/선별하는 워크플로우 개발 필요</li>
+<li><strong>일관성 및 공정성 검증</strong>: 다중 에이전트 시스템의 출력 일관성, 논문 특성(저자 명성, 소속 기관 등)에 대한 편향 가능성에 대한 심층 분석 부족</li>
+<li><strong>평가 기준의 주관성</strong>: ReviewBench의 정량적 평가 지표가 심사의 주관적 판단(예: 창의성 평가)을 충분히 포착하지 못할 가능성</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 인간 심사자의 구조화된 사고 과정을 체계적으로 모방한 첫 대규모 데이터셋과 다중 에이전트 프레임워크로 AI 심사의 현실화 가능성을 높였다. 다만, 데이터 시간성 문제, 평가 지표의 한계, 실제 심사 제도 도입 시 윤리적·제도적 과제에 대한 보충 논의가 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../519_MARG_Multi-Agent_Review_Generation_for_Scientific_Papers/index.html">MARG: Multi-Agent Review Generation for Scientific Papers</a></div><div class="conn-reason">다중 에이전트 리뷰 생성의 기본 프레임워크가 인간-AI 격차 해소를 위한 구조화된 추론 과정 설계에 핵심적인 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../679_Revieweval_An_evaluation_framework_for_ai-generated_reviews/index.html">ReviewEval: An evaluation framework for AI-generated reviews</a></div><div class="conn-reason">인간과 AI 생성 리뷰 간 격차를 분석한 연구로 ReviewEval 평가 프레임워크 설계의 기준점을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../665_Remor_Automated_peer_review_generation_with_llm_reasoning_an/index.html">Remor: Automated peer review generation with llm reasoning and multi-objective reinforcement learning</a></div><div class="conn-reason">다중 에이전트 프레임워크와 강화학습 기반 접근법은 모두 AI 심사평의 품질 향상을 목표로 하지만 다른 구조적 해결책을 제시한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../665_Remor_Automated_peer_review_generation_with_llm_reasoning_an/index.html">Remor: Automated peer review generation with llm reasoning and multi-objective reinforcement learning</a></div><div class="conn-reason">다목적 강화학습과 다중 에이전트 접근법은 모두 심사평 품질 향상을 목표로 하지만 서로 다른 최적화 전략을 사용한다.</div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/index.html">When AI Co-Scientists Fail: SPOT—a Benchmark for Automated Verification of Scientific Research</a></div><div class="conn-reason">AI 생성 심사평의 품질 향상 연구와 과학 논문 오류 검증의 한계 연구를 대비하여 AI 심사 시스템의 현실적 적용 가능성을 평가할 수 있다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

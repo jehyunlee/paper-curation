@@ -1,0 +1,1 @@
+By leveraging diverse capabilities of multiple dynamically interacting large language models (LLMs), we can overcome the limitations of conventional approaches and develop a new class of physics-inspired generative machine learning platform, here referred to as MechAgents.. A set of AI agents can solve mechanics tasks, here demonstrated for ela

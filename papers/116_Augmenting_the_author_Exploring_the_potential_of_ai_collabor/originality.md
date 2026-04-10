@@ -1,0 +1,1 @@
+NACKE∗, Stratford School of Interaction Design and Business, University of Waterloo, Canada This workshop paper presents a critical examination of the integration of Generative AI (Gen AI) into the academic writing process, focusing on the use of AI as a collaborative tool.. It contrasts the performance and interaction of two AI models, Gemini and ChatGPT,

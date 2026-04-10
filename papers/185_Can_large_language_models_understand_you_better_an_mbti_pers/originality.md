@@ -1,0 +1,1 @@
+In this paper, we optimize the task by constructing MBTIBENCH, the first manually annotated high-quality MBTI personality detection dataset with soft labels, under the guidance of psychologists.. As for the first challenge, MBTIBENCH effectively solves the incorrect labeling issues, which account for 29.58% of the data.. As for the second challenge, we estimate

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/jehyu/Arbeitplatz/paper-curation/docs/papers\\\" && PYTHONUTF8=1 python -c \\\"\\nimport sys, json\\nfrom graphify.build import build_from_json\\nfrom graphify.cluster import score_...",
+  "error": "Exit code 1\n[graphify] Extraction warning (447 issues): Node 1 (id='001_multiview_clip') has invalid file_type 'method' - must be one of ['code', 'document', 'image', 'paper', 'rationale']\r\nTraceback (most recent call last):\r\n  File \"<string>\", line 55, in <module>\r\n    to_html(G, communities, 'graphify-out/graph.html', community_labels=labels)\r\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jehyu\\AppData\\Roaming\\Python\\Python314\\site-packages\\g...",
+  "timestamp": "2026-04-08T20:54:46.159Z",
+  "retry_count": 2
+}

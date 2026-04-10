@@ -1,0 +1,1 @@
+Here, we introduce scBaseCamp, a continuously updated single-cell RNA-seq database that leverages an AI agent-driven hierarchical workflow to automate discovery, metadata extraction, and standardized data processing.. Built by directly mining and processing all publicly accessible 10X Genomics single-

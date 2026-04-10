@@ -1,0 +1,1 @@
+We will introduce a chiral spin symmetry, which is a symmetry of the electric part of electrodynamics and of QCD with light quarks.. It is realized approximately in QCD above the chiral restoration crossover and disappears in the QGP regime.. The center symmetry of the pure glue action and the chiral spin symmetry of the electric part of the QCD Lag

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GoAI: Enhancing AI Students&#x27; Learning Paths and Idea Generation via Graph of AI Ideas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>GoAI: Enhancing AI Students&#x27; Learning Paths and Idea Generation via Graph of AI Ideas</h1>
+<blockquote><p><strong>저자</strong>: Xian Gao, Zongyun Zhang, Ting Liu, Yuzhuo Fu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2503.08549" target="_blank">10.48550/ARXIV.2503.08549</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: The framework of GoAI. The framework consists of four stages: (1) Literature Search and Filtering, (2) GoAI Gr</em></p></div>
+<p>GoAI는 AI 연구논문으로부터 교육용 지식그래프를 구축하고, 이를 활용하여 학생들의 개인화된 학습경로 계획과 창의적 아이디어 생성을 지원하는 도구이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM 기반 학술 어시스턴트는 논문 요약과 아이디어 생성이 가능하지만, 선형적 서술만 제공하여 선수지식(prerequisite knowledge)과 인용관계의 의미론적 정보를 놓친다.</li>
+<li><strong>Gap</strong>: 기존 LLM 접근법들은 교육학적 선수조건을 무시하고, 인용관계의 의미론적 역할(baseline, extension, critique 등)을 포착하지 못하며, 학술 발전의 그래프 구조를 단순화한다.</li>
+<li><strong>Why</strong>: AI 분야의 급속한 발전으로 학생들은 '정보-혁신' 간극에 직면하고 있으며, 효율적인 학습경로 계획과 고품질의 창의적 아이디어 생성이 AI 교육의 핵심이다.</li>
+<li><strong>Approach</strong>: 논문과 선수지식(개념, 기술, 도구)을 노드로, 의미론적 인용 정보를 엣지로 하는 지식그래프를 구축하고, 빔 검색 기반의 경로 탐색과 Idea Studio를 통해 학습경로 계획 및 아이디어 피드백을 제공한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>Figure 2: An example workflow of graph exploration and idea generation. The paper “Tree of Thoughts” is the key referenc</em></p></div>
+<ul>
+<li><strong>교육-연구 통합 지식그래프(GoAI)</strong>: 선수지식 메타데이터와 의미론적 인용 레이블을 보존하는 AI 교육용 지식그래프 구축</li>
+<li><strong>개인화 학습경로 계획</strong>: LLM이 그래프를 동적으로 순회하여 연구추세를 분석하고 학생맞춤형 학습궤적을 생성</li>
+<li><strong>구조화된 아이디어 평가</strong>: Idea Studio에서 Chain-of-Thought 기반 피드백으로 참신성, 명확성, 실현가능성, 학습목표 정렬을 평가</li>
+<li><strong>실증적 효과</strong>: 인지부하 감소 및 학습성과(learning gains), 창의성 품질(creativity quality) 개선 입증</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Figure 1: The framework of GoAI. The framework consists of four stages: (1) Literature Search and Filtering, (2) GoAI Gr</em></p></div>
+<ul>
+<li>AI 논문으로부터 논문 엔티티, 개념, 기술, 도구 등의 선수지식 추출</li>
+<li>인용관계에 대한 의미론적 어노테이션(baseline, extension, contrast, critique 등) 수행</li>
+<li>추출된 정보로 노드-엣지 구조의 지식그래프 구성</li>
+<li>학생 쿼리에 대해 빔 서치를 통한 다중 발전궤적 생성 및 복잡도 기반 커리큘럼 조직</li>
+<li>CoT 기반 리뷰어가 제안된 아이디어에 대한 형성평가(formative feedback) 제공</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>기존 citation-only 접근과 달리 의미론적 인용 레이블과 선수지식을 통합한 교육-연구 하이브리드 그래프 설계</li>
+<li>선형적 연구발전 서술 대신 그래프 구조로 학술 생태계의 복잡한 상호연결성 표현</li>
+<li>빔 서치 기반 인용의미론-인식형 경로 탐색으로 학습목표 최적화</li>
+<li>학생 아이디어 생성 과정 전반을 지원하는 통합 Idea Studio 설계</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li>선수지식 추출 및 의미론적 인용 어노테이션의 정확성 및 확장성에 대한 상세한 평가 부족</li>
+<li>대규모 학생군에 대한 종단 평가(longitudinal evaluation)와 장기 학습효과 검증 필요</li>
+<li>다학제 분야 및 비영어권 논문에 대한 적용 가능성 미검토</li>
+<li>빔 서치 파라미터 튜닝과 학습경로 개인화 전략의 최적화 기준 미제시</li>
+<li>후속연구: 자동 어노테이션 정확도 향상, 다국어/다분야 확장, 사용자 피드백 기반 적응형 그래프 진화 메커니즘</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: GoAI는 교육학적 요구와 학술 네트워크의 복잡성을 동시에 다루는 혁신적 접근으로, 의미론적 지식그래프와 LLM의 결합을 통해 AI 학생들의 학습 효율성과 창의성을 실질적으로 향상시킬 수 있는 실용적 도구를 제시한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1112_CS-KG_20_A_Large-scale_Knowledge_Graph_of_Computer_Science/index.html">CS-KG 2.0: A Large-scale Knowledge Graph of Computer Science</a></div><div class="conn-reason">컴퓨터과학 지식그래프를 교육용으로 특화하여 학습경로와 아이디어 생성에 활용하는 확장 연구이다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1112_CS-KG_20_A_Large-scale_Knowledge_Graph_of_Computer_Science/index.html">CS-KG 2.0: A Large-scale Knowledge Graph of Computer Science</a></div><div class="conn-reason">컴퓨터과학 지식그래프를 교육용으로 활용하여 개인화된 학습을 지원하는 구체적 적용 사례이다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

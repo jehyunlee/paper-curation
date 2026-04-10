@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cited text spans for citation text generation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Cited text spans for citation text generation</h1>
+<blockquote><p><strong>저자</strong>: Xiangci Li, Yi‐Hui Lee, Jessica Ouyang | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Overview of the proposed CTS-based citation generation approach. Context, Oracle, Keyword 전략을 통해 인용 논문에서 CTS를 검색하고 인용 텍스트를 생성</em></p></div>
+<p>과학 논문의 인용 텍스트 자동 생성을 위해 기존의 초록(abstract)만 사용하는 방식 대신, 실제 인용되는 특정 텍스트 구간(Cited Text Span, CTS)을 활용하여 더 정확하고 충실한 인용 생성이 가능함을 보여준다. 이를 위해 원가(distant labeling)를 통해 대규모 CTS 데이터셋을 구축하고, 실용적인 키워드 기반 CTS 검색 방법을 제안한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존 추상적 인용 생성(abstractive citation generation) 접근법들은 계산상의 제약으로 인해 인용 논문의 초록에만 기반하여 모델을 학습해왔다. 또한 Li et al. (2022)에 따르면 인간이 작성한 골드 인용 텍스트의 관련성 평가 점수가 초록에 대해 정의될 때 시스템 생성 인용보다 유의미하게 낮다.</li>
+<li><strong>Gap</strong>: 초록은 항상 인용 생성에 가장 적절한 입력이 아니며, 골드 인용 텍스트가 논문 본문 내용을 참조하는 경우가 많으나 이 정보에 접근할 수 없다. 기존 CTS 데이터셋은 매우 작고(364-239개), 주석자간 일치도가 낮으며(Cohen's κ = 0.16∼0.52), 자동 CTS 검색 시스템의 성능도 부실(F1 < 0.2)하다.</li>
+<li><strong>Why</strong>: CTS 기반 인용 생성은 충실성(grounding)을 통해 환각(hallucination)을 방지할 수 있으나, 수동 주석은 노동 집약적이고 비실용적이다.</li>
+<li><strong>Approach</strong>: (1) 원가 레이블링(distant labeling)으로 대규모 CTS 데이터셋 구축, (2) 기존 CTS 검색 방식의 문제점 식별, (3) 인간-루프 기반 키워드 검색 방식 제안</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>원가 레이블링 CTS는 상위 40개 문장에서 CL-SciSumm의 80%, AbuRa'ed의 95% 인간 주석 CTS를 커버</em></p></div>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
+<p class="fig-caption"><em>원가 레이블링 CTS(실선)는 인간 주석 CTS(점선)보다 높은 ROUGE-L 리콜 성능 달성</em></p></div>
+<ol>
+<li><strong>원가 레이블링의 효과성</strong>: ROUGE 기반 원가 레이블링이 인간 주석과 비슷한 수준의 충실성(QuestEval, ANLI 평가)을 보이면서도 더 높은 토큰 오버랩을 달성했다. 이는 하나의 인용에 대해 여러 개의 타당한 CTS가 존재할 수 있음을 시사한다.</li>
+<li><strong>다운스트림 작업 성능</strong>: 원가 레이블링 CTS로 학습한 모델이 인간 주석 CTS 기반 모델과 비슷하거나 더 우수한 인용 생성 성능(BLEU, METEOR, ROUGE-L)을 달성했으며, CL-SciSumm 데이터셋에서는 오히려 우월했다.</li>
+<li><strong>실용적 가능성</strong>: 초록 기반 접근법 대비 CTS 기반 인용 생성으로 명백히 개선된 충실성과 정확도를 입증함으로써, 전체 논문 텍스트 기반 인용 생성의 타당성 확보했다.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+</div>
+<ul>
+<li><strong>원가 레이블링 전략</strong>: 골드 인용 텍스트를 쿼리로 사용하여 인용 논문에서 상위-k개 문장을 ROUGE-1/2 리콜 기반으로 순위 지어 CTS 후보 추출. GPU 불필요한 ROUGE 기반 방식 선택으로 계산 효율성 확보</li>
+<li><strong>평가 메트릭</strong>:
+<ul>
+<li>토큰 오버랩 (ROUGE-recall)</li>
+<li>충실성 (QuestEval, ANLI non-contradiction score)</li>
+</ul>
+</li>
+<li><strong>인용 생성 모델</strong>: 두 가지 아키텍처 실험
+<ul>
+<li>RAG-FiD (Retrieval-Augmented Generation with Fusion-in-Decoder)</li>
+<li>LED (Longformer Encoder-Decoder)를 Oracle 검색과 함께 사용</li>
+</ul>
+</li>
+<li><strong>키워드 기반 CTS 검색</strong>: 골드 인용 텍스트 대신 인용 맥락(citation context)의 키워드를 추출하여 검색 쿼리로 사용. 인간 개입을 통해 실용성 확보</li>
+<li><strong>데이터셋 구성</strong>: CL-SciSumm 364개, AbuRa'ed 194개 (45개 제외) 인용 사례 활용하여 원가 레이블링 검증</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>새로운 문제 정의</strong>: 기존 CTS 검색 시스템이 인용 생성 태스크에 부적절한 이유를 명확히 지적 (골드 인용 텍스트를 쿼리로 사용하는 문제)</li>
+<li><strong>원가 레이블링의 정당화</strong>: 인간 주석의 낮은 일치도를 "여러 타당한 CTS 존재 가능성" 관점에서 재해석하여 원가 레이블링의 품질 동등성 입증</li>
+<li><strong>실용적 접근</strong>: 인간-루프 기반 키워드 검색 방식으로 실제 인용 생성 시스템 적용 가능성 제시 (기존 오라클 기반 방식의 한계 극복)</li>
+<li><strong>대규모 데이터셋 구축</strong>: 기존 수동 주석 데이터셋의 크기 제약을 원가 레이블링으로 해결</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>CTS 다양성 부족</strong>: 원가 레이블링은 높은 토큰 오버랩을 우선시하기 때문에 의미적으로 유사하지만 다른 표현의 CTS를 놓칠 수 있다 (BERTScore가 ROUGE를 약간 하회한 이유)</li>
+<li><strong>키워드 추출의 수동성</strong>: 제안된 키워드 기반 CTS 검색이 "인간-루프" 방식으로, 완전 자동화되지 않았다. 자동 키워드 추출 방법의 개발 필요</li>
+<li><strong>평가 메트릭의 한계</strong>: BLEU, METEOR, ROUGE-L 등 자동 평가 메트릭만 사용되었으며, 인간 평가를 통한 충실성과 충분성(informativeness) 검증 부재</li>
+<li><strong>모델 스케일의 제약</strong>: LED/RAG-FiD 등 상대적으로 작은 모델 기반 실험. 최신 LLM(GPT-3.5 등)과의 비교 평가 미수행</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>의미적 CTS 다양성을 포착할 수 있는 밀도 검색(dense retrieval) 방식 개선</li>
+<li>자동 키워드 추출 알고리즘 개발</li>
+<li>대규모 LLM을 활용한 인용 생성 및 검증</li>
+<li>학제 간 일반화 (학제별 인용 패턴의 차이 고려)</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 본 논문은 인용 생성 시스템에서 초록의 한계를 지적하고 CTS 기반 접근의 타당성을 체계적으로 입증한 가치 있는 연구이다. 원가 레이블링으로 수작업 주석의 부담을 경감한 점이 실무적 기여도 크다. 다만 완전 자동화된 CTS 검색 실현 및 대규모 생성 모델과의 통합 검증이 보완되면 영향력이 더욱 증대될 것으로 기대된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../238_Controllable_citation_sentence_generation_with_language_mode/index.html">Controllable Citation Sentence Generation with Language Models</a></div><div class="conn-reason">인용 텍스트 생성을 위한 인용된 텍스트 구간 활용 연구로 본 논문의 제어 가능한 생성을 위한 입력 정보 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../219_Citebart_Learning_to_generate_citations_for_local_citation_r/index.html">Citebart: Learning to generate citations for local citation recommendation</a></div><div class="conn-reason">인용 텍스트 생성 연구가 로컬 인용 추천을 위한 인용 토큰 마스킹 학습의 기초 아이디어를 제공합니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1091_Scirgc_Multi-granularity_citation_recommendation_and_citatio/index.html">Scirgc: Multi-granularity citation recommendation and citation sentence preference alignment</a></div><div class="conn-reason">다중 단위 인용 추천 및 문장 생성에서 본 논문의 CTS 방법론을 인용 의도와 결합한 기반을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../420_Ilciter_Evidence-grounded_interpretable_local_citation_recom/index.html">ILCiteR: Evidence-grounded interpretable local citation recommendation</a></div><div class="conn-reason">해석 가능한 로컬 인용 추천으로 본 논문의 인용 생성과 다른 접근법인 인용 추천 시스템을 제시한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../238_Controllable_citation_sentence_generation_with_language_mode/index.html">Controllable Citation Sentence Generation with Language Models</a></div><div class="conn-reason">제어 가능한 인용 문장 생성 연구로 본 논문의 인용 텍스트 구간 활용을 언어 모델 제어로 발전시킨다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../420_Ilciter_Evidence-grounded_interpretable_local_citation_recom/index.html">ILCiteR: Evidence-grounded interpretable local citation recommendation</a></div><div class="conn-reason">인용 텍스트 스팬 추출을 해석가능한 증거 스팬 제시로 발전시켜 더 투명한 인용 추천을 가능하게 합니다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

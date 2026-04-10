@@ -1,0 +1,1 @@
+In this work, we introduce L-CiteEval, a comprehensive multi-task benchmark for long- context understanding with citations, aiming to evaluate both the understanding capability and faithfulness of LCMs.. L-CiteEval covers 11 tasks from diverse domains, spanning context lengths from 8K to 48K, and provides a fully auto- mated evaluation suite.

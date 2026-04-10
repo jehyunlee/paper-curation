@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Domain-specific ReAct for physics-integrated iterative modeling: A case study of LLM agents for gas path analysis of gas turbines</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Domain-specific ReAct for physics-integrated iterative modeling: A case study of LLM agents for gas path analysis of gas turbines</h1>
+<blockquote><p><strong>저자</strong>: Tao Song, Yuwei Fan, Chen Feng, Keyu Song, Chao Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2406.07572" target="_blank">10.48550/arXiv.2406.07572</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>그림 2: 이중 에이전트 도구 호출 프로세스</em></p></div>
+<p>본 논문은 LLM(대규모 언어 모델)을 에너지·발전 공학 영역의 실제 문제 해결에 활용하기 위해 ReAct 프롬프팅과 도구 호출 메커니즘을 결합한 도메인 특화 프레임워크를 제시한다. 가스터빈의 가스 경로 분석(gas path analysis)을 사례로 하여 다양한 규모의 LLM들의 능력과 한계를 체계적으로 평가한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM은 자연어 처리 및 추론 작업에서 뛰어난 성능을 보이며, RAG, Chain-of-Thought, ReAct 등의 향상 기법이 환각(hallucination)과 설명 불가능성을 완화시킨다.</li>
+<li><strong>Gap</strong>: 기존 AI 도구들은 에너지 시스템의 복잡성을 이해할 이론적 기초가 부족하고 블랙박스 특성으로 인해 신뢰성과 해석 가능성이 떨어진다. LLM을 도메인 특화 공학 문제에 체계적으로 적용한 사례가 제한적이다.</li>
+<li><strong>Why</strong>: 에너지·발전 공학은 물리적 법칙 준수가 필수적이고, 복잡한 다중 성분 계산이 필요하므로 LLM의 순수 텍스트 추론만으로는 신뢰할 수 없다.</li>
+<li><strong>Approach</strong>: 물리 기반 도구를 사전 정의하고 ReAct 기반 이중 에이전트 구조를 설계하여 LLM의 추론 능력과 도메인 지식을 통합한다. 다양한 규모(8B~70B+)의 모델을 비교 평가한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>그림 1: 가스터빈의 가스 경로 분석 개요</em></p></div>
+<ol>
+<li><strong>이중 에이전트 도구 호출 프로세스 개발</strong>: 기본 도구 호출을 지원하지 않는 모델들도 통일된 프레임워크에서 작동하도록 하는 구조 설계 성공. 에이전트 1은 ReAct 추론으로 행동 결정, 에이전트 2는 JSON 형식으로 도구 파라미터 추출.</li>
+<li><strong>모델 성능 차이 규명</strong>:
+<ul>
+<li>소형 모델(LLama3 8B, Qwen1.5 32B): 도구 사용과 파라미터 추출에 실패</li>
+<li>대형 모델(LLama3 70B, Qwen1.5 72B, GPT-4o, GLM-4): 도구 기반 계산에서 정확한 결과 도출</li>
+<li>모든 모델이 다중 성분의 복잡한 문제에서 어려움을 겪음</li>
+</ul>
+</li>
+<li><strong>규모-능력 관계 제시</strong>: 약 100억 개 파라미터 규모의 LLM이 미세 조정(fine-tuning)과 고급 프롬프트 설계를 통해 전문 시나리오 요구사항을 충족할 가능성 제시.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>도메인 도구 사전 정의</strong>: 압축기(compressor), 연소실(combustion chamber), 터빈(turbine), 노즐(nozzle) 각각에 대해 열역학 방정식 기반 계산 함수 개발. 근사를 통해 단순화하되, 필요시 더 정교한 모델로 대체 가능한 구조 설계.</li>
+<li><strong>ReAct 프롬프팅 적용</strong>:
+<ul>
+<li>Thought (생각): 현재 상황 분석</li>
+<li>Action (행동): 사용할 도구 선택</li>
+<li>Action Input (입력): 도구 파라미터 지정</li>
+<li>Observation (관찰): 도구 실행 결과</li>
+<li>Final Answer (최종 답): 결론 도출</li>
+</ul>
+</li>
+<li><strong>JSON 기반 파라미터 추출</strong>: 에이전트 2가 LLM 생성 텍스트를 고정 스키마의 JSON으로 변환하여 파싱 오류 최소화.</li>
+<li><strong>비교 평가 설정</strong>: 로컬 배포 모델(LLama3, Qwen1.5)과 API 기반 모델(GPT-3.5, GPT-4o, GLM-4)을 동일한 프레임워크에서 테스트.</li>
+<li><strong>단일 성분 vs. 다중 성분 테스트</strong>: 초기 단일 성분 계산 성공 여부와 이후 가스 유량 → 연소실 온도·압력 → 터빈 효율 등의 순차적 다중 단계 문제 해결 능력 평가.</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>도메인 특화 프레임워크</strong>: 일반적인 도구 호출 메커니즘을 물리 방정식 기반 에너지 공학 문제에 맞게 맞춤형 설계한 최초의 시도.</li>
+<li><strong>이중 에이전트 구조</strong>: 네이티브 도구 호출을 지원하지 않는 모델들도 통일된 인터페이스로 활용 가능하게 하는 일반화된 접근법.</li>
+<li><strong>체계적 모델 비교</strong>: 파라미터 규모(8B~100B+), 제조사(Meta, Alibaba, OpenAI, Zhipu), 배포 방식(로컬/API)을 달리하는 모델들을 동일 기준으로 평가.</li>
+<li><strong>물리 제약 통합</strong>: 열역학 도구를 강제함으로써 LLM의 순수 텍스트 생성 문제를 해결하고 물리적 타당성 보장.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>근사 및 단순화</strong>: 기체 열물성 상수와 유동 보존 관계식에 다수의 근사 적용. 실제 엔지니어링 정확도 요구 시 더 정교한 모델로의 대체 필요.</li>
+<li><strong>다중 성분 복잡도</strong>: 모든 모델이 여러 단계의 순차적 계산이 필요한 복잡한 문제에서 추론 연쇄를 유지하지 못함. 메모리(memory)와 계획(planning) 강화 필요.</li>
+<li><strong>소형 모델의 근본적 한계</strong>: 8B, 32B 규모 모델은 도구 파라미터 추출 자체에 실패. 사전 학습 데이터 또는 아키텍처 수준의 개선 필요.</li>
+<li><strong>프롬프트 엔지니어링 의존성</strong>: 성능이 프롬프트 설계에 크게 의존하므로, 상이한 도메인 문제에 대한 일반화 가능성 검증 필요.</li>
+<li><strong>상용 모델 접근성</strong>: GPT, GLM 등 최고 성능 모델의 로컬 배포 불가로 인한 실용적 제약. 오픈소스 모델의 성능 격차 지속.</li>
+<li><strong>후속 연구</strong>:
+<ul>
+<li>100B 규모 오픈소스 모델(예: LLama3 400B)의 성능 평가</li>
+<li>도메인 특화 미세 조정 데이터셋 구축 및 적용</li>
+<li>트리 탐색(tree search) 등 고급 에이전트 추론 전략 도입</li>
+<li>불확실성 정량화 및 신뢰도 평가 프레임워크 개발</li>
+<li>다른 에너지 공학 문제(연소 불안정성, 구조 최적화 등)로 확장 검증</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 LLM을 물리 기반 도메인 문제에 체계적으로 적용한 의미 있는 사례 연구로, 도메인 특화 프레임워크의 설계와 모델 규모별 성능 평가에 기여한다. 다만 현재는 정성적 관찰 중심이며, 통계적 검증과 실제 산업 데이터를 통한 검증이 추가되면 영향력을 크게 확대할 수 있을 것으로 판단된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">물리학 도메인의 정확한 모델링 요구사항이 과학 가설 생성에서 진실성과 검증 가능성의 중요성을 보여주는 기반 사례이다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">물리학 통합 모델링과 사회적 책임 AI 인과학습이 모두 복잡한 시스템의 인과관계를 다루지만 물리적 vs 사회적 도메인으로 구분된다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">사회적 책임 AI를 위한 인과학습과 물리학 통합 모델링이 모두 복잡한 인과관계를 다루지만 사회적 vs 물리적 시스템으로 구분된다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../748_Semi-Supervised_2D_Human_Pose_Estimation_Driven_by_Position/index.html">Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module</a></div><div class="conn-reason">물리학 통합 모델링과 컴퓨터 비전 포즈 추정이 모두 도메인 특화 과학적 추론이지만 서로 다른 과학 영역에 특화되어 있다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../748_Semi-Supervised_2D_Human_Pose_Estimation_Driven_by_Position/index.html">Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module</a></div><div class="conn-reason">컴퓨터 비전 영역의 도메인 특화 추론과 물리학 통합 모델링이 모두 특정 과학 도메인에서의 LLM 활용이지만 접근 방식이 다르다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../631_Predicting_field_experiments_with_large_language_models/index.html">Predicting field experiments with large language models</a></div><div class="conn-reason">경제학에서의 실험 예측 방법론을 물리학 통합 모델링에 적용하여 도메인 간 방법론 전이 가능성을 탐구할 수 있다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../911_Resummation_of_the_C-Parameter_Sudakov_Shoulder_Using_Effect/index.html">Resummation of the C-Parameter Sudakov Shoulder Using Effective Field Theory</a></div><div class="conn-reason">물리학 통합 반복 모델링 접근법을 입자물리학의 복잡한 재합 계산으로 확장하여 더 정밀한 예측을 가능하게 한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">에너지 공학의 도메인 특화 ReAct 프레임워크가 Scientific Agent 서베이에서 제시하는 도메인 전문성 통합 방법론의 실제 구현 사례이다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">Scientific Agent의 도메인 특화 지식 통합 방법론이 물리학 통합 모델링의 ReAct 프레임워크에서 실제 적용 사례로 구현된다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

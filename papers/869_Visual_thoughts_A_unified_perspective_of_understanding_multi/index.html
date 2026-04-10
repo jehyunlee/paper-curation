@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Visual thoughts: A unified perspective of understanding multimodal chain-of-thought</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Visual thoughts: A unified perspective of understanding multimodal chain-of-thought</h1>
+<blockquote><p><strong>저자</strong>: Zihui Cheng, Qiguang Chen, Xiao Xu 외 | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.15510" target="_blank">arXiv:2505.15510</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>그림 1: (a) 순수 텍스트 근거를 사용하는 T-MCoT와 (b) 이미지-텍스트 교차 근거를 생성하는 I-MCoT의 비교</em></p></div>
+<p>대규모 비전-언어 모델(LVLM)의 멀티모달 체인-오브-쏘트(MCoT) 추론에서 <strong>시각적 사고(Visual Thoughts)</strong>라는 통합된 메커니즘을 발견하였으며, 이는 텍스트 기반과 이미지 교차 방식의 MCoT 모두를 설명하는 새로운 관점을 제시한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 최근 LVLM은 MCoT 추론으로 성능 향상을 이루었으며, 텍스트 기반 MCoT(T-MCoT)와 이미지-텍스트 교차 MCoT(I-MCoT) 두 가지 패러다임이 존재한다. 일부 연구는 I-MCoT가 인간의 인지 처리를 더 잘 반영한다고 주장하고, 다른 연구는 수학적 맥락에서 텍스트 기반이 우수하다고 제시한다.</li>
+<li><strong>Gap</strong>: 서로 다른 MCoT 패러다임이 왜 효과적인지, 어떤 메커니즘으로 개선되는지 통일된 설명이 부족하며, 최적의 MCoT 패러다임을 식별하기 위한 일반화된 프레임워크가 없다.</li>
+<li><strong>Why</strong>: MCoT의 실제 작동 메커니즘을 이해해야 더 나은 멀티모달 추론 방법을 개발할 수 있고, 상황에 맞는 최적의 전략을 선택할 수 있다.</li>
+<li><strong>Approach</strong>: 시각적 사고를 중간 표현으로 정의하고, 텍스트 표현(자연언어, 구조화된 언어)과 시각 표현(편집 이미지, 생성 이미지)의 4가지 전략으로 분류하여 실험적으로 검증한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>그림 2: 컴퓨터 시스템 관점에서의 멀티모달 추론 비교: (a) 시각적 사고를 내부 캐시로 활용 vs (b) 원본 이미지에 직접 접근</em></p></div>
+<ol>
+<li><strong>시각적 사고의 효과성 입증</strong>: 시각적 사고를 제거하고 원본 이미지만으로 추론하면 성능이 크게 저하되며, 이는 심지어 질문만으로 추론하는 것보다 나쁜 수준임을 확인했다. 이는 시각적 사고가 명시적으로 관련 시각 정보를 전달함으로써 추론 효율성을 크게 높임을 의미한다.</li>
+<li><strong>4가지 시각적 사고 표현 전략 분석</strong>:
+<ul>
+<li><strong>N-LANG</strong> (자연언어): 이미지 캡셔닝으로 풍부한 시각 설명 제공</li>
+<li><strong>S-LANG</strong> (구조화된 언어): 장면 그래프(scene graph)로 구조적 정보 제공</li>
+<li><strong>E-IMG</strong> (편집 이미지): 그라운딩, 깊이 추정, 분할 등으로 원본 이미지 처리</li>
+<li><strong>G-IMG</strong> (생성 이미지): 확산 모델으로 새로운 이미지 생성</li>
+</ul>
+</ol>
+<p>각 전략은 명확성과 효율성에서 차이를 보이며, 특정 시나리오에서 상이한 성능을 발휘한다.</p>
+<ol>
+<li><strong>내부 메커니즘 규명</strong>: 시각적 사고는 단순한 정보 전달을 넘어 <strong>입력 이미지와 깊은 변환기(transformer) 계층 사이의 중개자</strong> 역할을 하며, LVLM의 더 고급 인지 처리를 가능하게 한다.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>그림 3: 텍스트 표현 (a)과 시각 표현 (b)의 시각적 사고. 텍스트 표현은 N-LANG과 S-LANG, 시각 표현은 E-IMG와 G-IMG를 포함</em></p></div>
+<ul>
+<li><strong>정형화된 정의</strong>: 시각적 사고(R_EVT)를 수식 (1)로 정형화하여, 과제 질문(Q_T), 명시적 지시사항(I_EVT), 이전 추론 단계(R_<i), 시각 입력(V_I)의 함수로 표현</li>
+<li><strong>분류 체계</strong>: 생성 방식에 따라 <strong>텍스트 기반 MCoT</strong> (자연언어, 구조화된 언어)와 <strong>이미지 기반 MCoT</strong> (편집 이미지, 생성 이미지)로 이원화</li>
+<li><strong>캐시 비유</strong>: 원본 이미지를 "외부 저장소"로, 시각적 사고를 "내부 캐시"로 개념화하여 반복적 이미지 재처리 부담을 감소시키는 방식 설명</li>
+<li><strong>정보 흐름 분석</strong>: 어텐션 메커니즘(attention mechanism)과 LVLM 내부 정보 흐름을 추적하여 시각적 사고가 깊은 계층으로의 시각 정보 전달을 촉진하는 방식 검증</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>통합 관점 제시</strong>: T-MCoT와 I-MCoT의 이질적으로 보이는 두 패러다임을 <strong>시각적 사고</strong>라는 단일한 개념으로 통일한 첫 번째 시도로, 기존의 패러다임 간 논쟁에 이론적 해결책을 제공</li>
+<li><strong>체계적 분류 체계</strong>: 시각적 사고의 4가지 표현 방식을 체계적으로 정의하고 비교하는 프레임워크 구축으로, 향후 새로운 MCoT 방법론 개발의 이론적 토대 마련</li>
+<li><strong>메커니즘 수준의 깊이</strong>: 단순 성능 비교를 넘어 LVLM 내부의 정보 흐름, 어텐션 패턴, 계층 간 정보 전달 방식을 분석함으로써 "왜" 작동하는지에 대한 심층적 이해 제공</li>
+<li><strong>외부 기억 비유</strong>: 컴퓨터 시스템의 캐시 개념을 활용한 창의적 비유로, 추상적인 AI 메커니즘을 직관적으로 설명</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>제한 사항</strong>:
+<ul>
+<li>4가지 시각적 사고 표현이 모든 가능한 형태를 완전히 커버하는지 검증 필요 (새로운 하이브리드 형태의 가능성)</li>
+<li>실험이 특정 LVLM 아키텍처(예: LLaVA, GPT-4V 등)에 제한될 수 있으며, 다양한 아키텍처에서의 일반화 정도 미확인</li>
+<li>계산 비용(computational overhead) 분석이 명시적으로 부재하여, 각 표현 방식의 실제 효율성 비교가 불완전</li>
+</ul>
+</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>시각적 사고의 최적 조합(앙상블) 전략 개발로, 서로 다른 표현 방식을 효과적으로 혼합하는 방법 탐색</li>
+<li>동적 시각적 사고 선택 메커니즘 구축으로, 과제의 특성에 따라 자동으로 최적의 표현 형태를 선택하는 적응형 시스템 개발</li>
+<li>다국어 및 다중 문화 맥락에서 시각적 사고의 효과성 검증</li>
+<li>시각적 사고가 모델의 환각(hallucination) 감소에 미치는 영향 분석</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.2/5</span></div>
+<p><strong>총평</strong>: 본 논문은 멀티모달 추론 분야의 오랜 논쟁(T-MCoT vs I-MCoT)에 "시각적 사고"라는 새로운 이론적 렌즈를 제공함으로써 개념적 통합을 이루었으며, 4가지 표현 전략의 체계적 분류는 향후 MCoT 방법론 개발의 로드맵을 제시한다. 다만 내부 메커니즘 분석의 기술적 깊이와 실제 성능 이득에 대한 정량적 검증이 보강된다면 더욱 영향력 있는 기여가 될 것으로 예상된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../785_T-sciq_Teaching_multimodal_chain-of-thought_reasoning_via_mi/index.html">T-SciQ: Teaching multimodal chain-of-thought reasoning via mixed large language model signals for science question answering</a></div><div class="conn-reason">멀티모달 체인-오브-쏘트 추론의 기본 메커니즘이 과학 문제 해결 교육의 이론적 토대를 제공합니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../785_T-sciq_Teaching_multimodal_chain-of-thought_reasoning_via_mi/index.html">T-SciQ: Teaching multimodal chain-of-thought reasoning via mixed large language model signals for science question answering</a></div><div class="conn-reason">멀티모달 과학 문제 해결을 시각적 사고라는 통합된 추론 메커니즘으로 확장하여 더 깊은 이해를 제공합니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../840_Transforming_Science_with_Large_Language_Models_A_Survey_on/index.html">Transforming Science with Large Language Models: A Survey on AI-assisted Scientific Discovery, Experimentation, Content Generation, and Evaluation</a></div><div class="conn-reason">시각적 사고 메커니즘을 과학 연구의 멀티모달 AI 시스템으로 확장하여 더 효과적인 과학적 추론을 가능하게 합니다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../037_A_Survey_on_Uncertainty_Quantification_Methods_for_Deep_Lear/index.html">A Survey on Uncertainty Quantification Methods for Deep Learning</a></div><div class="conn-reason">시각적 추론에서의 불확실성을 정량화하여 멀티모달 AI 시스템의 신뢰성을 향상시키는 방법을 제시합니다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

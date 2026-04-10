@@ -1,0 +1,1 @@
+We present a reinforcement learning approach for scientific explanation gen- eration that incorporates agentic personas, structured representations of expert reasoning strategies, that guide the explanation agent towards specific epistemic preferences.. In an evaluation of knowledge graph-based explanations for drug discovery, we tested two pe

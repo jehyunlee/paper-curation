@@ -1,0 +1,1 @@
+To clarify the numerous evaluation tasks in both academia and industry, we investigate multiple papers concerning LLM evaluations.. We summarize 4 core competencies of LLM, including reasoning, knowledge, relia- bility, and safety.. For every competency, we introduce its definition, corresponding benchmarks, and metrics.. Under this competency architecture, s

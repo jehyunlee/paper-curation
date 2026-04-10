@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</h1>
+<blockquote><p><strong>저자</strong>: Amirmohammad Ziaei Bideh, Jonathan Gryak | <strong>날짜</strong>: 2026-03-21 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>LLM-ODE의 개요: (1) 관찰된 궤적 데이터를 상태변수로 분해, (2) LLM이 진화 연산자로 작용하여 기호 방정식 모집단 진화 유도, (3) 방정식 수준 파레토 프론트의 카르테시안 곱에서 최종 시스템 선택</em></p></div>
+<p>본 논문은 대규모 언어모델(LLM)을 유전 프로그래밍(GP)에 통합하여 동역학 시스템의 지배 방정식 발견을 가속화하는 LLM-ODE 프레임워크를 제안한다. 기호 표현의 광대한 탐색 공간을 효율적으로 탐색하기 위해 LLM의 생성 능력을 진화 연산자로 활용한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 유전 프로그래밍은 기호 회귀(Symbolic Regression)에서 유연성과 해석성으로 널리 채택되어 왔으며, SINDy 같은 선형 모델과 Transformer 기반 대규모 사전학습 방법도 존재한다.</li>
+<li><strong>Gap</strong>: 기존 GP 기반 방법들은 무작위 돌연변이(mutation)와 교배(crossover)에 의존하여 기호 표현의 조합론적 탐색 공간을 비효율적으로 탐색한다. 이는 수렴 지연, 국소 최적해 도달, 고차원 시스템에 대한 확장성 부족으로 이어진다.</li>
+<li><strong>Why</strong>: 최근 LLM들은 자연어 처리뿐만 아니라 과학적 추론, 최적화, 흑박스 재조합에서 강력한 능력을 보여주고 있어, 대규모 코퍼스에서 습득한 구조적·문법적 패턴을 기호 진화에 활용할 수 있는 기회가 있다.</li>
+<li><strong>Approach</strong>: 고성능 후보 방정식에서 추출한 패턴을 활용하여 LLM이 정보 기반 돌연변이와 재조합을 제안하는 하이브리드 프레임워크 개발. 섬(island) 기반 진화 전략으로 다중 모집단을 병렬 진화시키고, 주기적 정제 단계를 통해 섬 간 정보 공유를 촉진한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>다양한 정규화 평균 제곱 오차(NMSE) 임계값 λ에 따른 검색 반복에 대한 시스템 발견율</em></p></div>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>시스템 파레토 프론트를 따른 점의 개수</em></p></div>
+<ol>
+<li><strong>탐색 효율성</strong>: 91개 동역학 시스템(1~4개 상태변수 포함)에 대한 종합 실증 평가에서 LLM-ODE가 고전적 GP 방법 대비 훨씬 빠른 수렴과 더 적은 반복으로 해를 발견함을 입증</li>
+<li><strong>파레토 프론트 품질</strong>: LLM-ODE 변형들이 다양한 LLM 모델에 걸쳐 일관되게 기호 복잡도와 예측 오차의 균형 측면에서 전통 GP를 상회</li>
+<li><strong>확장성</strong>: 선형 모델 및 Transformer 단독 방법과 비교하여 고차원 시스템에 대한 우수한 확장성 달성</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
+<p class="fig-caption"><em>D=1 상태변수를 가진 동역학 시스템의 훈련 궤적</em></p></div>
+<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
+<p class="fig-caption"><em>D=2 상태변수를 가진 동역학 시스템의 훈련 궤적</em></p></div>
+<ul>
+<li><strong>문제 분해</strong>: D차원 시스템을 D개의 독립적인 1변수 방정식 발견 문제로 분해하여 조합론적 복잡도 감소</li>
+<li><strong>LLM 기반 연산자</strong>: 현재 모집단에서 적응적 샘플링(softmax 분포 기반)으로 선택된 k개 방정식을 문맥 예제로 활용하여 LLM이 b개의 개선된 후보 표현식 제안</li>
+<li><strong>상수 최적화</strong>: 각 후보의 기호 구조는 고정하되, 수치적 상수와 계수를 외부 최적화기(numerical optimizer)를 통해 훈련 데이터에 맞춰 최적화</li>
+<li><strong>섬 기반 진화</strong>: 여러 모집단이 독립적으로 진화하되, n_refine 반복마다 섬 간 n_mix 개 방정식을 무작위 교환하고 저성능 절반 제거로 다양성 유지</li>
+<li><strong>다목적 선택</strong>: 최종 시스템을 방정식별 파레토 프론트(기호 복잡도 vs. 적합도)의 카르테시안 곱에서 선택하여 해석성과 정확성의 트레이드오프 반영</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>최초 시도</strong>: 진화 프레임워크 내에서 LLM을 활용하여 coupled differential equations 시스템 발견을 시도한 첫 번째 방법 (단일 방정식 발견을 다룬 선행 LLM-SR 연구와 차별)</li>
+<li><strong>하이브리드 설계</strong>: LLM의 생성 사전(generative prior)과 진화 알고리즘의 탐색 다양성을 결합한 혁신적 아키텍처</li>
+<li><strong>섬 정제 메커니즘</strong>: 주기적 정보 교환과 선택 압력 유지를 통한 새로운 다양성 촉진 전략</li>
+<li><strong>포괄적 벤치마크</strong>: 91개 시스템에 대한 대규모 실증 평가로 방법의 일반화 능력 입증</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>LLM 의존성</strong>: 방법의 효과가 LLM 품질에 크게 의존하며, 계산 비용 분석이 부재함. 더 경량의 모델 적용이나 비용-성능 트레이드오프 연구 필요</li>
+<li><strong>초기화 민감성</strong>: 섬 기반 접근과 무작위 초기화가 결과의 안정성에 미치는 영향에 대한 분석 부족</li>
+<li><strong>실험 범위</strong>: 벤치마크가 주로 합성 데이터에 기반하며, 실제 실험 데이터나 노이즈 강건성 평가가 제한적</li>
+<li><strong>기호 단순화</strong>: 발견된 방정식의 자동 단순화(algebraic simplification) 메커니즘 부재</li>
+<li><strong>이론적 분석</strong>: LLM 가이드가 탐색 공간의 수렴성이나 최적성에 미치는 영향에 대한 이론적 보장 부족</li>
+<li><strong>후속 방향</strong>: (1) 실제 과학 데이터셋 적용, (2) 동적 LLM 프롬프팅 전략, (3) 대안적 기호 표현(예: 함수형 프로그래밍) 탐색, (4) 하이퍼파라미터 민감도 분석 강화</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: LLM-ODE는 대규모 언어모델의 생성 능력을 유전 프로그래밍의 진화 연산자로 창의적으로 활용하여 기호 회귀의 효율성과 확장성을 실질적으로 개선한 강력한 작업이다. 다만 이론적 분석 강화, 실제 데이터 검증, 계산 비용 평가를 통해 실용적 영향력을 더욱 입증할 필요가 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../232_CodePDE_An_Inference_Framework_for_LLM-driven_PDE_Solver_Gen/index.html">CodePDE: An Inference Framework for LLM-driven PDE Solver Generation</a></div><div class="conn-reason">LLM 기반 동적 시스템 발견이 PDE 솔버 생성의 이론적 기초가 됨</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../547_Mllm-based_discovery_of_intrinsic_coordinates_and_governing/index.html">MLLM-based discovery of intrinsic coordinates and governing equations from high-dimensional data</a></div><div class="conn-reason">동적 시스템 발견을 위한 LLM 활용 방법론이 동영상에서 지배 방정식 발견의 이론적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../759_SLE-FNO_Single-Layer_Extensions_for_Task-Agnostic_Continual/index.html">SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators</a></div><div class="conn-reason">과학 머신러닝에서의 지속학습 문제가 LLM 기반 동역학 시스템 발견의 지식 보존과 적응에 기반을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../466_Large_Language_Model-Based_Evolutionary_Optimizer_Reasoning/index.html">Large Language Model-Based Evolutionary Optimizer: Reasoning with elitism</a></div><div class="conn-reason">동역학 시스템 발견과 블랙박스 최적화 모두 LLM을 진화 알고리즘에 통합하지만 적용 영역과 목표가 다르다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../466_Large_Language_Model-Based_Evolutionary_Optimizer_Reasoning/index.html">Large Language Model-Based Evolutionary Optimizer: Reasoning with elitism</a></div><div class="conn-reason">LLM을 진화 알고리즘에 통합하여 블랙박스 최적화를 수행하는 반면 LLM-ODE는 동역학 시스템 발견에 초점을 맞춘 다른 접근법이다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../275_Discovering_symbolic_differential_equations_with_symmetry_in/index.html">Discovering symbolic differential equations with symmetry invariants</a></div><div class="conn-reason">LLM 기반 동적 시스템 발견과 대칭 불변량 기반 방정식 발견은 서로 다른 접근법으로 같은 문제를 해결합니다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../289_Drsr_Llm_based_scientific_equation_discovery_with_dual_reaso/index.html">DrSR: LLM 기반 과학 방정식 발견 (데이터와 경험의 이중 추론)</a></div><div class="conn-reason">데이터와 경험의 이중 추론 접근법과 대규모 언어모델을 활용한 동역학 시스템 발견이라는 서로 다른 방정식 발견 방법론입니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../799_The_frontier_of_simulation-based_inference/index.html">The frontier of simulation-based inference</a></div><div class="conn-reason">동역학 시스템 발견을 위한 LLM 기반 ODE 접근법으로 확장한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../275_Discovering_symbolic_differential_equations_with_symmetry_in/index.html">Discovering symbolic differential equations with symmetry invariants</a></div><div class="conn-reason">대칭성을 가진 기호 미분방정식 발견이 LLM-ODE의 동역학 시스템 발견을 더 구체적으로 확장한 사례이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../502_Llm-feynman_Leveraging_large_language_models_for_universal_s/index.html">LLM-Feynman: Leveraging Large Language Models for Universal Scientific Formula and Theory Discovery</a></div><div class="conn-reason">LLM을 이용한 동역학 시스템 발견의 체계적인 벤치마크를 제공하여 LLM-Feynman의 성능을 평가할 수 있다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../364_From_Theory_to_Application_A_Practical_Introduction_to_Neura/index.html">From Theory to Application: A Practical Introduction to Neural Operators in Scientific Computing</a></div><div class="conn-reason">LLM을 이용한 동역학계 데이터 기반 발견에 신경 연산자 적용</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../759_SLE-FNO_Single-Layer_Extensions_for_Task-Agnostic_Continual/index.html">SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators</a></div><div class="conn-reason">과학 머신러닝 모델의 지속학습이 LLM 기반 동역학 시스템 발견에서 새로운 데이터 적응에 적용된다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

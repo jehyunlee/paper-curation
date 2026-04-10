@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wordcraft: A human-ai collaborative editor for story writing</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Wordcraft: A human-ai collaborative editor for story writing</h1>
+<blockquote><p><strong>저자</strong>: Andy Coenen, Luke M. Davis, Daphne Ippolito, Emily Reif, Ann Yuan | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Wordcraft 에디터: 왼쪽은 텍스트 편집 영역, 오른쪽은 AI 어시스턴트의 다양한 상호작용 옵션 제공</em></p></div>
+<p>신경 언어 모델의 능력을 활용하여 인간 작가와 AI 어시스턴트가 협력하는 스토리 쓰기 도구를 제시한다. Few-shot 학습과 대화형 인터페이스를 통해 단일 언어 모델으로 다양한 창작 작업을 지원한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 신경 언어 모델이 실제 응용에 적용되고 있으나, 기존 상호작용 방식은 제한적이다. 각 기능마다 별도 모델 훈련이 필요한 문제가 있다.</li>
+<li><strong>Gap</strong>: 스토리 작성의 다양한 단계(계획, 작성, 편집)에서 필요한 여러 종류의 작업을 유연하게 지원하는 통합 인터페이스가 부족하다.</li>
+<li><strong>Why</strong>: 창작 활동은 사용자의 의도를 명확하게 전달하기 어렵고, 예상 밖의 결과도 창작의 기회가 될 수 있는 이상적인 테스트 환경이다.</li>
+<li><strong>Approach</strong>: Few-shot 학습 기법과 대화형 언어 모델(Meena)을 활용하여 단일 모델로 다양한 창작 작업을 지원하는 협력형 에디터 개발</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>Few-shot 학습을 위한 단계별 대화 맥락: 인필링, 엘러보레이션, 리라이팅 작업의 예시</em></p></div>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>사용자 요청에 따른 프롬프트 구성 과정: 사용자 스토리 → 대화 맥락 추가 → 모델 응답</em></p></div>
+<ol>
+<li><strong>다목적 창작 지원</strong>: 연속 생성(continuation), 인필링(infilling), 엘러보레이션(elaboration), 리라이팅(rewriting) 등 다양한 작업을 단일 모델로 지원</li>
+<li><strong>대화형 인터페이스의 우월성</strong>: 일반 언어 모델 대비 대화형 모델(Meena)이 작가의 요청을 더 잘 이해하고 해석 가능한 응답을 제공하며, 불분명한 요청에 대해 명시적으로 피드백 가능</li>
+<li><strong>유연한 상황 적응</strong>: Few-shot 프롬프트를 통해 모델이 작업별 맥락을 학습하고 사용자 정의 쿼리 지원으로 예상하지 못한 창작 요청에도 대응 가능</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>기반 모델</strong>: Meena 대화 언어 모델 사용 (일반 목적 언어 모델과 비교 검토)</li>
+<li><strong>Few-shot 학습</strong>: 각 작업별로 2-7개의 예시를 포함한 대화형 맥락 제작
+<ul>
+<li>인필링: 6개 예시로 빈칸 채우기 작업 프레임</li>
+<li>엘러보레이션: 4개 예시로 상세 설명 작업 프레임</li>
+<li>리라이팅: 7개 예시로 스타일 변환 작업 프레임</li>
+</ul>
+</li>
+<li><strong>프롬프트 구성</strong>: 사용자 스토리 + 작업별 대화 맥락 + 사용자 요청을 조합하여 모델 입력 생성</li>
+<li><strong>UI 설계</strong>: 텍스트 에디터의 친숙한 인터페이스 유지하면서 우측에 작업별 버튼 및 단축키 제공</li>
+<li><strong>디코딩</strong>: Top-k 랜덤 샘플링(k=40) 사용으로 다양한 후보 생성</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>대화형 모델의 창의 작문 활용</strong>: 기존의 좌-우 생성(left-to-right generation) 패러다임을 벗어나 대화형 언어 모델을 스토리 작성의 협력 파트너로 활용</li>
+<li><strong>Few-shot 프롬프트의 창의적 설계</strong>: 각 작업 유형별로 자연스러운 대화 형식의 예시 문맥을 수작업으로 구성하여 직관적이고 해석 가능한 프롬프팅 방식 제시</li>
+<li><strong>다중 상호작용 모드 통합</strong>: 단일 모델로 연속 생성, 인필링, 엘러보레이션, 리라이팅, 자유형 질문 등 다양한 작업을 유연하게 지원하는 통합 프레임워크</li>
+<li><strong>HCI 관점의 탐색 공간</strong>: 언어 모델의 능력과 한계를 테스트하고 사람들의 상호작용 패턴을 연구하는 실증적 플랫폼 제공</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>한계</strong>:
+<ul>
+<li>현재 소규모 정성적 연구만 수행되어 대화형 모델 vs 일반 언어 모델의 우월성에 대한 체계적 검증 부족</li>
+<li>Few-shot 프롬프트의 수작업 구성으로 인한 확장성 제한</li>
+<li>모델이 메타 텍스트(스토리 자체가 아닌 스토리 관련 설명)를 생성하는 문제 미해결</li>
+<li>문자 길이 지정 요청(예: "10단어")에 대한 정확도 미흡</li>
+</ul>
+</li>
+<li><strong>후속 연구</strong>:
+<ul>
+<li>Meena와 일반 목적 언어 모델의 체계적 비교 실험</li>
+<li>인간 피드백을 훈련 루프에 통합하는 파이프라인 개발</li>
+<li>동적 데이터셋 수집을 통한 지속적 훈련 및 평가 방법 개발</li>
+<li>사용자의 상호작용 패턴 및 창작 결과에 미치는 영향 분석</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 신경 언어 모델과 인간의 협력적 창작을 지원하는 실용적인 도구로서 가치 있는 연구이나, 핵심 주장들에 대한 체계적 검증과 평가 방법론이 부족하다는 점이 아쉽다. 향후 사용자 연구와 모델 비교 실험을 통해 강화될 필요가 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../515_Machine-in-the-loop_rewriting_for_creative_image_captioning/index.html">Machine-in-the-loop rewriting for creative image captioning</a></div><div class="conn-reason">인간-AI 협업 편집기의 기본 개념이 창의적 이미지 캡션 작성의 기계-인-루프 시스템에 이론적 기반을 제공합니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../775_Step-back_profiling_Distilling_user_history_for_personalized/index.html">Step-back profiling: Distilling user history for personalized scientific writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 다중 저자 과학 논문 작성이라는 복잡한 협업 시나리오로 확장되어 개인화 기법을 통해 구현된다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">인간-AI 협업 편집의 기본 프레임워크가 제어 가능한 학술 논문 수정을 위한 협업 모델의 이론적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../703_Scholawrite_A_dataset_of_end-to-end_scholarly_writing_proces/index.html">Scholawrite: A dataset of end-to-end scholarly writing process</a></div><div class="conn-reason">인간의 비선형적 글쓰기 과정에 대한 이해가 AI 협력 스토리 편집기 개발의 인간-AI 상호작용 설계 기초가 됩니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html">ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 학술 논문 작성이라는 전문적 영역에서 인용 검색과 생성을 통합한 특화된 시스템으로 발전한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../375_Generating_full_length_wikipedia_biographies_The_impact_of_g/index.html">Generating full length wikipedia biographies: The impact of gender bias on the retrieval-based generation of women biographies</a></div><div class="conn-reason">스토리 작성을 위한 인간-AI 협업 편집기로 본 논문과 다른 장르에서의 생성 및 편향 문제를 다룬다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../116_Augmenting_the_author_Exploring_the_potential_of_ai_collabor/index.html">Augmenting the author: Exploring the potential of ai collaboration in academic writing</a></div><div class="conn-reason">학술 논문 작성에서 스토리 작성으로 확장된 인간-AI 협력적 글쓰기 도구의 다른 응용을 보여준다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../656_Read_revise_repeat_A_system_demonstration_for_human-in-the-l/index.html">Read, Revise, Repeat: A System Demonstration for Human-in-the-Loop Iterative Text Revision</a></div><div class="conn-reason">기본적인 인간-AI 협력 글쓰기를 반복적 개정과 피드백 통합을 통한 더 정교한 협력 편집 시스템으로 확장함</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../228_CoAuthor_Designing_a_Human-AI_Collaborative_Writing_Dataset/index.html">CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities</a></div><div class="conn-reason">GPT-3 기반 창작 글쓰기 협력 연구가 스토리 작성을 위한 인간-AI 협력 에디터 개발로 확장되었다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../775_Step-back_profiling_Distilling_user_history_for_personalized/index.html">Step-back profiling: Distilling user history for personalized scientific writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기를 다중 저자 과학 논문 작성으로 확장하여 개인화된 사용자 프로필 기반의 협업 지원이 가능하다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../109_Assisting_in_writing_wikipedia-like_articles_from_scratch_wi/index.html">Assisting in writing wikipedia-like articles from scratch with large language models</a></div><div class="conn-reason">Wordcraft의 인간-AI 협업 편집 프레임워크가 STORM의 자동 기사 생성을 인터랙티브한 공동 창작 과정으로 발전시킨 연구임</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html">ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 학술 논문 작성이라는 전문적 영역에서 인용 검색과 동적 생성을 통합한 특화된 시스템으로 발전한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념을 제어 가능하고 맥락을 인식하는 학술 논문 수정이라는 특화된 기능으로 확장한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

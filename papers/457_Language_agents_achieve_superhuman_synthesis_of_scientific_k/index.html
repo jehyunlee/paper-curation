@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Language agents achieve superhuman synthesis of scientific knowledge</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Language agents achieve superhuman synthesis of scientific knowledge</h1>
+<blockquote><p><strong>저자</strong>: Michael D. Skarlinski, Sam Cox, Jon M. Laurent, James D. Braza, Michaela Hinks, Michael J. Hammerling, Manvitha Ponnapati, Samuel G. Rodriques, Andrew D. White | <strong>날짜</strong>: 2024-09-26 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.13740" target="_blank">10.48550/arXiv.2409.13740</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>LLM(Large Language Model)의 환각(hallucination) 문제를 극복한 에이전트 시스템 PaperQA2를 개발하여, 과학 문헌 검색, 요약, 모순 탐지 작업에서 박사 수준의 과학자를 능가하는 성능을 달성했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM은 강력한 자연어 처리 능력을 가지고 있지만, 사실에 근거하지 않은 정보를 자신감 있게 생성하는 환각(hallucination) 문제가 있음. 과학 연구에 LLM을 활용하기 위해서는 높은 정확도와 신뢰성이 필수적임.</li>
+<li><strong>Gap</strong>: 기존 과학 문헌 검색 벤치마크들은 초록(abstract)에만 제한되거나, 고정된 코퍼스(corpus)에서의 검색만 평가하며, 인간 성능과의 직접적 비교가 부족함. 단일 AI 시스템이 여러 현실적 문헌 검색 작업에서 동시에 평가된 사례가 없음.</li>
+<li><strong>Why</strong>: 과학자들이 대규모 문헌을 효율적으로 검색, 종합, 요약하고 모순을 찾아내는 일은 시간이 매우 오래 걸리며, 자동화된 시스템이 이를 해결할 수 있다면 과학 연구의 속도를 대폭 높일 수 있음.</li>
+<li><strong>Approach</strong>: 엄격한 인간-AI 비교 방법론을 개발하고, LitQA2라는 새로운 벤치마크(248개 문제)를 제작하여 이를 통해 PaperQA2 에이전트 시스템을 설계 및 최적화.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: PaperQA2의 에이전트 도구 구성(A)과 세 가지 작업에서의 성능 비교(B)">
+<p class="fig-caption"><em>PaperQA2의 아키텍처와 핵심 성능 지표</em></p></div>
+<ol>
+<li><strong>문헌 검색 작업(Question Answering)</strong>: PaperQA2는 LitQA2에서 85.2% ± 1.1%의 정밀도(precision)를 달성하여 박사 수준 인간 전문가의 73.8% ± 9.6%를 초월하는 초인간 성능 달성 (p = 0.0036). 정확도(accuracy)는 66.0% ± 1.2%로 인간의 67.7% ± 11.9%와 통계적으로 유의미한 차이 없음.</li>
+<li><strong>인용 요약 작업(Cited Summarization)</strong>: Wikipedia 스타일의 과학 주제 요약을 작성하여 기존 인간 작성 Wikipedia 기사보다 유의미하게 높은 정확도 달성.</li>
+<li><strong>모순 탐지 작업(Contradiction Detection)</strong>: 생물학 논문에서 평균 2.34 ± 1.99개의 모순을 식별하며, 이 중 70%가 인간 전문가에 의해 검증됨. 기존 논문의 ZNF804A rs1344706 유전자형과 정신분열증의 관계에 대한 상충하는 주장들을 자동으로 발견.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: LitQA2 벤치마크 예시(A), PaperQA2 성능 비교(B), 구성 요소 분석(C), 파이프라인 단계별 DOI 회상률(D)">
+<p class="fig-caption"><em>정량적 평가 및 상세 성능 분석</em></p></div>
+<h3>RAG(Retrieval-Augmented Generation) 기반 에이전트 설계</h3>
+<ul>
+<li><strong>Paper Search Tool</strong>: 사용자 요청을 키워드 검색으로 변환하여 후보 논문 탐색. 상태-최고 문서 파싱 알고리즘(Grobid) 사용으로 섹션, 표, 인용 정보 신뢰성 있게 추출.</li>
+<li><strong>Gather Evidence Tool</strong>:
+<ul>
+<li>밀집 벡터 검색(dense vector retrieval)으로 상위-k개 논문 청크(chunk) 순위 결정</li>
+<li>LLM 재순위(reranking) 및 문맥적 요약화(Contextual Reranking and Summarization, RCS) 단계 추가로 무관한 청크 필터링</li>
+<li>메타데이터(인용 수, 저널명) 주입</li>
+</ul>
+</li>
+<li><strong>Citation Traversal Tool</strong>: 인용 그래프를 계층적 색인(hierarchical indexing) 형태로 활용하여 추가 관련 논문 검색. 과학자의 문헌 탐색 방식 모방. 회상률(recall) 34% 향상.</li>
+<li><strong>Generate Answer Tool</strong>: 상위 순위 증거 요약을 프롬프트에 포함하여 최종 답변 생성.</li>
+</ul>
+<h3>성능 최적화</h3>
+<ul>
+<li><strong>에이전트 구조의 중요성</strong>: 비에이전트 버전 대비 에이전트 방식이 정확도 유의미하게 향상 (p = 0.015). 에이전트가 검색 키워드를 반복적으로 수정 가능하기 때문.</li>
+<li><strong>문맥 크기 최적화</strong>: 15개 문맥(정밀도 최대)과 5개 문맥(정확도 최대) 사이의 트레이드오프 관찰.</li>
+<li><strong>모델 선택</strong>: GPT-4-Turbo가 RCS 단계에서 가장 우수한 성능 (p = 0.003). Claude-Opus가 정밀도에서 최고 성능. 작은 모델들(GPT-3.5-Turbo, Llama3)은 RCS에서 성능 저하 → 일정 이상의 이해 능력 필수.</li>
+<li><strong>과적합 방지</strong>: 초기 147개 LitQA2 문제에서 후속 101개 신규 문제로의 성능 일반화 확인 (유의미한 차이 없음).</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>첫 번째 종합 벤치마크</strong>: LitQA2는 전체 과학 문헌에서 검색을 요구하는 첫 번째 현실적 평가 세트. 기존 벤치마크(초록만 포함, 고정 코퍼스)의 한계 극복.</li>
+<li><strong>엄격한 인간-AI 비교 방법론</strong>: 금전적 인센티브($3-12/문제)를 제공하여 박사 수준 과학자들에게 완전한 인터넷 접근과 시간 제한 없는 조건 부여. 이전 연구들보다 훨씬 공정한 비교 설정.</li>
+<li><strong>다중 작업 평가</strong>: 단일 시스템(PaperQA2)이 검색, 요약, 모순 탐지 세 가지 상이한 문헌 과학 작업에서 우수한 성능을 보임. 일반성(generalization) 입증.</li>
+<li><strong>Citation Traversal 도구</strong>: 인용 그래프 구조를 계층적 색인으로 활용하는 혁신적 접근. 회상률 개선에 통계적으로 유의미한 효과 (p = 0.022).</li>
+<li><strong>RCS(Contextual Reranking and Summarization)의 중요성 입증</strong>: 기존 RAG 시스템들이 검색 청크를 변형 없이 제공하는 반면, RCS를 통한 동적 요약 및 점수화로 무관 정보 필터링 효과 입증 (p < 0.001).</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>모순 탐지의 신뢰도 한계</strong>: 70%의 검증 성공률은 30%의 위양성(false positive) 발생을 의미. 생물학 도메인에만 적용되었으며 다른 과학 분야로의 일반화 필요.</li>
+<li><strong>계산 비용</strong>: RCS 단계로 인한 LLM 호출 증가로 높은 계산 비용 발생. 비용 최적화 방안 미흡.</li>
+<li><strong>편향된 벤치마크</strong>: LitQA2 문제들이 최근 논문과 생물학 분야에 집중되어 있어, 역사 깊은 분야나 다른 과학 분야에 대한 평가 부족.</li>
+<li><strong>인간 평가자의 편향</strong>: 박사 학위자 또는 박사 과정생만 평가에 참여하여 다양한 전문 수준의 대표성 부족.</li>
+<li><strong>후속 연구</strong>:
+<ul>
+<li>타 과학 분야(물리학, 화학, 의학 등)로의 적용 확대</li>
+<li>모순의 자동 검증 알고리즘 개발로 70% 검증률 개선</li>
+<li>더 큰 규모의 모순 탐지 실험 수행(N=93에서 확대)</li>
+<li>계산 효율성 향상을 위한 경량화 전략 개발</li>
+<li>더 강력한 벤치마크 구축(다양한 시간 기간, 도메인, 난이도)</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 이 논문은 과학 문헌 합성에서 LLM의 초인간 성능 달성을 엄격한 방법론으로 입증한 중요한 기여로, LitQA2 벤치마크와 PaperQA2 시스템의 설계가 실질적 가치 높음. 다만 모순 탐지의 신뢰도 한계와 도메인 편향을 극복하고, 계산 효율성을 개선한다면 과학 연구 인프라로서의 가능성이 더욱 강화될 것으로 판단됨.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../602_Paperqa_Retrieval-augmented_generative_agent_for_scientific/index.html">PaperQA: Retrieval-Augmented Generative Agent for Scientific Research</a></div><div class="conn-reason">PaperQA의 기본적인 검색 증강 생성 에이전트 구조가 PaperQA2의 환각 해결과 초인적 과학 지식 합성 능력의 기초 프레임워크를 제공함</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../593_Openscholar_Synthesizing_scientific_literature_with_retrieva/index.html">Openscholar: Synthesizing scientific literature with retrieval-augmented lms</a></div><div class="conn-reason">OpenScholar가 과학 문헌 합성에 초점을 맞춘 반면, PaperQA2는 정확한 정보 검색과 요약에 특화되어 서로 다른 강점을 가진 상호 보완적 시스템임</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../602_Paperqa_Retrieval-augmented_generative_agent_for_scientific/index.html">PaperQA: Retrieval-Augmented Generative Agent for Scientific Research</a></div><div class="conn-reason">PaperQA2가 PaperQA의 기본 검색 증강 접근법을 환각 문제 해결과 모순 탐지 기능으로 대폭 개선하여 박사급 성능을 달성한 직접적 후속 연구임</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

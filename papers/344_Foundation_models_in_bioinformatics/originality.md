@@ -1,0 +1,1 @@
+In this review, we introduce recent advancements in bioinformatics FMs employed in a variety of downstream tasks, including genomics, transcriptomics, proteomics, drug discovery and single-cell analysis.. Our aim is to assist scientists in selecting appropriate FMs in bioinformatics

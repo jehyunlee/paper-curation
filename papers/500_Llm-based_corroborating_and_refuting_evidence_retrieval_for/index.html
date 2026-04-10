@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LLM-based Corroborating and Refuting Evidence Retrieval for Scientific Claim Verification</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>LLM-based Corroborating and Refuting Evidence Retrieval for Scientific Claim Verification</h1>
+<blockquote><p><strong>저자</strong>: Siyuan Wang, James R. Foulds, Md Osman Gani, Shimei Pan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.07937" target="_blank">arXiv:2503.07937</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>CIBER 시스템 아키텍처: 다중 측면 심문(MAI), 응답 해석(RR), 판정 및 신뢰도(V&C) 모듈로 구성</em></p></div>
+<p>CIBER는 검색 증강 생성(RAG) 프레임워크를 확장하여 과학적 주장(claim)을 검증하기 위해 지지 증거와 반박 증거를 체계적으로 식별하고 검색하는 프레임워크이다. 다양한 질문 프로브(probe)를 통해 LLM의 응답 일관성을 평가함으로써 환각(hallucination) 문제를 완화한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: RAG는 LLM의 환각 문제를 완화하는 효과적인 기법으로 알려져 있으나, 여전히 잡음 견고성(noise robustness), 부정적 거절(negative rejection), 정보 통합 측면에서 오류가 발생한다. 특히 과학적 주장 검증과 같은 고신뢰도가 요구되는 분야에서는 문제가 심각하다.</li>
+<li><strong>Gap</strong>: 기존 RAG 방식은 단순히 관련 문서를 검색하여 LLM에 제시하는 수준에 머물러 있으며, LLM 응답의 신뢰성을 다각적으로 평가하고 여러 관점의 증거를 체계적으로 통합하는 메커니즘이 부족하다.</li>
+<li><strong>Why</strong>: 과학적 주장은 높은 정확성과 신뢰성을 요구하며, 단일 질문으로는 LLM의 일관성 있는 판단을 보장할 수 없다. 따라서 다양한 표현과 논리적 변이를 포함한 프로브를 통해 응답의 견고성을 검증할 필요가 있다.</li>
+<li><strong>Approach</strong>: (1) 다중 측면 심문(MAI)으로 동일한 주장에 대해 다양한 표현의 프로브를 생성하고, (2) 응답 해석(RR) 모듈로 LLM의 자유로운 응답을 정규화하며, (3) 판정 및 신뢰도(V&C) 모듈에서 증거 융합 전략으로 최종 판정을 도출한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>CIBER의 세 가지 핵심 모듈 구성</em></p></div>
+<ol>
+<li><strong>지원/반박 증거 검색의 체계화</strong>: 단순한 관련성 검색을 넘어 과학적 주장을 명확하게 지지하는 증거와 반박하는 증거를 구분하여 검색하고 제시할 수 있는 프레임워크 개발</li>
+<li><strong>LLM 응답 신뢰성 평가 메커니즘</strong>: 동일 프로브의 반복 실행과 다양한 표현 변이(PAG, PCF) 를 통해 LLM의 응답 일관성을 정량적으로 측정하고 신뢰도 점수(confidence score) 산출</li>
+<li><strong>화이트박스/블랙박스 모델 모두 지원</strong>: LLM의 내부 정보(파라미터, 학습 데이터)에 접근하지 않고도 동작하므로 ChatGPT, Claude 등 다양한 API 기반 LLM에 적용 가능</li>
+<li><strong>비감독(Unsupervised) 접근</strong>: 도메인별 라벨링 데이터를 요구하지 않아 다양한 과학 분야로 쉽게 확장 가능</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>CIBER 아키텍처의 세 가지 신규 모듈</em></p></div>
+<p><strong>1. 다중 측면 심문(Multi-Aspect Interrogation, MAI)</strong></p>
+<ul>
+<li>원본 프로브(pO): "논문 A의 연구에 기반하여 주장 C가 참인가?"</li>
+<li>동의 프로브 세트(PAG): pO 및 그 패러프레이즈(paraphrase)로 LLM 응답이 일치해야 함</li>
+<li>충돌 프로브 세트(PCF): ¬pO(부정형) 및 그 패러프레이즈로 LLM 응답이 대조되어야 함</li>
+<li>각 프로브에 대해 K번 반복 실행하여 확률 기반 응답 분포 수집</li>
+</ul>
+<p><strong>2. 응답 해석(Response Resolution, RR)</strong></p>
+<ul>
+<li>프롬프트 엔지니어링: GPT-2의 경우 "relatively/quite" 같은 부사를 추가하여 응답 제약, GPT-3.5/4는 "yes/no 또는 I am not sure"로 형식 제한</li>
+<li>어휘 및 정규표현 기반 파서: "is true/false", "correct/incorrect" 등의 변이 표현을 정규 형식(Support, Refute, Neutral)으로 매핑</li>
+</ul>
+<p><strong>3. 판정 및 신뢰도(Verdict and Confidence, V&C)</strong></p>
+<p>세 가지 증거 융합 전략:</p>
+<ul>
+<li><strong>가중 비율(Weighted Proportions, WP)</strong>: PAG와 PCF의 응답 확률을 가중 평균으로 결합 (α는 trade-off 파라미터)
+<ul>
+<li>WPS = α·Prob(Support|PAG) + (1-α)·Prob(Support|PCF)</li>
+<li>최종 판정: argmax(WPS, WPR, WPN)</li>
+</ul>
+</li>
+<li><strong>Dempster-Shafer 신념 업데이트(DS)</strong>: 확률 이론 기반의 더 정교한 증거 통합</li>
+<li><strong>추가 전략</strong>: 중앙값(median), 다수결(majority voting) 등 다양한 통합 방식 실험</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>새로운 프레임워크 설계</strong>: RAG의 생성 단계(generation stage)에 초점을 맞춰 LLM 응답의 불확실성을 체계적으로 측정하는 최초의 접근</li>
+<li><strong>논리적 일관성 검증</strong>: 동의/충돌 프로브 쌍(agreement/conflict probe pairs)을 통해 LLM의 논리적 일관성뿐 아니라 어휘-구문 변이에 대한 강건성 평가</li>
+<li><strong>모델 비의존적 설계</strong>: 블랙박스 LLM에 적용 가능하며, 특정 모델의 아키텍처에 의존하지 않는 범용적 접근법</li>
+<li><strong>비감독 학습</strong>: 도메인 특화 라벨링 데이터 없이도 다양한 과학 분야에 즉시 적용 가능한 일반화 가능성</li>
+<li><strong>합성 및 실제 데이터셋 구축</strong>: 평가를 위해 새로운 합성 데이터셋(synthetic datasets) 2개와 실제 데이터셋(real datasets) 2개 구축</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>응답 파싱의 한계</strong>: 프롬프트 엔지니어링과 정규표현 기반 파서가 LLM의 모든 표현 변이를 완벽하게 포착하지 못할 수 있으며, 모델별로 별도 튜닝 필요</li>
+<li><strong>계산 비용</strong>: K번 반복 실행과 다중 프로브 조합으로 인한 API 호출 증가로 계산 비용과 지연 시간이 증가 (효율성 개선 필요)</li>
+<li><strong>증거 융합 전략의 최적화</strong>: 현재 세 가지 기본 전략을 제시했으나, α 파라미터 설정과 최적 융합 방식에 대한 이론적 근거가 부족</li>
+<li><strong>대규모 평가의 필요성</strong>: 다양한 과학 도메인(생의학, 기후과학, 기계학습 등)에서의 광범위한 벤치마크 평가와 실제 과학 문헌 대규모 말뭉치에서의 검증</li>
+<li><strong>설명가능성 강화</strong>: 최종 판정에 이르는 과정에서 어느 문서와 프로브가 결정적 역할을 했는지에 대한 설명가능성 제공 방안 연구</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: CIBER는 RAG의 생성 단계에 초점을 맞춰 다중 측면 심문을 통해 LLM 응답의 신뢰성을 체계적으로 평가하는 혁신적 프레임워크로, 과학적 주장 검증과 같은 고신뢰도 응용에서 실질적 가치를 제공한다. 다만 대규모 실제 데이터에서의 광범위한 검증과 계산 비용 최적화, 설명가능성 강화가 향후 과제이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../426_Improving_Scientific_Hypothesis_Generation_with_Knowledge_Gr/index.html">Improving Scientific Hypothesis Generation with Knowledge Grounded Large Language Models</a></div><div class="conn-reason">지식 그래프 기반 가설 생성이 과학적 주장 검증의 방법론적 기반</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../579_Nsf-scify_Mining_the_nsf_awards_database_for_scientific_clai/index.html">NSF-SCIFY: Mining the NSF Awards Database for Scientific Claims</a></div><div class="conn-reason">대규모 과학적 주장 데이터셋이 주장 검증 시스템의 핵심 데이터 기반</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../332_Fact-checking_complex_claims_with_program-guided_reasoning/index.html">Fact-checking complex claims with program-guided reasoning</a></div><div class="conn-reason">증거 검색 vs 프로그램 가이드 추론으로 사실 확인의 서로 다른 접근법</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../567_Multivers_Improving_scientific_claim_verification_with_weak/index.html">Multivers: Improving scientific claim verification with weak supervision and full-document context</a></div><div class="conn-reason">과학적 주장 검증을 약한 지도학습으로 개선한 멀티모달 접근</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../426_Improving_Scientific_Hypothesis_Generation_with_Knowledge_Gr/index.html">Improving Scientific Hypothesis Generation with Knowledge Grounded Large Language Models</a></div><div class="conn-reason">지식 그래프 기반 가설 생성을 과학적 주장 검증으로 확장한 방법론</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../579_Nsf-scify_Mining_the_nsf_awards_database_for_scientific_clai/index.html">NSF-SCIFY: Mining the NSF Awards Database for Scientific Claims</a></div><div class="conn-reason">NSF 과학적 주장 데이터셋을 활용한 증거 검색 및 검증 시스템</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

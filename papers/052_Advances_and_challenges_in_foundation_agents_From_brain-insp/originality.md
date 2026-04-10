@@ -1,0 +1,1 @@
+We structure our exploration into four interconnected parts.. First, we systematically investigate the modular foundation of intelligent agents, systematically mapping their cog- nitive, perceptual, and operational modules onto analogous human brain functionalities and elucidating core components such as memory, world modeling, reward processing, goa

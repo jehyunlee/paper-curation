@@ -1,0 +1,1 @@
+We review these methods from a unified perspective, demonstrating that current techniques—such as Sequential Monte Carlo (SMC)-based guidance, value-based imoprtance sampling, and classifier guidance—aim to approximate soft optimal denoising processes (a.k.a.. policies in RL) that combine pre-trained denoisin

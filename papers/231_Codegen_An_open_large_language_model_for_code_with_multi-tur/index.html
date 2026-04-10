@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Codegen: An open large language model for code with multi-turn program synthesis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Codegen: An open large language model for code with multi-turn program synthesis</h1>
+<blockquote><p><strong>저자</strong>: Erik Nijkamp, Bo Pang, Hiroaki Hayashi, Lifu Tu, Huan Wang, Yingbo Zhou, Silvio Savarese, Caiming Xiong | <strong>날짜</strong>: 2023 (ICLR 발표) | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2203.13474" target="_blank">arXiv:2203.13474</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>본 논문은 프로그램 합성(program synthesis) 작업에 최적화된 16.1B 파라미터 규모의 대규모 언어 모델 CodeGen 계열을 제시하고, 사용자가 자연어로 단계적 명령을 제공하는 <strong>다중 턴 프로그램 합성(multi-turn program synthesis)</strong> 패러다임을 도입하여 단일 턴 방식 대비 명확한 성능 향상을 입증한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: Codex, GPT-3 등 대규모 언어모델이 프로그램 합성에서 우수한 성능을 보이고 있으나, 이러한 모델들이 대부분 폐쇄형으로 제공되어 학술 연구 접근성이 제한적이다. 또한 기존 연구는 단일 턴(single-turn) 입력에만 초점을 맞추고 있다.</li>
+<li><strong>Gap</strong>: (1) 오픈소스 고성능 코드 생성 모델의 부재, (2) 복잡한 프로그램 요구사항을 단일 프롬프트로 지정해야 하는 사용성 문제, (3) 다중 턴 상호작용이 프로그램 합성에 미치는 영향에 대한 체계적 분석 부재.</li>
+<li><strong>Why</strong>: 복잡하고 긴 명세를 여러 단계로 분해하면: (1) 모델이 각 부분 문제에 집중할 수 있어 검색 공간 축소, (2) GitHub 코드의 주석-코드 인터리빙 패턴이 약한 감독 신호(weak supervision)로 작용하여 자연어 기반 다중 턴 능력 학습 가능, (3) 사용자 입장에서 자연어로 점진적으로 의도 표현 가능.</li>
+<li><strong>Approach</strong>: (1) ThePile, BigQuery, BigPython 세 가지 데이터셋에서 순차적으로 학습된 모델 계열 개발 (NL → MULTI → MONO), (2) 115개 다양한 문제로 구성된 <strong>다중 턴 프로그래밍 벤치마크(MTPB)</strong> 구축, (3) JAXFormer 훈련 라이브러리 오픈소스화.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="https://example.com/fig1.png" alt="Figure 1">
+<p class="fig-caption"><em>이메일 주소에서 사용자명 추출하는 다중 턴 프로그램 합성의 예시</em></p></div>
+<ol>
+<li><strong>단일 턴 성능</strong>: HumanEval 벤치마크에서 CODEGEN-MONO 16.1B가 pass@1 = 29.28%, pass@100 = 75.00%로 달성하여 GPT-Neo/GPT-J 대비 현저히 우수하고 Codex 300M/2.5B 수준 성능 발휘.</li>
+<li><strong>다중 턴 우수성</strong>: MTPB 벤치마크에서 동일한 의도를 다중 턴으로 제공했을 때 단일 턴 대비 <strong>평균 통과율 30% 이상 향상</strong> (Figure 2 참조). 예를 들어 일부 문제에서 단일 턴 15% → 다중 턴 45% 수준의 개선 관찰.</li>
+<li><strong>오픈소스 기여</strong>: 16.1B까지의 모든 모델 체크포인트 및 TPU-v4 최적화 훈련 라이브러리 공개로 학술 커뮤니티 접근성 확대.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="https://example.com/fig2.png" alt="Figure 2">
+<p class="fig-caption"><em>단일 턴 vs 다중 턴 평균 통과율 차이</em></p></div>
+<ul>
+<li><strong>데이터셋 구성 및 순차 학습</strong>:
+<ul>
+<li>ThePile (825.18 GiB, 22개 서브셋, GitHub 코드 7.6%): 자연어 기초 학습</li>
+<li>BigQuery (6개 언어 코드): 다중언어 능력 추가</li>
+<li>BigPython (대규모 GitHub Python 코드): Python 특화 학습</li>
+<li>각 단계마다 이전 가중치로 초기화하는 순차 파인튜닝(sequential fine-tuning)</li>
+</ul>
+</li>
+<li><strong>모델 아키텍처</strong>: 표준 자기회귀 트랜스포머(autoregressive transformer) with 다음 토큰 예측(next-token prediction) 목적함수. 파라미터 규모: 350M, 2.7B, 6.1B, 16.1B (scaling law 검증용)</li>
+<li><strong>훈련 인프라</strong>: JAXFormer 라이브러리 개발으로 TPU-v4에서 효율적인 데이터/모델 병렬처리(data/model parallelism) 구현</li>
+<li><strong>MTPB 벤치마크 설계</strong>:
+<ul>
+<li>115개 문제를 2-4개 부분 문제로 분해</li>
+<li>각 턴에서 자연어 명세 + 이전 턴 코드 조각 입력</li>
+<li>전문가 작성 테스트 케이스로 통과율(pass rate) 평가</li>
+</ul>
+</li>
+<li><strong>프롬프트 형식</strong>: 자연어 설명 → 코드 생성 → 다음 단계 설명 → 추가 코드 생성 패턴</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>다중 턴 프로그램 합성 패러다임 도입</strong>: 기존 연구가 단일 프롬프트만 다루는 반면, 사용자-모델 상호작용의 반복적 특성을 처음으로 체계화.</li>
+<li><strong>다중 턴 프로그래밍 벤치마크(MTPB) 구축</strong>: 115개 문제의 다중 턴 분해 제공 → 정량적 평가 가능한 첫 번째 벤치마크.</li>
+<li><strong>약한 감독 신호(weak supervision) 가설</strong>: 주석-코드 인터리빙 패턴을 명시적 학습 신호로 활용하지 않음에도 불구하고 자동으로 다중 턴 능력이 emergence되는 메커니즘 분석 시도.</li>
+<li><strong>스케일 법칙(scaling laws) 분석</strong>: 4가지 모델 크기에서 프로그램 합성 능력의 emergence 추적 → 크기와 데이터 규모의 중요성 입증.</li>
+<li><strong>JAXFormer 오픈소스화</strong>: 기존 폐쇄형 모델에 대항하여 전체 훈련 코드 및 모델 공개 → 연구 접근성 민주화.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>약한 감독 신호의 불충분성</strong>: 코드 주석이 부정확하거나 무관한 위치에 있을 수 있음. 명시적 comment-code 쌍 학습 데이터로의 강화가 필요할 수 있음.</li>
+<li><strong>MTPB의 제한성</strong>: 115개 문제가 모두 인간이 수작업으로 분해한 것으로, 자동 분해 방법론 또는 더 큰 규모 벤치마크 필요.</li>
+<li><strong>다중 턴 최적 분해 전략 미결정</strong>: 문제를 몇 개 부분으로 나누는 것이 최적인지, 어떤 순서로 분해할지에 대한 명확한 지침 부재. 자동 분해 방법 개발 필요.</li>
+<li><strong>모델 크기 한계</strong>: 16.1B가 최대이지만, Codex-12B의 성능 초과하지 못함. 더 큰 모델 또는 전문화된 사전학습 필요.</li>
+<li><strong>프로그래밍 언어 다양성</strong>: Python에 편향된 평가. Java, C++ 등 다른 언어에서의 성능 체계적 분석 필요.</li>
+<li><strong>후속 연구 방향</strong>: (1) 다중 턴 분해의 자동화, (2) 인간 피드백 활용(RLHF)을 통한 다중 턴 정책 최적화, (3) 외부 도구(Python REPL, 테스트 실행) 통합, (4) 더 큰 규모 모델의 가능성 탐색.</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: CodeGen은 프로그램 합성의 민주화를 위한 첫 고품질 오픈소스 모델로서, 다중 턴 패러다임 도입과 전용 벤치마크 제시를 통해 학술 기여도를 확보했으나, 성능 경쟁력과 다중 턴 성능 향상의 원인에 대한 깊이 있는 분석이 더 강화될 필요가 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../815_ToolLLM_Facilitating_Large_Language_Models_to_Master_16000_R/index.html">ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs</a></div><div class="conn-reason">코드 생성 능력이 API 도구 사용 벤치마크에서 프로그래밍 작업의 기반</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">CodeGen의 다중 턴 프로그램 생성 방법론이 DeepSeek-Coder 개발의 기초가 됨</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1092_Table-llm-specialist_Language_model_specialists_for_tables_u/index.html">Table-llm-specialist: Language model specialists for tables using iterative generator-validator finetuning</a></div><div class="conn-reason">다중 턴 프로그램 합성 방법론을 테이블 작업 특화 모델 훈련에 적용한 기반</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../197_Chartcoder_Advancing_multimodal_large_language_model_for_cha/index.html">Chartcoder: Advancing multimodal large language model for chart-to-code generation</a></div><div class="conn-reason">다중 턴 프로그램 합성 방법론이 차트-코드 변환에서 단계적 생성 접근의 기반</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../197_Chartcoder_Advancing_multimodal_large_language_model_for_cha/index.html">Chartcoder: Advancing multimodal large language model for chart-to-code generation</a></div><div class="conn-reason">CodeGen의 다중 턴 프로그램 합성 방법론을 차트-코드 변환에 적용한 기반</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">코드 생성에 특화된 DeepSeek-Coder와 달리 대화형 프로그램 합성에 중점</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1092_Table-llm-specialist_Language_model_specialists_for_tables_u/index.html">Table-llm-specialist: Language model specialists for tables using iterative generator-validator finetuning</a></div><div class="conn-reason">프로그램 합성 기법을 테이블 작업 특화 모델의 반복적 미세조정에 적용한 확장</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../741_Seed-coder_Let_the_code_model_curate_data_for_itself/index.html">Seed-coder: Let the code model curate data for itself</a></div><div class="conn-reason">CodeGen의 프로그램 생성 기법을 자동화된 데이터 큐레이션으로 발전시킨 연구</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

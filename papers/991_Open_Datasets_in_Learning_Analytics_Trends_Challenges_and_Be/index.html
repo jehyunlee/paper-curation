@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Open Datasets in Learning Analytics: Trends, Challenges, and Best PRACTICE</h1>
+<blockquote><p><strong>저자</strong>: Valdemar Švábenský, Brendan Flanagan, Erwin Daniel López Zapata, Atsushi Shimada | <strong>날짜</strong>: 2026-02-19 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3798096" target="_blank">10.1145/3798096</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1. PRISMA flow diagram. Generated using the tool by Haddaway et al. [146].</em></p></div>
+<p>학습분석(Learning Analytics) 연구의 세 주요 학회(LAK, EDM, AIED)에서 2020-2024년간 출판된 1,125개 논문을 분석하여 172개의 공개 데이터셋(Open Datasets)을 발굴하고, 현황을 파악하며 PRACTICE 8개 항목 체크리스트를 제시한 종합 조사 연구이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: Open Science의 중요성이 널리 인정되고 있으며, 데이터 공개는 연구 재현성, 협력, 신뢰성을 높이고 저자의 인용도(+25%)와 신뢰도를 증진시킨다. 그러나 LA 커뮤니티에서의 공개 데이터셋 현황과 실행 관행은 명확하지 않다.</li>
+<li><strong>Gap</strong>: LA, EDM, AIED 분야에서 공개 데이터셋의 가용성, 특성, 분포, 그리고 데이터 공개 관행의 현황이 체계적으로 파악되지 않았으며, 연구자들이 데이터 공개 시 직면하는 구체적인 도전 요소와 해결 방안이 부재했다.</li>
+<li><strong>Why</strong>: 공개 데이터셋은 연구 재현성과 협력을 지원하고 빠른 연구 진행을 가능하게 하며, FAIR 원칙 미준수에 따른 경제적 손실(EU 연 10.2억 유로)을 줄일 수 있다. 또한 domain-specific 접근이 필요하다는 선행 연구의 지적에 따라 LA 분야의 현황 파악이 시급하다.</li>
+<li><strong>Approach</strong>: 3개 주요 학회에서 2020-2024년 발표된 1,125개 논문을 수작업으로 검토하여 공개 데이터셋을 발굴, 분류, 분석하고, FAIR 원칙 기반의 실행 가이드라인을 개발했다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>Fig. 2. Distributions of dataset frequency across educational topics and levels of students.</em></p></div>
+<ul>
+<li><strong>가장 포괄적인 데이터셋 컬렉션</strong>: 172개의 고유한 공개 데이터셋을 발굴하였으며, 이 중 143개(83%)는 선행 조사에서 미포착된 신규 데이터셋이다.</li>
+<li><strong>상세한 분류 체계</strong>: 데이터셋의 맥락(Context), 분석 방법(Analytical Methods), 사용 현황, 교육 주제, 수준, 지리적 분포, 학생 수, 데이터 포인트 규모 등을 체계적으로 분류했다.</li>
+<li><strong>PRACTICE 8개 항목 가이드라인</strong>: 실행 가능한 체크리스트 형태의 권장사항을 제시하여 연구자들의 데이터 공개를 촉진한다.</li>
+<li><strong>원본 데이터셋 공개</strong>: 발굴된 172개 데이터셋과 204개 관련 논문의 주석이 달린 인벤토리를 학술 커뮤니티에 제공한다.</li>
+<li><strong>현장의 갭 분석</strong>: LA 커뮤니티가 데이터 부족한 분야(교육 맥락, 주제별, 지역별)를 식별하여 향후 연구 우선순위를 제시한다.</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1. PRISMA flow diagram. Generated using the tool by Haddaway et al. [146].</em></p></div>
+<ul>
+<li>PRISMA(Preferred Reporting Items for Systematic Reviews and Meta-Analyses) 방법론을 따른 체계적 문헌 검토 수행</li>
+<li>LAK, EDM, AIED 3개 플래그십 학회의 2020-2024년 출판물(총 1,125개 논문) 수작업 검토</li>
+<li>각 데이터셋에 대해 교육 주제, 수준, 지리적 위치, 규모, 접근성, 라이선싱, 분석 방법 등의 메타데이터 추출 및 분류</li>
+<li>FAIR 원칙(Findable, Accessible, Interoperable, Reusable)과 Open Data Handbook 정의 활용한 공개 데이터 정의 수립</li>
+<li>발견된 갭과 도전 요소를 바탕으로 8개 항목의 PRACTICE 체크리스트 개발(Persistent identifier, Repository choice, Accessibility, Citability, Transparency, Interoperability, Community standards, Ethical compliance)</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>LA/EDM/AIED 분야의 <strong>최초 종합 조사</strong>: 선행 조사가 미포착한 143개 신규 데이터셋을 발굴하며, 5년간 3개 플래그십 학회 전수 조사로 현장의 정확한 현황을 제시</li>
+<li><strong>Domain-specific 실행 가이드</strong>: 일반적 Open Science 원칙이 아닌 LA 연구자의 실제 수요와 도전에 기반한 맞춤형 PRACTICE 가이드라인 개발</li>
+<li><strong>상세한 메타데이터 체계</strong>: 단순 데이터셋 목록화가 아닌 교육적 맥락, 분석 방법, 지리적 분포 등 다각도의 특성 분석으로 재사용성 증진</li>
+<li><strong>공개된 인벤토리 자산</strong>: 172개 데이터셋과 204개 논문의 주석이 달린 인벤토리를 학술 커뮤니티에 공유하여 향후 연구의 출발점 제공</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>시간적 범위 제한</strong>: 2020-2024년 5년간 데이터만 분석하여 장기적 추세 변화(2019년 이전)를 포착하지 못함</li>
+<li><strong>학회 중심 분석</strong>: 3개 주요 학회 논문만 대상으로 하여 저널 출판, gray literature, 비영어권 연구물은 미포함</li>
+<li><strong>수작업 검토의 주관성</strong>: 1,125개 논문의 수작업 검토로 인한 검토자 간 일치도(inter-rater reliability) 문제 가능성</li>
+<li><strong>숨겨진 데이터셋</strong>: 논문에 명시되지 않았지만 보충 자료나 저자 요청으로만 접근 가능한 데이터셋 누락 가능성</li>
+<li><strong>후속 연구 방향</strong>: (1) 다른 학회 및 저널 확대 조사, (2) PRACTICE 가이드라인의 실제 채택률 모니터링, (3) 데이터 공개 장애 요소에 대한 심층 인터뷰 연구, (4) 자동화된 데이터셋 발굴 방법 개발</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 이 논문은 Learning Analytics 분야에서 공개 데이터셋의 현황을 처음으로 종합 조사한 선구적 연구로, 143개의 신규 데이터셋 발굴과 PRACTICE 가이드라인을 통해 LA 커뮤니티의 Open Science 실행을 직접적으로 지원한다. 학회 중심 범위와 수작업 검토의 한계가 있으나, 도메인 특화 가이드라인과 공개 인벤토리 제공으로 학술 커뮤니티에 즉시 실용적 가치를 제공한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../992_OpenAlex_in_focus_Metadata_quality_of_publication_type_and_l/index.html">OpenAlex in focus: Metadata quality of publication type and language fields in an open peer review corpus</a></div><div class="conn-reason">학습분석 연구에서 사용되는 데이터셋의 품질 평가 기반을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../978_Introducing_the_open_biomedical_map_of_science/index.html">Introducing the open biomedical map of science</a></div><div class="conn-reason">교육 데이터 분석에서 다른 접근 방식을 제시한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../993_OpenAlex_A_fully-open_index_of_scholarly_works_authors_venue/index.html">OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts</a></div><div class="conn-reason">OpenAlex 시스템을 학습분석 연구 데이터 수집에 실제 적용한다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

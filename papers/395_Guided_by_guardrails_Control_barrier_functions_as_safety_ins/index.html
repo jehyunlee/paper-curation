@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Guided by guardrails: Control barrier functions as safety instructors for robotic learning</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Guided by guardrails: Control barrier functions as safety instructors for robotic learning</h1>
+<blockquote><p><strong>저자</strong>: Maeva Guerrier, Karthik Soma, Hassan Fouad, Giovanni Beltrame | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.18858" target="_blank">arXiv:2505.18858</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>강화학습(RL)의 안전성 문제를 제어 장벽 함수(Control Barrier Functions, CBFs)를 활용하여 해결하는 혁신적 접근법을 제시한다. 세 가지 CBF 통합 방식을 통해 로봇이 안전한 행동을 학습하면서도 목표 달성 성능을 유지하도록 한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 강화학습은 로봇 제어에 효과적이지만, 종래의 RL은 안전을 단순한 음의 보상과 에피소드 즉시 종료로 모델링함</li>
+<li><strong>Gap</strong>: 이러한 방식은 실제 세계의 시간적 피해 축적(예: 지속적인 충돌 손상)을 포착하지 못하며, 탐색 과정에서 에이전트가 위험한 상태에 갇힐 수 있음</li>
+<li><strong>Why</strong>: 안전성은 학습 기반 로봇 시스템의 실제 적용을 가로막는 핵심 장애물</li>
+<li><strong>Approach</strong>: CBF의 이론적 안전 보장을 RL 프레임워크에 "가드레일(guardrail)"로 통합하여 안전 제약을 동적으로 강제</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>그림 1: 세 가지 안전 가드레일 변형 - 필터(초록색), 보상 기반(주황색), 감쇠(파란색)</em></p></div>
+<ol>
+<li><strong>세 가지 CBF-RL 통합 방식 제안</strong>:
+<ul>
+<li><strong>CBF Filter</strong>: 에이전트가 위험 영역에 진입 시 액션을 최소한으로 개입하여 교정</li>
+<li><strong>CBF Reward</strong>: CBF 제안 액션으로부터의 편차를 보상 함수에 포함시켜 페널티 부여</li>
+<li><strong>CBF Decay</strong>: 커리큘럼 학습 방식으로 훈련 과정에서 CBF의 영향을 점진적으로 제거</li>
+</ul>
+</li>
+<li><strong>실제 적용 가능성 입증</strong>:
+<ul>
+<li>단순 유니사이클(unicycle) 모델로 추상화하여 다양한 로봇 동역학에 적용 가능</li>
+<li>시뮬레이션에서 훈련한 정책을 4륜 차동 구동 로봇(four-wheel differential drive robot)에 성공적으로 배포</li>
+<li>시뮬레이션-현실 이전(sim2real transfer) 성능 평가</li>
+</ul>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>그림 2: 유니사이클 모델의 장애물 회피 CBF 구성 - 로봇 축을 따라 ε만큼 이동한 점 x'를 사용</em></p></div>
+<p><strong>기술적 구현</strong>:</p>
+<ul>
+<li><strong>CBF 공식화</strong>: 전통적 장애물 회피 CBF h = ||x-x₀||² - δ²의 상대 차수(relative degree) 문제를 해결하기 위해, 로봇 축을 따라 ε만큼 이동한 점 x'를 기준으로 h = ||x'-x₀||² - (δ+ε)² 형태로 개선</li>
+<li><strong>우선순위 파라미터 κ</strong>: 선형 속도와 각속도 제어의 우선순위를 조정하여 제한된 제어 액션에서도 장애물 회피 가능</li>
+<li><strong>SAC 기반 통합</strong>: Soft Actor-Critic 알고리즘을 기본으로 하여 세 가지 방식의 CBF 통합 메커니즘 구현</li>
+<li><strong>환경 설계</strong>: 시작점, 목표, 장애물 위치를 무작위화하고, 에피소드를 종료하지 않으면서 지속적인 음의 보상으로 시간적 피해 효과 모델링</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>CBF를 안전 가드레일로 재해석</strong>: 기존의 CBF-RL 통합 방식과 달리, 행동 필터링, 보상 설계, 커리큘럼 학습의 세 가지 구별되는 접근법 제시</li>
+<li><strong>추상화된 동역학 모델</strong>: 유니사이클 모델을 통해 CBF의 복잡한 설계를 단순화하면서도 다양한 로봇 플랫폼에의 일반화 가능성 증대</li>
+<li><strong>현실적 안전 모델링</strong>: 기존의 즉시 에피소드 종료 방식을 지양하고, 지속적인 음의 보상으로 실제 피해 축적을 반영</li>
+<li><strong>우선순위 파라미터 도입</strong>: κ 값을 통해 선형/각속도 제어의 가중치를 동적으로 조정하여 대형 시간 스텝에 대응 가능</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<p><strong>한계점</strong>:</p>
+<ul>
+<li>CBF 설계 시 장애물의 정확한 위치 정보가 필요하며, 동적 장애물이나 불확실성 있는 환경에는 제한적</li>
+<li>실험이 단일 장애물 환경에 국한되어 복잡한 다중 장애물 시나리오에서의 성능 미검증</li>
+<li>세 가지 방식의 이론적 안전 보장 차이가 명확하게 분석되지 않음</li>
+</ul>
+<p><strong>후속 연구 방향</strong>:</p>
+<ul>
+<li>동적 장애물 및 모델 불확실성을 처리하는 적응형 CBF 개발</li>
+<li>고차원 상태 공간(시각 정보 등)에 대한 CBF 적용 방법 연구</li>
+<li>다중 제약 조건(에너지, 이동 범위 등)을 동시에 고려하는 확장된 프레임워크</li>
+<li>신경망 기반 CBF와의 비교 분석 및 안전 보장성 검증</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 이 논문은 강화학습의 안전성 문제를 CBF라는 이론적으로 견고한 도구를 통해 해결하는 실질적이고 창의적인 접근을 제시하며, 세 가지 통합 방식의 비교와 sim2real 검증을 통해 실무적 가치를 입증한다. 다만 더 복잡한 환경과 동적 장애물에 대한 성능 평가가 후속 과제이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../249_Curriculum_Reinforcement_Learning_from_Easy_to_Hard_Tasks_Im/index.html">Curriculum Reinforcement Learning from Easy to Hard Tasks Improves LLM Reasoning</a></div><div class="conn-reason">쉬운 태스크에서 어려운 태스크로의 커리큘럼 강화학습은 제어 장벽 함수를 통한 안전 학습에 점진적 훈련 방법론을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">제어 장벽 함수 기반 안전 학습은 오프라인 강화학습의 행동 공간 섭동 문제를 해결하는 안전성 보장 메커니즘을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html">Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms</a></div><div class="conn-reason">두 논문 모두 로봇 제어 안전성을 다루되 제어 장벽 함수는 안전 제약, 소프트 연속 팔은 시뮬레이션 전이에 중점을 둔다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html">Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms</a></div><div class="conn-reason">두 논문 모두 로봇 제어의 안전성을 다루되 소프트 연속 팔은 시뮬레이션 전이, 제어 장벽 함수는 안전 제약에 중점을 둔다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">제어 장벽 함수를 통한 안전 학습은 오프라인 강화학습의 행동 공간 섭동 취약성을 해결하는 추가적인 안전성 보장 메커니즘을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가는 제어 장벽 함수 기반 안전 학습에서 행동 공간 섭동에 대한 추가적인 견고성 분석을 제공한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GraphEval: A lightweight graph-based llm framework for idea evaluation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>GraphEval: A lightweight graph-based llm framework for idea evaluation</h1>
+<blockquote><p><strong>저자</strong>: Tao Feng, Yihang Sun, Jiaxuan You (UIUC, Peking University) | <strong>날짜</strong>: 2025 (ICLR 2025) | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.12600v2" target="_blank">arXiv:2503.12600v2</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>GraphEval는 아이디어를 관점(viewpoint) 노드로 분해하여 그래프 구조로 변환함으로써 LLM 기반 평가의 편향과 불안정성을 해결한다.</em></p></div>
+<p>복잡한 연구 아이디어를 이해 가능한 관점들로 분해하고 이를 그래프로 연결하여 라벨 전파(label propagation) 또는 그래프 신경망(GNN)을 통해 견고하고 편향 없는 아이디어 평가를 수행하는 경량 프레임워크다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존 LLM 기반 아이디어 평가 방식(프롬프트 엔지니어링, 자기 반성 등)은 빠른 피드백을 제공할 수 있다.</li>
+<li><strong>Gap</strong>: 그러나 이들은 (1) 프롬프트에 매우 민감하고, (2) 복잡한 의미 정보 이해에 어려움이 있으며, (3) 아이디어 내 사실적 오류를 놓치기 쉽고, (4) LLM의 "긍정적이고 도움이 되려는" 편향으로 인해 부정적 평가를 거의 하지 않는다.</li>
+<li><strong>Why</strong>: 심리학 연구에 따르면 인간은 추상적 아이디어를 단순한 관점으로 분해하거나 다른 아이디어와의 연결을 보일 때 더 잘 이해한다.</li>
+<li><strong>Approach</strong>: 복잡한 아이디어를 LLM으로 분해하여 관점-노드를 생성하고, 관계 추출(relation extraction)과 BERT 유사도를 통해 노드를 연결하여 관점-그래프를 구성한 후, 라벨 전파 또는 GNN으로 평가를 수행한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>동일 아이디어에 대해 프롬프트 미세 변화만으로도 평가 점수가 78→85→75로 크게 변한다.</em></p></div>
+<ol>
+<li><strong>견고성 향상</strong>: 기존 LLM 방식 대비 F1 점수 최소 14% 향상, 프롬프트 민감도 제거</li>
+<li><strong>계산 효율성</strong>: 경량 모델 사용으로 낮은 계산 비용과 API 비용으로 고성능 달성</li>
+<li><strong>표절 탐지</strong>: 시간 정보를 노드 특성에 포함하여 표절된 아이디어를 효과적으로 감지</li>
+<li><strong>공개 자원</strong>: 재현 가능성을 위해 코드 공개 (GitHub)</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>GraphEval의 전체 파이프라인: 아이디어 분해→관점-그래프 생성→라벨 전파/GNN 기반 평가</em></p></div>
+<h3>GraphEval-LP (Label Propagation)</h3>
+<ul>
+<li><strong>학습 불필요</strong>: 그래프 기반 라벨 전파 알고리즘으로 학습된 노드에서 미학습 노드로 품질 라벨 전파</li>
+<li><strong>프로세스</strong>: 가중 엣지를 통해 관점 노드의 라벨을 집계하여 최종 평가 결정</li>
+</ul>
+<h3>GraphEval-GNN (Graph Neural Network)</h3>
+<ul>
+<li><strong>최소 학습</strong>: GNN 모델이 관점-그래프의 노드 레벨 분류 작업으로 훈련</li>
+<li><strong>참신성 평가</strong>: 시간 정보 + 표절 샘플의 부정 라벨로 아이디어 참신성 학습</li>
+<li><strong>집계 방식</strong>: Mean Pooling (전역 정보)과 Min Pooling (국소 정보)로 글로벌-로컬 정보 활용</li>
+</ul>
+<h3>핵심 구성 요소</h3>
+<ul>
+<li><strong>관점 추출</strong>: 프롬프트 기반 소형 LLM으로 복잡한 아이디어를 이해 가능한 관점으로 분해</li>
+<li><strong>엣지 생성</strong>: LLM 기반 관계 추출 또는 BERT 유사도 점수로 관점 간 연결</li>
+<li><strong>그래프 구축</strong>: 여러 아이디어의 관점과 엣지를 연결하여 통합 관점-그래프 생성</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>그래프 관점의 신규성</strong>: LLM 기반 아이디어 평가를 그래프 문제로 재정의한 첫 시도</li>
+<li><strong>심리학 기반 설계</strong>: 인간의 추상적 이해 메커니즘(분해와 연결)에서 영감을 받아 알고리즘 설계</li>
+<li><strong>하이브리드 접근</strong>: 학습 불필요한 라벨 전파와 경량 GNN의 두 가지 선택지 제공으로 유연성 극대화</li>
+<li><strong>표절 탐지 통합</strong>: 아이디어 평가에 시간 정보와 표절 샘플을 명시적으로 반영</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>관점 추출의 질</strong>: 초기 LLM 기반 분해 단계의 품질이 전체 성능에 미치는 영향 분석 부족</li>
+<li><strong>그래프 구성의 자동성</strong>: 관계 추출 및 유사도 기반 엣지 생성이 완전 자동인지, 수동 개입이 필요한지 명확하지 않음</li>
+<li><strong>데이터셋 규모</strong>: 실험이 두 개 데이터셋에만 수행되어 일반화 가능성 검증 필요</li>
+<li><strong>해석 가능성</strong>: 그래프 기반 평가가 어떤 관점들이 최종 점수에 가장 영향을 미쳤는지 설명하는 메커니즘 부재</li>
+<li><strong>인간 평가와의 비교</strong>: LLM 기반 기존 방식뿐 아니라 인간 전문가 평가와의 직접 비교 필요</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.2/5</span></div>
+<p><strong>총평</strong>: GraphEval은 LLM 기반 아이디어 평가의 편향과 불안정성을 그래프 구조와 심리학적 직관으로 우아하게 해결하는 혁신적인 접근법이며, 실질적인 성능 향상과 표절 탐지 기능으로 학술 커뮤니티에 즉각적인 가치를 제공한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../194_Chain_of_ideas_Revolutionizing_research_via_novel_idea_devel/index.html">Chain of Ideas: Revolutionizing research via novel idea development with llm agents</a></div><div class="conn-reason">연구 아이디어 평가에서 그래프 기반 vs 체인 구조의 다른 조직화 접근법을 비교할 수 있다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../194_Chain_of_ideas_Revolutionizing_research_via_novel_idea_devel/index.html">Chain of Ideas: Revolutionizing research via novel idea development with llm agents</a></div><div class="conn-reason">연구 아이디어 생성에서 체인 구조 vs 그래프 기반의 다른 조직화 접근법을 비교할 수 있다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../149_Bayes-Entropy_Collaborative_Driven_Agents_for_Research_Hypot/index.html">Bayes-Entropy Collaborative Driven Agents for Research Hypotheses Generation and Optimization</a></div><div class="conn-reason">연구 가설 생성에서 그래프 기반 vs 베이즈-엔트로피 협업의 다른 접근법을 비교할 수 있다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">그래프 기반 LLM 프레임워크를 통한 아이디어 평가가 과학적 아이디어 생성 벤치마크의 평가 체계를 확장한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../391_Graph_of_ai_ideas_Leveraging_knowledge_graphs_and_llms_for_a/index.html">Graph of AI Ideas: Leveraging Knowledge Graphs and LLMs for AI Research Idea Generation</a></div><div class="conn-reason">AI 아이디어의 지식 그래프를 경량 그래프 기반 평가 프레임워크로 확장한 연구다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../418_Hypothesis_Generation_for_Materials_Discovery_and_Design_Usi/index.html">Hypothesis Generation for Materials Discovery and Design Using Goal-Driven and Constraint-Guided LLM Agents</a></div><div class="conn-reason">그래프 기반 아이디어 평가 프레임워크를 재료 발견 가설 평가에 적용할 수 있다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../155_Beyond_Brainstorming_What_Drives_High-Quality_Scientific_Ide/index.html">Beyond Brainstorming: What Drives High-Quality Scientific Ideas? Lessons from Multi-Agent Collaboration</a></div><div class="conn-reason">그래프 기반 LLM 프레임워크를 과학 아이디어 평가에 적용한 사례</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../216_Chimera_A_knowledge_base_of_idea_recombination_in_scientific/index.html">Chimera: A knowledge base of idea recombination in scientific literature</a></div><div class="conn-reason">GraphEval의 LLM 기반 아이디어 평가 프레임워크가 Chimera에서 추출된 재조합 패턴의 품질과 창의성을 체계적으로 평가할 수 있는 도구를 제공함</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

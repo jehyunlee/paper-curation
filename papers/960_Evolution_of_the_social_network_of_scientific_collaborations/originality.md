@@ -1,0 +1,1 @@
+By mapping the electronic database containing all relevant journals in mathematics and neuro-science for an eight- year period (1991-98), we infer the dynamic and the structural mechanisms that govern the evolution and topology of this complex system.. Three complementary app

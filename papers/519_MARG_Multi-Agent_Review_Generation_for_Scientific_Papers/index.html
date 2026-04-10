@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MARG: Multi-Agent Review Generation for Scientific Papers</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>MARG: Multi-Agent Review Generation for Scientific Papers</h1>
+<blockquote><p><strong>저자</strong>: Mike D'Arcy, Tom Hope, Larry Birnbaum, Doug Downey | <strong>날짜</strong>: 2024-01-08 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2401.04259" target="_blank">10.48550/arXiv.2401.04259</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>다중 에이전트 아키텍처 개요: 논문을 여러 청크로 분할하여 각 GPT 인스턴스에 배치</em></p></div>
+<p>본 연구는 여러 LLM 인스턴스 간의 협력적 대화를 통해 과학 논문에 대한 피어 리뷰 피드백을 생성하는 MARG(Multi-Agent Review Generation) 방법을 제안한다. 이를 통해 기본 모델의 입력 길이 제한을 초과하는 긴 논문도 처리할 수 있으며, 제네릭한 피드백 문제를 크게 개선한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: GPT-4와 같은 현대의 대규모 언어 모델(LLM)은 뛰어난 성능을 보유하고 있으나, 과학 논문과 같은 장문의 기술 텍스트 이해 및 생성에 대해서는 충분히 탐구되지 않았다.</li>
+<li><strong>Gap</strong>: (1) LLM의 제한된 컨텍스트 윈도우로 인해 긴 논문 전체를 입력할 수 없다. (2) 단일 에이전트 방식은 제네릭하고 비구체적인 피드백을 생성한다(기준 방법의 60% 이상이 제네릭 의견).</li>
+<li><strong>Why</strong>: 효과적인 피어 리뷰는 논문의 의도, 기술적 세부사항, 실험의 타당성 등을 이해하고 구체적인 개선 제안을 제시해야 하는 복잡한 추론을 요구한다.</li>
+<li><strong>Approach</strong>: 다중 에이전트 아키텍처를 도입하여 (1) 논문을 여러 청크로 분할해 워커 에이전트에 배치하고, (2) 리더 에이전트의 조율 하에 에이전트 간 협력적 대화를 수행하며, (3) 실험(experiments), 명확성(clarity), 영향력(impact) 등 다양한 측면에 특화된 전문가 에이전트를 추가한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>MARG-S의 구조: 여러 특화된 다중 에이전트 그룹으로 구성되며, 각 그룹의 피드백이 통합 및 정제됨</em></p></div>
+<ol>
+<li><strong>정성적 피드백 품질 대폭 개선</strong>: 사용자 연구에서 MARG-S는 논문당 3.7개의 "좋은" 피드백을 생성했으며, 이는 기준 방법(1.7개)의 2.2배, Liang et al. (2023) 방법(0.3개)의 12배에 해당한다.</li>
+<li><strong>구체성과 제네릭성 개선</strong>: MARG-S의 71%가 구체적(specific)으로 평가되었으며, 제네릭 피드백 비율을 60%에서 29%로 감소시켰다. 자동화된 평가에서는 가장 강력한 기준 방법 대비 6.1 recall points 향상을 달성했다.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
+<p class="fig-caption"><em>각 방법에 대한 평균 품질 평가: MARG-S가 특이도, 정확성, 전반적 도움성에서 우수함</em></p></div>
+<ul>
+<li><strong>멀티 에이전트 아키텍처</strong>:
+<ul>
+<li><strong>리더 에이전트</strong>: 전체 작업 조율 및 에이전트 간 통신 관리. 고수준 계획을 먼저 수립한 후 워커/전문가 에이전트에 메시지 전송</li>
+<li><strong>워커 에이전트</strong>: 논문의 각 청크를 수신하여 할당된 섹션에 대한 피드백 생성</li>
+<li><strong>전문가 에이전트</strong>: 특정 피드백 유형(실험 분석, 명확성 개선, 영향력 평가)에 특화된 보조 역할 수행</li>
+</ul>
+</li>
+<li><strong>프롬프트 엔지니어링</strong>: 각 에이전트 유형에 고유한 시스템 메시지 제공. 리더 에이전트는 "SEND MESSAGE" 커맨드를 통해 다른 에이전트와 통신하는 프로토콜 사용</li>
+<li><strong>파이프라인</strong>: (1) 논문을 단락 경계에서 텍스트 청크로 분할, (2) 각 청크에 섹션명과 순서 정보 주석 추가, (3) 특화된 에이전트 그룹이 피드백 생성, (4) 최종 다중 에이전트 그룹이 피드백 정제 및 중복 제거</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>새로운 응용</strong>: 다중 에이전트 LLM 상호작용을 긴 기술 문서 처리의 제약 극복에 활용한 첫 시도</li>
+<li><strong>특화된 에이전트 도입</strong>: 단순한 다중 에이전트 협력을 넘어 서로 다른 리뷰 측면에 특화된 전문가 에이전트를 설계함으로써 성능 향상 (기준 방법 대비 2.2배)</li>
+<li><strong>실제 문제 해결</strong>: API 기반 LLM의 컨텍스트 제한이라는 실용적 제약 조건에서 아키텍처 수정 없이 해결책 제시</li>
+<li><strong>포괄적 평가</strong>: 자동 메트릭뿐 아니라 정성적 사용자 연구를 통해 구체성, 정확성, 도움성을 다각도로 검증</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>높은 비용</strong>: 다중 에이전트 시스템은 단일 에이전트 대비 상당히 높은 API 호출 비용 소요 (상용화 시 경제성 문제)</li>
+<li><strong>에이전트 간 통신 오류</strong>: 메시지 누락, 정보 전달 실패 등 에이전트 간 협력 과정에서 발생하는 오류로 인한 성능 저하</li>
+<li><strong>멀티모달 정보 부재</strong>: 텍스트만 처리 가능하여 논문의 그림, 표, 수식 등 중요한 시각 정보를 활용하지 못함</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>더 효율적인 에이전트 간 통신 프로토콜 개발 및 오류 감소</li>
+<li>비용 최적화를 위한 경량 모델 적용 가능성 탐색</li>
+<li>시각 정보 포함 시 성능 변화 분석</li>
+<li>다양한 도메인(생물학, 물리학 등)으로의 확장 성능 평가</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 다중 에이전트 LLM 협력을 통해 긴 과학 논문의 구체적 피드백 생성이라는 실질적 문제를 효과적으로 해결한 우수한 연구이다. 사용자 연구로 2.2배의 성능 개선을 실증했으나, 높은 비용과 에이전트 통신 오류라는 한계를 극복해야 한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../592_Openreviewer_A_specialized_large_language_model_for_generati/index.html">OpenReviewer: A specialized large language model for generating critical scientific paper reviews</a></div><div class="conn-reason">다중 에이전트 리뷰 생성의 협업적 접근법이 전문화된 리뷰 생성 모델의 기초 아이디어를 제공합니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../677_Reviewer2_Optimizing_Review_Generation_Through_Prompt_Genera/index.html">Reviewer2: Optimizing Review Generation Through Prompt Generation</a></div><div class="conn-reason">프롬프트 생성을 통한 리뷰 최적화가 다중 에이전트 리뷰 생성의 개별 에이전트 성능 향상에 기초를 제공합니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html">ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</a></div><div class="conn-reason">다중 에이전트 리뷰 생성의 기본 프레임워크가 인간-AI 격차 해소를 위한 구조화된 추론 과정 설계에 핵심적인 기반을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../534_Meta-review_generation_with_checklist-guided_iterative_intro/index.html">Meta-review generation with checklist-guided iterative introspection</a></div><div class="conn-reason">과학 논문 리뷰에서 다중 에이전트 협업과 체크리스트 기반 메타리뷰 생성의 서로 다른 자동화 접근법을 제시합니다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../803_The_open_review-based_orb_dataset_Towards_automatic_assessme/index.html">The open review-based (orb) dataset: Towards automatic assessment of scientific papers and experiment proposals in high-energy physics</a></div><div class="conn-reason">다중 에이전트 리뷰 생성이 ORB 데이터셋 기반 평가와 다른 접근 방식을 제시한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../534_Meta-review_generation_with_checklist-guided_iterative_intro/index.html">Meta-review generation with checklist-guided iterative introspection</a></div><div class="conn-reason">메타리뷰 생성에서 체크리스트 기반 자기성찰과 다중 에이전트 협업의 서로 다른 자동화 방법을 비교할 수 있습니다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../780_Surveyforge_On_the_outline_heuristics_memory-driven_generati/index.html">Surveyforge: On the outline heuristics, memory-driven generation, and multi-dimensional evaluation for automated survey writing</a></div><div class="conn-reason">다중 에이전트 리뷰 생성과 달리 단일 프레임워크로 포괄적 설문지를 생성하는 접근</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../592_Openreviewer_A_specialized_large_language_model_for_generati/index.html">OpenReviewer: A specialized large language model for generating critical scientific paper reviews</a></div><div class="conn-reason">전문 리뷰 생성 모델을 다중 에이전트 협업 시스템으로 확장하여 더 포괄적인 피드백을 제공합니다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

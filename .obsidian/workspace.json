@@ -1,0 +1,222 @@
+{
+  "main": {
+    "id": "953768965cae224f",
+    "type": "split",
+    "children": [
+      {
+        "id": "661880c8ba397e25",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e41a43f3e30811a9",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "그래프 뷰"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "298725a12273a912",
+    "type": "split",
+    "children": [
+      {
+        "id": "438f1694942968d0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "28955abf0afb2898",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "86216324594160f8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:cat/Ethics,_Policy_and_Meta-Science",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "14f0a17e02edd4b7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "37ed64f58418f123",
+    "type": "split",
+    "children": [
+      {
+        "id": "a5b181c7a11894e4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0b2c40e87ca06f47",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "백링크"
+            }
+          },
+          {
+            "id": "b18c55f978e3aaeb",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "나가는 링크"
+            }
+          },
+          {
+            "id": "37f6d0ba05a6cdfb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "d09767fe70ef494f",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "4263724e92fb62c8",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "e41a43f3e30811a9",
+  "lastOpenFiles": [
+    "ai4s/timeline_candidates_pb/_caption_Scientific_Figure_Analysis.txt",
+    "ai4s/timeline_candidates_pb/_method_text_Scientific_Figure_Analysis.txt",
+    "ai4s/timeline_candidates_pb/_caption_Reinforcement_Learning_and_Reasoning.txt",
+    "ai4s/timeline_candidates_pb/_method_text_Reinforcement_Learning_and_Reasoning.txt",
+    "ai4s/timeline_candidates_pb/_caption_Materials_Science_and_Electronics.txt",
+    "ai4s/timeline_candidates_pb/_method_text_Materials_Science_and_Electronics.txt",
+    "ai4s/timeline_candidates_pb/_caption_Materials_Properties_and_Mechanics.txt",
+    "ai4s/timeline_candidates_pb/_method_text_Materials_Properties_and_Mechanics.txt",
+    "ai4s/timeline_candidates_pb/_caption_Large_Language_Model_Evaluation.txt",
+    "ai4s/timeline_candidates_pb/_method_text_Large_Language_Model_Evaluation.txt",
+    "ai4s/timeline_candidates_pb/_caption_General_Machine_Learning_Research.txt",
+    "papers/998_Predicting_Scientific_Breakthroughs_Based_on_Structural_Dyna/originality.md",
+    "papers/997_Polymer_Science_Research_in_India_A_Scientometrics_Study/originality.md",
+    "papers/996_Partisan_disparities_in_the_funding_of_science_in_the_United/originality.md",
+    "papers/995_Papers_and_patents_are_becoming_less_disruptive_over_time/originality.md",
+    "papers/994_Organisational_accounts_engaged_in_scholarly_communication_o/originality.md",
+    "papers/993_OpenAlex_A_fully-open_index_of_scholarly_works_authors_venue/originality.md",
+    "papers/992_OpenAlex_in_focus_Metadata_quality_of_publication_type_and_l/originality.md",
+    "papers/991_Open_Datasets_in_Learning_Analytics_Trends_Challenges_and_Be/originality.md",
+    "papers/989_Modeling_Changing_Scientific_Concepts_with_Complex_Networks/originality.md",
+    "papers/986_Mapping_the_changing_structure_of_science_through_diachronic/originality.md",
+    "papers/985_Mapping_scientific_communities_at_scale/originality.md",
+    "papers/983_Mapping_Research_Funding_and_Outputs_at_the_Topic_Level_in_t/originality.md",
+    "papers/982_Mapping_Knowledge_Topic_Analysis_of_Science_Locates_Research/originality.md",
+    "papers/980_Linking_Global_Science_Funding_to_Research_Publications/originality.md",
+    "papers/979_Large_teams_develop_and_small_teams_disrupt_science_and_tech/originality.md",
+    "papers/978_Introducing_the_open_biomedical_map_of_science/originality.md",
+    "papers/977_Introducing_multiverse_analysis_to_bibliometrics_The_case_of/originality.md",
+    "papers/976_Intersectional_inequalities_in_science/originality.md",
+    "papers/975_Interdisciplinary_papers_supported_by_disciplinary_grants_ga/originality.md",
+    "papers/974_Information_Pathways_in_Online_Science_Communication_The_Rol/originality.md",
+    "papers/973_Impacts_of_inter-institutional_mobility_on_scientific_perfor/originality.md",
+    "papers/972_Identifying_interdisciplinary_emergence_in_the_science_of_sc/originality.md",
+    "papers/883_When_reviewers_lock_horn_Finding_disagreement_in_scientific/originality.md",
+    "papers/882_When_large_language_models_meet_citation_A_survey/originality.md",
+    "papers/881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/originality.md",
+    "ai4s/category_timeline_Autonomous_Agents_and_Research_Workflow.png",
+    "ai4s/research_timeline.png"
+  ]
+}

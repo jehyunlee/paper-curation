@@ -1,0 +1,1 @@
+To address this gap, we introduce "Tree-of-Table", a novel approach designed to enhance LLMs’ reasoning capabilities over large and complex tables.. Our method employs Table Condensation and Decomposition to distill and reorganize relevant data into a manageable format, followed by the construction of a hierarchical Table-Tree that facilitates tree

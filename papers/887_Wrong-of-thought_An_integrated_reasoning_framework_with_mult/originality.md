@@ -1,0 +1,1 @@
+To address these chal- lenges, we propose Wrong-of-Thought (WoT), which includes two core modules: (1) Multi- Perspective Verification: A multi-perspective verification method for accurately refining the reasoning process and result, and (2) Wrong In- formation Utilization: Utilizing wrong informa- tion to alert LLMs and reduce the

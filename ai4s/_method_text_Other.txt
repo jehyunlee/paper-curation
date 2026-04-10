@@ -1,0 +1,170 @@
+# CATEGORY TIMELINE METHOD: Other (Multi-class)
+
+## STREAM ARCHITECTURE
+
+### STREAM 1: Multi-view Data Integration (2021–2026)
+**Year Range:** 2021–2026
+
+**Sub-sub-themes:**
+- Heterogeneous Data Fusion Frameworks
+- Cross-modal Representation Learning
+- Unified Data Access Architectures
+- Molecular-scale Data Harmonization (AMDAT)
+
+**Key Tools/Frameworks:**
+- Multi-source Integration Protocols
+- Cross-domain Feature Alignment Systems
+- Open-source Molecular Dynamics Pipelines
+
+**Interactions:**
+- FEED → LLM Collective Dynamics (2024): unified representations enable collective reasoning
+- MERGE ← Human-AI Collaborative Creation (2025): integrated data informs collaborative workflows
+
+**Milestones:**
+- ▶ 2021: Emergence of structured data integration in collaborative systems
+- ◀ 2023: Decline of siloed tool ecosystems; shift toward unified frameworks
+- ▶ 2026: AMDAT publication anchors open-source molecular data integration
+
+---
+
+### STREAM 2: LLM Collective Dynamics (2024–2026)
+**Year Range:** 2024–2026
+
+**Sub-sub-themes:**
+- Multi-agent Language Model Orchestration
+- Emergent Reasoning Patterns
+- Distributed Inference Systems
+- Ensemble Decision-making Mechanisms
+
+**Key Tools/Frameworks:**
+- Multi-LLM Coordination Architectures
+- Consensus-building Protocols
+- Distributed Prompt Engineering Systems
+
+**Interactions:**
+- FEED ← Multi-view Data Integration (2025): structured inputs enable coherent collective outputs
+- ENABLE → AI Tools for Research Practice (2025): collective reasoning powers research assistance
+- SPAWN → Human-AI Collaborative Creation (2025): emergent behaviors enable new interaction paradigms
+
+**Milestones:**
+- ▶ 2024: Emergence of multi-agent LLM frameworks in research contexts
+- ▶ 2026: Scaling of collective dynamics to complex research problems
+
+---
+
+### STREAM 3: AI Tools for Research Practice (2025–2026)
+**Year Range:** 2025–2026
+
+**Sub-sub-themes:**
+- Discovery and Evaluation Platforms
+- Benchmarking and Curation Systems
+- Integration with Research Workflows
+- Domain-specific Research Assistants
+
+**Key Tools/Frameworks:**
+- AI Tool Registry and Recommendation Systems
+- Research Practice Evaluation Frameworks
+- Workflow Integration Middleware
+- Domain-specialized Research Assistants
+
+**Interactions:**
+- FEED ← LLM Collective Dynamics (2025): collective reasoning improves tool recommendations
+- MERGE → Human-AI Collaborative Creation (2025): tools facilitate creative workflows
+- ENABLE ← Multi-view Data Integration (2025): integrated data informs tool selection
+
+**Milestones:**
+- ▶ 2025-02-17: Nature publication establishes benchmarking and evaluation as critical practice
+- ▶ 2026: Workflow integration standards emerge across research domains
+
+---
+
+### STREAM 4: Human-AI Collaborative Creation (2021–2026)
+**Year Range:** 2021–2026
+
+**Sub-sub-themes:**
+- Interactive Co-authoring Systems
+- Hybrid Agency Models
+- Creative Control Negotiation
+- Feedback Loop Optimization
+
+**Key Tools/Frameworks:**
+- Human-AI Editor Interfaces (Wordcraft paradigm)
+- Bidirectional Guidance Systems
+- Iterative Refinement Architectures
+- User Intent Modeling
+
+**Interactions:**
+- FEED → Multi-view Data Integration (2024): collaborative insights reveal data patterns
+- MERGE ← LLM Collective Dynamics (2025): collective reasoning augments creative ideation
+- ENABLE ← AI Tools for Research Practice (2025): research tools integrate into creative workflows
+
+**Milestones:**
+- ▶ 2021: Wordcraft establishes interactive human-AI editing as viable creative paradigm
+- ◀ 2023: Decline of passive AI suggestion models; shift toward bidirectional control
+- ▶ 2025: Convergence of collaborative creation across research and creative domains
+
+---
+
+## INTERACTION MAP
+
+**2021–2022:** Human-AI Collaborative Creation (solitary emergence)
+
+**2023:** Decline of isolated tool paradigms → foundation for integration
+
+**2024:** Multi-view Data Integration & LLM Collective Dynamics emerge in parallel
+- FEED: Integration → Collective Dynamics
+
+**2025 (convergence node):**
+- MERGE: Data Integration ← → Collective Dynamics
+- ENABLE: Collective Dynamics → Research Tools
+- SPAWN: Collective Dynamics → Collaborative Creation
+- FEED: Research Tools ← Integration & Collective Dynamics
+- MERGE: Collaborative Creation ← Research Tools
+
+**2026 (maturation phase):**
+- AMDAT publication anchors multi-view integration
+- Workflow standards stabilize across all four streams
+
+---
+
+## VISUAL SPECIFICATION (ABSOLUTE)
+
+**Orientation:** Horizontal, left-to-right temporal flow (2021 → 2026)
+
+**Structure:** Four parallel ribbon-streams, variable width per activity intensity, flowing left-to-right with temporal progression
+
+**Canvas:** 16:9 aspect ratio, white background, 100% opacity
+
+**Stream Representation:**
+- Each stream as continuous ribbon
+- Width modulates by research intensity
+- Color differentiation by stream identity (no color names in labels)
+- Interaction zones marked by overlapping ribbon areas
+
+**Interaction Visualization:**
+- FEED: Thin directional arrow, target stream side-margin
+- MERGE: Overlapping ribbon envelope, extended contact zone
+- SPAWN: Bifurcation point, origin stream tapers, new stream emerges
+- ENABLE: Dashed arrow pathway between streams
+
+**Milestones:**
+- Vertical datum lines at event years
+- Triangle markers: ▶ (emergence/growth), ◀ (decline/transition)
+- Milestone labels positioned above/below ribbons, outside main flow
+
+**Labels (all mandatory, external to ribbons):**
+- Stream names, left margin, centered vertically per stream
+- Sub-sub-theme names within ribbon zones or adjacent boxes
+- Tool/framework names in italics, positioned near relevant sub-sub-theme
+- Interaction labels on arrows/zones (FEED, MERGE, SPAWN, ENABLE)
+- Year markers below timeline baseline
+
+**Prohibited Elements:**
+- Title text
+- Watercolor, gradient, or soft-edge effects
+- Paper count indicators
+- Color name text (use visual differentiation only)
+- Unlabeled branches
+- External decorative elements
+
+**Typography:** Sans-serif, high contrast, minimum 10pt readable size

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Data, measurement and empirical methods in the science of science</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Data, measurement and empirical methods in the science of science</h1>
+<blockquote><p><strong>저자</strong>: Lu Liu, Benjamin F. Jones, Brian Uzzi, Dashun Wang | <strong>날짜</strong>: 2023-06-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41562-023-01562-4" target="_blank">10.1038/s41562-023-01562-4</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1 | Science of science data and linkages. This figure presents commonly</em></p></div>
+<p>과학의 과학(science of science) 분야에서 대규모 데이터셋, 측정 방법론, 실증적 연구 방법론을 종합적으로 리뷰하여 과학의 작동 방식과 과학적 진전을 이해하기 위한 실증적 접근법을 제시한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 20세기 중반부터 과학의 본질, 관행, 조직, 영향에 관한 연구가 진행되어 왔으며, scientometrics, metascience, 과학기술학(STS) 등 다양한 학문 공동체가 과학 연구에 기여해 왔다.</li>
+<li><strong>Gap</strong>: 학제 간 방법론이 다양하지만 서로 다른 학문 분야에서 발표되어 연구 결과가 분절되어 있으며, 과학의 과학 분야의 빠른 발전으로 인해 다양한 데이터, 측정, 방법론에 대한 통합적 이해가 부족하다.</li>
+<li><strong>Why</strong>: 과학 정책 설계, 과학 제도 개선, 과학자의 연구 선택 지원, 과학적 생산성과 영향력 향상을 위해서는 과학이 어떻게 작동하는지, 혁신이 어디서 발생하는지에 대한 깊이 있는 이해가 필수적이다.</li>
+<li><strong>Approach</strong>: Web of Science, PubMed, CrossRef 등 대규모 출판 데이터셋과 펀딩, 특허, 피어리뷰, 미디어 활용 데이터를 통합하여 과학 활동을 추적하고, 머신러닝, 네트워크 분석, 계량경제학 등의 고급 방법론을 적용한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1 | Science of science data and linkages. This figure presents commonly</em></p></div>
+<ul>
+<li><strong>포괄적 데이터 생태계 구축</strong>: 출판물부터 펀딩, 특허, 피어리뷰, 사회적 영향까지 과학 활동의 상류(upstream)와 하류(downstream)를 통합적으로 포괄하는 데이터 링크 체계 제시</li>
+<li><strong>측정 구성요소 표준화</strong>: 과학적 생산성, 혁신성(novelty), 학제 간 협력, 다양성 등 과학 활동의 주요 측정 지표 정의 및 정량화 방법 제시</li>
+<li><strong>실증 방법론 다층화</strong>: 예측 모델링(machine learning), 준실험 설계(quasi-experiment), 인과추론(causal inference) 등 다양한 실증 방법론의 강점과 한계를 비교 분석</li>
+<li><strong>정책 연계성 강화</strong>: 과학 투자 규모, 공공 이익 부합성, 고영향 과학 조건, 보상 체계의 영향, 재현성(reproducibility) 등 핵심 정책 질문에 실증적 답변 제공</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1 | Science of science data and linkages. This figure presents commonly</em></p></div>
+<ul>
+<li>대규모 출판 데이터셋(Web of Science, OpenAlex, CORE, PubMed) 활용으로 백만 개 이상의 학술 논문 메타데이터 수집</li>
+<li>펀딩 데이터(NIH, NSF, UMETRICS)와 출판 데이터의 연결(linkage)을 통해 공공 투자 대비 과학적 성과 추적</li>
+<li>특허(PatentView, Google Patents), 정책 문서(Overton), 임상 시험(FDA) 등 과학 외부 데이터와의 교차 참조로 영향력 측정</li>
+<li>텍스트 분석(full text), 네트워크 분석(collaboration networks), 머신러닝 기반 내용 표현(content representation) 개발</li>
+<li>준실험 설계(regression discontinuity, difference-in-differences)와 인과추론 기법으로 정책 효과 평가</li>
+<li>멘토십 족보(math genealogy), 과정 설명서(course syllabi) 데이터를 통해 과학자 육성 및 지식 전수 과정 분석</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>종래 discipline-specific 접근에서 벗어나 과학 생태계 전체를 데이터로 포괄하는 통합적 관점 제시</li>
+<li>출판물 중심 분석을 넘어 펀딩, 특허, 피어리뷰, 미디어 언급 등 과학 활동의 다층적 측면을 단일 분석 틀로 통합</li>
+<li>metascience, scientometrics, 경제학, STS 등 산재된 연구 공동체의 방법론을 체계적으로 분류하고 비교</li>
+<li>과학 정책 질문(funding scale, reward systems, reproducibility)과 실증 방법론을 직접 연계하여 policy-facing research의 방향 제시</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li>데이터 가용성의 불균형: 선진국 과학, 영문 출판물에 편향되어 있으며 개발도상국 과학이나 비영문 출판물이 과소 대표됨</li>
+<li>측정의 타당성 문제: 인용도(citation count)는 과학적 질(quality)과 완전히 일치하지 않으며, 다양한 측정 지표 간의 상관관계와 인과관계 구분 필요</li>
+<li>인과성 추론의 한계: 준실험 설계도 완전한 인과성을 보장하지 못하며, 복잡한 시스템에서의 피드백 루프와 상호작용 효과 파악 어려움</li>
+<li>학제 간 용어 및 방법론 격차: 각 공동체의 서로 다른 규범과 방법론으로 인한 지식 축적 곤란, 향후 더욱 통합된 용어와 방법론 표준화 필요</li>
+<li>시간적 역동성 부재: 대부분의 분석이 단면적(cross-sectional)이어서 과학의 장기적 구조 변화나 패러다임 전환 포착 부족</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 이 리뷰는 과학의 과학 분야의 급속한 발전을 체계적으로 정리하고, 분절된 학문 공동체를 한데 모으는 중요한 교량 역할을 한다. 데이터, 측정, 방법론의 삼각형 구조로 접근하여 이해도를 높이고, 과학 정책과의 실질적 연계를 강조함으로써 학술적 엄밀성과 실용적 가치를 모두 추구한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1073_MOLIERE_Automatic_Biomedical_Hypothesis_Generation_System/index.html">MOLIERE: Automatic Biomedical Hypothesis Generation System</a></div><div class="conn-reason">과학의 과학 분야에서 대규모 데이터 활용과 실증적 방법론의 이론적 기반을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1118_Paper_Circle_An_Open-source_Multi-agent_Research_Discovery_a/index.html">Paper Circle: An Open-source Multi-agent Research Discovery and Analysis Framework</a></div><div class="conn-reason">과학의 과학 연구에서 데이터와 측정 방법론을 더 포괄적으로 확장한 종합적 리뷰이다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

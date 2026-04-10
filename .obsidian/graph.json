@@ -1,0 +1,37 @@
+{
+  "collapse-filter": false,
+  "search": "path:papers file:review -file:\".webp\" -file:\".png\" -file:text -file:fig",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": false,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "tag:#topic/ai4s  ",
+      "color": {
+        "a": 1,
+        "rgb": 14048348
+      }
+    },
+    {
+      "query": "tag:#topic/scisci  ",
+      "color": {
+        "a": 1,
+        "rgb": 9537258
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1.02193347193347,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": false,
+  "centerStrength": 0.518713248970312,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 0.1316872427983525,
+  "close": false
+}

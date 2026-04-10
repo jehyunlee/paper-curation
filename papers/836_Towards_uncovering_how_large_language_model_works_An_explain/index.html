@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Towards uncovering how large language model works: An explainability perspective</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Towards uncovering how large language model works: An explainability perspective</h1>
+<blockquote><p><strong>저자</strong>: Haiyan Zhao, Fan Yang, Bo Shen, Himabindu Lakkaraju, Mengnan Du | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2402.10688" target="_blank">arXiv:2402.10688</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>대규모 언어모델의 작동 메커니즘: (a) 모델 컴포넌트 내 지식의 아키텍처 구성, (b) 중간 표현에 인코딩된 지식, (c) 훈련 과정에서의 일반화 능력 발달</em></p></div>
+<p>이 논문은 설명가능성(explainability) 관점에서 대규모 언어모델(LLM)의 내부 작동 메커니즘을 체계적으로 검토한 종합 리뷰 논문이다. 기계적 해석가능성(mechanistic interpretability), 표현 공학(representation engineering), 훈련 역학 분석을 통해 LLM의 지식 구성, 부호화, 학습 과정을 밝히고, 이러한 인사이트가 모델 편집, 프루닝, 인간 정렬에 어떻게 활용될 수 있는지 보여준다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM(GPT-4, LLaMA-2, Claude-3 등)은 언어 이해 및 생성에서 뛰어난 성능을 보이며, 우수한 일반화 및 추론 능력을 시연함</li>
+<li><strong>Gap</strong>: 이러한 모델의 성공 뒤의 "어떻게"와 "왜"는 여전히 불투명함. 할루시네이션, 독성, 인간 가치와의 불일치 등의 문제가 해결되지 못함</li>
+<li><strong>Why</strong>: LLM의 안전하고 효과적인 배포를 위해서는 모델의 내부 작동 원리를 깊이 있게 이해하고, 각 컴포넌트의 기여도를 파악할 필요가 있음</li>
+<li><strong>Approach</strong>: 기계적 해석가능성, 표현 공학, 훈련 역학 분석 등 기존의 설명가능성 기법들을 종합하여 LLM의 작동 메커니즘을 체계적으로 검토</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>트랜스포머 회로(Transformer Circuit)의 구조: Query-Key 회로와 Output-Value 회로를 통한 정보 처리 메커니즘</em></p></div>
+<ol>
+<li><strong>신경원(Neuron) 수준 분석</strong>: 다의성(polysemanticity)의 발생 원인을 규명하고, 중첩(superposition)과 단일의미성(monosemanticity) 개념을 통해 신경원의 특성을 설명. 희소 자동인코더(sparse autoencoder)를 통해 특징 분해(feature disentanglement)의 가능성 제시</li>
+<li><strong>회로(Circuit) 수준 분석</strong>: 트랜스포머 회로에 대한 수학적 프레임워크를 제시하고, Query-Key 회로와 Output-Value 회로의 역할 구분. 귀납 헤드(induction head)가 맥락 내 학습(in-context learning) 능력에 기여함을 밝힘</li>
+<li><strong>주의 헤드(Attention Head) 분석</strong>: 귀납 헤드가 패턴 접두사 매칭(prefix matching)과 시퀀스 복사를 통해 맥락 내 학습을 가능하게 함을 실증적으로 입증</li>
+<li><strong>훈련 역학 분석</strong>: 그로킹(grokking) 및 기억화(memorization) 현상을 기계적 관점에서 설명하여, 모델의 일반화 능력 발달 과정을 규명</li>
+<li><strong>실용적 응용</strong>: 이러한 인사이트를 모델 편집(model editing), 프루닝(pruning), 인간 가치 정렬(human alignment)에 활용하는 방법론 제시</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>기계적 해석가능성(Mechanistic Interpretability)</strong>: 신경원, 회로, 주의 헤드 등 개별 컴포넌트의 기능과 상호작용을 분석하여 모델을 역공학(reverse-engineer)</li>
+<li><strong>중첩(Superposition) 분석</strong>: 신경원 수보다 특징 수가 많을 때 여러 특징이 하나의 신경원에 인코딩되는 메커니즘을 ReLU 네트워크 등을 통해 규명</li>
+<li><strong>희소 자동인코더(Sparse Autoencoder)</strong>: 사전 정의된 특징 사전(dictionary)을 활용하여 중첩된 특징을 분해하고 단일의미성을 달성하는 기법</li>
+<li><strong>트랜스포머 회로 프레임워크</strong>: 디코더 전용 트랜스포머를 수학적으로 분석하여 QK 회로(정보 소스 선택)와 OV 회로(출력 생성)의 역할을 명확화</li>
+<li><strong>귀납 헤드 식별</strong>: 두 개의 주의 헤드로 구성된 회로가 "[A<em>][B</em>]" 패턴으로부터 "[B]"를 예측하는 방식을 분석</li>
+<li><strong>훈련 동역학 분석</strong>: 기억화 단계와 그로킹 단계를 구분하여 모델의 학습 과정 추적</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>종합적 관점</strong>: 기존 리뷰 논문들과 달리 설명가능성 기법 자체보다 "LLM이 어떻게 작동하는가"에 초점을 맞춤. 신경원, 회로, 주의 헤드, 훈련 역학 등 다양한 수준의 분석을 통합적으로 제시</li>
+<li><strong>계층적 분석 프레임워크</strong>: 신경원-회로-헤드의 계층적 구조에서 지식 구성을 설명하고, 각 수준 간의 관계를 명확히 함</li>
+<li><strong>실용성 강조</strong>: 설명가능성 분석이 모델 편집, 프루닝, 정렬 개선 등 구체적인 성능 향상으로 이어지는 경로를 보여줌</li>
+<li><strong>새로운 개념 통합</strong>: 중첩, 단일의미성, 귀납 헤드, 그로킹 등 최근 발견된 개념들을 체계적으로 통합</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>이론적 한계</strong>: 대부분의 기계적 해석가능성 연구가 소규모 장난감 모델(toy model)에서 수행되었으며, 실제 LLM(수십억 개 파라미터)에 직접 적용하기 어려움</li>
+<li><strong>확장성 문제</strong>: 희소 자동인코더 등의 방법이 대규모 모델에서 계산 효율성 측면에서 실용적이지 못할 수 있음</li>
+<li><strong>해석의 주관성</strong>: 특징이나 회로를 "이해할 수 있는" 개념으로 매핑하는 과정에 주관성이 존재함</li>
+<li><strong>불완전한 인과성</strong>: 귀납 헤드와 맥락 내 학습 간의 인과관계가 부분적으로만 입증됨</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>대규모 모델에 적용 가능한 확장성 있는 해석가능성 기법 개발</li>
+<li>특징 분해의 완전성을 보장하는 방법론 제시</li>
+<li>해석가능성 분석을 보다 정교한 인간 정렬 기법으로 변환하는 방법 탐색</li>
+<li>다중 모달(multimodal) 및 다국어 LLM에 대한 해석가능성 연구 확대</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 이 논문은 LLM의 내부 작동 메커니즘을 설명가능성 관점에서 체계적으로 정리한 우수한 리뷰 논문으로, 신경원·회로·헤드·훈련 역학의 계층적 분석을 통해 LLM의 투명성을 높인다. 다만 장난감 모델 기반 결과의 현실적 적용 가능성과 대규모 모델으로의 확장성은 여전히 과제로 남아 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../582_On_gradient-like_explanation_under_a_black-box_setting_when/index.html">On gradient-like explanation under a black-box setting: when black-box explanations become as good as white-box</a></div><div class="conn-reason">LLM의 해석가능성 연구가 블랙박스 설정에서의 그래디언트 기반 설명 방법 개발의 이론적 배경을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../397_Hallucinations_can_improve_large_language_models_in_drug_dis/index.html">Hallucinations can improve large language models in drug discovery</a></div><div class="conn-reason">LLM의 해석가능성 연구가 환각 현상이 성능에 미치는 영향을 이해하는 데 필요한 기계적 이해를 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../397_Hallucinations_can_improve_large_language_models_in_drug_dis/index.html">Hallucinations can improve large language models in drug discovery</a></div><div class="conn-reason">LLM의 환각 현상을 이해하기 위해서는 언어 모델의 내부 메커니즘에 대한 근본적 이해가 필요하다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../527_Mechanistic_interpretability_for_ai_safetya_review/index.html">Mechanistic interpretability for ai safety–a review</a></div><div class="conn-reason">AI 안전성을 위한 기계적 해석가능성과 LLM 작동 메커니즘 이해라는 유사하지만 다른 관점의 해석가능성 연구이다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../527_Mechanistic_interpretability_for_ai_safetya_review/index.html">Mechanistic interpretability for ai safety–a review</a></div><div class="conn-reason">LLM 작동 메커니즘 이해에서 기계론적 vs 설명가능성 기반의 다른 접근법을 비교할 수 있다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../582_On_gradient-like_explanation_under_a_black-box_setting_when/index.html">On gradient-like explanation under a black-box setting: when black-box explanations become as good as white-box</a></div><div class="conn-reason">LLM의 내부 작동 메커니즘 이해를 위한 체계적 검토가 블랙박스 설정에서의 설명가능성 연구의 이론적 확장이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../017_A_practical_review_of_mechanistic_interpretability_for_trans/index.html">A practical review of mechanistic interpretability for transformer-based language models</a></div><div class="conn-reason">대형 언어모델 작동 방식의 설명가능한 연구는 기계적 해석가능성의 실무 가이드를 더욱 심화된 연구 방향으로 확장합니다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

@@ -1,0 +1,1 @@
+Artificial intelligence (AI) technology has demonstrated remarkable potential in drug discov- ery, where pharmacokinetics plays a crucial role in determining the dosage, safety, and effi- cacy of new drugs.. A major challenge for AI-driven drug discovery (AIDD) is the scarcity of high-quality data, which often requires extensive wet-lab work.. A typical example of this is phar

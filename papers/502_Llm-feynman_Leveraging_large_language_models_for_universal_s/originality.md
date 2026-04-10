@@ -1,0 +1,1 @@
+Here, we present LLM-Feynman, a novel framework that leverages large language models (LLMs) alongside systematic optimization to derive concise, interpretable formulas from data and domain knowledge.. Our method integrates automated feature engineering, LLM-guided symbolic regressio

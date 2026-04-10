@@ -1,0 +1,1 @@
+Supercomputers offer unprecedented opportuni­ ties for modelling complex materials.. In this Viewpoint, five researchers working on different types of materials discuss the most pro­ mising directions in computational materials science.. As new supercomputers come online, what advances do you think they will unlock in your area of research?. Veronique Van Speybroeck: M
