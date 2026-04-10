@@ -1,0 +1,18 @@
+{
+  "zotero": {
+    "api_key": "YOUR_ZOTERO_API_KEY_HERE",
+    "email": "your.email@example.com",
+    "collections": {
+      "my_topic": "Your Zotero Collection Name"
+    },
+    "pdf_dir": "/path/to/your/zotero/pdfs"
+  },
+  "unpaywall_email": "your.email@example.com",
+  "_comment_github": "github 섹션은 선택사항입니다. GitHub Pages 배포가 필요 없으면 삭제하세요.",
+  "github": {
+    "repo": "your-username/paper-curation",
+    "branch": "master",
+    "pages_base_url": "https://your-username.github.io/paper-curation"
+  },
+  "paperbanana_dir": "/path/to/your/PaperBanana"
+}

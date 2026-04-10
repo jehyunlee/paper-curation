@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Claimver: Explainable claim-level verification and evidence attribution of text through knowledge graphs</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Claimver: Explainable claim-level verification and evidence attribution of text through knowledge graphs</h1>
+<blockquote><p><strong>저자</strong>: Preetam Prabhu Srikar Dammu, Himanshu Naidu, Mouly Dewan, Youngmin Kim, Tanya Roosta, Aman Chadha, Chirag Shah | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>ClaimVer의 주장 검증 및 증거 귀속 시연. 자동 색상 코딩(황색: 외삽, 적색: 모순)과 위키데이터 기반 증거 제시</em></p></div>
+<p>본 논문은 지식 그래프(Knowledge Graph, KG)를 활용하여 텍스트의 각 주장(claim)을 세분화된 수준에서 검증하고, 각 검증 결과에 대한 명확한 증거와 설명을 제공하는 ClaimVer 프레임워크를 제안한다. 단순한 이진 판정 대신 주장 단위의 세밀한 분석을 통해 사용자의 신뢰도를 향상시킨다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존의 사실 검증 도구(HealthFeedback, Google Fact Check Tools)들은 텍스트 전체에 대한 포괄적 레이블만 제공하며, 문장(sentence) 또는 단락(paragraph) 수준의 검증에 머물러 있음.</li>
+<li><strong>Gap</strong>: (1) 한 텍스트 내 다중 주장에 대한 세분화된 검증 부재, (2) 검증 근거의 명확한 제시 부족, (3) 사용자 신뢰 형성을 위한 설명가능성(explainability) 부족.</li>
+<li><strong>Why</strong>: AI 생성 텍스트의 확산으로 미정보(misinformation)와 환각(hallucination) 문제가 심화되고 있으며, 사용자가 자동화된 검증 시스템을 신뢰하기 위해서는 근거 있는 설명이 필수적.</li>
+<li><strong>Approach</strong>: 위키데이터(Wikidata) 기반 지식 그래프를 검증의 신뢰할 수 있는 참조 자료로 활용하고, LLM을 미세 조정하여 주장 수준의 세밀한 검증과 증거 귀속을 동시에 수행.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>ClaimVer 프레임워크의 전체 처리 흐름. 전처리 단계에서 NER, 공참 해결, KG 엔티티 링킹을 거쳐 관련 삼중항(triplet) 검색 및 미세조정된 LLM을 통한 검증 수행</em></p></div>
+<ol>
+<li><strong>주장 단위 세분화 검증</strong>: 단일 텍스트를 다수의 독립적 주장으로 분해하여 각각을 검증하므로, 일부 주장이 거짓이더라도 나머지 주장의 검증 결과를 차별화하여 제시 가능.</li>
+<li><strong>KG 기반 다중 참조 통합</strong>: 단일 참조 문헌과의 일대일 매핑 방식을 벗어나 지식 그래프라는 통합된 정보 저장소를 활용하여 여러 출처에서 수집된 정보를 종합적으로 검증.</li>
+<li><strong>설명가능한 검증 결과</strong>: 각 주장에 대해 (1) 예측(Attributable/Extrapolatory/Contradictory), (2) 관련 삼중항, (3) 설명(rationale), (4) 귀속 점수(Knowledge Attribution Score, KAS)를 함께 제시.</li>
+<li><strong>위키데이터 엔티티 연결</strong>: 검증 결과와 함께 관련 위키 엔티티의 ID와 설명을 시각적으로 표시하여 사용자가 검증의 근거를 직접 확인 가능.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>미세조정용 LLM 지시어 프롬프트. 주장과 관련 삼중항을 입력받아 검증 카테고리, 설명, 귀속 점수를 출력하도록 구조화</em></p></div>
+<ul>
+<li><strong>전처리(Preprocessing)</strong>: 위키 엔티티에 특화된 명명 엔티티 인식(NER), 공참 해결(coreference resolution), KG 엔티티 링킹(entity linking), 문맥 길이 초과 시 구획화(compartmentalization) 수행.</li>
+<li><strong>관련 삼중항 검색</strong>: Woolnet 알고리즘(다중 노드 너비 우선 탐색, BFS)을 통해 각 주장과 관련된 지식 그래프 상의 삼중항 추출. 최대 3홉(hop), 최대 4개 경로 제한으로 관련성 있는 삼중항만 검색.</li>
+<li><strong>검증 목적 함수</strong>: 세 가지 카테고리 정의
+<ul>
+<li><strong>Attributable</strong>: 삼중항이 주장을 완전히 지지</li>
+<li><strong>Extrapolatory</strong>: 주장 평가에 불충분한 정보</li>
+<li><strong>Contradictory</strong>: 삼중항이 주장과 모순</li>
+</ul>
+</li>
+<li><strong>LLM 미세조정</strong>: Llama3-8B-Chat, Mistral-7B-v0.3-Chat 등의 오픈소스 모델을 지시어 기반으로 미세조정하여 주장, 관련 삼중항, 위키데이터 정의를 입력받아 검증 카테고리, 설명, 귀속 점수를 예측하도록 학습.</li>
+<li><strong>귀속 점수(KAS)</strong>: 검증된 주장의 신뢰도를 0과 1 사이의 점수로 정량화하여 다운스트림 작업에 적용 가능하게 설계.</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>세분화된 분석 수준</strong>: 기존 문장/단락 수준 검증을 주장(claim) 수준으로 확대하여 더 세밀한 오류 지적 가능.</li>
+<li><strong>KG 기반 다중 참조 통합</strong>: 일대일 텍스트-참조 매핑 방식을 벗어나 지식 그래프라는 통합 정보원을 활용함으로써 정보 출처의 분산 문제 해결.</li>
+<li><strong>설명과 증거의 동시 제시</strong>: 단순 예측에 그치지 않고 설명(rationale), 관련 삼중항(triplets), 위키 엔티티 정보를 함께 제공하여 사용자 신뢰 향상.</li>
+<li><strong>일반적 프레임워크</strong>: 위키데이터에 국한되지 않고 삼중항 형식의 모든 지식 그래프에 적용 가능한 범용 설계.</li>
+<li><strong>정량화된 귀속 점수</strong>: Knowledge Attribution Score(KAS)라는 새로운 메트릭 도입으로 검증 결과의 활용성 확대.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>지식 그래프의 한계</strong>: Wikidata의 완성도와 최신성에 의존하므로, KG에 미포함된 사실에 대해서는 검증 불가. 신속히 변화하는 뉴스나 통계 데이터의 경우 시의성 문제 발생 가능.</li>
+<li><strong>복잡한 추론 필요한 주장</strong>: 다중 단계의 논리적 연쇄(multi-hop reasoning)가 필요한 주장의 경우 검증 정확성이 떨어질 수 있으며, 인과관계나 조건부 명제는 삼중항 구조로 표현하기 어려움.</li>
+<li><strong>LLM 미세조정의 데이터 의존성</strong>: 학습 데이터의 품질과 규모에 따라 성능이 크게 좌우될 수 있으나, 논문에서 사용한 학습 데이터셋의 규모와 구성에 대한 구체적 정보 부족.</li>
+<li><strong>평가 방법론 제시 부족</strong>: 본 논문 발췌본에서는 실제 실험 결과, 정량적 평가 지표, 기존 방법과의 비교 분석이 제시되지 않음.</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>다양한 도메인과 언어에 대한 광범위한 평가 필요</li>
+<li>실시간 정보 업데이트를 반영하는 동적 KG 연계</li>
+<li>사용자 신뢰도 향상의 실제 효과 측정을 위한 사용성 연구</li>
+<li>증거 선택 과정의 투명성 강화(왜 특정 삼중항이 선택되었는가)</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: ClaimVer는 사용자 중심의 설명가능한 사실 검증이라는 중요한 문제에 접근한 실용적 프레임워크로, 주장 단위 검증과 KG 기반 증거 제시 방식이 신선하다. 다만 정량적 평가 결과의 부재와 기술적 세부사항의 부족으로 인해 재현성과 신뢰성 검증이 필요하며, 실제 시스템 성능과 사용자 신뢰도 향상의 실증적 증거가 제시되어야 완성도 있는 연구로 평가될 수 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">지식 그래프 기반 주장 검증의 기초 방법론을 의료 분야에 특화하여 확장한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">웹 기반 반자동 검색 대신 지식 그래프를 활용한 체계적 주장 검증 방법을 제시한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">간결한 사실 추출 방식 대신 지식 그래프를 활용한 설명가능한 주장 검증을 제시한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">주장 검증을 위한 다른 접근법으로 지식 그래프를 활용한 설명가능한 방법을 제시한다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">반자동 팩트체킹을 더 체계적이고 설명가능한 프레임워크로 발전시킨다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">지식 그래프 기반 설명가능한 검증을 의료 주장 검증에 구체적으로 적용한다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

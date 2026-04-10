@@ -1,0 +1,752 @@
+---
+name: paper-curation
+description: "최신 학술 논문 자동 큐레이션 풀 파이프라인. 검색 → Zotero 등록 → Paper Review → GitHub Pages 배포까지 전체 실행. 트리거: '논문 큐레이션', '최신 논문 찾아줘', '논문 수집', 'paper curation', '오늘 나온 논문', '최신 논문 Zotero에', 'curate papers', '논문 모니터링', 'paper curation 배포해줘', '배포해줘'."
+---
+
+# Paper Curation — 최신 논문 자동 큐레이션 및 Zotero 등록
+
+<Purpose>
+특정 시기(기본: 지난 24시간)와 분야(기본: science of science, bibliometrics, scientometrics)의 최신 논문을 arXiv, Semantic Scholar, OpenAlex에서 자동 검색하고, 중복 제거 및 관련성 필터링 후 Zotero에 일괄 등록한다. 등록된 논문에 대해 paper-review를 실행하고, 결과를 GitHub Pages에 독립 HTML로 배포한다. **Phase 1~7 전체를 항상 실행한다 (부분 실행 없음).**
+</Purpose>
+
+<Use_When>
+- "최신 논문 찾아줘", "오늘 나온 논문" 요청 시
+- "논문 큐레이션", "논문 수집", "paper curation" 요청 시
+- "최신 논문 Zotero에 넣어줘" 요청 시
+- "논문 모니터링", "curate papers" 요청 시
+- "paper curation 배포해줘", "배포해줘" 요청 시 → `prepare_deploy.py --topic {topic} --push` 실행
+- 특정 분야의 최신 동향을 추적할 때
+</Use_When>
+
+<Do_Not_Use_When>
+- 특정 논문 1편을 Zotero에 추가 → zotero-add 스킬 사용
+- 논문 리뷰/분석 → paper-review 스킬 사용
+- 보고서 작성용 논문 수집 → report-gen 스킬 사용
+</Do_Not_Use_When>
+
+<Why_This_Exists>
+연구자는 자신의 분야에서 매일 쏟아지는 논문을 추적해야 하지만, 여러 데이터베이스를 일일이 확인하는 것은 비효율적이다. 이 오케스트레이터는 다중 소스 병렬 검색 → 중복 제거 → 관련성 필터 → Zotero 등록까지 전 과정을 자동화한다.
+</Why_This_Exists>
+
+<Execution_Policy>
+- **항상 Phase 0~7 전체 파이프라인을 실행한다 (부분 실행 없음)**
+- 실행 모드: **서브 에이전트** (파이프라인 + 팬아웃, 에이전트 간 통신 불필요)
+- 아키텍처: `파이프라인 + 팬아웃/팬인` 복합 패턴
+
+  ```
+  [오케스트레이터 (이 스킬)]
+      │
+      ├─ Phase 1: Agent(paper-scout) ──── 검색 + 중복제거 + 필터링
+      │
+      ├─ Phase 4-5: Agent(zotero-librarian) ── Zotero 등록 + PDF + Figure
+      │
+      ├─ Phase 6a: Agent(paper-reviewer) ×N ── 병렬 리뷰 → papers/ 중앙 저장소
+      │
+      └─ Phase 6b: Agent(web-publisher) ── topic 뷰 HTML + GitHub Pages 배포
+  ```
+
+- **에이전트 분배**:
+  - `paper-scout` (1개): arXiv/S2/OpenAlex 병렬 검색 → 중복제거 → 관련성 필터
+  - `zotero-librarian` (1개): Zotero 중복 체크 → 등록 → PDF 다운로드 → Figure 추출
+  - `paper-reviewer` (4~5개 병렬): 논문 4-5편씩 배치로 리뷰 (run_in_background)
+  - `web-publisher` (1개): topic 뷰 index.html + GitHub Pages push
+- 중간에 멈추지 않고 끝까지 실행. 실패한 단계는 스킵하고 보고서에 기록
+- PDF가 있는 논문만 리뷰 대상. 손상/부적절 PDF는 제외 목록에 기록
+
+**⚠️ 저장소 구조 (Central Papers Repository):**
+
+```
+paper-curation/                          ← git repo (jehyunlee/paper-curation)
+├── docs/                                ← 배포 루트 (GitHub Pages)
+│   ├── papers/                          ← 중앙 저장소 (Single Source of Truth)
+│   │   ├── {slug}/                      ← 논문별 디렉토리 (전역 고유)
+│   │   │   ├── review.md               ← 리뷰 원본 (1곳에만 존재)
+│   │   │   ├── figures/                ← 추출된 figure들
+│   │   │   └── index.html              ← 개별 리뷰 HTML
+│   │   └── _papers_index.json          ← 마스터 인덱스
+│   │
+│   ├── ai4s/                            ← 주제별 뷰 (리뷰 파일 없음, 참조만)
+│   │   ├── research_timeline.png
+│   │   ├── category_timeline_*.png
+│   │   ├── _category_summaries.json
+│   │   ├── _timeline_narrative.json
+│   │   ├── _new_classification.json
+│   │   └── index.html                  ← ../papers/{slug}/index.html 로 링크
+│   │
+│   └── scisci/                          ← 다른 주제 뷰
+│       └── index.html
+├── pipeline/                            ← 파이프라인 스크립트
+```
+
+**_papers_index.json 스키마:**
+```json
+[
+  {
+    "slug": "001_AlphaFold_Highly_Accurate",
+    "title": "Highly Accurate Protein Structure Prediction with AlphaFold",
+    "authors": ["John Jumper", "..."],
+    "date": "2021-07-15",
+    "doi": "10.1038/s41586-021-03819-2",
+    "topics": ["ai4s", "scisci"],
+    "primary_topic": "ai4s",
+    "classifications": {
+      "ai4s": {
+        "primary_category": "Life Sciences & Molecular Discovery",
+        "all_categories": ["Life Sciences & Molecular Discovery", "Scientific Foundation Models"],
+        "sub_category": "Protein Structure & Design",
+        "sub_categories": {
+          "Life Sciences & Molecular Discovery": "Protein Structure & Design",
+          "Scientific Foundation Models": "Domain-Specific Model Adaptation"
+        }
+      },
+      "scisci": {
+        "primary_category": "Knowledge Production & Innovation",
+        "all_categories": ["Knowledge Production & Innovation"],
+        "sub_category": "",
+        "sub_categories": {}
+      }
+    },
+    "score": 5.0,
+    "essence": "AlphaFold는 아미노산 서열만으로...",
+    "has_pdf": true,
+    "has_figures": true,
+    "review_date": "2026-03-26"
+  }
+]
+```
+
+**⚠️ 토픽별 분류 격리 원칙:**
+- 분류 필드는 `classifications[topic]` 안에만 존재. 최상위에 `primary_category` 등 flat 필드 사용 금지.
+- `classify_papers.py --topic ai4s` 실행 시 ai4s 논문만 분류. scisci 데이터를 건드리지 않음.
+- 각 토픽은 독립된 카테고리 체계를 가짐 (ai4s 8개, scisci 9개).
+
+**핵심 원칙:**
+1. **리뷰는 docs/papers/{slug}/에만 존재** — topic 디렉토리에 리뷰 복사하지 않음
+2. **리뷰 작성 전 _papers_index.json 검색** — 이미 리뷰가 있으면 topics 배열에 현재 주제만 추가
+3. **topic 뷰의 index.html은 ../papers/{slug}/index.html로 링크**
+4. **slug는 전역 고유** — {NNN}_{SafeTitle} 형식, NNN은 docs/papers/ 전체에서 순번
+5. **기존 topic 디렉토리(docs/ai4s/ 등)에 있던 리뷰는 docs/papers/로 마이그레이션** 필요
+</Execution_Policy>
+
+<Steps>
+1. **Phase 0 - 파라미터 설정**
+
+   사용자 입력에서 검색 파라미터를 결정한다:
+
+   | 파라미터 | 기본값 | 예시 |
+   |---------|--------|------|
+   | 시기 (period) | 지난 24시간 | "이번 주", "지난 3일", "2026-03-20부터" |
+   | 분야 (fields) | science of science, bibliometrics, scientometrics | "AI for science", "materials science" |
+   | 최대 등록 수 (max_papers) | 20 | "최대 10편", "전부 다" |
+   | 관련성 임계값 (threshold) | 0.5 | "느슨하게 0.3", "엄격하게 0.8" |
+   | 모드 (mode) | `full` | `--local`: Zotero 기존 논문만 사용 (검색/등록 스킵) |
+
+   #### 실행 모드
+
+   | 모드 | 트리거 | 실행 Phase |
+   |------|--------|-----------|
+   | `full` (기본) | "논문 큐레이션", "최신 논문 찾아줘" | 전체 파이프라인 |
+   | `local` | "--local", "가지고 있는 논문으로" | 웹 검색/등록 스킵, Zotero 기반 |
+   | `update` | "--update", "업데이트", "새 논문 반영" | 신규만 리뷰, 기존 보존, narrative만 (변경 카테고리) |
+   | `update --timeline` | "--update --timeline" | 신규만 리뷰 + 변경 카테고리 타임라인 이미지 재생성 |
+   | `--timeline` (단독) | "--timeline", "타임라인 재생성" | 전체 narrative + 타임라인 이미지 재생성 |
+   | `update-force` | "--update-force", "전체 재생성" | 리뷰/분류/타임라인 전부 재생성 |
+
+   `--local`, `--update`, `--update-force`, `--timeline`은 **독립 플래그**로 조합 가능:
+
+   | update | timeline | 카테고리 체계 | 신규 분류 | Narrative | Timeline 이미지 | Summaries/Insights |
+   |:------:|:--------:|:-----------:|:--------:|:---------:|:--------------:|:-----------------:|
+   | X | X | 재생성 (topic_modeling) | 전체 | 전체 | 전체 | 전체 |
+   | O | X | **기존 유지** | 신규만 | **변경 카테고리만** | **스킵** | **변경 카테고리만** |
+   | O | O | **기존 유지** | 신규만 | **변경 카테고리만** | **변경 카테고리만** | **변경 카테고리만** |
+   | X | O | 기존 유지 | - | **전체** | **전체** | **전체** |
+
+   위 표에 `--local`을 추가하면 웹 검색/Zotero 등록만 스킵되고 나머지 동작은 동일.
+
+   **`--update` 핵심 원칙**:
+   - `classifications[topic]`이 이미 있는 논문은 분류 스킵. 신규 논문만 기존 카테고리에 분류.
+   - 카테고리 체계(topic_modeling) 재생성 안 함 — 기존 카테고리 구조 유지.
+   - 신규 논문이 추가된 카테고리만 narrative/summaries/insights 재생성.
+   - timeline 이미지는 `--timeline` 플래그가 있을 때만 재생성.
+
+   **`--timeline` 핵심 원칙** (단독 사용 시):
+   - 리뷰 생성 없음. 기존 논문 데이터로 전체 카테고리의 narrative + 이미지 재생성.
+
+   **`--update-force` 핵심 원칙**: 기존 docs/papers/{slug}/의 review.md, figures/, index.html, text.md를 **모두 삭제 후 재생성**. PDF부터 다시 파싱하여 완전히 새로운 리뷰를 생성. classification, timeline, category descriptions도 전부 재생성.
+
+   **⚠️ 카테고리 분류 원칙:**
+
+   **카테고리 체계는 MECE (Mutually Exclusive, Collectively Exhaustive):**
+   - 카테고리 **정의** 자체는 상호 배타적이어야 한다. 각 카테고리가 다루는 영역이 명확히 구분됨.
+   - 전체 포괄적(CE): 모든 논문이 최소 1개 카테고리에 속해야 하며, "Other"로 빠지는 비율 10% 이하.
+
+   **논문 분류는 Multi-class:**
+   - 카테고리 정의는 배타적이지만, **논문의 성격에 따라 여러 카테고리에 동시에 속할 수 있다.**
+   - 예: 에이전트(Autonomous Agents)로 NLP 작업(Scientific NLP)을 수행하는 논문 → 두 카테고리 모두 해당.
+   - 예: 기초 모델(Foundation Models)을 만들고 벤치마크(Benchmarks)로 평가 → 두 카테고리 모두 해당.
+   - **`classifications[topic].primary_category`**: 가장 적합한 1개.
+   - **`classifications[topic].all_categories`**: 논문이 의미 있게 기여하는 모든 카테고리 (1~3개). 적극적으로 할당.
+   - **`classifications[topic].sub_categories`**: 카테고리별 sub_category dict. `{"Category A": "Sub A", "Category B": "Sub B"}`. multi-class 논문은 소속된 각 카테고리마다 별도의 sub_category를 가진다.
+   - **`classifications[topic].sub_category`**: primary_category 기준 sub (legacy 호환).
+   - `build_topic_index.py`가 `classifications[topic].all_categories` 기반으로 여러 카테고리에 카드를 표시.
+
+   **분류 도구:**
+   - `classify_papers.py --topic ai4s`: category + sub-category 일괄 분류 (**해당 토픽 논문만 필터링**)
+   - `classify_papers.py --topic ai4s --sub-only`: sub-category만 재분류
+   - **`--update` 모드**: `classifications[topic]`이 이미 있는 논문은 스킵, 신규만 분류 (기존 보존)
+
+   **정본 관리 (단방향 흐름):**
+   `classify_papers.py` → `_papers_index.json` (classifications[topic]) → `build_category_summaries.py`
+   - sub_categories 이름의 정본은 `classify_papers.py`가 all_categories 각각에 대해 할당한 값
+   - multi-class 논문은 카테고리마다 다른 sub_category를 가짐 (예: Life Sciences에서는 "Protein Structure & Design", Foundation Models에서는 "Domain-Specific Model Adaptation")
+   - `build_category_summaries.py`는 `sub_categories[cat_name]` 정본 이름을 사용 (자체 생성 금지)
+   - `build_topic_index.py`는 카드 배치 시 `sub_categories[cat_name]`으로 해당 카테고리 고유의 sub-group에 배치
+
+   `local` 모드 동작:
+   - Phase 1~5를 **전부 스킵**
+   - Zotero 컬렉션에서 period에 해당하는 기존 논문을 직접 가져옴
+   - PDF 보유 여부 확인 → PDF 있는 논문만 리뷰 대상
+   - Phase 6 (리뷰 + Figure 추출 + HTML + 배포)부터 실행
+
+   ```python
+   # local 모드 감지
+   local_mode = any(kw in user_input.lower() for kw in [
+       "--local", "가지고 있는", "기존 논문", "zotero에 있는", "보유한 논문",
+       "수집된 논문", "현재 논문", "이미 있는"
+   ])
+
+   if local_mode:
+       # Zotero에서 직접 가져오기
+       items = []
+       start = 0
+       while True:
+           url = f"https://api.zotero.org/users/{USER_ID}/collections/{collection_key}/items/top?limit=100&start={start}&format=json"
+           req = urllib.request.Request(url, headers={"Zotero-API-Key": API_KEY})
+           with urllib.request.urlopen(req) as resp:
+               batch = json.load(resp)
+           if not batch: break
+           items.extend(batch)
+           start += 100
+           if len(batch) < 100: break
+
+       # period 필터
+       registered = []
+       for item in items:
+           d = item["data"]
+           if d.get("itemType") in ("attachment", "note"): continue
+           date = d.get("date", "")
+           if period_start[:4] in date or (len(period_start) >= 4 and any(str(y) in date for y in range(int(period_start[:4]), 2027))):
+               # PDF 확인
+               children = get_children(d["key"])
+               pdf_path = None
+               for c in children:
+                   p = c["data"].get("path", "")
+                   if p.endswith(".pdf"): pdf_path = p; break
+               registered.append({
+                   "title": d.get("title",""), "key": d["key"],
+                   "pdf": pdf_path is not None, "pdf_path": pdf_path,
+                   "authors": [f"{c.get('firstName','')} {c.get('lastName','')}".strip() for c in d.get("creators",[])],
+                   "date": date, "doi": d.get("DOI",""), "arxiv_id": get_arxiv_id(d),
+                   "abstract": d.get("abstractNote",""),
+               })
+
+       print(f"Local mode: {len(registered)} papers from Zotero ({sum(1 for r in registered if r['pdf'])} with PDF)")
+       # → Phase 6으로 직접 진행
+   ```
+
+   `update` 모드 동작:
+   - 중앙 저장소(papers_dir)의 review.md 목록을 스캔하여 이미 리뷰된 논문 제목 수집 (현재 field_slug가 topics에 포함된 것만)
+   - Zotero 컬렉션에서 현재 논문 목록을 가져와 diff 계산 (신규 추가 / 삭제됨)
+   - 신규 논문만 PDF 확인 → Figure 추출 → 리뷰 작성
+   - 기존 분류 기준(TOPIC_KEYWORDS)으로 신규 논문을 multi-class 분류
+   - Research Timeline을 새로 생성 (전체 논문 기반)
+   - index.html을 전체 재빌드 (기존 + 신규 모두 포함)
+   - GitHub Pages 배포
+
+   ```python
+   # 플래그 감지 (독립적으로 조합 가능)
+   local_mode = any(kw in user_input.lower() for kw in [
+       "--local", "가지고 있는", "기존 논문", "zotero에 있는", "보유한 논문",
+       "수집된 논문", "현재 논문", "이미 있는"
+   ])
+   update_force_mode = any(kw in user_input.lower() for kw in [
+       "--update-force", "전체 재생성", "다시 만들어", "리뷰 재생성",
+       "update-force", "force update", "전부 다시"
+   ])
+   update_mode = not update_force_mode and any(kw in user_input.lower() for kw in [
+       "--update", "업데이트", "논문 추가 반영", "새 논문 반영", "update"
+   ])
+
+   if update_force_mode:
+       import os, re, shutil
+
+       # --update-force: 기존 review.md, figures/, index.html 삭제 후 전체 재생성
+       # text.md 캐시는 유지 (PDF 재파싱 방지)
+
+       # 1. 논문 풀 결정
+       if local_mode:
+           all_papers = get_all_items(collection_key)
+       else:
+           # Phase 1~5 실행 후 전체 풀
+           all_papers = get_all_items(collection_key)
+
+       # 2. 기존 파일 전부 삭제 (slug 디렉토리 자체는 유지)
+       for slug in os.listdir(papers_dir):
+           slug_dir = os.path.join(papers_dir, slug)
+           if not os.path.isdir(slug_dir) or not slug[0].isdigit():
+               continue
+           for fname in ["review.md", "index.html", "text.md"]:
+               fpath = os.path.join(slug_dir, fname)
+               if os.path.exists(fpath):
+                   os.remove(fpath)
+           # figures/ 삭제 (디렉토리 전체)
+           fig_dir = os.path.join(slug_dir, "figures")
+           if os.path.isdir(fig_dir):
+               shutil.rmtree(fig_dir)
+
+       print(f"Update-force: cleaned existing reviews. {len(all_papers)} papers to re-process.")
+
+       # 3. 모든 논문을 신규로 처리 → Phase 6 (리뷰 + Figure + HTML) 전체 실행
+       # classification, timeline, category descriptions도 전부 재생성
+       # 이후 흐름은 full 모드의 Phase 6과 동일
+
+   elif update_mode:
+       import os, re
+
+       # 1. 중앙 저장소에서 현재 주제(field_slug)에 해당하는 리뷰 완료 논문 제목 수집
+       existing_titles = set()
+       for slug in os.listdir(papers_dir):
+           rpath = os.path.join(papers_dir, slug, "review.md")
+           if not os.path.isfile(rpath):
+               continue
+           # _papers_index.json에서 topics 확인 (현재 field_slug 포함 여부)
+           entry = existing_reviews.get(slug)
+           if entry and field_slug not in entry.get("topics", []):
+               continue
+           with open(rpath, "r", encoding="utf-8") as f:
+               title_m = re.search(r'^#\s+(.+)$', f.readline(), re.MULTILINE)
+               if title_m:
+                   existing_titles.add(title_m.group(1).strip().lower()[:40])
+
+       # 2. 논문 풀 결정 (local 여부에 따라)
+       if local_mode:
+           # --local --update: Zotero DB만 참조 (웹 검색/등록 스킵)
+           all_papers = get_all_items(collection_key)
+       else:
+           # --update (without --local): 웹 검색 + Zotero 등록 후 전체 풀
+           # Phase 1~5 실행 (paper-scout → zotero-librarian)
+           # ... (full 모드와 동일한 검색/등록 파이프라인)
+           all_papers = get_all_items(collection_key)  # 등록 후 최신 상태
+
+       # 3. Diff 계산
+       new_papers = [p for p in all_papers
+                     if p["title"].strip().lower()[:40] not in existing_titles]
+
+       # 4. 삭제된 논문 감지
+       current_titles = set(p["title"].strip().lower()[:40] for p in all_papers)
+       removed = [t for t in existing_titles if t not in current_titles]
+
+       print(f"Update mode (local={local_mode}): +{len(new_papers)} new, -{len(removed)} removed")
+
+       # 5. 신규 논문만 리뷰 (PDF → Figure → review.md)
+       #    기존 review.md는 수정하지 않음
+       #    삭제된 논문은 papers_dir에서 slug 폴더 삭제
+
+       # 6. 전체 재빌드 (classification 기준 유지)
+       #    - 기존 TOPIC_KEYWORDS 그대로 사용 (절대 변경 금지)
+       #    - 기존 + 신규 review.md 모두 파싱하여 multi-class 재분류
+       #    - Research Timeline 재생성 (gemini-3-pro-image-preview)
+       #    - index.html + 개별 review HTML 전체 재생성
+       #    - GitHub Pages push
+   ```
+
+   ```python
+   from datetime import datetime, timedelta, timezone
+
+   KST = timezone(timedelta(hours=9))
+
+   # 기본: 지난 24시간
+   period_start = (datetime.now(KST) - timedelta(days=1)).strftime("%Y-%m-%d")
+   period_end = datetime.now(KST).strftime("%Y-%m-%d")
+
+   # 기본 분야
+   fields = {
+       "keywords": ["science of science", "bibliometrics", "scientometrics",
+                     "research evaluation", "citation analysis", "science mapping",
+                     "scholarly communication", "altmetrics", "research assessment"],
+       "arxiv_cats": ["cs.DL", "cs.SI"],  # Digital Libraries, Social/Info Networks
+       "openalex_concepts": ["C2522767166", "C2779455604", "C178315738"],
+       # Bibliometrics, Scientometrics, Science of science
+   }
+
+   # Zotero 컬렉션 매핑 (분야별 자동 분류)
+   ZOTERO_COLLECTIONS = {
+       "scisci": "3KVIDDKH",      # "Science of Science"
+       "ai4s":   "WKEZLEE8",      # "AI assisted Research"
+   }
+   collection_key = ZOTERO_COLLECTIONS.get(field_slug, "")
+   ```
+
+2. **Phase 1-3 - 논문 검색 + 중복 제거 + 관련성 필터링**
+
+   `search_papers.py`가 arXiv, Semantic Scholar, OpenAlex에서 병렬 검색하고 중복 제거 및 관련성 필터링을 수행한다.
+
+   ```bash
+   # 기본: 지난 7일, threshold 0.3
+   PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --days 7
+
+   # 커스텀: 지난 1일, 최대 50편, threshold 0.5
+   PYTHONUTF8=1 python pipeline/search_papers.py --topic ai4s --days 1 --max-papers 50 --threshold 0.5
+   ```
+
+   **검색 흐름:**
+   1. 토픽별 키워드로 3개 소스 순차 검색 (rate limiting 자동 적용)
+   2. DOI + 제목 퍼지 매칭으로 중복 제거
+   3. primary/secondary 키워드 매칭으로 관련성 점수 계산
+   4. threshold 이상만 필터링, 점수순 정렬
+
+   **출력:** `{topic}/_search_results.json`
+
+3. **Phase 4-5 - Zotero 등록 + PDF 다운로드**
+
+   `register_zotero.py`가 검색 결과를 Zotero에 등록하고 PDF를 다운로드한다.
+
+   ```bash
+   # 검색 결과 등록
+   PYTHONUTF8=1 python pipeline/register_zotero.py --topic scisci
+
+   # 커스텀 입력 파일
+   PYTHONUTF8=1 python pipeline/register_zotero.py --topic ai4s --input docs/ai4s/_search_results.json
+
+   # PDF 누락 논문 재시도
+   PYTHONUTF8=1 python pipeline/register_zotero.py --topic scisci --fix-pdfs
+
+   # 미리보기 (실제 등록 없이)
+   PYTHONUTF8=1 python pipeline/register_zotero.py --topic scisci --dry-run
+   ```
+
+   **처리 흐름:**
+   1. Zotero API로 제목 기반 중복 체크 (first 40 chars)
+   2. 신규 논문 일괄 등록 (batch 50)
+   3. PDF 다운로드: arXiv → S2 openAccessPdf → Unpaywall 순서
+   4. linked file로 Zotero 아이템에 첨부
+
+   **출력:** `{topic}/_register_results.json`
+
+4. **Phase 6 - Paper Review 작성 및 GitHub Pages 배포**
+
+   등록된 각 논문에 대해 리뷰를 생성하고, 결과를 GitHub Pages에 배포한다.
+   모든 단계는 실제 스크립트로 실행된다.
+
+   #### 6-1. 리뷰 생성 (전체 파이프라인)
+
+   `run_update_force.py`가 Zotero fetch → PDF 파싱 → Figure 추출 → review.md → index.html 전체를 처리한다.
+
+   ```bash
+   # 전체 재생성 (병렬 4)
+   PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --concurrency 4
+
+   # --update: 신규만 리뷰 + 변경 카테고리 narrative만 (타임라인 이미지 스킵)
+   PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --concurrency 4 --resume
+
+   # --update --timeline: 신규 리뷰 + 변경 카테고리 narrative + 타임라인 이미지
+   PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --concurrency 4 --resume --timeline
+
+   # --timeline 단독: 리뷰 없이 전체 narrative + 타임라인 이미지 재생성
+   PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --timeline
+   ```
+
+   **내부 처리:**
+   - PDF 유효성 검사 (크기 < 10KB, redirect 감지 → 제외)
+   - 본문 추출 → `docs/papers/{slug}/text.md` 캐싱 (PyMuPDF)
+   - Figure 추출 (PyMuPDF 3x zoom, 최대 5개, pages 0-14)
+   - Figure 검증 (Gemini Flash): 동일 크기 figure, 5KB 미만 → 무효 처리
+   - review.md 작성 (Claude Haiku, JSON→마크다운 템플릿)
+   - index.html 변환 (review_to_html.py 내부 호출)
+   - checkpoint 자동 저장 (`_update_force_checkpoint.json`) → 중단 후 재개 가능
+   - Pass 1 완료 후 failed 논문 자동 재시도
+
+   **무효 Figure 대체:**
+   Figure가 무효 판정되면 `gemini-timeline` 스킬의 concept diagram 모드로 대체 이미지를 생성한다.
+
+   #### 6-2. 분류 (카테고리 + 서브카테고리)
+
+   ```bash
+   # 전체 분류
+   PYTHONUTF8=1 python pipeline/classify_papers.py --topic ai4s
+
+   # sub-category만 재분류
+   PYTHONUTF8=1 python pipeline/classify_papers.py --topic ai4s --sub-only
+   ```
+
+   **분류 규칙:**
+   - `classifications[topic].primary_category`: 가장 적합한 1개
+   - `classifications[topic].all_categories`: 의미 있게 기여하는 모든 카테고리 (1~3개)
+   - `classifications[topic].sub_categories`: 카테고리별 sub_category dict
+   - `--update` 모드: 기존 분류 보존, 신규만 분류
+
+   #### 6-3. 카테고리 설명 생성
+
+   ```bash
+   PYTHONUTF8=1 python pipeline/build_category_summaries.py --topic ai4s
+   ```
+
+   카테고리별 한국어 설명 + sub-theme 목록을 `_category_summaries.json`에 저장.
+
+   **설명 품질 검증 (빌드 시 자동):**
+   - 설명 길이 최소 150자
+   - 한국어 비율 30% 이상
+   - 마침표 종료
+   위반 시 WARNING 출력.
+
+   #### 6-4. 타임라인 생성
+
+   ```bash
+   # 전체 (narrative + 이미지)
+   PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s
+
+   # narrative만 (Opus streaming)
+   PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s --narrative-only
+
+   # 이미지만 (기존 narrative 사용)
+   PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s --images-only
+
+   # 메인 타임라인만 재생성
+   PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s --main-only
+
+   # 카테고리 타임라인만
+   PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s --category-only
+   ```
+
+   **프로세스 (Bottom-up 3-step):**
+   1. 카테고리별 narrative (Opus streaming) → `_category_narratives.json`
+   2. 카테고리 종합 → 메인 narrative + executive_summary_ko → `_timeline_narrative.json`
+   3. PaperBanana로 이미지 생성 → `{topic}/*.png`
+
+   **핵심 원칙:**
+   - Gemini API 직접 호출 금지 → PaperBanana가 내부 처리
+   - 5 candidate 기본, #1 자동 배포
+   - `_category_narratives.json` 보존 → `--main-only`로 메인만 재생성 가능
+   - executive_summary_ko: max_tokens=4000, 잘림 자동 보정 (마지막 완전한 문장까지)
+
+   #### 6-5. 마스터 인덱스 재빌드
+
+   ```bash
+   PYTHONUTF8=1 python pipeline/build_papers_index.py --topic ai4s
+   ```
+
+   모든 `docs/papers/*/review.md`에서 메타데이터를 추출하여 `docs/papers/_papers_index.json` 재생성.
+
+   #### 6-6. 토픽 인덱스 HTML 생성
+
+   ```bash
+   PYTHONUTF8=1 python pipeline/build_topic_index.py ai4s
+   PYTHONUTF8=1 python pipeline/build_topic_index.py scisci
+   ```
+
+   카테고리 그룹별 카드 UI + Research Timeline + 검색/정렬 기능을 포함한 `{topic}/index.html` 생성.
+
+   **HTML 생성 원칙:**
+   - 카드 UI: hero 배너 + 논문별 카드 + score badge + 대표 figure
+   - MathJax 3 포함 (LaTeX 수식 렌더링)
+   - DOI auto-link (이중 링크 방지)
+   - Figure는 .webp 우선, .png 폴백
+
+   #### 6-7. 개별 리뷰 HTML 변환
+
+   ```bash
+   # 전체 변환
+   PYTHONUTF8=1 python pipeline/review_to_html.py --all
+
+   # 특정 범위만
+   PYTHONUTF8=1 python pipeline/review_to_html.py --slugs 251-394
+   ```
+
+   `review.md` → `index.html` 변환. MathJax, lightbox, 목록 돌아가기 링크 포함.
+
+   #### 6-8. 배포 준비 + Push
+
+   ```bash
+   # PNG→WebP 변환 + 참조 업데이트
+   PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s
+
+   # 변환 + git push
+   PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s --push
+
+   # 크기 예상만 (dry-run)
+   PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s --dry-run
+   ```
+
+   PNG→WebP 변환 (quality 90) → HTML/MD 참조 업데이트 → 원본 PNG 삭제 → git push.
+
+   **배포 URL:** `https://jehyunlee.github.io/paper-curation/{topic}/`
+
+5. **Phase 7 - 결과 보고**
+
+   ```markdown
+   ## 논문 큐레이션 결과
+
+   **검색 기간**: {period_start} ~ {period_end}
+   **분야**: {fields description}
+   **검색 결과**: {total_found}편 → 중복 제거 {unique}편 → 관련성 필터 {filtered}편 → Zotero 신규 등록 {registered}편
+   **리뷰 작성**: {reviewed}편 | **배포**: {deploy_url}
+
+   | # | 제목 | 저자 | 소스 | PDF | Zotero | 리뷰 | 점수 |
+   |---|------|------|------|-----|--------|------|------|
+   | 1 | ... | ... | arXiv | ✅ | ABC123 | ✅ | 4/5 |
+   | 2 | ... | ... | S2 | ❌ | DEF456 | ❌ | - |
+
+   **배포 URL**: https://jehyunlee.github.io/paper-curation/{field_slug}_{date_str}/
+   **이미 등록됨**: {already_count}편 (건너뜀)
+   **실패**: {error_count}편
+   ```
+</Steps>
+
+<Tool_Usage>
+- `Agent(subagent_type="paper-scout")`: Phase 1 — 다중 소스 검색 + 중복제거 + 필터링
+- `Agent(subagent_type="zotero-librarian")`: Phase 4-5 — Zotero 등록 + PDF 다운로드 + Figure 추출
+- `Agent(subagent_type="paper-reviewer", run_in_background=true)`: Phase 6a — 병렬 리뷰 (4~5편/배치) → **papers/ 중앙 저장소에 저장**
+- `Agent(subagent_type="web-publisher")`: Phase 6b — **topic 뷰** HTML 빌드 + GitHub Pages 배포 (Research Timeline + 정렬 기능 + DOI 링크 포함)
+- `Skill("gemini-timeline")`: Phase 6-1c — Figure 없는 논문의 대표 이미지 생성 **(concept diagram)**
+- `generate_timelines.py`: Phase 6-1d, 6-1e — **Bottom-up 타임라인 생성 (Gemini 직접 호출 금지)**
+  - Phase 1: 카테고리별 → Opus narrative + 핵심 정보 JSON 저장 + PaperBanana 이미지
+  - Phase 2: 카테고리 JSON 종합 → Opus 메인 narrative + PaperBanana 이미지
+  - `_category_narratives.json`에 카테고리 요약 보존 → `--main-only`로 메인만 재생성 가능
+  - 5 candidate 생성, #1 자동 배포, 변경은 사용자 수동 지시
+- `Bash(python ...)`: 에이전트 내부에서 API 호출, PDF 처리 등
+- PDF 확보: arXiv → S2 openAccessPdf → Unpaywall API → 수동 목록
+- Zotero linked file: `C:\Users\jehyu\GoogleDrive\Zotero\`에 저장 후 linked_file로 첨부
+- Figure 추출: PyMuPDF(fitz)로 Figure 1 영역 렌더링 → `figures/fig1.png`
+- `--fix-missing-pdfs`: 기존 Zotero 아이템 중 PDF 누락 보완 (zotero-librarian)
+</Tool_Usage>
+
+<Examples>
+<Good>
+User: "최신 논문 찾아줘"
+→ 기본값 (24시간, science of science/bibliometrics) 으로 전체 파이프라인 실행
+
+User: "이번 주 AI for science 논문 수집해서 Zotero에 넣어줘"
+→ period=7일, fields=["AI for science", "scientific discovery", "AI4Science"]
+
+User: "논문 큐레이션 해줘, 최대 5편만"
+→ 기본 분야, max_papers=5
+</Good>
+
+<Bad>
+User: "이 논문 Zotero에 추가해" + 특정 URL
+→ zotero-add 스킬 사용.
+
+User: "이 논문 리뷰해줘"
+→ paper-review 스킬 사용.
+</Bad>
+</Examples>
+
+<Escalation_And_Stop_Conditions>
+- 3개 소스 모두 API 실패: 사용자에게 알리고 수동 검색 제안
+- 검색 결과 0건: 검색 범위(기간/분야) 확대 제안
+- Zotero API 실패: 검색 결과를 CSV로 저장하고 수동 등록 안내
+- 등록 중 연속 5건 실패: 중단하고 부분 결과 보고
+</Escalation_And_Stop_Conditions>
+
+<Final_Checklist>
+- [ ] 3개 소스 검색 완료 (arXiv, Semantic Scholar, OpenAlex)
+- [ ] 중복 제거 완료
+- [ ] 관련성 필터링 적용
+- [ ] Zotero 기존 아이템 중복 체크
+- [ ] 신규 논문 Zotero 등록 + PDF 링크
+- [ ] 각 논문 paper-review 실행 (PDF 있는 논문만)
+- [ ] 인덱스 페이지 생성 (요약 + 핵심 그림 + 점수)
+- [ ] GitHub Pages 배포 (https://jehyunlee.github.io/paper-curation/{분야}_{YYMMDD}/)
+- [ ] 배포 URL 확인
+- [ ] 결과 보고 (등록 수, 리뷰 수, 배포 URL)
+</Final_Checklist>
+
+<Advanced>
+## 분야별 프리셋
+
+| 프리셋 | 키워드 | arXiv 카테고리 | OpenAlex Concept |
+|--------|--------|--------------|-----------------|
+| **scisci** (기본) | bibliometrics, scientometrics, science of science | cs.DL, cs.SI | C2522767166, C2779455604 |
+| **ai4sci** | AI for science, scientific discovery, ML for science | cs.AI, cs.LG, physics.comp-ph | C154945302 |
+| **materials** | materials science, computational materials | cond-mat.mtrl-sci | C192562407 |
+| **energy** | battery, solar cell, energy storage | cond-mat.mtrl-sci, physics.app-ph | C120665830 |
+
+사용: "AI for science 분야 논문 큐레이션해줘" → ai4sci 프리셋 자동 선택
+
+## 스케줄링
+
+매일 자동 실행하려면 `/schedule` 스킬과 연계:
+```
+/schedule create --name "daily-paper-curation" --cron "0 9 * * *" --prompt "/paper-curation"
+```
+
+## 검색 범위 확장
+
+기본 분야 외 추가 키워드를 사용자가 지정할 수 있음:
+```
+/paper-curation --fields "network science, complex networks" --period 7d --max 30
+```
+
+## --update-force 재현 파이프라인
+
+새 주제 또는 기존 주제 전체 재생성 시 아래 순서대로 실행.
+모든 스크립트는 `paper-curation/` 디렉토리에서 실행.
+
+```bash
+# 사전 조건: Zotero 컬렉션에 논문이 등록되어 있어야 함
+# COLLECTIONS dict에 topic → collection_key 매핑 필요 (run_update_force.py 내)
+
+# ── Step 0: Zotero 삭제/제목변경 동기화 (--update 시 필수) ──
+PYTHONUTF8=1 python pipeline/sync_zotero.py --topic ai4s --dry-run  # 먼저 확인
+PYTHONUTF8=1 python pipeline/sync_zotero.py --topic ai4s            # 실행
+
+# ── Step 1: PDF → text.md → figures → review.md → index.html ──
+# docs/papers/ 비우고 시작 (최초 또는 전체 재생성 시)
+PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --concurrency 4
+# 중단 후 재개 / 실패분 재시도 / 신규 논문 추가:
+PYTHONUTF8=1 python pipeline/run_update_force.py --topic ai4s --concurrency 4 --resume
+
+# ── Step 2: _papers_index.json 재생성 ──
+PYTHONUTF8=1 python pipeline/build_papers_index.py --topic ai4s
+
+# ── Step 3: 카테고리 + sub-category 분류 (multi-class) ──
+PYTHONUTF8=1 python pipeline/classify_papers.py --topic ai4s
+# sub-category만 재분류:
+PYTHONUTF8=1 python pipeline/classify_papers.py --topic ai4s --sub-only
+
+# ── Step 4: 카테고리 설명 생성 (한글 [NNN] 마커) ──
+PYTHONUTF8=1 python pipeline/build_category_summaries.py --topic ai4s
+# 한글 설명만 재생성:
+PYTHONUTF8=1 python pipeline/build_category_summaries.py --topic ai4s --regen-ko
+
+# ── Step 5: 타임라인 생성 (PaperBanana, Gemini 직접 호출 금지) ──
+PYTHONUTF8=1 python pipeline/generate_timelines.py --topic ai4s
+# 메인만: --main-only, 카테고리만: --category-only
+# candidate 수: --candidates 5 (기본값, #1 자동 배포)
+# 특정 카테고리만: --categories "Ethics, Policy & Meta-Science"
+
+# ── Step 6: index.html 빌드 + 검증 ──
+PYTHONUTF8=1 python pipeline/review_to_html.py --all
+PYTHONUTF8=1 python pipeline/build_topic_index.py ai4s
+# 검증 항목: ../papers/ 경로, 설명 품질, [NNN] 링크
+
+# ── Step 7: 배포 준비 (PNG→WebP + gitignore) ──
+PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s              # dry-run으로 크기 확인
+PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s --quality 90  # 변환 실행
+PYTHONUTF8=1 python pipeline/prepare_deploy.py --topic ai4s --push        # 변환 + git push
+```
+
+### 스크립트 요약
+
+| 스크립트 | 역할 | 입력 | 출력 |
+|----------|------|------|------|
+| `sync_zotero.py` | Zotero 삭제/제목변경 동기화 (DOI+퍼지매칭) | Zotero API + `_papers_index.json` | 삭제/제목 업데이트 |
+| `run_update_force.py` | PDF→review 배치 | Zotero API | `docs/papers/{slug}/` |
+| `build_papers_index.py` | 마스터 인덱스 + 스키마 마이그레이션 | `docs/papers/*/review.md` | `_papers_index.json` (`classifications[topic]`) |
+| `classify_papers.py` | 토픽별 카테고리 + 카테고리별 sub 분류 (update-safe) | `_papers_index.json` | `classifications[topic].sub_categories` dict |
+| `build_category_summaries.py` | 한글 설명 생성 (정본 `sub_categories[cat]` 참조) | `classifications[topic]` | `_category_summaries.json` |
+| `generate_timelines.py` | Bottom-up 타임라인 (카테고리→메인, Opus+PaperBanana) | `classifications[topic]` | `{topic}/*.png` + `_category_narratives.json` |
+| `review_to_html.py` | review→HTML 변환 | `docs/papers/*/review.md` | `docs/papers/*/index.html` |
+| `build_topic_index.py` | 인덱스 페이지 빌드 | 위 모든 파일 | `docs/{topic}/index.html` |
+| `prepare_deploy.py` | 배포 준비 (PNG→WebP, gitignore, push) | `docs/papers/*/figures/*.png` | `.webp` + git push |
+</Advanced>

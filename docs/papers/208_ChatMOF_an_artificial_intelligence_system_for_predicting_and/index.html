@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ChatMOF: an artificial intelligence system for predicting and generating metal-organic frameworks using large language models</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>ChatMOF: an artificial intelligence system for predicting and generating metal-organic frameworks using large language models</h1>
+<blockquote><p><strong>저자</strong>: Y. Kang, Jihan Kim | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41467-024-48998-4" target="_blank">10.1038/s41467-024-48998-4</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1 | ChatMOF의 개념도(a)와 구조도(b). ChatMOF는 에이전트, 도구 모음, 평가기의 세 가지 핵심 요소로 구성되어 자연어 질문에 기반하여 금속-유기 골격의 성질을 예측하고 구조를 생성한다.</em></p></div>
+<p>대규모 언어 모델(Large Language Model, LLM)을 활용하여 금속-유기 골격(Metal-Organic Framework, MOF)의 성질을 예측하고 신규 구조를 생성할 수 있는 인공지능 시스템 ChatMOF를 개발했다. 자연스러운 텍스트 입력만으로 복잡한 재료 과학 작업을 자동화할 수 있음을 보여주었다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 트랜스포머 기반 대규모 언어 모델(GPT-4, GPT-3.5 등)이 화학(chemistry), 의학(medicine), 생물학(biology) 등 다양한 분야에서 활용되고 있으며, 자율적 LLM 에이전트가 데이터 처리 및 결과 생성에서 우수한 성능을 보임.</li>
+<li><strong>Gap</strong>: 재료 과학 분야, 특히 MOF와 같은 복잡한 고급 재료에 대한 LLM 활용은 여전히 미흡함. 두 가지 주요 문제: (1) 복잡한 재료의 구조를 텍스트로 표현할 수 있는 형식이 부족함, (2) 재료 과학 분야의 텍스트 형식 학습 데이터 부족.</li>
+<li><strong>Why</strong>: MOF는 높은 기공성(porosity), 넓은 표면적(surface area), 우수한 조절 가능성(tunability) 때문에 화학 응용에 광범위하게 사용되며, 새로운 재료 설계 자동화의 필요성이 높음.</li>
+<li><strong>Approach</strong>: LLM을 데이터베이스(CoREMOF, QMOF, MOFkey, DigiMOF)와 기계학습 모델(MOFTransformer)로 통합하는 멀티 컴포넌트 시스템 설계.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>Fig. 2 | 테이블 검색 도구의 예시. 사용자 질문에 따라 ChatMOF가 자동으로 데이터베이스에서 정보를 추출한다.</em></p></div>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>Fig. 3 | 예측기(predictor)의 사용 예시. MOFTransformer 모델을 선택하여 재료의 성질을 예측한다.</em></p></div>
+<ol>
+<li><strong>높은 예측 정확도</strong>: GPT-4 기반 ChatMOF는 검색(searching) 96.9%, 예측(predicting) 95.7%, 생성(generating) 87.5%의 높은 정확도 달성.</li>
+<li><strong>다중 작업 수행</strong>: 데이터 검색(data retrieval), 성질 예측(property prediction), 구조 생성(structure generation)의 세 가지 핵심 작업을 자동으로 수행하며, 자연언어 입력만으로 사용자가 원하는 성질의 MOF 생성 가능.</li>
+<li><strong>실질적 재료 생성</strong>: 기존 LLM 연구가 문헌에서 추출한 데이터 기반의 응답 생성에 국한된 반면, ChatMOF는 실제 재료 구조 생성이 가능.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
+<p class="fig-caption"><em>Fig. 4 | 유전 알고리즘(genetic algorithm)을 활용한 MOF 생성 프로세스.</em></p></div>
+<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
+<p class="fig-caption"><em>Fig. 5 | 복합적 다단계 질문의 예시. CO₂ Henry 계수와 관련된 복잡한 쿼리 처리.</em></p></div>
+<p><strong>시스템 아키텍처:</strong></p>
+<ul>
+<li><strong>에이전트(Agent)</strong>: ReAct 및 MRKL 방법론 기반으로 사용자 쿼리를 분석, 행동 결정, 입력 관리, 결과 관찰의 4단계 운영 수행. LLM을 중앙 조정자로 활용하여 전체 프로세스 관리.</li>
+<li><strong>도구 모음(Toolkit)</strong>: 4가지 범주로 분류
+<ul>
+<li><strong>테이블 검색(Table-searcher)</strong>: CoREMOF, QMOF 데이터베이스에서 사전 계산된 성질 추출</li>
+<li><strong>인터넷 검색(Internet-searcher)</strong>: 온라인 정보 수집</li>
+<li><strong>예측기(Predictor)</strong>: MOFTransformer 기계학습 모델을 활용한 성질 예측</li>
+<li><strong>생성기(Generator)</strong>: 유전 알고리즘을 통한 새로운 MOF 구조 생성</li>
+<li><strong>유틸리티(Utilities)</strong>: 계산기, 시각화기, 파일 입출력 등</li>
+</ul>
+</li>
+<li><strong>평가기(Evaluator)</strong>: 도구로부터 얻은 출력을 평가하여 최종 응답 생성 또는 재계획 지시.</li>
+</ul>
+<p><strong>주요 기술 요소:</strong></p>
+<ul>
+<li>MOFTransformer: 원자, 결합 등 국소 특성과 표면적, 위상(topology) 등 전역 특성을 활용하여 100만 개의 가상 MOF로 사전학습 후 특정 성질별 미세조정.</li>
+<li>MOFkey 데이터베이스: 규칙 기반 방법으로 유기 링커, 금속 클러스터, 위상 정보 제공.</li>
+<li>DigiMOF 데이터베이스: 텍스트 마이닝을 통한 합성 조건 정보(유기 전구체, 금속 전구체, 용매).</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>LLM과 재료 과학의 통합</strong>: 문헌 정보 추출 수준을 넘어 실제 재료 구조 생성까지 확장한 혁신적 접근법.</li>
+<li><strong>구조화된 멀티 컴포넌트 설계</strong>: 에이전트, 도구, 평가기의 계층적 구조로 자동 추론과 도구 선택을 효율적으로 구현.</li>
+<li><strong>자연언어 인터페이스의 실질화</strong>: 형식적 쿼리 없이 자연언어만으로 전문적 재료 과학 작업 수행 가능하게 함으로써 사용성과 접근성 대폭 향상.</li>
+<li><strong>역설계(Inverse Design) 구현</strong>: 사용자가 원하는 성질을 명시하면 그에 맞는 MOF 구조를 자동 생성하는 기능.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>생성 정확도 제약</strong>: 87.5%의 생성 정확도는 검색, 예측에 비해 낮으며, 생성된 구조의 합성 가능성(synthesizability) 및 실험적 검증이 필요함.</li>
+<li><strong>데이터베이스 의존성</strong>: 시스템의 성능이 CoREMOF, QMOF 등 기존 데이터베이스의 완전성과 정확성에 크게 의존하며, 데이터가 없는 신규 재료 클래스에 대해서는 한계 존재.</li>
+<li><strong>LLM의 제한된 전문성</strong>: 보충 자료에서 보여주듯이 LLM 단독으로는 MOF 관련 전문 질문에 대한 정확한 응답 불가능하므로, 외부 도구와의 통합이 필수적.</li>
+<li><strong>계산 비용</strong>: MOFTransformer 예측의 빠른 속도는 장점이나, 생성 프로세스(유전 알고리즘)의 계산 시간은 명시되지 않음.</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>합성 가능성 평가 모듈 추가</li>
+<li>실험적 검증을 통한 생성 구조의 신뢰성 확인</li>
+<li>MOF 외 다른 다공성 재료(zeolite, COF 등)로 확장</li>
+<li>더 큰 규모의 재료 데이터베이스 구축 및 활용</li>
+<li>미세조정된 도메인 특화 LLM 개발</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: ChatMOF는 대규모 언어 모델을 데이터베이스 및 기계학습과 결합하여 재료 과학 분야에 실질적 가치를 제공하는 혁신적 AI 시스템이며, 특히 자연언어 기반 인터페이스와 구조 생성 기능은 주목할 만하나, 생성 정확도 향상과 실험적 검증을 통한 추가 개발이 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../764_Sparks_Multi-Agent_Artificial_Intelligence_Model_Discovers_P/index.html">Sparks: Multi-Agent Artificial Intelligence Model Discovers Protein Design Principles</a></div><div class="conn-reason">특정 과학 영역에서의 AI 시스템 성공 사례가 일반적인 자동화된 과학 발견의 가능성을 뒷받침한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../398_Harnessing_large_language_models_for_scientific_novelty_dete/index.html">Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set</a></div><div class="conn-reason">MOF 예측과 생성에서 AI 시스템과 LLM 기반 데이터 수집이라는 서로 다른 접근법으로 화학 소재 연구를 자동화한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../398_Harnessing_large_language_models_for_scientific_novelty_dete/index.html">Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set</a></div><div class="conn-reason">MOF와 화학 소재라는 유사한 영역에서 LLM 기반 지식 추출과 AI 시스템 구축의 서로 다른 접근법을 비교한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../298_Earth-Agent_Unlocking_the_Full_Landscape_of_Earth_Observatio/index.html">Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents</a></div><div class="conn-reason">지구 관측 데이터와 화학 소재라는 서로 다른 과학 영역에서 멀티모달 AI 에이전트 접근법을 비교할 수 있다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../523_MatterChat_A_Multi-Modal_LLM_for_Material_Science/index.html">MatterChat: A Multi-Modal LLM for Material Science</a></div><div class="conn-reason">특정 화학 소재(MOF)에 특화된 시스템을 더 넓은 재료과학 영역으로 확장하여 포괄적인 멀티모달 LLM을 구축한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

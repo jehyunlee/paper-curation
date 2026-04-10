@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Authorship, titles and open access as drivers of citation performance in orthopaedics: a scientometric analysis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #2374D6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #2374D6; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #2374D6; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #2374D6; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #2374D6; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #EBF3FF; color: #1856A0; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #1856A0; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #F8FAFD; }
+.essence-box h2 { color: #1856A0; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #1856A0; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #2374D6; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #2374D6; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Authorship, titles and open access as drivers of citation performance in orthopaedics: a scientometric analysis</h1>
+<blockquote><p><strong>저자</strong>: Filippo Migliorini, Raju Vaishya, Fabrizio Rivera, Jörg Eschweiler, Philipp Kobbe, Marcel Betsch, Francesco Oliva, Nicola Maffulli | <strong>날짜</strong>: 2026-03-20 | <strong>DOI</strong>: <a href="https://doi.org/10.1186/s10195-026-00911-z" target="_blank">10.1186/s10195-026-00911-z</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>정형외과 논문 97,806개를 분석하여 저자 수, 제목 특성, 개방접근(OA) 출판이 인용 성과에 미치는 영향을 규명한 scientometric 연구</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 다중 저자 논문과 개방접근 논문이 더 많은 인용을 받는다고 알려져 있으나, 정형외과 분야에서 제목 구조와 결합된 영향은 체계적으로 규명되지 않았음</li>
+<li><strong>Gap</strong>: 정형외과 분야에서 저자 수, 제목 특성, OA 상태가 인용 성과에 미치는 복합적 영향을 대규모로 분석한 연구가 부족함</li>
+<li><strong>Why</strong>: 연구자들이 윤리적 기준을 유지하면서 자신의 연구 영향력을 최대화할 수 있는 실증적 근거를 제공하고, 정형외과 출판 전략 수립에 기여할 수 있음</li>
+<li><strong>Approach</strong>: 2010-2020년 Scopus 데이터베이스에서 정형외과 논문을 검색하여 다중선형회귀분석(multiple linear regression)으로 저자 수, 제목 특성(길이, 문장부호), OA 상태와 연간 정규화 인용률(citations/year)의 관계를 분석</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ul>
+<li><strong>저자 수와 인용 성과의 양의 상관</strong>: 저자 1명 추가당 연 0.108건의 인용 증가 (β=0.108, p<0.001)</li>
+<li><strong>개방접근의 인용 이점</strong>: OA 논문이 비-OA 논문 대비 연 0.175건 높은 인용률 달성 (p=0.001)</li>
+<li><strong>제목 특성의 차등적 영향</strong>: 콜론(+0.314건/년), 대시(+0.187건/년)는 인용 증가, 물음표(-0.476건/년)와 전체 대문자(-0.71건/년)는 인용 감소</li>
+<li><strong>연구 설계별 인용 순위</strong>: 네트워크 메타분석(6.64건/년) > 체계적 리뷰(5.66) > 메타분석(5.08) > 무작위 대조 시험(3.90) > 관찰 연구(2.40) > 증례 보고(0.77)</li>
+<li><strong>제목 길이의 이중 효과</strong>: 문자 수는 양의 상관(β=0.023, p<0.001)이나 단어 수는 음의 상관(β=-0.183, p<0.001)</li>
+</ul></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li>Scopus 데이터베이스에서 'orthopaedic' 키워드로 2010-2020년 논문 검색 (97,806개 논문 확보)", 'Python 3.11 및 Pandas 라이브러리를 사용하여 CSV 파일 처리 및 데이터 정제</li>
+<li>종속변수로 '연간 인용률(citations_per_year)' 계산: 총 인용 수 ÷ 발표 이후 연수", '독립변수 표준화: 저자 수(연속형), OA 상태(이진형), 제목 특성(길이, 문장부호, 형식), 연구 설계 유형</li>
+<li>statsmodels 라이브러리로 OLS(Ordinary Least Squares) 다중선형회귀분석 수행</li>
+<li>그룹별 비교 통계검정(comparative statistical testing)으로 제목 스타일 및 연구 설계 간 차이 평가</li>
+<li>탐색적 모델링(exploratory modelling)으로 최고 인용률을 예측하는 저자 수와 제목 특성의 조합 식별</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>정형외과 분야에 특화된 대규모 단일 학제(field-specific) 분석으로, 기존의 학제 간 또는 소규모 연구의 한계 극복</li>
+<li>저자 수, 제목 특성, OA 상태의 <strong>복합적 영향</strong>을 동시에 분석한 통합 접근법</li>
+<li>제목의 문자 수와 단어 수가 상반된 효과를 갖는다는 <strong>새로운 발견</strong>으로 제목 구성의 이중성 규명</li>
+<li>연구 설계별 인용 성과의 명확한 위계 구조를 정량화하여 메타-분석류 논문의 인용 우위를 실증</li>
+<li>정규화된 인용률(per-year normalization) 사용으로 출판 시간에 따른 편향 제거</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li>Scopus만 사용하여 Web of Science, PubMed 등 다른 데이터베이스의 인용 패턴 미반영 가능</li>
+<li>인용 수가 연구 질(research quality)과 완벽히 일치하지 않으며, 자기인용(self-citation) 제외 미실행</li>
+<li>2010-2020년 데이터로 시간 경과에 따른 저자 수, OA 출판 정책의 변화 반영 제한</li>
+<li>제목 특성(문장부호, 형식)의 인과관계는 규명되지 않았으며, 교란 변수(confounding variables) 미제어 가능성</li>
+<li>후속 연구: (1) 자기인용 제외 후 재분석, (2) 다학제 데이터베이스 통합 비교, (3) 질적 내용 분석과 결합, (4) 저자 학파(school), 기관의 영향 분석</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 3/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
+<p><strong>총평</strong>: 정형외과 분야의 출판 특성과 인용 성과의 관계를 대규모 실증 데이터로 명확히 규명한 실용적이고 신뢰할 수 있는 연구로, 저자들이 윤리를 훼손하지 않으면서 학술 영향력을 최적화할 수 있는 증거 기반 지침을 제시함.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1039_The_Preeminence_of_Ethnic_Diversity_in_Scientific_Collaborat/index.html">The Preeminence of Ethnic Diversity in Scientific Collaboration</a></div><div class="conn-reason">서지계량학적 분석 방법론의 기반을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1122_The_disruption_index_suffers_from_citation_inflation_Re-anal/index.html">The disruption index suffers from citation inflation: Re-analysis of temporal CD trend and relationship with team size reveal discrepancies</a></div><div class="conn-reason">저자 수, 제목, 개방접근 등이 인용에 미치는 영향 분석을 더욱 발전시킨 연구이다.</div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../1122_The_disruption_index_suffers_from_citation_inflation_Re-anal/index.html">The disruption index suffers from citation inflation: Re-analysis of temporal CD trend and relationship with team size reveal discrepancies</a></div><div class="conn-reason">혁신의 붕괴 지수에 대한 기존 해석에 반대하여 측정 편향 문제를 지적한다.</div></div></div>
+<div class="back"><a href="../../scisci/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

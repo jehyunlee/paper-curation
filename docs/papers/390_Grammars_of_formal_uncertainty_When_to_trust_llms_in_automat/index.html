@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Grammars of formal uncertainty: When to trust llms in automated reasoning tasks</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Grammars of formal uncertainty: When to trust llms in automated reasoning tasks</h1>
+<blockquote><p><strong>저자</strong>: Debargha Ganguly, Vikash Singh, Sreehari Sankar, B. X. Zhang, Xuecen Zhang, Srinivasan Iyengar, Xiaotian Han, Amit Sharma, Shivkumar Kalyanaraman, Vipin Chaudhary | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.20047" target="_blank">미제공</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>LLM의 본질적인 확률성(probabilistic nature)과 형식검증의 결정론적 요구(deterministic guarantees) 사이의 근본적 긴장을 해소하기 위해, 확률문맥자유문법(PCFG, Probabilistic Context-Free Grammar) 기반 프레임워크를 도입하여 LLM 생성 SMT-LIB 프로그램의 불확실성을 체계적으로 정량화하고, 이를 통해 선택적 검증(selective verification)으로 14-100% 오류율을 감소시킨다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM은 형식명세(formal artifacts) 생성에 뛰어난 성능을 보이며, 형식방법의 대중화 가능성을 제시함. 기존 불확실성 정량화(UQ) 기법으로는 토큰 확률의 엔트로피 등이 존재.</li>
+<li><strong>Gap</strong>: LLM은 본질적으로 확률적이나 형식검증은 결정론적 보증을 요구하는 근본적 인식론적 간극(epistemological gap)이 존재. SMT 기반 자동형식화(autoformalization)의 효과가 작업별로 극단적으로 다르며(+34.8% from -44.5%), 기존 UQ 기법들이 형식산출물의 오류를 식별하지 못함.</li>
+<li><strong>Why</strong>: 형식검증이 안전-임계 시스템으로 제한되는 핵심 이유는 전문성 필요 및 노동 비용. LLM의 불확실성을 신뢰할 수 있는 방식으로 활용하면 형식방법을 민주화할 수 있음.</li>
+<li><strong>Approach</strong>: LLM 출력의 확률분포를 PCFG로 모델링하고, 이로부터 도출된 25개 불확실성 메트릭을 작업별로 융합하여 선택적 검증을 수행.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="https://arxiv.org/html/2505.20047v1/x1.png" alt="Figure 1: LLM 생성 SMT-LIB 형식화의 실증 분석 - 실제 출력, PCFG 규칙 빈도, 계산된 확률분포">
+<p class="fig-caption"><em>그림 1: '수학이나 물리를 공부하고 열심히 일하는 모든 사람은 성공할 것이다'라는 명제에 대한 LLM 생성 논리적 변형, 측정된 PCFG 규칙 빈도, 계산된 확률분포. 실제 데이터 사용, 합성 데이터 없음.</em></p></div>
+<ol>
+<li><strong>실증적 실패모드 분석</strong>: 5개 최신 LLM을 4개 형식추론 데이터셋으로 평가하여 SMT 기반 자동형식화의 도메인 특이성을 정량화. ProofWriter에서 +34.8% 정확도 향상, FOLIO에서 -44.5% 저하. 기존 UQ 기법(토큰 확률 엔트로피)이 이러한 오류를 포착하지 못함을 증명.</li>
+<li><strong>PCFG 기반 확률 프레임워크</strong>: 측정 가능한 확률공간(Σ*, F)을 정의하고, LLM이 유도하는 확률측도(probability measure) µ_{T,θ,SMT}를 SMT-LIB v2 문법 기반 PCFG로 근사. 최대우도추정(MLE)과 Lidstone 평활화(smoothing)를 통해 규칙 확률을 추정하며, 커버리지 보증 정리(Coverage Guarantee Theorem 1)로 샘플 크기의 필요성을 이론화.</li>
+<li><strong>세분화된 불확실성 분류법</strong>: 기존 epistemic/aleatoric 이분법을 넘어 4개 범주(epistemic-knowledge, epistemic-procedural, recursive-complexity, capacity-limited)로 확장한 정제된 분류체계 제시. 25개 메트릭 개발 및 평가 완료.</li>
+<li><strong>작업 종속적 신호 식별 및 선택적 검증</strong>: 불확실성 신호가 작업에 따라 달라짐을 입증 (예: 논리 작업에서 문법 엔트로피 AUROC > 0.93). 경량의 모델-불가지론적(model-agnostic) 신호 융합으로 개별 메트릭 성능 초과. 최소 기각(minimal abstention)으로 오류율 14-100% 감소.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="https://arxiv.org/html/2505.20047v1/figures.png" alt="Figure 2-5: 온도 변수에 따른 메트릭 변화 - 스펙트럼 반경, 문법 엔트로피, KLD, 엔트로피 비율">
+</div>
+<h3>이론적 기초</h3>
+<ul>
+<li><strong>확률공간 정형화</strong>: 문자 집합 Σ에 대해 모든 유한 문자열의 집합 Σ<em>을 측정가능 공간 (Σ</em>, F)으로 정의 (F는 실린더 집합 σ-대수)</li>
+<li><strong>LLM 확률측도</strong>: 작업 T와 파라미터 θ에 대해 LLM이 유도하는 조건부 측도 µ_{T,θ,SMT} = µ_{T,θ}(A∩L_{SMT})/µ_{T,θ}(L_{SMT}) 정의</li>
+</ul>
+<h3>PCFG 근사 방법</h3>
+<ul>
+<li><strong>샘플 수집</strong>: 목표 LLM에서 N개의 SMT-LIB 프로그램 샘플 P_N = {P₁, ..., P_N} 생성</li>
+<li><strong>구문분석</strong>: SMT-LIB v2 문법 G_{SMT}으로 각 프로그램 구문분석, 적용된 규칙(production rules) 기록</li>
+<li><strong>MLE 추정</strong>: 규칙 r = (A → β)의 상대빈도 p̂_MLE(r) = C(r)/C(A)로 계산 (C(r): 규칙 적용 횟수, C(A): LHS 비단말 총 적용 횟수)</li>
+<li><strong>평활화</strong>: Lidstone 평활화 p̂^(β_s)_N(r) = (C(r) + β_s)/(C(A) + β_s|R_A|)로 영(zero) 카운트 처리</li>
+</ul>
+<h3>메트릭 도출 (정적/동적)</h3>
+<ul>
+<li><strong>정적 메트릭</strong>: 비단말 개수 |V_{SMT}|, 규칙 개수 |R_{SMT}|, 비단말당 평균 규칙, 최대 분기 인수(branching factor), 재귀 유형 감지</li>
+<li><strong>스펙트럼 성질</strong>: 평균 행렬 B의 스펙트럼 반경 ρ(B) = max{|λ| | det(B - λI) = 0} (ρ < 1: 유한 유도 길이, ρ ≥ 1: 구조 복잡도 높음)</li>
+<li><strong>정보이론 메트릭</strong>: 비단말별 Shannon 엔트로피 H(A) = -∑_{A→β∈R_A} p(A→β)log₂p(A→β), 문법 전체 엔트로피, KL 발산(KLD), 엔트로피 비율</li>
+</ul>
+<h3>선택적 검증 파이프라인</h3>
+<ul>
+<li>다중 불확실성 신호의 경량 융합(lightweight fusion)</li>
+<li>임계값(threshold) 기반 신뢰도 추정 및 검증 대상 선택</li>
+<li>형식 검증 엔진(SMT solver) 호출 최소화로 계산 효율성 확보</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>뉴로-심볼 시스템의 인식론적 갭 해결</strong>: LLM의 확률성과 형식방법의 결정론적 요구를 PCFG 기반 수학 프레임워크로 연결한 첫 시도</li>
+<li><strong>구조화된 불확실성 정량화</strong>: 단순 토큰 확률 엔트로피 대신 문맥자유문법 규칙 수준의 확률 분포를 체계적으로 모델링</li>
+<li><strong>세분화된 분류체계</strong>: epistemic-knowledge, epistemic-procedural, recursive-complexity, capacity-limited 4개 범주로 기존 이분법 확장</li>
+<li><strong>작업별 메트릭 최적성 발견</strong>: 동일한 메트릭이 작업마다 다른 성능을 보이며, 작업 인식형 신호 융합의 필요성을 실증적으로 입증</li>
+<li><strong>카버리지 보증 이론</strong>: 샘플링 기반 근사의 이론적 신뢰성을 정식화 (Theorem 1: 실패 확률의 상한 도출)</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>PCFG 근사의 한계</strong>: 실제 LLM 분포 µ_{T,θ,SMT}와 PCFG 모델 µ_G의 괴리. KL 발산 최소화 보증 있으나, 문맥 의존성(context-dependency) 미포함 (Neural PCFG로 일부 완화 제시)</li>
+<li><strong>샘플 크기 의존성</strong>: 신뢰할 수 있는 PCFG 파라미터 추정에 필요한 최소 샘플 수 N에 대한 명시적 지침 부재. Coverage Guarantee는 상한만 제공.</li>
+<li><strong>평가 범위 제한</strong>: 4개 형식추론 데이터셋과 5개 LLM으로 평가했으나, 더 다양한 도메인(기하, 프로그램 검증 등)과 최신 모델(GPT-4o, Claude 3.5 등) 포함 필요</li>
+<li><strong>선택적 검증의 실제 비용 미계산</strong>: 기각 시 인간 검토 또는 대체 방법의 실제 비용 분석 부재. 오류 감소의 trade-off 정량화 부족</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>Neural PCFG 기반 문맥 의존 모델로 근사 정확도 향상</li>
+<li>다중 LLM 앙상블에서의 신호 융합 최적화</li>
+<li>형식증명(formal proofs), 프로그램 합성 등 다른 형식산출물로 확장</li>
+<li>모달리티 인식 아키텍처(modality-aware architectures) 설계로 신뢰성 강화</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: LLM과 형식검증 간의 근본적 긴장을 PCFG 프레임워크로 우아하게 해결하고, 작업별</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../674_ReTool_Reinforcement_Learning_for_Strategic_Tool_Use_in_LLMs/index.html">ReTool: Reinforcement Learning for Strategic Tool Use in LLMs</a></div><div class="conn-reason">확률문맥자유문법 기반 불확실성 정량화와 강화학습 기반 전략적 도구 사용은 LLM의 신뢰성 문제를 서로 다른 방식으로 해결하는 접근이다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../674_ReTool_Reinforcement_Learning_for_Strategic_Tool_Use_in_LLMs/index.html">ReTool: Reinforcement Learning for Strategic Tool Use in LLMs</a></div><div class="conn-reason">ReTool의 강화학습 기반 전략적 도구 사용과 확률문맥자유문법 기반 불확실성 정량화는 LLM 신뢰성을 서로 다른 방식으로 개선하는 접근이다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../846_TrustLLM_Trustworthiness_in_Large_Language_Models/index.html">TrustLLM: Trustworthiness in Large Language Models</a></div><div class="conn-reason">대규모 언어 모델의 신뢰성 종합 평가가 형식 검증에서의 불확실성 정량화를 더 광범위한 신뢰성 차원으로 확장한 연구이다.</div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../471_Large_Language_Models_Cannot_Self-Correct_Reasoning_Yet/index.html">Large Language Models Cannot Self-Correct Reasoning Yet</a></div><div class="conn-reason">LLM의 자기 수정 추론 한계 연구가 확률적 언어 모델의 결정론적 보장 제공 가능성에 대한 반대 관점을 제시한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

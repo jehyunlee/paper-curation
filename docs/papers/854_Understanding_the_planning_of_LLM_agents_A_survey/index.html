@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Understanding the planning of LLM agents: A survey</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Understanding the planning of LLM agents: A survey</h1>
+<blockquote><p><strong>저자</strong>: Xu Huang, Weiwen Liu, Xiaolong Chen, Xingmei Wang, Hao Wang 외 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.02716" target="_blank">10.48550/arXiv.2402.02716</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Taxonomy on LLM-Agent planning">
+<p class="fig-caption"><em>LLM 기반 에이전트 계획 수립의 5가지 주요 분류</em></p></div>
+<p>본 논문은 대규모 언어모델(LLM)을 자율 에이전트의 계획 모듈로 활용하는 최신 연구들을 체계적으로 분석한 첫 번째 종합 설문 논문이다. 기존의 기호 기반 방법과 강화학습 기반 방법의 한계를 극복하기 위해 LLM의 추론 및 도구 활용 능력을 활용한 계획 수립 방법들을 5가지 범주로 분류하여 상세히 분석한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존 자율 에이전트의 계획 수립은 기호 기반 방법(PDDL)과 강화학습(RL) 기반 방법에 의존해왔으며, 이들은 각각 전문가의 노력 필요, 오류 불내성, 높은 데이터 요구량 등의 한계를 가짐</li>
+<li><strong>Gap</strong>: 최근 LLM의 급속한 발전으로 LLM 기반 에이전트 계획 연구가 급증했으나, 기존 설문들은 LLM의 추론, 도구 학습, 자율 에이전트 전반을 다루면서 계획 능력 자체에 대한 상세한 분석이 부족함</li>
+<li><strong>Why</strong>: LLM은 자연언어 처리, 복잡한 추론, 다양한 도구 활용, 지시 따르기 능력을 보유하고 있어 에이전트의 인지 코어로서 계획 능력을 크게 향상시킬 수 있는 잠재력이 있음</li>
+<li><strong>Approach</strong>: LLM 기반 에이전트 계획의 최신 연구들을 체계적으로 분류하고 분석하여 5가지 주요 방향으로 구조화하며, 4개 벤치마크에서 대표 방법들을 평가하여 종합적 인사이트를 제공</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Types of task decomposition manners">
+<p class="fig-caption"><em>작업 분해의 두 가지 방식: (a) 분해-우선 방식과 (b) 인터리빙 방식</em></p></div>
+<ol>
+<li><strong>체계적 분류 체계 제시</strong>: 기존에 산발적으로 연구되던 LLM 기반 에이전트 계획 방법들을 <strong>작업 분해(Task Decomposition)</strong>, <strong>다중 계획 선택(Multi-plan Selection)</strong>, <strong>외부 모듈 활용(External Planner-aided Planning)</strong>, <strong>반사 및 개선(Reflection & Refinement)</strong>, <strong>메모리 증강 계획(Memory-augmented Planning)</strong> 5가지로 체계적으로 분류</li>
+<li><strong>각 방향별 상세 분석</strong>: 각 범주에 대해 동기, 기본 아이디어, 대표 방법들(CoT, ReAct, HuggingGPT, Plan-and-Solve 등), 장단점을 포괄적으로 논의</li>
+<li><strong>공식적 문제 표현</strong>: 각 방법을 수학적으로 명확히 표현하여 상이한 접근 방식 간의 본질적 차이를 명확히 함</li>
+<li><strong>종합적 벤치마크 평가</strong>: 4개의 주요 벤치마크에서 대표 방법들을 평가하여 실증적 비교 제공</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<p><strong>작업 분해(Task Decomposition) 방법</strong></p>
+<ul>
+<li>복잡한 작업을 분할 정복 전략으로 여러 부분작업(sub-task)으로 분해</li>
+<li><strong>분해-우선 방식</strong>: 모든 부분작업을 미리 분해 후 순차적으로 계획 수립 (HuggingGPT, Plan-and-Solve, ProgPrompt)</li>
+<li><strong>인터리빙 방식</strong>: 부분작업 분해와 계획을 번갈아 수행하며 동적 조정 (CoT, ReAct, PAL, PoT)
+<ul>
+<li>CoT: 소수의 예제를 통해 단계별 추론 유도</li>
+<li>Zero-shot CoT: "단계별로 생각해보자"는 지시로 추론 능력 활성화</li>
+<li>ReAct: 추론(Thought)과 계획(Action)을 분리하여 교대로 수행</li>
+<li>PoT/PAL: 프로그래밍 코드로 추론 과정을 형식화</li>
+</ul>
+</ul>
+<p><strong>다중 계획 선택(Multi-plan Selection)</strong></p>
+<ul>
+<li>여러 대안 계획을 생성한 후 트리 탐색 등의 전략으로 최적 계획 선택</li>
+<li>ToT(Tree-of-Thought), GoT(Graph-of-Thought), CoT-SC 등이 대표</li>
+</ul>
+<p><strong>외부 모듈 활용(External Planner-aided Planning)</strong></p>
+<ul>
+<li>LLM이 작업을 형식화하고 전문 계획 시스템(예: PDDL 기반 계획기)이 실제 계획 생성</li>
+<li>LLM+P, LLM+PDDL 등의 방법</li>
+</ul>
+<p><strong>반사 및 개선(Reflection & Refinement)</strong></p>
+<ul>
+<li>초기 계획 생성 후 오류 반영, 피드백 수집, 계획 개선의 반복 프로세스</li>
+<li>Reflexion, CRITIC, Self-Refine 등이 실패 경험으로부터 학습</li>
+</ul>
+<p><strong>메모리 증강 계획(Memory-augmented Planning)</strong></p>
+<ul>
+<li>상식, 과거 경험, 도메인 지식 등을 별도 메모리에 저장하고 계획 시 검색 활용</li>
+<li>REMEMBER, MemoryBank 등의 방법</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>최초의 체계적 종합 분석</strong>: LLM 기반 에이전트 계획 능력에 특화된 첫 번째 설문으로, 기존 일반 에이전트/추론/도구 학습 설문들과 차별화</li>
+<li><strong>포괄적 분류 체계</strong>: 5가지 직교적 범주로 기존 산발적 연구들을 명확히 구조화하여, 각 방법의 본질적 아이디어와 차이를 명확화</li>
+<li><strong>형식적 문제 정의</strong>: 각 방향을 수학적으로 엄밀하게 표현하여 비교 분석 용이성 증대</li>
+<li><strong>상세한 실증 비교</strong>: Table 1을 통한 체계적 비교와 4개 벤치마크에서의 정량적 평가 제공</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<p><strong>현재 한계점</strong></p>
+<ul>
+<li>논문 초반부로 전체 내용이 제시되지 않아 각 방법의 구체적 성능 비교, 개별 한계점에 대한 상세 분석이 확인 불가</li>
+<li>작업 분해 방식에서 분해-우선 방식의 오류 누적 문제, 인터리빙 방식의 환각(hallucination) 문제 지적에 그침</li>
+<li>다양한 방법 간 상충 관계나 결합 가능성에 대한 상세한 논의 부재</li>
+</ul>
+<p><strong>후속 연구 방향</strong></p>
+<ul>
+<li>LLM 기반 계획의 견고성(robustness) 향상: 오류 복구, 동적 재계획 메커니즘 개발</li>
+<li>계획 효율성 개선: 긴 궤적(trajectory)에서의 환각 문제 해결</li>
+<li>여러 방법의 하이브리드 접근: 작업 분해, 외부 계획기, 메모리의 결합 효과 연구</li>
+<li>도메인 특화 평가: 로봇공학, 웹 에이전트, 과학적 발견 등 구체적 응용에서의 계획 능력 평가</li>
+<li>계획의 해석가능성(interpretability) 향상: LLM의 계획 과정의 투명성 증대</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 급속히 발전하는 LLM 기반 에이전트 계획 분야에 대한 첫 체계적 종합 분석을 제공하며, 5가지 명확한 분류 체계와 상세한 기술적 분석을 통해 커뮤니티에 중요한 참고자료가 될 것으로 평가된다. 향후 각 방향의 한계 극복과 방법론 간 결합 연구가 핵심 과제가 될 것으로 예상된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../412_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_Friends_in/index.html">HiAgent: Hierarchical Working Memory Management for Solving Long-Horizon Agent Tasks with Large Language Model</a></div><div class="conn-reason">계층적 작업 메모리 관리가 LLM 에이전트의 장기 계획 수립에서 핵심적인 기반 기술을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../625_PlanGenLLMs_A_Modern_Survey_of_LLM_Planning_Capabilities/index.html">PlanGenLLMs: A Modern Survey of LLM Planning Capabilities</a></div><div class="conn-reason">LLM 계획 능력에 대한 현대적 조사와 LLM 에이전트 계획의 이해 모두 동일한 주제를 다루지만 접근 관점이 다르다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../625_PlanGenLLMs_A_Modern_Survey_of_LLM_Planning_Capabilities/index.html">PlanGenLLMs: A Modern Survey of LLM Planning Capabilities</a></div><div class="conn-reason">LLM 에이전트 계획 이해에 대한 조사와 LLM 계획 능력의 현대적 조사는 상호 보완적인 관점을 제공합니다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../577_Nova_An_iterative_planning_and_search_approach_to_enhance_no/index.html">Nova: An iterative planning and search approach to enhance novelty and diversity of llm generated ideas</a></div><div class="conn-reason">반복적 계획과 검색을 통한 추론 향상이 LLM 에이전트 계획 수립의 구체적인 확장 방법이다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../412_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_Friends_in/index.html">HiAgent: Hierarchical Working Memory Management for Solving Long-Horizon Agent Tasks with Large Language Model</a></div><div class="conn-reason">LLM 에이전트의 계획 수립에서 계층적 메모리 관리가 장기 작업 수행에 필수적인 구성 요소이다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

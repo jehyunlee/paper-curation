@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Peerarg: Argumentative peer review with llms</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Peerarg: Argumentative peer review with llms</h1>
+<blockquote><p><strong>저자</strong>: Purin Sukpanichnant, Anna Rapberger, Francesca Toni | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.16813" target="_blank">10.48550/arXiv.2409.16813</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>PeerArg 파이프라인 개요: 각 리뷰에서 양극 논증 틀(BAF)을 추출한 후 통합하여 최종 논문 채택 여부를 결정</em></p></div>
+<p>본 논문은 대규모 언어 모델(LLM)과 계산 논증(computational argumentation) 방법을 결합하여 피어 리뷰 과정을 투명하고 해석 가능하게 만드는 PeerArg 시스템을 제안한다. 양극 논증 틀(Bipolar Argumentation Framework, BAF)을 활용하여 여러 리뷰의 의견을 구조화되고 논리적으로 통합함으로써 논문 채택 여부를 예측한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 피어 리뷰는 학술 출판의 핵심 프로세스이지만 주관성과 확증편향(confirmation bias), 첫인상 편향(first-impression bias) 등 여러 편견에 취약하다. 최근 NLP 기술을 적용한 리뷰 이해 및 생성 연구들(메타 리뷰 생성, 찬반 요약 등)이 증가하고 있다.</li>
+<li><strong>Gap</strong>: 기존 딥러닝 기반 접근법들은 뛰어난 성능을 보이지만 블랙박스 특성으로 인해 결정 과정의 근거를 이해하고 신뢰하기 어렵다. 또한 기존 논증 연구들은 논문의 구조 분석에만 집중하고 논증 간 관계(support/attack)를 모델링하지 않는다.</li>
+<li><strong>Why</strong>: 투명성과 해석 가능성(interpretability)을 갖춘 리뷰 집계 시스템이 필요하다. 논증 관계를 명시적으로 모델링하면 리뷰어의 의견 충돌과 지지를 구조화할 수 있다.</li>
+<li><strong>Approach</strong>: 양극 논증 틀(BAF)을 사용하여 각 리뷰를 논증 구조로 변환하고, 여러 리뷰의 구조들을 통합한 후 정량적 논증 의미론(DF-QuAD, MLP-기반 의미론)을 적용하여 논문 채택 여부를 결정한다. 비교 기준으로 LLM의 few-shot 학습 기반 엔드투엔드 모델도 제안한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>엔드투엔드 LLM 입력 템플릿: 프라이머(primer)의 4개 예제와 프롬프트(prompt)의 대상 리뷰들로 구성</em></p></div>
+<ol>
+<li><strong>해석 가능한 리뷰 집계 프레임워크</strong>: PeerArg는 리뷰들의 의견을 명시적인 논증 구조로 표현하여 각 논증의 강도와 상호 관계를 정량적으로 평가할 수 있다. 이는 메타 리뷰어나 컨퍼런스 의장이 채택 결정의 근거를 명확히 이해하도록 돕는다.</li>
+<li><strong>우수한 예측 성능</strong>: 세 개의 리뷰 데이터셋(두 개의 컨퍼런스 리뷰 데이터셋과 한 개의 저널 리뷰 데이터셋)에서 PeerArg의 특정 하이퍼파라미터 조합이 few-shot LLM을 능가하는 성능을 달성했다.</li>
+<li><strong>LLM과 기호적 AI의 시너지</strong>: LLM을 사용하여 자동으로 리뷰에서 논증과 관계를 추출한 후 계산 논증 방법으로 집계함으로써 두 접근 방식의 장점을 결합한다.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3 &amp; 4">
+<p class="fig-caption"><em>리뷰 QBAF 추출 과정: LLM이 리뷰 텍스트에서 주요 주장을 추출하고 이들 간의 support/attack 관계를 식별하여 양극 논증 틀을 구성</em></p></div>
+<h3>PeerArg 파이프라인의 주요 단계:</h3>
+<ul>
+<li><strong>리뷰 → QBAF 변환</strong>: 각 리뷰에 대해 LLM 프롬프트를 사용하여 주요 논증(arguments)과 그 관계(support/attack edges)를 추출한다. 각 논증에는 신뢰도 기반의 기초 점수(base score β)를 할당한다.</li>
+<li><strong>QBAF 통합</strong>: 여러 리뷰의 QBAF들을 하나의 통합된 QBAF로 병합한다. 동일한 내용의 논증은 병합되고 상충하는 주장은 공격 관계(attack)로 모델링된다.</li>
+<li><strong>의미론 적용</strong>: DF-QuAD 의미론 또는 MLP-기반 의미론을 적용하여 각 논증의 최종 강도를 계산한다. 이는 공격자와 지지자의 강도를 합산하여 기초 점수에 영향을 미친다.</li>
+<li><strong>채택 결정</strong>: 통합 QBAF에서 "채택(accept)"과 관련된 주요 논증들의 최종 강도를 기준으로 임계값(threshold)을 사용하여 채택 여부를 결정한다.</li>
+</ul>
+<h3>엔드투엔드 LLM:</h3>
+<ul>
+<li><strong>Few-shot 프롬프팅</strong>: Mistral-7B 모델에 4개의 예제(2개 채택, 2개 거절)로 구성된 프라이머와 대상 리뷰들을 입력으로 제공한다.</li>
+<li><strong>직접 예측</strong>: 구조적 분석 없이 리뷰 텍스트에서 바로 채택/거절을 예측한다.</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>양극 논증 틀의 적용</strong>: 기존 피어 리뷰 논증 연구와 달리 support/attack 관계를 명시적으로 모델링하여 리뷰 의견의 상호작용을 구조화하는 것이 새로운 접근이다.</li>
+<li><strong>LLM 기반 자동 추출과 기호적 AI의 결합</strong>: 신경망 기반 LLM으로 논증 요소를 추출하고 이를 고전적 논증 프레임워크에 통합하는 하이브리드 접근법이 독창적이다.</li>
+<li><strong>정량적 의미론의 적용</strong>: 피어 리뷰 도메인에서 DF-QuAD와 MLP-기반 의미론을 사용하여 리뷰 의견을 정량적으로 집계하는 것은 처음이다.</li>
+<li><strong>투명성 중심</strong>: 블랙박스 모델 대신 명시적인 논증 구조를 통해 의사결정 과정을 추적할 수 있는 점이 기존 NLP 접근법과 구별된다.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>논증 추출의 정확성 의존</strong>: 전체 시스템의 성능이 LLM의 논증 추출 품질에 크게 의존하기 때문에 추출 오류가 누적될 수 있다. 각 단계별 오류 분석과 개선이 필요하다.</li>
+<li><strong>QBAF 통합의 휴리스틱</strong>: 서로 다른 리뷰의 논증들을 "동일하다"고 판단하는 기준이 정확하지 않을 수 있으며, 이로 인한 영향을 분석해야 한다.</li>
+<li><strong>하이퍼파라미터의 데이터셋 의존성</strong>: 최적의 하이퍼파라미터 조합이 데이터셋별로 다르게 나타나므로 일반화 가능성과 실제 적용 방안을 명확히 해야 한다.</li>
+<li><strong>평가 지표의 제한</strong>: 예측 정확도만 평가하고 해석 가능성 개선이나 리뷰어의 신뢰도 향상에 대한 정성적 평가가 부족하다.</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>논증 추출 단계의 정확도 향상 (수동 검증, 미세 조정된 모델 사용)</li>
+<li>의미론 선택 기준 및 적응형 선택 메커니즘 개발</li>
+<li>메타 리뷰 생성으로의 확장</li>
+<li>피어 리뷰어들의 실제 선호도 조사를 통한 평가</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 피어 리뷰의 투명성과 해석 가능성 문제에 대한 혁신적인 접근을 제시하며 양극 논증 틀의 새로운 응용을 보여준다. 다만 논증 추출 과정의 신뢰성, QBAF 통합의 엄밀성, 실제 적용 가능성에 대한 더 깊은 분석과 검증이 필요하며, 특히 해석 가능성 개선의 실질적 이점을 정성적으로 입증해야 한다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1087_Gpt4_is_slightly_helpful_for_peer-review_assistance_A_pilot/index.html">Gpt4 is slightly helpful for peer-review assistance: A pilot study</a></div><div class="conn-reason">GPT-4의 동료평가 보조 능력을 바탕으로 더 구조화된 논증 기반 접근법을 제시한다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../080_AI_is_transforming_peer_review__and_many_scientists_are_worr/index.html">AI is transforming peer review — and many scientists are worried</a></div><div class="conn-reason">AI 동료평가에 대한 우려를 논증 틀을 통해 투명하고 해석가능하게 해결한다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../776_Streamlining_the_review_process_Ai-generated_annotations_in/index.html">Streamlining the review process: AI-generated annotations in research manuscripts</a></div><div class="conn-reason">AI 주석 달기를 포함한 더 체계적이고 논리적인 동료평가 시스템으로 확장한다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

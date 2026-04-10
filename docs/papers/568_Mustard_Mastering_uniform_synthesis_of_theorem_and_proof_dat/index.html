@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mustard: Mastering uniform synthesis of theorem and proof data</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Mustard: Mastering uniform synthesis of theorem and proof data</h1>
+<blockquote><p><strong>저자</strong>: Yinya Huang, Xiaohan Lin, Zhengying Liu, Qingxing Cao, Huajian Xin, Haiming Wang, Zhenguo Li, Linqi Song, Xiaodan Liang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>다양한 중간 추론 단계 생성 및 검증 방법 비교</em></p></div>
+<p>본 논문은 대규모언어모델(LLM)과 형식 정리 증명기(formal theorem prover)의 상호작용을 통해 고품질의 수학 정리와 증명 데이터를 대규모로 생성하는 MUSTARD 프레임워크를 제안한다. 생성된 5,866개의 검증된 데이터로 구성된 MUSTARDSAUCE 벤치마크를 통해 미세조정된 언어모델의 수학적 추론 능력을 평균 15.41% 상대성능 향상으로 입증한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>:
+<ul>
+<li>Chain-of-Thought(CoT) 프롬프팅과 형식 언어 생성을 통한 수학 문제 해결이 효과적임</li>
+<li>중간 단계별 주석(step-wise annotation)이 복잡한 추론에 필수적</li>
+</ul>
+</li>
+<li><strong>Gap</strong>:
+<ul>
+<li>기존 방법들의 한계점: (1) 수동 주석은 노동집약적이고 데이터 규모가 극히 제한적(miniF2F), (2) 규칙 기반 검증(ROSCOE)은 정확성 보장 불가, (3) INT의 규칙 기반 합성은 의미있는 수학 지식 부족</li>
+</ul>
+</li>
+<li><strong>Why</strong>:
+<ul>
+<li>대규모, 정확한 중간 단계, 의미있는 수학 지식을 모두 만족하는 자동 데이터 생성 방법이 필요</li>
+</ul>
+</li>
+<li><strong>Approach</strong>:
+<ul>
+<li>LLM의 자연어 생성 능력과 형식 정리 증명기(Lean Prover)의 엄격한 검증을 결합한 3단계 파이프라인 구축</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>MUSTARD의 전체 구조: 개념 샘플링 → 증명 생성 → 형식 검증</em></p></div>
+<ol>
+<li><strong>대규모 고품질 데이터셋 구축</strong>: 비공식 정리, 비공식 증명, 형식 증명(Lean 3)을 포함한 5,866개의 검증된 데이터포인트로 구성된 MUSTARDSAUCE 벤치마크 생성. 교육 수준별(초등~대학원) 및 수학 영역별 다양성 확보</li>
+<li><strong>미세조정 성능 향상</strong>: Llama 2-7B를 MUSTARDSAUCE로 미세조정했을 때 GSM8K에서 20.9% 제로샷 성능 향상, mathlib에서 8.7% pass@1 달성, 자동 정리 증명에서 평균 15.41% 상대성능 향상</li>
+<li><strong>데이터 품질 검증</strong>: 형식 증명기의 검증이 인간 평가와 일치하며, 생성된 데이터는 두 개의 서로 다른 수학 개념을 창의적으로 결합하여 의미있는 문제 생성 확인</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>미세조정된 모델 성능</em></p></div>
+<h3>1단계: 개념 샘플링 (Concept Seeding)</h3>
+<ul>
+<li>Khan Academy의 모든 수학 강좌에서 4개 교육 수준(초등, 중등, 고등, 고등교육)별 수학 개념 추출</li>
+<li>각 수준에서 1~2개의 개념을 균등 샘플링하여 다양한 문제 도메인 확보</li>
+<li>2개 개념 조합으로 도메인 간 복합성 증대</li>
+</ul>
+<h3>2단계: 증명 생성 (Proof Generation)</h3>
+<ul>
+<li>GPT-4를 이용한 3가지 작업 동시 수행:
+<ul>
+<li>(T1) 주어진 개념 기반 수학 문제 생성</li>
+<li>(T2) 자연어 형식의 증명 생성</li>
+<li>(T3) 자연어 증명을 Lean 3 형식 증명으로 자동 형식화</li>
+</ul>
+</li>
+<li>명시적 예제(exemplars) 없이 순수 개념 기반 프롬프팅으로 편향 최소화</li>
+<li>질문 유형(정리 증명 vs 수학 단어 문제) 및 교육 수준 명시</li>
+</ul>
+<h3>3단계: 형식 검증 (Formal Validation)</h3>
+<ul>
+<li>Lean Prover를 통한 형식 증명 자동 검증</li>
+<li>실패 시 에러 메시지를 포함한 프롬프트로 개선 재시도</li>
+<li>검증 통과 여부에 따른 데이터 분류:
+<ul>
+<li>통과: 고품질 데이터포인트로 수집</li>
+<li>실패: 오류 메시지 활용하여 도전적 샘플로 재생성</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>LLM과 정리 증명기의 상호작용 기반 자동화</strong>: 기존 방법과 달리 형식 검증을 통한 반복 개선 루프 도입으로 의미있는 고품질 데이터 생성</li>
+<li><strong>균등 다양성 샘플링 전략</strong>: Khan Academy 기반의 계층적 개념 풀에서 체계적 샘플링으로 교육 수준 및 도메인 균형 달성</li>
+<li><strong>비공식-형식 쌍 데이터셋</strong>: 동일한 증명에 대한 자연어와 형식 언어 표현 쌍 제공으로 자동 형식화(auto-formalization) 연구에 활용 가능</li>
+<li><strong>대규모 벤치마크 공개</strong>: 5,866개 규모의 검증된 데이터로 기존 miniF2F(488개) 대비 12배 규모 확충</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>LLM 의존성</strong>: 고품질 생성을 위해 GPT-4(폐쇄 모델)에 의존하며, 오픈소스 모델로의 일반화 가능성 미탐색</li>
+<li><strong>Lean 3 제한</strong>: 형식 증명이 Lean 3로만 생성되어 다른 정리 증명 시스템(Coq, Isabelle 등)으로의 확장성 제한</li>
+<li><strong>개념 풀 한계</strong>: Khan Academy 기반 개념 풀이 고등교육 수준에서 제한적이며, 더 심화된 수학 개념 포함 필요</li>
+<li><strong>오류 메시지 활용의 효과성</strong>: 일부 오류는 LLM이 해석하기 어려울 수 있으며, 오류 메시지 자동 분석 및 지도 메커니즘 추가 연구 필요</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>오픈소스 LLM으로의 성능 검증</li>
+<li>다양한 형식 언어(Coq, Isabelle) 지원 확대</li>
+<li>인간-AI 협력 기반 데이터 개선 파이프라인 구축</li>
+<li>생성된 데이터의 공정성(fairness) 및 편향성 분석</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: MUSTARD는 LLM과 형식 정리 증명기의 상호작용을 통해 대규모 고품질 수학 데이터를 자동 생성하는 효과적인 프레임워크를 제시하며, 공개 벤치마크 MUSTARDSAUCE의 실제 성능 향상으로 실용성을 입증한 우수한 논문이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../264_Deepseek-prover_Advancing_theorem_proving_in_llms_through_la/index.html">Deepseek-prover: Advancing theorem proving in llms through large-scale synthetic data</a></div><div class="conn-reason">형식 수학에서의 정리 증명 능력을 위한 언어모델 기반 기술의 핵심 기반을 제공한다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../486_Lego-prover_Neural_theorem_proving_with_growing_libraries/index.html">Lego-prover: Neural theorem proving with growing libraries</a></div><div class="conn-reason">증명 라이브러리 확장과 함께 MUSTARD의 데이터 생성 프레임워크를 결합할 수 있다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../339_Fimo_A_challenge_formal_dataset_for_automated_theorem_provin/index.html">Fimo: A challenge formal dataset for automated theorem proving</a></div><div class="conn-reason">자동 정리 증명 분야의 실제 도전 과제들에 MUSTARD의 고품질 데이터를 적용할 수 있다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

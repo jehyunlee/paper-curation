@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design</h1>
+<blockquote><p><strong>저자</strong>: Masatoshi Uehara, Xingyu Su, Yulai Zhao, Xiner Li, Aviv Regev | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.14944" target="_blank">10.48550/arXiv.2502.14944</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>그림 1: 제안된 프레임워크는 반복적 과정을 따르며, 각 반복에서 샘플에 노이즈를 주입한 후 보상을 최적화하면서 디노이징하는 과정</em></p></div>
+<p>본 논문은 확산 모델(Diffusion Models)에서 테스트 타임 보상 최적화를 위한 반복적 개선 프레임워크를 제안한다. 기존의 단일 샷(single-shot) 방식과 달리, 부분 노이징과 보상 유도 디노이징의 두 단계를 반복하여 점진적으로 설계(design)를 개선할 수 있다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 확산 모델은 텍스트-이미지, 단백질 서열 생성 등 다양한 분야에서 성공적이며, 분류기 유도(classifier guidance)나 도함수-프리(derivative-free) 방법들이 보상 유도 생성(reward-guided generation)에 활용되고 있다.</li>
+<li><strong>Gap</strong>: 기존 방법들은 완전 노이징 상태에서 디노이징 상태로의 단일 패스에만 의존하며, 두 가지 핵심 문제가 존재한다: (1) 보상 유도 디노이징 중 발생한 오류를 수정할 메커니즘 부재, (2) 특히 마스크 확산 모델에서 한번 변경된 토큰은 끝까지 고정되는 문제, (3) 하드 제약조건(hard constraints) 처리의 어려움.</li>
+<li><strong>Why</strong>: 생물학적 서열 설계(단백질, DNA)에서는 구조적 안정성, 결합 친화력, 세포타입 특이성 등 복잡한 보상함수 최적화가 필요하며, 추론 시간 계산량을 증가시켜 더 나은 설계를 얻을 수 있을 것으로 예상된다.</li>
+<li><strong>Approach</strong>: 테스트 타임에 임의의 양의 계산을 활용하여 설계를 지속적으로 개선하는 반복적 개선 알고리즘(noising + reward-guided denoising) 제안.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>그림 2: 기존 보상 유도 알고리즘은 소프트 최적 정책 {p⋆_t}로부터 순차적 샘플링으로 볼 수 있으며, 알고리즘의 차이는 p⋆_t 근사 방식에 있다</em></p></div>
+<ol>
+<li><strong>이론적 기여</strong>: 제안된 알고리즘이 exp(r(x))p_pre(·) 분포로부터 샘플링함을 수학적으로 증명하여, 생성된 설계의 자연스러움(naturalness)과 보상 최적화 간 균형을 이론적으로 보장.</li>
+<li><strong>방법론 혁신</strong>: 단순한 반복적 개선을 통해 마스크 확산 모델의 근본적 한계(한번 변경된 토큰 고정)를 극복하고, 하드 제약조건을 포함하는 복잡한 보상함수 최적화 가능.</li>
+<li><strong>실험적 우수성</strong>: 단백질 구조 설계(target RMSD 최소화)와 세포타입 특이성 DNA 설계에서 기존 방법들을 능가하는 성능 달성.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>그림 3: RERD 알고리즘 요약 - 반복적으로 부분 노이징과 보상 유도 디노이징 수행</em></p></div>
+<p><strong>핵심 알고리즘 구조:</strong></p>
+<ul>
+<li><strong>반복적 단계</strong>: 각 반복 k에서 (1) 현재 샘플 x^(k)에 부분 노이즈 주입 → 중간상태 생성, (2) 보상 유도 디노이징을 통해 x^(k+1) 획득</li>
+<li><strong>소프트 최적 정책 근사</strong>: 식 (2)의 소프트 가치함수 v_t(x_t)를 근사하기 위해 재구성된 x_0 예측값 x̂_0(x_t)의 보상 r(x̂_0(x_t)) 활용</li>
+<li><strong>대규모 행동공간 처리</strong>: 분류기 유도(연속) 또는 중요도 샘플링(이산)으로 p⋆_t 근사</li>
+<li><strong>하드 제약조건 처리</strong>: 초기 시드 시퀀스를 가능 영역 C 내에서 선택하여 제약조건 자동 만족</li>
+<li><strong>진화 알고리즘과의 연결</strong>: 보상 기반 선택과 부분 변이(노이징)의 조합이 유전 알고리즘(genetic algorithms)과 유사한 구조</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>첫 확산 모델 반복 개선</strong>: 언어모델의 반복 개선(BERT-style refinement) 개념을 확산 모델에 처음 적용하여 테스트 타임 보상 최적화의 새로운 패러다임 제시.</li>
+<li><strong>오류 수정 메커니즘</strong>: 기존 단일 패스 방식의 결정 불가역성 문제를 부분 노이징을 통한 재샘플링으로 해결 - 특히 마스크 확산 모델에서 매우 중요.</li>
+<li><strong>제약조건 통합 설계</strong>: 하드 제약조건을 reward function으로 단순 설정하는 대신, 초기 조건 선택을 통해 실질적으로 달성하는 실용적 방안 제시.</li>
+<li><strong>통합 이론 프레임워크</strong>: KL 정규화된 보상 최적화 목표(식 1)와 확산 모델의 수학적 연결을 명확히 하고, 제안 알고리즘의 최적성 보장.</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>계산비용 증가</strong>: 반복적 개선으로 인한 추론 시간 증가는 실제 응용에서 병목이 될 수 있으며, 효율성 개선 방안 필요.</li>
+<li><strong>부분 노이징 스케줄 미최적화</strong>: 각 반복에서 주입할 노이즈 수준(noise level)을 선택하는 전략이 휴리스틱으로 보이며, 이론적 최적화 부재.</li>
+<li><strong>실제 검증 제한</strong>: 단백질 설계의 경우 구조 예측(ESMFold)만 사용하고 실제 생화학적 검증 부재, DNA 설계도 세포 실험 검증 미흡.</li>
+<li><strong>보상함수 품질 의존성</strong>: 알고리즘의 성능이 보상함수의 정확성에 크게 의존하지만, 부정확한 보상함수에 대한 견고성(robustness) 분석 부족.</li>
+<li><strong>후속 연구</strong>: (1) 적응형 노이징 스케줄 학습, (2) 불완전한 보상함수 환경에서의 성능 특성화, (3) 다른 생성 모델(flow-based, autoregressive)로의 확장, (4) 실제 생물학적 검증 수행.</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 확산 모델의 테스트 타임 최적화에 혁신적인 반복 개선 접근을 제시하고, 특히 마스크 확산의 토큰 고정 문제 해결과 하드 제약조건 처리는 실질적 기여다. 단백질/DNA 설계에서 일관된 성능 향상을 보이나, 계산 효율성 분석 부재와 실제 생물학적 검증 부족이 한계. 학술적 우수성은 높으나 실무 적용을 위해서는 효율화와 검증이 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../337_Figgen_Text_to_scientific_figure_generation/index.html">Figgen: Text to scientific figure generation</a></div><div class="conn-reason">확산 모델에서 보상 기반 반복적 정제 방법이 FigGen의 과학 도형 생성 정확도 개선에 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../428_Inference-Time_Alignment_in_Diffusion_Models_with_Reward-Gui/index.html">Inference-Time Alignment in Diffusion Models with Reward-Guided Generation: Tutorial and Review</a></div><div class="conn-reason">추론 시간 정렬의 보상 유도 방법론이 반복적 개선 프레임워크의 핵심 이론적 기반을 제공함</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 보상 최적화를 다루지만 반복적 개선과 동적 탐색이라는 서로 다른 전략을 사용함</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html">Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design</a></div><div class="conn-reason">둘 다 확산모델의 보상 기반 미세조정을 다루지만 서로 다른 기법적 접근을 제시한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 정렬을 다루지만 동적 탐색과 반복적 개선이라는 서로 다른 최적화 전략을 사용함</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../269_Derivative-Free_Guidance_in_Continuous_and_Discrete_Diffusio/index.html">Derivative-Free Guidance in Continuous and Discrete Diffusion Models with Soft Value-Based Decoding</a></div><div class="conn-reason">테스트 시간 확산 모델 개선에 미분 자유 보상 최적화 기법을 확장 적용할 수 있다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html">Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design</a></div><div class="conn-reason">반복적 증류 방법이 보상 유도 확산 모델의 테스트 시간 개선 과정을 더욱 효율화할 수 있음</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../428_Inference-Time_Alignment_in_Diffusion_Models_with_Reward-Gui/index.html">Inference-Time Alignment in Diffusion Models with Reward-Guided Generation: Tutorial and Review</a></div><div class="conn-reason">테스트 시간 보상 유도 반복 개선이 추론 시간 확산 모델 정렬로 확장될 수 있습니다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

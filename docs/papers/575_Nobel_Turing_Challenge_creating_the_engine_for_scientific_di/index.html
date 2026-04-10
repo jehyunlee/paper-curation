@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nobel Turing Challenge: creating the engine for scientific discovery</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Nobel Turing Challenge: creating the engine for scientific discovery</h1>
+<blockquote><p><strong>저자</strong>: H. Kitano | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41540-021-00189-3" target="_blank">10.1038/s41540-021-00189-3</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>과학 발견의 과정을 자동화하고 가속화하기 위한 AI 시스템(AI Scientist)을 개발하는 것을 목표로 하는 거대한 도전(Grand Challenge)을 제시한다. 이는 노벨상 수준의 발견을 자율적으로 수행할 수 있는 AI를 2050년까지 구현하려는 야심찬 비전이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>:
+<ul>
+<li>과학 철학에서 Popper, Kuhn, Lakatos 등이 과학적 발견의 과정을 이론적으로 논의해왔음</li>
+<li>DENDRAL, MYCIN, AM, EURISKO 등 초기 AI 시스템이 과학 발견을 시도했으나 제한적 범위에 그침</li>
+<li>최근 자동화된 실험 시스템(폐쇄 루프: 가설 생성→실험 계획→실행)이 효모 유전학에서 구현됨</li>
+</ul>
+</li>
+<li><strong>Gap</strong>:
+<ul>
+<li>기존 철학적 논의는 계산 가능하도록 구체적으로 구현되지 못함</li>
+<li>인간 과학자의 인지적 제약(cognitive limitation)과 사회학적 제약을 극복하는 대안적 과학 형태의 부재</li>
+<li>단일 데이터셋이나 특정 과제 수준을 넘어 대규모로 의미 있는 발견을 지속적으로 생성할 수 있는 시스템 부재</li>
+</ul>
+</li>
+<li><strong>Why</strong>:
+<ul>
+<li>과학적 발견의 가속화는 현문명의 가장 중요한 과제 중 하나</li>
+<li>인간 과학자의 직관과 편향성을 보완하고 가설 공간(hypothesis space)의 광범위한 탐색이 가능한 AI 과학자의 필요성</li>
+<li>시스템 생물학과 다양한 과학 분야의 발전을 위한 인간-AI 하이브리드 과학의 구현 필요</li>
+</ul>
+</li>
+<li><strong>Approach</strong>:
+<ul>
+<li>"Nobel Turing Challenge"라는 명확한 미션 선언: 2050년까지 노벨상 수준의 과학 발견을 자율적으로 수행 가능한 AI 시스템 개발</li>
+<li>가치 중심 접근법(value-driven)에서 탐색 중심 접근법(exploration-driven)으로의 패러다임 전환</li>
+<li>편향되지 않은 가설 공간의 체계적 탐색과 검증</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>Nobel Turing Challenge의 명확한 정의</strong>: 2050년까지 최고 수준의 인간 과학자와 구별되지 않을 수준의 AI Scientist 개발이라는 구체적 목표 제시</li>
+<li><strong>두 가지 핵심 목표 설정</strong>:
+<ul>
+<li>고도의 자율적 과학 연구 수행으로 대규모 과학 발견 달성</li>
+<li>연구 주제에 대한 전략적 선택 및 발견의 가치, 방법론, 추론 과정을 학술지 등으로 의사소통할 수 있는 능력</li>
+</ul>
+</li>
+<li><strong>과학적 발견의 새로운 프레임워크 제시</strong>: 과학 발견을 문제 해결(problem-solving)로 재정의하고, 이를 가설 공간의 탐색과 최적화로 계산 가능하게 구조화</li>
+<li><strong>대안적 과학 형태의 개념화</strong>: 인간 과학자와는 다른 패턴의 과학 발견이 가능함을 시사하는 "Science of Science" 패러다임 제안</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<ul>
+<li><strong>가설 생성 및 검증의 자동화</strong>: 편향되지 않은 가설 공간의 광범위하고 체계적인 탐색 및 효율적인 검증 시스템 구축</li>
+<li><strong>문제 해결의 프레임워크</strong>: 과학적 발견을 정의된 문제→탐색 및 최적화→발견으로 구성된 계산 가능한 프로세스로 재구조화</li>
+<li><strong>오믹스 기반의 무편향 측정</strong>: 고처량 실험 기술(microarray, 차세대 염기서열분석)과 생물정보학의 무편향 측정 방식을 가설 생성 시스템의 기반으로 활용</li>
+<li><strong>로봇 기반 실험 시스템</strong>: 자동화된 실험 계획, 수행, 데이터 수집을 위한 로봇 시스템 통합</li>
+<li><strong>기계학습과 추론 시스템</strong>: 다단계의 기계학습 및 논리적 추론 시스템으로 가설의 평가, 우선순위 결정, 새로운 방향 제시</li>
+<li><strong>Feigenbaum Test의 고려</strong>: 최고 수준의 인간 과학자와 구별 불가능한 수준의 AI 과학자 달성 여부 판단 기준 설정</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>Science of Science의 명확한 제시</strong>: 인간 과학자의 행동 모방이 아닌 과학적 발견의 본질을 계산적으로 구현하려는 혁신적 관점</li>
+<li><strong>가치 중심에서 탐색 중심으로의 패러다임 전환</strong>: 기존의 의도적(deliberative) 과학 방식과는 전혀 다른 대규모, 무편향 가설 탐색이라는 급진적 접근법</li>
+<li><strong>전학제적 통합</strong>: 과학 철학, AI, 시스템 생물학, 로봇공학, 기계학습을 통합한 종합적 비전 제시</li>
+<li><strong>Feigenbaum Test의 도입</strong>: AI Scientist가 인간 과학자와 구별 불가능할 수 있음을 인식하고, 이를 도구적으로 활용하려는 메타적 사고</li>
+<li><strong>노벨상이라는 상징적 목표</strong>: 과학적 발견의 영향력을 측정 가능한 구체적 기준으로 제시하면서도, 동시에 이것이 상징일 수 있음을 명확히 함</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>철학적 기초의 부족</strong>: 과학 철학의 여러 관점(Popper의 반증 가능성, Kuhn의 패러다임 전환 등)을 통합하는 구체적 계산 모델이 아직 제시되지 않음</li>
+<li><strong>실제 구현의 기술적 과제</strong>: 진정한 자율적 의사결정, 전략적 연구 주제 선택, 그리고 이를 설명 가능한 형태로 의사소통하는 기술의 현실적 어려움</li>
+<li><strong>가설 공간의 크기 제어</strong>: 무편향 탐색이 극단적으로 큰 가설 공간에서 실제로 의미 있는 발견을 보장할 수 있는지에 대한 미해결 문제</li>
+<li><strong>창발성(emergence)의 미지성</strong>: AI Scientist가 인간이 예상하지 못한 완전히 새로운 형태의 과학적 발견을 할 가능성과 그 위험성에 대한 검토 부족</li>
+<li><strong>사회학적·윤리적 함의</strong>: AI Scientist의 저자성(authorship), 책임성(accountability), 그리고 인간 과학자와의 노동 관계 변화 등에 대한 깊이 있는 논의 필요</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>구체적인 도메인(시스템 생물학, 신약개발, 재료과학 등)에서 축소된 버전의 AI Scientist 구현과 검증</li>
+<li>가설 생성과 우선순위 결정을 위한 보다 정교한 기계학습 알고리즘 개발</li>
+<li>AI Scientist 탐지 시스템(AI Scientist Detection System) 개발의 필요성 제시</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+<div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 3.5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.5/5</span></div>
+<p><strong>총평</strong>: 이 관점논문(perspective)은 과학적 발견의 자동화라는 거대하고 도전적인 문제를 명확한 비전과 구체적인 목표로 제시함으로써 AI 연구 커뮤니티에 새로운 방향을 제공하는 중요한 기여를 한다. 특히 가치 중심에서 탐색 중심으로의 패러다임 전환과 "Science of Science"라는 개념은 매우 혁신적이다. 다만 철학적 기초의 구체화, 기술적 실현 경로의 상세 제시, 그리고 사회적·윤리적 함의에 대한 깊이 있는 논의가 향후 필요하며, 실제 구현 과정에서 무편향 탐색의 실제 효과성이 검증되어야 한다는 한계가 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../878_What_ChatGPT_and_generative_AI_mean_for_science/index.html">What ChatGPT and generative AI mean for science</a></div><div class="conn-reason">생성형 AI의 과학적 잠재력이 AI Scientist 개발의 동기와 방향을 제시한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../076_AI_for_Science_An_Emerging_Agenda/index.html">AI for Science: An Emerging Agenda</a></div><div class="conn-reason">과학적 발견 엔진 구축의 이론적 토대를 제공하는 노벨 튜링 챌린지</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../363_From_Reasoning_to_Learning_A_Survey_on_Hypothesis_Discovery/index.html">From Reasoning to Learning: A Survey on Hypothesis Discovery and Rule Learning with Large Language Models</a></div><div class="conn-reason">가설 발견과 규칙 학습이 자율적 과학 발견 엔진의 핵심 기능이다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../134_Automating_the_practice_of_science_Opportunities_challenges/index.html">Automating the practice of science: Opportunities, challenges, and implications</a></div><div class="conn-reason">과학 자동화 프레임워크가 AI Scientist 구현의 실용적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../363_From_Reasoning_to_Learning_A_Survey_on_Hypothesis_Discovery/index.html">From Reasoning to Learning: A Survey on Hypothesis Discovery and Rule Learning with Large Language Models</a></div><div class="conn-reason">LLM의 추론 능력이 AI Scientist의 가설 생성 엔진 구현에 필요하다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../106_Artificial_Intelligence_in_Research_and_Development/index.html">Artificial Intelligence in Research and Development</a></div><div class="conn-reason">AI의 연구개발 영향 분석이 AI Scientist 개발의 경제적 정당성을 제공한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../795_The_AI_Scientist_Towards_Fully_Automated_Open-Ended_Scientif/index.html">The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery</a></div><div class="conn-reason">AI Scientist의 초기 구현을 완전 자동화된 개방형 과학 발견으로 발전시킨다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../834_Towards_Scientific_Discovery_with_Generative_AI_Progress_Opp/index.html">Towards Scientific Discovery with Generative AI: Progress, Opportunities, and Challenges</a></div><div class="conn-reason">과학 발견 엔진 개발의 구체적 실현 방안과 도전 과제를 제시한다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../795_The_AI_Scientist_Towards_Fully_Automated_Open-Ended_Scientif/index.html">The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery</a></div><div class="conn-reason">과학 발견 엔진의 구체적 구현체로서 노벨 튜링 챌린지에 부응하는 시스템을 제시한다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../134_Automating_the_practice_of_science_Opportunities_challenges/index.html">Automating the practice of science: Opportunities, challenges, and implications</a></div><div class="conn-reason">과학 자동화의 구체적 구현체로서 AI Scientist를 통해 노벨-튜링 챌린지를 실현한다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../352_From_AI_for_Science_to_Agentic_Science_A_Survey_on_Autonomou/index.html">From AI for Science to Agentic Science: A Survey on Autonomous Scientific Discovery</a></div><div class="conn-reason">에이전틱 사이언스 프레임워크를 과학 발견 엔진 구축에 적용하여 노벨-튜링 챌린지와 같은 야심찬 목표를 달성할 수 있다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

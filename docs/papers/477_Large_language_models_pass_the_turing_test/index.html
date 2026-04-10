@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Large language models pass the turing test</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Large language models pass the turing test</h1>
+<blockquote><p><strong>저자</strong>: Cameron R. Jones, Benjamin K. Bergen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>각 AI 증인의 승률(interrogator가 AI 시스템을 인간으로 판단한 비율). 오차막대는 95% 부트스트랩 신뢰구간을 나타냄</em></p></div>
+<p>본 논문은 현대 대규모 언어모델(LLM)이 튜링 테스트(Turing test)의 세 명 참가자 버전을 최초로 통과했음을 보여주는 실증적 증거를 제시한다. GPT-4.5가 적절한 페르소나(persona) 프롬프트 하에서 73%의 확률로 인간으로 판단되었으며, 이는 실제 인간 참가자보다 유의미하게 높은 비율이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 지난 75년간 튜링 테스트를 통과하는 시스템을 구축하려는 많은 시도가 있었으나 성공하지 못했음. 최근 두 편의 연구는 간소화된 2자 버전의 튜링 테스트에서 LLM을 평가했으며, GPT-4는 인간으로 54% 판정되었음.</li>
+<li><strong>Gap</strong>: 튜링의 원래 3자 버전 테스트는 더 엄격한 테스트로 간주되는데(직접 비교 가능, 적절한 기저율 보장), 이를 현대 LLM으로 체계적으로 평가한 연구가 부족함.</li>
+<li><strong>Why</strong>: LLM이 튜링 테스트를 통과할 수 있다면 인간 대체 가능성, 사기·허위정보 확산의 위험성 등 사회·경제적 영향이 즉각적임. 또한 현대 AI 벤치마크는 좁은 범위와 정적 특성으로 인해 진정한 추론 능력이 아닌 암기를 측정할 가능성 있음.</li>
+<li><strong>Approach</strong>: UCSD 학부생(n=126)과 Prolific 참여자(n=158)를 대상으로 두 개의 독립적이고 사전 등록된 3자 튜링 테스트를 실시. GPT-4.5, LLaMa-3.1-405B, GPT-4o, ELIZA를 평가하고, 페르소나 프롬프트 유무를 비교.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Prolific(a, b & d) 및 학부생(c) 연구의 4가지 게임 예시. 각 패널에서 한 대화는 인간 증인과, 다른 하나는 AI 시스템과 진행됨</em></p></div>
+<ol>
+<li><strong>GPT-4.5의 튜링 테스트 통과</strong>: GPT-4.5-PERSONA는 전체 73% 승률(학부생 69%, Prolific 76%)을 기록하여 실제 인간 참가자보다 유의미하게 높은 비율로 인간으로 판정됨 (p = 0.50, 50% 이상이므로 귀무가설 채택 불가).</li>
+<li><strong>LLaMa의 경계선 성능</strong>: LLaMa-3.1-405B-PERSONA는 56% 승률(학부생 45%, Prolific 65%)로 인간과 통계적으로 구분되지 않음 (p = 0.08 또는 p = 0.50).</li>
+<li><strong>기저 모델의 실패</strong>: GPT-4o-NO-PERSONA(21%)와 ELIZA(23%)는 유의미하게 50% 이하의 승률을 기록하여 조작 점검(manipulation check)으로 기능함.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3-5">
+<p class="fig-caption"><em>Figure 3: Interrogator 정확도 vs 종료 설문 응답 | Figure 4: Interrogator 전략 분류 | Figure 5: Interrogator 사유 분석</em></p></div>
+<ul>
+<li><strong>실험 설계</strong>: 각 라운드에서 interrogator는 5분간 인간 증인 1명과 AI 증인 1명과 동시에 메시징으로 대화 후 어느 쪽이 인간인지 판정 및 신뢰도·사유 기술</li>
+<li><strong>프롬프트 전략</strong>:
+<ul>
+<li>NO-PERSONA: 최소한의 지시("튜링 테스트에 참가 중이며 인간으로 확신시켜야 함")</li>
+<li>PERSONA: 특정 페르소나 채택(내향적 젊은이, 인터넷 문화 지식, 속어 사용)</li>
+</ul>
+</li>
+<li><strong>대조군 설정</strong>: ELIZA(규칙 기반 챗봇, 1960년대)를 기저선으로 사용하여 interrogator가 약한 AI를 구분할 수 있는지 확인</li>
+<li><strong>통계 방법론</strong>: 사전 등록된 귀무가설(win rate ≠ 50%) 검증, 부트스트랩 신뢰구간, z-검정 사용</li>
+<li><strong>강건성 테스트</strong>: 두 개의 독립적 집단(학부생 vs Prolific)에서 반복 실시하여 결과의 일반화 가능성 확인</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>최초의 3자 튜링 테스트 통과</strong>: 기존 연구는 2자 버전 또는 구형 LLM 평가에 국한되었으나, 본 연구는 현대 LLM(GPT-4.5)이 Turing의 원래 3자 버전을 통과함을 최초로 입증</li>
+<li><strong>사전 등록 및 독립 표본 반복</strong>: 사전 가설 등록 및 두 개의 서로 다른 표본에서의 반복으로 통계적 엄격성과 신뢰성 확보</li>
+<li><strong>페르소나 프롬프트의 체계적 분석</strong>: 같은 모델도 프롬프트에 따라 21~73%까지 승률이 변하는 점을 정량적으로 시연</li>
+<li><strong>사회적·경제적 영향 프레이밍</strong>: 튜링 테스트 통과를 단순 지능 측정이 아닌 "대체 가능성(substitutability)" 및 "기만 능력(ability to deceive)" 관점에서 해석</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>제한된 대화 시간</strong>: 5분이라는 짧은 시간 제약으로 인해 깊이 있는 논의나 모순 발견이 어려울 수 있음</li>
+<li><strong>표본의 동질성</strong>: 학부생과 Prolific 참여자 모두 온라인 기반으로 일반인(오프라인, 연령층 다양성)의 성능과는 다를 가능성</li>
+<li><strong>페르소나 의존성</strong>: 성능이 페르소나 프롬프트에 크게 의존하여 일반화 가능성 제한</li>
+<li><strong>인과성 미명확</strong>: LLM의 어떤 특성(문법, 시의성, 논리적 일관성 등)이 통과를 가능하게 했는지 상세 분석 부재</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>더 길거나 대면 멀티모달 상황에서의 성능 평가</li>
+<li>다양한 배경의 표본 확대 (나이, 교육 수준, 문화권)</li>
+<li>모델의 구체적인 강점/약점 분석 (어떤 질문 카테고리에서 강한가)</li>
+<li>튜링 테스트 통과 능력의 시간적 변화 추적</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 현대 LLM이 75년간의 도전 과제였던 튜링 테스트를 통과했음을 처음으로 실증적으로 입증한 획기적 연구이며, 엄격한 실험 설계와 통계 방법론을 갖추었으나, 더욱 다양한 표본과 심층적 메커니즘 분석으로 보완될 여지가 있다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../838_Training_socially_aligned_language_models_in_simulated_human/index.html">Training socially aligned language models in simulated human society</a></div><div class="conn-reason">사회적으로 정렬된 언어 모델 학습이 튜링 테스트 통과의 기반 기술이 됨</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../179_Can_ai_replace_human_subjects_a_large-scale_replication_of_p/index.html">Can AI Replace Human Subjects? A Large-Scale Replication of Psychological Experiments with LLMs</a></div><div class="conn-reason">LLM이 인간을 대체할 수 있는 가능성을 사회과학 실험 맥락에서 체계적으로 검증</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">GPT-4 같은 고성능 LLM이 인간과 구별되지 않을 정도로 발전했음을 실증적으로 증명</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">GPT-4의 발전된 언어 능력이 튜링 테스트 통과라는 구체적 성과로 입증됨</div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../846_TrustLLM_Trustworthiness_in_Large_Language_Models/index.html">TrustLLM: Trustworthiness in Large Language Models</a></div><div class="conn-reason">LLM의 신뢰성 문제를 지적하며 튜링 테스트 통과만으로는 진정한 지능을 증명할 수 없음을 논의</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

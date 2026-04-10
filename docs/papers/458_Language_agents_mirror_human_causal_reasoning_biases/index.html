@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Language agents mirror human causal reasoning biases</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Language agents mirror human causal reasoning biases</h1>
+<blockquote><p><strong>저자</strong>: Anthony GX-Chen, Dongyan Lin, Mandana Samiei, Doina Precup, Blake A. Richards, Rob Fergus, Kenneth Marino | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.09614" target="_blank">arXiv:2505.09614</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: The Blicket Test">
+<p class="fig-caption"><em>언어 모델이 객체를 기계에 올려놓는 상호작용을 통해 인과관계를 파악해야 하는 블리켓 테스트</em></p></div>
+<p>언어 모델(LM) 에이전트는 인과관계 추론에서 선언적(disjunctive, OR) 규칙에는 능하지만 결합적(conjunctive, AND) 규칙에서 체계적으로 편향되어 있으며, 이러한 편향이 인간 성인의 인지 편향과 유사함을 보여주는 연구이다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 언어 모델은 자연언어 처리와 로봇 제어 등에서 뛰어난 성능을 보이고 있으며, LM 에이전트는 항생제 설계, 학술지 논문 작성 등 실무적 적용이 확대되고 있음</li>
+<li><strong>Gap</strong>: LM 에이전트가 인과관계(causal relationships)를 효율적으로 탐색하고 추론할 수 있는지, 그리고 체계적 편향을 갖고 있는지 불명확함. 특히 인간 훈련 데이터로부터 학습한 LM이 인간의 인지 편향을 상속받았는지 알려지지 않음</li>
+<li><strong>Why</strong>: 자율 의사결정 에이전트는 과학적으로 견고한 인과추론 능력이 필수적이나, 심리학 연구에서 인간도 특정 상황에서 체계적으로 비합리적임이 알려져 있음</li>
+<li><strong>Approach</strong>: 발달심리학의 블리켓 테스트(Blicket Test) 패러다임을 텍스트 기반 게임으로 적응시켜, 다양한 LM들의 인과추론 능력과 편향을 측정하고 인간 데이터와 비교</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2: Quiz accuracy of various models">
+<p class="fig-caption"><em>다양한 언어 모델들의 선언적/결합적 규칙에서의 정확도: 모든 모델이 결합적 규칙에서 체계적으로 낮은 성능 보임</em></p></div>
+<ol>
+<li><strong>선언적 편향 발견</strong>: 모든 LM 모델군(GPT-4o, DeepSeek, Gemma 등)이 결합적 규칙보다 선언적 규칙에서 신뢰성 높게 더 나은 성능을 보임. 이는 옳은 탐색 데이터가 주어져도 나타나는 현상으로, 순수한 탐색 비효율의 문제가 아님</li>
+<li><strong>인간과 유사한 편향 패턴</strong>: LM의 추론 프로필이 인간 성인의 패턴과 유사하지만 유아/어린이의 패턴(편향 없는 "요람 속의 과학자")과는 다름을 정량적으로 입증</li>
+<li><strong>복합 인과요인</strong>: 정보 이득(information gain)과 정확도 간 강한 상관관계(ρ=0.76)를 발견했으나, 동일한 정보 수집 후에도 모델이 결합적 가설을 제거하지 못함</li>
+<li><strong>확장성 있는 개선방법</strong>: 테스트 타임 샘플링을 통해 명시적으로 인과 가설을 샘플링하고 제거하도록 프롬프팅하면 선언적 편향이 유의미하게 감소</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3: Correlation analysis">
+<p class="fig-caption"><em>모델 성능에 영향을 미치는 요소들: 정보 이득이 가장 강한 양의 상관(ρ=0.76), 탐색 단계 수는 음의 상관(ρ=-0.35)</em></p></div>
+<ul>
+<li><strong>텍스트 기반 블리켓 테스트</strong>: 에이전트는 순차적으로 객체를 기계에 올렸다 내렸다 하면서 상태 변화를 관찰하고, 탐색 단계 이후 모든 관찰 이력을 제공받아 각 객체의 블리켓 여부를 판단</li>
+<li><strong>정보이득 측정</strong>: Shannon 엔트로피 기반 기댓값 정보이득(expected information gain)을 계산하여 최적 탐색 행동 정의. 오라클 에이전트는 한 단계 정보 최대화로 상한선 제시</li>
+<li><strong>다양한 모델 평가</strong>: GPT-4o, DeepSeek-Reasoner/Chat, Gemma 3, QWQ 등 여러 모델군 및 시스템 메시지, CoT/ReAct/Reflexion 같은 프롬프팅 기법으로 로버스트 검증</li>
+<li><strong>가설 제거 방법(Hypothesis Elimination)</strong>: 명시적으로 가능한 인과 가설들의 평면적 사전분포(flat prior)를 구성하고, 각 가설을 의도적으로 제거하도록 유도하는 테스트-타임 절차</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li>발달심리학 패러다임(블리켓 테스트)을 LM 에이전트 평가에 처음 적용하여, 인공지능의 인과추론 편향을 체계적으로 측정</li>
+<li>인간 성인과 LM 간의 정량적 비교를 통해 "모델이 훈련 데이터의 인간 편향을 상속한다"는 가설을 실증적으로 검증</li>
+<li>선언적 편향이 탐색 전략 부족이 아닌 근본적 추론 편향임을 보여줌으로써, 단순한 프롬프팅 개선을 넘어 인과추론의 본질적 문제를 지적</li>
+<li>정보이득 최적화와 실제 모델 성능 간의 간극을 측정하고, 이를 해결하는 가설 제거 기반의 구성적 방법 제시</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>태스크 단순성</strong>: 블리켓 테스트는 제한된 인과구조(2가지 규칙만)만 다루며, 현실의 복잡한 인과 관계(시간적 지연, 숨겨진 변수, 다중 상호작용 등)는 포함하지 않음</li>
+<li><strong>프롬프트 의존성</strong>: 다양한 시스템 메시지와 프롬프팅 기법을 시도했으나, 개별 최적화된 프롬프트에 대한 "금은 총알(silver bullet)" 존재 여부는 미해결</li>
+<li><strong>확장성 검증</strong>: 제안된 가설 제거 방법이 더 복잡한 인과 구조와 더 많은 객체(>8)에서 어느 정도로 스케일되는지 실험이 제한적</li>
+<li><strong>인간 비교의 깊이</strong>: 성인과 유아 간 성능 비교는 데이터 수준이지만, 선언적 편향의 심리학적 근원(예: 언어 구조, 선험적 개념 등)에 대한 이론적 분석 부재</li>
+<li><strong>인과 발견 일반화</strong>: 블리켓 테스트 외 다른 인과 추론 패러다임(예: 중재 실험, 관측 데이터 분석)에서 유사한 편향이 나타나는지 미검증</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 언어 모델의 인과추론 편향을 심리학 패러다임과 연계하여 처음으로 체계적으로 규명하였으며, 인간 행동과의 정량적 비교를 통해 모델이 훈련 데이터의 인지 편향을 상속함을 실증했다. 제안된 가설 제거 방법은 이론적 근거가 명확하고 성능 개선이 유의미하나, 더 복잡한 인과 구조와 다양한 추론 시나리오로의 확장 가능성 검증이 필요하다. 자율 에이전트의 과학적 추론 능력 강화라는 중요한 문제를 다루는 높은 수준의 연구이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../360_From_lived_experience_to_insight_Unpacking_the_psychological/index.html">From lived experience to insight: Unpacking the psychological risks of using ai conversational agents</a></div><div class="conn-reason">언어 에이전트의 인간과 유사한 인지 편향 연구가 AI의 심리적 위험 분석에 이론적 기반을 제공한다</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../173_Bridging_social_psychology_and_llm_reasoning_Conflict-aware/index.html">Bridging social psychology and llm reasoning: Conflict-aware meta-review generation via cognitive alignment</a></div><div class="conn-reason">사회 심리학과 LLM 추론의 연결이 언어 에이전트 편향 연구의 이론적 기반을 제공한다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">사회적 책임 AI를 위한 인과 학습을 언어 에이전트의 인지 편향 연구로 확장할 수 있다</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../360_From_lived_experience_to_insight_Unpacking_the_psychological/index.html">From lived experience to insight: Unpacking the psychological risks of using ai conversational agents</a></div><div class="conn-reason">인과관계 추론에서 언어 에이전트의 인간 유사 편향을 AI 시스템의 심리적 위험 분석에 적용할 수 있다</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

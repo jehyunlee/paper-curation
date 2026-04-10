@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</h1>
+<blockquote><p><strong>저자</strong>: Shingo Ayabe, Takuto Otomo, Hiroshi Kera, Kazuhiko Kawamoto | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.18781" target="_blank">arXiv:2412.18781</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>오프라인 강화학습의 견고성 평가 개요: 다양한 품질의 오프라인 데이터셋으로 학습된 모델을 정상, 랜덤, 적대적 섭동 조건에서 평가</em></p></div>
+<p>본 논문은 <strong>오프라인 강화학습(Offline RL) 기반 로봇 제어 시스템의 행동 공간 섭동에 대한 견고성을 체계적으로 평가</strong>하며, 기존 오프라인 RL 방법들이 액추에이터 고장과 같은 실제 운영 환경의 도전에 얼마나 취약한지를 실증적으로 증명한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 오프라인 RL은 환경과의 상호작용 없이 사전 수집 데이터셋에서만 학습하므로 비용과 위험을 감소시킬 수 있다. 기존 연구들은 주로 <strong>상태 공간 섭동(state-space perturbations)</strong>에 대한 견고성만 다루었다.</li>
+<li><strong>Gap</strong>: 실제 로봇 시스템에서 액추에이터 고장, 마찰 계수 불일치 등 <strong>행동 공간 섭동(action-space perturbations)</strong>은 동등하게 중요하지만, 오프라인 RL의 관점에서는 거의 탐구되지 않았다. 상태 공간 섭동에 대한 방어 전략(평활화 손실, KL 발산 제약)이 행동 공간 섭동에도 효과적인지 불명확하다.</li>
+<li><strong>Why</strong>: 오프라인 RL은 데이터셋 외의 행동 탐색을 제한하는 보수적 제약(conservative constraint)을 사용하기 때문에, 훈련 데이터에 포함되지 않은 섭동에 매우 취약할 것으로 예상된다. 이를 체계적으로 검증하는 것이 신뢰할 수 있는 로봇 제어 시스템 개발에 필수적이다.</li>
+<li><strong>Approach</strong>: (1) 미분 진화(differential evolution) 기반 적대적 섭동 생성, (2) BCQ, TD3+BC, IQL 등 표준 오프라인 RL 방법의 견고성 평가, (3) 섭동이 포함된 데이터셋으로 재학습 시도를 통한 방어 전략 검증</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>세 종류의 다리 로봇(Hopper, HalfCheetah, Ant)에서 적대적 섭동 강도에 따른 테스트 타임 견고성 평가 결과</em></p></div>
+<ol>
+<li><strong>오프라인 RL의 심각한 취약성 실증</strong>: 기존 오프라인 RL 방법들(BCQ, TD3+BC, IQL)이 무작위 및 적대적 행동 섭동에 대해 <strong>온라인 RL보다 훨씬 더 취약</strong>함을 정량적으로 입증. 예를 들어, Hopper 환경에서 적대적 섭동 하에 평균 에피소드 보상이 극적으로 감소.</li>
+<li><strong>데이터셋 커버리지의 중요성 규명</strong>: 테스트 타임 견고성이 훈련 데이터셋의 상태-행동 커버리지(state-action coverage)에 직접 의존함을 발견. 전문가(expert) 데이터셋은 중간(medium) 데이터셋보다 섭동에 더 잘 견딤.</li>
+<li><strong>기존 방어 전략의 무효성</strong>: 온라인 RL의 표준 방어 전략인 "섭동이 추가된 환경에서 훈련"을 오프라인 설정에서 적용했을 때, <strong>섭동이 포함된 데이터셋으로 훈련해도 견고성 개선이 거의 없음</strong>을 발견. 이는 오프라인 설정에서 특화된 새로운 방어 방법 개발의 필요성을 강조.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
+<p class="fig-caption"><em>Hopper, HalfCheetah, Ant의 훈련 데이터셋에서의 행동 분포 비교: 히스토그램으로 표시된 상태-행동 커버리지</em></p></div>
+<ul>
+<li><strong>적대적 섭동 생성</strong>: 미분 진화 알고리즘을 사용하여 평균 에피소드 보상을 최소화하는 행동 섭동을 반복적으로 최적화. 온라인 RL의 그래디언트 기반 공격과 달리, 오프라인 설정에서 정책-섭동 결합 최적화를 요구하지 않음.</li>
+<li><strong>평가 메트릭</strong>: 세 가지 조건에서 평균 에피소드 보상 측정: (1) 정상(normal), (2) 무작위 섭동, (3) 적대적 섭동</li>
+<li><strong>데이터셋 구성</strong>: D4RL 벤치마크의 expert, medium, medium-expert 데이터셋 사용. 섭동 강도 변화에 따른 영향 분석.</li>
+<li><strong>방어 실험</strong>: 적대적 섭동으로 증강된 데이터셋을 생성하고, 이를 사용하여 정책을 재학습 후 견고성 재평가</li>
+<li><strong>환경</strong>: MuJoCo 물리 시뮬레이션에서 3종의 다리 로봇(Hopper-v2, HalfCheetah-v2, Ant-v2)의 전진 보행 태스크</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>오프라인 RL의 행동 공간 섭동 취약성을 최초로 체계적 평가</strong>: 기존 연구들이 상태 공간 섭동만 다룬 반면, 본 연구는 실제 로봇 응용에서 더 직접적인 영향을 미치는 행동 공간 섭동을 중점 분석</li>
+<li><strong>오프라인-온라인 RL의 견고성 비교 프레임워크</strong>: 동일한 평가 환경과 메트릭으로 두 패러다임의 차이를 정량화</li>
+<li><strong>오프라인 설정에 적합한 적대적 공격 방법론</strong>: 정책-섭동 결합 최적화를 요구하지 않는 미분 진화 기반 공격으로 오프라인 특수성 반영</li>
+<li><strong>데이터셋 커버리지-견고성 상관관계 분석</strong>: 훈련 데이터의 행동 분포가 섭동 견고성에 미치는 직접적 영향 규명</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>제한된 환경</strong>: MuJoCo 물리 시뮬레이션만 사용. 실제 로봇 하드웨어나 더 복잡한 환경(부분 관찰성, 비선형 역학)에서의 검증 필요</li>
+<li><strong>제한된 오프라인 RL 방법</strong>: BCQ, TD3+BC, IQL 3가지만 평가. 더 최신의 오프라인 RL 알고리즘(CQL, AWAC 등)과의 비교 부족</li>
+<li><strong>섭동 형태의 단순성</strong>: 관절 토크 신호의 부분적 섭동만 다룸. 다중 액추에이터 동시 고장, 센서-액추에이터 결합 고장 등 복잡한 시나리오는 미포함</li>
+<li><strong>효과적인 방어 전략 부재</strong>: 섭동 증강 데이터셋이 실패한 이유에 대한 깊이 있는 분석과 원리 기반 대안 제시 부족</li>
+<li><strong>후속 연구 방향</strong>:
+<ol>
+<li>보수적 제약을 완화하면서도 오프라인성을 유지하는 "적응형 탐색(adaptive exploration)" 방법 개발</li>
+<li>섭동에 대해 내재적으로 견고한 행동을 학습하는 정규화 기법(예: action robustness regularization) 연구</li>
+<li>모델 기반 오프라인 RL에서의 동역학 불확실성 활용</li>
+<li>실제 로봇 플랫폼에서의 현실성 검증</li>
+</ol>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 본 논문은 <strong>오프라인 강화학습의 실제 운영 환경에서의 적용 가능성에 중요한 의문을 제기</strong>하며, 행동 공간 섭동에 대한 체계적 취약성 평가를 통해 실무적 가치를 제공한다. 특히 데이터셋 커버리지와 견고성의 상관관계 규명은 향후 더 견고한 오프라인 RL 알고리즘 개발의 기초가 될 수 있다. 다만 <strong>문제 진단에는 탁월하지만 해결책 제시는 미흡</strong>하며, 실제 로봇 검증과 더 다양한 공격 형태 분석을 통한 심화가 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html">Guided by guardrails: Control barrier functions as safety instructors for robotic learning</a></div><div class="conn-reason">제어 장벽 함수 기반 안전 학습은 오프라인 강화학습의 행동 공간 섭동 문제를 해결하는 안전성 보장 메커니즘을 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 한국어 논문은 행동 공간 섭동, 영어 논문은 동일한 주제를 다른 관점에서 접근한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 영어 논문과 한국어 논문이 동일한 주제를 다른 관점에서 접근한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../140_Autonomous_reinforcement_learning_agent_for_chemical_vapor_d/index.html">Autonomous reinforcement learning agent for chemical vapor deposition synthesis of quantum materials</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가 방법론을 화학 공정 제어에 적용한 확장 연구다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../422_Improving_generalization_of_robot_locomotion_policies_via_sh/index.html">Improving generalization of robot locomotion policies via sharpness-aware reinforcement learning</a></div><div class="conn-reason">샤프니스 인식 최소화를 통한 일반화 개선은 오프라인 강화학습의 견고성 문제를 모델 최적화 관점에서 해결하는 추가적인 방법론을 제시한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../003_A_comprehensive_survey_of_cross-domain_policy_transfer_for_e/index.html">A comprehensive survey of cross-domain policy transfer for embodied agents</a></div><div class="conn-reason">오프라인 강화학습의 로봇 제어 견고성을 크로스 도메인 정책 전이로 확장한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html">Guided by guardrails: Control barrier functions as safety instructors for robotic learning</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가는 제어 장벽 함수 기반 안전 학습에서 행동 공간 섭동에 대한 추가적인 견고성 분석을 제공한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

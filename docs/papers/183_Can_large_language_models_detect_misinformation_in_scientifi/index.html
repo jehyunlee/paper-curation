@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Can large language models detect misinformation in scientific news reporting? arXiv preprint arXiv:2402.14268, 2024.</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Can large language models detect misinformation in scientific news reporting? arXiv preprint arXiv:2402.14268, 2024.</h1>
+<blockquote><p><strong>저자</strong>: Yupeng Cao, Aishwarya Muralidharan Nair, Nastaran Jamalipour Soofi, Elyon Eyimife, K.P. Subbalakshmi | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2402.14268" target="_blank">arXiv:2402.14268</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>과학 뉴스 기사의 오보(misinformation)를 탐지하기 위해 대규모 언어모델(LLM)의 능력을 평가하고, 과학적 타당성 차원(Dimensions of Validity, DoV)을 정의하여 prompt engineering을 통해 미명시적 주장(explicit claim) 없이도 오보를 검출할 수 있는 세 가지 아키텍처를 제안한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존의 과학 fact-checking 방법들은 인간이 뉴스에서 명시적 주장(claim)을 추출해야 하는 번거로운 과정이 필요하며, LLM이 생성한 거짓 정보의 증가로 인해 과학 도메인의 오보 탐지가 더욱 복잡해지고 있음</li>
+<li><strong>Gap</strong>: 1) 과학 뉴스의 타당성을 정의하는 일반화된 분류체계(taxonomy) 부재, 2) 현실적 시나리오에서 명시적 주장 추출 없이 작동하는 아키텍처 부재, 3) LLM 생성 콘텐츠 혼합 데이터셋 부재</li>
+<li><strong>Why</strong>: 과학 정보는 비전문가에게 뉴스와 소셜미디어로 전파되므로, 오보의 공중보건 피해가 심각하고(COVID-19, 백신 거부 등), 수동 fact-checking의 확장성 한계</li>
+<li><strong>Approach</strong>: CoSMis 데이터셋 구축(인간 작성+LLM 생성), DoV 가이드 Chain-of-Thought prompting, 3가지 파이프라인 아키텍처(SERIf, SIf, D2I) 비교 평가</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>데이터셋 구축 프로세스: 공개 데이터셋, 웹 리소스, LLM 기반 생성을 통한 균형잡힌 코퍼스 수집</em></p></div>
+<ol>
+<li><strong>CoSMis(SciNews) 데이터셋 개발</strong>: 2,400개의 COVID-19 관련 뉴스(신뢰 1,200개, 부신뢰 1,200개)와 CORD-19 과학 초록 페어링. 인간 작성(1,200개)과 LLM 생성(1,200개) 균형 포함으로 실제 시나리오 반영</li>
+<li><strong>과학적 타당성 차원(DoV) 정의</strong>: 과학 뉴스의 오보를 다차원으로 평가하는 프레임워크 제시</li>
+<li><strong>3가지 LLM 파이프라인</strong>: SERIf(Summarization-Evidence Retrieval-Inference), SIf(Evidence Retrieval 제외), D2I(Direct-to-Inference) 아키텍처로 점진적 처리 단계 감소 설계</li>
+<li><strong>설명가능성 제공</strong>: DoV 기반 Chain-of-Thought prompting으로 모델 의사결정 과정의 해석 가능성 확보</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>제안된 3가지 아키텍처: SERIf는 요약→증거 검색→추론의 3단계, SIf는 2단계, D2I는 직접 추론으로 진행</em></p></div>
+<p><strong>방법론</strong>:</p>
+<ul>
+<li><strong>데이터셋 구축</strong>: MM-CoVaR, COVID19-FNIR, COVID-Rumor 등 공개 데이터셋 활용 + 웹 스크래핑 + 과학 키워드 필터링 + 수동 검증 + LLM 기반 신뢰/불신뢰 뉴스 생성</li>
+<li><strong>DoV 프레임워크</strong>: 과학적 정확성, 맥락 적절성, 출처 인용, 불확실성 표현 등 다차원 평가 기준 설정</li>
+<li><strong>Prompt Engineering</strong>: Zero-shot, Few-shot, DoV-guided Chain-of-Thought 전략 적용</li>
+<li><strong>모델 평가</strong>: GPT-3.5, GPT-4, Llama2(7B/13B/70B), Llama3(8B) 비교 테스트</li>
+<li><strong>아키텍처 비교</strong>: 각 파이프라인의 처리 단계 차이에 따른 성능 변화 분석</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>Novel Dataset</strong>: 인간 작성과 LLM 생성 콘텐츠의 균형잡힌 혼합으로, 현실의 혼합 오보 생태계 반영</li>
+<li><strong>Taxonomy Creation</strong>: 과학 오보를 체계적으로 분류하는 DoV 차원 정의 - 기존 연구에서 부재했던 개념적 틀 제시</li>
+<li><strong>No Explicit Claim Requirement</strong>: 명시적 주장 추출 없이 직접 비교 가능한 아키텍처 제안으로 실용성 향상</li>
+<li><strong>Explainability Focus</strong>: DoV 기반 CoT prompting으로 '왜 오보인가'에 대한 설명 제공 메커니즘 구축</li>
+<li><strong>Comprehensive Architecture Comparison</strong>: 3가지 복잡도 수준의 파이프라인 비교로 처리 단계의 영향 분석</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>데이터셋 제한</strong>: COVID-19 특화 데이터로 다른 과학 도메인(기후, 물리학 등)으로의 일반화 가능성 미검증</li>
+<li><strong>LLM 의존성</strong>: GPT-3.5/4의 API 비용 문제와 오픈소스 모델(Llama)과의 성능 격차 존재</li>
+<li><strong>평가 메트릭</strong>: 정확도 기반 평가만 제시, 부분적 오류(partial misinformation)나 문제사항의 심각도 구분 부족</li>
+<li><strong>사람-모델 비교 부재</strong>: 인간 평가자(과학자, 기자)와 LLM 성능의 직접 비교 필요</li>
+<li><strong>후속 연구</strong>: 1) 다학제 과학 도메인 확장, 2) Fine-tuning 기반 성능 개선 탐색, 3) 실시간 뉴스 스트림 적용, 4) 멀티모달(이미지+텍스트) 오보 탐지</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 이 논문은 과학 뉴스의 오보 탐지 문제를 현대적 관점에서 접근하여 실용적 데이터셋과 명시적 주장 추출이 필요 없는 LLM 파이프라인을 제안했으나, 다중 도메인 일반화와 더 정밀한 평가 프로토콜을 통해 임팩트를 극대화할 수 있는 추가 연구가 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../859_Unsupervised_pretraining_for_fact_verification_by_language_m/index.html">Unsupervised pretraining for fact verification by language model distillation</a></div><div class="conn-reason">과학 뉴스의 오보 탐지를 위한 타당성 차원 정의가 SFAVEL의 클레임-근거 의미론적 정렬 학습의 이론적 기반을 제공함</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html">DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts</a></div><div class="conn-reason">DEFAME의 멀티모달 동적 증거 기반 접근법이 과학 뉴스 오보 탐지의 텍스트 기반 타당성 평가와 상호 보완적인 검증 방법을 제시함</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 클레임의 검증 가능성 분석이 과학 뉴스 오보 탐지에서 사용된 과학적 타당성 평가 방법론을 의료 영역으로 확장한 연구임</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UI-TARS: Pioneering Automated GUI Interaction with Native Agents</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>UI-TARS: Pioneering Automated GUI Interaction with Native Agents</h1>
+<blockquote><p><strong>저자</strong>: Yujia Qin, Yining Ye, Junjie Fang, Haoming Wang, Shihao Liang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.12326" target="_blank">10.48550/arXiv.2501.12326</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>UI-TARS가 항공편 검색을 돕는 데모 사례</em></p></div>
+<p>스크린샷만을 입력으로 받아 마우스, 키보드 조작 등 인간 같은 상호작용을 수행하는 네이티브 GUI 에이전트 모델로, 상용 모델(GPT-4o)에 기반한 프레임워크들을 뛰어넘는 엔드-투-엔드(end-to-end) 성능을 달성했다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 기존 GUI 에이전트는 HTML, 접근성 트리 등 텍스트 기반 표현에 의존하는 모듈식 프레임워크(framework) 구조를 사용하거나, GPT-4o와 같은 상용 VLM(Vision Language Model)에 의존한다.</li>
+<li><strong>Gap</strong>: (1) 텍스트 기반 방식은 플랫폼별 불일치, 장황함, 확장성 부족 문제 존재, (2) 모듈식 프레임워크는 전문가 지식에 의존하며 새로운 상황에 취약하고, (3) 네이티브 에이전트 모델로의 전환에는 지각(perception), 추론(reasoning), 메모리(memory), 행동(action) 전체를 통합한 대규모 고품질 데이터의 부재라는 데이터 병목 문제가 있다.</li>
+<li><strong>Why</strong>: 순수 비전(pure-vision) 기반 엔드-투-엔드 에이전트 모델은 인간의 인지 과정에 더 가깝고 더 적응적이지만, 실제 성능은 기대에 미치지 못하고 있다.</li>
+<li><strong>Approach</strong>: 고품질 GUI 데이터 수집 및 System-2 추론 통합, 그리고 반복적 학습(iterative training)과 반성 튜닝(reflection tuning)을 통해 네이티브 GUI 에이전트 모델 UI-TARS를 개발한다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
+<p class="fig-caption"><em>GUI 에이전트의 진화 경로</em></p></div>
+<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
+<p class="fig-caption"><em>핵심 역량 및 평가 개요</em></p></div>
+<ol>
+<li><strong>벤치마크 우수 성능</strong>: OSWorld에서 50스텝 기준 24.6점(Claude 22.0 초과), AndroidWorld에서 46.6점(GPT-4o 34.5 초과) 달성, 10개 이상의 GUI 에이전트 벤치마크에서 SOTA(State-of-the-Art) 성능 달성</li>
+<li><strong>통합 아키텍처</strong>: 지각, 행동 모델링, System-2 추론, 메모리를 하나의 엔드-투-엔드 모델로 통합하여 모듈식 프레임워크보다 우수한 성능 달성</li>
+<li><strong>자동 데이터 수집 및 정제</strong>: 수백 대의 가상 머신을 활용한 자동 궤적(trace) 수집 및 다단계 필터링으로 대규모 고품질 데이터 생성</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
+<p class="fig-caption"><em>UI-TARS의 아키텍처 개요 및 핵심 역량</em></p></div>
+<ul>
+<li><strong>강화된 지각(Enhanced Perception)</strong>:
+<ul>
+<li>요소 설명(element description), 밀집 캡셔닝(dense captioning), 상태 전환 캡셔닝(state transition captioning), 시각적 추론 QA, Set-of-Mark 프롬프팅 등 5가지 지각 작업으로 구성된 대규모 데이터셋 구축</li>
+<li>GUI 요소의 타입, 바운딩박스, 텍스트 내용 메타데이터 추출을 통한 세밀한 UI 이해</li>
+</ul>
+</li>
+<li><strong>통합 행동 모델링(Unified Action Modeling)</strong>:
+<ul>
+<li>플랫폼별 의미적으로 동등한 행동을 표준화된 행동 공간으로 통합</li>
+<li>요소 설명과 공간 좌표를 쌍으로 하는 대규모 그라운딩(grounding) 데이터셋으로 정확한 상호작용 실현</li>
+</ul>
+</li>
+<li><strong>System-2 추론(System-2 Reasoning)</strong>:
+<ul>
+<li>6M 개의 GUI 튜토리얼 수집 및 정제로 논리적 의사결정을 위한 GUI 지식 제공</li>
+<li>작업 분해(task decomposition), 장기 일관성(long-term consistency), 마일스톤 인식(milestone recognition), 시행착오(trial&error), 반성(reflection) 등 다양한 추론 패턴 주입</li>
+<li>각 행동 전에 명시적 "생각(thoughts)" 생성으로 지각과 행동을 의도적 의사결정과 연결</li>
+</ul>
+</li>
+<li><strong>반복적 개선(Iterative Refinement)</strong>:
+<ul>
+<li>다단계 필터링: 규칙 기반 휴리스틱, VLM 점수 평가, 인간 검증</li>
+<li>반성 튜닝: 오류 수정(error correction)과 반성 후(post-reflection) 데이터 주석으로 에이전트가 자신의 실수를 학습하고 회복</li>
+</ul>
+</ul>
+<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
+<p class="fig-caption"><em>지각 및 그라운딩 데이터 예시</em></p></div></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>순수 비전 기반 네이티브 모델</strong>: 텍스트 표현에 대한 의존성을 완전히 제거하고 스크린샷만으로 동작하는 완전히 새로운 접근 방식</li>
+<li><strong>System-2 추론 통합</strong>: GUI 에이전트 분야에서 명시적인 생각 과정을 포함한 의도적 추론을 체계적으로 적용한 첫 시도</li>
+<li><strong>자동화된 데이터 수집 파이프라인</strong>: 수백 대의 가상 머신을 활용한 대규모 자동 궤적 생성 및 반성 기반 필터링 방식으로 데이터 병목 문제 해결</li>
+<li><strong>GUI 에이전트 진화 경로 분석</strong>: 규칙 기반 에이전트에서 네이티브 에이전트 모델을 거쳐 활동적이고 평생학습하는 에이전트로의 진화 과정을 체계적으로 분석</li>
+<li><strong>멀티플랫폼 통합 행동 공간</strong>: 웹, 모바일, 데스크톱 등 다양한 플랫폼의 행동을 의미적으로 통합하는 새로운 표현 방식</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>데이터 규모의 한계</strong>: 비록 대규모 자동 수집을 시도했으나, 텍스트 기반 에이전트나 VLM에 비해 여전히 상대적으로 적은 양의 세밀한 주석 데이터 필요</li>
+<li><strong>실시간 동적 환경의 제약</strong>: 현재 구축된 가상 환경에서의 학습으로, 완전히 예측 불가능한 실제 사용자 인터페이스에 대한 일반화 능력은 미지수</li>
+<li><strong>System-2 추론 오버헤드</strong>: 명시적 생각 과정이 추가되면서 응답 시간이 증가하는 트레이드오프로, 실시간 상황에서의 배포 고려 필요</li>
+<li><strong>후속 연구 방향</strong>:
+<ul>
+<li>활동적 학습(active learning)을 통한 인간 피드백 수집의 최소화</li>
+<li>평생학습(lifelong learning)으로 시간에 따른 인터페이스 변화에 적응하는 에이전트 개발</li>
+<li>다양한 자연어 지시사항(instruction)에 대한 강건성 개선</li>
+<li>크로스 도메인 전이 학습(transfer learning) 능력 강화</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: UI-TARS는 GUI 에이전트 분야의 패러다임 전환을 제시하는 중요한 논문으로, 엔드-투-엔드 네이티브 모델이 모듈식 프레임워크를 실제로 능가할 수 있음을 보여주었으며, 특히 자동화된 데이터 수집과 반성 기반 학습 메커니즘은 향후 유사한 구체화(embodied) AI 분야의 발전에 중요한 기여를 할 것으로 기대된다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../590_Openhands_An_open_platform_for_ai_software_developers_as_gen/index.html">Openhands: An open platform for ai software developers as generalist agents</a></div><div class="conn-reason">일반적인 AI 소프트웨어 개발 플랫폼이 네이티브 GUI 에이전트의 기반이 됩니다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../073_AI_Agents_in_Engineering_Design_A_Multi-Agent_Framework_for/index.html">AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerodynamic Car Design</a></div><div class="conn-reason">네이티브 에이전트의 상호작용이 엔지니어링 설계 자동화의 기반을 제공합니다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../061_Agent_S_An_Open_Agentic_Framework_that_Uses_Computers_Like_a/index.html">Agent S: An Open Agentic Framework that Uses Computers Like a Human</a></div><div class="conn-reason">Agent S와 UI-TARS는 모두 GUI 자동화를 다루지만, 인간과 유사한 컴퓨터 사용과 네이티브 에이전트 기반 자동화라는 서로 다른 접근 방식을 채택합니다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../073_AI_Agents_in_Engineering_Design_A_Multi-Agent_Framework_for/index.html">AI Agents in Engineering Design: A Multi-Agent Framework for Aesthetic and Aerodynamic Car Design</a></div><div class="conn-reason">GUI 자동화와 엔지니어링 설계 자동화 모두 인간-AI 협업을 다룹니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../888_X-webagentbench_A_multilingual_interactive_web_benchmark_for/index.html">X-WebAgentBench: A Multilingual Interactive Web Benchmark for Evaluating Global Agentic System</a></div><div class="conn-reason">GUI 상호작용이 다국어 웹 에이전트 벤치마크로 확장됩니다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

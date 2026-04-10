@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Augmenting large language models with chemistry tools</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Augmenting large language models with chemistry tools</h1>
+<blockquote><p><strong>저자</strong>: Andres M. Bran, Sam Cox, Oliver Schilter, Carlo Baldassari, Andrew D. White, Philippe Schwaller | <strong>날짜</strong>: 2024-05-08 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s42256-024-00832-8" target="_blank">10.1038/s42256-024-00832-8</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>ChemCrow는 GPT-4에 18개의 화학 전문가 도구를 통합하여 합성 계획, 약물 발견, 재료 설계 등 다양한 화학 작업을 자동으로 수행할 수 있는 LLM 화학 에이전트이다. 이 시스템은 곤충 기피제와 유기촉매 합성을 자율적으로 실행하고 새로운 색소체 발견을 주도하여, 계산 화학과 실험 화학 사이의 격차를 효과적으로 연결한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: LLM(특히 GPT-4, GPT-3.5)은 자연언어 처리 분야에서 우수한 성능을 보이나 기초 수학이나 화학 연산에 취약하다(예: 12,345 × 98,765 계산 불가, IUPAC 명명법을 분자 구조로 변환 불능). 또한 외부 지식 출처에 대한 접근이 제한적이다.</li>
+<li><strong>Gap</strong>: 화학 분야는 반응 예측, 역합성 계획, 분자 생성 등 다양한 AI 도구들이 존재하지만, 이들이 독립적인 환경(RXN for Chemistry, AIZynthFinder 등)에서 통합되어 실험 화학자들의 접근성이 낮고 도구 간 상호운용성이 부족하다.</li>
+<li><strong>Why</strong>: 화학의 자동화 수준이 타 분야에 비해 낮은 이유는 높은 실험 의존성, 데이터 부족, 계산 도구의 제한된 적용 범위 때문이다.</li>
+<li><strong>Approach</strong>: 전문가 설계 화학 도구들을 LLM의 추론 능력과 결합하여 자동화된 화학 에이전트를 구축한다. Thought-Action-Action Input-Observation 반복 루프를 통해 LLM이 작업을 추론하고, 적절한 도구를 선택하며, 결과를 분석하는 방식으로 작동시킨다.</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<ol>
+<li><strong>자율적 화학 합성 실행</strong>: ChemCrow는 사용자 입력(예: "곤충 기피제의 합성 계획 및 실행")을 받아 클라우드 연결 로보틱 플랫폼(RoboRXN)에서 자율적으로 DEET(곤충 기피제) 및 3개의 티오우레아 유기촉매(Schreiner's, Ricci's, Takemoto's) 합성을 성공적으로 계획하고 실행했다. 합성 절차 검증 데이터를 반복적으로 쿼리하여 용매량 조정 등 자동 수정을 수행하는 능력도 시연했다.</li>
+<li><strong>인간-AI 협력을 통한 신규 색소체 발견</strong>: ChemCrow는 기계학습 모델 학습을 통해 색소체 후보 라이브러리를 스크리닝하고, 목표 흡수 최대 파장(369 nm)을 기준으로 새로운 분자를 제안했으며, 이 분자는 실제 합성되어 약 336 nm의 흡수 최대 파장을 가진 새로운 색소체로 검증되었다.</li>
+<li><strong>다양한 화학 작업에서의 평가 우월성</strong>: 14개 사용 사례에서 GPT-4 단독 사용 대비 ChemCrow의 성능이 LLM 기반 평가(EvaluatorGPT)와 전문가 인간 평가 모두에서 우수함을 입증했다.</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
+<p class="fig-caption"><em>Fig. 1 | 개요 및 도구 집합. (a) 작업 해결 과정의 개요 및 DEET 합성 예시, (b) 구현된 18개의 화학 도구 (반응, 분자, 안전, 검색, 표준 도구)</em></p></div>
+<ul>
+<li><strong>도구 통합</strong>: 18개의 전문가 설계 도구 구현
+<ul>
+<li>반응 도구: 역합성(Retrosynthesis), 절차 예측(Procedure prediction), 반응 예측(Reaction prediction)</li>
+<li>분자 도구: 이름-SMILES 변환, 유사성 검색, 분자 수정(Modify molecule)</li>
+<li>안전 도구: 폭발물 검사(Explosive check), 안전 평가(Safety assessment)</li>
+<li>검색 도구: Google 검색, 문헌 검색(Literature search), 특허 검사(Patent check)</li>
+<li>표준 도구: 웹 검색, 코드 해석기(Code interpreter), 인간 전문가 상담</li>
+</ul>
+</li>
+<li><strong>ReAct 프레임워크 적용</strong>: 체인-오브-소트(Chain-of-thought) 추론과 도구 사용을 결합
+<ol>
+<li>Thought: 현재 작업 상태 추론 및 계획</li>
+<li>Action: 사용할 도구 선택</li>
+<li>Action Input: 도구 입력값 제공</li>
+<li>Observation: 도구 결과 분석 후 다음 단계 결정</li>
+</ol>
+<ul>
+<li>반복 루프: 최종 답변에 도달할 때까지 반복</li>
+</ul>
+</li>
+<li><strong>합성 절차 자동 적응</strong>: RoboRXN 플랫폼 검증 데이터 쿼리를 통해 불유효한 합성 절차(예: "용매 부족")를 자동으로 수정하여 인간 개입 제거</li>
+<li><strong>평가 방법론</strong>:
+<ul>
+<li>LLM 기반 평가: EvaluatorGPT를 교사 역할로 설정하여 작업 해결 여부 및 추론 과정 정확성 평가</li>
+<li>전문가 인간 평가: 화학자 협력을 통한 검증</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>새로운 통합 아키텍처</strong>: 화학 분야에서 처음으로 다양한 전문가 도구들을 단일 LLM 에이전트에 체계적으로 통합하여 자동화된 추론 엔진을 구현했다.</li>
+<li><strong>자율적 실행 능력 확장</strong>: 단순 계획을 넘어 클라우드 연결 로보틱 시스템과의 직접 연동을 통해 실제 화학 실험 자동화를 최초로 시연했다.</li>
+<li><strong>적응형 절차 수정</strong>: 합성 검증 피드백을 반복적으로 받아 절차를 자동 조정하는 능력은 기존 자동화 도구에서 부재한 새로운 기능이다.</li>
+<li><strong>포괄적 평가 프레임워크</strong>: 화학 관련 LLM 작업을 위한 표준화된 평가 방법론 개발(LLM 기반 + 전문가 평가 조합)</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>도구 품질 의존성</strong>: 합성 계획 능력은 기반 합성 엔진의 개선에 크게 의존하며, 현재 도구 집합이 완전하지 않다. 저자들은 새로운 도구 추가로 쉽게 확장 가능하도록 설계했음을 언급했다.</li>
+<li><strong>평가 방법론의 한계</strong>: 화학 분야의 표준화된 벤치마크 부족으로 인해 평가 신뢰성이 제한적이며, LLM 기반 평가와 전문가 평가 간 불일치 가능성이 존재한다.</li>
+<li><strong>확장성 및 일반화</strong>: 주로 GPT-4 기반 실험이므로 다른 LLM 모델에서의 성능 검증이 필요하다. 또한 도구의 확장성과 새로운 화학 도메인으로의 적용 가능성에 대한 체계적 분석이 부족하다.</li>
+<li><strong>후속 연구</strong>:
+<ul>
+<li>더 강력한 합성 예측 엔진 개발</li>
+<li>실시간 피드백을 활용한 학습 능력 강화</li>
+<li>다양한 LLM 모델과의 비교 평가</li>
+<li>화학 벤치마크 표준화 추진</li>
+<li>산업 규모 실험실 시스템과의 통합</li>
+</ul>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: ChemCrow는 LLM을 화학 도구와 체계적으로 통합하여 자율적 합성 실행과 신약 발견을 실현한 획기적인 작업으로, 화학 자동화 분야에 명확한 진전을 보여준다. 다만 평가 방법론의 표준화와 다양한 화학 도메인으로의 확장성 검증이 향후 과제이다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">LLM에 화학 도구 통합의 기본 연구가 ChemCrow의 직접적 기반</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../557_MOOSE-Chem_Large_Language_Models_for_Rediscovering_Unseen_Ch/index.html">MOOSE-Chem: Large Language Models for Rediscovering Unseen Chemistry Scientific Hypotheses</a></div><div class="conn-reason">LLM에 화학 도구를 통합하는 방법론이 미발견 화학 가설 재발견의 기반을 제공한다</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">LLM에 전문 도구를 통합하는 방법론이 단백질 설계 다중 에이전트 시스템의 기반을 제공한다</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../214_ChemToolAgent_The_Impact_of_Tools_on_Language_Agents_for_Che/index.html">ChemToolAgent: The Impact of Tools on Language Agents for Chemistry Problem Solving</a></div><div class="conn-reason">화학 도구로 LLM 확장하기가 화학 문제 해결 도구의 기반 제공</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../239_CRISPR-GPT_for_agentic_automation_of_gene-editing_experiment/index.html">CRISPR-GPT for agentic automation of gene-editing experiments</a></div><div class="conn-reason">화학 도구로 강화된 LLM 연구는 CRISPR-GPT가 유전체 공학 도메인 지식을 통합하는 방법론적 기반을 제공한다.</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">LLM에 전문 도구를 통합하는 방법론이 매개변수화된 추론 에이전트의 기반을 제공한다</div></div>
+<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../554_Modular_large_language_model_agents_for_multi-task_computati/index.html">PharmAgents: Building a Virtual Pharma with Large Language Model Agents</a></div><div class="conn-reason">화학 도구로 증강된 대규모 언어 모델이 PharmAgents의 신약 개발 전 과정 자동화를 위한 핵심적인 기술적 토대를 제공한다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">화학 분야에서 LLM 도구 증강의 다른 접근법과 구현 방식을 비교할 수 있다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">화학 vs 단백질 분야에서 LLM 기반 전문 도구 통합의 다른 적용을 비교할 수 있다</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../209_ChemAgent_Self-updating_Library_in_Large_Language_Models_Imp/index.html">ChemAgent: Self-updating Library in Large Language Models Improves Chemical Reasoning</a></div><div class="conn-reason">LLM의 화학 능력 향상을 위한 서로 다른 접근법을 제시합니다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../557_MOOSE-Chem_Large_Language_Models_for_Rediscovering_Unseen_Ch/index.html">MOOSE-Chem: Large Language Models for Rediscovering Unseen Chemistry Scientific Hypotheses</a></div><div class="conn-reason">LLM에 화학 도구를 통합한 방법론을 미발견 화학 가설 재발견에 확장 적용할 수 있다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../480_Large-Language-Model-Based_AI_Agent_for_Organic_Semiconducto/index.html">Large-Language-Model-Based AI Agent for Organic Semiconductor Device Research</a></div><div class="conn-reason">LLM과 머신러닝 알고리즘 결합을 화학 도구 통합에서 반도체 소자 개발로 확장한 연구다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">화학 도구 통합 방법론을 신약 개발의 전체 파이프라인으로 확장한 연구다</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../837_Training_a_Scientific_Reasoning_Model_for_Chemistry/index.html">Training a Scientific Reasoning Model for Chemistry</a></div><div class="conn-reason">대규모 언어 모델에 화학 도구를 증강하는 방법이 ether0의 화학 구조 출력 능력 향상에 활용될 수 있다.</div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1106_The_BOS-Lig_Dataset_Accurate_Ligand_Charges_from_a_Consensus/index.html">The BOS-Lig Dataset: Accurate Ligand Charges from a Consensus Approach for 66,810 Experimentally Synthesized Ligands</a></div><div class="conn-reason">화학 도구로 대규모 언어 모델을 증강하여 본 논문의 리간드 전하 데이터를 화학 언어 모델링에 활용할 수 있다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>

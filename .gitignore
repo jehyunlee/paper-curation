@@ -1,0 +1,65 @@
+# Everything excluded by default, then whitelist
+*
+
+# Whitelist: core project files
+!.gitignore
+!.nojekyll
+!README.md
+!SKILL.md
+!SKILL.md.template
+!config.example.json
+!CLAUDE.md
+
+# Pipeline scripts
+!pipeline/
+!pipeline/*.py
+!pipeline/lib/
+!pipeline/lib/*.py
+
+# Documentation (whitelist specific service files below)
+!docs/
+!docs/setup-guide.md
+
+# GitHub Pages deployment (under docs/)
+!docs/papers/
+!docs/papers/*/
+!docs/papers/*/index.html
+!docs/papers/*/review.md
+!docs/papers/*/figures/
+!docs/papers/*/figures/*.webp
+
+!docs/*/
+!docs/*/index.html
+!docs/*/network.html
+!docs/*/*.png
+!docs/*/*.webp
+
+# Exclude pipeline-generated data (created by running scripts)
+docs/*/_*.json
+docs/*/_*.txt
+docs/*/*.json
+docs/papers/*/text.md
+docs/papers/*/originality.md
+
+# Exclude local config and temp files
+config.json
+__pycache__/
+pipeline/__pycache__/
+pipeline/lib/__pycache__/
+pipeline/_update_force_checkpoint.json
+pipeline/_update_force.log
+pipeline/_img_timelines/
+pipeline/_img_workflows/*
+!pipeline/_img_workflows/workflow.png
+_regen_*.py
+
+# Exclude Claude Code / OMC runtime files that may land under docs/
+docs/**/.claude/
+docs/**/.omc/
+
+# Exclude Obsidian vault files
+docs/.obsidian/
+docs/**/.obsidian/
+
+# Exclude internal planning / spec drafts
+docs/superpowers/

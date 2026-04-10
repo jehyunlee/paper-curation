@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LM-Combiner: A Contextual Rewriting Model for Chinese Grammatical Error Correction</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'KoPub Dotum', 'KoPubDotumMedium', -apple-system, 'Noto Sans KR', sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #333; background: #f0f2f5; }
+h1 { font-size: 1.4rem; color: #1a1a2e; border-bottom: 3px solid #D63423; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+h2 { font-size: 1.1rem; color: #D63423; margin: 0 0 0.6rem; padding: 0; border: none; }
+h3 { font-size: 1rem; color: #333; margin: 0.8rem 0 0.4rem; }
+p { margin: 0.4rem 0; font-size: 0.93rem; }
+blockquote { border-left: 4px solid #D63423; margin: 0.8rem 0; padding: 0.6rem 1rem; background: #f0f4f8; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: #555; }
+ul, ol { margin: 0.4rem 0 0.4rem 1.5rem; }
+li { margin: 0.2rem 0; font-size: 0.93rem; }
+.section-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; width: 100%; }
+th, td { border: 1px solid #e0e0e0; padding: 6px 12px; text-align: left; }
+th { background: #D63423; color: white; font-weight: 600; font-size: 0.82rem; }
+tr:nth-child(even) { background: #f8f9fa; }
+td:last-child { text-align: center; font-weight: 600; color: #D63423; }
+.eval-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.eval-badge { background: #FEF0EF; color: #A62018; padding: 0.2rem 0.7rem; border-radius: 14px; font-size: 0.8rem; font-weight: 600; }
+.essence-box { border: 2px solid #8B1A1A; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #FDF8F8; }
+.essence-box h2 { color: #8B1A1A; margin: 0 0 0.5rem; border: none; padding: 0; }
+code { background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+img { max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }
+strong { color: #1a1a2e; }
+a { color: #A62018; }
+.back { margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }
+.back a { font-weight: 600; text-decoration: none; }
+.back a:hover { text-decoration: underline; }
+.connections-box { background: white; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.connections-box h2 { color: #D63423; margin: 0 0 0.8rem; border: none; padding: 0; font-size: 1.05rem; }
+.conn-item { border-left: 3px solid #ddd; padding: 0.6rem 0 0.6rem 1rem; margin-bottom: 0.6rem; }
+.conn-item.alternative { border-left-color: #3B82F6; }
+.conn-item.extension { border-left-color: #10B981; }
+.conn-item.foundation { border-left-color: #8B5CF6; }
+.conn-item.counterpoint { border-left-color: #F59E0B; }
+.conn-item.application { border-left-color: #EF4444; }
+.conn-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 0.15rem; }
+.conn-item.alternative .conn-type { color: #3B82F6; }
+.conn-item.extension .conn-type { color: #10B981; }
+.conn-item.foundation .conn-type { color: #8B5CF6; }
+.conn-item.counterpoint .conn-type { color: #F59E0B; }
+.conn-item.application .conn-type { color: #EF4444; }
+.conn-title { font-size: 0.9rem; font-weight: 600; }
+.conn-title a { color: #1a1a2e; text-decoration: none; }
+.conn-title a:hover { color: #D63423; text-decoration: underline; }
+.conn-reason { font-size: 0.85rem; color: #555; margin-top: 0.15rem; }
+.review-fig { text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.review-fig img { max-width: min(100%, 700px); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: zoom-in; }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; cursor: zoom-out; align-items: center; justify-content: center; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 8px; }
+.fig-caption { font-size: 0.85rem; color: #888; margin-top: 0.5rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>LM-Combiner: A Contextual Rewriting Model for Chinese Grammatical Error Correction</h1>
+<blockquote><p><strong>저자</strong>: Yixuan Wang, Baoxin Wang, Yijun Liu, Dayong Wu, Wanxiang Che | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2403.17413" target="_blank">미제공</a></p></blockquote>
+<hr>
+<div class="essence-box"><h2>Essence</h2>
+<p>중국어 문법 오류 수정(CGEC) 시스템의 과도한 수정(over-correction) 문제를 해결하기 위해, 기존 GEC 시스템의 출력을 입력받아 직접 재작성하는 경량의 언어모델 기반 필터링 모델을 제안한다.</p></div>
+<div class="section-box"><h2>Motivation</h2>
+<ul>
+<li><strong>Known</strong>: 최근 GEC 연구에서 모델 앙상블 기반 투표 방식이 과도한 수정 문제를 완화하고 정확도를 개선할 수 있음이 알려짐</li>
+<li><strong>Gap</strong>: 기존 앙상블 방법들은 (1) 여러 GEC 시스템의 출력이 필요하여 추론 비용이 높고, (2) 재현율(recall)을 크게 감소시킨다는 치명적 문제 존재</li>
+<li><strong>Why</strong>: 중국어 GEC는 훈련 데이터 부족, 복잡한 문법 오류로 인해 영어 GEC 대비 정확도가 약 절반 수준이며, 특히 과도한 수정 문제가 심각함</li>
+<li><strong>Approach</strong>: 과도한 수정을 별도의 텍스트 재작성 작업으로 분리하여, 원문과 GEC 시스템 출력만을 입력받아 두 텍스트의 적절한 조합을 생성하는 단일 경량 모델 개발</li>
+</ul></div>
+<div class="section-box"><h2>Achievement</h2>
+<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 과도한 수정 문제의 예시로, 원문에서 올바른 부분(파란색)까지 변경하는 것을 보여주고, LM-Combiner가 이를 필터링하는 과정 표시">
+</div>
+<ol>
+<li><strong>정확도 대폭 개선</strong>: FCGEC 데이터셋에서 기준 모델 대비 정확도(Precision) +18.2점 향상, F0.5 +5.8점 개선으로 SOTA 수준 달성</li>
+<li><strong>재현율 유지</strong>: 높은 정확도 개선에도 불구하고 재현율(Recall)을 일정하게 유지하여 실용성 확보</li>
+<li><strong>경량성과 효율성</strong>: 소규모 파라미터와 제한된 훈련 데이터(천 단위)로도 우수한 성능 달성, ChatGPT 같은 블랙박스 시스템의 과도한 수정 완화에 활용 가능</li>
+</ol></div>
+<div class="section-box"><h2>How</h2>
+<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 수정-재작성 프레임워크의 플로우차트로, 훈련 단계에서 K-fold 교차 추론으로 과도 수정 문장 생성 후 학습, 추론 단계에서 원문과 GEC 출력만으로 재작성">
+</div>
+<h3>데이터 레벨</h3>
+<ul>
+<li><strong>K-fold 교차 추론(K-fold Cross Inference)</strong>: 훈련 집합을 K개로 분할하여 각 분할마다 나머지 데이터로 모델을 학습한 후 해당 분할에 추론 수행. 이를 통해 자연스러운 과도 수정 문장 구성</li>
+<li><strong>금표준 라벨 병합(Gold Labels Merging)</strong>: M2 오류 라벨을 활용하여 수정-재작성 작업을 분리, LM-Combiner가 올바른 수정과 과도한 수정 중 선택하도록 단순화</li>
+</ul>
+<h3>모델 레벨</h3>
+<ul>
+<li><strong>인과 언어모델(Causal LM) 기반 아키텍처</strong>: GPT-2 백본을 사용하여 원문(Xsrc)과 후보 문장(Xcandi)을 <cat> 토큰으로 구분하고, 입력 후 목표 문장(Ytgt)을 생성</li>
+<li><strong>손실함수 설계</strong>: 정확한 문장 부분에만 손실을 계산하여 모델이 과도 수정과 올바른 수정을 구분하도록 학습</li>
+<li><strong>추론 전략</strong>: PPL 기반 필터링과 달리, 직접 생성 방식으로 재현율을 더 잘 유지하면서 정확도 향상</li>
+</ul></div>
+<div class="section-box"><h2>Originality</h2>
+<ul>
+<li><strong>이전과 다른 접근</strong>: 과도 수정 문제를 독립적인 재작성 작업으로 분리하여 단일 경량 모델로 처리하는 새로운 패러다임 제시</li>
+<li><strong>K-fold 교차 추론</strong>: 데이터 누출 문제를 해결하면서 자연스러운 과도 수정 사례를 체계적으로 구성하는 창의적 방법론</li>
+<li><strong>블랙박스 시스템 적용성</strong>: 기존 GEC 시스템의 출력만 필요하므로 ChatGPT 같은 독점 모델의 후처리에도 직접 활용 가능한 범용성</li>
+</ul></div>
+<div class="section-box"><h2>Limitation &amp; Further Study</h2>
+<ul>
+<li><strong>단일 시스템에 대한 최적화</strong>: 현재 방법은 특정 GEC 시스템의 출력 분포에 최적화되어 있어, 다른 시스템의 출력에 대한 일반화 능력에 대한 검토 필요</li>
+<li><strong>도메인 의존성</strong>: FCGEC 데이터셋(원어민 코퍼스)에서만 평가하였으므로, 학습자 코퍼스 등 다양한 도메인에 대한 검증 필요</li>
+<li><strong>오류 유형별 분석 부재</strong>: 어떤 유형의 과도 수정이 더 효과적으로 처리되는지에 대한 세부 분석 미흡</li>
+<li><strong>향후 연구</strong>: (1) 여러 GEC 시스템 출력을 동시에 처리하는 확장 가능성 탐색, (2) 더 큰 규모 언어모델의 적용 효과 검증, (3) 영어 등 다른 언어로의 이전 학습 가능성 조사</li>
+</ul></div>
+<div class="section-box"><h2>Evaluation</h2>
+
+<p><strong>총평</strong>: 과도한 수정 문제를 효과적으로 해결하기 위해 재작성 모델이라는 실용적인 접근을 제시하며, K-fold 교차 추론이라는 창의적 데이터 구성 방법으로 인해 학술적 가치가 있다. 다만 평가 범위의 확대와 더 엄밀한 일반화 검증이 필요하다.</p></div>
+<div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../423_Improving_grammatical_error_correction_via_contextual_data_a/index.html">Improving grammatical error correction via contextual data augmentation</a></div><div class="conn-reason">문법 오류 수정의 맥락 데이터 증강 기법을 제공하여 LM-Combiner의 재작성 모델 성능 개선에 활용할 수 있다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../246_Csed_A_chinese_semantic_error_diagnosis_corpus/index.html">Csed: A chinese semantic error diagnosis corpus</a></div><div class="conn-reason">둘 다 중국어 언어 오류 처리를 다루지만 하나는 문법 오류 수정이고 다른 하나는 의미 오류 진단에 초점을 맞춘다.</div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../246_Csed_A_chinese_semantic_error_diagnosis_corpus/index.html">Csed: A chinese semantic error diagnosis corpus</a></div><div class="conn-reason">중국어 문법을 위한 맥락적 재작성 모델로 본 논문의 중국어 의미 오류와 다른 유형의 언어 오류 처리를 제시한다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">Few-shot 일관성 개선 기법이 중국어 문법 오류 수정에서 과도한 수정 문제 해결에 적용될 수 있다.</div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../571_Neural_automated_writing_evaluation_with_corrective_feedback/index.html">Neural automated writing evaluation with corrective feedback</a></div><div class="conn-reason">중국어 문법을 위한 맥락적 재작성 모델은 제2언어 학습자 대상 쓰기 평가 시스템을 다국어 환경으로 확장한다.</div></div></div>
+<div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
+<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  document.addEventListener('click', function(e) {
+    const img = e.target.closest('.review-fig img');
+    if (img) { lbImg.src = img.src; lb.classList.add('active'); }
+  });
+  lb.addEventListener('click', function() { lb.classList.remove('active'); lbImg.src = ''; });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
+  });
+});
+</script>
+<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
+Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+</footer>
+</body>
+</html>
