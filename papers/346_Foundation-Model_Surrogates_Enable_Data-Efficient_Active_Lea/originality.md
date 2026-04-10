@@ -1,1 +1,0 @@
-Here we introduce In-Context Active Learning (ICAL), a framework that replaces conventional surrogate models with a foundation model trained to approximate Bayesian inference over tabular data.

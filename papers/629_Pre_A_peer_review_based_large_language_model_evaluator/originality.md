@@ -1,1 +1,0 @@
-In order to address these issues, inspired by the peer review systems widely used in academic publication process, we propose a novel framework that can automatically evaluate LLMs through a peer-review process.. Specifically, for the evaluation of a specific task, we first construct a small qualification exam to select “reviewers” from a c

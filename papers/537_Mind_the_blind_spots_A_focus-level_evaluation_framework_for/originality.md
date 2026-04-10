@@ -1,1 +1,0 @@
-We intro- duce a focus-level evaluation framework that operationalizes the focus as a normalized dis- tribution of attention across predefined facets in paper reviews.. Based on the framework, we developed an automatic focus-level evaluation pipeline based on two sets of facets: target (e.g., problem, method, and experiment) and aspect (e.g., validity, clarity, and

@@ -1,1 +1,0 @@
-First, we pro- pose a four-stage research roadmap of scientific reasoning capabilities, and highlight the current state of MLLM applications in scientific reason- ing, noting their ability to integrate and reason over diverse data types

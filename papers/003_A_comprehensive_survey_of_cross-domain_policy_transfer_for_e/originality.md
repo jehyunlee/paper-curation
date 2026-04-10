@@ -1,1 +1,0 @@
-In this paper, we conduct a systematic review of exist- ing cross-domain policy transfer methods.. Through a nuanced categorization of domain gaps, we en- capsulate the overarching insights and design con- siderations of each problem setting.. We also pro- vide a high-level discussion

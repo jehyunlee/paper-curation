@@ -1,1 +1,0 @@
-Here, we introduce Agentomics-ML, a fully autonomous agent- based system designed to produce a classification model and the necessary files for reproducible training and inference.. Our method follows predefined steps of an ML experimentation process, repeatedly interacting with the file system through Bash to complete individual steps.

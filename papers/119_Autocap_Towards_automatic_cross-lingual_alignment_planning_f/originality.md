@@ -1,1 +1,0 @@
-Moti- vated by this, we introduce an Automatic Cross- lingual Alignment Planning (AUTOCAP) for zero-shot chain-of-thought to address the above challenges.. The core of AUTOCAP consists of two components: (1) Automatic Language Se- lection Prompting to guide

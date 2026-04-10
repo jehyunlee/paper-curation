@@ -1,1 +1,0 @@
-We introduce CLinical Entity Augmented Retrieval (CLEAR), a RAG pipeline that retrieves information using entities.. We compared CLEAR to embedding RAG and full-note approaches for extracting 18 variables using six LLMs across 20,000 clinical notes.. Average F1 scores were 0.90, 0.86, and 0.79; inference ti

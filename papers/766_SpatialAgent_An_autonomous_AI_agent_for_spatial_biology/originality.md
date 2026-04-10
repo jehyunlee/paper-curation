@@ -1,1 +1,0 @@
-Here, we present SpatialAgent , a fully autonomous AI agent dedicated for spatial-biology research.

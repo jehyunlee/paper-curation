@@ -1,1 +1,0 @@
-Recent work enhances LLMs with unstructured or semistructured representations of scientific concepts; to complement this, we try extracting structured representations using LLMs.. By combining LLMs’ semantic understanding with a schema of scientific concepts, we prototype a system that answers precise questions about the literature as a whole.. Our schema applies

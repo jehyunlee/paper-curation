@@ -1,1 +1,0 @@
-Here, building on the rich literature on innovation1–10, human dynamics11–17 and learning18–25, we develop a simple one-parameter model that mimics how successful future attempts build on those past.. Ana- lytically solving this model reveals a phase transition that separates dynamics of failure into regions of stagnation or progression

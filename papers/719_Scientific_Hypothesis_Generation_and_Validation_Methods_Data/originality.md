@@ -1,1 +1,0 @@
-Given a generated hypothesis H represented as a vector h in an embedding space, and a set of existing hypotheses Hi with vectors hi, the novelty N(H) of H can be computed as the inverse of the average cosine similarity between h and each hi: N(H) = 1 −1 |S| X i∈S cosine_similarity(h, hi), (1) where S is

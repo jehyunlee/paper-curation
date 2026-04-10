@@ -1,1 +1,0 @@
-There, the au- thors (including one of us) built a network of more than 6,000 quantum physics concepts.. The authors formulate the task of predicting new research trends and connections for the first time as an ML task.. The task was to identify which concept

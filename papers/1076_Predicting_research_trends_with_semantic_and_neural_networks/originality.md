@@ -1,1 +1,0 @@
-Here, we show how to build and use a semantic network for quantum physics, which we call SEMNET.. It is built from 750,000 scientific papers in physics published since 1919.. In the network,

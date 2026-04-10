@@ -1,1 +1,0 @@
-We here propose that leveraging the capacity of Large Language Models (LLMs) to mimic human behavior may be fruitful to address this gap.. On top of being an useful approximation of human cultural dynamics, multi-agents models featuring generative agents are also important to study for their own sake.. Indeed, as artificial agents are bound to

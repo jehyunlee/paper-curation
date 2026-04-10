@@ -1,1 +1,0 @@
-In this study, we present an integrated Deep Active Learning (DeepAL) framework that incorporates information from a biological knowledge graph (SPOKE, the Scalable Precision Medicine Open Knowledge Engine) to efficiently search the configuration space of a large dataset of all pairwise knock- downs of 356 human genes in HIV infect

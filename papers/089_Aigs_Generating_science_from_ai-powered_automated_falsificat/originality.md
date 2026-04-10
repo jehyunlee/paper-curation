@@ -1,1 +1,0 @@
-In this paper, we study AI-Generated Science (AIGS), where agents in- dependently and autonomously complete the entire research process and discover scientific laws.. By revisiting the definition of scientific research (Popper, 1935), we argue that falsification i

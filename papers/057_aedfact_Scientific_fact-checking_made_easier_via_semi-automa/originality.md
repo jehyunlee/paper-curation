@@ -1,1 +1,0 @@
-There- fore, in this paper, we present aedFaCT, a web browser ex- tension that can help professionals and news readers perform fact-checking via the automatic discovery of expert opinions relevant to the news of concern via shared keywords.. Our ini- tial evaluation with three independent testers (who did not participate in the development of the extension) indicated that aedFaCT

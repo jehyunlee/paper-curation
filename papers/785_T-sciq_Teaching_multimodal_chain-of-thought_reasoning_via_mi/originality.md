@@ -1,1 +1,0 @@
-To address these issues, we propose a novel method termed T-SciQ that aims at teaching science question answering with LLM signals.. The T-SciQ approach generates high-quality CoT rationales as teaching signals and is advanced to train much smaller models to perform CoT reasoning in complex modalities.. Addition- ally, we introduce a novel data mixing strate

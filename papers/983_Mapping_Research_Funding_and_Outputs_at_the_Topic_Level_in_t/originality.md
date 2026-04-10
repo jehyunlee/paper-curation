@@ -1,1 +1,0 @@
-Mapping Research Funding and Outputs at the Topic Level in the Nordic Countries. 북유럽 국가들의 연구 자금 지원과 출판 성과 간의 관계를 주제 수준에서 분석하여, 자금이 출판량은 증가시키지만 인용 영향도(citation impact)는 오히려 감소시키는 질-량 간 트레이드오프 현상을 발견했다.

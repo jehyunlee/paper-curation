@@ -1,1 +1,0 @@
-Here, we overcome these limitations by leveraging the distinct capabilities of multiple AI agents that collaborate autonomously within a dynamic environment to solve complex materials design tasks.. The proposed physics-aware generative AI platform, AtomAgents, synergizes the intelligence of large lang

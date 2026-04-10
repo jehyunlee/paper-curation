@@ -1,1 +1,0 @@
-We address this gap by deriving quantitative scaling principles for agent systems.. We first formalize a definition for agentic evaluation and characterize scaling laws as the interplay between agent quantity, coordination str

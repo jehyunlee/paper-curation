@@ -1,1 +1,0 @@
-To address these issues, we introduce HiPerRAG, a RAG workflow powered by high performance computing (HPC) to index and re- trieve knowledge from more than 3.6 million scientific articles.. At its core are Oreo, a high-throughput model for multimodal doc- ument parsing, and ColTrast, a query-aware encoder fine-tuning algorithm th

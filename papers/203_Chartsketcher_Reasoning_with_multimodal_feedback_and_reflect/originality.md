@@ -1,1 +1,0 @@
-Inspired by human cognitive behavior, we propose ChartSketcher, a multimodal feedback-driven step- by-step reasoning method designed to address these limitations.. ChartSketcher is a chart understanding model that employs Sketch-CoT, enabling MLLMs to annotate intermediate reasoning steps directly onto charts using a programmatic sketching library, iteratively feeding these v

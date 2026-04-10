@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Curation — Redirecting…</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://paper-curation.jehyun-lee.workers.dev/">
+<meta http-equiv="refresh" content="0; url=https://paper-curation.jehyun-lee.workers.dev/">
+<script>
+(function () {
+  var target = 'https://paper-curation.jehyun-lee.workers.dev';
+  var path = window.location.pathname || '/';
+  // GitHub Pages project site uses "/paper-curation" as the repo prefix — strip it.
+  var prefix = '/paper-curation';
+  if (path.indexOf(prefix) === 0) {
+    path = path.slice(prefix.length) || '/';
+  }
+  if (path.charAt(0) !== '/') path = '/' + path;
+  window.location.replace(target + path + window.location.search + window.location.hash);
+})();
+</script>
+<style>
+  html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fafafa; color: #1a1a1a; }
+  main { max-width: 520px; margin: 20vh auto; padding: 2rem; text-align: center; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; }
+  p { color: #555; line-height: 1.6; }
+  a { color: #D63423; text-decoration: none; border-bottom: 1px solid currentColor; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Paper Curation</h1>
+  <p>이 사이트는 이전되었습니다.<br>자동으로 이동되지 않으면 <a id="fallback" href="https://paper-curation.jehyun-lee.workers.dev/">여기</a>를 클릭하세요.</p>
+</main>
+<script>
+  // For no-JS-redirect fallback (meta refresh handles it), still update the visible link to preserve the path.
+  var el = document.getElementById('fallback');
+  if (el) {
+    var t = 'https://paper-curation.jehyun-lee.workers.dev';
+    var p = window.location.pathname || '/';
+    if (p.indexOf('/paper-curation') === 0) p = p.slice('/paper-curation'.length) || '/';
+    if (p.charAt(0) !== '/') p = '/' + p;
+    el.href = t + p + window.location.search + window.location.hash;
+  }
+</script>
+</body>
+</html>

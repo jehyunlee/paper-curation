@@ -1,1 +1,0 @@
-To address these challenges, we introduce Leaderboard Auto Generation (League), a novel and well-organized framework for automatic generation of leaderboards on a given research topic in rapidly evolving fields like Artificial Intelligence.. League employs a systematic pipeline encompassing paper collection, result extraction and integration, leader- board generation, and qua

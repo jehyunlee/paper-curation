@@ -1,1 +1,0 @@
-Here, we introduce VASPilot, an open-source platform that fully automates VASP workflows via a multi-agent architecture built on the CrewAI framework and a standardized Model Context Protocol (MCP).. VASPilot’s agent suite handles every stage of a VASP study-from retrieving cryst

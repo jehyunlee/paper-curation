@@ -1,1 +1,0 @@
-To address these challenges, we propose PROF that PROduces Feedback via learning from LM simulated student revisions.. PROF aims to it- eratively optimize the feedback generator by directly maximizing the effectiveness of stu- dents’ overall revising performance as simu- lated by LMs.. Focusing on an economic essay assignment, we empirically test the efficacy of PROF and observe

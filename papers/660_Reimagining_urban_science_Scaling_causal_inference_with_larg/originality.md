@@ -1,1 +1,0 @@
-In this Perspective, we propose UrbanCIA, an LLM-driven conceptual framework composed of four distinct modular agents responsible for hypothesis generation, data engineering, experiment design and execution, and results interpretation with policy insights.. We begin by examining the current

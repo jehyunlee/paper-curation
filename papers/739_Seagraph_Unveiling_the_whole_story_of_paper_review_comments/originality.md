@@ -1,1 +1,0 @@
-In this paper, we present SEAGraph, a novel framework developed to clarify review comments by uncovering the underlying inten- tions behind them.. We construct two types of graphs for each paper: the semantic mind graph, which captures the authors’ thought pro- cess, and the hierarchical background graph, which delineates the research domains related to the paper.

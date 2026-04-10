@@ -1,1 +1,0 @@
-Using comprehensive new data on prizes and prizewinners worldwide and across disciplines, we examine the growth dynamics and interlocking relationships found in the worldwide scientific prize network.. We focus on understanding how the knowledge linkages among prizes and scientists’

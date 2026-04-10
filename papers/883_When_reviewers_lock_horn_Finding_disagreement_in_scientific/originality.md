@@ -1,1 +1,0 @@
-Here in this work, we introduce a novel task of automatically iden- tifying contradictions among reviewers on a given article.. To this end, we introduce Con- traSciView, a comprehensive review-pair con- tradiction dataset on around 8.5k papers (with around 28k review pairs containing nearly 50k review pair comments) from the open revi

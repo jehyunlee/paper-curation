@@ -1,1 +1,0 @@
-In this paper, we perform a case study with three popular LLMs, i.e., GPT-3.5, LLaMA2, and PaLM2, to assist meta-reviewers in better comprehending multiple experts’ perspectives by generating a controlled multi-perspective- summary (MPS) of their opinions.. To achieve this, we prompt three LLMs with different type- s/
