@@ -1,0 +1,10 @@
+#:schema node_modules/wrangler/config-schema.json
+# Cloudflare Workers with Static Assets
+# Serves docs/ as a static site (no worker script, assets only)
+# Docs: https://developers.cloudflare.com/workers/static-assets/
+
+name = "paper-curation"
+compatibility_date = "2026-04-11"
+
+[assets]
+directory = "./docs"
