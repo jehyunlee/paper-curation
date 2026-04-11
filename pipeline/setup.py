@@ -89,10 +89,14 @@ def step_config():
     return cfg
 
 
-def step_env_check():
-    """Step 2: LLM API 키 환경변수 확인."""
+def step_env_check(cfg):
+    """Step 2: LLM API 키 환경변수 확인.
+
+    ANTHROPIC / GOOGLE 키는 경고만 출력하고 넘어간다.
+    OPENAI_API_KEY는 Deep Research 검색 인덱스 빌드에 필수라 없으면
+    직접 입력받아 config.json에 저장하고, 입력을 건너뛰면 설치를 중단한다.
+    (config.json은 .gitignore 로 보호됨)"""
     print("\n[2/6] 환경변수 확인")
-    ok = True
 
     for key in ["ANTHROPIC_API_KEY", "GOOGLE_API_KEY"]:
         val = os.environ.get(key, "")
@@ -100,12 +104,34 @@ def step_env_check():
             print(f"  ✓ {key} 설정됨")
         else:
             print(f"  ✗ {key} 미설정 — 파이프라인 실행 시 필요합니다")
-            ok = False
 
-    if not ok:
-        print("  → 나중에 설정하려면: export ANTHROPIC_API_KEY=... && export GOOGLE_API_KEY=...")
+    # OPENAI_API_KEY: required for Deep Research search index
+    env_key = os.environ.get("OPENAI_API_KEY", "")
+    cfg_key = cfg.get("openai_api_key", "")
+    openai_key = env_key or cfg_key
+    if openai_key:
+        source = "env" if env_key else "config.json"
+        print(f"  ✓ OPENAI_API_KEY 설정됨 ({source})")
+        os.environ["OPENAI_API_KEY"] = openai_key
+        return
 
-    return ok
+    print()
+    print("  ✗ OPENAI_API_KEY 미설정")
+    print("    Deep Research 검색 인덱스 빌드에 필수입니다.")
+    print("    발급: https://platform.openai.com/api-keys")
+    print("    지금 입력하시면 config.json에 저장되어 다음 실행에서도 자동 사용됩니다.")
+    print("    입력을 건너뛰시면 설치가 여기서 중단됩니다. 발급 후 다시 setup.py를 실행하세요.")
+    print()
+    user_input = input("    OpenAI API Key (sk-..., Enter로 중단): ").strip()
+    if not user_input:
+        print("\n  OPENAI_API_KEY가 필요합니다. 설치를 중단합니다.")
+        print("  키를 발급한 뒤 다시 `python pipeline/setup.py` 를 실행해주세요.")
+        sys.exit(1)
+
+    cfg["openai_api_key"] = user_input
+    _save_config(cfg)
+    os.environ["OPENAI_API_KEY"] = user_input
+    print("  ✓ OPENAI_API_KEY → config.json 에 저장")
 
 
 def step_zotero_test(cfg):
@@ -283,6 +309,8 @@ def main():
     parser = argparse.ArgumentParser(description="paper-curation setup")
     parser.add_argument("--no-install", action="store_true",
                         help="SKILL.md 스킬 설치를 건너뜁니다")
+    parser.add_argument("--no-run", action="store_true",
+                        help="설치만 하고 첫 파이프라인 실행은 건너뜁니다")
     args = parser.parse_args()
 
     print("=" * 50)
@@ -292,8 +320,8 @@ def main():
     # Step 1: config.json
     cfg = step_config()
 
-    # Step 2: 환경변수
-    step_env_check()
+    # Step 2: 환경변수 (OPENAI_API_KEY 는 필수 — 없으면 여기서 중단)
+    step_env_check(cfg)
 
     # Step 3: Zotero 연결
     step_zotero_test(cfg)
@@ -337,8 +365,8 @@ def main():
     print()
     if topics:
         topic = topics[0]
-        print(f"  실행 명령어:")
-        print(f"    # 전체 파이프라인 (Zotero에서 가져와서 리뷰 + 배포)")
+        print(f"  실행 명령어 (이후에 수동으로 돌릴 때):")
+        print(f"    # 전체 파이프라인 (Zotero에서 가져와서 리뷰 + Deep Research 인덱스 + 배포)")
         print(f"    PYTHONUTF8=1 python pipeline/run_update_force.py --topic {topic}")
         print()
         print(f"    # 로컬 모드 (이미 가져온 논문만 처리)")
@@ -346,6 +374,29 @@ def main():
         print()
         print(f"    # 업데이트 모드 (새 논문만 추가, 기존 유지)")
         print(f"    PYTHONUTF8=1 python pipeline/run_update_force.py --topic {topic} --local --update")
+    print()
+
+    # Step 7: 첫 파이프라인 자동 실행 (--no-run 으로 건너뛸 수 있음)
+    if topics and not args.no_run:
+        topic = topics[0]
+        print("-" * 50)
+        print(f"  첫 파이프라인을 자동 실행합니다 (topic: {topic})")
+        print("-" * 50)
+        print("  Zotero에서 논문을 가져와 리뷰 → 분류 → 인덱스 →")
+        print("  Deep Research 검색 인덱스 → (GitHub 설정 시) 배포까지 진행합니다.")
+        print("  Ctrl+C 로 중단할 수 있고, 중단 후에는 --resume 모드로 이어서 진행할 수 있습니다.")
+        print()
+        try:
+            subprocess.run(
+                [sys.executable, str(REPO / "pipeline" / "run_update_force.py"),
+                 "--topic", topic, "--concurrency", "4"],
+                env={**os.environ, "PYTHONUTF8": "1"},
+                cwd=str(REPO),
+            )
+        except KeyboardInterrupt:
+            print("\n  (파이프라인 실행이 중단되었습니다. 나중에 --resume 으로 재개 가능)")
+    elif topics and args.no_run:
+        print("  (--no-run 지정: 첫 파이프라인 실행은 건너뜁니다)")
     print()
 
 

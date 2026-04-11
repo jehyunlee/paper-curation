@@ -1132,6 +1132,11 @@ def main():
         run_step("build_topic_index",
                  ["python", "pipeline/build_topic_index.py", topic], 600)
 
+        # Deep Research search index (section-aware chunks + OpenAI embeddings).
+        # Reads OPENAI_API_KEY from env or config.json; fails fast if missing.
+        run_step("build_search_index",
+                 ["python", "pipeline/build_search_index.py", "--topic", topic], 900)
+
         # Deploy if GitHub config exists
         from config_loader import get_github_repo
         if get_github_repo():

@@ -32,7 +32,19 @@ from pathlib import Path
 
 PIPELINE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(PIPELINE_DIR))
-from config_loader import DOCS_DIR, PAPERS_DIR, get_topic_dir, get_papers_index_path
+from config_loader import DOCS_DIR, PAPERS_DIR, PROJECT_ROOT, get_topic_dir, get_papers_index_path
+
+
+def _load_openai_key_from_config() -> str:
+    """Fallback: read openai_api_key from config.json (written by setup.py)."""
+    try:
+        cfg_path = PROJECT_ROOT / "config.json"
+        if cfg_path.exists():
+            with open(cfg_path, "r", encoding="utf-8") as f:
+                return json.load(f).get("openai_api_key", "") or ""
+    except Exception:
+        pass
+    return ""
 
 try:
     import numpy as np
@@ -260,11 +272,13 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool):
             print("ERROR: openai package not installed. Run: pip install openai")
             sys.exit(1)
 
-        if not os.environ.get("OPENAI_API_KEY"):
-            print("ERROR: OPENAI_API_KEY env var not set")
+        api_key = os.environ.get("OPENAI_API_KEY") or _load_openai_key_from_config()
+        if not api_key:
+            print("ERROR: OPENAI_API_KEY not set (env var or config.json).")
+            print("       Set OPENAI_API_KEY or run 'python pipeline/setup.py' to save it into config.json.")
             sys.exit(1)
 
-        client = OpenAI()
+        client = OpenAI(api_key=api_key)
         embeddings: list = []
         BATCH = 100
         t0 = time.time()
