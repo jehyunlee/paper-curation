@@ -613,9 +613,11 @@ img.lazy.loaded {{ opacity: 1; }}
 .deep-answer strong {{ color: #1a1a1a; }}
 .deep-answer a.ref {{ display: inline-block; color: {accent}; text-decoration: none; font-weight: 700; font-size: 0.72rem; padding: 0 0.32rem; border-radius: 3px; background: {accent}1a; margin: 0 0.12rem; vertical-align: super; line-height: 1.2; }}
 .deep-answer a.ref:hover {{ background: {accent}; color: white; }}
-.deep-answer figure {{ margin: 1rem 0; max-width: 100%; padding: 0.6rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee; }}
-.deep-answer figure img {{ width: 100%; height: auto; border-radius: 4px; display: block; cursor: zoom-in; }}
+.deep-answer figure {{ margin: 1rem 0; max-width: 100%; }}
+.deep-answer img {{ width: 100%; height: auto; display: block; margin: 1rem 0; padding: 0.5rem; background: #fafafa; border: 1px solid #eee; border-radius: 6px; box-sizing: border-box; cursor: zoom-in; }}
+.deep-answer figure img {{ margin: 0; }}
 .deep-answer figure figcaption {{ font-size: 0.78rem; color: #666; text-align: center; margin-top: 0.45rem; font-style: italic; }}
+.deep-answer p img {{ margin: 0.5rem 0; }}
 .deep-answer code {{ background: #f2f2f4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.86em; font-family: ui-monospace, monospace; }}
 .deep-answer pre {{ background: #f6f8fa; padding: 0.7rem 0.9rem; border-radius: 6px; overflow-x: auto; }}
 .deep-refs {{ margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; }}
