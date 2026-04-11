@@ -395,7 +395,7 @@ Abstract: {abstract}
 본문 (발췌): {paper_text[:12000]}
 Figure 목록:{fig_refs}
 
-JSON 필드 (모두 한국어, 기술용어 영문 병기):
+JSON 필드 (모두 한국어 서술. 단 Jargon — 기술 용어·모델명·데이터셋·알고리즘·수식·프레임워크·제품명 등 — 은 원문 그대로 유지하고 번역하지 말 것. 예: "diffusion model을 사용한다" (O), "확산 모델(diffusion model)을 사용한다" (X)):
 {{
   "essence": "1-2문장 핵심 요약",
   "fig_essence": "Essence에 가장 관련된 Figure 번호 (예: 1). 없으면 0",
