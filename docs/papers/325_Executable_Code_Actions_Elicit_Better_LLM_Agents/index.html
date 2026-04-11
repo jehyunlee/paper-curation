@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xingyao Wang, Yangyi Chen, Lifan Yuan, Yizhe Zhang, Yunzhu Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.01030" target="_blank">10.48550/arXiv.2402.01030</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CodeAct와 Text/JSON 액션의 비교: (상) 다양한 액션 형식 간 예시 비교, (하) M3ToolEval 벤치마크에서의 정량적 결과</em></p></div>
 <p>LLM 에이전트의 액션 공간을 통합하기 위해 실행 가능한 Python 코드를 직접 사용하는 CodeAct 프레임워크를 제안하며, 기존의 JSON/텍스트 기반 액션 방식 대비 최대 20% 높은 성공률을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 실행 가능한 Python 코드를 통합 액션 공간으로 사용하고, Python 인터프리터와 통합하여 다중턴 상호작용을 통해 동적으로 액션을 조정 및 개선하는 CodeAct 프레임워크를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>LLM 에이전트의 일반적 다중턴 상호작용 프레임워크: 에이전트, 사용자, 환경의 역할을 나타내며 CodeAct의 역할과 데이터 수집의 동기를 설명한다.</em></p></div>
 <ol>
 <li><strong>광범위한 실증적 검증</strong>: 17개 LLM(오픈소스 및 폐쇄형)에 대한 실험으로 CodeAct의 우수성 입증. 기본 도구 호출 작업(API-Bank)에서는 대부분의 모델이 기준선과 동등하거나 우수한 성능 달성.</li>
 <li><strong>복잡한 작업에서의 성능 향상</strong>: 새로운 벤치마크 M3ToolEval (82개 인간 큐레이션 작업)에서 최대 20% 절대 성공률 향상 및 액션 수 30% 감소. 모델 능력이 증가할수록 성능 격차 확대.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반 능력 보존</strong>: 기존 지시 튜닝 데이터와 함께 사용하여 에이전트 작업 성능 개선 동시에 일반 능력(QA, 코딩, 지시 따르기) 유지.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>CodeActAgent (Mistral-7b)와의 Python 패키지 다중턴 상호작용 예시: 컨텍스트 내 시연 없이 고도화된 작업 수행</em></p></div>
 <ul>
 <li><strong>CodeAct 프레임워크</strong>: Python 코드를 실행 가능한 액션으로 사용하며, Python 인터프리터와 통합하여 코드 실행 결과와 오류 메시지를 관찰(observation)으로 수신</li>
 <li><strong>다중턴 상호작용</strong>: 에이전트가 관찰(실행 결과, 오류)을 기반으로 동적으로 이전 액션을 조정하거나 새로운 액션을 발행. Chain-of-Thought와 자가 반성(self-reflection) 포함</li>

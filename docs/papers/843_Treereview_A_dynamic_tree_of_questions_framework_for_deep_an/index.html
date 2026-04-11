@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuan Chang, Ziyue Li, Hengyuan Zhang, Yuanbo Kong, Yanru Wu, Hayden Kwok-Hay So, Zhijiang Guo, Liya Zhu, Ngai Wong | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>TreeReview 프레임워크 개요: (A) 하향식 질문 생성 단계에서 계층적 질문 분해, (B) 상향식 답변 집계 단계에서 최종 리뷰 생성</em></p></div>
 <p>본 논문은 긴 학술 논문의 동료평가(peer review)를 효율적이면서도 깊이 있게 수행하기 위해 질문-답변 트리 구조를 활용하는 TreeReview 프레임워크를 제안한다. 계층적 질문 분해와 동적 질문 확장 메커니즘을 통해 LLM 기반 과학 논문 검토에서 종합성, 기술적 깊이, 전문가 정렬성을 향상시키면서 토큰 사용량을 80%까지 감소시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 리뷰어가 탐색적 질문을 통해 리뷰를 수행하는 인지 패턴에 영감을 받아, 논문 리뷰를 계층적 질문-답변 트리 구조로 모델링하는 TreeReview 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 품질 차원에 걸친 LLM 평가 점수 비교</em></p></div>
 <ol>
 <li><strong>전체 리뷰 생성 태스크에서 우수한 성능</strong>:
 <ul>
@@ -108,8 +104,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <p>TreeReview는 두 가지 단계로 작동:</p>
 <p><strong>1단계: 하향식(Top-Down) 질문 생성</strong></p>
 <ul>
@@ -156,7 +150,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: TreeReview는 LLM 기반 학술 논문 동료평가의 실질적 과제들을 명확히 인식하고, 계층적 질문 분해와 동적 확장이라는 우아한 해결책으로 높은 품질을 유지하면서 계산 효율성을 획기적으로 개선한 연구이다. 포괄적 벤치마크 공개와 인간 평가를 통한 검증으로 신뢰성이 높으나, 초매개변수 선택과 도메인 다양성 측면에서 추가 분석이 있으면 더욱 견고할 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../083_AI-Driven_Review_Systems_Evaluating_LLMs_in_Scalable_and_Bia/index.html">AI-Driven Review Systems: Evaluating LLMs in Scalable and Bias-Aware Academic Reviews</a></div><div class="conn-reason">TreeReview가 질문 트리 구조로 논문 검토를, AI-Driven Review Systems가 편향 인식 자동화로 접근하여 상호 보완적인 검토 방법론을 제시함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../083_AI-Driven_Review_Systems_Evaluating_LLMs_in_Scalable_and_Bia/index.html">AI-Driven Review Systems: Evaluating LLMs in Scalable and Bias-Aware Academic Reviews</a></div><div class="conn-reason">AI-Driven Review가 편향 감소와 일관성에 초점을 맞춘 반면, TreeReview는 계층적 질문을 통한 깊이와 효율성을 추구하여 상호 보완적 접근법을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../677_Reviewer2_Optimizing_Review_Generation_Through_Prompt_Genera/index.html">Reviewer2: Optimizing Review Generation Through Prompt Generation</a></div><div class="conn-reason">Reviewer2의 프롬프트 최적화 접근법이 TreeReview의 계층적 질문 생성 메커니즘과 결합되어 더 효과적인 검토 시스템을 구축할 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

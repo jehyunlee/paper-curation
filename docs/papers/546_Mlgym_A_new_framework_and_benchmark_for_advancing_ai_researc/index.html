@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Deepak Nathani, Lovish Madaan, Nicholas Roberts, Nikolay Bashlykov, Ajay Menon, Vincent Moens, Amar Budhiraja, Despoina Magka, Vladislav Vorotilov, Gaurav Chaurasia, Dieuwke Hupkes, Ricardo Silveira Cabral, Tatiana Shavrina, Jakob Foerster, Yoram Bachrach, William Yang Wang, Roberta Raileanu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MLGym의 구조: 다양한 AI 연구 작업을 통합하는 프레임워크</em></p></div>
 <p>본 논문은 LLM 기반 AI 연구 에이전트(AI Research Agent)를 평가하고 개발하기 위한 첫 번째 Gym 환경인 <strong>MLGym</strong>과 13개 과제로 구성된 벤치마크 <strong>MLGym-Bench</strong>를 제시한다. 이는 RL, 커리큘럼 러닝 등 다양한 학습 알고리즘으로 에이전트를 훈련할 수 있는 통합 플랫폼을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -84,16 +82,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Gymnasium 표준을 따르는 통합 프레임워크를 설계하고, 다양한 도메인(컴퓨터 비전, NLP, RL, 게임 이론, SAT)의 13개 개방형 연구 작업을 선정하여 최신 LLM(Claude-3.5-Sonnet, Llama-3.1-405B, GPT-4o, o1-preview, Gemini-1.5-Pro) 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Best Attempt@4 및 Best Submission@4 성능 프로필 비교</em></p></div>
 <ol>
 <li><strong>첫 번째 Gym 환경 기반 AI 연구 에이전트 프레임워크 제시</strong>: 표준화된 인터페이스로 RL, 커리큘럼 러닝, 개방형 학습 등 다양한 학습 알고리즘 적용 가능</li>
 <li><strong>다양한 도메인의 개방형 연구 작업 구성</strong>: 이미지 분류(cifar10), 언어 모델링(mini-gpt2), RL 정책 학습(lunar-lander), 게임 이론(한판 포커), SAT 해결, 신경망 구조 탐색 등 13개 이질적 작업</li>
 <li><strong>유연한 평가 아티팩트 지원</strong>: 모델 체크포인트, RL 알고리즘, 전략 코드 등 다양한 형태의 연구 산출물을 직접 평가 가능</li>
 <li><strong>AutoML 기반 통합 평가 메트릭 제안</strong>: 최적화 문제의 성능 프로파일(performance profile) 개념을 도입하여 이질적인 평가 지표를 가진 작업들 간 공정한 비교 가능</li>
-</ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Best Attempt AUP@4 vs API 비용: 성능과 경제성 분석</em></p></div></div>
+</ol></div>
 <div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>MLGym 아키텍처</strong>:
@@ -152,7 +146,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../230_Code_llama_Open_foundation_models_for_code/index.html">Code llama: Open foundation models for code</a></div><div class="conn-reason">코드 생성 모델이 AI 연구 에이전트 개발의 기반이 됩니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../782_SWE-bench_Can_Language_Models_Resolve_Real-World_GitHub_Issu/index.html">SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a></div><div class="conn-reason">실제 개발 문제 해결이 AI 연구 에이전트의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../528_MedAgentGym_A_Scalable_Agentic_Training_Environment_for_Code/index.html">MedAgentGym: A Scalable Agentic Training Environment for Code-Centric Reasoning in Biomedical Data Science</a></div><div class="conn-reason">머신러닝 vs 생의학 도메인에서의 AI 에이전트 개발 환경을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../528_MedAgentGym_A_Scalable_Agentic_Training_Environment_for_Code/index.html">MedAgentGym: A Scalable Agentic Training Environment for Code-Centric Reasoning in Biomedical Data Science</a></div><div class="conn-reason">생의학 vs 머신러닝 도메인에서의 AI 에이전트 훈련 환경을 제시합니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../230_Code_llama_Open_foundation_models_for_code/index.html">Code llama: Open foundation models for code</a></div><div class="conn-reason">코드 생성 모델이 AI 연구 에이전트 프레임워크에 활용됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

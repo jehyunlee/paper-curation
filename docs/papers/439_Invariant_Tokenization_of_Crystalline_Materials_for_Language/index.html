@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Keqiang Yan, Xiner Li, Hongyi Ling, K. Ashen, Carl N. Edwards | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.00152" target="_blank">10.48550/arXiv.2503.00152</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Mat2Seq의 파이프라인: 3D 결정 구조를 Niggli 셀 축약과 원시 단위 셀 결정을 거쳐 고유한 1D 수열로 변환</em></p></div>
 <p>본 연구는 3D 결정 구조(crystal structure)를 언어 모델(LM)이 처리 가능한 1D 수열로 변환하되, SE(3) 불변성과 주기성 불변성을 보장하는 <strong>Mat2Seq</strong> 방법을 제안한다. 이를 통해 동일한 결정에 대해 고유한 수열 표현을 생성하여 언어 모델 기반의 신규 결정 물질 생성을 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 고유하고 완전한 결정 수열 표현을 생성하기 위해 (1) Niggli 셀 축약으로 SO(3) 동변적(equivariant) 단위 셀 결정, (2) 이를 SE(3) 불변 수열로 변환하는 두 단계 접근 방식 제시.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CIF 파일 기반 방법의 한계: 동일 결정이 주기적 변환에 따라 서로 다른 CIF 파일로 표현되는 문제</em></p></div>
 <ol>
 <li><strong>고유한 수열 표현 달성</strong>: Mat2Seq은 동일한 결정 구조와 그 등가 표현들을 모두 단일 고유 수열로 매핑하여 데이터 증강 없이 불변성 보장</li>
 <li><strong>수학적 엄밀성</strong>: SE(3) 불변성, 주기성 불변성, 완전성(completeness)의 세 가지 요구사항을 형식적으로 정의하고 이를 만족함을 증명</li>
@@ -130,9 +126,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../349_Fragment_and_Geometry_Aware_Tokenization_of_Molecules_for_St/index.html">Fragment and Geometry Aware Tokenization of Molecules for Structure-Based Drug Design Using Language Models</a></div><div class="conn-reason">분자의 기하학적 토큰화 연구가 결정 구조 불변 토큰화의 방법론적 기초</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1104_A_Physics-Informed_Chemical_Rule_for_Topological_Materials_D/index.html">A Physics-Informed Chemical Rule for Topological Materials Discovery</a></div><div class="conn-reason">결정 구조의 불변 토큰화가 위상 물질 발견 규칙의 구조적 인코딩 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../487_Leveraging_biomolecule_and_natural_language_through_multi-mo/index.html">Leveraging biomolecule and natural language through multi-modal learning: A survey</a></div><div class="conn-reason">결정 구조 vs 생물분자로 대상은 다르지만 동일한 다중모달 토큰화 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../487_Leveraging_biomolecule_and_natural_language_through_multi-mo/index.html">Leveraging biomolecule and natural language through multi-modal learning: A survey</a></div><div class="conn-reason">생물분자 vs 결정 구조로 대상은 다르지만 동일한 다중모달 토큰화 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../383_Geometry_Informed_Tokenization_of_Molecules_for_Language_Mod/index.html">Geometry Informed Tokenization of Molecules for Language Model Generation</a></div><div class="conn-reason">분자 기하학 토큰화를 결정 구조의 SE(3) 불변성으로 확장한 발전된 연구</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../383_Geometry_Informed_Tokenization_of_Molecules_for_Language_Mod/index.html">Geometry Informed Tokenization of Molecules for Language Model Generation</a></div><div class="conn-reason">결정체 재료의 불변 토큰화에서 3D 분자 기하학 토큰화로의 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../125_Automated_latex_code_generation_from_handwritten_math_expres/index.html">Automated latex code generation from handwritten math expressions using vision transformer</a></div><div class="conn-reason">결정 물질의 불변 토크나이제이션 기법이 필기 수학식 이미지의 구조적 표현 학습에 적용될 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1104_A_Physics-Informed_Chemical_Rule_for_Topological_Materials_D/index.html">A Physics-Informed Chemical Rule for Topological Materials Discovery</a></div><div class="conn-reason">결정 구조 토큰화를 위상 물질 발견에 적용한 구체적인 응용 사례</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

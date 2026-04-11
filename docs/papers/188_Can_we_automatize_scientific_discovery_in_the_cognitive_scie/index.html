@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Akshay K. Jagadish, Milena Rmus, Kristin Witte, Marvin Mathony, Marcel Binz, Eric Schulz | <strong>날짜</strong>: 2026-03-22 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2603.20988" target="_blank">https://arxiv.org/abs/2603.20988</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. An automated cycle of scientific discovery in the cognitive sciences. An experimentalist proposes experiments,</em></p></div>
 <p>인지과학에서 대규모언어모델(LLM)과 기초모델(Foundation Models)을 활용하여 과학적 발견의 전체 사이클을 자동화하는 프레임워크를 제안한다. 실험 설계, 행동 데이터 생성, 모델 합성, 반복 최적화의 모든 단계를 in silico로 구현하는 고속의 자동화된 인지과학 엔진이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 지능형 실험 샘플러로 사용하여 실험을 자동 제안하고, 인지 기초모델(Centaur)로 개인 특성을 조건화한 고충실도 행동 데이터를 생성하며, LLM 기반 프로그램 합성(GeCCo, FunSearch)으로 대규모 모델 탐색을 수행하고, LLM 비평가(critic)로 '흥미로움' 메트릭을 평가하여 다음 반복을 최적화한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. An automated cycle of scientific discovery in the cognitive sciences. An experimentalist proposes experiments,</em></p></div>
 <ul>
 <li><strong>완전 자동화된 발견 사이클</strong>: 실험 제안, 데이터 생성, 모델 합성, 루프 폐쇄의 4단계를 모두 자동화한 통합 프레임워크 제시</li>
 <li><strong>LLM 기반 실험 샘플러</strong>: 형식 문법(MDP 기반)을 넘어 LLM이 직접 개념적으로 의미 있는 새로운 실험을 생성하고 반복 개선 가능</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>과학적 흥미로움 최적화</strong>: 통계적 정보 이득뿐 아니라 이론적 의미(interestingness)를 LLM 비평가가 평가하여 과학적으로 조명하는 실험 우선순위 결정</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. An automated cycle of scientific discovery in the cognitive sciences. An experimentalist proposes experiments,</em></p></div>
 <ul>
 <li><strong>실험 제안 단계</strong>: MDP 기반 형식 문법으로 시작하되, LLM을 메타-실험 설계자로 활용하여 새로운 인지 패러다임을 직접 샘플링하고 피드백으로 반복 정제</li>
 <li><strong>데이터 생성 단계</strong>: Centaur 인지 기초모델에 과제 설명과 피험자 메타데이터(연령, 성별, 진단, 설문지 점수 등)를 프롬프트로 입력하여 다중 회차 의사결정 행동 시뮬레이션</li>

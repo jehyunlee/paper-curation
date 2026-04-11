@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Saaket Agashe, Jiuzhou Han, Shuyu Gan, Jiachen Yang, Ang Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2410.08164" target="_blank">10.48550/arXiv.2410.08164</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Agent S uses a computer like a human to solve diverse desktop tasks on different systems.">
-</div>
 <p>Agent S는 계층적 계획 수립, 경험 기억 시스템, 그리고 Agent-Computer Interface(ACI)를 통합한 GUI 자동화 프레임워크로, 복잡한 멀티스텝 데스크톱 작업을 인간처럼 자동으로 수행한다. OSWorld 벤치마크에서 기존 방법 대비 83.6% 상대 개선율을 달성한 최신 최고 성능(SOTA) 모델이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,15 +81,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 외부 웹 지식과 내부 에피소드 메모리를 활용한 경험 강화 계층적 계획, 자체 평가 기반 연속적 메모리 업데이트, 그리고 언어 중심 ACI를 통한 정확한 GUI 제어</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Agent S vs. OSWorld Agent results across five broad computer task categories.">
-</div>
 <ol>
 <li><strong>OSWorld 벤치마크 성능 대폭 향상</strong>: 11.21%에서 20.58%로 개선(9.37%p 절대 향상, 83.6% 상대 향상), 새로운 SOTA 달성. 5개 카테고리(Operating System, Office, Daily, Professional Workflow) 모두에서 일관된 개선</li>
 <li><strong>WindowsAgentArena 일반화 검증</strong>: 명시적 적응 없이도 13.3%에서 18.2%로 성능 향상, 서로 다른 운영체제 간 높은 일반화 능력 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Overview of the Agent S framework. Given task Tu and initial environment observation o0, the Manager conducts experience-augmented hierarchical planning using web knowledge and narrative memory to produce subtasks s0, . . . , sn. For each si, Worker wi draws from episodic memory to generate an action at at time t, which is executed by the ACI to return the next immediate observation ot+1.">
-</div>
 <p><strong>세 가지 핵심 요소:</strong></p>
 <h3>3.1 경험 강화 계층적 계획(Experience-Augmented Hierarchical Planning)</h3>
 <ul>

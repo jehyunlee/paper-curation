@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shanda Li, Tanya Marwah, Junhong Shen, Weiwei Sun, Andrej Risteski | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.08783" target="_blank">10.48550/arXiv.2505.08783</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: CodePDE 프레임워크 개요">
-<p class="fig-caption"><em>CodePDE의 5단계 파이프라인: 작업 명세 → 코드 생성 → 디버깅 → 평가 → 해결자 개선</em></p></div>
 <p><strong>핵심</strong>: PDE(편미분방정식) 해석을 코드 생성 문제로 재정의하고, LLM(대형언어모델)의 추론 시간 알고리즘과 스케일링 전략을 활용하여 자동으로 수치 해석 솔버를 생성하는 첫 번째 프레임워크. 디버깅, 자체 개선, 테스트 타임 스케일링 메커니즘을 통해 단순 프롬프팅 대비 성능을 크게 향상시킴.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: PDE 문제를 자연어로 명세하고 LLM에게 완전한 해석기 코드 생성을 요청. 실행 오류 피드백을 통한 자동 디버깅, 해 정확도 기반 반복 개선, 추론 예산 증가에 따른 성능 스케일링 메커니즘 구현.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 대표 LLM들의 테스트 타임 스케일링 곡선">
-<p class="fig-caption"><em>베스트-오프-N 샘플링을 통한 PDE별 성능 개선: 추론 예산 증가에 따른 해의 정확도 향상</em></p></div>
 <ol>
 <li><strong>자동 디버깅의 효과성</strong>: 버그 없는 솔버 생성률이 41%에서 84%로 향상 (평균). 런타임 오류 추적을 통한 반복적 자체 디버깅이 자율적 오류 수정에 효과적.</li>
 <li><strong>테스트 타임 스케일링의 확장성</strong>: 베스트-오프-N 샘플링을 통해 추론 예산 증가에 따라 해 정확도가 일관되게 향상. 이는 LLM 생성 솔버에 대한 실질적 확장 법칙 발견.</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>기존 솔버와 비교 가능한 성능</strong>: 16개 강력한 LLM(o3, DeepSeek-R1, GPT-4o, DeepSeek-V3 등)을 활용한 평가에서 맞춤형 수치 해석기 및 전문 PDE 소프트웨어와 경쟁 가능한 수준의 성능 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 디버깅의 효과">
-<p class="fig-caption"><em>단계별 디버깅 과정을 통한 실행 가능한 솔버 비율 증가</em></p></div>
 <h3>Step 1: 작업 명세 (Task Specification)</h3>
 <ul>
 <li>PDE의 지배 방정식, 영역 명세, 경계 조건, 초기 조건을 자연언어로 형식화</li>
@@ -152,8 +146,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: CodePDE는 대형언어모델이 과학 컴퓨팅, 특히 PDE 해석 분야에서 어떤 기여를 할 수 있는지를 체계적으로 탐색한 의미 있는 연구. 자동 디버깅과 반복 개선이 LLM 기반 솔버 생성의 핵심 성공 요인임을 실증적으로 입증했고, 다양한 모델 간 특성 차이를 분석한 점이 주요 기여. 다만 고차원, 극도로 복잡한 PDE, 물리 제약 조건 명시 등에서의 확장성 검증이 필요하며, 전통적 수치 해석 소프트웨어와의 실무 수준 비교 심화가 향후 과제. 학술적 가치와 실용성을 모두 갖춘 중요한 논문.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../588_OpenFOAMGPT_20_end-to-end_trustworthy_automation_for_computa/index.html">OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics</a></div><div class="conn-reason">OpenFOAMGPT 2.0의 자연어에서 PDE 해석 기능은 CodePDE가 제공하는 LLM 기반 PDE 솔버 생성 프레임워크를 기반으로 구현되었습니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../503_LLM-ODE_Data-driven_Discovery_of_Dynamical_Systems_with_Larg/index.html">LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</a></div><div class="conn-reason">LLM 기반 동적 시스템 발견이 PDE 솔버 생성의 이론적 기초가 됨</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../143_AutoP2C_An_LLM-Based_Agent_Framework_for_Code_Repository_Gen/index.html">AutoP2C: An LLM-Based Agent Framework for Code Repository Generation from Multimodal Content in Academic Papers</a></div><div class="conn-reason">논문에서 코드로의 자동 변환이라는 동일한 목표를 PDE와 일반 코드 관점에서 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../143_AutoP2C_An_LLM-Based_Agent_Framework_for_Code_Repository_Gen/index.html">AutoP2C: An LLM-Based Agent Framework for Code Repository Generation from Multimodal Content in Academic Papers</a></div><div class="conn-reason">논문에서 코드 생성이라는 동일 목표를 PDE와 일반 저장소 관점에서 접근</div></div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../143_AutoP2C_An_LLM-Based_Agent_Framework_for_Code_Repository_Gen/index.html">AutoP2C: An LLM-Based Agent Framework for Code Repository Generation from Multimodal Content in Academic Papers</a></div><div class="conn-reason">논문에서 코드로의 자동 변환이라는 동일한 목표를 PDE와 일반 코드 관점에서 접근</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

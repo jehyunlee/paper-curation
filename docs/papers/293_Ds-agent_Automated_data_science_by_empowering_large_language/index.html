@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Siyuan Guo, Cheng Deng, Ying Wen, Hechang Chen, Yi Chang, Jun Wang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DS-Agent의 개요: (a) CBR 기반 LLM의 구조, (b) 반복 단계에 따른 성능 개선</em></p></div>
 <p>대규모 언어모델(LLM)의 사례 기반 추론(Case-Based Reasoning, CBR)을 결합하여 자동화된 데이터 과학 작업을 수행하는 DS-Agent 프레임워크를 제시한다. 개발 단계에서는 Kaggle의 전문가 지식을 활용한 반복적 개선을, 배포 단계에서는 저자원 환경에서의 효율적 코드 생성을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Kaggle의 방대한 기술 보고서와 코드 저장소를 활용하여 CBR 프레임워크와 LLM을 통합하고, 인간의 전문 지식을 체계적으로 활용 및 반복 개선하는 파이프라인 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4-5">
-<p class="fig-caption"><em>개발 단계에서의 성공률 및 배포 단계에서의 원패스율</em></p></div>
 <ol>
 <li><strong>개발 단계 성능</strong>: GPT-4 기반 DS-Agent는 12개 개발 작업에서 100% 성공률 달성; 반복 단계 증가에 따른 지속적 성능 개선 입증</li>
 <li><strong>배포 단계 성능</strong>:
@@ -90,8 +86,6 @@ a { color: #A62018; }
 <li><strong>효율성</strong>: 표준 시나리오에서 GPT-3.5/GPT-4당 실행 비용 $0.06/$1.60; 저자원 시나리오에서 $0.0045/$0.135로 감소</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2-3">
-<p class="fig-caption"><em>CBR 기반 LLM의 구조: RAG와의 비교</em></p></div>
 <h3>개발 단계: 자동 반복 파이프라인</h3>
 <ul>
 <li><strong>인간 지식 사례 수집 (Human Insight Case Collection)</strong>:
@@ -161,7 +155,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../253_Data_Interpreter_An_LLM_Agent_For_Data_Science/index.html">Data Interpreter: An LLM Agent For Data Science</a></div><div class="conn-reason">Data Interpreter의 데이터 과학 작업 해석 능력이 DS-Agent의 자동화된 데이터 분석 및 코드 생성 기능의 기본적인 기술적 토대이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../146_Autosdt_Scaling_data-driven_discovery_tasks_toward_open_co-s/index.html">AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists</a></div><div class="conn-reason">AutoSDT가 제공하는 데이터 발견 태스크가 DS-Agent 같은 데이터 사이언스 에이전트 학습의 기반이 됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../463_Large_language_model_agent_for_hyper-parameter_optimization/index.html">Large language model agent for hyper-parameter optimization</a></div><div class="conn-reason">DS-Agent의 사례 기반 추론을 통한 데이터 과학 자동화와 하이퍼파라미터 최적화에 특화된 LLM 에이전트는 같은 문제를 다른 범위에서 해결하는 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../463_Large_language_model_agent_for_hyper-parameter_optimization/index.html">Large language model agent for hyper-parameter optimization</a></div><div class="conn-reason">하이퍼파라미터 최적화에 특화된 LLM 에이전트와 DS-Agent의 포괄적 데이터 과학 자동화는 같은 영역을 다른 범위에서 다루는 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../594_OSDA_Agent_Leveraging_Large_Language_Models_for_De_Novo_Desi/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">개선된 DS-Agent가 기존 Kaggle 기반 자동 데이터 과학 프레임워크를 더 강화된 사례 기반 추론과 배포 최적화로 발전시킨 확장 버전이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../259_DeepAnalyze_Agentic_Large_Language_Models_for_Autonomous_Dat/index.html">DeepAnalyze: Agentic Large Language Models for Autonomous Data Science</a></div><div class="conn-reason">DS-Agent의 기본 데이터 사이언스 자동화를 분석가 수준의 심층 연구로 발전시킴</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">데이터 사이언스 자동화 에이전트 DS-Agent의 성능을 ML 실험 관점에서 평가</div></div></div>

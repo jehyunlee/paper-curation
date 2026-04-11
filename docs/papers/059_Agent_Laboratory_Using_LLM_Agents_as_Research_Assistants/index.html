@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Samuel Schmidgall, Yusheng Su, Ze Wang, Ximeng Sun, Jialian Wu, Xiaodong Yu, Jiang Liu, Michael Moor, Zicheng Liu, Emad Barsoum | <strong>날짜</strong>: 2025-06-17 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.04227" target="_blank">10.48550/arXiv.2501.04227</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Agent Laboratory는 인간의 연구 아이디어를 입력받아 특화된 LLM 에이전트 파이프라인을 통해 연구 보고서와 코드 저장소를 생성한다.</em></p></div>
 <p>Agent Laboratory는 인간의 연구 아이디어 실행을 지원하는 자율적 LLM 기반 프레임워크로, 문헌 검토, 실험 수행, 보고서 작성의 세 단계를 거쳐 완전한 연구 성과물을 생성한다. 기존 자동화 연구 방법 대비 84% 비용 감축을 달성하면서도 높은 품질의 기계학습 연구를 수행할 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간이 제시한 연구 아이디어를 입력받아, 특화된 LLM 에이전트(PhD 에이전트, Postdoc 에이전트 등)가 문헌 검토→실험 설계 및 수행→논문 작성을 자동으로 진행. 각 단계에서 사용자 피드백 가능한 co-pilot 모드 제공.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Agent Laboratory의 세 가지 핵심 단계: 문헌 검토(Literature Review), 실험 수행(Experimentation), 보고서 작성(Report Writing) 및 각 단계의 역할과 도구.</em></p></div>
 <ol>
 <li><strong>모델 성능 비교</strong>: o1-preview 기반 Agent Laboratory가 가장 우수한 연구 성과물 생성. o1-mini는 실험 품질 점수에서 최고 달성. gpt-4o는 모든 지표에서 뒤처짐.</li>
 <li><strong>자동화된 실험 수행</strong>: mle-solver를 통해 MLE-Bench 과제의 부분집합에서 최첨단(SOTA) 성능 달성. MLAB, OpenHands, AIDE 대비 더 많은 금메달·은메달 획득. 생성된 머신러닝 코드가 기존 방법 대비 경쟁력 있는 성능 발휘.</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>평가 불일치 발견</strong>: 자동화된 평가 vs. 인간 평가의 격차 발생(6.1/10 vs. 3.8/10). 자동화 평가가 품질을 과대평가하는 경향.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>mle-solver의 반복적 워크플로우: 실험 코드 생성, 실행, 오류 처리, 결과 해석의 순환 과정.</em></p></div>
 <ul>
 <li><strong>문헌 검토 단계</strong>: PhD 에이전트가 arXiv, Google Scholar 등에서 관련 문헌 검색. 논문 요약 및 핵심 개념 추출. 연구 맥락 정립.</li>
 <li><strong>실험 설계 및 수행</strong>: Postdoc 에이전트가 실험 계획 수립. <strong>mle-solver</strong> 도구가 코드 생성→실행→디버깅→결과 수집의 반복 프로세스 담당. 머신러닝 파이프라인(데이터 처리, 모델 학습, 평가) 자동화.</li>

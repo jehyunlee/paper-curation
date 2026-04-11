@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tao Song, Yuwei Fan, Chen Feng, Keyu Song, Chao Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2406.07572" target="_blank">10.48550/arXiv.2406.07572</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 이중 에이전트 도구 호출 프로세스</em></p></div>
 <p>본 논문은 LLM(대규모 언어 모델)을 에너지·발전 공학 영역의 실제 문제 해결에 활용하기 위해 ReAct 프롬프팅과 도구 호출 메커니즘을 결합한 도메인 특화 프레임워크를 제시한다. 가스터빈의 가스 경로 분석(gas path analysis)을 사례로 하여 다양한 규모의 LLM들의 능력과 한계를 체계적으로 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 물리 기반 도구를 사전 정의하고 ReAct 기반 이중 에이전트 구조를 설계하여 LLM의 추론 능력과 도메인 지식을 통합한다. 다양한 규모(8B~70B+)의 모델을 비교 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 가스터빈의 가스 경로 분석 개요</em></p></div>
 <ol>
 <li><strong>이중 에이전트 도구 호출 프로세스 개발</strong>: 기본 도구 호출을 지원하지 않는 모델들도 통일된 프레임워크에서 작동하도록 하는 구조 설계 성공. 에이전트 1은 ReAct 추론으로 행동 결정, 에이전트 2는 JSON 형식으로 도구 파라미터 추출.</li>
 <li><strong>모델 성능 차이 규명</strong>:
@@ -134,13 +130,10 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM을 물리 기반 도메인 문제에 체계적으로 적용한 의미 있는 사례 연구로, 도메인 특화 프레임워크의 설계와 모델 규모별 성능 평가에 기여한다. 다만 현재는 정성적 관찰 중심이며, 통계적 검증과 실제 산업 데이터를 통한 검증이 추가되면 영향력을 크게 확대할 수 있을 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">물리학 도메인의 정확한 모델링 요구사항이 과학 가설 생성에서 진실성과 검증 가능성의 중요성을 보여주는 기반 사례이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">물리학 통합 모델링과 사회적 책임 AI 인과학습이 모두 복잡한 시스템의 인과관계를 다루지만 물리적 vs 사회적 도메인으로 구분된다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">사회적 책임 AI를 위한 인과학습과 물리학 통합 모델링이 모두 복잡한 인과관계를 다루지만 사회적 vs 물리적 시스템으로 구분된다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../748_Semi-Supervised_2D_Human_Pose_Estimation_Driven_by_Position/index.html">Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module</a></div><div class="conn-reason">물리학 통합 모델링과 컴퓨터 비전 포즈 추정이 모두 도메인 특화 과학적 추론이지만 서로 다른 과학 영역에 특화되어 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../748_Semi-Supervised_2D_Human_Pose_Estimation_Driven_by_Position/index.html">Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module</a></div><div class="conn-reason">컴퓨터 비전 영역의 도메인 특화 추론과 물리학 통합 모델링이 모두 특정 과학 도메인에서의 LLM 활용이지만 접근 방식이 다르다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../631_Predicting_field_experiments_with_large_language_models/index.html">Predicting field experiments with large language models</a></div><div class="conn-reason">경제학에서의 실험 예측 방법론을 물리학 통합 모델링에 적용하여 도메인 간 방법론 전이 가능성을 탐구할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../911_Resummation_of_the_C-Parameter_Sudakov_Shoulder_Using_Effect/index.html">Resummation of the C-Parameter Sudakov Shoulder Using Effective Field Theory</a></div><div class="conn-reason">물리학 통합 반복 모델링 접근법을 입자물리학의 복잡한 재합 계산으로 확장하여 더 정밀한 예측을 가능하게 한다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">에너지 공학의 도메인 특화 ReAct 프레임워크가 Scientific Agent 서베이에서 제시하는 도메인 전문성 통합 방법론의 실제 구현 사례이다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">Scientific Agent의 도메인 특화 지식 통합 방법론이 물리학 통합 모델링의 ReAct 프레임워크에서 실제 적용 사례로 구현된다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">에너지 공학의 도메인 특화 ReAct 프레임워크가 Scientific Agent 서베이에서 제시하는 도메인 전문성 통합 방법론의 실제 구현 사례이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

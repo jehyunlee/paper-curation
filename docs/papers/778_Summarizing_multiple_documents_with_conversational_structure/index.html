@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Miao Li, Eduard Hovy, Jey Han Lau | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2305.01498" target="_blank">arXiv:2305.01498</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>계층적 대화 구조를 가진 PEERSUM 데이터셋 예시: 공식 리뷰, 저자 응답, 공개 리뷰 등이 스레드 형태로 조직됨</em></p></div>
 <p>학술 논문 심사 과정에서 메타리뷰(meta-review)를 자동 생성하기 위해 리뷰어들의 상충된 의견과 다중 순환 대화를 포함한 계층적 구조를 갖춘 새로운 다중문서 요약 데이터셋(PEERSUM)과 이를 활용하는 관계-인식 모델(RAMMER)을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 명시적 계층적 대화 구조와 상충 관계 표시를 포함한 PEERSUM 데이터셋 구성 (2) Transformer의 주의(attention) 메커니즘을 관계-인식 희소 주의(sparse attention)로 대체하고 메타데이터 예측을 위한 다중 작업 학습을 도입한 RAMMER 모델 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PEERSUM의 계층적 구조: 공식 리뷰 스레드, 저자 응답, 공개 리뷰, 논문 초록 등이 트리 구조로 구성됨 (평균 높이 3.63, 너비 5.31)</em></p></div>
 <ol>
 <li><strong>PEERSUM 데이터셋</strong>: 14,993개 샘플(ICLR 2018-2022, NeurIPS 2021-2022)로 구성. 기존 MDS 데이터셋과 달리:
 <ul>
@@ -128,9 +124,7 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 복잡한 구조와 상충하는 정보를 다루는 현실적이고 도전적인 다중문서 요약 데이터셋을 제시한 점에서 학술적 기여도가 높으나, 제안된 모델이 핵심 문제(상충 해결)를 해결하지 못함을 보여주어 향후 연구의 방향을 명확히 제시한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../561_Ms2_Multi-document_summarization_of_medical_studies/index.html">Ms2: Multi-document summarization of medical studies</a></div><div class="conn-reason">둘 다 의료/학술 분야 다중문서 요약을 다루지만 하나는 동료평가, 다른 하나는 체계적 문헌 검토에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../561_Ms2_Multi-document_summarization_of_medical_studies/index.html">Ms2: Multi-document summarization of medical studies</a></div><div class="conn-reason">둘 다 의료/학술 분야 다중문서 요약을 다루지만 하나는 체계적 문헌 검토, 다른 하나는 동료평가에 중점을 둠</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../581_Oarelatedwork_A_large-scale_dataset_of_related_work_sections/index.html">OARelatedWork: A large-scale dataset of related work sections with full-texts from open access sources</a></div><div class="conn-reason">둘 다 학술 논문의 다중문서 요약을 다루지만 하나는 메타리뷰, 다른 하나는 관련 업무 생성에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../581_Oarelatedwork_A_large-scale_dataset_of_related_work_sections/index.html">OARelatedWork: A large-scale dataset of related work sections with full-texts from open access sources</a></div><div class="conn-reason">둘 다 학술 논문의 다중문서 요약을 다루지만 하나는 관련 업무, 다른 하나는 메타리뷰 생성에 중점을 둠</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../022_A_sentiment_consolidation_framework_for_meta-review_generati/index.html">A sentiment consolidation framework for meta-review generation</a></div><div class="conn-reason">둘 다 동료평가에서 감정 통합을 다루지만 서로 다른 프레임워크와 접근 방식을 사용함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ChatGPT를 활용한 자동 데이터 구축(API 수집 → 지시생성 → 솔루션 경로 어노테이션), DFSDT 기반 강화된 추론 전략, 신경망 API 리트리버, 그리고 자동 평가기 ToolEval 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 모델의 도구 사용 평가 결과: Pass Rate와 Win Rate (ChatGPT-ReACT 대비)</em></p></div>
 <ol>
 <li><strong>포괄적 데이터셋 구성</strong>: RapidAPI에서 49개 카테고리, 3,451개 도구(Tool), 16,464개 API로 이루어진 ToolBench 구축 (126,486개 지시문, 469,585개 실제 API 호출 포함)</li>
 <li><strong>우수한 모델 성능</strong>: ToolLLaMA는 Text-Davinci-003과 Claude-2를 능가하고 ChatGPT와 견줄 만한 성능 달성, GPT-4에만 약간 밀림</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>강력한 일반화</strong>: 훈련에 미포함된 APIBench 데이터셋에서 Gorilla와 동등한 성능 시연</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ToolBench 구축의 세 단계와 API 리트리버 및 ToolLLaMA 학습 파이프라인</em></p></div>
 <h3>데이터 구축 프로세스</h3>
 <ul>
 <li><strong>API 수집</strong>: RapidAPI Hub에서 10,853개 도구(53,190개 API)를 초기 수집 후, 품질 검증(404 에러, 내부 오류 체크)을 통해 3,451개 도구(16,464개 API) 최종 선정</li>
@@ -128,7 +124,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../499_LLM_With_Tools_A_Survey/index.html">LLM With Tools: A Survey</a></div><div class="conn-reason">LLM 도구 사용에 대한 포괄적 서베이에서 제시된 방법론을 대규모 벤치마크로 구현</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../672_ResearchGym_Evaluating_Language_Model_Agents_on_Real-World_A/index.html">ResearchGym: Evaluating Language Model Agents on Real-World AI Research</a></div><div class="conn-reason">도구 사용 능력을 평가하는 ToolLLM의 방법론을 연구 에이전트 평가로 확장한 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../180_Can_foundation_models_actively_gather_information_in_interac/index.html">Can foundation models actively gather information in interactive environments to test hypotheses? arXiv preprint arXiv:2412.06438, 2024.</a></div><div class="conn-reason">능동적 정보 수집에 중점을 둔 접근과 달리 구체적 API 도구 활용 능력에 집중</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../180_Can_foundation_models_actively_gather_information_in_interac/index.html">Can foundation models actively gather information in interactive environments to test hypotheses? arXiv preprint arXiv:2412.06438, 2024.</a></div><div class="conn-reason">API 도구 사용과 달리 환경과의 능동적 상호작용을 통한 정보 수집 능력에 집중</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">API 도구 사용 능력 평가를 머신러닝 실험이라는 구체적 도메인으로 특화한 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../499_LLM_With_Tools_A_Survey/index.html">LLM With Tools: A Survey</a></div><div class="conn-reason">16,000개 이상의 도구를 마스터하는 LLM 훈련으로 도구 활용 능력을 대폭 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../268_Democratizing_AI_scientists_using_ToolUniverse/index.html">Democratizing AI scientists using ToolUniverse</a></div><div class="conn-reason">도구 생태계가 더 포괄적인 도구 마스터링으로 확장됩니다.</div></div>

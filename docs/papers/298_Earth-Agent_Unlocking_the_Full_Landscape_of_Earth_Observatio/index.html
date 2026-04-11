@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Peilin Feng, Zhutao Lv, Junyan Ye, Xiaolei Wang, Xinjie Huo, Jinhua Yu, Wanghan Xu, Wenlong Zhang, Lei Bai, Conghui He, Weijia Li | <strong>날짜</strong>: 2025-09-27 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Earth-Agent의 종합 개요: 기존 MLLM 기반 연구, 에이전트 기반 연구와의 비교 및 제안된 Earth-Agent의 차별성</em></p></div>
 <p>본 논문은 RGB 이미지를 넘어 다중스펙트럼 데이터와 지구 관측 제품(Earth Products)을 통합적으로 처리하는 에이전트 기반 프레임워크 Earth-Agent를 제시하며, 이를 평가하기 위한 248개의 전문가 검증 과제로 구성된 Earth-Bench 벤치마크를 소개한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Model Context Protocol(MCP) 기반 104개 전문 도구를 통합한 구조화된 에이전트 프레임워크(ReAct 방식)를 구축하고, 다중스펙트럼-RGB 데이터를 모두 지원하며, 추론 궤적과 결과를 함께 평가하는 벤치마크 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Earth-Agent가 Spectrum, Products, RGB 데이터를 활용한 다단계 추론으로 복잡한 과제 해결: 건기지수 스파이크 계산, 야간 조명 강도 추세 분석, 항만 면적 차이 계산</em></p></div>
 <ol>
 <li><strong>포괄적 다중모달 처리</strong>: RGB 이미지, 원본 스펙트럼 데이터, 지구 제품(NDVI, LST, TVDI 등)을 단일 프레임워크에서 통합 처리. 기존 MLLM은 RGB만 지원하던 것에서 진화</li>
 <li><strong>체계적 도구 생태계</strong>: 104개 전문 도구를 Index(지수 계산), Inversion(역산), Perception(인식), Analysis(분석), Statistics(통계) 등 5개 도메인 특화 toolkit으로 구조화. MCP 기반으로 확장성 보장</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>Earth-Bench 벤치마크</strong>: 13,729개 이미지, 248개 전문가 검증 질문으로 구성되어 스펙트럼, 제품, RGB 모달리티 모두 포함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Earth-Agent 프레임워크: ReAct 스타일 워크플로우를 통한 LLM 기반 추론과 도구 호출의 상호작용</em></p></div>
 <ul>
 <li><strong>ReAct 기반 에이전트 루프</strong>: LLM(Claude, GPT-4 등)이 현재 상태를 관찰(Observation) → 사고(Thought) → 행동(Action, 도구 호출 또는 최종 답변)의 순환 구조로 다단계 추론 수행</li>
 <li><strong>MCP 프로토콜 기반 도구 통합</strong>: Model Context Protocol을 활용하여 다양한 외부 도구, 모델, 데이터소스(Google Earth Engine, NASA Earthdata, 전문 RS 모델)를 표준화된 방식으로 연결</li>

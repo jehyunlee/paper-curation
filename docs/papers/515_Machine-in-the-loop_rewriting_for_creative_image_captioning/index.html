@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Vishakh Padmakumar, He He | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: [미기재]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 사용자가 중심이 되어 재작성할 텍스트 구간을 표시하면, 모델이 창의적인 대안을 제시하는 기계-인-루프 시스템</em></p></div>
 <p>본 논문은 사용자가 주도권을 유지하면서 창의적 작문을 돕는 기계-인-루프 재작성 모델(Creative Rewriting Assistant, CRA)을 제안하며, 이미지 캡션 작성 과제에서 사용자와의 협력을 통해 더욱 서술적이고 비유적인 텍스트 생성을 지원한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사용자가 명시적으로 특정 텍스트 구간을 표시하면 모델이 그 부분만 재작성(span rewriting) 또는 공백을 채우는(text infilling) 방식의 국소적(local) 편집 방식 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 창의적 텍스트 데이터셋의 주석을 활용하여 BART-Large로 일반적 문장을 생성하고, 이를 학습 데이터로 변환하는 과정</em></p></div>
 <ol>
 <li><strong>사용자 만족도 향상</strong>: 사용자 연구(Amazon Mechanical Turk)에서 CRA가 기준 모델(BART infilling 모델)보다 훨씬 더 도움이 된다는 평가를 받음</li>
 <li><strong>작문 품질 개선</strong>: CRA와 협력하여 작성한 캡션이 독립적으로 작성한 캡션보다 더 창의적이고 다양한 어휘를 포함하며, 제3자 평가에서도 서술적 및 비유적 요소가 더 풍부함</li>
 <li><strong>적응적 학습 가능</strong>: 사용자의 승인/거절 피드백을 통해 모델을 지속적으로 미세조정(fine-tune)할 수 있어, 사용자 선호도에 적응 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 기계-인-루프 협력과 독립 작성 간의 생성 텍스트 비교 예시</em></p></div>
 <ul>
 <li><strong>훈련 데이터 구성</strong>: Table 1의 6개 소스(감정 단어, 은유, 의성어 등의 주석이 있는 텍스트)에서 창의적 문장을 수집하고, 주석된 창의적 구간을 BART-Large로 대체하여 일반적 문장을 합성(42,000 학습 쌍)</li>
 <li><strong>모델 아키텍처</strong>: BART 기반의 시퀀스-투-시퀀스 모델을 활용하여 창의적 문장을 예측하도록 학습</li>
@@ -113,7 +107,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 사용자 제어권을 보장하면서도 창의적 작문을 보조하는 실용적이고 타당한 접근법을 제시하며, 특히 기술이 다양한 사용자 그룹에 미치는 차별적 영향을 분석한 점이 강점입니다. 다만 평가 과제의 제한성과 초보 사용자를 위한 해결책 부재가 향후 개선 과제입니다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 편집기의 기본 개념이 창의적 이미지 캡션 작성의 기계-인-루프 시스템에 이론적 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../399_Helm_Highlighted_evidence_augmented_language_model_for_enhan/index.html">HeLM: Highlighted Evidence augmented Language Model for Enhanced Table-to-Text Generation</a></div><div class="conn-reason">창의적 캡션 작성에서 기계-인-루프 방식과 증거 강조 방식의 서로 다른 인간-AI 협업 접근법을 비교할 수 있습니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../399_Helm_Highlighted_evidence_augmented_language_model_for_enhan/index.html">HeLM: Highlighted Evidence augmented Language Model for Enhanced Table-to-Text Generation</a></div><div class="conn-reason">표 캡션 생성에서 기계-인-루프 접근법과 증거 강조 접근법의 비교 분석이 가능합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../708_SciCap_Generating_Captions_for_Scientific_Figures/index.html">SciCap: Generating Captions for Scientific Figures</a></div><div class="conn-reason">과학적 도형 캡션 생성을 창의적이고 비유적인 표현으로 확장하여 더 풍부한 서술이 가능한 방법을 제시합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

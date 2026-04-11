@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Perturb-seq 유전자 섭동 실험 데이터로부터 인과 ground truth를 구축하고, 이를 LLM의 문헌 기반 예측과 비교하는 벤치마킹 프레임워크 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Directed edges are drawn between the perturbed gene k and the set of genes ∆k = {i,..., j} that change significantly under experimental intervention on k.">
-<p class="fig-caption"><em>그림 1: 섭동된 유전자 k와 k에 대한 실험적 중재 하에서 유의하게 변하는 유전자 집합 간의 방향성 모서리</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마킹 프레임워크</strong>: 100개 이상의 변수와 수천 개의 인과 가설에 대해 LLM의 인과관계 추론 능력을 실제 개입 데이터(interventional data)로 검증하는 체계적 방법론 개발</li>
 <li><strong>전략적 증강의 효과</strong>: 검색 증강(retrieval-augmentation)과 맞춤형 프롬프팅을 통해 상대적으로 작은 LLM도 생물학적 시스템의 의미 있는 인과구조를 포착 가능함을 실증</li>
 <li><strong>지식 기반 방법과의 비교</strong>: STRING 데이터베이스 같은 전통적 구조화된 지식 기반 방법과의 비교를 통해 LLM의 추론 능력의 상대적 장단점 명확화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Outputs for inferring causal direction with different prompt contexts, for the example gene">
-<p class="fig-caption"><em>그림 2: 예시 유전자에 대해 다양한 프롬프트 맥락에서 인과방향 추론 결과</em></p></div>
 <h3>인과 Ground Truth 구축</h3>
 <ul>
 <li><strong>Mann-Whitney U 검정</strong> 활용: 각 유전자 k 섭동 시 target 유전자 j의 발현 분포 변화를 통계적으로 검정 (H₀: 동일 분포 vs H₁: 다른 분포)</li>
@@ -103,8 +99,6 @@ a { color: #A62018; }
 <li><strong>임계값 기반 그래프 생성</strong>: 확률 행렬을 임계값 γ로 이진 그래프 변환</li>
 <li><strong>추이적 폐포(transitive closure) 분석</strong>: 직접 인과관계뿐 아니라 간접 경로까지 고려</li>
 </ul>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Gemma2의 다양한 유전자별 문맥 정보 정도에 따른 결과">
-<p class="fig-caption"><em>그림 3: 유전자 수준의 맥락 정보 제공 수준에 따른 LLM 성능 변화</em></p></div>
 <h3>검색 증강 전략</h3>
 <ul>
 <li><strong>생물학적 맥락 명시</strong>: 실험 조건, 세포 유형, 후성유전학적 배경 정보 포함</li>
@@ -135,8 +129,7 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../505_Llm4grn_Discovering_causal_gene_regulatory_networks_with_llm/index.html">LLM4GRN: Discovering causal gene regulatory networks with llms–evaluation through synthetic data generation</a></div><div class="conn-reason">생물학적 인과관계 추론의 일반적 프레임워크를 유전자 조절 네트워크 발견이라는 구체적 문제에 적용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../505_Llm4grn_Discovering_causal_gene_regulatory_networks_with_llm/index.html">LLM4GRN: Discovering causal gene regulatory networks with llms–evaluation through synthetic data generation</a></div><div class="conn-reason">유전자 조절 네트워크 발견을 위한 LLM 활용 연구로, 생물학적 인과관계 추론의 구체적 적용 사례이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../459_Language_Models_for_Controllable_DNA_Sequence_Design/index.html">Language Models for Controllable DNA Sequence Design</a></div><div class="conn-reason">생물학적 인과관계 추론 능력을 DNA 서열의 기능적 특성 예측과 설계에 활용할 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../615_PerTurboAgent_A_Self-Planning_Agent_for_Boosting_Sequential/index.html">PerTurboAgent: A Self-Planning Agent for Boosting Sequential Perturb-seq Experiments</a></div><div class="conn-reason">유전자 섭동 실험 설계에 인과관계 추론 능력을 활용하여 더 효과적인 실험 계획을 수립할 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../615_PerTurboAgent_A_Self-Planning_Agent_for_Boosting_Sequential/index.html">PerTurboAgent: A Self-Planning Agent for Boosting Sequential Perturb-seq Experiments</a></div><div class="conn-reason">생물학적 인과관계 추론 능력을 유전자 섭동 실험의 순차적 선택 최적화에 활용할 수 있다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../615_PerTurboAgent_A_Self-Planning_Agent_for_Boosting_Sequential/index.html">PerTurboAgent: A Self-Planning Agent for Boosting Sequential Perturb-seq Experiments</a></div><div class="conn-reason">유전자 섭동 실험 설계에 인과관계 추론 능력을 활용하여 더 효과적인 실험 계획을 수립할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

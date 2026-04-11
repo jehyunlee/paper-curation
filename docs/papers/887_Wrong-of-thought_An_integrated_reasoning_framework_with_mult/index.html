@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongheng Zhang, Qiguang Chen, Jingxuan Zhou, Peng Wang, Jiasheng Si, Jin Wang, Wenpeng Lu, Libo Qin | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2410.04463" target="_blank">arXiv:2410.04463</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 기존 다중 사고 통합 방법(a)은 단일 검증만 사용하고 오류 정보를 활용하지 않는 반면, WoT(b)는 다중 관점 검증과 오류 정보 활용을 제공한다.</em></p></div>
 <p>대규모 언어 모델(LLM)의 추론 성능을 향상시키기 위해 다중 관점에서 검증하고 이전 오류 정보를 활용하는 WoT(Wrong-of-Thought) 프레임워크를 제안한다. 기존 XoT의 단일 검증 방식과 오류 정보 무시 문제를 해결하여 8개 데이터셋과 5개 LLM에서 우수한 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 어설션 검증, 프로세스 검증, 결과 검증의 3가지 관점으로 다중 검증 수행 (2) 이전 오류 정보를 현재 추론 문맥에 포함시켜 동일한 실수 반복 방지</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: WoT 프레임워크의 구조. 계획 및 풀이, 다중 관점 검증, 오류 정보 활용의 세 가지 핵심 모듈로 구성된다.</em></p></div>
 <ol>
 <li><strong>종합적 성능 향상</strong>: 8개 벤치마크 데이터셋(GSM8K, GSM-Hard, Algebra, MultiArith 등)과 5개 LLM(Mistral-7B, Qwen-7B/14B, Gemini-1.0-Pro, GPT-3.5-Turbo)에서 모든 기존 베이스라인을 능가</li>
 <li><strong>어려운 계산 문제 해결 능력</strong>: 특히 복잡한 수학적 추론이 필요한 문제에서 탁월한 성능 입증</li>
 <li><strong>오류 정보 활용의 효과성</strong>: 잘못된 추론 정보를 다시 제시함으로써 LLM이 유사한 오류를 반복할 확률 감소</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: XoT 프레임워크. 추론 방법 선택 후 어설션 검증을 통해 판단하고, 오류 시 다른 방법으로 전환하여 재시작한다.</em></p></div>
 <h3>다중 관점 검증(Multi-Perspective Verification)</h3>
 <ul>
 <li><strong>어설션 검증</strong>: XoT의 기존 방식을 채용하여 중간 변수를 어설션 문장으로 형식화하고 외부 도구로 실행 검증</li>

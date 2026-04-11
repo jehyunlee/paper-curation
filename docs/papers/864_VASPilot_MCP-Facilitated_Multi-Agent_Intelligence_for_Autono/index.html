@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jiaxuan Liu, Tiannian Zhu, Caiyuan Ye, Zhong Fang, Hongming Weng, Quansheng Wu | <strong>날짜</strong>: 2025-08-09 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2508.07035" target="_blank">10.48550/arXiv.2508.07035</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1_overall_structure.webp" alt="Figure 1">
-<p class="fig-caption"><em>VASPilot의 전체 구조: 웹 서버, CrewAI 기반 다중 에이전트 협력 핵심, MCP 타입 도구 서버로 구성</em></p></div>
 <p>VASPilot은 CrewAI 프레임워크와 Model Context Protocol(MCP)을 활용한 다중 에이전트 시스템으로, VASP(Vienna Ab initio Simulation Package) 밀도범함수이론(DFT) 계산의 전체 워크플로우를 완전 자동화한다. 이를 통해 연구자들은 계산 세부사항에서 벗어나 과학적 발견에 집중할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MCP 표준화 프로토콜과 CrewAI 프레임워크를 기반으로 (1) 4개 에이전트(Manager, Crystal Structure, VASP, Result Validation)의 협력 구조 설계, (2) VASP 특화 도구 세트 개발, (3) Flask 기반 웹 인터페이스 제공, (4) 다양한 벤치마크 검증을 수행했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2_tools_structure.webp" alt="Figure 2">
-<p class="fig-caption"><em>VASP 도구 구조: 입력파일 준비, 작업 제출, 계산 상태 확인, 결과 추출 및 시각화의 완전 자동화</em></p></div>
 <ol>
 <li><strong>완전 자동화 워크플로우</strong>: 결정구조 검색(Materials Project)부터 입력파일 생성, Slurm 작업 제출, 에러 메시지 파싱, 동적 매개변수 조정을 통한 재시작까지 모든 단계를 수동 개입 없이 처리. 특히 '대기 계산(wait_calc)' 도구로 장시간 작업 중 네트워크 타임아웃 문제 해결.</li>
 <li><strong>다양한 벤치마크 검증</strong>:
@@ -127,7 +123,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3.5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: VASPilot은 LLM 기반 다중 에이전트 프레임워크를 VASP 자동화에 처음 체계적으로 적용한 의미 있는 시도로, 표준화된 MCP 프로토콜을 통해 재사용성과 확장성을 갖춘 실용적 도구이다. 다만 에러 처리의 깊이, 극단적 규모 작업의 검증, 그리고 동적 매개변수 조정 알고리즘의 투명성이 개선되면 더욱 강력한 기여가 될 수 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../589_OpenFOAMGPT_A_retrieval-augmented_large_language_model_LLM_a/index.html">OpenFOAMGPT: A retrieval-augmented large language model (LLM) agent for OpenFOAM-based computational fluid dynamics</a></div><div class="conn-reason">OpenFOAM CFD 자동화와 유사하게 VASP DFT 계산을 자동화하는 다중 에이전트 시스템을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../589_OpenFOAMGPT_A_retrieval-augmented_large_language_model_LLM_a/index.html">OpenFOAMGPT: A retrieval-augmented large language model (LLM) agent for OpenFOAM-based computational fluid dynamics</a></div><div class="conn-reason">CFD 시뮬레이션 자동화와 유사하게 DFT 계산을 자동화하는 다중 에이전트 접근법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../133_Automating_quantum_computing_laboratory_experiments_with_an/index.html">Automating quantum computing laboratory experiments with an agent-based AI framework</a></div><div class="conn-reason">양자 컴퓨팅 실험 자동화에서 물리 계산 자동화로 확장된 응용 분야를 다룬다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../826_Towards_Autonomous_Mathematics_Research/index.html">Towards Autonomous Mathematics Research</a></div><div class="conn-reason">자율적 수학 연구를 위한 자동화 시스템으로 계산 과학의 완전 자동화 비전을 공유한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

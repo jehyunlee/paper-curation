@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wenchong He, Zhe Jiang, Tingsong Xiao, Zelin Xu, Yukun Li | <strong>날짜</strong>: 2023-02-26 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 기존 UQ 방법 설문의 분류 체계 비교</em></p></div>
 <p>본 논문은 딥러닝의 불확실성 정량화(Uncertainty Quantification, UQ) 방법을 불확실성의 원천(데이터 불확실성 vs 모델 불확실성)에 따라 체계적으로 분류하는 최초의 종합 설문이다. 기존 설문과 달리 신경망 아키텍처나 베이지안 형식이 아닌 불확실성 원천 관점에서 UQ 방법들을 분석함으로써 실무 응용에 적합한 방법 선택을 용이하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,10 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 모델 불확실성 원천의 시각화</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 데이터 불확실성 시각화 예시 (색상은 서로 다른 클래스를 표현)</em></p></div>
 <ol>
 <li><strong>불확실성 원천 기반 분류체계</strong>: 모델 불확실성(Model Uncertainty/Epistemic), 데이터 불확실성(Data Uncertainty/Aleatoric), 그리고 둘 모두를 다루는 방법으로 UQ 방법을 3가지로 분류</li>
 <li><strong>수학적 기초 제시</strong>: 지도학습 프레임워크에서 모델 불확실성의 3가지 원천(모델 족의 선택, 모델 파라미터 학습, 학습-추론 간 분포 차이/OOD)과 데이터 불확실성의 정의를 명확히 함</li>
@@ -111,10 +105,6 @@ a { color: #A62018; }
 <li><strong>주요 머신러닝 문제와의 통합</strong>: OOD 탐지, 능동학습(Active Learning), 심화강화학습(Deep RL)에서 UQ의 역할 분석</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 불확실성 원천의 다양한 유형</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: DNN을 위한 UQ 문헌의 분류체계</em></p></div>
 <p><strong>불확실성 원천 정의:</strong></p>
 <ul>
 <li><strong>데이터 불확실성(Aleatoric)</strong>: 데이터의 고유한 무작위성/확률성(센서 노이즈) 또는 레이블 간 충돌에서 비롯되며 더 많은 학습 샘플로도 감소 불가능</li>

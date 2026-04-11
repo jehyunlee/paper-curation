@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: C. H. Kao, Wenting Zhao, Shreelekha Revankar, Samuel Speas, Snehal Bhagat, Rajeev Datta, Cheng Perng Phoo, Utkarsh Mall, Carl Vondrick, Kavita Bala, Bharath Hariharan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.12110" target="_blank">arXiv:2504.12110</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>UnivEARTH 벤치마크는 NASA Earth Observatory 기사에서 추출한 140개의 지구 관측 관련 예/아니오 질문으로 구성되며, Google Earth Engine API를 활용하여 LLM 에이전트를 평가한다.</em></p></div>
 <p>본 논문은 지구 관측(Earth Observation, EO) 작업을 자동화하기 위한 LLM 에이전트의 준비도를 평가하기 위해 <strong>UnivEARTH</strong> 벤치마크를 제시하고, 현재 최첨단 모델들이 코드 실행 실패(58%)로 인해 33% 수준의 낮은 정확도만 달성함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: NASA Earth Observatory의 신뢰할 수 있는 기사를 기반으로 고품질의 질문-답변 쌍을 엄격히 선별하고, Google Earth Engine API를 활용한 코드 생성 능력으로 LLM 에이전트를 벤치마킹</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1 - 질문 예시">
-<p class="fig-caption"><em>다양한 주제(표면 반사율, 야간 조명, 산림 범위, 눈 덮음, 이산화질소 등)에 걸친 UnivEARTH의 질문 사례</em></p></div>
 <ol>
 <li><strong>고품질 벤치마크 개발</strong>: NASA Earth Observatory 기사에서 추출한 140개의 검증된 예/아니오 질문으로 구성된 UnivEARTH 데이터셋 (13개 주제, 17개 센서/데이터셋)을 구축하여 과학적 신뢰성 확보</li>
 <li><strong>신뢰할 수 있는 근거 기반 평가</strong>: 단순 질문 답변뿐 아니라 Google Earth Engine Python API를 활용한 코드 생성으로 근거 기반 답변을 강제하여 더 엄격한 평가 프레임워크 제시</li>

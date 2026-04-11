@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 인-컨텍스트 학습을 활용하여 복잡한 주장을 구조화된 프로그램 형식으로 분해하고, 각 단계를 전문화된 함수(질문 답변, 사실 검증, 논리 추론 등)에 위임하는 방식으로 설명 가능하면서도 데이터 효율적인 팩트 체킹을 구현.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: PROGRAMFC 모델 개요. 프로그램 생성 단계에서 Codex를 이용해 추론 프로그램을 생성하고, 프로그램 실행 단계에서 각 단계를 특화된 함수(QA 모델, Fact Checker, Logical Reasoner)에 위임">
-</div>
 <ol>
 <li><strong>다중 데이터셋에서 우수한 성능 달성</strong>: HOVER와 FEVEROUS라는 복잡한 주장 검증 데이터셋에서 7개의 파우 샷(few-shot) 기준 모델들을 능가하며, 특히 추론 깊이(reasoning depth)가 증가할수록 프로그램 가이드 추론의 효과가 증가함을 입증.</li>
 <li><strong>설명 가능한 추론 과정</strong>: 생성된 프로그램 자체가 명확한 단계별 추론 경로를 제시하므로, 사용자가 모델의 의사결정 과정을 이해하고 디버깅할 수 있음.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>근거 검색 향상</strong>: 오픈 도메인 설정에서 추론 프로그램이 관련 근거의 검색 성능(retrieval)을 개선하는 효과를 확인.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 프로그램 생성-실행 패러다임. S1-S4는 순차적 추론 단계를 나타내며, 각 단계는 특정 함수를 호출하고 결과를 변수에 저장">
-</div>
 <ul>
 <li><strong>프로그램 생성(Program Generation)</strong>:
 <ul>
@@ -145,7 +141,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../394_Grounding_fallacies_misrepresenting_scientific_publications/index.html">Grounding fallacies misrepresenting scientific publications in evidence</a></div><div class="conn-reason">둘 다 복잡한 사실 검증을 다루지만 하나는 과학 논문 오용, 다른 하나는 일반적 복잡한 주장에 중점을 둠</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../827_Towards_effective_extraction_and_evaluation_of_factual_claim/index.html">Towards effective extraction and evaluation of factual claims</a></div><div class="conn-reason">둘 다 팩트체킹을 다루지만 하나는 프로그램 기반 추론, 다른 하나는 주장 추출에 중점을 둠</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../500_Llm-based_corroborating_and_refuting_evidence_retrieval_for/index.html">LLM-based Corroborating and Refuting Evidence Retrieval for Scientific Claim Verification</a></div><div class="conn-reason">증거 검색 vs 프로그램 가이드 추론으로 사실 확인의 서로 다른 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../827_Towards_effective_extraction_and_evaluation_of_factual_claim/index.html">Towards effective extraction and evaluation of factual claims</a></div><div class="conn-reason">둘 다 팩트체킹을 다루지만 하나는 주장 추출에, 다른 하나는 프로그램 기반 추론에 중점을 둠</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../441_Investigating_zero-and_few-shot_generalization_in_fact_verif/index.html">Investigating zero-and few-shot generalization in fact verification</a></div><div class="conn-reason">기본적인 팩트 체킹을 복잡한 주장의 프로그램 가이드 추론으로 확장하여 더 정교한 사실 검증 방법을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../859_Unsupervised_pretraining_for_fact_verification_by_language_m/index.html">Unsupervised pretraining for fact verification by language model distillation</a></div><div class="conn-reason">프로그램 가이드 추론을 통한 복잡한 클레임 검증이 SFAVEL의 기본적인 클레임-근거 정렬 학습을 더 정교한 추론 체계로 발전시킨 연구임</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../832_Towards_llm-based_fact_verification_on_news_claims_with_a_hi/index.html">Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method</a></div><div class="conn-reason">프로그램 가이드 추론을 통한 복잡한 클레임 팩트 체킹이 HiSS의 계층적 분해 방법을 더 정교한 논리적 추론 체계로 발전시킨 연구임</div></div>

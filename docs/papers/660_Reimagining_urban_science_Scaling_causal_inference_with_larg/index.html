@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yutong Xia, Ao Qu, Yunhan Zheng, Yihong Tang, Dingyi Zhuang, Yuxuan Liang, Shenhao Wang, Cathy Wu, Lijun Sun, Roger Zimmermann, Jinhua Zhao | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.12345" target="_blank">arXiv:2504.12345</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>논문의 구조적 논리: 현황 검토에서 프레임워크, 그리고 광범위한 논의로 진행되는 계층적 구조</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 도시 인과 추론(Urban Causal Inference) 연구의 자동화와 확장성을 달성하는 UrbanCIA 프레임워크를 제시한다. 이를 통해 가설 생성부터 정책 해석까지 전체 도시과학 연구 파이프라인을 지능형 멀티에이전트 시스템으로 재구성하고자 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 언어 이해, 추론, 계획, 코드 실행, 도구 활용 능력과 다중양식 LLM(MLLM)의 이미지/오디오/그래프 처리 능력을 모듈식 멀티에이전트 시스템으로 조직하여 도시 인과 추론 파이프라인 전체를 자동화한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>도시 인과 추론의 주요 격차: (a) 주제/지역/데이터/설계 방법의 불균형 분포, (b) 지역 간 심각한 불균형, (c) 다중양식 데이터 활용 부족</em></p></div>
 <ol>
 <li><strong>포괄적 현황 진단</strong>: 2012-2021년 Cities 저널 2,428개 논문을 LLM+고전 머신러닝+전문가 검증으로 분석하여 219개 인과 추론 논문 식별. 시간에 따른 증가 추세(2012년 3.0% → 2020년 15.2%), 지역 불균형, 구조화 데이터 과의존(64%), 낮은 재현성을 정량화.</li>
 <li><strong>UrbanCIA 프레임워크</strong>: 4개 모듈식 에이전트(가설 생성, 데이터 엔지니어링, 실험 설계 및 실행, 결과 해석)로 구성된 개념적 프레임워크 제시. 기존 수동 워크플로우와 고립된 AI 도구의 한계를 극복하고, 인간 판단과 도메인 전문성 보존.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>포용적 도시과학 실현</strong>: 시민 조직, 지방정부, 지역 사회 등 광범위한 참여자의 접근성 강화로 Jane Jacobs의 "모두가 만드는 도시" 비전 구현.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>도시 인과 연구의 상승 추세: 2012-2021년 Cities 저널의 논문 수(파란 막대)와 인과 추론 방법 활용(빨간 막대) 비율</em></p></div>
 <p><strong>시스템 설계 원칙:</strong></p>
 <ul>
 <li><strong>모듈화</strong>: 4개의 독립적 에이전트(Reader, Data Engineer, Methodologist, Analyst)가 순차적으로 협력하면서도 각 모듈의 대체 가능성 확보</li>

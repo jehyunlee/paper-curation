@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Anna Martin-Boyle, Aahan Tyagi, Marti A. Hearst, Dongyeop Kang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>인용 그래프 비교: (상단) 인간이 작성한 관련 연구 섹션, (중단) ScholaCite를 통한 GPT 협력 버전, (하단) GPT 전적 생성 버전. 노드는 인용 문헌을, 간선은 같은 문장 내 인용의 동시 출현을 나타냄</em></p></div>
 <p>본 논문은 학술 논문의 관련 연구(Related Work) 섹션 작성에서 GPT-4의 능력을 실증적으로 평가한다. 인용 그래프(citation graph) 분석을 통해 GPT는 거시적 인용 그룹화는 가능하나, 인간의 개입 없이 정교한 문헌 종합을 실패함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인용 그래프 구조 분석이라는 객관적, 재현가능하고 확장 가능한 평가 방법론을 개발하여, (1) 인간 저술, (2) GPT 협력 저술, (3) GPT 단독 저술 간 비교</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ScholaCite 워크플로우: 원본 인간 저술 텍스트, ScholaCite 기반 GPT 협력 텍스트, GPT 단독 생성 텍스트의 생성 과정</em></p></div>
 <ol>
 <li><strong>ScholaCite 도구 개발</strong>: GPT-4를 통합하여 (a) 인용 그룹화 및 근거 생성, (b) 그룹 기반 관련 연구 섹션 초안 작성을 지원하는 2단계 협력 시스템 구축</li>
 <li><strong>인용 그래프 분석 방법론</strong>: 인용 문헌을 노드로, 같은 문장 내 인용 동시 출현을 간선으로 하는 그래프 구조를 통해, 전통적 True/False Positive 분류를 벗어난 객관적 평가 메커니즘 제시</li>
@@ -139,10 +135,8 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../753_Shared_imagination_Llms_hallucinate_alike/index.html">Shared imagination: Llms hallucinate alike</a></div><div class="conn-reason">LLM의 공유된 환각 패턴이 관련 연구 섹션 작성에서 나타나는 얕은 지식 종합 문제의 근본적 원인을 이해하는 데 중요한 통찰을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../373_Generalization_Bias_in_Large_Language_Model_Summarization_of/index.html">Generalization Bias in Large Language Model Summarization of Scientific Research</a></div><div class="conn-reason">GPT 생성 텍스트의 피상적 지식 합성 분석으로 과학 요약에서 과도한 일반화가 발생하는 메커니즘을 설명한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../789_Taxonomy_tree_generation_from_citation_graph/index.html">Taxonomy tree generation from citation graph</a></div><div class="conn-reason">인용 그래프 분석과 분류 체계 생성은 문헌 종합의 구조적 한계를 극복하기 위한 대안적 접근 방법을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../789_Taxonomy_tree_generation_from_citation_graph/index.html">Taxonomy tree generation from citation graph</a></div><div class="conn-reason">구조적 인용 그래프 분석을 통한 체계적 분류 생성이 GPT의 얕은 문헌 종합 문제에 대한 대안적 해결 방안을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../753_Shared_imagination_Llms_hallucinate_alike/index.html">Shared imagination: Llms hallucinate alike</a></div><div class="conn-reason">공유된 상상 공간 개념이 GPT의 얕은 문헌 종합 문제를 더 깊이 이해하는 이론적 틀을 제공한다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../742_Select_read_and_write_A_multi-agent_framework_of_full-text-b/index.html">Select, read, and write: A multi-agent framework of full-text-based related work generation</a></div><div class="conn-reason">GPT의 문헌 종합 한계와 전체 텍스트 기반 관련 연구 생성의 가능성을 비교하여 현재 AI 기술의 실제 성능과 개선 방향을 파악할 수 있다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../742_Select_read_and_write_A_multi-agent_framework_of_full-text-b/index.html">Select, read, and write: A multi-agent framework of full-text-based related work generation</a></div><div class="conn-reason">전체 텍스트 기반 관련 연구 자동 생성의 가능성과 GPT의 문헌 종합 한계를 대비하여 현재 기술의 실제 능력과 한계를 균형있게 파악할 수 있다.</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../742_Select_read_and_write_A_multi-agent_framework_of_full-text-b/index.html">Select, read, and write: A multi-agent framework of full-text-based related work generation</a></div><div class="conn-reason">GPT의 문헌 종합 한계와 전체 텍스트 기반 관련 연구 생성의 가능성을 비교하여 현재 AI 기술의 실제 성능과 개선 방향을 파악할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

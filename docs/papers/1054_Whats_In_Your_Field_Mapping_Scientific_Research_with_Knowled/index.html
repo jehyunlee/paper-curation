@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Abhipsha Das, Nicholas Lourie, Siavash Golkar, Mariel Pettee | <strong>날짜</strong>: 2025-05-29 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.09894" target="_blank">10.48550/arXiv.2503.09894</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Illustration of the structured concept extraction pipeline: i) the corpus used, ii) running optimized prompt</em></p></div>
 <p>LLM과 구조화된 지식 그래프(Knowledge Graph)를 결합하여 30,000개의 과학 논문에서 자동으로 개념을 추출하고 분석하는 시스템을 제시합니다. 이를 통해 과학 분야 전반의 동향을 추적하고 체계적으로 문헌을 탐색할 수 있습니다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 9개 범주(모델, 작업, 데이터셋, 분야, 모달리티, 방법, 객체, 속성, 기기)로 구성된 범용 스키마를 설계하고, Llama-3 70B로 few-shot 학습 기반 개념 추출을 수행합니다. 추출된 구조화 정보를 SQL 데이터베이스에 저장하고 지식 그래프로 시각화합니다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Illustration of the structured concept extraction pipeline: i) the corpus used, ii) running optimized prompt</em></p></div>
 <ul>
 <li><strong>범용 과학 개념 스키마 개발</strong>: 9개 카테고리로 천체물리학, 유체역학, 진화생물학 등 이질적 분야에 적용 가능한 스키마 설계</li>
 <li><strong>효율적 LLM 기반 추출 파이프라인</strong>: 단 20개 수동 주석만으로 프롬프트 최적화(F1점수 기준 정확도 달성)</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>지식 그래프 시각화</strong>: 추출된 개념 간 관계를 그래프로 표현하여 학문 생태계의 새로운 탐색 방식 제시</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Expanded prompt illustration with schema</em></p></div>
 <ul>
 <li><strong>스키마 설계</strong>: 저자들이 반복적 논의와 수동 주석을 통해 9개 과학 개념 범주 정의</li>
 <li><strong>프롬프트 엔지니어링</strong>: Few-shot 예제 개수/선택, 프롬프트 구조, 입력 단위(문장/단락), 출력 형식(JSON/텍스트) 등 체계적 변수 실험</li>

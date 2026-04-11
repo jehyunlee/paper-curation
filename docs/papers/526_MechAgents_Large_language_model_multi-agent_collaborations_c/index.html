@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Bo Ni, Markus J. Buehler | <strong>날짜</strong>: 2023-11-14 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2311.08166" target="_blank">10.48550/arXiv.2311.08166</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 역할을 가진 LLM 기반 에이전트들의 협력 구조: (a) GPT-4 기반 에이전트 시스템, (b) 자기수정 기능을 가진 2개 에이전트 팀, (c) 역할 분담이 있는 다중 에이전트 그룹</em></p></div>
 <p>대규모 언어모델(LLM) 기반 다중 에이전트 시스템이 자동으로 역학(mechanics) 문제를 풀 수 있음을 보여준다. 에이전트 간 상호작용과 자기수정을 통해 유한요소법(FEM)을 활용한 탄성론 문제 해결이 가능하며, 물리 기반 모델링과 LLM의 지능을 결합하는 새로운 접근법을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -99,18 +97,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>2개 에이전트 팀의 자기수정 흐름 및 결과: (a) 대화 흐름도, (b-f) 각 라운드에서 생성된 변위장(displacement field) 및 응력 분포 결과</em></p></div>
 <ol>
 <li><strong>2개 에이전트 팀의 성공</strong>: 선형 탄성(linear elasticity) 문제에서 자기수정을 통해 경계조건 변경, 메시 개선, 기하학적 수정(원형 구멍 추가), 응력 성분 추출 등을 자동으로 수행. 초기 오류(Lamé 상수 정의 누락)를 대화를 통해 자동 수정.</li>
 <li><strong>다중 에이전트 팀의 향상된 성능</strong>: 역할 분담을 통해 단일 2개 에이전트 팀이 실패하는 복잡한 문제(비선형 하이퍼탄성, 유한변형)를 해결. 에이전트 간 상호 비판과 수정으로 개념적 오류까지 감지 및 교정.</li>
 <li><strong>자동 데이터 생성</strong>: FEM 코드로부터 새로운 물리 데이터 생성 가능, 기계학습 모델 학습용 데이터셋 자동 구성 가능성 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>2개 에이전트 팀이 생성한 변위장 및 응력 분포 시각화 결과</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그룹 채팅 중 에이전트 간 동적 상호작용 및 생성된 결과 플롯</em></p></div>
 <ul>
 <li><strong>2개 에이전트 팀 구성</strong>:
 <ul>
@@ -173,7 +165,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 이 논문은 대규모 언어모델을 다중 에이전트 체계로 조직하여 물리 기반 수치해석 문제를 자동으로 풀 수 있음을 최초로 실증하였으며, 특히 자기수정과 상호 비판을 통한 협력 메커니즘이 단순 다중 에이전트보다 우월함을 보여줌으로써 공학 AI 자동화의 새로운 가능성을 열었다. 다만 적용 범위 확대와 자동 오류 감지 개선이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../721_Scientific_Machine_Learning_through_Physics-Informed_Neural/index.html">Scientific Machine Learning through Physics-Informed Neural Networks: Where we are and What&#x27;s next</a></div><div class="conn-reason">물리 정보 기반 신경망을 통한 과학적 기계학습이 MechAgents의 물리 기반 모델링과 LLM 지능 결합의 이론적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../535_MetaOpenFOAM_an_LLM-based_multi-agent_framework_for_CFD/index.html">MetaOpenFOAM: an LLM-based multi-agent framework for CFD</a></div><div class="conn-reason">MechAgents의 역학 문제 해결과 MetaOpenFOAM의 CFD 자동화는 서로 다른 물리학 영역에서 LLM 기반 다중 에이전트 시뮬레이션을 구현하는 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../535_MetaOpenFOAM_an_LLM-based_multi-agent_framework_for_CFD/index.html">MetaOpenFOAM: an LLM-based multi-agent framework for CFD</a></div><div class="conn-reason">MetaOpenFOAM의 CFD 자동화와 MechAgents의 역학 문제 해결은 서로 다른 물리학 분야에서 LLM 기반 시뮬레이션을 구현하는 대안적 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../620_Physics-Informed_Autonomous_LLM_Agents_for_Explainable_Power/index.html">Physics-Informed Autonomous LLM Agents for Explainable Power Electronics Modulation Design</a></div><div class="conn-reason">전력 시스템 분석을 위한 물리 정보 기반 자율 LLM 에이전트가 MechAgents의 역학 문제 해결을 다른 공학 영역으로 확장한 적용이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

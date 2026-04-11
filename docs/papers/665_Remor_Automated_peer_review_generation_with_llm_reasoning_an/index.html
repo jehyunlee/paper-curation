@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Pawin Taechoyotin, Daniel Acuna | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>REMOR의 작동 방식: (A) 다중 차원 보상 함수(HPRR)를 통한 AI 리뷰 생성 시스템, (B) PeerRT 데이터셋을 이용한 감독 미세조정(SFT) 및 GRPO 학습 프로세스</em></p></div>
 <p>본 논문은 추론(reasoning) 기능을 갖춘 대형언어모델(LLM)과 다목적 강화학습(MORL)을 결합하여 인간 수준 이상의 깊이 있고 균형잡힌 학술 논문 심사평을 자동 생성하는 REMOR 시스템을 제안한다. 기존 AI 심사평의 얕은 분석과 과도한 칭찬 문제를 다목적 보상함수와 추론 능력으로 극복한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 추론 트레이스가 풍부한 고품질 심사평 데이터셋(PeerRT) 구축, (2) 인간 선호도 정렬 다중 차원 보상함수(HPRR) 설계, (3) Group Relative Policy Optimization(GRPO)으로 두 가지 모델(인간정렬 가중치 REMOR-H, 균일 가중치 REMOR-U) 학습.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>각 모델별 평균 보상 점수 비교: REMOR-U와 REMOR-H가 인간 리뷰 및 기존 AI 시스템 대비 2배 이상의 보상 달성</em></p></div>
 <ol>
 <li><strong>성능 우수성</strong>: REMOR-U와 REMOR-H가 인간 리뷰, 비추론 다중 에이전트 시스템, 상용 LLM 베이스라인 대비 평균 보상에서 2배 이상 달성. 최고 품질 AI 리뷰와 인간 리뷰가 비교 가능한 수준이나, REMOR은 저품질 인간 리뷰의 긴 꼬리 분포 회피.</li>
 <li><strong>다차원 평가 메커니즘</strong>: HPRR 함수가 비판(criticism), 예시(example), 중요도(importance), 제안(suggestion) 등 8개 차원을 종합적으로 평가하여 단순 정량 지표 이상의 통합적 품질 측정 가능.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>공개 자산</strong>: PeerRT 데이터셋, HPRR 함수, REMOR 모델 공개로 향후 연구 활성화 기반 제공.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>각 메트릭별 평균 보상: REMOR이 비판(criticism), 예시(example), 중요도(importance) 등에서 현저히 높은 점수 달성</em></p></div>
 <p><strong>데이터셋 구축</strong>:</p>
 <ul>
 <li>ICLR 2017-2020 공개 데이터 기반 16.8K 심사평 수집 (5.5K 제출물)</li>
@@ -137,10 +131,8 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3.5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: REMOR은 추론과 강화학습을 심사평 생성에 창의적으로 결합하여 인간 수준 이상의 성능을 달성한 의미 있는 기여이다. 특히 다차원 보상함수와 PeerRT 데이터셋의 공개는 학계에 실질적 자산이 될 것이다. 다만 인간 평가의 규모, 보상함수 설계의 정당성, 타분야 일반화 가능성에 대한 더 깊은 검증이 논문의 영향력을 강화할 것이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../678_ReviewerGPT_An_Exploratory_Study_on_Using_Large_Language_Mod/index.html">ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</a></div><div class="conn-reason">LLM의 논문 심사 가능성에 대한 탐색적 연구가 고급 추론 기능을 갖춘 자동 심사 시스템 개발의 기초적인 실증 근거를 제공한다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../678_ReviewerGPT_An_Exploratory_Study_on_Using_Large_Language_Mod/index.html">ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</a></div><div class="conn-reason">LLM 논문 심사의 기초적 실증 연구가 추론 기능을 갖춘 고급 자동 심사 시스템 개발의 가능성과 한계를 보여주는 출발점이 된다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../022_A_sentiment_consolidation_framework_for_meta-review_generati/index.html">A sentiment consolidation framework for meta-review generation</a></div><div class="conn-reason">LLM을 활용한 동료평가 생성의 기초적 접근이 감정 통합 프레임워크를 통한 메타리뷰 생성의 이론적 토대를 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html">ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</a></div><div class="conn-reason">다목적 강화학습과 다중 에이전트 접근법은 모두 심사평 품질 향상을 목표로 하지만 서로 다른 최적화 전략을 사용한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html">ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</a></div><div class="conn-reason">다중 에이전트 프레임워크와 강화학습 기반 접근법은 모두 AI 심사평의 품질 향상을 목표로 하지만 다른 구조적 해결책을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../262_Deepreview_Improving_llm-based_paper_review_with_human-like/index.html">DeepReview: Improving LLM-based Paper Review with Human-like Deep Thinking Process</a></div><div class="conn-reason">인간과 유사한 논문 리뷰를 추론 능력과 다목적 최적화로 확장하여 더 균형잡힌 심사평 생성이 가능하다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

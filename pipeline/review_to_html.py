@@ -130,7 +130,7 @@ def _list_content(s):
     return s
 
 
-def md_section_to_html(text):
+def md_section_to_html(text, slug_dir=None):
     """Convert markdown body text to HTML (within a section)."""
     lines = text.strip().split('\n')
     out = []
@@ -238,6 +238,27 @@ def md_section_to_html(text):
         img_m = re.match(r'!\[([^\]]*)\]\(([^)]+)\)\s*(.*)', s)
         if img_m:
             alt, src, rest = img_m.group(1), img_m.group(2), img_m.group(3).strip()
+            # Defensive: drop the reference entirely if the figure file is
+            # missing on disk. Some older reviews reference figures that
+            # were never extracted or were pruned later; rendering them
+            # as-is produces broken <img> tags on the published page.
+            # We also peek ahead to eat any adjacent italic-only caption
+            # line so it does not end up orphaned after the drop.
+            file_ok = True
+            if slug_dir and not src.startswith(('http://', 'https://', 'data:')):
+                abs_path = os.path.join(slug_dir, src)
+                if not os.path.exists(abs_path):
+                    file_ok = False
+            if not file_ok:
+                i += 1
+                while i < len(lines) and not lines[i].strip():
+                    i += 1
+                if i < len(lines):
+                    nxt_line = lines[i].strip()
+                    if (nxt_line.startswith('*') and nxt_line.endswith('*')
+                            and not nxt_line.startswith('**')):
+                        i += 1
+                continue
             out.append(f'<div class="review-fig"><img src="{esc(src)}" alt="{esc(alt)}">')
             # Inline caption on same line
             if rest and rest.startswith('*') and rest.endswith('*'):
@@ -376,7 +397,7 @@ def convert_review(md_path, topic, slug_dir):
 
     # Sections (eval badges moved INTO Evaluation section)
     for sec_title, sec_body in parsed_sections:
-        sec_html = md_section_to_html(sec_body)
+        sec_html = md_section_to_html(sec_body, slug_dir)
 
         if sec_title.startswith('Essence') or '한줄 요약' in sec_title:
             if not sec_html.strip():
@@ -434,6 +455,23 @@ def convert_review(md_path, topic, slug_dir):
             "counterpoint": "반론/비판",
             "application": "응용 사례",
         }
+
+        # Dedup within the same relation: a paper appearing twice as e.g.
+        # "alternative" for the same source is redundant. The same paper
+        # is still allowed to show up under *different* relation types
+        # (e.g. both "alternative" and "application") because those carry
+        # distinct meanings. We keep the first occurrence so upstream
+        # ordering (if any) is preserved; the explicit sort below then
+        # places every surviving entry in the canonical order.
+        _seen_pairs = set()
+        _deduped = []
+        for c in conns:
+            key = (c.get("relation", ""), c.get("slug", ""))
+            if key in _seen_pairs:
+                continue
+            _seen_pairs.add(key)
+            _deduped.append(c)
+        conns = _deduped
 
         # 정렬: 1차 관계 유형, 2차 시간순
         rel_order = {"foundation": 0, "alternative": 1, "extension": 2,

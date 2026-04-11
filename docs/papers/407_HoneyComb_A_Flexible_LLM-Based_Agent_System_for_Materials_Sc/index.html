@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Huan Zhang, Yu Song, Ziyu Hou, Santiago Miret, Bang Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.00135" target="_blank">10.48550/arXiv.2409.00135</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HoneyComb의 전체 아키텍처. 쿼리 입력에서 시작하여 MatSciKB와 Tool-Hub로부터 정보를 검색하고, Executor가 도구를 반복적으로 호출하며, 최종적으로 Retriever를 통해 LLM이 답변을 생성</em></p></div>
 <p>HoneyComb은 재료과학(Materials Science) 분야에 특화된 최초의 LLM 기반 에이전트 시스템으로, 신뢰할 수 있는 지식베이스(MatSciKB)와 도구 허브(Tool-Hub)를 통합하여 LLM의 환각(hallucination)과 계산 오류를 근본적으로 해결한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 구조화된 지식베이스(MatSciKB)와 일반·전문 도구(Tool-Hub)를 갖춘 LLM 에이전트 시스템을 구축하여, 외부 지식과 도구 접근을 통해 성능을 향상</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 LLM을 HoneyComb과 통합했을 때의 성능 개선 비교</em></p></div>
 <ol>
 <li><strong>포괄적 재료과학 지식베이스 구축</strong>: MatSciKB는 38,469개 데이터 항목을 통합 (arXiv 논문 20,384개, Wikipedia 3,620개, 교과서 1,930개, 데이터셋 10,473개, 공식 57개, GPT 생성 예제 2,005개)으로 16개 범주의 트리 구조로 조직화하여 CRUD 연산을 지원</li>
 <li><strong>귀납적 도구 생성(Inductive Tool Construction) 방법론 도입</strong>: 단순 API 래핑이 아닌 재료과학 특화 도구를 체계적으로 생성·분해·개선하는 프레임워크로, 일반 도구(웹 검색, Python REPL)와 전문 도구를 통합 관리</li>
@@ -86,10 +82,6 @@ a { color: #A62018; }
 <li><strong>광범위한 성능 개선</strong>: 다양한 LLM(GPT-4, Claude 등)과 통합했을 때 기준 모델 대비 현저한 성능 향상을 달성하면서도 신뢰성을 동시에 확보</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>귀납적 도구 생성의 예시</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Tool Assessor와 Executor 상호작용 사이클</em></p></div>
 <ul>
 <li><strong>MatSciKB 설계</strong>: 다양한 출처(학술지, Wikipedia, 교과서, 데이터셋, 수식, GPT 생성 예제)에서 신뢰할 수 있는 정보를 수집하여 구조화된 형식으로 저장하고, 트리 기반 카테고리 시스템(16개 범주)으로 조직화하여 효율적 검색 및 업데이트 가능성 확보</li>
 <li><strong>일반 도구(General Tools)</strong>: 웹 검색 API(ArXiv, 학술지 데이터베이스), Python REPL 환경을 통해 정적 MatSciKB의 한계를 보완하고 최신 정보와 수치 계산을 수행</li>

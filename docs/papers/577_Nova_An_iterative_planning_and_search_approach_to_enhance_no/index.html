@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiang Hu, Hongyu Fu, Jinge Wang, Yifeng Wang, Zhikun Li, Renjun Xu, Yu Lu, Yaochu Jin, Lu Pan, Zhenzhong Lan | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>좌측: 다른 최신 기법들과의 성능 비교. 우측: 반복 단계별 생성된 고유한 새로운 아이디어의 수 증가 추이</em></p></div>
 <p>LLM의 연구 아이디어 생성 능력을 향상시키기 위해 반복적인 계획 수립과 지식 검색을 결합한 Nova 프레임워크를 제안한다. 이 방법은 기존 접근법 대비 새로운 아이디어 생성을 3.4배, 상위 평가 아이디어를 2.5배 이상 증가시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 초기 시드 아이디어 생성 후, 반복적으로 계획을 수립하여 검색 범위를 확장하고, 새로운 지식을 기반으로 아이디어를 개선하고 상세화하는 3단계 파이프라인을 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Nova 파이프라인: 초기 시드 아이디어 생성 → 반복적 개선 → 아이디어 완성의 3단계 구성</em></p></div>
 <ol>
 <li><strong>높은 정량적 성과</strong>: 170개 상위 학회 논문(ACL, ICLR, CVPR)을 대상으로 Swiss Tournament Score 5를 받은 아이디어가 기존 최신 방법 대비 2.5배 이상 증가했으며, 고유한 새로운 아이디어는 3.4배 증가.</li>
 <li><strong>우수한 질적 평가</strong>: 자동 평가(Swiss Tournament)와 인간 평가 모두에서 아이디어의 새로움(novelty)과 다양성(diversity)이 크게 향상됨을 입증.</li>
 <li><strong>반복 효과 검증</strong>: 반복 단계가 진행될수록 새로운 아이디어의 비중이 점진적으로 증가함을 시각화하여 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>계획 기반 반복 시드 아이디어 생성 프로세스 예시</em></p></div>
 <h3>초기 시드 아이디어 생성 (Initial Seed Idea Generation)</h3>
 <ul>
 <li>입력 논문의 참고문헌과 최신 출판물을 활용한 다중 소스 기반 지식 추적</li>
@@ -141,7 +135,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Nova는 반복적 계획과 목표 지향적 지식 검색을 결합하여 LLM 기반 아이디어 생성의 새로움과 다양성을 크게 향상시키는 실질적으로 효과적인 방법론이다. 다만 평가 범위의 제한, 계산 비용, 그리고 타 분야에서의 일반화 가능성 검증이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../469_Large_Language_Models_as_Evolutionary_Optimizers/index.html">Large Language Models as Evolutionary Optimizers</a></div><div class="conn-reason">조합 최적화에서 LLM 기반 진화 알고리즘과 반복적 계획 및 탐색 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../509_Llms_can_realize_combinatorial_creativity_generating_creativ/index.html">LLMs can realize combinatorial creativity: generating creative ideas via LLMs for scientific research</a></div><div class="conn-reason">조합적 창의성 이론과 반복적 계획 수립은 모두 연구 아이디어 생성을 위한 서로 다른 체계적 접근법입니다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../509_Llms_can_realize_combinatorial_creativity_generating_creativ/index.html">LLMs can realize combinatorial creativity: generating creative ideas via LLMs for scientific research</a></div><div class="conn-reason">Nova의 반복적 계획 수립과 조합적 창의성 이론은 모두 연구 아이디어 생성을 위한 서로 다른 체계적 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../854_Understanding_the_planning_of_LLM_agents_A_survey/index.html">Understanding the planning of LLM agents: A survey</a></div><div class="conn-reason">반복적 계획과 검색을 통한 추론 향상이 LLM 에이전트 계획 수립의 구체적인 확장 방법이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../668_ResearchAgent_Iterative_Research_Idea_Generation_over_Scient/index.html">ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</a></div><div class="conn-reason">ResearchAgent의 반복적 연구 아이디어 생성은 Nova 프레임워크의 계획 수립과 검색 결합 방식을 더욱 발전시킨 형태입니다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">LiveIdeaBench의 과학적 창의성 평가는 Nova가 생성한 새로운 아이디어의 품질을 측정하는 실제 응용 플랫폼입니다</div></div>

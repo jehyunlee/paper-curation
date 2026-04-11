@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mengkang Hu, Yuhang Zhou, Wendong Fan, Yuzhou Nie, Bowei Xia, Tao Sun, Ziyu Ye, Zhaoxuan Jin, Yingru Li, Qiguang Chen, Zeyu Zhang, Yifeng Wang, Qianshuo Ye, Bernard Ghanem, Ping Luo, Guohao Li | <strong>날짜</strong>: 2025-06-11 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.23885" target="_blank">10.48550/arXiv.2505.23885</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: WORKFORCE와 OWL의 개요. 기존 접근과 달리 새 도메인 적응 시 전체 재학습 없이 모듈식 확장 가능</em></p></div>
 <p>LLM 기반 다중 에이전트 시스템에서 도메인별 특화된 설계로 인한 이식성 부족 문제를 해결하기 위해, 전략 계획(Planner)과 도메인 특화 실행(Worker)을 분리한 모듈식 WORKFORCE 프레임워크와 이를 최적화하는 OWL 학습 패러다임을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 도메인 불가지론 Planner(작업 분해) + Coordinator(작업 관리) + 도메인 특화 Worker nodes(도구 호출)로 구성된 계층적 다중 에이전트 프레임워크 제안. (2) Planner만 최적화하고 Worker는 교체 가능한 OWL 훈련 패러다임 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: GAIA 벤치마크에서 WORKFORCE와 OWL의 성능 비교. 상용 시스템 OpenAI Deep Research 능가</em></p></div>
 <ol>
 <li><strong>최첨단 성능</strong>: WORKFORCE는 GAIA 벤치마크에서 69.70% 정확도 달성, OpenAI Deep Research (55.15%) 대비 2.34% 초과, 기존 오픈소스 SOTA (67.46%) 능가</li>
 <li><strong>효율적 학습</strong>: OWL로 훈련된 Qwen2.5-32B-Instruct 모델이 52.73% (+16.37%) 달성, GPT-4o-mini (47.27%), Qwen2.5-72B-Instruct (49.09%) 초과. GAIA 데이터 미사용 학습으로도 일반화 능력 입증</li>
 <li><strong>모듈식 확장성</strong>: 새 도메인 적응 시 Worker nodes만 추가/수정하면 되므로 재설계 및 재훈련 최소화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: WORKFORCE 프레임워크 개요. Planner, Coordinator, Worker Pool의 계층적 구조</em></p></div>
 <p><strong>추론 메커니즘 (Inference)</strong>:</p>
 <ul>
 <li><strong>Planner Agent</strong>: 사용자 질문을 분석하여 worker 역량 레지스트리 기반 세부 작업으로 분해</li>
@@ -121,7 +115,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: WORKFORCE와 OWL은 다중 에이전트 시스템의 도메인 간 이식성 문제에 우아한 모듈식 해결책을 제시하며, GAIA 벤치마크에서 상용 시스템을 초과하는 성능을 달성했다는 점에서 실질적 기여가 있다. 다만 Worker 설계 일반화, 학습 메커니즘 상세화, 보다 다양한 도메인 검증 등이 추가되면 영향력이 더 높아질 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../823_Towards_a_Science_of_Scaling_Agent_Systems/index.html">Towards a Science of Scaling Agent Systems</a></div><div class="conn-reason">에이전트 시스템 확장의 과학이 OWL의 일반화된 다중 에이전트 지원 시스템 설계의 이론적 기반과 확장성 원리를 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../120_AutoGen_Enabling_Next-Gen_LLM_Applications_via_Multi-Agent_C/index.html">AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation</a></div><div class="conn-reason">OWL의 모듈식 WORKFORCE 프레임워크가 AutoGen의 다중 에이전트 시스템을 도메인 이식성 문제 해결을 위해 발전시킨 확장된 아키텍처이다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../120_AutoGen_Enabling_Next-Gen_LLM_Applications_via_Multi-Agent_C/index.html">AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation</a></div><div class="conn-reason">OWL의 모듈식 WORKFORCE 프레임워크가 AutoGen의 대화형 다중 에이전트 시스템을 도메인 범용성을 위해 발전시킨 확장 버전이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../464_Large_Language_Model_based_Multi-Agents_A_Survey_of_Progress/index.html">Large Language Model based Multi-Agents: A Survey of Progress and Challenges</a></div><div class="conn-reason">대규모 언어 모델 기반 다중 에이전트의 진행 조사가 OWL의 범용 다중 에이전트 프레임워크 개발에 직접적으로 적용되는 방법론적 통찰이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

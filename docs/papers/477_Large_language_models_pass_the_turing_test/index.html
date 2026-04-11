@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Cameron R. Jones, Benjamin K. Bergen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>각 AI 증인의 승률(interrogator가 AI 시스템을 인간으로 판단한 비율). 오차막대는 95% 부트스트랩 신뢰구간을 나타냄</em></p></div>
 <p>본 논문은 현대 대규모 언어모델(LLM)이 튜링 테스트(Turing test)의 세 명 참가자 버전을 최초로 통과했음을 보여주는 실증적 증거를 제시한다. GPT-4.5가 적절한 페르소나(persona) 프롬프트 하에서 73%의 확률로 인간으로 판단되었으며, 이는 실제 인간 참가자보다 유의미하게 높은 비율이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: UCSD 학부생(n=126)과 Prolific 참여자(n=158)를 대상으로 두 개의 독립적이고 사전 등록된 3자 튜링 테스트를 실시. GPT-4.5, LLaMa-3.1-405B, GPT-4o, ELIZA를 평가하고, 페르소나 프롬프트 유무를 비교.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Prolific(a, b & d) 및 학부생(c) 연구의 4가지 게임 예시. 각 패널에서 한 대화는 인간 증인과, 다른 하나는 AI 시스템과 진행됨</em></p></div>
 <ol>
 <li><strong>GPT-4.5의 튜링 테스트 통과</strong>: GPT-4.5-PERSONA는 전체 73% 승률(학부생 69%, Prolific 76%)을 기록하여 실제 인간 참가자보다 유의미하게 높은 비율로 인간으로 판정됨 (p = 0.50, 50% 이상이므로 귀무가설 채택 불가).</li>
 <li><strong>LLaMa의 경계선 성능</strong>: LLaMa-3.1-405B-PERSONA는 56% 승률(학부생 45%, Prolific 65%)로 인간과 통계적으로 구분되지 않음 (p = 0.08 또는 p = 0.50).</li>
 <li><strong>기저 모델의 실패</strong>: GPT-4o-NO-PERSONA(21%)와 ELIZA(23%)는 유의미하게 50% 이하의 승률을 기록하여 조작 점검(manipulation check)으로 기능함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3-5">
-<p class="fig-caption"><em>Figure 3: Interrogator 정확도 vs 종료 설문 응답 | Figure 4: Interrogator 전략 분류 | Figure 5: Interrogator 사유 분석</em></p></div>
 <ul>
 <li><strong>실험 설계</strong>: 각 라운드에서 interrogator는 5분간 인간 증인 1명과 AI 증인 1명과 동시에 메시징으로 대화 후 어느 쪽이 인간인지 판정 및 신뢰도·사유 기술</li>
 <li><strong>프롬프트 전략</strong>:
@@ -126,7 +120,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../838_Training_socially_aligned_language_models_in_simulated_human/index.html">Training socially aligned language models in simulated human society</a></div><div class="conn-reason">사회적으로 정렬된 언어 모델 학습이 튜링 테스트 통과의 기반 기술이 됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../179_Can_ai_replace_human_subjects_a_large-scale_replication_of_p/index.html">Can AI Replace Human Subjects? A Large-Scale Replication of Psychological Experiments with LLMs</a></div><div class="conn-reason">LLM이 인간을 대체할 수 있는 가능성을 사회과학 실험 맥락에서 체계적으로 검증</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">GPT-4 같은 고성능 LLM이 인간과 구별되지 않을 정도로 발전했음을 실증적으로 증명</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">GPT-4의 발전된 언어 능력이 튜링 테스트 통과라는 구체적 성과로 입증됨</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../846_TrustLLM_Trustworthiness_in_Large_Language_Models/index.html">TrustLLM: Trustworthiness in Large Language Models</a></div><div class="conn-reason">LLM의 신뢰성 문제를 지적하며 튜링 테스트 통과만으로는 진정한 지능을 증명할 수 없음을 논의</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

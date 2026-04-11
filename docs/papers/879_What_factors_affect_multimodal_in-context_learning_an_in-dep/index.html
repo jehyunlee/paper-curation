@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Libo Qin, Qiguang Chen, Hao Fei, Zhi Chen, Min Li, Wanxiang Che | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2410.20482" target="_blank">10.48550/arXiv.2410.20482</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>멀티모달 인-컨텍스트 학습의 세 가지 핵심 단계: 시연(demonstration) 검색, 순서 지정, 프롬프트 구성</em></p></div>
 <p>본 논문은 시각 언어 모델(Vision LLM)에서 멀티모달 인-컨텍스트 학습(MM-ICL)의 성능을 결정하는 요소들을 체계적으로 분석합니다. 6개 모델과 20가지 전략을 통해 시연 검색, 순서 지정, 프롬프트 구성의 세 단계에서 성능에 영향을 미치는 핵심 요인들을 규명합니다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MM-ICL 프로세스의 세 단계(시연 검색, 순서 지정, 프롬프트 구성)를 세분화하여 각 단계에서 다양한 전략들의 영향을 실험적으로 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>시연 검색 프로세스: 샘플 표현, 비교, 선택의 세 단계</em></p></div>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>시연 순서 지정: 시연 내부(intra) 및 시연 간(inter) 순서의 영향</em></p></div>
 <ol>
 <li><strong>멀티모달 정렬이 병목</strong>: 다중모달 검색기(retriever)가 단일모달 방식보다 평균적으로 우수한 성능을 나타냄. 모델의 멀티모달 정렬(alignment) 수준이 매개변수 크기보다 MM-ICL 효과성에 더 큰 영향을 미침. 즉, 백본 구조와 시연 품질 모두에서 정렬이 핵심 제약 요소임을 확인</li>
 <li><strong>시연 내부 순서의 중요성</strong>: 시연 내부의 순서(특히 이미지-텍스트 등 모달리티의 순서)가 시연 간 순서보다 모델 성능에 훨씬 더 큰 영향을 미침. 모달리티 순서 조정만으로도 상당한 성능 개선이 가능함을 입증</li>
 <li><strong>도입부 지시문의 효과</strong>: 시연 전에 배치된 도입부 지시문(introductory instruction)이 시연 후의 총괄 지시문이나 시연 내부의 지시문보다 작업 이해도와 성능 향상에 더욱 효과적</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 4">
-<p class="fig-caption"><em>세 가지 지시문 주입 방식: 도입부(a), 총괄(b), 시연 내부(c)</em></p></div>
 <h3>시연 검색(Demonstration Retrieval)</h3>
 <ul>
 <li><strong>샘플 표현</strong>: 텍스트 인코더(Encoder_txt), 시각 인코더(Encoder_vis), 멀티모달 인코더(Encoder_multi) 간 성능 비교를 통해 인코더 선택의 영향 분석</li>

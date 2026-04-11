@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Fuxiao Liu, Xiaoyang Wang, Wenlin Yao, Jianshu Chen, Kaiqiang Song, Sangwoo Cho, Yaser Yacoob, Dong Yu | <strong>날짜</strong>: 2024-04-15 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2311.10774" target="_blank">10.48550/arXiv.2311.10774</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MMC의 9가지 구별되는 작업, 다양한 주제(비즈니스, 건강, 생물학 등), 다양한 차트 유형(막대, 히스토그램, 선형, 산점도, 히트맵 등)으로 구성된 인간 주석 데이터셋</em></p></div>
 <p>대규모 멀티모달 차트 명령어 튜닝(600k 인스턴스)을 통해 차트 이해에 특화된 LMM(대규모 멀티모달 모델)을 개발하고, 9가지 하위 작업으로 구성된 포괄적 벤치마크를 제시하는 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 600k 규모의 대규모 차트 명령어 튜닝 데이터셋 구축, (2) 이를 기반으로 차트 특화 LMM 개발, (3) 9가지 작업 포함 포괄적 인간 주석 벤치마크 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MMCA의 전체 아키텍처</em></p></div>
 <ol>
 <li><strong>MMC-Instruction 데이터셋</strong>: 기존 공개 데이터셋(FigureQA 180k, DVQA 300k, PlotQA 224k, ChartQA 21.9k)보다 규모(600k), 다양성(주제, 언어 스타일, 차트 유형), 품질이 우수. 자유형식(free-form) 질문과 개방형(open-ended) 답변으로 인간 인지와 일치</li>
 <li><strong>MMCA 모델</strong>: 기존 오픈소스 LMM들을 능가하는 최첨단 성능 달성. 기존 차트 QA 벤치마크에서 우수한 성능 입증</li>
 <li><strong>MMC-Benchmark</strong>: 차트 정보 추출, 차트 추론, 문맥적 이해, 다중 차트 이해, 차트 유형 분류, 차트 주제 분류, 차트-데이터테이블 변환, 차트-JSON 변환, 주식 차트 분석 등 9가지 작업 포함. GPT-4V를 포함한 최신 모델들도 상당한 도전에 직면, 특히 Chart-to-Datatable/JSON 작업에서 제한적 성능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>GPT-4V의 실패 사례(빨강)와 정정 답안(파랑) 비교</em></p></div>
 <ul>
 <li><strong>Chart-Text Alignment Data (400k)</strong>:
 <ul>
@@ -150,7 +144,6 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../204_Chartx__chartvlm_A_versatile_benchmark_and_foundation_model/index.html">Chartx &amp; chartvlm: A versatile benchmark and foundation model for complicated chart reasoning</a></div><div class="conn-reason">ChartX &amp; ChartVLM의 기초 모델을 대규모 명령어 튜닝으로 발전시킨 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../203_Chartsketcher_Reasoning_with_multimodal_feedback_and_reflect/index.html">ChartSketcher: Reasoning with multimodal feedback and reflection for chart understanding</a></div><div class="conn-reason">대규모 멀티모달 차트 이해 데이터셋이 반복적 스케칭 방법론의 성능 평가에 확장 적용될 수 있습니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">Gemini 같은 멀티모달 모델의 차트 이해 능력을 전문적으로 평가하고 개선하는 연구</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">Gemini의 멀티모달 능력이 MMC의 차트 이해 작업에 직접 적용될 수 있음</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">MMC의 차트 이해 기술을 과학 분야 특화 멀티모달 벤치마크로 확장</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

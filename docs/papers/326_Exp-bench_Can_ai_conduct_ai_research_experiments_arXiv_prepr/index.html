@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Patrick Tser Jern Kon, Jiachen Liu, Xinyi Zhu, Qiuyi Ding, Jingjia Peng, Jiarong Xing, Yibo Huang, Yiming Qiu, Jayanth Srinivasa, Myungjin Lee, Mosharaf Chowdhury, Matei Zaharia, Ang Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.24785" target="_blank">arXiv:2505.24785</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>EXP-Bench는 AI 에이전트가 동료 심사 논문에서 추출한 완전한 연구 실험을 수행할 수 있는지를 평가하는 벤치마크로, 연구 질문으로부터 가설 수립, 실험 설계, 구현, 실행, 결론 도출까지의 전체 과정을 평가한다.</em></p></div>
 <p>AI가 완전한 종료-대-종료(end-to-end) 연구 실험을 수행할 수 있는 능력을 체계적으로 평가하기 위해 EXP-Bench 벤치마크를 제시하며, NeurIPS/ICLR 논문 461개 작업에서 현재 AI 에이전트들이 0.5%의 완전 실험 성공률에 그치고 있음을 보였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 영향력 있는 동료 심사 논문과 오픈소스 구현에서 추출한 461개의 실제 AI 연구 작업으로 구성된 벤치마크를 제안하되, 논문과 코드에서 산재된 실험 세부사항을 추출하는 반자동화 파이프라인(semi-automated curation pipeline)을 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ICLR 2024 MogaNet 논문에서 추출한 단일 연구 작업의 예시로, 연구 질문, 고수준 방법 설명, 스타터 코드를 제공받는 형태를 보여준다.</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>EXP-Bench 데이터셋은 Deep Learning, Reinforcement Learning, Computer Vision, Generative Models 등 다양한 ML 연구 분야에서 균형잡힌 작업들로 구성되어 있으며, NeurIPS(53%)와 ICLR(47%)에서 추출되었다.</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구성</strong>: NeurIPS/ICLR 2024의 51개 논문에서 461개의 연구 작업(12,737개 세분화된 부분 작업)을 추출하여, 컴퓨터 비전, NLP, 강화학습 등 다양한 AI 하위분야를 포함한 벤치마크 구축</li>
 <li><strong>확장 가능한 반자동화 파이프라인</strong>: 소스 선택/필터링 → 실험 절차 추출 → 구현 추출의 3단계로 논문과 코드베이스에서 산재된 세부정보를 체계적으로 추출하며, 실행 기반 검증으로 기능성을 보장</li>
@@ -94,8 +88,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>EXP-Bench 반자동화 데이터셋 구축 파이프라인의 3단계 프로세스</em></p></div>
 <p><strong>Dataset Specification</strong>:</p>
 <ul>
 <li><strong>문제 설명</strong>: 연구 질문(research question), 고수준 방법(high-level method), 코드 저장소 접근성 제공</li>
@@ -140,7 +132,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: EXP-Bench는 AI 에이전트의 종료-대-종료 연구 실험 수행 능력을 처음으로 체계적으로 평가하는 중요한 벤치마크이며, 반자동화 파이프라인을 통해 대규모 고충실도 데이터셋을 구축한 점이 주목할 만하다. 다만 파이프라인의 자동화 정도와 다중 유효 해법 인정 메커니즘 개선이 향후 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../079_Ai_idea_bench_2025_Ai_research_idea_generation_benchmark/index.html">AI Idea Bench 2025: AI 연구 아이디어 생성 벤치마크</a></div><div class="conn-reason">EXP-Bench의 완전한 실험 수행 능력 평가와 AI Idea Bench의 아이디어 생성 능력 평가는 AI 연구 역량을 서로 다른 단계에서 측정하는 보완적 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../079_Ai_idea_bench_2025_Ai_research_idea_generation_benchmark/index.html">AI Idea Bench 2025: AI 연구 아이디어 생성 벤치마크</a></div><div class="conn-reason">AI Idea Bench의 아이디어 생성 평가와 EXP-Bench의 실험 수행 평가는 AI 연구 능력을 서로 다른 단계에서 측정하는 보완적 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../669_Researchbench_Benchmarking_llms_in_scientific_discovery_via/index.html">ResearchBench: Benchmarking LLMs in Scientific Discovery via Inspiration-Based Task Decomposition</a></div><div class="conn-reason">ResearchBench가 EXP-Bench의 실험 수행 평가를 더 광범위한 과학적 발견 과정으로 확장한 종합적 벤치마크이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../177_Can_ai_agents_design_and_implement_drug_discovery_pipelines/index.html">Can ai agents design and implement drug discovery pipelines? arXiv preprint arXiv:2504.19912, 2025.</a></div><div class="conn-reason">Exp-bench의 AI 연구 실험 수행 평가가 Deep Thought의 신약 발견 연구 자동화 성능을 검증하는 도구로 활용됨</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../795_The_AI_Scientist_Towards_Fully_Automated_Open-Ended_Scientif/index.html">The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery</a></div><div class="conn-reason">AI Scientist의 완전 자동화된 과학 발견 주장에 대해 EXP-Bench가 현재 AI 에이전트의 실제 실험 성공률 한계를 실증적으로 반박한다.</div></div></div>

@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 중앙집중식 SCP Hub와 연합형 SCP Server로 구성된 허브-스포크 아키텍처를 설계하여, (1) 과학 자원에 대한 통일된 명세, (2) 실험 생명주기의 제1급 추상화, (3) 지능형 워크플로우 오케스트레이션 엔진을 제공한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: SCP overview">
-<p class="fig-caption"><em>SCP는 실험실 기기, 데이터베이스, LLM, 계산 모델, API 등을 통합하여 드라이(computational)/웻(wet) 하이브리드 협업 연구 패러다임을 지원</em></p></div>
 <ol>
 <li><strong>대규모 통합 생태계</strong>: 1,600개 이상의 도구 자원을 보유한 과학 발견 플랫폼 구축으로, 이질적 AI 시스템과 인간 연구자의 안전한 대규모 협업을 가능하게 함.</li>
 <li><strong>프로토콜 수준 표준화</strong>: 소프트웨어 함수, 데이터셋, 물리 기기, 복합 에이전트를 단일 명세(specification schema)로 기술하여 개발자의 통합 오버헤드를 대폭 감소시키고 확장성 확보.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>지능형 오케스트레이션</strong>: 고수준의 실험 의도를 자동으로 다단계 계획으로 분해하고, 의존성 구조, 지연시간, 실험 위험, 비용 추정치 등을 함께 제시.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: SCP architecture overview">
-<p class="fig-caption"><em>SCP Hub가 사용자 애플리케이션, SCP Server, 메시징/저장소 컴포넌트 간의 상호작용을 조율하는 중앙 통제 역할 수행</em></p></div>
 <ul>
 <li><strong>Hub-and-Spoke 아키텍처</strong>: 중앙 SCP Hub가 분산된 SCP Server들의 페더레이션을 조율하며, 클라이언트는 단일 진입점을 통해 이질적 자원에 접근.</li>
 <li><strong>실험 컨텍스트의 제1급 추상화</strong>: 실험 ID, 유형(드라이/웻/하이브리드), 목표, 데이터 저장 URI, 설정 매개변수를 포함하는 구조화된 메타데이터로 종단 간 추적성과 버전 관리 실현.</li>

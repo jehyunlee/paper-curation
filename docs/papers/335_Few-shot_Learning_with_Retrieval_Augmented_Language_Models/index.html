@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Gautier Izacard, Patrick Lewis, M. Lomeli, Lucas Hosseini, F. Petroni | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Atlas는 사전학습과 미세조정 단계 모두에서 검색을 활용하는 검색 증강 언어 모델로, 지식 기반 작업에서 강력한 few-shot 성능을 보임</em></p></div>
 <p>본 논문은 매개변수 메모리에 의존하지 않고 외부 지식 소스를 활용하는 검색 증강 언어 모델(Atlas)을 제시하여, 550억 개 매개변수 모델보다 50배 적은 매개변수(110억)로 우수한 few-shot 학습 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 검색 증강 아키텍처를 활용하되, 사전학습 단계에서 retriever와 언어 모델을 함께 학습하고, 네 가지 novel한 retriever 학습 목적 함수(ADist, EMDR2, PDist, Margin-MSE)를 제시하여 few-shot 성능을 최적화한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: KILT 벤치마크의 다양한 작업(사실 검증, 질의응답, 엔티티 링킹)에 대한 쿼리-출력 쌍의 예시</em></p></div>
 <ol>
 <li><strong>Few-shot 성능 우수성</strong>: NaturalQuestions에서 64개 예시만으로 42.4% 정확도 달성 (PaLM 540B 대비 3% 우수), Wikipedia 인덱스만 사용 시 45.1% 달성</li>
 <li><strong>Full-dataset 성능 최고 성과</strong>: NaturalQuestions (+8.1%), TriviaQA (+9.3%), FEVER, KILT의 5개 작업에서 새로운 최고 성능 기록</li>
@@ -130,10 +126,8 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../421_Improving_demonstration_diversity_by_human-free_fusing_for_t/index.html">Improving demonstration diversity by human-free fusing for text-to-sql</a></div><div class="conn-reason">검색 증강 언어모델의 소수샷 학습이 시연 다양성 개선의 기초적인 방법론을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html">Clinical entity augmented retrieval for clinical information extraction</a></div><div class="conn-reason">검색 증강 언어모델의 기본 원리를 임상 도메인에 특화하여 적용한 실제 구현 사례입니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../768_Splade_v2_Sparse_lexical_and_expansion_model_for_information/index.html">Splade v2: Sparse lexical and expansion model for information retrieval</a></div><div class="conn-reason">밀집 표현 기반 검색 증강과 희소 렉시컬 표현 기반 검색의 서로 다른 정보검색 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../768_Splade_v2_Sparse_lexical_and_expansion_model_for_information/index.html">Splade v2: Sparse lexical and expansion model for information retrieval</a></div><div class="conn-reason">희소 렉시컬 표현과 밀집 표현 기반 검색 증강이라는 서로 다른 정보검색 패러다임의 장단점을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../613_Personalized_graph-based_retrieval_for_large_language_models/index.html">Personalized graph-based retrieval for large language models</a></div><div class="conn-reason">검색 증강 생성에서 개인화 접근법과 소수샘플 학습 방법의 차이점을 비교하여 각각의 장단점을 이해할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../593_Openscholar_Synthesizing_scientific_literature_with_retrieva/index.html">Openscholar: Synthesizing scientific literature with retrieval-augmented lms</a></div><div class="conn-reason">소규모 검색 증강 모델의 기본 아이디어를 대규모 과학 문헌 데이터베이스로 확장한 발전된 형태의 연구입니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../593_Openscholar_Synthesizing_scientific_literature_with_retrieva/index.html">Openscholar: Synthesizing scientific literature with retrieval-augmented lms</a></div><div class="conn-reason">소규모 검색 증강 모델의 기본 개념을 4천500만 개 논문을 다루는 대규모 과학 문헌 시스템으로 발전시킨 연구입니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html">Clinical entity augmented retrieval for clinical information extraction</a></div><div class="conn-reason">검색 증강 언어모델의 일반적 원리를 임상 정보 추출이라는 구체적 도메인에 적용한 사례입니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

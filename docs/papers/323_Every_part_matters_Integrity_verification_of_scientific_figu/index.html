@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiang Shi, Jiawei Liu, Yinpeng Liu, Qikai Cheng, Wei Lu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 자연 이미지와 과학 논문 그림의 텍스트-이미지 정렬 작업 비교. 과학 그림의 텍스트-정렬 작업은 각 모듈 요소를 파싱하고, 텍스트를 정렬하며, 정렬되지 않은 요소를 식별하는 것을 요구함.</em></p></div>
 <p>본 연구는 과학 논문의 그림에서 텍스트와 시각 요소의 세밀한 정렬을 위한 새로운 작업인 "Figure Integrity Verification"을 제안하며, 이를 지원하기 위해 Figure-seg 데이터셋과 Every Part Matters (EPM) 프레임워크를 개발했다. 이는 복잡한 도메인-특화 과학 그림의 이해와 검증을 크게 개선한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 작업 수준: Figure Integrity Verification 작업 제안 (텍스트 정렬, 미정렬 요소 식별); (2) 데이터 수준: 반자동 방식으로 Figure-seg 대규모 정렬 데이셋 구축; (3) 모델 수준: MLLM 기반 EPM 프레임워크 및 유추 추론(analogical reasoning) 기반 보완 방법 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 과학 그림 세밀한 정렬을 위한 데이터셋 구축 프로세스 개요.</em></p></div>
 <ol>
 <li><strong>텍스트-그림 정렬 성능 대폭 개선</strong>: CIoU 메트릭에서 22.53%, gIoU 메트릭에서 45.13% 향상을 달성하여 기존 최고 성능(SOTA) 기술을 크게 초과.</li>
 <li><strong>미정렬 요소 탐지 능력 강화</strong>: 미정렬 그림 요소 탐지에서 CIoU 4.90%, gIoU 4.52% 성능 향상으로 복잡한 그림의 우수한 이해 입증.</li>
@@ -86,10 +82,6 @@ a { color: #A62018; }
 <li><strong>배경 지식의 시너지 효과</strong>: 그림 요소의 공간-의미 특성에 관한 배경 지식 통합 시 약 70% 메트릭에서 긍정적 성과 달성, 자연 이미지와 과학 그림의 차이 강조.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 무결성 검증 작업 구현을 위한 전체 프레임워크. (a)는 두 가지 평가 기준을 보여줌.</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: Chain-of-Attribute (CoA) 추론 프로세스의 상세 설명.</em></p></div>
 <ul>
 <li><strong>Figure Integrity Verification Task</strong>: 세 가지 핵심 요소로 구성
 <ul>

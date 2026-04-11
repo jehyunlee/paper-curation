@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qihua Pan, Dong Xu, Qianwei Yang, Jenna Xinyi Yao, Sisi Yuan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: FROGENT 멀티에이전트 시스템의 아키텍처 개요. 네 가지 핵심 에이전트(Orchestrate, Retrieve, Forge, Gauge)로 구성되며, 동적 생화학 데이터베이스와 확장 가능한 도구 라이브러리를 통합</em></p></div>
 <p>FROGENT는 대규모 언어 모델(LLM)의 계획, 추론, 도구 활용 능력을 활용하여 신약 개발 전 과정을 하나의 통합된 자동화 프레임워크로 통합하는 멀티에이전트 시스템이다. 표적 식별부터 소분자 생성, 펩타이드 최적화, 역합성 계획까지 약물 발견 파이프라인의 모든 단계를 자동으로 실행할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 네 가지 전문화된 에이전트(중앙 조정 에이전트, 데이터 검색 에이전트, 분자 생성 에이전트, 평가 에이전트)로 구성된 분산 협업 멀티에이전트 시스템을 설계하고, Model Context Protocol을 통해 동적 데이터베이스와 계산 모델에 접근</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: FROGENT의 개념적 워크플로우. 사용자의 고수준 목표에서 시작하여 다단계 전략 계획으로 분해되고 특화된 에이전트들에게 위임됨</em></p></div>
 <ol>
 <li><strong>통합 자동화</strong>: 표적 식별, 소분자 생성, 펩타이드 최적화, 합성 계획을 포함한 신약 개발의 전 단계를 하나의 폐루프 자동화 시스템으로 통합 (소분자 및 펩타이드 치료제 모두 지원)</li>
 <li><strong>벤치마크 성능</strong>: 8개의 다양한 벤치마크(신약 발견의 핵심 작업들)에서 6개의 고급 ReAct 스타일 기준 에이전트를 일관되게 능가</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자율성 향상</strong>: 명시적 추론과 계획 모델링을 통해 다단계 의사결정을 지원하고, 동적 메모리(Global Context)를 통해 에이전트 간 정보 공유 및 전역적 일관성 확보</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 벤치마크에서 각 에이전트의 전체 성능 평가</em></p></div>
 <h3>아키텍처 설계</h3>
 <ul>
 <li><strong>Orchestrate Agent</strong>: 중앙 제어기로서 사용자 목표를 구조화된 작업 그래프(task graph)로 분해하고 전문화된 에이전트들에게 위임. Global Context를 관리하여 전체 워크플로우의 상태 추적</li>

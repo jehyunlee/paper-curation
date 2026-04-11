@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 "원고 품질 검사기(manuscript quality checker)"로 활용하여 중대한 오류와 논리적 결함을 자동 식별하고, LLM을 판정자(judge)로 활용한 자동 평가 프레임워크를 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="표2.png" alt="Table 2: LLM 체커의 성능 및 비용 비교">
-<p class="fig-caption"><em>표 2: 다양한 모델들의 문제 식별 개수, 히트율(HR@5), 평균 정밀도(AP@5), 토큰 사용량 및 예상 비용 비교</em></p></div>
 <ol>
 <li><strong>o3 모델의 우수한 성능</strong>: o3가 모든 모델 중 가장 높은 히트율(HR@5: 48.2% for PDF, 50.6% for LaTeX)을 달성하면서도 적정한 비용 수준 유지</li>
 <li><strong>형식 저항성 차이</strong>: Gemini 모델은 LaTeX 형식으로 전환 시 성능 저하(39.2% → 36.3%)를 보였으나, OpenAI o-시리즈 모델은 안정적(48.2% → 50.6%)</li>
@@ -130,7 +128,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM을 동료 심사 보조 도구로 위치지어 책임감 있는 활용을 추구하며, 실제 철회 데이터를 바탕으로 한 실증적 평가와 자동 평가 프레임워크를 제시하여 학술 출판 시스템의 개선에 유의미한 기여를 합니다. 다만 자동 평가 방식의 검증과 도메인 별 일반화 측면에서 추가 연구가 필요합니다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../678_ReviewerGPT_An_Exploratory_Study_on_Using_Large_Language_Mod/index.html">ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</a></div><div class="conn-reason">LLM의 일반적 논문 심사 능력 탐색이 비판적 문제 검출이라는 특화된 심사 업무 수행 가능성 평가의 기초가 된다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/index.html">When AI Co-Scientists Fail: SPOT—a Benchmark for Automated Verification of Scientific Research</a></div><div class="conn-reason">철회된 논문 데이터와 검증된 오류 데이터를 활용한 두 연구 모두 과학적 오류 검출 능력을 평가하지만 서로 다른 데이터셋과 접근법을 사용한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/index.html">When AI Co-Scientists Fail: SPOT—a Benchmark for Automated Verification of Scientific Research</a></div><div class="conn-reason">과학 논문 오류 자동 검증에서 서로 다른 데이터셋과 평가 방법을 사용하여 LLM의 학술 검증 능력을 다각도로 평가한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../678_ReviewerGPT_An_Exploratory_Study_on_Using_Large_Language_Mod/index.html">ReviewerGPT? An Exploratory Study on Using Large Language Models for Paper Reviewing</a></div><div class="conn-reason">LLM의 논문 심사 가능성 탐색을 비판적 문제 검출이라는 특화된 영역으로 확장하여 더 구체적인 적용 방안을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../692_Safescientist_Toward_risk-aware_scientific_discoveries_by_ll/index.html">SafeScientist: Toward Risk-Aware Scientific Discoveries by LLM Agents</a></div><div class="conn-reason">안전한 과학적 발견을 위한 위험 인식 시스템으로 확장하여 오류 검출을 넘어 예방적 안전 조치까지 포함한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

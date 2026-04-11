@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Siddharth Narayanan, James D. Braza, Ryan-Rhys Griffiths, Manu Ponnapati, Albert Bou, Jon Laurent, Ori Kabeli, Geemi Wellawatte, Sam Cox, Samuel G. Rodriques, Andrew D. White | <strong>날짜</strong>: 2024-12-30 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 5개의 Aviary 환경과 언어 결정 과정(LDP) 프레임워크 개요</em></p></div>
 <p>본 논문은 과학적 작업을 해결하기 위한 언어 에이전트(language agent)를 훈련하기 위한 확장 가능한 체육관 프레임워크인 Aviary를 제시한다. 저자들은 언어 에이전트를 언어-기반 부분 관찰 가능 마르코프 결정 과정(language decision process, LDP)으로 형식화하고, DNA 조작, 과학 문헌 질문 응답, 단백질 안정성 공학 등 3개의 과학 환경을 포함한 5개 환경을 구현했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,23 +75,17 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 언어 에이전트를 확률적 계산 그래프(stochastic computation graph)로 표현하여 LDP로 정의하고, 확장 가능한 환경 프레임워크(Aviary)를 구축하여 expert iteration 등의 최적화 기법을 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: Aviary 환경을 사용하여 LLM과 언어 에이전트의 작업 해결 능력</em></p></div>
 <ol>
 <li><strong>이론적 기여</strong>: 부분 관찰 가능 마르코프 결정 과정(POMDP)의 자연언어 표현으로서 언어 결정 과정(LDP)을 형식화하여, 다양한 기존 에이전트 아키텍처(CoALA, ReAct 등)를 통일된 프레임워크로 구현 가능함을 시연했다.</li>
 <li><strong>성능 달성</strong>: 오픈 소스 소형 모델(Llama-3.1-8B-Instruct)을 온라인 훈련(expert iteration)과 추론 시간 샘플링(majority vote)으로 훈련하여, DNA 구축 설계 및 과학 문헌 질문 응답 환경에서 최첨단 LLM(GPT-4o 등)과 인간 전문가를 능가하면서 <strong>추론 비용을 100배 감소</strong>시켰다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 확률적 계산 그래프로 표현된 단순 언어 에이전트 아키텍처</em></p></div>
 <ul>
 <li><strong>LDP 형식화</strong>: 상태 공간 S, 자연언어 기반 행동 공간 A, 관찰 공간 O, 전이 함수 T, 보상 함수 R, 할인 계수 γ로 구성된 튜플 (V, S, A, O, T, Z, R, γ)로 정의. 정책 π_θ: O → A는 학습 가능한 파라미터 θ(LLM 가중치, 온도 등)를 포함.</li>
 <li><strong>5개 환경 구현</strong>: (1) 분자 클로닝 DNA 구축(SeqQA), (2) 과학 문헌 질문 응답(LitQA2), (3) 단백질 안정성 공학(ProteinBench), (4) GSM8K(수학 추론), (5) HotpotQA(다중홉 질문 응답)</li>
 <li><strong>훈련 파이프라인</strong>: Expert iteration을 통해 자가 생성 궤적에 대한 지도 학습(supervised fine-tuning)으로 반복적 개선. 추론 시점에서 majority vote 샘플링으로 성능 향상.</li>
 <li><strong>모듈식 설계</strong>: Aviary (환경 정의), LDP (에이전트 및 최적화기 구현)로 분리하여 환경, 에이전트, 옵티마이저의 교환 가능성 제공.</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: (A) 분자 클로닝 환경에서 SeqQA 작업 훈련, (B) LitQA2 작업 훈련</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>이론적 독창성</strong>: LDP를 명시적으로 형식화하고 부분 관찰 가능성과 자연언어 관찰의 특성을 강조한 점. 기존 POMDP 프레임워크보다 언어 에이전트의 특수성을 더 정확히 포착.</li>

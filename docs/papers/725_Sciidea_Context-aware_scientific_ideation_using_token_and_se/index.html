@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Farhana Keya, Gollam Rabby, Prasenjit Mitra, Sahar Vahdati, Sören Auer, Yaser Jaradeh | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>연구자와 SCI-IDEA의 상호작용 개요. 좌측은 연구자 피드백, 우측은 문맥 인식 과학적 아이디어 생성 및 개선 기법 제시</em></p></div>
 <p>SCI-IDEA는 대규모 언어모델(LLM)의 다양한 프롬프팅 전략과 "Aha Moment" 탐지를 결합하여 문맥-인식적이고 고품질의 창의적 과학 아이디어를 반복적으로 생성하고 개선하는 프레임워크이다. 토큰 및 문장 임베딩을 활용하여 신성(novelty)과 놀라움(surprise)을 측정함으로써 혁신적인 연구 아이디어를 식별한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 연구자의 선행 작업 및 관련 문헌에서 핵심 facet을 추출하여 연구 공백을 파악하고, 다양한 프롬프팅 전략(영점, 영점 사고 연쇄, 소수 예시)을 상황에 따라 적용하며, 의미론적 임베딩을 통해 신성과 놀라움을 측정하여 혁신적 아이디어를 탐지한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>SCI-IDEA 프레임워크 개요. 상단은 Module 1(facet 생성)을, 하단은 Module 2(아이디어 생성 및 평가) 표시</em></p></div>
 <ol>
 <li><strong>포괄적 평가 성과</strong>: 신성, 흥미도(excitement), 실현 가능성(feasibility), 효과성(effectiveness)에서 1-10 척도 기준 평균 6.84-6.89점 달성. GPT-4o, GPT-4.5, DeepSeek-32B/70B 등 다양한 LLM과 프롬프팅 방식(0/2/3/5-shot, 사고 연쇄) 조합으로 일관된 성능 입증.</li>
 <li><strong>다층 평가 메커니즘</strong>: 인간 전문가와 LLM 독립적 평가를 통해 4개 차원에서 아이디어 품질 평가. 토큰 및 문장 레벨 임베딩 모두 유사한 성능(6.83-6.87점) 달성으로 방법의 견고성 증명.</li>
 <li><strong>윤리적 고려</strong>: 지적 신용, 잠재적 오용, 인간 창의성과 AI 주도 아이디어의 균형 문제를 체계적으로 다룸.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>임베딩 전략별 인간 평가 점수 분포. 토큰 및 문장 레벨 임베딩 간 성능 비교</em></p></div>
 <ul>
 <li><strong>Facet 추출</strong>: 연구자 ORCID/프로필로부터 CORE, arXiv, Semantic Scholar의 관련 출판물 P={p₁, p₂, ..., pₙ} 수집. 목표(objectives), 방법론(methodologies), 평가(evaluation), 향후 작업(future work) facet 추출.</li>
 <li><strong>연구 공백 식별</strong>: 구조화된 facet 분석을 통해 기존 연구와 미흡한 부분의 격차 파악. 예: DRL의 높은 에너지 소비 vs. SNN의 낮은 전력 특성 미활용.</li>

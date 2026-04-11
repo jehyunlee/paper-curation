@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Edward O. Pyzer-Knapp, Matteo Manica, Peter Staar, Lucas Morin, Patrick Ruch, Teodoro Laino, John R. Smith, Alessandro Curioni | <strong>날짜</strong>: 2025-03-06 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41524-025-01538-0" target="_blank">10.1038/s41524-025-01538-0</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: AI 머신러닝 표현의 진화 타임라인">
-<p class="fig-caption"><em>수동 기술된 기호적 표현에서 오늘날의 파운데이션 모델까지의 진화를 보여주는 타임라인</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)과 파운데이션 모델(Foundation Models)이 재료 발견(materials discovery) 분야에 어떻게 적용되고 있으며, 향후 어떤 방향으로 발전할 것인지를 종합적으로 리뷰한 관점 논문이다. 데이터 추출, 물성 예측, 분자 생성, 합성 계획 등 현재의 최첨단 적용 사례와 함께 새로운 데이터 수집 방법과 다중 모달리티의 영향을 검토한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 파운데이션 모델의 정의와 구조(인코더, 디코더)를 설명하고, 데이터 추출, 물성 예측, 분자 생성, 합성 계획의 네 가지 핵심 응용 분야에서의 현황과 과제를 체계적으로 분석.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 공유 잠재 공간의 생성 및 활용">
-<p class="fig-caption"><em>인코더, 디코더 및 예측기 모델을 통해 분자 표현을 잠재 공간으로 변환하는 프로세스 시각화</em></p></div>
 <ol>
 <li><strong>데이터 추출 모달리티 확장</strong>: 전통적인 텍스트 기반 추출을 넘어 표(table), 이미지, 분자 구조 등 다중 모달리티 데이터 통합이 진행 중. PubChem, ZINC, ChEMBL 등 주요 화학 데이터베이스 활용 및 특수 알고리즘(Plot2Spectra, DePlot)을 통한 분광 데이터 추출 가능.</li>
 <li><strong>물성 예측 모델의 다양화</strong>: BERT 기반 인코더 모델이 주류이지만, GPT 기반 아키텍처의 비중이 증가 중. 2D 표현(SMILES, SELFIES)에서 3D 구조 기반 예측으로의 진화, 특히 결정체(crystals) 같은 무기 고체에서 그래프 기반 표현 적용.</li>
 <li><strong>파운데이션 모델 접근의 강점</strong>: 핵심 모델과 아키텍처 컴포넌트의 재사용성으로 효율성 향상. 대규모 자기 지도학습을 통한 일반화된 표현 학습이 다양한 다운스트림 과제에 적응 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 현재 보고된 모델의 일반적인 아키텍처 유형 분류">
-<p class="fig-caption"><em>다양한 파운데이션 모델 아키텍처의 구성 비율 분석</em></p></div>
 <ul>
 <li><strong>파운데이션 모델 구조</strong>: 비지도 사전학습(unsupervised pretraining)으로 기반 모델(base model) 구축 → 라벨된 데이터로 세부 과제 미세조정(fine-tuning) → 사용자 선호도에 따른 정렬(alignment) 수행</li>
 <li><strong>아키텍처 선택</strong>:
@@ -128,7 +122,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4.5/5</span></div>
 <p><strong>총평</strong>: 본 논문은 파운데이션 모델이라는 최신 AI 패러다임을 재료 과학 분야에 포괄적으로 적용하는 중요한 관점 논문으로, 현재의 최첨단 사례와 함께 데이터 품질, 다중 모달리티 통합, 3D 구조 정보 결핍 등 구체적인 과제들을 명확히 제시한다. 다만 각 응용 분야별 기술적 심화 논의와 구체적인 사례 분석이 제한적이며, 향후 데이터셋 확충과 도메인 특화 모델 개발에 대한 실행 로드맵이 추가될 수 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../287_Dont_Stop_Pretraining_Adapt_Language_Models_to_Domains_and_T/index.html">Don&#x27;t Stop Pretraining: Adapt Language Models to Domains and Tasks</a></div><div class="conn-reason">도메인 적응 기법이 재료과학 파운데이션 모델 개발의 핵심 방법론이다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../287_Dont_Stop_Pretraining_Adapt_Language_Models_to_Domains_and_T/index.html">Don&#x27;t Stop Pretraining: Adapt Language Models to Domains and Tasks</a></div><div class="conn-reason">도메인 적응 기법이 재료과학 파운데이션 모델의 특화 학습에 필수적이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../695_Scaling_Deep_Learning_for_Materials_Discovery/index.html">Scaling Deep Learning for Materials Discovery</a></div><div class="conn-reason">GNoME의 성공이 재료발견 분야 파운데이션 모델 발전의 중요한 사례가 된다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../633_Prim_Principle-inspired_material_discovery_through_multi-age/index.html">Prim: Principle-inspired material discovery through multi-agent collaboration</a></div><div class="conn-reason">재료 발견을 위한 기초 모델의 현재 상태와 도전 과제에 대한 이론적 배경을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../025_A_Survey_of_AI_for_Materials_Science_Foundation_Models_LLM_A/index.html">A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</a></div><div class="conn-reason">소재 발견을 위한 기초 모델의 현재 상태 분석이 AI 소재 과학 서베이의 기초 모델 섹션에 핵심 정보를 제공함</div></div>

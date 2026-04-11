@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Karan Goyal, Dikshant Kukreja, Vikram Goyal, Mukesh Mohania | <strong>날짜</strong>: 2026-03-18 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2603.17361" target="_blank">10.48550/arXiv.2603.17361</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: The architecture of our two-stage citation recommendation system. (1) The non-learnable Profiler</em></p></div>
 <p>논문은 인용 추천 시스템에서 인간의 인용 행동 패턴(public profile)을 효율적으로 캡처하는 경량 모듈 Profiler와 적응형 벡터 게이팅을 통해 신뢰도 사전정보와 의미론적 정보를 통합하는 DAVINCI 모델을 제안하며, 현실적인 귀납적(inductive) 평가 설정을 도입하여 새로운 최첨단 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 논문은 비학습 기반의 경량 Profiler 모듈로 인용 패턴을 포착하고, 시간적 제약을 적용한 귀납적 평가 설정을 제안하며, 적응형 벡터 게이팅(adaptive vector-gating mechanism)을 통해 신뢰도 사전정보와 의미론적 정보를 통합하는 DAVINCI 모델을 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: The indispensable role of the public profile.</em></p></div>
 <ul>
 <li><strong>Profiler 모듈</strong>: 비학습 기반의 경량 모듈로 인간의 인용 행동 패턴을 효율적으로 캡처하며, 기존의 sequential prefetcher+enricher 조합을 초과하는 성능을 달성하면서도 확인 편향(confirmation bias)을 제거</li>
 <li><strong>Public Profile의 중요성</strong>: 연구 생태계가 논문을 인식하는 방식('public profile')이 인용 추천을 위한 매우 중요한 신호임을 실증적으로 입증", '<strong>DAVINCI 리랭킹 모델</strong>: 적응형 벡터 게이팅 메커니즘을 통해 신뢰도 사전정보와 의미론적 정보를 통합하며, 특수 메타데이터(분류법) 없이도 다양한 데이터셋에 일반화 가능</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>최첨단 성능</strong>: 여러 벤치마크 데이터셋(ACL-200, FTPR, RefSeer, arXiv, ArSyTa)에서 전문화된 LCR 시스템과 대규모 오픈소스 리랭커를 능가하는 새로운 최첨단 결과 달성</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: The architecture of our two-stage citation recommendation system. (1) The non-learnable Profiler</em></p></div>
 <ul>
 <li>Profiler: 논문의 '공개 프로필'(인용 빈도, 영향도 등)에 기반한 신뢰도 점수 산출을 통해 후보 문서 검색", 'DAVINCI: 적응형 벡터 게이팅을 이용하여 Profiler의 신뢰도 사전정보(confidence priors)와 심층 의미론적 분석 결과를 판별적으로 융합</li>
 <li>귀납적 평가: 평가 쿼리 문서와 후보 코퍼스의 완전한 분리(Deval ∩ C = ∅) 및 시간적 일관성(temporal consistency) 제약 적용</li>

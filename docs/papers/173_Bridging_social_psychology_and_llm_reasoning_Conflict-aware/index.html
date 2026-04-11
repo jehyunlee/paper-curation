@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wei Chen, Han Ding, Meng Yuan, Zhao Zhang, Deqing Wang, Fuzhen Zhuang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.13879" target="_blank">arXiv:2503.13879</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 인간의 메타-리뷰 작성에서 "빠른 사고"와 "느린 사고" 과정</em></p></div>
 <p>학술 동료심사 시스템의 메타-리뷰(종합의견) 자동생성을 위해 Kahneman의 이원인지이론(dual-process theory)을 LLM에 적용한 인지정렬프레임워크(CAF)를 제안하며, 기존 LLM 방식의 앵커링 효과(anchoring effect)와 동조편향(conformity bias)을 정량화하고 완화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 이원인지이론을 LLM에 구현하여 (1) 핵심정보 추출, (2) 갈등인식 점진적 통합, (3) 인지정렬(이원추론)의 3단계 파이프라인 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 서로 다른 리뷰어(R1-R5)의 최종 스코어 영향도 및 앵커링 효과 차이(Δ)</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 제안된 CAF 모델의 아키텍처</em></p></div>
 <ol>
 <li><strong>인지편향 정량화</strong>: 앵커링 효과와 동조편향을 수학적으로 정의·측정하는 메트릭 개발 (로지스틱 회귀를 통한 계수 ξᵢ 산출, 동조계수 κ 정의)</li>
 <li><strong>성능 개선</strong>: CAF 적용 결과 감정 일관성(sentiment consistency) 최대 19.47% 향상, 내용 일관성(content consistency) 최대 12.95% 개선 달성</li>
@@ -112,7 +106,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../458_Language_agents_mirror_human_causal_reasoning_biases/index.html">Language agents mirror human causal reasoning biases</a></div><div class="conn-reason">사회 심리학과 LLM 추론의 연결이 언어 에이전트 편향 연구의 이론적 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../179_Can_ai_replace_human_subjects_a_large-scale_replication_of_p/index.html">Can AI Replace Human Subjects? A Large-Scale Replication of Psychological Experiments with LLMs</a></div><div class="conn-reason">심리학 실험 재현 vs 사회심리학과 LLM 추론 연결의 서로 다른 심리학 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../537_Mind_the_blind_spots_A_focus-level_evaluation_framework_for/index.html">Mind the blind spots: A focus-level evaluation framework for llm reviews</a></div><div class="conn-reason">포커스 레벨 평가와 인지정렬프레임워크는 모두 LLM 리뷰 시스템의 편향 문제를 다루는 상호 보완적인 접근법입니다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../537_Mind_the_blind_spots_A_focus-level_evaluation_framework_for/index.html">Mind the blind spots: A focus-level evaluation framework for llm reviews</a></div><div class="conn-reason">인지정렬프레임워크의 앵커링 효과 완화와 포커스 레벨 평가는 모두 LLM 리뷰의 편향 문제를 다루는 상호 보완적 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../608_Peer_Review_as_A_Multi-Turn_and_Long-Context_Dialogue_with_R/index.html">Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions</a></div><div class="conn-reason">다중 턴 장문맥 대화로서의 동료심사는 메타-리뷰의 갈등 인식 프레임워크를 실제 리뷰 프로세스로 확장한 응용입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../319_Ethnography_and_machine_learning_Synergies_and_new_direction/index.html">Ethnography and Machine Learning: Synergies and New Directions</a></div><div class="conn-reason">사회심리학과 LLM 추론의 결합이 민족지학과 머신러닝 융합의 구체적인 확장 사례이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../498_LLM_as_a_Mastermind_A_Survey_of_Strategic_Reasoning_with_Lar/index.html">LLM as a Mastermind: A Survey of Strategic Reasoning with Large Language Models</a></div><div class="conn-reason">사회심리학과 LLM 추론의 갈등 인식 연구가 다중 에이전트 환경에서의 전략적 추론 메커니즘에 직접 적용되는 심리학적 통찰이다.</div></div>

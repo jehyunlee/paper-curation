@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Danqing Shi, Yao Wang, Yunpeng Bai, Andreas Bulling, Antti Oulasvirta | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2502.03575" target="_blank">10.48550/ARXIV.2502.03575</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Chartist가 다양한 분석 작업(값 검색, 필터링, 극값 찾기)에 걸쳐 작업 중심적 스캔패스를 예측하는 방식을 보여주는 예시</em></p></div>
 <p>본 논문은 차트 읽기 시 사용자의 작업별 안구 움직임 패턴(스캔패스)을 예측하는 첫 번째 계산 모델인 Chartist를 제시한다. 계층적 제어 아키텍처(LLM 기반 인지 제어기와 강화학습 기반 안구운동 제어기)를 통해 값 검색, 필터링, 극값 찾기와 같은 분석 작업을 수행할 때 인간과 유사한 시선 순서를 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>작업 중심적 안구 움직임 제어 개념도: 누적 정보에 기반하여 다음 부작업(subtask)을 결정하고, 각 부작업이 픽셀 수준의 안구 움직임 제어</em></p></div>
 <ol>
 <li><strong>첫 번째 작업 중심 스캔패스 예측 모델</strong>: 자유로운 시청이 아닌 분석 작업 수행 중 시간적 순서를 포함한 스캔패스 예측의 첫 계산 모델 제시</li>
 <li><strong>계층적 제어 아키텍처의 효과성</strong>: 인지과학의 계층적 의사결정 프레임워크 개념을 반영하여 복잡한 작업을 단순한 부작업으로 분해 가능</li>
@@ -109,8 +105,6 @@ a { color: #A62018; }
 <li><strong>인간 유사 시선 행동 특성</strong>: 모델 예측이 고정점 지속 시간, 고정점 간 거리 등 요약 통계에서 인간과 유사한 안구 움직임 행동 특현</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>계층적 안구 움직임 제어 아키텍처 개요: 차트와 작업 입력 시 인지 제어기의 의사결정 흐름</em></p></div>
 <ul>
 <li><strong>고수준 인지 제어기</strong>:
 <ul>

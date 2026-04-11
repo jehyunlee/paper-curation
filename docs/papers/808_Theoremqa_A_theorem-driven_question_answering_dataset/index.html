@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wenhu Chen, Ming Yin, Max Ku, Pan Lu, Yixin Wan, Xueguang Ma, Jianyu Xu, Xinyi Wang, Tony Xia | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TheoremQA의 개요 및 적용된 프롬프팅 전략</em></p></div>
 <p>대학 수준의 수학, 물리, 금융, 전산 분야에서 350개 이상의 정리(theorem)를 포함하는 800개의 고품질 질문-답변 쌍으로 구성된 정리 중심 질문 답변 데이터셋을 제시한다. 이는 LLM의 도메인 지식 적용 능력을 평가하는 첫 번째 벤치마크이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 도메인 전문가 집단이 (1) 수학, 물리, 금융, 전산 분야의 약 400개 정리를 열거하고, (2) 각 정리와 관련된 대학 수준의 질문을 인터넷과 교과서에서 수집하며, (3) 자동 평가를 위해 답안 형식을 표준화(정수, 실수, 불린, 선택지)한 후 최종 800개의 높은 품질의 질문-정리-답변 3중쌍을 확보.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>TheoremQA의 예시. Stokes 정리를 이용한 적분 변환 문제</em></p></div>
 <ol>
 <li><strong>광범위한 정리 커버리지</strong>: 수학(199개), 물리(52개), 금융(55개), 전산(48개) 등 354개의 정리를 포함하며, 대수학, 정수론, 그래프 이론, 정보이론 등 다양한 세부분야를 포괄.</li>
 <li><strong>LLM 성능의 계층화 된 격차 발견</strong>:
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>멀티모달 평가</strong>: 51개의 이미지 포함 질문을 통해 멀티모달 모델들을 평가했으나, 도표 및 텍스트가 혼재된 이미지의 비자연성으로 인해 기존 시각 인코더가 충분한 개선을 제공하지 못함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>TheoremQA의 답변 타입 분포</em></p></div>
 <p><strong>데이터셋 구성 프로세스</strong>:</p>
 <ul>
 <li><strong>정리 열거</strong>: GPT-4를 이용하여 각 분야의 주요 세부분야를 파악한 후, 도메인 전문가 집단이 정리 목록을 정제 및 보완</li>
@@ -140,7 +134,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../339_Fimo_A_challenge_formal_dataset_for_automated_theorem_provin/index.html">Fimo: A challenge formal dataset for automated theorem proving</a></div><div class="conn-reason">정리 기반 질의응답이 형식적 수학 문제 해결의 방법론적 기초</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../697_Scaling_physical_reasoning_with_the_physics_dataset/index.html">Scaling physical reasoning with the physics dataset</a></div><div class="conn-reason">PHYSICS 데이터셋의 물리 문제 평가 방식이 TheoremQA의 정리 기반 질문 답변 벤치마크 설계에 참고가 됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../706_SciBench_Evaluating_College-Level_Scientific_Problem-Solving/index.html">SciBench: Evaluating College-Level Scientific Problem-Solving Abilities of Large Language Models</a></div><div class="conn-reason">둘 다 과학 문제 해결 벤치마크이지만 TheoremQA는 정리 중심, SciBench는 대학 수준 전반을 다루는 차이가 있음</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../706_SciBench_Evaluating_College-Level_Scientific_Problem-Solving/index.html">SciBench: Evaluating College-Level Scientific Problem-Solving Abilities of Large Language Models</a></div><div class="conn-reason">과학 문제 해결 능력을 대학 수준 vs 정리 증명 수준에서 각각 평가한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../807_Theoremexplainagent_Towards_video-based_multimodal_explanati/index.html">TheoremExplainAgent: Towards Video-based Multimodal Explanations for LLM Theorem Understanding</a></div><div class="conn-reason">정리 설명을 위한 비디오 기반 접근법과 텍스트 기반 질문 답변의 서로 다른 다중모드 수학 교육 방식을 비교할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../539_Minif2f_a_cross-system_benchmark_for_formal_olympiad-level_m/index.html">Minif2f: a cross-system benchmark for formal olympiad-level mathematics</a></div><div class="conn-reason">MinIF2F의 형식적 올림피아드 수학 벤치마크가 TheoremQA의 정리 적용 능력 평가를 더욱 엄밀하게 확장함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../697_Scaling_physical_reasoning_with_the_physics_dataset/index.html">Scaling physical reasoning with the physics dataset</a></div><div class="conn-reason">TheoremQA의 정리 기반 평가 방식이 PHYSICS 데이터셋의 물리 문제 해결 능력 평가를 더욱 체계화함</div></div></div>

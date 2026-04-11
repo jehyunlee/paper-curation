@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Syed Asad Rizvi, Daniel Levine, Aakash Patel, Shiyang Zhang, Eric Wang, Curtis Jamison Perry, Ivan Vrkic, Nicole Mayerli Constante, Zirui Fu, Sizhuang He, David Zhang, Cerise Tang, Zhuoyang Lyu, Rayyan Darji, Chang Li, Emily Sun, David Jeong, Lawrence Zhao, Jennifer Kwan, David Braun, Brian Hafler, Hattie Chung, Rahul M. Dhodapkar, Paul Jaeger, Bryan Perozzi, Jeffrey Ishizuka, Shekoofeh Azizi, David Van Dijk | <strong>날짜</strong>: 2025-04-17 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.04.14.648850" target="_blank">10.1101/2025.04.14.648850</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: C2S-Scale는 scRNA-seq 데이터와 자연언어를 통합하여 LLM을 이용한 단일세포 분석 수행</em></p></div>
 <p>단일세포 RNA 시퀀싱 데이터를 "세포 문장(cell sentence)" 형태의 텍스트로 변환하여 대규모언어모델(LLM)로 처리하는 Cell2Sentence 프레임워크를 270억 개의 파라미터로 확장함으로써, 전사체 데이터와 생물학적 텍스트 정보를 통합한 차세대 단일세포 분석 플랫폼을 구현했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,14 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 견고한 스케일링 행동(scaling behavior)과 일반화 능력을 활용하되, Cell2Sentence 데이터 엔지니어링으로 고차원 발현 데이터를 텍스트로 변환하여 기존 LLM 인프라 활용</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: C2S 프레임워크의 다차원적 확장 - 모델 용량, 데이터 크기, 다중 모달리티, 다중세포 지원, 생물학적 스케일 통합</em></p></div>
 <ol>
 <li><strong>확장 가능한 LLM 아키텍처</strong>: 410M에서 27B 파라미터까지 5개 모델 크기에서 일관된 성능 향상 달성. Gemma-2 및 Pythia 기반 모델로 기존 단일세포 모델 대비 압도적 규모 확대</li>
 <li><strong>대규모 다중모달 학습 데이터</strong>: 5천만 개 이상의 인간 및 마우스 세포의 10억 개 토큰 코퍼스 구성 - Human Cell Atlas, CellxGene 통합. 전사체 데이터+생물학적 텍스트+메타데이터 동시 학습</li>
 <li><strong>다양한 다운스트림 작업 성능</strong>: 세포 타입 주석(cell type annotation), 세포 임베딩(cell embedding), 섭동 반응 예측, 자연언어 해석, 공간 추론(spatial reasoning), 질의응답(QA) 등 전방위 우수 성능</li>
 <li><strong>강화학습 기반 성능 향상</strong>: Group Relative Policy Optimization (GRPO)을 적용하여 목표 특정 작업 성능 추가 개선. 특히 복잡한 질의응답 벤치마크에서 현저한 개선</li>
 <li><strong>신규 평가 지표 제안</strong>: 단일세포 Fréchet Inception Distance (scFID) 개발 - 표현식 수준의 노이즈에 덜 민감한 생물학적으로 의미 있는 생성 모델 평가 방법</li>
-</ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: C2S-Scale이 전사체 재단 모델과 일반 LLM을 모두 능가한 다양한 작업 성능</em></p></div></div>
+</ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 모델 용량 증가에 따른 일관된 스케일링 성능</em></p></div>
 <ul>
 <li><strong>데이터 표현 변환</strong>: 각 세포의 발현 유전자를 발현량 내림차순으로 정렬하여 "세포 문장" 생성 - 상대적 위치와 원본 발현 간의 강한 관계로 최소 정보 손실</li>
 <li><strong>이단계 학습</strong>: (1) 자가지도학습(self-supervised) 기반 일반 사전학습 (2) 특정 작업별 추가 미세조정(fine-tuning)</li>
@@ -129,9 +121,7 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../306_Efficient_fine-tuning_of_single-cell_foundation_models_enabl/index.html">Efficient fine-tuning of single-cell foundation models enables zero-shot molecular perturbation prediction</a></div><div class="conn-reason">대규모 언어모델과 단일세포 분석의 통합적 접근법에 대한 기반을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">단일세포 데이터의 LLM 처리 기술이 AI 에이전트 기반 단일세포 데이터베이스 구축과 표준화에 필수적인 기반 기술을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../483_Learning_to_Discover_Regulatory_Elements_for_Gene_Expression/index.html">Learning to Discover Regulatory Elements for Gene Expression Prediction</a></div><div class="conn-reason">단일 세포 분석을 위한 대규모 언어모델이 유전자 발현 예측의 기반을 제공합니다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">단일세포 데이터의 대규모 언어모델 스케일링을 위한 고품질 훈련 데이터 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../161_BioBERT_a_pre-trained_biomedical_language_representation_mod/index.html">BioBERT: a pre-trained biomedical language representation model for biomedical text mining</a></div><div class="conn-reason">단일세포 데이터 텍스트 변환 방식과 생의학 텍스트 전용 언어모델이 생의학 빅데이터 처리의 상반된 접근법을 보여준다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../161_BioBERT_a_pre-trained_biomedical_language_representation_mod/index.html">BioBERT: a pre-trained biomedical language representation model for biomedical text mining</a></div><div class="conn-reason">생의학 텍스트 전용 BERT와 단일세포 데이터를 텍스트로 변환하여 처리하는 LLM이 생의학 데이터 처리의 서로 다른 접근법을 보여준다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../302_Effective_gene_expression_prediction_from_sequence_by_integr/index.html">Effective gene expression prediction from sequence by integrating long-range interactions</a></div><div class="conn-reason">DNA 서열 기반 유전자 발현 예측과 단일세포 데이터의 텍스트 변환 처리가 유전체학 빅데이터 분석의 서로 다른 접근법을 보여준다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../431_Integrated_analysis_of_multimodal_single-cell_data/index.html">Integrated analysis of multimodal single-cell data</a></div><div class="conn-reason">단일세포 데이터를 텍스트로 변환하는 접근법이 멀티모달 단일세포 데이터 통합 분석을 위한 새로운 방법론적 확장을 제공한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../344_Foundation_models_in_bioinformatics/index.html">Foundation models in bioinformatics</a></div><div class="conn-reason">단일 세포 분석을 위한 대형 언어 모델 확장이 생물정보학 기초 모델의 구체적 응용 사례입니다.</div></div>

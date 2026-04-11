@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wuyang Lan, Wenzheng Wang, Changwei Ji, Guoxing Yang, Yongbo Zhang, Xiaohong Liu, Song Wu, Guangyu Wang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 합성 데이터 생성 파이프라인</em></p></div>
 <p>본 논문은 실제 임상 기록을 기반으로 한 20,000개의 임상 데이터셋에서 학습하여, 질병 진단에서 추론 능력을 강화한 의료 특화 대규모 언어모델(LLM) ClinicalGPT-R1을 제시한다. 지도학습 미세조정(SFT)과 강화학습(RL)의 두 단계 학습을 통해 진단 추론 능력을 향상시키며, 중국어 진단 작업에서 GPT-4o를 능가하는 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 실제 임상 기록을 기반으로 한 임상 진단 데이터셋을 구축하고, 탐색 전략(탐험, 역추적, 검증, 수정)을 포함한 다양한 합성 데이터 생성 기법을 적용한 후, SFT와 RL의 두 단계 훈련을 통해 모델의 추론 능력을 개선함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 서로 다른 훈련 방법에 따른 ClinicalGPT-R1 성능 비교 (SFT vs SFT+RL)</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 서로 다른 훈련 데이터 소스에 따른 ClinicalGPT-R1 성능 비교</em></p></div>
 <ol>
 <li><strong>성과 1 - 중국어 진단 우수성</strong>: ClinicalGPT-R1은 중국어 진단 작업에서 GPT-4o를 능가하는 성능 달성. 7개 의료 부서 전반에서 평균 정확도 향상 입증.</li>
 <li><strong>성과 2 - 두 단계 훈련의 효과성</strong>: SFT+RL 조합 훈련이 SFT 단독 훈련보다 우수한 성능을 달성. 강화학습 단계를 통한 추론 최적화의 효과 입증 (그림 2).</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>성과 4 - 벤치마크 구축</strong>: 7개 주요 의료 부서(호흡기계, 위장관계, 비뇨기계, 심혈관계, 면역학, 신경학, 내분비학)를 포괄한 3,500개 샘플의 도전적 평가 벤치마크 MedBench-Hard 구축.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 임상 기록 기반 합성 데이터 생성 파이프라인 상세도</em></p></div>
 <p><strong>의료 데이터 구축:</strong></p>
 <ul>
 <li>MedDX-FT와 익명화된 전자의료기록(EHR)으로부터 실제 임상 데이터 수집</li>

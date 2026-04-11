@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiuying Chen, Tairan Wang, Taicheng Guo, Kehan Guo, Juexiao Zhou, Haoyang Li, Mingchen Zhuge, Jürgen Schmidhuber, Xin Gao, Xiangliang Zhang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2407.16931" target="_blank">arXiv:2407.16931</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: BoolQ(일반 도메인), KGQA(템플릿 기반 화학), ScholarChemQA(실제 논문 기반) 비교</em></p></div>
 <p>화학 학술 논문으로부터 구성된 첫 대규모 화학 QA 데이터셋 ScholarChemQA를 제시하고, 불균형한 라벨 분포와 대량의 미표지 데이터를 다루는 QAMatch 모델을 제안하여 LLM을 능가하는 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 화학 논문의 제목(의문형)을 질문으로, 초록을 근거로 다중선택지(yes/no/maybe) 답변을 생성하여 ScholarChemQA 구성, (2) 라벨 불균형과 미표지 데이터 문제를 해결하는 QAMatch 모델 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: (a) 데이터 크롤링 프로세스 (b) ScholarChemQA의 주제 분포 (c) 라벨 비율 관계</em></p></div>
 <ol>
 <li><strong>첫 화학 학술 QA 데이터셋</strong>: 화학 논문 약 100만 건에서 40k 인스턴스 수집, 1,050개 수동 주석(yes 65.8%, no 21.2%, maybe 13.0%) + 4k 추가 변환 질문 포함. 실제 연구 문제 기반으로 기초 개념부터 복잡한 화학 과정까지 다양한 주제 포함.</li>
 <li><strong>LLM 한계 규명</strong>: GPT-3.5는 54%, GPT-4는 60% 정도의 정확도만 달성하여 도메인 특화 모델의 필요성 입증. LLM들이 복잡한 화학 용어와 심층 의미 분석 능력의 부족을 드러냄.</li>
 <li><strong>QAMatch 모델의 우수성</strong>: 유사 규모의 모델과 GPT-3.5/GPT-4를 모두 능가하는 성능 달성. 작고 효율적이면서도 높은 정확도 제공.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: QAMatch의 지도학습(label rebalancing) 및 반지도학습 구조</em></p></div>
 <ul>
 <li><strong>라벨 불균형 해결 (Label Rebalancing)</strong>: 역클래스 빈도(Inverse Frequency) 기반 인스턴스별(Instance-wise) 손실 함수 가중치 조정. 소수 클래스(maybe 13%)가 다수 클래스(yes 65.8%)에 압도되지 않도록 최적화.</li>
 <li><strong>의사라벨 교정 (Pseudo-label Calibration)</strong>: 미표지 데이터에 대해 생성된 의사라벨의 분포를 원하는 진정한 라벨 분포(Ground Truth Distribution)와 정렬하는 절차. 의사라벨 품질 보증.</li>

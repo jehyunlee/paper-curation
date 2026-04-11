@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Noy Sternlicht, Tom Hope | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.20779v4" target="_blank">arXiv:2505.20779v4</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 과학 논문 초록에서 아이디어 재조합을 자동으로 추출하는 작업. 드래곤플라이 날개에서 영감을 받아 드론 프로펠러를 설계한 사례.</em></p></div>
 <p>과학 논문 28,000개 이상에서 자동으로 추출한 아이디어 재조합 사례들의 대규모 지식베이스를 구축하였으며, 이를 통해 과학자들의 창의적 사고 과정을 분석하고 새로운 연구 방향을 제안하는 모델을 학습할 수 있도록 하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 전문가 주석 데이터셋을 기반으로 대규모 언어모델(LLM)을 미세조정하여 arXiv 논문 초록에서 재조합 사례를 자동 추출하고, 이를 통해 메타과학 분석과 계산 기반 아이디어 생성을 지원하는 지식베이스를 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: CHIMERA 지식베이스 구성 및 응용 분야. 인간 주석 데이터로 LLM을 미세조정하여 대규모 KB를 구축하고, 이를 통해 계산 기반 아이디어 생성, 탐색, 메타과학 분석을 지원한다.</em></p></div>
 <ol>
 <li><strong>CHIMERA 지식베이스 구축</strong>: 28,000개 이상의 재조합 사례를 자동으로 추출하여 구성한 최초의 과학적 아이디어 재조합 지식베이스 개발. Blend(여러 개념의 융합)와 Inspiration(한 영역에서 다른 영역으로의 영감 전이)의 두 가지 재조합 유형 구분.</li>
 <li><strong>고품질 주석 데이터셋 구축</strong>: 박사 학위 소유 주석자 2명이 580개 초록을 주석한 전문가 검증 데이터셋 공개(blend 200개, inspiration 69개, 비재조합 311개)로, 향후 연구의 기초 자원 제공.</li>
@@ -89,8 +85,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: arXiv 카테고리 간 재조합 네트워크. 컴퓨터 과학, 양자생물학, 수학 최적화 간의 상호 연결.</em></p></div>
 <ul>
 <li><strong>데이터 소싱</strong>: unarXive 코퍼스에서 AI 관련 논문 추출, 키워드 기반 필터링(예: "inspired by", "combines", "integration" 등)으로 재조합 가능성 높은 초록 선정</li>
 <li><strong>전문가 주석</strong>: PhD 학위 소유 경험 많은 주석자 2명 선정 → 상세한 지침서 및 1시간 교육 → LightTag 플랫폼 사용 → 10% 겹침 샘플로 품질 모니터링 → NLP 전문가 검토 및 정제</li>
@@ -127,7 +121,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 과학적 재조합을 체계적으로 추출하고 분석하는 최초의 시도로서, 고품질 주석 데이터셋과 지식베이스를 공개함으로써 메타과학 및 계산 기반 아이디어 생성 연구에 실질적 기여를 한다. 다만 AI 논문 중심, 추출 모델의 정량적 평가 미흡, 인과 관계 미확립 등의 한계가 있어, 향후 다학제 확장과 심층 분석이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../762_Spark_A_system_for_scientifically_creative_idea_generation/index.html">Spark: A system for scientifically creative idea generation</a></div><div class="conn-reason">과학적 아이디어 재조합에 대한 지식 기반을 제공하여 창의적 아이디어 생성의 토대를 마련한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../492_Literature_meets_data_A_synergistic_approach_to_hypothesis_g/index.html">Literature meets data: A synergistic approach to hypothesis generation</a></div><div class="conn-reason">Chimera가 기존 아이디어 재조합 패턴을 분석하는 반면, Literature meets data는 문헌과 데이터를 통합하여 새로운 가설을 생성하는 상반된 접근법을 사용함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../492_Literature_meets_data_A_synergistic_approach_to_hypothesis_g/index.html">Literature meets data: A synergistic approach to hypothesis generation</a></div><div class="conn-reason">문헌과 데이터의 시너지 접근법이 기존 아이디어 재조합 패턴 분석과 달리 이론적 통찰과 실증적 패턴을 통합하여 새로운 가설을 생성하는 차별화된 방법론을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../434_Interesting_Scientific_Idea_Generation_using_Knowledge_Graph/index.html">Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders</a></div><div class="conn-reason">지식 그래프를 활용한 과학적 아이디어 생성이 Chimera의 아이디어 재조합 지식베이스를 실제 창의적 연구 제안으로 활용하는 구체적 방법론을 제시함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../392_Grapheval_A_lightweight_graph-based_llm_framework_for_idea_e/index.html">GraphEval: A lightweight graph-based llm framework for idea evaluation</a></div><div class="conn-reason">GraphEval의 LLM 기반 아이디어 평가 프레임워크가 Chimera에서 추출된 재조합 패턴의 품질과 창의성을 체계적으로 평가할 수 있는 도구를 제공함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

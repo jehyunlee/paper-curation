@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yixuan Weng, Minjun Zhu, Guangsheng Bao, Hongbo Zhang, Jindong Wang, Yue Zhang, Linyi Yang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2411.00816" target="_blank">10.48550/ARXIV.2411.00816</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>반복적 훈련 프레임워크: CycleResearcher가 논문을 생성하고 CycleReviewer가 평가하여 선호도 쌍을 구성한 후 정책을 최적화하는 사이클</em></p></div>
 <p>본 논문은 오픈소스 LLM을 활용하여 논문 작성, 동료 검토, 수정의 전체 연구 사이클을 자동화하는 통합 프레임워크를 제안한다. CycleReviewer가 인간 리뷰어보다 26.89% 더 우수한 성능을 보이며, CycleResearcher가 생성한 논문이 인간 전문가 수준(5.36점)에 근접하는 성과를 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 정책 모델(CycleResearcher)과 보상 모델(CycleReviewer)로 구성된 반복적 선호도 훈련(Iterative Preference Training) 프레임워크를 제안하고, 두 개의 새로운 고품질 데이터셋(Review-5k, Research-14k)을 구축하여 강화학습으로 최적화함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Review-5k와 Research-14k 데이터셋 구축 파이프라인: ICLR 2024 리뷰 정보와 주요 ML 학회 논문의 구조화된 아웃라인 및 메인 텍스트 수집</em></p></div>
 <ol>
 <li><strong>CycleReviewer의 탁월한 성능</strong>: 평균 절대오차(MAE) 기준으로 개별 인간 리뷰어 대비 <strong>26.89% 개선</strong>. 논문 점수 예측에서 전문가 수준을 초과함.</li>
 <li><strong>CycleResearcher의 경쟁력 있는 논문 생성</strong>: 생성 논문이 시뮬레이션 동료 검토에서 <strong>5.36점</strong> 달성 (인간 전문가 프리프린트 수준 5.24점 초과, 수용 논문 수준 5.69점에 근접). 31.07% 수용률 달성.</li>
@@ -91,8 +87,6 @@ a { color: #A62018; }
 <li><strong>완전한 자동화 사이클 구현</strong>: 오픈소스 모델(Mistral, Qwen 2.5, 12B-123B 규모)만으로 연구-검토-수정의 전체 루프를 강화학습으로 최적화.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>CycleResearcher와 CycleReviewer의 상호작용을 통한 반복적 개선 메커니즘</em></p></div>
 <h3>방법론 주요 특징</h3>
 <ul>
 <li><strong>이중 모델 아키텍처</strong>:
@@ -148,7 +142,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 오픈소스 LLM으로 전체 연구 수행-동료 검토-수정 사이클을 자동화하는 야심찬 시도로, CycleReviewer가 인간 리뷰어를 초과하는 성과와 대규모 고품질 데이터셋의 공개는 큰 기여이다. 다만 실험 검증의 시뮬레이션 성격, 도메인 일반화의 미흡, 그리고 학술 윤리 문제의 불완전한 처리가 지적되며, 이들이 해결될 경우 과학 자동화 분야에서 중요한 이정표가 될 가능성이 높다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../184_Can_large_language_models_provide_useful_feedback_on_researc/index.html">Can large language models provide useful feedback on research papers? A large-scale empirical analysis</a></div><div class="conn-reason">LLM의 논문 피드백 능력이 자동화된 검토 시스템의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../086_AI-Researcher_Autonomous_Scientific_Innovation/index.html">AI-Researcher: Autonomous Scientific Innovation</a></div><div class="conn-reason">연구 자동화를 위한 서로 다른 사이클 기반 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../086_AI-Researcher_Autonomous_Scientific_Innovation/index.html">AI-Researcher: Autonomous Scientific Innovation</a></div><div class="conn-reason">과학 연구 자동화를 위한 서로 다른 통합 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../184_Can_large_language_models_provide_useful_feedback_on_researc/index.html">Can large language models provide useful feedback on research papers? A large-scale empirical analysis</a></div><div class="conn-reason">논문 피드백 능력이 자동화된 동료 검토 시스템으로 발전됩니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../608_Peer_Review_as_A_Multi-Turn_and_Long-Context_Dialogue_with_R/index.html">Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions</a></div><div class="conn-reason">자동화된 검토가 다중턴 대화 기반 동료 검토로 확장됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

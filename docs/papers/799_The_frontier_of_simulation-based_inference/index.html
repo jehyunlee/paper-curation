@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kyle Cranmer, Johann Brehmer, Gilles Louppe | <strong>날짜</strong>: 12/2020 | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.1912789117" target="_blank">10.1073/pnas.1912789117</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 길이 척도에서 시뮬레이션으로 설명되는 현상들: 입자 충돌기부터 우주 진화까지 모두 다루기 어려운 우도(likelihood)를 가짐</em></p></div>
 <p>본 논문은 복잡한 시뮬레이션으로부터 직접 추론(inference)을 수행하는 <strong>시뮬레이션 기반 추론(simulation-based inference, SBI)</strong>의 급속한 발전을 종합적으로 검토한다. 기계학습, 능동학습, 시뮬레이터 내부 구조 활용이라는 세 가지 주요 동력이 이 분야에 새로운 모멘텀을 부여하고 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기존의 근사 베이지안 계산(Approximate Bayesian Computation, ABC)과 밀도 추정에서 벗어나 기계학습의 발전을 적극 활용하되, 능동학습과 시뮬레이터의 내부 구조를 직접 활용하는 새로운 방법론을 제시한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 시뮬레이션 기반 추론 접근법의 개요: (a) ABC 기반 방법, (e) 밀도 추정 기반 방법과 새로운 신경망 기반 접근법들</em></p></div>
 <ol>
 <li><strong>기계학습과의 교차 수분(Cross-pollination)</strong>: 확률적 모델링과 신경망 기반 밀도 추정 기술이 시뮬레이션 기반 추론에 새로운 가능성을 제시한다. 이는 고차원 데이터에서의 성능 향상과 표본 효율성 개선을 가능하게 한다.</li>
 <li><strong>능동학습의 통합</strong>: 연속적으로 획득한 지식을 활용하여 시뮬레이터 평가의 방향을 지속적으로 최적화함으로써 다양한 추론 방법의 표본 효율성을 크게 향상시킨다.</li>
 <li><strong>시뮬레이터 내부 구조 활용</strong>: 시뮬레이터를 블랙박스로 취급하지 않고 내부 세부사항에 직접 접근하여 추론 엔진의 성능을 극대화하는 새로운 통합 방식을 개발한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>기계학습, 능동학습, 시뮬레이터 내부 구조 활용이 어떻게 상호작용하는지를 보여주는 개념도</em></p></div>
 <ul>
 <li><strong>시뮬레이터 정의</strong>: 입력 매개변수 θ를 받아 내부 상태/잠재변수 z_i ~ p_i(z_i|θ, z<i)를 샘플링하고 최종 데이터 x ~ p(x|θ, z)를 출력하는 확률적 프로그램(probabilistic program)</li>
 <li><strong>추론 문제 분류</strong>:

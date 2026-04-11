@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Haoyu Wang, Yujia Fu, Zhu Zhang, Shuo Wang, Zirui Ren, Xiaorong Wang, Zhili Li, Chaoqun He, Bo An, Zhiyuan Liu, Maosong Sun (Tsinghua University 등) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.05732" target="_blank">arXiv:2504.05732</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 자원 활용에서 전통적인 추출적 방법(왼쪽)과 통합적 접근법(오른쪽)의 비교</em></p></div>
 <p>본 논문은 극도로 긴 입력 자원으로부터 장문 기사를 생성하는 LLM의 능력을 향상시키기 위해, 정보 병목 이론에 기반한 합성곱 신경망 영감의 테스트 타임 스케일링 방법을 제안한다. 추출적 방법의 한계를 극복하기 위해 자원을 통합적으로 활용하는 엔트로피 기반 최적화 프레임워크를 소개한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 정보 병목(Information Bottleneck, IB) 이론에 기반한 이론적 분석을 통해 중간 표현(스켈레톤과 다이제스트)의 중요성을 강조하고, 합성곱 신경망에서 영감을 얻은 엔트로피 기반 반복 개선 메커니즘으로 통합적 자원 활용 달성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: LLM×MapReduce-V2의 전체 파이프라인. 초기화, 스켈레톤 개선, 조사 구성 3단계로 구성</em></p></div>
 <ol>
 <li><strong>이론적 기반</strong>: 정보 병목 분석을 통해 장문→장문 생성의 4가지 최적화 목표(다이제스트 정보 최대화, 스켈레톤 정보 최대화, 불필요한 정보 최소화, 추가 정보 포함) 도출</li>
 <li><strong>실증적 성과</strong>: 제안 방법이 기준선 대비 참고문헌 활용율에서 최소 32.9% 향상을 달성하였으며, 다른 평가 지표에서도 추출적 방법보다 우수한 성능 입증</li>
 <li><strong>벤치마크 구축</strong>: 컴퓨터 과학 분야 학술 조사(survey)와 전체 참고문헌을 쌍으로 포함하는 첫 대규모 장문→장문 생성 평가 벤치마크 SurveyEval 개발</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 스켈레톤의 구조 예시. 각 섹션에 다이제스트 구성과 분석 지침 포함</em></p></div>
 <h3>초기화 단계</h3>
 <ul>
 <li><strong>조사 트리 구성</strong>: 생성될 마크다운 문서의 구조를 반영하는 트리 구조 T=(V,E) 사용 (V: 섹션 제목 노드, E: 부모-자식 관계)</li>
@@ -134,7 +128,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 정보 이론 기반의 견고한 분석과 실용적 파이프라인 설계를 통해 장문→장문 생성의 자원 활용 문제를 체계적으로 해결한 우수한 연구이다. SurveyEval 벤치마크의 구축과 32.9% 이상의 성능 향상은 실질적 가치가 있으나, 높은 계산 비용과 일부 설계 선택의 동기 부족이 실무 적용을 제한할 수 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../005_A_comprehensive_survey_on_long_context_language_modeling/index.html">A comprehensive survey on long context language modeling</a></div><div class="conn-reason">긴 컨텍스트 언어 모델링에 대한 종합적 조사가 극도로 긴 입력 처리 방법론의 이론적 토대를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">발산적 사고와 과학적 창의성 평가와 달리 극도로 긴 입력에서 장문 기사 생성이라는 다른 LLM 능력을 측정한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">과학적 아이디어 생성 능력 평가와 장문 기사 생성 능력 평가 모두 LLM의 창의적 생성 능력을 다루지만 평가 방식이 다르다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../036_A_survey_on_transformer_context_extension_Approaches_and_eva/index.html">A survey on transformer context extension: Approaches and evaluation</a></div><div class="conn-reason">트랜스포머 컨텍스트 확장 접근법들이 엔트로피 기반 테스트 타임 스케일링의 구체적인 확장 기술이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

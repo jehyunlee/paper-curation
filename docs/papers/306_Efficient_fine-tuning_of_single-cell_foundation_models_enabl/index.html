@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sepideh Maleki, Jan-Christian Huetter, Kangway V. Chuang, David Richmond, Gabriele Scalia, Tommaso Biancalani (Genentech) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>scDCA 아키텍처: scGPT의 각 transformer 블록에 drug-conditional adapter를 통합하여 분자 임베딩으로 동적으로 down-projection과 up-projection 계층의 편향을 조정</em></p></div>
 <p>단일세포 기초 모델(foundation model)을 약물 조건부 어댑터(drug-conditional adapter)로 효율적으로 미세조정하여, 미래 약물에 대한 세포 반응 예측 및 미보유 세포주(unseen cell line)에 대한 제로샷 일반화를 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기초 모델의 각 트랜스포머 블록에 약물 조건부 어댑터를 삽입하여, 분자 임베딩으로 어댑터 파라미터를 동적으로 제어. 전체 모델 파라미터의 1% 미만만 학습하여 과적합 방지 및 기초 모델의 지식 보존.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 베이스라인(ChemCPA, Biolord, SAMS-VAE)과의 성능 비교에서 scDCA는 모든 설정에서 최고 성능</em></p></div>
 <ol>
 <li><strong>미보유 약물 및 세포주 예측 성능 향상</strong>: 기존 방법 대비 특히 미보유 세포주에 대한 few-shot 및 zero-shot 일반화에서 현저한 성능 개선 달성. ChemCPA, Biolord, SAMS-VAE 등 기존 최고 성능 방법들을 모든 평가 설정에서 초월.</li>
 <li><strong>매개변수 효율성과 생물학적 지식 보존의 이중성 달성</strong>: 전체 기초 모델 파라미터 중 1% 미만만 학습 가능하게 하여 제한된 데이터셋에서의 과적합 방지. 동시에 사전학습된 transformer 가중치를 동결함으로써 수천만 세포에서 학습한 풍부한 생물학적 표현 유지.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Drug-conditional adapter 모듈의 상세 구조</em></p></div>
 <ul>
 <li><strong>기본 프레임워크</strong>: scGPT(또는 다른 트랜스포머 기반 단일세포 기초 모델)의 각 계층에 drug-conditional adapter 모듈 삽입. 어댑터는 다운-프로젝션(down-projection)과 업-프로젝션(up-projection) 계층의 편향(bias)을 분자 임베딩에 의존적으로 조정.</li>
 <li><strong>분자 조건화 메커니즘</strong>: 약물의 화학 구조를 임베딩 공간으로 인코딩. 이 분자 임베딩이 adapter의 파라미터를 동적으로 제어하여, 약물-특이적 신호를 기초 모델에 주입하되 원본 가중치는 동결.</li>
@@ -112,12 +106,10 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">대규모 언어모델과 단일세포 분석의 통합적 접근법에 대한 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../699_SCANPY_large-scale_single-cell_gene_expression_data_analysis/index.html">SCANPY: large-scale single-cell gene expression data analysis</a></div><div class="conn-reason">단일세포 분석을 Python 기반 스케일링 vs LLM 기반 파운데이션 모델로 접근한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">LLM 기반 신약 개발 에이전트와 단일세포 모델을 결합하여 더 정확한 약물 효과 예측을 할 수 있다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">단일세포 모델의 약물 반응 예측을 LLM 기반 신약 개발 에이전트와 통합한 확장 연구다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../431_Integrated_analysis_of_multimodal_single-cell_data/index.html">Integrated analysis of multimodal single-cell data</a></div><div class="conn-reason">다중모달 단일세포 데이터 분석에 약물 조건부 어댑터를 적용할 수 있다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../287_Dont_Stop_Pretraining_Adapt_Language_Models_to_Domains_and_T/index.html">Don&#x27;t Stop Pretraining: Adapt Language Models to Domains and Tasks</a></div><div class="conn-reason">언어모델 도메인 적응 방법을 단일세포 파운데이션 모델 미세조정에 적용한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../163_Biodsa-1k_Benchmarking_data_science_agents_for_biomedical_re/index.html">Biodsa-1k: Benchmarking data science agents for biomedical research</a></div><div class="conn-reason">단일세포 기초 모델의 약물 반응 예측을 생의학 연구 가설 검증에 적용할 수 있다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">표준화된 단일세포 데이터를 파운데이션 모델의 효율적 파인튜닝에 활용할 수 있다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../163_Biodsa-1k_Benchmarking_data_science_agents_for_biomedical_re/index.html">Biodsa-1k: Benchmarking data science agents for biomedical research</a></div><div class="conn-reason">단일세포 모델의 약물 반응 예측 능력을 생의학 가설 검증 벤치마크에서 평가할 수 있다</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">표준화된 단일세포 데이터를 파운데이션 모델의 효율적 파인튜닝에 활용할 수 있다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

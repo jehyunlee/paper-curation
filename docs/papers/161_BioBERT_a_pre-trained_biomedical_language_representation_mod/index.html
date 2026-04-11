@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: BERT를 생의학 코퍼스(PubMed 초록 및 PMC 전문 기사)에서 추가로 사전학습하여 도메인 특화 BioBERT 모델을 개발하고, 이를 NER, RE, QA 등 다양한 생의학 텍스트 마이닝 과제에 적용 평가함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figure1_overview.png" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. BioBERT의 사전학습 및 미세조정 개요</em></p></div>
 <ol>
 <li><strong>생의학 NER 성능</strong>: 기존 최고 성능 모델 대비 0.62% F1 점수 향상 달성. BioBERT는 WordPiece 임베딩을 직접 학습하여 생의학 도메인 특화 표현 습득.</li>
 <li><strong>관계 추출 성능</strong>: 기존 최고 성능 모델 대비 2.80% F1 점수 향상. [CLS] 토큰 기반 문장 분류로 엔티티 간의 관계를 효과적으로 판별.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일관된 아키텍처</strong>: 거의 동일한 구조로 여러 과제에 최소한의 수정만으로 적용 가능한 범용성 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figure2_pretraining.png" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. (a) PubMed 코퍼스 크기 변화에 따른 성능 (b) 다양한 사전학습 단계에서 BioBERT의 NER 성능</em></p></div>
 <p><strong>사전학습 전략</strong>:</p>
 <ul>
 <li>BERT 가중치로 초기화 후 PubMed 초록과 PMC 전문 기사로 추가 사전학습 (8개 NVIDIA V100 GPU에서 23일간 학습)</li>
@@ -122,12 +118,10 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4.5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4.5/5</span> <span class="eval-badge">Overall: 4.6/5</span></div>
 <p><strong>총평</strong>: BioBERT는 도메인 특화 사전학습의 중요성을 명확히 입증하며, 생의학 텍스트 마이닝 커뮤니티에 실질적이고 즉시 활용 가능한 기여를 제공한 연구다. 공개된 모델과 코드는 이후 생의학 NLP 분야의 발전을 견인한 중요한 기초 자산이 되었다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../707_SciBERT_A_Pretrained_Language_Model_for_Scientific_Text/index.html">SciBERT: A Pretrained Language Model for Scientific Text</a></div><div class="conn-reason">생의학 도메인 특화 BERT 모델의 선구적 연구로서 과학 텍스트 처리를 위한 언어모델 개발의 중요한 출발점이다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../707_SciBERT_A_Pretrained_Language_Model_for_Scientific_Text/index.html">SciBERT: A Pretrained Language Model for Scientific Text</a></div><div class="conn-reason">BioBERT의 생의학 도메인 특화 아이디어를 더 넓은 과학 분야로 확장한 연구</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../720_Scientific_Large_Language_Models_A_Survey_on_Biological__Che/index.html">Scientific Large Language Models: A Survey on Biological &amp; Chemical Domains</a></div><div class="conn-reason">생의학 도메인 특화 언어모델의 초기 연구로서 이후 과학 분야 대형언어모델 발전의 중요한 기반이 되었다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../344_Foundation_models_in_bioinformatics/index.html">Foundation models in bioinformatics</a></div><div class="conn-reason">BioBERT의 생의학 언어 표현 사전훈련이 생물정보학 기초 모델 발전의 중요한 선행 연구입니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../367_Galactica_A_Large_Language_Model_for_Science/index.html">Galactica: A Large Language Model for Science</a></div><div class="conn-reason">도메인 특화 사전학습과 범용 과학 언어모델이 각각 전문성과 범용성 측면에서 다른 접근법을 제시한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">생의학 텍스트 전용 BERT와 단일세포 데이터를 텍스트로 변환하여 처리하는 LLM이 생의학 데이터 처리의 서로 다른 접근법을 보여준다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">단일세포 데이터 텍스트 변환 방식과 생의학 텍스트 전용 언어모델이 생의학 빅데이터 처리의 상반된 접근법을 보여준다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../152_BERT_Pre-training_of_Deep_Bidirectional_Transformers_for_Lan/index.html">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></div><div class="conn-reason">BERT를 생의학 도메인에 특화시켜 의료 텍스트 이해 성능을 개선함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../734_ScispaCy_Fast_and_Robust_Models_for_Biomedical_Natural_Langu/index.html">ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing</a></div><div class="conn-reason">생의학 언어 표현 모델인 BioBERT의 발전을 실용적 NLP 파이프라인으로 확장한 사례이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

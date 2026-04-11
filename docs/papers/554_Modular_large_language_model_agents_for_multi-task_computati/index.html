@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Bowen Gao, Yanwen Huang, Yiqiao Liu, Wenxuan Xie, Wei-Ying Ma, Ya-Qin Zhang, Yanyan Lan | <strong>날짜</strong>: 2025년 3월 31일 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.22164v2" target="_blank">arXiv:2503.22164v2</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Virtual Pharma (PharmAgents)는 약물 발견 타겟 발굴부터 전임상 평가까지의 전체 과정을 시뮬레이션한다.</em></p></div>
 <p>PharmAgents는 대규모 언어 모델(LLM) 기반의 다중 에이전트 협력 시스템으로, 신약 개발의 전체 워크플로우—타겟 발굴, 리드 화합물 식별, 최적화, 전임상 평가—를 자동화하고 투명하게 수행한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 광범위한 지식과 추론 능력에 특화된 머신러닝 모델과 계산 도구를 결합하고, 역할 기반(role-based) 에이전트 구조로 신약 개발 파이프라인을 모듈화하여 협력 체계 구축</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PharmAgents의 전체 워크플로우: 질병 정보 입력부터 최종 후보 약물 평가까지의 4개 주요 모듈</em></p></div>
 <ol>
 <li><strong>타겟 발굴의 정확성</strong>: 18개 중 16개 타겟이 인간 전문가에 의해 적절하다고 평가됨. 질병 맥락에서 오차 누적 없이 신뢰할 수 있는 타겟과 리간드 결합 위치 확인</li>
 <li><strong>분자 생성 및 최적화 성능</strong>: SOTA 방법 대비 성공률을 15.72%에서 37.94%로 향상, 동일 타겟에서 질병별 맥락을 반영하여 상충하는 성질의 화합물 설계 가능</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자기진화 능력</strong>: 과거 경험을 학습하여 향후 설계를 개선하며 성공률을 30%에서 36%로 증가</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>타겟 발굴 모듈의 워크플로우와 예시 결과</em></p></div>
 <h3>4개 모듈 구조:</h3>
 <ul>
 <li><strong>Target Discovery (타겟 발굴)</strong>:
@@ -99,15 +93,11 @@ a { color: #A62018; }
 </li>
 <li><strong>Lead Identification (리드 화합물 식별)</strong>:</li>
 </ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>리드 화합물 식별 모듈의 워크플로우와 예시 결과</em></p></div>
 <ul>
 <li>타겟 정보, 질병 맥락, 포켓 구조 기반으로 가능성 있는 리드 화합물 생성</li>
 </ul>
 </li>
 <li><strong>Lead Optimization (리드 최적화)</strong>:</li>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>리드 최적화 모듈의 워크플로우와 예시 결과</em></p></div>
 <ul>
 <li>결합 친화력(binding affinity) 및 약물 유사성(drug-likeness) 성질 개선</li>
 </ul>
@@ -151,7 +141,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: PharmAgents는 LLM 기반 다중 에이전트 시스템을 신약 개발 전체 파이프라인에 체계적으로 적용한 획기적 사례로, 자동화와 해석가능성의 결합을 통해 규제 친화적 AI 약물 발견의 새로운 패러다임을 제시한다. 다만 실제 실험 검증과 광범위한 질병별 평가를 통해 실용성을 더욱 강화할 필요가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">화학 도구로 증강된 대규모 언어 모델이 PharmAgents의 신약 개발 전 과정 자동화를 위한 핵심적인 기술적 토대를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../514_MAC-AMP_A_Closed-Loop_Multi-Agent_Collaboration_System_for_M/index.html">MAC-AMP: A Closed-Loop Multi-Agent Collaboration System for Multi-Objective Antimicrobial Peptide Design</a></div><div class="conn-reason">PharmAgents의 포괄적 신약 개발과 MAC-AMP의 항균펩타이드 특화 시스템은 서로 다른 범위에서 약물 개발을 자동화하는 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../514_MAC-AMP_A_Closed-Loop_Multi-Agent_Collaboration_System_for_M/index.html">MAC-AMP: A Closed-Loop Multi-Agent Collaboration System for Multi-Objective Antimicrobial Peptide Design</a></div><div class="conn-reason">MAC-AMP의 항균펩타이드 특화 다중 에이전트와 PharmAgents의 포괄적 신약 개발 시스템은 서로 다른 범위에서 약물 설계를 자동화하는 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html">The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies</a></div><div class="conn-reason">Virtual Lab의 실제 나노바디 설계 성공이 PharmAgents의 가상 제약회사 개념을 특정 단백질 영역에서 실증한 구체적 확장 사례이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

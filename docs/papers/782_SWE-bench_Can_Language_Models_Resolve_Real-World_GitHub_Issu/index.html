@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, Karthik Narasimhan | <strong>날짜</strong>: 2024-11-11 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2310.06770" target="_blank">10.48550/arXiv.2310.06770</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: SWE-bench는 GitHub 이슈를 실제 코드베이스와 함께 제시하여 언어 모델이 생성한 패치를 단위 테스트로 검증하는 방식으로 작동</em></p></div>
 <p>실제 GitHub 이슈 2,294개를 기반으로 한 소프트웨어 엔지니어링 벤치마크 SWE-bench를 제시하며, 최고 성능 모델(Claude 2)도 1.96%의 낮은 해결율만 달성하여 대규모 언어 모델의 실제 소프트웨어 엔지니어링 능력의 한계를 명확히 드러낸다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 실제 GitHub 이슈-PR 쌍을 3단계 필터링(속성 필터링, 실행 필터링)으로 정제하여 고품질 작업 인스턴스 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 3단계 데이터 파이프라인: (1) 인기 리포지토리 90,000개 PR 수집 → (2) 이슈 해결 + 테스트 기여 PR 필터링 → (3) 실행 기반 필터링으로 2,294개 최종 작업 구성</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구성</strong>: 12개 인기 Python 리포지토리에서 2,294개의 실제 이슈를 기반으로 한 고품질 벤치마크 생성. 각 작업은 평균 438K 라인의 대규모 코드베이스, 195단어의 이슈 설명, 평균 1.7개 파일과 3.0개 함수 수정 필요</li>
 <li><strong>상태 최고 모델의 성능 한계 실증</strong>: Claude 2 (BM25 retriever 포함) 1.96%, GPT-4는 미포함되었으나 공개 모델 중 SWE-Llama 13b가 경쟁 가능 수준의 성능 달성</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>지속적 확장 가능성</strong>: 최소 인간 개입으로 새로운 Python 리포지토리를 추가할 수 있는 자동화된 파이프라인 설계</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 12개 리포지토리별 작업 분포 (django 850개가 가장 많고, flask 11개가 가장 적음)</em></p></div>
 <h3>데이터 구성 방법론</h3>
 <ul>
 <li><strong>Stage I</strong>: GitHub에서 ~90,000개 PR 수집 (>90% Python 코드, 인기 리포지토리 중심)</li>

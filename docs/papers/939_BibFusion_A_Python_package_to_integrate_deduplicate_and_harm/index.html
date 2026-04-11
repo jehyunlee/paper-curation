@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Angelo Britto, Sebastian Robledo, Martha Zuluaga | <strong>날짜</strong>: 2026-02-14 | <strong>DOI</strong>: <a href="https://doi.org/10.47909/ijsmc.342" target="_blank">10.47909/ijsmc.342</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2 presents the unified ER model of the</em></p></div>
 <p>BibFusion은 Scopus와 Web of Science의 서지 데이터를 통합, 중복 제거 및 조화(harmonize)하여 서지계량 분석에 활용할 수 있는 Python 패키지이다. DOI 기반 식별자와 메타데이터 정규화를 통해 분석 준비된 통합 말뭉치를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: BibFusion은 DOI 우선 중복 제거 전략(부재 시 제목-연도-첫 저자 대체)과 OpenAlex 기반 DOI 해석을 통한 선택적 메타데이터 풍부화를 적용한다. 정규 PersonID 계층(ORCID → OpenAlexAuthorID → 정규화 이름)을 통해 저자를 구분하고, 병합 결정과 감사 추적을 기록한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2 presents the unified ER model of the</em></p></div>
 <ul>
 <li><strong>통합 및 정규화</strong>: Scopus CSV와 WoS TXT 파일을 수입하여 제목/키의 ASCII/대문자 표준화, 소속 정보 파싱 및 국가 추출 등 체계적 정규화 수행</li>
 <li><strong>메타데이터 풍부화</strong>: DOI 기반 OpenAlex 해석으로 OpenAlex 저작 ID, ORCID, OpenAlex 저자 ID 등 지속적 식별자 회수</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>분석 준비 말뭉치</strong>: 8,569개 논문의 높은 식별자 및 지리적 완정성을 갖춘 통합 말뭉치와 일관된 인용 네트워크 제공</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1 provides a synopsis of the end-to-end</em></p></div>
 <ul>
 <li>메타데이터 정규화(ASCII 표준화, 대소문자 통일)</li>
 <li>OpenAlex API를 통한 DOI 기반 식별자 해석</li>

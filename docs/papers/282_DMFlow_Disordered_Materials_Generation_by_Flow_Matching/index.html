@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Liming Wu, Rui Jiao, Qi Li, Mingze Li, Songyou Li, Shifeng Jin, Wenbing Huang | <strong>날짜</strong>: 2026-02-04 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2602.04734" target="_blank">10.48550/arXiv.2602.04734</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 완전 정렬 결정체 vs. 무질서 결정체. 화살표는 슈퍼셀 축소, BL/BR은 좌측/우측 위치를 표시</em></p></div>
 <p>본 논문은 완전히 정렬된 결정체만 생성하던 기존 심화 학습 모델의 한계를 극복하기 위해, <strong>치환 무질서(Substitutional Disorder, SD)와 위치 무질서(Positional Disorder, PD)를 모두 생성 가능한 DMFlow 프레임워크</strong>를 제시한다. 리만 기하학적 흐름 매칭(Riemannian Flow Matching)과 구 재매개변수화를 통해 확률 심플렉스 제약을 만족하는 물리적으로 타당한 무질서 가중치를 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -97,8 +95,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: DMFlow의 전체 프레임워크. (a) 선행 분포에서 목표 데이터 분포로의 흐름 매칭 과정, (b) 각 다양체의 기하학적 표현, (c) 속도 예측 네트워크의 GNN 아키텍처</em></p></div>
 <ol>
 <li><strong>통일된 표현 체계</strong>:
 <ul>
@@ -120,8 +116,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 앙상블 투표(Ensemble Voting) 절차를 통한 이산화</em></p></div>
 <ul>
 <li><strong>통일된 표현 설계</strong>:
 <ul>
@@ -214,7 +208,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: DMFlow는 무질서 결정체 생성이라는 중요하면서도 미개척된 문제를 처음 체계적으로 해결한 논문으로, 리만 흐름 매칭과 통합 표현이라는 기술적 혁신을 통해 높은 완성도를 보인다. 다만 이진 PD 제약, 생성 구조의 물리적 검증 부족, 대규모 구조에 대한 확장성 미검증 등이 향후 개선 과제이며, 실제 신물질 발견으로의 영향력은 추가 실증이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../555_Molgan_An_implicit_generative_model_for_small_molecular_grap/index.html">Molgan: An implicit generative model for small molecular graphs</a></div><div class="conn-reason">소분자용 암시적 생성모델 MolGAN이 무질서 재료 생성의 기반 제공</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../555_Molgan_An_implicit_generative_model_for_small_molecular_grap/index.html">Molgan: An implicit generative model for small molecular graphs</a></div><div class="conn-reason">DMFlow의 무질서 물질 생성 방법론이 MolGAN의 분자 그래프 생성 알고리즘 개발에 기초가 됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../383_Geometry_Informed_Tokenization_of_Molecules_for_Language_Mod/index.html">Geometry Informed Tokenization of Molecules for Language Model Generation</a></div><div class="conn-reason">언어모델 분자 생성과 무질서 재료 생성의 다른 생성 모델 접근법</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1099_Generative_Inversion_of_Spectroscopic_Data_for_Amorphous_Str/index.html">Generative Inversion of Spectroscopic Data for Amorphous Structure Elucidation</a></div><div class="conn-reason">비정질 재료 구조 생성에서 흐름 매칭과 확산 모델의 다른 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../269_Derivative-Free_Guidance_in_Continuous_and_Discrete_Diffusio/index.html">Derivative-Free Guidance in Continuous and Discrete Diffusion Models with Soft Value-Based Decoding</a></div><div class="conn-reason">연속 이산 확산의 미분 프리 가이던스에서 무질서 재료로의 확장</div></div>

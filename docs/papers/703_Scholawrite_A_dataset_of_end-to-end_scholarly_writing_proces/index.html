@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Overleaf에서 작동하는 Chrome 확장 프로그램으로 자연스러운 환경에서 키스트로크를 수집하고, 15개 범주로 구성된 인지적 저술 의도 분류체계(taxonomy)를 개발하여 각 변경사항에 주석을 달아 종단 데이터셋을 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figure1_writing_process.png" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 주석이 달린 저술 의도를 포함한 학술 저술 과정의 예시. 반복적이고 비선형적이며 긴 시간에 걸쳐 여러 활동, 도구, 의도 간 빈번한 전환</em></p></div>
 <ol>
 <li><strong>ScholaWrite 데이터셋</strong>: 컴퓨터과학 대학원생 10명으로부터 수집한 5개 논문 전본(full manuscripts)에서 4개월간 61,885개 텍스트 변경을 추적. 각 키스트로크는 인지적 의도(생각 발상, 명확성 개선 등) 주석이 달려 있어 저술 인지 모델링에 최적화됨.</li>
 <li><strong>재사용 가능한 저술 포착 도구 및 분류체계</strong>: Overleaf용 Chrome 확장 프로그램이 프라이버시를 보호하면서 실시간 키스트로크를 기록하고, 15개 세부 의도 범주를 통해 학술 저술의 인지적 기제를 체계적으로 분석 가능하게 함.</li>
 <li><strong>인간-LLM 간극의 실증적 통찰</strong>: 저술의 57.4%는 텍스트 생산, 명확성·유창성 개선에 집중되며, 절반 이상의 세션에서 3개 이상의 복합 의도가 얽혀 있음을 발견. GPT-4, Qwen 등 현재 LLM은 표면 수준의 편집은 모방하나 다음 의도 예측이나 인지적으로 복잡한 수정을 지속하는 데 실패.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="table1_taxonomy.png" alt="Figure 1 (Table 1)">
-<p class="fig-caption"><em>표 1: 세 가지 대범주(계획, 구현, 검토) 하에 15개 세부 의도 분류체계 (예: 생각 발상 7.0%, 텍스트 생산 57.4%, 유창성 개선 등)</em></p></div>
 <p><strong>데이터 수집 및 주석 파이프라인:</strong></p>
 <ul>
 <li><strong>Overleaf 키스트로크 로깅</strong>: Chrome 확장이 key-up 이벤트마다 visible text를 캡처하고 Google의 diff_match_patch로 변경사항 추출, 타임스탐프·파일명·저자 ID 메타데이터 저장</li>

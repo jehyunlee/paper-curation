@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lei Wang, Yi Hu, Jiabang He, Xing Xu, Ning Liu, Hui Liu, Heng Tao Shen | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ScienceQA 데이터 예시: 인간 주석 CoT와 LLM 생성 CoT 비교. LLM 생성 CoT가 더 많은 외부 지식을 포함함</em></p></div>
 <p>본 논문은 대형 언어 모델(LLM)이 생성한 연쇄적 사고(Chain-of-Thought, CoT) 신호를 혼합하여 과학 문제 해결 능력을 갖춘 소규모 학생 모델을 학습하는 T-SciQ 프레임워크를 제안한다. 인간 주석의 비용 문제와 정보 손실을 극복하기 위해 두 가지 유형의 자동 생성 교수 신호를 결합하는 혁신적인 데이터 혼합 전략을 도입한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 교사 모델로 활용하여 (1) 단순 CoT(QA-CoT)와 (2) 계획 기반 CoT(QA-PCoT)라는 두 가지 유형의 교수 데이터를 자동 생성하고, 검증 세트를 기반으로 이들을 문제 유형별로 혼합하여 최적의 학습 데이터셋을 구성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>T-SciQ 프레임워크의 3단계: (i) 교수 데이터 생성, (ii) 데이터 혼합, (iii) 미세조정</em></p></div>
 <ol>
 <li><strong>최첨단 성능 달성</strong>: ScienceQA 벤치마크에서 96.18% 정확도로 새로운 최고 기록 수립
 <ul>

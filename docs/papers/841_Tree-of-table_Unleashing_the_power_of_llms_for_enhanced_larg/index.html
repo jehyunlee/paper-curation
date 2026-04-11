@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Deyi Ji, Lanyun Zhu, Siqi Gao, Peng Xu, Hongtao Lu, Jieping Ye, Feng Zhao | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) 일반적 추론, (b) Chain-of-Table, (c) 제안된 Tree-of-Table 방법의 비교. Tree-of-Table은 대규모 관계형 테이블에 대해 계층적이고 구조화된 추론 프로세스를 통해 우수한 성능을 보여줌</em></p></div>
 <p>대규모 테이블 이해를 위해 테이블 응축 및 분해를 통해 관련 정보를 추출한 후, 계층적 Table-Tree를 구성하여 트리 구조 추론을 수행하는 새로운 방법론을 제시한다. 이는 기존의 선형 체인 기반 방식의 한계를 극복하고 복잡한 다중 테이블 관계를 효과적으로 처리한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 테이블을 계층적 트리 구조로 변환하여 단계별 인간 추론 방식을 반영하고, 각 노드가 명확한 목적을 가지도록 체계화된 추론 경로 제공</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: Tree-of-Table 방법론의 초기 단계 - 테이블 응축 및 분해 과정</em></p></div>
 <ol>
 <li><strong>벤치마크 설정</strong>: WikiTQ, TableFact, FeTaQA, BIRD 등 4개 주요 데이터셋에서 최고 성능(SOTA) 달성</li>
 <li><strong>확장성 입증</strong>: 대규모 복잡 테이블(특히 BIRD 데이터셋)에서 기존 방법 대비 현저한 성능 향상 및 일반화 능력 입증</li>
 <li><strong>효율성 개선</strong>: 테이블 응축 및 계층적 분해를 통해 LLM의 컨텍스트 사용 효율성 대폭 개선</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: Tree-of-Table 실행 단계에서 구조화된 추론 과정</em></p></div>
 <p><strong>Tree-of-Table의 3단계 프로세스</strong>:</p>
 <ol>
 <li><strong>Table Condensation & Decomposition</strong>
@@ -137,11 +131,9 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Tree-of-Table은 대규모 테이블 이해라는 중요한 실무 문제에 대해 트리 구조 추론을 통한 창의적인 해결책을 제시하며, 다양한 벤치마크에서 입증된 성능으로 충분한 기여가 있다. 다만 구체적인 알고리즘 설명과 계산 비용 분석이 보강되면 더욱 완성도 높은 연구가 될 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../035_A_survey_on_table-and-text_hybridqa_Concepts_methods_challen/index.html">A survey on table-and-text hybridqa: Concepts, methods, challenges and future directions</a></div><div class="conn-reason">테이블-텍스트 하이브리드 QA에 대한 조사는 대규모 테이블 이해를 위한 계층적 Table-Tree 구성의 이론적 기반을 제공합니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../652_Rbf_Quantifying_and_optimizing_reasoning_boundaries_across_m/index.html">RBF++: Quantifying and optimizing reasoning boundaries across measurable and unmeasurable capabilities for chain-of-thought reasoning</a></div><div class="conn-reason">RBF++의 추론 경계 최적화와 Tree-of-table의 계층적 구조 추론은 모두 복잡한 추론 문제를 해결하기 위한 서로 다른 구조적 접근법입니다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../652_Rbf_Quantifying_and_optimizing_reasoning_boundaries_across_m/index.html">RBF++: Quantifying and optimizing reasoning boundaries across measurable and unmeasurable capabilities for chain-of-thought reasoning</a></div><div class="conn-reason">Tree-of-table의 계층적 테이블 추론과 RBF++의 추론 경계 최적화는 모두 복잡한 추론 능력 향상을 위한 서로 다른 구조적 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../035_A_survey_on_table-and-text_hybridqa_Concepts_methods_challen/index.html">A survey on table-and-text hybridqa: Concepts, methods, challenges and future directions</a></div><div class="conn-reason">테이블 기반 QA가 LLM의 대규모 테이블 추론 능력으로 확장됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1092_Table-llm-specialist_Language_model_specialists_for_tables_u/index.html">Table-llm-specialist: Language model specialists for tables using iterative generator-validator finetuning</a></div><div class="conn-reason">테이블 처리 능력을 Tree-of-Table 방법론으로 더욱 체계화한 확장 연구</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">대형 언어모델을 활용한 테이블 마스터는 Tree-of-table의 계층적 테이블 처리 방식을 더욱 발전시킨 형태입니다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">기본적인 테이블 이해를 Tree-of-table과 같은 더 체계적인 대규모 테이블 추론 방법으로 확장함</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">대형 언어모델을 활용한 테이블 마스터는 Tree-of-table의 계층적 테이블 처리 방식을 더욱 발전시킨 형태입니다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

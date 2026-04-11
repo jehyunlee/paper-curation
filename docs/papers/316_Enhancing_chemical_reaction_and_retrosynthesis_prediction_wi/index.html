@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xuan Lin, Qingrui Liu, Hongxin Xiang, Daojian Zeng, Xiangxiang Zeng | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.02639" target="_blank">arXiv:2505.02639</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>BRICS 기반 단편(fragment)과 반응물(reactant) 간의 유사성 분포(평균 66.5%) 및 이중 과제 학습을 통한 성능 향상(6.3% 개선)</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)을 화학 반응 및 역합성 예측에 적용할 때 직면하는 데이터 부족과 과제 간 상관관계 무시 문제를 해결하기 위해, BRICS 기반 440만 개 분자 데이터셋과 이중 과제 학습 전략을 갖춘 ChemDual 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -82,16 +80,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) BRICS 기반 저비용 대규모 데이터셋(440만) 구축, (2) 다중 규모 토크나이저를 통한 원자·함수기·단편 수준의 분자 정보 캡처, (3) 단편 재조합 및 반응 예측을 동시에 최적화하는 이중 과제 학습 전략 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChemDual의 전체 구조: 데이터셋 구축, 다중 규모 토크나이저, 이중 과제 학습 모듈</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: Mol-Instruction 및 USPTO-50K 데이터셋에서 기존 단일 과제 접근법 및 일반 오픈소스 LLM을 능가하는 정확도 달성 (반응 예측에서 이중 과제 학습 적용 시 6.3% Exact Match Score 개선)</li>
 <li><strong>약물 설계 잠재력</strong>: 분자 도킹 분석 결과 ChemDual이 단백질 결합 친화도가 우수하고 다양한 화합물을 생성하여 신약 설계에 강한 응용 가능성 입증</li>
 <li><strong>효율적 데이터 구축</strong>: 20M SMILES 시퀀스로부터 440만 개의 학습용 지시문 자동 생성으로 데이터 획득 비용 대폭 절감</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>지시문 세트 예시: 역합성(전방 과제)과 반응 예측(후방 과제)</em></p></div>
 <p><strong>Dataset Construction (3.1절)</strong></p>
 <ul>
 <li>ChEMBL-34 데이터베이스에서 20M 분자 SMILES 수집 → 중복 제거, 유효성 검증, 분자량 필터링 → 2.2M 분자 라이브러리 구축</li>
@@ -129,7 +123,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: ChemDual은 BRICS 기반 저비용 대규모 데이터셋과 화학적 직관에 기반한 이중 과제 학습으로 화학 반응/역합성 예측에서 의미 있는 성능 향상을 달성했으며, 약물 설계 응용 가능성을 실증했다. 다만 단편화 방법의 한계, 해석 가능성 부족, 평가 범위 확대의 필요성이 향후 개선 방향이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../856_Unimatch_Universal_matching_from_atom_to_task_for_few-shot_d/index.html">Unimatch: Universal matching from atom to task for few-shot drug discovery</a></div><div class="conn-reason">화학 반응 예측에서 원자 수준부터 과제 수준까지의 계층적 접근법을 사용하지만 메타러닝과 듀얼 태스크 학습이라는 다른 전략을 채택한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../856_Unimatch_Universal_matching_from_atom_to_task_for_few-shot_d/index.html">Unimatch: Universal matching from atom to task for few-shot drug discovery</a></div><div class="conn-reason">few-shot 약물 발견에서 계층적 매칭과 메타러닝을 사용하는 반면 ChemDual은 듀얼 태스크 학습을 채택하는 다른 접근법이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">화학 도구를 활용한 LLM 확장이 ChemDual의 화학 반응 예측 프레임워크와 상호 보완적인 접근법이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../461_LARC_Towards_Human-level_Constrained_Retrosynthesis_Planning/index.html">LARC: Towards Human-level Constrained Retrosynthesis Planning through an Agentic Framework</a></div><div class="conn-reason">인간 수준의 제약 조건을 고려한 역합성 계획이 ChemDual의 역합성 예측 기능의 실제 적용 영역이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1106_The_BOS-Lig_Dataset_Accurate_Ligand_Charges_from_a_Consensus/index.html">The BOS-Lig Dataset: Accurate Ligand Charges from a Consensus Approach for 66,810 Experimentally Synthesized Ligands</a></div><div class="conn-reason">화학 반응 및 역합성 예측 성능 향상에서 본 논문의 정확한 리간드 전하 정보를 활용할 수 있다.</div></div></div>

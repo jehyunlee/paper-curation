@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kexin Chen, Hanqun Cao, Junyou Li, Yuyang Du, Menghao Guo | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.12993" target="_blank">10.48550/arXiv.2402.12993</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Our MLR-COPILOT Framework. LLM IdeaAgent (leftmost grey component) performs research idea</em></p></div>
 <p>대규모언어모델(LLM) 에이전트 기반의 자동화된 기계학습 연구 프레임워크(MLR-COPILOT)로, 연구 아이디어 생성부터 실험 구현 및 실행까지 전 과정을 자동화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: RL 튜닝된 IdeaAgent로 아이디어 생성, ExperimentAgent로 구현 및 실행의 3단계 통합 프레임워크를 구축하며, 모델/데이터 검색(retrieval), 프로토타입 코드 재사용, 반복적 디버깅과 인간 피드백 메커니즘을 포함한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Our MLR-COPILOT Framework. LLM IdeaAgent (leftmost grey component) performs research idea</em></p></div>
 <ul>
 <li><strong>완전 자동화된 ML 연구 파이프라인</strong>: 연구 논문 입력부터 검증된 연구 결과까지 세 단계(아이디어 생성, 구현, 실행)를 통합하여 전체 연구 사이클 자동화</li>
 <li><strong>RL 기반 IdeaAgent 개발</strong>: 4,271개 논문에서 추출한 다차원 평가 지표(novelity, feasibility, effectiveness)로 강화학습 훈련하여 기계학습 연구에 특화된 고품질 아이디어 생성</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실용적 검증</strong>: 5개의 실제 ML 연구 논문/문제에 대한 사례 연구로 유의미한 개선과 결론 도출 가능성 입증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Our MLR-COPILOT Framework. LLM IdeaAgent (leftmost grey component) performs research idea</em></p></div>
 <ul>
 <li><strong>Stage 1 (아이디어 생성)</strong>: 입력 논문에서 연구 과제, 갭, 키워드 추출 → 관련 최근 연구 검색 → RL-튜닝된 IdeaAgent가 트렌드와 갭 분석하여 방법론(h) 및 실험 계획(e) 생성</li>
 <li><strong>Stage 2 (구현)</strong>: 원본 논문에서 프로토타입 코드 검색 → ExperimentAgent가 코드 적응 및 통합 → HuggingFace에서 모델/데이터 옵션 검색 → 실행 가능한 코드 생성</li>

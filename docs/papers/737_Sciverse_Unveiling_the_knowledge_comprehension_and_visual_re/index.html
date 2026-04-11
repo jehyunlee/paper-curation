@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Z. J. Guo, Renrui Zhang, Hao Chen, Jialin Gao, Dongzhi Jiang, Jiaze Wang, Pheng‐Ann Heng | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 5가지 문제 버전과 과학적 CoT 평가 전략의 개요. 지식 수준을 달리하는 3가지 버전과 시각 정보 비중을 달리하는 2가지 버전, 그리고 단계별 평가 전략을 제시.</em></p></div>
 <p>SCIVERSE는 대규모 멀티모달 모델(LMM)의 과학 문제 해결 능력을 세밀하게 평가하기 위한 벤치마크로, 1,147개 문제를 5가지 버전으로 변환한 5,735개 테스트 인스턴스를 제공하며, 과학 지식 이해, 멀티모달 콘텐츠 해석, 연쇄적 사고(CoT) 추론이라는 세 가지 핵심 차원을 체계적으로 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 각 문제를 지식 수준에 따라 3가지 버전(Knowledge-free, -lite, -rich)으로, 시각-텍스트 정보 배분에 따라 2가지 버전(Vision-rich, Vision-only)으로 변환하고, GPT-4o를 활용한 과학적 CoT 평가 전략을 개발하여 단계별 지식 및 논리 오류를 분석한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: SCIVERSE의 주제 분포. 물리학 2,010개(35.0%), 화학 1,880개(32.2%), 생물학 1,845개(32.8%).</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 1,147개의 고품질 과학 문제를 5가지 버전으로 변환하여 5,735개의 평가 인스턴스를 포함하는 SCIVERSE 데이터셋 구축. 물리, 화학, 생물학 3개 주요 학문을 21개 세부 주제로 구분하고 고등학교부터 대학 수준까지 다양한 난이도 포함.</li>
 <li><strong>세밀한 평가 틀</strong>: 과학 문제 해결의 세 가지 차원을 각각 평가할 수 있는 다층 구조 제시:
@@ -96,8 +92,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1 (하단): 과학적 CoT 평가 전략. 단계별 분류, 지식 및 논리 점수 산출.</em></p></div>
 <h3>데이터 수집 및 변환</h3>
 <ul>
 <li>기존 공개 데이터셋(SceMQA, MMMU, CMMMU)에서 1,200개 문제 초수집</li>
@@ -150,7 +144,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../091_Aiscivision_A_framework_for_specializing_large_multimodal_mo/index.html">Aiscivision: A framework for specializing large multimodal models in scientific image classification</a></div><div class="conn-reason">지식 이해와 시각적 추론을 통해 과학 분야에서의 다중모달 모델 활용 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../315_Enhancing_chart-to-code_generation_in_multimodal_large_langu/index.html">Enhancing chart-to-code generation in multimodal large language models via iterative dual preference learning</a></div><div class="conn-reason">차트-코드 생성 향상 기법이 SCIVERSE의 시각적 추론 평가 방법론 개발에 필수적인 기반을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../552_Mmsci_A_dataset_for_graduate-level_multi-discipline_multimod/index.html">MMSCI: A dataset for graduate-level multi-discipline multimodal scientific understanding</a></div><div class="conn-reason">둘 다 과학 멀티모달 평가를 위한 벤치마크이지만 SCIVERSE는 세밀한 능력 분석에, MMSCI는 대규모 데이터 수집에 집중함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../552_Mmsci_A_dataset_for_graduate-level_multi-discipline_multimod/index.html">MMSCI: A dataset for graduate-level multi-discipline multimodal scientific understanding</a></div><div class="conn-reason">둘 다 과학 멀티모달 벤치마크를 제공하지만 MMSCI는 대학원 수준 복잡성에, SCIVERSE는 세밀한 능력 평가에 집중함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../727_Scimage_How_good_are_multimodal_large_language_models_at_sci/index.html">Scimage: How good are multimodal large language models at scientific text-to-image generation? arXiv preprint arXiv:2412.02368, 2024.</a></div><div class="conn-reason">SCIMAGE의 과학 이미지 이해 평가가 SCIVERSE의 멀티모달 콘텐츠 해석 차원을 더욱 구체화함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

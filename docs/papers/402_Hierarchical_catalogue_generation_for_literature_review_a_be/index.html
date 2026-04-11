@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kun Zhu, Xiaocheng Feng, Xiachong Feng, Yingsheng Wu, Bing Qin | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: gpt-3.5-turbo로 생성한 과학 문헌 리뷰의 예시. (A) 직접 생성 시 중복 콘텐츠와 논리적 혼란 발생, (B) 오라클 카탈로그 사용 시 체계적 생성, (C) 생성된 카탈로그 사용 시 품질 저하 문제</em></p></div>
 <p>본 논문은 과학 문헌 리뷰 자동 생성 과정에서 계층적 카탈로그(목차)의 중요성을 강조하고, 참고 논문들을 입력받아 리뷰 논문의 계층적 카탈로그를 생성하는 새로운 과제(HiCatGLR)를 제안한다. 7.6k개의 리뷰 카탈로그와 389k개의 참고 논문으로 구성된 벤치마크 데이터셋을 구축하고, 구조적 특성을 반영한 평가 지표를 설계하여 다양한 최신 모델의 성능을 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -98,8 +96,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 데이터셋의 통계적 특성 및 카탈로그 구조 분포</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: arXiv와 Semantics Scholar에서 제목에 "survey" 또는 "review" 포함 논문 수집 → 11,435개 선별, HTML 형식 확보 가능한 8,397개 최종 선정</li>
 <li><strong>카탈로그 추출</strong>: PDF에서의 구조 정보 손실 문제를 해결하기 위해 ar5iv(LaTeX→HTML 변환 서비스)에서 HTML 파일 획득 → 정규식을 이용해 제목 계층 레벨을 <code><L1>, <L2>, <L3></code> 태그로 변환</li>
@@ -111,8 +107,6 @@ a { color: #A62018; }
 <li>CQE: 기준 카탈로그에서 추출한 템플릿 단어(the, a, of 등)의 재현율로 표준화 정도 측정</li>
 </ul>
 </ul>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 단계별 생성(step-by-step) 접근법의 아키텍처</em></p></div>
 <ul>
 <li><strong>모델 구조</strong>:
 <ul>

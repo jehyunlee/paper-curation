@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuren Mao, Yu Mi, Peigen Liu, Mengfei Zhang, Hanqing Liu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.04698" target="_blank">10.48550/arXiv.2504.04698</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>scAgent의 전체 프레임워크: (a) 다양한 사용자 쿼리에 대응하는 능력, (b) 계획 모듈의 구조, (c) 행동 공간의 구성, (d) 메모리 모듈의 정보</em></p></div>
 <p>대규모 언어 모델(LLM) 기반 에이전트를 활용한 범용 단일세포 주석(cell annotation) 프레임워크로, 조직 간 일반화, 신규 세포 타입 발견, 데이터 효율성을 동시에 달성한다. scAgent는 160개 세포 타입과 35개 조직에서 우수한 성능을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반의 자율 에이전트 아키텍처로 계획 모듈(Planning Module), 행동 공간(Action Space), 메모리 모듈(Memory Module)을 통해 다중 턴 상호작용으로 세포 주석을 자동화한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>교차 조직 CTA 성능: (a,b) CG 데이터셋과 TS 데이터셋에서 정확도, 가중 F1-score, 매크로 F1-score 비교 (c) 혼동 행렬을 통한 다양한 세포 타입 분류 (d,e) 조직별 가중 F1-score 성능</em></p></div>
 <ol>
 <li><strong>최첨단 성능</strong>: CG 데이터셋에서 매크로 F1-score 89.31%로 두 번째 순위 방법(scTab 10X data, 82.58%)을 6.73 포인트 앞지르며, 10배 적은 훈련 데이터로 달성</li>
 <li><strong>우수한 일관성</strong>: 모든 조직에서 우수한 성능 유지(표준편차 ~0.07), 특히 자궁, 태반, 유방 등 8개 중요 조직에서 99% 이상의 가중 F1-score 달성</li>
 <li><strong>데이터 효율성</strong>: 동일한 크기의 훈련 데이터에서 scGPT 등 기존 방법 대비 현저히 높은 성능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>신규 세포 발견 및 배치 효과 보정 성능</em></p></div>
 <ul>
 <li><strong>계획 모듈</strong>: DeepSeek-R1 671B LLM을 기반으로 사용자 쿼리를 입력받아 행동 공간의 도구와 메모리 정보를 통합하여 상세한 실행 계획 생성</li>
 <li><strong>행동 공간</strong>:
@@ -140,7 +134,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../069_Agentomics-ML_Autonomous_Machine_Learning_Experimentation_Ag/index.html">Agentomics-ML: Autonomous Machine Learning Experimentation Agent for Genomic and Transcriptomic Data</a></div><div class="conn-reason">단일 세포 주석을 위한 LLM 에이전트의 다른 접근 방식을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../431_Integrated_analysis_of_multimodal_single-cell_data/index.html">Integrated analysis of multimodal single-cell data</a></div><div class="conn-reason">가중 최근접 이웃 기반 멀티모달 데이터 통합이 LLM 에이전트를 활용한 범용 단일세포 주석 시스템으로 발전했다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../193_CellAgent_An_LLM-driven_Multi-Agent_Framework_for_Automated/index.html">CellAgent: An LLM-driven Multi-Agent Framework for Automated Single-cell Data Analysis</a></div><div class="conn-reason">LLM 기반 다중 에이전트 세포 분석 프레임워크가 범용 단일세포 주석을 더 포괄적인 세포 분석으로 확장한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../193_CellAgent_An_LLM-driven_Multi-Agent_Framework_for_Automated/index.html">CellAgent: An LLM-driven Multi-Agent Framework for Automated Single-cell Data Analysis</a></div><div class="conn-reason">단일세포 주석화를 위한 LLM 에이전트를 자동화된 분석 파이프라인으로 확장할 수 있다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../064_Agentic_AI_for_Scientific_Discovery_A_Survey_of_Progress_Cha/index.html">Agentic AI for Scientific Discovery: A Survey of Progress, Challenges, and Future Directions</a></div><div class="conn-reason">과학 발견을 위한 에이전틱 AI 시스템의 구체적인 생물학 분야 적용 사례로서 단일세포 주석에 특화된다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../344_Foundation_models_in_bioinformatics/index.html">Foundation models in bioinformatics</a></div><div class="conn-reason">LLM 에이전트 기반 단일 세포 주석화가 생물정보학 기초 모델의 실제 적용 사례를 보여줍니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../681_Revisiting_Gene_Ontology_Knowledge_Discovery_with_Hierarchic/index.html">Revisiting Gene Ontology Knowledge Discovery with Hierarchical Feature Selection and Virtual Study Group of AI Agents</a></div><div class="conn-reason">LLM 에이전트를 통한 단일 세포 주석의 구체적 적용으로 생물학적 지식 추출을 보여준다.</div></div></div>

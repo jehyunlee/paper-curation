@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Y. Kang, Jihan Kim | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41467-024-48998-4" target="_blank">10.1038/s41467-024-48998-4</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1 | ChatMOF의 개념도(a)와 구조도(b). ChatMOF는 에이전트, 도구 모음, 평가기의 세 가지 핵심 요소로 구성되어 자연어 질문에 기반하여 금속-유기 골격의 성질을 예측하고 구조를 생성한다.</em></p></div>
 <p>대규모 언어 모델(Large Language Model, LLM)을 활용하여 금속-유기 골격(Metal-Organic Framework, MOF)의 성질을 예측하고 신규 구조를 생성할 수 있는 인공지능 시스템 ChatMOF를 개발했다. 자연스러운 텍스트 입력만으로 복잡한 재료 과학 작업을 자동화할 수 있음을 보여주었다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 데이터베이스(CoREMOF, QMOF, MOFkey, DigiMOF)와 기계학습 모델(MOFTransformer)로 통합하는 멀티 컴포넌트 시스템 설계.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2 | 테이블 검색 도구의 예시. 사용자 질문에 따라 ChatMOF가 자동으로 데이터베이스에서 정보를 추출한다.</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3 | 예측기(predictor)의 사용 예시. MOFTransformer 모델을 선택하여 재료의 성질을 예측한다.</em></p></div>
 <ol>
 <li><strong>높은 예측 정확도</strong>: GPT-4 기반 ChatMOF는 검색(searching) 96.9%, 예측(predicting) 95.7%, 생성(generating) 87.5%의 높은 정확도 달성.</li>
 <li><strong>다중 작업 수행</strong>: 데이터 검색(data retrieval), 성질 예측(property prediction), 구조 생성(structure generation)의 세 가지 핵심 작업을 자동으로 수행하며, 자연언어 입력만으로 사용자가 원하는 성질의 MOF 생성 가능.</li>
 <li><strong>실질적 재료 생성</strong>: 기존 LLM 연구가 문헌에서 추출한 데이터 기반의 응답 생성에 국한된 반면, ChatMOF는 실제 재료 구조 생성이 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Fig. 4 | 유전 알고리즘(genetic algorithm)을 활용한 MOF 생성 프로세스.</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Fig. 5 | 복합적 다단계 질문의 예시. CO₂ Henry 계수와 관련된 복잡한 쿼리 처리.</em></p></div>
 <p><strong>시스템 아키텍처:</strong></p>
 <ul>
 <li><strong>에이전트(Agent)</strong>: ReAct 및 MRKL 방법론 기반으로 사용자 쿼리를 분석, 행동 결정, 입력 관리, 결과 관찰의 4단계 운영 수행. LLM을 중앙 조정자로 활용하여 전체 프로세스 관리.</li>
@@ -138,7 +128,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: ChatMOF는 대규모 언어 모델을 데이터베이스 및 기계학습과 결합하여 재료 과학 분야에 실질적 가치를 제공하는 혁신적 AI 시스템이며, 특히 자연언어 기반 인터페이스와 구조 생성 기능은 주목할 만하나, 생성 정확도 향상과 실험적 검증을 통한 추가 개발이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../764_Sparks_Multi-Agent_Artificial_Intelligence_Model_Discovers_P/index.html">Sparks: Multi-Agent Artificial Intelligence Model Discovers Protein Design Principles</a></div><div class="conn-reason">특정 과학 영역에서의 AI 시스템 성공 사례가 일반적인 자동화된 과학 발견의 가능성을 뒷받침한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../398_Harnessing_large_language_models_for_scientific_novelty_dete/index.html">Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set</a></div><div class="conn-reason">MOF 예측과 생성에서 AI 시스템과 LLM 기반 데이터 수집이라는 서로 다른 접근법으로 화학 소재 연구를 자동화한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../398_Harnessing_large_language_models_for_scientific_novelty_dete/index.html">Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set</a></div><div class="conn-reason">MOF와 화학 소재라는 유사한 영역에서 LLM 기반 지식 추출과 AI 시스템 구축의 서로 다른 접근법을 비교한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../298_Earth-Agent_Unlocking_the_Full_Landscape_of_Earth_Observatio/index.html">Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents</a></div><div class="conn-reason">지구 관측 데이터와 화학 소재라는 서로 다른 과학 영역에서 멀티모달 AI 에이전트 접근법을 비교할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../523_MatterChat_A_Multi-Modal_LLM_for_Material_Science/index.html">MatterChat: A Multi-Modal LLM for Material Science</a></div><div class="conn-reason">특정 화학 소재(MOF)에 특화된 시스템을 더 넓은 재료과학 영역으로 확장하여 포괄적인 멀티모달 LLM을 구축한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

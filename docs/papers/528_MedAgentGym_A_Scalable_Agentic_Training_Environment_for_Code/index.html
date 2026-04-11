@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ran Xu, Yuchen Zhuang, Yishan Zhong, Yue Yu, Zifeng Wang, Xiangru Tang, Hang Wu, May D. Wang, Peifeng Ruan, Donghan Yang, Tao Wang, Guanghua Xiao, Xin Liu, Carl Yang, Yang Xie, Wenqi Shi | <strong>날짜</strong>: 2025-06-04 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.04405v2" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: (a) MedAgentGym의 과제별 성능과 (b) 전체 리더보드 평가. 상용 LLM과 오픈소스 LLM 간 상당한 성능 격차를 시각화함</em></p></div>
 <p>본 논문은 생의학 데이터 과학(biomedical data science)에서 코드 기반 추론 능력을 강화하기 위한 확장 가능한 LLM 에이전트 훈련 환경인 MedAgentGym을 제시한다. 72,413개의 과제 인스턴스와 실행 가능한 샌드박스 환경을 통해 오픈소스 LLM들의 생의학 코딩 역량을 대폭 향상시킬 수 있음을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 12개의 실제 생의학 시나리오에서 파생된 129개 범주의 72,413개 과제 인스턴스를 포함하는 종합적 벤치마크 환경 구축. 각 과제를 Docker 기반 실행 가능한 격리 환경에 캡슐화하고, 상세한 과제 명세, 대화형 피드백, 검증 가능한 정답 주석, 확장 가능한 훈련 궤적(trajectory) 생성을 지원함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1b">
-<p class="fig-caption"><em>Figure 1b: MedAgentGym의 전체 점수 리더보드. 오픈소스와 상용 LLM 간의 상당한 성능 격차 시각화</em></p></div>
 <ol>
 <li><strong>대규모 생의학 코딩 벤치마크 구축</strong>: 12개 실제 데이터소스(MIMIC-III, eICU, TREQS 등)에서 파생된 72,413개의 과제 인스턴스를 정수화. 129개 범주에 걸쳐 데이터베이스 쿼리, 의료 계산, 생물정보학, 기계학습 모델링 등을 포함하는 포괄적 범위를 제공.</li>
 <li><strong>29개 LLM 종합 벤치마킹</strong>: 상용 LLM(gpt-4o, gpt-4.1 등)과 오픈소스 LLM(Qwen, Llama, DeepSeek 등) 간의 생의학 데이터 과학 능력에서 상당한 성능 격차를 정량화. 특히 생의학 소프트웨어 엔지니어링과 예측 모델링에서 차이가 가장 큼.</li>
 <li><strong>효과적인 강화학습 기반 훈련</strong>: Med-Copilot 에이전트가 오프라인 강화학습(offline RL)에서 +43.02%, 온라인 강화학습(online RL)에서 +45.28%의 성능 향상 달성. 최종적으로 Med-Copilot-14B가 분포 내(in-distribution)와 분포 외(out-of-distribution) 과제 모두에서 gpt-4o와 경쟁 가능한 성능 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: MedAgentGym의 전체 구조. 종합적 코드 기반 생의학 추론 과제를 포함</em></p></div>
 <p><strong>데이터 구성 및 통합 벤치마크</strong>:</p>
 <ul>
 <li>MIMIC-III(9개 범주, 10,440개 인스턴스), eICU(9개 범주, 6,824개), TREQS(4개 범주, 9,984개) 등 8개 주요 데이터소스와 MedAgentGym 내부 데이터(113개 범주, 40,142개) 통합</li>
@@ -143,7 +137,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MedAgentGym은 생의학 데이터 과학 분야에서 코드 기반 추론을 위한 최초의 포괄적이고 실행 가능한 훈련 환경으로, 대규모 통합 벤치마크, 효과적인 RL 훈련 방법론, 그리고 공개된 리소스를 통해 오픈소스 LLM의 의료 도메인 적응에</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../163_Biodsa-1k_Benchmarking_data_science_agents_for_biomedical_re/index.html">Biodsa-1k: Benchmarking data science agents for biomedical research</a></div><div class="conn-reason">생의학 데이터 과학 벤치마크가 에이전트 훈련 환경의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../546_Mlgym_A_new_framework_and_benchmark_for_advancing_ai_researc/index.html">MLGym: A new framework and benchmark for advancing ai research agents</a></div><div class="conn-reason">생의학 vs 머신러닝 도메인에서의 AI 에이전트 훈련 환경을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../546_Mlgym_A_new_framework_and_benchmark_for_advancing_ai_researc/index.html">MLGym: A new framework and benchmark for advancing ai research agents</a></div><div class="conn-reason">머신러닝 vs 생의학 도메인에서의 AI 에이전트 개발 환경을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../429_Infiagent-dabench_Evaluating_agents_on_data_analysis_tasks/index.html">InfiAgent-DABench: Evaluating Agents on Data Analysis Tasks</a></div><div class="conn-reason">생의학 코딩 역량이 데이터 분석 작업 평가로 확장됩니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../645_Pubmedqa_A_dataset_for_biomedical_research_question_answerin/index.html">PubMedQA: A Dataset for Biomedical Research Question Answering</a></div><div class="conn-reason">MedAgentGym의 확장 가능한 에이전트 훈련 환경이 PubMedQA 데이터셋을 활용하여 의료 코딩 작업에서의 실제적 성능 향상을 달성할 수 있는 구체적 방법을 제시함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../606_Patientsim_A_persona-driven_simulator_for_realistic_doctor-p/index.html">Patientsim: A Persona-Driven Simulator for Realistic Doctor-Patient Interactions</a></div><div class="conn-reason">코딩 능력을 위한 확장 가능한 에이전트 훈련 환경 MedAgentGym은 환자 시뮬레이터의 의료 교육 활용을 구체화한다.</div></div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qiushi Sun, Zhoumianze Liu, Chang Ma, Zichen Ding, Fangzhi Xu 외 다수 | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.19897" target="_blank">arXiv:2505.19897v2</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AlphaFold를 통한 단백질 구조 예측과 Celestia에서 행성 궤도 표시 등 실제 과학 소프트웨어와 상호작용하는 에이전트</em></p></div>
 <p>본 논문은 현실적인 과학 워크플로우에서 멀티모달 자율 에이전트를 평가하기 위한 <strong>SCIENCEBOARD</strong> 환경과 벤치마크를 제시한다. 생화학, 천문학, 지정보학 등 6개 과학 도메인에서 169개의 고품질 작업을 통해 최신 LLM/VLM 기반 에이전트들이 15% 이하의 성공률을 보이며, 현재 기술의 한계를 명시적으로 드러낸다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 실제 과학 소프트웨어가 통합된 동적이고 시각적으로 풍부한 VM 기반 환경 구축, (2) 도메인 전문가가 설계한 169개의 고품질 현실 작업 벤치마크 개발, (3) GPT-4o, Claude 3.7, UI-TARS 등 최신 에이전트의 상세 평가 및 분석.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>SCIENCEBOARD의 인프라 구조: VM 기반 환경, 과학 소프트웨어, GUI/CLI 인터페이스, 평가 파이프라인</em></p></div>
 <ol>
 <li><strong>종합 평가 환경 구축</strong>:
 <ul>
@@ -110,8 +106,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>작업 주석 파이프라인: 도메인 전문가에 의한 설계 및 검증 프로세스</em></p></div>
 <h3>환경 설계 (Environment Design)</h3>
 <ul>
 <li><strong>POMDP 모델링</strong>: 목표(goal), 상태 공간(state space S), 행동 공간(action space A), 관찰 공간(observation space O), 상태 전이 함수(T)로 형식화</li>

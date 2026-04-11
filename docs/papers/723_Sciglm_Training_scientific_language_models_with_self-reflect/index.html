@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Dan Zhang, Ziniu Hu, Sining Zhoubian, Zhengxiao Du, Kaiyu Yang, Zihan Wang, Yisong Yue, Yuxiao Dong, Jie Tang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2401.07950" target="_blank">arXiv:2401.07950</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 다양한 LLM의 과학 벤치마크 평균 정확도">
-<p class="fig-caption"><em>다양한 파라미터 크기의 LLM들에 대한 SciGLM의 성능 개선 효과</em></p></div>
 <p>SciGLM은 자기 성찰적(self-reflective) 주석 생성 프레임워크를 통해 고품질의 과학 지시 데이터를 자동으로 큐레이션하고, 이를 이용해 여러 언어 모델을 파인튜닝함으로써 대학 수준의 과학 추론 능력을 갖춘 과학 언어 모델을 구축한다. GPT-3.5와 GPT-4 같은 고급 LLM도 기본적인 과학 문제에서 28.52%의 낮은 정확도를 보이는 문제를 해결하기 위해, 물리, 화학, 수학, 형식적 증명(Lean)을 포함하는 254,051개의 고품질 과학 지시문을 포함한 SciInstruct 데이터셋을 구축했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM이 자율적으로 추론 단계를 주석 처리하고, 오류를 자가 진단하며, 개선하는 자기 성찰적 주석 생성 프레임워크를 제안. 이를 통해 최소한의 인간 개입으로 고품질 지시 데이터를 대규모로 생성하고, 여러 언어 모델(ChatGLM3 6B/32B, Llama3-8B-Instruct, Mistral-7B)을 파인튜닝.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: SciInstruct 구축 파이프라인">
-<p class="fig-caption"><em>다양한 소스로부터 데이터 수집, 자기 성찰적 주석, 필터링을 거쳐 고품질 지시문 생성</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5: 자기 성찰적 주석 생성 프레임워크의 워크플로우">
-<p class="fig-caption"><em>3단계 반복 과정을 통한 단계별 정확한 추론 과정 생성의 예시</em></p></div>
 <ol>
 <li><strong>포괄적 과학 지시 데이터셋 구축</strong>: 물리학, 화학, 수학, 형식적 증명(Lean)을 포함하는 254,051개의 검증된 고품질 지시문으로 구성된 SciInstruct 데이터셋 완성. 도메인별 비중은 물리&화학 48.8%, 수학 35.4%, 형식적 증명 15.8%이며, 질문 유형은 채우기형(33.2%), 선택형(32.0%), 복잡한 풀이형(20.1%), 간단한 풀이형(14.6%)으로 다양화.</li>
 <li><strong>성능 향상 검증</strong>: ChatGLM3 6B 모델에서 4.87%, 32B 모델에서 2.67% 정확도 개선 달성. 동일 파라미터 크기의 선행 모델들(Galactica, MAmmoTH)을 능가하며, GPT-4와의 격차를 축소. 과학 벤치마크(CEval-Sci, Sci-Eval, SciBench, MATH, SAT-Math)에서 평균 정확도 향상을 보임.</li>
 <li><strong>일반 언어 능력 보존</strong>: 지시 튜닝을 통한 성능 향상이 기본 모델의 일반 언어 이해 및 코딩 능력을 손상시키지 않음을 검증. SciGLM이 인간-AI 상호작용 및 과학 도메인 전문 지식 모두에 적합한 균형잡힌 모델임을 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 도메인 비중">
-</div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 질문 유형 비중">
-</div>
 <p><strong>데이터 수집 및 큐레이션</strong>:</p>
 <ul>
 <li>물리, 화학, 수학, 형식적 증명(Lean) 등 다양한 과학 분야의 교과서, 교육 자료, 문제집으로부터 기본 QA 데이터 수집</li>

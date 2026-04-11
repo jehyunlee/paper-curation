@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tarun Gupta, Danish Pruthi | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: 미제공</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: LLM 생성 연구 제안서의 표절 탐지를 위한 전문가 평가 개요. 선행 연구와 달리 본 연구의 참여자들은 표절을 적극적으로 탐색하도록 지시받음</em></p></div>
 <p>최근 자동화된 연구 에이전트가 혁신적인 연구 아이디어를 생성할 수 있다고 주장되고 있으나, 본 논문은 LLM이 생성한 연구 문서의 24%가 기존 논문으로부터 정교하게 표절되었음을 입증한다. 특히 이러한 표절이 내장된 표절 탐지 시스템을 우회하며 출처를 인정하지 않는 문제를 지적한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 13명의 분야 전문가에게 NLP 12개 주제별로 5개의 LLM 생성 연구 제안서를 제시하고, 1-5점 척도(5: 직접 표절, 4: 혼합 차용, 3: 부분 겹침, 2: 미미한 유사성, 1: 완전 독창)로 평가하게 하며, 4점 이상은 출처 논문 저자에게 검증을 요청함</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: LLM 생성 연구 문서(Si et al. (2024)의 예시)와 발표된 논문 간의 시각적 매핑</em></p></div>
 <ol>
 <li><strong>표절 검증 결과</strong>: 50개의 LLM 생성 연구 문서 중 14%가 5점(직접 표절), 10%가 4점(혼합 차용)으로 총 24%가 검증된 표절 사례이며, 이는 출처 논문 저자들의 교차 검증을 거침</li>
 <li><strong>광범위한 유사성</strong>: 나머지 76%의 문서도 기존 작업과 다양한 정도의 유사성을 보이며, 완전히 새로운 것으로 보이는 소수의 경우를 제외하고는 대부분 기존 연구와 연결되어 있음</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자동화 탐지 실패</strong>: SSAG(Semantic Scholar Augmented Generation), OpenScholar, Turnitin 등의 자동화된 표절 탐지 방법들이 LLM 생성 연구 제안서의 표절을 적절히 탐지하지 못하며, 통제 실험을 통해 이를 입증함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 제목과 초록을 연결한 PCA 투영 분석</em></p></div>
 <ul>
 <li><strong>전문가 평가 설정</strong>: 각 참여자에게 전문 분야를 지정하게 하고 해당 주제의 5개 제안서 중 3개를 평가 대상으로 선정(총 13명의 전문가 × 다중 평가)</li>
 <li><strong>다층 데이터 소스</strong>: Si et al. (2024)에서 생성한 36개 제안서(12개 주제 × 3개), Si et al. (2024)의 공개 4개 제안서, Lu et al. (2024a)의 10개 논문으로 총 50개 문서 구성</li>
@@ -122,9 +116,7 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../885_Withdrarxiv_A_large-scale_dataset_for_retraction_study/index.html">Withdrarxiv: A large-scale dataset for retraction study</a></div><div class="conn-reason">arXiv 철회 논문 연구에서 AI 생성 연구의 표절 문제로 확장하여 현대적 학술 윤리 문제를 다룹니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../611_People_who_frequently_use_ChatGPT_for_writing_tasks_are_accu/index.html">People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text</a></div><div class="conn-reason">AI 생성 텍스트 탐지 연구에서 AI 생성 연구 논문의 표절 탐지로 확장하여 더 전문적인 영역의 AI 탐지 문제를 다룹니다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../280_Divergent_llm_adoption_and_heterogeneous_convergence_paths_i/index.html">Divergent LLM Adoption and Heterogeneous Convergence Paths in Research Writing</a></div><div class="conn-reason">LLM 채택의 긍정적 수렴 효과와 대조적으로 AI 생성 연구에서 나타나는 표절이라는 부정적 부작용을 지적합니다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html">AAAR-1.0: Assessing AI&#x27;s Potential to Assist Research</a></div><div class="conn-reason">AI의 연구 지원 잠재력에 대한 낙관적 평가와 대조적으로 AI 생성 연구의 실제 품질 문제를 실증적으로 제시합니다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../280_Divergent_llm_adoption_and_heterogeneous_convergence_paths_i/index.html">Divergent LLM Adoption and Heterogeneous Convergence Paths in Research Writing</a></div><div class="conn-reason">LLM 채택의 긍정적 수렴 현상을 다루는 반면, AI 생성 연구의 표절 문제라는 부정적 측면을 제시합니다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html">AAAR-1.0: Assessing AI&#x27;s Potential to Assist Research</a></div><div class="conn-reason">AI의 연구 지원 잠재력을 평가하는 긍정적 관점과 AI 생성 연구의 표절 문제라는 부정적 현실을 대조적으로 보여줍니다.</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html">AAAR-1.0: Assessing AI&#x27;s Potential to Assist Research</a></div><div class="conn-reason">AI의 연구 지원 잠재력에 대한 낙관적 평가와 대조적으로 AI 생성 연구의 실제 품질 문제를 실증적으로 제시합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

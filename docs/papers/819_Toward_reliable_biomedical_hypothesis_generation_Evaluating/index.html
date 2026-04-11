@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Guangzhi Xiong, Eric Xie, Corey Williams, Myles Kim, Amir Hassan Shariatmadari, Sikun Guo, Stefan Bekiranov, Aidong Zhang (University of Virginia) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.24963/ijcai.2025/873" target="_blank">10.24963/ijcai.2025/873</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TruthHypo 벤치마크 개요: 데이터셋 구성, 작업 수식화, 진실성 평가를 포함</em></p></div>
 <p>대규모 언어 모델(LLM)의 생의학 가설 생성 능력을 평가하기 위해 TruthHypo 벤치마크와 KnowHD 할루시네이션 탐지 프레임워크를 제안했으며, LLM이 진실한 가설 생성에서 상당한 어려움을 겪음을 입증하고 지식 기반 접지(groundedness) 점수를 통한 검증 방법을 제시했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 생의학 지식그래프(PubTator 3.0)와 시간 기반 분할(2023년 이전/2024년 이후)을 활용한 TruthHypo 벤치마크를 구축하고, 추론 과정 분석을 통한 KnowHD 할루시네이션 탐지 프레임워크를 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>KnowHD 할루시네이션 탐지 프레임워크 개요</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>접지도(groundedness) 수준에 따른 평균 정확도. 가설들이 접지도 점수별로 그룹화됨</em></p></div>
 <ol>
 <li><strong>벤치마크 구축</strong>: PubTator 3.0 기반 3가지 관계 유형(Chemical & Gene, Disease & Gene, Gene & Gene)에 대해 총 2,024개 인스턴스의 TruthHypo 벤치마크 개발. 시간 기반 분할로 미래 과학 발견 시뮬레이션 구현.</li>
 <li><strong>할루시네이션 탐지 프레임워크</strong>: 가설과 추론 체인을 원자적 주장(atomic claims)으로 분해하여 접지도를 평가하는 KnowHD 프레임워크 제안. 이 점수가 진실한 가설 필터링의 효과적 지표임을 입증.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>휴먼 평가 검증</strong>: 개방형 가설 생성 작업에서 KnowHD의 과학적 타당성 있는 가설 식별 효용성을 휴먼 평가로 확인.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>GPT-4o-mini를 사용한 KnowHD의 정확도 개선. 접지도에 따른 필터링 효과 시각화</em></p></div>
 <p><strong>TruthHypo 벤치마크:</strong></p>
 <ul>
 <li>PubTator 3.0 생의학 지식그래프에서 PMID 기반 시간 분할로 "본 것(seen)"과 "보지 못한 것(unseen)" 부분집합 구성</li>

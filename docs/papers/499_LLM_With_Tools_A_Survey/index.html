@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhuocheng Shen | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.18807" target="_blank">10.48550/arXiv.2409.18807</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM이 도구를 사용하는 전체 프로세스</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)에 외부 도구 통합을 통해 모델의 성능을 향상시키는 방법론을 체계적으로 조사한 종합 리뷰이다. 사용자 지시 이해부터 도구 선택, 실행, 피드백 처리까지의 표준화된 패러다임을 제시하고, 미세조정(Fine-tuning)과 문맥 내 학습(In-Context Learning) 기법을 통해 LLM의 도구 활용 능력을 강화하는 방법을 탐구한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 사용자 의도 이해 → (2) 도구 기능 이해 → (3) 작업 분해 → (4) 동적 계획 조정의 통합 프레임워크 제시</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>사용자 명령에서 피드백 처리까지의 도구 활용 전체 사이클</em></p></div>
 <ol>
 <li><strong>표준화된 도구 활용 패러다임</strong>: 6개의 함수(f_intent, f_plan, f_exec, f_feedback, f_perceive, f_adjust)로 구성된 형식적 프레임워크 정의로, 도구 통합의 일관성 있는 이해를 제공</li>
 <li><strong>도구 활용의 6가지 핵심 도전 과제 체계화</strong>: 도구 호출 시점, 도구 선택 정확성, 호출 방법, 추론 견고성, 시간 효율성, 일반화 능력을 명확히 구분하여 분석</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>Chameleon 재현 및 분석</strong>: ScienceQA에서 Chameleon의 결과를 재현하고 코드 구조를 분석하여 실제 구현의 검증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>도구 사용 흐름도: 사용자 명령 → 의도 파악 → 계획 수립 → 실행 → 피드백 → 조정 → 반복</em></p></div>
 <ul>
 <li><strong>의도 파악 (Intent Recognition)</strong>: 함수 f_intent(u) → i로 사용자의 실제 필요를 추출하여 후속 계획의 방향성 결정</li>
 <li><strong>도구 이해</strong>: 도구의 기본 연산, 적용 시나리오, 한계점을 깊이 있게 학습하여 '언제, 어디서, 어떻게' 사용할지 결정</li>

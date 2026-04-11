@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiaoxi Li, Jiajie Jin, Guanting Dong, Hongjin Qian, Yutao Zhu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.21776" target="_blank">10.48550/arXiv.2504.21776</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: RAG 패러다임 비교: (a) 표준 RAG, (b) 사전 정의된 워크플로우가 있는 고급 RAG, (c) WebThinker의 자율적 도구 호출</em></p></div>
 <p>대규모 추론 모델(LRM)의 정적 지식 의존성을 극복하기 위해, 웹 탐색과 정보 수집을 추론 과정에 통합하는 자율 딥 리서치 에이전트를 제시한다. WebThinker는 LRM이 웹 페이지를 동적으로 탐색하고 실시간으로 보고서를 작성할 수 있도록 지원한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LRM이 추론 과정 중 자율적으로 웹 검색, 페이지 네비게이션, 실시간 보고서 작성을 수행하도록 하는 WebThinker를 제안한다. Deep Web Explorer 모듈과 Autonomous Think-Search-and-Draft 전략, 그리고 RL 기반 DPO 훈련을 결합한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 두 가지 작업에서 WebThinker와 다른 모델의 전체 성능 비교: 복잡한 문제 해결(좌측)과 과학 보고서 생성(우측)</em></p></div>
 <ol>
 <li><strong>복잡한 추론 벤치마크 성능</strong>: GPQA(64.6%), GAIA(48.5%), WebWalkerQA(46.5%), HLE(15.8%)에서 강력한 결과를 달성. Search-o1-32B 대비 GAIA에서 21.9%, HLE에서 36.2% 우월.</li>
 <li><strong>과학 보고서 생성</strong>: Glaive 데이터셋에서 Grok3 DeeperSearch, Gemini 2.0 Deep Research를 능가. 종합성(Comprehensive) 8.3, 철저성(Thorough) 8.4, 사실성(Factuality) 7.7 달성.</li>
 <li><strong>스케일링 효율성</strong>: DeepSeek-R1 기반 모델에서 7B부터 32B까지 일관된 성능 향상 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: WebThinker 프레임워크 개요. (1) 문제 해결 모드는 Deep Web Explorer로 웹 탐색을 가능하게 하고, (2) 보고서 생성 모드는 사고-검색-작성을 동시에 수행</em></p></div>
 <h3>문제 해결 모드 (Problem-Solving Mode)</h3>
 <ul>
 <li><strong>Deep Web Explorer 모듈</strong>: LRM이 지식 격차 마주칠 때 자율적으로 웹 검색 개시</li>

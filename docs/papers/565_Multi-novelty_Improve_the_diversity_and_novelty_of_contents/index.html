@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Arash Lagzian, Srinivas Anumasa, Dianbo Liu | <strong>소속</strong>: National University of Singapore | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2502.12700" target="_blank">arXiv:2502.12700</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다중 관점 임베딩을 통한 LLM 생성 콘텐츠의 다양성과 신규성 향상 개요</em></p></div>
 <p>본 논문은 추론 시점(inference-time)에 텍스트와 이미지 기반 다중 관점(multi-view) 임베딩을 활용하여 대규모 언어모델(LLM)이 생성하는 콘텐츠의 다양성과 신규성을 개선하는 아키텍처 무관(model-agnostic) 방법을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 프롬프트의 다양한 관점을 생성하는 다중 관점 생성기를 통해 LLM에 입력하기 전에 텍스트 및 이미지 기반 관점들을 융합한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>다양성, 신규성, 정확성 평가 결과 (전체 답변 vs 정확한 답변)</em></p></div>
 <ol>
 <li><strong>포괄적 평가 프레임워크 개발</strong>: 다양성(Diversity), 신규성(Novelty), 정확성(Correctness)을 동시에 평가하는 DNC 프레임워크 제안</li>
 <li><strong>대규모 실험 검증</strong>: 909,500개의 생성 응답을 포함한 909kPR 데이터셋을 구축하여 GPT-4o, DeepSeek-R1, Qwen 등 주요 모델들에서 개선 효과 입증</li>
 <li><strong>모델 무관 방법론</strong>: 기존 LLM 아키텍처 수정 없이 적용 가능한 추론 시점 기법으로 오픈소스 및 상용 모델 모두 호환</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>텍스트 다중 관점 임베딩 프로세스</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>이미지 기반 관점 생성 및 설명 개선 프로세스</em></p></div>
 <h3>1. 다중 관점 임베딩</h3>
 <p><strong>텍스트 관점 임베딩 (Text View Embedding)</strong></p>
 <ul>

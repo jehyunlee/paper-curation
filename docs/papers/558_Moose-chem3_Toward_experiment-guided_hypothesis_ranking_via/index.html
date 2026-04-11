@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wanhao Liu, Zonglin Yang, Jue Wang, Lidong Bing, Di Zhang, Dongzhan Zhou, Yuqiang Li, Houqiang Li, Erik Cambria, Wanli Ouyang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.17873" target="_blank">arXiv:2505.17873</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 랭킹 전략의 개요. 사전 실험 랭킹(pre-experiment ranking)은 피드백이 없으며, 실제 실험 기반 랭킹은 상태 의존적이지만 확장 불가능하고, 시뮬레이터 기반 접근은 신속하고 확장 가능함</em></p></div>
 <p>본 논문은 자동 과학 발견(automated scientific discovery)에서 가설 순위 지정(hypothesis ranking)을 위해 <strong>시뮬레이션된 실험 피드백(simulated experimental feedback)</strong>을 활용하는 새로운 과제를 제안한다. 실험실 실험이 비싸고 처리량이 제한적인 자연과학 영역에서, 실제 실험을 반복 수행하지 않으면서도 실험 기반 순위 지정 정책을 개발할 수 있는 고충실도(high-fidelity) 시뮬레이터와 맥락 내 강화학습(in-context reinforcement learning, ICRL) 프레임워크를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세 가지 개념적 기초(A1: 국소 최적점 가정, P1: 과학 원리, D1: 논리적 추론)를 바탕으로 정답 가설과의 거리에 기반한 가설 성능 시뮬레이터를 구축하고, 이를 통해 실험 기반 순위 지정 정책을 개발할 수 있는 환경 제공.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 세 개념적 기초(A1–P1–D1)의 예시. (a) 이상적 성능 경관, (b) 실제 성능 경관, (c) 불완전한 유사도 추정으로 인한 편차</em></p></div>
 <ol>
 <li><strong>시뮬레이터 개발 및 검증</strong>: 문헌에서 실험 결과가 보고된 124개 가설로 구성된 데이터셋을 수집하여 시뮬레이터를 검증. 실제 실험 결과와 높은 추세 정렬(trend alignment)을 달성하며, 그 편차가 습식 실험실(wet-lab) 노이즈와 유사함을 확인. 기존 기준선들(Yang et al., 2025에서 개작된 강력한 기준선 포함)을 능가함.</li>
 <li><strong>실험 기반 순위 지정 과제 정식화</strong>: 상태 의존적이고 동적인 가설 순위 지정이라는 새로운 과제를 형식화하고, 사전 실험 랭킹의 한계를 명확히 함.</li>
 <li><strong>클러스터링 기반 에이전트 정책</strong>: 가설을 기능적 요소(functional elements)로 분해하고, 공유된 기계적 역할(mechanistic roles)로 그룹화한 뒤, 피드백에 기반하여 유망한 요소의 재조합(recombination)을 우선순위 지정. 사전 실험 기준선 및 제거 연구(ablation) 변형들을 현저히 능가함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 시뮬레이터의 내부 구조</em></p></div>
 <h3>시뮬레이터 구축</h3>
 <ul>
 <li><strong>개념적 기초 형식화</strong>:
@@ -110,8 +104,6 @@ a { color: #A62018; }
 <p>```</p>
 <p>f_real(h) = f(h, h<em>; q, φ</em>) + noise_distortion</p>
 <p>```</p>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 맥락 내 강화학습(in-context RL) 프레임워크 내 실험 기반 순위 지정 정책</em></p></div>
 <h3>실험 기반 순위 지정 정책 (ICRL 프레임워크)</h3>
 <ul>
 <li><strong>가설 분해(Decomposition)</strong>: 가설을 기능적 성분으로 분해하여 표현</li>

@@ -75,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다양한 규모에서 예측 가능한 동작을 하는 딥러닝 인프라 및 최적화 방법 개발, (2) 소규모 모델(GPT-4의 1/1,000 ~ 1/10,000 규모)로부터 성능 예측, (3) 인간 시험을 통한 광범위한 능력 평가, (4) 강화학습 피드백(RLHF) 기반 정렬.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: GPT-4 및 소규모 모델의 성능. 내부 코드베이스 데이터셋에서의 최종 손실값(bits per word). 소규모 모델로부터의 전력 법칙 적합이 GPT-4의 최종 손실을 정확히 예측.</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: HumanEval 부분집합에서의 평균 로그 통과율. 전력 법칙 적합이 GPT-4 성능을 매우 정확히 예측.</em></p></div>
 <ol>
 <li><strong>확장 법칙의 정확한 예측</strong>: 손실값(loss) 예측에서 L(C) = aC^b + c 형태의 전력 법칙을 사용하여 GPT-4의 최종 손실을 높은 정확도로 사전 예측. 코딩 능력(HumanEval)도 −E_P[log(pass_rate(C))] = α·C^−k 관계로 1,000배 이상 작은 모델로부터 정확히 예측.</li>
 <li><strong>인간 수준의 시험 성적</strong>: 법학시험(Bar Exam) 상위 10%, LSAT 상위 12%, SAT 수학 상위 11%, GRE 언어 상위 1% 수준의 성능 달성. 기존 GPT-3.5는 법학시험에서 하위 10%였음.</li>
@@ -118,13 +114,11 @@ a { color: #A62018; }
 <div class="section-box"><h2>총평</h2>
 <p>GPT-4는 Transformer 기반 멀티모달 모델로서 인간 수준의 시험 성적 달성, 정확한 확장 예측 능력, 다언어 우수성을 통해 대규모 언어 모델 개발의 새로운 경지를 보여준다. 특히 소규모 모델로부터 거대 모델 성능을 사전 예측할 수 있다는 발견은 과학적 이해도와 배포 안전성을 동시에 향상시키는 기여이다. 다만 아키텍처 및 훈련 세부사항 미공개, 환각·신뢰성 부족, 제한된 문맥 길이 등 한계가 존재하며, 독립적 검증과 추가 투명성이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">Gemini와 함께 멀티모달 AI의 양대 모델로 서로 다른 회사의 접근법을 대표함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">GPT-4와 경쟁하는 Google의 멀티모달 모델로 다른 회사의 접근법을 보여줌</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../801_The_llama_3_herd_of_models/index.html">The Llama 3 Herd of Models</a></div><div class="conn-reason">GPT-4와 경쟁하는 Meta의 오픈소스 언어 모델 시리즈</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../266_Deepseek-v3_technical_report/index.html">Deepseek-v3 technical report</a></div><div class="conn-reason">GPT-4와 경쟁하는 대규모 MoE 모델로 효율성과 성능 면에서 다른 접근법을 제시</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../370_Gemma_2_Improving_open_language_models_at_a_practical_size/index.html">Gemma 2: Improving open language models at a practical size</a></div><div class="conn-reason">GPT-4와 경쟁할 수 있는 성능을 훨씬 작은 모델 크기로 달성하는 다른 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../322_Evaluation_of_openai_o1_Opportunities_and_challenges_of_agi/index.html">Evaluation of openai o1: Opportunities and challenges of agi</a></div><div class="conn-reason">GPT-4를 기반으로 한 OpenAI o1의 추론 능력 평가 연구</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../477_Large_language_models_pass_the_turing_test/index.html">Large language models pass the turing test</a></div><div class="conn-reason">GPT-4의 발전된 언어 능력이 튜링 테스트 통과라는 구체적 성과로 입증됨</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../477_Large_language_models_pass_the_turing_test/index.html">Large language models pass the turing test</a></div><div class="conn-reason">GPT-4 같은 고성능 LLM이 인간과 구별되지 않을 정도로 발전했음을 실증적으로 증명</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../477_Large_language_models_pass_the_turing_test/index.html">Large language models pass the turing test</a></div><div class="conn-reason">GPT-4의 발전된 언어 능력이 튜링 테스트 통과라는 구체적 성과로 입증됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

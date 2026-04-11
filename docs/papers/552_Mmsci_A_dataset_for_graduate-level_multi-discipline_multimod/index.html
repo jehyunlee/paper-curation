@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zekun Li, Xianjun Yang, Kyuri Choi, Wanrong Zhu, Ryan Hsieh, HyeonJung Kim, Jin Hyuk Lim, Sungyoung Ji, Byungju Lee, Xifeng Yan, Linda Ruth Petzold, Stephen D. Wilson, Woosang Lim, William Yang Wang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: MMSCI 데이터셋의 상위 20개 과학 분야별 논문 수와 이미지 수</em></p></div>
 <p>본 논문은 Nature Communications의 동료평가 논문 131,393개로부터 742,273개의 이미지를 수집하여, 72개 학문 분야의 대학원 수준 복잡한 과학 시각화를 이해하기 위한 대규모 멀티모달 데이터셋(MMSCI)을 제시한다. 이를 통해 19개 언어비전모델(Large Vision Language Models, LVLMs)을 평가하며, 미세 조정 및 사전 학습을 통해 모델 성능을 향상시킬 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 동료평가된 Nature Communications 논문에서 고품질 이미지와 메타데이터를 수집하고, 다양한 시각화 유형을 포함하는 포괄적 데이터셋을 구축한다. 도형 설명(figure captioning)과 다지선다형 질문(multiple-choice questions) 벤치마크를 구성하여 LVLMs와 인간 전문가의 성능을 비교 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: MMSCI의 7가지 이질적 과학 이미지 유형 예시 (정량적 데이터 시각화 53.5%, 개략도 13.2%, 현미경 사진 14.7% 등)</em></p></div>
 <ol>
 <li><strong>포괄적 데이터셋 구축</strong>: 72개 과학 분야, 131,393개 논문, 742,273개 이미지로 구성된 대규모 고품질 멀티모달 데이터셋 구축. 기존 데이터셋(주로 CS 분야)과 달리 자연과학 전반을 폭넓게 커버하며 다양한 시각화 유형 포함</li>
 <li><strong>어려운 벤치마크 과제 개발</strong>: 도형 설명과 다지선다형 질문 과제 설계로, 다수의 오픈소스 모델이 무작위 추측 수준 이하의 성능을 보이는 등 과제의 난이도와 현재 모델의 한계를 명확히 드러냄</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>훈련 자원으로서의 가치 입증</strong>: 과제 특화 데이터로 미세 조정 시 성능 향상 달성, 그리고 기사와 이미지의 인터리브(interleaved) 데이터로 사전 학습 시 재료과학 등 하위 과제에서 성능 개선 확인</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 부-도형 캡션 추출의 예시와 벤치마크 데이터 구성</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: Nature Communications 웹사이트에서 개방 접근(open-access), 동료평가 논문의 제목, 초록, 본문, 참고문헌, 도형, 캡션을 체계적으로 수집</li>
 <li><strong>데이터 정제 및 처리</strong>:
@@ -145,7 +139,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">MMC의 차트 이해 기술이 MMSCI의 과학 시각화 데이터 처리 방법론의 핵심 구성요소임</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../261_Deepresearch_bench_A_comprehensive_benchmark_for_deep_resear/index.html">DeepResearch Bench: A Comprehensive Benchmark for Deep Research Agents</a></div><div class="conn-reason">대학원 수준 다중 분야 다중모달 데이터세트가 연구 벤치마크의 기반 제공</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../737_Sciverse_Unveiling_the_knowledge_comprehension_and_visual_re/index.html">Sciverse: Unveiling the knowledge comprehension and visual reasoning of lmms on multi-modal scientific problems</a></div><div class="conn-reason">둘 다 과학 멀티모달 벤치마크를 제공하지만 MMSCI는 대학원 수준 복잡성에, SCIVERSE는 세밀한 능력 평가에 집중함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../737_Sciverse_Unveiling_the_knowledge_comprehension_and_visual_re/index.html">Sciverse: Unveiling the knowledge comprehension and visual reasoning of lmms on multi-modal scientific problems</a></div><div class="conn-reason">둘 다 과학 멀티모달 평가를 위한 벤치마크이지만 SCIVERSE는 세밀한 능력 분석에, MMSCI는 대규모 데이터 수집에 집중함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../706_SciBench_Evaluating_College-Level_Scientific_Problem-Solving/index.html">SciBench: Evaluating College-Level Scientific Problem-Solving Abilities of Large Language Models</a></div><div class="conn-reason">대학 수준 과학 문제를 대학원 수준 멀티모달 과학으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../713_Scicueval_A_comprehensive_dataset_for_evaluating_scientific/index.html">Scicueval: A comprehensive dataset for evaluating scientific context understanding in large language models</a></div><div class="conn-reason">대학원 수준의 다학제 멀티모달 과학 데이터셋은 SciCUEval의 과학적 맥락 이해를 더욱 고도화한 벤치마크입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1106_The_BOS-Lig_Dataset_Accurate_Ligand_Charges_from_a_Consensus/index.html">The BOS-Lig Dataset: Accurate Ligand Charges from a Consensus Approach for 66,810 Experimentally Synthesized Ligands</a></div><div class="conn-reason">대학원 수준 다학제 다중모달 과학 데이터셋으로 본 논문의 화학 데이터를 더 광범위한 과학 도메인으로 확장한다.</div></div>

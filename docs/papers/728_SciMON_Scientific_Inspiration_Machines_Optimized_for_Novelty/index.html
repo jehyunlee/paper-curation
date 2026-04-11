@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qingyun Wang, Doug Downey, Heng Ji, Tom Hope | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/2024.acl-long.18" target="_blank">10.18653/v1/2024.acl-long.18</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: SCIMON takes background context and gen-</em></p></div>
 <p>과학 논문에서 자동으로 추출한 맥락을 기반으로 문헌에 근거한 새로운 과학적 아이디어를 생성하는 SCIMON 프레임워크를 제시하며, 반복적인 참신성(novelty) 최적화를 통해 LLM의 아이디어 생성 능력을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 배경 맥락에서 문헌의 '영감(inspirations)'을 동적으로 검색하고, 생성된 아이디어를 기존 연구와 반복적으로 비교하여 참신성이 충분해질 때까지 아이디어를 갱신하는 프레임워크를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Architecture overview. Our models retrieve inspirations and then pass the background input and retrieved</em></p></div>
 <ul>
 <li><strong>새로운 문제 설정 제안</strong>: 이진 링크 예측을 넘어 자연어 아이디어 생성이라는 개방형 문제 설정 도입</li>
 <li><strong>자동 학습 데이터 수집</strong>: 정보 추출(IE) 모델을 활용하여 과학 논문에서 문제-아이디어 쌍 자동 추출</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>실증적 한계 도출</strong>: GPT-4가 생성한 아이디어가 여전히 참신성과 깊이에서 실제 과학 논문에 미치지 못함을 입증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Architecture overview. Our models retrieve inspirations and then pass the background input and retrieved</em></p></div>
 <ul>
 <li>정보 추출(IE)을 이용한 자동 데이터 수집: 배경 문맥(문제/동기)과 타겟 아이디어를 논문에서 추출</li>
 <li>동적 영감 검색(Inspiration Retrieval): 의미적 이웃, 지식그래프(KG) 이웃, 인용 이웃 등 세 가지 방식으로 관련 논문 검색</li>
@@ -115,13 +109,10 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 기존 LBD의 근본적 한계를 인식하고 개방형 자연어 아이디어 생성으로 문제를 재설정한 매우 참신한 연구이며, 반복적 참신성 최적화라는 새로운 기법을 도입했으나, 생성된 아이디어 품질이 여전히 실무적 수준에 미치지 못하는 것이 향후 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">SciMON의 참신성 최적화 방법론이 LLM의 과학 아이디어 생성 능력 평가에서 제시하는 기본적인 아이디어 품질 메트릭을 발전시킨 것이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../729_Scipip_An_llm-based_scientific_paper_idea_proposer/index.html">SciPIP: An LLM-based Scientific Paper Idea Proposer</a></div><div class="conn-reason">SciMON의 참신성 최적화와 SciPIP의 이중 경로 아이디어 생성이 모두 LLM 기반 과학 아이디어 생성의 품질 향상을 위한 서로 다른 접근법이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../729_Scipip_An_llm-based_scientific_paper_idea_proposer/index.html">SciPIP: An LLM-based Scientific Paper Idea Proposer</a></div><div class="conn-reason">SciPIP의 의미론적 검색과 이중 경로 생성이 SciMON의 참신성 최적화와 함께 LLM 기반 과학 아이디어 생성의 서로 다른 품질 향상 전략이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../603_PaperRobot_Incremental_Draft_Generation_of_Scientific_Ideas/index.html">PaperRobot: Incremental Draft Generation of Scientific Ideas</a></div><div class="conn-reason">PaperRobot의 기본적인 아이디어 생성에서 SciMON의 참신성 최적화로 진화하여 더 혁신적인 과학 아이디어를 생성할 수 있다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../603_PaperRobot_Incremental_Draft_Generation_of_Scientific_Ideas/index.html">PaperRobot: Incremental Draft Generation of Scientific Ideas</a></div><div class="conn-reason">PaperRobot의 기본 아이디어 생성에서 SciMON의 참신성 최적화로 발전하는 과정을 확인할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">LLM의 기본적인 아이디어 생성 능력 평가가 SciMON의 참신성 최적화를 통한 품질 향상 연구의 기반이 된다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../442_Iris_Interactive_research_ideation_system_for_accelerating_s/index.html">Iris: Interactive research ideation system for accelerating scientific discovery</a></div><div class="conn-reason">MCTS 기반 적응형 탐색을 참신성 최적화로 발전시킨 연구</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">SciMON의 참신성 추구와 TruthHypo의 진실성 평가가 과학 아이디어 생성에서 창의성과 정확성 간의 트레이드오프를 보여준다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">TruthHypo의 진실성 검증과 SciMON의 참신성 추구가 과학 가설 생성에서 정확성과 창의성 간의 균형 문제를 부각시킨다.</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">SciMON의 참신성 추구와 TruthHypo의 진실성 평가가 과학 아이디어 생성에서 창의성과 정확성 간의 트레이드오프를 보여준다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yijia Shao, Yucheng Jiang, Theodore A. Kanell, Peter Xu, Omar Khattab, Monica S. Lam (Stanford University) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2402.14207" target="_blank">arXiv:2402.14207</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>STORM은 Wikipedia와 같은 장문의 기사를 처음부터 작성할 때 필요한 사전 작성 단계(pre-writing stage)를 자동화한다. 다양한 관점의 질문 제시를 통해 주제를 연구하고 아웃라인을 생성한다.</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 Wikipedia 수준의 장문 기사를 처음부터 작성하는 문제를 다루며, 특히 사전 작성 단계에서의 주제 연구와 아웃라인 생성에 초점을 맞춘다. STORM(Synthesis of Topic Outlines through Retrieval and Multi-perspective Question Asking) 시스템을 제안하여 다양한 관점에서의 질문 생성과 정보 수집을 통해 체계적인 아웃라인을 자동으로 구성할 수 있음을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다양한 관점 발견과 반복적인 대화형 질문 생성을 통해 체계적으로 주제를 연구하고, 이를 바탕으로 포괄적인 아웃라인을 구성하는 STORM 시스템을 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>STORM은 관련 Wikipedia 기사 조사를 통해 다양한 관점을 식별하고, 각 관점에 따라 질문을 생성하여 신뢰할 수 있는 온라인 소스에서 정보를 수집하는 7단계 프로세스로 구성된다.</em></p></div>
 <ol>
 <li><strong>평가 데이터셋 구축</strong>: LLM의 사전학습 이후 생성된 고품질 Wikipedia 기사들을 수집한 FreshWiki 데이터셋을 구성하여, 데이터 누출 문제를 해결하고 최신 주제를 다룰 수 있도록 했다.</li>
 <li><strong>아웃라인 평가 지표 개발</strong>: 헤딩 소프트 리콜(heading soft recall)과 헤딩 엔티티 리콜(heading entity recall)의 두 가지 지표를 도입하여 생성된 아웃라인의 품질을 체계적으로 평가할 수 있게 했다.</li>
 <li><strong>STORM의 우수성 입증</strong>: 기존 아웃라인 기반 RAG 베이스라인 대비 STORM이 생성한 기사가 구성(organization) 면에서 25% 절대 증가, 포괄성(coverage) 면에서 10% 증가의 성과를 거뒀으며, Wikipedia 편집자들의 전문가 평가에서도 우수성을 확인했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>STORM의 8단계 프로세스: ①주제 관련 기사 조사, ②다양한 관점 식별, ③관점별 질문 생성 및 답변 수집, ④쿼리 분할, ⑤검색 및 정제, ⑥정보 종합, ⑦LLM 기반 직접 생성, ⑧최종 아웃라인 정제</em></p></div>
 <ul>
 <li><strong>관점 발견 단계</strong>: 주어진 주제와 관련된 Wikipedia 기사들을 검색하여 분석함으로써, 주제를 다루는 데 있어 다양한 관점(예: 사건 기획자, 역사학자, 경제학자 등)을 자동으로 식별한다.</li>
 <li><strong>관점 기반 질문 생성</strong>: 각 관점으로 LLM을 구성(personify)하여 해당 관점에서 중요하게 여길 만한 질문들을 생성한다. 이를 통해 단순한 사실 질문을 넘어 다층적 관점을 반영한 질문이 생성된다.</li>
@@ -113,7 +107,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 본 논문은 LLM을 이용한 장문 기사 생성에서 사전 작성 단계의 중요성을 재조명하고, 다양한 관점 기반의 대화형 질문 생성을 통해 체계적인 정보 연구를 자동화하는 STORM 시스템을 제시함으로써, 학술적으로나 실무적으로 중요한 기여를 한다. 특히 새로운 데이터셋과 평가 지표의 제공, 그리고 Wikipedia 편집자들의 전문가 평가를 포함한 종합적 검증이 강점이나, 출처 편향과 사실 관계의 정확성 문제는 향후 해결해야 할 과제로 남아있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">STORM이 다관점 질문을 통한 아웃라인 생성에 초점을 맞춘 반면, SciReviewGen은 쿼리 기반 다중 문서 요약으로 접근하여 서로 다른 장문 작성 전략을 제시함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">SciReviewGen이 쿼리 기반 다중 문서 요약으로 문헌 리뷰를 자동 생성하는 반면, STORM은 다관점 질문을 통한 아웃라인 중심 접근법을 사용하여 상호 보완적 전략을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">Wordcraft의 인간-AI 협업 편집 프레임워크가 STORM의 자동 기사 생성을 인터랙티브한 공동 창작 과정으로 발전시킨 연구임</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../228_CoAuthor_Designing_a_Human-AI_Collaborative_Writing_Dataset/index.html">CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities</a></div><div class="conn-reason">CoAuthor 데이터셋이 STORM 시스템을 활용한 인간-AI 협업 글쓰기의 실제 사례와 패턴을 분석할 수 있는 구체적 자료를 제공함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../219_Citebart_Learning_to_generate_citations_for_local_citation_r/index.html">Citebart: Learning to generate citations for local citation recommendation</a></div><div class="conn-reason">처음부터 위키피디아 스타일 글 작성 지원에서 로컬 인용 추천이라는 구체적 기능을 제공하는 응용 기술입니다.</div></div></div>

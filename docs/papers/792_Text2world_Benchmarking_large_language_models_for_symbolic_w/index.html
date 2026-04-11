@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mengkang Hu, Tianxing Chen, Yude Zou, Yuheng Lei, Qiguang Chen, Ming Li, Yao Mu, Hongyuan Zhang, Wenqi Shao, Ping Luo | <strong>날짜</strong>: 2025 | <strong>DOI</strong>:</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TEXT2WORLD 벤치마크의 전체 파이프라인: 자연언어 설명으로부터 PDDL 도메인 모델 생성, 자동 수정, 다중 기준 평가</em></p></div>
 <p>대규모 언어모델(LLM)이 자연언어 설명으로부터 기호적 세계 모델(symbolic world model)을 생성할 수 있는지 평가하기 위해 PDDL 기반의 포괄적인 벤치마크 TEXT2WORLD를 제안하고, 수백 개의 다양한 도메인과 실행 기반 평가 지표를 통해 현재 LLM의 세계 모델링 능력이 여전히 제한적임을 밝혔다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: PDDL 기반의 대규모 벤치마크를 구축하여 직접적이고 다중 기준의 실행 기반 평가 지표(executability, structural similarity, component-wise F1 scores)를 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>벤치마크 구성 과정: (a) 데이터 수집(1,801개), (b) 자동 필터링 및 수동 선택(264개), (c) 주석 작성 및 품질 보증(최종 103개)</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 1,801개 PDDL 파일에서 출발하여 자동 필터링(검증, 중복 제거, 복잡도 제어, 토큰 길이 필터링)과 수동 선택을 거쳐 103개의 고품질 도메인 벤치마크 완성(Fleiss Kappa = 0.82의 높은 주석자 간 일치도)</li>
 <li><strong>신뢰성 높은 평가 지표</strong>: n-gram 기반 데이터 오염 분석(μ = 0.04)으로 낮은 오염율 확인, 구조적 유사도(Levenshtein ratio)와 성분별 F1 점수(술어, 매개변수, 전제조건, 효과)를 통한 다차원적 평가 체계 구현</li>
 <li><strong>LLM 성능 벤칭마킹</strong>: 9개 모델 패밀리 16개 LLM 평가 결과, 강화학습으로 훈련된 추론 모델(reasoning models)이 가장 우수한 성능 보임. 오류 수정을 통해 성능 유의미 향상. 주요 오류는 필수 전제조건이나 효과 누락(omission of essential preconditions/effects)으로 분석됨</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <p><strong>벤치마크 구성 방법론</strong>:</p>
 <ul>
 <li><strong>데이터 수집</strong>: 공개 저장소 및 계획 경진대회에서 1,801개 원본 PDDL 파일 수집</li>

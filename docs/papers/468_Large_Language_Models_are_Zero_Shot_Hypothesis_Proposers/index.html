@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Biqing Qi, Kaiyan Zhang, Haoxiang Li, Kai Tian, Sihang Zeng | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2311.05965" target="_blank">10.48550/arXiv.2311.05965</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 미세조정된 65B LLaMA 모델이 생성한 가설의 예시로, 기존 문헌의 발견과 유사한 결과를 도출함</em></p></div>
 <p>대규모언어모델(LLM)이 학습되지 않은 과학 가설을 제시할 수 있으며, 생성된 가설이 실제 출판된 문헌과 일치하는 검증 가능한 내용임을 입증하는 연구이다. 특히 불확실성 증가가 영점 학습(zero-shot) 가설 생성 능력을 향상시킨다는 발견을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,16 +98,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 과학 발견의 반복적 순환 고리 - 데이터 분석, 가설 생성, 실험 설계, 실행, 관찰 축적</em></p></div>
 <ol>
 <li><strong>영점 학습 가설 생성의 검증</strong>: LLM이 훈련 데이터에 노출되지 않은 2023년 8월 논문의 가설을 성공적으로 생성했으며, 이는 실제 발표된 논문과 일치하는 검증 가능한 가설임을 입증</li>
 <li><strong>불확실성 증가의 긍정적 영향</strong>: 불확실성 수준을 높임으로써 후보 생성의 다양성이 증가하고, 이것이 영점 학습 조건에서 가설 생성 능력을 향상시킴을 발견 (예: 협업 기반 접근이 소수샷 또는 도구 활용보다 더 효과적)</li>
 <li><strong>고계 추론 능력의 발견</strong>: LLM이 단순한 패턴 매칭을 넘어 기초적이지만 고계 지식 추론 능력을 보유하고 있음을 실증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 데이터 분할 파이프라인 - 2023년 1월 기준으로 훈련/테스트 데이터 분리</em></p></div>
 <ul>
 <li><strong>데이터셋 구성</strong>:
 <ul>

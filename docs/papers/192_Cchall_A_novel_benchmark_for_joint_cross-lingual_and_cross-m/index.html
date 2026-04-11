@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongheng Zhang, Xu Liu, Ruoxi Zhou, Qiguang Chen, Hao Fei, Wenpeng Lü, Libo Qin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.19108" target="_blank">10.48550/arXiv.2505.19108</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figure1.png" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) 교차-언어 환각(cross-lingual hallucination) - "stand"를 "站在"로 오역, (b) 교차-모달 환각(cross-modal hallucination) - 존재하지 않는 "bridge" 생성, (c) 교차-언어 및 교차-모달 환각의 결합</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)이 교차-언어 및 교차-모달 상황에서 동시에 겪는 환각(hallucination) 문제를 평가하기 위한 새로운 벤치마크 <strong>CCHall(Cross-lingual and Cross-modal Hallucinations)</strong>을 제시한다. 기존 연구가 단일 시나리오(교차-언어 또는 교차-모달)에만 집중한 반면, 이 연구는 두 문제가 결합된 실제 상황을 평가하는 최초의 종합 벤치마크를 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: VQA(Visual Question Answering)와 이미지 캡셔닝(Image Captioning) 태스크를 기반으로 원본 다중모달 데이터셋을 선택하고, 자동 필터링과 데이터 번역을 통해 체계적으로 교차-모달, 교차-언어, 결합된 환각 데이터셋을 구성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figure2.png" alt="Figure 2">
-<p class="fig-caption"><em>그림 2(a): 다양한 환각 유형에 대한 MLLM의 F1-점수 성능 분석, (b): 기존 벤치마크와 CCHall의 비교</em></p></div>
 <ol>
 <li><strong>최초의 결합 벤치마크 제시</strong>: 교차-언어 및 교차-모달 환각을 동시에 평가하는 최초의 벤치마크 CCHall을 개발했으며, 기존 벤치마크(XL-Sum, CHAIR, POPE 등)는 한 가지 시나리오만 다룬다.</li>
 <li><strong>포괄적 평가 결과</strong>: InternVL2-8B(65.9%), Llama-3.2-11B-Vision(46.2%), Qwen2-VL-7B(38.7%) 등 다양한 규모의 모델을 평가하여, 현재 MLLM들이 결합된 환각에 여전히 어려움을 겪고 있음을 입증했다.</li>
 <li><strong>완화 전략의 차별화된 효과성</strong>: 소규모 모델(<12B)에는 기본 전략이, 대규모 모델에는 고급 전략(다중언어 문맥, 도구 보조)이 더 효과적임을 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figure3.png" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: CCHall 구성 과정 - (a) 원본 다중모달 데이터셋 선택, (b) 교차-모달 환각 데이터 구성, (c) 교차-언어 환각 데이터 구성, (d) 결합된 벤치마크</em></p></div>
 <ul>
 <li><strong>데이터셋 선택 단계</strong>: GQA, AMBER(VQA용 3,600개 이미지, 337개 객체 범주), XM3600, xFlickr&Co(이미지 캡셔닝용 다양한 문화권 이미지) 등을 통합 선택</li>
 <li><strong>자동 샘플 제거</strong>: 이미지-텍스트 쌍 불일치, 고아(orphan) 데이터 등 비정상 데이터 자동 필터링으로 데이터 품질 보증</li>
@@ -120,7 +114,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../753_Shared_imagination_Llms_hallucinate_alike/index.html">Shared imagination: Llms hallucinate alike</a></div><div class="conn-reason">LLM들이 유사한 환각을 보인다는 기초 연구가 교차-언어/모달 환각 벤치마크 개발의 이론적 근거를 제공함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../119_Autocap_Towards_automatic_cross-lingual_alignment_planning_f/index.html">Autocap: Towards automatic cross-lingual alignment planning for zero-shot chain-of-thought</a></div><div class="conn-reason">교차언어 및 교차문화 이해를 위한 새로운 벤치마크가 AutoCAP의 영점 교차언어 추론 프레임워크를 문화적 맥락까지 고려하는 더 포괄적인 평가로 확장함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../827_Towards_effective_extraction_and_evaluation_of_factual_claim/index.html">Towards effective extraction and evaluation of factual claims</a></div><div class="conn-reason">팩트체킹에서 주장 추출의 모호성 처리 문제가 교차-언어/모달 상황에서 더욱 복잡해지는 확장된 도전과제임</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../460_Language_models_surface_the_unwritten_code_of_science_and_so/index.html">Language models surface the unwritten code of science and society</a></div><div class="conn-reason">LLM의 편향을 진단 도구로 활용하자는 관점과 교차-언어/모달 환각을 문제로 보는 관점이 대조됨</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../460_Language_models_surface_the_unwritten_code_of_science_and_so/index.html">Language models surface the unwritten code of science and society</a></div><div class="conn-reason">LLM의 편향을 진단 도구로 활용하자는 관점과 교차-언어/모달 환각을 문제로 보는 관점이 대조됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

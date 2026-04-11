@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yao Wang, Mingxuan Cui, Arthur Jiang, Jun Yan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.01508" target="_blank">arXiv:2503.01508</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>RND 알고리즘의 개념 도시: 주어진 아이디어(삼각형/오각형)와 기존 문헌을 의미론적 임베딩 공간에 표현한 후, P개의 최근접 이웃을 찾고 각 이웃의 주변 밀도(Q개의 이웃 기준)를 계산하여 상대적 순위로 혁신성 점수를 결정</em></p></div>
 <p>대규모 언어모델(LLM)이 생성한 연구 아이디어의 혁신성을 자동 평가하기 위해 <strong>상대 이웃 밀도(Relative Neighbor Density, RND)</strong> 알고리즘을 제안한다. 이 방법은 절대적 국소 밀도가 아닌 의미론적 이웃들의 상대적 밀도 분포를 분석하여 도메인 간 일관된 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 의미론적 이웃의 상대적 밀도 순위를 활용하되, 전문가 라벨링 없이 테스트셋을 구성하는 방법론 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>컴퓨터과학과 생의학 도메인에서 HD(Historical Dissimilarity)와 RND 점수의 분포 비교: RND는 도메인별 편차가 적음</em></p></div>
 <ol>
 <li><strong>도메인 간 일관된 성능</strong>: 컴퓨터과학(AUROC=0.820), 생의학(AUROC=0.765)에서 최고 성능 달성. 교차 도메인 평가에서 RND(0.795) vs 기존 최고 방법(0.597) <strong>대폭 우수</strong></li>
 <li><strong>전문가 라벨링 불필요</strong>: 최근 상위 저널/학회의 논문(양성)과 과거 높은 인용도 논문(음성)을 구분하는 방식으로 신뢰할 수 있는 테스트셋 자동 구성</li>
 <li><strong>대규모 데이터베이스</strong>: PubMed 2,536만 편, ArXiv 264만 편의 의미론적 임베딩 구축(M3-Embedding, 1024차원)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>RND 알고리즘의 P(최근접 이웃 수)와 Q(이웃의 이웃 수) 파라미터에 따른 AUROC 변화: P=100, Q=50에서 최적</em></p></div>
 <ul>
 <li><strong>의미론적 임베딩</strong>: 각 논문의 제목과 초록을 M3-Embedding으로 1024차원 벡터로 변환</li>
 <li><strong>이웃 밀도(ND) 계산</strong>: 아이디어 임베딩 v와 Q개의 최근접 논문 사이의 코사인 거리 평균의 역수</li>

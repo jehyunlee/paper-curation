@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Junkai Li, Yunghwei Lai, Weitao Li, Jingyi Ren, Meng Zhang, Xinhui Kang, Siyu Wang, Peng Li, Ya-Qin Zhang, Weizhi Ma, Yang Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Agent Hospital 개요: 환자, 간호사, 의사 모두가 LLM 기반 자율 에이전트인 병원 시뮬레이션</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 기반으로 한 자율 에이전트들이 병원 환경을 시뮬레이션하는 "Agent Hospital"을 제안하며, 의사 에이전트가 수만 건의 환자 치료를 통해 진화하여 실제 의료 시험 벤치마크에서 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 병원 워크플로우를 가상 환경으로 재현하고, LLM과 의료 지식베이스를 결합하여 자동으로 의료 데이터를 생성하며, 에이전트 진화 메커니즘으로 의사 에이전트를 지속 개선</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>병원 폐쇄 치료 사이클 시뮬레이션: 질병 발생부터 사후 추적까지의 전 과정</em></p></div>
 <ol>
 <li><strong>의사 에이전트 진화</strong>: 환자 에이전트 치료 건수 증가에 따라 진단 정확도가 지속적으로 개선되며, 실시간 세계의 수년치 경험을 가상환경에서 수 시간 내에 축약</li>
 <li><strong>실제 성능 전이</strong>: Agent Hospital에서 습득한 의료 전문성이 실제 세계의 MedQA 벤치마크(USMLE 문제)에 적용되어 기존 의료 에이전트 방법들을 능가하는 성과 달성</li>
 <li><strong>자동 데이터 생성</strong>: 수동 라벨링 없이 의료 지식베이스와 LLM 결합을 통해 339개 질병, 32개 과를 포함한 대규모 의료 데이터 자동 생성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>환자 에이전트 자동 생성: 질병 선택 → 기본정보 → 병력 → 증상 → 의료 검사 결과 생성 파이프라인</em></p></div>
 <h3>Simulacrum 구성 (SEAL의 제1 요소)</h3>
 <ul>
 <li><strong>가상 환경 설계</strong>: Tiled 맵 에디터와 Phaser 게임 개발 프레임워크를 사용하여 16개 기능 영역(분류 부스, 등록, 대기실, 진료실, 검사실, 약국 등) 구현</li>

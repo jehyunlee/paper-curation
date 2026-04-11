@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: D. Rao, Weiqiu You, Eric Wong, Chris Callison-Burch | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>NSF 주요 지원 분야별 분포: 재료과학(3.9%), 수학물리과학(16.5%), 지구과학(13.8%) 등</em></p></div>
 <p>NSF(미국 국립과학재단) 지원금 데이터베이스에서 과학적 주장(scientific claims)과 연구 제안(investigation proposals)을 대규모로 추출한 데이터셋 NSF-SCIFY를 제시한다. 1970년부터 2024년까지 50년간 400K개 이상의 지원금 초록에서 추정 280만 개의 과학적 주장을 추출하여 현재까지 가장 큰 규모의 과학적 주장 데이터셋을 구축했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Claude-3.5를 이용한 제로샷 프롬팅으로 검증 가능한 주장과 전향적 연구 제안을 구분하여 추출하는 방법 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>기술 초록과 비기술 초록의 t-SNE 임베딩 비교: STEL 스타일 임베딩으로 명확한 분리 관찰</em></p></div>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: NSF-SCIFY-MATSCI에서 재료과학 분야 16K개 초록으로부터 114K개 과학적 주장과 145K개 연구 제안 추출 (기존 최대 데이터셋 대비 10배 이상 규모)</li>
 <li><strong>높은 자동 추출 성능</strong>: 미세조정된 모델이 기본 모델 대비 100% 상대 개선율 달성, 조사 제안 추출에서 90% 이상 개선 달성</li>

@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 오프정책 수집 단계(roll-in), 값함수 기반 소프트 최적정책 모의(roll-out), 정방향 KL 발산 최소화를 통한 모델 업데이트(model update)의 세 단계를 반복하는 정책 증류(policy distillation) 프레임워크</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: VIDD의 개요. 오프정책 롤인, 값함수 기반 보상가중 롤아웃, 정방향 KL 기반 모델 업데이트를 반복적으로 수행</em></p></div>
 <ol>
 <li><strong>안정성 향상</strong>: 오프정책 데이터 수집과 정방향 KL 목적함수를 통해 온정책 방법 대비 훈련 안정성이 향상되고 모드 붕괴 위험 감소</li>
 <li><strong>샘플 효율 개선</strong>: 기존 RL 방법들(PPO, DDPO)보다 우수한 샘플 효율로 더 적은 보상 평가로 수렴</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>비미분가능 보상 최적화</strong>: 물리 시뮬레이션이나 과학 지식 기반 보상 등 임의의 비미분가능 보상함수에 대응 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: VIDD의 알고리즘 구조 및 세 가지 핵심 단계</em></p></div>
 <p><strong>알고리즘 구조:</strong></p>
 <ul>
 <li><strong>Roll-in (오프정책 수집)</strong>: 사전훈련된 모델과 이전 미세조정 정책의 혼합분포에서 궤적(trajectory)을 샘플링하여 다양한 탐색 보장. 이를 통해 현재 정책 주변의 좁은 영역으로 제한되지 않음</li>

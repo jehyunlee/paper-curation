@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Namkyeong Lee, E. Brouwer, Ehsan Hajiramezanali, Chanyoung Park, Gabriele Scalia | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.17506" target="_blank">10.48550/arXiv.2502.17506</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CLADD 프레임워크의 전체 구조: 계획 팀(Planning Team), 지식그래프 팀(Knowledge Graph Team), 분자 이해 팀(Molecule Understanding Team)의 협력</em></p></div>
 <p>본 논문은 검색 증강 생성(RAG, Retrieval-Augmented Generation)과 다중 에이전트 협력을 활용하여 신약 발견 작업을 수행하는 CLADD 프레임워크를 제시한다. 도메인 특화 미세조정 없이 일반용도 LLM을 활용하면서도 이질적인 생화학 데이터의 동적 통합과 개방형 질문에 대한 추론을 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: RAG 기반 다중 에이전트 프레임워크를 통해 동적 지식 통합, 이질적 생화학 데이터 처리, 미세조정 불필요</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>약물-표적 예측 작업에서 에이전트 간 협력 예시: 활성화된 단백질(OPRD1, ADRB2, OPRM1)을 식별</em></p></div>
 <ol>
 <li><strong>다양한 신약 발견 작업 지원</strong>: 약물-표적 예측(drug-target prediction), 분자 주석(molecular captioning), 생물학적 활성도 예측 등 다양한 제로샷(zero-shot) 및 개방형 작업 수행 가능</li>
 <li><strong>일반용도 LLM의 효과적 활용</strong>: 도메인 특화 미세조정 없이 외부 생화학 데이터베이스와 지식그래프를 동적으로 통합하여 성능 향상</li>
 <li><strong>성능 우월성</strong>: 일반용도 LLM, 도메인 특화 LLM, 전통 딥러닝 방식 모두를 능가하는 성능 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CLADD의 세 가지 팀 구조와 정보 흐름</em></p></div>
 <p><strong>Planning Team (계획 팀)</strong></p>
 <ul>
 <li><strong>MolAnn Planner</strong>: 질의 분자의 주석이 충분한지 판단하여 추가 정보 필요성 결정</li>

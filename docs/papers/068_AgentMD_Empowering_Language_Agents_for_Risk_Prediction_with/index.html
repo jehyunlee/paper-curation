@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qiao Jin, Zhizheng Wang, Yifan Yang, Qingqing Zhu, Donald Wright | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.13225" target="_blank">10.48550/arXiv.2402.13225</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1. 연구 개요: (a) RiskCalcs 도구 모음 구축 프로세스, (b) 장기 시스템별 계산기 분포, (c) 도구의 의미적 표현 t-SNE 시각화, (d) 환자 노트에 RiskCalcs 적용 프로세스</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 PubMed 문헌으로부터 2,164개의 임상 계산기(RiskCalcs)를 자동으로 큐레이션하고, 이를 환자 기록에 적용하는 의료 언어 에이전트 AgentMD를 제시한다. 기존 수동 큐레이션의 확장성 문제를 극복하면서 80% 이상의 정확도를 달성하고, 기존 GPT-4 체인-오브-소트(Chain-of-Thought) 방식(40.9%)을 크게 능가한다(87.7%).</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 자율 에이전트 능력을 활용하여 ① 문헌 스크리닝과 도구 자동 생성 및 검증 파이프라인 구축 ② 대규모 임상 도구 라이브러리 구성 ③ 환자 노트에서 관련 계산기 자동 선택 및 적용 프레임워크 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3. RiskCalcs 도구의 품질 및 커버리지 분석: (a) 상위 50개 인용 계산기, (b) 무작위 샘플 50개 계산기의 평가 결과</em></p></div>
 <ol>
 <li><strong>대규모 자동 큐레이션</strong>: PubMed 339,952개 논문 중 2,164개의 검증된 임상 계산기를 자동으로 추출하여 RiskCalcs 라이브러리 구축. 이 중 96%가 기존 온라인 구현 도구에 없는 신규 자동화 도구.</li>
 <li><strong>높은 품질 달성</strong>: 수동 평가 결과 추상(87.0%), 계산 로직(87.6%), 결과 해석(89.0%) 정확도 달성. 상위 25개 인용 계산기의 68% 구현률 vs. 무작위 샘플 4% 구현률로 실질적 커버리지 확대.</li>
 <li><strong>우수한 임상 적용 성능</strong>: 신규 벤치마크 RiskQA에서 87.7% 정확도로 기존 GPT-4 체인-오브-소트(40.9%)를 2배 이상 상회. MIMIC-III 중환자 데이터에 적용하여 인구 수준 및 개인 위험 수준의 특성 분석 가능성 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2. AgentMD의 도구 제작 및 사용 방법론: (a) 생성된 RiskCalcs 계산기 예시, (b) 도구 선택, 계산, 요약 단계 포함 상세 방법</em></p></div>
 <h3>도구 제작 (Tool Maker)</h3>
 <ul>
 <li><strong>스크리닝 단계</strong>: Boolean 쿼리("patient AND (risk OR mortality) AND (score OR point OR rule OR calculator)")로 2000-2023년 PubMed 검색 → 339,952개 논문 추출</li>

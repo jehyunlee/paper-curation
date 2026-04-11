@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yushuai Wu, Ting Zhang, Hao Zhou, Hainan Wu, Hanwen Sunchu, Lei Hu, Xiaofang Chen, Suyuan Zhao, Gaochao Liu, Chao Sun, Jiahuan Zhang, Yizhen Luo, Peng Liu, Zaiqing Nie | <strong>날짜</strong>: 2024-03-18 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.03768" target="_blank">10.48550/arXiv.2403.03768</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>약물 R&D 과정의 다양한 단계에서 교차 약물 반응 평가(CRE)의 역할</em></p></div>
 <p>DeepCRE는 도메인 분리 네트워크(Domain Separation Network, DSN) 기반의 AI 모델로, 세포주 데이터로 학습하여 환자 수준의 약물 반응을 예측함으로써 신약 개발 후기 단계에서의 약물 효과 비교 평가를 가능하게 한다. 이를 통해 기존 모델 대비 17.7% 성능 향상과 5배의 적응증(indication) 수준 개선을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세포주와 환자의 유전자발현프로필(GEP)을 공유 공간으로 정렬하는 도메인 적응(domain adaptation) 전략과 종양 유형별 적응형 사전학습(tumor type-adaptive pretraining) 전략 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>13개 암 종류에서 환자 수준 CRE 성능 비교</em></p></div>
 <ol>
 <li><strong>환자 수준 성능</strong>: DSN-adv 모델이 13개 종양 유형 중 12개에서 최고 성능 달성, P-SDL 대비 평균 27.49%, C-MDL 대비 21.38% 성능 향상</li>
 <li><strong>적응증 수준 성능</strong>: 233개 소분자 약물을 13개 종양 유형(적응증)에 대해 평가하여 5배의 성능 개선 달성, DrugBank 검증 결과 거짓 음성(false negative) 제로 달성</li>
 <li><strong>임상 검증</strong>: 대장암(CRC) 오르가노이드 실험에서 DeepCRE가 선정한 6개 약물 후보(Set A)가 8개 중 5개 오르가노이드에서 기존 승인 약물 2개(Set C) 대비 유의미하게 높은 효과성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DeepCRE 모델의 구조와 종양 유형별 적응형 사전학습 전략</em></p></div>
 <ul>
 <li><strong>도메인 분리 네트워크(DSN)</strong>: 공유 인코더와 개인 인코더를 통해 세포주-환자 간 도메인 갭을 최소화하면서 약물별 고유 정보 보존</li>
 <li><strong>적응형 사전학습 전략</strong>: 전체 데이터 기반의 일반적 사전학습 대신, T2 환자를 모든 세포주와 정렬하는 종양 유형 특화 사전학습으로 3.51~11.28% 추가 성능 향상</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Masatoshi Uehara, Yulai Zhao, Chenyu Wang, Xiner Li, Aviv Regev | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.09685" target="_blank">10.48550/arXiv.2501.09685</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 대표적인 추론 시간 알고리즘들의 요약">
-<p class="fig-caption"><em>Figure 2: 최적화 목표 달성을 위한 다양한 추론 시간 기법들 (Best-of-N, 분류기 가이던스, SMC 기반 가이던스, 값 기반 중요도 샘플링)</em></p></div>
 <p>본 튜토리얼은 사전학습된 확산 모델을 미세조정하지 않으면서 추론 시간(inference time)에 보상 함수(reward function)를 최대화하는 정렬(alignment) 기법들을 통일된 관점에서 리뷰하고, 단백질 설계 같은 과학 분야에서 실제로 유용한 비미분 가능한 보상 피드백을 다루는 방법론들을 포괄적으로 다룬다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 모든 추론 시간 알고리즘들이 공통적으로 목표로 하는 "소프트 최적 정책(soft optimal policy)"을 수식 (1)로 통일되게 표현하고, 이 목표 분포에 도달하는 방식의 차이에 따라 기법들을 분류하며 새로운 알고리즘들도 제시한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 값 기반 빔 서치를 통한 계산 확장">
-<p class="fig-caption"><em>Figure 3: 트리 너비(tree width) 증가에 따른 보상 함수 최적화의 개선 - 단백질 안정성(pLDDT)과 이미지 미적 점수 모두에서 계산 예산 증가에 비례한 성능 향상 관찰</em></p></div>
 <ol>
 <li><strong>통일된 이론적 틀</strong>: 순차 몬테카를로(SMC) 기반 가이던스, 값 기반 중요도 샘플링, 분류기 가이던스 등 기존의 다양한 기법들이 모두 동일한 소프트 최적 정책을 근사하려고 시도함을 보여줌으로써, 각 방법의 근본적 연결성 제시</li>
 <li><strong>비미분 보상에 대한 포괄적 기법</strong>: 분자 설계에서 흔한 비미분 가능한 물리 시뮬레이션이나 분자 지문(fingerprint) 기반 학습 모델을 다루는 SMC 기반 및 값 기반 중요도 샘플링 방법들을 상세히 리뷰</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>교차 도메인 통찰</strong>: 언어 모델과 확산 모델의 추론 시간 기법들 간 연결성 논의 및 탐색 알고리즘(search algorithm) 기반 접근법 추가</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 추론 시간 기법의 목표">
-<p class="fig-caption"><em>Figure 1: 미세조정 없이 사전학습 생성 모델과 보상 모델을 통합하여 기능성 높은 자연스러운 설계 생성</em></p></div>
 <p><strong>핵심 수식적 표현</strong>:</p>
 <ul>
 <li>목표 분포: $p_{\text{pre}}(·) \times \exp(r(·)/\alpha) / C$

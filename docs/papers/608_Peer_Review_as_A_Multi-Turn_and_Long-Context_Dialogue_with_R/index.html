@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Cheng Tan, Dongxin Lyu, Siyuan Li, Zhangyang Gao, Jingxuan Wei, Siqi Ma, Zicheng Liu, Stan Z. Li | <strong>날짜</strong>: 2024-06-09 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2406.05688" target="_blank">10.48550/arXiv.2406.05688</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 기존 LLM 피어리뷰 접근법과 개선된 프레임워크 비교</em></p></div>
 <p>대규모언어모델(LLM)의 학술 논문 피어리뷰 과정을 단순한 정적 검토 생성에서 저자-검토자-의사결정자 간의 동적 다중턴 대화로 재정의하고, 92,017개의 검토문을 포함한 대규모 데이터셋(ReviewMT)을 구축했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다중턴 대화 구조로 피어리뷰 과정 재정의, (2) ICLR과 Nature Communications에서 26,841개 논문의 92,017개 검토문 수집, (3) 각 역할별 평가 메트릭스 제시</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: ReviewMT 데이터셋 데이터 처리 파이프라인 개요</em></p></div>
 <ol>
 <li><strong>종합 데이터셋 구축</strong>: 26,841개 논문, 92,017개 검토문으로 구성된 ReviewMT 데이터셋 공개. ICLR(2017-2024)과 Nature Communications(2023)의 이질적 검토 프로세스를 ReviewMT-ICLR, ReviewMT-NC 두 부분집합으로 분할하여 제공</li>
 <li><strong>역할기반 다중턴 프레임워크</strong>: 4단계 상호작용 구조 공식화
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>평가 메트릭스 제시</strong>: 각 역할의 성능 평가를 위한 다차원 지표 제안(응답의 유효성, 텍스트 품질, 점수 평가, 의사결정 평가)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: ReviewMT-ICLR 데이터셋의 ICLR 논문과 검토문 통계</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: OpenReview API(ICLR), Requests 라이브러리를 통한 웹 크롤링(Nature Communications)으로 체계적 수집. Robots 프로토콜 준수</li>
 <li><strong>텍스트 처리</strong>: PDF-to-text 변환 시 Marker 소프트웨어를 활용하여 마크다운 형식 유지로 구조적 충실성 확보</li>
@@ -106,9 +100,7 @@ a { color: #A62018; }
 </ul>
 </li>
 <li><strong>적응적 처리</strong>: 연도별·저널별 검토 프로세스 변화에 대응(예: 초기 평점 미제공 논문은 최종 평점만 사용)</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: ReviewMT 데이터셋의 키워드 워드클라우드</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>프레임워크 혁신</strong>: 피어리뷰를 단순 텍스트 생성 과제에서 복합 역할기반 다중턴 대화로 재정의하는 개념적 전환</li>

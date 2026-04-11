@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yichen He, Guanhua Huang, Peiyuan Feng, Yuan Lin, Yuchen Zhang, Hang Li, Weinan E | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PaSa 시스템 아키텍처: Crawler와 Selector 두 개의 LLM 에이전트로 구성</em></p></div>
 <p>PaSa는 복잡한 학술 논문 검색을 자동으로 수행하는 LLM 기반 에이전트로, 검색 도구 활용, 논문 읽기, 인용 네트워크 탐색을 통해 종합적이고 정확한 검색 결과를 제공한다. 합성 데이터(AutoScholarQuery)로 학습했음에도 실제 환경(RealScholarQuery)에서 Google Scholar 및 GPT-4o 기반 방법들을 크게 능가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 개의 LLM 에이전트(Crawler와 Selector)로 구성된 PaSa를 제안하고, AGILE 강화학습 프레임워크로 최적화하며, 새로운 session-level PPO 알고리즘을 설계한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PaSa 워크플로우 예시: Crawler의 다양한 [Search] 실행과 인용 네트워크 탐색</em></p></div>
 <ol>
 <li><strong>성능 우수성</strong>: PaSa-7B는 AutoScholarQuery 테스트 셋에서 Google+GPT-4o 대비 Recall@20에서 34.05%, Recall@50에서 39.36% 향상. RealScholarQuery에서는 Recall@20 37.78%, Recall@50 39.90% 향상. PaSa-GPT-4o 대비 30.36% 재현율 향상.</li>
 <li><strong>합성 데이터의 효과성</strong>: 합성 데이터(AutoScholarQuery, 33.5k 쿼리-논문 쌍)로만 학습했음에도 실제 환경에서 우수한 성능 달성, 도메인 전이(domain transfer) 가능성 입증.</li>
@@ -118,7 +114,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: PaSa는 LLM 에이전트를 활용한 학술 논문 검색 문제의 창의적인 해법이며, 합성 데이터로의 학습이 실제 환경에서 우수한 성능을 달성하는 점이 주목할 만하다. 다만 데이터의 도메인 편향성과 평가 규모의 제한이 일반화 가능성에 대한 의문을 남긴다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html">Ask, retrieve, summarize: A modular pipeline for scientific literature summarization</a></div><div class="conn-reason">모듈러 검색 파이프라인이 포괄적 논문 검색의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../510_Llms_for_literature_review_Are_we_there_yet_arXiv_preprint_a/index.html">Llms for literature review: Are we there yet? arXiv preprint arXiv:2412.15249, 2024.</a></div><div class="conn-reason">학술 논문 검색을 위한 서로 다른 자동화 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../510_Llms_for_literature_review_Are_we_there_yet_arXiv_preprint_a/index.html">Llms for literature review: Are we there yet? arXiv preprint arXiv:2412.15249, 2024.</a></div><div class="conn-reason">문헌 리뷰 자동화를 위한 서로 다른 LLM 기반 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../087_Ai2_scholar_qa_Organized_literature_synthesis_with_attributi/index.html">Ai2 Scholar QA: Organized literature synthesis with attribution</a></div><div class="conn-reason">논문 검색이 조직적인 문헌 합성으로 확장됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

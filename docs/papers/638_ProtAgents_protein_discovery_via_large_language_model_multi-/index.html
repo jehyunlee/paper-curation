@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Alireza Ghafarollahi, Markus J. Buehler | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1039/d4dd00013g" target="_blank">10.1039/d4dd00013g</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 단백질 발견 및 분석을 위한 다중 에이전트 AI 프레임워크. 각 에이전트는 프로필로 정의된 초점과 맞춤 함수에 접근 가능하며, 그룹 채팅 관리자를 통해 동적으로 협력한다.</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM, Large Language Model) 기반의 다중 에이전트 협업 시스템인 ProtAgents를 제안하여, 물리 기반 시뮬레이션과 머신러닝을 통합함으로써 de novo 단백질 설계 및 분석을 자동화한다. 각 에이전트는 특정 도메인 전문성을 가지고 동적으로 상호작용하면서 복잡한 단백질 설계 문제를 해결한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,14 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 뛰어난 추론, 계획 수립 능력을 핵심으로 하는 다중 에이전트 시스템을 구축하여, 물리 시뮬레이터, 생성형 AI 모델, 미세 조정된 변환기(transformer) 모델, 지식 검색 에이전트 등 다양한 도구들이 자율적으로 협력하도록 설계한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 다중 에이전트 팀 멤버들 간의 동적 상호작용 흐름도. 그룹 채팅 관리자가 현재 문맥에 따라 협력할 에이전트를 선택하여 상호 수정과 역할 분담을 가능하게 한다.</em></p></div>
 <ol>
 <li><strong>다중 에이전트 아키텍처 개발</strong>: 사용자 프록시(user_proxy), 계획자(planner), 실행 담당자(assistant), 평가자(critic) 등 서로 다른 전문성을 가진 4가지 주요 에이전트로 구성된 협력 시스템을 구현하였으며, 그룹 채팅 관리자(group chat manager)가 동적으로 협력 구조를 조정한다.</li>
 </ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 복잡한 단백질 설계 작업(실험 II)을 해결하기 위한 다중 에이전트 협력 개요. Chroma를 이용한 de novo 단백질 서열 생성, OmegaFold를 통한 3D 구조 예측, 고유 진동수 및 이차 구조 분석을 순차적으로 수행한다.</em></p></div>
 <ol>
 <li><strong>통합 도구 생태계</strong>: 물리 PDE 시뮬레이터(고유 진동수 계산), 확산 모델 기반 생성형 AI(Chroma), 미세 조정 변환기(단백질 기계적 물성 예측), 문헌 기반 지식 검색 등을 하나의 시스템에 통합하여 de novo 단백질 설계와 동시에 물성 예측 및 검증이 가능하도록 함.</li>
 <li><strong>자동화된 반복적 문제 해결</strong>: 단순 질문에서 출발하여 에이전트들이 자동으로 서브 태스크로 분해하고, 각 도구를 순차적으로 적용하며, 결과를 상호 검증하는 과정을 인간 개입 없이 수행 가능하게 함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 복잡한 단백질 설계 작업(실험 III)을 해결하기 위한 다중 에이전트 협력 개요.</em></p></div>
 <ul>
 <li><strong>LLM 기반 에이전트 설계</strong>: 각 에이전트는 프로필(profile)에 의해 정의된 역할과 관련 맞춤 함수(customized functions)에 접근 가능하며, 자연어를 통해 상호 통신하고 협력한다.</li>
 <li><strong>동적 역할 분담</strong>: 그룹 채팅 관리자가 현재 대화의 문맥을 파악하여 필요한 에이전트를 선택적으로 활성화하고, 에이전트 간 상호 수정(mutual correction)을 촉진한다.</li>
@@ -135,11 +127,8 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">화학 vs 단백질 분야에서 LLM 기반 전문 도구 통합의 다른 적용을 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">단백질 vs 약물 발견에서 LLM 기반 다중 에이전트 시스템의 다른 적용 분야를 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../065_Agentic_End-to-End_De_Novo_Protein_Design_for_Tailored_Dynam/index.html">Agentic End-to-End De Novo Protein Design for Tailored Dynamics Using a Language Diffusion Model</a></div><div class="conn-reason">단백질 설계에서 다중 에이전트 vs 엔드투엔드 단일 시스템의 다른 접근법을 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../065_Agentic_End-to-End_De_Novo_Protein_Design_for_Tailored_Dynam/index.html">Agentic End-to-End De Novo Protein Design for Tailored Dynamics Using a Language Diffusion Model</a></div><div class="conn-reason">동일한 단백질 발견 문제를 다중 에이전트 접근법으로 해결하여 상호 보완적인 방법론을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">신약 vs 단백질 발견에서 LLM 기반 다중 에이전트 시스템의 다른 적용 분야를 비교할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../686_Robust_deep_learning_based_protein_sequence_design_using_Pro/index.html">Robust deep learning based protein sequence design using ProteinMPNN</a></div><div class="conn-reason">단백질 설계를 LLM 기반 다중 에이전트 시스템으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../144_AutoProteinEngine_A_Large_Language_Model_Driven_Agent_Framew/index.html">AutoProteinEngine: A Large Language Model Driven Agent Framework for Multimodal AutoML in Protein Engineering</a></div><div class="conn-reason">LLM 기반 단백질 엔진 프레임워크를 다중 에이전트 협업으로 확장한 연구다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../144_AutoProteinEngine_A_Large_Language_Model_Driven_Agent_Framew/index.html">AutoProteinEngine: A Large Language Model Driven Agent Framework for Multimodal AutoML in Protein Engineering</a></div><div class="conn-reason">ProtAgents의 다중 에이전트 기반 단백질 발견이 AutoProteinEngine의 단일 에이전트 AutoML 접근을 협업적 시스템으로 확장한 발전 형태이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../160_BioAgents_Democratizing_Bioinformatics_Analysis_with_Multi-A/index.html">BioAgents: Democratizing Bioinformatics Analysis with Multi-Agent Systems</a></div><div class="conn-reason">BioAgents의 생물정보학 분석 접근법을 단백질 발견 영역으로 확장하여 더 전문화된 다중 에이전트 시스템을 구축할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

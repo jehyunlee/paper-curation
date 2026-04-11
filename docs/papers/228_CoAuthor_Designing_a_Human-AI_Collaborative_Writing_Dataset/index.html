@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mina Lee, Percy Liang, Qian Yang | <strong>날짜</strong>: 2022-04-29 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3491102.3502030" target="_blank">10.1145/3491102.3502030</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CoAuthor 데이터셋: 63명의 작가와 GPT-3의 4개 인스턴스 간 1445개 쓰기 세션에서 수집된 인간-AI 협력 상호작용</em></p></div>
 <p>본 논문은 GPT-3의 창작 및 논증적 글쓰기 지원 능력을 탐구하기 위해 설계된 대규모 인간-AI 협력 글쓰기 데이터셋 CoAuthor를 제시하며, 상호작용 데이터셋 분석을 통해 언어 모델의 역량을 HCI 관점에서 체계적으로 이해할 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 이 문제를 해결하기 위해 저자들은 대규모 상호작용 데이터셋(CoAuthor)을 설계하고 수집하여 분석함으로써 언어 모델의 능력을 체계적으로 탐구할 수 있음을 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>창작과 논증적 글쓰기에서 높은 및 낮은 무작위성(randomness)의 GPT-3 능력 비교</em></p></div>
 <ol>
 <li><strong>포괄적 상호작용 데이터셋 구축</strong>: 63명의 작가와 GPT-3의 4개 인스턴스 간 1445개 글쓰기 세션으로부터 수집된 CoAuthor 데이터셋을 제시. 이는 실제 사용자의 자연스러운 상호작용을 기록한 최초의 대규모 인간-AI 협력 글쓰기 데이터셋이다.</li>
 <li><strong>언어 모델 능력의 다각적 분석</strong>: 언어 능력(fluency), 아이디어 창출 능력(ideation), 협력 능력(collaboration)의 세 가지 차원에서 GPT-3의 역량을 실증적으로 분석하고, 다양한 "좋은 협력(good collaboration)"의 정의 하에서 모델의 기여도를 평가했다.</li>
 <li><strong>재생 인터페이스 제공</strong>: 모든 글쓰기 세션을 재생할 수 있는 대화형 도구를 공개하여, 설계자들이 실제 상호작용의 역학관계를 직관적으로 이해할 수 있게 했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>CoAuthor 데이터 수집용 인터페이스</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>작가와 GPT-3이 작성한 문장의 특성 비교</em></p></div>
 <ul>
 <li><strong>데이터 수집 설계</strong>: 참여자들이 자유롭게 글을 쓰고, GPT-3의 제안을 요청하거나 거절하고, 제안된 텍스트를 수정할 수 있는 유연한 인터페이스 제공. 창작(creative) 및 논증적(argumentative) 글쓰기 두 가지 작업 유형 포함.</li>
 <li><strong>능력 평가 메트릭</strong>:

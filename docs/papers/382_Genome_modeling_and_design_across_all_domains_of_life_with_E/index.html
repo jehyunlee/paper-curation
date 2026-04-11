@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: G. Brixi, Matthew G. Durrant, Jerome Ku, Michael Poli, Greg Brockman | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.02.18.638918" target="_blank">10.1101/2025.02.18.638918</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 원핵생물 생명에 걸친 게놈 파운데이션 모델 사전학습. (A) 단일 뉴클레오타이드 해상도의 게놈 수열 모델은 규제 DNA 및 중심 원리의 다른 양식(단백질, 코딩 RNA, 논코딩 RNA) 내의 모든 정보를 학습할 수 있음. (B) StripedHyena는 장문 수열용 심층 신호 처리 아키텍처. (C) 박테리아 및 바이러스 게놈으로 사전학습된 70억 파라미터 Evo 모델.</em></p></div>
 <p>Evo는 131 킬로베이스(kb) 문맥 길이를 가진 70억 파라미터 게놈 파운데이션 모델로, 단일 뉴클레오타이드 해상도에서 분자 규모부터 전체 게놈 규모까지 DNA 수열의 예측 및 생성을 가능하게 한다. StripedHyena 아키텍처를 기반으로 하여 기존 방법보다 수백 배 긴 650 kb 길이의 코딩 수열을 생성할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 심층 신호 처리(deep signal processing) 기반 StripedHyena 하이브리드 아키텍처를 사용하여 (1) Hyena 층과 주의(attention) 층의 결합, (2) 바이트 레벨 단일 뉴클레오타이드 토큰화, (3) 2.7백만 개 원핵생물 및 박테리오파지 게놈 학습.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: Evo의 영-샷(zero-shot) 함수 예측 성능. 단백질, 논코딩 RNA, 규제 수열에 대한 예측.</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: CRISPR-Cas 수열에 대한 미세조정으로 단백질-RNA 복합체의 생성적 설계 가능.</em></p></div>
 <ol>
 <li><strong>영-샷 함수 예측</strong>:
 <ul>
@@ -103,8 +97,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ul>
 <li><strong>아키텍처</strong>: StripedHyena는 29개의 하이에나(Hyena) 층과 3개의 다중-헤드 주의(multi-head attention) 층의 하이브리드 구조
 <ul>
@@ -165,7 +157,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 5/5</span> <span class="eval-badge">Technical Soundness: 4.5/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.6/5</span></div>
 <p><strong>총평</strong>: Evo는 깊은 신호 처리 기반 아키텍처를 활용하여 DNA 수열 모델링의 확장성 문제를 혁신적으로 해결하고, 최초로 다중-양식·다중-스케일의 통합 게놈 파운데이션 모델을 제시함으로써 합성생물학과 게놈 공학 분야에 패러다임 전환을 기대하게 한다. 다만 생성 수열의 생물학적 타당성 검증과 진핵생물으로의 확장이 향후 실용화의 핵심 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../749_Sequence_modeling_and_design_from_molecular_to_genome_scale/index.html">Sequence modeling and design from molecular to genome scale with Evo</a></div><div class="conn-reason">동일한 Evo 모델이지만 다른 해상도와 응용 관점에서 접근함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../749_Sequence_modeling_and_design_from_molecular_to_genome_scale/index.html">Sequence modeling and design from molecular to genome scale with Evo</a></div><div class="conn-reason">동일한 Evo 모델의 다른 버전으로 성능 개선사항 비교 분석 가능</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../302_Effective_gene_expression_prediction_from_sequence_by_integr/index.html">Effective gene expression prediction from sequence by integrating long-range interactions</a></div><div class="conn-reason">DNA 서열로부터 유전자 발현 예측 기술이 모든 생명체 도메인에 걸친 게놈 모델링 및 설계로 확장되었다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../271_Developing_ChemDFM_as_a_large_language_foundation_model_for/index.html">Developing ChemDFM as a large language foundation model for chemistry</a></div><div class="conn-reason">화학 분야 LLM과 유전체 모델링을 결합한 더 큰 생명과학 프레임워크 구축 가능</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../094_AlphaGenome_advancing_regulatory_variant_effect_prediction_w/index.html">AlphaGenome: advancing regulatory variant effect prediction with a unified DNA sequence model</a></div><div class="conn-reason">AlphaGenome의 다중 모달리티 예측이 전체 생명체의 게놈 모델링으로 확장됩니다.</div></div></div>

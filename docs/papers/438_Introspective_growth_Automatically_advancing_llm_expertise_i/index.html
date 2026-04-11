@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongtao Liu, Marti Checa, Rama Vasudevan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">제공되지 않음</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>특허 쌍 구분 작업에서 LLM의 정확도 비교: "다른 특허인가?"와 "같은 특허인가?" 질문에 대한 응답 분포</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 기술 판단 능력을 평가하기 위해 USPTO 특허 분류 작업을 활용하여, 모델이 보유한 지식(lay-in knowledge)과 실제 활용하는 지식(working knowledge) 간의 격차를 진단하는 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 의미상 유사하지만 기술적으로 구분되는 특허 쌍을 제시하여 차별화(differentiation) 능력을 테스트하고, 자가 생성 질답과 외부 정보 제공을 통해 미사용 지식 대 누락 지식을 분리 진단</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Panel (a): ArXiv 논문과 특허 설명서의 모델 혼란도(perplexity) 비교 / Panel (b): 각 특허와 가장 유사한 다른 특허 간 코사인 유사도 분포</em></p></div>
 <ol>
 <li><strong>대규모 특허 데이터셋 구축</strong>: 컴퓨터/정보기술 130만+건, 생의학 17만+건의 2015년 이후 특허 중 고난도 구분 쌍(hard-to-distinguish pairs) 확보 - USPTO 심사관의 인적 검증으로 신뢰성 확보</li>
 <li><strong>미사용 지식 병목(knowledge deployment bottleneck) 규명</strong>: 모델 오류의 대부분이 참지식(lay-in knowledge) 미활용에서 비롯되며, 실제 지식 부족은 상대적으로 적음을 실증적으로 입증</li>
 <li><strong>모델 스케일별 상보적 강점 발견</strong>: 소형 모델은 단순하고 전이 가능한 질문-답변 기저틀을 생성하여 회수(retrieval)를 용이하게 하고, 대형 모델은 더 복잡하지만 일반화 능력이 낮은 질문을 생성 - 계층적 협력 전략의 가능성 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>질문 생성 모델과 답변 모델의 조합에 따른 성능: 자가생성 질답 vs. 외부 정보 기반 질답 비교</em></p></div>
 <ul>
 <li><strong>차별화 기반 이해도 평가</strong>: 두 특허 텍스트가 같은 발명을 설명하는지 여부를 판단하는 이진 분류 작업 (정답: 항상 "다른 특허")</li>
 <li><strong>신뢰도 가중 투표(confidence-weighted voting)</strong>: 동일 프롬프트 3회 독립 생성 결과를 신뢰도로 가중평균하여 모델의 실제 확신도 반영 (신뢰도 투표와 다수결 투표 간 상관계수 0.95)</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: H. Ning, Zhenlong Li, Temitope Akinboyewa, M. Lessani | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1080/17538947.2025.2458688" target="_blank">10.1080/17538947.2025.2458688</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>자율 지리공간 데이터 검색 프레임워크의 구조</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 기반으로 지리정보시스템(GIS) 에이전트가 자동으로 지리공간 데이터를 발견하고 다운로드할 수 있는 프레임워크를 제안한다. 데이터 소스 색인과 핸드북 인벤토리로 구성된 플러그-앤-플레이 구조를 통해 OpenStreetMap, 미국 인구조사국 데이터, 위성 이미지 등 다양한 출처에서 80-90%의 높은 성공률로 데이터를 자동 검색한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 수동으로 구성된 데이터 소스 목록과 기술 핸드북을 기반으로 LLM이 프로그램을 생성·실행·디버깅하여 다양한 출처에서 데이터를 검색하는 프레임워크를 개발하고, QGIS 플러그인과 Python 프로그램으로 구현한 후 검증한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>QGIS 플러그인으로 다운로드한 나이지리아의 지리공간 데이터</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>QGIS 플러그인으로 다운로드한 펜실베이니아주의 카운티 경계</em></p></div>
 <ol>
 <li><strong>포괄적 프레임워크 개발</strong>: 데이터 소스 색인, 핸드북 인벤토리, 인증 관리, 코드베이스로 구성된 확장 가능한 프레임워크 설계로, 새로운 데이터 소스를 플러그-앤-플레이 방식으로 추가 가능하게 함.</li>
 <li><strong>다양한 데이터 소스 통합</strong>: OpenStreetMap, US Census Bureau(행정경계 및 인구통계), ESRI World Imagery(위성 이미지), OpenTopography(DEM), 날씨 데이터, COVID-19 데이터 등 6개 데이터 소스에서 80-90%의 높은 정확도로 데이터 검색 성공.</li>

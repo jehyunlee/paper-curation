@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zihan Zhao, Da Ma, Lu Chen, Liangtai Sun, Zihao Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1016/j.xcrp.2025.102523" target="_blank">10.1016/j.xcrp.2025.102523</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>화학 분야 LLM 개발을 위한 일반 영역 LLM에 화학 도메인 지식을 통합하는 개념도</em></p></div>
 <p>화학 분야의 다양한 작업을 처리할 수 있는 대규모 언어 모델 ChemDFM을 개발했으며, GPT-4를 능가하는 성능을 달성하면서도 화학 분야의 자유로운 대화형 AI 조수 역할을 수행할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLaMA-13B 기반으로 두 단계 훈련을 통해 화학 지식을 통합한다: (1) 도메인 사전 훈련(Domain Pre-training)으로 화학 논문과 교과서에서 지식을 획득하고, (2) 명령어 튜닝(Instruction Tuning)으로 화학 언어 패턴과 분자 표기법에 익숙하게 한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChemDFM의 두 단계 훈련 절차와 지원하는 다양한 작업</em></p></div>
 <ol>
 <li><strong>포괄적 화학 능력</strong>: 분자 인식, 분자 설계, 분자 성질 예측, 반응 분석, 수율 예측, 역합성 등 다양한 화학 작업을 처리할 수 있으며, 미지의 상황에서의 추론과 오류 수정도 가능하다.</li>
 <li><strong>우수한 성능</strong>: ChemDFM-13B가 대부분의 오픈소스 LLM을 능가하며, 모델 크기의 현저한 차이에도 불구하고 많은 화학 작업에서 GPT-4의 성능을 초과한다.</li>
 <li><strong>실제 시나리오 적응성</strong>: 최신 화학 논문 기반의 미지의 상황(unseen scenarios)에서도 더 정확하고 관련성 높은 답변을 생성하여 데이터 누수를 방지하면서도 실무 적용성을 입증한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>명령어 튜닝에 사용된 화학 반응 완성 작업의 예시</em></p></div>
 <ul>
 <li><strong>도메인 사전 훈련 데이터</strong>:
 <ul>
@@ -138,7 +132,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../226_ClinicalGPT_Large_Language_Models_Finetuned_with_Diverse_Med/index.html">ClinicalGPT: Large Language Models Finetuned with Diverse Medical Data and Comprehensive Evaluation</a></div><div class="conn-reason">화학 분야 대형 언어 기초 모델 개발 경험이 의료 분야 특화 모델 구축에 필요한 도메인 적응 전략을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../025_A_Survey_of_AI_for_Materials_Science_Foundation_Models_LLM_A/index.html">A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</a></div><div class="conn-reason">재료과학 AI 조사가 화학 LLM 개발의 광범위한 맥락을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">화학 분야 LLM의 다른 구현 방식으로 도구 통합 vs 파운데이션 모델 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">화학 AI 에이전트의 다른 구현 방식으로 도구 통합 vs 파운데이션 모델</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../382_Genome_modeling_and_design_across_all_domains_of_life_with_E/index.html">Genome modeling and design across all domains of life with Evo 2</a></div><div class="conn-reason">화학 분야 LLM과 유전체 모델링을 결합한 더 큰 생명과학 프레임워크 구축 가능</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../167_Biomedlm_A_27_b_parameter_language_model_trained_on_biomedic/index.html">BioMedLM: A 2.7B Parameter Language Model Trained on Biomedical Text</a></div><div class="conn-reason">화학 분야 대형 언어 파운데이션 모델 개발에 생명의학 모델 적용</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Siting Liang, Daniel Sonntag | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2502.21014" target="_blank">arXiv:2502.21014</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 생의학 주장 검증 시스템의 대화형 컴포넌트들</em></p></div>
 <p>대규모 언어 모델(LLM)과 SHAP 설명가능성을 결합하여 의료 주장 검증의 투명성을 높이는 대화형 시스템을 제시한다. 사용자는 과학 문헌에서 관련 연구를 검색하고, CoENLI 프레임워크를 통해 LLM의 추론 과정을 검토하며, SHAP 값으로 단어 수준의 기여도를 파악할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: CoENLI(Chain of Evidence-based NLI) 프레임워크와 SHAP 설명가능성을 통합한 대화형 검증 시스템 개발. 사용자는 다중 LLM의 비교 분석, 생성된 근거 기반 설명, 단어 수준의 기여도 분석을 통해 최종 판단을 내린다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 증거 분석과 SHAP 기반 설명의 이중층 설명가능성</em></p></div>
 <ol>
 <li><strong>CoENLI 프레임워크 개발</strong>: 의미 기반화(Semantic Grounding) → 증거 기반 평가(Evidence-Based Evaluation) → 관계 예측(Relation Prediction)의 3단계 체계화된 추론으로 NLI4CT와 SciFact 벤치마크에서 CoT 대비 성능 향상을 달성했다.</li>
 <li><strong>이중층 설명가능성 구현</strong>: LLM의 근거 분석과 SHAP 기반 단어 기여도를 함께 제시하여 모델의 의사결정 과정을 다층적으로 해석 가능하게 만들었다.</li>
 <li><strong>인간-AI 협업 워크플로우</strong>: 사용자가 분류 결과를 검토하고 조정할 수 있으며, 모델이 조정된 판단에 대한 근거 기반 정당화(narrative justification)를 생성하는 순환적 과정을 구현했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: CoENLI 프레임워크의 3단계 추론 과정</em></p></div>
 <p><strong>시스템 워크플로우</strong>:</p>
 <ul>
 <li><strong>Step 1</strong>: 사용자가 검증할 주장(claim) 선택 → BM25 알고리즘으로 관련 과학 논문 검색</li>
@@ -136,7 +130,6 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">과학적 팩트체킹을 의료 분야로 확장하고 설명가능성을 추가한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">일반적인 사실 검증을 의료 분야로 특화하고 설명가능성을 추가한 확장 연구이다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../235_Comparing_knowledge_sources_for_open-domain_scientific_claim/index.html">Comparing knowledge sources for open-domain scientific claim verification</a></div><div class="conn-reason">설명 가능한 생물의학 주장 검증 연구로 본 논문의 과학적 주장 검증을 의료 도메인으로 확장한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">의료 분야로 특화하여 사실 검증에 설명가능성을 추가한 확장 연구이다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../221_Claimver_Explainable_claim-level_verification_and_evidence_a/index.html">Claimver: Explainable claim-level verification and evidence attribution of text through knowledge graphs</a></div><div class="conn-reason">지식 그래프 기반 설명가능한 검증을 의료 주장 검증에 구체적으로 적용한다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

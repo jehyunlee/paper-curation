@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 자연어 프롬프트를 통해 LLM에게 부모 선택과 유전 연산을 지시하고, LLM의 온도(temperature) 파라미터를 자동 조절하여 탐색(exploration)과 활용(exploitation)의 균형을 유지하는 LMEA 프레임워크 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LMEA의 개요 및 프롬프트 구성 예시</em></p></div>
 <ol>
 <li><strong>경쟁력 있는 성능</strong>: LMEA는 20개 노드 규모의 TSP(Traveling Salesman Problem) 인스턴스에서 전통적 휴리스틱과 견줄 만한 성능을 달성하며, 특히 10개 및 15개 노드 규모에서는 최적해를 일관되게 발견.</li>
 <li><strong>최소한의 설계 노력</strong>: 추가 모델 훈련이나 광범위한 도메인 전문 지식 없이 자연어 프롬프트 변경만으로 다양한 최적화 문제에 적응 가능.</li>
 <li><strong>자동 적응 메커니즘의 효과성</strong>: 온도 자동 조절 메커니즘이 지역 최적해 함정을 회피하고 탐색 성능을 향상시킴을 실증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>LMEA와 OPRO의 세대 수에 따른 수렴 곡선 비교</em></p></div>
 <ul>
 <li><strong>프롬프트 설계</strong>: 과제 설명(task description), 해의 속성(solution properties), 집단 정보(population information), 연산자 지시(operator instructions)를 포함하는 구조화된 다중 파트 프롬프트 구성. 체인-오브-씽크(Chain-of-Thought) 기법 활용.</li>
 <li><strong>알고리즘 프레임워크</strong>:

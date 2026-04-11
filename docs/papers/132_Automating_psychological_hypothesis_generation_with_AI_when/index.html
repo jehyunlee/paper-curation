@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Song Tong, Kai Mao, Zhen Huang, Yukun Zhao, Kaiping Peng | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1057/s41599-024-03407-5" target="_blank">10.1057/s41599-024-03407-5</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLMCG 알고리즘을 기반한 가설 생성 프레임워크: 문헌 검색, 인과 관계 쌍 추출, 가설 생성의 세 단계</em></p></div>
 <p>본 연구는 대규모 언어 모델(LLM)과 인과 지식 그래프(Causal Knowledge Graph)를 결합하여 심리학 분야의 자동화된 가설 생성을 수행했다. 43,312개 심리학 논문을 분석한 결과, LLM 단독보다 우월한 신규성을 가진 130개의 웰빙 관련 가설을 생성할 수 있음을 입증했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 의미론적 추출 능력과 인과 그래프의 체계적 사고를 결합한 LLMCG(LLM-based Causal Graph) 프레임워크를 제안하고, 링크 예측(link prediction) 알고리즘으로 새로운 가설을 자동 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>집단 간 비교 분석: (a) 신규성(novelty)과 (b) 유용성(usefulness) 분포를 보여주는 박스 플롯</em></p></div>
 <ol>
 <li><strong>가설 생성의 효과성</strong>: LLMCG 프레임워크로 생성한 130개의 웰빙 관련 가설이 박사 과정생(novice experts)의 아이디어와 유사한 수준의 신규성을 보였다 (t(59) = 3.34, p = 0.007). LLM 단독 방식을 명확히 능가했다 (t(59) = 4.32, p < 0.001).</li>
 <li><strong>의미론적 우월성</strong>: 심층 의미 분석(deep semantic analysis) 결과, LLMCG 알고리즘이 더 깊이 있는 개념 통합과 광범위한 의미 스펙트럼을 보유함을 입증했다. BERT 공간에서의 의미적 거리 분석으로 이를 정량적으로 확인했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>BERT 공간에서의 의미 표현 t-SNE 시각화: (a) 신규성 점수와 (b) 유용성 점수 비교</em></p></div>
 <p><strong>3단계 LLMCG 프레임워크</strong>:</p>
 <ul>
 <li><strong>Step 1 - 문헌 검색</strong>: PMC Open Access Subset에서 심리학 관련 키워드("psychol", "clin psychol" 등)를 포함한 약 140,000개 논문 검색. 저널명에 "Psychol"을 포함한 43,312개 논문 최종 선정 (1975-2023년)</li>
@@ -126,9 +120,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 심리학 분야의 자동 가설 생성에 대한 선도적 시도로, LLM과 인과 그래프의 상승효과를 실증적으로 입증했다. 대규모 문헌 분석과 신뢰성 있는 비교 평가는 강점이지만, 인과 추출의 정확도 검증과 생성 가설의 실제 실험적 검증이 향후 연구에서 보완되어야 한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../468_Large_Language_Models_are_Zero_Shot_Hypothesis_Proposers/index.html">Large Language Models are Zero Shot Hypothesis Proposers</a></div><div class="conn-reason">LLM의 가설 생성 능력에 대한 기초적 탐구가 심리학 분야 자동화된 가설 생성 연구의 이론적 토대를 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../434_Interesting_Scientific_Idea_Generation_using_Knowledge_Graph/index.html">Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders</a></div><div class="conn-reason">둘 다 지식 그래프와 LLM을 결합한 연구 아이디어 생성을 다루지만, 하나는 심리학, 다른 하나는 일반 과학 분야에 특화됨</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../434_Interesting_Scientific_Idea_Generation_using_Knowledge_Graph/index.html">Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders</a></div><div class="conn-reason">둘 다 지식 그래프와 LLM을 결합한 연구 아이디어 생성을 다루지만 하나는 일반 과학, 다른 하나는 심리학에 특화됨</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../419_Hypothesis_Generation_with_Large_Language_Models/index.html">Hypothesis Generation with Large Language Models</a></div><div class="conn-reason">일반적인 LLM 가설 생성을 심리학이라는 특정 도메인으로 확장하여 인과 지식 그래프를 통합한 더 정교한 접근법을 제시함</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../419_Hypothesis_Generation_with_Large_Language_Models/index.html">Hypothesis Generation with Large Language Models</a></div><div class="conn-reason">AI를 통한 심리학 가설 생성을 더 일반적인 과학 분야로 확장하고 탐색-활용 균형을 도입한 진보된 방법입니다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../419_Hypothesis_Generation_with_Large_Language_Models/index.html">Hypothesis Generation with Large Language Models</a></div><div class="conn-reason">일반적인 LLM 가설 생성을 심리학이라는 특정 도메인으로 확장하여 인과 지식 그래프를 통합한 더 정교한 접근법을 제시함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yang Zhang, Yufei Wang, Kai Wang, Quan Z. Sheng, Lina Yao, A. Mahmood, Wei Emma Zhang, Rongying Zhao | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2309.09727" target="_blank">10.48550/arXiv.2309.09727</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM과 인용 간의 상호 이익적 관계</em></p></div>
 <p>대규모 언어 모델(LLM)과 학술 인용 분석 간의 상호 보완 관계를 체계적으로 정리한 최초의 종합 조사 연구이다. LLM이 인용 분석 작업의 성능을 향상시키고, 역으로 인용 데이터가 LLM의 텍스트 표현을 개선하는 양방향 이익 구조를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM이 인용 분석을 돕는 경로(인용 분류, 인용 기반 요약, 인용 추천)와 인용이 LLM을 개선하는 경로(인용 예측, 네트워크 구조 활용, 문서 간 관계)를 체계적으로 분류 정리한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>LLM과 인용 연구의 분류 체계</em></p></div>
 <ol>
 <li><strong>LLM의 인용 분석 기여 메커니즘 규명</strong>: 고품질 텍스트 임베딩, 강력한 텍스트 생성 능력, 인용 구조 정보 통합 능력 등 세 가지 핵심 메커니즘을 통해 LLM이 인용 분류, 인용 기반 요약, 인용 추천 작업의 성능을 향상시킴을 입증</li>
 <li><strong>인용 분류의 다층적 접근법 제시</strong>: BERT, SciBERT, T5 등 판별형(Discriminative) LLM의 고품질 표현뿐 아니라, T5, GPT-2 등 생성형(Generative) LLM을 통한 합성 데이터 생성 및 데이터 불균형 해결 방법 제시</li>
 <li><strong>문서 간 관계 활용의 중요성 강조</strong>: 단일 문서 학습을 넘어 다중 홉(Multi-hop) 지식을 학습할 수 있는 인용 네트워크 활용의 가치를 구체화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>LLM이 인용 작업을 개선하는 경로</em></p></div>
 <p><strong>인용 분류(Citation Classification)</strong></p>
 <ul>
 <li>인코더 기반 LLM(BERT, SciBERT)을 통한 고품질 표현 추출</li>

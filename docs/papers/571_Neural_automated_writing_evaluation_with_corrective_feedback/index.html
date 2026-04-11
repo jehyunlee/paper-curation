@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Izia Xiaoxiao Wang, Xihan Wu, Edith Coates, Min Zeng, Jiexin Kuang, Siliang Liu, Mengyang Qiu, Jungyeul Park | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>시스템 워크플로우: 학습자가 에세이를 제출하면 자동 쓰기 평가(AWE)와 문법 오류 수정(GEC)을 통합하여 점수와 수정 피드백을 제공</em></p></div>
 <p>본 논문은 자동 쓰기 평가(AWE: Automated Writing Evaluation)와 문법 오류 수정(GEC: Grammatical Error Correction) 시스템을 통합하여, 제2언어 학습자에게 즉각적인 에세이 평점과 문법 수정 피드백을 동시에 제공하는 통합 시스템을 제시한다. 이를 통해 시험 시뮬레이션 환경을 구현하여 보다 실질적인 언어 학습 경험을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 신경망 기반의 AWE(점수 예측)와 GEC(문법 오류 수정) 시스템을 하나의 플랫폼에 통합하여, 학습자가 에세이를 제출하면 종합적인 점수(전체 점수 + 8가지 항목별 점수)와 인라인 문법 수정을 함께 제공.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>통합 AWE-GEC 시스템의 사용자 인터페이스: 원본 텍스트의 삭제된 토큰(빨간색), 추가된 문법 수정(초록색), AWE 점수(0-100 범위)</em></p></div>
 <ol>
 <li><strong>크로스-프롬프트 점수 제공</strong>: ASAP++과 ASAP 데이터셋을 활용하여 8개의 서로 다른 프롬프트에 대한 종합적인 루브릭 점수(content, organization, word choice, sentence fluency, conventions 등) 제시. 단순 전체 점수가 아닌 다차원적 평가 결과 제공.</li>
 <li><strong>고성능 GEC 모델</strong>: BEA 2019 테스트셋에서 65.29 F₀.₅ 점수 달성. BERT 기반 seq2seq 모델과 데이터 증강(spell-checked 문장 추가로 157만→172만 문장쌍으로 확대)을 통해 강력한 문법 오류 수정 성능 구현.</li>

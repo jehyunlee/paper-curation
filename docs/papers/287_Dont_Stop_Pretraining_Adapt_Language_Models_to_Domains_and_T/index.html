@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 4개 도메인(생의학, 컴퓨터과학, 뉴스, 리뷰)의 8개 분류 작업에 대해 도메인 적응 사전학습(DAPT: Domain-Adaptive PreTraining)과 작업 적응 사전학습(TAPT: Task-Adaptive PreTraining)을 체계적으로 비교 분석</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 도메인 간 어휘 중복도(%) 분석 - RoBERTa 사전학습 도메인(PT)과 각 도메인 간의 유사성 정량화">
-<p class="fig-caption"><em>어휘 중복도를 통한 도메인 유사성 분석: CS와 생의학(BioMed) 도메인이 PT 도메인과 가장 멀리 떨어져 있음</em></p></div>
 <ol>
 <li><strong>도메인 적응 사전학습(DAPT)의 일관된 효과</strong>: 생의학, CS, 리뷰 도메인에서 RoBERTa 대비 지속적 성능 향상 달성(예: ACL-ARC 63.0% → 75.4%, CHEMPROT 81.9% → 84.2%). 고자원/저자원 설정 모두에서 개선 확인</li>
 <li><strong>도메인 적응과 작업 적응의 상승 효과</strong>: DAPT 후 TAPT를 추가로 적용하면 더 큰 성능 향상 달성, 즉 다단계 적응 사전학습(multi-phase adaptive pretraining)이 효과적임을 입증</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자동 데이터 선택 전략</strong>: 인간 큐레이션 데이터 부재 시 간단한 데이터 선택 전략으로 작업 적응 사전학습 성능을 향상시킬 수 있는 실용적 대안 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 데이터 분포의 계층 구조 - 관찰 가능한 작업 분포(task distribution)와 더 넓은 도메인 분포(domain distribution)의 관계 도시">
-<p class="fig-caption"><em>작업 데이터는 도메인 분포의 부분집합이며, 원본 사전학습 도메인과 반드시 겹치지 않음을 시각화</em></p></div>
 <ul>
 <li><strong>도메인 적응 사전학습(DAPT)</strong>: RoBERTa를 각 도메인의 대규모 비레이블 텍스트(7.55B~8.10B 토큰)에서 12.5K 스텝(단일 epoch) 추가 학습. 마스크 언어 모델(masked language modeling) 목적 함수 유지</li>
 <li><strong>어휘 중복 분석</strong>: 상위 10K 빈도 단어(stopword 제외)의 도메인 간 겹침 정도로 사전 적응 잠재력 평가. PT(RoBERTa) 도메인과의 거리가 멀수록 높은 개선 예상</li>
@@ -120,7 +116,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 5/5</span> <span class="eval-badge">Clarity: 5/5</span> <span class="eval-badge">Overall: 4.5/5</span></div>
 <p><strong>총평</strong>: 본 논문은 현대 NLP의 통념(대규모 광범위 모델로 충분함)에 대한 실증적 반박을 제공하는 중요한 연구로, 4개 도메인의 8개 작업에 걸친 체계적 비교를 통해 도메인/작업 적응 사전학습의 일관된 효과를 입증했다. 어휘 겹침 분석으로 적응 이득을 사전에 예측 가능하게 하고, 자동 데이터 선택 전략으로 실무적 적용성을 높였다는 점에서 ACL 2020의 주요 기여 논문으로 평가받을 만하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../343_Foundation_models_for_materials_discovery__current_state_and/index.html">Foundation models for materials discovery – current state and future directions</a></div><div class="conn-reason">도메인 적응 기법이 재료과학 파운데이션 모델의 특화 학습에 필수적이다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../343_Foundation_models_for_materials_discovery__current_state_and/index.html">Foundation models for materials discovery – current state and future directions</a></div><div class="conn-reason">도메인 적응 기법이 재료과학 파운데이션 모델 개발의 핵심 방법론이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../340_Fine-tuning_large_language_models_for_domain_adaptation_expl/index.html">Fine-tuning large language models for domain adaptation: exploration of training strategies, scaling, model merging and synergistic capabilities</a></div><div class="conn-reason">도메인 적응의 기본 원리가 과학 분야 LLM 개발의 핵심 방법론이 됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../340_Fine-tuning_large_language_models_for_domain_adaptation_expl/index.html">Fine-tuning large language models for domain adaptation: exploration of training strategies, scaling, model merging and synergistic capabilities</a></div><div class="conn-reason">도메인 적응을 과학 분야로 확장한 구체적 사례와 실험을 제공한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../306_Efficient_fine-tuning_of_single-cell_foundation_models_enabl/index.html">Efficient fine-tuning of single-cell foundation models enables zero-shot molecular perturbation prediction</a></div><div class="conn-reason">언어모델 도메인 적응 방법을 단일세포 파운데이션 모델 미세조정에 적용한다.</div></div></div>

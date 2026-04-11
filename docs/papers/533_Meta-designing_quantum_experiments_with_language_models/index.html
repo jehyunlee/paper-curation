@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sören Arlt, Haonan Duan, F.-Y. Li, Sang Michael Xie, Yuhuai Wu, Mario Krenn | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>좌측: 클래스의 첫 세 상태로부터 임의의 크기의 양자 실험 설정을 생성하는 Python 코드를 생성. 우측: 계산 비용이 입자 수에 따라 급격히 증가하는 문제를 해결</em></p></div>
 <p>언어 모델을 활용하여 단일 양자 상태 하나가 아닌 <strong>양자 상태의 전체 클래스를 해결하는 메타-솔루션(Python 코드)</strong>을 자동 발견함으로써, 인간이 이해 가능한 설계 원칙을 추출하고 임의의 크기로 실험을 확대할 수 있는 새로운 AI 기반 과학 발견 방법론을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 트랜스포머 기반 sequence-to-sequence 언어 모델을 합성 데이터로 훈련하여, 양자 상태 시퀀스로부터 임의의 시스템 크기에 대해 작동하는 Python 메타-프로그램을 직접 생성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>비대칭 비용 활용: 무작위 Python 프로그램(수열 B)을 생성하고 N=0,1,2에 대해 실행하면 세 개의 양자 상태(수열 A)를 얻음</em></p></div>
 <ol>
 <li><strong>이전 미발견 양자 상태의 일반화 발견</strong>: 응축 물질 물리학의 중요한 양자 상태(GHZ 상태, 클러스터 상태 등)에 대해 이전에 알려지지 않은 실험적 구현 방법을 자동으로 발견</li>
 <li><strong>해석 가능한 메타-솔루션 생성</strong>: 단순히 최적화된 수치 파라미터가 아닌 <strong>인간이 읽을 수 있는 Python 코드</strong>로 일반적 설계 원칙을 표현하여, 물리학자가 직접 패턴을 이해하고 학습 가능</li>
 <li><strong>스케일러빌리티 달성</strong>: 개별 최적화가 불가능한 큰 입자 수(N≥10)의 실험 설정을 자동으로 구성할 수 있는 범용 프로그램 생성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>새로운 메타-설계 솔루션들과 이들의 패턴</em></p></div>
 <p><strong>합성 데이터 생성 (비대칭 비용 활용)</strong>:</p>
 <ul>
 <li>무작위 Python 프로그램(변수 N 포함)을 생성하는 것은 간단함 (쉬운 방향: B→A)</li>

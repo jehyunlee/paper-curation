@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Peng Wang, Ruihan Tao, Qiguang Chen, Mengkang Hu, Libo Qin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.15372v1" target="_blank">arXiv:2505.15372v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>영어 환경과 다국어 환경에서 GPT-4o의 성능 비교: 다국어 환경에서 20% 이상 성능 저하 발생</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반 에이전트의 다국어 성능을 평가하기 위해 14개 언어, 2,800개의 지시문, 589,946개의 상품을 포함한 X-WebAgentBench 벤치마크를 제시한다. 기존 에이전트 벤치마크들이 영어 중심이었던 반면, 이 연구는 다국어 지시문과 다국어 환경을 동시에 포함한 최초의 종합적인 다국어 에이전트 평가 벤치마크를 구축하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 영어 WebShop 벤치마크를 기반으로 하되, (a) 14개 대표 언어를 선정하여 (b) 지시문과 환경 데이터를 다국어로 번역하고, (c) 품질 검증을 통해 신뢰할 수 있는 다국어 에이전트 평가 벤치마크를 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>X-WebAgentBench 구축의 4단계: (a) 데이터 준비, (b) 다국어 지시문 구성, (c) 다국어 환경 구성, (d) 품질 검증</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>X-WebAgentBench의 언어 분포(15개 언어, 청색=영어 영역, 녹색=다국어 영역) 및 상품 카테고리 분포</em></p></div>
 <ol>
 <li><strong>벤치마크 구축</strong>: 14개 언어에 걸쳐 2,800개의 다국어 지시문과 589,946개의 다국어 상품 데이터를 포함한 첫 번째 종합적 다국어 에이전트 벤치마크 개발</li>
 <li><strong>성능 분석</strong>: 다양한 LLM과 교차언어 정렬(cross-lingual alignment) 방법의 효과를 체계적으로 평가하여, (a) 큰 모델의 경우 고급 교차언어 정렬이 성능을 크게 향상시키고, (b) 작은 모델의 경우 다국어 환경을 영어로 번역하는 것이 효과적이며, (c) 기존 에이전트 기법과 교차언어 기법의 단순 조합은 불충분함을 입증</li>
 <li><strong>품질 보증</strong>: 50개 제품에 대한 사전 검증을 통해 Google Translate(90% 이상)와 GPT-4 (74%)의 번역 정확도를 비교하고, 환경 데이터 번역에는 GPT-4를 선택하여 문맥적 뉘앙스를 정확히 포착</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <h3>2.1 데이터 준비 (Data Preparation)</h3>
 <ul>
 <li><strong>언어 선택</strong>: Conneau et al. (2018)을 따라 7개 언어족에 걸친 14개 대표 언어 선정 (자원 분포 균형 및 지리적 다양성 확보)</li>

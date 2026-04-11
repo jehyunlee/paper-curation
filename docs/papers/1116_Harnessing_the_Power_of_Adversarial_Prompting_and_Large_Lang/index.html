@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Ioana Ciucă, Yuan-Sen Ting, Sandor Kruk, Kartheik Iyer | <strong>날짜</strong>: 2023-06-20 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2306.11648" target="_blank">10.48550/arXiv.2306.11648</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Adversarial prompting and domain-specific context enrichment significantly enhance hypothesis generation quali</em></p></div>
 <p>본 연구는 GPT-4와 적대적 프롬프팅(adversarial prompting)을 활용하여 천문학 분야에서 가설 생성 능력을 향상시키는 방법을 제시한다. NASA 천체물리학 데이터시스템(ADS)의 1,000개 논문을 맥락 정보로 제공할 때 적대적 프롬프팅이 특히 효과적임을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 맥락 정보 검색 파이프라인(retrieval pipeline)을 통해 1,000개의 논문 청크를 벡터화하고, 생성 모델-비평 모델-중재 모델의 3단계 GPT-4 인스턴스를 활용한 적대적 피드백 루프를 구성한다. 반복적인 비판과 개선을 통해 가설의 질을 향상시킨다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Adversarial prompting and domain-specific context enrichment significantly enhance hypothesis generation quali</em></p></div>
 <ul>
 <li><strong>적대적 프롬프팅의 효과성</strong>: 적대적 프롬프팅(adversarial prompting)이 없을 때는 맥락 논문 수에 관계없이 가설 질이 정체하지만, 적용 시 뚜렷한 개선 효과를 보인다.</li>
 <li><strong>도메인 맥락과의 상관관계</strong>: 적대적 프롬프팅을 적용했을 때 특히 1,000개 논문 맥락(N=1000)에서 가설 질과 논문 수 간의 강한 상관관계가 성립한다.</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>저비용 도메인 적응</strong>: 미세 조정이나 어댑터(adapter) 없이 프롬프팅만으로 도메인 특화 성능을 달성한다.</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. This figure illustrates the adversarial in-context prompting workflow using OpenAI’s GPT-4 model. The procedur</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: NASA ADS에서 'Gaia', 은하 운동학, 구조, 진화 관련 키워드로 필터링한 1,000개 갈락틱 천문학(Galactic Astronomy) 논문 선정", '<strong>전처리 및 임베딩</strong>: PDF를 텍스트로 변환 후 1,000 토큰 단위 청크로 분할, OpenAI의 text-ada-002 모델로 임베딩</li>
 <li><strong>유사도 검색</strong>: 쿼리를 임베딩한 후 벡터 데이터베이스에서 유사 청크 검색</li>

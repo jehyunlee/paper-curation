@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mingyang Chen, Tianpeng Li, Haoze Sun, Yijie Zhou, Chenzheng Zhu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.19470" target="_blank">10.48550/arXiv.2503.19470</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: ReSearch와 기준선(baseline) 방법들의 벤치마크 성능 비교. 모든 기준선은 Qwen2.5-32B-Instruct 기반.</em></p></div>
 <p>ReSearch는 강화학습(RL)을 통해 대규모 언어모델(LLM)이 추론 과정 중 언제 어떻게 검색을 수행할지를 자동으로 학습하는 프레임워크이다. 감독 데이터 없이 검색 쿼리, 텍스트 기반 사고(thinking), 검색 결과를 통합한 추론 체인을 만들어 다중 홉(multi-hop) 질문 답변에서 8.9~22.4%의 성능 향상을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 강화학습(GRPO)을 활용하여 추론(thinking), 검색 쿼리(search), 검색 결과(result)를 하나의 통합 체인으로 취급하고, 최종 답변의 정확도만으로 보상 신호를 주어 감독 데이터 없이 학습.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: ReSearch와 기준선 방법들의 벤치마크 성능 비교</em></p></div>
 <ol>
 <li><strong>강력한 일반화 성능</strong>: 하나의 훈련 데이터셋에서만 학습했음에도 HotpotQA(63.6%), 2Wiki(54.2%), MuSiQue(33.4%), Bamboogle(54.4%) 등 여러 벤치마크에서 일관되게 기준선 대비 8.9~22.4%의 절대 성능 향상 달성.</li>
 <li><strong>모델 규모별 효과성</strong>: Qwen2.5-7B와 Qwen2.5-32B 양쪽 모두에서 성공적으로 훈련되어 방법론의 확장성 입증.</li>
 <li><strong>자동 추론 능력 도출</strong>: 강화학습 과정에서 사전 정의된 휴리스틱 없이 반성(reflection)과 자기 수정(self-correction) 같은 고급 추론 능력이 자연스럽게 발현됨.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: ReSearch의 훈련 개요. (a) GRPO 파이프라인. (b) 검색을 포함한 롤아웃 생성 프로세스의 세부사항</em></p></div>
 <h3>훈련 메커니즘</h3>
 <ul>
 <li><strong>GRPO 알고리즘</strong>: Group Relative Policy Optimization을 사용하여 별도의 비평 모델 없이 롤아웃 그룹에서 기준선을 추정하고, 정규화된 이점(normalized advantage)을 통해 정책을 최적화. KL 발산 페널티로 참조 정책으로부터의 편차를 제어.</li>
@@ -121,7 +115,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: ReSearch는 추론과 검색을 통합하는 새로운 관점에서 강화학습을 적용하여 감독 데이터 없이도 다중 홉 질문 답변에서 뚜렷한 성능 개선을 달성한 실질적 가치 높은 논문이다. 다만 보상 함수의 단순성, 훈련 비용 분석 부재, 평가 데이터셋의 제한성 등으로 인해 완전성 면에서는 약간의 개선 여지가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html">WebThinker: Empowering Large Reasoning Models with Deep Research Capability</a></div><div class="conn-reason">WebThinker의 웹 탐색과 정보 수집 통합은 ReSearch의 검색 쿼리와 추론 체인 생성에 더 동적인 정보 수집 방법론을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../740_Search-R1_Training_LLMs_to_Reason_and_Leverage_Search_Engine/index.html">Search-R1: Training LLMs to Reason and Leverage Search Engines with Reinforcement Learning</a></div><div class="conn-reason">두 논문 모두 강화학습 기반 검색을 다루되 ReSearch는 다중홉 질문 답변, Search-R1은 검색 엔진과의 통합에 특화되어 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../740_Search-R1_Training_LLMs_to_Reason_and_Leverage_Search_Engine/index.html">Search-R1: Training LLMs to Reason and Leverage Search Engines with Reinforcement Learning</a></div><div class="conn-reason">두 논문 모두 검색 기반 추론을 다루되 Search-R1은 검색 엔진 활용, ReSearch는 다중홉 질문 답변에 특화되어 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html">WebThinker: Empowering Large Reasoning Models with Deep Research Capability</a></div><div class="conn-reason">ReSearch의 강화학습 기반 검색 학습은 WebThinker의 웹 탐색 능력을 더욱 체계적이고 자동화된 방식으로 발전시킨다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../743_Self-critique_guided_iterative_reasoning_for_multi-hop_quest/index.html">Self-critique guided iterative reasoning for multi-hop question answering</a></div><div class="conn-reason">기본적인 추론 학습을 검색과 강화학습을 통한 더 체계적인 추론 능력 향상 방법으로 확장함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../602_Paperqa_Retrieval-augmented_generative_agent_for_scientific/index.html">PaperQA: Retrieval-Augmented Generative Agent for Scientific Research</a></div><div class="conn-reason">PaperQA의 과학 문헌 검색 증강 생성은 ReSearch의 강화학습 기반 검색 학습을 학술 문헌 도메인에 직접 적용한 실제 사례를 보여준다.</div></div></div>

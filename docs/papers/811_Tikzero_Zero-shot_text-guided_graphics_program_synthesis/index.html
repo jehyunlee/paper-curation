@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jonas Belouadi, Eddy Ilg, Margret Keuper, Hideki Tanaka, Masao Utiyama, Raj Dabre, Steffen Eger, Simone Ponzetto | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.11509" target="_blank">arXiv:2503.11509</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. 그래픽 프로그램 합성을 위한 학습 데이터 가용성 비교</em></p></div>
 <p>텍스트 설명으로부터 TikZ 그래픽 프로그램을 생성하는 문제를 해결하기 위해, 캡션-프로그램 정렬 데이터의 부족이라는 핵심 병목을 극복하는 TikZero를 제시한다. 이 방법은 이미지 표현을 매개자로 활용하여 그래픽 프로그램 생성과 텍스트 이해를 분리함으로써, 정렬되지 않은 대규모 데이터를 독립적으로 활용할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -98,8 +96,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. TikZero+와 AutomaTikZv2의 정성적 비교</em></p></div>
 <ol>
 <li><strong>새로운 아키텍처</strong>: TikZero는 표현 공간 정렬(representation space alignment)을 통해 정렬된 데이터의 필요성을 제거하면서 텍스트 기반 그래픽 프로그램 합성을 달성</li>
 <li><strong>데이터셋 기여</strong>: DaTikZv3 데이터셋 공개 - 45만+ TikZ 프로그램과 ~17만 캡션 샘플 포함 (기존 DaTikZv2 대비 대폭 확대)</li>
@@ -112,8 +108,6 @@ a { color: #A62018; }
 <li><strong>효율성</strong>: 어댑터 학습 중 문본 디코더(보통 가장 큰 구성 요소)를 로드할 필요 없음</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3. TikZero의 아키텍처 개요</em></p></div>
 <p><strong>역 그래픽스 모델 기반</strong></p>
 <ul>
 <li>VLM(Vision-Language Model) 아키텍처 채용</li>

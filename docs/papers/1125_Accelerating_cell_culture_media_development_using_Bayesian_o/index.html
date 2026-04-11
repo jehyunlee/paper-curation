@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Harini Narayanan, Joshua A. Hinckley, Rachel Barry, Brendan Dang, Lenna A. Wolffe, Adel Atari, Yuen-Yi Tseng, J. Christopher Love | <strong>날짜</strong>: 2025-07-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41467-025-61113-5" target="_blank">10.1038/s41467-025-61113-5</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1 | Workﬂow. Schematic representation of the Bayesian Optimization (BO)-based iterative experimental design workﬂow</em></p></div>
 <p>베이지안 최적화(Bayesian Optimization) 기반의 반복적 실험 설계 프레임워크를 적용하여 세포 배양 배지 개발을 가속화했으며, PBMC 배양과 K. phaffii의 재조합 단백질 생산 최적화에서 기존 방법 대비 3-30배 적은 실험으로 우수한 결과를 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 가우시안 프로세스(Gaussian Process) 기반 확률적 서로게이트 모델과 베이지안 최적화기를 결합하여 반복적 실험 설계 프레임워크를 구축했으며, 초기 실험 세트로 GP 모델을 구성하고 각 반복에서 탐색-활용 균형을 맞추며 모델을 지속적으로 업데이트한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2 | Media blend and cytokine composition optimization PBMC cultures.</em></p></div>
 <ul>
 <li><strong>PBMC 배양 배지 최적화</strong>: 세포 생존력 유지와 표현형 분포 안정성을 위한 사이토카인 보충 배지 조성을 도출하여 72시간까지 세포 배양 가능</li>
 <li><strong>K. phaffii 재조합 단백질 생산</strong>: 3개의 재조합 단백질 생산을 최적화하는 배지 조건을 발견하여 표준 배지 대비 향상된 성능 달성</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>복합 설계 공간 처리</strong>: 연속 변수와 범주형 변수, 제약 조건이 혼재된 복잡한 설계 공간을 효율적으로 처리</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1 | Workﬂow. Schematic representation of the Bayesian Optimization (BO)-based iterative experimental design workﬂow</em></p></div>
 <ul>
 <li>가우시안 프로세스(GP)를 확률적 서로게이트 모델로 사용하여 생물학적 시스템의 부드러운 응답 함수 학습</li>
 <li>GP에 사전 신념(prior beliefs)과 공정 잡음(process noise)을 명시적으로 포함하여 생물학적 불확실성 반영</li>
@@ -120,7 +114,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../744_Self-Driving_Laboratories_for_Chemistry_and_Materials_Scienc/index.html">Self-Driving Laboratories for Chemistry and Materials Science</a></div><div class="conn-reason">화학과 재료과학의 자율주행 실험실이 베이지안 최적화의 이론적 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">자동화된 실시간 실험-이론 폐쇄루프와 베이지안 최적화의 다른 접근법</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1126_Autonomous_platform_for_solution_processing_of_electronic_po/index.html">Autonomous platform for solution processing of electronic polymers</a></div><div class="conn-reason">두 논문 모두 베이지안 최적화를 자동화 실험에 적용하되 세포 배양 배지는 생물학, 전자 고분자는 재료과학 분야에 특화되어 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1126_Autonomous_platform_for_solution_processing_of_electronic_po/index.html">Autonomous platform for solution processing of electronic polymers</a></div><div class="conn-reason">두 논문 모두 베이지안 최적화 기반 자동화를 다루되 Polybot은 재료과학, 세포 배양은 생물학 응용에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../140_Autonomous_reinforcement_learning_agent_for_chemical_vapor_d/index.html">Autonomous reinforcement learning agent for chemical vapor deposition synthesis of quantum materials</a></div><div class="conn-reason">화학 기상 증착의 자율 강화학습에서 베이지안 최적화로의 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../788_Targeted_materials_discovery_using_Bayesian_algorithm_execut/index.html">Targeted materials discovery using Bayesian algorithm execution</a></div><div class="conn-reason">베이지안 알고리즘 실행을 통한 표적 재료 발견은 세포 배양 배지 개발의 베이지안 최적화 프레임워크를 재료 발견으로 확장한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../072_Agents_for_self-driving_laboratories_applied_to_quantum_comp/index.html">Agents for self-driving laboratories applied to quantum computing</a></div><div class="conn-reason">자율주행 실험실의 AI 에이전트는 세포 배양 배지 개발의 베이지안 최적화 과정을 완전 자동화된 실험 시스템으로 구현할 수 있다.</div></div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Seon‐Ok Kim | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 생의학 질의응답 최적화를 위한 접근 방식 개요 - 미세조정, 검색 증강 생성(RAG), 프롬프트 엔지니어링 통합</em></p></div>
 <p>MedBioLM은 의료 및 생물학 분야의 질의응답(QA) 작업에 최적화된 대규모 언어 모델(LLM)로, 미세조정(fine-tuning)과 검색 증강 생성(RAG)을 결합하여 사실적 정확성과 신뢰성을 동시에 향상시킨다. 폐쇄형 QA(객관식), 장문형 QA, 단문형 QA 등 다양한 형식에서 기존 모델을 능가하는 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 미세조정, RAG, 프롬프트 엔지니어링을 통합하고, 다양한 의료 QA 데이터셋(MedQA, PubMedQA, BioASQ 등)에서 각 기법의 효과를 체계적으로 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: MedBioLM과 기본 모델의 폐쇄형 및 단문형 의료 QA 작업 성능 비교</em></p></div>
 <ol>
 <li><strong>폐쇄형 QA 성능 향상</strong>: 미세조정된 MedBioLM이 MedQA에서 88% 정확도, BioASQ에서 96% 정확도 달성. 이는 GPT-4o, GPT-3.5를 능가하는 10-30% 성능 향상을 의미한다.</li>
 <li><strong>장문형 QA 개선</strong>: MedicationQA에서 ROUGE-1 및 BLEU 점수가 GPT-4o 대비 향상되어 상세하고 일관성 있는 설명 생성 능력 입증.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>GPT-4o 우수성 검증</strong>: 최신 모델(GPT-4o)이 미세조정 시 GPT-4 및 GPT-3.5보다 모든 의료 QA 벤치마크에서 우수한 성능을 보임.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: RAG(검색 증강 생성) 프로세스 - 쿼리 인코더, 지식 검색·검색, 답변 생성기의 3단계 구성</em></p></div>
 <p><strong>미세조정(Fine-tuning)</strong></p>
 <ul>
 <li>도메인 특화 의료 QA 데이터셋(MedQA, PubMedQA, BioASQ, MedicationQA, LiveQA, 커스텀 데이터셋)을 활용한 감독 학습(supervised learning)</li>

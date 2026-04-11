@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yinya Huang, Xiaohan Lin, Zhengying Liu, Qingxing Cao, Huajian Xin, Haiming Wang, Zhenguo Li, Linqi Song, Xiaodan Liang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 중간 추론 단계 생성 및 검증 방법 비교</em></p></div>
 <p>본 논문은 대규모언어모델(LLM)과 형식 정리 증명기(formal theorem prover)의 상호작용을 통해 고품질의 수학 정리와 증명 데이터를 대규모로 생성하는 MUSTARD 프레임워크를 제안한다. 생성된 5,866개의 검증된 데이터로 구성된 MUSTARDSAUCE 벤치마크를 통해 미세조정된 언어모델의 수학적 추론 능력을 평균 15.41% 상대성능 향상으로 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -93,16 +91,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MUSTARD의 전체 구조: 개념 샘플링 → 증명 생성 → 형식 검증</em></p></div>
 <ol>
 <li><strong>대규모 고품질 데이터셋 구축</strong>: 비공식 정리, 비공식 증명, 형식 증명(Lean 3)을 포함한 5,866개의 검증된 데이터포인트로 구성된 MUSTARDSAUCE 벤치마크 생성. 교육 수준별(초등~대학원) 및 수학 영역별 다양성 확보</li>
 <li><strong>미세조정 성능 향상</strong>: Llama 2-7B를 MUSTARDSAUCE로 미세조정했을 때 GSM8K에서 20.9% 제로샷 성능 향상, mathlib에서 8.7% pass@1 달성, 자동 정리 증명에서 평균 15.41% 상대성능 향상</li>
 <li><strong>데이터 품질 검증</strong>: 형식 증명기의 검증이 인간 평가와 일치하며, 생성된 데이터는 두 개의 서로 다른 수학 개념을 창의적으로 결합하여 의미있는 문제 생성 확인</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>미세조정된 모델 성능</em></p></div>
 <h3>1단계: 개념 샘플링 (Concept Seeding)</h3>
 <ul>
 <li>Khan Academy의 모든 수학 강좌에서 4개 교육 수준(초등, 중등, 고등, 고등교육)별 수학 개념 추출</li>

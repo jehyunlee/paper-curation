@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhuo-Fan Shi, Chunxiao Xin, Tong Huo, Yun-Tao Jiang, Bowen Wu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41598-025-92337-6" target="_blank">10.1038/s41598-025-92337-6</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1.  Comparison of thermodynamic analysis workflow with and without the use of Molecular Dynamics</em></p></div>
 <p>LAMMPS 기반 분자동역학(MD) 시뮬레이션을 위해 미세조정된 대규모언어모델(LLM)을 활용하여 재료의 열역학 파라미터를 자동으로 계산하는 MDAgent 프레임워크를 제안한다. 텍스트-코드 생성 기술로 코드 개발 시간을 42.22% 단축하였다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Manager, Planner, Worker, Evaluator로 구성된 모듈형 에이전트 아키텍처를 설계하고, 두 개의 맞춤형 데이터셋(LSCF-Dataset, LEQS-Dataset)으로 LLM을 미세조정하여 LAMMPS 스크립트 생성 및 평가 능력을 향상시킨다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3.  Simulation models and results: (a) copper molecular model for volumetric heat capacity, (b) energy–</em></p></div>
 <ul>
 <li><strong>MDAgent 프레임워크 개발</strong>: 자연언어 입력을 분석하여 자동으로 LAMMPS 시뮬레이션 스크립트를 생성, 실행, 검토하고 반복적으로 개선하는 통합 시스템 구축</li>
 <li><strong>전문 데이터셋 구축</strong>: LAMMPS 스크립트 생성용 LSCF-Dataset과 전문가 주석 평가용 LEQS-Dataset 개발으로 재료과학 분야의 데이터 부족 문제 해결</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>다중 열역학 작업 검증</strong>: 구리의 체적열용량, 다이아몬드 격자상수, 구리 용융점, 구리 선팽창계수 등 4가지 대표 작업에서 신뢰할 수 있는 결과 도출</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2.  (a) Architecture diagram: MDAgent with Manager, Worker, and evaluator powered by large language</em></p></div>
 <ul>
 <li>Manager 컴포넌트가 자연언어 사용자 입력을 파싱하여 작업 의도를 해석</li>
 <li>Planner가 고수준 목표를 LAMMPS 관련 세부 작업(subtask)으로 분해</li>

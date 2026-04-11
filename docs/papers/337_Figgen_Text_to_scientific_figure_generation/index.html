@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: J.A. Rodríguez, David Vázquez, Issam Laradji, Marco Pedersoli, Pau Rodríguez | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2306.00800" target="_blank">arXiv:2306.00800</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Paper2Fig100k 테스트 셋의 캡션으로부터 생성된 모델의 샘플들</em></p></div>
 <p>텍스트 설명으로부터 과학 논문의 도형(scientific figure)을 생성하는 새로운 문제를 제시하고, 확산 모델(diffusion model) 기반의 FigGen을 제안한 초기 탐색 연구이다. 자연 이미지와 달리 과학 도형은 이산적 컴포넌트(상자, 화살표, 텍스트)와 높은 기술적 복잡성을 포함하므로 새로운 도전과제를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Paper2Fig100k 데이터셋(논문-도형 쌍 81,194개)을 활용하여 잠재 확산 모델(latent diffusion model)을 훈련하고, 텍스트-도형 간 관계 학습을 시도한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 다양한 Classifier-Free Guidance(CFG) 스케일에서 생성된 FigGenBase 샘플들</em></p></div>
 <ol>
 <li><strong>새로운 문제 정의</strong>: 텍스트-과학 도형 생성(text-to-figure generation)을 명확히 정의하고 주요 도전과제(텍스트 길이 가변성, 다양한 도형 스타일, 종횡비 변화, 텍스트 렌더링 품질)를 식별했다.</li>
 <li><strong>모델 및 데이터셋 공개</strong>: 코드와 사전 훈련된 모델을 GitHub에 공개하여 커뮤니티의 추가 연구를 지원한다.</li>
@@ -141,7 +137,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../129_Automatikz_Text-guided_synthesis_of_scientific_vector_graphi/index.html">AutomaTikZ: Text-guided synthesis of scientific vector graphics with tikz</a></div><div class="conn-reason">텍스트에서 과학 그림 생성의 기본 아이디어가 TikZ 기반 벡터 그래픽으로 구현됨</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../682_Reward-Guided_Iterative_Refinement_in_Diffusion_Models_at_Te/index.html">Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design</a></div><div class="conn-reason">확산 모델에서 보상 기반 반복적 정제 방법이 FigGen의 과학 도형 생성 정확도 개선에 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../601_PaperBanana_Automating_Academic_Illustration_for_AI_Scientis/index.html">PaperBanana: Automating Academic Illustration for AI Scientists</a></div><div class="conn-reason">둘 다 AI를 이용한 과학 일러스트레이션 자동화를 다루지만 하나는 확산 모델 기반 과학 도형 생성에, 다른 하나는 학술 일러스트레이션 자동화에 초점을 맞춘다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../601_PaperBanana_Automating_Academic_Illustration_for_AI_Scientis/index.html">PaperBanana: Automating Academic Illustration for AI Scientists</a></div><div class="conn-reason">FigGen과 유사하게 텍스트에서 과학 그림 생성하지만 에이전트 기반 접근법 사용</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">확산 모델에서 추론 시점 정렬을 위한 동적 검색 기법이 FigGen의 과학 도형 생성 품질 향상에 적용될 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../566_Multimodal_deepresearcher_Generating_text-chart_interleaved/index.html">Multimodal deepresearcher: Generating text-chart interleaved reports from scratch with agentic framework</a></div><div class="conn-reason">과학적 그림 생성 기술은 텍스트와 차트 통합 보고서에서 시각화 요소를 더욱 풍부하게 만드는 확장 기술입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../811_Tikzero_Zero-shot_text-guided_graphics_program_synthesis/index.html">TikZero: Zero-shot text-guided graphics program synthesis</a></div><div class="conn-reason">텍스트에서 과학 도형 생성의 확산 모델 기반 접근법이 TikZero의 TikZ 프로그램 합성과 상호 보완적인 기술을 제공한다.</div></div></div>

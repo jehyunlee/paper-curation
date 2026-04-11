@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasupat, Ming-Wei Chang | <strong>날짜</strong>: 2020 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2002.08909" target="_blank">arXiv:2002.08909</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>REALM은 언어 모델 사전학습에 신경망 기반 지식 검색기(neural knowledge retriever)를 통합하여, 백엔드에서 수백만 개의 문서를 고려하는 검색 단계를 통해 학습 신호를 역전파한다.</em></p></div>
 <p>REALM은 지식을 신경망 파라미터에 암묵적으로 저장하는 대신, 학습 가능한 텍스트 검색 모듈을 통해 명시적으로 외부 코퍼스(예: Wikipedia)에서 관련 문서를 동적으로 검색하고 활용하는 검색증강 언어 모델 사전학습 프레임워크다. 비지도 마스크된 언어 모델(MLM) 목표 신호를 통해 검색기를 end-to-end로 학습할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 학습 가능한 검색기 p(z|x)와 지식 증강 인코더 p(y|z,x)를 도입하여, 입력에 대해 관련 문서를 검색한 후 이를 조건으로 출력을 예측하는 retrieve-then-predict 방식의 잠재변수 언어 모델로 설계한다. 검색기는 unsupervised MLM 신호에 의존하여 역전파 학습이 가능하다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>REALM의 전체 프레임워크: (좌) 비지도 사전학습에서 검색기와 지식 증강 인코더가 공동으로 학습되고, (우) 지도 미세조정에서 사전학습된 파라미터를 다운스트림 과제에 적용한다.</em></p></div>
 <ol>
 <li><strong>Open-QA 벤치마크에서 SOTA 달성</strong>: NaturalQuestions-Open, WebQuestions, CuratedTrec의 세 가지 주요 Open-QA 벤치마크에서 기존 방법 대비 4-16% 절대 정확도(absolute accuracy) 향상을 달성했다. 이는 명시적 지식 저장(retrieval-based) 방법과 암묵적 지식 저장(T5 같은 대규모 생성 모델) 모두를 능가한다.</li>
 <li><strong>비지도 학습으로 검색기 최적화</strong>: 처음으로 수백만 개의 문서를 고려하는 거대 규모 검색 단계를 통해 역전파를 수행하는 방식으로, 라벨 없이 MLM 신호만을 이용하여 신경망 검색기를 사전학습하는 방법을 제시했다.</li>
 <li><strong>해석 가능성 및 모듈화</strong>: 검색된 문서가 명시적으로 노출되어 모델 예측의 근거를 추적할 수 있으며, 검색기와 인코더를 독립적으로 업데이트하거나 지식 코퍼스를 교체할 수 있다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>REALM 사전학습에서 비동기 MIPS를 활용한 대규모 검색 최적화.</em></p></div>
 <p><strong>핵심 방법론:</strong></p>
 <ul>
 <li><strong>생성 과정 모델링</strong>: p(y|x) = Σ_z∈Z p(y|z,x)p(z|x) 형태로 검색을 잠재변수로 취급하여 모든 가능한 문서에 대해 주변화(marginalize)한다.</li>
@@ -144,7 +138,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../675_Retrieval-Augmented_Generation_for_Knowledge-Intensive_NLP_T/index.html">Retrieval-Augmented Generation for Large Language Models: A Survey</a></div><div class="conn-reason">REALM이 제시한 검색 증강 생성의 초기 방법론이 RAG 연구의 기초가 됨</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">검색증강 언어모델 사전훈련 방법론을 지식그래프 특화 RAG 시스템으로 발전시킨 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../152_BERT_Pre-training_of_Deep_Bidirectional_Transformers_for_Lan/index.html">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></div><div class="conn-reason">BERT의 암묵적 지식 저장과 달리 외부 코퍼스에서 명시적 검색을 통한 지식 활용 방식</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../152_BERT_Pre-training_of_Deep_Bidirectional_Transformers_for_Lan/index.html">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></div><div class="conn-reason">BERT의 암묵적 지식 저장 방식과 달리 명시적 검색을 통해 지식을 활용하는 다른 접근법</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../404_Hiperrag_High-performance_retrieval_augmented_generation_for/index.html">HiPerRAG: High-performance retrieval augmented generation for scientific insights</a></div><div class="conn-reason">과학 문헌 처리에서 멀티모달 사전훈련과 고성능 컴퓨팅 기반 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../768_Splade_v2_Sparse_lexical_and_expansion_model_for_information/index.html">Splade v2: Sparse lexical and expansion model for information retrieval</a></div><div class="conn-reason">REALM의 밀집 표현 기반 검색을 희소 표현과 결합한 발전된 형태의 검색 증강 사전학습 모델입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">REALM의 검색 증강 기법을 더 유연한 모듈형 프레임워크로 발전시킨 연구</div></div>

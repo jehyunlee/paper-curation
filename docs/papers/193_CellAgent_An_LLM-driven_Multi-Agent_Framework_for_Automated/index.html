@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 생물학 전문가 역할(Planner, Executor, Evaluator)을 LLM으로 구현하고, 계층적 의사결정 메커니즘과 자기반복 최적화 메커니즘을 도입하여 복잡한 분석 작업을 자동으로 계획하고 실행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Fig. 1 Schematic of the CellAgent Framework">
-<p class="fig-caption"><em>CellAgent의 다중 에이전트 협업 워크플로우: (a) 사용자 입력, (b) 작업 분해, (c) 세부 실행 및 최적화, (d) 최종 결과 생성 과정</em></p></div>
 <ol>
 <li><strong>높은 작업 완료율</strong>: 50개 이상의 단일세포 데이터셋(수십 개 조직, 수백 개 세포 유형 포함)에서 92%의 작업 완료율을 달성하여, GPT-4 직접 사용 대비 2배 이상 향상</li>
 <li><strong>우수한 분석 성능</strong>: 배치 효과 보정(batch correction), 세포 유형 주석(cell type annotation), 궤적 추론(trajectory inference) 등 핵심 분석 작업에서 기존 최고 도구들과 대등하거나 우수한 성능 달성</li>
 <li><strong>종합적 자동화</strong>: 전처리, 품질 관리, 정규화, 배치 효과 보정, 세포 유형 주석 등 전체 워크플로우의 엔드-투-엔드 자동 실행으로 인간 개입 제거</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Fig. 1 CellAgent Framework Architecture">
-<p class="fig-caption"><em>CellAgent의 핵심 구성 요소와 LLM 추론 프로세스</em></p></div>
 <ul>
 <li><strong>Planner 역할</strong>: 사용자의 자연어 지시를 정확히 이해하고, 데이터 특성을 파악한 후, 전체 분석 작업을 합리적인 순차 단계로 분해. 품질 관리, 고변수 유전자 선택, 정규화, 배치 보정, 세포 유형 주석 등의 필요 단계를 계획</li>
 <li><strong>Executor 역할</strong>: 분해된 각 세부 작업을 순차적으로 실행하며, 도구 문서 검색을 통해 적절한 방법론 선택 및 실행 가능한 코드 생성. 실행 예외 발생 시 재귀적으로 문제 해결</li>
@@ -121,10 +117,8 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../431_Integrated_analysis_of_multimodal_single-cell_data/index.html">Integrated analysis of multimodal single-cell data</a></div><div class="conn-reason">멀티모달 단일세포 데이터 통합 분석 기술이 세포 생물학 연구 자동화를 위한 멀티 에이전트 시스템의 핵심 분석 기반을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../120_AutoGen_Enabling_Next-Gen_LLM_Applications_via_Multi-Agent_C/index.html">AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation</a></div><div class="conn-reason">다중 에이전트 시스템의 일반적 프레임워크가 단일세포 분석 특화 에이전트의 기술적 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">단일세포 분석 자동화를 위해 LLM 다중 에이전트 프레임워크와 AI 기반 대규모 데이터 표준화라는 다른 접근법을 사용한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../700_scBaseCount_an_AI_agent-curated_uniformly_processed_and_auto/index.html">scBaseCamp: an AI agent-curated, uniformly processed, and autonomously updated single cell data repository</a></div><div class="conn-reason">단일세포 RNA 시퀀싱 데이터 처리를 위해 AI 에이전트 기반 자동화와 대규모 표준화라는 다른 접근법을 사용한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../357_From_intention_to_implementation_automating_biomedical_resea/index.html">From intention to implementation: automating biomedical research via LLMs</a></div><div class="conn-reason">CellAgent의 LLM 기반 다중 에이전트 세포 분석 프레임워크는 BioResearcher의 바이오메디컬 자동화를 세포 수준으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../693_scAgent_Universal_Single-Cell_Annotation_via_a_LLM_Agent/index.html">scAgent: Universal Single-Cell Annotation via a LLM Agent</a></div><div class="conn-reason">단일세포 주석화를 위한 LLM 에이전트를 자동화된 분석 파이프라인으로 확장할 수 있다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../693_scAgent_Universal_Single-Cell_Annotation_via_a_LLM_Agent/index.html">scAgent: Universal Single-Cell Annotation via a LLM Agent</a></div><div class="conn-reason">LLM 기반 다중 에이전트 세포 분석 프레임워크가 범용 단일세포 주석을 더 포괄적인 세포 분석으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../062_Agent-based_multimodal_information_extraction_for_nanomateri/index.html">Agent-based multimodal information extraction for nanomaterials</a></div><div class="conn-reason">나노물질 정보 추출을 위한 nanoMINER는 CellAgent의 세포 데이터 자동화 기법을 재료과학 영역으로 확장하여 멀티모달 과학 데이터 처리의 새로운 응용을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../069_Agentomics-ML_Autonomous_Machine_Learning_Experimentation_Ag/index.html">Agentomics-ML: Autonomous Machine Learning Experimentation Agent for Genomic and Transcriptomic Data</a></div><div class="conn-reason">세포 생물학 자동화를 위한 LLM 기반 다중 에이전트 프레임워크로 확장한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">대규모 언어모델을 활용한 단일세포 분석이 세포 생물학 연구 자동화를 위한 멀티 에이전트 시스템에 핵심적으로 활용될 수 있다</div></div></div>

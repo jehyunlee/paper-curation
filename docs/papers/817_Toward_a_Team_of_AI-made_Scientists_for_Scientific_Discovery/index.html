@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Haoyang Liu, Yijiang Li, Jinglin Jian, Yuxuan Cheng, Jianrong Lu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.12391" target="_blank">10.48550/arXiv.2402.12391</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TAIS의 개요: 프로젝트 매니저, 데이터 엔지니어, 통계학자, 도메인 전문가, 코드 리뷰어의 5개 역할이 협업하여 유전자 발현 데이터에서 질병 예측 유전자를 식별</em></p></div>
 <p>대규모 언어모델(LLM)을 기반으로 한 AI 과학자 팀(TAIS)이 데이터 선택, 전처리, 혼재 인자 보정, 조건 예측을 자동화하여 질병 관련 유전자 발견 파이프라인을 효율화하는 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 멀티에이전트 시스템으로 과학자의 역할(프로젝트 매니저, 데이터 엔지니어, 도메인 전문가, 통계학자, 코드 리뷰어)을 모의하여 협업적으로 분석 파이프라인을 실행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>데이터 엔지니어와 코드 리뷰어 간의 쓰기-실행-감시 루프: 코드 생성 후 표준출력/표준에러를 검증하고 피드백 반복</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>데이터 엔지니어와 도메인 전문가 간의 협의: 생물의학 결정(임상 라벨 추출, 유전자 식별자 통합 등)에 대한 지식 기반 지도</em></p></div>
 <ol>
 <li><strong>TAIS 시스템 개발</strong>: 프로젝트 매니저(조정), 데이터 엔지니어(전처리 코드 작성), 통계학자(회귀분석), 도메인 전문가(생물의학 판단), 코드 리뷰어(품질 보증)로 구성된 경량 멀티에이전트 시스템 구축</li>
 <li><strong>고급 분석 기능</strong>: 혼재 인자(confounding factor) 보정과 두 단계 회귀(two-step regression)를 도입하여 누락된 조건 예측 및 거짓 발견 최소화</li>

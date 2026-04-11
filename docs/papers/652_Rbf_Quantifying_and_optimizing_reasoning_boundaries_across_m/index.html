@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qiguang Chen, Libo Qin, Jinhao Liu, Yue Liao, Jiaqi Wang, Jingxuan Zhou, Wanxiang Che | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.13307" target="_blank">arXiv:2505.13307</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 제안된 개념 개요 - (a) 추론 경계(RB), (b) 계측 가능한 시나리오에서 상한을 정량화하는 결합법칙, (c) 상수 가정 및 (d) 계측 불가능한 경계를 위한 경계 분할 메커니즘, (e) 최적화를 위한 RB 분류</em></p></div>
 <p>본 논문은 <strong>추론 경계 프레임워크++(RBF++)</strong>를 제안하여 대형 언어 모델(LLM)의 체인-오브-씽크(CoT) 추론 능력의 한계를 정량화하고 최적화하는 방법론을 제시한다. 계측 가능한 능력과 계측 불가능한 능력(멀티모달 지각 등) 모두에 대해 체계적으로 추론 경계를 분석하고 최적화 전략을 도출한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -87,8 +85,6 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 추론 경계의 존재 검증 - BigGSM에서 수행된 평가 결과</em></p></div>
 <ol>
 <li><strong>정량적 경계 분석 틀</strong>: 추론 경계를 형식적으로 정의(식 1)하고, 가중 조화 평균 기반 결합법칙(식 3)을 통해 복잡한 작업의 상한을 정량화</li>
 <li><strong>계측 불가능 영역 처리</strong>: 상수 가정을 도입하여 멀티모달 지각 및 도메인 지식과 같은 직접 계측할 수 없는 능력의 경계를 추정 가능하게 함</li>
@@ -97,8 +93,6 @@ a { color: #A62018; }
 <li><strong>고급 추론 모델 분석</strong>: BigGSM++ 벤치마크 도입으로 DeepSeek-R1 같은 고급 추론 LLM의 경계 분석, 강화 학습이 계측 불가능 영역에서 100배 개선 달성 발견</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 텍스트 모달에서 다양한 작업에 대한 RB의 결합법칙 검증</em></p></div>
 <h3>핵심 방법론</h3>
 <ul>
 <li><strong>추론 경계 정의</strong> (식 1):</li>
@@ -125,9 +119,7 @@ a { color: #A62018; }
 <li>부분적으로 실행 가능(PFRB): 10% < Acc < 90%</li>
 <li>완전히 불가능(CIRB): Acc ≤ 10%</li>
 </ul>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: BigGSM의 텍스트 모달 시나리오에서 다양한 추론 경계의 특성 분석</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>형식적 추론 경계 정의</strong>: 기존의 정성적 경계 분석을 넘어 수학적으로 엄밀한 RB 정의 제시</li>
@@ -156,7 +148,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: RBF++는 CoT 추론의 경계를 정량화하는 새로운 프레임워크로, 계측 가능한 영역과 불가능한 영역을 모두 다루려는 야심찬 시도이다. 광범위한 실증 검증과 실용적 최적화 방법(MARP++)을 제시한 점이 강점이나, 이론적 기초(특히 상수 가정)의 엄밀성과 보편성에 대해 추가적 논의가 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../844_Truly_assessing_fluid_intelligence_of_large_language_models/index.html">Truly assessing fluid intelligence of large language models through dynamic reasoning evaluation</a></div><div class="conn-reason">대형 언어모델의 유동 지능 평가는 추론 경계 정량화를 위한 근본적인 인지 능력 측정 기준을 제공합니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../841_Tree-of-table_Unleashing_the_power_of_llms_for_enhanced_larg/index.html">Tree-of-table: Unleashing the power of llms for enhanced large-scale table understanding</a></div><div class="conn-reason">Tree-of-table의 계층적 테이블 추론과 RBF++의 추론 경계 최적화는 모두 복잡한 추론 능력 향상을 위한 서로 다른 구조적 접근법입니다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../841_Tree-of-table_Unleashing_the_power_of_llms_for_enhanced_larg/index.html">Tree-of-table: Unleashing the power of llms for enhanced large-scale table understanding</a></div><div class="conn-reason">RBF++의 추론 경계 최적화와 Tree-of-table의 계층적 구조 추론은 모두 복잡한 추론 문제를 해결하기 위한 서로 다른 구조적 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../037_A_Survey_on_Uncertainty_Quantification_Methods_for_Deep_Lear/index.html">A Survey on Uncertainty Quantification Methods for Deep Learning</a></div><div class="conn-reason">추론 경계를 정량화하고 최적화하는 방법으로 딥러닝 불확실성 정량화 기법을 확장합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../844_Truly_assessing_fluid_intelligence_of_large_language_models/index.html">Truly assessing fluid intelligence of large language models through dynamic reasoning evaluation</a></div><div class="conn-reason">추론 경계 최적화가 유동 지능의 동적 추론 평가를 확장함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../028_A_survey_of_reasoning_with_foundation_models/index.html">A survey of reasoning with foundation models</a></div><div class="conn-reason">다양한 작업에서 추론 경계를 정량화하고 최적화하는 구체적인 방법론을 제시한다.</div></div>

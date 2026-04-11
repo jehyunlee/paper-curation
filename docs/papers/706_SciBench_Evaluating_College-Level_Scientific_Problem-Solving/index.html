@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiaoxuan Wang, Ziniu Hu, Pan Lu, Yanqiao Zhu, Jieyu Zhang, Satyen Subramaniam, Arjun R. Loomba, Shichang Zhang, Yizhou Sun, Wei Wang | <strong>날짜</strong>: 2023-07-20 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Physical Chemistry 문제의 두 가지 프롬프팅 전략에 따른 GPT-4의 해결 시도. CoT 프롬프팅에서는 공식은 맞지만 계산 오류가 발생하고, Python 외부 도구 사용 시에는 수학적 관계 오해로 인한 오류 발생</em></p></div>
 <p>본 논문은 대학 수준의 과학 문제 해결 능력을 평가하기 위한 포괄적 벤치마크인 SciBench를 제시한다. 기존 벤치마크의 고등학교 수준 문제 중심 한계를 극복하기 위해 869개의 대학 수준 수학, 화학, 물리 문제와 177개의 멀티모달 문제를 포함한 데이터셋을 구축했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 대학 수준의 개방형 서술식 문제 869개 수집, (2) 멀티모달 부분집합 177개 포함, (3) 폐쇄형 시험 문제 103개 추가, (4) 다양한 LLM(LLaMA-2, Mistral, Claude2, GPT-3.5, GPT-4 등)과 프롬프팅 전략 평가, (5) 상세한 오류 분석을 통해 10가지 필수 문제 해결 능력 분류.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig-table1.webp" alt="Table 1">
-<p class="fig-caption"><em>Table 1: SciBench와 기타 벤치마크 비교. 대학 수준, 미적분, 통계, 시각 컨텍스트, 상세 해결책, 자유 응답 형식의 포괄성 입증</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 기존 벤치마크 대비 가장 광범위한 특성 보유 - 대학 수준, 다중 도메인(수학/화학/물리), 고급 계산(미적분/통계), 멀티모달 포함, 자유 응답형식, 상세 솔루션 제공.</li>
 <li><strong>성능 격차 정량화</strong>: 최고 성능 모델(CoT + 외부 도구)도 텍스트 데이터셋 43.22%, 멀티모달 데이터셋 13.8%, 폐쇄 시험 데이터셋 51.57%의 점수만 달성 - LLM의 심각한 한계 노출.</li>
@@ -130,7 +126,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../299_Earthse_A_benchmark_evaluating_earth_scientific_exploration/index.html">EarthSE: A benchmark evaluating earth scientific exploration capability for large language models</a></div><div class="conn-reason">대학 수준 과학 문제 해결 평가가 지구과학 벤치마크의 기반 제공</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../090_AIRS-Bench_a_Suite_of_Tasks_for_Frontier_AI_Research_Science/index.html">AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</a></div><div class="conn-reason">최전선 AI 연구 과학을 위한 기초적 벤치마크 역할을 한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../808_Theoremqa_A_theorem-driven_question_answering_dataset/index.html">TheoremQA: A Theorem-driven Question Answering Dataset</a></div><div class="conn-reason">과학 문제 해결 능력을 대학 수준 vs 정리 증명 수준에서 각각 평가한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../808_Theoremqa_A_theorem-driven_question_answering_dataset/index.html">TheoremQA: A Theorem-driven Question Answering Dataset</a></div><div class="conn-reason">둘 다 과학 문제 해결 벤치마크이지만 TheoremQA는 정리 중심, SciBench는 대학 수준 전반을 다루는 차이가 있음</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../697_Scaling_physical_reasoning_with_the_physics_dataset/index.html">Scaling physical reasoning with the physics dataset</a></div><div class="conn-reason">둘 다 과학 문제 해결 벤치마크이지만 PHYSICS는 물리 특화, SciBench는 대학 수준 전반을 다루는 차이가 있음</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../552_Mmsci_A_dataset_for_graduate-level_multi-discipline_multimod/index.html">MMSCI: A dataset for graduate-level multi-discipline multimodal scientific understanding</a></div><div class="conn-reason">대학 수준 과학 문제를 대학원 수준 멀티모달 과학으로 확장한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

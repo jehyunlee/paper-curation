@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Madhav Krishan Garg, Tejash Prasad, Tanmay Singhal, Chhavi Kirtani, Murari Mandal, Dhruv Kumar (IIIT Delhi, KIIT Bhubaneswar, BITS Pilani) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ReviewEval과 ReviewAgent: 논문과 학회/저널 가이드라인이 주어졌을 때, ReviewAgent가 AI 기반 리뷰를 생성하고 ReviewEval을 통해 다양한 차원에서 평가</em></p></div>
 <p>학술 논문 동료 평가(peer review) 부족 문제를 해결하기 위해 LLM 기반 리뷰 시스템의 신뢰성을 평가하는 종합 프레임워크 ReviewEval과 자체 개선 루프를 갖춘 AI 리뷰어 ReviewAgent를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 5가지 핵심 평가 차원을 포함하는 ReviewEval 프레임워크와 학회별 맞춤형 정렬(conference-specific alignment), 자체 개선 루프(self-refinement loop), 외부 개선 루프(external improvement loop)를 갖춘 ReviewAgent를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>AI 생성 리뷰의 주요 문제점: (좌측부터) 인간 리뷰와의 의미적/주제적 차이, 사실적 부정확성 및 환각, 제한된 분석적 추론, 구체적 개선 제안 부족</em></p></div>
 <ol>
 <li><strong>실행 가능한 통찰 개선</strong>: 기존 AI 기준선 대비 6.78%, 전문가 리뷰 대비 47.62% 향상</li>
 <li><strong>분석 깊이 강화</strong>: 기존 AI 기준선 대비 3.97%, 전문가 리뷰 대비 12.73% 증가</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>다차원 평가 메트릭</strong>: 기존 유사성 기반 평가를 넘어 투명하고 해석 가능한 5개 차원의 평가 지표 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>메트릭 기여도 분석</em></p></div>
 <h3>ReviewEval 평가 프레임워크</h3>
 <ul>
 <li><strong>인간 리뷰와의 비교 (Comparison with Expert Reviews)</strong>
@@ -170,7 +164,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../654_Re_2_A_consistency-ensured_dataset_for_full-stage_peer_revie/index.html">Re 2: A consistency-ensured dataset for full-stage peer review and multi-turn rebuttal discussions</a></div><div class="conn-reason">AI 생성 리뷰 평가 프레임워크가 피어리뷰 데이터셋 구축과 LLM 리뷰 능력 평가의 기준을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../184_Can_large_language_models_provide_useful_feedback_on_researc/index.html">Can large language models provide useful feedback on research papers? A large-scale empirical analysis</a></div><div class="conn-reason">AI 생성 리뷰 평가를 위한 서로 다른 접근법을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../262_Deepreview_Improving_llm-based_paper_review_with_human-like/index.html">DeepReview: Improving LLM-based Paper Review with Human-like Deep Thinking Process</a></div><div class="conn-reason">LLM 기반 리뷰 개선을 위한 구조화된 프레임워크와 함께 AI 리뷰 시스템의 품질과 신뢰성을 종합적으로 향상시킨다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../262_Deepreview_Improving_llm-based_paper_review_with_human-like/index.html">DeepReview: Improving LLM-based Paper Review with Human-like Deep Thinking Process</a></div><div class="conn-reason">AI 생성 리뷰의 평가 프레임워크와 함께 LLM 기반 리뷰 시스템의 품질 향상을 위한 상호 보완적 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../739_Seagraph_Unveiling_the_whole_story_of_paper_review_comments/index.html">Seagraph: Unveiling the whole story of paper review comments</a></div><div class="conn-reason">AI 생성 리뷰 평가 프레임워크로 SEAGraph의 리뷰 댓글 분석 결과를 검증할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../270_Detecting_llm-written_peer_reviews/index.html">Detecting LLM-written Peer Reviews</a></div><div class="conn-reason">LLM이 작성한 피어 리뷰 탐지 기술을 활용하여 ReviewAgent의 자체 개선 루프에 검증 단계를 추가할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../877_What_Can_Natural_Language_Processing_Do_for_Peer_Review/index.html">What Can Natural Language Processing Do for Peer Review?</a></div><div class="conn-reason">동료 심사에서 자연언어처리의 역할 매핑이 AI 생성 리뷰의 효과적 평가 프레임워크 개발에 핵심적인 가이드라인을 제공한다</div></div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tetsu Kasanishi, Masaru Isonuma, Junichiro Mori, Ichiro Sakata | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2305.15186" target="_blank">논문 링크</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 문헌 리뷰 생성 작업의 개요. 입력된 논문의 초록과 리뷰/챕터 제목(쿼리)을 통해 문헌 리뷰 텍스트를 생성한다.</em></p></div>
 <p>본 논문은 자동 문헌 리뷰 생성을 위한 최초의 대규모 데이터셋인 <strong>SciReviewGen</strong>을 제시한다. 10,000개 이상의 문헌 리뷰와 690,000개의 인용 논문으로 구성되어 있으며, 쿼리 기반 다중 문서 요약(query-focused multi-document summarization) 작업으로 정의한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Semantic Scholar Open Research Corpus(S2ORC)를 기반으로 컴퓨터 과학 분야의 대규모 문헌 리뷰 데이터셋을 구축하고, 트랜스포머 기반 요약 모델을 확장하여 평가.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/table1.webp" alt="Table 1">
-<p class="fig-caption"><em>Table 1: SciReviewGen과 기타 다중 문서 요약 데이터셋의 비교. SciReviewGen(split)은 평균 1,274개의 입력 토큰과 604개의 출력 토큰을 가짐.</em></p></div>
 <ol>
 <li><strong>최초의 대규모 문헌 리뷰 데이터셋 구축</strong>: 9,187개의 학습 샘플, 484개의 검증 샘플, 459개의 테스트 샘플로 구성된 SciReviewGen 릴리스. 챕터 단위로 분할 시 84,705개의 학습 샘플으로 확대.</li>
 <li><strong>기존 데이터셋과 차별화</strong>: Multi-XScience(116개 토큰)와 비교하여 약 5.2배 긴 출력(604개 토큰), Multi-News(2,103개)와 비교하여 6배 긴 입력(12,503개 토큰)을 처리하는 더 도전적인 과제 제시.</li>
@@ -147,7 +143,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../780_Surveyforge_On_the_outline_heuristics_memory-driven_generati/index.html">Surveyforge: On the outline heuristics, memory-driven generation, and multi-dimensional evaluation for automated survey writing</a></div><div class="conn-reason">대규모 문헌 리뷰 데이터셋 구축 방법론을 자동 설문지 생성에 적용한 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html">Ask, retrieve, summarize: A modular pipeline for scientific literature summarization</a></div><div class="conn-reason">자동 문헌 검토를 위한 대규모 데이터셋으로 본 논문의 요약 시스템 학습 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../109_Assisting_in_writing_wikipedia-like_articles_from_scratch_wi/index.html">Assisting in writing wikipedia-like articles from scratch with large language models</a></div><div class="conn-reason">SciReviewGen이 쿼리 기반 다중 문서 요약으로 문헌 리뷰를 자동 생성하는 반면, STORM은 다관점 질문을 통한 아웃라인 중심 접근법을 사용하여 상호 보완적 전략을 제시함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../109_Assisting_in_writing_wikipedia-like_articles_from_scratch_wi/index.html">Assisting in writing wikipedia-like articles from scratch with large language models</a></div><div class="conn-reason">STORM이 다관점 질문을 통한 아웃라인 생성에 초점을 맞춘 반면, SciReviewGen은 쿼리 기반 다중 문서 요약으로 접근하여 서로 다른 장문 작성 전략을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../812_TLDR_Extreme_Summarization_of_Scientific_Documents/index.html">TLDR: Extreme Summarization of Scientific Documents</a></div><div class="conn-reason">단일 논문 요약에서 다중 논문을 활용한 자동 문헌 리뷰 생성으로 확장한 발전된 형태의 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../534_Meta-review_generation_with_checklist-guided_iterative_intro/index.html">Meta-review generation with checklist-guided iterative introspection</a></div><div class="conn-reason">체크리스트 가이드 반복적 내성을 통한 메타 리뷰 생성이 SciReviewGen의 기본적인 문헌 리뷰 생성을 더 정교한 검토와 평가 과정을 포함하는 메타 수준으로 발전시킨 연구임</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../402_Hierarchical_catalogue_generation_for_literature_review_a_be/index.html">Hierarchical catalogue generation for literature review: a benchmark</a></div><div class="conn-reason">문헌 리뷰 자동 생성에서 단순한 데이터셋을 계층적 카탈로그 구조로 확장한 고도화된 접근법입니다.</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ruochen Li, Liqiang Jing, Chi Han, Jiawei Zhou, Xinya Du | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 3가지 차원에 걸친 동적 제어를 포함한 학습 프레임워크. 생성된 연구 아이디어는 각 차원에 대한 점수를 제공하는 보상 모델로 평가되며, 이는 강화학습 미세조정 과정 중에 아이디어 제안자와 차원별 제어 파라미터를 최적화하도록 안내</em></p></div>
 <p>대규모 언어모델(LLM)을 활용하여 연구 아이디어 생성을 자동화하되, 참신성(novelty), 실현성(feasibility), 효과성(effectiveness)의 세 가지 핵심 차원 간의 균형을 동적으로 조정하는 두 단계 학습 프레임워크를 제시한다. 감독학습(SFT)과 제어 가능한 강화학습(RL)을 결합하여 차원별 보상 모델을 통해 미세한 피드백으로 최적화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 단계 학습(SFT → 제어 가능한 RL)과 차원별 보상 모델링, 그리고 문장 수준의 디코더를 통한 동적 제어를 도입하여 맥락 인식적 강조를 가능하게 함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 연구 논문으로부터의 연구 아이디어 생성. 각 아이디어는 참신성, 실현성, 효과성 차원으로 측정됨</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 디코딩 RNN이 균형잡힌 맥락 인식적 생성을 위해 차원을 동적으로 조정함</em></p></div>
 <ol>
 <li><strong>차원별 제어 프레임워크</strong>: 두 단계 미세조정을 통해 차원별 보상 모델이 참신성, 실현성, 효과성에 대한 세분화된 피드백을 제공하여 생성 과정을 체계적으로 최적화.</li>
 <li><strong>동적 디코딩 메커니즘</strong>: 문장 수준의 RNN 디코더가 각 부분(방법론 vs. 실험 계획)에 따라 차원별 가중치를 동적으로 조정하여 맥락별로 적절한 강조를 실현. 예를 들어 방법론 부분에서는 참신성을, 실험 계획에서는 실현성을 우선시.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>포괄적 평가</strong>: 제안 방법이 최적화되고 제어 가능한 연구 아이디어 생성에서 효과성을 입증하는 광범위한 실험 결과 제시.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 정규화된 문장에 대한 차원별 변화</em></p></div>
 <ul>
 <li><strong>Supervised Fine-Tuning (SFT) 단계</strong>:
 <ul>
@@ -150,7 +142,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../249_Curriculum_Reinforcement_Learning_from_Easy_to_Hard_Tasks_Im/index.html">Curriculum Reinforcement Learning from Easy to Hard Tasks Improves LLM Reasoning</a></div><div class="conn-reason">동적 제어를 통한 연구 아이디어 생성 학습은 쉬운 작업에서 어려운 작업으로의 점진적 학습 패러다임의 이론적 기반이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../257_Decomposing_the_enigma_Subgoal-based_demonstration_learning/index.html">Decomposing the enigma: Subgoal-based demonstration learning for formal theorem proving</a></div><div class="conn-reason">두 논문 모두 연구 방법론 개선을 다루되 형식 정리 증명은 구조화된 시연, 연구 아이디어 생성은 동적 제어에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../066_Agentic_Personas_for_Adaptive_Scientific_Explanations_with_K/index.html">Agentic Personas for Adaptive Scientific Explanations with Knowledge Graphs</a></div><div class="conn-reason">두 논문 모두 연구 아이디어 생성을 다루되 동적 제어는 참신성-실현성 균형, Agentic Personas는 적응형 설명에 중점을 둔다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../066_Agentic_Personas_for_Adaptive_Scientific_Explanations_with_K/index.html">Agentic Personas for Adaptive Scientific Explanations with Knowledge Graphs</a></div><div class="conn-reason">두 논문 모두 연구 아이디어 생성을 다루되 Agentic Personas는 지식그래프 기반 설명, Learning to generate는 참신성-실현성 균형에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../466_Large_Language_Model-Based_Evolutionary_Optimizer_Reasoning/index.html">Large Language Model-Based Evolutionary Optimizer: Reasoning with elitism</a></div><div class="conn-reason">동적 제어를 통한 연구 아이디어 생성 학습이 LLM 기반 진화 최적화를 창의적 생성 분야로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../438_Introspective_growth_Automatically_advancing_llm_expertise_i/index.html">Introspective growth: Automatically advancing llm expertise in technology judgment</a></div><div class="conn-reason">동적 제어를 통한 연구 아이디어 생성 학습이 내성적 성장의 자동화된 전문성 발전을 창의적 아이디어 생성 영역으로 확장한 연구임</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../494_Liveideabench_Evaluating_llms_scientific_creativity_and_idea/index.html">Liveideabench: Evaluating llms&#x27; scientific creativity and idea generation with minimal context</a></div><div class="conn-reason">LiveIdeaBench의 LLM 과학적 창의성 평가는 동적 제어 기반 연구 아이디어 생성의 실제 성능을 체계적으로 벤치마킹할 수 있다.</div></div></div>

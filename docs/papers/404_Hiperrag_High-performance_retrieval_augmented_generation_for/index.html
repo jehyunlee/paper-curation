@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ozan Gökdemir, Carlo Siebenschuh, Alexander Brace, Azton I. Wells, Brian Hsu, Kyle Hippe, Priyanka V. Setty, Aswathy Ajith, J. Gregory Pauloski, Varuni Sastry, Sam Foreman, Huihuo Zheng, Heng Ma, Bharat Kale, Nicholas Chia, Tom Gibbs, Michael E. Papka, Thomas Brettin, Francis J. Alexander, Anima Anandkumar | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3732775.3733586" target="_blank">10.1145/3732775.3733586</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HiPerRAG 워크플로우: 멀티모달 문서 파싱(Oreo), 질의-인식형 인코더 미세조정(ColTrast), 그리고 대규모 벡터 검색을 통합한 과학 문헌 RAG 시스템</em></p></div>
 <p>본 논문은 360만 개 이상의 과학 논문을 처리하기 위해 고성능 컴퓨팅(HPC)을 활용한 검색-증강 생성(RAG) 시스템 HiPerRAG를 제시하며, 과학 문헌의 복잡한 구조를 처리하는 새로운 문서 파싱 기법(Oreo)과 과학 텍스트 특화 인코더(ColTrast)를 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -82,8 +80,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 레이아웃 감지 + 선택적 OCR 기반 두 단계 파싱(Oreo), (2) 대조학습과 후기-상호작용(late-interaction) 기법을 결합한 과학 특화 인코더(ColTrast), (3) 단백질 상호작용/기능 예측 Q&A 벤치마크 개발, (4) HPC 시스템(Polaris, Sunspot, Frontier)에서의 분산 처리.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Oreo 파싱 워크플로우: YOLO 기반 레이아웃 감지 → 영역별 선택적 처리(추출 또는 OCR)</em></p></div>
 <ol>
 <li><strong>문서 파싱 성과</strong>: Oreo가 최신 파서(Nougat, Marker)와 비교하여 유사한 정확도를 유지하면서 <strong>약 10배 높은 처리량</strong> 달성. 대규모 과학 논문 코퍼스 처리에 가장 적합한 솔루션 제공.</li>
 <li><strong>검색 성능</strong>: ColTrast 인코더로 미세조정한 결과, <strong>SciQ에서 90% 정확도, PubMedQA에서 76% 정확도</strong> 달성. PubMedGPT 등 도메인 특화 모델과 GPT-4 같은 상용 LLM을 모두 능가.</li>
@@ -91,8 +87,6 @@ a { color: #A62018; }
 <li><strong>확장성</strong>: 3개의 슈퍼컴퓨터에서 수천 개의 GPU로 확장 가능한 분산 워크플로우(Parsl 프레임워크 활용) 구현. 백만 규모 문서의 실시간 처리 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>ColTrast 인코더 워크플로우: 질의 샘플링 → 대조학습 → 후기-상호작용 기법 적용</em></p></div>
 <h3>문서 파싱 (Oreo)</h3>
 <ul>
 <li><strong>2단계 하이브리드 접근</strong>: (1) YOLO CNN을 이용한 고속 레이아웃 감지로 PDF를 텍스트/표/이미지/수식 영역으로 분할, (2) 영역 유형에 따라 추출 기반(born-digital) 또는 OCR 기반(스캔 PDF) 파싱 적용</li>

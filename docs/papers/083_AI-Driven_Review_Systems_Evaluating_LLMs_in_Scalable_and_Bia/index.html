@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Keith Tyser, Ben Segev, Gaston Longhitano, Xin-Yu Zhang, Zachary Meeks, Jason Lee, Uday Garg, Nicholas Belsten, Avi Shporer, Madeleine Udell, Dov Te'eni, Iddo Drori | <strong>날짜</strong>: 2024-08-19 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2408.10365" target="_blank">10.48550/arXiv.2408.10365</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: OpenReviewer 시스템">
-<p class="fig-caption"><em>OpenReviewer: 사용자가 논문을 업로드하면 자동으로 검토되고 수정 지침과 함께 피드백을 받음</em></p></div>
 <p>본 논문은 대규모 학술논문 검토의 병목 현상을 해결하기 위해 LLM(Large Language Model) 기반의 자동 논문 검토 시스템을 개발하고, 인간 검토자의 선호도와의 정렬도(alignment)를 평가하는 연구이다. 특히 시각-텍스트 통합 분석, 동적 질문 적응, 편향 감소 메커니즘을 통해 고품질의 일관된 검토를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -102,8 +100,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Papers with Reviews 플랫폼">
-<p class="fig-caption"><em>arXiv 및 Nature 개방 접근(open-access) 논문을 자동으로 수집, 검토, 순위화하여 공개 제공</em></p></div>
 <ol>
 <li><strong>세 가지 통합 시스템 개발</strong>:
 <ul>
@@ -133,8 +129,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3 &amp; 4: Reviewer Arena와 리뷰어 간 승률 비교">
-<p class="fig-caption"><em>다양한 LLM 리뷰어들의 선호도 기반 경쟁 분석</em></p></div>
 <p><strong>검토 생성 방법</strong>:</p>
 <ul>
 <li><strong>메타 프롬핑(Meta-prompting)</strong>: 복잡한 검토 작업을 소규모 전문가 LLM 인스턴스로 분해하여 처리</li>
@@ -183,7 +177,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM 기반 학술 논문 검토 시스템의 실용적 구현과 함께 인간 검토와의 정렬도를 체계적으로 평가하는 주요 기여를 한다. 특히 멀티모달 분석, 편향 완화, 대규모 실제 데이터 적용 등이 강점이며, 오류 도입을 통한 신뢰 영역 매핑은 창의적 평가 방식이다. 다만 인간 선호도 데이터 규모 제한과 일부 윤리적 위험에 대한 미흡한 해결이 개선 과제이나, 학술 출판 생태계에 즉시 적용 가능한 실질적 솔루션을 제시한 점에서 높은 가치를 지닌다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../628_Position_The_ai_conference_peer_review_crisis_demands_author/index.html">Position: The AI Conference Peer Review Crisis Demands Author Feedback and Reviewer Rewards</a></div><div class="conn-reason">AI 학회 동료평가 위기에 대한 체계적 분석이 자동화된 검토 시스템 개발의 필요성과 방향성을 제시하는 이론적 근거가 됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../843_Treereview_A_dynamic_tree_of_questions_framework_for_deep_an/index.html">TreeReview: A dynamic tree of questions framework for deep and efficient llm-based scientific peer review</a></div><div class="conn-reason">AI-Driven Review가 편향 감소와 일관성에 초점을 맞춘 반면, TreeReview는 계층적 질문을 통한 깊이와 효율성을 추구하여 상호 보완적 접근법을 제시함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../843_Treereview_A_dynamic_tree_of_questions_framework_for_deep_an/index.html">TreeReview: A dynamic tree of questions framework for deep and efficient llm-based scientific peer review</a></div><div class="conn-reason">TreeReview가 질문 트리 구조로 논문 검토를, AI-Driven Review Systems가 편향 인식 자동화로 접근하여 상호 보완적인 검토 방법론을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../262_Deepreview_Improving_llm-based_paper_review_with_human-like/index.html">DeepReview: Improving LLM-based Paper Review with Human-like Deep Thinking Process</a></div><div class="conn-reason">DeepReview의 인간형 검토 개선 방법이 AI-Driven Review Systems의 편향 인식 메커니즘과 결합되어 더 정교한 자동 검토 시스템을 구성할 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

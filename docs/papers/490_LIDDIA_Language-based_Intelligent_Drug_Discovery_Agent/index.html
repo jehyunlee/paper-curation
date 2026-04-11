@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Reza Averly, Frazier N. Baker, Xia Ning | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.13959" target="_blank">10.48550/arXiv.2502.13959</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LIDDIA 프레임워크의 개요: 사용자 프롬프트(AR/NR3C4 타겟팅 분자)에서 시작하여 REASONER, EXECUTOR, EVALUATOR, MEMORY 네 가지 연결된 컴포넌트를 통해 약물 후보군을 생성하는 과정</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)의 추론 능력을 활용하여 전임상 신약개발 과정을 자동화하는 지능형 에이전트 LIDDIA를 제시한다. LIDDIA는 계산 도구들을 결합하여 분자 생성, 최적화, 선별을 통해 주요 약학적 기준을 만족하는 신규 치료약물 후보를 식별할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 추론 능력을 약물 발견 계산 도구(도킹, 성질 예측, 분자 생성 최적화)와 통합하여 REASONER, EXECUTOR, EVALUATOR, MEMORY 네 개 컴포넌트로 구성된 모듈식 에이전트 구축.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>좌측: 분자 품질 분석 - 여러 약학적 성질(QED, Vina 스코어 등)에서 생성된 분자들의 성능 분포. 우측: 액션 분석 - GENERATE, OPTIMIZE, SCREEN 액션의 호출 패턴</em></p></div>
 <ol>
 <li><strong>높은 성공률</strong>: 30개의 임상적으로 관련된 치료 타겟 중 70% 이상에서 핵심 약학적 기준을 충족하는 분자들을 생성 성공.</li>
 <li><strong>탐색-활용 균형</strong>: LIDDIA가 화학 공간(chemical space)에서 탐색(exploration)과 활용(exploitation)을 지능적으로 균형을 맞추는 패턴 확인 - 이것이 성공 결과의 핵심 메커니즘.</li>
 <li><strong>신규 후보 발굴</strong>: AR/NR3C4(전립선암 및 유방암의 중요한 타겟) 타겟에 대해 약속 있는 신규 약물 후보 1개 식별.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>다양한 타겟에 걸친 LIDDIA 액션 궤적: 각 타겟별로 GENERATE, OPTIMIZE, SCREEN 액션이 어떻게 순차적으로 수행되는지 보여주는 궤적 분석</em></p></div>
 <ul>
 <li><strong>REASONER</strong>: 메모리의 분자 정보와 성질 프로파일을 기반으로 LLM을 활용하여 다음 액션을 계획. GENERATE(새 분자 생성), OPTIMIZE(기존 분자 개선), SCREEN(선별) 세 가지 액션 타입 수행.</li>
 <li><strong>EXECUTOR</strong>: 각 액션별 최신 계산 도구 통합
@@ -127,7 +121,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../291_Drugclip_Contrastive_drug-disease_interaction_for_drug_repur/index.html">DrugCLIP: Contrastive drug-disease interaction for drug repurposing</a></div><div class="conn-reason">언어 기반 지능형 약물 발견과 대조학습 재창출의 다른 접근법</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../177_Can_ai_agents_design_and_implement_drug_discovery_pipelines/index.html">Can ai agents design and implement drug discovery pipelines? arXiv preprint arXiv:2504.19912, 2025.</a></div><div class="conn-reason">같은 신약개발 자동화를 다루지만 LIDDIA는 전임상 과정 전반을, Deep Thought는 파이프라인 설계에 집중한 차이점을 보임</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../292_Drugpilot_Llm-based_parameterized_reasoning_agent_for_drug_d/index.html">Drugpilot: Llm-based parameterized reasoning agent for drug discovery</a></div><div class="conn-reason">신약 발견에서 LLM 기반 에이전트의 다른 설계 접근법과 구현 방식을 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../177_Can_ai_agents_design_and_implement_drug_discovery_pipelines/index.html">Can ai agents design and implement drug discovery pipelines? arXiv preprint arXiv:2504.19912, 2025.</a></div><div class="conn-reason">둘 다 AI 기반 신약 발견을 다루지만 Deep Thought는 파이프라인 설계에, LIDDIA는 전체 전임상 과정에 집중함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../213_ChemReasoner_Heuristic_Search_over_a_Large_Language_Models_K/index.html">ChemReasoner: Heuristic Search over a Large Language Model&#x27;s Knowledge Space using Quantum-Chemical Feedback</a></div><div class="conn-reason">LIDDIA의 분자 생성 기능이 ChemReasoner의 화학 추론 능력과 결합하면 더 정교한 신약 후보 발견이 가능함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../856_Unimatch_Universal_matching_from_atom_to_task_for_few-shot_d/index.html">Unimatch: Universal matching from atom to task for few-shot drug discovery</a></div><div class="conn-reason">언어 기반 지능형 약물 발견 에이전트가 계층적 매칭을 실제 약물 발견 워크플로우로 확장한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tianzhe Chu, Yuexiang Zhai, Jihan Yang, Shengbang Tong, Saining Xie | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.17161" target="_blank">10.48550/arXiv.2501.17161</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: V-IRL 시각 네비게이션 환경에서 RL과 SFT의 비교 연구. OOD 곡선은 서로 다른 텍스트 액션 공간을 사용한 동일 작업의 성능을 나타냄</em></p></div>
 <p>본 논문은 기초 모델의 사후훈련(post-training) 단계에서 지도학습 미세조정(SFT)과 강화학습(RL)의 일반화(generalization) 능력을 비교하는 체계적 연구로, <strong>RL은 규칙 기반 추론과 시각 작업에서 우수한 일반화 성능을 보이는 반면, SFT는 훈련 데이터의 암기(memorization)에 치중한다</strong>는 핵심 발견을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 텍스트 기반 규칙 일반화와 시각 일반화 두 가지 관점에서 평가, (2) GeneralPoints (산술 추론 카드 게임)와 V-IRL (실제 네비게이션 환경) 두 가지 새로운/기존 벤치마크 도입, (3) SFT 후 RL을 순차적으로 적용하는 다단계 RL 프레임워크 채용</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4 &amp; 5 병합 개념">
-<p class="fig-caption"><em>Figure: GeneralPoints와 V-IRL에서 RL과 SFT의 성공률(%) 추이 비교. RL이 분포 외 데이터(OOD)에서 일관된 성능 개선을 유지</em></p></div>
 <ol>
 <li><strong>우수한 규칙 기반 일반화</strong>: RL은 훈련된 규칙을 미보유(unseen) 규칙 변형에 성공적으로 전이시키는 반면, SFT는 분포 외(out-of-distribution) 작업에서 큰 성능 저하를 보임</li>
 <li><strong>시각 영역 일반화</strong>: RL은 색상, 공간 배치 등 시각 입력 변형에 대해서도 일관된 일반화를 달성하고, V-IRL 벤치마크에서 최첨단 성능 달성 (+33.8%: 44.0% → 77.8%)</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>추론시간 계산 스케일링</strong>: 최대 검증 단계 수 증대를 통한 추론시간 계산 확장이 RL 일반화의 핵심 요소임을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2 &amp; 3 참조">
-<p class="fig-caption"><em>Figure 2-3: 검증자(verifier)를 이용한 순차적 수정 공식화. 상태-액션 전이 예시</em></p></div>
 <ul>
 <li><strong>순차적 수정(Sequential Revision) 공식화</strong>:
 <ul>

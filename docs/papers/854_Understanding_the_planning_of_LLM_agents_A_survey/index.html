@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xu Huang, Weiwen Liu, Xiaolong Chen, Xingmei Wang, Hao Wang 외 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.02716" target="_blank">10.48550/arXiv.2402.02716</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Taxonomy on LLM-Agent planning">
-<p class="fig-caption"><em>LLM 기반 에이전트 계획 수립의 5가지 주요 분류</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 자율 에이전트의 계획 모듈로 활용하는 최신 연구들을 체계적으로 분석한 첫 번째 종합 설문 논문이다. 기존의 기호 기반 방법과 강화학습 기반 방법의 한계를 극복하기 위해 LLM의 추론 및 도구 활용 능력을 활용한 계획 수립 방법들을 5가지 범주로 분류하여 상세히 분석한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 에이전트 계획의 최신 연구들을 체계적으로 분류하고 분석하여 5가지 주요 방향으로 구조화하며, 4개 벤치마크에서 대표 방법들을 평가하여 종합적 인사이트를 제공</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Types of task decomposition manners">
-<p class="fig-caption"><em>작업 분해의 두 가지 방식: (a) 분해-우선 방식과 (b) 인터리빙 방식</em></p></div>
 <ol>
 <li><strong>체계적 분류 체계 제시</strong>: 기존에 산발적으로 연구되던 LLM 기반 에이전트 계획 방법들을 <strong>작업 분해(Task Decomposition)</strong>, <strong>다중 계획 선택(Multi-plan Selection)</strong>, <strong>외부 모듈 활용(External Planner-aided Planning)</strong>, <strong>반사 및 개선(Reflection & Refinement)</strong>, <strong>메모리 증강 계획(Memory-augmented Planning)</strong> 5가지로 체계적으로 분류</li>
 <li><strong>각 방향별 상세 분석</strong>: 각 범주에 대해 동기, 기본 아이디어, 대표 방법들(CoT, ReAct, HuggingGPT, Plan-and-Solve 등), 장단점을 포괄적으로 논의</li>
@@ -145,7 +141,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 급속히 발전하는 LLM 기반 에이전트 계획 분야에 대한 첫 체계적 종합 분석을 제공하며, 5가지 명확한 분류 체계와 상세한 기술적 분석을 통해 커뮤니티에 중요한 참고자료가 될 것으로 평가된다. 향후 각 방향의 한계 극복과 방법론 간 결합 연구가 핵심 과제가 될 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../412_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_Friends_in/index.html">HiAgent: Hierarchical Working Memory Management for Solving Long-Horizon Agent Tasks with Large Language Model</a></div><div class="conn-reason">계층적 작업 메모리 관리가 LLM 에이전트의 장기 계획 수립에서 핵심적인 기반 기술을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../625_PlanGenLLMs_A_Modern_Survey_of_LLM_Planning_Capabilities/index.html">PlanGenLLMs: A Modern Survey of LLM Planning Capabilities</a></div><div class="conn-reason">LLM 계획 능력에 대한 현대적 조사와 LLM 에이전트 계획의 이해 모두 동일한 주제를 다루지만 접근 관점이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../625_PlanGenLLMs_A_Modern_Survey_of_LLM_Planning_Capabilities/index.html">PlanGenLLMs: A Modern Survey of LLM Planning Capabilities</a></div><div class="conn-reason">LLM 에이전트 계획 이해에 대한 조사와 LLM 계획 능력의 현대적 조사는 상호 보완적인 관점을 제공합니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../577_Nova_An_iterative_planning_and_search_approach_to_enhance_no/index.html">Nova: An iterative planning and search approach to enhance novelty and diversity of llm generated ideas</a></div><div class="conn-reason">반복적 계획과 검색을 통한 추론 향상이 LLM 에이전트 계획 수립의 구체적인 확장 방법이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../412_HuggingGPT_Solving_AI_Tasks_with_ChatGPT_and_its_Friends_in/index.html">HiAgent: Hierarchical Working Memory Management for Solving Long-Horizon Agent Tasks with Large Language Model</a></div><div class="conn-reason">LLM 에이전트의 계획 수립에서 계층적 메모리 관리가 장기 작업 수행에 필수적인 구성 요소이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

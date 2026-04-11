@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 가설 생성을 "관찰된 현상에 대한 자연언어 이론/설명 생성"으로 명확히 정의하고, (2) 귀납적/연역적 추론, 추상화, 합성 능력을 평가하며, (3) 설명력(explanatory power)을 첫 번째 평가 기준으로 삼고 흥미로움(interestingness)은 부차적으로 취급하는 평가 틀을 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: HypoBench 벤치마크 개요. 7개 실제 및 5개 합성 영역의 194개 데이터셋과 난이도 제어 방식(대학 입시 사례), 평가 지표(설명력, 흥미로움, 실용성, 가설 발견율)를 시각화">
-<p class="fig-caption"><em>대학 입시 예시를 통해 합성 데이터셋의 난이도 제어 메커니즘을 보여줌: 특성 개수 증가, 노이즈 추가, 특성 상호작용, 방해 특성 추가</em></p></div>
 <ol>
 <li><strong>최초의 체계적 벤치마크 구축</strong>: 실제 과제 7개(사기 리뷰 탐지, AI 생성 콘텐츠 식별, 설득력 있는 주장 예측, 정신 스트레스 감지, 뉴스 헤드라인 참여도, 리트윗, 논문 인용)와 합성 과제 5개(대선, 성격 예측, 해양 생태계, 대학 입시, 신발 판매)로 구성된 194개 데이터셋 제공.</li>
 <li><strong>방법론 비교 분석</strong>: 4개 최신 LLM(GPT-4, Claude, Qwen, Llama)과 6개 기존 가설 생성 방법(Zero-shot, Few-shot, Literature-Only, Data-Only, Literature+Data, HypoGeniC)을 종합 평가. 실제 데이터에서는 Literature+Data 방식과 Qwen 모델이 최고 성능.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반화 능력 평가</strong>: 도메인 내(IND)와 도메인 외(OOD) 분할을 통해 발견된 가설의 실제 일반화 능력 측정, 기존 방법들의 플로시빌리티(plausibility)와 참신성(novelty) 간 균형 문제 지적.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 합성 데이터셋에서 HypoGeniC의 난이도별 가설 발견율(HDR) 결과">
-</div>
 <ul>
 <li><strong>형식적 문제 정의</strong>: 관찰 데이터 D와 문헌 L_Q로부터 현상 Q에 대한 가설 H를 생성. 잠재 변수 z를 통해 y = f(z)이고, 관찰 x = g(z)의 역과정을 통해 인코딩된 특성 추출.</li>
 <li><strong>실제 데이터셋 구성</strong>: 기존 연구에서 채택한 6개 과제에 논문 인용 과제 추가. 각 과제마다 관련 문헌 수집 및 IND/OOD 분할을 통해 도메인 이동(domain shift) 시 일반화 능력 평가.</li>

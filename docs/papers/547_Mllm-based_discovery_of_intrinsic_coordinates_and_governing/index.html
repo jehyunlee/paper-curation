@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ruikun Li, Yan Lu*, Shixiang Tang, Biqing Qi, Wanli Ouyang | <strong>날짜</strong>: 2025 | <strong>소속</strong>: Shanghai Artificial Intelligence Laboratory | <strong>DOI</strong>: 미기재</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 제안된 비디오 방정식 추론 프레임워크의 전체 파이프라인. 고차원 관측 데이터로부터 물리 좌표계 발견과 지배 방정식 추론을 수행한다.</em></p></div>
 <p>본 논문은 멀티모달 대규모 언어 모델(MLLM)을 활용하여 고차원 동영상 데이터로부터 저차원 물리 좌표계와 지배 방정식을 자동으로 발견하는 Video Equation Reasoning (VER) 프레임워크를 제안한다. 향상된 시각적 프롬프트와 가설-평가-반복 추론 체인을 통해 종래 방법 대비 외삽 정확도를 약 26.96% 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -98,10 +96,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 픽셀 좌표 시스템의 추론 결과. 파란색은 그라운드 트루스, 녹색과 회색 점선은 제안 방법의 궤적</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 잠재 좌표 시스템의 추론 결과</em></p></div>
 <ol>
 <li><strong>물리 좌표 자동 발견</strong>: 세 가지 향상된 시각적 프롬프트 도구(Spatial Measurement, Regional Amplifier, Plot Replayer)를 설계하여 MLLM의 공간 인식 능력 강화. 픽셀 좌표와 잠재 좌표 두 유형 모두에 대응 가능.</li>
 <li><strong>방정식 추론 성능 향상</strong>: 가설-평가-반복(hypothesis-assessment-iteration) 추론 체인을 통해 MLLM의 사전학습 지식을 방정식 탐색에 활용. 기존 symbolic regression 방법 대비 외삽 정확도 26.96% 향상 달성.</li>

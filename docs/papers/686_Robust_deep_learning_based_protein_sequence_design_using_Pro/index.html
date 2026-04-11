@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: J. Dauparas, I. Anishchenko, N. Bennett, H. Bai, R. Ragotte | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: <a href="https://doi.org/10.1126/science.add2187" target="_blank">10.1126/science.add2187</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ProteinMPNN 아키텍처: 메시지 패싱 신경망(MPNN) 기반의 순서-비의존적 자가회귀 모델로, 다중 체인 및 대칭성을 고려한 위치 결합 설계 가능</em></p></div>
 <p><strong>깊은 신경망 기반 단백질 서열 설계 방법 ProteinMPNN을 개발하여, 기존의 물리 기반 방법(Rosetta)보다 우수한 성능을 보이며 다양한 단백질 설계 문제에 광범위하게 적용 가능함을 입증했다.</strong></p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -96,8 +94,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ProteinMPNN의 전산 평가: (A) Rosetta 대비 월등한 서열 복구율(52.4% vs 32.9%), (B) 모노머(52%), 호모머(55%), 헤테로머(51%) 중위 서열 복구율, (C) 백본 노이즈 추가 학습의 영향, (E) 단일 서열 AlphaFold 예측에서 ProteinMPNN 서열의 우수한 구조 부호화</em></p></div>
 <ol>
 <li><strong>높은 서열 복구율</strong>: 네이티브 단백질 백본에서 52.4% 서열 복구율로 Rosetta(32.9%)를 60% 이상 능가하며, 단백질 핵심에서 표면까지 모든 영역에서 일관되게 우수한 성능</li>
 <li><strong>광범위한 적용성</strong>:
@@ -111,8 +107,6 @@ a { color: #A62018; }
 <li><strong>계산 효율성</strong>: 100개 잔기당 1.2초(ProteinMPNN) vs 4.3분(Rosetta) - 약 200배 빠른 속도</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ProteinMPNN 모델 아키텍처의 주요 개선 사항</em></p></div>
 <p><strong>아키텍처 개선</strong>:</p>
 <ul>
 <li>입력 특징: Cα-Cα 거리, 상대 방향(relative orientation), 백본 이면각에서 <strong>N, Cα, C, O 및 가상 Cβ 원자 간 거리</strong>로 확장 (41.2% → 49.0% 복구율)</li>
@@ -167,7 +161,6 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../256_De_novo_design_of_protein_structure_and_function_with_RFdiff/index.html">Agentic End-to-End De Novo Protein Design for Tailored Dynamics Using a Language Diffusion Model</a></div><div class="conn-reason">강건한 단백질 서열 설계를 목표 동역학을 갖는 구조 설계로 확장할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">단백질 설계를 LLM 기반 다중 에이전트 시스템으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../171_Boltz-1_Democratizing_Biomolecular_Interaction_Modeling/index.html">Boltz-1 Democratizing Biomolecular Interaction Modeling</a></div><div class="conn-reason">구조 예측과 서열 설계를 결합하여 통합적 단백질 엔지니어링 파이프라인을 구성한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../171_Boltz-1_Democratizing_Biomolecular_Interaction_Modeling/index.html">Boltz-1 Democratizing Biomolecular Interaction Modeling</a></div><div class="conn-reason">단백질 구조 예측을 서열 설계와 결합하여 통합적 단백질 엔지니어링을 가능하게 한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../634_PRIME_A_Multi-Agent_Environment_for_Orchestrating_Dynamic_Co/index.html">PRIME: A Multi-Agent Environment for Orchestrating Dynamic Computational Workflows in Protein Engineerings</a></div><div class="conn-reason">PRIME의 동적 계산 워크플로우 조율 기법을 견고한 딥러닝 기반 단백질 서열 설계로 확장하여 더 신뢰할 수 있는 단백질 공학 시스템을 구축할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../1129_SARS-CoV-2_simulations_go_exascale_to_predict_dramatic_spike/index.html">SARS-CoV-2 simulations go exascale to predict dramatic spike opening and cryptic pockets across the proteome</a></div><div class="conn-reason">단백질 서열 설계 기법을 바이러스 단백질 구조 연구에 적용할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

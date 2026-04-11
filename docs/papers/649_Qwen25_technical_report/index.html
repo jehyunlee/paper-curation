@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qwen An Yang, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chengyuan Li, Dayiheng Liu, Fei Huang, Guanting Dong, Haoran Wei, Huan Lin, Jian Yang, Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxin Yang, Jingren Zhou, Junyang Lin, Kai Dang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: 아직 미정</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Qwen 시리즈의 반복적 개발 과정에서 데이터 스케일링의 중요성을 시각화. Qwen2.5는 18조 토큰으로 사전학습되어 수학, MBPP, BBH, MMLU 벤치마크에서 우수한 성능을 보임.</em></p></div>
 <p>본 논문은 Qwen2.5 대규모 언어 모델(LLM) 시리즈를 소개하며, 사전학습 데이터를 7조에서 18조 토큰으로 확대하고, 감독 미세조정(SFT), 직접 선호도 최적화(DPO), 그룹 상대 정책 최적화(GRPO) 등 고도화된 후학습 기법을 적용하여 이전 버전 대비 대폭 향상된 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사전학습 데이터 대폭 확대(18조 토큰)와 고품질 필터링, 수학/코딩 데이터 통합, 합성 데이터 생성, 도메인 균형화를 통해 데이터 개선. 0.5B~72B 밀집(dense) 모델과 MoE 기반 Turbo/Plus 모델의 다양한 사이즈 제공. 초장문(1M 토큰) 문맥 처리 및 고급 후학습 기법 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Qwen2.5-Turbo의 100만 토큰 길이 Passkey Retrieval 작업 성능. 초장문 처리 능력을 입증.</em></p></div>
 <ol>
 <li><strong>데이터 스케일링의 효과</strong>: 사전학습 데이터를 18조 토큰으로 확대함으로써 수학, 코딩, 상식 및 전문 지식에서 현저한 향상 달성. 특히 MMLU, BBH, MBPP 벤치마크에서 이전 버전 대비 큰 성능 향상.</li>
 <li><strong>경쟁력 있는 오픈 가중치 모델</strong>: Qwen2.5-72B-Instruct가 약 5배 큰 Llama-3-405B-Instruct와 경쟁 가능한 성능 달성. 0.5B부터 72B까지 7가지 사이즈로 다양한 배포 시나리오 지원.</li>
@@ -101,8 +97,6 @@ a { color: #A62018; }
 <li>MoE 모델의 활성화된 파라미터와 전체 파라미터 튜닝을 통해 밀집 모델(예: Qwen2.5-72B, 14B)과의 성능 동등성 달성.</li>
 </ul>
 <h3>장문맥 사전학습</h3>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Qwen2.5-Turbo와 Qwen2.5-7B의 TTFT(첫 토큰까지의 시간) 비교. 완전 어텐션 대비 최적화된 구현의 효율성을 보여줌.</em></p></div>
 <ul>
 <li><strong>2단계 사전학습</strong>: 초기 4,096 토큰 문맥 길이로 학습 후, 최종 단계에서 32,768 토큰으로 확대(소형 모델 제외).</li>
 <li><strong>Turbo 모델의 특수 처리</strong>: 1M 토큰까지의 초장문 처리 능력 구현을 위한 전문화된 훈련.</li>

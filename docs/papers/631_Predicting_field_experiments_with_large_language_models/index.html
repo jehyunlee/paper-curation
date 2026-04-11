@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 자동화된 3단계 프레임워크(정보 추출 → 변형 생성 → 예측)를 통해 대규모 현장 실험 예측</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: The Data Collection Workflow">
-<p class="fig-caption"><em>논문 수집 및 필터링 과정: 6,544개 논문에서 최종 276개의 현장 실험 선정</em></p></div>
 <ol>
 <li><strong>대규모 자동화 평가</strong>: 2000-2024년 경제학 주요 저널 276개 논문(1,261개 결론)에서 78% 평균 예측 정확도 달성 - 기존 소규모 수동 방식의 한계 극복</li>
 <li><strong>이분포/왜도 특성 발견</strong>: 예측 결과가 양극단 분포 - 71%의 결론에서 거의 100% 정확도, 18%에서는 거의 0% 정확도로 나타나, 특정 주제에 대한 LLM의 근본적 한계 시사</li>
 <li><strong>데이터 누수 방지 및 복잡성 증대</strong>: Claude(추출/검증용)와 GPT(예측용) 분리 사용, 인간-객체 상호작용 포함 복잡한 처치 설계 지원</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Prediction Framework">
-<p class="fig-caption"><em>3단계 프레임워크: 정보 추출(Claude) → 변형 생성(Claude) → 예측(GPT)</em></p></div>
 <p><strong>프레임워크 구성:</strong></p>
 <ul>
 <li><strong>정보 추출 단계</strong>: Claude를 사용하여 논문에서 실험 설정(participant, intervention, outcome 등) 자동 추출</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shuzhou Yuan, Zhan Qu, Ashish Yashwanth Kangen, Michael Färber | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HHEM-2.1-Open 모델을 사용한 사실적 일관성 점수. 대부분의 LLM이 MolT5 기준 설명과 낮은 일관성을 보여 광범위한 환각을 나타냄</em></p></div>
 <p>일반적으로 문제로 간주되는 대규모 언어모델(LLM)의 환각(hallucinations)이 오히려 약물 발견의 분자 특성 예측 과제에서 모델의 성능을 향상시킬 수 있다는 역설적인 발견을 제시한다. 구조적 오기술(structural misdescription)과 같은 특정 유형의 환각이 모델의 일반화 능력을 증대시키는 암묵적 반사실(implicit counterfactual)로 작동함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 7개의 명령어 튜닝된 LLM을 5개의 분자 특성 예측 데이터셋(MoleculeNet)에서 평가. SMILES 문자열로부터 자연언어 설명을 생성하여 분류 과제의 프롬프트에 포함시킨 후, SMILES 전용, MolT5 기준 설명, PubChem 규칙 기반 텍스트 등 3가지 기준과 비교.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>HIV 데이터셋 샘플을 이용한 방법 설명. SMILES로부터 환각된 분자 설명을 생성한 후 이진 분류 과제의 프롬프트에 포함</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: Falcon3-Mamba-7B가 환각 포함 시 모든 기준선을 초과하며 PubChem 기준선보다 ROC-AUC 8.22% 개선. Llama-3.1-8B는 SMILES 기준선 대비 15.8%, MolT5 기준선 대비 11.2% 향상. GPT-4o에서 생성된 환각이 모델들 간 가장 일관된 성과 제공.</li>
 <li><strong>환각 분석</strong>: 18,000개 이상의 유익한 환각을 식별 및 분류. 구조적 오기술이 가장 영향력 있는 유형으로 도출되어, 분자 구조에 대한 환각된 진술이 모델 신뢰도를 증가시킬 수 있음을 시사. 기타 유형: 기능적 환각(functional hallucination), 유추적 환각(analogical hallucination), 일반적 수사(generic fluff).</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>7개 LLM 전반의 ROC-AUC 평균 향상도</em></p></div>
 <ul>
 <li><strong>프롬프트 설계</strong>: 모든 모델과 데이터셋에서 일관성 보장을 위해 표준화된 프롬프트 템플릿 사용. 시스템 롤을 "약물 발견 전문가"로 정의하여 화학 관련 출력 유도</li>
 <li><strong>환각 정의</strong>: 생성 텍스트에서 분자의 실제 구조 또는 알려진 특성으로 뒷받침되지 않는 모든 정보로 정의</li>
@@ -114,7 +108,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: 환각의 역설적 유익성을 실증적으로 제시하는 창의적 연구로, 약물 발견 도메인에 새로운 관점을 제공한다. 다만 메커니즘 이해와 실제 적용 가능성 검증이 보완되면 임팩트가 더욱 강화될 것이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../836_Towards_uncovering_how_large_language_model_works_An_explain/index.html">Towards uncovering how large language model works: An explainability perspective</a></div><div class="conn-reason">LLM의 환각 현상을 이해하기 위해서는 언어 모델의 내부 메커니즘에 대한 근본적 이해가 필요하다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../836_Towards_uncovering_how_large_language_model_works_An_explain/index.html">Towards uncovering how large language model works: An explainability perspective</a></div><div class="conn-reason">LLM의 해석가능성 연구가 환각 현상이 성능에 미치는 영향을 이해하는 데 필요한 기계적 이해를 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../814_Tooling_or_Not_Tooling_The_Impact_of_Tools_on_Language_Agent/index.html">Tooling or Not Tooling? The Impact of Tools on Language Agents for Chemistry Problem Solving</a></div><div class="conn-reason">도구 증강의 한계를 보여주는 연구로, 환각이 오히려 도움이 될 수 있다는 발견과 연결하여 AI 성능 개선의 복잡성을 이해할 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../471_Large_Language_Models_Cannot_Self-Correct_Reasoning_Yet/index.html">Large Language Models Cannot Self-Correct Reasoning Yet</a></div><div class="conn-reason">자기 수정 능력의 한계를 다룬 연구로, 환각이 성능 향상에 도움이 된다는 발견과 모델의 자기 개선 한계를 대조적으로 보여준다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../291_Drugclip_Contrastive_drug-disease_interaction_for_drug_repur/index.html">DrugCLIP: Contrastive drug-disease interaction for drug repurposing</a></div><div class="conn-reason">약물 발견에서 LLM 환각 개선에서 대조학습 약물 재창출로의 확장</div></div>

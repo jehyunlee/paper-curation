@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jiho Kim, Sungjin Park, Yeonsu Kwon, Yohan Jo, James H. Thorne, Edward Choi | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2305.06590" target="_blank">arXiv:2305.06590</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: FACTKG의 예제 데이터. 주장을 SUPPORTED 또는 REFUTED로 검증하기 위해 DBpedia에서 추출한 트리플(triple)을 증거로 사용</em></p></div>
 <p>본 논문은 지식 그래프(Knowledge Graph, KG)를 기반으로 사실 검증(fact verification)을 수행하기 위한 첫 번째 대규모 데이터셋 FACTKG를 제시한다. 이 데이터셋은 5가지 추론 유형(One-hop, Conjunction, Existence, Multi-hop, Negation)을 포함하는 108k개의 자연언어 주장으로 구성되어 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: WebNLG 데이터셋의 텍스트-그래프 쌍을 기반으로 5가지 추론 유형에 따라 주장을 생성하고, Entity/Relation 치환, NLI 검증 등의 방법으로 다양한 스타일의 주장을 구성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: FACTKG에서 사용된 두 가지 치환 방법. Entity 치환에서는 원래 주장의 모든 엔터티로부터 4-hop 외부에 위치한 새 엔터티를 선택하며, 양방향 NLI 결과가 모두 contradiction이면 완료한다. Relation 치환에서는 원래 relation과 동일한 엔터티 타입을 갖는 relation을 무작위로 추출하여 치환한다.</em></p></div>
 <ol>
 <li><strong>데이터셋 구성</strong>: 5가지 추론 유형(One-hop, Conjunction, Existence, Multi-hop, Negation)을 체계적으로 분류한 108k개 주장 생성. DBpedia 전체(0.1B 트리플)를 증거로 사용하여 기존 KG 데이터셋(FB15K: 592K)보다 훨씬 대규모이다.</li>
 <li><strong>다양한 언어 스타일</strong>: Colloquial(구어) 및 Written(문어) 스타일을 모두 포함하여 대화 시스템 등 실제 응용에 더 적합하게 구성.</li>
 <li><strong>기준 모델 성능</strong>: 그래프 증거를 활용한 모델이 텍스트만 사용하는 기준 모델보다 우수한 성능을 달성함을 실증적으로 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Conjunction과 Multi-hop 주장에서 사용되는 그래프 패턴</em></p></div>
 <ul>
 <li><strong>One-hop 생성</strong>: WebNLG의 단일 트리플 문장을 SUPPORTED 주장으로 사용. REFUTED는 Entity 치환(4-hop 이상 떨어진 동일 타입 엔터티) 또는 Relation 치환(호환 가능한 relation으로 변경)으로 생성.</li>
 <li><strong>Conjunction 생성</strong>: 2개 이상 트리플로 구성된 문장을 SUPPORTED로 사용. 모든 트리플이 존재해야 검증 성공. REFUTED는 Entity 치환으로 생성.</li>
@@ -120,7 +114,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../172_Boolq_Exploring_the_surprising_difficulty_of_natural_yesno_q/index.html">BoolQ: Exploring the Surprising Difficulty of Natural Yes/No Questions</a></div><div class="conn-reason">자연 발생 질문에 대한 읽기 이해와 지식 그래프 기반 구조화된 추론이라는 서로 다른 질의응답 접근법입니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../567_Multivers_Improving_scientific_claim_verification_with_weak/index.html">Multivers: Improving scientific claim verification with weak supervision and full-document context</a></div><div class="conn-reason">과학 청구 검증에서 약한 감독과 지식 그래프 추론의 서로 다른 사실 검증 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../541_Missing_counter-evidence_renders_nlp_fact-checking_unrealist/index.html">Missing counter-evidence renders nlp fact-checking unrealistic for misinformation</a></div><div class="conn-reason">지식 그래프의 구조화된 추론과 반박 증거 부족 문제 지적이라는 서로 다른 팩트체킹 접근법과 비판을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../541_Missing_counter-evidence_renders_nlp_fact-checking_unrealist/index.html">Missing counter-evidence renders nlp fact-checking unrealistic for misinformation</a></div><div class="conn-reason">반박 증거 부족의 한계를 지적하는 반면, 지식 그래프 기반 추론을 통한 체계적 사실확인 접근법을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../317_Enhancing_natural_language_inference_performance_with_knowle/index.html">Enhancing natural language inference performance with knowledge graph for covid-19 automated fact-checking in indonesian language</a></div><div class="conn-reason">지식 그래프 추론 기반 팩트 검증이 NLI 성능 향상과 같은 목표의 다른 접근법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../172_Boolq_Exploring_the_surprising_difficulty_of_natural_yesno_q/index.html">BoolQ: Exploring the Surprising Difficulty of Natural Yes/No Questions</a></div><div class="conn-reason">자연어 예/아니오 질문에서 지식 그래프 기반 구조화된 추론으로 확장한 더 체계적인 사실 검증 접근법입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../448_Kgvalidator_A_framework_for_automatic_validation_of_knowledg/index.html">KGValidator: A framework for automatic validation of knowledge graph construction</a></div><div class="conn-reason">지식 그래프 기반 추론을 통한 사실 검증으로 지식 그래프 완성 검증을 확장한다.</div></div>

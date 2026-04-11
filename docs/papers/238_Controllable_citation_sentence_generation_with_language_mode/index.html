@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nianlong Gu, Richard H. R. Hahnloser | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2211.07066" target="_blank">arXiv:2211.07066</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>언어 모델을 이용한 인용 문장 생성 워크플로우: 지도 학습 미세조정 후 PPO를 통한 제어 가능성 최적화</em></p></div>
 <p>본 논문은 저자가 인용 의도(citation intent)와 핵심 키워드를 명시적으로 지정하여 인용 문장 생성을 제어할 수 있는 언어 모델 기반 접근법을 제안한다. 지도 학습 미세조정과 강화학습(PPO)을 결합하여 생성 품질과 제어 가능성을 동시에 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 구조화된 프롬프트 템플릿을 설계하여 원고 맥락, 피인용 논문 정보, 제어 속성을 통합하고 언어 모델을 미세조정; (2) 의도 일치도(Intent Alignment Score), 키워드 회수율(Keyword Recall), 유창성 점수(Fluency Score), ROUGE-F1을 제어 가능성 메트릭으로 정의하고 PPO의 보상 함수로 활용하여 모델 최적화.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>제안 방법의 전체 워크플로우: 지도 학습과 강화학습 단계</em></p></div>
 <ol>
 <li><strong>통합 제어 프레임워크 개발</strong>: 단일 언어 모델 내에서 인용 속성 추론(uncontrolled mode)과 사용자 지정 속성 기반 생성(controlled mode)을 모두 수행 가능하게 함. 이를 통해 사용자가 필요에 따라 자동 추론 모드와 명시적 제어 모드를 유연하게 전환 가능.</li>
 <li><strong>다중 메트릭 기반 제어 가능성 평가 체계</strong>: 의도 정렬성, 키워드 포함률, 유창성, 내용 관련성을 종합적으로 측정하는 평가 메트릭 구성. 이를 바탕으로 PPO를 통한 강화학습으로 모델의 제어 가능성을 기존 지도 학습만으로는 달성하기 어려운 수준까지 향상.</li>
 <li><strong>포괄적 데이터셋 구성</strong>: 문맥 정보와 인용 속성을 파싱한 대규모 데이터셋을 구축하여 향후 제어 가능 인용 생성 연구의 토대 제공.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Galactica-6.7B 모델의 비제어 모드에서 생성한 인용 문장 예시</em></p></div>
 <h3>지도 학습 미세조정 (Supervised Fine-tuning)</h3>
 <ul>
 <li><strong>구조화된 입력 템플릿 설계</strong>: 원고 제목/초록, 피인용 논문 제목/초록, 원고 내 선행 텍스트, 인용 의도, 키워드, 목표 인용 문장을 계층적으로 배열한 프롬프트 구성.</li>

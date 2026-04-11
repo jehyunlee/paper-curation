@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuqiang Li, Ruifeng Li, Dongzhan Zhou, Ancheng Shen, Ao Zhang, Mao Su, Mingqian Li, Hongyang Chen, Gang Chen, Yin Zhang, Shufei Zhang, Wanli Ouyang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: [미제공]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>약동학 예측을 위한 물리 공식 강화 다중 작업 학습의 개요. (a) AI 기반 신약 개발의 과제, (b) 물리 공식 제약을 신경망에 통합하여 작업 간 지식 전이와 목표 정렬 강화</em></p></div>
 <p>본 논문은 물리 공식(physical formula) 제약을 다중 작업 학습(multi-task learning)에 통합하여 약동학(pharmacokinetics)의 4가지 핵심 파라미터(AUC, CL, Vdss, T1/2)를 동시에 예측하는 PEMAL 프레임워크를 제시한다. 제한된 데이터와 높은 노이즈 환경에서 물리 제약을 활용한 명시적 작업 간 연결을 통해 예측 정확도와 견고성을 현저히 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -97,16 +95,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PEMAL과 GIN의 약동학 예측 시각화. (a-d) 각 파라미터별 예측값과 관측값의 상관관계</em></p></div>
 <ol>
 <li><strong>데이터 효율성 극대화</strong>: 공개 데이터 170개 포인트만으로도 전통 기계학습(Random Forest, Gaussian Process, XGBoost) 및 단일 작업 딥러닝(GIN) 초과 성능 달성. 물리 제약이 암묵적 특징 공유보다 더 효과적인 지식 전이 실현</li>
 <li><strong>노이즈 강건성 우수성</strong>: 데이터에 의도적 노이즈 추가 시 GIN은 성능 급격히 저하하나, PEMAL은 작업 간 물리적 제약으로 인해 상대적으로 안정적 예측 유지. 노이즈 환경에서의 우월성은 습식 실험의 고유한 불확실성 특성 반영</li>
 <li><strong>다양한 데이터 희소성 조건 대응</strong>: 훈련 데이터 규모를 단계적으로 감소시킬 때 PEMAL의 성능 저하율이 GIN보다 현저히 낮음. 극도로 제한된 샘플에서도 일반화 성능 유지</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 데이터 볼륨에 따른 성능 비교. PEMAL과 GIN의 각 약동학 파라미터별 성능 변화</em></p></div>
 <p><strong>Stage I - 자율 지도학습 (Dual-level Reconstruction)</strong>:</p>
 <ul>
 <li>원자(atom) 분기: 무작위 마스킹된 원자에 대해 재구성 작업 수행. MAE 손실로 감독</li>

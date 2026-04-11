@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kun Li, Zhennan Wu, Shoupeng Wang, Jia Wu, Shirui Pan, Wenbin Hu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DrugPilot 프레임워크의 구조: LLM, 매개변수화된 메모리 풀(PMP), Fe-Fo 메커니즘, AI 모델 집합으로 구성된 통합 시스템</em></p></div>
 <p>본 논문은 신약 개발의 전 단계를 지원하는 대형 언어모델(LLM) 기반 에이전트 시스템 DrugPilot을 제시한다. 매개변수화된 메모리 풀(Parameterized Memory Pool, PMP)을 통해 이질적인 약물 데이터를 표준화된 표현으로 변환하고, 피드백-포커스(Fe-Fo) 메커니즘으로 LLM의 추론 오류를 실시간 모니터링하여 정확한 도구 호출과 멀티턴 대화를 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 매개변수화된 메모리 풀로 멀티모달 데이터를 구조화하고, Fe-Fo 메커니즘으로 LLM의 추론 오류를 피드백하며, 8개 핵심 약물 발견 작업을 지원하는 통합 에이전트 프레임워크 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DrugPilot의 응용 시나리오 및 기존 약물 발견 LLM/에이전트와의 비교: 코드 불필요(Zero-Code), 확장 가능한 데이터 획득, 조율된 멀티태스크 처리, 정확한 실행</em></p></div>
 <ol>
 <li><strong>벤치마크 성능</strong>: Berkeley function-calling 벤치마크에서 단순(Simple), 멀티-도구(Multi-tool), 멀티턴(Multi-turn) 시나리오에서 각각 98.0%, 93.5%, 64.0%의 작업 완료율 달성. ReAct 대비 13.2%, 66.1%, 80.3% 향상</li>
 <li><strong>신약 발견 데이터셋 구축</strong>: 8개 약물 발견 작업을 아우르는 2,800개의 고품질 주석 샘플로 이루어진 도구 호출 벤치마크(TCDD, Tool-Calling Dataset for Drug Discovery) 최초 제안</li>
 <li><strong>실무 적용성</strong>: 분자 최적화 작업에서 기존 LLM 대비 100-1,000배 많은 정확한 SMILES 후보(수십 개 → 수백-수천 개) 생성 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PMP의 구조: 키-값 쌍으로 메모리 저장, LLM은 간결한 키와 상호작용하고 도구는 구조화된 값과 직접 상호작용</em></p></div>
 <ul>
 <li><strong>매개변수화된 메모리 풀(PMP)</strong>: 사용자 입력과 도구 실행 결과를 구조화된 키-값 형식으로 저장. LLM은 간결한 키만 접근하고 도구는 구조화된 값과 직접 상호작용하여 정보 손실 최소화</li>
 <li><strong>Fe-Fo 메커니즘</strong>: LLM의 PMP 해석 오류와 도구 호출 실패 시 구체적인 오류 피드백 제공 및 원래 질문 재제시로 장시간 대화에서의 포커스 유지</li>
@@ -115,10 +109,8 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../291_Drugclip_Contrastive_drug-disease_interaction_for_drug_repur/index.html">DrugCLIP: Contrastive drug-disease interaction for drug repurposing</a></div><div class="conn-reason">매개변수화된 추론 약물 파일럿이 약물-질병 상호작용의 기반 제공</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">LLM에 전문 도구를 통합하는 방법론이 매개변수화된 추론 에이전트의 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">신약 vs 단백질 발견에서 LLM 기반 다중 에이전트 시스템의 다른 적용 분야를 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">단백질 vs 약물 발견에서 LLM 기반 다중 에이전트 시스템의 다른 적용 분야를 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../490_LIDDIA_Language-based_Intelligent_Drug_Discovery_Agent/index.html">LIDDIA: Language-based Intelligent Drug Discovery Agent</a></div><div class="conn-reason">신약 발견에서 LLM 기반 에이전트의 다른 설계 접근법과 구현 방식을 비교할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../306_Efficient_fine-tuning_of_single-cell_foundation_models_enabl/index.html">Efficient fine-tuning of single-cell foundation models enables zero-shot molecular perturbation prediction</a></div><div class="conn-reason">단일세포 모델의 약물 반응 예측을 LLM 기반 신약 개발 에이전트와 통합한 확장 연구다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../306_Efficient_fine-tuning_of_single-cell_foundation_models_enabl/index.html">Efficient fine-tuning of single-cell foundation models enables zero-shot molecular perturbation prediction</a></div><div class="conn-reason">LLM 기반 신약 개발 에이전트와 단일세포 모델을 결합하여 더 정확한 약물 효과 예측을 할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">화학 도구 통합 방법론을 신약 개발의 전체 파이프라인으로 확장한 연구다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

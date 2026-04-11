@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Antony Seabra, Claudio Cavalcante, João Nepomuceno, Lucas Lago, Nicolaas Ruberg, Sérgio Lifschitz | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: [해당 정보 없음]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>에이전트 아키텍처</em></p></div>
 <p>다양한 데이터 소스(비정형 문서, 구조화된 데이터베이스)를 통합하는 다중 에이전트 기반 질의응답 시스템을 제안한다. 동적 프롬프트 엔지니어링과 함께 SQL 에이전트, RAG(Retrieval-Augmented Generation) 에이전트, 라우터 에이전트를 조합하여 질의 특성에 따라 최적의 검색 전략을 자동으로 선택한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 동적 멀티 에이전트 오케스트레이션, RAG, Text-to-SQL 기법, 동적 프롬프트 엔지니어링을 결합하여 질의 특성에 따라 최적의 검색 전략을 자동 선택하는 시스템 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>애플리케이션 아키텍처</em></p></div>
 <ol>
 <li><strong>멀티소스 통합 Q&A 시스템</strong>: 계약 관리 도메인에서 비정형 문서와 구조화된 데이터베이스로부터의 정보를 동시에 검색하여 포괄적이고 맥락 인식적 응답 제공 가능.</li>
 <li><strong>동적 라우팅 메커니즘</strong>: 쿼리 특성을 분석하여 SQL 에이전트(구조화 데이터용), RAG 에이전트(비정형 문서용), 또는 하이브리드 접근을 자동으로 선택함으로써 검색 정확도 향상.</li>
 <li><strong>응답 정확도 개선</strong>: 동적 프롬프트 엔지니어링을 통해 쿼리 컨텍스트에 맞게 LLM의 지시사항을 실시간 조정하여 도메인 특화 응답 품질 증대.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>검색-증강 생성(RAG)</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>계약 조항별 청킹</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>청크 메타데이터</em></p></div>
 <p><strong>멀티 에이전트 오케스트레이션 시스템 구성:</strong></p>
 <ul>
 <li><strong>에이전트 기반 아키텍처</strong>: 라우터 에이전트가 쿼리 분석 후 적절한 에이전트(SQL, RAG, 또는 둘 모두)로 작업 위임</li>

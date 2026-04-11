@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xinyu Xu, Arif Ullah, Ming Yang | <strong>날짜</strong>: 2026 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2604.05586" target="_blank">10.48550/ARXIV.2604.05586</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Periodic table distribution of PI topogivities τ PI</em></p></div>
 <p>전자 채움, 공간군 대칭, 궤도 특성을 명시적으로 인코딩하여 위상 물질을 신속하게 식별하는 물리 기반 화학 규칙(physics-informed chemical rule)을 제시한다. 조성만 고려하는 기존 휴리스틱의 한계를 극복하여 동일한 화학식을 가진 다형체(polymorph)도 구별할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 조성(composition block), 보조 화학 특성(auxiliary chemical feature block), 전역 특성(global feature block)을 결합한 특성 벡터를 구성하고, 선형 서포트 벡터 분류기를 훈련하여 물리적으로 해석 가능한 점수 함수 g_PI(M)를 도출한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Performance metrics of the τ PI chemical rule on Discovery Space-1 stratified by the</em></p></div>
 <ul>
 <li><strong>대칭 기반 방법 실패 사례 해결</strong>: 종래 대칭 지표로는 식별 불가능한 위상 물질 후보를 새로운 규칙으로 식별</li>
 <li><strong>다형체 구분 능력</strong>: 동일한 화학식이지만 다른 공간군을 가진 물질을 정확히 구별</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>물리적 투명성 유지</strong>: 조성, 화학 환경, 대칭 기여도로 명시적으로 분해 가능한 선형 모델</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: SG distribution of (A) trivial, (B) topological materials where n represents the</em></p></div>
 <ul>
 <li>특성 벡터 X(M)를 세 부분으로 구성: (i) 조성 블록 X_c(M)는 참조 원소 제외 원소 분율 인코딩, (ii) 보조 블록 X_o(M)는 궤도 가전자 특성과 원소 범주 기술자 포함, (iii) 전역 블록 X_g(M)은 전자 패리티와 공간군을 원-핫 인코딩</li>
 <li>선형 SVC(support vector classifier) 훈련: g_PI(M) = w·X(M) + b로 결정 함수 정의</li>

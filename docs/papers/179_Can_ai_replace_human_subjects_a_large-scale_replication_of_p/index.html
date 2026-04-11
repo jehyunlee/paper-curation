@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ziyan Cui, Ning Li, Huaikang Zhou (Tsinghua University) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: [미제공]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>주요 특성별 주효과(Main Effects) 재현율 비교</em></p></div>
 <p>대규모 심리학 실험 156개를 GPT-4, Claude 3.5 Sonnet, DeepSeek v3 등 3개의 최신 LLM으로 재현한 결과, LLM은 주효과 73-81%의 높은 재현율을 보이지만 인종, 성별 등 사회적으로 민감한 주제에서는 현저히 낮은 성과를 보였으며, 효과크기가 인간 연구보다 2-3배 크다는 체계적 편차를 드러냈다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 2015-2024년 5개 상위 저널(Academy of Management Journal, Organizational Behavior and Human Decision Making, Journal of Applied Psychology, Journal of Personality and Social Psychology, Journal of Experimental Psychology: General)에서 무작위로 선정한 156개의 시나리오 기반 실험을 3개 LLM으로 재현하는 대규모 "실리콘 재현(silicon replication)" 연구 실시</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>GPT-4의 원본 및 재현 p값 비교</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>GPT-4의 주효과 r값 비교 (원본 vs 재현)</em></p></div>
 <ol>
 <li><strong>높은 주효과 재현율</strong>: GPT-4는 주효과의 72.7%, 상호작용효과의 45.7% 재현 성공. Claude와 DeepSeek는 더욱 높은 재현율 달성. 이는 원본 연구의 방향성과 통계적 유의성이 잘 보존됨을 의미</li>
 <li><strong>사회적으로 민감한 주제에서의 현저한 성능 저하</strong>: 인종 변수가 포함된 연구의 경우 GPT-4의 주효과 재현율이 76.8%에서 41.5%로 급락. 이는 LLM의 가치 정렬(value alignment)과 사회적 바람직성 편향(social desirability bias)에 기인</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>더 좁은 신뢰구간</strong>: LLM 응답은 피로, 주의산만, 반응 불일치가 없어 더 명확한 데이터 패턴을 보이며, 이는 심리 효과의 정교한 감지 가능성을 시사하면서도 제1종 오류(Type I error) 위험성도 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>연구 설계 및 과정</em></p></div>
 <ul>
 <li><strong>표본 선정</strong>: 5개 상위 저널에서 각 10개 논문씩 무작위 선정하여 총 156개 연구 확보. 자기 경험 보고, 프라이밍 기법, 생리적 측정, 종단 설계, 집단 상호작용 포함 연구는 제외</li>
 <li><strong>프롬프트 설계</strong>: (1) 맥락/역할 설정 (2) 시나리오 설명 (3) 변수 측정 (4) 응답 형식 설정의 4개 핵심 요소로 구성. JSON 형식 출력으로 체계적 분석 용이</li>

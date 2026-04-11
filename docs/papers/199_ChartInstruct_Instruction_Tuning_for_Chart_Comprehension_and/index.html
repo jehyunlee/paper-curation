@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ahmed Masry, Mehrad Shahmohammadi, Md Rizwan Parvez, Enamul Hoque, Shafiq Joty | <strong>날짜</strong>: 2024-03-14 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.09028" target="_blank">10.48550/arXiv.2403.09028</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 차트 관련 작업 예시: 요약, 질문-답변, 팩트 체킹, 추론, 코딩 능력 등을 포함한 8가지 유형의 지시문 튜닝 작업</em></p></div>
 <p>본 논문은 차트 이해와 추론을 위한 대규모 지시문 튜닝 데이터셋(191K 지시문, 71K 차트)을 제시하고, 차트 특화 비전-언어 모델(VLM)의 일반화 능력을 대폭 향상시키는 두 가지 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 157개 온라인 플랫폼에서 수집한 71K 개의 다양한 실제 차트, (2) GPT-3.5/4와 Gemini를 활용한 191K 지시문 자동 생성, (3) 차트 특화 비전 인코더(UniChart)를 통합한 두 가지 VLM 아키텍처 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>지시문 튜닝 파이프라인: WebCharts 수집, 자동 데이터 테이블 추출, 다양한 작업별 지시문 생성 과정</em></p></div>
 <ol>
 <li><strong>새로운 벤치마크 성능 달성</strong>: ChartQA, Chart2Text, OpenCQA, ChartFC 등 4개 벤치마크에서 최고 성능(SOTA) 달성. UniChart 비전 인코더를 LLaVA 아키텍처에 통합하여 기존 CLIP 기반 모델 대비 성능 향상</li>
 <li><strong>광범위한 작업 다양성</strong>: 191K 지시문이 6가지 작업 카테고리(CoT 추론 14.3%, 요약 28.24%, 팩트 체킹 12.67%, 개방형 QA 22.26%, 코딩 10.26%, 신규 작업 12.27%)를 균형있게 커버하여 미학습 작업에 대한 일반화 능력 증명</li>
@@ -89,8 +85,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>지시문의 주요 동사(Root Verb) 분포: 다양한 작업 유형을 반영하는 언어적 다양성</em></p></div>
 <p><strong>데이터 구성</strong>:</p>
 <ul>
 <li>UniChart 코퍼스 30K 차트 (기존 데이터셋)</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Axel Backlund, Lukas Petersson | <strong>날짜</strong>: 2025-02-20 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.15840" target="_blank">10.48550/arXiv.2502.15840</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Vending-Bench 벤치마크 개요</em></p></div>
 <p>본 논문은 LLM 기반 에이전트가 장기간(>2천만 토큰)에 걸쳐 일관된 성능을 유지하는 능력을 평가하기 위해 자판기 운영이라는 단순하지만 장시간 지속되는 비즈니스 시뮬레이션 환경을 제시한다. 실험 결과 Claude 3.5 Sonnet과 o3-mini는 대부분의 실행에서 수익을 창출하지만 모든 모델이 높은 분산도(variance)를 보이며, 배송 일정 오해석, 주문 망각, 또는 "멜트다운" 루프 등으로 인해 장기적으로 성능이 저하됨을 발견했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 자판기 운영이라는 관리 가능한 복잡도의 시뮬레이션 환경을 설계하여, 단순한 개별 작업들(재고 관리, 주문, 가격 설정, 수수료 처리)이 장기간에 걸쳐 에이전트의 일관성을 어떻게 저해하는지 관찰.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>주요 모델들의 시뮬레이션 기간 동안의 평균 점수 추이</em></p></div>
 <ol>
 <li><strong>성능 순위 및 인상적 결과</strong>: Claude 3.5 Sonnet이 평균 순자산 $2,217.93으로 최고 성능을 달성하여 인간 기준선($844.05)을 약 2.6배 상회. o3-mini는 두 번째로 $906.86의 순자산 달성.</li>
 <li><strong>높은 분산도 발견</strong>: 모든 모델이 매우 높은 성능 분산을 나타냄. 예를 들어 Claude 3.5 Sonnet의 경우 최고 성능 실행에서는 우수하지만, 최악의 경우 $476.00으로 떨어지며, 일부 실행에서는 단 하나의 상품도 판매하지 못함.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>컨텍스트 윈도우와의 무관성</strong>: 성능 저하가 컨텍스트 윈도우 포화 지점과 명확한 상관관계를 보이지 않아, 실패가 메모리 한계가 아닌 다른 원인에서 비롯됨을 시사.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>공급자 통신 설정</em></p></div>
 <p><strong>에이전트 구현</strong>:</p>
 <ul>
 <li>기본 루프 기반 설계로 과도한 복잡도 추가 방지 및 모델 간 공정성 유지</li>

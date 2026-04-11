@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wenbo Pan, Zhichao Liu, Qiguang Chen, Xiangyang Zhou, Haining Yu, Xiaohua Jia | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>안전 잔차 공간(Safety Residual Space) 개념도. 안전 미세조정(safety fine-tuning) 중 표현 변화의 선형 결합으로 정의되며, 지배적 방향과 비지배적 방향의 상호작용을 보여줌</em></p></div>
 <p>대규모언어모델(LLM)의 안전 정렬 행동은 단일 선형 방향이 아닌 활성화 공간의 다차원 직교 방향들의 상호작용으로 제어된다. 본 연구는 안전 미세조정 과정에서 발생하는 표현 변화를 분석하여 거부 행동을 지배하는 주도적 방향과 가설적 내러티브, 역할극 같은 서로 다른 특징을 나타내는 부차적 방향들을 발견한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 안전 미세조정 전후의 활성화 변화를 포착하는 "안전 잔차 공간(Safety Residual Space)"을 정의하고, 이 공간에서 특이값 분해(SVD)를 통해 주요 방향들을 추출한 후, 계층별 관련성 전파(Layer-wise Relevance Propagation, LRP)를 확장하여 각 방향의 의미를 해석한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>계층별 잔차 공간의 유효 순위(Effective Rank). SSFT와 DPO 모두에서 일관된 패턴을 보이며, 안전 특징이 다차원으로 분포함을 시사</em></p></div>
 <ol>
 <li><strong>안전 잔차 공간 프레임워크 제안</strong>: 안전 미세조정 중 표현 변화를 선형 변환으로 모델링하는 새로운 개념을 도입했다. 이는 기존의 단일 프로브 벡터 방식과 달리 여러 직교 방향을 자동으로 발견할 수 있다.</li>
 <li><strong>해석 가능한 다차원 특징 발견</strong>: Llama 3 8B을 대상으로 한 실험에서, 지배적 방향(dominant component)이 거부 행동을 주로 제어하며, 여러 부차적 방향들이 가설적 내러티브(hypothetical narrative), 역할극(role-playing) 등의 구분 가능한 특징을 나타냄을 확인했다.</li>
 <li><strong>안전 정렬 취약성의 새로운 통찰</strong>: 부차적 방향들이 지배적 방향을 촉진하거나 억제하는 역할을 수행함을 밝혔으며, 해로운 쿼리에서 특정 트리거 토큰을 제거하면 이들 방향을 완화시켜 안전 기능을 우회할 수 있음을 시연했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>계층별 모델 출력 예측 정확도. 지배적 방향이 안전 행동 예측에 미치는 영향을 보여줌</em></p></div>
 <p><strong>방법론적 기여:</strong></p>
 <ul>
 <li><strong>안전 잔차 공간 정의</strong>: 미세조정 전 표현 $x_u$에서 미세조정 후 표현으로의 변환 $T(x_u)$를 최적 선형 근사 $S(x) = Wx + b$로 모델링. 평균제곱오차(MSE) 최소화를 통해 학습된 표현 변화를 포착한다.</li>

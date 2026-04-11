@@ -75,25 +75,15 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세 가지 환경(텍스트 기반 Feature World, 멀티모달 Feature World, 텍스트 기반 Alchemy)에서 여러 파운데이션 모델(Gemini 1.5/2.5, Claude 3.7, ChatGPT-4o/o4-mini)을 제로샷(zero-shot) 인-컨텍스트 프롬팅으로 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Feature World 작업 구조 및 실험 설정 - (a) 텍스트 기반 작업 예시">
-<p class="fig-caption"><em>텍스트 기반 Feature World의 단순한 상태 비의존 보상 함수 학습 환경</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Feature World에서 보상 대상을 발견한 에피소드의 비율 비교">
-<p class="fig-caption"><em>모델별 정보 수집 효율성: 최적 정책과의 근접성</em></p></div>
 <ol>
 <li><strong>정보 수집 능력 (Information Gathering)</strong>: 모든 평가 대상 LLM이 간단한 보상 함수를 가진 Feature World 작업에서 최적(near-optimal) 성능에 근접. 특히 고정 스텝 예산 내에서 보상 대상을 찾는 성공률이 높음</li>
 <li><strong>메타러닝의 조건부 성공</strong>: 기본 Alchemy 환경에서는 메타러닝 실패(시행 간 성능 개선 없음)를 보였으나, <strong>요약 프롬팅(summarization prompting)</strong> 을 도입하면 시행을 거듭하면서 성능이 유의미하게 향상됨</li>
 </ol>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: Alchemy 작업 구조 및 실험 설정 - 잠재적 인과 구조 추론 환경">
-<p class="fig-caption"><em>다중 상태 의존 시행을 요구하는 메타러닝 벤치마크</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5: 다양한 모델과 조건 간 Alchemy 에피소드 점수 비교">
-<p class="fig-caption"><em>요약 여부에 따른 성능 차이: Gemini 2.5 우수, ChatGPT 낮음</em></p></div>
 <ol>
 <li><strong>모델 간 강한 이질성</strong>: Alchemy 환경에서 명확한 성능 격차 - Gemini 2.5 > Claude 3.7 >> ChatGPT-4o/o4-mini. 이는 Alchemy이 파운데이션 모델의 탐색 능력 벤치마크로서의 가치를 입증</li>
 <li><strong>전략 적응과 재학습</strong>: 일부 모델(특히 Gemini 2.5)에서 환경 규칙이 예기치 않게 변경될 때 요약을 통해 새로운 세계 모델(world model)의 적응적 재학습 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 3D 탐색 작업의 개략도 및 성능 지표 (15 에피소드/조건)">
-<p class="fig-caption"><em>멀티모달 Feature World에서의 시각적 피드백과 성능 한계</em></p></div>
 <ul>
 <li><strong>Feature World 설계</strong>: 정적이고 상태 비의존적인 숨겨진 보상 함수에 대한 정보 수집만 측정하는 최소 환경. 단순화를 통해 즉각적 정보 수집 효율성을 독립적으로 분석</li>
 <li><strong>Alchemy 구현</strong>: 원본 Alchemy(Wang et al., 2021) 벤치마크의 텍스트 기반 커스텀 버전 개발. 에이전트가 다중 상태 의존 시행을 통해 잠재적 인과 구조를 추론해야 함</li>
@@ -128,9 +118,7 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 본 논문은 파운데이션 모델의 대화형 탐색 능력을 최초로 체계적으로 평가하여 학계와 산업에 중요한 벤치마크와 통찰을 제공한다. 특히 요약 프롬팅을 통한 창발적 메타러닝은 기술적 관심이 높으며, Alchemy 벤치마크 도입으로 향후 연구의 기초를 마련했다. 다만 메커니즘 분석 심화와 더 복잡한 환경에서의 검증이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../672_ResearchGym_Evaluating_Language_Model_Agents_on_Real-World_A/index.html">ResearchGym: Evaluating Language Model Agents on Real-World AI Research</a></div><div class="conn-reason">대화형 환경에서의 능동적 탐색 능력 평가가 AI 연구 에이전트 평가의 방법론적 기반</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../672_ResearchGym_Evaluating_Language_Model_Agents_on_Real-World_A/index.html">ResearchGym: Evaluating Language Model Agents on Real-World AI Research</a></div><div class="conn-reason">대화형 환경에서의 능동적 탐색 능력 평가 방법론을 연구 에이전트 평가에 적용한 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../815_ToolLLM_Facilitating_Large_Language_Models_to_Master_16000_R/index.html">ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs</a></div><div class="conn-reason">API 도구 사용과 달리 환경과의 능동적 상호작용을 통한 정보 수집 능력에 집중</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../815_ToolLLM_Facilitating_Large_Language_Models_to_Master_16000_R/index.html">ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs</a></div><div class="conn-reason">능동적 정보 수집에 중점을 둔 접근과 달리 구체적 API 도구 활용 능력에 집중</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../400_Hiagent_Hierarchical_working_memory_management_for_solving_l/index.html">Hiagent: Hierarchical working memory management for solving long-horizon agent tasks with large language model</a></div><div class="conn-reason">계층적 메모리 관리와 달리 능동적 환경 탐색을 통한 문제 해결 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">ML 실험 에이전트가 능동적 탐색을 통해 효율적으로 실험을 설계하는 능력 평가로 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../890_Your_Brain_on_ChatGPT_Accumulation_of_Cognitive_Debt_when_Us/index.html">Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task</a></div><div class="conn-reason">대화형 정보 수집에서 기초 모델의 능력을 탐구하여 AI 의존성의 인지적 영향을 더 깊이 이해할 수 있습니다.</div></div></div>

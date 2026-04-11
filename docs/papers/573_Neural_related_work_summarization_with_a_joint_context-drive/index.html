@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongzhen Wang, Xiaozhong Liu, Zheng Gao | <strong>날짜</strong>: 2019 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/1901.09492" target="_blank">arXiv:1901.09492</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>이질적 참고문헌 그래프 (논문, 저자, 키워드, 학술지 간의 10가지 관계)</em></p></div>
 <p>본 논문은 seq2seq 패러다임을 활용하여 학술 논문의 관련 연구(related work) 섹션을 자동으로 생성하는 신경망 기반 추출식 요약 시스템을 제안한다. 텍스트 맥락과 이질적 참고문헌 그래프 맥락을 결합한 주의 메커니즘(joint context-driven attention mechanism)으로 주제 일관성을 유지하면서 관련 논문을 선별한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 이질적 참고문헌 그래프에서 엣지 타입 유용성 분포(Edge-type Usefulness Distribution, EUD)를 진화 알고리즘으로 발견, (2) 텍스트와 그래프 맥락을 동시에 활용하는 결합 주의 메커니즘 제안, (3) 8,080개 논문으로 구성된 대규모 데이터셋에서 평가.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>seq2seq 요약 모델 프레임워크 (인코더, 이중 주의 메커니즘, 디코더)</em></p></div>
 <ol>
 <li><strong>신경망 기반 자동화 달성</strong>: 기존 규칙 기반 방법들의 제약을 극복하여 처음으로 신경 데이터 기반 자동 관련 연구 요약 솔루션을 개발. 전형적 seq2seq 요약 모델과 5개 고전 요약 기준선(baseline)을 모두 초과 성능.</li>
 <li><strong>대규모 평가 데이터셋</strong>: 기존 연구 최대 1,050개(Hu and Wan 2014) 대비 약 8배 확대된 8,080개 논문 데이터셋으로 학습 및 평가하여 결과의 신뢰성 증대.</li>
 <li><strong>주제 편향성 포착</strong>: 단순 어휘 유사도를 넘어 목표 논문의 관심사에 맞춘 선택적 요약 가능. 그래프 기반 맥락이 신흥 개념이나 용어 변이(paraphrasing) 상황에서 강점.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>각 참고문헌에서 추출된 단어 수 분포</em></p></div>
 <ul>
 <li><strong>이질적 그래프 구조</strong>: 4개 노드 타입(논문, 저자, 키워드, 학술지) × 10개 엣지 타입(인용, 공저, 키워드 연관, 학술지 시리즈 등)으로 구성. 각 엣지에 전이 확률 π(e_{j,i}) ∈ [0,1] 할당.</li>
 <li><strong>엣지 타입 유용성 분포(EUD) 최적화</strong>:

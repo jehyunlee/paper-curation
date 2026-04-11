@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Marco Maurizi, Derek Xu, Yu-tong Wang, Desheng Yao, D. Hahn 외 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2408.06300" target="_blank">10.48550/arXiv.2408.06300</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Fig 1">
-<p class="fig-caption"><em>그래프 공간에서의 메타머터리얼-응답 설계 공간. (A) 메타머터리얼의 그래프 표현: 연결재(strut)는 간선(edge), 교점은 노드(node)로 인코딩</em></p></div>
 <p>본 논문은 그래프 신경망(Graph Neural Networks, GNN), 강화학습(Reinforcement Learning, RL), 그리고 몬테카를로 트리 탐색(Monte Carlo Tree Search, MCTS)을 결합한 GraphMetaMat 프레임워크를 제시하여, 사용자 정의 비선형 기능 반응(응력-변형률 곡선, 파동 전송 응답)을 가진 3D 메타머터리얼을 역설계할 수 있는 방법론을 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 메타머터리얼의 구조를 그래프로 표현(연결재=간선, 교점=노드)하여 GNN의 귀납적 편향을 활용하고, 모방학습(Imitation Learning, IL)으로 사전학습 후 강화학습으로 미세 조정하며, MCTS로 탐색 성능을 개선하는 통합 프레임워크를 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Fig 2">
-<p class="fig-caption"><em>GraphMetaMat 프레임워크 개요. (A) 그래프 생성 과정과 트리 탐색, (C) 순방향 GNN 모델 학습을 통한 구조-기능 매핑</em></p></div>
 <ol>
 <li><strong>광범위한 응력-변형률 응답 설계</strong>: 4자리 수 범위의 응력(stress)을 커버하고 최대 30% 변형률까지 복잡한 거동을 가진 메타머터리얼을 설계 가능. 사용자 정의 곡선에 대해 평균 10% 허용오차 범위 내에서 역설계 성공.</li>
 <li><strong>파동 전송 특성 제어</strong>: 1-12 kHz 주파수 범위에서 조정 가능한 감쇠 갭(attenuation gap)을 가진 파동 전송 곡선(wave transmission curve) 설계. 목표 감쇠 갭에 대해 약 0.8의 정확도 달성.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반화 성능</strong>: 훈련 세트 외 미지(unseen) 곡선 설계에서 베스트 훈련 매치 대비 약 3배 우수한 오차 분포 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Fig 3">
-<p class="fig-caption"><em>사용자 정의 기능 반응의 설계. (A) 4가지 응력-변형률 반응 유형 (더 딱딱한, 볼록 변형 경화, 오목 변형, 더 부드러운), (D) 3가지 파동 전송 감쇠 갭 유형</em></p></div>
 <p><strong>GraphMetaMat 프레임워크의 주요 구성 요소:</strong></p>
 <ul>
 <li><strong>그래프 표현</strong>: 메타머터리얼의 위상(topology)과 기하학(geometry)을 노드 특성과 간선 특성으로 인코딩. 입방 대칭성(cubic symmetry)을 유지하여 이질적(heterogeneous) 메타머터리얼 생성 용이.</li>
@@ -128,11 +122,8 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 그래프 신경망과 강화학습을 결합하여 복잡한 비선형 기능 반응을 가진 메타머터리얼의 역설계를 효과적으로 해결한 혁신적인 연구로, 설계 공간의 제약을 제거하고 실제 응용(보호장비, 전기차 진동 제어)까지 검증한 점에서 높은 가치를 지니고 있다. 다만 로딩 조건, 재료 다양성, 시뮬레이션-실제 간극 등의 실용적 한계가 후속 개선의 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">메타물질 역설계를 위한 GNN-RL 접근법과 화학 공간 탐색을 위한 LLM 기반 진화 알고리즘이 각각 다른 도메인에서 유사한 역설계 문제를 해결한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../046_Accurate_structure_prediction_of_biomolecular_interactions_w/index.html">Accurate structure prediction of biomolecular interactions with AlphaFold 3</a></div><div class="conn-reason">그래프 신경망 기반 메타물질 설계와 확산 모델 기반 생체분자 구조 예측이 각각 공학과 생물학 분야에서 유사한 역설계 접근법을 보여준다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../046_Accurate_structure_prediction_of_biomolecular_interactions_w/index.html">Accurate structure prediction of biomolecular interactions with AlphaFold 3</a></div><div class="conn-reason">확산 모델 기반 생체분자 구조 예측과 그래프 신경망 기반 메타물질 설계가 서로 다른 도메인에서 유사한 역설계 문제를 해결한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">화학 공간에서 LLM 기반 진화 탐색과 메타물질에서 GNN 기반 역설계가 각각 다른 도메인에서 유사한 최적화 문제를 해결한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../622_Physics-Informed_Neural_Operator_for_Electromagnetic_Inverse/index.html">Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems</a></div><div class="conn-reason">메타물질 역설계를 위한 GNN 접근법이 전자기 역문제 해결을 위한 물리 정보 기반 신경 연산자로 확장되었다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../105_Artificial_Intelligence_for_Direct_Prediction_of_Molecular_D/index.html">Artificial Intelligence for Science in Quantum, Atomistic, and Continuum Systems</a></div><div class="conn-reason">물리 시스템에서 대칭성과 등변성을 활용한 심층학습 원리가 메타물질 역설계에서 그래프 신경망과 강화학습에 핵심적으로 적용된다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../105_Artificial_Intelligence_for_Direct_Prediction_of_Molecular_D/index.html">Artificial Intelligence for Science in Quantum, Atomistic, and Continuum Systems</a></div><div class="conn-reason">대칭성과 등변성을 활용한 심층학습 방법론이 메타물질의 역설계 문제에서 그래프 신경망과 함께 핵심적으로 활용된다</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../105_Artificial_Intelligence_for_Direct_Prediction_of_Molecular_D/index.html">Artificial Intelligence for Science in Quantum, Atomistic, and Continuum Systems</a></div><div class="conn-reason">물리 시스템에서 대칭성과 등변성을 활용한 심층학습 원리가 메타물질 역설계에서 그래프 신경망과 강화학습에 핵심적으로 적용된다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

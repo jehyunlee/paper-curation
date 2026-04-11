@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 계층적 인용 그래프 클러스터링과 택소노미 노드 표현화(verbalization)의 두 하위 문제로 분해하고, 이를 결합 최적화 프레임워크로 통합하여 학습함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Citation graph와 Taxonomy의 계층적 대응 관계">
-</div>
 <ol>
 <li><strong>계층적 그래프 클러스터링</strong>: 텍스트 콘텐츠와 인용 구조를 모두 고려하여 재귀적으로 논문들을 그룹화하는 방법 제안. 각 레벨에서 하위 주제의 노드들을 상위 주제의 슈퍼노드로 클러스터링하면서 특성 집계(feature aggregation)를 통해 의미론적 일관성 유지.</li>
 <li><strong>택소노미 노드 표현화</strong>: 대규모 언어 모델(LLM)을 활용하여 각 클러스터의 중심 개념을 반복적으로 생성하는 전략 개발. 클러스터 레벨 그래프 임베딩과 논문 레벨 정보를 결합하여 계층 구조 전체에 걸쳐 의미론적으로 풍부한 및 일관성 있는 택소노미 생성.</li>
 <li><strong>평가 데이터셋</strong>: 컴퓨터 과학 분야의 고품질 인간 작성 문헌 리뷰에 대응하는 518개의 인용 그래프 수집 및 공개, 향후 연구를 위한 벤치마크 제공.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 계층적 택소노미 생성 프레임워크의 전체 구조">
-</div>
 <ul>
 <li><strong>문제 분해</strong>: 택소노미 생성을 계층 구조 유도 함수 g와 개념 추상화 함수 h의 합성으로 표현 (f = h∘g)</li>
 <li><strong>계층적 클러스터링 모듈</strong>:
@@ -138,7 +134,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../742_Select_read_and_write_A_multi-agent_framework_of_full-text-b/index.html">Select, read, and write: A multi-agent framework of full-text-based related work generation</a></div><div class="conn-reason">인용 그래프에서 분류 체계 생성이 관련 연구 섹션에서 참고 문헌 간의 관계를 체계적으로 구조화하는 기본 프레임워크를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../752_Shallow_synthesis_of_knowledge_in_gpt-generated_texts_A_case/index.html">Shallow synthesis of knowledge in gpt-generated texts: A case study in automatic related work composition</a></div><div class="conn-reason">구조적 인용 그래프 분석을 통한 체계적 분류 생성이 GPT의 얕은 문헌 종합 문제에 대한 대안적 해결 방안을 제시한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../329_Explaining_relationships_among_research_papers/index.html">Explaining relationships among research papers</a></div><div class="conn-reason">인용 그래프에서 분류 체계 트리 생성으로 본 논문과 다른 방식의 논문 간 관계 구조화를 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../752_Shallow_synthesis_of_knowledge_in_gpt-generated_texts_A_case/index.html">Shallow synthesis of knowledge in gpt-generated texts: A case study in automatic related work composition</a></div><div class="conn-reason">인용 그래프 분석과 분류 체계 생성은 문헌 종합의 구조적 한계를 극복하기 위한 대안적 접근 방법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../742_Select_read_and_write_A_multi-agent_framework_of_full-text-b/index.html">Select, read, and write: A multi-agent framework of full-text-based related work generation</a></div><div class="conn-reason">인용 그래프에서 생성된 분류 체계가 관련 연구 섹션 작성에서 문헌 간의 계층적 관계를 체계적으로 구조화하는 핵심 도구로 활용된다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

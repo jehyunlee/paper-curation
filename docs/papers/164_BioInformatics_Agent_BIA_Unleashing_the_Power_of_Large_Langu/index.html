@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Q. Xin, Quyu Kong, Hongyi Ji, Yue Shen, Yuqi Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2024.05.22.595240" target="_blank">10.1101/2024.05.22.595240</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: BIA 전체 프레임워크 개요">
-<p class="fig-caption"><em>BIA의 입력 처리, 생성 과정, 응답 평가, 피드백 루프, 전달의 5단계 워크플로우</em></p></div>
 <p>대규모 언어모델(LLM) 기반 생물정보학 에이전트(BIA)를 개발하여 자연어 대화를 통해 단일세포 RNA 시퀀싱(scRNA-seq) 데이터의 자동 분석 파이프라인을 실현했다. 사용자는 복잡한 프로그래밍 없이 생물정보학 분석의 전체 과정을 수행할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: GPT-4 기반 LLM 에이전트에 도메인별 도구(online database, metadata extraction, bioinformatics workflow)를 통합하여 자연어 기반 자동 분석 시스템 구축</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 로컬 및 공개 데이터베이스 검색">
-<p class="fig-caption"><em>BIA의 데이터셋 검색 및 획득 프로세스</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: 생물정보학 분석 프로세스 및 결과 개요">
-<p class="fig-caption"><em>데이터 처리부터 분석 결과 도출까지의 전체 파이프라인</em></p></div>
 <ol>
 <li><strong>포괄적 자동화 파이프라인</strong>: 데이터 추출, 메타데이터 처리, 워크플로우 설계, 코드 생성, 보고서 작성을 자연어로 통제</li>
 <li><strong>지능형 도구 통합</strong>: ENA, NCBI, GEO 등 공개 데이터베이스 연동 및 Cell Ranger, Scanpy 등 생물정보 도구 자동 호출</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>유연한 데이터 포맷 처리</strong>: SRA, FASTQ, MTX, TSV, RData 등 다양한 형식의 카운트 매트릭스를 Anndata 표준 형식으로 자동 변환</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 생물정보학 도구 호출자 흐름도">
-<p class="fig-caption"><em>Thought-Action-Observation 루프를 통한 도구 선택 및 실행 메커니즘</em></p></div>
 <ul>
 <li><strong>Thought-Action-Observation (TAO) 루프</strong>: LLM이 현재 작업 상태를 반성적으로 평가(Thought), 특정 도구 호출(Action), 결과 해석(Observation)하는 구조화된 대화 형식</li>
 <li><strong>메타데이터 처리</strong>:

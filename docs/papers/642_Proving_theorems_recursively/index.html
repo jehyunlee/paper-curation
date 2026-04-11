@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Haiming Wang, Huajian Xin, Zhengying Liu, Wenda Li, Yinya Huang, Jianqiao Lu, Zhicheng Yang, Jing Tang, Jian Yin, Zhenguo Li, Xiaodan Liang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2405.14414" target="_blank">arXiv:2405.14414</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 단계적 증명과 재귀적 증명의 비교. (a) 단계적 접근은 증명의 계층 구조를 무시하고 증명 단계들의 시퀀스로만 취급. (b) 재귀적 증명은 검증 가능한 증명 스케치를 여러 레벨로 분해하여 단계별로 중간 명제 증명을 미루는 방식으로 진행.</em></p></div>
 <p>신경망 기반 자동 정리 증명(automated theorem proving)에서 기존의 단계적(step-by-step) 탐색 방식의 한계를 극복하기 위해, 본 논문은 <strong>POETRY(PrOvE Theorems RecursivelY)</strong>를 제안한다. 이는 Isabelle 정리 증명기에서 재귀적이고 계층적 접근을 통해 증명을 단계적으로 구성하는 방법으로, 중간 명제들의 증명을 <code>sorry</code> 플레이스홀더로 미루고 더 깊은 레벨에서 해결하는 방식이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Isabelle의 <code>sorry</code> 타틱을 활용하여 중간 명제의 증명을 임시로 건너뛰고, 각 레벨에서 검증 가능한 증명 스케치를 먼저 탐색한 후, 다음 레벨에서 미뤄진 명제들을 재귀적으로 증명하는 방식.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: POETRY와 GPT-f 기준선 간 증명 길이 비교. y축은 로그 스케일로 표시.</em></p></div>
 <ol>
 <li><strong>정량적 성능 향상</strong>: miniF2F 데이터셋에서 평균 5.1% 절대 개선율 달성 (42.2% 통과율), PISA 데이터셋에서 재귀적 증명을 통해 단계적 기준선 대비 3.9% 절대 개선.</li>
 <li><strong>증명 길이 대폭 확장</strong>: 최대 증명 길이가 단계적 방식의 10단계에서 262단계로 증가 (miniF2F 기준), PISA에서도 26단계로 확장. 이는 더 복잡한 정리들을 증명할 수 있음을 시사.</li>
 <li><strong>재귀적 구조의 이점</strong>: 거짓 중간 명제를 포함한 검증된 스케치도 다음 레벨에서 증명 불가능할 때 새로운 스케치 탐색으로 자동 보정되어, 강건한 탐색 프레임워크 구성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 재귀적 BFS(Best-First Search) 탐색의 상세 예시. 증명 트리의 각 노드는 증명 상태(proof state)를 나타냄.</em></p></div>
 <ul>
 <li><strong>증명 스케치 추출(Proof Sketch Extraction)</strong>: 기존 완전 증명(complete proof)의 데이터에서 Isabelle의 <code>proof level</code> 정보를 활용하여 계층 구조를 추출. Algorithm 1의 <code>EXTRACTPROOFSKETCH</code> 함수가 증명 단계들을 재귀적으로 처리하며, 깊이가 증가하는 지점에서 <code>sorry</code>로 중간 증명을 대체.</li>
 <li><strong>재귀적 데이터 구성</strong>: 각 완전 증명으로부터 다중 레벨의 증명 스케치들을 추출하여 훈련 데이터 구성. 이를 통해 언어모델이 각 레벨에서 스케치를 생성하는 법을 학습.</li>
@@ -114,10 +108,8 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">수학적 추론에 강한 Phi-4의 능력을 정리 증명 자동화에 활용할 수 있는 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../030_A_survey_on_deep_learning_for_theorem_proving/index.html">A survey on deep learning for theorem proving</a></div><div class="conn-reason">정리 증명 심층학습 기법들을 재귀적 증명 방법론으로 발전시킨 이론적 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1095_Towards_large_language_models_as_copilots_for_theorem_provin/index.html">Towards large language models as copilots for theorem proving in lean</a></div><div class="conn-reason">Lean Copilot의 인간-AI 협업 접근과 달리 완전 자동화된 재귀적 증명 방식 추구</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1095_Towards_large_language_models_as_copilots_for_theorem_provin/index.html">Towards large language models as copilots for theorem proving in lean</a></div><div class="conn-reason">완전 자동화된 재귀적 증명과 달리 인간 수학자와 AI의 협업을 통한 증명 보조 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../489_Lf_a_foundational_higher-order-logic/index.html">Lf: a foundational higher-order-logic</a></div><div class="conn-reason">둘 다 정리 증명의 논리적 기반을 다루지만 하나는 과학 형식화를 위한 고차 논리 체계에, 다른 하나는 재귀적 정리 증명에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../379_Generative_language_modeling_for_automated_theorem_proving/index.html">Generative language modeling for automated theorem proving</a></div><div class="conn-reason">생성형 언어모델 기반 정리 증명을 재귀적 계층 구조로 발전시킨 확장 연구</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../379_Generative_language_modeling_for_automated_theorem_proving/index.html">Generative language modeling for automated theorem proving</a></div><div class="conn-reason">GPT-f의 정리 증명 기법을 재귀적 증명 방법론으로 확장한 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../807_Theoremexplainagent_Towards_video-based_multimodal_explanati/index.html">TheoremExplainAgent: Towards Video-based Multimodal Explanations for LLM Theorem Understanding</a></div><div class="conn-reason">TheoremExplainAgent의 비디오 기반 설명 생성을 재귀적 정리 증명으로 확장하여 더 체계적이고 단계적인 수학 학습 환경을 조성할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../030_A_survey_on_deep_learning_for_theorem_proving/index.html">A survey on deep learning for theorem proving</a></div><div class="conn-reason">정리 증명에 대한 심층학습 기법 서베이에서 제시된 방법론을 재귀적 접근으로 구현</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">수학적 추론에 특화된 Phi-4의 능력을 정리 증명 작업에 활용하는 응용</div></div></div>

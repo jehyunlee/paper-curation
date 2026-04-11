@@ -75,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 비감독학습으로부터 얻은 2D 순서 매개변수(order parameter Z) 표현과 이전의 RNN 모델을 활용하여, LLM이 반복적으로 단량체 서열을 제안하고 점수를 받는 루프 구조에서 목표 형태에 가장 가까운 서열을 찾도록 설계했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1: LLM 기반 진화 최적화의 개념도. (a) 단량체 서열→MD 시뮬레이션→2D 순서 매개변수 Z 추출 파이프라인, (d) LLM 에이전트가 서열을 제안하면 RNN 모델로 평가하는 반복 루프</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2: 최적화 알고리즘 성능 비교. (b) 최고 3개 후보의 평균 거리, (c) 역치값 이하의 서열 개수, (d) 6가지 목표 형태에 대한 종합 성과 (씨앗 없음/있음)</em></p></div>
 <ol>
 <li><strong>LLM의 우수한 수렴성</strong>: LLM 기반 최적화기는 활동적 학습과 진화 알고리즘보다 빠르게 목표 영역에 수렴하며, 탐색(exploration)과 착취(exploitation) 사이의 균형을 효과적으로 유지했다. 초기 5회 반복에서 올바른 영역을 찾고, 마지막 5회에서 다양한 우수 해를 발견했다.</li>
 <li><strong>일관된 우수 성능</strong>: 12개 테스트 케이스(6가지 목표 형태 × 씨앗 있음/없음) 중 11개에서 LLM 기반 방법이 최고 평균 성능을 기록했다. 씨앗 지원 시 중앙값 성능이 특히 향상되었으며, 모든 형태에서 중앙값 k=0인 경우가 사라졌다.</li>
 <li><strong>문맥 무시 상황에서의 자동 추론</strong>: 문맥 정보를 제공하지 않은 "oracle" 프롬프트에서도 LLM은 단백질 폴딩 문제로 자동 추론하면서 효과적으로 수행했다. 이는 LLM이 암묵적 도메인 지식을 활용하고 있음을 시사한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1 상세">
-<p class="fig-caption"><em>Fig. 1e-g: 대표적 LLM 최적화 과정. (e) 반복별 거리 변화, (f-g) 잠재 공간(latent space Z)에서의 수열 위치 변화 추이</em></p></div>
 <ul>
 <li><strong>문제 설정</strong>: 비감독학습으로부터 추출한 2D 순서 매개변수 Z 공간에서, 주어진 목표 형태 Z_t까지의 거리를 최소화하는 단량체 서열 x를 찾는 역 설계(inverse design) 문제</li>
 <li><strong>LLM 기반 루프</strong>:
@@ -138,7 +132,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 대규모언어모델의 emergent behavior를 재료 과학의 실제 문제에 창의적으로 적용하여 기존 최적화 방법을 능가하는 성과를 보였다. 다만 RNN 근사값 기반 평가와 실제 MD 검증 부재, 그리고 LLM의 작동 원리에 대한 이론적 이해 부족이 한계로 지적되며, 향후 이러한 점들이 보완되면 더욱 강력한 기여가 될 수 있을 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../469_Large_Language_Models_as_Evolutionary_Optimizers/index.html">Large Language Models as Evolutionary Optimizers</a></div><div class="conn-reason">진화 최적화 알고리즘으로서의 LLM 활용 방법론이 거대분자 설계에 적용된 사례이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../459_Language_Models_for_Controllable_DNA_Sequence_Design/index.html">Language Models for Controllable DNA Sequence Design</a></div><div class="conn-reason">언어 모델을 활용한 생체분자 설계라는 공통 주제이지만 거대분자 자기조립과 DNA 서열 설계로 응용 영역이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../459_Language_Models_for_Controllable_DNA_Sequence_Design/index.html">Language Models for Controllable DNA Sequence Design</a></div><div class="conn-reason">거대분자 설계를 위한 LLM 활용이라는 공통점이 있지만, DNA 서열 생성과 자기조립 구조 설계라는 다른 타겟을 다룬다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">화학 공간에서의 효율적인 진화 탐색 기법을 거대분자 설계에 확장 적용할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

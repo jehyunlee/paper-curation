@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu Chen, Yankai Lin, Wayne Xin Zhao, Zhewei Wei, Ji-Rong Wen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: -</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>GoAI 프레임워크 개요: 문헌 검색 및 필터링 → 지식 그래프 구성 → 경로 생성 → 경로 일관성 검증의 4단계</em></p></div>
 <p>본 논문은 지식 그래프(Knowledge Graph)와 대형 언어모델(LLM)을 활용하여 AI 학생들의 개인화된 학습 경로를 제시하고 연구 아이디어 생성을 지원하는 GoAI 시스템을 제안한다. 이는 빠르게 확장되는 AI 문헌의 바다에서 학생들이 겪는 "정보-혁신 간극"을 해소한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 의미론적으로 주석이 달린 인용 관계와 선행 지식 메타데이터를 포함하는 AI 교육용 지식 그래프를 구성하고, 빔 서치(beam search) 기반 경로 탐색으로 개인화된 학습 경로를 생성한 후, Idea Studio에서 구조화된 피드백을 제공한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그래프 탐색 및 아이디어 생성의 예시 워크플로우: "Tree of Thoughts" 논문을 핵심 참조 논문으로 하여 발전 궤적과 학습 경로를 생성</em></p></div>
 <ol>
 <li><strong>지식 그래프 구성</strong>: AI 교육을 위한 연구 중심 지식 그래프를 개발하여 논문 엔티티, 의미론적으로 주석된 인용 관계(baseline, extension, contrast/ablation, critique/response), 및 선행 개념·기술을 통합한다.</li>
 <li><strong>개인화된 학습 경로</strong>: LLM을 에이전트로 활용하여 그래프를 동적으로 탐색하고, 인용 의미론을 고려한 빔 서치로 여러 발전 궤적을 생성하며, 선행 지식의 복잡도를 기준으로 학습 커리큘럼을 구성한다.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실증적 성과</strong>: 학습 성과, 창의성 품질, 인지 부하 측정을 통해 그래프 기반 학습 경로 계획, 창의성 생성, 구조화된 피드백이 학생들의 경계 요약(frontier summarization), 핵심 기술 식별, 실현 가능한 개념 생성 능력을 향상시킴을 입증한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>GoAI의 참신성 평가 처리 흐름: 기존 문헌과의 비교를 통한 다각적 평가</em></p></div>
 <h3>4단계 GoAI 프레임워크:</h3>
 <ol>
 <li><strong>문헌 검색 및 필터링</strong>: Semantic Scholar API와 ArXiv API를 활용하여 초기 연구 주제와 관련된 상위 논문(key references)을 검색하고, 이들의 참고 목록(backward extension)과 인용 논문(forward extension)을 양방향으로 확장한다.</li>
@@ -142,7 +136,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../540_Mir_Methodology_inspiration_retrieval_for_scientific_researc/index.html">Mir: Methodology inspiration retrieval for scientific research problems</a></div><div class="conn-reason">AI 아이디어 지식 그래프가 방법론적 영감 검색의 구조적 표현 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../426_Improving_Scientific_Hypothesis_Generation_with_Knowledge_Gr/index.html">Improving Scientific Hypothesis Generation with Knowledge Grounded Large Language Models</a></div><div class="conn-reason">AI 연구 vs 일반 과학 가설 생성으로 지식 그래프 활용의 서로 다른 도메인 적용</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../518_Many_Heads_Are_Better_Than_One_Improved_Scientific_Idea_Gene/index.html">Many Heads Are Better Than One: Improved Scientific Idea Generation by A LLM-Based Multi-Agent System</a></div><div class="conn-reason">지식 그래프 vs 다중 헤드 접근으로 과학 아이디어 생성의 서로 다른 방법론</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../426_Improving_Scientific_Hypothesis_Generation_with_Knowledge_Gr/index.html">Improving Scientific Hypothesis Generation with Knowledge Grounded Large Language Models</a></div><div class="conn-reason">같은 지식 그래프 활용 접근이지만 AI 연구 아이디어 생성에 특화된 시스템</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../632_Predicting_the_future_of_ai_with_ai_High-quality_link_predic/index.html">Predicting the future of ai with ai: High-quality link prediction in an exponentially growing knowledge network</a></div><div class="conn-reason">AI 아이디어 지식 그래프를 활용한 연구 방향 예측으로 링크 예측 접근법을 확장할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../540_Mir_Methodology_inspiration_retrieval_for_scientific_researc/index.html">Mir: Methodology inspiration retrieval for scientific research problems</a></div><div class="conn-reason">AI 아이디어 지식 그래프를 방법론적 영감 검색으로 확장한 연구 지원 시스템</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../392_Grapheval_A_lightweight_graph-based_llm_framework_for_idea_e/index.html">GraphEval: A lightweight graph-based llm framework for idea evaluation</a></div><div class="conn-reason">AI 아이디어의 지식 그래프를 경량 그래프 기반 평가 프레임워크로 확장한 연구다</div></div></div>

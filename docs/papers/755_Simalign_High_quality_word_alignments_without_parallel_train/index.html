@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Masoud Jalili Sabet, Philipp Dufter, François Yvon, Hinrich Schütze | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2004.08728" target="_blank">arXiv:2004.08728</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 언어 쌍과 혼합 문장에 대한 병렬 학습 데이터 없이 단어 정렬을 수행하는 방법</em></p></div>
 <p>본 논문은 병렬 학습 데이터 없이 다국어 단어 임베딩(정적 및 문맥화된)을 활용하여 고품질의 단어 정렬을 수행하는 SimAlign 방법을 제안한다. 전통적인 통계적 정렬기(efloral 등)와 비교해서도 우수한 성능을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 병렬 데이터 없이 단일언어 데이터에서만 학습된 다국어 임베딩(fastText+VecMap, mBERT, XLM-RoBERTa)의 유사도 행렬(similarity matrix)로부터 단어 정렬을 추출</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>IterMax 알고리즘: 반복적으로 유사도 행렬을 수정하면서 정렬을 추출</em></p></div>
 <ol>
 <li><strong>우수한 성능</strong>: 문맥화된 임베딩(contextualized embeddings)으로부터 얻은 정렬이 100K 병렬 문장으로 학습한 efloral보다 영어-독일어 쌍에서 F1이 5% 포인트 높음 (6개 언어쌍 중 4쌍에서 우수, 2쌍에서 동등)</li>
 <li><strong>병렬 데이터 불필요</strong>: 전문 용어 없이 단일언어 데이터만으로 임베딩 학습 가능하여 저자원 언어와 혼합 언어 문장 정렬 가능</li>
 <li><strong>유연한 정렬 추출 방법</strong>: 3가지 서로 다른 알고리즘(Argmax, IterMax, Match)으로 정확도(precision)와 재현율(recall)의 트레이드오프 조절 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>서브단어 수준 정렬을 단어 수준으로 변환하는 프로세스</em></p></div>
 <h3>주요 방법론</h3>
 <ul>
 <li><strong>유사도 행렬 기반 정렬 추출</strong>
@@ -146,7 +140,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: SimAlign은 다국어 임베딩의 유사도 행렬에서 단어 정렬을 추출하는 창의적이고 실용적인 방법을 제안하여, 병렬 학습 데이터의 의존성을 제거하면서도 전통적 통계 정렬기를 능가하는 성능을 달성했다는 점에서 의의가 있다. 다만 하이퍼파라미터 최적화와 더 광범위한 언어 커버리지 개선이 향후 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html">BiasFilter: An inference-time debiasing framework for large language models</a></div><div class="conn-reason">다국어 임베딩의 편향 문제를 다루는 BiasFilter와 SimAlign의 크로스링구얼 정렬 방법론이 상호 보완적 관계에 있음</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../119_Autocap_Towards_automatic_cross-lingual_alignment_planning_f/index.html">Autocap: Towards automatic cross-lingual alignment planning for zero-shot chain-of-thought</a></div><div class="conn-reason">SimAlign은 병렬 데이터 없는 단어 정렬을, AutoCAP은 다국어 추론에서의 언어 정렬을 다루어 서로 다른 차원의 정렬 문제를 해결함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../119_Autocap_Towards_automatic_cross-lingual_alignment_planning_f/index.html">Autocap: Towards automatic cross-lingual alignment planning for zero-shot chain-of-thought</a></div><div class="conn-reason">AutoCAP이 다국어 추론에서의 자동 언어 선택과 가중치 할당에 초점을 맞춘 반면, SimAlign은 병렬 데이터 없는 단어 수준 정렬에 특화되어 상호 보완적 접근법을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../858_Unsupervised_crosslingual_representation_learning_at_scale/index.html">Unsupervised Crosslingual Representation Learning at Scale</a></div><div class="conn-reason">대규모 무감독 크로스링구얼 표현 학습이 SimAlign의 정적/문맥화 임베딩 활용 방식을 더 큰 규모로 확장한 연구임</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

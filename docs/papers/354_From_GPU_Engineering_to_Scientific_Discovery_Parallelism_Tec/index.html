@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Emmanuel A Olanrewaju | <strong>날짜</strong>: 2026-03-20 | <strong>DOI</strong>: <a href="https://doi.org/10.26434/chemrxiv.15001091/v1" target="_blank">10.26434/chemrxiv.15001091/v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1-4.webp" alt="Figure 1-4">
-<p class="fig-caption"><em>데이터 병렬화(Data Parallelism) 기법들의 성능 비교: (좌상) 에포크 시간, (우상) 스케일링 효율성, (좌하) 손실 수렴, (우하) 처리량</em></p></div>
 <p>대규모 언어 모델(LLM)의 효율적인 학습 및 배포를 위해 GPU 기반 병렬화 기법들을 종합적으로 검토한 논문으로, 과학 발견 가속화를 위한 실제 적용 가이드를 제시한다. 데이터 병렬화, 텐서 병렬화, 시퀀스 병렬화, 컨텍스트 병렬화, 파이프라인 병렬화, 전문가 병렬화 등 6가지 주요 기법의 장단점과 최적 활용 조건을 실증적으로 분석한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: GPU 아키텍처 최적화, 병렬화 기법, 메모리 관리 전략을 통합적으로 분석하고, 각 기법의 트레이드오프를 실험적으로 검증하여 실용적 선택 가이드를 제공한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig5-6.webp" alt="Figure 5-6">
-<p class="fig-caption"><em>DeepSpeed ZeRO 최적화: (좌) ZeRO-2와 ZeRO-3의 메모리-처리량 트레이드오프 비교, (우) 모델 크기에 따른 ZeRO 전략 선택 프레임워크</em></p></div>
-<div class="review-fig"><img src="figures/fig7-9.webp" alt="Figure 7-9">
-<p class="fig-caption"><em>텐서 병렬화(TP) 및 시퀀스 병렬화(SP): (좌) TP 적용 전후 메모리 감소 효과, (중앙) TP+SP 결합 효과, (우) 트랜스포머 블록 내 활성화 메모리 변화</em></p></div>
 <ol>
 <li><strong>데이터 병렬화 최적화</strong>: DP Interleaved 및 PyTorch DDP 기법이 계산-통신 오버래핑을 통해 나이브 DP 대비 유의미한 처리량 개선을 달성함을 실증. 큰 모델에서 더욱 효과적임을 확인.</li>
 <li><strong>ZeRO 기법의 실용적 분류</strong>: ZeRO-0부터 ZeRO-3까지 5단계 메모리 절감 전략을 제시. ZeRO-3은 최대 메모리 효율을 제공하나 통신 오버헤드 증가로 처리량 저하 발생 - 명확한 트레이드오프 관계 규명.</li>

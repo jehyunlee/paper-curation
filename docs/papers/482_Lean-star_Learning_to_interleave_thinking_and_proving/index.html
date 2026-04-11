@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: H. Lin, Zhiqing Sun, Sean Welleck, Yiming Yang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 사고(thought) 유무에 따른 한 증명 단계에서의 전술 예측 비교</em></p></div>
 <p>언어 모델이 형식 수학 증명을 수행할 때, 인간의 사고 과정을 나타내는 자연언어 생각(informal thought)을 각 증명 단계 전에 생성하도록 학습시켜 정리 증명 능력을 향상시키는 프레임워크를 제시한다. 이를 통해 형식 증명에 내재된 정보만으로는 부족한 추론 과정을 보완한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: GPT-4 같은 오라클 모델(oracle model)을 이용하여 정답 전술(ground-truth tactic)을 조건으로 하는 "역방향 생성(retrospective rationale generation)"을 통해 50,000개의 자동 주석 데이터를 생성하고, 이를 기반으로 생각-강화 전술 예측 모델을 학습한 후 전문가 반복(expert iteration)으로 추가 최적화.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: Lean-STaR 전체 파이프라인 - (1) GPT-4로 CoT 데이터셋 생성 (2) SFT 모델을 CoT로 미세 조정하여 Lean-CoT 획득 (3) 전문가 반복으로 STaR 데이터셋 생성 및 반복 미세 조정</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: InternLM2-7b 기반 모델에서 43.4% → 46.3% (Pass@64)의 유의미한 성능 개선 달성. 더 강력한 InternLM2-7b-plus 모델 사용 시 45.4% (Pass@32) 달성으로 기존 최고 성능 초과.</li>
 <li><strong>최초 생각-강화 데이터셋</strong>: 정리 증명 분야에서 처음으로 (상태, 생각, 전술) 삼중 쌍 형태의 학습 데이터셋 구축. 약 50,000개의 Mathlib 기반 데이터와 전문가 반복을 통한 추가 50,000개 합성 데이터로 총 100,000개 규모.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: Lean-STaR이 생성한 증명과 생각의 예시 - 생각에 계산 오류가 있어도(빨간색) Lean의 nlinarith 전술이 실제 계산을 수행하므로 증명의 정확성에 영향 없음</em></p></div>
 <ul>
 <li><strong>역방향 생각 생성(Retrospective Rationale Generation)</strong>: 형식 증명 데이터셋에서 (상태 s_i, 전술 a_i) 쌍을 추출하고, 정답 전술을 조건으로 하여 GPT-4에 그 전술에 도달한 이유를 설명하는 자연언어 생각 t_i를 생성하도록 요청. 이는 모델이 사후(hindsight) 생각을 방지하고 실제 추론 과정을 반영하도록 설계됨.</li>
 <li><strong>생각-강화 전술 예측 모델(Thought-augmented Tactic Prediction)</strong>: 기존의 π(a|s) 대신 분해된 조건부 확률 π(a|s) = Σ_t π(a|t,s)π(t|s)을 사용하여 상태에서 생각을 먼저 생성한 후 전술을 예측하는 구조로 학습.</li>

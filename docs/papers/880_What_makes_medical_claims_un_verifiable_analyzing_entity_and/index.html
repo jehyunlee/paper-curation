@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 훈련된 주석자들이 PubMed에서 증거를 찾는 과정을 관찰하고, 엔티티-관계 패턴과 검증 가능성 간의 연관성을 분석하며, 중중 전문가와 일반인의 주석 품질을 비교</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Pairwise co-occurrence of verdicts in BEAR-FACT tweets with more than one claim">
-<p class="fig-caption"><em>다중 주장을 포함하는 트윗에서 검증 결과의 쌍별 공존 관계</em></p></div>
 <ol>
 <li><strong>BEAR-FACT 코퍼스 구축</strong>: 1,448개의 사실 검증된 생의학 주장, 증거 문서, 구조화된 엔티티/관계 정보를 포함하는 첫 번째 트위터 데이터셋 제시 (30.9%가 검증 불가능)</li>
 <li><strong>부정 관계의 검증 어려움</strong>: 긍정 관계(예: cause-of)를 포함한 주장이 부정 관계(not-cause-of)보다 더 쉽게 검증되며, 더 높은 비율로 SUPPORTED 판정을 받음을 발견</li>
@@ -85,8 +83,6 @@ a { color: #A62018; }
 <li><strong>검증 가능성 예측</strong>: RoBERTa 모델을 미세조정하여 검증 가능한 주장 예측은 .82 F1로 높은 성능을 보였으나, 검증 불가능한 주장 탐지는 .27 F1로 저조함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Verdict distribution across claim relation and entity types">
-<p class="fig-caption"><em>주장의 관계 및 엔티티 유형에 따른 검증 결과 분포</em></p></div>
 <ul>
 <li><strong>데이터 구축</strong>: BEAR 코퍼스(생의학 엔티티-관계 주석이 포함된 트윗)에서 주장을 포함하며 의료 관계를 가진 646개 문서 선별 → 엔티티-관계-엔티티 삼중항(triplet) 추출 → 수동 필터링 및 문법 수정을 통해 1,532개 주장 확보</li>
 <li><strong>주석 과정</strong>: 2명의 훈련된 주석자가 PubMed를 사용하여 각 주장에 대해 증거 탐색 → 초기 쿼리(AND 연산자로 연결된 엔티티)에서 시작 → 최대 3분간 쿼리 개선 → 증거 발견 시 PMID 및 관련 문장 기록, 미발견 시 UNVERIFIABLE 레이블 부여</li>

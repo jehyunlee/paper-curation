@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wei Lu, Rachel K. Luu, Markus J. Buehler | <strong>날짜</strong>: 2025-03-28 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41524-025-01564-y" target="_blank">10.1038/s41524-025-01564-y</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>모델 훈련, 병합 및 평가 단계. A: 기존의 선형 훈련 파이프라인(CPT→SFT→DPO/ORPO). B: 모델 병합을 포함한 대안적 파이프라인</em></p></div>
 <p>본 논문은 재료과학 등 전문 도메인에 대응하는 대형언어모델(LLM)의 파인튜닝 전략을 체계적으로 탐구하며, 특히 여러 미세조정 모델의 병합(model merging)이 개별 모델의 능력을 초월하는 창발적 기능(emergent capabilities)을 생성할 수 있음을 실증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Continued Pretraining(CPT), Supervised Fine-Tuning(SFT), Direct Preference Optimization(DPO), Odds Ratio Preference Optimization(ORPO)을 조직적으로 비교하고, Spherical Linear Interpolation(SLERP) 기반 모델 병합의 효과를 다양한 모델 규모(8B, 7B, 1.7B 파라미터)에서 실험한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Llama-3.1 모델 변형체의 성능 평가</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Mistral-7B-v0.3 모델 변형체의 성능 평가</em></p></div>
 <ol>
 <li><strong>모델 병합의 창발성</strong>: 여러 미세조정 모델의 SLERP 기반 병합이 개별 부모 모델의 능력을 단순 합산하지 않고, 매개변수 간의 비선형 상호작용을 통해 어느 부모 모델도 단독으로 달성하지 못한 새로운 기능을 생성하며, 도메인 특화 평가에서 개선된 성능을 달성함을 실증했다.</li>
 <li><strong>훈련 전략의 체계적 비교</strong>: CPT를 통한 도메인 지식 습득, SFT를 통한 작업 특화, DPO/ORPO를 통한 선호도 정렬의 순차적 파이프라인이 각 단계에서 모델 능력을 단계적으로 향상시키며, 다양한 모델 아키텍처(Llama 3.1 8B, Mistral 7B)에서 일관된 거동을 보임을 확인했다.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>개방형 대화 평가</strong>: 인간-AI 모델 간의 자유로운 대화 평가에서 가장 작은 모델조차 추론 깊이, 창의성, 명확성, 정량적 정확성 등의 핵심 기준에서 높은 지능 점수를 달성할 수 있음을 보였다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>SLERP(구면 선형 보간법)와 LERP(선형 보간법)의 비교. SLERP는 모델 매개변수 공간의 기하학적 구조를 보존하여 의미 있는 능력 혼합을 가능하게 함</em></p></div>
 <ul>
 <li><strong>훈련 파이프라인 설계</strong>: 베이스 모델 → CPT(도메인 특화 원시 텍스트, 추론/요약/증류 텍스트) → SFT(질답, 지시응답, 대화 쌍) → DPO/ORPO(양성/음성 예제 기반 선호도 최적화)로 구성된 순차적 단계 실행</li>
 <li><strong>SLERP 기반 모델 병합</strong>: 선형 보간(LERP)과 달리, SLERP는 매개변수 공간의 구면 기하학을 보존하여 선형 결합으로 인한 손실을 피하고, 매개변수 간 각도 관계를 유지함으로써 의미 있고 응집력 있는 능력 혼합 실현</li>

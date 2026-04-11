@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lynn Chua, Badih Ghazi, Yangsibo Huang, Pritish Kamath, Ravi Kumar, Pasin Manurangsi, Amer Sinha, Chulin Xie, Chiyuan Zhang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2406.16135" target="_blank">arXiv:2406.16135</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 다국어 LLM은 기계번역과 같은 명시적 작업에서는 강한 교차언어 능력을 보이나, 모델 가중치에 암묵적으로 저장된 지식을 활용하는 지식 집약적 작업에서는 언어 간 격차를 해소하지 못함을 보여줌.</em></p></div>
 <p>본 논문은 다국어 대규모 언어 모델(LLM)이 명시적 교차언어 작업(기계번역)에서는 우수한 성능을 보이나, 매개변수 지식의 암묵적 교차언어 활용에서는 심각한 성능 저하를 경험하는 '교차언어 지식 장벽(crosslingual knowledge barrier)'을 처음으로 체계적으로 규명하는 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기계번역 성능 평가(§2.1), 임베딩 공간 분석(§2.2), 교차언어 QA 작업(§3)을 통해 다차원적으로 검증한 후, 혼합언어 미세조정 전략을 제안(§4).</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 영문 텍스트와 혼합언어 번역 텍스트의 임베딩이 기준선보다 더 잘 정렬됨을 시각화함.</em></p></div>
 <ol>
 <li><strong>교차언어 능력의 이중성 규명</strong>: 15개 모델, 16개 언어, 3개 데이터셋을 통해 LLM이 기계번역(COMET 점수 87점대, Google Translate와 경쟁 수준)과 임베딩 유사성 측면에서는 강한 명시적 교차언어 능력을 보유하나, 사실상의 지식 활용 단계에서는 현저한 성능 저하를 경험함을 입증.</li>
 <li><strong>교차언어 지식 장벽의 체계적 발견</strong>: MMLU 벤치마크(일반 지식), Harry Potter 퀴즈, TOFU 벤치마크(도메인 특화 지식)에서 영문으로 학습된 지식을 타언어 질문으로 접근할 때 유의미한 성능 격차 발생을 최초로 문헌화. 사전학습(§3.1)과 미세조정(§3.2) 단계 모두에서 장벽 존재 확인.</li>
 <li><strong>혼합언어 미세조정의 효과성</strong>: 단순 프롬프트 엔지니어링(§4.1)보다 혼합언어 데이터에 대한 미세조정(§4.2)이 장벽을 효과적으로 완화하며, (1) 도메인 외(out-of-domain) WikiText 같은 데이터셋에서도 효과적이고 (2) 미세조정에 포함되지 않은 언어로의 일반화 능력도 향상됨을 실증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: MMLU 혼합언어 MCQ 평가에서 16개 언어 전반에 걸친 교차언어 지식 장벽을 시각화함.</em></p></div>
 <ul>
 <li><strong>교차언어 능력 측정</strong>: (K, C, O) 튜플 정의를 통해 다언어성(같은 언어 내에서의 평균 성능)과 교차언어성(K_ℓ, C_ℓ', O_ℓ''에서 언어가 다른 경우)을 명확히 구분.</li>
 <li><strong>REPEAT → 번역 → 암묵적 지식 QA로의 계층적 분석</strong>: 문맥에서 소스 텍스트를 제공하는 명시적 작업에서 성공하지만, 매개변수에 암묵적으로 저장된 지식의 교차언어 추론 단계에서 성능 급락.</li>
@@ -118,9 +112,7 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../367_Galactica_A_Large_Language_Model_for_Science/index.html">Galactica: A Large Language Model for Science</a></div><div class="conn-reason">과학 특화 언어모델 Galactica가 다국어 환경에서 겪을 수 있는 교차언어 지식 장벽 분석</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../858_Unsupervised_crosslingual_representation_learning_at_scale/index.html">Unsupervised Crosslingual Representation Learning at Scale</a></div><div class="conn-reason">다언어 능력의 실제적 한계와 지식 장벽을 실증적으로 분석함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html">BiasFilter: An inference-time debiasing framework for large language models</a></div><div class="conn-reason">다국어 LLM의 편향 완화를 위해 BiasFilter와 같은 추론 시간 편향 제거 기법 적용 가능</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html">BiasFilter: An inference-time debiasing framework for large language models</a></div><div class="conn-reason">다국어 LLM의 교차언어 편향 문제를 추론 시간에 실시간으로 완화하는 응용</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">STEM 성능에 최적화된 Phi-4가 다국어 환경에서는 교차언어 지식 장벽으로 성능 저하 가능성</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">STEM 성능에 최적화되었지만 다국어 환경에서 교차언어 지식 장벽 문제 발생 가능성</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">STEM 성능에 최적화된 Phi-4가 다국어 환경에서는 교차언어 지식 장벽으로 성능 저하 가능성</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

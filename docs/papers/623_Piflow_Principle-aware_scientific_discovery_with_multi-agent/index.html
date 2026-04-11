@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yingming Pu, Tao Lin, Hongyu Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>약물 발견 맥락에서 과학적 원리의 잠재력 설명: PiFlow는 높은 잠재력의 원리와 부합하는 가설을 우선시하여 탐색을 지시</em></p></div>
 <p>본 논문은 LLM 기반 멀티에이전트 시스템(MAS)의 과학적 발견 과정을 정보이론적 원리에 기반한 불확실성 감소 문제로 재정의하고, 과학 법칙으로 안내되는 Min-Max 최적화 프레임워크 PiFlow를 제안한다. 이를 통해 기존의 무작위적 가설화와 증거 연결 실패 문제를 해결하면서도 기존 에이전트 아키텍처와의 플러그-앤-플레이 호환성을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 정보이론 기반의 Min-Max 최적화를 통해 누적 후회(cumulative regret) 최소화(착취)와 정보 이득 최대화(탐색)를 균형있게 추구하며, 과학 원리를 동적으로 선택하여 점진적 불확실성 감소를 달성하는 PiFlow 프레임워크를 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>서로 다른 과학 도메인에서의 최적화 궤적: 24개 배치에 걸친 목적함수값 변화 추이</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>이론적 일치성의 경험적 검증: (a) 시간에 따른 평균 후회가 로그-로그 스케일에서 O(√T) 이론값과 밀접</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: 세 개의 과학 발견 시나리오(나노소재, 생체분자, 초전도체)에서 SOTA 기준 대비 발견 효율성 31.18%~41.73% 개선, 솔루션 품질 12.47%~31.72% 향상</li>
 <li><strong>계산 효율성</strong>: 토큰 소비 27% 감소, 시간-대-솔루션 5.6배 가속화를 달성하면서도 성능 저하 없음</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반화 가능성</strong>: 플러그-앤-플레이 모듈로서 GPT-4, Claude 등 서로 다른 LLM 백본과 기존 에이전트 프레임워크와의 호환성 실증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PiFlow 아키텍처 개요: Min-Max 최적화를 통해 가설-검증 루프를 동적으로 지시하는 메커니즘</em></p></div>
 <ul>
 <li><strong>과학 원리 정의</strong>: 자연언어로 표현된 기초 개념, 확립된 법칙, 또는 패턴으로서 도메인 전문가가 제시하거나 LLM이 추출한 원리 집합 P = {p₁, p₂, p₃, ...} 구성</li>
 <li><strong>가설-검증 루프</strong>:

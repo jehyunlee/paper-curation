@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: CoSMis 데이터셋 구축(인간 작성+LLM 생성), DoV 가이드 Chain-of-Thought prompting, 3가지 파이프라인 아키텍처(SERIf, SIf, D2I) 비교 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>데이터셋 구축 프로세스: 공개 데이터셋, 웹 리소스, LLM 기반 생성을 통한 균형잡힌 코퍼스 수집</em></p></div>
 <ol>
 <li><strong>CoSMis(SciNews) 데이터셋 개발</strong>: 2,400개의 COVID-19 관련 뉴스(신뢰 1,200개, 부신뢰 1,200개)와 CORD-19 과학 초록 페어링. 인간 작성(1,200개)과 LLM 생성(1,200개) 균형 포함으로 실제 시나리오 반영</li>
 <li><strong>과학적 타당성 차원(DoV) 정의</strong>: 과학 뉴스의 오보를 다차원으로 평가하는 프레임워크 제시</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>설명가능성 제공</strong>: DoV 기반 Chain-of-Thought prompting으로 모델 의사결정 과정의 해석 가능성 확보</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>제안된 3가지 아키텍처: SERIf는 요약→증거 검색→추론의 3단계, SIf는 2단계, D2I는 직접 추론으로 진행</em></p></div>
 <p><strong>방법론</strong>:</p>
 <ul>
 <li><strong>데이터셋 구축</strong>: MM-CoVaR, COVID19-FNIR, COVID-Rumor 등 공개 데이터셋 활용 + 웹 스크래핑 + 과학 키워드 필터링 + 수동 검증 + LLM 기반 신뢰/불신뢰 뉴스 생성</li>

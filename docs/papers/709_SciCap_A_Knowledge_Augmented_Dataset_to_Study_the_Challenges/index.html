@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhishen Yang, Raj Dabre, Hideki Tanaka, Naoaki Okazaki | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2306.03491" target="_blank">10.48550/ARXIV.2306.03491</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figure1.png" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 멘션 문단과 OCR 토큰이 없으면 데이터 해석이 불가능함을 보여주는 예시</em></p></div>
 <p>과학 논문의 도표 캡션 자동 생성을 지식 증강 이미지 캡셔닝(knowledge-augmented image captioning) 문제로 재정의하고, 멘션 문단(mention-paragraph)과 OCR 토큰을 포함한 SciCap+ 데이터셋을 구축하여 다중모드(multimodal) 컨텍스트 정보가 캡션 생성에 미치는 영향을 분석한 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기존 SciCap 데이터셋에 멘션 문단과 OCR 토큰을 추가하여 SciCap+ 구축하고, M4C-Captioner(다중모드 트랜스포머 기반 포인터 네트워크 모델)로 실험</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figure2.png" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: SciCap+ 데이터셋 생성을 위한 데이터 증강 워크플로우</em></p></div>
 <ol>
 <li><strong>데이터셋 확장</strong>: 414k 개의 도표를 포함하는 SciCap을 멘션 문단과 OCR 토큰(좌표 정보 포함)으로 확장하여 SciCap+ 구축
 <ul>
@@ -95,8 +91,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figure3.png" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 멘션 문단과 OCR 토큰과 도표 캡션 간 관련성 점수 분포 (코헨 카파: 0.28)</em></p></div>
 <p><strong>데이터 수집 및 처리</strong>:</p>
 <ul>
 <li>PDFFigures 2.0을 이용해 PDF에서 도표 및 본문 추출</li>

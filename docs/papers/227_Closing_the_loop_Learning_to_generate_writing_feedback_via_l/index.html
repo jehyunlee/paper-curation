@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Inderjeet Nair, Jiaye Tan, Xiaotian Su, Anne Gere, Xu Wang, Lu Wang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2410.08058" target="_blank">arXiv:2410.08058</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PROF 파이프라인: 피드백 생성기가 여러 피드백을 샘플링하고, 학생 시뮬레이터를 통해 수정 결과를 평가하며, 선호도 관계를 기반으로 DPO를 통해 반복적으로 최적화되는 과정</em></p></div>
 <p>본 논문은 <strong>언어 모델 기반 학생 시뮬레이터를 활용하여 작문 피드백 생성 모델(PROF)을 반복적으로 최적화하는 방법</strong>을 제안한다. 실제 학생 참여 없이 피드백의 실효성을 직접 측정하고 개선할 수 있는 자동화된 시스템을 구축한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 학생의 피드백 적용 과정을 에뮬레이션하는 LM 기반 학생 시뮬레이터 개발, (2) 온도(temperature) 조절로 다양한 학생 행동 시뮬레이션, (3) 시뮬레이터의 수정 품질을 기반으로 DPO(Direct Preference Optimization)를 통해 피드백 생성기를 반복 최적화.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>온도 변화에 따른 문장 수준의 수정 수 변화: llama3-8b와 gpt-3.5 모두 온도가 증가할수록 추가와 삭제가 증가하며, 실제 학생과 유사한 패턴을 보임</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>수정된 에세이 품질 비교: 학생 시뮬레이터들의 성능이 실제 학생과 유사한 궤적을 따르며, 초기 에세이 품질 대비 개선도를 확인</em></p></div>
 <ol>
 <li><strong>기존 모델 초월</strong>: GPT-3.5/GPT-4의 소수 샷 프롬프팅보다 <strong>피드백 적용 성능에서 우수</strong>하면서도 8B 파라미터 모델로 훨씬 효율적</li>
 <li><strong>레이블 없는 학습</strong>: 고품질 피드백의 대규모 주석 데이터셋 없이도, 그리고 원하는 피드백 속성을 명시하지 않고도 학습 가능</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실제 수정과의 정렬성</strong>: 생성 피드백이 실제 학생 수정과 양호한 정렬을 보이며, LM 시뮬레이터의 신뢰성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>반복적 최적화 파이프라인의 상세 프로세스</em></p></div>
 <ul>
 <li><strong>학생 시뮬레이터 구축 (§3.1)</strong>
 <ul>
@@ -149,11 +141,9 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 본 논문은 LM 시뮬레이터를 활용하여 피드백 생성을 반복적으로 최적화하는 창의적 방법론을 제시하며, 기존 대형 모델을 능가하는 효율적이고 효과적인 시스템을 구현했다. 다만 단일 과제 검증과 실제 학생 참여 평가 부재가 실제 교육 현장으로의 전환 가능성을 제한한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../656_Read_revise_repeat_A_system_demonstration_for_human-in-the-l/index.html">Read, Revise, Repeat: A System Demonstration for Human-in-the-Loop Iterative Text Revision</a></div><div class="conn-reason">둘 다 인간-AI 협력 글쓰기를 다루지만, 하나는 학생 시뮬레이터 기반 피드백, 다른 하나는 직접적 인간 피드백 방식임</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../656_Read_revise_repeat_A_system_demonstration_for_human-in-the-l/index.html">Read, Revise, Repeat: A System Demonstration for Human-in-the-Loop Iterative Text Revision</a></div><div class="conn-reason">둘 다 인간-AI 협력 글쓰기를 다루지만 하나는 직접적 인간 피드백, 다른 하나는 학생 시뮬레이터 기반 접근임</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../423_Improving_grammatical_error_correction_via_contextual_data_a/index.html">Improving grammatical error correction via contextual data augmentation</a></div><div class="conn-reason">작문 피드백 생성을 문법 오류 수정의 문맥 기반 증강으로 확장하여 더 정교한 오류 패턴 학습을 제공합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../414_Human-llm_coevolution_Evidence_from_academic_writing/index.html">Human-LLM Coevolution: Evidence from Academic Writing</a></div><div class="conn-reason">인간-LLM 협력 글쓰기의 일반적 패턴을 교육적 맥락으로 확장하여 피드백 생성에 특화된 방법론을 개발함</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../284_Does_writing_with_language_models_reduce_content_diversity_a/index.html">Does writing with language models reduce content diversity? arXiv preprint arXiv:2309.05196, 2023.</a></div><div class="conn-reason">AI 어시스턴트가 학습에 도움이 된다는 관점과 콘텐츠 다양성을 감소시킨다는 우려가 상반됨</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../284_Does_writing_with_language_models_reduce_content_diversity_a/index.html">Does writing with language models reduce content diversity? arXiv preprint arXiv:2309.05196, 2023.</a></div><div class="conn-reason">AI가 콘텐츠 다양성을 감소시킨다는 우려와 교육적 피드백 개선에 도움된다는 관점이 상반됨</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../284_Does_writing_with_language_models_reduce_content_diversity_a/index.html">Does writing with language models reduce content diversity? arXiv preprint arXiv:2309.05196, 2023.</a></div><div class="conn-reason">AI 어시스턴트가 학습에 도움이 된다는 관점과 콘텐츠 다양성을 감소시킨다는 우려가 상반됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

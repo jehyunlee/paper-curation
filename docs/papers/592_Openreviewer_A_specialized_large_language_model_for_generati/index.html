@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Maximilian Idahl, Zahra Ahmadi | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>OpenReviewer 데모 인터페이스: PDF 업로드, 마크다운 변환, 리뷰 템플릿 편집, 리뷰 생성 기능</em></p></div>
 <p>79,000개의 전문가 리뷰로 파인튠된 8B 파라미터 언어모델(Llama-OpenReviewer-8B)을 통해 기계학습 및 AI 학술지 논문에 대한 고품질 동료심사 의견을 생성하는 오픈소스 시스템이다. GPT-4o, Claude-3.5 같은 범용 LLM과 달리 비판적이고 현실적인 리뷰를 생성하여 인간 검토자의 평가 분포와 유사한 결과를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ICLR 2024 심사자 가이드를 기반으로 한 전문화된 장문맥(long-context) LLM을 개발하고, 상위 ML 학술대회(ICLR, NeurIPS)의 79,000개 전문가 리뷰 데이터셋으로 파인튠.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>GPT-4o를 이용한 선호도 평가 결과</em></p></div>
 <ol>
 <li><strong>권장사항 일치도 향상</strong>: OpenReviewer는 400개 테스트 논문에 대해 인간 심사자 권장사항과 55.5% 정확도로 일치(exact match)하며, 평균 오차 0.96을 기록. 이는 GPT-4o의 23.8% 일치도, 2.34 오차보다 현저히 우수(Table 1 참조).</li>
 <li><strong>비판적 평가의 현실성</strong>: 범용 LLM들이 과도하게 긍정적인 평가(평균 6.5~7.2/10)를 제시하는 반면, OpenReviewer는 인간 심사자와 동일한 분포(평균 5.4/10)의 비판적 리뷰 생성. 이는 원고의 실제 약점을 저자에게 제시하는 데 필수적.</li>
 <li><strong>구조화된 리뷰 생성</strong>: 학술대회별 템플릿 준수, 수식과 표를 포함한 기술 콘텐츠 정확 추출, 마크다운 형식 리뷰 자동 생성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>OpenReviewer의 시스템 프롬프트</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>OpenReviewer의 사용자 프롬프트</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: OpenReview에서 2022년 이후 ICLR, NeurIPS의 36,000개 논문과 141,000개 리뷰 수집. PDF를 마크다운으로 변환(Marker 라이브러리 사용 - Nougat 대비 정확도 향상, 수식·표 정확 변환).</li>
 <li><strong>필터링</strong>: 논문 및 리뷰를 길이별로 필터링(상하위 1% 제거), 고신뢰도 리뷰만 선별("자신있지만 절대적이지 않은" 신뢰도 이상) → 최종 79,000개 리뷰 데이터셋.</li>
@@ -123,7 +115,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../519_MARG_Multi-Agent_Review_Generation_for_Scientific_Papers/index.html">MARG: Multi-Agent Review Generation for Scientific Papers</a></div><div class="conn-reason">다중 에이전트 리뷰 생성의 협업적 접근법이 전문화된 리뷰 생성 모델의 기초 아이디어를 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../445_Is_Your_Paper_Being_Reviewed_by_an_LLM_Investigating_AI_Text/index.html">Is Your Paper Being Reviewed by an LLM? Investigating AI Text Detectability in Peer Review</a></div><div class="conn-reason">AI 리뷰 생성과 AI 텍스트 탐지가 학술 심사에서 AI 활용의 상반된 두 관점을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../677_Reviewer2_Optimizing_Review_Generation_Through_Prompt_Genera/index.html">Reviewer2: Optimizing Review Generation Through Prompt Generation</a></div><div class="conn-reason">측면 프롬프트 모델링과 과학 리뷰 전용 대규모 언어모델이라는 서로 다른 자동 리뷰 생성 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../445_Is_Your_Paper_Being_Reviewed_by_an_LLM_Investigating_AI_Text/index.html">Is Your Paper Being Reviewed by an LLM? Investigating AI Text Detectability in Peer Review</a></div><div class="conn-reason">AI 생성 리뷰 탐지와 전문 AI 리뷰 생성이라는 상반된 관점에서 학술 심사의 AI 활용을 다룹니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../350_Frame_Feedback-refined_agent_methodology_for_enhancing_medic/index.html">Frame: Feedback-refined agent methodology for enhancing medical research insights</a></div><div class="conn-reason">둘 다 논문 작성 자동화를 다루지만 FRAME은 의료 연구에, OpenReviewer는 일반적 논문 생성에 집중함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../126_Automated_review_generation_method_based_on_large_language_m/index.html">Automated review generation method based on large language models</a></div><div class="conn-reason">과학 논문 리뷰 생성을 전문화된 대규모 언어모델로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../519_MARG_Multi-Agent_Review_Generation_for_Scientific_Papers/index.html">MARG: Multi-Agent Review Generation for Scientific Papers</a></div><div class="conn-reason">전문 리뷰 생성 모델을 다중 에이전트 협업 시스템으로 확장하여 더 포괄적인 피드백을 제공합니다.</div></div>

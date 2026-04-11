@@ -96,20 +96,14 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Average episode reward as function of the noise strength for SHAC, SHAC-ASAM, and PPO">
-<p class="fig-caption"><em>액션 노이즈 강도에 따른 평균 에피소드 보상 비교</em></p></div>
 <ol>
 <li><strong>강건성 향상</strong>: SHAC-ASAM이 표준 SHAC 대비 액션 노이즈(action noise)에 대해 유의미하게 높은 허용 범위 달성. 특히 Ant와 Humanoid 환경에서 노이즈가 증가해도 성능 저하가 적음</li>
 <li><strong>일반화 성능</strong>: 0차 방법(PPO)과 유사한 수준의 일반화 성능을 달성하면서도 1차 방법의 샘플 효율성 유지</li>
 </ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Average episode reward as a function of the contact Coulomb friction for SHAC, SHAC-ASAM, and PPO">
-<p class="fig-caption"><em>접촉 마찰 계수 변화에 따른 성능 비교</em></p></div>
 <ol>
 <li><strong>환경 변동성 대응</strong>: 쿨롱 마찰(Coulomb friction) 등 환경 파라미터 변화에 대한 적응 능력 향상</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Average episode reward heatmaps for SHAC (left) and PPO (right) policies under varying noise conditions">
-<p class="fig-caption"><em>다양한 노이즈 조건에서의 정책 성능 히트맵</em></p></div>
 <ul>
 <li><strong>SHAC 기반</strong>: 짧은 수평선(short horizon) 윈도우 기반의 미분 가능 시뮬레이션으로 샘플 효율성 확보</li>
 <li><strong>ASAM 통합</strong>:

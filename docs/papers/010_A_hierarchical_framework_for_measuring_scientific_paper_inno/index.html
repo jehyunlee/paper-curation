@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Hongming Tan, Shaoxiong Zhan, Fengwei Jia, Hai-Tao Zheng, Wai Kin (Victor) Chan | <strong>날짜</strong>: 02/2026 | <strong>DOI</strong>: <a href="https://doi.org/10.1016/j.ins.2025.122787" target="_blank">10.1016/j.ins.2025.122787</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: An example of hierarchical scientific paper innovation measurement (HSPIM) via large language models. We use z</em></p></div>
 <p>대규모언어모델(LLM)을 활용하여 과학논문의 혁신성을 계층적으로 측정하는 HSPIM 프레임워크를 제안한다. 논문을 섹션으로 분해하고 질의응답(QA) 기반 가중치 점수화로 혁신성을 정량화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 제로샷 프롬프팅으로 논문을 IMRaD 형식의 섹션으로 분류하고, 각 섹션에 공통 및 섹션별 특화 질문을 생성하여 혁신성 점수화를 수행한다. 유전 알고리즘으로 질문-프롬프트 조합을 최적화하여 성능을 향상시킨다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: Comparison of section-based scientific paper innovation measurement (SSPIM), naive implement of hierarchical s</em></p></div>
 <ul>
 <li><strong>HSPIM 프레임워크</strong>: 논문-섹션-QA 계층 구조로 장문 텍스트를 효과적으로 처리하고, 신뢰도 가중치 기반 집계로 섹션 수준 혁신성을 논문 수준으로 통합</li>
 <li><strong>혁신성 개념 정의</strong>: 경제학과 사회과학 이론을 바탕으로 혁신성을 새로움(novelty)과 실용적 가치(contribution, feasibility)의 결합으로 명확히 정의</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>HSPIM+ 확장</strong>: 새로움, 기여도, 실현가능성을 각각 점수화하여 혁신성의 세밀한 분석 가능</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: An example of an individual (a question-prompt combination) for multi-prompt optimization. Within an individua</em></p></div>
 <ul>
 <li>논문을 섹션 제목 기준으로 텍스트 청크로 분할하고 LLM으로 IMRaD 섹션 유형 분류</li>
 <li>각 섹션에 대해 공통 질문 1개 + 섹션별 특화 질문 1개의 2층 질문 구조 설계</li>

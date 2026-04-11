@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ghazal Khalighinejad, Sharon Scott, Ollie Liu, Kelly Anderson, Rickard Stureborg | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2410.20494" target="_blank">10.48550/arXiv.2410.20494</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 텍스트와 그림 간의 상호연결된 데이터를 포함하는 논문의 예시 및 샘플 특성과 구성 세부사항을 캡처하는 JSON 구조</em></p></div>
 <p>재료과학 분야의 과학 논문에서 텍스트, 표, 그림에 분산된 구조화된 정보를 추출하는 멀티모달 정보 추출(Multimodal Information Extraction, MIE) 벤치마크를 제시한다. 324개의 전문가 주석 논문과 1,688개의 복잡한 구조화된 JSON 파일로 구성된 MATVIX 데이터셋을 소개하며, 비전-랭귀지 모델(Vision-Language Models, VLMs)의 성능을 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 장문 컨텍스트를 처리 가능한 VLMs를 제로샷(zero-shot) 방식으로 벤치마킹하고, Fréchet 거리를 이용한 곡선 유사도 평가 방법을 제안. DePlot 같은 전문화된 모델과의 조합도 검토.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 그림과 해당 샘플의 예시. 특성의 데이터 포인트들이 그림에서 추출됨을 보여줌</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 고분자 나노복합재료(PNC) 231개, 생분해 고분자(PBD) 93개 총 324개의 전체 길이 과학 논문에서 1,688개의 구조화된 JSON 파일 생성. 평균 8,905 토큰의 장문 문서 포함.</li>
 <li><strong>멀티모달 평가 방법론 개발</strong>: 구성(composition)을 기반으로 샘플 정렬 후, Fréchet 거리를 통해 예측과 실제 곡선의 유사도 측정. 계층적 구조 정렬 평가 방법 제시로 단순 개체 인식 이상의 복잡성 반영.</li>
 <li><strong>VLM 성능 분석</strong>: GPT-4o 등 최신 비전-랭귀지 모델들의 제로샷 성능을 벤치마킹하고, DePlot(도표→표 변환) 모델과의 결합으로 그림 추출 성능 개선 가능성 입증. 현재 모델의 상당한 개선 여지 확인.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: BaTiO3 나노복합재료에서 손실 탄젠트의 감소와 유전 상수의 증가를 보여주는 예시</em></p></div>
 <ul>
 <li><strong>데이터 수집 및 정제</strong>: NanoMine 저장소의 불일치한 XML 기반 데이터를 표준화하여 JSON 형식으로 변환. 43개 속성을 6개 주요 특성(열적, 전기적, 기계적, 점탄성, 부피적, 유변학적)으로 범주화.</li>
 <li><strong>PNC 샘플 정의</strong>: 각 샘플을 성분(matrix, filler) 및 특성(properties) 섹션으로 구성된 구조화된 JSON 객체로 표현. 수치 데이터는 실험 조건(헤더)과 함께 기록.</li>

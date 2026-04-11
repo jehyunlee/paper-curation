@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jeffrey Hu, Rongzhi Dong, Ying Feng, Ming Hu, Jianjun Hu | <strong>날짜</strong>: 2026-03-24 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2603.12567" target="_blank">10.48550/arXiv.2603.12567</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 기초 모델이 능동 학습의 서로게이트 모델링 딜레마를 해결함. (a) 기존 모델들은 예측 능력과 불확실성 추정 간의 트레이드오프 직면 (b) 기초 모델은 메타 학습된 사전 정보를 통해 표현력 높은 예측과 보정된 불확실성 결합</em></p></div>
 <p>소재 발견을 위한 능동 학습(Active Learning, AL)에서 기존 가우스 프로세스(GP)와 랜덤 포레스트(RF) 서로게이트 모델의 한계를 극복하기 위해, 트랜스포머 기반의 기초 모델(Foundation Model, FM)인 TabPFN을 서로게이트로 도입하는 문맥 내 능동 학습(In-Context Active Learning, ICAL) 프레임워크를 제안한다. TabPFN은 메타 학습을 통해 소량의 실험 데이터에서도 표현력 높은 예측과 보정된 불확실성을 동시에 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,19 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 메타 학습을 통해 백만 개의 합성 회귀 과제로 사전학습된 TabPFN을 서로게이트 모델로 도입. 데이터별 재훈련 없이 단일 순전파로 베이지안 추론을 근사하여 소량 데이터 환경에 최적화</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: Cu 경도(hardness) 데이터셋에서 ICAL의 성능. (a-b) TabPFN vs GP 비교</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: (a)(c) Cu 전기전도도 및 (b)(d) 벌크 금속 유리(Glass_DS3) 데이터셋에서의 비교</em></p></div>
 <ol>
 <li><strong>평가 효율성 개선</strong>: 10개 소재 데이터셋 중 8개에서 TabPFN이 최소 평가 횟수 달성. GP 대비 평균 52%, RF 대비 29.77% 평가 횟수 감소</li>
 <li><strong>불확실성 보정 우월성</strong>: 크로스 밸리데이션 분석 결과, TabPFN이 가장 낮은 음의 로그 우도(Negative Log-Likelihood, NLL)와 희소화 오류 곡선 아래 면적(Area Under the Sparsification Error curve, AUSE)을 달성하여 우수한 불확실성 보정 증명</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 소재 발견을 위한 풀 기반 능동 학습 파이프라인. EI(Expected Improvement)는 다른 획득 함수로 대체 가능</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: 원소 농도 특성을 사용한 LTC_conc 데이터셋에서의 ICAL 성능 비교</em></p></div>
 <ul>
 <li><strong>기초 모델 선택</strong>: TabPFN은 트랜스포머 기반으로 수백만 개의 합성 회귀 과제에 대해 메타학습을 통해 함수 공간에 대한 보편적 사전(universal prior) 습득</li>
 <li><strong>추론 메커니즘</strong>: 데이터셋별 그래디언트 기반 최적화 없이 단일 순전파로 전체 예측 분포(predictive distribution) 출력. GP처럼 원리적이지만 RF/NN 수준의 표현력 제공</li>
@@ -122,7 +112,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 기초 모델의 메타학습 능력을 소재 발견 능동 학습의 핵심 문제(표현력 vs. 불확실성 트레이드오프)에 창의적으로 적용하였으며, 광범위한 벤치마크로 우월성을 입증했다. 다만 실제 실험 환경 검증과 고차원 특성 공간 확장이 완성되면 임팩트가 더욱 강화될 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../451_Knowledge-guided_large_language_model_for_material_science/index.html">Knowledge-guided large language model for material science</a></div><div class="conn-reason">재료 발견을 위한 능동 학습 시스템의 도메인 특화 언어 모델 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../626_Polymer_Brushes_and_Grafted_Polymers_AIML-Driven_Synthesis_S/index.html">Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL</a></div><div class="conn-reason">소재 발견을 위한 AI/ML 워크플로우라는 동일한 목표를 다른 재료 시스템(일반 vs 중합체)으로 접근합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../626_Polymer_Brushes_and_Grafted_Polymers_AIML-Driven_Synthesis_S/index.html">Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL</a></div><div class="conn-reason">소재 연구 자동화라는 동일한 목표를 중합체와 일반 소재라는 다른 재료 시스템으로 접근합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../037_A_Survey_on_Uncertainty_Quantification_Methods_for_Deep_Lear/index.html">A Survey on Uncertainty Quantification Methods for Deep Learning</a></div><div class="conn-reason">불확실성 정량화를 기초 모델 기반 능동 학습으로 확장하여 데이터 효율성을 크게 개선합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../258_Deep_active_learning_based_experimental_design_to_uncover_sy/index.html">Deep active learning based experimental design to uncover synergistic genetic interactions for host targeted therapeutics</a></div><div class="conn-reason">기초 모델 기반 대리 모델이 HIV 감염 유전자 상호작용 발견에서 능동학습을 더욱 효율화할 수 있습니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../451_Knowledge-guided_large_language_model_for_material_science/index.html">Knowledge-guided large language model for material science</a></div><div class="conn-reason">재료과학 LLM 방법론을 능동 학습 기반 소재 발견에 구체적으로 적용하는 실용적 사례입니다.</div></div></div>

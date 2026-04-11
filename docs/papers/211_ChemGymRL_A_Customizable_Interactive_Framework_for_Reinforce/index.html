@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Chris Beeler, Sriram Ganapathi Subramanian, Kyle Sprague, Mark Baula, Nouha Chatti | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1039/d3dd00183k" target="_blank">10.1039/d3dd00183k</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChemGymRL 시뮬레이션: (a) 반응(RxN), 추출(ExT), 증류(DiT) 벤치에서 작동하는 에이전트; (b) 용기 내 재료의 상태 추적 및 벤치 간 이동</em></p></div>
 <p>본 논문은 자동화 화학 실험실(automated chemistry lab)을 위한 강화학습(reinforcement learning, RL) 에이전트 훈련을 위한 오픈소스 시뮬레이션 환경 ChemGymRL을 제시한다. 이 프레임워크는 반응, 추출, 증류의 세 가지 상호연결된 화학 벤치를 구현하여 RL 알고리즘의 개발과 평가를 용이하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Gymnasium 표준 API를 따르는 모듈식, 확장 가능한 오픈소스 시뮬레이션 프레임워크를 구현하고, 표준 RL 알고리즘들을 각 벤치에서 훈련하여 성능을 비교 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>반응 벤치(Reaction Bench): (a) 관찰 가능한 UV-vis 흡수 스펙트라 및 시스템 상태; (b) 연속값 액션 벡터(온도, 부피, 반응물 투입)</em></p></div>
 <ol>
 <li><strong>통합 시뮬레이션 프레임워크 개발</strong>: 반응(RxN), 추출(ExT), 증류(DiT) 벤치를 포함하는 상호연결된 화학 시뮬레이션 환경을 구현. 각 벤치는 독립적으로 작동 가능하면서도 용기(vessel)를 통해 결과를 다른 벤치로 전달할 수 있도록 설계됨.</li>
 <li><strong>높은 모듈성과 확장성</strong>: 미분방정식 기반 반응 모델링에서 분자 동역학(molecular dynamics) 시뮬레이션으로의 교체 등 기저 물리 모델을 변경해도 에이전트 인터페이스에 영향이 없도록 구조화됨.</li>
 <li><strong>RL 알고리즘 벤치마킹</strong>: PPO(Proximal Policy Optimization)가 모든 벤치에서 휴리스틱(heuristic) 기반 에이전트를 일관되게 능가함을 보여줌으로써 학습 가능성과 최적화 공간의 존재를 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1b">
-<p class="fig-caption"><em>용기 구조: 재료 상태 추적 및 벤치 간 전송</em></p></div>
 <p><strong>반응 벤치(RxN)</strong></p>
 <ul>
 <li>관찰 공간(Observation Space): UV-vis 흡수 스펙트라, 정규화된 온도, 부피, 압력, 사용 가능한 재료</li>

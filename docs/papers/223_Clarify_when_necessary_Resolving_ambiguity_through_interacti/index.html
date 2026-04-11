@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Michael J.Q. Zhang, Eunsol Choi | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>세 단계 프레임워크: (1) 명확화 필요 여부 판단, (2) 명확화 질문 생성, (3) 명확화 정보를 활용한 응답</em></p></div>
 <p>대규모 언어모델(LLM)이 모호한 사용자 입력을 처리할 때 명확화 질문을 통해 상호작용하도록 하는 작업 중립적 프레임워크를 제시하고, 사용자 의도 엔트로피 추정 방식인 INTENT-SIM을 통해 명확화가 필요한 경우를 효과적으로 식별한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>체계적 프레임워크 제공</strong>: 모호성 해결을 위한 작업 중립적 3단계 프레임워크를 통해 다양한 NLP 응용에 적용 가능한 기초를 마련.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <p><strong>3단계 프레임워크 구조</strong>:</p>
 <ul>
 <li><strong>Task 1 (명확화 필요 여부 판단)</strong>:
@@ -138,9 +134,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM의 모호성 해결을 위한 명확화 상호작용이라는 미개척 영역에 체계적 프레임워크를 도입하고, INTENT-SIM을 통해 현실적 성능 개선을 달성한 견실한 연구이다. 다만 명확화 질문 생성에서 오라클 기반 접근의 한계와 현실적 상호작용 복잡성의 단순화로 인해, 실제 배포 시스템으로의 전환에는 추가 연구가 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">대규모 모델의 인터랙티브 지능에 대한 연구가 사용자 의도 엔트로피 추정과 명확화 필요성 판단의 이론적 배경을 제공함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../222_Clam_Selective_clarification_for_ambiguous_questions_with_ge/index.html">CLAM: Selective clarification for ambiguous questions with generative language models</a></div><div class="conn-reason">CLAM의 선택적 명확화 방법이 Clarify when necessary의 모호성 해결 프레임워크를 더 정교한 질문 생성과 답변 시스템으로 발전시킨 연구임</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../222_Clam_Selective_clarification_for_ambiguous_questions_with_ge/index.html">CLAM: Selective clarification for ambiguous questions with generative language models</a></div><div class="conn-reason">상호작용을 통한 모호성 해결 연구로 본 논문의 명확화 프레임워크를 대화형 시스템으로 확장한다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../641_Prototypical_human-ai_collaboration_behaviors_from_llm-assis/index.html">Prototypical human-ai collaboration behaviors from llm-assisted writing in the wild</a></div><div class="conn-reason">LLM 지원 글쓰기에서의 인간-AI 협력 행동 분석이 명확화 질문을 통한 상호작용 패턴의 실제 사용 사례를 보여줌</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../641_Prototypical_human-ai_collaboration_behaviors_from_llm-assis/index.html">Prototypical human-ai collaboration behaviors from llm-assisted writing in the wild</a></div><div class="conn-reason">명확화 질문을 통한 모호성 해결 프레임워크가 실제 LLM 지원 글쓰기 환경에서 관찰된 사용자-AI 상호작용 패턴의 이론적 설명을 제공함</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../641_Prototypical_human-ai_collaboration_behaviors_from_llm-assis/index.html">Prototypical human-ai collaboration behaviors from llm-assisted writing in the wild</a></div><div class="conn-reason">LLM 지원 글쓰기에서의 인간-AI 협력 행동 분석이 명확화 질문을 통한 상호작용 패턴의 실제 사용 사례를 보여줌</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

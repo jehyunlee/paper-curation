@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mengchen Liu, Qixiu Li, Dongdong Chen, Dong Chen, Jianmin Bao, Yunsheng Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Data generation pipeline: Stage 1 데이터 생성, Stage 2 차트 생성, Stage 3 QA 쌍 생성</em></p></div>
 <p>LLM(Large Language Model)만을 활용하여 약 400만 개의 다양한 차트 이미지와 7,500만 개 이상의 밀집 주석(데이터 테이블, 코드, 설명, QA)으로 구성된 대규모 합성 차트 데이터셋 SynChart를 구축하고, 이를 통해 4.2B 매개변수의 차트 전문가 모델을 학습하여 ChartQA 벤치마크에서 GPT-4O에 근접하면서도 GPT-4V를 능가하는 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -86,8 +84,6 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChartQA 정확도 비교: 다양한 모델과 성분의 기여도 시각화</em></p></div>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: 약 393만 개 차트 이미지 + 7,860만 개 설명, 4,580만 개 단순 QA, 1,390만 개 복잡 QA로 구성된 SynChart 완성. 기존 ChartLlama(11K)와 비교해 약 360배 규모 확대.</li>
 <li><strong>강력한 모델 성능</strong>:
@@ -100,8 +96,6 @@ a { color: #A62018; }
 <li><strong>확장성 검증</strong>: 데이터 양 증가에 따라 성능이 지속적으로 개선되며 포화 징후가 없음(표 5). 공개 데이터 대비 1:6 비율(14배 훈련 비용)에서 83.2% 달성, 합성 데이터의 다양성 충분성 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>세 단계 데이터 생성 파이프라인의 상세 구성</em></p></div>
 <p><strong>Stage 1: 데이터 테이블 생성</strong></p>
 <ul>
 <li>상위 9개 차트 유형 식별 (Obelics/ChartBench 샘플에서 모델 예측 + 인간 주석)</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Purin Sukpanichnant, Anna Rapberger, Francesca Toni | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2409.16813" target="_blank">10.48550/arXiv.2409.16813</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PeerArg 파이프라인 개요: 각 리뷰에서 양극 논증 틀(BAF)을 추출한 후 통합하여 최종 논문 채택 여부를 결정</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)과 계산 논증(computational argumentation) 방법을 결합하여 피어 리뷰 과정을 투명하고 해석 가능하게 만드는 PeerArg 시스템을 제안한다. 양극 논증 틀(Bipolar Argumentation Framework, BAF)을 활용하여 여러 리뷰의 의견을 구조화되고 논리적으로 통합함으로써 논문 채택 여부를 예측한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 양극 논증 틀(BAF)을 사용하여 각 리뷰를 논증 구조로 변환하고, 여러 리뷰의 구조들을 통합한 후 정량적 논증 의미론(DF-QuAD, MLP-기반 의미론)을 적용하여 논문 채택 여부를 결정한다. 비교 기준으로 LLM의 few-shot 학습 기반 엔드투엔드 모델도 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>엔드투엔드 LLM 입력 템플릿: 프라이머(primer)의 4개 예제와 프롬프트(prompt)의 대상 리뷰들로 구성</em></p></div>
 <ol>
 <li><strong>해석 가능한 리뷰 집계 프레임워크</strong>: PeerArg는 리뷰들의 의견을 명시적인 논증 구조로 표현하여 각 논증의 강도와 상호 관계를 정량적으로 평가할 수 있다. 이는 메타 리뷰어나 컨퍼런스 의장이 채택 결정의 근거를 명확히 이해하도록 돕는다.</li>
 <li><strong>우수한 예측 성능</strong>: 세 개의 리뷰 데이터셋(두 개의 컨퍼런스 리뷰 데이터셋과 한 개의 저널 리뷰 데이터셋)에서 PeerArg의 특정 하이퍼파라미터 조합이 few-shot LLM을 능가하는 성능을 달성했다.</li>
 <li><strong>LLM과 기호적 AI의 시너지</strong>: LLM을 사용하여 자동으로 리뷰에서 논증과 관계를 추출한 후 계산 논증 방법으로 집계함으로써 두 접근 방식의 장점을 결합한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3 &amp; 4">
-<p class="fig-caption"><em>리뷰 QBAF 추출 과정: LLM이 리뷰 텍스트에서 주요 주장을 추출하고 이들 간의 support/attack 관계를 식별하여 양극 논증 틀을 구성</em></p></div>
 <h3>PeerArg 파이프라인의 주요 단계:</h3>
 <ul>
 <li><strong>리뷰 → QBAF 변환</strong>: 각 리뷰에 대해 LLM 프롬프트를 사용하여 주요 논증(arguments)과 그 관계(support/attack edges)를 추출한다. 각 논증에는 신뢰도 기반의 기초 점수(base score β)를 할당한다.</li>

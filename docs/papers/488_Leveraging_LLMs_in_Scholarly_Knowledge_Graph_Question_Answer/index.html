@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tilahun Abedissa Taffa, Ricardo Usbeck | <strong>날짜</strong>: 2023-11-16 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>학술 KGQA 모델의 전체 파이프라인</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 학술 지식 그래프에 대한 자연어 질문을 SPARQL 쿼리로 변환하는 few-shot 기반 접근법을 제시하며, SciQA 벤치마크에서 F1 스코어 0.99를 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: BERT 기반 문장 인코더로 유사 질문을 검색하고, top-n개의 유사 질문-SPARQL 쌍을 프롬프트의 예제로 활용하여 LLM(Vicuna-13B)이 대상 질문에 대한 SPARQL을 생성하도록 함</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChatGPT 3.5의 zero-shot SPARQL 생성: Wikidata(좌)에서는 성공, ORKG(우)에서는 실패</em></p></div>
 <ol>
 <li><strong>우수한 성능</strong>: SciQA 벤치마크에서 F1 스코어 0.99(top-3 few-shot) 달성, Scholarly-QALD-23 챌린지에서 2위 랭크</li>
 <li><strong>Few-shot 최적화</strong>: 1-shot(F1=0.96) → 3-shot(F1=0.99) → 5-shot(F1=0.989)의 결과를 통해 과도한 예제의 부정적 영향을 실증적으로 입증</li>

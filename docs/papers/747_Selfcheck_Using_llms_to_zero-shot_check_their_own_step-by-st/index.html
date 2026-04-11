@@ -75,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 생성 능력을 활용하되, 검증 과정을 목표 추출(target extraction) → 정보 수집(information collection) → 단계 재생성(step regeneration) → 결과 비교(result comparison)의 4단계로 분해하여 각 단계의 난이도를 낮추고 상관관계 있는 오류를 감소.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>SelfCheck의 구체적 실행 예시: 5번 단계의 정사각형 완성(completing the square) 검증 과정을 4단계로 분해하여 수행</em></p></div>
 <ol>
 <li><strong>오류 인식 성능</strong>: GSM8K, MathQA, MATH 데이터셋의 세 수학 과제 모두에서 단순 다수결 투표(majority voting) 대비 최종 정답 정확도 대폭 상승. 낮은 신뢰도 솔루션 필터링 시 부정답 비율을 9%, 22.8%, 16.2% 감소.</li>
 <li><strong>신뢰도 점수의 유효성</strong>: SelfCheck가 제공하는 신뢰도 점수를 가중치로 사용한 가중 투표(weighted voting)를 통해 정답 정확도 향상. 신뢰도 점수가 실제 정답 여부와 의미 있는 상관관계 보유.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>단계 검증의 4단계 분해 프로세스</em></p></div>
 <h3>핵심 방법론</h3>
 <ul>
 <li><strong>4단계 분해 구조의 설계 이유</strong>:

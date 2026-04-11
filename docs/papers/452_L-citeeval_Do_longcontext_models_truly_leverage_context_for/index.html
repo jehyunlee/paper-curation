@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zecheng Tang, Keyan Zhou, Juntao Li, Baibei Ji, Jianye Hou, Min Zhang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">제공 안함</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>L-CiteEval 벤치마크의 작업 형식 및 파이프라인: 장문 맥락이 주어졌을 때 모델이 답변과 함께 인용(citation)을 생성하도록 요구</em></p></div>
 <p>장문맥 언어모델(Long-Context Models, LCMs)이 실제로 주어진 맥락을 활용하여 응답하는지 평가하는 종합 벤치마크 L-CiteEval을 제시하며, 자동화된 평가를 통해 모델의 생성 품질뿐 아니라 인용 정확도(citation accuracy)를 동시에 측정한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다양한 작업 도메인(11개 작업, 5개 카테고리)과 맥락 길이(8K~48K 토큰)를 포함하는 벤치마크 구축 (2) 인용 기반 평가를 통해 모델의 충실성 측정 (3) 완전 자동화된 평가 스위트 제공 (4) 길이 및 난이도 변수를 통제한 벤치마크 변형 제시</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기존 장문맥 벤치마크(LongBench, Ruler, LongCite)와 L-CiteEval의 비교: 데이터 규모, 평가 방식, 작업 분포</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구성</strong>: 11개 작업(단일/다중 문서 QA, 요약, 대화 이해, 합성 작업), 10,000+ 테스트 샘플, 8K~48K 길이의 맥락 포함. 기존 LongCite(최대 32K, 5.88%)보다 훨씬 광범위한 장문맥 커버리지 제공</li>
 <li><strong>개폐형 모델 간 차이 규명</strong>: 폐쇄형 모델(GPT-4, Claude 등)과 개방형 모델(LLaMA, Qwen 등) 간 생성 품질은 미미한 차이를 보이나, <strong>인용 정확도(citation precision)와 재현율(recall)에서 개방형 모델이 현저히 뒤떨어짐</strong>. 이는 개방형 모델이 맥락보다 내재 지식(inherent knowledge)에 의존하는 경향을 의미함</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>주의 메커니즘과의 상관성 발견</strong>: 모델의 인용 생성 과정과 주의(attention) 메커니즘(특히 retrieval head) 간 상관관계 존재 확인. 벤치마크의 타당성과 추후 LCM 개발 방향성 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>응답 형식: [statement₁][citation₁] [statement₂][citation₂] 형태로 각 문장 뒤에 인용 청크 인덱스 붙임</em></p></div>
 <ul>
 <li><strong>작업 정의</strong>: 장문맥 T와 질문 Q가 주어졌을 때, 모델이 여러 문장 S = {s₁, s₂, ..., sₙ}과 대응 인용 C = {c₁, c₂, ..., cₙ}을 생성하도록 요구. 각 문장은 반드시 뒤따르는 인용 청크 인덱스로 지원받아야 함</li>
 <li><strong>평가 메트릭 이중화</strong>:

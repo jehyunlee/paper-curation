@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jing-Cheng Pang, Heng-Bo Fan, Pengyuan Wang, Jiahao Xiao, Nan Tang, Si-Hang Yang, Chengxing Jia, Sheng-Jun Huang, Yang Yu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 능동적 문의를 통한 언어모델의 질의 응답 과정. (A) 문의 없이 직접 답변, (B) 사용자에게 명확한 질문을 통해 능동적으로 정보 수집</em></p></div>
 <p>본 논문은 대형 언어모델(LLM)이 사용자의 모호한 질의를 명확히 하기 위해 능동적으로 질문을 제기하는 LaMAI(Language Model with Active Inquiry) 방법을 제안한다. 능동학습(active learning) 기법을 활용하여 가장 정보량이 많은 질문을 선택함으로써 LLM의 응답 정확도를 크게 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 불확실성 추정을 통해 LLM의 모호함 수준을 판단하고, 능동학습을 적용하여 가장 정보량이 많은 명확화 질문을 선택한 후, 사용자 피드백을 기반으로 질의를 갱신하는 반복 대화 방식을 채택한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: LaMAI 메서드의 전체 워크플로우. (A) 사용자 질의의 불확실성 평가, (B) 불확실성 추정 모듈, (C) 능동 문의 모듈, (D) 답변 생성 모듈</em></p></div>
 <ol>
 <li><strong>정확도 대폭 향상</strong>: 복잡한 데이터셋에서 기존 31.9%에서 50.9%로 답변 정확도 향상, 다른 질의응답 프레임워크를 초과 성능 달성</li>
 <li><strong>인간 평가에서의 우수성</strong>: 실제 인간 참여 시나리오에서 기준 방법 대비 82% 이상의 경우에서 동등하거나 우수한 응답 생성</li>
 <li><strong>다양한 LLM과의 호환성</strong>: GPT-3.5, GPT-4 등 다양한 언어모델에 통합 가능하며, 방법의 견고성과 확장성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: QMSum 데이터셋에서의 LaMAI 비교 및 분석 결과</em></p></div>
 <p>LaMAI는 다음 세 가지 핵심 구성요소로 구성된다:</p>
 <ul>
 <li><strong>불확실성 추정(Uncertainty Estimation)</strong>: 다중 답변 샘플링을 통해 T개의 답변 {A₁, A₂, ..., A_T}를 생성하고, 답변 간 변동성(variation)을 계산하여 모델의 불확실성을 정량화한다.</li>

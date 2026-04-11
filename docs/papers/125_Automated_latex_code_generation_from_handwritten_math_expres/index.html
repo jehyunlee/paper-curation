@@ -75,22 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Vision Transformer 인코더와 트랜스포머 디코더를 결합한 아키텍처를 설계하고, CNN-LSTM, ResNet50-LSTM 기준 모델과 비교 실험을 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: LaTeX 수식의 길이별 분포 (1~150 심볼 범위)</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 원본 LaTeX 이미지와 생성된 패치 (10×10 픽셀 크기)</em></p></div>
 <ol>
 <li><strong>Vision Transformer의 우월성</strong>: ViT 기반 모델이 CNN-RNN 기준 모델 대비 더 높은 정확도(accuracy)와 BLEU 점수를 달성하고, 더 낮은 Levenshtein 거리를 기록했다.</li>
 <li><strong>개선된 특성 추출</strong>: 이미지를 100개의 10×10 픽셀 패치로 분할하여 처리함으로써 지역적 세부 정보와 전역적 구조를 효과적으로 포착한다.</li>
 <li><strong>확장성과 재현성</strong>: 200,000개 데이터 포인트로 학습하여 실용적 규모의 검증을 완료했으며, GitHub에서 코드를 공개하여 재현 가능성을 보장한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: CNN 기준 모델 인코더 구조 (50,200) → (25,100) → (12,50) 차원 축소</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: ResNet50 사전학습 모델 인코더와 LSTM 디코더</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5: 트랜스포머 인코더 아키텍처 (8개 레이어, 4개 주의 헤드)</em></p></div>
 <h3>기준 모델 (CNN-LSTM)</h3>
 <ul>
 <li>3×3 합성곱 필터와 2×2 최대 풀링을 3회 반복하는 인코더</li>

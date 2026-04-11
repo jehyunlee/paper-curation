@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhaorui Yang, Bo Pan, Han Wang, Yiyao Wang, Xingyu Liu, Luoxuan Weng, Yingchaojie Feng, Haozhe Feng, Minfeng Zhu, Bo Zhang, Wei Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Multimodal DeepResearcher의 프레임워크 - 4단계(조사, 예시 보고서 텍스트화, 계획, 멀티모달 보고서 생성)로 분해</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)을 활용하여 텍스트와 차트가 유기적으로 통합된 멀티모달 보고서를 자동으로 생성하는 시스템을 제안한다. 핵심 혁신은 시각화를 구조화된 텍스트 표현(FDV: Formal Description of Visualization)으로 변환하여 LLM의 맥락 학습(in-context learning)을 가능하게 한 점이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 그래픽 문법(Grammar of Graphics) 이론에 영감받은 FDV 표현 방식을 제안하여, 멀티모달 콘텐츠를 LLM이 처리 가능한 구조화된 텍스트로 변환한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Multimodal DeepResearcher가 생성한 다양한 차트 예시 (면적도, 산키도, 대시보드, 수평막대그래프, 원형차트, 인포그래픽)</em></p></div>
 <ol>
 <li><strong>새로운 작업 정의 및 평가 체계</strong>: 텍스트-차트 통합 보고서 생성이라는 새로운 작업을 정의하고, 100개의 다양한 주제와 10개의 전담 지표(보고서 수준 5개, 차트 수준 5개)를 포함한 MultimodalReportBench 벤치마크를 구축했다.</li>
 <li><strong>우수한 성능</strong>: Claude 3.7 Sonnet을 기반으로 기존 방법(DataNarrative) 대비 82% 승률을 달성하였으며, 자동 평가와 인간 평가 모두에서 일관된 우월성을 입증했다.</li>
 <li><strong>복잡한 차트 생성</strong>: 단순한 막대/선 차트를 넘어 산키도, 대시보드, 인포그래픽 등 다양하고 정교한 시각화를 생성할 수 있다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: FDV(Formal Description of Visualization)의 작동 원리 - 레이아웃, 척도, 데이터, 마크의 4가지 관점으로 시각화 캡처</em></p></div>
 <p><strong>4단계 에이전틱 프레임워크</strong>:</p>
 <ol>
 <li><strong>조사 단계(Researching)</strong>

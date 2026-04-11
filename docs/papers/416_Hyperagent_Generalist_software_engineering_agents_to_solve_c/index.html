@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: H. N. Phan, Phong X. Nguyen, Nghi D. Q. Bui | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 소프트웨어 엔지니어링 작업을 해결하기 위한 개발자의 전형적인 워크플로우 (분석 & 계획 → 기능 위치 파악 → 코드 편집 → 실행)</em></p></div>
 <p>HYPERAGENT는 인간 개발자의 워크플로우를 모방하는 멀티에이전트 시스템으로, 플래너(Planner), 네비게이터(Navigator), 코드 에디터(Code Editor), 실행기(Executor)의 네 가지 전문화된 에이전트로 구성되어 다양한 프로그래밍 언어와 소프트웨어 엔지니어링 작업을 일반적으로 해결할 수 있는 최초의 통합 시스템이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 개발자의 전형적인 4단계 워크플로우(분석 & 계획, 기능 위치화, 코드 편집, 실행)를 에뮬레이션하는 멀티에이전트 시스템을 설계하여, 효율성(가벼운 LLM과 고급 모델의 조합), 일반화 가능성(최소한의 설정으로 다양한 작업 적응), 확장성(복잡한 작업의 효율적 처리)을 모두 달성함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: HYPERAGENT의 개요 - 네 가지 에이전트(Planner, Navigator, Code Editor, Executor)로 구성된 확장 가능한 멀티에이전트 시스템</em></p></div>
 <ol>
 <li><strong>범용성과 성능의 동시 달성</strong>: HYPERAGENT는 Python(SWE-Bench), Java(Defects4J), Repository-level 코드 생성(RepoExec) 등 다양한 언어와 작업에서 SOTA(State-of-the-Art) 성능을 달성하는 최초의 off-the-shelf 시스템임. GitHub 이슈 해결에서 강력한 베이스라인들을 초과 달성.</li>
 <li><strong>전문화된 에이전트 설계의 효율성</strong>: Planner와 Navigator는 경량 LLM을 사용하고, Code Editor와 Executor는 고급 모델을 사용함으로써, 계산 비용을 최소화하면서도 복잡한 코드 작업에서 높은 성능 유지. 이는 에이전트별 작업 특성에 따른 최적화된 리소스 할당.</li>
 <li><strong>광범위한 적용 가능성</strong>: Task-specific 적응 없이도 다양한 소프트웨어 엔지니어링 벤치마크에서 일관되게 우수한 성능을 발휘하며, 이는 실제 소프트웨어 개발 환경으로의 전이 가능성을 강력히 입증함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 에이전트 간 상호작용 예시 - Planner의 사고(Thought)와 요청(Request)이 Navigator, Code Editor, Executor를 차례로 호출하는 협력 과정</em></p></div>
 <ul>
 <li><strong>4-에이전트 협력 메커니즘</strong>:
 <ul>

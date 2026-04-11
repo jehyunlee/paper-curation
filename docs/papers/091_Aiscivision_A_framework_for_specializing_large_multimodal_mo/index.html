@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Brian Hogan, Anmol Kabra, F. Pacheco, Laura Greenstreet, Joshua Fan, Aaron Ferber, Marta Eichemberger Ummus, Agostinho M. Brito, Olivia Graham, Lillian R. Aoki, C. Drew Harvell, Alexander S. Flecker, Carla Gomes | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2410.21480" target="_blank">arXiv:2410.21480</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: AISciVision 프레임워크의 개념도">
-<p class="fig-caption"><em>Visual Retrieval-Augmented Generation(VisRAG)과 도메인 특화 도구를 결합하여 과학 이미지 분류를 수행하는 AISciVision의 워크플로우. 테스트 이미지에 대해 유사한 긍정/부정 예시를 검색한 후, LMM 에이전트가 여러 라운드에서 도구를 사용하여 분석을 정제하고 최종 예측과 추론 기록(transcript)을 생성한다.</em></p></div>
 <p>대규모 다중모달 모델(LMM)을 과학 영상 분류 작업에 특화시키는 프레임워크로, 시각적 검색 기반 생성(VisRAG)과 도메인 특화 도구를 활용하여 해석 가능하고 신뢰할 수 있는 AI 시스템을 구현했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 검색 기반 생성(RAG)과 에이전트 기반 도구 사용을 결합하여, 인간 전문가의 이미지 비교 및 도구 기반 검사 과정을 모방하는 프레임워크를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 세 가지 과학 이미지 분류 데이터셋">
-<p class="fig-caption"><em>양식장(Aquaculture), 병든 피그래스(Eelgrass), 태양광 패널(Solar) 감지 작업의 예시 이미지들</em></p></div>
 <ol>
 <li><strong>프레임워크 개발</strong>: VisRAG(시각적 검색 기반 생성)과 도메인 특화 도구를 통합한 혁신적 프레임워크 제안. LMM이 멀티라운드 대화를 통해 도구를 선택적으로 활용하면서 추론 과정을 투명하게 기록한다.</li>
 <li><strong>성능 우수성</strong>: 양식장 감지, 병든 피그래스, 태양광 패널 3개 실제 과학 데이터셋에서 완전 지도학습(fully supervised) 모델 및 영점샷(zero-shot) 방식을 능가하면서 동시에 추론 기록을 생성한다.</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kexin Huang, Serena Zhang, Hanchen Wang, Yuanhao Qu, Yingzhou Lu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.05.30.656746" target="_blank">10.1101/2025.05.30.656746</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Biomni의 통합 생의학 행동 공간 및 에이전트 환경 개요. (a) 생의학 논문에서 체계적으로 행동을 발견하는 워크플로우</em></p></div>
 <p>본 논문은 생의학 연구의 단편화된 워크플로우 문제를 해결하기 위해 일반목적 생의학 AI 에이전트 Biomni를 제시한다. 이는 150개의 전문 도구, 105개의 소프트웨어 패키지, 59개의 데이터베이스를 통합한 최초의 통합 생의학 행동 공간(Biomni-E1)과 이를 활용하는 지능형 에이전트 아키텍처(Biomni-A1)로 구성되어 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 25개 생의학 도메인의 수천 개 논문을 분석하여 AI 기반 행동 발견 에이전트로 필수 도구, 데이터베이스, 프로토콜 추출, (2) 검색 기반 계획과 코드 기반 실행을 통합한 일반목적 에이전트 아키텍처 개발, (3) 사전정의된 템플릿 없이 동적 워크플로우 구성 가능하도록 설계.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 다양한 현실적 생의학 작업에 대한 Biomni의 영점사격(Zero-shot) 일반화. (a) Biomni가 6개 기준 모델보다 우수함</em></p></div>
 <ol>
 <li><strong>통합 생의학 행동 공간 구축</strong>: 25개 생의학 도메인에 걸쳐 150개의 특화된 도구, 105개의 소프트웨어 패키지, 59개의 데이터베이스를 포함하는 Biomni-E1 환경 최초 구축. 이는 체계적인 AI 기반 논문 분석을 통해 수행됨.</li>
 <li><strong>강력한 일반화 성능</strong>: 원인 유전자 우선순위 지정(causal gene prioritization), 약물 재표적화(drug repurposing), 희귀질환 진단, 미생물군집 분석, 분자 클로닝 등 다양한 생의학 작업에서 작업 특화 프롬프트 튜닝 없이 강력한 성능 달성.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>습식 실험실 프로토콜 설계</strong>: 10개의 실제 클로닝 시나리오에 대한 개방형 클로닝 벤치마크에서 실험실 연구자를 지원하기 위한 자동화된 프로토콜 설계 능력 시연.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Biomni가 자율적으로 복잡한 다중모달 생의학 분석을 실행하여 가설 생성. (a-d) Biomni가 신속하게...</em></p></div>
 <p><strong>Biomni-E1 (환경) 구축:</strong></p>
 <ul>
 <li>생의학 논문 100개/도메인 × 25개 도메인에서 AI 에이전트를 통해 작업, 도구, 데이터베이스 자동 추출</li>
@@ -102,9 +96,7 @@ a { color: #A62018; }
 <li><strong>코드 기반 실행</strong>: 루프, 병렬화, 조건부 로직을 포함한 복잡한 워크플로우 구성 가능</li>
 <li><strong>절차적 로직 통합</strong>: 사전정의된 함수 서명을 따르지 않는 소프트웨어, 도구, 데이터베이스, 원본 데이터 작업 유연하게 통합</li>
 <li><strong>LLM 기반 추론</strong>: 도메인 전문성과 결합된 LLM 추론으로 상세한 단계별 계획 생성</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: Biomni가 습식 실험실 실험 프로토콜 설계. (a) 10개 실제 클로닝 시나리오의 개방형 클로닝 벤치마크</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>최초의 통합 생의학 행동 공간</strong>: 25개 도메인의 수천 개 논문으로부터 체계적으로 추출한 150개 도구 + 105개 소프트웨어 + 59개 데이터베이스의 포괄적 환경 구축이 선례 없음.</li>
@@ -133,7 +125,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../839_Transforming_Behavioral_Neuroscience_Discovery_with_In-Conte/index.html">Transforming Behavioral Neuroscience Discovery with In-Context Learning and AI-Enhanced Tensor Methods</a></div><div class="conn-reason">생명의학 분야의 일반적인 AI 에이전트 프레임워크를 신경과학 특화 도구로 응용할 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../226_ClinicalGPT_Large_Language_Models_Finetuned_with_Diverse_Med/index.html">ClinicalGPT: Large Language Models Finetuned with Diverse Medical Data and Comprehensive Evaluation</a></div><div class="conn-reason">의료 특화 대규모 언어모델의 두 가지 다른 설계 철학을 비교하여 의료 AI의 범용성과 특화성 간의 균형점을 찾을 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../151_Benchmarking_ai_scientists_in_omics_data-driven_biological_r/index.html">Benchmarking AI Scientists in Omics Data-Driven Biological Research</a></div><div class="conn-reason">생의학 연구 지원이라는 동일한 목표를 통합 에이전트와 벤치마크 평가라는 상호 보완적 접근으로 달성합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../151_Benchmarking_ai_scientists_in_omics_data-driven_biological_r/index.html">Benchmarking AI Scientists in Omics Data-Driven Biological Research</a></div><div class="conn-reason">생물의학 AI의 성능 평가라는 동일한 목표를 다른 접근법(벤치마크 vs 통합 에이전트)으로 달성합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../774_STELLA_Towards_a_Biomedical_World_Model_with_Self-Evolving_M/index.html">STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents</a></div><div class="conn-reason">STELLA와 Biomni 모두 범용 바이오의학 AI 에이전트를 추구하지만 자기진화형 vs 사전 훈련된 접근방식을 사용한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../626_Polymer_Brushes_and_Grafted_Polymers_AIML-Driven_Synthesis_S/index.html">Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL</a></div><div class="conn-reason">자율 실험실 개념을 생의학과 재료과학이라는 서로 다른 연구 분야에 적용하는 학제간 접근입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../055_Advancing_multimodal_medical_capabilities_of_gemini/index.html">Advancing multimodal medical capabilities of gemini</a></div><div class="conn-reason">BiOMNI의 일반 목적 생의학 AI 에이전트가 Med-Gemini의 특화된 의료 멀티모달 능력을 더 광범위한 생의학 영역으로 확장함</div></div>

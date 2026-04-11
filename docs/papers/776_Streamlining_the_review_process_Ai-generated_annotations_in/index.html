@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Óscar Díaz, Xabier Garmendia, Juanan Pereira | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.00281" target="_blank">DOI 미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1: 리뷰 보고서 및 그 UML 개념화</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 학술 논문 심사 과정에 통합하되, AI가 전체 심사를 대체하는 것이 아니라 <strong>manuscript annotation(원고 주석 달기)</strong>이라는 특정 작업을 지원하는 방식을 제안한다. AnnotateGPT 플랫폼을 통해 AI와 인간 심사자의 협력을 위한 중간지점으로서 annotation의 역할을 검증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: annotation을 심사 프로세스의 전단계로 위치시켜, LLM이 중요한 구절을 미리 강조함으로써 심사자의 집중력을 향상시키고 가독성을 개선하는 방식 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2: Annotation 생성 프로세스</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3: Annotation 중심 프롬프팅</em></p></div>
 <ol>
 <li><strong>Annotation 기반 AI-인간 협력 모델 제시</strong>: 기존 '자동화(AI for automation)' 패러다임에서 벗어나 '보강(AI for augmentation)' 접근방식을 구현. 이는 심사자가 원고를 읽기 전에 LLM이 생성한 annotation을 통해 중요 부분을 미리 파악하게 함.</li>
 <li><strong>AnnotateGPT 플랫폼 개발</strong>: GPT-4를 활용한 전용 manuscript review 플랫폼을 구현하여 proof-of-concept 제공. 심사 기준별로 color-coding된 annotation을 지원하여 맥락화(contextualization)를 구현.</li>
 <li><strong>구조화된 심사 프레임워크</strong>: Review → CriterionReview → Annotation의 계층적 구조를 UML로 정의하여, 구체성(specificity), 맥락화(contextualization), 시의성(timeliness)을 만족하는 심사 구조를 제안.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Fig. 4: CriterionReview를 위한 다양한 관점</em></p></div>
 <ul>
 <li><strong>Annotation 생성 단계</strong>: LLM이 심사 기준(originality, rigor, relevance 등)에 따라 원고의 관련 구절을 자동 식별 및 하이라이트. 각 기준별로 서로 다른 색상으로 구분.</li>
 <li><strong>Criterion-driven Review 프로세스</strong>: 심사자가 annotation된 원고를 기반으로 각 기준별로 원고의 충족도를 평가하는 반복적 과정 수행. 원고와 심사 기준 간의 부합도를 점진적으로 검토.</li>

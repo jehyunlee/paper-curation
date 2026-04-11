@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Taolin Han, Shuang Wu, Jinghang Wang, Yuhao Zhou, Renquan Lv, Bing Zhao, Wei Hu | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>분자 구조 해석을 제약 만족 문제(CSP)로 표현</em></p></div>
 <p>본 논문은 화학 구조 해석 작업을 동적 다중 턴 에이전트 평가 벤치마크로 재정의한 MolQuest를 제안한다. 정적 QA 형식의 기존 과학 벤치마크의 한계를 극복하기 위해, 실제 화학 문헌 데이터 기반의 상호작용적 환경에서 LLM의 귀추적 추론(abductive reasoning) 및 전략적 의사결정 능력을 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 화학 문헌 지원정보(Supporting Information)에서 추출한 실제 데이터와 상태머신 기반 상호작용 환경을 통합하여, 모델이 도구를 호출하고 가설을 반복적으로 정제하는 과정을 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MolQuest 벤치마크의 핵심 특성(동적 상호작용, 실데이터 기반, 다차원 평가)</em></p></div>
 <ol>
 <li><strong>혁신적 평가 패러다임</strong>: 정적 QA에서 동적 순차적 의사결정(sequential decision-making) 문제로의 재정의로, 실제 실험실 워크플로우를 반영한 "계획-요청-추론" 루프 구현</li>
 <li><strong>고품질 실데이터셋 구성</strong>: 2025년 이후 발표된 화학 문헌에서 추출한 데이터로 50% 이상의 테스트 케이스 확보, 학습 데이터 오염 위험 최소화</li>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>포괄적 평가 프레임워크</strong>: 12개 SOTA LLM에 대한 광범위한 평가 수행, 최종 답변 정확도를 넘어 의사결정 로직과 추론 과정 평가</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>데이터 처리 파이프라인: LLM 자동화와 전문가 검증의 인루프 결합</em></p></div>
 <ul>
 <li><strong>작업 정의</strong>: 분자 구조 해석을 제약 만족 문제(CSP)로 형식화. 미지의 샘플로부터 시작하여 NMR, MS 등 스펙트럼 증거와 일치하는 화학적으로 유효한 분자 구조 식별</li>
 <li><strong>데이터 구성 파이프라인</strong>:

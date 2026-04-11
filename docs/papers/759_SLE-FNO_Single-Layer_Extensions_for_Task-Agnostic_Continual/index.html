@@ -75,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: FNO에 특화된 가벼운 단일 레이어 확장 아키텍처 제안 + 주요 지속학습 방법들(EWC, LwF, 재현(replay), GEM, OGD, PiggyBack, LoRA) 포괄적 비교 + 동맥류 혈류에서 일시적 농도 필드를 시간 평균 벽 전단응력(TAWSS)으로 매핑하는 실제 문제 적용.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 동맥류 기하학 및 문제 설정">
-<p class="fig-caption"><em>동맥류 기하학(a), 메시(b), 경계 조건(c), 농도 슬라이스와 TAWSS(d), 각 데이터셋의 공간 파라미터(e)</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: SLE-FNO 아키텍처">
-<p class="fig-caption"><em>훈련 단계(a)에서는 기존 FNO가 새 데이터를 처리하고, 추론 단계(b)에서는 과제별 확장 레이어가 적응된 예측 제공</em></p></div>
 <ol>
 <li><strong>완전한 망각 방지</strong>: SLE-FNO는 정확도 저하 없이 영점 망각(zero forgetting) 달성. 재현 기반 및 아키텍처 기반 방법들 중 최고 성능 보유.</li>
 <li><strong>파라미터 효율성</strong>: 새로운 과제당 1.5-4.4%의 파라미터만 추가하여, PiggyBack이나 완전 모델 재복제에 비해 현저히 낮은 오버헤드. 네트워크 크기 제어 가능.</li>
@@ -87,10 +83,6 @@ a { color: #A62018; }
 <li><strong>소수 샘플 미세조정 분석</strong>: 제한된 새 데이터 하에서의 적응, 지식 보존, 예측 견고성에 대한 통찰 제공.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: FNO 아키텍처 개요">
-<p class="fig-caption"><em>FNO의 입력 들어올리기, 푸리에 블록 스택, 최종 투영 구조</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 지속학습 방법 비교">
-<p class="fig-caption"><em>정규화 기반(EWC) 방법의 제약 기제, 그리고 기타 주요 방법들의 개념</em></p></div>
 <p><strong>SLE-FNO 방법론</strong>:</p>
 <ul>
 <li><strong>기본 구조</strong>: 기존 FNO 모델 고정, 각 새 과제마다 경량 단일 푸리에 블록 추가</li>

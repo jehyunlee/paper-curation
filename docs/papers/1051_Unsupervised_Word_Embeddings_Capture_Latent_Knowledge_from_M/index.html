@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Vahe Tshitoyan, John Dagdelen, Leigh Weston, Alexander Dunn, Ziqin Rong, Olga Kononova, Kristin A. Persson, Gerbrand Ceder, Anubhav Jain | <strong>날짜</strong>: 2019 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-019-1335-8" target="_blank">10.1038/s41586-019-1335-8</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1 | Word2vec skip-gram and analogies. a, Target words ‘LiCoO2’</em></p></div>
 <p>비지도 학습 방식의 Word2vec를 재료과학 문헌 330만 개 초록에 적용하여 화학적 지식을 명시적으로 부여하지 않고도 주기율표 구조와 물성-구조 관계 등 잠재 지식을 포착할 수 있음을 보여줌.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 1922~2018년 재료 과학 저널 1,000여 개에서 330만 개의 초록을 수집하여 50만 단어 어휘를 구성하고, Word2vec의 skip-gram 모델을 200차원 임베딩으로 학습하여 재료과학 개념과 물질-응용 관계를 포착함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3 | Validation of the predictions. a, Results of prediction of</em></p></div>
 <ul>
 <li><strong>주기율표 구조 자동 포착</strong>: 화학적 지식을 명시적으로 삽입하지 않았음에도 임베딩의 2차원 투영에서 원소들이 주기율표와 일관된 배치를 보임</li>
 <li><strong>물질 유사성 및 유추 인식</strong>: LiCoO2와 가장 유사한 5개 물질이 모두 리튬이온 캐소드 소재이며, NiFe:ferromagnetic = IrMn:antiferromagnetic 같은 도메인 특정 유추를 자동으로 해결</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>구체적 사례</strong>: CuGaTe2는 실제 발표 4년 전에 상위 5개 예측에 포함되었고, ReS2와 CdIn2Te4는 각각 8~9년 전에 예측됨</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1 | Word2vec skip-gram and analogies. a, Target words ‘LiCoO2’</em></p></div>
 <ul>
 <li>1922~2018년 간 1,000여 재료 관련 저널에서 330만 개 과학 초록 수집 및 전처리</li>
 <li>Word2vec skip-gram 모델 적용으로 200차원 단어 임베딩 학습 (컨텍스트 단어 예측 기반)</li>

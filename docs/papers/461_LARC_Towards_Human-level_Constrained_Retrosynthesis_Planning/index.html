@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Frazier N. Baker, Daniel Adu-Ampratwum, Reza Averly, Botao Yu, Huan Sun | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2508.11860" target="_blank">10.48550/arXiv.2508.11860</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: LARC 개요">
-<p class="fig-caption"><em>그림 1: LARC 프레임워크 개요. (a) 사용자 프롬프트로 목표 분자와 제약조건 지정, (b) EVALUATOR가 각 반응을 제약조건에 대해 평가, (c) 툴박스로 평가 근거화, (d) SYNTHESIZER가 피드백을 반영하여 경로 탐색, (e) 제약조건을 만족하는 합성 경로 출력</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM) 기반의 에이전트 프레임워크 LARC를 제안하여, 화학에서 발암물질 회피, 자연발화물질 제거 등 실질적인 제약조건 하에서 망원(retrosynthesis) 계획을 수행한다. LARC는 72.9%의 성공률을 달성하여 기존 LLM 기반 방법을 크게 상회하고 인간 전문가 수준에 접근한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Agent-as-a-Judge 패러다임을 도입하여, EVALUATOR(평가 담당)와 SYNTHESIZER(탐색 담당)의 이중 구조로 반응 단위 피드백을 제약조건 인식형 가치 함수에 통합한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: LARC와 전문가 합성 경로 비교">
-<p class="fig-caption"><em>그림 3: LARCMistral과 EXPERT의 합성 경로 비교. 특정 중간체에서 LARC가 더 효율적인 경로를 발견함</em></p></div>
 <ol>
 <li><strong>성과1 - 높은 성공률</strong>: 48개의 주의깊게 선별된 제약조건 망원 과제(3가지 제약유형)에서 72.9% 성공률 달성. 일반 LLM 기준선 대비 압도적 우월성 입증.</li>
 <li><strong>성과2 - 전문가 수준 접근</strong>: 인간 화학 전문가의 성공률에 근접하면서도 실행 시간을 크게 단축. 사례 연구에서 인간 전문가의 논리를 모방하거나 일부 과제에서 더 우수한 경로 발견.</li>
@@ -127,10 +123,8 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM 기반 에이전트를 화학의 실질적 제약조건 망원 계획에 처음 적용한 의미 있는 연구로, Agent-as-a-Judge를 계획 루프 내부에 통합하는 설계가 창의적이며 72.9% 성공률로 높은 실효성을 입증한다. 다만 평가 데이터셋 규모가 제한적이고 도구 정확성 의존성, 제약유형 확장성, 비용 분석 부재 등이 보완되어야 산업 적용 가능성이 확보될 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../459_Language_Models_for_Controllable_DNA_Sequence_Design/index.html">Language Models for Controllable DNA Sequence Design</a></div><div class="conn-reason">제약 조건 하에서의 역합성 계획 연구가 조건부 DNA 서열 생성의 방법론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../788_Targeted_materials_discovery_using_Bayesian_algorithm_execut/index.html">Targeted materials discovery using Bayesian algorithm execution</a></div><div class="conn-reason">베이지안 알고리즘 실행을 통한 재료 발견과 LLM 기반 역합성 계획은 서로 다른 AI 접근법으로 화학 문제를 해결합니다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../788_Targeted_materials_discovery_using_Bayesian_algorithm_execut/index.html">Targeted materials discovery using Bayesian algorithm execution</a></div><div class="conn-reason">베이지안 알고리즘 실행과 LLM 기반 역합성 계획은 모두 복잡한 재료/화학 설계 목표 달성을 위한 서로 다른 AI 기반 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">ChemCrow의 화학 도구 증강 언어모델은 LARC의 제약조건 기반 역합성 계획을 더욱 발전시킨 형태입니다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../744_Self-Driving_Laboratories_for_Chemistry_and_Materials_Scienc/index.html">Self-Driving Laboratories for Chemistry and Materials Science</a></div><div class="conn-reason">자율 실험실 기술은 LARC의 역합성 계획을 실제 화학 실험으로 구현하는 응용 분야입니다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../744_Self-Driving_Laboratories_for_Chemistry_and_Materials_Scienc/index.html">Self-Driving Laboratories for Chemistry and Materials Science</a></div><div class="conn-reason">LARC의 제약조건 기반 역합성 계획은 자율 실험실에서 실제 화학 합성을 자동화하는 핵심 응용 기술입니다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../316_Enhancing_chemical_reaction_and_retrosynthesis_prediction_wi/index.html">Enhancing chemical reaction and retrosynthesis prediction with large language model and dual-task learning</a></div><div class="conn-reason">인간 수준의 제약 조건을 고려한 역합성 계획이 ChemDual의 역합성 예측 기능의 실제 적용 영역이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

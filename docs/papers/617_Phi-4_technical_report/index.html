@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Marah Abdin, Jyoti Aneja, Harkirat Behl, Sébastien Bubeck, Ronen Eldan, Suriya Gunasekar, Michael R. Harrison, Russell J. Hewett, Mojan Javaheripi, Piero Kauffmann, James R. Lee, Yin Tat Lee, Yuanzhi Li, Weishung Liu, Caio César Teodorio Mendes, Anh Nguyen, Eric Price, Gustavo de Rosa, Olli Saarikivi, Adil Salim | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.08905" target="_blank">arXiv:2412.08905</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 2024년 11월 AMC-10/12 시험에서 다양한 모델의 평균 성능 비교</em></p></div>
 <p>Phi-4는 140억 개 파라미터의 언어 모델로, 고품질 합성 데이터 중심의 학습 레시피를 통해 개발되었으며, 교사 모델인 GPT-4o를 STEM 기반 질의응답 벤치마크에서 능가하는 성능을 달성했다. 특히 추론 관련 작업에서 훨씬 큰 모델들과 비슷하거나 우수한 성능을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다양한 기법(다중 에이전트 프롬프팅, 자가 수정 워크플로우, 지시 역변환)을 통한 합성 데이터 생성, (2) 고품질 유기적 데이터의 큐레이션과 필터링, (3) 거절 샘플링(rejection sampling)과 새로운 직접 선호도 최적화(DPO) 기법을 포함한 포스트트레이닝 혁신</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Phi-4의 경쟁 수학 문제(AMC-10/12) 성능 비교</em></p></div>
 <ol>
 <li><strong>벤치마크 성능 우수성</strong>: Phi-4는 GPQA(대학원 수준 STEM 질의응답)에서 56.1점, MATH(수학 경시 문제)에서 80.4점을 달성하여 교사 모델 GPT-4o를 능가했다. HumanEval에서 82.6점, ArenaHard에서 75.4점 등 다양한 추론 벤치마크에서 우수한 성능을 보였다.</li>
 <li><strong>신선한 데이터셋 검증</strong>: 2024년 11월 AMC-10/12 경시대회(학습 데이터 수집 이후)에서 평균 91.8점을 기록하여, 훨씬 큰 모델들(GPT-4o-mini 78.2점, Llama-3.3 70B 66.4점)을 크게 상회했다. 이는 오버피팅이나 데이터 오염이 없음을 증명한다.</li>
@@ -125,13 +121,11 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../642_Proving_theorems_recursively/index.html">Proving Theorems Recursively</a></div><div class="conn-reason">수학적 추론에 강한 Phi-4의 능력을 정리 증명 자동화에 활용할 수 있는 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1095_Towards_large_language_models_as_copilots_for_theorem_provin/index.html">Towards large language models as copilots for theorem proving in lean</a></div><div class="conn-reason">수학적 추론에 강한 Phi-4와 같은 모델을 정리 증명 보조 도구로 활용할 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../367_Galactica_A_Large_Language_Model_for_Science/index.html">Galactica: A Large Language Model for Science</a></div><div class="conn-reason">과학 문헌 기반 Galactica와 달리 합성 데이터 중심 학습으로 STEM 성능을 달성한 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../367_Galactica_A_Large_Language_Model_for_Science/index.html">Galactica: A Large Language Model for Science</a></div><div class="conn-reason">과학 전문 대규모 모델 Galactica와 달리 Phi-4는 합성 데이터 중심으로 STEM 성능을 달성한 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../370_Gemma_2_Improving_open_language_models_at_a_practical_size/index.html">Gemma 2: Improving open language models at a practical size</a></div><div class="conn-reason">Phi-4와 함께 경량 고성능 모델의 대표적 사례로 서로 다른 최적화 전략 제시</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../266_Deepseek-v3_technical_report/index.html">Deepseek-v3 technical report</a></div><div class="conn-reason">Phi-4의 효율적 소형 모델 철학을 대규모 MoE로 확장한 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../801_The_llama_3_herd_of_models/index.html">The Llama 3 Herd of Models</a></div><div class="conn-reason">Microsoft의 Phi-4가 Llama 3보다 작은 규모에서 효율적인 성능을 달성하는 방법을 보여주어 모델 크기 최적화 관점을 제공한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../642_Proving_theorems_recursively/index.html">Proving Theorems Recursively</a></div><div class="conn-reason">수학적 추론에 특화된 Phi-4의 능력을 정리 증명 작업에 활용하는 응용</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../245_Crosslingual_capabilities_and_knowledge_barriers_in_multilin/index.html">Crosslingual capabilities and knowledge barriers in multilingual large language models</a></div><div class="conn-reason">STEM 성능에 최적화되었지만 다국어 환경에서 교차언어 지식 장벽 문제 발생 가능성</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../245_Crosslingual_capabilities_and_knowledge_barriers_in_multilin/index.html">Crosslingual capabilities and knowledge barriers in multilingual large language models</a></div><div class="conn-reason">STEM 성능에 최적화된 Phi-4가 다국어 환경에서는 교차언어 지식 장벽으로 성능 저하 가능성</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../245_Crosslingual_capabilities_and_knowledge_barriers_in_multilin/index.html">Crosslingual capabilities and knowledge barriers in multilingual large language models</a></div><div class="conn-reason">STEM 성능에 최적화되었지만 다국어 환경에서 교차언어 지식 장벽 문제 발생 가능성</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

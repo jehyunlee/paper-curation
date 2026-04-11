@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Bowen Gao, Yanwen Huang, Yiqiao Liu, Wenxuan Xie, Weiying Ma | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.22164" target="_blank">10.48550/arXiv.2503.22164</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Virtual Pharma (PharmAgents)가 신약 발견 과정(타겟 발견부터 전임상 평가까지)을 시뮬레이션</em></p></div>
 <p>대규모 언어모델(LLM) 기반 멀티-에이전트 시스템을 활용하여 신약 발견의 전체 워크플로우(타겟 발견 → 리드 식별 → 리드 최적화 → 전임상 평가)를 자동화하고 설명 가능하게 수행하는 가상 제약회사 시스템을 제안한다. 기존 단일 모델의 한계를 극복하고 학습 경험을 통해 자가 진화하는 능력을 갖춘 혁신적 패러다임을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MetaGPT의 역할 기반 전략에서 영감을 얻어, 신약 발견의 4대 단계(타겟 발견, 리드 식별, 리드 최적화, 전임상 평가)를 세분화하고, 각 단계마다 특화된 LLM 에이전트를 설계한다. 각 에이전트는 전문화된 ML 모델, 도메인 특화 도구, 정교한 프롬프트 엔지니어링, 그리고 명확한 워크플로우로 구성하여 협력하는 구조를 채택한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: PharmAgents의 전체 워크플로우</em></p></div>
 <ol>
 <li><strong>타겟 발견 성능</strong>: 테스트된 한 질병에서 식별된 18개 타겟 중 16개가 인간 전문가에 의해 적절한 것으로 평가되었으며, 복잡한 질병 상황에서도 오류 누적이 발생하지 않았다. 질병 관련 단백질 타겟을 정확히 식별하고, 최적의 구조 배치를 선택하며, 분자 특성에 기반한 리간드-결합 부위를 정확히 위치시켰다.</li>
 <li><strong>분자 생성 및 최적화 성능</strong>: 동일 타겟에 대해 질병 맥락에 따라 상충되는 특성을 갖는 화합물을 설계할 수 있는 능력을 입증했으며, 기존 최첨단 방법 대비 전체 성공률을 15.72%에서 37.94%로 대폭 향상시켰다. 각 에이전트의 협업을 통해 결합 친화도와 약물성(drug-likeness) 특성을 동시에 개선했다.</li>
@@ -86,12 +82,6 @@ a { color: #A62018; }
 <li><strong>자가 진화 능력</strong>: 과거 경험을 요약 학습하여 향후 결과물을 개선하는 능력으로, 선행 경험이 통합되었을 때 성공률이 30%에서 36%로 증가했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 타겟 발견 모듈의 워크플로우 및 예시 출력</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 리드 식별 모듈의 워크플로우 및 예시 출력</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5: 리드 최적화 모듈의 워크플로우 및 예시 출력</em></p></div>
 <h3>핵심 방법론</h3>
 <ul>
 <li><strong>역할 기반 에이전트 설계</strong>: 각 단계별로 명확히 정의된 책임을 가진 특화된 에이전트(질병 전문가, 구조 전문가, 분자 설계자 등) 배치</li>

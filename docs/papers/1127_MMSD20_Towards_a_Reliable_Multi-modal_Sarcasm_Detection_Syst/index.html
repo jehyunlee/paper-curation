@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mayur Wankhade, Annavarapu Chandra Sekhara Rao, Chaitanya Kulkarni | <strong>날짜</strong>: 2023 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2307.07135" target="_blank">https://arxiv.org/abs/2307.07135</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Overall process of construction MMSD2.0 dataset. Given the example in (a), Spurious Cues Removal</em></p></div>
 <p>MMSD 벤치마크의 허위 신호(spurious cues)와 불합리한 주석을 제거한 MMSD2.0 데이터셋과 다중 관점 CLIP 프레임워크를 제안하여 신뢰할 수 있는 멀티모달 풍자 탐지 시스템 구축.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MMSD에서 해시태그와 이모지를 제거하여 허위 신호를 제거하고, 50% 이상의 부정 샘플을 크라우드소싱으로 재주석 처리. 사전학습된 CLIP 모델을 기반으로 텍스트, 이미지, 텍스트-이미지 상호작용 3가지 관점에서 멀티뷰 정보 추출.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Overall process of construction MMSD2.0 dataset. Given the example in (a), Spurious Cues Removal</em></p></div>
 <ul>
 <li><strong>MMSD2.0 데이터셋</strong>: 허위 신호(해시태그, 이모지) 제거 및 50% 이상 샘플의 크라우드소싱 재주석으로 신뢰성 있는 벤치마크 구축</li>
 <li><strong>Multi-view CLIP 프레임워크</strong>: 텍스트, 이미지, 텍스트-이미지 상호작용 관점에서 다중 단위 신호 활용으로 기존 최신 모델 능가</li>
@@ -112,12 +108,10 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 멀티모달 풍자 탐지 연구의 기초가 되는 벤치마크의 근본적인 문제를 최초로 지적하고 이를 체계적으로 개선한 MMSD2.0을 제시한 점이 매우 가치있다. 제안된 Multi-view CLIP은 간결하면서도 우수한 성능을 보여주며, 충분히 신뢰할 수 있는 벤치마크와 방법을 제공함으로써 향후 연구의 발전에 크게 기여할 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">멀티모달 벤치마크 구축 방법론을 풍자 탐지라는 특정 작업에 적용한 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html">BiasFilter: An inference-time debiasing framework for large language models</a></div><div class="conn-reason">추론 시점 편향 제거 프레임워크는 멀티모달 풍자 탐지에서 허위 신호 제거와 신뢰성 확보를 위한 기술적 기반을 제공합니다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html">BiasFilter: An inference-time debiasing framework for large language models</a></div><div class="conn-reason">멀티모달 풍자 탐지에서 허위 신호 제거를 위한 편향 완화 기법의 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">범용 멀티모달 모델과 달리 풍자 탐지라는 특정 작업에 특화된 시스템 구축</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 주장의 검증 가능성 분석과 멀티모달 풍자 탐지는 모두 텍스트-이미지 간 불일치나 허위 정보를 탐지하는 서로 다른 도메인의 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html">DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts</a></div><div class="conn-reason">다중 모달 사실 검증을 위한 동적 증거 기반 프레임워크는 멀티모달 풍자 탐지의 신뢰성을 사실 검증 영역으로 확장한 응용입니다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">멀티모달 풍자 탐지에서 인간 피드백을 통한 모델 성능 개선 능력 평가에 적용</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">멀티모달 풍자 탐지에서 인간 피드백을 활용한 모델 개선 능력 평가에 적용 가능</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">멀티모달 풍자 탐지에서 인간 피드백을 통한 모델 성능 개선 능력 평가에 적용</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiao Liu, Xinyi Dong, Xinyang Gao, Yansong Feng, Xun Pang (Beijing University) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.21396" target="_blank">arXiv:2505.21396</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>데이터 증강 LLM 아이디어 생성 프레임워크: 메타데이터를 아이디어 생성 단계에, 자동 검증을 선택 단계에 통합</em></p></div>
 <p>대규모 언어 모델(LLM)을 활용한 연구 아이디어 생성 시 관련 데이터의 메타데이터와 자동 검증을 통합하면 아이디어의 실현가능성과 경험적 타당성이 20% 이상 향상된다. 더 나아가 LLM이 생성한 아이디어가 실제 연구자들의 자체 아이디어 개발을 영감 있게 지원함을 실증적으로 입증했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 아이디어 생성 단계에서 메타데이터(데이터셋 설명)를 통합하여 실현가능한 개념 도출 유도, (2) 아이디어 선택 단계에 자동 검증 추가하여 가설의 경험적 타당성 사전 평가, (3) 실제 연구자 23명을 대상 인간 연구로 LLM 아이디어의 영감 효과 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>표준 프레임워크(중앙)에 비해 메타데이터를 생성 단계에, 자동 검증을 선택 단계에 통합한 데이터 증강 프레임워크</em></p></div>
 <ol>
 <li><strong>메타데이터의 효과</strong>: ClimateDataBank의 메타데이터를 포함할 때 생성된 아이디어의 실현가능성(feasibility)이 20% 향상, 기대 효과성(expected effectiveness)이 18% 향상됨을 전문가 평가로 확인</li>
 <li><strong>자동 검증의 효과</strong>: 자동 검증 프로세스를 거친 아이디어 선택 시 전체 품질이 7% 향상되어, 경험적으로 입증된 아이디어 선택에 유효함을 입증</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>ClimateDataBank 구축</strong>: 향후 데이터 기반 이념화 연구를 지원하기 위해 22개 데이터셋으로 구성된 ClimateDataBank 구축</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>좌측: 메타데이터 통합 아이디어 생성 과정 | 우측: 자동 검증을 통한 가설 타당성 확인</em></p></div>
 <p><strong>아이디어 구조 및 생성 (4.1절)</strong></p>
 <ul>
 <li>사회과학 연구 아이디어: 연구질문(RQ) + 이론(Theory) + 가설(Hypotheses) 3개 요소로 구성</li>
@@ -147,7 +141,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 이 논문은 LLM 기반 연구 아이디어 생성에 데이터를 통합하는 실질적 방안을 제시하고, 특히 인간 연구를 통해 LLM 아이디어가 실제 연구자들에게 영감을 줄 수 있음을 입증한 의미 있는 작업이다. 사회과학 특화, ClimateDataBank 리소스 기여, 메타데이터와 자동 검증의 이중 통합</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../188_Can_we_automatize_scientific_discovery_in_the_cognitive_scie/index.html">Can we automatize scientific discovery in the cognitive sciences?</a></div><div class="conn-reason">인지과학 분야의 자동화된 과학적 발견 방법론이 연구 아이디어 생성 자동화의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../763_Sparks_of_science_Hypothesis_generation_using_structured_pap/index.html">Sparks of science: Hypothesis generation using structured paper data</a></div><div class="conn-reason">구조화된 논문 데이터를 이용한 가설 생성 연구로, 메타데이터 활용 방식에서 유사하지만 접근법이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../763_Sparks_of_science_Hypothesis_generation_using_structured_pap/index.html">Sparks of science: Hypothesis generation using structured paper data</a></div><div class="conn-reason">구조화된 데이터를 활용한 가설 생성이라는 공통 접근법이지만 과학적 가설과 연구 아이디어라는 다른 결과물을 다룬다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../777_Structuring_scientific_innovation_A_framework_for_modeling_a/index.html">Structuring scientific innovation: A framework for modeling and discovering impactful knowledge combinations</a></div><div class="conn-reason">문제-방법 재결합을 통한 과학적 발견 모델링 프레임워크를 아이디어 생성 개선에 적용할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../019_A_review_of_llm-assisted_ideation/index.html">A review of llm-assisted ideation</a></div><div class="conn-reason">데이터를 통한 연구 아이디어 생성 개선이 LLM 지원 아이디에이션의 체계적 검토 결과를 실증적으로 뒷받침함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

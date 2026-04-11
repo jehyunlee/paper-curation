@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 로봇공학, ab initio 데이터베이스, 문헌 채굴 기반 ML 모델(합성 제안), 능동 학습(ARROWS3)을 통합한 자율 실험실 플랫폼 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figure1.png" alt="A-Lab 자율 재료 합성 시스템 개요. DFT 계산 convex hull에서 공기 안정 목표 물질을 선정하고, 문헌 기반 ML 모델로 합성 조리법을 제안한 후, 로봇 실험실에서 실행 및 특성화. 높은 수율을 얻지 못하면 능동 학습 알고리즘이 반응 경로를 최적화.">
-</div>
 <ol>
 <li><strong>높은 성공률 달성</strong>: 57개 목표 물질 중 36개 합성 성공(63%), 33개 원소와 40개 구조 원형(structural prototype)을 포함</li>
 <li><strong>문헌 기반 초기 조리법의 효과</strong>: 353개 테스트된 합성 조리법 중 30%만 성공했으나, ML 모델이 제안한 처음 5개 조리법으로 30개 재료 합성 가능 (문헌에서 유사 재료를 효과적으로 판별)</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>계산 화면의 신뢰성 증명</strong>: 분해 에너지(decomposition energy) 범위에서 열역학적 안정성과 합성 성공 사이 명확한 상관관계 부재 → 계산만으로 합성 가능성을 충분히 예측하기 어려움을 시사</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figure1.png" alt="A-Lab 작동 흐름도. (1) 분말 투여 및 혼합, (2) 샘플 가열, (3) XRD 특성화. 각 단계는 로봇팔로 자동 연결. ML 모델이 XRD 패턴을 분석하고 Rietveld 정제로 확인.">
-</div>
 <ul>
 <li><strong>재료 선정</strong>: Materials Project 및 Google DeepMind convex hull에서 공기 안정 물질(<10 meV/atom) 선정, O₂/CO₂/H₂O와 반응하지 않는 물질만 포함</li>
 <li><strong>초기 조리법 생성</strong>: 문헌에서 추출한 대규모 합성 데이터셋으로 학습한 ML 모델이 목표 물질과 유사한 기존 물질 기반의 조리법 제안 (최대 5개), 별도 ML 모델이 가열 온도 예측</li>
@@ -134,7 +130,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../134_Automating_the_practice_of_science_Opportunities_challenges/index.html">Automating the practice of science: Opportunities, challenges, and implications</a></div><div class="conn-reason">과학 자동화의 일반적 프레임워크가 자율 실험실 구현의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">재료 탐색의 실시간 폐루프 vs 자율 합성이라는 서로 다른 자동화 접근법을 보여준다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../684_Robot-assisted_mapping_of_chemical_reaction_hyperspaces_and/index.html">Robot-assisted mapping of chemical reaction hyperspaces and networks</a></div><div class="conn-reason">화학반응 매핑과 재료 합성 자동화라는 서로 다른 자율실험실 응용분야를 다룬다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../684_Robot-assisted_mapping_of_chemical_reaction_hyperspaces_and/index.html">Robot-assisted mapping of chemical reaction hyperspaces and networks</a></div><div class="conn-reason">둘 다 자율 실험실 개념이지만 A-Lab은 무기재료, 이 논문은 화학반응에 특화되어 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../745_Self-driving_laboratories_to_autonomously_navigate_the_prote/index.html">Self-driving laboratories to autonomously navigate the protein fitness landscape</a></div><div class="conn-reason">단백질 특화 자동화를 더 넓은 화학 합성 자동화로 확장하여 포괄적인 자율 실험실 구축 방향을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../658_Real-time_experiment-theory_closed-loop_interaction_for_auto/index.html">Real-time experiment-theory closed-loop interaction for autonomous materials science</a></div><div class="conn-reason">AMASE의 실시간 폐루프 개념을 재료 합성 최적화에 적용할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../043_Accelerating_Drug_Discovery_Through_Agentic_AI_A_Multi-Agent/index.html">Accelerating drug discovery with artificial: a whole-lab orchestration and scheduling system for self-driving labs</a></div><div class="conn-reason">자율 실험실의 무기 고체 합성 자동화가 Artificial 플랫폼의 신약 개발 워크플로우 조정 능력을 소재 과학으로 확장함</div></div>

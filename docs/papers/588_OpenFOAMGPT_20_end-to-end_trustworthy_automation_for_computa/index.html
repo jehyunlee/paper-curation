@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jingsen Feng, Ran Xu, Xu Chu | <strong>날짜</strong>: 2025-04-27 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2504.19338" target="_blank">10.48550/arXiv.2504.19338</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: The design of multi-Agent framework for CFD">
-<p class="fig-caption"><em>Figure 1: 전산유체역학(CFD)을 위한 다중에이전트 프레임워크 설계. 빨강색은 사용자 인터페이스, 녹색은 LLM 기반 에이전트, 파랑색은 코드 모듈을 나타냄</em></p></div>
 <p>자연어 질의(natural language query)로부터 완전 자동화된 CFD 시뮬레이션을 수행하는 첫 번째 다중에이전트 프레임워크를 제안한다. 전처리, 프롬프트 생성, 시뮬레이션, 후처리의 네 가지 특화된 에이전트가 협력하여 450건 이상의 시뮬레이션에서 100% 성공률을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 특화된 에이전트 4개를 설계하여 자연어에서 최종 시각화까지 전 과정을 자동화하고, 엄격한 신뢰성 검증 수행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Validation and parametric studies of Poiseuille flow simulations">
-<p class="fig-caption"><em>Figure 2: Poiseuille 유동 시뮬레이션의 검증 및 매개변수 연구 결과</em></p></div>
 <ol>
 <li><strong>완전 자동화 달성</strong>: 450건 이상의 다양한 시뮬레이션(Poiseuille 유동, 다공질 매질 유동, 공기역학)에서 100% 성공률과 재현성 입증</li>
 <li><strong>신뢰성 검증</strong>: 제로-톨러런스(zero-tolerance) 과학 계산 애플리케이션에 필요한 신뢰성 표준 달성 확인</li>
 <li><strong>접근성 개선</strong>: 자연어 기반 인터페이스를 유지하면서 계산물리의 엄격한 요구사항 충족</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Results of single-phase flow in porous media simulation">
-<p class="fig-caption"><em>Figure 3: 다공질 매질 단상 유동 시뮬레이션 결과 및 격자 독립성 연구</em></p></div>
 <h3>다중에이전트 아키텍처</h3>
 <ul>
 <li><strong>전처리 에이전트(Pre-processing Agent)</strong>: 사용자 질의 분석 → 단일 케이스 vs. 매개변수 연구 분류 → 격자 생성 전략 결정(blockMesh 또는 snappyHexMesh)</li>

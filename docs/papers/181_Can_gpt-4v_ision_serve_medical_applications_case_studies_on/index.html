@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Chaoyi Wu, Jiayu Lei, Qiaoyu Zheng, Weike Zhao, Weixiong Lin, Xiaoman Zhang, Xiao Zhou, Ziheng Zhao, Ya Zhang, Yanfeng Wang, Weidi Xie | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2310.09909" target="_blank">arXiv:2310.09909</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>의료 시스템 17개와 영상 모달리티 8개를 포괄하는 평가 프레임워크</em></p></div>
 <p>본 논문은 OpenAI의 GPT-4V(ision) 모델이 의료 영상 진단 작업에서 실제로 임상 적용 가능한지를 체계적으로 평가한 연구이다. 17개 신체 시스템과 8개 영상 모달리티를 포함한 광범위한 사례 연구를 통해 GPT-4V의 의료 진단 능력과 한계를 명확히 규명했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 중추신경계(CNS), 심장, 흉부, 종양학 등 17개 신체 시스템에 대해 X-ray, CT, MRI, PET, DSA, 유방촬영술, 초음파, 병리 등 8개 모달리티의 의료 영상을 활용하여 GPT-4V를 다각도로 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>GPT-4V의 단일 뇌 MRI 영상 분석 사례</em></p></div>
 <ol>
 <li><strong>영상 모달리티 및 해부학적 구조 인식 우수</strong>: GPT-4V는 의료 영상의 촬영 방식(X-ray, CT, MRI 등)과 신체 부위를 정확하게 식별할 수 있으며, 이 분야에서는 상대적으로 높은 성능을 보임</li>
 <li><strong>질병 진단에서 심각한 한계</strong>: 정확한 질병 진단 능력이 현저히 부족하며, 특히 드문 질환이나 복잡한 임상 소견의 경우 오진 또는 관련 없는 답변을 생성함</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>환자 병력에 대한 과도한 의존성</strong>: 환자의 의료 기록이 제공되면 답변이 크게 달라지며, 이는 모델이 영상 정보보다 텍스트 정보에 더 큰 가중치를 두는 경향을 시사함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>해부학적 구조 및 이상 소견 위치 파악 평가 사례</em></p></div>
 <ul>
 <li><strong>사례 선정</strong>: 17개 신체 시스템별로 실제 임상 사례 수집 및 다양한 질환 포함</li>
 <li><strong>영상 처리</strong>: 원본 의료 영상을 GPT-4V 입력 형식에 맞게 전처리</li>

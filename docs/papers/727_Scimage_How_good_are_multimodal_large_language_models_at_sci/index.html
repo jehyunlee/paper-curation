@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Leixin Zhang, Steffen Eger, Yinjie Cheng, Weihe Zhai, Jonas Belouadi, Christoph Leiter, Simone Paolo Ponzetto, Fahimeh Moafian, Zhixue Zhao | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.02368" target="_blank">arXiv:2412.02368</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>과학적 텍스트-이미지 생성의 예시. 일반 이미지(좌측)와 달리 과학 이미지는 정확한 공간 배치, 수치 표현, 객체 속성의 정확성을 요구한다.</em></p></div>
 <p>본 논문은 멀티모달 대규모 언어모델(LLM)의 과학적 이미지 생성 능력을 평가하기 위한 ScImage 벤치마크를 제시한다. 5가지 모델(GPT-4o, Llama, AutomaTikZ, DALL-E, StableDiffusion)을 공간(spatial), 수치(numeric), 속성(attribute) 이해 차원에서 평가한 결과, 모든 모델이 특히 복합 프롬프트에서 상당한 어려움을 겪는 것으로 나타났다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>세 가지 이해 차원의 설명. 속성(attribute), 공간(spatial), 수치(numeric) 이해가 개별적으로 및 조합된 형태로 평가된다.</em></p></div>
 <ol>
 <li><strong>벤치마크 구축</strong>: ~3,000개의 생성된 과학 이미지에 대한 약 3,000 USD 규모의 인간 평가 점수를 포함한 포괄적인 ScImage 벤치마크 제시</li>
 <li><strong>광범위한 모델 평가</strong>: 코드 기반 및 멀티모달 모델 5개(최대 8개의 서로 다른 구성)를 체계적으로 비교하여 각 모델의 장단점 분석</li>
@@ -109,8 +105,6 @@ a { color: #A62018; }
 <li><strong>평가 메트릭 검증</strong>: 표준 자동화 메트릭(CLIPScore, FID 등)이 과학 이미지 평가에 신뢰도가 낮음을 입증하고 인간 평가의 필요성 확인</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>텍스트-코드-이미지 생성과 직접 텍스트-이미지 생성의 비교.</em></p></div>
 <ul>
 <li><strong>프롬프트 설계</strong>: 3가지 이해 차원(공간, 수치, 속성)을 개별적으로 및 조합된 형태로 테스트하는 404개의 영어 프롬프트 구성</li>
 <li><strong>모델 범위</strong>:

@@ -82,8 +82,6 @@ a { color: #A62018; }
 <li><strong>scFv 조합 설계의 증명</strong>: 설계된 중쇄(heavy chain) CDR과 경쇄(light chain) CDR을 결합하여 TcdB와 Phox2b peptide-MHC 복합체에 대한 scFv 설계를 처음으로 달성. 두 개의 TcdB scFv에서 올바른 Ig 폴드와 결합 자세를 크라이오-EM으로 확인했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Overview of RFdiffusion for antibody design">
-<p class="fig-caption"><em>Figure 1: RFdiffusion 항체 설계 개요. (A) 미세조정 과정에서 항체 복합체 구조를 노이징하여 학습, (B) 추론 시 프레임워크 서열과 구조를 제공, (C) 전역 프레임 불변성을 통해 강체 위치 샘플링 가능, (D) 표적 에피토프 지정을 위한 핫스팟(hotspot) 특징 적응</em></p></div>
 <h3>RFdiffusion 미세조정 방법</h3>
 <ul>
 <li><strong>네트워크 구조 유지</strong>: AlphaFold2/RF2의 frame representation(각 잔기의 Cα 좌표 및 N-Cα-C 강체 방향)을 사용하는 확산 모델 구조 유지</li>
@@ -93,8 +91,6 @@ a { color: #A62018; }
 <li><strong>서열 설계</strong>: RFdiffusion 구조 생성 후 ProteinMPNN을 사용하여 CDR 루프 서열 설계</li>
 </ul>
 <h3>RoseTTAFold2 미세조정 방법</h3>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Biochemical characterization of designed VHHs">
-<p class="fig-caption"><em>Figure 2: 설계된 VHH의 생화학적 특성화. 다양한 생물물리학적 방법으로 VHH 결합체의 특이성과 친화도 검증</em></p></div>
 <ul>
 <li><strong>항체-항원 구조 예측 특화</strong>: RF2 네트워크를 항체 구조에 미세조정하되, 학습 시 표적 구조와 에피토프 위치 정보 제공. 이를 통해 CDR 예측 정확도 및 항체-표적 결합 방향 예측 개선</li>
 <li><strong>자체 일관성(self-consistency) 필터링</strong>: RFdiffusion이 생성한 설계 구조를 미세조정 RF2로 재예측하여 설계 구조와의 유사도 평가. 높은 신뢰도로 의도한 방식으로 결합 예측되는 VHH를 선정</li>
@@ -107,8 +103,6 @@ a { color: #A62018; }
 <li><strong>OrthoRep 기반 친화도 성숙</strong>: 무작위 뮤탈 로드 재조합 플라스미드(pOrtho)를 사용하여 VHH CDR 서열의 진화적 최적화. 높은 돌연변이율(mutation rate)로 신속한 친화도 개선</li>
 </ul>
 <h3>구조 검증</h3>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Cryo-EM structural characterization of two de novo designed VHHs">
-<p class="fig-caption"><em>Figure 3: 두 de novo 설계 VHH의 크라이오-EM 구조 특성화. 원자 수준의 설계 정확도 확인</em></p></div>
 <ul>
 <li><strong>크라이오-EM 데이터 수집 및 처리</strong>: 설계된 VHH 또는 scFv와 항원의 복합체에 대한 고해상도 구조 결정</li>
 <li><strong>구조 비교</strong>: 설계 모델 구조와 실험적으로 결정된 구조의 RMSD 계산 및 비교</li>

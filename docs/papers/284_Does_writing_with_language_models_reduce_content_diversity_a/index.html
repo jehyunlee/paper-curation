@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Vishakh Padmakumar, He He | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: 미제공</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>세 그룹(Solo, GPT3, InstructGPT)이 작성한 에세이의 내용 다양성 측정. InstructGPT로 공동 작성한 에세이가 가장 유사하고 어휘 및 내용 다양성이 낮음</em></p></div>
 <p>인간 피드백으로 미세조정된 언어모델(InstructGPT)을 사용한 협력 글쓰기가 통계적으로 유의미하게 내용 다양성을 감소시키는지를 제어된 실험을 통해 측정한 연구이다. 기본 모델(GPT3)은 유의미한 영향을 보이지 않았다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 제어된 실험 설계를 통해 세 조건(모델 없음, 기본 GPT3, 미세조정된 InstructGPT)에서 사용자들이 작성한 논설문을 비교하고 다양성 메트릭스 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>세 그룹의 동질화(homogenization) 점수 비교. InstructGPT 그룹이 유의미하게 높은 점수를 나타냄</em></p></div>
 <ol>
 <li><strong>동질화 효과 입증</strong>: InstructGPT로 작성한 에세이가 다른 두 그룹 대비 저자 간 유사도가 통계적으로 유의미하게 높음. 특히 모델이 기여한 주요 포인트가 이러한 동질화의 주요 원인</li>
 <li><strong>다양성 감소 확인</strong>: InstructGPT 그룹의 에세이들이 (1) 어휘 다양성(lexical diversity) 감소, (2) 반복되는 고차 n-그램(higher-order n-grams) 증가, (3) 고유한 주요 포인트 수 감소를 보임</li>
 <li><strong>모델 종류별 차이</strong>: 미세조정되지 않은 기본 GPT3는 유사한 수준의 모델 기여도에도 불구하고 유의미한 다양성 감소 효과를 보이지 않음. 인간 피드백 강화학습(RLHF)이 모델 출력의 다양성을 감소시키는 것으로 해석</li>
-</ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>상위 50개 단어(a)와 5-gram(b)의 분포. InstructGPT 그룹에서 더 큰 집중도를 보임</em></p></div></div>
+</ol></div>
 <div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>데이터 수집</strong>: Upwork에서 모집한 38명의 영어 모국어 사용자가 New York Times Student Opinion 시리즈의 10개 주제에 대해 약 300단어의 논설문 작성 (총 300편)</li>
@@ -130,7 +124,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 협력 글쓰기 환경에서 인간 피드백 미세조정된 LLM이 콘텐츠 다양성을 의도하지 않게 감소시킨다는 중요한 발견을 제시한 잘 설계된 실증 연구이다. 다만 현상 규명에 주력하여 근본 원인 분석과 해결 방안 제시는 미흡한 편이며, 제한된 참가자 집단에서의 결과로 인한 일반화 가능성 문제가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../375_Generating_full_length_wikipedia_biographies_The_impact_of_g/index.html">Generating full length wikipedia biographies: The impact of gender bias on the retrieval-based generation of women biographies</a></div><div class="conn-reason">언어 모델과의 글쓰기가 콘텐츠 다양성에 미치는 영향 연구로 본 논문의 성별 편향 분석의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../283_Do_Users_Write_More_Insecure_Code_with_AI_Assistants/index.html">Do Users Write More Insecure Code with AI Assistants?</a></div><div class="conn-reason">AI 어시스턴트 사용의 부정적 측면을 각각 다양성과 보안 관점에서 다른 각도로 조사함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../283_Do_Users_Write_More_Insecure_Code_with_AI_Assistants/index.html">Do Users Write More Insecure Code with AI Assistants?</a></div><div class="conn-reason">AI 어시스턴트 사용의 부정적 측면을 각각 보안과 다양성 관점에서 다른 각도로 조사함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../414_Human-llm_coevolution_Evidence_from_academic_writing/index.html">Human-LLM Coevolution: Evidence from Academic Writing</a></div><div class="conn-reason">AI 작문 도구 사용이 콘텐츠 다양성에 미치는 영향을 통계적 분석과 실험적 접근법으로 각각 다르게 탐구합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../409_How_ai_ideas_affect_the_creativity_diversity_and_evolution_o/index.html">AI 아이디어가 인간의 창의성, 다양성, 아이디어 진화에 미치는 영향: 대규모 동적 실험 증거</a></div><div class="conn-reason">언어모델과의 글쓰기가 콘텐츠 다양성을 감소시킨다는 발견이 AI 아이디어 노출의 창의성과 다양성에 대한 영향을 더 광범위한 맥락에서 검증함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../641_Prototypical_human-ai_collaboration_behaviors_from_llm-assis/index.html">Prototypical human-ai collaboration behaviors from llm-assisted writing in the wild</a></div><div class="conn-reason">언어모델과의 글쓰기가 콘텐츠 다양성에 미치는 영향 연구가 인간-AI 협력 행동 분석을 창작물의 품질 변화 측면으로 확장한 심화 연구임</div></div>
@@ -139,7 +132,6 @@ a { color: #A62018; }
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../900_ChatGPT_has_entered_the_classroom_how_LLMs_could_transform_e/index.html">ChatGPT has entered the classroom: how LLMs could transform education</a></div><div class="conn-reason">AI 도구 사용이 교육 콘텐츠 다양성에 미치는 부정적 영향을 제시한다</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../227_Closing_the_loop_Learning_to_generate_writing_feedback_via_l/index.html">Closing the loop: Learning to generate writing feedback via language model simulated student revisions</a></div><div class="conn-reason">AI가 콘텐츠 다양성을 감소시킨다는 우려와 교육적 피드백 개선에 도움된다는 관점이 상반됨</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../571_Neural_automated_writing_evaluation_with_corrective_feedback/index.html">Neural automated writing evaluation with corrective feedback</a></div><div class="conn-reason">언어 모델과 함께 글쓰기할 때 내용 다양성이 감소한다는 연구는 자동 쓰기 평가 시스템이 창의성에 미칠 부정적 영향을 시사한다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../227_Closing_the_loop_Learning_to_generate_writing_feedback_via_l/index.html">Closing the loop: Learning to generate writing feedback via language model simulated student revisions</a></div><div class="conn-reason">AI 어시스턴트가 학습에 도움이 된다는 관점과 콘텐츠 다양성을 감소시킨다는 우려가 상반됨</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../565_Multi-novelty_Improve_the_diversity_and_novelty_of_contents/index.html">Multi-novelty: Improve the diversity and novelty of contents generated by large language models via inference-time multi-views brainstorming</a></div><div class="conn-reason">AI 생성 콘텐츠 다양성 감소 문제에 대한 구체적인 해결책을 제시한다</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../107_Artificial_intelligence_tools_expand_scientists_impact_but_c/index.html">Artificial intelligence tools expand scientists’ impact but contract science’s focus</a></div><div class="conn-reason">언어 모델과의 글쓰기가 콘텐츠 다양성을 줄이는지 조사하여 본 논문의 탐색 범위 축소 현상을 다른 관점에서 검증한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

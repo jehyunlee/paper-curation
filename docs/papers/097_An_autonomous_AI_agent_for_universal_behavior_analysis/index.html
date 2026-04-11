@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Almir Aljović, Zuwan Lin, Wenbo Wang, Xinhe Zhang, Arnau Marin-Llobet | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.05.15.653585" target="_blank">10.1101/2025.05.15.653585</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: BehaveAgent 아키텍처. (a) 현재 행동 분석 방법론과 (b) BehaveAgent의 자동화된 워크플로우 비교</em></p></div>
 <p>멀티모달 대규모 언어 모델(LLM)과 비전-언어 모델(VLM)을 통합한 자율 AI 에이전트 BehaveAgent는 재학습이나 수동 개입 없이 비디오에서 동물 행동을 보편적으로 분석할 수 있다. 식물부터 인간까지 다양한 종과 실험 패러다임에서 제로샷(zero-shot) 시각 추론을 통해 행동 분석을 자동화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다양한 AI 컴포넌트(LLM, VLM, 시각 그라운딩 모델, SAM2 분할 모델)를 멀티모달 컨텍스트 메모리와 목표 지향적 주의 메커니즘으로 통합한 자율 에이전트 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 제로샷 행동 패러다임 감지 및 목표 설정. BehaveAgent가 생성된 비디오에서 자동으로 행동 유형을 인식하고 맞춤형 분석 목표를 설정함</em></p></div>
 <ol>
 <li><strong>제로샷 행동 패러다임 감지</strong>: OpenAI의 Sora로 생성된 비디오에서 추가 맥락 정보 없이 Morris Water Maze(쥐의 공간 학습), Corvid 문제해결(조류 인지), Primate 객체 조작, 얼굴 표정 분석 등 서로 다른 4가지 행동 패러다임을 자동 식별하고 전문화된 분석 목표 설정.</li>
 <li><strong>종 간 보편적 적용 가능성</strong>: 식물, 곤충, 설치류, 영장류, 인간에 이르는 다양한 생물 대상에서 추가 학습이나 미세조정 없이 행동 분석 수행 가능. 자동화된 피처 추적, 행동 수열 식별, 해석적 추론 제공.</li>
 <li><strong>포괄적 연구 보고서 생성</strong>: 행동 발견을 과학 문헌과 통합하여 목표, 방법론, 발견, 함의 및 참고문헌을 포함한 완전한 연구 문서 자동 생성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 목표 지향적 피처 감지 및 추론 기반 추적</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 비디오 객체 분할 및 VLM 안내 의미론적 라벨링을 통한 피처 클러스터링</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: 맥락 인식 행동 시간적 분할</em></p></div>
 <ul>
 <li><strong>아키텍처 구성</strong>: GPT-4o, Claude-3.7-Sonnet, Gemini-2.5-Pro-Preview 등 멀티모달 LLM을 추론 및 계획 핵심으로 사용. Molmo 등 대규모 시각 그라운딩 모델로 자연어 지시를 통한 정확한 객체 위치 파악.</li>
 <li><strong>적응형 코어(Adaptive Core)</strong>: 입력 비디오에서 행동 패러다임을 제로샷 감지하고 자동으로 목표 설정. VLM을 통해 실험 설정, 피사체, 행동 패턴 인식 (도메인별 미세조정 불필요).</li>

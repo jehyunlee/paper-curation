@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kimi Team, Angang Du, Bofei Gao, Bowei Xing, Changjiu Jiang, Cheng Chen, Cheng Li, Chenjun Xiao, Chenzhuang Du, Chonghua Liao, Chuning Tang, Congcong Wang, Dehao Zhang, Enming Yuan, Enzhe Lu, Feng Tang, Flood Sung, Guangda Wei, Guokun Lai, Haiqing Guo | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: arXiv:2501.12599v4</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Kimi k1.5 long-CoT results">
-</div>
 <p>본 논문은 대규모 언어모델(LLM)의 강화학습(RL) 기반 훈련을 통해 추론 성능을 대폭 향상시킨 Kimi k1.5 모델을 제시한다. 긴 맥락(long context) 확장과 개선된 정책 최적화를 기반으로 복잡한 기법(MCTS, 가치함수 등) 없이도 o1 수준의 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -98,8 +96,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Kimi k1.5 short-CoT results">
-</div>
 <ol>
 <li><strong>Long-CoT 성능</strong>: AIME 77.5점(o1 74.4점과 동등), MATH-500 96.2점(o1 94.8점 상회), Codeforces 94 백분위 달성
 <ul>
@@ -114,8 +110,6 @@ a { color: #A62018; }
 <li><strong>Long2Short 방법론</strong>: 긴 추론에서 학습한 활성화 패턴을 단문 모델에 이전하여 성능 유지</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Large Scale Reinforcement Learning Training System for LLM">
-</div>
 <ul>
 <li><strong>RL 프롬프트 셋 큐레이션</strong>:
 <ul>
@@ -166,7 +160,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 긴 맥락과 간단한 정책 최적화만으로 o1 수준의 추론 성능을 달성한 점에서 실질적 기여도가 크다. 특히 Long2Short 기법으로 단문 모델도 대폭 향상시킨 결과는 실무적 가치가 높으나, 훈련 데이터 공개 미흡과 이론적 근거 보강이 이루어진다면 더욱 설득력 있는 연구가 될 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../033_A_survey_on_large_language_model_based_autonomous_agents/index.html">A survey on large language model based autonomous agents</a></div><div class="conn-reason">대규모 언어모델 기반 자율 에이전트 서베이는 Kimi k1.5의 강화학습 기반 에이전트 설계에 이론적 배경과 방법론적 근거를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../265_DeepSeek-R1_incentivizes_reasoning_in_LLMs_through_reinforce/index.html">DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning</a></div><div class="conn-reason">두 논문 모두 강화학습으로 LLM 추론을 향상시키되 Kimi k1.5는 긴 맥락 확장, DeepSeek-R1은 순수 RL에 중점을 둔다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../265_DeepSeek-R1_incentivizes_reasoning_in_LLMs_through_reinforce/index.html">DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning</a></div><div class="conn-reason">두 논문 모두 강화학습으로 LLM의 추론 능력을 향상시키되 DeepSeek-R1은 순수 RL, Kimi k1.5는 긴 맥락과 정책 최적화를 강조한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../422_Improving_generalization_of_robot_locomotion_policies_via_sh/index.html">Improving generalization of robot locomotion policies via sharpness-aware reinforcement learning</a></div><div class="conn-reason">로봇 정책의 일반화 성능 향상을 위한 SAM 기법은 Kimi k1.5의 정책 최적화 방법론에 샤프니스 인식 최소화를 도입할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

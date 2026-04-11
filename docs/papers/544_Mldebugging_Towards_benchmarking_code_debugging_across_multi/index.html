@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jinyang Huang, Xiachong Feng, Qiguang Chen, Hanzhang Zhao, Zheng Cheng, Jie Bai, Jingxuan Zhou, Min Li, L. Q. Qin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다중 라이브러리 코드 디버깅의 예시: (a) 단순 정적 버그 vs (b) 라이브러리 간 변수 적응 문제</em></p></div>
 <p>본 논문은 실제 소프트웨어 개발 환경에서 흔히 나타나는 <strong>다중 라이브러리 시나리오에서의 코드 디버깅</strong>을 체계적으로 평가하기 위한 MLDebugging 벤치마크를 제시한다. 126개의 Python 라이브러리를 포함하고 7가지 버그 유형으로 분류된 1,175개의 샘플로 구성되어 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 라이브러리 코드 디버깅 벤치마크를 구축하고, 버그 카테고리 균형 조정 프로세스를 설계하며, 기존 오픈소스 및 클로즈드소스 LLM들의 성능을 종합 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>데이터셋 구축 파이프라인: (1) 데이터셋 수집, (2) LLM을 통한 디버깅, (3) 카테고리 균형 조정, (4) 수동 검증</em></p></div>
 <ol>
 <li><strong>다중 라이브러리 디버깅 벤치마크 구축</strong>: 126개의 widely-used 라이브러리를 포함하는 1,175개의 고품질 샘플 생성. 기존 벤치마크(xCodeEval, HumanEval, MdEval)와 달리 2-6개의 라이브러리 사용 및 실제 시나리오 반영.</li>
 <li><strong>체계적 버그 분류 체계</strong>: Type Mismatch(TM), Data Transfer Issues(DTI), Function Parameter Errors(FPE), Parameter Configuration Errors(PCE), Function Misuse(FM), Requirement Misunderstanding(RM), Import Errors(IE) 등 7개 카테고리로 분류.</li>
@@ -90,8 +86,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>데이터셋 구축의 4단계 프로세스</em></p></div>
 <p><strong>1. 소스 코드 수집</strong></p>
 <ul>
 <li>BigCodeBench(Zhuo et al., 2024)에서 다중 라이브러리 코드 쿼리 수집</li>
@@ -153,7 +147,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MLDebugging은 코드 디버깅 연구의 중요한 공백인 다중 라이브러리 시나리오를 처음으로 체계적으로 다루는 실질적인 기여를 한다. 엄격한 데이터 수집 및 품질 관리 프로세스와 포괄적인 LLM 평가를 통해 이 분야의 토대를 마련했으나, 언어 제한, 샘플 규모, 버그 현실성 검증 측면에서 개선 여지가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">머신러닝 에이전트 평가를 위한 언어 모델 벤치마크가 다중 라이브러리 환경에서의 코드 디버깅 평가의 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../090_AIRS-Bench_a_Suite_of_Tasks_for_Frontier_AI_Research_Science/index.html">AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</a></div><div class="conn-reason">프론티어 AI 연구 과학 에이전트 평가와 다중 라이브러리 코드 디버깅 평가 모두 AI의 복잡한 기술적 문제 해결 능력을 측정하지만 접근법이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../090_AIRS-Bench_a_Suite_of_Tasks_for_Frontier_AI_Research_Science/index.html">AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents</a></div><div class="conn-reason">AI 에이전트의 연구 생명주기 전체 평가와 다중 라이브러리 코드 디버깅 평가 모두 복잡한 AI 능력을 측정하지만 평가 범위가 다르다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../548_Mlr-bench_Evaluating_ai_agents_on_open-ended_machine_learnin/index.html">MLR-Bench: Evaluating AI Agents on Open-Ended Machine Learning Research</a></div><div class="conn-reason">오픈엔드 머신러닝 연구 평가가 실제 소프트웨어 개발에서의 디버깅 능력 평가를 연구 차원으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../550_MLRC-Bench_Can_Language_Agents_Solve_Machine_Learning_Resear/index.html">MLRC-Bench: Can Language Agents Solve Machine Learning Research Challenges?</a></div><div class="conn-reason">코드 디버깅 벤치마크로서 MLRC-Bench에서 요구되는 코드 구현 및 수정 능력 평가를 보완한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

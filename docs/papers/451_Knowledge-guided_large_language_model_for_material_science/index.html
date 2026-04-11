@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Guanjie Wang, Jingjing Hu, Jian Zhou, Sen Liu, Qingjiang Li, Zhimei Sun | <strong>날짜</strong>: 2025-02-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1016/j.revmat.2025.100007" target="_blank">10.1016/j.revmat.2025.100007</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Fig. 1">
-<p class="fig-caption"><em>그림 1: 최근 년도별 대규모 언어모델의 발전 timeline. 오픈소스 LLM은 노란색으로 표시</em></p></div>
 <p>ChatGPT로 촉발된 대규모 언어모델(LLM)의 혁신을 재료과학 분야에 체계적으로 적용하기 위한 지식-안내식 도메인 특화 모델 개발 및 활용 방법론을 제시한 종합 리뷰 논문이다. 본 논문은 LLM 구축부터 재료 발견에의 실제 응용까지 전주기적 가이드라인을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 구축 프레임워크(목표 결정, 데이터 큐레이션, 모델 아키텍처 설계, 훈련 및 평가 프레임워크), 도메인 특화 방법론(파인튜닝, 검색-증강 생성, 프롬프트 엔지니어링, AI 에이전트), 재료과학 응용 분야를 체계적으로 검토한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Fig. 2">
-<p class="fig-caption"><em>그림 2: LLM을 처음부터 구축하기 위한 프레임워크</em></p></div>
 <ol>
 <li><strong>LLM 개발 이정표 정리</strong>: 통계적 언어모델(1990s) → 신경 언어모델(2000s) → 사전학습 언어모델/BERT → 초대형 모델(GPT-3, PaLM) → ChatGPT/GPT-4 → 다중모드 모델(Claude 3, LLaMA 3)까지의 진화 과정을 시간별로 체계화했다.</li>
 <li><strong>실용적 LLM 구축 가이드라인</strong>: 범위-목표 결정 → 아키텍처 설계 → 데이터 큐레이션 → 훈련 프레임워크 수립 → 평가 체계 구축의 5단계 프로세스를 제시했다.</li>
@@ -86,12 +82,6 @@ a { color: #A62018; }
 <li><strong>재료과학 응용 사례 확대</strong>: 정형화된 정보 추출, 물성 예측, 신규 화합물 발견, 자율 실험실, 로봇 기반 재료 발견까지 구체적 응용 분야를 매핑했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Fig. 3">
-<p class="fig-caption"><em>그림 3: LLM 파인튜닝을 위한 프레임워크. (a) 매개변수 효율적 파인튜닝의 3가지 단계</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Fig. 4">
-<p class="fig-caption"><em>그림 4: 검색-증강 생성(RAG)의 개요</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Fig. 5">
-<p class="fig-caption"><em>그림 5: (a) 비에이전트, (b) 에이전트, (c) 다중 에이전트 워크플로우</em></p></div>
 <p><strong>재료과학 LLM 구축 및 적용 방법론</strong>:</p>
 <ul>
 <li><strong>아키텍처 설계</strong>: Transformer 기반 구조 채택 → 자기-주의(Self-Attention) 메커니즘으로 재료 데이터 간 관계성 포착 → 다중-헤드 주의(Multi-Head Attention)로 다양한 재료 정보 표현 → 위치 인코딩으로 원자 배열이나 합성 경로 등 시퀀셜 정보 처리</li>
@@ -122,7 +112,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../111_AtomAgents_Alloy_design_and_discovery_through_physics-aware/index.html">AtomAgents: Alloy design and discovery through physics-aware multi-modal multi-agent artificial intelligence</a></div><div class="conn-reason">재료과학 분야 LLM 활용의 이론적 기초와 체계적 방법론을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../346_Foundation-Model_Surrogates_Enable_Data-Efficient_Active_Lea/index.html">Foundation-Model Surrogates Enable Data-Efficient Active Learning for Materials Discovery</a></div><div class="conn-reason">재료 발견을 위한 능동 학습 시스템의 도메인 특화 언어 모델 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../523_MatterChat_A_Multi-Modal_LLM_for_Material_Science/index.html">MatterChat: A Multi-Modal LLM for Material Science</a></div><div class="conn-reason">재료과학 LLM이라는 동일한 목표를 지식 안내와 구조 인식이라는 서로 다른 접근법으로 구현합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../523_MatterChat_A_Multi-Modal_LLM_for_Material_Science/index.html">MatterChat: A Multi-Modal LLM for Material Science</a></div><div class="conn-reason">재료과학 특화 LLM이라는 동일한 목표를 구조 인식과 지식 안내라는 상호 보완적 방법으로 달성합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../111_AtomAgents_Alloy_design_and_discovery_through_physics-aware/index.html">AtomAgents: Alloy design and discovery through physics-aware multi-modal multi-agent artificial intelligence</a></div><div class="conn-reason">재료과학 LLM의 이론적 방법론을 합금 설계라는 구체적 응용으로 확장하는 실용적 사례입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../613_Personalized_graph-based_retrieval_for_large_language_models/index.html">Personalized graph-based retrieval for large language models</a></div><div class="conn-reason">지식 안내 언어 모델의 개념을 개인화된 지식 그래프로 확장하여 더 정교한 사용자별 정보 검색이 가능하다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../626_Polymer_Brushes_and_Grafted_Polymers_AIML-Driven_Synthesis_S/index.html">Polymer Brushes and Grafted Polymers: AI/ML-Driven Synthesis, Simulation, and Characterization towards autonomous SDL</a></div><div class="conn-reason">재료과학 LLM 방법론을 중합체 브러시라는 특정 재료 시스템에 적용하는 전문화된 사례입니다.</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jiaxin Huang, Shixiang Gu, Le Hou, Yuexin Wu, Xuezhi Wang, Hongkun Yu, Jiawei Han | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 방법의 개요. Chain-of-Thought 예시를 활용하여 언어모델이 여러 개의 CoT 추론 경로를 생성하고, 다수결 투표(Majority Voting)로 고신뢰도 답변을 선택한 후, 이를 파인튜닝 데이터로 활용">
-<p class="fig-caption"><em>그림 1: 방법의 개요. Chain-of-Thought 예시를 활용하여 언어모델이 여러 개의 CoT 추론 경로를 생성하고, 다수결 투표(Majority Voting)로 고신뢰도 답변을 선택한 후, 이를 파인튜닝 데이터로 활용</em></p></div>
 <p>대규모 언어모델(LLM)이 레이블 없는 데이터만으로 자기 생성 고신뢰도 추론(reasoning) 경로를 통해 자가 개선(self-improve)할 수 있음을 입증한 논문이다. Chain-of-Thought 프롬팅과 자기 일관성(self-consistency)을 활용하여 감독 신호 없이 모델의 추론 능력을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 레이블 없는 질문 데이터에 CoT 프롬팅으로 다중 추론 경로 생성 (2) 다수결 투표로 고신뢰도 답변 선택 (3) 해당 답변으로 이어지는 모든 추론 경로를 파인튜닝 데이터로 사용 (4) 혼합 형식(mixed format) 증강으로 다양한 학습 데이터 생성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: GSM8K 훈련 집합에서 다중 경로 디코딩 후 다수결 투표 답변의 신뢰도와 정확도 관계">
-<p class="fig-caption"><em>그림 2: GSM8K 훈련 집합에서 다중 경로 디코딩 후 다수결 투표 답변의 신뢰도와 정확도 관계</em></p></div>
 <ol>
 <li><strong>도메인 내 성능 대폭 향상</strong>: 540B 파라미터 PaLM 모델에서 GSM8K 74.4%→82.1%, DROP 78.2%→83.0%, OpenBookQA 90.0%→94.4%, ANLI-A3 63.4%→67.9%로 개선. 감독 신호 없이 최신 수준(state-of-the-art) 성능 달성</li>
 <li><strong>도메인 외 일반화(Out-of-Domain Generalization)</strong>: AQUA, StrategyQA, MNLI 등 훈련 분포와 다른 데이터셋에서도 성능 개선. 자가 개선이 특정 데이터셋에 과적합(overfitting)되지 않고 일반적 추론 능력을 향상시킴을 입증</li>
 <li><strong>상태 추적 능력</strong>: 신뢰도 척도(confidence measure)가 실제 정확도와 높은 상관관계를 보임(Figure 2). 모델이 자신의 신뢰도를 정확히 평가할 수 있음을 시사</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: PaLM-540B에서 다중 경로 샘플링을 사용한 GSM8K 테스트 집합에서의 정확도 결과">
-<p class="fig-caption"><em>그림 3: PaLM-540B에서 다중 경로 샘플링을 사용한 GSM8K 테스트 집합에서의 정확도 결과</em></p></div>
 <ul>
 <li><strong>다중 경로 디코딩(Multiple Path Decoding)</strong>: 각 질문 x_i에 대해 샘플링 온도 T > 0으로 m개의 CoT 추론 경로 {r_i1, r_i2, ..., r_im} 생성</li>
 <li><strong>다수결 투표 기반 필터링(Majority Voting Filtering)</strong>: 생성된 경로들의 최종 답변 {y_i1, y_i2, ..., y_im}에 대해 다수결 투표로 가장 일관성 있는 답변 ỹ_i 선택. 반드시 정답일 필요는 없지만 여러 경로가 합의한 답변</li>
@@ -114,7 +108,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 이 논문은 레이블 없는 데이터로 대규모 언어모델이 자가 개선할 수 있음을 명확히 입증한 중요한 연구다. Chain-of-Thought와 자기 일관성을 창의적으로 조합하여 강력한 자동 감독 신호를 얻었으며, 도메인 내외 다수 데이터셋에서 상태 추적 수준의 성능을 달성했다. 다만 신뢰도 평가의 정교성, 오류 증폭 위험, 계산 비용 등의 한계가 있으나, 감독 신호 의존성을 크게 줄일 수 있다는 점에서 실무적 가치가 매우 높다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../746_Self-Refine_Iterative_Refinement_with_Self-Feedback/index.html">Self-Refine: Iterative Refinement with Self-Feedback</a></div><div class="conn-reason">자기 일관성과 고신뢰도 추론을 통한 자가 개선 방법론이 Self-Refine의 피드백 기반 반복적 정제 시스템의 이론적 토대를 마련함</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../746_Self-Refine_Iterative_Refinement_with_Self-Feedback/index.html">Self-Refine: Iterative Refinement with Self-Feedback</a></div><div class="conn-reason">둘 다 LLM이 외부 지도 없이 자기 개선하는 메커니즘을 다루지만, Self-Refine은 피드백 기반, 이 논문은 추론 경로 기반 접근법을 사용</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../314_Enabling_language_models_to_implicitly_learn_self-improvemen/index.html">Enabling language models to implicitly learn self-improvement</a></div><div class="conn-reason">LLM의 일반적인 자기개선 능력에 대한 기초 연구가 암묵적 자기개선 프레임워크 개발의 이론적 토대를 제공함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../447_Iterative_self-incentivization_empowers_large_language_model/index.html">Iterative self-incentivization empowers large language models as agentic searchers</a></div><div class="conn-reason">반복적 자기 인센티브 방법이 레이블 없는 데이터를 통한 자가 개선을 강화학습 기반의 더 정교한 자기 동기 시스템으로 발전시킨 연구임</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../471_Large_Language_Models_Cannot_Self-Correct_Reasoning_Yet/index.html">Large Language Models Cannot Self-Correct Reasoning Yet</a></div><div class="conn-reason">LLM이 아직 추론에서 자기 수정을 완전히 수행할 수 없다는 비판적 분석이 자가 개선 가능성에 대한 낙관적 결과에 반박하는 관점을 제시함</div></div></div>

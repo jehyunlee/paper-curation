@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jay DeYoung, Iz Beltagy, Madeleine van Zuylen, Bailey Kuehl, Lucy Lu Wang | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2104.06486" target="_blank">arXiv:2104.06486</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>연구 배경(BACKGROUND)과 개별 의약 논문 초록(study abstracts)으로부터 목표 요약(TARGET summary)을 생성하는 텍스트-투-텍스트 다중문서 요약 작업</em></p></div>
 <p>본 논문은 의료 분야의 문헌 검토 자동화를 목표로 470K개 의약 논문과 20K개 체계적 문헌 검토(systematic reviews)를 포함한 대규모 다중문서 요약 데이터셋 MS²을 제시하며, 이는 생의학 도메인의 첫 공개 다중문서 요약 데이터셋이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 체계적 문헌 검토(systematic reviews)로부터 자동으로 생성된 다중문서 요약 데이터셋을 구축하고, 자유 텍스트 형식과 구조화된 형식(PICO 요소 및 증거 추론)을 모두 제공하며 BART 기반 요약 시스템을 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>문헌 검토와 인용된 개별 논문 출판 연도의 분포에서 약 8년의 시간 격차가 명확히 드러남</em></p></div>
 <ol>
 <li><strong>데이터셋 구축</strong>: 체계적 문헌 검토 자동 식별 파이프라인(키워드 필터 → PubMed 필터 → 문서 유형 필터 → 적합성 분류기)을 통해 20K개 검토와 470K개 개별 논문으로 구성된 대규모 데이터셋 구축. 테스트셋의 모든 TARGET 문장 2K개 검토(4,519문)에 대해 수동 검증 수행.</li>
 <li><strong>다중 형식 지원</strong>: 자유 텍스트 형식(texts-to-text seq2seq)과 구조화된 형식(table-to-table)을 모두 제공하여 유연한 접근 가능. PICO 요소 태깅과 증거 추론(Evidence Inference) 클래스 라벨 자동 생성으로 구조적 일관성 평가 가능.</li>
@@ -124,7 +120,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MS²는 의료 도메인에 다중문서 요약이라는 새로운 NLP 과제를 제시하고 대규모 공개 데이터셋을 제공함으로써 학계의 기여도가 크나, 현재 기준 모델의 성능(증거 방향 일치도 50%)이 실무 적용에는 미흡하며 구조화 정보의 활용 방안이 더욱 발전할 필요가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../581_Oarelatedwork_A_large-scale_dataset_of_related_work_sections/index.html">OARelatedWork: A large-scale dataset of related work sections with full-texts from open access sources</a></div><div class="conn-reason">의료 분야 다중문서 요약의 기초적 접근이 관련 업무 생성을 위한 전체 텍스트 활용 방법의 토대를 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../778_Summarizing_multiple_documents_with_conversational_structure/index.html">Summarizing multiple documents with conversational structure for meta-review generation</a></div><div class="conn-reason">둘 다 의료/학술 분야 다중문서 요약을 다루지만 하나는 체계적 문헌 검토, 다른 하나는 동료평가에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../778_Summarizing_multiple_documents_with_conversational_structure/index.html">Summarizing multiple documents with conversational structure for meta-review generation</a></div><div class="conn-reason">둘 다 의료/학술 분야 다중문서 요약을 다루지만 하나는 동료평가, 다른 하나는 체계적 문헌 검토에 중점을 둠</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../812_TLDR_Extreme_Summarization_of_Scientific_Documents/index.html">TLDR: Extreme Summarization of Scientific Documents</a></div><div class="conn-reason">의료 연구의 다중문서 요약을 과학 문서의 극단적 요약으로 확장하여 더 간결한 정보 압축 방법을 탐구함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../581_Oarelatedwork_A_large-scale_dataset_of_related_work_sections/index.html">OARelatedWork: A large-scale dataset of related work sections with full-texts from open access sources</a></div><div class="conn-reason">의료 연구의 다중문서 요약을 전체 논문 텍스트를 활용하는 관련 업무 생성으로 확장하여 더 포괄적인 문헌 요약을 제공함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

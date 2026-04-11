@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shengjun Liu, Yu Yu, Ting Zhang, Hanchao Liu, Xinru Liu, Deyu Meng | <strong>날짜</strong>: 2025-10-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1016/j.neucom.2025.130518" target="_blank">10.1016/j.neucom.2025.130518</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>신경 연산자의 발전 역사</em></p></div>
 <p>편미분방정식(PDE) 해법으로 전통 수치해석 방법을 대체할 수 있는 신경 연산자(Neural Operators, NOs)의 아키텍처, 변형, 성능을 종합적으로 비교 분석한 체계적 리뷰 논문이다. DeepONet, 적분 커널 연산자, 트랜스포머 기반 신경 연산자의 세 가지 주요 아키텍처와 이들의 물리정보 통합 변형, 복잡계 응용을 다룬다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세 가지 기본 아키텍처의 구조와 성질을 소개하고, (1) 연산자 기저 기반 변형, (2) 물리정보 통합 변형, (3) 복잡계 응용 변형을 분석한 후, 수치 실험으로 성능 비교</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DeepONet 네트워크 아키텍처: 트렁크 네트워크(trunk network)와 p개의 브랜치 네트워크(branch network)로 구성</em></p></div>
 <ol>
 <li><strong>포괄적 분류 체계 수립</strong>: 신경 연산자를 세 가지 주요 아키텍처(DeepONet, 적분 커널 연산자, 트랜스포머 기반)로 체계화하고 각각의 기본 구조, 장단점, 적용 조건을 명확히 정의</li>
 <li><strong>다층적 변형 분석</strong>: 연산자 기저(operator basis) 변형, 물리정보 통합, 복잡계 응용 세 방향으로 신경 연산자 확장을 체계적으로 정리하여 상호연관성과 차이점 제시</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실무 가이드라인 제공</strong>: 신경 연산자의 한계(대량 학습 데이터 필요, 고차원 문제에서 성능 저하)와 개선 방향을 제시하여 실제 응용과 개발을 위한 체계적 지침 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>적분 커널 연산자 프레임워크: 입력 함수 a가 점별 리프팅 연산자를 통해 고차원 공간으로 변환</em></p></div>
 <p><strong>DeepONet 방식</strong>:</p>
 <ul>
 <li>트렁크 네트워크: 쿼리 좌표점 x에서 기저 함수 t_k(x) 학습</li>

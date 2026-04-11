@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Maximilian Nickel, K. Murphy, Volker Tresp, E. Gabrilovich | <strong>날짜</strong>: 2015 | <strong>DOI</strong>: <a href="https://doi.org/10.1109/JPROC.2015.2483592" target="_blank">10.1109/JPROC.2015.2483592</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1. Sample knowledge graph. Nodes represent entities, edge labels represent</em></p></div>
 <p>본 논문은 지식 그래프(Knowledge Graphs)에 대한 관계형 기계학습(Relational Machine Learning) 기법들을 종합적으로 검토하며, 잠재 특성 모델(Latent Feature Models)과 그래프 패턴 마이닝 기반 모델을 통해 누락된 사실(엣지)을 예측하는 방법을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 논문은 (1) 텐서 분해와 신경망 기반의 잠재 특성 모델, (2) 관찰 가능한 그래프 패턴 기반 모델, (3) 두 가지 접근법의 결합을 제시하며, 이들을 Google의 Knowledge Vault 프로젝트와 같은 실제 시스템에 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1. Sample knowledge graph. Nodes represent entities, edge labels represent</em></p></div>
 <ul>
 <li><strong>관계형 기계학습 프레임워크</strong>: 통계적 관계형 학습(SRL)을 지식 그래프에 적용하여 누락된 엣지 예측, 노드 속성 예측, 연결성 기반 클러스터링 등의 작업을 수행할 수 있는 체계적 방법론 제시</li>
 <li><strong>이중 모델 아키텍처</strong>: 잠재 특성 모델(RESCAL, 신경망)과 관찰 가능 패턴 모델의 장점을 결합하여 예측 성능과 계산 효율성의 균형 달성</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자동 지식베이스 구축 파이프라인</strong>: 정보 추출과 통계적 모델을 결합하여 웹에서 추출한 노이즈가 있는 사실들의 신뢰성을 자동으로 검증하고 필터링하는 방법 제시</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3. Tensor representation of binary relational data.</em></p></div>
 <ul>
 <li>- 지식 그래프를 3-모드 텐서로 표현하여 텐서 분해(Tensor Factorization) 기법 적용</li>
 <li>- 다층 신경망(Multiway Neural Networks)을 이용한 엔티티 임베딩 학습</li>
@@ -119,7 +113,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../032_A_Survey_on_Knowledge_Graphs_Representation_Acquisition_and/index.html">A Survey on Knowledge Graphs: Representation, Acquisition, and Applications</a></div><div class="conn-reason">관계형 기계학습과 지식 그래프의 표현 학습에 대한 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../882_When_large_language_models_meet_citation_A_survey/index.html">When large language models meet citation: A survey</a></div><div class="conn-reason">지식 그래프와 관계형 머신러닝 기반이 LLM-인용 분석 결합의 이론적 토대를 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../393_Graphusion_a_rag_framework_for_knowledge_graph_construction/index.html">Graphusion: a rag framework for knowledge graph construction with a global perspective</a></div><div class="conn-reason">관계형 기계학습의 이론적 기초가 지식 그래프 구축을 위한 RAG 프레임워크 개발의 방법론적 배경을 제공함</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../393_Graphusion_a_rag_framework_for_knowledge_graph_construction/index.html">Graphusion: a rag framework for knowledge graph construction with a global perspective</a></div><div class="conn-reason">지식 그래프를 위한 관계형 기계학습 리뷰가 과학 지식그래프 구축의 이론적 토대를 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../448_Kgvalidator_A_framework_for_automatic_validation_of_knowledg/index.html">KGValidator: A framework for automatic validation of knowledge graph construction</a></div><div class="conn-reason">지식 그래프를 위한 관계형 기계학습에 대한 포괄적 리뷰로 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../434_Interesting_Scientific_Idea_Generation_using_Knowledge_Graph/index.html">Interesting Scientific Idea Generation using Knowledge Graphs and LLMs: Evaluations with 100 Research Group Leaders</a></div><div class="conn-reason">지식 그래프의 관계형 기계학습에 대한 체계적 검토가 과학 아이디어 생성을 위한 지식 그래프 활용의 이론적 토대를 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../066_Agentic_Personas_for_Adaptive_Scientific_Explanations_with_K/index.html">Agentic Personas for Adaptive Scientific Explanations with Knowledge Graphs</a></div><div class="conn-reason">지식 그래프 관계형 머신러닝 리뷰는 Agentic Personas의 지식그래프 기반 설명 생성 시스템 설계에 핵심적인 이론적 배경을 제공한다.</div></div></div>

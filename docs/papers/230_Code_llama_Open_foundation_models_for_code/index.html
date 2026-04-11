@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Baptiste Rozière, Jonas Gehring, Fabian Gloeckle, Sten Sootla, Itai Gat, Xiaoqing Tan, Yossi Adi, Jingyu Liu, Tal Remez, J. Rapin, Artyom Kozhevnikov, I. Evtimov, Joanna Bitton, Manish P Bhatt, Cristian Canton Ferrer, Aaron Grattafiori, Wenhan Xiong, Alexandre D'efossez, Jade Copet, Faisal Azhar | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: -</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Code Llama 특화 파이프라인. 다양한 미세조정(fine-tuning) 단계를 거쳐 기반 모델에서 Instruct 모델로 발전">
-</div>
 <p>Code Llama는 Llama 2 기반의 오픈소스 코드 생성 대규모언어모델(Large Language Model, LLM) 계열로, 코드 인필링(infilling), 장문맥 처리, 명령어 추종 능력을 갖춘 차세대 코드 생성 모델이다. 7B부터 70B 파라미터까지 4가지 크기의 모델과 3가지 변형(기본, Python 특화, Instruct)을 제공하며, 공개 모델 중 최고 수준의 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Llama 2 기반에서 시작하여 단계적 특화를 수행한다: (1) 500B~1T 토큰의 코드 중심 데이터로 사전학습, (2) 인필링 목표(FIM, Fill-In-the-Middle) 추가, (3) RoPE 위치 임베딩 수정을 통한 장문맥 미세조정(16K→100K 토큰), (4) 지도 학습과 자기-지도(self-instruct) 데이터로 명령어 미세조정.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Code Llama-Instruct(34B) 모델의 Bash 명령어 쿼리 응답 예시. 자연어 질문을 파싱하여 적절한 옵션을 제시하고 해설을 제공">
-</div>
 <ol>
 <li><strong>벤치마크 성능</strong>: HumanEval에서 최고 67%, MBPP에서 65% 달성(공개 모델 기준 최우수). Code Llama-Python 7B가 Llama 2 70B를 HumanEval과 MBPP에서 초과. MultiPL-E(다언어) 벤치마크에서 모든 공개 모델 초과.</li>
 <li><strong>모델 다양성</strong>: 기본 모델(Code Llama), Python 특화 모델(Code Llama-Python), 명령어 추종 모델(Code Llama-Instruct)로 상이한 사용 사례 커버. 7B, 13B, 34B, 70B 크기로 배포 확장성 제공.</li>
 <li><strong>핵심 기능</strong>: 인필링 가능 모델(7B, 13B, 70B)은 문서 중간의 코드 완성 지원. 최대 100K 토큰까지 처리 가능(16K 학습 후 fine-tuning). 자동생성 지도 데이터로 안전성과 진실성 개선.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Code Llama 특화 파이프라인. 기초 모델에서 출발하여 코드 학습(500B 토큰), 인필링, Python 특화(100B), 장문맥 미세조정, 명령어 미세조정(~5B) 단계 거침">
-</div>
 <ul>
 <li><strong>기반 선택</strong>: Llama 2에서 초기화하여 일반 언어 이해 능력 유지. 코드 전용 학습 대비 우월함을 실증적으로 검증.</li>
 <li><strong>인필링 메커니즘</strong>: 인과 마스킹(causal masking) 기반 FIM 목표. 훈련 문서를 접두사(prefix), 중간(middle), 접미사(suffix)로 분할(균일 분포 샘플링)하여 90% 확률로 변환. PSM(prefix-suffix-middle)과 SPM(suffix-prefix-middle) 형식 50:50 혼합. 토크나이저 특수 토큰 추가로 경계 표시.</li>
@@ -121,8 +115,7 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">Code Llama와 유사한 코드 특화 LLM이지만 상용 사용 가능한 오픈소스로 차별화</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../741_Seed-coder_Let_the_code_model_curate_data_for_itself/index.html">Seed-coder: Let the code model curate data for itself</a></div><div class="conn-reason">Code Llama와 유사한 코드 모델이지만 데이터 전처리에서 완전 자동화 달성</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../731_Scireplicate-bench_Benchmarking_llms_in_agent-driven_algorit/index.html">SciReplicate-Bench: Benchmarking LLMs in Agent-driven Algorithmic Reproduction from Research Papers</a></div><div class="conn-reason">Code Llama의 코드 생성 능력이 과학 논문의 알고리즘 복제에 활용됩니다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../546_Mlgym_A_new_framework_and_benchmark_for_advancing_ai_researc/index.html">MLGym: A new framework and benchmark for advancing ai research agents</a></div><div class="conn-reason">코드 생성 모델이 AI 연구 에이전트 프레임워크에 활용됩니다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../731_Scireplicate-bench_Benchmarking_llms_in_agent-driven_algorit/index.html">SciReplicate-Bench: Benchmarking LLMs in Agent-driven Algorithmic Reproduction from Research Papers</a></div><div class="conn-reason">Code Llama의 코드 생성 능력이 알고리즘 복제 벤치마크에 활용됩니다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../546_Mlgym_A_new_framework_and_benchmark_for_advancing_ai_researc/index.html">MLGym: A new framework and benchmark for advancing ai research agents</a></div><div class="conn-reason">코드 생성 모델이 AI 연구 에이전트 프레임워크에 활용됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

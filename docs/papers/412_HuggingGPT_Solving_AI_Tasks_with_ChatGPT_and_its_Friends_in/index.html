@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mengkang Hu, Tianxing Chen, Qiguang Chen, Yao Mu, Wenqi Shao, Ping Luo | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2408.09559" target="_blank">arXiv:2408.09559</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>STANDARD 패러다임과 HiAgent의 작업 메모리 관리 비교</em></p></div>
 <p>대규모 언어 모델(LLM) 기반 에이전트의 장기 작업 수행을 위해, 인지과학의 청킹(chunking) 원리에 영감을 받아 <strong>부분목표(subgoal)를 메모리 청크로 활용한 계층적 작업 메모리 관리 프레임워크</strong>를 제시한다. 기존 방식의 모든 행동-관찰 쌍을 컨텍스트에 포함하는 방식을 개선하여 작업 메모리 중복성을 제거한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 부분목표를 작업 메모리의 청크 단위로 활용하되, 현재 부분목표의 행동-관찰 쌍만 유지하고 완료된 부분목표는 요약된 관찰로 압축하는 계층적 관리 방식을 제안한다. 추가로 필요시 과거 부분목표의 상세 궤적을 검색할 수 있는 궤적 검색(trajectory retrieval) 모듈을 도입한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>HiAgent의 계층적 작업 메모리 관리 프로세스</em></p></div>
 <ol>
 <li><strong>성공률 및 효율성 개선</strong>:
 <ul>
@@ -90,8 +86,6 @@ a { color: #A62018; }
 <li><strong>강건성 및 일반화</strong>: 다양한 단계에서 일관된 성능 향상 입증 및 높은 행동 실행 가능성(executability) 달성으로 방법론의 견고성 확보</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>서로 다른 단계에서의 진행률 비교</em></p></div>
 <ul>
 <li><strong>부분목표 기반 계층적 관리</strong>:
 <ul>

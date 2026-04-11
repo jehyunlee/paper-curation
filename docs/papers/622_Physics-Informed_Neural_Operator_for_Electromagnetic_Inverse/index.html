@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Q. C. Dong, Zi-Xuan Su, Qing Huo Liu, Wen Chen, Zhizhang Chen | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 전자기 역산란 문제 해결을 위한 PINO 프레임워크. 정규화된 좌표 X, Y를 입력으로 하고, 신경 연산자의 출력은 예측된 유도 전류 Ĵ</em></p></div>
 <p>본 논문은 신경 연산자(Neural Operator)와 물리 정보를 결합한 PINO 프레임워크를 제안하여 전자기 역산란 문제를 신속하고 정확하게 해결한다. 학습 가능한 텐서로 유전율을 표현하고 하이브리드 손실 함수(state loss, data loss, TV 정규화)로 신경 연산자와 물질 특성을 동시에 최적화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: FNO, U-FNO, F-FNO 세 가지 신경 연산자 아키텍처를 비교하며, 좌표 주파수 인코딩(frequency encoding)으로 공간 표현 능력을 강화하고, 상태 손실(state loss)과 데이터 손실(data loss)을 결합한 완전 미분 가능한 프레임워크를 구성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 2차원 TMz 산란 시나리오 모델링 설정</em></p></div>
 <ol>
 <li><strong>우수한 복원 정확도</strong>: 단일/다중 주파수 환경에서 노이즈(5%, 10%)가 있어도 기존 CSI 방법을 일관되게 능가하며, 위상 없는 데이터로도 안정적인 복원을 달성한다.</li>
 <li><strong>유연한 일반화</strong>: 하나의 신경 연산자로 여러 주파수에 대응 가능하고, 위상 정보 유무를 모두 처리할 수 있는 통일된 프레임워크를 제공한다.</li>
 <li><strong>아키텍처 비교</strong>: FNO, U-FNO, F-FNO의 성능 차이를 정량적으로 분석하여 각 신경 연산자의 장단점을 명확히 한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <ul>
 <li><strong>주파수 인코딩</strong>: 공간 좌표 (X, Y)를 삼각함수 기저 함수로 인코딩하여 M=10까지의 고주파 정보를 표현 능력에 추가한다.</li>
 <li><strong>신경 연산자 구조</strong>: 선형 lifting 연산자 P로 인코딩된 입력을 고차원 특징 공간으로 투영하고, Fourier 변환 기반 kernel 연산자 K를 통해 반복적으로 특징 필드를 업데이트한다 (d₀ → d₁ → ... → dₙ).</li>
@@ -132,7 +126,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../576_Nonlinear_stochastic_and_quantum_motion_from_Coulomb_forces/index.html">Nonlinear stochastic and quantum motion from Coulomb forces</a></div><div class="conn-reason">물리 정보 신경 연산자의 전자기 역산란 적용 연구에서 쿨롱 상호작용의 물리적 이해가 도움이 될 수 있다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../574_Neural-POD_A_Plug-and-Play_Neural_Operator_Framework_for_Inf/index.html">Neural-POD: A Plug-and-Play Neural Operator Framework for Infinite-Dimensional Functional Nonlinear Proper Orthogonal Decomposition</a></div><div class="conn-reason">즉석 학습을 위한 신경 연산자 플러그인 프레임워크가 전자기 역산란 문제 해결의 기술적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../621_Physics-informed_neural_network_for_multi-objective_design_o/index.html">Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes</a></div><div class="conn-reason">물리 정보 신경 연산자를 전자기 역산란과 열관리 설계라는 서로 다른 물리 문제에 적용한 사례들이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../621_Physics-informed_neural_network_for_multi-objective_design_o/index.html">Physics-informed neural network for multi-objective design optimization of wickless thermal ground planes</a></div><div class="conn-reason">물리 정보 신경망의 다목적 설계 최적화와 전자기 역산란 문제라는 서로 다른 공학적 응용을 보여준다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../440_Inverse_designing_metamaterials_with_programmable_nonlinear/index.html">Inverse designing metamaterials with programmable nonlinear functional responses in graph space</a></div><div class="conn-reason">메타물질 역설계를 위한 GNN 접근법이 전자기 역문제 해결을 위한 물리 정보 기반 신경 연산자로 확장되었다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../427_Incorporating_Continuous_Dependence_Qualifies_Physics-Inform/index.html">Incorporating Continuous Dependence Qualifies Physics-Informed Neural Networks for Operator Learning</a></div><div class="conn-reason">연속 의존성을 고려한 PINN 개선 방법을 전자기 역산란의 신경 연산자 학습에 적용할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

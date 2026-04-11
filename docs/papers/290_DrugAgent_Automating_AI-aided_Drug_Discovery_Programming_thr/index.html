@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sizhe Liu, Yizhou Lu, Siyu Chen, Xiyang Hu, Jieyu Zhao | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2411.15692" target="_blank">10.48550/arXiv.2411.15692</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DrugAgent 프레임워크 개요: LLM Planner와 LLM Instructor의 협력을 통해 자연언어로 표현된 신약 발견 과제를 자동으로 ML 프로그래밍으로 변환</em></p></div>
 <p>LLM 기반 다중 에이전트 프레임워크 DrugAgent는 신약 발견 분야의 전문적 지식을 통합하여 일반 목적 AI 에이전트의 한계를 극복하고, DTI(약물-표적 상호작용) 예측에서 ReAct 대비 4.92% 향상된 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 신약 발견 분야의 도메인 지식을 체계적으로 검증하고, 아이디어 공간(idea space) 수준의 동적 계획과 전문화된 도메인 문서화를 통합한 다중 에이전트 프레임워크를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DAVIS(DTI) 데이터셋에서 오류 모드 분석: ReAct와 ResearchAgent는 도메인 지식이 필요한 단계에서 오류 발생 비율이 높지만, DrugAgent는 해당 카테고리에서 오류가 없음</em></p></div>
 <ol>
 <li><strong>성능 우위</strong>: DrugAgent@Top3는 ADMET에서 0.8206, HTS에서 0.8257, DTI에서 0.8950의 ROC-AUC 달성. ReAct 대비 DTI 과제에서 4.92% 상대 개선율, 전 과제에서 100% 유효 제출률 달성(ReAct는 50-87.5%).</li>
 <li><strong>도메인 지식 통합의 효과</strong>: 오류 추적 분석 결과 DrugAgent는 도메인 지식이 필요한 단계에서의 오류 비율이 0%로, 일반 에이전트 대비 현저히 낮은 오류율(ReAct, ResearchAgent는 30-40% 오류) 달성.</li>
 <li><strong>전문가 수준 성능</strong>: 인간 전문가 기준(Human Baseline)과 비교하여 competitive한 성능 달성 (DTI에서 동일 성능 0.8950).</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ul>
 <li><strong>LLM Planner (아이디어 공간 관리)</strong>:
 <ul>

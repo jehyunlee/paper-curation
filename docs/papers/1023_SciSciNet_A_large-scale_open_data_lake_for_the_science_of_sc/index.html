@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Zihang Lin, Yian Yin, Lu Liu, Dashun Wang | <strong>날짜</strong>: 2023-06-01 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41597-023-02198-9" target="_blank">10.1038/s41597-023-02198-9</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1  The entity relationship diagram of SciSciNet. SciSciNet includes “SciSciNet_Papers” as the main data</em></p></div>
 <p>SciSciNet은 134M개 이상의 과학 출판물과 자금 조달, 특허, 임상시험 등 외부 연계를 포괄하는 대규모 개방형 데이터 레이크(data lake)로서 과학의 과학(science of science) 연구의 진입 장벽을 낮추고 재현성을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: Microsoft Academic Graph(MAG)를 중심으로 Crossref, OpenAlex, PatentsView, NIH/NSF 자금 데이터, 임상시험 정보 등 다양한 출처의 데이터를 통합하고 링크하며, 표준화된 전처리와 공통 측정값(disruption, team composition 등)을 계산 제공한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3  Summary statistics of scientific publications in SciSciNet. (a) The number of publications in 19 top-level</em></p></div>
 <ul>
 <li><strong>포괄적 데이터 통합</strong>: 134M개 이상의 과학 출판물과 저자, 소속기관, 자금 출처(NIH, NSF), 산출물(특허, 임상시험, 뉴스)을 연계한 통합 데이터 레이크 구축</li>
 <li><strong>투명한 전처리 문서화</strong>: 데이터 수집, 정제, 링킹의 상세한 전처리 단계와 분석 선택사항을 명확히 문서화하여 재현성 확보</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>공개 접근성</strong>: Figshare를 통한 자유로운 데이터 접근으로 다양한 연구자의 참여와 데이터 레이크 협력적 확충 가능</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2  Matching NSF reference string to MAG records. (a) Distribution of Z-scores for papers matched in</em></p></div>
 <ul>
 <li>Microsoft Academic Graph(MAG)를 핵심 데이터 소스로 활용하되 MAG 종료 이후에도 지속성 확보</li>
 <li>Crossref DOI 메타데이터와 OpenAlex의 논문-저자-기관-개념 연결 통합</li>

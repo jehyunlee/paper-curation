@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: R. Wang, Boxiao Wang, Kai Li, Yifan Zhang, Jian Cheng | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.04282" target="_blank">arXiv:2506.04282</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DrSR 프레임워크 개요: (a) 데이터 인식 통찰 (b) 귀납적 아이디어 추출 (c) 방정식 생성 및 선택</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용한 기호 회귀(Symbolic Regression)에서 <strong>데이터 구조 분석</strong>과 <strong>생성 이력 반영</strong>의 이중 추론을 통해 과학 방정식 발견의 정확성과 효율성을 획기적으로 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -86,10 +84,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 과학 분야에서의 일반화 성능 (ID/OOD 설정)</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>문법적으로 유효한 해 비율 비교 - DrSR의 우월한 안정성</em></p></div>
 <ol>
 <li><strong>높은 발견 정확성</strong>: 물리학, 화학, 생물학, 재료과학 6개 벤치마크에서 <strong>유효 방정식 생성률 및 정확도 면에서 SOTA 달성</strong>
 <ul>
@@ -107,8 +101,6 @@ a { color: #A62018; }
 <li><strong>강건한 일반화</strong>: 학습 데이터와 다른 분포를 가진 테스트 데이터에서도 일관된 성능 유지</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <h3>3.1 데이터 인식 통찰 (Data-aware Insight)</h3>
 <ul>
 <li><strong>초기 통찰 생성</strong>: 원본 데이터 D에서 균등 샘플링으로 100개 샘플 추출 → πdata LLM이 변수 관계 분석하여 초기 통찰 D₀ 도출

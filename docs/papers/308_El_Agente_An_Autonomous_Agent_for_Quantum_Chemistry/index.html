@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yunheng Zou, Austin H. Cheng, Abdulrahman Aldossary, Jiaru Bai, Shi Xuan Leong | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1016/j.matt.2025.102263" target="_blank">10.1016/j.matt.2025.102263</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>El Agente Q의 개요: LLM 기반 다중 에이전트 시스템으로 자동화된 계획, 일정 조정, 실행 및 문제 해결을 수행</em></p></div>
 <p>본 연구는 LLM 기반 다중 에이전트 시스템(El Agente Q)을 통해 양자화학 워크플로우를 자연언어 프롬프트로부터 동적으로 생성·실행하는 자율 시스템을 제시한다. 계층적 메모리 프레임워크, 적응적 도구 선택, 자동 오류 복구를 특징으로 하며, 대학 수준의 과제에서 >87%의 성공률을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 계층적 인지 아키텍처(hierarchical cognitive architecture)를 기반으로 한 다중 에이전트 시스템(El Agente)을 설계하고, 이를 양자화학 영역에 적용(El Agente Q). 전문가 지식 주입을 위한 다중 인터페이스(프로그래밍 및 자연언어 대화) 제공.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>El Agente의 인지 아키텍처: 글로벌 메모리, 에이전트별 대화 이력, 그라운딩 메커니즘, 장기 메모리로 구성된 작업 메모리와 LLM 추론 핵심</em></p></div>
 <ol>
 <li><strong>높은 작업 성공률</strong>: 6개의 대학 수준 과제 및 2개의 사례 연구에서 평균 >87%의 작업 성공률 달성. Geometry optimization, electronic structure analysis, thermochemical property evaluation 등 다양한 양자화학 계산 자동 수행.</li>
 <li><strong>적응적 오류 복구</strong>: In situ debugging을 통한 자동 오류 처리 및 문제 해결. Runtime errors와 computational divergences에 대한 실시간 대응으로 사용자의 문제 해결 시간 단축.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>다중 계산 화학 도구 통합</strong>: RDKit, OpenBabel, xTB, ORCA, Architector 등 다양한 소프트웨어 패키지 및 SLURM 작업 스케줄러와의 인터페이싱으로 광범위한 계산 화학 작업 지원.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>El Agente Q의 계층적 아키텍처: 최상위 computational chemist 에이전트가 고수준 계획을 수립하고, 하위 에이전트들이 특화된 작업 실행</em></p></div>
 <ul>
 <li><strong>계층적 다중 에이전트 구조</strong>: 특수화된 역할을 가진 LLM 기반 에이전트들의 네트워크 구성. 최상위 에이전트(computational chemist)는 고수준 계획에 집중하고, 하위 에이전트들은 geometry optimization, molecular property prediction 등 특화된 작업 실행.</li>
 <li><strong>4계층 작업 메모리 구성</strong>:
@@ -141,7 +135,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: El Agente Q는 LLM 기반 다중 에이전트 시스템을 통해 양자화학 자동화의 접근성과 유연성을 크게 향상시킨 의미 있는 연구로, 계층적 메모리 아키텍처와 적응적 오류 복구 능력이 돋보인다. 다만 episodic memory 미활성화, hallucination 문제 해결, 실제 대규모 계산에서의 효율성 검증 등이 향후 개선 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../620_Physics-Informed_Autonomous_LLM_Agents_for_Explainable_Power/index.html">Physics-Informed Autonomous LLM Agents for Explainable Power Electronics Modulation Design</a></div><div class="conn-reason">물리 정보 기반 자율 LLM 에이전트의 설명 가능성을 양자화학 워크플로우에 적용할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../212_Chemist-X_Large_Language_Model-empowered_Agent_for_Reaction/index.html">Chemist-X: Large Language Model-empowered Agent for Reaction Condition Recommendation in Chemical Synthesis</a></div><div class="conn-reason">화학 분야 자동화를 위해 양자화학과 합성 반응이라는 다른 전문 영역에서 LLM 에이전트를 활용한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../212_Chemist-X_Large_Language_Model-empowered_Agent_for_Reaction/index.html">Chemist-X: Large Language Model-empowered Agent for Reaction Condition Recommendation in Chemical Synthesis</a></div><div class="conn-reason">화학 실험 자동화를 위해 반응 조건 최적화와 양자화학 워크플로우라는 다른 특화 영역에 접근한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../130_Automating_Computational_Chemistry_Workflows_via_OpenClaw_an/index.html">Automating Computational Chemistry Workflows via OpenClaw and Domain-Specific Skills</a></div><div class="conn-reason">양자화학을 위한 자율 에이전트가 계산화학 워크플로우 자동화의 다른 구현 방식을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../456_Lang-PINN_From_Language_to_Physics-Informed_Neural_Networks/index.html">Lang-PINN: From Language to Physics-Informed Neural Networks via a Multi-Agent Framework</a></div><div class="conn-reason">언어에서 물리 정보 신경망으로의 변환을 양자화학 계산으로 확장할 수 있다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

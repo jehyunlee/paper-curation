@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lang Cao, Hanbing Liu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>표의 특성으로 인한 4가지 주요 도전과제와 이에 대응하는 솔루션 개요</em></p></div>
 <p>언어 모델(LM)의 테이블 이해 능력을 향상시키기 위해 구조화된 데이터의 특성으로부터 발생하는 4가지 도전과제를 식별하고, 이를 해결하기 위한 통합 프레임워크 TableMaster를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 테이블의 구조적(structured), 밀집된(dense), 간결한(concise), 수치적(numerical) 특성으로부터 발생하는 4가지 도전과제를 식별하고, 각각에 대응하는 표적화된 솔루션들을 통합한 통일된 레시피(recipe)를 제시한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>테이블 크기, 의미론적 강화, 추론 방식, 정규화의 영향을 보여주는 실험적 분석</em></p></div>
 <ol>
 <li><strong>도전과제의 체계적 분석</strong>: 4가지 핵심 도전과제 식별
 <ul>
@@ -91,8 +87,6 @@ a { color: #A62018; }
 <li><strong>성능 향상</strong>: WikiTQ 데이터셋에서 GPT-4o-mini 기반 78.13% 정확도 달성, 기존 베이스라인 초과</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TableMaster 프레임워크의 4가지 표적화 솔루션과 적응적 추론</em></p></div>
 <ul>
 <li><strong>Table-of-Focus (S1)</strong>: 질의와 관련된 핵심 테이블만 추출하여 컨텍스트 크기 감소 → C1 해결</li>
 <li><strong>Table Verbalization (S2)</strong>: 테이블을 의미론적으로 풍부한 텍스트로 변환
@@ -144,9 +138,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../035_A_survey_on_table-and-text_hybridqa_Concepts_methods_challen/index.html">A survey on table-and-text hybridqa: Concepts, methods, challenges and future directions</a></div><div class="conn-reason">테이블 이해 기술이 하이브리드 QA의 핵심 구성 요소가 됨</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../802_The_mighty_torr_A_benchmark_for_table_reasoning_and_robustne/index.html">The mighty torr: A benchmark for table reasoning and robustness</a></div><div class="conn-reason">테이블 추론과 견고성에 대한 벤치마크 연구가 언어 모델의 테이블 이해 능력 향상 프레임워크 개발의 기초를 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../599_Paper2poster_Towards_multimodal_poster_automation_from_scien/index.html">Paper2poster: Towards multimodal poster automation from scientific papers</a></div><div class="conn-reason">둘 다 테이블과 관련된 멀티모달 작업을 다루지만 하나는 테이블 이해, 다른 하나는 포스터 생성에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../599_Paper2poster_Towards_multimodal_poster_automation_from_scien/index.html">Paper2poster: Towards multimodal poster automation from scientific papers</a></div><div class="conn-reason">둘 다 테이블과 관련된 멀티모달 작업을 다루지만 하나는 포스터 생성, 다른 하나는 테이블 이해에 중점을 둠</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../841_Tree-of-table_Unleashing_the_power_of_llms_for_enhanced_larg/index.html">Tree-of-table: Unleashing the power of llms for enhanced large-scale table understanding</a></div><div class="conn-reason">기본적인 테이블 이해를 Tree-of-table과 같은 더 체계적인 대규모 테이블 추론 방법으로 확장함</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../841_Tree-of-table_Unleashing_the_power_of_llms_for_enhanced_larg/index.html">Tree-of-table: Unleashing the power of llms for enhanced large-scale table understanding</a></div><div class="conn-reason">대형 언어모델을 활용한 테이블 마스터는 Tree-of-table의 계층적 테이블 처리 방식을 더욱 발전시킨 형태입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../802_The_mighty_torr_A_benchmark_for_table_reasoning_and_robustne/index.html">The mighty torr: A benchmark for table reasoning and robustness</a></div><div class="conn-reason">TableMaster가 제시하는 표 이해 방법론이 ToRR 벤치마크에서 발견된 LLM의 표 형식 취약성 문제를 해결하는 솔루션으로 활용될 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

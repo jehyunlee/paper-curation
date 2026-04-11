@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lorenz Kuhn, Yarin Gal, Sebastian Farquhar | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2212.07769" target="_blank">arXiv:2212.07769</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. (a) 일반적인 언어모델의 동작 (b) CLAM: 애매한 질문 감지 및 명확화 질문 생성</em></p></div>
 <p>대규모 언어모델(LLM)이 애매한 사용자 질문에 대해 명확화를 요청하지 않고 부정확한 답변을 제공하는 문제를 해결하기 위해, CLAM 프레임워크를 제안한다. 이는 애매한 질문을 감지하고 명확화 질문을 생성한 후 사용자의 명확화 정보를 바탕으로 최종 답변을 제공하는 선택적 명확화(selective clarification) 접근법이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 프롬팅(prompting)을 이용한 메타인지(meta-cognition) 기반 프레임워크로 (1) 애매함 감지, (2) 명확화 질문 생성, (3) 명확화 후 답변 제공의 3단계 구현.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. 선택적 명확화의 4단계 과정</em></p></div>
 <ol>
 <li><strong>CLAM 프레임워크 제안</strong>: 애매한 질문을 감지하고 선택적으로 명확화를 요청하는 통합 프레임워크 개발. 기존 SotA 모델 대비 애매한 질문 포함 데이터셋에서 유의미한 정확도 향상 달성.</li>
 <li><strong>메타인지 개념 도입</strong>: 언어모델이 "생각에 대한 생각"을 명시적으로 수행하는 메타인지를 새로운 설계 패러다임으로 제시. Chain-of-thought 프롬팅보다 체계화된 접근법 제공.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>Ambiguous TriviaQA 데이터셋</strong>: 200개의 애매한/명확한 질문 쌍으로 구성된 벤치마크 데이터셋 구축. 기존 ClariQ, CLAQUA 등의 한계를 보완.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3. 애매한 사용자 입력을 명확화하기 위한 프롬트 구조</em></p></div>
 <p><strong>CLAM 프레임워크 구현:</strong></p>
 <ul>
 <li><strong>Step 1a-1b: 애매함 감지</strong> - Few-shot 프롬팅으로 질문을 이진 분류(애매/명확). 모델의 로그 확률(log probability)을 연속값 예측자로 활용</li>
@@ -122,8 +116,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">일관성을 위한 프롬프트가 자기 일관성보다 효과적임을 보여 본 논문의 선택적 명확화 접근법의 이론적 근거를 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../312_Empowering_language_models_with_active_inquiry_for_deeper_un/index.html">Empowering language models with active inquiry for deeper understanding</a></div><div class="conn-reason">모호성 해결을 위한 상호작용이 능동적 질의의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../747_Selfcheck_Using_llms_to_zero-shot_check_their_own_step-by-st/index.html">Selfcheck: Using llms to zero-shot check their own step-by-step reasoning</a></div><div class="conn-reason">LLM의 단계별 자기 점검 방법으로 본 논문의 애매한 질문 처리와 다른 접근법의 품질 보장을 제시한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../223_Clarify_when_necessary_Resolving_ambiguity_through_interacti/index.html">Clarify when necessary: Resolving ambiguity through interaction with LMs</a></div><div class="conn-reason">상호작용을 통한 모호성 해결 연구로 본 논문의 명확화 프레임워크를 대화형 시스템으로 확장한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../223_Clarify_when_necessary_Resolving_ambiguity_through_interacti/index.html">Clarify when necessary: Resolving ambiguity through interaction with LMs</a></div><div class="conn-reason">CLAM의 선택적 명확화 방법이 Clarify when necessary의 모호성 해결 프레임워크를 더 정교한 질문 생성과 답변 시스템으로 발전시킨 연구임</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../223_Clarify_when_necessary_Resolving_ambiguity_through_interacti/index.html">Clarify when necessary: Resolving ambiguity through interaction with LMs</a></div><div class="conn-reason">상호작용을 통한 모호성 해결 연구로 본 논문의 명확화 프레임워크를 대화형 시스템으로 확장한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

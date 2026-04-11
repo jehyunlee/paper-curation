@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Alexander Tornede, Difan Deng, Theresa Eimer, Joseph Giovanelli, Aditya Mohan, Tim Ruhkopf, Sarah Segel, Daphne Theodorakopoulos, Tanja Tornede, Henning Wachsmuth, Marius Lindauer | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2306.08107" target="_blank">arXiv:2306.08107</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AutoML이 LLM 생명주기(사전학습, 미세조정, 추론)의 모든 단계에 적용될 수 있으며, 각 단계의 서로 다른 목표, 하이퍼파라미터, 설계 결정에 맞춰 조정되어야 함을 보여줌</em></p></div>
 <p>본 논문은 AutoML(자동 기계학습)과 LLM(대규모 언어 모델)의 상생적(symbiotic) 통합을 제안하며, 양 분야가 서로를 어떻게 강화할 수 있는지를 포괄적으로 탐색한다. AutoML이 LLM 최적화에 가져오는 도전과제, LLM이 AutoML 개선에 제공하는 기회, 그리고 통합 과정에서 발생할 수 있는 위험을 체계적으로 분석한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: AutoML for LLM(제2장), LLM for AutoML(제3장), 그리고 위험 평가(제4장)라는 세 가지 관점에서 상생 관계를 체계적으로 조사한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM 생명주기 전체에 걸친 AutoML 적용의 도전과제와 최적화 대상</em></p></div>
 <ol>
 <li><strong>AutoML for LLM의 주요 도전과제 규정</strong>:
 <ul>
@@ -106,8 +102,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>각 LLM 생명주기 단계별 AutoML 적용 방식</em></p></div>
 <h3>AutoML for LLMs 접근법:</h3>
 <ul>
 <li><strong>사전학습 최적화</strong>: Transfer learning 활용, 데이터 선택(data selection), 토크나이제이션(tokenization) 최적화, 네트워크 아키텍처 설계</li>
@@ -151,7 +145,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 4.5/5</span> <span class="eval-badge">Overall: 4.5/5</span></div>
 <p><strong>총평</strong>: 본 논문은 AutoML과 LLM의 상생적 통합에 대한 최초의 포괄적 분석으로, 현실적인 도전과제 규정과 함께 양방향 기회를 체계적으로 제시함으로써 향후 연구 방향을 명확히 한다. 다만 개념적 수준의 제안이 많고 구체적 구현 사례가 부족한 점이 아쉬우며, 제시된 위험 요소에 대한 미티게이션 전략 개발이 후속 연구의 중요한 과제가 될 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../771_Starcoder_may_the_source_be_with_you_arXiv_preprint_arXiv230/index.html">StarCoder: may the source be with you! arXiv preprint arXiv:2305.06161, 2023.</a></div><div class="conn-reason">대형언어모델과 자동 기계학습의 상생적 통합 연구가 오픈소스 코드 생성 모델의 개발과 최적화에 핵심적인 이론적 토대가 된다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../771_Starcoder_may_the_source_be_with_you_arXiv_preprint_arXiv230/index.html">StarCoder: may the source be with you! arXiv preprint arXiv:2305.06161, 2023.</a></div><div class="conn-reason">오픈소스 코드 LLM의 투명성과 성능이 AutoML과 LLM의 상생적 통합을 통한 코드 생성 최적화에 필수적인 기반을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../136_Automl-gpt_Automatic_machine_learning_with_gpt/index.html">AutoML-GPT: Automatic Machine Learning with GPT</a></div><div class="conn-reason">LLM 시대 AutoML의 현재 도전과제와 기회에 대한 포괄적 분석을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../770_Starcoder_2_and_the_stack_v2_The_next_generation/index.html">StarCoder 2 and the Stack v2: The next generation</a></div><div class="conn-reason">AutoML과 LLM의 통합이 코드 생성 모델의 자동 최적화와 성능 향상에 필수적인 방법론적 기반을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../253_Data_Interpreter_An_LLM_Agent_For_Data_Science/index.html">Data Interpreter: An LLM Agent For Data Science</a></div><div class="conn-reason">LLM 기반 데이터 사이언스 에이전트가 AutoML과 LLM의 상생적 통합 원리를 데이터 분석 자동화에 구체적으로 적용한 결과이다</div></div>

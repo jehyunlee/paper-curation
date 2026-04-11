@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiangru Tang, Xingyao Zhang, Yanjun Shao, Jie Wu, Yilun Zhao, Arman Cohan, Ming Gong, Dongmei Zhang, Mark Gerstein | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2406.14275" target="_blank">arXiv:2406.14275</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: STEP-BACK PROFILING 개요. 각 사용자의 과거 논문을 압축하여 프로필 표현을 생성하고, 이를 LLM 생성 과정에 증강하는 방식</em></p></div>
 <p>본 논문은 사용자 이력(user history)을 간결한 프로필로 증류(distill)하여 LLM을 개인화하는 <strong>STEP-BACK PROFILING</strong> 기법을 제안한다. 특히 다중 저자 과학 논문 작성이라는 현실적 시나리오에서 협업 글쓰기를 지원하기 위해 개발되었다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: LaMP 벤치마크에서 STEP-BACK PROFILING의 성능. 대부분의 LaMP 작업에서 우수한 성능 달성</em></p></div>
 <ol>
 <li><strong>LaMP 벤치마크 개선</strong>: 기존 방법 대비 최대 3.6점 성능 향상 달성 (7개 개인화 작업)</li>
 <li><strong>다중 저자 협업 글쓰기 검증</strong>: PSW 데이터셋을 통해 협업 논문 작성에서 사용자 특성 포착의 효과성 입증</li>
@@ -109,8 +105,6 @@ a { color: #A62018; }
 <li><strong>확장성 확보</strong>: 제한된 컨텍스트 길이 내에서 더 많은 사용자 정보 활용 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>STEP-BACK PROFILING의 4단계 절차</em></p></div>
 <p><strong>절차 구성</strong>:</p>
 <ul>
 <li><strong>User Profile Gisting</strong>: LLM을 이용하여 각 사용자의 이력 Hi를 짧은 "gist" 표현으로 응축 (Gist(·) 함수)
@@ -166,7 +160,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 다중 저자 과학 논문 작성이라는 복잡한 협업 시나리오로 확장되어 개인화 기법을 통해 구현된다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../613_Personalized_graph-based_retrieval_for_large_language_models/index.html">Personalized graph-based retrieval for large language models</a></div><div class="conn-reason">사용자 이력 증류 기법이 개인화된 그래프 기반 검색에서 콜드스타트 문제 해결을 위한 핵심 전처리 방법론으로 활용된다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">사용자 이력 기반 개인화와 제어 가능한 맥락 인식 수정은 모두 개인화된 학술 글쓰기 지원을 목표로 하지만 서로 다른 개인화 전략을 사용한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">맥락 인식 제어 가능한 수정과 사용자 이력 기반 개인화는 모두 개인화된 학술 글쓰기를 지원하지만 서로 다른 개인화 메커니즘을 사용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기를 다중 저자 과학 논문 작성으로 확장하여 개인화된 사용자 프로필 기반의 협업 지원이 가능하다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../613_Personalized_graph-based_retrieval_for_large_language_models/index.html">Personalized graph-based retrieval for large language models</a></div><div class="conn-reason">사용자 이력 증류 기법이 개인화된 그래프 기반 검색에서 효율적인 사용자 프로필 생성을 위한 핵심 전처리 방법론으로 활용된다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

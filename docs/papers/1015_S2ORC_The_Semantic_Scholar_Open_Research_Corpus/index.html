@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Kyle Lo, Lucy Lu Wang, Mark Neumann, Rodney Kinney, Daniel Weld | <strong>날짜</strong>: 2020 | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/2020.acl-main.447" target="_blank">10.18653/v1/2020.acl-main.447</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Inline citations and references to ﬁgures and</em></p></div>
 <p>81.1M 학술 논문의 메타데이터, 초록, 인용 정보와 8.1M 오픈 액세스 논문의 구조화된 전체 텍스트를 포함하는 대규모 공개 학술 코퍼스(S2ORC)를 소개한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: Semantic Scholar 문헌 코퍼스를 기반으로 SCIENCEPARSE와 GROBID를 사용하여 PDF에서 구조화된 데이터를 추출하고, arXiv LaTeX 소스에서 추가 구조 정보를 파싱한다. 메타데이터 통합, 오픈 액세스 식별, 논문 클러스터링, 참고문헌 링크 해결의 4단계 파이프라인을 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Inline citations and references to ﬁgures and</em></p></div>
 <ul>
 <li><strong>규모와 포괄성</strong>: 81.1M 논문(메타데이터 및 초록 포함), 8.1M 오픈 액세스 전체 텍스트(PDF 파싱), 1.5M LaTeX 파싱본으로 기존 PubMed Central의 3배 이상 규모</li>
 <li><strong>구조화된 정보</strong>: 인라인 인용 언급(inline citations), 표/그림/수식 참조, 해결된 참고문헌 링크, 섹션 헤더, 단락 구조 등 기계 가독성 있는 주석</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>공개 가용성</strong>: GitHub을 통해 공개되어 학술 커뮤니티에 기여하는 대규모 공개 자원</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Inline citations and references to ﬁgures and</em></p></div>
 <ul>
 <li>SCIENCEPARSE v3.0.0과 GROBID v0.5.5를 사용한 PDF 처리 파이프라인: 메타데이터(제목, 저자, 초록) 추출, 섹션별 본문 단락 추출, 표/그림 캡션과 방정식 추출, 인라인 인용과 참고문헌 추출</li>
 <li>인라인 인용 후처리: 정규표현식을 사용하여 인용 스타일(BRACKET, NAME-YEAR, OTHER) 분류, 오류(false positive/negative) 수정, 괄호 인용 범위 확장([3]-[5] → [3], [4], [5])</li>

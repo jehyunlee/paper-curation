@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kyle Swanson, Wesley Wu, Nash L. Bulaong, J. Pak, James Y. Zou | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2024.11.11.623004" target="_blank">10.1101/2024.11.11.623004</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: Virtual Lab 아키텍처. (a) PI 에이전트를 중심으로 다양한 과학자 에이전트들이 팀을 이루는 구조, (b) 팀 미팅의 다중 라운드 토론 흐름, (c) 개별 미팅의 반복적 피드백 과정</em></p></div>
 <p>본 연구는 대규모 언어모델(LLM) 기반의 다중 전문가 AI 에이전트 팀이 인간 연구자와 협력하여 학제간 과학 연구를 수행하는 "Virtual Lab" 프레임워크를 제시한다. 이를 SARS-CoV-2 나노바디 설계에 적용하여 92개의 신규 나노바디를 설계하고 실험적 검증을 통해 유망한 결합 특성을 가진 후보를 발굴했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 연구자의 고수준 지시 하에 PI 에이전트(AI 리더)가 분야별 전문 에이전트들(생물학자, 컴퓨터과학자, 비평가)을 동적으로 생성하고 팀 미팅과 개별 미팅을 통해 협력하는 구조로 구현.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 나노바디 설계를 위한 Virtual Lab의 적용 워크플로우</em></p></div>
 <ol>
 <li><strong>novel nanobody design pipeline 개발</strong>: ESM(단백질 언어 모델), AlphaFold-Multimer(단백질 폴딩), Rosetta(계산 생물학 소프트웨어)를 통합한 새로운 계산 파이프라인을 자동으로 설계. SARS-CoV-2 원래 균주의 RBD(수용체 결합 영역)에 결합하는 기존 나노바디를 최신 변이주에 맞도록 돌연변이 유도.</li>
 <li><strong>높은 설계 성공률</strong>: 92개의 설계된 나노바디 중 90% 이상이 발현되고 가용성을 보임. 특히 JN.1 또는 KP.3 변이주에 향상된 결합력을 보이면서도 원조 바이러스 스파이크 단백질에 강한 결합력을 유지하는 2개의 유망 후보 발굴.</li>
 <li><strong>실제 과학 발견의 증명</strong>: 순수 계산만이 아닌 실험적 검증을 통해 AI-인간 협력의 실제 영향력을 입증한 첫 사례 중 하나.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: Nb21 나노바디 분석. 매 라운드의 설계 반복 과정과 계산 모델들의 예측 신뢰성 검증</em></p></div>
 <ul>
 <li><strong>에이전트 설정</strong>: 각 에이전트는 4가지 기준(제목, 전문성, 목표, 역할)으로 정의되며, PI 에이전트가 자동으로 프로젝트에 필요한 scientist agents 생성</li>
 <li><strong>팀 미팅 구조</strong>: (1) PI가 아젠다와 질문 제시 → (2) N라운드의 순차적 토론(각 scientist agent 의견 → critic 피드백) → (3) PI의 종합 요약 및 의사결정</li>

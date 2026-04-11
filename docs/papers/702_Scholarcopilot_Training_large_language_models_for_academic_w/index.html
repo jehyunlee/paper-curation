@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yubo Wang, Xueguang Ma, Ping Nie, Huaye Zeng, Zhiheng Lyu, Yuxuan Zhang, Benjamin Schneider, Yi Lu, Xiang Yue, Wenhu Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.00824" target="_blank">arXiv:2504.00824</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>전통적인 RAG 시스템(좌)과 ScholarCopilot(우)의 비교. ScholarCopilot은 텍스트 생성 중 동적으로 검색 토큰([RET])을 생성하여 문맥-인식형 참고문헌 검색을 수행함</em></p></div>
 <p>학술 논문 작성을 위해 생성 과정과 인용 검색을 통합한 대규모 언어모델 프레임워크를 제시한다. 동적 검색 토큰 생성을 통해 필요한 시점에 정확한 학술 참고문헌을 검색하고 인용 정확도를 대폭 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 통합된 생성-검색 프레임워크로 검색 토큰([RET])을 동적으로 생성하여 필요한 시점에 참고문헌을 검색하고, 단일 모델에서 두 목표를 함께 최적화함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>전통적 RAG(정적 검색-생성 파이프라인)와 ScholarCopilot(동적 인터리빙)의 비교</em></p></div>
 <ol>
 <li><strong>검색 성능</strong>: Top-1 검색 정확도 40.1% 달성 (E5-Mistral-7B-Instruct 15.0%, BM25 9.8% 초과)</li>
 <li><strong>생성 품질</strong>: 1,000개 샘플 평가에서 16.2/25점 획득 (Qwen-2.5-7B-Instruct 13.9점, Qwen-2.5-72B-Instruct 15.8점 초과). 관련성, 논리적 일관성, 학술적 엄밀성, 정보 완성도, 학술적 혁신성의 5가지 차원 평가.</li>
 <li><strong>사용자 만족도</strong>: 10명의 숙련된 학술 저자의 사용자 연구에서 ChatGPT 대비 인용 품질 100% 선호, 전체 유용성 70% 이상 선호.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>ScholarCopilot 데이터셋 생성 파이프라인. arXiv에서 670K개 논문 수집 → 570K개 LaTeX 소스 파일 획득 → 501K개 구조화 문서 파싱 → 19M 인용 추출 → 16.8M 인용 매칭(arXiv 10M + Semantic Scholar 6.8M) → 500K 훈련 데이터셋</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>ScholarCopilot의 통합 훈련 프레임워크. 텍스트 생성의 다음 토큰 예측 손실과 인용 검색의 대조학습 손실을 함께 최적화하며, 검색 토큰([RET])이 동적으로 검색을 트리거함</em></p></div>
 <ul>
 <li><strong>데이터셋 구성</strong>: arXiv에서 2007-2024년 발행 컴퓨터과학 논문 500K개 수집, 평균 38개 인용 포함 (매칭율 87%)</li>
 <li><strong>통합 훈련 구조</strong>: 단일 모델에서 (1) 다음 토큰 예측(next token prediction) 손실과 (2) 대조학습(contrastive learning) 손실을 함께 최적화</li>
@@ -116,7 +108,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: ScholarCopilot은 반복적 검색-생성 통합을 통해 학술 논문 작성에 특화된 실용적이고 혁신적인 솔루션을 제시한다. 대규모 학술 데이터셋 구축과 사용자 평가를 통해 실질적 가치를 입증했으나, 도메인 한정성과 상세한 기술 설명 부분에서 개선의 여지가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 학술 논문 작성이라는 전문적 영역에서 인용 검색과 생성을 통합한 특화된 시스템으로 발전한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">학술 글쓰기에서 인용 검색 통합과 제어 가능한 수정 기능은 모두 글쓰기 지원을 목표로 하지만 서로 다른 작업 단계에 초점을 맞춘다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../889_Xtragpt_Llms_for_human-ai_collaboration_on_controllable_acad/index.html">XtraGPT: Llms for human-ai collaboration on controllable academic paper revision</a></div><div class="conn-reason">제어 가능한 학술 논문 수정과 인용 검색 통합 글쓰기는 모두 학술 글쓰기 지원을 목표로 하지만 수정과 생성이라는 다른 작업에 특화된다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념이 학술 논문 작성이라는 전문적 영역에서 인용 검색과 동적 생성을 통합한 특화된 시스템으로 발전한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../228_CoAuthor_Designing_a_Human-AI_Collaborative_Writing_Dataset/index.html">CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities</a></div><div class="conn-reason">인간-AI 협업 글쓰기 데이터셋을 학술 논문 작성이라는 전문 영역으로 확장하여 더 정교한 협업 모델을 구축한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

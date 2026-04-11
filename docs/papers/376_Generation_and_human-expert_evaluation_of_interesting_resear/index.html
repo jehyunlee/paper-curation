@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xuemei Gu, Mario Krenn | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2405.17044" target="_blank">arXiv:2405.17044</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>SciMuse 시스템: 지식 그래프와 GPT-4를 이용한 연구 아이디어 생성 메커니즘. (a) 5,800만 개 논문에서 123,128개 개념을 추출하여 구성한 지식 그래프, (b) 개인화된 연구 협력 제안 생성 과정</em></p></div>
 <p>본 논문은 5,800만 개의 과학논문과 대규모언어모델(LLM)을 활용하여 개인화된 연구 아이디어를 생성하는 SciMuse 시스템을 제시하고, 110명 이상의 연구그룹 리더가 4,400개 이상의 아이디어를 평가한 대규모 인간 평가 연구이다. 이를 통해 AI 생성 연구 아이디어의 매력도를 예측할 수 있는 두 가지 방법(지도학습 신경망, 제로샷 LLM 랭킹)을 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 지식 그래프 구축 → 개인화된 연구 제안 생성 → 110명 연구그룹 리더의 대규모 평가 → 관심도 예측 모델 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Max Planck Society 내 110명 연구그룹 리더의 대규모 평가 결과. (a)-(b) 54개 Max Planck 연구소 위치 및 평가자 분포 (자연과학 104명, 사회과학 6명), (c) 1-5점 척도의 관심도 평가 분포</em></p></div>
 <ol>
 <li><strong>대규모 인간 평가 데이터 구축</strong>: 110명의 경험 많은 연구그룹 리더(평균 59.7편 논문 발표, 3,759.7회 인용)로부터 4,451건의 평가 수집. 전체의 25% (1,107개)가 4-5점의 높은 관심도를 보임.</li>
 <li><strong>지식 그래프 특성과 관심도의 관계 규명</strong>: 첫 번째 개념의 차수(degree)와 PageRank가 관심도와 강한 음의 상관관계를 보임. 즉, 더 널리 알려진 개념일수록 덜 흥미로운 아이디어로 평가됨. 같은 분야 연구자 간 제안이 다른 분야보다 더 긍정적으로 평가됨.</li>
 <li><strong>효율적인 예측 모델 개발</strong>: 신경망 기반(지식 그래프 특성만 사용)과 제로샷 LLM 랭킹 모두 인간 평가 데이터 없이도 높은 예측 정확도 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>지식 그래프 특성과 연구 관심도의 상관관계 분석. 8가지 특성(노드 특성 a-b, 노드 인용 지표 c-e, 엣지 특성 f, 엣지 인용 지표 g, 의미 거리 h)에 대해 정규화 후 50개 그룹으로 분할하여 평균값 계산</em></p></div>
 <p><strong>지식 그래프 구축 (Knowledge Graph Generation)</strong></p>
 <ul>
 <li>RAKE 알고리즘으로 244만 개 논문 제목/초록에서 후보 개념 추출</li>
@@ -136,8 +130,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../419_Hypothesis_Generation_with_Large_Language_Models/index.html">Hypothesis Generation with Large Language Models</a></div><div class="conn-reason">LLM을 활용한 가설 생성에 대한 체계적 연구가 SciMuse의 연구 아이디어 생성 메커니즘의 이론적 기반과 방법론적 근거를 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../187_Can_LLMs_Generate_Novel_Research_Ideas_A_Large-Scale_Human_S/index.html">Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers</a></div><div class="conn-reason">흥미로운 연구 아이디어의 생성과 인간 전문가 평가 방법론으로 본 논문의 대규모 인간 연구 설계 기반을 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../725_Sciidea_Context-aware_scientific_ideation_using_token_and_se/index.html">SCI-IDEA: Context-aware scientific ideation using token and sentence embeddings</a></div><div class="conn-reason">SCI-IDEA의 맥락 인식 과학 아이디어 생성이 SciMuse의 개인화 접근법을 토큰 기반 세분화와 맥락 이해로 더욱 정교하게 발전시킨 연구임</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../409_How_ai_ideas_affect_the_creativity_diversity_and_evolution_o/index.html">AI 아이디어가 인간의 창의성, 다양성, 아이디어 진화에 미치는 영향: 대규모 동적 실험 증거</a></div><div class="conn-reason">SciMuse가 개인화된 연구 아이디어 생성의 매력도에 초점을 맞춘 반면, AI 아이디어 노출 연구는 창의성보다 다양성 감소 위험을 경고하는 상반된 관점을 제시함</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../409_How_ai_ideas_affect_the_creativity_diversity_and_evolution_o/index.html">AI 아이디어가 인간의 창의성, 다양성, 아이디어 진화에 미치는 영향: 대규모 동적 실험 증거</a></div><div class="conn-reason">SciMuse의 AI 생성 아이디어 매력도 예측과 달리 이 연구는 AI 노출이 개별 창의성 향상 없이 집단 다양성만 증가시킨다는 우려를 제기함</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../409_How_ai_ideas_affect_the_creativity_diversity_and_evolution_o/index.html">AI 아이디어가 인간의 창의성, 다양성, 아이디어 진화에 미치는 영향: 대규모 동적 실험 증거</a></div><div class="conn-reason">SciMuse가 개인화된 연구 아이디어 생성의 매력도에 초점을 맞춘 반면, AI 아이디어 노출 연구는 창의성보다 다양성 감소 위험을 경고하는 상반된 관점을 제시함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

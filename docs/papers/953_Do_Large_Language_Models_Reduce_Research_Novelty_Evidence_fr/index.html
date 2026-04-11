@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Ali Safari | <strong>날짜</strong>: 2026-03-23 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2603.22510v1" target="_blank">https://arxiv.org/abs/2603.22510v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Event study coefficients for Post x Non-EDA interaction, relative to 2022. Pre-treatment coefficients</em></p></div>
 <p>ChatGPT 출시 이후 비영어권 국가 소속 연구자들의 논문이 영어권 연구자들 대비 의미론적 새로움(semantic novelty)이 유의미하게 감소했으며, 이는 LLM이 생산성 향상과 동시에 지적 다양성을 감소시킬 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 2020-2025년 정보시스템 저널 44개에 게재된 13,847개 논문의 SPECTER2 임베딩을 이용하여 의미론적 새로움을 측정하고, ChatGPT 출시(2022년 11월)를 처치 시점으로 하는 이중차분(difference-in-differences) 설계를 적용했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3. Mean z-scored novelty by affiliation group and period. Non-EDA authors show higher baseline novelty</em></p></div>
 <ul>
 <li><strong>이질적 처치 효과 발견</strong>: 비영어권 국가(Non-EDA) 소속 저자들이 영어권 국가(EDA) 저자들 대비 상대적 새로움에서 0.18 표준편차 감소 (beta = -0.176, p < 0.001), 즉 새로움 분포상 7백분위 포인트 하락</li>
 <li><strong>견고성 검증</strong>: 대체 근처이웃값, 대체 처치시점, COVID 년도 제외, 사전 처치 플라시보 검정 등 모든 강건성 검정에서 결과 유지</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>생산성-새로움 트레이드오프 증거</strong>: 생산성 향상과 새로움 감소의 동시 발생 가능성 제시</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Research model. The main path captures the association between LLM availability and semantic novelty,</em></p></div>
 <ul>
 <li>SPECTER2 임베딩 사용: 각 논문을 고차원 벡터로 표현하여 의미론적 유사성 측정</li>
 <li>코사인 거리(cosine distance) 계산: 각 논문과 가장 가까운 선행 논문들 간 거리를 새로움으로 정의</li>

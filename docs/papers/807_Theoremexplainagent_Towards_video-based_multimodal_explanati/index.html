@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Max Ku, C.P. Chong, Jonathan Leung, Krish Shah, Ai‐Ming Yu, Wenhu Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>아리스토텔레스의 인용구와 함께 시각화 설명의 중요성을 강조하는 그림. 버블 정렬 예시로 텍스트 설명과 시각적 설명의 이해도 차이를 보여줌</em></p></div>
 <p>정리(Theorem) 이해를 위해 LLM이 5분 이상의 긴 형식 설명 비디오를 에이전트 기반으로 생성하는 새로운 접근법을 제시하며, 다중 모드 설명이 텍스트 기반 평가보다 더 깊은 추론 오류를 드러낼 수 있음을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 개의 LLM 에이전트로 구성된 에이전트 기반 시스템(TheoremExplainAgent)을 개발하여 (1) 플래너 에이전트가 스토리 플랜과 나레이션 생성, (2) 코딩 에이전트가 Manim 애니메이션 스크립트 생성, 240개 정리를 포함하는 벤치마크 TheoremExplainBench와 5개 자동 평가 지표를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다중 모드 정리 설명 프레임워크 개요. 정리 입력부터 정확도/심화도, 시각적 관련성, 논리적 흐름, 요소 레이아웃, 시각적 일관성 등 5개 평가 지표 산출까지의 파이프라인</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>TheoremExplainAgent의 두 에이전트 구조. 플래너 에이전트가 비전, 스토리보드, 애니메이션·나레이션, 기술 구현 계획을 생성하고, 코딩 에이전트가 에이전트 RAG를 통해 Manim 코드를 생성 및 디버깅함. IEEE 변환 예시에서 TypeError 해결 과정 표시</em></p></div>
 <ol>
 <li><strong>장시간 비디오 생성 성공</strong>: 기존 에이전트 미사용 방식(약 20초)과 대비하여 최대 10분 이상의 일관성 있는 설명 비디오 생성에 성공. 이는 장기 계획 및 실행 능력의 중요성을 입증.</li>
 <li><strong>높은 성공률과 품질</strong>: o3-mini 모델이 93.8% 성공률(video generation success rate)과 0.77의 종합 점수 달성. 정리의 난이도(쉬움/중간/어려움) 전반에 걸쳐 견고한 성능 유지.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>숨겨진 추론 오류 노출</strong>: 다중 모드 설명이 텍스트 기반 평가에서 놓치는 더 깊은 추론 오류를 드러냄. 모델이 표면적 단서를 활용하지 못하고 구조적 정확성을 명시적으로 증명해야 하므로 오류가 더 명확해짐.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>TheoremExplainBench가 포함하는 컴퓨터과학, 화학, 수학, 물리의 세부 분야. 각 분야별 14-32개 하위 주제 카테고리 포함</em></p></div>
 <p><strong>시스템 아키텍처:</strong></p>
 <ul>
 <li><strong>플래너 에이전트 (Planner Agent)</strong>

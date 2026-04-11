@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Chris Lu, Cong Lu, Robert Tjarko Lange, Yutaro Yamada, Shengran Hu, Jakob Foerster, David Ha, Jeff Clune | <strong>날짜</strong>: 2026-03 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-026-10265-5" target="_blank">10.1038/s41586-026-10265-5</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: The AI Scientist의 워크플로우. 자동화된 아이디어 생성, 트리 기반 실험, 원고 작성 및 리뷰의 서로 다른 단계들로 구성되며, 기초 모델의 개선에 따라 논문 품질이 지속적으로 향상된다.</em></p></div>
 <p>본 논문은 <strong>The AI Scientist</strong> 시스템을 제시하며, 이는 아이디어 창출부터 동료 검토까지 과학 연구의 전체 수명주기를 자동화하는 최초의 엔드-투-엔드 파이프라인이다. 이 시스템이 생성한 논문이 상위권 머신러닝 컨퍼런스 워크숍의 동료 검토 과정을 통과했으며, 이는 AI의 과학 기여 역량이 상당히 성숙했음을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기초 모델을 활용한 복합 에이전트 시스템을 구축하여, 아이디어 생성→실험 계획 및 실행→결과 분석→논문 작성→동료 검토의 전체 프로세스를 자동화. 추가로 AI 기반 검토자(Automated Reviewer)를 개발하여 생성된 논문의 품질을 자동으로 평가.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1b-c">
-<p class="fig-caption"><em>Figure 1b-c: (b) 시간에 따른 모델 개선에 따라 AI Scientist 논문의 품질이 지속적으로 상향하며, (c) 자동화된 검토자의 성능이 인간 검토자와 동등한 수준임을 보여주는 균형정확도(Balanced Accuracy) 비교.</em></p></div>
 <ol>
 <li><strong>엔드-투-엔드 자동화 달성</strong>: The AI Scientist는 아이디어 생성, 문헌 검색, 실험 계획, 코드 작성 및 실행, 결과 시각화, 논문 작성, 동료 검토까지 모든 단계를 자동으로 수행.</li>
 <li><strong>실제 피어 리뷰 통과</strong>: 생성된 3개 논문 중 1개가 ICLR 워크숍의 동료 검토에서 인정받아, 수용 기준을 초과하는 점수 달성 (워크숍 수용률 70%).</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>확장성과 개선 가능성</strong>: 더 강력한 모델과 더 많은 추론 시간 계산을 사용할수록 논문 품질이 향상되며 (R²=0.517, P<0.00001), 기초 모델의 개선에 따라 지속적 성능 향상이 예상됨.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1a">
-<p class="fig-caption"><em>Figure 1a: The AI Scientist의 4가지 주요 단계 - 아이디어 생성, 실험 수행, 논문 작성, AI 검토.</em></p></div>
 <p><strong>단계 1: 아이디어 생성 (Ideation)</strong></p>
 <ul>
 <li>LLM이 사용자 지정 머신러닝 서브필드 내에서 고수준의 연구 방향과 가설을 반복적으로 생성</li>

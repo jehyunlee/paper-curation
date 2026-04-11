@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nazanin Jafari, James Allan | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2407.18367" target="_blank">arXiv:2407.18367</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>FactDetect 프레임워크 개요: 문구 매칭(Phrase Matching) → 질문 생성(Question Generation) → 짧은 사실 생성(Short Fact Generation)</em></p></div>
 <p>본 논문은 증거(evidence)에서 추출한 간결한 사실(short facts)을 통해 주장 검증(claim verification)의 견고성과 추론 능력을 향상시키는 FactDetect 방법을 제안한다. 멀티태스크 학습과 LLM 기반 제로샷 프롬프팅에서 모두 적용 가능한 데이터 증강 전략이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 활용하여 증거를 더 짧고 명확한 사실로 단순화하고, 이를 멀티태스크 학습(중요도 탐지 + 주장 검증)의 보조 태스크로 활용하거나 LLM 프롬프팅에 증강</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>과학적 주장에서 증거로부터 짧은 사실 생성의 3단계 프로세스</em></p></div>
 <ol>
 <li><strong>감독 학습 모델 성능</strong>: SciFact, HealthVer, SciFact-Open 데이터셋에서 F1 스코어 기준 <strong>15% 향상</strong> 달성</li>
 <li><strong>제로샷 LLM 성능</strong>: 멀티태스크 학습 기반 FactDetect(AugFactDetect)를 프롬프트에 증강하여 세 가지 과학 주장 검증 데이터셋에서 <strong>평균 17.3% 성능 향상</strong> (기존 최고 성능 모델 대비 통계적으로 유의미)</li>
 <li><strong>설명 가능성</strong>: 자동 생성된 짧은 사실이 명시적인 근거 제시로 모델의 추론 과정을 보다 투명하게 함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>FactDetect의 세 가지 핵심 단계</em></p></div>
 <ul>
 <li><strong>1단계: 문구 매칭 (Phrase Matching)</strong>
 <ul>
@@ -135,9 +129,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: FactDetect는 과학 주장 검증의 복잡성을 단순하고 명확한 사실 추출을 통해 해결하는 실용적인 접근이며, 멀티태스크 학습과 LLM 프롬프팅 모두에서 일관된 성능 향상을 보여준다. 그러나 자동 생성 파이프라인의 신뢰도 검증, 계산 효율성, 다양한 도메인에서의 일반화 가능성 평가가 향후 개선 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">일반적인 사실 검증 방법론을 과학적 맥락에 특화된 형태로 구현한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../221_Claimver_Explainable_claim-level_verification_and_evidence_a/index.html">Claimver: Explainable claim-level verification and evidence attribution of text through knowledge graphs</a></div><div class="conn-reason">주장 검증을 위한 다른 접근법으로 지식 그래프를 활용한 설명가능한 방법을 제시한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../221_Claimver_Explainable_claim-level_verification_and_evidence_a/index.html">Claimver: Explainable claim-level verification and evidence attribution of text through knowledge graphs</a></div><div class="conn-reason">간결한 사실 추출 방식 대신 지식 그래프를 활용한 설명가능한 주장 검증을 제시한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">의료 분야로 특화하여 사실 검증에 설명가능성을 추가한 확장 연구이다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">일반적인 사실 검증을 의료 분야로 특화하고 설명가능성을 추가한 확장 연구이다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">사실 검증의 일반적 방법론을 과학적 팩트체킹이라는 구체적 영역에 적용한다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

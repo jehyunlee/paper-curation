@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Dakota Murray, Jisung Yoon, Sadamori Kojaku, Rodrigo Costas, Woo-Sung Jung, Staša Milojević, Yong-Yeol Ahn | <strong>날짜</strong>: 2023-12-26 | <strong>DOI</strong>: <a href="https://doi.org/10.1073/pnas.2305414120" target="_blank">10.1073/pnas.2305414120</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1.</em></p></div>
 <p>Word2vec 신경망 임베딩 모델을 이용하여 이동 궤적(migration trajectories)으로부터 지역 간의 잠재적 구조를 비지도학습으로 추출하고, 중력 모델(gravity model of mobility)과의 수학적 동치성을 증명한다. 과학자 300만 명의 이동 데이터에 적용하여 문화, 언어, 위신 등 다층적 요인을 포함한 과학 마이그레이션의 복잡한 구조를 효과적으로 인코딩할 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: Word2vec (Skip-Gram Negative Sampling) 모델을 궤적 데이터에 적용하되, 위치를 단어, 궤적을 문장으로 취급한다. 중력 모델의 수학적 동치성을 이론적으로 증명하고, Web of Science 데이터베이스에서 추출한 과학자 300만 명의 제휴 궤적(affiliation trajectories)으로 실증적 검증을 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1.</em></p></div>
 <ol>
 <li><strong>중력 모델과의 수학적 동치성 증명</strong>: Word2vec의 Skip-Gram Negative Sampling이 중력 모델 프레임워크와 수학적으로 동치임을 이론적으로 입증하여, 신경망 임베딩의 이론적 토대 확립</li>
 <li><strong>고차원 벡터공간 표현</strong>: 지역 간 기능거리를 정확하고 조밀하며 연속적인 벡터공간 표현으로 변환하여, 다층적 분석을 가능하게 하는 "디지털 더블" 구현</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>도메인 외 일반화 가능성</strong>: 항공편 이동 기록과 숙박 예약 데이터 등 완전히 다른 도메인에 적용 가능함을 실증하여 방법론의 보편적 적용 가능성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1.</em></p></div>
 <ul>
 <li>Web of Science 데이터베이스에서 2008-2019년 사이 3백만 명의 이름-명확화된 저자 중 이동성 있는 저자(1개 이상 제휴) 추출</li>
 <li>저자의 시간 경과에 따른 제휴 변화를 궤적으로 구성(공동제휴 포함)</li>

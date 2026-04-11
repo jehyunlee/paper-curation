@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 일반 목적 에이전트(OpenClaw)와 재사용 가능한 스킬의 명확한 분리를 통해, 새로운 도메인 기능은 에이전트를 재설계하지 않고도 스킬 수준에서 추가·교체·재사용 가능하도록 설계.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: OpenClaw 기반 분리된 에이전트-스킬 프레임워크의 아키텍처">
-<p class="fig-caption"><em>OpenClaw는 중앙 제어와 감독을 제공하고, 스키마 정의 계획 스킬이 과학적 목표를 실행 가능한 작업 명세로 변환하며, 도메인 스킬이 계산화학 절차를 캡슐화하고, DPDispatcher가 이질적 HPC 환경에서 작업 실행을 관리한다.</em></p></div>
 <ol>
 <li><strong>메탄 산화 분자동역학(MD) 사례 연구 성공</strong>: 자연 언어 명령으로부터 시작하여 분자 최적화, 파일 형식 변환, 반응 시스템 구성, MD 시뮬레이션, HPC 디스패치 및 모니터링, 실패 복구, 궤적 분석까지 <strong>완전한 크로스-툴 실행(cross-tool execution)</strong> 완성.</li>
 <li><strong>확장 가능한 스킬 라이브러리 공개</strong>: 양자화학, 분자동역학, 기계학습 포텐셜, 분자 표현 등을 아우르는 <strong>오픈소스 계산화학 스킬 라이브러리</strong> 제공으로 재현성과 확장성 향상.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>반응 네트워크 추출(Reaction Network Extraction)</strong>: MD 시뮬레이션 결과로부터 자동으로 화학 반응 네트워크를 추출하는 후처리 분석 능력 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2: (a) LLM 기반 의사결정 프로세스 개요; (b) 워크플로우">
-</div>
 <ul>
 <li><strong>OpenClaw 제어 루프</strong>: 사용자 요청, 도구 접근, 장기 작업 상태 추적을 포함한 세션 컨텍스트 유지. 각 스텝에서 현재 대화 상태와 이전 행동 출력을 읽고, 언어모델이 다음 행동(스킬 로딩, 도구 호출, 도메인 스크립트 실행 등)을 생성. 출력, 오류, 생성된 파일을 캡처하여 다음 턴의 컨텍스트에 추가.</li>
 <li><strong>스키마 정의 계획 스킬(Schema-Defined Planning Skills)</strong>: 과학적 목표(예: "메탄 산화 경로 탐색")를 실행 가능한 작업 명세(task manifest)로 변환. 어떤 스킬을 어떤 순서로, 어떤 조건에서 조합할지를 명시.</li>
@@ -93,9 +89,7 @@ a { color: #A62018; }
 <li><strong>uv 도구체인 활용</strong>: uvx로 임시 격리 환경에서 도구 호출. 각 스킬이 필요 패키지와 함께 실행 가능한 명령으로 표현되어, 런타임에 의존성 해결 가능하면서도 스킬 수준에서 모듈식 유지.</li>
 <li><strong>DPDispatcher 통합</strong>: HPC 스케줄러 인식형(scheduler-aware) 실행 인터페이스로 이질적 HPC 환경(로컬, 슬럼, PBS 등)에 걸친 작업 제출, 모니터링, 복구를 일관된 방식으로 처리.</li>
 <li><strong>전명 제어 루프 오케스트레이션</strong>: 고수준 계획, HPC 제출, 계산화학 연산이 모두 OpenClaw의 중앙 루프에서 조율되므로, 스킬은 능력 설명과 절차만 제공하고 자율적으로 동작하지 않음.</li>
-</ul>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3: 메탄 산화 MD 시뮬레이션 워크플로우">
-</div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>아키텍처 혁신</strong>: 기존의 워크플로우-중심 시스템(고정 제어 흐름)과 전문화된 에이전트 시스템(깊게 내장된 도메인 로직) 사이의 <strong>거짓 이분법을 극복</strong>. 일반 목적 에이전트와 재사용 가능한 스킬의 명확한 계층 분리를 통해, 도메인 전문성을 에이전트 재설계 없이도 추가·교체 가능하도록 구조화.</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: K. J. Kevin Feng, Kevin Pu, Matt Latzke, Tal August, Pao Siangliulue, Jonathan Bragg, Daniel S. Weld, Amy X. Zhang, Joseph Chee Chang | <strong>날짜</strong>: 2026 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3772318.3791673" target="_blank">10.1145/3772318.3791673</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Cocoa는 과학 연구자를 위해 문서 환경에서 AI 에이전트와의 인터리빙된 공동 계획 및 실행을 촉진하는 상호작용 시스템이다.</em></p></div>
 <p>본 논문은 AI 에이전트와의 협업에서 계획(planning)과 실행(execution)을 엄격하게 분리하지 않고 유연하게 인터리빙(interleaving)하며, 인간과 에이전트 간 업무 위임 권한을 동적으로 조정할 수 있는 상호작용 설계를 제시한다. 계산 노트북(computational notebook) 패러다임의 영감을 받아 과학 연구 작업을 위한 문서 기반 협업 시스템 Cocoa를 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Cocoa의 사용자 인터페이스 개요: (A) 인터랙티브 계획으로 공동 계획 및 실행 지원, (B) AI 에이전트 할당 단계, (C) 연구자 할당 단계, (D) 사이드바 기반 결과 편집 및 피드백</em></p></div>
 <ol>
 <li><strong>협업 설계의 유연성</strong>: 개별 계획 단계를 사용자 또는 에이전트에 동적으로 할당 가능한 인터페이스 구현. 사용자는 에이전트의 제안을 수용, 거부, 수정할 수 있는 명시적인 선택지 제공</li>
 <li><strong>인터리빙 가능성</strong>: 계획과 실행을 엄격히 분리하지 않고, 부분 실행 후 계획을 재조정하거나 새로운 단계를 추가할 수 있는 유연한 워크플로우 실현</li>
@@ -112,8 +108,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>사용자가 문서의 텍스트에서 "에이전트 호출(Invoke agent)" 버튼을 클릭하여 에이전트 호출</em></p></div>
 <ul>
 <li><strong>공동 계획 단계</strong>: 에이전트 호출 시 문서 내에서 직접 실행 계획(plan of action)을 제시하고, 사용자는 단계 편집, 추가, 할당(user/agent) 가능</li>
 <li><strong>공동 실행 단계</strong>: 계산 노트북의 셀(cell) 실행 개념을 차용하여 개별 단계 실행 및 재실행 지원. 사용자는 인터랙티브 사이드바를 통해 에이전트 결과를 편집하고 피드백 제공</li>

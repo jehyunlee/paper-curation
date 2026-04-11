@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: DeepSeek-AI, Daya Guo, Dejian Yang, Haowei Zhang, Jun-Mei Song | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-025-09422-z" target="_blank">10.1038/s41586-025-09422-z</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: (a) RL 훈련 과정에서 DeepSeek-R1-Zero의 AIME 정확도. (b) RL 프로세스 중 응답의 평균 길이 증가.</em></p></div>
 <p>본 논문은 인간이 주석을 단 추론 궤적(reasoning trajectory) 없이 순수 강화학습(RL)을 통해 대형언어모델(LLM)의 추론 능력을 유도할 수 있음을 보여준다. RL 훈련 과정에서 모델은 자발적으로 자기 검증, 재검토, 동적 전략 적응 등의 고급 추론 패턴을 개발한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: DeepSeek-V3-Base에 기반하여 Group Relative Policy Optimization (GRPO)을 사용한 순수 RL 훈련을 수행하되, SFT 단계를 건너뛰고 최종 예측의 정확성만을 보상 신호로 사용</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1a">
-<p class="fig-caption"><em>AIME 2024 벤치마크에서 Pass@1 15.6%에서 77.9%로, Self-consistency 적용 시 86.7%까지 달성</em></p></div>
 <ol>
 <li><strong>수학 문제 해결</strong>: AIME 2024에서 Pass@1 기준 77.9%, Self-consistency 적용 시 86.7% 정확도 달성 (인간 평균 수준 초과)</li>
 <li><strong>코딩 경쟁 및 STEM 분야 우수성</strong>: 코딩 경쟁(coding competitions) 및 대학원 수준의 생물, 물리, 화학 문제에서 탁월한 성능 입증</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>모델 증류(Distillation)</strong>: 소형 모델로 증류된 버전들도 원래의 명령어 조정(instruction-tuned) 모델을 능가하는 추론 능력 보유</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>RL 프레임워크 개요</em></p></div>
 <ul>
 <li><strong>Group Relative Policy Optimization (GRPO)</strong>: PPO(Proximal Policy Optimization)의 단순화 버전으로, 각 질문에 대해 16개 출력을 샘플링한 후 정책 목적함수 최대화 (식 1-3 참고)</li>
 <li><strong>보상 설계</strong>: 규칙 기반 보상 시스템 활용
@@ -136,7 +130,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../243_Critique-GRPO_Advancing_LLM_Reasoning_with_Natural_Language/index.html">Critique-GRPO: Advancing LLM Reasoning with Natural Language and Numerical Feedback</a></div><div class="conn-reason">DeepSeek-R1의 순수 강화학습 기반 추론 능력은 Critique-GRPO의 자연언어 비판과 수치 보상 통합에 기본적인 RL 토대를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../585_Openai_o1_system_card/index.html">Openai o1 system card</a></div><div class="conn-reason">DeepSeek-R1과 OpenAI o1 모두 강화학습을 통한 추론 능력 향상을 추구하지만 서로 다른 훈련 방법론과 안전성 접근을 사용한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../449_Kimi_k15_Scaling_reinforcement_learning_with_llms/index.html">Kimi k1.5: Scaling reinforcement learning with llms</a></div><div class="conn-reason">두 논문 모두 강화학습으로 LLM의 추론 능력을 향상시키되 DeepSeek-R1은 순수 RL, Kimi k1.5는 긴 맥락과 정책 최적화를 강조한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../449_Kimi_k15_Scaling_reinforcement_learning_with_llms/index.html">Kimi k1.5: Scaling reinforcement learning with llms</a></div><div class="conn-reason">두 논문 모두 강화학습으로 LLM 추론을 향상시키되 Kimi k1.5는 긴 맥락 확장, DeepSeek-R1은 순수 RL에 중점을 둔다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../249_Curriculum_Reinforcement_Learning_from_Easy_to_Hard_Tasks_Im/index.html">Curriculum Reinforcement Learning from Easy to Hard Tasks Improves LLM Reasoning</a></div><div class="conn-reason">DeepSeek-R1과 E2H Reasoner 모두 강화학습을 통해 LLM의 추론 능력을 향상시키지만 서로 다른 학습 전략을 사용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../243_Critique-GRPO_Advancing_LLM_Reasoning_with_Natural_Language/index.html">Critique-GRPO: Advancing LLM Reasoning with Natural Language and Numerical Feedback</a></div><div class="conn-reason">자연언어 비판을 통합한 Critique-GRPO는 DeepSeek-R1의 순수 RL 접근법에 추가적인 언어적 피드백 메커니즘을 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../833_Towards_reasoning_era_A_survey_of_long_chain-of-thought_for/index.html">Towards reasoning era: A survey of long chain-of-thought for reasoning large language models</a></div><div class="conn-reason">강화학습을 통한 추론 장려가 Long CoT 특성 향상에 어떻게 기여하는지 확장 연구를 제공한다</div></div>

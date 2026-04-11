@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mohamed Elrefaie, Janet Qian, Raina Wu, Qian Chen, Angela Dai, Faez Ahmed | <strong>날짜</strong>: 2025-03-30 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.23315" target="_blank">10.48550/arXiv.2503.23315</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: AI 설계 에이전트 프레임워크로 자동차 설계 프로세스 가속화. VLM(비전-언어 모델), 기하 딥러닝, LLM을 통합하고 AutoGen으로 에이전트 간 협업 조율</em></p></div>
 <p>본 논문은 자동차 설계 분야에 AI 설계 에이전트(Design Agents)를 도입하여, 스케칭부터 공기역학 시뮬레이션까지 전 설계 주기를 수 주일에서 수 분으로 단축하는 다중 에이전트 프레임워크를 제시한다. VLM, LLM, 기하 딥러닝 기법을 활용한 전문화된 에이전트들이 엔지니어와 디자이너와 협력하여 설계 창의성과 효율성을 대폭 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: DrivAerNet++ 데이터셋(8,000개 산업 표준 자동차 설계)을 기반으로 4개의 전문화된 AI 에이전트(스타일링, CAD, 메싱, 시뮬레이션 에이전트)를 AutoGen으로 조율하는 다중 에이전트 프레임워크 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 다중 에이전트 시스템의 상호작용 흐름. 2D 스케치 입력 → 스타일링 렌더링 → CAD 검색/생성 → 메시 생성 → 공기역학 예측</em></p></div>
 <ol>
 <li><strong>설계 사이클 가속화</strong>: 개념 설계부터 공기역학 평가까지의 과정을 주 단위에서 분 단위로 단축하여 수십 배의 효율성 향상 달성</li>
 <li><strong>통합형 멀티모달 프레임워크</strong>: 2D 스케칭, 3D 형상 생성, CFD 메싱, 고충실도 공기역학 시뮬레이션을 일관되게 연결하는 최초의 엔드-투-엔드 시스템 구축</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>설계 공간 탐색</strong>: t-SNE 기반 비선형 차원 축소로 DrivAerNet++ 고차원 설계 공간의 고성능 설계 클러스터 식별</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: AI 다중 에이전트 시스템 사용 사례. 디자이너가 2D 스케치를 입력하면 다양한 스타일 옵션의 고해상도 렌더링 생성</em></p></div>
 <p><strong>핵심 방법론:</strong></p>
 <ul>
 <li><strong>스타일링 에이전트(Styling Agent)</strong>: Stable Diffusion XL, ControlNet, DALL·E를 활용하여 설계자 프롬프트에 기반한 고해상도 렌더링 생성 및 미적 개선</li>
@@ -126,7 +120,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 생성형 AI와 기하 딥러닝을 자동차 설계에 체계적으로 통합한 혁신적 프레임워크를 제시하며, 산업 규모 데이터셋과 자동화된 워크플로우를 통해 설계 사이클 획기적 단축을 입증했다. 다만 정량적 성능 평가와 실제 설계 프로젝트에서의 엔드유저 피드백이 추가되면 학술적 임팩트와 실무 적용성이 한층 강화될 것으로 기대된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../849_UI-TARS_Pioneering_Automated_GUI_Interaction_with_Native_Age/index.html">UI-TARS: Pioneering Automated GUI Interaction with Native Agents</a></div><div class="conn-reason">네이티브 에이전트의 상호작용이 엔지니어링 설계 자동화의 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../084_Ai-driven_robotics_for_free-space_optics/index.html">AI-Driven Robotics for Free-Space Optics</a></div><div class="conn-reason">자동차 설계와 광학 실험 모두 물리적 시스템의 AI 기반 자동화를 다룹니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../084_Ai-driven_robotics_for_free-space_optics/index.html">AI-Driven Robotics for Free-Space Optics</a></div><div class="conn-reason">자동차 설계와 광학 실험 모두 물리적 시스템의 AI 기반 설계 자동화를 다룹니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../849_UI-TARS_Pioneering_Automated_GUI_Interaction_with_Native_Age/index.html">UI-TARS: Pioneering Automated GUI Interaction with Native Agents</a></div><div class="conn-reason">GUI 자동화와 엔지니어링 설계 자동화 모두 인간-AI 협업을 다룹니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../462_Large_Language_Model_Agent_as_a_Mechanical_Designer/index.html">Large Language Model Agent as a Mechanical Designer</a></div><div class="conn-reason">자동차 설계가 더 일반적인 기계 설계로 확장됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

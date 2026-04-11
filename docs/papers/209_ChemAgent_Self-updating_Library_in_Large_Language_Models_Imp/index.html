@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiangru Tang, Tianyu Hu, Muyang Ye, Yanjun Shao, Xunjian Yin 외 | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.06590" target="_blank">10.48550/arXiv.2501.06590</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 전체 프레임워크 다이어그램 - (a) 라이브러리 강화 추론과 (b) 라이브러리 구축</em></p></div>
 <p>대규모 언어 모델(LLM)의 화학 추론 능력을 향상시키기 위해 동적으로 업데이트되는 자체 학습 라이브러리 시스템을 제안한다. 계획 메모리, 실행 메모리, 지식 메모리의 세 가지 메모리 구성요소를 통해 문제를 분해하고 과거 경험을 활용하여 정확도를 최대 46% 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 개발 데이터셋에서 복잡한 문제를 원자적 부작업(sub-tasks)으로 분해하고, 세 가지 유형의 메모리(Mp: 계획 메모리, Me: 실행 메모리, Mk: 지식 메모리)로 구성된 동적 라이브러리를 구축. 테스트 시 새로운 문제에 대해 라이브러리에서 관련 정보를 검색하고 검증하여 추론을 진행.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 수소 원자 에너지 전이 문제의 해결 방법 비교 - (a) 표준 Chain-of-Thought의 계산 오류, (b) StructChem의 상수 및 단위 변환 오류, (c) ChemAgent의 정확한 해답</em></p></div>
 <ol>
 <li><strong>정량적 성과</strong>: SciBench의 4개 화학 추론 데이터셋에서 GPT-4 기준 평균 37% 정확도 향상(최대 46%), 현재 최고 성능 방법 StructChem 대비 평균 10% 개선(최대 15%)</li>
 <li><strong>모델 성능 상관성</strong>: 강력한 기본 모델일수록 더 큰 개선 효과 실현. GPT-4에서 GPT-3.5보다 더 높은 개선율 달성, 오픈소스 모델(Llama3)에서도 일관된 개선 확인</li>
 <li><strong>정성적 성과</strong>: 단순 계산 오류, 상수 오류, 단위 변환 오류 등 구체적인 문제점을 체계적으로 해결하여 솔루션의 신뢰성 향상</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 라이브러리의 메모리 구성 요소 - 실행 메모리와 계획 메모리는 과거 경험에서 유래, 지식 메모리는 문제 프롬프트 기반으로 LLM이 생성</em></p></div>
 <p><strong>라이브러리 구축 단계</strong>:</p>
 <ul>
 <li>개발 데이터셋의 복잡한 문제를 계층적으로 분해하여 원자적 부작업 생성</li>

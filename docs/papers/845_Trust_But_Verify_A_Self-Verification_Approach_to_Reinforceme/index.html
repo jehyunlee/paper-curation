@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiaoyuan Liu, Tian Liang, Zhiwei He, Jiahao Xu, Wenxuan Wang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.13445" target="_blank">10.48550/arXiv.2505.13445</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>RISE 프레임워크: (i) 문제 풀이 및 검증 생성 단계와 (ii) RL 최적화 단계로 구성</em></p></div>
 <p>대규모 언어모델(LLM)의 "표면적 자기반성(superficial self-reflection)" 문제를 해결하기 위해, 검증 가능한 보상(verifiable rewards)을 활용하여 문제 풀이 능력과 자기검증 능력을 <strong>동시에 온라인으로 학습</strong>하는 RISE 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 결과 검증자(outcome verifier)로부터의 검증 가능한 보상을 <strong>풀이 생성과 자기검증 작업 모두에 동시에 활용</strong>하는 온라인 RL 프레임워크를 설계한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 샘플링 예산에서의 테스트 타임 성능 비교 (k값)</em></p></div>
 <ol>
 <li><strong>추론 정확도 향상</strong>: Qwen-3B 기준 Zero-RL 베이스라인 대비 3.7% 평균 개선, 지시어 조정 모델(Qwen-3B-Instruct)과 비교하면 일관된 상위 성능</li>
 <li><strong>검증 능력 대폭 개선</strong>: 검증 정확도에서 최대 2.8배 향상 달성, Qwen-3B-Instruct 대비 33.4% 성능 이득</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>모델 규모 확장성</strong>: 1.5B, 3B, 7B 모델에서 일관된 성능 개선으로 방법론의 일반성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>RISE와 다른 접근법 간의 비교 분석</em></p></div>
 <ul>
 <li><strong>2단계 프로세스</strong>:
 <ol>
@@ -124,7 +118,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 검증 가능한 보상을 활용하여 LLM의 문제 풀이와 자기검증 능력을 동시에 강화하는 실용적이고 효과적인 온라인 RL 프레임워크를 제안하며, 수학적 추론 벤치마크에서의 일관된 성능 개선과 상세한 분석으로 학계의 주목할 만한 기여이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../598_PAG_Multi-Turn_Reinforced_LLM_Self-Correction_with_Policy_as/index.html">PAG: Multi-Turn Reinforced LLM Self-Correction with Policy as Generative Verifier</a></div><div class="conn-reason">두 논문 모두 LLM 자기 검증을 다루되 RISE는 검증 가능한 보상 활용, PAG는 다중 턴 정책-검증자 전환에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../683_RM-R1_Reward_Modeling_as_Reasoning/index.html">RM-R1: Reward Modeling as Reasoning</a></div><div class="conn-reason">두 논문 모두 보상 모델의 검증 능력을 다루되 RM-R1은 추론 통합, RISE는 자기검증 학습에 초점을 맞춘다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../598_PAG_Multi-Turn_Reinforced_LLM_Self-Correction_with_Policy_as/index.html">PAG: Multi-Turn Reinforced LLM Self-Correction with Policy as Generative Verifier</a></div><div class="conn-reason">두 논문 모두 LLM의 자기 수정 능력을 다루되 PAG는 다중 턴 워크플로우, RISE는 검증 가능한 보상을 통한 동시 학습에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../396_Hallucination_mitigation_using_agentic_ai_natural_language-b/index.html">Hallucination mitigation using agentic ai natural language-based frameworks</a></div><div class="conn-reason">강화학습 기반 자기 검증을 통한 환각 문제 해결의 다른 접근 방식을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../683_RM-R1_Reward_Modeling_as_Reasoning/index.html">RM-R1: Reward Modeling as Reasoning</a></div><div class="conn-reason">RM-R1의 추론 능력을 통합한 보상 모델링은 RISE의 검증 가능한 보상 시스템에 더 정교한 평가 메커니즘을 제공한다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../471_Large_Language_Models_Cannot_Self-Correct_Reasoning_Yet/index.html">Large Language Models Cannot Self-Correct Reasoning Yet</a></div><div class="conn-reason">대규모 언어모델이 아직 추론을 자기수정할 수 없다는 연구 결과는 RISE의 동시 학습 접근법이 해결하고자 하는 핵심 한계를 명확히 보여준다.</div></div></div>

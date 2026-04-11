@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Liqiang Jing, Zhehui Huang, Xiaoyang Wang, Wenlin Yao, Wenhao Yu, Kaixin Ma, Hongming Zhang, Xinya Du, Dong Yu | <strong>날짜</strong>: 2024 (ICLR 2025 발표) | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2409.07703" target="_blank">arXiv:2409.07703</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figure1.png" alt="Figure 1">
-<p class="fig-caption"><em>DSBench 벤치마크의 완전한 워크플로우: 작업 설명 및 데이터 파일 처리부터 모델/에이전트 실행 및 최종 평가까지의 전체 과정</em></p></div>
 <p>대규모 언어 모델(LLM)과 대규모 시각-언어 모델(LVLM) 기반 데이터 과학 에이전트의 실제 성능을 평가하기 위해, ModelOff와 Kaggle 대회에서 수집한 466개의 데이터 분석 작업과 74개의 데이터 모델링 작업으로 구성된 포괄적 벤치마크 <strong>DSBench</strong>를 제시한다. 현존하는 최고 성능의 에이전트도 데이터 분석 작업의 34.12%만 해결하며 데이터 모델링에서 34.74% 상대 성능 격차(RPG)를 보임으로써, 현실 수준의 데이터 과학 에이전트 개발에 상당한 개선이 필요함을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Modeloff(금융 데이터 분석 대회)와 Kaggle(머신러닝 모델링 대회)에서 실제 경쟁 작업을 수집하여 다양한 모달리티, 긴 맥락, 대규모 파일, 멀티테이블 구조를 포함하는 현실적 벤치마크를 구성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="table1.png" alt="Table 1">
-<p class="fig-caption"><em>기존 에이전트 벤치마크와의 비교: 데이터 파일, 테이블, 이미지 포함 여부, 작업 설명 길이, 실행 가능한 평가 함수 제공, 환경 고정, 코드 전용, 작업 수</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구성</strong>: 38개 Modeloff 대회에서 466개 데이터 분석 작업과 74개 Kaggle 대회에서 74개 데이터 모델링 작업을 수집하여 총 540개 작업으로 구성된 DSBench를 개발</li>
 <li><strong>다중 모달리티와 현실성 통합</strong>: 평균 749.6 단어의 긴 작업 설명, 이미지(0.1개), Excel 파일(0.8개), 다중 시트(2.3개), 다중 테이블(1.3개) 등 현실 작업의 특성을 포함하며, 평균 61GB의 대규모 훈련 데이터 포함</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>종합적 기준선 평가</strong>: GPT-4o, Claude, Gemini 등 최신 LLM/LVLM을 포함한 다양한 모델과 에이전트를 평가하여 최고 성능도 34.12% 정확도와 34.74% RPG에 그침을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="table2_3.png" alt="Table 2 &amp; 3">
-<p class="fig-caption"><em>데이터 분석 작업의 특성(평균 749.58 단어 지시, 0.8개 Excel 파일, 2.3개 시트)과 데이터 모델링 작업의 특성(평균 688 단어 맥락, 287k 훈련 샘플, 61GB 파일 크기)</em></p></div>
 <ul>
 <li><strong>데이터 분석 작업 설계</strong>: Modeloff의 다지선다형(multiple-choice)과 단답형(fill-in-the-blank) 질문을 수집하며, LLM 기반 의미 비교 함수 S(A, Â)를 통해 정답 검증</li>
 <li><strong>데이터 모델링 작업 설계</strong>: Kaggle 대회의 실제 머신러닝 문제를 포함하여 훈련 데이터로 모델 학습 후 테스트 데이터에 대한 예측 성능 평가</li>

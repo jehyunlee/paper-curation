@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Rui Ye, Xianghe Pang, Jingyi Chai, Jiaao Chen, Zhen-fei Yin, Zhen Xiang, Xiaowen Dong, Jing Shao, Siheng Chen | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) 학술 커뮤니티가 피어 리뷰에 LLM 도입을 시작했으며, (b) 프롬프트 주입을 통한 명시적 조작, (c) LLM이 저자가 공개한 한계를 인용할 가능성이 높으며, (d) 불완전한 콘텐츠에도 부당히 높은 점수를 부여함</em></p></div>
 <p>본 연구는 학술 피어 리뷰에 대규모 언어모델(LLM)을 활용할 때의 심각한 보안 취약점을 최초로 종합적으로 분석한 논문이다. 저자들은 명시적 조작(explicit manipulation)과 암시적 조작(implicit manipulation), 그리고 LLM의 내재적 결함을 통해 LLM 기반 리뷰어가 얼마나 쉽게 오도될 수 있는지를 실증적으로 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ICLR 2024의 공개 피어 리뷰 데이터셋을 활용하여 (1) 명시적 조작(PDF에 작은 흰색 폰트로 조작 텍스트 주입), (2) 암시적 조작(저자가 한계를 의도적으로 강조), (3) 내재적 결함(불완전한 콘텐츠, 저자명 편향, 논문 길이 편향)에 대한 통제된 실험 수행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 조작 전후 리뷰 평점 비교</em></p></div>
 <ol>
 <li><strong>명시적 조작의 극단적 취약성</strong>: 프롬프트 주입을 통해 LLM-조작 내용 일치도가 90% 이상 달성, 반면 LLM-인간 일치도는 53%에서 16%로 급락. 조작된 리뷰의 평점이 평균 5.34에서 7.99로 상승하여 거의 모든 논문이 긍정적 평가를 받음</li>
 <li><strong>암시적 조작의 4.5배 높은 영향력</strong>: 저자가 공개한 한계에 대해 LLM은 인간 리뷰어보다 4.5배 더 높은 일치도(consistency)를 보임. 이는 LLM이 저자의 프레이밍에 매우 취약함을 의미함</li>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>시뮬레이션 영향</strong>: 5%의 리뷰만 조작해도 상위 30% 순위에서 12%의 논문이 순위를 잃을 수 있음을 시뮬레이션으로 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 상위 30% 논문에 대한 체계적 영향</em></p></div>
 <ul>
 <li><strong>명시적 조작 방법론</strong>:
 <ul>

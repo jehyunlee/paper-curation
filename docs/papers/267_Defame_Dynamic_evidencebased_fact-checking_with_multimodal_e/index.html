@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tobias Braun, Mark Rothermel, Marcus Rohrbach, Anna Rohrbach (Technical University of Darmstadt & hessian.AI) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.10510" target="_blank">arXiv:2412.10510</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DEFAME의 개요: 멀티모달 클레임을 멀티모달 증거로 검증하여 상세한 인간친화적 보고서를 생성</em></p></div>
 <p>본 논문은 텍스트와 이미지를 모두 포함하는 클레임(주장)을 검증하는 DEFAME이라는 멀티모달 팩트체킹 시스템을 제안한다. 6단계 동적 파이프라인을 통해 외부 도구와 멀티모달 LLM을 활용하여 증거를 검색하고 평가하며, 설명 가능한 검증 보고서를 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MLLM(멀티모달 대형언어모델)을 핵심으로 하는 6단계 동적 파이프라인을 설계하여, 웹 검색, 역이미지 검색 등 외부 도구를 활용한 동적 증거 검색과 멀티모달 처리를 통합하고 설명 가능한 보고서를 생성함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DEFAME의 6단계 파이프라인: Plan → Execute → Summarize → Develop → Judge → Justify</em></p></div>
 <ol>
 <li><strong>최첨단 성능 달성</strong>:
 <ul>
@@ -102,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>CLAIMREVIEW2024+ 데이터셋의 예시와 GPT-4O 대비 DEFAME의 혼동 행렬</em></p></div>
 <p><strong>6단계 동적 파이프라인:</strong></p>
 <ul>
 <li><strong>Stage 1 (Plan)</strong>: MLLM이 클레임 분석 후 필요한 검색 도구와 깊이 결정</li>

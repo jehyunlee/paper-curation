@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Agustinus Kristiadi, Felix Strieth‐Kalthoff, Marta Skreta, Pascal Poupart, Alán Aspuru‐Guzik, Geoff Pleiss | <strong>날짜</strong>: 2024 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2402.05015" target="_blank">https://arxiv.org/abs/2402.05015</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. The surrogates we consider in this work. “PEFT” refers to parameter efficient finetuning which adds a (proport</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)이 분자 공간에서의 베이지안 최적화(BO)에 실제로 유용한지를 엄밀하게 평가하며, 베이지안 서로게이트 모델을 통해 원칙적인 불확실성 정량화를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 고정 특징 추출기로서의 LLM과 매개변수 효율적 미세조정(PEFT) + 라플라스 근사를 통한 적응 특징 LLM 서로게이트 모델을 제시하고, 8개의 실제 화학 문제와 8개의 LLM에 대해 광범위한 실험을 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4. Summarized performance of the results in Figure 3 in</em></p></div>
 <ul>
 <li><strong>원칙적 베이지안 서로게이트 구성</strong>: 기존의 점 추정 기반 비베이지안 LLM 대신 적절한 후분포(posterior)를 보유한 베이지안 신경망 기반 서로게이트 모델 제시</li>
 <li><strong>LLM 유용성의 조건부 결론</strong>: LLM은 도메인 특화 데이터로 사전학습되거나 미세조정되었을 때만 분자 공간 BO에서 유용함을 입증</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실용적 소프트웨어 라이브러리</strong>: 이산 공간 BO용 오픈소스 라이브러리 제공으로 재현성 및 접근성 확보</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. The surrogates we consider in this work. “PEFT” refers to parameter efficient finetuning which adds a (proport</em></p></div>
 <ul>
 <li>LLM의 마지막 계층 임베딩을 고정된 특징 추출기로 사용하여 표준 BO 서로게이트(GP, 베이지안 신경망)의 입력으로 활용</li>
 <li>LoRA, Adapter 등 PEFT 기법을 통해 LLM의 일부 가중치만 미세조정 가능하도록 설정</li>
@@ -115,8 +109,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM 기반 분자 최적화에 대한 과장된 주장을 비판적으로 검토하면서 원칙적인 베이지안 프레임워크를 제시하는 매우 중요한 기여를 한다. 광범위한 실험과 실용적 라이브러리 제공으로 과학 발견의 자동화 분야에 높은 영향을 미칠 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../867_Verifier-Constrained_Flow_Expansion_for_Discovery_Beyond_the/index.html">Verifier-Constrained Flow Expansion for Discovery Beyond the Data</a></div><div class="conn-reason">베이지안 최적화의 원칙적 불확실성 정량화가 Flow 모델의 검증기 제약 프레임워크에서 유효성 보장의 기반이 됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../788_Targeted_materials_discovery_using_Bayesian_algorithm_execut/index.html">Targeted materials discovery using Bayesian algorithm execution</a></div><div class="conn-reason">베이지안 알고리즘을 통한 표적 소재 발견이 LLM의 분자 공간 베이지안 최적화 유용성을 실제로 검증함</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../569_Nanostructured_Material_Design_via_a_Retrieval-Augmented_Gen/index.html">Hypothesis Generation for Materials Discovery and Design Using Goal-Driven and Constraint-Guided LLM Agents</a></div><div class="conn-reason">소재 발견에서 LLM의 한계를 지적하는 회의적 관점이 ACCELMAT의 LLM 활용 낙관론과 대조됨</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../569_Nanostructured_Material_Design_via_a_Retrieval-Augmented_Gen/index.html">Hypothesis Generation for Materials Discovery and Design Using Goal-Driven and Constraint-Guided LLM Agents</a></div><div class="conn-reason">ACCELMAT는 LLM의 소재 발견 가능성을 낙관하는 반면, 베이지안 최적화 논문은 LLM의 실제 유용성에 회의적 관점을 제시함</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../569_Nanostructured_Material_Design_via_a_Retrieval-Augmented_Gen/index.html">Hypothesis Generation for Materials Discovery and Design Using Goal-Driven and Constraint-Guided LLM Agents</a></div><div class="conn-reason">소재 발견에서 LLM의 한계를 지적하는 회의적 관점이 ACCELMAT의 LLM 활용 낙관론과 대조됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

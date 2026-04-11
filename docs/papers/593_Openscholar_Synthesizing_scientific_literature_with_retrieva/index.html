@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Akari Asai, Jacqueline He, Rulin Shao, Weijia Shi, Amanpreet Singh, Joseph Chee Chang, Kyle Lo, Luca Soldaini, Sergey Feldman, Mike D'Arcy, David Wadden, Matt Latzke, Mingliang Tian, Peng Ji, Shengyan Liu, Tong Hao, Borong Wu, Yi Xiong, Luke Zettlemoyer, Graham Neubig | <strong>날짜</strong>: 2024 | <strong>DOI</strong>:</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>OpenScholar의 전체 개요: 전문화된 데이터스토어, 검색기 및 언어모델로 구성되며, 검색 기반 자체 피드백 추론 루프를 통해 반복적으로 응답을 개선한다.</em></p></div>
 <p>본 논문은 4,500만 개의 오픈 액세스 과학 논문에서 관련 구절을 검색하고 인용 기반 응답을 합성하는 검색 증강 대규모 언어모델(RAG-LM) 기반 시스템 OpenScholar를 제안하며, 함께 과학 논문 합성 평가를 위한 대규모 벤치마크 ScholarQA-Bench를 소개한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 과학 문헌 전문화 데이터스토어(45M 논문), 학습된 검색기와 재순위 지정기, 자체 피드백 반복 개선 루프를 포함한 통합 RAG 시스템을 구축하고, 전문가가 작성한 질의-응답 쌍(2,967개)으로 구성된 ScholarQA-Bench 벤치마크를 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>OpenScholar의 상세한 추론(상) 및 학습(하) 파이프라인. 추론 시에는 검색기를 통해 관련 논문을 식별하고 재순위 지정기로 상위 N개를 정제한 후, LM이 초기 응답과 자체 피드백을 생성하여 반복적으로 개선한다.</em></p></div>
 <ol>
 <li><strong>성능 우수성</strong>: OpenScholar-8B가 GPT-4o보다 정확도에서 5%, PaperQA2보다 7% 우수한 성능을 보이며, GPT-4o의 인용 환각률(78-90%)을 인간 전문가 수준으로 개선(인용 정확도 대폭 향상)</li>
 <li><strong>인간 평가 선호도</strong>: OpenScholar-8B는 전문가 작성 응답 대비 51% 승률, OpenScholar-GPT4o는 70% 승률을 달성하여 GPT-4o의 32%를 크게 상회</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자원 공개</strong>: 코드, 학습된 모델 체크포인트, 45M 논문 데이터스토어(237M 임베딩), ScholarQA-Bench 데이터셋, 공개 데모 전부 공개</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>OpenScholar의 상세 구조: (1)검색 단계: 질의로부터 데이터스토어의 관련 구절 검색, (2)재순위: 신경망 재순위 지정기로 상위 N개 정제, (3)생성: LM이 초기 응답 생성, (4)피드백: LM이 자신의 출력에 대해 자연언어 피드백 생성, (5)반복 개선: 피드백을 반영하여 응답 업데이트를 여러 번 수행</em></p></div>
 <ul>
 <li><strong>OpenScholar-DataStore (OSDS)</strong>: Semantic Scholar에서 수집한 45M 개의 오픈 액세스 논문과 237M 개의 대응 구절 임베딩으로 구성된 전문화된 데이터스토어</li>
 <li><strong>검색 및 재순위 지정</strong>: 기본 검색기로 후보 문서 식별 후, 학습된 신경망 재순위 지정기가 상위 N개 구절 선별하여 검색 품질 향상</li>
@@ -136,11 +130,9 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../602_Paperqa_Retrieval-augmented_generative_agent_for_scientific/index.html">PaperQA: Retrieval-Augmented Generative Agent for Scientific Research</a></div><div class="conn-reason">OpenScholar의 과학 문헌 합성 접근법이 PaperQA의 검색 증강 방식과 다른 각도에서 대규모 과학 지식 처리 문제를 해결하는 대안적 방법론을 제시함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../457_Language_agents_achieve_superhuman_synthesis_of_scientific_k/index.html">Language agents achieve superhuman synthesis of scientific knowledge</a></div><div class="conn-reason">OpenScholar가 과학 문헌 합성에 초점을 맞춘 반면, PaperQA2는 정확한 정보 검색과 요약에 특화되어 서로 다른 강점을 가진 상호 보완적 시스템임</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html">Clinical entity augmented retrieval for clinical information extraction</a></div><div class="conn-reason">일반적인 과학 문헌 검색 합성과 임상 도메인 특화 엔티티 기반 검색이라는 서로 다른 전문 분야 접근법입니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html">Clinical entity augmented retrieval for clinical information extraction</a></div><div class="conn-reason">임상 정보 추출을 위한 엔티티 기반 검색과 과학 문헌 합성을 위한 일반적 검색 증강의 서로 다른 접근법을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../087_Ai2_scholar_qa_Organized_literature_synthesis_with_attributi/index.html">Ai2 Scholar QA: Organized literature synthesis with attribution</a></div><div class="conn-reason">과학 문헌을 검색하고 합성하는 오픈 시스템으로 동일한 목표를 다른 구조로 달성한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../812_TLDR_Extreme_Summarization_of_Scientific_Documents/index.html">TLDR: Extreme Summarization of Scientific Documents</a></div><div class="conn-reason">과학 논문의 극단적 요약에서 전체 과학 문헌의 종합적 검색과 합성으로 확장한 더 포괄적인 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../335_Few-shot_Learning_with_Retrieval_Augmented_Language_Models/index.html">Few-shot Learning with Retrieval Augmented Language Models</a></div><div class="conn-reason">소규모 검색 증강 모델의 기본 개념을 4천500만 개 논문을 다루는 대규모 과학 문헌 시스템으로 발전시킨 연구입니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../335_Few-shot_Learning_with_Retrieval_Augmented_Language_Models/index.html">Few-shot Learning with Retrieval Augmented Language Models</a></div><div class="conn-reason">소규모 검색 증강 모델의 기본 아이디어를 대규모 과학 문헌 데이터베이스로 확장한 발전된 형태의 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../675_Retrieval-Augmented_Generation_for_Knowledge-Intensive_NLP_T/index.html">Retrieval-Augmented Generation for Large Language Models: A Survey</a></div><div class="conn-reason">과학 문헌 합성을 위한 검색 증강을 일반적인 RAG 시스템의 과학 특화 확장으로 발전시킬 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../493_Litllm_A_toolkit_for_scientific_literature_review/index.html">Litllm: A toolkit for scientific literature review</a></div><div class="conn-reason">검색 증강 생성을 통한 과학 문헌 합성이 LitLLM의 관련 연구 섹션 작성을 더 포괄적인 문헌 통합으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../404_Hiperrag_High-performance_retrieval_augmented_generation_for/index.html">HiPerRAG: High-performance retrieval augmented generation for scientific insights</a></div><div class="conn-reason">과학 문헌 합성을 위한 검색 증강 방법이 HiPerRAG의 대규모 처리 능력과 결합될 수 있습니다.</div></div></div>

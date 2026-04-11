@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Steven Au, Cameron J. Dimacali, Ojasmitha Pedirappagari, Namyong Park, Franck Dernoncourt, Yu Wang, Nikos Kanakaris, Hanieh Deilamsalehy, Ryan A. Rossi, Nesreen K. Ahmed | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PGraphRAG 프레임워크 개요. 사용자 프로필과 상호작용 데이터로부터 사용자 중심 그래프를 구성하고, 그래프에서 구조화된 사용자 관련 정보를 검색하여 언어 모델의 생성을 조건부화함</em></p></div>
 <p>본 논문은 지식 그래프 기반의 개인화된 검색 증강 생성(PGraphRAG)을 제안하여 사용자 이력이 부족한 콜드스타트 환경에서도 LLM의 개인화된 텍스트 생성 능력을 향상시킨다. 구조화된 사용자 정보를 검색 과정에 통합하여 희소 프로필 상황에서도 유의미한 개인화를 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사용자-아이템 상호작용으로 구성된 이분 그래프(bipartite graph)에서 사용자 프로필 뿐만 아니라 이웃 프로필(neighboring profiles)까지 검색하여 맥락을 보강</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Amazon 사용자-제품 데이터셋에서 사용자 프로필 크기의 분포. 대부분의 사용자가 소수의 리뷰만 보유하고 있으며, 빨간 수직선은 LaMP와 LongLaMP 같은 선행 벤치마크에서 사용한 최소 프로필 크기 임계값을 표시</em></p></div>
 <ol>
 <li><strong>벤치마크 기여</strong>: 장문 생성(4개 작업), 단문 생성(4개 작업), 서수 분류(4개 작업)로 구성된 12개 작업의 개인화된 그래프 기반 텍스트 생성 벤치마크 제시. 실제 희소 프로필 환경을 반영하는 최초의 포괄적 평가 자료</li>
 <li><strong>성능 향상</strong>: 장문 생성에서 평균 ROUGE-1 14.8% 개선, 단문 생성에서 4.6% 개선. 희소 프로필 환경에서 LaMP 대비 현저히 우수한 성능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>사용자, 아이템, 상호작용 간선(예: 리뷰)을 보여주는 이분 사용자 중심 그래프 G = (U, V, E)의 예시</em></p></div>
 <ul>
 <li><strong>개인화 텍스트 생성 정의</strong>: 입력 쿼리(x), 목표 출력(y), 사용자 프로필(Pi)이 주어질 때, Pr(y' | x, Pi)를 최대화하는 개인화된 출력(ŷ) 생성</li>
 <li><strong>그래프 기반 검색</strong>: 구조화된 사용자 중심 이분 그래프에서 사용자의 자체 프로필 뿐만 아니라 유사 사용자나 아이템의 관련 정보도 함께 검색. 검색된 맥락 R(Pi) ⊆ Pi을 프롬프트에 증강</li>

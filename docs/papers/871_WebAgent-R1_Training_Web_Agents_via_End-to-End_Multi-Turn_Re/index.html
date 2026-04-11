@@ -75,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 행동 복제로 초기화한 후, 다중턴 GRPO(M-GRPO) 알고리즘과 동적 컨텍스트 압축, 병렬 궤적 롤아웃을 활용한 온폴리 강화학습을 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Comparison between existing methods and our WEBAGENT-R1 on the WebArena-Lite benchmark.">
-<p class="fig-caption"><em>WebArena-Lite 벤치마크에서 기존 방법 대비 WebAgent-R1의 성능 비교</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: Qwen-2.5-3B를 6.1%에서 33.9%로, Llama-3.1-8B를 8.5%에서 44.8%로 성공률 향상. GPT-4o, OpenAI o3 등 강력한 프롬프팅 기반 모델을 능가한다.</li>
 <li><strong>확장성</strong>: 다양한 모델 크기(3B~32B)에서 일관되게 우수한 성과를 입증하며, 온폴리 방식으로 외부 감독(예: GPT-4 기반 보상 모델) 없이 자체적으로 완성된 학습이 가능하다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Overview of the end-to-end multi-turn RL training framework used in WEBAGENT-R1.">
-<p class="fig-caption"><em>WebAgent-R1의 종단 간 다중턴 RL 훈련 프레임워크 개요</em></p></div>
 <h3>핵심 메커니즘</h3>
 <ul>
 <li><strong>행동 복제 초기화</strong>: 전문가 데이터셋을 이용한 SFT로 기본적인 웹 상호작용 능력 습득 (s1, a1, s2, a2, ... st 형태의 상호작용 히스토리 학습)</li>

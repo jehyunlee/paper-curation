@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Martin Gerlach, Tiago P. Peixoto, Eduardo G. Altmann | <strong>날짜</strong>: 2018 | <strong>DOI</strong>: <a href="https://doi.org/10.1126/sciadv.aaq1360" target="_blank">10.1126/sciadv.aaq1360</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Fig. 1. Two approaches to extract information from collections of texts. Topic</em></p></div>
 <p>텍스트 코퍼스를 문서-단어 이분 네트워크로 표현하여 토픽 모델링을 커뮤니티 탐지 문제로 재정의하고, 비모수 계층적 확률 블록 모델(hSBM)을 통해 LDA의 한계를 극복하는 통합 프레임워크를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: pLSI(Probabilistic Latent Semantic Indexing)의 수학적 동치성을 활용하여 확률 블록 모델(SBM)의 비모수 베이지안 표현화를 토픽 모델링에 적용하고, 계층적 구조를 통해 다중 해상도의 토픽 구조를 자동으로 탐지한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Fig. 3. LDA is unable to infer non-Dirichlet topic mixtures. Visualization of the distribution of topic mixtures logP(qd</em></p></div>
 <ul>
 <li><strong>이분 네트워크 표현</strong>: 문서-단어 행렬을 가중 이분 다중그래프로 표현하여 토픽 모델링을 네트워크 커뮤니티 탐지로 형식화</li>
 <li><strong>비모수 접근법</strong>: 디리클레 사전의 제약을 벗어나 더 유연한 비모수 계층적 확률 블록 모델(hSBM) 도입</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>우수한 성능</strong>: 실제 및 인공 코퍼스에서 LDA보다 뛰어난 통계적 모델 선택 성능 입증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Fig. 2. Parallelism between topic models and community detection methods.</em></p></div>
 <ul>
 <li>문서-단어 매트릭스를 이분 네트워크로 변환 (노드: 문서/단어, 간선 가중치: 단어 빈도)</li>
 <li>pLSI와 혼합 멤버십 SBM 간의 수학적 동치성 활용</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jan A. Botha, Manaal Faruqui, John Alex, Jason Baldridge, Dipanjan Das | <strong>날짜</strong>: 2018 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>위키피디아 편집 이력에서 추출한 문장 분할-재표현(split-and-rephrase) 예시. 원본 문장이 두 개의 더 단순한 문장으로 분해되며, 삭제된 단어(노랑)와 추가된 단어(파랑)를 표시함.</em></p></div>
 <p>본 논문은 위키피디아 편집 이력을 마이닝하여 문장 분할-재표현(split-and-rephrase) 작업을 위한 100만 개 규모의 대규모 자연 데이터셋 WikiSplit을 구축하고, 이를 활용하여 기존 방법 대비 32 BLEU 포인트 향상을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,14 +75,10 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 위키피디아 편집 이력을 자동으로 마이닝하여 문장 분할 사례를 추출하는 확장 가능한 휴리스틱 기반 방법을 제안하고, 추출된 데이터의 품질을 검증하며, 기존 WebSplit과 결합하여 모델 성능을 평가함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/table3.webp" alt="Table 3">
-<p class="fig-caption"><em>WebSplit과 WikiSplit의 코퍼스 통계 비교. WikiSplit은 복잡 문장 수, 단순 문장 수, 토큰 다양성 모두에서 훨씬 더 큰 규모와 다양성을 제공함.</em></p></div>
 <ol>
 <li><strong>WikiSplit 데이터셋 구축</strong>: 100만 개의 자연스러운 문장 분할-재표현 예시 추출. 기존 WebSplit 대비 60배 많은 고유 분할 예시와 90배 더 큰 어휘 규모(633k 토큰) 달성.</li>
 <li><strong>성능 대폭 향상</strong>: WebSplit 벤치마크에서 BLEU 점수 30.5에서 62.4로 상향(104% 향상), 이전 최고 성능(Aharoni and Goldberg 2018의 30.5 BLEU) 대비 32 포인트 개선.</li>
 </ol>
-<div class="review-fig"><img src="figures/table5.webp" alt="Table 5">
-<p class="fig-caption"><em>다양한 학습 데이터 조합에 따른 WebSplit 테스트 셋 성능. WikiSplit만 사용했을 때 60.4 BLEU, WebSplit과 결합했을 때 62.4 BLEU 달성.</em></p></div>
 <ol>
 <li><strong>언어 간 일반화 가능성</strong>: 위키피디아가 다국어로 존재하므로 제안된 추출 방법을 다른 언어로도 확장 가능한 기반 제공.</li>
 </ol></div>
@@ -129,8 +123,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../791_Text_editing_by_command/index.html">Text editing by command</a></div><div class="conn-reason">위키피디아 편집 이력을 활용한 텍스트 분할과 재구성 연구가 자연어 명령 기반 텍스트 편집의 방법론적 기초를 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../703_Scholawrite_A_dataset_of_end-to-end_scholarly_writing_proces/index.html">Scholawrite: A dataset of end-to-end scholarly writing process</a></div><div class="conn-reason">위키피디아 편집 이력을 활용한 문장 분할-재표현 연구가 학술 글쓰기 과정의 텍스트 변경 패턴 분석의 기초가 됩니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../791_Text_editing_by_command/index.html">Text editing by command</a></div><div class="conn-reason">데이터 마이닝 기반 문장 분할과 명령어 기반 텍스트 편집이라는 서로 다른 텍스트 변형 접근법을 제시합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../884_Wikiatomicedits_A_multilingual_corpus_of_wikipedia_edits_for/index.html">WikiAtomicEdits: A Multilingual Corpus of Wikipedia Edits for Modeling Language and Discourse</a></div><div class="conn-reason">영어 위키피디아 편집에서 다국어 위키피디아 편집 데이터셋으로 확장하여 더 포괄적인 텍스트 편집 연구를 가능하게 합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../884_Wikiatomicedits_A_multilingual_corpus_of_wikipedia_edits_for/index.html">WikiAtomicEdits: A Multilingual Corpus of Wikipedia Edits for Modeling Language and Discourse</a></div><div class="conn-reason">위키피디아 편집 이력을 활용한 분할 및 재작성 학습이 WikiAtomicEdits 코퍼스에서 발견된 편집 패턴을 실제 텍스트 처리 작업에 적용한 후속 연구임</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../884_Wikiatomicedits_A_multilingual_corpus_of_wikipedia_edits_for/index.html">WikiAtomicEdits: A Multilingual Corpus of Wikipedia Edits for Modeling Language and Discourse</a></div><div class="conn-reason">영어 위키피디아 편집에서 다국어 위키피디아 편집 데이터셋으로 확장하여 더 포괄적인 텍스트 편집 연구를 가능하게 합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

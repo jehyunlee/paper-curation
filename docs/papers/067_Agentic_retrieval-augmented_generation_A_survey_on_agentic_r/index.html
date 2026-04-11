@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Aditi Singh, Abul Ehtesham, Saket Kumar, T. T. Khoei | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.09136" target="_blank">10.48550/arXiv.2501.09136</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Agentic RAG의 전체 개요</em></p></div>
 <p>대규모 언어모델(LLM)의 정적 학습 데이터 의존성을 극복하기 위해 자율 AI 에이전트를 RAG 파이프라인에 통합한 Agentic RAG 시스템에 대한 포괄적인 설문 논문이다. 이는 반성(reflection), 계획(planning), 도구 활용(tool use), 다중 에이전트 협력을 통해 동적 검색 전략과 적응형 워크플로우를 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: AI 에이전트의 agentic 패턴(반성, 계획, 도구 활용, 다중 에이전트 협력)을 RAG에 통합하여 동적 적응성과 확장성 달성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>RAG의 핵심 구성 요소: 검색(Retrieval), 증강(Augmentation), 생성(Generation)</em></p></div>
 <ol>
 <li><strong>RAG 진화 체계화</strong>: Naïve RAG → Advanced RAG → Modular RAG → Graph RAG → Agentic RAG으로 이어지는 패러다임 진화를 명확히 제시하고 각 단계의 특성, 강점, 한계를 상세히 분석</li>
 <li><strong>Agentic RAG 분류법 제시</strong>: 단일 에이전트, 다중 에이전트, 그래프 기반 프레임워크를 포함하는 포괄적인 분류 체계 제공</li>
 <li><strong>실무 구현 가이드</strong>: 벤치마크, 데이터셋, 도구 및 프레임워크, 윤리적 고려사항을 다루는 실질적 구현 전략 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Naïve RAG: 단순 키워드 기반 검색의 한계</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Advanced RAG: 밀집 벡터 검색과 반복적 검색 메커니즘</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Modular RAG: 하이브리드 검색 전략과 구성 가능한 파이프라인</em></p></div>
 <ul>
 <li><strong>RAG 기초</strong>: 외부 데이터 소스(지식베이스, API, 벡터 데이터베이스)에서 실시간 정보 검색하여 LLM의 생성 능력과 통합</li>
 <li><strong>Agentic 패턴</strong>: 반성(자가 검증), 계획(목표 분해), 도구 활용(외부 시스템 상호작용), 다중 에이전트 협력(분산 문제 해결)</li>

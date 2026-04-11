@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Aniketh Garikaparthi, Manasi Patwardhan, Aditya Kanade, Ahmed E. Hassan, Lovekesh Vig, Arman Cohan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.00249" target="_blank">arXiv:2506.00249v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 일반적인 검색(상)은 의미론적 유사성만으로 비관련 논문을 검색하지만, 제안 방법(하)은 방법론적 영감을 포착</em></p></div>
 <p>본 논문은 과학 연구 문제 해결을 위해 <strong>방법론적 영감(Methodology Inspiration)을 줄 수 있는 선행 연구를 검색하는 새로운 과제(MIR)</strong>를 정의하고, 인용 네트워크의 방법론적 계보를 포착하는 <strong>방법론 인접 그래프(MAG)</strong>를 활용하여 밀집 검색기(dense retriever)를 학습하는 기법을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 연구 제안(문제 + 동기)만을 입력으로 받아 방법론적으로 영감을 줄 수 있는 논문들을 검색하는 MIR 과제를 정의하고, 인용 의도(citation intent) 라벨이 있는 MultiCite 데이터셋을 확장하여 학습 데이터를 구축한 후, MAG를 통해 방법론 관계를 포착하는 검색기를 훈련한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 데이터셋 구축 과정 - MultiCite 데이터 적응 및 arXiv 증강</em></p></div>
 <ol>
 <li><strong>새로운 과제 및 데이터셋</strong>: MIR 과제를 형식화하고, MultiCite 데이터셋을 확장하여 MIR 평가용 데이터셋(MIR-MultiCite)을 구축했다. 이 데이터셋은 연구 제안과 그에 대한 방법론적 영감을 주는 논문 쌍으로 구성된다.</li>
 <li><strong>방법론 인접 그래프 기반 학습</strong>: 인용 네트워크에서 'methodology' 또는 'non-methodology' 의도로 라벨된 엣지를 가진 MAG를 구축하고, 이로부터 합성된 삼중 손실(triplet loss)을 통해 검색기를 미세조정함으로써 <strong>Recall@3에서 +5.4, Mean Average Precision(mAP)에서 +7.8의 향상</strong>을 달성했다.</li>

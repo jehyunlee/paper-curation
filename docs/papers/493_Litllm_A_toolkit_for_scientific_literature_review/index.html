@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shubham Agarwal, Gaurav Sahu, Abhay Puri, Issam H. Laradji, Krishnamurthy DJ Dvijotham, Jason Stanley, Laurent Charlin, Christopher Pal | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LitLLM 인터페이스: 사용자 제공 초록을 기반으로 Retrieval Augmented Generation(RAG) 원칙을 적용하여 문헌 리뷰를 생성하는 시스템</em></p></div>
 <p>LitLLM은 대규모 언어모델(LLM)과 검색 증강 생성(RAG) 기술을 결합하여 과학 논문의 관련 연구(Related Work) 섹션 작성을 자동화하는 대화형 도구이다. 시스템은 사용자 제공 초록으로부터 키워드 추출, 논문 검색 및 재순위화, 문헌 리뷰 생성의 모듈화된 파이프라인을 통해 환각(hallucination) 문제를 해결한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Retrieval Augmented Generation(RAG) 원칙을 적용하여 검색된 실제 논문들을 컨텍스트로 활용함으로써 LLM의 환각을 억제하고, 모듈화된 파이프라인(키워드 추출 → 논문 검색 → 재순위화 → 생성)을 통해 체계적으로 문헌 리뷰를 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>모듈화된 파이프라인 구조: 초록 → 키워드 생성 → 논문 검색 → 재순위화 → 최종 문헌 리뷰 생성</em></p></div>
 <ol>
 <li><strong>실용적 도구 개발</strong>: 사용자 친화적 인터페이스를 갖춘 완전한 문헌 리뷰 생성 시스템을 구현했으며, 데모 및 공개 툴킷을 제공한다(https://litllm.github.io).</li>
 <li><strong>환각 문제 해결</strong>: RAG 기반 접근으로 검색된 실제 논문들을 기반으로 생성하도록 조건화하여 환각 현상을 크게 감소시킨다.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>제어 가능한 생성</strong>: 문장 계획(sentence-based planning) 기능을 통해 생성된 문헌 리뷰의 길이와 형식을 사용자가 제어할 수 있다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 검색 전략: 초록 기반 키워드 요약, 사용자 제공 키워드, 시드 논문 기반 추천</em></p></div>
 <h3>3.1 논문 검색 모듈 (Paper Retrieval Module)</h3>
 <ul>
 <li>Semantic Scholar API와 OpenAlex API를 활용하여 300M+ 학술 메타데이터에 접근</li>
@@ -95,16 +89,12 @@ a { color: #A62018; }
 <li>선택적으로 사용자가 제공한 추가 키워드로 검색 결과 개선</li>
 <li>관련 시드 논문으로부터 Recommendations API를 통해 유사 논문 검색</li>
 </ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>키워드 요약 프롬프트: 연구 초록을 5개 이하의 검색 키워드로 변환</em></p></div>
 <h3>3.2 논문 재순위화 모듈 (Paper Re-Ranking Module)</h3>
 <ul>
 <li>Permutation generation 방식: LLM이 사용자 초록과의 연관성에 따라 논문들을 내림차순으로 순위화하도록 프롬프트</li>
 <li>Debate-ranking 방식: LLM이 각 논문에 대해 포함 찬성/반대 논거를 생성 후 확률 기반 순위 결정</li>
 <li>최상위 k개 후보를 LLM이 최종 순위화하여 생성 품질 향상</li>
 </ul>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>재순위화 프롬프트: 초록과 후보 논문들의 추상을 입력하여 관련성 기반 순위 생성</em></p></div>
 <h3>3.3 요약 생성 모듈 (Summary Generation Module)</h3>
 <ul>
 <li><strong>Zero-shot 생성</strong>: 초록과 재순위화된 논문들의 초록을 직접 LLM에 입력하여 관련 연구 섹션 생성</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhicheng Guo, Sijie Cheng, Hao Wang, Shihao Liang, Yujia Qin, Peng Li, Zhiyuan Liu, Maosong Sun, Yang Liu | <strong>날짜</strong>: 2025-03-05 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.07714" target="_blank">10.48550/arXiv.2403.07714</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ToolBench에서 보고된 성능과 재현된 성능의 비교: 몇 개월 후 동일한 설정에서 재현했을 때 상당한 성능 저하 발생</em></p></div>
 <p>대규모 언어 모델(LLM)이 도구를 활용하는 능력을 평가하기 위해 안정적인 벤치마크가 필수적인데, 기존 ToolBench는 실시간 API의 불안정성으로 인해 결과 재현성이 떨어진다. 본 논문은 가상 API 서버와 안정적인 평가 시스템을 통해 이 문제를 해결한 StableToolBench를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 실시간 API 호출 대신 (1) 캐싱 시스템으로 이전 결과 저장, (2) LLM 기반 API 시뮬레이터로 누락된 API 모방, (3) GPT-4 기반 개선된 평가 지표(SoPR, SoWR) 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>ToolBench의 API 상태 변화: 성공 44.4%, 연결 불가 14.8%, 파싱 오류 25.9% 등</em></p></div>
 <ol>
 <li><strong>안정적 벤치마크 구축</strong>: 가상 API 서버(캐싱 + 시뮬레이터)와 개선된 평가 시스템으로 API 변화에 강건한 평가 환경 제공</li>
 <li><strong>성능 안정성 입증</strong>: Figure 4에서 API 실패율이 증가해도 새로운 평가 지표는 일관된 결과 유지(기존 방식은 10-50% API 실패 시 5-25% 성능 저하)</li>
 <li><strong>평가 시스템 개선</strong>: GPT-3.5의 판별 불가 문제(Table 1의 "Unsure" 항목)를 GPT-4로 대체하여 안정성 향상</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ToolBench의 Pass Rate 평가 방식: "Unsure" 상태에서 임의 결정으로 인한 불안정성</em></p></div>
 <p><strong>가상 API 서버 (Virtual API Server)</strong></p>
 <ul>
 <li><strong>캐싱 시스템</strong>: 카테고리, 도구, API 이름, 인자로 구성된 키를 사용하여 API 응답 저장. 첫 번째 우선순위는 캐시 조회</li>

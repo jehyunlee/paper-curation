@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhihan Zhang, Yixin Cao, Lizi Liao | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3746027.3755596" target="_blank">10.1145/3746027.3755596</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>차트-to-코드 생성 작업의 예시로, 실행 가능성(Executability), 시각적 충실도(Visual Fidelity), 속성 정확도(Attributes Correctness) 등 다중 차원으로 평가됨</em></p></div>
 <p>차트 이미지를 실행 가능한 플로팅 코드로 변환하는 차트-to-코드 생성 작업에서, 다중모달 대규모 언어 모델(MLLM)의 성능을 향상시키기 위해 이중 모드(code + image) 보상 메커니즘과 반복적 선호도 학습을 결합한 프레임워크를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 코드와 이미지 양쪽 모드에서 보상 신호를 제공하고, 오프라인 강화학습(RL) 패러다임을 활용하여 반복적으로 모델을 정제하는 이중 선호도 유도 정제(dual preference-guided refinement) 프레임워크 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Chart2Code의 개요: 휴리스틱 F1 기반 코드 점수 매기기와 시각 보상 모델을 포함한 이중 보상 메커니즘, 그리고 구조화된 변형 생성 전략과 종횡별(aspect-level) 피드백 데이터셋</em></p></div>
 <ol>
 <li><strong>성과1 - 다중 MLLM에서의 일관된 성능 향상</strong>: 세 개의 기본 MLLM과 두 개의 벤치마크에서 실험하여 프레임워크가 다양한 초기화 설정에서도 실질적인 성능 개선을 달성함을 입증</li>
 <li><strong>성과2 - 전문화된 모델과의 경쟁력</strong>: 범용 오픈소스 MLLM들을 차트 전문 모델 및 일부 독점 시스템 수준으로 향상시켜, 고품질의 시각적으로 충실한 플로팅 코드 생성 능력을 확보</li>
 <li><strong>성과3 - 스케일 가능하고 타겟팅된 감독</strong>: 구조화된 변형 생성 전략과 시각 보상 모델을 통해 고품질의 종횡별 선호도 쌍 생성을 효율적으로 수행 가능하게 함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>각 반복 단계에서 생성되는 보상 신호의 흐름</em></p></div>
 <p><strong>1. 이중 보상 메커니즘 (Dual Rewarding Mechanism)</strong></p>
 <ul>
 <li><strong>코드 측 평가</strong>: 휴리스틱 F1 기반 점수 매기기로 생성 코드의 구조적 완정성과 의미론적 정확성 평가

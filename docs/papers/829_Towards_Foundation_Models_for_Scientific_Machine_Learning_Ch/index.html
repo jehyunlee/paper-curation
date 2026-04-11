@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shashank Subramanian, P. Harrington, K. Keutzer, W. Bhimji, D. Morozov, M. W. Mahoney, Amir Gholami | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2306.00258" target="_blank">10.48550/arXiv.2306.00258</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 PDE 시스템에 대한 사전학습과 미세조정 프레임워크</em></p></div>
 <p>본 논문은 자연언어처리(NLP)와 컴퓨터비전(CV) 분야에서 성공적으로 활용된 파운데이션 모델 패러다임(사전학습-미세조정)을 과학 머신러닝(Scientific Machine Learning, SciML) 분야에 적용 가능한지 체계적으로 검증한다. 편미분방정식(PDE) 학습 작업에서 신경 연산자(Neural Operator)를 다양한 물리 시스템으로 사전학습한 후 미세조정하면, 처음부터 학습한 모델보다 수 자릿수 적은 데이터로 목표 정확도에 도달할 수 있음을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Fourier Neural Operator(FNO)를 기본 아키텍처로 사용하여 Poisson, Advection-Diffusion, Helmholtz 등 다양한 PDE 시스템에서 (1) 데이터셋 다양성 확보, (2) 모든 PDE 입력 변수(계수, 소스 함수) 샘플링, (3) 다운스트림 데이터 크기, 모델 파라미터, 물리 파라미터 변화에 따른 전이 학습 효과를 측정.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다운스트림 데이터 스케일링: 전이학습 vs 처음부터 학습</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>모델 크기 확장 (64K에서 256M 파라미터): 미세조정이 처음부터 학습보다 우수한 성능 향상</em></p></div>
 <ol>
 <li><strong>다운스트림 데이터 효율성</strong>: 전이학습을 통해 목표 정확도에 도달하는 데 처음부터 학습 대비 <strong>자릿수 단위의 데이터 감소</strong>. 영점-샷(zero-shot) 또는 소수-샷(few-shot, O(10) 데이터) 미세조정에서도 유의미한 성능 향상 관찰. 다운스트림 데이터가 사전학습 데이터 규모에 도달할 때까지 일관된 이점 유지.</li>
 <li><strong>모델 크기 스케일링 효과</strong>: 매개변수를 64K에서 256M으로 확대(4,000배)할 때, 작은 모델에서의 오류 포화 현상 해소 후 단조 감소. <strong>미세조정된 모델이 처음부터 학습한 모델보다 매개변수 스케일링에 따른 성능 향상 폭이 더 큼</strong>.</li>
@@ -89,8 +83,6 @@ a { color: #A62018; }
 <li><strong>다중 연산자 전이</strong>: 서로 다른 해의 특성을 보이는 Poisson, Helmholtz 등 여러 PDE 시스템으로 동시에 사전학습한 단일 모델도 다양한 다운스트림 작업에서 성능 이점 유지. <strong>동일한 모델이 서로 다른 PDE 시스템 간 전이 가능함을 입증</strong>.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>물리 파라미터 변화에 따른 전이학습: 분포 내(a)에서 심화 OOD(d)로의 성능 곡선</em></p></div>
 <ul>
 <li><strong>사전학습 데이터셋 구성</strong>: 다양한 PDE에서 모든 입력 변수(PDE 계수, 소스 함수, 경계/초기 조건)를 동시에 샘플링. 기존 연구에서 일부 변수를 고정한 것과 대조. 정규화 전략 적용으로 성능 저하 방지.</li>
 <li><strong>신경 연산자 아키텍처</strong>: Fourier Neural Operator(FNO) 기반으로 함수 공간 간 매핑 학습. 다양한 PDE 계수와 경계 조건의 조합 처리 가능.</li>

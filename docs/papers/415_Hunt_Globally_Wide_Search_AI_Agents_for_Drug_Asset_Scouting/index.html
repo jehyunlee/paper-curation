@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 비(非)영어 지역 뉴스 소스에서 역방향으로 자산을 채굴하여 방법 유도 편향을 감소, (2) 투자자/BD 전문가의 실제 스크리닝 쿼리를 사전 정보로 사용하여 벤치마크 쿼리 생성, (3) 완전성·비환각을 중심으로 설계한 트리 기반 자기학습 Bioptic Agent 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 자산 스카우팅의 품질-시간 트레이드오프. y축: F1-score (높을수록 좋음), x축: 벽시계 시간(로그 척도)</em></p></div>
 <ol>
 <li><strong>성능 초과 달성</strong>: Bioptic Agent는 79.7% F1-score 달성
 <ul>
@@ -90,8 +88,6 @@ a { color: #A62018; }
 <li><strong>계산량 확장성</strong>: 추가 계산 투입에 따라 성능이 가파르게 향상되며, 이는 "더 많은 계산 = 더 나은 결과"를 뒷받침.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 완전성 벤치마크 구성 파이프라인. 상단: 자산 채굴 (Regional News Miner Agent, Attributes Enrichment Agent, Google Search Agent), 하단: 쿼리 생성 (실제 투자자 쿼리 클러스터링, Template Generator Agent, Query Generation Agent, Query Validator Agent)</em></p></div>
 <h3>벤치마크 구성 방법론</h3>
 <ul>
 <li><strong>역방향 설계 (Backward Construction)</strong>: 쿼리에서 출발하는 대신, 지역 뉴스 소스에서 독립적으로 수집한 신약 자산을 시작점으로 설정하여 방법 유도 편향 감소.</li>

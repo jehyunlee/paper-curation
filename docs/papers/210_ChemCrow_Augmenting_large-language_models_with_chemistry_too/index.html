@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Andres M Bran, Sam Cox, Oliver Schilter, Carlo Baldassari, Andrew D White, Philippe Schwaller | <strong>날짜</strong>: 2023-04-11 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: ChemCrow의 개요 및 도구 집합. (a) 작업 해결 프로세스의 개요. (b) 구현된 18개의 도구 세트</em></p></div>
 <p>대규모 언어 모델(LLM)에 18개의 화학 전문 도구를 통합하여 유기합성, 신약 개발, 재료 설계 등 다양한 화학 작업을 자율적으로 수행할 수 있는 ChemCrow 에이전트를 개발했다. GPT-4를 기반으로 하는 이 시스템은 Thought-Action-Observation 루프를 통해 화학 문제 해결에서 LLM의 고질적 한계를 극복한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ReAct(Reasoning + Acting)과 MRKL 프레임워크를 기반으로 LLM에 화학 특화 도구를 통합한 에이전트 시스템 구축. 18개의 도구(반응 도구, 분자 도구, 안전 도구, 검색 도구, 표준 도구)를 개발하고 클라우드 연결 로봇 합성 플랫폼(RoboRXN)과 연동.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 실험 검증. (a) 사용자가 ChemCrow를 시작하는 스크립트 예시. (b) 티오우레아 유기촉매 쿼리 및 합성. (c) IBM Research RoboRXN 합성 플랫폼. (d) 실험으로 검증된 화합물들</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 신규 색소 발견으로 이어진 인간-AI 협력. 좌측: 인간의 입력 및 행동. 우측: ChemCrow의 행동 및 최종 제안</em></p></div>
 <ol>
 <li><strong>자율 화학 합성</strong>: ChemCrow는 "곤충 기피제 합성 계획 및 실행"이라는 단순한 입력으로부터 DEET 및 3개의 티오우레아 유기촉매(Schreiner's, Ricci's, Takemoto's)의 합성을 자율적으로 계획하고 실행했다. RoboRXN 플랫폼에서 4개의 합성이 모두 성공적으로 수행되었으며, ActionCleaner 기능을 통해 유효하지 않은 합성 절차를 자동으로 반복 수정하였다.</li>
 <li><strong>인간-AI 협력을 통한 신규 분자 발견</strong>: 머신러닝 모델 학습, 데이터 정제, 특성 예측을 자동으로 수행하여 목표 파장(369nm)에 근접한 신규 색소(E)-3-methyl-4-(2-(3'-(methylsulfonamido)-[1,1'-biphenyl]-4-yl)vinyl)benzoate를 제안했으며, 실험적 합성과 분석을 통해 검증(측정 파장 336nm)되었다.</li>
 <li><strong>광범위한 평가</strong>: 14개의 사용 사례에서 ChemCrow와 순수 GPT-4의 성능을 LLM 기반 평가자(EvaluatorGPT)와 전문가 인간 평가를 통해 비교 분석했으며, ChemCrow의 화학 작업 자동화 효과를 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 다양한 화학 작업 범위에서 GPT-4와 ChemCrow의 비교 성능</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: ChemCrow가 제공하는 안전 지침 예시</em></p></div>
 <ul>
 <li><strong>에이전트 아키텍처</strong>: Thought-Action-Action Input-Observation 반복 루프 구현
 <ul>
@@ -144,7 +134,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: ChemCrow는 LLM을 화학 도구와 물리적 실험 플랫폼에 효과적으로 연결하여 자율 화학 합성과 신규 분자 발견을 실현한 획기적 연구다. 특히 실험 검증과 인간-AI 협력 사례는 설득력 있으나, LLM 평가자의 신뢰성 문제와 도구 집합의 제한성, 완전 자동화 달성의 미흡함은 향후 개선이 필요한 과제로 남는다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">LLM에 화학 도구 통합의 기본 연구가 ChemCrow의 직접적 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../271_Developing_ChemDFM_as_a_large_language_foundation_model_for/index.html">Developing ChemDFM as a large language foundation model for chemistry</a></div><div class="conn-reason">화학 AI 에이전트의 다른 구현 방식으로 도구 통합 vs 파운데이션 모델</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../271_Developing_ChemDFM_as_a_large_language_foundation_model_for/index.html">Developing ChemDFM as a large language foundation model for chemistry</a></div><div class="conn-reason">화학 분야 LLM의 다른 구현 방식으로 도구 통합 vs 파운데이션 모델 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../047_ActionIE_Action_Extraction_from_Scientific_Literature_with_P/index.html">ActionIE: Action Extraction from Scientific Literature with Programming Languages</a></div><div class="conn-reason">Python 코드 생성을 통한 화학 행동 추출과 화학 도구로 증강된 대형 언어모델은 모두 과학 문헌의 실험 절차를 자동화하는 서로 다른 접근법입니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../115_Augmenting_large_language_models_with_chemistry_tools/index.html">Augmenting large language models with chemistry tools</a></div><div class="conn-reason">화학 분야에서 LLM 도구 증강의 다른 접근법과 구현 방식을 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1106_The_BOS-Lig_Dataset_Accurate_Ligand_Charges_from_a_Consensus/index.html">The BOS-Lig Dataset: Accurate Ligand Charges from a Consensus Approach for 66,810 Experimentally Synthesized Ligands</a></div><div class="conn-reason">화학 대응 LLM 확장과 정확한 리간드 전하 결정의 다른 접근법</div></div>

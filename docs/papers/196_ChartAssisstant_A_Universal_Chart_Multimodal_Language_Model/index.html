@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 9가지 차트 유형을 포함하는 39M 규모의 ChartSFT 데이터셋 구축, (2) 차트-테이블 번역 사전학습으로 정렬 강화, (3) 5가지 작업(수치 QA, 참조 QA, 개방형 QA, 요약, 차트-테이블 번역)의 다중작업 명령어 튜닝.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기존 차트 모델과 ChartAssistant의 학습 파이프라인 비교</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: UniChart 대비 수치 QA에서 50.0%, ChartQA에서 28.1% 성능 향상. 영점학습(zero-shot) 설정에서 RealCQA 데이터셋에서 29.5%, ChartLLM에서 23.6% 성능 향상 달성.</li>
 <li><strong>데이터셋 규모</strong>: MatCha 대비 4.75배, UniChart 대비 5.62배 큰 39M 규모의 ChartSFT 데이터셋 구축으로 더 나은 일반화 가능성 제공.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>포괄적 차트 커버리지</strong>: 기본 차트(막대, 선, 산점선, 원형)와 특화된 차트(레이더, 박스플롯 등) 포함으로 더 넓은 차트 유형 대응.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChartAssistant가 수행하는 다양한 차트 이해 작업들</em></p></div>
 <p><strong>ChartSFT 데이터셋 구성</strong>:</p>
 <ul>
 <li>기본 차트 유형: 기존 벤치마크(ChartQA, PlotQA, OpenCQA 등) 활용 및 arXiv 테이블에서 데이터 증강</li>

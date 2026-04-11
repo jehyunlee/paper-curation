@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mubashara Akhtar, Oana Cocarascu, Elena Simperl | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2301.11843" target="_blank">10.48550/ARXIV.2301.11843</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChartFC 데이터셋의 예: 청구(claim)가 증거 차트로 지지되는 경우</em></p></div>
 <p>본 논문은 차트 이미지를 증거로 하여 텍스트 청구의 진위를 판정하는 새로운 자동 팩트-체킹(AFC) 과제를 제안하고, 이를 위한 첫 번째 모델인 ChartBERT를 소개한다. 텍스트, 구조, 시각 정보를 결합하여 차트 기반 주장 검증의 복잡한 추론 문제를 해결한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: OCR 기반 텍스트 추출, 시퀀스 생성, 구조 임베딩이 강화된 BERT 아키텍처를 통해 통합적 차트 이해 모델을 제안하고, 15,886개 차트로 구성된 ChartFC 벤치마크 데이터셋을 구축한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChartBERT 아키텍처: 읽기(Reading), 시퀀스 생성, 인코딩 세 가지 구성 요소</em></p></div>
 <ol>
 <li><strong>신규 과제 및 데이터셋</strong>: 차트 기반 팩트-체킹 과제를 최초 제안하고, 다양한 방향성, 색상, 배경을 갖춘 15,886개의 인간-작성 청구 기반 ChartFC 데이터셋 구축</li>
 <li><strong>모델 성능</strong>: ChartBERT가 63.8% 정확도를 달성하며, 75개 비전-언어(VL) 기준 모델(5개 비전 인코더, 3개 언어 인코더, 5개 융합 방법의 조합)을 체계적으로 평가하여 최상의 VL 기준선 초과</li>
 <li><strong>포괄적 벤치마킹</strong>: 최신 비전-언어 모델들의 한계를 명확히 하고, 모델 실패 패턴에 대한 상세 분석 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>ChartBERT 입력 표현: 추출된 텍스트와 구조 임베딩(x, y 좌표, 라벨 임베딩)</em></p></div>
 <p><strong>1단계 - 텍스트 및 구조 정보 추출</strong></p>
 <ul>
 <li>Tesseract OCR 모델을 사용하여 차트 이미지에서 텍스트 영역 감지</li>
@@ -150,7 +144,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 주장의 검증 가능성 분석이 차트 기반 증거를 활용한 의료 팩트 체킹에서 검증 가능한 주장을 식별하는 기준을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../783_Synchart_Synthesizing_charts_from_language_models/index.html">Synchart: Synthesizing charts from language models</a></div><div class="conn-reason">차트 이미지 읽기 및 추론을 위한 증거 기반 답변 생성 기법이 SynChart의 QA 주석 생성에 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../711_Sciclaims_An_end-to-end_generative_system_for_biomedical_cla/index.html">SciClaims: An end-to-end generative system for biomedical claim analysis</a></div><div class="conn-reason">차트 기반 팩트 체킹과 생의학 주장 검증은 서로 다른 증거 유형을 활용하지만 동일한 증거 기반 검증 프레임워크를 공유한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../711_Sciclaims_An_end-to-end_generative_system_for_biomedical_cla/index.html">SciClaims: An end-to-end generative system for biomedical claim analysis</a></div><div class="conn-reason">생의학 주장 분석과 차트 기반 팩트 체킹은 모두 증거 기반 검증을 수행하지만 텍스트와 시각적 증거라는 다른 정보원을 활용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 주장 검증 가능성 분석을 차트 기반 증거 활용으로 확장하여 더 다양한 증거 유형에 대한 검증 가능성 평가가 가능하다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../315_Enhancing_chart-to-code_generation_in_multimodal_large_langu/index.html">Enhancing chart-to-code generation in multimodal large language models via iterative dual preference learning</a></div><div class="conn-reason">차트에서 코드 생성 능력을 차트 기반 팩트 체킹으로 확장하여 더 정교한 차트 정보 추출과 검증이 가능하다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

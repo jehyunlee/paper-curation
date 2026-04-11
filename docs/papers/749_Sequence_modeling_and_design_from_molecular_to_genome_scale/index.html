@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: StripedHyena 아키텍처(주의 메커니즘과 데이터 제어식 합성곱 연산자의 하이브리드)를 활용하여 긴 서열을 효율적으로 처리하고, 300억 뉴클레오타이드 토큰의 OpenGenome 데이터셋으로 사전학습</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="./fig1_concept.png" alt="Figure 1 개념도">
-<p class="fig-caption"><em>Figure 1: 원핵생물 게놈에서 게놈 기초 모델 사전학습. StripedHyena 아키텍처를 사용한 7B 파라미터 Evo 모델의 학습 구성.</em></p></div>
 <ol>
 <li><strong>영점학습 기능 예측(Zero-shot Function Prediction)</strong>:
 <ul>
@@ -98,8 +96,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="./fig2_performance.png" alt="Figure 2 성능 평가">
-<p class="fig-caption"><em>Figure 2: 단백질, 비코딩 RNA, 조절 영역에 대한 영점학습 기능 예측 성능.</em></p></div>
 <ul>
 <li><strong>StripedHyena 아키텍처</strong>: 29개의 데이터 제어식 합성곱 연산자(hyena layer)와 3개(10%)의 다중 헤드 주의(attention) 층을 교대로 배치. Hyena 층은 단기 및 장기 필터의 합성으로 DNA의 노이즈 패턴 필터링 및 뉴클레오타이드를 모티프로 집계</li>
 <li><strong>문맥 길이 및 토큰화</strong>: 131,000 토큰의 문맥길이, 단일 뉴클레오타이드 바이트-수준 토큰화로 기존 Transformer 기반 DNA 모델의 한계 극복</li>
@@ -138,7 +134,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Evo는 게놈 수준의 장문맥 시퀀스 모델링과 생성에서 획기적인 진전을 이루었으며, DNA 스케일링 법칙 제시와 다중 분자 복합체 생성 능력은 합성생물학 분야에 새로운 가능성을 열었다. 다만 생성된 서열의 실생물 검증과 더 광범위한 생물체로의 확장이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../302_Effective_gene_expression_prediction_from_sequence_by_integr/index.html">Effective gene expression prediction from sequence by integrating long-range interactions</a></div><div class="conn-reason">유전자 발현 예측을 위한 서열 모델링 연구가 분자부터 게놈 규모까지의 서열 모델링 및 설계 연구의 중요한 기초가 되었다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../382_Genome_modeling_and_design_across_all_domains_of_life_with_E/index.html">Genome modeling and design across all domains of life with Evo 2</a></div><div class="conn-reason">동일한 Evo 모델의 다른 버전으로 성능 개선사항 비교 분석 가능</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../382_Genome_modeling_and_design_across_all_domains_of_life_with_E/index.html">Genome modeling and design across all domains of life with Evo 2</a></div><div class="conn-reason">동일한 Evo 모델이지만 다른 해상도와 응용 관점에서 접근함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">진화적 탐색 방법론이 게놈 설계와 생성에 실제 적용됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

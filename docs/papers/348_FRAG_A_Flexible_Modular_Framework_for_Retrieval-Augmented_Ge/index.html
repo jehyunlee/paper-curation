@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zengyi Gao, Yukun Cao, Hairu Wang, Ao Ke, Yuan Feng | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.09957" target="_blank">10.48550/arXiv.2501.09957</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Modular and Coupled KG-RAG Frameworks">
-<p class="fig-caption"><em>Modular과 Coupled KG-RAG 프레임워크의 구조적 차이</em></p></div>
 <p>본 논문은 지식그래프(KG) 기반 검색증강생성(RAG) 시스템에서 유연성과 검색 품질 사이의 트레이드오프를 해결하기 위해 FRAG 프레임워크를 제안한다. 쿼리의 복잡도를 자동으로 판단하여 단순/복잡 추론 작업에 맞춤형 검색 전략을 적용함으로써 LLM 미세조정 없이 모듈식 설계의 유연성을 유지하면서도 검색 품질을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -82,16 +80,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 쿼리 텍스트만을 이용하여 추론 경로의 호프 범위를 예측하고 단순/복잡으로 분류한 후, 각 복잡도에 맞는 맞춤형 검색 파이프라인을 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Analysis of Semantic and Structural Information in Reasoning Paths">
-<p class="fig-caption"><em>추론 경로의 의미론적(semantic) 정보와 구조적(structural) 정보 분석</em></p></div>
 <ol>
 <li><strong>유연성과 품질의 동시 달성</strong>: LLM 미세조정 없이 모듈식 설계의 격리성, 유연성, 확장성을 유지하면서 동적 검색 전략으로 검색 품질 향상</li>
 <li><strong>효율성 향상</strong>: 추가 LLM 호출이나 미세조정이 필요 없어 자원 소비를 최소화하고 계산 효율성 극대화</li>
 <li><strong>최첨단 성능</strong>: 벤치마크 데이터셋에서 기존 방법들과 비교하여 우수한 성능 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Framework of FRAG">
-<p class="fig-caption"><em>FRAG의 세 가지 주요 모듈 구조</em></p></div>
 <p><strong>1. Reasoning-Aware 모듈</strong> (쿼리 복잡도 분류)</p>
 <ul>
 <li>쿼리 컨텍스트에서 의미론적, 통계적 특징을 추출하여 교차 도메인 분류기 훈련</li>
@@ -138,7 +132,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../535_MetaOpenFOAM_an_LLM-based_multi-agent_framework_for_CFD/index.html">MetaOpenFOAM: an LLM-based multi-agent framework for CFD</a></div><div class="conn-reason">검색 증강 생성의 유연한 모듈 프레임워크가 MetaOpenFOAM의 RAG 기술 기반 CFD 지식 검색 및 처리 시스템의 핵심 기술적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1092_Table-llm-specialist_Language_model_specialists_for_tables_u/index.html">Table-llm-specialist: Language model specialists for tables using iterative generator-validator finetuning</a></div><div class="conn-reason">테이블 작업 전문가 모델과 달리 지식그래프 기반 RAG의 유연성을 통한 범용적 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../393_Graphusion_a_rag_framework_for_knowledge_graph_construction/index.html">Graphusion: a rag framework for knowledge graph construction with a global perspective</a></div><div class="conn-reason">지식그래프 구축에 중점을 둔 Graphusion과 달리 기존 KG 활용 최적화에 집중</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1092_Table-llm-specialist_Language_model_specialists_for_tables_u/index.html">Table-llm-specialist: Language model specialists for tables using iterative generator-validator finetuning</a></div><div class="conn-reason">RAG 프레임워크의 유연성 추구와 달리 테이블 작업에 특화된 전문 모델 개발 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../659_REALM_Retrieval-Augmented_Language_Model_Pre-Training/index.html">REALM: Retrieval-Augmented Language Model Pre-Training</a></div><div class="conn-reason">REALM의 검색 증강 기법을 더 유연한 모듈형 프레임워크로 발전시킨 연구</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

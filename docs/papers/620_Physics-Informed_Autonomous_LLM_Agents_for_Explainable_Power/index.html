@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Junhua Liu, Fanfan Lin, Xinze Li, Shuai Zhao, K. Lim | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1609/aaai.v40i47.41441" target="_blank">10.1609/aaai.v40i47.41441</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PHIA 시스템 아키텍처: 엔지니어가 채팅 인터페이스를 통해 설계 요구사항을 제공하면, 플래너가 도구 세트를 조율하여 인간 개입 없이 변조 설계를 반복적으로 생성</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반 자율 에이전트인 PHIA(Physics-Informed Autonomous Agent)를 제안하여, 신재생에너지 시스템의 전력변환기 변조 설계를 자동화하고 최소한의 인간 개입으로 고품질 설계를 생성한다. 물리 정보 신경망과 최적화 알고리즘을 통합함으로써 설명 가능성과 확장성을 동시에 달성한 획기적인 접근법이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -85,8 +83,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 플래너를 중심으로 사용자 요구사항을 자연언어로 처리하고, 물리 정보 대리모델(Surrogate Model)과 최적화 알고리즘을 도구로 활용하여 자율적으로 최적 설계를 생성하고 반복 개선.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>계층적 물리 정보 대리모델: ModNet(스위치 레벨 모델링)과 CirNet(시스템 레벨 모델링) 두 개의 물리 정보 신경망으로 구성하여 전력변환기의 복잡한 동작 정확도 향상</em></p></div>
 <ol>
 <li><strong>성능 우수성</strong>: 저데이터 시나리오에서 최고 벤치마크 대비 63.2%, 고데이터 시나리오에서 23.7% 더 낮은 표준평균절대오차(SMAE) 달성</li>
 <li><strong>설계 시간 대폭 단축</strong>: 전통적 방법 대비 33배 이상 빠른 설계 프로세스 실현</li>
@@ -94,8 +90,6 @@ a { color: #A62018; }
 <li><strong>물리 정보 대리모델 개발</strong>: 희소 데이터 환경에서도 높은 정확도를 유지하는 계층적 구조의 신경망 모델 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>전력변환기 응용 사례: DAB(Dual Active Bridge) 변환기는 DC 트랜스포머로서 다양한 DC 버스를 연결하며, 스위치 변조가 전력 전송 효율, 전압 조절, 시스템 안정성에 직접 영향</em></p></div>
 <p><strong>PHIA 시스템의 주요 구성요소 및 작동 방식:</strong></p>
 <ul>
 <li><strong>LLM 기반 플래너 모듈</strong>: 채팅 인터페이스를 통해 사용자의 자연언어 요구사항을 대화형으로 획득하고 검증. 설계 사양(operating conditions, modulation strategy, performance objectives)을 자동으로 추출</li>

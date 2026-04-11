@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta Raileanu, Maria Lomeli, Luke Zettlemoyer, Nicola Cancedda, Thomas Scialom | <strong>날짜</strong>: 2023-02-09 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2302.04761" target="_blank">10.48550/arXiv.2302.04761</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Toolformer의 예시적 예측. 모델이 자율적으로 다양한 API(위에서부터: 질의응답 시스템, 계산기, 기계번역 시스템, Wikipedia 검색 엔진)를 호출하여 텍스트 완성에 필요한 정보를 획득한다.</em></p></div>
 <p>언어 모델이 자기 자신의 피드백만을 이용하여 계산기, 검색 엔진, 질의응답 시스템 등의 외부 도구를 언제 어떻게 사용할지 자동으로 학습할 수 있는 Toolformer 모델을 제안한다. 인간의 주석 없이 자가감독(self-supervised) 방식으로 학습되며, 6.7B 매개변수의 소규모 모델이 GPT-3보다 나은 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사전학습된 대규모 언어 모델의 인-컨텍스트 학습 능력을 이용하여 잠재적 API 호출을 생성하고, 자가감독 손실함수를 통해 실제로 도움이 되는 호출만을 필터링한 후, 필터링된 API 호출들과 함께 원본 데이터셋으로 모델을 파인튜닝한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 접근 방식의 핵심 단계. 입력 텍스트 x가 주어지면 (1) 가능한 API 호출 위치와 후보들을 샘플링하고, (2) API 호출을 실행한 후, (3) 손실함수 감소에 기여하지 않는 호출들을 필터링하여 최종 데이터셋을 구성한다.</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: 6.7B 매개변수의 Toolformer(GPT-J 기반)가 다양한 다운스트림 작업에서 175B 매개변수의 GPT-3을 능가하는 제로샷(zero-shot) 성능을 달성한다.</li>
 <li><strong>일반성 보존</strong>: 원본 사전학습 데이터셋을 그대로 사용하여 파인튜닝함으로써 언어 모델의 기본 능력을 손상시키지 않으면서 도구 사용 능력을 추가한다.</li>
 <li><strong>다양한 도구 통합</strong>: 질의응답 시스템, Wikipedia 검색, 계산기, 번역 시스템, 달력 등 5가지 이질적인 도구를 하나의 프레임워크에서 운영할 수 있다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 질의응답 도구를 위한 프롬프트 P(x)의 예. 모델에게 몇 가지 데모를 통해 API 호출의 형식과 위치를 학습시킨다.</em></p></div>
 <ul>
 <li><strong>API 호출 샘플링 (Sampling)</strong>:
 <ul>
@@ -153,7 +147,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../114_Augmented_Language_Models_a_Survey/index.html">Augmented Language Models: a Survey</a></div><div class="conn-reason">증강 언어모델의 도구 사용 개념이 언어모델이 스스로 도구 사용을 학습하는 자율적 시스템 개발의 중요한 이론적 토대가 되었다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../499_LLM_With_Tools_A_Survey/index.html">LLM With Tools: A Survey</a></div><div class="conn-reason">언어 모델이 스스로 도구 사용법을 학습하는 Toolformer의 기초 연구를 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../174_Browsecomp_A_simple_yet_challenging_benchmark_for_browsing_a/index.html">BrowseComp: A simple yet challenging benchmark for browsing agents</a></div><div class="conn-reason">언어모델의 도구 사용 학습 연구가 복잡한 웹 브라우징 에이전트 평가 벤치마크의 기술적 기반을 제공합니다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../174_Browsecomp_A_simple_yet_challenging_benchmark_for_browsing_a/index.html">BrowseComp: A simple yet challenging benchmark for browsing agents</a></div><div class="conn-reason">도구 사용을 학습하는 언어모델 연구의 기반 위에서 더 복잡한 웹 브라우징 능력을 평가하는 벤치마크를 구축합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../793_The_Adoption_and_Usage_of_AI_Agents_Early_Evidence_from_Perp/index.html">The Adoption and Usage of AI Agents: Early Evidence from Perplexity</a></div><div class="conn-reason">언어모델의 도구 사용 학습 연구가 AI 에이전트 채택과 활용 사례 분석의 기술적 배경을 제공합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../655_ReAct_Synergizing_Reasoning_and_Acting_in_Language_Models/index.html">ReAct: Synergizing Reasoning and Acting in Language Models</a></div><div class="conn-reason">도구 사용 학습에서 추론과 행동을 결합한 더 포괄적인 에이전트 프레임워크로 발전한 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../496_LLM_Agents_Making_Agent_Tools/index.html">LLM Agents Making Agent Tools</a></div><div class="conn-reason">Toolformer의 언어 모델 자체 도구 사용 학습이 TOOLMAKER의 과학 논문 기반 자동 도구 생성으로 발전한 확장된 형태이다.</div></div>

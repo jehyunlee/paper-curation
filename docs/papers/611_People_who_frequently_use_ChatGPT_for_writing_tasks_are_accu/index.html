@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jenna Russell, Marzena Karpinska, Mohit Iyyer | <strong>날짜</strong>: 2025-01-26 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.15654" target="_blank">10.48550/arXiv.2501.15654</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 인간 전문가의 AI 생성 텍스트 주석 예시 - 판단, 신뢰도 점수, 상세 설명 포함</em></p></div>
 <p>LLM을 글쓰기 작업에 자주 사용하는 사람들은 특별한 학습 없이도 AI 생성 텍스트를 극도로 정확하게 탐지할 수 있으며, 자동 탐지 시스템보다 훨씬 우수한 성능을 보인다. 본 연구는 300개의 논픽션 기사에 대한 9명의 주석자 분석을 통해 이를 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다양한 LLM 배경을 가진 주석자들을 채용하여 5단계 실험(기본 모델 → 패러프레이징 → 휴머니제이션)에서 인간-AI 쌍을 이룬 기사 300개에 주석을 달게 하고, 판단 과정에 대한 상세 설명을 수집한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 전문가 신뢰도는 난이도가 높아질수록 감소하지만 정확도는 유지</em></p></div>
 <ol>
 <li><strong>LLM 자주 사용자의 우수한 성능</strong>: LLM을 글쓰기에 자주 사용하는 5명의 "전문가" 주석자의 다수결 투표는 300개 기사 중 단 1개만 오분류(99.67% 정확도). 비교군(LLM을 거의 사용하지 않는 주석자)은 거의 무작위 수준의 성능을 보임.</li>
 <li><strong>자동 탐지 시스템 초월</strong>: Pangram 상용 모델을 제외한 거의 모든 오픈소스 탐지기(Binoculars 6.7%, Fast-DetectGPT 23.3%)를 능가. 특히 O1-Pro 휴머니제이션 텍스트 탐지에서 전문가는 100% 정확도, 자동 방식은 심각한 성능 저하.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 전문가가 언급한 탐지 단서의 범주별 빈도 분포</em></p></div>
 <ul>
 <li><strong>실험 설계</strong>: 5개 단계별 배치 실험(60개 기사/배치, 30개 인간/30개 AI), 제목-부제를 동일하게 제어한 최소 쌍(minimal pairs) 구성, 피험자 내 설계(within-subjects design)로 개인차 최소화</li>
 <li><strong>주석 과정</strong>: (1) 이진 판단, (2) 신뢰도 1-5점, (3) 클라우 하이라이트, (4) 단락 길이의 설명 수집</li>
@@ -127,7 +121,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../635_Productivity_assessment_of_neural_code_completion/index.html">Productivity assessment of neural code completion</a></div><div class="conn-reason">ChatGPT 사용자의 글쓰기 정확성 연구가 신경망 코드 완성 도구 사용자의 생산성 평가 방법론에 기초적인 사용자 행동 분석 틀을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../280_Divergent_llm_adoption_and_heterogeneous_convergence_paths_i/index.html">Divergent LLM Adoption and Heterogeneous Convergence Paths in Research Writing</a></div><div class="conn-reason">LLM 사용자의 AI 텍스트 탐지 능력 연구가 학계의 LLM 채택 패턴과 그 영향 분석의 기초 통찰을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../478_Large_language_models_penetration_in_scholarly_writing_and_p/index.html">Large language models penetration in scholarly writing and peer review</a></div><div class="conn-reason">ChatGPT 사용자의 AI 생성 텍스트 탐지 정확도 연구로 LLM 침투도 측정의 기술적 기반을 제공한다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../280_Divergent_llm_adoption_and_heterogeneous_convergence_paths_i/index.html">Divergent LLM Adoption and Heterogeneous Convergence Paths in Research Writing</a></div><div class="conn-reason">ChatGPT 사용자들의 AI 텍스트 탐지 능력 연구로서 LLM 채택 패턴 분석의 기초 통찰을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../093_All_that_glitters_is_not_novel_Plagiarism_in_ai_generated_re/index.html">All that glitters is not novel: Plagiarism in ai generated research</a></div><div class="conn-reason">AI 생성 텍스트 탐지 연구가 AI 생성 연구 논문의 정교한 표절 탐지 문제의 기초 기술적 배경을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../270_Detecting_llm-written_peer_reviews/index.html">Detecting LLM-written Peer Reviews</a></div><div class="conn-reason">ChatGPT 사용자의 탐지 능력과 LLM 작성 동료 검토 자동 탐지라는 서로 다른 AI 생성 텍스트 식별 접근법입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../284_Does_writing_with_language_models_reduce_content_diversity_a/index.html">Does writing with language models reduce content diversity? arXiv preprint arXiv:2309.05196, 2023.</a></div><div class="conn-reason">언어모델 사용이 글쓰기에 미치는 영향을 다양성 감소에서 정확성 인식으로 확장하여 더 포괄적인 사용자 행동 분석을 제공함</div></div>

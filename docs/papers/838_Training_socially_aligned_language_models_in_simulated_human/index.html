@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ruibo Liu, Ruixin Yang, Chenyan Jia, Ge Zhang, Denny Zhou, Andrew M. Dai, Diyi Yang, Soroush Vosoughi | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2305.16960" target="_blank">arXiv:2305.16960</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기존의 RLHF와 달리 Stable Alignment은 시뮬레이션된 사회적 상호작용을 통해 직접 언어모델을 정렬한다</em></p></div>
 <p>본 논문은 시뮬레이션된 사회적 상호작용을 통해 언어모델을 사회적으로 정렬(socially aligned)시키는 새로운 학습 패러다임을 제시한다. 기존 감독 학습이나 보상 모델링의 한계를 극복하기 위해 다중 에이전트 시뮬레이션 환경(SANDBOX)에서 생성된 상호작용 데이터를 활용하여 보다 견고하고 확장 가능한 정렬 방법을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다중 언어모델 에이전트로 구성된 시뮬레이션 사회(SANDBOX) 구축, (2) Back-Scatter 메커니즘을 통한 동료 피드백 수집, (3) 3단계 Stable Alignment 학습 프레임워크(모방, 자기비판, 재정렬) 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>다양한 언어모델에서의 정렬 분석: 모델 규모가 반드시 정렬 성능을 크게 향상시키지는 않음</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Back-Scatter를 통한 상호작용 데이터 생성 및 3가지 정렬 데이터 타입(모방, 자기비판, 재정렬) 구성</em></p></div>
 <ol>
 <li><strong>벤치마크 성능 우월성</strong>: 6개의 정렬 벤치마크에서 기존 방법을 능가하며, 적대적 공격(jailbreaking)에 대한 견고성이 현저히 향상됨</li>
 <li><strong>확장성 및 효율성 개선</strong>: 추가 보상 모델이 필요 없어 자원 제약 환경에 쉽게 배포 가능하며, 기존 SFT 대비 인간 라벨링 비용 감소</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>생성 데이터의 질</strong>: 169k개의 상호작용 데이터에서 수집된 비교 쌍(comparative pairs), 집단 평가(collective ratings), 상세 피드백, 반복 수정 응답을 포함한 고품질 데이터 구성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>SANDBOX의 Back-Scatter 메커니즘: 중앙 에이전트가 초기 응답을 생성한 후, 주변 에이전트들의 평가와 피드백을 받아 반복적으로 개선</em></p></div>
 <p><strong>SANDBOX 시뮬레이션:</strong></p>
 <ul>
 <li>100개의 언어모델 기반 사회 에이전트 구성</li>

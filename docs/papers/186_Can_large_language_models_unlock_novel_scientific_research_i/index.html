@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sandeep Kumar, Tirthankar Ghosal, Vinayak Goyal, Asif Ekbal | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>대규모 언어모델이 연구논문을 읽고 미래 연구 아이디어를 제안하는 과정</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)이 과학 논문으로부터 새로운 미래 연구 아이디어를 생성할 수 있는지를 체계적으로 평가한다. 이를 위해 자동 평가 메트릭(IAScore, Idea Distinctness Index)을 제안하고 인간 평가를 병행하여 LLM의 아이디어 생성 능력과 한계를 분석한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 5개 도메인(컴퓨터과학, 경제학, 물리학, 화학, 의학)의 1,250개 논문으로 데이터셋을 구성하고, 저자가 제시한 미래 연구 아이디어와의 정렬도를 측정하는 IAScore와 아이디어 다양성을 평가하는 Idea Distinctness Index를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>도메인별 및 모델별 IAScore 비교; 높은 값은 저자의 아이디어와 더 나은 정렬을 의미</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>아이디어 다양성 지수 분석; 인간은 논문의 저자</em></p></div>
 <ol>
 <li><strong>자동 평가 메트릭 개발</strong>: IAScore는 생성된 아이디어가 저자가 제시한 미래 연구 방향과 얼마나 잘 정렬되는지를 측정하며, 해석 가능하고 확장 가능한 하한(lower-bound) 지표로 기능한다.</li>
 <li><strong>포괄적 데이터셋 구축</strong>: 5개 도메인의 최신 논문들로부터 FRI(Future Research Ideas) 말뭉치를 구성하고, 저자의 미래 연구 아이디어를 AP-FRI 코퍼스로 정리하여 벤치마크를 제공한다.</li>
 <li><strong>LLM 비교 분석</strong>: Gemini, Claude-2, GPT-3.5, GPT-4의 성능을 평가하여 모델별 강점과 약점을 파악하고, 컴퓨터과학 분야 660개 아이디어에 대한 인간 평가를 통해 참신성, 관련성, 실행 가능성을 검증한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>도메인별 논문 내 평균 단어 수 비교 (미래연구 섹션 포함/제외)</em></p></div>
 <ul>
 <li><strong>데이터셋 구성</strong>: S2ORC에서 각 도메인별 250개씩 총 1,250개 논문 수집; 전체 내용과 미래연구 섹션 포함 논문만 선별</li>
 <li><strong>미래 연구 아이디어 제거</strong>: 논문에서 언급된 FRI를 식별하여 제거(Direct FRI는 전체 제거, Mixed FRI는 부분 제거)하여 LLM이 사전 정보를 갖지 않도록 처리</li>
@@ -118,9 +110,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">SciMON의 참신성 최적화 방법론이 LLM의 과학 아이디어 생성 능력 평가에서 제시하는 기본적인 아이디어 품질 메트릭을 발전시킨 것이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">LLM의 아이디어 생성 능력에 대한 기본 평가가 TruthHypo의 진실성 검증 연구의 필요성을 입증하는 기초 연구이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../603_PaperRobot_Incremental_Draft_Generation_of_Scientific_Ideas/index.html">PaperRobot: Incremental Draft Generation of Scientific Ideas</a></div><div class="conn-reason">LLM 기반 아이디어 생성 평가와 PaperRobot의 지식 그래프 기반 아이디어 생성이 과학적 아이디어 창출의 서로 다른 접근법을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../603_PaperRobot_Incremental_Draft_Generation_of_Scientific_Ideas/index.html">PaperRobot: Incremental Draft Generation of Scientific Ideas</a></div><div class="conn-reason">PaperRobot의 자동 아이디어 생성과 LLM의 과학적 아이디어 생성 능력을 직접 비교하여 방법론적 차이점을 이해할 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../730_Sciqag_A_framework_for_auto-generated_science_question_answe/index.html">SciQAG: A framework for auto-generated science question answering dataset with fine-grained evaluation</a></div><div class="conn-reason">LLM의 아이디어 생성과 과학 QA 쌍 생성이 모두 과학 문헌으로부터 지식을 자동 추출하지만 다른 형태의 결과물을 산출한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../730_Sciqag_A_framework_for_auto-generated_science_question_answe/index.html">SciQAG: A framework for auto-generated science question answering dataset with fine-grained evaluation</a></div><div class="conn-reason">SciQAG의 자동 QA 생성과 LLM의 아이디어 생성 평가가 모두 과학 문헌으로부터 자동으로 지식을 추출하지만 서로 다른 형태의 산출물을 생성한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../631_Predicting_field_experiments_with_large_language_models/index.html">Predicting field experiments with large language models</a></div><div class="conn-reason">경제학 실험 예측과 일반적인 과학 아이디어 생성에서 LLM의 예측 능력을 다른 도메인에서 비교 검증할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">LLM의 기본적인 아이디어 생성 능력 평가가 SciMON의 참신성 최적화를 통한 품질 향상 연구의 기반이 된다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../729_Scipip_An_llm-based_scientific_paper_idea_proposer/index.html">SciPIP: An LLM-based Scientific Paper Idea Proposer</a></div><div class="conn-reason">SciPIP의 구체적인 아이디어 생성 시스템이 LLM의 일반적인 과학 아이디어 생성 능력 평가를 실용적으로 구현한 사례이다.</div></div>

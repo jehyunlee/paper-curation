@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tianyu Hua, Harper Hua, Violet Xiang, Benjamin Klieger, Sang T. Truong, Weixin Liang, Fan-Yun Sun, Nick Haber (Stanford University) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.02314v1" target="_blank">arXiv:2506.02314v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ResearchCodeBench 작업 설정 개요. LLM은 연구 논문, TODO 마커가 포함된 목표 코드 스니펫, 동일 프로젝트의 주변 컨텍스트 코드에 접근하여 누락된 코드를 작성한다.</em></p></div>
 <p>최신 기계학습 연구 논문에서 제시된 새로운 아이디어를 실행 가능한 코드로 변환하는 LLM의 능력을 평가하는 벤치마크로, 2024-2025년 상위 학회(NeurIPS, ICLR, CVPR) 논문 20개로부터 구성된 212개의 코딩 챌린지를 통해 현재 최고 성능 LLM도 40% 미만의 성공률을 보임을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 최근 발표된 ML 논문의 핵심 기여를 구현하는 코딩 챌린지를 구성하고, 공식 저장소의 참조 구현을 기반으로 단위 테스트(Unit tests)와 동등성 테스트(Equivalence tests)의 하이브리드 평가 전략을 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>32개 LLM의 ResearchCodeBench에서의 Scaled Pass@1 결과 (탐욕적 디코딩)</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구성</strong>: 20개의 최신 ML 논문(생성 모델, 컴퓨터 비전, 이론, 강화학습 등 다양한 분야)으로부터 212개의 코딩 챌린지 구성, 논문 저자 및 도메인 전문가와의 협력으로 신뢰성 확보</li>
 <li><strong>LLM 성능 평가 결과</strong>: 32개 이상의 상용 및 오픈소스 LLM 평가 수행
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>신뢰성 높은 평가 방법론</strong>: 단순한 문자열 거리나 LLM 판정자 대신, 실행 기반의 하이브리드 평가 전략으로 기능적 정확성 검증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>논문 접근성에 따른 LLM 성능 차이. 논문 접근 시 더 높은 성능을 보임</em></p></div>
 <ul>
 <li><strong>논문 선택</strong>: 상위 학회 및 arXiv에서 핵심 기여가 명확하고 오픈소스 저장소가 있으며 저자 협력 가능성이 높은 논문 20개 선정</li>
 <li><strong>핵심 기여 식별</strong>: 각 논문의 구현 관련 혁신 기여(손실 함수에서 전체 훈련 파이프라인까지)를 파악하여 1개 이상의 기여 추출</li>
@@ -133,7 +127,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4.5/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.4/5</span></div>
 <p><strong>총평</strong>: ResearchCodeBench는 LLM의 진정한 혁신 코드 구현 능력을 평가하는 시간-민감하고 객관적인 벤치마크를 제시함으로써, AI 보조 과학 연구의 현실적 한계를 규명하고 향후 LLM 개선 방향의 기준점을 제공하는 가치 있는 기여이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../545_Mle-bench_Evaluating_machine_learning_agents_on_machine_lear/index.html">MLE-bench: Evaluating machine learning agents on machine learning engineering</a></div><div class="conn-reason">MLE-bench가 Kaggle 문제인 반면 ResearchCodeBench는 최신 연구 논문의 새로운 아이디어 구현에 집중</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../545_Mle-bench_Evaluating_machine_learning_agents_on_machine_lear/index.html">MLE-bench: Evaluating machine learning agents on machine learning engineering</a></div><div class="conn-reason">MLE-bench가 Kaggle 기반인 반면 ResearchCodeBench는 최신 ML 연구 논문 구현에 특화됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../712_SciCode_A_Research_Coding_Benchmark_Curated_by_Scientists/index.html">SciCode: A Research Coding Benchmark Curated by Scientists</a></div><div class="conn-reason">과학자 큐레이션 코딩 벤치마크와 기계학습 연구 코드 벤치마킹이 각각 과학 연구와 ML 연구 맥락에서 코드 생성 능력을 평가한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../550_MLRC-Bench_Can_Language_Agents_Solve_Machine_Learning_Resear/index.html">MLRC-Bench: Can Language Agents Solve Machine Learning Research Challenges?</a></div><div class="conn-reason">둘 다 연구 관련 코딩을 다루지만 MLRC-Bench는 재현보다는 리뷰에 초점</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../320_Evaluating_Large_Language_Models_in_Scientific_Discovery/index.html">Evaluating large language models trained on code</a></div><div class="conn-reason">함수 생성 중심의 코드 평가가 새로운 기계학습 방법 구현을 위한 연구 코드 벤치마킹으로 확장되었다</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Max Glockner, Yufang Hou, Iryna Gurevych | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: PolitiFact의 거짓 주장. 반박 증거를 찾기 어려운 경우, 사실확인자들은 주장의 근거가 된 가정을 반박함으로써 거짓을 증명한다.</em></p></div>
 <p>현재의 NLP 기반 사실확인(fact-checking) 접근법은 반박 증거(counter-evidence)의 존재를 가정하지만, 실제 미정보(misinformation)는 신뢰할 만한 증거가 부족한 환경에서 발생하기 때문에 현실적이지 않다. 본 논문은 기존 사실확인 데이터셋들이 모두 현실적 요구사항을 만족하지 못함을 보이고, 모델들이 누출된(leaked) 증거에 의존함을 실증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 전문 사실확인자들의 검증 전략을 분석하여 현실적 사실확인의 조건 도출, (2) FCNLP가 이를 만족하지 못함을 보이고, (3) 기존 데이터셋들이 실제 조건을 위반함을 체계적으로 검토, (4) 모델이 누출된 증거에 의존하는 실험적 증거 제시.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: PolitiFact의 연도별 판정 비율. 2016년 이후 거짓 주장에 대한 사실확인이 증가하는 추세를 보임.</em></p></div>
 <ol>
 <li><strong>두 가지 현실적 조건 도출</strong>: 전문 사실확인자들의 검증 과정 분석으로부터 (1) Source Guarantee—증거가 주장자의 근거를 구성하거나 그것을 지칭해야 함, (2) Context Availability—주장의 원본 환경을 파악할 수 있어야 함 등 두 가지 조건을 도출했다.</li>
 <li><strong>현존 데이터셋의 현실성 부재 입증</strong>: PolitiFact와 Snopes의 100개 미정보 주장을 분석한 결과, 65.3%가 Source Guarantee를 필요로 하는 검증 전략(Local Counter-Evidence 또는 Non-Credible Source)을 사용하나, 기존 FCNLP 기반 데이터셋들은 이를 만족하는 증거를 제공하지 못한다.</li>
@@ -136,7 +132,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">팩트 체킹에서 반박 증거 부족 문제가 의료 주장의 검증 가능성을 결정하는 핵심 요인으로 작용한다는 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html">DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts</a></div><div class="conn-reason">기존 팩트체킹의 반박 증거 부족 한계를 해결하기 위해 멀티모달 증거를 동적으로 수집하는 발전된 접근법입니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../333_Factkg_Fact_verification_via_reasoning_on_knowledge_graphs/index.html">Factkg: Fact verification via reasoning on knowledge graphs</a></div><div class="conn-reason">반박 증거 부족의 한계를 지적하는 반면, 지식 그래프 기반 추론을 통한 체계적 사실확인 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../333_Factkg_Fact_verification_via_reasoning_on_knowledge_graphs/index.html">Factkg: Fact verification via reasoning on knowledge graphs</a></div><div class="conn-reason">지식 그래프의 구조화된 추론과 반박 증거 부족 문제 지적이라는 서로 다른 팩트체킹 접근법과 비판을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html">DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts</a></div><div class="conn-reason">단순한 반박 증거 부족 문제를 멀티모달 증거 기반 팩트체킹으로 확장하여 더 현실적인 사실확인 시스템을 구축합니다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../859_Unsupervised_pretraining_for_fact_verification_by_language_m/index.html">Unsupervised pretraining for fact verification by language model distillation</a></div><div class="conn-reason">반박 증거의 부재가 NLP 팩트 체킹을 비현실적으로 만든다는 지적이 SFAVEL의 자기지도학습 접근법의 한계를 보여줌</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../235_Comparing_knowledge_sources_for_open-domain_scientific_claim/index.html">Comparing knowledge sources for open-domain scientific claim verification</a></div><div class="conn-reason">NLP 사실 확인에서 반박 증거 부족 문제를 지적하여 본 논문의 지식 소스 비교 연구의 한계를 제시한다.</div></div></div>

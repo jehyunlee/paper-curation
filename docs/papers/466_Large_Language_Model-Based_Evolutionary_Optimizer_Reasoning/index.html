@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shuvayan Brahmachary, S. Joshi, A. Panda, K. Koneripalli, A. Sagotra | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.02054" target="_blank">10.48550/arXiv.2403.02054</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>LEO 프레임워크의 구조적 개요</em></p></div>
 <p>대규모 언어모델(LLM)의 추론 능력을 활용하여 블랙박스 최적화 문제를 해결하는 LEO(Language-model-based Evolutionary Optimizer)라는 새로운 인구 기반 최적화 방법을 제안한다. 엘리티즘 기반의 탐색(exploration)과 개발(exploitation) 전략을 통해 LLM의 환각 현상을 완화하면서도 우수한 최적화 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 탐색과 개발의 이중 풀(dual pool) 구조를 가진 인구 기반 진화 알고리즘 프레임워크를 도입하여 LLM이 풍부한 문맥 정보를 활용하도록 하고, 엘리티즘을 통해 최고 성능 해를 보존하는 전략을 채택한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>인구 기반 접근 없는 LLM 최적화의 조기 수렴 현상 (Rosenbrock 함수)</em></p></div>
 <ol>
 <li><strong>다양한 문제에의 적용성</strong>: 단일/다중 목적 벤치마크 함수, 초음속 노즐 형상 최적화, 열전달, 풍력발전단지 배치 최적화 등 산업 공학 문제까지 확장된 적용을 시연했으며, 고차원 문제(high-dimensional problems)에서도 LLM의 최적화 능력을 입증했다.</li>
 <li><strong>기울기 기반 방법과 경쟁 가능한 성능</strong>: 제시된 LEO 방법이 gradient descent, Bayesian optimization, genetic algorithms 등 기존의 최첨단(state-of-the-art) 기울기 기반 및 기울기 자유 최적화 방법들과 비교하여 동등하거나 경쟁 가능한 결과를 달성했다.</li>
 <li><strong>LLM의 추론 능력 검증</strong>: 수치 최적화 과정에서 LLM의 논리적 추론 능력이 실제로 작동함을 두 가지 검증 테스트를 통해 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>탐색과 개발을 통한 설계 공간의 LLM 보조 최적화 개념도</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>LEO를 이용한 2D 벤치마크 함수의 수렴 곡선</em></p></div>
 <ul>
 <li><strong>이중 풀 구조</strong>: 탐색 풀(exploration pool)에서 다양한 설계 공간 영역의 해를 유지하고, 개발 풀(exploitation pool)에서 유망한 영역 근처의 해들을 추적하는 분리된 구조 운영</li>
 <li><strong>매개변수 자유 설계</strong>: 사전 튜닝이 필요 없는 매개변수 자유(parameter-free) 방식으로 설계되어 일반화 가능성 향상</li>
@@ -126,7 +118,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../469_Large_Language_Models_as_Evolutionary_Optimizers/index.html">Large Language Models as Evolutionary Optimizers</a></div><div class="conn-reason">대규모 언어모델을 진화 최적화기로 활용하는 일반적인 접근법이 LEO의 구체적인 구현의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../754_ShinkaEvolve_Towards_Open-Ended_And_Sample-Efficient_Program/index.html">ShinkaEvolve: Towards Open-Ended And Sample-Efficient Program Evolution</a></div><div class="conn-reason">둘 다 LLM 기반 진화 최적화를 다루지만 ShinkaEvolve는 프로그램에, LLM-EO는 일반적 최적화에 집중함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../503_LLM-ODE_Data-driven_Discovery_of_Dynamical_Systems_with_Larg/index.html">LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</a></div><div class="conn-reason">LLM을 진화 알고리즘에 통합하여 블랙박스 최적화를 수행하는 반면 LLM-ODE는 동역학 시스템 발견에 초점을 맞춘 다른 접근법이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../503_LLM-ODE_Data-driven_Discovery_of_Dynamical_Systems_with_Larg/index.html">LLM-ODE: Data-driven Discovery of Dynamical Systems with Large Language Models</a></div><div class="conn-reason">동역학 시스템 발견과 블랙박스 최적화 모두 LLM을 진화 알고리즘에 통합하지만 적용 영역과 목표가 다르다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../469_Large_Language_Models_as_Evolutionary_Optimizers/index.html">Large Language Models as Evolutionary Optimizers</a></div><div class="conn-reason">대형 언어 모델 기반 진화 최적화가 제약 조건이 있는 역합성 계획으로 확장될 수 있습니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../484_Learning_to_generate_research_idea_with_dynamic_control/index.html">Learning to generate research idea with dynamic control</a></div><div class="conn-reason">동적 제어를 통한 연구 아이디어 생성 학습이 LLM 기반 진화 최적화를 창의적 생성 분야로 확장한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

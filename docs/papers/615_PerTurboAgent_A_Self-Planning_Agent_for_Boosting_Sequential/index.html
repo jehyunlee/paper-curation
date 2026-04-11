@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Minsheng Hao, Yongju Lee, Hanchen Wang, Gabriele Scalia, Aviv Regev | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.05.25.656020" target="_blank">10.1101/2025.05.25.656020</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PerTurboAgent 개요: 자기 계획 능력을 갖춘 LLM 기반 에이전트가 순차적 실험 라운드를 통해 표적 페놀타입에 영향을 미치는 유전자 섭동을 식별</em></p></div>
 <p>대규모 유전자 섭동 실험(Perturb-seq)에서 제한된 실험 자원 내에서 최대의 정보 수집을 위해, 자기 계획 능력을 갖춘 LLM 기반 에이전트(PerTurboAgent)를 개발하여 순차적 유전자 선택 문제를 자동화하고 기존 능동학습(active learning) 방법들을 능가하는 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 에이전트의 추론 능력과 도구 사용 능력(tool use)을 활용하여 자기-계획(self-planning) 메커니즘을 구현하고, 행동 메모리(action memory)를 통해 다단계 의사결정을 지원하는 방식</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>라운드별 Hit 누적 곡선: PerTurboAgent가 기존 능동학습 방법(GeneDisco, DiscoBAX, Iterpert)과 다른 LLM 에이전트(BioDiscoveryAgent)를 일관되게 능가</em></p></div>
 <ol>
 <li><strong>성능 우월성</strong>: 11개 표현형 과제에서 PerTurboAgent가 기존 활성학습 방법들(GeneDisco, DiscoBAX, Iterpert)과 최근 BioDiscoveryAgent를 일관되게 능가하며, 특히 초기 라운드에서 더 빠르게 hit 유전자를 식별</li>
 <li><strong>해석 가능성과 투명성</strong>: 선택된 행동의 빈도 분석과 내부 메모리 추적을 통해 에이전트의 추론 과정을 명확히 가시화할 수 있으며, 구체적인 행동 로그(Figure 4)를 통해 의사결정 근거를 추적 가능</li>
 <li><strong>모델 호환성</strong>: 폐쇄형(GPT-4) 및 개방형(Llama) 모델 모두에서 작동하며, 더 고급 모델을 사용할수록 성능이 향상되는 특성을 보임</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>PerTurboAgent 행동 분석: (a) 범주별 행동 수 분포 (추론, ML 추론, 분석) (b) 라운드별 행동 빈도 변화</em></p></div>
 <ul>
 <li><strong>행동 풀(Action Pool) 설계</strong>: 세 가지 범주로 구성
 <ul>
@@ -135,11 +129,9 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4/5</span> <span class="eval-badge">Clarity: 3.5/5</span> <span class="eval-badge">Overall: 4/5</span></div>
 <p><strong>총평</strong>: PerTurboAgent는 자기-계획 LLM 에이전트를 통해 고비용 유전자 섭동 실험의 효율화라는 현실적 문제를 창의적으로 해결하는 연구로, 기존 활성학습 방법들을 일관되게 능가하는 경험적 성과를 보입니다. 다만 ADG 정의의 자동화, 실제 실험실 환경 검증, 이론적 기초의 강화가 이루어진다면 훨씬 더 강력한 기여가 될 수 있을 것으로 판단됩니다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../505_Llm4grn_Discovering_causal_gene_regulatory_networks_with_llm/index.html">LLM4GRN: Discovering causal gene regulatory networks with llms–evaluation through synthetic data generation</a></div><div class="conn-reason">유전자 관련 실험에서 LLM을 활용한다는 공통점이 있지만 순차적 섭동 실험 설계와 조절 네트워크 발견이라는 다른 목적을 가진다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../505_Llm4grn_Discovering_causal_gene_regulatory_networks_with_llm/index.html">LLM4GRN: Discovering causal gene regulatory networks with llms–evaluation through synthetic data generation</a></div><div class="conn-reason">유전자 섭동 실험에서 LLM을 활용한다는 공통점이 있지만 네트워크 발견과 실험 설계라는 다른 목적을 가진다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../239_CRISPR-GPT_for_agentic_automation_of_gene-editing_experiment/index.html">CRISPR-GPT for agentic automation of gene-editing experiments</a></div><div class="conn-reason">유전자 편집 실험 자동화를 위한 CRISPR-GPT 기술을 유전자 섭동 실험 설계에 확장 적용할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../474_Large_language_models_for_zero-shot_inference_of_causal_stru/index.html">Large language models for zero-shot inference of causal structures in biology</a></div><div class="conn-reason">생물학적 인과관계 추론 능력을 유전자 섭동 실험의 순차적 선택 최적화에 활용할 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../048_Adaptive_ai_decision_interface_for_autonomous_electronic_mat/index.html">Adaptive ai decision interface for autonomous electronic material discovery</a></div><div class="conn-reason">순차적 섭동 부스팅을 위한 자기 계획 에이전트의 구체적인 응용을 보여준다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../474_Large_language_models_for_zero-shot_inference_of_causal_stru/index.html">Large language models for zero-shot inference of causal structures in biology</a></div><div class="conn-reason">유전자 섭동 실험 설계에 인과관계 추론 능력을 활용하여 더 효과적인 실험 계획을 수립할 수 있다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../048_Adaptive_ai_decision_interface_for_autonomous_electronic_mat/index.html">Adaptive ai decision interface for autonomous electronic material discovery</a></div><div class="conn-reason">순차적 섭동 부스팅을 위한 자기 계획 에이전트의 구체적인 응용을 보여준다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

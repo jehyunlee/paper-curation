@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xuanle Zhao, Xianzhen Luo, Qi Shi, Chi Chen, Shuo Wang, Zhiyuan Liu, Maosong Sun | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2501.06598" target="_blank">arXiv:2501.06598v3</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 기존 MLLM과 ChartCoder의 성능 비교. 차트-코드 생성 작업에서 기존 오픈소스 MLLM은 차트 타입 불일치와 크기 오류를 범하지만, ChartCoder는 정확한 코드를 생성한다.</em></p></div>
 <p>본 논문은 차트 이미지를 코드로 변환하는 전문화된 멀티모달 대형언어모델(MLLM)인 ChartCoder를 제안하며, 이를 위해 대규모 차트-코드 데이터셋(Chart2Code-160k)과 단계적 생각(Snippet-of-Thought, SoT) 방법론을 소개한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) Code LLM을 언어 백본으로 활용하여 코드 생성에 최적화된 MLLM 구축, (2) 대규모 다양한 차트-코드 데이터셋 자동 생성, (3) 핵심 정보를 강조하는 단계적 생성 방법론 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Chart2Code 데이터셋 생성 과정과 ChartCoder의 2단계 학습 프로세스. 단계1은 차트/이미지-텍스트 정렬, 단계2는 차트-코드 지시사항 튜닝.</em></p></div>
 <ol>
 <li><strong>모델 성능</strong>: 7B 파라미터만 사용하면서 기존 모든 오픈소스 MLLM을 차트-코드 벤치마크에서 능가하는 우수한 차트 복원 능력과 코드 실행 가능성 달성</li>
 <li><strong>데이터셋 구축</strong>: 27가지 차트 타입에 걸친 160,000개의 고품질 차트-코드 쌍으로 구성된 첫 대규모 차트-코드 데이터셋(Chart2Code-160k) 제공</li>
 <li><strong>방법론 효과성</strong>: Snippet-of-Thought(SoT) 방법으로 모델의 추론 능력과 세부 정보 포착 능력 향상 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChartCoder의 2단계 학습 구조와 데이터셋 생성 파이프라인</em></p></div>
 <h3>Dataset 생성 (Chart2Code-160k)</h3>
 <ul>
 <li><strong>Step 1</strong>: LLM을 이용하여 특정 도메인 내 키워드 생성 및 관련 시뮬레이션 데이터 생성</li>
@@ -136,11 +130,9 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 4/5</span> <span class="eval-badge">Overall: 4.2/5</span></div>
 <p><strong>총평</strong>: ChartCoder는 차트-코드 생성이라는 미개척 영역을 개척하면서 Code LLM 백본과 대규모 데이터셋, SoT 방법론을 통해 실제 성능 개선을 달성한 의미 있는 연구이다. 다만 방법론의 이론적 깊이와 응용 범위 확대에서 추가 개선의 여지가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../231_Codegen_An_open_large_language_model_for_code_with_multi-tur/index.html">Codegen: An open large language model for code with multi-turn program synthesis</a></div><div class="conn-reason">CodeGen의 다중 턴 프로그램 합성 방법론을 차트-코드 변환에 적용한 기반</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../231_Codegen_An_open_large_language_model_for_code_with_multi-tur/index.html">Codegen: An open large language model for code with multi-turn program synthesis</a></div><div class="conn-reason">다중 턴 프로그램 합성 방법론이 차트-코드 변환에서 단계적 생성 접근의 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../196_ChartAssisstant_A_Universal_Chart_Multimodal_Language_Model/index.html">ChartAssisstant: A Universal Chart Multimodal Language Model via Chart-to-Table Pre-training and Multitask Instruction Tuning</a></div><div class="conn-reason">범용 차트 이해 모델이 차트-코드 변환이라는 특화 작업의 기반 기술</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../709_SciCap_A_Knowledge_Augmented_Dataset_to_Study_the_Challenges/index.html">SciCap+: A Knowledge Augmented Dataset to Study the Challenges of Scientific Figure Captioning</a></div><div class="conn-reason">둘 다 멀티모달 차트 이해를 다루지만 하나는 과학 논문의 지식 증강에, 다른 하나는 일반적인 차트 코딩에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../204_Chartx__chartvlm_A_versatile_benchmark_and_foundation_model/index.html">Chartx &amp; chartvlm: A versatile benchmark and foundation model for complicated chart reasoning</a></div><div class="conn-reason">차트 이해와 추론에 중점을 둔 ChartX와 달리 차트-코드 변환이라는 구체적 작업에 특화</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../204_Chartx__chartvlm_A_versatile_benchmark_and_foundation_model/index.html">Chartx &amp; chartvlm: A versatile benchmark and foundation model for complicated chart reasoning</a></div><div class="conn-reason">코드 생성에 특화된 ChartCoder와 달리 차트 이해 전반을 다루는 종합적 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">둘 다 차트 이해에 특화되었지만 ChartCoder는 코딩 접근법을, MMC는 명령어 튜닝을 사용</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../811_Tikzero_Zero-shot_text-guided_graphics_program_synthesis/index.html">TikZero: Zero-shot text-guided graphics program synthesis</a></div><div class="conn-reason">텍스트에서 그래픽 프로그램을 합성하는 TikZero와 유사하게 차트 이미지에서 코드를 생성하는 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../196_ChartAssisstant_A_Universal_Chart_Multimodal_Language_Model/index.html">ChartAssisstant: A Universal Chart Multimodal Language Model via Chart-to-Table Pre-training and Multitask Instruction Tuning</a></div><div class="conn-reason">범용 차트 이해 모델 ChartAssistant의 기능을 코드 생성이라는 특정 작업으로 세분화한 발전</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wei Pang, Kevin Qinghong Lin, Xiangru Jian, Xi He, Philip H. S. Torr | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>과학 논문에서 포스터를 생성하기 위한 두 가지 핵심 도전 과제: (좌) PosterAgent를 통한 포스터 생성 방법, (우) Paper2Poster 벤치마크를 통한 평가 방법</em></p></div>
 <p>본 논문은 과학 논문을 단일 페이지 학술 포스터로 자동 변환하는 첫 번째 벤치마크와 평가 지표 집합을 제시하며, 시각적-언어적 피드백 루프를 갖춘 다중 에이전트 파이프라인(PosterAgent)을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 100개 논문-포스터 쌍 벤치마크 구축, (2) 시각적 품질, 텍스트 일관성, VLM 판정관(VLM-as-judge), PaperQuiz(포스터가 논문 핵심을 얼마나 잘 전달하는지 평가) 4가지 평가 지표 제안, (3) Parser-Planner-Painter-Commenter 다중 에이전트 파이프라인 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Paper2Poster 평가 프레임워크: 시각적 품질, 텍스트 일관성, VLM 판정관을 통한 종합 평가, PaperQuiz를 통한 독자 이해도 시뮬레이션</em></p></div>
 <ol>
 <li><strong>첫 번째 벤치마크 구축</strong>: POSTERSUM 데이터셋을 기반으로 2022-2024년 ICML, NeurIPS, ICLR 논문 100개와 저자가 설계한 포스터 쌍 수집. 평균 22.6페이지, 20,370.3 토큰의 논문을 774.1단어, 1,416.2 토큰으로 14.4배 압축</li>
 <li><strong>혁신적 PaperQuiz 지표</strong>: LLM이 자동 생성한 다지선다형 문제로 VLM 리더(학생, 교수 등 다양한 전문성 수준)가 포스터만으로 논문 내용을 파악할 수 있는지 평가—인간 평가와 높은 상관관계</li>
@@ -91,8 +87,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>PosterAgent 파이프라인: Parser(논문→자산 라이브러리), Planner(의미적 정렬 및 레이아웃 생성), Painter-Commenter 루프(렌더링 및 VLM 피드백)</em></p></div>
 <p><strong>PosterAgent 3단계 구조</strong>:</p>
 <ol>
 <li><strong>Parser (자산 추출)</strong>
@@ -148,7 +142,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 학술 포스터 자동 생성이라는 도전적이고 실용적인 문제에 처음으로 체계적으로 접근한 의미 있는 작업으로, 신뢰할 수 있는 벤치마크와 혁신적인 PaperQuiz 지표를 제공하며, 실용성 높은 PosterAgent 파이프라인으로 강력한 결과를 달성했다. 다만 데이터셋 규모 확대, 다양한 학문 분야 적용, 그리고 자동 평가 지표의 보완이 향후 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../336_FigCaps-HF_A_Figure-to-Caption_Generative_Framework_and_Benc/index.html">FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</a></div><div class="conn-reason">과학적 그림에 대한 캡션 생성 연구가 논문을 포스터로 변환하는 멀티모달 자동화의 기초적 접근을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">둘 다 테이블과 관련된 멀티모달 작업을 다루지만 하나는 포스터 생성, 다른 하나는 테이블 이해에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">둘 다 테이블과 관련된 멀티모달 작업을 다루지만 하나는 테이블 이해, 다른 하나는 포스터 생성에 중점을 둠</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../597_P2p_Automated_paper-to-poster_generation_and_fine-grained_be/index.html">P2P: Automated Paper-to-Poster Generation and Fine-Grained Benchmark</a></div><div class="conn-reason">논문을 포스터로 변환하는 작업을 자동화된 Paper-to-Poster 생성과 세밀한 벤치마킹으로 확장함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Amil Merchant, Simon Batzner, Samuel S. Schoenholz, Muratahan Aykol, Gowoon Cheon, Ekin Dogus Cubuk | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-023-06735-9" target="_blank">10.1038/s41586-023-06735-9</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>GNoME 기반 효율적 발견. (a) 모델 기반 필터링과 DFT의 데이터 피드백 루프, (b) 381,000개의 신규 안정 물질 발견으로 기존 대비 거의 10배 증가, (c) 736개 구조의 독립적 실험 검증, (d) 6개 원소 포함 물질까지 확장된 예측 능력</em></p></div>
 <p>그래프 신경망(GNN)을 대규모로 학습시킨 GNoME(Graph Networks for Materials Exploration) 모델을 통해 물질 안정성 예측에서 전례 없는 일반화 성능을 달성하였으며, 220만 개의 신규 안정 결정질 구조를 발견하여 인류가 알고 있는 안정 물질을 약 10배 확장했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 대칭 인식 부분 대체(SAPS, Symmetry-Aware Partial Substitutions)와 임의 구조 탐색(AIRSS)을 통한 다양한 후보 구조 생성, (2) GNN 기반 에너지 모델 구축, (3) 6라운드의 능동 학습(active learning) 반복을 통한 데이터 피드백 루프 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>발견된 안정 결정질의 요약. (a) 4개 이상 원소를 포함한 물질에서 GNoME의 우수한 발견 효율, (b) 4원계(quaternary) 물질의 위상 분리 에너지 분포</em></p></div>
 <ol>
 <li><strong>물질 발견의 획기적 확장</strong>: 381,000개의 신규 안정 물질 발견으로 총 421,000개의 안정 결정질 카탈로그 구성 (기존 대비 약 10배 증가). 이 중 736개 구조가 독립적으로 실험 검증됨</li>
 <li><strong>예측 성능의 현저한 향상</strong>:
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>하위 응용 모델링 능력</strong>: 대규모 이방성 상호작용 포텐셜(equivariant interatomic potentials) 학습으로 분자동역학(molecular dynamics) 시뮬레이션 및 이온 전도도 영점 샷(zero-shot) 예측 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>학습된 상호작용 포텐셜 스케일링. 이방성 신경망 포텐셜의 성능 향상</em></p></div>
 <ul>
 <li><strong>구조적 파이프라인</strong>:
 <ul>
@@ -160,8 +154,7 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1099_Generative_Inversion_of_Spectroscopic_Data_for_Amorphous_Str/index.html">Generative Inversion of Spectroscopic Data for Amorphous Structure Elucidation</a></div><div class="conn-reason">재료 발견을 위한 딥러닝 확장성에서 분광 데이터 역변환으로의 발전</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../241_Criteria-first_semantics-later_reproducible_structure_discov/index.html">Criteria-first, semantics-later: reproducible structure discovery in image-based sciences</a></div><div class="conn-reason">재료 구조 발견을 이미지 기반 구조 추출 방법론으로 확장할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../343_Foundation_models_for_materials_discovery__current_state_and/index.html">Foundation models for materials discovery – current state and future directions</a></div><div class="conn-reason">파운데이션 모델 이론을 GNoME 같은 대규모 재료 발견에 실제 적용한 사례이다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../372_General-Purpose_Machine-Learned_Potential_for_CrCoNi_Alloys/index.html">General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 머신러닝 포텐셜 개발에 적용한다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../372_General-Purpose_Machine-Learned_Potential_for_CrCoNi_Alloys/index.html">General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 정밀 모델링에 적용한다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../372_General-Purpose_Machine-Learned_Potential_for_CrCoNi_Alloys/index.html">General-Purpose Machine-Learned Potential for CrCoNi Alloys Enabling Large-Scale Atomistic Simulations with First-Principles Accuracy</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 머신러닝 포텐셜 개발에 적용한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

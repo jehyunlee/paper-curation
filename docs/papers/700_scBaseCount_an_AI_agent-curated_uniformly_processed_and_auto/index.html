@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nicholas D. Youngblut, Christopher Carpenter, Jaanak Prashar, Chiara Ricci-Tam, Rajesh Ilango, Noam Teyssier, Silvana Konermann, Patrick D. Hsu, Alexander Dobin, David P. Burke, Hani Goodarzi, Yusuf H. Roohani | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.02.27.640494" target="_blank">10.1101/2025.02.27.640494</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>scBaseCamp은 종(species)과 조직(tissue)에 걸쳐 2억 3천만 개 이상의 세포를 포함하는 가장 큰 공개 단일 세포 유전자 발현 데이터셋 저장소이다.</em></p></div>
 <p>AI 에이전트 기반의 자동화된 워크플로우를 통해 공개 10X Genomics 단일세포 RNA 시퀀싱 데이터를 발굴하고 표준화된 방식으로 처리하여, 가장 규모가 크고 다양한 단일세포 데이터 저장소 scBaseCamp를 구축했다. 이는 AI 기반 가상세포 모델 개발을 위한 훈련 데이터로 활용될 수 있으며, 데이터 처리 파이프라인의 표준화를 통해 분석 아티팩트를 최소화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: AI 에이전트(SRAgent)를 통한 자동 발굴 및 메타데이터 추출, 그리고 표준화된 처리 파이프라인(scRecounter)을 통한 단일 세포 데이터의 대규모 재처리.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>scBaseCamp의 규모와 다양성: (A) 인간, 마우스, 제브라피시, 초파리의 조직별 색상 UMAP, (B-C) CZ CELLxGENE과의 종과 조직 분포 비교, (D) SRAgent의 자동 조직 주석과 CZ CELLxGENE 레이블의 일치도</em></p></div>
 <ol>
 <li><strong>최대 규모의 데이터 저장소 구축</strong>: 현재 2억 3천만 개 이상의 세포를 포함하고 있으며, CZ CELLxGENE(1억 7백만 개)과 Human Cell Atlas(6천 5백만 개)를 능가한다. 평균적으로 세포당 7,614개의 고유 분자 식별자(UMI)를 보유한다.</li>
 <li><strong>광범위한 종과 조직 다양성</strong>: 21개 종과 72개 조직에 걸친 데이터를 포함하여 기존 저장소보다 훨씬 더 광범위한 생물학적 맥락을 제공한다.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>지속적 확장</strong>: 현재까지 63,892개의 SRA 실험을 식별했고 이 중 43,587개가 10X Genomics 라이브러리로 확인되었으며, 30,387개를 재처리했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>AI 기반 큐레이션 및 표준화된 처리: (A) SRAgent의 계층적 AI 파이프라인, (B) scRecounter의 Nextflow 기반 처리 워크플로우, (C) 다양한 특성 주석 및 멀티맵핑 전략</em></p></div>
 <ul>
 <li><strong>SRAgent (자동 발굴 및 메타데이터 추출)</strong>:
 <ul>
@@ -134,9 +128,7 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: scBaseCamp는 AI 에이전트 기반 자동화 및 표준화된 대규모 재처리를 통해 단일세포 생물학과 AI 모델 개발을 위한 획기적인 자원을 제공하며, 지속적 확장 메커니즘은 이 분야의 향후 발전을 크게 가속화할 것으로 예상된다. 다만 기술적 세부사항과 정량적 검증 데이터의 보강이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">단일세포 데이터의 대규모 언어모델 스케일링을 위한 고품질 훈련 데이터 기반을 제공한다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html">Scaling Large Language Models for Next-Generation Single-Cell Analysis</a></div><div class="conn-reason">단일세포 데이터의 LLM 처리 기술이 AI 에이전트 기반 단일세포 데이터베이스 구축과 표준화에 필수적인 기반 기술을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../193_CellAgent_An_LLM-driven_Multi-Agent_Framework_for_Automated/index.html">CellAgent: An LLM-driven Multi-Agent Framework for Automated Single-cell Data Analysis</a></div><div class="conn-reason">단일세포 RNA 시퀀싱 데이터 처리를 위해 AI 에이전트 기반 자동화와 대규모 표준화라는 다른 접근법을 사용한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../193_CellAgent_An_LLM-driven_Multi-Agent_Framework_for_Automated/index.html">CellAgent: An LLM-driven Multi-Agent Framework for Automated Single-cell Data Analysis</a></div><div class="conn-reason">단일세포 분석 자동화를 위해 LLM 다중 에이전트 프레임워크와 AI 기반 대규모 데이터 표준화라는 다른 접근법을 사용한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../699_SCANPY_large-scale_single-cell_gene_expression_data_analysis/index.html">SCANPY: large-scale single-cell gene expression data analysis</a></div><div class="conn-reason">SCANPY의 데이터 처리 능력을 AI 에이전트 기반 자동화로 확장한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../431_Integrated_analysis_of_multimodal_single-cell_data/index.html">Integrated analysis of multimodal single-cell data</a></div><div class="conn-reason">멀티모달 단일세포 데이터 분석 기술이 AI 에이전트 기반 단일세포 데이터베이스 구축과 표준화 작업에 핵심적으로 활용된다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../306_Efficient_fine-tuning_of_single-cell_foundation_models_enabl/index.html">Efficient fine-tuning of single-cell foundation models enables zero-shot molecular perturbation prediction</a></div><div class="conn-reason">표준화된 단일세포 데이터를 파운데이션 모델의 효율적 파인튜닝에 활용할 수 있다</div></div></div>

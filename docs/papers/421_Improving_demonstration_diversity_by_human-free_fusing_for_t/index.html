@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Dingzirui Wang, Longxu Dou, Xuanliang Zhang, Qingfu Zhu, Wanxiang Che | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기준선(좌)과 FUSED(우)의 시연(demonstration) 풀 구성 비교. FUSED는 기존 라벨링 없이도 또는 인간 개입 없이 시연 풀을 합성하고 다양성을 향상시킬 수 있음</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 문맥 내 학습(in-context learning)을 활용한 Text-to-SQL 작업에서 시연(demonstration) 풀의 다양성을 측정하고 향상시키는 방법을 제안한다. 기존의 인간 라벨링 기반 시연 선택 방식의 낮은 다양성과 높은 비용 문제를 해결하기 위해 FUSED(FUSing itEratively for Demonstrations) 방법을 도입한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -86,8 +84,6 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4, 5">
-<p class="fig-caption"><em>기존 라벨링 데이터의 DM 값과 성능 분석. 더 높은 DM을 가진 시연 풀의 존재를 시각적으로 확인</em></p></div>
 <ol>
 <li><strong>다양성 지표 정의</strong>: 사용자 질문 중 시연 풀의 가장 유사한 시연과의 유사도가 최소인 질문을 기반으로 하는 DM 지표 도입. 기존 라벨링의 다양성이 추가로 향상될 수 있음을 증명</li>
 <li><strong>성능 개선</strong>:
@@ -100,8 +96,6 @@ a { color: #A62018; }
 <li><strong>비용 절감</strong>: 인간 라벨링 없이 LLM 기반 자동 합성으로 라벨링 비용 제거</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>FUSED의 파이프라인: (1) 시연 샘플링, (2) 시연 융합 단계로 구성</em></p></div>
 <p><strong>FUSED의 반복적 융합 프로세스:</strong></p>
 <ul>
 <li><strong>단계 1: 시연 샘플링(Demonstration Sampling)</strong>
@@ -148,8 +142,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 Text-to-SQL 작업의 시연 풀 다양성을 체계적으로 측정하고 개선하는 실용적인 방법을 제안한다. DM 지표는 명확한 동기를 가지고 있으며, FUSED 방법은 라벨링 비용을 절감하면서도 일관된 성능 향상을 달성했다. 다만 일부 설계 선택의 이론적 근거가 보강되고 생성된 시연의 품질에 대한 상세 분석이 있으면 더욱 우수한 논문이 될 것으로 판단된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../335_Few-shot_Learning_with_Retrieval_Augmented_Language_Models/index.html">Few-shot Learning with Retrieval Augmented Language Models</a></div><div class="conn-reason">검색 증강 언어모델의 소수샷 학습이 시연 다양성 개선의 기초적인 방법론을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../405_Hit-scir_at_mmnlu22_Consistency_regularization_for_multiling/index.html">Hit-scir at mmnlu22: Consistency regularization for multilingual spoken language understanding</a></div><div class="conn-reason">다양성 향상에서 무인 융합 방법과 일관성 정규화 방법이 서로 다른 접근 방식을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">소수샷 학습에서 시연 다양성과 일관성 프롬프팅의 서로 다른 성능 향상 전략을 비교할 수 있습니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../405_Hit-scir_at_mmnlu22_Consistency_regularization_for_multiling/index.html">Hit-scir at mmnlu22: Consistency regularization for multilingual spoken language understanding</a></div><div class="conn-reason">Text-to-SQL에서의 무인 융합 다양성 향상과 SLU에서의 일관성 정규화가 서로 다른 다양성 증진 방법을 제시합니다.</div></div></div>
+<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">소수샷 학습에서 시연 다양성과 일관성 프롬프팅의 서로 다른 성능 향상 전략을 비교할 수 있습니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

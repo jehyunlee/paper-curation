@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ilia Kuznetsov, Osama Mohammed Afzal, Koen Dercksen, Nils Dycke, Alexander Goldberg, Tom Hope, Dirk Hovy, Jonathan K. Kummerfeld, Anne Lauscher, Kevin Leyton-Brown, Sheng Lu, Mausam, Margot Mieskes, Aurélie Névéol, Danish Pruthi, Lizhen Qu, Roy Schwartz, Noah A. Smith, Thamar Solorio, Jingyan Wang, Xiaodan Zhu, Anna Rogers, Nihar B. Shah, Iryna Gurevych | <strong>날짜</strong>: 2024-05-10 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2405.06563" target="_blank">10.48550/arXiv.2405.06563</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 동료 심사(Peer Review)를 하나의 과정으로 보는 관점과 그로 인해 생성되는 산출물들. 각 단계별로 색상 코딩됨.</em></p></div>
 <p>본 논문은 과학 출판의 핵심 질관리 메커니즘인 동료 심사 과정에서 자연언어처리(NLP)가 구체적으로 어떤 역할을 할 수 있는지를 체계적으로 매핑하고, 실현 가능한 NLP 지원 방안을 제시하는 포괄적인 기초 연구이다. 저자들은 원고 제출부터 최종 출판까지 전체 심사 과정의 각 단계에서의 도전과제와 NLP 적용 기회를 상세히 분석하며, 완전 자동화보다는 리뷰어와 편집자의 효율성을 높이는 지원 도구 개발에 초점을 맞춘다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,12 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 저자들은 AI 학회의 심사 과정을 구체적 사례로 삼아, 제출부터 카메라-레디(Camera-ready) 수정까지 각 단계를 분석하고, 데이터 수집, 실험 방법론, 윤리적 이슈 등 거시적 도전과제를 다루며, 실행 계획(call for action)을 제시한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 동료 심사 전(Before Peer Review) 단계에서의 지원 영역</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 동료 심사 중(During Peer Review) 단계에서의 지원 영역</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 동료 심사 후(After Peer Review) 단계에서의 지원 영역</em></p></div>
 <ol>
 <li><strong>프로세스 매핑</strong>: 동료 심사를 원고 제출, 리뷰어 할당, 리뷰 작성, 저자-리뷰어 토론, 메타-리뷰 작성, 수용 결정, 최종 수정의 7개 주요 단계로 체계화하고, 각 단계별 주요 도전과제(scale & logistics, cost, bias, quality, strategic behavior)를 명확히 도출했다.</li>
 <li><strong>NLP 개입 기회의 다층적 분류</strong>:
@@ -96,8 +88,6 @@ a { color: #A62018; }
 <li><strong>커뮤니티 자산 구축</strong>: 동료 심사 관련 주요 데이터셋을 수집하고 공개하는 companion repository 개발 (https://github.com/OAfzal/nlp-for-peer-review)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: 동료 심사 데이터는 의미론적, 구조적으로 복잡한 다양한 문서 유형을 포함함</em></p></div>
 <ul>
 <li><strong>원고 필터링</strong>: 범위(scope) 검증, 메타데이터 기반 적합성 판단, 구조적 오류 탐지를 통한 명확한 불적합 원고 사전 제거</li>
 <li><strong>리뷰어 할당 최적화</strong>: 토픽 모델링, 인용 네트워크 분석, 과거 리뷰 품질 점수를 활용한 능력 추정으로 최적 할당 실현</li>
@@ -130,7 +120,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../126_Automated_review_generation_method_based_on_large_language_m/index.html">Automated review generation method based on large language models</a></div><div class="conn-reason">피어 리뷰에서 자연어 처리의 역할에 대한 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../628_Position_The_ai_conference_peer_review_crisis_demands_author/index.html">Position: The AI Conference Peer Review Crisis Demands Author Feedback and Reviewer Rewards</a></div><div class="conn-reason">동료 심사 과정의 NLP 지원 체계가 AI 시대 동료 심사 위기 해결을 위한 기술적 솔루션의 중요한 기반을 제공한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../154_Best_Practices_for_Using_AI_When_Writing_Scientific_Manuscri/index.html">Best Practices for Using AI When Writing Scientific Manuscripts: Caution, Care, and Consideration: Creative Science Depends on It</a></div><div class="conn-reason">과학 논문 작성에서의 AI 활용 가이드라인이 동료 심사 과정 전반에서 NLP 기술의 체계적 적용으로 확장된 연구이다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../154_Best_Practices_for_Using_AI_When_Writing_Scientific_Manuscri/index.html">Best Practices for Using AI When Writing Scientific Manuscripts: Caution, Care, and Consideration: Creative Science Depends on It</a></div><div class="conn-reason">과학 논문 작성에서의 AI 활용 가이드라인이 동료 심사 과정 전반의 NLP 적용으로 확장된 연구 영역이다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../608_Peer_Review_as_A_Multi-Turn_and_Long-Context_Dialogue_with_R/index.html">Peer Review as A Multi-Turn and Long-Context Dialogue with Role-Based Interactions</a></div><div class="conn-reason">동료 심사에서 NLP 활용 방안이 멀티턴 대화와 장문맥을 고려한 AI 기반 동료 심사 시스템의 구체적 구현에 적용된다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../679_Revieweval_An_evaluation_framework_for_ai-generated_reviews/index.html">ReviewEval: An evaluation framework for AI-generated reviews</a></div><div class="conn-reason">동료 심사에서 자연언어처리의 역할 매핑이 AI 생성 리뷰의 효과적 평가 프레임워크 개발에 핵심적인 가이드라인을 제공한다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

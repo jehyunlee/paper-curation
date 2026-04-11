@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Wujiang Xu, Zujie Liang, Kai Mei, Hang Gao, Juntao Tan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.12110" target="_blank">10.48550/arXiv.2502.12110</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>전통적 메모리 시스템은 미리 정의된 메모리 접근 패턴을 요구하는 반면, A-MEM은 동적 메모리 연산을 가능하게 함</em></p></div>
 <p>본 논문은 LLM 에이전트를 위한 동적 에이전트 메모리 시스템 A-MEM을 제안하며, 젯엘카스텐(Zettelkasten) 방법론의 원리를 기반으로 새로운 메모리가 추가될 때 자동으로 문맥적 연결을 생성하고 기존 메모리를 진화시키는 메커니즘을 구현했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 젯엘카스텐 방법의 원자적 노트(atomic note) 원리와 유연한 연결 메커니즘을 LLM 기반의 에이전트 메모리 아키텍처로 구현하여 자율적 노트 생성, 동적 링크 형성, 메모리 진화를 가능하게 함</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>A-MEM 아키텍처: 노트 구성, 링크 생성, 메모리 진화의 3단계 과정을 통해 상호연결된 메모리 네트워크 형성</em></p></div>
 <ol>
 <li><strong>동적 메모리 구조화</strong>: 미리 정의된 메모리 연산 없이 에이전트가 자율적으로 메모리를 조직화하고 진화시킬 수 있는 아젠틱 메모리 시스템 구현</li>
 <li><strong>메모리 업데이트 메커니즘</strong>: 새로운 메모리 추가 시 링크 생성(link generation)과 메모리 진화(memory evolution) 두 가지 핵심 연산이 자동으로 작동하여 기존 메모리의 문맥 표현을 동적으로 적응시킴</li>
 <li><strong>실증적 성능 개선</strong>: 6개 파운데이션 모델(foundation model)을 대상으로 장기 대화 데이터셋에서 6가지 평가 지표로 기존 SOTA 대비 현저한 성능 향상 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <h3>노트 구성 (Note Construction)</h3>
 <ul>
 <li>각 메모리 노트 $m_i = \{c_i, t_i, K_i, G_i, X_i, e_i, L_i\}$로 표현
@@ -145,7 +139,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: A-MEM은 LLM 에이전트의 메모리 문제에 대한 창의적이고 실용적인 해결책을 제시하며, 젯엘카스텐 원리의 현대적 적용과 메모리 진화라는 개념이 의미 있으나, 계산 효율성, 메모리 진화의 이론적 기반, 그리고 평가의 폭을 넓힐 필요가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../355_From_Human_Memory_to_AI_Memory_A_Survey_on_Memory_Mechanisms/index.html">From Human Memory to AI Memory: A Survey on Memory Mechanisms in the Era of LLMs</a></div><div class="conn-reason">A-MEM의 동적 에이전트 메모리와 From Human Memory to AI Memory는 모두 AI 메모리 시스템을 다루지만, 젯엘카스텐 방법론과 인간-AI 메모리 비교라는 서로 다른 접근법을 취합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../400_Hiagent_Hierarchical_working_memory_management_for_solving_l/index.html">Hiagent: Hierarchical working memory management for solving long-horizon agent tasks with large language model</a></div><div class="conn-reason">A-MEM의 문맥적 메모리 연결 시스템은 HiAgent의 계층적 작업 메모리 관리를 확장하여 더 동적이고 진화하는 메모리 구조를 제공합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../400_Hiagent_Hierarchical_working_memory_management_for_solving_l/index.html">Hiagent: Hierarchical working memory management for solving long-horizon agent tasks with large language model</a></div><div class="conn-reason">에이전트 메모리 관리가 계층적 작업 메모리로 구체화되고 발전됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../355_From_Human_Memory_to_AI_Memory_A_Survey_on_Memory_Mechanisms/index.html">From Human Memory to AI Memory: A Survey on Memory Mechanisms in the Era of LLMs</a></div><div class="conn-reason">인간 기억 체계를 LLM 에이전트 메모리로 확장한 연구를 에이전틱 메모리로 발전</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

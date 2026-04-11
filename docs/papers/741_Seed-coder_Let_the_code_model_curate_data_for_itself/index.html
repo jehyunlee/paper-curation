@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: ByteDance Seed, Yuyu Zhang, Jing Su, Yifan Sun, Chenguang Xi, Xia Xiao, Zheng Shen, A. Q. Zhang, Kaibo Liu, Daoguang Zan, Tao Sun, J. Zhu, Shijie Xin, Dong Huang, Y. Bai, Lixin Dong, C. J. Li, Jianchong Chen, Hao Zhou, Yifan Huang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.03524" target="_blank">arXiv:2506.03524</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1. Seed-Coder-8B 지시어(Instruct)와 추론(Reasoning) 변형의 벤치마크 성능 비교</em></p></div>
 <p>본 논문은 코드 데이터 전처리 과정에서 인간의 수작업 필터링 규칙에 의존하지 않고, LLM 기반 자동 필터링을 활용하여 6조 토큰의 고품질 코드 사전학습 데이터를 구축한 Seed-Coder 모델 시리즈를 제시한다. 동일 규모의 오픈소스 모델을 능가하고 더 큰 모델과도 경쟁력 있는 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: <strong>모델 중심 데이터 파이프라인(model-centric data pipeline)</strong>으로 전환한다. LLM 자신을 품질 평가자로 활용하여 GitHub, GitHub Commits, 코드 관련 웹 데이터를 필터링한다. 이어 base, instruct, reasoning의 세 가지 8B 모델 변형을 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2. 사전학습 데이터 처리 파이프라인. GitHub와 웹 아카이브에서 수집한 데이터를 네 가지 범주(파일 수준, 저장소 수준, 커밋, 웹 데이터)로 분류하고 LLM 기반 품질 필터와 최소한의 규칙을 적용</em></p></div>
 <ol>
 <li><strong>모델 기반 필터링의 성공</strong>: LLM을 이용한 품질 필터(Quality Scorer)가 수작업 규칙보다 우수한 성능을 보였다. 정확도, 일관성, 대규모 처리 능력에서 인간적 개입을 최소화하면서도 높은 필터링 품질 달성.</li>
 <li><strong>벤치마크 우위성</strong>: 동일 규모(8B) 오픈소스 모델(Qwen2.5-Coder-7B, DeepSeek-Coder-V2-Lite, OlympicCoder-7B)을 능가하고, 더 큰 모델들과도 경쟁 가능한 성능. 특히 코드 생성(code generation), 코드 완성(code completion), 코드 편집(code editing), 다단계 추론(multi-step reasoning), 소프트웨어 엔지니어링 작업에서 우수한 성능.</li>
 <li><strong>대규모 고품질 데이터 구축</strong>: 6조 토큰의 중복 제거된 코드 사전학습 코퍼스 구축. 원본 데이터의 약 98% 감소를 통해 효율적이고 관리 가능한 고품질 데이터셋 확보.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3-5. LLM 기반 품질 평가 파이프라인 및 예시</em></p></div>
 <h3>사전학습(Pretraining) 단계</h3>
 <ul>
 <li><strong>병렬 파이프라인 설계</strong>: 순차 의존성을 제거하여 각 필터가 독립적으로 실행 가능하도록 설계. 점진적 데이터 확장과 유연한 파이프라인 조작 지원.</li>
@@ -171,7 +165,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Seed-Coder는 코드 데이터 큐레이션의 근본적인 방식을 재정의하여, 인간의 수작업 규칙 대신</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../230_Code_llama_Open_foundation_models_for_code/index.html">Code llama: Open foundation models for code</a></div><div class="conn-reason">Code Llama와 유사한 코드 모델이지만 데이터 전처리에서 완전 자동화 달성</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">DeepSeek-Coder와 달리 Seed-Coder는 LLM 기반 자동 필터링으로 인간 수작업을 제거</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">둘 다 코드 생성 모델이지만 Seed-Coder는 LLM 기반 자동 필터링으로 차별화됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../894_AI_Copilot_Code_Quality_2025_Data_Suggests_4x_Growth_in_Code/index.html">AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones - GitClear</a></div><div class="conn-reason">둘 다 코딩 LLM을 다루지만 하나는 AI Copilot 코드 품질에, 다른 하나는 Seed-Coder의 자동 큐레이션에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../231_Codegen_An_open_large_language_model_for_code_with_multi-tur/index.html">Codegen: An open large language model for code with multi-turn program synthesis</a></div><div class="conn-reason">CodeGen의 프로그램 생성 기법을 자동화된 데이터 큐레이션으로 발전시킨 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../770_Starcoder_2_and_the_stack_v2_The_next_generation/index.html">StarCoder 2 and the Stack v2: The next generation</a></div><div class="conn-reason">StarCoder의 코드 생성 능력을 자가 큐레이션 데이터로 더욱 향상시킨 연구</div></div></div>

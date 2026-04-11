@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: RL(PPO/GRPO)에 검색 엔진을 환경의 일부로 모델링하고, 검색된 토큰에 대한 손실 마스킹, 다중 턴 상호작용 구조, 결과 기반 단순 보상 함수를 도입</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: PPO와 GRPO에서 검색 엔진을 활용한 훈련 과정. 롤아웃 중 LLM은 검색 엔진과 다중 턴 상호작용 수행</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: Qwen2.5-7B에서 기존 RAG 대비 평균 41% 상대 개선, Qwen2.5-3B에서 20% 개선 (7개 QA 데이터셋 평가)</li>
 <li><strong>안정적 훈련</strong>: 검색된 토큰의 손실 마스킹으로 RL 최적화 안정성 확보</li>
 <li><strong>해석 가능성</strong>: RL 방법 선택, LLM 모델 차이, 응답 길이 동역학에 대한 실증적 통찰 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: PPO vs GRPO 수렴 비교</em></p></div>
 <p><strong>RL 객체 함수</strong> (검색 엔진 통합):</p>
 <ul>
 <li>정책 LLM πθ가 입력 x에서 검색 엔진 R과의 상호작용을 포함한 출력 y 샘플링</li>
@@ -102,9 +98,7 @@ a { color: #A62018; }
 <li><strong>GRPO 적용</strong>: 그룹 상대 정책 최적화로 비평가 모델 제거, 그룹 점수에서 베이스라인 추정</li>
 <li><strong>토큰 구조</strong>: <code><search></code> <code></search></code>로 검색 쿼리, <code><information></code> <code></information></code>으로 검색 결과, <code><think></code> <code></think></code>로 추론, <code><answer></code> <code></answer></code>로 최종 답변 감싸기</li>
 <li><strong>보상 함수</strong>: 결과 기반 보상(rϕ)만 사용 (과정 기반 보상 미사용)</li>
-</ul>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 검색된 토큰 손실 마스킹 연구</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>검색 엔진의 환경 모델링</strong>: 기존 RL에서 검색을 독립적 모듈로 취급했던 것과 달리, 환경의 일부로 통합하여 상호작용 학습 가능</li>
@@ -134,7 +128,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../842_Tree-planner_Efficient_close-loop_task_planning_with_large_l/index.html">Tree-planner: Efficient close-loop task planning with large language models</a></div><div class="conn-reason">강화학습 기반 검색 및 추론 훈련으로 계획 수립의 다른 접근 방식을 보여준다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../667_ReSearch_Learning_to_Reason_with_Search_for_LLMs_via_Reinfor/index.html">ReSearch: Learning to Reason with Search for LLMs via Reinforcement Learning</a></div><div class="conn-reason">두 논문 모두 검색 기반 추론을 다루되 Search-R1은 검색 엔진 활용, ReSearch는 다중홉 질문 답변에 특화되어 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html">WebThinker: Empowering Large Reasoning Models with Deep Research Capability</a></div><div class="conn-reason">두 논문 모두 추론 과정에서의 검색 통합을 다루되 WebThinker는 웹 탐색, Search-R1은 검색 엔진 활용에 특화되어 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../667_ReSearch_Learning_to_Reason_with_Search_for_LLMs_via_Reinfor/index.html">ReSearch: Learning to Reason with Search for LLMs via Reinforcement Learning</a></div><div class="conn-reason">두 논문 모두 강화학습 기반 검색을 다루되 ReSearch는 다중홉 질문 답변, Search-R1은 검색 엔진과의 통합에 특화되어 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../281_Dlpo_Towards_a_robust_efficient_and_generalizable_prompt_opt/index.html">Dlpo: Towards a robust, efficient, and generalizable prompt optimization framework from a deep-learning perspective</a></div><div class="conn-reason">검색 엔진 활용 LLM 훈련과 프롬프트 최적화의 다른 성능 향상 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html">WebThinker: Empowering Large Reasoning Models with Deep Research Capability</a></div><div class="conn-reason">WebThinker의 웹 탐색 능력은 Search-R1의 검색 엔진 활용을 더 동적이고 상호작용적인 정보 수집으로 발전시킨다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">Search-R1의 검색 기반 추론이 확산 모델의 동적 탐색 과정에서 더 효과적인 빔 폭 조정을 가능하게 함</div></div></div>

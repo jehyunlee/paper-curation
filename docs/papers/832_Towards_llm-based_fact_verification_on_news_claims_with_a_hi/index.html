@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 복잡한 클레임을 더 작은 세부 클레임으로 분해하도록 LLM에 지시하고, 검색 엔진을 통해 외부 지식을 제공하여 사실 환각을 완화하는 HiSS 프롬프팅 방법을 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: Vanilla CoT 프롬프팅 기반 클레임 검증의 예시. 생성된 CoT가 "nukes"에 관한 필수 사고 누락과 증거 없는 사실 환각으로 인해 잘못된 판단에 도달한다.</em></p></div>
 <ol>
 <li><strong>LLM의 인컨텍스트 학습 능력 입증</strong>: 단 4-shot 시연 예제만으로도 LLM이 대부분의 지도학습 방법을 능가할 수 있음을 확인하였으며, 이는 LLM이 허위정보 대응의 유망한 도구임을 시사한다.</li>
 <li><strong>최첨단 성능 달성</strong>: RAWFC와 LIAR 두 가지 공개 미정보 데이터셋에서 HiSS 프롬프팅이 기존의 완전 지도학습 방식을 능가하며, 매크로 평균 F1에서 평균 4.95% 향상을 달성하고 소수-샷 뉴스 클레임 검증에서 새로운 최첨단 성과를 수립했다.</li>
 <li><strong>향상된 설명 가능성</strong>: 기존 방법 대비 더 세분화되고 따라가기 쉬운 설명을 자동 평가와 인간 평가를 통해 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 제안된 HiSS 모델의 개요. 원본 인간 입력은 빨간색 배경으로 표시된다.</em></p></div>
 <h3>Hierarchical Step-by-Step (HiSS) 프롬프팅의 두 가지 주요 프로세스:</h3>
 <ol>
 <li><strong>클레임 분해(Claim Decomposition)</strong>
@@ -134,7 +130,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM 기반의 뉴스 클레임 검증에서 실무 지향적 성과를 보였으며, 계층적 분해와 검색 기반 증거 통합을 통해 LLM의 추론 능력을 실효적으로 향상시킨 의의 있는 연구이다. 다만 다양한 도메인과 언어로의 확장성 검증과 비용 효율성 개선이 향후 과제로 남아있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../541_Missing_counter-evidence_renders_nlp_fact-checking_unrealist/index.html">Missing counter-evidence renders nlp fact-checking unrealistic for misinformation</a></div><div class="conn-reason">기존 팩트체킹의 한계를 지적한 연구가 계층적 증거 기반 뉴스 클레임 검증 시스템 개발의 동기를 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../859_Unsupervised_pretraining_for_fact_verification_by_language_m/index.html">Unsupervised pretraining for fact verification by language model distillation</a></div><div class="conn-reason">HiSS가 계층적 단계별 프롬프팅을 통해 뉴스 클레임을 세분화하는 반면, SFAVEL은 언어모델 증류를 통한 무감독 학습으로 서로 다른 팩트 검증 접근법을 제시함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../859_Unsupervised_pretraining_for_fact_verification_by_language_m/index.html">Unsupervised pretraining for fact verification by language model distillation</a></div><div class="conn-reason">SFAVEL은 언어모델 증류를 통한 무감독 접근을, HiSS는 계층적 단계별 프롬프팅을 사용하여 서로 다른 방식으로 팩트 검증 문제를 해결함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html">DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts</a></div><div class="conn-reason">동적 증거 수집 기반 접근법과 계층적 증거 구조화 접근법이라는 서로 다른 팩트체킹 시스템 설계 철학을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../332_Fact-checking_complex_claims_with_program-guided_reasoning/index.html">Fact-checking complex claims with program-guided reasoning</a></div><div class="conn-reason">프로그램 가이드 추론을 통한 복잡한 클레임 팩트 체킹이 HiSS의 계층적 분해 방법을 더 정교한 논리적 추론 체계로 발전시킨 연구임</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../827_Towards_effective_extraction_and_evaluation_of_factual_claim/index.html">Towards effective extraction and evaluation of factual claims</a></div><div class="conn-reason">효과적인 사실 클레임 추출과 평가 방법론이 HiSS의 계층적 클레임 분해와 증거 수집 과정을 실제 뉴스 검증 시스템에 적용할 수 있는 구체적 기술을 제공함</div></div></div>

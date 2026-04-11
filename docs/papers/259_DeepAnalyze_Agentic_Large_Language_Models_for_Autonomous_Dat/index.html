@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shaolei Zhang, Ju Fan, Meihao Fan, Guoliang Li, Xiaoyong Du | <strong>날짜</strong>: 2025-10-19 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>DeepAnalyze-8B: 데이터 소스에서 분석가급 리포트까지 엔드-투-엔드 자동 데이터 과학을 수행하는 에이전틱 LLM</em></p></div>
 <p>본 논문은 원시 데이터에서 분석가급 심층 연구 보고서까지 완전 자동화된 데이터 과학(autonomous data science)을 달성하는 최초의 에이전틱 LLM인 DeepAnalyze-8B를 제안한다. 단 8B 파라미터로 고급 독점 LLM 기반의 기존 워크플로우 에이전트를 능가하는 성능을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 인간 데이터 과학자의 학습 궤적을 모방하는 커리큘럼 기반 에이전틱 훈련 패러다임(curriculum-based agentic training paradigm), (2) 고품질 훈련 데이터를 구성하는 데이터 기반 궤적 합성 프레임워크(data-grounded trajectory synthesis framework)</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>DeepAnalyze 아키텍처: 자율 조율(autonomous orchestration)과 적응형 최적화(adaptive optimization) 능력을 갖춘 에이전틱 시스템</em></p></div>
 <ol>
 <li><strong>엔드-투-엔드 자동화</strong>: 데이터 준비(data preparation), 분석(analysis), 모델링(modeling), 시각화(visualization), 리포트 생성까지 전체 파이프라인을 자동으로 완성</li>
 <li><strong>다양한 데이터 작업 지원</strong>: 데이터 질문 답변(data QA), 특화된 분석 작업(specialized analytics), 개방형 데이터 연구(open-ended data research) 등 광범위한 데이터 과학 작업 수행</li>
@@ -86,10 +82,6 @@ a { color: #A62018; }
 <li><strong>완전 공개</strong>: 모델, 코드, 훈련 데이터(DataScience-Instruct-500K) 전량 오픈소스 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>에이전틱 강화학습(Agentic RL) 개요: 환경과의 상호작용을 통한 피드백 기반 학습</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>데이터 기반 궤적 합성 프레임워크: 고품질 훈련 데이터 구성 프로세스</em></p></div>
 <ul>
 <li><strong>커리큘럼 기반 훈련</strong>: 간단한 작업(데이터 QA)에서 복잡한 작업(개방형 연구)으로 점진적으로 난이도를 상향하여 LLM이 역량을 순차적으로 습득</li>
 <li><strong>자율 조율(Autonomous Orchestration)</strong>: 사용자 의도를 이해하고 복잡한 다단계 작업을 체계적으로 조율하는 능력</li>
@@ -119,7 +111,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: DeepAnalyze는 자동화된 데이터 과학을 향한 실질적이고 중요한 첫 걸음을 제시하며, 커리큘럼 기반 훈련과 데이터 기반 궤적 합성은 LLM 에이전트 훈련의 새로운 패러다임을 제안한다. 8B 모델로 대형 독점 모델을 능가하는 효율성과 완전 공개 전략은 의의가 크지만, 다양한 도메인과 복잡한 실제 환경에서의 강건성 검증과 평가 메트릭 확충이 후속 개선 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../253_Data_Interpreter_An_LLM_Agent_For_Data_Science/index.html">Data Interpreter: An LLM Agent For Data Science</a></div><div class="conn-reason">Data Interpreter와 유사한 데이터 사이언스 자동화이지만 8B 모델로 더 효율적 달성</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../146_Autosdt_Scaling_data-driven_discovery_tasks_toward_open_co-s/index.html">AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists</a></div><div class="conn-reason">AutoSDT가 태스크 생성에 집중하는 반면 DeepAnalyze는 실제 분석 실행을 자동화</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../146_Autosdt_Scaling_data-driven_discovery_tasks_toward_open_co-s/index.html">AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists</a></div><div class="conn-reason">둘 다 자동화된 데이터 과학을 다루지만 AutoSDT는 태스크 생성에, DeepAnalyze는 분석 실행에 특화</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../293_Ds-agent_Automated_data_science_by_empowering_large_language/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">DS-Agent의 기본 데이터 사이언스 자동화를 분석가 수준의 심층 연구로 발전시킴</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../542_Mlagentbench_Evaluating_language_agents_on_machine_learning/index.html">MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation</a></div><div class="conn-reason">DeepAnalyze의 자율적 데이터 과학 능력을 MLAgentBench로 체계적 평가 가능</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

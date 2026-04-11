@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Michael Sun, Weize Yuan, Gang Liu, Wojciech Matusik, Jie Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.22948" target="_blank">10.48550/arXiv.2505.22948</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>주요 FMG 알고리즘 모듈: 기저 클리크 추출부터 근 모티프 선택까지의 단계적 프로세스. MMFM이 의미 있는 부분구조 병합과 화학적 중요도 판단을 수행.</em></p></div>
 <p>다중 모달 기반 모델(MMFM)의 화학 지식을 활용하여 분자를 이미지와 텍스트로 표현하고, 계층적 분해 알고리즘과 연쇄 추론(chain-of-thought)을 결합해 해석 가능한 분자 그래프 문법(graph grammar)을 자동으로 학습하는 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 클리크 트리 분해(clique tree decomposition) 알고리즘을 기반으로 각 단계마다 MMFM의 의사결정 모듈을 통합하고, LLM 논쟁(debate) 메커니즘으로 화학적 타당성을 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>FMG 파이프라인: (좌) 기저 클리크 초기화, (중좌) 클리크 그래프 삼각분할, (중앙) MMFM 기반 모티프 병합 결정, (중우) 중요도 낮은 상호작용 제거, (우) 근 모티프 선택.</em></p></div>
 <ol>
 <li><strong>데이터 효율성 및 다양성</strong>: 기존 SOTA 방법 대비 분자 생성 벤치마크에서 우수한 성능 달성 (합성 가능성, 다양성, 데이터 효율성 모두 개선)</li>
 <li><strong>내재적 해석성</strong>: 생성된 문법 규칙이 관능기(functional groups) 등 화학적으로 의미 있는 부분구조로 구성되며, 단계별 추론 과정을 "설계 내러티브(design narrative)"로 기록하여 투명성 확보</li>
 <li><strong>전문가 검증</strong>: LLM 판사 및 토너먼트 시스템을 통해 분해(decomposition)의 화학적 타당성을 자동 검증하고, 전문가 기준 레이블과 비교 검증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <p><strong>알고리즘 단계:</strong></p>
 <ol>
 <li><strong>기저 클리크 추출(Base Clique Extraction)</strong>
@@ -159,7 +153,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../487_Leveraging_biomolecule_and_natural_language_through_multi-mo/index.html">Leveraging biomolecule and natural language through multi-modal learning: A survey</a></div><div class="conn-reason">생체분자와 자연어의 멀티모달 결합 방법론이 분자 이미지와 텍스트 표현 통합의 핵심 기반이 됨</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../487_Leveraging_biomolecule_and_natural_language_through_multi-mo/index.html">Leveraging biomolecule and natural language through multi-modal learning: A survey</a></div><div class="conn-reason">분자 문법 기반 파운데이션 모델과 생물분자 다중모달 학습의 대조적 방법론</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../555_Molgan_An_implicit_generative_model_for_small_molecular_grap/index.html">Molgan: An implicit generative model for small molecular graphs</a></div><div class="conn-reason">MolGAN의 분자 생성 결과를 Foundation Molecular Grammar의 해석 가능한 문법 구조로 체계적으로 분석할 수 있음</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../555_Molgan_An_implicit_generative_model_for_small_molecular_grap/index.html">Molgan: An implicit generative model for small molecular graphs</a></div><div class="conn-reason">Foundation Molecular Grammar의 해석 가능한 분자 문법이 MolGAN의 생성 결과를 체계적으로 분석하는 도구로 활용됨</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../383_Geometry_Informed_Tokenization_of_Molecules_for_Language_Mod/index.html">Geometry Informed Tokenization of Molecules for Language Model Generation</a></div><div class="conn-reason">분자의 기하학적 토큰화 방법이 Foundation Molecular Grammar의 계층적 분해 알고리즘을 더욱 정교화함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../349_Fragment_and_Geometry_Aware_Tokenization_of_Molecules_for_St/index.html">Fragment and Geometry Aware Tokenization of Molecules for Structure-Based Drug Design Using Language Models</a></div><div class="conn-reason">멀티모달 분자 문법 기초 모델이 프래그먼트 기반 분자 토큰화 방법을 더 포괄적으로 확장할 수 있습니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

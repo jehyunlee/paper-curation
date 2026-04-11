@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Siwei Wang, Xinwang Liu, Suyuan Liu, Jiaqi Jin, Wenxuan Tu, Xinzhong Zhu, En Zhu | <strong>날짜</strong>: 2022-05-30 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>앵커 정렬 문제(AUP): 서로 다른 뷰에서 생성된 앵커 그래프의 열(column)이 정렬되지 않아 부정확한 그래프 융합 발생</em></p></div>
 <p>본 논문은 대규모 멀티뷰 클러스터링에서 <strong>앵커 정렬 문제(Anchor-Unaligned Problem, AUP)</strong>를 최초로 정의하고, 피처 및 구조 정보를 모두 활용하여 앵커 대응 관계를 정확하게 수립하는 FMVACC(Fast Multi-View Anchor-Correspondence Clustering) 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 멀티뷰 데이터에서 다양한 차원의 앵커 간 거리 계산의 불가능성을 극복하기 위해 관계적 표현(relational representation)을 통해 피처 대응성과 구조 대응성을 모두 활용하는 유연한 앵커 매칭 프레임워크 제시</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>FMVACC 개요: 피처 대응성과 구조 대응성을 결합한 앵커 매칭 모듈</em></p></div>
 <ol>
 <li><strong>AUP 문제 정의</strong>: 멀티뷰 클러스터링에서 앵커 정렬 문제를 최초로 명시적으로 정의하고 그 영향을 실증적으로 입증</li>
 <li><strong>유연한 앵커 생성</strong>: 직교 제약 조건(AᵢAᵢ⊤ = Iₘ)을 통해 판별력 있는 앵커 최적화, 고정 인덱스 기반의 경직된 방식을 탈피</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>광범위한 검증</strong>: 7개 벤치마크 데이터셋에서 효과성 및 효율성 입증, 기존 앵커 그래프 기반 방법들에 정렬 모듈 적용 시 성능 개선</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>피처 대응성(Feature Correspondence)과 구조 대응성(Structure Correspondence)의 두 가지 방식</em></p></div>
 <h3>유연한 앵커 생성 (Flexible Anchor Generation)</h3>
 <ul>
 <li>각 뷰에서 직교 제약을 갖는 앵커 최적화:

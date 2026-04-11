@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yu Du, Fangyun Wei, Hongyang Zhang | <strong>날짜</strong>: 2024-02-06 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.04253" target="_blank">10.48550/arXiv.2402.04253</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AnyTool의 구조 및 ToolLLM과의 성능 비교</em></p></div>
 <p>16,000개 이상의 API를 활용하여 사용자 쿼리를 해결하는 GPT-4 기반 에이전트로, 계층적 API 검색기, 문제 해결기, 자기 반성 메커니즘을 통합하여 기존 방식 대비 35.4% 향상된 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 계층적 API 검색기로 검색 공간 축소, (2) 자기 반성 메커니즘으로 반복 개선, (3) 실제 시나리오를 반영한 개선된 평가 프로토콜 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>AnyTool의 전체 구조: 계층적 API 검색기, 솔버, 자기 반성 메커니즘</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: ToolBench에서 ToolLLM 대비 평균 pass rate 35.4% 증가 달성.</li>
 <li><strong>학습 불필요</strong>: GPT-4의 함수 호출 기능만으로 작동하여 추가 모듈 학습이 불필요(Plug-and-Play).</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>평가 프로토콜 개선</strong>: 실제 응용 시나리오를 반영한 개선된 평가 방식 제안 및 AnyToolBench 벤치마크 도입.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>기존 평가 프로토콜의 결함과 개선된 평가 방식 비교</em></p></div>
 <h3>계층적 API 검색기 (Hierarchical API Retriever)</h3>
 <ul>
 <li><strong>3계층 구조</strong>: 메타 에이전트 → 카테고리 에이전트 → 도구 에이전트</li>

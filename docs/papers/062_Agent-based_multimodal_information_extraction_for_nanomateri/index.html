@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 에이전트 아키텍처 기반의 nanoMINER 시스템을 제안하여, 조정 에이전트(Main agent)가 NER 에이전트와 비전 에이전트를 오케스트레이션하며, YOLO와 GPT-4o를 활용해 텍스트와 시각 정보를 통합 처리한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>nanoMINER: 다중 에이전트 시스템의 구조로 PDF 입력부터 구조화된 데이터 출력까지의 전체 파이프라인 표시</em></p></div>
 <ol>
 <li><strong>나노물질 데이터 추출</strong>: 19개 논문의 25개 실험에서 화학식, 결정계, 크기, 표면 개질 등의 매개변수를 추출했으며, 화학식과 코팅 분자에서 정규화된 Levenshtein 거리가 거의 0에 가까운 수준(~0.0)의 정확도 달성, 코팅 분자 무게 추출에서 0.66의 정밀도 달성</li>
 <li><strong>나노자임 데이터 추출</strong>: Km, Vmax, 최소/최대 기질 농도(Cmin, Cmax)에 대해 0.96 이상의 정밀도, 특히 kinetic parameter에서 0.98의 거의 완벽에 가까운 정밀도 달성</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>암묵적 정보 추출</strong>: 화학식으로부터 결정계를 추론하는 능력을 시연하여, 명시적 정보뿐만 아니라 암묵적 데이터도 추출 가능함을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>나노물질 데이터 추출 성능: 다양한 매개변수에 대한 정밀도, 재현율, F1 스코어 비교</em></p></div>
 <ul>
 <li><strong>PDF 처리</strong>: 입력 PDF에서 텍스트, 이미지, 플롯을 추출하여 모든 데이터 모달리티 확보</li>
 <li><strong>시각 정보 추출</strong>: YOLO 모델을 통해 도표, 테이블, 화학식 구조 등의 객체 감지 및 식별, GPT-4o로 추출된 시각 정보를 텍스트 설명과 링크</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhizheng Wang, Qiao Jin, Chih-Hsuan Wei, Shubo Tian | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41592-025-02748-6" target="_blank">10.1038/s41592-025-02748-6</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>GeneAgent의 4단계 파이프라인: 생성(Generation), 자기검증(Self-verification), 수정(Modification), 요약(Summarization). 자기검증 단계에서 도메인 특화 데이터베이스와 상호작용하여 환각을 감지하고 검증 보고서를 생성함.</em></p></div>
 <p>대규모 언어모델(LLM)의 환각(hallucination) 문제를 자기검증 메커니즘으로 해결하는 유전자 집합 분석 AI 에이전트를 제시하며, GPT-4 대비 현저히 높은 정확도를 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 도메인 특화 생물학 데이터베이스(GO, KEGG, Reactome 등 18개)와 자동으로 상호작용하는 자기검증 메커니즘을 갖춘 LLM 에이전트 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>세 데이터셋(GO, NeST, MSigDB)에 걸친 ROUGE 점수 및 의미 유사도(semantic similarity) 비교. GeneAgent이 모든 메트릭에서 GPT-4를 일관되게 상회함.</em></p></div>
 <ol>
 <li><strong>벤치마크 성능 향상</strong>: 1,106개 유전자 집합 평가에서 GeneAgent이 GPT-4 대비 ROUGE-L 점수 0.239→0.310 (MSigDB), MedCPT 기반 의미 유사도 0.689→0.705 (GO dataset) 달성. 90% 이상 유사도 생성 케이스 104→170개 증가.</li>
 <li><strong>실무 적용성 검증</strong>: 마우스 B2905 멜라노마 세포주 유래 7개 신규 유전자 집합 분석에서 전문가 검토 결과 GPT-4 대비 더욱 관련성 높고 포괄적인 기능 설명 생성. 다중 종(species) 간 안정성 확보.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1c">
-<p class="fig-caption"><em>selfVeri-Agent의 동작 예시: RTK signaling 관련 클레임이 데이터베이스 쿼리를 통해 MAPK signaling pathway와만 관련 있음을 확인하고 "부분 지지됨(partially supported)" 판정.</em></p></div>
 <ul>
 <li><strong>4단계 파이프라인</strong>:
 <ul>

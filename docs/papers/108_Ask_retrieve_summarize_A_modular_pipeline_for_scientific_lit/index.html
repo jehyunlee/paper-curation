@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Pierre Achkar, Tim Gollub, Martin Potthast | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.16349" target="_blank">arXiv:2505.16349</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: XSum 파이프라인 개요. 참고 논문들을 질문 생성, 검색, 질답 모듈을 거쳐 최종 요약본으로 변환</em></p></div>
 <p>과학 문헌의 지수적 증가 문제를 해결하기 위해, 검색-증강-생성(RAG) 기반의 모듈식 다중문서 요약(MDS) 파이프라인인 XSum을 제안한다. 질문 생성 모듈과 편집 모듈의 두 가지 혁신적 컴포넌트를 통해 정확하고 인용이 풍부한 과학 문헌 요약을 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 질문 생성 모듈로 논문의 제목과 초록을 기반으로 동적으로 구조화된 질문을 생성하고, 편집 모듈로 질답 쌍들을 일관성 있는 인용 풍부 요약으로 합성함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1, 2">
-<p class="fig-caption"><em>그림 1, 2: 기존 파이프라인과의 비교. Pipeline 1은 신경망 순위 모델(monoT5), Pipeline 2는 임베딩 기반 검색(SPECTER2) 사용</em></p></div>
 <ol>
 <li><strong>성능 개선</strong>: SurveySum 데이터셋에서 CheckEval, G-Eval, Ref-F1 지표에서 기존 방법들 대비 현저한 성능 향상 달성</li>
 <li><strong>모듈식 설계</strong>: 질문 생성-검색-질답-편집의 투명하고 적응 가능한 4단계 파이프라인으로 각 단계의 독립적 개선 가능성 제시</li>
 <li><strong>인용 추적성 강화</strong>: 최종 요약본에서 학술적 표준을 준수하는 정확한 인용 유지로 신뢰성 향상</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: XSum 전체 파이프라인의 상세 흐름</em></p></div>
 <p><strong>1단계 - 질문 생성 (Question Generation)</strong></p>
 <ul>
 <li>입력 논문의 제목과 초록을 LLM에 전달하여 광범위하고 일반적인 질문 생성</li>

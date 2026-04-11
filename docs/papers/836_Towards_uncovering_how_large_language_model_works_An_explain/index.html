@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Haiyan Zhao, Fan Yang, Bo Shen, Himabindu Lakkaraju, Mengnan Du | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2402.10688" target="_blank">arXiv:2402.10688</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>대규모 언어모델의 작동 메커니즘: (a) 모델 컴포넌트 내 지식의 아키텍처 구성, (b) 중간 표현에 인코딩된 지식, (c) 훈련 과정에서의 일반화 능력 발달</em></p></div>
 <p>이 논문은 설명가능성(explainability) 관점에서 대규모 언어모델(LLM)의 내부 작동 메커니즘을 체계적으로 검토한 종합 리뷰 논문이다. 기계적 해석가능성(mechanistic interpretability), 표현 공학(representation engineering), 훈련 역학 분석을 통해 LLM의 지식 구성, 부호화, 학습 과정을 밝히고, 이러한 인사이트가 모델 편집, 프루닝, 인간 정렬에 어떻게 활용될 수 있는지 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기계적 해석가능성, 표현 공학, 훈련 역학 분석 등 기존의 설명가능성 기법들을 종합하여 LLM의 작동 메커니즘을 체계적으로 검토</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>트랜스포머 회로(Transformer Circuit)의 구조: Query-Key 회로와 Output-Value 회로를 통한 정보 처리 메커니즘</em></p></div>
 <ol>
 <li><strong>신경원(Neuron) 수준 분석</strong>: 다의성(polysemanticity)의 발생 원인을 규명하고, 중첩(superposition)과 단일의미성(monosemanticity) 개념을 통해 신경원의 특성을 설명. 희소 자동인코더(sparse autoencoder)를 통해 특징 분해(feature disentanglement)의 가능성 제시</li>
 <li><strong>회로(Circuit) 수준 분석</strong>: 트랜스포머 회로에 대한 수학적 프레임워크를 제시하고, Query-Key 회로와 Output-Value 회로의 역할 구분. 귀납 헤드(induction head)가 맥락 내 학습(in-context learning) 능력에 기여함을 밝힘</li>
@@ -121,9 +117,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 이 논문은 LLM의 내부 작동 메커니즘을 설명가능성 관점에서 체계적으로 정리한 우수한 리뷰 논문으로, 신경원·회로·헤드·훈련 역학의 계층적 분석을 통해 LLM의 투명성을 높인다. 다만 장난감 모델 기반 결과의 현실적 적용 가능성과 대규모 모델으로의 확장성은 여전히 과제로 남아 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../582_On_gradient-like_explanation_under_a_black-box_setting_when/index.html">On gradient-like explanation under a black-box setting: when black-box explanations become as good as white-box</a></div><div class="conn-reason">LLM의 해석가능성 연구가 블랙박스 설정에서의 그래디언트 기반 설명 방법 개발의 이론적 배경을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../397_Hallucinations_can_improve_large_language_models_in_drug_dis/index.html">Hallucinations can improve large language models in drug discovery</a></div><div class="conn-reason">LLM의 해석가능성 연구가 환각 현상이 성능에 미치는 영향을 이해하는 데 필요한 기계적 이해를 제공한다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../397_Hallucinations_can_improve_large_language_models_in_drug_dis/index.html">Hallucinations can improve large language models in drug discovery</a></div><div class="conn-reason">LLM의 환각 현상을 이해하기 위해서는 언어 모델의 내부 메커니즘에 대한 근본적 이해가 필요하다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../527_Mechanistic_interpretability_for_ai_safetya_review/index.html">Mechanistic interpretability for ai safety–a review</a></div><div class="conn-reason">AI 안전성을 위한 기계적 해석가능성과 LLM 작동 메커니즘 이해라는 유사하지만 다른 관점의 해석가능성 연구이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../527_Mechanistic_interpretability_for_ai_safetya_review/index.html">Mechanistic interpretability for ai safety–a review</a></div><div class="conn-reason">LLM 작동 메커니즘 이해에서 기계론적 vs 설명가능성 기반의 다른 접근법을 비교할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../582_On_gradient-like_explanation_under_a_black-box_setting_when/index.html">On gradient-like explanation under a black-box setting: when black-box explanations become as good as white-box</a></div><div class="conn-reason">LLM의 내부 작동 메커니즘 이해를 위한 체계적 검토가 블랙박스 설정에서의 설명가능성 연구의 이론적 확장이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../017_A_practical_review_of_mechanistic_interpretability_for_trans/index.html">A practical review of mechanistic interpretability for transformer-based language models</a></div><div class="conn-reason">대형 언어모델 작동 방식의 설명가능한 연구는 기계적 해석가능성의 실무 가이드를 더욱 심화된 연구 방향으로 확장합니다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

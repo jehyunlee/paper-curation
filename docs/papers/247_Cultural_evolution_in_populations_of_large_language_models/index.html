@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: J'érémyPerez, Corentin Léger, Marcela Ovando-Tellez, Chris Foulon, Joan Dussauld, Pierre-Yves Oudeyer, Clément Moulin-Frier | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2403.08882" target="_blank">2403.08882</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM 에이전트들이 네트워크 구조로 조직되어 이웃 에이전트들과 이야기를 교환하며, 각 에이전트는 특정 성격과 프롬프트를 통해 이전 세대의 이야기들을 변환하여 새로운 이야기를 생성한다.</em></p></div>
 <p>이 논문은 대규모 언어모델(LLM) 인구에서 문화진화를 시뮬레이션하는 프레임워크를 제안하며, 네트워크 구조, 성격, 정보 변환 방식 등 문화진화의 주요 변수들을 조작하면서 기계가 생성하는 문화의 역학을 탐구한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 성격(personality), 초기화 프롬프트, 변환 프롬프트를 조작 가능한 오픈소스 소프트웨어를 개발하여 LLM 인구에서의 언어문화 진화를 시뮬레이션한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>50개 에이전트의 직선 전승 체인에서 생성된 텍스트의 진화 시각화: (a) 모든 이야기 간의 의미론적 유사성 행렬, (b) 생성된 이야기들 간의 유사성을 네트워크 그래프로 표현, (c) 각 세대에서 사용된 단어의 변화.</em></p></div>
 <ol>
 <li><strong>LLM 기반 문화진화 프레임워크 개발</strong>: 네트워크 구조, 에이전트 성격, 정보 변환 방식을 조작할 수 있는 통합 시뮬레이션 플랫폼 구축</li>
 <li><strong>다층적 분석 도구 제공</strong>: 생성 세대 내 유사성, 연속 세대 간 유사성, 초기 세대와의 유사성 측정 및 단어 체인 분석, 유사성 네트워크 시각화 제공</li>
 <li><strong>문화진화와 생성AI 연결</strong>: 두 분야 간의 접점을 개척하여 인간 문화진화의 가설 생성과 기계문화의 역학 이해라는 이중 목표 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>네트워크 구조의 효과: 10개 에이전트, 10세대 동안 다양한 네트워크 구조(선형, 격자, 완전 연결 등)에서의 문화 역학 비교.</em></p></div>
 <ul>
 <li><strong>모델 구조</strong>: 각 세대의 LLM 에이전트들이 (1) 초기화 프롬프트로 시작 이야기 생성 → (2) 변환 프롬프트와 이웃 에이전트의 이야기를 입력받아 새 이야기 생성 → (N) 세대를 거쳐 반복</li>
 <li><strong>성격 메커니즘</strong>: 모든 프롬프트 앞에 성격 서술("당신은 매우 창의적이다")을 추가하여 에이전트의 개별 특성 반영</li>

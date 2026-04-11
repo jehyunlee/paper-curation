@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Isabel Cachola, Kyle Lo, Arman Cohan, Daniel S. Weld | <strong>날짜</strong>: 2020 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2004.15011" target="_blank">10.48550/ARXIV.2004.15011</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>과학 논문의 TLDR 예시. TLDR은 일반적으로 논문의 초록, 서론, 결론 섹션에서 발견되는 두드러진 정보로 구성됨</em></p></div>
 <p>본 논문은 과학 논문을 위한 극단적 요약(extreme summarization) 작업인 TLDR 생성을 소개하고, 이를 위한 5.4K 규모의 멀티-타겟 데이터셋 SciTLDR과 제목을 보조 신호로 활용하는 CATTS 학습 전략을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 저자 작성 TLDR과 전문가 파생 TLDR의 두 가지 유형을 포함하는 멀티-타겟 데이터셋 구성. 제목을 보조 학습 신호로 활용하는 CATTS 학습 전략 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>동료 평가 의견을 TLDR로 다시 쓴 예시. 피어 리뷰 의견의 첫 부분을 활용하여 주석 자들이 TLDR을 작성</em></p></div>
 <ol>
 <li><strong>SciTLDR 데이터셋</strong>: 3,229개의 컴퓨터 과학 논문에 대한 5,411개의 TLDR로 구성. 학습셋(1,992개), 개발셋(619개), 테스트셋(618개) 구성. 기존 요약 데이터셋과 달리 다중 목표 요약 포함.</li>
 <li><strong>CATTS 학습 전략</strong>: 제목을 보조 신호로 활용하여 제어 코드(control code)를 통해 제목과 TLDR을 동시에 생성하도록 훈련. BART 모델에 적용 시 자동 메트릭과 인간 평가 모두에서 개선 달성.</li>
@@ -111,7 +107,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../593_Openscholar_Synthesizing_scientific_literature_with_retrieva/index.html">Openscholar: Synthesizing scientific literature with retrieval-augmented lms</a></div><div class="conn-reason">과학 논문 극단적 요약 연구가 대규모 문헌 검색 합성 시스템의 요약 생성 모듈 개발에 기초 기술을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../907_Is_AI_ready_to_mass-produce_lay_summaries_of_research_articl/index.html">Is AI ready to mass-produce lay summaries of research articles?</a></div><div class="conn-reason">과학 문서의 극단적 요약 기법이 일반 독자용 간략 요약 생성의 기술적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../885_Withdrarxiv_A_large-scale_dataset_for_retraction_study/index.html">Withdrarxiv: A large-scale dataset for retraction study</a></div><div class="conn-reason">과학 논문의 요약 생성과 철회 논문의 분류라는 서로 다른 과학 문헌 처리 접근법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../885_Withdrarxiv_A_large-scale_dataset_for_retraction_study/index.html">Withdrarxiv: A large-scale dataset for retraction study</a></div><div class="conn-reason">과학 논문의 생산적 요약 생성과 문제가 있는 논문의 철회 분석이라는 서로 다른 과학 문헌 처리 관점을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html">Ask, retrieve, summarize: A modular pipeline for scientific literature summarization</a></div><div class="conn-reason">과학 문서의 극단적 요약 방법으로 본 논문의 다중문서 요약과 다른 접근법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../561_Ms2_Multi-document_summarization_of_medical_studies/index.html">Ms2: Multi-document summarization of medical studies</a></div><div class="conn-reason">의료 연구의 다중문서 요약을 과학 문서의 극단적 요약으로 확장하여 더 간결한 정보 압축 방법을 탐구함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">단일 논문 요약에서 다중 논문을 활용한 자동 문헌 리뷰 생성으로 확장한 발전된 형태의 연구입니다.</div></div>

@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: CBF의 이론적 안전 보장을 RL 프레임워크에 "가드레일(guardrail)"로 통합하여 안전 제약을 동적으로 강제</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 세 가지 안전 가드레일 변형 - 필터(초록색), 보상 기반(주황색), 감쇠(파란색)</em></p></div>
 <ol>
 <li><strong>세 가지 CBF-RL 통합 방식 제안</strong>:
 <ul>
@@ -93,8 +91,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 유니사이클 모델의 장애물 회피 CBF 구성 - 로봇 축을 따라 ε만큼 이동한 점 x'를 사용</em></p></div>
 <p><strong>기술적 구현</strong>:</p>
 <ul>
 <li><strong>CBF 공식화</strong>: 전통적 장애물 회피 CBF h = ||x-x₀||² - δ²의 상대 차수(relative degree) 문제를 해결하기 위해, 로봇 축을 따라 ε만큼 이동한 점 x'를 기준으로 h = ||x'-x₀||² - (δ+ε)² 형태로 개선</li>
@@ -129,7 +125,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../249_Curriculum_Reinforcement_Learning_from_Easy_to_Hard_Tasks_Im/index.html">Curriculum Reinforcement Learning from Easy to Hard Tasks Improves LLM Reasoning</a></div><div class="conn-reason">쉬운 태스크에서 어려운 태스크로의 커리큘럼 강화학습은 제어 장벽 함수를 통한 안전 학습에 점진적 훈련 방법론을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">제어 장벽 함수 기반 안전 학습은 오프라인 강화학습의 행동 공간 섭동 문제를 해결하는 안전성 보장 메커니즘을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html">Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms</a></div><div class="conn-reason">두 논문 모두 로봇 제어 안전성을 다루되 제어 장벽 함수는 안전 제약, 소프트 연속 팔은 시뮬레이션 전이에 중점을 둔다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html">Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms</a></div><div class="conn-reason">두 논문 모두 로봇 제어의 안전성을 다루되 소프트 연속 팔은 시뮬레이션 전이, 제어 장벽 함수는 안전 제약에 중점을 둔다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">제어 장벽 함수를 통한 안전 학습은 오프라인 강화학습의 행동 공간 섭동 취약성을 해결하는 추가적인 안전성 보장 메커니즘을 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가는 제어 장벽 함수 기반 안전 학습에서 행동 공간 섭동에 대한 추가적인 견고성 분석을 제공한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

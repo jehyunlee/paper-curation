@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jesse Haworth, Rishi Biswas, Justin Opfermann, Michael Kam, Yaning Wang, Desire Pantalone, Francis X. Creighton, Robin Yang, Jin U. Kang, Axel Krieger | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2410.07493" target="_blank">arXiv:2410.07493</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: µSTAR 시스템 개요 - LBR Med 로봇팔, 혈관 위치 결정 시스템(MAPS), OCT 광섬유 및 마이크로카메라 장착 봉합 도구</em></p></div>
 <p>본 논문은 혈관 문합(vascular anastomosis)을 자율적으로 수행하는 최초의 로봇 시스템인 마이크로 스마트 조직 자율 로봇(µSTAR)을 개발했으며, OCT 기반 실시간 조직 감지와 신경망 기반 봉합 오류 감지를 통해 경험 많은 외과의들과 경쟁 가능한 수준의 성능을 ex vivo 조직에서 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) OCT 광섬유 센서와 마이크로카메라 통합 봉합 도구 설계, (2) OCT 기반 고도화된 조직 분류 알고리즘, (3) 봉합 오류 자동 감지 신경망, (4) 멀티모달 영상 기반 자율 수술 제어기 및 워크플로우 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: µSTAR의 봉합 워크플로우 - (A) 오른쪽 혈관에 needle outside-inside 진입, (B) 왼쪽 혈관에 inside-outside 진출, (C) 완성된 문합 봉합</em></p></div>
 <ol>
 <li><strong>첫 자율 혈관 문합 달성</strong>: 실제 조직(ex vivo)에서 혈관 문합을 자율적으로 수행한 최초의 로봇 시스템 개발. 90%의 봉합을 인간 개입 없이 완료.</li>
 <li><strong>수술의 정확성과 일관성 입증</strong>: 누출 압력(leak pressure), 관강 감소(lumen reduction), 봉합 배치 변동성(suture placement variation) 측면에서 경험 많은 외과의들과 동등한 수준의 성능 달성.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>자동 오류 감지 및 보정</strong>: 신경망 기반으로 놓친 봉합(missed suture)을 자율적으로 식별, 수정, 검증하는 기능으로 기존 자율 시스템의 한계 극복.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: µSTAR 시스템 소프트웨어 아키텍처 - 다중 센서 데이터 통합 및 실시간 제어 흐름도</em></p></div>
 <p><strong>하드웨어 구성:</strong></p>
 <ul>
 <li>LBR Med 7-DOF (7자유도) 의료용 로봇팔 (KUKA)</li>
@@ -147,7 +141,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 혈관 문합이라는 고도의 정밀성을 요구하는 수술 영역에서 최초로 자율 로봇 시스템을 성공적으로 구현한 획기적 업적이다. OCT 기반 실시간 센싱과 신경망 기반 오류 감지라는 기술적 혁신이 돋보이며, ex vivo 실험에서 숙련 외과의와 동등한 성능을 입증했다는 점은 높이 평가할 만하다. 다만, 임상 적용을 위해서는 체계적인 in vivo 동물 실험, 통계적으로 충분한 표본 규모, 알고리즘의 투명성 향상이 필수적이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../310_Embodied_Science_Closing_the_Discovery_Loop_with_Agentic_Emb/index.html">Embodied Science: Closing the Discovery Loop with Agentic Embodied AI</a></div><div class="conn-reason">체현된 과학 발견의 구체적 구현 사례로서 물리적 실험과 AI의 결합 가능성을 실증한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../745_Self-driving_laboratories_to_autonomously_navigate_the_prote/index.html">Self-driving laboratories to autonomously navigate the protein fitness landscape</a></div><div class="conn-reason">의료 수술과 생화학 실험이라는 서로 다른 영역에서 자율 로봇 시스템의 구현 방식을 비교한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../745_Self-driving_laboratories_to_autonomously_navigate_the_prote/index.html">Self-driving laboratories to autonomously navigate the protein fitness landscape</a></div><div class="conn-reason">생명과학과 의료 분야에서 각각 단백질 공학과 수술 로봇이라는 서로 다른 자율 실험실 구현을 보여준다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../133_Automating_quantum_computing_laboratory_experiments_with_an/index.html">Automating quantum computing laboratory experiments with an agent-based AI framework</a></div><div class="conn-reason">의료용 자율 로봇을 양자 컴퓨팅 실험 자동화로 확장하여 더 넓은 과학 실험 영역을 포괄한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../084_Ai-driven_robotics_for_free-space_optics/index.html">AI-Driven Robotics for Free-Space Optics</a></div><div class="conn-reason">광학 실험의 로봇 자동화가 OCT를 통한 자율 로봇 시스템으로 확장 가능합니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../310_Embodied_Science_Closing_the_Discovery_Loop_with_Agentic_Emb/index.html">Embodied Science: Closing the Discovery Loop with Agentic Embodied AI</a></div><div class="conn-reason">광학 코히런스 단층촬영을 사용한 자율 로봇 시스템은 Embodied Science 패러다임의 구체적인 실현 사례다.</div></div></div>

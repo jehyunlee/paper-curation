@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Haofei Yu, Zhaochen Hong, Zirui Cheng, Kunlun Zhu, Keyang Xuan, Jinwei Yao, Tao Feng, Jiaxuan You | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.17767" target="_blank">arXiv:2412.17767</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 인간 연구 커뮤니티를 에이전트-데이터 그래프로 추상화. 연구자는 에이전트 노드, 논문은 데이터 노드로 표현</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM) 기반 멀티에이전트 프레임워크를 통해 인간 연구 커뮤니티를 시뮬레이션하는 RESEARCHTOWN을 제안한다. 연구 커뮤니티를 에이전트-데이터 그래프로 모델링하고 TextGNN이라는 텍스트 기반 메시지 전달 메커니즘을 통해 논문 작성, 리뷰 작성 등 협업 연구 활동을 동적으로 시뮬레이션한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 연구 커뮤니티를 그래프 구조로 표현(에이전트-데이터 그래프)하고, GNN의 메시지 패싱 개념을 텍스트 기반으로 확장한 TextGNN 프레임워크 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 커뮤니티 그래프에서 TextGNN 추론의 3단계: 논문 읽기 → 논문 작성 → 리뷰 작성</em></p></div>
 <ol>
 <li><strong>현실적인 협업 연구 활동 시뮬레이션</strong>: 논문 작성에서 평균 유사도 0.68, 리뷰 작성에서 0.49의 유사도 점수 달성 (최신 텍스트 임베딩 모델 기준)</li>
 <li><strong>견고한 다중 에이전트 시뮬레이션</strong>: 에이전트 수 증가 시 성능 향상 및 무관련 논문 포함 시에도 견고성 유지 입증</li>
@@ -123,7 +119,6 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">ResearchTown의 멀티에이전트 시뮬레이션이 Scientific Agent 서베이에서 제시하는 이론적 프레임워크의 실제 구현 사례로 활용될 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../670_ResearchCodeAgent_An_LLM_Multi-Agent_System_for_Automated_Co/index.html">ResearchCodeAgent: An LLM Multi-Agent System for Automated Codification of Research Methodologies</a></div><div class="conn-reason">ResearchTown의 협업적 연구 환경에서 ResearchCodeAgent가 다중 에이전트 간 코드 리뷰와 개선을 통한 고품질 구현을 가능하게 한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../038_A_vision_for_auto_research_with_llm_agents/index.html">A vision for auto research with llm agents</a></div><div class="conn-reason">ResearchTown의 연구 커뮤니티 시뮬레이션이 Auto Research 비전의 협업적 연구 자동화를 위한 테스트베드 역할을 할 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../038_A_vision_for_auto_research_with_llm_agents/index.html">A vision for auto research with llm agents</a></div><div class="conn-reason">Auto Research의 협업적 연구 자동화 비전이 ResearchTown의 멀티에이전트 연구 커뮤니티 시뮬레이션에서 실제 테스트될 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">Scientific Agent의 이론적 프레임워크가 ResearchTown의 멀티에이전트 시뮬레이션에서 실제 구현되어 연구 자동화의 실현 가능성을 검증할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../188_Can_we_automatize_scientific_discovery_in_the_cognitive_scie/index.html">Can we automatize scientific discovery in the cognitive sciences?</a></div><div class="conn-reason">인간 연구 커뮤니티 시뮬레이터를 인지과학 자동화에 적용한 사례</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

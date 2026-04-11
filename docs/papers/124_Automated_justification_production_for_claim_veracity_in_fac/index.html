@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Islam Eldifrawi, Shengrui Wang, Amine Trabelsi | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>일반적인 자동 팩트체킹(AFC) 파이프라인: 주장 검증성 탐지 → 증거 검색 및 선택 → 진위 판정 → 정당화 생성</em></p></div>
 <p>본 논문은 자동 팩트체킹 시스템에서 판정 결과를 설명하기 위한 <strong>정당화(justification) 자동 생성</strong>에 초점을 맞춘 종합 서베이로, 최근 트랜스포머와 대형언어모델(LLM) 발전에 따른 설명 가능한 팩트체킹의 진화를 체계적으로 분석하고 정당화 표준화를 위한 다차원 분류체계를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 정당화 생성 방법론을 (1) 파이프라인 아키텍처, (2) 입출력 유형, (3) 주요 접근법, (4) 설명 가능성 등 5개 차원의 다면적 분류체계로 정리하고 진행 상황을 분석</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>정당화 생성을 위한 5개 차원의 분류 체계: 파이프라인 아키텍처, 입력 유형, 출력 유형, 설명 가능성, 주요 접근법</em></p></div>
 <ol>
 <li><strong>다차원 분류체계 제시</strong>: AFC 정당화 생성을 (i) 파이프라인 아키텍처 (ii) 입력 유형(텍스트/멀티모달) (iii) 출력 유형(자연언어/강조/SPO 트리플) (iv) 설명 가능성(자기설명적/비자기설명적) (v) 주요 방법론(어텐션, 지식그래프, 요약, 멀티홉, LLM RAG/파인튜닝) 등으로 체계적으로 분류</li>
 <li><strong>정당화 표준화 진행 상황 분석</strong>: Graves (2018)의 완전성, 일관성, 상호작용성, 실행가능성, 시간성, 참신성, 복잡성, 간결성, 인과성, 중립성 등 10가지 바람직한 특성(desiderata)을 제시하고, Atanasova et al. (2022)의 손실함수 기반 일관성 강화 시도 등 진행 상황 기록</li>
 <li><strong>기존 서베이의 한계 극복</strong>: Kotonya and Toni (2020a)의 논문 이후 출현한 새로운 접근법들(특히 LLM 기반)을 포함하며, 멀티모달 정당화 생성 분야의 미개척 영역에 대한 초기 관찰 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>정당화 출력 유형의 예시: 자연언어 텍스트, 강조 부분, SPO 트리플</em></p></div>
 <p><strong>AFC 파이프라인의 4단계 구성:</strong></p>
 <ul>
 <li><strong>주장 검증성 탐지 (3.1)</strong>: 주장의 중요도, 검증 가능성, 잠재적 해악성 판단</li>

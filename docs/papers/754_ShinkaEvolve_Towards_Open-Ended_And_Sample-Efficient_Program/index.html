@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: R. Lange, Yuki Imajuku, Edoardo Cetin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2509.19349" target="_blank">10.48550/arXiv.2509.19349</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ShinkaEvolve 프레임워크 개요: 평가된 프로그램의 아카이브 구축, 거절 샘플링을 통한 새로운 프로그램 생성, 적응형 선택</em></p></div>
 <p>대규모 언어모델(LLM)을 진화 알고리즘의 변이 연산자로 활용하여 샘플 효율성을 획기적으로 개선한 프로그램 진화 프레임워크이다. 세 가지 핵심 알고리즘 혁신(부모 선택 전략, 코드 신규성 거절 샘플링, 적응형 LLM 앙상블)을 통해 기존 방법 대비 수십 배 적은 평가로 최첨단 솔루션을 발견한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 탐색(exploration)과 활용(exploitation)의 균형을 맞추는 적응형 부모 샘플링, 코드 임베딩 유사도 기반 신규성 검증, 성능 기반 LLM 앙상블 선택 전략을 통합</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>원 패킹 작업에서 ShinkaEvolve는 AlphaEvolve를 150개 샘플로 능가</em></p></div>
 <ol>
 <li><strong>획기적인 샘플 효율성</strong>: 원 패킹 문제에서 단 150개 샘플로 새로운 최첨단 솔루션 발견 (기존 방법 대비 수십 배 개선)</li>
 <li><strong>다양한 도메인 검증</strong>:
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>오픈소스 공개</strong>: Apache 2.0 라이센스 하에 전체 코드와 대화형 시각화 도구 공개로 민주화 추진</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>부모 샘플링 전략: 균일 샘플링(순수 탐색)에서 언덕오르기(순수 활용)까지 다양한 선택지 제공</em></p></div>
 <h3>1. 적응형 부모 및 영감 프로그램 샘플링</h3>
 <ul>
 <li><strong>아일랜드 모델</strong>: 독립적인 부분모집단으로 다양성 증대 및 조기 수렴 방지</li>
@@ -106,8 +100,6 @@ a { color: #A62018; }
 </ul>
 </ul>
 <h3>2. LLM 유도 프로그램 변이 및 신규성 평가</h3>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>코드 신규성 거절 샘플링: 임베딩 유사도 계산 → 임계값 초과 시 LLM 재평가</em></p></div>
 <ul>
 <li><strong>세 가지 변이 전략</strong>:
 <ol>

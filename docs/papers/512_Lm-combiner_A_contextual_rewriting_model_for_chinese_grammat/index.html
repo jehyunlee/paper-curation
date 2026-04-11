@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 과도한 수정을 별도의 텍스트 재작성 작업으로 분리하여, 원문과 GEC 시스템 출력만을 입력받아 두 텍스트의 적절한 조합을 생성하는 단일 경량 모델 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 과도한 수정 문제의 예시로, 원문에서 올바른 부분(파란색)까지 변경하는 것을 보여주고, LM-Combiner가 이를 필터링하는 과정 표시">
-</div>
 <ol>
 <li><strong>정확도 대폭 개선</strong>: FCGEC 데이터셋에서 기준 모델 대비 정확도(Precision) +18.2점 향상, F0.5 +5.8점 개선으로 SOTA 수준 달성</li>
 <li><strong>재현율 유지</strong>: 높은 정확도 개선에도 불구하고 재현율(Recall)을 일정하게 유지하여 실용성 확보</li>
 <li><strong>경량성과 효율성</strong>: 소규모 파라미터와 제한된 훈련 데이터(천 단위)로도 우수한 성능 달성, ChatGPT 같은 블랙박스 시스템의 과도한 수정 완화에 활용 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 수정-재작성 프레임워크의 플로우차트로, 훈련 단계에서 K-fold 교차 추론으로 과도 수정 문장 생성 후 학습, 추론 단계에서 원문과 GEC 출력만으로 재작성">
-</div>
 <h3>데이터 레벨</h3>
 <ul>
 <li><strong>K-fold 교차 추론(K-fold Cross Inference)</strong>: 훈련 집합을 K개로 분할하여 각 분할마다 나머지 데이터로 모델을 학습한 후 해당 분할에 추론 수행. 이를 통해 자연스러운 과도 수정 문장 구성</li>
@@ -114,7 +110,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 과도한 수정 문제를 효과적으로 해결하기 위해 재작성 모델이라는 실용적인 접근을 제시하며, K-fold 교차 추론이라는 창의적 데이터 구성 방법으로 인해 학술적 가치가 있다. 다만 평가 범위의 확대와 더 엄밀한 일반화 검증이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../423_Improving_grammatical_error_correction_via_contextual_data_a/index.html">Improving grammatical error correction via contextual data augmentation</a></div><div class="conn-reason">문법 오류 수정의 맥락 데이터 증강 기법을 제공하여 LM-Combiner의 재작성 모델 성능 개선에 활용할 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../246_Csed_A_chinese_semantic_error_diagnosis_corpus/index.html">Csed: A chinese semantic error diagnosis corpus</a></div><div class="conn-reason">둘 다 중국어 언어 오류 처리를 다루지만 하나는 문법 오류 수정이고 다른 하나는 의미 오류 진단에 초점을 맞춘다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../246_Csed_A_chinese_semantic_error_diagnosis_corpus/index.html">Csed: A chinese semantic error diagnosis corpus</a></div><div class="conn-reason">중국어 문법을 위한 맥락적 재작성 모델로 본 논문의 중국어 의미 오류와 다른 유형의 언어 오류 처리를 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">Few-shot 일관성 개선 기법이 중국어 문법 오류 수정에서 과도한 수정 문제 해결에 적용될 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../571_Neural_automated_writing_evaluation_with_corrective_feedback/index.html">Neural automated writing evaluation with corrective feedback</a></div><div class="conn-reason">중국어 문법을 위한 맥락적 재작성 모델은 제2언어 학습자 대상 쓰기 평가 시스템을 다국어 환경으로 확장한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

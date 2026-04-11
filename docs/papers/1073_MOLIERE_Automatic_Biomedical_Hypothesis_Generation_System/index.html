@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Justin Sybrandt, Michael Shtutman, Ilya Safro | <strong>날짜</strong>: 2017-08-13 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3097983.3098057" target="_blank">10.1145/3097983.3098057</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: MOLIERE network construction pipeline.</em></p></div>
 <p>MEDLINE의 24.5백만 개 문서로부터 구축한 대규모 생의학 지식 네트워크를 이용하여 자동으로 숨겨진 개념 간의 연결을 발견하고 가설을 생성하는 시스템이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: MEDLINE, UMLS 메타시소러스, 의학 논문 등 이질적 데이터소스로부터 다중모달 다중관계 네트워크를 구축하고, FastText와 FLANN을 이용한 최단 경로 탐색과 LDA 기반 주제 모델링으로 가설을 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: MOLIERE network construction pipeline.</em></p></div>
 <ul>
 <li><strong>전체 MEDLINE 활용</strong>: 첫 번째로 24.5백만 개 전체 MEDLINE 데이터셋을 활용한 가설 생성 시스템 구현</li>
 <li><strong>제약 없는 어휘 처리</strong>: 도메인 특화 제한 어휘 없이 ToPMine을 통한 자동 다중단어 구문 인식으로 유연성 극대화</li>
@@ -86,8 +82,6 @@ a { color: #1856A0; }
 <li><strong>오픈소스 공개</strong>: 네트워크, 구현 코드, 온라인 쿼리 서비스 공개로 과학 커뮤니티 기여</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: MOLIERE query pipeline.</em></p></div>
 <ul>
 <li>SPECIALIST NLP 도구로 MEDLINE 초록 정규화 및 전처리</li>
 <li>ToPMine을 이용한 의미 있는 n-gram 다중단어 구문 추출</li>

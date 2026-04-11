@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Baptiste Rozière, Jonas Gehring, Fabian Gloeckle, Sten Sootla, Itai Gat, Xiaoqing Ellen Tan, Yossi Adi, Jingyu Liu, Sauvestre, Romain, Tal Remez, Jérémy Rapin, Artyom Kozhevnikov, Ivan Evtimov, Joanna Bitton, Manish Bhatt, Cristian Canton Ferrer, Aaron Grattafiori, Wenhan Xiong, Alexandre Défossez, Jade Copet | <strong>날짜</strong>: 2024 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2404.12534" target="_blank">https://arxiv.org/abs/2404.12534</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Lean Copilot provides a general framework for running LLM inference in Lean, either</em></p></div>
 <p>Lean Copilot은 대규모 언어모델(LLM)을 Lean 증명보조기에 직접 통합하여 인간 수학자가 정리 증명을 보조받을 수 있는 neuro-symbolic 프레임워크이다. 이를 통해 전술 제안, 증명 탐색, 전제 선택 등의 증명 자동화 도구를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Lean 커널 내에서 직접 LLM 추론을 실행하는 일반 프레임워크를 설계했으며, 로컬 또는 서버 기반 실행을 모두 지원한다. 세 가지 주요 도구(전술 제안, 증명 탐색, 전제 선택)를 구현하고 ReProver 모델을 기본으로 사용하면서 사용자 정의 모델도 지원한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: The frontend of Lean Copilot’s SUGGEST_TACTICS. The user imports Lean Copilot just</em></p></div>
 <ul>
 <li><strong>프레임워크 개발</strong>: Lean 커널에서 직접 실행 가능한 LLM 추론 프레임워크(Lean Copilot) 구현. 로컬(GPU 有無) 및 클라우드 기반 추론을 모두 지원</li>
 <li><strong>자동화 성능</strong>: SEARCH_PROOF가 평균 74.2%의 증명 스텝 자동화 달성 (AESOP 대비 85% 향상)</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>투명성</strong>: 평가 코드 및 상세 결과를 공개하여 재현성 보장</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Lean Copilot provides a general framework for running LLM inference in Lean, either</em></p></div>
 <ul>
 <li>CTranslate2를 사용하여 로컬에서 LLM 추론을 효율적으로 실행하거나 서버 프로세스 통신을 통해 원격 실행 지원</li>
 <li>ReProver 모델의 전제 검색(premise retrieval) 능력을 활용하여 관련 보조정리(lemma) 자동 식별</li>
@@ -118,7 +112,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">수학적 추론에 강한 Phi-4와 같은 모델을 정리 증명 보조 도구로 활용할 기반</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../030_A_survey_on_deep_learning_for_theorem_proving/index.html">A survey on deep learning for theorem proving</a></div><div class="conn-reason">정리 증명 자동화 연구 동향이 Lean Copilot과 같은 실용적 도구 개발의 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../642_Proving_theorems_recursively/index.html">Proving Theorems Recursively</a></div><div class="conn-reason">완전 자동화된 재귀적 증명과 달리 인간 수학자와 AI의 협업을 통한 증명 보조 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../642_Proving_theorems_recursively/index.html">Proving Theorems Recursively</a></div><div class="conn-reason">Lean Copilot의 인간-AI 협업 접근과 달리 완전 자동화된 재귀적 증명 방식 추구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../264_Deepseek-prover_Advancing_theorem_proving_in_llms_through_la/index.html">Deepseek-prover: Advancing theorem proving in llms through large-scale synthetic data</a></div><div class="conn-reason">DeepSeek-Prover의 LLM 기반 증명 방법을 인간-AI 협업 환경으로 확장</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../539_Minif2f_a_cross-system_benchmark_for_formal_olympiad-level_m/index.html">Minif2f: a cross-system benchmark for formal olympiad-level mathematics</a></div><div class="conn-reason">miniF2F 벤치마크를 활용하여 LLM 기반 정리 증명 코파일럿의 성능을 체계적으로 평가</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../030_A_survey_on_deep_learning_for_theorem_proving/index.html">A survey on deep learning for theorem proving</a></div><div class="conn-reason">정리 증명 심층학습 서베이에서 제시된 방법론들을 실제 Lean 환경에서 구현한 응용</div></div>

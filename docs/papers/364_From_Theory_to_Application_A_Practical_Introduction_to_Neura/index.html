@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Prashant K. Jha | <strong>날짜</strong>: 2025-03-07 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: DeepONet, PCANet, FNO의 신경망 연산자 구조 개요</em></p></div>
 <p>본 논문은 매개변수 편미분방정식(PDEs)의 해를 근사하기 위한 신경 연산자(Neural Operators) 아키텍처들의 실용적 입문서이다. DeepONet, PCANet, FNO 세 가지 핵심 모델을 비교 분석하고, 이들을 Poisson 방정식과 선형 탄성 변형 문제에 적용하며, 베이지안 역문제에서의 대용 모델(Surrogate Model)로의 활용을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 개의 선형 매개변수 PDE(Poisson 방정식, 선형 탄성)를 모델 문제로 설정하고, DeepONet, PCANet, FNO를 단계별로 구현·평가한 후, MCMC 기반 Bayesian 역문제에서의 성능을 검증한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 입출력 데이터의 특이값(Singular Values) - 낮은 차원 구조를 시각화</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Poisson 및 선형 탄성 문제의 대표 데이터 샘플</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5: DeepONet, PCANet, FNO의 유한요소 해(FEM)와의 예측값 비교</em></p></div>
 <ol>
 <li><strong>세 가지 신경 연산자 아키텍처의 상세 비교</strong>: DeepONet(Branch-Trunk 구조), PCANet(PCA 기반 차원 축소), FNO(푸리에 공간에서의 연산자 학습)의 핵심 메커니즘을 명확히 제시하고 Python 구현 코드를 제공했다.</li>
 <li><strong>베이지안 역문제에서의 대용 모델 유효성 확인</strong>: Poisson 방정식(확산율 추론)과 선형 탄성(영 계수 추론) 문제에서 신경 연산자를 이용한 MCMC 샘플링이 "참" 모델과 유사한 성능을 달성함을 입증했다.</li>
 <li><strong>실용적 구현 가이드 제공</strong>: 함수 공간에서의 가우시안 측도(Gaussian Measures) 샘플링, 데이터 구조 정의, MCMC 알고리즘 등을 자세히 설명하고 Jupyter 노트북 및 코드(GitHub)를 공개했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 라플라시안 기반 가우시안 측도를 이용한 무작위 함수 샘플링</em></p></div>
 <h3>신경 연산자 구현 방법론</h3>
 <ul>
 <li><strong>Deep Operator Network (DeepONet)</strong>

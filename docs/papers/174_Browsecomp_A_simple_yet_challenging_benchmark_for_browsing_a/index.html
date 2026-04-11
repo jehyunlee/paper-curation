@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: J. Wei, Zhiqing Sun, Spencer Papay, Steve McKinney, Jeffrey S. Han, Isa Fulford, Hyung Won Chung, Alex Tachard Passos, William Fedus, Amelia Glaese | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 테스트 시 계산량(browsing effort)에 따른 OpenAI Deep Research의 BrowseComp 성능. 정확도가 계산량에 비례하여 증가</em></p></div>
 <p>웹 에이전트의 능력을 평가하기 위해 1,266개의 어려운 질문으로 구성된 BrowseComp 벤치마크를 제시한다. 이 벤치마크는 깊이 있는 웹 탐색과 창의적인 검색 능력을 요구하면서도 답변이 짧고 검증이 용이한 특징을 갖는다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 트레이너가 수동으로 10분 이내에 단순 구글 검색으로는 풀 수 없고, 기존 모델(GPT-4o, Claude 등)도 풀지 못하는 1,266개의 질문과 짧은 답변을 수집하여 벤치마크 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: BrowseComp의 주제 분포. TV/영화(16.2%), 과학기술(13.7%), 미술(10.0%) 등 다양한 영역 커버</em></p></div>
 <ol>
 <li><strong>벤치마크 품질 검증</strong>: 인간 트레이너가 1,255개 문제 중 367개(29.2%)만 2시간 내 해결 가능하며, 이 중 86.4%가 참조 답변과 일치—벤치마크의 높은 난이도 입증</li>
 <li><strong>포괄적 평가 커버리지</strong>: 10개 카테고리(TV/영화, 과학기술, 미술, 역사, 스포츠, 음악 등) 1,266개 문제로 다양한 도메인의 지식 검색 능력 측정</li>
 <li><strong>스케일 가능한 성능 곡선</strong>: OpenAI Deep Research가 테스트 시 계산량 증가에 따라 부드러운 성능 향상을 보여 모델 개선을 정량화할 수 있는 감도 있는 벤치마크임을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 인간이 문제를 해결한 시간 분포(좌)와 포기한 시간 분포(우). 해결된 문제는 1시간부터 3시간까지 분산, 포기된 경우 대부분 2시간 근처</em></p></div>
 <p><strong>데이터 수집 및 검증 방법론:</strong></p>
 <ul>
 <li><strong>역제곱 방식(Inverted Question Design)</strong>: 실제 사실에서 시작하여 검증은 쉽지만 발견은 어려운 질문으로 변환. 예) 특정 학회에서 특정 대학 출신 특정 저자로 논문 찾기</li>
@@ -122,11 +116,9 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: BrowseComp는 급성장하는 웹 에이전트 분야에 명확한 표준을 제공하는 실용적이고 잘 설계된 벤치마크이지만, 실제 사용자 요구(긴 답변, 모호성 해결)를 포함한 확장이 향후 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../813_Toolformer_Language_Models_Can_Teach_Themselves_to_Use_Tools/index.html">Toolformer: Language Models Can Teach Themselves to Use Tools</a></div><div class="conn-reason">도구 사용을 학습하는 언어모델 연구의 기반 위에서 더 복잡한 웹 브라우징 능력을 평가하는 벤치마크를 구축합니다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../813_Toolformer_Language_Models_Can_Teach_Themselves_to_Use_Tools/index.html">Toolformer: Language Models Can Teach Themselves to Use Tools</a></div><div class="conn-reason">언어모델의 도구 사용 학습 연구가 복잡한 웹 브라우징 에이전트 평가 벤치마크의 기술적 기반을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../874_WebWatcher_Breaking_New_Frontier_of_Vision-Language_Deep_Res/index.html">WebWatcher: Breaking New Frontier of Vision-Language Deep Research Agent</a></div><div class="conn-reason">웹 브라우징의 기본적인 도전 과제를 다루는 벤치마크로 복잡한 웹 탐색의 기초를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../793_The_Adoption_and_Usage_of_AI_Agents_Early_Evidence_from_Perp/index.html">The Adoption and Usage of AI Agents: Early Evidence from Perplexity</a></div><div class="conn-reason">웹 에이전트 평가를 위한 벤치마크로서 AI 에이전트 사용 패턴 연구와 상호 보완적인 평가 관점을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../450_Knowledge_navigator_Llm-guided_browsing_framework_for_explor/index.html">Knowledge Navigator: LLM-guided Browsing Framework for Exploratory Search in Scientific Literature</a></div><div class="conn-reason">LLM 가이드 브라우징 프레임워크의 성능을 체계적으로 평가할 수 있는 도전적인 벤치마크를 제공합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../450_Knowledge_navigator_Llm-guided_browsing_framework_for_explor/index.html">Knowledge Navigator: LLM-guided Browsing Framework for Exploratory Search in Scientific Literature</a></div><div class="conn-reason">단순한 브라우징 과제를 대규모 과학 문헌의 체계적 탐색으로 확장한 고도화된 시스템입니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../793_The_Adoption_and_Usage_of_AI_Agents_Early_Evidence_from_Perp/index.html">The Adoption and Usage of AI Agents: Early Evidence from Perplexity</a></div><div class="conn-reason">AI 에이전트 사용 패턴 연구의 실제 평가를 위한 도전적인 웹 브라우징 벤치마크를 제공합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuxuan Chen, Xu Zhu, Hua Zhou, Zhuyin Ren | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2407.21320" target="_blank">10.48550/arXiv.2407.21320</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MetaOpenFOAM의 다중 에이전트 프레임워크 구조: Architect, InputWriter, Runner, Reviewer의 역할 분담</em></p></div>
 <p>자연언어 입력만으로 CFD(전산유체역학) 시뮬레이션을 자동화하는 다중 에이전트 LLM 프레임워크로, MetaGPT의 조립라인 패러다임과 Langchain의 검색증강생성(RAG) 기술을 결합하여 메시 전처리부터 후처리까지 전체 CFD 작업흐름을 자동 처리한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MetaGPT의 조립라인 패러다임으로 역할 기반 에이전트 협업 구조를 구현하고, Langchain의 RAG 기술로 OpenFOAM 튜토리얼 데이터베이스를 통합하여 LLM의 전문성을 강화함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>역할 및 액션별 절제 연구 결과: 각 에이전트와 RAG의 필요성 검증</em></p></div>
 <ol>
 <li><strong>높은 자동화 성공률</strong>: 8개의 CFD 시뮬레이션 벤치마크 테스트에서 85% pass@1 성공률 달성, 케이스당 평균 비용 $0.22로 경제성 확인</li>
 <li><strong>광범위한 물리 문제 커버</strong>: DNS, RANS, LES를 포함한 다양한 난류 모델, 압축성/비압축성 유동, 열전달, 연소 등 다차원 유동 문제 8가지에서 안정적 작동</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반화 능력 입증</strong>: 사용자 요구사항의 주요 매개변수 식별 및 수정, 버그 자동 수정, 인간 참여를 통한 시뮬레이션 성능 향상 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Langchain 기반 검색증강생성(RAG) 프로세스: OpenFOAM 튜토리얼 데이터베이스 구축 및 유사 사례 검색</em></p></div>
 <h3>프레임워크 구조</h3>
 <ul>
 <li><strong>Architect</strong>: 자연언어 요구사항을 해석하고, RAG를 통해 데이터베이스에서 유사 사례 검색, 입력 아키텍처 생성</li>
@@ -133,7 +127,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MetaOpenFOAM은 다중 에이전트 LLM과 RAG 기술을 창의적으로 결합하여 CFD 자동화의 새로운 패러다임을 제시하는 가치 있는 연구이다. 높은 성공률(85%)과 경제성($0.22/케이스)은 산업 적용 가능성을 보여주지만, 메시 자동 생성 부재, 낮은 온도 의존성, 제한된 벤치마크 규모는 실제 엔드-투-엔드 CFD 솔루션으로 발전하기 위해 개선이 필요한 부분이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">검색 증강 생성의 유연한 모듈 프레임워크가 MetaOpenFOAM의 RAG 기술 기반 CFD 지식 검색 및 처리 시스템의 핵심 기술적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../526_MechAgents_Large_language_model_multi-agent_collaborations_c/index.html">MechAgents: Large language model multi-agent collaborations can solve mechanics problems, generate new data, and integrate knowledge</a></div><div class="conn-reason">MetaOpenFOAM의 CFD 자동화와 MechAgents의 역학 문제 해결은 서로 다른 물리학 분야에서 LLM 기반 시뮬레이션을 구현하는 대안적 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../526_MechAgents_Large_language_model_multi-agent_collaborations_c/index.html">MechAgents: Large language model multi-agent collaborations can solve mechanics problems, generate new data, and integrate knowledge</a></div><div class="conn-reason">MechAgents의 역학 문제 해결과 MetaOpenFOAM의 CFD 자동화는 서로 다른 물리학 영역에서 LLM 기반 다중 에이전트 시뮬레이션을 구현하는 접근이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../587_OpenFOAM_The_Open_Source_Computational_Fluid_Dynamics_Toolbo/index.html">OpenFOAMGPT 2.0: 계산유체역학을 위한 신뢰할 수 있는 자동화 시스템</a></div><div class="conn-reason">CFD 분야에서 신뢰성 중심 접근법과 다중 에이전트 협력 접근법이라는 서로 다른 자동화 전략을 제시한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../559_Mooseagent_A_llm_based_multi-agent_framework_for_automating/index.html">Mooseagent: A llm based multi-agent framework for automating moose simulation</a></div><div class="conn-reason">MetaOpenFOAM과 MooseAgent 모두 CFD 시뮬레이션 자동화를 위한 LLM 기반 다중 에이전트 프레임워크이지만 서로 다른 시뮬레이션 플랫폼을 대상으로 한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../588_OpenFOAMGPT_20_end-to-end_trustworthy_automation_for_computa/index.html">OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics</a></div><div class="conn-reason">OpenFOAMGPT 2.0과 MetaOpenFOAM은 모두 CFD 시뮬레이션 자동화를 다루지만, end-to-end 자동화와 다중 에이전트 협업이라는 서로 다른 접근 방식을 채택합니다.</div></div>

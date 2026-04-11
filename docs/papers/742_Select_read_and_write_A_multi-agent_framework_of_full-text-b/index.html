@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiaochuan Liu, Ruihua Song, Xiting Wang, Xu Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.19647" target="_blank">arXiv:2505.19647</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다중 에이전트 프레임워크의 개요: 셀렉터, 리더, 라이터가 협력하여 논문을 읽고 관련 연구 섹션을 생성</em></p></div>
 <p>학술 논문의 관련 연구(Related Work) 섹션 자동 생성을 위해 전체 텍스트 기반 다중 에이전트 프레임워크를 제안한다. 셀렉터-리더-라이터 구조와 그래프 기반 제약을 통해 참고 문헌 간의 관계를 명시적으로 포착하고 깊이 있는 이해를 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -87,16 +85,12 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그래프 인식 셀렉터의 동작: (a) 그래프 구조 제약 하에서 현재 논문 계속 읽기 또는 인접 논문으로 이동 (b) 인용 그래프 (c) 공동 출현 그래프</em></p></div>
 <ol>
 <li><strong>프레임워크 성능</strong>: Llama3-8B, GPT-4o, Claude-3-Haiku 세 가지 기본 모델 전반에서 일관되게 성능 향상. LLM 기반 메트릭과 그래프 기반 메트릭 모두에서 개선.</li>
 <li><strong>그래프 인식 셀렉터 우수성</strong>: 다양한 선택 전략 중 그래프 제약을 활용하는 셀렉터가 최고 성능 달성. 참고 문헌 간의 명시적 관계 활용이 읽기 순서 최적화에 효과적임을 입증.</li>
 <li><strong>전체 텍스트 활용</strong>: 섹션별 선택적 읽기를 통해 맥락 윈도우 제약을 극복하면서도 풍부한 정보 활용 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>프레임워크 구성 및 데이터 흐름</em></p></div>
 <p><strong>다중 에이전트 프레임워크 구조:</strong></p>
 <ul>
 <li><strong>셀렉터(Selector)</strong>:
@@ -152,8 +146,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../789_Taxonomy_tree_generation_from_citation_graph/index.html">Taxonomy tree generation from citation graph</a></div><div class="conn-reason">인용 그래프에서 분류 체계 생성이 관련 연구 섹션에서 참고 문헌 간의 관계를 체계적으로 구조화하는 기본 프레임워크를 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">자동 문헌 리뷰 생성을 다중 에이전트와 그래프 기반 제약을 활용한 더 정교한 관련 연구 섹션 생성으로 발전시킨다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../789_Taxonomy_tree_generation_from_citation_graph/index.html">Taxonomy tree generation from citation graph</a></div><div class="conn-reason">인용 그래프에서 생성된 분류 체계가 관련 연구 섹션 작성에서 문헌 간의 계층적 관계를 체계적으로 구조화하는 핵심 도구로 활용된다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../752_Shallow_synthesis_of_knowledge_in_gpt-generated_texts_A_case/index.html">Shallow synthesis of knowledge in gpt-generated texts: A case study in automatic related work composition</a></div><div class="conn-reason">전체 텍스트 기반 관련 연구 자동 생성의 가능성과 GPT의 문헌 종합 한계를 대비하여 현재 기술의 실제 능력과 한계를 균형있게 파악할 수 있다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../752_Shallow_synthesis_of_knowledge_in_gpt-generated_texts_A_case/index.html">Shallow synthesis of knowledge in gpt-generated texts: A case study in automatic related work composition</a></div><div class="conn-reason">GPT의 문헌 종합 한계와 전체 텍스트 기반 관련 연구 생성의 가능성을 비교하여 현재 AI 기술의 실제 성능과 개선 방향을 파악할 수 있다.</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../752_Shallow_synthesis_of_knowledge_in_gpt-generated_texts_A_case/index.html">Shallow synthesis of knowledge in gpt-generated texts: A case study in automatic related work composition</a></div><div class="conn-reason">전체 텍스트 기반 관련 연구 자동 생성의 가능성과 GPT의 문헌 종합 한계를 대비하여 현재 기술의 실제 능력과 한계를 균형있게 파악할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

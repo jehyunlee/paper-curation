@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Guangzhi Xiong, Eric Xie, Corey Williams, Myles Kim, Amir Hassan Shariatmadari | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.24963/ijcai.2025/873" target="_blank">10.24963/ijcai.2025/873</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>TruthHypo 벤치마크의 개요: 데이터셋 구성, 작업 공식화, 진실성 평가</em></p></div>
 <p>본 논문은 과학 가설 생성에서 대규모 언어모델(LLM)의 진실성을 평가하기 위한 TruthHypo 벤치마크와 환각(hallucination) 탐지를 위한 KnowHD 프레임워크를 제시한다. LLM이 그럴듯해 보이지만 과학적으로 부정확한 가설을 생성하는 문제를 체계적으로 연구하기 위한 포괄적 접근법을 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 생의학 지식 그래프와 도메인 특화 코퍼스 기반의 TruthHypo 벤치마크 구축, (2) 생성 과정의 추론 단계를 분석하여 환각을 탐지하는 KnowHD 프레임워크 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>KnowHD 환각 탐지 프레임워크 개요</em></p></div>
 <ol>
 <li><strong>TruthHypo 벤치마크</strong>: PubTator 3.0의 생의학 지식 그래프를 기반으로 3가지 관계 유형(Chemical & Gene, Disease & Gene, Gene & Gene)에 대해 2024년 이전/이후 데이터로 시간적 분할을 수행한 1,209~547개 인스턴스의 평가 데이터셋 구축. 실제 과학 발견의 시간 진행을 모의(simulate)함.</li>
 <li><strong>KnowHD 프레임워크</strong>: 가설과 추론 사슬을 원자적 주장(atomic claims)으로 분해하여 기존 지식과의 부합도를 세밀하게 평가. groundedness 점수가 진실한 가설을 필터링하는 효과적인 메트릭임을 입증.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>인간 평가 검증</strong>: 개방형 가설 생성 과제에서 KnowHD의 과학적 타당성 판별 능력과 과학 발견 가속화 효용을 인간 평가자가 확인.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>groundedness 수준에 따른 평균 정확도. 가설이 groundedness 점수별로 그룹화됨</em></p></div>
 <p><strong>데이터셋 구성</strong>:</p>
 <ul>
 <li>PubTator 3.0에서 추출한 생의학 지식 그래프의 관계 엣지(edge)를 사용</li>
@@ -149,17 +143,14 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../286_Domain-specific_ReAct_for_physics-integrated_iterative_model/index.html">Domain-specific ReAct for physics-integrated iterative modeling: A case study of LLM agents for gas path analysis of gas turbines</a></div><div class="conn-reason">물리학 도메인의 정확한 모델링 요구사항이 과학 가설 생성에서 진실성과 검증 가능성의 중요성을 보여주는 기반 사례이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">LLM의 아이디어 생성 능력에 대한 기본 평가가 TruthHypo의 진실성 검증 연구의 필요성을 입증하는 기초 연구이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">TruthHypo의 환각 탐지와 진실성 평가가 Scientific Agent의 신뢰성 있는 과학적 발견을 위한 핵심적인 검증 메커니즘을 제공한다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">Scientific Agent의 강건한 검증 메커니즘 요구사항이 TruthHypo의 진실성 평가와 환각 탐지 연구의 필요성을 뒷받침한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../819_Toward_reliable_biomedical_hypothesis_generation_Evaluating/index.html">Toward reliable biomedical hypothesis generation: Evaluating truthfulness and hallucination in large language models</a></div><div class="conn-reason">과학 가설 생성의 신뢰성 평가를 위한 서로 다른 접근법을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../417_HypoBench_Towards_Systematic_and_Principled_Benchmarking_for/index.html">HypoBench: Towards Systematic and Principled Benchmarking for Hypothesis Generation</a></div><div class="conn-reason">체계적 벤치마킹 vs 신뢰성 평가로 가설 생성 검증의 서로 다른 접근법</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../719_Scientific_Hypothesis_Generation_and_Validation_Methods_Data/index.html">Scientific hypothesis generation by large language models: laboratory validation in breast cancer treatment</a></div><div class="conn-reason">생의학 가설 생성에서 GPT-4 기반 실험 검증과 신뢰성 평가 중심 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">LLM의 일반적인 아이디어 생성 능력 평가에서 TruthHypo의 구체적인 진실성 검증 방법론으로 발전하여 더 신뢰할 수 있는 평가를 가능하게 한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../492_Literature_meets_data_A_synergistic_approach_to_hypothesis_g/index.html">Literature meets data: A synergistic approach to hypothesis generation</a></div><div class="conn-reason">신뢰할 수 있는 생의학 가설 생성 평가가 문헌-데이터 통합 접근법을 의료 영역에 특화하여 가설 품질과 신뢰성을 체계적으로 검증하는 확장 연구임</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">TruthHypo의 환각 탐지 프레임워크가 사회적 책임 AI의 인과학습에서 잘못된 인과관계 추론을 검출하는 도구로 활용될 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">인과학습의 편향 완화 도구들이 과학 가설 생성에서 환각과 편향을 탐지하는 TruthHypo의 검증 메커니즘에 적용될 수 있다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../748_Semi-Supervised_2D_Human_Pose_Estimation_Driven_by_Position/index.html">Semi-Supervised 2D Human Pose Estimation Driven by Position Inconsistency Pseudo Label Correction Module</a></div><div class="conn-reason">포즈 추정의 정확한 성능 측정과 과학 가설 생성의 진실성 평가 문제를 대조하여 과학적 검증의 도메인별 차이를 보여준다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">TruthHypo의 진실성 검증과 SciMON의 참신성 추구가 과학 가설 생성에서 정확성과 창의성 간의 균형 문제를 부각시킨다.</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">SciMON의 참신성 추구와 TruthHypo의 진실성 평가가 과학 아이디어 생성에서 창의성과 정확성 간의 트레이드오프를 보여준다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../631_Predicting_field_experiments_with_large_language_models/index.html">Predicting field experiments with large language models</a></div><div class="conn-reason">실험 예측의 높은 정확도와 과학 가설 생성의 진실성 문제를 대조하여 LLM의 도메인별 신뢰성 차이를 분석할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

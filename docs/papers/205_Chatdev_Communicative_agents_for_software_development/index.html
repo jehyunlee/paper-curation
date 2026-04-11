@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qian Chen, Wei Liu, Hongzhang Liu, Nuo Chen, Yufan Dang, Jiahao Li, Cheng Yang, Weize Chen, Yu-Sheng Su, Xin Cong, Juyuan Xu, Dahai Li, Zhiyuan Liu, Maosong Sun | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2307.07924" target="_blank">arXiv:2307.07924</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 소프트웨어 에이전트들이 다단계 통신을 수행하며 설계, 코딩, 테스트 단계의 세부 작업을 협력하여 수행하는 체인-구조 워크플로우</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반의 전문화된 에이전트들이 자연언어 및 프로그래밍 언어를 통해 상호 통신하며 소프트웨어 개발의 설계, 코딩, 테스트 단계를 협력적으로 수행하는 ChatDev 프레임워크를 제시한다. 이는 기존의 개별 단계별 고립된 딥러닝 접근법을 통일된 언어기반 통신으로 연결하여 전체적인 소프트웨어 개발 프로세스의 일관성과 효율성을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 체인-구조 워크플로우(chat chain)로 각 단계를 세부 작업으로 분해, (2) 이중 에이전트(instructor-assistant) 대화 패턴으로 안정적 통신, (3) 통신식 환각 제거(communicative dehallucination) 메커니즘으로 정보 요청 및 정확한 응답 확보.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: ChatDev 프레임워크 - 다양한 사회적 역할을 가진 LLM 에이전트들이 다중 에이전트 협력을 통해 포괄적 솔루션 개발</em></p></div>
 <ol>
 <li><strong>개발 프로세스 통합</strong>: 설계/코딩/테스트 단계에 대한 통일된 언어 기반 통신으로 기존의 단편화된 접근 방식을 체계적으로 통합. 자연언어는 시스템 설계에, 프로그래밍 언어는 소프트웨어 최적화에 각각 유효함을 실증.</li>
 <li><strong>소프트웨어 품질 향상</strong>: 생성된 소프트웨어의 완전성(completeness), 실행 가능성(executability), 요구사항 일관성이 모두 개선됨. 통신식 환각 제거 메커니즘을 통해 코딩 오류 발생률 감소.</li>
 <li><strong>투명한 개발 과정</strong>: 체인-구조 워크플로우는 중간 단계의 해결책을 검토할 수 있도록 하여 문제 식별 및 추적이 용이.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 세부 작업별 instructor-assistant 에이전트의 다중 라운드 통신 및 합의 도달 과정</em></p></div>
 <ul>
 <li><strong>Chat Chain (체인-구조 워크플로우)</strong>
 <ul>

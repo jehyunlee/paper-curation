@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Seok Joon Kwon | <strong>날짜</strong>: 2026-04-07 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2604.05714" target="_blank">10.48550/arXiv.2604.05714</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1 presents the baseline simulation over a 20-year horizon (initial point t = 0 at November 2022</em></p></div>
 <p>AI 기반 논문 작성 도구의 급속한 확산이 동료 검증(peer review) 능력을 초과하면서 과학적 지식 생산이 역설적으로 감소하는 현상을 제조업의 제약 이론(Theory of Constraints)으로 정량화한 동역학 모델 연구.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 2개 상태변수(리뷰 큐Q, 검증 품질q)와 1개 외생입력(논문작성 AI 채택 φw)을 갖는 최소 ODE 모델을 구성하여, 큐 압력이 리�뷰어 AI 채택(φr)을 내생적으로 유도하는 피드백 메커니즘을 포착했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3 maps long time behavior of the knowledge measured by K(t = 20 yr)/K0 across the (γ, δ) parameter</em></p></div>
 <ul>
 <li><strong>'허니문-역설' 현상 정량화</strong>: 지식 산출이 2026년경 1.10K₀으로 정점에 도달 후 2028년 역설 개시, 32% 손실로 저하되는 시간 경로 예측", '<strong>임계 조건 도출</strong>: δ > γ (리뷰 가속도 > 논문작성 가속도) 만족 시에만 순편익 가능; 현재 운영점은 δ=0.5, γ=2.0으로 역설 영역 심화</li>
 <li><strong>실증적 검증</strong>: NeurIPS, ICLR, arXiv, bioRxiv 데이터로 Post-ChatGPT 제출 가속화 패턴과 정성적 일치 확인</li>
 <li><strong>정책 레버 분석</strong>: 리뷰 인프라 투자와 제도적 품질 기준의 복합 개입만이 긍정적 지식 생산 복구 가능 시사</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Empirical validation. Annual submissions for (a) NeurIPS (2008-2025), (b) ICLR (2013-2026),</em></p></div>
 <ul>
 <li>논문작성 AI 채택을 로지스틱 함수로 모델링 (tw=3.0년, 2025년 50% 채택률)</li>
 <li>리뷰어 AI 채택을 Michaelis-Menten형 포화 함수로 표현 (큐 크기의 비선형 함수)</li>

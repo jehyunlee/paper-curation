@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhijie Bao, Qingyun Liu, Ying Guo, Zhengqiang Ye, Jun Shen, Shirong Xie, Jiajie Peng, Xuanjing Huang, Zhongyu Wei | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PIORS의 전체 프레임워크. 상단은 SFMSS 프레임워크, 하단은 환자, 접수 간호사(PIORS-Nurse), 임상의, 정보 보조원으로 구성된 PIORS의 상세 구조</em></p></div>
 <p>중국의 과포화 외래 접수 업무를 해결하기 위해 대규모언어모델(LLM) 기반 다중 에이전트 시스템을 제안하고, 실제 임상 시나리오에 맞춘 의료 대화 데이터 생성 프레임워크를 통해 개인화된 고품질 접수 서비스를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 병원정보시스템(HIS)과 통합된 LLM 기반 접수 간호사 에이전트 개발, (2) 실제 외래 기록 기반의 서비스 플로우 인식 의료 시나리오 시뮬레이션(SFMSS) 프레임워크를 통한 고품질 훈련 데이터 생성.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>PIORS-Nurse와 기준 모델들의 성능 비교</em></p></div>
 <ol>
 <li><strong>자동 평가 우수성</strong>: PIORS-Nurse가 GPT-4o를 포함한 모든 기준 모델을 상회하는 부서 지정 정확도 및 정보 수집 능력 입증</li>
 <li><strong>사용자 평가 만족도</strong>: 15명의 사용자 평가에서 최고 기준 모델 대비 81% 이상의 동등 또는 우수 비율 달성, 실제 시나리오에서의 우월한 경험 제공</li>
 <li><strong>임상 전문가 평가</strong>: 15명의 임상 전문가가 PIORS-Nurse의 질문 능력(inquiry capabilities)과 간결한 응답 능력에서 현저한 우수성 인정</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>SFMSS의 상세 구조. 좌측은 데이터 소스, 우측은 시뮬레이션 프로세스</em></p></div>
 <p><strong>PIORS 시스템 구조</strong>:</p>
 <ul>
 <li><strong>상호작용 모듈(Interaction Module)</strong>: 환자와 직접 상호작용, 부서 지정 및 기본 의료 문의 대응</li>

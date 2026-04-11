@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Joseph Loffredo, Suyeol Yun | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.13524" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Agentic RAG: 연구자가 정의한 함수 집합과 AI 어시스턴트 프레임워크를 통해 LLM이 언제, 어디서, 어떻게 외부 정보를 검색할지 동적으로 결정하는 자율 에이전트로 작동</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)에 사전 정의된 함수와 특화된 도구를 장착하여 에이전틱 검색증강생성(Agentic RAG)을 구현한 LLM 에이전트가 정치기관 연구에서 데이터 수집, 전처리, 분석을 효율화할 수 있음을 보여준다. CongressRA라는 미 의회 연구 지원용 LLM 에이전트를 사례로 제시하며 이러한 접근법의 잠재력을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -97,18 +95,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>검색증강생성(RAG): 사용자 쿼리를 외부 정보로 보강하여 LLM이 최신의 맥락적으로 관련된 콘텐츠 생성 가능</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>CongressRA 아키텍처: U.S. 의회 연구 지원용 LLM 에이전트의 구조</em></p></div>
 <ol>
 <li><strong>LLM 에이전트의 연구 지원 역할 규명</strong>: 전통적 RAG를 넘어 Agentic RAG가 LLM에 자율적 의사결정 능력을 부여하여 복합적 연구 작업 지원 가능함을 이론적으로 정립</li>
 <li><strong>CongressRA 구현 및 검증</strong>: Binder(1999)의 입법 경직도 지수를 재구성함으로써 LLM 에이전트가 기존 연구를 복제하고 확장할 수 있음을 실증적으로 입증</li>
 <li><strong>모듈식 설계의 재사용성</strong>: 작업별 지시사항 변경만으로 다양한 정치기관 연구 맥락에 적용 가능한 이식 가능한 도구 시스템 구현</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>CongressRA를 활용한 입법 경직도 측정: 체계적 워크플로우를 통해 의회 기록에서 관련 정보 추출 및 분석 프로세스</em></p></div>
 <ul>
 <li><strong>Agentic RAG 구현</strong>:
 <ul>

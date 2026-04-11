@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: TikZ를 중간 표현으로 활용하여 저수준 그래픽 요소 대신 고수준 프로그래밍 명령어를 생성하도록 함. 대규모 TikZ 데이터셋을 구축하고, 멀티모달 CLIP 임베딩으로 강화된 LLaMA 모델을 개발함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: CLiMA, LLaMA, CLIP으로 생성한 과학 벡터 그래픽의 예시. 3D 손실함수 등고선도, 다층 퍼셉트론, 막대 그래프 등이 자동 생성됨">
-<p class="fig-caption"><em>그림 1: CLiMA로 생성된 과학 벡터 그래픽 예시</em></p></div>
 <ol>
 <li><strong>DaTikZ 데이터셋 구축</strong>: 웹사이트, TeX Stack Exchange, arXiv, GPT-4 생성 데이터 등 다양한 출처에서 수집한 120,789개의 TikZ-캡션 쌍으로 구성된 최초의 대규모 TikZ 데이터셋 창출. 62.71%는 데이터 증강(augmentation) 처리됨.</li>
 <li><strong>미세조정 LLaMA 모델 성능 우위</strong>: 자동 평가와 인간 평가 모두에서 DaTikZ로 미세조정된 LLaMA(7B/13B)가 GPT-4와 Claude 2보다 인간이 작성한 그래픽에 더 유사한 결과를 생성함을 입증.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>일반화 능력 검증</strong>: 모든 모델이 양호한 일반화 성능을 보이며 과도한 암기(memorization) 문제가 없음을 입증. 반면 GPT-4와 Claude 2는 더 단순한 결과를 생성하며 입력 캡션을 그대로 이미지에 복사하는 퇴화된 솔루션(degenerate solution)을 생성하는 경향을 보임.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 자동 평가 결과 - BLEU, METEOR, ROUGE-L, CIDEr 메트릭에서 모델 간 비교">
-<p class="fig-caption"><em>그림 2: 자동 평가 결과 비교</em></p></div>
 <p><strong>데이터 수집 및 처리</strong>:</p>
 <ul>
 <li>웹사이트, TeX Stack Exchange (WizardLM으로 캡션 생성), arXiv (정규표현식으로 TikZ 추출), GPT-4 생성 예제 등 다층적 출처에서 수집</li>
@@ -141,7 +137,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../783_Synchart_Synthesizing_charts_from_language_models/index.html">Synchart: Synthesizing charts from language models</a></div><div class="conn-reason">Synchart가 차트 합성에 특화된 반면 AutomaTikZ는 과학 벡터 그래픽 전반을 다룸</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../811_Tikzero_Zero-shot_text-guided_graphics_program_synthesis/index.html">TikZero: Zero-shot text-guided graphics program synthesis</a></div><div class="conn-reason">둘 다 텍스트 기반 과학 벡터 그래픽 합성을 다루지만 하나는 TikZ 프로그램 생성에, 다른 하나는 AutomaTikZ를 통한 자동화에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../601_PaperBanana_Automating_Academic_Illustration_for_AI_Scientis/index.html">PaperBanana: Automating Academic Illustration for AI Scientists</a></div><div class="conn-reason">PaperBanana가 AI 과학자 특화인 반면 AutomaTikZ는 일반적인 과학 벡터 그래픽 생성</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../601_PaperBanana_Automating_Academic_Illustration_for_AI_Scientis/index.html">PaperBanana: Automating Academic Illustration for AI Scientists</a></div><div class="conn-reason">둘 다 과학 시각화 자동화를 다루지만 PaperBanana는 AI 과학자용, AutomaTikZ는 일반 과학용</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../811_Tikzero_Zero-shot_text-guided_graphics_program_synthesis/index.html">TikZero: Zero-shot text-guided graphics program synthesis</a></div><div class="conn-reason">TikZero의 제로샷 그래픽 생성을 대규모 TikZ 데이터셋으로 학습한 발전된 버전</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

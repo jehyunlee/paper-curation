@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: DeepSeek-AI, Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bowen Wu, Chengda Lu, Chenggang Zhao, Chengqi Deng, Chenyu Zhang, Chong Ruan, Damai Dai, Daya Guo, Dejian Yang, Deli Chen, Dongjie Ji, Erhang Li, Fangyun Lin, Fengze Dai, Fuli Luo | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: arXiv:2412.19437v2</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: DeepSeek-V3와 동종 모델들의 벤치마크 성능 비교</em></p></div>
 <p>671B 매개변수를 가진 혼합 전문가(Mixture-of-Experts, MoE) 언어 모델 DeepSeek-V3를 제시하며, 토큰당 37B만 활성화되어 효율적 추론을 실현한다. 보조 손실 없는 부하 균형 전략과 다중 토큰 예측(Multi-Token Prediction, MTP) 목표를 도입하여 뛰어난 성능을 달성하면서도 2.788M H800 GPU 시간이라는 경제적 훈련 비용으로 완성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 보조 손실 없는 부하 균형 전략 도입, (2) 다중 토큰 예측 훈련 목표 적용, (3) FP8 혼합 정밀도 훈련 프레임워크 구현, (4) DualPipe 파이프라인 병렬화와 계산-통신 중첩(computation-communication overlap) 최적화, (5) DeepSeek-R1으로부터의 추론 능력 증류(knowledge distillation).</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: DeepSeek-V3의 기본 아키텍처 (다중 헤드 잠재 주의 및 DeepSeekMoE)</em></p></div>
 <ol>
 <li><strong>성능 우월성</strong>:
 <ul>
@@ -98,12 +94,6 @@ a { color: #A62018; }
 <li><strong>기술 검증</strong>: 671B 규모의 초대형 모델에서 FP8 혼합 정밀도 훈련의 실효성 최초 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 다중 토큰 예측(MTP) 구현 방식</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 전방향 및 역방향 청크 쌍의 중첩 전략</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>그림 5: 8개 PP rank와 20개 마이크로배치에 대한 DualPipe 스케줄링 예시</em></p></div>
 <p><strong>아키텍처 개선:</strong></p>
 <ul>
 <li>Multi-Head Latent Attention (MLA): 키-값(KV) 캐시 크기를 대폭 감소시켜 추론 효율 증대</li>
@@ -176,8 +166,7 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../801_The_llama_3_herd_of_models/index.html">The Llama 3 Herd of Models</a></div><div class="conn-reason">Llama 3와 유사한 성능을 MoE 아키텍처로 더 효율적으로 달성하는 경쟁 모델</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../649_Qwen25_technical_report/index.html">Qwen2.5 technical report</a></div><div class="conn-reason">둘 다 중국 기업의 최신 대규모 언어 모델이지만 하나는 Alibaba의 Qwen2.5이고 다른 하나는 DeepSeek의 DeepSeek-v3로 서로 다른 기술적 접근법을 사용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../617_Phi-4_technical_report/index.html">Phi-4 technical report</a></div><div class="conn-reason">Phi-4의 효율적 소형 모델 철학을 대규모 MoE로 확장한 접근법</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../370_Gemma_2_Improving_open_language_models_at_a_practical_size/index.html">Gemma 2: Improving open language models at a practical size</a></div><div class="conn-reason">DeepSeek-V3의 대규모 MoE 접근법과 달리 Gemma 2는 경량화된 효율적 모델에 집중</div></div>
-<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../370_Gemma_2_Improving_open_language_models_at_a_practical_size/index.html">Gemma 2: Improving open language models at a practical size</a></div><div class="conn-reason">DeepSeek-V3의 대규모 MoE와 달리 Gemma 2는 소형 모델의 효율성과 실용성 강조</div></div></div>
+<div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../370_Gemma_2_Improving_open_language_models_at_a_practical_size/index.html">Gemma 2: Improving open language models at a practical size</a></div><div class="conn-reason">DeepSeek-V3의 대규모 MoE 접근법과 달리 Gemma 2는 경량화된 효율적 모델에 집중</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

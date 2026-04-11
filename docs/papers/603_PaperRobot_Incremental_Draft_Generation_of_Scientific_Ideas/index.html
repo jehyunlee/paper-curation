@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qingyun Wang, Lifu Huang, Zhiying Jiang, Kevin Knight, Heng Ji, Mohit Bansal, Yi Luan | <strong>날짜</strong>: 2019 | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/P19-1191" target="_blank">10.18653/v1/P19-1191</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PaperRobot의 단계별 논문 작성 과정: 기존 논문 읽기 → 지식 그래프 구성 → 새로운 아이디어 예측 → 새로운 논문 작성</em></p></div>
 <p>PaperRobot은 기존 생의학 논문에서 지식 그래프를 자동으로 구축하고, 링크 예측을 통해 새로운 과학적 아이디어를 생성한 후, 메모리-어텐션 네트워크로 제목, 초록, 결론을 순차적으로 작성하는 자동 연구 보조 시스템이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세 단계 파이프라인 구축 - (1) 기존 논문에서 지식 그래프 추출, (2) 그래프 구조와 텍스트 정보를 결합한 링크 예측, (3) 메모리-어텐션 네트워크를 통한 논문 자동 작성.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PaperRobot의 전체 아키텍처: 지식 추출 → 링크 예측 → 메모리-어텐션 기반 텍스트 생성</em></p></div>
 <ol>
 <li><strong>Turing 테스트 성과</strong>: 생의학 도메인 전문가에 의한 평가에서 시스템 생성 초록이 인간 작성 초록보다 30% 선호되고, 결론과 향후 연구가 24%, 새로운 제목이 12% 선호됨.</li>
 <li><strong>최소한의 편집으로 사용 가능</strong>: 대부분의 생성된 초록은 도메인 전문가의 최소한의 수정만으로 정보적이고 일관된 논문으로 변환 가능.</li>
 <li><strong>포괄적 지식 그래프 구성</strong>: CTD(Comparative Toxicogenomics Database) 기반으로 질병(Disease), 화학물질(Chemical), 유전자(Gene) 등 3가지 엔티티 유형과 133개 관계 서브타입을 추출하여 풍부한 배경 지식 그래프 구축.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>지식 추출 및 링크 예측 예시: Calcium과 Zinc의 맥락 정보와 그래프 구조 유사성을 이용한 새로운 이웃 예측</em></p></div>
 <h3>1. 배경 지식 그래프 추출 (Background Knowledge Extraction)</h3>
 <ul>
 <li>기존 논문에서 엔티티 멘션 추출 및 링킹 시스템(Wei et al., 2013) 적용</li>
@@ -165,9 +159,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: PaperRobot은 생의학 논문 자동 생성이라는 실제적 문제에 멀티모달 접근(그래프+텍스트)을 적용한 의욕적인 연구이며, Turing 테스트에서 인간과 경쟁할 수 있는 수준의 성과를 보였다. 다만 생성된 텍스트의 과학적 정확성 검증과 실제 활용도에 대한 심층 분석이 보완된다면 학술 출판 생태계에 실질적 기여를 할 수 있을 것으로 예상된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../038_A_vision_for_auto_research_with_llm_agents/index.html">A vision for auto research with llm agents</a></div><div class="conn-reason">PaperRobot의 개별 기능들이 Auto Research 비전의 전체 연구 생명주기 자동화에서 어떤 위치를 차지하는지 이해할 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">PaperRobot의 자동 아이디어 생성과 LLM의 과학적 아이디어 생성 능력을 직접 비교하여 방법론적 차이점을 이해할 수 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">LLM 기반 아이디어 생성 평가와 PaperRobot의 지식 그래프 기반 아이디어 생성이 과학적 아이디어 창출의 서로 다른 접근법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">PaperRobot의 기본 아이디어 생성에서 SciMON의 참신성 최적화로 발전하는 과정을 확인할 수 있다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">PaperRobot의 기본적인 아이디어 생성에서 SciMON의 참신성 최적화로 진화하여 더 혁신적인 과학 아이디어를 생성할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../038_A_vision_for_auto_research_with_llm_agents/index.html">A vision for auto research with llm agents</a></div><div class="conn-reason">Auto Research 비전이 PaperRobot의 개별적인 논문 생성 자동화를 전체 연구 과정의 포괄적 자동화로 확장한 개념이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../670_ResearchCodeAgent_An_LLM_Multi-Agent_System_for_Automated_Co/index.html">ResearchCodeAgent: An LLM Multi-Agent System for Automated Codification of Research Methodologies</a></div><div class="conn-reason">PaperRobot의 논문 생성 결과물을 ResearchCodeAgent가 실행 가능한 코드로 변환하여 아이디어에서 구현까지의 완전한 자동화를 달성한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../670_ResearchCodeAgent_An_LLM_Multi-Agent_System_for_Automated_Co/index.html">ResearchCodeAgent: An LLM Multi-Agent System for Automated Codification of Research Methodologies</a></div><div class="conn-reason">PaperRobot으로 생성된 아이디어를 ResearchCodeAgent로 실제 구현 가능한 코드로 변환하는 완전한 연구 자동화 파이프라인을 구성할 수 있다.</div></div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shir Ashury-Tahan, Yifan Mai, C Rajmohan, Ariel Gera, Yotam Perlitz, Asaf Yehudai, Elron Bandel, Leshem Choshen, Eyal Shnarch, Percy Liang, Michal Shmueli-Scheuer | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: ToRR의 개요. LLM을 다양한 프롬프트 구성으로 표 추론 데이터셋에서 평가하고, 테이블 직렬화(serialization) 및 섭동(perturbation) 변형을 포함하여 성능과 신뢰성을 분석</em></p></div>
 <p>본 논문은 <strong>ToRR(Table Reasoning and Robustness) 벤치마크</strong>를 제시하여, 대규모 언어모델(LLM)의 표 데이터 이해 능력과 다양한 표 형식에 대한 견고성(robustness)을 체계적으로 평가한다. 10개의 데이터셋을 통해 14개 주요 LLM을 평가한 결과, 최신 모델들도 표 형식 변화에 취약한 '깨지기 쉬운(brittle)' 행동을 보인다는 것을 발견했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 10개 데이터셋(6개 작업 유형, 다양한 도메인)으로 구성된 포괄적 벤치마크를 설계하고, 7가지 표 직렬화 형식과 4가지 구조적 섭동(행 셔플, 열 전치 등)을 적용하여 35가지 프롬프트 구성으로 14개 LLM을 평가했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 동일한 질문이지만 서로 다른 표 형식(마크다운 vs. 셔플된 CSV)의 프롬프트 예시. 최신 모델들도 이 두 형식에서 일관되지 않은 답변을 생성한다.</em></p></div>
 <ol>
 <li><strong>표 추론의 심각한 한계 발견</strong>: 14개 주요 LLM(GPT-4o, DeepSeek v3 등 포함)이 표 기반 작업에서 상당한 성능 저하를 보였으며, 특히 수치 추론(numerical reasoning)이 필요한 작업에서 취약함을 확인했다.</li>
 <li><strong>견고성의 취약성 입증</strong>: 동일한 의미의 표가 다른 형식으로 제시되면, 대부분의 모델이 일관되지 않은 성능을 보였다. 예를 들어, 마크다운과 CSV 형식 사이에서 오답을 다르게 생성하는 현상이 빈번했다.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>메타-평가 통찰</strong>: 단일 프롬프트로 100개 예제를 평가하는 것보다, 35개 프롬프트 구성으로 평가할 때 모델 순위의 안정성이 크게 향상되었으며, 이는 테스트 셋 크기 증가와 비슷한 신뢰성 개선 효과를 제공한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 각 예제에 대해 35가지 프롬프트 구성에서 얻은 성능 분포</em></p></div>
 <p><strong>벤치마크 설계:</strong></p>
 <ul>
 <li><strong>데이터셋 선정</strong>: FinQA(금융), WikiTQ(위키피디아), TabFact(사실검증), TableBench(데이터 분석), QTSumm, SciGen, NumericNLG(표-텍스트 변환), TURL CTA(분류) 등 10개 데이터셋</li>
@@ -145,7 +139,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM의 표 데이터 처리 능력에 대한 가장 포괄적인 평가를 제공하며, 특히 표 형식 변화에 따른 모델의 취약성을 실증적으로 드러냈다는 점에서 높은 가치를 지닌다. 견고성 메트릭과 메타-평가 분석은 향후 NLP 벤치마크 설계의 방향성을 제시하는 중요한 기여이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">테이블 추론과 견고성에 대한 벤치마크 연구가 언어 모델의 테이블 이해 능력 향상 프레임워크 개발의 기초를 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../715_Scidqa_A_deep_reading_comprehension_dataset_over_scientific/index.html">Scidqa: A deep reading comprehension dataset over scientific papers</a></div><div class="conn-reason">ToRR이 표 추론 견고성에 초점을 맞춘 반면, SciDQA는 과학 논문의 깊이 있는 이해를 평가하여 서로 다른 각도에서 LLM 평가를 다룸</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../715_Scidqa_A_deep_reading_comprehension_dataset_over_scientific/index.html">Scidqa: A deep reading comprehension dataset over scientific papers</a></div><div class="conn-reason">SciDQA가 과학 논문의 깊이 있는 이해에 초점을 맞춘 반면, ToRR는 표 형식 견고성 평가에 특화되어 서로 다른 각도에서 LLM의 과학 텍스트 처리 능력을 평가함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../787_Tablemaster_A_recipe_to_advance_table_understanding_with_lan/index.html">Tablemaster: A recipe to advance table understanding with language models</a></div><div class="conn-reason">TableMaster가 제시하는 표 이해 방법론이 ToRR 벤치마크에서 발견된 LLM의 표 형식 취약성 문제를 해결하는 솔루션으로 활용될 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

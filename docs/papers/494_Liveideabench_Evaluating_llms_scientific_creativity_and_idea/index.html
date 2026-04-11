@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kai Ruan, Xuan Wang, Jixiang Hong, Peng Wang, Yang Liu, Hao Sun | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LiveIdeaBench의 전체 설계: (a) 1,000개 이상의 과학 키워드를 사용한 발산적 사고 촉진, (b) 판정 LLM이 5가지 차원으로 평가, (c) 상위 10개 최첨단 모델로 구성된 동적 평가 패널, (d-f) Guilford 창의성 이론 기반 5가지 차원 평가 방법론</em></p></div>
 <p>본 논문은 최소한의 맥락(단일 키워드)을 사용하여 대규모 언어모델(LLM)의 과학적 아이디어 생성 능력과 발산적 사고(divergent thinking) 능력을 평가하는 포괄적인 벤치마크 LiveIdeaBench를 제시한다. 40개 이상의 모델을 22개 과학 분야의 1,180개 키워드로 평가한 결과, 과학적 아이디어 생성 능력이 일반 지능 점수로 잘 예측되지 않음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Guilford의 창의성 이론에서 영감을 얻어, 단일 키워드 프롬프트로 발산적 사고를 촉진하고, 최첨단 LLM의 동적 패널을 판정자로 활용하여 5가지 차원(독창성, 실현가능성, 유창성, 유연성, 명확성)에서 생성된 아이디어를 평가하는 벤치마크를 구축했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>LiveIdeaBench에서의 모델 성능 비교: (a) 개방 가중치 및 독점 모델의 5가지 차원별 점수 및 전체 성능, (b) 주요 모델들의 다차원 성능 프로필, (c) 과학 키워드의 워드클라우드</em></p></div>
 <ol>
 <li><strong>일반 지능과 창의성의 독립성 실증</strong>: QwQ-32B-preview는 일반 지능 점수에서 claude-3.5-sonnet:thinking보다 현저히 낮음에도 불구하고, 과학적 아이디어 생성의 창의적 성능에서 비교 가능한 수준을 달성했다. 이는 threshold theory를 LLM 맥락에서 실증적으로 지지한다.</li>
 <li><strong>포괄적 벤치마크 구축</strong>: 22개 과학 분야에 걸친 1,180개 키워드로 40개 이상의 모델을 평가하여, 일반 지능 점수로 설명되지 않는 창의성의 변동성을 체계적으로 문서화했다.</li>
 <li><strong>창의성과 지능의 다른 발달 경로 발견</strong>: 과학적 아이디어 생성 능력이 일반 문제 해결 능력과 다른 훈련 전략으로 향상될 가능성을 시사한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>과학 분류별 LiveIdeaBench의 모델 성능: 다양한 과학 영역(물리학, 화학, 생물학 등)에서 평균 성능을 시각화한 히트맵</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: 22개 과학 분야에서 1,180개의 대표적 키워드 선정 (예: "날씨 예측", "양자 컴퓨팅")</li>
 <li><strong>아이디어 생성</strong>: 각 키워드에 대해 여러 LLM이 과학적 아이디어 생성 수행</li>
@@ -131,7 +125,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../187_Can_LLMs_Generate_Novel_Research_Ideas_A_Large-Scale_Human_S/index.html">Can LLMs Generate Novel Research Ideas? A Large-Scale Human Study with 100+ NLP Researchers</a></div><div class="conn-reason">LLM이 새로운 연구 아이디어를 생성할 수 있는지에 대한 대규모 인간 평가가 과학적 창의성 벤치마크의 기반 연구이다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../313_Enabling_ai_scientists_to_recognize_innovation_A_domain-agno/index.html">Enabling AI Scientists to Recognize Innovation: A Domain-Agnostic Algorithm for Assessing Novelty</a></div><div class="conn-reason">LLM의 과학적 창의성과 아이디어 생성 평가 벤치마크로 본 논문의 혁신성 평가 방법론의 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../495_Llm__mapreduce-v2_Entropy-driven_convolutional_test-time_sca/index.html">LLM × MapReduce-V2: Entropy-Driven Convolutional Test-Time Scaling for Generating Long-Form Articles from Extremely Long Resources</a></div><div class="conn-reason">과학적 아이디어 생성 능력 평가와 장문 기사 생성 능력 평가 모두 LLM의 창의적 생성 능력을 다루지만 평가 방식이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../495_Llm__mapreduce-v2_Entropy-driven_convolutional_test-time_sca/index.html">LLM × MapReduce-V2: Entropy-Driven Convolutional Test-Time Scaling for Generating Long-Form Articles from Extremely Long Resources</a></div><div class="conn-reason">발산적 사고와 과학적 창의성 평가와 달리 극도로 긴 입력에서 장문 기사 생성이라는 다른 LLM 능력을 측정한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../155_Beyond_Brainstorming_What_Drives_High-Quality_Scientific_Ide/index.html">Beyond Brainstorming: What Drives High-Quality Scientific Ideas? Lessons from Multi-Agent Collaboration</a></div><div class="conn-reason">LLM의 과학적 창의성 평가와 고품질 아이디어 생성 동인의 다른 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../509_Llms_can_realize_combinatorial_creativity_generating_creativ/index.html">LLMs can realize combinatorial creativity: generating creative ideas via LLMs for scientific research</a></div><div class="conn-reason">LiveIdeaBench의 과학적 창의성 평가는 조합적 창의성 이론 기반 아이디어 생성의 검증 방법을 제공합니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../392_Grapheval_A_lightweight_graph-based_llm_framework_for_idea_e/index.html">GraphEval: A lightweight graph-based llm framework for idea evaluation</a></div><div class="conn-reason">그래프 기반 LLM 프레임워크를 통한 아이디어 평가가 과학적 아이디어 생성 벤치마크의 평가 체계를 확장한다.</div></div>

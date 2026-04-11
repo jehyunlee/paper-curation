@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Siyuan Wang, James R. Foulds, Md Osman Gani, Shimei Pan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.07937" target="_blank">arXiv:2503.07937</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CIBER 시스템 아키텍처: 다중 측면 심문(MAI), 응답 해석(RR), 판정 및 신뢰도(V&C) 모듈로 구성</em></p></div>
 <p>CIBER는 검색 증강 생성(RAG) 프레임워크를 확장하여 과학적 주장(claim)을 검증하기 위해 지지 증거와 반박 증거를 체계적으로 식별하고 검색하는 프레임워크이다. 다양한 질문 프로브(probe)를 통해 LLM의 응답 일관성을 평가함으로써 환각(hallucination) 문제를 완화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다중 측면 심문(MAI)으로 동일한 주장에 대해 다양한 표현의 프로브를 생성하고, (2) 응답 해석(RR) 모듈로 LLM의 자유로운 응답을 정규화하며, (3) 판정 및 신뢰도(V&C) 모듈에서 증거 융합 전략으로 최종 판정을 도출한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CIBER의 세 가지 핵심 모듈 구성</em></p></div>
 <ol>
 <li><strong>지원/반박 증거 검색의 체계화</strong>: 단순한 관련성 검색을 넘어 과학적 주장을 명확하게 지지하는 증거와 반박하는 증거를 구분하여 검색하고 제시할 수 있는 프레임워크 개발</li>
 <li><strong>LLM 응답 신뢰성 평가 메커니즘</strong>: 동일 프로브의 반복 실행과 다양한 표현 변이(PAG, PCF) 를 통해 LLM의 응답 일관성을 정량적으로 측정하고 신뢰도 점수(confidence score) 산출</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>비감독(Unsupervised) 접근</strong>: 도메인별 라벨링 데이터를 요구하지 않아 다양한 과학 분야로 쉽게 확장 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CIBER 아키텍처의 세 가지 신규 모듈</em></p></div>
 <p><strong>1. 다중 측면 심문(Multi-Aspect Interrogation, MAI)</strong></p>
 <ul>
 <li>원본 프로브(pO): "논문 A의 연구에 기반하여 주장 C가 참인가?"</li>

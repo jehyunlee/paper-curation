@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Amirmohammad Ziaei Bideh, Jonathan Gryak | <strong>날짜</strong>: 2026-03-21 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM-ODE의 개요: (1) 관찰된 궤적 데이터를 상태변수로 분해, (2) LLM이 진화 연산자로 작용하여 기호 방정식 모집단 진화 유도, (3) 방정식 수준 파레토 프론트의 카르테시안 곱에서 최종 시스템 선택</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 유전 프로그래밍(GP)에 통합하여 동역학 시스템의 지배 방정식 발견을 가속화하는 LLM-ODE 프레임워크를 제안한다. 기호 표현의 광대한 탐색 공간을 효율적으로 탐색하기 위해 LLM의 생성 능력을 진화 연산자로 활용한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 고성능 후보 방정식에서 추출한 패턴을 활용하여 LLM이 정보 기반 돌연변이와 재조합을 제안하는 하이브리드 프레임워크 개발. 섬(island) 기반 진화 전략으로 다중 모집단을 병렬 진화시키고, 주기적 정제 단계를 통해 섬 간 정보 공유를 촉진한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 정규화 평균 제곱 오차(NMSE) 임계값 λ에 따른 검색 반복에 대한 시스템 발견율</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>시스템 파레토 프론트를 따른 점의 개수</em></p></div>
 <ol>
 <li><strong>탐색 효율성</strong>: 91개 동역학 시스템(1~4개 상태변수 포함)에 대한 종합 실증 평가에서 LLM-ODE가 고전적 GP 방법 대비 훨씬 빠른 수렴과 더 적은 반복으로 해를 발견함을 입증</li>
 <li><strong>파레토 프론트 품질</strong>: LLM-ODE 변형들이 다양한 LLM 모델에 걸쳐 일관되게 기호 복잡도와 예측 오차의 균형 측면에서 전통 GP를 상회</li>
 <li><strong>확장성</strong>: 선형 모델 및 Transformer 단독 방법과 비교하여 고차원 시스템에 대한 우수한 확장성 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>D=1 상태변수를 가진 동역학 시스템의 훈련 궤적</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>D=2 상태변수를 가진 동역학 시스템의 훈련 궤적</em></p></div>
 <ul>
 <li><strong>문제 분해</strong>: D차원 시스템을 D개의 독립적인 1변수 방정식 발견 문제로 분해하여 조합론적 복잡도 감소</li>
 <li><strong>LLM 기반 연산자</strong>: 현재 모집단에서 적응적 샘플링(softmax 분포 기반)으로 선택된 k개 방정식을 문맥 예제로 활용하여 LLM이 b개의 개선된 후보 표현식 제안</li>
@@ -121,7 +111,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../547_Mllm-based_discovery_of_intrinsic_coordinates_and_governing/index.html">MLLM-based discovery of intrinsic coordinates and governing equations from high-dimensional data</a></div><div class="conn-reason">동적 시스템 발견을 위한 LLM 활용 방법론이 동영상에서 지배 방정식 발견의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../759_SLE-FNO_Single-Layer_Extensions_for_Task-Agnostic_Continual/index.html">SLE-FNO: Single-Layer Extensions for Task-Agnostic Continual Learning in Fourier Neural Operators</a></div><div class="conn-reason">과학 머신러닝에서의 지속학습 문제가 LLM 기반 동역학 시스템 발견의 지식 보존과 적응에 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../466_Large_Language_Model-Based_Evolutionary_Optimizer_Reasoning/index.html">Large Language Model-Based Evolutionary Optimizer: Reasoning with elitism</a></div><div class="conn-reason">동역학 시스템 발견과 블랙박스 최적화 모두 LLM을 진화 알고리즘에 통합하지만 적용 영역과 목표가 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../466_Large_Language_Model-Based_Evolutionary_Optimizer_Reasoning/index.html">Large Language Model-Based Evolutionary Optimizer: Reasoning with elitism</a></div><div class="conn-reason">LLM을 진화 알고리즘에 통합하여 블랙박스 최적화를 수행하는 반면 LLM-ODE는 동역학 시스템 발견에 초점을 맞춘 다른 접근법이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../275_Discovering_symbolic_differential_equations_with_symmetry_in/index.html">Discovering symbolic differential equations with symmetry invariants</a></div><div class="conn-reason">LLM 기반 동적 시스템 발견과 대칭 불변량 기반 방정식 발견은 서로 다른 접근법으로 같은 문제를 해결합니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../289_Drsr_Llm_based_scientific_equation_discovery_with_dual_reaso/index.html">DrSR: LLM 기반 과학 방정식 발견 (데이터와 경험의 이중 추론)</a></div><div class="conn-reason">데이터와 경험의 이중 추론 접근법과 대규모 언어모델을 활용한 동역학 시스템 발견이라는 서로 다른 방정식 발견 방법론입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../799_The_frontier_of_simulation-based_inference/index.html">The frontier of simulation-based inference</a></div><div class="conn-reason">동역학 시스템 발견을 위한 LLM 기반 ODE 접근법으로 확장한다.</div></div>

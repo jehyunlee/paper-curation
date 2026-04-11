@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zheng Chu, Haiming Fan, Jingchang Chen, Qianyu Wang, Mingda Yang, Jiafeng Liang, Zhongjie Wang, Hao Li, Guoan Tang, Ming Liu, Bing Qin | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 다중 홉 질의응답에서 반복적 검색과 자기비판 유도 추론의 비교. 제안 방법은 반복적 추론 중 자기비판을 통합하고 피드백에 기반한 탐색을 수행함</em></p></div>
 <p>대규모 언어모델(LLM)의 지식 제한 문제를 해결하기 위해, 자기비판 피드백을 통해 반복적 추론 과정을 유도하는 새로운 다중 홉 질의응답 방법을 제안한다. 모델이 질문 분해, 검색, 추론, 자기평가를 학습하여 중간 단계의 오류를 줄이고 최적 추론 경로를 선택할 수 있도록 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 자기비판 모듈(critic model)이 검색 적절성, 추론 유용성, 전체 품질을 평가하는 보상을 생성하고, 이를 통해 훈련 중 감독 신호를 제공하고 추론 중 최적 경로를 선택하도록 한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: SiGIR의 전체 구조. (I) 자기비판 기능을 가진 반복적 추론기 학습 과정, (II) 질문 분해/검색/추론/평가를 포함한 SC-Reasoner의 특성, (III) 탐색과 보상 기반 탐색을 통한 최적 경로 선택</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: HotpotQA, 2WikiMQA, MuSiQue 세 데이터셋에서 평균 8.6% 성능 향상(SOTA 대비), DeepSeek-V2.5, Mistral, LLaMA2, Qwen2.5 모델에서 일관된 개선</li>
 <li><strong>효율성과 비용</strong>: Monte Carlo Tree Search 같은 고비용 탐색 방법 대비 계산 오버헤드를 줄이면서도 추론 확장(inference-time scaling) 효과 달성</li>

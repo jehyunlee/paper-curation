@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Cheng Qian, Yufan Dang, Jiahao Li, Wei Liu, Weize Chen, Cheng Yang, Zhiyuan Liu, Maosong Sun | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Experiential Co-Learning 프레임워크: Co-Tracking, Co-Memorizing, Co-Reasoning 세 모듈을 통해 Instructor와 Assistant 에이전트가 과거 경험을 학습하고 활용하여 소프트웨어 개발 작업을 효율적으로 수행</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반 다중 에이전트 시스템이 과거 작업 경험을 축적하고 활용하는 "경험적 협력학습(Experiential Co-Learning)" 프레임워크를 제안한다. 이를 통해 소프트웨어 개발 작업에서 반복적인 오류를 감소시키고 에이전트 간의 협력 효율성을 현저히 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 과거 작업 궤적(trajectory)에서 "지름길(shortcut)"을 추출하여 경험 풀(experience pool)을 구축하고, 새로운 작업 해결 시 이러한 경험을 활용하는 세 가지 모듈(Co-Tracking, Co-Memorizing, Co-Reasoning)을 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ol>
 <li><strong>경험 기반 협력학습의 첫 시도</strong>: LLM 기반 다중 에이전트 협력에 과거 경험을 통합한 최초의 연구로, Co-Tracking/Co-Memorizing/Co-Reasoning을 통해 Instructor와 Assistant 역할의 에이전트 간 협력학습을 실현했다.</li>
 <li><strong>작업 실행 그래프 기반 지름길 추출</strong>: 절차적 궤적에서 인접하지 않은 노드를 연결하는 "지름길"을 추출하여 에이전트의 단축 사고(shortcut thinking)를 유도하는 혁신적 경험 표현 방식을 제안했다.</li>
 <li><strong>다각적 검증</strong>: 소프트웨어 개발의 다양한 작업에 대해 광범위한 실험을 수행하여, 제안된 프레임워크가 에이전트의 협력 품질과 효율성을 유의미하게 향상시킴을 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>작업 실행 그래프의 주요 요소 분포: 에지(instruction), 상태 전환, 지름길의 구성 비율</em></p></div>
 <h3>Co-Tracking 모듈</h3>
 <ul>
 <li>Instructor 에이전트와 Assistant 에이전트 간의 통신을 추적하여 <strong>절차적 궤적(procedural trajectory)</strong> 수집</li>

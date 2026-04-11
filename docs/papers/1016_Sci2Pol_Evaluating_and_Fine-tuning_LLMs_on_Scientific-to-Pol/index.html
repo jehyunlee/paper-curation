@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Weimin Wu, Alexander C. Furnas, Eddie Yang, Gefei Liu, Akhil Pandey Akella, Xuefeng Song, Dashun Wang, Han Liu | <strong>날짜</strong>: 2025-09-25 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2509.21493" target="_blank">10.48550/arXiv.2509.21493</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Overview of Sci2Pol-Taxonomy and Dataset Source. (a) Sci2Pol-Taxonomy defines a</em></p></div>
 <p>과학 논문을 정책 문서로 변환하는 LLM의 능력을 평가하고 개선하기 위해 벤치마크(Sci2Pol-Bench)와 학습 데이터셋(Sci2Pol-Corpus)을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 인간의 작성 프로세스를 반영하는 5단계 분류체계(자동완성, 이해, 요약, 생성, 검증)를 기반으로 18개 작업의 벤치마크를 설계하고, LLM-as-a-judge 방식의 새로운 평가 지표를 제안한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Overview of the Sci2Pol-Corpus Curation Process. It consists of 639 high-quality pa-</em></p></div>
 <ul>
 <li><strong>Sci2Pol-Bench 개발</strong>: 85개의 전문가 작성 논문-정책 문서 쌍을 기반으로 18개 작업(객관식 및 개방형)으로 구성된 최초의 과학-정책 변환 벤치마크 구축</li>
 <li><strong>새로운 평가 지표</strong>: 기존 BERTScore와 ROUGE의 한계를 지적하고, 전문가 판단과 일치하는 LLM 기반 평가 메트릭 제안</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>미세조정 성과</strong>: Sci2Pol-Corpus로 미세조정한 Gemma-27B가 훨씬 큰 GPT-4o 및 DeepSeek-V3(671B)를 초과</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Overview of the Sci2Pol-Corpus Curation Process. It consists of 639 high-quality pa-</em></p></div>
 <ul>
 <li>5단계 분류체계(Sci2Pol-Taxonomy)에 기반한 벤치마크 설계: 자동완성, 이해, 요약, 생성, 검증 단계별 작업 정의</li>
 <li>85개 전문가 작성 논문-정책 문서 쌍(Nature Energy, Nature Climate Change 등 고임팩트 저널 출처)을 도메인 타겟으로 활용</li>

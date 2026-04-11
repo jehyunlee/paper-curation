@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xingyao Wang, Boxuan Li, Yufan Song, Frank F. Xu, Xiangru Tang, Mingchen Zhuge, Jiayi Pan, Yueqi Song, Bowen Li, Jaskirat Singh, Hoang H. Tran, Fuqiang Li, Ren Ma, Mingzhang Zheng, Bill Qian, Yanjun Shao, Niklas Muennighoff, Yizhe Zhang, Binyuan Hui, Junyang Lin | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>OpenHands의 3가지 주요 구성요소: 1) Agent 추상화, 2) Event Stream, 3) Runtime</em></p></div>
 <p>OpenHands는 LLM 기반 AI 에이전트가 소프트웨어 개발자처럼 코드 작성, 명령행 인터페이스 조작, 웹 브라우징을 통해 세계와 상호작용할 수 있는 개방형 플랫폼이다. MIT 라이선스로 공개된 커뮤니티 프로젝트로, 188명 이상의 기여자로부터 2,100회 이상의 기여를 받았다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 이벤트 스트림 기반 아키텍처, Docker 샌드박스 런타임, CodeAct 기반의 범용 액션 인터페이스(IPython, Bash, 브라우저), 멀티 에이전트 위임(delegation), 15개 벤치마크 기반 평가 프레임워크를 포함한 통합 플랫폼을 제시한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>OpenHands 사용자 인터페이스: 파일 뷰, 실행된 명령어/코드, 브라우저 활동, 에이전트 상호작용 표시</em></p></div>
 <ol>
 <li><strong>통합 플랫폼 제공</strong>: 에이전트 정의, 액션 실행, 관찰(Observation) 수집을 위한 일관된 추상화를 제공하여, 사용자들이 복잡한 저수준 세부사항 없이 에이전트를 쉽게 개발할 수 있게 함.</li>
 <li><strong>포괄적 액션 공간</strong>: IPythonRunCellAction, CmdRunAction, BrowserInteractiveAction이라는 핵심 액션을 통해 소프트웨어 엔지니어링 대부분의 작업을 커버하는 동시에, 프로그래밍 언어 기반 접근으로 임의의 도구 통합을 가능하게 함.</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>광범위한 평가</strong>: SWE-Bench, WebArena 등을 포함한 15개 벤치마크로 다양한 소프트웨어 엔지니어링 및 웹 기반 작업에 대한 에이전트 성능을 종합 평가.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>OpenHands에서 에이전트 구현의 최소 예제: reset() 메서드와 step() 메서드로 구성</em></p></div>
 <p><strong>아키텍처 및 구현 방식:</strong></p>
 <ul>
 <li><strong>Event Stream 기반 상태 관리</strong>: 에이전트가 과거의 모든 액션과 관찰을 시간순 리스트로 유지하여, 컨텍스트 윈도우 내에서 전체 실행 히스토리에 접근 가능하게 구성. 이는 LLM의 추론에 필요한 충분한 정보를 제공함.</li>

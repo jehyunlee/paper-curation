@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: William Watson, Lawrence Yong | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2403.18855" target="_blank">10.48550/arXiv.2403.18855</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 학습된 잔차(Learned Residual)를 갖춘 증강 트랜스포머 아키텍처</em></p></div>
 <p>신용평가기관의 평가 기준 문서들 사이의 인용 관계를 그래프 링크 예측(link prediction) 문제로 모델링하여, 트랜스포머 기반 그래프 신경망으로 누락된 인용을 자동 추천하고 순위를 매기는 방법론을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인용 네트워크의 문서 노드를 트랜스포머 기반 그래프 임베딩으로 인코딩한 후, 링크 예측을 통해 새 문서의 관련 인용을 추천하고 순위 지정</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 주제 영역별로 색칠된 임베딩(t-SNE 투영)</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: TF-IDF 기준 대비 MAP 10.5% → 25.4%, MAR 34.6% → 65.3% (k=20 기준) 달성</li>
 <li><strong>그래프 구조의 효과성</strong>: 그래프 정보를 활용한 모델이 콘텐츠 기반 방법을 크게 상회하는 성능 입증</li>
 <li><strong>임베딩 품질</strong>: 주제 영역별 자기조직화(self-organization)를 통해 도메인 내 및 도메인 간 인용 패턴 자동 포착</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 주제 영역별로 정렬된 실제 교차참조 행렬</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 50% 임계값으로 설정된 예측 교차참조 행렬</em></p></div>
 <p><strong>모델 아키텍처:</strong></p>
 <ul>
 <li>초기 임베딩: 300차원 정규화 TF-IDF 벡터를 64차원 밀집 벡터로 압축</li>

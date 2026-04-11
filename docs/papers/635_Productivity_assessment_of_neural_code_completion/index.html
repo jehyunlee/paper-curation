@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Albert Ziegler, Eirini Kalliamvakou, X. Alice Li, Andrew Rice, Devon Rifkin, Shawn Simister, Ganesh Sittampalam, Edward Aftandilian | <strong>날짜</strong>: 6월 13, 2022 | <strong>DOI</strong>: <a href="https://doi.org/10.1145/3520312.3534864" target="_blank">10.1145/3520312.3534864</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>GitHub Copilot의 코드 완성 단계별 흐름</em></p></div>
 <p>신경망 기반 코드 완성 도구의 개발자 생산성 향상 효과를 측정하기 위해, GitHub Copilot 사용자 2,631명의 설문 응답과 실제 사용 데이터를 연계 분석하여 <strong>제안 수락률(acceptance rate)이 개발자의 생산성 인식을 가장 잘 예측하는 지표임을 입증</strong>한 실증 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: SPACE 프레임워크를 기반으로 설계된 설문(만족도, 성능, 커뮤니케이션, 효율성 4개 차원)과 IDE에서 수집한 상세한 사용 메트릭(수락 횟수, 문자 수, 지속성 등)을 연계 분석하여 어떤 지표가 생산성 인식을 가장 잘 예측하는지 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>설문 응답자 인구통계(전문 프로그래머 상당수 포함)</em></p></div>
 <ol>
 <li><strong>수락률 우수성</strong>: 제안된 항목 중 수락된 항목의 비율(수락률, acceptance rate)이 수락된 코드의 양(accepted_char), 지속성(persistence) 등 더 세부적인 메트릭보다 개발자의 생산성 인식을 더 잘 예측함을 통계적으로 입증</li>
 <li><strong>다층적 분석</strong>: 개발자 인구(2,047명 매칭), 프로그래밍 언어, 시간대 등에 따른 수락률의 상당한 변동성을 확인하고, GitHub Copilot의 전체 수락률이 27%, 일일 평균 수락 건수(DCPU)가 31건임을 파악</li>
 <li><strong>방법론 기여</strong>: 오프라인-온라인 평가 간 간극을 해소하기 위해 실제 개발자를 생산성의 전문가 평가자로 활용하는 설문-텔레메트리 연계 방식을 확립</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>사용 메트릭 간 상관관계: 모든 차원이 생산성 지표와 유사하게 대응</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: GitHub Copilot 기술 미리보기 사용자 17,420명 중 2,631명으로부터 2022년 2월-3월 4주간 설문 응답과 IDE 사용 로그 동시 수집</li>
 <li><strong>메트릭 정의</strong>:
@@ -121,7 +115,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../611_People_who_frequently_use_ChatGPT_for_writing_tasks_are_accu/index.html">People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text</a></div><div class="conn-reason">ChatGPT 사용자의 글쓰기 정확성 연구가 신경망 코드 완성 도구 사용자의 생산성 평가 방법론에 기초적인 사용자 행동 분석 틀을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../283_Do_Users_Write_More_Insecure_Code_with_AI_Assistants/index.html">Do Users Write More Insecure Code with AI Assistants?</a></div><div class="conn-reason">AI 코딩 도구의 생산성 평가에서 보안성 관점과 생산성 관점이라는 서로 다른 측정 기준을 제시하여 종합적 평가가 필요함을 보여준다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../894_AI_Copilot_Code_Quality_2025_Data_Suggests_4x_Growth_in_Code/index.html">AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones - GitClear</a></div><div class="conn-reason">코드 완성 도구의 생산성 측정을 코드 품질 평가로 확장하여 더 포괄적인 AI 코딩 도구 평가 프레임워크를 구축한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../894_AI_Copilot_Code_Quality_2025_Data_Suggests_4x_Growth_in_Code/index.html">AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones - GitClear</a></div><div class="conn-reason">신경 코드 완성의 생산성 평가 연구가 AI Copilot 코드 품질의 4배 성장이 실제 개발자 생산성에 미치는 영향을 분석하는데 활용될 수 있다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../283_Do_Users_Write_More_Insecure_Code_with_AI_Assistants/index.html">Do Users Write More Insecure Code with AI Assistants?</a></div><div class="conn-reason">AI 코드 어시스턴트의 생산성 향상 효과와 보안 취약점 증가라는 상반된 관점을 제시함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

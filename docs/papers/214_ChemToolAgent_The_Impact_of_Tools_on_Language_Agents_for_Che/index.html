@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Botao Yu, Frazier N. Baker, Ziru Chen, Garrett Herb, Boyu Gou | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChemToolAgent 프레임워크: ReAct 패러다임을 따르는 세 단계 반복 과정 (Thought, Action, Observation)</em></p></div>
 <p>대규모 언어 모델(LLM)에 화학 전문 도구를 통합한 에이전트가 모든 화학 문제 해결에서 일관되게 성능 향상을 가져오지는 않으며, 특화된 분자/반응 작업과 일반 화학 시험 문제에서 도구 활용의 효과가 크게 다르다는 것을 규명한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 29개 도구를 통합한 개선된 ChemToolAgent(CTA)를 개발하고, 특화된 화학 작업(SMolInstruct, 700개)과 일반 화학 문제(MMLU-Chemistry, SciBench-Chemistry, GPQA-Chemistry, 총 386개)에서 광범위한 실험 수행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>CTA(GPT) 오류 통계: SMolInstruct에서 102개, MMLU-Chemistry에서 64개의 오류를 추론 오류(Reasoning Error), 접지 오류(Grounding Error), 도구 오류(Tool Error)로 분류</em></p></div>
 <ol>
 <li><strong>특화된 화학 작업에서 도구의 가치 입증</strong>: CTA는 기본 LLM 대비 SMolInstruct 작업에서 현저한 성능 향상 달성 (예: Name Conversion to SMILES에서 GPT-4o 0% → CTA-GPT 70%, Forward Synthesis에서 12% → 78%)</li>
 <li><strong>일반 화학 문제에서 도구 통합의 한계 발견</strong>: MMLU-Chemistry, SciBench-Chemistry, GPQA-Chemistry에서 CTA가 기본 LLM(GPT-4o: 80.5%, Claude: 76.7%)을 대부분 하회 (MMLU-C에서 CTA-GPT 71.0%, GPQA-C에서 33.8%)하는 반직관적 결과 도출</li>

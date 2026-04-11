@@ -75,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 15년 이상 그룹 내에서 검증되고 수십 편의 발표된 논문에 사용된 분석 루틴을 통합한 전문화된 오픈소스 도구키트(AMDAT) 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>이진 Lennard-Jones(binLJ), Kob-Andersen(KG), 2D 이진 Lennard-Jones(binLJ2D) 시스템에 대한 방사상 분포함수(RDF) 및 구조 인수(Structure Factor)</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>각 시스템의 동역학 성질: 평균제곱변위(MSD), 중간산란함수(ISF), 이웃 그래프 변동(NGP), 이웃 장식 함수(NDF)</em></p></div>
 <ol>
 <li><strong>효율적 장시간 동역학 분석</strong>: 메모리 내 궤적 처리(파일 I/O 최소화)와 지수 시간 샘플링으로 수십 개의 시간 스케일에 걸친 분석을 실현. 궤적 파일 크기의 2~3배 메모리로 거의 즉각적인 프레임 접근 가능</li>
 <li><strong>광범위한 검증된 관측량 제품군</strong>: 방사상 분포함수(RDF), 구조 인수(Structure Factor), 중간산란함수(ISF), 이웃 상관(Neighbor Correlation), Van Hove 상관함수 등 비정질/유리 재료 분석에 필수적인 구조 및 동역학 함수 다수 구현</li>
 <li><strong>모듈식 확장 가능 아키텍처</strong>: trajectory list, multibody list, neighbor list, value list 등의 조합 가능한 데이터 추상화로 복잡한 분석 파이프라인을 간단히 구성 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>KG 시스템의 Van Hove 상관함수 자기부분(Self part)</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>이진 Lennard-Jones 시스템의 배치 구조, 입자 이동성 및 기타 성질로 색칠</em></p></div>
 <ul>
 <li><strong>메모리 내 궤적 처리</strong>: System 객체가 초기화 시 전체 MD 궤적을 메모리에 로드하여 반복적 파일 접근 제거</li>
 <li><strong>지수 시간 샘플링</strong>: 단시간에서 밀집 샘플링, 장시간에서 성글게 샘플링하여 저장 공간 효율화</li>

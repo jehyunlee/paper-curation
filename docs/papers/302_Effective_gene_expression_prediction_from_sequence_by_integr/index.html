@@ -75,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Transformer의 주목 메커니즘을 적용하여 장거리 정보 흐름을 개선하고, 다중 작업 학습(multitask learning)으로 인간 및 마우스 게놈의 에피유전체 및 전사 데이터셋 수천 개를 동시에 예측</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Enformer improves gene expression prediction in held-out genes by using a larger receptive field">
-<p class="fig-caption"><em>그림 1: Enformer는 200 kb 입력 서열에서 128 bp 해상도로 게놈 트랙을 예측하며, Transformer 모듈을 통해 Basenji2 대비 5배 큰 수용장(100 kb vs 20 kb)을 달성</em></p></div>
 <ol>
 <li><strong>예측 정확도 획기적 향상</strong>: CAGE(Cap Analysis Gene Expression)를 통한 RNA 발현 예측에서 평균 상관계수가 0.81에서 0.85로 증가 (Basenji1→Basenji2 개선의 2배 규모, 실험 수준 정확도 0.94와의 격차 1/3 해소)</li>
 <li><strong>장거리 규제 요소 통합</strong>: 수용장을 20 kb에서 100 kb로 확대함으로써 고신뢰도 인핸서-유전자 쌍의 포함 비율을 47%에서 84%로 증가</li>
 <li><strong>세포 유형 특이성 향상</strong>: 조직 또는 세포 유형 특이성 예측이 개선되었으며, 밀접하게 관련된 샘플들에서도 우수한 성능 발휘</li>
 </ol>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Enformer attends to cell-type-specific enhancers, enabling enhancer prioritization">
-<p class="fig-caption"><em>그림 2: Enformer의 기여도 점수가 세포 유형 특이적 인핸서를 식별하며, ABC 점수와 필적하는 인핸서 우선순위화 성능 달성</em></p></div>
 <ol>
 <li><strong>인핸서 우선순위화</strong>: DNA 서열만을 입력으로 하면서도 실험 데이터(HiC, H3K27ac)를 사용하는 ABC 점수와 동등하거나 더 우수한 성능으로 인핸서-유전자 상호작용 예측</li>
 <li><strong>절연체 요소 학습</strong>: 위상 연관 영역(TAD) 경계에 대한 주목이 임의의 위치보다 높고, 경계 반대편 영역에 대한 주목이 낮은 패턴으로 절연체 기능 학습 확인</li>

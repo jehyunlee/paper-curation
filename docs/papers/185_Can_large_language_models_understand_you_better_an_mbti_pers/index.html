@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Bohan Li, Jiannan Guan, Longxu Dou, Yunlong Feng 외 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.12510" target="_blank">arXiv:2412.12510</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MBTIBENCH의 초점: 기존 MBTI 성격 탐지 데이터셋의 데이터 품질 문제와 소프트 라벨 부재 해결</em></p></div>
 <p>본 논문은 <strong>Myers-Briggs Type Indicator (MBTI) 성격 탐지의 과도한 낙관성을 개선</strong>하기 위해, 심리학 전문가의 지도 하에 심리 전문가가 직접 주석을 단 <strong>첫 번째 소프트 라벨 MBTI 데이터셋 MBTIBENCH</strong>를 구축했다. 이는 자기보고식 라벨의 부정확성(29.58% 오류)과 극단적 성격만 표현하는 하드 라벨의 한계를 해결한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -97,16 +95,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MBTI의 4가지 차원 정의: 외향성/내향성(E/I), 감각/직관(S/N), 사고/감정(T/F), 판단/인식(J/P)</em></p></div>
 <ol>
 <li><strong>데이터 품질 개선</strong>: 라벨 누수(직접 성격 누수, 성격 특성 누수, 교차 이론 특성 누수)와 쓸모없는 잡음(정보 부족, 깨진 텍스트, 링크/미디어) 제거로 기존 데이터셋의 <strong>29.58% 오류 해결</strong></li>
 <li><strong>소프트 라벨 도입</strong>: [0, 1] 범위의 연속 표현으로 극성 경향 표현 (예: 외향성 40% = 내향성 60%), 비극단적 성격 특성을 가진 사람이 더 많음을 확인</li>
 <li><strong>LLM 편향 분석</strong>: 6개 대규모 언어모델(LLM)과 4가지 프롬프팅 방법 평가로 <strong>극단화된 예측(polarized predictions)과 편향</strong>을 주요 연구 방향으로 제시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>MBTIBENCH 구축 워크플로우: 데이터 필터링 → 주석 학습 → 형식적 주석 → 소프트 라벨 추정</em></p></div>
 <ul>
 <li><strong>데이터 필터링 가이드라인</strong>:
 <ul>

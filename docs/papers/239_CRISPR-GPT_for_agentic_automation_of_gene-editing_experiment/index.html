@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuanhao Qu, Kaixuan Huang, Ming Yin, Kanghong Zhan, Dyllan Liu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41551-025-01463-z" target="_blank">10.1038/s41551-025-01463-z</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Overview of CRISPR-GPT Agent. LLM 기반 설계 및 계획 엔진(좌측)이 4가지 핵심 메타-작업(우상단)과 보조 기능들을 수행하며, 여러 유용한 도구 및 툴킷(우하단)을 통합</em></p></div>
 <p>CRISPR-GPT는 대규모 언어 모델(LLM)에 유전체 공학 도메인 지식과 외부 도구를 통합하여, 비전문가 연구자도 CRISPR 유전자 편집 실험을 자동으로 설계할 수 있는 에이전트 시스템이다. 이 시스템은 CRISPR 시스템 선택부터 가이드 RNA 설계, 세포 전달 방법 추천, 프로토콜 작성, 검증 실험 설계까지 전체 파이프라인을 자동화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 도메인 전문가 지식, 최신 문헌, 계산 도구(guideRNA 설계 도구 등)를 LLM 에이전트에 통합하고, 상태 머신 기반의 작업 분해 및 도구 제공 시스템을 구축</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>CRISPR-GPT의 컴포넌트: LLM Planner, Tool Provider, Task Executor, LLM Agent가 협력하여 복합 작업을 자동화</em></p></div>
 <ol>
 <li><strong>자동화된 4가지 핵심 메타-작업</strong>: CRISPR 시스템 선택, gRNA(가이드 RNA) 설계, 전달 방법 추천, 오프타겟 효과 예측을 포함한 완전한 실험 파이프라인 자동화</li>
 <li><strong>도메인 특화 설계</strong>: Broad Institute의 gold-standard guideRNA 라이브러리 및 CRISPRPick 툴킷 통합으로 효율성과 특이성 최적화</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>실제 사용 사례 검증</strong>: 비전문가 연구자도 처음부터 유전자 편집 실험을 효과적으로 설계할 수 있음을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <p><strong>시스템 아키텍처 및 알고리즘</strong>:</p>
 <ul>
 <li><strong>LLM Planner</strong>: 사용자 요청을 분석하여 4가지 사전 정의된 메타-작업 또는 맞춤형 작업 체인 구성</li>
@@ -123,8 +117,7 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../532_MerLean_An_Agentic_Framework_for_Autoformalization_in_Quantu/index.html">MerLean: An Agentic Framework for Autoformalization in Quantum Computation</a></div><div class="conn-reason">둘 다 자동화된 과학 연구를 다루지만 MerLean은 형식화에, CRISPR-GPT는 실험에 특화</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../211_ChemGymRL_A_Customizable_Interactive_Framework_for_Reinforce/index.html">ChemGymRL: A Customizable Interactive Framework for Reinforcement Learning for Digital Chemistry</a></div><div class="conn-reason">강화학습 화학 환경을 유전자 편집 자동화로 확장한 생명과학 응용</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../774_STELLA_Towards_a_Biomedical_World_Model_with_Self-Evolving_M/index.html">STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents</a></div><div class="conn-reason">STELLA의 자기진화형 바이오의학 에이전트는 CRISPR-GPT의 정적 도구 집합 한계를 극복하는 발전된 형태다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../615_PerTurboAgent_A_Self-Planning_Agent_for_Boosting_Sequential/index.html">PerTurboAgent: A Self-Planning Agent for Boosting Sequential Perturb-seq Experiments</a></div><div class="conn-reason">유전자 편집 실험 자동화를 위한 CRISPR-GPT 기술을 유전자 섭동 실험 설계에 확장 적용할 수 있다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../774_STELLA_Towards_a_Biomedical_World_Model_with_Self-Evolving_M/index.html">STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents</a></div><div class="conn-reason">STELLA의 자기진화형 바이오의학 에이전트는 CRISPR-GPT의 정적 도구 집합 한계를 극복하는 발전된 형태다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../615_PerTurboAgent_A_Self-Planning_Agent_for_Boosting_Sequential/index.html">PerTurboAgent: A Self-Planning Agent for Boosting Sequential Perturb-seq Experiments</a></div><div class="conn-reason">유전자 편집 실험 자동화를 위한 CRISPR-GPT 기술을 유전자 섭동 실험 설계에 확장 적용할 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

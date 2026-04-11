@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ievgeniia A. Tiukova, Daniel Brunnsåker, Erik Y. Bjurström, Alexander H. Gower, Filip Kronström, Gabriel K. Reder, Ronald S. Reiserer, Konstantin Korovin, Larisa B. Soldatova, John P. Wikswo, Ross D. King | <strong>날짜</strong>: 2024-08-20 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2408.10689" target="_blank">10.48550/arXiv.2408.10689</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="Genesis_fig1.png" alt="Fig 1">
-<p class="fig-caption"><em>그림 1. Genesis 시스템의 전체 아키텍처: 1,000개의 컴퓨터 제어식 μ-바이오리액터, 질량분석기, RNA-SEQ, 온톨로지 기반 지식베이스, AI 모듈이 통합된 완전 자동화 시스템</em></p></div>
 <p>Genesis는 수천 개의 상호작용하는 인과관계 성분을 가진 시스템 생물학 모델을 자동으로 개선하기 위해 설계된 다음 세대 로봇 과학자이며, 하루에 1,000개의 가설 기반 폐쇄 루프 실험 사이클을 병렬로 실행할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 1,000개의 μ-바이오리액터, 자동화된 질량분석(AutonoMS), 구조화된 온톨로지 기반 데이터베이스(Genesis-DB), 모델 수정 추적(RIMBO), 관계형 학습 기반 개선 알고리즘(LGEM+)을 통한 통합 플랫폼 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="Genesis_fig2.png" alt="Fig 2">
-<p class="fig-caption"><em>그림 2. Genesis 하드웨어: (a) Chalmers에서 운영 중인 초기 12개 μ-바이오리액터 시스템, (b) 유체 및 마이크로-포뮬레이터 설계 개요</em></p></div>
-<div class="review-fig"><img src="Genesis_fig3.png" alt="Fig 3">
-<p class="fig-caption"><em>그림 3. Genesis 질량분석 플랫폼: Agilent RapidFire 로봇 시스템과 이온 이동도 질량분석(IM-MS) 6560 시스템</em></p></div>
 <ol>
 <li><strong>하드웨어 혁신</strong>: 1,000개의 컴퓨터 제어식 μ-바이오리액터 시스템 개발 완료(초기 12개 시스템 운영). 각 바이오리액터는 배치(batch), 유가식 배치(fed-batch), 연속 배양 모드를 실시간으로 전환 가능하며, 실험 조건의 광범위한 탐색 가능</li>
 <li><strong>고처리량 분석 플랫폼</strong>: AutonoMS를 통해 하루 약 10,000회의 대사체(metabolite) 측정 수행 가능 달성(크로마토그래피 단계 제거로 기존 시스템 대비 획기적 향상). 5초 샘플 분석 시간으로 표적 및 비표적 대사체학 실험 검증 완료</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>모델 변화 추적</strong>: RIMBO(Revisions for Improvements of Models in Biology Ontology) 온톨로지 개발로 수십만 건의 모델 수정사항을 체계적으로 기록 및 추론 가능하게 함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="Genesis_fig4.png" alt="Fig 4">
-<p class="fig-caption"><em>그림 4. 유전자 발현 네트워크 재구성 → 실험 조건 검색 → 가설 및 실험 절차 기록 → 신규 데이터 포함 네트워크 재구성 → 시각화 업데이트의 사이클</em></p></div>
 <ul>
 <li><strong>실험 설계 매개변수</strong>: 유전체(20,000개 삭제 및 리포터 변이주 라이브러리), 성장률/OD(케모스탯/터빈도스탯), 배양 배지(10개 대사물질 칵테일, ~100가지 조합), 약물(~10,000가지 화합물 조합)</li>
 <li><strong>데이터 수집</strong>: 성장률(배치 배양), 배양액 대사 분석(~10가지 화합물), 효모 내부 상태(~100개 대사물질), 유전자 발현 수준(~6,000개 유전자)을 자동화된 방식으로 수집</li>

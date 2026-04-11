@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Guangzhi Xiong, Eric Xie, Amir Hassan Shariatmadari, Sikun Guo, Stefan Bekiranov | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2411.02382" target="_blank">10.48550/arXiv.2411.02382</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>KG-CoI 시스템의 개요: KG 기반 맥락 검색, KG 증강 아이디어 체인 생성, KG 기반 환각 감지 모듈로 구성</em></p></div>
 <p>LLM의 과학적 가설 생성 능력을 지식 그래프(Knowledge Graph)의 구조화된 정보와 통합하여 향상시키고, 생성 과정의 환각(hallucination)을 감지 및 완화하는 KG-CoI 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 검증된 과학적 정보를 담은 지식 그래프를 LLM의 추론 과정에 직접 통합하고, 단계적 추론 체인(Chain of Ideas)을 구성하며, 생성된 가설의 환각을 KG 기반으로 탐지한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 방법의 성능 비교: 자기 일관성(self-consistency) 설정에서 실행 횟수에 따른 성능 변화</em></p></div>
 <ol>
 <li><strong>가설 생성 정확도 향상</strong>: KG-CoI는 기존의 직접 프롬프팅(Direct prompting), 사고의 연쇄(Chain-of-Thought), RAG 방식 대비 가장 높은 정확도로 과학적 가설을 생성한다.</li>
 <li><strong>환각 감소 및 신뢰성 개선</strong>: KG 기반 환각 탐지 모듈을 통해 생성된 추론 단계들에서 사실적 오류를 식별하고, 시스템의 신뢰성을 크게 향상시킨다.</li>
 <li><strong>새로운 평가 데이터셋 구축</strong>: 지식 그래프 내의 링크를 마스킹하여 LLM의 가설 생성 능력을 정량적으로 평가할 수 있는 벤치마크 데이터셋을 구성하였다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <p>KG-CoI는 세 가지 주요 모듈로 구성된다:</p>
 <h3>1. KG 기반 맥락 검색 (KG-guided Context Retrieval)</h3>
 <ul>
@@ -142,7 +136,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../289_Drsr_Llm_based_scientific_equation_discovery_with_dual_reaso/index.html">DrSR: LLM 기반 과학 방정식 발견 (데이터와 경험의 이중 추론)</a></div><div class="conn-reason">지식 그래프를 활용한 과학 가설 생성 연구가 방정식 발견에서 경험적 지식을 활용하는 접근법의 이론적 기반을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../009_A_GENTIC_H_YPOTHESIS__A_SURVEY_ON_HYPOTHESIS_GENERATION_USIN/index.html">A GENTIC H YPOTHESIS : A SURVEY ON HYPOTHESIS GENERATION USING LLM SYSTEMS</a></div><div class="conn-reason">가설 생성 연구의 포괄적 서베이로서 이론적 기초 제공</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../391_Graph_of_ai_ideas_Leveraging_knowledge_graphs_and_llms_for_a/index.html">Graph of AI Ideas: Leveraging Knowledge Graphs and LLMs for AI Research Idea Generation</a></div><div class="conn-reason">같은 지식 그래프 활용 접근이지만 AI 연구 아이디어 생성에 특화된 시스템</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../391_Graph_of_ai_ideas_Leveraging_knowledge_graphs_and_llms_for_a/index.html">Graph of AI Ideas: Leveraging Knowledge Graphs and LLMs for AI Research Idea Generation</a></div><div class="conn-reason">AI 연구 vs 일반 과학 가설 생성으로 지식 그래프 활용의 서로 다른 도메인 적용</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../500_Llm-based_corroborating_and_refuting_evidence_retrieval_for/index.html">LLM-based Corroborating and Refuting Evidence Retrieval for Scientific Claim Verification</a></div><div class="conn-reason">지식 그래프 기반 가설 생성을 과학적 주장 검증으로 확장한 방법론</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../666_Research_hypothesis_generation_over_scientific_knowledge_gra/index.html">Research hypothesis generation over scientific knowledge graphs</a></div><div class="conn-reason">지식 그래프 기반 가설 생성의 실제 연구 적용 사례</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

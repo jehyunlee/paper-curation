@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ming Du, Yanqi Luo, Srutarshi Banerjee, Michael Wojcik, Jelena Popovic, Mathew J. Cherukara | <strong>날짜</strong>: 2026-02-17 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: EAA의 주요 구성 요소 및 상호작용. 작업 관리자(Task Manager)가 채팅 루프 또는 워크플로우를 포함하며, 에이전트 객체를 생성 및 유지하고 문맥을 관리한다.</em></p></div>
 <p>본 논문은 비전 언어 모델(Vision Language Model, VLM) 기반 에이전트 시스템인 EAA(Experiment Automation Agents)를 제시하며, 이는 복잡한 미시경 실험 워크플로우를 자동화하기 위해 멀티모달 추론, 도구 기반 행동, 장기 메모리를 통합한다. Advanced Photon Source의 이미징 빔라인에서 자동 영역판 초점 맞춤, 자연언어 기반 특성 검색, 대화형 데이터 획득을 구현하여 사용자 접근성을 대폭 개선한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -85,8 +83,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 멀티모달 입력 처리, 유연한 LLM-논리 제어 수준 조절, Model Context Protocol(MCP) 양방향 호환, RAG 기반 장기 메모리, 순차적 도구 실행 설계를 통해 이러한 격차를 해소하는 포괄적 에이전트 시스템을 설계</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 실험 자동화 도구에서 LLM 개입의 세 가지 수준. 각 수준에 대해 예시를 열거한다.</em></p></div>
 <ol>
 <li><strong>VLM 기반 멀티모달 에이전트 구현</strong>: 사용자 및 도구로부터의 이미지를 VLM으로 직접 처리하여 의미론적 이미지 이해를 실현. 자연언어로 기술된 특성 검색(예: "육각형 나노입자") 작업 자동화 달성</li>
 <li><strong>유연한 제어 수준 아키텍처 개발</strong>: LLM 완전 주도, 논리-LLM 혼합(localized LLM queries), 논리 완전 주도 등 세 가지 워크플로우 수준을 지원하여 안정성과 유연성 균형 달성</li>
@@ -94,12 +90,6 @@ a { color: #A62018; }
 <li><strong>실제 빔라인 실증</strong>: Advanced Photon Source의 이미징 빔라인에서 자동 영역판(zone plate) 초점 맞춤, 대화형 데이터 획득 성공적 구현</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: EAA 작업 관리자의 예시 워크플로우 다이어그램. (a) 일반적인 채팅 루프 구조</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 초점 맞춤 작업의 궤적. (a) 방문한 모든 영역판 z-위치에서 획득한 2D 이미지</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5: 특성 검색 작업의 궤적 및 결과. (a) 2D 이미지 획득 중심의 궤적</em></p></div>
 <ul>
 <li><strong>작업 관리자(Task Manager) 기반 아키텍처</strong>: 채팅 루프 또는 워크플로우 로직을 포함하는 중앙 관리 구조로, 사용자 입력, 자동 생성 메시지, 에이전트 응답을 문맥에 누적</li>
 <li><strong>세 단계 LLM 개입 모델</strong>:

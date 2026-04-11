@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 프롬프트 템플릿 변형을 통해 클레임의 세 가지 변형(CON, NEG, UNC)을 생성하고, 이들 간의 논리적 일관성을 제약조건으로 설정한 후, T-Few 모델에 PEFT 방식으로 미세조정.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ProToCo의 아키텍처: 클레임-증거 쌍에서 프롬프트 템플릿 변형을 통해 확인(CON), 불확실성(UNC), 부정(NEG) 변형을 생성하고, (IA)3를 이용한 PEFT로 모델 일관성 학습</em></p></div>
 <ol>
 <li><strong>Few-shot 성능</strong>: 세 개의 공개 사실검증 데이터셋에서 최신 few-shot 기준선 대비 최대 30.4% 상대 F1 개선</li>
 <li><strong>Zero-shot 성능</strong>: 레이블 없는 인스턴스만으로도 강력한 영샘플 학습기 T0-3B를 지속적으로 상회</li>
 <li><strong>대규모 모델 비교</strong>: OPT-30B를 능가하고, Self-Consistency 기반 OPT-6.7B를 유의미하게 초과 (few-shot, zero-shot 모두)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>일관성 메커니즘의 예시: 동일한 증거에 대해 원본, 확인, 부정, 불확실성 변형의 클레임에 대한 판단이 논리적으로 일치해야 함</em></p></div>
 <h3>프롬프트 기반 변형 생성</h3>
 <ul>
 <li>입력 템플릿 T_x와 타겟 템플릿 T_y로 구성된 프롬프트 템플릿 T 정의</li>

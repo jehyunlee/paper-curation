@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: arXiv 논문의 그림-캡션 쌍을 다중선택 문제로 변환하고, 적대적 필터링(adversarial filtering)과 인간 검증을 통해 고품질 문제 집합 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: SciFIBench 개요. 왼쪽: arXiv 논문에서 추출한 2000개의 다중선택형 과학 그림 해석 문제. 오른쪽: 28개 LMM 평가 프레임워크">
-</div>
 <ol>
 <li><strong>벤치마크 구축</strong>: arXiv에서 추출한 94k(CS) + 102k(일반) 그림-캡션 쌍으로부터 8개 범주의 2000개 고품질 문제 생성. 모든 문제에 대해 인간 검증 수행하여 응답 가능성 보장</li>
 <li><strong>포괄적 평가</strong>: GPT-4o, Gemini 1.5를 포함한 28개 LMM 평가로 현재 최고 성능 모델도 인간 기준선에 미치지 못함을 확인. 적대적 필터링이 문제 난이도 유의미하게 증가</li>
 <li><strong>충실성 분석</strong>: LLM(Gemini-Pro)을 활용한 자동 평가 방법 개발 및 모델의 추론 일관성(reasoning faithfulness) 프로빙 실시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: SciFIBench 문제의 그림 크기 및 캡션 길이 분포">
-</div>
 <p><strong>문제 구성 방법론</strong>:</p>
 <ul>
 <li><strong>임베딩 기반 선택</strong>: CLIP 기반 비전-언어 모델로 그림-캡션 쌍의 결합 임베딩(2048차원) 생성</li>
@@ -134,7 +130,6 @@ a { color: #A62018; }
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../336_FigCaps-HF_A_Figure-to-Caption_Generative_Framework_and_Benc/index.html">FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</a></div><div class="conn-reason">과학 그림 캡션 생성 모델의 성능을 체계적으로 평가할 수 있는 벤치마크 제공</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../201_ChartLlama_A_Multimodal_LLM_for_Chart_Understanding_and_Gene/index.html">ChartLlama: A Multimodal LLM for Chart Understanding and Generation</a></div><div class="conn-reason">차트 이해 전용 멀티모달 모델의 방법론이 과학 그림 전반을 다루는 대형 멀티모달 모델 벤치마킹에 핵심적으로 적용된다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../369_Gemini_a_family_of_highly_capable_multimodal_models/index.html">Gemini: a family of highly capable multimodal models</a></div><div class="conn-reason">Gemini의 멀티모달 능력을 과학 분야 특화 벤치마크로 평가하는 연구</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../336_FigCaps-HF_A_Figure-to-Caption_Generative_Framework_and_Benc/index.html">FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</a></div><div class="conn-reason">과학 그림 해석 벤치마크에서 캡션 생성 모델의 성능을 체계적으로 평가</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">MMC의 차트 이해 기술을 과학 분야 특화 멀티모달 벤치마크로 확장</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../627_Position_Multimodal_large_language_models_can_significantly/index.html">Position: Multimodal large language models can significantly advance scientific reasoning</a></div><div class="conn-reason">과학 도표 이해를 위한 대형 멀티모달 모델 벤치마킹이 과학적 추론 향상의 실제적 평가 기준을 제공한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre | <strong>날짜</strong>: 2008 | <strong>DOI</strong>: <a href="https://doi.org/10.1088/1742-5468/2008/10/P10008" target="_blank">10.1088/1742-5468/2008/10/P10008</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Visualization of the steps of our algorithm. Each pass is made of two phases:</em></p></div>
 <p>대규모 네트워크의 커뮤니티 구조를 모듈성(modularity) 최적화를 통해 빠르게 추출하는 휴리스틱 알고리즘을 제안한다. 반복적인 두 단계(지역 최적화 및 커뮤니티 응집)를 통해 계층적 커뮤니티 구조를 효율적으로 도출한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: 각 노드를 초기 커뮤니티로 시작하여, 각 노드에 대해 인접 커뮤니티로의 이동 시 모듈성 증가분을 계산하고 최대 증가를 제공하는 커뮤니티로 이동시킨다. 이를 반복하고 발견된 커뮤니티들로 새로운 네트워크를 구성하여 같은 과정을 재귀적으로 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Visualization of the steps of our algorithm. Each pass is made of two phases:</em></p></div>
 <ul>
 <li><strong>계산 복잡도 선형성</strong>: 희소 네트워크에서 거의 선형 복잡도를 달성하여 152분 내 1.18억 노드 네트워크 분석 가능</li>
 <li><strong>모듈성 최적화 효율성</strong>: 기존 최고 속도 알고리즘보다 우월한 모듈성 값을 달성하면서 계산 시간 단축</li>
@@ -87,8 +83,6 @@ a { color: #1856A0; }
 <li><strong>실제 사례 검증</strong>: 260만 고객의 벨기에 모바일 네트워크(언어 커뮤니티) 및 11억 이상의 링크를 가진 웹 그래프에서 성공적 검증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Visualization of the steps of our algorithm. Each pass is made of two phases:</em></p></div>
 <ul>
 <li>초기화: 각 노드를 별도 커뮤니티로 지정</li>
 <li>1단계(지역 최적화): 각 노드 i에 대해 모든 인접 노드의 커뮤니티를 확인하고 식(2)를 이용해 모듈성 증가분 ΔQ 계산</li>

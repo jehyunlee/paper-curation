@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jianke Yang, M. A. Bhat, B. L. Hu, Yadi Cao, Nima Dehmamy, Robin Walters, Rose Yu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2505.12083" target="_blank">10.48550/arXiv.2505.12083</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>프레임워크는 대칭 불변량(symmetry invariants)을 사용하여 방정식 발견에서 대칭성을 강제한다. 원형 영역에서의 예측 함수는 불변량 사용 시 대칭 출력을 보장함을 시각화한다.</em></p></div>
 <p>데이터로부터 미분방정식을 발견할 때 물리법칙을 위반하는 복잡한 해를 얻는 문제를 해결하기 위해, 대칭 불변량(differential invariants)을 기본 단위로 사용하여 방정식 발견 알고리즘을 제약하는 일반적 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 대칭 변환의 미분 불변량(differential invariants) 이론을 활용하여 원래 변수 대신 불변량을 기본 단위로 사용함으로써, 모든 기호 회귀 방법에 일반적으로 적용 가능한 대칭성 강제 메커니즘을 구축.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>유전 프로그래밍 기반 방법들의 성공 확률: 제안 방법(대칭성 포함)이 다양한 물리계에서 기본 방법들을 현저히 능가한다.</em></p></div>
 <ol>
 <li><strong>일반적 프레임워크</strong>: Lie 점 대칭(Lie point symmetry) 이론의 미분 불변량에 기반한 범용 프레임워크 개발. 방정식의 유형, 대칭 그룹, 기본 SR 알고리즘에 제약이 적음.</li>
 <li><strong>기존 방법과의 통합</strong>: 희소 회귀와 유전 프로그래밍 등 기존 SR 방법들과 원활하게 통합되며, 정확도와 효율성을 개선. 발견된 방정식은 지정된 대칭성을 자동으로 만족함을 보장.</li>
 <li><strong>강건성 검증</strong>: Darcy 유동, 반응-확산(reaction-diffusion) 시스템 등 다양한 물리계에서 검증. 노이즈가 있는 데이터와 불완전한 대칭성 조건에서도 견고한 성능 유지.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Lie 점 변환과 그 연장(prolongation)의 군 작용 시각화: 대칭 변환 하에서 미분량들의 변환 관계를 보여준다.</em></p></div>
 <ul>
 <li><strong>대칭 불변량 계산</strong>: 주어진 대칭 그룹 G에 대해 Lie 점 대칭 이론을 활용하여 미분 불변량 I₁, I₂, ... 체계적으로 도출</li>
 <li><strong>탐색 공간 재정의</strong>: 기존 기본 단위(변수, 미분항)를 미분 불변량으로 대체하여 후보 함수 라이브러리 구성</li>

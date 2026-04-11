@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 640,730개의 실험 기반 화학 문제(375개 작업)로 강화학습을 통해 24B 파라미터 모델 훈련. Supervised Fine-Tuning(SFT) → Group Relative Policy Optimization(GRPO)의 단계적 학습, 추론 패턴 증류, 동적 커리큘럼 등의 최적화 기법 활용.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 훈련 방법론 개요 및 ether0의 추론 예시. 하단의 훈련 단계는 각 단계별 정확도를 동일 x축 범위로 정규화하여 표시">
-</div>
 <ol>
 <li><strong>성능 우위</strong>: ether0는 GPT-4o, Llama 같은 최첨단 LLM, 일반 화학 모델, 인간 전문가를 분자 설계 작업에서 초과. 특히 retrosynthesis, solubility editing 등 복합 추론 작업에서 두드러짐.</li>
 <li><strong>데이터 효율성</strong>: 전문화된 도메인 특화 모델(Molecular Transformer 등)과 비교해 월등히 적은 데이터로 더 나은 성능 달성. 이는 추론 모델의 일반성과 강화학습의 효율성을 입증.</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>375개 작업의 다양성</strong>: 단순 구조 변환(IUPAC name, SMILES completion)부터 복합 특성 예측(혈뇌장벽 투과성, 수용체 결합, 냄새 특성)까지 포괄.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 일반 목적 LLM과의 작업별 성능 비교">
-</div>
 <ul>
 <li><strong>문제 구성</strong>: 640,730개 질문-답변 쌍을 ChEMBL, COCONUT, ORD 등 실험 데이터베이스에서 추출. 모든 분자는 합성된 실제 화합물만 사용(가상 분자 제외).</li>
 <li><strong>보상 함수 설계</strong>:

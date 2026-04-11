@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shingo Ayabe, Takuto Otomo, Hiroshi Kera, Kazuhiko Kawamoto | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.18781" target="_blank">arXiv:2412.18781</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>오프라인 강화학습의 견고성 평가 개요: 다양한 품질의 오프라인 데이터셋으로 학습된 모델을 정상, 랜덤, 적대적 섭동 조건에서 평가</em></p></div>
 <p>본 논문은 <strong>오프라인 강화학습(Offline RL) 기반 로봇 제어 시스템의 행동 공간 섭동에 대한 견고성을 체계적으로 평가</strong>하며, 기존 오프라인 RL 방법들이 액추에이터 고장과 같은 실제 운영 환경의 도전에 얼마나 취약한지를 실증적으로 증명한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 미분 진화(differential evolution) 기반 적대적 섭동 생성, (2) BCQ, TD3+BC, IQL 등 표준 오프라인 RL 방법의 견고성 평가, (3) 섭동이 포함된 데이터셋으로 재학습 시도를 통한 방어 전략 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>세 종류의 다리 로봇(Hopper, HalfCheetah, Ant)에서 적대적 섭동 강도에 따른 테스트 타임 견고성 평가 결과</em></p></div>
 <ol>
 <li><strong>오프라인 RL의 심각한 취약성 실증</strong>: 기존 오프라인 RL 방법들(BCQ, TD3+BC, IQL)이 무작위 및 적대적 행동 섭동에 대해 <strong>온라인 RL보다 훨씬 더 취약</strong>함을 정량적으로 입증. 예를 들어, Hopper 환경에서 적대적 섭동 하에 평균 에피소드 보상이 극적으로 감소.</li>
 <li><strong>데이터셋 커버리지의 중요성 규명</strong>: 테스트 타임 견고성이 훈련 데이터셋의 상태-행동 커버리지(state-action coverage)에 직접 의존함을 발견. 전문가(expert) 데이터셋은 중간(medium) 데이터셋보다 섭동에 더 잘 견딤.</li>
 <li><strong>기존 방어 전략의 무효성</strong>: 온라인 RL의 표준 방어 전략인 "섭동이 추가된 환경에서 훈련"을 오프라인 설정에서 적용했을 때, <strong>섭동이 포함된 데이터셋으로 훈련해도 견고성 개선이 거의 없음</strong>을 발견. 이는 오프라인 설정에서 특화된 새로운 방어 방법 개발의 필요성을 강조.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Hopper, HalfCheetah, Ant의 훈련 데이터셋에서의 행동 분포 비교: 히스토그램으로 표시된 상태-행동 커버리지</em></p></div>
 <ul>
 <li><strong>적대적 섭동 생성</strong>: 미분 진화 알고리즘을 사용하여 평균 에피소드 보상을 최소화하는 행동 섭동을 반복적으로 최적화. 온라인 RL의 그래디언트 기반 공격과 달리, 오프라인 설정에서 정책-섭동 결합 최적화를 요구하지 않음.</li>
 <li><strong>평가 메트릭</strong>: 세 가지 조건에서 평균 에피소드 보상 측정: (1) 정상(normal), (2) 무작위 섭동, (3) 적대적 섭동</li>
@@ -120,7 +114,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 <strong>오프라인 강화학습의 실제 운영 환경에서의 적용 가능성에 중요한 의문을 제기</strong>하며, 행동 공간 섭동에 대한 체계적 취약성 평가를 통해 실무적 가치를 제공한다. 특히 데이터셋 커버리지와 견고성의 상관관계 규명은 향후 더 견고한 오프라인 RL 알고리즘 개발의 기초가 될 수 있다. 다만 <strong>문제 진단에는 탁월하지만 해결책 제시는 미흡</strong>하며, 실제 로봇 검증과 더 다양한 공격 형태 분석을 통한 심화가 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html">Guided by guardrails: Control barrier functions as safety instructors for robotic learning</a></div><div class="conn-reason">제어 장벽 함수 기반 안전 학습은 오프라인 강화학습의 행동 공간 섭동 문제를 해결하는 안전성 보장 메커니즘을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 한국어 논문은 행동 공간 섭동, 영어 논문은 동일한 주제를 다른 관점에서 접근한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../688_Robustness_evaluation_of_offline_reinforcement_learning_for/index.html">Robustness evaluation of offline reinforcement learning for robot control against action perturbations</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 영어 논문과 한국어 논문이 동일한 주제를 다른 관점에서 접근한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../140_Autonomous_reinforcement_learning_agent_for_chemical_vapor_d/index.html">Autonomous reinforcement learning agent for chemical vapor deposition synthesis of quantum materials</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가 방법론을 화학 공정 제어에 적용한 확장 연구다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../422_Improving_generalization_of_robot_locomotion_policies_via_sh/index.html">Improving generalization of robot locomotion policies via sharpness-aware reinforcement learning</a></div><div class="conn-reason">샤프니스 인식 최소화를 통한 일반화 개선은 오프라인 강화학습의 견고성 문제를 모델 최적화 관점에서 해결하는 추가적인 방법론을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../003_A_comprehensive_survey_of_cross-domain_policy_transfer_for_e/index.html">A comprehensive survey of cross-domain policy transfer for embodied agents</a></div><div class="conn-reason">오프라인 강화학습의 로봇 제어 견고성을 크로스 도메인 정책 전이로 확장한다.</div></div>

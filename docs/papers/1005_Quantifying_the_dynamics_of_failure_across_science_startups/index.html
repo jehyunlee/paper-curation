@@ -66,8 +66,6 @@ a { color: #1856A0; }
 <blockquote><p><strong>저자</strong>: Yian Yin, Yang Wang, James A. Evans, Dashun Wang | <strong>날짜</strong>: 2019 | <strong>DOI</strong>: <a href="https://doi.org/10.1038/s41586-019-1725-y" target="_blank">10.1038/s41586-019-1725-y</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Phase diagram of the model. (a) Analytical solution of the model reveals that the</em></p></div>
 <p>과학, 스타트업, 보안 등 다양한 분야에서 반복된 실패의 역학을 설명하는 일-매개변수 모델을 개발하여, 실패 후 성공으로 이어지는 동역학의 위상 전이를 발견했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #1856A0; }
 <li><strong>Approach</strong>: NIH 연구비 신청, 스타트업 투자, 테러 공격 등 3개 대규모 데이터셋에서 개인의 반복 시도 이력을 추적하고, 과거 경험을 얼마나 활용하는지를 나타내는 매개변수 k를 가진 수학 모델을 제시하여 해석적으로 풀었다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: Testing model predictions. (a-c) Complementary cumulative distribution (CCDF) of</em></p></div>
 <ul>
 <li><strong>위상 전이 발견</strong>: 매개변수 k에 대해 불연속적인 위상 전이가 존재하며, 임계값 k*을 기준으로 정체(stagnation) 영역과 진전(progression) 영역이 구분됨을 증명했다.</li>
 <li><strong>보편적 동역학 법칙</strong>: 진전 영역에서 시간 복잡도와 품질 개선이 멱법칙(power law)을 따르며, 이는 Wright's Law와 일치함을 보였다.", '<strong>조기 신호 식별</strong>: 성공과 실패를 경험한 개인들이 초기에는 유사하지만, 후속 시도의 효율성(efficiency)과 품질(quality)의 동역학에서 근본적으로 다른 패턴을 보임을 발견했다.</li>
 <li><strong>3개 도메인에서 검증</strong>: NIH, 스타트업, 테러 조직 데이터에서 모델 예측이 일관되게 지지됨을 확인했다 (p < 0.05).</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: The k model. (a) Here we treat each attempt as a combination of independent compo-</em></p></div>
 <ul>
 <li>NIH R01 신청 776,721건, 스타트업 58,111개, 테러 공격 170,350건의 장기 데이터 수집 및 정제</li>
 <li>각 시도를 독립적 컴포넌트의 조합으로 모델링하고, 새 버전 생성 확률을 p=(1-x*)^α로 설정</li>

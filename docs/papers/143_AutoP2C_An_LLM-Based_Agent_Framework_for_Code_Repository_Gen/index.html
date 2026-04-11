@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zijie Lin, Yiqing Shen, Qilin Cai, He Sun, Jinrui Zhou, Mingjun Xiao | <strong>날짜</strong>: 2025-04-28 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>"Paper-to-Code" (P2C) 작업의 개요: 학술 논문의 다중모달 콘텐츠(텍스트, 이미지, 표)를 처리하여 완전히 실행 가능한 코드 저장소와 설명 다이어그램 생성</em></p></div>
 <p>학술 논문의 텍스트, 다이어그램, 표 등 다중모달 콘텐츠를 자동으로 처리하여 완전히 실행 가능한 코드 저장소를 생성하는 혁신적인 다중에이전트 LLM 프레임워크를 제시한다. 이는 기존의 단순 코드 스니펫 생성을 넘어 연구 논문 구현의 전체 자동화를 목표로 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 4단계 다중에이전트 프레임워크(저장소 청사진 추출 → 다중모달 콘텐츠 파싱 → 계층적 작업 분해 → 반복적 피드백 기반 디버깅)로 체계적 자동화.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>AutoP2C 프레임워크 개요: (1) 기존 ML 저장소 분석을 통한 표준화된 저장소 청사진 생성, (2) PDF 논문을 통합 표현으로 변환, (3) 구조화된 구현 계획 생성, (4) 반복적 피드백을 통한 실행 가능한 코드 저장소 생성</em></p></div>
 <ol>
 <li><strong>혁신적 작업 정의 및 공식화</strong>: "Paper-to-Code"를 다중모달 콘텐츠에서 구조화된 멀티파일 저장소와 설명 시각화를 생성하는 새로운 작업으로 최초 정의. 공식: f_P2C: P → R (P: 텍스트, 이미지, 표 / R: 모듈 집합 + 설명 다이어그램)</li>
 <li><strong>높은 실행 성공률</strong>: 8개 논문 벤치마크에서 AutoP2C는 모든 8개 논문의 실행 가능한 코드 저장소 생성 성공(100%), 반면 OpenAI-o1과 DeepSeek-R1은 단 1개 논문만 성공(12.5%). 이는 8배 우월성을 입증.</li>
@@ -135,7 +131,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: AutoP2C는 학술 논문의 자동 코드화라는 실제적이고 중요한 문제를 다중모달 이해와 다중에이전트 협력으로 효과적으로 해결한 혁신적 연구이다. 기존 방법 대비 8배 우월한 성공률은 실무적 가치를 입증하나, 벤치마크 규모 확대와 복잡한 시나리오에 대한 검증이 필요하며, 반복적 디버깅 메커니즘의 이론적 보장도 강화되어야 한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../232_CodePDE_An_Inference_Framework_for_LLM-driven_PDE_Solver_Gen/index.html">CodePDE: An Inference Framework for LLM-driven PDE Solver Generation</a></div><div class="conn-reason">논문에서 코드 생성이라는 동일 목표를 PDE와 일반 저장소 관점에서 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../232_CodePDE_An_Inference_Framework_for_LLM-driven_PDE_Solver_Gen/index.html">CodePDE: An Inference Framework for LLM-driven PDE Solver Generation</a></div><div class="conn-reason">논문에서 코드로의 자동 변환이라는 동일한 목표를 PDE와 일반 코드 관점에서 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../145_Autoreproduce_Automatic_ai_experiment_reproduction_with_pape/index.html">Autoreproduce: Automatic AI Experiment Reproduction with Paper Lineage</a></div><div class="conn-reason">논문 기반 실험 재현이 코드 저장소 생성으로 확장됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

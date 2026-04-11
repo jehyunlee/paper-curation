@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 폐루프 다중 에이전트 협업 시스템을 구축하여 (1) 속성 예측 모듈, (2) AI 시뮬레이션 피어 리뷰 모듈, (3) 강화학습 정제 모듈, (4) 펩타이드 생성 모듈을 통해 평가 결과를 기계 실행 가능한 보상 함수로 변환하고, 반복적 최적화를 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: MAC-AMP 프레임워크">
-<p class="fig-caption"><em>Figure 1: (a) 입력에서 출력까지 반복적으로 AMP 설계를 안내하는 폐루프 워크플로우 개요 (b) 모듈 간 상호작용을 보여주는 MAC-AMP 파이프라인 개요</em></p></div>
 <ol>
 <li><strong>다중 목표 최적화 성과</strong>: 항균 활성(antibacterial activity), AMP 유사성(AMP-likeness), 독성 규정 준수(toxicity compliance), 구조적 신뢰성(structural reliability)에서 기존 생성 모델 대비 우수한 성과 달성. 정적 가중치 대신 에이전트 합의 기반의 다중 목표 조정으로 안정적 최적화 실현.</li>
 <li><strong>설명가능성과 감시 가능성</strong>: 투명한 로그, 재생 추적(replay traces), 합의 인식 의사결정 추적을 통해 에이전트 전역의 단계별 설명가능성 제공. 블랙박스 AI 모델의 한계 극복.</li>
@@ -84,10 +82,6 @@ a { color: #A62018; }
 <li><strong>도메인 전이 가능성</strong>: AMP 설계 특화 구조를 유지하면서도 다른 분자 설계 문제로의 일반화 가능성 제시.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: AI 시뮬레이션 피어 리뷰 모듈">
-<p class="fig-caption"><em>Figure 2: 인공지능 시뮬레이션 피어 리뷰 모듈 개요</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 강화학습 정제 모듈">
-<p class="fig-caption"><em>Figure 3: 강화학습 정제 모듈 개요</em></p></div>
 <h3>속성 예측 모듈 (Property Prediction Module)</h3>
 <ul>
 <li><strong>항균 활성</strong>: ProtBERT 기반 LLM 회귀모델을 입력 데이터셋으로 전이학습하여 표적 특화 MIC 예측기 개발 (8:1:1 train:validation:test)</li>
@@ -138,7 +132,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MAC-AMP는 다중 에이전트 협업을 AMP 설계에 성공적으로 적용한 혁신적 연구로, 폐루프 구조와 설명가능성이라는 핵심 장점을 제시한다. 계산 기반 평가에서 기존 모델을 능가했으나, 생체 외 검증과 계산</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../177_Can_ai_agents_design_and_implement_drug_discovery_pipelines/index.html">Can ai agents design and implement drug discovery pipelines? arXiv preprint arXiv:2504.19912, 2025.</a></div><div class="conn-reason">AI 에이전트의 약물 발견 파이프라인 설계 능력이 MAC-AMP의 폐루프 항균펩타이드 개발 시스템 구축의 기본적인 기술적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../554_Modular_large_language_model_agents_for_multi-task_computati/index.html">PharmAgents: Building a Virtual Pharma with Large Language Model Agents</a></div><div class="conn-reason">MAC-AMP의 항균펩타이드 특화 다중 에이전트와 PharmAgents의 포괄적 신약 개발 시스템은 서로 다른 범위에서 약물 설계를 자동화하는 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../554_Modular_large_language_model_agents_for_multi-task_computati/index.html">PharmAgents: Building a Virtual Pharma with Large Language Model Agents</a></div><div class="conn-reason">PharmAgents의 포괄적 신약 개발과 MAC-AMP의 항균펩타이드 특화 시스템은 서로 다른 범위에서 약물 개발을 자동화하는 접근이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html">The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies</a></div><div class="conn-reason">Virtual Lab의 나노바디 설계 성공이 MAC-AMP의 항균펩타이드 설계를 위한 다중 에이전트 협업 방법론의 효과를 다른 단백질 영역에서 확장 검증한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

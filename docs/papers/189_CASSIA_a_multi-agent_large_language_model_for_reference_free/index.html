@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Elliot Xie, Lingxin Cheng, Jack M. Shireman, Yujia Cai, Jihua Liu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2024.12.04.626476" target="_blank">10.1101/2024.12.04.626476</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CASSIA의 다중 에이전트 LLM 시스템 구조. 온보딩 플랫폼을 통해 사용자 입력을 받고, Annotator, Validator, Formatter, Scorer, Reporter 에이전트가 순차적으로 작동하며, 선택적 에이전트들(Subclustering, Uncertainty Quantification, RAG)도 활용 가능</em></p></div>
 <p>CASSIA는 단일세포 RNA-seq 데이터의 자동화된 세포주석(cell annotation)을 위한 다중 에이전트 대규모 언어모델(LLM) 시스템으로, 기존 방법보다 12-41% 높은 정확도를 달성하면서 해석 가능한 품질 점수와 불확실성 정량화를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 검증(validation), 품질 점수 생성, 보고 기능을 갖춘 다중 에이전트 시스템을 구축하여 LLM의 한계를 극복</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2a-2b">
-<p class="fig-caption"><em>5개 벤치마크 데이터셋에서 완전히 정확한 주석(fully correct)은 12-41% 개선, 부분적으로 정확한 주석까지 포함한 결과는 9-29% 개선</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2c-2e">
-<p class="fig-caption"><em>면역세포 분류에서 25% 이상의 성능 향상(좌측), 종양 미세환경에서 암 세포 구분(중앙), 비모델 생물종(상어, 집고양이, 호랑이, 천산갑)에서 14-77% 정확도 개선(우측)</em></p></div>
 <ol>
 <li><strong>높은 정확도</strong>: 5개 대규모 벤치마크 데이터셋 및 복잡한 면역세포, 종양 미세환경, 비모델 생물종 데이터에서 기존 방법 대비 현저히 우수한 성능 입증</li>
 <li><strong>해석 가능한 품질 점수</strong>: 0-100% 범위의 주석별 품질 점수 생성으로, 정확한 주석은 높은 점수, 오류는 낮은 점수를 부여하여 신뢰도 있는 결과 평가 가능 (Figure 2f)</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>세밀한 주석 기능</strong>: 검색-증강 생성(RAG) 에이전트를 통해 세포 마커 데이터베이스와 생물학적 온톨로지를 활용한 상세 주석 가능 (신경세포의 excitatory/inhibitory 분류, layer 위치 등)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ul>
 <li><strong>온보딩 플랫폼</strong>: 사용자가 종(species), 조직(tissue), 알려진 마커 유전자(markers), 실험 조건 등을 입력</li>
 <li><strong>Annotator 에이전트</strong>: Zero-shot chain-of-thought 방식으로 표준 생물정보학자의 워크플로우를 모방하여 세포 주석 수행</li>

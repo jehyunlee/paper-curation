@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xinyun Chen, Maxwell Lin, Nathanael Schärli, Denny Zhou | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2304.05128" target="_blank">10.48550/arXiv.2304.05128</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>SELF-DEBUGGING의 반복적 디버깅 프로세스: 코드 생성(Step 1) → 코드 실행(Step 2) → 코드 설명(Step 3) → 피드백 생성 단계</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)이 몇 가지 시연(few-shot demonstration)을 통해 자신이 생성한 코드를 자동으로 디버깅하도록 가르치는 SELF-DEBUGGING 기법을 제시한다. 외부 피드백 없이 코드 설명과 실행 결과 분석을 통해 오류를 식별하는 "러버덕 디버깅(rubber duck debugging)" 방식의 자체 수정이 가능함을 보인다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Few-shot 프롬프팅을 통해 LLM에게 (1) 코드 생성 → (2) 코드 실행 → (3) 코드 설명 생성 → (4) 피드백 기반 수정 의 반복적 디버깅 프로세스를 학습시킨다. 단위 테스트가 없는 경우 순수 코드 설명으로, 있는 경우 실행 결과 피드백과 함께 설명을 활용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>텍스트-SQL 생성을 위한 SELF-DEBUGGING 프롬프트 예시</em></p></div>
 <ol>
 <li><strong>다중 도메인 최고 성능 달성</strong>:
 <ul>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>모델 일반성</strong>: GPT 계열(code-davinci-002, gpt-3.5-turbo, gpt-4)과 오픈소스 모델(StarCoder) 모두에서 효과 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>코드 번역을 위한 SELF-DEBUGGING 프롬프트 예시와 단위 테스트 피드백</em></p></div>
 <ul>
 <li><strong>3단계 반복 프로세스</strong>:
 <ol>
@@ -136,7 +130,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../242_CRITIC_Large_Language_Models_Can_Self-Correct_with_Tool-Inte/index.html">CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing</a></div><div class="conn-reason">자기 디버깅의 기본 개념이 도구 통합 자기 수정 시스템에서 더 포괄적인 오류 검출과 수정 능력을 구현하는 기초가 된다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../636_Prompt_to_be_consistent_is_better_than_self-consistent_few-s/index.html">Prompt to be consistent is better than self-consistent? Few-shot and zero-shot fact verification with pre-trained language models</a></div><div class="conn-reason">언어모델의 일관성 강제와 자기 디버깅은 모두 자기 수정 메커니즘이지만, 논리적 제약과 실행 피드백이라는 다른 검증 방식을 사용한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../610_Pelican_Correcting_Hallucination_in_Vision-LLMs_via_Claim_De/index.html">Pelican: Correcting Hallucination in Vision-LLMs via Claim Decomposition and Program of Thought Verification</a></div><div class="conn-reason">코드 자기 디버깅과 시각적 주장 검증은 모두 자기 수정 메커니즘을 활용하지만 실행 피드백과 논리적 분해라는 서로 다른 검증 방법을 사용한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../610_Pelican_Correcting_Hallucination_in_Vision-LLMs_via_Claim_De/index.html">Pelican: Correcting Hallucination in Vision-LLMs via Claim Decomposition and Program of Thought Verification</a></div><div class="conn-reason">코드 디버깅과 시각적 주장 검증은 모두 자기 수정 메커니즘을 활용하지만, 서로 다른 모달리티에서 오류 검출과 보정 방법을 제시한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../746_Self-Refine_Iterative_Refinement_with_Self-Feedback/index.html">Self-Refine: Iterative Refinement with Self-Feedback</a></div><div class="conn-reason">Self-Refine의 피드백 메커니즘을 디버깅 특화 작업으로 확장하여 코드 수정에 적용한 후속 연구로 볼 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

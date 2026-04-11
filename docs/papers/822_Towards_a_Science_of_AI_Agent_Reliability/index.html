@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Stephan Rabanser, Sayash Kapoor, Peter Kirgis, Kangheng Liu, Saiteja Utpala, Arvind Narayanan | <strong>날짜</strong>: 2026-02-18 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2602.16666" target="_blank">10.48550/arXiv.2602.16666</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>신뢰성 향상이 능력 향상보다 뒤처짐. 정확도는 꾸준히 상승하지만 신뢰성은 미미한 개선만 보임</em></p></div>
 <p>AI 에이전트(agents)의 실제 배포 환경에서 높은 정확도에도 불구하고 신뢰성 부족이 심각한 문제임을 보여주며, 안전-임계 엔지니어링(safety-critical engineering)의 원칙을 기반으로 일관성, 견고성, 예측가능성, 안전성의 4가지 차원으로 분해한 신뢰성 평가 메트릭 12개를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 안전-임계 엔지니어링 분야(항공, 원전, 자동차)의 수십 년 관행으로부터 신뢰성의 4가지 핵심 차원을 도출하고, 각 차원에 대한 구체적인 메트릭을 정의하여 14개 에이전트 모델을 2개 벤치마크에서 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>결과 일관성: 모델 간 편차 분석</em></p></div>
 <ol>
 <li><strong>신뢰성 평가 프레임워크 구축</strong>: 일관성(consistency), 견고성(robustness), 예측가능성(predictability), 안전성(safety)의 4가지 독립적 차원에서 12개의 구체적이고 계산 가능한 메트릭 제안. 이 메트릭들은 원시 정확도와 무관하게 서로 다른 능력 수준의 에이전트들을 비교 가능하게 함</li>
 <li><strong>신뢰성-능력 괴리 실증</strong>: 18개월 동안의 모델 릴리스에서 정확도는 연 0.21 기울기로 꾸준히 향상되지만, 신뢰성(R)은 연 0.03에 불과한 미미한 개선만 달성. 벤치마크 간 정확도-신뢰성 상관계수 차이(0.63~0.73에서 0.46~0.82로 변동)는 정확도 향상이 신뢰성 향상을 보장하지 않음을 시사</li>
 <li><strong>현대 에이전트의 신뢰성 프로필 분석</strong>: 일관성(run-to-run repeatability)과 예측가능성이 즉각적인 연구 초점이 필요한 가장 약한 차원임을 특정. 모델들이 동일 조건에서 다양한 출력을 보이며, 자신의 실패 가능성을 충분히 인식하지 못함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>프롬프트 견고성: 입력 변동에 따른 성능 저하</em></p></div>
 <p><strong>신뢰성 메트릭 설계:</strong></p>
 <ul>
 <li><strong>일관성</strong> (Consistency):

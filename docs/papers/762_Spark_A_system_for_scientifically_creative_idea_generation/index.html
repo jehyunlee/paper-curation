@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Asiem Sanyal, Samuel Schapiro, Sumuk Shashidhar, Royce Moon, Lav R. Varshney, Dilek Hakkani‐Tür | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="SPARK의_end-to-end_파이프라인.png" alt="Figure 1">
-<p class="fig-caption"><em>SPARK의 end-to-end 파이프라인: XPLOR는 임베딩 기반 재귀적 문헌 검색을 수행하고, SPARK Idea Generator는 체인-오브-소트 프롬팅으로 연구 제안을 합성하며, SPARK Filter는 지도학습 미세조정된 JUDGE 모델을 통해 자동화된 동료평가 및 순위 매김을 수행한다.</em></p></div>
 <p>대규모 언어 모델(LLM)과 계산 창의성(CC) 원칙을 결합하여 과학적 아이디어를 자동 생성하고 평가하는 통합 시스템을 제시한다. OpenReview의 600K 과학 리뷰로 훈련된 JUDGE 평가 모델을 통해 생성된 아이디어의 창의성을 자동 검토한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 문헌 검색(XPLOR) → 아이디어 생성(SPARK Idea Generator) → 아이디어 평가(SPARK Filter + JUDGE)의 3단계 파이프라인을 구축하고, 600K OpenReview 데이터셋으로 JUDGE 모델을 훈련한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="Spark_아이디어_생성_파이프라인.png" alt="Figure 2">
-<p class="fig-caption"><em>Spark 아이디어 생성 파이프라인: (A) 입력 개념 및 문제, (B) 구조화된 프롬트, (C) LLM 응답, (D) 생성된 아이디어</em></p></div>
-<div class="review-fig"><img src="Spark_Filter_파이프라인.png" alt="Figure 3">
-<p class="fig-caption"><em>Spark Filter 파이프라인: 생성된 아이디어에 대해 JUDGE 모델이 다중 비평을 생성하고, 별도의 LLM이 최종 수락/거절 결정과 유용성 점수를 종합한다.</em></p></div>
 <ol>
 <li><strong>통합 시스템 구현</strong>: 문헌 검색, 아이디어 생성, 평가를 통합한 완전한 파이프라인 구축으로 10,000개 이상의 AI 중심 연구 아이디어를 성공적으로 생성 및 필터링</li>
 <li><strong>전문 평가 모델 개발</strong>: OpenReview의 600K 과학 리뷰를 활용하여 JUDGE 모델 훈련. 추상(abstract)만 사용하고 실험 결과를 제거한 "아이디어 추상(Aidea)" 데이터 변환으로 편향 완화</li>

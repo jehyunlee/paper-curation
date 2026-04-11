@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Hyungyu Shin, Jingyu Tang, Yoonjoo Lee, Nayoung Kim, Hyunseung Lim, Ji Yong Cho, Hwajung Hong, Moontae Lee, Ju-ho Kim | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: LLM 리뷰 평가를 위한 포커스 레벨 평가 프레임워크. 사전정의된 facet을 기반으로 포커스 분포를 계산하고 인간 리뷰와 비교</em></p></div>
 <p>본 논문은 LLM이 생성한 논문 리뷰가 인간 전문가와 동일한 비판적 측면(강점과 약점)에 주목하는지 평가하기 위한 <strong>포커스 레벨 평가 프레임워크</strong>를 제안한다. LLM 리뷰의 기술적 타당성 편향과 참신성 평가 간과라는 맹점을 정량적으로 드러낸다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 전문가 리뷰에서 강점/약점을 추출하고, 사전정의된 target(문제, 방법, 실험 등) 및 aspect(타당성, 명확성, 참신성 등) facet으로 자동 주석화하여 포커스 분포를 계산하고 LLM과 비교한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 자동 포커스 레벨 평가 프로세스. 메타리뷰에서 강점/약점 추출 → facet 자동 주석 → 포커스 분포 계산 및 비교</em></p></div>
 <ol>
 <li><strong>포커스 프레임워크 개발</strong>: 676개 ICLR 논문 리뷰(2021-2024)로부터 3,657개 인간 전문가 강점/약점을 수집하고, 자동 주석기(Cohen's kappa: target 0.81, aspect 0.79)를 구축하여 완전 자동화된 평가 파이프라인 실현.</li>
 <li><strong>LLM 맹점 발견</strong>: 8개 LLM(GPT, Llama, DeepSeek) 및 파인튜닝 모델 평가 결과, 모든 오프더셀프 LLM이 <strong>기술적 타당성 검토에 편향</strong>(overemphasis)되고 <strong>약점 지적 시 참신성 평가를 심각하게 간과</strong>(underemphasis)하는 일관된 패턴 발견.</li>
 <li><strong>성능 격차 정량화</strong>: 최고 성능 모델도 target-aspect 매칭 F1 스코어 0.373에 불과하며, 파인튜닝 모델만이 인간 포커스 분포와 가장 가까운 결과 달성(텍스트 유사도에서는 Llama-405B가 최고).</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3-4">
-<p class="fig-caption"><em>그림 3-4: 강점/약점 분포 및 target/aspect별 포커스 분포 시각화</em></p></div>
 <ul>
 <li><strong>Facet 정의</strong>: AI 컨퍼런스 9개 투고 가이드라인 + 리뷰 분석 문헌 검토를 통해 target 7개(Problem, Method, Theory, Experiment, Dataset, Prior Research, Conclusion, Paper) 및 aspect 5개(Validity, Clarity, Novelty, Impact, Completeness) 추출.</li>
 <li><strong>자동 주석기</strong>: LLM 기반 주석기 개발, 각 강점/약점에 target-aspect 레이블 할당, 인간 주석자와의 일치도(IRR) 검증(kappa > 0.79).</li>
@@ -114,7 +108,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../262_Deepreview_Improving_llm-based_paper_review_with_human-like/index.html">DeepReview: Improving LLM-based Paper Review with Human-like Deep Thinking Process</a></div><div class="conn-reason">DeepReview의 인간 유사 논문 리뷰 개선 방법은 포커스 레벨 평가 프레임워크의 이론적 기반을 제공합니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../173_Bridging_social_psychology_and_llm_reasoning_Conflict-aware/index.html">Bridging social psychology and llm reasoning: Conflict-aware meta-review generation via cognitive alignment</a></div><div class="conn-reason">인지정렬프레임워크의 앵커링 효과 완화와 포커스 레벨 평가는 모두 LLM 리뷰의 편향 문제를 다루는 상호 보완적 접근법입니다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../128_Automatically_evaluating_the_paper_reviewing_capability_of_l/index.html">Automatically evaluating the paper reviewing capability of large language models</a></div><div class="conn-reason">동일한 포커스 레벨 평가 프레임워크를 다른 관점에서 접근함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../173_Bridging_social_psychology_and_llm_reasoning_Conflict-aware/index.html">Bridging social psychology and llm reasoning: Conflict-aware meta-review generation via cognitive alignment</a></div><div class="conn-reason">포커스 레벨 평가와 인지정렬프레임워크는 모두 LLM 리뷰 시스템의 편향 문제를 다루는 상호 보완적인 접근법입니다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../128_Automatically_evaluating_the_paper_reviewing_capability_of_l/index.html">Automatically evaluating the paper reviewing capability of large language models</a></div><div class="conn-reason">논문 리뷰 능력의 자동 평가는 LLM 리뷰의 맹점을 정량화하는 포커스 레벨 평가의 확장된 응용입니다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

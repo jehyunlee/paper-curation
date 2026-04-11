@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Rui Hu, Yue Wu, Tianhao Su, Yin Wang, Shunbo Hu, Jizhong Huang | <strong>날짜</strong>: 2026-02-18 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>두 단계 에이전트 프레임워크의 개요. 원본 PDF 수집부터 구조화된 JSON 데이터베이스까지의 처리 흐름</em></p></div>
 <p>대규모 언어모델(LLM)을 활용하여 과학 문헌에 산재된 기계적 구성 모델(constitutive model)을 자동으로 추출하고, 이를 문화유산 보존 분야의 디지털 트윈 구축에 활용하는 혁신적 시스템을 제시한다. 2,000여 편의 논문에서 185개의 구성 모델과 450개 이상의 보정된 매개변수를 추출하여 80.4%의 정확도를 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 제로샷/소수샷 학습, 문맥 이해, 복잡한 지시 따르기 능력을 활용한 2단계 에이전트 프레임워크를 개발한다. 비용 효율적인 "게이트키퍼(Gatekeeper)" 에이전트로 관련 논문을 선별하고, 고성능 "분석가(Analyst)" 에이전트가 맥락 인식 기호 접지(Context-Aware Symbolic Grounding) 메커니즘을 통해 정밀 추출을 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>추출된 구성 메커니즘의 분포. 프레임워크가 성공적으로 분류한 모델 유형들</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>프레임워크의 정량적 평가. (a) 추출 성능의 혼동 행렬, (b) 정확도-재현율 곡선</em></p></div>
 <ol>
 <li><strong>구조화된 유산 재료 구성 모델 데이터베이스 구축</strong>: 2,000여 편의 논문 스크리닝을 통해 엄격한 기준을 충족하는 113개의 고품질 연구를 선별했으며, 185개의 구성 모델 인스턴스와 450개 이상의 보정된 매개변수를 포함한 체계적 저장소를 구축했다.</li>
 <li><strong>높은 추출 정확도 및 효율성 달성</strong>: 80.4%의 추출 정확도(precision)를 달성했으며, 휴먼-인-더-루프(Human-in-the-loop) 워크플로우를 통해 수동 데이터 큐레이션 시간을 약 90% 단축했다. 2단계 에이전트 설계로 계산 비용을 대폭 절감하면서도 높은 정밀도를 유지했다.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>문화유산의 "디지털 재료 트윈(Digital Material Twin)" 기초 마련</strong>: 산재된 문헌을 체계적으로 통합하여 향후 고충실도 수치 시뮬레이션과 과학 기반 보존 의사결정을 가능하게 했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>정성적 추출 사례 연구. Jeffreys형 점탄성(Viscoelastic) 모델의 추출 프로세스</em></p></div>
 <h3>2단계 에이전트 프레임워크 설계</h3>
 <ul>
 <li><strong>Stage I (게이트키퍼)</strong>: 저비용 LLM을 사용하여 광범위한 관련성 기준으로 문헌을 필터링. 계산 자원 효율성 극대화.</li>
@@ -107,8 +99,6 @@ a { color: #A62018; }
 <li><strong>구조화된 데이터베이스 저장</strong>: 추출된 모델과 매개변수를 엄격한 스키마에 따라 JSON 형식으로 저장하여 상호 운용성과 검색 용이성 확보.</li>
 </ul>
 <h3>웹 기반 지식 검색 플랫폼</h3>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>자동화된 데이터 수집 인터페이스. 추출 결과의 상세 뷰</em></p></div>
 <ul>
 <li>범위 제한 매개변수 쿼리 기능으로 다운스트림 수치 시뮬레이션에 적합한 데이터 신속 검색 지원.</li>
 <li>사용자 친화적 인터페이스로 엔지니어와 과학자의 접근성 향상.</li>
@@ -139,7 +129,6 @@ a { color: #A62018; }
 <div class="eval-badges"><span class="eval-badge">Novelty: 4.5/5</span> <span class="eval-badge">Technical Soundness: 4/5</span> <span class="eval-badge">Significance: 4.5/5</span> <span class="eval-badge">Clarity: 3.5/5</span> <span class="eval-badge">Overall: 4.2/5</span></div>
 </div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../496_LLM_Agents_Making_Agent_Tools/index.html">LLM Agents Making Agent Tools</a></div><div class="conn-reason">기계적 구성 모델의 문헌 기반 추출과 TOOLMAKER의 코드 저장소 기반 도구 생성은 서로 다른 소스에서 과학 지식을 자동화하는 대안적 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../496_LLM_Agents_Making_Agent_Tools/index.html">LLM Agents Making Agent Tools</a></div><div class="conn-reason">TOOLMAKER의 코드 저장소 기반 도구 생성과 기계적 구성 모델의 문헌 기반 추출은 서로 다른 소스에서 과학 도구를 자동 생성하는 접근이다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../252_Data_integrity_in_materials_science_in_the_era_of_AI_balanci/index.html">Data integrity in materials science in the era of AI: balancing accelerated discovery with responsible science and innovation</a></div><div class="conn-reason">재료과학에서의 데이터 무결성 연구가 기계적 구성 모델 추출의 정확도 검증과 품질 보장에 직접적으로 적용되는 방법론이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

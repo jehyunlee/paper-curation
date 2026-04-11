@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jong Inn Park, Maanas Taneja, Qianwen Wang, Dongyeop Kang (University of Minnesota) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 다중 에이전트 비디오 생성 파이프라인의 개념적 개요">
-<p class="fig-caption"><em>전처리, 계획, 편집, 피드백 및 평가의 4단계로 구성된 파이프라인</em></p></div>
 <p>본 논문은 과학 논문을 짧은 형식의 동영상으로 변환하는 완전 자동화된 멀티-LLM 에이전트 프레임워크 SciTalk를 제안한다. 인간 크리에이터의 반복적 워크플로우에서 영감을 받아 피드백 루프를 통해 과학적 정확성과 시각적 품질을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 크리에이터 워크플로우를 모방한 구조화된 멀티-에이전트 프레임워크 제안. 생성형 모델 대신 비디오 편집 라이브러리 사용으로 시각적 충실도 보장. 피드백 에이전트를 통한 반복적 개선 메커니즘 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: 반복(iteration)에 따른 평가 점수 추이">
-<p class="fig-caption"><em>인간 평가와 모델 평가 모두에서 반복을 거쳐 개선 경향</em></p></div>
 <ol>
 <li><strong>멀티-에이전트 협업 체계</strong>: 6개의 특화된 LLM 기반 에이전트(Flashtalk Generator, Sceneplan Generator, Background Assistant, Text Assistant, Effect Assistant, Layout Allocator)가 4단계 파이프라인에서 조율된 협업 수행. 단순 프롬프팅 기반선(baseline)보다 더 정확하고 매력적인 콘텐츠 생성 달성.</li>
 <li><strong>반복적 피드백 루프</strong>: Vision-Language Model 기반 Feedback Agent가 각 부분 장면(sub-scene)을 정성적·정량적 지표로 평가. Reflection Agent가 피드백을 프롬프트에 반영하여 점진적 개선 구현. 사용자 역할 시뮬레이션을 통한 자동화된 피드백 메커니즘.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 생성 에이전트들이 장면 구성에 기여하는 상세한 워크플로우">
-<p class="fig-caption"><em>각 에이전트의 입출력과 역할 분담</em></p></div>
 <p><strong>프리프로세싱 단계 (Preprocessing)</strong></p>
 <ul>
 <li>arXiv 등 소스에서 논문 수집, 원문 텍스트 추출 (HTML/PDF)</li>

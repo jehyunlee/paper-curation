@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Gemini Robotics Team, Rohan Anil, Sebastian Borgeaud, Jean-Baptiste Alayrac, Jiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew M. Dai, Anja Hauth, Katie Millican, David M. Silver, Melvin Johnson, Ioannis Antonoglou, Julian Schrittwieser, Amelia Glaese, Jilin Chen, Emily Pitler, Timothy Lillicrap, Angeliki Lazaridou, Orhan Fırat | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Gemini 모델은 텍스트, 이미지, 오디오, 비디오의 인터리빙된 시퀀스를 입력으로 받아 텍스트와 이미지가 섞인 응답을 생성할 수 있다.</em></p></div>
 <p>Google이 개발한 Gemini는 이미지, 오디오, 비디오, 텍스트를 네이티브하게 처리하는 멀티모달 대규모 언어 모델 패밀리로, Ultra, Pro, Nano 세 가지 크기로 제공되며 30개의 32개 벤치마크 중에서 최첨단 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Transformer 디코더를 기반으로 하되 멀티모달 입력(텍스트, 이미지, 오디오, 비디오)을 처리하도록 설계하고, 32k 컨텍스트 길이를 지원하며, 대규모 TPU 인프라를 활용하여 세 가지 크기(Ultra, Pro, Nano)의 모델을 동시에 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Gemini 모델이 학생의 물리 문제 풀이를 검증하는 예시로, 필기 인식, 문제 이해, LaTeX 생성 능력을 보여준다.</em></p></div>
 <ol>
 <li><strong>벤치마크 성능 우위</strong>: Gemini Ultra가 평가된 32개 벤치마크 중 30개에서 최첨단 성능 달성
 <ul>
@@ -96,8 +92,6 @@ a { color: #A62018; }
 <li><strong>효율적인 모델 계열</strong>: 온디바이스 배포용 Nano 모델(1.8B~3.25B 파라미터)도 크기 대비 뛰어난 성능 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 모달리티의 입력이 인터리빙된 형태로 처리되는 구조</em></p></div>
 <ul>
 <li><strong>아키텍처</strong>: Transformer 디코더 기반으로 멀티쿼리 어텐션(multi-query attention) 등 효율성 개선 기법 적용</li>
 <li><strong>멀티모달 인코딩</strong>:
@@ -150,12 +144,10 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Gemini는 텍스트, 이미지, 오디오, 비디오를 통합적으로 처리하는 진정한 멀티모달 모델로서, MMLU 인간 전문가 수준 달성 및 30/32 벤치마크 최첨단 성능 기록을 통해 멀티모달 AI의 새로운 기준을 제시하며, 대규모 훈련 인프라 혁신(97% goodput)은 향후 초대형 모델 개발의 모범 사례가 될 것으로 기대된다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../801_The_llama_3_herd_of_models/index.html">The Llama 3 Herd of Models</a></div><div class="conn-reason">Google의 Gemini 멀티모달 모델 패밀리가 Llama 3의 멀티모달 확장 및 성능 벤치마킹에 비교 기준을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">GPT-4와 경쟁하는 Google의 멀티모달 모델로 다른 회사의 접근법을 보여줌</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../387_Gpt-4_technical_report/index.html">GPT-4 Technical Report</a></div><div class="conn-reason">Gemini와 함께 멀티모달 AI의 양대 모델로 서로 다른 회사의 접근법을 대표함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1127_MMSD20_Towards_a_Reliable_Multi-modal_Sarcasm_Detection_Syst/index.html">MMSD2.0: Towards a Reliable Multi-modal Sarcasm Detection System</a></div><div class="conn-reason">범용 멀티모달 모델과 달리 풍자 탐지라는 특정 작업에 특화된 시스템 구축</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../368_Gemini_15_Unlocking_multimodal_understanding_across_millions/index.html">Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context</a></div><div class="conn-reason">Gemini 1.5로 발전하면서 더 긴 컨텍스트와 향상된 멀티모달 이해 능력을 제공</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">Gemini의 멀티모달 능력을 과학 분야 특화 벤치마크로 평가하는 연구</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">Gemini의 멀티모달 능력이 MMC의 차트 이해 작업에 직접 적용될 수 있음</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">Gemini 같은 멀티모달 모델의 차트 이해 능력을 전문적으로 평가하고 개선하는 연구</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">Gemini의 멀티모달 능력이 MMC의 차트 이해 작업에 직접 적용될 수 있음</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

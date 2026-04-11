@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Linzhi Huang, Yulong Li, Hongbo Tian, Yue Yang, Xiangang Li, Weihong Deng, Jieping Ye | <strong>날짜</strong>: 2023-03-08 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 위치 불일치(Position Inconsistency) 개념 설명. 신뢰도(confidence)가 낮아도 위치 일관성이 높은 고품질 의사 레이블이 존재함을 보여줌</em></p></div>
 <p>반인체 포즈 추정을 위한 준지도학습(semi-supervised learning)에서 <strong>위치 불일치 기반 의사 레이블 수정 모듈(SSPCM)</strong>을 제안하여, 노이즈 의사 레이블을 효과적으로 제거하고 SOTA 성능을 달성한 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -88,8 +86,6 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: COCO 데이터셋에서 레이블된 인스턴스 수에 따른 성능 비교. 모든 설정에서 기존 SOTA 대비 우수한 성능</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: COCO 데이터셋에서
 <ul>
@@ -102,8 +98,6 @@ a { color: #A62018; }
 <li><strong>다중 벤치마크 검증</strong>: MPII, COCO, AI-Challenger에서 일관된 성능 우수성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: SSPCM의 전체 훈련 파이프라인. 4단계 상호 학습(interactive training) 구조</em></p></div>
 <h3>핵심 방법론</h3>
 <p><strong>1. 위치 불일치 의사 레이블 수정 모듈(PCM)</strong></p>
 <ul>
@@ -156,9 +150,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../125_Automated_latex_code_generation_from_handwritten_math_expres/index.html">Automated latex code generation from handwritten math expressions using vision transformer</a></div><div class="conn-reason">위치 임베딩 기반의 반지도 학습 방법이 필기 수학식의 공간적 구조 인식에 이론적 기반을 제공한다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">도메인 특화 과학 추론 사례로서 Scientific Agent 설계에서 특정 영역 전문성 통합 방법론의 실제 구현 예시를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../286_Domain-specific_ReAct_for_physics-integrated_iterative_model/index.html">Domain-specific ReAct for physics-integrated iterative modeling: A case study of LLM agents for gas path analysis of gas turbines</a></div><div class="conn-reason">컴퓨터 비전 영역의 도메인 특화 추론과 물리학 통합 모델링이 모두 특정 과학 도메인에서의 LLM 활용이지만 접근 방식이 다르다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../286_Domain-specific_ReAct_for_physics-integrated_iterative_model/index.html">Domain-specific ReAct for physics-integrated iterative modeling: A case study of LLM agents for gas path analysis of gas turbines</a></div><div class="conn-reason">물리학 통합 모델링과 컴퓨터 비전 포즈 추정이 모두 도메인 특화 과학적 추론이지만 서로 다른 과학 영역에 특화되어 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">반지도학습 포즈 추정의 편향 제거 기법이 사회적 책임 AI의 인과학습 도구에서 편향 완화 방법론으로 적용될 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">사회적 책임 AI의 편향 완화 방법론이 반지도학습 포즈 추정의 의사 레이블 노이즈 제거 기법과 연결되어 AI 시스템의 공정성을 향상시킬 수 있다.</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../820_Toward_Reliable_Scientific_Hypothesis_Generation_Evaluating/index.html">Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models</a></div><div class="conn-reason">포즈 추정의 정확한 성능 측정과 과학 가설 생성의 진실성 평가 문제를 대조하여 과학적 검증의 도메인별 차이를 보여준다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

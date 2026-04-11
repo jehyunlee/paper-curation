@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Preetam Prabhu Srikar Dammu, Himanshu Naidu, Mouly Dewan, Youngmin Kim, Tanya Roosta, Aman Chadha, Chirag Shah | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ClaimVer의 주장 검증 및 증거 귀속 시연. 자동 색상 코딩(황색: 외삽, 적색: 모순)과 위키데이터 기반 증거 제시</em></p></div>
 <p>본 논문은 지식 그래프(Knowledge Graph, KG)를 활용하여 텍스트의 각 주장(claim)을 세분화된 수준에서 검증하고, 각 검증 결과에 대한 명확한 증거와 설명을 제공하는 ClaimVer 프레임워크를 제안한다. 단순한 이진 판정 대신 주장 단위의 세밀한 분석을 통해 사용자의 신뢰도를 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 위키데이터(Wikidata) 기반 지식 그래프를 검증의 신뢰할 수 있는 참조 자료로 활용하고, LLM을 미세 조정하여 주장 수준의 세밀한 검증과 증거 귀속을 동시에 수행.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ClaimVer 프레임워크의 전체 처리 흐름. 전처리 단계에서 NER, 공참 해결, KG 엔티티 링킹을 거쳐 관련 삼중항(triplet) 검색 및 미세조정된 LLM을 통한 검증 수행</em></p></div>
 <ol>
 <li><strong>주장 단위 세분화 검증</strong>: 단일 텍스트를 다수의 독립적 주장으로 분해하여 각각을 검증하므로, 일부 주장이 거짓이더라도 나머지 주장의 검증 결과를 차별화하여 제시 가능.</li>
 <li><strong>KG 기반 다중 참조 통합</strong>: 단일 참조 문헌과의 일대일 매핑 방식을 벗어나 지식 그래프라는 통합된 정보 저장소를 활용하여 여러 출처에서 수집된 정보를 종합적으로 검증.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>위키데이터 엔티티 연결</strong>: 검증 결과와 함께 관련 위키 엔티티의 ID와 설명을 시각적으로 표시하여 사용자가 검증의 근거를 직접 확인 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>미세조정용 LLM 지시어 프롬프트. 주장과 관련 삼중항을 입력받아 검증 카테고리, 설명, 귀속 점수를 출력하도록 구조화</em></p></div>
 <ul>
 <li><strong>전처리(Preprocessing)</strong>: 위키 엔티티에 특화된 명명 엔티티 인식(NER), 공참 해결(coreference resolution), KG 엔티티 링킹(entity linking), 문맥 길이 초과 시 구획화(compartmentalization) 수행.</li>
 <li><strong>관련 삼중항 검색</strong>: Woolnet 알고리즘(다중 노드 너비 우선 탐색, BFS)을 통해 각 주장과 관련된 지식 그래프 상의 삼중항 추출. 최대 3홉(hop), 최대 4개 경로 제한으로 관련성 있는 삼중항만 검색.</li>
@@ -129,7 +123,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">지식 그래프 기반 주장 검증의 기초 방법론을 의료 분야에 특화하여 확장한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">웹 기반 반자동 검색 대신 지식 그래프를 활용한 체계적 주장 검증 방법을 제시한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">간결한 사실 추출 방식 대신 지식 그래프를 활용한 설명가능한 주장 검증을 제시한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../685_Robust_claim_verification_through_fact_detection/index.html">Robust claim verification through fact detection</a></div><div class="conn-reason">주장 검증을 위한 다른 접근법으로 지식 그래프를 활용한 설명가능한 방법을 제시한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../057_aedfact_Scientific_fact-checking_made_easier_via_semi-automa/index.html">aedFaCT: Scientific fact-checking made easier via semi-automatic discovery of relevant expert opinions</a></div><div class="conn-reason">반자동 팩트체킹을 더 체계적이고 설명가능한 프레임워크로 발전시킨다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../328_Explainable_biomedical_claim_verification_with_large_languag/index.html">Explainable biomedical claim verification with large language models</a></div><div class="conn-reason">지식 그래프 기반 설명가능한 검증을 의료 주장 검증에 구체적으로 적용한다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

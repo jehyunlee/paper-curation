@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ziwei Ji, Tiezheng Yu, Yan Xu, Nayeon Lee, Etsuko Ishii, Pascale Fung | <strong>날짜</strong>: 2024 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2410.12164" target="_blank">https://arxiv.org/abs/2410.12164</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Performance vs. generalizability trade-offs: A visual comparison of different fine-tuning approaches for table</em></p></div>
 <p>테이블 작업(데이터 정제, NL-to-SQL 등)에 특화된 언어모델을 만들기 위해 생성-검증 이중 작업의 반복적 미세조정 패러다임인 Table-Specialist를 제안한다. 수동 레이블 없이 자동 생성된 훈련 데이터로 강력한 성능과 일반화를 동시에 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 테이블 작업의 이중성(생성 작업과 분류 작업의 상호 대응)을 활용하여 Generator-Validator 패러다임을 제안한다. 생성 모델과 분류 모델을 반복적으로 미세조정하여 서로 생성한 데이터를 검증함으로써 수동 레이블 없이 훈련 데이터를 자동으로 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: “Table-Specialist fine-tuning”: Quality vs. latency</em></p></div>
 <ul>
 <li><strong>성능 향상</strong>: Table-Specialist-GPT-3.5가 vanilla GPT-3.5뿐만 아니라 GPT-4 수준의 성능을 초과하여 달성, 여러 테이블 작업에서 입증됨</li>
 <li><strong>비용 효율성</strong>: GPT-4 수준의 성능을 더 작은 모델(GPT-3.5)로 달성하여 배포 비용과 지연 시간 대폭 감소</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실무 적용</strong>: Microsoft Excel의 자동 데이터 정제 등 실제 사용 사례에 통합됨</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5: Architecture of Table-Specialist using “Generator-Validator” fine-tuning for a given task type 𝑇(Error detecti</em></p></div>
 <ul>
 <li>테이블 작업의 이중성 인식: 각 생성 작업(예: NL-to-SQL)과 대응하는 분류 작업(SQL 검증) 식별</li>
 <li>Generator-Validator 반복 프레임워크 구성: 생성 모델이 데이터 생성, 분류 모델이 검증하는 반복 루프</li>
@@ -114,7 +108,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 테이블 작업의 이중성을 창의적으로 활용하여 수동 레이블 없이도 높은 성능과 일반화를 동시에 달성한 혁신적 연구이다. Microsoft Excel 통합 등 실무 적용 가능성이 높으며, 특화-일반화 trade-off 문제 해결에 새로운 방향을 제시한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../231_Codegen_An_open_large_language_model_for_code_with_multi-tur/index.html">Codegen: An open large language model for code with multi-turn program synthesis</a></div><div class="conn-reason">다중 턴 프로그램 합성 방법론을 테이블 작업 특화 모델 훈련에 적용한 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">RAG 프레임워크의 유연성 추구와 달리 테이블 작업에 특화된 전문 모델 개발 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">테이블 작업 전문가 모델과 달리 지식그래프 기반 RAG의 유연성을 통한 범용적 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../231_Codegen_An_open_large_language_model_for_code_with_multi-tur/index.html">Codegen: An open large language model for code with multi-turn program synthesis</a></div><div class="conn-reason">프로그램 합성 기법을 테이블 작업 특화 모델의 반복적 미세조정에 적용한 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../841_Tree-of-table_Unleashing_the_power_of_llms_for_enhanced_larg/index.html">Tree-of-table: Unleashing the power of llms for enhanced large-scale table understanding</a></div><div class="conn-reason">테이블 처리 능력을 Tree-of-Table 방법론으로 더욱 체계화한 확장 연구</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../751_SFT_Memorizes_RL_Generalizes_A_Comparative_Study_of_Foundati/index.html">SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training</a></div><div class="conn-reason">테이블 전문가 모델에서 생성-검증 이중 작업이 SFT 대비 일반화 성능 향상에 기여</div></div></div>

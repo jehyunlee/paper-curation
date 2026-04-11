@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lin Yang, Shawn Xu, Andrew Sellergren, Timo Kohlberger, Yuchen Zhou, Sofia Ira Ktena, Atilla P. Kiraly, Faruk Ahmed, Farhad Hormozdiari, Tiam Jaroensri, E.-W. Wang, Ellery Wulczyn, F Guimaraes Silvio Jamil, Theo Guidroz, Chuck Lau, Siyuan Qiao, Yun Liu, Akshay Goel, Kendall Park, Arnav Agharwal | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: arXiv:2405.03162v1</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Med-Gemini 모델군의 구성과 다양한 의료 작업에서의 성능 개요</em></p></div>
 <p>Gemini의 멀티모달 역량을 의료 영역에 특화시킨 Med-Gemini 모델 패밀리를 개발하여, 흉부 X선(CXR) 보고서 생성, 3D CT 해석, 의료 영상 분류, 유전체 위험도 예측 등 다양한 임상 작업에서 기존 최고 성능을 초과하거나 경쟁력 있는 결과를 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Gemini를 7백만 샘플(3.7백만 의료 영상/사례)로 미세조정하여 2D/3D 방사선학, 병리학, 안과학, 피부과학, 유전체 데이터에 최적화된 Med-Gemini 개발. 22개 데이터셋, 5개 작업 유형에서 자동화 지표 및 전문가 평가 수행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>의료 전문가에 의한 CXR 보고서 생성 평가 결과</em></p></div>
 <ol>
 <li><strong>CXR 보고서 생성</strong>: 정상 사례에서 57-96%, 비정상 사례에서 43-65%의 AI 생성 보고서가 원래 방사선과 의사의 보고서와 "동등 이상"으로 평가. 두 개의 독립 데이터셋에서 기존 최고 성능을 절대값 1%~12% 상회</li>
 <li><strong>3D CT 해석</strong>: 멀티모달 모델 기반 3D CT 부피(volume) 보고서 생성 최초 시연. 53%의 AI 보고서가 임상적으로 수용 가능하나, 전문가 품질 달성을 위해 추가 연구 필요</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>다유전자 위험도 예측(Polygenic Risk Prediction)</strong>: 표준 선형 다유전자 위험도 점수(PRS) 기반 접근법 초과. 학습하지 않은 유전적으로 상관된 질병으로 일반화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>조직병리학 영상 분류 성능 분석</em></p></div>
 <ul>
 <li><strong>기반 모델</strong>: Gemini의 고급 추론, 멀티모달 이해, 장문맥 처리 능력을 상속하며, 환자 표현(patient representation)과 의료 지식으로 강화</li>
 <li><strong>학습 데이터</strong>: 7백만 샘플의 주로 자유 형식 텍스트 및 의료 데이터 쌍 활용으로 비용이 많이 드는 전문가 라벨링 회피. 공개 데이터셋(MIMIC-CXR, ChestX-ray14 등)과 자체 큐레이션 데이터셋 혼합</li>

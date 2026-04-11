@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Parshin Shojaee, Ngoc-Hieu Nguyen, Kazem Meidani, Amir Barati Farimani, Khoa D Doan, Chandan K Reddy | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.10415" target="_blank">arXiv:2504.10415v2</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Feynman 문제와 LLM-SRBench 데이터셋(LSR-Transform, LSR-Synth)에서 단순 LLM 샘플링(Llama-3.1-8B)의 오차 분석. Feynman 문제에서 수치 오차 곡선의 급격한 하강과 낮은 기호 오차는 실제 발견보다 암기를 시사함.</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM) 기반 과학 방정식 발견의 진정한 능력을 평가하기 위해 암기를 방지하는 종합적 벤치마크 LLM-SRBench를 제안한다. 4개 과학 분야에서 239개 도전 문제로 구성되어 있으며, 최고 성능 모델도 31.5% 기호 정확도에 불과함을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 익숙한 문제의 비표준 수학적 표현(LSR-Transform), (2) 합성 신규 항을 포함한 발견 주도 문제(LSR-Synth)의 두 가지 카테고리로 암기를 방지하는 벤치마크 설계.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. LLM 기반 과학 방정식 발견의 개요. 벤치마크 과제(좌)에서 과학 맥락과 수치 데이터를 결합하고, 발견 프로세스(중앙)에서 LLM의 과학 지식과 데이터 기반 추론을 활용하여 반복적으로 가설 생성, 평가(우)에서 데이터 신실성, 기호 정확도, 계산 효율성으로 측정.</em></p></div>
 <ol>
 <li><strong>종합 벤치마크 구축</strong>: 4개 과학 분야(화학 36, 생물학 24, 물리학 43, 재료과학 25)에서 239개 문제(LSR-Transform 111개, LSR-Synth 128개)로 구성된 첫 번째 대규모 LLM 기반 방정식 발견 벤치마크 제시.</li>
 <li><strong>성능 상한선 규정</strong>: 최고 성능 모델(GPT-4o 등)이 LSR-Transform에서 31.5%, LSR-Synth에서 28.1%의 기호 정확도로 현저히 낮은 성능을 달성, 벤치마크의 도전 난이도와 미래 연구 가치 입증.</li>
 <li><strong>암기 방지 메커니즘</strong>: Feynman 방정식을 비표준 수학 형태로 변환하고 합성 항을 도입하여 LLM의 단순 암송이 아닌 실제 데이터 기반 추론 능력 평가 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3. LLM-SRBench의 두 데이터셋 카테고리에 대한 생성 파이프라인. (a) LSR-Transform은 Feynman 문제를 다른 수학 표현으로 변환.</em></p></div>
 <h3>LSR-Transform (변환 기반 문제)</h3>
 <ul>
 <li><strong>Step 1-2</strong>: Feynman 벤치마크의 100개 물리 방정식 수집 후 입력 특성 중 하나를 새로운 목표 변수로 선택</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yongji Wang, Mehdi Bennani, James Martens, Sébastien Racanière, Sam Blackwell, Alex Matthews, Stanislav Nikolov, Gonzalo Cao-Labora, Daniel S. Park, Martin Arjovsky, Daniel Worrall, Chongli Qin, Ferran Alet, Borislav Kozlovskii, Nenad Tomašev, Alex Davies, Pushmeet Kohli, Tristan Buckmaster, Bogdan Georgiev, Javier Gómez-Serrano, Ray Jiang, Ching-Yao Lai | <strong>날짜</strong>: 2025-09-17 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2509.14185" target="_blank">10.48550/arXiv.2509.14185</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 고정밀 자기유사해(Self-similar solution) 발견을 위한 연구 방법론. (a) 해의 발견: PINN과 Gauss-Newton 최적화기를 이용한 다단계 학습으로 자기유사 스케일링 계수 λ를 찾음. (b) 해의 분석: 선형화된 PDE의 안정성 분석을 통해 불안정 모드 특성화.</em></p></div>
 <p>기계학습과 고정밀 수치해석을 결합하여 <strong>3D 오일러 방정식, 비압축성 다공질 매질 방정식, Boussinesq 방정식에서 처음으로 불안정 특이점(unstable singularities)의 체계적인 발견</strong>을 보여주는 연구이다. 불안정 특이점은 무한 정밀도의 초기조건이 필요하며, 미량의 교란으로도 폭발 궤적에서 벗어나는 특수한 현상으로, 이전에는 안정 특이점만 수치적으로 발견되었다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: PINN의 신경망 아키텍처와 훈련 스킴을 정교하게 설계하고 고정밀 Gauss-Newton 최적화기를 결합하여 불안정 특이점을 발견 및 검증.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: IPM 및 Boussinesq 방정식의 자기유사 특이점. (a,b) 3번째 불안정 해의 와도(vorticity) Ω 공간 프로필. (c,d) y₁축 단면도 (안정부터 3번째 불안정까지). (e) 역 스케일 계수 vs 불안정성 차수: 두 시스템 모두에서 선형 추세 발견. (f) 발견된 스케일 계수들(초록색, 노란색)과 기존 해(파란색).</em></p></div>
 <ol>
 <li><strong>불안정 특이점의 체계적 발견</strong>: CCF, 2D IPM, 2D Boussinesq 방정식에서 <strong>새로운 불안정 자기유사해 계열 다수 발견</strong>. IPM에서는 3개, Boussinesq에서는 최소 4개의 불안정 모드 식별. 각각 대응하는 스케일링 계수 λ 값을 고정밀 계산.</li>
 <li><strong>이중정밀도 기계 정밀도 달성</strong>: CCF의 안정 해 및 1번째 불안정 해에 대해 <strong>거의 이중정밀도(double-float) 기계 정밀도</strong>에 도달. GPU 하드웨어의 반올림 오차로만 제한되는 수준으로, 컴퓨터 보조 증명(CAP)의 엄격한 요구사항 충족 가능.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>정밀도 획기적 개선</strong>: 모든 발견된 해에 대해 이전 연구를 훨씬 상회하는 정확도 달성 (최대 잔차 10⁻²⁵ 이하).</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ul>
 <li><strong>자기유사 좌표 변환(Self-similar coordinates)</strong>: 시간 진화 시뮬레이션 문제를 정상(stationary) 자기유사 프로필 찾기로 변환. 스케일링 계수 λ로 매개변수화된 공간-시간 재스케일링으로 빠르게 발산하는 물리량 추적 어려움 제거.</li>
 <li><strong>PINN 아키텍처 설계</strong>:

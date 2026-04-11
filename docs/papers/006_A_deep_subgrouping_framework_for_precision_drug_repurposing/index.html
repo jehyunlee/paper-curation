@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Seungyeon Lee, Ruoqi Liu, Feixiong Cheng, Ping Zhang | <strong>날짜</strong>: 2024 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2412.20373" target="_blank">https://arxiv.org/abs/2412.20373</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Flowchart of a deep subgrouping framework for</em></p></div>
 <p>STEDR은 환자 하위군의 이질적 치료 반응을 고려하여 실제 환자 데이터에서 임상시험을 모의실험하고 정밀 약물 재창출(precision drug repurposing)을 수행하는 딥러닝 프레임워크이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: STEDR은 이중 수준 주의 메커니즘(covariate-level, visit-level attention)으로 시간 데이터를 인코딩하고, VAE(Variational Auto-Encoder) 기반 하위군 네트워크로 환자를 이질적 분포를 가진 하위군으로 분류하여 하위군 특화 치료 효과를 추정한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: Drug selection and screening criteria. From 1,134</em></p></div>
 <ul>
 <li><strong>첫 통합 프레임워크</strong>: 하위군 분석과 치료 효과 추정을 결합한 약물 재창출의 첫 사례</li>
 <li><strong>대규모 임상시험 모의실험</strong>: 800만+ 환자 MarketScan MDCR 데이터베이스에서 1,134개 약물 중 100회씩 임상시험을 모의실험하여 14개 AD 재창출 후보 약물 발굴</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>우수한 성능</strong>: 기존 방법론 대비 재창출 후보 약물 식별에서 우수성 입증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: An illustration of STEDR. The EHR data is processed through patient-level attention to learn individualized re</em></p></div>
 <ul>
 <li>이중 수준 주의 메커니즘: 공변량 수준 주의로 각 진단 코드의 영향도 학습, 방문 수준 주의로 시간 역학 관계 포착</li>
 <li>환자 인코더: 종단 EHR 데이터를 개인화된 환자 표현으로 변환</li>

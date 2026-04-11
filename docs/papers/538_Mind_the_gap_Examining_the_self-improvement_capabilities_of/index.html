@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuda Song, Hanlin Zhang, Carson Eisenach, Sham M. Kakade, Dean Foster, Udaya Ghai | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.02674" target="_blank">arXiv:2412.02674</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 적절한 검증 방법(예: CoT-S)을 사용할 때, 상대 생성-검증 갭이 사전학습 연산량(flops)에 대해 단조증가하는 현상</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 자기개선(self-improvement) 메커니즘을 체계적으로 분석하며, <strong>생성-검증 갭(Generation-Verification Gap, GV-Gap)</strong>이라는 핵심 지표를 통해 언어모델이 자신의 출력을 검증하여 성능을 개선할 수 있는 능력의 한계와 가능성을 규명한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 수학적 프레임워크를 통해 자기개선의 세 가지 핵심 요소(생성, 검증, 모델 업데이트)를 형식화하고, 여러 모델 계열, 검증 메커니즘, 작업에 걸쳐 생성-검증 갭을 측정하여 일반적인 패턴을 발견</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 거부 샘플링(rejection sampling)을 예시로 한 자기개선 프레임워크의 핵심 정의 시각화</em></p></div>
 <ol>
 <li><strong>생성-검증 갭의 스케일링 현상</strong>: 특정 검증 방법(특히 Chain-of-Thought-Score)을 사용할 때, 상대 GV-Gap이 모델의 사전학습 연산량(flops)에 대해 단조증가하는 현상을 발견. 이는 더 큰 모델일수록 자신의 생성물을 더 잘 검증할 수 있음을 시사</li>
 <li><strong>교차 검증 분석</strong>: 서로 다른 모델을 생성과 검증에 사용할 때, GV-Gap은 검증자의 능력에 따라 증가하고 생성자의 능력에 따라 감소하는 일관된 패턴을 관찰</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>검증 메커니즘의 특성</strong>: 같은 검증 방법은 서로 다른 모델에서도 일관된 추세를 유도하지만, 서로 다른 검증 메커니즘 간에는 상당한 겹치지 않음. GV-Gap과 생성 정확도 간에 필수적인 양의 상관관계가 없음을 발견</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 교차 개선에서의 GV-Gaps. 각 행(고정된 생성자)에 대해, 검증자 능력이 증가할수록 갭이 증가</em></p></div>
 <p><strong>자기개선 프레임워크의 형식화:</strong></p>
 <ul>
 <li><strong>생성 단계</strong>: 프롬프트 분포 μ에서 생성자 f가 여러 응답 y를 생성. 중요한 조건은 생성 분포의 변동성(improvable generation)이 존재해야 함</li>
@@ -146,7 +140,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../751_SFT_Memorizes_RL_Generalizes_A_Comparative_Study_of_Foundati/index.html">SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training</a></div><div class="conn-reason">SFT와 RL의 일반화 능력 비교 연구에서 자기개선 메커니즘의 이론적 기반 제공</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">LLM의 자기개선 능력 분석이 인간 피드백 기반 상호작용 능력 평가의 이론적 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1100_Representative_Informative_and_De-Amplifying_Requirements_fo/index.html">Representative, Informative, and De-Amplifying: Requirements for Robust Bayesian Active Learning under Model Misspecification</a></div><div class="conn-reason">생성-검증 갭에 집중한 접근과 달리 실험설계 최적화를 통한 모델 신뢰성 향상</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../1100_Representative_Informative_and_De-Amplifying_Requirements_fo/index.html">Representative, Informative, and De-Amplifying: Requirements for Robust Bayesian Active Learning under Model Misspecification</a></div><div class="conn-reason">생성-검증 갭 분석과 달리 실험설계 단계에서 모델 오명시 문제를 해결하는 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../435_Interfeedback_Unveiling_interactive_intelligence_of_large_mu/index.html">InterFeedback: Unveiling interactive intelligence of large multimodal models via human feedback</a></div><div class="conn-reason">자기개선 메커니즘 분석을 인간-AI 상호작용에서의 피드백 활용 능력으로 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../751_SFT_Memorizes_RL_Generalizes_A_Comparative_Study_of_Foundati/index.html">SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training</a></div><div class="conn-reason">자기개선 메커니즘에서 SFT의 암기와 RL의 일반화 능력 차이를 체계적으로 분석한 확장</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../471_Large_Language_Models_Cannot_Self-Correct_Reasoning_Yet/index.html">Large Language Models Cannot Self-Correct Reasoning Yet</a></div><div class="conn-reason">LLM의 자기수정 한계를 지적한 연구와 자기개선 가능성을 탐구한 상반된 관점</div></div></div>

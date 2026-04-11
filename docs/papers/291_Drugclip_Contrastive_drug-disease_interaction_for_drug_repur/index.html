@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yingzhou Lu, Yaojun Hu, Chenhao Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Drug repurposing의 개념 - 기존 승인된 약물을 새로운 질병 치료에 재사용하는 과정">
-</div>
 <p>기존 임상시험 데이터를 기반으로 약물-질병 상호작용(drug-disease interaction)을 학습하는 대조학습(contrastive learning) 방법 DrugCLIP을 제안하여, 음성 샘플(negative samples) 부족 문제를 해결하고 약물 재창출(drug repurposing) 효율을 16.5% 향상시켰다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -88,16 +86,12 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 메시지 전달 신경망(MPNN)을 이용한 약물 분자 표현 - 이웃 노드들의 표현을 반복적으로 집계하여 그래프 레벨 표현 생성">
-</div>
 <ol>
 <li><strong>데이터셋 기여</strong>: 2000년대 초부터 현재까지 약 35,000개의 임상시험으로 구성된 약물 재창출 전문 데이터셋 구축 및 공개</li>
 <li><strong>방법론 성과</strong>: DrugCLIP 모델이 최고 성능 기준 대비 Hit Rate에서 16.5% 향상 달성</li>
 <li><strong>다중양식 표현</strong>: 약물(분자 그래프)과 질병(ICD 코드 계층구조)의 서로 다른 데이터 형식을 통일된 임베딩 공간(embedding space)으로 효과적으로 변환</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 그래프 기반 어텐션 모델 구조">
-</div>
 <h3>약물 분자 표현 (Drug Molecule Representation)</h3>
 <ul>
 <li><strong>분자 그래프 구조</strong>: SMILES 문자열 대신 분자 그래프를 사용 (노드=원자, 엣지=화학결합)</li>

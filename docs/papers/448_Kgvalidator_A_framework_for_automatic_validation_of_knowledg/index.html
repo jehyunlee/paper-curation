@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jack Boylan, Shashank Mangla, Dominic Thorn, Demian Gholipour Ghalandari, Parsa Ghaffari, Chris Hokamp (Quantexa) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2404.15923" target="_blank">arXiv:2404.15923</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>지식 그래프 트리플 검증을 위한 프레임워크: 외부 데이터(웹, Wikidata, 문서)와 LLM을 활용하여 검증되지 않은 트리플을 검증된 트리플로 변환</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 지식 그래프(Knowledge Graph, KG) 완성 모델을 자동으로 검증하는 프레임워크인 KGValidator를 제안한다. 기존의 인간 주석에 의존하는 검증 방식을 LLM 기반의 생성 에이전트로 대체할 수 있음을 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 내재적 지식, 사용자 제공 문서, 외부 지식 소스(Wikidata, 웹 검색)를 활용하여 KG 트리플을 검증하는 확장 가능한 프레임워크 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>폐쇄 세계 가정의 예시: James Joyce가 저술한 책들 중 테스트 셋에 누락된 작품은 KG 완성 모델의 참(true) 예측도 거짓 양성으로 처리됨</em></p></div>
 <ol>
 <li><strong>프레임워크 개발</strong>: Instructor 라이브러리, Pydantic 클래스, 함수 호출을 활용하여 LLM이 올바른 검증 지침을 따르고 정확한 데이터 구조를 출력하도록 제어</li>
 <li><strong>유연한 지식 소스 통합</strong>: LLM의 내재 지식, 사용자 제공 텍스트 문서, 외부 지식 소스(Wikidata, 인터넷 검색)를 모두 지원하며 금 참조 불필요</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>문맥 강화 분석</strong>: 추가 문맥 제공이 최첨단 LLM의 평가 능력에 미치는 영향 조사</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>개방 정보 추출(OpenIE)의 예시: 고정되지 않은 출력 스키마에서 텍스트로부터 엔티티와 속성을 추출</em></p></div>
 <p><strong>검증 파이프라인:</strong></p>
 <ul>
 <li><strong>입력</strong>: 검증되지 않은 트리플(주체, 관계, 객체)과 추가 문맥(옵션)</li>

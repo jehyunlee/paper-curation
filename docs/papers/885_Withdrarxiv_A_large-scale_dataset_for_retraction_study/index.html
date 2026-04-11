@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Delip Rao, Jonathan Young, Thomas G. Dietterich, Chris Callison-Burch | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: [미공개]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>arXiv 초록 페이지에서 추출한 메타데이터 요소</em></p></div>
 <p>본 논문은 arXiv 플랫폼에서 철회된 14,000개 이상의 논문을 수집한 첫 대규모 철회 연구 데이터셋(WithdrawArXiv)을 제시하며, 철회 이유를 10가지 범주로 분류하는 자동 분류 체계를 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: arXiv와 협력하여 철회된 16,460개 논문 ID를 수집하고, 임베딩과 K-means 클러스터링으로 철회 의견(comment)을 분석한 후, GPT-4 제로샷 프롬프팅으로 자동 분류를 수행했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>수동 주석 10% 계층화 샘플(총 1,620개)에서 평가한 제로샷 분류 혼동 행렬</em></p></div>
 <ol>
 <li><strong>WithdrawArXiv 데이터셋 구축</strong>: 2024년 9월까지 arXiv 전체 역사에 걸친 16,395개의 철회 논문과 관련 의견을 포함한 첫 대규모 dataset 개발</li>
 <li><strong>철회 이유 분류 체계 개발</strong>: 10가지 범주(중대한 오류, 미완성 저작, 오타, 신규성 부족, 행정/법적 문제, arXiv 정책 위반, 다른 출판물에 포함, 표절, 개인적 사유, 미명시)를 식별하고 각 범주별 예제 제시</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>WithdrawArXiv-SciFy 릴리스</strong>: 과학적 실현가능성 연구, 주장 검증, 자동화된 정리 증명을 위해 파싱된 전체 텍스트 PDF 스크립트를 포함한 확장 데이터셋 공개</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>논문 철회 사유의 분포</em></p></div>
 <ul>
 <li><strong>Step 1 - 철회 논문 ID 수집</strong>: arXiv.org와 협력하여 공식 채널을 통해 2024년 9월까지의 모든 철회 논문 ID(16,460개) 확보</li>
 <li><strong>Step 2 - 메타데이터 추출</strong>: HTML 파싱을 통해 철회 의견, 주제 영역, 버전 URL 등 메타데이터 추출</li>
@@ -116,7 +110,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 이 논문은 STEM 분야에서 처음으로 대규모 논문 철회 데이터셋을 제시하고 실용적 자동화 방법론을 제공하여 과학 무결성 연구에 중요한 기여를 하고 있으나, 단일 플랫폼 한정과 분류 세분화 미흡이라는 제한사항이 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../591_Openreview_should_be_protected_and_leveraged_as_a_community/index.html">OpenReview Should be Protected and Leveraged as a Community Asset for Research in the Era of Large Language Models</a></div><div class="conn-reason">철회 논문 데이터셋 연구가 OpenReview와 같은 학술 커뮤니티 플랫폼 보호의 중요성을 뒷받침하는 실증적 근거를 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../812_TLDR_Extreme_Summarization_of_Scientific_Documents/index.html">TLDR: Extreme Summarization of Scientific Documents</a></div><div class="conn-reason">과학 논문의 생산적 요약 생성과 문제가 있는 논문의 철회 분석이라는 서로 다른 과학 문헌 처리 관점을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../812_TLDR_Extreme_Summarization_of_Scientific_Documents/index.html">TLDR: Extreme Summarization of Scientific Documents</a></div><div class="conn-reason">과학 논문의 요약 생성과 철회 논문의 분류라는 서로 다른 과학 문헌 처리 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../093_All_that_glitters_is_not_novel_Plagiarism_in_ai_generated_re/index.html">All that glitters is not novel: Plagiarism in ai generated research</a></div><div class="conn-reason">arXiv 철회 논문 연구에서 AI 생성 연구의 표절 문제로 확장하여 현대적 학술 윤리 문제를 다룹니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../698_Scaling_Reproducibility_An_AI-Assisted_Workflow_for_Large-Sc/index.html">Scaling Reproducibility: An AI-Assisted Workflow for Large-Scale Reanalysis</a></div><div class="conn-reason">철회된 논문에 대한 대규모 데이터셋 연구는 AI 지원 재현성 워크플로우가 해결해야 할 연구 신뢰성 문제의 실제 사례를 보여준다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

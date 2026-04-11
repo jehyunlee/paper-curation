@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Hayato Ikoma, Teruko Mitamura (Carnegie Mellon University) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2502.06316" target="_blank">arXiv:2502.06316</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>특허 심사 과정: 심사관이 특허 청구항과 선행기술 문서를 비교하여 거절 이유를 판단하고, 출원인이 청구항을 수정한 후 재심사하는 반복 과정</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 특허 신규성(novelty) 평가 능력을 최초로 체계적으로 검증하기 위해, 실제 특허 심사 사례를 기반으로 한 데이터셋을 구축하고 다양한 모델의 성능을 비교 분석한 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 실제 특허청 거절 통지서(Non-Final Rejection) 기반 신규성 평가 데이터셋 구축, (2) 분류 및 생성 모델 모두를 활용한 청구항-인용문헌(C-T: Claim-Cited Texts) 대응 관계 분석.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>특허 심사 과정의 전체 흐름과 데이터 추출 출처: 비신규 사례는 원본 청구항, 신규 사례는 수정된 청구항 사용</em></p></div>
 <ol>
 <li><strong>최초 데이터셋 구축</strong>: 2014-2015년 USPTO IPC G06F(전자 데이터 처리) 분야 3,975건의 특허 사례로부터 청구항-인용문헌 쌍 데이터셋 구성 (훈련:검증:테스트 = 80:10:10, 길이 편향 제거를 위한 전처리 적용)</li>
 <li><strong>모델 성능 비교</strong>: 분류 모델(Longformer)은 신규성 평가에 제한적 성능을 보였으나, 생성 모델(Llama, GPT-4o)은 합리적 수준의 정확도로 예측하고 청구항과 선행기술 간 관계를 설명할 수 있음을 입증</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Erpai Luo, Jinmeng Jia, Yifan Xiong, Xiangyu Li, Xiaobo Guo, Baoqi Yu, Minsheng Hao, Lei Wei, Xuegong Zhang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.08341" target="_blank">arXiv:2505.08341</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>BAISBench의 개요: (A) 두 가지 보완적 태스크 구성, (B) BAIS-DPTA의 구축 방식, (C) BAIS-SD의 구축 방식</em></p></div>
 <p>단일세포 전사체(single-cell transcriptomics) 데이터를 활용하여 AI 과학자(AI scientist) 시스템의 생물학적 발견 능력을 평가하는 BAISBench 벤치마크를 제시한다. 현재 AI 과학자들은 완전한 자동화된 생물학적 발견에는 못 미치지만, 데이터 기반 생물학 연구 지원에 상당한 잠재력을 보이고 있음을 실증적으로 보여준다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 15개의 전문가 주석 단일세포 데이터셋을 이용한 세포형 주석(cell type annotation) 태스크와 41개의 발표된 단일세포 연구에서 도출한 193개의 객관식 질문으로 구성된 벤치마크를 개발하고, 여러 AI 과학자 시스템과 6명의 대학원 수준 생물정보학자의 성능을 비교 평가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>BAIS-DPTA 태스크에서 다양한 AI 모델의 세포형 주석 정확도: (A) 전체 결과, (B) 조직별 결과</em></p></div>
 <ol>
 <li><strong>세포형 주석 능력</strong>: AI 과학자들은 표준 전처리 및 분석 워크플로우를 안정적으로 실행할 수 있으며, 기본 LLM 모델의 성능에 따라 크게 좌우됨을 보였다. uHAF 기반의 계층적 평가 지표(SCTA)를 도입하여 정확도뿐 아니라 생물학적 세분화 정도도 평가 가능하게 했다.</li>
 <li><strong>과학적 발견 능력</strong>: 최고 성능 AI 과학자들이 대학원 수준 연구자들과 비슷한 수준의 성능을 달성했으나, 깊은 생물학적 판단이 필요한 태스크에서는 여전히 인간 전문가에 미치지 못한다. 193개의 질문에서 산출된 결과는 AI 시스템의 강점과 약점을 명확히 구분한다.</li>
 <li><strong>평가 프레임워크 확립</strong>: 실제 생물학 연구 워크플로우를 반영하는 현실적이고 해석 가능한 벤치마크를 제시함으로써 AI 과학자의 진전을 평가하고 개선 방향을 제시할 수 있는 기초를 마련했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>BAIS-DPTA 태스크의 파이프라인: AI 과학자에게 단일세포 유전자 발현 데이터셋이 제공되고 전처리 및 주석을 수행</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>BAIS-SD 태스크의 파이프라인: 배경 정보와 대응하는 데이터셋이 제공되고 발표된 발견과 일치하는 결론을 찾도록 요구</em></p></div>
 <ul>
 <li><strong>BAIS-DPTA 구축</strong>: 15개 장기·조직 유래 최근 발표 scRNA-seq 데이터셋(세포 수: 2,312~58,706, 세포형: 4~42종) 수집 후 경험 많은 생물정보학자들이 통합 계층적 세포 주석 프레임워크(uHAF)를 기준으로 수동 주석</li>
 <li><strong>평가 메트릭</strong>: 워크플로우 완성도(품질관리, 정규화, 고변이 유전자 선택, 차원 축소, 클러스터링, 마커 유전자 동정) 확인 후 uHAF 기반 계층적 점수(SCTA)로 정확한/부분적/약한 일치도 평가</li>
@@ -128,7 +120,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../089_Aigs_Generating_science_from_ai-powered_automated_falsificat/index.html">AIGS: Generating science from ai-powered automated falsification</a></div><div class="conn-reason">자동화된 과학 발견의 일반적 프레임워크를 생물학 연구라는 특정 도메인에 적용하는 기초를 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../710_Sciclaimhunt_A_large_dataset_for_evidence-based_scientific_c/index.html">Sciclaimhunt: A large dataset for evidence-based scientific claim verification</a></div><div class="conn-reason">과학적 주장의 증거 기반 검증이 AI 과학자의 생물학적 발견 능력 평가의 기준을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../168_Biomni_A_General-Purpose_Biomedical_AI_Agent/index.html">Biomni: A General-Purpose Biomedical AI Agent</a></div><div class="conn-reason">생물의학 AI의 성능 평가라는 동일한 목표를 다른 접근법(벤치마크 vs 통합 에이전트)으로 달성합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../168_Biomni_A_General-Purpose_Biomedical_AI_Agent/index.html">Biomni: A General-Purpose Biomedical AI Agent</a></div><div class="conn-reason">생의학 연구 지원이라는 동일한 목표를 통합 에이전트와 벤치마크 평가라는 상호 보완적 접근으로 달성합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../710_Sciclaimhunt_A_large_dataset_for_evidence-based_scientific_c/index.html">Sciclaimhunt: A large dataset for evidence-based scientific claim verification</a></div><div class="conn-reason">과학적 주장 검증을 생물학적 발견 평가로 확장하여 AI 과학자의 신뢰성을 높입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html">AAAR-1.0: Assessing AI&#x27;s Potential to Assist Research</a></div><div class="conn-reason">일반적인 AI 연구 지원 평가에서 오믹스 데이터 기반 생물학 연구라는 구체적 도메인으로 확장한 전문 분야 벤치마크입니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../089_Aigs_Generating_science_from_ai-powered_automated_falsificat/index.html">AIGS: Generating science from ai-powered automated falsification</a></div><div class="conn-reason">자동 반증 기반 과학 시스템을 생물학적 발견이라는 구체적 도메인에 적용하여 실용성을 검증합니다.</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Muye Huang, Lingling Zhang, Jie Ma, Han Lai, Fangzhi Xu, Yifei Li, Wenjun Wu, Yaqiang Wu, Jun Liu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.19076" target="_blank">arXiv:2505.19076</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ChartSketcher의 개요: 중간 추론 및 반성 과정(점선)과 각 단계의 스케치 출력</em></p></div>
 <p>본 논문은 멀티모달 대규모 언어 모델(MLLM)이 차트를 이해할 때 시각적 피드백을 통한 반복적 스케칭(Sketch-CoT)으로 추론 과정을 개선하는 방법을 제안한다. 인간의 인지 행동에서 영감을 받아, 모델이 중간 추론 단계를 차트에 직접 주석 처리하고 이를 다시 입력으로 제공하여 멀티모달 상호작용을 통한 깊이 있는 이해를 실현한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간이 복잡한 시각 정보를 마주할 때 스케칭으로 핵심 세부사항을 표시하고 문제를 분해하는 자연스러운 행동에서 영감을 받아, Sketch-CoT와 반성 메커니즘을 통해 멀티모달 피드백 기반 추론 방식을 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ChartSketcher 훈련 과정: 상단은 콜드 스타트 단계(지식 증류), 하단은 오프라인 강화학습 최적화</em></p></div>
 <ol>
 <li><strong>Sketch-CoT 메커니즘</strong>: MLLM이 중간 추론 단계를 프로그래밍 방식의 스케칭 라이브러리를 통해 차트에 직접 주석 처리하고, 생성된 스케치를 다시 입력으로 받아 반복적 멀티모달 추론을 실현</li>
 <li><strong>자동 반성 및 오류 수정</strong>: 단계 간 반성 과정을 포함하여 모델이 이전 단계의 추론 오류를 식별하고 즉시 수정할 수 있는 인간 수준의 반성 능력 구현</li>
@@ -91,8 +87,6 @@ a { color: #A62018; }
 <li><strong>포괄적 데이터셋</strong>: 차트 단계별 추론을 지원하는 300K 콜드 스타트 샘플과 50K 강화학습 샘플 구성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>ChartSketcher의 네 가지 사례: 각 단계의 드로잉 코드는 생략</em></p></div>
 <p><strong>아키텍처 설계</strong>:</p>
 <ul>
 <li><strong>프로그래밍 스케칭 라이브러리</strong>: 간단한 명령 문법으로 기하학적 도형(점, 선, 원, 화살표 등)을 생성·조작하며, 이동, 회전, 삭제 등의 연산 지원</li>

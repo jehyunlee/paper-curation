@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xianrui Zhong, Yufeng Du, Siru Ouyang, Ming Zhong, Tingfeng Luo | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.18653/v1/2024.acl-long.683" target="_blank">10.18653/v1/2024.acl-long.683</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>화학 반응 절차를 자연언어에서 구조화된 행동 시퀀스로 추출하는 예시</em></p></div>
 <p>과학 문헌의 비정형 자연언어로 표현된 실험 절차를 Python 코드 생성 문제로 재정의하여 대규모 언어모델(LLM)을 활용해 화학 합성 행동을 추출하는 방법론을 제시한다. 프로그래밍 언어의 구조적 특성(클래스, 상속, 타입)을 활용하여 엔티티 간 관계를 명확히 포착한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 액션 추출을 코드 생성 문제로 재정의하여 각 액션 타입을 Python 클래스로 변환하고, LLM의 인-컨텍스트 러닝(few-shot learning) 능력을 활용하여 어노테이션 데이터 부족 문제 해결</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ActionIE 프레임워크 개요: 패턴 마이닝 → 텍스트 재표현 → 코드 생성 → 자연언어 변환</em></p></div>
 <ol>
 <li><strong>코드 기반 구조화</strong>: 프로그래밍 언어의 클래스 상속과 컴포지션 관계를 통해 액션 간 의존성과 중첩된 구조를 명확하게 표현하여, LLM의 할루시네이션(hallucination) 문제 완화 및 액션 정의 변경에 대한 유연성 제공</li>
 <li><strong>신규 평가 메트릭</strong>: 기존 토큰 수준 평가의 한계를 지적하고, 그래프 매칭(graph-based matching) 기반 메트릭을 제안하여 추출 정확도와 인간 판단의 상관관계 향상</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>우수한 성능</strong>: 기존 강력한 베이스라인(fine-tuned T5, GPT-3.5) 대비 일관된 성능 우월성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>텍스트 재표현 예시</em></p></div>
 <ul>
 <li><strong>패턴 마이닝 모듈</strong>: Flan-T5-Large와 GPT-4를 활용하여 자연언어에서 액션 관련 유언어 패턴(linguistic cues)을 자동 탐지하고, 빈도 분석을 통해 도메인 특화 표현 패턴 축적</li>
 <li><strong>텍스트 재표현(Text Rephrasing)</strong>: GPT-4를 이용해 복잡하고 불명확한 원문을 더 명확한 형태로 변환하여, 코드 생성 단계의 입력 품질 향상</li>

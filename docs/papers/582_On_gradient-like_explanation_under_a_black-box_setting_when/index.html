@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yi Cai, Gerhard Wunder | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2308.09381" target="_blank">arXiv:2308.09381</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>기준선 f(-3) ≈ 0이 주어질 때, GEEX의 평활화된 버전이 실제 기여도를 더 잘 근사함</em></p></div>
 <p>본 논문은 <strong>GEEX (Gradient-Estimation-based EXplanation)</strong>를 제안하여 블랙박스 설정에서도 화이트박스 수준의 그래디언트 유사 설명을 생성할 수 있음을 보인다. 쿼리 레벨 접근만으로 정밀한 특성 귀속(feature attribution)을 제공하면서도 완전성(Completeness), 민감도(Sensitivity) 등 기본 공리를 엄밀히 만족한다.</p>
 <hr></div>
 <div class="section-box"><h2>Motivation</h2>
@@ -99,10 +97,6 @@ a { color: #A62018; }
 </ul>
 <hr></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>GEEX의 개요: 샘플링된 노이즈 ε와 경로상 위치 α로부터 쿼리 z 결정</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>InceptionV3에서 GEEX는 n</em>이 증가함에 따라 IG와 수렴하는 AOPC 점수 달성*</p></div>
 <ol>
 <li><strong>이론적 기여</strong>:
 <ul>
@@ -119,8 +113,6 @@ a { color: #A62018; }
 </ol>
 <hr></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>간단한 사례: 그래디언트 포화로 인해 추정된 그래디언트 η가 0으로 수렴하여 민감도 공리 위반</em></p></div>
 <p><strong>핵심 방법론:</strong></p>
 <ul>
 <li><strong>그래디언트 추정 기초</strong>:

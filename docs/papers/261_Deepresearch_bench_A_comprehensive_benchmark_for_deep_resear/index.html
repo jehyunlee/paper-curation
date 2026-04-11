@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mingxuan Du, Benfeng Xu, Chiwei Zhu, Xiaorui Wang, Zhendong Mao | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2506.11763" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: DeepResearch Bench에서의 에이전트 성능 개요. 좌측: 평가 차원별 생성된 보고서 품질 점수, 우측: 에이전트 인용 정확도 및 평균 효과적 인용 수</em></p></div>
 <p>본 논문은 대규모 언어모델 기반 깊이 있는 연구 에이전트(Deep Research Agents, DRAs)를 체계적으로 평가하기 위한 최초의 종합 벤치마크 DeepResearch Bench를 제시한다. 22개 분야의 박사 수준 연구 과제 100개와 두 가지 혁신적인 평가 방법론(RACE, FACT)을 통해 DRA의 보고서 생성 품질과 정보 검색 능력을 정량적으로 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 96,147개 실제 사용자 쿼리를 기반으로 실제 수요 분포를 파악하고 비례적으로 100개 작업 구성, (2) 도메인 전문가가 정교하게 작성한 박사 수준 연구 과제 수집, (3) 참조 기반 적응형 평가 프레임워크(RACE)와 인용 신뢰성 평가 프레임워크(FACT) 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: DeepResearch Bench 개요. (a) 분포 분석 및 데이터 수집 파이프라인, (b) RACE 프레임워크 개요, (c) FACT 프레임워크 개요</em></p></div>
 <ol>
 <li><strong>DeepResearch Bench 구축</strong>: 실제 사용자 데이터 96,147개에 기반한 주제 분포 분석을 통해, 22개 분야에 걸친 박사 수준의 100개 연구 과제 벤치마크 구성 (영문 50개, 중문 50개)</li>
 <li><strong>RACE 평가 프레임워크 개발</strong>: 동적 가중치 생성, 적응형 기준 설정, 참조 기반 상대 점수 계산 등 세 단계를 통해 과제별 특성을 반영하고 인간 판단과 높은 일치도를 달성하는 보고서 품질 평가 방법론</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>인간 검증 연구</strong>: 제안된 평가 방법론들이 인간 판단과의 일치도를 검증하는 광범위한 사용자 연구 수행</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 44,019개 필터링된 깊이 있는 연구 과제의 주제 분포</em></p></div>
 <h3>데이터 수집 및 분포 분석</h3>
 <ul>
 <li>96,147개 실제 사용자 쿼리를 DeepSeek-V3-0324를 이용해 필터링하여 44,019개의 깊이 있는 연구 작업 식별</li>

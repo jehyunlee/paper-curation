@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Tool-Augmented Language Model (TALM) 프레임워크를 기반으로 LangChain을 활용하여 LLM, 프롬프트 엔지니어링, 그리고 RDKit, PubChem, ChEMBL 등의 화학정보학 도구를 통합한 CACTUS 에이전트를 개발했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CACTUS 에이전트의 일반적인 워크플로우: 사용자 입력에서 시작하여 Planning-Action-Execution-Observation 단계를 거쳐 적절한 도구를 선택하고 최종 결과를 도출</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: Gemma-7b와 Mistral-7b 모델이 프롬프팅 전략과 관계없이 가장 높은 정확도를 달성하였으며, 기존 LLM 대비 CACTUS가 화학 질문에 대해 현저히 우수한 성능을 시현했다.</li>
 <li><strong>도메인 특화 임팩트</strong>: 도메인 특화 프롬프트(domain-specific prompting)와 하드웨어 구성이 모델 성능에 미치는 영향을 체계적으로 분석하여, 프롬프트 엔지니어링의 중요성과 소비자 등급 하드웨어에서 작은 모델 배포의 실행 가능성을 입증했다.</li>
 <li><strong>확장 가능한 도구 생태계</strong>: 분자 성질 예측, 유사성 검색, 약물 유사성 평가(drug-likeness assessment) 등 다양한 화학 작업을 지원하는 10개 도구를 통합했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2, 3">
-<p class="fig-caption"><em>Gemma-7b 모델의 다양한 프롬프팅 전략에 대한 성능 비교 및 7B 매개변수 모델들 간의 성능 비교</em></p></div>
 <ul>
 <li><strong>아키텍처</strong>: LangChain 기반 커스텀 MRKL 에이전트 구현으로 도구(Tools), LLMChain, 에이전트 클래스의 3가지 핵심 컴포넌트 통합</li>
 <li><strong>ReAct 프레임워크</strong>: 도구 설명(tool descriptions)을 기반으로 사용자 입력에 가장 적합한 도구를 선택하는 제로샷(zero-shot) 에이전트 방식 적용</li>
@@ -120,9 +116,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../211_ChemGymRL_A_Customizable_Interactive_Framework_for_Reinforce/index.html">ChemGymRL: A Customizable Interactive Framework for Reinforcement Learning for Digital Chemistry</a></div><div class="conn-reason">화학정보학 도구 통합이 화학 실험 자동화의 소프트웨어 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../131_Automating_exploratory_proteomics_research_via_language_mode/index.html">Automating exploratory proteomics research via language models</a></div><div class="conn-reason">화학정보학 vs 단백질체학으로 도메인은 다르지만 유사한 자동화 도구 통합 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../213_ChemReasoner_Heuristic_Search_over_a_Large_Language_Models_K/index.html">ChemReasoner: Heuristic Search over a Large Language Model&#x27;s Knowledge Space using Quantum-Chemical Feedback</a></div><div class="conn-reason">화학 도구 연결 vs 휴리스틱 탐색으로 화학 LLM의 서로 다른 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../131_Automating_exploratory_proteomics_research_via_language_mode/index.html">Automating exploratory proteomics research via language models</a></div><div class="conn-reason">단백질체학 vs 화학정보학으로 도메인은 다르지만 유사한 자동화 도구 통합 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../110_AstroAgents_A_Multi-Agent_AI_for_Hypothesis_Generation_from/index.html">AstroAgents: A Multi-Agent AI for Hypothesis Generation from Mass Spectrometry Data</a></div><div class="conn-reason">화학정보학 vs 우주생물학으로 도메인은 다르지만 유사한 다중 에이전트 도구 활용</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../110_AstroAgents_A_Multi-Agent_AI_for_Hypothesis_Generation_from/index.html">AstroAgents: A Multi-Agent AI for Hypothesis Generation from Mass Spectrometry Data</a></div><div class="conn-reason">우주생물학 vs 화학정보학으로 도메인은 다르지만 유사한 다중 에이전트 도구 활용</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../837_Training_a_Scientific_Reasoning_Model_for_Chemistry/index.html">Training a Scientific Reasoning Model for Chemistry</a></div><div class="conn-reason">둘 다 화학 도메인에서 AI 에이전트를 다루지만 하나는 추론 모델 훈련에, 다른 하나는 도구 사용 연결에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../210_ChemCrow_Augmenting_large-language_models_with_chemistry_too/index.html">ChemCrow: Augmenting large-language models with chemistry tools</a></div><div class="conn-reason">화학정보학 도구 통합을 화학 증강 대화형 시스템으로 발전시킨 연구</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../242_CRITIC_Large_Language_Models_Can_Self-Correct_with_Tool-Inte/index.html">CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing</a></div><div class="conn-reason">CRITIC의 도구 기반 자기수정 프레임워크는 CACTUS의 화학 도구 활용에서 실험 결과 검증과 오류 수정에 직접 적용될 수 있다.</div></div>

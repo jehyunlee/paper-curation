@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 반응 분자동역학(RMD) 시뮬레이션으로 10,000개 합성 데이터 생성 → 신경 자기회귀 밀도 추정기(NADE-CVD)로 빠른 대체 모델 구축 → 오프라인 모델 기반 강화학습으로 최적 합성 정책 발굴</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: RMD 계산 합성의 개요. (a) 20나노초 길이의 단일 합성 스케줄에 대한 RMD 시뮬레이션 도식. 초기 MoO₃ 슬래브가 시간-변동 황화 환경과 반응하여 MoS₂ 및 MoO₃₋ₓ로 구성된 최종 구조를 생성. (b) MoS₂ 합성의 RMD 시뮬레이션 스냅샷. S₂, H₂, H₂S 가스를 포함하는 황화 환경이 시뮬레이션 셀 중앙의 MoOₓSᵧ 슬래브와 반응.">
-</div>
 <ol>
 <li><strong>NADE-CVD 모델의 높은 정확도</strong>: 10,000개 RMD 시뮬레이션으로 훈련된 신경망 기반 대체 모델이 약 3.5 원자(RMSE) 오차로 CVD 합성 결과를 예측하여, 개별 상(phase)에 대해 ≤30 원자 이내의 최대 예측 오차 달성</li>
 <li><strong>미지의 최적 합성 스케줄 발굴</strong>: RL 에이전트가 학습한 임계 온도(threshold temperature)와 화학포텐셜(chemical potential)을 기반으로 높은 결정성, 상순도(phase purity)를 갖는 반도성 MoS₂를 생성하는 기존에 알려지지 않은 합성 조건 예측</li>
 <li><strong>장시간 거동 예측 가능성</strong>: 분자동역학 시뮬레이션의 적용 범위를 넘어 실험 합성과 직접 연관된 더 긴 시간 스케일의 반응 시스템 거동 예측 가능성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: NADE-CVD를 통한 합성 스케줄 출력 예측. (a, b) 베이즈 네트워크의 구조. (c) NADE-CVD 모델 아키텍처로, 인코더, 디코더, 및 순환 신경망(RNN)으로 구성되며, 시뮬레이션 이력 Z₁:ₜ, X₁:ₜ에 의해 인코딩된 숨겨진 상태 hₜ의 함수로서 평균 μₜ₊₁과 분산 σₜ₊₁을 출력.">
-</div>
 <p><strong>반응 분자동역학 시뮬레이션</strong>:</p>
 <ul>
 <li>MoO₃ 결정과 H₂S, S₂, H₂를 포함하는 황화 환경의 다단계 반응 모의</li>
@@ -136,7 +132,6 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../380_Generative_machine_learning_in_adaptive_control_of_dynamic_m/index.html">Generative machine learning in adaptive control of dynamic manufacturing processes: A review</a></div><div class="conn-reason">화학 기상 증착 프로세스에서 자율 강화학습 에이전트로 생성형 머신러닝 제어를 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1125_Accelerating_cell_culture_media_development_using_Bayesian_o/index.html">Accelerating cell culture media development using Bayesian optimization-based iterative experimental design</a></div><div class="conn-reason">화학 기상 증착의 자율 강화학습에서 베이지안 최적화로의 확장</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../454_Lagrangian_neural_networks/index.html">Lagrangian neural networks</a></div><div class="conn-reason">물리 법칙 보존을 고려한 신경망을 화학기상증착 공정 최적화에 적용할 수 있다</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../454_Lagrangian_neural_networks/index.html">Lagrangian neural networks</a></div><div class="conn-reason">라그랑주 신경망의 에너지 보존 법칙을 화학기상증착 공정 모델링에 적용할 수 있다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../829_Towards_Foundation_Models_for_Scientific_Machine_Learning_Ch/index.html">Towards Foundation Models for Scientific Machine Learning: Characterizing Scaling and Transfer Behavior</a></div><div class="conn-reason">편미분방정식 학습의 사전학습-미세조정 패러다임을 화학 공정 최적화에 적용할 수 있다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

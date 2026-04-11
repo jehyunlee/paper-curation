@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhaolin Gao, Kianté Brantley, Thorsten Joachims | <strong>날짜</strong>: 2024-12-02 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.10886" target="_blank">10.48550/arXiv.2402.10886</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>REVIEWER2의 구조: (a) 두 단계 모델 미세조정 (Mp: 논문→측면 프롬프트, Mr: 논문+프롬프트→리뷰) (b) 추론 단계에서의 순차적 생성</em></p></div>
 <p>본 논문은 LLM 기반 자동화된 논문 리뷰 생성의 문제를 <strong>측면 프롬프트(aspect prompt)를 명시적으로 모델링하는 두 단계 프레임워크</strong>로 해결하여, 더 구체적이고 다양한 리뷰를 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 단계 파이프라인으로 (1) 측면 프롬프트 생성 모델, (2) 프롬프트 조건 리뷰 생성 모델을 분리하여 명시적 제어 가능성 추가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>측면 프롬프트의 효과: (a) 인간 리뷰들의 일반적(파란색) 및 특정(빨간색) 내용 (b) 프롬프트 없이는 일반 내용만 생성 (c) 프롬프트로 특정 내용 생성 가능</em></p></div>
 <ol>
 <li><strong>리뷰 품질 향상</strong>: REVIEWER2는 기존 방식 대비 충실성(faithfulness), 커버리지, 구체성 측면에서 현저히 우수한 리뷰 생성</li>
 <li><strong>대규모 주석 데이터셋 구축</strong>: 27,000개 논문과 99,000개 리뷰에 측면 프롬프트를 주석한 첫 번째 규모 데이터셋 공개 (6개 학회: NeurIPS, ICLR, PeerRead, NLPeer 등)</li>
 <li><strong>효율적 구현</strong>: LongLoRA 기반으로 32k 토큰 컨텍스트 길이 지원, 논문의 추출적 요약(extractive summary) 불필요</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>PGE (Prompt Generation with Evaluation) 파이프라인: 생성 단계와 평가 단계의 반복적 프로세스</em></p></div>
 <p><strong>REVIEWER2 구조</strong>:</p>
 <ul>
 <li><strong>1단계 모델 (Mp)</strong>: 논문 p를 입력받아 측면 프롬프트 집합 {x₁, ..., xₖ} 생성</li>

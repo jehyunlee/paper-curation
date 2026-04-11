@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xi Chen, Huan-jing Zhao, Shu Zhao, Jie Chen, Yan-ping Zhang | <strong>날짜</strong>: 2025 | <strong>URL</strong>: <a href="https://arxiv.org/abs/2505.20103" target="_blank">https://arxiv.org/abs/2505.20103</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Process for implementing citation recommendation and generation in the SciRGC framework</em></p></div>
 <p>SciRGC 프레임워크는 인용 의도(citation intent) 인식과 인용 네트워크를 활용하여 학술 논문의 적절한 인용 문헌을 추천하고 고품질의 인용 문장을 생성하는 다단계 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 두 단계 인용 추천 모듈(회상 및 재순위 단계)에서 인용 네트워크 기반 협업 필터링과 인용 의도 특성을 통합하고, Chain-of-Thought 추론 기반 인용 문장 생성을 위해 LLM(Large Language Model)에 LoRA 미세 조정과 DPO(Direct Preference Optimization) 정렬을 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Process for implementing citation recommendation and generation in the SciRGC framework</em></p></div>
 <ul>
 <li><strong>향상된 인용 문헌 추천</strong>: 인용 네트워크와 인용 의도를 통합하여 ACL-200, FullTextPeerRead, RefSeer, arXiv 등 4개 데이터셋에서 MRR 및 R@K 메트릭으로 기존 방법들을 일관되게 초과 달성</li>
 <li><strong>고품질 인용 문장 생성</strong>: Chain-of-Thought 추론 기반 방식과 DPO를 통한 인간 선호도 정렬로 주류 대규모 언어 모델과 비교하여 우수한 성능 달성</li>
 <li><strong>새로운 평가 메트릭</strong>: 기존 자동 평가 메트릭의 체계적 편향을 해결하기 위해 다차원 인용 생성 품질 평가 프레임워크 도입 및 인간 평가를 통한 검증</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Two collaborative filtering algorithms, dashed boxes represent two papers that are similar, and single arrows</em></p></div>
 <ul>
 <li><strong>회상 단계(Recall Stage)</strong>: 로컬 정보를 위해 인코더 모델 사용, 글로벌 관점을 위해 인용 네트워크 기반 협업 필터링(ScCF, CcCF) 알고리즘 설계 및 결합</li>
 <li><strong>재순위 단계(Re-ranking Stage)</strong>: 인용 의도 인식을 통해 추천 문헌 리스트 조정으로 정확도와 제어 가능성 향상</li>

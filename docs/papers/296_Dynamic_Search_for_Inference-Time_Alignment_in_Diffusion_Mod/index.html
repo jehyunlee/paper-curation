@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사전학습된 확산 모델의 디노이징 과정을 트리로 형식화하고, 동적 빔 탐색(dynamic beam search)을 적용하여 빔 폭과 트리 너비를 시간 단계에 따라 동적으로 조정.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Inference-time alignment of diffusion model as a search problem">
-<p class="fig-caption"><em>Figure 1: 확산 모델의 추론 시간 정렬을 탐색 문제로 프레임화. 녹색 원은 트리 노드(후보 샘플)를 나타내고, 어두운 노드는 높은 잠재 보상을 표시. 파란 화살표는 동적으로 선택된 고보상 궤적</em></p></div>
 <ol>
 <li><strong>탐색 프레임워크 제안</strong>: 확산 모델의 디노이징 프로세스를 트리 구조로 형식화하여, 보상 최적화를 체계적인 탐색 문제로 재구성. 이는 기존의 ad-hoc한 유도 방식과 달리 일관된 이론적 기초 제공.</li>
 <li><strong>동적 빔 탐색(DSearch) 알고리즘</strong>: 고정 너비 빔 탐색의 비효율성을 해결하기 위해, 시간 단계별로 빔 폭 b(t)와 트리 너비 w(t)를 동적으로 조정. 약한 빔의 계산 자원을 다른 빔으로 재할당하여 효율성 극대화(w(t)·b(t) 고정).</li>
 <li><strong>다중 도메인 검증</strong>: 생물학적 수열 설계(biological sequence design), 분자 최적화(molecular optimization), 이미지 생성 등 다양한 도메인에서 기존 방법 대비 우수한 보상 최적화 성과 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Illustration of DSearch with dynamic width adjustment">
-<p class="fig-caption"><em>Figure 2: DSearch의 트리 너비 확장과 빔 폭 동적 조정. 약한 빔의 자원을 다른 빔으로 재할당하면서 w(t)b(t) 유지</em></p></div>
 <p><strong>트리 정의 및 너비 제한</strong>:</p>
 <ul>
 <li>나이브 접근의 O(|X|^T) 복잡도를 해결하기 위해 사전학습된 정책으로부터 샘플링하여 트리 너비 w(t) 제한</li>
@@ -132,7 +128,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../269_Derivative-Free_Guidance_in_Continuous_and_Discrete_Diffusio/index.html">Derivative-Free Guidance in Continuous and Discrete Diffusion Models with Soft Value-Based Decoding</a></div><div class="conn-reason">미분 없는 유도 방법이 비미분 보상 함수에 대한 확산 모델 최적화의 이론적 기반을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../269_Derivative-Free_Guidance_in_Continuous_and_Discrete_Diffusio/index.html">Derivative-Free Guidance in Continuous and Discrete Diffusion Models with Soft Value-Based Decoding</a></div><div class="conn-reason">확산 모델의 추론 시간 정렬에서 다른 동적 탐색 vs 보상 가이던스 접근법을 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../682_Reward-Guided_Iterative_Refinement_in_Diffusion_Models_at_Te/index.html">Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 정렬을 다루지만 동적 탐색과 반복적 개선이라는 서로 다른 최적화 전략을 사용함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../682_Reward-Guided_Iterative_Refinement_in_Diffusion_Models_at_Te/index.html">Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 보상 최적화를 다루지만 반복적 개선과 동적 탐색이라는 서로 다른 전략을 사용함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../337_Figgen_Text_to_scientific_figure_generation/index.html">Figgen: Text to scientific figure generation</a></div><div class="conn-reason">확산 모델에서 추론 시점 정렬을 위한 동적 검색 기법이 FigGen의 과학 도형 생성 품질 향상에 적용될 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../740_Search-R1_Training_LLMs_to_Reason_and_Leverage_Search_Engine/index.html">Search-R1: Training LLMs to Reason and Leverage Search Engines with Reinforcement Learning</a></div><div class="conn-reason">Search-R1의 검색 기반 추론이 확산 모델의 동적 탐색 과정에서 더 효과적인 빔 폭 조정을 가능하게 함</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

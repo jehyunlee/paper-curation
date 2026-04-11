@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jinheon Baek, Sujay Kumar Jauhar, Silviu Cucerzan, Sung Ju Hwang | <strong>날짜</strong>: 2025-02-09 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2404.07738" target="_blank">10.48550/arXiv.2404.07738</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: (A) 과학 지식 자원 구성 - 논문, 학술 그래프, 엔티티 중심 지식 저장소 (B) 문제 식별→방법 개발→실험 설계의 체계적 연구 아이디어 생성 과정과 인간 판단 기반 검토 에이전트의 반복적 개선</em></p></div>
 <p>대규모 언어 모델(LLM)의 백과사전적 지식과 추론 능력을 활용하여 과학 문헌으로부터 자동으로 새로운 연구 아이디어를 생성하고 인간 선호도 기반의 피어 리뷰 에이전트를 통해 반복적으로 개선하는 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 연구자의 작업 방식을 모델링하여 (1) 학술 그래프 기반 관련 문헌 이해, (2) 엔티티 중심 지식 저장소를 통한 개념 간 관계 파악, (3) 인간 판단으로부터 유도된 평가 기준을 갖춘 검토 에이전트를 통한 반복적 개선을 구현한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 인간 평가(상단)와 모델 기반 평가(하단)에서 ResearchAgent의 주요 결과 - 베이스라인 대비 명확성, 관련성, 유의성, 특히 참신성에서 우수</em></p></div>
 <ol>
 <li><strong>우수한 생성 품질</strong>: 인간 평가와 모델 기반 평가 모두에서 LLM 베이스라인을 크게 상회하며, 특히 생성된 아이디어의 참신성(novelty)에서 뛰어난 성과를 달성</li>
 <li><strong>다학제적 검증</strong>: 여러 학문 분야의 과학 논문에 대해 실험 검증을 수행하여 ResearchAgent의 일반화 가능성과 실용성을 입증</li>
 <li><strong>컴포넌트 유효성</strong>: 엔티티 중심 지식 저장소와 반복적 개선 단계가 순수 선행 연구만 기반한 인스턴스 대비 의미 있게 더 나은 아이디어 생성에 기여함을 정량화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 반복 개선 단계 수에 따른 성과 변화 - 초기 단계에서 가장 큰 개선이 이루어지며 3-4 단계 이후 수렴</em></p></div>
 <p><strong>ResearchAgent 시스템 구성</strong>:</p>
 <ul>
 <li><strong>지식 소스 통합</strong>:

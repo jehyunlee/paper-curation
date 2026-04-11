@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuwei Wan, Yixuan Liu, Aswathy Ajith, Clara Grazian, Bram Hoex, Wenjie Zhang, Chunyu Kit, Tong Xie, Ian Foster | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2405.09939" target="_blank">arXiv:2405.09939</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>SciQAG 프레임워크: 과학 문헌으로부터 QA 생성 (점선은 선택적 미세조정)</em></p></div>
 <p>대규모 언어모델(LLM)을 활용하여 과학 논문으로부터 자동으로 고품질의 개방형 질의응답 쌍(188,042개 QA 쌍, 24개 과학 분야)을 생성하고, 세밀한 평가 지표(RACAR)로 품질을 필터링하는 SciQAG 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 QA 생성기(Generator)와 5차원 평가 지표(RACAR: Relevance, Agnosticism, Completeness, Accuracy, Reasonableness)를 갖춘 QA 평가기(Evaluator)로 구성된 자동화 프레임워크를 개발하여 비용 효율적인 대규모 데이터셋 구축을 추구한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>GPT-4 점수와 전문가 주석 점수 간의 Spearman/Pearson 상관계수</em></p></div>
 <ol>
 <li><strong>대규모 고품질 데이터셋 구축</strong>: 22,743개 과학 논문에서 188,042개의 QA 쌍을 생성하고, SciQAG-24D 벤치마크 구성 (24개 과학 분야 커버)</li>
 <li><strong>신뢰성 있는 평가 지표 개발</strong>: RACAR 지표와 GPT-4 기반 자동 평가가 도메인 전문가 평가와 높은 상관계수(Spearman/Pearson > 0.7)를 보임으로써 자동화 평가의 타당성 검증</li>
@@ -130,10 +126,8 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: SciQAG는 폐쇄형 개방형 과학 QA 자동 생성의 실질적 해결책을 제시하며, 188K 규모의 다학제 데이터셋과 신뢰성 있는 평가 프레임워크를 제공하는 점에서 가치 있는 기여이다. 다만 생성 품질 보증의 근본적 한계와 평가 지표의 LLM 의존성에 대한 추가 검증이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">SciQAG의 자동 질의응답 생성 방법론이 사회적 책임 AI를 위한 인과학습 도구들의 효과를 평가하는 체계적인 질문 생성에 적용될 수 있다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../191_Causal_learning_for_socially_responsible_ai/index.html">Causal learning for socially responsible ai</a></div><div class="conn-reason">인과학습 도구의 체계적 평가를 위해 SciQAG의 자동 질의응답 생성 방법론이 편향성과 공정성 관련 질문 생성에 활용될 수 있다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../729_Scipip_An_llm-based_scientific_paper_idea_proposer/index.html">SciPIP: An LLM-based Scientific Paper Idea Proposer</a></div><div class="conn-reason">SciPIP의 과학 논문 아이디어 생성 방법론이 SciQAG의 질의응답 데이터 생성을 위한 기반 기술로 활용될 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">SciQAG의 자동 QA 생성과 LLM의 아이디어 생성 평가가 모두 과학 문헌으로부터 자동으로 지식을 추출하지만 서로 다른 형태의 산출물을 생성한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../186_Can_large_language_models_unlock_novel_scientific_research_i/index.html">Can Large Language Models Unlock Novel Scientific Research Ideas? arXiv:2409.06185, 2024</a></div><div class="conn-reason">LLM의 아이디어 생성과 과학 QA 쌍 생성이 모두 과학 문헌으로부터 지식을 자동 추출하지만 다른 형태의 결과물을 산출한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../729_Scipip_An_llm-based_scientific_paper_idea_proposer/index.html">SciPIP: An LLM-based Scientific Paper Idea Proposer</a></div><div class="conn-reason">SciPIP의 아이디어 생성 결과물을 SciQAG의 질의응답 쌍 생성에 활용하여 과학 지식의 자동 구조화를 확장할 수 있다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../835_Towards_Scientific_Intelligence_A_Survey_of_LLM-based_Scient/index.html">Towards Scientific Intelligence: A Survey of LLM-based Scientific Agents</a></div><div class="conn-reason">SciQAG의 고품질 QA 데이터가 Scientific Agent의 지식 기반 구축과 추론 능력 향상을 위한 핵심 자원으로 활용될 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

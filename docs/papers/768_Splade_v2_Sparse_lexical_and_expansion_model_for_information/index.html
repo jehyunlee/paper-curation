@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 최대값 풀링(max pooling)으로 풀링 메커니즘 개선, (2) 쿼리 확장 없는 문서 인코더 버전 제안, (3) 증류 기법을 통한 성능 부스팅</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Performance vs FLOPS for SPLADE models trained">
-<p class="fig-caption"><em>Figure 1: SPLADE 모델들의 성능 대비 연산량(FLOPS) 비교</em></p></div>
 <ol>
 <li><strong>NDCG@10 향상</strong>: TREC DL 2019에서 기존 SPLADE 대비 <strong>9% 이상의 성능 향상</strong> 달성</li>
 <li><strong>BEIR 벤치마크 최고 성능</strong>: 제로샷 평가에서 BEIR 벤치마크의 최고 성능 달성</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>MS MARCO 통과</strong>: 증류된 SPLADE (DistilSPLADE-max)로 최신 기술 수준에 근접한 결과 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Performance vs average document length">
-<p class="fig-caption"><em>Figure 2: 문서 길이에 따른 성능 변화 분석</em></p></div>
 <p><strong>핵심 기술 개선사항:</strong></p>
 <ul>
 <li><strong>최대값 풀링 (Max Pooling)</strong>: 기존의 로그-포화 합산 연산(Eq. 2)을 최대값 연산(Eq. 6)으로 변경</li>
@@ -156,7 +152,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 SPLADE 모델에 대한 정밀한 개선을 통해 희소 렉시컬 표현 기반 정보검색의 새로운 최고 성능을 달성했으며, 특히 최대값 풀링과 문서 전용 인코더 같은 단순하면서도 효과적인 기법들이 실무 적용 가치가 높다. 다만 초대규모 컬렉션과 실제 ANN 검색 환경에 대한 검증이 더 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../593_Openscholar_Synthesizing_scientific_literature_with_retrieva/index.html">Openscholar: Synthesizing scientific literature with retrieval-augmented lms</a></div><div class="conn-reason">희소-밀집 하이브리드 검색 모델이 대규모 과학문헌 검색 시스템의 첫 단계 검색기로 활용될 수 있는 기술적 기반을 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../335_Few-shot_Learning_with_Retrieval_Augmented_Language_Models/index.html">Few-shot Learning with Retrieval Augmented Language Models</a></div><div class="conn-reason">희소 렉시컬 표현과 밀집 표현 기반 검색 증강이라는 서로 다른 정보검색 패러다임의 장단점을 비교할 수 있습니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../335_Few-shot_Learning_with_Retrieval_Augmented_Language_Models/index.html">Few-shot Learning with Retrieval Augmented Language Models</a></div><div class="conn-reason">밀집 표현 기반 검색 증강과 희소 렉시컬 표현 기반 검색의 서로 다른 정보검색 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../659_REALM_Retrieval-Augmented_Language_Model_Pre-Training/index.html">REALM: Retrieval-Augmented Language Model Pre-Training</a></div><div class="conn-reason">REALM의 밀집 표현 기반 검색을 희소 표현과 결합한 발전된 형태의 검색 증강 사전학습 모델입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html">Clinical entity augmented retrieval for clinical information extraction</a></div><div class="conn-reason">희소 렉시컬 검색 모델을 임상 엔티티 기반 검색으로 발전시킨 도메인 특화 응용 연구입니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

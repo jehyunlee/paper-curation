@@ -82,8 +82,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 상태공간모델을 유리 전달함수(Rational Transfer Function, RTF) 표현 H(z) = h₀ + (b₁z⁻¹ + ... + bₙz⁻ⁿ)/(1 + a₁z⁻¹ + ... + aₙz⁻ⁿ)로 직접 매개변수화하고, 분자/분모 계수(a, b)를 시퀀스 길이로 패딩한 후 FFT를 이용하여 임펄스 응답 필터를 계산.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>메모리 소비 측면에서 S5(스캔 기반)는 상태 크기에 따라 메모리가 급증하지만, RTF는 선형적으로 증가</em></p></div>
 <ol>
 <li><strong>상태-자유 복잡도 달성</strong>:
 <ul>
@@ -106,8 +104,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>상태-자유 병렬 추론 알고리즘: (a) RTF 표현, (b) 알고리즘 흐름도(rFFT→패딩→합성곱→irFFT), (c) 단일 스텝 추론용 재귀 형태</em></p></div>
 <ul>
 <li><strong>전달함수 표현의 좌표 불변성(Coordinate Invariance)</strong>:</li>
 </ul>
@@ -155,7 +151,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../572_Neural_Ordinary_Differential_Equations/index.html">Neural Ordinary Differential Equations</a></div><div class="conn-reason">신경 상미분방정식이 상태공간모델의 전달함수 표현에 수학적 기반을 제공한다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../829_Towards_Foundation_Models_for_Scientific_Machine_Learning_Ch/index.html">Towards Foundation Models for Scientific Machine Learning: Characterizing Scaling and Transfer Behavior</a></div><div class="conn-reason">과학 머신러닝의 파운데이션 모델 패러다임이 상태공간모델의 전달함수 접근법에 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../454_Lagrangian_neural_networks/index.html">Lagrangian neural networks</a></div><div class="conn-reason">상태공간 vs 라그랑주 기반 물리 시스템 모델링의 다른 수학적 접근법을 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../454_Lagrangian_neural_networks/index.html">Lagrangian neural networks</a></div><div class="conn-reason">물리 시스템 모델링에서 라그랑주 vs 상태공간 기반의 다른 수학적 접근법을 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../574_Neural-POD_A_Plug-and-Play_Neural_Operator_Framework_for_Inf/index.html">Neural-POD: A Plug-and-Play Neural Operator Framework for Infinite-Dimensional Functional Nonlinear Proper Orthogonal Decomposition</a></div><div class="conn-reason">신경 연산자와 상태공간모델의 물리 기반 추론에서 다른 접근법을 비교할 수 있다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../829_Towards_Foundation_Models_for_Scientific_Machine_Learning_Ch/index.html">Towards Foundation Models for Scientific Machine Learning: Characterizing Scaling and Transfer Behavior</a></div><div class="conn-reason">과학 머신러닝 파운데이션 모델 패러다임을 상태공간모델의 물리 시스템 학습에 적용할 수 있다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

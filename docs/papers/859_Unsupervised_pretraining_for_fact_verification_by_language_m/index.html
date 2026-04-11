@@ -81,8 +81,6 @@ a { color: #A62018; }
 <li><strong>언어모델 증류의 효과성</strong>: 8개 사전학습 언어모델의 의미론적 지식을 효과적으로 지식모델 공간으로 이전하며, 작업 특화 설계의 중요성을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: SFAVEL 프레임워크 개요 - (a) 자기지도학습 기반 언어모델 증류 사전학습 과정을 보여주며, 고정된 언어모델로부터 클레임 임베딩을 획득하고, 지식모델로 사실 임베딩을 생성한 후, 스코어링 모듈이 근거를 점수화하고, 세 가지 손실함수(증류, 스코어링, 대비)를 결합하여 최적화한다.">
-</div>
 <p><strong>데이터 처리 파이프라인</strong>:</p>
 <ul>
 <li>미표지 클레임 배치 x = {xᵢ}ₙᵢ₌₁과 지식그래프 G(ε, R) (엔티티와 관계 포함) 사용</li>
@@ -131,7 +129,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../441_Investigating_zero-and_few-shot_generalization_in_fact_verif/index.html">Investigating zero-and few-shot generalization in fact verification</a></div><div class="conn-reason">팩트 검증을 위한 비지도 사전학습 방법이 zero-shot 및 few-shot 일반화 연구의 방법론적 기초를 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../183_Can_large_language_models_detect_misinformation_in_scientifi/index.html">Can large language models detect misinformation in scientific news reporting? arXiv preprint arXiv:2402.14268, 2024.</a></div><div class="conn-reason">과학 뉴스의 오보 탐지를 위한 타당성 차원 정의가 SFAVEL의 클레임-근거 의미론적 정렬 학습의 이론적 기반을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../832_Towards_llm-based_fact_verification_on_news_claims_with_a_hi/index.html">Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method</a></div><div class="conn-reason">SFAVEL은 언어모델 증류를 통한 무감독 접근을, HiSS는 계층적 단계별 프롬프팅을 사용하여 서로 다른 방식으로 팩트 검증 문제를 해결함</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../832_Towards_llm-based_fact_verification_on_news_claims_with_a_hi/index.html">Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method</a></div><div class="conn-reason">HiSS가 계층적 단계별 프롬프팅을 통해 뉴스 클레임을 세분화하는 반면, SFAVEL은 언어모델 증류를 통한 무감독 학습으로 서로 다른 팩트 검증 접근법을 제시함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../567_Multivers_Improving_scientific_claim_verification_with_weak/index.html">Multivers: Improving scientific claim verification with weak supervision and full-document context</a></div><div class="conn-reason">비감독 사전훈련을 약한 감독 학습으로 확장하여 더 정교한 과학 사실 검증 시스템을 구축합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../332_Fact-checking_complex_claims_with_program-guided_reasoning/index.html">Fact-checking complex claims with program-guided reasoning</a></div><div class="conn-reason">프로그램 가이드 추론을 통한 복잡한 클레임 검증이 SFAVEL의 기본적인 클레임-근거 정렬 학습을 더 정교한 추론 체계로 발전시킨 연구임</div></div>
 <div class="conn-item counterpoint"><div class="conn-type">반론/비판</div><div class="conn-title"><a href="../541_Missing_counter-evidence_renders_nlp_fact-checking_unrealist/index.html">Missing counter-evidence renders nlp fact-checking unrealistic for misinformation</a></div><div class="conn-reason">반박 증거의 부재가 NLP 팩트 체킹을 비현실적으로 만든다는 지적이 SFAVEL의 자기지도학습 접근법의 한계를 보여줌</div></div></div>

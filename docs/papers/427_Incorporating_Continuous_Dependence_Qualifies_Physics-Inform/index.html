@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Guojie Li, Wuyue Yang, Liu Hong | <strong>날짜</strong>: 2026-03-26 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: cd-PINN의 아이디어, 문제 설정 및 아키텍처 설명. (C) 연속성 가정에 기반한 목적함수, (D) 라벨된 학습 데이터, (F) cd-PINN의 아키텍처</em></p></div>
 <p>편미분방정식(PDE)의 해가 초기/경계값 및 매개변수에 대해 연속적으로 의존한다는 수학적 성질을 활용하여 물리정보신경망(PINN)을 확장한 cd-PINN을 제안한다. 이는 제한된 라벨 데이터로도 DeepONet과 FNO 대비 1-3 자릿수 낮은 오차를 달성하면서 재훈련 없이 연산자 학습을 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 매개변수 인코딩 c와 공간좌표 x에 연속적으로 의존하는 고차원 해공간 G(A)를 학습하도록 설계. PDE 잔차 손실에 추가적으로 해의 계수에 대한 미분가능성 손실 L_cd를 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 매개변수화된 확산 및 파동 방정식의 결과. (A) 훈련 에포크에 따른 테스트 MSE, (B) 매개변수 위상공간에서의 NLMAE, (C) 미학습 설정에서의 예측 해</em></p></div>
 <ol>
 <li><strong>확산 방정식</strong>: 20개 라벨 데이터로 DeepONet/FNO 대비 테스트 MSE가 약 100배 이상 개선. PINN 대비 cd-PINN은 특히 σ가 작은 영역에서 1자릿수 NLMAE 개선.</li>
 <li><strong>파동 방정식</strong>: cd-PINN이 PI-DeepONet 대비 NRMSE에서 약 28배 향상(1.20×10⁻³ vs 3.43×10⁻²). 파동 진행 영역에서 최대 절대오차 크게 감소.</li>
 <li><strong>확장성</strong>: Poisson, 고차원 확산-반응, Burgers 방정식 등 다양한 PDE에서 일관된 성능 향상 입증. 재훈련 없이 새로운 매개변수에 대한 직접 추론 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 매개변수화된 Poisson 방정식의 결과. 잔차점 밀도에 따른 L_cd의 영향 분석</em></p></div>
 <ul>
 <li><strong>아키텍처</strong>: 인코더-디코더 구조. 초기값 u₀(x) 또는 매개변수 a(t,x)를 저차원 인코딩 c로 변환 → 신경망 G(c, x)가 해 u를 학습. MLP 기반 인코더가 Transformer보다 성능 우수.</li>
 <li><strong>손실함수</strong>:</li>

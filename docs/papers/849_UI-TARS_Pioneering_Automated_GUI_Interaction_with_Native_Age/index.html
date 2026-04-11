@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yujia Qin, Yining Ye, Junjie Fang, Haoming Wang, Shihao Liang | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2501.12326" target="_blank">10.48550/arXiv.2501.12326</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>UI-TARS가 항공편 검색을 돕는 데모 사례</em></p></div>
 <p>스크린샷만을 입력으로 받아 마우스, 키보드 조작 등 인간 같은 상호작용을 수행하는 네이티브 GUI 에이전트 모델로, 상용 모델(GPT-4o)에 기반한 프레임워크들을 뛰어넘는 엔드-투-엔드(end-to-end) 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 고품질 GUI 데이터 수집 및 System-2 추론 통합, 그리고 반복적 학습(iterative training)과 반성 튜닝(reflection tuning)을 통해 네이티브 GUI 에이전트 모델 UI-TARS를 개발한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>GUI 에이전트의 진화 경로</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>핵심 역량 및 평가 개요</em></p></div>
 <ol>
 <li><strong>벤치마크 우수 성능</strong>: OSWorld에서 50스텝 기준 24.6점(Claude 22.0 초과), AndroidWorld에서 46.6점(GPT-4o 34.5 초과) 달성, 10개 이상의 GUI 에이전트 벤치마크에서 SOTA(State-of-the-Art) 성능 달성</li>
 <li><strong>통합 아키텍처</strong>: 지각, 행동 모델링, System-2 추론, 메모리를 하나의 엔드-투-엔드 모델로 통합하여 모듈식 프레임워크보다 우수한 성능 달성</li>
 <li><strong>자동 데이터 수집 및 정제</strong>: 수백 대의 가상 머신을 활용한 자동 궤적(trace) 수집 및 다단계 필터링으로 대규모 고품질 데이터 생성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>UI-TARS의 아키텍처 개요 및 핵심 역량</em></p></div>
 <ul>
 <li><strong>강화된 지각(Enhanced Perception)</strong>:
 <ul>
@@ -114,9 +106,7 @@ a { color: #A62018; }
 <li>다단계 필터링: 규칙 기반 휴리스틱, VLM 점수 평가, 인간 검증</li>
 <li>반성 튜닝: 오류 수정(error correction)과 반성 후(post-reflection) 데이터 주석으로 에이전트가 자신의 실수를 학습하고 회복</li>
 </ul>
-</ul>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>지각 및 그라운딩 데이터 예시</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>순수 비전 기반 네이티브 모델</strong>: 텍스트 표현에 대한 의존성을 완전히 제거하고 스크린샷만으로 동작하는 완전히 새로운 접근 방식</li>

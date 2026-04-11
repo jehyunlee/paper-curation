@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sandeep Kumar, Tirthankar Ghosal, Asif Ekbal | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 리뷰어 간 모순의 예시 - Reviewer 1은 증거가 강하고 충분하다고 평가하지만, Reviewer 2는 그 증거에 회의적</em></p></div>
 <p>본 논문은 과학 논문의 피어 리뷰 과정에서 리뷰어 간의 모순(disagreement)을 자동으로 탐지하는 새로운 과제를 제시하고, 이를 위한 대규모 데이터셋 ContraSciView와 기준 모델을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) ICLR(2017-2020)과 NeurIPS(2016-2019) 데이터로부터 약 8.5k 논문, 28k 리뷰 쌍 기반 ContraSciView 데이터셋 구축, (2) 8개 측면 카테고리(Motivation, Clarity, Soundness 등)와 감정(긍정/부정) 레이블링을 통한 모순 정의, (3) 측면-감정 모델과 모순 분류기 기반의 2단계 기준 모델 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 측면별 모순 주석 통계 - Clarity 측면에서 가장 많은 모순 발생</em></p></div>
 <ol>
 <li><strong>첫 번째 자동화 작업 수행</strong>: 피어 리뷰 모순 탐지를 처음으로 정형화하고 자동 탐지 시스템 개발. 이는 학술 출판 분야의 AI 적용 범위를 확장함.</li>
 <li><strong>고품질 대규모 데이터셋 구축</strong>: 8.5k 논문, 25.8k 리뷰, 28.5k 리뷰 쌍으로 구성된 ContraSciView 데이셋 공개. 4년 이상 연구 경험을 가진 박사과정 학생 6명과 10년 이상 경험의 전문가 2명이 주석 작성(Cohen's kappa = 0.62, substantial agreement).</li>
 <li><strong>리뷰어 간 불일치 패턴 분석</strong>: Clarity 측면에서 가장 많은 모순(전문성, 도메인 지식, 언어 능력 차이 등), Replicability와 Meaningful Comparison에서는 적은 모순 발견.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 제안된 기준 모델의 흐름도 - SDAP(Sentiment Disparity Aspect Pair) 추출 후 모순 여부 판정</em></p></div>
 <h3>데이터셋 구축 방법</h3>
 <ul>
 <li>ASAP-Review 데이터셋에서 ICLR과 NeurIPS 논문 8,582개 선정</li>

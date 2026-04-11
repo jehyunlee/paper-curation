@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiangci Li, Jessica Ouyang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: GPT-4 기반 Bing Chat과 본 논문의 접근 방식 비교. Bing Chat의 출력은 일반적이고 부정확한 반면, 제안 방식은 구조화된 특성(features)을 활용하여 보다 정확한 인용문을 생성한다.</em></p></div>
 <p>본 논문은 연구 논문들 간의 복잡한 관계를 포착하기 위해 특성 기반(feature-based) LLM 프롬프팅 접근법을 제안하며, 단순 인용문 생성을 넘어 여러 논문을 한 번에 처리하고 이들을 연결하는 전환 문장(transition sentence)을 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -100,10 +98,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 문학 검토 생성을 위한 프롬프트 형식. 추출된 특성들이 구조화되어 LLM에 입력된다.</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 인간 평가 점수 분포. 적분적 글쓰기 스타일을 보인 생성문이 더 높은 선호도를 보인다.</em></p></div>
 <ol>
 <li><strong>특성 기반 생성 프레임워크</strong>: 인용 논문의 기여도, 논문 간 관계, 인용의 담화 역할(discourse role)을 표현하는 해석 가능한(human-interpretable) 자연언어 특성들을 정의하고 자동 추출</li>
 <li><strong>다중 인용 동시 생성</strong>: 단일 인용문이 아닌 여러 논문의 인용과 이를 연결하는 전환 문장을 한 번에 생성하여 응집력 있는 문학 검토 구성</li>
@@ -111,8 +105,6 @@ a { color: #A62018; }
 <li><strong>적분적 글쓰기 선호도 발견</strong>: 인간 평가 결과 고수준의 추상적 인용과 전환 문장이 포함된 응집력 있는 문서를 강하게 선호</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: 사실적 오류(factual errors) 개수 비교. 제안 방식이 Bing Chat 대비 오류를 크게 감소시킨다.</em></p></div>
 <ul>
 <li><strong>특성 추출 단계</strong>:
 <ul>

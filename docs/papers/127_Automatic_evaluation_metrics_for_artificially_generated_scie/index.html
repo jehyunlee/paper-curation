@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Niklas Hoepner, Leon Eshuijs, Dimitrios Alivanistos, Giacomo Zamprogno, Ilaria Tiddi | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2503.05712" target="_blank">arXiv:2503.05712</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>논문 표현을 위한 context model의 아키텍처: 제목-초록(초록색)과 관련 작업, 방법론, 실험 결과, 결론(파랑색)을 결합하여 처리</em></p></div>
 <p>AI가 생성한 과학 논문의 품질 평가를 위해 인용 횟수 예측(Citation Count Prediction)과 리뷰 점수 예측(Review Score Prediction)을 자동 평가 지표로 제안하며, 단순 모델이 LLM 기반 검토자보다 인간 평가와 더 일치함을 입증한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: OpenReview의 모든 제출 논문을 파싱하여 인용 횟수, 참고문헌, 연구 가설로 보강한 후, 인용 횟수 예측과 리뷰 점수 예측을 품질 대리 지표로 비교 분석</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>다양한 조건에서의 Pearson 상관계수 히트맵: 리뷰 점수와 인용 횟수의 관계</em></p></div>
 <ol>
 <li><strong>인용 횟수 예측의 우월성</strong>: 리뷰 점수 예측보다 인용 횟수 예측이 더 실행 가능함을 입증하였으며, 제목과 초록만 사용한 단순 모델도 LLM 기반 검토자를 능가하는 일관성을 보임</li>
 <li><strong>데이터셋 구축</strong>: OpenReview의 모든 제출 논문을 통일된 형식으로 파싱하고 추가 메타데이터(인용 횟수, 연구 가설)로 보강한 대규모 데이터셋 제공</li>
 <li><strong>예측 난이도 비교</strong>: 전체 논문 정보 대비 연구 가설 정보만으로는 점수 예측이 훨씬 어려우며, 완전한 논문 텍스트의 이점이 명확함을 확인</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>모델 아키텍처: SPECTER2 embedding을 이용한 문맥 정보 통합</em></p></div>
 <ul>
 <li><strong>임베딩 방식</strong>: SPECTER2 모델의 회귀 어댑터(Regression Adapter)를 사용하여 과학 논문 텍스트에 맞춘 고품질 표현 생성</li>
 <li><strong>문맥 모델링</strong>: 제목-초록으로 논문을 표현하고, 관련 작업/방법론/실험 결과/결론 또는 참고문헌의 제목-초록을 문맥으로 활용하여 Transformer 인코더를 통해 처리</li>

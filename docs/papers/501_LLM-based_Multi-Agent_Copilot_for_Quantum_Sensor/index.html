@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Rong Sha, Bing Wang, Jun Yang, Xiaoxiao Ma, Chengkun Wu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2508.05421" target="_blank">10.48550/arXiv.2508.05421</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>QCopilot 프레임워크의 전체 아키텍처로, 중앙집중식 에이전트 통신, 지식 베이스, 실험 최적화 및 결함 진단 워크플로우를 보여줌</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM) 기반 다중 에이전트 시스템인 QCopilot을 제시하여 양자 센서(특히 냉원자 원자 냉각) 개발 과정의 자동화와 진단을 실현했다. 이를 통해 수동 실험 대비 약 100배의 속도 향상을 달성하며, 다중 매개변수 환경에서 자율적으로 이상 매개변수를 탐지할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM의 강력한 추론, 계획, 맥락 이해 능력을 활용하여 Decision Maker, Experimenter, Analyst, Multimodal Diagnoser, Web Searcher, Recorder 등 특화된 에이전트로 구성된 다중 에이전트 시스템을 구축한다. 벡터 지식베이스, 능동 학습(Active Learning), 불확실성 정량화를 통합한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>원자 냉각 실험의 최적화: (c) 베이지안 최적화(BO)의 수렴 과정, (f) 다중 목표 최적화(MBO)에 의한 파레토 프론티어 식별</em></p></div>
 <ol>
 <li><strong>극저온 원자 생성</strong>: 수시간 내 인간 개입 없이 10⁸개의 sub-µK 원자 생성 달성. 이는 수동 실험 대비 약 100배의 속도 향상에 해당한다.</li>
 <li><strong>적응형 최적화</strong>: MOT(Magneto-Optical Trap) 단계에서 베이지안 최적화로 약 100회 반복 내 수렴, PGC(Polarization Gradient Cooling) 단계에서 다중 목표 베이지안 최적화(MBO)로 파레토 프론티어 효율적 식별. 500회 시도에서 477개의 허용 가능 결과(10 µK 이하)를 생성.</li>
 <li><strong>자율적 이상 감지</strong>: 다중 매개변수 실험 환경에서 이상 매개변수를 자동으로 식별하고 그 원인을 추론할 수 있다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>최적화 워크플로우: (a) MOT 최적화를 위한 대화 이력 기반 의사결정, (d) PGC 최적화 프로토콜</em></p></div>
 <ul>
 <li><strong>중앙집중식 에이전트 아키텍처</strong>: Decision Maker가 작업을 분해하여 다른 에이전트에 할당하고, 벡터 지식베이스에서 하드웨어 매개변수 보고서를 검색 증강 생성(RAG)으로 획득한다.</li>
 <li><strong>능동 학습 기반 최적화</strong>: Experimenter가 실험 요구사항에 따라 최적화 방법(단일 목표 BO 또는 다중 목표 MBO)을 자동으로 선택하여 고차원 매개변수 공간을 효율적으로 탐색한다. 강건성을 위해 각 매개변수 설정을 3회 반복 측정.</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Junyi Bian, Xiaolei Qin, Wuhe Zhou, Mengzuo Huang, Congyi Luo, Ke Zhang, Weidong Zhang | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2311.08896" target="_blank">arXiv:2311.08896</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HeLM의 전체 프레임워크: 상단은 훈련 과정, 하단은 추론 과정을 보여줌</em></p></div>
 <p>표-텍스트 생성 작업에서 입력 테이블의 관련 행(row)을 먼저 강조(highlighting)하는 두 단계 접근 방식을 제안하여, 대규모 언어모델(LLM)이 핵심 증거에 집중하도록 함으로써 생성 품질을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 표 강조기(table highlighter)로 관련 행 인덱스를 식별하고, 강조된 표를 기반으로 표 요약기(table summarizer)가 최종 답변을 생성하는 두 단계 파이프라인 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>강조기와 요약기의 프롬프트 구조</em></p></div>
 <ol>
 <li><strong>최첨단 성능</strong>: FetaQA와 QTSumm 데이터셋에서 ROUGE와 BLEU 점수 기준 최첨단 결과 달성</li>
 <li><strong>해석 가능성 제공</strong>: 강조된 행 인덱스를 통해 모델의 의사결정 과정을 명확히 제시하여 해석 가능성(interpretability) 향상</li>
 <li><strong>효율적 파인튜닝</strong>: QLoRA를 활용한 매개변수 효율적 학습으로 제한된 계산 자원에서도 LLaMA2 파인튜닝 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>증거 레이블 증류를 위한 프롬프트</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>표 강조 예시: 관련 행의 각 셀에 '</em>' 문자를 붙여 강조*</p></div>
 <p><strong>방법론:</strong></p>
 <ul>
 <li><strong>두 단계 구조</strong>:
@@ -131,9 +123,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: HeLM은 표-텍스트 생성에서 명시적 증거 강조를 통해 성능과 해석 가능성을 동시에 달성한 실용적이고 효과적인 접근법이며, 주석 없는 데이터셋에서도 적용 가능한 증거 라벨 구성 방법의 창의성이 돋보인다. 다만 개별 기술의 참신성과 이론적 깊이 측면에서는 보완의 여지가 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../708_SciCap_Generating_Captions_for_Scientific_Figures/index.html">SciCap: Generating Captions for Scientific Figures</a></div><div class="conn-reason">과학적 도형 캡션 생성의 기본 방법론을 표 캡션 생성에 적용한 기초 연구입니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../515_Machine-in-the-loop_rewriting_for_creative_image_captioning/index.html">Machine-in-the-loop rewriting for creative image captioning</a></div><div class="conn-reason">표 캡션 생성에서 기계-인-루프 접근법과 증거 강조 접근법의 비교 분석이 가능합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../515_Machine-in-the-loop_rewriting_for_creative_image_captioning/index.html">Machine-in-the-loop rewriting for creative image captioning</a></div><div class="conn-reason">창의적 캡션 작성에서 기계-인-루프 방식과 증거 강조 방식의 서로 다른 인간-AI 협업 접근법을 비교할 수 있습니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../564_Multi-llm_collaborative_caption_generation_in_scientific_doc/index.html">Multi-llm collaborative caption generation in scientific documents</a></div><div class="conn-reason">단일 LLM의 증거 강조 방식을 다중 LLM 협업으로 확장한 고도화된 접근법을 제시합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../564_Multi-llm_collaborative_caption_generation_in_scientific_doc/index.html">Multi-llm collaborative caption generation in scientific documents</a></div><div class="conn-reason">단일 LLM의 증거 강조를 다중 LLM 협업으로 발전시켜 더 고품질의 과학 도형 캡션을 생성합니다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../564_Multi-llm_collaborative_caption_generation_in_scientific_doc/index.html">Multi-llm collaborative caption generation in scientific documents</a></div><div class="conn-reason">단일 LLM의 증거 강조 방식을 다중 LLM 협업으로 확장한 고도화된 접근법을 제시합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

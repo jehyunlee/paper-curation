@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Hongjing Shao, Qian Luo, Jiayi Xia | <strong>날짜</strong>:  | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Processing pipeline for pretraining data. We collected data from GitHub and web archives.</em></p></div>
 <p>코드 LLM 사전학습 데이터를 자동으로 큐레이션하는 모델 중심 파이프라인을 제시하고, 이를 바탕으로 8B 규모의 Seed-Coder 모델 시리즈(base, instruct, reasoning)를 개발하여 동급 오픈소스 모델을 능가하는 성능을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 기반 품질 스코어러를 사용하여 GitHub, 커밋, 웹 데이터를 자동 필터링하고 6조 토큰의 사전학습 코퍼스를 구성했으며, 지도 학습 미세조정과 DPO, LongCoT 강화학습을 통해 세 가지 모델 변형을 개발했다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Benchmark performance of instruct and reasoning variants of Seed-Coder-8B.</em></p></div>
 <ul>
 <li><strong>자동 데이터 파이프라인</strong>: 최소한의 인간 개입으로 6조 토큰의 코드 사전학습 데이터를 구성하는 병렬 처리 가능한 모델 중심 파이프라인 개발</li>
 <li><strong>벤치마크 성능</strong>: BigCodeBench(55.8%), FullStack Bench(47.6%), SWE-bench Verified(50.9%) 등 다양한 코딩 태스크에서 동급 모델 능가 또는 최고 성능 달성</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>오픈소스 기여</strong>: 경량이면서도 강력한 8B 모델 시리즈를 공개하여 오픈소스 커뮤니티의 진전 촉진</li>
 </ul></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Processing pipeline for pretraining data. We collected data from GitHub and web archives.</em></p></div>
 <ul>
 <li>GitHub 데이터, 커밋 데이터, 코드 관련 웹 데이터에서 정확/근사 중복 제거 수행</li>
 <li>LLM 품질 스코어러를 활용한 자동 필터링으로 고품질 데이터 선별</li>
@@ -117,8 +111,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Seed-Coder는 인간 규칙 기반 접근법의 한계를 체계적으로 극복하고 모델 중심의 자동 데이터 큐레이션 패러다임을 성공적으로 구현했으며, 경량급(8B) 오픈소스 모델에서 동급 이상의 성능을 달성하여 향후 코드 LLM 개발의 중요한 방향을 제시한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../263_Deepseek-coder_When_the_large_language_model_meets_programmi/index.html">Deepseek-coder: When the large language model meets programming–the rise of code intelligence</a></div><div class="conn-reason">DeepSeek-Coder가 대규모 코드 언어 모델의 기반 기술로서 AI Copilot의 코드 생성 품질 개선에 영향을 미친다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../741_Seed-coder_Let_the_code_model_curate_data_for_itself/index.html">Seed-coder: Let the code model curate data for itself</a></div><div class="conn-reason">둘 다 코딩 LLM을 다루지만 하나는 AI Copilot 코드 품질에, 다른 하나는 Seed-Coder의 자동 큐레이션에 초점을 맞춘다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../635_Productivity_assessment_of_neural_code_completion/index.html">Productivity assessment of neural code completion</a></div><div class="conn-reason">신경 코드 완성의 생산성 평가 연구가 AI Copilot 코드 품질의 4배 성장이 실제 개발자 생산성에 미치는 영향을 분석하는데 활용될 수 있다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../635_Productivity_assessment_of_neural_code_completion/index.html">Productivity assessment of neural code completion</a></div><div class="conn-reason">코드 완성 도구의 생산성 측정을 코드 품질 평가로 확장하여 더 포괄적인 AI 코딩 도구 평가 프레임워크를 구축한다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../635_Productivity_assessment_of_neural_code_completion/index.html">Productivity assessment of neural code completion</a></div><div class="conn-reason">신경 코드 완성의 생산성 평가 연구가 AI Copilot 코드 품질의 4배 성장이 실제 개발자 생산성에 미치는 영향을 분석하는데 활용될 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiner Li, Limei Wang, Youzhi Luo, Carl N. Edwards, Shurui Gui | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2408.10120" target="_blank">10.48550/arXiv.2408.10120</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Geo2Seq 개요: 정규 표준화 라벨링 순서로 노드를 배열하고 각 노드에 원자 종류와 구면 좌표를 벡터 형태로 채워 수열로 변환</em></p></div>
 <p>본 논문은 3D 분자 구조를 SE(3)-불변(invariant) 1D 이산 수열로 변환하는 Geo2Seq 토큰화 방법을 제안하여, 언어 모델(LM)이 3D 분자 생성 태스크를 효과적으로 수행할 수 있도록 한다. 기존의 확산 모델 기반 방법론보다 빠르면서도 더 나은 조건부 생성 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 분자의 3D 좌표를 SE(3)-불변 구면 좌표(spherical coordinates)로 변환하고, 정규 표준화 라벨링(canonical labeling)을 통해 순서를 결정하여 1D 이산 수열로 인코딩한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>편극율(Polarizability α) 조건으로 생성된 분자의 시각화</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>QM9 데이터셋에서 Geo2Seq + Mamba로 생성된 분자의 시각화</em></p></div>
 <ol>
 <li><strong>생성 품질 및 다양성</strong>: Geo2Seq을 다양한 언어 모델(Transformer, Mamba 등 SSM)과 결합하여 화학적으로 유효하고 다양한 3D 분자를 신뢰성 있게 생성할 수 있음을 입증</li>
 <li><strong>조건부 생성 성능</strong>: 조건부 생성(conditional generation) 태스크에서 강력한 확산 모델 기저선(EDM 등)을 큰 차이로 초과 달성</li>
 <li><strong>효율성</strong>: 확산 모델 대비 훨씬 빠른 생성 속도(자동회귀 디코딩)를 유지하면서 더 나은 성능 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Geo2Seq의 핵심 단계: 정규 표준화 라벨링, 구면 좌표 표현, 토큰화, 수열 생성</em></p></div>
 <ul>
 <li><strong>정규 표준화 라벨링(Canonical Labeling)</strong>: 그래프 동형(isomorphism)을 제외한 정보 손실 없이 분자 그래프의 노드를 고정된 순서로 배열</li>
 <li><strong>구면 좌표 표현</strong>: 각 원자를 <code>[z_i, d_i, θ_i, φ_i]</code>로 표현 (z_i: 원자번호, d_i: 거리, θ_i, φ_i: 각도)
@@ -126,11 +118,9 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 언어 모델을 3D 분자 생성에 효과적으로 적용하기 위한 창의적인 토큰화 방법을 제안하며, SE(3)-불변성을 엄밀히 보장하면서도 조건부 생성에서 확산 모델을 초과하는 성능을 달성한다. 모델-불가지론적 설계로 확장성도 우수하나, 수치 정밀도와 계산 복잡도 측면의 실용적 제약에 대한 더 깊은 논의가 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../230_Code_llama_Open_foundation_models_for_code/index.html">Code llama: Open foundation models for code</a></div><div class="conn-reason">코드용 오픈 파운데이션 모델이 분자 언어모델 생성의 기반 제공</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../349_Fragment_and_Geometry_Aware_Tokenization_of_Molecules_for_St/index.html">Fragment and Geometry Aware Tokenization of Molecules for Structure-Based Drug Design Using Language Models</a></div><div class="conn-reason">구조화된 표현을 위한 분자 조각과 기하학 토큰화의 다른 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../349_Fragment_and_Geometry_Aware_Tokenization_of_Molecules_for_St/index.html">Fragment and Geometry Aware Tokenization of Molecules for Structure-Based Drug Design Using Language Models</a></div><div class="conn-reason">구조 기반 약물 설계에서 SE(3) 좌표계와 기하학적 토큰화 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../125_Automated_latex_code_generation_from_handwritten_math_expres/index.html">Automated latex code generation from handwritten math expressions using vision transformer</a></div><div class="conn-reason">둘 다 분자 및 수학적 구조의 언어 모델 토크나이제이션을 다루지만 하나는 필기 수학식의 LaTeX 변환에, 다른 하나는 분자의 기하학적 토크나이제이션에 초점을 맞춘다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../282_DMFlow_Disordered_Materials_Generation_by_Flow_Matching/index.html">DMFlow: Disordered Materials Generation by Flow Matching</a></div><div class="conn-reason">언어모델 분자 생성과 무질서 재료 생성의 다른 생성 모델 접근법</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../439_Invariant_Tokenization_of_Crystalline_Materials_for_Language/index.html">Invariant Tokenization of Crystalline Materials for Language Model Enabled Generation</a></div><div class="conn-reason">결정체 재료의 불변 토큰화에서 3D 분자 기하학 토큰화로의 확장</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../439_Invariant_Tokenization_of_Crystalline_Materials_for_Language/index.html">Invariant Tokenization of Crystalline Materials for Language Model Enabled Generation</a></div><div class="conn-reason">분자 기하학 토큰화를 결정 구조의 SE(3) 불변성으로 확장한 발전된 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../345_Foundation_Molecular_Grammar_Multi-Modal_Foundation_Models_I/index.html">Foundation Molecular Grammar: Multi-Modal Foundation Models Induce Interpretable Molecular Graph Languages</a></div><div class="conn-reason">분자의 기하학적 토큰화 방법이 Foundation Molecular Grammar의 계층적 분해 알고리즘을 더욱 정교화함</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../459_Language_Models_for_Controllable_DNA_Sequence_Design/index.html">Language Models for Controllable DNA Sequence Design</a></div><div class="conn-reason">제어 가능한 DNA 서열 설계를 3D 분자 토큰화에 언어모델로 적용</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

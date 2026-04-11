@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shiyang Duan, Yuan Tian, Qi-Tao Bing, Xiaowei Shao | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2508.01746" target="_blank">10.48550/arXiv.2508.01746</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>HypoAgents 프레임워크의 흐름도: Hypothesis Proposal → Evidence Validation → Hypothesis Refinement의 폐쇄루프 구조</em></p></div>
 <p>본 논문은 베이지안 추론(Bayesian reasoning)과 정보엔트로피(information entropy) 기반 탐색을 결합하여 과학적 가설의 자동 생성 및 반복적 최적화를 수행하는 다중에이전트 프레임워크 HypoAgents를 제안한다. 기존의 대규모언어모델(LLM) 기반 방법들이 불확실성을 체계적으로 모델링하지 못했던 문제를 해결하기 위해, 폐쇄루프 피드백 메커니즘을 통해 가설 집합을 반복적으로 개선한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,17 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 베이지안 추론을 통한 신념 업데이트와 정보엔트로피 기반 탐색을 결합한 "제안-검증-개선(Propose-Verify-Refine)" 폐쇄루프를 구축하여, 불확실성이 높은 가설을 우선적으로 개선하는 반복 최적화 방식을 채택한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 반복(iterations) 횟수에 따른 성능 영향: ELO 점수는 지속적으로 개선되고 엔트로피는 감소</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: ICLR 2025 실제 연구 질문 데이터셋(100개 연구질문) 평가 결과, 12번 최적화 반복 후 생성된 가설의 평균 ELO 점수가 116.3점 증가하였으며, 실제 논문 초록 벤치마크를 17.8점 상회했다.</li>
 <li><strong>불확실성 감소</strong>: 섀넌 엔트로피(Shannon entropy)로 측정된 전체 시스템의 불확실성이 0.92 감소하여, 생성된 가설에 대한 신뢰도가 유의미하게 향상됨을 입증했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>서로 다른 초기 가설 개수의 영향: 최적 범위 결정</em></p></div>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>정제 임계값(refinement threshold)이 성능에 미치는 영향: 엔트로피 기반 선택의 효과성</em></p></div>
 <h3>1단계: 가설 제안(Hypothesis Proposal)</h3>
 <ul>
 <li><strong>다양성 샘플링</strong>: 온도 파라미터 변화와 다양한 프롬프트 템플릿을 활용하여 LLM으로부터 다중라운드 샘플링 수행</li>

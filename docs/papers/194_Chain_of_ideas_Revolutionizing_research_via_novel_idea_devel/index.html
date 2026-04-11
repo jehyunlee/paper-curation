@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Long Li, Weiwen Xu, Jiayan Guo, Ruochen Zhao, Xingxuan Li 외 (DAMO Academy, Alibaba Group; Zhejiang University) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2410.13185" target="_blank">arXiv:2410.13185</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: Vanilla RAG 기반 연구 에이전트와 Chain-of-Ideas 에이전트의 비교. CoI는 관련 논문들을 체계적 체인으로 조직하여 논리적 일관성 있는 아이디어 생성</em></p></div>
 <p>LLM 기반 에이전트가 과학 문헌을 체인 구조로 조직하여 연구 분야의 진화 과정을 명확히 반영함으로써, 인간 연구자 수준의 참신한 연구 아이디어 생성을 자동화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인간 연구자가 기초 논문부터 최신 연구까지 진화 과정을 추적하며 아이디어를 개발하는 방식에 영감을 받아, 체계적으로 선택된 논문들을 체인 구조로 조직하는 CoI 에이전트 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: CoI 에이전트의 3단계 프레임워크 - CoI 구성, 아이디어 생성, 실험 설계</em></p></div>
 <ol>
 <li><strong>CoI 에이전트의 우수성</strong>: AI 분야 아이디어 생성 태스크에서 모든 자동화 베이스라인을 능가하며, 2위 방법보다 56 ELO 점수 우수. 인간 전문가 수준의 참신성(novelty) 달성.</li>
 <li><strong>비용 효율성</strong>: 1개의 후보 아이디어와 실험 설계를 생성하는 최소 비용이 $0.50으로 매우 경제적.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>핵심 발견</strong>: 아이디어의 참신성을 위해서는 관련 문헌의 '양'보다 명확한 발전 추세 분석이 더 중요함을 규명.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <p><strong>Stage 1: CoI 구성 (CoI Construction)</strong></p>
 <ul>
 <li>주어진 연구 주제에 대해 LLM이 K개의 서로 다른 관점의 쿼리 생성</li>
@@ -155,7 +149,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../714_Scideator_Human-llm_scientific_idea_generation_grounded_in_r/index.html">Scideator: Human-LLM scientific idea generation grounded in research-paper facet recombination</a></div><div class="conn-reason">혁신적 연구 아이디어 개발을 위한 아이디어 연쇄 접근법이 논문 기반 아이디어 생성과 다른 방법론을 제시한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../392_Grapheval_A_lightweight_graph-based_llm_framework_for_idea_e/index.html">GraphEval: A lightweight graph-based llm framework for idea evaluation</a></div><div class="conn-reason">연구 아이디어 생성에서 체인 구조 vs 그래프 기반의 다른 조직화 접근법을 비교할 수 있다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../762_Spark_A_system_for_scientifically_creative_idea_generation/index.html">Spark: A system for scientifically creative idea generation</a></div><div class="conn-reason">과학적 아이디어 생성에서 체인 구조 vs 창의적 시스템의 다른 접근법을 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../392_Grapheval_A_lightweight_graph-based_llm_framework_for_idea_e/index.html">GraphEval: A lightweight graph-based llm framework for idea evaluation</a></div><div class="conn-reason">연구 아이디어 평가에서 그래프 기반 vs 체인 구조의 다른 조직화 접근법을 비교할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../418_Hypothesis_Generation_for_Materials_Discovery_and_Design_Usi/index.html">Hypothesis Generation for Materials Discovery and Design Using Goal-Driven and Constraint-Guided LLM Agents</a></div><div class="conn-reason">과학 문헌의 체인 구조 조직화 방법론을 재료 발견 가설 생성에 적용한 확장 연구다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../155_Beyond_Brainstorming_What_Drives_High-Quality_Scientific_Ide/index.html">Beyond Brainstorming: What Drives High-Quality Scientific Ideas? Lessons from Multi-Agent Collaboration</a></div><div class="conn-reason">아이디어 체인 혁신 연구에서 구조화된 다중 에이전트 토론으로의 확장</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../668_ResearchAgent_Iterative_Research_Idea_Generation_over_Scient/index.html">ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</a></div><div class="conn-reason">과학 지식 그래프 기반 가설 생성을 문헌 체인 구조로 확장한 연구다</div></div></div>

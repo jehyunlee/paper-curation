@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Raúl Ortega, José Manuel Gómez-Pérez | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: System Architecture">
-<p class="fig-caption"><em>시스템 아키텍처: Llama3 8B Instruct 모델과 Elasticsearch 기반 검색 엔진으로 구성된 생의학 논문 분석 파이프라인</em></p></div>
 <p>SciClaims는 생의학 텍스트에서 과학적 주장을 자동으로 추출하고, PubMed에서 관련 증거를 검색한 후, 단일 대규모 언어모델(LLM)을 사용하여 검증하는 통합 시스템이다. 체계적 문헌고찰(Systematic Literature Review, SLR)과 특허 검증 등 고위험도 활용 사례를 지원한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 단일 GPU에서 효율적으로 동작하도록 최적화된 Llama3 8B Instruct 모델을 기반으로 하는 통합 시스템 개발. 추출-검색-검증의 세 단계를 자연어 설명과 증거 강조를 포함하여 웹 인터페이스로 제공.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: SciClaims 데모 인터페이스">
-<p class="fig-caption"><em>사용자 인터페이스: 입력 텍스트 분석 시 추출된 주장, 검증 결과, 관련 증거, 근거 제시</em></p></div>
 <ol>
 <li><strong>포괄적 End-to-End 파이프라인</strong>: 주장 추출, 증거 검색, 검증을 단일 LLM으로 통합하여 추가 미세조정(fine-tuning) 없이 구현. 기존 다단계 파이프라인의 실패 가능성을 제거하고 인터프리터빌리티(interpretability) 향상.</li>
 <li><strong>실제 배포 최적화</strong>: 24GB VRAM GPU 하나에서 효율적으로 동작하며, 최대 10,000자 길이의 문서 처리 가능. vLLM을 활용한 고처리량 추론으로 실시간 성능 구현.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>사용자 친화적 인터페이스</strong>: 30개 이상의 사전 설정 예제(생의학 논문, COVID 관련 뉴스, SNS, 특허) 제공. 모순된 증거에 대해 모든 관련 쌍을 반환하여 사용자가 정확도를 판단 가능. 신뢰성 점수(confidence score)와 근거(rationale) 제시.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1 재참조: 시스템 아키텍처 상세 구조">
-</div>
 <ul>
 <li><strong>Claim Extraction (청구 추출)</strong>
 <ul>
@@ -149,7 +143,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: SciClaims는 과학적 주장 검증의 완전한 파이프라인을 단일 LLM으로 통합하여 실제 배포 가능하도록 최적화한 우수한 시스템 데모이다. 생의학 분야의 체계적 문헌고찰 같은 고위험도 활용에 직접적 가치를 제공하며, 공개 코드와 인터페이스를 통해 재현성과 확장성을 담보한다. 다만 평가 범위 확대와 도메인 외 적용성 검증으로 더욱 강화될 수 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 주장의 검증 가능성 분석이 생의학 주장의 자동 추출과 검증에서 처리 가능한 주장 유형을 식별하는 핵심 기준을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../657_Reading_and_Reasoning_over_Chart_Images_for_Evidence-based_A/index.html">Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking</a></div><div class="conn-reason">생의학 주장 분석과 차트 기반 팩트 체킹은 모두 증거 기반 검증을 수행하지만 텍스트와 시각적 증거라는 다른 정보원을 활용한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../657_Reading_and_Reasoning_over_Chart_Images_for_Evidence-based_A/index.html">Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking</a></div><div class="conn-reason">차트 기반 팩트 체킹과 생의학 주장 검증은 서로 다른 증거 유형을 활용하지만 동일한 증거 기반 검증 프레임워크를 공유한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../602_Paperqa_Retrieval-augmented_generative_agent_for_scientific/index.html">PaperQA: Retrieval-Augmented Generative Agent for Scientific Research</a></div><div class="conn-reason">과학적 질의응답을 위한 검색 증강 에이전트를 생의학 주장 분석이라는 특화된 도메인으로 확장하여 더 정밀한 증거 검색과 검증이 가능하다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../880_What_makes_medical_claims_un_verifiable_analyzing_entity_and/index.html">What makes medical claims (un) verifiable? analyzing entity and relation properties for fact verification</a></div><div class="conn-reason">의료 주장의 검증 가능성 분석이 생의학 주장의 자동 분석 시스템에서 처리 가능한 주장을 사전에 필터링하는 핵심 구성 요소로 활용된다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

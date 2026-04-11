@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiangru Tang, Anni Zou, Zhuosheng Zhang, Ziming Li, Yilun Zhao, Xingyao Zhang, Arman Cohan, Mark Gerstein | <strong>날짜</strong>: 2023-11-16 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MedAgents 프레임워크의 5단계 파이프라인: 전문가 수집, 분석 제안, 보고서 요약, 협력 협의, 의사결정</em></p></div>
 <p>대규모 언어 모델(LLM)의 의료 추론 능력을 향상시키기 위해 다학제 협력 프레임워크를 제안하며, 역할 놀이와 반복적 토론을 통해 훈련 없이도 의료 지식을 효과적으로 활용한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 의료 질문의 다학제 관점을 반영하는 여러 도메인 전문가 에이전트가 역할 놀이를 통해 반복적으로 토론하고 합의에 도달하는 프레임워크 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MedAgents의 실제 적용 예시: VSD 진단 사례에서 소아과, 심장학, 유전학 등 여러 전문가 에이전트가 참여하여 최종 일치 보고서 생성</em></p></div>
 <ol>
 <li><strong>평가 성능</strong>: 9개 데이터셋(MedQA, MedMCQA, PubMedQA, MMLU의 6개 의료 서브태스크)에서 CoT 및 Self-Consistency 프롬프팅 방법을 초과 달성. 특히 zero-shot 설정에서 5-shot 기준선보다 우수한 성능 기록.</li>
 <li><strong>해석 가능성 및 신뢰도</strong>: 역할 놀이와 협력 토론을 통해 모델의 추론 과정이 명시적이고 검증 가능해지며, RAG(Retrieval Augmented Generation) 없이도 정확한 의료 지식 활용 가능 증명.</li>
 <li><strong>실무 적용성</strong>: 훈련이 필요 없는 플러그 앤 플레이 방식으로 Med-PaLM 2 등 기존 의료 LLM을 보완할 수 있음.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>전문가 에이전트 수의 영향 분석</em></p></div>
 <p><strong>5단계 프레임워크:</strong></p>
 <ul>
 <li><strong>①Expert Gathering (전문가 수집)</strong>: 주어진 의료 질문과 선택지에 기반하여 질문 도메인 전문가(QD)와 선택지 도메인 전문가(OD)를 체계적으로 모집. 역할 프롬프트를 통해 LLM이 특정 의료 분야 전문가 역할 수행.</li>
@@ -108,8 +102,6 @@ a { color: #A62018; }
 <li><strong>투명성</strong>: 각 단계의 명시적 논리 구조와 역할 프롬프팅으로 "왜 이 답인가"를 추적 가능하게 함.</li>
 </ul></div>
 <div class="section-box"><h2>Limitation &amp; Further Study</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4, 5">
-<p class="fig-caption"><em>오류 분석: 도메인 지식 부족, 지식 오인출, 일관성 오류, CoT 오류의 4가지 주요 카테고리</em></p></div>
 <ul>
 <li><strong>한계 1 - 도메인 지식 부족</strong>: LLM이 특정 의료 지식을 훈련 데이터에서 충분히 습득하지 못한 경우 협력도 근본적으로 제한적. 의료 특화 파인튜닝의 필요성 남음.</li>
 <li><strong>한계 2 - 지식 오인출</strong>: 모델이 의료 지식을 소유하고 있어도 프롬프팅에 따라 부정확한 지식을 활용하거나 혼동하는 경우 발생.</li>

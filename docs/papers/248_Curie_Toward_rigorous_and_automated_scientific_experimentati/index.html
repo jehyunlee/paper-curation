@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Patrick Tser Jern Kon, Jiachen Liu, Qi Ding, Yiming Qiu, Zhenning Yang, Yibo Huang, Jayanth Srinivasa, Myungjin Lee, Mosharaf Chowdhury, Ang Chen | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1. Curie overview.</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM) 기반 AI 에이전트를 활용하여 엄밀하고 자동화된 과학 실험 수행을 가능하게 하는 프레임워크 Curie를 제안한다. 신뢰성(reliability), 방법론적 통제(methodical control), 해석가능성(interpretability)을 갖춘 세 가지 핵심 모듈을 통해 실험 과정에 엄밀함을 내재화하고, 기존 베이스라인 대비 3.4배 향상된 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,22 +75,16 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 아키텍트 에이전트와 기술자 에이전트로 구성된 다중 에이전트 시스템 내에 <strong>Experimental Rigor Engine</strong>을 삽입하여, (1) 에이전트 내 신뢰성 강화, (2) 에이전트 간 방법론적 통제, (3) 실험 문서화를 통한 해석가능성 확보를 체계화한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2. Case Study. Curie는 반복 샘플링의 이점에 관한 기존 연구를 검증, 확장, 비판할 수 있다.</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: 컴퓨터 과학 도메인 46개 실험 질문에서 OpenHands, Microsoft Magentic 등 최강 베이스라인 대비 <strong>3.4배 성능 개선</strong> 달성</li>
 <li><strong>포괄적 벤치마크 구성</strong>: 영향력 있는 연구 논문 및 널리 채택된 오픈소스 프로젝트로부터 파생된 현실 기반의 실험 과제 46개 개발</li>
 <li><strong>과학적 워크플로우 지원</strong>: 기존 연구의 재현(reproduce), 확장(extend), 비판(challenge) 등 완전한 실험 라이프사이클 자동화 시연</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3. Curie workflow with an example task in LLM reasoning. Architect는 고수준 계획 설계와 발견 사항 반영을 담당하고, Technician은 계획에 따른 실험 구현 및 실행을 담당한다.</em></p></div>
 <ul>
 <li><strong>아키텍트 에이전트(Architect Agent)</strong>: 고수준 실험 계획 수립 (가설 정의, 변수 식별), 발견 사항에 대한 반영(reflection) 수행</li>
 <li><strong>기술자 에이전트(Technician Agents)</strong>: 아키텍트의 계획에 따라 통제된 실험 환경 구성 및 실행, 세부 작업 수행</li>
 </ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4. Intra-ARM setup validation high-level workflow.</em></p></div>
 <ul>
 <li><strong>Intra-Agent Rigor Module (Intra-ARM)</strong>: 각 에이전트의 신뢰성 강화
 <ul>
@@ -116,8 +108,6 @@ a { color: #A62018; }
 <li>재현성 및 협업 촉진</li>
 </ul>
 </ul>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Figure 5. Errors detected by two of Intra-ARM's many validators.</em></p></div>
 <ul>
 <li><strong>다층 검증 체계</strong>: 설정 검증(setup validator), 실행 검증(execution validator) 등 여러 검증기를 통한 LLM 환각 방지</li>
 </ul></div>

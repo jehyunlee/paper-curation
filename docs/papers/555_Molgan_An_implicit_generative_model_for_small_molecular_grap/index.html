@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nicola De Cao, Thomas Kipf | <strong>날짜</strong>: 2018 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/1805.11973" target="_blank">arXiv:1805.11973</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MolGAN의 전체 구조: 잠재변수 z로부터 생성기가 분자 그래프를 생성하고, 판별기는 실제/생성 데이터 분류, 보상망은 화학적 성질을 평가한다.</em></p></div>
 <p>본 논문은 그래프 구조 데이터에 직접 작동하는 GAN 기반 암묵적(implicit) 생성 모델을 제안하여, 분자 설계에서 비용이 큰 그래프 매칭 절차와 노드 순서 휴리스틱을 우회하고 높은 유효성의 화학 화합물을 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: GAN을 그래프에 맞게 적응시키되, 판별기와 보상망은 그래프 합성곱(graph convolution)으로 노드 순서 불변성을 확보하고, 생성기는 우도 제약 없이 자유롭게 노드 순서 선택</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MolGAN 아키텍처: 생성기는 인접 행렬 A와 주석 행렬 X를 생성한 후 카테고리 샘플링으로 이산화하여 분자 그래프를 완성한다.</em></p></div>
 <ol>
 <li><strong>높은 유효성</strong>: QM9 데이터셋에서 거의 100%에 가까운 유효한 화학 화합물 생성 달성</li>
 <li><strong>우수한 비교 성능</strong>: SMILES 기반 방법들(RNN-VAE, ORGAN)과 likelihood 기반 그래프 생성 방법보다 우수한 성능 입증</li>
 <li><strong>화학적 특성 최적화</strong>: 강화학습(RL) 목표와 결합하여 약물 유사성(druglikeness, QED) 등 특정 화학 성질 최적화 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>QM9 데이터셋 샘플(좌)과 약물 유사성(QED)으로 최적화된 MolGAN 생성 분자(우)</em></p></div>
 <ul>
 <li><strong>생성기(Generator)</strong>:
 <ul>
@@ -137,11 +131,8 @@ a { color: #A62018; }
 <p><strong>총평</strong>: MolGAN은 그래프 기반 분자 생성에 GAN을 성공적으로 적용한 선구적 연구로, 노드 순서 불변성 문제를 우아하게 해결하고 높은 유효성의 화합물을 생성하나, 모드 붕괴 취약성과 소분자 제한이라는 근본적 과제를 안고 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../349_Fragment_and_Geometry_Aware_Tokenization_of_Molecules_for_St/index.html">Fragment and Geometry Aware Tokenization of Molecules for Structure-Based Drug Design Using Language Models</a></div><div class="conn-reason">소분자 그래프 생성을 위한 암시적 생성 모델이 구조 기반 분자 토큰화의 방법론적 기반을 제공합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../282_DMFlow_Disordered_Materials_Generation_by_Flow_Matching/index.html">DMFlow: Disordered Materials Generation by Flow Matching</a></div><div class="conn-reason">DMFlow의 무질서 물질 생성 방법론이 MolGAN의 분자 그래프 생성 알고리즘 개발에 기초가 됨</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../282_DMFlow_Disordered_Materials_Generation_by_Flow_Matching/index.html">DMFlow: Disordered Materials Generation by Flow Matching</a></div><div class="conn-reason">소분자용 암시적 생성모델 MolGAN이 무질서 재료 생성의 기반 제공</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../867_Verifier-Constrained_Flow_Expansion_for_Discovery_Beyond_the/index.html">Verifier-Constrained Flow Expansion for Discovery Beyond the Data</a></div><div class="conn-reason">분자 생성에서 MolGAN은 GAN 기반 암묵적 방법을, Flow 확장은 명시적 확률 모델을 사용하는 대조적 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../867_Verifier-Constrained_Flow_Expansion_for_Discovery_Beyond_the/index.html">Verifier-Constrained Flow Expansion for Discovery Beyond the Data</a></div><div class="conn-reason">분자 생성에서 Flow 확장은 명시적 확률 모델을, MolGAN은 GAN 기반 암묵적 방법을 사용하는 대조적 접근법</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../345_Foundation_Molecular_Grammar_Multi-Modal_Foundation_Models_I/index.html">Foundation Molecular Grammar: Multi-Modal Foundation Models Induce Interpretable Molecular Graph Languages</a></div><div class="conn-reason">Foundation Molecular Grammar의 해석 가능한 분자 문법이 MolGAN의 생성 결과를 체계적으로 분석하는 도구로 활용됨</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../345_Foundation_Molecular_Grammar_Multi-Modal_Foundation_Models_I/index.html">Foundation Molecular Grammar: Multi-Modal Foundation Models Induce Interpretable Molecular Graph Languages</a></div><div class="conn-reason">MolGAN의 분자 생성 결과를 Foundation Molecular Grammar의 해석 가능한 문법 구조로 체계적으로 분석할 수 있음</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../345_Foundation_Molecular_Grammar_Multi-Modal_Foundation_Models_I/index.html">Foundation Molecular Grammar: Multi-Modal Foundation Models Induce Interpretable Molecular Graph Languages</a></div><div class="conn-reason">Foundation Molecular Grammar의 해석 가능한 분자 문법이 MolGAN의 생성 결과를 체계적으로 분석하는 도구로 활용됨</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

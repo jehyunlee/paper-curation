@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2210.03629" target="_blank">10.48550/arXiv.2210.03629</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 4가지 프롬프팅 방식 비교 - (a) 표준, (b) 사고의 연쇄(CoT), (c) 행동만, (d) ReAct (reasoning+acting). HotpotQA와 AlfWorld 작업 해결 과정 시연</em></p></div>
 <p>본 논문은 대규모 언어 모델(LLM)의 추론(reasoning)과 행동(acting)을 상호작용적으로 결합하여 복잡한 작업을 해결하는 ReAct 패러다임을 제시한다. 모델이 사고(thought)와 행동(action)을 번갈아 생성하면서 외부 환경과 상호작용하여 동적 추론을 수행하고 오류 전파 및 환각(hallucination)을 완화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -98,8 +96,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: HotpotQA와 Fever에서 프롬프팅 결과 비교 (PaLM-540B)</em></p></div>
 <ol>
 <li><strong>질의응답(QA) 및 사실검증 작업에서 우수한 성능</strong>:
 <ul>
@@ -122,8 +118,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: HotpotQA에서 프롬프팅 및 파인튜닝 스케일링 결과 비교</em></p></div>
 <p><strong>ReAct 프레임워크의 핵심 구성 요소</strong>:</p>
 <ul>
 <li><strong>확장된 행동 공간</strong>: 기존 도메인 행동(A)에 언어 기반 사고(L) 추가로 정책 π(âₜ|cₜ)의 암묵적 매핑 문제 완화</li>

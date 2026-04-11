@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Pancheng Wang, Shasha Li, Kunyuan Pang, Liangliang He, Dong Li, Jintao Tang, Ting Wang | <strong>날짜</strong>: 2022 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 입력 과학 논문의 초록과 금표준 요약에서 구성된 지식 그래프</em></p></div>
 <p>본 논문은 지식 그래프(Knowledge Graph, KG)를 중심으로 다중 문서 과학 논문 요약(Multi-Document Scientific Summarization, MDSS)을 수행하는 KGSum 모델을 제안한다. 인코딩과 디코딩 전 과정에서 지식 그래프를 활용하여 논문의 주요 내용과 논문 간 관계를 효과적으로 모델링한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인코딩 단계에서 그래프 업데이터(Graph Updater)와 개체-문장 업데이터(Entity-Sentence Updater)를 통해 지식 그래프 정보를 논문 표현에 통합하고, 디코딩 단계에서는 두 단계 디코더를 제안하여 먼저 요약의 지식 그래프를 서술 문장 형태(KGtext)로 생성한 후 최종 요약을 생성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 제안된 모델의 전체 프레임워크</em></p></div>
 <ol>
 <li><strong>지식 그래프 중심 MDSS 모델</strong>: 다중 입력 논문의 지식 그래프를 하나의 통합 그래프로 융합하고, 그래프 트랜스포머를 활용하여 개체와 관계 표현을 학습함으로써 논문 내용과 논문 간 관계를 동시에 모델링</li>
 <li><strong>두 단계 디코더 구조</strong>: KGtext 생성기(KGtext Generator)에서 요약의 지식 그래프를 서술 문장으로 변환하고, 요약 생성기(Summary Generator)에서 이를 가이드로 최종 요약을 생성하는 이원적 구조로 중간 지식 정보를 활용</li>
@@ -125,7 +121,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../385_Glimpse_Pragmatically_informative_multi-document_summarizati/index.html">Glimpse: Pragmatically informative multi-document summarization for scholarly reviews</a></div><div class="conn-reason">지식 그래프 기반 다중 문서 요약 기법으로 차별적 다중 문서 요약의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../573_Neural_related_work_summarization_with_a_joint_context-drive/index.html">Neural Related Work Summarization with a Joint Context-driven Attention Mechanism</a></div><div class="conn-reason">관련 연구 요약에서 문맥-그래프 결합 주의와 지식 그래프 중심 접근법의 서로 다른 구조적 모델링을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../401_Hierarchical_attention_graph_for_scientific_document_summari/index.html">Hierarchical attention graph for scientific document summarization in global and local level</a></div><div class="conn-reason">과학 문서 요약에서 지식 그래프 중심 접근법과 계층적 어텐션 그래프 방식의 서로 다른 구조적 모델링을 비교할 수 있습니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../401_Hierarchical_attention_graph_for_scientific_document_summari/index.html">Hierarchical attention graph for scientific document summarization in global and local level</a></div><div class="conn-reason">과학 문서 요약에서 계층적 어텐션 그래프와 지식 그래프 중심 접근법의 성능을 비교할 수 있습니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../032_A_Survey_on_Knowledge_Graphs_Representation_Acquisition_and/index.html">A Survey on Knowledge Graphs: Representation, Acquisition, and Applications</a></div><div class="conn-reason">지식 그래프의 표현과 획득에 대한 포괄적 조사를 과학 문서 요약에 특화된 지식 그래프 활용으로 확장한 응용 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html">Ask, retrieve, summarize: A modular pipeline for scientific literature summarization</a></div><div class="conn-reason">지식 그래프에서 다중 문서 과학 요약을 수행하여 본 논문의 요약 방법론을 구조화된 지식과 결합한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

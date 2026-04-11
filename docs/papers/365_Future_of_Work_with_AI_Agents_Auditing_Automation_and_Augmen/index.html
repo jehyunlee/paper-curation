@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yijia Shao, Humishka Zope, Yucheng Jiang, Jiaxin Pei, David Nguyen, Erik Brynjolfsson, Diyi Yang | <strong>날짜</strong>: 2025-06-11 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2506.06576" target="_blank">10.48550/arXiv.2506.06576</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 감시 프레임워크의 개요 및 핵심 통찰. 프레임워크는 워커 선호도와 기술적 타당성에 대한 이중 관점을 포착하며, 구조화된 프롬프트와 음성 강화 인터페이스를 통해 참여자의 추론을 안내한다.</em></p></div>
 <p>본 논문은 미국 전역 104개 직종, 844개 과제에 걸쳐 1,500명의 현장 워커와 52명의 AI 전문가 데이터를 통합한 WORKBank 데이터베이스를 구축하여, AI 에이전트의 자동화 및 증강 가능성에 대한 체계적인 감시 평가를 제시한다. 특히 단순 자동화-비자동화 이분법을 벗어나 Human Agency Scale (HAS) 이라는 인간 중심의 스케일을 도입함으로써, 워커 선호도와 기술 역량 간의 불일치를 드러내고 향후 인적 역량의 변화를 예측한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,10 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: O*NET 데이터베이스 기반의 과제별 감시 프레임워크 개발. 음성 강화 미니 인터뷰를 통해 워커의 미묘한 선호도 포착. Human Agency Scale (H1-H5)을 통해 자동화-증강 스펙트럼의 인간 관여도 정량화. AI 전문가 평가와의 이중 관점 통합.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Human Agency Scale (HAS) 단계. H1(완전 자동화)부터 H5(인간 관여 필수)까지 5단계로 인간 중심의 렌즈를 제공한다.</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: 현장 워커의 1차 데이터는 AI 에이전트 자동화에 대한 긍정적 태도를 드러낸다.</em></p></div>
 <ol>
 <li><strong>워커의 자동화 선호도</strong>: 과제의 46.1%에서 워커들은 일자리 손실 우려와 업무 만족도를 고려한 후에도 AI 에이전트 자동화에 긍정적 태도를 표현. 자동화 동기는 주로 고가치 업무에 집중하기 위한 시간 확보이며, 산업별로 상이한 트렌드 존재.</li>
 <li><strong>선호도-역량 불일치의 시각화</strong>: 워커 선호도와 기술 역량 간 불일치를 "Automation Green Light Zone"(높은 선호도·높은 역량), "Automation Red Light Zone"(높은 역량·낮은 선호도), "R&D Opportunity Zone"(높은 선호도·낮은 역량), "Low Priority Zone"(낮은 선호도·낮은 역량)의 4개 영역으로 분류. Y Combinator 회사-과제 매핑의 41.0%가 Low Priority Zone과 Red Light Zone에 집중되어 있는 반면, Green Light Zone과 Opportunity Zone의 유망 과제는 저평가.</li>
@@ -88,8 +82,6 @@ a { color: #A62018; }
 <li><strong>인적 역량의 구조적 변화</strong>: 정보 처리 능력에서 대인 관계 역량으로의 이동. 과제-핵심 기술 매핑 분석 결과, 전통적 고임금 기술인 정보 분석(analyzing information)의 중요도는 감소 반면, 대인 관계 및 조직 관리 기술의 중요성 증가. 개인에게 요구되는 기술 범위의 확대 경향.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Human Agency Scale (HAS)의 5단계 구조와 팀 역학 모델</em></p></div>
 <p><strong>감시 프레임워크의 핵심 설계 원칙 및 방법:</strong></p>
 <ul>
 <li><strong>과제 수준의 세분화</strong>: O*NET 데이터베이스에서 추출한 복잡한 다단계 직무 과제(예: "Marketing Managers: Compile lists describing product or service offerings") 중심의 감사. 직종 수준이 아닌 과제 수준의 분석으로 문맥의존적 특성 포착.</li>

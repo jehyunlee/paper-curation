@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yubin Kim, Ken Gu, Chanwoo Park, Chunjong Park, Samuel Schmidgall, A. Ali Heydari, Yao Yan, Zhihan Zhang, Yuchen Zhuang, Mark Malhotra, Paul Pu Liang, Hae Won Park, Yuzhe Yang, Xuhai Xu, Yilun Du, Shwetak Patel, Tim Althoff, Daniel McDuff, Xin Liu | <strong>날짜</strong>: 2025-12-17 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2512.08296" target="_blank">10.48550/arXiv.2512.08296</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 모델 지능(Intelligence Index)과 에이전트 구조에 따른 성능 변화. 세 가지 LLM 계열(OpenAI, Google, Anthropic)에서 다중 에이전트 시스템(MAS) 변형이 단일 에이전트 시스템(SAS) 대비 상이한 확장 특성을 보임.</em></p></div>
 <p>본 논문은 언어 모델 기반 에이전트 시스템의 성능을 결정하는 정량적 확장 원칙(scaling laws)을 최초로 체계적으로 도출한 연구이다. 도구 활용도, 모델 능력, 작업 특성 간의 상호작용을 분석하여 다중 에이전트 시스템(MAS)이 언제 성능을 향상시키고 언제 저하시키는지 정량화하는 예측 프레임워크를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 에이전틱 평가 정의 정형화: 환경과의 다중 스텝 상호작용, 부분 관찰(partial observability) 하에서의 반복적 정보 수집, 환경 피드백 기반 적응적 전략 개선이 필요. (2) 동일한 프롬프트, 도구, 토큰 예산을 유지하면서 5가지 에이전트 아키텍처를 비교. (3) 180개 제어된 구성을 통해 정량적 좌표화 메트릭(효율성, 오버헤드, 오류 증폭, 중복성)을 도출하고 예측 모델 구축.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 다양한 작업 도메인에서 단일 에이전트 시스템과 다중 에이전트 시스템의 성능 비교. 웹 네비게이션과 금융 추론에서 상이한 아키텍처 효과가 관찰됨.</em></p></div>
 <ol>
 <li><strong>세 가지 지배적 확장 패턴 발견</strong>
 <ul>
@@ -102,8 +98,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 모델 계열과 아키텍처 간의 비용-성능 트레이드오프. 좌표화 오버헤드의 상대적 중요성이 모델 능력과 작업 유형에 따라 변함.</em></p></div>
 <ul>
 <li><strong>제어된 실험 설계</strong>
 <ul>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Žiga Avsec, Natasha Latysheva, Jun Cheng, Guido Novati, Kyle R. Taylor | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.1101/2025.06.25.661532" target="_blank">10.1101/2025.06.25.661532</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: AlphaGenome 모델 아키텍처, 학습 방식 및 종합 평가 성능. (a) 모델 개요: 1 Mb DNA 서열을 입력받아 11개 모달리티에서 5,930개의 게놈 트랙을 단일 염기쌍 해상도로 예측. (e) 변이 효과 예측에서 기존 모델 대비 상대적 성능 개선</em></p></div>
 <p>AlphaGenome은 1 메가베이스(Mb) DNA 서열 입력과 단일 염기쌍(bp) 해상도를 통합하여, 11개의 생물학적 모달리티(유전자 발현, 스플라이싱, 크로마틴 접근성, 조직인자 결합, 3D 크로마틴 구조 등)에 걸쳐 5,930개의 게놈 트랙을 동시에 예측하는 통합 딥러닝 모델이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -88,8 +86,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: U-Net 기반 아키텍처와 sequence parallelism을 활용하여 1 Mb 컨텍스트에서 bp 해상도 예측을 가능하게 하고, 다양한 모달리티를 단일 모델로 통합</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: AlphaGenome 트랙 예측 예시 및 상세 성능 평가. 관찰된 데이터와 AlphaGenome 예측의 높은 일치도 시연</em></p></div>
 <ol>
 <li><strong>게놈 트랙 예측 성능</strong>: 26개의 게놈 트랙 예측 과제 중 22개에서 기존 최강 모델을 능가 (Pearson r 기준 다양한 모달리티 분석)</li>
 <li><strong>변이 효과 예측 성능</strong>: 26개의 변이 효과 예측 벤치마크 중 24개에서 우수한 성능 달성
@@ -102,8 +98,6 @@ a { color: #A62018; }
 <li><strong>다중 모달리티 해석</strong>: TAL1 종양원유전자 인근의 임상적으로 관련된 변이들의 메커니즘을 모든 모달리티에서 동시에 정확히 설명</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: AlphaGenome은 최첨단 스플라이싱 변이 효과 예측 모델. (a) 스플라이싱 예측 유형의 종합적 비교 및 성능 메트릭</em></p></div>
 <ul>
 <li><strong>아키텍처</strong>
 <ul>
@@ -157,7 +151,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: AlphaGenome은 기존의 구조적 트레이드오프를 극복하고 11개 모달리티를 통합하는 강력한 unified model로서, 비코딩 변이의 분자적 효과 해석을 위한 중요한 진전을 제시한다. 광범위한 벤치마킹과 공개 도구 제공으로 실용적 임팩트가 높으나, 컨텍스트 길이 한계와 일부 modality의 해상도 제약이 향후 개선 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../166_Biomaze_Benchmarking_and_enhancing_large_language_models_for/index.html">Biomaze: Benchmarking and enhancing large language models for biological pathway reasoning</a></div><div class="conn-reason">생물학적 경로 추론이 유전체 변이 효과 예측의 기반이 됩니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../483_Learning_to_Discover_Regulatory_Elements_for_Gene_Expression/index.html">Learning to Discover Regulatory Elements for Gene Expression Prediction</a></div><div class="conn-reason">둘 다 DNA 서열로부터 유전자 발현을 예측하되 서로 다른 접근법을 사용합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../483_Learning_to_Discover_Regulatory_Elements_for_Gene_Expression/index.html">Learning to Discover Regulatory Elements for Gene Expression Prediction</a></div><div class="conn-reason">유전자 발현 예측을 위한 서로 다른 조절 요소 발견 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../382_Genome_modeling_and_design_across_all_domains_of_life_with_E/index.html">Genome modeling and design across all domains of life with Evo 2</a></div><div class="conn-reason">AlphaGenome의 다중 모달리티 예측이 전체 생명체의 게놈 모델링으로 확장됩니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../166_Biomaze_Benchmarking_and_enhancing_large_language_models_for/index.html">Biomaze: Benchmarking and enhancing large language models for biological pathway reasoning</a></div><div class="conn-reason">생물학적 경로 추론이 유전체 변이 효과 예측에 적용됩니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

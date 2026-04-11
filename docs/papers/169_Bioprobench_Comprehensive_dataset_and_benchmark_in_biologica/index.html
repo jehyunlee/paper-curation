@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yuyang Liu, Liuzhenghao Lv, Xiancheng Zhang, Jingya Wang, Li Yuan, Yonghong Tian | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.07889" target="_blank">arXiv:2505.07889</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>BioProBench의 개요: 27,000개 프로토콜 코퍼스, 556,171개 작업 인스턴스, 17개 생물학 분야 분포</em></p></div>
 <p>생물학적 실험 프로토콜의 절차적 추론(procedural reasoning)을 평가하기 위한 대규모 데이터셋 및 벤치마크를 제시한다. BioProCorpus(27,000개 프로토콜)로부터 구성된 550,000개 이상의 구조화된 작업 인스턴스를 통해 LLM의 안전성, 정확성, 인과적 논리 이해도를 진단한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 전문가 검증과 자동화 필터링을 결합한 다단계 구성 파이프라인(Figure 2 참조)을 통해 고품질 코퍼스를 구축하고, 5가지 작업 유형으로 절차적 이해의 다양한 측면을 체계적으로 포착</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>BioProBench 구성 파이프라인: 데이터 수집·정제·보강, 5가지 작업 구성, 자동화 및 전문가 검증</em></p></div>
 <ol>
 <li><strong>포괄적 자원 제공</strong>: 27,000개 프로토콜의 BioProCorpus와 556,171개 구조화된 작업 인스턴스 제공. 17개 생물학 분야를 포함하여 높은 일반화 가능성 확보</li>
 <li><strong>다층적 평가 프레임워크</strong>: 프로토콜 질의응답(PQA), 단계 순서화(ORD), 오류 수정(ERR), 프로토콜 생성(GEN), 프로토콜 추론(REA) 등 5가지 작업으로 정확성, 절차적 논리, 안전성 평가</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실용성 검증</strong>: BioProCorpus 기반 검색 증강 에이전트(RAG) ProAgent 개발로 절차 단계 회수율 및 추론 정확도 향상 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>각 작업 유형의 대표 샘플: PQA(약물 용량 추출), ORD(단계 정렬), ERR(오류 검증), GEN(프로토콜 생성)</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: Protocols.io, Bio-protocol, Protocol Exchange, JOVE, Nature Protocols, Morimoto Lab 등 6개 권위 있는 자료 활용 (26,933개 프로토콜)</li>
 <li><strong>구조화 처리</strong>: 정규식 기반 정제(HTML 제거, 중복 제거)와 들여쓰기·기호 기반 파싱으로 계층적 절차 구조 보존</li>
@@ -115,7 +109,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: BioProBench는 생물학 프로토콜의 절차적 추론에 특화된 첫 대규모 벤치마크로서, 엄격한 전문가 검증 기반의 고품질 데이터와 다층적 작업 설계를 통해 LLM의 체계적 약점을 진단하는 점에서 높은 가치를 지닌다. 다만 도메인 외 일반화, 다양한 에이전트 아키텍처와의 비교, 실제 실험실 통합 평가 측면에서의 확장이 향후 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../159_Bio-sieve_exploring_instruction_tuning_large_language_models/index.html">Bio-SIEVE: Exploring Instruction Tuning Large Language Models for Systematic Review Automation</a></div><div class="conn-reason">생의학 분야 LLM 지시 튜닝이 생물학적 프로토콜 이해의 기반을 제공한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../163_Biodsa-1k_Benchmarking_data_science_agents_for_biomedical_re/index.html">Biodsa-1k: Benchmarking data science agents for biomedical research</a></div><div class="conn-reason">생물학 vs 생의학 실험에서 AI 에이전트의 절차적 추론 평가의 다른 접근법을 비교할 수 있다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../163_Biodsa-1k_Benchmarking_data_science_agents_for_biomedical_re/index.html">Biodsa-1k: Benchmarking data science agents for biomedical research</a></div><div class="conn-reason">생의학 vs 생물학 실험 프로토콜에서 AI 에이전트 평가의 다른 접근법을 비교할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../118_Autobio_A_simulation_and_benchmark_for_robotic_automation_in/index.html">AutoBio: A Simulation and Benchmark for Robotic Automation in Digital Biology Laboratory</a></div><div class="conn-reason">생물학적 실험 자동화 벤치마크를 로봇 자동화 시뮬레이션으로 확장한 연구다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../142_AutoNumerics_An_Autonomous_PDE-Agnostic_Multi-Agent_Pipeline/index.html">AutoNumerics: An Autonomous, PDE-Agnostic Multi-Agent Pipeline for Scientific Computing</a></div><div class="conn-reason">자율적 다중 에이전트 시스템을 생물학적 실험 프로토콜 수행에 적용할 수 있다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

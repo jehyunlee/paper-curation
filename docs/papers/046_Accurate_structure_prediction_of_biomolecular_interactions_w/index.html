@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: AlphaFold 2 아키텍처를 대폭 개선하여, Evoformer를 간단한 Pairformer로 교체하고 Structure Module을 Diffusion Module로 대체하여 일반화된 생체분자 복합체 예측 가능하게 함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1 - AlphaFold 3의 예측 정확도">
-<p class="fig-caption"><em>그림 1: AlphaFold 3는 다양한 생체분자 복합체에서 정확하게 구조를 예측함</em></p></div>
 <ol>
 <li><strong>포괄적 성능 향상</strong>: 단백질-리간드 상호작용에서는 최고 수준의 도킹 도구를 능가하고, 단백질-핵산 상호작용에서는 핵산 특화 예측기를 초과하는 성능 달성</li>
 <li><strong>통합 프레임워크</strong>: 단백질, 핵산, 소분자, 이온, 변형 잔기를 포함한 거의 모든 PDB 분자 유형을 단일 모델로 예측</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>구조적 신뢰도 개선</strong>: 원자 수준(atom-level)과 쌍 수준(pairwise)의 오류를 예측하는 신뢰도 지표 개발 (pLDDT, PAE, PDE)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2 - 아키텍처 개선사항">
-<p class="fig-caption"><em>그림 2: Diffusion Module을 통한 원자 좌표 직접 예측</em></p></div>
 <ul>
 <li><strong>MSA 처리 축소</strong>: Evoformer의 4개 블록으로 축소하고 pair-weighted averaging 사용으로 계산 효율성 증대</li>
 <li><strong>Pairformer 도입</strong>: 쌍 표현(pair representation)과 단일 표현(single representation)만 처리하여 MSA 표현 제거</li>
@@ -127,8 +123,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../403_Highly_accurate_protein_structure_prediction_with_AlphaFold/index.html">Highly accurate protein structure prediction with AlphaFold</a></div><div class="conn-reason">AlphaFold 2의 단일 단백질 구조 예측 기술을 기반으로 생체분자 복합체 예측으로 확장한 직접적인 후속 연구이다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../440_Inverse_designing_metamaterials_with_programmable_nonlinear/index.html">Inverse designing metamaterials with programmable nonlinear functional responses in graph space</a></div><div class="conn-reason">확산 모델 기반 생체분자 구조 예측과 그래프 신경망 기반 메타물질 설계가 서로 다른 도메인에서 유사한 역설계 문제를 해결한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">확산 기반 생체분자 구조 예측과 LLM 기반 화학 공간 탐색이 각각 구조와 서열 관점에서 분자 설계 문제에 접근한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../305_Efficient_Evolutionary_Search_Over_Chemical_Space_with_Large/index.html">Efficient Evolutionary Search Over Chemical Space with Large Language Models</a></div><div class="conn-reason">LLM을 활용한 분자 진화 탐색과 확산 모델 기반 생체분자 구조 예측이 각각 서열과 구조 관점에서 분자 설계 문제에 접근한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../440_Inverse_designing_metamaterials_with_programmable_nonlinear/index.html">Inverse designing metamaterials with programmable nonlinear functional responses in graph space</a></div><div class="conn-reason">그래프 신경망 기반 메타물질 설계와 확산 모델 기반 생체분자 구조 예측이 각각 공학과 생물학 분야에서 유사한 역설계 접근법을 보여준다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../171_Boltz-1_Democratizing_Biomolecular_Interaction_Modeling/index.html">Boltz-1 Democratizing Biomolecular Interaction Modeling</a></div><div class="conn-reason">AlphaFold3와 같은 성능을 오픈소스로 구현하여 접근성을 높인다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../1129_SARS-CoV-2_simulations_go_exascale_to_predict_dramatic_spike/index.html">SARS-CoV-2 simulations go exascale to predict dramatic spike opening and cryptic pockets across the proteome</a></div><div class="conn-reason">AlphaFold 3의 생체분자 복합체 예측 기술과 스파이크 단백질의 동역학 시뮬레이션이 상호 보완적인 구조-기능 분석을 가능하게 한다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../403_Highly_accurate_protein_structure_prediction_with_AlphaFold/index.html">Highly accurate protein structure prediction with AlphaFold</a></div><div class="conn-reason">AlphaFold의 단일 단백질 구조 예측을 생체분자 복합체 상호작용 예측으로 확장한 직접적인 발전이다</div></div>

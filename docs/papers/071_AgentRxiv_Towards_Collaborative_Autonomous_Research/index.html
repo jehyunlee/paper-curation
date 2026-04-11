@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Samuel Schmidgall, Michael Moor | <strong>날짜</strong>: 2025-03-23 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2503.18102" target="_blank">10.48550/arXiv.2503.18102</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: AgentRxiv를 통한 협업 자율 연구. 분산된 자율 에이전트 실험실들이 공유 연구 목표를 향해 협업하며, 인간 연구자의 초기 지도 하에 에이전트들이 자율적으로 연구를 수행하고 중앙 프리프린트 서버에 논문을 업로드한다.</em></p></div>
 <p>본 논문은 LLM 에이전트들이 공유 프리프린트 서버를 통해 연구 결과를 주고받으며 협업하는 AgentRxiv 프레임워크를 제시한다. 단독으로 동작하는 기존 자율 연구 시스템의 한계를 극복하여, 에이전트들이 서로의 발견을 기반으로 누적적으로 개선할 수 있게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 중앙 집중식 프리프린트 서버 인프라를 제공하여 여러 에이전트 실험실이 연구 논문을 업로드/검색하고, 서로의 발견을 기반으로 새로운 기법을 개발하도록 한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 자율 연구 협업을 위한 AgentRxiv 프레임워크. 두 개의 에이전트 실험실이 공유 프리프린트 서버를 통해 연구 결과를 교환한다.</em></p></div>
 <ol>
 <li><strong>단계별 성능 향상</strong>: MATH-500 벤치마크에서 기준값 70.2%에서 최종 78.2%로 상향 (11.4% 상대 개선). Simultaneous Divergence Averaging (SDA) 등 새로운 추론 기법 발견.</li>
 <li><strong>크로스 도메인 일반화</strong>: MATH-500에서 발견된 추론 전략이 GPQA, MMLU-Pro, MedQA 등 다양한 벤치마크에 일반화되며, 5개 언어모델(DeepSeek-v3 ~ Gemini-2.0 pro)에서 평균 3.3% 개선.</li>
 <li><strong>병렬 협업 효과</strong>: 3개의 병렬 실험실 운영 시 MATH-500에서 +6.0% 추가 개선. 다중 에이전트 협업이 단일 에이전트보다 13.7% 상대 개선 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 에이전트 실험실 워크플로우. 3단계: 문헌 검토, 실험 수행, 보고서 작성</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>그림 4: MATH-500에서 새로운 추론 기법 설계. 단일 자율 에이전트의 진행 과정</em></p></div>
 <ul>
 <li><strong>아키텍처</strong>: 기존 Agent Laboratory 시스템에 기반하여 중앙 프리프린트 서버 모듈 추가. 각 에이전트가 생성한 논문을 자동으로 서버에 업로드하고, 다른 에이전트들이 검색·활용 가능하게 함.</li>
 <li><strong>반복 프로세스</strong>:
@@ -122,9 +114,7 @@ a { color: #A62018; }
 <p><strong>총평</strong>: AgentRxiv는 자율 연구 시스템의 협업 패러다임을 처음 구현한 의미 있는 기여이며, 실증적 성과(11.4% ~ 13.7% 개선)와 일반화 능력을 보여준다. 다만 계산 효율성, 메커니즘 해석성, 다양한 과학 도메인에서의 검증이 향후 과제이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../668_ResearchAgent_Iterative_Research_Idea_Generation_over_Scient/index.html">ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</a></div><div class="conn-reason">ResearchAgent의 반복적 아이디어 생성 메커니즘이 AgentRxiv의 누적적 지식 개선 시스템의 기반이 되는 기술적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../825_Towards_an_AI_co-scientist/index.html">Towards an AI co-scientist</a></div><div class="conn-reason">AgentRxiv의 협업적 연구 공유 메커니즘과 AI co-scientist의 생성-토론-진화 방식은 서로 다른 접근으로 에이전트 간 지식 축적을 달성한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../825_Towards_an_AI_co-scientist/index.html">Towards an AI co-scientist</a></div><div class="conn-reason">AI co-scientist의 생성-토론-진화 방식과 AgentRxiv의 프리프린트 서버 기반 협업은 서로 다른 메커니즘으로 에이전트 간 지식 발전을 달성한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../826_Towards_Autonomous_Mathematics_Research/index.html">Towards Autonomous Mathematics Research</a></div><div class="conn-reason">수학 연구의 자율적 정리 발견을 위한 Aletheia가 AgentRxiv의 협업적 연구 프레임워크를 전문 수학 도메인으로 확장한 사례이다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../826_Towards_Autonomous_Mathematics_Research/index.html">Towards Autonomous Mathematics Research</a></div><div class="conn-reason">AgentRxiv의 협업적 연구 프레임워크가 Aletheia의 수학 연구 자동화를 위한 다중 에이전트 지식 공유 시스템으로 확장된 형태이다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../826_Towards_Autonomous_Mathematics_Research/index.html">Towards Autonomous Mathematics Research</a></div><div class="conn-reason">수학 연구의 자율적 정리 발견을 위한 Aletheia가 AgentRxiv의 협업적 연구 프레임워크를 전문 수학 도메인으로 확장한 사례이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

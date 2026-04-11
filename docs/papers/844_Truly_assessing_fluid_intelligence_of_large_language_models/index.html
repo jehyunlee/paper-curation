@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yue Yang, Mingkang Chen, Qihua Liu, Mengkang Hu, Qiguang Chen, Gengrui Zhang, Shuyue Hu, Guangtao Zhai, Yu Qiao, Yu Wang, Wenqi Shao, Ping Luo | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) 숨겨진 잠재 규칙의 예시, (b) 기존 벤치마크와의 비교, (c) DRE-Bench의 LLM 지능 리더보드</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 진정한 유동 지능(fluid intelligence)을 평가하기 위해 계층적 인지 프레임워크를 바탕으로 한 동적 추론 평가 벤치마크 <strong>DRE-Bench</strong>를 제안한다. 4가지 인지 수준(속성, 공간, 순차, 개념)의 36개 추상 추론 과제와 복잡도 변화를 포함한 약 4,000개의 사례를 통해 LLM의 규칙 일반화 능력을 체계적으로 측정한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 확인된 심리학 계층 구조(Primi, 2001)에 기반하여 4가지 인지 수준으로 조직된 36개 추상 추론 과제를 설계하고, 각 과제에 대해 코드 기반 생성기와 해결기를 개발하여 동적으로 다양한 복잡도의 변형 사례를 자동 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 4가지 인지 수준에 걸친 구체적인 추상 추론 과제들 및 동적 변수 예시</em></p></div>
 <ol>
 <li><strong>계층적 인지 정렬 평가 체계 구축</strong>: 속성(Attribute) → 공간(Spatial) → 순차(Sequential) → 개념(Conceptual) 수준의 4단계 인지 계층 구조 내 36개 과제 설계. 각 수준은 특정 인지 능력(대칭, 회전, 중력, 팽창 등)을 체계적으로 평가한다.</li>
 <li><strong>동적 데이터 생성 엔진 개발</strong>: LLM 기반 에이전트가 설계한 코드 생성기/해결기를 통해 약 4,000개의 검증된 추상 추론 사례를 자동 생성. 각 과제마다 매개변수 변화(크기, 개수, 단계, 각도 등)로 복잡도 조절이 가능하여 데이터 오염 문제 해결.</li>
@@ -90,8 +86,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: DRE-Bench 데이터 생성 파이프라인</em></p></div>
 <ul>
 <li><strong>계층적 과제 설계</strong>: 인지 심리학 문헌(Primi, 2001)에서 검증된 4단계 인지 수준을 참고하여 각 수준당 3개의 잠재 규칙(latent rule) 정의</li>
 <li><strong>인간-에이전트 협력 파이프라인</strong>:

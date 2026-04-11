@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shingo Ayabe, Takuto Otomo, Hiroshi Kera, Kazuhiko Kawamoto (Chiba University) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2412.18781" target="_blank">arXiv:2412.18781</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>오프라인 RL의 견고성 평가 개요: 다양한 품질의 오프라인 데이터셋에서 학습한 모델을 정상, 랜덤, 적대적 행동 섭동 조건에서 평가</em></p></div>
 <p>본 논문은 오프라인 강화학습(Offline RL)이 로봇 제어에서 행동 공간의 섭동(action perturbations)에 대해 얼마나 취약한지를 체계적으로 평가하고, 기존의 온라인 RL 방법보다 더 큰 약점을 가짐을 실증적으로 증명한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,14 +75,10 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: MuJoCo 시뮬레이터에서 Hopper, HalfCheetah, Ant 다리 로봇에 대해 BCQ, TD3+BC, IQL 등 기존 오프라인 RL 방법들을 평가한다. 차분 진화(differential evolution) 알고리즘으로 생성한 적대적 섭동(adversarial perturbations)과 랜덤 섭동을 적용하여 견고성을 측정한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>세 가지 다리 로봇에서 적대적 섭동 강도 변화에 따른 테스트 시간 견고성 평가 결과</em></p></div>
 <ol>
 <li><strong>오프라인 RL의 심각한 취약성</strong>: 기존 오프라인 RL 방법들은 행동 공간 섭동에 매우 취약하며, 온라인 RL 방법들보다 훨씬 큰 성능 저하를 보인다. 예를 들어 적대적 섭동 하에서 보상이 30-70% 감소한다.</li>
 <li><strong>데이터셋 커버리지의 중요성</strong>: 테스트 시간 견고성은 훈련 데이터셋의 상태-행동 커버리지에 크게 의존한다. Expert 데이터셋이 Medium 데이터셋보다 일관되게 더 높은 견고성을 나타낸다.</li>
 </ol>
-<div class="review-fig"><img src="figures/fig45.webp" alt="Figure 4, 5">
-<p class="fig-caption"><em>훈련 데이터셋의 행동 분포 및 상태-행동 커버리지: 더 나은 커버리지를 가진 데이터셋이 더 견고한 정책을 생성</em></p></div>
 <ol>
 <li><strong>데이터셋 증강의 한계</strong>: 섭동이 적용된 행동으로 훈련 데이터셋을 증강해도 견고성이 유의미하게 개선되지 않는다. 이는 단순한 데이터 증강만으로는 충분하지 않음을 시사한다.</li>
 </ol></div>
@@ -131,7 +125,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 오프라인 RL의 행동 공간 섭동에 대한 취약성을 처음으로 체계적으로 드러냄으로써 중요한 안전성 문제를 제기한다. 다만 문제 제시에 머물고 해결책이 부족하며, 실제 로봇 환경에서의 검증이 필요하다는 점이 제약이다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../863_Value_iteration_for_learning_concurrently_executable_robotic/index.html">Value iteration for learning concurrently executable robotic control tasks</a></div><div class="conn-reason">동시 실행 가능한 로봇 제어 태스크 학습 연구는 오프라인 강화학습의 견고성 평가에 멀티태스킹 환경에서의 성능 분석 방법론을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 영어 논문과 한국어 논문이 동일한 주제를 다른 관점에서 접근한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../662_Reinforcement_Learning_for_Dynamic_Microfluidic_Control/index.html">오프라인 강화학습의 로봇 제어 견고성 평가: 행동 공간 섭동에 대한 연구</a></div><div class="conn-reason">두 논문 모두 오프라인 강화학습의 견고성을 다루되 한국어 논문은 행동 공간 섭동, 영어 논문은 동일한 주제를 다른 관점에서 접근한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../422_Improving_generalization_of_robot_locomotion_policies_via_sh/index.html">Improving generalization of robot locomotion policies via sharpness-aware reinforcement learning</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가 연구는 샤프니스 인식 최소화 기법이 실제 로봇 제어에서 어떤 견고성 개선을 가져오는지 실증적으로 분석할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html">Guided by guardrails: Control barrier functions as safety instructors for robotic learning</a></div><div class="conn-reason">제어 장벽 함수를 통한 안전 학습은 오프라인 강화학습의 행동 공간 섭동 취약성을 해결하는 추가적인 안전성 보장 메커니즘을 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../863_Value_iteration_for_learning_concurrently_executable_robotic/index.html">Value iteration for learning concurrently executable robotic control tasks</a></div><div class="conn-reason">오프라인 강화학습의 견고성 평가 방법론은 동시 실행 태스크 학습에서 개별 태스크들의 견고성과 상호 간섭 효과를 분석하는 평가 프레임워크를 제공한다.</div></div></div>

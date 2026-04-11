@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: NEP 프레임워크 내에서 순수 원소, 이원 및 삼원 합금, 다양한 결정 구조와 열역학 조건을 포함한 광범위한 데이터셋을 기반으로 기계학습 포텐셜을 개발하여 전체 조성 공간에서의 전이성을 확보.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: 에너지, 력, 응력 검증">
-<p class="fig-caption"><em>NEP, EAM1, EAM2, MEAM, MTP의 (a) NEP 훈련 데이터셋, (b) MTP 데이터셋, (c) 독립적 검증 데이터셋에서의 쌍별 비교. (d) NEP 기술자에 기반한 주성분 분석(PCA) 결과.</em></p></div>
 <ol>
 <li><strong>최고 수준의 예측 정확도</strong>: NEP는 모든 데이터셋에서 에너지, 력, 응력 예측에서 DFT와 가장 우수한 일치를 보임. 특히 검증 데이터셋에서 력의 RMSE는 121.41 meV/Å로, MTP의 192.41 meV/Å 대비 37% 향상.</li>
 <li><strong>전체 조성 공간에서의 우수한 전이성</strong>: 기존 MTP는 등원자 조성에서만 정확하지만, 개발된 NEP는 순수 원소부터 비등원자 삼원 합금까지 전체 조성 범위에서 일관된 정확도 유지.</li>
@@ -90,8 +88,6 @@ a { color: #A62018; }
 <li><strong>화학적 단거리 질서(SRO) 효과 포착</strong>: 등원자 및 비등원자 조성에서 SRO와 그것의 적층 결함 에너지에 미치는 영향을 제1원리 및 실험과 일치하게 재현.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: 음향 분산 관계">
-<p class="fig-caption"><em>순수 원소(Cr, Co, Ni)의 음향 분산 관계. NEP는 DFT 및 실험 데이터와 우수한 일치를 보이는 반면, 기존 포텐셜들(특히 EAM2)은 상당한 편차와 허수 음향 주파수를 나타냄.</em></p></div>
 <ul>
 <li><strong>데이터셋 구성</strong>: 3030개의 다양한 원자 배치로 구성된 훈련 데이터셋에는 순수 원소, 이원 및 삼원 합금, 비등원자 조성, 다양한 결정 구조, 광범위한 열역학 조건(5~3000 K)을 포함.</li>
 <li><strong>스핀 편극 ab initio 계산</strong>: 모든 데이터가 스핀 편극 DFT를 기반으로 하여 자성 상호작용을 정확하게 반영.</li>
@@ -125,8 +121,7 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../516_Machine-Learned_Interatomic_Potentials_for_Predicting_Physic/index.html">Machine-Learned Interatomic Potentials for Predicting Physicochemical Properties of Molten Metal-Salt Systems for Calcium Electrolysis</a></div><div class="conn-reason">원자간 포텐셜 예측을 NEP vs 다른 머신러닝 기법으로 접근한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../619_Physics_Informed_Deep_Learning_Part_I_Data-driven_Solutions/index.html">Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations</a></div><div class="conn-reason">물리법칙 기반 신경망을 머신러닝 포텐셜 개발에 적용한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../619_Physics_Informed_Deep_Learning_Part_I_Data-driven_Solutions/index.html">Physics Informed Deep Learning (Part I): Data-driven Solutions of Nonlinear Partial Differential Equations</a></div><div class="conn-reason">물리법칙 기반 신경망을 재료과학의 머신러닝 포텐셜 개발에 적용할 수 있다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../695_Scaling_Deep_Learning_for_Materials_Discovery/index.html">Scaling Deep Learning for Materials Discovery</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 정밀 모델링에 적용한다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../695_Scaling_Deep_Learning_for_Materials_Discovery/index.html">Scaling Deep Learning for Materials Discovery</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 머신러닝 포텐셜 개발에 적용한다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../695_Scaling_Deep_Learning_for_Materials_Discovery/index.html">Scaling Deep Learning for Materials Discovery</a></div><div class="conn-reason">대규모 재료 발견 결과를 특정 합금 시스템의 정밀 모델링에 적용한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

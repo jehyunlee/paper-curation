@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Anthony GX-Chen, Dongyan Lin, Mandana Samiei, Doina Precup, Blake A. Richards, Rob Fergus, Kenneth Marino | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.09614" target="_blank">arXiv:2505.09614</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: The Blicket Test">
-<p class="fig-caption"><em>언어 모델이 객체를 기계에 올려놓는 상호작용을 통해 인과관계를 파악해야 하는 블리켓 테스트</em></p></div>
 <p>언어 모델(LM) 에이전트는 인과관계 추론에서 선언적(disjunctive, OR) 규칙에는 능하지만 결합적(conjunctive, AND) 규칙에서 체계적으로 편향되어 있으며, 이러한 편향이 인간 성인의 인지 편향과 유사함을 보여주는 연구이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 발달심리학의 블리켓 테스트(Blicket Test) 패러다임을 텍스트 기반 게임으로 적응시켜, 다양한 LM들의 인과추론 능력과 편향을 측정하고 인간 데이터와 비교</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2: Quiz accuracy of various models">
-<p class="fig-caption"><em>다양한 언어 모델들의 선언적/결합적 규칙에서의 정확도: 모든 모델이 결합적 규칙에서 체계적으로 낮은 성능 보임</em></p></div>
 <ol>
 <li><strong>선언적 편향 발견</strong>: 모든 LM 모델군(GPT-4o, DeepSeek, Gemma 등)이 결합적 규칙보다 선언적 규칙에서 신뢰성 높게 더 나은 성능을 보임. 이는 옳은 탐색 데이터가 주어져도 나타나는 현상으로, 순수한 탐색 비효율의 문제가 아님</li>
 <li><strong>인간과 유사한 편향 패턴</strong>: LM의 추론 프로필이 인간 성인의 패턴과 유사하지만 유아/어린이의 패턴(편향 없는 "요람 속의 과학자")과는 다름을 정량적으로 입증</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>확장성 있는 개선방법</strong>: 테스트 타임 샘플링을 통해 명시적으로 인과 가설을 샘플링하고 제거하도록 프롬프팅하면 선언적 편향이 유의미하게 감소</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3: Correlation analysis">
-<p class="fig-caption"><em>모델 성능에 영향을 미치는 요소들: 정보 이득이 가장 강한 양의 상관(ρ=0.76), 탐색 단계 수는 음의 상관(ρ=-0.35)</em></p></div>
 <ul>
 <li><strong>텍스트 기반 블리켓 테스트</strong>: 에이전트는 순차적으로 객체를 기계에 올렸다 내렸다 하면서 상태 변화를 관찰하고, 탐색 단계 이후 모든 관찰 이력을 제공받아 각 객체의 블리켓 여부를 판단</li>
 <li><strong>정보이득 측정</strong>: Shannon 엔트로피 기반 기댓값 정보이득(expected information gain)을 계산하여 최적 탐색 행동 정의. 오라클 에이전트는 한 단계 정보 최대화로 상한선 제시</li>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Lukas Buess, Matthias Keicher, Nassir Navab, Andreas Maier, Soroosh Tayebi Arasteh | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2502.09242" target="_blank">arXiv:2502.09242</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>의료 분야의 멀티모달 AI 파이프라인: (A) 다양한 의료 데이터 양식 수집 및 처리, (B) AI 모델에 의한 통합 표현 변환, (C) 리포트 생성, 대화 지원, 치료 계획 등의 인사이트 생성, (D) 피드백을 통한 반복적 최적화</em></p></div>
 <p>본 논문은 의료 분야에서 생성형 AI의 진화를 체계적으로 검토한 스코핑 리뷰로, 텍스트 기반 대규모 언어모델(LLM)에서 의료 영상, 임상 데이터를 통합하는 멀티모달 AI 시스템으로의 전환을 추적하며, PRISMA-ScR 가이드라인을 따라 2020-2024년 발표된 144개 논문을 분석했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: PubMed, IEEE Xplore, Web of Science에서 체계적 검색 후 수동 검색으로 보완하여 텍스트 기반 LLM, 멀티모달 모델, 데이터셋, 평가 지표를 분류 분석</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>PRISMA 플로우 다이어그램: 데이터베이스 4,384개 레코드에서 60개, 수동 검색 83개를 포함하여 총 144개 논문 선정</em></p></div>
 <ol>
 <li><strong>텍스트 기반 LLM의 의료 응용 체계화</strong>: BioBERT, BioMistral 등 의료 특화 모델들이 supervised finetuning(SFT), prompt engineering, RLHF(강화학습) 등 다양한 기법으로 임상 문서화, 의료 문헌 요약, 진단 지원에 활용되고 있음을 분류</li>
 <li><strong>멀티모달 AI로의 패러다임 전환 확인</strong>: 단순 텍스트 처리에서 의료 영상, 임상 노트, 구조화된 데이터를 단일 모델 내 통합하는 멀티모달 대규모 언어모델(MLLM)로의 전환이 진단 지원, 의료 리포트 생성, 약물 발견, 대화형 AI 혁신을 주도</li>
 <li><strong>평가 방법론의 gap 규명</strong>: 어휘 기반 지표(BLEU, ROUGE), 임상 특화 지표, 모델 신뢰성·임상 관련성·일반화 가능성 평가의 불일치 확인</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>멀티모달 아키텍처: (A) CLIP 기반 모델 - 임베딩 정렬 (B) 크로스 어텐션 (C) 융합 기법</em></p></div>
 <ul>
 <li><strong>데이터 수집 및 처리</strong>: 의료 영상(X-ray, CT, MRI), 임상 노트, 실험실 결과, 유전체 데이터 등 다양한 양식을 구조화된 형태로 수집</li>
 <li><strong>모델 아키텍처</strong>: Transformer 기반 self-attention 메커니즘으로 문맥 관계 및 장거리 의존성 포착; CLIP 기반 모델, 크로스 어텐션, 멀티 모달 융합 기법 활용</li>
@@ -98,9 +92,7 @@ a { color: #A62018; }
 </ul>
 </li>
 <li><strong>멀티모달 통합</strong>: 다양한 데이터 타입을 통합 표현으로 변환하여 포괄적 의사결정 지원 시스템 구현</li>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>의료 분야의 생성형 AI 평가: 어휘 기반 지표(BLEU, ROUGE), 임상 특화 지표, 자동 평가 vs. 인간 평가</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li>2020-2024년 최신 논문 144개를 체계적으로 분석하여 텍스트 중심 LLM에서 멀티모달 AI로의 진화 추적</li>

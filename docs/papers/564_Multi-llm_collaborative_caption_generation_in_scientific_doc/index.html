@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 품질 평가(Quality Assessment), 다양한 캡션 생성(Diverse Caption Generation), 판단(Judgment)의 세 가지 모듈로 구성된 협업 프레임워크 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Overview of the collaborative framework integrating multiple LLMs for caption generation in scientific documents. Initially, two MLLMs generate figure descriptions. Next, three fine-tuned models and GPT-4o generate candidate captions. Finally, GPT-4o selects and refines the best caption from the candidates.">
-</div>
 <ol>
 <li><strong>저품질 데이터 필터링</strong>: 미세조정된 LLaVA 모델을 통해 훈련 데이터의 품질을 평가하여 고품질 캡션(점수 5-6)만 선별. Kendall's tau 계수 0.5502로 GPT-4o와의 일치도 확인.</li>
 <li><strong>인간 평가 우수성</strong>: 도메인 전문가(Ph.D. 학생)의 평가에서 MLBCAP가 저자가 작성한 원본 캡션보다 선호됨을 입증. 35,935개의 고품질 전처리된 훈련 데이터 구축.</li>
 <li><strong>장단형 캡션 생성</strong>: 학술지의 페이지 제약을 고려하여 장문(50단어) 및 단문(30단어) 버전의 캡션을 동시에 생성 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Human evaluation results showing preferences for generated captions">
-</div>
 <h3>4.1 품질 평가 모듈</h3>
 <ul>
 <li>GPT-4o를 사용하여 3,000개 샘플에 대해 1-6점 척도의 합성 품질 평가 데이터셋 생성</li>
@@ -135,7 +131,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../336_FigCaps-HF_A_Figure-to-Caption_Generative_Framework_and_Benc/index.html">FigCaps-HF: A Figure-to-Caption Generative Framework and Benchmark with Human Feedback</a></div><div class="conn-reason">과학 도형 캡션 생성에서 다중 LLM 협업과 단일 생성 프레임워크의 서로 다른 접근법을 비교할 수 있습니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../092_Align_then_Fusion_Generalized_Large-scale_Multi-view_Cluster/index.html">Align then Fusion: Generalized Large-scale Multi-view Clustering with Anchor Matching Correspondences</a></div><div class="conn-reason">다중 LLM 협업 캡션 생성에서 본 논문의 앵커 대응 관계 수립 방법론을 활용할 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../399_Helm_Highlighted_evidence_augmented_language_model_for_enhan/index.html">HeLM: Highlighted Evidence augmented Language Model for Enhanced Table-to-Text Generation</a></div><div class="conn-reason">단일 LLM의 증거 강조를 다중 LLM 협업으로 발전시켜 더 고품질의 과학 도형 캡션을 생성합니다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../399_Helm_Highlighted_evidence_augmented_language_model_for_enhan/index.html">HeLM: Highlighted Evidence augmented Language Model for Enhanced Table-to-Text Generation</a></div><div class="conn-reason">단일 LLM의 증거 강조 방식을 다중 LLM 협업으로 확장한 고도화된 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../605_PatFig_Generating_Short_and_Long_Captions_for_Patent_Figures/index.html">PatFig: Generating Short and Long Captions for Patent Figures</a></div><div class="conn-reason">과학 문서에서 다중 LLM 협업 캡션 생성 기법이 특허 도형의 복잡한 기술적 내용을 더욱 정확하게 캡션화하는데 활용될 수 있다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../524_MatViX_Multimodal_Information_Extraction_from_Visually_Rich/index.html">MatViX: Multimodal Information Extraction from Visually Rich Articles</a></div><div class="conn-reason">다중 LLM 협업 캡션 생성이 MatViX의 멀티모달 정보 추출을 과학 문서의 시각적 요소 설명 생성으로 확장한 구체적 응용 연구임</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../329_Explaining_relationships_among_research_papers/index.html">Explaining relationships among research papers</a></div><div class="conn-reason">과학 문서에서 다중 LLM 협업 캡션 생성으로 본 논문의 여러 논문 처리를 다중 모델 협업으로 확장한다.</div></div></div>

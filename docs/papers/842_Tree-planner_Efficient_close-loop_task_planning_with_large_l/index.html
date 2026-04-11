@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mengkang Hu, Yao Mu, Xinmiao Yu, Mingyu Ding, Shiguang Wu, Wenqi Shao, Qiguang Chen, Bin Wang, Yu Qiao, Ping Luo | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>TREE-PLANNER의 3단계 파이프라인: (I) 실행 전 잠재적 계획 샘플링, (II) 샘플링된 계획들을 집계하여 액션 트리 구성, (III) 폐루프에서 LLM이 액션 트리 상에서 의사결정</em></p></div>
 <p>대규모 언어모델(LLM)을 활용한 폐루프 태스크 플래닝에서 토큰 효율성과 오류 수정 효율성을 동시에 개선하는 TREE-PLANNER를 제안한다. 기존의 반복적 플래닝(iterative planning) 대신 계획 샘플링-액션 트리 구성-그라운디드 의사결정의 3단계로 재구조화하여 토큰 소비 92.2% 감소와 오류 수정 40.5% 감소를 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 계획 샘플링(단일 LLM 호출)과 그라운디드 의사결정(반복 호출)으로 쿼리를 분리하고, 이를 액션 트리로 연결하여 더 유연한 백트래킹(backtracking)을 가능하게 한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기존 반복적 플래닝 패러다임의 개요</em></p></div>
 <ol>
 <li><strong>토큰 효율성</strong>: ITERATIVE-PLANNER 대비 53.29%, LOCAL REPLAN 대비 74.36%, GLOBAL REPLAN 대비 92.24% 토큰 소비 감소. 환경 정보와 문맥 예시가 계획 샘플링 단계에서 단 1회만 청구되기 때문.</li>
 <li><strong>수정 효율성</strong>: LOCAL REPLAN 대비 37.99%, GLOBAL REPLAN 대비 40.52% 오류 수정 횟수 감소. 액션 트리의 백트래킹으로 불필요한 재결정 감소.</li>
 <li><strong>성능</strong>: VirtualHome 환경에서 수정 없는 설정(no correction)에서 기존 최고 성능 대비 3.65%, 수정 있는 설정(with correction)에서 1.29% 향상.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>액션 트리 구성 프로세스: 샘플링된 계획들의 공통 프리픽스를 집계하여 트리 구조로 변환</em></p></div>
 <p><strong>Stage I. 계획 샘플링 (Plan Sampling)</strong></p>
 <ul>
 <li>LLM(ρ_ps, g) = {c₁, c₂, ..., c_N}을 통해 N개의 잠재적 계획을 단일 호출로 샘플링</li>

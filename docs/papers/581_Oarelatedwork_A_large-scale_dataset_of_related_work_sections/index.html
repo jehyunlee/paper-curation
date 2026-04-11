@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Martin Docekal, Martin Fajcik, Pavel Smrz | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2405.01930" target="_blank">arXiv:2405.01930</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>전체 관련 업무(Related Work) 섹션을 인용된 논문들과 대상 논문의 전체 텍스트로부터 생성하는 태스크</em></p></div>
 <p>본 논문은 오픈 액세스 논문의 전체 텍스트를 포함하는 대규모 관련 업무 생성 데이터셋 OARelatedWork를 제시하며, 초록(abstract)만 사용하는 기존 방식에서 벗어나 전체 콘텐츠를 활용한 다중 문서 요약 연구를 추진한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 오픈 액세스 소스(CORE, Semantic Scholar)로부터 1억 2,490만 개 문서를 수집하고, 자동 문헌 연결 및 계층 구조 파싱을 통해 정제된 데이터셋 구축</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>문헌의 계층 구조 파싱 예시: 내부 번호 매기기와 앵커 생성 단계</em></p></div>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: 94,450개의 관련 업무 섹션과 5,824,689개의 고유 참조 논문을 포함한 첫 번째 전체 관련 업무 생성 데이터셋 완성</li>
 <li><strong>성능 향상 실증</strong>: 추상적 요약(abstractive)의 추출적 상한(extractive upper bound)이 초록만 사용할 때 대비 전체 콘텐츠 사용 시 ROUGE-2 기준 217% 증가 (PRIMERA 모델 0.08 → 0.15)</li>
 <li><strong>평가 메트릭 개선</strong>: BERTScore의 길이 제한 문제를 해결하는 메타-메트릭(meta-metric) 제안 및 인간 판단과의 상관성 검증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>연구 도메인에 따른 데이터셋 분포의 차이</em></p></div>
 <ul>
 <li><strong>데이터 소스 통합</strong>: CORE(540만 문서)와 Semantic Scholar(1억 2,920만 문서) 데이터 병합 및 중복 제거</li>
 <li><strong>자동 문헌 연결</strong>: Microsoft Academic Graph와 Semantic Scholar 인용 그래프를 활용한 다단계 문헌 매칭
@@ -125,7 +119,6 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../561_Ms2_Multi-document_summarization_of_medical_studies/index.html">Ms2: Multi-document summarization of medical studies</a></div><div class="conn-reason">의료 분야 다중문서 요약의 기초적 접근이 관련 업무 생성을 위한 전체 텍스트 활용 방법의 토대를 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">관련 연구 섹션의 대규모 데이터셋이 SciReviewGen의 자동 문헌 리뷰 생성 시스템을 훈련하고 평가할 수 있는 핵심적인 데이터 자원을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../778_Summarizing_multiple_documents_with_conversational_structure/index.html">Summarizing multiple documents with conversational structure for meta-review generation</a></div><div class="conn-reason">둘 다 학술 논문의 다중문서 요약을 다루지만 하나는 관련 업무, 다른 하나는 메타리뷰 생성에 중점을 둠</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../778_Summarizing_multiple_documents_with_conversational_structure/index.html">Summarizing multiple documents with conversational structure for meta-review generation</a></div><div class="conn-reason">둘 다 학술 논문의 다중문서 요약을 다루지만 하나는 메타리뷰, 다른 하나는 관련 업무 생성에 중점을 둠</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../573_Neural_related_work_summarization_with_a_joint_context-drive/index.html">Neural Related Work Summarization with a Joint Context-driven Attention Mechanism</a></div><div class="conn-reason">관련 연구 섹션 데이터셋을 신경망 기반 관련 연구 요약 시스템으로 확장한 실제 적용 연구입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../561_Ms2_Multi-document_summarization_of_medical_studies/index.html">Ms2: Multi-document summarization of medical studies</a></div><div class="conn-reason">의료 연구의 다중문서 요약을 전체 논문 텍스트를 활용하는 관련 업무 생성으로 확장하여 더 포괄적인 문헌 요약을 제공함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html">SciReviewGen: a large-scale dataset for automatic literature review generation</a></div><div class="conn-reason">관련 업무 섹션 생성을 자동화된 문헌 리뷰 생성의 더 포괄적인 프로세스로 확장함</div></div>

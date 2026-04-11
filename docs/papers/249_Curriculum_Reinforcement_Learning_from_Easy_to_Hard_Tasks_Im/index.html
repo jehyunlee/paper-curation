@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Shubham Parashar, Shurui Gui, Xiner Li, Hongyi Ling, Sushil Vemuri | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2506.06632" target="_blank">10.48550/arXiv.2506.06632</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>E2H Reasoner의 작업 분해: 학습이 진행됨에 따라 자명(Trivial) → 쉬움(Easy) → 중간(Medium) → 어려움(Hard) 작업으로 점진적 전환</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)의 추론 능력을 강화학습(RL)과 커리큘럼 학습을 결합하여 개선하는 <strong>E2H Reasoner</strong> 방법을 제시한다. 작업을 난이도별로 분해하고 확률적 스케줄러를 통해 쉬운 작업에서 어려운 작업으로 점진적 학습을 수행함으로써, 단순 RL만으로는 해결 불가능한 추론 문제를 학습 가능하게 한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -82,16 +80,12 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Pass@k 평가에서 E2H가 기저 모델을 상회: (a) Countdown, (b) Blocksworld, (c) LLaMA 3.2 3B의 추론 예시</em></p></div>
 <ol>
 <li><strong>실증적 성과</strong>: 5개 추론 작업(Blocksworld, Countdown, MATH, AQuA, GSM8K)에서 최고 성능(SOTA) 달성. 특히 기저 모델이 0-shot으로 해결 불가능한 문제까지 학습하여 높은 pass@k 값 달성</li>
 <li><strong>이론적 보장</strong>: Approximate Policy Iteration 프레임워크 내에서 E2H Reasoner의 수렴성을 증명하고, 적절하게 분해된 작업을 통한 커리큘럼 학습이 직접 학습보다 <strong>적은 표본으로도 수렴</strong> 가능함을 보였다 (finite-sample complexity bound 도출)</li>
 <li><strong>일반화 능력</strong>: 커리큘럼 학습을 통해 모델이 분포 내 난제뿐만 아니라 분포 외(OOD) 작업으로의 일반화 능력을 강화</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>코사인 기반 스케줄링 메커니즘 (Gaussian Sampler를 통한 동적 작업 비중 조정)</em></p></div>
 <p><strong>방법론의 핵심 요소:</strong></p>
 <ul>
 <li><strong>작업 분해 (Task Decomposition)</strong>:

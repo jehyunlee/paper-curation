@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Bodhisattwa Prasad Majumder, Harshit Surana, D. P. Agarwal, Bhavana Dalvi Mishra, Abhijeetsingh Meena, Aryan Prakhar, Tirth Vora, Tushar Khot, Ashish Sabharwal, Peter E. Clark | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>각 DiscoveryBench 과제는 목표와 데이터셋으로 구성되며, 통계 분석과 과학적 의미 추론이 필요하고, 다면적 평가를 통해 엄밀하게 평가됨</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)이 데이터셋만으로 가설을 자동으로 탐색하고 검증할 수 있는지 평가하기 위한 최초의 포괄적 벤치마크 <strong>DiscoveryBench</strong>를 제시한다. 264개의 실제 과제와 903개의 합성 과제로 구성되어 있으며, 현재 최고 성능 LLM도 25%의 정확도만 달성하여 자동화된 데이터 기반 발견의 난제를 드러낸다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 발행된 과학 논문에서 추출한 실제 발견 과제와 합성 과제를 통해 정형화된 벤치마크를 구축하고, 다면적(faceted) 평가 프레임워크를 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>DB-REAL과 DB-SYNTH에서 다양한 에이전트-LLM 조합의 가설 매칭 스코어(HMS)</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 사회학, 공학 등 6개 도메인에서 발행된 20개 이상의 논문으로부터 264개의 실제 발견 과제 추출 및 검증된 워크플로우 제공. 복잡도 제어를 위해 48개 도메인에 걸친 903개의 합성 과제 추가</li>
 <li><strong>정형화된 발견 프레임워크</strong>: 가설을 문맥(context), 변수(variables), 관계(relationship)의 3개 차원으로 분해하는 구조화된 형식 제시. 가설 의미 트리(hypothesis semantic tree)를 도입하여 복잡한 계층적 가설 표현 가능</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>광범위한 성능 분석</strong>: 오픈소스 및 폐쇄형 LLM을 포함한 여러 추론 프레임워크 평가. 최고 성능이 25%에 불과함을 입증하여 미해결 과제 명시</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>가설의 계층적 구조를 표현하는 의미 트리: 루트는 목표 변수, 리프는 독립 변수, 내부 노드는 중간 가설의 목표 변수</em></p></div>
 <ul>
 <li><strong>과제 정의</strong>: 하나 이상의 데이터셋 D와 자연언어 발견 목표 G가 주어졌을 때, G를 해결하는 가설 h = ψ(c, v, r)을 최고의 특이성(specificity)으로 도출</li>
 <li><strong>DB-REAL 구성</strong>:

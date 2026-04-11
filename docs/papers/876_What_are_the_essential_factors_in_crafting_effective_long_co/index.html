@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhi Chen, Qiguang Chen, Libo Qin, Qipeng Guo, Haijun Lv, Yicheng Zou, Hang Yan, Kai Chen, Dahua Lin | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>기존 Self-Instruct 방식과 MIMG 프레임워크의 비교: 다중 홉 질문, 고품질, 다양성 측면에서의 개선</em></p></div>
 <p>장문맥(long context) 대규모언어모델(LLM) 훈련용 고품질 다중 홉(multi-hop) 지시어 조정 데이터셋 생성의 핵심 요소를 체계적으로 규명하고, 다중 에이전트 상호작용 기반의 데이터 합성 프레임워크(MIMG)를 제안하여 기존 방식의 35% 수준의 다중 홉 데이터를 85% 이상으로 개선했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 에이전트 상호작용을 활용한 MIMG 프레임워크 제안: (1) 품질 검증 에이전트, (2) 단일 홉 질문 생성 에이전트, (3) 다중 질문 샘플링 전략, (4) 다중 홉 질문 통합 에이전트로 구성</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MIMG 프레임워크의 전체 프로세스: 4개 주요 컴포넌트의 상호작용 및 각 단계별 전략</em></p></div>
 <ol>
 <li><strong>데이터 품질 획기적 개선</strong>: Qwen-272B로 생성한 데이터에서 다중 홉 질문 85% 이상, 고품질 샘플 85% 이상, 낮은 중복도 달성 (기존 대비 50% 이상 향상)</li>
 <li><strong>광범위한 실험적 검증</strong>: 10개 도메인, 5개 LLM(Qwen2-72B, InternLM2-20B, Gemini-1.5-Pro, GPT-4o-mini, GPT-4o), 17가지 전략을 통해 장문맥 다중 홉 데이터 생성의 핵심 요소 규명</li>
 <li><strong>인간 주석 데이터 초과 성능</strong>: 합성 고품질 데이터로 훈련한 LLM이 대규모 인간 주석 데이터로 훈련한 모델을 초과하여 평균 7.54% 성능 향상 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>품질 검증 에이전트의 다양한 전략 분석: 분류(Classification) vs. 점수화(Scoring) 방식의 정확도, 정밀도, 문맥 길이별 영향</em></p></div>
 <h3>2.1 품질 검증 에이전트 (QVA)</h3>
 <ul>
 <li><strong>검증 전략</strong>:

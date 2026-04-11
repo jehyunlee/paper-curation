@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 다양한 문제 클래스와 해결 방법 요약 (2) 심층 학습 기반 불확실성 모델링 절차 (3) 선택된 UQ 방법의 검토 및 SciML 통합 (4) 불확실성 평가 지표 및 사후 개선 방법 제시 (5) 광범위한 비교 연구 수행</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 데이터 노이즈, 제한된 데이터, 모형 오명시 등으로부터의 전체 불확실성 분해">
-<p class="fig-caption"><em>그림 2: 데이터(노이즈, 갭), 물리 모형, 신경망으로부터의 불확실성 기여도 정성적 분석</em></p></div>
 <ol>
 <li><strong>포괄적 UQ 프레임워크 제시</strong>: 함수 근사, PINN 기반 PDE 풀이, DeepONet 기반 연산자 학습에서의 통일된 불확실성 모델링 및 정량화 방법론 개발. 총 불확실성을 인식론적 불확실성(epistemic uncertainty)과 우연적 불확실성(aleatoric uncertainty)으로 분해.</li>
 <li><strong>다양한 UQ 방법론 통합</strong>: Bayesian 방법(Variational Inference, MCMC, Laplace approximation), 앙상블(ensemble) 방법, 함수 사전분포(Functional Priors, FP), 확률미분방정식(Stochastic PDE, SPDE) 해석 방법을 체계적으로 비교 평가. 각 방법의 계산 비용(computational cost)과 성능을 정량화.</li>
@@ -85,8 +83,6 @@ a { color: #A62018; }
 <li><strong>오픈소스 라이브러리 개발</strong>: NeuralUQ 파이썬 라이브러리(github.com/Crunch-UQ4MI/neuraluq) 제공으로 재현성과 접근성 확보. 교육용 튜토리얼 및 추가 계산 실험 포함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4: 입력 함수 λ(x; ξ)와 대응되는 출력 u_θ(x; ξ)를 가진 DeepONet 구조">
-<p class="fig-caption"><em>그림 4: DeepONet 아키텍처로 분기 네트워크(branch net)가 함수 입력을 인코딩하고 트렁크 네트워크(trunk net)가 공간 위치를 처리</em></p></div>
 <ul>
 <li><strong>불확실성 모델링</strong>:
 <ul>

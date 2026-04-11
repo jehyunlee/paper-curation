@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Dengyun Peng, Yuhang Zhou, Qiguang Chen, JinHao Liu, Jingjing Chen, Libo Qin, Wanxiang Che | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 반사 기반 프롬프트 최적화 방법과 DLPO의 비교 - 견고성, 효율성, 일반화 능력 개선</em></p></div>
 <p>대규모 언어 모델(LLM)의 프롬프트 최적화에서 기존 반사(reflection) 기반 방법의 불안정성, 낮은 수렴 속도, 제한된 일반화 능력을 해결하기 위해 전통 딥러닝 기법에서 영감을 얻은 7가지 텍스트 기반 그래디언트 최적화 전략을 제시한다. 이를 통해 프롬프트 최적화의 견고성(robustness), 효율성(efficiency), 일반화 능력(generalizability)을 동시에 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 딥러닝의 성숙한 최적화 기법들(드롭아웃, 학습률 감쇠, 모멘텀 등)을 텍스트 공간에 적응시킨 7가지 기법을 개발하여 프롬프트 최적화에 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 기존 방법의 불안정성, 낮은 효율성, 제한된 일반화 능력 분석</em></p></div>
 <ol>
 <li><strong>견고성 향상</strong>: 텍스트 학습률(TLR), 텍스트 드롭아웃(TDO), 텍스트 시뮬레이션 어닐링(TSA)을 통해 최적화 과정의 진동을 감소시키고 안정성을 확보. 다양한 시드에 따른 분산을 크게 축소.</li>
 <li><strong>효율성 개선</strong>: 텍스트 학습률 감쇠(TLRD), 텍스트 모멘텀(TMnt), 텍스트 대조학습(TCL)을 통해 수렴 속도 향상. 목표 성능 달성에 필요한 반복 횟수를 20회 이상에서 대폭 감소.</li>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>경험적 우수성</strong>: 5개 벤치마크(GSM8K, MATH, BigGSM, BBH, MGSM)에서 기존 최고 성능 방법 대비 8.1% 향상, 수작업으로 설계한 프롬프트 성능도 초과.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 반사 기반 프롬프트 최적화의 정방향(Forward)과 역방향(Backward) 엔진</em></p></div>
 <p><strong>견고성 개선 방법:</strong></p>
 <ul>
 <li><strong>텍스트 학습률(TLR)</strong>: 각 최적화 스텝에서 수정되는 문장 수를 제어하여 급격한 업데이트 방지</li>

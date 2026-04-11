@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xueliang Zhao, Wenda Li, Lingpeng Kong | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2305.16366" target="_blank">10.48550/arXiv.2305.16366</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 왼쪽은 비형식적 증명과 부분목표 기반 증명의 예시, 오른쪽은 확산 모델을 사용한 시연 예제의 최적 부분집합과 순서 결정</em></p></div>
 <p>대형 언어 모델(LLM)을 형식 정리 증명(formal theorem proving)에 활용할 때, 시연 예제의 구조화와 조직화 방식을 개선함으로써 증명 성공률을 38.9%에서 45.5%로 향상시키는 부분목표 기반 학습 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 비형식적 증명을 부분목표 기반 증명으로 재구조화하고 ChatGPT와의 반복적 상호작용을 통해 정제, (2) 확산 모델을 훈련하여 시연 예제의 최적 부분집합과 순서를 동시에 결정</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: miniF2F-test에서 문제 해결 수 vs LLM 호출 횟수</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: miniF2F 벤치마크에서 45.5% 통과율 달성 (이전 SOTA 38.5% 대비 6.6% 절대 개선, 17.0% 상대 개선)</li>
 <li><strong>샘플링 효율 5배 향상</strong>: 확산 모델을 통한 시연 조직화로 이전 SOTA 수준(38.5%)을 100회 대신 20회의 LLM 호출로 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 제안된 방법으로 생성한 형식 스케치</em></p></div>
 <p><strong>부분목표 기반 증명 구성:</strong></p>
 <ul>
 <li>수동 작성된 비형식적 증명으로부터 시작하여 초기 부분목표 집합 생성</li>

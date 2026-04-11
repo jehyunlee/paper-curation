@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Pondé de Oliveira Pinto, Jared Kaplan, Harrison Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, Alex Ray, Raul Puri, Gretchen Krueger, Michael Petrov, Heidy Khlaaf, Girish Sastry, Pamela Mishkin, Brooke Chan, Scott Gray, Nick Ryder | <strong>날짜</strong>: 2021 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HumanEval 데이터셋에서 모델 크기에 따른 통과율. 단일 샘플 생성 시 Codex-12B는 28.8%, 100개 샘플 생성 후 단위 테스트 통과 샘플 선택 시 77.5% 달성</em></p></div>
 <p>GitHub 코드로 미세조정된 GPT 기반의 Codex 모델을 제시하고, 새로운 벤치마크인 HumanEval을 통해 함수형 정확성(functional correctness) 기반의 평가 체계를 제안한 논문이다. Codex는 도큐스트링(docstring)으로부터 Python 함수를 생성하는 능력에서 기존 모델들을 크게 능가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 164개의 수작업 프로그래밍 문제로 구성된 HumanEval 벤치마크 제작, (2) 단위 테스트 통과 여부로 평가하는 pass@k 메트릭 제안, (3) GitHub 코드로 GPT 모델 미세조정하여 Codex 개발, (4) 안전한 코드 실행 환경(sandbox) 구축.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>HumanEval 데이터셋의 3개 문제 예시와 Codex-12B가 생성한 정답. 도큐스트링만으로 함수를 완전히 구현하는 예시 제시</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: 단일 샘플 기준 Codex-12B는 28.8% 해결률(GPT-3: 0%, GPT-J: 11.4%), 100개 샘플 생성 시 Codex-S는 77.5% 달성. 모델 크기 확대(300M → 12B)에 따른 성능 스케일링 확인.</li>
 <li><strong>메트릭 기여</strong>: pass@k 메트릭의 불편 추정량(unbiased estimator) 제안으로 샘플링 기반 평가의 분산(variance) 문제 해결. 함수형 정확성이 BLEU 점수보다 신뢰성 높음을 입증.</li>
@@ -118,13 +114,10 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: 이 논문은 코드 생성 모델의 평가 체계를 근본적으로 개선하고 실용적 벤치마크를 제공함으로써 프로그래밍 합성 분야에 중대한 기여를 했다. Codex 모델의 실제 성능은 놀라울 정도이나, 평가 범위의 한정과 윤리적 논의의 깊이 부족이 아쉬움.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../771_Starcoder_may_the_source_be_with_you_arXiv_preprint_arXiv230/index.html">StarCoder: may the source be with you! arXiv preprint arXiv:2305.06161, 2023.</a></div><div class="conn-reason">Codex의 코드 생성 능력 평가 방법론이 오픈소스 코드 생성 대형언어모델의 성능 측정과 벤치마킹에 중요한 기반이 되었다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../771_Starcoder_may_the_source_be_with_you_arXiv_preprint_arXiv230/index.html">StarCoder: may the source be with you! arXiv preprint arXiv:2305.06161, 2023.</a></div><div class="conn-reason">Codex의 코드 생성 평가 체계가 오픈소스 대형언어모델 기반 코드 생성의 성능 측정과 개선에 핵심적인 방법론을 제공했다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../770_Starcoder_2_and_the_stack_v2_The_next_generation/index.html">StarCoder 2 and the Stack v2: The next generation</a></div><div class="conn-reason">함수형 정확성 기반 코드 평가 체계가 차세대 대규모 코드 생성 모델의 성능 측정과 개선에 필수적인 평가 기준을 제공했다</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../770_Starcoder_2_and_the_stack_v2_The_next_generation/index.html">StarCoder 2 and the Stack v2: The next generation</a></div><div class="conn-reason">GitHub 코드 기반 모델 훈련과 함수형 정확성 평가 방법론이 대규모 오픈소스 코드 생성 모델 개발의 중요한 기반이 되었다</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../1084_An_Autonomous_Large_Language_Model_Agent_for_Chemical_Litera/index.html">An Autonomous Large Language Model Agent for Chemical Literature Data Mining</a></div><div class="conn-reason">자율 기계학습 연구 프레임워크는 코드 훈련된 대규모 언어모델의 평가 연구 결과를 기반으로 연구 코드 생성과 실험 자동화 기능을 구현합니다.</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../010_A_hierarchical_framework_for_measuring_scientific_paper_inno/index.html">A hierarchical framework for measuring scientific paper innovation via large language models</a></div><div class="conn-reason">코드 평가를 위한 LLM 활용 연구가 과학 논문의 혁신성을 측정하는 계층적 프레임워크 개발의 방법론적 기초를 제공함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../712_SciCode_A_Research_Coding_Benchmark_Curated_by_Scientists/index.html">SciCode: A Research Coding Benchmark Curated by Scientists</a></div><div class="conn-reason">일반적인 코드 생성 평가가 과학자들이 직접 큐레이션한 과학 연구 문제 중심의 코딩 벤치마크로 구체화되었다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../712_SciCode_A_Research_Coding_Benchmark_Curated_by_Scientists/index.html">SciCode: A Research Coding Benchmark Curated by Scientists</a></div><div class="conn-reason">일반적인 프로그래밍 함수 생성 평가를 과학자들이 직접 설계한 실제 과학 연구 문제 해결 능력 평가로 발전시켰다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../671_Researchcodebench_Benchmarking_llms_on_implementing_novel_ma/index.html">ResearchCodeBench: Benchmarking LLMs on Implementing Novel Machine Learning Research Code</a></div><div class="conn-reason">함수 생성 중심의 코드 평가가 새로운 기계학습 방법 구현을 위한 연구 코드 벤치마킹으로 확장되었다</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

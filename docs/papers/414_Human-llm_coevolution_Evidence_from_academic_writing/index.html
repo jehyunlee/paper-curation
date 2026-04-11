@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mingmeng Geng, Roberto Trotta | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>arXiv 초록에서 ChatGPT가 선호하거나 비선호하는 단어들의 빈도 변화 추이</em></p></div>
 <p>본 논문은 arXiv 논문 초록의 통계적 분석을 통해 인간과 대형언어모델(LLM)의 공진화(coevolution) 현상을 보여준다. 특히 2024년 초 ChatGPT의 과용 단어들이 지적된 직후부터 해당 단어들의 사용 빈도가 급감하는 현상을 발견했으며, 이는 연구자들이 LLM 출력을 의도적으로 수정하고 있음을 시사한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,23 +75,15 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 2018-2024년 arXiv 전체 논문(129만여 편) 초록의 월별 단어 빈도 분석을 통해 LLM 특성 단어의 시간적 변화를 추적하고, 기계생성 텍스트 탐지 도구(Binoculars)의 실제 성능을 검증</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>2018-2024년 arXiv 초록에서 LLM 사용을 나타내는 단어들의 빈도 변화. (a)Liang et al. 2024b가 지적한 4개 단어, (b)Liang et al. 2024a가 지적한 6개 단어의 평균 빈도 추이</em></p></div>
 <ol>
 <li><strong>공진화 현상의 명확한 증거</strong>: "delve", "intricate", "showcasing" 등 LLM 특성 단어는 2024년 3월-4월 이후 급감했으나, "significant", "additionally" 같은 상대적으로 일반적인 단어는 지속적으로 증가 중. 이는 연구자들이 주목받은 단어는 의도적으로 피하지만, 덜 주목받은 단어에는 민감하지 않음을 보여줌</li>
 <li><strong>탐지 도구의 실제 한계</strong>: Binoculars 등 최신 MGT 탐지기는 LLM으로 완전히 처리된 텍스트에 대해 통계적으로 유의미한 탐지 능력을 보이지 못함. 2023년 초록과 LLM 처리 초록 간 탐지 점수 차이 미미</li>
 <li><strong>프롬프트 조작의 효과성</strong>: LLM에 특정 단어 사용을 피하도록 명시한 프롬프트(P2)는 해당 단어의 빈도를 감소시키지만 완전히 제거하지는 못하며, 탐지기의 성능 변화는 미미함</li>
 </ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>컴퓨터과학(CS) 초록과 다른 분야 초록의 단어 빈도 비율 비교. (a)2023년 vs. 2022년 비율, (b)2024년 Q1 vs. 2023-2024년 전체 빈도 비율</em></p></div>
 <ol>
 <li><strong>분야 간 확산</strong>: CS 분야에서 더 자주 등장하는 단어들이 다른 학문 분야에서도 빈도가 증가하는 추세, LLM 영향이 학문 전반에 걸쳐 확대되고 있음을 시사</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>원본 arXiv 초록과 GPT-4o-mini로 처리한 버전의 단어 빈도 비교. P1: 일반 수정 프롬프트, P2: 특정 단어 금지 프롬프트</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>Binoculars를 이용한 MGT 탐지 결과. 낮은 점수는 기계생성 가능성 높음을 나타냄. (a)실제 논문 초록의 시간별 변화, (b)원본과 LLM 처리 초록 간 비교</em></p></div>
 <ul>
 <li><strong>데이터 수집</strong>: Kaggle의 arXiv 메타데이터(2018-2024, 약 129만 4천 편) 및 WithdrawArXiv 데이터셋 활용</li>
 <li><strong>단어 빈도 분석</strong>: 월별로 정규화된 빈도 계산(10,000개 초록 기준), 비율 지표 Rij(T1, T2) = fij(T1)/fij(T2) 도입으로 기간 간 비교 정량화</li>

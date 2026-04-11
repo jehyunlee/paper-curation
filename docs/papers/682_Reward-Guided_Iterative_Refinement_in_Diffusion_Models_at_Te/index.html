@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Masatoshi Uehara, Xingyu Su, Yulai Zhao, Xiner Li, Aviv Regev | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2502.14944" target="_blank">10.48550/arXiv.2502.14944</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 제안된 프레임워크는 반복적 과정을 따르며, 각 반복에서 샘플에 노이즈를 주입한 후 보상을 최적화하면서 디노이징하는 과정</em></p></div>
 <p>본 논문은 확산 모델(Diffusion Models)에서 테스트 타임 보상 최적화를 위한 반복적 개선 프레임워크를 제안한다. 기존의 단일 샷(single-shot) 방식과 달리, 부분 노이징과 보상 유도 디노이징의 두 단계를 반복하여 점진적으로 설계(design)를 개선할 수 있다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 테스트 타임에 임의의 양의 계산을 활용하여 설계를 지속적으로 개선하는 반복적 개선 알고리즘(noising + reward-guided denoising) 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 기존 보상 유도 알고리즘은 소프트 최적 정책 {p⋆_t}로부터 순차적 샘플링으로 볼 수 있으며, 알고리즘의 차이는 p⋆_t 근사 방식에 있다</em></p></div>
 <ol>
 <li><strong>이론적 기여</strong>: 제안된 알고리즘이 exp(r(x))p_pre(·) 분포로부터 샘플링함을 수학적으로 증명하여, 생성된 설계의 자연스러움(naturalness)과 보상 최적화 간 균형을 이론적으로 보장.</li>
 <li><strong>방법론 혁신</strong>: 단순한 반복적 개선을 통해 마스크 확산 모델의 근본적 한계(한번 변경된 토큰 고정)를 극복하고, 하드 제약조건을 포함하는 복잡한 보상함수 최적화 가능.</li>
 <li><strong>실험적 우수성</strong>: 단백질 구조 설계(target RMSD 최소화)와 세포타입 특이성 DNA 설계에서 기존 방법들을 능가하는 성능 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: RERD 알고리즘 요약 - 반복적으로 부분 노이징과 보상 유도 디노이징 수행</em></p></div>
 <p><strong>핵심 알고리즘 구조:</strong></p>
 <ul>
 <li><strong>반복적 단계</strong>: 각 반복 k에서 (1) 현재 샘플 x^(k)에 부분 노이즈 주입 → 중간상태 생성, (2) 보상 유도 디노이징을 통해 x^(k+1) 획득</li>
@@ -117,7 +111,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../428_Inference-Time_Alignment_in_Diffusion_Models_with_Reward-Gui/index.html">Inference-Time Alignment in Diffusion Models with Reward-Guided Generation: Tutorial and Review</a></div><div class="conn-reason">추론 시간 정렬의 보상 유도 방법론이 반복적 개선 프레임워크의 핵심 이론적 기반을 제공함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 보상 최적화를 다루지만 반복적 개선과 동적 탐색이라는 서로 다른 전략을 사용함</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html">Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design</a></div><div class="conn-reason">둘 다 확산모델의 보상 기반 미세조정을 다루지만 서로 다른 기법적 접근을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../296_Dynamic_Search_for_Inference-Time_Alignment_in_Diffusion_Mod/index.html">Dynamic Search for Inference-Time Alignment in Diffusion Models</a></div><div class="conn-reason">둘 다 확산 모델의 추론 시간 정렬을 다루지만 동적 탐색과 반복적 개선이라는 서로 다른 최적화 전략을 사용함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../269_Derivative-Free_Guidance_in_Continuous_and_Discrete_Diffusio/index.html">Derivative-Free Guidance in Continuous and Discrete Diffusion Models with Soft Value-Based Decoding</a></div><div class="conn-reason">테스트 시간 확산 모델 개선에 미분 자유 보상 최적화 기법을 확장 적용할 수 있다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html">Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design</a></div><div class="conn-reason">반복적 증류 방법이 보상 유도 확산 모델의 테스트 시간 개선 과정을 더욱 효율화할 수 있음</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../428_Inference-Time_Alignment_in_Diffusion_Models_with_Reward-Gui/index.html">Inference-Time Alignment in Diffusion Models with Reward-Guided Generation: Tutorial and Review</a></div><div class="conn-reason">테스트 시간 보상 유도 반복 개선이 추론 시간 확산 모델 정렬로 확장될 수 있습니다.</div></div></div>

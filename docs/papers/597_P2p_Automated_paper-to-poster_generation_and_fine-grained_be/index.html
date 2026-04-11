@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Tao Sun, Enhao Pan, Zhengkai Yang, Kaixin Sui, Jiajun Shi, Xianfu Cheng, Tongliang Li, Wenhao Huang, Ge Zhang, Jian Yang, Zhoujun Li | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.17104v1" target="_blank">arXiv:2505.17104v1</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: P2P의 다중 에이전트 아키텍처: Figure Agent는 시각 요소 처리, Section Agent는 콘텐츠 생성, Orchestrate Agent는 포스터 조립 및 HTML 렌더링을 담당</em></p></div>
 <p>학술 논문을 자동으로 고품질 학술 포스터(HTML 형식)로 변환하는 LLM 기반 다중 에이전트 프레임워크를 제안하며, 30,000개 이상의 대규모 지시 데이터셋과 세부 평가 벤치마크를 함께 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 특화된 에이전트(Figure Agent, Section Agent, Orchestrate Agent)와 검증 모듈을 통한 다단계 처리, 대규모 지시 데이터셋 구성, 세부 평가 프레임워크(fine-grained evaluation framework) 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 논문-포스터 변환 예시: 좌측 논문의 주요 요소(제목, 그림, 섹션)가 우측 생성된 포스터에 매핑됨</em></p></div>
 <ol>
 <li><strong>P2P 다중 에이전트 프레임워크</strong>: 세 개의 특화된 에이전트와 각각의 검증 모듈(checker module)을 통해 반복적 개선(iterative refinement)을 수행하며, HTML/CSS 기반 렌더링으로 전문적인 포스터 생성 달성.</li>
 <li><strong>P2P INSTRUCT 데이터셋</strong>: 30,460개의 고품질 지시-응답 쌍(instruction-response pairs)으로 구성된 첫 대규모 학술 포스터 생성 특화 데이터셋 구축. Figure Describer를 통해 16,848개 그림 설명(평균 192 토큰), Section/Content/HTML Generator를 통해 13,612개 텍스트 콘텐츠 예제(평균 3,300 토큰 이상) 수집.</li>
 <li><strong>P2P EVAL 벤치마크</strong>: 121개 논문-포스터 쌍과 이중 평가 방법론(Universal Evaluation + Fine-Grained Evaluation)을 포함한 포괄적 평가 체계 제시. 33개 모델 평가를 통한 성능 검증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <h3>Figure Agent (시각 요소 처리)</h3>
 <ul>
 <li>DocLayout-YOLO를 이용한 그림/표 추출</li>

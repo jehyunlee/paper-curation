@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jingsen Feng, Ran Xu, Xu Chu | <strong>날짜</strong>: 2025.04.27 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.19338" target="_blank">arXiv:2504.19338</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: CFD를 위한 다중 에이전트 프레임워크 설계. 빨강 = 사용자 인터페이스, 녹색 = LLM 기반 지능형 에이전트, 파랑 = 내장 코드 모듈</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반 다중 에이전트 프레임워크를 활용하여 자연어 쿼리만으로 완전 자동화된 CFD 시뮬레이션을 수행할 수 있는 OpenFOAMGPT 2.0을 제시한다. 450여 건의 시뮬레이션에서 100% 성공률을 달성하며 과학 컴퓨팅의 엄격한 신뢰성 요구사항을 충족시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 사전처리, 프롬프트 생성, 시뮬레이션 실행, 사후처리 4개 전문화된 에이전트로 CFD 워크플로우를 완전 자동화</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Poiseuille 유동 시뮬레이션의 검증 및 매개변수 연구. (a) 수치해와의 비교</em></p></div>
 <ol>
 <li><strong>완전 자동화 end-to-end 워크플로우</strong>: 자연어 쿼리 → 메시 생성 → CFD 시뮬레이션 → 시각화·분석까지 인간개입 없이 자동 수행. 450건 이상의 다양한 시뮬레이션에서 100% 성공 및 재현성 달성</li>
 <li><strong>다중 사례 매개변수 연구 지원</strong>: 단순 구조 대비 복잡한 기하학 대응, 단일 사례뿐 아니라 여러 변수의 매개변수 스터디 자동화 (메시 해상도, 물리 특성, 경계조건 등)</li>
 <li><strong>신뢰성 검증</strong>: 과학 컴퓨팅의 zero-tolerance 기준을 충족하는 안정적 다중 에이전트 아키텍처 입증. Poiseuille 유동, 다공질 매질 유동(단일·다중 상), 오토바이 공력 분석 등 다양한 사례에서 검증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 다공질 매질 단일상 유동 시뮬레이션 결과. (a) 격자 독립성 연구</em></p></div>
 <p><strong>전문화된 4개 에이전트의 협업 체계</strong>:</p>
 <ul>
 <li><strong>사전처리 에이전트</strong>: 사용자 쿼리의 시맨틱 분석으로 (1)단일·다중 사례 분류, (2)blockMesh(단순기하) vs snappyHexMesh(복잡기하) 메시 전략 자동 선택. 매개변수 변수 자동 식별</li>

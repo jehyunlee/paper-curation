@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiang Zhuang, Chenyi Zhou, Kehua Feng, Zhihui Zhu, Yunfan Gao, Yijie Zhong, Yichi Zhang, Junjie Huang, Keyan Ding, Lei Bai, Haofen Wang, Qiang Zhang, Huajun Chen | <strong>날짜</strong>: 2026-03-20 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: 예측 중심 AI4S에서 embodied science으로의 전환. 좌측은 기존의 인간-오케스트레이션 워크플로우, 우측은 폐쇄 루프의 PLAD 프레임워크를 보여줌</em></p></div>
 <p>본 논문은 과학 발견을 고립된 예측 작업이 아닌 물리 세계와의 지속적 상호작용을 통한 폐쇄 루프 프로세스로 재정의하는 <strong>Embodied Science</strong> 패러다임을 제시한다. 이를 구현하기 위해 지각(Perception)–언어(Language)–행동(Action)–발견(Discovery)을 통합하는 PLAD 프레임워크 기반의 에이전틱 구현화 AI 시스템을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 과학 발견의 폐쇄 루프 프로세스로의 재정의: 지각(기기 신호), 인지(과학적 추론), 행동(실험실 개입), 발견(결과 내재화)의 통합을 통해 장기 자율 발견 시스템 구현.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 장기 자율 과학 발견을 위한 PLAD 루프. 지각은 원시 기기 신호를 변환하고, 추론과 계획을 통해 다음 실험을 결정하며, 행동으로 물리적 개입을 실행하고, 발견을 통해 결과를 내재화함</em></p></div>
 <ol>
 <li><strong>Embodied Science 패러다임 정의</strong>: 과학 발견을 인간이 오케스트레이션하는 느슨한 연결의 단계적 프로세스에서 AI가 직접 참여하는 폐쇄 루프 프로세스로 전환하는 이론적 프레임워크 제시.</li>
 <li><strong>PLAD 프레임워크 개발</strong>: Perception(기기 신호 해석), Language(과학적 추론 및 계획), Action(실험실 개입), Discovery(통찰력 내재화)의 네 가지 핵심 기능을 통합하는 통일된 시스템 아키텍처 제안.</li>
 <li><strong>Agentic Embodied AI 정의</strong>: (1) 장기 목표 관리 능력, (2) 실험 루프 내 구체적 인터페이스(원시 기기 스트림, 작동 상태, 작동 기제), (3) 장기 지속성(메모리, 추적성, 모니터링, 복구 동작)을 필수 속성으로 하는 에이전틱 시스템의 구체적 정의.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 과학 발견에서 PLAD 인스턴스화. (a) 효소 설계: 구조적 및 기능적 지각이 언어 기반 추론을 유도하고, 변이 실험을 설계하며, 생화학적 검증을 통해 효소 속성을 발견함</em></p></div>
 <ul>
 <li><strong>지각(Perception)</strong>: 기기에서 생성된 생 데이터(스펙트럼, 크로마토그램, 현미경 영상, 센서 로그, 보정 추적)를 다모달, 불완전한 신호로 해석. 목표 지향적 감지(적응형 확대, 재측정, 재보정, 이상 감지 시 양식 전환) 수행.</li>
 <li><strong>언어 기반 추론(Language-grounded Reasoning)</strong>: 불확실성 하에서의 실험 추론, 비용과 우발상황을 고려한 계획 수립, 증거 축적에 따른 가설 수정. 다음 실험 선택뿐 아니라 측정 대상, 개입 시점, 가설 수정 방식 결정.</li>

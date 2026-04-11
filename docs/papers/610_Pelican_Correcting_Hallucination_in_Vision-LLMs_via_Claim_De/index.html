@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Pritish Sahu, Karan Sikka, Ajay Divakaran | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.2407.02352" target="_blank">10.48550/ARXIV.2407.02352</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Pelican의 전체 파이프라인: 시각적 표(Visual Table) 구성, 청구(Claim) 분해, Program-of-Thought 코드 생성, 통합 검증 종합</em></p></div>
 <p>시각 언어 모델(LVLM)의 환각(hallucination) 문제를 1차 술어(first-order predicates) 기반 청구 분해와 파이썬 코드 생성을 통해 검증하고 보정하는 프레임워크를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 청구를 구조화된 부분 청구 체인으로 분해하고, Program-of-Thought 방식으로 파이썬 코드를 생성하여 중간 변수와 공유 계산을 활용하되, LLM의 추론 능력으로 최종 검증을 수행한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>부분 청구로부터 생성된 계산 그래프: 술어를 노드로, 의존성을 간선으로 표현</em></p></div>
 <ol>
 <li><strong>환각 감소 성능</strong>: MMHal-Bench에서 다양한 LVLM 기준선 대비 8%-32% 환각 감소, 기존 환각 완화 방법 대비 27% 감소 달성</li>
 <li><strong>강화된 접지</strong>: 중간 변수($person_riding 등)를 통한 정확한 객체 인스턴스 참조로 다중 객체 청구에서의 정밀도 향상</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>다중 벤치마크 검증</strong>: GAVIE, MME 데이터셋에서도 일관된 성능 개선 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>4단계 파이프라인: (Step 1) 시각적 표 구성, (Step 2) 청구 분해, (Step 3) Program-of-Thought 코드 생성, (Step 4) 통합 검증</em></p></div>
 <ul>
 <li><strong>Visual Table 생성</strong>: YOLO와 Grounding-DINO를 결합하여 이미지에서 핵심 시각적 객체를 탐지하고 Pandas dataframe 형태로 표현화. 이를 통해 객체 검출의 폐쇄 어휘(closed-vocabulary) 한계와 개방 어휘 모델의 거짓양성(false-positive) 문제 완화</li>
 <li><strong>청구 분해(Claim Decomposition)</strong>: LLM의 추론 능력을 활용하여 복잡한 청구를 1차 술어 기반의 세분화된 부분 청구로 변환. 각 부분 청구는 (술어, 질문) 쌍으로 구성되며 계산 그래프의 노드 역할</li>
@@ -115,7 +109,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: Pelican은 시각 언어 모델의 환각 문제를 체계적으로 접근하는 견고한 프레임워크로, 중간 변수와 계산 공유라는 실질적 개선을 통해 SOTA 대비 의미 있는 성능 향상을 달성했으나, 높은 계산 비용과 시각 도구 의존성이 실무 적용 시 제약이 될 수 있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../753_Shared_imagination_Llms_hallucinate_alike/index.html">Shared imagination: Llms hallucinate alike</a></div><div class="conn-reason">두 논문 모두 LLM의 환각 문제를 다루며, 공유된 상상 공간 개념이 시각-언어 모델의 환각 보정 메커니즘 이해에 중요한 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../790_Teaching_Large_Language_Models_to_Self-Debug/index.html">Teaching Large Language Models to Self-Debug</a></div><div class="conn-reason">코드 디버깅과 시각적 주장 검증은 모두 자기 수정 메커니즘을 활용하지만, 서로 다른 모달리티에서 오류 검출과 보정 방법을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../790_Teaching_Large_Language_Models_to_Self-Debug/index.html">Teaching Large Language Models to Self-Debug</a></div><div class="conn-reason">코드 자기 디버깅과 시각적 주장 검증은 모두 자기 수정 메커니즘을 활용하지만 실행 피드백과 논리적 분해라는 서로 다른 검증 방법을 사용한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../242_CRITIC_Large_Language_Models_Can_Self-Correct_with_Tool-Inte/index.html">CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing</a></div><div class="conn-reason">CRITIC의 도구 기반 자기 수정 프레임워크를 시각-언어 영역으로 확장하여 더 구조화된 검증 과정을 제공한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../753_Shared_imagination_Llms_hallucinate_alike/index.html">Shared imagination: Llms hallucinate alike</a></div><div class="conn-reason">LLM들의 공유된 환각 패턴 분석이 시각-언어 모델의 환각 보정에서 일관된 오류 유형을 사전에 식별하고 대응하는 데 활용된다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

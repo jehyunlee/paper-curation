@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Paimon Goulart, Jordan Steinhauser, Dawon Ahn, Kylene Shuler, Edward Korzus, Jia Chen, Evangelos E. Papalexakis | <strong>날짜</strong>: 2026-02-19 | <strong>DOI</strong>: [미제공]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>제안된 파이프라인 개요: In-Context 데이터 준비, AI 강화 텐서 분석, AI 기반 패턴 해석의 세 가지 주요 단계</em></p></div>
 <p>본 논문은 행동신경과학 연구에서 데이터 준비부터 패턴 해석까지 시간 소비적이고 전문가 의존적인 단계들을 AI로 자동화하는 통합 파이프라인을 제시한다. In-Context Learning(ICL)과 향상된 텐서 분해를 활용하여 도메인 전문가가 프로그래밍 지식 없이도 공포 과일반화(fear generalization) 연구에서 신경 패턴을 발굴할 수 있는 사용자 친화적 인터페이스를 구현했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,14 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ICL을 도메인 전문가의 인터페이스로 활용하여 모델 훈련 없이 데이터 준비 자동화, 향상된 텐서 분해로 이질적 데이터의 패턴 발굴, RAG 기반 패턴 해석을 통합한 엔드-투-엔드 파이프라인 개발.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>제안된 AR-ICL(Autoregressive In-Context Learning) 방법을 이용한 행동 라벨링. 시간 정보를 활용하여 라벨의 일관성 유지</em></p></div>
 <ol>
 <li><strong>In-Context Learning 기반 데이터 준비</strong>: 비디오 행동 라벨링과 calcium 신호 처리를 ICL로 자동화. 기존의 수작업 검사(manual visual inspection)와 복잡한 파이프라인(CNMF, 세포 등록) 대체. Autoregressive ICL(AR-ICL)을 도입하여 시간적 일관성 있는 라벨링 달성.</li>
 <li><strong>AI 강화 텐서 분해</strong>: 신경 활동과 행동 데이터의 이질적 특성을 처리하는 향상된 텐서 분해 모델 개발. 기존 TCA 대비 성능 향상 및 신뢰할 수 있는 컴포넌트 수 결정 방법 제시.</li>
 </ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>VLM 기반 calcium 활동성 분석의 성능 평가 (F1 스코어)</em></p></div>
 <ol>
 <li><strong>도메인 검증 패턴 발굴</strong>: 발견된 신경 패턴이 도메인 전문가에 의해 공포 판별/과일반화와의 의미 있는 연관성 확인. 표준 관행 및 베이스라인 ML 모델 대비 우수한 성능 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>시간적 일관성을 위한 AR-ICL 프롬프트. 고정된 ICL 예제에 추가로 이전 시간 단계의 예측값 포함</em></p></div>
 <p><strong>파이프라인 구성 요소:</strong></p>
 <ul>
 <li><strong>In-Context Data Preparation (데이터 준비)</strong>
@@ -108,8 +100,6 @@ a { color: #A62018; }
 <li>클래식 텐서 방법의 해석 가능성 유지하면서 성능 개선</li>
 </ul>
 </ul>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>발견된 잠재 신경 컴포넌트 해석을 위한 Discovery ICL 프롬프트. 검색 보강 생성(RAG) 정보 포함</em></p></div>
 <ul>
 <li><strong>AI-driven Pattern Interpretation (패턴 해석)</strong>
 <ul>

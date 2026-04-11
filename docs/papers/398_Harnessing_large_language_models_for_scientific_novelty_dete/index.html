@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yeonghun Kang, Wonseok Lee, Taeun Bae, Seunghee Han, Huiwon Jang, Jihan Kim | <strong>날짜</strong>: 2025-02-05 | <strong>DOI</strong>: <a href="https://doi.org/10.1021/jacs.4c11085" target="_blank">10.1021/jacs.4c11085</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>L2M3 모델의 전체 구조: (a) 테이블과 텍스트에서 정보를 추출하는 통합 프레임워크, (b) 테이블 마이닝 프로세스, (c) 텍스트 마이닝 프로세스</em></p></div>
 <p>대규모 언어모델(LLM)을 활용하여 과학 문헌에서 40,000개 이상의 금속-유기 골격(MOF) 관련 논문을 분석하고, 32개의 핵심 특성과 21개 합성 조건 카테고리를 자동으로 추출한 포괄적인 데이터셋을 구축했다. 이 데이터셋을 통해 합성 조건과 실험 데이터 간의 차이를 규명하고 합성 조건 추천 시스템을 개발했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: ChatGPT 등의 LLM의 문맥 이해 능력과 few-shot 학습 성능을 활용하여, Yaghi 그룹의 선행 연구를 확장하는 자동화된 "L2M3" (Large Language Model MOF Miner) 시스템을 개발. 테이블 추출, 합성 조건 추출, 특성 추출을 위한 세 가지 전문화된 에이전트를 구성.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>데이터 추출 및 조직화 시스템: (a) 분류 및 포함 단계 결과에 따라 적응적으로 수정되는 LLM 프롬프트, (b) 메타데이터 태깅을 통한 동일 물질의 정보 통합</em></p></div>
 <ol>
 <li><strong>대규모 데이터셋 구축</strong>: 40,000개 이상 논문에서 39,476개 유효 데이터셋 추출. 32개 정의된 특성(surface area, pore volume 등)과 일반 형식의 특성들을 추출. MOF 합성 프로세스를 21개 카테고리로 분류하여 세밀한 데이터 구조화 실현.</li>
 <li><strong>높은 추출 정확도 달성</strong>: 다양한 출판사로부터 150개 논문의 무작위 표본 평가에서 분류(categorization), 포함(inclusion), 추출(extraction) 작업에 대한 정확도 검증. 프롬프트 엔지니어링, 온도 제어, 할루시네이션 최소화 기법으로 신뢰성 확보.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실용적 도구 개발</strong>: 추출된 합성 조건 데이터로부터 합성 조건 추천 시스템 구축. 사용자가 제공한 전구체(precursor)를 기반으로 최적 합성 조건을 제시하여 합성 전략 개선에 활용 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>적응형 LLM 프롬프트와 데이터 조직화 에이전트의 상세 프로세스</em></p></div>
 <ul>
 <li><strong>테이블 에이전트</strong>: 세 단계 프로세스 적용
 <ul>
@@ -141,7 +135,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 LLM 기반 자동화된 데이터 마이닝의 뛰어난 실례로, 40,000개 논문에서 포괄적 MOF 데이터셋을 체계적으로 구축하고 시뮬레이션-실험 간극을 규명했으며 실용적 추천 시스템을 제시함으로써 데이터 기반 물질 과학의 새로운 표준을 제시한다. 다만 LLM 고유의 할루시네이션 위험과 검증 표본의 제한으로 인해 완전한 정확성 보증에는 미치지 못한다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../025_A_Survey_of_AI_for_Materials_Science_Foundation_Models_LLM_A/index.html">A Survey of AI for Materials Science: Foundation Models, LLM Agents, Datasets, and Tools</a></div><div class="conn-reason">재료과학에서 AI와 LLM 활용의 포괄적 조망을 제공하여 MOF 연구의 이론적 맥락을 제시한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../208_ChatMOF_an_artificial_intelligence_system_for_predicting_and/index.html">ChatMOF: an artificial intelligence system for predicting and generating metal-organic frameworks using large language models</a></div><div class="conn-reason">MOF와 화학 소재라는 유사한 영역에서 LLM 기반 지식 추출과 AI 시스템 구축의 서로 다른 접근법을 비교한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../208_ChatMOF_an_artificial_intelligence_system_for_predicting_and/index.html">ChatMOF: an artificial intelligence system for predicting and generating metal-organic frameworks using large language models</a></div><div class="conn-reason">MOF 예측과 생성에서 AI 시스템과 LLM 기반 데이터 수집이라는 서로 다른 접근법으로 화학 소재 연구를 자동화한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../764_Sparks_Multi-Agent_Artificial_Intelligence_Model_Discovers_P/index.html">Sparks: Multi-Agent Artificial Intelligence Model Discovers Protein Design Principles</a></div><div class="conn-reason">문헌 기반 데이터 수집을 넘어 완전 자동화된 과학 발견으로 나아가는 발전 경로를 보여준다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

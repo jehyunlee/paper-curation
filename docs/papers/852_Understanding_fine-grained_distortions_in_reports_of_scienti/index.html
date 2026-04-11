@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Amelie Wuehrl, Dustin Wright, Roman Klinger, Isabelle Augenstein | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>과학 논문의 발견과 보도된 발견의 쌍 예시. 인과관계, 확실성, 일반화, 선정성의 세밀한 왜곡 레이블 표시</em></p></div>
 <p>과학 논문의 발견이 일반 대중에게 보도될 때 발생하는 네 가지 유형의 세밀한 왜곡(인과관계, 확실성, 일반화, 선정성)을 자동으로 감지하기 위한 첫 번째 체계적 연구이다. 1,600개의 과학 발견을 쌍으로 주석 처리하고 기준 모델을 구축하여 과학 통신의 왜곡 패턴을 분석했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 1,600개 인스턴스의 전문가 주석 처리 데이터셋 구축 (학술지 800쌍: 뉴스 + 트윗), (2) 세밀한 왜곡 감지를 위한 벤치마크 모델 개발 및 평가, (3) 대규모 자동 레이블 데이터(1,655,570개 논문 발견, 422,626개 뉴스, 356,275개 트윗)에서 왜곡 패턴 분석</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>인과관계와 확실성의 변화를 시각화한 Sankey 다이어그램</em></p></div>
 <ol>
 <li><strong>주석 처리 데이터셋 구축</strong>: 의학(227), 심리학(257), 생물학(185), 컴퓨터과학(168)의 4개 학문 분야에서 1,600개의 쌍을 이룬 과학 발견 데이터셋 구축. 정보 매칭 점수(IMS > 4)로 필터링하여 고품질 데이터 확보</li>
 <li><strong>왜곡 패턴 발견</strong>:
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>자동 감지 모델 개발</strong>: 인과관계(F1=0.58), 확실성(F1=0.56), 일반화(F1=0.57), 선정성(Pearson r=0.61) 예측. 미세 조정된 과제별 모델이 소수 샷 LLM 프롬프팅을 일관되게 능가함</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>치명적 왜곡(critical distortions)의 동시 발생 행렬</em></p></div>
 <ul>
 <li><strong>네 가지 왜곡 차원 정의</strong>:
 <ul>

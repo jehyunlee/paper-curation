@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xueyu Hu, Ziyu Zhao, Shuang Wei, Ziwei Chai, Qianli Ma, Guoyin Wang, Xuwu Wang, Jing Su, Jingjing Xu, Ming Zhu, Yao Cheng, Jianbo Yuan, Jiwei Li, Kun Kuang, Yang Yang, Hongxia Yang, Fei Wu | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2401.05507" target="_blank">arXiv:2401.05507</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>LLM 기반 에이전트가 CSV 파일을 입력받아 ReAct 방식으로 코드를 작성, 실행하고 결과를 도출하는 데이터 분석 태스크의 평가 프로세스</em></p></div>
 <p>본 논문은 LLM 기반 에이전트의 데이터 분석 능력을 평가하기 위한 최초의 종합 벤치마크 <strong>InfiAgent-DABench</strong>를 제안한다. 257개의 폐쇄형(closed-form) 데이터 분석 질문과 52개의 CSV 파일로 구성된 DAEval 데이터셋과, 이를 평가하기 위한 에이전트 프레임워크를 제공한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -97,16 +95,12 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>DAEval 구성 워크플로우: CSV 파일 수집 → 설명 생성 → 개념 기반 질문 생성 → 제약조건 및 포맷 요구사항 생성 → 인간 검증</em></p></div>
 <ol>
 <li><strong>최초의 데이터 분석 벤치마크</strong>: 257개 질문, 52개 CSV 파일, 다양한 도메인과 18개 데이터 분석 핵심 개념 포함</li>
 <li><strong>광범위한 평가</strong>: 34개 최신 LLM 평가를 통해 현재 LLM의 데이터 분석 능력의 한계 규명</li>
 <li><strong>개선된 오픈소스 에이전트</strong>: DAInstruct 명령어 튜닝 데이터셋을 기반으로 학습한 DAAgent-34B가 GPT-3.5를 3.9% 상회하는 성능 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>데이터 분석 개념, CSV 파일 설명, 제약조건을 통한 폐쇄형 질문 생성 프로세스</em></p></div>
 <ul>
 <li><strong>데이터셋 구축</strong>:
 <ul>

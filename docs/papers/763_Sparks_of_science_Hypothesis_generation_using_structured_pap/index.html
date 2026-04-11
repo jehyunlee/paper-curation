@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: C. O'Neill, Tirthankar Ghosal, R. Raileanu, Mike Walmsley, Thang Bui, Kevin Schawinski, Ioana Ciuca | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미공개</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>HypoGen 파이프라인: 논문 초록에서 Bit-Flip-Spark 구조와 Chain-of-Reasoning을 추출하여 모델 파인튜닝에 사용</em></p></div>
 <p>본 논문은 과학적 가설 생성(Scientific Hypothesis Generation, SHG)을 조건부 언어 모델링(conditional language modeling) 문제로 프레임화하기 위해 약 5,500개의 구조화된 문제-가설 쌍으로 구성된 HypoGen 데이터셋을 소개한다. Bit(기존 가정)-Spark(핵심 통찰)-Flip(혁신적 제안) 스키마에 명시적 추론 체인을 결합하여 생성된 가설의 신성(novelty)과 타당성(feasibility)을 향상시킨다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 최상위 컴퓨터과학 학회(top-tier CS conferences)의 논문들로부터 Bit-Flip-Spark+Chain-of-Reasoning 형식으로 구조화된 데이터를 추출하여 데이터셋 구축. OpenAI o1 모델을 활용해 초록과 본문에서 각 요소들을 추출하고, 파인튜닝된 LLaMA 모델로 Bit가 주어졌을 때 Spark와 Chain-of-Reasoning을 생성하도록 훈련.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>9가지 실험 구성에서 생성된 가설의 질에 대한 비교 분석</em></p></div>
 <ol>
 <li><strong>HypoGen 데이터셋 구축</strong>: 컴퓨터과학 최상위 학회에서 추출한 약 5,500개의 구조화된 문제-가설 쌍으로 구성된 최초의 과학적 가설 생성 데이터셋 개발. 각 항목에 상세한 추론 체인(Chain-of-Reasoning)이 포함되어 인간 과학자의 사고 과정을 충실하게 반영.</li>
 <li><strong>성능 향상 입증</strong>: HypoGen 데이터셋으로 파인튜닝된 LLaMA 기반 모델이 신성성, 타당성, 전반적 품질 측면에서 베이스라인 모델 대비 개선된 가설을 생성함을 자동화 메트릭과 LLM 판사(Claude 3.7 Sonnet)의 평가를 통해 입증.</li>
@@ -124,7 +120,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 과학적 가설 생성 문제를 체계적으로 접근하기 위해 첫 대규모 구조화 데이터셋을 제시하고, Chain-of-Reasoning을 명시적으로 통합한 점에서 높은 창의성을 보인다. 다만 평가 방법론의 엄밀성 강화, 다분야 확장, 실제 과학자 검증을 통한 검증이 완성도를 위해 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../777_Structuring_scientific_innovation_A_framework_for_modeling_a/index.html">Structuring scientific innovation: A framework for modeling and discovering impactful knowledge combinations</a></div><div class="conn-reason">문제-방법 조합의 구조적 재결합 모델링이 Bit-Spark-Flip 스키마 기반 가설 생성의 이론적 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../425_Improving_research_idea_generation_through_data_An_empirical/index.html">Improving research idea generation through data: An empirical investigation in social science</a></div><div class="conn-reason">구조화된 데이터를 활용한 가설 생성이라는 공통 접근법이지만 과학적 가설과 연구 아이디어라는 다른 결과물을 다룬다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../425_Improving_research_idea_generation_through_data_An_empirical/index.html">Improving research idea generation through data: An empirical investigation in social science</a></div><div class="conn-reason">구조화된 논문 데이터를 이용한 가설 생성 연구로, 메타데이터 활용 방식에서 유사하지만 접근법이 다르다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../666_Research_hypothesis_generation_over_scientific_knowledge_gra/index.html">Research hypothesis generation over scientific knowledge graphs</a></div><div class="conn-reason">과학 지식 그래프 기반의 연구 가설 생성을 구조화된 논문 데이터로 확장한 발전된 형태이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../777_Structuring_scientific_innovation_A_framework_for_modeling_a/index.html">Structuring scientific innovation: A framework for modeling and discovering impactful knowledge combinations</a></div><div class="conn-reason">문제-방법 재결합의 구조적 모델링을 과학적 가설 생성의 구체적 스키마로 발전시킬 수 있다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

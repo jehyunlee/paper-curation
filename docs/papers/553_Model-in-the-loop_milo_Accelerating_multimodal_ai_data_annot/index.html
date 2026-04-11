@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Y. Q. Wang, David Stevens, Pranay Shah, Wenwen Jiang, Miao Liu, Xu Chen, Robert Kuo, Na Li, Boying Gong, Daniel J. Lee, Jiabo Hu, Ning Zhang, Bob Kamma | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MILO 프레임워크: 데이터 주석 시스템에 AI/ML 모델을 통합하는 구조</em></p></div>
 <p>본 논문은 전문 인간 주석자와 대규모 언어모델(LLM)의 협력을 통해 멀티모달 AI 데이터 주석 프로세스를 가속화하는 Model-in-the-Loop (MILO) 프레임워크를 제시한다. LLM을 사전 주석, 실시간 보조, 검증자로 활용하여 주석 시간 단축 및 품질 향상을 달성했다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,20 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 본 논문은 주석 라이프사이클 전반에서 인간-모델 협력을 위한 대화형 프레임워크(MILO)를 개발하고, 주관적 품질 평가 방법론을 제시하며, 실제 프로덕션 환경에서 3가지 경험적 연구를 수행하여 효과를 입증한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>미세조정된 Llama 모델의 ROC 곡선 및 AUC 메트릭</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>사전 주석 LLM 보조 기능의 유무에 따른 작업당 처리 시간 차이(초)</em></p></div>
 <ol>
 <li><strong>주석 효율성 향상</strong>: 사전 주석(pre-annotation) LLM 보조 기능을 통해 주석 처리 시간을 현저히 단축. 실시간 LLM 보조 기능은 복잡한 멀티모달 주석(예: 시각적 질의응답)에서 처리 시간을 절감하고 품질을 개선.</li>
 <li><strong>주석 품질 개선</strong>: LLM 판정자(judge)로서의 역할을 통해 주석 일관성 확보 및 개방형 주석에 대한 세분화된 피드백 제공. 인간 검수자의 편향 감소 및 객관적 평가 기준 제시.</li>
 <li><strong>주석자 경험 향상</strong>: 모델 기반 제안과 컨텍스트 정보 제공으로 인지 부하 감소, 주석자 만족도 및 참여도 증가.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>사전 주석 LLM 보조 기능이 포함된 코멘트 분류 주석 UI의 예시</em></p></div>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>시각적 질의응답(VQA) 주석을 위한 실시간 LLM 보조 기능 포함/미포함 UI 비교</em></p></div>
 <p><strong>MILO 프레임워크의 3가지 핵심 역할:</strong></p>
 <ul>
 <li><strong>사전 주석 보조(Pre-annotation Assistant)</strong>: 미세조정된 LLM을 활용하여 주석 전 단계에서 예측 라벨과 신뢰도 점수 제공, 주석자의 선택 공간 사전 축소</li>

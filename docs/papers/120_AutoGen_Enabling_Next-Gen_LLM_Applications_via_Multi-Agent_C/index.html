@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Beibin Li | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AutoGen이 지원하는 다중 에이전트 대화 기반 LLM 애플리케이션의 다양한 형태</em></p></div>
 <p>AutoGen은 LLM 기반 에이전트들이 서로 대화하면서 협력하여 복잡한 작업을 해결할 수 있는 오픈소스 프레임워크로, 개발자가 다양한 도메인의 LLM 애플리케이션을 빠르게 구축할 수 있도록 돕는다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 에이전트 대화(multi-agent conversation) 기반의 프레임워크 설계를 통해 (1) 맞춤형·대화 가능한 에이전트와 (2) 대화 기반 프로그래밍 패러다임을 제공</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>AutoGen을 이용한 다중 에이전트 대화 프로그래밍의 구조 및 실행 예시</em></p></div>
 <ol>
 <li><strong>맞춤형 대화 가능 에이전트 (Conversable Agents)</strong>: ConversableAgent를 기본 추상화로 하여 LLM, 인간, 도구를 자유롭게 조합하여 다양한 역할(코드 생성, 코드 실행, 인간 피드백 수집, 검증 등)의 에이전트를 빠르게 구성 가능</li>
 <li><strong>대화 중심 프로그래밍 패러다임 (Conversation Programming)</strong>: 복잡한 LLM 워크플로우를 다중 에이전트 대화로 단순화하고, 자연어와 프로그래밍 언어의 조합으로 다양한 대화 패턴(계층적 채팅, 공동 채팅 등) 구현 가능</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>광범위한 응용성</strong>: 수학, 코딩, 질의응답, 운영연구, 온라인 의사결정, 엔터테인먼트 등 다양한 도메인에서 효과성 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3-4">
-<p class="fig-caption"><em>다양한 애플리케이션 사례 및 성능 비교</em></p></div>
 <ul>
 <li><strong>에이전트 설계</strong>:
 <ul>
@@ -130,10 +124,8 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../464_Large_Language_Model_based_Multi-Agents_A_Survey_of_Progress/index.html">Large Language Model based Multi-Agents: A Survey of Progress and Challenges</a></div><div class="conn-reason">차세대 LLM 애플리케이션을 위한 멀티에이전트 프레임워크가 복잡한 문제 해결의 구체적 구현 사례입니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../447_Iterative_self-incentivization_empowers_large_language_model/index.html">Iterative self-incentivization empowers large language models as agentic searchers</a></div><div class="conn-reason">AutoGen의 멀티 에이전트 프레임워크는 EXSEARCH의 단일 에이전트 자기 개선을 여러 에이전트 간 협력적 학습으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../596_OWL_Optimized_Workforce_Learning_for_General_Multi-Agent_Ass/index.html">OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation</a></div><div class="conn-reason">OWL의 모듈식 WORKFORCE 프레임워크가 AutoGen의 대화형 다중 에이전트 시스템을 도메인 범용성을 위해 발전시킨 확장 버전이다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../596_OWL_Optimized_Workforce_Learning_for_General_Multi-Agent_Ass/index.html">OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation</a></div><div class="conn-reason">OWL의 모듈식 WORKFORCE 프레임워크가 AutoGen의 다중 에이전트 시스템을 도메인 이식성 문제 해결을 위해 발전시킨 확장된 아키텍처이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../823_Towards_a_Science_of_Scaling_Agent_Systems/index.html">Towards a Science of Scaling Agent Systems</a></div><div class="conn-reason">AutoGen의 다중 에이전트 프레임워크에 정량적 확장 법칙을 적용하여 성능 예측 가능성을 높인다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../358_From_Labor_to_Collaboration_A_Methodological_Experiment_Usin/index.html">From Labor to Collaboration: A Methodological Experiment Using AI Agents to Augment Research Perspectives in Taiwan&#x27;s Humanities and Social Sciences</a></div><div class="conn-reason">인문사회과학 연구를 위한 Agentic Workflow가 AutoGen의 다중 에이전트 협업 메커니즘을 특정 학문 영역에 적용한 실용 사례이다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../358_From_Labor_to_Collaboration_A_Methodological_Experiment_Usin/index.html">From Labor to Collaboration: A Methodological Experiment Using AI Agents to Augment Research Perspectives in Taiwan&#x27;s Humanities and Social Sciences</a></div><div class="conn-reason">AutoGen의 다중 에이전트 대화 프레임워크가 인문사회과학 연구의 특수성을 고려한 협업 워크플로우에 구체적으로 적용된 사례이다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../358_From_Labor_to_Collaboration_A_Methodological_Experiment_Usin/index.html">From Labor to Collaboration: A Methodological Experiment Using AI Agents to Augment Research Perspectives in Taiwan&#x27;s Humanities and Social Sciences</a></div><div class="conn-reason">인문사회과학 연구를 위한 Agentic Workflow가 AutoGen의 다중 에이전트 협업 메커니즘을 특정 학문 영역에 적용한 실용 사례이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

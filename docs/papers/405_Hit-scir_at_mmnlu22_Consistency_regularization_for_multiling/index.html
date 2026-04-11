@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 기계 번역(machine translation)과 부분단어 샘플링(subword sampling) 두 가지 데이터 증강 전략을 기반으로 의도 탐지와 슬롯 채우기 태스크에 일관성 정규화를 적용한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>일관성 정규화 기반 미세조정 프레임워크. 하이브리드 데이터 증강으로 기계 번역(MT)과 부분단어 샘플링(SS)을 활용</em></p></div>
 <ol>
 <li><strong>경쟁 우위</strong>: MMNLU-22 경쟁에서 전체 데이터셋 설정 하에 1위 달성 (정확 매칭 정확도 49.65점, 2위보다 1.02점 우수)</li>
 <li><strong>성능 향상</strong>:
@@ -88,8 +86,6 @@ a { color: #A62018; }
 <li><strong>포괄적 효과</strong>: 전체 데이터셋 설정과 제로샷(zero-shot) 설정 모두에서 지속적인 성능 개선 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MASSIVE 데이터셋의 영어 예제: 의도(set alarm)와 슬롯 레이블(time, date) 표기</em></p></div>
 <h3>일관성 정규화(Consistency Regularization)</h3>
 <ul>
 <li>원본 입력 x와 증강된 입력 A(x, z)에 대한 예측 분포를 대칭 쿨백-라이블러 발산(symmetric KL divergence)으로 정렬</li>
@@ -138,7 +134,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 일관성 정규화와 하이브리드 데이터 증강의 결합으로 다국어 SLU에서 체계적이고 효과적인 성능 향상을 달성했으며, MMNLU-22 경쟁 우승으로 실용성을 입증한 견고한 연구이다. 다만 기계 번역에서의 슬롯 정렬 한계와 상용 API 의존성이 개선 여지를 남긴다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../206_ChatGPT_outperforms_crowd_workers_for_text-annotation_tasks/index.html">ChatGPT outperforms crowd workers for text-annotation tasks</a></div><div class="conn-reason">텍스트 주석 작업에서 ChatGPT의 기본 성능이 다국어 음성언어이해의 데이터 증강 전략 개발에 기초가 됩니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../421_Improving_demonstration_diversity_by_human-free_fusing_for_t/index.html">Improving demonstration diversity by human-free fusing for text-to-sql</a></div><div class="conn-reason">Text-to-SQL에서의 무인 융합 다양성 향상과 SLU에서의 일관성 정규화가 서로 다른 다양성 증진 방법을 제시합니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../421_Improving_demonstration_diversity_by_human-free_fusing_for_t/index.html">Improving demonstration diversity by human-free fusing for text-to-sql</a></div><div class="conn-reason">다양성 향상에서 무인 융합 방법과 일관성 정규화 방법이 서로 다른 접근 방식을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../423_Improving_grammatical_error_correction_via_contextual_data_a/index.html">Improving grammatical error correction via contextual data augmentation</a></div><div class="conn-reason">문법 오류 수정과 다국어 음성언어이해에서 각각 문맥 기반과 일관성 기반의 서로 다른 데이터 증강 방법을 사용합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../423_Improving_grammatical_error_correction_via_contextual_data_a/index.html">Improving grammatical error correction via contextual data augmentation</a></div><div class="conn-reason">문법 오류 수정의 문맥 기반 데이터 증강 방법을 다국어 음성언어이해에 적용하여 성능을 향상시킬 수 있습니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

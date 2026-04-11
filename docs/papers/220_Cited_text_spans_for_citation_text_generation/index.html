@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiangci Li, Yi‐Hui Lee, Jessica Ouyang | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Overview of the proposed CTS-based citation generation approach. Context, Oracle, Keyword 전략을 통해 인용 논문에서 CTS를 검색하고 인용 텍스트를 생성</em></p></div>
 <p>과학 논문의 인용 텍스트 자동 생성을 위해 기존의 초록(abstract)만 사용하는 방식 대신, 실제 인용되는 특정 텍스트 구간(Cited Text Span, CTS)을 활용하여 더 정확하고 충실한 인용 생성이 가능함을 보여준다. 이를 위해 원가(distant labeling)를 통해 대규모 CTS 데이터셋을 구축하고, 실용적인 키워드 기반 CTS 검색 방법을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,18 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 원가 레이블링(distant labeling)으로 대규모 CTS 데이터셋 구축, (2) 기존 CTS 검색 방식의 문제점 식별, (3) 인간-루프 기반 키워드 검색 방식 제안</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>원가 레이블링 CTS는 상위 40개 문장에서 CL-SciSumm의 80%, AbuRa'ed의 95% 인간 주석 CTS를 커버</em></p></div>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>원가 레이블링 CTS(실선)는 인간 주석 CTS(점선)보다 높은 ROUGE-L 리콜 성능 달성</em></p></div>
 <ol>
 <li><strong>원가 레이블링의 효과성</strong>: ROUGE 기반 원가 레이블링이 인간 주석과 비슷한 수준의 충실성(QuestEval, ANLI 평가)을 보이면서도 더 높은 토큰 오버랩을 달성했다. 이는 하나의 인용에 대해 여러 개의 타당한 CTS가 존재할 수 있음을 시사한다.</li>
 <li><strong>다운스트림 작업 성능</strong>: 원가 레이블링 CTS로 학습한 모델이 인간 주석 CTS 기반 모델과 비슷하거나 더 우수한 인용 생성 성능(BLEU, METEOR, ROUGE-L)을 달성했으며, CL-SciSumm 데이터셋에서는 오히려 우월했다.</li>
 <li><strong>실용적 가능성</strong>: 초록 기반 접근법 대비 CTS 기반 인용 생성으로 명백히 개선된 충실성과 정확도를 입증함으로써, 전체 논문 텍스트 기반 인용 생성의 타당성 확보했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-</div>
 <ul>
 <li><strong>원가 레이블링 전략</strong>: 골드 인용 텍스트를 쿼리로 사용하여 인용 논문에서 상위-k개 문장을 ROUGE-1/2 리콜 기반으로 순위 지어 CTS 후보 추출. GPU 불필요한 ROUGE 기반 방식 선택으로 계산 효율성 확보</li>
 <li><strong>평가 메트릭</strong>:

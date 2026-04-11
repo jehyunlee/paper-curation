@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sayar Ghosh Roy, Jiawei Han | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2403.08737" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>ILCiteR 시스템의 개요: 증거 데이터베이스 사전 로딩, 조건부 신경 순위 앙상블을 통한 증거 스팬 재순위화, 논문 순위화의 3단계 프로세스</em></p></div>
 <p>본 논문은 학술 논문 인용 추천 작업에 <strong>해석가능성(interpretability)</strong>을 도입하기 위해, 쿼리(claim 또는 entity mention)에 대해 인용할 논문을 추천할 때 기존 문헌에서 추출한 유사한 증거 스팬(evidence span)을 근거로 제시하는 새로운 접근방식 ILCiteR을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 쿼리와 유사하면서 동시에 특정 논문을 인용하고 있는 기존 문헌의 증거 스팬을 찾아 이를 근거로 인용을 추천하는 증거 기반 프레임워크를 도입한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>로컬 인용 추천 작업의 개요: 쿼리와 후보 논문 풀로부터 인용 가능한 논문을 추천</em></p></div>
 <ol>
 <li><strong>증거 기반 로컬 인용 추천 작업 정의</strong>: 기존의 직접적 매핑 방식에서 벗어나 증거 스팬을 매개변수로 하는 새로운 문제 정의를 도입하여 모든 추천이 구체적인 근거를 갖도록 함.</li>
 <li><strong>대규모 증거 데이터베이스 구축</strong>: Computer Science 분야의 3가지 주요 주제(NER, SUMM, MT)에 대해 200,000개 이상의 고유한 증거 스팬과 인용 논문 쌍을 포함하는 데이터셋 개발 (NER: 23,803개, SUMM: 79,345개, MT: 108,692개 스팬).</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>조건부 신경 순위 앙상블</strong>: 어휘 유사성과 의미적 유사성을 결합한 순위 재정렬 방식이 순수 렉시컬/시맨틱 검색 및 단순 앙상블보다 우수한 성능 달성.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>조건부 신경 순위 앙상블: 여러 유사도 점수를 결합하여 증거 스팬 재순위화</em></p></div>
 <p><strong>증거 데이터베이스 구축 (Section 5)</strong>:</p>
 <ul>
 <li>S2ORC 데이터셋에서 정규화된 전문 텍스트를 가진 20,000개 이상의 Computer Science 논문 수집</li>

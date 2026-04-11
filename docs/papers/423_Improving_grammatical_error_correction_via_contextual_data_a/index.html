@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yixuan Wang, Baoxin Wang, Yijun Liu, Qingfu Zhu, Dayong Wu, Wanxiang Che | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: 각 데이터셋에서 오류 패턴의 분포 비교. 제안 방법(Ours)이 실제 분포(Real Distribution)와 가장 유사함을 보여줌</em></p></div>
 <p>본 논문은 문법 오류 수정(Grammatical Error Correction, GEC) 작업에서 합성 데이터의 불일치한 오류 분포와 노이즈 레이블 문제를 해결하기 위해 <strong>문맥 기반 데이터 증강(contextual data augmentation)</strong> 방법을 제안한다. 규칙 기반 치환과 모델 기반 생성을 결합하여 오류 패턴에 대한 풍부한 문맥을 생성하고, 재레이블링을 통해 합성 데이터의 노이즈를 완화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 오류 패턴 추출 → 오류 빈도에 따른 패턴 샘플링 → 생성 모델(GPT2/LLaMA2)을 활용한 문맥 생성 → 규칙 기반 패턴 치환을 통한 병렬 코퍼스 구성 → 기준 모델의 재레이블링을 통한 노이즈 제거 → 결합 학습</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 문맥 기반 증강을 통한 합성 데이터 구성. GPT2 미세조정과 LLaMA2 인컨텍스트 학습(ICL) 모두 실험됨</em></p></div>
 <ol>
 <li><strong>분포 일관성 달성</strong>: 제안된 증강 방법이 100개의 가장 빈번한 오류 패턴에서 실제 데이터셋의 분포를 가장 잘 재현하며, 규칙 기반과 모델 기반 방법보다 우수한 일치도를 보임(그림 1).</li>
 <li><strong>최첨단 성능 달성</strong>: CoNLL14와 BEA19-Test 벤치마크에서 제안 방법이 강력한 기준선을 일관되게 초과하며 최첨단 성능을 달성. 적은 양의 합성 데이터만으로도 강력한 성능 개선을 실현.</li>
 <li><strong>노이즈 완화 효과</strong>: 재레이블링 기반 데이터 정제 방법이 합성 데이터의 노이즈 영향을 효과적으로 완화하여 결합 학습에서 성능 저하 문제 해결.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 증강 데이터를 활용한 결합 학습의 세 단계. 기준 모델로 합성 데이터를 노이즈 제거한 후 결합 학습 수행</em></p></div>
 <h3>방법론 구성</h3>
 <ul>
 <li><strong>오류 패턴 추출</strong>: ERRANT 도구를 활용하여 병렬 코퍼스에서 편집 작업(editing operations)을 규칙에 따라 추출하고, 서로 다른 길이의 패턴(1-gram, 3-gram, 5-gram 등)을 포함하여 더 현실적인 오류 표현 보장</li>

@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 작은 규모의 인간 주석 데이터로 피드백 예측 모델 학습, (2) 오프라인 Upside-Down RL(UDRL)을 이용한 보상 조건부 행동 복제(reward-conditioned behavioral cloning) 기반 효율적 최적화</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: RLHF Framework for Figure-Caption Generative Models - 소수의 인간 피드백 그림-캡션 쌍에서 학습한 피드백 예측 모델을 통해 대규모 학습 코퍼스에 대한 피드백 추론</em></p></div>
 <ol>
 <li><strong>성능 향상</strong>: BLIP을 기반 모델로 사용할 때, ROUGE에서 35.7%, BLEU에서 16.9%, METEOR에서 9% 평균 성능 향상 달성</li>
 <li><strong>확장 가능한 피드백 생성</strong>: 작은 규모의 인간 주석 데이터(M ≪ N, 예: N=100,000일 때 M=100)로부터 대규모 학습 데이터셋에 대한 자동 피드백 점수 예측 가능</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>공개 벤치마크</strong>: 향후 RLHF 기술 개발을 위한 대규모 벤치마크 데이터셋 공개</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Human Feedback Prediction Model의 결과 - 세 가지 그림-캡션 평가 지표에 대한 예측 성능</em></p></div>
 <p><strong>프레임워크 구성</strong>:</p>
 <ul>
 <li><strong>Step 1 - 인간 피드백 수집</strong>: M개의 그림-캡션 쌍 {I_h, T_h}에 대해 도메인 전문가가 k개의 평가 메트릭(유용성, OCR 콘텐츠, 핵심 내용 등) 점수 부여</li>
@@ -139,8 +135,7 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../727_Scimage_How_good_are_multimodal_large_language_models_at_sci/index.html">Scimage: How good are multimodal large language models at scientific text-to-image generation? arXiv preprint arXiv:2412.02368, 2024.</a></div><div class="conn-reason">그림-캡션 생성 프레임워크가 과학적 이미지 생성과 이해 평가를 시각-텍스트 변환 관점에서 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../600_Paper2Web_Lets_Make_Your_Paper_Alive/index.html">Paper2Web: Let&#x27;s Make Your Paper Alive!</a></div><div class="conn-reason">과학 도표 캡션 생성을 논문 전체의 멀티미디어 변환으로 확장한 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../601_PaperBanana_Automating_Academic_Illustration_for_AI_Scientis/index.html">PaperBanana: Automating Academic Illustration for AI Scientists</a></div><div class="conn-reason">FigCaps-HF의 캡션 생성을 넘어 전체 다이어그램과 플롯을 자동 생성하는 발전된 시스템</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">과학 그림 해석 벤치마크에서 캡션 생성 모델의 성능을 체계적으로 평가</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">과학 그림 캡션 생성 모델의 성능을 체계적으로 평가할 수 있는 벤치마크 제공</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">과학 그림 해석 벤치마크에서 캡션 생성 모델의 성능을 체계적으로 평가</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

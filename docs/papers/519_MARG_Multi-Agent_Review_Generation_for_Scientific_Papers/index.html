@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Mike D'Arcy, Tom Hope, Larry Birnbaum, Doug Downey | <strong>날짜</strong>: 2024-01-08 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2401.04259" target="_blank">10.48550/arXiv.2401.04259</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다중 에이전트 아키텍처 개요: 논문을 여러 청크로 분할하여 각 GPT 인스턴스에 배치</em></p></div>
 <p>본 연구는 여러 LLM 인스턴스 간의 협력적 대화를 통해 과학 논문에 대한 피어 리뷰 피드백을 생성하는 MARG(Multi-Agent Review Generation) 방법을 제안한다. 이를 통해 기본 모델의 입력 길이 제한을 초과하는 긴 논문도 처리할 수 있으며, 제네릭한 피드백 문제를 크게 개선한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 에이전트 아키텍처를 도입하여 (1) 논문을 여러 청크로 분할해 워커 에이전트에 배치하고, (2) 리더 에이전트의 조율 하에 에이전트 간 협력적 대화를 수행하며, (3) 실험(experiments), 명확성(clarity), 영향력(impact) 등 다양한 측면에 특화된 전문가 에이전트를 추가한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>MARG-S의 구조: 여러 특화된 다중 에이전트 그룹으로 구성되며, 각 그룹의 피드백이 통합 및 정제됨</em></p></div>
 <ol>
 <li><strong>정성적 피드백 품질 대폭 개선</strong>: 사용자 연구에서 MARG-S는 논문당 3.7개의 "좋은" 피드백을 생성했으며, 이는 기준 방법(1.7개)의 2.2배, Liang et al. (2023) 방법(0.3개)의 12배에 해당한다.</li>
 <li><strong>구체성과 제네릭성 개선</strong>: MARG-S의 71%가 구체적(specific)으로 평가되었으며, 제네릭 피드백 비율을 60%에서 29%로 감소시켰다. 자동화된 평가에서는 가장 강력한 기준 방법 대비 6.1 recall points 향상을 달성했다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>각 방법에 대한 평균 품질 평가: MARG-S가 특이도, 정확성, 전반적 도움성에서 우수함</em></p></div>
 <ul>
 <li><strong>멀티 에이전트 아키텍처</strong>:
 <ul>
@@ -125,7 +119,6 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html">ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews</a></div><div class="conn-reason">다중 에이전트 리뷰 생성의 기본 프레임워크가 인간-AI 격차 해소를 위한 구조화된 추론 과정 설계에 핵심적인 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../534_Meta-review_generation_with_checklist-guided_iterative_intro/index.html">Meta-review generation with checklist-guided iterative introspection</a></div><div class="conn-reason">과학 논문 리뷰에서 다중 에이전트 협업과 체크리스트 기반 메타리뷰 생성의 서로 다른 자동화 접근법을 제시합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../803_The_open_review-based_orb_dataset_Towards_automatic_assessme/index.html">The open review-based (orb) dataset: Towards automatic assessment of scientific papers and experiment proposals in high-energy physics</a></div><div class="conn-reason">다중 에이전트 리뷰 생성이 ORB 데이터셋 기반 평가와 다른 접근 방식을 제시한다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../534_Meta-review_generation_with_checklist-guided_iterative_intro/index.html">Meta-review generation with checklist-guided iterative introspection</a></div><div class="conn-reason">메타리뷰 생성에서 체크리스트 기반 자기성찰과 다중 에이전트 협업의 서로 다른 자동화 방법을 비교할 수 있습니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../780_Surveyforge_On_the_outline_heuristics_memory-driven_generati/index.html">Surveyforge: On the outline heuristics, memory-driven generation, and multi-dimensional evaluation for automated survey writing</a></div><div class="conn-reason">다중 에이전트 리뷰 생성과 달리 단일 프레임워크로 포괄적 설문지를 생성하는 접근</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../592_Openreviewer_A_specialized_large_language_model_for_generati/index.html">OpenReviewer: A specialized large language model for generating critical scientific paper reviews</a></div><div class="conn-reason">전문 리뷰 생성 모델을 다중 에이전트 협업 시스템으로 확장하여 더 포괄적인 피드백을 제공합니다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>

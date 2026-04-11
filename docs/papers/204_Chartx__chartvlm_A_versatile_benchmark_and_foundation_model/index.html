@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Renqiu Xia, Bo Zhang, Hancheng Ye, Xiangchao Yan, Qi Liu, Hongbin Zhou, Zijun Chen, Min Dou, Botian Shi, Junchi Yan, Yu Qiao | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: ChartX 평가 데이터셋과 ChartVLM 모델의 개요. ChartX는 22개 분야, 18개 차트 유형, 7개 작업을 포함하며, ChartVLM은 instruction adapter를 통해 작업을 동적으로 선택하고 인식 작업 결과를 추론 작업에 통합하여 해석가능성을 향상시킨다.</em></p></div>
 <p>본 논문은 다중모달 대형언어모델(MLLM)의 차트 이해 능력을 종합적으로 평가하기 위해 ChartX 벤치마크와 ChartVLM 기초모델을 제시한다. 특히 차트 데이터 추출과 복잡한 추론을 포함하는 다단계 작업에서 모델의 해석가능성을 강화하는 새로운 접근방식을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: (1) 18개 차트 유형, 22개 분야 주제, 7개 작업을 포함하는 고품질 48K 멀티모달 차트 데이터셋 ChartX 구축; (2) 인식 작업(perception tasks) 결과를 인지 작업(cognition tasks)에 통합하여 해석가능성을 강화하는 ChartVLM 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>Figure 4: ChartVLM의 아키텍처. 기본 디코더는 제목/유형/구조 추출(SE)을 담당하고, 보조 디코더는 instruction adapter를 통해 동적으로 QA, 설명, 요약, 코드 재생성 등의 작업을 선택 실행한다.</em></p></div>
 <ol>
 <li><strong>포괄적 벤치마크 구축</strong>: 기존 벤치마크 대비 6배 이상의 차트 유형(18개 vs 3-10개)과 5배 이상의 분야 주제(22개)를 포함하는 ChartX 데이터셋 개발. EM, SCRM, GPT-accuracy, GPT-score 등 다층적 평가 지표 도입</li>
 <li><strong>해석가능성 강화 모델</strong>: 차트 구조 추출 → 데이터 기반 추론의 순차적 처리 파이프라인으로 각 단계의 근거를 명확하게 제시. Instruction adapter를 통한 동적 작업 선택으로 상호작용성 향상</li>
 <li><strong>성능 우월성</strong>: ChartVLM이 기존 차트 특화 모델들과 범용 MLLM(LLaVA, Qwen-VL 등)을 능가하며 GPT-4V와 유사 수준의 성능 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: 차트 데이터 수집 및 품질 검증 파이프라인</em></p></div>
 <h3>ChartX 데이터셋 구축</h3>
 <ul>
 <li><strong>차트 생성</strong>: 22개 분야의 실제 데이터를 이용하여 18개 차트 유형별로 체계적 생성</li>
@@ -134,7 +128,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../722_Scifibench_Benchmarking_large_multimodal_models_for_scientif/index.html">SciFIBench: Benchmarking Large Multimodal Models for Scientific Figure Interpretation</a></div><div class="conn-reason">차트 이해에 특화된 ChartX와 달리 전반적인 과학 논문 그림 해석 능력을 평가하는 포괄적 벤치마크</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../196_ChartAssisstant_A_Universal_Chart_Multimodal_Language_Model/index.html">ChartAssisstant: A Universal Chart Multimodal Language Model via Chart-to-Table Pre-training and Multitask Instruction Tuning</a></div><div class="conn-reason">차트 이해 벤치마크와 달리 다양한 차트 작업을 단일 모델로 처리하는 통합 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../197_Chartcoder_Advancing_multimodal_large_language_model_for_cha/index.html">Chartcoder: Advancing multimodal large language model for chart-to-code generation</a></div><div class="conn-reason">코드 생성에 특화된 ChartCoder와 달리 차트 이해 전반을 다루는 종합적 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../197_Chartcoder_Advancing_multimodal_large_language_model_for_cha/index.html">Chartcoder: Advancing multimodal large language model for chart-to-code generation</a></div><div class="conn-reason">차트 이해와 추론에 중점을 둔 ChartX와 달리 차트-코드 변환이라는 구체적 작업에 특화</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../196_ChartAssisstant_A_Universal_Chart_Multimodal_Language_Model/index.html">ChartAssisstant: A Universal Chart Multimodal Language Model via Chart-to-Table Pre-training and Multitask Instruction Tuning</a></div><div class="conn-reason">범용 차트 언어모델 ChartAssistant의 성능을 더 체계적으로 평가하는 벤치마크</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../198_ChartGemma_Visual_Instruction-tuning_for_Chart_Reasoning_in/index.html">ChartGemma: Visual Instruction-tuning for Chart Reasoning in the Wild</a></div><div class="conn-reason">ChartGemma의 차트 추론 능력이 더 포괄적인 차트 벤치마크로 확장됩니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../551_MMC_Advancing_Multimodal_Chart_Understanding_with_Large-scal/index.html">MMC: Advancing Multimodal Chart Understanding with Large-scale Instruction Tuning</a></div><div class="conn-reason">ChartX &amp; ChartVLM의 기초 모델을 대규모 명령어 튜닝으로 발전시킨 연구</div></div>

@@ -75,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: GraphRAG의 성공에 영감을 받아 논문의 구조적 특성(섹션/서브섹션)을 활용하여 두 가지 그래프를 구성하고, 맞춤형 검색 방법으로 각 리뷰 댓글에 대한 관련 콘텐츠를 추출한 후 LLM으로 일관된 설명을 생성한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: SEAGraph can help authors better understand reviewers&#x27; comments by providing detailed insights and evidence.">
-<p class="fig-caption"><em>그림 1: SEAGraph는 저자가 리뷰어 의견을 이해하도록 상세한 통찰과 증거를 제공</em></p></div>
 <ol>
 <li><strong>리뷰 댓글 이해를 위한 새로운 프레임워크 제시</strong>: SEAGraph는 리뷰 댓글 이해 분야를 개척하는 최초의 프레임워크로, 저자들이 리뷰어의 의도를 파악하고 논문을 개선할 수 있도록 직관적인 증거와 논거를 제공한다.</li>
 <li><strong>이중 그래프 구조의 설계</strong>: 의미론적 마인드 그래프는 논문의 내재적 논증과 증거를 포착하고, 계층적 배경 그래프는 연구 도메인의 맥락을 형식화하여 리뷰어의 관점을 시뮬레이션하는 데 필수적인 배경지식을 제공한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: The overall framework of SEAGraph consists of the construction of the semantic mind graph and the hierarchical background graph, along with the corresponding retrieval module.">
-<p class="fig-caption"><em>그림 2: SEAGraph의 전체 프레임워크</em></p></div>
 <ul>
 <li><strong>데이터 전처리</strong>: Nougat(시각 변환기 기반 논문 파서)를 사용하여 PDF 논문을 처리하고, LLM으로 리뷰 댓글을 개별 항목(강점, 약점, 질문)으로 추출</li>
 <li><strong>의미론적 마인드 그래프 구성</strong>:

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ricky T. Q. Chen, Yulia Rubanova, Jesse Bettencourt, David Duvenaud | <strong>날짜</strong>: 2018-06-19 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.1806.07366" target="_blank">10.48550/arXiv.1806.07366</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>좌측: 잔차 네트워크는 이산적 유한 변환 시퀀스 정의 / 우측: ODE 네트워크는 연속적으로 상태를 변환하는 벡터장 정의</em></p></div>
 <p>기존의 이산 깊이(discrete depth) 신경망 대신 숨겨진 상태의 도함수를 신경망으로 매개변수화하고, 이를 상미분방정식(ODE) 초기값 문제로 정의하여 블랙박스 ODE 솔버로 계산하는 혁신적 연속깊이(continuous-depth) 신경망 모델을 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -89,21 +87,15 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>역모드 미분(adjoint sensitivity method)을 통한 ODE 솔버의 블랙박스 기울기 계산. 증강 ODE를 역시간으로 해결하여 원래 상태와 손실에 대한 민감도 동시 계산</em></p></div>
 <ol>
 <li><strong>메모리 효율성</strong>: 깊이에 무관한 상수 메모리 비용으로 임의의 깊이 신경망 학습 가능 (O(1) vs O(L))</li>
 <li><strong>적응형 계산</strong>: 최신 ODE 솔버의 적응 단계 크기 제어로 입력과 문제 복잡도에 따라 계산 비용 동적 조절 가능</li>
 </ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>학습된 ODE-Net의 통계: (a) 오차 제어 가능성 (b) 함수 평가 횟수와 계산 시간 선형 관계 (c) 역전파 시 평가 횟수가 정방향의 약 절반 (d) 학습 진행에 따른 함수 평가 횟수 증가</em></p></div>
 <ol>
 <li><strong>연속 정규화 흐름</strong>: 행렬식 계산 대신 대각합(trace) 연산으로 O(D³)에서 O(D)로 복잡도 개선, 데이터 차원 분할/순서 제약 제거</li>
 <li><strong>연속 시계열 모델</strong>: 임의 시간 도착 데이터를 자연스럽게 처리 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>인스턴트 변수변환 정리: 연속 변환에서 로그 확률 변화가 야코비안 대각합의 음수로 표현되어 정규화 흐름의 계산 비용 급격히 감소</em></p></div>
 <p><strong>핵심 기술:</strong></p>
 <ul>
 <li><strong>수반민감도 방법 (Adjoint Sensitivity Method)</strong>:

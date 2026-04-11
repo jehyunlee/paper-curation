@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Changhong Mou, Binghang Lu, Guang Lin | <strong>날짜</strong>: 2026-02-17 | <strong>DOI</strong>: [미제공]</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Neural-POD는 고전 POD의 이산적 선형 표현을 신경망 기반의 연속적 비선형 함수로 대체하며, 해상도 독립성과 매개변수 일반화를 가능하게 한다.</em></p></div>
 <p>본 논문은 신경망을 활용하여 고전 특이값 분해(SVD) 기반 POD(Proper Orthogonal Decomposition)의 한계를 극복하는 Neural-POD를 제안한다. 무한차원 함수공간에서 비선형 직교 기저함수를 학습함으로써 해상도 독립성, 매개변수 일반화, 그리고 다양한 규범(norm) 최적화를 동시에 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 신경망으로 매개변수화된 비선형 기저함수를 그람-슈미트 직교화 유사 절차로 순차적 잔차 최소화를 통해 학습하여, 함수공간에서의 해상도 독립적 표현 획득.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1c">
-<p class="fig-caption"><em>Figure 1c: Neural-POD 학습 개요. 시간 및 매개변수 변화에 따른 스냅샷으로부터 공간 모드 함수 Φᵢ(x; κ)와 시간 계수 Ψᵢ(t; κ)를 분해하며, 임의의 격자 점과 매개변수에서 평가 가능.</em></p></div>
 <ol>
 <li><strong>플러그-앤-플레이 통합성</strong>: 학습된 기저함수를 Galerkin 투영 기반 ROM과 DeepONet 프레임워크에 모두 용이하게 통합 가능. 오프라인 학습-온라인 배포 워크플로우와 호환되어 기존 솔버에 최소한의 수정으로 삽입 가능.</li>
 <li><strong>해상도 독립적 기저 함수</strong>: 신경망으로 표현된 연속 함수 매핑 φ(x; κ)는 임의의 격자에서 평가 가능하여, 서로 다른 해상도 간 전이성 보장.</li>
@@ -93,8 +89,6 @@ a { color: #A62018; }
 <li><strong>비선형 구조 포착</strong>: 신경망의 보편 함수 근사 능력으로 고전 POD가 놓치는 비선형 특징 표현 가능.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Neural-POD를 Galerkin ROM과 DeepONet 양쪽과 연결하는 플러그-앤-플레이 인터페이스. 사전 학습된 신경망 기저가 해석 가능한 물리적 표현을 제공.</em></p></div>
 <p><strong>학습 절차 (Gram-Schmidt 유사 방식)</strong>:</p>
 <ul>
 <li><strong>Step 1</strong>: 첫 번째 모드는 스냅샷 u(x,t,κ)와 신경망 표현 Φ₁(x;κ)·Ψ₁(t;κ) 간 재구성 손실을 최소화하여 학습</li>

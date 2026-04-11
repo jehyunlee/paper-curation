@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Rui Yang, Boming Yang, Xinjie Zhao, Fan Gao, Aosong Feng, Sixun Ouyang, Moritz Blum, Tianwei She, Yuang Jiang, Freddy Lecue, Jinghui Lu, Irene Li | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">TBD</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: Zero-shot LLM, RAG 프레임워크, Graphusion의 지식그래프 구축 방식 비교</em></p></div>
 <p>본 논문은 대규모언어모델(LLM)을 활용하여 자유로운 텍스트에서 <strong>전역적 관점(global perspective)</strong>을 고려한 과학 분야의 지식그래프(Knowledge Graph, KG)를 구축하는 새로운 프레임워크 Graphusion을 제안한다. 기존 로컬 중심의 방법을 넘어 엔티티 병합, 충돌 해결, 신규 관계 발견을 통해 통합된 지식그래프를 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 세 단계 프로세스로 구성: (1) 토픽 모델링으로 시드 엔티티 추출하여 엔티티 추출 가이드, (2) LLM을 이용한 삼중항 후보 추출, (3) 엔티티 병합, 충돌 해결, 신규 삼중항 발견을 포함한 <strong>지식 융합 모듈</strong> 설계.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: Graphusion의 3단계 프레임워크 - 시드 엔티티 생성, 후보 삼중항 추출, 지식그래프 융합</em></p></div>
 <ol>
 <li><strong>높은 추출 정확도</strong>: 엔티티 추출 2.92/3, 관계 인식 2.37/3 달성</li>
 <li><strong>QA 벤치마크에서 성능 개선</strong>: 새로운 전문가 검증 벤치마크 TutorQA(1,200개 QA 쌍, 6가지 작업)를 구축하여 구축된 KG 활용 시 부분그래프 완성 작업에서 9.2% 정확도 향상</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>효율성</strong>: GraphRAG 대비 낮은 계산 비용으로 전역적 관점 제공</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: Graphusion의 GPT-4o 모델에 대한 케이스 스터디</em></p></div>
 <p><strong>Step 1: 시드 엔티티 추출 (Seed Entity Extraction)</strong></p>
 <ul>
 <li>토픽 모델링(Topic Modeling)을 활용하여 도메인 관련 엔티티 목록 생성</li>
@@ -125,7 +119,6 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: Graphusion은 LLM 기반 지식그래프 구축에서 로컬에서 전역적 관점으로의 전환을 효과적으로 구현하며, 특히 체계적인 지식 융합 모듈과 교육 도메인의 실제 적용을 통해 실질적 기여를 제시한다. 다만 도메인 특화성, 충돌 해결 메커니즘의 상세 기술화, 대규모 확장성 검증이 추가로 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../020_A_Review_of_Relational_Machine_Learning_for_Knowledge_Graphs/index.html">A Review of Relational Machine Learning for Knowledge Graphs</a></div><div class="conn-reason">지식 그래프를 위한 관계형 기계학습 리뷰가 과학 지식그래프 구축의 이론적 토대를 제공합니다.</div></div>
-<div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../020_A_Review_of_Relational_Machine_Learning_for_Knowledge_Graphs/index.html">A Review of Relational Machine Learning for Knowledge Graphs</a></div><div class="conn-reason">관계형 기계학습의 이론적 기초가 지식 그래프 구축을 위한 RAG 프레임워크 개발의 방법론적 배경을 제공함</div></div>
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../666_Research_hypothesis_generation_over_scientific_knowledge_gra/index.html">Research hypothesis generation over scientific knowledge graphs</a></div><div class="conn-reason">과학 분야 지식그래프 구축을 위한 RAG 프레임워크가 가설 생성의 기반 지식 구조를 제공합니다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../348_FRAG_A_Flexible_Modular_Framework_for_Retrieval-Augmented_Ge/index.html">FRAG: A Flexible Modular Framework for Retrieval-Augmented Generation based on Knowledge Graphs</a></div><div class="conn-reason">지식그래프 구축에 중점을 둔 Graphusion과 달리 기존 KG 활용 최적화에 집중</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../404_Hiperrag_High-performance_retrieval_augmented_generation_for/index.html">HiPerRAG: High-performance retrieval augmented generation for scientific insights</a></div><div class="conn-reason">고성능 RAG 시스템의 과학 문헌 처리 기법이 지식그래프 기반 검색 증강에 확장 적용될 수 있습니다.</div></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zhihao Fan, Jialong Tang, Wei Chen, Siyuan Wang, Zhongyu Wei, Jun Xie, Fei Huang, Jingren Zhou (Alibaba Inc., Huazhong University of Science and Technology, Fudan University) | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2402.09742" target="_blank">arXiv:2402.09742</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AI Hospital 프레임워크의 다중 에이전트 상호작용 시뮬레이션: 의사(플레이어)가 환자, 검사관, 과장과 다중 턴 대화를 통해 진단하는 동적 의료 상호작용 환경</em></p></div>
 <p>대규모 언어 모델(LLM)이 의료 질문 답변 벤치마크에서 우수한 성능을 보이지만, 실제 의료 현장의 복잡한 의사-환자 상호작용을 반영하지 못한다. 이 논문은 다중 에이전트 의료 상호작용 시뮬레이터인 AI Hospital을 제안하고, 현실적인 임상 진단 시나리오에서 LLM의 성능 격차를 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 다중 에이전트 프레임워크(환자, 검사관, 과장, 의사)로 실제 의료 상호작용을 시뮬레이션하고, 고품질 중국 의료 기록 기반 벤치마크(MVME)로 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AI Hospital의 다중 에이전트 구조와 진단 과정의 흐름</em></p></div>
 <ol>
 <li><strong>AI Hospital 프레임워크 개발</strong>: 다중 에이전트(Patient, Examiner, Chief Physician, Doctor) 구조로 실제 의사-환자 상호작용을 시뮬레이션하며, Doctor 에이전트가 증상 수집 → 검사 추천 → 진단의 다중 턴 대화를 수행</li>
 <li><strong>MVME(Multi-View Medical Evaluation) 벤치마크 구축</strong>: 의료 전문가가 선별한 고품질 중국 의료 기록을 기반으로 증상 수집, 검사 추천, 진단 정확도 등 세 가지 차원의 성능 평가 지표 개발</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>분쟁 해결 협업 메커니즘</strong>: 복수의 의사 에이전트가 독립적으로 동일 사례에 대해 상호작용하고 Centre Agent가 의견 수렴을 가이드하는 협업 전략 제안으로 성능 향상 (단, 여전히 상한선 이하)</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>의료 기록 정보의 분류와 에이전트별 할당 구조</em></p></div>
 <p><strong>시스템 구성</strong>:</p>
 <ul>
 <li><strong>Patient 에이전트</strong> (GPT-3.5): 의료 기록의 주관적 정보(증상, 과거력, 습관)만 접근 가능. 협력성, 일상적 언어 사용, 호기심, 개성화된 배경 표현</li>

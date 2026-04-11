@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Qian Huang, Jian Vora, Percy Liang, Jure Leskovec | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2310.03302" target="_blank">arXiv:2310.03302</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>MLAgentBench의 개요. 각 환경은 작업 설명, 시작 파일, 평가기를 포함하며, 에이전트는 파일을 읽고/쓰고 Python 코드를 반복적으로 실행하여 최종 제출 파일을 생성</em></p></div>
 <p>본 논문은 <strong>머신러닝 실험을 자동으로 수행할 수 있는 언어 모델 기반 에이전트를 평가하기 위한 벤치마크(MLAgentBench)</strong>를 제안한다. 13개의 다양한 ML 작업을 통해 최신 언어 모델들의 ML 실험 수행 능력을 체계적으로 평가한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 명확한 목표와 자동 평가 시스템을 갖춘 13개의 ML 작업 벤치마크를 구축하고, ReAct 프레임워크 기반의 에이전트를 설계하여 여러 최신 언어 모델(Claude v3 Opus, GPT-4, Gemini-Pro 등)을 평가</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>LM 기반 에이전트의 개요. 각 단계에서 프롬프트와 문맥은 단계별 반영(reflection), 고차원 계획, 사실 확인, 추론을 포함</em></p></div>
 <ol>
 <li><strong>벤치마크 구축</strong>: CIFAR-10 같은 고전적 데이터셋부터 BabyLM, Kaggle 챌린지 등 최신 연구 문제까지 포함하는 13개 태스크로 구성된 포괄적 벤치마크 생성</li>
 <li><strong>성능 평가</strong>: Claude v3 Opus 기반 에이전트가 <strong>평균 37.5% 성공률</strong>을 달성하며, 기존 ReAct 및 AutoGPT 에이전트 대비 우수한 성능 입증</li>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>해석가능성</strong>: 에이전트의 연구 계획과 행동이 높은 해석가능성을 보여 인간의 개입과 감시가 가능함을 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>시간 스텝별 성능 평가</em></p></div>
 <h3>환경 설계</h3>
 <ul>
 <li><strong>작업 사양</strong>: 텍스트 설명, 시작 파일(데이터, 기본 코드), 평가기로 구성</li>

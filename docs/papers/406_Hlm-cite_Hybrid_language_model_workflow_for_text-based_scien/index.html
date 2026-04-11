@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jingyang Fan, Qianyue Hao, Yong Li, Fengli Xu, Jian Yuan | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Figure 1: (a) 핵심 인용(Core Citation) 정의. (b)(c) 핵심 인용과 표면적 인용의 통계적 차이: 키워드 겹침(b)과 주요 텍스트 내 언급 빈도(c)</em></p></div>
 <p>본 논문은 과학 논문의 인용 예측 문제를 단순한 이진 분류에서 벗어나 <strong>핵심 인용(core citations)</strong>을 표면적 인용 및 비인용과 구별하는 다단계 분류 문제로 재정의하고, 임베딩 모델과 생성형 LLM을 결합한 하이브리드 워크플로우(HLM-Cite)를 제안한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -86,8 +84,6 @@ a { color: #A62018; }
 </ol>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Figure 2: 제안된 HLM-Cite 워크플로우의 구조. (a) 전체 개요: 검색 모듈과 LLM 에이전트 순위 결정 모듈의 두 단계. (b) 검색 모듈의 커리큘럼 파인튜닝: 분류(Stage 1)에서 순위 결정(Stage 2) 태스크로 전이. (c) LLM 에이전트 순위 결정: Guider, Analyzer, Decider의 세 역할 분담</em></p></div>
 <ol>
 <li><strong>핵심 인용 개념 도입</strong>:
 <ul>
@@ -104,8 +100,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Figure 3: LLM 에이전트 순위 결정 모듈의 사례 연구. Guider의 원샷 학습 예시(2→3→1의 정렬)를 통해 Analyzer와 Decider가 논리적 관계를 추론하고 순위를 결정</em></p></div>
 <h3>2단계 하이브리드 워크플로우</h3>
 <p><strong>Stage 1: 검색 모듈 (Embedding-based Retrieval)</strong></p>
 <ul>
@@ -179,7 +173,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: 본 논문은 인용 예측 문제를 개념적으로 재정의하고 하이브리드 모델을 통해 실질적인 확장성을 달성한 견실한 연구이다. 특히 100K 후보 집합 처리와 17.6% 성능 개선은 실무적 가치가 높으나, 핵심 인용 정의의 순환성과 LLM 기반 추론의 효율성 개선이 향후 중요한 과제로 남아있다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../219_Citebart_Learning_to_generate_citations_for_local_citation_r/index.html">Citebart: Learning to generate citations for local citation recommendation</a></div><div class="conn-reason">지역적 인용 맥락에서의 인용문 생성 기법으로 HLM-Cite의 텍스트 기반 인용 예측 방법론의 기초를 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../150_Benchmark_for_evaluation_and_analysis_of_citation_recommenda/index.html">Benchmark for evaluation and analysis of citation recommendation models</a></div><div class="conn-reason">인용 추천 시스템의 표준화된 평가 방법론을 제시하여 HLM-Cite의 성능 평가에 활용할 수 있다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../150_Benchmark_for_evaluation_and_analysis_of_citation_recommenda/index.html">Benchmark for evaluation and analysis of citation recommendation models</a></div><div class="conn-reason">하이브리드 언어모델을 활용한 인용 추천 방법으로 기존 평가 기준과 비교 분석이 가능하다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../273_Directed_criteria_citation_recommendation_and_ranking_throug/index.html">Directed criteria citation recommendation and ranking through link prediction</a></div><div class="conn-reason">기준 지향적 인용 추천 기법을 다루어 핵심 인용과 표면적 인용을 구별하는 HLM-Cite와 보완적이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jiachang Liu, Qi Zhang, Chongyang Shi, Usman Naseem, Shoujin Wang, Liang Hu, Ivor W. Tsang | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>관련 업무 생성을 위한 인과 그래프. do-calculus를 적용하여 경로 c→x를 차단하고 허위 상관관계 c→x→y의 영향을 완화</em></p></div>
 <p>본 논문은 학술 논문의 관련 업무(Related Work) 섹션을 자동으로 생성하는 과정에서 인과 관계 이론을 도입하여, 문장 순서와 같은 허위 상관관계(spurious correlation)를 제거하고 문서 간 실제 의미 관계에 기반한 고품질 요약을 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 인과 그래프 모델링을 통해 허위 상관관계를 식별하고, do-calculus와 백도어 기준(backdoor criterion)을 활용한 인과 개입(causal intervention)으로 경로 c→x를 차단. 이를 통해 실제 인과관계 x→y에 기반한 생성을 유도.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>디코더에 통합된 CaM의 구조. 세 가지 구성 요소: Primitive Intervention, Context-aware Remapping, Optimal Intensity Learning</em></p></div>
 <ol>
 <li><strong>첫 시도</strong>: 관련 업무 생성 과제에 인과 이론을 처음 도입. 기존 연구들이 간과했던 인과관계의 중요성을 체계적으로 다룸.</li>
 <li><strong>새로운 모듈 제안</strong>: CaM(Causal Intervention Module for Related Work Generation)을 제안하여 Transformer와 end-to-end로 통합. Primitive Intervention, Context-aware Remapping, Optimal Intensity Learning의 세 부분으로 구성.</li>
 <li><strong>실험 성능</strong>: S2ORC와 Delve 두 개의 실제 데이터셋에서 기존 최신 모델들을 능가하는 성능 달성. 인과 개입의 효과성 및 관련 업무 생성에 인과 이론 도입의 정당성 입증.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>관련 업무 생성에서 인과관계(실선 화살표)와 허위 상관관계(점선 화살표)의 효과 차이 설명</em></p></div>
 <ul>
 <li><strong>Causal Graph Modeling</strong>: 문장 순서(c), 문서 관계(x), 전이 표현(y) 간의 관계를 인과 그래프로 모델링. 문장 순서는 전이 표현에 직접 영향을 미치면서 동시에 문서 관계에 간접 영향을 미치는 교란 변수(confounder)로 작동.</li>
 <li><strong>Primitive Intervention</strong>: do-calculus 및 백도어 기준을 적용하여 식 (1) p(y|do(x)) = Σ_c p(y|x,c)p(c)를 유도. 순서 정보를 임베딩에 통합하고(식 2), 문장 위치 확률을 예측한 후(식 3), 순서 강화 임베딩과 위치 확률의 가중 합으로 개입된 임베딩 계산(식 4).</li>

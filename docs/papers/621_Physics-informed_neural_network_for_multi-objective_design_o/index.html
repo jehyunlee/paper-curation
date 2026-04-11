@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 열전달 지배방정식(Navier-Stokes, 열방정식)을 신경망에 내재화한 PINNs 모델을 구축하고, 열저항·온도분포·가열성능 등 다중 목적함수를 동시에 최적화.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Fig. 2">
-<p class="fig-caption"><em>PINN 기반 열지면 시뮬레이터의 구조도</em></p></div>
 <ol>
 <li><strong>고속 성능 예측</strong>: 기존 FEM 대비 수백 배 빠른 계산 속도로 실시간 최적화 가능 (메시 생성 불필요, 자동미분 활용)</li>
 <li><strong>높은 정확도 유지</strong>: 제한된 실험 데이터와 물리 제약조건을 결합하여 적은 학습 데이터로도 전통 수치해석 수준의 정확도 달성</li>
 <li><strong>다목적 최적화 성공</strong>: 열저항(thermal resistance) 최소화, 온도균일성 확보, 제조 제약 만족을 동시에 달성하는 파레토 최적해 도출</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Fig. 3">
-<p class="fig-caption"><em>다목적 최적화 결과의 레이더 맵 시각화</em></p></div>
 <ul>
 <li><strong>신경망 구조</strong>: U_NN(w,b)으로 온도장 U(x,t) 표현, 자동미분으로 편미분(∂U/∂t, ∇²U 등) 자동 계산</li>
 <li><strong>손실함수 구성</strong>:
@@ -132,7 +128,6 @@ a { color: #A62018; }
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../618_Physical_formula_enhanced_multi-task_learning_for_pharmacoki/index.html">Physical formula enhanced multi-task learning for pharmacokinetics prediction</a></div><div class="conn-reason">물리 정보를 신경망에 통합한다는 공통 접근법이지만 약동학 예측과 열관리 설계라는 다른 응용 분야를 다룬다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../576_Nonlinear_stochastic_and_quantum_motion_from_Coulomb_forces/index.html">Nonlinear stochastic and quantum motion from Coulomb forces</a></div><div class="conn-reason">물리 정보를 신경망에 통합한다는 공통점이 있지만 쿨롱 상호작용의 비선형 효과와 열관리 설계라는 다른 물리 현상을 다룬다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../622_Physics-Informed_Neural_Operator_for_Electromagnetic_Inverse/index.html">Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems</a></div><div class="conn-reason">물리 정보 신경망의 다목적 설계 최적화와 전자기 역산란 문제라는 서로 다른 공학적 응용을 보여준다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../622_Physics-Informed_Neural_Operator_for_Electromagnetic_Inverse/index.html">Physics-Informed Neural Operator for Electromagnetic Inverse Scattering Problems</a></div><div class="conn-reason">물리 정보 신경 연산자를 전자기 역산란과 열관리 설계라는 서로 다른 물리 문제에 적용한 사례들이다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../721_Scientific_Machine_Learning_through_Physics-Informed_Neural/index.html">Scientific Machine Learning through Physics-Informed Neural Networks: Where we are and What&#x27;s next</a></div><div class="conn-reason">과학적 기계학습을 위한 물리 정보 신경망의 일반적 프레임워크를 열관리 설계에 구체적으로 적용한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../758_Simulations_in_the_era_of_exascale_computing/index.html">Simulations in the era of exascale computing</a></div><div class="conn-reason">엑사스케일 컴퓨팅의 발전이 물리 정보 신경망을 활용한 대규모 다목적 설계 최적화를 가능하게 한다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../456_Lang-PINN_From_Language_to_Physics-Informed_Neural_Networks/index.html">Lang-PINN: From Language to Physics-Informed Neural Networks via a Multi-Agent Framework</a></div><div class="conn-reason">다목적 설계를 위한 물리 정보 신경망의 구체적 응용 사례를 보여준다.</div></div></div>

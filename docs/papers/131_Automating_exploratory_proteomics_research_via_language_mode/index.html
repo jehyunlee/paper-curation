@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ning Ding, Shang Qu, Linhai Xie 외 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>PROTEUS의 반복적 개선 프레임워크(a)와 상세한 작업 프로세스(b). 데이터 설명, 연구 목표 계획, 워크플로우 계획, 도구 실행, 결과 해석의 순환 구조</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM)을 활용하여 원본 단백질체학(proteomics) 데이터로부터 자동으로 과학적 발견을 수행하는 PROTEUS 시스템을 제시한다. 인간의 개입 없이 계층적 계획 수립, 생물정보학 도구 실행, 반복적 분석 워크플로우 정제를 통해 고품질의 생물학적 가설을 생성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,14 +75,10 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 계층적 계획 프레임워크(연구 목표 → 분석 워크플로우 → 분석 단계)를 통해 LLM을 조율하고, 반복적 개선 메커니즘을 도입하여 중간 결과 기반의 동적 계획 수정을 가능케 한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>전체 191개 가설에 대한 5개 지표별 평균 점수 및 분포</em></p></div>
 <ol>
 <li><strong>포괄적 자동화 달성</strong>: 12개의 다양한 단백질체학 데이터셋(면역세포, 종양, 단일세포/대량 샘플)에서 191개의 과학적 가설을 자동 생성하였으며, 인간 전문가 개입 없이 완전한 end-to-end 분석 수행이 가능함을 입증했다.</li>
 <li><strong>높은 평가 점수 확보</strong>: LLM 기반 자동 평가(5개 지표)와 인간 전문가 평가 모두에서 일관되게 높은 점수를 획득했으며, 생성된 가설들이 기존 문헌과 잘 부합하면서도 새로운 검증 가능한 가설을 제시함을 확인했다.</li>
-</ol>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>SPDB 데이터셋 10개에 대한 5개 지표별 점수 분포</em></p></div></div>
+</ol></div>
 <div class="section-box"><h2>How</h2>
 <ul>
 <li><strong>도메인 특화 모델</strong>: Llama 3.1 70B를 UltraMedical 데이터셋으로 미세조정하여 생물의학 분야 지식과 분석 능력 강화</li>
@@ -101,9 +95,7 @@ a { color: #A62018; }
 <li>자동 평가: 5개 지표(신뢰성, 참신성, 생물학적 타당성, 논리적 일관성, 데이터 근거성)</li>
 <li>인간 평가: 동일 지표 적용 및 상세 질적 피드백</li>
 </ul>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>2개 임상 코호트 데이터셋에 대한 5개 지표별 점수 분포</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>완전 자동화된 end-to-end 파이프라인</strong>: 기존 연구들이 개별 단계 자동화나 인간 개입 필요성을 보유한 것과 달리, PROTEUS는 원본 데이터에서 최종 가설 생성까지 완전 자동화 달성</li>
@@ -118,15 +110,12 @@ a { color: #A62018; }
 <li><strong>도구 라이브러리 확장</strong>: 현재 통합된 생물정보학 도구 세트의 확장 및 다양한 오믹스 데이터(genomics, metabolomics) 통합</li>
 <li><strong>생물학적 타당성 검증</strong>: 생성된 가설들의 실험적 검증 및 새로운 생물학적 발견으로의 전환 가능성 평가</li>
 <li><strong>해석 가능성 개선</strong>: 가설 생성 과정의 중간 추론 단계 시각화 및 사용자 개입 지점 제공</li>
-</ul>
-<div class="review-fig"><img src="figures/fig5.webp" alt="Figure 5">
-<p class="fig-caption"><em>PROTEUS의 백본으로 자체 모델과 GPT-4o 사용 결과 비교</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Evaluation</h2>
 
 <p><strong>총평</strong>: PROTEUS는 LLM을 활용한 단백질체학 데이터 분석 및 가설 생성의 완전 자동화를 성공적으로 구현한 혁신적 시스템이며, 포괄적 평가를 통해 신뢰성과 참신성을 입증했다. 다만 생성된 가설의 실험적 검증, 더 다양한 생물학적 영역으로의 확장, 그리고 기술적 세부사항의 투명성 개선이 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../558_Moose-chem3_Toward_experiment-guided_hypothesis_ranking_via/index.html">Moose-chem3: Toward experiment-guided hypothesis ranking via simulated experimental feedback</a></div><div class="conn-reason">단백질체학 자동 분석이 실험 피드백 기반 가설 평가의 생물정보학 기반</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../176_CACTUS_Chemistry_Agent_Connecting_Tool_Usage_to_Science/index.html">CACTUS: Chemistry Agent Connecting Tool Usage to Science</a></div><div class="conn-reason">단백질체학 vs 화학정보학으로 도메인은 다르지만 유사한 자동화 도구 통합 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../176_CACTUS_Chemistry_Agent_Connecting_Tool_Usage_to_Science/index.html">CACTUS: Chemistry Agent Connecting Tool Usage to Science</a></div><div class="conn-reason">화학정보학 vs 단백질체학으로 도메인은 다르지만 유사한 자동화 도구 통합 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../371_GeneAgent_self-verification_language_agent_for_gene-set_anal/index.html">GeneAgent: self-verification language agent for gene-set analysis using domain databases</a></div><div class="conn-reason">단백질체학 vs 유전자 세트 분석으로 생물정보학의 서로 다른 자동화 영역</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../164_BioInformatics_Agent_BIA_Unleashing_the_Power_of_Large_Langu/index.html">BioInformatics Agent (BIA): Unleashing the Power of Large Language Models to Reshape Bioinformatics Workflow</a></div><div class="conn-reason">생물정보학 에이전트를 단백질체학 특화 자동 발견으로 구체화한 응용</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../558_Moose-chem3_Toward_experiment-guided_hypothesis_ranking_via/index.html">Moose-chem3: Toward experiment-guided hypothesis ranking via simulated experimental feedback</a></div><div class="conn-reason">단백질체학 자동 분석을 시뮬레이션 실험 설계로 확장한 방법론</div></div></div>

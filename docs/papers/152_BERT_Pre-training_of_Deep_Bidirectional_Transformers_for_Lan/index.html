@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova | <strong>날짜</strong>: 2018 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/ARXIV.1810.04805" target="_blank">10.48550/ARXIV.1810.04805</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="BERT_architecture.png" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: BERT의 전체 사전학습 및 파인튜닝 절차. 동일한 아키텍처가 사전학습과 파인튜닝에 사용되며, 특수 토큰 [CLS]와 [SEP]를 통해 다양한 NLP 작업 처리</em></p></div>
 <p>BERT는 양방향(Bidirectional) 자기주의(Self-Attention)를 활용하여 마스크된 토큰 예측(Masked Language Model, MLM) 목표로 사전학습한 심층 트랜스포머 인코더로, 최소한의 파인튜닝만으로 11개 NLP 작업에서 최고 성능을 달성한 혁신적인 언어 표현 모델이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Cloze 작업에서 영감을 받아 입력 토큰의 일부를 무작위로 마스킹한 후 원래 값을 예측하는 MLM 목표로 양방향 조건화를 가능하게 함</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="BERT_comparison.png" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: BERT는 양방향 트랜스포머를 사용하며, OpenAI GPT는 좌측 문맥만 참조하는 제약된 자기주의 사용</em></p></div>
 <ol>
 <li><strong>11개 주요 NLP 벤치마크에서 최고 성능 달성</strong>
 <ul>
@@ -92,8 +88,6 @@ a { color: #A62018; }
 <li><strong>작업별 복잡한 아키텍처 설계 필요성 제거</strong> - 최소한의 출력층 추가만으로 다양한 작업 처리 가능</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="BERT_input.png" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: BERT 입력 표현 구성. 토큰 임베딩, 세그먼트 임베딩, 위치 임베딩의 합으로 구성</em></p></div>
 <h3>모델 아키텍처</h3>
 <ul>
 <li><strong>기반</strong>: 멀티층 양방향 트랜스포머 인코더 (Vaswani et al., 2017)</li>
@@ -151,11 +145,9 @@ a { color: #A62018; }
 
 <p><strong>총평</strong>: BERT는 MLM이라는 우아한 아이디어로 양방향 심층 사전학습을 달성하고 최소한의 아키텍처 수정으로 다양한 NLP 작업에서 최고 성능을 보임으로써, 현대 NLP의 기초를 마련한 획기적 연구이다. 높은 계산 비용과 일부 설계 선택(NSP)의 유효성 재검토 여지는 있으나, 학문적 영향력과 실무 적용성 측면에서 최상의 기여를 했다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../659_REALM_Retrieval-Augmented_Language_Model_Pre-Training/index.html">REALM: Retrieval-Augmented Language Model Pre-Training</a></div><div class="conn-reason">BERT의 암묵적 지식 저장 방식과 달리 명시적 검색을 통해 지식을 활용하는 다른 접근법</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../659_REALM_Retrieval-Augmented_Language_Model_Pre-Training/index.html">REALM: Retrieval-Augmented Language Model Pre-Training</a></div><div class="conn-reason">BERT의 암묵적 지식 저장과 달리 외부 코퍼스에서 명시적 검색을 통한 지식 활용 방식</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../467_Large_Language_Models/index.html">Large Language Models</a></div><div class="conn-reason">트랜스포머 기반 언어모델과 양방향 사전훈련 모델이 서로 다른 언어 이해 접근법을 제시합니다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../707_SciBERT_A_Pretrained_Language_Model_for_Scientific_Text/index.html">SciBERT: A Pretrained Language Model for Scientific Text</a></div><div class="conn-reason">BERT의 과학 도메인 특화 버전으로 과학 텍스트에서 더 나은 성능을 달성함</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../161_BioBERT_a_pre-trained_biomedical_language_representation_mod/index.html">BioBERT: a pre-trained biomedical language representation model for biomedical text mining</a></div><div class="conn-reason">BERT를 생의학 도메인에 특화시켜 의료 텍스트 이해 성능을 개선함</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../707_SciBERT_A_Pretrained_Language_Model_for_Scientific_Text/index.html">SciBERT: A Pretrained Language Model for Scientific Text</a></div><div class="conn-reason">BERT의 일반 도메인 사전학습을 과학 텍스트에 특화시켜 과학 NLP 성능을 향상</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../367_Galactica_A_Large_Language_Model_for_Science/index.html">Galactica: A Large Language Model for Science</a></div><div class="conn-reason">BERT의 과학 도메인 확장판으로 1200억 토큰의 과학 논문으로 학습된 대규모 모델</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>

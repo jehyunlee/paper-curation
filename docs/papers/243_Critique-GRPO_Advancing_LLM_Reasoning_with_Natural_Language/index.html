@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Xiaoying Zhang, Hao Sun, Yipeng Zhang, Kaituo Feng, Chaochao Lu | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2506.03106" target="_blank">10.48550/arXiv.2506.03106</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) Critique-GRPO는 수치 피드백만이 아닌 자연어 피드백(비판)을 통해 초기 응답과 자기 개선 모두에서 학습 가능. (b) Qwen3-8B에서 8가지 추론 과제 평균 Pass@1 4.5% 개선. (c) 자기 비판을 통한 자기 개선으로 AIME 2024에서 66.7% Pass@1 달성.</em></p></div>
 <p>본 논문은 순수 수치 보상(numerical rewards)의 한계를 극복하기 위해 자연언어 비판(natural language critiques)을 온라인 강화학습(online RL) 프레임워크에 통합한 Critique-GRPO를 제안한다. 이는 LLM의 추론 능력을 향상시키는 새로운 접근 방식이다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -83,8 +81,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 자연언어 비판과 수치 보상을 모두 통합하는 온라인 RL 프레임워크(Critique-GRPO) 개발으로 두 가지 이점을 모두 활용</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: Critique-GRPO 개요. 질문에 대해 초기 응답을 샘플링하고, 보상 시스템의 비판을 활용하여 in-context learning으로 응답을 개선. 이를 초기 응답과 결합하여 정책 최적화 수행.</em></p></div>
 <ol>
 <li><strong>광범위한 성능 개선</strong>:
 <ul>
@@ -106,8 +102,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: [상세 메커니즘 시각화]</em></p></div>
 <ul>
 <li><strong>핵심 메커니즘</strong>:
 <ul>

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Aniketh Garikaparthi, Manasi Patwardhan, Lovekesh Vig, Arman Cohan | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Human-in-the-loop Idea Generation with Monte-Carlo-Tree-Search</em></p></div>
 <p>LLM의 자동화 능력을 활용하면서도 연구자의 투명한 제어와 감시를 가능하게 하는 인터랙티브 연구 아이디어 생성 시스템 IRIS를 제안하며, Monte Carlo Tree Search(MCTS) 기반의 적응형 탐색과 세분화된 피드백 메커니즘을 통해 과학적 가설 생성을 가속화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Human-in-the-Loop(HITL) 프레임워크와 MCTS 기반 체계적 탐색, 세분화된 피드백 분류체계, 쿼리 기반 문헌 합성을 통합한 대화형 플랫폼 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>IRIS Platform Interface with Retrieval Panel, Chat Overview Panel, Research Brief Panel</em></p></div>
 <ol>
 <li><strong>HITL 프레임워크</strong>: 완전 자동화를 피하고 계획(planning), 생성(generation), 회고(retrospection) 단계 전반에서 연구자 개입을 가능하게 하는 사용자 중심 설계 구현</li>
 <li><strong>세분화된 평가 및 피드백</strong>: 실제 과학적 비평에 기반한 위계적 분류체계(Table 2)를 통해 연구 브리프의 특정 부분(제목, 방법론, 실험 계획)에 대한 실행 가능한 피드백 제공, 연구자 검증을 통해 보상 해킹 방지</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>오픈소스 플랫폼</strong>: 학계 채택을 촉진하는 공개 구현</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Iterative improvement in hypothesis quality</em></p></div>
 <p><strong>시스템 아키텍처</strong>:</p>
 <ul>
 <li><strong>아이디어 에이전트(Ideation Agent)</strong>: 반자동 모드(연구자 지도)와 완전 자동 모드(MCTS 기반 탐색) 간 전환 가능</li>
@@ -134,7 +128,6 @@ a { color: #A62018; }
 <p><strong>총평</strong>: IRIS는 LLM 기반 과학적 발견 가속화라는 중요한 과제에서 완전 자동화의 함정을 인식하고 투명성과 조정 가능성을 갖춘 HITL 시스템으로 실질적 해결책을 제시한다. 세분화된 피드백과 MCTS 기반 탐색은 기술적으로 창의적이며, 오픈소스 공개는 높이 평가되나, 사용자 연구의 범위 확대와 다양한 학문 영역에서의 검증이 더 필요하다.</p></div>
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../417_HypoBench_Towards_Systematic_and_Principled_Benchmarking_for/index.html">HypoBench: Towards Systematic and Principled Benchmarking for Hypothesis Generation</a></div><div class="conn-reason">가설 생성 벤치마킹 기준을 실제 시스템 개발에 적용한 사례</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../847_Two_heads_are_better_than_one_A_multi-agent_system_has_the_p/index.html">Two heads are better than one: A multi-agent system has the potential to improve scientific idea generation</a></div><div class="conn-reason">단일 연구자 대상 인터랙티브 시스템 vs 다중 에이전트 협력 시스템의 대조적 접근</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../847_Two_heads_are_better_than_one_A_multi-agent_system_has_the_p/index.html">Two heads are better than one: A multi-agent system has the potential to improve scientific idea generation</a></div><div class="conn-reason">다중 에이전트 협력 시스템 vs 단일 연구자 대상 인터랙티브 시스템의 대조적 접근</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../045_Acceleron_A_tool_to_accelerate_research_ideation/index.html">Acceleron: A tool to accelerate research ideation</a></div><div class="conn-reason">둘 다 연구 아이디어 생성 도구이지만 Acceleron은 LLM 에이전트에, IRIS는 대화형 시스템에 집중하는 차이가 있음</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../728_SciMON_Scientific_Inspiration_Machines_Optimized_for_Novelty/index.html">SciMON: Scientific Inspiration Machines Optimized for Novelty</a></div><div class="conn-reason">MCTS 기반 적응형 탐색을 참신성 최적화로 발전시킨 연구</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../417_HypoBench_Towards_Systematic_and_Principled_Benchmarking_for/index.html">HypoBench: Towards Systematic and Principled Benchmarking for Hypothesis Generation</a></div><div class="conn-reason">가설 생성 벤치마크를 실제 인터랙티브 연구 시스템으로 구현한 응용 사례</div></div>

@@ -75,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM을 클라이언트로 시뮬레이션하되, 심리 프로필(문제, 증상, 성격 특성)을 기반으로 일관성 있게 행동하도록 프롬프팅. 시뮬레이션된 클라이언트가 표준화된 심리척도(SRS, CECS, SEQ, WAI-SR, HAQ-II)를 작성하도록 함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>ClientCAST의 전체 프레임워크: 심리 프로필을 갖춘 LLM 시뮬레이션 클라이언트가 LLM 치료사와 상호작용하고 설문지를 완성</em></p></div>
 <ol>
 <li><strong>클라이언트 시뮬레이션의 신뢰성 검증</strong>: High-Low Quality Counseling과 AnnoMI 데이터셋을 활용하여 시뮬레이션된 클라이언트가 제공된 심리 프로필의 문제, 증상, 말투에는 일관되게 따르나 겉으로 드러나는 성격 특성 재현에는 덜 정확함을 확인.</li>
 <li><strong>평가 척도의 판별력</strong>: 완성된 설문지 결과가 고품질과 저품질 상담 세션을 통계적으로 유의미하게 구분할 수 있음을 입증 (세션 결과, 치료 동맹, 자기보고 감정 차원).</li>
 <li><strong>LLM 치료사 평가</strong>: Claude-3, GPT-3.5, LLaMA3-70B, Mixtral 8×7B를 ClientCAST로 평가하여 모델별 치료 능력의 차이를 정량화.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>고품질과 저품질 세션의 세션 결과, 치료 동맹, 자기보고 감정 점수 비교</em></p></div>
 <p><strong>클라이언트 시뮬레이션 방법:</strong></p>
 <ul>
 <li>실제 상담 세션 Si에서 LLM을 이용해 심리 프로필 PC(Si) 추출 (3가지 구성 요소)
@@ -138,8 +134,7 @@ a { color: #A62018; }
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../606_Patientsim_A_persona-driven_simulator_for_realistic_doctor-p/index.html">Patientsim: A Persona-Driven Simulator for Realistic Doctor-Patient Interactions</a></div><div class="conn-reason">표준화된 환자 개념을 LLM 치료사 평가로 확장한 의료 시뮬레이션 발전</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../360_From_lived_experience_to_insight_Unpacking_the_psychological/index.html">From lived experience to insight: Unpacking the psychological risks of using ai conversational agents</a></div><div class="conn-reason">LLM 치료사의 클라이언트 중심 평가를 AI 에이전트의 심리적 영향 평가 방법론으로 활용할 수 있다</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../433_Interactive_agents_Simulating_counselor-client_psychological/index.html">Interactive agents: Simulating counselor-client psychological counseling via role-playing llm-to-llm interactions</a></div><div class="conn-reason">클라이언트 중심 LLM 치료사 평가 연구는 심리 상담 대화 생성 프레임워크의 실제 치료 효과성을 검증한다.</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../531_Medsyn_Enhancing_diagnostics_with_human-ai_collaboration/index.html">Medsyn: Enhancing diagnostics with human-ai collaboration</a></div><div class="conn-reason">클라이언트 시뮬레이션을 실제 진단 향상에 적용한 Human-AI 협력 사례</div></div>
-<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../531_Medsyn_Enhancing_diagnostics_with_human-ai_collaboration/index.html">Medsyn: Enhancing diagnostics with human-ai collaboration</a></div><div class="conn-reason">클라이언트 중심 LLM 치료사 평가로 의료 분야 인간-AI 협력의 다른 적용을 보여준다.</div></div></div>
+<div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../531_Medsyn_Enhancing_diagnostics_with_human-ai_collaboration/index.html">Medsyn: Enhancing diagnostics with human-ai collaboration</a></div><div class="conn-reason">클라이언트 시뮬레이션을 실제 진단 향상에 적용한 Human-AI 협력 사례</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

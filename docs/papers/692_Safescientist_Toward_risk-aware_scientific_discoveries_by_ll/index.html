@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Kunlun Zhu, Jiaxun Zhang, Ziheng Qi, Ning Shang, Zijia Liu, Pengfei Han, Yue Su, Haofei Yu, Jiaxuan You | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.23559" target="_blank">arXiv:2505.23559</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>SafeScientist는 악의적이거나 위험한 프롬프트에 대해 거절 응답을 제시하며, 일반 AI 과학자 프레임워크와 달리 위험 인식(Risk-Awareness)을 통해 안전하게 고위험 주제를 다룬다.</em></p></div>
 <p>본 논문은 LLM 기반 AI 과학자 에이전트의 자동화된 과학 발견 과정에서 발생하는 윤리적, 안전 문제를 체계적으로 해결하기 위해 SafeScientist 프레임워크를 제안한다. 이는 다층 방어 메커니즘(prompt monitoring, agent collaboration monitoring, tool-use monitoring, ethical reviewer)을 통합하여 과학 연구 파이프라인 전반에 걸쳐 안전성을 보장한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,15 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 과학 맥락의 안전을 명시적으로 설계한 SafeScientist 프레임워크와 240개의 고위험 과학 발견 과제 + 120개의 도구 관련 위험 시나리오로 구성된 SciSafetyBench 벤치마크 도입.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>SafeScientist의 엔드-투-엔드 파이프라인: 입력 감지(Prompt Monitor), 다중 에이전트 토론(Discussion Stage), 도구 사용(Tool Use Stage), 논문 작성(Writing Stage)을 거쳐 SciSafetyBench 기반 공격/방어 평가를 통합.</em></p></div>
 <ol>
 <li><strong>SafeScientist 프레임워크</strong>: 기존 AI Scientist/Tiny Scientist 등의 경량 프레임워크에 4가지 방어 메커니즘(Prompt Monitor, Agent Collaboration Monitor, Tool-Use Monitor, Paper Ethic Reviewer)을 통합하여 과학 연구 파이프라인 전반의 안전 감독을 실현. 기존 AI 과학자 프레임워크 대비 안전 성능 34.69% 향상.</li>
 <li><strong>SciSafetyBench 벤치마크</strong>: 6개 과학 도메인(물리학, 화학, 생물학, 재료과학, 컴퓨터과학, 의학)에 걸친 240개 고위험 과학 발견 과제와 30개 과학 도구 + 120개 도구별 위험 시나리오로 구성. 다양한 대적 공격(Base64, DAN, Inception 등)에 대한 강건성 검증 완료.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-</div>
 <p><strong>방어 메커니즘 (Defense Methods)</strong>:</p>
 <ul>
 <li><strong>Prompt Monitor</strong>:

@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yiqiao Jin, Qinlin Zhao, Yiyang Wang, Hao Chen, Kaijie Zhu, Yijia Xiao, Jindong Wang | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/" target="_blank">미제공</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>AgentReview 프레임워크는 피어 리뷰 프로세스를 현실적으로 시뮬레이션하며, 다중 변수의 영향을 분리하여 분석한다.</em></p></div>
 <p>본 논문은 대규모언어모델(LLM) 기반 에이전트를 활용하여 학술지 피어 리뷰 과정을 시뮬레이션하고, 검토자 편향(reviewer bias), 사회적 영향(social influence), 권위 편향(authority bias) 등 다양한 사회학적 요인이 리뷰 결정에 미치는 영향을 정량화하는 첫 번째 프레임워크를 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 에이전트 기반 시뮬레이션 프레임워크를 구축하여 검토자(reviewer), 저자(author), 분야 의장(area chair, AC) 등의 특성을 조절하면서 대규모 피어 리뷰를 시뮬레이션하고, 53,800개 이상의 생성된 리뷰 문서를 분석한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>5단계 피어 리뷰 파이프라인: (I) 검토자 평가, (II) 저자-검토자 토론, (III) 검토자-의장 토론, (IV) 메타리뷰 작성, (V) 최종 결정</em></p></div>
 <ol>
 <li><strong>사회적 영향(Social Influence)</strong>: 리베탈(rebuttal) 이후 검토자들이 동료의 의견에 맞추는 현상을 확인하였으며, 이로 인해 평점의 표준편차가 27.2% 감소한다.</li>
 <li><strong>검토자 편향의 결정적 영향</strong>: 단 1명의 편향된 검토자만으로도 최종 결정의 37.1%가 변경되며, 무책임한(irresponsible) 검토자 1명은 전체 검토자의 commitment를 18.7% 감소시킨다(altruism fatigue).</li>
@@ -87,8 +83,6 @@ a { color: #A62018; }
 <li><strong>정박 편향(Anchoring Bias)</strong>: 리베탈의 영향이 다른 요인들보다 덜 중요하며, 이는 검토자들이 초기 인상에 크게 의존하기 때문이다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>책임감 없는 검토자와 악의적 검토자의 수에 따른 초기 및 최종 평점의 분포 변화</em></p></div>
 <ul>
 <li><strong>검토자 특성화</strong>: 3개 차원으로 검토자 유형을 정의
 <ul>

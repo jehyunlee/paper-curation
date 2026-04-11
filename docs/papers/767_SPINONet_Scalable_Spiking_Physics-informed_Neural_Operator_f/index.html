@@ -75,17 +75,11 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 신경과학에서 영감을 받은 희소 이벤트 기반 뉴런 모델과 분리 가능한 DeepONet 아키텍처의 구조적 특성을 결합한다. 입력 함수 인코딩 경로(branch)에만 스파이킹 동역학을 도입하고, 공간-시간 좌표 경로(trunk)는 연속 미분 가능하도록 유지하여 양립 불가능한 두 요구사항을 해결한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: Mean per-layer spiking activity in the branch-network VSN layers across all numerical examples.">
-<p class="fig-caption"><em>모든 수치 예제에서 branch 네트워크 VSN 레이어의 계층별 평균 스파이킹 활동도</em></p></div>
 <ol>
 <li><strong>아키텍처적 분리를 통한 물리정보 스파이킹 연산자 학습</strong>: SPINONet은 입력 함수 인코딩 경로에 Variable Spiking Neuron(VSN)을 도입하여 희소 이벤트 기반 연산을 가능하게 하면서, 좌표 종속 trunk 네트워크를 연속 미분 가능하게 유지함으로써 PDE 잔차 계산(residual computation)에 필요한 공간-시간 편미분을 정확히 계산할 수 있다. 좌표별 인수분해(coordinate-wise factorization)로 명시적 전체 메시 평가를 제거하여 해상도 증가에 따른 계산 비용이 선형적으로 증가한다.</li>
 <li><strong>정확도 유지와 안정성 향상</strong>: 시간 종속 및 정상 상태 PDE, 고차원 공간-시간-매개변수 설정을 포함한 다양한 벤치마크에서 SPINONet은 기존 물리정보 연산자 학습 기법(PI-DeepONet)과 비교하여 희소 통신으로 인한 성능 저하 없이 유사한 예측 정확도를 달성한다. 순수 물리정보 학습이 퇴화 해(spurious solution)로 수렴할 수 있는 어려운 영역에서, 소량의 감독 데이터(limited data supervision)를 하이브리드 방식으로 추가하면 근본적 물리정보 손실 함수 공식을 수정하지 않으면서도 성능과 안정성이 개선된다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3: Viscous Burgers equation: Comparison of SPINONet and PI-DeepONet computational cost as a function">
-<p class="fig-caption"><em>점성 Burgers 방정식: 함수 대비 SPINONet과 PI-DeepONet 계산 비용 비교</em></p></div>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: Representative spatio-temporal predictions on unseen test samples.">
-<p class="fig-caption"><em>보이지 않은 테스트 샘플에 대한 대표적 공간-시간 예측</em></p></div>
 <ul>
 <li><strong>분리 가능한 DeepONet 구조</strong>: Vanilla DeepONet (식 2)을 확장하여 d차원 공간-시간 좌표에 대해 d개의 독립적 trunk 네트워크를 사용. 각 trunk 네트워크 $\text{tr}_j: \mathbb{R} \to \mathbb{R}^{pr}$는 일차원 좌표 $\xi_j$를 입력받아 $p \times r$ 크기의 기저 함수를 생성(여기서 $p$는 잠재 차원, $r$은 저차 분해 순위).</li>
 <li><strong>VSN 기반 희소 계수 생성</strong>: Branch 네트워크에서 Variable Spiking Neuron을 사용하여 입력 함수 인코딩. VSN은 연속값 스파이크를 지원하여 회귀 및 연산자 학습에 적합. 스파이킹 활동이 낮으면 multiply-accumulate 연산 감소로 에너지 절감.</li>

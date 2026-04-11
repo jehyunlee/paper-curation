@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Zihui Cheng, Qiguang Chen, Xiao Xu 외 | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.15510" target="_blank">arXiv:2505.15510</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>그림 1: (a) 순수 텍스트 근거를 사용하는 T-MCoT와 (b) 이미지-텍스트 교차 근거를 생성하는 I-MCoT의 비교</em></p></div>
 <p>대규모 비전-언어 모델(LVLM)의 멀티모달 체인-오브-쏘트(MCoT) 추론에서 <strong>시각적 사고(Visual Thoughts)</strong>라는 통합된 메커니즘을 발견하였으며, 이는 텍스트 기반과 이미지 교차 방식의 MCoT 모두를 설명하는 새로운 관점을 제시한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 시각적 사고를 중간 표현으로 정의하고, 텍스트 표현(자연언어, 구조화된 언어)과 시각 표현(편집 이미지, 생성 이미지)의 4가지 전략으로 분류하여 실험적으로 검증한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>그림 2: 컴퓨터 시스템 관점에서의 멀티모달 추론 비교: (a) 시각적 사고를 내부 캐시로 활용 vs (b) 원본 이미지에 직접 접근</em></p></div>
 <ol>
 <li><strong>시각적 사고의 효과성 입증</strong>: 시각적 사고를 제거하고 원본 이미지만으로 추론하면 성능이 크게 저하되며, 이는 심지어 질문만으로 추론하는 것보다 나쁜 수준임을 확인했다. 이는 시각적 사고가 명시적으로 관련 시각 정보를 전달함으로써 추론 효율성을 크게 높임을 의미한다.</li>
 <li><strong>4가지 시각적 사고 표현 전략 분석</strong>:
@@ -94,8 +90,6 @@ a { color: #A62018; }
 <li><strong>내부 메커니즘 규명</strong>: 시각적 사고는 단순한 정보 전달을 넘어 <strong>입력 이미지와 깊은 변환기(transformer) 계층 사이의 중개자</strong> 역할을 하며, LVLM의 더 고급 인지 처리를 가능하게 한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>그림 3: 텍스트 표현 (a)과 시각 표현 (b)의 시각적 사고. 텍스트 표현은 N-LANG과 S-LANG, 시각 표현은 E-IMG와 G-IMG를 포함</em></p></div>
 <ul>
 <li><strong>정형화된 정의</strong>: 시각적 사고(R_EVT)를 수식 (1)로 정형화하여, 과제 질문(Q_T), 명시적 지시사항(I_EVT), 이전 추론 단계(R_<i), 시각 입력(V_I)의 함수로 표현</li>
 <li><strong>분류 체계</strong>: 생성 방식에 따라 <strong>텍스트 기반 MCoT</strong> (자연언어, 구조화된 언어)와 <strong>이미지 기반 MCoT</strong> (편집 이미지, 생성 이미지)로 이원화</li>

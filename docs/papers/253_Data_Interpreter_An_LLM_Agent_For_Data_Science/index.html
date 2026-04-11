@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Sirui Hong, Yizhang Lin, Bangbang Liu, Binhao Wu, Danyang Li 외 다수 | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: <a href="https://doi.org/10.48550/arXiv.2402.18679" target="_blank">10.48550/arXiv.2402.18679</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>Data Interpreter의 계층적 그래프 모델링 워크플로우: 프로젝트 요구사항을 태스크 그래프로 분해한 후, 실행 가능한 액션 그래프로 다시 분해하는 과정</em></p></div>
 <p>본 논문은 대규모 언어모델(LLM) 기반 에이전트가 데이터 사이언스의 장기적이고 상호연결된 작업들을 자동으로 해결할 수 있도록 설계된 <strong>Data Interpreter</strong>를 제안한다. 계층적 그래프 모델링과 프로그래밍 가능한 노드 생성이라는 두 가지 핵심 메커니즘을 통해 복잡한 데이터 사이언스 워크플로우를 동적으로 관리하고 실시간 데이터 변화에 적응한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: 복잡한 데이터 사이언스 문제를 계층적 그래프 구조(태스크 그래프 → 액션 그래프)로 재구성하고, 프로그래밍 가능한 노드 생성을 통해 각 부분 문제를 동적으로 생성·검증·최적화</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>다양한 오픈소스 프레임워크와의 비교 분석: 종합 점수(comprehensive score)로 표준화된 성능 평가</em></p></div>
 <ol>
 <li><strong>벤치마크 성능 향상</strong>: InfiAgent-DABench에서 정확도 75.9%에서 94.9%로 <strong>25% 개선</strong>, MATH 데이터셋에서 최고 성능 대비 <strong>26% 향상</strong></li>
 <li><strong>다양한 작업 영역 우수성</strong>: 머신러닝 작업에서 88%→95%, 개방형 작업에서 60%→97%로 향상되어 다중 도메인 적용성 입증</li>
 <li><strong>프레임워크 우월성</strong>: Figure 1에서 보이듯이 기존 오픈소스 프레임워크(예: MetaGPT 등)를 일관되게 상회하는 성능 달성</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>계층적 그래프 모델링 및 생성 실행 프로세스</em></p></div>
 <p><strong>핵심 방법론:</strong></p>
 <ul>
 <li><strong>계층적 그래프 모델링 (Hierarchical Graph Modeling)</strong>
@@ -145,12 +139,10 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../293_Ds-agent_Automated_data_science_by_empowering_large_language/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">Data Interpreter의 데이터 과학 작업 해석 능력이 DS-Agent의 자동화된 데이터 분석 및 코드 생성 기능의 기본적인 기술적 토대이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../170_Blade_Benchmarking_language_model_agents_for_data-driven_sci/index.html">Blade: Benchmarking language model agents for data-driven science</a></div><div class="conn-reason">데이터 사이언스 자동화를 위한 LLM 에이전트 구현과 데이터 기반 과학 발견 에이전트 벤치마킹이 실행과 평가 측면에서 상호 보완한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../594_OSDA_Agent_Leveraging_Large_Language_Models_for_De_Novo_Desi/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">계층적 그래프 모델링 기반 데이터 해석기와 대형언어모델 기반 데이터 사이언스 자동화가 각각 구조적, 언어적 접근법으로 동일한 문제를 해결한다</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../170_Blade_Benchmarking_language_model_agents_for_data-driven_sci/index.html">Blade: Benchmarking language model agents for data-driven science</a></div><div class="conn-reason">데이터 기반 과학 발견을 위한 언어모델 에이전트 벤치마크와 데이터 사이언스 자동화 에이전트가 각각 평가와 구현 관점에서 접근한다</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../259_DeepAnalyze_Agentic_Large_Language_Models_for_Autonomous_Dat/index.html">DeepAnalyze: Agentic Large Language Models for Autonomous Data Science</a></div><div class="conn-reason">Data Interpreter와 유사한 데이터 사이언스 자동화이지만 8B 모델로 더 효율적 달성</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../135_Automl_in_the_age_of_large_language_models_Current_challenge/index.html">Automl in the age of large language models: Current challenges, future opportunities and risks</a></div><div class="conn-reason">AutoML과 LLM의 통합 원리가 데이터 사이언스 자동화를 위한 LLM 에이전트 개발에 직접적으로 적용되고 확장된다</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../121_Autokaggle_A_multi-agent_framework_for_autonomous_data_scien/index.html">Autokaggle: A multi-agent framework for autonomous data science competitions</a></div><div class="conn-reason">데이터 사이언스 워크플로우 자동화 개념이 Kaggle 경진대회와 같은 구체적인 데이터 과학 문제 해결을 위한 멀티 에이전트 시스템으로 확장되었다</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../594_OSDA_Agent_Leveraging_Large_Language_Models_for_De_Novo_Desi/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">기본적인 LLM 데이터 과학 에이전트를 Kaggle 전문 지식과 케이스 기반 추론으로 고도화한다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../121_Autokaggle_A_multi-agent_framework_for_autonomous_data_scien/index.html">Autokaggle: A multi-agent framework for autonomous data science competitions</a></div><div class="conn-reason">AutoKaggle의 다중 에이전트 프레임워크는 Data Interpreter의 LLM 기반 데이터 과학 자동화 기법을 확장하여 경진대회 환경에 특화된 솔루션을 제공합니다.</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../594_OSDA_Agent_Leveraging_Large_Language_Models_for_De_Novo_Desi/index.html">DS-Agent: Automated Data Science by Empowering Large Language Models with Case-Based Reasoning</a></div><div class="conn-reason">기본적인 LLM 데이터 과학 에이전트를 Kaggle 전문 지식과 케이스 기반 추론으로 고도화한다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

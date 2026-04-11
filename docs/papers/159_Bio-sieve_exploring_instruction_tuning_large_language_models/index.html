@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ambrose Robinson, William Thorne, Ben Wu, Abdullah Pandor, Munira Essat, Mark Stevenson, Xingyi Song (The University of Sheffield) | <strong>날짜</strong>: 2023 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2308.06610" target="_blank">arXiv:2308.06610</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>의료 체계적 문헌고찰(Systematic Review) 프로세스에서 Bio-SIEVE가 지원하는 제목 및 초록 스크리닝 단계</em></p></div>
 <p>본 논문은 의료 체계적 문헌고찰의 가장 비용 집약적인 단계인 초록 스크리닝을 자동화하기 위해 지시어 미세조정(instruction tuning)을 통해 대규모언어모델(LLM)을 특화시킨 Bio-SIEVE를 제시한다. 이 모델은 ChatGPT를 능가하는 성능을 보이면서도 의료 영역 간 우수한 일반화 능력을 갖춘다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Cochrane Review 지식베이스를 활용하여 LLaMA와 Guanaco 모델에 지시어 미세조정을 적용하고, 다중작업(multi-task) 학습(PICO 추출, 배제 이유 생성)의 효과를 검증한다.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>학습 데이터셋의 포함/배제 분류에 따른 주제 분포</em></p></div>
 <ol>
 <li><strong>우수한 분류 성능</strong>: Bio-SIEVE는 ChatGPT와 기존 학습 기반 접근법을 모두 능가하며, 특히 배제 사례에서 높은 정확도를 달성한다(예: 구강 건강 리뷰에서 근육 외상 연구 성공적 배제).</li>
 <li><strong>도메인 간 일반화</strong>: 여러 의료 영역에 걸쳐 더 나은 일반화 성능을 보여, 미학습 체계적 문헌고찰에 대한 적용 가능성을 입증한다.</li>
@@ -86,8 +82,6 @@ a { color: #A62018; }
 <li><strong>재현성과 투명성</strong>: 모델 가중치, 코드, 데이터셋 재구성을 위한 DOI 목록을 공개하여 완전한 재현성을 보장한다.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>지시어 미세조정에 사용된 Cochrane 샘플의 예시</em></p></div>
 <ul>
 <li><strong>데이터</strong>: Cochrane Review 데이터베이스의 확장 가능한 지식베이스를 활용하여 초록-포함/배제 쌍을 구성</li>
 <li><strong>기본 모델</strong>: LLaMA(7B, 13B, 65B)와 Guanaco(지시어 미세조정 전처리된 LLaMA) 기반으로 시작</li>

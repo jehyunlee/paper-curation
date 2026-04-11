@@ -75,8 +75,6 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: LLM 에이전트를 핵심으로 자연언어 인터페이스, 멀티모달 AutoML, 자동 하이퍼파라미터 최적화(HPO), 자동 데이터 검색을 통합한 통합 프레임워크 개발</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1: AutoProteinEngine 프레임워크 개요">
-<p class="fig-caption"><em>Figure 1: 자연언어 작업 명세부터 AutoML 실행, 자동 데이터 검색까지의 엔드-투-엔드 워크플로우</em></p></div>
 <ol>
 <li><strong>멀티모달 AutoML 프레임워크</strong>: 단백질 시퀀스(ESM 시리즈)와 구조 그래프 데이터를 모두 처리 가능한 최초의 전문화된 AutoML 시스템으로, 레이트 퓨전(late fusion) 전략으로 멀티모달 정보 통합</li>
 <li><strong>자동화된 하이퍼파라미터 최적화</strong>: Tree-structured Parzen Estimator(TPE)와 Asynchronous Successive Halving Algorithm(ASHA)을 결합하여 효율적 하이퍼파라미터 탐색 및 동적 리소스 할당 달성</li>
@@ -84,8 +82,6 @@ a { color: #A62018; }
 <li><strong>실무 검증</strong>: Brazzein(분류), Arylsulfatase A(회귀) 두 단백질 엔지니어링 작업에서 영점 샷(zero-shot) 및 수동 미세조정(manual fine-tuning) 대비 현저한 성능 향상 입증</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2: 대화형 인터페이스 작업 흐름">
-<p class="fig-caption"><em>Figure 2: AutoPE 대화형 인터페이스와 기존 코드 기반 딥러닝 워크플로우 비교</em></p></div>
 <h3>LLM 기반 AutoML 모듈</h3>
 <ul>
 <li><strong>작업 검증</strong>: 사용자 자연언어 입력을 프롬프팅으로 AutoPE 기능 범위(단백질 안정성, PPi, 효소 활성, 돌연변이 예측) 내 유효성 검토</li>
@@ -127,9 +123,7 @@ a { color: #A62018; }
 <div class="connections-box"><h2>같이 보면 좋은 논문</h2><div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../159_Bio-sieve_exploring_instruction_tuning_large_language_models/index.html">Bio-SIEVE: Exploring Instruction Tuning Large Language Models for Systematic Review Automation</a></div><div class="conn-reason">생물정보학 분야를 위한 대규모 언어 모델 조정 방법론이 AutoProteinEngine의 생물학자 친화적 자연언어 인터페이스 구현의 기반이다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../634_PRIME_A_Multi-Agent_Environment_for_Orchestrating_Dynamic_Co/index.html">PRIME: A Multi-Agent Environment for Orchestrating Dynamic Computational Workflows in Protein Engineerings</a></div><div class="conn-reason">단백질 공학과 단백질 엔진 분야에서 다중 에이전트 시스템의 서로 다른 자동화 접근법을 비교하여 최적의 단백질 설계 전략을 찾을 수 있다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html">The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies</a></div><div class="conn-reason">AutoProteinEngine의 일반적 단백질 공학 자동화와 Virtual Lab의 특정 나노바디 설계는 서로 다른 범위에서 단백질 설계를 자동화하는 접근이다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html">The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies</a></div><div class="conn-reason">Virtual Lab의 특정 나노바디 설계와 AutoProteinEngine의 일반적 단백질 공학 자동화는 서로 다른 범위에서 단백질 설계를 다루는 접근이다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">ProtAgents의 다중 에이전트 기반 단백질 발견이 AutoProteinEngine의 단일 에이전트 AutoML 접근을 협업적 시스템으로 확장한 발전 형태이다.</div></div>
-<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">LLM 기반 단백질 엔진 프레임워크를 다중 에이전트 협업으로 확장한 연구다</div></div></div>
+<div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../638_ProtAgents_protein_discovery_via_large_language_model_multi-/index.html">ProtAgents: protein discovery via large language model multi-agent collaborations combining physics and machine learning</a></div><div class="conn-reason">ProtAgents의 다중 에이전트 기반 단백질 발견이 AutoProteinEngine의 단일 에이전트 AutoML 접근을 협업적 시스템으로 확장한 발전 형태이다.</div></div></div>
 <div class="back"><a href="../../ai4s/index.html">&larr; 목록으로 돌아가기</a></div>
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>

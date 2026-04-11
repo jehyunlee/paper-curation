@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Nuo Chen, Andre Huikai Lin, Jiaying Wu, Junyi Hou, Zining Zhang, Qian Wang, Xidong Wang, Bingsheng He | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2505.11336" target="_blank">arXiv:2505.11336</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>학술 논문 수정 워크플로우 비교 (좌) 및 proprietary LLM의 부족한 수정 예시 (우)</em></p></div>
 <p>본 논문은 맥락 인식(context-aware)과 제어 가능한(controllable) 학술 논문 수정을 위한 인간-AI 협업 프레임워크를 제안하며, 이를 구현한 XtraGPT 모델군(1.5B~14B)을 소개한다. 140,000개의 지도 학습 쌍으로 구성된 ReviseQA 데이터셋을 구축하여 섹션 단위의 정교한 학술 논문 수정을 지원한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -101,8 +99,6 @@ a { color: #A62018; }
 </ul>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>사후 훈련 파이프라인 개요 - 제어 가능한 섹션 단위 정교한 논문 수정 가능</em></p></div>
 <ol>
 <li><strong>데이터셋 구축</strong>: ReviseQA - 상위 학회 7,000개 논문에서 추출한 140,000개 고품질 지도-수정 쌍
 <ul>
@@ -126,8 +122,6 @@ a { color: #A62018; }
 </ul>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>제안된 프레임워크의 주요 설계 원칙과 기술적 구현</em></p></div>
 <p><strong>문제 정의 (Problem Formulation)</strong>:</p>
 <ul>
 <li>입력: 전체 논문 초안 T, 수정 대상 문단 p, 사용자 지시 q</li>
@@ -199,9 +193,7 @@ a { color: #A62018; }
 <div class="conn-item foundation"><div class="conn-type">기반 연구</div><div class="conn-title"><a href="../595_Overleafcopilot_Empowering_academic_writing_in_overleaf_with/index.html">OverleafCopilot: Empowering academic writing in overleaf with large language models</a></div><div class="conn-reason">제어 가능한 학술 글쓰기를 위한 LLM 활용 연구로 OverleafCopilot의 기능 설계 기반을 제공한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../775_Step-back_profiling_Distilling_user_history_for_personalized/index.html">Step-back profiling: Distilling user history for personalized scientific writing</a></div><div class="conn-reason">맥락 인식 제어 가능한 수정과 사용자 이력 기반 개인화는 모두 개인화된 학술 글쓰기를 지원하지만 서로 다른 개인화 메커니즘을 사용한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../520_Massw_A_new_dataset_and_benchmark_tasks_for_ai-assisted_scie/index.html">MASSW: A new dataset and benchmark tasks for AI-assisted scientific workflows</a></div><div class="conn-reason">AI 보조 과학 연구에서 구조화된 워크플로우 추출과 제어 가능한 학술 작문의 서로 다른 접근 방식을 비교할 수 있습니다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../775_Step-back_profiling_Distilling_user_history_for_personalized/index.html">Step-back profiling: Distilling user history for personalized scientific writing</a></div><div class="conn-reason">사용자 이력 기반 개인화와 제어 가능한 맥락 인식 수정은 모두 개인화된 학술 글쓰기 지원을 목표로 하지만 서로 다른 개인화 전략을 사용한다.</div></div>
 <div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html">ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations</a></div><div class="conn-reason">제어 가능한 학술 논문 수정과 인용 검색 통합 글쓰기는 모두 학술 글쓰기 지원을 목표로 하지만 수정과 생성이라는 다른 작업에 특화된다.</div></div>
-<div class="conn-item alternative"><div class="conn-type">다른 접근</div><div class="conn-title"><a href="../702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html">ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations</a></div><div class="conn-reason">학술 글쓰기에서 인용 검색 통합과 제어 가능한 수정 기능은 모두 글쓰기 지원을 목표로 하지만 서로 다른 작업 단계에 초점을 맞춘다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../886_Wordcraft_A_human-ai_collaborative_editor_for_story_writing/index.html">Wordcraft: A human-ai collaborative editor for story writing</a></div><div class="conn-reason">인간-AI 협업 글쓰기의 기본 개념을 제어 가능하고 맥락을 인식하는 학술 논문 수정이라는 특화된 기능으로 확장한다.</div></div>
 <div class="conn-item extension"><div class="conn-type">후속 연구</div><div class="conn-title"><a href="../703_Scholawrite_A_dataset_of_end-to-end_scholarly_writing_proces/index.html">Scholawrite: A dataset of end-to-end scholarly writing process</a></div><div class="conn-reason">인간의 학술 글쓰기 과정 연구가 LLM 기반 협력적 학술 글쓰기 시스템 개발의 기초 자료를 제공합니다.</div></div>
 <div class="conn-item application"><div class="conn-type">응용 사례</div><div class="conn-title"><a href="../228_CoAuthor_Designing_a_Human-AI_Collaborative_Writing_Dataset/index.html">CoAuthor: Designing a Human-AI Collaborative Writing Dataset for Exploring Language Model Capabilities</a></div><div class="conn-reason">인간-AI 협력 글쓰기 패턴 분석이 학술 논문 작성을 위한 제어 가능한 AI 협력 시스템 개발에 직접 활용된다</div></div>

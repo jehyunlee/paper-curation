@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Ege Yiğit Çelik, Selma Tekır | <strong>날짜</strong>: 2024 | <strong>DOI</strong>: N/A</p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>CiteBART의 워크플로우. 노란색과 녹색 예시는 각각 CiteBART-Base와 CiteBART-Global의 작동 방식을 나타낸다.</em></p></div>
 <p>본 논문은 인용 토큰(citation token)을 마스킹하는 사용자 정의 사전학습을 통해 로컬 인용 추천(Local Citation Recommendation, LCR) 작업을 수행하는 생성형 모델 CiteBART를 제안한다. 기존의 사전-검색 및 재순위(pre-fetch and re-rank) 파이프라인과 달리 엔드-투-엔드 학습 시스템으로 우수한 성능을 달성한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: BART 인코더-디코더 아키텍처에서 저자-날짜 형식의 인용 토큰을 마스킹하고 재구성하도록 학습. 로컬 문맥만 사용하는 Base 방식과 저자 논문의 제목 및 초록을 추가하는 Global 방식의 두 가지 변형 제안.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>올바른 예측(a)과 부정확한 예측(b)을 포함한 정성적 분석 사례.</em></p></div>
 <ol>
 <li><strong>벤치마크 성능</strong>: CiteBART-Global이 FullTextPeerRead를 제외한 모든 LCR 벤치마크에서 최첨단 성능 달성. 특히 Refseer와 ArXiv 같은 대규모 데이터셋에서 유의미한 개선을 보임. Refseer에서 학습된 모델이 최고 성능 모델으로 기록됨.</li>
 <li><strong>할루시네이션 분석</strong>: Top-3 예측의 매크로 할루시네이션율(MaHR)이 4%에 불과하며, 정답이 Top-k 리스트에 포함될 때 다른 예측의 할루시네이션 경향이 유의미하게 감소함을 실증.</li>
 <li><strong>교차 데이터셋 일반화</strong>: CiteBART-Global이 강한 교차 데이터셋 일반화 능력을 보유.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>Global 데이터셋 생성을 위한 대규모 언어 모델(LLM)에 대한 프롬프트 예시.</em></p></div>
 <ul>
 <li><strong>CiteBART-Base</strong>: 로컬 문맥에서 인용 토큰을 마스킹하고 저자-날짜 형식의 인용을 예측하도록 학습. 문맥만을 입력으로 활용.</li>
 <li><strong>CiteBART-Global</strong>: Base 방식을 확장하여 저자 논문의 제목과 초록을 로컬 문맥에 연결. REALM 프레임워크에서 영감을 받아 글로벌 정보를 통해 역전파(backpropagation)되도록 설계.</li>

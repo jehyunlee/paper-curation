@@ -66,8 +66,6 @@ a { color: #A62018; }
 <blockquote><p><strong>저자</strong>: Yao Fehlis, Paul Mandel, Charles Crain, Betty Liu, David Fuller (Artificial Inc.) | <strong>날짜</strong>: 2025 | <strong>DOI</strong>: <a href="https://arxiv.org/abs/2504.00986" target="_blank">arXiv:2504.00986</a></p></blockquote>
 <hr>
 <div class="essence-box"><h2>Essence</h2>
-<div class="review-fig"><img src="figures/fig1.webp" alt="Figure 1">
-<p class="fig-caption"><em>Artificial 플랫폼의 모듈식 및 확장 가능한 아키텍처</em></p></div>
 <p>자동화된 AI 기반 실험(self-driving labs)에서 복잡한 워크플로우를 조정하고, 다양한 기기와 AI 모델을 통합하며, 데이터를 효율적으로 관리하는 통합 플랫폼인 Artificial을 제시한다. NVIDIA BioNeMo 같은 AI/ML 모델을 통해 분자 상호작용 예측 및 생물분자 분석을 가능하게 함으로써 신약 개발을 가속화한다.</p></div>
 <div class="section-box"><h2>Motivation</h2>
 <ul>
@@ -77,16 +75,12 @@ a { color: #A62018; }
 <li><strong>Approach</strong>: Artificial이라는 통합 플랫폼을 제시하여 (1) 실험실 워크플로우를 조정하고, (2) AI 기반 의사결정을 통합하며, (3) 데이터 관리를 원활하게 하고, (4) NVIDIA BioNeMo NIM(컨테이너화된 사전 학습 AI 모델)을 자동 약물 스크리닝 및 실험 프로세스에 통합함.</li>
 </ul></div>
 <div class="section-box"><h2>Achievement</h2>
-<div class="review-fig"><img src="figures/fig2.webp" alt="Figure 2">
-<p class="fig-caption"><em>자동 실험실의 4단계 사이클: Design → Run → Optimize → Learn</em></p></div>
 <ol>
 <li><strong>통합 오케스트레이션 플랫폼 구축</strong>: Web Apps(Labs, Assistants, Workflows, LabOps, Digital Twin), 백엔드 Services(Orchestration, Scheduler/Executor, Data Records), Lab API(GraphQL, gRPC, REST), 그리고 적응형 통신 프로토콜(HTTPS, gRPC, Local APIs)을 통해 기기, 소프트웨어, 외부 시스템 간의 완전한 통합을 달성함.</li>
 <li><strong>자동화된 워크플로우 최적화</strong>: Scheduler/Executor가 휴리스틱(heuristic)과 제약조건(constraints)을 고려하여 자원 할당을 최적화하고, Digital Twin 기술로 실시간 모니터링 및 시뮬레이션을 가능하게 함으로써 실험 효율성을 극대화함.</li>
 <li><strong>폐루프 학습 시스템</strong>: Design-Run-Optimize-Learn의 4단계 순환 구조를 통해 실험 데이터를 체계적으로 로깅하고, AI가 이를 분석하여 가설 검증 및 워크플로우 개선을 자동으로 수행하게 함.</li>
 </ol></div>
 <div class="section-box"><h2>How</h2>
-<div class="review-fig"><img src="figures/fig3.webp" alt="Figure 3">
-<p class="fig-caption"><em>NVIDIA BioNeMo 모델을 통합한 자동 가상 스크리닝 증명 개념(Proof of Concept)</em></p></div>
 <ul>
 <li><strong>Web Apps 계층</strong>:
 <ul>
@@ -120,9 +114,7 @@ a { color: #A62018; }
 <li>클라우드(EKS/AKS) 및 로컬 환경(MicroK8s) 배포 지원</li>
 <li>SSL 암호화를 통한 민감한 실험실 데이터 보호</li>
 </ul>
-</ul>
-<div class="review-fig"><img src="figures/fig4.webp" alt="Figure 4">
-<p class="fig-caption"><em>가상 스크리닝 증명 개념 중 자동 반복 횟수</em></p></div></div>
+</ul></div>
 <div class="section-box"><h2>Originality</h2>
 <ul>
 <li><strong>처음으로 제시하는 완전 통합 플랫폼</strong>: 실험실 오케스트레이션, AI/ML 모델 통합, 워크플로우 자동화, 데이터 관리를 하나의 통합 시스템으로 구현하여 신약 개발 전체 파이프라인을 지원함.</li>
