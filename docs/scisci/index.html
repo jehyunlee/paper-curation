@@ -262,15 +262,14 @@ img.lazy.loaded { opacity: 1; }
     <div id="deep-panel" class="deep-panel" style="display:none">
       <div class="deep-header">
         <h3>Deep Research</h3>
-        <select id="deep-model" class="deep-model">
-          <option value="claude-haiku-4-5">Haiku 4.5 (fast &amp; cheap)</option>
-          <option value="claude-sonnet-4-5">Sonnet 4.5 (best quality)</option>
-        </select>
         <select id="deep-length" class="deep-model" title="답변 분량">
           <option value="short" selected>Short</option>
           <option value="medium">Medium (2x)</option>
           <option value="long">Long (5x)</option>
-          <option value="ultra">Ultra (10x)</option>
+        </select>
+        <select id="deep-model" class="deep-model">
+          <option value="claude-haiku-4-5">Haiku 4.5 (fast &amp; cheap)</option>
+          <option value="claude-sonnet-4-5">Sonnet 4.5 (best quality)</option>
         </select>
         <button class="deep-btn" id="deep-rerun" disabled title="현재 질의를 선택한 모델·분량으로 다시 실행">&#x21BB; 재시작</button>
         <div class="deep-actions">
