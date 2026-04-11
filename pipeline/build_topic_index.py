@@ -830,7 +830,7 @@ function deepHidePanel() {
 }
 
 function deepUpdateButtons(enabled) {
-  for (const id of ['deep-copy', 'deep-download', 'deep-newtab']) {
+  for (const id of ['deep-copy', 'deep-download', 'deep-newtab', 'deep-rerun']) {
     const b = document.getElementById(id);
     if (b) b.disabled = !enabled;
   }
@@ -1304,6 +1304,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (dl) dl.addEventListener('click', downloadAnswerMd);
   const nt = document.getElementById('deep-newtab');
   if (nt) nt.addEventListener('click', openAnswerInNewTab);
+  const rerun = document.getElementById('deep-rerun');
+  if (rerun) rerun.addEventListener('click', function() {
+    const q = document.getElementById('search-input').value;
+    if (q && q.trim()) runDeepResearch(q);
+  });
   const save = document.getElementById('api-key-save');
   if (save) save.addEventListener('click', function() {
     const a = document.getElementById('anthropic-key').value.trim();
@@ -1560,6 +1565,7 @@ HTML = (
     '          <option value="claude-haiku-4-5">Haiku 4.5 (fast &amp; cheap)</option>\n'
     '          <option value="claude-sonnet-4-5">Sonnet 4.5 (best quality)</option>\n'
     '        </select>\n'
+    '        <button class="deep-btn" id="deep-rerun" disabled title="현재 질의를 선택한 모델로 다시 실행">&#x21BB; 재시작</button>\n'
     '        <div class="deep-actions">\n'
     '          <button class="deep-btn" id="deep-copy" disabled title="Copy markdown">&#x1F4CB; Copy</button>\n'
     '          <button class="deep-btn" id="deep-download" disabled title="Download .md">&#x2B07; Download</button>\n'
