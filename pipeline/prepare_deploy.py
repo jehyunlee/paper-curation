@@ -57,18 +57,35 @@ def ensure_gitignore():
         print("  .gitignore: already up to date")
 
 
+MIN_VALID_WEBP_BYTES = 200  # anything smaller is almost certainly corrupt
+
+
 def convert_png_to_webp(png_path, quality=90):
-    """PNG → WebP 변환. 성공 시 (원본크기, 변환크기) 반환."""
+    """PNG → WebP 변환. 성공 시 (원본크기, 변환크기, webp_path) 반환.
+
+    실패하거나 손상된 WebP (너무 작음)의 경우 dangling webp 파일을
+    정리하고 None 을 반환해, 뒤따르는 Step 5 의 PNG 삭제 로직이
+    원본을 실수로 지우지 않도록 한다."""
+    webp_path = png_path.replace(".png", ".webp")
     try:
         from PIL import Image
-        webp_path = png_path.replace(".png", ".webp")
         img = Image.open(png_path)
         img.save(webp_path, "WEBP", quality=quality)
         orig_size = os.path.getsize(png_path)
         webp_size = os.path.getsize(webp_path)
+        if webp_size < MIN_VALID_WEBP_BYTES:
+            raise RuntimeError(
+                f"WebP output too small ({webp_size} bytes, likely corrupt)")
         return orig_size, webp_size, webp_path
     except Exception as e:
         print(f"  ERR: {png_path}: {e}")
+        # Clean up any partial/corrupt webp file so Step 5 does not
+        # treat it as a successful conversion and delete the PNG.
+        if os.path.exists(webp_path):
+            try:
+                os.remove(webp_path)
+            except Exception as cleanup_err:
+                print(f"    (failed to clean dangling webp: {cleanup_err})")
         return 0, 0, None
 
 
@@ -185,15 +202,29 @@ def main():
 
     print(f"  Updated: {updated} files")
 
-    # Step 5: Delete original PNGs
+    # Step 5: Delete original PNGs (only when WebP is verifiably good).
+    # Double-defense against WebP-conversion races: we require the WebP
+    # to actually exist AND to be at least MIN_VALID_WEBP_BYTES, which
+    # catches cases where Pillow crashed halfway and left a tiny or
+    # corrupt output. Any PNG preserved by this guard is logged so the
+    # operator can investigate and retry.
     print("\nStep 5: Deleting original PNGs...")
     deleted = 0
+    preserved = 0
     for png_path in png_files:
         webp_path = png_path.replace(".png", ".webp")
-        if os.path.exists(webp_path):
-            os.remove(png_path)
-            deleted += 1
-    print(f"  Deleted: {deleted} PNGs")
+        if not os.path.exists(webp_path):
+            preserved += 1
+            print(f"  KEEP: {png_path} (no WebP)")
+            continue
+        webp_size = os.path.getsize(webp_path)
+        if webp_size < MIN_VALID_WEBP_BYTES:
+            preserved += 1
+            print(f"  KEEP: {png_path} (WebP too small: {webp_size} bytes)")
+            continue
+        os.remove(png_path)
+        deleted += 1
+    print(f"  Deleted: {deleted} PNGs, Preserved: {preserved}")
 
     # Step 6: Commit docs/ changes and push to master (Cloudflare auto-deploys)
     if args.push:
