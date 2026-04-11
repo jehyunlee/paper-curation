@@ -44,6 +44,9 @@ docs/*/*.json
 docs/papers/*/text.md
 docs/papers/*/originality.md
 
+# Deep Research search index — explicitly whitelisted for deployment
+!docs/*/_search_index.json
+
 # Exclude local config and temp files
 config.json
 __pycache__/
