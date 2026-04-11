@@ -581,7 +581,69 @@ img.lazy.loaded {{ opacity: 1; }}
 .cat-insight {{ background: #f8f9fa; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.88rem; line-height: 1.6; }}
 .cat-insight .ci-label {{ font-weight: 600; color: {accent_dark}; margin-right: 0.3rem; }}
 .cat-insight .ci-gap {{ color: #D97706; }}
-.cat-insight .ci-policy {{ color: #4B5563; }}"""
+.cat-insight .ci-policy {{ color: #4B5563; }}
+/* ============ Deep Research ============ */
+.search-row {{ display: flex; gap: 0.5rem; align-items: stretch; }}
+.search-row input {{ flex: 1; }}
+.mode-toggle {{ display: flex; gap: 0; border: 2px solid #e0e0e0; border-radius: 8px; overflow: hidden; flex-shrink: 0; }}
+.mode-btn {{ background: white; border: none; padding: 0.5rem 0.9rem; font-size: 0.85rem; cursor: pointer; color: #888; transition: all 0.15s; font-family: inherit; }}
+.mode-btn.active {{ background: {accent}; color: white; }}
+.mode-btn:hover:not(.active) {{ background: #f5f5f5; color: {accent_dark}; }}
+.deep-panel {{ margin-top: 1rem; background: #fcfcfd; border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; }}
+.deep-header {{ display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.1rem; background: linear-gradient(135deg, {accent}12, transparent); border-bottom: 1px solid #eee; flex-wrap: wrap; }}
+.deep-header h3 {{ font-size: 0.95rem; color: {accent_dark}; margin: 0; flex-shrink: 0; font-weight: 700; }}
+.deep-model {{ padding: 0.35rem 0.55rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.78rem; background: white; cursor: pointer; font-family: inherit; color: #444; }}
+.deep-actions {{ margin-left: auto; display: flex; gap: 0.35rem; flex-wrap: wrap; }}
+.deep-btn {{ background: white; border: 1px solid #ddd; border-radius: 6px; padding: 0.32rem 0.7rem; font-size: 0.76rem; cursor: pointer; color: #555; transition: all 0.15s; font-family: inherit; }}
+.deep-btn:hover:not(:disabled) {{ background: {accent}; color: white; border-color: {accent}; }}
+.deep-btn:disabled {{ opacity: 0.4; cursor: not-allowed; }}
+.deep-status {{ padding: 0.55rem 1.1rem; font-size: 0.82rem; color: #555; background: #f7f9fb; border-bottom: 1px solid #eee; display: none; }}
+.deep-status.active {{ display: block; }}
+.deep-status.error {{ color: #b33a3a; background: #fef3f2; border-bottom-color: #fadcd9; }}
+.deep-body {{ padding: 1.2rem 1.5rem; display: none; }}
+.deep-body.active {{ display: block; }}
+.deep-answer {{ font-size: 0.94rem; line-height: 1.75; color: #262626; }}
+.deep-answer p {{ margin: 0.75rem 0; }}
+.deep-answer h1, .deep-answer h2, .deep-answer h3 {{ color: {accent_dark}; margin: 1.1rem 0 0.45rem; line-height: 1.3; }}
+.deep-answer h1 {{ font-size: 1.2rem; }}
+.deep-answer h2 {{ font-size: 1.05rem; }}
+.deep-answer h3 {{ font-size: 0.96rem; }}
+.deep-answer ul, .deep-answer ol {{ margin: 0.5rem 0 0.5rem 1.5rem; }}
+.deep-answer li {{ margin: 0.25rem 0; }}
+.deep-answer strong {{ color: #1a1a1a; }}
+.deep-answer a.ref {{ display: inline-block; color: {accent}; text-decoration: none; font-weight: 700; font-size: 0.72rem; padding: 0 0.32rem; border-radius: 3px; background: {accent}1a; margin: 0 0.12rem; vertical-align: super; line-height: 1.2; }}
+.deep-answer a.ref:hover {{ background: {accent}; color: white; }}
+.deep-answer figure {{ margin: 1rem auto; max-width: 90%; padding: 0.6rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee; }}
+.deep-answer figure img {{ max-width: 100%; border-radius: 4px; display: block; margin: 0 auto; cursor: zoom-in; }}
+.deep-answer figure figcaption {{ font-size: 0.78rem; color: #666; text-align: center; margin-top: 0.45rem; font-style: italic; }}
+.deep-answer code {{ background: #f2f2f4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.86em; font-family: ui-monospace, monospace; }}
+.deep-answer pre {{ background: #f6f8fa; padding: 0.7rem 0.9rem; border-radius: 6px; overflow-x: auto; }}
+.deep-refs {{ margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; }}
+.deep-refs h4 {{ font-size: 0.88rem; color: {accent_dark}; margin-bottom: 0.55rem; }}
+.deep-refs ol {{ margin-left: 1.2rem; font-size: 0.82rem; color: #555; }}
+.deep-refs li {{ margin: 0.3rem 0; line-height: 1.55; }}
+.deep-refs a {{ color: {accent}; text-decoration: none; }}
+.deep-refs a:hover {{ text-decoration: underline; }}
+.deep-figures {{ margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid #eee; }}
+.deep-figures h4 {{ font-size: 0.88rem; color: {accent_dark}; margin-bottom: 0.6rem; }}
+.deep-figures-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.7rem; }}
+.deep-fig-item {{ background: #fafafa; border: 1px solid #eee; border-radius: 6px; overflow: hidden; }}
+.deep-fig-item a {{ text-decoration: none; color: inherit; display: block; }}
+.deep-fig-item img {{ width: 100%; height: 115px; object-fit: cover; cursor: zoom-in; display: block; }}
+.deep-fig-item .fig-cap {{ padding: 0.35rem 0.6rem; font-size: 0.7rem; color: #666; line-height: 1.35; }}
+.modal {{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 9999; align-items: center; justify-content: center; padding: 1rem; }}
+.modal.active {{ display: flex; }}
+.modal-content {{ background: white; border-radius: 12px; padding: 1.8rem 2rem; max-width: 520px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }}
+.modal-content h3 {{ font-size: 1.1rem; color: {accent_dark}; margin-bottom: 0.5rem; }}
+.modal-content p {{ font-size: 0.87rem; color: #555; line-height: 1.6; margin-bottom: 0.4rem; }}
+.modal-content .warn {{ font-size: 0.76rem; color: #a82727; padding: 0.55rem 0.75rem; background: #fef3f2; border-left: 3px solid #e74c3c; border-radius: 4px; margin: 0.8rem 0; line-height: 1.5; }}
+.modal-content label {{ display: block; font-size: 0.8rem; font-weight: 600; color: #333; margin: 0.75rem 0 0.3rem; }}
+.modal-content input {{ width: 100%; padding: 0.55rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem; font-family: ui-monospace, monospace; color: #222; }}
+.modal-content input:focus {{ border-color: {accent}; outline: none; }}
+.modal-actions {{ display: flex; gap: 0.55rem; justify-content: flex-end; margin-top: 1.2rem; }}
+.modal-actions button {{ padding: 0.5rem 1.1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: 1px solid #ddd; background: white; color: #555; font-family: inherit; }}
+.modal-actions button.primary {{ background: {accent}; color: white; border-color: {accent}; }}
+.modal-actions button:hover {{ opacity: 0.88; }}"""
 
 JS = """function toggleTopic(id) {
   const body = document.getElementById(id);
@@ -700,6 +762,7 @@ let searchTimer;
 document.addEventListener('DOMContentLoaded', function() {
   const input = document.getElementById('search-input');
   if (input) input.addEventListener('input', function() {
+    if (window._searchMode === 'deep') return;
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => searchPapers(this.value), 300);
   });
@@ -721,6 +784,539 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && lb.classList.contains('active')) { lb.classList.remove('active'); lbImg.src = ''; }
   });
+});
+
+// ============================================================================
+// Deep Research (client-side RAG + Anthropic streaming with Extended Thinking)
+// ============================================================================
+const DEEP = { index: null, loading: false, currentAnswer: '', currentRefs: [] };
+
+// Safe DOM helpers (no .innerHTML usage)
+function clearEl(el) { while (el && el.firstChild) el.removeChild(el.firstChild); }
+function renderTo(el, content) {
+  if (!el) return;
+  clearEl(el);
+  if (!content) return;
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const frag = range.createContextualFragment(content);
+  el.appendChild(frag);
+}
+
+function deepSetStatus(text, isError) {
+  const el = document.getElementById('deep-status');
+  if (!el) return;
+  if (!text) { el.classList.remove('active', 'error'); el.textContent = ''; return; }
+  el.textContent = text;
+  el.classList.add('active');
+  if (isError) el.classList.add('error'); else el.classList.remove('error');
+}
+
+function deepShowPanel() {
+  document.getElementById('deep-panel').style.display = '';
+  document.getElementById('deep-body').classList.add('active');
+}
+
+function deepHidePanel() {
+  document.getElementById('deep-panel').style.display = 'none';
+  document.getElementById('deep-body').classList.remove('active');
+  deepSetStatus('');
+  clearEl(document.getElementById('deep-answer'));
+  document.getElementById('deep-refs').style.display = 'none';
+  document.getElementById('deep-figures').style.display = 'none';
+  DEEP.currentAnswer = '';
+  DEEP.currentRefs = [];
+  deepUpdateButtons(false);
+}
+
+function deepUpdateButtons(enabled) {
+  for (const id of ['deep-copy', 'deep-download', 'deep-newtab']) {
+    const b = document.getElementById(id);
+    if (b) b.disabled = !enabled;
+  }
+}
+
+async function deepLoadIndex() {
+  if (DEEP.index) return DEEP.index;
+  if (DEEP.loading) {
+    while (DEEP.loading) await new Promise(r => setTimeout(r, 100));
+    return DEEP.index;
+  }
+  DEEP.loading = true;
+  deepSetStatus('\U0001F4E6 Loading search index...');
+  try {
+    const resp = await fetch('_search_index.json');
+    if (!resp.ok) throw new Error('Index fetch failed: ' + resp.status);
+    DEEP.index = await resp.json();
+    return DEEP.index;
+  } finally {
+    DEEP.loading = false;
+  }
+}
+
+function dequantizeEmb(b64) {
+  const binary = atob(b64);
+  const dim = binary.length;
+  const vec = new Float32Array(dim);
+  for (let i = 0; i < dim; i++) {
+    let b = binary.charCodeAt(i);
+    if (b >= 128) b -= 256;
+    vec[i] = b / 127.0;
+  }
+  let n = 0;
+  for (let i = 0; i < dim; i++) n += vec[i] * vec[i];
+  n = Math.sqrt(n) || 1;
+  for (let i = 0; i < dim; i++) vec[i] /= n;
+  return vec;
+}
+
+function cosineSim(a, b) {
+  let s = 0;
+  for (let i = 0; i < a.length; i++) s += a[i] * b[i];
+  return s;
+}
+
+async function embedQuery(text) {
+  const key = localStorage.getItem('openai_key');
+  if (!key) throw new Error('OpenAI API key missing');
+  const resp = await fetch('https://api.openai.com/v1/embeddings', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body: JSON.stringify({ input: text, model: 'text-embedding-3-small' }),
+  });
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error('OpenAI embed ' + resp.status + ': ' + err.slice(0, 180));
+  }
+  const data = await resp.json();
+  const raw = data.data[0].embedding;
+  let n = 0;
+  for (const v of raw) n += v * v;
+  n = Math.sqrt(n) || 1;
+  return raw.map(v => v / n);
+}
+
+function parseTimeFilter(q) {
+  const now = new Date().getFullYear();
+  const P = [
+    [/(\\d{4})\\s*년\\s*이후|since\\s+(\\d{4})|after\\s+(\\d{4})/i, m => ({min: +(m[1]||m[2]||m[3])})],
+    [/(\\d{4})\\s*년\\s*이전|before\\s+(\\d{4})/i, m => ({max: +(m[1]||m[2])})],
+    [/최근\\s*(\\d+)\\s*년|last\\s+(\\d+)\\s+years?|past\\s+(\\d+)\\s+years?/i, m => ({min: now - +(m[1]||m[2]||m[3])})],
+    [/최근\\s*1\\s*년|last\\s+year/i, () => ({min: now - 1})],
+    [/(\\d{4})\\s*[-~]\\s*(\\d{4})/, m => ({min: +m[1], max: +m[2]})],
+  ];
+  for (const [re, fn] of P) {
+    const m = q.match(re);
+    if (m) return fn(m);
+  }
+  return null;
+}
+
+function detectLang(text) {
+  const ko = (text.match(/[\\u1100-\\u11FF\\u3130-\\u318F\\uAC00-\\uD7AF]/g) || []).length;
+  return (ko / (text.length || 1)) > 0.1 ? 'ko' : 'en';
+}
+
+function retrieveChunks(queryVec, index, timeFilter, k) {
+  const chunks = index.chunks, papers = index.papers;
+  const scored = [];
+  for (let i = 0; i < chunks.length; i++) {
+    const c = chunks[i];
+    const paper = papers[c.slug];
+    if (!paper) continue;
+    if (timeFilter) {
+      const y = parseInt(paper.year);
+      if (timeFilter.min && (!y || y < timeFilter.min)) continue;
+      if (timeFilter.max && (!y || y > timeFilter.max)) continue;
+    }
+    const vec = dequantizeEmb(c.emb);
+    scored.push({ chunk: c, paper: paper, sim: cosineSim(queryVec, vec) });
+  }
+  scored.sort((a, b) => b.sim - a.sim);
+  const used = {};
+  const sel = [];
+  for (const s of scored) {
+    if (sel.length >= k) break;
+    used[s.chunk.slug] = (used[s.chunk.slug] || 0) + 1;
+    if (used[s.chunk.slug] > 3) continue;
+    sel.push(s);
+  }
+  return sel;
+}
+
+function mdToMarkup(md) {
+  if (window.marked) {
+    try { return window.marked.parse(md, { gfm: true, breaks: false }); }
+    catch (e) { /* fallthrough */ }
+  }
+  let h = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
+    .replace(/!\\[([^\\]]*)\\]\\(([^)]+)\\)/g, '<figure><img src="$2" alt="$1"><figcaption>$1</figcaption></figure>')
+    .replace(/\\[([^\\]]+)\\]\\(([^)]+)\\)/g, '<a href="$2">$1</a>')
+    .replace(/\\n\\n+/g, '</p><p>');
+  return '<p>' + h + '</p>';
+}
+
+function postProcessRefs(markup, refs) {
+  return markup.replace(/\\[ref:(\\d+)\\]/g, (_, n) => {
+    const ref = refs[parseInt(n) - 1];
+    if (!ref) return '[ref:' + n + ']';
+    return '<a class="ref" href="' + ref.url + '" target="_blank">[' + n + ']</a>';
+  });
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function collectCitedNums(md) {
+  const cited = new Set();
+  for (const m of md.matchAll(/\\[ref:(\\d+)\\]/g)) cited.add(parseInt(m[1]));
+  return cited;
+}
+
+function collectInlineFigureUrls(md) {
+  const used = new Set();
+  for (const m of md.matchAll(/!\\[[^\\]]*\\]\\(([^)]+)\\)/g)) used.add(m[1]);
+  return used;
+}
+
+function buildPrompt(query, selected, lang) {
+  const systemKo = '당신은 학술 논문 큐레이션의 리서치 보조입니다. 아래에 제공된 논문 발췌문만을 근거로, 큐레이터의 "카테고리 요약" 스타일을 따라 답변하세요.\\n\\n스타일 지침:\\n- 서술형 한국어 문장 (불릿 나열은 꼭 필요할 때만)\\n- 2~5개 문단, 주제별 또는 시간순으로 자연스럽게 묶기\\n- 모든 주장에 [ref:N] 인용 (N은 아래 발췌문 번호)\\n- 연관된 Figure는 본문의 적절한 위치에 ![caption](url) 형식으로 삽입 (발췌문의 Figures에 명시된 URL만 사용, 임의 URL 금지)\\n- 마지막 문단은 연구들을 종합하는 한두 문장\\n\\n답변 절차 (출력에 포함하지 말 것):\\n1. 먼저 내부적으로 질의를 분석하고, 어떤 논문들을 어떤 그룹/순서로 엮을지 계획을 세우세요.\\n2. 그런 다음 계획에 따라 최종 답변 본문만 작성하세요.\\n3. 제공된 발췌문 밖의 지식을 절대 사용하지 마세요.\\n4. 발췌문으로 뒷받침되지 않는 주장은 생략하세요.';
+  const systemEn = 'You are a research assistant for an academic paper curation. Answer using ONLY the provided excerpts, following the curator\\'s "category overview" style.\\n\\nStyle guidelines:\\n- Narrative prose (use bullets only when truly needed)\\n- 2-5 paragraphs, grouped by theme or chronology\\n- Cite every claim with [ref:N] where N is the excerpt number below\\n- Embed relevant figures inline at natural positions using ![caption](url) markdown; only use figure URLs explicitly listed with the excerpts (no fabricated URLs)\\n- Close with one or two synthesizing sentences\\n\\nProcedure (do NOT include in output):\\n1. First analyse the query internally and plan which papers to cover and how to group/order them.\\n2. Then write only the final answer body according to your plan.\\n3. Do not use any knowledge beyond the excerpts.\\n4. Omit any claim you cannot back up with an excerpt.';
+  const lines = [];
+  for (let i = 0; i < selected.length; i++) {
+    const s = selected[i], n = i + 1, paper = s.paper;
+    const figs = (paper.figures && paper.figures.length)
+      ? '\\n  Figures:\\n' + paper.figures.map(f => '    - ' + f.url + '  (' + (f.caption || 'figure') + ')').join('\\n')
+      : '';
+    lines.push('[' + n + '] Paper: "' + paper.title + '" (' + (paper.year || 'n/a') + ', category: ' + (paper.category || 'n/a') + ')\\n  Section: ' + s.chunk.section + figs + '\\n  Text:\\n' + s.chunk.text.split('\\n').map(l => '    ' + l).join('\\n'));
+  }
+  const user = 'Excerpts from paper reviews:\\n\\n' + lines.join('\\n\\n---\\n\\n') + '\\n\\n---\\nQuestion: ' + query;
+  return { system: lang === 'ko' ? systemKo : systemEn, user: user };
+}
+
+async function callClaude(query, selected, lang, model) {
+  const apiKey = localStorage.getItem('anthropic_key');
+  if (!apiKey) throw new Error('Anthropic API key missing');
+  const p = buildPrompt(query, selected, lang);
+  const body = {
+    model: model,
+    max_tokens: 8192,
+    thinking: { type: 'enabled', budget_tokens: 2000 },
+    system: p.system,
+    messages: [{ role: 'user', content: p.user }],
+    stream: true,
+  };
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify(body),
+  });
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error('Anthropic ' + resp.status + ': ' + err.slice(0, 300));
+  }
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let idx;
+    while ((idx = buffer.indexOf('\\n\\n')) !== -1) {
+      const block = buffer.slice(0, idx);
+      buffer = buffer.slice(idx + 2);
+      for (const line of block.split('\\n')) {
+        if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6);
+        if (payload === '[DONE]') continue;
+        let ev;
+        try { ev = JSON.parse(payload); } catch { continue; }
+        if (ev.type === 'content_block_start') {
+          if (ev.content_block.type === 'thinking') deepSetStatus('\U0001F914 답변 계획 중...');
+          else if (ev.content_block.type === 'text') deepSetStatus('\u270D\uFE0F 답변 작성 중...');
+        } else if (ev.type === 'content_block_delta') {
+          if (ev.delta.type === 'text_delta') {
+            DEEP.currentAnswer += ev.delta.text;
+            renderDeepAnswer(DEEP.currentAnswer);
+          }
+        } else if (ev.type === 'error') {
+          throw new Error('Anthropic stream error: ' + (ev.error && ev.error.message || JSON.stringify(ev)));
+        }
+      }
+    }
+  }
+}
+
+function renderDeepAnswer(md) {
+  const el = document.getElementById('deep-answer');
+  if (!el) return;
+  let markup = mdToMarkup(md);
+  markup = postProcessRefs(markup, DEEP.currentRefs);
+  renderTo(el, markup);
+}
+
+function finalizeDeepAnswer() {
+  const cited = collectCitedNums(DEEP.currentAnswer);
+  const refsListEl = document.getElementById('deep-refs-list');
+  clearEl(refsListEl);
+  if (cited.size > 0) {
+    const ordered = [...cited].sort((a, b) => a - b);
+    for (const n of ordered) {
+      const ref = DEEP.currentRefs[n - 1];
+      if (!ref) continue;
+      const li = document.createElement('li');
+      li.appendChild(document.createTextNode('[' + n + '] '));
+      const link = document.createElement('a');
+      link.href = ref.url;
+      link.target = '_blank';
+      link.textContent = ref.title;
+      li.appendChild(link);
+      if (ref.year) li.appendChild(document.createTextNode(' (' + ref.year + ')'));
+      refsListEl.appendChild(li);
+    }
+    document.getElementById('deep-refs').style.display = '';
+  }
+  const usedInBody = collectInlineFigureUrls(DEEP.currentAnswer);
+  const grid = document.getElementById('deep-figures-grid');
+  clearEl(grid);
+  let added = 0;
+  for (const n of [...cited].sort((a, b) => a - b)) {
+    const ref = DEEP.currentRefs[n - 1];
+    if (!ref || !ref.figures || !ref.figures.length) continue;
+    for (const fig of ref.figures) {
+      if (usedInBody.has(fig.url)) continue;
+      const div = document.createElement('div');
+      div.className = 'deep-fig-item';
+      const link = document.createElement('a');
+      link.href = ref.url;
+      link.target = '_blank';
+      link.title = ref.title + ' — ' + (fig.caption || '');
+      const img = document.createElement('img');
+      img.src = fig.url;
+      img.alt = fig.caption || '';
+      const cap = document.createElement('div');
+      cap.className = 'fig-cap';
+      cap.textContent = '[' + n + '] ' + (fig.caption || 'Figure');
+      link.appendChild(img);
+      link.appendChild(cap);
+      div.appendChild(link);
+      grid.appendChild(div);
+      added++;
+      if (added >= 20) break;
+    }
+    if (added >= 20) break;
+  }
+  document.getElementById('deep-figures').style.display = added > 0 ? '' : 'none';
+  deepUpdateButtons(true);
+}
+
+async function runDeepResearch(query) {
+  query = (query || '').trim();
+  if (!query) return;
+  if (!localStorage.getItem('anthropic_key') || !localStorage.getItem('openai_key')) {
+    openApiKeyModal();
+    return;
+  }
+  deepShowPanel();
+  clearEl(document.getElementById('deep-answer'));
+  document.getElementById('deep-refs').style.display = 'none';
+  document.getElementById('deep-figures').style.display = 'none';
+  DEEP.currentAnswer = '';
+  DEEP.currentRefs = [];
+  deepUpdateButtons(false);
+  try {
+    const index = await deepLoadIndex();
+    deepSetStatus('\U0001F50D 질의 임베딩 중...');
+    const queryVec = await embedQuery(query);
+    deepSetStatus('\U0001F4DA 관련 논문 검색 중...');
+    const timeFilter = parseTimeFilter(query);
+    const selected = retrieveChunks(queryVec, index, timeFilter, 30);
+    if (selected.length === 0) {
+      deepSetStatus('관련 논문을 찾지 못했어요. 질의를 다시 입력해보세요.', true);
+      return;
+    }
+    DEEP.currentRefs = selected.map((s, i) => ({
+      n: i + 1,
+      slug: s.chunk.slug,
+      title: s.paper.title,
+      year: s.paper.year,
+      url: s.paper.url,
+      figures: s.paper.figures || [],
+    }));
+    const lang = detectLang(query);
+    const model = document.getElementById('deep-model').value || 'claude-haiku-4-5';
+    await callClaude(query, selected, lang, model);
+    finalizeDeepAnswer();
+    deepSetStatus('\u2705 완료');
+    setTimeout(() => deepSetStatus(''), 2500);
+  } catch (e) {
+    console.error(e);
+    deepSetStatus('오류: ' + e.message, true);
+  }
+}
+
+function setSearchMode(mode) {
+  window._searchMode = mode;
+  const cb = document.getElementById('mode-classic');
+  const db = document.getElementById('mode-deep');
+  const input = document.getElementById('search-input');
+  const hint = document.getElementById('search-hint');
+  if (cb) cb.classList.toggle('active', mode === 'classic');
+  if (db) db.classList.toggle('active', mode === 'deep');
+  if (mode === 'deep') {
+    if (input) input.placeholder = 'Deep Research: 자유롭게 질의하세요 (예: 2023년 이후 LLM agent 동향)';
+    if (hint) hint.textContent = 'Press Enter to run Deep Research. Uses your Anthropic + OpenAI keys (stored in localStorage, never sent to this site).';
+  } else {
+    if (input) input.placeholder = 'Search papers by title, DOI, keyword...';
+    if (hint) hint.textContent = 'Enter title, DOI, author name, or keyword to filter';
+    deepHidePanel();
+  }
+}
+
+function openApiKeyModal() {
+  const modal = document.getElementById('api-key-modal');
+  document.getElementById('anthropic-key').value = localStorage.getItem('anthropic_key') || '';
+  document.getElementById('openai-key').value = localStorage.getItem('openai_key') || '';
+  modal.classList.add('active');
+}
+function closeApiKeyModal() {
+  document.getElementById('api-key-modal').classList.remove('active');
+}
+
+function buildFullMarkdown() {
+  const q = document.getElementById('search-input').value;
+  const lines = ['# Deep Research', '', '**Query**: ' + q, '**Generated**: ' + new Date().toISOString(), '', '---', '', DEEP.currentAnswer];
+  const cited = collectCitedNums(DEEP.currentAnswer);
+  if (cited.size > 0) {
+    lines.push('', '## References', '');
+    for (const n of [...cited].sort((a, b) => a - b)) {
+      const ref = DEEP.currentRefs[n - 1];
+      if (!ref) continue;
+      lines.push('[' + n + '] [' + ref.title + '](' + ref.url + ')' + (ref.year ? ' (' + ref.year + ')' : ''));
+    }
+  }
+  return lines.join('\\n');
+}
+
+function copyAnswerMd() {
+  if (!DEEP.currentAnswer) return;
+  const full = buildFullMarkdown();
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = document.getElementById('deep-copy');
+    const orig = btn.textContent;
+    btn.textContent = '\u2713 Copied';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+function downloadAnswerMd() {
+  if (!DEEP.currentAnswer) return;
+  const full = buildFullMarkdown();
+  const blob = new Blob([full], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  a.href = url;
+  a.download = 'deep-research-' + ts + '.md';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+function openAnswerInNewTab() {
+  if (!DEEP.currentAnswer) return;
+  const q = document.getElementById('search-input').value;
+  let answerMarkup = mdToMarkup(DEEP.currentAnswer);
+  answerMarkup = postProcessRefs(answerMarkup, DEEP.currentRefs);
+  const cited = collectCitedNums(DEEP.currentAnswer);
+  let refsMarkup = '';
+  if (cited.size > 0) {
+    refsMarkup = '<h3>References</h3><ol>';
+    for (const n of [...cited].sort((a, b) => a - b)) {
+      const ref = DEEP.currentRefs[n - 1];
+      if (!ref) continue;
+      refsMarkup += '<li>[' + n + '] <a href="' + ref.url + '" target="_blank">' + escapeAttr(ref.title) + '</a>' + (ref.year ? ' (' + ref.year + ')' : '') + '</li>';
+    }
+    refsMarkup += '</ol>';
+  }
+  const base = new URL('.', window.location.href).href;
+  answerMarkup = answerMarkup.replace(/(src|href)="(\\.\\.\\/[^"]+)"/g, (_, attr, rel) => attr + '="' + new URL(rel, base).href + '"');
+  refsMarkup = refsMarkup.replace(/href="(\\.\\.\\/[^"]+)"/g, (_, rel) => 'href="' + new URL(rel, base).href + '"');
+  const doc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Deep Research</title><style>' +
+    'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:760px;margin:2rem auto;padding:0 1.5rem;color:#222;line-height:1.75;}' +
+    'h1{font-size:1.35rem;margin-bottom:0.3rem;}' +
+    '.meta{color:#888;font-size:0.85rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid #eee;}' +
+    '.answer{font-size:0.96rem;}' +
+    '.answer p{margin:0.9rem 0;}' +
+    '.answer h1,.answer h2,.answer h3{color:#333;margin:1.2rem 0 0.5rem;}' +
+    '.answer a.ref{display:inline-block;color:#2563EB;text-decoration:none;font-weight:700;font-size:0.72rem;padding:0 0.3rem;border-radius:3px;background:#EBF2FF;vertical-align:super;margin:0 0.1rem;}' +
+    '.answer figure{margin:1rem auto;max-width:92%;padding:0.55rem;background:#fafafa;border-radius:8px;border:1px solid #eee;}' +
+    '.answer figure img{max-width:100%;display:block;margin:0 auto;}' +
+    '.answer figure figcaption{font-size:0.78rem;color:#666;text-align:center;margin-top:0.4rem;font-style:italic;}' +
+    'h3{color:#333;margin:2rem 0 0.6rem;border-top:1px solid #eee;padding-top:1rem;}' +
+    'ol{font-size:0.85rem;color:#555;margin-left:1rem;}' +
+    'ol li{margin:0.3rem 0;}' +
+    'ol a{color:#2563EB;text-decoration:none;}' +
+    '@media print{body{max-width:none;}}' +
+    '</style></head><body>' +
+    '<h1>Deep Research</h1>' +
+    '<div class="meta"><strong>Query:</strong> ' + escapeAttr(q) + '<br><strong>Generated:</strong> ' + new Date().toLocaleString() + '</div>' +
+    '<div class="answer">' + answerMarkup + '</div>' +
+    refsMarkup +
+    '</body></html>';
+  const blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  window._searchMode = 'classic';
+  const cb = document.getElementById('mode-classic');
+  const db = document.getElementById('mode-deep');
+  if (cb) cb.addEventListener('click', () => setSearchMode('classic'));
+  if (db) db.addEventListener('click', () => setSearchMode('deep'));
+  const input = document.getElementById('search-input');
+  if (input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && window._searchMode === 'deep') {
+        e.preventDefault();
+        runDeepResearch(this.value);
+      }
+    });
+  }
+  const close = document.getElementById('deep-close');
+  if (close) close.addEventListener('click', deepHidePanel);
+  const copy = document.getElementById('deep-copy');
+  if (copy) copy.addEventListener('click', copyAnswerMd);
+  const dl = document.getElementById('deep-download');
+  if (dl) dl.addEventListener('click', downloadAnswerMd);
+  const nt = document.getElementById('deep-newtab');
+  if (nt) nt.addEventListener('click', openAnswerInNewTab);
+  const save = document.getElementById('api-key-save');
+  if (save) save.addEventListener('click', function() {
+    const a = document.getElementById('anthropic-key').value.trim();
+    const o = document.getElementById('openai-key').value.trim();
+    if (a) localStorage.setItem('anthropic_key', a);
+    if (o) localStorage.setItem('openai_key', o);
+    closeApiKeyModal();
+    if (a && o && window._searchMode === 'deep') {
+      runDeepResearch(document.getElementById('search-input').value);
+    }
+  });
+  const cancel = document.getElementById('api-key-cancel');
+  if (cancel) cancel.addEventListener('click', closeApiKeyModal);
 });"""
 
 
@@ -932,6 +1528,7 @@ HTML = (
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/font-kopub/1.0/kopubdotum.css">\n'
     '<script>window.MathJax={tex:{inlineMath:[[\'$\',\'$\'],[\'\\\\(\',\'\\\\)\']],displayMath:[[\'$$\',\'$$\'],[\'\\\\[\',\'\\\\]\']]}};</script>\n'
     '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>\n'
+    '<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>\n'
     f'<style>\n{CSS}\n</style>\n'
     '</head>\n'
     '<body>\n'
@@ -947,9 +1544,42 @@ HTML = (
     + research_tl_html
     + render_insights_section()
     + '  <div class="search-box">\n'
-    '    <input type="text" id="search-input" placeholder="Search papers by title, DOI, keyword...">\n'
-    '    <div class="search-hint">Enter title, DOI, author name, or keyword to filter</div>\n'
+    '    <div class="search-row">\n'
+    '      <input type="text" id="search-input" placeholder="Search papers by title, DOI, keyword...">\n'
+    '      <div class="mode-toggle">\n'
+    '        <button class="mode-btn active" id="mode-classic" title="Substring search">Classic</button>\n'
+    '        <button class="mode-btn" id="mode-deep" title="Deep Research (uses your API keys)">&#x1F9E0; Deep</button>\n'
+    '      </div>\n'
+    '    </div>\n'
+    '    <div class="search-hint" id="search-hint">Enter title, DOI, author name, or keyword to filter</div>\n'
     '    <div class="search-count" id="search-count"></div>\n'
+    '    <div id="deep-panel" class="deep-panel" style="display:none">\n'
+    '      <div class="deep-header">\n'
+    '        <h3>Deep Research</h3>\n'
+    '        <select id="deep-model" class="deep-model">\n'
+    '          <option value="claude-haiku-4-5">Haiku 4.5 (fast &amp; cheap)</option>\n'
+    '          <option value="claude-sonnet-4-5">Sonnet 4.5 (best quality)</option>\n'
+    '        </select>\n'
+    '        <div class="deep-actions">\n'
+    '          <button class="deep-btn" id="deep-copy" disabled title="Copy markdown">&#x1F4CB; Copy</button>\n'
+    '          <button class="deep-btn" id="deep-download" disabled title="Download .md">&#x2B07; Download</button>\n'
+    '          <button class="deep-btn" id="deep-newtab" disabled title="Open in new tab">&#x1F517; New tab</button>\n'
+    '          <button class="deep-btn" id="deep-close" title="Close">&#x2715;</button>\n'
+    '        </div>\n'
+    '      </div>\n'
+    '      <div class="deep-status" id="deep-status"></div>\n'
+    '      <div class="deep-body" id="deep-body">\n'
+    '        <div class="deep-answer" id="deep-answer"></div>\n'
+    '        <div class="deep-refs" id="deep-refs" style="display:none">\n'
+    '          <h4>References</h4>\n'
+    '          <ol id="deep-refs-list"></ol>\n'
+    '        </div>\n'
+    '        <div class="deep-figures" id="deep-figures" style="display:none">\n'
+    '          <h4>Related Figures</h4>\n'
+    '          <div class="deep-figures-grid" id="deep-figures-grid"></div>\n'
+    '        </div>\n'
+    '      </div>\n'
+    '    </div>\n'
     '  </div>\n\n'
     + '  <div class="sort-bar">\n'
     '    <button class="sort-btn" onclick="sortCards(\'date\',\'asc\')">\ucd9c\ud310\uc77c &#x25B2;</button>\n'
@@ -965,6 +1595,21 @@ HTML = (
     '  </div>\n\n'
     '</div>\n\n'
     '<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>\n\n'
+    '<div id="api-key-modal" class="modal">\n'
+    '  <div class="modal-content">\n'
+    '    <h3>&#x1F511; API Keys Required</h3>\n'
+    '    <p>Deep Research uses your own Anthropic and OpenAI API keys. Keys are stored in your browser only (localStorage) and are never sent to this site\'s server.</p>\n'
+    '    <div class="warn">&#x26A0; Your keys are exposed to this page\'s JavaScript. Use a rate-limited key if possible.</div>\n'
+    '    <label for="anthropic-key">Anthropic API Key (sk-ant-...)</label>\n'
+    '    <input type="password" id="anthropic-key" placeholder="sk-ant-...">\n'
+    '    <label for="openai-key">OpenAI API Key (sk-...)</label>\n'
+    '    <input type="password" id="openai-key" placeholder="sk-...">\n'
+    '    <div class="modal-actions">\n'
+    '      <button id="api-key-cancel">Cancel</button>\n'
+    '      <button id="api-key-save" class="primary">Save &amp; continue</button>\n'
+    '    </div>\n'
+    '  </div>\n'
+    '</div>\n\n'
     f'<script>\n{JS}\n</script>\n\n'
     '<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">'
     'Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com'
