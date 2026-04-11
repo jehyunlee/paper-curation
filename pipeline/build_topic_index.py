@@ -613,8 +613,8 @@ img.lazy.loaded {{ opacity: 1; }}
 .deep-answer strong {{ color: #1a1a1a; }}
 .deep-answer a.ref {{ display: inline-block; color: {accent}; text-decoration: none; font-weight: 700; font-size: 0.72rem; padding: 0 0.32rem; border-radius: 3px; background: {accent}1a; margin: 0 0.12rem; vertical-align: super; line-height: 1.2; }}
 .deep-answer a.ref:hover {{ background: {accent}; color: white; }}
-.deep-answer figure {{ margin: 1rem auto; max-width: 90%; padding: 0.6rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee; }}
-.deep-answer figure img {{ max-width: 100%; border-radius: 4px; display: block; margin: 0 auto; cursor: zoom-in; }}
+.deep-answer figure {{ margin: 1rem 0; max-width: 100%; padding: 0.6rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee; }}
+.deep-answer figure img {{ width: 100%; height: auto; border-radius: 4px; display: block; cursor: zoom-in; }}
 .deep-answer figure figcaption {{ font-size: 0.78rem; color: #666; text-align: center; margin-top: 0.45rem; font-style: italic; }}
 .deep-answer code {{ background: #f2f2f4; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.86em; font-family: ui-monospace, monospace; }}
 .deep-answer pre {{ background: #f6f8fa; padding: 0.7rem 0.9rem; border-radius: 6px; overflow-x: auto; }}
@@ -999,14 +999,33 @@ function buildPrompt(query, selected, lang) {
   return { system: lang === 'ko' ? systemKo : systemEn, user: user };
 }
 
-async function callClaude(query, selected, lang, model) {
+const LENGTH_SPEC = {
+  short:  { max_tokens: 4096,  thinking: 1500, ko: '2~5개 문단으로 간결하게 (약 400~900자)',       en: '2-5 concise paragraphs (roughly 300-700 words)' },
+  medium: { max_tokens: 6500,  thinking: 2500, ko: '5~10개 문단으로 충실하게 (약 900~1800자)',     en: '5-10 substantial paragraphs (roughly 700-1500 words)' },
+  long:   { max_tokens: 12000, thinking: 4000, ko: '10~20개 문단으로 상세하게 (약 1800~4500자)',   en: '10-20 detailed paragraphs (roughly 1500-3500 words)' },
+  ultra:  { max_tokens: 20000, thinking: 6000, ko: '20~40개 문단으로 심층적으로 (약 4500~9000자)', en: '20-40 in-depth paragraphs (roughly 3500-7000 words)' },
+};
+
+async function callClaude(query, selected, lang, model, length) {
   const apiKey = localStorage.getItem('anthropic_key');
   if (!apiKey) throw new Error('Anthropic API key missing');
+  const spec = LENGTH_SPEC[length] || LENGTH_SPEC.short;
+  // Haiku 4.5 caps output at ~8192 tokens; Sonnet can go higher.
+  let maxTokens = spec.max_tokens;
+  let thinkingBudget = spec.thinking;
+  if (model === 'claude-haiku-4-5' && maxTokens > 8000) {
+    maxTokens = 8000;
+    if (thinkingBudget > 2500) thinkingBudget = 2500;
+  }
   const p = buildPrompt(query, selected, lang);
+  // Append length directive to the system prompt.
+  p.system += '\\n\\n' + (lang === 'ko'
+    ? '분량 지침: 답변을 ' + spec.ko + '로 작성하세요. 분량이 길수록 각 논문을 더 깊이 있게 다루고, 주제 그룹을 더 세분화하세요.'
+    : 'Length directive: write the answer as ' + spec.en + '. Longer lengths should cover each paper in more depth and introduce finer thematic subdivisions.');
   const body = {
     model: model,
-    max_tokens: 8192,
-    thinking: { type: 'enabled', budget_tokens: 2000 },
+    max_tokens: maxTokens,
+    thinking: { type: 'enabled', budget_tokens: thinkingBudget },
     system: p.system,
     messages: [{ role: 'user', content: p.user }],
     stream: true,
@@ -1156,7 +1175,8 @@ async function runDeepResearch(query) {
     }));
     const lang = detectLang(query);
     const model = document.getElementById('deep-model').value || 'claude-haiku-4-5';
-    await callClaude(query, selected, lang, model);
+    const length = document.getElementById('deep-length').value || 'short';
+    await callClaude(query, selected, lang, model, length);
     finalizeDeepAnswer();
     deepSetStatus('\u2705 완료');
     setTimeout(() => deepSetStatus(''), 2500);
@@ -1565,7 +1585,13 @@ HTML = (
     '          <option value="claude-haiku-4-5">Haiku 4.5 (fast &amp; cheap)</option>\n'
     '          <option value="claude-sonnet-4-5">Sonnet 4.5 (best quality)</option>\n'
     '        </select>\n'
-    '        <button class="deep-btn" id="deep-rerun" disabled title="현재 질의를 선택한 모델로 다시 실행">&#x21BB; 재시작</button>\n'
+    '        <select id="deep-length" class="deep-model" title="답변 분량">\n'
+    '          <option value="short" selected>Short</option>\n'
+    '          <option value="medium">Medium (2x)</option>\n'
+    '          <option value="long">Long (5x)</option>\n'
+    '          <option value="ultra">Ultra (10x)</option>\n'
+    '        </select>\n'
+    '        <button class="deep-btn" id="deep-rerun" disabled title="현재 질의를 선택한 모델·분량으로 다시 실행">&#x21BB; 재시작</button>\n'
     '        <div class="deep-actions">\n'
     '          <button class="deep-btn" id="deep-copy" disabled title="Copy markdown">&#x1F4CB; Copy</button>\n'
     '          <button class="deep-btn" id="deep-download" disabled title="Download .md">&#x2B07; Download</button>\n'
