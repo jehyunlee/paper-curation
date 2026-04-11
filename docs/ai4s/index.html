@@ -20229,6 +20229,22 @@ function openAnswerInNewTab() {
 
 document.addEventListener('DOMContentLoaded', function() {
   window._searchMode = 'classic';
+
+  // Localhost dev convenience: auto-inject API keys from _local_keys.json
+  // (git-ignored, only present in local builds). On Cloudflare the file
+  // does not exist, so fetch() fails silently and visitors see the normal
+  // BYO-key modal. Keys go directly into localStorage and never overwrite
+  // an existing localStorage value (so manual entry still wins).
+  fetch('../_local_keys.json').then(function(r) {
+    return r.ok ? r.json() : null;
+  }).then(function(keys) {
+    if (!keys) return;
+    if (keys.anthropic_key && !localStorage.getItem('anthropic_key'))
+      localStorage.setItem('anthropic_key', keys.anthropic_key);
+    if (keys.openai_key && !localStorage.getItem('openai_key'))
+      localStorage.setItem('openai_key', keys.openai_key);
+  }).catch(function() { /* no local keys; fine */ });
+
   const cb = document.getElementById('mode-classic');
   const db = document.getElementById('mode-deep');
   if (cb) cb.addEventListener('click', () => setSearchMode('classic'));

@@ -10,12 +10,13 @@ import json, os, re, sys
 from html import escape
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 
 KST = timezone(timedelta(hours=9))
 TODAY = datetime.now(KST).strftime("%Y-%m-%d")
 
 from collections import OrderedDict
-from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir
+from config_loader import PAPERS_DIR as _PAPERS_DIR, DOCS_DIR, get_topic_dir
 from lib.categories import category_slug
 PAPERS_DIR = str(_PAPERS_DIR)
 
@@ -1307,6 +1308,22 @@ function openAnswerInNewTab() {
 
 document.addEventListener('DOMContentLoaded', function() {
   window._searchMode = 'classic';
+
+  // Localhost dev convenience: auto-inject API keys from _local_keys.json
+  // (git-ignored, only present in local builds). On Cloudflare the file
+  // does not exist, so fetch() fails silently and visitors see the normal
+  // BYO-key modal. Keys go directly into localStorage and never overwrite
+  // an existing localStorage value (so manual entry still wins).
+  fetch('../_local_keys.json').then(function(r) {
+    return r.ok ? r.json() : null;
+  }).then(function(keys) {
+    if (!keys) return;
+    if (keys.anthropic_key && !localStorage.getItem('anthropic_key'))
+      localStorage.setItem('anthropic_key', keys.anthropic_key);
+    if (keys.openai_key && !localStorage.getItem('openai_key'))
+      localStorage.setItem('openai_key', keys.openai_key);
+  }).catch(function() { /* no local keys; fine */ });
+
   const cb = document.getElementById('mode-classic');
   const db = document.getElementById('mode-deep');
   if (cb) cb.addEventListener('click', () => setSearchMode('classic'));
@@ -1656,6 +1673,31 @@ out_path = os.path.join(TOPIC_DIR, "index.html")
 with open(out_path, "w", encoding="utf-8") as f:
     f.write(HTML)
 print(f"Written: {out_path} ({len(HTML):,} chars)")
+
+# Operator convenience: write docs/_local_keys.json so localhost dev
+# automatically pre-fills Anthropic + OpenAI keys into localStorage
+# and skips the Deep Research modal. This file is git-ignored and
+# is never deployed, so visitors on Cloudflare still go through the
+# normal BYO-key flow.
+try:
+    _local_cfg_path = Path(__file__).resolve().parent.parent / "config.json"
+    _local_cfg = {}
+    if _local_cfg_path.exists():
+        with open(_local_cfg_path, "r", encoding="utf-8") as _lcf:
+            _local_cfg = json.load(_lcf)
+    _lk = {}
+    _anthropic = os.environ.get("ANTHROPIC_API_KEY") or _local_cfg.get("anthropic_api_key")
+    _openai = os.environ.get("OPENAI_API_KEY") or _local_cfg.get("openai_api_key")
+    if _anthropic:
+        _lk["anthropic_key"] = _anthropic
+    if _openai:
+        _lk["openai_key"] = _openai
+    if _lk:
+        _lk_path = Path(DOCS_DIR) / "_local_keys.json"
+        _lk_path.write_text(json.dumps(_lk), encoding="utf-8")
+        print(f"Local keys: {_lk_path} ({len(_lk)} keys, for localhost dev, git-ignored)")
+except Exception as _e:
+    print(f"Local keys skipped: {_e}")
 
 # Verify no old-style paths
 old_paths = re.findall(r'(?:href|src)="(\d{3}_[^"]*)"', HTML)
