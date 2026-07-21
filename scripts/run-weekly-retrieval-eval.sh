@@ -11,6 +11,8 @@ elif [[ -x /opt/homebrew/Caskroom/miniconda/base/envs/py312/bin/python ]]; then
   PYTHON=/opt/homebrew/Caskroom/miniconda/base/envs/py312/bin/python
 elif command -v python3.12 >/dev/null 2>&1; then
   PYTHON="$(command -v python3.12)"
+elif [[ -x /opt/homebrew/bin/python3 ]]; then
+  PYTHON=/opt/homebrew/bin/python3
 elif command -v python3 >/dev/null 2>&1; then
   PYTHON="$(command -v python3)"
 else
