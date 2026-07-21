@@ -549,6 +549,61 @@ def check_topic(rep, topic, cfg, papers):
 
 
 # ---------------------------------------------------------------------------
+# 10. Git 가드레일 (pre-push 훅 · 백업)
+# ---------------------------------------------------------------------------
+def _git_hooks_dir():
+    """core.hooksPath / worktree 를 고려한 실제 훅 디렉토리."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(REPO), "rev-parse", "--git-path", "hooks"],
+            capture_output=True, text=True, timeout=5)
+        if out.returncode == 0 and out.stdout.strip():
+            p = Path(out.stdout.strip())
+            return p if p.is_absolute() else (REPO / p)
+    except Exception:
+        pass
+    return REPO / ".git" / "hooks"
+
+
+def check_guardrails(rep):
+    rep.section("10. Git 가드레일 (pre-push 훅 · 백업)")
+
+    src = REPO / "scripts" / "pre-push"
+    installed = _git_hooks_dir() / "pre-push"
+    fix = "bash scripts/install-hooks.sh"
+
+    if not src.exists():
+        rep.warn("scripts/pre-push 없음", "훅 소스가 저장소에 없음")
+    elif not installed.exists():
+        rep.fail("pre-push 훅 미설치",
+                 "시크릿 유출 스캔이 실행된 적 없음 (.git/hooks 에 pre-push 없음)", fix)
+    elif installed.read_bytes() != src.read_bytes():
+        rep.warn("pre-push 훅 구버전",
+                 "scripts/pre-push 와 설치본이 다름 — 재설치 필요", fix)
+    elif not os.access(installed, os.X_OK):
+        rep.warn("pre-push 훅 비실행", "chmod +x 필요", fix)
+    else:
+        rep.ok("pre-push 훅 활성", "시크릿 스캔 차단 + validate 권고")
+
+    # 백업 대상 (macOS Time Machine) — git 밖 로컬 산출물 보호
+    if sys.platform == "darwin":
+        try:
+            tm = subprocess.run(["tmutil", "destinationinfo"],
+                                capture_output=True, text=True, timeout=5)
+            if tm.returncode != 0 or "No destinations" in (tm.stdout + tm.stderr):
+                rep.warn(
+                    "Time Machine 대상 없음",
+                    "git 밖 로컬 산출물(docs/papers · _agent · _local_keys 등) 미백업",
+                    "시스템 설정 → Time Machine 에서 백업 디스크 지정")
+            else:
+                rep.ok("Time Machine 대상 구성됨")
+        except FileNotFoundError:
+            pass
+        except Exception:
+            pass
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 def main():
@@ -579,6 +634,7 @@ def main():
     check_papers_index(rep, papers)
     if args.topic:
         check_topic(rep, args.topic, cfg, papers)
+    check_guardrails(rep)
 
     rep.summary()
     sys.exit(1 if rep.fails else 0)

@@ -1,16 +1,19 @@
 #!/bin/sh
 # pre-push hook for paper-curation
-# Install: cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+# Install: bash scripts/install-hooks.sh   (idempotent, self-verifying)
 #
-# Blocks pushes that:
-#  1. Embed Anthropic / OpenAI API keys (sk-ant-..., sk-proj-...)
-#  2. Fail validate_papers --strict (broken figures, schema, dup text.md, etc.)
+# Design — two tiers so the security guard is always on without slowing pushes:
+#   1. Secret-leak scan  → HARD BLOCK (exit 1). Fast (~5s). Anthropic/OpenAI keys.
+#   2. validate_papers   → ADVISORY (warns, never blocks). It is a *deploy* gate,
+#      not a push gate; the hard gate lives in CI (schema-drift / secret-scan)
+#      and in prepare_deploy. Blocking every push on unrelated data issues would
+#      only train `git push --no-verify`, which also disables the secret scan.
 #
-# Both checks are quick (~5s + ~30s); skip with: git push --no-verify
+# Skip everything with: git push --no-verify
 
 set -e
 
-# 1. Secret leak detection on staged-for-push commits
+# ── 1. Secret leak detection (HARD BLOCK) ───────────────────────────────────
 echo "[pre-push] scanning for API key leaks…"
 RANGE="@{u}..HEAD"
 if ! git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
@@ -24,18 +27,17 @@ if [ -n "$LEAK" ]; then
 fi
 echo "[pre-push] ✓ no leaks"
 
-# 2. validate_papers strict gate (skip on docs-only branches)
+# ── 2. validate_papers (ADVISORY — never blocks the push) ───────────────────
 TOPIC="${PAPER_CURATION_TOPIC:-ai4s}"
 if [ -f pipeline/validate_papers.py ]; then
-    echo "[pre-push] validate_papers --topic $TOPIC --strict"
+    echo "[pre-push] validate_papers --topic $TOPIC --strict (advisory)"
     if ! PYTHONUTF8=1 python pipeline/validate_papers.py --topic "$TOPIC" --strict >/tmp/_pp_validate.log 2>&1; then
-        echo "[pre-push] ❌ validate_papers failed:"
-        tail -20 /tmp/_pp_validate.log
-        echo
-        echo "Override with: git push --no-verify"
-        exit 1
+        echo "[pre-push] ⚠ validate_papers reported issues (not blocking push):"
+        tail -12 /tmp/_pp_validate.log
+        echo "[pre-push] ⚠ fix before deploy — CI and prepare_deploy enforce this hard."
+    else
+        echo "[pre-push] ✓ validate_papers passed"
     fi
-    echo "[pre-push] ✓ validate_papers passed"
 fi
 
 exit 0
