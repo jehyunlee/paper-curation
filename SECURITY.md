@@ -19,16 +19,21 @@ security document, not a legal one — for copyright/deploy legality see
 ## Attack surface → control → where it runs → verification
 
 ### S1 — Secret leaked through git
-- **Control:** `scripts/pre-push` scans exactly the commits being pushed (ref
-  list read from stdin; new branches scoped with `--not --remotes`, so the first
-  push is covered). Hard-blocks on `sk-(ant|proj)-…` keys.
-- **Backstop that runs regardless of local hook state:** `.github/workflows/secret-scan.yml`
-  (every push/PR) + GitHub-native push protection (repo settings).
-- **Activation guard:** `pipeline/doctor.py` check 10 fails if the hook is missing
-  or drifted from source, so it cannot sit silently uninstalled.
-- **Verified:** isolated-repo reproduction — a committed key on a new-branch first
-  push reaches the remote with the old scan (`git diff HEAD` = work tree, not the
-  push) and is blocked by the current scan.
+- **Control:** `scripts/pre-push` passes the exact pushed refs to
+  `scripts/scan-secrets.py`. The scanner enumerates newly introduced git
+  objects and reads raw commit/tag/blob bytes through `git cat-file --batch`;
+  it does not depend on diff generation. This covers merge-resolution blobs,
+  `.gitattributes -diff`, NUL/binary blobs, and annotated-tag messages.
+- **Patterns:** Anthropic/OpenAI, AWS `AKIA`, GitHub `gh*`, and Google `AIza`;
+  whitespace-split and standard-base64 forms are normalized and checked.
+- **Backstop:** `.github/workflows/secret-scan.yml` scans the complete current
+  HEAD snapshot and tag objects on every push/PR; GitHub-native push protection
+  remains the pre-receive prevention layer.
+- **Activation guard:** `pipeline/doctor.py` check 10 fails if the hook/scanner
+  is missing or drifted from source.
+- **Verified:** committed integration tests exercise clean/worktree-only cases
+  plus new/existing refs, merge resolution, `-diff`, NUL blob, annotated tag,
+  whitespace split, base64, AWS, GitHub, and Google patterns.
 - **Do NOT:** `git push --no-verify` (bypasses the scan — also blocked by the
   agent guard); commit real keys "temporarily".
 
@@ -37,12 +42,18 @@ security document, not a legal one — for copyright/deploy legality see
   `git push --no-verify/--force`, `git init`, `mv .git`, `rm -rf / ~ $HOME`,
   `mkfs`/`diskutil erase`/`tmutil delete`, reads of `config.json`/`~/.ssh`, and
   writes into `.git/` or the guard/settings themselves.
-- **Control (dynamic):** `~/.claude/hooks/guard.py` (PreToolUse) catches the
-  obfuscated variants prefix matching misses, and restores blocking of `.git`
-  destruction, catastrophic `rm`, remote-pipe-to-shell, and self-disable.
-- **Prompt restored:** `skipDangerousModePermissionPrompt` removed — dangerous
-  actions prompt again instead of auto-approving.
-- **Verified:** 25-case block/allow matrix (dangerous → exit 2, normal dev → exit 0).
+- **Control (dynamic):** `scripts/claude_guard.py` is source-controlled and
+  installed by `scripts/install-agent-guard.py` to
+  `~/.claude/hooks/guard.py` (PreToolUse). It parses each executable shell line
+  (excluding heredoc prose), blocks hook disablement (`chmod -x`,
+  `core.hooksPath`), credential discovery, `.git` destruction, catastrophic
+  `rm`, remote-pipe-to-shell, and self-disable; Write/Edit targets use realpath
+  so symlink escapes are blocked.
+- **Prompt restored:** `skipDangerousModePermissionPrompt` is absent.
+- **Activation guard:** doctor check 10 verifies installed guard == tracked
+  source, deny/PreToolUse wiring, prompt state, and broken agent symlinks.
+- **Verified:** committed matrix: dangerous 23/23 blocked, normal 13/13 allowed,
+  plus realpath symlink escape blocked.
 - **Do NOT:** re-add `skipDangerousModePermissionPrompt`; grant blanket
   `Bash(git init:*)` / `Bash(mv .git…)` allows in project settings (global deny
   overrides them, but do not weaken it).
@@ -66,15 +77,15 @@ security document, not a legal one — for copyright/deploy legality see
 
 ## Residual risk / known gaps
 - **Time Machine unset** — S4 backup gap (doctor warns).
-- **Static deny is brittle** — prefix matching is bypassable by construction; the
-  PreToolUse hook is the robust layer, and it fails **open** on its own crash by
-  design (a fail-closed guard that blocked every tool would just be removed). The
-  static deny remains as the non-bypassable floor.
-- **Secret scan pattern** is Anthropic/OpenAI-key specific (`sk-(ant|proj)-`);
-  other credential formats are not covered — rely on GitHub-native scanning too.
+- **Static deny is a coarse floor.** The source-controlled PreToolUse parser is
+  the precise layer; malformed hook input fails closed. Doctor detects missing,
+  changed, or unconfigured installed guards.
+- **Encoded-secret detection is bounded:** standard base64 and whitespace split
+  are covered; arbitrary encryption/novel encodings are not. GitHub-native
+  secret scanning remains complementary.
 
 ## Re-verify the controls
-- `bash scripts/install-hooks.sh` then `python pipeline/doctor.py` → check 10 shows the hook active.
-- Isolated hook test: commit a fake `sk-ant-…` key on a new branch and confirm the push is refused.
-- Guard matrix: pipe sample tool-call JSON into `~/.claude/hooks/guard.py` and check exit 2 vs 0.
-- CI: the `secret-scan` workflow runs on every push/PR.
+- `bash scripts/install-hooks.sh && python3 scripts/install-agent-guard.py`
+- `python pipeline/doctor.py` → check 10 verifies Git + agent activation.
+- `python -m unittest -v pipeline.tests.test_security_guardrails`
+- CI: the same raw-object scanner runs on every push/PR.

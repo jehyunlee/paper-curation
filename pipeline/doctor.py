@@ -566,7 +566,7 @@ def _git_hooks_dir():
 
 
 def check_guardrails(rep):
-    rep.section("10. Git 가드레일 (pre-push 훅 · 백업)")
+    rep.section("10. 가드레일 (Git · 에이전트 · 백업)")
 
     src = REPO / "scripts" / "pre-push"
     installed = _git_hooks_dir() / "pre-push"
@@ -584,6 +584,58 @@ def check_guardrails(rep):
         rep.warn("pre-push 훅 비실행", "chmod +x 필요", fix)
     else:
         rep.ok("pre-push 훅 활성", "시크릿 스캔 차단 + validate 권고")
+
+    scanner = REPO / "scripts" / "scan-secrets.py"
+    if scanner.exists():
+        rep.ok("raw-object 시크릿 스캐너", "commit · tag · binary blob 검사")
+    else:
+        rep.fail("시크릿 스캐너 없음", "scripts/scan-secrets.py 누락")
+
+    # Agent layer: source-controlled guard must match its installed global copy,
+    # settings must wire PreToolUse + deny and must not bypass dangerous prompts.
+    guard_src = REPO / "scripts" / "claude_guard.py"
+    guard_dst = Path.home() / ".claude" / "hooks" / "guard.py"
+    settings_path = Path.home() / ".claude" / "settings.json"
+    agent_fix = "python3 scripts/install-agent-guard.py"
+    if not guard_src.exists():
+        rep.fail("에이전트 가드 소스 없음", "scripts/claude_guard.py 누락")
+    elif not guard_dst.exists():
+        rep.fail("에이전트 PreToolUse 가드 미설치", str(guard_dst), agent_fix)
+    elif guard_dst.read_bytes() != guard_src.read_bytes():
+        rep.fail("에이전트 가드 구버전/변조",
+                 "설치본이 저장소 소스와 다름", agent_fix)
+    else:
+        rep.ok("에이전트 PreToolUse 가드 활성", "설치본 == 버전관리 소스")
+
+    try:
+        settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        rep.fail("Claude settings 읽기 실패", str(exc), agent_fix)
+    else:
+        deny = settings.get("permissions", {}).get("deny", [])
+        pre = settings.get("hooks", {}).get("PreToolUse", [])
+        wired = any("guard.py" in json.dumps(x) for x in pre)
+        if settings.get("skipDangerousModePermissionPrompt") is True:
+            rep.fail("dangerous-mode 프롬프트 스킵 활성",
+                     "skipDangerousModePermissionPrompt=true", agent_fix)
+        elif not deny or not wired:
+            rep.fail("Claude deny/PreToolUse 미배선",
+                     f"deny={len(deny)} · PreToolUse guard={wired}", agent_fix)
+        else:
+            rep.ok("Claude 권한 정책 활성",
+                   f"deny {len(deny)}건 · dangerous-mode 스킵 없음")
+
+    broken_agents = []
+    agents_dir = Path.home() / ".claude" / "agents"
+    if agents_dir.exists():
+        broken_agents = [p for p in agents_dir.iterdir()
+                         if p.is_symlink() and not p.exists()]
+    if broken_agents:
+        rep.warn("에이전트 심링크 단절",
+                 f"{len(broken_agents)}개가 존재하지 않는 경로를 가리킴",
+                 "끊어진 링크를 삭제하거나 현재 agent 소스로 다시 연결")
+    else:
+        rep.ok("에이전트 심링크 정상")
 
     # 백업 대상 (macOS Time Machine) — git 밖 로컬 산출물 보호
     if sys.platform == "darwin":
