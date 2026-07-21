@@ -266,6 +266,11 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode retime --images all
 # Worker secrets (1회): wrangler secret put GOOGLE_API_KEY (/api/embed) + RESEND_API_KEY (/api/audio-email)
 PYTHONUTF8=1 python pipeline/run_full.py --topic humanoid --mode deploy
 
+# 에이전트/CLI 읽기 전용 검색 — 기본 _cross, 빌드/파일 변경 없음
+python pipeline/query_search_index.py --query "scientific discovery agents" --mode bm25 --json
+python pipeline/query_search_index.py --topic humanoid --query "VLA action tokenization" --mode hybrid --json
+# Python: from pipeline.api import query_search_index
+
 # 실행 계획 미리보기 (변경 0)
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source web --dry-run
 ```

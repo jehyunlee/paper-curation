@@ -47,6 +47,8 @@
 | **처리** | <ul><li>Section-aware chunking</li><li>Google <code>gemini-embedding-001</code> 임베딩 (768d, <code>task_type=RETRIEVAL_DOCUMENT</code>, L2 정규화 후 int8 양자화)</li><li>BM25 sparse 텀도 함께 인덱싱 (hybrid 검색용)</li><li>개인 메모도 인덱싱되어 다음 질의에 반영</li></ul> |
 | **출력** | <code>_search_index.json</code> + <code>_search_index_emb.bin</code> |
 | **활용** | 토픽 페이지에서 자연어 질의 → 질의 임베딩은 worker <code>/api/embed</code> (배포) 또는 <code>pipeline/serve_local.py</code> (로컬) 가 <code>gemini-embedding-001</code> (<code>task_type=RETRIEVAL_QUERY</code>) 로 대신 계산 → **hybrid 검색** (BM25 + dense, RRF 융합) → LLM 이 상위 후보를 한 문장씩 re-rank → 사용자 키 prefix 자동 감지로 **Anthropic / OpenAI / Google 중 하나**가 논문 근거 답변 스트리밍. 검색에는 독자 키가 전혀 필요 없고, 키(BYOK)는 답변 생성에만 쓰입니다. 응답은 자연어 본문 + 클릭 가능 `[N]` 인용 + 자동 figure 인라인. Fast/Smart 토글 라벨은 감지된 백엔드의 실제 모델명을 표시 (예: `Fast (cost: Haiku 4.5)`) |
+| **CLI/API 활용** | <code>query_search_index.py</code>가 동일 토크나이저·BM25(<code>k1=1.5, b=0.75</code>)·dense cosine·RRF(<code>k=60</code>)를 읽기 전용으로 실행합니다. 기본 컬렉션은 <code>_cross</code>. <code>--mode bm25</code>는 키 없이 동작하고, hybrid/dense는 Gemini <code>RETRIEVAL_QUERY</code>를 사용합니다. <code>pipeline.api.query_search_index()</code>로 에이전트/자동화에서 JSON 결과를 직접 소비할 수 있습니다. |
+| **갱신 경계** | 질의는 인덱스를 재빌드하지 않습니다. curate/rebuild의 <code>run_update_force.py</code>가 자동 갱신하며, builder가 입력 fingerprint를 기록하고 deploy preflight가 stale 여부를 확인합니다. |
 
 ### 6. 인덱스 + 네트워크
 

@@ -254,6 +254,68 @@ def _preflight_topics(topics=None, min_size=_PREFLIGHT_MIN_BYTES):
         print(f"    - {t}: {sz / 1024:.0f} KB")
 
 
+def _search_index_freshness(topic):
+    """Return fingerprint-based freshness evidence for one topic index.
+
+    Existing indexes without a fingerprint are reported as unknown (warning,
+    not a false-positive deploy block). The next normal rebuild establishes the
+    baseline; subsequent source changes are blocked until rebuilt.
+    """
+    topic_dir = Path(DOCS_DIR) / topic
+    index_path = topic_dir / "_search_index.json"
+    if not index_path.exists():
+        return {"topic": topic, "fresh": False, "reason": "index JSON missing"}
+    try:
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {"topic": topic, "fresh": False, "reason": f"invalid index JSON: {exc}"}
+
+    emb_name = index.get("emb_file") or "_search_index_emb.bin"
+    emb_path = topic_dir / emb_name
+    if not emb_path.exists():
+        return {"topic": topic, "fresh": False, "reason": f"embedding sidecar missing: {emb_name}"}
+
+    expected = index.get("source_fingerprint")
+    if not expected:
+        return {
+            "topic": topic,
+            "fresh": None,
+            "reason": "index predates source fingerprint; rebuild recommended",
+        }
+
+    from build_search_index import source_fingerprint
+    actual, source_count = source_fingerprint(
+        topic, (index.get("papers") or {}).keys(),
+        docs_dir=DOCS_DIR, papers_dir=PAPERS_DIR)
+    fresh = actual == expected
+    return {
+        "topic": topic,
+        "fresh": fresh,
+        "reason": "" if fresh else "indexed source files changed after build",
+        "source_file_count": source_count,
+    }
+
+
+def _preflight_search_indexes(topics=None):
+    """Abort a public deploy when a deployable topic's RAG index is stale."""
+    topics = topics or _discover_deployable_topics()
+    results = [_search_index_freshness(t) for t in topics]
+    stale = [r for r in results if r["fresh"] is False]
+    if stale:
+        print("\n  [preflight] ABORT — search index missing or stale:")
+        for result in stale:
+            print(f"    - {result['topic']}: {result['reason']}")
+        print("\n  Fix: rebuild each affected index before deploying:")
+        print("       PYTHONUTF8=1 python pipeline/build_search_index.py --topic <topic>")
+        raise SystemExit("Refusing to deploy: stale search index")
+    unknown = [r for r in results if r["fresh"] is None]
+    for result in unknown:
+        print(f"  [preflight] WARNING — {result['topic']}: {result['reason']}")
+    fresh = [r["topic"] for r in results if r["fresh"] is True]
+    if fresh:
+        print("  [preflight] search indexes fresh: " + ", ".join(fresh))
+
+
 def _wrangler_env():
     """Build env for wrangler subprocess — accepts CF_API_TOKEN or
     CLOUDFLARE_API_TOKEN, maps the former to the latter for wrangler."""
@@ -689,6 +751,7 @@ def _run_deploy(topic="ai4s", *, quality=90, dry_run=False, push=False,
             # Step 7: Upload full content to Cloudflare via wrangler
             print("\nStep 7: Deploying to Cloudflare (wrangler deploy)...")
             print("  [preflight] verifying topic indices before upload")
+            _preflight_search_indexes(topics)
             _preflight_topics(topics)
             _wrangler_deploy()
 

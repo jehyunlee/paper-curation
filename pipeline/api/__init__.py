@@ -191,12 +191,33 @@ def network(topic):
     return _run_network(topic=topic)
 
 
-def search_index(topic, *, model="text-embedding-3-small", limit=None,
-                 dry_run=False):
-    """Build Deep Research RAG index (section-aware chunks + int8 embeddings)."""
+def build_search_index(topic, *, model="gemini-embedding-001", limit=None,
+                       dry_run=False, include_text="auto"):
+    """Build the Deep Research index; this mutates index artifacts."""
     from build_search_index import _run_search_index
     return _run_search_index(topic=topic, model=model, limit=limit,
-                             dry_run=dry_run)
+                             dry_run=dry_run, include_text=include_text)
+
+
+def search_index(topic, *, model="gemini-embedding-001", limit=None,
+                 dry_run=False, include_text="auto"):
+    """Compatibility alias for :func:`build_search_index`.
+
+    Historically this misleading name built an index rather than querying it.
+    New code should call ``build_search_index`` or ``query_search_index``.
+    """
+    return build_search_index(topic, model=model, limit=limit, dry_run=dry_run,
+                              include_text=include_text)
+
+
+def query_search_index(topic="_cross", query="", *, top_k=10, mode="hybrid",
+                       min_year=None, max_year=None, query_vector=None,
+                       docs_dir=None):
+    """Read/query an existing index without rebuilding or mutating it."""
+    from query_search_index import query_search_index as _query_search_index
+    return _query_search_index(
+        topic, query, top_k=top_k, mode=mode, min_year=min_year,
+        max_year=max_year, query_vector=query_vector, docs_dir=docs_dir)
 
 
 def topic_index(topic):
@@ -256,7 +277,8 @@ __all__ = [
     # narrative
     "category_summary", "insights", "timeline",
     # html / network / search index / deploy
-    "network", "search_index", "topic_index", "review_to_html", "deploy",
+    "network", "build_search_index", "search_index", "query_search_index",
+    "topic_index", "review_to_html", "deploy",
     # validate / audit / cleanup
     "validate", "audit_matching", "fix_matching", "cleanup",
 ]

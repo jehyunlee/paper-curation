@@ -46,6 +46,33 @@ from config_loader import DOCS_DIR, PAPERS_DIR, PROJECT_ROOT, get_topic_dir, get
 _ZMETA_CACHE = None
 
 
+def source_fingerprint(topic, slugs, *, docs_dir=None, papers_dir=None):
+    """Fingerprint files that feed one topic index without parsing/re-embedding.
+
+    Path + size + nanosecond mtime make deploy freshness checks cheap. The
+    builder records this after collecting papers; prepare_deploy recomputes it.
+    """
+    docs_root = Path(docs_dir) if docs_dir is not None else Path(DOCS_DIR)
+    papers_root = Path(papers_dir) if papers_dir is not None else Path(PAPERS_DIR)
+    files = []
+    for slug in sorted(set(slugs)):
+        for name in ("review.md", "notes.md"):
+            path = papers_root / slug / name
+            if path.exists():
+                files.append((f"papers/{slug}/{name}", path))
+    notes_root = docs_root / "notes" / topic
+    if notes_root.exists():
+        for path in sorted(notes_root.rglob("*.md")):
+            if not path.name.startswith("_"):
+                files.append((f"notes/{topic}/{path.relative_to(notes_root).as_posix()}", path))
+
+    digest = hashlib.sha256()
+    for rel, path in files:
+        stat = path.stat()
+        digest.update(f"{rel}\0{stat.st_size}\0{stat.st_mtime_ns}\n".encode("utf-8"))
+    return digest.hexdigest(), len(files)
+
+
 def _zotero_meta():
     global _ZMETA_CACHE
     if _ZMETA_CACHE is None:
@@ -909,6 +936,10 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         "papers": papers_meta,
         "chunks": out_chunks,
     }
+    source_fp, source_count = source_fingerprint(topic, papers_meta)
+    out["source_fingerprint"] = source_fp
+    out["source_file_count"] = source_count
+    out["built_at"] = int(time.time())
 
     bin_path = topic_dir / EMB_BIN_NAME
     bin_path.write_bytes(bytes(emb_blob))

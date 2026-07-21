@@ -139,6 +139,18 @@ PYTHONUTF8=1 python pipeline/setup.py
 **브라우저 안에서**: Deep Research(키 자동 감지)와 Audio Overview(Gemini TTS → MP3)가 동작합니다.
 **Option 분기**: `--insights`(크로스카테고리 인사이트 + 네트워크) · `--mode deploy`(Cloudflare + gh-pages) · `--local-fallback`(망 전멸 시 로컬 LLM).
 
+**CLI/에이전트 검색** — 인덱스를 재빌드하지 않는 읽기 전용 질의 경로:
+```bash
+# 통합 컬렉션(_cross), API 키 없이 BM25
+python pipeline/query_search_index.py --query "과학적 발견 자동화" --mode bm25
+
+# Gemini 질의 임베딩 + BM25 RRF, 구조화 JSON 출력
+python pipeline/query_search_index.py --topic humanoid --query "VLA action tokenization" --json
+```
+기본 컬렉션은 `_cross`이며 `hybrid`·`dense`·`bm25`를 지원합니다. Python에서는
+`pipeline.api.query_search_index()`를 호출합니다. 질의는 인덱스를 변경하지 않으며,
+curate/rebuild가 인덱스를 갱신하고 deploy preflight가 fingerprint freshness를 확인합니다.
+
 단계별 입력·처리·출력 상세 → **[Architecture & Internals](docs/architecture.md)**
 
 ## 사용 모드

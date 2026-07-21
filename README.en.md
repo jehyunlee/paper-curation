@@ -190,6 +190,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | **Processing** | <ul><li>Section-aware chunking</li><li>Google <code>gemini-embedding-001</code> embeddings (768d, <code>task_type=RETRIEVAL_DOCUMENT</code>, L2-normalized then int8-quantized)</li><li>BM25 sparse terms indexed alongside (for hybrid retrieval)</li><li>Personal notes are indexed and reflected in future queries</li></ul> |
 | **Output** | <code>_search_index.json</code> + <code>_search_index_emb.bin</code> |
 | **Usage** | Natural-language query on topic page → the query embedding is computed for the reader by the worker <code>/api/embed</code> route (deployed) or <code>pipeline/serve_local.py</code> (local) with <code>gemini-embedding-001</code> (<code>task_type=RETRIEVAL_QUERY</code>) → **hybrid retrieval** (BM25 + dense, fused with RRF) → an LLM re-ranks the top candidates → user-key prefix auto-detected, and **Anthropic / OpenAI / Google** streams a grounded answer. Retrieval needs no reader key; a key (BYOK) is only for answer generation. Output is natural prose + clickable `[N]` citation chips + auto-inlined figures |
+| **CLI / agent query** | Read-only retrieval without rebuilding: `python pipeline/query_search_index.py --query "automated scientific discovery" --mode bm25` (defaults to `_cross`, no key), or use `--mode hybrid --json` for Gemini query embeddings + BM25 RRF. Python callers use `pipeline.api.query_search_index()`. |
 
 ### 6. Index + Network
 

@@ -2588,8 +2588,8 @@ def main():
         run_step("build_rss",
                  ["python", "pipeline/build_rss.py", topic], 300)
 
-        # Deep Research search index (section-aware chunks + OpenAI embeddings).
-        # Reads OPENAI_API_KEY from env or config.json; fails fast if missing.
+        # Deep Research search index (section-aware chunks + Gemini embeddings).
+        # Reads GOOGLE_API_KEY/GEMINI_API_KEY from env or config.json.
         # Cleanup stale category narratives/timelines before building the
         # search index so Deep Research never surfaces renamed categories.
         # Always runs --execute because post-processing has just rewritten
