@@ -218,6 +218,13 @@ python pipeline/evaluate_retrieval.py \
 # Install the same test on macOS (Sunday 03:17)
 scripts/install-retrieval-eval-launchd.sh
 ```
+The installer mirrors only evaluator runtime, tracked corpus, baseline, and the
+eight index sidecars to
+`~/Library/Application Support/paper-curation/retrieval-eval/`. macOS
+LaunchAgents cannot read a repository under `Documents` without TCC approval,
+so the scheduled job evaluates this atomic snapshot and writes reports under
+`~/Library/Logs/paper-curation/`. Successful orchestrated index rebuilds refresh
+the snapshot automatically when the LaunchAgent is installed.
 
 `run_update_force.py` rebuilds `_cross`, then hard-gates the rebuilt source
 collection and `_cross` before deploy. The bootstrap labels are BM25 top-1

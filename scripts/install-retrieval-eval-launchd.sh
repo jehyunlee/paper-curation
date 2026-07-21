@@ -5,17 +5,23 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd -P)"
 LABEL="dev.jehyunlee.paper-curation.retrieval-eval"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 LOG_DIR="$HOME/Library/Logs/paper-curation"
+SNAPSHOT="$HOME/Library/Application Support/paper-curation/retrieval-eval"
 mkdir -p "$HOME/Library/LaunchAgents" "$LOG_DIR"
+/usr/bin/python3 "$ROOT/pipeline/refresh_retrieval_eval_snapshot.py" \
+  --project-root "$ROOT" --output "$SNAPSHOT"
 
-/usr/bin/python3 - "$ROOT" "$PLIST" "$LABEL" <<'PY'
+
+/usr/bin/python3 - "$ROOT" "$PLIST" "$LABEL" "$SNAPSHOT" <<'PY'
 import plistlib
 import sys
 from pathlib import Path
 
-root, destination, label = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+root, destination, label, snapshot = (
+    Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3], Path(sys.argv[4])
+)
 logs = Path.home() / "Library" / "Logs" / "paper-curation"
-evaluation = root / "pipeline" / "evaluate_retrieval.py"
-eval_dir = root / "pipeline" / "eval"
+evaluation = snapshot / "pipeline" / "evaluate_retrieval.py"
+eval_dir = snapshot / "pipeline" / "eval"
 value = {
     "Label": label,
     # LaunchAgent processes cannot execute scripts from Documents under macOS
@@ -28,6 +34,7 @@ value = {
         "--baseline", str(eval_dir / "retrieval_baseline.json"),
         "--min-recall-at-5", "0",
         "--max-regression", "0.025",
+        "--docs-dir", str(snapshot / "docs"),
         "--strict",
         "--output", str(logs / "retrieval-weekly-latest.json"),
         "--failures", str(logs / "retrieval-weekly-failures.json"),

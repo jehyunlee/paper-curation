@@ -2288,6 +2288,7 @@ def main():
             "build_cross_index",
             "evaluate_retrieval",
             "evaluate_retrieval (_cross)",
+            "refresh_retrieval_eval_snapshot",
         }
 
         def run_step(step_name, cmd, step_timeout=600):
@@ -2639,6 +2640,11 @@ def main():
                                 "--output", str(eval_results / "_cross.json"),
                                 "--failures", str(eval_results / "_cross_failures.json")],
                  300)
+        run_step(
+            "refresh_retrieval_eval_snapshot",
+            ["python", "pipeline/refresh_retrieval_eval_snapshot.py", "--if-installed"],
+            900,
+        )
 
         # Deploy via wrangler (Cloudflare Workers with Static Assets) +
         # idempotent gh-pages stub sync. Requires:
