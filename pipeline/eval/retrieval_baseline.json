@@ -1,0 +1,70 @@
+{
+  "aggregate": {
+    "failure_count": 21,
+    "mrr_at_10": 0.3433630952380952,
+    "query_count": 40,
+    "recall_at_10": 0.625,
+    "recall_at_5": 0.475
+  },
+  "collections": {
+    "_cross": {
+      "failure_count": 4,
+      "mrr_at_10": 0.225,
+      "query_count": 5,
+      "recall_at_10": 0.4,
+      "recall_at_5": 0.2
+    },
+    "ai4s": {
+      "failure_count": 3,
+      "mrr_at_10": 0.2785714285714286,
+      "query_count": 5,
+      "recall_at_10": 0.6,
+      "recall_at_5": 0.4
+    },
+    "ai4s+scisci": {
+      "failure_count": 4,
+      "mrr_at_10": 0.23333333333333334,
+      "query_count": 5,
+      "recall_at_10": 0.4,
+      "recall_at_5": 0.2
+    },
+    "ai4s-icml2026": {
+      "failure_count": 3,
+      "mrr_at_10": 0.135,
+      "query_count": 5,
+      "recall_at_10": 0.8,
+      "recall_at_5": 0.4
+    },
+    "humanoid": {
+      "failure_count": 2,
+      "mrr_at_10": 0.36666666666666664,
+      "query_count": 5,
+      "recall_at_10": 0.6,
+      "recall_at_5": 0.6
+    },
+    "physical-ai": {
+      "failure_count": 3,
+      "mrr_at_10": 0.26666666666666666,
+      "query_count": 5,
+      "recall_at_10": 0.4,
+      "recall_at_5": 0.4
+    },
+    "scisci": {
+      "failure_count": 1,
+      "mrr_at_10": 0.725,
+      "query_count": 5,
+      "recall_at_10": 1.0,
+      "recall_at_5": 0.8
+    },
+    "smart-laboratory": {
+      "failure_count": 1,
+      "mrr_at_10": 0.5166666666666667,
+      "query_count": 5,
+      "recall_at_10": 0.8,
+      "recall_at_5": 0.8
+    }
+  },
+  "query_set_sha256": "60b0e7cf97ca4ff4e08921e464af48e7457f7912c2a16e352b8b9ebd2356fbe1",
+  "schema_version": 1,
+  "vector_manifest_sha256": "eff6d19cea2cef7fdab934d45eb38272cb0bbff54e03690af056d1fa076a5d76"
+}

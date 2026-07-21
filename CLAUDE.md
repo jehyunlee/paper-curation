@@ -271,6 +271,14 @@ python pipeline/query_search_index.py --query "scientific discovery agents" --mo
 python pipeline/query_search_index.py --topic humanoid --query "VLA action tokenization" --mode hybrid --json
 # Python: from pipeline.api import query_search_index
 
+# 검색 품질 회귀 — 고정 query vector, 네트워크 호출 없음
+python pipeline/evaluate_retrieval.py \
+  --queries pipeline/eval/retrieval_queries.jsonl \
+  --vectors pipeline/eval/retrieval_query_vectors.json \
+  --all --baseline pipeline/eval/retrieval_baseline.json \
+  --min-recall-at-5 0 --strict \
+  --output pipeline/eval/results/latest.json
+
 # 실행 계획 미리보기 (변경 0)
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source web --dry-run
 ```

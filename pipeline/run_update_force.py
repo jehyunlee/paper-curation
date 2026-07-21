@@ -2284,6 +2284,10 @@ def main():
             "topic_modeling (coords+connections)",
             "topic_modeling (umap fix)",
             "classify_papers",
+            "build_search_index",
+            "build_cross_index",
+            "evaluate_retrieval",
+            "evaluate_retrieval (_cross)",
         }
 
         def run_step(step_name, cmd, step_timeout=600):
@@ -2346,7 +2350,10 @@ def main():
             except Exception as e:
                 log(f"  [{step_name}] ERROR: {str(e)[:100]}")
                 if is_critical:
-                    raise
+                    raise RuntimeError(
+                        f"critical step '{step_name}' raised {type(e).__name__}; "
+                        "aborting orchestration."
+                    ) from e
 
         # Step 1: Always rebuild index
         run_step("build_papers_index",
@@ -2576,6 +2583,8 @@ def main():
                              ["python", "pipeline/generate_network.py", "--topic", topic], 600)
             else:
                 log(f"  [verify_umap] OK: all {len(topic_slugs)} papers have coordinates")
+        except RuntimeError:
+            raise
         except Exception as e:
             log(f"  [verify_umap] WARNING: verification failed ({str(e)[:100]})")
 
@@ -2599,6 +2608,37 @@ def main():
 
         run_step("build_search_index",
                  ["python", "pipeline/build_search_index.py", "--topic", topic], 900)
+
+        # `_cross` is a cheap merge of existing topic sidecars (no embedding
+        # calls). Keep the agent/CLI default collection synchronized after every
+        # source-topic rebuild; the generic page itself need not be regenerated.
+        run_step("build_cross_index",
+                 ["python", "pipeline/build_cross_index.py", "--no-page"], 300)
+
+        # Fixed query vectors make this a deterministic, network-free deploy
+        # gate. A source collection and the merged agent collection must both
+        # retain the tracked recall floor and baseline before publication.
+        eval_dir = PIPELINE_DIR / "eval"
+        eval_results = eval_dir / "results"
+        eval_common = [
+            "python", "pipeline/evaluate_retrieval.py",
+            "--queries", str(eval_dir / "retrieval_queries.jsonl"),
+            "--vectors", str(eval_dir / "retrieval_query_vectors.json"),
+            "--baseline", str(eval_dir / "retrieval_baseline.json"),
+            "--strict",
+            "--min-recall-at-5", "0",
+            "--max-regression", "0.025",
+        ]
+        run_step("evaluate_retrieval",
+                 eval_common + ["--topic", topic,
+                                "--output", str(eval_results / f"{topic}.json"),
+                                "--failures", str(eval_results / f"{topic}_failures.json")],
+                 300)
+        run_step("evaluate_retrieval (_cross)",
+                 eval_common + ["--topic", "_cross",
+                                "--output", str(eval_results / "_cross.json"),
+                                "--failures", str(eval_results / "_cross_failures.json")],
+                 300)
 
         # Deploy via wrangler (Cloudflare Workers with Static Assets) +
         # idempotent gh-pages stub sync. Requires:
@@ -2627,8 +2667,12 @@ def main():
                     log(f"  [prepare_deploy] FAILED (exit {result.returncode})")
                     if result.stderr:
                         log(f"    {result.stderr[:500]}")
+                    raise RuntimeError(
+                        f"prepare_deploy failed with exit {result.returncode}"
+                    )
             except Exception as e:
                 log(f"  [prepare_deploy] ERROR: {str(e)[:100]}")
+                raise
         else:
             missing = []
             if not has_cf_token:

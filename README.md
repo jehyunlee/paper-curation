@@ -151,6 +151,13 @@ python pipeline/query_search_index.py --topic humanoid --query "VLA action token
 `pipeline.api.query_search_index()`를 호출합니다. 질의는 인덱스를 변경하지 않으며,
 curate/rebuild가 인덱스를 갱신하고 deploy preflight가 fingerprint freshness를 확인합니다.
 
+**검색 품질 회귀 테스트** — 8개 컬렉션의 고정 40질의·고정 Gemini query vector로
+`recall@5/10`, `MRR@10`, 실패 질의를 네트워크 없이 측정합니다. 인덱스 재빌드 뒤에는
+해당 컬렉션과 `_cross`가 baseline보다 하락하면 배포를 중단하며, macmini에서는
+`scripts/install-retrieval-eval-launchd.sh`로 매주 일요일 03:17 평가를 설치합니다.
+초기 `retrieval-v2-bootstrap`은 BM25 top-1 known-item 라벨이므로 절대 품질 점수가 아니라
+회귀 감지용입니다. 평가 자료·결정 기록은 `pipeline/eval/`에 있습니다.
+
 단계별 입력·처리·출력 상세 → **[Architecture & Internals](docs/architecture.md)**
 
 ## 사용 모드

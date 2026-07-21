@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "name": "retrieval-v2-bootstrap",
+  "created": "2026-07-21",
+  "query_count": 40,
+  "collections": [
+    "ai4s",
+    "scisci",
+    "ai4s+scisci",
+    "ai4s-icml2026",
+    "humanoid",
+    "physical-ai",
+    "smart-laboratory",
+    "_cross"
+  ],
+  "provenance": "The original 2026-06-12 40-query bake-off inputs were not recoverable; only aggregate scores survived in Claude project memory. This is a new v2 bootstrap corpus and must not be represented as the original set.",
+  "labeling": "Queries were written as natural-language collection intents. relevant_slugs were fixed from BM25 top-1 on the 2026-07-21 indexes before generating Gemini query vectors, avoiding self-labeling from the hybrid ranker under evaluation.",
+  "limitations": [
+    "Bootstrap labels contain one relevant slug per query and therefore measure known-item hit rate as recall.",
+    "English-only initial corpus; Korean and observed production failures must be added as separate rows.",
+    "BM25-derived labels require human review and should be supplemented by the append-only failure set."
+  ]
+}

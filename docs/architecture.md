@@ -48,7 +48,7 @@
 | **출력** | <code>_search_index.json</code> + <code>_search_index_emb.bin</code> |
 | **활용** | 토픽 페이지에서 자연어 질의 → 질의 임베딩은 worker <code>/api/embed</code> (배포) 또는 <code>pipeline/serve_local.py</code> (로컬) 가 <code>gemini-embedding-001</code> (<code>task_type=RETRIEVAL_QUERY</code>) 로 대신 계산 → **hybrid 검색** (BM25 + dense, RRF 융합) → LLM 이 상위 후보를 한 문장씩 re-rank → 사용자 키 prefix 자동 감지로 **Anthropic / OpenAI / Google 중 하나**가 논문 근거 답변 스트리밍. 검색에는 독자 키가 전혀 필요 없고, 키(BYOK)는 답변 생성에만 쓰입니다. 응답은 자연어 본문 + 클릭 가능 `[N]` 인용 + 자동 figure 인라인. Fast/Smart 토글 라벨은 감지된 백엔드의 실제 모델명을 표시 (예: `Fast (cost: Haiku 4.5)`) |
 | **CLI/API 활용** | <code>query_search_index.py</code>가 동일 토크나이저·BM25(<code>k1=1.5, b=0.75</code>)·dense cosine·RRF(<code>k=60</code>)를 읽기 전용으로 실행합니다. 기본 컬렉션은 <code>_cross</code>. <code>--mode bm25</code>는 키 없이 동작하고, hybrid/dense는 Gemini <code>RETRIEVAL_QUERY</code>를 사용합니다. <code>pipeline.api.query_search_index()</code>로 에이전트/자동화에서 JSON 결과를 직접 소비할 수 있습니다. |
-| **갱신 경계** | 질의는 인덱스를 재빌드하지 않습니다. curate/rebuild의 <code>run_update_force.py</code>가 자동 갱신하며, builder가 입력 fingerprint를 기록하고 deploy preflight가 stale 여부를 확인합니다. |
+| **갱신·품질 경계** | 질의는 인덱스를 재빌드하지 않습니다. curate/rebuild의 <code>run_update_force.py</code>가 source 인덱스와 <code>_cross</code>를 자동 갱신하고 source fingerprint를 기록합니다. 이어 고정 40질의·고정 query vector 평가를 네트워크 없이 실행하며, source 컬렉션 또는 <code>_cross</code>의 recall@5가 baseline보다 0.025 초과 하락하면 배포를 중단합니다. macmini launchd도 같은 평가를 매주 실행합니다. |
 
 ### 6. 인덱스 + 네트워크
 
@@ -79,7 +79,7 @@
 | `make_slug()` 40-char collision fix | 25-char prefix matching 이 다른 논문을 거짓 매칭하던 버그 (예: "A Hierarchical Framework for Humanoid Locomotion" ↔ "A hierarchical framework for measuring scientific impact"). 비교 길이를 `min(40, min(len(a), len(b)))` 로 변경, 10-char floor 추가. 짧은 제목의 자기-자신 매칭 (예: "Robot Learning from Human Videos: A Survey", 35 norm chars) 보존 |
 | `_zotero_text_sanity()` 한국어/ASCII 듀얼 패스 | Zotero 에 한국어 제목으로 등록된 영문 PDF 케이스 통과. 한글 syllable 을 keyword 추출 정규식에 포함, threshold 스케일링 (구 `max(3, …)` → `max(1, len(kw)*coverage)`), ASCII-only fallback (영문 token 만 일치해도 DOI/author 통과하면 OK) |
 | `extract_insights` 3-backend fallback | cross-category insights 호출에 Anthropic → OpenAI → Gemini chain. `EXTRACT_INSIGHTS_CC_BACKENDS` env var 로 순서 override. ReadTimeout/connection 에러 시 다음 backend 자동 시도. 각 backend 는 동일한 tool-use / structured output schema 로 강제 |
-| `run_step()` CRITICAL_STEPS hard-fail | `build_papers_index` / `topic_modeling*` / `classify_papers` 는 실패 시 `RuntimeError` 로 abort. 신규 분류 누락된 채로 나머지 단계가 stale 분류로 silent 진행되던 문제 해결. 그 외 LLM narrative/이미지/검색 인덱스는 degradable 로 soft-fail 유지 |
+| `run_step()` CRITICAL_STEPS hard-fail | `build_papers_index` / `topic_modeling*` / `classify_papers` / source·`_cross` 검색 인덱스 빌드와 품질 평가는 실패 시 `RuntimeError` 로 abort. 신규 분류 누락, stale 검색 인덱스, retrieval recall 회귀 상태로 배포되는 것을 차단. LLM narrative/이미지 생성은 degradable 로 soft-fail 유지 |
 | `audit_matching.py` | 동일 text.md 해시 공유 슬러그 탐지 (duplicate PDF) + 4축 cross-check |
 | `fix_matching.py` | 감사 결과 기반 리뷰 삭제 + 재리뷰 명령 자동 출력 (기본 dry-run) |
 | `dedup_zotero.py` | Zotero 컬렉션 중복 탐지/삭제 (제목 60자 + DOI + arXiv + PDF 공유). `run_update_force` preflight 자동 통합 |

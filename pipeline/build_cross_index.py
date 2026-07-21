@@ -18,9 +18,11 @@ Usage:
     PYTHONUTF8=1 python pipeline/build_cross_index.py --no-page      # 데이터만 병합, HTML 생략
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 PIPELINE_DIR = Path(__file__).resolve().parent
@@ -57,6 +59,7 @@ def merge_indexes(topics: list[str]):
     best: dict[str, dict] = {}   # slug -> {n, chunks, emb, meta, topic}
     order: list[str] = []        # slug 최초 등장 순서
     topic_paper_counts: dict[str, int] = {}
+    source_indexes: dict[str, dict] = {}
 
     for t in topics:
         tdir = DOCS_DIR / t
@@ -65,9 +68,20 @@ def merge_indexes(topics: list[str]):
         if not idx_path.exists() or not emb_path.exists():
             print(f"[cross] skip {t}: 검색 인덱스 없음")
             continue
-        idx = json.loads(idx_path.read_text(encoding="utf-8"))
+        idx_bytes = idx_path.read_bytes()
+        idx = json.loads(idx_bytes)
         tmodel = idx.get("model")
         tdim = int(idx.get("dim") or 0)
+        if not isinstance(tmodel, str) or not tmodel.strip():
+            raise SystemExit(f"[cross] {t}: 유효한 임베딩 모델 정보가 없습니다")
+        tquant = idx.get("quant")
+        if tdim <= 0:
+            raise SystemExit(f"[cross] {t}: 유효하지 않은 임베딩 차원 {tdim}")
+        if tquant != "int8-l2norm":
+            raise SystemExit(
+                f"[cross] {t}: 지원하지 않는 양자화 {tquant!r}; "
+                "build_search_index 로 int8-l2norm 인덱스를 재빌드하세요."
+            )
         if model is None:
             model, dim = tmodel, tdim
         elif tmodel != model or tdim != dim:
@@ -84,6 +98,12 @@ def merge_indexes(topics: list[str]):
             )
         tpapers = idx.get("papers", {}) or {}
         topic_paper_counts[t] = len(tpapers)
+        source_indexes[t] = {
+            "source_fingerprint": idx.get("source_fingerprint"),
+            "index_sha256": hashlib.sha256(idx_bytes).hexdigest(),
+            "embedding_sha256": hashlib.sha256(emb).hexdigest(),
+            "count": len(chunks),
+        }
 
         by_slug: dict[str, list[int]] = {}
         for i, c in enumerate(chunks):
@@ -129,6 +149,13 @@ def merge_indexes(topics: list[str]):
         "papers": papers,
         "chunks": merged_chunks,
     }
+    source_payload = json.dumps(
+        source_indexes, ensure_ascii=False, sort_keys=True,
+        separators=(",", ":")).encode("utf-8")
+    out["source_fingerprint"] = hashlib.sha256(source_payload).hexdigest()
+    out["source_indexes"] = source_indexes
+    out["source_file_count"] = len(source_indexes)
+    out["built_at"] = int(time.time())
     return out, bytes(merged_emb), topic_paper_counts
 
 

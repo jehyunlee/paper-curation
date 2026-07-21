@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "decisions": [
+    {
+      "date": "2026-06-12",
+      "kind": "embedding-model-selection",
+      "evidence": {
+        "query_count": 40,
+        "metric": "recall@5",
+        "scores": {
+          "gemini-embedding-001/768": 0.975,
+          "text-embedding-3-small": 0.475,
+          "text-embedding-3-large/768": 0.8
+        },
+        "provenance": "Aggregate results recovered from Claude project memory; the original queries and per-query labels were not recoverable."
+      },
+      "change": "Selected gemini-embedding-001 with 768 dimensions for the retrieval index."
+    },
+    {
+      "date": "2026-07-21",
+      "kind": "evaluation-loop",
+      "evidence": {
+        "query_set": "retrieval-v2-bootstrap",
+        "query_count": 40,
+        "aggregate_recall_at_5": 0.475,
+        "aggregate_recall_at_10": 0.625,
+        "known_limitations": [
+          "Labels are BM25 top-1 known-item targets, not exhaustive human relevance judgments.",
+          "The corpus is English-only and has five queries per collection."
+        ]
+      },
+      "change": "Added deterministic fixed-vector evaluation after index rebuilds and a weekly launchd run. The bootstrap is a regression gate with no absolute recall floor until labels receive human review.",
+      "follow_up_trigger": "Revise chunking or collection composition only after reviewed failures show a repeatable category-level pattern; record the before/after metrics here."
+    }
+  ]
+}
