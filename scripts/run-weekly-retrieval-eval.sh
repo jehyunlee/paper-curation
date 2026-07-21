@@ -11,17 +11,21 @@ elif [[ -x /opt/homebrew/Caskroom/miniconda/base/envs/py312/bin/python ]]; then
   PYTHON=/opt/homebrew/Caskroom/miniconda/base/envs/py312/bin/python
 elif command -v python3.12 >/dev/null 2>&1; then
   PYTHON="$(command -v python3.12)"
+elif [[ -x /usr/bin/python3 ]] && /usr/bin/python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 9))'; then
+  # Apple-signed system Python can read Documents under macOS TCC when a
+  # Homebrew interpreter launched over SSH/launchd cannot.
+  PYTHON=/usr/bin/python3
 elif [[ -x /opt/homebrew/bin/python3 ]]; then
   PYTHON=/opt/homebrew/bin/python3
 elif command -v python3 >/dev/null 2>&1; then
   PYTHON="$(command -v python3)"
 else
-  echo "retrieval evaluation: Python 3.10+ not found; set PAPER_CURATION_PYTHON" >&2
+  echo "retrieval evaluation: Python 3.9+ not found; set PAPER_CURATION_PYTHON" >&2
   exit 2
 fi
 
-if [[ ! -x "$PYTHON" ]] || ! "$PYTHON" -c 'import sys; raise SystemExit(sys.version_info < (3, 10))'; then
-  echo "retrieval evaluation: $PYTHON is not an executable Python 3.10+" >&2
+if [[ ! -x "$PYTHON" ]] || ! "$PYTHON" -c 'import sys; raise SystemExit(sys.version_info < (3, 9))'; then
+  echo "retrieval evaluation: $PYTHON is not an executable Python 3.9+" >&2
   exit 2
 fi
 
