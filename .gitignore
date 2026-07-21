@@ -13,6 +13,7 @@
 !wrangler.toml
 !CLAUDE.md
 !workflow.png
+!SECURITY.md
 
 # Pipeline scripts
 !pipeline/

@@ -3,29 +3,59 @@
 # Install: bash scripts/install-hooks.sh   (idempotent, self-verifying)
 #
 # Design — two tiers so the security guard is always on without slowing pushes:
-#   1. Secret-leak scan  → HARD BLOCK (exit 1). Fast (~5s). Anthropic/OpenAI keys.
+#   1. Secret-leak scan  → HARD BLOCK (exit 1). Scans exactly the commits being
+#      pushed, read from the ref list git feeds on stdin. New branches (no
+#      upstream) are scoped with `--not --remotes` so the first push — when the
+#      most new commits land at once — is covered too.
 #   2. validate_papers   → ADVISORY (warns, never blocks). It is a *deploy* gate,
 #      not a push gate; the hard gate lives in CI (schema-drift / secret-scan)
 #      and in prepare_deploy. Blocking every push on unrelated data issues would
 #      only train `git push --no-verify`, which also disables the secret scan.
 #
-# Skip everything with: git push --no-verify
+# Skip everything with: git push --no-verify   (also blocked by the agent guard)
 
 set -e
 
+PATTERN='sk-(ant|proj)-[A-Za-z0-9_-]{20,}'
+
+is_zero() {           # true if an oid is all zeros (deleted ref / new branch)
+    case "$1" in *[!0]*) return 1 ;; *) return 0 ;; esac
+}
+
+scan() {              # scan added (+) lines of the given rev-range for keys
+    git log -p --no-color "$@" 2>/dev/null | grep -E '^\+' | grep -E "$PATTERN" || true
+}
+
 # ── 1. Secret leak detection (HARD BLOCK) ───────────────────────────────────
-echo "[pre-push] scanning for API key leaks…"
-RANGE="@{u}..HEAD"
-if ! git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
-    RANGE="HEAD"
+echo "[pre-push] scanning pushed commits for API key leaks…"
+leak=""
+lines=0
+while read -r local_ref local_oid remote_ref remote_oid; do
+    [ -z "$local_oid" ] && continue
+    lines=$((lines + 1))
+    is_zero "$local_oid" && continue          # branch deletion — nothing pushed
+    if is_zero "$remote_oid"; then
+        hit=$(scan "$local_oid" --not --remotes)   # new branch: only new commits
+    else
+        hit=$(scan "$remote_oid..$local_oid")      # existing branch: pushed range
+    fi
+    [ -n "$hit" ] && leak="$leak
+$hit"
+done
+
+if [ "$lines" -eq 0 ]; then
+    # No refs on stdin at all (manual run). Fall back to commit-based range —
+    # NEVER `git diff HEAD`, which inspects the work tree, not what is pushed.
+    # A push that is ONLY deletions has lines>0 here, so it is correctly skipped.
+    leak=$(scan HEAD --not --remotes)
 fi
-LEAK=$(git diff "$RANGE" | grep -E 'sk-(ant|proj)-[A-Za-z0-9_-]{10,}' || true)
-if [ -n "$LEAK" ]; then
-    echo "[pre-push] ❌ API key leak detected — refusing push"
-    echo "$LEAK" | head -5
+
+if [ -n "$(printf '%s' "$leak" | grep -E "$PATTERN" || true)" ]; then
+    echo "[pre-push] ❌ API key leak detected in pushed commits — refusing push"
+    printf '%s\n' "$leak" | grep -E "$PATTERN" | head -5
     exit 1
 fi
-echo "[pre-push] ✓ no leaks"
+echo "[pre-push] ✓ no leaks in pushed commits"
 
 # ── 2. validate_papers (ADVISORY — never blocks the push) ───────────────────
 TOPIC="${PAPER_CURATION_TOPIC:-ai4s}"
