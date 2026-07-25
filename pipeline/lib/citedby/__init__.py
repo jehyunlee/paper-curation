@@ -42,6 +42,9 @@ __all__ = [
     # topic_filter.py — 주제 필터 + 5W1H 요약
     "filter_by_topic",
     "generate_summaries",
+    # zotero_links.py — 내 Zotero 라이브러리 PDF 바로열기 링크
+    "load_zotero_index",
+    "ZoteroIndex",
     # 하위 모듈
     "scopus",
 ]
@@ -58,6 +61,7 @@ _ANALYSIS_EXPORTS = frozenset({
     "extract_originality_for_papers", "fetch_paper_metadata",
 })
 _FILTER_EXPORTS = frozenset({"filter_by_topic", "generate_summaries"})
+_ZOTERO_EXPORTS = frozenset({"load_zotero_index", "ZoteroIndex"})
 
 
 def __getattr__(name: str):
@@ -83,6 +87,9 @@ def __getattr__(name: str):
     if name in _FILTER_EXPORTS:
         topic_filter = importlib.import_module(".topic_filter", __name__)
         return getattr(topic_filter, name)
+    if name in _ZOTERO_EXPORTS:
+        zotero_links = importlib.import_module(".zotero_links", __name__)
+        return getattr(zotero_links, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 

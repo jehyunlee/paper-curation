@@ -239,6 +239,7 @@ def run_topic_analysis(papers: list[dict], *,
                        lang: str = "ko",
                        cache_dir=None,
                        make_summaries: bool = True,
+                       link_zotero: bool = True,
                        on_event=None) -> dict:
     """주제로 필터링 → 5W1H 요약 → HTML 리포트.
 
@@ -251,6 +252,7 @@ def run_topic_analysis(papers: list[dict], *,
     """
     from .report import build_report_html, papers_to_csv
     from .topic_filter import filter_by_topic, generate_summaries
+    from .zotero_links import load_zotero_index
 
     emit = _emit(on_event)
     papers = list(papers or [])
@@ -275,9 +277,15 @@ def run_topic_analysis(papers: list[dict], *,
         selected = papers
 
     emit("report", "리포트 생성 중...")
+    # 내 Zotero 라이브러리에 있는 논문은 제목 옆에 PDF 바로열기 링크가 붙는다.
+    # `docs/_zotero_keys.json` 은 로컬 전용이라, 없으면 조용히 외부 링크만 남는다.
+    zindex = load_zotero_index() if link_zotero else None
+    if zindex:
+        emit("report", f"Zotero 링크 매칭 (인덱스 {len(zindex)}건)")
+
     report_html = build_report_html(
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
-        source_counts=source_counts)
+        source_counts=source_counts, zotero_index=zindex)
 
     return {
         "topic": topic,

@@ -30,6 +30,7 @@ AUDIO_FROM 설정 필요.
 
 import argparse
 import base64
+import datetime
 import functools
 import json
 import math
@@ -300,8 +301,117 @@ class LocalHandler(SimpleHTTPRequestHandler):
             self._handle_embed()
         elif route == "/api/audio-email":
             self._handle_audio_email()
+        elif route == "/api/citedby":
+            self._handle_citedby()
         else:
             self._send_json(404, {"error": "not found"})
+
+    # ── Citedby (인용논문 분석) — NDJSON 스트리밍 ──────────────────────────
+    #
+    # 분석은 수 분이 걸린다. 한 번에 응답하면 브라우저가 죽은 것처럼 보이므로
+    # 진행 이벤트를 한 줄에 하나씩(JSON) 흘려보낸다. HTTP/1.0 + Content-Length
+    # 생략이면 연결 종료가 곧 스트림 끝이라 별도 chunked 인코딩이 필요 없다.
+    # 클라이언트는 fetch() + ReadableStream 으로 읽는다 (Deep Research 와 동일 패턴).
+    def _stream_line(self, obj):
+        try:
+            self.wfile.write(
+                (json.dumps(obj, ensure_ascii=False) + "\n").encode("utf-8"))
+            self.wfile.flush()
+            return True
+        except (BrokenPipeError, ConnectionResetError):
+            return False    # 사용자가 탭을 닫았거나 중단했다
+
+    def _handle_citedby(self):
+        try:
+            req = json.loads(self._read_body() or b"{}")
+        except Exception as e:
+            self._send_json(400, {"error": f"invalid JSON body: {e}"})
+            return
+
+        doi = (req.get("doi") or "").strip()
+        if not doi:
+            self._send_json(400, {"error": "missing 'doi'"})
+            return
+
+        sources = req.get("sources") or None
+        topic = (req.get("topic") or "").strip()
+        lang = (req.get("lang") or "ko").strip()
+        slug = (req.get("slug") or "").strip()
+        use_llm = bool(req.get("use_llm_originality", True))
+
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+
+        alive = {"ok": True}
+
+        def on_event(phase, message, current=0, total=0):
+            if not alive["ok"]:
+                return
+            alive["ok"] = self._stream_line({
+                "event": "progress", "phase": phase, "message": message,
+                "current": current, "total": total,
+            })
+
+        try:
+            # 지연 import — citedby 를 안 쓰는 서버 기동에 pandas 비용을 물리지 않는다.
+            from lib.citedby import run_citedby
+            result = run_citedby(doi, sources=sources, topic=topic, lang=lang,
+                                 use_llm_originality=use_llm, on_event=on_event)
+        except Exception as e:
+            self._stream_line({"event": "error", "message": str(e)[:400]})
+            return
+
+        files = self._save_citedby_outputs(slug, result)
+        self._stream_line({
+            "event": "done",
+            "doi": result["doi"],
+            "matched": result["matched"],
+            "total": result["total"],
+            "elapsed_sec": result["elapsed_sec"],
+            "source_counts": result["source_counts"],
+            "report_html": result["report_html"],
+            "files": files,
+        })
+
+    def _save_citedby_outputs(self, slug, result):
+        """리포트/CSV 를 docs/papers/{slug}/citedby/ 에 저장하고 URL 을 돌려준다.
+
+        slug 가 없으면 저장을 건너뛴다. docs/papers/ 는 gitignore +
+        .assetsignore 대상이라 저장소·배포를 오염시키지 않는다.
+        """
+        if not slug:
+            return {}
+        # 경로 소독 2단: 허용 문자만 남기고 → 남은 점 연속(`..`)을 접는다.
+        # 문자 필터만으로는 "../../etc/evil" 이 "....etcevil" 로 남아 경로
+        # 성분에 `..` 가 살아난다.
+        safe = re.sub(r"[^A-Za-z0-9._-]", "", slug)
+        safe = re.sub(r"\.{2,}", ".", safe).strip("._-")
+        if not safe:
+            return {}
+        papers_root = (DOCS_DIR / "papers").resolve()
+        out_dir = (papers_root / safe / "citedby").resolve()
+        # 봉쇄 검증 — 어떤 입력이 와도 papers/ 밖에는 쓰지 않는다.
+        if not str(out_dir).startswith(str(papers_root) + os.sep):
+            print(f"  [citedby] slug 거부(경로 이탈): {slug!r}")
+            return {}
+        try:
+            out_dir.mkdir(parents=True, exist_ok=True)
+            stamp = datetime.datetime.now().strftime("%y%m%d_%H%M")
+            files = {}
+            report_path = out_dir / f"report_{stamp}.html"
+            report_path.write_text(result["report_html"], encoding="utf-8")
+            files["report"] = f"/papers/{safe}/citedby/{report_path.name}"
+            if result.get("csv"):
+                csv_path = out_dir / f"citing_{stamp}.csv"
+                csv_path.write_text(result["csv"], encoding="utf-8")
+                files["csv"] = f"/papers/{safe}/citedby/{csv_path.name}"
+            return files
+        except OSError as e:
+            print(f"  [citedby] 저장 실패: {e}")
+            return {}
 
     def _handle_embed(self):
         try:

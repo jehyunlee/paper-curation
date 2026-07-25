@@ -12,9 +12,11 @@
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
+import tempfile
 import sys
 import unittest
 from datetime import datetime
@@ -29,6 +31,7 @@ from lib.citedby import citing  # noqa: E402
 from lib.citedby import report  # noqa: E402
 from lib.citedby import scopus  # noqa: E402
 from lib.citedby import topic_filter  # noqa: E402
+from lib.citedby import zotero_links  # noqa: E402
 
 
 class LazyImportTests(unittest.TestCase):
@@ -816,6 +819,156 @@ class AnalysisOrchestrationTests(unittest.TestCase):
         self.assertIn("title", out["csv"])
         self.assertIn("done", events)
         self.assertGreaterEqual(out["elapsed_sec"], 0)
+
+
+class ZoteroKeyNormalizationTests(unittest.TestCase):
+    def test_doi_key_strips_url_prefix_and_cases(self):
+        for raw in ("https://doi.org/10.1/ABC", "http://dx.doi.org/10.1/abc",
+                    "  10.1/AbC  "):
+            with self.subTest(raw=raw):
+                self.assertEqual(zotero_links.normalize_doi_key(raw), "10.1/abc")
+
+    def test_doi_key_rejects_empty_markers(self):
+        for raw in ("", "  ", "nan", "None"):
+            with self.subTest(raw=raw):
+                self.assertEqual(zotero_links.normalize_doi_key(raw), "")
+
+    def test_title_key_is_alphanumeric_lower(self):
+        self.assertEqual(
+            zotero_links.normalize_title_key("Towards Discovery, with AI!"),
+            "towardsdiscoverywithai")
+
+    def test_title_key_matches_across_punctuation_variants(self):
+        a = zotero_links.normalize_title_key("Deep Learning: A Review")
+        b = zotero_links.normalize_title_key("deep learning - a review.")
+        self.assertEqual(a, b)
+
+    def test_title_key_truncates_long_titles(self):
+        self.assertLessEqual(
+            len(zotero_links.normalize_title_key("word " * 60)), 60)
+
+
+class ZoteroIndexTests(unittest.TestCase):
+    def _index(self):
+        return zotero_links.ZoteroIndex(by_doi={"10.1/a": "KEYA"},
+                                        by_title={"papertitleb": "KEYB"})
+
+    def test_doi_match_wins_over_title(self):
+        self.assertEqual(
+            self._index().lookup({"doi": "10.1/a", "title": "Paper Title B"}),
+            "KEYA")
+
+    def test_title_fallback_when_no_doi(self):
+        self.assertEqual(
+            self._index().lookup({"doi": "", "title": "Paper Title B"}), "KEYB")
+
+    def test_miss_returns_empty(self):
+        self.assertEqual(
+            self._index().lookup({"doi": "10.9/z", "title": "Nope"}), "")
+
+    def test_url_builds_open_pdf_protocol(self):
+        self.assertEqual(self._index().url({"doi": "10.1/a"}),
+                         "zotero://open-pdf/library/items/KEYA")
+
+    def test_url_empty_on_miss(self):
+        self.assertEqual(self._index().url({"doi": "10.9/z"}), "")
+
+    def test_empty_index_is_falsy_and_safe(self):
+        empty = zotero_links.ZoteroIndex()
+        self.assertFalse(empty)
+        self.assertEqual(empty.url({"doi": "10.1/a"}), "")
+
+
+class ZoteroIndexLoadTests(unittest.TestCase):
+    def test_missing_files_return_empty_index_without_raising(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertFalse(zotero_links.load_zotero_index(tmp))
+
+    def test_joins_papers_index_with_zotero_keys_on_slug(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp)
+            (docs / "papers").mkdir()
+            (docs / "_zotero_keys.json").write_text(json.dumps({
+                "001_Alpha": "ATTACH1",
+                "002_Beta": "ATTACH2",
+                "999_Orphan": "ATTACH9",      # papers_index 에 없음 → 무시
+            }), encoding="utf-8")
+            (docs / "papers" / "_papers_index.json").write_text(json.dumps([
+                {"slug": "001_Alpha", "doi": "10.1/ALPHA", "title": "Alpha One"},
+                {"slug": "002_Beta", "doi": "", "title": "Beta Two"},
+                {"slug": "003_NoKey", "doi": "10.1/c", "title": "Gamma"},
+            ]), encoding="utf-8")
+            idx = zotero_links.load_zotero_index(docs)
+
+        self.assertEqual(idx.by_doi.get("10.1/alpha"), "ATTACH1")
+        self.assertEqual(idx.by_title.get("alphaone"), "ATTACH1")
+        self.assertEqual(idx.by_title.get("betatwo"), "ATTACH2")
+        self.assertNotIn("10.1/c", idx.by_doi)   # Zotero 키 없는 논문은 제외
+
+    def test_corrupt_json_returns_empty_index(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp)
+            (docs / "papers").mkdir()
+            (docs / "_zotero_keys.json").write_text("{broken", encoding="utf-8")
+            (docs / "papers" / "_papers_index.json").write_text(
+                "[]", encoding="utf-8")
+            self.assertFalse(zotero_links.load_zotero_index(docs))
+
+
+class ReportZoteroLinkTests(unittest.TestCase):
+    """정적 HTML 문서에서 Zotero PDF 바로열기 링크."""
+
+    def setUp(self):
+        self.idx = zotero_links.ZoteroIndex(by_doi={"10.1/a": "KEYA"})
+
+    def test_zotero_scheme_passes_absolute_url_guard(self):
+        self.assertEqual(
+            report._absolute_url("zotero://open-pdf/library/items/K"),
+            "zotero://open-pdf/library/items/K")
+
+    def test_other_schemes_still_blocked(self):
+        for bad in ("javascript:alert(1)", "file:///etc/passwd",
+                    "../rel.html", "data:text/html,x"):
+            with self.subTest(bad=bad):
+                self.assertEqual(report._absolute_url(bad), "")
+
+    def test_library_hit_renders_zotero_link(self):
+        out = report.build_report_html(
+            papers=[{"title": "In Library", "doi": "10.1/a"}],
+            zotero_index=self.idx)
+        self.assertIn("zotero://open-pdf/library/items/KEYA", out)
+
+    def test_library_miss_falls_back_to_external_link(self):
+        out = report.build_report_html(
+            papers=[{"title": "Not In Library", "doi": "10.9/z"}],
+            zotero_index=self.idx)
+        self.assertNotIn("zotero://", out)
+        self.assertIn("https://doi.org/10.9/z", out)
+
+    def test_no_index_means_no_zotero_links(self):
+        out = report.build_report_html(
+            papers=[{"title": "X", "doi": "10.1/a"}], zotero_index=None)
+        self.assertNotIn("zotero://", out)
+
+    def test_seed_paper_gets_zotero_link(self):
+        out = report.build_report_html(
+            papers=[], paper_info={"title": "Seed", "doi": "10.1/a"},
+            zotero_index=self.idx)
+        self.assertIn("zotero://open-pdf/library/items/KEYA", out)
+
+    def test_all_hrefs_remain_absolute_with_zotero(self):
+        out = report.build_report_html(
+            papers=[{"title": "A", "doi": "10.1/a"},
+                    {"title": "B", "doi": "10.9/z"}],
+            zotero_index=self.idx)
+        for href in re.findall(r'href="([^"]*)"', out):
+            with self.subTest(href=href):
+                self.assertRegex(href, r"^(https?|zotero)://")
+
+    def test_input_papers_are_not_mutated(self):
+        papers = [{"title": "A", "doi": "10.1/a"}]
+        report.build_report_html(papers=papers, zotero_index=self.idx)
+        self.assertNotIn("_zotero_url", papers[0])
 
 
 if __name__ == "__main__":

@@ -51,6 +51,7 @@ _LABELS = {
         "sources_label": "소스별 수집",
         "year_range": "연도 범위",
         "open": "원문",
+        "zotero": "Zotero",
     },
     "en": {
         "report_title": "Citing Paper Analysis Report",
@@ -76,6 +77,7 @@ _LABELS = {
         "sources_label": "By source",
         "year_range": "Year range",
         "open": "Open",
+        "zotero": "Zotero",
     },
 }
 
@@ -90,18 +92,24 @@ def _esc(value) -> str:
     return html.escape(s, quote=True)
 
 
+# 링크로 내보낼 수 있는 스킴. `zotero://` 는 Zotero 데스크톱이 처리하는
+# 프로토콜 핸들러로, 브라우저에서도 PDF 로 인쇄해도 링크 주석으로 보존된다.
+_ALLOWED_SCHEMES = ("https://", "http://", "zotero://")
+
+
 def _absolute_url(raw: str) -> str:
-    """절대 URL 만 통과시킨다.
+    """허용 스킴의 절대 URL 만 통과시킨다.
 
     PDF 안에서 클릭 가능하려면 스킴이 있는 절대 URL 이어야 한다. 상대경로는
     인쇄 시점의 문서 위치에 묶여 PDF 에서 열리지 않으므로 **버린다**
-    (빈 문자열 → 호출부가 링크 대신 평문으로 렌더).
+    (빈 문자열 → 호출부가 링크 대신 평문으로 렌더). `javascript:`/`file:` 등
+    나머지 스킴도 같은 이유로 차단된다.
     """
     s = (raw or "").strip()
     if not s:
         return ""
     low = s.lower()
-    if low.startswith("https://") or low.startswith("http://"):
+    if low.startswith(_ALLOWED_SCHEMES):
         return s
     return ""
 
@@ -195,10 +203,15 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
     url = paper_url(paper_info)
     linked = _link(url, title, cls="seed-t") if title else ""
     meta = _citation_line(paper_info)
+    tail = []
     doi = (paper_info.get("doi") or "").strip()
-    doi_html = ""
     if doi and doi.lower() != "nan":
-        doi_html = f'<div class="seed-doi">{_link(paper_url(paper_info), doi)}</div>'
+        tail.append(_link(paper_url(paper_info), doi))
+    zotero_url = (paper_info.get("_zotero_url") or "").strip()
+    if zotero_url:
+        tail.append(_link(zotero_url, lbl["zotero"], cls="zot"))
+    doi_html = (f'<div class="seed-doi">{" · ".join(tail)}</div>'
+                if tail else "")
     return (
         '<section class="seed">'
         f'<div class="seed-label">{_esc(lbl["seed"])}</div>'
@@ -229,9 +242,16 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         orig_html = (f'<div class="orig"><span class="orig-l">'
                      f'{_esc(lbl["originality"])}</span> {_esc(originality)}</div>')
 
-    open_link = ""
+    links = []
     if url:
-        open_link = f'<div class="open">{_link(url, lbl["open"])}</div>'
+        links.append(_link(url, lbl["open"]))
+    zotero_url = (paper.get("_zotero_url") or "").strip()
+    if zotero_url:
+        # Zotero 데스크톱이 PDF 를 바로 연다. 라이브러리에 없으면 이 링크 자체가
+        # 없으므로, 독자는 위의 외부 링크(DOI/arXiv)로 간다.
+        links.append(_link(zotero_url, lbl["zotero"], cls="zot"))
+    links_html = (f'<div class="open">{" · ".join(links)}</div>'
+                  if links else "")
 
     return (
         '<article class="card">'
@@ -239,7 +259,7 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         + (f'<div class="meta">{meta}</div>' if meta else "")
         + orig_html
         + _summary_table(paper, lbl)
-        + open_link
+        + links_html
         + "</article>"
     )
 
@@ -251,6 +271,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
     for i, p in enumerate(papers, 1):
         url = paper_url(p)
         title = (p.get("title") or "").strip()
+        zot = (p.get("_zotero_url") or "").strip()
         rows.append(
             "<tr>"
             f'<td class="num">{i}</td>'
@@ -258,6 +279,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
             f'<td>{_esc(p.get("journal"))}</td>'
             f'<td class="num">{_esc(p.get("year"))}</td>'
             f'<td class="num">{_esc(p.get("citationCount"))}</td>'
+            f'<td class="num">{_link(zot, "PDF", cls="zot") if zot else ""}</td>'
             "</tr>"
         )
     return (
@@ -267,6 +289,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
         f'<th>{_esc(lbl["journal"])}</th>'
         f'<th class="num">{_esc(lbl["year"])}</th>'
         f'<th class="num">{_esc(lbl["cited"])}</th>'
+        f'<th class="num">{_esc(lbl["zotero"])}</th>'
         "</tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>"
     )
 
@@ -309,6 +332,8 @@ table.sum th{width:5.2rem;text-align:left;vertical-align:top;background:#eef1f6;
  color:var(--soft);font-weight:600;padding:.35rem .55rem;border:1px solid var(--line);}
 table.sum td{padding:.35rem .6rem;border:1px solid var(--line);vertical-align:top;}
 .open{margin-top:.5rem;font-size:.8rem;}
+a.zot{color:#8a3a1e;border:1px solid #e6cfc5;border-radius:5px;padding:.02rem .34rem;
+ font-size:.92em;background:#fdf5f2;}
 table.list{width:100%;border-collapse:collapse;font-size:.82rem;}
 table.list th{background:#eef1f6;color:var(--soft);text-align:left;font-weight:600;}
 table.list th,table.list td{padding:.4rem .55rem;border-bottom:1px solid var(--line);
@@ -348,6 +373,7 @@ def build_report_html(*,
                       topic: str = "",
                       lang: str = "ko",
                       source_counts: dict | None = None,
+                      zotero_index=None,
                       generated_at: datetime | None = None) -> str:
     """citedby 결과를 자기완결 HTML 리포트로 렌더한다.
 
@@ -357,6 +383,9 @@ def build_report_html(*,
         topic: 주제 필터 문자열. 비어 있으면 표시 생략.
         lang: "ko" | "en".
         source_counts: `{source: 원시건수}` — 개요 칩에 표시.
+        zotero_index: `zotero_links.ZoteroIndex`. 주면 내 Zotero 라이브러리에
+            있는 논문에 `zotero://open-pdf/...` 링크를 붙인다. 로컬 전용
+            산출물(`docs/_zotero_keys.json`)에 의존하므로 없으면 생략된다.
         generated_at: 생성 시각(테스트 고정용). 기본 now.
 
     Returns:
@@ -367,7 +396,18 @@ def build_report_html(*,
         않으므로 링크 대신 평문으로 떨어진다 (`_absolute_url`).
     """
     lbl = _LABELS.get(lang) or _LABELS["ko"]
-    papers = list(papers or [])
+    papers = [dict(p) for p in (papers or [])]
+    if zotero_index:
+        # 내 라이브러리에 있는 논문만 Zotero 링크를 얻는다. 나머지는 외부 DOI.
+        for p in papers:
+            zurl = zotero_index.url(p)
+            if zurl:
+                p["_zotero_url"] = zurl
+        if paper_info:
+            paper_info = dict(paper_info)
+            zurl = zotero_index.url(paper_info)
+            if zurl:
+                paper_info["_zotero_url"] = zurl
     ts = (generated_at or datetime.now()).strftime("%Y-%m-%d %H:%M")
 
     sub_bits = []
