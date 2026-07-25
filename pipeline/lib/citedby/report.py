@@ -68,6 +68,10 @@ _LABELS = {
         "dr_ph": "예: 이 논문들이 공통으로 지적하는 한계는?",
         
         "dr_go": "질문",
+        "exp_pdf": "🖨 PDF",
+        "exp_md": "⬇ .md",
+        "exp_obs": "📝 Obsidian",
+        "exp_audio": "🎧 오디오",
         "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
         "timeline": "인용 흐름 타임라인",
         "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
@@ -257,6 +261,29 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
     )
 
 
+def _audio_blocks(enabled: bool) -> tuple[str, str, str]:
+    """Audio Overview (CSS, 모달, 스크립트). paper-curation 모듈을 그대로 쓴다 —
+    대본 생성·Gemini TTS·mp3 인코딩·이메일 발송이 전부 거기 들어 있다."""
+    if not enabled:
+        return "", "", ""
+    try:
+        from lib.audio_overview import (get_audio_css, audio_modal_html,
+                                        audio_script_block)
+        from lib.citedby.deep_panel import AUDIO_PROVIDER_JS
+    except Exception:  # noqa: BLE001 — 오디오는 부가 기능
+        return "", "", ""
+    import os
+    key = (os.environ.get("GOOGLE_API_KEY")
+           or os.environ.get("GEMINI_API_KEY") or "")
+    css = get_audio_css("#D63423", "#a82a1c", "#fdecea")
+    modal = audio_modal_html(
+        "이 답변을 팟캐스트형 오디오로 만듭니다. "
+        "(Gemini · 완성본은 이메일로도 전송)")
+    script = audio_script_block(key, mode="deep",
+                                provider_js=AUDIO_PROVIDER_JS)
+    return css, modal, script
+
+
 def _deep_css(index_file: str) -> str:
     """Deep Research 패널 CSS. 패널이 없으면 한 글자도 넣지 않는다."""
     if not index_file:
@@ -265,11 +292,11 @@ def _deep_css(index_file: str) -> str:
     return panel_css()
 
 
-def _deep_script(index_file: str) -> str:
+def _deep_script(index_file: str, collection: str = "") -> str:
     if not index_file:
         return ""
     from .deep_panel import panel_script
-    return panel_script(index_file)
+    return panel_script(index_file, collection)
 
 
 def _pdf_link(paper: dict, lbl: dict) -> str:
@@ -586,6 +613,7 @@ def build_report_html(*,
                       themes: dict | None = None,
                       timeline_uri: str = "",
                       deep_index: str = "",
+                      collection: str = "",
                       generated_at: datetime | None = None) -> str:
     """citedby 결과를 자기완결 HTML 리포트로 렌더한다.
 
@@ -667,6 +695,9 @@ def build_report_html(*,
     body.append(
         f'<footer>paper-curation · citedby · {_esc(ts)}</footer>'
     )
+    # Audio Overview 는 Deep Research 패널이 있을 때만 (답변이 있어야 의미가 있다)
+    _audio_css, _audio_modal, _audio_script = _audio_blocks(bool(deep_index))
+
     body.append("</div>")
 
     return (
@@ -674,8 +705,10 @@ def build_report_html(*,
         '"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f'<title>{_esc(lbl["report_title"])}</title>'
-        f"<style>{_CSS}{_deep_css(deep_index)}</style>{_PRINT_JS}</head><body>"
-        + "".join(body) + _deep_script(deep_index) +
+        f"<style>{_CSS}{_deep_css(deep_index)}{_audio_css}</style>"
+        f"{_PRINT_JS}</head><body>"
+        + "".join(body) + _audio_modal + _deep_script(deep_index, collection)
+        + _audio_script +
         "</body></html>"
     )
 

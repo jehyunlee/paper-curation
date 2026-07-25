@@ -2236,7 +2236,9 @@ class ServerSideKeyTests(unittest.TestCase):
         js = panel_script("_citedby_index.json")
         html = panel_html("_citedby_index.json",
                           {"dr_title": "t", "dr_sub": "s", "dr_ph": "p",
-                           "dr_go": "g", "dr_offline": "o"})
+                           "dr_go": "g", "dr_offline": "o",
+                           "exp_pdf": "P", "exp_md": "M", "exp_obs": "O",
+                           "exp_audio": "A"})
         self.assertNotIn("drKey", js)
         self.assertNotIn("drKey", html)
         self.assertNotIn("type=\"password\"", html)
@@ -2298,3 +2300,66 @@ class ServerSideKeyTests(unittest.TestCase):
              patch.object(TF, "resolve_keys", return_value={"anthropic": "K"}):
             self.assertEqual(TF.llm_json("q"), {"ok": 1})
         self.assertEqual(seen["system"], TF._JSON_SYSTEM)
+
+
+class AnswerExportTests(unittest.TestCase):
+    """답변 렌더·내보내기 — paper-curation 의 기존 구현을 재사용한다.
+
+    처음엔 마크다운 렌더러·TTS·Obsidian 저장 라우트를 새로 만들려 했는데,
+    셋 다 이미 있었다 (marked.js, lib/audio_overview, obsidian://new URI).
+    """
+
+    def _html(self, **kw):
+        kw.setdefault("papers", [{"title": "P", "doi": "10.1/a"}])
+        return report.build_report_html(**kw)
+
+    def test_answer_model_is_top_tier(self):
+        """배치 분류용 저비용 tier 로는 6만 자 근거를 못 다룬다."""
+        from lib.citedby.topic_filter import ANSWER_MODELS, DEFAULT_MODELS
+        self.assertEqual(ANSWER_MODELS[0], ("anthropic", "claude-opus-5"))
+        self.assertNotEqual(ANSWER_MODELS[0], DEFAULT_MODELS[0])
+
+    def test_markdown_is_rendered_not_raw(self):
+        js = self._html(deep_index="_citedby_index.json")
+        self.assertIn("mdToMarkup", js)
+        self.assertIn("marked.min.js", js)
+        self.assertNotIn("$('drAns').textContent=text", js)
+
+    def test_export_buttons_present(self):
+        h = self._html(deep_index="_citedby_index.json")
+        for bid in ("drPdf", "drMd", "drObs", "drAudioBtn"):
+            with self.subTest(bid=bid):
+                self.assertIn(bid, h)
+
+    def test_obsidian_uses_uri_not_server_route(self):
+        """obsidian://new 면 서버 라우트가 필요 없다 — 코퍼스와 같은 방식."""
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn("obsidian://new?vault=docs", h)
+        self.assertNotIn("/api/citedby-save", h)
+
+    def test_obsidian_path_and_filename_convention(self):
+        h = self._html(deep_index="_citedby_index.json", collection="ai4s")
+        self.assertIn("'notes/'+COLLECTION+'/help/CITEDBY_'", h)
+        self.assertIn('var COLLECTION="ai4s"', h)
+
+    def test_pdf_export_keeps_absolute_reference_links(self):
+        """파일을 받은 사람이 클릭할 수 있어야 한다."""
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn("https://doi.org/", h)
+        self.assertIn("https://arxiv.org/abs/", h)
+        self.assertIn("function exportPdf", h)
+
+    def test_audio_reuses_existing_module(self):
+        """TTS 를 새로 만들지 않는다 — audio_overview 가 대본·TTS·mp3·이메일을
+        전부 갖고 있다."""
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn("lamejs", h)               # audio_overview 의 mp3 인코더
+        self.assertIn("_audioContextProvider", h)
+        self.assertIn("window._AUDIO_MODE", h)
+
+    def test_audio_absent_without_panel(self):
+        self.assertNotIn("lamejs", self._html())
+
+    def test_export_bar_hidden_until_answered(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn('id="drExport" style="display:none"', h)

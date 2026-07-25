@@ -50,6 +50,17 @@ _CSS = """
 .dr-status{font-size:12.5px;color:var(--soft);margin-top:8px;min-height:1.2em}
 .dr-status.err{color:#c0392b}
 .dr-ans{margin-top:12px;font-size:14.5px;line-height:1.75;white-space:pre-wrap}
+.dr-exp{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.dr-x{font:inherit;font-size:12.5px;padding:6px 12px;border:1px solid var(--line);
+ border-radius:6px;background:#fff;cursor:pointer;color:var(--ink)}
+.dr-x:hover{background:#f2f4f7}
+.dr-ans h2{font-size:16px;margin:18px 0 6px}
+.dr-ans h3{font-size:14px;margin:14px 0 4px}
+.dr-ans ul,.dr-ans ol{margin:6px 0 10px;padding-left:22px}
+.dr-ans li{margin:3px 0}
+.dr-ans p{margin:8px 0}
+.dr-ans code{background:#f2f4f7;padding:1px 5px;border-radius:4px;font-size:12.5px}
+.dr-ans strong{font-weight:700}
 .dr-refs{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
 .dr-refs h4{margin:0 0 6px;font-size:13px;color:var(--soft)}
 .dr-ref{font-size:12.5px;margin:3px 0;color:var(--soft)}
@@ -67,6 +78,7 @@ _CSS = """
 _JS = r"""
 (function(){
   var IDX=null, EMB=null, READY=false, LAST_MODEL='';
+  var LAST={q:'',answer:'',refs:[],model:''};
   var $=function(id){return document.getElementById(id);};
   function status(msg,err){var el=$('drStatus'); if(!el)return;
     el.textContent=msg||''; el.className='dr-status'+(err?' err':'');}
@@ -205,6 +217,133 @@ _JS = r"""
     return j.answer||'';
   }
 
+  // ── 마크다운 렌더 ────────────────────────────────────────────────────
+  // 코퍼스 Deep Research 와 같은 규약: marked.js 가 있으면 그걸 쓰고, 없으면
+  // 최소 폴백. [ref:N] 은 렌더 후 클릭 가능한 배지로 바꾼다.
+  function mdToMarkup(md){
+    var h;
+    if(window.marked){
+      try{ h=window.marked.parse(md,{gfm:true,breaks:false}); }catch(e){}
+    }
+    if(h===undefined){
+      h=String(md||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/^#{4,6}\s+(.+)$/gm,'<h4>$1</h4>')
+        .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+        .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+        .replace(/^# (.+)$/gm,'<h2>$1</h2>')
+        .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+        .replace(/`([^`]+)`/g,'<code>$1</code>')
+        .replace(/^\s*[-*+]\s+(.+)$/gm,'<li>$1</li>')
+        .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+        .replace(/\n{2,}/g,'</p><p>');
+      h='<p>'+h+'</p>';
+    }
+    return h.replace(/\[ref:(\d+)\]/g,'<span class="dr-cite">$1</span>');
+  }
+
+  // ── 내보내기 (코퍼스 Deep Research 와 동일 형식) ──────────────────────
+  function citedNums(md){
+    var s=new Set(), m, re=/\[ref:(\d+)\]/g;
+    while((m=re.exec(md||''))) s.add(parseInt(m[1],10));
+    return s;
+  }
+  function refUrl(r){
+    if(r.doi) return 'https://doi.org/'+r.doi;
+    if(r.arxiv) return 'https://arxiv.org/abs/'+r.arxiv;
+    return r.url||'';
+  }
+  function buildFullMarkdown(){
+    var lines=['# citedby Deep Research','','**Query**: '+LAST.q,
+               '**Generated**: '+new Date().toISOString(),
+               '**Model**: '+(LAST.model||'-'),'','---','',LAST.answer];
+    var cited=citedNums(LAST.answer);
+    if(cited.size>0){
+      lines.push('','## References','');
+      Array.from(cited).sort(function(a,b){return a-b;}).forEach(function(n){
+        var r=LAST.refs[n-1]; if(!r) return;
+        var href=refUrl(r);
+        var au=r.authors?(String(r.authors).split(/[;,]/)[0].trim()+' et al. '):'';
+        var yr=r.year?('('+r.year+'). '):'';
+        var id=r.doi?(' DOI: https://doi.org/'+r.doi):(r.arxiv?(' arXiv:'+r.arxiv):'');
+        lines.push('- ['+n+'] '+au+yr+(href?('['+r.title+']('+href+')'):r.title)+'.'+id);
+      });
+    }
+    return lines.join('\n');
+  }
+  function safeName(s){
+    return String(s||'질문').replace(/[\\/:*?"<>|\n\r\t]/g,' ')
+      .replace(/\s+/g,' ').trim().slice(0,80)||'질문';
+  }
+  function dlBlob(name, text, mime){
+    var b=new Blob([text],{type:mime||'text/markdown;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(a.href);},100);
+  }
+  function exportMd(){
+    if(!LAST.answer) return;
+    var d=new Date().toISOString().slice(0,10);
+    dlBlob('CITEDBY_'+d+'_'+safeName(LAST.q)+'.md', buildFullMarkdown());
+  }
+  // Obsidian 은 서버 라우트가 필요 없다 — obsidian://new URI 로 vault 에
+  // 직접 만든다 (코퍼스 Deep Research 와 동일 방식).
+  function exportObsidian(){
+    if(!LAST.answer) return;
+    var d=new Date().toISOString().slice(0,10);
+    var file='notes/'+COLLECTION+'/help/CITEDBY_'+d+'_'+safeName(LAST.q);
+    var body=['# '+LAST.q,'','> citedby Deep Research ('+new Date().toLocaleString()+
+              (LAST.model?(' · '+LAST.model):'')+')','',
+              '## My Notes','','(여기에 생각을 적으세요)','','---','',
+              buildFullMarkdown()].join('\n');
+    window.location.href='obsidian://new?vault=docs&file='+
+      encodeURIComponent(file)+'&content='+encodeURIComponent(body);
+    status('Obsidian 으로 보냈습니다 — '+file+'.md');
+  }
+  // PDF 는 전용 인쇄 창. 참고문헌의 DOI/URL 을 절대 링크로 심어, 파일을 받은
+  // 사람이 그대로 클릭할 수 있게 한다.
+  function exportPdf(){
+    if(!LAST.answer) return;
+    var cited=citedNums(LAST.answer);
+    var refs=Array.from(cited).sort(function(a,b){return a-b;}).map(function(n){
+      var r=LAST.refs[n-1]; if(!r) return '';
+      var href=refUrl(r);
+      var meta=[r.year||'', r.journal||''].filter(Boolean).join(' · ');
+      return '<li><span class="n">['+n+']</span> '+
+        (href?('<a href="'+href+'">'+esc(r.title)+'</a>'):esc(r.title))+
+        (meta?(' <span class="m">'+esc(meta)+'</span>'):'')+
+        (href?('<div class="u"><a href="'+href+'">'+esc(href)+'</a></div>'):'')+
+        '</li>';
+    }).join('');
+    var css='body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",'+
+      '"Noto Sans KR",sans-serif;line-height:1.75;color:#1f2430;max-width:820px;'+
+      'margin:0 auto;padding:28px 24px;word-break:keep-all}'+
+      'h1{font-size:20px;margin:0 0 4px}h2{font-size:16px;margin:22px 0 8px;'+
+      'border-bottom:1px solid #e2e5ec;padding-bottom:4px}h3{font-size:14px}'+
+      '.meta{color:#5b6478;font-size:12px;margin-bottom:18px}'+
+      '.dr-cite{display:inline-block;min-width:1.3em;text-align:center;font-size:10.5px;'+
+      'font-weight:700;background:#eef1f5;border-radius:4px;padding:0 4px;margin:0 1px}'+
+      'ol.refs{padding-left:0;list-style:none}ol.refs li{margin:7px 0;font-size:12.5px}'+
+      'ol.refs .n{font-weight:700;margin-right:4px}ol.refs .m{color:#7a8089}'+
+      'ol.refs .u{font-size:11px;margin-left:22px}'+
+      'a{color:#1a4fa0}@page{size:A4;margin:16mm 14mm}'+
+      '@media print{a{text-decoration:none}}';
+    var w=window.open('','_blank');
+    if(!w){ status('팝업이 차단되었습니다 — 허용 후 다시 시도하세요', true); return; }
+    w.document.write('<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">'+
+      '<title>'+esc(LAST.q)+'</title><style>'+css+'</style></head><body>'+
+      '<h1>'+esc(LAST.q)+'</h1>'+
+      '<div class="meta">citedby Deep Research · '+new Date().toLocaleString()+
+      (LAST.model?(' · '+esc(LAST.model)):'')+'</div>'+
+      mdToMarkup(LAST.answer)+
+      (refs?('<h2>참고문헌</h2><ol class="refs">'+refs+'</ol>'):'')+
+      '</body></html>');
+    w.document.close();
+    setTimeout(function(){ w.focus(); w.print(); }, 400);
+  }
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
   function renderRefs(refs){
     var el=$('drRefs'); if(!el) return;
     if(!refs.length){el.innerHTML=''; return;}
@@ -243,8 +382,10 @@ _JS = r"""
 
       status('답변 생성 중… (근거 '+refs.length+'건)');
       var text=await answer(q, refs);
-      $('drAns').innerHTML=text.replace(/</g,'&lt;')
-        .replace(/\[ref:(\d+)\]/g,'<span class="dr-cite">$1</span>');
+      LAST={q:q, answer:text, refs:refs, model:LAST_MODEL};
+      window._citedbyLast=LAST;
+      $('drAns').innerHTML=mdToMarkup(text);
+      var bar=$('drExport'); if(bar) bar.style.display='';
       status('완료 — 근거 '+refs.length+'건'+(LAST_MODEL?(' · '+LAST_MODEL):''));
     }catch(e){ status(String(e.message||e), true); }
     $('drGo').disabled=false;
@@ -252,6 +393,18 @@ _JS = r"""
 
   document.addEventListener('DOMContentLoaded', function(){
     var go=$('drGo'); if(go) go.addEventListener('click', run);
+    var map={drPdf:exportPdf, drMd:exportMd, drObs:exportObsidian,
+             drAudioBtn:function(){
+               // 오디오는 paper-curation 의 Audio Overview 모듈이 전담한다
+               // (대본 생성 → Gemini TTS → mp3 → 이메일 발송까지 포함).
+               // 여기서는 컨텍스트만 넘기고 모달을 연다.
+               if(!LAST.answer){ status('먼저 질문에 답을 받으세요', true); return; }
+               if(typeof window.openAudioModal==='function') window.openAudioModal();
+               else status('Audio Overview 모듈이 로드되지 않았습니다', true);
+             }};
+    Object.keys(map).forEach(function(id){
+      var b=$(id); if(b) b.addEventListener('click', map[id]);
+    });
     var q=$('drQ'); if(q) q.addEventListener('keydown', function(e){
       if(e.key==='Enter') run(); });
     load();
@@ -281,17 +434,39 @@ def panel_html(index_file: str, lbl: dict) -> str:
         "</div>"
         '<div class="dr-status" id="drStatus"></div>'
         '<div class="dr-ans" id="drAns"></div>'
+        '<div class="dr-exp" id="drExport" style="display:none">'
+        f'<button class="dr-x" id="drPdf" type="button">{lbl["exp_pdf"]}</button>'
+        f'<button class="dr-x" id="drMd" type="button">{lbl["exp_md"]}</button>'
+        f'<button class="dr-x" id="drObs" type="button">{lbl["exp_obs"]}</button>'
+        f'<button class="dr-x" id="drAudioBtn" type="button">{lbl["exp_audio"]}</button>'
+        "</div>"
+        '<audio id="drAudio" controls style="display:none;width:100%;margin-top:10px"></audio>'
         '<div class="dr-refs" id="drRefs"></div>'
         "</section>"
     )
 
 
-def panel_script(index_file: str) -> str:
+AUDIO_PROVIDER_JS = (
+    "window._audioContextProvider = function() {\n"
+    "  var L = (window._citedbyLast || {});\n"
+    "  return {\n"
+    "    title: (L.q || 'citedby-deep-research'),\n"
+    "    review: '[질문]\\n' + (L.q || '') + '\\n\\n[답변]\\n' + (L.answer || ''),\n"
+    "    connections: (L.refs || []).map(function(r) {\n"
+    "      return {title: r.title, relation: '근거', reason: r.section || ''};\n"
+    "    })\n"
+    "  };\n"
+    "};"
+)
+
+
+def panel_script(index_file: str, collection: str = "") -> str:
     return (
+        '<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>\n'
         "<script>\n"
         f"var IDX_FILE={json.dumps(index_file)};\n"
         f"var MODELS={json.dumps(_MODELS)};\n"
         f"var TOPK={TOPK};var POOL={POOL};var PER_PAPER={PER_PAPER};"
-        f"var MAX_OUT={MAX_OUT};\n"
+        f"var MAX_OUT={MAX_OUT};var COLLECTION={json.dumps(collection or '_cross')};\n"
         f"{_JS}\n</script>"
     )

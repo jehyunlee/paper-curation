@@ -244,6 +244,7 @@ def run_topic_analysis(papers: list[dict], *,
                        link_zotero: bool = True,
                        deep_index: str = "",
                        suggest_collections: bool = True,
+                       collection: str = "",
                        want_timeline: bool = False,
                        on_event=None) -> dict:
     """주제로 필터링 → 5W1H 요약 → HTML 리포트.
@@ -312,7 +313,8 @@ def run_topic_analysis(papers: list[dict], *,
     report_html = build_report_html(
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
         source_counts=source_counts, zotero_index=zindex, themes=themes,
-        deep_index=deep_index, timeline_uri=timeline_uri)
+        deep_index=deep_index, timeline_uri=timeline_uri,
+        collection=collection)
 
     return {
         "topic": topic,

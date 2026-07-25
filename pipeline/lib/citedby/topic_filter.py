@@ -397,6 +397,14 @@ def generate_summaries(papers: list[dict], topic: str, *,
 
 # ── 자유 텍스트 (Deep Research 답변) ──────────────────────────────────────
 
+# 답변 전용 모델 — DEFAULT_MODELS 는 배치 분류용 저비용 tier 라 답변에는 얇다.
+# 근거 6만 자를 읽고 논문을 비교하는 작업이므로 최상위를 쓴다.
+ANSWER_MODELS = (
+    ("anthropic", "claude-opus-5"),
+    ("google", "gemini-3.5-flash"),
+    ("openai", "gpt-5.5"),
+)
+
 TEXT_SYSTEM = ("You are a careful research assistant. Answer in prose, "
                "grounded strictly in the provided excerpts.")
 
@@ -412,7 +420,7 @@ def llm_text(prompt: str, *, max_tokens: int = 8000,
         (answer, provider, model) — 전부 실패하면 ("", "", "").
     """
     keys = resolve_keys() if keys is None else keys
-    for provider, model in list(models or DEFAULT_MODELS):
+    for provider, model in list(models or ANSWER_MODELS):
         key = keys.get(provider)
         caller = _CALLERS.get(provider)
         if not key or caller is None:
