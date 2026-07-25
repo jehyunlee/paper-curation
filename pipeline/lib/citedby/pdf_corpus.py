@@ -64,34 +64,67 @@ def _import_search_index():
     return bsi
 
 
-def select_pdf_papers(papers: list[dict], index=None) -> tuple[list, list]:
-    """PDF 를 보유한 논문만 남긴다.
+# 근거 등급 — 각 논문의 분석이 무엇에 기반했는지. 리포트에 그대로 노출해
+# 독자가 신뢰도를 판단할 수 있게 한다.
+EV_PDF = "pdf"            # 보유 PDF 전문 (수만 자)
+EV_ABSTRACT = "abstract"  # 초록만 (수백~2천 자)
+EV_TITLE = "title"        # 제목뿐
+
+# 초록으로 인정할 최소 길이. 이보다 짧으면 사실상 제목만 있는 것과 같다.
+MIN_ABSTRACT = 120
+
+
+def tier_papers(papers: list[dict], index=None) -> tuple[list, dict]:
+    """모든 인용논문에 **근거 등급**을 매긴다. 제외하지 않는다.
+
+    PDF 가 없다고 논문을 버리면 정보가 통째로 사라진다 — 초록만이라도 있으면
+    주제 군집·요약에 쓸 수 있고, 목록에 남아 있는 것 자체가 정보다.
+
+        pdf       내 Zotero 보유 PDF 전문   (최선)
+        abstract  초록만                     (제한적)
+        title     제목뿐                     (최소)
 
     Returns:
-        (보유 논문[, Zotero 정보가 붙은 dict], 미보유 논문)
+        (등급이 매겨진 papers, 등급별 편수)
     """
     from .local_library import load_library_index
 
     if index is None:
         index = load_library_index()
-    held, missing = [], []
-    if not index:
-        return held, list(papers or [])
 
+    out = []
+    stats = {EV_PDF: 0, EV_ABSTRACT: 0, EV_TITLE: 0}
     for p in (papers or []):
-        hit = index.lookup(p)
-        if hit and hit.has_pdf:
-            q = dict(p)
+        q = dict(p)
+        hit = index.lookup(q) if index else None
+        if hit:
+            q["_in_library"] = True
             q["_library_key"] = hit.key
             q["_library_attach"] = hit.attachment_key
-            q["_pdf_path"] = hit.pdf_path
-            q["_in_library"] = True
-            q["_has_pdf"] = True
+            if hit.has_pdf:
+                q["_pdf_path"] = hit.pdf_path
+                q["_has_pdf"] = True
             if not str(q.get("abstract") or "").strip() and hit.abstract:
                 q["abstract"] = hit.abstract
-            held.append(q)
         else:
-            missing.append(dict(p))
+            q["_in_library"] = False
+
+        if q.get("_pdf_path"):
+            q["_evidence"] = EV_PDF
+        elif len(str(q.get("abstract") or "").strip()) >= MIN_ABSTRACT:
+            q["_evidence"] = EV_ABSTRACT
+        else:
+            q["_evidence"] = EV_TITLE
+        stats[q["_evidence"]] += 1
+        out.append(q)
+    return out, stats
+
+
+def select_pdf_papers(papers: list[dict], index=None) -> tuple[list, list]:
+    """PDF 보유분만 골라낸다 (엄격 모드용). 등급 분류는 `tier_papers` 를 쓴다."""
+    tiered, _ = tier_papers(papers, index)
+    held = [p for p in tiered if p["_evidence"] == EV_PDF]
+    missing = [p for p in tiered if p["_evidence"] != EV_PDF]
     return held, missing
 
 
@@ -148,21 +181,28 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
 
     for i, p in enumerate(papers, 1):
         key = paper_key(p)
+        # PDF 가 있으면 전문, 없으면 초록이라도 인덱싱한다. 근거가 얇은 건
+        # 사실이지만 검색 대상에서 통째로 빠지는 것보다는 낫다.
         text = pdf_fulltext(p.get("_pdf_path", ""))
-        if len(text) < 500:
-            logger.debug("본문 부족, 건너뜀: %s", p.get("title", "")[:50])
+        evidence = EV_PDF if len(text) >= 500 else ""
+        if not evidence:
+            text = str(p.get("abstract") or "").strip()
+            evidence = EV_ABSTRACT if len(text) >= MIN_ABSTRACT else ""
+        if not evidence:
+            logger.debug("근거 부족, 건너뜀: %s", p.get("title", "")[:50])
             continue
 
         windows = bsi._text_windows(text, size=CHUNK_SIZE,
                                     overlap=CHUNK_OVERLAP)
         added = 0
-        for w in windows[:MAX_CHUNKS_PER_PAPER]:
+        cap = MAX_CHUNKS_PER_PAPER if evidence == EV_PDF else 3
+        for w in windows[:cap]:
             body = bsi.clean_chunk_text(w)
             if len(body) < 200:
                 continue
             chunks.append({
                 "slug": key,
-                "section": "본문",
+                "section": "본문" if evidence == EV_PDF else "초록",
                 "text": body,
                 "text_sha": hashlib.sha256(body.encode("utf-8")).hexdigest()[:16],
             })
@@ -177,6 +217,7 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
                 "authors": p.get("authors") or p.get("author_names", ""),
                 "zotero_key": p.get("_library_key", ""),
                 "zotero_attach": p.get("_library_attach", ""),
+                "evidence": evidence,
                 "chunks": added,
             }
         if progress and (i % 5 == 0 or i == len(papers)):

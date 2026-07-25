@@ -241,6 +241,8 @@ def run_topic_analysis(papers: list[dict], *,
                        cache_dir=None,
                        make_summaries: bool = True,
                        link_zotero: bool = True,
+                       deep_index: str = "",
+                       suggest_collections: bool = True,
                        on_event=None) -> dict:
     """주제로 필터링 → 5W1H 요약 → HTML 리포트.
 
@@ -285,6 +287,13 @@ def run_topic_analysis(papers: list[dict], *,
         if themes:
             emit("themes", f"주제 {len(themes['clusters'])}개 갈래 도출")
 
+    # 컬렉션 추천 — citedby 등록분은 Unfiled 로 가므로 배정 후보를 함께 낸다.
+    if suggest_collections and selected:
+        from .collections import recommend_collections
+        selected = recommend_collections(
+            selected, cache_dir=cache_dir,
+            progress=lambda phase, msg: emit(phase, msg))
+
     emit("report", "리포트 생성 중...")
     # 내 Zotero 라이브러리에 있는 논문은 제목 옆에 PDF 바로열기 링크가 붙는다.
     # `docs/_zotero_keys.json` 은 로컬 전용이라, 없으면 조용히 외부 링크만 남는다.
@@ -294,7 +303,8 @@ def run_topic_analysis(papers: list[dict], *,
 
     report_html = build_report_html(
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
-        source_counts=source_counts, zotero_index=zindex, themes=themes)
+        source_counts=source_counts, zotero_index=zindex, themes=themes,
+        deep_index=deep_index)
 
     return {
         "topic": topic,
@@ -315,14 +325,16 @@ def run_citedby(doi: str, *,
                 lang: str = "ko",
                 max_results_per_source: int = 5000,
                 use_llm_originality: bool = True,
-                pdf_only: bool = False,
+                pdf_first: bool = False,
                 build_index: bool = False,
                 index_dir=None,
                 cache_dir=None,
                 on_event=None) -> dict:
     """수집 → (PDF 선별) → 필터 → 요약 → 리포트를 한 번에.
 
-    `pdf_only` — **내 Zotero 에 PDF 를 보유한 인용논문만** 남긴다. 초록은
+    `pdf_first` — 논문마다 **근거 등급**을 매긴다(PDF 전문 > 초록 > 제목).
+    제외하지 않는다 — 초록만이라도 있으면 축소된 근거로 쓰는 게 버리는 것보다
+    낫다. 초록은
     폐쇄형 논문에서 무료 API 로 못 받지만 내 PDF 에는 전문이 있다. 대상이
     줄어드는 대신 편당 기반이 수백 자에서 수만 자로 넓어져, 주제 군집화와
     5W1H 요약이 원문을 보고 판단하게 된다.
@@ -339,31 +351,33 @@ def run_citedby(doi: str, *,
 
     papers = citing["papers"]
     pdf_stats = None
-    if pdf_only:
-        from .pdf_corpus import select_pdf_papers
-        held, missing = select_pdf_papers(papers)
-        pdf_stats = {"held": len(held), "missing": len(missing),
-                     "total": len(papers)}
+    if pdf_first:
+        from .pdf_corpus import tier_papers
+        papers, pdf_stats = tier_papers(papers)
         emit("library",
-             f"PDF 보유 {len(held)}/{len(papers)}편 — 미보유 {len(missing)}편 제외",
-             len(held), len(papers))
-        papers = held
+             f"근거 등급 — PDF 전문 {pdf_stats['pdf']}편 · "
+             f"초록 {pdf_stats['abstract']}편 · 제목뿐 {pdf_stats['title']}편",
+             pdf_stats["pdf"], len(papers))
 
-    topical = run_topic_analysis(
-        papers, topic=topic, paper_info=citing["paper_info"],
-        source_counts=citing["source_counts"], lang=lang,
-        cache_dir=cache_dir, on_event=on_event)
-
+    # 인덱스를 **리포트보다 먼저** 만든다 — 리포트가 인덱스 파일명을 알아야
+    # Deep Research 패널을 붙일 수 있다.
     index_info = None
+    deep_index = ""
     if build_index and papers:
-        from .pdf_corpus import build_index as _build_index
+        from .pdf_corpus import build_index as _build_index, INDEX_NAME
         target = index_dir or Path.cwd()
         index_info = _build_index(papers, target,
                                   progress=lambda p, m: emit(p, m))
         if index_info:
+            deep_index = INDEX_NAME
             emit("index",
                  f"Deep Research 인덱스: 논문 {index_info['papers']}편 · "
                  f"청크 {index_info['chunks']}개")
+
+    topical = run_topic_analysis(
+        papers, topic=topic, paper_info=citing["paper_info"],
+        source_counts=citing["source_counts"], lang=lang,
+        cache_dir=cache_dir, deep_index=deep_index, on_event=on_event)
 
     elapsed = (datetime.now() - started).total_seconds()
     emit("done", f"완료: {topical['matched']}/{topical['total']}편 "

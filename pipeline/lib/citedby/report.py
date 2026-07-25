@@ -51,6 +51,22 @@ _LABELS = {
         "sources_label": "소스별 수집",
         "year_range": "연도 범위",
         "open": "원문",
+        "open_pdf": "PDF 열기",
+        "suggest": "권장 컬렉션",
+        "suggest_none": "미분류 (뚜렷이 맞는 컬렉션 없음)",
+        "col_title": "컬렉션 배정 제안",
+        "col_note": "citedby 로 등록한 논문은 컬렉션이 지정되지 않아 Unfiled 에 쌓인다. 기존 컬렉션 중에서만 제안하며, 확신이 없으면 비워 둔다 — 최종 판단은 직접 하시라.",
+        "held": "보유",
+        "ev_pdf": "전문",
+        "ev_abstract": "초록",
+        "ev_title": "제목만",
+        "ev_note": "각 논문 옆 배지는 분석 근거의 범위다 — 전문(보유 PDF) > 초록 > 제목만.",
+        "dr_title": "Deep Research — 보유 PDF 전문 기반",
+        "dr_sub": "아래 논문들의 PDF 원문을 근거로 답합니다. 로컬 서버로 열어야 동작합니다.",
+        "dr_ph": "예: 이 논문들이 공통으로 지적하는 한계는?",
+        "dr_key": "API 키 (선택 · 브라우저에만 머뭄)",
+        "dr_go": "질문",
+        "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
         "themes": "인용 주제 분포",
         "themes_note": "주제를 지정하지 않아 인용논문을 자동 군집화했다. 연도별 편수와 누적 피인용으로 각 갈래가 언제 얼마나 퍼졌는지 읽는다.",
         "zotero": "Zotero PDF",
@@ -237,6 +253,35 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
     )
 
 
+def _deep_css(index_file: str) -> str:
+    """Deep Research 패널 CSS. 패널이 없으면 한 글자도 넣지 않는다."""
+    if not index_file:
+        return ""
+    from .deep_panel import panel_css
+    return panel_css()
+
+
+def _deep_script(index_file: str) -> str:
+    if not index_file:
+        return ""
+    from .deep_panel import panel_script
+    return panel_script(index_file)
+
+
+def _pdf_link(paper: dict, lbl: dict) -> str:
+    """보유 PDF 바로열기 링크. PDF-first 모드의 핵심 동선이다."""
+    attach = (paper.get("_library_attach") or "").strip()
+    if attach:
+        return _link(f"zotero://open-pdf/library/items/{attach}",
+                     lbl["open_pdf"], cls="zot pdf")
+    key = (paper.get("_library_key") or "").strip()
+    if key:
+        return _link(f"zotero://select/library/items/{key}",
+                     lbl["zotero_item"], cls="zot")
+    return (paper.get("_zotero_url") or "").strip() and _link(
+        paper["_zotero_url"], _zotero_label(paper, lbl), cls="zot") or ""
+
+
 def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     title = (paper.get("title") or "").strip()
     url = paper_url(paper)
@@ -251,31 +296,67 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         meta_bits.append(_esc(src))
     meta = " · ".join(b for b in meta_bits if b)
 
+    # PDF-first — 초록 대신 **원문 링크**가 본문 자리를 차지한다. 초록은 폐쇄형
+    # 논문에서 못 받는 반면 보유 PDF 에는 전문이 있으므로, 읽을 사람을 원문으로
+    # 곧장 보내는 게 낫다. 요약이 필요하면 5W1H 표가 그 자리를 대신한다.
+    links = [_pdf_link(paper, lbl)]
+    if url:
+        links.append(_link(url, lbl["open"]))
+    links_html = (f'<div class="open">{" · ".join(x for x in links if x)}</div>'
+                  if any(links) else "")
+
     originality = (paper.get("originality") or "").strip()
     orig_html = ""
     if originality and originality.lower() != "nan":
         orig_html = (f'<div class="orig"><span class="orig-l">'
                      f'{_esc(lbl["originality"])}</span> {_esc(originality)}</div>')
 
-    links = []
-    if url:
-        links.append(_link(url, lbl["open"]))
-    zotero_url = (paper.get("_zotero_url") or "").strip()
-    if zotero_url:
-        # PDF 첨부가 있으면 Zotero 가 PDF 를 바로 열고, 없으면 서지정보를 띄운다.
-        # 라이브러리에 아예 없으면 이 링크 자체가 없어 외부 DOI 로 간다.
-        links.append(_link(zotero_url, _zotero_label(paper, lbl), cls="zot"))
-    links_html = (f'<div class="open">{" · ".join(links)}</div>'
-                  if links else "")
+    sug = ""
+    name = (paper.get("_suggest_collection") or "").strip()
+    if name:
+        conf = (paper.get("_suggest_confidence") or "").strip()
+        reason = (paper.get("_suggest_reason") or "").strip()
+        sug = (f'<div class="sug">{_esc(lbl["suggest"])}: '
+               f'<span class="sug-n">{_esc(name)}</span>'
+               + (f'<span class="sug-c">{_esc(conf)}</span>' if conf else "")
+               + (f'<div class="sug-r">{_esc(reason)}</div>' if reason else "")
+               + "</div>")
 
+    ev = (paper.get("_evidence") or "").strip()
+    badge = (f'<span class="ev ev-{ev}">{_esc(lbl.get("ev_" + ev, ev))}</span>'
+             if ev else ("" if not paper.get("_library_attach")
+                         else '<span class="held">PDF</span>'))
     return (
         '<article class="card">'
-        f'<h3><span class="n">{index}</span> {head}</h3>'
+        f'<h3><span class="n">{index}</span> {head} {badge}</h3>'
         + (f'<div class="meta">{meta}</div>' if meta else "")
-        + orig_html
-        + _summary_table(paper, lbl)
         + links_html
+        + orig_html
+        + sug
+        + _summary_table(paper, lbl)
         + "</article>"
+    )
+
+
+def _collections_section(papers: list[dict], lbl: dict) -> str:
+    """컬렉션별 제안 집계. 어디에 몇 편을 넣을지 한눈에 보고 결정한다."""
+    from .collections import summarize
+    rows = summarize(papers)
+    if not rows or all(not r["name"] for r in rows):
+        return ""
+
+    body = []
+    for r in rows:
+        label = _esc(r["name"]) if r["name"] else f'<i>{_esc(lbl["suggest_none"])}</i>'
+        sample = _esc(" · ".join(t[:38] for t in r["titles"][:2]))
+        body.append(f'<tr><td>{label}</td><td class="num">{r["count"]}</td>'
+                    f'<td class="dim">{sample}</td></tr>')
+    return (
+        f'<h2>{lbl["col_title"]}</h2>'
+        f'<p class="note">{lbl["col_note"]}</p>'
+        '<table class="cols"><thead><tr><th>컬렉션</th>'
+        '<th class="num">편수</th><th>예시</th></tr></thead>'
+        f'<tbody>{"".join(body)}</tbody></table>'
     )
 
 
@@ -409,6 +490,21 @@ table.themes th,table.themes td{border:1px solid #e2e5ea;padding:5px 8px;text-al
 table.themes th{background:#f2f4f7;font-weight:600}
 table.themes td.num,table.themes th.num{text-align:right;font-variant-numeric:tabular-nums}
 table.themes tr.muted{color:#8a9099}
+.sug{margin-top:6px;font-size:12.5px}
+.sug-n{display:inline-block;background:#eef4ff;color:#1a4fa0;border:1px solid #cfe0fb;
+ border-radius:5px;padding:1px 7px;font-weight:600}
+.sug-c{font-size:11px;color:#8a9099;margin-left:5px}
+.sug-r{color:var(--soft);margin-top:3px}
+table.cols{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13px}
+table.cols th,table.cols td{border:1px solid #e2e5ea;padding:5px 9px;text-align:left}
+table.cols th{background:#f2f4f7;font-weight:600}
+table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
+.held,.ev{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 5px;vertical-align:middle}
+.held{color:#1f7a4d;background:#e6f5ec}
+.ev-pdf{color:#1f7a4d;background:#e6f5ec}
+.ev-abstract{color:#8a6d1f;background:#fbf3de}
+.ev-title{color:#8a9099;background:#f0f1f3}
+a.pdf{font-weight:600}
 table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
 .kw{font-size:11px;color:#7a8089;margin-top:2px}
 .dim{font-weight:400;color:#7a8089;font-size:13px}
@@ -456,6 +552,7 @@ def build_report_html(*,
                       source_counts: dict | None = None,
                       zotero_index=None,
                       themes: dict | None = None,
+                      deep_index: str = "",
                       generated_at: datetime | None = None) -> str:
     """citedby 결과를 자기완결 HTML 리포트로 렌더한다.
 
@@ -515,8 +612,15 @@ def build_report_html(*,
 
     # 주제 분포는 개요 직후의 **독립 섹션**이다. 논문 목록 안에 두면 papers 가
     # 비었을 때 함께 사라지는데, 분포는 목록과 별개의 요약이라 그러면 안 된다.
+    # Deep Research 는 주제 분포보다 먼저 — 독자가 먼저 묻고 싶어 하는 자리다.
+    if deep_index:
+        from .deep_panel import panel_html
+        body.append(panel_html(deep_index, lbl))
+
     if themes:
         body.append(_themes_section(themes, lbl))
+
+    body.append(_collections_section(papers, lbl))
 
     if not papers:
         body.append(f'<div class="empty">{_esc(lbl["no_papers"])}</div>')
@@ -535,8 +639,8 @@ def build_report_html(*,
         '"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f'<title>{_esc(lbl["report_title"])}</title>'
-        f"<style>{_CSS}</style>{_PRINT_JS}</head><body>"
-        + "".join(body) +
+        f"<style>{_CSS}{_deep_css(deep_index)}</style>{_PRINT_JS}</head><body>"
+        + "".join(body) + _deep_script(deep_index) +
         "</body></html>"
     )
 

@@ -816,12 +816,28 @@ class AnalysisOrchestrationTests(unittest.TestCase):
             analysis.run_citing_analysis("   ")
 
     def test_topic_analysis_passthrough_when_no_topic(self):
+        """주제가 없으면 **필터·5W1H 는** 돌지 않는다.
+
+        컬렉션 추천은 주제와 무관하게 별도로 도는 기능이라, 여기서는 꺼서
+        필터 경로만 검증한다.
+        """
         papers = [{"title": "A", "doi": "10.1/a"}]
         with patch.object(topic_filter, "llm_json") as llm:
-            out = analysis.run_topic_analysis(papers, topic="")
+            out = analysis.run_topic_analysis(papers, topic="",
+                                              suggest_collections=False)
         llm.assert_not_called()
         self.assertEqual(out["matched"], 1)
         self.assertIn("<!DOCTYPE html>", out["report_html"])
+
+    def test_collections_suggested_even_without_topic(self):
+        """주제 미지정이어도 컬렉션 추천은 돈다 — Unfiled 를 줄이는 게 목적."""
+        papers = [{"title": "A", "doi": "10.1/a"}]
+        from lib.citedby import collections as C
+        with patch.object(C, "recommend_collections",
+                          side_effect=lambda p, **k: p) as rec:
+            analysis.run_topic_analysis(papers, topic="",
+                                        suggest_collections=True)
+        rec.assert_called_once()
 
     def test_topic_analysis_reports_matched_over_total(self):
         papers = [{"title": f"P{i}"} for i in range(3)]
@@ -1757,3 +1773,138 @@ class PdfCorpusTests(unittest.TestCase):
              patch.object(pdf_corpus, "embed_chunks", return_value=b"\x00" * 10):
             info = pdf_corpus.build_index([{"title": "T"}], tmp)
         self.assertFalse(info["has_vectors"])
+
+
+class EvidenceTierTests(unittest.TestCase):
+    """근거 등급 — PDF 없다고 논문을 버리지 않는다."""
+
+    def _idx(self):
+        from lib.citedby import local_library as ll
+        return ll.LibraryIndex(by_doi={
+            "10.1/pdf": ll.LibraryItem(key="K1", doi="10.1/pdf",
+                                       pdf_path="/tmp/x.pdf",
+                                       attachment_key="ATT1"),
+            "10.1/abs": ll.LibraryItem(key="K2", doi="10.1/abs",
+                                       abstract="초" * 200),
+        })
+
+    def test_three_tiers(self):
+        from lib.citedby.pdf_corpus import tier_papers, EV_PDF, EV_ABSTRACT, EV_TITLE
+        out, stats = tier_papers([
+            {"doi": "10.1/pdf", "title": "A"},
+            {"doi": "10.1/abs", "title": "B"},
+            {"doi": "10.9/z", "title": "C"},
+            {"doi": "10.9/y", "title": "D", "abstract": "x" * 300},
+        ], self._idx())
+        self.assertEqual([p["_evidence"] for p in out],
+                         [EV_PDF, EV_ABSTRACT, EV_TITLE, EV_ABSTRACT])
+        self.assertEqual(stats, {EV_PDF: 1, EV_ABSTRACT: 2, EV_TITLE: 1})
+
+    def test_nothing_is_dropped(self):
+        from lib.citedby.pdf_corpus import tier_papers
+        papers = [{"doi": f"10.9/{i}", "title": f"P{i}"} for i in range(7)]
+        out, _ = tier_papers(papers, self._idx())
+        self.assertEqual(len(out), 7)
+
+    def test_short_abstract_counts_as_title_only(self):
+        from lib.citedby.pdf_corpus import tier_papers, EV_TITLE
+        out, _ = tier_papers([{"doi": "10.9/z", "abstract": "짧다"}], self._idx())
+        self.assertEqual(out[0]["_evidence"], EV_TITLE)
+
+    def test_library_abstract_upgrades_tier(self):
+        """라이브러리에 초록이 있으면 제목만 → 초록으로 올라간다."""
+        from lib.citedby.pdf_corpus import tier_papers, EV_ABSTRACT
+        out, _ = tier_papers([{"doi": "10.1/abs", "title": "B"}], self._idx())
+        self.assertEqual(out[0]["_evidence"], EV_ABSTRACT)
+
+    def test_input_not_mutated(self):
+        from lib.citedby.pdf_corpus import tier_papers
+        src = [{"doi": "10.1/pdf", "title": "A"}]
+        tier_papers(src, self._idx())
+        self.assertNotIn("_evidence", src[0])
+
+
+class CollectionSuggestionTests(unittest.TestCase):
+    """컬렉션 추천 — 기존 컬렉션만, 확신 없으면 비워 둔다."""
+
+    COLS = [{"id": 1, "name": "AI for Science", "label": "AI for Science",
+             "count": 2883},
+            {"id": 2, "name": "Humanoid", "label": "Humanoid", "count": 561}]
+
+    def _run(self, results):
+        from lib.citedby import collections as C
+        with patch.object(C, "load_collections", return_value=self.COLS), \
+             patch("lib.citedby.topic_filter.llm_json",
+                   return_value={"results": results}):
+            return C.recommend_collections(
+                [{"title": "P1", "abstract": "a" * 200},
+                 {"title": "P2", "abstract": "b" * 200}])
+
+    def test_assigns_known_collection(self):
+        out = self._run([{"paper": 1, "collection": "AI for Science",
+                          "reason": "과학 AI", "confidence": "high"}])
+        self.assertEqual(out[0]["_suggest_collection"], "AI for Science")
+        self.assertEqual(out[0]["_suggest_confidence"], "high")
+        self.assertNotIn("_suggest_collection", out[1])
+
+    def test_hallucinated_collection_is_rejected(self):
+        """목록에 없는 이름은 버린다 — 새 컬렉션 제안은 범위 밖이다."""
+        out = self._run([{"paper": 1, "collection": "존재하지 않는 컬렉션",
+                          "reason": "x"}])
+        self.assertNotIn("_suggest_collection", out[0])
+
+    def test_blank_collection_means_unfiled(self):
+        out = self._run([{"paper": 1, "collection": "", "reason": "애매"}])
+        self.assertNotIn("_suggest_collection", out[0])
+
+    def test_no_collections_is_noop(self):
+        from lib.citedby import collections as C
+        with patch.object(C, "load_collections", return_value=[]):
+            out = C.recommend_collections([{"title": "P"}])
+        self.assertNotIn("_suggest_collection", out[0])
+
+    def test_summarize_groups_and_counts_unfiled(self):
+        from lib.citedby.collections import summarize
+        rows = summarize([
+            {"title": "A", "_suggest_collection": "X"},
+            {"title": "B", "_suggest_collection": "X"},
+            {"title": "C", "_suggest_collection": "Y"},
+            {"title": "D"},
+        ])
+        self.assertEqual(rows[0]["name"], "X")
+        self.assertEqual(rows[0]["count"], 2)
+        self.assertEqual(rows[-1]["name"], "")
+        self.assertEqual(rows[-1]["count"], 1)
+
+    def test_report_renders_suggestion(self):
+        out = report.build_report_html(papers=[{
+            "title": "P", "doi": "10.1/a",
+            "_suggest_collection": "AI for Science",
+            "_suggest_reason": "과학 AI 주제",
+            "_suggest_confidence": "high"}])
+        self.assertIn("AI for Science", out)
+        self.assertIn("컬렉션 배정 제안", out)
+
+
+class DeepPanelTests(unittest.TestCase):
+    def test_panel_absent_without_index(self):
+        out = report.build_report_html(papers=[{"title": "P", "doi": "10.1/a"}])
+        self.assertNotIn("drGo", out)
+
+    def test_panel_present_with_index(self):
+        out = report.build_report_html(papers=[{"title": "P", "doi": "10.1/a"}],
+                                       deep_index="_citedby_index.json")
+        self.assertIn("drGo", out)
+        self.assertIn("_citedby_index.json", out)
+        self.assertIn("/api/embed", out)
+
+    def test_panel_is_not_printed(self):
+        """PDF 출력에 검색 UI 가 끼면 안 된다."""
+        out = report.build_report_html(papers=[{"title": "P"}],
+                                       deep_index="_citedby_index.json")
+        self.assertIn('class="dr no-print"', out)
+
+    def test_offline_notice_exists(self):
+        out = report.build_report_html(papers=[{"title": "P"}],
+                                       deep_index="_citedby_index.json")
+        self.assertIn("serve_local.py", out)
