@@ -34,3 +34,11 @@ joblib
 umap-learn
 hdbscan
 sentence-transformers
+
+# --- Citedby (인용논문 분석: pipeline/lib/citedby/) ---
+# 지연 import 라 citedby 를 쓰지 않으면 로드되지 않는다.
+# NOTE: Scopus 는 pybliometrics **패키지**가 아니라 그 설정 파일
+#       (~/.config/pybliometrics.cfg) 의 API 키만 읽고 requests 로 호출하므로
+#       pybliometrics 자체는 의존성이 아니다.
+pandas
+arxiv

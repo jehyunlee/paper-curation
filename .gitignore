@@ -20,6 +20,8 @@
 !pipeline/*.py
 !pipeline/lib/
 !pipeline/lib/*.py
+!pipeline/lib/citedby/
+!pipeline/lib/citedby/*.py
 !pipeline/api/
 !pipeline/api/*.py
 !pipeline/_archive/
