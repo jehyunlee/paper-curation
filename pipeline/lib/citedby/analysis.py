@@ -245,7 +245,7 @@ def run_topic_analysis(papers: list[dict], *,
                        deep_index: str = "",
                        suggest_collections: bool = True,
                        collection: str = "",
-                       want_timeline: bool = False,
+                       want_timeline: bool = True,
                        on_event=None) -> dict:
     """주제로 필터링 → 5W1H 요약 → HTML 리포트.
 
@@ -267,6 +267,7 @@ def run_topic_analysis(papers: list[dict], *,
 
     themes = None
     timeline_uri = ""
+    timeline_narrative = ""
     if topic:
         emit("topic_filter", f"주제 필터링 시작: {topic}", 0, total)
         selected = filter_by_topic(
@@ -291,10 +292,19 @@ def run_topic_analysis(papers: list[dict], *,
         if themes:
             emit("themes", f"주제 {len(themes['clusters'])}개 갈래 도출")
             if want_timeline:
-                from .timeline import generate as _gen_timeline
-                timeline_uri = _gen_timeline(
-                    themes, paper_info=paper_info,
-                    progress=lambda phase, msg: emit(phase, msg))
+                # 그림은 부가물이다. PaperBanana 는 외부 모델·네트워크에 기대므로
+                # 실패할 수 있는데, 그것 때문에 수집·분석 결과 전체를 버리면
+                # 손해가 너무 크다. 기본으로 켜진 뒤로는 더더욱.
+                try:
+                    from .timeline import generate as _gen_timeline
+                    _tl = _gen_timeline(
+                        themes, paper_info=paper_info,
+                        progress=lambda phase, msg: emit(phase, msg))
+                    timeline_uri = _tl.uri
+                    # 그림이 실패해도 narrative 는 남는다 — 글이 정보량은 더 많다.
+                    timeline_narrative = _tl.narrative
+                except Exception as e:  # noqa: BLE001 — 그림 실패는 치명적이지 않다
+                    emit("timeline", f"타임라인 생략 ({type(e).__name__}) — 리포트는 계속")
 
     # 컬렉션 추천 — citedby 등록분은 Unfiled 로 가므로 배정 후보를 함께 낸다.
     if suggest_collections and selected:
@@ -314,6 +324,7 @@ def run_topic_analysis(papers: list[dict], *,
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
         source_counts=source_counts, zotero_index=zindex, themes=themes,
         deep_index=deep_index, timeline_uri=timeline_uri,
+        timeline_narrative=timeline_narrative,
         collection=collection)
 
     return {
@@ -336,7 +347,7 @@ def run_citedby(doi: str, *,
                 max_results_per_source: int = 5000,
                 use_llm_originality: bool = True,
                 pdf_first: bool = False,
-                timeline: bool = False,
+                timeline: bool = True,
                 build_index: bool = False,
                 index_dir=None,
                 cache_dir=None,

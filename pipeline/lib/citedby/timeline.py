@@ -21,6 +21,7 @@ import base64
 import logging
 import os
 import tempfile
+from typing import NamedTuple
 
 logger = logging.getLogger(__name__)
 
@@ -231,22 +232,51 @@ def _select_best(results: list, caption: str = ""):
 
 # ── 공개 API ─────────────────────────────────────────────────────────────
 
+# narrative 뒷부분은 PaperBanana 용 작화 지시문이다 — 배경색·픽셀 크기·금지
+# 요소 목록. 독자에게는 의미가 없으므로 첫 지시문 헤딩에서 자른다.
+_SPEC_HEADINGS = ("### BAND WIDTH GUIDE", "### ABSOLUTE VISUAL RULES")
+
+
+def reader_portion(method_text: str) -> str:
+    """작화 지시문을 떼고 독자가 읽을 분석 부분만 남긴다."""
+    cut = len(method_text)
+    for h in _SPEC_HEADINGS:
+        i = method_text.find(h)
+        if i != -1:
+            cut = min(cut, i)
+    return method_text[:cut].strip()
+
+
+class TimelineResult(NamedTuple):
+    """그림과 **그 그림을 만든 근거 글**을 함께 돌려준다.
+
+    narrative 는 LLM 이 인용 흐름을 읽고 쓴 본문이다. 그림보다 정보량이 많은데
+    예전엔 이미지 생성용으로만 쓰고 버렸다 — 독자에게도 보여준다.
+    """
+    uri: str = ""
+    narrative: str = ""
+    caption: str = ""
+
+    def __bool__(self) -> bool:      # 기존 `if timeline_uri:` 관용구 보존
+        return bool(self.uri)
+
+
 def generate(themes: dict, *, paper_info: dict | None = None,
              candidates: int = DEFAULT_CANDIDATES,
-             keys=None, cache_dir=None, progress=None) -> str:
-    """narrative → 후보 N개 → 선별 → data URI. 실패하면 빈 문자열.
+             keys=None, cache_dir=None, progress=None) -> TimelineResult:
+    """narrative → 후보 N개 → 선별 → (data URI, narrative, caption).
 
     어떤 실패도 예외로 올리지 않는다 — 그림은 부가물이고, 리포트가 그것 때문에
-    막히면 안 된다.
+    막히면 안 된다. 그림이 실패해도 narrative 는 살아 있으면 그대로 돌려준다.
     """
     if not themes or not themes.get("clusters"):
-        return ""
+        return TimelineResult()
 
     try:
         import lib.paperbanana  # noqa: F401
     except Exception as e:  # noqa: BLE001
         logger.info("타임라인 생략: PaperBanana 없음 (%s)", str(e)[:80])
-        return ""
+        return TimelineResult()
 
     if progress:
         progress("timeline", "타임라인 narrative 작성 중…")
@@ -255,7 +285,7 @@ def generate(themes: dict, *, paper_info: dict | None = None,
     if not method_text:
         if progress:
             progress("timeline", "타임라인 생략 (narrative 실패)")
-        return ""
+        return TimelineResult()
 
     box: dict = {}
 
@@ -278,15 +308,17 @@ def generate(themes: dict, *, paper_info: dict | None = None,
         logger.warning("타임라인이 %d초를 넘겨 포기", WALL_TIMEOUT_S)
         if progress:
             progress("timeline", "타임라인 생략 (시간 초과)")
-        return ""
+        return TimelineResult(narrative=reader_portion(method_text), caption=caption)
 
     png = box.get("png")
     if not png:
         if progress:
             progress("timeline", "타임라인 생략 (생성 실패)")
-        return ""
+        return TimelineResult(narrative=reader_portion(method_text), caption=caption)
 
     logger.info("타임라인 확정: %.0fKB", len(png) / 1024)
     if progress:
         progress("timeline", f"타임라인 완료 ({len(png) // 1024}KB)")
-    return "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+    return TimelineResult(
+        uri="data:image/png;base64," + base64.b64encode(png).decode("ascii"),
+        narrative=reader_portion(method_text), caption=caption)

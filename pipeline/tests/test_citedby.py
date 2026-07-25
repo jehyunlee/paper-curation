@@ -2148,7 +2148,7 @@ class TimelineProcedureTests(unittest.TestCase):
         from lib.citedby import timeline as TL
         with patch.object(TL, "build_narrative", return_value=("", "")), \
              patch.object(TL, "_generate_candidates") as gen:
-            self.assertEqual(TL.generate(self.THEMES), "")
+            self.assertEqual(TL.generate(self.THEMES).uri, "")
         gen.assert_not_called()
 
     def test_judge_picks_among_candidates(self):
@@ -2183,8 +2183,8 @@ class TimelineProcedureTests(unittest.TestCase):
 
     def test_empty_themes_is_noop(self):
         from lib.citedby import timeline as TL
-        self.assertEqual(TL.generate({}), "")
-        self.assertEqual(TL.generate({"clusters": []}), "")
+        self.assertEqual(TL.generate({}).uri, "")
+        self.assertEqual(TL.generate({"clusters": []}).uri, "")
 
     def test_report_embeds_timeline_as_data_uri(self):
         """사이드카 PNG 를 참조하면 파일을 옮기거나 PDF 로 뽑을 때 사라진다."""
@@ -2363,3 +2363,126 @@ class AnswerExportTests(unittest.TestCase):
     def test_export_bar_hidden_until_answered(self):
         h = self._html(deep_index="_citedby_index.json")
         self.assertIn('id="drExport" style="display:none"', h)
+
+
+import inspect
+
+
+class TimelineDefaultTests(unittest.TestCase):
+    """타임라인은 기본으로 그린다.
+
+    인용 흐름은 연도별 표보다 그림이 훨씬 빨리 읽힌다. opt-in 이면 사실상
+    아무도 안 켜므로 기본을 뒤집고, 급할 때 `--no-timeline` 으로 끈다.
+    """
+
+    def _parser(self):
+        import run_citedby
+        return run_citedby.build_parser() if hasattr(run_citedby, "build_parser") else None
+
+    def test_cli_draws_timeline_by_default(self):
+        import subprocess, sys, pathlib
+        root = pathlib.Path(__file__).resolve().parents[2]
+        out = subprocess.run(
+            [sys.executable, str(root / "pipeline" / "run_citedby.py"), "--help"],
+            capture_output=True, text=True, timeout=120).stdout
+        self.assertIn("--no-timeline", out)
+
+    def test_library_default_is_on(self):
+        import inspect
+        from lib.citedby import analysis
+        for fn, param in ((analysis.run_topic_analysis, "want_timeline"),
+                          (analysis.run_citedby, "timeline")):
+            with self.subTest(fn=fn.__name__):
+                sig = inspect.signature(fn)
+                self.assertTrue(sig.parameters[param].default,
+                                f"{fn.__name__}({param}=) 가 기본 False 면 "
+                                "CLI 만 바꾼 셈이라 API 호출자와 어긋난다")
+
+    def test_timeline_failure_does_not_break_report(self):
+        """그림은 부가물이다 — 실패해도 리포트는 나와야 한다."""
+        import lib.citedby.analysis as A
+        src = inspect.getsource(A.run_topic_analysis)
+        self.assertIn("except", src)
+
+
+class TimelineNarrativeTests(unittest.TestCase):
+    """그림과 함께 narrative 도 싣는다.
+
+    narrative 는 LLM 이 인용 흐름을 읽고 쓴 본문이다. 그림을 만드는 재료로만
+    쓰고 버렸는데, 정보량은 그림보다 많다.
+    """
+
+    def _html(self, **kw):
+        kw.setdefault("papers", [{"title": "P"}])
+        return report.build_report_html(**kw)
+
+    def test_image_and_narrative_both_rendered(self):
+        h = self._html(timeline_uri="data:image/png;base64,AAA",
+                       timeline_narrative="첫 문단.\n\n둘째 문단.")
+        self.assertIn("data:image/png;base64,AAA", h)
+        self.assertIn('<div class="tl-narr">', h)
+        # 마크다운 변환을 거치므로 문단이 <p> 로 나온다
+        self.assertIn("첫 문단.", h)
+        self.assertIn("둘째 문단.", h)
+
+    def test_narrative_survives_image_failure(self):
+        """그림만 실패한 것이지 글은 이미 나와 있다."""
+        h = self._html(timeline_narrative="글만 있다.")
+        self.assertIn('<div class="tl-narr">', h)
+        self.assertNotIn("<img src=\"data:image/png", h)
+
+    def test_section_omitted_when_both_absent(self):
+        self.assertNotIn('<div class="tl-narr">', self._html())
+
+    def test_narrative_is_escaped(self):
+        h = self._html(timeline_narrative="<script>alert(1)</script>")
+        self.assertNotIn("<script>alert(1)</script>", h)
+
+    def test_generate_returns_narrative_with_uri(self):
+        from lib.citedby.timeline import TimelineResult
+        r = TimelineResult(uri="u", narrative="n", caption="c")
+        self.assertEqual((r.uri, r.narrative, r.caption), ("u", "n", "c"))
+        self.assertTrue(r)
+        self.assertFalse(TimelineResult(narrative="글만"))  # uri 없으면 falsy
+
+    def test_analysis_passes_narrative_through(self):
+        import inspect
+        from lib.citedby import analysis
+        src = inspect.getsource(analysis.run_topic_analysis)
+        self.assertIn("timeline_narrative=timeline_narrative", src)
+
+
+class TimelineNarrativeShapeTests(unittest.TestCase):
+    """독자에게 보여줄 것만, 읽을 수 있는 형태로.
+
+    method_text 뒷부분은 PaperBanana 용 작화 지시문(배경색·픽셀 크기·금지 요소)
+    이라 독자에게 의미가 없다. 그대로 뿌리면 리포트가 프롬프트 덤프가 된다.
+    """
+
+    def test_drawing_spec_is_stripped(self):
+        from lib.citedby.timeline import reader_portion
+        src = ("## Citation Timeline\n### STREAM: a\n분석 본문\n"
+               "### BAND WIDTH GUIDE\n밴드 폭 지시\n"
+               "### ABSOLUTE VISUAL RULES\n- Background: Pure white\n")
+        got = reader_portion(src)
+        self.assertIn("분석 본문", got)
+        for banned in ("BAND WIDTH GUIDE", "ABSOLUTE VISUAL RULES",
+                       "Pure white"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, got)
+
+    def test_reader_portion_keeps_all_when_no_spec(self):
+        from lib.citedby.timeline import reader_portion
+        self.assertEqual(reader_portion("## T\n본문"), "## T\n본문")
+
+    def test_narrative_rendered_as_markdown(self):
+        """`##` 가 글자로 보이면 안 된다."""
+        h = report.build_report_html(
+            papers=[{"title": "P"}],
+            timeline_narrative="## 제목\n\n**굵게** 본문")
+        import re as _re
+        m = _re.search(r'<div class="tl-narr">(.*?)</div>', h, _re.S)
+        self.assertIsNotNone(m)
+        inner = m.group(1)
+        self.assertIn("<strong>굵게</strong>", inner)
+        self.assertNotIn("## 제목", inner)

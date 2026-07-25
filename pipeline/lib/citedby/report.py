@@ -379,15 +379,31 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     )
 
 
-def _timeline_section(data_uri: str, lbl: dict) -> str:
-    """타임라인 그림. base64 data URI 라 파일을 옮겨도 PDF 로 뽑아도 살아 있다."""
-    if not data_uri:
+def _timeline_section(data_uri: str, lbl: dict, narrative: str = "") -> str:
+    """타임라인 그림 + 그 그림을 만든 narrative.
+
+    그림은 base64 data URI 라 파일을 옮겨도 PDF 로 뽑아도 살아 있다.
+    narrative 는 LLM 이 인용 흐름을 읽고 쓴 본문 — 그림보다 정보량이 많으므로
+    함께 싣는다. 그림이 실패해도 글만으로 절이 성립한다.
+    """
+    if not data_uri and not narrative:
         return ""
-    return (
-        f'<h2>{lbl["timeline"]}</h2>'
-        f'<figure class="tl"><img src="{data_uri}" alt="{_esc(lbl["timeline"])}">'
-        f'<figcaption>{_esc(lbl["timeline_note"])}</figcaption></figure>'
-    )
+    out = [f'<h2>{lbl["timeline"]}</h2>']
+    if data_uri:
+        out.append(
+            f'<figure class="tl"><img src="{data_uri}" alt="{_esc(lbl["timeline"])}">'
+            f'<figcaption>{_esc(lbl["timeline_note"])}</figcaption></figure>')
+    if narrative:
+        # 마크다운 변환은 agent_lecture_digest 의 것을 그대로 쓴다 —
+        # 이스케이프·헤딩·굵게·링크를 이미 처리한다.
+        try:
+            from agent_lecture_digest import md_to_html as _md
+            inner = _md(narrative)
+        except Exception:  # noqa: BLE001 — 변환 실패해도 글은 보여준다
+            inner = "".join(f"<p>{_esc(x.strip())}</p>"
+                            for x in narrative.split("\n") if x.strip())
+        out.append(f'<div class="tl-narr">{inner}</div>')
+    return "".join(out)
 
 
 def _collections_section(papers: list[dict], lbl: dict) -> str:
@@ -561,7 +577,7 @@ table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
 .ev-abstract{color:#8a6d1f;background:#fbf3de}
 .ev-title{color:#8a9099;background:#f0f1f3}
 a.pdf{font-weight:600}
-figure.tl{margin:14px 0 22px;padding:0}
+figure.tl-narr{max-width:52rem;margin:1rem auto 0;line-height:1.75;color:#333}.tl-narr p{margin:0 0 .9rem}.tl{margin:14px 0 22px;padding:0}
 figure.tl img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
 figure.tl figcaption{font-size:12px;color:var(--soft);margin-top:6px}
 table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
@@ -612,6 +628,7 @@ def build_report_html(*,
                       zotero_index=None,
                       themes: dict | None = None,
                       timeline_uri: str = "",
+                     timeline_narrative: str = "",
                       deep_index: str = "",
                       collection: str = "",
                       generated_at: datetime | None = None) -> str:
@@ -678,7 +695,7 @@ def build_report_html(*,
         from .deep_panel import panel_html
         body.append(panel_html(deep_index, lbl))
 
-    body.append(_timeline_section(timeline_uri, lbl))
+    body.append(_timeline_section(timeline_uri, lbl, timeline_narrative))
 
     if themes:
         body.append(_themes_section(themes, lbl))
