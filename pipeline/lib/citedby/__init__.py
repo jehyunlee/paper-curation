@@ -18,6 +18,7 @@ from __future__ import annotations
 import importlib
 
 __all__ = [
+    # citing.py — 인용논문 수집
     "CITING_COLUMNS",
     "UNSUPPORTED_SOURCES",
     "normalize_doi",
@@ -28,10 +29,21 @@ __all__ = [
     "get_citing_from_s2",
     "get_citing_from_arxiv",
     "get_citing_from_wos",
+    # report.py — HTML 리포트(→ 브라우저 PDF) + CSV export
+    "build_report_html",
+    "papers_to_csv",
+    "paper_url",
+    # 하위 모듈
     "scopus",
 ]
 
-_CITING_EXPORTS = frozenset(__all__) - {"scopus"}
+_CITING_EXPORTS = frozenset({
+    "CITING_COLUMNS", "UNSUPPORTED_SOURCES", "normalize_doi",
+    "reconstruct_abstract", "fetch_all_citing_papers",
+    "get_citing_from_openalex", "get_citing_from_scopus",
+    "get_citing_from_s2", "get_citing_from_arxiv", "get_citing_from_wos",
+})
+_REPORT_EXPORTS = frozenset({"build_report_html", "papers_to_csv", "paper_url"})
 
 
 def __getattr__(name: str):
@@ -48,6 +60,9 @@ def __getattr__(name: str):
     if name in _CITING_EXPORTS:
         citing = importlib.import_module(".citing", __name__)
         return getattr(citing, name)
+    if name in _REPORT_EXPORTS:
+        report = importlib.import_module(".report", __name__)
+        return getattr(report, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 

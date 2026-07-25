@@ -12,9 +12,11 @@
 """
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 import unittest
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -22,6 +24,7 @@ PIPELINE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PIPELINE_DIR))
 
 from lib.citedby import citing  # noqa: E402
+from lib.citedby import report  # noqa: E402
 from lib.citedby import scopus  # noqa: E402
 
 
@@ -307,6 +310,187 @@ class ScopusConfigTests(unittest.TestCase):
                                    {"dc:title": "Good"}])
         self.assertEqual(len(df), 1)
         self.assertEqual(df.iloc[0]["title"], "Good")
+
+
+class ReportLinkIntegrityTests(unittest.TestCase):
+    """PDF 출력의 제1 불변식: 모든 앵커 href 가 절대 URL.
+
+    브라우저 print-to-PDF 는 `<a href>` 를 PDF 링크 주석으로 보존하지만,
+    상대경로는 인쇄 시점 문서 위치에 묶여 PDF 안에서 열리지 않는다. 따라서
+    렌더러는 절대 URL 만 링크로 내보내고 나머지는 평문으로 떨어뜨려야 한다.
+    """
+
+    HREF_RE = re.compile(r'href="([^"]*)"')
+
+    @staticmethod
+    def _paper(**kw):
+        base = {"title": "A Citing Paper", "journal": "Nature",
+                "year": 2025, "citationCount": 4, "source": "openalex",
+                "author_names": "Kim, J.; Lee, S.", "doi": "", "arxiv_id": "",
+                "pdf_url": ""}
+        base.update(kw)
+        return base
+
+    def _all_hrefs(self, html_text):
+        return self.HREF_RE.findall(html_text)
+
+    def test_every_anchor_href_is_absolute(self):
+        papers = [
+            self._paper(doi="10.1038/abc"),
+            self._paper(title="ArXiv One", doi="", arxiv_id="2501.00001"),
+            self._paper(title="OA PDF", pdf_url="https://ex.org/p.pdf"),
+            self._paper(title="No Link At All"),
+        ]
+        out = report.build_report_html(
+            papers=papers,
+            paper_info={"title": "Seed", "doi": "10.1/seed"},
+            topic="융합연구")
+        hrefs = self._all_hrefs(out)
+        self.assertTrue(hrefs, "링크가 하나도 없다 — 렌더가 깨졌다")
+        for h in hrefs:
+            with self.subTest(href=h):
+                self.assertRegex(h, r"^https?://",
+                                 f"절대 URL 이 아닌 href 가 PDF 로 새어나간다: {h}")
+
+    def test_relative_and_scheme_hrefs_are_rejected(self):
+        for bad in ("../papers/001_x/index.html", "/local/path",
+                    "javascript:alert(1)", "file:///etc/passwd", "  "):
+            with self.subTest(bad=bad):
+                self.assertEqual(report._absolute_url(bad), "")
+
+    def test_link_falls_back_to_plain_text(self):
+        out = report._link("../relative.html", "Some Title")
+        self.assertNotIn("<a", out)
+        self.assertIn("Some Title", out)
+
+    def test_paper_url_priority_doi_then_arxiv_then_pdf(self):
+        self.assertEqual(
+            report.paper_url({"doi": "10.1/x", "arxiv_id": "2501.1",
+                              "pdf_url": "https://e/p.pdf"}),
+            "https://doi.org/10.1/x")
+        self.assertEqual(
+            report.paper_url({"doi": "", "arxiv_id": "2501.00002"}),
+            "https://arxiv.org/abs/2501.00002")
+        self.assertEqual(
+            report.paper_url({"pdf_url": "https://e/p.pdf"}),
+            "https://e/p.pdf")
+        self.assertEqual(report.paper_url({}), "")
+
+    def test_doi_already_url_is_not_double_prefixed(self):
+        url = report.paper_url({"doi": "https://doi.org/10.1/x"})
+        self.assertEqual(url, "https://doi.org/10.1/x")
+        self.assertNotIn("doi.org/https", url)
+
+    def test_nan_fields_do_not_become_links(self):
+        url = report.paper_url({"doi": "nan", "arxiv_id": "nan",
+                                "pdf_url": "nan"})
+        self.assertEqual(url, "")
+
+
+class ReportPrintCssTests(unittest.TestCase):
+    """브라우저 PDF 저장 품질을 좌우하는 print 규칙."""
+
+    def setUp(self):
+        self.out = report.build_report_html(
+            papers=[{"title": "P", "doi": "10.1/x", "year": 2025}])
+
+    def test_has_print_button_wired_to_window_print(self):
+        self.assertIn("window.print()", self.out)
+        self.assertIn("citedbyPrint()", self.out)
+
+    def test_button_is_hidden_in_print(self):
+        self.assertIn("no-print", self.out)
+        self.assertRegex(self.out, r"\.no-print\{display:none")
+
+    def test_page_and_color_rules_present(self):
+        self.assertIn("@page", self.out)
+        self.assertIn("@media print", self.out)
+        # 표 헤더/칩 배경이 인쇄에서 날아가지 않아야 한다
+        self.assertIn("print-color-adjust:exact", self.out)
+
+    def test_cards_avoid_page_breaks(self):
+        self.assertIn("break-inside:avoid", self.out)
+
+    def test_does_not_append_url_text_after_links(self):
+        """`a::after{content:attr(href)}` 트릭 금지 — 링크 주석이 이미 보존된다."""
+        self.assertNotIn("attr(href)", self.out)
+
+    def test_report_is_self_contained(self):
+        """외부 자원 참조 0 — 파일로 저장해도 그대로 열려야 한다."""
+        self.assertNotIn("<link", self.out)
+        self.assertNotIn("<script src", self.out)
+        self.assertNotIn("@import", self.out)
+
+
+class ReportRenderTests(unittest.TestCase):
+    def test_escapes_html_in_untrusted_fields(self):
+        out = report.build_report_html(papers=[{
+            "title": "<script>alert(1)</script>",
+            "journal": 'J" onload="x',
+        }])
+        self.assertNotIn("<script>alert(1)</script>", out)
+        self.assertIn("&lt;script&gt;", out)
+        self.assertNotIn('onload="x', out)
+
+    def test_renders_5w1h_summary_table(self):
+        out = report.build_report_html(papers=[{
+            "title": "P", "doi": "10.1/x",
+            "summary": {"what": "무엇", "how": "어떻게",
+                        "result": "결과", "relevance": "관련"},
+        }])
+        self.assertIn("무엇", out)
+        self.assertIn("어떻게", out)
+        self.assertIn('class="sum"', out)
+
+    def test_missing_summary_omits_table(self):
+        out = report.build_report_html(papers=[{"title": "P"}])
+        self.assertNotIn('class="sum"', out)
+
+    def test_empty_paper_list_is_handled(self):
+        out = report.build_report_html(papers=[])
+        self.assertIn("인용논문이 없습니다", out)
+        self.assertTrue(out.startswith("<!DOCTYPE html>"))
+
+    def test_english_locale(self):
+        out = report.build_report_html(papers=[], lang="en")
+        self.assertIn("Citing Paper Analysis Report", out)
+        self.assertIn('lang="en"', out)
+
+    def test_source_counts_and_year_range_chips(self):
+        out = report.build_report_html(
+            papers=[{"title": "A", "year": 2020}, {"title": "B", "year": 2025}],
+            source_counts={"openalex": 12, "scopus": 3})
+        self.assertIn("2020–2025", out)
+        self.assertIn("openalex 12", out)
+
+    def test_deterministic_with_fixed_timestamp(self):
+        stamp = datetime(2026, 7, 25, 9, 30)
+        a = report.build_report_html(papers=[{"title": "X"}], generated_at=stamp)
+        b = report.build_report_html(papers=[{"title": "X"}], generated_at=stamp)
+        self.assertEqual(a, b)
+        self.assertIn("2026-07-25 09:30", a)
+
+
+class ReportCsvTests(unittest.TestCase):
+    def test_csv_has_header_and_url_column(self):
+        csv_text = report.papers_to_csv([
+            {"title": "A", "doi": "10.1/a"},
+            {"title": "B", "arxiv_id": "2501.1"},
+        ])
+        lines = csv_text.strip().splitlines()
+        self.assertIn("url", lines[0])
+        self.assertIn("https://doi.org/10.1/a", csv_text)
+        self.assertIn("https://arxiv.org/abs/2501.1", csv_text)
+        self.assertEqual(len(lines), 3)          # header + 2 rows
+
+    def test_csv_includes_originality_when_present(self):
+        csv_text = report.papers_to_csv([{"title": "A", "originality": "novel"}])
+        self.assertIn("originality", csv_text.splitlines()[0])
+        self.assertIn("novel", csv_text)
+
+    def test_csv_ignores_unknown_keys(self):
+        csv_text = report.papers_to_csv([{"title": "A", "zzz_unknown": "drop"}])
+        self.assertNotIn("zzz_unknown", csv_text)
 
 
 if __name__ == "__main__":
