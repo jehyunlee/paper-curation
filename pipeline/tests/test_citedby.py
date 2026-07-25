@@ -1979,3 +1979,53 @@ class CorpusAssetTests(unittest.TestCase):
             "_connections": [{"title": "이어지는 논문", "relation": "extension"}]}])
         self.assertIn("이어지는 논문", out)
         self.assertIn("ev-corpus", out)
+
+
+class ServeTests(unittest.TestCase):
+    """리포트를 로컬 서버로 띄우는 경로 — Deep Research 는 file:// 에서 안 된다."""
+
+    def test_report_url_maps_docs_relative_path(self):
+        from lib.citedby import serve
+        p = serve._DOCS / "papers" / "042_X" / "citedby" / "r.html"
+        self.assertEqual(serve.report_url(p, 8000),
+                         "http://localhost:8000/papers/042_X/citedby/r.html")
+
+    def test_report_url_empty_outside_docs(self):
+        """docs/ 밖이면 서빙할 수 없다 — 잘못된 링크를 주느니 없는 게 낫다."""
+        from lib.citedby import serve
+        self.assertEqual(serve.report_url("/tmp/r.html", 8000), "")
+
+    def test_reuses_running_server(self):
+        from lib.citedby import serve
+        with patch.object(serve, "find_running", return_value=8003), \
+             patch.object(serve.subprocess, "Popen") as popen:
+            self.assertEqual(serve.ensure_server(), 8003)
+        popen.assert_not_called()
+
+    def test_is_ours_rejects_foreign_server(self):
+        """8000 은 흔한 포트다. 남의 서버를 우리 것으로 오인하면 안 된다."""
+        from lib.citedby import serve
+        import urllib.error
+        err = urllib.error.HTTPError("u", 404, "nf", None, None)
+        with patch.object(serve.urllib.request, "urlopen", side_effect=err):
+            self.assertFalse(serve._is_ours(8000))
+
+    def test_is_ours_accepts_our_400_signature(self):
+        from lib.citedby import serve
+        import io
+        import urllib.error
+        body = io.BytesIO(json.dumps({"error": "missing 'text'"}).encode())
+        err = urllib.error.HTTPError("u", 400, "bad", None, body)
+        with patch.object(serve.urllib.request, "urlopen", side_effect=err):
+            self.assertTrue(serve._is_ours(8000))
+
+    def test_no_free_port_returns_none(self):
+        from lib.citedby import serve
+        with patch.object(serve, "find_running", return_value=None), \
+             patch.object(serve, "_port_open", return_value=True):
+            self.assertIsNone(serve.ensure_server())
+
+    def test_serve_report_returns_empty_when_server_fails(self):
+        from lib.citedby import serve
+        with patch.object(serve, "ensure_server", return_value=None):
+            self.assertEqual(serve.serve_report("/x/r.html"), "")

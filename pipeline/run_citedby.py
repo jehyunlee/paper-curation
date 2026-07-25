@@ -125,6 +125,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--build-index", action="store_true",
                    help="PDF 전문으로 Deep Research 인덱스 생성 "
                         "(_citedby_index.json + 임베딩 사이드카). --pdf-first 필요.")
+    p.add_argument("--serve", action="store_true",
+                   help="리포트를 로컬 서버(serve_local.py)로 띄우고 http URL 을 "
+                        "낸다. Deep Research 패널은 file:// 에서 동작하지 않으므로 "
+                        "--build-index 를 쓸 때 함께 켜는 게 좋다.")
+    p.add_argument("--open", dest="open_browser", action="store_true",
+                   help="--serve 로 얻은 URL 을 브라우저로 연다.")
     p.add_argument("--no-zotero-links", action="store_true",
                    help="Zotero PDF 링크를 붙이지 않는다")
     p.add_argument("--json", dest="as_json", action="store_true",
@@ -188,6 +194,13 @@ def main(argv=None) -> int:
             [_export_paper(p) for p in result["papers"]],
             ensure_ascii=False), encoding="utf-8")
 
+    # 서버 확보를 **payload 조립 전에** 한다 — --json 소비자(paper-curio 브리지)가
+    # url 을 받아야 file:// 대신 http 로 열 수 있다.
+    serve_url = ""
+    if args.serve:
+        from lib.citedby.serve import serve_report
+        serve_url = serve_report(report_path, open_browser=args.open_browser)
+
     payload = {
         "ok": True,
         "doi": result["doi"],
@@ -197,21 +210,30 @@ def main(argv=None) -> int:
         "elapsed_sec": result["elapsed_sec"],
         "source_counts": result["source_counts"],
         "report": str(report_path),
+        "url": serve_url,
         "csv": str(csv_path) if csv_path else "",
         "papers_json": str(papers_path) if papers_path else "",
     }
 
     if args.as_json:
         print(json.dumps(payload, ensure_ascii=False))
-    elif not args.quiet:
+        return 0
+
+    if not args.quiet:
         print()
         print(f"  인용논문 {result['total']}편 → 리포트 {result['matched']}편"
               f" ({result['elapsed_sec']}초)")
         print(f"  리포트: {report_path}")
+        if serve_url:
+            print(f"  열기  : {serve_url}")
+            print("          (Deep Research 패널은 이 URL 에서만 동작합니다)")
+        elif args.serve:
+            print("  ⚠ 로컬 서버를 띄우지 못했습니다 — 산출물이 docs/ 밖이거나 "
+                  "포트가 모두 사용 중일 수 있습니다.")
         if csv_path:
             print(f"  CSV   : {csv_path}")
-        print(f"  브라우저로 열어 [PDF 출력] 버튼을 누르면 링크가 살아있는 "
-              f"PDF 가 나옵니다.")
+        print("  브라우저로 열어 [PDF 출력] 버튼을 누르면 링크가 살아있는 "
+              "PDF 가 나옵니다.")
     return 0
 
 
