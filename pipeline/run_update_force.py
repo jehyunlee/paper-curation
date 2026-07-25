@@ -1965,6 +1965,9 @@ def main():
                         help="Print which papers would be processed and exit without writing.")
     parser.add_argument("--skip-dedup", action="store_true",
                         help="Skip the Zotero duplicate preflight (saves ~1-5 min; not recommended).")
+    parser.add_argument("--skip-metrics", action="store_true",
+                        help="피인용수·레퍼런스 수집(citations.md/references.md) 스킵. "
+                             "외부 API 를 타므로 오프라인이거나 급할 때.")
     parser.add_argument("--dedup-execute", action="store_true",
                         help="Let the Zotero dedup preflight actually delete duplicates. "
                              "Default is dry-run (report only).")
@@ -2359,6 +2362,24 @@ def main():
         # Step 1: Always rebuild index
         run_step("build_papers_index",
                  ["python", "pipeline/build_papers_index.py", "--topic", topic])
+
+        # Step 1.5: 피인용수·레퍼런스 (citations.md / references.md)
+        #
+        # build_papers_index 직후에 둔다 — `_papers_index.json` 이 방금 갱신돼
+        # 대상 목록이 정확하고, run_metrics 가 되쓰는 피인용수 캐시를 이후
+        # 단계(classify / build_topic_index / build_search_index)가 그대로
+        # 읽을 수 있다.
+        #
+        # 기본이 30일 증분이라 매 사이클 돌려도 비용이 거의 없다. 새로 리뷰된
+        # 논문은 citations.md 가 없으므로 항상 대상에 들어간다.
+        #
+        # **soft step 이다** — 외부 API(Crossref/OpenAlex/Scopus) 장애나 망
+        # 문제로 지표를 못 받는 것이 리뷰 파이프라인 전체를 중단시켜서는 안 된다.
+        # CRITICAL_STEPS 에 넣지 않은 이유다.
+        if not getattr(args, "skip_metrics", False):
+            run_step("run_metrics",
+                     ["python", "pipeline/run_metrics.py", "--quiet"],
+                     step_timeout=5400)
 
         # Step 2: topic_modeling
         # --category: always run (reclassify all)

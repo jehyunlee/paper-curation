@@ -28,6 +28,11 @@ papers/_comparisons/
 papers/*/review.md
 papers/*/text.md
 papers/*/originality.md
+# 지표 데이터 (로컬 전용) — 200편 실측 32.9MB, 전량 환산 약 244MB.
+# 인용목록이 논문당 수만 행까지 가므로 배포에 올리면 안 된다.
+papers/*/citations.md
+papers/*/references.md
+papers/*/citedby/
 
 
 # Cross-topic 통합 Deep Research (로컬 전용)

@@ -21,6 +21,35 @@ PAPERS_DIR = str(_PAPERS_DIR)
 from lib.dateutil import normalize_date as normalize_date_to_yyyymm
 
 
+_CITATION_KEYS = ("citation_count", "citations_source", "citations_asof",
+                  "citations_percentile")
+
+
+def _citation_fields(paper_dir, prev):
+    """citations.md 의 최신 스냅샷을 인덱스 캐시 필드로 환원.
+
+    1차 저장소는 `docs/papers/{slug}/citations.md` 이고 인덱스는 **조회용
+    사본**이다 (4,000여 개 md 를 열어야 정렬되는 상황을 피하려는 것). 파일이
+    있으면 언제나 파일이 이기고, 없을 때만 이전 인덱스 값을 물려받는다.
+
+    파일을 못 읽어도 인덱스 재생성 자체를 막지 않는다 — 지표는 부가 정보다.
+    """
+    try:
+        from lib.metrics import read_citations
+        doc = read_citations(paper_dir)
+        snap = doc.latest()
+        if snap is not None:
+            count, source = snap.best()
+            if count is not None:
+                return {"citation_count": count,
+                        "citations_source": source,
+                        "citations_asof": snap.date,
+                        "citations_percentile": snap.percentile}
+    except Exception:  # noqa: BLE001 — 지표 부재가 인덱스 빌드를 막지 않는다
+        pass
+    return {k: prev[k] for k in _CITATION_KEYS if k in prev}
+
+
 def _slug_has_figures(slug):
     fig_dir = os.path.join(PAPERS_DIR, slug, "figures")
     return os.path.isdir(fig_dir) and any(
@@ -204,6 +233,13 @@ def _run_build_index(topic="ai4s"):
             "zotero_item_key": prev.get("zotero_item_key", ""),
             "pdf_path": prev.get("pdf_path", ""),
         }
+        # 피인용수 캐시는 citations.md 에서 되읽는다.
+        #
+        # entry 를 화이트리스트로 새로 만들기 때문에, prev 에서 옮기지 않으면
+        # 인덱스를 재생성할 때마다 사라진다. 그렇다고 prev 를 신뢰하면 파일이
+        # 진실인데 인덱스가 낡는 역전이 생긴다 — **1차 저장소인 citations.md 가
+        # 언제나 이긴다.**
+        entry.update(_citation_fields(os.path.join(PAPERS_DIR, slug), prev))
         index.append(entry)
 
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

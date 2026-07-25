@@ -442,5 +442,91 @@ class CitingListTests(unittest.TestCase):
             self.assertEqual(collect.fetch_citing_papers("10.1/x"), [])
 
 
+
+class IndexCacheRoundTripTests(unittest.TestCase):
+    """`build_papers_index` 가 피인용수 캐시를 잃지 않아야 한다.
+
+    실제 위험: build_papers_index 는 entry 를 **화이트리스트로 새로 만든다.**
+    citations.md 를 되읽지 않으면 인덱스를 재생성할 때마다 citation_count 가
+    통째로 사라진다(실측 164편). 파이프라인이 매 사이클 이 단계를 돌리므로
+    조용히 소실됐을 것이다.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _bpi(self):
+        import importlib
+        return importlib.import_module("build_papers_index")
+
+    def test_restores_from_citations_md(self):
+        store.write_citations(
+            self.dir, slug="042_T", doi="10.1/x", title="T",
+            snapshot=CitationSnapshot("2026-07-25", openalex=182,
+                                      percentile=0.999))
+        got = self._bpi()._citation_fields(self.dir, {})
+        self.assertEqual(got["citation_count"], 182)
+        self.assertEqual(got["citations_source"], "openalex")
+        self.assertEqual(got["citations_asof"], "2026-07-25")
+
+    def test_file_wins_over_stale_index_value(self):
+        """1차 저장소는 citations.md — 인덱스는 조회용 사본일 뿐이다."""
+        store.write_citations(
+            self.dir, slug="042_T", doi="10.1/x", title="T",
+            snapshot=CitationSnapshot("2026-08-25", openalex=200))
+        got = self._bpi()._citation_fields(
+            self.dir, {"citation_count": 10, "citations_source": "crossref"})
+        self.assertEqual(got["citation_count"], 200)
+        self.assertEqual(got["citations_source"], "openalex")
+
+    def test_falls_back_to_prev_when_no_file(self):
+        got = self._bpi()._citation_fields(
+            self.dir, {"citation_count": 7, "citations_source": "openalex",
+                       "citations_asof": "2026-06-01"})
+        self.assertEqual(got["citation_count"], 7)
+
+    def test_no_file_no_prev_yields_nothing(self):
+        self.assertEqual(self._bpi()._citation_fields(self.dir, {}), {})
+
+    def test_zero_citations_survives_roundtrip(self):
+        """0 은 실측값 — 캐시에서 사라지면 안 된다."""
+        store.write_citations(
+            self.dir, slug="042_T", doi="10.1/x", title="T",
+            snapshot=CitationSnapshot("2026-07-25", openalex=0))
+        got = self._bpi()._citation_fields(self.dir, {})
+        self.assertEqual(got["citation_count"], 0)
+
+
+class PipelineWiringTests(unittest.TestCase):
+    """metrics 가 리뷰 파이프라인에 실제로 배선돼 있는지."""
+
+    def test_run_update_force_invokes_run_metrics(self):
+        src = (PIPELINE_DIR / "run_update_force.py").read_text(encoding="utf-8")
+        self.assertIn("run_metrics.py", src)
+        self.assertIn("--skip-metrics", src)
+
+    def test_metrics_runs_after_index_build(self):
+        """run_metrics 는 `_papers_index.json` 을 읽으므로 그 뒤여야 한다."""
+        src = (PIPELINE_DIR / "run_update_force.py").read_text(encoding="utf-8")
+        i_idx = src.index('run_step("build_papers_index"')
+        i_met = src.index('run_step("run_metrics"')
+        self.assertLess(i_idx, i_met)
+
+    def test_metrics_is_not_a_critical_step(self):
+        """외부 API 장애가 리뷰 파이프라인 전체를 죽여선 안 된다."""
+        src = (PIPELINE_DIR / "run_update_force.py").read_text(encoding="utf-8")
+        block = src[src.index("CRITICAL_STEPS = {"):]
+        block = block[:block.index("}")]
+        self.assertNotIn("run_metrics", block)
+
+    def test_run_full_forwards_the_flag(self):
+        src = (PIPELINE_DIR / "run_full.py").read_text(encoding="utf-8")
+        self.assertIn("--skip-metrics", src)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

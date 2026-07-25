@@ -101,6 +101,8 @@ def build_parser():
                         "run_update_force 로 전달(CONN_FULL_REBUILD=1).")
     p.add_argument("--skip-dedup", action="store_true",
                    help="Zotero dedup preflight 스킵.")
+    p.add_argument("--skip-metrics", action="store_true",
+                   help="피인용수·레퍼런스 수집 스킵. run_update_force 로 전달.")
     p.add_argument("--dedup-execute", action="store_true",
                    help="preflight가 dry-run 대신 실제 삭제까지 수행.")
     p.add_argument("--dry-run", action="store_true",
@@ -176,6 +178,8 @@ def build_update_force_cmd(args, images):
         cmd.append("--timeline")
     if args.skip_dedup:
         cmd.append("--skip-dedup")
+    if args.skip_metrics:
+        cmd.append("--skip-metrics")
     if args.dedup_execute:
         cmd.append("--dedup-execute")
     if args.dry_run:
