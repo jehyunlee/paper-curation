@@ -50,9 +50,23 @@ pipeline/eval/results/
 !open.command
 !open_*.command
 
-# 적법성 검토 보고서 (공개 배포 포함)
-!legalcheck/
-!legalcheck/*.html
+# Operations: tracked policy/legal pages and reproducible cost-analysis sources.
+# Generated price binaries, backups, figures, and local state remain ignored.
+!operations/
+!operations/legalcheck/
+!operations/legalcheck/*.html
+!operations/price/
+!operations/price/*.py
+!operations/price/*.html
+
+# Reusable report sources and editable styles; generated build/output stay local.
+!reports/
+!reports/source/
+!reports/source/*.md
+!reports/styles/
+!reports/styles/*.css
+reports/build/
+reports/output/
 
 # Documentation (whitelist specific service files below)
 !docs/

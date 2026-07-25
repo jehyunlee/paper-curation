@@ -4,7 +4,7 @@ Threat model for paper-curation and the agent harness that operates it. Scope:
 the pipeline repo, its git remote, the public Cloudflare deploy, local-only data,
 and the Claude agent that edits/runs all of the above. This is an operational
 security document, not a legal one — for copyright/deploy legality see
-[`legalcheck/legalcheck.html`](legalcheck/legalcheck.html).
+[`operations/legalcheck/legalcheck.html`](operations/legalcheck/legalcheck.html).
 
 ## Assets & trust boundaries
 

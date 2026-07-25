@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>paper-curation 비용 정리 · API 단가 계산</title>
+<style>
+  :root {
+    --bg:#0f1117; --card:#171a23; --card2:#1d212c; --line:#2a2f3c;
+    --ink:#e6e8ee; --muted:#9aa3b2; --accent:#f5a623; --accent2:#5b9dff;
+    --good:#3fd07f; --warn:#ff7a7a; --chip:#242a37;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo",
+      "Malgun Gothic",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; font-size:15px;
+  }
+  .wrap { max-width:1040px; margin:0 auto; padding:2.2rem 1.3rem 5rem; }
+  header.hero {
+    background:linear-gradient(135deg,#1a1f2e 0%,#23283a 55%,#3a2f18 100%);
+    border:1px solid var(--line); border-radius:16px; padding:1.8rem 1.9rem; margin-bottom:1.6rem;
+  }
+  header.hero h1 { margin:0 0 .35rem; font-size:1.6rem; letter-spacing:-.01em; }
+  header.hero .sub { color:var(--muted); font-size:.92rem; }
+  header.hero .sub b { color:var(--accent); }
+  .meta-row { margin-top:1rem; display:flex; flex-wrap:wrap; gap:.5rem; }
+  .chip {
+    background:var(--chip); border:1px solid var(--line); border-radius:999px;
+    padding:.28rem .7rem; font-size:.78rem; color:var(--muted);
+  }
+  .chip b { color:var(--ink); }
+  h2 {
+    font-size:1.18rem; margin:2.2rem 0 .5rem; padding-top:.4rem;
+    border-top:1px solid var(--line);
+  }
+  h2 .n { color:var(--accent); font-variant-numeric:tabular-nums; margin-right:.4rem; }
+  h3 { font-size:1rem; color:var(--accent2); margin:1.3rem 0 .4rem; }
+  p.note { color:var(--muted); font-size:.88rem; margin:.3rem 0 .8rem; }
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:1rem 1.1rem; margin:.7rem 0;
+  }
+  .hl { background:linear-gradient(135deg,#241d10,#1d2230); border-color:#4a3a1a; }
+  table { width:100%; border-collapse:collapse; margin:.6rem 0; font-size:.9rem; }
+  th, td { text-align:left; padding:.55rem .6rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:.82rem; background:var(--card2); }
+  tbody tr:hover { background:#1b1f2b; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .cost { color:var(--accent); font-weight:700; }
+  .cost-big { color:var(--accent); font-weight:800; font-size:1.05em; }
+  .krw { color:var(--muted); font-size:.82em; }
+  .b-good { color:var(--good); font-weight:700; }
+  .b-warn { color:var(--warn); font-weight:700; }
+  .tag {
+    display:inline-block; font-size:.7rem; padding:.08rem .42rem; border-radius:5px;
+    border:1px solid; margin-left:.3rem; vertical-align:middle; white-space:nowrap;
+  }
+  .tag.measured { color:var(--good); border-color:#2a6a48; background:#13241b; }
+  .tag.est { color:var(--accent); border-color:#5a4720; background:#241d10; }
+  .tag.reader { color:var(--accent2); border-color:#274a7a; background:#101a2a; }
+  .tag.op { color:#c79bff; border-color:#4a3a6a; background:#1a1424; }
+  code { background:#0c0e14; border:1px solid var(--line); border-radius:4px; padding:.05rem .35rem; font-size:.85em; }
+  ul.key { margin:.4rem 0; padding-left:1.1rem; }
+  ul.key li { margin:.3rem 0; }
+  .who { display:flex; flex-wrap:wrap; gap:.6rem; margin:.6rem 0; }
+  .who div { flex:1 1 280px; background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:.7rem .9rem; font-size:.86rem; }
+  footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px solid var(--line); padding-top:1rem; }
+  .legend { font-size:.8rem; color:var(--muted); margin:.4rem 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>💰 paper-curation 비용 정리</h1>
+    <div class="sub">
+      사용자 실행 동작 · 옵션별 API 비용 — 예제 논문 <b>arXiv 2412.11427</b>
+      <i>"Towards Scientific Discovery with Generative AI"</i> (Reddy &amp; Shojaee, AAAI 2025) 기준 실측.
+    </div>
+    <div class="meta-row">
+      <span class="chip">측정일 <b>2026-06-19</b></span>
+      <span class="chip">단가 기준 <b>2026-06 공식</b></span>
+      <span class="chip">환율 <b>1 USD ≈ ₩1,380</b></span>
+      <span class="chip">논문 <b>9p · 49,225자 · 그림 2</b></span>
+      <span class="chip">측정법 <b>count_tokens(무료) + 실제 1회 생성</b></span>
+    </div>
+  </header>
+
+  <div class="card hl">
+    <h3 style="margin-top:0">📌 핵심 실측 — 이 논문 1편을 리뷰하면</h3>
+    <p class="note">리뷰 프롬프트는 본문을 <b>12,000자로 절단</b>하므로 논문 길이와 무관하게 비용이 거의 고정됩니다.
+      아래 입력/출력 토큰은 Anthropic <code>count_tokens</code>(입력) 및 실제 1회 생성(출력)으로 측정한 <b>실제 청구 토큰</b>입니다.</p>
+    <table>
+      <thead><tr><th>항목</th><th class="num">입력 tok</th><th class="num">출력 tok</th><th>모델</th><th class="num">실제 비용</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>리뷰 생성 <span class="tag measured">✓ 실측</span></td>
+          <td class="num">4,887</td><td class="num">2,563</td>
+          <td>claude-haiku-4-5</td>
+          <td class="num"><span class="cost-big">$0.0177</span><br><span class="krw">≈ ₩24</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ───────────── ① 단가 ───────────── -->
+  <h2><span class="n">①</span>모델 단가 레퍼런스 <span style="font-size:.8rem;color:var(--muted)">(per 1M tokens, USD)</span></h2>
+  <table>
+    <thead><tr><th>모델</th><th>주 용도</th><th class="num">Input</th><th class="num">Output</th></tr></thead>
+    <tbody>
+      <tr><td><b>Claude Haiku 4.5</b></td><td>리뷰 · 카테고리 요약 · Deep "Fast"</td><td class="num">$1</td><td class="num">$5</td></tr>
+      <tr><td><b>Claude Sonnet 4.6</b></td><td>연결관계 · 인사이트 · Deep "Smart"</td><td class="num">$3</td><td class="num">$15</td></tr>
+      <tr><td><b>Claude Opus 4.8</b></td><td>타임라인 · <b>Deeper</b></td><td class="num">$5</td><td class="num">$25</td></tr>
+      <tr><td>OpenAI gpt-5.5</td><td>Deep "Smart" (OpenAI)</td><td class="num">$5</td><td class="num">$30</td></tr>
+      <tr><td>Gemini 3.5-flash</td><td>Deep "Smart" (Google)</td><td class="num">$1.5</td><td class="num">$9</td></tr>
+      <tr><td>Gemini 3.1-flash-lite</td><td>Deep "Fast" (Google)</td><td class="num">$0.25</td><td class="num">$1.5</td></tr>
+      <tr><td>Gemini-embedding-001</td><td>검색 인덱스 · 쿼리 임베딩</td><td class="num">$0.15</td><td class="num">—</td></tr>
+      <tr><td>Gemini 2.5-flash TTS</td><td>Audio Overview</td><td class="num">—</td><td class="num">$10 <span class="krw">(오디오 1M tok · 실제 ≈$0.015–0.019/분)</span></td></tr>
+      <tr><td>Gemini 3.1-pro / image</td><td>그림검증 · 오디오대본 · PaperBanana</td><td class="num">~$2 <span class="tag est">추정</span></td><td class="num">~$12 <span class="krw">/ 이미지 ~$0.04</span></td></tr>
+    </tbody>
+  </table>
+  <p class="legend">할인: Anthropic batch −50%, prompt caching 캐시입력 −90%. Opus 4.8 Fast Mode는 $10/$50.</p>
+
+  <!-- ───────────── ② Paper Curio ───────────── -->
+  <h2><span class="n">②</span>Paper Curio (Zotero 우클릭) <span class="tag op">운영자 부담</span></h2>
+  <p class="note">기본 경로는 브리지로 파이프라인과 <b>동일 코드</b>(<code>claude-haiku-4-5</code>, max_tokens 4000, 본문 12,000자 절단)를 호출합니다.
+    아래는 <b>이 논문 1편</b> 처리 기준.</p>
+  <table>
+    <thead><tr><th>동작 · 세부 단계</th><th>모델</th><th class="num">이 논문 비용</th></tr></thead>
+    <tbody>
+      <tr><td>리뷰 생성 <span class="tag measured">✓ 실측</span> (in 4,887 / out 2,563)</td><td>Haiku 4.5</td><td class="num"><span class="cost">$0.0177</span> <span class="krw">₩24</span></td></tr>
+      <tr><td>연결관계 (in~4k / out~1.5k) <span class="tag est">추정</span></td><td>Sonnet 4.6</td><td class="num"><span class="cost">~$0.035</span> <span class="krw">₩48</span></td></tr>
+      <tr><td>그림 검증 (그림 2개 × ~1.5라운드 vision) <span class="tag est">추정</span></td><td>Gemini 3.1-pro</td><td class="num"><span class="cost">~$0.01</span> <span class="krw">₩14</span></td></tr>
+      <tr><td>검색 인덱스 임베딩 (리뷰 ~7 chunk)</td><td>embedding-001</td><td class="num"><span class="cost">~$0.0004</span> <span class="krw">₩0.6</span></td></tr>
+      <tr><td>분류 (HDBSCAN) · 독창성 (규칙기반)</td><td>—</td><td class="num"><b class="b-good">$0</b></td></tr>
+      <tr style="background:#1b1f2b"><td><b>리뷰 1편 합계</b></td><td>—</td><td class="num"><span class="cost-big">≈ $0.063</span><br><span class="krw">≈ ₩87</span></td></tr>
+      <tr><td><b>일괄(batch) 리뷰</b> — N편 순차 반복</td><td>—</td><td class="num">N × ~$0.063 <span class="krw">(50편 ≈ $3.2 / ₩4,400)</span></td></tr>
+      <tr><td><b>이 컬렉션 웹 배포</b> — WebP+키strip+<code>wrangler deploy</code></td><td>LLM 없음</td><td class="num"><b class="b-good">$0</b> <span class="krw">(CF 인프라만)</span></td></tr>
+    </tbody>
+  </table>
+  <p class="legend">💡 <code>cached_call</code>: slug+프롬프트+모델 동일 시 재실행 <b class="b-good">0원</b> — 같은 논문 재리뷰는 무료.</p>
+
+  <!-- ───────────── ③ Deep Research ───────────── -->
+  <h2><span class="n">③</span>Deep Research (브라우저) <span class="tag reader">독자 BYOK 부담</span></h2>
+  <p class="note">이 논문 중심 질의 1건 기준. 검색된 논문 ~8편(이 논문 포함) 발췌 ≈ <b>입력 ~7.5k tok</b> + 재정렬(Haiku) ~$0.004 포함.
+    출력은 길이 옵션의 사실상 상한.</p>
+  <table>
+    <thead><tr>
+      <th>길이 옵션</th>
+      <th class="num">Fast (Haiku)</th><th class="num">Smart (Sonnet)</th>
+      <th class="num">Google Fast</th><th class="num">Google Smart</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><b>Short</b> <span class="krw">출력~3k</span></td>
+        <td class="num"><span class="cost">$0.027</span></td><td class="num"><span class="cost">$0.072</span></td>
+        <td class="num">$0.007</td><td class="num">$0.04</td></tr>
+      <tr><td><b>Medium</b> <span class="krw">출력~5.5k</span></td>
+        <td class="num"><span class="cost">$0.039</span></td><td class="num"><span class="cost">$0.109</span></td>
+        <td class="num">$0.011</td><td class="num">$0.06</td></tr>
+      <tr><td><b>Long</b> <span class="krw">출력~10k</span></td>
+        <td class="num"><span class="cost">$0.062</span></td><td class="num"><span class="cost">$0.177</span></td>
+        <td class="num">$0.017</td><td class="num">$0.10</td></tr>
+    </tbody>
+  </table>
+  <div class="card">
+    🖥️ <b>로컬(localhost) 주의</b> — file://·serve_local에서는 <code>text.md</code> 원문(논문당 최대 30,000자 × 최대 10편 ≈ <b>입력 ~85k tok</b>)이 함께 들어가
+    입력비가 급증합니다. 예) Smart·Long 로컬 ≈ <span class="cost">~$0.40</span>. 배포된 웹은 text.md가 없어 위 표대로 저렴합니다.
+  </div>
+
+  <!-- ───────────── ④ Deeper ───────────── -->
+  <h2><span class="n">④</span>Deeper Research <span class="tag reader">독자 BYOK</span> <span style="font-size:.8rem;color:var(--muted)">— 체크 시 Long + 최상위(Opus) 강제 · 멀티에이전트</span></h2>
+  <p class="note">쿼리 1건이 여러 호출로 펼쳐짐: 조사계획(Haiku) → 단면별 재정렬(Haiku×~5) → 구조설계(Haiku) → <b>단락작성(Opus ×4–8)</b> → <b>취합(Opus)</b>.
+    이 논문을 seed로, 연결그래프(후속·반론·기반)까지 확장.</p>
+  <table>
+    <thead><tr><th>백엔드 (최상위 모델)</th><th class="num">1쿼리 비용</th><th>Short 대비</th></tr></thead>
+    <tbody>
+      <tr><td><b>Anthropic (Opus 4.8)</b> ← 기본</td><td class="num"><span class="cost-big">≈ $2.0–2.5</span><br><span class="krw">₩2,800–3,500</span></td><td><b class="b-warn">약 70배</b></td></tr>
+      <tr><td>Google (3.5-flash)</td><td class="num"><span class="cost">≈ $0.8</span></td><td>~25배</td></tr>
+      <tr><td>OpenAI (gpt-5.5)</td><td class="num"><span class="cost">≈ $2.5</span></td><td>~80배</td></tr>
+    </tbody>
+  </table>
+  <p class="legend">비용 대부분이 Opus 단락작성 ×6 (~$1.35) + 취합 (~$0.8). 단락 수(4–8)·budget 사용량에 따라 $1.5–3.5. → <b class="b-warn">가장 비싼 단일 동작.</b></p>
+
+  <!-- ───────────── ⑤ Audio ───────────── -->
+  <h2><span class="n">⑤</span>Audio Overview (팟캐스트 변환) <span class="tag reader">브라우저=독자 BYOK</span></h2>
+  <p class="note">이 논문 리뷰(~2,563 tok) 기준. 비용은 오디오 길이에 <b>~선형 비례</b>. TTS는 토큰 과금($10/1M 오디오 tok · ~25–32 tok/초) → 실제 <b>≈$0.015–0.019/분</b> <span class="b-warn">(종전 "≈$0.25/분" 가정은 ~13배 과대 — 정정)</span>.</p>
+  <table>
+    <thead><tr><th>구성</th><th>모델</th><th class="num">5–6분</th><th class="num">30분</th></tr></thead>
+    <tbody>
+      <tr><td>대본 생성 (in~3.5k / 출력↑) <span class="tag est">추정</span></td><td>Gemini 3.1-pro</td><td class="num">~$0.04</td><td class="num">~$0.20</td></tr>
+      <tr><td>TTS (≈$0.015–0.019/분)</td><td>Gemini 2.5-flash TTS</td><td class="num">~$0.08</td><td class="num">~$0.46–0.59</td></tr>
+      <tr><td>이메일 발송</td><td>Resend</td><td class="num"><b class="b-good">~$0</b></td><td class="num"><b class="b-good">~$0</b></td></tr>
+      <tr style="background:#1b1f2b"><td><b>합계</b></td><td>—</td><td class="num"><span class="cost-big">≈ $0.12</span> <span class="krw">₩170</span></td><td class="num"><span class="cost-big">≈ $0.66–0.79</span> <span class="krw">₩0.9k–1.1k</span></td></tr>
+    </tbody>
+  </table>
+  <p class="legend">30분 ≈ <b>$0.75</b> (대본 $0.20 + TTS $0.46–0.59). 연관논문은 대본 프롬프트에 <b>한 줄 요약만</b> 추가 → 오디오당 <b class="b-good">&lt;$0.01</b> (논문 본문 정독·연결 발굴은 별도 1회 운영자 단계). 코드 경로 모델: 대본=<code>gemini-3.1-pro</code>, TTS=<code>gemini-2.5-flash-tts</code>.</p>
+
+  <!-- ───────────── ⑥ Pipeline ───────────── -->
+  <h2><span class="n">⑥</span>(참고) 운영자 전체 파이프라인 1회 <span class="tag op">운영자 부담</span></h2>
+  <p class="note">토픽 C=카테고리, P=신규논문. 추정 모델(토큰 근사). 가장 불확실: PaperBanana 이미지생성·gemini-3.1-pro 단가.</p>
+  <table>
+    <thead><tr><th>단계</th><th>모델</th><th>호출 규모</th><th class="num">비용 모델</th></tr></thead>
+    <tbody>
+      <tr><td>리뷰</td><td>Haiku</td><td>P편</td><td class="num">P × ~$0.018</td></tr>
+      <tr><td>그림검증</td><td>Gemini-pro</td><td>~그림수×1.5/편</td><td class="num">P × ~$0.01 <span class="tag est">추정</span></td></tr>
+      <tr><td><b>연결관계</b> (매회·캐시X)</td><td>Sonnet (out≤20k)</td><td>Σ⌈cat/25⌉</td><td class="num">~$0.2/배치 <span class="b-warn">큰 비중</span></td></tr>
+      <tr><td>카테고리 요약</td><td>Haiku</td><td>C×(1+서브)</td><td class="num">~$0.006/호출</td></tr>
+      <tr><td><b>교차카테고리 인사이트</b> (<code>--insights</code>)</td><td>Sonnet (in <b>최대 ~900k!</b>)</td><td>1회·캐시O</td><td class="num">~$2.8 <span class="krw">(대형 토픽)</span></td></tr>
+      <tr><td><b>타임라인 narrative</b> (<code>--retime</code>)</td><td>Opus (out≤12k)</td><td>C+2</td><td class="num">~$0.28/호출</td></tr>
+      <tr><td>타임라인 이미지</td><td>Gemini image</td><td>(C+1)×3 후보</td><td class="num">~$0.15/후보 <span class="tag est">추정</span></td></tr>
+      <tr><td>검색 인덱스</td><td>embedding</td><td>⌈miss/50⌉</td><td class="num">거의 무시</td></tr>
+    </tbody>
+  </table>
+  <div class="who">
+    <div>📅 <b>주간 운영</b> (C≈12, 신규 P≈10)<br>리뷰+그림+연결+요약 ≈ <span class="cost">~$5/회</span> <span class="krw">(₩6,900)</span><br><span class="legend">연결관계가 매회 전 카테고리 재실행 → 주 비용원</span></div>
+    <div>🏗️ <b>첫 빌드</b> (P≈80 + <code>--insights --timeline</code>)<br>≈ <span class="cost">~$20–25</span> <span class="krw">(₩28k–35k)</span><br><span class="legend">대형 토픽(ai4s/scisci)은 $30–60</span></div>
+  </div>
+
+  <!-- ───────────── ⑦ ai4s 시나리오 ───────────── -->
+  <h2><span class="n">⑦</span>시나리오: 이 논문을 <b>ai4s</b>에 추가 — 실제 카테고리(8개) 기준 timeline 비용 <span class="tag op">운영자 부담</span></h2>
+  <div class="meta-row" style="margin:.2rem 0 .6rem">
+    <span class="chip">ai4s 카테고리 <b>C = 8개</b></span>
+    <span class="chip">총 논문 <b>1,177편</b></span>
+    <span class="chip">이 논문 소속 <b>LLM Benchmarking and Agent Evaluation (182편)</b></span>
+  </div>
+  <p class="note">타임라인은 카테고리 narrative(Opus) + 후보 이미지(PaperBanana) + 심사(Sonnet vision)로 구성됩니다.
+    카테고리당 입력 ≈ <code>소속 논문수 × ~120 tok</code>, 출력은 cap(12k) 근처.</p>
+
+  <h3>(a) 타임라인 전체 재생성 <code>--retime</code> — C=8 실측 기준</h3>
+  <table>
+    <thead><tr><th>구성</th><th>모델</th><th>호출 수</th><th class="num">토큰(Σ in / Σ out)</th><th class="num">비용</th></tr></thead>
+    <tbody>
+      <tr><td>카테고리 narrative<br><span class="krw">(253·182·182·163·131·115·98·53편)</span></td><td>Opus 4.8</td><td>8</td><td class="num">~150k / ~72k</td><td class="num"><span class="cost">~$2.55</span></td></tr>
+      <tr><td>메인 타임라인 narrative</td><td>Opus 4.8</td><td>1</td><td class="num">~10k / ~8k</td><td class="num">~$0.25</td></tr>
+      <tr><td>Executive summary</td><td>Opus 4.8</td><td>1</td><td class="num">~10k / ~3.5k</td><td class="num">~$0.14</td></tr>
+      <tr><td>후보 이미지 심사 (vision)</td><td>Sonnet 4.6</td><td>9 <span class="krw">(C+1)</span></td><td class="num">~39k / ~3.6k</td><td class="num">~$0.17</td></tr>
+      <tr><td>PaperBanana 이미지 생성<br><span class="krw">(C+1)=9 diagram × 3 후보 = 27</span> <span class="tag est">추정</span></td><td>Gemini image+pro</td><td>27</td><td class="num">— (이미지)</td><td class="num"><span class="cost">~$4.0</span></td></tr>
+      <tr style="background:#1b1f2b"><td><b>전체 <code>--retime</code> 합계</b></td><td>—</td><td>—</td><td class="num">—</td><td class="num"><span class="cost-big">≈ $6.8</span><br><span class="krw">≈ ₩9,400</span></td></tr>
+      <tr><td><span class="krw">└ narrative만 (이미지 캐시/생략 시)</span></td><td>—</td><td>—</td><td class="num">—</td><td class="num"><span class="cost">≈ $2.8</span> <span class="krw">₩3,900</span></td></tr>
+    </tbody>
+  </table>
+  <p class="legend">출력비(Opus 8×~9k = ~$1.8)가 narrative 비용을 지배. <b class="b-warn">PaperBanana 이미지(~$4)가 전체의 최대 비중</b>이며 단가 불확실(<span class="tag est">추정</span>).</p>
+
+  <h3>(b) 이 논문 1편만 추가 시 증분 <code>--resume --timeline</code></h3>
+  <p class="note">새 논문은 소속 카테고리 <b>"LLM Benchmarking and Agent Evaluation"(182편)</b> 하나만 바꾸므로,
+    해당 카테고리 timeline만 재생성됩니다 (나머지 7개는 입력-해시 캐시 히트 → 0원).</p>
+  <table>
+    <thead><tr><th>항목</th><th>모델</th><th class="num">비용</th></tr></thead>
+    <tbody>
+      <tr><td>변경 카테고리 narrative (182편, in~22k/out~9k)</td><td>Opus 4.8</td><td class="num">~$0.29</td></tr>
+      <tr><td>메인 + Executive summary 갱신</td><td>Opus 4.8</td><td class="num">~$0.39</td></tr>
+      <tr><td>변경 카테고리 이미지 1개 (3 후보 + 심사) <span class="tag est">추정</span></td><td>Gemini+Sonnet</td><td class="num">~$0.47</td></tr>
+      <tr style="background:#1b1f2b"><td><b>timeline 증분 소계</b></td><td>—</td><td class="num"><span class="cost">≈ $1.15</span> <span class="krw">₩1,600</span></td></tr>
+      <tr><td colspan="3" style="color:var(--muted);font-size:.82rem;padding-top:.7rem">＋ 타임라인 외 추가 동작 (논문 추가에 수반)</td></tr>
+      <tr><td>리뷰 생성 <span class="tag measured">✓ 실측</span></td><td>Haiku</td><td class="num">$0.018</td></tr>
+      <tr><td>연결관계 (이 논문만) <span class="tag est">추정</span></td><td>Sonnet</td><td class="num">~$0.035</td></tr>
+      <tr><td>그림검증 + 카테고리요약 갱신 + 임베딩</td><td>Gemini/Haiku</td><td class="num">~$0.04</td></tr>
+      <tr style="background:#241d10"><td><b>논문 1편 ai4s 추가 총 증분 (timeline 포함)</b></td><td>—</td><td class="num"><span class="cost-big">≈ $1.24</span><br><span class="krw">≈ ₩1,710</span></td></tr>
+      <tr><td><span class="krw">└ timeline 이미지 재생성 생략 시</span></td><td>—</td><td class="num"><span class="cost">≈ $0.77</span> <span class="krw">₩1,060</span></td></tr>
+      <tr><td><span class="krw">└ timeline 자체를 안 돌릴 때 (리뷰+분류만)</span></td><td>—</td><td class="num"><span class="cost">≈ $0.09</span> <span class="krw">₩130</span></td></tr>
+    </tbody>
+  </table>
+  <p class="legend">핵심: 논문 1편 추가 자체는 <b class="b-good">~₩130</b>으로 저렴. 비용은 <b>그 카테고리의 timeline 이미지를 다시 그리느냐</b>에서 갈림(+~₩1,100). 8개 카테고리 전체 <code>--retime</code>은 ~₩9,400.</p>
+
+  <!-- ───────────── ⑧ ai4s 전체 비용 ───────────── -->
+  <h2><span class="n">⑧</span>ai4s 전체 비용 분해 — 실측 토큰 기반 (모든 단계) <span class="tag op">운영자 부담</span></h2>
+  <p class="note">C=8 카테고리, P=1,178편 실측. cross-category insights·paper-connections 입력은 ai4s 실데이터로 <code>count_tokens</code> 측정한 <b>실값</b>.
+    출력 토큰만 코드의 max_tokens·전형치로 추정.</p>
+  <table>
+    <thead><tr><th>단계</th><th>모델</th><th>호출</th><th class="num">입력 tok</th><th class="num">출력 tok</th><th class="num">비용</th></tr></thead>
+    <tbody>
+      <tr><td>리뷰 생성 (편당 실측 $0.0177)</td><td>Haiku</td><td>1,178</td><td class="num">편당 4,887</td><td class="num">편당 2,563</td><td class="num"><span class="cost">$20.8</span></td></tr>
+      <tr><td>그림 검증 <span class="tag est">추정</span></td><td>Gemini-pro</td><td>~3/편</td><td class="num">vision</td><td class="num">tiny</td><td class="num"><span class="cost">~$11.8</span></td></tr>
+      <tr><td><b>Paper connections</b> (cross-cat 후보 포함) <span class="tag measured">✓ 입력측정</span></td><td>Sonnet</td><td>52 배치</td><td class="num"><b>1,933,534</b></td><td class="num">~260k <span class="tag est">추정</span></td><td class="num"><span class="cost-big">~$10</span></td></tr>
+      <tr><td><b>Cross-category insights</b> (<code>--insights</code>) <span class="tag measured">✓ 입력측정</span></td><td>Sonnet</td><td>1·캐시O</td><td class="num"><b>198,493</b></td><td class="num">~7k</td><td class="num"><span class="cost">~$0.70</span></td></tr>
+      <tr><td>카테고리 요약 (8 overview + 82 sub)</td><td>Haiku</td><td>90</td><td class="num">~75k</td><td class="num">~80k</td><td class="num"><span class="cost">~$0.43</span></td></tr>
+      <tr><td>타임라인 narrative + 이미지 (⑦a)</td><td>Opus+Gemini</td><td>10+27</td><td class="num">~150k</td><td class="num">~83k</td><td class="num"><span class="cost">~$6.8</span></td></tr>
+      <tr><td>검색 인덱스 임베딩</td><td>embedding</td><td>~165 배치</td><td class="num">~1.65M</td><td class="num">—</td><td class="num"><span class="cost">~$0.25</span></td></tr>
+      <tr style="background:#241d10"><td><b>콜드 풀빌드 합계</b> (<code>--mode rebuild</code>, 캐시 없음, +insights+timeline)</td><td>—</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num"><span class="cost-big">≈ $51</span><br><span class="krw">≈ ₩70,000</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>실행 모드별 실제 비용 — "이 논문이 이미 ai4s에 있는" 운영 관점</h3>
+  <table>
+    <thead><tr><th>실행</th><th>재실행되는 단계</th><th class="num">비용</th></tr></thead>
+    <tbody>
+      <tr><td><b>콜드 풀빌드</b> <code>--mode rebuild</code></td><td>전부 (리뷰·그림·연결·인사이트·요약·타임라인)</td><td class="num"><span class="cost">≈ $51</span> <span class="krw">₩70k</span></td></tr>
+      <tr><td><b>재분류·재인사이트·타임라인 갱신</b><br><span class="krw">(리뷰·그림 캐시 히트)</span></td><td>연결 $10 + 인사이트 $0.7 + 요약 $0.43 + 타임라인 $6.8</td><td class="num"><span class="cost">≈ $18</span> <span class="krw">₩25k</span></td></tr>
+      <tr><td><b>주간 curate</b> <code>--mode curate</code><br><span class="krw">(신규 ~10편, insights/timeline 미실행)</span></td><td>신규 리뷰 $0.2 + <b>연결 전체 재실행 $10</b> + 요약 ~$0.1</td><td class="num"><span class="cost-big">≈ $10.4</span> <span class="krw">₩14k</span></td></tr>
+      <tr><td><b>논문 1편 추가 — 파이프라인</b> <code>curate</code></td><td>리뷰 $0.018 + 그림 $0.01 + <b>연결 전체 $10</b></td><td class="num"><span class="cost">≈ $10</span> <span class="krw">₩14k</span></td></tr>
+      <tr><td><b>논문 1편 추가 — Paper Curio 플러그인</b></td><td>리뷰 + 이 논문 연결만 + 그림 + 임베딩 <span class="krw">(토픽 전체 연결·인사이트·타임라인 미실행)</span></td><td class="num"><span class="cost">≈ $0.06</span> <span class="b-good">₩90</span></td></tr>
+    </tbody>
+  </table>
+  <div class="card hl">
+    🔑 <b>가장 중요한 발견</b> — <b>Paper connections는 캐시되지 않고</b>, 매 배치가 타 카테고리 ~1,000편 목록을 반복 포함해 입력이 <b>1.93M tok</b>에 달합니다.
+    그래서 <code>--mode curate</code>를 한 번 돌릴 때마다 신규 논문이 몇 편이든 <b class="b-warn">connections에 ~$10(₩14k)</b>이 매번 듭니다 — 타임라인($6.8)보다 큽니다.
+    반면 <b>Paper Curio 플러그인으로 1편만 추가</b>하면 토픽 전체 연결을 건드리지 않아 <b class="b-good">~₩90</b>입니다.
+    <br>→ 비용 절감 키: ① 잦은 추가는 플러그인 경로, ② 토픽 전체 connections 재생성은 모아서 (주 1회 등), ③ insights는 캐시되므로 입력 불변 시 무료.
+  </div>
+
+  <!-- ───────────── ⑨ 위키 운영 trade-off ───────────── -->
+  <h2><span class="n">⑨</span>"Karpathy LLM wiki" 운영 비용 — 큐레이션 vs 그냥 PDF 쌓기</h2>
+  <p class="note">동일한 LLM Q&amp;A 위키를, <b>A) paper-curation으로 미리 리뷰해서</b> 운영 vs <b>B) PDF만 쌓고 RAG로</b> 운영.
+    차이는 비용이 어디 있느냐 — A는 선행 큐레이션, B는 질의당 원문 컨텍스트.</p>
+  <div class="card">
+    <b>모델 파라미터</b> (이 세션 실측 앵커):
+    <ul class="key">
+      <li>논문 평균 <b>~13k tok</b> 원문 <span class="tag measured">✓ 측정</span> (2412.11427 = 49,225자 ≈ 13.3k tok)</li>
+      <li>리뷰 1편 <b>$0.0177</b> <span class="tag measured">✓ 측정</span> (Haiku) · 답변 모델 = Sonnet($3/$15) 양쪽 동일 · 출력 ~3k tok (상쇄)</li>
+      <li>검색 k=8 — A는 리뷰 distill 컨텍스트 ~7.5k tok, B는 원문 chunk ~14k tok</li>
+    </ul>
+    <table>
+      <thead><tr><th>방식</th><th class="num">선행/편</th><th class="num">질의당</th></tr></thead>
+      <tbody>
+        <tr><td><b>A. paper-curation</b> (리뷰+임베딩→RAG)</td><td class="num">$0.0181</td><td class="num">$0.0715</td></tr>
+        <tr><td><b>B. PDF 쌓기</b> (원문 임베딩→RAG)</td><td class="num">$0.00195</td><td class="num">$0.091</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>A. paper-curation 운영 비용 (USD) — 논문수 × 질의수</h3>
+  <table>
+    <thead><tr><th>논문수 \ 질의</th><th class="num">1회</th><th class="num">3회</th><th class="num">5회</th><th class="num">10회</th></tr></thead>
+    <tbody>
+      <tr><td><b>100편</b></td><td class="num">$1.88</td><td class="num">$2.02</td><td class="num">$2.17</td><td class="num">$2.53</td></tr>
+      <tr><td><b>200편</b></td><td class="num">$3.69</td><td class="num">$3.84</td><td class="num">$3.98</td><td class="num">$4.34</td></tr>
+      <tr><td><b>500편</b></td><td class="num">$9.12</td><td class="num">$9.27</td><td class="num">$9.41</td><td class="num">$9.77</td></tr>
+      <tr><td><b>1000편</b></td><td class="num">$18.17</td><td class="num">$18.32</td><td class="num">$18.46</td><td class="num">$18.82</td></tr>
+      <tr><td><b>1500편</b></td><td class="num">$27.22</td><td class="num">$27.37</td><td class="num">$27.51</td><td class="num">$27.87</td></tr>
+    </tbody>
+  </table>
+  <p class="legend">선행 리뷰비(논문수×$0.018)가 지배. 질의는 거의 공짜(논문수 무관 고정 $0.072). <span class="krw">전 기능(연결·타임라인) 포함 시 선행 = 편당 $0.043(ai4s 실측) → 1000편 ~$43.</span></p>
+
+  <h3>B. 그냥 PDF 쌓기(RAG) 운영 비용 (USD)</h3>
+  <table>
+    <thead><tr><th>논문수 \ 질의</th><th class="num">1회</th><th class="num">3회</th><th class="num">5회</th><th class="num">10회</th></tr></thead>
+    <tbody>
+      <tr><td><b>100편</b></td><td class="num">$0.29</td><td class="num">$0.47</td><td class="num">$0.65</td><td class="num">$1.11</td></tr>
+      <tr><td><b>200편</b></td><td class="num">$0.48</td><td class="num">$0.66</td><td class="num">$0.85</td><td class="num">$1.30</td></tr>
+      <tr><td><b>500편</b></td><td class="num">$1.07</td><td class="num">$1.25</td><td class="num">$1.43</td><td class="num">$1.89</td></tr>
+      <tr><td><b>1000편</b></td><td class="num">$2.04</td><td class="num">$2.22</td><td class="num">$2.41</td><td class="num">$2.86</td></tr>
+      <tr><td><b>1500편</b></td><td class="num">$3.02</td><td class="num">$3.20</td><td class="num">$3.38</td><td class="num">$3.84</td></tr>
+    </tbody>
+  </table>
+  <p class="legend">선행 거의 0 · 질의당 원문 컨텍스트가 비용. <b>요청한 모든 칸(질의 1–10회)에서 B가 저렴</b> — 1000편·10회 기준 A $18.8 vs B $2.9 (<b class="b-warn">6.5배</b>).</p>
+
+  <h3>⚖️ Trade-off 조건 (손익분기 질의 수)</h3>
+  <div class="card hl">
+    <b>A = B 손익분기</b>: <code>Δ선행·N = Δ질의(k)·Q</code> → <b>Q* ≈ 6.8 · N / k</b>
+    (k = 질의당 인용 문서수). per-query 격차가 <code>k·(원문청크 − distill청크)</code>에 비례하므로 <b>k가 클수록 손익분기 ↓</b> = 큐레이션이 더 빨리 유리. 기존 <b>0.83N</b>은 <b>k=8</b>의 특수값.
+    <table>
+      <thead><tr><th class="num">k (인용/질의)</th><th class="num">2</th><th class="num">4</th><th class="num">8</th><th class="num">16</th><th class="num">32</th></tr></thead>
+      <tbody>
+        <tr><td>Q*/N (질의/편)</td><td class="num">3.4</td><td class="num">1.7</td><td class="num">0.85</td><td class="num">0.43</td><td class="num">0.21</td></tr>
+        <tr><td>Q* @ N=1,000</td><td class="num">~3,400</td><td class="num">~1,700</td><td class="num">~850</td><td class="num">~430</td><td class="num">~210</td></tr>
+        <tr><td>B/A 질의비</td><td class="num">1.09×</td><td class="num">1.16×</td><td class="num">1.27×</td><td class="num">1.40×</td><td class="num">1.54×</td></tr>
+      </tbody>
+    </table>
+    <b>Q &lt; Q*</b> → PDF 쌓기(B)가 쌈 · <b>Q &gt; Q*</b> → paper-curation(A)이 쌈. 질의 1–10회 영역(k=8)에선 <b class="b-warn">항상 B 우위</b>.
+    <br><span class="legend">모델 민감도: 답변 모델이 강할수록 distill 효과↑ → 손익분기↓ (Opus < Sonnet < Haiku 순으로 Q* 작아짐).</span>
+  </div>
+
+  <div class="card">
+    <b class="b-warn">B가 토큰 수 외에 구조적으로 불리한 4가지</b> (실제 Q*를 <code>6.8N/k</code>보다 더 낮춤):
+    <ul class="key">
+      <li><b>독해 amortization</b> — A는 큐레이션 때 1회 독해 후 distill 재사용, B는 매 질의마다 원문을 강한 답변 모델에 재투입(‘논문 읽기’ 비용을 질의 횟수만큼 반복)</li>
+      <li><b>Figure 비대칭</b> — A는 figure 사전추출(WebP, 1회) 후 관련 그림만 캡션 참조 → 답변 LLM은 텍스트만(figure 토큰≈0). B는 figure 내용을 쓰려면 페이지 이미지를 멀티모달로 매 질의 투입(과금) or figure 통째 손실</li>
+      <li><b>길이 스케일링</b> — A 리뷰는 본문 12,000자 캡 → 50쪽 논문이든 ~고정(~2.5k tok). B 원문 컨텍스트는 <b>논문 길수록 증가</b> → 긴 논문일수록 격차↑</li>
+      <li><b>청크 경계</b> — A는 review.md를 의미 단위(Essence/How/Achievement…)로 사전분할 → 선택적 회수. B 원문 청크는 단·수식·참고문헌을 가로질러 잘림(저신호 → 같은 정보에 <code>k_B↑</code>)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <b>🚫 "전부 context에 넣기"(순수 Karpathy 덤프)는 불가</b> — 1M context ÷ 13k tok ≈ <b>~77편이 상한</b>.
+    100편 이상은 물리적으로 못 넣음 → <b>RAG가 강제됨</b>. (만약 질의마다 top-10 원문 통째로 넣으면 ~$0.44/질의 → 이 경우 A가 Q&gt;~0.04·N 부터 우위.)
+  </div>
+
+  <h3>두 방식의 장단점·한계 (Karpathy LLM wiki)</h3>
+  <div class="who">
+    <div><b style="color:var(--accent2)">A. paper-curation (Curate → Query)</b><br>
+      <b class="b-good">장점</b> ✓ 사람이 읽는 큐레이션 산출물(리뷰·카테고리·연결·타임라인) · distill 고신호 컨텍스트(노이즈↓·토큰↓) · 전역 구조·cross-paper 종합 · 질의비 거의 고정<br>
+      <b class="b-warn">한계</b> ✗ <b>압축 손실</b>(리뷰 밖 세부=수치·수식 접근 불가) · 리뷰 모델 오류가 전 질의에 전파(품질 상한) · 선행비·지연 · 고정 스키마·재큐레이션 비용
+    </div>
+    <div><b style="color:var(--accent)">B. PDF 쌓기 (Pile → Query)</b><br>
+      <b class="b-good">장점</b> ✓ 선행비≈0·즉시 질의 · 원문 직접 접근→디테일 보존 · 질의 1~10회 최저가 · 셋업 단순<br>
+      <b class="b-warn">한계</b> ✗ 원문 노이즈(참고문헌·수식·OCR)→답변 질↓·토큰 낭비 · <b>전역 구조 부재</b>(점-조회) · 검색 종속(top-k 누락 시 끝)·cross-doc 추론 약 · 컨텍스트 한계(~77편)→RAG 강제·휘발성·검증난
+    </div>
+  </div>
+  <div class="card"><b>공통 한계 (Karpathy LLM)</b>: 환각·lossy recall · 컨텍스트 윈도우 천장 · 대규모 코퍼스는 RAG 불가피 — <span class="krw">A는 ‘무엇을 잃었는지’ 모르고, B는 ‘무엇이 있는지’ 모른다.</span></div>
+
+  <div class="card hl">
+    🔑 <b>결론</b> — 순수 <b>질의 비용</b>만 보면, 1–10회 수준에선 <b class="b-good">"PDF 쌓기+RAG"가 압도적으로 쌈</b>(리뷰 선행비 회수 불가).
+    paper-curation의 비용은 <b>싼 질의를 사는 게 아니라</b> ① 사람이 읽는 한글 리뷰·카테고리·연결·타임라인·네트워크라는 <b>큐레이션 산출물</b>,
+    ② distill된 고신호 컨텍스트, ③ Deeper 그래프를 사는 것. <b>저장소(library) vs 검색엔진(search)의 차이</b> — 같은 "위키"라도 다른 제품.
+    <br>→ <b>질의만 필요</b>하면 PDF+RAG, <b>읽고 탐색·재사용</b>할 거면 paper-curation.
+  </div>
+
+  <!-- ───────────── ⑩ 규모 상한 ───────────── -->
+  <h2><span class="n">⑩</span>문헌 규모 상한 — 몇 편까지 쓸 수 있나 (무제한 아님)</h2>
+  <p class="note">방식에 따라 천장이 완전히 다릅니다. 인덱스 실측 <b>13 KB/편</b> (ai4s 1,178편 = 15.7MB).</p>
+  <table>
+    <thead><tr><th>방식</th><th class="num">문헌 상한</th><th>무엇이 막나</th></tr></thead>
+    <tbody>
+      <tr><td><b>전부 context 덤프</b> (순수 Karpathy)</td><td class="num"><span class="cost">~77편</span> <span class="krw">(실전 ~수십)</span></td><td>컨텍스트 윈도우 (1M ÷ 13k)</td></tr>
+      <tr><td><b>에이전트 on-demand</b> (Obsidian+Claude Code) <span class="tag op">이 워크플로</span></td><td class="num"><span class="cost">~수십~수백</span></td><td>색인 없음 → 내용 검색·discoverability</td></tr>
+      <tr><td><b>RAG · 브라우저</b> (현 paper-curation)</td><td class="num"><span class="cost">~1~3만 편</span></td><td>클라이언트 다운로드·메모리</td></tr>
+      <tr><td><b>RAG · server 벡터DB</b></td><td class="num"><span class="cost">~수백만+</span></td><td>검색 품질·예산 (사실상 무제한)</td></tr>
+    </tbody>
+  </table>
+  <h3>현 client-side 구조의 다운로드 스케일링 (실측 13 KB/편)</h3>
+  <table>
+    <thead><tr><th class="num">편수</th><th class="num">1,000</th><th class="num">10,000</th><th class="num">30,000</th><th class="num">100,000</th></tr></thead>
+    <tbody>
+      <tr><td>브라우저 다운로드</td><td class="num">13 MB</td><td class="num">134 MB</td><td class="num">401 MB</td><td class="num">1.3 GB</td></tr>
+      <tr><td>상태</td><td class="num"><b class="b-good">여유</b></td><td class="num">가능</td><td class="num"><b style="color:var(--accent)">부담</b></td><td class="num"><b class="b-warn">한계</b></td></tr>
+    </tbody>
+  </table>
+  <div class="card hl">
+    🔑 <b>핵심</b> — Karpathy식 "컨텍스트에 다 넣기"는 <b class="b-warn">~77편이 천장</b>. paper-curation처럼 <b>RAG(retrieval)</b>를 쓰면 그 천장을 없애지만, 현재 <b>브라우저 클라이언트</b> 구조 때문에 <b>~1~3만 편</b>이 실용 한계 — 인덱스를 <b>서버 벡터DB</b>로 옮기면 사실상 무제한(이후 검색 품질·예산이 한계). <span class="krw">컨텍스트 = 작업기억(제한) · retrieval = 외부기억(확장) → 무제한이 되려면 retrieval에 의존.</span>
+  </div>
+
+  <h3>4번째 방식: 에이전트 on-demand 읽기 (Obsidian + Claude Code + PDF 폴더)</h3>
+  <p class="note">Claude Code에 PDF 폴더만 알려주고 질문하며 wiki .md를 쌓는 방식 — 색인을 따로 안 만드는 그 워크플로.</p>
+  <div class="who">
+    <div><b style="color:var(--accent2)">메커니즘 — 임베딩·색인 없음</b><br>
+      Read·grep·glob로 PDF를 <b>그때그때 펼쳐 읽음</b>("PDF 따로 안 건드림" 맞음). 벡터DB 없음.<br>
+      <b class="b-warn">한계</b> ✗ grep은 PDF 바이너리 본문 못 읽음 → 내용 검색 약함 · 큰 폴더에선 "어느 PDF가 관련?" 못 찾음(파일명·폴더구조 의존) · 질의당 원문 통째 → 많은 논문 종합 질문은 context 부족 → <b>실용 ~수십~수백 편</b>
+    </div>
+    <div><b style="color:var(--good)">⭐ 사실상 paper-curation을 손으로</b><br>
+      질문하며 쌓는 <b>wiki .md = 점진적 수동 큐레이션</b>(grep으로 찾는 distill 층). 시간이 지날수록 <b>A(paper-curation)에 수렴</b> — paper-curation은 이를 <b>배치 + 임베딩 인덱스</b>로 자동·대규모화한 버전.
+    </div>
+  </div>
+  <div class="card"><b>요약</b>: 소규모(수십~수백 편)엔 가장 간편하고 잘 돌아감 · 대규모는 임베딩 인덱스(client ~1~3만 / server ~수백만)로 가야 함. 색인이 없어 <b>편수 한계가 4방식 중 가장 낮음</b>.</div>
+
+  <!-- ───────────── 요약 ───────────── -->
+  <h2 style="border-color:var(--accent)">🎯 핵심 요약</h2>
+  <div class="who">
+    <div><b>누가 내나</b><br>
+      <span class="tag op">운영자</span> 리뷰·파이프라인·타임라인·인사이트 (ANTHROPIC+GOOGLE 키)<br>
+      <span class="tag reader">독자</span> Deep·Deeper·Audio 답변생성 (BYOK)<br>
+      쿼리 임베딩·웹 배포 = 운영자지만 거의 무료
+    </div>
+    <div><b>싼 것</b><br>
+      논문 1편 리뷰 <span class="cost">$0.018 (₩24)</span><br>
+      웹 배포 <b class="b-good">$0</b><br>
+      Google-Fast Deep Research <span class="cost">~$0.007 (₩10)</span>
+    </div>
+    <div><b>비싼 것</b><br>
+      Deeper(Opus) 1쿼리 <span class="cost">~$2 (₩2,800)</span><br>
+      <b>connections 재실행</b>(curate 매회) <span class="cost">~$10 (₩14k)</span><br>
+      ai4s 콜드 풀빌드 <span class="cost">~$51 (₩70k)</span>
+    </div>
+    <div><b>고정 / 캐시</b><br>
+      리뷰는 본문 12,000자 캡 → 편당 비용 일정<br>
+      동일 논문 재리뷰·인사이트 캐시 = <b class="b-good">무료</b>
+    </div>
+  </div>
+
+  <footer>
+    <b>측정 방법</b> — 리뷰 입력 토큰은 Anthropic <code>count_tokens</code>(과금 없음)로 측정, 출력 토큰은 실제 생성 1회의 청구 usage.
+    그 외 연결관계·그림검증·Deep/Deeper/Audio는 코드의 실제 모델·max_tokens 설정 + 이 논문 실측 컨텍스트 크기로 산정한 추정치(<span class="tag est">추정</span> 표기).<br>
+    <span class="tag est">추정</span> 항목 중 <code>gemini-3.1-pro-preview</code>·이미지생성 단가는 공식 페이지 개별 명시가 적어 보수적으로 잡음.<br>
+    Generated by Claude Code · paper-curation cost sheet · 2026-06-19
+  </footer>
+
+</div>
+</body>
+</html>
