@@ -15,10 +15,16 @@ NOTE: `pybliometrics` 패키지 자체는 의존성이 아니다. 이 모듈은 
 from __future__ import annotations
 
 import configparser
+import datetime
 import logging
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+def _today() -> str:
+    """피인용수 수집 시점. 숫자는 시간이 지나면 낡으므로 함께 기록한다."""
+    return datetime.date.today().isoformat()
 
 SCOPUS_SEARCH_URL = "https://api.elsevier.com/content/search/scopus"
 
@@ -139,6 +145,12 @@ def results_to_df(results):
                 "publisher": "",
                 "language": "",
                 "item_type": s.get("subtypeDescription", "") or "",
+                "citations_scopus": int(s.get("citedby-count", 0) or 0),
+                "citations_crossref": None,
+                "citations_openalex": None,
+                "citations_s2": None,
+                "citations_percentile": None,
+                "citations_asof": _today(),
                 "citationCount": int(s.get("citedby-count", 0) or 0),
                 "af_city": ";".join(a.get("affiliation-city", "") or "" for a in affiliations),
                 "af_country": ";".join(a.get("affiliation-country", "") or "" for a in affiliations),

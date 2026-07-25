@@ -31,13 +31,29 @@ from . import scopus as _scopus
 
 logger = logging.getLogger(__name__)
 
+
+def _today() -> str:
+    """피인용수 수집 시점. 숫자는 시간이 지나면 낡으므로 함께 기록한다."""
+    return _scopus._today()
+
 # citing 논문 통합 컬럼 — 모든 source 의 레코드가 이 스키마로 정규화된다.
 CITING_COLUMNS = [
     "doi", "eid", "arxiv_id", "title", "abstract", "journal",
     # `date` 는 소스가 주는 **완전한 ISO 날짜**(YYYY-MM-DD). year/month 는
     # 정렬·집계용 파생값이라 date 를 대체하지 않는다 — Zotero 에는 date 를 쓴다.
     "date", "year", "month",
-    "volume", "issue", "pages", "citationCount", "source",
+    "volume", "issue", "pages", "source",
+    # 피인용수는 **소스마다 세는 우주가 다르다** — Scopus 는 Scopus 색인만,
+    # OpenAlex 는 자기 그래프만, S2 는 프리프린트·회색문헌까지 센다. 실측에서
+    # 같은 논문이 CR=47 / OA=52 / S2=104 으로 갈렸다. 그래서 병합(max)하지
+    # 않고 **소스별로 보존**하고, 표시할 때 출처·시점을 함께 밝힌다.
+    "citations_scopus", "citations_crossref",
+    "citations_openalex", "citations_s2",
+    # OpenAlex 연차보정 백분위 — 같은 해·분야 대비 상위 몇 %. 절대 피인용수는
+    # 분야·연차 편차가 커서 단독으로는 오독하기 쉽다.
+    "citations_percentile", "citations_asof",
+    # 정렬·표시에 쓰는 대표값 (파생). `_pick_citation_count` 가 채운다.
+    "citationCount",
     "issn", "publisher", "language", "item_type",
     "pdf_url", "au_keywords", "author_count", "author_names",
     "author_ids", "author_afids", "af_id", "af_name", "af_city", "af_country",
@@ -59,7 +75,8 @@ _DEFAULT_SOURCES = ["scopus", "wos", "openalex", "semanticscholar", "arxiv"]
 # 빈 값을 채운다 (실제로 `biblio` 누락으로 권/호/페이지가 전부 비어 있었다).
 _OPENALEX_SELECT = (
     "id,doi,title,display_name,publication_date,primary_location,"
-    "authorships,cited_by_count,abstract_inverted_index,type,biblio,language"
+    "authorships,cited_by_count,abstract_inverted_index,type,biblio,language,"
+    "citation_normalized_percentile"
 )
 
 
@@ -162,6 +179,14 @@ def _parse_openalex_work(w: dict) -> dict:
         "publisher": source_info.get("host_organization_name", "") or "",
         "language": w.get("language", "") or "",
         "item_type": w.get("type", "") or "",
+        "citations_openalex": w.get("cited_by_count"),
+        "citations_scopus": None,
+        "citations_crossref": None,
+        "citations_s2": None,
+        # 같은 해·분야 대비 상위 몇 % (0~1). 절대 피인용수보다 해석이 쉽다.
+        "citations_percentile": (w.get("citation_normalized_percentile")
+                                 or {}).get("value"),
+        "citations_asof": _today(),
         "citationCount": w.get("cited_by_count") or 0,
         "af_city": "",
         "af_country": "; ".join(c for c in af_countries[:5] if c),
@@ -404,6 +429,12 @@ def get_citing_from_s2(doi: str, max_results: int = 5000) -> list[dict]:
                     "publisher": "",
                     "language": "",
                     "item_type": "; ".join(p.get("publicationTypes") or []),
+                    "citations_s2": p.get("citationCount"),
+                    "citations_scopus": None,
+                    "citations_crossref": None,
+                    "citations_openalex": None,
+                    "citations_percentile": None,
+                    "citations_asof": _today(),
                     "citationCount": p.get("citationCount") or 0,
                     "af_city": "",
                     "af_country": "",
@@ -473,7 +504,14 @@ def get_citing_from_arxiv(doi: str, max_results: int = 5000) -> list[dict]:
                     "publisher": "arXiv",
                     "language": "",
                     "item_type": "preprint",
-                    "citationCount": 0,  # arXiv 는 제공하지 않음
+                    # arXiv 는 피인용수를 제공하지 않는다 — 0 이 아니라 '모름'.
+                    "citations_scopus": None,
+                    "citations_crossref": None,
+                    "citations_openalex": None,
+                    "citations_s2": None,
+                    "citations_percentile": None,
+                    "citations_asof": "",
+                    "citationCount": 0,
                     "af_city": "",
                     "af_country": "",
                     "af_id": "",
@@ -516,16 +554,73 @@ _SOURCE_FETCHERS = {
     "arxiv": get_citing_from_arxiv,
 }
 
-# 병합 우선순위 — 낮을수록 우선. Scopus 가 서지 필드가 가장 조밀하다.
+# 서지 필드 병합 우선순위 — 낮을수록 우선.
+#
+# 실측(표본 25편) 근거:
+#   volume  Crossref 20/25 · OpenAlex 20/25 · S2 13/25
+#   pages   Crossref 18/25 · OpenAlex 19/25 · S2 10/25
+# Crossref 는 발행사가 직접 등록한 정본이라 권/호/페이지 표기가 가장 믿을 만하고,
+# S2 는 서지에서 확연히 뒤진다. Scopus 는 있을 때 가장 조밀하지만 기관 IP 가
+# 없으면 0건이라 실질 1순위는 Crossref 가 된다.
 _SOURCE_PRIORITY = {
     "scopus": 0,
-    "wos": 1,
-    "arxiv": 2,
+    "crossref": 1,
+    "wos": 2,
     "openalex": 3,
-    "semanticscholar": 4,
+    "arxiv": 4,
+    "semanticscholar": 5,
 }
 
-_ENRICH_FIELDS = [c for c in CITING_COLUMNS if c != "source"]
+# 필드별 권위 재정의 — 전역 순위와 다른 필드만 적는다.
+#
+# 초록은 커버리지가 정반대다: Crossref 7/25 vs OpenAlex 13/25 · S2 13/25.
+# Crossref 는 발행사가 JATS 로 넣어야만 초록이 있어 28% 에 그친다. 전역 순위를
+# 그대로 쓰면 초록에서 손해라, 이 필드만 뒤집는다.
+_FIELD_AUTHORITY = {
+    "abstract": {
+        # Scopus 는 최상위 유지 — 큐레이션된 초록이고, 실측으로 열위가 확인된
+        # 건 Crossref 뿐이다. 근거 없이 강등하지 않는다.
+        "scopus": 0, "openalex": 1, "semanticscholar": 2, "arxiv": 3,
+        "crossref": 4, "wos": 5,
+    },
+}
+
+
+def _field_rank(field: str, source: str) -> int:
+    """해당 필드에서 이 source 의 우선순위. 낮을수록 우선."""
+    table = _FIELD_AUTHORITY.get(field) or _SOURCE_PRIORITY
+    return table.get(source, 99)
+
+
+# 피인용수는 병합하지 않는다 — 소스별 컬럼에 그대로 남긴다.
+_CITATION_COLUMNS = ("citations_scopus", "citations_crossref",
+                     "citations_openalex", "citations_s2",
+                     "citations_percentile", "citations_asof",
+                     "citationCount")
+
+_ENRICH_FIELDS = [c for c in CITING_COLUMNS
+                  if c != "source" and c not in _CITATION_COLUMNS]
+
+
+# 대표 피인용수를 고를 때의 소스 순서. OpenAlex 가 커버리지가 가장 넓고
+# 키가 필요 없으며 연차보정 백분위까지 준다.
+_CITATION_PREFERENCE = ("openalex", "crossref", "scopus", "s2")
+
+
+def _pick_citation_count(row) -> tuple:
+    """소스별 피인용수 중 대표값을 고른다. 반환 (값, 출처) — 없으면 (None, "").
+
+    **0 은 결측이 아니다.** 최근 논문의 0 은 정상값이고, citedby 는 바로 그
+    "아직 인용이 적은 새 논문"을 찾는 기능이다. 필드 부재(None)만 결측으로 본다.
+    """
+    for src in _CITATION_PREFERENCE:
+        val = row.get(f"citations_{src}")
+        if val is not None and str(val).strip() not in ("", "nan", "None"):
+            try:
+                return int(float(val)), src
+            except (TypeError, ValueError):
+                continue
+    return None, ""
 
 
 # ── 오케스트레이션 ────────────────────────────────────────────────────────
@@ -801,15 +896,30 @@ def enrich_from_crossref(df, progress_callback=None):
                 continue
 
             touched = False
+            row_src = str(df.at[idx, "source"] or "")
             for field, getter in _CROSSREF_FIELDS.items():
-                if not _is_empty(df.at[idx, field]):
-                    continue
                 value = getter(msg)
-                if value:
+                if not value:
+                    continue
+                # Crossref 가 이 필드에서 현재 값을 준 source 보다 권위가 높으면
+                # **덮어쓴다** (전역 순위 2위). 비어 있으면 당연히 채운다.
+                # 초록은 `_FIELD_AUTHORITY` 때문에 Crossref 가 최하위라, 이미
+                # 값이 있으면 건드리지 않는다.
+                if (_is_empty(df.at[idx, field])
+                        or _field_rank(field, "crossref")
+                        < _field_rank(field, row_src)):
                     _safe_set(df, idx, field, value)
                     touched = True
 
-            # date 는 유일하게 덮어쓴다 — 더 정밀할 때만.
+            # 피인용수는 병합하지 않고 Crossref 칸에 따로 적는다.
+            cr_cites = msg.get("is-referenced-by-count")
+            if cr_cites is not None:
+                _safe_set(df, idx, "citations_crossref", int(cr_cites))
+                if _is_empty(df.at[idx, "citations_asof"]):
+                    _safe_set(df, idx, "citations_asof", _today())
+                touched = True
+
+            # date 는 **더 정밀할 때만** 덮는다 ("2025" → "2025-08-20").
             cr_date = _crossref_date(msg)
             cur_date = str(df.at[idx, "date"] or "").strip()
             if len(cr_date) > len(cur_date):
@@ -823,6 +933,12 @@ def enrich_from_crossref(df, progress_callback=None):
             if touched:
                 filled += 1
 
+    # Crossref 피인용수가 새로 들어왔을 수 있으니 대표값을 다시 고른다.
+    if not df.empty:
+        picked = [_pick_citation_count(r) for _, r in df.iterrows()]
+        df["citationCount"] = [v if v is not None else 0 for v, _ in picked]
+        df["citations_source"] = [s for _, s in picked]
+
     if filled:
         logger.info("Crossref 보강 완료: %d/%d편", filled, len(targets))
         if progress_callback:
@@ -831,71 +947,108 @@ def enrich_from_crossref(df, progress_callback=None):
 
 
 def _is_empty(val) -> bool:
-    """필드가 사실상 비었는지. pandas NaN/문자열 'nan'/0 을 모두 빈 값으로 본다."""
+    """필드가 사실상 비었는지.
+
+    NOTE: **"0" 은 빈 값이 아니다.** 예전엔 피인용수 0 을 결측으로 보려고
+    "0"/"0.0" 을 여기 넣었는데, 최근 논문의 피인용 0 은 정상값이라 그러면
+    없는 인용을 만들어낸다. 피인용수는 이제 병합 대상이 아니고, 결측 판정은
+    필드 부재(None/빈 문자열)로만 한다.
+    """
     if val is None:
         return True
     s = str(val).strip()
-    return not s or s in ("nan", "0", "None", "0.0")
+    return not s or s in ("nan", "None", "<NA>")
 
 
 def _merge_by_priority(df):
-    """source 우선순위로 논문을 병합한다 (제목 기준 dedup).
+    """제목 기준으로 dedup 하고, **필드별 권위**에 따라 값을 고른다.
 
-    1. 우선순위 오름차순·피인용 내림차순 정렬
-    2. 같은 제목의 첫(최우선) 레코드를 베이스로 삼고
-    3. 하위 source 레코드로 빈 필드를 채운다
-       - abstract: 기존 내용을 포함하는 **더 긴** 버전이면 승격
-       - citationCount: 더 큰 값 유지
+    예전에는 "최우선 source 레코드를 베이스로 삼고 하위가 빈 칸만 채우는"
+    방식이었다. 그러면 필드마다 권위가 다른 현실을 담지 못한다 — 서지는
+    Crossref/Scopus 가 강하지만 초록은 OpenAlex/S2 가 강하다(실측: Crossref
+    초록 7/25 vs OpenAlex 13/25).
+
+    그래서 필드마다 `_field_rank()` 로 가장 권위 있는 source 의 값을 고른다.
+    같은 순위면 먼저 온 값을 유지한다. abstract 는 예외로, 기존 내용을 포함하는
+    더 긴 버전이면 순위와 무관하게 승격한다 (잘린 초록 방지).
+
+    피인용수는 **병합하지 않는다** — 소스별 컬럼에 그대로 두고, 대표값만
+    `_pick_citation_count()` 로 파생한다.
     """
     if df.empty:
         return df
 
+    import pandas as pd
+
     df = df.copy()
     df["_src_priority"] = df["source"].map(_SOURCE_PRIORITY).fillna(99).astype(int)
     df["_dedup_key"] = df["title"].fillna("").str.lower().str.strip()
-    df = df.sort_values(["_src_priority", "citationCount"], ascending=[True, False])
+    df = df.sort_values(["_src_priority"], ascending=[True])
 
     merged: dict[str, dict] = {}
+    # dedup_key → {field: 그 값을 준 source 의 해당 필드 순위}
+    field_rank: dict[str, dict] = {}
     enriched = 0
 
     for _, row in df.iterrows():
         key = row["_dedup_key"]
+        src = row.get("source") or ""
+
         if key not in merged:
             merged[key] = row.to_dict()
+            field_rank[key] = {
+                f: (_field_rank(f, src) if not _is_empty(row.get(f)) else 99)
+                for f in _ENRICH_FIELDS
+            }
             continue
 
         base = merged[key]
+        ranks = field_rank[key]
+
+        # 소스별 피인용수는 서로 다른 측정계라 덮지 않고 각자 칸에 모은다.
+        for col in _CITATION_COLUMNS:
+            if col in ("citationCount", "citations_asof"):
+                continue
+            val = row.get(col)
+            if val is not None and not _is_empty(val) and _is_empty(base.get(col)):
+                base[col] = val
+        if _is_empty(base.get("citations_asof")) and row.get("citations_asof"):
+            base["citations_asof"] = row["citations_asof"]
+
         for field in _ENRICH_FIELDS:
             new_val = row.get(field)
             if _is_empty(new_val):
                 continue
             base_val = base.get(field)
+            new_rank = _field_rank(field, src)
 
             if field == "abstract":
                 base_str = "" if _is_empty(base_val) else str(base_val).strip()
                 new_str = str(new_val).strip()
                 if not base_str:
-                    base[field] = new_val
+                    base[field], ranks[field] = new_val, new_rank
+                    enriched += 1
+                elif new_rank < ranks.get(field, 99):
+                    base[field], ranks[field] = new_val, new_rank
                     enriched += 1
                 elif len(new_str) > len(base_str) and base_str in new_str:
+                    # 잘린 초록의 더 긴 판본은 순위와 무관하게 승격
                     base[field] = new_val
                     enriched += 1
-            elif field == "citationCount":
-                try:
-                    if int(new_val) > int(base_val or 0):
-                        base[field] = new_val
-                        enriched += 1
-                except (ValueError, TypeError):
-                    pass
-            elif _is_empty(base_val):
-                base[field] = new_val
+            elif _is_empty(base_val) or new_rank < ranks.get(field, 99):
+                base[field], ranks[field] = new_val, new_rank
                 enriched += 1
 
     if enriched:
         logger.info("Enriched %d fields from lower-priority sources", enriched)
 
-    import pandas as pd
     result = pd.DataFrame(list(merged.values()))
+    # 대표 피인용수 파생 — 정렬·표시용. 소스별 원본은 그대로 남는다.
+    if not result.empty:
+        picked = [_pick_citation_count(r) for _, r in result.iterrows()]
+        result["citationCount"] = [v if v is not None else 0 for v, _ in picked]
+        result["citations_source"] = [s for _, s in picked]
+
     drop_cols = [c for c in ("_src_priority", "_dedup_key") if c in result.columns]
     if drop_cols:
         result = result.drop(columns=drop_cols)

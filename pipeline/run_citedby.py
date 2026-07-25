@@ -80,7 +80,18 @@ def _export_paper(paper: dict) -> dict:
         "item_type": _s("item_type"),
         "authors": [a.strip() for a in _s("author_names").split(";") if a.strip()],
         "abstract": _s("abstract"),
+        # 피인용수 — 소스마다 세는 우주가 달라 병합하지 않는다. 대표값에
+        # 출처·시점을 붙여 내보내고, 소스별 원값도 함께 넘긴다.
         "citation_count": _s("citationCount"),
+        "citation_source": _s("citations_source"),
+        "citation_asof": _s("citations_asof"),
+        "citation_percentile": _s("citations_percentile"),
+        "citations_by_source": {
+            src: paper.get(f"citations_{src}")
+            for src in ("scopus", "crossref", "openalex", "s2")
+            if paper.get(f"citations_{src}") is not None
+            and str(paper.get(f"citations_{src}")).strip() not in ("", "nan")
+        },
         "source": _s("source"),
         "originality": _s("originality"),
         "topic_reason": _s("topic_reason"),

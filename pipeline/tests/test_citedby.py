@@ -184,12 +184,46 @@ class MergeByPriorityTests(unittest.TestCase):
         ])
         self.assertEqual(out.iloc[0]["abstract"], keep)
 
-    def test_citation_count_keeps_maximum(self):
+    def test_citation_counts_are_kept_per_source_not_merged(self):
+        """피인용수는 max() 로 뭉개지 않는다 — 소스마다 세는 우주가 다르다.
+
+        실측: 같은 논문이 Crossref 47 / OpenAlex 52 / S2 104. max 를 취하면
+        어느 소스에서도 나오지 않은 숫자가 된다.
+        """
         out = self._merge([
-            self._row(title="P", source="scopus", citationCount=3),
-            self._row(title="P", source="openalex", citationCount=17),
+            self._row(title="P", source="scopus", citations_scopus=3),
+            self._row(title="P", source="openalex", citations_openalex=17),
         ])
-        self.assertEqual(int(out.iloc[0]["citationCount"]), 17)
+        row = out.iloc[0]
+        self.assertEqual(int(row["citations_scopus"]), 3)
+        self.assertEqual(int(row["citations_openalex"]), 17)
+        # 대표값은 OpenAlex 선호 (커버리지 최대 + 백분위 제공)
+        self.assertEqual(int(row["citationCount"]), 17)
+        self.assertEqual(row["citations_source"], "openalex")
+
+    def test_zero_citations_is_a_real_value_not_missing(self):
+        """최근 논문의 피인용 0 은 정상값 — 다른 소스 값으로 덮으면 안 된다."""
+        out = self._merge([
+            self._row(title="P", source="openalex", citations_openalex=0),
+        ])
+        self.assertEqual(int(out.iloc[0]["citationCount"]), 0)
+        self.assertEqual(out.iloc[0]["citations_source"], "openalex")
+
+    def test_bibliographic_field_follows_source_priority(self):
+        """서지는 Scopus > Crossref > OpenAlex > S2."""
+        out = self._merge([
+            self._row(title="P", source="semanticscholar", volume="S2VOL"),
+            self._row(title="P", source="openalex", volume="OAVOL"),
+        ])
+        self.assertEqual(out.iloc[0]["volume"], "OAVOL")
+
+    def test_abstract_uses_field_authority_over_global_priority(self):
+        """초록만은 Crossref 를 뒤로 민다 (실측 커버리지 7/25 vs 13/25)."""
+        self.assertLess(citing._field_rank("abstract", "openalex"),
+                        citing._field_rank("abstract", "crossref"))
+        # 서지 필드는 반대 — Crossref 가 앞선다
+        self.assertLess(citing._field_rank("volume", "crossref"),
+                        citing._field_rank("volume", "openalex"))
 
     def test_distinct_titles_are_kept(self):
         out = self._merge([
@@ -206,12 +240,12 @@ class MergeByPriorityTests(unittest.TestCase):
 
 class IsEmptyTests(unittest.TestCase):
     def test_empty_values(self):
-        for v in (None, "", "   ", "nan", "None", "0", "0.0"):
+        for v in (None, "", "   ", "nan", "None"):
             with self.subTest(v=v):
                 self.assertTrue(citing._is_empty(v))
 
     def test_non_empty_values(self):
-        for v in ("text", 5, "10.1/x", 1.5):
+        for v in ("text", 5, "10.1/x", 1.5, "0", 0, "0.0"):
             with self.subTest(v=v):
                 self.assertFalse(citing._is_empty(v))
 
@@ -1017,6 +1051,23 @@ class MetadataCompletenessTests(unittest.TestCase):
         """select 에서 빠지면 응답에 아예 안 담긴다 — 파서와 짝을 맞춘다."""
         self.assertIn("biblio", citing._OPENALEX_SELECT)
         self.assertIn("language", citing._OPENALEX_SELECT)
+        self.assertIn("citation_normalized_percentile", citing._OPENALEX_SELECT)
+
+    def test_select_covers_every_field_the_parser_reads(self):
+        """`select` 누락은 조용한 데이터 손실이다 — 실제로 두 번 당했다.
+
+        `biblio` 누락으로 권/호/페이지가, `citation_normalized_percentile`
+        누락으로 백분위가 통째로 비었다. 파서가 최상위에서 읽는 키가 select 에
+        모두 들어있는지 기계적으로 확인한다.
+        """
+        import inspect
+        import re as _re
+        src = inspect.getsource(citing._parse_openalex_work)
+        read = set(_re.findall(r'w\.get\(\s*"([a-z_]+)"', src))
+        selected = set(citing._OPENALEX_SELECT.split(","))
+        missing = sorted(read - selected)
+        self.assertEqual(missing, [],
+                         f"파서가 읽지만 select 에 없는 필드: {missing}")
 
     def test_parses_volume_issue_pages(self):
         rec = citing._parse_openalex_work(self.WORK)
@@ -1058,6 +1109,7 @@ class CrossrefEnrichmentTests(unittest.TestCase):
         "container-title": ["Nature"],
         "published": {"date-parts": [[2025, 8, 20]]},
         "author": [{"given": None, "family": "Ananya"}],
+        "is-referenced-by-count": 47,
     }
 
     def _row(self, **over):
@@ -1109,12 +1161,42 @@ class CrossrefEnrichmentTests(unittest.TestCase):
         self.assertEqual(int(r["year"]), 2025)
         self.assertEqual(int(r["month"]), 8)
 
-    def test_does_not_overwrite_existing_fields(self):
-        r = self._run(self._row(volume="999", journal="상위소스저널",
-                                date="2025-01-02"))
+    def test_overrides_lower_authority_bibliographic_source(self):
+        """Crossref 는 서지 2순위 — OpenAlex/S2 값을 덮는다."""
+        r = self._run(self._row(source="openalex", volume="999",
+                                journal="OA 저널", date="2025-01-02"))
+        self.assertEqual(r["volume"], "644")
+        self.assertEqual(r["journal"], "Nature")
+        self.assertEqual(r["date"], "2025-01-02")   # 이미 완전한 날짜는 유지
+
+    def test_does_not_override_scopus(self):
+        """Scopus 는 서지 1순위 — Crossref 가 덮지 않는다."""
+        r = self._run(self._row(source="scopus", volume="999",
+                                journal="Scopus 저널", date="2025"))
         self.assertEqual(r["volume"], "999")
-        self.assertEqual(r["journal"], "상위소스저널")
-        self.assertEqual(r["date"], "2025-01-02")   # 이미 완전하면 유지
+        self.assertEqual(r["journal"], "Scopus 저널")
+        self.assertEqual(r["date"], "2025-08-20")   # 날짜는 정밀해지면 승격
+
+    def test_does_not_override_abstract(self):
+        """초록은 Crossref 가 최하위 — 기존 값을 건드리지 않는다."""
+        msg = {**self.MSG, "abstract": "<jats:p>CR abstract</jats:p>"}
+        import pandas as pd
+        with patch.object(citing.requests, "get") as g:
+            g.return_value.status_code = 200
+            g.return_value.json.return_value = {"message": msg}
+            row = self._row(source="openalex", abstract="OA 초록", date="2025")
+            r = citing.enrich_from_crossref(pd.DataFrame([row])).iloc[0]
+        self.assertEqual(r["abstract"], "OA 초록")
+
+    def test_records_crossref_citation_count_separately(self):
+        r = self._run(self._row(source="openalex", citations_openalex=52,
+                                date="2025"))
+        self.assertEqual(int(r["citations_crossref"]), 47)
+        self.assertEqual(int(r["citations_openalex"]), 52)
+        # 대표값은 OpenAlex 선호 — max(52,47) 같은 합성값이 아니다
+        self.assertEqual(int(r["citationCount"]), 52)
+        self.assertEqual(r["citations_source"], "openalex")
+        self.assertTrue(r["citations_asof"])
 
     def test_skips_rows_that_need_nothing(self):
         row = self._row(date="2025-08-20", volume="644", pages="598-600")
