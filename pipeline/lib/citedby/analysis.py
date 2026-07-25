@@ -23,6 +23,7 @@ from __future__ import annotations
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -351,7 +352,10 @@ def run_citedby(doi: str, *,
     (`_citedby_index.json` + 사이드카). 기존 코퍼스 인덱스와 같은 스키마다.
     """
     emit = _emit(on_event)
-    started = datetime.now()
+    # **monotonic** 을 쓴다 — 벽시계는 실행 중 NTP 보정·절전 복귀로 뒤로 뛸 수
+    # 있고, 실제로 -56,645초(음수)가 리포트에 찍힌 적이 있다. 경과시간은
+    # 시계 조정과 무관해야 한다.
+    started = time.monotonic()
 
     citing = run_citing_analysis(
         doi, sources=sources, max_results_per_source=max_results_per_source,
@@ -389,7 +393,7 @@ def run_citedby(doi: str, *,
         cache_dir=cache_dir, deep_index=deep_index,
         want_timeline=timeline, on_event=on_event)
 
-    elapsed = (datetime.now() - started).total_seconds()
+    elapsed = max(0.0, time.monotonic() - started)
     emit("done", f"완료: {topical['matched']}/{topical['total']}편 "
                  f"({elapsed:.0f}초)", topical["matched"], topical["total"])
 

@@ -2197,3 +2197,32 @@ class TimelineProcedureTests(unittest.TestCase):
     def test_report_without_timeline_has_no_figure(self):
         out = report.build_report_html(papers=[{"title": "P"}])
         self.assertNotIn("figure class=\"tl\"", out)
+
+
+class ElapsedClockTests(unittest.TestCase):
+    """경과시간은 시계 조정에 흔들리면 안 된다.
+
+    실제 사고: 실행 중 시스템 시계가 뒤로 점프해 리포트에 -56,645초가 찍혔다.
+    datetime.now() 차이는 NTP 보정·절전 복귀에 그대로 노출된다.
+    """
+
+    def test_uses_monotonic_not_wallclock(self):
+        src = (PIPELINE_DIR / "lib" / "citedby" / "analysis.py").read_text(
+            encoding="utf-8")
+        self.assertIn("time.monotonic()", src)
+        self.assertNotIn("(datetime.now() - started)", src)
+
+    def test_elapsed_never_negative(self):
+        """시계가 뒤로 뛰어도 음수가 새어 나가지 않는다."""
+        seq = iter([1000.0, 100.0])       # 두 번째 호출이 더 작다
+        with patch.object(analysis.time, "monotonic", lambda: next(seq)), \
+             patch.object(analysis, "run_citing_analysis",
+                          return_value={"papers": [], "paper_info": None,
+                                        "source_counts": {}, "csv": "",
+                                        "doi": "10.1/a"}), \
+             patch.object(analysis, "run_topic_analysis",
+                          return_value={"papers": [], "report_html": "<html>",
+                                        "csv": "", "matched": 0, "total": 0,
+                                        "topic": "", "themes": None}):
+            out = analysis.run_citedby("10.1/a")
+        self.assertGreaterEqual(out["elapsed_sec"], 0)
