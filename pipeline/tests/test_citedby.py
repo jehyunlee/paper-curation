@@ -320,12 +320,20 @@ class FetchAllCitingTests(unittest.TestCase):
 
 
 class ScopusConfigTests(unittest.TestCase):
-    def test_available_degrades_gracefully_without_cfg(self):
-        with patch.object(scopus, "config_path", return_value=None):
-            scopus._api_keys = None          # 캐시 무효화
+    def test_available_false_only_when_no_key_anywhere(self):
+        """키가 어디에도 없을 때만 False. cfg 부재만으로는 False 가 아니다.
+
+        실환경의 SCOPUS_API_KEY 가 새어들면 이 검증이 무의미해지므로 env 를
+        비운다.
+        """
+        scopus._api_keys = None
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(scopus, "config_path", return_value=None), \
+             patch.object(scopus, "_keys_from_config_json", return_value=[]):
             ok, reason = scopus.available()
+        scopus._api_keys = None
         self.assertFalse(ok)
-        self.assertIn("pybliometrics.cfg", reason)
+        self.assertIn("SCOPUS_API_KEY", reason)
 
     def test_results_to_df_maps_scopus_fields(self):
         df = scopus.results_to_df([{
@@ -1020,6 +1028,87 @@ class ReportZoteroLinkTests(unittest.TestCase):
         papers = [{"title": "A", "doi": "10.1/a"}]
         report.build_report_html(papers=papers, zotero_index=self.idx)
         self.assertNotIn("_zotero_url", papers[0])
+
+
+class ScopusKeyResolutionTests(unittest.TestCase):
+    """키 탐색 경로 회귀 방지.
+
+    실제 버그: `SCOPUS_API_KEY` 환경변수가 있는데도 코드가 pybliometrics.cfg
+    파일만 봐서 "설정 없음" 으로 판정했고, 거기서 "기관망 밖" 이라고 오진까지
+    했다. 실제로는 Search API 가 200 으로 잘 붙는 상태였다.
+    """
+
+    def setUp(self):
+        scopus._api_keys = None
+        scopus._key_origin = ""
+
+    tearDown = setUp
+
+    def test_env_var_is_used(self):
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K1"}, clear=True):
+            self.assertEqual(scopus.get_api_keys(), ["K1"])
+            self.assertEqual(scopus.key_origin(), "env:SCOPUS_API_KEY")
+
+    def test_elsevier_alias_env_var(self):
+        with patch.dict(os.environ, {"ELSEVIER_API_KEY": "K2"}, clear=True):
+            self.assertEqual(scopus.get_api_keys(), ["K2"])
+
+    def test_comma_separated_keys(self):
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "A,B,C"}, clear=True):
+            self.assertEqual(scopus.get_api_keys(), ["A", "B", "C"])
+
+    def test_available_true_with_env_key_and_no_cfg(self):
+        """cfg 파일이 없어도 환경변수만 있으면 사용 가능해야 한다."""
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K"}, clear=True), \
+             patch.object(scopus, "config_path", return_value=None):
+            ok, reason = scopus.available()
+        self.assertTrue(ok, reason)
+
+    def test_missing_key_everywhere_raises(self):
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(scopus, "config_path", return_value=None), \
+             patch.object(scopus, "_keys_from_config_json", return_value=[]):
+            with self.assertRaises(FileNotFoundError):
+                scopus.get_api_keys()
+
+    def test_headers_carry_key_and_optional_inst_token(self):
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K"}, clear=True), \
+             patch.object(scopus, "inst_token", return_value=""):
+            h = scopus.headers()
+        self.assertEqual(h["X-ELS-APIKey"], "K")
+        self.assertNotIn("X-ELS-Insttoken", h)
+
+        scopus._api_keys = None
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K"}, clear=True), \
+             patch.object(scopus, "inst_token", return_value="TOK"):
+            h = scopus.headers()
+        self.assertEqual(h["X-ELS-Insttoken"], "TOK")
+
+    def test_probe_reports_tier_per_endpoint(self):
+        """키가 있어도 엔드포인트별 권한이 다르다 — 실측 200/400/401."""
+        from unittest.mock import MagicMock
+        import requests as _rq
+
+        def fake_get(url, headers=None, params=None, timeout=None):
+            r = MagicMock()
+            if "abstract" in url:
+                r.status_code = 401
+            elif "REFEID" in str((params or {}).get("query", "")):
+                r.status_code = 400
+            else:
+                r.status_code = 200
+                r.json.return_value = {
+                    "search-results": {"entry": [{"eid": "2-s2.0-1"}]}}
+            return r
+
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K"}, clear=True), \
+             patch.object(_rq, "get", side_effect=fake_get):
+            p = scopus.probe()
+        self.assertTrue(p["search"])
+        self.assertFalse(p["citing"])
+        self.assertFalse(p["references"])
+        self.assertEqual(p["detail"]["citing"], 400)
+        self.assertEqual(p["detail"]["references"], 401)
 
 
 class MetadataCompletenessTests(unittest.TestCase):

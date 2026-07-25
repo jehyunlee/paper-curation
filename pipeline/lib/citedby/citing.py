@@ -264,7 +264,7 @@ def get_citing_from_openalex(doi: str, max_results: int = 5000) -> list[dict]:
 
 def _scopus_find_eid(doi: str) -> str | None:
     """DOI → Scopus EID."""
-    headers = {"Accept": "application/json", "X-ELS-APIKey": _scopus.next_key()}
+    headers = _scopus.headers()
     try:
         resp = requests.get(_scopus.SCOPUS_SEARCH_URL, headers=headers,
                             params={"query": f'DOI("{doi}")', "count": 1}, timeout=15)
@@ -304,7 +304,7 @@ def get_citing_from_scopus(doi: str, max_results: int = 5000) -> list[dict]:
         auth_retries = 0
         try:
             while len(all_entries) < max_results:
-                headers["X-ELS-APIKey"] = _scopus.next_key()
+                headers = _scopus.headers()
                 resp = requests.get(
                     _scopus.SCOPUS_SEARCH_URL, headers=headers,
                     params={"query": f"REFEID({eid})", "count": page_size,
