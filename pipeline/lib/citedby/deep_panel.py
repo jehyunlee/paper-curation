@@ -22,6 +22,13 @@ import json
 
 # 답변 생성 모델 — 리포트 독자가 BYOK 로 넣는다. citedby 본체의 3-provider
 # cascade 와 같은 등급을 쓴다.
+# 근거 수·출력 길이 — 답변이 "부실하다"는 보고의 직접 원인이 여기였다.
+# 12청크 × 1,600토큰으로는 논문 여러 편을 비교할 여지가 없다.
+TOPK = 28          # 최종 근거 청크 (2,200자 × 28 ≈ 6만 자 컨텍스트)
+POOL = 120         # BM25/dense 각각의 후보 폭
+PER_PAPER = 4      # 논문당 상한 — 한 편이 상위를 독식하지 못하게
+MAX_OUT = 8000     # 답변 토큰
+
 _MODELS = {
     "anthropic": "claude-sonnet-5",
     "openai": "gpt-4.1",
@@ -47,6 +54,8 @@ _CSS = """
 .dr-refs h4{margin:0 0 6px;font-size:13px;color:var(--soft)}
 .dr-ref{font-size:12.5px;margin:3px 0;color:var(--soft)}
 .dr-ref b{color:var(--ink)}
+.dr-prev{color:#9aa0a8;font-size:11.5px;margin:2px 0 0 18px;line-height:1.5}
+.dr-ref i{font-style:normal;color:#7a8089;font-size:11.5px}
 .dr-cite{display:inline-block;min-width:1.4em;text-align:center;font-size:11px;
  font-weight:700;background:#eef1f5;border-radius:4px;padding:0 4px;margin:0 1px}
 .dr-off{font-size:13px;color:var(--soft);background:#fff7e6;border:1px solid #f0d9a8;
@@ -139,14 +148,24 @@ _JS = r"""
       for(var d=0;d<dim;d++) s+=(EMB[off+d]/127)*(vec[d]/qn);
       out.push([i,s]);
     }
-    return out.sort(function(a,c){return c[1]-a[1];}).slice(0,40);
+    return out.sort(function(a,c){return c[1]-a[1];}).slice(0,POOL);
   }
   function rrf(a,b){
     var R={}, K=60;
     a.forEach(function(x,i){R[x[0]]=(R[x[0]]||0)+1/(K+i+1);});
     b.forEach(function(x,i){R[x[0]]=(R[x[0]]||0)+1/(K+i+1);});
-    return Object.keys(R).map(function(i){return [parseInt(i,10),R[i]];})
-      .sort(function(x,y){return y[1]-x[1];}).slice(0,12);
+    var ranked=Object.keys(R).map(function(i){return [parseInt(i,10),R[i]];})
+      .sort(function(x,y){return y[1]-x[1];});
+    // 한 논문이 상위를 독식하면 답변이 그 논문 요약이 된다. 논문당 상한을 두고
+    // 폭을 확보한 뒤, 남는 자리를 점수순으로 채운다.
+    var perPaper={}, picked=[], rest=[];
+    for(var i=0;i<ranked.length && picked.length<TOPK;i++){
+      var slug=IDX.chunks[ranked[i][0]].slug;
+      perPaper[slug]=(perPaper[slug]||0)+1;
+      if(perPaper[slug]<=PER_PAPER) picked.push(ranked[i]); else rest.push(ranked[i]);
+    }
+    for(var j=0;j<rest.length && picked.length<TOPK;j++) picked.push(rest[j]);
+    return picked;
   }
 
   // ── 답변 생성 (BYOK) ────────────────────────────────────────────────
@@ -158,17 +177,34 @@ _JS = r"""
   }
   async function answer(q, refs, key){
     var ctx=refs.map(function(r,i){
-      return '['+(i+1)+'] '+(r.title||'')+'\n'+r.text;
+      var head='['+(i+1)+'] '+(r.title||'');
+      if(r.year) head+=' ('+r.year+')';
+      if(r.section) head+=' — '+r.section;
+      return head+'\n'+r.text;
     }).join('\n\n');
-    var prompt='다음은 어떤 논문을 인용한 논문들의 원문 발췌다.\n\n'+ctx+
-      '\n\n질문: '+q+'\n\n규칙:\n- 위 발췌만 근거로 답한다. 없으면 없다고 말한다.\n'+
-      '- 문장마다 근거를 [ref:N] 으로 표기한다.\n- 한국어로, 간결하게.';
+    var prompt=
+      '다음은 어떤 논문을 인용한 논문들의 **원문 발췌**다. 각 발췌는 논문 제목과 '+
+      '섹션이 붙어 있다.\n\n'+ctx+'\n\n질문: '+q+'\n\n'+
+      '## 작성 규칙\n'+
+      '- 위 발췌만 근거로 삼는다. 발췌에 없는 내용은 지어내지 말고 "발췌 범위에서는 '+
+      '확인되지 않는다"고 밝힌다.\n'+
+      '- **구체적으로 쓴다.** 발췌에 있는 수치·데이터셋 이름·모델명·실험 조건·'+
+      '정량 결과를 그대로 인용한다. "성능이 향상되었다" 같은 뭉뚱그린 표현 대신 '+
+      '"F1 0.72 → 0.81" 처럼 적는다.\n'+
+      '- **논문을 비교한다.** 같은 문제를 다룬 논문이 여럿이면 접근 차이와 결과 '+
+      '차이를 나란히 놓는다. 상충하는 주장이 있으면 그 사실 자체를 짚는다.\n'+
+      '- 근거를 문장 단위로 [ref:N] 표기한다. 한 문장에 근거가 여럿이면 '+
+      '[ref:2][ref:5] 처럼 모두 적는다.\n'+
+      '- 구조: 먼저 **핵심 답변** 3~5문장, 다음 **논문별 근거**를 소제목으로 나눠 '+
+      '상세히, 마지막에 **한계/미해결** 을 적는다.\n'+
+      '- 분량은 아끼지 않는다. 발췌에 담긴 내용을 최대한 끌어 쓴다.\n'+
+      '- 한국어. 기술 용어는 영어 그대로.';
     var p=provider(key);
     if(p==='anthropic'){
       var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
         headers:{'Content-Type':'application/json','x-api-key':key,
           'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:MODELS.anthropic,max_tokens:1600,
+        body:JSON.stringify({model:MODELS.anthropic,max_tokens:MAX_OUT,
           messages:[{role:'user',content:prompt}]})});
       if(!r.ok) throw new Error('Anthropic '+r.status);
       var j=await r.json();
@@ -177,7 +213,7 @@ _JS = r"""
     if(p==='openai'){
       var r2=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body:JSON.stringify({model:MODELS.openai,max_completion_tokens:1600,
+        body:JSON.stringify({model:MODELS.openai,max_completion_tokens:MAX_OUT,
           messages:[{role:'user',content:prompt}]})});
       if(!r2.ok) throw new Error('OpenAI '+r2.status);
       var j2=await r2.json();
@@ -187,7 +223,8 @@ _JS = r"""
       var r3=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'
         +MODELS.google+':generateContent?key='+encodeURIComponent(key),
         {method:'POST',headers:{'Content-Type':'application/json'},
-         body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+         body:JSON.stringify({contents:[{parts:[{text:prompt}]}],
+           generationConfig:{maxOutputTokens:MAX_OUT}})});
       if(!r3.ok) throw new Error('Gemini '+r3.status);
       var j3=await r3.json();
       return ((j3.candidates||[])[0]||{}).content?.parts?.[0]?.text||'';
@@ -201,8 +238,11 @@ _JS = r"""
     el.innerHTML='<h4>근거</h4>'+refs.map(function(r,i){
       var link=r.attach?(' · <a href="zotero://open-pdf/library/items/'+r.attach
         +'">PDF 열기</a>'):'';
+      var sec=r.section?(' <i>'+r.section.replace(/</g,'&lt;')+'</i>'):'';
+      var prev=(r.text||'').slice(0,180).replace(/</g,'&lt;');
       return '<div class="dr-ref"><b>['+(i+1)+']</b> '+
-        (r.title||'').replace(/</g,'&lt;')+link+'</div>';
+        (r.title||'').replace(/</g,'&lt;')+sec+link+
+        '<div class="dr-prev">'+prev+'…</div></div>';
     }).join('');
   }
 
@@ -224,7 +264,8 @@ _JS = r"""
 
       var refs=hits.map(function(h){
         var c=IDX.chunks[h[0]], p=(IDX.papers||{})[c.slug]||{};
-        return {text:c.text, title:p.title||c.slug, attach:p.zotero_attach||''};
+        return {text:c.text, title:p.title||c.slug, attach:p.zotero_attach||'',
+                section:c.section||'', year:p.year||''};
       });
       renderRefs(refs);
 
@@ -283,5 +324,7 @@ def panel_script(index_file: str) -> str:
         "<script>\n"
         f"var IDX_FILE={json.dumps(index_file)};\n"
         f"var MODELS={json.dumps(_MODELS)};\n"
+        f"var TOPK={TOPK};var POOL={POOL};var PER_PAPER={PER_PAPER};"
+        f"var MAX_OUT={MAX_OUT};\n"
         f"{_JS}\n</script>"
     )

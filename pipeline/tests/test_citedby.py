@@ -2029,3 +2029,74 @@ class ServeTests(unittest.TestCase):
         from lib.citedby import serve
         with patch.object(serve, "ensure_server", return_value=None):
             self.assertEqual(serve.serve_report("/x/r.html"), "")
+
+
+class DeepPanelDepthTests(unittest.TestCase):
+    """답변 깊이 회귀 방지.
+
+    "Deep Research 가 부실하다" 는 보고의 원인이 넷이었다 — 프롬프트가 명시적
+    으로 "간결하게" 를 요구했고, 근거가 12청크, 출력이 1,600토큰, 청크가
+    1,400자였다. 컨텍스트가 15.6k자에 그쳐 논문 여러 편을 비교할 여지가 없었다.
+    """
+
+    def _js(self):
+        from lib.citedby.deep_panel import panel_script
+        return panel_script("_citedby_index.json")
+
+    def test_context_budget_is_large_enough(self):
+        from lib.citedby import deep_panel as DP
+        from lib.citedby import pdf_corpus as PC
+        ctx = DP.TOPK * PC.CHUNK_SIZE
+        self.assertGreaterEqual(ctx, 50000, f"컨텍스트가 {ctx}자로 너무 작다")
+
+    def test_output_budget_allows_a_long_answer(self):
+        from lib.citedby import deep_panel as DP
+        self.assertGreaterEqual(DP.MAX_OUT, 6000)
+
+    def test_prompt_does_not_ask_for_brevity(self):
+        """'간결하게' 가 얇은 답변의 직접 원인이었다."""
+        js = self._js()
+        self.assertNotIn("간결하게", js)
+        self.assertIn("분량은 아끼지 않는다", js)
+
+    def test_prompt_demands_concrete_numbers_and_comparison(self):
+        js = self._js()
+        for phrase in ("수치", "비교", "그대로 인용"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, js)
+
+    def test_per_paper_cap_prevents_single_paper_domination(self):
+        from lib.citedby import deep_panel as DP
+        self.assertGreater(DP.PER_PAPER, 0)
+        self.assertLess(DP.PER_PAPER, DP.TOPK,
+                        "논문당 상한이 최종 근거 수 이상이면 상한이 무의미하다")
+        self.assertIn("PER_PAPER", self._js())
+
+    def test_candidate_pool_exceeds_final_selection(self):
+        from lib.citedby import deep_panel as DP
+        self.assertGreater(DP.POOL, DP.TOPK)
+
+    def test_constants_are_injected_into_js(self):
+        js = self._js()
+        for name in ("TOPK", "POOL", "PER_PAPER", "MAX_OUT"):
+            with self.subTest(name=name):
+                self.assertIn(f"var {name}=", js)
+
+    def test_context_carries_section_and_year(self):
+        """섹션·연도가 없으면 LLM 이 근거를 제대로 귀속하지 못한다."""
+        js = self._js()
+        self.assertIn("r.section", js)
+        self.assertIn("r.year", js)
+
+    def test_refs_show_excerpt_preview(self):
+        self.assertIn("dr-prev", self._js())
+
+    def test_chunk_size_covers_a_full_paragraph(self):
+        from lib.citedby import pdf_corpus as PC
+        self.assertGreaterEqual(PC.CHUNK_SIZE, 2000)
+        self.assertGreaterEqual(PC.CHUNK_OVERLAP, 300)
+
+    def test_per_paper_chunk_cap_covers_full_text(self):
+        """전문 평균 63k자 / 2.2k = ~29청크. 상한이 그보다 작으면 뒷부분이 잘린다."""
+        from lib.citedby import pdf_corpus as PC
+        self.assertGreaterEqual(PC.MAX_CHUNKS_PER_PAPER * PC.CHUNK_SIZE, 120000)

@@ -34,8 +34,11 @@ logger = logging.getLogger(__name__)
 INDEX_NAME = "_citedby_index.json"
 EMB_NAME = "_citedby_index_emb.bin"
 
-CHUNK_SIZE = 1400
-CHUNK_OVERLAP = 200
+# 청크가 작으면 근거가 문장 조각으로 잘려 답변이 얇아진다. 방법·실험 서술은
+# 한 문단이 2천 자를 넘는 일이 흔하므로 넉넉히 잡고, 경계에서 문맥이 끊기지
+# 않도록 겹침도 늘린다.
+CHUNK_SIZE = 2200
+CHUNK_OVERLAP = 400
 EMBED_BATCH = 32
 EMBED_DIM = 768
 EMBED_MODEL = "gemini-embedding-001"
@@ -48,7 +51,9 @@ _REF_HEAD = re.compile(
 
 # 한 논문에서 뽑을 청크 상한. 전문이 길어도 Deep Research 는 상위 근거만 쓰므로,
 # 무한정 넣으면 인덱스만 비대해진다.
-MAX_CHUNKS_PER_PAPER = 40
+# 전문 평균이 63k자라 2,200자 청크로 ~29개다. 80이면 12만 자(추출 상한)까지
+# 잘림 없이 담긴다 — 뒷부분(실험·결론)이 잘려 나가면 답변이 서론만 인용한다.
+MAX_CHUNKS_PER_PAPER = 80
 
 
 def _pipeline_dir() -> Path:
@@ -235,7 +240,7 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
         windows = bsi._text_windows(text, size=CHUNK_SIZE,
                                     overlap=CHUNK_OVERLAP)
         added = 0
-        cap = MAX_CHUNKS_PER_PAPER if evidence == EV_PDF else 3
+        cap = MAX_CHUNKS_PER_PAPER if evidence == EV_PDF else 4
         for w in windows[:cap]:
             body = bsi.clean_chunk_text(w)
             if len(body) < 200:
