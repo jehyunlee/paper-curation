@@ -11,8 +11,14 @@ Run: PYTHONUTF8=1 /opt/homebrew/Caskroom/miniconda/base/envs/py312/bin/python \
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "lib"))
-import connections as C  # noqa: E402
+# NOTE: `pipeline/lib` 를 sys.path 에 직접 넣으면 안 된다. 그 디렉토리의
+# `dateutil.py` 가 표준 `python-dateutil` 패키지를 가려서, 같은 프로세스에서
+# pandas 를 import 하는 다른 테스트가 통째로 깨진다
+# (`No module named 'dateutil.tz'; 'dateutil' is not a package`).
+# `unittest discover` 는 실행 전에 모든 테스트 모듈을 import 하므로, 이 한 줄이
+# 스위트 전체를 오염시켰다. 패키지 경로로 import 한다.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from lib import connections as C  # noqa: E402
 
 # 100_/200_ deliberately share title-part "Foo_Bar" -> ambiguous.
 IDX = {"1759_WoCoCo_Learning_X", "9119_Unique_Paper", "100_Foo_Bar", "200_Foo_Bar"}

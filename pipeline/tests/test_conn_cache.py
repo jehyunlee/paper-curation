@@ -35,10 +35,13 @@ import tempfile
 # Import ONLY the dependency-light targets — add pipeline/lib to sys.path so
 # `import conn_cache` / `import connections` resolve the single files directly
 # (lib/__init__.py is empty; nothing heavy is pulled in).
-_LIB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "lib")
-sys.path.insert(0, _LIB_DIR)
-import conn_cache  # noqa: E402
-import connections  # noqa: E402  (the REAL merge/bidirectional logic)
+# NOTE: `pipeline/lib` 를 sys.path 에 넣으면 그 안의 `dateutil.py` 가 표준
+# `python-dateutil` 을 가려, 같은 프로세스에서 pandas 를 쓰는 테스트가 전부
+# 깨진다. `unittest discover` 는 실행 전에 모든 모듈을 import 하므로 이 한 줄이
+# 스위트를 오염시킨다. 패키지 경로로 import 한다.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from lib import conn_cache  # noqa: E402
+from lib import connections  # noqa: E402  (the REAL merge/bidirectional logic)
 
 # sync_topic_connections now self-heals connection slugs against the real
 # _papers_index.json (remap renumbered, prune deleted). This test uses synthetic
