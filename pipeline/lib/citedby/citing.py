@@ -715,8 +715,63 @@ def fetch_all_citing_papers(doi: str,
     return df, source_counts
 
 
+_SPRINGER_META_ENDPOINTS = ("meta/v2/json", "metadata/json")
+
+# Springer Nature 계열 DOI 접두사. 다른 발행사에 헛요청을 보내지 않으려고 미리
+# 거른다 (Elsevier·SSRN 등은 이 API 로 못 받는다).
+_SPRINGER_PREFIXES = ("10.1038", "10.1007", "10.1186", "10.1057", "10.1140")
+
+
+def springer_meta_key() -> str:
+    """Springer Nature **Metadata** API 키.
+
+    OpenAccess API 키(`NATURESPRINGER_API_KEY`)와 **다른 키**다. 실측:
+    OpenAccess 키로 Metadata 를 부르면 401 이고, OpenAccess 는 비OA 논문에
+    404 라 초록 결손을 하나도 못 메운다. 초록을 주는 건 Metadata 쪽이다.
+    """
+    for name in ("SPRINGER_META_API_KEY", "NATURESPRINGERMETA_API_KEY",
+                 "NATURESPRINTERMETA_API_KEY"):
+        v = (os.environ.get(name) or "").strip()
+        if v:
+            return v
+    return ""
+
+
+def _springer_abstract(doi: str, key: str) -> str:
+    """Springer Nature Metadata API 에서 초록 하나. 없으면 빈 문자열."""
+    for path in _SPRINGER_META_ENDPOINTS:
+        try:
+            resp = requests.get(
+                f"https://api.springernature.com/{path}",
+                params={"q": f"doi:{doi}", "api_key": key}, timeout=20)
+            if resp.status_code != 200:
+                continue
+            for rec in (resp.json().get("records") or []):
+                ab = rec.get("abstract") or ""
+                # 응답 형태가 문자열/`{p: ...}`/리스트로 갈린다.
+                if isinstance(ab, dict):
+                    ab = ab.get("p") or ""
+                if isinstance(ab, list):
+                    ab = " ".join(str(x) for x in ab)
+                ab = str(ab).strip()
+                if ab:
+                    return ab
+        except Exception:  # noqa: BLE001 — 보강 실패는 무시
+            continue
+    return ""
+
+
 def _fill_missing_abstracts_by_doi(df):
-    """초록이 비었지만 DOI 가 있는 논문을 S2 직접 조회로 보강."""
+    """초록이 비었지만 DOI 가 있는 논문을 보강한다.
+
+    두 단계로 시도한다:
+      1. Semantic Scholar 직접 조회 (모든 발행사)
+      2. Springer Nature Metadata API (SN 계열 DOI 만, 키가 있을 때)
+
+    2단계가 필요한 이유 — 폐쇄형 논문의 초록은 OpenAlex/Crossref/S2 어디에도
+    없다(발행사가 재배포를 막는다). 실측: 결손 20편 중 SN 계열 8편이 다른
+    소스에서 전부 실패했지만 Metadata API 로는 8/8 회수됐다.
+    """
     targets = []
     for idx, row in df.iterrows():
         abstract = str(row.get("abstract", "") or "").strip()
@@ -742,20 +797,52 @@ def _fill_missing_abstracts_by_doi(df):
         return ""
 
     filled = 0
+    still: list[tuple] = []
     with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {executor.submit(_fetch_one, doi): idx for idx, doi in targets}
+        futures = {executor.submit(_fetch_one, doi): (idx, doi)
+                   for idx, doi in targets}
         for future in as_completed(futures):
+            idx, doi = futures[future]
             try:
                 abstract = future.result()
             except Exception:  # noqa: BLE001
-                continue
+                abstract = ""
             if len(abstract) > 20:
-                df.at[futures[future], "abstract"] = abstract
+                df.at[idx, "abstract"] = abstract
                 filled += 1
+            else:
+                still.append((idx, doi))
 
     if filled:
         logger.info("Filled %d/%d missing abstracts via S2 DOI lookup",
                     filled, len(targets))
+
+    # 2단계: Springer Nature Metadata API — 폐쇄형 SN 논문의 마지막 수단.
+    sn_key = springer_meta_key()
+    sn_targets = [(idx, doi) for idx, doi in still
+                  if doi.split("/")[0] in _SPRINGER_PREFIXES]
+    if sn_key and sn_targets:
+        logger.info("Looking up %d Springer Nature abstracts via Metadata API...",
+                    len(sn_targets))
+        sn_filled = 0
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {executor.submit(_springer_abstract, doi, sn_key): idx
+                       for idx, doi in sn_targets}
+            for future in as_completed(futures):
+                try:
+                    abstract = future.result()
+                except Exception:  # noqa: BLE001
+                    continue
+                if len(abstract) > 20:
+                    df.at[futures[future], "abstract"] = abstract
+                    sn_filled += 1
+        if sn_filled:
+            logger.info("Filled %d/%d abstracts via Springer Nature Metadata",
+                        sn_filled, len(sn_targets))
+    elif sn_targets and not sn_key:
+        logger.info("Springer Nature 계열 %d편의 초록이 비었으나 Metadata API "
+                    "키가 없다 (SPRINGER_META_API_KEY)", len(sn_targets))
+
     return df
 
 

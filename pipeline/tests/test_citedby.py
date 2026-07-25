@@ -1317,3 +1317,100 @@ class CrossrefEnrichmentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class SpringerAbstractFallbackTests(unittest.TestCase):
+    """폐쇄형 Springer Nature 논문의 초록 보강.
+
+    실측 배경: 초록 결손 20편 중 SN 계열 8편이 OpenAlex/Crossref/S2/Scopus
+    **전부**에서 실패했다(발행사가 재배포를 막는다). Springer Nature
+    **Metadata** API 로는 8/8 회수됐다. OpenAccess API 키로는 401 이고,
+    OpenAccess 는 비OA 에 404 라 하나도 못 메운다 — 별개 키가 필요하다.
+    """
+
+    def _frame(self, dois):
+        import pandas as pd
+        rows = []
+        for d in dois:
+            r = {c: "" for c in citing.CITING_COLUMNS}
+            r.update({"doi": d, "title": "t", "abstract": "",
+                      "source": "openalex"})
+            rows.append(r)
+        return pd.DataFrame(rows)
+
+    def test_key_resolution_order(self):
+        with patch.dict(os.environ, {"SPRINGER_META_API_KEY": "A"}, clear=True):
+            self.assertEqual(citing.springer_meta_key(), "A")
+        with patch.dict(os.environ, {"NATURESPRINTERMETA_API_KEY": "B"},
+                        clear=True):
+            self.assertEqual(citing.springer_meta_key(), "B")
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(citing.springer_meta_key(), "")
+
+    def test_only_springer_prefixes_are_queried(self):
+        """Elsevier/SSRN 에 헛요청을 보내지 않는다."""
+        seen = []
+
+        def fake_sn(doi, key):
+            seen.append(doi)
+            return "S" * 50
+
+        with patch.dict(os.environ, {"SPRINGER_META_API_KEY": "K"}), \
+             patch.object(citing.requests, "get") as g, \
+             patch.object(citing, "_springer_abstract", side_effect=fake_sn):
+            g.return_value.status_code = 404          # S2 는 전부 실패
+            citing._fill_missing_abstracts_by_doi(
+                self._frame(["10.1038/a", "10.1007/b",
+                             "10.1016/c", "10.2139/ssrn.1"]))
+        self.assertEqual(sorted(seen), ["10.1007/b", "10.1038/a"])
+
+    def test_springer_fills_when_s2_fails(self):
+        with patch.dict(os.environ, {"SPRINGER_META_API_KEY": "K"}), \
+             patch.object(citing.requests, "get") as g, \
+             patch.object(citing, "_springer_abstract",
+                          return_value="Q" * 80):
+            g.return_value.status_code = 404
+            out = citing._fill_missing_abstracts_by_doi(
+                self._frame(["10.1038/a"]))
+        self.assertEqual(len(out.iloc[0]["abstract"]), 80)
+
+    def test_s2_hit_skips_springer(self):
+        """S2 가 이미 채웠으면 SN 을 부르지 않는다 (호출 예산)."""
+        with patch.dict(os.environ, {"SPRINGER_META_API_KEY": "K"}), \
+             patch.object(citing.requests, "get") as g, \
+             patch.object(citing, "_springer_abstract") as sn:
+            g.return_value.status_code = 200
+            g.return_value.json.return_value = {"abstract": "Z" * 60}
+            citing._fill_missing_abstracts_by_doi(self._frame(["10.1038/a"]))
+        sn.assert_not_called()
+
+    def test_no_key_is_a_noop(self):
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(citing.requests, "get") as g, \
+             patch.object(citing, "_springer_abstract") as sn:
+            g.return_value.status_code = 404
+            out = citing._fill_missing_abstracts_by_doi(
+                self._frame(["10.1038/a"]))
+        sn.assert_not_called()
+        self.assertEqual(out.iloc[0]["abstract"], "")
+
+    def test_abstract_shapes_are_normalised(self):
+        """응답의 abstract 가 str / {p:...} / list 로 갈린다."""
+        for payload, want in (
+            ({"records": [{"abstract": "plain text " * 5}]}, True),
+            ({"records": [{"abstract": {"p": "dict form " * 5}}]}, True),
+            ({"records": [{"abstract": ["list ", "form " * 8]}]}, True),
+            ({"records": [{"abstract": ""}]}, False),
+            ({"records": []}, False),
+        ):
+            with self.subTest(payload=str(payload)[:40]):
+                with patch.object(citing.requests, "get") as g:
+                    g.return_value.status_code = 200
+                    g.return_value.json.return_value = payload
+                    got = citing._springer_abstract("10.1038/a", "K")
+                self.assertEqual(bool(got), want)
+
+    def test_http_error_is_swallowed(self):
+        with patch.object(citing.requests, "get",
+                          side_effect=RuntimeError("down")):
+            self.assertEqual(citing._springer_abstract("10.1038/a", "K"), "")
