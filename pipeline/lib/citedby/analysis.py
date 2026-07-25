@@ -259,6 +259,7 @@ def run_topic_analysis(papers: list[dict], *,
     total = len(papers)
     topic = (topic or "").strip()
 
+    themes = None
     if topic:
         emit("topic_filter", f"주제 필터링 시작: {topic}", 0, total)
         selected = filter_by_topic(
@@ -274,7 +275,14 @@ def run_topic_analysis(papers: list[dict], *,
                 progress_callback=lambda phase, msg, cur=0, tot=0:
                     emit(phase, msg, cur, tot))
     else:
+        # 주제 미지정 → 자동 주제 분석. 실패해도 목록 리포트는 그대로 나간다.
         selected = papers
+        from .themes import analyze_themes
+        themes = analyze_themes(
+            papers, cache_dir=cache_dir,
+            progress=lambda phase, msg: emit(phase, msg))
+        if themes:
+            emit("themes", f"주제 {len(themes['clusters'])}개 갈래 도출")
 
     emit("report", "리포트 생성 중...")
     # 내 Zotero 라이브러리에 있는 논문은 제목 옆에 PDF 바로열기 링크가 붙는다.
@@ -285,13 +293,14 @@ def run_topic_analysis(papers: list[dict], *,
 
     report_html = build_report_html(
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
-        source_counts=source_counts, zotero_index=zindex)
+        source_counts=source_counts, zotero_index=zindex, themes=themes)
 
     return {
         "topic": topic,
         "papers": selected,
         "report_html": report_html,
         "csv": papers_to_csv(selected) if selected else "",
+        "themes": themes,
         "matched": len(selected),
         "total": total,
     }

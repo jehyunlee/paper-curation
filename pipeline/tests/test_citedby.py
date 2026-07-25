@@ -1414,3 +1414,102 @@ class SpringerAbstractFallbackTests(unittest.TestCase):
         with patch.object(citing.requests, "get",
                           side_effect=RuntimeError("down")):
             self.assertEqual(citing._springer_abstract("10.1038/a", "K"), "")
+
+
+class ThemeAnalysisTests(unittest.TestCase):
+    """주제 미지정 시의 자동 군집 분석.
+
+    부가 기능이므로 **어떤 실패도 리포트 생성을 막아선 안 된다** — 편수 부족,
+    의존성 없음, 군집화 예외, 전량 미분류 모두 None 으로 조용히 빠진다.
+    """
+
+    def _papers(self, n=40, year=2025):
+        return [{"title": f"Paper {i}", "abstract": "x" * 60,
+                 "year": year, "citation_count": i}
+                for i in range(n)]
+
+    def test_below_threshold_returns_none(self):
+        from lib.citedby import themes
+        self.assertIsNone(themes.analyze_themes(self._papers(5), min_papers=30))
+
+    def test_untitled_papers_are_dropped_from_count(self):
+        from lib.citedby import themes
+        papers = self._papers(29) + [{"title": "", "abstract": "y"}]
+        self.assertIsNone(themes.analyze_themes(papers, min_papers=30))
+
+    def test_missing_dependency_returns_none(self):
+        from lib.citedby import themes
+        with patch.dict("sys.modules", {"topic_modeling": None}):
+            self.assertIsNone(
+                themes.analyze_themes(self._papers(40), min_papers=30))
+
+    def test_clustering_exception_returns_none(self):
+        from lib.citedby import themes
+        import types
+        fake = types.SimpleNamespace(
+            compute_embeddings=lambda t: (_ for _ in ()).throw(RuntimeError("x")),
+            run_clustering=lambda *a, **k: None)
+        with patch.dict("sys.modules", {"topic_modeling": fake}):
+            self.assertIsNone(
+                themes.analyze_themes(self._papers(40), min_papers=30))
+
+    def test_all_outliers_returns_none(self):
+        from lib.citedby import themes
+        import types
+        n = 40
+        fake = types.SimpleNamespace(
+            compute_embeddings=lambda t: (None, sorted(t)),
+            run_clustering=lambda e, s, t, **k: ([-1] * n, None, {}, None))
+        with patch.dict("sys.modules", {"topic_modeling": fake}):
+            self.assertIsNone(
+                themes.analyze_themes(self._papers(n), min_papers=30))
+
+    def test_year_parsing_prefers_full_date(self):
+        from lib.citedby import themes
+        self.assertEqual(themes._year_of({"date": "2025-08-20"}), 2025)
+        self.assertEqual(themes._year_of({"year": 2024}), 2024)
+        self.assertIsNone(themes._year_of({"date": "", "year": ""}))
+
+    def test_paper_text_prefers_abstract_then_originality(self):
+        from lib.citedby import themes
+        self.assertIn("ABS", themes._paper_text(
+            {"title": "T", "abstract": "ABS", "originality": "ORIG"}))
+        self.assertIn("ORIG", themes._paper_text(
+            {"title": "T", "abstract": "", "originality": "ORIG"}))
+        self.assertEqual(themes._paper_text(
+            {"title": "T", "abstract": "", "originality": ""}), "T")
+
+    def test_fallback_name_filters_stopwords(self):
+        from lib.citedby import themes
+        name = themes._fallback_name(["the", "and", "la", "agents",
+                                      "discovery", "protein"])
+        self.assertNotIn("the", name)
+        self.assertIn("agents", name)
+
+    def test_report_renders_theme_table(self):
+        themes_data = {
+            "clusters": [{"id": 0, "name": "LLM 에이전트", "keywords": ["agent"],
+                          "count": 3, "citations": 42,
+                          "years": {2024: 1, 2025: 2}, "papers": []}],
+            "years": [2024, 2025], "outliers": 1, "total": 4,
+        }
+        out = report.build_report_html(
+            papers=[{"title": "P", "doi": "10.1/a"}], themes=themes_data)
+        self.assertIn("인용 주제 분포", out)
+        self.assertIn("LLM 에이전트", out)
+        self.assertIn("미분류", out)
+
+    def test_report_without_themes_has_no_section(self):
+        out = report.build_report_html(
+            papers=[{"title": "P", "doi": "10.1/a"}], themes=None)
+        self.assertNotIn("인용 주제 분포", out)
+
+    def test_theme_name_is_escaped(self):
+        themes_data = {
+            "clusters": [{"id": 0, "name": "<script>x</script>",
+                          "keywords": [], "count": 1, "citations": 0,
+                          "years": {}, "papers": []}],
+            "years": [], "outliers": 0, "total": 1,
+        }
+        out = report.build_report_html(papers=[], themes=themes_data)
+        self.assertNotIn("<script>x</script>", out)

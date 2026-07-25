@@ -51,6 +51,8 @@ _LABELS = {
         "sources_label": "소스별 수집",
         "year_range": "연도 범위",
         "open": "원문",
+        "themes": "인용 주제 분포",
+        "themes_note": "주제를 지정하지 않아 인용논문을 자동 군집화했다. 연도별 편수와 누적 피인용으로 각 갈래가 언제 얼마나 퍼졌는지 읽는다.",
         "zotero": "Zotero PDF",
         "zotero_item": "Zotero 서지정보",
         "zotero_col": "Zotero",
@@ -277,6 +279,49 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     )
 
 
+def _themes_section(themes: dict, lbl: dict) -> str:
+    """연도 × 군집 교차표 — "주제별로 얼마나 어떻게 흘러갔는지".
+
+    이미지도 Opus narrative 도 만들지 않는다. year 와 피인용수가 이미 있으므로
+    교차표만으로 확산 양상이 읽힌다.
+    """
+    if not themes or not themes.get("clusters"):
+        return ""
+
+    years = themes.get("years") or []
+    total = themes.get("total") or 0
+    n_cl = len(themes["clusters"])
+
+    head = ["<th>주제</th>", "<th class='num'>편수</th>"]
+    head += [f"<th class='num'>{y}</th>" for y in years]
+    head.append("<th class='num'>누적 피인용</th>")
+
+    rows = []
+    for c in themes["clusters"]:
+        cells = [f"<td><b>{_esc(c['name'])}</b>"
+                 f"<div class='kw'>{_esc(', '.join(c['keywords']))}</div></td>",
+                 f"<td class='num'>{c['count']}</td>"]
+        for y in years:
+            n = c["years"].get(y, 0)
+            cells.append(f"<td class='num'>{n if n else '·'}</td>")
+        cells.append(f"<td class='num'>{c['citations']:,}</td>")
+        rows.append("<tr>" + "".join(cells) + "</tr>")
+
+    if themes.get("outliers"):
+        pad = "".join("<td class='num'>·</td>" for _ in years)
+        rows.append(
+            f"<tr class='muted'><td>미분류</td>"
+            f"<td class='num'>{themes['outliers']}</td>{pad}"
+            f"<td class='num'>·</td></tr>")
+
+    return (
+        f'<h2>{lbl["themes"]} <span class="dim">— {n_cl}개 갈래 / {total:,}편</span></h2>'
+        f'<p class="note">{lbl["themes_note"]}</p>'
+        f'<table class="themes"><thead><tr>{"".join(head)}</tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table>'
+    )
+
+
 def _appendix(papers: list[dict], lbl: dict) -> str:
     if not papers:
         return ""
@@ -345,6 +390,13 @@ table.sum{width:100%;border-collapse:collapse;margin:.55rem 0 .2rem;font-size:.8
 table.sum th{width:5.2rem;text-align:left;vertical-align:top;background:#eef1f6;
  color:var(--soft);font-weight:600;padding:.35rem .55rem;border:1px solid var(--line);}
 table.sum td{padding:.35rem .6rem;border:1px solid var(--line);vertical-align:top;}
+table.themes{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:12.5px}
+table.themes th,table.themes td{border:1px solid #e2e5ea;padding:5px 8px;text-align:left}
+table.themes th{background:#f2f4f7;font-weight:600}
+table.themes td.num,table.themes th.num{text-align:right;font-variant-numeric:tabular-nums}
+table.themes tr.muted{color:#8a9099}
+.kw{font-size:11px;color:#7a8089;margin-top:2px}
+.dim{font-weight:400;color:#7a8089;font-size:13px}
 .open{margin-top:.5rem;font-size:.8rem;}
 a.zot{color:#8a3a1e;border:1px solid #e6cfc5;border-radius:5px;padding:.02rem .34rem;
  font-size:.92em;background:#fdf5f2;}
@@ -388,6 +440,7 @@ def build_report_html(*,
                       lang: str = "ko",
                       source_counts: dict | None = None,
                       zotero_index=None,
+                      themes: dict | None = None,
                       generated_at: datetime | None = None) -> str:
     """citedby 결과를 자기완결 HTML 리포트로 렌더한다.
 
@@ -449,6 +502,8 @@ def build_report_html(*,
         body.append(f'<div class="empty">{_esc(lbl["no_papers"])}</div>')
     else:
         body.append(f'<h2>{_esc(lbl["papers"])}</h2>')
+        if themes:
+            body.append(_themes_section(themes, lbl))
         body.extend(_paper_card(i, p, lbl) for i, p in enumerate(papers, 1))
         body.append(_appendix(papers, lbl))
 
