@@ -48,6 +48,35 @@ def _default_out_dir(slug: str) -> Path:
     return DOCS_DIR / "citedby"
 
 
+def _export_paper(paper: dict) -> dict:
+    """Zotero 등록에 필요한 서지 필드만 추린 dict.
+
+    citing 레코드는 내부 필드(`_zotero_url` 등)와 빈 컬럼이 많아 그대로
+    내보내면 소비자가 지저분해진다. NaN/빈 값은 빈 문자열로 정규화한다.
+    """
+    def _s(key):
+        v = paper.get(key)
+        if v is None:
+            return ""
+        s = str(v).strip()
+        return "" if s.lower() in ("nan", "none") else s
+
+    return {
+        "title": _s("title"),
+        "doi": _s("doi"),
+        "arxiv_id": _s("arxiv_id"),
+        "url": _s("pdf_url"),
+        "journal": _s("journal"),
+        "year": _s("year"),
+        "authors": [a.strip() for a in _s("author_names").split(";") if a.strip()],
+        "abstract": _s("abstract"),
+        "citation_count": _s("citationCount"),
+        "source": _s("source"),
+        "originality": _s("originality"),
+        "topic_reason": _s("topic_reason"),
+    }
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description="DOI → 인용논문 분석 HTML 문서 (+ CSV)",
@@ -119,6 +148,15 @@ def main(argv=None) -> int:
         csv_path = out_dir / f"citing_{stamp}.csv"
         csv_path.write_text(result["csv"], encoding="utf-8")
 
+    # 논문 목록 JSON — Zotero 일괄 등록(paper-curio) 처럼 후속 소비자가
+    # CSV 를 파싱하지 않고 바로 읽을 수 있게 서지 필드만 추려 낸다.
+    papers_path = None
+    if result.get("papers"):
+        papers_path = out_dir / f"papers_{stamp}.json"
+        papers_path.write_text(json.dumps(
+            [_export_paper(p) for p in result["papers"]],
+            ensure_ascii=False), encoding="utf-8")
+
     payload = {
         "ok": True,
         "doi": result["doi"],
@@ -129,6 +167,7 @@ def main(argv=None) -> int:
         "source_counts": result["source_counts"],
         "report": str(report_path),
         "csv": str(csv_path) if csv_path else "",
+        "papers_json": str(papers_path) if papers_path else "",
     }
 
     if args.as_json:
