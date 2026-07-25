@@ -308,11 +308,25 @@ def _themes_section(themes: dict, lbl: dict) -> str:
         rows.append("<tr>" + "".join(cells) + "</tr>")
 
     if themes.get("outliers"):
-        pad = "".join("<td class='num'>·</td>" for _ in years)
+        oy = themes.get("outlier_years") or {}
+        cells = "".join(f"<td class='num'>{oy.get(y, 0) or '·'}</td>"
+                        for y in years)
         rows.append(
             f"<tr class='muted'><td>미분류</td>"
-            f"<td class='num'>{themes['outliers']}</td>{pad}"
-            f"<td class='num'>·</td></tr>")
+            f"<td class='num'>{themes['outliers']}</td>{cells}"
+            f"<td class='num'>{themes.get('outlier_citations', 0):,}</td></tr>")
+
+    # 합계 행 — 각 열의 합이 전체와 맞는지 눈으로 검산된다.
+    # (미분류 피인용을 버려 표 합이 실제와 3 어긋났던 적이 있다.)
+    year_totals = {y: sum(c["years"].get(y, 0) for c in themes["clusters"])
+                      + (themes.get("outlier_years") or {}).get(y, 0)
+                   for y in years}
+    total_cells = "".join(f"<td class='num'>{year_totals[y] or '·'}</td>"
+                          for y in years)
+    rows.append(
+        f"<tr class='total'><td><b>합계</b></td>"
+        f"<td class='num'><b>{total:,}</b></td>{total_cells}"
+        f"<td class='num'><b>{themes.get('total_citations', 0):,}</b></td></tr>")
 
     return (
         f'<h2>{lbl["themes"]} <span class="dim">— {n_cl}개 갈래 / {total:,}편</span></h2>'
@@ -395,6 +409,7 @@ table.themes th,table.themes td{border:1px solid #e2e5ea;padding:5px 8px;text-al
 table.themes th{background:#f2f4f7;font-weight:600}
 table.themes td.num,table.themes th.num{text-align:right;font-variant-numeric:tabular-nums}
 table.themes tr.muted{color:#8a9099}
+table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
 .kw{font-size:11px;color:#7a8089;margin-top:2px}
 .dim{font-weight:400;color:#7a8089;font-size:13px}
 .open{margin-top:.5rem;font-size:.8rem;}
@@ -498,12 +513,15 @@ def build_report_html(*,
         _stats_block(papers, source_counts, lbl),
     ]
 
+    # 주제 분포는 개요 직후의 **독립 섹션**이다. 논문 목록 안에 두면 papers 가
+    # 비었을 때 함께 사라지는데, 분포는 목록과 별개의 요약이라 그러면 안 된다.
+    if themes:
+        body.append(_themes_section(themes, lbl))
+
     if not papers:
         body.append(f'<div class="empty">{_esc(lbl["no_papers"])}</div>')
     else:
         body.append(f'<h2>{_esc(lbl["papers"])}</h2>')
-        if themes:
-            body.append(_themes_section(themes, lbl))
         body.extend(_paper_card(i, p, lbl) for i, p in enumerate(papers, 1))
         body.append(_appendix(papers, lbl))
 

@@ -1513,3 +1513,81 @@ class ThemeAnalysisTests(unittest.TestCase):
         }
         out = report.build_report_html(papers=[], themes=themes_data)
         self.assertNotIn("<script>x</script>", out)
+
+
+class ThemeTotalsTests(unittest.TestCase):
+    """표의 합이 실제와 어긋나지 않아야 한다.
+
+    실제 버그: 미분류(outlier)를 편수만 세고 버려서 그들의 피인용이 표에서
+    누락됐다 — 화면 325 vs 실제 328. 표가 "총 41편"이라 해놓고 피인용은
+    40편분만 보여줬다.
+    """
+
+    def _fake_topic_modeling(self, labels):
+        import types
+        n = len(labels)
+        return types.SimpleNamespace(
+            compute_embeddings=lambda t: (None, sorted(t)),
+            run_clustering=lambda e, s, t, **k: (
+                labels, None, {i: [("kw", 1.0)] for i in set(labels) if i != -1},
+                None, None, None))
+
+    def _run(self, papers, labels):
+        from lib.citedby import themes
+        with patch.dict("sys.modules",
+                        {"topic_modeling": self._fake_topic_modeling(labels)}), \
+             patch.object(themes, "_name_clusters",
+                          side_effect=lambda kw, ti, **k: {t: f"C{t}" for t in kw}):
+            return themes.analyze_themes(papers, min_papers=3)
+
+    def test_outlier_citations_are_counted(self):
+        papers = [{"title": f"P{i}", "year": 2025, "citation_count": 10}
+                  for i in range(4)]
+        papers[3]["citation_count"] = 3          # 이 편이 outlier
+        th = self._run(papers, [0, 0, 0, -1])
+        self.assertEqual(th["outliers"], 1)
+        self.assertEqual(th["outlier_citations"], 3)
+        self.assertEqual(th["total_citations"], 33)
+
+    def test_total_equals_sum_of_parts(self):
+        papers = [{"title": f"P{i}", "year": 2024 + (i % 2),
+                   "citation_count": i} for i in range(6)]
+        th = self._run(papers, [0, 0, 1, 1, -1, -1])
+        parts = sum(c["citations"] for c in th["clusters"]) \
+            + th["outlier_citations"]
+        self.assertEqual(parts, th["total_citations"])
+        self.assertEqual(parts, sum(range(6)))
+
+    def test_outlier_years_are_recorded(self):
+        papers = [{"title": f"P{i}", "year": 2025, "citation_count": 1}
+                  for i in range(4)]
+        papers[3]["year"] = 2024
+        th = self._run(papers, [0, 0, 0, -1])
+        self.assertEqual(th["outlier_years"], {2024: 1})
+        self.assertIn(2024, th["years"])
+
+    def test_counts_add_up_to_total(self):
+        papers = [{"title": f"P{i}", "year": 2025, "citation_count": 1}
+                  for i in range(7)]
+        th = self._run(papers, [0, 0, 1, 1, 1, -1, -1])
+        self.assertEqual(sum(c["count"] for c in th["clusters"])
+                         + th["outliers"], th["total"])
+
+    def test_citations_parse_both_field_spellings(self):
+        from lib.citedby import themes
+        self.assertEqual(themes._citations_of({"citation_count": "42"}), 42)
+        self.assertEqual(themes._citations_of({"citationCount": 7}), 7)
+        self.assertEqual(themes._citations_of({"citation_count": "nan"}), 0)
+        self.assertEqual(themes._citations_of({}), 0)
+
+    def test_report_renders_total_row(self):
+        themes_data = {
+            "clusters": [{"id": 0, "name": "A", "keywords": [], "count": 2,
+                          "citations": 10, "years": {2025: 2}, "papers": []}],
+            "years": [2025], "outliers": 1, "outlier_years": {2025: 1},
+            "outlier_citations": 3, "total": 3, "total_citations": 13,
+        }
+        out = report.build_report_html(papers=[], themes=themes_data)
+        self.assertIn("합계", out)
+        self.assertIn("13", out)      # 총 피인용
+        self.assertIn(">3<", out)     # 미분류 피인용이 · 가 아니다

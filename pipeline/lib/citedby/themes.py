@@ -103,6 +103,23 @@ def _year_of(p: dict):
     return None
 
 
+def _citations_of(p: dict) -> int:
+    """대표 피인용수. 파싱 불가하면 0.
+
+    `_export_paper` 는 문자열(`citation_count`)로, DataFrame 레코드는
+    숫자(`citationCount`)로 준다 — 두 경로를 모두 받는다.
+    """
+    for key in ("citation_count", "citationCount"):
+        v = p.get(key)
+        if v in (None, "", "nan"):
+            continue
+        try:
+            return int(float(v))
+        except (TypeError, ValueError):
+            continue
+    return 0
+
+
 def analyze_themes(papers: list[dict], *,
                    min_papers: int = DEFAULT_MIN_PAPERS,
                    cache_dir=None,
@@ -155,7 +172,11 @@ def analyze_themes(papers: list[dict], *,
     for slug, tid in zip(slugs, topics):
         members[int(tid)].append(keyed[slug])
 
-    outliers = len(members.pop(-1, []))
+    # 미분류(outlier)를 편수만 세고 버리면 표의 피인용 합이 전체와 어긋난다
+    # (실측: 표 325 vs 실제 328 — 미분류 1편의 3회가 누락됐다).
+    # 군집은 아니지만 **집계에는 포함**한다.
+    outlier_papers = members.pop(-1, [])
+    outliers = len(outlier_papers)
     if not members:
         logger.info("주제 분석 생략: 유효 군집 0개 (전량 미분류)")
         return None
@@ -171,8 +192,9 @@ def analyze_themes(papers: list[dict], *,
                            cache_dir=cache_dir, keys=keys)
 
     all_years: set[int] = set()
-    clusters = []
-    for tid, ms in members.items():
+
+    def _tally(ms: list) -> tuple:
+        """논문 묶음 → (연도별 편수, 피인용 합). 군집·미분류·합계가 공유한다."""
         years = Counter()
         citations = 0
         for p in ms:
@@ -180,11 +202,12 @@ def analyze_themes(papers: list[dict], *,
             if y:
                 years[y] += 1
                 all_years.add(y)
-            try:
-                citations += int(float(p.get("citation_count")
-                                       or p.get("citationCount") or 0))
-            except (TypeError, ValueError):
-                pass
+            citations += _citations_of(p)
+        return years, citations
+
+    clusters = []
+    for tid, ms in members.items():
+        years, citations = _tally(ms)
         clusters.append({
             "id": tid,
             "name": names.get(tid) or _fallback_name(cluster_kw[tid]),
@@ -197,11 +220,18 @@ def analyze_themes(papers: list[dict], *,
 
     # 편수 → 피인용 순. 큰 갈래가 위로 오게.
     clusters.sort(key=lambda c: (-c["count"], -c["citations"]))
-    logger.info("주제 분석: %d개 군집 (미분류 %d편 / 총 %d편)",
-                len(clusters), outliers, total)
+
+    out_years, out_citations = _tally(outlier_papers)
+    total_citations = sum(c["citations"] for c in clusters) + out_citations
+
+    logger.info("주제 분석: %d개 군집 (미분류 %d편 / 총 %d편, 피인용 %d)",
+                len(clusters), outliers, total, total_citations)
     return {
         "clusters": clusters,
         "years": sorted(all_years),
         "outliers": outliers,
+        "outlier_years": dict(out_years),
+        "outlier_citations": out_citations,
         "total": total,
+        "total_citations": total_citations,
     }
