@@ -34,7 +34,11 @@ logger = logging.getLogger(__name__)
 # citing 논문 통합 컬럼 — 모든 source 의 레코드가 이 스키마로 정규화된다.
 CITING_COLUMNS = [
     "doi", "eid", "arxiv_id", "title", "abstract", "journal",
-    "year", "month", "volume", "pages", "citationCount", "source",
+    # `date` 는 소스가 주는 **완전한 ISO 날짜**(YYYY-MM-DD). year/month 는
+    # 정렬·집계용 파생값이라 date 를 대체하지 않는다 — Zotero 에는 date 를 쓴다.
+    "date", "year", "month",
+    "volume", "issue", "pages", "citationCount", "source",
+    "issn", "publisher", "language", "item_type",
     "pdf_url", "au_keywords", "author_count", "author_names",
     "author_ids", "author_afids", "af_id", "af_name", "af_city", "af_country",
 ]
@@ -49,6 +53,14 @@ UNSUPPORTED_SOURCES = {
 _MAX_RATE_LIMIT_RETRIES = 5
 
 _DEFAULT_SOURCES = ["scopus", "wos", "openalex", "semanticscholar", "arxiv"]
+
+# OpenAlex 응답 필드 화이트리스트. `_parse_openalex_work` 가 읽는 것과 **반드시**
+# 일치해야 한다 — select 에서 빠진 필드는 응답에 아예 담기지 않아, 파서가 조용히
+# 빈 값을 채운다 (실제로 `biblio` 누락으로 권/호/페이지가 전부 비어 있었다).
+_OPENALEX_SELECT = (
+    "id,doi,title,display_name,publication_date,primary_location,"
+    "authorships,cited_by_count,abstract_inverted_index,type,biblio,language"
+)
 
 
 def normalize_doi(raw_input: str) -> str:
@@ -114,6 +126,15 @@ def _parse_openalex_work(w: dict) -> dict:
     loc = w.get("primary_location") or {}
     source_info = loc.get("source") or {}
     authorships = w.get("authorships") or []
+    # OpenAlex 는 권/호/페이지를 `biblio` 에 담아 준다. select 에 넣지 않으면
+    # 응답에서 통째로 빠지므로 `_OPENALEX_SELECT` 와 짝을 맞춰야 한다.
+    biblio = w.get("biblio") or {}
+    first_page = (biblio.get("first_page") or "").strip()
+    last_page = (biblio.get("last_page") or "").strip()
+    if first_page and last_page and first_page != last_page:
+        pages = f"{first_page}-{last_page}"
+    else:
+        pages = first_page or last_page or ""
 
     af_names, af_countries = [], []
     for a in authorships:
@@ -124,6 +145,9 @@ def _parse_openalex_work(w: dict) -> dict:
     return {
         "title": w.get("display_name") or w.get("title") or "",
         "abstract": reconstruct_abstract(w.get("abstract_inverted_index")),
+        # 완전한 날짜를 그대로 보존한다. year/month 는 파생값일 뿐이라,
+        # 여기서 잘라 버리면 Zotero 에 "2025" 만 들어간다 (실제 버그였다).
+        "date": pub_date,
         "year": int(pub_date[:4]) if len(pub_date) >= 4 else None,
         "month": int(pub_date[5:7]) if len(pub_date) >= 7 else None,
         "doi": (w.get("doi") or "").replace("https://doi.org/", ""),
@@ -131,8 +155,13 @@ def _parse_openalex_work(w: dict) -> dict:
         "arxiv_id": "",
         "pdf_url": loc.get("pdf_url") or loc.get("landing_page_url") or "",
         "journal": source_info.get("display_name", ""),
-        "volume": "",
-        "pages": "",
+        "volume": (biblio.get("volume") or "").strip(),
+        "issue": (biblio.get("issue") or "").strip(),
+        "pages": pages,
+        "issn": "; ".join(source_info.get("issn") or []),
+        "publisher": source_info.get("host_organization_name", "") or "",
+        "language": w.get("language", "") or "",
+        "item_type": w.get("type", "") or "",
         "citationCount": w.get("cited_by_count") or 0,
         "af_city": "",
         "af_country": "; ".join(c for c in af_countries[:5] if c),
@@ -165,8 +194,7 @@ def get_citing_from_openalex(doi: str, max_results: int = 5000) -> list[dict]:
             "filter": f"cites:{work_id}",
             "per_page": 200,
             "cursor": cursor,
-            "select": "id,doi,title,display_name,publication_date,primary_location,"
-                      "authorships,cited_by_count,abstract_inverted_index,type",
+            "select": _OPENALEX_SELECT,
             **_openalex_params(),
         }
         try:
@@ -307,7 +335,7 @@ def get_citing_from_s2(doi: str, max_results: int = 5000) -> list[dict]:
     api_key = os.environ.get("S2_API_KEY", "")
     headers = {"x-api-key": api_key} if api_key else {}
     fields = ("title,abstract,externalIds,journal,publicationDate,"
-              "citationCount,authors,openAccessPdf")
+              "citationCount,authors,openAccessPdf,publicationTypes")
     base_url = f"https://api.semanticscholar.org/graph/v1/paper/DOI:{doi}/citations"
 
     results: list[dict] = []
@@ -361,6 +389,7 @@ def get_citing_from_s2(doi: str, max_results: int = 5000) -> list[dict]:
                 results.append({
                     "title": p.get("title", ""),
                     "abstract": p.get("abstract") or "",
+                    "date": pub_date,
                     "year": int(pub_date[:4]) if len(pub_date) >= 4 else None,
                     "month": int(pub_date[5:7]) if len(pub_date) >= 7 else None,
                     "doi": ext_ids.get("DOI", ""),
@@ -369,7 +398,12 @@ def get_citing_from_s2(doi: str, max_results: int = 5000) -> list[dict]:
                     "pdf_url": oa_pdf.get("url", ""),
                     "journal": journal.get("name", "") or "",
                     "volume": journal.get("volume", "") or "",
-                    "pages": journal.get("pages", "") or "",
+                    "issue": "",
+                    "pages": (journal.get("pages", "") or "").replace(" - ", "-"),
+                    "issn": "",
+                    "publisher": "",
+                    "language": "",
+                    "item_type": "; ".join(p.get("publicationTypes") or []),
                     "citationCount": p.get("citationCount") or 0,
                     "af_city": "",
                     "af_country": "",
@@ -423,6 +457,8 @@ def get_citing_from_arxiv(doi: str, max_results: int = 5000) -> list[dict]:
                 results.append({
                     "title": paper.title,
                     "abstract": paper.summary or "",
+                    "date": (paper.published.strftime("%Y-%m-%d")
+                             if paper.published else ""),
                     "year": paper.published.year if paper.published else None,
                     "month": paper.published.month if paper.published else None,
                     "doi": paper.doi or "",
@@ -431,7 +467,12 @@ def get_citing_from_arxiv(doi: str, max_results: int = 5000) -> list[dict]:
                     "pdf_url": paper.pdf_url or "",
                     "journal": "",
                     "volume": "",
+                    "issue": "",
                     "pages": "",
+                    "issn": "",
+                    "publisher": "arXiv",
+                    "language": "",
+                    "item_type": "preprint",
                     "citationCount": 0,  # arXiv 는 제공하지 않음
                     "af_city": "",
                     "af_country": "",
@@ -571,6 +612,8 @@ def fetch_all_citing_papers(doi: str,
 
     df = _merge_by_priority(pd.DataFrame(all_records))
     df = _fill_missing_abstracts_by_doi(df)
+    # 병합 이후에 돈다 — 어느 source 도 못 채운 칸만 Crossref(DOI 정본)로 메운다.
+    df = enrich_from_crossref(df, progress_callback)
 
     logger.info("Total citing papers after dedup: %d (raw: %d)",
                 len(df), sum(source_counts.values()))
@@ -618,6 +661,172 @@ def _fill_missing_abstracts_by_doi(df):
     if filled:
         logger.info("Filled %d/%d missing abstracts via S2 DOI lookup",
                     filled, len(targets))
+    return df
+
+
+def _crossref_headers() -> dict:
+    """Crossref polite pool 헤더. mailto 를 넣으면 우선 처리된다."""
+    email = (os.environ.get("CROSSREF_EMAIL")
+             or os.environ.get("OPENALEX_EMAIL") or "").strip()
+    ua = "paper-curation-citedby/1.0"
+    if email:
+        ua += f" (mailto:{email})"
+    return {"User-Agent": ua}
+
+
+def _crossref_date(msg: dict) -> str:
+    """Crossref date-parts → ISO 날짜. 연도만 있으면 연도만 돌려준다."""
+    for key in ("published", "published-print", "published-online", "issued"):
+        parts = ((msg.get(key) or {}).get("date-parts") or [[]])[0]
+        if not parts:
+            continue
+        nums = [int(p) for p in parts if isinstance(p, int)]
+        if len(nums) >= 3:
+            return f"{nums[0]:04d}-{nums[1]:02d}-{nums[2]:02d}"
+        if len(nums) == 2:
+            return f"{nums[0]:04d}-{nums[1]:02d}"
+        if len(nums) == 1:
+            return f"{nums[0]:04d}"
+    return ""
+
+
+def _crossref_authors(msg: dict) -> str:
+    """Crossref author → "First Last; ..." 문자열.
+
+    Crossref 는 given/family 를 분리해 주므로 출처 중 가장 정확하다.
+    단일명(mononym)은 family 만 오는데(예: Nature 기자 'Ananya') 정상이다.
+    """
+    names = []
+    for a in (msg.get("author") or []):
+        if a.get("name"):                      # 기관 저자
+            names.append(a["name"].strip())
+            continue
+        full = " ".join(x for x in (a.get("given"), a.get("family")) if x)
+        if full.strip():
+            names.append(full.strip())
+    return "; ".join(names)
+
+
+# Crossref 로 채울 필드 → 응답에서 값을 뽑는 함수.
+_CROSSREF_FIELDS = {
+    "volume": lambda m: (m.get("volume") or "").strip(),
+    "issue": lambda m: (m.get("issue") or "").strip(),
+    "pages": lambda m: (m.get("page") or "").strip(),
+    "issn": lambda m: "; ".join(m.get("ISSN") or []),
+    "publisher": lambda m: (m.get("publisher") or "").strip(),
+    "language": lambda m: (m.get("language") or "").strip(),
+    "item_type": lambda m: (m.get("type") or "").strip(),
+    "journal": lambda m: ((m.get("container-title") or [""]) or [""])[0].strip(),
+    "author_names": _crossref_authors,
+}
+
+CROSSREF_PARALLEL = int(os.environ.get("CITEDBY_CROSSREF_PARALLEL", "8"))
+
+
+def _needs_crossref(row) -> bool:
+    """Crossref 를 조회할 가치가 있는 행인지.
+
+    권/페이지가 비었거나 날짜가 연도까지밖에 없으면 보강 대상. 이미 모두
+    채워져 있으면 요청을 아낀다.
+    """
+    if _is_empty(row.get("doi")):
+        return False
+    if _is_empty(row.get("volume")) or _is_empty(row.get("pages")):
+        return True
+    return len(str(row.get("date") or "").strip()) < 10
+
+
+def _safe_set(df, idx, col, value) -> None:
+    """dtype 충돌 없이 셀에 값을 쓴다.
+
+    pandas 의 문자열 dtype 컬럼에 int 를 넣으면 TypeError 가 난다 (year/month
+    를 채울 때 실제로 터졌다). 충돌하면 해당 컬럼만 object 로 승격시킨다.
+    """
+    try:
+        df.at[idx, col] = value
+    except (TypeError, ValueError):
+        df[col] = df[col].astype(object)
+        df.at[idx, col] = value
+
+
+def enrich_from_crossref(df, progress_callback=None):
+    """DOI 기준으로 Crossref 서지정보를 보강한다.
+
+    Crossref 는 DOI 등록기관이 직접 넣은 **정본** 메타데이터라 권/호/페이지·
+    발행일·ISSN·발행사·저자 표기가 검색 인덱스(OpenAlex/S2)보다 정확하다.
+    키도 기관망도 필요 없다.
+
+    정책:
+      * **빈 필드만 채운다** — 상위 source 가 준 값을 덮지 않는다.
+      * 단 `date` 는 예외로, **더 정밀한 날짜면 승격**한다
+        ("2025" → "2025-08-20"). 연도만 남는 게 이 보강의 주된 동기다.
+    """
+    import pandas as pd  # noqa: F401 — df 연산에 필요
+
+    if df.empty:
+        return df
+
+    targets = [(idx, str(row["doi"]).strip())
+               for idx, row in df.iterrows() if _needs_crossref(row)]
+    if not targets:
+        return df
+
+    if progress_callback:
+        progress_callback("crossref", f"Crossref 서지 보강: {len(targets)}편")
+    logger.info("Crossref 보강 대상 %d편", len(targets))
+
+    headers = _crossref_headers()
+
+    def _fetch(doi):
+        try:
+            resp = requests.get(f"https://api.crossref.org/works/{doi}",
+                                headers=headers, timeout=15)
+            if resp.status_code == 200:
+                return resp.json().get("message") or {}
+        except Exception:  # noqa: BLE001 — 보강 실패는 무시하고 원본 유지
+            pass
+        return None
+
+    filled = 0
+    workers = max(1, min(CROSSREF_PARALLEL, len(targets)))
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = {ex.submit(_fetch, doi): idx for idx, doi in targets}
+        for future in as_completed(futures):
+            idx = futures[future]
+            try:
+                msg = future.result()
+            except Exception:  # noqa: BLE001
+                continue
+            if not msg:
+                continue
+
+            touched = False
+            for field, getter in _CROSSREF_FIELDS.items():
+                if not _is_empty(df.at[idx, field]):
+                    continue
+                value = getter(msg)
+                if value:
+                    _safe_set(df, idx, field, value)
+                    touched = True
+
+            # date 는 유일하게 덮어쓴다 — 더 정밀할 때만.
+            cr_date = _crossref_date(msg)
+            cur_date = str(df.at[idx, "date"] or "").strip()
+            if len(cr_date) > len(cur_date):
+                _safe_set(df, idx, "date", cr_date)
+                if len(cr_date) >= 4:
+                    _safe_set(df, idx, "year", int(cr_date[:4]))
+                if len(cr_date) >= 7:
+                    _safe_set(df, idx, "month", int(cr_date[5:7]))
+                touched = True
+
+            if touched:
+                filled += 1
+
+    if filled:
+        logger.info("Crossref 보강 완료: %d/%d편", filled, len(targets))
+        if progress_callback:
+            progress_callback("crossref", f"Crossref 보강 완료: {filled}편")
     return df
 
 

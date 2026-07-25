@@ -67,7 +67,17 @@ def _export_paper(paper: dict) -> dict:
         "arxiv_id": _s("arxiv_id"),
         "url": _s("pdf_url"),
         "journal": _s("journal"),
+        # 소스가 준 **완전한 날짜**(YYYY-MM-DD). Zotero 의 Date 필드로 그대로
+        # 들어간다. year 는 date 가 없을 때의 폴백.
+        "date": _s("date") or _s("year"),
         "year": _s("year"),
+        "volume": _s("volume"),
+        "issue": _s("issue"),
+        "pages": _s("pages"),
+        "issn": _s("issn"),
+        "publisher": _s("publisher"),
+        "language": _s("language"),
+        "item_type": _s("item_type"),
         "authors": [a.strip() for a in _s("author_names").split(";") if a.strip()],
         "abstract": _s("abstract"),
         "citation_count": _s("citationCount"),

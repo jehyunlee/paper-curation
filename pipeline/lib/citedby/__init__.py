@@ -29,6 +29,7 @@ __all__ = [
     "get_citing_from_s2",
     "get_citing_from_arxiv",
     "get_citing_from_wos",
+    "enrich_from_crossref",
     # report.py — HTML 리포트(→ 브라우저 PDF) + CSV export
     "build_report_html",
     "papers_to_csv",
@@ -54,6 +55,7 @@ _CITING_EXPORTS = frozenset({
     "reconstruct_abstract", "fetch_all_citing_papers",
     "get_citing_from_openalex", "get_citing_from_scopus",
     "get_citing_from_s2", "get_citing_from_arxiv", "get_citing_from_wos",
+    "enrich_from_crossref",
 })
 _REPORT_EXPORTS = frozenset({"build_report_html", "papers_to_csv", "paper_url"})
 _ANALYSIS_EXPORTS = frozenset({

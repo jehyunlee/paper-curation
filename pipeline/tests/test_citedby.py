@@ -988,5 +988,161 @@ class ReportZoteroLinkTests(unittest.TestCase):
         self.assertNotIn("_zotero_url", papers[0])
 
 
+class MetadataCompletenessTests(unittest.TestCase):
+    """서지 필드 누락 회귀 방지.
+
+    실제 버그: OpenAlex 파서가 volume/pages 를 빈 문자열로 **하드코딩**하고
+    `select` 에 `biblio` 를 넣지 않아 권/호/페이지가 통째로 비었다. 날짜도
+    완전한 ISO 를 연/월로 잘라 Zotero 에 "2025" 만 들어갔다.
+    """
+
+    WORK = {
+        "display_name": "What counts as plagiarism?",
+        "publication_date": "2025-08-20",
+        "doi": "https://doi.org/10.1038/d41586-025-02616-5",
+        "biblio": {"volume": "644", "issue": "8077",
+                   "first_page": "598", "last_page": "600"},
+        "primary_location": {
+            "source": {"display_name": "Nature",
+                       "issn": ["0028-0836", "1476-4687"],
+                       "host_organization_name": "Nature Portfolio"},
+        },
+        "authorships": [{"author": {"display_name": "Ananya"}}],
+        "cited_by_count": 3,
+        "language": "en",
+        "type": "article",
+    }
+
+    def test_openalex_select_requests_biblio(self):
+        """select 에서 빠지면 응답에 아예 안 담긴다 — 파서와 짝을 맞춘다."""
+        self.assertIn("biblio", citing._OPENALEX_SELECT)
+        self.assertIn("language", citing._OPENALEX_SELECT)
+
+    def test_parses_volume_issue_pages(self):
+        rec = citing._parse_openalex_work(self.WORK)
+        self.assertEqual(rec["volume"], "644")
+        self.assertEqual(rec["issue"], "8077")
+        self.assertEqual(rec["pages"], "598-600")
+
+    def test_single_page_is_not_duplicated(self):
+        w = {**self.WORK, "biblio": {"first_page": "42", "last_page": "42"}}
+        self.assertEqual(citing._parse_openalex_work(w)["pages"], "42")
+
+    def test_keeps_full_iso_date(self):
+        """연/월로 잘라 버리면 Zotero Date 가 "2025" 로 남는다."""
+        rec = citing._parse_openalex_work(self.WORK)
+        self.assertEqual(rec["date"], "2025-08-20")
+        self.assertEqual(rec["year"], 2025)
+        self.assertEqual(rec["month"], 8)
+
+    def test_parses_issn_publisher_language_type(self):
+        rec = citing._parse_openalex_work(self.WORK)
+        self.assertEqual(rec["issn"], "0028-0836; 1476-4687")
+        self.assertEqual(rec["publisher"], "Nature Portfolio")
+        self.assertEqual(rec["language"], "en")
+        self.assertEqual(rec["item_type"], "article")
+
+    def test_all_columns_present_in_parser_output(self):
+        """스키마 드리프트 방지 — 컬럼을 빠뜨리면 병합에서 조용히 깨진다."""
+        rec = citing._parse_openalex_work(self.WORK)
+        missing = [c for c in citing.CITING_COLUMNS if c not in rec]
+        self.assertEqual(missing, [], f"OpenAlex 파서 누락 컬럼: {missing}")
+
+
+class CrossrefEnrichmentTests(unittest.TestCase):
+    MSG = {
+        "volume": "644", "issue": "8077", "page": "598-600",
+        "ISSN": ["0028-0836", "1476-4687"],
+        "publisher": "Springer Science and Business Media LLC",
+        "language": "en", "type": "journal-article",
+        "container-title": ["Nature"],
+        "published": {"date-parts": [[2025, 8, 20]]},
+        "author": [{"given": None, "family": "Ananya"}],
+    }
+
+    def _row(self, **over):
+        base = {c: "" for c in citing.CITING_COLUMNS}
+        base.update({"doi": "10.1/x", "title": "t", "citationCount": 0})
+        base.update(over)
+        return base
+
+    def _run(self, row):
+        import pandas as pd
+        with patch.object(citing.requests, "get") as g:
+            g.return_value.status_code = 200
+            g.return_value.json.return_value = {"message": self.MSG}
+            return citing.enrich_from_crossref(pd.DataFrame([row])).iloc[0]
+
+    def test_date_parts_to_iso(self):
+        self.assertEqual(citing._crossref_date(self.MSG), "2025-08-20")
+
+    def test_date_parts_partial(self):
+        self.assertEqual(
+            citing._crossref_date({"issued": {"date-parts": [[2025, 8]]}}),
+            "2025-08")
+        self.assertEqual(
+            citing._crossref_date({"issued": {"date-parts": [[2025]]}}), "2025")
+        self.assertEqual(citing._crossref_date({}), "")
+
+    def test_authors_given_family(self):
+        self.assertEqual(citing._crossref_authors(self.MSG), "Ananya")
+        self.assertEqual(
+            citing._crossref_authors(
+                {"author": [{"given": "Jane", "family": "Doe"}]}), "Jane Doe")
+
+    def test_institutional_author_name(self):
+        self.assertEqual(
+            citing._crossref_authors({"author": [{"name": "WHO Group"}]}),
+            "WHO Group")
+
+    def test_fills_empty_bibliographic_fields(self):
+        r = self._run(self._row(date="2025"))
+        self.assertEqual(r["volume"], "644")
+        self.assertEqual(r["issue"], "8077")
+        self.assertEqual(r["pages"], "598-600")
+        self.assertEqual(r["journal"], "Nature")
+
+    def test_promotes_year_only_date_to_full_date(self):
+        """이 보강의 주된 동기 — Zotero Date 가 "2025" 로 남던 문제."""
+        r = self._run(self._row(date="2025"))
+        self.assertEqual(r["date"], "2025-08-20")
+        self.assertEqual(int(r["year"]), 2025)
+        self.assertEqual(int(r["month"]), 8)
+
+    def test_does_not_overwrite_existing_fields(self):
+        r = self._run(self._row(volume="999", journal="상위소스저널",
+                                date="2025-01-02"))
+        self.assertEqual(r["volume"], "999")
+        self.assertEqual(r["journal"], "상위소스저널")
+        self.assertEqual(r["date"], "2025-01-02")   # 이미 완전하면 유지
+
+    def test_skips_rows_that_need_nothing(self):
+        row = self._row(date="2025-08-20", volume="644", pages="598-600")
+        self.assertFalse(citing._needs_crossref(row))
+
+    def test_skips_rows_without_doi(self):
+        self.assertFalse(citing._needs_crossref(self._row(doi="")))
+
+    def test_needs_enrichment_when_date_is_year_only(self):
+        self.assertTrue(citing._needs_crossref(
+            self._row(date="2025", volume="644", pages="1-2")))
+
+    def test_network_failure_leaves_frame_unchanged(self):
+        import pandas as pd
+        row = self._row(date="2025")
+        with patch.object(citing.requests, "get",
+                          side_effect=RuntimeError("down")):
+            r = citing.enrich_from_crossref(pd.DataFrame([row])).iloc[0]
+        self.assertEqual(r["volume"], "")
+        self.assertEqual(r["date"], "2025")
+
+    def test_safe_set_promotes_dtype_on_conflict(self):
+        """문자열 dtype 컬럼에 int 를 쓰면 pandas 가 던진다 (실제로 터졌다)."""
+        import pandas as pd
+        df = pd.DataFrame({"year": pd.array(["2025"], dtype="string")})
+        citing._safe_set(df, 0, "year", 2026)
+        self.assertEqual(df.at[0, "year"], 2026)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
