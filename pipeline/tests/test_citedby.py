@@ -12,6 +12,7 @@
 """
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -23,9 +24,11 @@ from unittest.mock import patch
 PIPELINE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PIPELINE_DIR))
 
+from lib.citedby import analysis  # noqa: E402
 from lib.citedby import citing  # noqa: E402
 from lib.citedby import report  # noqa: E402
 from lib.citedby import scopus  # noqa: E402
+from lib.citedby import topic_filter  # noqa: E402
 
 
 class LazyImportTests(unittest.TestCase):
@@ -491,6 +494,328 @@ class ReportCsvTests(unittest.TestCase):
     def test_csv_ignores_unknown_keys(self):
         csv_text = report.papers_to_csv([{"title": "A", "zzz_unknown": "drop"}])
         self.assertNotIn("zzz_unknown", csv_text)
+
+
+class JsonParsingTests(unittest.TestCase):
+    """LLM 응답은 코드펜스/군더더기를 달고 오는 일이 잦다."""
+
+    def test_plain_json(self):
+        self.assertEqual(topic_filter._parse_json('{"a": 1}'), {"a": 1})
+
+    def test_fenced_json(self):
+        self.assertEqual(
+            topic_filter._parse_json('```json\n{"a": 1}\n```'), {"a": 1})
+
+    def test_json_embedded_in_prose(self):
+        self.assertEqual(
+            topic_filter._parse_json('Sure!\n{"a": 1}\nHope that helps.'),
+            {"a": 1})
+
+    def test_unparseable_returns_none(self):
+        for bad in ("", "not json at all", "{broken"):
+            with self.subTest(bad=bad):
+                self.assertIsNone(topic_filter._parse_json(bad))
+
+
+class KeyResolutionTests(unittest.TestCase):
+    def test_env_keys_are_picked_up(self):
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "sk-ant-1",
+                                     "GOOGLE_API_KEY": "AIza-1",
+                                     "OPENAI_API_KEY": "sk-2"}, clear=False):
+            keys = topic_filter.resolve_keys()
+        self.assertEqual(keys["anthropic"], "sk-ant-1")
+        self.assertEqual(keys["google"], "AIza-1")
+        self.assertEqual(keys["openai"], "sk-2")
+
+    def test_alias_env_names(self):
+        with patch.dict(os.environ, {"CLAUDE_API_KEY": "sk-ant-alias"},
+                        clear=True):
+            keys = topic_filter.resolve_keys()
+        self.assertEqual(keys.get("anthropic"), "sk-ant-alias")
+
+
+class LlmCascadeTests(unittest.TestCase):
+    """Anthropic → Google → OpenAI 순서와 폴백."""
+
+    def test_uses_first_available_provider(self):
+        calls = []
+
+        def anth(key, model, prompt, mt):
+            calls.append("anthropic")
+            return '{"ok": 1}'
+
+        with patch.dict(topic_filter._CALLERS, {"anthropic": anth}, clear=False):
+            out = topic_filter.llm_json("p", keys={"anthropic": "k",
+                                                   "openai": "k2"})
+        self.assertEqual(out, {"ok": 1})
+        self.assertEqual(calls, ["anthropic"])
+
+    def test_falls_through_on_exception(self):
+        def boom(key, model, prompt, mt):
+            raise RuntimeError("429")
+
+        def ok(key, model, prompt, mt):
+            return '{"ok": 2}'
+
+        with patch.dict(topic_filter._CALLERS,
+                        {"anthropic": boom, "google": ok}, clear=False):
+            out = topic_filter.llm_json("p", keys={"anthropic": "k",
+                                                   "google": "k"})
+        self.assertEqual(out, {"ok": 2})
+
+    def test_falls_through_on_unparseable_json(self):
+        with patch.dict(topic_filter._CALLERS,
+                        {"anthropic": lambda *a: "garbage",
+                         "google": lambda *a: '{"ok": 3}'}, clear=False):
+            out = topic_filter.llm_json("p", keys={"anthropic": "k",
+                                                   "google": "k"})
+        self.assertEqual(out, {"ok": 3})
+
+    def test_no_keys_returns_none(self):
+        self.assertIsNone(topic_filter.llm_json("p", keys={}))
+
+    def test_provider_without_key_is_skipped(self):
+        called = []
+        with patch.dict(topic_filter._CALLERS,
+                        {"anthropic": lambda *a: called.append("a") or "{}",
+                         "google": lambda *a: called.append("g") or '{"ok":1}'},
+                        clear=False):
+            topic_filter.llm_json("p", keys={"google": "k"})
+        self.assertEqual(called, ["g"])
+
+
+class GeminiSdkMigrationTests(unittest.TestCase):
+    """구 SDK(google.generativeai) 잔재 회귀 방지.
+
+    paper-curation 표준은 `google-genai` 다. 원본 scisci 는 둘을 혼용했고,
+    구 SDK 가 py312 에 딸려 들어오면 충돌한다.
+    """
+
+    # 문서/주석은 "무엇을 제거했는지" 설명하며 옛 이름을 언급한다. 실제 import
+    # 문만 잡도록 좁힌다 — 그렇지 않으면 설명문에 걸려 거짓 양성이 난다.
+    LEGACY_SDK_RE = re.compile(
+        r"^\s*(?:import\s+google\.generativeai|from\s+google\.generativeai\b)",
+        re.MULTILINE)
+    MYAPIKEY_RE = re.compile(
+        r"^\s*(?:import\s+MyAPIKEY|from\s+MyAPIKEY\b)", re.MULTILINE)
+
+    def test_source_does_not_import_legacy_sdk(self):
+        src = Path(topic_filter.__file__).read_text(encoding="utf-8")
+        self.assertIsNone(self.LEGACY_SDK_RE.search(src),
+                          "deprecated google.generativeai 를 import 하고 있다")
+        self.assertIn("from google import genai", src)
+
+    def test_no_myapikey_import_anywhere(self):
+        pkg = Path(topic_filter.__file__).parent
+        for py in sorted(pkg.glob("*.py")):
+            with self.subTest(file=py.name):
+                self.assertIsNone(
+                    self.MYAPIKEY_RE.search(py.read_text(encoding="utf-8")),
+                    "개인 로컬 모듈 MyAPIKEY 의존이 남아 있다")
+
+
+class BatchResultMappingTests(unittest.TestCase):
+    """LLM 이 요청한 개수와 다르게 돌려줘도 흘려보내지 않는다."""
+
+    def test_exact_count_maps_in_order(self):
+        slots = [None] * 3
+        topic_filter._apply_batch_results(
+            slots, [{"v": 1}, {"v": 2}, {"v": 3}], 0, 3, lambda i: i["v"])
+        self.assertEqual(slots, [1, 2, 3])
+
+    def test_count_mismatch_falls_back_to_paper_index(self):
+        slots = [None] * 3
+        topic_filter._apply_batch_results(
+            slots, [{"paper": 3, "v": 9}], 0, 3, lambda i: i["v"])
+        self.assertEqual(slots, [None, None, 9])
+
+    def test_out_of_range_index_is_ignored(self):
+        slots = [None] * 2
+        topic_filter._apply_batch_results(
+            slots, [{"paper": 99, "v": 1}], 0, 2, lambda i: i["v"])
+        self.assertEqual(slots, [None, None])
+
+
+class TopicFilterTests(unittest.TestCase):
+    @staticmethod
+    def _papers(n):
+        return [{"title": f"P{i}", "abstract": f"abs {i}"} for i in range(n)]
+
+    def test_selects_only_relevant_and_attaches_reason(self):
+        payload = {"results": [
+            {"paper": 1, "relevant": True, "reason": "직접 관련"},
+            {"paper": 2, "relevant": False, "reason": "무관"},
+        ]}
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            out = topic_filter.filter_by_topic(self._papers(2), "융합연구")
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["title"], "P0")
+        self.assertEqual(out[0]["topic_reason"], "직접 관련")
+
+    def test_empty_topic_returns_nothing(self):
+        self.assertEqual(topic_filter.filter_by_topic(self._papers(3), "  "), [])
+
+    def test_llm_failure_drops_batch_without_raising(self):
+        with patch.object(topic_filter, "llm_json", return_value=None):
+            out = topic_filter.filter_by_topic(self._papers(3), "t")
+        self.assertEqual(out, [])
+
+    def test_batches_are_chunked(self):
+        seen = []
+
+        def fake(prompt, **kw):
+            seen.append(prompt)
+            return {"results": []}
+
+        with patch.object(topic_filter, "llm_json", side_effect=fake):
+            topic_filter.filter_by_topic(
+                self._papers(topic_filter.FILTER_BATCH_SIZE + 1), "t")
+        self.assertEqual(len(seen), 2)
+
+    def test_does_not_mutate_input(self):
+        payload = {"results": [{"paper": 1, "relevant": True, "reason": "r"}]}
+        papers = self._papers(1)
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            topic_filter.filter_by_topic(papers, "t")
+        self.assertNotIn("topic_reason", papers[0])
+
+
+class SummaryTests(unittest.TestCase):
+    def test_attaches_5w1h_summary(self):
+        payload = {"results": [{"paper": 1, "what": "W", "how": "H",
+                                "result": "R", "relevance": "V"}]}
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            out = topic_filter.generate_summaries([{"title": "P"}], "t")
+        self.assertEqual(out[0]["summary"]["what"], "W")
+        self.assertEqual(out[0]["summary"]["relevance"], "V")
+
+    def test_failure_leaves_paper_without_summary(self):
+        with patch.object(topic_filter, "llm_json", return_value=None):
+            out = topic_filter.generate_summaries([{"title": "P"}], "t")
+        self.assertNotIn("summary", out[0])
+
+    def test_all_empty_fields_are_not_attached(self):
+        payload = {"results": [{"paper": 1, "what": "", "how": "",
+                                "result": "", "relevance": ""}]}
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            out = topic_filter.generate_summaries([{"title": "P"}], "t")
+        self.assertNotIn("summary", out[0])
+
+
+class OriginalityAdapterTests(unittest.TestCase):
+    """기존 originality_extractor 재사용 계약."""
+
+    def test_rule_based_hit_skips_llm(self):
+        papers = [{"title": "P", "abstract": "We propose a novel method."}]
+        with patch.object(analysis, "_emit", return_value=lambda *a, **k: None):
+            with patch("lib.originality_extractor._extract_rule_based",
+                       return_value="We propose a novel method."), \
+                 patch("lib.originality_extractor._llm_fallback") as llm:
+                out = analysis.extract_originality_for_papers(papers)
+        llm.assert_not_called()
+        self.assertEqual(out[0]["originality_source"], "rule_base")
+
+    def test_llm_fallback_only_for_misses(self):
+        papers = [{"title": "A", "abstract": "hit"},
+                  {"title": "B", "abstract": "miss"}]
+
+        def rule(text, triggers):
+            return "found" if text == "hit" else ""
+
+        with patch("lib.originality_extractor._extract_rule_based",
+                   side_effect=rule), \
+             patch("lib.originality_extractor._llm_fallback",
+                   return_value=("llm text", [])) as llm, \
+             patch("lib.originality_extractor._update_triggers", return_value=0):
+            out = analysis.extract_originality_for_papers(papers)
+        self.assertEqual(llm.call_count, 1)
+        self.assertEqual(out[0]["originality_source"], "rule_base")
+        self.assertEqual(out[1]["originality_source"], "llm")
+
+    def test_use_llm_false_skips_fallback(self):
+        with patch("lib.originality_extractor._extract_rule_based",
+                   return_value=""), \
+             patch("lib.originality_extractor._llm_fallback") as llm:
+            out = analysis.extract_originality_for_papers(
+                [{"title": "P", "abstract": "x"}], use_llm=False)
+        llm.assert_not_called()
+        self.assertEqual(out[0]["originality"], "")
+
+    def test_empty_abstract_is_skipped(self):
+        with patch("lib.originality_extractor._extract_rule_based") as rule:
+            out = analysis.extract_originality_for_papers(
+                [{"title": "P", "abstract": "  "}])
+        rule.assert_not_called()
+        self.assertEqual(out[0]["originality"], "")
+
+    def test_llm_exception_does_not_kill_run(self):
+        with patch("lib.originality_extractor._extract_rule_based",
+                   return_value=""), \
+             patch("lib.originality_extractor._llm_fallback",
+                   side_effect=RuntimeError("boom")):
+            out = analysis.extract_originality_for_papers(
+                [{"title": "P", "abstract": "x"}])
+        self.assertEqual(out[0]["originality"], "")
+
+    def test_does_not_mutate_input(self):
+        papers = [{"title": "P", "abstract": "x"}]
+        with patch("lib.originality_extractor._extract_rule_based",
+                   return_value="orig"):
+            analysis.extract_originality_for_papers(papers)
+        self.assertNotIn("originality", papers[0])
+
+
+class AnalysisOrchestrationTests(unittest.TestCase):
+    def test_blank_doi_raises(self):
+        with self.assertRaises(ValueError):
+            analysis.run_citing_analysis("   ")
+
+    def test_topic_analysis_passthrough_when_no_topic(self):
+        papers = [{"title": "A", "doi": "10.1/a"}]
+        with patch.object(topic_filter, "llm_json") as llm:
+            out = analysis.run_topic_analysis(papers, topic="")
+        llm.assert_not_called()
+        self.assertEqual(out["matched"], 1)
+        self.assertIn("<!DOCTYPE html>", out["report_html"])
+
+    def test_topic_analysis_reports_matched_over_total(self):
+        papers = [{"title": f"P{i}"} for i in range(3)]
+        payload = {"results": [{"paper": 1, "relevant": True, "reason": "r"},
+                               {"paper": 2, "relevant": False, "reason": ""},
+                               {"paper": 3, "relevant": False, "reason": ""}]}
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            out = analysis.run_topic_analysis(papers, topic="t",
+                                              make_summaries=False)
+        self.assertEqual((out["matched"], out["total"]), (1, 3))
+
+    def test_full_pipeline_emits_events_and_builds_report(self):
+        import pandas as pd
+
+        df = pd.DataFrame([{**{c: "" for c in citing.CITING_COLUMNS},
+                            "title": "Citing One", "doi": "10.1/c",
+                            "abstract": "We propose X.", "citationCount": 5,
+                            "source": "openalex"}])
+        events = []
+
+        with patch("lib.citedby.citing.fetch_all_citing_papers",
+                   return_value=(df, {"openalex": 1})), \
+             patch.object(analysis, "fetch_paper_metadata",
+                          return_value={"title": "Seed", "doi": "10.1/seed"}), \
+             patch("lib.originality_extractor._extract_rule_based",
+                   return_value="We propose X."), \
+             patch.object(topic_filter, "llm_json", return_value={"results": [
+                 {"paper": 1, "relevant": True, "reason": "직접 관련"}]}):
+            out = analysis.run_citedby(
+                "https://doi.org/10.1/seed", sources=["openalex"], topic="AI",
+                on_event=lambda phase, msg, cur=0, tot=0: events.append(phase))
+
+        self.assertEqual(out["doi"], "10.1/seed")
+        self.assertEqual(out["matched"], 1)
+        self.assertIn("Citing One", out["report_html"])
+        self.assertIn("https://doi.org/10.1/c", out["report_html"])
+        self.assertIn("title", out["csv"])
+        self.assertIn("done", events)
+        self.assertGreaterEqual(out["elapsed_sec"], 0)
 
 
 if __name__ == "__main__":

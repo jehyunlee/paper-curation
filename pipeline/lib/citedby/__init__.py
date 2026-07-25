@@ -33,6 +33,15 @@ __all__ = [
     "build_report_html",
     "papers_to_csv",
     "paper_url",
+    # analysis.py — 오케스트레이션 (진입점 둘이 공유)
+    "run_citedby",
+    "run_citing_analysis",
+    "run_topic_analysis",
+    "extract_originality_for_papers",
+    "fetch_paper_metadata",
+    # topic_filter.py — 주제 필터 + 5W1H 요약
+    "filter_by_topic",
+    "generate_summaries",
     # 하위 모듈
     "scopus",
 ]
@@ -44,6 +53,11 @@ _CITING_EXPORTS = frozenset({
     "get_citing_from_s2", "get_citing_from_arxiv", "get_citing_from_wos",
 })
 _REPORT_EXPORTS = frozenset({"build_report_html", "papers_to_csv", "paper_url"})
+_ANALYSIS_EXPORTS = frozenset({
+    "run_citedby", "run_citing_analysis", "run_topic_analysis",
+    "extract_originality_for_papers", "fetch_paper_metadata",
+})
+_FILTER_EXPORTS = frozenset({"filter_by_topic", "generate_summaries"})
 
 
 def __getattr__(name: str):
@@ -63,6 +77,12 @@ def __getattr__(name: str):
     if name in _REPORT_EXPORTS:
         report = importlib.import_module(".report", __name__)
         return getattr(report, name)
+    if name in _ANALYSIS_EXPORTS:
+        analysis = importlib.import_module(".analysis", __name__)
+        return getattr(analysis, name)
+    if name in _FILTER_EXPORTS:
+        topic_filter = importlib.import_module(".topic_filter", __name__)
+        return getattr(topic_filter, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
