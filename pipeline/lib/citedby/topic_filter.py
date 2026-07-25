@@ -105,18 +105,20 @@ def _parse_json(text: str):
 _JSON_SYSTEM = "You are a JSON-only responder. Output ONLY valid JSON."
 
 
-def _call_anthropic(key: str, model: str, prompt: str, max_tokens: int) -> str:
+def _call_anthropic(key: str, model: str, prompt: str, max_tokens: int,
+                    system: str = _JSON_SYSTEM) -> str:
     from anthropic import Anthropic
     client = Anthropic(api_key=key, timeout=180.0, max_retries=4)
     resp = client.messages.create(
-        model=model, max_tokens=max_tokens, system=_JSON_SYSTEM,
+        model=model, max_tokens=max_tokens, system=system,
         messages=[{"role": "user", "content": prompt}],
     )
     return "".join(b.text for b in resp.content
                    if getattr(b, "type", "") == "text")
 
 
-def _call_google(key: str, model: str, prompt: str, max_tokens: int) -> str:
+def _call_google(key: str, model: str, prompt: str, max_tokens: int,
+                 system: str = _JSON_SYSTEM) -> str:
     """신 SDK(`google-genai`). 원본의 `google.generativeai` 는 deprecated."""
     from google import genai
     from google.genai import types
@@ -124,24 +126,27 @@ def _call_google(key: str, model: str, prompt: str, max_tokens: int) -> str:
     client = genai.Client(api_key=key)
     resp = client.models.generate_content(
         model=model,
-        contents=f"{_JSON_SYSTEM}\n\n{prompt}",
+        contents=(f"{system}\n\n{prompt}" if system else prompt),
         config=types.GenerateContentConfig(
             temperature=0,
             max_output_tokens=max_tokens,
-            response_mime_type="application/json",
+            response_mime_type=("application/json"
+                                if system == _JSON_SYSTEM else "text/plain"),
         ),
     )
     return resp.text or ""
 
 
-def _call_openai(key: str, model: str, prompt: str, max_tokens: int) -> str:
+def _call_openai(key: str, model: str, prompt: str, max_tokens: int,
+                 system: str = _JSON_SYSTEM) -> str:
     from openai import OpenAI
     client = OpenAI(api_key=key, timeout=180.0, max_retries=4)
     resp = client.chat.completions.create(
         model=model,
         max_completion_tokens=max_tokens,
-        response_format={"type": "json_object"},
-        messages=[{"role": "system", "content": _JSON_SYSTEM},
+        **({"response_format": {"type": "json_object"}}
+           if system == _JSON_SYSTEM else {}),
+        messages=[{"role": "system", "content": system},
                   {"role": "user", "content": prompt}],
     )
     return resp.choices[0].message.content or ""
@@ -388,3 +393,36 @@ def generate_summaries(papers: list[dict], topic: str, *,
 
     logger.info("5W1H summaries: %d/%d generated", filled, total)
     return papers
+
+
+# ── 자유 텍스트 (Deep Research 답변) ──────────────────────────────────────
+
+TEXT_SYSTEM = ("You are a careful research assistant. Answer in prose, "
+               "grounded strictly in the provided excerpts.")
+
+
+def llm_text(prompt: str, *, max_tokens: int = 8000,
+             keys: dict | None = None, models=None) -> tuple[str, str, str]:
+    """3-provider cascade 로 **자유 텍스트** 답변을 받는다.
+
+    `llm_json` 과 달리 JSON 을 강제하지 않는다 — 그 system 프롬프트를 그대로
+    쓰면 답변이 ```json {...} 로 감싸여 나온다 (실제로 그랬다).
+
+    Returns:
+        (answer, provider, model) — 전부 실패하면 ("", "", "").
+    """
+    keys = resolve_keys() if keys is None else keys
+    for provider, model in list(models or DEFAULT_MODELS):
+        key = keys.get(provider)
+        caller = _CALLERS.get(provider)
+        if not key or caller is None:
+            continue
+        try:
+            text = caller(key, model, prompt, max_tokens, TEXT_SYSTEM)
+        except Exception as e:  # noqa: BLE001 — 다음 provider 로
+            logger.warning("답변 생성 실패 (%s/%s): %s",
+                           provider, model, str(e)[:140])
+            continue
+        if text and text.strip():
+            return text, provider, model
+    return "", "", ""

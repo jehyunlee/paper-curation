@@ -66,7 +66,7 @@ _CSS = """
 # 패널 JS. 인덱스는 리포트와 같은 디렉토리에 있다고 가정한다.
 _JS = r"""
 (function(){
-  var IDX=null, EMB=null, READY=false;
+  var IDX=null, EMB=null, READY=false, LAST_MODEL='';
   var $=function(id){return document.getElementById(id);};
   function status(msg,err){var el=$('drStatus'); if(!el)return;
     el.textContent=msg||''; el.className='dr-status'+(err?' err':'');}
@@ -169,13 +169,9 @@ _JS = r"""
   }
 
   // ── 답변 생성 (BYOK) ────────────────────────────────────────────────
-  function provider(key){
-    if(/^sk-ant-/.test(key)) return 'anthropic';
-    if(/^sk-/.test(key)) return 'openai';
-    if(/^AIza/.test(key)) return 'google';
-    return '';
-  }
-  async function answer(q, refs, key){
+  // 답변 생성은 **서버가 한다**. 로컬 전용이므로 키를 브라우저로 내려보낼
+  // 이유가 없고, 내려보내면 DOM·확장프로그램·캐시에 노출된다.
+  async function answer(q, refs){
     var ctx=refs.map(function(r,i){
       var head='['+(i+1)+'] '+(r.title||'');
       if(r.year) head+=' ('+r.year+')';
@@ -199,37 +195,14 @@ _JS = r"""
       '상세히, 마지막에 **한계/미해결** 을 적는다.\n'+
       '- 분량은 아끼지 않는다. 발췌에 담긴 내용을 최대한 끌어 쓴다.\n'+
       '- 한국어. 기술 용어는 영어 그대로.';
-    var p=provider(key);
-    if(p==='anthropic'){
-      var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':key,
-          'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:MODELS.anthropic,max_tokens:MAX_OUT,
-          messages:[{role:'user',content:prompt}]})});
-      if(!r.ok) throw new Error('Anthropic '+r.status);
-      var j=await r.json();
-      return (j.content||[]).map(function(c){return c.text||'';}).join('');
-    }
-    if(p==='openai'){
-      var r2=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body:JSON.stringify({model:MODELS.openai,max_completion_tokens:MAX_OUT,
-          messages:[{role:'user',content:prompt}]})});
-      if(!r2.ok) throw new Error('OpenAI '+r2.status);
-      var j2=await r2.json();
-      return j2.choices[0].message.content||'';
-    }
-    if(p==='google'){
-      var r3=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'
-        +MODELS.google+':generateContent?key='+encodeURIComponent(key),
-        {method:'POST',headers:{'Content-Type':'application/json'},
-         body:JSON.stringify({contents:[{parts:[{text:prompt}]}],
-           generationConfig:{maxOutputTokens:MAX_OUT}})});
-      if(!r3.ok) throw new Error('Gemini '+r3.status);
-      var j3=await r3.json();
-      return ((j3.candidates||[])[0]||{}).content?.parts?.[0]?.text||'';
-    }
-    throw new Error('키 형식을 알 수 없습니다 (sk-ant-/sk-/AIza)');
+
+    var r=await fetch('/api/citedby-answer',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:prompt,max_tokens:MAX_OUT})});
+    var j=await r.json().catch(function(){return {};});
+    if(!r.ok) throw new Error(j.error||('answer '+r.status));
+    LAST_MODEL=(j.provider||'')+(j.model?(' / '+j.model):'');
+    return j.answer||'';
   }
 
   function renderRefs(refs){
@@ -249,7 +222,6 @@ _JS = r"""
   async function run(){
     var q=($('drQ')||{}).value||''; q=q.trim();
     if(!q||!READY) return;
-    var key=(($('drKey')||{}).value||'').trim();
     $('drGo').disabled=true; $('drAns').textContent='';
     try{
       status('검색 중…');
@@ -269,14 +241,11 @@ _JS = r"""
       });
       renderRefs(refs);
 
-      if(!key){ status('근거 '+refs.length+'건을 찾았습니다. 답변을 생성하려면 '+
-        'API 키를 입력하세요 (브라우저에만 머뭅니다).'); $('drGo').disabled=false; return; }
-
-      status('답변 생성 중…');
-      var text=await answer(q, refs, key);
+      status('답변 생성 중… (근거 '+refs.length+'건)');
+      var text=await answer(q, refs);
       $('drAns').innerHTML=text.replace(/</g,'&lt;')
         .replace(/\[ref:(\d+)\]/g,'<span class="dr-cite">$1</span>');
-      status('완료 — 근거 '+refs.length+'건');
+      status('완료 — 근거 '+refs.length+'건'+(LAST_MODEL?(' · '+LAST_MODEL):''));
     }catch(e){ status(String(e.message||e), true); }
     $('drGo').disabled=false;
   }
@@ -303,8 +272,6 @@ def panel_html(index_file: str, lbl: dict) -> str:
         f'<div class="dr-sub">{lbl["dr_sub"]}</div>'
         '<div class="dr-row" id="drRow">'
         f'<input id="drQ" class="dr-q" type="text" placeholder="{lbl["dr_ph"]}">'
-        f'<input id="drKey" class="dr-key" type="password" '
-        f'placeholder="{lbl["dr_key"]}">'
         f'<button id="drGo" class="dr-go" type="button" disabled>'
         f'{lbl["dr_go"]}</button>'
         "</div>"

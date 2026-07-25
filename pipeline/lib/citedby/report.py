@@ -64,9 +64,9 @@ _LABELS = {
         "ev_title": "제목만",
         "ev_note": "각 논문 옆 배지는 분석 근거의 범위다 — 전문(보유 PDF) > 초록 > 제목만.",
         "dr_title": "Deep Research — 보유 PDF 전문 기반",
-        "dr_sub": "아래 논문들의 PDF 원문을 근거로 답합니다. 로컬 서버로 열어야 동작합니다.",
+        "dr_sub": "아래 논문들의 PDF 원문을 근거로 답합니다. 키는 서버 환경설정에서 읽으므로 입력할 필요가 없습니다.",
         "dr_ph": "예: 이 논문들이 공통으로 지적하는 한계는?",
-        "dr_key": "API 키 (선택 · 브라우저에만 머뭄)",
+        
         "dr_go": "질문",
         "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
         "timeline": "인용 흐름 타임라인",

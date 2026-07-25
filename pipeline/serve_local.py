@@ -299,6 +299,8 @@ class LocalHandler(SimpleHTTPRequestHandler):
         route = self.path.split("?", 1)[0]
         if route == "/api/embed":
             self._handle_embed()
+        elif route == "/api/citedby-answer":
+            self._handle_citedby_answer()
         elif route == "/api/audio-email":
             self._handle_audio_email()
         elif route == "/api/citedby":
@@ -320,6 +322,46 @@ class LocalHandler(SimpleHTTPRequestHandler):
             return True
         except (BrokenPipeError, ConnectionResetError):
             return False    # 사용자가 탭을 닫았거나 중단했다
+
+    # ── Deep Research 답변 생성 ────────────────────────────────────────────
+    #
+    # **키는 브라우저로 내려보내지 않는다.** 로컬 전용이므로 서버가 이미 가진
+    # 키(env → config.json)로 서버에서 호출하고 텍스트만 돌려준다. 예전엔 리포트
+    # 화면에서 사용자가 키를 붙여넣게 했는데, 로컬 환경에서는 불필요한 노출이다.
+    def _handle_citedby_answer(self):
+        try:
+            req = json.loads(self._read_body() or b"{}")
+        except Exception as e:
+            self._send_json(400, {"error": f"invalid JSON body: {e}"})
+            return
+
+        prompt = (req.get("prompt") or "").strip()
+        if not prompt:
+            self._send_json(400, {"error": "missing 'prompt'"})
+            return
+        try:
+            max_tokens = int(req.get("max_tokens") or 8000)
+        except (TypeError, ValueError):
+            max_tokens = 8000
+        max_tokens = max(256, min(max_tokens, 16000))
+
+        sys.path.insert(0, str(PIPELINE_DIR))
+        try:
+            from lib.citedby.topic_filter import llm_text
+        except Exception as e:
+            self._send_json(500, {"error": f"citedby 모듈 로드 실패: {e}"})
+            return
+
+        answer, provider, model = llm_text(prompt, max_tokens=max_tokens)
+        if not answer:
+            self._send_json(502, {
+                "error": "답변 생성 실패 — LLM 키가 없거나(ANTHROPIC_API_KEY / "
+                         "OPENAI_API_KEY / GOOGLE_API_KEY) 모든 provider 가 "
+                         "실패했습니다. 서버 로그를 확인하세요.",
+            })
+            return
+        self._send_json(200, {"answer": answer, "provider": provider,
+                              "model": model})
 
     def _handle_citedby(self):
         try:

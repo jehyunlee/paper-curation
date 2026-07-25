@@ -2226,3 +2226,75 @@ class ElapsedClockTests(unittest.TestCase):
                                         "topic": "", "themes": None}):
             out = analysis.run_citedby("10.1/a")
         self.assertGreaterEqual(out["elapsed_sec"], 0)
+
+
+class ServerSideKeyTests(unittest.TestCase):
+    """로컬 전용이므로 키는 서버에 두고 브라우저로 내려보내지 않는다."""
+
+    def test_panel_has_no_key_input(self):
+        from lib.citedby.deep_panel import panel_script, panel_html
+        js = panel_script("_citedby_index.json")
+        html = panel_html("_citedby_index.json",
+                          {"dr_title": "t", "dr_sub": "s", "dr_ph": "p",
+                           "dr_go": "g", "dr_offline": "o"})
+        self.assertNotIn("drKey", js)
+        self.assertNotIn("drKey", html)
+        self.assertNotIn("type=\"password\"", html)
+
+    def test_panel_calls_server_answer_route(self):
+        from lib.citedby.deep_panel import panel_script
+        js = panel_script("_citedby_index.json")
+        self.assertIn("/api/citedby-answer", js)
+        self.assertNotIn("api.anthropic.com", js)
+        self.assertNotIn("api.openai.com", js)
+        self.assertNotIn("generativelanguage.googleapis.com", js)
+
+    def test_llm_text_does_not_force_json(self):
+        """JSON system 프롬프트를 그대로 쓰면 답변이 ```json 으로 감싸여 나온다."""
+        from lib.citedby import topic_filter as TF
+        seen = {}
+
+        def fake(key, model, prompt, max_tokens, system=None):
+            seen["system"] = system
+            return "평문 답변"
+
+        with patch.dict(TF._CALLERS, {"anthropic": fake}), \
+             patch.object(TF, "resolve_keys", return_value={"anthropic": "K"}):
+            ans, prov, model = TF.llm_text("q")
+        self.assertEqual(ans, "평문 답변")
+        self.assertEqual(prov, "anthropic")
+        self.assertEqual(seen["system"], TF.TEXT_SYSTEM)
+        self.assertNotEqual(seen["system"], TF._JSON_SYSTEM)
+
+    def test_llm_text_cascades_on_failure(self):
+        from lib.citedby import topic_filter as TF
+
+        def boom(*a, **k):
+            raise RuntimeError("down")
+
+        with patch.dict(TF._CALLERS, {"anthropic": boom,
+                                      "google": lambda *a, **k: "구글 답변"}), \
+             patch.object(TF, "resolve_keys",
+                          return_value={"anthropic": "A", "google": "G"}):
+            ans, prov, _ = TF.llm_text("q")
+        self.assertEqual(ans, "구글 답변")
+        self.assertEqual(prov, "google")
+
+    def test_llm_text_empty_when_no_keys(self):
+        from lib.citedby import topic_filter as TF
+        with patch.object(TF, "resolve_keys", return_value={}):
+            self.assertEqual(TF.llm_text("q"), ("", "", ""))
+
+    def test_json_path_still_forces_json(self):
+        """자유 텍스트 경로를 추가하면서 JSON 경로가 깨지면 안 된다."""
+        from lib.citedby import topic_filter as TF
+        seen = {}
+
+        def fake(key, model, prompt, max_tokens, system=TF._JSON_SYSTEM):
+            seen["system"] = system
+            return '{"ok": 1}'
+
+        with patch.dict(TF._CALLERS, {"anthropic": fake}), \
+             patch.object(TF, "resolve_keys", return_value={"anthropic": "K"}):
+            self.assertEqual(TF.llm_json("q"), {"ok": 1})
+        self.assertEqual(seen["system"], TF._JSON_SYSTEM)
