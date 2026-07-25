@@ -873,6 +873,23 @@ class ZoteroIndexTests(unittest.TestCase):
     def test_url_empty_on_miss(self):
         self.assertEqual(self._index().url({"doi": "10.9/z"}), "")
 
+    def test_item_key_fallback_when_no_attachment(self):
+        """PDF 첨부가 없으면 서지정보(zotero://select)로 폴백한다."""
+        idx = zotero_links.ZoteroIndex(item_by_doi={"10.1/b": "ITEMB"})
+        self.assertEqual(idx.url({"doi": "10.1/b"}),
+                         "zotero://select/library/items/ITEMB")
+        self.assertEqual(idx.url_kind({"doi": "10.1/b"}), "item")
+
+    def test_attachment_wins_over_item_key(self):
+        idx = zotero_links.ZoteroIndex(by_doi={"10.1/a": "ATT"},
+                                       item_by_doi={"10.1/a": "ITEM"})
+        self.assertEqual(idx.url({"doi": "10.1/a"}),
+                         "zotero://open-pdf/library/items/ATT")
+        self.assertEqual(idx.url_kind({"doi": "10.1/a"}), "pdf")
+
+    def test_url_kind_empty_on_miss(self):
+        self.assertEqual(self._index().url_kind({"doi": "10.9/z"}), "")
+
     def test_empty_index_is_falsy_and_safe(self):
         empty = zotero_links.ZoteroIndex()
         self.assertFalse(empty)

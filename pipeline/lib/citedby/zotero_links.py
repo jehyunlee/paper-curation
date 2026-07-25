@@ -64,32 +64,65 @@ def normalize_title_key(title: str) -> str:
 
 
 class ZoteroIndex:
-    """doi / 정규화제목 → Zotero 첨부키 조회기.
+    """doi / 정규화제목 → Zotero 링크 조회기.
 
-    비어 있어도(파일 없음) 정상 동작한다 — `lookup()` 이 항상 빈 문자열을 준다.
+    두 종류의 키를 구분해 담는다:
+
+        첨부(attachment) 키 → ``zotero://open-pdf``  PDF 를 바로 연다
+        항목(item) 키       → ``zotero://select``    서지정보를 띄운다
+
+    PDF 첨부가 있으면 PDF 를, 없으면 서지정보를 여는 게 요구사항이라
+    `url()` 이 첨부 → 항목 순으로 폴백한다.
+
+    비어 있어도(파일 없음) 정상 동작한다 — `url()` 이 항상 빈 문자열을 준다.
     """
 
-    def __init__(self, by_doi: dict | None = None, by_title: dict | None = None):
-        self.by_doi = by_doi or {}
-        self.by_title = by_title or {}
+    def __init__(self, by_doi: dict | None = None, by_title: dict | None = None,
+                 item_by_doi: dict | None = None,
+                 item_by_title: dict | None = None):
+        self.by_doi = by_doi or {}                  # → 첨부 키
+        self.by_title = by_title or {}              # → 첨부 키
+        self.item_by_doi = item_by_doi or {}        # → 항목 키
+        self.item_by_title = item_by_title or {}    # → 항목 키
 
     def __bool__(self) -> bool:
-        return bool(self.by_doi or self.by_title)
+        return bool(self.by_doi or self.by_title
+                    or self.item_by_doi or self.item_by_title)
 
     def __len__(self) -> int:
         return len(self.by_doi) + len(self.by_title)
 
-    def lookup(self, paper: dict) -> str:
-        """논문 dict → Zotero 첨부키. 못 찾으면 빈 문자열. DOI 우선, 제목 차선."""
-        key = self.by_doi.get(normalize_doi_key(paper.get("doi", "")))
+    @staticmethod
+    def _get(paper: dict, by_doi: dict, by_title: dict) -> str:
+        """DOI 우선, 제목 차선 조회."""
+        key = by_doi.get(normalize_doi_key(paper.get("doi", "")))
         if key:
             return key
-        return self.by_title.get(normalize_title_key(paper.get("title", "")), "")
+        return by_title.get(normalize_title_key(paper.get("title", "")), "")
+
+    def lookup(self, paper: dict) -> str:
+        """PDF 첨부 키. 없으면 빈 문자열."""
+        return self._get(paper, self.by_doi, self.by_title)
+
+    def lookup_item(self, paper: dict) -> str:
+        """항목(서지정보) 키. 없으면 빈 문자열."""
+        return self._get(paper, self.item_by_doi, self.item_by_title)
 
     def url(self, paper: dict) -> str:
-        """Zotero PDF 열기 URL. 라이브러리에 없으면 빈 문자열."""
+        """Zotero 열기 URL. **PDF 우선, 없으면 서지정보**, 둘 다 없으면 빈 문자열."""
         key = self.lookup(paper)
-        return f"{ZOTERO_PDF_PREFIX}{key}" if key else ""
+        if key:
+            return f"{ZOTERO_PDF_PREFIX}{key}"
+        item_key = self.lookup_item(paper)
+        if item_key:
+            return f"{ZOTERO_SELECT_PREFIX}{item_key}"
+        return ""
+
+    def url_kind(self, paper: dict) -> str:
+        """`url()` 이 어떤 종류를 돌려주는지 — "pdf" | "item" | ""."""
+        if self.lookup(paper):
+            return "pdf"
+        return "item" if self.lookup_item(paper) else ""
 
 
 _EMPTY = ZoteroIndex()
@@ -127,19 +160,34 @@ def load_zotero_index(docs_dir=None) -> ZoteroIndex:
     entries = raw if isinstance(raw, list) else (raw.get("papers") or [])
     by_doi: dict[str, str] = {}
     by_title: dict[str, str] = {}
+    item_by_doi: dict[str, str] = {}
+    item_by_title: dict[str, str] = {}
 
     for entry in entries:
         if not isinstance(entry, dict):
             continue
-        key = slug_to_key.get(entry.get("slug", ""))
-        if not key:
-            continue
         doi_key = normalize_doi_key(entry.get("doi", ""))
-        if doi_key:
-            by_doi.setdefault(doi_key, key)
         title_key = normalize_title_key(entry.get("title", ""))
-        if title_key:
-            by_title.setdefault(title_key, key)
+        if not (doi_key or title_key):
+            continue
 
-    logger.info("Zotero 인덱스: doi %d건, title %d건", len(by_doi), len(by_title))
-    return ZoteroIndex(by_doi, by_title)
+        # 1순위: 첨부(PDF) 키 — zotero://open-pdf 로 PDF 를 바로 연다.
+        attach_key = slug_to_key.get(entry.get("slug", ""))
+        if attach_key:
+            if doi_key:
+                by_doi.setdefault(doi_key, attach_key)
+            if title_key:
+                by_title.setdefault(title_key, attach_key)
+
+        # 2순위: 항목 키 — PDF 첨부가 없을 때 zotero://select 로 서지정보를
+        # 띄운다. `_papers_index.json` 의 커버리지가 낮아(121/4,048) 보조용.
+        item_key = (entry.get("zotero_item_key") or "").strip()
+        if item_key:
+            if doi_key:
+                item_by_doi.setdefault(doi_key, item_key)
+            if title_key:
+                item_by_title.setdefault(title_key, item_key)
+
+    logger.info("Zotero 인덱스: PDF(doi %d/title %d), 서지(doi %d/title %d)",
+                len(by_doi), len(by_title), len(item_by_doi), len(item_by_title))
+    return ZoteroIndex(by_doi, by_title, item_by_doi, item_by_title)

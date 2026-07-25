@@ -51,7 +51,9 @@ _LABELS = {
         "sources_label": "소스별 수집",
         "year_range": "연도 범위",
         "open": "원문",
-        "zotero": "Zotero",
+        "zotero": "Zotero PDF",
+        "zotero_item": "Zotero 서지정보",
+        "zotero_col": "Zotero",
     },
     "en": {
         "report_title": "Citing Paper Analysis Report",
@@ -77,7 +79,9 @@ _LABELS = {
         "sources_label": "By source",
         "year_range": "Year range",
         "open": "Open",
-        "zotero": "Zotero",
+        "zotero": "Zotero PDF",
+        "zotero_item": "Zotero record",
+        "zotero_col": "Zotero",
     },
 }
 
@@ -141,6 +145,15 @@ def _link(url: str, text: str, *, cls: str = "") -> str:
         return label
     attr = f' class="{cls}"' if cls else ""
     return f'<a href="{_esc(safe_url)}"{attr} rel="noopener">{label}</a>'
+
+
+def _zotero_label(paper: dict, lbl: dict) -> str:
+    """Zotero 링크 라벨 — PDF 를 여는지 서지정보를 여는지 명시한다.
+
+    `_zotero_kind` 는 `build_report_html` 이 ZoteroIndex.url_kind() 로 채운다.
+    """
+    return lbl["zotero"] if paper.get("_zotero_kind") == "pdf" \
+        else lbl["zotero_item"]
 
 
 def _citation_line(paper: dict) -> str:
@@ -209,7 +222,7 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
         tail.append(_link(paper_url(paper_info), doi))
     zotero_url = (paper_info.get("_zotero_url") or "").strip()
     if zotero_url:
-        tail.append(_link(zotero_url, lbl["zotero"], cls="zot"))
+        tail.append(_link(zotero_url, _zotero_label(paper_info, lbl), cls="zot"))
     doi_html = (f'<div class="seed-doi">{" · ".join(tail)}</div>'
                 if tail else "")
     return (
@@ -247,9 +260,9 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         links.append(_link(url, lbl["open"]))
     zotero_url = (paper.get("_zotero_url") or "").strip()
     if zotero_url:
-        # Zotero 데스크톱이 PDF 를 바로 연다. 라이브러리에 없으면 이 링크 자체가
-        # 없으므로, 독자는 위의 외부 링크(DOI/arXiv)로 간다.
-        links.append(_link(zotero_url, lbl["zotero"], cls="zot"))
+        # PDF 첨부가 있으면 Zotero 가 PDF 를 바로 열고, 없으면 서지정보를 띄운다.
+        # 라이브러리에 아예 없으면 이 링크 자체가 없어 외부 DOI 로 간다.
+        links.append(_link(zotero_url, _zotero_label(paper, lbl), cls="zot"))
     links_html = (f'<div class="open">{" · ".join(links)}</div>'
                   if links else "")
 
@@ -272,6 +285,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
         url = paper_url(p)
         title = (p.get("title") or "").strip()
         zot = (p.get("_zotero_url") or "").strip()
+        zot_label = "PDF" if p.get("_zotero_kind") == "pdf" else "서지"
         rows.append(
             "<tr>"
             f'<td class="num">{i}</td>'
@@ -279,7 +293,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
             f'<td>{_esc(p.get("journal"))}</td>'
             f'<td class="num">{_esc(p.get("year"))}</td>'
             f'<td class="num">{_esc(p.get("citationCount"))}</td>'
-            f'<td class="num">{_link(zot, "PDF", cls="zot") if zot else ""}</td>'
+            f'<td class="num">{_link(zot, zot_label, cls="zot") if zot else ""}</td>'
             "</tr>"
         )
     return (
@@ -289,7 +303,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
         f'<th>{_esc(lbl["journal"])}</th>'
         f'<th class="num">{_esc(lbl["year"])}</th>'
         f'<th class="num">{_esc(lbl["cited"])}</th>'
-        f'<th class="num">{_esc(lbl["zotero"])}</th>'
+        f'<th class="num">{_esc(lbl["zotero_col"])}</th>'
         "</tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>"
     )
 
@@ -403,11 +417,13 @@ def build_report_html(*,
             zurl = zotero_index.url(p)
             if zurl:
                 p["_zotero_url"] = zurl
+                p["_zotero_kind"] = zotero_index.url_kind(p)
         if paper_info:
             paper_info = dict(paper_info)
             zurl = zotero_index.url(paper_info)
             if zurl:
                 paper_info["_zotero_url"] = zurl
+                paper_info["_zotero_kind"] = zotero_index.url_kind(paper_info)
     ts = (generated_at or datetime.now()).strftime("%Y-%m-%d %H:%M")
 
     sub_bits = []
