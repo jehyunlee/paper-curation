@@ -52,11 +52,13 @@ _LABELS = {
         "year_range": "연도 범위",
         "open": "원문",
         "open_pdf": "PDF 열기",
+        "connected": "이어지는 논문",
         "suggest": "권장 컬렉션",
         "suggest_none": "미분류 (뚜렷이 맞는 컬렉션 없음)",
         "col_title": "컬렉션 배정 제안",
         "col_note": "citedby 로 등록한 논문은 컬렉션이 지정되지 않아 Unfiled 에 쌓인다. 기존 컬렉션 중에서만 제안하며, 확신이 없으면 비워 둔다 — 최종 판단은 직접 하시라.",
         "held": "보유",
+        "ev_corpus": "리뷰완료",
         "ev_pdf": "전문",
         "ev_abstract": "초록",
         "ev_title": "제목만",
@@ -311,6 +313,15 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         orig_html = (f'<div class="orig"><span class="orig-l">'
                      f'{_esc(lbl["originality"])}</span> {_esc(originality)}</div>')
 
+    conns = paper.get("_connections") or []
+    conn_html = ""
+    if conns:
+        items = " · ".join(
+            f'{_esc(c.get("title", "")[:44])} <i>({_esc(c.get("relation", ""))})</i>'
+            for c in conns[:4])
+        conn_html = (f'<div class="conn"><span class="conn-l">'
+                     f'{_esc(lbl["connected"])}</span> {items}</div>')
+
     sug = ""
     name = (paper.get("_suggest_collection") or "").strip()
     if name:
@@ -332,6 +343,7 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
         + (f'<div class="meta">{meta}</div>' if meta else "")
         + links_html
         + orig_html
+        + conn_html
         + sug
         + _summary_table(paper, lbl)
         + "</article>"
@@ -501,7 +513,11 @@ table.cols th{background:#f2f4f7;font-weight:600}
 table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
 .held,.ev{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 5px;vertical-align:middle}
 .held{color:#1f7a4d;background:#e6f5ec}
+.ev-corpus{color:#5b21b6;background:#f0e9fd}
 .ev-pdf{color:#1f7a4d;background:#e6f5ec}
+.conn{margin-top:6px;font-size:12.5px;color:var(--soft)}
+.conn-l{font-weight:600;color:var(--ink)}
+.conn i{color:#7a8089;font-style:normal;font-size:11.5px}
 .ev-abstract{color:#8a6d1f;background:#fbf3de}
 .ev-title{color:#8a9099;background:#f0f1f3}
 a.pdf{font-weight:600}

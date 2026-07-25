@@ -1741,7 +1741,7 @@ class PdfCorpusTests(unittest.TestCase):
     def test_build_index_returns_none_without_chunks(self):
         from lib.citedby import pdf_corpus
         with tempfile.TemporaryDirectory() as tmp, \
-             patch.object(pdf_corpus, "build_chunks", return_value=([], {})):
+             patch.object(pdf_corpus, "build_chunks", return_value=([], {}, {})):
             self.assertIsNone(pdf_corpus.build_index([], tmp))
 
     def test_index_schema_matches_search_index(self):
@@ -1751,7 +1751,7 @@ class PdfCorpusTests(unittest.TestCase):
                    "text_sha": "abc"}]
         meta = {"s": {"title": "T", "chunks": 1}}
         with tempfile.TemporaryDirectory() as tmp, \
-             patch.object(pdf_corpus, "build_chunks", return_value=(chunks, meta)), \
+             patch.object(pdf_corpus, "build_chunks", return_value=(chunks, meta, {})), \
              patch.object(pdf_corpus, "embed_chunks", return_value=None):
             info = pdf_corpus.build_index([{"title": "T"}], tmp)
             data = json.loads((Path(tmp) / pdf_corpus.INDEX_NAME)
@@ -1769,7 +1769,7 @@ class PdfCorpusTests(unittest.TestCase):
                    "text_sha": "a"}]
         with tempfile.TemporaryDirectory() as tmp, \
              patch.object(pdf_corpus, "build_chunks",
-                          return_value=(chunks, {"s": {"chunks": 1}})), \
+                          return_value=(chunks, {"s": {"chunks": 1}}, {})), \
              patch.object(pdf_corpus, "embed_chunks", return_value=b"\x00" * 10):
             info = pdf_corpus.build_index([{"title": "T"}], tmp)
         self.assertFalse(info["has_vectors"])
@@ -1789,7 +1789,8 @@ class EvidenceTierTests(unittest.TestCase):
         })
 
     def test_three_tiers(self):
-        from lib.citedby.pdf_corpus import tier_papers, EV_PDF, EV_ABSTRACT, EV_TITLE
+        from lib.citedby.pdf_corpus import (tier_papers, EV_CORPUS, EV_PDF,
+                                            EV_ABSTRACT, EV_TITLE)
         out, stats = tier_papers([
             {"doi": "10.1/pdf", "title": "A"},
             {"doi": "10.1/abs", "title": "B"},
@@ -1798,7 +1799,8 @@ class EvidenceTierTests(unittest.TestCase):
         ], self._idx())
         self.assertEqual([p["_evidence"] for p in out],
                          [EV_PDF, EV_ABSTRACT, EV_TITLE, EV_ABSTRACT])
-        self.assertEqual(stats, {EV_PDF: 1, EV_ABSTRACT: 2, EV_TITLE: 1})
+        self.assertEqual(stats, {EV_CORPUS: 0, EV_PDF: 1,
+                                 EV_ABSTRACT: 2, EV_TITLE: 1})
 
     def test_nothing_is_dropped(self):
         from lib.citedby.pdf_corpus import tier_papers
@@ -1908,3 +1910,72 @@ class DeepPanelTests(unittest.TestCase):
         out = report.build_report_html(papers=[{"title": "P"}],
                                        deep_index="_citedby_index.json")
         self.assertIn("serve_local.py", out)
+
+
+class CorpusAssetTests(unittest.TestCase):
+    """코퍼스 전처리물이 원시 PDF 보다 우선한다."""
+
+    def _idx(self):
+        from lib.citedby import corpus_assets as CA
+        idx = CA.CorpusIndex()
+        idx.by_doi = {"10.1/corp": "042_Corpus_Paper"}
+        idx.by_title = {"corpuspaper": "042_Corpus_Paper"}
+        idx.meta = {"042_Corpus_Paper": {"title": "Corpus Paper",
+                                         "primary_topic": "ai4s"}}
+        idx.connections = {"042_Corpus_Paper": [
+            {"slug": "099_Other", "relation": "extension", "reason": "확장"}]}
+        idx.meta["099_Other"] = {"title": "Other Paper"}
+        return idx
+
+    def test_corpus_match_sets_evidence_and_connections(self):
+        from lib.citedby.corpus_assets import enrich_with_corpus, EV_CORPUS
+        out, st = enrich_with_corpus(
+            [{"doi": "10.1/corp", "title": "Corpus Paper"},
+             {"doi": "10.9/z", "title": "Outside"}], self._idx())
+        self.assertEqual(out[0]["_evidence"], EV_CORPUS)
+        self.assertEqual(out[0]["_corpus_slug"], "042_Corpus_Paper")
+        self.assertEqual(out[0]["_connections"][0]["title"], "Other Paper")
+        self.assertNotIn("_corpus_slug", out[1])
+        self.assertEqual(st["matched"], 1)
+
+    def test_corpus_beats_pdf_in_tiering(self):
+        """PDF 를 갖고 있어도 코퍼스 자산이 있으면 corpus 등급이다."""
+        from lib.citedby import pdf_corpus as PC
+        from lib.citedby import local_library as ll
+        lib = ll.LibraryIndex(by_doi={
+            "10.1/corp": ll.LibraryItem(key="K", doi="10.1/corp",
+                                        pdf_path="/tmp/x.pdf",
+                                        attachment_key="A")})
+        with patch("lib.citedby.corpus_assets.load_corpus_index",
+                   return_value=self._idx()):
+            out, stats = PC.tier_papers(
+                [{"doi": "10.1/corp", "title": "Corpus Paper"}], lib)
+        self.assertEqual(out[0]["_evidence"], PC.EV_CORPUS)
+        self.assertEqual(stats[PC.EV_CORPUS], 1)
+        self.assertEqual(stats[PC.EV_PDF], 0)
+
+    def test_lookup_by_title_when_doi_missing(self):
+        self.assertEqual(self._idx().lookup({"title": "Corpus  Paper!"}),
+                         "042_Corpus_Paper")
+
+    def test_empty_index_is_noop(self):
+        from lib.citedby import corpus_assets as CA
+        out, st = CA.enrich_with_corpus([{"doi": "10.1/a"}], CA.CorpusIndex())
+        self.assertNotIn("_corpus_slug", out[0])
+        self.assertEqual(st["matched"], 0)
+
+    def test_connections_are_capped(self):
+        from lib.citedby.corpus_assets import connected_papers
+        idx = self._idx()
+        idx.connections["042_Corpus_Paper"] = [
+            {"slug": f"s{i}", "relation": "r"} for i in range(9)]
+        for i in range(9):
+            idx.meta[f"s{i}"] = {"title": f"T{i}"}
+        self.assertEqual(len(connected_papers("042_Corpus_Paper", idx, limit=5)), 5)
+
+    def test_report_shows_connections(self):
+        out = report.build_report_html(papers=[{
+            "title": "P", "doi": "10.1/a", "_evidence": "corpus",
+            "_connections": [{"title": "이어지는 논문", "relation": "extension"}]}])
+        self.assertIn("이어지는 논문", out)
+        self.assertIn("ev-corpus", out)

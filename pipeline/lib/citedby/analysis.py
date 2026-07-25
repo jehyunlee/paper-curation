@@ -355,9 +355,10 @@ def run_citedby(doi: str, *,
         from .pdf_corpus import tier_papers
         papers, pdf_stats = tier_papers(papers)
         emit("library",
-             f"근거 등급 — PDF 전문 {pdf_stats['pdf']}편 · "
-             f"초록 {pdf_stats['abstract']}편 · 제목뿐 {pdf_stats['title']}편",
-             pdf_stats["pdf"], len(papers))
+             f"근거 등급 — 리뷰완료 {pdf_stats.get('corpus', 0)}편 · "
+             f"PDF 전문 {pdf_stats['pdf']}편 · 초록 {pdf_stats['abstract']}편 · "
+             f"제목뿐 {pdf_stats['title']}편",
+             pdf_stats.get("corpus", 0) + pdf_stats["pdf"], len(papers))
 
     # 인덱스를 **리포트보다 먼저** 만든다 — 리포트가 인덱스 파일명을 알아야
     # Deep Research 패널을 붙일 수 있다.

@@ -66,6 +66,7 @@ def _import_search_index():
 
 # 근거 등급 — 각 논문의 분석이 무엇에 기반했는지. 리포트에 그대로 노출해
 # 독자가 신뢰도를 판단할 수 있게 한다.
+EV_CORPUS = "corpus"      # 코퍼스 전처리물 (review 섹션 + text.md + figures + 연결)
 EV_PDF = "pdf"            # 보유 PDF 전문 (수만 자)
 EV_ABSTRACT = "abstract"  # 초록만 (수백~2천 자)
 EV_TITLE = "title"        # 제목뿐
@@ -88,13 +89,18 @@ def tier_papers(papers: list[dict], index=None) -> tuple[list, dict]:
         (등급이 매겨진 papers, 등급별 편수)
     """
     from .local_library import load_library_index
+    from .corpus_assets import enrich_with_corpus
 
     if index is None:
         index = load_library_index()
 
+    # 코퍼스 전처리물이 최우선 — review 섹션·text.md·figures·연결관계가 있고
+    # 검색 인덱스에 **이미 임베딩되어** 있다. 원시 PDF 를 다시 파싱할 이유가 없다.
+    papers, _corpus_stats = enrich_with_corpus(list(papers or []))
+
     out = []
-    stats = {EV_PDF: 0, EV_ABSTRACT: 0, EV_TITLE: 0}
-    for p in (papers or []):
+    stats = {EV_CORPUS: 0, EV_PDF: 0, EV_ABSTRACT: 0, EV_TITLE: 0}
+    for p in papers:
         q = dict(p)
         hit = index.lookup(q) if index else None
         if hit:
@@ -109,7 +115,9 @@ def tier_papers(papers: list[dict], index=None) -> tuple[list, dict]:
         else:
             q["_in_library"] = False
 
-        if q.get("_pdf_path"):
+        if q.get("_corpus_slug"):
+            q["_evidence"] = EV_CORPUS
+        elif q.get("_pdf_path"):
             q["_evidence"] = EV_PDF
         elif len(str(q.get("abstract") or "").strip()) >= MIN_ABSTRACT:
             q["_evidence"] = EV_ABSTRACT
@@ -169,18 +177,50 @@ def paper_key(p: dict) -> str:
 
 
 def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
-    """PDF 전문을 청크로 쪼갠다.
+    """근거를 청크로 쪼갠다 (코퍼스 재사용 > PDF 전문 > 초록).
 
     Returns:
         (chunks, papers_meta) — chunks 는 `_search_index.json` 과 같은 모양
         `{slug, section, text, text_sha}` 이라 Deep Research UI 가 그대로 읽는다.
     """
+    from .corpus_assets import corpus_chunks
     bsi = _import_search_index()
     chunks: list[dict] = []
     meta: dict[str, dict] = {}
+    reused_vecs: dict[str, bytes] = {}   # 코퍼스에서 잘라 온 벡터 (재임베딩 불필요)
+    corpus_idx = None
 
     for i, p in enumerate(papers, 1):
         key = paper_key(p)
+
+        # 코퍼스 논문은 이미 섹션 단위로 청킹·임베딩돼 있다. 잘라 쓰면 Gemini
+        # 호출이 0회이고, 검증된 섹션 구조(Essence/Motivation/…)도 보존된다.
+        cslug = p.get("_corpus_slug")
+        if cslug:
+            if corpus_idx is None:
+                from .corpus_assets import load_corpus_index
+                corpus_idx = load_corpus_index()
+            cchunks, cvecs = corpus_chunks(cslug, corpus_idx)
+            if cchunks:
+                for c in cchunks:
+                    c["slug"] = key
+                    chunks.append(c)
+                reused_vecs[key] = cvecs
+                meta[key] = {
+                    "title": p.get("title", ""), "doi": p.get("doi", ""),
+                    "year": p.get("year") or p.get("date", ""),
+                    "journal": p.get("journal", ""),
+                    "authors": p.get("authors") or p.get("author_names", ""),
+                    "zotero_key": p.get("_library_key", ""),
+                    "zotero_attach": p.get("_library_attach", ""),
+                    "evidence": EV_CORPUS, "corpus_slug": cslug,
+                    "connections": p.get("_connections") or [],
+                    "chunks": len(cchunks),
+                }
+                if progress and (i % 5 == 0 or i == len(papers)):
+                    progress("index", f"코퍼스 청크 재사용 {i}/{len(papers)}편")
+                continue
+
         # PDF 가 있으면 전문, 없으면 초록이라도 인덱싱한다. 근거가 얇은 건
         # 사실이지만 검색 대상에서 통째로 빠지는 것보다는 낫다.
         text = pdf_fulltext(p.get("_pdf_path", ""))
@@ -223,7 +263,7 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
         if progress and (i % 5 == 0 or i == len(papers)):
             progress("index", f"본문 청킹 {i}/{len(papers)}편 · 청크 {len(chunks)}개")
 
-    return chunks, meta
+    return chunks, meta, reused_vecs
 
 
 def embed_chunks(chunks: list[dict], *, progress=None) -> bytes | None:
@@ -279,12 +319,46 @@ def build_index(papers: list[dict], out_dir, *, embed: bool = True,
         인덱스 요약 dict. 만들 게 없으면 None.
     """
     out_dir = Path(out_dir)
-    chunks, meta = build_chunks(papers, progress=progress)
+    chunks, meta, reused = build_chunks(papers, progress=progress)
     if not chunks:
         logger.info("인덱스 생략: 청크 0개")
         return None
 
-    emb = embed_chunks(chunks, progress=progress) if embed else None
+    emb = None
+    if embed:
+        # 코퍼스에서 잘라 온 벡터가 있는 청크는 재임베딩하지 않는다.
+        # 청크 순서 = 벡터 순서라, 슬롯을 남겨 두고 새로 만든 것만 채운다.
+        need = [c for c in chunks if c["slug"] not in reused]
+        fresh = embed_chunks(need, progress=progress) if need else b""
+        if fresh is None:
+            logger.warning("신규 임베딩 실패 — 벡터 없이 저장")
+        else:
+            buf, fi = bytearray(), 0
+            ok = True
+            for c in chunks:
+                v = reused.get(c["slug"])
+                if v is not None:
+                    # 논문 단위로 잘라 온 벡터를 청크 순서대로 소비한다.
+                    take = v[:EMBED_DIM]
+                    reused[c["slug"]] = v[EMBED_DIM:]
+                    if len(take) != EMBED_DIM:
+                        ok = False
+                        break
+                    buf += take
+                else:
+                    seg = fresh[fi:fi + EMBED_DIM]
+                    fi += EMBED_DIM
+                    if len(seg) != EMBED_DIM:
+                        ok = False
+                        break
+                    buf += seg
+            emb = bytes(buf) if ok else None
+            if not ok:
+                logger.warning("벡터 조립 실패 — 벡터 없이 저장")
+            else:
+                logger.info("임베딩: 재사용 %d청크 · 신규 %d청크",
+                            len(chunks) - len(need), len(need))
+
     if emb is not None and len(emb) != len(chunks) * EMBED_DIM:
         logger.warning("임베딩 길이 불일치 — 벡터 없이 저장 (%d != %d)",
                        len(emb), len(chunks) * EMBED_DIM)
