@@ -69,6 +69,8 @@ _LABELS = {
         "dr_key": "API 키 (선택 · 브라우저에만 머뭄)",
         "dr_go": "질문",
         "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
+        "timeline": "인용 흐름 타임라인",
+        "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
         "themes": "인용 주제 분포",
         "themes_note": "주제를 지정하지 않아 인용논문을 자동 군집화했다. 연도별 편수와 누적 피인용으로 각 갈래가 언제 얼마나 퍼졌는지 읽는다.",
         "zotero": "Zotero PDF",
@@ -350,6 +352,17 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     )
 
 
+def _timeline_section(data_uri: str, lbl: dict) -> str:
+    """타임라인 그림. base64 data URI 라 파일을 옮겨도 PDF 로 뽑아도 살아 있다."""
+    if not data_uri:
+        return ""
+    return (
+        f'<h2>{lbl["timeline"]}</h2>'
+        f'<figure class="tl"><img src="{data_uri}" alt="{_esc(lbl["timeline"])}">'
+        f'<figcaption>{_esc(lbl["timeline_note"])}</figcaption></figure>'
+    )
+
+
 def _collections_section(papers: list[dict], lbl: dict) -> str:
     """컬렉션별 제안 집계. 어디에 몇 편을 넣을지 한눈에 보고 결정한다."""
     from .collections import summarize
@@ -521,6 +534,9 @@ table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
 .ev-abstract{color:#8a6d1f;background:#fbf3de}
 .ev-title{color:#8a9099;background:#f0f1f3}
 a.pdf{font-weight:600}
+figure.tl{margin:14px 0 22px;padding:0}
+figure.tl img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
+figure.tl figcaption{font-size:12px;color:var(--soft);margin-top:6px}
 table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
 .kw{font-size:11px;color:#7a8089;margin-top:2px}
 .dim{font-weight:400;color:#7a8089;font-size:13px}
@@ -568,6 +584,7 @@ def build_report_html(*,
                       source_counts: dict | None = None,
                       zotero_index=None,
                       themes: dict | None = None,
+                      timeline_uri: str = "",
                       deep_index: str = "",
                       generated_at: datetime | None = None) -> str:
     """citedby 결과를 자기완결 HTML 리포트로 렌더한다.
@@ -632,6 +649,8 @@ def build_report_html(*,
     if deep_index:
         from .deep_panel import panel_html
         body.append(panel_html(deep_index, lbl))
+
+    body.append(_timeline_section(timeline_uri, lbl))
 
     if themes:
         body.append(_themes_section(themes, lbl))

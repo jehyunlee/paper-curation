@@ -243,6 +243,7 @@ def run_topic_analysis(papers: list[dict], *,
                        link_zotero: bool = True,
                        deep_index: str = "",
                        suggest_collections: bool = True,
+                       want_timeline: bool = False,
                        on_event=None) -> dict:
     """주제로 필터링 → 5W1H 요약 → HTML 리포트.
 
@@ -263,6 +264,7 @@ def run_topic_analysis(papers: list[dict], *,
     topic = (topic or "").strip()
 
     themes = None
+    timeline_uri = ""
     if topic:
         emit("topic_filter", f"주제 필터링 시작: {topic}", 0, total)
         selected = filter_by_topic(
@@ -286,6 +288,11 @@ def run_topic_analysis(papers: list[dict], *,
             progress=lambda phase, msg: emit(phase, msg))
         if themes:
             emit("themes", f"주제 {len(themes['clusters'])}개 갈래 도출")
+            if want_timeline:
+                from .timeline import generate as _gen_timeline
+                timeline_uri = _gen_timeline(
+                    themes, paper_info=paper_info,
+                    progress=lambda phase, msg: emit(phase, msg))
 
     # 컬렉션 추천 — citedby 등록분은 Unfiled 로 가므로 배정 후보를 함께 낸다.
     if suggest_collections and selected:
@@ -304,7 +311,7 @@ def run_topic_analysis(papers: list[dict], *,
     report_html = build_report_html(
         papers=selected, paper_info=paper_info, topic=topic, lang=lang,
         source_counts=source_counts, zotero_index=zindex, themes=themes,
-        deep_index=deep_index)
+        deep_index=deep_index, timeline_uri=timeline_uri)
 
     return {
         "topic": topic,
@@ -326,6 +333,7 @@ def run_citedby(doi: str, *,
                 max_results_per_source: int = 5000,
                 use_llm_originality: bool = True,
                 pdf_first: bool = False,
+                timeline: bool = False,
                 build_index: bool = False,
                 index_dir=None,
                 cache_dir=None,
@@ -378,7 +386,8 @@ def run_citedby(doi: str, *,
     topical = run_topic_analysis(
         papers, topic=topic, paper_info=citing["paper_info"],
         source_counts=citing["source_counts"], lang=lang,
-        cache_dir=cache_dir, deep_index=deep_index, on_event=on_event)
+        cache_dir=cache_dir, deep_index=deep_index,
+        want_timeline=timeline, on_event=on_event)
 
     elapsed = (datetime.now() - started).total_seconds()
     emit("done", f"완료: {topical['matched']}/{topical['total']}편 "

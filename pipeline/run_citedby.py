@@ -125,6 +125,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--build-index", action="store_true",
                    help="PDF 전문으로 Deep Research 인덱스 생성 "
                         "(_citedby_index.json + 임베딩 사이드카). --pdf-first 필요.")
+    p.add_argument("--timeline", action="store_true",
+                   help="PaperBanana 로 인용 흐름 타임라인 그림을 만들어 리포트에 "
+                        "넣는다. 수 분 걸리므로 기본은 꺼짐. 실패해도 리포트는 나온다.")
     p.add_argument("--serve", action="store_true",
                    help="리포트를 로컬 서버(serve_local.py)로 띄우고 http URL 을 "
                         "낸다. Deep Research 패널은 file:// 에서 동작하지 않으므로 "
@@ -159,6 +162,7 @@ def main(argv=None) -> int:
             max_results_per_source=args.max_per_source,
             use_llm_originality=not args.no_llm_originality,
         pdf_first=args.pdf_first,
+        timeline=args.timeline,
         build_index=args.build_index,
         index_dir=out_dir,
             on_event=on_event)

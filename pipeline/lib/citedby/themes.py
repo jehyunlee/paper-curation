@@ -215,6 +215,9 @@ def analyze_themes(papers: list[dict], *,
             "count": len(ms),
             "citations": citations,
             "years": dict(years),
+            # 대표 제목 — 타임라인 narrative 가 "무엇을 한 논문인지" 알아야
+            # 갈래를 서술할 수 있다. 통계만으로는 스트림 이름밖에 못 쓴다.
+            "titles": [str(p.get("title") or "") for p in ms][:6],
             "papers": ms,
         })
 

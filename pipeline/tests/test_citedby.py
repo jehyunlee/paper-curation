@@ -2100,3 +2100,100 @@ class DeepPanelDepthTests(unittest.TestCase):
         """전문 평균 63k자 / 2.2k = ~29청크. 상한이 그보다 작으면 뒷부분이 잘린다."""
         from lib.citedby import pdf_corpus as PC
         self.assertGreaterEqual(PC.MAX_CHUNKS_PER_PAPER * PC.CHUNK_SIZE, 120000)
+
+
+class TimelineProcedureTests(unittest.TestCase):
+    """타임라인은 **narrative → 후보 N개 → vision judge 선별** 절차를 따른다.
+
+    통계를 PaperBanana 에 바로 던지면 "무엇을 그릴지" 를 생성기가 스스로
+    지어내야 해서 같은 데이터로도 결과가 매번 달라진다. paper-curation 의
+    generate_timelines 가 narrative 단계를 두는 이유가 그것이다.
+    """
+
+    THEMES = {
+        "clusters": [
+            {"id": 0, "name": "AI Agents", "keywords": ["agent", "llm"],
+             "count": 8, "citations": 120, "years": {2024: 3, 2025: 5},
+             "titles": ["Virtual Lab designs nanobodies"], "papers": []},
+            {"id": 1, "name": "Peer Review", "keywords": ["review"],
+             "count": 3, "citations": 20, "years": {2025: 3},
+             "titles": ["ReviewEval"], "papers": []},
+        ],
+        "years": [2024, 2025], "outliers": 0, "outlier_years": {},
+        "outlier_citations": 0, "total": 11, "total_citations": 140,
+    }
+
+    def test_narrative_prompt_carries_paper_titles(self):
+        """제목이 없으면 스트림 이름밖에 못 쓴다 — 구체성이 사라진다."""
+        from lib.citedby import timeline as TL
+        block = TL._themes_block(self.THEMES)
+        self.assertIn("Virtual Lab designs nanobodies", block)
+        self.assertIn("120 citations", block)
+
+    def test_narrative_requested_before_image(self):
+        from lib.citedby import timeline as TL
+        seen = {}
+
+        def fake_llm(prompt, **kw):
+            seen["prompt"] = prompt
+            return {"method_text": "## Citation Timeline", "caption": "c"}
+
+        with patch("lib.citedby.topic_filter.llm_json", side_effect=fake_llm):
+            mt, cap = TL.build_narrative(self.THEMES, {"title": "Seed"})
+        self.assertEqual(mt, "## Citation Timeline")
+        self.assertIn("STREAM:", seen["prompt"])
+        self.assertIn("Seed", seen["prompt"])
+
+    def test_no_narrative_means_no_image_attempt(self):
+        from lib.citedby import timeline as TL
+        with patch.object(TL, "build_narrative", return_value=("", "")), \
+             patch.object(TL, "_generate_candidates") as gen:
+            self.assertEqual(TL.generate(self.THEMES), "")
+        gen.assert_not_called()
+
+    def test_judge_picks_among_candidates(self):
+        from lib.citedby import timeline as TL
+        res = [(1, 10, "/a.png", b"A"), (2, 20, "/b.png", b"B"),
+               (3, 30, "/c.png", b"C")]
+        block = unittest.mock.MagicMock()
+        block.type = "tool_use"
+        block.input = {"best": 2, "reason": "선명"}
+        resp = unittest.mock.MagicMock(content=[block])
+        client = unittest.mock.MagicMock()
+        client.messages.create.return_value = resp
+        with patch("anthropic.Anthropic", return_value=client):
+            self.assertEqual(TL._select_best(res, "cap")[0], 2)
+
+    def test_judge_failure_falls_back_to_first(self):
+        """선별이 배치를 막아서는 안 된다."""
+        from lib.citedby import timeline as TL
+        res = [(1, 10, "/a.png", b"A"), (2, 20, "/b.png", b"B")]
+        with patch("anthropic.Anthropic", side_effect=RuntimeError("down")):
+            self.assertEqual(TL._select_best(res, "")[0], 1)
+
+    def test_single_candidate_skips_judge(self):
+        from lib.citedby import timeline as TL
+        with patch("anthropic.Anthropic") as A:
+            TL._select_best([(1, 10, "/a.png", b"A")], "")
+        A.assert_not_called()
+
+    def test_no_candidates_returns_none(self):
+        from lib.citedby import timeline as TL
+        self.assertIsNone(TL._select_best([], ""))
+
+    def test_empty_themes_is_noop(self):
+        from lib.citedby import timeline as TL
+        self.assertEqual(TL.generate({}), "")
+        self.assertEqual(TL.generate({"clusters": []}), "")
+
+    def test_report_embeds_timeline_as_data_uri(self):
+        """사이드카 PNG 를 참조하면 파일을 옮기거나 PDF 로 뽑을 때 사라진다."""
+        uri = "data:image/png;base64,AAAA"
+        out = report.build_report_html(papers=[{"title": "P"}],
+                                       timeline_uri=uri)
+        self.assertIn(uri, out)
+        self.assertIn("인용 흐름 타임라인", out)
+
+    def test_report_without_timeline_has_no_figure(self):
+        out = report.build_report_html(papers=[{"title": "P"}])
+        self.assertNotIn("figure class=\"tl\"", out)
