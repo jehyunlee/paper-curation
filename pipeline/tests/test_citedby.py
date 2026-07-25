@@ -1591,3 +1591,169 @@ class ThemeTotalsTests(unittest.TestCase):
         self.assertIn("합계", out)
         self.assertIn("13", out)      # 총 피인용
         self.assertIn(">3<", out)     # 미분류 피인용이 · 가 아니다
+
+
+class LocalLibraryTests(unittest.TestCase):
+    """로컬 Zotero DB 매칭 — 내가 보유한 논문은 API 를 두드리지 않는다."""
+
+    def _idx(self):
+        from lib.citedby import local_library as ll
+        return ll.LibraryIndex(
+            by_doi={"10.1/a": ll.LibraryItem(key="K1", title="A",
+                                             doi="10.1/a", abstract="AB" * 30,
+                                             pdf_path="/tmp/a.pdf",
+                                             attachment_key="ATT1")},
+            by_arxiv={"2409.04109": ll.LibraryItem(key="K2", title="B")},
+            by_title={"papertitlec": ll.LibraryItem(key="K3", title="Paper Title C")})
+
+    def test_lookup_priority_doi_first(self):
+        idx = self._idx()
+        hit = idx.lookup({"doi": "10.1/a", "title": "Paper Title C"})
+        self.assertEqual(hit.key, "K1")
+
+    def test_lookup_arxiv_fallback(self):
+        hit = self._idx().lookup({"doi": "", "arxiv_id": "2409.04109"})
+        self.assertEqual(hit.key, "K2")
+
+    def test_lookup_title_last(self):
+        hit = self._idx().lookup({"doi": "", "title": "Paper Title C!"})
+        self.assertEqual(hit.key, "K3")
+
+    def test_lookup_miss(self):
+        self.assertIsNone(self._idx().lookup({"doi": "10.9/z", "title": "Nope"}))
+
+    def test_doi_normalisation(self):
+        from lib.citedby import local_library as ll
+        for raw in ("https://doi.org/10.1/A", "doi:10.1/a", " 10.1/A "):
+            self.assertEqual(ll.normalize_doi(raw), "10.1/a")
+
+    def test_arxiv_extraction_from_url_or_extra(self):
+        from lib.citedby import local_library as ll
+        self.assertEqual(
+            ll.extract_arxiv("https://arxiv.org/abs/2409.04109"), "2409.04109")
+        self.assertEqual(ll.extract_arxiv("", "arXiv:2501.12345"), "2501.12345")
+        self.assertEqual(ll.extract_arxiv("no id here"), "")
+
+    def test_missing_db_returns_empty_index(self):
+        from lib.citedby import local_library as ll
+        idx = ll.load_library_index(db_path="/nonexistent/zotero.sqlite")
+        self.assertFalse(idx)
+
+    def test_enrich_fills_abstract_from_zotero(self):
+        from lib.citedby import local_library as ll
+        papers = [{"doi": "10.1/a", "title": "A", "abstract": ""}]
+        out, st = ll.enrich_from_library(papers, self._idx(), read_pdf=False)
+        self.assertTrue(out[0]["_in_library"])
+        self.assertEqual(out[0]["_abstract_from"], "zotero")
+        self.assertEqual(st["abstract_from_zotero"], 1)
+
+    def test_enrich_does_not_overwrite_existing_abstract(self):
+        from lib.citedby import local_library as ll
+        papers = [{"doi": "10.1/a", "title": "A", "abstract": "기존 초록" * 10}]
+        out, _ = ll.enrich_from_library(papers, self._idx(), read_pdf=False)
+        self.assertIn("기존 초록", out[0]["abstract"])
+        self.assertNotIn("_abstract_from", out[0])
+
+    def test_enrich_marks_non_library_papers(self):
+        from lib.citedby import local_library as ll
+        out, st = ll.enrich_from_library(
+            [{"doi": "10.9/z", "title": "Nope"}], self._idx(), read_pdf=False)
+        self.assertFalse(out[0]["_in_library"])
+        self.assertEqual(st["matched"], 0)
+
+    def test_attachment_path_convention(self):
+        from lib.citedby import local_library as ll
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "x.pdf").write_bytes(b"%PDF-1.4")
+            self.assertEqual(ll._resolve_pdf("attachments:x.pdf", d, "K"),
+                             str(d / "x.pdf"))
+            self.assertEqual(ll._resolve_pdf("attachments:none.pdf", d, "K"), "")
+            self.assertEqual(ll._resolve_pdf("", d, "K"), "")
+
+
+class PdfCorpusTests(unittest.TestCase):
+    """PDF 전문 기반 코퍼스 — 초록 대신 원문을 쓴다."""
+
+    def _idx(self):
+        from lib.citedby import local_library as ll
+        return ll.LibraryIndex(by_doi={
+            "10.1/held": ll.LibraryItem(key="K1", doi="10.1/held",
+                                        pdf_path="/tmp/x.pdf",
+                                        attachment_key="ATT1"),
+            "10.1/nopdf": ll.LibraryItem(key="K2", doi="10.1/nopdf"),
+        })
+
+    def test_selects_only_pdf_holders(self):
+        from lib.citedby.pdf_corpus import select_pdf_papers
+        held, missing = select_pdf_papers([
+            {"doi": "10.1/held", "title": "A"},
+            {"doi": "10.1/nopdf", "title": "B"},     # 라이브러리에 있으나 PDF 없음
+            {"doi": "10.9/z", "title": "C"},          # 라이브러리에 없음
+        ], self._idx())
+        self.assertEqual([p["doi"] for p in held], ["10.1/held"])
+        self.assertEqual(len(missing), 2)
+        self.assertEqual(held[0]["_library_attach"], "ATT1")
+
+    def test_empty_index_holds_nothing(self):
+        from lib.citedby import local_library as ll
+        from lib.citedby.pdf_corpus import select_pdf_papers
+        held, missing = select_pdf_papers([{"doi": "10.1/a"}], ll.LibraryIndex())
+        self.assertEqual(held, [])
+        self.assertEqual(len(missing), 1)
+
+    def test_paper_key_prefers_doi_then_arxiv_then_title(self):
+        from lib.citedby.pdf_corpus import paper_key
+        self.assertEqual(paper_key({"doi": "10.1/A"}), "10.1/a")
+        self.assertEqual(paper_key({"doi": "", "arxiv_id": "2409.04109"}),
+                         "2409.04109")
+        self.assertEqual(paper_key({"title": "Some Title!"}), "sometitle")
+
+    def test_references_are_trimmed_from_fulltext(self):
+        from lib.citedby import pdf_corpus
+        body = "본문 " * 400 + "\nReferences\n" + "[1] cite " * 100
+        with patch.object(pdf_corpus, "_REF_HEAD", pdf_corpus._REF_HEAD):
+            m = pdf_corpus._REF_HEAD.search(body)
+        self.assertIsNotNone(m)
+        self.assertGreater(m.start(), len(body) * 0.3)
+
+    def test_missing_pdf_yields_empty_text(self):
+        from lib.citedby.pdf_corpus import pdf_fulltext
+        self.assertEqual(pdf_fulltext("/nonexistent/x.pdf"), "")
+        self.assertEqual(pdf_fulltext(""), "")
+
+    def test_build_index_returns_none_without_chunks(self):
+        from lib.citedby import pdf_corpus
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(pdf_corpus, "build_chunks", return_value=([], {})):
+            self.assertIsNone(pdf_corpus.build_index([], tmp))
+
+    def test_index_schema_matches_search_index(self):
+        """Deep Research UI 가 코퍼스 인덱스와 구분 없이 읽어야 한다."""
+        from lib.citedby import pdf_corpus
+        chunks = [{"slug": "s", "section": "본문", "text": "t" * 300,
+                   "text_sha": "abc"}]
+        meta = {"s": {"title": "T", "chunks": 1}}
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(pdf_corpus, "build_chunks", return_value=(chunks, meta)), \
+             patch.object(pdf_corpus, "embed_chunks", return_value=None):
+            info = pdf_corpus.build_index([{"title": "T"}], tmp)
+            data = json.loads((Path(tmp) / pdf_corpus.INDEX_NAME)
+                              .read_text(encoding="utf-8"))
+        for key in ("model", "dim", "quant", "count", "papers", "chunks"):
+            self.assertIn(key, data)
+        self.assertEqual(data["dim"], 768)
+        self.assertEqual(data["quant"], "int8-l2norm")
+        self.assertEqual(info["chunks"], 1)
+
+    def test_vector_length_mismatch_drops_vectors(self):
+        """길이가 안 맞으면 잘못된 사이드카를 쓰느니 벡터 없이 저장한다."""
+        from lib.citedby import pdf_corpus
+        chunks = [{"slug": "s", "section": "본문", "text": "t" * 300,
+                   "text_sha": "a"}]
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(pdf_corpus, "build_chunks",
+                          return_value=(chunks, {"s": {"chunks": 1}})), \
+             patch.object(pdf_corpus, "embed_chunks", return_value=b"\x00" * 10):
+            info = pdf_corpus.build_index([{"title": "T"}], tmp)
+        self.assertFalse(info["has_vectors"])

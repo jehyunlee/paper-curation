@@ -118,6 +118,12 @@ def build_parser() -> argparse.ArgumentParser:
                    help="소스당 최대 수집 건수 (기본 5000)")
     p.add_argument("--no-llm-originality", action="store_true",
                    help="독창성 추출을 rule-based 로만 (LLM 호출 0)")
+    p.add_argument("--pdf-only", action="store_true",
+                   help="내 Zotero 에 PDF 를 보유한 인용논문만 대상. 초록 대신 "
+                        "전문을 쓰므로 주제 군집·요약 품질이 크게 오른다.")
+    p.add_argument("--build-index", action="store_true",
+                   help="PDF 전문으로 Deep Research 인덱스 생성 "
+                        "(_citedby_index.json + 임베딩 사이드카). --pdf-only 필요.")
     p.add_argument("--no-zotero-links", action="store_true",
                    help="Zotero PDF 링크를 붙이지 않는다")
     p.add_argument("--json", dest="as_json", action="store_true",
@@ -145,6 +151,9 @@ def main(argv=None) -> int:
             args.doi, sources=sources, topic=args.topic, lang=args.lang,
             max_results_per_source=args.max_per_source,
             use_llm_originality=not args.no_llm_originality,
+        pdf_only=args.pdf_only,
+        build_index=args.build_index,
+        index_dir=out_dir,
             on_event=on_event)
     except Exception as e:  # noqa: BLE001 — CLI 경계
         print(f"ERROR: {e}", file=sys.stderr)

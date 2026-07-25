@@ -24,6 +24,7 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from pathlib import Path
 
 import requests
 
@@ -314,9 +315,21 @@ def run_citedby(doi: str, *,
                 lang: str = "ko",
                 max_results_per_source: int = 5000,
                 use_llm_originality: bool = True,
+                pdf_only: bool = False,
+                build_index: bool = False,
+                index_dir=None,
                 cache_dir=None,
                 on_event=None) -> dict:
-    """수집 → 필터 → 요약 → 리포트를 한 번에. 진입점 둘이 공유하는 상위 함수."""
+    """수집 → (PDF 선별) → 필터 → 요약 → 리포트를 한 번에.
+
+    `pdf_only` — **내 Zotero 에 PDF 를 보유한 인용논문만** 남긴다. 초록은
+    폐쇄형 논문에서 무료 API 로 못 받지만 내 PDF 에는 전문이 있다. 대상이
+    줄어드는 대신 편당 기반이 수백 자에서 수만 자로 넓어져, 주제 군집화와
+    5W1H 요약이 원문을 보고 판단하게 된다.
+
+    `build_index` — PDF 전문을 청킹·임베딩해 Deep Research 인덱스를 만든다
+    (`_citedby_index.json` + 사이드카). 기존 코퍼스 인덱스와 같은 스키마다.
+    """
     emit = _emit(on_event)
     started = datetime.now()
 
@@ -324,10 +337,33 @@ def run_citedby(doi: str, *,
         doi, sources=sources, max_results_per_source=max_results_per_source,
         use_llm_originality=use_llm_originality, on_event=on_event)
 
+    papers = citing["papers"]
+    pdf_stats = None
+    if pdf_only:
+        from .pdf_corpus import select_pdf_papers
+        held, missing = select_pdf_papers(papers)
+        pdf_stats = {"held": len(held), "missing": len(missing),
+                     "total": len(papers)}
+        emit("library",
+             f"PDF 보유 {len(held)}/{len(papers)}편 — 미보유 {len(missing)}편 제외",
+             len(held), len(papers))
+        papers = held
+
     topical = run_topic_analysis(
-        citing["papers"], topic=topic, paper_info=citing["paper_info"],
+        papers, topic=topic, paper_info=citing["paper_info"],
         source_counts=citing["source_counts"], lang=lang,
         cache_dir=cache_dir, on_event=on_event)
+
+    index_info = None
+    if build_index and papers:
+        from .pdf_corpus import build_index as _build_index
+        target = index_dir or Path.cwd()
+        index_info = _build_index(papers, target,
+                                  progress=lambda p, m: emit(p, m))
+        if index_info:
+            emit("index",
+                 f"Deep Research 인덱스: 논문 {index_info['papers']}편 · "
+                 f"청크 {index_info['chunks']}개")
 
     elapsed = (datetime.now() - started).total_seconds()
     emit("done", f"완료: {topical['matched']}/{topical['total']}편 "
@@ -339,6 +375,8 @@ def run_citedby(doi: str, *,
         "source_counts": citing["source_counts"],
         "all_papers": citing["papers"],
         "all_csv": citing["csv"],
+        "pdf_stats": pdf_stats,
+        "index": index_info,
         "topic": topical["topic"],
         "papers": topical["papers"],
         "report_html": topical["report_html"],
