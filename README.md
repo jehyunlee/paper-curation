@@ -80,7 +80,7 @@ PYTHONUTF8=1 python pipeline/setup.py
 |------|------|------|
 | 리뷰 · 연결 · 인사이트 | `claude-sonnet-5` | $2 / $10 (인트로, ~2026-08-31) → $3 / $15 |
 | Figure 검증 (vision judge) | `claude-haiku-4-5` | $1 / $5 |
-| 타임라인 내러티브 | `claude-opus` (4.8) | $5 / $25 |
+| 타임라인 내러티브 | `claude-opus-5` (5) | $5 / $25 |
 | 분류 | — (HDBSCAN + UMAP) | **LLM 호출 0회 → $0** |
 | 검색 임베딩 | Google `gemini-embedding-001` | Google 임베딩 요금(소액) |
 

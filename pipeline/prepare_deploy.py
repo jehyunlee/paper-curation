@@ -420,7 +420,7 @@ def _sync_gh_pages_stubs(topics, cf_url=CF_BASE_URL):
             summary.append("prune " + ", ".join(pruned))
         msg = (
             f"gh-pages redirect stubs: {'; '.join(summary)}\n\n"
-            "Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
+            "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
         )
         subprocess.run(["git", "commit", "-m", msg], check=True, cwd=worktree)
         subprocess.run(["git", "push", "origin", "gh-pages"], check=True, cwd=worktree)
@@ -809,7 +809,7 @@ def _run_deploy(topic="ai4s", *, quality=90, dry_run=False, push=False,
                     ["git", "commit", "-m",
                      f"Deploy: {converted} figures WebP, "
                      f"{total_orig // 1048576}→{total_webp // 1048576}MB\n\n"
-                     f"Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"],
+                     f"Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"],
                     check=True,
                 )
                 subprocess.run(["git", "push", "origin", "master"], check=True)

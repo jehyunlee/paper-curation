@@ -158,7 +158,7 @@ para(tf, "단가 = 2026-06 공식 (Anthropic·OpenAI·Google)", 12.5, DARK, Fals
 table(s, [["모델", "In", "Out"],
           ["Haiku 4.5", "$1", "$5"],
           ["Sonnet 4.6", "$3", "$15"],
-          ["Opus 4.8", "$5", "$25"],
+          ["Opus 5", "$5", "$25"],
           ["Gemini 3.5-flash", "$1.5", "$9"],
           ["Gemini embed", "$0.15", "—"]],
       8.25, 1.6, 4.5, 3.5, col_w=[2.5, 1.0, 1.0], sizes=[12,12,12,12,12,12])
@@ -187,8 +187,8 @@ title(s, "Deep Research 질의 비용 — 길이 × 모델", "검색된 ~8편 �
 pic(s, FIG+"c2_deep.png", 0.4, 1.5, w=8.0)
 box, tf = tb(s, 8.6, 1.7, 4.5, 5.0)
 para(tf, "옵션", 14, BLUE, True, first=True, space_after=6)
-para(tf, "Fast=Haiku · Smart=Sonnet · 길이 Short/Medium/Long", 12, DARK, False, bullet=("•",BLUE))
-runs(tf, [("Deeper(Opus) ≈ ", DARK, False), ("$2.2", RED, True), (" — 약 70배", GRAY, False)], 12.5, space_after=8)
+para(tf, "Fast=Sonnet · Smart=Opus · 길이 Short/Medium/Long", 12, DARK, False, bullet=("•",BLUE))
+runs(tf, [("Deeper(Opus) ≈ ", DARK, False), ("$2.8", RED, True), (" — 약 35배", GRAY, False)], 12.5, space_after=8)
 para(tf, "비용 부담", 14, BLUE, True, space_after=6)
 para(tf, "답변 생성 = 독자 BYOK · 쿼리 임베딩=운영자(거의 0)", 12, DARK, False, bullet=("•",BLUE))
 para(tf, "주의: 로컬(text.md 포함) 질의는 입력 ~85k tok로 급증", 12, AMBER, True, bullet=("⚠",AMBER))

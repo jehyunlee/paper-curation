@@ -110,9 +110,9 @@
   <table>
     <thead><tr><th>모델</th><th>주 용도</th><th class="num">Input</th><th class="num">Output</th></tr></thead>
     <tbody>
-      <tr><td><b>Claude Haiku 4.5</b></td><td>리뷰 · 카테고리 요약 · Deep "Fast"</td><td class="num">$1</td><td class="num">$5</td></tr>
-      <tr><td><b>Claude Sonnet 4.6</b></td><td>연결관계 · 인사이트 · Deep "Smart"</td><td class="num">$3</td><td class="num">$15</td></tr>
-      <tr><td><b>Claude Opus 4.8</b></td><td>타임라인 · <b>Deeper</b></td><td class="num">$5</td><td class="num">$25</td></tr>
+      <tr><td><b>Claude Haiku 4.5</b></td><td>리뷰 · 카테고리 요약</td><td class="num">$1</td><td class="num">$5</td></tr>
+      <tr><td><b>Claude Sonnet 5</b></td><td>연결관계 · 인사이트 · Deep "Fast" · 재정렬</td><td class="num">$3</td><td class="num">$15</td></tr>
+      <tr><td><b>Claude Opus 5</b></td><td>타임라인 · Deep "Smart" · <b>Deeper</b></td><td class="num">$5</td><td class="num">$25</td></tr>
       <tr><td>OpenAI gpt-5.5</td><td>Deep "Smart" (OpenAI)</td><td class="num">$5</td><td class="num">$30</td></tr>
       <tr><td>Gemini 3.5-flash</td><td>Deep "Smart" (Google)</td><td class="num">$1.5</td><td class="num">$9</td></tr>
       <tr><td>Gemini 3.1-flash-lite</td><td>Deep "Fast" (Google)</td><td class="num">$0.25</td><td class="num">$1.5</td></tr>
@@ -121,7 +121,7 @@
       <tr><td>Gemini 3.1-pro / image</td><td>그림검증 · 오디오대본 · PaperBanana</td><td class="num">~$2 <span class="tag est">추정</span></td><td class="num">~$12 <span class="krw">/ 이미지 ~$0.04</span></td></tr>
     </tbody>
   </table>
-  <p class="legend">할인: Anthropic batch −50%, prompt caching 캐시입력 −90%. Opus 4.8 Fast Mode는 $10/$50.</p>
+  <p class="legend">할인: Anthropic batch −50%, prompt caching 캐시입력 −90%. Opus 5 Fast Mode는 $10/$50.</p>
 
   <!-- ───────────── ② Paper Curio ───────────── -->
   <h2><span class="n">②</span>Paper Curio (Zotero 우클릭) <span class="tag op">운영자 부담</span></h2>
@@ -144,44 +144,44 @@
 
   <!-- ───────────── ③ Deep Research ───────────── -->
   <h2><span class="n">③</span>Deep Research (브라우저) <span class="tag reader">독자 BYOK 부담</span></h2>
-  <p class="note">이 논문 중심 질의 1건 기준. 검색된 논문 ~8편(이 논문 포함) 발췌 ≈ <b>입력 ~7.5k tok</b> + 재정렬(Haiku) ~$0.004 포함.
+  <p class="note">이 논문 중심 질의 1건 기준. 검색된 논문 ~8편(이 논문 포함) 발췌 ≈ <b>입력 ~7.5k tok</b> + 재정렬(Sonnet) ~$0.012 포함.
     출력은 길이 옵션의 사실상 상한.</p>
   <table>
     <thead><tr>
       <th>길이 옵션</th>
-      <th class="num">Fast (Haiku)</th><th class="num">Smart (Sonnet)</th>
+      <th class="num">Fast (Sonnet)</th><th class="num">Smart (Opus)</th>
       <th class="num">Google Fast</th><th class="num">Google Smart</th>
     </tr></thead>
     <tbody>
       <tr><td><b>Short</b> <span class="krw">출력~3k</span></td>
-        <td class="num"><span class="cost">$0.027</span></td><td class="num"><span class="cost">$0.072</span></td>
+        <td class="num"><span class="cost">$0.080</span></td><td class="num"><span class="cost">$0.125</span></td>
         <td class="num">$0.007</td><td class="num">$0.04</td></tr>
       <tr><td><b>Medium</b> <span class="krw">출력~5.5k</span></td>
-        <td class="num"><span class="cost">$0.039</span></td><td class="num"><span class="cost">$0.109</span></td>
+        <td class="num"><span class="cost">$0.117</span></td><td class="num"><span class="cost">$0.187</span></td>
         <td class="num">$0.011</td><td class="num">$0.06</td></tr>
       <tr><td><b>Long</b> <span class="krw">출력~10k</span></td>
-        <td class="num"><span class="cost">$0.062</span></td><td class="num"><span class="cost">$0.177</span></td>
+        <td class="num"><span class="cost">$0.185</span></td><td class="num"><span class="cost">$0.300</span></td>
         <td class="num">$0.017</td><td class="num">$0.10</td></tr>
     </tbody>
   </table>
   <div class="card">
     🖥️ <b>로컬(localhost) 주의</b> — file://·serve_local에서는 <code>text.md</code> 원문(논문당 최대 30,000자 × 최대 10편 ≈ <b>입력 ~85k tok</b>)이 함께 들어가
-    입력비가 급증합니다. 예) Smart·Long 로컬 ≈ <span class="cost">~$0.40</span>. 배포된 웹은 text.md가 없어 위 표대로 저렴합니다.
+    입력비가 급증합니다. 예) Smart·Long 로컬 ≈ <span class="cost">~$0.73</span>. 배포된 웹은 text.md가 없어 위 표대로 저렴합니다.
   </div>
 
   <!-- ───────────── ④ Deeper ───────────── -->
   <h2><span class="n">④</span>Deeper Research <span class="tag reader">독자 BYOK</span> <span style="font-size:.8rem;color:var(--muted)">— 체크 시 Long + 최상위(Opus) 강제 · 멀티에이전트</span></h2>
-  <p class="note">쿼리 1건이 여러 호출로 펼쳐짐: 조사계획(Haiku) → 단면별 재정렬(Haiku×~5) → 구조설계(Haiku) → <b>단락작성(Opus ×4–8)</b> → <b>취합(Opus)</b>.
+  <p class="note">쿼리 1건이 여러 호출로 펼쳐짐: 조사계획(Sonnet) → 단면별 재정렬(Sonnet×~5) → 구조설계(Sonnet) → <b>단락작성(Opus ×4–8)</b> → <b>취합(Opus)</b>.
     이 논문을 seed로, 연결그래프(후속·반론·기반)까지 확장.</p>
   <table>
     <thead><tr><th>백엔드 (최상위 모델)</th><th class="num">1쿼리 비용</th><th>Short 대비</th></tr></thead>
     <tbody>
-      <tr><td><b>Anthropic (Opus 4.8)</b> ← 기본</td><td class="num"><span class="cost-big">≈ $2.0–2.5</span><br><span class="krw">₩2,800–3,500</span></td><td><b class="b-warn">약 70배</b></td></tr>
+      <tr><td><b>Anthropic (Opus 5)</b> ← 기본</td><td class="num"><span class="cost-big">≈ $2.8–3.3</span><br><span class="krw">₩3,900–4,600</span></td><td><b class="b-warn">약 35배</b></td></tr>
       <tr><td>Google (3.5-flash)</td><td class="num"><span class="cost">≈ $0.8</span></td><td>~25배</td></tr>
       <tr><td>OpenAI (gpt-5.5)</td><td class="num"><span class="cost">≈ $2.5</span></td><td>~80배</td></tr>
     </tbody>
   </table>
-  <p class="legend">비용 대부분이 Opus 단락작성 ×6 (~$1.35) + 취합 (~$0.8). 단락 수(4–8)·budget 사용량에 따라 $1.5–3.5. → <b class="b-warn">가장 비싼 단일 동작.</b></p>
+  <p class="legend">비용 대부분이 Opus 단락작성 ×6 (~$1.35) + 취합(Opus, ~$1.3) + 조사·재정렬·구조설계(Sonnet, ~$0.15). 단락 수(4–8)·budget 사용량에 따라 $2.0–4.0. → <b class="b-warn">가장 비싼 단일 동작.</b></p>
 
   <!-- ───────────── ⑤ Audio ───────────── -->
   <h2><span class="n">⑤</span>Audio Overview (팟캐스트 변환) <span class="tag reader">브라우저=독자 BYOK</span></h2>
@@ -232,9 +232,9 @@
   <table>
     <thead><tr><th>구성</th><th>모델</th><th>호출 수</th><th class="num">토큰(Σ in / Σ out)</th><th class="num">비용</th></tr></thead>
     <tbody>
-      <tr><td>카테고리 narrative<br><span class="krw">(253·182·182·163·131·115·98·53편)</span></td><td>Opus 4.8</td><td>8</td><td class="num">~150k / ~72k</td><td class="num"><span class="cost">~$2.55</span></td></tr>
-      <tr><td>메인 타임라인 narrative</td><td>Opus 4.8</td><td>1</td><td class="num">~10k / ~8k</td><td class="num">~$0.25</td></tr>
-      <tr><td>Executive summary</td><td>Opus 4.8</td><td>1</td><td class="num">~10k / ~3.5k</td><td class="num">~$0.14</td></tr>
+      <tr><td>카테고리 narrative<br><span class="krw">(253·182·182·163·131·115·98·53편)</span></td><td>Opus 5</td><td>8</td><td class="num">~150k / ~72k</td><td class="num"><span class="cost">~$2.55</span></td></tr>
+      <tr><td>메인 타임라인 narrative</td><td>Opus 5</td><td>1</td><td class="num">~10k / ~8k</td><td class="num">~$0.25</td></tr>
+      <tr><td>Executive summary</td><td>Opus 5</td><td>1</td><td class="num">~10k / ~3.5k</td><td class="num">~$0.14</td></tr>
       <tr><td>후보 이미지 심사 (vision)</td><td>Sonnet 4.6</td><td>9 <span class="krw">(C+1)</span></td><td class="num">~39k / ~3.6k</td><td class="num">~$0.17</td></tr>
       <tr><td>PaperBanana 이미지 생성<br><span class="krw">(C+1)=9 diagram × 3 후보 = 27</span> <span class="tag est">추정</span></td><td>Gemini image+pro</td><td>27</td><td class="num">— (이미지)</td><td class="num"><span class="cost">~$4.0</span></td></tr>
       <tr style="background:#1b1f2b"><td><b>전체 <code>--retime</code> 합계</b></td><td>—</td><td>—</td><td class="num">—</td><td class="num"><span class="cost-big">≈ $6.8</span><br><span class="krw">≈ ₩9,400</span></td></tr>
@@ -249,8 +249,8 @@
   <table>
     <thead><tr><th>항목</th><th>모델</th><th class="num">비용</th></tr></thead>
     <tbody>
-      <tr><td>변경 카테고리 narrative (182편, in~22k/out~9k)</td><td>Opus 4.8</td><td class="num">~$0.29</td></tr>
-      <tr><td>메인 + Executive summary 갱신</td><td>Opus 4.8</td><td class="num">~$0.39</td></tr>
+      <tr><td>변경 카테고리 narrative (182편, in~22k/out~9k)</td><td>Opus 5</td><td class="num">~$0.29</td></tr>
+      <tr><td>메인 + Executive summary 갱신</td><td>Opus 5</td><td class="num">~$0.39</td></tr>
       <tr><td>변경 카테고리 이미지 1개 (3 후보 + 심사) <span class="tag est">추정</span></td><td>Gemini+Sonnet</td><td class="num">~$0.47</td></tr>
       <tr style="background:#1b1f2b"><td><b>timeline 증분 소계</b></td><td>—</td><td class="num"><span class="cost">≈ $1.15</span> <span class="krw">₩1,600</span></td></tr>
       <tr><td colspan="3" style="color:var(--muted);font-size:.82rem;padding-top:.7rem">＋ 타임라인 외 추가 동작 (논문 추가에 수반)</td></tr>
@@ -448,7 +448,7 @@
       Google-Fast Deep Research <span class="cost">~$0.007 (₩10)</span>
     </div>
     <div><b>비싼 것</b><br>
-      Deeper(Opus) 1쿼리 <span class="cost">~$2 (₩2,800)</span><br>
+      Deeper(Opus) 1쿼리 <span class="cost">~$3 (₩4,100)</span><br>
       <b>connections 재실행</b>(curate 매회) <span class="cost">~$10 (₩14k)</span><br>
       ai4s 콜드 풀빌드 <span class="cost">~$51 (₩70k)</span>
     </div>
@@ -462,6 +462,7 @@
     <b>측정 방법</b> — 리뷰 입력 토큰은 Anthropic <code>count_tokens</code>(과금 없음)로 측정, 출력 토큰은 실제 생성 1회의 청구 usage.
     그 외 연결관계·그림검증·Deep/Deeper/Audio는 코드의 실제 모델·max_tokens 설정 + 이 논문 실측 컨텍스트 크기로 산정한 추정치(<span class="tag est">추정</span> 표기).<br>
     <span class="tag est">추정</span> 항목 중 <code>gemini-3.1-pro-preview</code>·이미지생성 단가는 공식 페이지 개별 명시가 적어 보수적으로 잡음.<br>
+    <b class="b-warn">2026-07 모델 개정</b> — Deep Research 를 Fast=Sonnet · Smart=Opus 로, 타임라인·Deeper 를 Opus 5 로 상향. §③·④ 수치는 이 문서의 단가표로 재계산했고, Opus 5 단가는 Opus 4.8 값($5/$25)을 잠정 유지 — 공식 단가 확정 시 재검증 필요.<br>
     Generated by Claude Code · paper-curation cost sheet · 2026-06-19
   </footer>
 

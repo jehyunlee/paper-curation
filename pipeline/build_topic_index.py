@@ -1438,7 +1438,7 @@ def _run_topic_index(topic=None, cross=None):
     }
 
     // ── LLM re-rank ──────────────────────────────────────────────────
-    // RRF top-20 을 답변 백엔드의 FAST tier 모델(Anthropic→Haiku, Google→Flash,
+    // RRF top-20 을 답변 백엔드의 FAST tier 모델(Anthropic→Sonnet, Google→Flash,
     // OpenAI→소형)로 재정렬. 단발성 non-stream 호출. 어떤 실패든(파싱/타임아웃/
     // 인증) RRF 상위 topK 로 조용히 폴백한다 — 답변 경로는 그대로.
     async function rerankCall(backend, apiKey, model, sys, user) {
@@ -1761,7 +1761,7 @@ def _run_topic_index(topic=None, cross=None):
     }
 
     const MODEL_MAP = {
-      anthropic: { fast: 'claude-haiku-4-5', smart: 'claude-sonnet-5', top: 'claude-opus-4-8' },
+      anthropic: { fast: 'claude-sonnet-5', smart: 'claude-opus-5', top: 'claude-opus-5' },
       openai:    { fast: 'gpt-4.1',          smart: 'gpt-5.5',           top: 'gpt-5.5' },
       google:    { fast: 'gemini-3.1-flash-lite', smart: 'gemini-3.5-flash', top: 'gemini-3.5-flash' },
     };
@@ -1777,7 +1777,7 @@ def _run_topic_index(topic=None, cross=None):
     // the user sees what they're picking. Keyed by the same backend
     // names detectBackend() returns.
     const MODEL_LABEL = {
-      anthropic: { fast: 'Haiku 4.5', smart: 'Sonnet 5', top: 'Opus 4.8' },
+      anthropic: { fast: 'Sonnet 5', smart: 'Opus 5', top: 'Opus 5' },
       openai:    { fast: 'GPT-4.1',   smart: 'GPT-5.5',    top: 'GPT-5.5' },
       google:    { fast: 'Gemini 3.1 Flash-Lite', smart: 'Gemini 3.5 Flash', top: 'Gemini 3.5 Flash' },
     };
@@ -1785,7 +1785,7 @@ def _run_topic_index(topic=None, cross=None):
     function updateDeepModelLabels() {
       // Refresh the Fast/Smart dropdown labels based on whatever key is
       // currently cached. Called on page load and after any key prompt
-      // so the user sees concrete model names like "Fast (cost: Haiku 4.5)".
+      // so the user sees concrete model names like "Fast (cost: Sonnet 5)".
       const sel = document.getElementById('deep-model');
       if (!sel) return;
       const key = _LLM_KEY || _ANTHROPIC_KEY || _OPENAI_KEY ||
@@ -1827,8 +1827,8 @@ def _run_topic_index(topic=None, cross=None):
         stream: true,
       };
       if (deepWebSearchOn()) {
-        // Sonnet 5 / Opus 4.8 은 dynamic-filtering 신형(web_search_20260209),
-        // Haiku 4.5 는 구형(web_search_20250305)만 지원. 서버 툴이라 브라우저
+        // Sonnet 5 / Opus 5 는 dynamic-filtering 신형(web_search_20260209) 지원.
+        // (구 Haiku 4.5 만 web_search_20250305 — 현재 매핑엔 없음.) 서버 툴이라 브라우저
         // BYOK 에서 그대로 동작하고, 스트림 파서는 text_delta 외 블록을 무시한다.
         body.tools = [{
           type: /haiku-4-5/.test(model) ? 'web_search_20250305' : 'web_search_20260209',
@@ -1837,7 +1837,7 @@ def _run_topic_index(topic=None, cross=None):
         }];
         body.system = prompt.system + WEB_SEARCH_ADDENDUM;
       }
-      // Adaptive-thinking models (Opus 4.8, Sonnet 5, Fable 5) REJECT the
+      // Adaptive-thinking models (Opus 5, Sonnet 5, Fable 5) REJECT the
       // legacy budget-based thinking.type.enabled (HTTP 400). Send it ONLY to
       // models known to take the explicit budget form — whitelist, so any
       // future model defaults to no thinking param (safe on both kinds).
@@ -2852,8 +2852,8 @@ def _run_topic_index(topic=None, cross=None):
       // partial stream and let the ref-integrity guard below rebuild from the
       // section drafts (which already carry correct [ref:N]).
       try {
-        // 취합기는 top(Opus, 출력 ~32K) 대신 smart(Sonnet 5, 출력 64K)로 — 확대된 Deeper
-        // 리포트가 출력 상한에 걸려 잘리지 않도록 (openai/google 는 smart=top 이라 무변).
+        // 취합기는 smart tier 로 — anthropic 도 이제 smart=top=Opus 5 이고 openai/google 도
+        // smart=top 이라 사실상 top 과 동일. 출력 상한 초과 시 아래 가드가 섹션 draft 로 폴백.
         await assembleReport(query, drafts, lang, backend, apiKey, resolveModel(backend, 'smart') || topModel);
       } catch (e) {
         if (deepIsAbort(e)) throw e;  // user 중단 → bubble to outer handler
@@ -3776,7 +3776,7 @@ def _run_topic_index(topic=None, cross=None):
         '          <option value="medium">Medium (2x)</option>\n'
         '          <option value="long">Long (5x)</option>\n'
         '        </select>\n'
-        '        <select id="deep-model" class="deep-model" title="모델 등급. 키에 따라 Anthropic Haiku/Sonnet, OpenAI GPT-4.1/GPT-5.5, Google Gemini 3.1 Flash-Lite/3.5 Flash 로 자동 매핑">\n'
+        '        <select id="deep-model" class="deep-model" title="모델 등급. 키에 따라 Anthropic Sonnet/Opus, OpenAI GPT-4.1/GPT-5.5, Google Gemini 3.1 Flash-Lite/3.5 Flash 로 자동 매핑">\n'
         '          <option value="fast">Fast (cheap)</option>\n'
         '          <option value="smart">Smart (best)</option>\n'
         '        </select>\n'
