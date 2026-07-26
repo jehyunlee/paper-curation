@@ -434,3 +434,140 @@ def llm_text(prompt: str, *, max_tokens: int = 8000,
         if text and text.strip():
             return text, provider, model
     return "", "", ""
+_STREAM_SYSTEM = (
+    "You are a careful research assistant. Write a complete, self-contained "
+    "answer grounded in the supplied corpus. Never end mid-sentence. When web "
+    "search is enabled, corpus excerpts remain primary and every web-derived "
+    "claim must carry a descriptive inline markdown link."
+)
+
+
+def _stream_anthropic(key, model, prompt, max_tokens, on_delta, web_search):
+    from anthropic import Anthropic
+
+    client = Anthropic(api_key=key, timeout=600.0, max_retries=4)
+    kwargs = {
+        "model": model,
+        "max_tokens": max_tokens,
+        "system": _STREAM_SYSTEM,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": True,
+    }
+    if web_search:
+        kwargs["tools"] = [{
+            "type": ("web_search_20250305" if "haiku-4-5" in model
+                     else "web_search_20260209"),
+            "name": "web_search",
+            "max_uses": 5,
+        }]
+    answer, stop_reason = [], ""
+    for event in client.messages.create(**kwargs):
+        if getattr(event, "type", "") == "content_block_delta":
+            delta = getattr(event, "delta", None)
+            if getattr(delta, "type", "") == "text_delta":
+                text = getattr(delta, "text", "") or ""
+                if text:
+                    answer.append(text)
+                    on_delta(text)
+        elif getattr(event, "type", "") == "message_delta":
+            stop_reason = getattr(getattr(event, "delta", None),
+                                  "stop_reason", "") or stop_reason
+    return "".join(answer), stop_reason == "max_tokens"
+
+
+def _stream_google(key, model, prompt, max_tokens, on_delta, web_search):
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client(api_key=key)
+    config = {
+        "system_instruction": _STREAM_SYSTEM,
+        "temperature": 0.4,
+        "max_output_tokens": max_tokens,
+    }
+    if web_search:
+        config["tools"] = [types.Tool(google_search=types.GoogleSearch())]
+    answer, truncated = [], False
+    for chunk in client.models.generate_content_stream(
+            model=model, contents=prompt,
+            config=types.GenerateContentConfig(**config)):
+        text = getattr(chunk, "text", "") or ""
+        if text:
+            answer.append(text)
+            on_delta(text)
+        for cand in getattr(chunk, "candidates", None) or []:
+            reason = str(getattr(cand, "finish_reason", "") or "").upper()
+            truncated = truncated or "MAX_TOKENS" in reason
+    return "".join(answer), truncated
+
+
+def _stream_openai(key, model, prompt, max_tokens, on_delta, web_search):
+    from openai import OpenAI
+
+    if web_search:
+        raise RuntimeError("OpenAI citedby web search is not supported")
+    client = OpenAI(api_key=key, timeout=600.0, max_retries=4)
+    stream = client.chat.completions.create(
+        model=model, max_completion_tokens=max_tokens, stream=True,
+        messages=[{"role": "system", "content": _STREAM_SYSTEM},
+                  {"role": "user", "content": prompt}],
+    )
+    answer, truncated = [], False
+    for event in stream:
+        choice = event.choices[0] if getattr(event, "choices", None) else None
+        text = getattr(getattr(choice, "delta", None), "content", "") or ""
+        if text:
+            answer.append(text)
+            on_delta(text)
+        truncated = truncated or getattr(choice, "finish_reason", "") == "length"
+    return "".join(answer), truncated
+
+
+_STREAM_CALLERS = {
+    "anthropic": _stream_anthropic,
+    "google": _stream_google,
+    "openai": _stream_openai,
+}
+
+
+def llm_text_stream(prompt: str, on_delta, *, max_tokens: int = 16000,
+                    web_search: bool = False, keys: dict | None = None,
+                    models=None) -> tuple[str, str, str]:
+    """Stream a complete answer, continuing once when a provider hits its cap.
+
+    Provider fallback is safe only before any text reaches the browser. Once a
+    stream has emitted text, switching providers would duplicate or contradict
+    the visible answer, so a mid-stream failure is surfaced to the caller.
+    """
+    keys = resolve_keys() if keys is None else keys
+    for provider, model in list(models or ANSWER_MODELS):
+        key = keys.get(provider)
+        caller = _STREAM_CALLERS.get(provider)
+        if not key or caller is None or (web_search and provider == "openai"):
+            continue
+        emitted = []
+        emit = lambda text: (emitted.append(text), on_delta(text))
+        try:
+            text, truncated = caller(
+                key, model, prompt, max_tokens, emit, web_search)
+            if truncated and text.strip():
+                continuation = (
+                    prompt + "\n\n---\nThe answer below reached the output limit. "
+                    "Continue from its final sentence without repeating any text. "
+                    "Finish every remaining section and conclusion.\n\n"
+                    "PARTIAL ANSWER:\n" + text)
+                more, truncated_again = caller(
+                    key, model, continuation, max_tokens, emit, web_search)
+                text += more
+                if truncated_again:
+                    raise RuntimeError(
+                        f"{provider} response remained truncated after continuation")
+        except Exception as e:  # noqa: BLE001
+            if emitted:
+                raise
+            logger.warning("스트리밍 답변 생성 실패 (%s/%s): %s",
+                           provider, model, str(e)[:180])
+            continue
+        if text.strip():
+            return text, provider, model
+    return "", "", ""

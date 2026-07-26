@@ -16,6 +16,7 @@ docx 를 만들지 않고 **HTML 한 장**을 낸다:
 from __future__ import annotations
 
 import html
+import json
 import re
 from datetime import datetime
 
@@ -113,6 +114,15 @@ _LABELS = {
         "zotero": "Zotero PDF",
         "zotero_item": "Zotero record",
         "zotero_col": "Zotero",
+        "dr_title": "Deep Research — full-text PDF corpus",
+        "dr_sub": "Answers are grounded in the citing papers' locally held PDFs.",
+        "dr_ph": "e.g. Which limitations recur across these papers?",
+        "dr_go": "Ask",
+        "exp_pdf": "🖨 PDF",
+        "exp_md": "⬇ .md",
+        "exp_obs": "📝 Obsidian",
+        "exp_audio": "🎧 Audio",
+        "dr_offline": "<b>Open this report through the local server.</b> Run <code>python pipeline/serve_local.py</code>, then use <code>http://localhost:8000/…</code>.",
     },
 }
 
@@ -282,15 +292,16 @@ def _audio_blocks(enabled: bool) -> tuple[str, str, str]:
            or os.environ.get("GEMINI_API_KEY") or "")
     css = get_audio_css("#D63423", "#a82a1c", "#fdecea")
     modal = audio_modal_html(
-        "이 답변을 팟캐스트형 오디오로 만듭니다. "
-        "(Gemini · 완성본은 이메일로도 전송)")
+        "선택한 citedby 리포트 또는 Deep Research 답변을 팟캐스트형 오디오로 "
+        "만듭니다. (Gemini · 완성본은 이메일로도 전송)")
     script = audio_script_block(key, mode="deep",
                                 provider_js=AUDIO_PROVIDER_JS)
-    # 상단 바 버튼 배선. Deep Research 패널의 버튼과 같은 모달을 연다 —
-    # 컨텍스트 provider 가 답변 유무를 보고 알아서 갈라준다.
+    # 상단 바는 citedby 리포트 컨텍스트를 명시한다. Deep 패널 버튼은 `deep`을
+    # 지정하므로 같은 모달을 공유해도 서로의 본문을 침범하지 않는다.
     script += (
         '\n<script>(function(){var b=document.getElementById("rpAudio");'
         'if(!b)return;b.addEventListener("click",function(){'
+        'window._citedbyAudioMode="report";'
         'if(typeof window.openAudioModal==="function")window.openAudioModal();'
         '});})();</script>')
     return css, modal, script
@@ -766,6 +777,80 @@ _PRINT_JS = (
 )
 
 
+def _report_export_script(collection: str) -> str:
+    """Citedby 본문 전용 Markdown/Obsidian export.
+
+    Deep Research 패널은 `.no-print`라 PDF에서 빠지고, 여기서도 명시적으로
+    제거한다. 따라서 패널에 답변이 남아 있어도 상단 도구는 리포트만 내보낸다.
+    """
+    col = json.dumps(collection or "citedby", ensure_ascii=False)
+    return f"""<script>
+(function(){{
+  var COLLECTION={col};
+  function children(n){{return Array.prototype.map.call(n.childNodes,nodeMd).join('');}}
+  function nodeMd(n){{
+    if(n.nodeType===3) return (n.nodeValue||'').replace(/\\s+/g,' ');
+    if(n.nodeType!==1) return '';
+    var t=n.tagName.toLowerCase(), body=children(n).trim();
+    if(t==='a'){{
+      var href=n.getAttribute('href')||'';
+      return href?('['+body+']('+href+')'):body;
+    }}
+    if(/^h[1-6]$/.test(t)) return '\\n\\n'+'#'.repeat(parseInt(t[1],10))+' '+body+'\\n\\n';
+    if(t==='p') return '\\n\\n'+body+'\\n\\n';
+    if(t==='br') return '\\n';
+    if(t==='li') return '\\n- '+body;
+    if(t==='tr'){{
+      var cells=Array.prototype.map.call(n.querySelectorAll(':scope > th,:scope > td'),
+        function(x){{return children(x).trim().replace(/\\|/g,'\\\\|');}});
+      return cells.length?('\\n| '+cells.join(' | ')+' |'):'';
+    }}
+    if(t==='img'){{
+      var alt=n.getAttribute('alt')||'timeline';
+      var src=n.getAttribute('src')||'';
+      return src.indexOf('data:')===0?('\\n\\n*['+alt+' image embedded in HTML report]*\\n\\n'):
+             (src?('\\n\\n!['+alt+']('+src+')\\n\\n'):'');
+    }}
+    if(['div','section','article','table','ul','ol','figure','figcaption'].indexOf(t)>=0)
+      return '\\n'+body+'\\n';
+    return body;
+  }}
+  function reportMarkdown(){{
+    var root=document.querySelector('.wrap').cloneNode(true);
+    root.querySelectorAll('.no-print,.dr,script,style,footer').forEach(function(n){{n.remove();}});
+    return nodeMd(root).replace(/\\n[ \\t]+/g,'\\n').replace(/\\n{{3,}}/g,'\\n\\n').trim()+'\\n';
+  }}
+  function safe(s){{return String(s||'citedby').replace(/[\\\\/:*?"<>|\\n\\r\\t]/g,' ')
+    .replace(/\\s+/g,' ').trim().slice(0,70)||'citedby';}}
+  function title(){{
+    var n=document.querySelector('.seed-title,h1');
+    return n?(n.innerText||'citedby').trim():'citedby';
+  }}
+  function download(){{
+    var text=reportMarkdown(), d=new Date().toISOString().slice(0,10);
+    var blob=new Blob([text],{{type:'text/markdown;charset=utf-8'}});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='CITEDBY_REPORT_'+d+'_'+safe(title())+'.md';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){{a.remove();URL.revokeObjectURL(a.href);}},100);
+  }}
+  function obsidian(){{
+    var d=new Date().toISOString().slice(0,10);
+    var file='notes/'+COLLECTION+'/help/CITEDBY_REPORT_'+d+'_'+safe(title());
+    var body='# '+title()+'\\n\\n> citedby report ('+new Date().toLocaleString()+
+      ')\\n\\n## My Notes\\n\\n(여기에 생각을 적으세요)\\n\\n---\\n\\n'+reportMarkdown();
+    window.location.href='obsidian://new?vault=docs&file='+encodeURIComponent(file)+
+      '&content='+encodeURIComponent(body);
+  }}
+  document.addEventListener('DOMContentLoaded',function(){{
+    var md=document.getElementById('rpMd'), ob=document.getElementById('rpObs');
+    if(md)md.addEventListener('click',download);
+    if(ob)ob.addEventListener('click',obsidian);
+  }});
+}})();
+</script>"""
+
+
 def build_report_html(*,
                       papers: list[dict],
                       paper_info: dict | None = None,
@@ -831,11 +916,13 @@ def build_report_html(*,
         '<div class="bar no-print">',
         f'<button type="button" class="btn" onclick="citedbyPrint()">'
         f'\U0001F5A8\uFE0F {_esc(lbl["print"])}</button>',
-        # 오디오는 Deep Research 답변이 없어도 눌릴 수 있어야 한다 — 리포트를
-        # 그대로 듣고 싶은 경우가 있다. 패널이 있을 때만 모듈이 실리므로
-        # 버튼도 그때만 낸다.
+        f'<button type="button" class="btn" id="rpMd">'
+        f'{_esc(lbl["exp_md"])}</button>',
+        f'<button type="button" class="btn" id="rpObs">'
+        f'{_esc(lbl["exp_obs"])}</button>',
+        # Deep Research 인덱스가 있는 citedby 리포트에서 본문 오디오를 제공한다.
         (f'<button type="button" class="btn" id="rpAudio">'
-         f'\U0001F3A7 {_esc(lbl["exp_audio"])}</button>' if _audio_on else ""),
+         f'{_esc(lbl["exp_audio"])}</button>' if _audio_on else ""),
         f'<span class="hint">{_esc(lbl["print_hint"])}</span>',
         "</div>",
         f'<h1>{_esc(lbl["report_title"])}</h1>',
@@ -871,7 +958,7 @@ def build_report_html(*,
     body.append(
         f'<footer>paper-curation · citedby · {_esc(ts)}</footer>'
     )
-    # Audio Overview 는 Deep Research 패널이 있을 때만 (답변이 있어야 의미가 있다)
+    # Audio Overview 자산이 실릴 때만 버튼을 낸다.
     _audio_css, _audio_modal, _audio_script = _audio_blocks(bool(deep_index))
 
     body.append("</div>")
@@ -884,7 +971,7 @@ def build_report_html(*,
         f"<style>{_CSS}{_deep_css(deep_index)}{_audio_css}</style>"
         f"{_PRINT_JS}</head><body>"
         + "".join(body) + _audio_modal + _deep_script(deep_index, collection)
-        + _audio_script +
+        + _audio_script + _report_export_script(collection) +
         "</body></html>"
     )
 

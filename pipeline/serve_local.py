@@ -340,28 +340,50 @@ class LocalHandler(SimpleHTTPRequestHandler):
             self._send_json(400, {"error": "missing 'prompt'"})
             return
         try:
-            max_tokens = int(req.get("max_tokens") or 8000)
+            max_tokens = int(req.get("max_tokens") or 16000)
         except (TypeError, ValueError):
-            max_tokens = 8000
-        max_tokens = max(256, min(max_tokens, 16000))
+            max_tokens = 16000
+        max_tokens = max(256, min(max_tokens, 24000))
+        web_search = bool(req.get("web_search", False))
 
         sys.path.insert(0, str(PIPELINE_DIR))
         try:
-            from lib.citedby.topic_filter import llm_text
+            from lib.citedby.topic_filter import llm_text_stream
         except Exception as e:
             self._send_json(500, {"error": f"citedby 모듈 로드 실패: {e}"})
             return
 
-        answer, provider, model = llm_text(prompt, max_tokens=max_tokens)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+
+        alive = {"ok": True}
+
+        def emit_delta(text):
+            if alive["ok"]:
+                alive["ok"] = self._stream_line({
+                    "event": "delta", "text": text,
+                })
+
+        try:
+            answer, provider, model = llm_text_stream(
+                prompt, emit_delta, max_tokens=max_tokens,
+                web_search=web_search)
+        except Exception as e:  # noqa: BLE001 — 스트림 안 오류로 전달
+            self._stream_line({"event": "error", "message": str(e)[:400]})
+            return
         if not answer:
-            self._send_json(502, {
-                "error": "답변 생성 실패 — LLM 키가 없거나(ANTHROPIC_API_KEY / "
-                         "OPENAI_API_KEY / GOOGLE_API_KEY) 모든 provider 가 "
-                         "실패했습니다. 서버 로그를 확인하세요.",
+            self._stream_line({
+                "event": "error",
+                "message": "답변 생성 실패 — LLM 키가 없거나 모든 provider가 "
+                           "실패했습니다. 서버 로그를 확인하세요.",
             })
             return
-        self._send_json(200, {"answer": answer, "provider": provider,
-                              "model": model})
+        self._stream_line({
+            "event": "done", "provider": provider, "model": model,
+            "chars": len(answer),
+        })
 
     def _handle_citedby(self):
         try:

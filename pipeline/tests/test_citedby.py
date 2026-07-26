@@ -2262,6 +2262,27 @@ class ServerSideKeyTests(unittest.TestCase):
         self.assertNotIn("api.openai.com", js)
         self.assertNotIn("generativelanguage.googleapis.com", js)
 
+    def test_panel_streams_ndjson_and_has_research_options(self):
+        from lib.citedby.deep_panel import panel_script, panel_html
+        labels = {"dr_title": "t", "dr_sub": "s", "dr_ph": "p",
+                  "dr_go": "g", "dr_offline": "o",
+                  "exp_pdf": "P", "exp_md": "M", "exp_obs": "O",
+                  "exp_audio": "A"}
+        js = panel_script("_citedby_index.json")
+        html = panel_html("_citedby_index.json", labels)
+        self.assertIn("getReader()", js)
+        self.assertIn("ev.event==='delta'", js)
+        self.assertIn("web_search:!!web", js)
+        self.assertIn('id="drWeb"', html)
+        self.assertIn('id="drDeeper"', html)
+
+    def test_server_answer_route_is_streaming(self):
+        import serve_local
+        src = inspect.getsource(serve_local.LocalHandler._handle_citedby_answer)
+        self.assertIn("application/x-ndjson", src)
+        self.assertIn("llm_text_stream", src)
+        self.assertIn('"event": "delta"', src)
+
     def test_llm_text_does_not_force_json(self):
         """JSON system 프롬프트를 그대로 쓰면 답변이 ```json 으로 감싸여 나온다."""
         from lib.citedby import topic_filter as TF
@@ -2297,6 +2318,27 @@ class ServerSideKeyTests(unittest.TestCase):
         from lib.citedby import topic_filter as TF
         with patch.object(TF, "resolve_keys", return_value={}):
             self.assertEqual(TF.llm_text("q"), ("", "", ""))
+
+    def test_llm_text_stream_continues_truncated_answer(self):
+        from lib.citedby import topic_filter as TF
+        calls = []
+
+        def fake(key, model, prompt, max_tokens, emit, web):
+            calls.append(prompt)
+            text = "첫 부분." if len(calls) == 1 else " 마지막 부분."
+            emit(text)
+            return text, len(calls) == 1
+
+        deltas = []
+        with patch.dict(TF._STREAM_CALLERS, {"anthropic": fake}), \
+             patch.object(TF, "resolve_keys", return_value={"anthropic": "K"}):
+            ans, provider, _ = TF.llm_text_stream(
+                "질문", deltas.append, models=[("anthropic", "model")])
+        self.assertEqual(ans, "첫 부분. 마지막 부분.")
+        self.assertEqual("".join(deltas), ans)
+        self.assertEqual(provider, "anthropic")
+        self.assertEqual(len(calls), 2)
+        self.assertIn("PARTIAL ANSWER", calls[1])
 
     def test_json_path_still_forces_json(self):
         """자유 텍스트 경로를 추가하면서 JSON 경로가 깨지면 안 된다."""
@@ -2374,6 +2416,19 @@ class AnswerExportTests(unittest.TestCase):
     def test_export_bar_hidden_until_answered(self):
         h = self._html(deep_index="_citedby_index.json")
         self.assertIn('id="drExport" style="display:none"', h)
+
+    def test_result_export_bar_precedes_streamed_answer(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertLess(h.index('id="drExport"'), h.index('id="drAns"'))
+
+    def test_report_and_result_exports_are_separate(self):
+        h = self._html(deep_index="_citedby_index.json", collection="ai4s")
+        for bid in ("rpMd", "rpObs", "rpAudio", "drMd", "drObs", "drAudioBtn"):
+            self.assertIn('id="' + bid + '"', h)
+        self.assertIn("CITEDBY_REPORT_", h)
+        self.assertIn("window._citedbyAudioMode=\"report\"", h)
+        self.assertIn("window._citedbyAudioMode='deep'", h)
+        self.assertIn("root.querySelectorAll('.no-print,.dr", h)
 
 
 import inspect
