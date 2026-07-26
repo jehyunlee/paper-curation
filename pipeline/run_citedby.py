@@ -183,7 +183,10 @@ def main(argv=None) -> int:
             source_counts=result["source_counts"])
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now().strftime("%y%m%d_%H%M")
+    # TZ 환경변수가 아니라 기계 설정 시간대로 — 상속된 TZ 때문에
+    # 파일명이 16시간 어긋나 시간순 정렬이 깨진 적이 있다.
+    from lib.dateutil import now_local
+    stamp = now_local().strftime("%y%m%d_%H%M")
     report_path = out_dir / f"report_{stamp}.html"
     report_path.write_text(result["report_html"], encoding="utf-8")
 

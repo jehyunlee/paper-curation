@@ -1,5 +1,6 @@
 """날짜 문자열 정규화. build_papers_index.py, build_topic_index.py 등에서 공유."""
 
+import os
 import re
 
 MONTH_MAP = {
@@ -61,3 +62,42 @@ def normalize_date(ds):
         return m.group(1)
 
     return ds
+
+
+# ── 벽시계 ───────────────────────────────────────────────────────────────
+
+def machine_tz():
+    """이 기계에 설정된 시간대. `TZ` 환경변수를 **무시**한다.
+
+    `datetime.now()` 는 프로세스가 상속한 `TZ` 를 따른다. 그래서 에이전트
+    하네스·cron·launchd·원격 SSH 처럼 TZ 가 다른 환경에서 파이프라인을 돌리면
+    산출물 파일명이 엉뚱한 시각을 받는다. 실제로 리포트가 16시간 어긋난 이름으로
+    저장돼 시간순 정렬이 깨졌다 (TZ=America/Los_Angeles 상속).
+
+    운영자가 명시하려면 `PAPER_CURATION_TZ` 를 쓴다. 없으면 OS 설정을 읽는다.
+    """
+    from zoneinfo import ZoneInfo
+
+    name = (os.environ.get("PAPER_CURATION_TZ") or "").strip()
+    if not name:
+        # macOS/Linux: /etc/localtime → .../zoneinfo/Asia/Seoul
+        try:
+            link = os.path.realpath("/etc/localtime")
+            if "zoneinfo/" in link:
+                name = link.split("zoneinfo/", 1)[1]
+        except OSError:
+            name = ""
+    if name:
+        try:
+            return ZoneInfo(name)
+        except Exception:  # noqa: BLE001 — 알 수 없는 이름이면 아래로
+            pass
+    return None  # 확인 불가 → 호출자가 기존 지역시각으로 폴백
+
+
+def now_local():
+    """기계 설정 시간대의 현재 시각. TZ 환경변수에 흔들리지 않는다."""
+    from datetime import datetime
+
+    tz = machine_tz()
+    return datetime.now(tz) if tz else datetime.now()

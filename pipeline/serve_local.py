@@ -441,7 +441,8 @@ class LocalHandler(SimpleHTTPRequestHandler):
             return {}
         try:
             out_dir.mkdir(parents=True, exist_ok=True)
-            stamp = datetime.datetime.now().strftime("%y%m%d_%H%M")
+            from lib.dateutil import now_local
+            stamp = now_local().strftime("%y%m%d_%H%M")
             files = {}
             report_path = out_dir / f"report_{stamp}.html"
             report_path.write_text(result["report_html"], encoding="utf-8")

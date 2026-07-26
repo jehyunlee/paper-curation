@@ -675,7 +675,8 @@ def build_report_html(*,
             if zurl:
                 paper_info["_zotero_url"] = zurl
                 paper_info["_zotero_kind"] = zotero_index.url_kind(paper_info)
-    ts = (generated_at or datetime.now()).strftime("%Y-%m-%d %H:%M")
+    from lib.dateutil import now_local
+    ts = (generated_at or now_local()).strftime("%Y-%m-%d %H:%M")
 
     sub_bits = []
     if topic.strip():

@@ -2595,3 +2595,68 @@ class TimelineOverviewLangTests(unittest.TestCase):
         """'그룹을 언급하라'만으론 근거가 없다 — 어디서 찾을지 알려줘야 한다."""
         r = self._render("ko")
         self.assertIn("repeated author", r)
+
+
+class WallClockTests(unittest.TestCase):
+    """산출물 시각은 상속된 TZ 에 흔들리면 안 된다.
+
+    에이전트 하네스가 TZ=America/Los_Angeles 를 물려줘서, 11:16 에 만든 리포트가
+    `report_260725_1916.html` 로 저장됐다 — 16시간 어긋나 목록이 시간순으로
+    정렬되지 않았다. cron·launchd·원격 SSH 도 같은 함정에 빠진다.
+    """
+
+    def test_now_local_ignores_TZ_env(self):
+        import os, time
+        from lib.dateutil import now_local
+        before = now_local().strftime("%Y%m%d_%H%M")
+        old = os.environ.get("TZ")
+        try:
+            os.environ["TZ"] = "America/Los_Angeles"
+            time.tzset()
+            self.assertEqual(now_local().strftime("%Y%m%d_%H%M"), before)
+        finally:
+            if old is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = old
+            time.tzset()
+
+    def test_explicit_override_is_honoured(self):
+        """운영자가 명시하면 그것을 따른다."""
+        import os
+        from lib.dateutil import machine_tz
+        old = os.environ.get("PAPER_CURATION_TZ")
+        try:
+            os.environ["PAPER_CURATION_TZ"] = "UTC"
+            self.assertEqual(str(machine_tz()), "UTC")
+        finally:
+            if old is None:
+                os.environ.pop("PAPER_CURATION_TZ", None)
+            else:
+                os.environ["PAPER_CURATION_TZ"] = old
+
+    def test_unknown_zone_falls_back_not_crashes(self):
+        import os
+        from lib.dateutil import machine_tz, now_local
+        old = os.environ.get("PAPER_CURATION_TZ")
+        try:
+            os.environ["PAPER_CURATION_TZ"] = "Not/AZone"
+            self.assertIsNone(machine_tz())
+            self.assertIsNotNone(now_local())   # 죽지 않는다
+        finally:
+            if old is None:
+                os.environ.pop("PAPER_CURATION_TZ", None)
+            else:
+                os.environ["PAPER_CURATION_TZ"] = old
+
+    def test_no_raw_datetime_now_in_stamp_paths(self):
+        """다시 새지 않도록 호출부를 고정한다."""
+        import pathlib
+        root = pathlib.Path(__file__).resolve().parents[1]
+        for rel in ("run_citedby.py", "serve_local.py", "lib/citedby/report.py"):
+            src = (root / rel).read_text(encoding="utf-8")
+            for line in src.splitlines():
+                if "strftime" in line and "%y%m%d_%H%M" in line or (
+                        "strftime" in line and "%Y-%m-%d %H:%M" in line):
+                    with self.subTest(rel=rel, line=line.strip()[:60]):
+                        self.assertNotIn("datetime.now()", line)
