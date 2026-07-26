@@ -2139,16 +2139,27 @@ class TimelineProcedureTests(unittest.TestCase):
             return {"method_text": "## Citation Timeline", "caption": "c"}
 
         with patch("lib.citedby.topic_filter.llm_json", side_effect=fake_llm):
-            mt, cap = TL.build_narrative(self.THEMES, {"title": "Seed"})
+            mt, cap, ov = TL.build_narrative(self.THEMES, {"title": "Seed"})
         self.assertEqual(mt, "## Citation Timeline")
         self.assertIn("STREAM:", seen["prompt"])
         self.assertIn("Seed", seen["prompt"])
 
     def test_no_narrative_means_no_image_attempt(self):
         from lib.citedby import timeline as TL
-        with patch.object(TL, "build_narrative", return_value=("", "")), \
+        with patch.object(TL, "build_narrative", return_value=("", "", "")), \
              patch.object(TL, "_generate_candidates") as gen:
             self.assertEqual(TL.generate(self.THEMES).uri, "")
+        gen.assert_not_called()
+
+    def test_overview_survives_narrative_failure(self):
+        """작화 지시가 없어 그림을 못 그려도, 개요가 나왔으면 그건 살린다."""
+        from lib.citedby import timeline as TL
+        with patch.object(TL, "build_narrative",
+                          return_value=("", "", "개요는 나왔다.")), \
+             patch.object(TL, "_generate_candidates") as gen:
+            r = TL.generate(self.THEMES)
+        self.assertEqual(r.uri, "")
+        self.assertEqual(r.overview, "개요는 나왔다.")
         gen.assert_not_called()
 
     def test_judge_picks_among_candidates(self):
@@ -2486,3 +2497,101 @@ class TimelineNarrativeShapeTests(unittest.TestCase):
         inner = m.group(1)
         self.assertIn("<strong>굵게</strong>", inner)
         self.assertNotIn("## 제목", inner)
+
+
+class TimelineOverviewTests(unittest.TestCase):
+    """그림 아래 첫 글은 **줄글 개요**여야 한다.
+
+    스트림별 항목 나열은 이미 그림이 하는 일이다. 독자가 먼저 알아야 할 것은
+    "무엇이 생겼고 사라졌고 갈라졌고 합쳐졌는가" 라는 시간의 서사다.
+    """
+
+    def _html(self, **kw):
+        kw.setdefault("papers", [{"title": "P"}])
+        return report.build_report_html(**kw)
+
+    def test_overview_precedes_stream_detail(self):
+        h = self._html(timeline_uri="data:image/png;base64,AAA",
+                       timeline_overview="줄글 개요.",
+                       timeline_narrative="### STREAM: a\n세부")
+        self.assertLess(h.index('<div class="tl-over">'),
+                        h.index('<div class="tl-narr">'))
+
+    def test_image_precedes_overview(self):
+        h = self._html(timeline_uri="data:image/png;base64,AAA",
+                       timeline_overview="줄글 개요.")
+        self.assertLess(h.index("base64,AAA"), h.index('<div class="tl-over">'))
+
+    def test_blank_line_splits_paragraphs(self):
+        """줄글은 문단으로 끊어 읽힌다 — 한 덩어리로 뭉치면 안 된다."""
+        h = self._html(timeline_overview="가.\n\n나.\n\n다.")
+        import re as _re
+        inner = _re.search(r'<div class="tl-over">(.*?)</div>', h, _re.S).group(1)
+        self.assertEqual(inner.count("<p>"), 3)
+
+    def test_overview_alone_renders_section(self):
+        """그림이 실패해도 개요만으로 절이 성립한다."""
+        h = self._html(timeline_overview="개요만 있다.")
+        self.assertIn('<div class="tl-over">', h)
+
+    def test_overview_is_escaped(self):
+        h = self._html(timeline_overview="<script>alert(1)</script>")
+        self.assertNotIn("<script>alert(1)</script>", h)
+
+    def test_prompt_demands_prose_and_temporal_focus(self):
+        """항목 나열이 아니라 줄글이어야 하고, 시간축 변화를 요구해야 한다."""
+        from lib.citedby import timeline as TL
+        p = TL._NARRATIVE_PROMPT
+        self.assertIn("OVERVIEW", p)
+        self.assertIn("flowing prose", p)
+        self.assertIn("no bullet points", p)
+        for concept in ("appeared", "faded", "split into branches", "converged"):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, p)
+        self.assertIn("research group", p)   # 연구 그룹 강조
+        self.assertIn("hinge", p)            # turning point 논문
+
+    def test_overview_language_follows_report(self):
+        from lib.citedby import timeline as TL
+        self.assertEqual(TL._LANG_NAMES["ko"], "Korean")
+        self.assertEqual(TL._LANG_NAMES["en"], "English")
+        self.assertIn("{lang_name}", TL._NARRATIVE_PROMPT)
+
+    def test_overview_kept_out_of_drawing_spec(self):
+        """개요는 별도 필드다 — method_text 에 섞여 그림에 새면 안 된다."""
+        from lib.citedby.timeline import TimelineResult
+        r = TimelineResult(uri="u", narrative="n", caption="c", overview="o")
+        self.assertEqual(r.overview, "o")
+        self.assertNotIn("o", r.narrative)
+
+
+class TimelineOverviewLangTests(unittest.TestCase):
+    """개요는 리포트 언어로 쓴다.
+
+    프롬프트 전체가 영어(그림 생성기용)라, 언어를 한 번만 적으면 모델이
+    그대로 영어로 써 버린다 — 실제로 그렇게 나왔다.
+    """
+
+    def _render(self, lang):
+        from lib.citedby.timeline import _NARRATIVE_PROMPT as P, _LANG_NAMES
+        return P.format(seed="S", short_seed="S", total=1, span="s",
+                        themes="t", lang_name=_LANG_NAMES[lang])
+
+    def test_language_instruction_is_emphatic(self):
+        r = self._render("ko")
+        self.assertIn("NOT IN ENGLISH", r)
+        self.assertGreaterEqual(r.count("Korean"), 3)
+
+    def test_technical_terms_stay_english(self):
+        """한국어 문장 안에 영어 기술 용어 — paper-curation 전체 관례."""
+        self.assertIn("do not translate them", self._render("ko"))
+
+    def test_english_report_asks_for_english(self):
+        r = self._render("en")
+        self.assertIn("English", r)
+        self.assertNotIn("Korean", r)
+
+    def test_research_group_hint_is_actionable(self):
+        """'그룹을 언급하라'만으론 근거가 없다 — 어디서 찾을지 알려줘야 한다."""
+        r = self._render("ko")
+        self.assertIn("repeated author", r)

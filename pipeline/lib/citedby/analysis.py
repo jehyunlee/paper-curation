@@ -268,6 +268,7 @@ def run_topic_analysis(papers: list[dict], *,
     themes = None
     timeline_uri = ""
     timeline_narrative = ""
+    timeline_overview = ""
     if topic:
         emit("topic_filter", f"주제 필터링 시작: {topic}", 0, total)
         selected = filter_by_topic(
@@ -298,9 +299,10 @@ def run_topic_analysis(papers: list[dict], *,
                 try:
                     from .timeline import generate as _gen_timeline
                     _tl = _gen_timeline(
-                        themes, paper_info=paper_info,
+                        themes, paper_info=paper_info, lang=lang,
                         progress=lambda phase, msg: emit(phase, msg))
                     timeline_uri = _tl.uri
+                    timeline_overview = _tl.overview
                     # 그림이 실패해도 narrative 는 남는다 — 글이 정보량은 더 많다.
                     timeline_narrative = _tl.narrative
                 except Exception as e:  # noqa: BLE001 — 그림 실패는 치명적이지 않다
@@ -325,6 +327,7 @@ def run_topic_analysis(papers: list[dict], *,
         source_counts=source_counts, zotero_index=zindex, themes=themes,
         deep_index=deep_index, timeline_uri=timeline_uri,
         timeline_narrative=timeline_narrative,
+        timeline_overview=timeline_overview,
         collection=collection)
 
     return {

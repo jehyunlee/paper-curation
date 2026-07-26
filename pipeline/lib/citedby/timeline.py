@@ -92,6 +92,36 @@ rounded callout boxes, one saturated consistent colour per stream, flat vector.
 
 CAPTION:
 A one-paragraph figure caption describing what the timeline shows.
+
+---
+
+OVERVIEW — **WRITE THIS IN {lang_name}. NOT IN ENGLISH.**
+Everything above is in English because it drives an image generator. This
+section is different: a human reads it. Write it in {lang_name}.
+Keep technical terms, method names, benchmarks, and venues in English inside
+{lang_name} sentences — do not translate them.
+
+Write 2-3 paragraphs of **flowing prose** — no headings, no bullet points,
+no labels. This is what a reader sees first, above the per-stream breakdown,
+so it must stand on its own without the diagram.
+
+Anchor it on **how the field moved over time**:
+- what appeared, and what triggered it
+- what faded or was absorbed into something else
+- where a line of work split into branches
+- where separate lines converged
+
+Then, only where the evidence above actually supports it:
+- if one research group, lab, or recurring set of authors drives a stream,
+  name them and say what they pushed forward — look for repeated author
+  names or affiliations across the paper titles above
+- if a single paper is the hinge the field turned on, name it and say what
+  changed before versus after
+
+Be concrete — name methods, benchmarks, venues, and years from the data.
+Do not hedge, do not summarise the list back, and do not restate the stream
+names in order. A reader who never sees the diagram should still come away
+understanding the shape of this citation landscape.
 """
 
 
@@ -111,9 +141,17 @@ def _themes_block(themes: dict) -> str:
     return "\n".join(lines)
 
 
+_LANG_NAMES = {"ko": "Korean", "en": "English"}
+
+
 def build_narrative(themes: dict, paper_info: dict | None = None, *,
-                    keys=None, cache_dir=None) -> tuple[str, str]:
-    """LLM 으로 method text + caption 을 만든다. 실패하면 ("", "").
+                    lang: str = "ko",
+                    keys=None, cache_dir=None) -> tuple[str, str, str]:
+    """LLM 으로 method text + caption + overview 를 만든다. 실패하면 ("", "", "").
+
+    overview 는 **독자용 줄글**이라 리포트 언어로 쓰고, method_text 는 그림
+    생성기에 넘어가므로 영어로 둔다. 한 번의 호출로 둘 다 받되 용도가 다르니
+    섞지 않는다 — 작화 지시문이 독자에게 새는 사고가 이래서 났다.
 
     이 단계를 건너뛰면 PaperBanana 가 무엇을 그릴지 스스로 지어내야 한다 —
     같은 데이터로도 결과가 매번 달라지는 원인이다.
@@ -126,16 +164,18 @@ def build_narrative(themes: dict, paper_info: dict | None = None, *,
 
     prompt = _NARRATIVE_PROMPT.format(
         seed=seed, short_seed=seed[:60], total=themes.get("total", 0),
-        span=span, themes=_themes_block(themes))
+        span=span, themes=_themes_block(themes),
+        lang_name=_LANG_NAMES.get(lang, "Korean"))
     prompt += ('\n\nReturn JSON only:\n'
-               '{"method_text": "...", "caption": "..."}')
+               '{"method_text": "...", "caption": "...", "overview": "..."}')
 
-    got = llm_json(prompt, max_tokens=6000, keys=keys, cache_dir=cache_dir)
+    got = llm_json(prompt, max_tokens=8000, keys=keys, cache_dir=cache_dir)
     if not got:
         logger.warning("타임라인 narrative 생성 실패")
-        return "", ""
+        return "", "", ""
     return (str(got.get("method_text") or "").strip(),
-            str(got.get("caption") or "").strip())
+            str(got.get("caption") or "").strip(),
+            str(got.get("overview") or "").strip())
 
 
 # ── 2단계: 후보 생성 ─────────────────────────────────────────────────────
@@ -254,15 +294,16 @@ class TimelineResult(NamedTuple):
     예전엔 이미지 생성용으로만 쓰고 버렸다 — 독자에게도 보여준다.
     """
     uri: str = ""
-    narrative: str = ""
+    narrative: str = ""      # 스트림별 세부 (작화 지시문 제외)
     caption: str = ""
+    overview: str = ""       # 독자용 줄글 2~3단락 — 세부보다 먼저 읽힌다
 
     def __bool__(self) -> bool:      # 기존 `if timeline_uri:` 관용구 보존
         return bool(self.uri)
 
 
 def generate(themes: dict, *, paper_info: dict | None = None,
-             candidates: int = DEFAULT_CANDIDATES,
+             candidates: int = DEFAULT_CANDIDATES, lang: str = "ko",
              keys=None, cache_dir=None, progress=None) -> TimelineResult:
     """narrative → 후보 N개 → 선별 → (data URI, narrative, caption).
 
@@ -280,12 +321,14 @@ def generate(themes: dict, *, paper_info: dict | None = None,
 
     if progress:
         progress("timeline", "타임라인 narrative 작성 중…")
-    method_text, caption = build_narrative(themes, paper_info,
-                                           keys=keys, cache_dir=cache_dir)
+    method_text, caption, overview = build_narrative(
+        themes, paper_info, lang=lang, keys=keys, cache_dir=cache_dir)
     if not method_text:
+        # 작화 지시가 없으면 그림은 못 그린다. 하지만 개요가 나왔다면 그건
+        # 독자용 산출물로 이미 완결이라 버리지 않는다.
         if progress:
             progress("timeline", "타임라인 생략 (narrative 실패)")
-        return TimelineResult()
+        return TimelineResult(overview=overview)
 
     box: dict = {}
 
@@ -308,17 +351,20 @@ def generate(themes: dict, *, paper_info: dict | None = None,
         logger.warning("타임라인이 %d초를 넘겨 포기", WALL_TIMEOUT_S)
         if progress:
             progress("timeline", "타임라인 생략 (시간 초과)")
-        return TimelineResult(narrative=reader_portion(method_text), caption=caption)
+        return TimelineResult(narrative=reader_portion(method_text),
+                              caption=caption, overview=overview)
 
     png = box.get("png")
     if not png:
         if progress:
             progress("timeline", "타임라인 생략 (생성 실패)")
-        return TimelineResult(narrative=reader_portion(method_text), caption=caption)
+        return TimelineResult(narrative=reader_portion(method_text),
+                              caption=caption, overview=overview)
 
     logger.info("타임라인 확정: %.0fKB", len(png) / 1024)
     if progress:
         progress("timeline", f"타임라인 완료 ({len(png) // 1024}KB)")
     return TimelineResult(
         uri="data:image/png;base64," + base64.b64encode(png).decode("ascii"),
-        narrative=reader_portion(method_text), caption=caption)
+        narrative=reader_portion(method_text), caption=caption,
+        overview=overview)
