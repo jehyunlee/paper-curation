@@ -956,7 +956,9 @@ def build_report_html(*,
         body.append(_appendix(papers, lbl))
 
     body.append(
-        f'<footer>paper-curation · citedby · {_esc(ts)}</footer>'
+        f'<footer>paper-curation · citedby · {_esc(ts)} · '
+        '<a href="https://github.com/jehyunlee/paper-curation">'
+        'Jehyun Lee (https://github.com/jehyunlee/paper-curation)</a></footer>'
     )
     # Audio Overview 자산이 실릴 때만 버튼을 낸다.
     _audio_css, _audio_modal, _audio_script = _audio_blocks(bool(deep_index))

@@ -81,7 +81,8 @@ _CSS = """
 .dr-prev{color:#9aa0a8;font-size:11.5px;margin:2px 0 0 18px;line-height:1.5}
 .dr-ref i{font-style:normal;color:#7a8089;font-size:11.5px}
 .dr-cite{display:inline-block;min-width:1.4em;text-align:center;font-size:11px;
- font-weight:700;background:#eef1f5;border-radius:4px;padding:0 4px;margin:0 1px}
+ font-weight:700;background:#eef1f5;border-radius:4px;padding:0 4px;margin:0 1px;
+ color:var(--ink);text-decoration:none}
 .dr-off{font-size:13px;color:var(--soft);background:#fff7e6;border:1px solid #f0d9a8;
  border-radius:7px;padding:10px 12px;margin-top:8px;line-height:1.6}
 .dr-off code{background:#fff;padding:1px 5px;border-radius:4px;font-size:12px}
@@ -359,7 +360,7 @@ _JS = r"""
   // ── 마크다운 렌더 ────────────────────────────────────────────────────
   // 코퍼스 Deep Research 와 같은 규약: marked.js 가 있으면 그걸 쓰고, 없으면
   // 최소 폴백. [ref:N] 은 렌더 후 클릭 가능한 배지로 바꾼다.
-  function mdToMarkup(md){
+  function mdToMarkup(md, refPrefix){
     var h;
     if(window.marked){
       try{ h=window.marked.parse(md,{gfm:true,breaks:false}); }catch(e){}
@@ -377,7 +378,11 @@ _JS = r"""
         .replace(/\n{2,}/g,'</p><p>');
       h='<p>'+h+'</p>';
     }
-    return h.replace(/\[ref:(\d+)\]/g,'<span class="dr-cite">$1</span>');
+    var prefix=(refPrefix===undefined)?'dr-ref-':refPrefix;
+    return h.replace(/\[ref:(\d+)\]/g,function(_,n){
+      return '<a class="dr-cite" href="#'+prefix+n+
+        '" title="Reference '+n+'">['+n+']</a>';
+    });
   }
 
   // ── 내보내기 (코퍼스 Deep Research 와 동일 형식) ──────────────────────
@@ -391,7 +396,10 @@ _JS = r"""
     if(r.arxiv) return 'https://arxiv.org/abs/'+r.arxiv;
     return r.url||'';
   }
-  function buildFullMarkdown(){
+  function reviewSlug(r){
+    return r.corpus_slug||((r.related&&r.source_slug)?r.source_slug:'');
+  }
+  function buildFullMarkdown(kind){
     var lines=['# citedby Deep Research','','**Query**: '+LAST.q,
                '**Generated**: '+new Date().toISOString(),
                '**Model**: '+(LAST.model||'-'),'','---','',LAST.answer];
@@ -400,11 +408,14 @@ _JS = r"""
       lines.push('','## References','');
       Array.from(cited).sort(function(a,b){return a-b;}).forEach(function(n){
         var r=LAST.refs[n-1]; if(!r) return;
-        var href=refUrl(r);
         var au=r.authors?(String(r.authors).split(/[;,]/)[0].trim()+' et al. '):'';
         var yr=r.year?('('+r.year+'). '):'';
-        var id=r.doi?(' DOI: https://doi.org/'+r.doi):(r.arxiv?(' arXiv:'+r.arxiv):'');
-        lines.push('- ['+n+'] '+au+yr+(href?('['+r.title+']('+href+')'):r.title)+'.'+id);
+        var slug=reviewSlug(r), title=r.title||'Untitled', linked=title;
+        if(slug&&kind==='obsidian')
+          linked='[[papers/'+slug+'/review|'+title+']]';
+        else if(slug)
+          linked='['+title+'](../../'+slug+'/review.md)';
+        lines.push('- ['+n+'] '+au+yr+linked+'.');
       });
     }
     return lines.join('\n');
@@ -423,7 +434,7 @@ _JS = r"""
   function exportMd(){
     if(!LAST.answer) return;
     var d=new Date().toISOString().slice(0,10);
-    dlBlob('CITEDBY_'+d+'_'+safeName(LAST.q)+'.md', buildFullMarkdown());
+    dlBlob('CITEDBY_'+d+'_'+safeName(LAST.q)+'.md', buildFullMarkdown('markdown'));
   }
   // Obsidian 은 서버 라우트가 필요 없다 — obsidian://new URI 로 vault 에
   // 직접 만든다 (코퍼스 Deep Research 와 동일 방식).
@@ -434,7 +445,7 @@ _JS = r"""
     var body=['# '+LAST.q,'','> citedby Deep Research ('+new Date().toLocaleString()+
               (LAST.model?(' · '+LAST.model):'')+')','',
               '## My Notes','','(여기에 생각을 적으세요)','','---','',
-              buildFullMarkdown()].join('\n');
+              buildFullMarkdown('obsidian')].join('\n');
     window.location.href='obsidian://new?vault=docs&file='+
       encodeURIComponent(file)+'&content='+encodeURIComponent(body);
     status('Obsidian 으로 보냈습니다 — '+file+'.md');
@@ -448,7 +459,7 @@ _JS = r"""
       var r=LAST.refs[n-1]; if(!r) return '';
       var href=refUrl(r);
       var meta=[r.year||'', r.journal||''].filter(Boolean).join(' · ');
-      return '<li><span class="n">['+n+']</span> '+
+      return '<li id="dr-pdf-ref-'+n+'"><span class="n">['+n+']</span> '+
         (href?('<a href="'+href+'">'+esc(r.title)+'</a>'):esc(r.title))+
         (meta?(' <span class="m">'+esc(meta)+'</span>'):'')+
         (href?('<div class="u"><a href="'+href+'">'+esc(href)+'</a></div>'):'')+
@@ -466,6 +477,8 @@ _JS = r"""
       'ol.refs .n{font-weight:700;margin-right:4px}ol.refs .m{color:#7a8089}'+
       'ol.refs .u{font-size:11px;margin-left:22px}'+
       'a{color:#1a4fa0}@page{size:A4;margin:16mm 14mm}'+
+      '.pdf-footer{margin-top:30px;padding-top:9px;border-top:1px solid #ddd;'+
+      'font-size:11px;color:#667085}'+
       '@media print{a{text-decoration:none}}';
     var w=window.open('','_blank');
     if(!w){ status('팝업이 차단되었습니다 — 허용 후 다시 시도하세요', true); return; }
@@ -474,8 +487,9 @@ _JS = r"""
       '<h1>'+esc(LAST.q)+'</h1>'+
       '<div class="meta">citedby Deep Research · '+new Date().toLocaleString()+
       (LAST.model?(' · '+esc(LAST.model)):'')+'</div>'+
-      mdToMarkup(LAST.answer)+
+      mdToMarkup(LAST.answer,'dr-pdf-ref-')+
       (refs?('<h2>참고문헌</h2><ol class="refs">'+refs+'</ol>'):'')+
+      '<footer class="pdf-footer">Jehyun Lee (<a href="https://github.com/jehyunlee/paper-curation">https://github.com/jehyunlee/paper-curation</a>)</footer>'+
       '</body></html>');
     w.document.close();
     setTimeout(function(){ w.focus(); w.print(); }, 400);
@@ -489,13 +503,14 @@ _JS = r"""
     el.innerHTML='<h4>근거</h4>'+refs.map(function(r,i){
       var link=r.attach?(' · <a href="zotero://open-pdf/library/items/'+r.attach+
         '">PDF 열기</a>'):'';
-      if(r.url) link+=' · <a href="'+esc(r.url)+
-        '" target="_blank" rel="noopener">열기</a>';
+      var slug=reviewSlug(r);
+      if(slug) link+=' · <a href="../../'+encodeURIComponent(slug)+
+        '/review.md" target="_blank" rel="noopener">review.md</a>';
       var sec=r.section?(' <i>'+esc(r.section)+'</i>'):'';
       var rel=r.related?(' <span class="dr-cite">'+esc(r.relation||'related')+
         '</span>'):'';
       var prev=esc((r.text||'').slice(0,180));
-      return '<div class="dr-ref"><b>['+(i+1)+']</b> '+
+      return '<div class="dr-ref" id="dr-ref-'+(i+1)+'"><b>['+(i+1)+']</b> '+
         esc(r.title||'')+sec+rel+link+
         '<div class="dr-prev">'+prev+'…</div></div>';
     }).join('');

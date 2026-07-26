@@ -2421,6 +2421,13 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("marked.min.js", js)
         self.assertNotIn("$('drAns').textContent=text", js)
 
+    def test_inline_citations_target_reference_entries(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn('href="#\'+prefix+n', h)
+        self.assertIn('id="dr-ref-\'+(i+1)', h)
+        self.assertIn("mdToMarkup(LAST.answer,'dr-pdf-ref-')", h)
+        self.assertIn('id="dr-pdf-ref-\'+n', h)
+
     def test_export_buttons_present(self):
         h = self._html(deep_index="_citedby_index.json")
         for bid in ("drPdf", "drMd", "drObs", "drAudioBtn"):
@@ -2438,6 +2445,23 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("'notes/'+COLLECTION+'/help/CITEDBY_'", h)
         self.assertIn('var COLLECTION="ai4s"', h)
 
+    def test_note_exports_link_local_reviews_not_external_urls(self):
+        h = self._html(deep_index="_citedby_index.json")
+        markdown = h[h.index("function buildFullMarkdown"):
+                     h.index("function safeName")]
+        self.assertIn("[[papers/'+slug+'/review|'+title+']]", markdown)
+        self.assertIn("](../../'+slug+'/review.md)", markdown)
+        self.assertNotIn("refUrl(", markdown)
+        self.assertNotIn("https://doi.org/", markdown)
+        self.assertNotIn("https://arxiv.org/", markdown)
+
+    def test_live_references_prefer_local_reviews(self):
+        h = self._html(deep_index="_citedby_index.json")
+        refs = h[h.index("function renderRefs"):h.index("async function run")]
+        self.assertIn("encodeURIComponent(slug)", refs)
+        self.assertIn("/review.md", refs)
+        self.assertNotIn("r.url", refs)
+
     def test_pdf_export_keeps_absolute_reference_links(self):
         """파일을 받은 사람이 클릭할 수 있어야 한다."""
         h = self._html(deep_index="_citedby_index.json")
@@ -2445,6 +2469,12 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("https://arxiv.org/abs/", h)
         self.assertIn("function exportPdf", h)
 
+    def test_pdf_exports_include_attribution_footer(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertGreaterEqual(h.count("Jehyun Lee ("), 2)
+        self.assertGreaterEqual(
+            h.count("https://github.com/jehyunlee/paper-curation"), 4)
+        self.assertIn('class="pdf-footer"', h)
     def test_audio_reuses_existing_module(self):
         """TTS 를 새로 만들지 않는다 — audio_overview 가 대본·TTS·mp3·이메일을
         전부 갖고 있다."""
