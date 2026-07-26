@@ -75,7 +75,8 @@ _LABELS = {
         "exp_audio": "🎧 오디오",
         "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
         "timeline": "인용 흐름 타임라인",
-        "st_size": "규모", "st_infl": "영향", "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
+        "st_size": "규모", "st_infl": "영향",
+        "tl_failed": "타임라인 그림을 만들지 못했습니다 — 아래 갈래 설명은 그대로 유효합니다.", "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
         "themes": "인용 주제 분포",
         "themes_note": "주제를 지정하지 않아 인용논문을 자동 군집화했다. 연도별 편수와 누적 피인용으로 각 갈래가 언제 얼마나 퍼졌는지 읽는다.",
         "zotero": "Zotero PDF",
@@ -98,6 +99,7 @@ _LABELS = {
         "no_papers": "No citing papers matched.",
         "originality": "Originality",
         "cited": "Citations",
+        "tl_failed": "The timeline image could not be generated — the stream analysis below is still valid.",
         "st_size": "Size",
         "st_infl": "Influence",
         "source": "Source",
@@ -284,6 +286,13 @@ def _audio_blocks(enabled: bool) -> tuple[str, str, str]:
         "(Gemini · 완성본은 이메일로도 전송)")
     script = audio_script_block(key, mode="deep",
                                 provider_js=AUDIO_PROVIDER_JS)
+    # 상단 바 버튼 배선. Deep Research 패널의 버튼과 같은 모달을 연다 —
+    # 컨텍스트 provider 가 답변 유무를 보고 알아서 갈라준다.
+    script += (
+        '\n<script>(function(){var b=document.getElementById("rpAudio");'
+        'if(!b)return;b.addEventListener("click",function(){'
+        'if(typeof window.openAudioModal==="function")window.openAudioModal();'
+        '});})();</script>')
     return css, modal, script
 
 
@@ -501,7 +510,8 @@ def _stream_cards(streams, lbl: dict, papers: list[dict]) -> str:
 
 def _timeline_section(data_uri: str, lbl: dict, narrative: str = "",
                       overview: str = "", streams=(),
-                      papers: list[dict] | None = None) -> str:
+                      papers: list[dict] | None = None,
+                      failure: str = "") -> str:
     """타임라인 그림 + 그 그림을 만든 narrative.
 
     그림은 base64 data URI 라 파일을 옮겨도 PDF 로 뽑아도 살아 있다.
@@ -512,6 +522,11 @@ def _timeline_section(data_uri: str, lbl: dict, narrative: str = "",
     if not data_uri and not narrative and not overview and not streams:
         return ""
     out = [f'<h2>{lbl["timeline"]}</h2>']
+    if not data_uri and failure:
+        # 그림이 없으면 **왜 없는지** 적는다. 조용히 빠지면 다시 돌릴지
+        # 판단할 근거가 없다 — 실제로 그래서 원인을 사후에 못 찾았다.
+        out.append(f'<p class="tl-fail">{_esc(lbl["tl_failed"])}'
+                   f' <span>({_esc(failure)})</span></p>')
     if data_uri:
         out.append(
             f'<figure class="tl"><img src="{data_uri}" alt="{_esc(lbl["timeline"])}">'
@@ -709,7 +724,7 @@ table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
 .ev-abstract{color:#8a6d1f;background:#fbf3de}
 .ev-title{color:#8a9099;background:#f0f1f3}
 a.pdf{font-weight:600}
-figure.tl-over{max-width:52rem;margin:1.2rem auto .4rem;font-size:1.05rem;line-height:1.9;color:#242a35}.stw{display:grid;gap:.85rem;margin:1.4rem auto 0;max-width:52rem}.stc{border:1px solid var(--line);border-radius:12px;padding:1rem 1.15rem;background:#fcfcfd}.stc h3{margin:0 0 .55rem;font-size:1.02rem;letter-spacing:-.01em;color:#1f2430}.stc p{margin:0 0 .6rem;line-height:1.75}.stc p.si{margin:.1rem 0 .55rem;font-size:.88rem;color:var(--soft)}.sbs{display:flex;flex-wrap:wrap;gap:.32rem;margin:0 0 .7rem}.sb{font-size:.74rem;font-weight:600;line-height:1;padding:.32rem .5rem;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--soft);white-space:nowrap}.sb.yr{font-variant-numeric:tabular-nums;color:#1f2430}.sb.tr{color:#1f2430}.sb.hi{background:#fdecea;border-color:#f3c9c3;color:#a82a1c}.sb.mid{background:#f2f5fa;border-color:#dde4ee;color:#41506b}.sb.lo{background:#f6f7f9;border-color:var(--line);color:#7b8496}.sp{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}.sp .pref{font-size:.79rem;padding:.28rem .55rem;border-radius:7px;background:#f2f5fa;border:1px solid #e3e9f2;color:#33405a;text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp .pref:hover{background:#e8eef8;border-color:#cfd9e8}.sp .pref.off{background:#f6f7f9;border-color:var(--line);color:#98a0ae}a.pref{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(214,52,35,.28)}a.pref:hover{border-bottom-color:var(--accent)}.card{scroll-margin-top:1rem}@media print{.sb{border-color:#ccc!important;background:#fff!important}.stc{break-inside:avoid}}.tl-over p{margin:0 0 1.05rem}.tl-narr{max-width:52rem;margin:.6rem auto 0;line-height:1.75;color:#333}.tl-narr p{margin:0 0 .9rem}.tl{margin:14px 0 22px;padding:0}
+figure.tl-over{max-width:52rem;margin:1.2rem auto .4rem;font-size:1.05rem;line-height:1.9;color:#242a35}.tl-fail{max-width:52rem;margin:1rem auto;padding:.7rem .9rem;border-radius:9px;background:#fff8f0;border:1px solid #f0dcc4;color:#7a5a2e;font-size:.9rem}.tl-fail span{color:#a08256;font-size:.84rem}.stw{display:grid;gap:.85rem;margin:1.4rem auto 0;max-width:52rem}.stc{border:1px solid var(--line);border-radius:12px;padding:1rem 1.15rem;background:#fcfcfd}.stc h3{margin:0 0 .55rem;font-size:1.02rem;letter-spacing:-.01em;color:#1f2430}.stc p{margin:0 0 .6rem;line-height:1.75}.stc p.si{margin:.1rem 0 .55rem;font-size:.88rem;color:var(--soft)}.sbs{display:flex;flex-wrap:wrap;gap:.32rem;margin:0 0 .7rem}.sb{font-size:.74rem;font-weight:600;line-height:1;padding:.32rem .5rem;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--soft);white-space:nowrap}.sb.yr{font-variant-numeric:tabular-nums;color:#1f2430}.sb.tr{color:#1f2430}.sb.hi{background:#fdecea;border-color:#f3c9c3;color:#a82a1c}.sb.mid{background:#f2f5fa;border-color:#dde4ee;color:#41506b}.sb.lo{background:#f6f7f9;border-color:var(--line);color:#7b8496}.sp{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}.sp .pref{font-size:.79rem;padding:.28rem .55rem;border-radius:7px;background:#f2f5fa;border:1px solid #e3e9f2;color:#33405a;text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp .pref:hover{background:#e8eef8;border-color:#cfd9e8}.sp .pref.off{background:#f6f7f9;border-color:var(--line);color:#98a0ae}a.pref{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(214,52,35,.28)}a.pref:hover{border-bottom-color:var(--accent)}.card{scroll-margin-top:1rem}@media print{.sb{border-color:#ccc!important;background:#fff!important}.stc{break-inside:avoid}}.tl-over p{margin:0 0 1.05rem}.tl-narr{max-width:52rem;margin:.6rem auto 0;line-height:1.75;color:#333}.tl-narr p{margin:0 0 .9rem}.tl{margin:14px 0 22px;padding:0}
 figure.tl img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
 figure.tl figcaption{font-size:12px;color:var(--soft);margin-top:6px}
 table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
@@ -763,6 +778,7 @@ def build_report_html(*,
                      timeline_narrative: str = "",
                      timeline_overview: str = "",
                      timeline_streams=(),
+                     timeline_failure: str = "",
                       deep_index: str = "",
                       collection: str = "",
                       generated_at: datetime | None = None) -> str:
@@ -809,11 +825,17 @@ def build_report_html(*,
         sub_bits.append(f'{_esc(lbl["topic"])}: <b>{_esc(topic)}</b>')
     sub_bits.append(f'{_esc(lbl["generated"])}: {_esc(ts)}')
 
+    _audio_on = bool(deep_index)
     body = [
         '<div class="wrap">',
         '<div class="bar no-print">',
         f'<button type="button" class="btn" onclick="citedbyPrint()">'
         f'\U0001F5A8\uFE0F {_esc(lbl["print"])}</button>',
+        # 오디오는 Deep Research 답변이 없어도 눌릴 수 있어야 한다 — 리포트를
+        # 그대로 듣고 싶은 경우가 있다. 패널이 있을 때만 모듈이 실리므로
+        # 버튼도 그때만 낸다.
+        (f'<button type="button" class="btn" id="rpAudio">'
+         f'\U0001F3A7 {_esc(lbl["exp_audio"])}</button>' if _audio_on else ""),
         f'<span class="hint">{_esc(lbl["print_hint"])}</span>',
         "</div>",
         f'<h1>{_esc(lbl["report_title"])}</h1>',
@@ -831,7 +853,8 @@ def build_report_html(*,
         body.append(panel_html(deep_index, lbl))
 
     body.append(_timeline_section(timeline_uri, lbl, timeline_narrative,
-                                  timeline_overview, timeline_streams, papers))
+                                  timeline_overview, timeline_streams, papers,
+                                  timeline_failure))
 
     if themes:
         body.append(_themes_section(themes, lbl))

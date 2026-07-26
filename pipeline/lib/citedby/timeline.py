@@ -21,11 +21,14 @@ import base64
 import logging
 import os
 import tempfile
+import time
 from typing import NamedTuple
 
 logger = logging.getLogger(__name__)
 
-WALL_TIMEOUT_S = 900       # 후보 생성 전체 상한 (대화형이라 코퍼스보다 짧게)
+WALL_TIMEOUT_S = 1800      # 후보 생성 전체 상한 (운영자 지시 2026-07-26).
+                           # 900초로는 후보 3개 × critic round 가 빠듯했다 —
+                           # 코퍼스 쪽 generate_timelines 는 21600s 를 쓴다.
 CRITIC_ROUNDS = 2
 DEFAULT_CANDIDATES = 3     # 코퍼스는 5개. 대화형이라 3개로 줄인다.
 
@@ -206,8 +209,13 @@ def build_narrative(themes: dict, paper_info: dict | None = None, *,
 # ── 2단계: 후보 생성 ─────────────────────────────────────────────────────
 
 def _generate_candidates(method_text: str, caption: str, out_dir: str,
-                         n: int, progress=None) -> list:
-    """PaperBanana 로 후보 N개. 실패한 것은 조용히 건너뛴다."""
+                         n: int, progress=None, errors: list | None = None) -> list:
+    """PaperBanana 로 후보 N개. 하나 실패해도 나머지로 계속한다.
+
+    실패 사유는 `errors` 로 흘려보낸다. 예전엔 로그로만 남겨서, 그림이 안
+    나왔을 때 왜인지 알 방법이 전혀 없었다 — 15분 기다린 사람이 다시 돌릴지
+    판단할 근거조차 없었다.
+    """
     from lib.paperbanana import generate_diagram
 
     results = []
@@ -215,17 +223,24 @@ def _generate_candidates(method_text: str, caption: str, out_dir: str,
         if progress:
             progress("timeline", f"타임라인 후보 {i}/{n} 생성 중…")
         path = os.path.join(out_dir, f"cand_{i}.png")
+        t0 = time.time()
         try:
             png = generate_diagram(method_text, caption, aspect_ratio="16:9",
                                    critic_rounds=CRITIC_ROUNDS,
                                    retrieval_setting="auto",
                                    output_path=path)
         except Exception as e:  # noqa: BLE001 — 후보 하나 실패가 전체를 막지 않는다
-            logger.warning("후보 %d 실패: %s", i, str(e)[:110])
+            why = f"{type(e).__name__}: {str(e)[:110]}"
+            logger.warning("후보 %d 실패 (%.0fs): %s", i, time.time() - t0, why)
+            if errors is not None:
+                errors.append(f"후보 {i} — {why}")
             continue
         if png:
             results.append((i, len(png), path, png))
-            logger.info("후보 %d: %.0fKB", i, len(png) / 1024)
+            logger.info("후보 %d: %.0fKB (%.0fs)", i, len(png) / 1024,
+                        time.time() - t0)
+        elif errors is not None:
+            errors.append(f"후보 {i} — 빈 결과")
     return results
 
 
@@ -323,6 +338,8 @@ class TimelineResult(NamedTuple):
     caption: str = ""
     overview: str = ""       # 독자용 줄글 2~3단락 — 세부보다 먼저 읽힌다
     streams: tuple = ()      # 구조화된 스트림 — 배지·링크·단락으로 렌더한다
+    failure: str = ""        # 그림이 없을 때 **왜 없는지**. 조용히 빠지면
+                             # 15분 기다린 사람이 판단할 근거가 없다.
 
     def __bool__(self) -> bool:      # 기존 `if timeline_uri:` 관용구 보존
         return bool(self.uri)
@@ -343,7 +360,7 @@ def generate(themes: dict, *, paper_info: dict | None = None,
         import lib.paperbanana  # noqa: F401
     except Exception as e:  # noqa: BLE001
         logger.info("타임라인 생략: PaperBanana 없음 (%s)", str(e)[:80])
-        return TimelineResult()
+        return TimelineResult(failure="PaperBanana 없음")
 
     if progress:
         progress("timeline", "타임라인 narrative 작성 중…")
@@ -354,14 +371,18 @@ def generate(themes: dict, *, paper_info: dict | None = None,
         # 독자용 산출물로 이미 완결이라 버리지 않는다.
         if progress:
             progress("timeline", "타임라인 생략 (narrative 실패)")
-        return TimelineResult(overview=overview, streams=tuple(streams))
+        return TimelineResult(overview=overview, streams=tuple(streams),
+                              failure="narrative 생성 실패")
 
     box: dict = {}
 
     def _run():
         with tempfile.TemporaryDirectory(prefix="citedby_tl_") as tmp:
+            errs: list[str] = []
             res = _generate_candidates(method_text, caption, tmp,
-                                       candidates, progress)
+                                       candidates, progress, errs)
+            if not res and errs:
+                box["why"] = " / ".join(errs[:3])
             best = _select_best(res, caption)
             if best:
                 box["png"] = best[3]
@@ -379,7 +400,8 @@ def generate(themes: dict, *, paper_info: dict | None = None,
             progress("timeline", "타임라인 생략 (시간 초과)")
         return TimelineResult(narrative=reader_portion(method_text),
                               caption=caption, overview=overview,
-                              streams=tuple(streams))
+                              streams=tuple(streams),
+                              failure=f"{WALL_TIMEOUT_S}초 초과")
 
     png = box.get("png")
     if not png:
@@ -387,7 +409,8 @@ def generate(themes: dict, *, paper_info: dict | None = None,
             progress("timeline", "타임라인 생략 (생성 실패)")
         return TimelineResult(narrative=reader_portion(method_text),
                               caption=caption, overview=overview,
-                              streams=tuple(streams))
+                              streams=tuple(streams),
+                              failure=box.get("why") or "후보 생성 실패")
 
     logger.info("타임라인 확정: %.0fKB", len(png) / 1024)
     if progress:

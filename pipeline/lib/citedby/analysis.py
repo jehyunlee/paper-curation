@@ -270,6 +270,7 @@ def run_topic_analysis(papers: list[dict], *,
     timeline_narrative = ""
     timeline_overview = ""
     timeline_streams: tuple = ()
+    timeline_failure = ""
     if topic:
         emit("topic_filter", f"주제 필터링 시작: {topic}", 0, total)
         selected = filter_by_topic(
@@ -305,9 +306,11 @@ def run_topic_analysis(papers: list[dict], *,
                     timeline_uri = _tl.uri
                     timeline_overview = _tl.overview
                     timeline_streams = _tl.streams
+                    timeline_failure = _tl.failure
                     # 그림이 실패해도 narrative 는 남는다 — 글이 정보량은 더 많다.
                     timeline_narrative = _tl.narrative
                 except Exception as e:  # noqa: BLE001 — 그림 실패는 치명적이지 않다
+                    timeline_failure = f"{type(e).__name__}: {str(e)[:90]}"
                     emit("timeline", f"타임라인 생략 ({type(e).__name__}) — 리포트는 계속")
 
     # 컬렉션 추천 — citedby 등록분은 Unfiled 로 가므로 배정 후보를 함께 낸다.
@@ -331,6 +334,7 @@ def run_topic_analysis(papers: list[dict], *,
         timeline_narrative=timeline_narrative,
         timeline_overview=timeline_overview,
         timeline_streams=timeline_streams,
+        timeline_failure=timeline_failure,
         collection=collection)
 
     return {

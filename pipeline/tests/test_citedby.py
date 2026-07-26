@@ -2742,3 +2742,111 @@ class StreamCardTests(unittest.TestCase):
     def test_markdown_fallback_when_no_streams(self):
         h = self._html(timeline_narrative="### STREAM: 폴백 경로")
         self.assertIn("폴백 경로", h)
+
+
+class TopBarAudioTests(unittest.TestCase):
+    """PDF 출력 옆에서 바로 오디오. 질문을 던지지 않고도 듣고 싶다.
+
+    기존 오디오 버튼은 Deep Research 패널 안에만 있어서, 답변을 받아야만
+    누를 수 있었다. 리포트 자체를 듣고 싶은 경우를 막고 있었다.
+    """
+
+    def _html(self, **kw):
+        kw.setdefault("papers", [{"title": "P"}])
+        return report.build_report_html(**kw)
+
+    def test_button_sits_next_to_pdf(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn('id="rpAudio"', h)
+        self.assertLess(h.index("citedbyPrint()"), h.index("rpAudio"))
+        self.assertLess(h.index("rpAudio"), h.index('class="hint"'))
+
+    def test_button_absent_without_audio_module(self):
+        """모듈이 안 실리면 눌러도 아무 일 없는 버튼이 남으면 안 된다."""
+        h = self._html()
+        self.assertNotIn("rpAudio", h)
+
+    def test_button_wired_to_shared_modal(self):
+        h = self._html(deep_index="_citedby_index.json")
+        self.assertIn('getElementById("rpAudio")', h)
+        self.assertIn("openAudioModal", h)
+
+    def test_provider_falls_back_to_report_body(self):
+        """답변이 없으면 개요와 스트림을 읽는다."""
+        from lib.citedby.deep_panel import AUDIO_PROVIDER_JS as A
+        self.assertIn("if (L.answer)", A)      # 답변 있으면 그것
+        self.assertIn(".tl-over", A)           # 없으면 개요
+        self.assertIn(".stc", A)               # 그리고 스트림
+        self.assertIn(".card", A)              # 논문은 근거로
+
+    def test_provider_is_valid_js(self):
+        import subprocess, tempfile, pathlib
+        from lib.citedby.deep_panel import AUDIO_PROVIDER_JS as A
+        f = pathlib.Path(tempfile.mktemp(suffix=".js"))
+        f.write_text(A, encoding="utf-8")
+        r = subprocess.run(["node", "--check", str(f)],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr[:300])
+
+
+class TimelineFailureVisibilityTests(unittest.TestCase):
+    """그림이 없으면 **왜 없는지** 남긴다.
+
+    기본값을 켜면서 예외만 격리하고 사유를 버렸더니, 15분 기다린 뒤 빈손으로
+    남은 사람이 다시 돌릴지 판단할 근거가 없었다. 실제로 원인을 사후에 찾지
+    못했다.
+    """
+
+    def _html(self, **kw):
+        kw.setdefault("papers", [{"title": "P"}])
+        return report.build_report_html(**kw)
+
+    def test_reason_shown_when_image_missing(self):
+        h = self._html(timeline_overview="개요.", timeline_failure="1800초 초과")
+        self.assertIn('class="tl-fail"', h)
+        self.assertIn("1800초 초과", h)
+
+    def test_analysis_survives_and_stays_useful(self):
+        """그림만 없을 뿐 갈래 설명은 그대로 유효하다고 알린다."""
+        h = self._html(timeline_overview="개요.", timeline_failure="x")
+        self.assertIn("유효", h)
+        self.assertIn('<div class="tl-over">', h)
+
+    def test_no_notice_when_image_present(self):
+        h = self._html(timeline_uri="data:image/png;base64,A",
+                       timeline_failure="x")
+        self.assertNotIn('class="tl-fail"', h)
+
+    def test_timeout_is_1800(self):
+        """운영자 지시 — 900초로는 후보 3개 × critic round 가 빠듯했다."""
+        from lib.citedby import timeline as TL
+        self.assertEqual(TL.WALL_TIMEOUT_S, 1800)
+
+    def test_timeout_result_carries_reason(self):
+        from lib.citedby.timeline import TimelineResult, WALL_TIMEOUT_S
+        r = TimelineResult(overview="o", failure=f"{WALL_TIMEOUT_S}초 초과")
+        self.assertIn("1800", r.failure)
+        self.assertFalse(r)          # uri 없으니 falsy
+
+    def test_candidate_errors_are_collected(self):
+        """후보별 예외를 로그에만 남기면 사후에 못 본다."""
+        from lib.citedby import timeline as TL
+        errs: list[str] = []
+        with patch.object(TL, "CRITIC_ROUNDS", 0), \
+             patch("lib.paperbanana.generate_diagram",
+                   side_effect=RuntimeError("boom")):
+            got = TL._generate_candidates("m", "c", "/tmp", 2, None, errs)
+        self.assertEqual(got, [])
+        self.assertEqual(len(errs), 2)
+        self.assertIn("RuntimeError", errs[0])
+        self.assertIn("boom", errs[0])
+
+    def test_missing_paperbanana_names_itself(self):
+        from lib.citedby import timeline as TL
+        with patch.dict("sys.modules", {"lib.paperbanana": None}):
+            r = TL.generate({"clusters": [{"name": "a", "count": 1,
+                                           "citations": 0, "years": {},
+                                           "keywords": [], "titles": []}],
+                             "years": [2024], "total": 1})
+        self.assertEqual(r.uri, "")
+        self.assertIn("PaperBanana", r.failure)
