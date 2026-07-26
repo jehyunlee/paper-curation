@@ -55,6 +55,14 @@ _CSS = """
 .dr-status{font-size:12.5px;color:var(--soft);margin-top:8px;min-height:1.2em}
 .dr-status.err{color:#c0392b}
 .dr-ans{margin-top:12px;font-size:14.5px;line-height:1.75;white-space:normal}
+.dr-plan{display:none;margin-top:10px;padding:10px 12px;border:1px solid #dfe4ec;
+ border-radius:7px;background:#f7f9fc;font-size:12.5px;line-height:1.6}
+.dr-plan.on{display:block}
+.dr-plan b{display:block;margin-bottom:4px;color:var(--ink)}
+.dr-web-log{display:none;margin-top:8px;padding:7px 10px;border-left:3px solid #4a78c2;
+ background:#f4f7fc;font-size:11.5px;color:var(--soft);line-height:1.55}
+.dr-web-log.on{display:block}
+.dr-web-log a{word-break:break-all}
 .dr-exp{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
 .dr-x{font:inherit;font-size:12.5px;padding:6px 12px;border:1px solid var(--line);
  border-radius:6px;background:#fff;cursor:pointer;color:var(--ink)}
@@ -83,7 +91,8 @@ _CSS = """
 _JS = r"""
 (function(){
   var IDX=null, EMB=null, READY=false, LAST_MODEL='';
-  var LAST={q:'',answer:'',refs:[],model:'',deeper:false,web:false};
+  var WEB_COUNT=0, WEB_SOURCES=0, WEB_URLS={};
+  var LAST={q:'',answer:'',refs:[],model:'',deeper:false,web:false,plan:''};
   var $=function(id){return document.getElementById(id);};
   function status(msg,err){var el=$('drStatus'); if(!el)return;
     el.textContent=msg||''; el.className='dr-status'+(err?' err':'');}
@@ -185,40 +194,10 @@ _JS = r"""
     return picked;
   }
 
-  // ── 답변 생성 (서버 NDJSON streaming) ───────────────────────────────────
-  async function answer(q, refs, deeper, web, onText){
-    var ctx=refs.map(function(r,i){
-      var head='['+(i+1)+'] '+(r.title||'');
-      if(r.year) head+=' ('+r.year+')';
-      if(r.section) head+=' — '+r.section;
-      return head+'\n'+r.text;
-    }).join('\n\n');
-    var depth=deeper
-      ? '- **Deeper Research**: 4~7개 분석 축으로 나눠 각 축을 충분히 전개하고, 논문 사이의 계보·대안·상충 결과·시간적 변화를 종합한다. 마지막에 전체 결론과 열린 질문을 별도 절로 완결한다.\n'
-      : '';
-    var prompt=
-      '다음은 어떤 논문을 인용한 논문들의 **원문 발췌**다. 각 발췌는 논문 제목과 '+
-      '섹션이 붙어 있다.\n\n'+ctx+'\n\n질문: '+q+'\n\n'+
-      '## 작성 규칙\n'+
-      '- 위 발췌를 주 근거로 삼는다. 발췌에 없는 내용은 지어내지 말고 "발췌 범위에서는 '+
-      '확인되지 않는다"고 밝힌다.\n'+
-      '- **구체적으로 쓴다.** 발췌에 있는 수치·데이터셋 이름·모델명·실험 조건·'+
-      '정량 결과를 그대로 인용한다. "성능이 향상되었다" 같은 뭉뚱그린 표현 대신 '+
-      '"F1 0.72 → 0.81" 처럼 적는다.\n'+
-      '- **논문을 비교한다.** 같은 문제를 다룬 논문이 여럿이면 접근 차이와 결과 '+
-      '차이를 나란히 놓는다. 상충하는 주장이 있으면 그 사실 자체를 짚는다.\n'+
-      '- 근거를 문장 단위로 [ref:N] 표기한다. 한 문장에 근거가 여럿이면 '+
-      '[ref:2][ref:5] 처럼 모두 적는다.\n'+depth+
-      '- 구조: 먼저 **핵심 답변** 3~5문장, 다음 **논문별 근거**를 소제목으로 나눠 '+
-      '상세히, 마지막에 **한계/미해결** 을 적는다.\n'+
-      '- 답변은 반드시 완결된 문장과 결론으로 끝낸다.\n'+
-      '- 분량은 아끼지 않는다. 선택한 모드의 모든 절과 결론을 충분히 완성한다.\n'+
-      '- 한국어. 기술 용어는 English 그대로.';
-
+  // ── 서버 NDJSON streaming + Deeper orchestration ────────────────────────
+  async function streamCall(payload, onText, onEvent){
     var r=await fetch('/api/citedby-answer',{method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({prompt:prompt,max_tokens:deeper?24000:MAX_OUT,
-                           web_search:!!web,deeper:!!deeper})});
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!r.ok){
       var ej=await r.json().catch(function(){return {};});
       throw new Error(ej.error||('answer '+r.status));
@@ -229,11 +208,13 @@ _JS = r"""
       line=line.trim(); if(!line) return;
       var ev; try{ev=JSON.parse(line);}catch(e){return;}
       if(ev.event==='delta' && ev.text){
-        text+=ev.text; onText(text);
+        text+=ev.text; if(onText) onText(text);
       }else if(ev.event==='done'){
         meta=ev;
       }else if(ev.event==='error'){
         throw new Error(ev.message||'답변 stream 오류');
+      }else if(onEvent){
+        onEvent(ev);
       }
     }
     while(true){
@@ -248,8 +229,131 @@ _JS = r"""
     buf+=dec.decode();
     if(buf.trim()) consume(buf);
     if(!text.trim()) throw new Error('빈 답변을 받았습니다');
-    LAST_MODEL=(meta.provider||'')+(meta.model?(' / '+meta.model):'');
-    return text;
+    return {text:text,meta:meta};
+  }
+
+  async function planResearch(q, refs){
+    var titles=[], seen={};
+    refs.forEach(function(r){
+      var key=r.title||''; if(key && !seen[key]){seen[key]=1;titles.push(key);}
+    });
+    var prompt=
+      '사용자의 citedby Deeper Research 질문을 실제 문헌 조사 가능한 4~6개 축으로 '+
+      '분해하라. 먼저 질문의 판단 기준을 명시하고, 각 축마다 무엇을 비교하고 어떤 '+
+      '반론·후속·기반 연구를 확인할지 한 문장으로 쓴다. 마지막 줄에는 최종 synthesis '+
+      '구조를 적는다. 한국어 Markdown 번호 목록만 출력한다.\n\n질문: '+q+
+      '\n\n현재 검색된 핵심 논문:\n- '+titles.slice(0,20).join('\n- ');
+    var box=$('drPlan'), body=$('drPlanBody');
+    if(box) box.className='dr-plan on';
+    if(body) body.textContent='조사 계획 작성 중…';
+    var result=await streamCall(
+      {prompt:prompt,max_tokens:1600,purpose:'plan',web_search:false},
+      function(text){if(body) body.innerHTML=mdToMarkup(text);});
+    if(body) body.innerHTML=mdToMarkup(result.text);
+    return result.text;
+  }
+
+  async function expandRelated(refs){
+    var seen={}, candidates=[];
+    refs.forEach(function(r){
+      if(r.corpus_slug) seen[r.corpus_slug]=1;
+      (r.connections||[]).forEach(function(c){
+        var slug=c.slug||'';
+        if(!slug||seen[slug]) return;
+        seen[slug]=1;
+        candidates.push({slug:slug,title:c.title||slug,relation:c.relation||'related',
+                         reason:c.reason||''});
+      });
+    });
+    candidates=candidates.slice(0,20);
+    var loaded=await Promise.all(candidates.map(async function(c){
+      try{
+        var url='../../'+encodeURIComponent(c.slug)+'/review.md';
+        var r=await fetch(url);
+        if(!r.ok) return null;
+        var text=(await r.text()).trim();
+        if(!text) return null;
+        return {text:text.slice(0,7000),title:c.title,attach:'',
+                section:'Related paper · '+c.relation,year:'',authors:'',
+                doi:'',arxiv:'',url:new URL('../../'+c.slug+'/',location.href).href,
+                source_slug:c.slug,corpus_slug:c.slug,connections:[],
+                relation:c.relation,reason:c.reason,related:true};
+      }catch(e){return null;}
+    }));
+    return refs.concat(loaded.filter(Boolean));
+  }
+
+  function researchEvent(ev){
+    var log=$('drWebLog'); if(!log) return;
+    log.className='dr-web-log on';
+    var line=document.createElement('div');
+    if(ev.event==='web_search'){
+      WEB_COUNT++;
+      line.textContent='🔎 '+(ev.query||ev.message||'web search');
+      status('🌐 web 검색 중… '+WEB_COUNT+'회');
+    }else if(ev.event==='web_result'){
+      if(ev.url && !WEB_URLS[ev.url]){
+        WEB_URLS[ev.url]=1; WEB_SOURCES++;
+        var a=document.createElement('a'); a.href=ev.url; a.target='_blank';
+        a.rel='noopener'; a.textContent=ev.title||ev.url; line.appendChild(a);
+      }else if(ev.url){
+        return;
+      }else line.textContent='↳ '+(ev.message||'web result');
+    }else if(ev.event==='web_warning'){
+      line.textContent='⚠ '+(ev.message||'web search 확인 불가');
+    }else return;
+    log.appendChild(line);
+  }
+
+  function absorbWebLinks(text){
+    var re=/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, m;
+    while((m=re.exec(text||''))){
+      researchEvent({event:'web_result',title:m[1],url:m[2]});
+    }
+  }
+
+  function cleanWebPreamble(text){
+    var s=String(text||''), m=s.match(/^#{1,3}\s/m);
+    if(m && m.index>0){
+      var pre=s.slice(0,m.index);
+      if(/\b(I'll|I will|Let me|searches? before drafting)\b/i.test(pre))
+        return s.slice(m.index);
+    }
+    return s;
+  }
+
+  async function answer(q, refs, deeper, web, plan, onText){
+    var ctx=refs.map(function(r,i){
+      var head='['+(i+1)+'] '+(r.title||'');
+      if(r.year) head+=' ('+r.year+')';
+      if(r.section) head+=' — '+r.section;
+      if(r.related) head+=' [연결관계: '+r.relation+
+        (r.reason?(' — '+r.reason):'')+']';
+      return head+'\n'+r.text;
+    }).join('\n\n');
+    var depth=deeper
+      ? '- **Deeper Research**: 아래 조사 계획의 모든 축을 순서대로 다루고, 핵심 인용논문뿐 아니라 [연결관계]가 붙은 related papers를 사용해 기반·후속·대안·반론의 계보를 명시한다. 마지막에 전체 결론과 열린 질문을 별도 절로 완결한다.\n'
+      : '';
+    var planBlock=deeper&&plan?('\n## 사전 조사 계획\n'+plan+'\n'):'';
+    var prompt=
+      '다음은 어떤 논문을 인용한 논문들의 **원문 발췌**와 그 related papers다. '+
+      '각 발췌는 논문 제목과 섹션이 붙어 있다.\n\n'+ctx+planBlock+
+      '\n\n질문: '+q+'\n\n## 작성 규칙\n'+
+      '- 위 발췌를 주 근거로 삼는다. 발췌에 없는 내용은 지어내지 않는다.\n'+
+      '- **구체적으로 쓴다.** 수치·데이터셋·모델·실험 조건·정량 결과를 그대로 인용한다.\n'+
+      '- **논문을 비교한다.** 접근과 결과가 다르거나 상충하면 나란히 설명한다.\n'+
+      '- 근거를 문장 단위로 [ref:N] 표기한다. 여러 근거는 [ref:2][ref:5]로 쓴다.\n'+depth+
+      (web?'- web search를 반드시 먼저 2회 이상 수행하고, 코퍼스 밖 주장은 descriptive Markdown hyperlink로 출처를 붙인다. tool 호출 과정을 설명하거나 "검색하겠다"고 예고하지 말고 검색 완료 후 곧바로 본문을 시작한다. URL을 지어내지 않는다.\n':'')+
+      '- 구조: **핵심 답변**, 계획 축별 상세 분석, **한계/미해결**, **종합 결론**.\n'+
+      '- 답변은 반드시 완결된 문장과 결론으로 끝낸다.\n'+
+      '- 분량은 아끼지 않는다. 모든 절과 결론을 충분히 완성한다.\n'+
+      '- 한국어. 기술 용어는 English 그대로.';
+    var result=await streamCall(
+      {prompt:prompt,max_tokens:deeper?24000:MAX_OUT,web_search:!!web,
+       deeper:!!deeper,purpose:'answer'},onText,researchEvent);
+    LAST_MODEL=(result.meta.provider||'')+
+      (result.meta.model?(' / '+result.meta.model):'');
+    return result.text;
   }
 
   // ── 마크다운 렌더 ────────────────────────────────────────────────────
@@ -383,12 +487,16 @@ _JS = r"""
     var el=$('drRefs'); if(!el) return;
     if(!refs.length){el.innerHTML=''; return;}
     el.innerHTML='<h4>근거</h4>'+refs.map(function(r,i){
-      var link=r.attach?(' · <a href="zotero://open-pdf/library/items/'+r.attach
-        +'">PDF 열기</a>'):'';
-      var sec=r.section?(' <i>'+r.section.replace(/</g,'&lt;')+'</i>'):'';
-      var prev=(r.text||'').slice(0,180).replace(/</g,'&lt;');
+      var link=r.attach?(' · <a href="zotero://open-pdf/library/items/'+r.attach+
+        '">PDF 열기</a>'):'';
+      if(r.url) link+=' · <a href="'+esc(r.url)+
+        '" target="_blank" rel="noopener">열기</a>';
+      var sec=r.section?(' <i>'+esc(r.section)+'</i>'):'';
+      var rel=r.related?(' <span class="dr-cite">'+esc(r.relation||'related')+
+        '</span>'):'';
+      var prev=esc((r.text||'').slice(0,180));
       return '<div class="dr-ref"><b>['+(i+1)+']</b> '+
-        (r.title||'').replace(/</g,'&lt;')+sec+link+
+        esc(r.title||'')+sec+rel+link+
         '<div class="dr-prev">'+prev+'…</div></div>';
     }).join('');
   }
@@ -400,6 +508,11 @@ _JS = r"""
     var web=!!(($('drWeb')||{}).checked);
     $('drGo').disabled=true; $('drAns').textContent='';
     var bar=$('drExport'); if(bar) bar.style.display='none';
+    WEB_COUNT=0; WEB_SOURCES=0; WEB_URLS={};
+    var planBox=$('drPlan'), planBody=$('drPlanBody'), webLog=$('drWebLog');
+    if(planBox) planBox.className='dr-plan';
+    if(planBody) planBody.textContent='';
+    if(webLog){webLog.className='dr-web-log';webLog.innerHTML='';}
     try{
       status('검색 중…');
       var sparse=bm25(q), dvec=null;
@@ -415,23 +528,39 @@ _JS = r"""
         var c=IDX.chunks[h[0]], p=(IDX.papers||{})[c.slug]||{};
         return {text:c.text, title:p.title||c.slug, attach:p.zotero_attach||'',
                 section:c.section||'', year:p.year||'', authors:p.authors||'',
-                doi:p.doi||'', arxiv:p.arxiv||'', url:p.url||p.external_url||''};
+                doi:p.doi||'', arxiv:p.arxiv||'', url:p.url||p.external_url||'',
+                source_slug:c.slug, corpus_slug:p.corpus_slug||'',
+                connections:p.connections||[], related:false};
       });
+      var plan='', baseCount=refs.length;
+      if(deeper){
+        status('🔎 사전 조사 계획 수립 중…');
+        plan=await planResearch(q,refs);
+        status('🕸 related papers 확장 중…');
+        refs=await expandRelated(refs);
+      }
+      var relatedCount=refs.length-baseCount;
       renderRefs(refs);
 
-      LAST={q:q,answer:'',refs:refs,model:'',deeper:deeper,web:web};
+      LAST={q:q,answer:'',refs:refs,model:'',deeper:deeper,web:web,plan:plan};
       window._citedbyLast=LAST;
       status((deeper?'Deeper Research':'답변')+' 작성 중… 근거 '+refs.length+'건'+
-             (web?' · web 검색':''));
-      var text=await answer(q, refs, deeper, web, function(partial){
+             (relatedCount?(' · related '+relatedCount+'편'):'')+
+             (web?' · web 검색 대기':''));
+      var text=await answer(q, refs, deeper, web, plan, function(partial){
         LAST.answer=partial;
         $('drAns').innerHTML=mdToMarkup(partial);
       });
+      text=cleanWebPreamble(text);
       LAST.answer=text; LAST.model=LAST_MODEL;
+      if(web) absorbWebLinks(text);
       window._citedbyLast=LAST;
       $('drAns').innerHTML=mdToMarkup(text);
       if(bar) bar.style.display='';
-      status('완료 — 근거 '+refs.length+'건'+(LAST_MODEL?(' · '+LAST_MODEL):''));
+      status('완료 — 근거 '+refs.length+'건'+
+             (relatedCount?(' · related '+relatedCount+'편'):'')+
+             (web?(' · web 검색 '+WEB_COUNT+'회 · 출처 '+WEB_SOURCES+'건'):'')+
+             (LAST_MODEL?(' · '+LAST_MODEL):''));
     }catch(e){ status(String(e.message||e), true); }
     $('drGo').disabled=false;
   }
@@ -488,6 +617,9 @@ def panel_html(index_file: str, lbl: dict) -> str:
         f'{lbl["dr_offline"]}'
         '<div id="drOfflineWhy" style="margin-top:6px;font-size:12px"></div>'
         "</div>"
+        '<div class="dr-plan" id="drPlan"><b>🗺 조사 계획</b>'
+        '<div id="drPlanBody"></div></div>'
+        '<div class="dr-web-log" id="drWebLog"></div>'
         '<div class="dr-exp" id="drExport" style="display:none">'
         f'<button class="dr-x" id="drPdf" type="button">{lbl["exp_pdf"]}</button>'
         f'<button class="dr-x" id="drMd" type="button">{lbl["exp_md"]}</button>'

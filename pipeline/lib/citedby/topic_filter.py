@@ -404,6 +404,11 @@ ANSWER_MODELS = (
     ("google", "gemini-3.5-flash"),
     ("openai", "gpt-5.5"),
 )
+PLAN_MODELS = (
+    ("anthropic", "claude-sonnet-5"),
+    ("google", "gemini-3.1-flash-lite"),
+    ("openai", "gpt-4.1"),
+)
 
 TEXT_SYSTEM = ("You are a careful research assistant. Answer in prose, "
                "grounded strictly in the provided excerpts.")
@@ -437,12 +442,16 @@ def llm_text(prompt: str, *, max_tokens: int = 8000,
 _STREAM_SYSTEM = (
     "You are a careful research assistant. Write a complete, self-contained "
     "answer grounded in the supplied corpus. Never end mid-sentence. When web "
-    "search is enabled, corpus excerpts remain primary and every web-derived "
-    "claim must carry a descriptive inline markdown link."
+    "search is enabled, corpus excerpts remain primary. You MUST perform web "
+    "search before drafting, using at least two distinct queries when the "
+    "provider supports it, and every web-derived claim must carry a descriptive "
+    "inline markdown link. Do not narrate tool calls or say that you are about "
+    "to search; begin directly with the requested answer after searching."
 )
 
 
-def _stream_anthropic(key, model, prompt, max_tokens, on_delta, web_search):
+def _stream_anthropic(key, model, prompt, max_tokens, on_delta, web_search,
+                      on_event):
     from anthropic import Anthropic
 
     client = Anthropic(api_key=key, timeout=600.0, max_retries=4)
@@ -461,21 +470,68 @@ def _stream_anthropic(key, model, prompt, max_tokens, on_delta, web_search):
             "max_uses": 5,
         }]
     answer, stop_reason = [], ""
+    seen_urls = set()
+
+    def emit_urls(value):
+        if hasattr(value, "model_dump"):
+            value = value.model_dump()
+        if isinstance(value, dict):
+            url = str(value.get("url") or value.get("uri") or "")
+            title = str(value.get("title") or value.get("page_title") or "")
+            if url.startswith(("http://", "https://")) and url not in seen_urls:
+                seen_urls.add(url)
+                on_event("web_result", {
+                    "message": "web 출처 발견", "title": title[:200],
+                    "url": url[:500],
+                })
+            for child in value.values():
+                emit_urls(child)
+        elif isinstance(value, (list, tuple)):
+            for child in value:
+                emit_urls(child)
+    web_started = False
     for event in client.messages.create(**kwargs):
-        if getattr(event, "type", "") == "content_block_delta":
+        etype = getattr(event, "type", "")
+        if etype == "content_block_start":
+            block = getattr(event, "content_block", None)
+            btype = getattr(block, "type", "")
+            if web_search and btype in ("server_tool_use", "web_search_tool_use"):
+                web_started = True
+                raw_input = getattr(block, "input", None) or {}
+                query = (raw_input.get("query", "") if isinstance(raw_input, dict)
+                         else str(raw_input))
+                if query:
+                    on_event("web_search", {
+                        "message": "Anthropic web_search 실행 중",
+                        "query": query[:300],
+                    })
+            elif web_search and btype in ("web_search_tool_result",
+                                         "server_tool_result"):
+                on_event("web_result", {
+                    "message": "web 검색 결과를 근거에 반영 중",
+                })
+                emit_urls(block)
+        elif etype == "content_block_delta":
             delta = getattr(event, "delta", None)
             if getattr(delta, "type", "") == "text_delta":
                 text = getattr(delta, "text", "") or ""
                 if text:
                     answer.append(text)
                     on_delta(text)
-        elif getattr(event, "type", "") == "message_delta":
+            elif getattr(delta, "type", "") == "citations_delta":
+                emit_urls(getattr(delta, "citation", None))
+        elif etype == "message_delta":
             stop_reason = getattr(getattr(event, "delta", None),
                                   "stop_reason", "") or stop_reason
+    if web_search and not web_started:
+        on_event("web_warning", {
+            "message": "provider가 web_search tool을 호출하지 않았습니다",
+        })
     return "".join(answer), stop_reason == "max_tokens"
 
 
-def _stream_google(key, model, prompt, max_tokens, on_delta, web_search):
+def _stream_google(key, model, prompt, max_tokens, on_delta, web_search,
+                   on_event):
     from google import genai
     from google.genai import types
 
@@ -488,6 +544,7 @@ def _stream_google(key, model, prompt, max_tokens, on_delta, web_search):
     if web_search:
         config["tools"] = [types.Tool(google_search=types.GoogleSearch())]
     answer, truncated = [], False
+    seen_web = set()
     for chunk in client.models.generate_content_stream(
             model=model, contents=prompt,
             config=types.GenerateContentConfig(**config)):
@@ -498,10 +555,37 @@ def _stream_google(key, model, prompt, max_tokens, on_delta, web_search):
         for cand in getattr(chunk, "candidates", None) or []:
             reason = str(getattr(cand, "finish_reason", "") or "").upper()
             truncated = truncated or "MAX_TOKENS" in reason
+            gm = getattr(cand, "grounding_metadata", None)
+            if web_search and gm:
+                queries = list(getattr(gm, "web_search_queries", None) or [])
+                for query in queries:
+                    marker = ("query", str(query))
+                    if marker not in seen_web:
+                        seen_web.add(marker)
+                        on_event("web_search", {
+                            "message": "Google Search 실행",
+                            "query": str(query)[:300],
+                        })
+                for item in list(getattr(gm, "grounding_chunks", None) or []):
+                    web = getattr(item, "web", None)
+                    url = str(getattr(web, "uri", "") or "")
+                    title = str(getattr(web, "title", "") or "")
+                    marker = ("url", url)
+                    if url and marker not in seen_web:
+                        seen_web.add(marker)
+                        on_event("web_result", {
+                            "message": "web 출처 발견", "title": title[:200],
+                            "url": url[:500],
+                        })
+    if web_search and not seen_web:
+        on_event("web_warning", {
+            "message": "provider가 Google Search grounding을 반환하지 않았습니다",
+        })
     return "".join(answer), truncated
 
 
-def _stream_openai(key, model, prompt, max_tokens, on_delta, web_search):
+def _stream_openai(key, model, prompt, max_tokens, on_delta, web_search,
+                   on_event):
     from openai import OpenAI
 
     if web_search:
@@ -532,13 +616,14 @@ _STREAM_CALLERS = {
 
 def llm_text_stream(prompt: str, on_delta, *, max_tokens: int = 16000,
                     web_search: bool = False, keys: dict | None = None,
-                    models=None) -> tuple[str, str, str]:
+                    models=None, on_event=None) -> tuple[str, str, str]:
     """Stream a complete answer, continuing once when a provider hits its cap.
 
     Provider fallback is safe only before any text reaches the browser. Once a
     stream has emitted text, switching providers would duplicate or contradict
     the visible answer, so a mid-stream failure is surfaced to the caller.
     """
+    on_event = on_event or (lambda event, payload: None)
     keys = resolve_keys() if keys is None else keys
     for provider, model in list(models or ANSWER_MODELS):
         key = keys.get(provider)
@@ -549,7 +634,7 @@ def llm_text_stream(prompt: str, on_delta, *, max_tokens: int = 16000,
         emit = lambda text: (emitted.append(text), on_delta(text))
         try:
             text, truncated = caller(
-                key, model, prompt, max_tokens, emit, web_search)
+                key, model, prompt, max_tokens, emit, web_search, on_event)
             if truncated and text.strip():
                 continuation = (
                     prompt + "\n\n---\nThe answer below reached the output limit. "
@@ -557,7 +642,8 @@ def llm_text_stream(prompt: str, on_delta, *, max_tokens: int = 16000,
                     "Finish every remaining section and conclusion.\n\n"
                     "PARTIAL ANSWER:\n" + text)
                 more, truncated_again = caller(
-                    key, model, continuation, max_tokens, emit, web_search)
+                    key, model, continuation, max_tokens, emit, web_search,
+                    on_event)
                 text += more
                 if truncated_again:
                     raise RuntimeError(

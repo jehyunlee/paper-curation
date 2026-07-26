@@ -2276,12 +2276,37 @@ class ServerSideKeyTests(unittest.TestCase):
         self.assertIn('id="drWeb"', html)
         self.assertIn('id="drDeeper"', html)
 
+    def test_deeper_runs_plan_and_related_expansion(self):
+        from lib.citedby.deep_panel import panel_script, panel_html
+        labels = {"dr_title": "t", "dr_sub": "s", "dr_ph": "p",
+                  "dr_go": "g", "dr_offline": "o",
+                  "exp_pdf": "P", "exp_md": "M", "exp_obs": "O",
+                  "exp_audio": "A"}
+        js = panel_script("_citedby_index.json")
+        html = panel_html("_citedby_index.json", labels)
+        self.assertIn("plan=await planResearch(q,refs)", js)
+        self.assertIn("refs=await expandRelated(refs)", js)
+        self.assertIn("connections:p.connections||[]", js)
+        self.assertIn("purpose:'plan'", js)
+        self.assertIn('id="drPlan"', html)
+
+    def test_web_activity_is_visible_not_discarded(self):
+        from lib.citedby.deep_panel import panel_script
+        from lib.citedby import topic_filter as TF
+        js = panel_script("_citedby_index.json")
+        self.assertIn("function researchEvent", js)
+        self.assertIn("WEB_COUNT++", js)
+        self.assertIn("WEB_SOURCES++", js)
+        self.assertIn("MUST perform web", TF._STREAM_SYSTEM)
+
     def test_server_answer_route_is_streaming(self):
         import serve_local
         src = inspect.getsource(serve_local.LocalHandler._handle_citedby_answer)
         self.assertIn("application/x-ndjson", src)
         self.assertIn("llm_text_stream", src)
         self.assertIn('"event": "delta"', src)
+        self.assertIn("PLAN_MODELS", src)
+        self.assertIn("on_event=emit_event", src)
 
     def test_llm_text_does_not_force_json(self):
         """JSON system 프롬프트를 그대로 쓰면 답변이 ```json 으로 감싸여 나온다."""
@@ -2323,7 +2348,7 @@ class ServerSideKeyTests(unittest.TestCase):
         from lib.citedby import topic_filter as TF
         calls = []
 
-        def fake(key, model, prompt, max_tokens, emit, web):
+        def fake(key, model, prompt, max_tokens, emit, web, on_event):
             calls.append(prompt)
             text = "첫 부분." if len(calls) == 1 else " 마지막 부분."
             emit(text)
@@ -2339,6 +2364,24 @@ class ServerSideKeyTests(unittest.TestCase):
         self.assertEqual(provider, "anthropic")
         self.assertEqual(len(calls), 2)
         self.assertIn("PARTIAL ANSWER", calls[1])
+
+    def test_llm_text_stream_relays_provider_events(self):
+        from lib.citedby import topic_filter as TF
+
+        def fake(key, model, prompt, max_tokens, emit, web, on_event):
+            on_event("web_search", {"query": "q1"})
+            on_event("web_result", {"url": "https://example.org"})
+            emit("답")
+            return "답", False
+
+        events = []
+        with patch.dict(TF._STREAM_CALLERS, {"anthropic": fake}), \
+             patch.object(TF, "resolve_keys", return_value={"anthropic": "K"}):
+            TF.llm_text_stream(
+                "질문", lambda text: None, web_search=True,
+                models=[("anthropic", "model")],
+                on_event=lambda event, payload: events.append((event, payload)))
+        self.assertEqual([e[0] for e in events], ["web_search", "web_result"])
 
     def test_json_path_still_forces_json(self):
         """자유 텍스트 경로를 추가하면서 JSON 경로가 깨지면 안 된다."""

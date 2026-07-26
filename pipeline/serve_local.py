@@ -345,10 +345,14 @@ class LocalHandler(SimpleHTTPRequestHandler):
             max_tokens = 16000
         max_tokens = max(256, min(max_tokens, 24000))
         web_search = bool(req.get("web_search", False))
+        purpose = "plan" if req.get("purpose") == "plan" else "answer"
+        if purpose == "plan":
+            web_search = False
+            max_tokens = min(max_tokens, 2000)
 
         sys.path.insert(0, str(PIPELINE_DIR))
         try:
-            from lib.citedby.topic_filter import llm_text_stream
+            from lib.citedby.topic_filter import PLAN_MODELS, llm_text_stream
         except Exception as e:
             self._send_json(500, {"error": f"citedby 모듈 로드 실패: {e}"})
             return
@@ -366,10 +370,19 @@ class LocalHandler(SimpleHTTPRequestHandler):
                     "event": "delta", "text": text,
                 })
 
+        def emit_event(event, payload):
+            if not alive["ok"]:
+                return
+            data = {"event": event}
+            if isinstance(payload, dict):
+                data.update(payload)
+            alive["ok"] = self._stream_line(data)
         try:
             answer, provider, model = llm_text_stream(
                 prompt, emit_delta, max_tokens=max_tokens,
-                web_search=web_search)
+                web_search=web_search,
+                models=(PLAN_MODELS if purpose == "plan" else None),
+                on_event=emit_event)
         except Exception as e:  # noqa: BLE001 — 스트림 안 오류로 전달
             self._stream_line({"event": "error", "message": str(e)[:400]})
             return
@@ -382,7 +395,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
             return
         self._stream_line({
             "event": "done", "provider": provider, "model": model,
-            "chars": len(answer),
+            "chars": len(answer), "purpose": purpose,
         })
 
     def _handle_citedby(self):
