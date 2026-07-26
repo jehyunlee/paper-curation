@@ -2139,14 +2139,14 @@ class TimelineProcedureTests(unittest.TestCase):
             return {"method_text": "## Citation Timeline", "caption": "c"}
 
         with patch("lib.citedby.topic_filter.llm_json", side_effect=fake_llm):
-            mt, cap, ov = TL.build_narrative(self.THEMES, {"title": "Seed"})
+            mt, cap, ov, st = TL.build_narrative(self.THEMES, {"title": "Seed"})
         self.assertEqual(mt, "## Citation Timeline")
         self.assertIn("STREAM:", seen["prompt"])
         self.assertIn("Seed", seen["prompt"])
 
     def test_no_narrative_means_no_image_attempt(self):
         from lib.citedby import timeline as TL
-        with patch.object(TL, "build_narrative", return_value=("", "", "")), \
+        with patch.object(TL, "build_narrative", return_value=("", "", "", [])), \
              patch.object(TL, "_generate_candidates") as gen:
             self.assertEqual(TL.generate(self.THEMES).uri, "")
         gen.assert_not_called()
@@ -2155,7 +2155,7 @@ class TimelineProcedureTests(unittest.TestCase):
         """작화 지시가 없어 그림을 못 그려도, 개요가 나왔으면 그건 살린다."""
         from lib.citedby import timeline as TL
         with patch.object(TL, "build_narrative",
-                          return_value=("", "", "개요는 나왔다.")), \
+                          return_value=("", "", "개요는 나왔다.", [])), \
              patch.object(TL, "_generate_candidates") as gen:
             r = TL.generate(self.THEMES)
         self.assertEqual(r.uri, "")
@@ -2660,3 +2660,85 @@ class WallClockTests(unittest.TestCase):
                         "strftime" in line and "%Y-%m-%d %H:%M" in line):
                     with self.subTest(rel=rel, line=line.strip()[:60]):
                         self.assertNotIn("datetime.now()", line)
+
+
+class StreamCardTests(unittest.TestCase):
+    """스트림은 항목 나열이 아니라 카드다 — 배지·흐름 단락·근거 링크.
+
+    예전엔 `Relative size: LARGE` 같은 줄이 본문으로 흘러 세로로 길어지고,
+    논문은 글자로만 적혀 독자가 아래 목록에서 눈으로 찾아야 했다.
+    """
+
+    PAPERS = [{"title": "The Virtual Lab: AI Agents Design New Nanobodies"},
+              {"title": "GeoFactory: automated geospatial workflows"}]
+    STREAM = [{"name": "Autonomous agents", "start": 2024, "end": 2026,
+               "trend": "ACCELERATING", "size": "LARGE", "influence": "HIGH",
+               "summary": "The Virtual Lab: AI Agents Design New Nanobodies 가 문을 열었다.",
+               "papers": ["The Virtual Lab: AI Agents Design New Nanobodies",
+                          "GeoFactory: automated geospatial workflows"],
+               "interaction": "MERGE INTO 지식 표현"}]
+
+    def _html(self, **kw):
+        kw.setdefault("papers", self.PAPERS)
+        return report.build_report_html(**kw)
+
+    def test_paper_cards_have_anchors(self):
+        h = self._html()
+        self.assertIn('<article class="card" id="p1"', h)
+        self.assertIn('<article class="card" id="p2"', h)
+
+    def test_stream_renders_as_card_with_badges(self):
+        h = self._html(timeline_streams=self.STREAM)
+        self.assertIn('class="stc"', h)
+        self.assertIn('class="sbs"', h)
+        for token in ("2024–2026", "Accelerating", "Large", "High"):
+            with self.subTest(token=token):
+                self.assertIn(token, h)
+
+    def test_size_and_influence_are_not_body_lines(self):
+        """등급은 배지다 — 본문 줄로 흘러 세로로 길어지면 안 된다."""
+        h = self._html(timeline_streams=self.STREAM)
+        self.assertNotIn("<p>Relative size", h)
+        self.assertNotIn("<p>Influence", h)
+
+    def test_stream_papers_link_to_cards(self):
+        h = self._html(timeline_streams=self.STREAM)
+        self.assertIn('<a class="pref" href="#p1"', h)
+        self.assertIn('<a class="pref" href="#p2"', h)
+
+    def test_stream_has_prose_paragraph(self):
+        h = self._html(timeline_streams=self.STREAM)
+        self.assertIn("문을 열었다", h)
+
+    def test_titles_in_prose_are_linkified(self):
+        """줄글 안에 글자로만 적힌 제목도 카드로 보낸다."""
+        h = self._html(timeline_overview="연구 GeoFactory: automated geospatial workflows 가 나왔다.")
+        self.assertIn('<a class="pref" href="#p2">', h)
+
+    def test_unknown_title_degrades_not_breaks(self):
+        st = [dict(self.STREAM[0], papers=["Never Seen This Title At All"])]
+        h = self._html(timeline_streams=st)
+        self.assertIn('class="pref off"', h)   # 링크 없이 표시만
+        self.assertNotIn('href="#pNone"', h)
+
+    def test_linkify_skips_inside_existing_anchor(self):
+        from lib.citedby.report import _linkify_papers
+        src = '<a href="x">GeoFactory: automated geospatial workflows</a>'
+        self.assertEqual(_linkify_papers(src, self.PAPERS), src)
+
+    def test_linkify_once_per_paper(self):
+        from lib.citedby.report import _linkify_papers
+        ttl = "GeoFactory: automated geospatial workflows"
+        got = _linkify_papers(f"<p>{ttl} 그리고 {ttl}</p>", self.PAPERS)
+        self.assertEqual(got.count('href="#p2"'), 1)
+
+    def test_streams_take_precedence_over_markdown(self):
+        """구조화된 streams 가 있으면 옛 마크다운 덤프는 쓰지 않는다."""
+        h = self._html(timeline_streams=self.STREAM,
+                       timeline_narrative="### STREAM: 옛날 마크다운")
+        self.assertIn('class="stc"', h)
+        self.assertNotIn("옛날 마크다운", h)
+
+    def test_markdown_fallback_when_no_streams(self):
+        h = self._html(timeline_narrative="### STREAM: 폴백 경로")
+        self.assertIn("폴백 경로", h)

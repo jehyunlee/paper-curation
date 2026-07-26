@@ -16,6 +16,7 @@ docx 를 만들지 않고 **HTML 한 장**을 낸다:
 from __future__ import annotations
 
 import html
+import re
 from datetime import datetime
 
 # 5W1H 요약 필드 → 표시 라벨. topic_filter 의 요약 스키마와 맞춘다.
@@ -74,7 +75,7 @@ _LABELS = {
         "exp_audio": "🎧 오디오",
         "dr_offline": "<b>로컬 서버로 열어야 합니다.</b> 터미널에서 <code>python pipeline/serve_local.py</code> 를 실행한 뒤 <code>http://localhost:8000/…</code> 로 이 리포트를 여세요. 검색 인덱스 로드와 쿼리 임베딩에 서버가 필요합니다.",
         "timeline": "인용 흐름 타임라인",
-        "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
+        "st_size": "규모", "st_infl": "영향", "timeline_note": "주제 갈래가 언제 갈라지고 어디로 모였는지. 아래 표와 같은 데이터를 그림으로 옮긴 것이다.",
         "themes": "인용 주제 분포",
         "themes_note": "주제를 지정하지 않아 인용논문을 자동 군집화했다. 연도별 편수와 누적 피인용으로 각 갈래가 언제 얼마나 퍼졌는지 읽는다.",
         "zotero": "Zotero PDF",
@@ -97,6 +98,8 @@ _LABELS = {
         "no_papers": "No citing papers matched.",
         "originality": "Originality",
         "cited": "Citations",
+        "st_size": "Size",
+        "st_infl": "Influence",
         "source": "Source",
         "year": "Year",
         "title": "Title",
@@ -313,6 +316,50 @@ def _pdf_link(paper: dict, lbl: dict) -> str:
         paper["_zotero_url"], _zotero_label(paper, lbl), cls="zot") or ""
 
 
+_TAG_SPLIT = re.compile(r"(<[^>]+>)")
+
+
+def _linkify_papers(html_text: str, papers: list[dict]) -> str:
+    """본문에 등장하는 논문 제목을 아래 카드 앵커로 건다.
+
+    글자로만 적힌 제목은 독자가 목록에서 눈으로 찾아야 한다 — 어차피 같은
+    문서 안에 카드가 있으니 바로 보낸다.
+
+    태그 밖 텍스트에서만 치환한다. 태그 속성값이나 이미 걸린 링크 안을
+    건드리면 마크업이 깨진다. 제목당 첫 등장 한 번만 건다 — 같은 제목이
+    여러 번 나올 때 링크가 도배되면 오히려 읽기 나쁘다.
+    """
+    cands = sorted(
+        ((_esc((p.get("title") or "").strip()), i)
+         for i, p in enumerate(papers, 1) if (p.get("title") or "").strip()),
+        key=lambda x: -len(x[0]))
+    cands = [(ttl, i) for ttl, i in cands if len(ttl) >= 12]  # 짧으면 오탐
+    if not cands:
+        return html_text
+
+    parts = _TAG_SPLIT.split(html_text)
+    done: set[int] = set()
+    depth = 0                      # <a> 안쪽이면 건너뛴다
+    for k, seg in enumerate(parts):
+        if seg.startswith("<"):
+            low = seg.lower()
+            if low.startswith("<a "):
+                depth += 1
+            elif low.startswith("</a"):
+                depth = max(0, depth - 1)
+            continue
+        if depth:
+            continue
+        for ttl, idx in cands:
+            if idx in done or ttl not in seg:
+                continue
+            seg = seg.replace(
+                ttl, f'<a class="pref" href="#p{idx}">{ttl}</a>', 1)
+            done.add(idx)
+        parts[k] = seg
+    return "".join(parts)
+
+
 def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     title = (paper.get("title") or "").strip()
     url = paper_url(paper)
@@ -367,7 +414,7 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
              if ev else ("" if not paper.get("_library_attach")
                          else '<span class="held">PDF</span>'))
     return (
-        '<article class="card">'
+        f'<article class="card" id="p{index}">'
         f'<h3><span class="n">{index}</span> {head} {badge}</h3>'
         + (f'<div class="meta">{meta}</div>' if meta else "")
         + links_html
@@ -379,15 +426,90 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     )
 
 
+_SIZE_TONE = {"LARGE": "hi", "MEDIUM": "mid", "SMALL": "lo"}
+_INFL_TONE = {"HIGH": "hi", "VERY HIGH": "hi", "MEDIUM": "mid", "LOW": "lo"}
+_TREND_MARK = {"ACCELERATING": "▲", "EMERGING": "▶", "STABLE": "■",
+               "FADING": "▼"}
+
+
+def _stream_cards(streams, lbl: dict, papers: list[dict]) -> str:
+    """스트림을 카드로. 배지 → 흐름 단락 → 근거 논문 링크 순.
+
+    예전엔 `Relative size: LARGE` 같은 줄이 본문으로 흘러 세로로 길게 늘어졌다.
+    등급은 눈으로 훑는 값이라 배지로 나란히 놓으면 자리도 덜 먹고 비교도 쉽다.
+    """
+    if not streams:
+        return ""
+    out = []
+    for s in streams:
+        if not isinstance(s, dict):
+            continue
+        name = _esc(str(s.get("name") or "").strip())
+        if not name:
+            continue
+        y0, y1 = s.get("start"), s.get("end")
+        span = f"{y0}–{y1}" if y0 and y1 and y0 != y1 else str(y0 or y1 or "")
+        trend = str(s.get("trend") or "").upper()
+        mark = _TREND_MARK.get(trend, "")
+
+        badges = []
+        if span:
+            badges.append(f'<span class="sb yr">{_esc(span)}</span>')
+        if trend:
+            badges.append(f'<span class="sb tr">{mark} {_esc(trend.title())}</span>')
+        size = str(s.get("size") or "").upper()
+        if size:
+            badges.append(f'<span class="sb {_SIZE_TONE.get(size, "mid")}">'
+                          f'{_esc(lbl["st_size"])} {_esc(size.title())}</span>')
+        infl = str(s.get("influence") or "").upper()
+        if infl:
+            badges.append(f'<span class="sb {_INFL_TONE.get(infl, "mid")}">'
+                          f'{_esc(lbl["st_infl"])} {_esc(infl.title())}</span>')
+
+        body = []
+        summary = str(s.get("summary") or "").strip()
+        if summary:
+            body.append(_linkify_papers(f"<p>{_esc(summary)}</p>", papers))
+        inter = str(s.get("interaction") or "").strip()
+        if inter:
+            body.append(f'<p class="si">{_esc(inter)}</p>')
+
+        refs = []
+        idx_of = {(p.get("title") or "").strip(): i
+                  for i, p in enumerate(papers, 1)}
+        for ttl in (s.get("papers") or [])[:5]:
+            ttl = str(ttl).strip()
+            if not ttl:
+                continue
+            i = idx_of.get(ttl)
+            if i is None:   # 제목이 조금 다를 수 있다 — 앞부분으로 재시도
+                for full, j in idx_of.items():
+                    if full[:40] and full[:40] == ttl[:40]:
+                        i = j
+                        break
+            refs.append(f'<a class="pref" href="#p{i}">{_esc(ttl)}</a>'
+                        if i else f'<span class="pref off">{_esc(ttl)}</span>')
+        refs_html = (f'<div class="sp">{"".join(refs)}</div>' if refs else "")
+
+        out.append(f'<section class="stc"><h3>{name}</h3>'
+                   f'<div class="sbs">{"".join(badges)}</div>'
+                   f'{"".join(body)}{refs_html}</section>')
+    if not out:
+        return ""
+    return f'<div class="stw">{"".join(out)}</div>'
+
+
 def _timeline_section(data_uri: str, lbl: dict, narrative: str = "",
-                      overview: str = "") -> str:
+                      overview: str = "", streams=(),
+                      papers: list[dict] | None = None) -> str:
     """타임라인 그림 + 그 그림을 만든 narrative.
 
     그림은 base64 data URI 라 파일을 옮겨도 PDF 로 뽑아도 살아 있다.
     narrative 는 LLM 이 인용 흐름을 읽고 쓴 본문 — 그림보다 정보량이 많으므로
     함께 싣는다. 그림이 실패해도 글만으로 절이 성립한다.
     """
-    if not data_uri and not narrative and not overview:
+    papers = papers or []
+    if not data_uri and not narrative and not overview and not streams:
         return ""
     out = [f'<h2>{lbl["timeline"]}</h2>']
     if data_uri:
@@ -399,9 +521,12 @@ def _timeline_section(data_uri: str, lbl: dict, narrative: str = "",
         # 풀어 쓴 것이라 스트림별 세부보다 앞에 둔다.
         paras = "".join(f"<p>{_esc(x.strip())}</p>"
                         for x in overview.split("\n\n") if x.strip())
-        out.append(f'<div class="tl-over">{paras}</div>')
-    if narrative:
-        # 마크다운 변환은 agent_lecture_digest 의 것을 그대로 쓴다 —
+        out.append(f'<div class="tl-over">{_linkify_papers(paras, papers)}</div>')
+    if streams:
+        out.append(_stream_cards(streams, lbl, papers))
+    elif narrative:
+        # streams 를 못 받은 경우의 폴백. 마크다운 변환은
+        # agent_lecture_digest 의 것을 그대로 쓴다 —
         # 이스케이프·헤딩·굵게·링크를 이미 처리한다.
         try:
             from agent_lecture_digest import md_to_html as _md
@@ -584,7 +709,7 @@ table.cols td.num{text-align:right;font-variant-numeric:tabular-nums}
 .ev-abstract{color:#8a6d1f;background:#fbf3de}
 .ev-title{color:#8a9099;background:#f0f1f3}
 a.pdf{font-weight:600}
-figure.tl-over{max-width:52rem;margin:1.2rem auto .4rem;font-size:1.05rem;line-height:1.9;color:#242a35}.tl-over p{margin:0 0 1.05rem}.tl-narr{max-width:52rem;margin:.6rem auto 0;line-height:1.75;color:#333}.tl-narr p{margin:0 0 .9rem}.tl{margin:14px 0 22px;padding:0}
+figure.tl-over{max-width:52rem;margin:1.2rem auto .4rem;font-size:1.05rem;line-height:1.9;color:#242a35}.stw{display:grid;gap:.85rem;margin:1.4rem auto 0;max-width:52rem}.stc{border:1px solid var(--line);border-radius:12px;padding:1rem 1.15rem;background:#fcfcfd}.stc h3{margin:0 0 .55rem;font-size:1.02rem;letter-spacing:-.01em;color:#1f2430}.stc p{margin:0 0 .6rem;line-height:1.75}.stc p.si{margin:.1rem 0 .55rem;font-size:.88rem;color:var(--soft)}.sbs{display:flex;flex-wrap:wrap;gap:.32rem;margin:0 0 .7rem}.sb{font-size:.74rem;font-weight:600;line-height:1;padding:.32rem .5rem;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--soft);white-space:nowrap}.sb.yr{font-variant-numeric:tabular-nums;color:#1f2430}.sb.tr{color:#1f2430}.sb.hi{background:#fdecea;border-color:#f3c9c3;color:#a82a1c}.sb.mid{background:#f2f5fa;border-color:#dde4ee;color:#41506b}.sb.lo{background:#f6f7f9;border-color:var(--line);color:#7b8496}.sp{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}.sp .pref{font-size:.79rem;padding:.28rem .55rem;border-radius:7px;background:#f2f5fa;border:1px solid #e3e9f2;color:#33405a;text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp .pref:hover{background:#e8eef8;border-color:#cfd9e8}.sp .pref.off{background:#f6f7f9;border-color:var(--line);color:#98a0ae}a.pref{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(214,52,35,.28)}a.pref:hover{border-bottom-color:var(--accent)}.card{scroll-margin-top:1rem}@media print{.sb{border-color:#ccc!important;background:#fff!important}.stc{break-inside:avoid}}.tl-over p{margin:0 0 1.05rem}.tl-narr{max-width:52rem;margin:.6rem auto 0;line-height:1.75;color:#333}.tl-narr p{margin:0 0 .9rem}.tl{margin:14px 0 22px;padding:0}
 figure.tl img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
 figure.tl figcaption{font-size:12px;color:var(--soft);margin-top:6px}
 table.themes tr.total{background:#f7f8fa;border-top:2px solid #c8ccd2}
@@ -637,6 +762,7 @@ def build_report_html(*,
                       timeline_uri: str = "",
                      timeline_narrative: str = "",
                      timeline_overview: str = "",
+                     timeline_streams=(),
                       deep_index: str = "",
                       collection: str = "",
                       generated_at: datetime | None = None) -> str:
@@ -705,7 +831,7 @@ def build_report_html(*,
         body.append(panel_html(deep_index, lbl))
 
     body.append(_timeline_section(timeline_uri, lbl, timeline_narrative,
-                                  timeline_overview))
+                                  timeline_overview, timeline_streams, papers))
 
     if themes:
         body.append(_themes_section(themes, lbl))

@@ -122,6 +122,24 @@ Be concrete — name methods, benchmarks, venues, and years from the data.
 Do not hedge, do not summarise the list back, and do not restate the stream
 names in order. A reader who never sees the diagram should still come away
 understanding the shape of this citation landscape.
+
+---
+
+STREAMS (structured, one entry per theme above):
+For each stream return an object with these fields.
+- name        the theme name
+- start, end  integer years
+- trend       ACCELERATING | STABLE | EMERGING | FADING
+- size        LARGE | MEDIUM | SMALL (paper count)
+- influence   HIGH | MEDIUM | LOW (citations, NOT paper count)
+- summary     **one paragraph in {lang_name}** tracing how this line of work
+              moved: what started it, what it turned into, where it now sits
+              relative to the others. Prose, not a list. This is the reader's
+              main text for the stream — the paper titles are only evidence.
+- papers      the exact titles from the data above that carry this stream,
+              copied verbatim so they can be linked. 2-5 of them.
+- interaction one short {lang_name} clause on how it relates to other streams
+              (merges into / feeds / spawned by / responds to).
 """
 
 
@@ -146,7 +164,7 @@ _LANG_NAMES = {"ko": "Korean", "en": "English"}
 
 def build_narrative(themes: dict, paper_info: dict | None = None, *,
                     lang: str = "ko",
-                    keys=None, cache_dir=None) -> tuple[str, str, str]:
+                    keys=None, cache_dir=None) -> tuple[str, str, str, list]:
     """LLM 으로 method text + caption + overview 를 만든다. 실패하면 ("", "", "").
 
     overview 는 **독자용 줄글**이라 리포트 언어로 쓰고, method_text 는 그림
@@ -167,15 +185,22 @@ def build_narrative(themes: dict, paper_info: dict | None = None, *,
         span=span, themes=_themes_block(themes),
         lang_name=_LANG_NAMES.get(lang, "Korean"))
     prompt += ('\n\nReturn JSON only:\n'
-               '{"method_text": "...", "caption": "...", "overview": "..."}')
+               '{"method_text": "...", "caption": "...", "overview": "...",\n'
+               ' "streams": [{"name": "...", "start": 2024, "end": 2026,\n'
+               '   "trend": "...", "size": "...", "influence": "...",\n'
+               '   "summary": "...", "papers": ["..."], "interaction": "..."}]}')
 
-    got = llm_json(prompt, max_tokens=8000, keys=keys, cache_dir=cache_dir)
+    got = llm_json(prompt, max_tokens=12000, keys=keys, cache_dir=cache_dir)
     if not got:
         logger.warning("타임라인 narrative 생성 실패")
-        return "", "", ""
+        return "", "", "", []
+    streams = got.get("streams")
+    if not isinstance(streams, list):
+        streams = []
     return (str(got.get("method_text") or "").strip(),
             str(got.get("caption") or "").strip(),
-            str(got.get("overview") or "").strip())
+            str(got.get("overview") or "").strip(),
+            streams)
 
 
 # ── 2단계: 후보 생성 ─────────────────────────────────────────────────────
@@ -294,9 +319,10 @@ class TimelineResult(NamedTuple):
     예전엔 이미지 생성용으로만 쓰고 버렸다 — 독자에게도 보여준다.
     """
     uri: str = ""
-    narrative: str = ""      # 스트림별 세부 (작화 지시문 제외)
+    narrative: str = ""      # (구) 마크다운 세부 — streams 가 있으면 안 쓴다
     caption: str = ""
     overview: str = ""       # 독자용 줄글 2~3단락 — 세부보다 먼저 읽힌다
+    streams: tuple = ()      # 구조화된 스트림 — 배지·링크·단락으로 렌더한다
 
     def __bool__(self) -> bool:      # 기존 `if timeline_uri:` 관용구 보존
         return bool(self.uri)
@@ -321,14 +347,14 @@ def generate(themes: dict, *, paper_info: dict | None = None,
 
     if progress:
         progress("timeline", "타임라인 narrative 작성 중…")
-    method_text, caption, overview = build_narrative(
+    method_text, caption, overview, streams = build_narrative(
         themes, paper_info, lang=lang, keys=keys, cache_dir=cache_dir)
     if not method_text:
         # 작화 지시가 없으면 그림은 못 그린다. 하지만 개요가 나왔다면 그건
         # 독자용 산출물로 이미 완결이라 버리지 않는다.
         if progress:
             progress("timeline", "타임라인 생략 (narrative 실패)")
-        return TimelineResult(overview=overview)
+        return TimelineResult(overview=overview, streams=tuple(streams))
 
     box: dict = {}
 
@@ -352,14 +378,16 @@ def generate(themes: dict, *, paper_info: dict | None = None,
         if progress:
             progress("timeline", "타임라인 생략 (시간 초과)")
         return TimelineResult(narrative=reader_portion(method_text),
-                              caption=caption, overview=overview)
+                              caption=caption, overview=overview,
+                              streams=tuple(streams))
 
     png = box.get("png")
     if not png:
         if progress:
             progress("timeline", "타임라인 생략 (생성 실패)")
         return TimelineResult(narrative=reader_portion(method_text),
-                              caption=caption, overview=overview)
+                              caption=caption, overview=overview,
+                              streams=tuple(streams))
 
     logger.info("타임라인 확정: %.0fKB", len(png) / 1024)
     if progress:
@@ -367,4 +395,4 @@ def generate(themes: dict, *, paper_info: dict | None = None,
     return TimelineResult(
         uri="data:image/png;base64," + base64.b64encode(png).decode("ascii"),
         narrative=reader_portion(method_text), caption=caption,
-        overview=overview)
+        overview=overview, streams=tuple(streams))
