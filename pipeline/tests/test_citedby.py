@@ -2625,6 +2625,28 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("if(note) return '[['+note+'|'+body+']]'", h)
         self.assertIn("window._citedbyReportMarkdown=reportMarkdown", h)
 
+    def test_report_titles_use_local_reviews_live_and_external_links_in_pdf(self):
+        h = self._html(
+            paper_info={"title": "Seed", "doi": "10.1234/seed"},
+            papers=[{
+                "title": "Reviewed", "doi": "10.1234/reviewed",
+                "_corpus_slug": "042_Reviewed Paper",
+            }])
+        self.assertIn(
+            'href="https://doi.org/10.1234/reviewed" '
+            'data-local="/papers/042_Reviewed%20Paper/" '
+            'data-external="https://doi.org/10.1234/reviewed"', h)
+        self.assertIn(
+            'class="seed-t" data-local="@seed" '
+            'data-external="https://doi.org/10.1234/seed"', h)
+        self.assertIn('window.addEventListener("beforeprint", applyPrintLinks)', h)
+        self.assertIn('window.addEventListener("afterprint", applyLiveLinks)', h)
+        self.assertIn("window._citedbyApplyLiveLinks = applyLiveLinks", h)
+        self.assertIn("window._citedbyApplyPrintLinks = applyPrintLinks", h)
+        self.assertIn(
+            '<a href="https://doi.org/10.1234/reviewed" rel="noopener">원문</a>',
+            h)
+
     def test_python_markdown_recovery_uses_same_local_identity(self):
         papers = [
             {"title": "Reviewed", "doi": "10.1234/reviewed",

@@ -20,6 +20,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 
 # 5W1H 요약 필드 → 표시 라벨. topic_filter 의 요약 스키마와 맞춘다.
 _SUMMARY_FIELDS = (
@@ -193,9 +194,14 @@ def _obsidian_path(paper: dict) -> str:
     return ""
 
 
+def _local_review_url(paper: dict) -> str:
+    slug = str(paper.get("_corpus_slug") or "").strip()
+    return f"/papers/{quote(slug)}/" if slug else ""
+
+
 def _link(url: str, text: str, *, cls: str = "",
-          obsidian: str = "") -> str:
-    """절대 URL이면 <a>, 아니면 평문. Obsidian target은 별도 metadata로 보존."""
+          obsidian: str = "", local: str = "") -> str:
+    """절대 URL이면 <a>. 로컬 review와 export 원문 target을 함께 보존."""
     safe_url = _absolute_url(url)
     label = _esc(text)
     if not safe_url:
@@ -205,6 +211,9 @@ def _link(url: str, text: str, *, cls: str = "",
         attrs.append(f'class="{cls}"')
     if obsidian:
         attrs.append(f'data-obsidian="{_esc(obsidian)}"')
+    if local:
+        attrs.append(f'data-local="{_esc(local)}"')
+        attrs.append(f'data-external="{_esc(safe_url)}"')
     attr = (" " + " ".join(attrs)) if attrs else ""
     return f'<a href="{_esc(safe_url)}"{attr} rel="noopener">{label}</a>'
 
@@ -276,7 +285,7 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
         return ""
     title = (paper_info.get("title") or "").strip()
     url = paper_url(paper_info)
-    linked = _link(url, title, cls="seed-t") if title else ""
+    linked = _link(url, title, cls="seed-t", local="@seed") if title else ""
     meta = _citation_line(paper_info)
     tail = []
     doi = (paper_info.get("doi") or "").strip()
@@ -406,7 +415,8 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     url = paper_url(paper)
     obsidian = _obsidian_path(paper)
     obs_attr = f' data-obsidian="{_esc(obsidian)}"' if obsidian else ""
-    head = _link(url, title) if url else _esc(title)
+    head = (_link(url, title, local=_local_review_url(paper))
+            if url else _esc(title))
 
     meta_bits = [_citation_line(paper)]
     cited = paper.get("citationCount")
@@ -678,7 +688,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
         rows.append(
             "<tr>"
             f'<td class="num">{i}</td>'
-            f"<td>{_link(url, title, obsidian=_obsidian_path(p)) if url else _esc(title)}</td>"
+            f"<td>{_link(url, title, obsidian=_obsidian_path(p), local=_local_review_url(p)) if url else _esc(title)}</td>"
             f'<td>{_esc(p.get("journal"))}</td>'
             f'<td class="num">{_esc(p.get("year"))}</td>'
             f'<td class="num">{_esc(p.get("citationCount"))}</td>'
@@ -795,9 +805,43 @@ footer{margin-top:2.5rem;padding-top:.9rem;border-top:1px solid var(--line);
 }
 """
 
-_PRINT_JS = (
-    "<script>function citedbyPrint(){window.print();}</script>"
-)
+_PRINT_JS = r"""<script>
+function citedbyPrint(){window.print();}
+(function(){
+  function seedSlug(){
+    var match = location.pathname.match(/\/papers\/([^/]+)\/citedby\//);
+    return match ? decodeURIComponent(match[1]) : "";
+  }
+  function localTarget(anchor){
+    var target = anchor.dataset.local || "";
+    if(target === "@seed"){
+      var slug = seedSlug();
+      return slug ? "/papers/" + encodeURIComponent(slug) + "/" : "";
+    }
+    return target;
+  }
+  function isLocalPreview(){
+    return location.protocol === "http:" &&
+      (location.hostname === "localhost" || location.hostname === "127.0.0.1");
+  }
+  function applyLiveLinks(){
+    document.querySelectorAll("a[data-local][data-external]").forEach(function(anchor){
+      var target = localTarget(anchor);
+      anchor.href = isLocalPreview() && target ? target : anchor.dataset.external;
+    });
+  }
+  function applyPrintLinks(){
+    document.querySelectorAll("a[data-local][data-external]").forEach(function(anchor){
+      anchor.href = anchor.dataset.external;
+    });
+  }
+  document.addEventListener("DOMContentLoaded", applyLiveLinks);
+  window.addEventListener("beforeprint", applyPrintLinks);
+  window.addEventListener("afterprint", applyLiveLinks);
+  window._citedbyApplyLiveLinks = applyLiveLinks;
+  window._citedbyApplyPrintLinks = applyPrintLinks;
+})();
+</script>"""
 
 
 _MD_LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
