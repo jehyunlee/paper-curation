@@ -2066,14 +2066,17 @@ class ServeTests(unittest.TestCase):
         with patch.object(serve.urllib.request, "urlopen", side_effect=err):
             self.assertFalse(serve._is_ours(8000))
 
-    def test_is_ours_accepts_our_400_signature(self):
+    def test_is_ours_accepts_health_signature(self):
         from lib.citedby import serve
         import io
-        import urllib.error
-        body = io.BytesIO(json.dumps({"error": "missing 'text'"}).encode())
-        err = urllib.error.HTTPError("u", 400, "bad", None, body)
-        with patch.object(serve.urllib.request, "urlopen", side_effect=err):
+        body = io.BytesIO(json.dumps({
+            "ok": True,
+            "service": "paper-curation-serve-local",
+        }).encode())
+        with patch.object(serve.urllib.request, "urlopen",
+                          return_value=body) as request:
             self.assertTrue(serve._is_ours(8000))
+        self.assertIn("/api/health", request.call_args.args[0])
 
     def test_no_free_port_returns_none(self):
         from lib.citedby import serve

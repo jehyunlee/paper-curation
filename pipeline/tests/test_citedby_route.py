@@ -83,6 +83,15 @@ class CitedbyRouteTests(unittest.TestCase):
             raw = resp.read().decode("utf-8")
         return [json.loads(ln) for ln in raw.splitlines() if ln.strip()]
 
+    def test_health_endpoint_identifies_server_without_error_probe(self):
+        with urllib.request.urlopen(
+                f"http://127.0.0.1:{self.port}/api/health", timeout=5) as resp:
+            self.assertEqual(resp.status, 200)
+            body = json.loads(resp.read().decode("utf-8"))
+        self.assertEqual(body, {
+            "ok": True,
+            "service": "paper-curation-serve-local",
+        })
     # ── 정상 경로 ────────────────────────────────────────────────────────
     def test_streams_progress_then_done(self):
         def fake(doi, **kw):

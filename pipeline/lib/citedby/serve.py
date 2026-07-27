@@ -17,7 +17,6 @@ import socket
 import subprocess
 import sys
 import time
-import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -40,26 +39,20 @@ def _port_open(port: int, host: str = "127.0.0.1") -> bool:
 
 
 def _is_ours(port: int) -> bool:
-    """이 포트의 서버가 paper-curation serve_local 인지 확인.
+    """전용 health endpoint로 paper-curation serve_local인지 확인.
 
-    `/api/embed` 는 우리만 가진 라우트다. 본문 없이 POST 하면 400(missing
-    'text')이 돌아온다 — 그 응답 모양이 서명 역할을 한다. 남의 서버라면
-    404/405 이거나 아예 다른 본문이다.
+    과거에는 빈 `/api/embed` POST의 의도적인 400 응답을 서명으로 썼다. 실행할
+    때마다 오류 로그가 남아 실제 장애와 혼동되므로, 부작용 없는 GET health check를
+    사용한다.
     """
     try:
-        req = urllib.request.Request(
-            f"http://127.0.0.1:{port}/api/embed", data=b"{}",
-            headers={"Content-Type": "application/json"}, method="POST")
-        urllib.request.urlopen(req, timeout=2)
-        return True                      # 200 이면 확실히 우리 것
-    except urllib.error.HTTPError as e:
-        if e.code != 400:
-            return False
-        try:
-            body = json.loads(e.read().decode("utf-8", "replace"))
-        except Exception:  # noqa: BLE001
-            return False
-        return "text" in str(body.get("error", ""))
+        response = urllib.request.urlopen(
+            f"http://127.0.0.1:{port}/api/health", timeout=2)
+        body = json.loads(response.read().decode("utf-8", "replace"))
+        return (
+            body.get("ok") is True
+            and body.get("service") == "paper-curation-serve-local"
+        )
     except Exception:  # noqa: BLE001
         return False
 

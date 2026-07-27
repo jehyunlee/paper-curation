@@ -257,6 +257,13 @@ class LocalHandler(SimpleHTTPRequestHandler):
     """docs/ 정적 서빙 + /api/* POST 핸들러."""
 
     def do_GET(self):  # noqa: N802 (stdlib 규약)
+        route = self.path.split("?", 1)[0]
+        if route == "/api/health":
+            self._send_json(200, {
+                "ok": True,
+                "service": "paper-curation-serve-local",
+            })
+            return
         # .html 은 env→config 키를 즉석 주입해 서빙한다 (Audio Overview _GEMINI_KEY,
         # 로컬 이메일 _LOCAL_EMAILS). baked 상태(배포 strip 후 미복원 등)와 무관하게
         # 로컬에서 동작하게 한다. 그 외 파일은 표준 정적 서빙.
