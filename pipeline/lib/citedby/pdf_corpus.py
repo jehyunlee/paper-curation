@@ -181,6 +181,57 @@ def paper_key(p: dict) -> str:
         str(p.get("title") or "").encode("utf-8")).hexdigest()[:16]
 
 
+def _clean_doi(value) -> str:
+    doi = str(value or "").strip()
+    doi = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", doi,
+                 flags=re.IGNORECASE)
+    doi = re.sub(r"^doi:\s*", "", doi, flags=re.IGNORECASE)
+    return doi if re.match(r"^10\.\d{3,}/\S+$", doi) else ""
+
+
+def _external_url(paper: dict) -> str:
+    """독립 export에서 항상 해석되는 논문 원문 주소."""
+    doi = _clean_doi(paper.get("doi"))
+    if doi:
+        return f"https://doi.org/{doi}"
+    arxiv = str(paper.get("arxiv") or paper.get("arxiv_id") or "").strip()
+    arxiv = re.sub(r"^arxiv:\s*", "", arxiv, flags=re.IGNORECASE)
+    if arxiv:
+        return f"https://arxiv.org/abs/{arxiv}"
+    for field in ("external_url", "url", "landing_page_url"):
+        url = str(paper.get(field) or "").strip()
+        if re.match(r"^https?://", url):
+            return url
+    return ""
+
+
+def _note_file(key: str, title: str) -> str:
+    stem = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:48]
+    digest = hashlib.sha1(key.encode("utf-8")).hexdigest()[:10]
+    return f"{stem or 'paper'}-{digest}.md"
+
+
+def _reference_meta(paper: dict, key: str, corpus_slug: str = "") -> dict:
+    doi = _clean_doi(paper.get("doi"))
+    arxiv = str(paper.get("arxiv") or paper.get("arxiv_id") or "").strip()
+    meta = {
+        "title": paper.get("title", ""),
+        "doi": doi,
+        "arxiv": re.sub(r"^arxiv:\s*", "", arxiv, flags=re.IGNORECASE),
+        "external_url": _external_url(paper),
+        "year": paper.get("year") or paper.get("date", ""),
+        "journal": paper.get("journal", ""),
+        "authors": paper.get("authors") or paper.get("author_names", ""),
+        "zotero_key": paper.get("_library_key", ""),
+        "zotero_attach": paper.get("_library_attach", ""),
+        "corpus_slug": corpus_slug,
+        "reference_type": EV_CORPUS if corpus_slug else "citedby-note",
+    }
+    if not corpus_slug:
+        meta["note_file"] = _note_file(key, str(paper.get("title") or ""))
+    return meta
+
+
 def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
     """근거를 청크로 쪼갠다 (코퍼스 재사용 > PDF 전문 > 초록).
 
@@ -212,13 +263,8 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
                     chunks.append(c)
                 reused_vecs[key] = cvecs
                 meta[key] = {
-                    "title": p.get("title", ""), "doi": p.get("doi", ""),
-                    "year": p.get("year") or p.get("date", ""),
-                    "journal": p.get("journal", ""),
-                    "authors": p.get("authors") or p.get("author_names", ""),
-                    "zotero_key": p.get("_library_key", ""),
-                    "zotero_attach": p.get("_library_attach", ""),
-                    "evidence": EV_CORPUS, "corpus_slug": cslug,
+                    **_reference_meta(p, key, cslug),
+                    "evidence": EV_CORPUS,
                     "connections": p.get("_connections") or [],
                     "chunks": len(cchunks),
                 }
@@ -255,13 +301,7 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
 
         if added:
             meta[key] = {
-                "title": p.get("title", ""),
-                "doi": p.get("doi", ""),
-                "year": p.get("year") or p.get("date", ""),
-                "journal": p.get("journal", ""),
-                "authors": p.get("authors") or p.get("author_names", ""),
-                "zotero_key": p.get("_library_key", ""),
-                "zotero_attach": p.get("_library_attach", ""),
+                **_reference_meta(p, key),
                 "evidence": evidence,
                 "chunks": added,
             }
@@ -312,6 +352,59 @@ def embed_chunks(chunks: list[dict], *, progress=None) -> bytes | None:
             progress("index", f"임베딩 {done}/{total} 청크")
     return bytes(out)
 
+
+def write_evidence_notes(out_dir: Path, meta: dict, chunks: list[dict]) -> int:
+    """코퍼스 밖 인용논문을 Obsidian에서 연결할 최소 evidence note로 저장."""
+    notes_dir = out_dir / "notes"
+    by_key: dict[str, list[dict]] = {}
+    for chunk in chunks:
+        by_key.setdefault(chunk.get("slug", ""), []).append(chunk)
+
+    written = 0
+    seed_slug = out_dir.parent.name
+    for key, paper in meta.items():
+        if paper.get("reference_type") == EV_CORPUS:
+            slug = paper.get("corpus_slug", "")
+            paper["local_html"] = f"../../{slug}/"
+            paper["local_md"] = f"../../{slug}/review.md"
+            paper["obsidian_path"] = f"papers/{slug}/review"
+            continue
+
+        note_file = paper.get("note_file") or _note_file(key, paper.get("title", ""))
+        note_stem = Path(note_file).stem
+        paper["local_md"] = f"notes/{note_file}"
+        paper["obsidian_path"] = (
+            f"papers/{seed_slug}/citedby/notes/{note_stem}"
+        )
+        evidence = by_key.get(key) or []
+        authors = paper.get("authors") or ""
+        if isinstance(authors, list):
+            authors = ", ".join(str(a) for a in authors)
+        lines = [
+            f"# {paper.get('title') or 'Untitled'}", "",
+            f"- Authors: {authors or '-'}",
+            f"- Year: {paper.get('year') or '-'}",
+            f"- Journal: {paper.get('journal') or '-'}",
+            f"- Evidence: {paper.get('evidence') or '-'}",
+        ]
+        if paper.get("doi"):
+            lines.append(f"- DOI: https://doi.org/{paper['doi']}")
+        elif paper.get("external_url"):
+            lines.append(f"- Source: {paper['external_url']}")
+        lines += [
+            f"- Seed review: [[papers/{seed_slug}/review|원논문 review]]",
+            "", "## Evidence excerpts", "",
+        ]
+        for i, chunk in enumerate(evidence[:3], 1):
+            lines += [
+                f"### {i}. {chunk.get('section') or '본문'}", "",
+                str(chunk.get("text") or "")[:2200].strip(), "",
+            ]
+        notes_dir.mkdir(parents=True, exist_ok=True)
+        (notes_dir / note_file).write_text(
+            "\n".join(lines).rstrip() + "\n", encoding="utf-8")
+        written += 1
+    return written
 
 def build_index(papers: list[dict], out_dir, *, embed: bool = True,
                 progress=None) -> dict | None:
@@ -369,6 +462,8 @@ def build_index(papers: list[dict], out_dir, *, embed: bool = True,
                        len(emb), len(chunks) * EMBED_DIM)
         emb = None
 
+    note_count = write_evidence_notes(out_dir, meta, chunks)
+
     payload = {
         "model": EMBED_MODEL,
         "dim": EMBED_DIM,
@@ -394,5 +489,6 @@ def build_index(papers: list[dict], out_dir, *, embed: bool = True,
         "papers": len(meta),
         "chunks": len(chunks),
         "has_vectors": bool(emb),
+        "evidence_notes": note_count,
         "index_path": str(out_dir / INDEX_NAME),
     }

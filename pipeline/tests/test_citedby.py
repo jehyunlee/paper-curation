@@ -1725,6 +1725,23 @@ class PdfCorpusTests(unittest.TestCase):
                          "2409.04109")
         self.assertEqual(paper_key({"title": "Some Title!"}), "sometitle")
 
+    def test_reference_meta_keeps_context_targets(self):
+        from lib.citedby import pdf_corpus as PC
+        corpus = PC._reference_meta(
+            {"title": "Known", "doi": "https://doi.org/10.1234/X"},
+            "known", "042_Known")
+        self.assertEqual(corpus["reference_type"], "corpus")
+        self.assertEqual(corpus["external_url"], "https://doi.org/10.1234/X")
+        self.assertEqual(corpus["corpus_slug"], "042_Known")
+
+        outside = PC._reference_meta(
+            {"title": "Outside", "arxiv_id": "2409.04109"}, "outside")
+        self.assertEqual(outside["reference_type"], "citedby-note")
+        self.assertEqual(
+            outside["external_url"], "https://arxiv.org/abs/2409.04109")
+        self.assertTrue(outside["note_file"].endswith(".md"))
+
+
     def test_references_are_trimmed_from_fulltext(self):
         from lib.citedby import pdf_corpus
         body = "본문 " * 400 + "\nReferences\n" + "[1] cite " * 100
@@ -1761,6 +1778,33 @@ class PdfCorpusTests(unittest.TestCase):
         self.assertEqual(data["dim"], 768)
         self.assertEqual(data["quant"], "int8-l2norm")
         self.assertEqual(info["chunks"], 1)
+
+    def test_unmatched_papers_get_obsidian_evidence_notes(self):
+        from lib.citedby import pdf_corpus as PC
+        chunks = [{"slug": "outside", "section": "Results",
+                   "text": "measured evidence", "text_sha": "a"}]
+        meta = {"outside": {
+            "title": "Outside Paper", "authors": ["A", "B"], "year": "2025",
+            "journal": "J", "doi": "10.1234/out", "external_url":
+            "https://doi.org/10.1234/out", "evidence": "pdf",
+            "reference_type": "citedby-note", "note_file": "outside.md",
+            "chunks": 1}}
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "papers" / "001_Seed" / "citedby"
+            with patch.object(PC, "build_chunks",
+                              return_value=(chunks, meta, {})), \
+                 patch.object(PC, "embed_chunks", return_value=None):
+                info = PC.build_index([], out)
+            data = json.loads((out / PC.INDEX_NAME).read_text(encoding="utf-8"))
+            note = (out / "notes" / "outside.md").read_text(encoding="utf-8")
+        ref = data["papers"]["outside"]
+        self.assertEqual(info["evidence_notes"], 1)
+        self.assertEqual(
+            ref["obsidian_path"],
+            "papers/001_Seed/citedby/notes/outside")
+        self.assertIn("[[papers/001_Seed/review|원논문 review]]", note)
+        self.assertIn("measured evidence", note)
+
 
     def test_vector_length_mismatch_drops_vectors(self):
         """길이가 안 맞으면 잘못된 사이드카를 쓰느니 벡터 없이 저장한다."""
@@ -1937,6 +1981,18 @@ class CorpusAssetTests(unittest.TestCase):
         self.assertEqual(out[0]["_connections"][0]["title"], "Other Paper")
         self.assertNotIn("_corpus_slug", out[1])
         self.assertEqual(st["matched"], 1)
+
+    def test_connections_preserve_reference_identity(self):
+        from lib.citedby.corpus_assets import connected_papers
+        idx = self._idx()
+        idx.meta["099_Other"].update({
+            "doi": "10.1234/other", "year": "2024",
+            "authors": "Kim; Lee", "external_url": "https://example.org/other"})
+        ref = connected_papers("042_Corpus_Paper", idx)[0]
+        self.assertEqual(ref["doi"], "10.1234/other")
+        self.assertEqual(ref["year"], "2024")
+        self.assertEqual(ref["authors"], "Kim; Lee")
+        self.assertEqual(ref["external_url"], "https://example.org/other")
 
     def test_corpus_beats_pdf_in_tiering(self):
         """PDF 를 갖고 있어도 코퍼스 자산이 있으면 corpus 등급이다."""
@@ -2445,22 +2501,43 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("'notes/'+COLLECTION+'/help/CITEDBY_'", h)
         self.assertIn('var COLLECTION="ai4s"', h)
 
-    def test_note_exports_link_local_reviews_not_external_urls(self):
+    def test_obsidian_links_reviews_and_generated_evidence_notes(self):
+        h = self._html(deep_index="_citedby_index.json")
+        identity = h[h.index("function obsidianTarget"):
+                     h.index("function safeName")]
+        self.assertIn("r.obsidian_path", identity)
+        self.assertIn("'papers/'+slug+'/review'", identity)
+        self.assertIn("linkAnswerForExport", identity)
+        self.assertIn("('[['+note+'|['+n+']]]')", identity)
+
+    def test_markdown_and_pdf_use_external_reference_urls(self):
         h = self._html(deep_index="_citedby_index.json")
         markdown = h[h.index("function buildFullMarkdown"):
                      h.index("function safeName")]
-        self.assertIn("[[papers/'+slug+'/review|'+title+']]", markdown)
-        self.assertIn("](../../'+slug+'/review.md)", markdown)
-        self.assertNotIn("refUrl(", markdown)
-        self.assertNotIn("https://doi.org/", markdown)
-        self.assertNotIn("https://arxiv.org/", markdown)
+        self.assertIn("else if(refUrl(r))", markdown)
+        self.assertIn("linked='['+title+']('+refUrl(r)+')'", markdown)
+        self.assertIn("linkAnswerForExport", markdown)
 
-    def test_live_references_prefer_local_reviews(self):
+    def test_live_references_use_local_html_on_localhost(self):
         h = self._html(deep_index="_citedby_index.json")
+        identity = h[h.index("function localRefUrl"):
+                     h.index("function obsidianTarget")]
         refs = h[h.index("function renderRefs"):h.index("async function run")]
-        self.assertIn("encodeURIComponent(slug)", refs)
-        self.assertIn("/review.md", refs)
-        self.assertNotIn("r.url", refs)
+        self.assertIn("location.hostname==='localhost'", identity)
+        self.assertIn("localRefUrl(r)", identity)
+        self.assertIn("liveRefUrl(r)", refs)
+        self.assertIn("evidence note", refs)
+
+    def test_web_citations_reuse_corpus_identity(self):
+        h = self._html(deep_index="_citedby_index.json")
+        dedup = h[h.index("function absorbWebCitations"):
+                  h.index("function cleanWebPreamble")]
+        self.assertIn("r.reference_type==='corpus'||r.corpus_slug", dedup)
+        self.assertIn("byDoi", dedup)
+        self.assertIn("canonicalUrl", dedup)
+        self.assertIn("byTitle", dedup)
+        self.assertIn("return prefix+'[ref:'+n+']'", dedup)
+        self.assertIn("text=absorbWebCitations(text,refs)", h)
 
     def test_pdf_export_keeps_absolute_reference_links(self):
         """파일을 받은 사람이 클릭할 수 있어야 한다."""

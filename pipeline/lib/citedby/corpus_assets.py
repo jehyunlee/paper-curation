@@ -96,7 +96,12 @@ def load_corpus_index() -> CorpusIndex:
         idx.meta[slug] = {
             "title": e.get("title", ""),
             "doi": e.get("doi", ""),
+            "arxiv": e.get("arxiv") or e.get("arxiv_id") or "",
+            "external_url": e.get("external_url") or e.get("url") or "",
+            "authors": e.get("authors") or e.get("author_names") or "",
             "date": e.get("date", ""),
+            "year": e.get("year") or str(e.get("date") or "")[:4],
+            "journal": e.get("journal", ""),
             "primary_topic": e.get("primary_topic", ""),
             "score": e.get("score"),
             "citation_count": e.get("citation_count"),
@@ -206,6 +211,12 @@ def connected_papers(slug: str, idx: CorpusIndex, *, limit: int = 5) -> list:
         out.append({
             "slug": target,
             "title": m.get("title", ""),
+            "year": m.get("year", ""),
+            "authors": m.get("authors", ""),
+            "journal": m.get("journal", ""),
+            "doi": m.get("doi", ""),
+            "arxiv": m.get("arxiv", ""),
+            "external_url": m.get("external_url", ""),
             "relation": c.get("relation", ""),
             "reason": c.get("reason", ""),
         })

@@ -262,8 +262,11 @@ _JS = r"""
         var slug=c.slug||'';
         if(!slug||seen[slug]) return;
         seen[slug]=1;
-        candidates.push({slug:slug,title:c.title||slug,relation:c.relation||'related',
-                         reason:c.reason||''});
+        candidates.push({slug:slug,title:c.title||slug,year:c.year||'',
+                         authors:c.authors||'',journal:c.journal||'',
+                         doi:c.doi||'',arxiv:c.arxiv||'',
+                         external_url:c.external_url||'',
+                         relation:c.relation||'related',reason:c.reason||''});
       });
     });
     candidates=candidates.slice(0,20);
@@ -275,9 +278,14 @@ _JS = r"""
         var text=(await r.text()).trim();
         if(!text) return null;
         return {text:text.slice(0,7000),title:c.title,attach:'',
-                section:'Related paper · '+c.relation,year:'',authors:'',
-                doi:'',arxiv:'',url:new URL('../../'+c.slug+'/',location.href).href,
-                source_slug:c.slug,corpus_slug:c.slug,connections:[],
+                section:'Related paper · '+c.relation,year:c.year,
+                authors:c.authors,journal:c.journal,doi:c.doi,arxiv:c.arxiv,
+                external_url:c.external_url,url:c.external_url,
+                local_html:'../../'+c.slug+'/',
+                local_md:'../../'+c.slug+'/review.md',
+                obsidian_path:'papers/'+c.slug+'/review',
+                reference_type:'corpus',source_slug:c.slug,
+                corpus_slug:c.slug,connections:[],
                 relation:c.relation,reason:c.reason,related:true};
       }catch(e){return null;}
     }));
@@ -306,11 +314,58 @@ _JS = r"""
     log.appendChild(line);
   }
 
-  function absorbWebLinks(text){
-    var re=/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, m;
-    while((m=re.exec(text||''))){
-      researchEvent({event:'web_result',title:m[1],url:m[2]});
+  function normTitle(s){
+    return String(s||'').toLowerCase().replace(/[^a-z0-9\uac00-\ud7a3]/g,'').slice(0,100);
+  }
+  function doiFrom(value){
+    var s=String(value||'').toLowerCase();
+    try{s=decodeURIComponent(s);}catch(e){}
+    var m=s.match(/10\.\d{3,9}\/[^\s?#]+/);
+    return m?m[0].replace(/[.,;]+$/,''):'';
+  }
+  function canonicalUrl(value){
+    try{
+      var u=new URL(value,location.href);
+      u.hash=''; u.search='';
+      return (u.hostname.toLowerCase().replace(/^www\./,'')+
+              u.pathname.replace(/\/+$/,'')).toLowerCase();
+    }catch(e){ return String(value||'').toLowerCase(); }
+  }
+  function absorbWebCitations(text, refs){
+    var byDoi={}, byUrl={}, byTitle={};
+    function keep(map,key,n,r){
+      if(!key) return;
+      var old=map[key];
+      if(!old||((r.reference_type==='corpus'||r.corpus_slug)&&!old.corpus))
+        map[key]={n:n,corpus:!!(r.reference_type==='corpus'||r.corpus_slug)};
     }
+    refs.forEach(function(r,i){
+      var n=i+1, title=normTitle(r.title);
+      keep(byDoi,doiFrom(r.doi||refUrl(r)),n,r);
+      keep(byUrl,canonicalUrl(refUrl(r)),n,r);
+      if(title.length>=12) keep(byTitle,title,n,r);
+    });
+    return String(text||'').replace(
+      /(^|[^!])\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/gm,
+      function(raw,prefix,label,url){
+        var doi=doiFrom(url), title=normTitle(label), hit=
+          (doi&&byDoi[doi])||byUrl[canonicalUrl(url)]||
+          (title.length>=12&&byTitle[title]);
+        var n;
+        if(hit){
+          n=hit.n;
+        }else{
+          refs.push({title:label,url:url,external_url:url,web:true,
+                     reference_type:'web',text:'',section:'Web source',
+                     corpus_slug:'',connections:[]});
+          n=refs.length;
+          byUrl[canonicalUrl(url)]={n:n,corpus:false};
+          if(doi) byDoi[doi]={n:n,corpus:false};
+          if(title.length>=12) byTitle[title]={n:n,corpus:false};
+        }
+        researchEvent({event:'web_result',title:label,url:url});
+        return prefix+'[ref:'+n+']';
+      });
   }
 
   function cleanWebPreamble(text){
@@ -385,24 +440,54 @@ _JS = r"""
     });
   }
 
-  // ── 내보내기 (코퍼스 Deep Research 와 동일 형식) ──────────────────────
+  // ── reference identity + context-aware export ───────────────────────────
   function citedNums(md){
     var s=new Set(), m, re=/\[ref:(\d+)\]/g;
     while((m=re.exec(md||''))) s.add(parseInt(m[1],10));
     return s;
   }
   function refUrl(r){
+    if(r.external_url) return r.external_url;
     if(r.doi) return 'https://doi.org/'+r.doi;
     if(r.arxiv) return 'https://arxiv.org/abs/'+r.arxiv;
-    return r.url||'';
+    return r.url||(r.title?('https://scholar.google.com/scholar?q='+
+      encodeURIComponent(r.title)):'');
   }
-  function reviewSlug(r){
-    return r.corpus_slug||((r.related&&r.source_slug)?r.source_slug:'');
+  function reviewSlug(r){ return r.corpus_slug||''; }
+  function localRefUrl(r){
+    if(r.local_html) return r.local_html;
+    var slug=reviewSlug(r);
+    return slug?('../../'+encodeURIComponent(slug)+'/'):'';
+  }
+  function isLocalHost(){
+    return location.protocol==='http:' &&
+      (location.hostname==='localhost'||location.hostname==='127.0.0.1');
+  }
+  function liveRefUrl(r){
+    return (isLocalHost()&&localRefUrl(r))||refUrl(r)||r.local_md||'';
+  }
+  function obsidianTarget(r){
+    if(r.obsidian_path) return r.obsidian_path;
+    var slug=reviewSlug(r);
+    return slug?('papers/'+slug+'/review'):'';
+  }
+  function linkAnswerForExport(answer, refs, kind){
+    return String(answer||'').replace(/\[ref:(\d+)\]/g,function(raw,n){
+      var r=refs[parseInt(n,10)-1]; if(!r) return raw;
+      if(kind==='obsidian'){
+        var note=obsidianTarget(r);
+        return note?('[['+note+'|['+n+']]]'):
+          (refUrl(r)?('[['+n+']]('+refUrl(r)+')'):('['+n+']'));
+      }
+      var href=refUrl(r);
+      return href?('[\\['+n+'\\]]('+href+')'):('\\['+n+'\\]');
+    });
   }
   function buildFullMarkdown(kind){
+    var answer=linkAnswerForExport(LAST.answer,LAST.refs,kind);
     var lines=['# citedby Deep Research','','**Query**: '+LAST.q,
                '**Generated**: '+new Date().toISOString(),
-               '**Model**: '+(LAST.model||'-'),'','---','',LAST.answer];
+               '**Model**: '+(LAST.model||'-'),'','---','',answer];
     var cited=citedNums(LAST.answer);
     if(cited.size>0){
       lines.push('','## References','');
@@ -410,11 +495,11 @@ _JS = r"""
         var r=LAST.refs[n-1]; if(!r) return;
         var au=r.authors?(String(r.authors).split(/[;,]/)[0].trim()+' et al. '):'';
         var yr=r.year?('('+r.year+'). '):'';
-        var slug=reviewSlug(r), title=r.title||'Untitled', linked=title;
-        if(slug&&kind==='obsidian')
-          linked='[[papers/'+slug+'/review|'+title+']]';
-        else if(slug)
-          linked='['+title+'](../../'+slug+'/review.md)';
+        var title=r.title||'Untitled', linked=title, note=obsidianTarget(r);
+        if(kind==='obsidian'&&note)
+          linked='[['+note+'|'+title+']]';
+        else if(refUrl(r))
+          linked='['+title+']('+refUrl(r)+')';
         lines.push('- ['+n+'] '+au+yr+linked+'.');
       });
     }
@@ -503,16 +588,18 @@ _JS = r"""
     el.innerHTML='<h4>근거</h4>'+refs.map(function(r,i){
       var link=r.attach?(' · <a href="zotero://open-pdf/library/items/'+r.attach+
         '">PDF 열기</a>'):'';
-      var slug=reviewSlug(r);
-      if(slug) link+=' · <a href="../../'+encodeURIComponent(slug)+
-        '/review.md" target="_blank" rel="noopener">review.md</a>';
+      if(r.local_md&&!r.corpus_slug)
+        link+=' · <a href="'+esc(r.local_md)+'" target="_blank">evidence note</a>';
+      var target=liveRefUrl(r), title=esc(r.title||'');
+      if(target) title='<a href="'+esc(target)+'" target="_blank" rel="noopener">'+
+        title+'</a>';
       var sec=r.section?(' <i>'+esc(r.section)+'</i>'):'';
       var rel=r.related?(' <span class="dr-cite">'+esc(r.relation||'related')+
         '</span>'):'';
       var prev=esc((r.text||'').slice(0,180));
       return '<div class="dr-ref" id="dr-ref-'+(i+1)+'"><b>['+(i+1)+']</b> '+
-        esc(r.title||'')+sec+rel+link+
-        '<div class="dr-prev">'+prev+'…</div></div>';
+        title+sec+rel+link+
+        (prev?('<div class="dr-prev">'+prev+'…</div>'):'')+'</div>';
     }).join('');
   }
 
@@ -541,11 +628,15 @@ _JS = r"""
 
       var refs=hits.map(function(h){
         var c=IDX.chunks[h[0]], p=(IDX.papers||{})[c.slug]||{};
-        return {text:c.text, title:p.title||c.slug, attach:p.zotero_attach||'',
-                section:c.section||'', year:p.year||'', authors:p.authors||'',
-                doi:p.doi||'', arxiv:p.arxiv||'', url:p.url||p.external_url||'',
-                source_slug:c.slug, corpus_slug:p.corpus_slug||'',
-                connections:p.connections||[], related:false};
+        return {text:c.text,title:p.title||c.slug,attach:p.zotero_attach||'',
+                section:c.section||'',year:p.year||'',authors:p.authors||'',
+                journal:p.journal||'',doi:p.doi||'',arxiv:p.arxiv||'',
+                external_url:p.external_url||'',url:p.external_url||p.url||'',
+                local_html:p.local_html||'',local_md:p.local_md||'',
+                obsidian_path:p.obsidian_path||'',note_file:p.note_file||'',
+                reference_type:p.reference_type||'',source_slug:c.slug,
+                corpus_slug:p.corpus_slug||'',connections:p.connections||[],
+                related:false};
       });
       var plan='', baseCount=refs.length;
       if(deeper){
@@ -567,8 +658,9 @@ _JS = r"""
         $('drAns').innerHTML=mdToMarkup(partial);
       });
       text=cleanWebPreamble(text);
+      text=absorbWebCitations(text,refs);
       LAST.answer=text; LAST.model=LAST_MODEL;
-      if(web) absorbWebLinks(text);
+      renderRefs(refs);
       window._citedbyLast=LAST;
       $('drAns').innerHTML=mdToMarkup(text);
       if(bar) bar.style.display='';
@@ -580,6 +672,13 @@ _JS = r"""
     $('drGo').disabled=false;
   }
 
+  window._citedbyReferenceTools={
+    absorbWebCitations:absorbWebCitations,
+    liveRefUrl:liveRefUrl,
+    refUrl:refUrl,
+    obsidianTarget:obsidianTarget,
+    linkAnswerForExport:linkAnswerForExport
+  };
   document.addEventListener('DOMContentLoaded', function(){
     var go=$('drGo'); if(go) go.addEventListener('click', run);
     var map={drPdf:exportPdf, drMd:exportMd, drObs:exportObsidian,
