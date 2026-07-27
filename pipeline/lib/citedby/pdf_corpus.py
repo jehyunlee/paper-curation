@@ -418,6 +418,25 @@ def build_index(papers: list[dict], out_dir, *, embed: bool = True,
     """
     out_dir = Path(out_dir)
     chunks, meta, reused = build_chunks(papers, progress=progress)
+    # 검색 근거가 너무 얇어 청크가 없는 논문도 Obsidian 지식망에서는 사라지면
+    # 안 된다. 최소 metadata note를 만들고, 뒤이어 생성되는 HTML report가 같은
+    # paper dict에서 그 경로를 읽도록 돌려준다.
+    for paper in papers:
+        key = paper_key(paper)
+        if key not in meta:
+            meta[key] = {
+                **_reference_meta(
+                    paper, key, str(paper.get("_corpus_slug") or "")),
+                "evidence": paper.get("_evidence") or EV_TITLE,
+                "connections": paper.get("_connections") or [],
+                "chunks": 0,
+            }
+    note_count = write_evidence_notes(out_dir, meta, chunks)
+    for paper in papers:
+        ref = meta.get(paper_key(paper)) or {}
+        paper["_citedby_obsidian_path"] = ref.get("obsidian_path", "")
+        paper["_citedby_note_file"] = ref.get("note_file", "")
+
     if not chunks:
         logger.info("인덱스 생략: 청크 0개")
         return None
@@ -461,8 +480,6 @@ def build_index(papers: list[dict], out_dir, *, embed: bool = True,
         logger.warning("임베딩 길이 불일치 — 벡터 없이 저장 (%d != %d)",
                        len(emb), len(chunks) * EMBED_DIM)
         emb = None
-
-    note_count = write_evidence_notes(out_dir, meta, chunks)
 
     payload = {
         "model": EMBED_MODEL,

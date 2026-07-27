@@ -19,6 +19,7 @@ import html
 import json
 import re
 from datetime import datetime
+from pathlib import Path
 
 # 5W1H 요약 필드 → 표시 라벨. topic_filter 의 요약 스키마와 맞춘다.
 _SUMMARY_FIELDS = (
@@ -178,13 +179,33 @@ def paper_url(paper: dict) -> str:
     return _absolute_url(paper.get("pdf_url") or "")
 
 
-def _link(url: str, text: str, *, cls: str = "") -> str:
-    """절대 URL 이면 <a>, 아니면 평문. PDF 링크 보존 불변식의 단일 집행 지점."""
+def _obsidian_path(paper: dict) -> str:
+    """Obsidian vault 안에서 이 논문을 가리키는 실제 Markdown note."""
+    ready = str(paper.get("_citedby_obsidian_path") or "").strip()
+    if ready:
+        return ready
+    corpus_slug = str(paper.get("_corpus_slug") or "").strip()
+    if corpus_slug:
+        return f"papers/{corpus_slug}/review"
+    note_file = str(paper.get("_citedby_note_file") or "").strip()
+    if note_file:
+        return f"@seed/citedby/notes/{Path(note_file).stem}"
+    return ""
+
+
+def _link(url: str, text: str, *, cls: str = "",
+          obsidian: str = "") -> str:
+    """절대 URL이면 <a>, 아니면 평문. Obsidian target은 별도 metadata로 보존."""
     safe_url = _absolute_url(url)
     label = _esc(text)
     if not safe_url:
         return label
-    attr = f' class="{cls}"' if cls else ""
+    attrs = []
+    if cls:
+        attrs.append(f'class="{cls}"')
+    if obsidian:
+        attrs.append(f'data-obsidian="{_esc(obsidian)}"')
+    attr = (" " + " ".join(attrs)) if attrs else ""
     return f'<a href="{_esc(safe_url)}"{attr} rel="noopener">{label}</a>'
 
 
@@ -267,7 +288,7 @@ def _seed_block(paper_info: dict | None, lbl: dict) -> str:
     doi_html = (f'<div class="seed-doi">{" · ".join(tail)}</div>'
                 if tail else "")
     return (
-        '<section class="seed">'
+        '<section class="seed" data-obsidian="@seed/review">'
         f'<div class="seed-label">{_esc(lbl["seed"])}</div>'
         f'<div class="seed-title">{linked or _esc(title)}</div>'
         + (f'<div class="seed-meta">{meta}</div>' if meta else "")
@@ -383,6 +404,8 @@ def _linkify_papers(html_text: str, papers: list[dict]) -> str:
 def _paper_card(index: int, paper: dict, lbl: dict) -> str:
     title = (paper.get("title") or "").strip()
     url = paper_url(paper)
+    obsidian = _obsidian_path(paper)
+    obs_attr = f' data-obsidian="{_esc(obsidian)}"' if obsidian else ""
     head = _link(url, title) if url else _esc(title)
 
     meta_bits = [_citation_line(paper)]
@@ -434,7 +457,7 @@ def _paper_card(index: int, paper: dict, lbl: dict) -> str:
              if ev else ("" if not paper.get("_library_attach")
                          else '<span class="held">PDF</span>'))
     return (
-        f'<article class="card" id="p{index}">'
+        f'<article class="card" id="p{index}"{obs_attr}>'
         f'<h3><span class="n">{index}</span> {head} {badge}</h3>'
         + (f'<div class="meta">{meta}</div>' if meta else "")
         + links_html
@@ -655,7 +678,7 @@ def _appendix(papers: list[dict], lbl: dict) -> str:
         rows.append(
             "<tr>"
             f'<td class="num">{i}</td>'
-            f"<td>{_link(url, title) if url else _esc(title)}</td>"
+            f"<td>{_link(url, title, obsidian=_obsidian_path(p)) if url else _esc(title)}</td>"
             f'<td>{_esc(p.get("journal"))}</td>'
             f'<td class="num">{_esc(p.get("year"))}</td>'
             f'<td class="num">{_esc(p.get("citationCount"))}</td>'
@@ -777,6 +800,56 @@ _PRINT_JS = (
 )
 
 
+_MD_LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+
+
+def obsidianize_report_markdown(markdown: str, papers: list[dict], *,
+                                seed_slug: str = "",
+                                seed_title: str = "",
+                                seed_url: str = "") -> str:
+    """이미 export된 citedby Markdown의 논문 링크를 vault wikilink로 교체.
+
+    브라우저 export와 같은 identity 규칙을 Python에서도 제공한다. 기존 export를
+    복구할 때 DOI/URL을 다시 손으로 고치지 않아도 된다.
+    """
+    by_index: dict[int, str] = {}
+    by_title: dict[str, str] = {}
+    by_url: dict[str, str] = {}
+    for i, paper in enumerate(papers, 1):
+        path = _obsidian_path(paper).replace(
+            "@seed", f"papers/{seed_slug}" if seed_slug else "")
+        if not path:
+            continue
+        by_index[i] = path
+        title = str(paper.get("title") or "").strip().casefold()
+        if title:
+            by_title[title] = path
+        url = paper_url(paper).strip().rstrip("/").casefold()
+        if url:
+            by_url[url] = path
+
+    seed_path = f"papers/{seed_slug}/review" if seed_slug else ""
+    seed_title_key = seed_title.strip().casefold()
+    seed_url_key = seed_url.strip().rstrip("/").casefold()
+
+    def replace(match):
+        label, href = match.group(1), match.group(2)
+        path = ""
+        anchor = re.fullmatch(r"#p(\d+)", href)
+        if anchor:
+            path = by_index.get(int(anchor.group(1)), "")
+        if not path:
+            path = by_title.get(label.strip().casefold(), "")
+        if not path:
+            path = by_url.get(href.strip().rstrip("/").casefold(), "")
+        if not path and seed_path and (
+                label.strip().casefold() == seed_title_key
+                or href.strip().rstrip("/").casefold() == seed_url_key):
+            path = seed_path
+        return f"[[{path}|{label}]]" if path else match.group(0)
+
+    return _MD_LINK.sub(replace, markdown)
+
 def _report_export_script(collection: str) -> str:
     """Citedby 본문 전용 Markdown/Obsidian export.
 
@@ -787,13 +860,40 @@ def _report_export_script(collection: str) -> str:
     return f"""<script>
 (function(){{
   var COLLECTION={col};
-  function children(n){{return Array.prototype.map.call(n.childNodes,nodeMd).join('');}}
-  function nodeMd(n){{
+  function seedSlug(){{
+    var p=location.pathname.split('/').filter(Boolean), i=p.indexOf('papers');
+    return i>=0&&p[i+1]?decodeURIComponent(p[i+1]):'';
+  }}
+  function resolveObs(path){{
+    var seed=seedSlug();
+    return String(path||'').replace(/^@seed/,seed?('papers/'+seed):'');
+  }}
+  function obsidianFor(n,href){{
+    var path=n.getAttribute&&n.getAttribute('data-obsidian');
+    if(!path&&href&&href.charAt(0)==='#'){{
+      var root=n.closest('.wrap'), target=root&&root.querySelector(href);
+      path=target&&target.getAttribute('data-obsidian');
+    }}
+    if(!path){{
+      var owner=n.closest&&n.closest('[data-obsidian]');
+      path=owner&&owner.getAttribute('data-obsidian');
+    }}
+    return resolveObs(path);
+  }}
+  function children(n,mode){{
+    return Array.prototype.map.call(n.childNodes,function(x){{return nodeMd(x,mode);}}).join('');
+  }}
+  function nodeMd(n,mode){{
     if(n.nodeType===3) return (n.nodeValue||'').replace(/\\s+/g,' ');
     if(n.nodeType!==1) return '';
-    var t=n.tagName.toLowerCase(), body=children(n).trim();
+    var t=n.tagName.toLowerCase(), body=children(n,mode).trim();
     if(t==='a'){{
       var href=n.getAttribute('href')||'';
+      if(mode==='obsidian'){{
+        var note=obsidianFor(n,href);
+        if(note) return '[['+note+'|'+body+']]';
+        if(href.charAt(0)==='#') return body;
+      }}
       return href?('['+body+']('+href+')'):body;
     }}
     if(/^h[1-6]$/.test(t)) return '\\n\\n'+'#'.repeat(parseInt(t[1],10))+' '+body+'\\n\\n';
@@ -802,7 +902,7 @@ def _report_export_script(collection: str) -> str:
     if(t==='li') return '\\n- '+body;
     if(t==='tr'){{
       var cells=Array.prototype.map.call(n.querySelectorAll(':scope > th,:scope > td'),
-        function(x){{return children(x).trim().replace(/\\|/g,'\\\\|');}});
+        function(x){{return children(x,mode).trim().replace(/\\|/g,'\\\\|');}});
       return cells.length?('\\n| '+cells.join(' | ')+' |'):'';
     }}
     if(t==='img'){{
@@ -815,10 +915,10 @@ def _report_export_script(collection: str) -> str:
       return '\\n'+body+'\\n';
     return body;
   }}
-  function reportMarkdown(){{
+  function reportMarkdown(mode){{
     var root=document.querySelector('.wrap').cloneNode(true);
     root.querySelectorAll('.no-print,.dr,script,style,footer').forEach(function(n){{n.remove();}});
-    return nodeMd(root).replace(/\\n[ \\t]+/g,'\\n').replace(/\\n{{3,}}/g,'\\n\\n').trim()+'\\n';
+    return nodeMd(root,mode||'markdown').replace(/\\n[ \\t]+/g,'\\n').replace(/\\n{{3,}}/g,'\\n\\n').trim()+'\\n';
   }}
   function safe(s){{return String(s||'citedby').replace(/[\\\\/:*?"<>|\\n\\r\\t]/g,' ')
     .replace(/\\s+/g,' ').trim().slice(0,70)||'citedby';}}
@@ -838,10 +938,11 @@ def _report_export_script(collection: str) -> str:
     var d=new Date().toISOString().slice(0,10);
     var file='notes/'+COLLECTION+'/help/CITEDBY_REPORT_'+d+'_'+safe(title());
     var body='# '+title()+'\\n\\n> citedby report ('+new Date().toLocaleString()+
-      ')\\n\\n## My Notes\\n\\n(여기에 생각을 적으세요)\\n\\n---\\n\\n'+reportMarkdown();
+      ')\\n\\n## My Notes\\n\\n(여기에 생각을 적으세요)\\n\\n---\\n\\n'+reportMarkdown('obsidian');
     window.location.href='obsidian://new?vault=docs&file='+encodeURIComponent(file)+
       '&content='+encodeURIComponent(body);
   }}
+  window._citedbyReportMarkdown=reportMarkdown;
   document.addEventListener('DOMContentLoaded',function(){{
     var md=document.getElementById('rpMd'), ob=document.getElementById('rpObs');
     if(md)md.addEventListener('click',download);

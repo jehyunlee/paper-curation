@@ -1805,6 +1805,29 @@ class PdfCorpusTests(unittest.TestCase):
         self.assertIn("[[papers/001_Seed/review|원논문 review]]", note)
         self.assertIn("measured evidence", note)
 
+    def test_title_only_papers_still_get_local_notes(self):
+        from lib.citedby import pdf_corpus as PC
+        chunks = [{"slug": "grounded", "section": "본문",
+                   "text": "x" * 300, "text_sha": "a"}]
+        meta = {"grounded": {
+            "title": "Grounded", "reference_type": "citedby-note",
+            "note_file": "grounded.md", "chunks": 1}}
+        title_only = {"title": "Title Only Paper", "_evidence": PC.EV_TITLE}
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "papers" / "001_Seed" / "citedby"
+            with patch.object(PC, "build_chunks",
+                              return_value=(chunks, meta, {})), \
+                 patch.object(PC, "embed_chunks", return_value=None):
+                info = PC.build_index([title_only], out)
+            note = out / "notes" / Path(title_only["_citedby_note_file"]).name
+            index = json.loads((out / PC.INDEX_NAME).read_text())
+            note_exists = note.exists()
+        self.assertTrue(note_exists)
+        self.assertIn("papers/001_Seed/citedby/notes/",
+                      title_only["_citedby_obsidian_path"])
+        self.assertEqual(index["papers"][PC.paper_key(title_only)]["chunks"], 0)
+        self.assertEqual(info["evidence_notes"], 2)
+
 
     def test_vector_length_mismatch_drops_vectors(self):
         """길이가 안 맞으면 잘못된 사이드카를 쓰느니 벡터 없이 저장한다."""
@@ -2582,6 +2605,46 @@ class AnswerExportTests(unittest.TestCase):
         self.assertIn("window._citedbyAudioMode=\"report\"", h)
         self.assertIn("window._citedbyAudioMode='deep'", h)
         self.assertIn("root.querySelectorAll('.no-print,.dr", h)
+
+    def test_whole_report_obsidian_export_uses_local_notes(self):
+        h = self._html(
+            paper_info={"title": "Seed", "doi": "10.1234/seed"},
+            papers=[
+                {"title": "Reviewed", "doi": "10.1234/reviewed",
+                 "_corpus_slug": "042_Reviewed"},
+                {"title": "Evidence", "doi": "10.1234/evidence",
+                 "_citedby_obsidian_path":
+                 "papers/001_Seed/citedby/notes/evidence"},
+            ])
+        self.assertIn(
+            'data-obsidian="papers/042_Reviewed/review"', h)
+        self.assertIn(
+            'data-obsidian="papers/001_Seed/citedby/notes/evidence"', h)
+        self.assertIn('data-obsidian="@seed/review"', h)
+        self.assertIn("reportMarkdown('obsidian')", h)
+        self.assertIn("if(note) return '[['+note+'|'+body+']]'", h)
+        self.assertIn("window._citedbyReportMarkdown=reportMarkdown", h)
+
+    def test_python_markdown_recovery_uses_same_local_identity(self):
+        papers = [
+            {"title": "Reviewed", "doi": "10.1234/reviewed",
+             "_corpus_slug": "042_Reviewed"},
+            {"title": "Evidence", "doi": "10.1234/evidence",
+             "_citedby_obsidian_path":
+             "papers/001_Seed/citedby/notes/evidence"},
+        ]
+        source = (
+            "[Reviewed](https://doi.org/10.1234/reviewed) "
+            "[Evidence](#p2) "
+            "[Seed](https://doi.org/10.1234/seed)")
+        converted = report.obsidianize_report_markdown(
+            source, papers, seed_slug="001_Seed", seed_title="Seed",
+            seed_url="https://doi.org/10.1234/seed")
+        self.assertIn(
+            "[[papers/042_Reviewed/review|Reviewed]]", converted)
+        self.assertIn(
+            "[[papers/001_Seed/citedby/notes/evidence|Evidence]]", converted)
+        self.assertIn("[[papers/001_Seed/review|Seed]]", converted)
 
 
 import inspect
