@@ -59,6 +59,26 @@
 | **출력** | <ul><li><code>{topic}/index.html</code></li><li>(O-2) <code>{topic}/network.html</code></li></ul> |
 | **활용** | <code>cd docs && python -m http.server 8000</code> → 브라우저에서 바로 사용. 개별 논문 페이지 / Deep Research 답변 양쪽에서 🎧 **Audio Overview** 버튼으로 팟캐스트형 한국어 오디오 생성 (Gemini TTS, 브라우저 안에서 MP3 인코딩 → 즉시 다운로드). 배포 환경에선 완성된 MP3 가 이메일로도 자동 발송됨 |
 
+### Citedby: corpus-first 인용 계보와 다중 출력
+
+`pipeline/run_citedby.py`는 한 DOI의 인용논문을 수집한 뒤
+`docs/papers/{seed_slug}/citedby/`에 자기완결 HTML·CSV·검색 인덱스를 만듭니다.
+
+| 계층 | 동작 |
+|------|------|
+| **수집·정규화** | OpenAlex·Scopus·Semantic Scholar·arXiv 결과를 DOI > arXiv ID > 정규화 제목 순으로 병합합니다. 웹 검색 결과도 같은 identity resolver를 거쳐 corpus hit와 중복되지 않습니다. |
+| **근거 선택** | `pdf_corpus.tier_papers()`가 corpus 전처리물 > Zotero PDF > 초록 > 제목 순으로 근거를 선택합니다. Corpus 논문은 기존 section chunk와 embedding을 재사용합니다. |
+| **타임라인** | 생성·소멸·분기·융합을 중심으로 종합 narrative와 stream별 설명을 만들고 PaperBanana 후보를 생성·비평해 그림을 고릅니다. 전체 wall-clock 상한은 1800초이며, 실패해도 narrative와 보고서는 보존됩니다. |
+| **Deep(er) Research** | `_citedby_index.json`과 int8 embedding sidecar를 BM25+dense RRF로 검색합니다. 답변 계획·related-paper 탐색·선택적 웹 검색·streaming 응답을 `/api/citedby-answer`가 제공합니다. |
+| **Reference identity** | 웹 citation이 DOI·arXiv·제목으로 corpus와 일치하면 corpus reference로 승격합니다. 본문 `[ref:N]`은 Reference section의 동일 항목을 가리킵니다. |
+| **출력별 링크** | 화면(localhost)은 `/papers/{slug}/` review HTML, print/PDF는 DOI·arXiv·원문 URL, Obsidian은 `papers/{slug}/review` 또는 seed 아래 evidence note를 사용합니다. HTML의 `data-local`/`data-external` 쌍과 `beforeprint`/`afterprint` 전환으로 같은 보고서에서 이를 보장합니다. |
+| **독립 export** | 원 Citedby 보고서와 Deep(er) Research 답변은 각각 PDF·Markdown·Obsidian·Audio Overview를 내보냅니다. PDF footer에는 프로젝트 출처를 넣습니다. |
+
+`--serve --open`은 `pipeline/lib/citedby/serve.py`를 통해 기존
+`serve_local.py`의 `/api/health`를 확인하거나 서버를 기동한 뒤 localhost URL을
+엽니다. 따라서 `file://`에서 사용할 수 없는 embedding·streaming·Audio 경로도
+생성 직후 동작합니다.
+
 
 ---
 

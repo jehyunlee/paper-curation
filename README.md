@@ -112,6 +112,7 @@ PYTHONUTF8=1 python pipeline/setup.py
 | **Audio Overview** | 리뷰/답변을 팟캐스트형 한국어 오디오로(Gemini TTS, 브라우저 MP3 인코딩 → 다운로드 + 배포 시 이메일) |
 | **타임라인** | 카테고리별 연구 동향 내러티브 + 다이어그램(PaperBanana) + main research timeline. `curate`에서도 누락 산출물은 기본 보강 |
 | **지식 축적** | Obsidian 연동 — 메모가 다음 질의에 반영되는 compounding knowledge |
+| **Citedby** | DOI 한 편에서 인용 계보·타임라인·내러티브·Deep(er) Research를 생성하고 PDF·Markdown·Obsidian·Audio로 출력 |
 | **논문 검색/등록** | arXiv·Semantic Scholar·OpenAlex 병렬 검색 + Zotero 자동 등록(선택) |
 
 **Option** — 플래그/모드로 켤 때만:
@@ -138,6 +139,34 @@ PYTHONUTF8=1 python pipeline/setup.py
 
 **브라우저 안에서**: Deep Research(키 자동 감지)와 Audio Overview(Gemini TTS → MP3)가 동작합니다.
 **Option 분기**: `--insights`(크로스카테고리 인사이트 + 네트워크) · `--mode deploy`(Cloudflare + gh-pages) · `--local-fallback`(망 전멸 시 로컬 LLM).
+
+## Citedby — 한 논문에서 시작하는 인용 계보 분석
+
+DOI 또는 로컬 리뷰 논문을 기준으로 OpenAlex·Scopus·Semantic Scholar·arXiv에서
+인용논문을 수집하고, 시간에 따른 연구 흐름을 자기완결 HTML 보고서로 만듭니다.
+
+```bash
+PYTHONUTF8=1 python pipeline/run_citedby.py \
+  --doi 10.xxxx/xxxxx \
+  --pdf-first --build-index --serve --open
+```
+
+- **인용 흐름 타임라인** — 연구 주제의 생성·소멸·분기·융합, turning-point 논문,
+  주요 연구 그룹을 2–3단락의 종합 narrative와 stream별 설명으로 정리
+- **PaperBanana 시각화** — 타임라인 그림과 narrative를 기본 생성
+  (`--no-timeline`으로 생략)
+- **PDF-first 근거 등급** — 기존 corpus 리뷰 > Zotero 보유 PDF 전문 > 초록 > 제목
+- **Deep(er) Research** — BM25+dense hybrid retrieval, 답변 계획, related-paper 탐색,
+  선택적 웹 검색, streaming 답변 및 `[ref:N]` 인용
+- **Corpus 우선 identity 통합** — 웹 검색 결과가 corpus 논문과 DOI·arXiv·제목으로
+  일치하면 외부 자료를 중복 인용하지 않고 기존 corpus reference를 사용
+- **문맥별 링크** — 로컬 HTML은 corpus review HTML, PDF는 DOI·arXiv·원문 URL,
+  Obsidian은 `papers/{slug}/review.md` 또는 citedby evidence note로 연결
+- **독립 출력** — Citedby 보고서와 Deep(er) Research 답변 각각
+  PDF·Markdown·Obsidian·Audio Overview 지원
+- **로컬 서버 열람** — `--serve --open`으로 `file://` 대신
+  `http://localhost:8000/...`을 열어 embedding·streaming·Audio API를 바로 사용
+
 
 **CLI/에이전트 검색** — 인덱스를 재빌드하지 않는 읽기 전용 질의 경로:
 ```bash
@@ -181,7 +210,7 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic humanoid --mode deploy
 
 # 실행 계획 미리보기 / 로컬 서버
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --dry-run
-PYTHONUTF8=1 python pipeline/serve_local.py     # http://localhost:8000 + /api/embed
+PYTHONUTF8=1 python pipeline/serve_local.py     # localhost:8000 + /api/embed + /api/citedby-answer
 ```
 
 전체 모드 표, 안전 플래그, Concurrency 튜닝, 복구 절차 → **[Operations Manual](docs/operations.md)**

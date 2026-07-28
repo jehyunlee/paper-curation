@@ -58,6 +58,11 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic humanoid --mode deploy
 
 # Dry-run (no execution)
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source web --dry-run
+
+# Citedby — PDF-first index + default timeline/narrative + localhost open
+PYTHONUTF8=1 python pipeline/run_citedby.py \
+  --doi 10.xxxx/xxxxx --slug 042_Some_Paper \
+  --pdf-first --build-index --serve --open
 ```
 
 ## Safety flags
@@ -242,6 +247,44 @@ python pipeline/generate_retrieval_vectors.py \
 Record measurement-driven model, chunking, or collection changes in
 `pipeline/eval/retrieval_decisions.json`; do not revise labels merely to make a
 gate pass.
+
+## Citedby operations
+
+`run_citedby.py` is a standalone tool rather than a `run_full.py` mode. For a reviewed
+seed paper, pass its slug so all timestamped artifacts stay under that paper:
+
+```bash
+PYTHONUTF8=1 python pipeline/run_citedby.py \
+  --doi 10.xxxx/xxxxx \
+  --slug 042_Some_Paper \
+  --pdf-first --build-index --serve --open
+```
+
+Default behavior and controls:
+
+- Timeline narrative and PaperBanana image are **on by default**. Use
+  `--no-timeline` only for a deliberately text-only or fast run.
+- Timeline candidate generation and critique have a **1800-second wall-clock cap**.
+  A timeout does not discard the report: the narrative and remaining sections are
+  still written, with the image failure shown explicitly.
+- `--pdf-first` applies the evidence order corpus review > Zotero PDF > abstract >
+  title. Use `--build-index` with it to write `_citedby_index.json` plus the
+  int8 embedding sidecar from those enriched sources.
+- `--serve` reuses a healthy paper-curation server or starts one; `--open` launches
+  the generated `http://localhost:8000/...` URL. Do not open the report as
+  `file://` when using Deep(er) Research.
+- The report and Deep(er) Research result have separate PDF, Markdown, Obsidian,
+  and Audio controls. Screen links open local corpus reviews, print links switch
+  to DOI/arXiv/source URLs, and Obsidian links target review Markdown or generated
+  evidence notes.
+- The local server must return 200 from `/api/health`. `/api/embed` needs
+  `GOOGLE_API_KEY`; `/api/citedby-answer` uses the configured answer providers.
+  A `304` for `_citedby_index_emb.bin` is a normal browser-cache hit.
+
+Re-running the same command creates a new timestamped report and reuses available
+corpus chunks, embeddings, and cached analysis. Source failures are soft: available
+providers continue, and the final report records the surviving evidence.
+
 ## Deploy (Option O-1)
 
 로컬 사용이 기본(Core)입니다. 외부 공유가 필요하면 **3-계층 split-host** 구조로 자동 배포됩니다:
