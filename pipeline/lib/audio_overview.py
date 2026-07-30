@@ -121,35 +121,33 @@ def audio_modal_html(sub_text="팟캐스트형 오디오로 생성합니다. (Ge
 # four onclick-referenced handlers are exported to window at the end.
 AUDIO_JS = r"""
 (function() {
-// _GEMINI_KEY is baked into the page at build time on localhost and
-// stripped on deploy. To let Cloudflare visitors still generate audio,
-// we additionally accept a user-provided key via localStorage and via
-// a one-time prompt the first time they click the button. The key
-// stays in their browser only — it is never sent anywhere except
-// google's TTS / Gemini endpoints.
-// Read the Gemini key from any slot the user might have used in this
-// browser before — direct _GEMINI_KEY, or _LLM_KEY if they typed a
-// Gemini key into the Deep Research prompt (AIza-prefixed). This lets
-// Audio Overview pick up keys that Deep Research stored, and vice
-// versa, without a second prompt.
-let GKEY = (window._GEMINI_KEY || "") || (function() {
+// Prefer OpenRouter (sk-or-…) for script + TTS. Legacy Gemini (AIza…) still
+// works. Keys stay in the browser — sent only to OpenRouter / Google.
+let GKEY = (window._OPENROUTER_KEY || window._GEMINI_KEY || "") || (function() {
   try {
+    const ork = localStorage.getItem("_OPENROUTER_KEY") || "";
+    if (ork) return ork;
+    const llm = localStorage.getItem("_LLM_KEY") || "";
+    if (llm && (String(llm).startsWith("sk-or-") || String(llm).startsWith("AIza"))) return llm;
     const direct = localStorage.getItem("_GEMINI_KEY") || "";
     if (direct) return direct;
-    const llm = localStorage.getItem("_LLM_KEY") || "";
-    if (llm && String(llm).startsWith("AIza")) return llm;
     return "";
   } catch (e) { return ""; }
 })();
+function isOpenRouterKey(k) {
+  return !!(k && String(k).startsWith("sk-or-"));
+}
 function rememberGeminiKey(k) {
   GKEY = k || "";
-  window._GEMINI_KEY = GKEY;
+  if (isOpenRouterKey(GKEY)) {
+    window._OPENROUTER_KEY = GKEY;
+  } else {
+    window._GEMINI_KEY = GKEY;
+  }
   try {
     if (GKEY) {
-      localStorage.setItem("_GEMINI_KEY", GKEY);
-      // Also seed the Deep Research unified slot so users who started
-      // here don't get re-prompted on the topic page. Only fill it when
-      // empty — never overwrite an existing Anthropic/OpenAI key.
+      if (isOpenRouterKey(GKEY)) localStorage.setItem("_OPENROUTER_KEY", GKEY);
+      else localStorage.setItem("_GEMINI_KEY", GKEY);
       const existing = localStorage.getItem("_LLM_KEY") || "";
       if (!existing) localStorage.setItem("_LLM_KEY", GKEY);
     }
@@ -158,14 +156,15 @@ function rememberGeminiKey(k) {
 function ensureGeminiKey() {
   if (GKEY) return GKEY;
   const k = prompt(
-    "Audio Overview는 Gemini API Key가 필요합니다.\n" +
-    "https://aistudio.google.com/apikey 에서 발급 후 입력하세요.\n" +
-    "(브라우저에만 저장됩니다 — 외부로 전송하지 않습니다)"
+    "Audio Overview API Key가 필요합니다.\\n" +
+    "권장: OpenRouter (sk-or-v1-...) https://openrouter.ai/keys\\n" +
+    "또는 Gemini (AIza...) https://aistudio.google.com/apikey\\n" +
+    "(브라우저에만 저장됩니다)"
   );
   if (!k) return "";
   const t = String(k).trim();
-  if (!t.startsWith("AIza")) {
-    alert("올바른 형식이 아닙니다. Gemini API Key는 AIza 로 시작합니다.");
+  if (!(t.startsWith("AIza") || t.startsWith("sk-or-"))) {
+    alert("올바른 형식이 아닙니다. OpenRouter(sk-or-…) 또는 Gemini(AIza…) 키를 입력하세요.");
     return "";
   }
   rememberGeminiKey(t);
@@ -178,8 +177,11 @@ function audioCtx() {
   return window._AUDIO || {title:"", review:"", connections:[]};
 }
 const SCRIPT_MODEL = "gemini-3.1-pro-preview";
+const OR_SCRIPT_MODEL = "anthropic/claude-sonnet-5";
 const TTS_MODEL = "gemini-2.5-flash-preview-tts";
+const OR_TTS_MODEL = "openai/gpt-4o-mini-tts";
 const GBASE = "https://generativelanguage.googleapis.com/v1beta/models/";
+const OR_BASE = "https://openrouter.ai/api/v1";
 const SAMPLE_RATE = 24000;
 const MAX_CHUNK_CHARS = 2200;   // per TTS call, keeps long scripts within limits
 const POOL = 3;                 // concurrent TTS calls
@@ -405,7 +407,56 @@ async function geminiPost(model, body) {
   return r.json();
 }
 
+async function openRouterChat(prompt) {
+  const r = await fetch(OR_BASE + "/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + GKEY,
+      "X-Title": "paper-curation-audio"
+    },
+    body: JSON.stringify({
+      model: OR_SCRIPT_MODEL,
+      max_tokens: 16000,
+      temperature: 0.85,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!r.ok) {
+    let msg = r.status + " " + r.statusText;
+    try { const j = await r.json(); if (j.error) msg = (j.error.message || JSON.stringify(j.error)); } catch (e) {}
+    throw new Error(msg);
+  }
+  const j = await r.json();
+  return ((((j.choices || [])[0] || {}).message || {}).content || "").trim();
+}
+
+async function openRouterTTS(text) {
+  const r = await fetch(OR_BASE + "/audio/speech", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + GKEY,
+      "X-Title": "paper-curation-audio"
+    },
+    body: JSON.stringify({
+      model: OR_TTS_MODEL,
+      input: text,
+      voice: "alloy",
+      response_format: "mp3"
+    })
+  });
+  if (!r.ok) {
+    let msg = r.status + " " + r.statusText;
+    try { msg = (await r.text()).slice(0, 200); } catch (e) {}
+    throw new Error(msg);
+  }
+  const buf = await r.arrayBuffer();
+  return new Uint8Array(buf);
+}
+
 async function callScript(prompt) {
+  if (isOpenRouterKey(GKEY)) return openRouterChat(prompt);
   const j = await geminiPost(SCRIPT_MODEL, {
     contents: [{parts: [{text: prompt}]}],
     generationConfig: {temperature: 0.85, maxOutputTokens: 65536}
@@ -431,6 +482,11 @@ function b64ToBytes(b64) {
 }
 
 async function ttsCall(text, speechConfig) {
+  if (isOpenRouterKey(GKEY)) {
+    // OpenRouter TTS returns mp3 bytes (not PCM). Callers that expect PCM
+    // for multi-speaker concat will use the mp3 path via decodeAudioData.
+    return openRouterTTS(text);
+  }
   const j = await geminiPost(TTS_MODEL, {
     contents: [{parts: [{text: text}]}],
     generationConfig: {responseModalities: ["AUDIO"], speechConfig: speechConfig}
@@ -597,13 +653,28 @@ async function runAudioGen() {
     }
   }
   try {
-    setStatus(`✍️ 대본 생성 중... (${SCRIPT_MODEL})`);
+    const scriptModel = isOpenRouterKey(GKEY) ? OR_SCRIPT_MODEL : SCRIPT_MODEL;
+    setStatus("✍️ 대본 생성 중... (" + scriptModel + ")");
     const script = await callScript(buildScriptPrompt(s));
     if (!script) throw new Error("대본이 비어 있습니다");
-    setStatus("🔊 음성 합성 중...");
-    const pcm = await synthesize(s, script);
-    setStatus("🎚️ MP3 인코딩 중...");
-    const blob = pcmToMp3(pcm);
+    let blob;
+    if (isOpenRouterKey(GKEY)) {
+      // OpenRouter /audio/speech returns mp3 — chunk and concatenate blobs.
+      setStatus("🔊 음성 합성 중... (" + OR_TTS_MODEL + ")");
+      const chunks = chunkParagraphs(script, MAX_CHUNK_CHARS);
+      let done = 0;
+      const parts = [];
+      for (let i = 0; i < chunks.length; i++) {
+        parts.push(await openRouterTTS(chunks[i]));
+        setStatus("🔊 음성 합성 " + (++done) + "/" + chunks.length);
+      }
+      blob = new Blob(parts, {type: "audio/mpeg"});
+    } else {
+      setStatus("🔊 음성 합성 중...");
+      const pcm = await synthesize(s, script);
+      setStatus("🎚️ MP3 인코딩 중...");
+      blob = pcmToMp3(pcm);
+    }
     if (_audioUrl) URL.revokeObjectURL(_audioUrl);
     _audioUrl = URL.createObjectURL(blob);
     const el = document.getElementById("audio-el");
@@ -614,8 +685,7 @@ async function runAudioGen() {
     const fname = (ctx.title || "audio_overview").slice(0, 60).replace(/[^\w가-힣 -]/g, "").trim().replace(/\s+/g, "_") + ".mp3";
     dl.download = fname;
     document.getElementById("audio-player").classList.add("show");
-    const dur = pcm.length / 2 / SAMPLE_RATE;
-    setStatus("✅ 완료 (약 " + Math.round(dur) + "초). 다운로드 가능.");
+    setStatus("✅ 완료 (" + Math.round(blob.size / 1024) + " KiB). 다운로드 가능.");
 
     // Send by email (optional). LOCAL pages have a baked recipient list;
     // WEB pages ask the visitor once and remember in localStorage. The send

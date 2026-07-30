@@ -3,7 +3,7 @@ paper-curation 설치 스크립트.
 
 한 번 실행으로 전체 설치를 완료한다:
   1. config.json 생성 (인터랙티브)
-  2. Core API 키 게이트 — ZOTERO/ANTHROPIC/GOOGLE/RESEND 4개 필수
+  2. Core API 키 게이트 — ZOTERO/OPENROUTER/RESEND 필수
      (없으면 입력받아 config.json 저장, 거부 시 설치 중단)
   3. Zotero 연결 테스트 (User ID 조회 + 컬렉션 검증)
   4. PaperBanana 확인 (없으면 자동 클론)
@@ -90,11 +90,11 @@ def step_config():
     return cfg
 
 
-# Core API 키 게이트 — 설치를 끝내기 전에 반드시 있어야 하는 4개 필수 키.
+# Core API 키 게이트 — 설치를 끝내기 전에 반드시 있어야 하는 필수 키.
 # 각 항목: env 변수명 → config.json 필드 경로(path) → 없으면 안 되는 이유(why).
 # env 또는 config.json 어느 한쪽에라도 값이 있으면 통과하고, 둘 다 비면 직접
 # 입력받아 config.json 에 저장한다 (config.json 은 .gitignore 로 보호됨).
-# OPENAI_API_KEY 는 더 이상 필수가 아니다 — Deep Research 임베딩이 Gemini 로 이동.
+# LLM/임베딩/비전/TTS 는 OPENROUTER_API_KEY 단일 키. Anthropic/Google 는 legacy.
 REQUIRED_KEYS = [
     {
         "env": "ZOTERO_API_KEY",
@@ -105,18 +105,12 @@ REQUIRED_KEYS = [
         "prompt": "Zotero API Key",
     },
     {
-        "env": "ANTHROPIC_API_KEY",
-        "path": ("anthropic_api_key",),
-        "why": "리뷰·내러티브·Deep Research 답변 생성",
-        "issue": "https://console.anthropic.com/settings/keys",
-        "prompt": "Anthropic API Key (sk-ant-...)",
-    },
-    {
-        "env": "GOOGLE_API_KEY",
-        "path": ("google_api_key",),
-        "why": "figure 검증·Audio Overview·PaperBanana 타임라인·Deep Research 임베딩",
-        "issue": "https://aistudio.google.com/apikey",
-        "prompt": "Google API Key (AIza...)",
+        "env": "OPENROUTER_API_KEY",
+        "path": ("openrouter", "api_key"),
+        "placeholder": "YOUR_OPENROUTER_API_KEY_HERE",
+        "why": "LLM·임베딩·figure vision·TTS (단일 키)",
+        "issue": "https://openrouter.ai/keys",
+        "prompt": "OpenRouter API Key (sk-or-v1-...)",
     },
     {
         "env": "RESEND_API_KEY",
@@ -184,14 +178,9 @@ def _prompt_required(spec):
 def step_env_check(cfg):
     """Step 2: Core API 키 게이트.
 
-    설치를 끝내려면 4개 Core 키(ZOTERO/ANTHROPIC/GOOGLE/RESEND)가 모두 있어야 한다.
+    설치를 끝내려면 Core 키(ZOTERO/OPENROUTER/RESEND)가 있어야 한다.
     env 또는 config.json 어느 한쪽에 있으면 통과하고, 둘 다 비면 그 자리에서
-    입력받아 config.json 에 저장한다. env 에만 있고 config 에 없으면 영속화를 위해
-    config 에도 반영해 downstream(config_loader / Zotero 연결 테스트)이 항상 읽도록 한다.
-    입력을 건너뛰면 sys.exit(1) 로 설치를 중단한다 (config.json 은 .gitignore 보호).
-
-    OPENAI_API_KEY 는 더 이상 필수가 아니다 — Deep Research 임베딩이 Gemini 로
-    이동했다. reader BYOK 답변 백엔드 / insights fallback 으로만 선택적으로 유용."""
+    입력받아 config.json 에 저장한다. Hermes(이미지)는 선택 안내만 한다."""
     print("\n[2/6] Core API 키 확인")
 
     dirty = False
@@ -209,14 +198,18 @@ def step_env_check(cfg):
     if dirty:
         _save_config(cfg)
 
-    # OPTIONAL: OPENAI_API_KEY 는 게이트 없음 (정보성 안내만)
-    openai_key = (os.environ.get("OPENAI_API_KEY", "").strip()
-                  or cfg.get("openai_api_key", "").strip())
-    if openai_key:
-        print("  ✓ OPENAI_API_KEY 설정됨 (선택) — reader BYOK 답변 백엔드 / insights fallback")
+    hermes = cfg.get("hermes") if isinstance(cfg.get("hermes"), dict) else {}
+    hermes_base = (os.environ.get("HERMES_GATEWAY_BASE_URL", "").strip()
+                   or str(hermes.get("base_url", "")).strip())
+    hermes_key = (os.environ.get("HERMES_GATEWAY_API_KEY", "").strip()
+                  or str(hermes.get("api_key", "")).strip())
+    if hermes_base and hermes_key and hermes_key != "YOUR_HERMES_GATEWAY_API_KEY_HERE":
+        print(f"  ✓ HERMES_GATEWAY 설정됨 — 다이어그램/타임라인 이미지 ({hermes_base})")
     else:
-        print("  · OPENAI_API_KEY 미설정 (선택) — Deep Research 임베딩은 Gemini 로 이동했습니다.")
-        print("    reader BYOK 답변 백엔드 / insights fallback 으로만 선택적으로 유용합니다.")
+        print("  · HERMES_GATEWAY 미설정 (선택) — 타임라인/워크플로 이미지는 PaperBanana 폴백.")
+        print("    export HERMES_GATEWAY_BASE_URL=http://localhost:8642/v1")
+        print("    export HERMES_GATEWAY_API_KEY=...  # sns_for_paper .env 와 동일")
+        print("    export HERMES_GATEWAY_MODEL=hermes-agent")
 
 
 def step_zotero_test(cfg):
@@ -503,11 +496,11 @@ def main():
     print("  다음 단계: 파이프라인 실행")
     print("-" * 50)
     print()
-    print("  Core API 키 4종(ZOTERO·ANTHROPIC·GOOGLE·RESEND) 확인 완료.")
+    print("  Core API 키(ZOTERO·OPENROUTER·RESEND) 확인 완료.")
     print("  이제 파이프라인을 실행하여 Zotero 컬렉션의 논문을 리뷰하고")
     print("  웹 페이지로 배포할 수 있습니다.")
     print()
-    print("  ⚠ 주의: Zotero 컬렉션의 논문 편수에 따라 시간이 크게 달라집니다 (Anthropic Tier·concurrency 의존).")
+    print("  ⚠ 주의: Zotero 컬렉션의 논문 편수에 따라 시간이 크게 달라집니다 (OpenRouter·concurrency 의존).")
     print("    - 10편 이하: 수 분")
     print("    - 50편: ~15분 (Tier 4 default --concurrency 16) ~ 1~2시간 (Tier 1 --concurrency 4)")
     print("    - 500편 이상: 비례 증가. Tier별 권장값은 README 'Concurrency 가이드' 참고.")
@@ -534,8 +527,8 @@ def main():
     print("  `run_full.py --mode deploy` 가 필요한 env(CF_API_TOKEN·CLOUDFLARE_ACCOUNT_ID·")
     print("  GitHub 설정)를 그 자리에서 안내합니다. Audio Overview 이메일 발송 기능은")
     print("  워커를 한 번 배포해 두어야 동작하며, 배포된 워커에 시크릿을 등록해야 합니다:")
-    print("    npx wrangler secret put GOOGLE_API_KEY   # 워커 측 TTS/Audio Overview 용")
-    print("    npx wrangler secret put RESEND_API_KEY   # MP3 첨부 메일 발송용")
+    print("    npx wrangler secret put OPENROUTER_API_KEY  # /api/embed (Deep Research)")
+    print("    npx wrangler secret put RESEND_API_KEY      # MP3 첨부 메일 발송용")
     print("  (자세한 내용은 README 'Audio Overview 이메일 발송 — Cloudflare Worker secrets' 참고)")
     print()
 

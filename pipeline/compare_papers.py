@@ -332,17 +332,11 @@ def _valid_comp(out):
 
 
 def compare_llm(papers):
-    from anthropic import Anthropic
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not key:
-        try:
-            with open(os.path.join(ROOT, "config.json"), encoding="utf-8") as f:
-                key = json.load(f).get("anthropic_api_key")
-        except Exception:
-            pass
-    if not key:
-        raise SystemExit("ANTHROPIC_API_KEY 없음")
-    client = Anthropic(api_key=key, timeout=300.0, max_retries=4)
+    from lib.llm_client import get_chat_client
+    try:
+        client = get_chat_client(timeout=300.0, max_retries=4)
+    except Exception as e:
+        raise SystemExit(f"LLM backend unavailable: {e}") from e
     base_prompt = _build_prompt(papers)
     required = ", ".join(_TOOL["input_schema"]["required"])
     extra = ""

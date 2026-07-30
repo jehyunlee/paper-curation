@@ -1,4 +1,8 @@
-"""PaperBanana wrapper: path management, agent initialization, and diagram generation."""
+"""PaperBanana wrapper: path management, agent initialization, and diagram generation.
+
+Prefers Hermes gateway for image generation when configured; falls back to
+PaperBanana (vendor image APIs) only if Hermes is unset or fails.
+"""
 import asyncio
 import base64
 import json
@@ -15,17 +19,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config_loader import get_paperbanana_dir
 
 _pb_dir = get_paperbanana_dir()
-if not _pb_dir:
-    raise ValueError(
-        "paperbanana_dir not set. "
-        "Set it in config.json or PAPERBANANA_DIR env var. "
-        "Clone from: https://github.com/dwzhu-pku/PaperBanana"
-    )
-PAPERBANANA_DIR = Path(_pb_dir)
+PAPERBANANA_DIR = Path(_pb_dir) if _pb_dir else None
 
 
 def _ensure_path():
     """Add PaperBanana to sys.path if not already there."""
+    if PAPERBANANA_DIR is None:
+        raise ValueError(
+            "paperbanana_dir not set. "
+            "Set it in config.json or PAPERBANANA_DIR env var, "
+            "or configure Hermes (HERMES_GATEWAY_*) for diagram generation. "
+            "Clone from: https://github.com/dwzhu-pku/PaperBanana"
+        )
     if str(PAPERBANANA_DIR) not in sys.path:
         sys.path.insert(0, str(PAPERBANANA_DIR))
 
@@ -65,15 +70,7 @@ def _ensure_dataset(task_name: str = "diagram"):
 
 
 def _prune_ref_to_available(data_dir: Path):
-    """ref.json 에서 GT 이미지가 디스크에 없는 reference 엔트리를 제거한다.
-
-    왜 (2026-06-12 실측): HF LFS 부분 다운로드로 ref.json 이 참조하는 이미지 중
-    소수(예 298 중 4)가 누락될 수 있다. RetrieverAgent 가 그중 하나를 reference
-    로 고르면 ``FileNotFoundError`` 로 *해당 카테고리 다이어그램 생성이 통째로
-    실패* 한다(비결정적). 디렉토리 존재만 보던 기존 가드는 이를 못 잡았다.
-    누락 엔트리만 외과적으로 제거하면 남은 다수(예 294)로 retrieval 품질을
-    유지하면서 landmine 을 없앤다. 원본은 .orig 로 1회 백업, 멱등.
-    """
+    """ref.json 에서 GT 이미지가 디스크에 없는 reference 엔트리를 제거한다."""
     ref_path = data_dir / "ref.json"
     images_dir = data_dir / "images"
     if not ref_path.exists() or not images_dir.is_dir():
@@ -116,13 +113,11 @@ def _extract_final_image_b64(result: dict, exp_mode: str) -> str | None:
     """Return the base64-encoded final image from a pipeline result dict."""
     task_name = "diagram"
 
-    # Try critic rounds 3 → 0
     for round_idx in range(3, -1, -1):
         key = f"target_{task_name}_critic_desc{round_idx}_base64_jpg"
         if key in result and result[key]:
             return result[key]
 
-    # Fallback: stylist (demo_full) or planner
     if exp_mode == "demo_full":
         key = f"target_{task_name}_stylist_desc0_base64_jpg"
     else:
@@ -130,36 +125,21 @@ def _extract_final_image_b64(result: dict, exp_mode: str) -> str | None:
     return result.get(key)
 
 
-def generate_diagram(method: str, caption: str,
-                     aspect_ratio: str = "16:9",
-                     critic_rounds: int = 3,
-                     exp_mode: str = "demo_full",
-                     retrieval_setting: str = "auto",
-                     output_path: str | Path | None = None) -> bytes | None:
-    """Generate a diagram image via PaperBanana.
-
-    Args:
-        method: Markdown description of the diagram content.
-        caption: Figure caption / visual intent string.
-        aspect_ratio: Image aspect ratio (e.g. "16:9", "21:9", "3:2").
-        critic_rounds: Number of PaperBanana critic iterations.
-        exp_mode: "demo_full" (with Stylist) or "demo_planner_critic" (without).
-        retrieval_setting: "auto" (reference learning), "none" (no refs).
-        output_path: If provided, save the PNG bytes to this path.
-
-    Returns:
-        PNG image bytes, or None if generation failed.
-    """
+def _generate_via_paperbanana(method: str, caption: str,
+                              aspect_ratio: str = "16:9",
+                              critic_rounds: int = 3,
+                              exp_mode: str = "demo_full",
+                              retrieval_setting: str = "auto",
+                              output_path: str | Path | None = None) -> bytes | None:
+    """Legacy PaperBanana path (vendor image APIs)."""
     prev_cwd = os.getcwd()
     try:
         _ensure_path()
         os.chdir(str(PAPERBANANA_DIR))
         _ensure_config()
 
-        # Download reference dataset for auto retrieval
         if retrieval_setting == "auto":
             _ensure_dataset("diagram")
-            # If dataset still not available, fall back to none
             ref_path = PAPERBANANA_DIR / "data" / "PaperBananaBench" / "diagram" / "ref.json"
             if not ref_path.exists():
                 retrieval_setting = "none"
@@ -215,10 +195,6 @@ def generate_diagram(method: str, caption: str,
                 results.append(result)
             return results
 
-        # Each generate_diagram call uses a fresh asyncio.run() event loop.
-        # PaperBanana caches its async LLM clients (google-genai / AsyncAnthropic)
-        # as module globals bound to the FIRST loop, so the 2nd+ call dies with
-        # "Event loop is closed". Recreate the clients so they rebind to this loop.
         try:
             from utils import generation_utils as _gu
             _gu.reinitialize_clients()
@@ -255,11 +231,52 @@ def generate_diagram(method: str, caption: str,
         return png_bytes
 
     except Exception as e:
-        # Log full traceback so root causes (e.g. ModuleNotFoundError for
-        # PaperBanana's own deps) surface in the wrapper's stderr instead of
-        # being swallowed into a generic "returned None". Then re-raise so the
-        # outer watchdog/retry layer can decide whether it's transient.
         logger.exception(f"PaperBanana diagram generation failed: {e}")
         raise
     finally:
         os.chdir(prev_cwd)
+
+
+def generate_diagram(method: str, caption: str,
+                     aspect_ratio: str = "16:9",
+                     critic_rounds: int = 3,
+                     exp_mode: str = "demo_full",
+                     retrieval_setting: str = "auto",
+                     output_path: str | Path | None = None) -> bytes | None:
+    """Generate a diagram image — Hermes first, PaperBanana fallback.
+
+    Args:
+        method: Markdown description of the diagram content.
+        caption: Figure caption / visual intent string.
+        aspect_ratio: Image aspect ratio (e.g. "16:9", "21:9", "3:2").
+        critic_rounds: Number of PaperBanana critic iterations (fallback only).
+        exp_mode: PaperBanana mode (fallback only).
+        retrieval_setting: PaperBanana retrieval (fallback only).
+        output_path: If provided, save the PNG bytes to this path.
+
+    Returns:
+        PNG image bytes, or None if generation failed.
+    """
+    # 1) Hermes preferred path
+    try:
+        from lib import hermes_image
+        if hermes_image.available():
+            logger.info("Generating diagram via Hermes gateway...")
+            png = hermes_image.generate_diagram(
+                method, caption, aspect_ratio=aspect_ratio,
+                output_path=output_path)
+            if png:
+                return png
+            logger.warning("Hermes returned no image — falling back to PaperBanana")
+    except Exception as e:
+        logger.warning("Hermes diagram path failed (%s) — PaperBanana fallback", e)
+
+    # 2) PaperBanana fallback
+    if PAPERBANANA_DIR is None:
+        logger.error(
+            "No Hermes image and paperbanana_dir unset — cannot generate diagram")
+        return None
+    return _generate_via_paperbanana(
+        method, caption, aspect_ratio=aspect_ratio,
+        critic_rounds=critic_rounds, exp_mode=exp_mode,
+        retrieval_setting=retrieval_setting, output_path=output_path)

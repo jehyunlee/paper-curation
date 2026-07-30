@@ -82,8 +82,8 @@ def opus_streaming_call(prompt, max_tokens=12000):
     """Opus streaming 호출. SDK retry는 request-level만 처리하므로 mid-stream
     Connection reset/ReadError를 잡아서 수동 retry (exp backoff)."""
     import time as _time
-    from anthropic import Anthropic
-    client = Anthropic(timeout=600.0, max_retries=4)
+    from lib.llm_client import get_chat_client, resolve_model
+    client = get_chat_client(timeout=600.0, max_retries=4)
 
     last_err = None
     for attempt in range(5):
@@ -92,7 +92,7 @@ def opus_streaming_call(prompt, max_tokens=12000):
             # Opus 5 uses adaptive thinking and rejects an explicit `temperature` —
             # the API returns 400 "`temperature` is deprecated for this model."
             with client.messages.stream(
-                model="claude-opus-5",
+                model=resolve_model("opus"),
                 max_tokens=max_tokens,
                 messages=[{"role": "user", "content": prompt}],
             ) as stream:
@@ -768,8 +768,8 @@ def select_best_candidate(results, caption=""):
         return results[0]
     try:
         import base64
-        from anthropic import Anthropic
-        judge = Anthropic(timeout=180.0, max_retries=3)
+        from lib.llm_client import get_chat_client
+        judge = get_chat_client(timeout=180.0, max_retries=3)
         content = []
         for n, (_i, _kb, path) in enumerate(results, 1):
             with open(path, "rb") as fh:

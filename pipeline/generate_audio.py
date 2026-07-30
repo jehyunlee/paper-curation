@@ -360,9 +360,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    api_key = get_google_key()  # env(GEMINI/GOOGLE) → config.json(gemini_api_key/google_api_key)
-    if not api_key:
-        print("ERROR: GEMINI_API_KEY/GOOGLE_API_KEY (env) 또는 config.json(google_api_key) 가 필요합니다.",
+    from config_loader import get_openrouter_config
+    from lib import openrouter as orouter
+
+    or_cfg = get_openrouter_config()
+    api_key = get_google_key()
+    if not or_cfg and not api_key:
+        print("ERROR: OPENROUTER_API_KEY (권장) 또는 GOOGLE_API_KEY 가 필요합니다.",
               file=sys.stderr)
         return 1
 
@@ -384,12 +388,41 @@ def main() -> int:
     lang = args.language
     direction = args.direction or DEFAULT_DIRECTION[lang]
     roles = ROLES[lang][args.speakers]
-    client = genai.Client(api_key=api_key)
-
-    print(f"[1/2] 대본 생성 ({SCRIPT_MODEL}) — slug={slug} speakers={args.speakers} "
-          f"lang={lang} length={args.length}m connections={len(conns)}")
     prompt = build_prompt(review, conns, args.speakers, lang, args.audience,
                           args.length, args.tone, args.focus, direction)
+    out_dir = PAPERS / slug
+
+    if or_cfg:
+        script_model = (or_cfg.get("models") or {}).get("sonnet",
+                                                         "anthropic/claude-sonnet-5")
+        print(f"[1/2] 대본 생성 (OpenRouter {script_model}) — slug={slug} "
+              f"speakers={args.speakers} lang={lang} length={args.length}m")
+        script = orouter.chat_text(
+            [{"role": "user", "content": prompt}],
+            model=script_model, max_tokens=16000, temperature=0.85)
+        if not script:
+            print("ERROR: 대본이 비었습니다.", file=sys.stderr)
+            return 2
+        (out_dir / "audio_script.txt").write_text(script, encoding="utf-8")
+        print(f"      → audio_script.txt ({len(script):,}자)")
+
+        tts_model = (or_cfg.get("models") or {}).get("tts", "openai/gpt-4o-mini-tts")
+        print(f"[2/2] 음성 합성 (OpenRouter {tts_model})")
+        chunks = chunk_paragraphs(script, MAX_CHUNK_CHARS)
+        mp3_parts = []
+        for i, chunk in enumerate(chunks, 1):
+            mp3_parts.append(orouter.tts(chunk, model=tts_model, voice="alloy",
+                                         response_format="mp3"))
+            print(f"      [{i:>3}/{len(chunks)}]", flush=True)
+        out = Path(args.out) if args.out else out_dir / "audio_overview.mp3"
+        out.write_bytes(b"".join(mp3_parts))
+        print(f"      → {out}  ({out.stat().st_size / 1024:.0f} KiB)")
+        return 0
+
+    # Legacy Gemini path
+    client = genai.Client(api_key=api_key)
+    print(f"[1/2] 대본 생성 ({SCRIPT_MODEL}) — slug={slug} speakers={args.speakers} "
+          f"lang={lang} length={args.length}m connections={len(conns)}")
     resp = client.models.generate_content(
         model=SCRIPT_MODEL, contents=prompt,
         config=types.GenerateContentConfig(temperature=0.85, max_output_tokens=65536))
@@ -398,7 +431,6 @@ def main() -> int:
     if not script:
         print("ERROR: 대본이 비었습니다.", file=sys.stderr)
         return 2
-    out_dir = PAPERS / slug
     (out_dir / "audio_script.txt").write_text(script, encoding="utf-8")
     print(f"      → audio_script.txt ({len(script):,}자)")
 

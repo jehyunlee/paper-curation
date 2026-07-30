@@ -139,11 +139,14 @@ def check_python(rep):
 # ---------------------------------------------------------------------------
 # (import 명, pip 패키지명, 용도)
 REQUIRED_PKGS = [
-    ("anthropic", "anthropic", "리뷰·분류·인사이트·Deep Research 답변 생성"),
-    ("google.genai", "google-genai", "Gemini 임베딩·figure 검증·TTS"),
+    ("anthropic", "anthropic", "legacy Anthropic SDK (OpenRouter 없을 때 폴백)"),
     ("fitz", "pymupdf", "PyMuPDF — PDF 텍스트/figure 추출"),
     ("PIL", "Pillow", "PNG→WebP 변환"),
     ("requests", "requests", "HTTP (검색·다운로드)"),
+]
+OPTIONAL_PKGS = [
+    ("google.genai", "google-genai", "legacy Gemini 폴백 (임베딩·TTS·figure)"),
+    ("openai", "openai", "legacy OpenAI / 로컬 OpenAI-compat"),
 ]
 # 재클러스터링(topic_modeling/classify_papers) 전용 — 없으면 리뷰·인덱스·배포는 되고
 # 재분류만 불가.
@@ -174,6 +177,14 @@ def check_packages(rep):
             rep.fail(mod, why, f"pip install {pip_name}")
     if missing_pip:
         rep.note(f"한 번에: pip install {' '.join(dict.fromkeys(missing_pip))}")
+
+    rep.section("2a. 선택 패키지 (legacy 벤더 폴백)")
+    for mod, pip_name, why in OPTIONAL_PKGS:
+        ok, _err = _can_import(mod)
+        if ok:
+            rep.ok(mod, why)
+        else:
+            rep.warn(mod, why, f"pip install {pip_name}")
 
     rep.section("2b. 재클러스터링 패키지 (선택 — reclassify/topic_modeling 전용)")
     missing_cluster = [pip for mod, pip in CLUSTER_PKGS if not _can_import(mod)[0]]
@@ -312,37 +323,86 @@ def _resolve_key(cfg, env_names, cfg_keys):
 def check_api_keys(rep, cfg):
     rep.section("5. API 키")
 
-    # 필수 2종
-    found, src = _resolve_key(cfg, ["ANTHROPIC_API_KEY"], ["anthropic_api_key"])
-    if found:
-        rep.ok("ANTHROPIC_API_KEY", f"설정됨 ({src}) — 리뷰·내러티브·Deep Research 답변")
+    # OpenRouter — LLM / embed / vision / TTS 단일 키 (1순위)
+    or_found = False
+    or_src = ""
+    if os.environ.get("OPENROUTER_API_KEY", "").strip():
+        or_found, or_src = True, "env:OPENROUTER_API_KEY"
+    elif isinstance(cfg, dict):
+        or_block = cfg.get("openrouter") if isinstance(cfg.get("openrouter"), dict) else {}
+        if str(or_block.get("api_key", "")).strip() and str(or_block.get("api_key")).strip() != "YOUR_OPENROUTER_API_KEY_HERE":
+            or_found, or_src = True, "config:openrouter.api_key"
+        elif str(cfg.get("openrouter_api_key", "")).strip():
+            or_found, or_src = True, "config:openrouter_api_key"
+    if or_found:
+        rep.ok("OPENROUTER_API_KEY", f"설정됨 ({or_src}) — LLM·임베딩·비전·TTS")
     else:
         rep.fail(
-            "ANTHROPIC_API_KEY 미설정",
-            "리뷰·내러티브·인사이트 생성에 필수",
-            "export ANTHROPIC_API_KEY=sk-ant-...  (https://console.anthropic.com/settings/keys)",
+            "OPENROUTER_API_KEY 미설정",
+            "리뷰·임베딩·figure vision·TTS 에 권장되는 단일 키",
+            "export OPENROUTER_API_KEY=sk-or-v1-...  (https://openrouter.ai/keys)",
+        )
+
+    # Hermes — 다이어그램/타임라인 이미지 전용
+    hermes_base = os.environ.get("HERMES_GATEWAY_BASE_URL", "").strip()
+    hermes_key = os.environ.get("HERMES_GATEWAY_API_KEY", "").strip()
+    if isinstance(cfg, dict) and isinstance(cfg.get("hermes"), dict):
+        hermes_base = hermes_base or str(cfg["hermes"].get("base_url", "")).strip()
+        hermes_key = hermes_key or str(cfg["hermes"].get("api_key", "")).strip()
+    if hermes_base and hermes_key and hermes_key != "YOUR_HERMES_GATEWAY_API_KEY_HERE":
+        # Optional live probe
+        try:
+            models_url = hermes_base.rstrip("/") + "/models"
+            req = urllib.request.Request(
+                models_url,
+                headers={"Authorization": f"Bearer {hermes_key}",
+                         "User-Agent": "paper-curation-doctor"},
+            )
+            with urllib.request.urlopen(req, timeout=5, context=_SSL_CTX) as resp:
+                _ = resp.read(200)
+            rep.ok("HERMES_GATEWAY", f"{hermes_base} — 이미지 생성 (probe OK)")
+        except Exception as e:
+            rep.warn(
+                "HERMES_GATEWAY 연결 실패",
+                f"{hermes_base}: {type(e).__name__}",
+                "hermes-tunnel.service / sns_for_paper .env 확인 — 다운 시 다이어그램만 skip",
+            )
+    else:
+        rep.warn(
+            "HERMES_GATEWAY 미설정 (선택)",
+            "타임라인/워크플로 다이어그램 이미지 — 미설정 시 PaperBanana 폴백",
+            "export HERMES_GATEWAY_BASE_URL=http://localhost:8642/v1 "
+            "HERMES_GATEWAY_API_KEY=... HERMES_GATEWAY_MODEL=hermes-agent",
+        )
+
+    # Legacy vendor keys (fallback only)
+    found, src = _resolve_key(cfg, ["ANTHROPIC_API_KEY"], ["anthropic_api_key"])
+    if found:
+        rep.ok("ANTHROPIC_API_KEY", f"설정됨 ({src}) — OpenRouter 없을 때 legacy 폴백")
+    else:
+        rep.warn(
+            "ANTHROPIC_API_KEY 미설정 (legacy)",
+            "OPENROUTER_API_KEY 가 있으면 불필요",
         )
 
     found, src = _resolve_key(
         cfg, ["GOOGLE_API_KEY", "GEMINI_API_KEY"], ["google_api_key", "gemini_api_key"]
     )
     if found:
-        rep.ok("GOOGLE_API_KEY", f"설정됨 ({src}) — figure 검증·TTS·Deep Research 임베딩")
+        rep.ok("GOOGLE_API_KEY", f"설정됨 ({src}) — OpenRouter 없을 때 legacy 폴백")
     else:
-        rep.fail(
-            "GOOGLE_API_KEY 미설정",
-            "figure 검증·Audio Overview·Deep Research 임베딩에 필수",
-            "export GOOGLE_API_KEY=AIza...  (https://aistudio.google.com/apikey)",
+        rep.warn(
+            "GOOGLE_API_KEY 미설정 (legacy)",
+            "OPENROUTER_API_KEY 가 있으면 불필요",
         )
 
-    # 선택
     found, src = _resolve_key(cfg, ["OPENAI_API_KEY"], ["openai_api_key"])
     if found:
-        rep.ok("OPENAI_API_KEY", f"설정됨 ({src}) — reader BYOK 답변 / insights fallback")
+        rep.ok("OPENAI_API_KEY", f"설정됨 ({src}) — legacy fallback")
     else:
         rep.warn(
             "OPENAI_API_KEY 미설정 (선택)",
-            "reader BYOK 답변 백엔드 / insights cross-category fallback 에만 사용",
+            "OpenRouter 단일 키로 대체됨",
         )
 
     found, src = _resolve_key(cfg, ["CLOUDFLARE_API_TOKEN", "CF_API_TOKEN"], [])

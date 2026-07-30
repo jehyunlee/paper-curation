@@ -70,18 +70,17 @@ def _build_topic_description(topic, primary_kws, secondary_kws):
 
 
 def _make_anthropic_client():
-    """Anthropic 클라이언트 생성. 키 없거나 실패하면 None (→ 키워드 폴백)."""
+    """LLM 클라이언트 생성 (OpenRouter 우선). 키 없거나 실패하면 None (→ 키워드 폴백)."""
     try:
-        from anthropic import Anthropic
-        from config_loader import load_config
-        key = os.environ.get("ANTHROPIC_API_KEY") or load_config().get("anthropic_api_key", "")
-        if not key:
-            print("  경고: ANTHROPIC_API_KEY 없음 — hybrid relevance 건너뜀 (keyword 폴백)",
+        from lib.llm_client import try_chat_client
+        client = try_chat_client(timeout=180.0, max_retries=4)
+        if client is None:
+            print("  경고: OPENROUTER_API_KEY/ANTHROPIC_API_KEY 없음 — hybrid relevance 건너뜀 (keyword 폴백)",
                   file=sys.stderr)
             return None
-        return Anthropic(api_key=key, timeout=180.0, max_retries=4)
+        return client
     except Exception as e:
-        print(f"  경고: Anthropic 클라이언트 생성 실패: {str(e)[:80]} (keyword 폴백)",
+        print(f"  경고: LLM 클라이언트 생성 실패: {str(e)[:80]} (keyword 폴백)",
               file=sys.stderr)
         return None
 

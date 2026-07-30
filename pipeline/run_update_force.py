@@ -780,9 +780,16 @@ def extract_figures(pdf_path, slug_dir):
     # 키 해석: env(GOOGLE_API_KEY/GEMINI_API_KEY) → config.json. 단 reextract_figures
     # 가 geometric-only 강제 시 세팅하는 PAPER_CURATION_NO_GEMINI 가 있으면 키 유무와
     # 무관하게 Gemini 검증을 끈다 (env pop 만으론 config.json 키가 남아 스위치가 안 먹음).
-    have_gemini = (not os.environ.get("PAPER_CURATION_NO_GEMINI")
-                   and bool(get_google_key().strip()))
-    # Log a degraded-Gemini warning at most once per run instead of silently
+    # Vision judge: OpenRouter preferred; legacy Google key as fallback.
+    # PAPER_CURATION_NO_GEMINI disables the multimodal round-trip entirely.
+    try:
+        from lib import openrouter as _orouter
+        _have_or_vision = _orouter.available()
+    except Exception:
+        _have_or_vision = False
+    have_vision = (not os.environ.get("PAPER_CURATION_NO_GEMINI")
+                   and (_have_or_vision or bool(get_google_key().strip())))
+    # Log a degraded-vision warning at most once per run instead of silently
     # accepting full pages when the validator throws.
     _gemini_warned = {"done": False}
 
@@ -796,22 +803,25 @@ def extract_figures(pdf_path, slug_dir):
         pre = pre_validate_figure(img_path)
         if pre is not None:
             return pre
-        if not have_gemini:
+        if not have_vision:
             # No key → skip the round-trip entirely, rely on geometry.
             return {"status": "error", "adjust_pt": {}}
+        prompt = (f"Evaluate cropping of this academic figure.\nCaption: {caption}\n"
+                  f"Check: (1) content CLIPPED at edges? (2) EXCESS body text?\n"
+                  f"JSON only: {{\"status\":\"ok\"|\"clipped\"|\"oversized\"|\"both\","
+                  f"\"issues\":\"brief\",\"adjust_pt\":{{\"top\":0,\"bottom\":0,\"left\":0,\"right\":0}}}}\n"
+                  f"adjust_pt: positive=expand, negative=shrink. PDF points.")
         try:
+            with open(img_path, "rb") as f:
+                img_bytes = f.read()
+            if _have_or_vision:
+                from lib import openrouter as orouter
+                return orouter.vision_json(prompt, img_bytes, mime="image/png")
             from google import genai
             from google.genai import types
             client = genai.Client(api_key=get_google_key())
-            with open(img_path, "rb") as f:
-                img_bytes = f.read()
-            prompt = (f"Evaluate cropping of this academic figure.\nCaption: {caption}\n"
-                      f"Check: (1) content CLIPPED at edges? (2) EXCESS body text?\n"
-                      f"JSON only: {{\"status\":\"ok\"|\"clipped\"|\"oversized\"|\"both\","
-                      f"\"issues\":\"brief\",\"adjust_pt\":{{\"top\":0,\"bottom\":0,\"left\":0,\"right\":0}}}}\n"
-                      f"adjust_pt: positive=expand, negative=shrink. PDF points.")
             resp = client.models.generate_content(
-                model="gemini-3.1-pro-preview",
+                model="gemini-2.5-flash",
                 contents=[types.Part.from_bytes(data=img_bytes, mime_type="image/png"), prompt])
             text = resp.text.strip()
             if "```" in text:
@@ -821,7 +831,7 @@ def extract_figures(pdf_path, slug_dir):
             return json.loads(text)
         except Exception as e:
             if not _gemini_warned["done"]:
-                log(f"  WARN Gemini figure validator unavailable "
+                log(f"  WARN figure vision validator unavailable "
                     f"({type(e).__name__}); using geometric crops only")
                 _gemini_warned["done"] = True
             return {"status": "error", "adjust_pt": {}}
@@ -1344,8 +1354,8 @@ def write_review(item, slug_dir, figures):
         fig_refs += f"\n- Fig {fig['name']}: {fig['caption'][:80]}"
 
     try:
-        from anthropic import Anthropic
-        client = Anthropic(timeout=180.0, max_retries=4)
+        from lib.llm_client import get_chat_client
+        client = get_chat_client(timeout=180.0, max_retries=4)
 
         # Tool-use forces a structured JSON response that matches
         # REVIEW_TOOL_SCHEMA. The SDK auto-retries on schema validation

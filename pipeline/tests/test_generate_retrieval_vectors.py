@@ -28,19 +28,22 @@ class RetrievalVectorGeneratorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             queries, output = self._queries(root), root / "vectors.json"
-            with patch("generate_retrieval_vectors.resolve_google_key", return_value="key"), \
+            with patch("generate_retrieval_vectors.resolve_embed_key", return_value="key"), \
                     patch("generate_retrieval_vectors.gemini_embed", return_value=[0.0] * 767 + [1.0]):
                 manifest = generate_manifest(queries, output, delay_seconds=0)
             self.assertEqual(manifest["task_type"], "RETRIEVAL_QUERY")
             self.assertEqual(manifest["query_set_sha256"], hashlib.sha256(queries.read_bytes()).hexdigest())
             self.assertEqual(len(manifest["vectors"]["q1"]), 768)
-            self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["model"], "gemini-embedding-001")
+            self.assertEqual(
+                json.loads(output.read_text(encoding="utf-8"))["model"],
+                "qwen/qwen3-embedding-8b",
+            )
 
     def test_existing_matching_manifest_is_reused_without_api(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             queries, output = self._queries(root), root / "vectors.json"
-            with patch("generate_retrieval_vectors.resolve_google_key", return_value="key"), \
+            with patch("generate_retrieval_vectors.resolve_embed_key", return_value="key"), \
                     patch("generate_retrieval_vectors.gemini_embed", return_value=[1.0] * 768):
                 generate_manifest(queries, output, delay_seconds=0)
             with patch("generate_retrieval_vectors.gemini_embed") as embed:
@@ -52,7 +55,7 @@ class RetrievalVectorGeneratorTests(unittest.TestCase):
             root = Path(td)
             queries, output = self._queries(root), root / "vectors.json"
             output.write_text(json.dumps({
-                "schema_version": 1, "model": "gemini-embedding-001",
+                "schema_version": 1, "model": "qwen/qwen3-embedding-8b",
                 "task_type": "RETRIEVAL_QUERY", "dim": 1,
                 "query_set_sha256": "stale", "vectors": {"q1": [1.0]},
             }), encoding="utf-8")
@@ -63,7 +66,7 @@ class RetrievalVectorGeneratorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             queries, output = self._queries(root), root / "vectors.json"
-            with patch("generate_retrieval_vectors.resolve_google_key", return_value="key"), \
+            with patch("generate_retrieval_vectors.resolve_embed_key", return_value="key"), \
                     patch("generate_retrieval_vectors.gemini_embed", return_value=[0.0] * 768):
                 with self.assertRaisesRegex(EvaluationError, "must not be all zeros"):
                     generate_manifest(queries, output, delay_seconds=0)

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""로컬 미리보기 서버 — docs/ 정적 서빙 + /api/embed Gemini 프록시.
+"""로컬 미리보기 서버 — docs/ 정적 서빙 + /api/embed OpenRouter 프록시.
 
 `python -m http.server` 는 정적 파일만 돌려주므로, Deep Research UI 가
 같은 출처(`/api/embed`) 로 쿼리 임베딩을 요청하면 응답하지 못한다. 이
 스크립트는 docs/ 를 그대로 서빙하면서 `/api/embed` POST 를 운영자의
-Gemini 키로 프록시해 로컬 미리보기에서도 검색이 동작하게 한다.
+OpenRouter 키로 프록시해 로컬 미리보기에서도 검색이 동작하게 한다.
 
 - GET                 → docs/ 정적 파일 (mime 자동, 디렉토리는 index.html)
-- POST /api/embed     → {"text": ...} → gemini-embedding-001 (768d,
-                        taskType RETRIEVAL_QUERY) → L2 정규화 후
-                        {"embedding": [...], "model": ..., "dim": 768}
+- POST /api/embed     → {"text": ...} → qwen/qwen3-embedding-8b (768d)
+                        → L2 정규화 후 {"embedding": [...], "model": ..., "dim": 768}
+                        (OPENROUTER 미설정 시 legacy Gemini 폴백)
 - POST /api/audio-email → Resend 포워딩 (worker/index.js 와 동일). 운영자
                         RESEND_API_KEY 로 MP3 첨부 메일 발송. 키 없으면 503
                         → UI 가 다운로드로 폴백.
@@ -17,11 +17,10 @@ Gemini 키로 프록시해 로컬 미리보기에서도 검색이 동작하게 �
 추가 의존성 없음 — 표준 라이브러리(http.server + urllib + base64)만 사용.
 
 키 우선순위:
-- 임베딩: GOOGLE_API_KEY/GEMINI_API_KEY env → config.json
-  (gemini_api_key/google_api_key) → docs/_local_keys.json (google_key/gemini_key).
+- 임베딩: OPENROUTER_API_KEY → GOOGLE_API_KEY/GEMINI_API_KEY → config.json
+  → docs/_local_keys.json.
 - 이메일: RESEND_API_KEY/AUDIO_FROM/AUDIO_REPLY_TO env → config.json
-  (resend_api_key/audio_from/audio_reply_to) → docs/_local_keys.json
-  (resend_key/audio_from/audio_reply_to).
+  → docs/_local_keys.json.
 
 참고: Resend 샌드박스 발신자(onboarding@resend.dev)는 도메인 인증 전까지
 Resend 계정 본인 이메일로만 배달된다. 타인에게 보내려면 커스텀 도메인 인증 +
@@ -53,13 +52,15 @@ try:
 except Exception:  # config.json 없거나 import 실패해도 env/_local_keys 로 동작
     load_config = None
 
-# Gemini 임베딩 설정 (인덱스 빌드와 동일 — RETRIEVAL_QUERY 만 다르다).
-GEMINI_MODEL = "gemini-embedding-001"
+# 임베딩 설정 — OpenRouter qwen3-embedding-8b 기본, Gemini legacy 폴백.
+EMBED_DIM = 768
+OPENROUTER_EMBED_MODEL = "qwen/qwen3-embedding-8b"
+GEMINI_MODEL = "gemini-embedding-001"  # legacy alias kept for importers
 GEMINI_ENDPOINT = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
     f"{GEMINI_MODEL}:embedContent"
 )
-EMBED_DIM = 768
+EMBED_MODEL = OPENROUTER_EMBED_MODEL
 
 # Audio Overview 이메일 발송 — worker/index.js 와 동일하게 Resend 로 포워딩.
 RESEND_ENDPOINT = "https://api.resend.com/emails"
@@ -74,10 +75,36 @@ _ssl_ctx.check_hostname = False
 _ssl_ctx.verify_mode = ssl.CERT_NONE
 
 _GOOGLE_KEY_CACHE = None
+_OPENROUTER_KEY_CACHE = None
+
+
+def resolve_openrouter_key():
+    """OpenRouter 키 조회. env → config.json → docs/_local_keys.json. 캐싱."""
+    global _OPENROUTER_KEY_CACHE
+    if _OPENROUTER_KEY_CACHE:
+        return _OPENROUTER_KEY_CACHE
+    key = os.environ.get("OPENROUTER_API_KEY") or ""
+    if not key and load_config is not None:
+        try:
+            cfg = load_config() or {}
+            key = (cfg.get("openrouter") or {}).get("api_key") or cfg.get("openrouter_api_key") or ""
+        except Exception:
+            key = ""
+    if not key:
+        local_keys = DOCS_DIR / "_local_keys.json"
+        if local_keys.exists():
+            try:
+                data = json.loads(local_keys.read_text(encoding="utf-8"))
+                key = data.get("openrouter_key") or data.get("openrouter_api_key") or ""
+            except Exception:
+                key = ""
+    if key:
+        _OPENROUTER_KEY_CACHE = key
+    return key
 
 
 def resolve_google_key():
-    """Gemini 키 조회. env → config.json → docs/_local_keys.json 순. 캐싱(비어있으면 재시도)."""
+    """Legacy Gemini 키 조회. env → config.json → docs/_local_keys.json 순."""
     global _GOOGLE_KEY_CACHE
     if _GOOGLE_KEY_CACHE:
         return _GOOGLE_KEY_CACHE
@@ -105,12 +132,49 @@ def resolve_google_key():
     return key
 
 
-def gemini_embed(text, api_key):
-    """gemini-embedding-001 으로 쿼리 임베딩 → L2 정규화한 768d 리스트 반환.
+def resolve_embed_key():
+    """임베딩용 키 — OpenRouter 우선, 없으면 Google."""
+    return resolve_openrouter_key() or resolve_google_key()
 
-    중요: output_dimensionality != 3072 이면 Gemini 가 비정규화 벡터를 돌려준다.
-    int8 양자화/코사인 비교 전에 반드시 L2 정규화해야 인덱스와 스케일이 맞는다.
-    """
+
+def _openrouter_embed(text, api_key):
+    """OpenRouter embeddings → L2-normalised 768d list."""
+    try:
+        from config_loader import get_openrouter_config
+        cfg = get_openrouter_config() or {}
+    except Exception:
+        cfg = {}
+    base = (cfg.get("base_url") or "https://openrouter.ai/api/v1").rstrip("/")
+    model = ((cfg.get("models") or {}).get("embed")
+             or os.environ.get("OPENROUTER_MODEL_EMBED")
+             or OPENROUTER_EMBED_MODEL)
+    dim = int(cfg.get("embed_dimensions") or EMBED_DIM)
+    payload = {"model": model, "input": text, "dimensions": dim}
+    req = urllib.request.Request(
+        f"{base}/embeddings",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "X-Title": "paper-curation",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30, context=_ssl_ctx) as resp:
+        out = json.load(resp)
+    items = out.get("data") or []
+    if not items:
+        raise ValueError("OpenRouter 응답에 embedding data 가 없습니다: "
+                         + json.dumps(out)[:200])
+    values = items[0].get("embedding") or []
+    if not values:
+        raise ValueError("OpenRouter embedding 이 비어 있습니다")
+    norm = math.sqrt(sum(v * v for v in values)) or 1.0
+    return [v / norm for v in values]
+
+
+def _gemini_embed_legacy(text, api_key):
+    """gemini-embedding-001 legacy path."""
     payload = {
         "model": f"models/{GEMINI_MODEL}",
         "content": {"parts": [{"text": text}]},
@@ -135,6 +199,23 @@ def gemini_embed(text, api_key):
 
     norm = math.sqrt(sum(v * v for v in values)) or 1.0
     return [v / norm for v in values]
+
+
+def gemini_embed(text, api_key=None):
+    """쿼리 임베딩 → L2 정규화한 768d 리스트. OpenRouter 우선.
+
+    이름(gemini_embed)은 하위 호환용. api_key 가 없으면 resolve_embed_key().
+    """
+    or_key = resolve_openrouter_key()
+    if or_key and (api_key is None or api_key == or_key
+                   or str(api_key).startswith("sk-or-")):
+        return _openrouter_embed(text, or_key if api_key is None else api_key)
+    key = api_key or resolve_google_key()
+    if not key:
+        raise ValueError("OPENROUTER_API_KEY 또는 GOOGLE_API_KEY 가 필요합니다")
+    if str(key).startswith("sk-or-"):
+        return _openrouter_embed(text, key)
+    return _gemini_embed_legacy(text, key)
 
 
 def resolve_resend_config():
@@ -510,11 +591,11 @@ class LocalHandler(SimpleHTTPRequestHandler):
             self._send_json(400, {"error": "missing 'text'"})
             return
 
-        api_key = resolve_google_key()
+        api_key = resolve_embed_key()
         if not api_key:
             self._send_json(503, {
-                "error": "Gemini 키 없음 — GOOGLE_API_KEY env 또는 "
-                         "config.json(gemini_api_key) 를 설정하세요.",
+                "error": "임베딩 키 없음 — OPENROUTER_API_KEY (권장) 또는 "
+                         "GOOGLE_API_KEY / config.json 을 설정하세요.",
             })
             return
 
@@ -525,13 +606,14 @@ class LocalHandler(SimpleHTTPRequestHandler):
                 detail = e.read().decode("utf-8", "replace")[:300]
             except Exception:
                 detail = str(e)
-            self._send_json(502, {"error": f"Gemini embed {e.code}: {detail}"})
+            self._send_json(502, {"error": f"embed {e.code}: {detail}"})
             return
         except Exception as e:
-            self._send_json(502, {"error": f"Gemini embed 실패: {e}"})
+            self._send_json(502, {"error": f"embed 실패: {e}"})
             return
 
-        self._send_json(200, {"embedding": vec, "model": GEMINI_MODEL, "dim": len(vec)})
+        model = EMBED_MODEL if resolve_openrouter_key() else GEMINI_MODEL
+        self._send_json(200, {"embedding": vec, "model": model, "dim": len(vec)})
 
     # ── Audio Overview 이메일 발송 (Resend 포워딩) ──────────────────────────
     def _parse_multipart(self):
@@ -654,9 +736,11 @@ def main():
     handler = functools.partial(LocalHandler, directory=str(DOCS_DIR))
     httpd = ThreadingHTTPServer(("", args.port), handler)
 
-    has_key = bool(resolve_google_key())
-    print(f"docs/ 서빙 + /api/embed → Gemini ({GEMINI_MODEL}, {EMBED_DIM}d) 프록시")
-    print(f"Gemini 키: {'감지됨' if has_key else '없음 (검색 임베딩 비활성 — 키 설정 필요)'}")
+    or_key = bool(resolve_openrouter_key())
+    has_key = bool(resolve_embed_key())
+    backend = f"OpenRouter ({EMBED_MODEL})" if or_key else f"Gemini ({GEMINI_MODEL})"
+    print(f"docs/ 서빙 + /api/embed → {backend}, {EMBED_DIM}d 프록시")
+    print(f"임베딩 키: {'감지됨' if has_key else '없음 (검색 임베딩 비활성 — OPENROUTER_API_KEY 설정 필요)'}")
     print(f"열기: {url}")
     if (DOCS_DIR / "_cross" / "index.html").exists():
         print(f"통합 Deep Research (로컬 전용): http://localhost:{args.port}/_cross/")

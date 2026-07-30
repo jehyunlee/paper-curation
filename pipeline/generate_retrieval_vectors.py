@@ -15,12 +15,17 @@ try:
     from evaluate_retrieval import (
         SCHEMA_VERSION, EvaluationError, load_query_set, load_vector_manifest,
     )
-    from serve_local import EMBED_DIM, GEMINI_MODEL, gemini_embed, resolve_google_key
+    from serve_local import (
+        EMBED_DIM, EMBED_MODEL, gemini_embed, resolve_embed_key,
+    )
 except ImportError:
     from pipeline.evaluate_retrieval import (
         SCHEMA_VERSION, EvaluationError, load_query_set, load_vector_manifest,
     )
-    from pipeline.serve_local import EMBED_DIM, GEMINI_MODEL, gemini_embed, resolve_google_key
+    from pipeline.serve_local import (
+        EMBED_DIM, EMBED_MODEL, gemini_embed, resolve_embed_key,
+    )
+GEMINI_MODEL = EMBED_MODEL  # alias for callers/tests expecting the old name
 
 
 def _write_atomic(path: Path, value: dict) -> None:
@@ -55,9 +60,12 @@ def generate_manifest(query_path: str | Path, output_path: str | Path, *, force:
             )
         return existing
 
-    api_key = resolve_google_key()
+    api_key = resolve_embed_key()
     if not api_key:
-        raise EvaluationError("GOOGLE_API_KEY/GEMINI_API_KEY is required to generate query vectors")
+        raise EvaluationError(
+            "OPENROUTER_API_KEY (preferred) or GOOGLE_API_KEY is required "
+            "to generate query vectors"
+        )
 
     vectors: dict[str, list[float]] = {}
     for position, row in enumerate(rows, 1):

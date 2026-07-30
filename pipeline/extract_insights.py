@@ -19,7 +19,7 @@ import time
 from collections import defaultdict
 from datetime import datetime
 
-from anthropic import Anthropic
+from lib.llm_client import get_chat_client, try_chat_client
 from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir, load_config
 
 PAPERS_DIR = str(_PAPERS_DIR)
@@ -693,18 +693,28 @@ def _run_insights(topic="ai4s", *, insights_only=False, connections_only=False,
     _http_retries = int(os.environ.get("EXTRACT_INSIGHTS_HTTP_RETRIES", "1"))
     clients: dict = {"anthropic": None, "openai": None}
     try:
-        clients["anthropic"] = Anthropic(timeout=_http_timeout, max_retries=_http_retries)
+        clients["anthropic"] = get_chat_client(
+            timeout=_http_timeout, max_retries=_http_retries)
     except Exception as e:
-        log(f"  [backend] Anthropic init failed: {str(e)[:80]}")
+        log(f"  [backend] LLM (OpenRouter/Anthropic) init failed: {str(e)[:80]}")
     try:
         from openai import OpenAI
-        _oai_key = os.environ.get("OPENAI_API_KEY") or load_config().get("openai_api_key", "")
-        if _oai_key:
-            clients["openai"] = OpenAI(api_key=_oai_key, timeout=_http_timeout, max_retries=_http_retries)
+        from config_loader import get_openrouter_config
+        _or = get_openrouter_config()
+        if _or:
+            # OpenRouter also covers the former OpenAI fallback path
+            clients["openai"] = OpenAI(
+                api_key=_or["api_key"],
+                base_url=_or["base_url"],
+                timeout=_http_timeout, max_retries=_http_retries)
+        else:
+            _oai_key = os.environ.get("OPENAI_API_KEY") or load_config().get("openai_api_key", "")
+            if _oai_key:
+                clients["openai"] = OpenAI(api_key=_oai_key, timeout=_http_timeout, max_retries=_http_retries)
     except Exception as e:
-        log(f"  [backend] OpenAI init failed: {str(e)[:80]}")
+        log(f"  [backend] OpenAI/OpenRouter init failed: {str(e)[:80]}")
     client = clients["anthropic"] or clients["openai"]
-    log(f"  [backend] connections: Anthropic {'OK' if clients.get('anthropic') else 'MISSING'} "
+    log(f"  [backend] connections: LLM {'OK' if clients.get('anthropic') else 'MISSING'} "
         f"(SPECTER2 후보 → Sonnet); cross-category insights: {'/'.join(_CC_BACKENDS)}")
     run_insights = not connections_only
     run_connections = not insights_only

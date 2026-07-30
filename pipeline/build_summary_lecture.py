@@ -123,22 +123,21 @@ def synthesize_summary(course, led, evidence):
     except Exception as e:
         errs.append(("gemini", str(e)[:140]))
 
-    # 2) Anthropic claude-sonnet-5 — 파이프라인 기본 합성 모델 (Gemini 쿼터 소진 시 fallback)
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        try:
-            from anthropic import Anthropic
-            ac = Anthropic(timeout=600.0, max_retries=4)
-            out = []
-            with ac.messages.stream(model="claude-sonnet-5", max_tokens=32000,
-                                    messages=[{"role": "user", "content": prompt}]) as stream:
-                for chunk in stream.text_stream:
-                    out.append(chunk)
-            txt = "".join(out).strip()
-            if len(txt) >= 3000:
-                return txt, "claude-sonnet-5"
-            errs.append(("claude", f"과소 응답 {len(txt)}자"))
-        except Exception as e:
-            errs.append(("claude", str(e)[:140]))
+    # 2) OpenRouter/Anthropic Sonnet — 파이프라인 기본 합성 모델
+    try:
+        from lib.llm_client import get_chat_client, resolve_model
+        ac = get_chat_client(timeout=600.0, max_retries=4)
+        out = []
+        with ac.messages.stream(model=resolve_model("sonnet"), max_tokens=32000,
+                                messages=[{"role": "user", "content": prompt}]) as stream:
+            for chunk in stream.text_stream:
+                out.append(chunk)
+        txt = "".join(out).strip()
+        if len(txt) >= 3000:
+            return txt, resolve_model("sonnet")
+        errs.append(("claude", f"과소 응답 {len(txt)}자"))
+    except Exception as e:
+        errs.append(("claude", str(e)[:140]))
 
     raise RuntimeError("모든 합성 백엔드 실패: " + " | ".join(f"{p}:{m}" for p, m in errs))
 
@@ -226,7 +225,8 @@ def _audio_script_part(ac, i, seg, n_seg, labels, rolelines):
         "라벨 외 머리말·메타·프로그램명 금지.\n\n"
         f"내용:\n{seg}"
     )
-    resp = ac.messages.create(model="claude-sonnet-5", max_tokens=8000,
+    from lib.llm_client import resolve_model as _resolve_model
+    resp = ac.messages.create(model=_resolve_model("sonnet"), max_tokens=8000,
                               messages=[{"role": "user", "content": prompt}])
     txt = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
     return i, txt
@@ -236,7 +236,7 @@ def build_audio(report_text):
     """정리편 Audio Overview. 대본=Claude Sonnet(2인 대화), 음성=Gemini 멀티스피커 TTS."""
     import generate_audio as ga
     import lameenc
-    from anthropic import Anthropic
+    from lib.llm_client import get_chat_client, resolve_model
     from concurrent.futures import ThreadPoolExecutor, as_completed
     lang = "ko"
     roles = ga.ROLES[lang][2]
@@ -252,9 +252,9 @@ def build_audio(report_text):
         sz = max(1, -(-len(report_text) // n_seg))
         segs = [report_text[i:i + sz] for i in range(0, len(report_text), sz)]
 
-    ac = Anthropic(timeout=600.0, max_retries=4)
+    ac = get_chat_client(timeout=600.0, max_retries=4)
     scripts = [""] * len(segs)
-    print(f"     대본 병렬 생성 {len(segs)} parts (claude-sonnet-5)", flush=True)
+    print(f"     대본 병렬 생성 {len(segs)} parts ({resolve_model('sonnet')})", flush=True)
     with ThreadPoolExecutor(max_workers=3) as ex:
         futs = {ex.submit(_audio_script_part, ac, i, seg, len(segs), labels, rolelines): i
                 for i, seg in enumerate(segs)}

@@ -453,6 +453,10 @@ def _reinject_local_keys(docs_dir=None, *, verbose=True):
               or cfg.get("gemini_api_key", "") or cfg.get("google_api_key", "")) or ""
     anthropic = (os.environ.get("ANTHROPIC_API_KEY") or cfg.get("anthropic_api_key", "")) or ""
     openai = (os.environ.get("OPENAI_API_KEY") or cfg.get("openai_api_key", "")) or ""
+    or_block = cfg.get("openrouter") if isinstance(cfg.get("openrouter"), dict) else {}
+    openrouter = (os.environ.get("OPENROUTER_API_KEY")
+                  or or_block.get("api_key", "")
+                  or cfg.get("openrouter_api_key", "")) or ""
     raw_emails = (os.environ.get("PAPER_CURATION_LOCAL_EMAILS", "")
                   or ",".join(cfg.get("local_emails", []) or []))
     emails = [e.strip() for e in raw_emails.split(",") if e.strip()]
@@ -473,6 +477,11 @@ def _reinject_local_keys(docs_dir=None, *, verbose=True):
         if openai:
             new = re.sub(r'((?:const|let|var)\s+_OPENAI_KEY\s*=\s*)""',
                          lambda m: m.group(1) + json.dumps(openai), new)
+        if openrouter:
+            new = re.sub(r'((?:const|let|var)\s+_OPENROUTER_KEY\s*=\s*)""',
+                         lambda m: m.group(1) + json.dumps(openrouter), new)
+            new = re.sub(r'((?:const|let|var)\s+_LLM_KEY\s*=\s*)""',
+                         lambda m: m.group(1) + json.dumps(openrouter), new)
         if emails:
             new = new.replace('window._LOCAL_EMAILS = []', 'window._LOCAL_EMAILS = ' + emails_js)
         if new != text:
@@ -678,6 +687,11 @@ def _run_deploy(topic="ai4s", *, quality=90, dry_run=False, push=False,
             r'\1 _OPENAI_KEY = ""',
             new_text,
         )
+        new_text = _re.sub(
+            r'(const|let|var)\s+_OPENROUTER_KEY\s*=\s*"sk-[^"]*"',
+            r'\1 _OPENROUTER_KEY = ""',
+            new_text,
+        )
         # Gemini key for the Audio Overview feature (review pages):
         #   window._GEMINI_KEY = "AIza...";
         new_text = _re.sub(
@@ -685,9 +699,7 @@ def _run_deploy(topic="ai4s", *, quality=90, dry_run=False, push=False,
             lambda m: (m.group(1) or "") + '_GEMINI_KEY = ""',
             new_text,
         )
-        # _LLM_KEY (Deep Research unified slot — Anthropic / OpenAI / Google).
-        # The build chooses one of the three to bake in; this catches any
-        # remnant regardless of provider prefix.
+        # _LLM_KEY (Deep Research unified slot — OpenRouter / Anthropic / …).
         new_text = _re.sub(
             r'(const|let|var)\s+_LLM_KEY\s*=\s*"(sk-[^"]*|AIza[^"]*)"',
             r'\1 _LLM_KEY = ""',

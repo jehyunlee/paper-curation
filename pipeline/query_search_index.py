@@ -142,12 +142,15 @@ def _normalize_query_vector(query_vector: Sequence[float], dim: int) -> list[flo
 def _embed_query(query: str, dim: int) -> list[float]:
     # Deferred import keeps BM25-only imports and queries free of key lookup/network work.
     try:
-        from serve_local import gemini_embed, resolve_google_key
+        from serve_local import gemini_embed, resolve_embed_key
     except ImportError:  # Supports ``import pipeline.query_search_index`` as well as script use.
-        from pipeline.serve_local import gemini_embed, resolve_google_key
-    key = resolve_google_key()
+        from pipeline.serve_local import gemini_embed, resolve_embed_key
+    key = resolve_embed_key()
     if not key:
-        raise ValueError("dense retrieval requires GOOGLE_API_KEY or GEMINI_API_KEY")
+        raise ValueError(
+            "dense retrieval requires OPENROUTER_API_KEY "
+            "(or legacy GOOGLE_API_KEY/GEMINI_API_KEY)"
+        )
     return _normalize_query_vector(gemini_embed(query, key), dim)
 
 

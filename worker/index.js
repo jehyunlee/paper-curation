@@ -1,25 +1,20 @@
 // Cloudflare Worker entry — serves static assets from docs/ via the
 // ASSETS binding, intercepts POST /api/audio-email to forward the generated
 // MP3 to Resend for email delivery, and exposes POST /api/embed as a query
-// embedding proxy for the Deep Research RAG UI (Gemini embeddings).
+// embedding proxy for the Deep Research RAG UI (OpenRouter embeddings).
 //
 // Secrets (set via `npx wrangler secret put <NAME>`):
-//   RESEND_API_KEY  — Resend API key (re_xxx). Required for /api/audio-email.
-//   AUDIO_REPLY_TO  — Optional. Reply-To header (e.g. "jehyun.lee@gmail.com")
-//                      so visitors' replies land in the operator's inbox even
-//                      though the From: stays on resend.dev.
-//   AUDIO_FROM      — Optional. Override "From:" address. Defaults to
-//                      "Paper Curation <onboarding@resend.dev>" (Resend's
-//                      shared sandbox sender — only delivers to the Resend
-//                      account email until a custom domain is verified).
-//   GOOGLE_API_KEY  — Google AI Studio key. Required for /api/embed (Gemini
-//                      gemini-embedding-001). Keeps the key server-side so the
-//                      browser never sees it.
+//   RESEND_API_KEY       — Resend API key (re_xxx). Required for /api/audio-email.
+//   AUDIO_REPLY_TO       — Optional. Reply-To header.
+//   AUDIO_FROM           — Optional. Override "From:" address.
+//   OPENROUTER_API_KEY   — Required for /api/embed (qwen/qwen3-embedding-8b).
+//                          Keeps the key server-side so the browser never sees it.
+//   GOOGLE_API_KEY       — Legacy fallback for /api/embed if OPENROUTER unset.
 //
 // Limits:
 //   - 25 MB request body (Resend attachment cap), 10 recipients max.
 //   - One Resend call per recipient (Resend free tier: 100 mails/day).
-//   - /api/embed: 2000-char query cap, single embedContent call per request.
+//   - /api/embed: 2000-char query cap, single embeddings call per request.
 
 const DEFAULT_FROM = "Paper Curation <onboarding@resend.dev>";
 const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
@@ -27,12 +22,13 @@ const MAX_RECIPIENTS = 10;
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// Deep Research 쿼리 임베딩 프록시 — index 와 동일한 gemini-embedding-001 을
-// RETRIEVAL_QUERY task 로 호출한다. 768D 출력은 비정규화 상태로 오므로
-// (output_dimensionality != 3072 이면 항상) 서버에서 L2 정규화한 뒤 돌려준다.
-const EMBED_MODEL = "gemini-embedding-001";
+// Deep Research 쿼리 임베딩 프록시 — OpenRouter qwen/qwen3-embedding-8b.
+// dimensions=768; L2 정규화 후 돌려준다 (코사인 검색 정합).
+const EMBED_MODEL = "qwen/qwen3-embedding-8b";
 const EMBED_DIM = 768;
 const MAX_QUERY_CHARS = 2000;
+const OPENROUTER_EMBED_URL = "https://openrouter.ai/api/v1/embeddings";
+const GEMINI_EMBED_MODEL = "gemini-embedding-001"; // legacy fallback
 
 function bytesToBase64(bytes) {
   // Workers runtime has btoa but it expects a binary string. Build it in
@@ -150,9 +146,9 @@ function l2normalize(vec) {
 }
 
 async function handleEmbed(request, env) {
-  if (!env.GOOGLE_API_KEY) {
+  if (!env.OPENROUTER_API_KEY && !env.GOOGLE_API_KEY) {
     return jsonResponse(
-      { error: "GOOGLE_API_KEY not configured on Worker" }, 503);
+      { error: "OPENROUTER_API_KEY not configured on Worker" }, 503);
   }
 
   let body;
@@ -171,51 +167,86 @@ async function handleEmbed(request, env) {
       { error: `Query too long (max ${MAX_QUERY_CHARS} chars)` }, 413);
   }
 
-  const apiUrl =
-    `https://generativelanguage.googleapis.com/v1beta/models/${EMBED_MODEL}:embedContent`;
-  const payload = {
-    model: `models/${EMBED_MODEL}`,
-    content: { parts: [{ text }] },
-    taskType: "RETRIEVAL_QUERY",
-    outputDimensionality: EMBED_DIM,
-  };
+  let values = null;
+  let modelUsed = EMBED_MODEL;
 
-  let upstream;
-  try {
-    upstream = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // 키를 URL 쿼리스트링이 아닌 헤더로 — 로그/리퍼러 유출 방지.
-        "x-goog-api-key": env.GOOGLE_API_KEY,
-      },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    return jsonResponse({ error: "Embedding upstream request failed" }, 502);
+  if (env.OPENROUTER_API_KEY) {
+    let upstream;
+    try {
+      upstream = await fetch(OPENROUTER_EMBED_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + env.OPENROUTER_API_KEY,
+          "X-Title": "paper-curation",
+        },
+        body: JSON.stringify({
+          model: EMBED_MODEL,
+          input: text,
+          dimensions: EMBED_DIM,
+        }),
+      });
+    } catch (e) {
+      return jsonResponse({ error: "Embedding upstream request failed" }, 502);
+    }
+    if (!upstream.ok) {
+      const detail = (await upstream.text()).slice(0, 400);
+      return jsonResponse(
+        { error: "Embedding upstream error", status: upstream.status, detail },
+        502);
+    }
+    let data;
+    try {
+      data = await upstream.json();
+    } catch (e) {
+      return jsonResponse({ error: "Invalid embedding response" }, 502);
+    }
+    const item = data && data.data && data.data[0];
+    values = item && item.embedding;
+  } else {
+    // Legacy Gemini fallback
+    modelUsed = GEMINI_EMBED_MODEL;
+    const apiUrl =
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_EMBED_MODEL}:embedContent`;
+    let upstream;
+    try {
+      upstream = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": env.GOOGLE_API_KEY,
+        },
+        body: JSON.stringify({
+          model: `models/${GEMINI_EMBED_MODEL}`,
+          content: { parts: [{ text }] },
+          taskType: "RETRIEVAL_QUERY",
+          outputDimensionality: EMBED_DIM,
+        }),
+      });
+    } catch (e) {
+      return jsonResponse({ error: "Embedding upstream request failed" }, 502);
+    }
+    if (!upstream.ok) {
+      const detail = (await upstream.text()).slice(0, 400);
+      return jsonResponse(
+        { error: "Embedding upstream error", status: upstream.status, detail },
+        502);
+    }
+    let data;
+    try {
+      data = await upstream.json();
+    } catch (e) {
+      return jsonResponse({ error: "Invalid embedding response" }, 502);
+    }
+    values = data && data.embedding && data.embedding.values;
   }
 
-  if (!upstream.ok) {
-    const detail = (await upstream.text()).slice(0, 400);
-    return jsonResponse(
-      { error: "Embedding upstream error", status: upstream.status, detail },
-      502);
-  }
-
-  let data;
-  try {
-    data = await upstream.json();
-  } catch (e) {
-    return jsonResponse({ error: "Invalid embedding response" }, 502);
-  }
-
-  const values = data && data.embedding && data.embedding.values;
   if (!Array.isArray(values) || values.length !== EMBED_DIM) {
     return jsonResponse({ error: "Unexpected embedding shape" }, 502);
   }
 
   const embedding = l2normalize(values);
-  return jsonResponse({ embedding, model: EMBED_MODEL, dim: EMBED_DIM }, 200);
+  return jsonResponse({ embedding, model: modelUsed, dim: EMBED_DIM }, 200);
 }
 
 // Local pages (localhost / file://) call these APIs cross-origin — without

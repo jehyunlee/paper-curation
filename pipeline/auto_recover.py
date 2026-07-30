@@ -125,8 +125,8 @@ def _anthropic_judge(medium_results, *, model=JUDGE_MODEL):
 
     실패 시 예외를 raise — 호출부(build_plan)가 잡아 medium 을 '미확정'으로 fallback.
     """
-    from anthropic import Anthropic
-    client = Anthropic(timeout=180.0, max_retries=4)
+    from lib.llm_client import get_chat_client
+    client = get_chat_client(timeout=180.0, max_retries=4)
     prompt = _build_judge_prompt(medium_results)
     resp = client.messages.create(
         model=model,
