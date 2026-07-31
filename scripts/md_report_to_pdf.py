@@ -43,6 +43,25 @@ FOOTER = (
 )
 
 
+def validate_report_source(md_text: str) -> list[str]:
+    """Return structural errors that would silently degrade the policy-report layout."""
+    errors: list[str] = []
+    stripped = md_text.lstrip()
+    if not stripped.startswith('<section class="cover">'):
+        errors.append(
+            'the document must start with <section class="cover"> '
+            '(copy reports/source/report-template.md)'
+        )
+    if "</section>" not in stripped:
+        errors.append("the cover section is not closed with </section>")
+    # Only the title and subtitle are load-bearing; kind/org/date are optional so
+    # authors can compose lighter, personal cover pages.
+    for class_name in ("c-title", "c-subtitle"):
+        if f'class="{class_name}"' not in md_text:
+            errors.append(f'missing required cover class "{class_name}"')
+    return errors
+
+
 def build_html(md_text: str, title: str, css: str) -> str:
     # Standalone "✦" lines (outside the cover HTML) become styled ornaments.
     md_text = re.sub(r"(?m)^✦\s*$", '<p class="sec-orn">✦</p>', md_text)
@@ -197,6 +216,12 @@ def main() -> int:
         return 2
 
     md_text = source.read_text(encoding="utf-8")
+    errors = validate_report_source(md_text)
+    if errors:
+        print("[error] report template validation failed:", file=sys.stderr)
+        for error in errors:
+            print(f"  - {error}", file=sys.stderr)
+        return 2
     css = args.css.read_text(encoding="utf-8")
     html = build_html(md_text, title=source.stem, css=css)
 

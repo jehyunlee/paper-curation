@@ -7,12 +7,13 @@
   --panel: #f5f5f3;
   --serif: "AppleMyungjo", "Nanum Myeongjo", "Noto Serif KR", serif;
   --sans: "Apple SD Gothic Neo", "NanumSquare", -apple-system, "Helvetica Neue", sans-serif;
+  --body: "Times New Roman", "나눔명조", "Nanum Myeongjo", "AppleMyungjo", serif;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: var(--sans);
+  font-family: var(--body);
   color: var(--ink);
   font-size: 10.8pt;
   line-height: 1.78;
@@ -26,7 +27,7 @@ em { font-style: italic; }
 a { color: var(--ink); text-decoration: none; }
 
 /* Cover */
-.cover { text-align: center; padding-top: 16%; }
+.cover { text-align: center; padding-top: 16%; display: flex; flex-direction: column; min-height: 100vh; }
 .c-title {
   font-family: var(--serif);
   font-weight: 700;
@@ -46,9 +47,9 @@ a { color: var(--ink); text-decoration: none; }
 .c-divider { color: var(--accent); font-size: 15pt; margin: .4em 0 .9em; }
 .c-kind { font-size: 11.5pt; letter-spacing: 7px; color: #333; margin: 0 0 1em; }
 hr.c-rule { width: 58px; border: none; border-top: 2px solid var(--ink); margin: 1.4em auto; }
-.c-org { font-size: 13pt; margin: 0 0 .25em; }
+.c-org { font-size: 13pt; margin: 0 0 .25em; text-align: right; }
 .c-org strong { font-weight: 700; }
-.c-date { font-size: 10pt; color: var(--muted); margin: 0 0 2.6em; }
+.c-date { font-size: 10pt; color: var(--muted); margin: 0 0 2.6em; text-align: right; }
 .c-epigraph {
   font-family: var(--serif);
   font-style: italic;
@@ -62,12 +63,20 @@ hr.c-rule { width: 58px; border: none; border-top: 2px solid var(--ink); margin:
 }
 .c-epi-orig { font-size: 9.4pt; color: var(--soft); }
 .c-epi-src { display: block; margin-top: .5em; font-style: normal; font-size: 9.4pt; color: var(--muted); }
+.c-epigraph.c-epigraph-box {
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  padding: 1.4em 1.8em;
+  border-radius: 2px;
+  max-width: 42em;
+  margin: 9em auto 1.8em;
+}
 .c-note {
   font-size: 8.6pt;
   color: var(--muted);
   text-align: left;
-  max-width: 35em;
-  margin: 2.8em auto 0;
+  max-width: none;
+  margin: auto 0 0;
   line-height: 1.7;
   border-top: 1px solid var(--rule);
   padding-top: 1em;
@@ -123,7 +132,19 @@ li::marker { color: var(--soft); }
   margin: 1em 0;
   line-height: 1.65;
 }
-blockquote.pull-quote { font-family: var(--serif); }
+blockquote:not(.c-epigraph) {
+  font-family: var(--serif);
+  margin: 1.15em 0;
+  padding: .85em 1.35em;
+  border-left: 4px solid var(--ink);
+  background: var(--panel);
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.7;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+blockquote:not(.c-epigraph) p:last-child { margin-bottom: 0; }
 
 /* Linked superscript citations */
 .citation { font-size: .72em; line-height: 0; vertical-align: super; margin-left: .05em; }
