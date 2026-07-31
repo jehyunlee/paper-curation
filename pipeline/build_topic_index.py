@@ -3015,13 +3015,22 @@ def _run_topic_index(topic=None, cross=None):
         // and the LLM gets richer source material.
         deepSetStatus('\U0001F4C4 원문 발췌 가져오는 중...');
         const fullTexts = {};
-        const topSlugs = dedupedSelected.slice(0, 10).map(function(s) { return s.slug; });
-        await Promise.all(topSlugs.map(async function(slug) {
+        // 전면 적용: 상위 10편 제한을 없애고 '선택된 모든 참고 논문'의 text.md 를
+        // 근거로 쓴다. 다만 컨텍스트 폭주를 막기 위해 전체 char 예산을 편수로 나눠
+        // per-paper 상한을 동적으로 정한다(토큰 안전선). 공개 사이트는 text.md 가
+        // 없어 404 → review-only 로 그대로 폴백(저작권).
+        const FT_TOTAL_BUDGET = 360000;   // 원문 발췌 총 char 예산(≈토큰 안전선)
+        const FT_PER_CAP = 30000;         // 편당 상한(기존 값)
+        const FT_PER_MIN = 6000;          // 편당 하한(너무 잘리면 근거 가치 하락)
+        const ftSlugs = dedupedSelected.map(function(s) { return s.slug; });
+        const ftPerCap = Math.max(FT_PER_MIN,
+          Math.min(FT_PER_CAP, Math.floor(FT_TOTAL_BUDGET / Math.max(1, ftSlugs.length))));
+        await Promise.all(ftSlugs.map(async function(slug) {
           try {
             const r = await fetch('../papers/' + slug + '/text.md');
             if (!r.ok) return;
             const t = await r.text();
-            fullTexts[slug] = t.slice(0, 30000);
+            fullTexts[slug] = t.slice(0, ftPerCap);
           } catch (e) { /* fetch error or missing file -- skip silently */ }
         }));
         deepThrowIfAborted();
