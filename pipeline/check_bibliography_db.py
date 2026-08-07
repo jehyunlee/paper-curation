@@ -41,6 +41,10 @@ def main() -> int:
             name for name in institution_names
             if bib.is_suspicious_institution_name(name)
         ]
+        local_language_institutions = [
+            name for name in institution_names
+            if bib.is_local_language_institution(name)
+        ]
         tables = {
             row[0] for row in conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table'").fetchall()
@@ -58,6 +62,8 @@ def main() -> int:
             "institution_aliases": aliases,
             "country_links": countries,
             "suspicious_institution_names": len(suspicious_institutions),
+            "local_language_institution_names": len(
+                local_language_institutions),
             "citation_snapshots": snapshots,
             "citation_yearly_rows": yearly,
         })
@@ -67,6 +73,10 @@ def main() -> int:
             report["issues"].append(
                 "suspicious institution names: "
                 + ", ".join(suspicious_institutions[:10]))
+        if local_language_institutions:
+            report["issues"].append(
+                "local-language institution names: "
+                + ", ".join(local_language_institutions[:10]))
         conn.close()
     try:
         source_count = len(json.loads(INDEX.read_text(encoding="utf-8")))

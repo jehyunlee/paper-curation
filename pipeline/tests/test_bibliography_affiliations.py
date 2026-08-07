@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 import sqlite3
+from unittest.mock import patch
 from pathlib import Path
 
 from pipeline import build_bibliography_db as bib
@@ -97,6 +98,43 @@ class BibliographyAffiliationTests(unittest.TestCase):
                 "College of Humanities, Arts, and Social Sciences"),
             "Nanyang Technological University",
         )
+
+    def test_all_multilingual_aliases_resolve_to_english_names(self):
+        self.assertGreater(len(bib.INSTITUTION_ENGLISH_ALIASES), 100)
+        for source, target in bib.INSTITUTION_ENGLISH_ALIASES.items():
+            with self.subTest(source=source):
+                self.assertEqual(bib.canonical_institution(source), target)
+                self.assertFalse(bib.is_local_language_institution(target))
+
+    def test_unknown_local_language_name_is_rejected(self):
+        self.assertTrue(
+            bib.is_suspicious_institution_name(
+                "Universität für Unbekannte Forschung"))
+
+    def test_unknown_local_name_uses_exact_country_matched_ror_label(self):
+        payload = {"items": [
+            {
+                "names": [
+                    {"value": "Universität Beispiel", "lang": "de",
+                     "types": ["label"]},
+                    {"value": "Example University", "lang": "en",
+                     "types": ["ror_display", "label"]},
+                ],
+                "locations": [{"geonames_details": {
+                    "country_name": "Germany"}}],
+            },
+        ]}
+        with tempfile.TemporaryDirectory() as td, patch.object(
+                bib, "_ROR_ENGLISH_CACHE_PATH",
+                Path(td) / "ror_english_aliases.json"), patch.object(
+                bib, "request_json", return_value=payload):
+            bib._ROR_ENGLISH_CACHE = {}
+            self.assertEqual(
+                bib.resolve_english_institution(
+                    "Universität Beispiel", "Germany", allow_remote=True),
+                "Example University",
+            )
+        bib._ROR_ENGLISH_CACHE = None
 
     def test_longest_registered_parent_wins_over_author_and_department(self):
         cases = {

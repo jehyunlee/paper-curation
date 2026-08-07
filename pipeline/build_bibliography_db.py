@@ -120,6 +120,35 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
 def norm(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip()).casefold()
 
+INSTITUTION_ENGLISH_ALIASES_PATH = (
+    Path(__file__).with_name("institution_english_aliases.json")
+)
+try:
+    INSTITUTION_ENGLISH_ALIASES = json.loads(
+        INSTITUTION_ENGLISH_ALIASES_PATH.read_text(encoding="utf-8"))
+except (OSError, ValueError):
+    INSTITUTION_ENGLISH_ALIASES = {}
+_INSTITUTION_ENGLISH_ALIASES_BY_NORM = {
+    norm(source): target
+    for source, target in INSTITUTION_ENGLISH_ALIASES.items()
+}
+LOCAL_LANGUAGE_INSTITUTION_RE = re.compile(
+    r"Universität|Universitaet|Université|Università|Universidad|"
+    r"Universidade|Universiteit|Universitat|Universitatea|Universitet(?:et)?|"
+    r"Uniwersytet|Universitas|Universitäts|Hochschule|Akademie|"
+    r"Gesellschaft|Institut für|\bInstitut\b|École|Ecole|"
+    r"Institut national|Centre national|Politecnico|Politécnica|"
+    r"\bIstituto\b|\bScuola\b|\bConsiglio\b|\bInstituto\b|"
+    r"\bConsejo\b|\bFundação\b|\bFundacion\b|\bFundación\b|"
+    r"Forschungs|Zentrum für|Bundesanstalt|Laboratoire|Ospedale|"
+    r"Institutet|Akademia|Instituto Superior Técnico|[А-Яа-яЁё]",
+    re.I,
+)
+
+
+def is_local_language_institution(name: str) -> bool:
+    return bool(LOCAL_LANGUAGE_INSTITUTION_RE.search(name or ""))
+
 
 def rel(p: Path) -> str:
     return p.relative_to(ROOT).as_posix()
@@ -185,6 +214,87 @@ def request_json(url: str, headers: dict | None = None, timeout: int = 30) -> di
     req = urllib.request.Request(url, headers=headers or {"User-Agent": f"paper-curation/1.0 (mailto:{MAILTO})"})
     with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
         return json.load(r)
+
+_ROR_ENGLISH_CACHE_PATH = ROOT / ".cache" / "ror_english_aliases.json"
+_ROR_ENGLISH_CACHE = None
+
+
+def _load_ror_english_cache() -> dict:
+    global _ROR_ENGLISH_CACHE
+    if _ROR_ENGLISH_CACHE is None:
+        try:
+            _ROR_ENGLISH_CACHE = json.loads(
+                _ROR_ENGLISH_CACHE_PATH.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            _ROR_ENGLISH_CACHE = {}
+    return _ROR_ENGLISH_CACHE
+
+
+def resolve_english_institution(name: str, country: str = "",
+                                *, allow_remote: bool = False) -> str:
+    """Resolve a local-language organization label to an English ROR label."""
+    name = re.sub(r"\s+", " ", name or "").strip(" ,;:-")
+    static = _INSTITUTION_ENGLISH_ALIASES_BY_NORM.get(norm(name))
+    if static:
+        return static
+    if not is_local_language_institution(name) or not allow_remote:
+        return ""
+
+    cache = _load_ror_english_cache()
+    cache_key = norm(name) + "|" + norm(country)
+    if cache_key in cache:
+        return str(cache[cache_key] or "")
+
+    resolved = ""
+    try:
+        query = urllib.parse.urlencode({"query": name})
+        payload = request_json(
+            "https://api.ror.org/v2/organizations?" + query, timeout=30)
+        wanted = norm(name)
+        wanted_country = norm(country)
+        for item in payload.get("items") or []:
+            names = item.get("names") or []
+            if wanted not in {
+                    norm(str(candidate.get("value") or ""))
+                    for candidate in names}:
+                continue
+            locations = item.get("locations") or [{}]
+            ror_country = norm(str(
+                (locations[0].get("geonames_details") or {}).get(
+                    "country_name") or ""))
+            if wanted_country and ror_country != wanted_country:
+                continue
+            english = [
+                str(candidate.get("value") or "") for candidate in names
+                if candidate.get("lang") == "en"
+                and ("ror_display" in (candidate.get("types") or [])
+                     or "label" in (candidate.get("types") or []))
+            ]
+            if not english:
+                english = [
+                    str(candidate.get("value") or "") for candidate in names
+                    if candidate.get("lang") == "en"
+                    and "alias" in (candidate.get("types") or [])
+                ]
+            resolved = next(
+                (candidate for candidate in english
+                 if candidate and not is_local_language_institution(candidate)),
+                "")
+            if resolved:
+                break
+    except Exception:
+        resolved = ""
+
+    cache[cache_key] = resolved
+    try:
+        _ROR_ENGLISH_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        temp = _ROR_ENGLISH_CACHE_PATH.with_suffix(".tmp")
+        temp.write_text(
+            json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
+        os.replace(temp, _ROR_ENGLISH_CACHE_PATH)
+    except OSError:
+        pass
+    return resolved
 
 
 def date_from_header(header: str) -> str:
@@ -520,6 +630,7 @@ GENERIC_INSTITUTION_NAMES = {
 STANDALONE_INSTITUTION_NAMES = {
     "London School of Economics and Political Science",
     "College of Staten Island",
+    "Sant'Anna School of Advanced Studies",
     "Allen Institute",
     "Max Planck Institute",
     "University of California",
@@ -542,6 +653,9 @@ def _clean_affiliation_text(value: str) -> str:
 
 def _apply_institution_aliases(value: str) -> str:
     value = re.sub(r"\s+", " ", value or "").strip(" ,;:-†‡")
+    english = _INSTITUTION_ENGLISH_ALIASES_BY_NORM.get(norm(value))
+    if english:
+        return english
     for pattern, canonical in INSTITUTION_CANONICAL_ALIASES:
         if re.match(pattern, value, re.I):
             return canonical
@@ -549,10 +663,11 @@ def _apply_institution_aliases(value: str) -> str:
 
 
 def is_suspicious_institution_name(name: str) -> bool:
-    value = _clean_affiliation_text(name)
+    value = _apply_institution_aliases(_clean_affiliation_text(name))
     if value in STANDALONE_INSTITUTION_NAMES:
         return False
-    if not value or value in GENERIC_INSTITUTION_NAMES or len(value) > 90:
+    if (not value or value in GENERIC_INSTITUTION_NAMES or len(value) > 90
+            or is_local_language_institution(value)):
         return True
     return bool(re.search(
         r"@|^College of\b|\b(?:Department|School of|Faculty|Published|Accepted|"
@@ -692,6 +807,11 @@ def institution_from_raw(raw: str) -> tuple[str, str] | None:
         if re.search(pattern, raw, re.I):
             group = name
             break
+
+    english = resolve_english_institution(
+        raw, country_from_raw(original), allow_remote=True)
+    if english:
+        return canonical_institution(english), group
 
     registered = resolve_institution_from_raw(original)
     if registered:
@@ -1020,9 +1140,12 @@ def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
     out = {}
     for rec in scopus_records:
         original_name = str(rec.get("name") or "")
+        english = resolve_english_institution(
+            original_name, str(rec.get("country") or ""),
+            allow_remote=True)
         parent = scopus_parent_institution(
             str(rec.get("scopus_id") or ""))
-        name = canonical_institution(parent or original_name)
+        name = canonical_institution(parent or english or original_name)
         if is_suspicious_institution_name(name):
             name = resolve_institution_from_raw(
                 str(rec.get("raw_name") or original_name), name)
