@@ -75,7 +75,7 @@ def _openalex_work(doi: str) -> dict | None:
         r = requests.get(
             f"{OPENALEX_URL}/doi:{urllib.parse.quote(doi)}",
             params={"select": "id,cited_by_count,citation_normalized_percentile,"
-                              "referenced_works_count",
+                              "referenced_works_count,counts_by_year",
                     **_openalex_params()},
             headers=_ua(), timeout=20)
         if r.status_code == 200:
@@ -117,12 +117,12 @@ def fetch_citation_counts(doi: str, *, use_scopus: bool = True) -> dict:
 
     Returns:
         {"openalex": int|None, "crossref": int|None, "scopus": int|None,
-         "percentile": float|None, "_crossref_msg": dict|None}
+         "percentile": float|None, "yearly": list, "_crossref_msg": dict|None}
         `_crossref_msg` 는 레퍼런스 추출에 재사용하라고 그대로 딸려 보낸다
         (같은 응답을 두 번 받지 않기 위함).
     """
     out = {"openalex": None, "crossref": None, "scopus": None,
-           "percentile": None, "_crossref_msg": None}
+           "percentile": None, "yearly": [], "_crossref_msg": None}
     if not doi:
         return out
 
@@ -141,6 +141,11 @@ def fetch_citation_counts(doi: str, *, use_scopus: bool = True) -> dict:
         pct = (oa.get("citation_normalized_percentile") or {}).get("value")
         if pct is not None:
             out["percentile"] = float(pct)
+        out["yearly"] = [
+            {"year": int(row["year"]), "cited_by_count": int(row["cited_by_count"])}
+            for row in (oa.get("counts_by_year") or [])
+            if row.get("year") is not None and row.get("cited_by_count") is not None
+        ]
 
     if use_scopus:
         out["scopus"] = _scopus_citations(doi)
@@ -254,8 +259,8 @@ def collect_paper_metrics(paper: dict, *,
         min_citations: 이 값 이상일 때만 citing 목록을 받는다.
 
     Returns:
-        {"slug","doi","title","counts","percentile","citing","references",
-         "citing_fetched": bool}
+        {"slug","doi","title","counts","percentile","yearly","citing",
+         "references","citing_fetched": bool}
     """
     doi = (paper.get("doi") or "").strip()
     result = {
@@ -264,6 +269,7 @@ def collect_paper_metrics(paper: dict, *,
         "title": paper.get("title", ""),
         "counts": {"openalex": None, "crossref": None, "scopus": None},
         "percentile": None,
+        "yearly": [],
         "citing": [],
         "references": [],
         "citing_fetched": False,
@@ -274,6 +280,7 @@ def collect_paper_metrics(paper: dict, *,
     counts = fetch_citation_counts(doi, use_scopus=use_scopus)
     result["counts"] = {k: counts[k] for k in ("openalex", "crossref", "scopus")}
     result["percentile"] = counts["percentile"]
+    result["yearly"] = counts["yearly"]
 
     if want_references:
         result["references"] = fetch_references(

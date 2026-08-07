@@ -31,7 +31,9 @@ def main() -> int:
     ap.add_argument("--author")
     ap.add_argument("--journal")
     ap.add_argument("--year")
-    ap.add_argument("--sort", choices=("date", "title", "institution", "author"), default="date")
+    ap.add_argument("--min-citations", type=int)
+    ap.add_argument("--sort", choices=("date", "title", "institution", "author",
+                                       "citations"), default="date")
     ap.add_argument("--desc", action="store_true")
     ap.add_argument("--limit", type=int, default=100)
     ap.add_argument("--json", action="store_true", dest="as_json")
@@ -49,19 +51,36 @@ def main() -> int:
         where.append("p.journal_name LIKE ?"); params.append(f"%{args.journal}%")
     if args.year:
         where.append("p.publication_date LIKE ?"); params.append(f"{args.year}%")
-    order = {"date": "p.publication_date", "title": "p.title", "institution": "i.institution_name", "author": "a.display_name"}[args.sort]
+    citation_expr = "COALESCE(cs.openalex_count,cs.crossref_count,cs.scopus_count)"
+    if args.min_citations is not None:
+        where.append(f"{citation_expr} >= ?")
+        params.append(args.min_citations)
+    order = {
+        "date": "p.publication_date",
+        "title": "p.title",
+        "institution": "i.institution_name",
+        "author": "a.display_name",
+        "citations": citation_expr,
+    }[args.sort]
     direction = "DESC" if args.desc else "ASC"
     sql = f"""SELECT DISTINCT p.title, p.publication_date, p.journal_name,
         p.volume, p.issue, p.pages, p.publisher, p.issn, p.eissn,
         p.document_type, p.doi, p.url, p.scopus_eid, p.received_date,
         p.accepted_date, p.published_online_date, p.bibliography_source,
         p.review_dir, p.zotero_item_key, i.institution_name,
-        pi.country_name, a.display_name AS first_author
+        pi.country_name, a.display_name AS first_author,
+        cs.observed_date AS citations_asof,
+        {citation_expr} AS citation_count, cs.openalex_count,
+        cs.crossref_count, cs.scopus_count, cs.normalized_percentile
         FROM papers p
         LEFT JOIN paper_institutions pi ON pi.paper_id=p.paper_id
         LEFT JOIN institutions i ON i.institution_id=pi.institution_id
         LEFT JOIN paper_authors pa ON pa.paper_id=p.paper_id AND pa.is_first_author=1
         LEFT JOIN authors a ON a.author_id=pa.author_id
+        LEFT JOIN citation_snapshots cs ON cs.paper_id=p.paper_id
+          AND cs.observed_date=(
+            SELECT MAX(cs2.observed_date) FROM citation_snapshots cs2
+            WHERE cs2.paper_id=p.paper_id)
         {('WHERE ' + ' AND '.join(where)) if where else ''}
         ORDER BY {order} {direction}, p.title ASC LIMIT ?"""
     params.append(max(1, args.limit))

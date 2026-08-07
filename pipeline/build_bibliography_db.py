@@ -71,10 +71,24 @@ CREATE TABLE IF NOT EXISTS paper_institutions (
 CREATE TABLE IF NOT EXISTS source_documents (
  paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE, document_type TEXT NOT NULL,
  path TEXT NOT NULL, sha256 TEXT, bytes INTEGER, PRIMARY KEY (paper_id, document_type));
+CREATE TABLE IF NOT EXISTS citation_snapshots (
+ paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ observed_date TEXT NOT NULL, openalex_count INTEGER, crossref_count INTEGER,
+ scopus_count INTEGER, normalized_percentile REAL,
+ PRIMARY KEY (paper_id, observed_date));
+CREATE TABLE IF NOT EXISTS citation_yearly (
+ paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ citation_year INTEGER NOT NULL, source TEXT NOT NULL,
+ citation_count INTEGER NOT NULL, retrieved_at TEXT NOT NULL,
+ PRIMARY KEY (paper_id, citation_year, source));
 CREATE INDEX IF NOT EXISTS idx_papers_doi ON papers(doi);
 CREATE INDEX IF NOT EXISTS idx_papers_date ON papers(publication_date);
 CREATE INDEX IF NOT EXISTS idx_authors_name ON authors(normalized_name);
 CREATE INDEX IF NOT EXISTS idx_institutions_name ON institutions(normalized_name);
+CREATE INDEX IF NOT EXISTS idx_citation_snapshots_date
+ ON citation_snapshots(observed_date);
+CREATE INDEX IF NOT EXISTS idx_citation_yearly_year
+ ON citation_yearly(citation_year);
 """
 
 PAPER_SCHEMA_COLUMNS = {

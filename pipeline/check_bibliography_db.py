@@ -31,8 +31,25 @@ def main() -> int:
         bad_dirs = conn.execute("SELECT COUNT(*) FROM papers WHERE review_dir='' OR review_dir IS NULL").fetchone()[0]
         aliases = conn.execute("SELECT COUNT(*) FROM institution_aliases").fetchone()[0]
         countries = conn.execute("SELECT COUNT(*) FROM paper_institutions WHERE country_name<>''").fetchone()[0]
-        report.update({"db_papers": count, "empty_titles": empty_titles, "empty_review_dirs": bad_dirs,
-                       "institution_aliases": aliases, "country_links": countries})
+        tables = {
+            row[0] for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+        }
+        snapshots = conn.execute(
+            "SELECT COUNT(*) FROM citation_snapshots").fetchone()[0] \
+            if "citation_snapshots" in tables else 0
+        yearly = conn.execute(
+            "SELECT COUNT(*) FROM citation_yearly").fetchone()[0] \
+            if "citation_yearly" in tables else 0
+        report.update({
+            "db_papers": count,
+            "empty_titles": empty_titles,
+            "empty_review_dirs": bad_dirs,
+            "institution_aliases": aliases,
+            "country_links": countries,
+            "citation_snapshots": snapshots,
+            "citation_yearly_rows": yearly,
+        })
         if empty_titles: report["issues"].append(f"empty titles: {empty_titles}")
         if bad_dirs: report["issues"].append(f"empty review directories: {bad_dirs}")
         conn.close()

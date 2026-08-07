@@ -87,6 +87,7 @@ def main() -> int:
     from lib.citedby import scopus as sc
     from lib.metrics import CitationSnapshot, write_citations, write_references
     from lib.metrics.collect import collect_many
+    from lib.metrics.db import sync_metrics_database
     import datetime
 
     papers = _load_index()
@@ -113,6 +114,13 @@ def main() -> int:
         return 0
     if not targets:
         print("  갱신할 논문이 없다.")
+        try:
+            db_result = sync_metrics_database(
+                [], datetime.date.today().isoformat())
+            if not db_result.get("skipped"):
+                print(f"  기존 citations.md 이력 {db_result['snapshots']:,}건 DB 동기화")
+        except Exception as exc:
+            print(f"  서지 DB 연동 실패: {exc}")
         return 0
 
     started = time.time()
@@ -160,6 +168,17 @@ def main() -> int:
             }
 
     _update_index(latest_by_slug)
+    try:
+        db_result = sync_metrics_database(results, today)
+        if db_result.get("skipped"):
+            print(f"  서지 DB 연동 생략 — {db_result['reason']}")
+        else:
+            print(f"  서지 DB 이력 {db_result['snapshots']:,}건 · "
+                  f"연도별 인용 {db_result['yearly']:,}건 갱신")
+    except Exception as exc:
+        # Metrics is a soft pipeline step; a DB synchronization failure must
+        # not discard citations.md or abort the remaining curation pipeline.
+        print(f"  서지 DB 연동 실패: {exc}")
 
     print(f"\n  citations.md {wrote_c:,}편 · references.md {wrote_r:,}편 · "
           f"인용목록 {with_citing:,}편 · {time.time() - started:.0f}초")

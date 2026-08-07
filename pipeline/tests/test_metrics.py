@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import sys
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -21,6 +22,7 @@ sys.path.insert(0, str(PIPELINE_DIR))
 
 from lib.metrics import store  # noqa: E402
 from lib.metrics import collect  # noqa: E402
+from lib.metrics import db as metrics_db  # noqa: E402
 from lib.metrics.store import CitationSnapshot  # noqa: E402
 
 
@@ -384,6 +386,23 @@ class CitationCountCollectionTests(unittest.TestCase):
                 want_citing=False)
         self.assertAlmostEqual(out["percentile"], 0.91)
 
+    def test_openalex_yearly_counts_are_preserved(self):
+        with patch.object(collect, "_crossref_work", return_value=None), \
+             patch.object(collect, "_openalex_work", return_value={
+                 "cited_by_count": 5,
+                 "counts_by_year": [
+                     {"year": 2025, "cited_by_count": 2},
+                     {"year": 2026, "cited_by_count": 3},
+                 ]}), \
+             patch.object(collect, "_scopus_citations", return_value=None):
+            out = collect.collect_paper_metrics(
+                {"slug": "s", "doi": "10.1/x", "title": "T"},
+                want_citing=False)
+        self.assertEqual(out["yearly"], [
+            {"year": 2025, "cited_by_count": 2},
+            {"year": 2026, "cited_by_count": 3},
+        ])
+
     def test_one_source_failure_does_not_abort(self):
         with patch.object(collect, "_crossref_work",
                           side_effect=RuntimeError("down")), \
@@ -408,6 +427,61 @@ class CitationCountCollectionTests(unittest.TestCase):
             out = collect.collect_many(papers)
         self.assertEqual([r["slug"] for r in out], ["b"])
 
+
+class CitationDatabaseTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        root = Path(self.temp.name)
+        self.db = root / "bibliography.sqlite3"
+        self.papers = root / "papers"
+        self.slug = "001_Test"
+        (self.papers / self.slug).mkdir(parents=True)
+        conn = sqlite3.connect(self.db)
+        conn.execute(
+            "CREATE TABLE papers (paper_id INTEGER PRIMARY KEY, "
+            "slug TEXT NOT NULL UNIQUE)")
+        conn.execute("INSERT INTO papers (slug) VALUES (?)", (self.slug,))
+        conn.commit()
+        conn.close()
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_history_backfill_and_yearly_upsert_are_idempotent(self):
+        pdir = self.papers / self.slug
+        store.write_citations(
+            pdir, slug=self.slug, doi="10.1/x", title="T",
+            snapshot=CitationSnapshot("2026-07-01", openalex=5, crossref=4))
+        store.write_citations(
+            pdir, slug=self.slug, doi="10.1/x", title="T",
+            snapshot=CitationSnapshot("2026-08-01", openalex=8, crossref=7))
+        result = {
+            "slug": self.slug,
+            "yearly": [
+                {"year": 2025, "cited_by_count": 3},
+                {"year": 2026, "cited_by_count": 5},
+            ],
+        }
+        first = metrics_db.sync_metrics_database(
+            [result], "2026-08-07", db_path=self.db, papers_dir=self.papers)
+        second = metrics_db.sync_metrics_database(
+            [{**result, "yearly": [
+                {"year": 2025, "cited_by_count": 3},
+                {"year": 2026, "cited_by_count": 6},
+            ]}], "2026-08-08", db_path=self.db, papers_dir=self.papers)
+        self.assertEqual(first["snapshots"], 2)
+        self.assertEqual(second["yearly"], 2)
+
+        conn = sqlite3.connect(self.db)
+        self.assertEqual(
+            conn.execute("SELECT COUNT(*) FROM citation_snapshots").fetchone()[0], 2)
+        self.assertEqual(
+            conn.execute("SELECT COUNT(*) FROM citation_yearly").fetchone()[0], 2)
+        self.assertEqual(
+            conn.execute(
+                "SELECT citation_count FROM citation_yearly "
+                "WHERE citation_year=2026").fetchone()[0], 6)
+        conn.close()
 
 class CitingListTests(unittest.TestCase):
     def test_sorted_by_citation_count_desc(self):
