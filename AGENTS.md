@@ -248,9 +248,9 @@ arXiv 가 chronic 429/timeout 인 경우 `search_papers.py --skip-arxiv` 로 우
 
 - Query by institution/country/author: `PYTHONUTF8=1 python pipeline/query_bibliography.py --institution "Cambridge" --sort date`
 - Validate completeness before using or publishing: `PYTHONUTF8=1 python pipeline/check_bibliography_db.py --strict`
-- The canonical DB is `Google Drive/내 드라이브/paper-curation/bibliography.sqlite3`, shared by the MacBook and Mac mini. `PAPER_CURATION_BIBLIO_DB` may override it for isolated tests.
+- The Mac mini local DB (`.cache/bibliography.sqlite3`) is canonical; the MacBook keeps its own local copy and `pipeline/sync_bibliography_db.py` pulls before review generation and pushes after DB updates. Google Drive is only a backup/transport copy, never a live SQLite volume.
 - Rebuild the full DB only with `--all`; the full-corpus worker uses a persistent Mac mini LaunchAgent and writes progress to `.cache/logs/bibliography_full.log`.
-- Only one review-generation job may write the shared SQLite file at a time. Build locally, then publish atomically; never run simultaneous writers on both machines.
+- Only one review-generation job may write the canonical SQLite file at a time. The MacBook sync hook refuses to treat Google Drive as a live database and transfers atomically over SSH.
 - Review-generation progress is persisted in `.cache/review_progress.json` and phase labels are printed as `PDF 매칭 → text.md 추출 → figure 추출 → review.md 생성 → HTML 변환`; use the JSON file or the run log for a live status view.
 - Any new paper-ingestion or Zotero-sync workflow that changes `_papers_index.json` MUST either rebuild the DB or leave a clearly visible stale-db validation failure. The DB is not authoritative when its paper count differs from `_papers_index.json`.
 - Institution aliases belong in `institution_aliases`; never create a second spelling ad hoc in downstream queries.

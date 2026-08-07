@@ -336,7 +336,7 @@ npx wrangler secret put AUDIO_REPLY_TO    # 답장이 갈 운영자 메일, 예:
 ## Bibliography DB operations
 
 The bibliography DB is the persistent memory layer for author, institution, country, DOI/URL, journal, date, Zotero key, and local review-directory queries. It is collection-independent and must be checked after corpus changes.
-The canonical file is `Google Drive/내 드라이브/paper-curation/bibliography.sqlite3`, shared by the MacBook and Mac mini. Only one review-generation job may write it at a time; the builder publishes atomically. Use `PAPER_CURATION_BIBLIO_DB` for isolated test databases.
+The Mac mini's `.cache/bibliography.sqlite3` is canonical. The MacBook keeps a local copy; `pipeline/sync_bibliography_db.py --pull` runs before review generation and `--push` runs afterward. Google Drive is backup/transport only, not a live SQLite volume.
 Review generation also writes `.cache/review_progress.json`. The live phase label cycles through `PDF 매칭 → text.md 추출 → figure 추출 → review.md 생성 → HTML 변환`, while the log includes the completed/total percentage.
 
 ```bash
