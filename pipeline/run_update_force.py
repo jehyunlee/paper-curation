@@ -299,6 +299,21 @@ def log(msg):
     print(f"[{ts}] {msg}", flush=True)
 
 
+def sync_bibliography_db(direction):
+    """Pull before review work or push after it; Mac mini is the canonical host."""
+    try:
+        result = subprocess.run(
+            [sys.executable, str(PIPELINE_DIR / "sync_bibliography_db.py"), direction],
+            cwd=str(PROJECT_ROOT), capture_output=True, text=True, timeout=180,
+        )
+        if result.returncode != 0:
+            log(f"[bibliography-sync] WARNING ({direction}): {result.stderr.strip()[:300]}")
+        elif result.stdout.strip():
+            log(f"[bibliography-sync] {result.stdout.strip()}")
+    except Exception as exc:
+        log(f"[bibliography-sync] WARNING ({direction}): {exc}")
+
+
 def load_checkpoint():
     # A truncated/corrupt checkpoint (process killed mid-flush) must NOT crash
     # the run before any work begins — degrade to the empty default instead.
@@ -2099,6 +2114,7 @@ def main():
         cp = {"completed": [], "failed": [], "phase": "init"}
         previously_completed = set()
 
+    sync_bibliography_db("--pull")
     # Fetch items
     log(f"Fetching Zotero collection '{args.topic}' ({collection_key})...")
     items = fetch_zotero_items(collection_key)
@@ -2620,6 +2636,8 @@ def main():
         run_step("build_bibliography_db",
                  ["python", "pipeline/build_bibliography_db.py", "--changed-only",
                   "--update-zotero", "--no-email"], 7200)
+        run_step("sync_bibliography_db (push)",
+                 ["python", "pipeline/sync_bibliography_db.py", "--push"], 180)
         run_step("generate_moc",
                  ["python", "pipeline/generate_moc.py", "--topic", topic], 600)
         # 네트워크 시각화는 Research Insights 와 묶인 Option(O-2) — --insights 일 때만.

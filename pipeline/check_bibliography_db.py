@@ -11,10 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS = ROOT / "docs" / "papers"
 INDEX = PAPERS / "_papers_index.json"
-DB = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", str(
-    Path.home() / "Library" / "CloudStorage" / "GoogleDrive-jehyun.lee@gmail.com" /
-    "내 드라이브" / "paper-curation" / "bibliography.sqlite3"
-)))
+DB = Path(os.environ.get(
+    "PAPER_CURATION_BIBLIO_DB", str(ROOT / ".cache" / "bibliography.sqlite3")
+))
 
 
 def main() -> int:

@@ -28,9 +28,9 @@ INDEX_PATH = PAPERS_DIR / "_papers_index.json"
 SHARED_ROOT = (Path.home() / "Library" / "CloudStorage" /
                "GoogleDrive-jehyun.lee@gmail.com" / "내 드라이브" / "paper-curation")
 SHARED_DB = SHARED_ROOT / "bibliography.sqlite3"
-DEFAULT_DB = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", "")) if os.environ.get("PAPER_CURATION_BIBLIO_DB") else (
-    SHARED_DB if SHARED_ROOT.parent.exists() else ROOT / ".cache" / "bibliography.sqlite3"
-)
+DEFAULT_DB = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", str(
+    ROOT / ".cache" / "bibliography.sqlite3"
+)))
 MAILTO = "jehyun.lee@gmail.com"
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
@@ -359,12 +359,14 @@ def upsert(conn, table: str, name: str, column: str) -> int:
     return conn.execute(f"INSERT INTO {table} ({column},normalized_name,source) VALUES (?,?,?)" if table == "institutions" else f"INSERT INTO {table} ({column},normalized_name) VALUES (?,?)", (name, key, "text.md:normalized") if table == "institutions" else (name, key)).lastrowid
 
 
-def build(entries: list[dict], db_path: Path, update_zotero: bool = False) -> dict:
+def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
+          skip_zotero: bool = False) -> dict:
     total = len(entries)
     print(f"[bibliography] starting {total} papers", flush=True)
     start = time.perf_counter(); db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(db_path); conn.executescript(SCHEMA)
-    zitems = fetch_zotero_items(); zupdated = 0; resolved = 0
+    zitems = [] if skip_zotero else fetch_zotero_items()
+    zupdated = 0; resolved = 0
     with conn:
         for index, p in enumerate(entries, 1):
             directory = PAPERS_DIR / p["slug"]; review = directory / "review.md"; text = directory / "text.md"; meta = fm(review)
@@ -511,6 +513,8 @@ def main() -> int:
     ap.add_argument("--changed-only", action="store_true",
                     help="process only papers whose review.md/text.md changed")
     ap.add_argument("--no-email", action="store_true")
+    ap.add_argument("--skip-zotero", action="store_true",
+                    help="skip the full Zotero library scan for a local incremental repair")
     args = ap.parse_args()
     entries = load_entries()
     if args.changed_only:
@@ -520,8 +524,7 @@ def main() -> int:
     if not entries:
         print(json.dumps({"processed": 0, "changed": 0, "db": str(args.output)}, ensure_ascii=False, indent=2))
         return 0
-    result = build(entries, args.output, args.update_zotero)
-    result["shared_db"] = publish_shared_db(args.output)
+    result = build(entries, args.output, args.update_zotero, args.skip_zotero)
     conn = sqlite3.connect(args.output)
     result.update({
         "papers": conn.execute("SELECT COUNT(*) FROM papers").fetchone()[0],
