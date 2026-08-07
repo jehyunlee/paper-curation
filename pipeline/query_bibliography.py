@@ -51,8 +51,11 @@ def main() -> int:
         where.append("p.publication_date LIKE ?"); params.append(f"{args.year}%")
     order = {"date": "p.publication_date", "title": "p.title", "institution": "i.institution_name", "author": "a.display_name"}[args.sort]
     direction = "DESC" if args.desc else "ASC"
-    sql = f"""SELECT DISTINCT p.title, p.publication_date, p.journal_name, p.doi,
-        p.url, p.review_dir, p.zotero_item_key, i.institution_name,
+    sql = f"""SELECT DISTINCT p.title, p.publication_date, p.journal_name,
+        p.volume, p.issue, p.pages, p.publisher, p.issn, p.eissn,
+        p.document_type, p.doi, p.url, p.scopus_eid, p.received_date,
+        p.accepted_date, p.published_online_date, p.bibliography_source,
+        p.review_dir, p.zotero_item_key, i.institution_name,
         pi.country_name, a.display_name AS first_author
         FROM papers p
         LEFT JOIN paper_institutions pi ON pi.paper_id=p.paper_id

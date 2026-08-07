@@ -41,6 +41,9 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS papers (
  paper_id INTEGER PRIMARY KEY, slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
  publication_date TEXT, journal_name TEXT, doi TEXT, arxiv_id TEXT, url TEXT,
+ volume TEXT, issue TEXT, pages TEXT, publisher TEXT, issn TEXT, eissn TEXT,
+ document_type TEXT, scopus_eid TEXT, received_date TEXT, accepted_date TEXT,
+ published_online_date TEXT, bibliography_source TEXT,
  review_dir TEXT NOT NULL, zotero_item_key TEXT, affiliation_source TEXT,
  affiliation_confidence REAL, header_raw TEXT, metadata_json TEXT NOT NULL DEFAULT '{}',
  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -73,6 +76,31 @@ CREATE INDEX IF NOT EXISTS idx_papers_date ON papers(publication_date);
 CREATE INDEX IF NOT EXISTS idx_authors_name ON authors(normalized_name);
 CREATE INDEX IF NOT EXISTS idx_institutions_name ON institutions(normalized_name);
 """
+
+PAPER_SCHEMA_COLUMNS = {
+    "volume": "TEXT",
+    "issue": "TEXT",
+    "pages": "TEXT",
+    "publisher": "TEXT",
+    "issn": "TEXT",
+    "eissn": "TEXT",
+    "document_type": "TEXT",
+    "scopus_eid": "TEXT",
+    "received_date": "TEXT",
+    "accepted_date": "TEXT",
+    "published_online_date": "TEXT",
+    "bibliography_source": "TEXT",
+}
+
+
+def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
+    """Add bibliographic columns to databases created by earlier releases."""
+    existing = {
+        row[1] for row in conn.execute("PRAGMA table_info(papers)").fetchall()
+    }
+    for name, sql_type in PAPER_SCHEMA_COLUMNS.items():
+        if name not in existing:
+            conn.execute(f"ALTER TABLE papers ADD COLUMN {name} {sql_type}")
 
 
 def norm(s: str) -> str:
@@ -307,40 +335,79 @@ def canonical_institution(name: str) -> str:
     return m.group(1).strip() if m else value
 
 
-_SCOPUS_AFFILIATION_CACHE = None
-SCOPUS_AFFILIATION_CACHE_PATH = ROOT / ".cache" / "scopus_affiliations.json"
+_SCOPUS_RECORD_CACHE = None
+SCOPUS_RECORD_CACHE_PATH = ROOT / ".cache" / "scopus_affiliations.json"
 
 
-def _load_scopus_affiliation_cache() -> dict:
-    global _SCOPUS_AFFILIATION_CACHE
-    if _SCOPUS_AFFILIATION_CACHE is None:
+def _load_scopus_record_cache() -> dict:
+    global _SCOPUS_RECORD_CACHE
+    if _SCOPUS_RECORD_CACHE is None:
         try:
-            _SCOPUS_AFFILIATION_CACHE = json.loads(
-                SCOPUS_AFFILIATION_CACHE_PATH.read_text(encoding="utf-8"))
+            _SCOPUS_RECORD_CACHE = json.loads(
+                SCOPUS_RECORD_CACHE_PATH.read_text(encoding="utf-8"))
         except Exception:
-            _SCOPUS_AFFILIATION_CACHE = {}
-    return _SCOPUS_AFFILIATION_CACHE
+            _SCOPUS_RECORD_CACHE = {}
+    return _SCOPUS_RECORD_CACHE
 
 
-def fetch_scopus_affiliations(doi: str) -> list[dict]:
-    """Scopus-first affiliation lookup. Failures degrade to PDF parsing."""
+def _format_issn(value) -> str:
+    values = re.findall(r"\d{8}", str(value or ""))
+    return "; ".join(f"{v[:4]}-{v[4:]}" for v in values)
+
+
+def scopus_bibliography(payload: dict) -> dict:
+    """Normalize Scopus Abstract Retrieval metadata into database fields."""
+    core = payload.get("coredata") or {}
+    doi = clean_doi(str(core.get("prism:doi") or ""))
+    return {
+        "title": str(core.get("dc:title") or "").strip(),
+        "journal": str(core.get("prism:publicationName") or "").strip(),
+        "date": str(core.get("prism:coverDate") or "").strip(),
+        "doi": doi,
+        "url": external_url(doi, ""),
+        "volume": str(core.get("prism:volume") or "").strip(),
+        "issue": str(core.get("prism:issueIdentifier") or "").strip(),
+        "pages": str(core.get("prism:pageRange") or "").strip(),
+        "publisher": str(core.get("dc:publisher") or "").strip(),
+        "issn": _format_issn(core.get("prism:issn")),
+        "eissn": _format_issn(core.get("prism:eIssn")),
+        "document_type": str(core.get("subtypeDescription") or "").strip(),
+        "scopus_eid": str(core.get("eid") or "").strip(),
+        "source": "scopus",
+    }
+
+
+def fetch_scopus_record(doi: str, title: str = "") -> dict:
+    """Fetch one Scopus record and reuse it for bibliography and affiliations."""
     doi = clean_doi(doi).lower()
-    if not doi:
-        return []
-    cache = _load_scopus_affiliation_cache()
-    if doi in cache:
-        return cache[doi]
-    records = []
+    title = re.sub(r"\s+", " ", title or "").strip()
+    if not doi and not title:
+        return {"bibliography": {}, "affiliations": []}
+    cache_key = doi or "title:" + norm(title)
+    cache = _load_scopus_record_cache()
+    cached = cache.get(cache_key)
+    if isinstance(cached, dict) and "bibliography" in cached:
+        return cached
+    legacy_affiliations = cached if isinstance(cached, list) else []
+    record = {"bibliography": {}, "affiliations": legacy_affiliations}
     try:
         import requests
         from lib.citedby import scopus
         ok, _ = scopus.available()
         if ok:
+            query = (f'DOI("{doi}")' if doi else
+                     f'TITLE("{title.replace(chr(34), " ")}")')
             search = requests.get(
                 scopus.SCOPUS_SEARCH_URL, headers=scopus.headers(),
-                params={"query": f'DOI("{doi}")', "count": 1}, timeout=30)
+                params={"query": query, "count": 5 if title and not doi else 1},
+                timeout=30)
             entries = ((search.json().get("search-results") or {}).get("entry") or []
                        if search.status_code == 200 else [])
+            if title and not doi:
+                entries = [
+                    entry for entry in entries
+                    if norm(str(entry.get("dc:title") or "")) == norm(title)
+                ]
             eid = entries[0].get("eid", "") if entries else ""
             if eid:
                 abstract = requests.get(
@@ -348,27 +415,37 @@ def fetch_scopus_affiliations(doi: str) -> list[dict]:
                     headers=scopus.headers(), params={"view": "FULL"}, timeout=30)
                 if abstract.status_code == 200:
                     payload = abstract.json().get("abstracts-retrieval-response") or {}
+                    affiliations = []
                     for aff in payload.get("affiliation") or []:
                         name = canonical_institution(str(aff.get("affilname") or ""))
                         if name:
-                            records.append({
+                            affiliations.append({
                                 "name": name,
                                 "raw_name": str(aff.get("affilname") or name),
                                 "country": str(aff.get("affiliation-country") or ""),
                                 "scopus_id": str(aff.get("@id") or ""),
                                 "source": "scopus",
                             })
+                    record = {
+                        "bibliography": scopus_bibliography(payload),
+                        "affiliations": affiliations,
+                    }
     except Exception:
-        records = []
-    cache[doi] = records
+        pass
+    cache[cache_key] = record
     try:
-        SCOPUS_AFFILIATION_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-        temp = SCOPUS_AFFILIATION_CACHE_PATH.with_suffix(".tmp")
+        SCOPUS_RECORD_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        temp = SCOPUS_RECORD_CACHE_PATH.with_suffix(".tmp")
         temp.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
-        os.replace(temp, SCOPUS_AFFILIATION_CACHE_PATH)
+        os.replace(temp, SCOPUS_RECORD_CACHE_PATH)
     except OSError:
         pass
-    return records
+    return record
+
+
+def fetch_scopus_affiliations(doi: str) -> list[dict]:
+    """Compatibility wrapper for affiliation-only callers."""
+    return fetch_scopus_record(doi).get("affiliations") or []
 
 
 _PDF_FILES = None
@@ -422,6 +499,91 @@ def _pdf_text_for_affiliations(pdf_path: Path | None, text_path: Path) -> str:
             r"(?im)^(?:author information|affiliations?|published online|received:).*$", text):
         chunks.append(text[max(0, match.start() - 1000):match.start() + 5000])
     return "\n".join(chunks)
+
+_MONTHS = {
+    name.lower(): f"{index:02d}" for index, name in enumerate(
+        ("January", "February", "March", "April", "May", "June", "July",
+         "August", "September", "October", "November", "December"), 1)
+}
+
+
+def _human_date(value: str) -> str:
+    match = re.search(
+        r"\b(\d{1,2})\s+(" + "|".join(_MONTHS) + r")\s+((?:19|20)\d{2})\b",
+        value or "", re.I)
+    if not match:
+        return ""
+    return f"{match.group(3)}-{_MONTHS[match.group(2).lower()]}-{int(match.group(1)):02d}"
+
+
+def pdf_bibliography(pdf_text: str) -> dict:
+    """Extract publisher-facing metadata from the PDF's front/back matter."""
+    result = {}
+    date_labels = {
+        "received_date": r"received(?:\s*:|\s+)",
+        "accepted_date": r"accepted(?:\s*:|\s+)",
+        "published_online_date": r"published\s+online(?:\s*:|\s+)",
+    }
+    for field, label in date_labels.items():
+        match = re.search(
+            label + r"\s*(\d{1,2}\s+[A-Za-z]+\s+(?:19|20)\d{2})",
+            pdf_text, re.I)
+        if match:
+            result[field] = _human_date(match.group(1))
+
+    doi_match = re.search(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", pdf_text, re.I)
+    if doi_match:
+        result["doi"] = clean_doi(doi_match.group(0))
+
+    # Common publisher running header, e.g.
+    # "Nature Methods | Volume 21 | August 2024 | 1470–1480".
+    header = re.search(
+        r"(?m)^\s*([^|\n]{2,120}?)\s*\|\s*Volume\s+([^|\n]+?)\s*\|"
+        r"\s*(?:[A-Za-z]+\s+)?(?:19|20)\d{2}\s*\|\s*"
+        r"([A-Za-z]?\d+(?:\s*[-–—]\s*[A-Za-z]?\d+)?)\s*$",
+        pdf_text, re.I)
+    if header:
+        journal = re.sub(r"\s+", " ", header.group(1)).strip()
+        if not re.search(r"copyright|http|doi", journal, re.I):
+            result["journal"] = journal
+        result["volume"] = header.group(2).strip()
+        result["pages"] = re.sub(r"\s*[-–—]\s*", "-", header.group(3))
+
+    issue = re.search(r"\b(?:Issue|No\.)\s+([A-Za-z0-9.-]+)", pdf_text, re.I)
+    if issue:
+        result["issue"] = issue.group(1)
+    return result
+
+
+def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
+    """Use Scopus as the baseline, then verify and repair it from the PDF."""
+    fields = (
+        "title", "journal", "date", "doi", "url", "volume", "issue", "pages",
+        "publisher", "issn", "eissn", "document_type", "scopus_eid",
+        "received_date", "accepted_date", "published_online_date",
+    )
+    result = {field: str(local.get(field) or "").strip() for field in fields}
+    used = ["local-metadata"]
+    if scopus:
+        for field in fields:
+            if scopus.get(field):
+                result[field] = str(scopus[field]).strip()
+        used = ["scopus"]
+
+    pdf_used = False
+    for field in ("journal", "doi", "volume", "issue", "pages",
+                  "received_date", "accepted_date", "published_online_date"):
+        if pdf.get(field):
+            result[field] = str(pdf[field]).strip()
+            pdf_used = True
+    if result["published_online_date"]:
+        result["date"] = result["published_online_date"]
+    if result["doi"]:
+        result["url"] = external_url(result["doi"], "")
+    if pdf_used:
+        used.append("pdf")
+    result["source"] = "+".join(used)
+    return result
 
 
 def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
@@ -500,19 +662,52 @@ def zotero_match(p: dict, items: list[dict]) -> dict | None:
     return candidates[0] if len(candidates) == 1 else None
 
 
-def patch_zotero(item: dict, p: dict, official: dict) -> bool:
-    if not official.get("doi"):
+def patch_zotero(item: dict, bibliography: dict) -> bool:
+    """Patch Zotero with the Scopus record after PDF reconciliation."""
+    if not bibliography.get("doi"):
         return False
     try:
         from config_loader import get_zotero_api_key, get_zotero_user_id
         key, user = get_zotero_api_key(), get_zotero_user_id()
-        data = item["data"]
-        patch = {"DOI": official["doi"], "publicationTitle": official.get("journal", ""), "date": official.get("date", ""), "url": "https://doi.org/" + official["doi"], "itemType": "journalArticle"}
-        req = urllib.request.Request(f"https://api.zotero.org/users/{user}/items/{item['key']}", data=json.dumps(patch).encode(), method="PATCH", headers={"Zotero-API-Key": key, "If-Unmodified-Since-Version": str(item.get("version", "")), "Content-Type": "application/json", "User-Agent": "paper-curation-bibliography/1.0"})
-        with urllib.request.urlopen(req, timeout=30, context=SSL_CTX) as r:
-            return r.status in (200, 204)
-    except Exception as e:
-        print(f"Zotero update warning ({item.get('key')}): {e}", file=sys.stderr)
+        field_map = {
+            "doi": "DOI",
+            "journal": "publicationTitle",
+            "date": "date",
+            "url": "url",
+            "volume": "volume",
+            "issue": "issue",
+            "pages": "pages",
+            "publisher": "publisher",
+        }
+        patch = {
+            zotero_field: bibliography[source_field]
+            for source_field, zotero_field in field_map.items()
+            if bibliography.get(source_field)
+        }
+        issns = "; ".join(
+            value for value in (bibliography.get("issn"), bibliography.get("eissn"))
+            if value)
+        if issns:
+            patch["ISSN"] = issns
+        patch["itemType"] = "journalArticle"
+        current = item.get("data") or {}
+        patch = {key_: value for key_, value in patch.items()
+                 if str(current.get(key_) or "") != str(value)}
+        if not patch:
+            return False
+        req = urllib.request.Request(
+            f"https://api.zotero.org/users/{user}/items/{item['key']}",
+            data=json.dumps(patch).encode(), method="PATCH",
+            headers={
+                "Zotero-API-Key": key,
+                "If-Unmodified-Since-Version": str(item.get("version", "")),
+                "Content-Type": "application/json",
+                "User-Agent": "paper-curation-bibliography/1.0",
+            })
+        with urllib.request.urlopen(req, timeout=30, context=SSL_CTX) as response:
+            return response.status in (200, 204)
+    except Exception as exc:
+        print(f"Zotero update warning ({item.get('key')}): {exc}", file=sys.stderr)
         return False
 
 
@@ -534,42 +729,114 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
     total = len(entries)
     print(f"[bibliography] starting {total} papers", flush=True)
     start = time.perf_counter(); db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(db_path); conn.executescript(SCHEMA)
+    conn = sqlite3.connect(db_path)
+    conn.executescript(SCHEMA)
+    ensure_schema_migrations(conn)
     zitems = [] if skip_zotero else fetch_zotero_items()
     zupdated = 0; resolved = 0
     with conn:
         for index, p in enumerate(entries, 1):
-            directory = PAPERS_DIR / p["slug"]; review = directory / "review.md"; text = directory / "text.md"; meta = fm(review)
+            directory = PAPERS_DIR / p["slug"]
+            review = directory / "review.md"
+            text = directory / "text.md"
+            meta = fm(review)
             title = str(meta.get("title") or p.get("title") or p["slug"]).strip()
-            doi = clean_doi(str(meta.get("doi") or p.get("doi") or "")); arxiv = clean_arxiv(str(meta.get("arxiv") or p.get("arxiv") or ""))
-            zitem = zotero_match({"title": title, "doi": doi, "arxiv": arxiv}, zitems) if zitems else None
+            doi = clean_doi(str(meta.get("doi") or p.get("doi") or ""))
+            arxiv = clean_arxiv(str(meta.get("arxiv") or p.get("arxiv") or ""))
+            zitem = zotero_match(
+                {"title": title, "doi": doi, "arxiv": arxiv}, zitems
+            ) if zitems else None
             zdata = zitem.get("data", {}) if zitem else {}
-            zdoi = clean_doi(zdata.get("DOI", "")); zurl = zdata.get("url", "")
+            zdoi = clean_doi(zdata.get("DOI", ""))
             if not doi and zdoi:
                 doi = zdoi
-            arxiv = arxiv or arxiv_from(zdata.get("archiveID", ""), zdata.get("url", ""), zdoi)
-            official = resolve_publication(title, doi or zdoi, arxiv) if (arxiv or doi.lower().startswith("10.48550")) else {}
+            arxiv = arxiv or arxiv_from(
+                zdata.get("archiveID", ""), zdata.get("url", ""), zdoi)
+            official = resolve_publication(
+                title, doi or zdoi, arxiv
+            ) if (arxiv or doi.lower().startswith("10.48550")) else {}
             if official.get("doi"):
-                doi, journal, date, source = official["doi"], official.get("journal", ""), official.get("date", ""), official.get("source", "")
+                doi = official["doi"]
                 resolved += 1
-            else:
-                journal = str(meta.get("journal") or p.get("journal") or zdata.get("publicationTitle") or "").strip()
-                date = str(meta.get("date") or p.get("date") or zdata.get("date") or "").strip()
-                source = "local-metadata"
-            # Affiliation precedence: Scopus first, then validate and repair from
-            # the source PDF (first/last pages plus abstract-adjacent zones).
-            scopus_affs = fetch_scopus_affiliations(doi)
+
+            local_bib = {
+                "title": title,
+                "journal": str(
+                    official.get("journal") or meta.get("journal")
+                    or p.get("journal") or zdata.get("publicationTitle") or ""
+                ).strip(),
+                "date": str(
+                    official.get("date") or meta.get("date")
+                    or p.get("date") or zdata.get("date") or ""
+                ).strip(),
+                "doi": doi,
+                "url": external_url(doi, arxiv) or str(zdata.get("url") or ""),
+                "volume": str(zdata.get("volume") or "").strip(),
+                "issue": str(zdata.get("issue") or "").strip(),
+                "pages": str(zdata.get("pages") or "").strip(),
+                "publisher": str(zdata.get("publisher") or "").strip(),
+                "issn": str(zdata.get("ISSN") or "").strip(),
+                "document_type": str(zdata.get("itemType") or "").strip(),
+            }
+            scopus_record = fetch_scopus_record(doi, title)
             header, raw_affs, _header_conf = extract_header(text)
             pdf_path = locate_pdf(p, meta)
             pdf_text = _pdf_text_for_affiliations(pdf_path, text)
-            affiliation_records = reconcile_affiliations(scopus_affs, pdf_text, raw_affs)
+            bibliography = reconcile_bibliography(
+                local_bib, scopus_record.get("bibliography") or {},
+                pdf_bibliography(pdf_text))
+            if len(bibliography["date"]) < 10:
+                bibliography["date"] = (
+                    date_from_header(header) or bibliography["date"])
+            title = bibliography["title"] or title
+            doi = bibliography["doi"] or doi
+
+            # Affiliation precedence: the same Scopus response is validated and
+            # repaired from source-PDF front/back matter.
+            affiliation_records = reconcile_affiliations(
+                scopus_record.get("affiliations") or [], pdf_text, raw_affs)
             sources = {record["source"] for record in affiliation_records}
             aff_source = "+".join(sorted(sources)) if sources else "missing"
-            conf = 0.95 if "scopus+pdf" in sources else (0.8 if affiliation_records else 0.0)
-            if len(date) < 10:
-                date = date_from_header(header) or date
-            if update_zotero and zitem and patch_zotero(zitem, {"doi": doi}, official): zupdated += 1
-            conn.execute("INSERT INTO papers (slug,title,publication_date,journal_name,doi,arxiv_id,url,review_dir,zotero_item_key,affiliation_source,affiliation_confidence,header_raw,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET title=excluded.title,publication_date=excluded.publication_date,journal_name=excluded.journal_name,doi=excluded.doi,arxiv_id=excluded.arxiv_id,url=excluded.url,review_dir=excluded.review_dir,zotero_item_key=excluded.zotero_item_key,affiliation_source=excluded.affiliation_source,affiliation_confidence=excluded.affiliation_confidence,header_raw=excluded.header_raw,metadata_json=excluded.metadata_json", (p["slug"],title,date,journal,doi,arxiv,external_url(doi,arxiv),rel(directory),zitem.get("key","") if zitem else p.get("zotero_item_key", ""),aff_source,conf,header,json.dumps({"publication_source": source, "topics": p.get("topics", []), "pdf_path": str(pdf_path or "")}, ensure_ascii=False)))
+            conf = 0.95 if "scopus+pdf" in sources else (
+                0.8 if affiliation_records else 0.0)
+            if update_zotero and zitem and patch_zotero(zitem, bibliography):
+                zupdated += 1
+
+            columns = (
+                "slug", "title", "publication_date", "journal_name", "doi",
+                "arxiv_id", "url", "volume", "issue", "pages", "publisher",
+                "issn", "eissn", "document_type", "scopus_eid",
+                "received_date", "accepted_date", "published_online_date",
+                "bibliography_source", "review_dir", "zotero_item_key",
+                "affiliation_source", "affiliation_confidence", "header_raw",
+                "metadata_json",
+            )
+            values = (
+                p["slug"], title, bibliography["date"], bibliography["journal"],
+                doi, arxiv, bibliography["url"] or external_url(doi, arxiv),
+                bibliography["volume"], bibliography["issue"],
+                bibliography["pages"], bibliography["publisher"],
+                bibliography["issn"], bibliography["eissn"],
+                bibliography["document_type"], bibliography["scopus_eid"],
+                bibliography["received_date"], bibliography["accepted_date"],
+                bibliography["published_online_date"], bibliography["source"],
+                rel(directory),
+                zitem.get("key", "") if zitem else p.get("zotero_item_key", ""),
+                aff_source, conf, header,
+                json.dumps({
+                    "publication_source": bibliography["source"],
+                    "formal_resolution_source": official.get("source", ""),
+                    "topics": p.get("topics", []),
+                    "pdf_path": str(pdf_path or ""),
+                }, ensure_ascii=False),
+            )
+            updates = ",".join(
+                f"{column}=excluded.{column}" for column in columns if column != "slug")
+            conn.execute(
+                f"INSERT INTO papers ({','.join(columns)}) "
+                f"VALUES ({','.join('?' for _ in columns)}) "
+                f"ON CONFLICT(slug) DO UPDATE SET {updates}",
+                values)
             pid = conn.execute("SELECT paper_id FROM papers WHERE slug=?", (p["slug"],)).fetchone()[0]
             conn.execute("DELETE FROM paper_authors WHERE paper_id=?", (pid,)); conn.execute("DELETE FROM paper_institutions WHERE paper_id=?", (pid,))
             authors = meta.get("authors") or p.get("authors") or []
