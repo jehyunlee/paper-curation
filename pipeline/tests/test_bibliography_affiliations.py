@@ -7,6 +7,24 @@ from pipeline import build_bibliography_db as bib
 
 
 class BibliographyAffiliationTests(unittest.TestCase):
+    def setUp(self):
+        bib.set_institution_registry({
+            "Tongji University",
+            "Massachusetts Institute of Technology",
+            "The University of Hong Kong",
+            "National University of Singapore",
+            "National University of Defense Technology",
+            "Technical University of Munich",
+            "Technical University of Denmark",
+            "Stanford University",
+            "Tsinghua University",
+            "The Chinese University of Hong Kong, Shenzhen",
+            "The Hong Kong University of Science and Technology",
+            "The Hong Kong University of Science and Technology (Guangzhou)",
+            "Warsaw University of Technology",
+            "Hebei University of Technology",
+        })
+
     def test_scopus_subunit_normalizes_to_parent_university(self):
         self.assertEqual(
             bib.canonical_institution("University of Toronto Faculty of Medicine"),
@@ -30,6 +48,98 @@ class BibliographyAffiliationTests(unittest.TestCase):
         by_name = {row["name"]: row for row in rows}
         self.assertEqual(by_name["University of Toronto"]["source"], "scopus+pdf")
         self.assertIn("University Health Network", by_name)
+
+    def test_longest_registered_parent_wins_over_author_and_department(self):
+        cases = {
+            (
+                "Zihe Wei School of Computer Science & Technology "
+                "Tongji University"
+            ): "Tongji University",
+            (
+                "Zituo Chen Department of Mechanical Engineering "
+                "Massachusetts Institute of Technology Cambridge"
+            ): "Massachusetts Institute of Technology",
+            (
+                "Department of Medicine, Stanford University School of Medicine"
+            ): "Stanford University",
+        }
+        for raw, expected in cases.items():
+            with self.subTest(raw=raw):
+                self.assertEqual(
+                    bib.resolve_institution_from_raw(raw, raw), expected)
+
+    def test_generic_university_names_expand_from_raw_affiliation(self):
+        cases = [
+            ("The University", "1The University of Hong Kong, Hong Kong",
+             "The University of Hong Kong"),
+            ("National University",
+             "1National University of Singapore, Singapore",
+             "National University of Singapore"),
+            ("National University",
+             "College, National University of Defense Technology, China",
+             "National University of Defense Technology"),
+            ("Technical University",
+             "Department, Technical University of Munich, Germany",
+             "Technical University of Munich"),
+        ]
+        for current, raw, expected in cases:
+            with self.subTest(current=current, raw=raw):
+                self.assertEqual(
+                    bib.resolve_institution_from_raw(raw, current), expected)
+
+    def test_clean_current_institution_is_not_replaced_by_another_affiliation(self):
+        raw = (
+            "Tsinghua University, Beijing, China; "
+            "The Hong Kong University of Science and Technology, Hong Kong"
+        )
+        self.assertEqual(
+            bib.resolve_institution_from_raw(raw, "Tsinghua University"),
+            "Tsinghua University",
+        )
+
+    def test_hong_kong_branch_campuses_remain_distinct(self):
+        cases = [
+            (
+                "Chinese University of Hong Kong, Shenzhen, China",
+                "Chinese University",
+                "The Chinese University of Hong Kong, Shenzhen",
+            ),
+            (
+                "Hong Kong University of Science and Technology (Guangzhou), China",
+                "Hong Kong University",
+                "The Hong Kong University of Science and Technology (Guangzhou)",
+            ),
+        ]
+        for raw, current, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(
+                    bib.resolve_institution_from_raw(raw, current), expected)
+
+    def test_affiliation_markers_do_not_truncate_technology_universities(self):
+        cases = [
+            (
+                "aWarsaw University of Technology, Faculty of Mathematics",
+                "University of Technology",
+                "Warsaw University of Technology",
+            ),
+            (
+                "BUPT 7Hebei University of Technology",
+                "University of Technology",
+                "Hebei University of Technology",
+            ),
+        ]
+        for raw, current, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(
+                    bib.resolve_institution_from_raw(raw, current), expected)
+
+    def test_truncated_exact_aliases_are_canonicalized(self):
+        self.assertEqual(
+            bib.canonical_institution("Massachusetts Institute"),
+            "Massachusetts Institute of Technology")
+        self.assertEqual(
+            bib.canonical_institution("Georgia Institute"),
+            "Georgia Institute of Technology")
 
     def test_text_fallback_scans_after_abstract_and_last_pages(self):
         with tempfile.TemporaryDirectory() as td:

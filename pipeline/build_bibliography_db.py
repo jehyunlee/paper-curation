@@ -304,49 +304,391 @@ def country_from_raw(raw: str) -> str:
     return ""
 
 
+INSTITUTION_CANONICAL_ALIASES = [
+    (r"^Massachusetts Institute(?: of Technology)?$", "Massachusetts Institute of Technology"),
+    (r"^Georgia Institute(?: of Technology)?$", "Georgia Institute of Technology"),
+    (r"^California Institute(?: of Technology)?$", "California Institute of Technology"),
+    (r"^Harbin Institute(?: of Technology)?(?: Shenzhen)?$", "Harbin Institute of Technology"),
+    (r"^Imperial College(?: London)?$", "Imperial College London"),
+    (r"^University College(?: London)?$", "University College London"),
+    (r"^The Chinese University(?: of Hong Kong)?$", "The Chinese University of Hong Kong"),
+    (r"^The Hong Kong University(?: of Science and Technology)?$", "The Hong Kong University of Science and Technology"),
+    (r"^Chinese Academy(?: of Science| of Sciences)?$", "Chinese Academy of Sciences"),
+    (r"^Korea Advanced Institute(?: of Science (?:and|&) Technology)?(?: \(KAIST\))?$", "Korea Advanced Institute of Science and Technology"),
+    (r"^KTH Royal Institute(?: of Technology)?$", "KTH Royal Institute of Technology"),
+    (r"^Karlsruhe Institute(?: of Technology)?$", "Karlsruhe Institute of Technology"),
+    (r"^Stevens Institute(?: of Technology)?$", "Stevens Institute of Technology"),
+    (r"^Illinois Institute(?: of Technology)?$", "Illinois Institute of Technology"),
+    (r"^Eastern Institute(?: of Technology)?$", "Eastern Institute of Technology"),
+    (r"^Polish Academy(?: of Sciences)?$", "Polish Academy of Sciences"),
+    (r"^University of Toronto Faculty of Medicine$", "University of Toronto"),
+    (r"^University Health Network,? Toronto.*$", "University Health Network"),
+    (r"^Microsoft Research,? Redmond.*$", "Microsoft Research"),
+    (r"^.*Robert R\. McCormick School of Engineering.*$", "Northwestern University"),
+    (r"^.*MIT (?:School|Department|Sloan).*$", "Massachusetts Institute of Technology"),
+    (r"^.*USC Viterbi School of Engineering.*$", "University of Southern California"),
+    (r"^.*Harvard (?:Faculty|John A\. Paulson School|T\.H\. Chan School).*$", "Harvard University"),
+    (r"^.*Haas School of Business.*$", "University of California, Berkeley"),
+    (r"^.*John F\. Kennedy School of Government.*$", "Harvard University"),
+    (r"^.*UCLA (?:Samueli School|School of Dentistry).*$", "University of California, Los Angeles"),
+    (r"^.*Whiting School of Engineering.*$", "Johns Hopkins University"),
+    (r"^.*Carlson School of Management.*$", "University of Minnesota"),
+    (r"^.*Princeton School of Public and International Affairs.*$", "Princeton University"),
+    (r"^.*(?:NYU Tandon|Leonard N\. Stern|Robert F\. Wagner).*$", "New York University"),
+    (r"^.*Fuqua School of Business.*$", "Duke University"),
+    (r"^.*Questrom School of Business.*$", "Boston University"),
+    (r"^.*DeGroote School of Business.*$", "McMaster University"),
+    (r"^.*Rady School of Management.*$", "University of California, San Diego"),
+    (r"^.*McDonough School of Business.*$", "Georgetown University"),
+    (r"^.*Pritzker School of Molecular Engineering.*$", "The University of Chicago"),
+    (r"^.*UNC (?:Eshelman School|School of Medicine).*$", "The University of North Carolina at Chapel Hill"),
+    (r"^.*UCSF School of Medicine.*$", "University of California, San Francisco"),
+    (r"^.*UC Berkeley(?:’s)? (?:School|Industrial Engineering).*$", "University of California, Berkeley"),
+    (r"^.*Johns Hopkins Department of Biomedical Engineering.*$", "Johns Hopkins University"),
+    (r"^.*McGill Faculty of Medicine.*$", "McGill University"),
+    (r"^.*Wake Forest School of Business.*$", "Wake Forest University"),
+    (r"^.*Gaoling School of Artificial Intelligence.*$", "Renmin University of China"),
+    (r"^.*Luddy School of Informatics.*$", "Indiana University"),
+    (r"^.*ECUST School of Business.*$", "East China University of Science and Technology"),
+    (r"^.*Department of Cognitive Robotics,? TU Delft.*$", "Delft University of Technology"),
+    (r"^.*ETH Zuirch.*$", "ETH Zurich"),
+    (r"^.*Idiap Research Institute.*$", "Idiap Research Institute"),
+    (r"^.*BNM Institute(?: of Technology)?.*$", "BNM Institute of Technology"),
+    (r"^Amsterdam School of Communication Research$", "University of Amsterdam"),
+    (r"^Dalian University$", "Dalian University of Technology"),
+    (r"^Chinese University$", "The Chinese University of Hong Kong"),
+    (r"^Chinese University of Hong Kong$", "The Chinese University of Hong Kong"),
+    (r"^Chinese University of Hong Kong, Shenzhen$", "The Chinese University of Hong Kong, Shenzhen"),
+    (r"^Hong Kong University of Science and Technology$", "The Hong Kong University of Science and Technology"),
+]
+
+RAW_INSTITUTION_ALIASES = [
+    (r"\bTechnical University(?: of)? Munich\b", "Technical University of Munich"),
+    (r"\bTechnical University(?: of)? Berlin\b", "Technical University of Berlin"),
+    (r"\bIndian Institute of Technology,?\s*Delhi\b", "Indian Institute of Technology Delhi"),
+    (r"\bIndian Institute of Technology,?\s*Roorkee\b", "Indian Institute of Technology Roorkee"),
+    (r"\bIndian Institute of Technology,?\s*Guwahati\b", "Indian Institute of Technology Guwahati"),
+    (r"\bIndian Institute of Technol(?:ogy)?\b", "Indian Institute of Technology"),
+    (r"\bNational Institute of Standards and Technology\b", "National Institute of Standards and Technology"),
+    (r"\bNational Institute of Information and Communications Technology\b", "National Institute of Information and Communications Technology"),
+    (r"\bNational Institute of Advanced Industrial Science and Technology\b", "National Institute of Advanced Industrial Science and Technology"),
+    (r"\bNational Institute for Materials Science\b", "National Institute for Materials Science"),
+    (r"\bNational Institute for Research in Digital Science and Technology\b", "National Institute for Research in Digital Science and Technology"),
+    (r"\bNational Institute of Telecommunications\b", "National Institute of Telecommunications"),
+    (r"\bNational Institute of Aging\b", "National Institute on Aging"),
+    (r"\bBeijing Institute of Technology\b", "Beijing Institute of Technology"),
+    (r"\bBeijing Institute for General Artificial Intelligence\b", "Beijing Institute for General Artificial Intelligence"),
+    (r"\bBeijing Institute of Mathematical Sciences and Applications\b", "Beijing Institute of Mathematical Sciences and Applications"),
+    (r"\bBeijing Institute of Heart, Lung and Blood Vessel Diseases\b", "Beijing Institute of Heart, Lung and Blood Vessel Diseases"),
+    (r"\bBeijing Institute of Collaborative Innovation\b", "Beijing Institute of Collaborative Innovation"),
+    (r"\bBeijing University of Technology\b", "Beijing University of Technology"),
+    (r"\bBeijing University of Posts and Telecommunications\b", "Beijing University of Posts and Telecommunications"),
+    (r"\bMedical University(?: of)? Vienna\b", "Medical University of Vienna"),
+    (r"\bMedical University(?: of)? Graz\b", "Medical University of Graz"),
+    (r"\bMedical University(?: of)? Warsaw\b", "Medical University of Warsaw"),
+    (r"\bState University of New York at Binghamton\b", "Binghamton University"),
+    (r"\bNational University of Malaysia\b", "National University of Malaysia"),
+    (r"\bDalian University of Technology\b", "Dalian University of Technology"),
+    (r"\bHong Kong University of Science and Technology\s*\(Guangzhou\)", "The Hong Kong University of Science and Technology (Guangzhou)"),
+    (r"\bHong Kong University of Science and Technology\b", "The Hong Kong University of Science and Technology"),
+    (r"\bChinese University of Hong Kong,?\s*Shenzhen\b", "The Chinese University of Hong Kong, Shenzhen"),
+    (r"\bChinese University of Hong Kong\b", "The Chinese University of Hong Kong"),
+    (r"\bColorado State University\b", "Colorado State University"),
+    (r"\bInstitute of Physics\b", "Institute of Physics"),
+]
+
+INSTITUTION_SEED_NAMES = {
+    "Massachusetts Institute of Technology",
+    "Georgia Institute of Technology",
+    "California Institute of Technology",
+    "Harbin Institute of Technology",
+    "Imperial College London",
+    "University College London",
+    "The Chinese University of Hong Kong",
+    "The Hong Kong University of Science and Technology",
+    "Chinese Academy of Sciences",
+    "National University of Singapore",
+    "National University of Defense Technology",
+    "Technical University of Munich",
+    "Technical University of Darmstadt",
+    "Technical University of Berlin",
+    "Technical University of Denmark",
+    "Indian Institute of Science",
+    "Indian Institute of Technology Delhi",
+    "Indian Institute of Technology Madras",
+    "Indian Institute of Technology Patna",
+    "Indian Institute of Technology Ropar",
+    "Indian Institute of Technology Roorkee",
+    "Indian Institute of Science Education and Research Pune",
+    "Korea Advanced Institute of Science and Technology",
+    "KTH Royal Institute of Technology",
+    "Karlsruhe Institute of Technology",
+    "Stevens Institute of Technology",
+    "Illinois Institute of Technology",
+    "Eastern Institute of Technology",
+    "Warsaw University of Technology",
+    "Hebei University of Technology",
+    "Polish Academy of Sciences",
+    "Tongji University",
+    "The University of Hong Kong",
+    "The University of Tokyo",
+    "The University of Chicago",
+    "The University of Sydney",
+    "The University of Texas at Austin",
+    "The University of Edinburgh",
+    "The University of Manchester",
+    "The University of Melbourne",
+    "The University of Adelaide",
+    "The University of British Columbia",
+    "The University of Texas at Dallas",
+    "The University of Utah",
+    "The University of Arizona",
+    "The University of Iowa",
+    "The University of North Carolina at Chapel Hill",
+    "The University of Osaka",
+    "The University of Queensland",
+    "The University of Sheffield",
+    "The University of Texas Rio Grande Valley",
+    "The University of Waterloo",
+    "Australian National University",
+    "Seoul National University",
+}
+
+GENERIC_INSTITUTION_NAMES = {
+    "The University", "National University", "Technical University",
+    "Massachusetts Institute", "Chinese Academy", "Harbin Institute",
+    "Georgia Institute", "California Institute", "Imperial College",
+    "University College", "Indian Institute", "The Chinese University",
+    "The Hong Kong University", "Beijing Institute", "National Institute",
+    "State University", "Medical University", "Central University",
+    "University of California", "City University", "Hong Kong University",
+    "Beijing University", "Huazhong University", "Renmin University",
+    "Southern University", "Dalian University", "Chinese University",
+    "King Abdullah University", "Singapore University",
+    "South China University", "Queensland University", "Max Planck Institute",
+    "University of Technology", "University of Science and Technology",
+    "Allen Institute",
+}
+
+STANDALONE_INSTITUTION_NAMES = {
+    "London School of Economics and Political Science",
+    "Allen Institute",
+    "Max Planck Institute",
+    "University of California",
+    "Hefei National Laboratory for Physical Sciences at the Microscale",
+    "Idiap Research Institute",
+    "National Engineering Laboratory for Big Data Analysis and Applications",
+}
+
+_INSTITUTION_REGISTRY: list[str] = []
+_INSTITUTION_REGISTRY_BY_TOKEN: dict[str, list[str]] = {}
+
+
+def _clean_affiliation_text(value: str) -> str:
+    value = re.sub(r"([A-Za-z])-\s+([a-z])", r"\1\2", value or "")
+    value = re.sub(r"^[a-z](?=[A-Z])", "", value)
+    value = re.sub(r"(?<![A-Za-z])\d+(?=[A-Z])", " ", value)
+    value = re.sub(r"\{[^}]*\}|\S+@\S+", " ", value)
+    return re.sub(r"\s+", " ", value).strip(" ,;:-")
+
+
+def _apply_institution_aliases(value: str) -> str:
+    value = re.sub(r"\s+", " ", value or "").strip(" ,;:-†‡")
+    for pattern, canonical in INSTITUTION_CANONICAL_ALIASES:
+        if re.match(pattern, value, re.I):
+            return canonical
+    return value
+
+
+def is_suspicious_institution_name(name: str) -> bool:
+    value = _clean_affiliation_text(name)
+    if value in STANDALONE_INSTITUTION_NAMES:
+        return False
+    if not value or value in GENERIC_INSTITUTION_NAMES or len(value) > 90:
+        return True
+    return bool(re.search(
+        r"@|\b(?:Department|School of|Faculty|Published|Accepted|Proceedings|"
+        r"Corresponding|Authors?|Laboratory for|is with|are with|work was|"
+        r"Submitted|Copyright)\b|(?:\band|\bof)$", value, re.I))
+
+
+def set_institution_registry(names) -> None:
+    global _INSTITUTION_REGISTRY, _INSTITUTION_REGISTRY_BY_TOKEN
+    cleaned = {_apply_institution_aliases(str(name)) for name in names if name}
+    cleaned.update(INSTITUTION_SEED_NAMES)
+    _INSTITUTION_REGISTRY = sorted(
+        (name for name in cleaned if not is_suspicious_institution_name(name)),
+        key=lambda name: (-len(name), name.casefold()))
+    by_token = {}
+    generic = {
+        "university", "institute", "academy", "college", "hospital",
+        "centre", "center", "research", "national", "technology",
+    }
+    for name in _INSTITUTION_REGISTRY:
+        tokens = [
+            token for token in re.findall(r"[a-z0-9]+", name.casefold())
+            if len(token) >= 4 and token not in generic
+        ]
+        key = max(tokens, key=len) if tokens else ""
+        if key:
+            by_token.setdefault(key, []).append(name)
+    _INSTITUTION_REGISTRY_BY_TOKEN = by_token
+
+
+def initialize_institution_registry(conn: sqlite3.Connection) -> None:
+    names = {
+        row[0] for row in conn.execute(
+            "SELECT institution_name FROM institutions").fetchall()
+        if row[0] and not is_suspicious_institution_name(row[0])
+    }
+    cache = _load_scopus_record_cache()
+    for record in cache.values():
+        if not isinstance(record, dict):
+            continue
+        for affiliation in record.get("affiliations") or []:
+            candidate = _apply_institution_aliases(
+                str(affiliation.get("name") or ""))
+            if candidate and not is_suspicious_institution_name(candidate):
+                names.add(candidate)
+    set_institution_registry(names)
+
+
+def _registered_institution(raw: str, current_name: str = "") -> str:
+    text = _clean_affiliation_text(raw)
+    folded = text.casefold()
+    current = _clean_affiliation_text(current_name)
+    current_folded = current.casefold()
+    raw_tokens = set(re.findall(r"[a-z0-9]+", folded))
+    registry_candidates = {
+        name for token in raw_tokens
+        for name in _INSTITUTION_REGISTRY_BY_TOKEN.get(token, ())
+    }
+    candidates = []
+    for name in registry_candidates:
+        match = re.search(
+            r"(?<![A-Za-z])" + re.escape(name.casefold()) + r"(?![A-Za-z])",
+            folded)
+        if not match:
+            continue
+        expandable = current in GENERIC_INSTITUTION_NAMES
+        related = (
+            not current or expandable or is_suspicious_institution_name(current)
+            or current_folded in name.casefold()
+            or name.casefold() in current_folded
+        )
+        if not related:
+            continue
+        exact_relation = int(
+            bool(current) and not expandable
+            and name.casefold() == current_folded)
+        prefix_relation = int(
+            bool(current) and (
+                name.casefold().startswith(current_folded)
+                or current_folded.startswith(name.casefold())))
+        candidates.append(
+            (exact_relation, prefix_relation, len(name), -match.start(), name))
+    return max(candidates)[-1] if candidates else ""
+
+
+def canonical_institution(name: str) -> str:
+    value = _apply_institution_aliases(_clean_affiliation_text(name))
+    registered = _registered_institution(value, value)
+    if registered and (
+            is_suspicious_institution_name(value)
+            or registered.casefold() in value.casefold()
+            or value.casefold() in registered.casefold()):
+        value = registered
+    match = re.match(
+        r"^(.+?\bUniversity)\s+(?:Faculty|School|Department|College)\b",
+        value, re.I)
+    return _apply_institution_aliases(
+        match.group(1).strip() if match else value)
+
+
+def _raw_institution_alias(raw: str) -> str:
+    text = _clean_affiliation_text(raw)
+    for pattern, canonical in RAW_INSTITUTION_ALIASES:
+        if re.search(pattern, text, re.I):
+            return canonical
+    return ""
+
+
+def resolve_institution_from_raw(raw: str, current_name: str = "") -> str:
+    direct = _raw_institution_alias(raw)
+    current = _clean_affiliation_text(current_name)
+    if direct and (
+            not current
+            or current in GENERIC_INSTITUTION_NAMES
+            or is_suspicious_institution_name(current)
+            or direct.casefold().startswith(current.casefold())):
+        return canonical_institution(direct)
+    registered = _registered_institution(raw, current_name)
+    if registered:
+        return canonical_institution(registered)
+    return ""
+
+
 def institution_from_raw(raw: str) -> tuple[str, str] | None:
-    raw = re.sub(r"\{[^}]*\}", " ", raw)
-    raw = re.sub(r"\S+@\S+", " ", raw)
+    original = raw
+    raw = _clean_affiliation_text(raw)
     raw = re.sub(r"^[\d\s*†‡(),.-]+", "", raw)
-    raw = re.sub(r"\s+", " ", raw).strip(" ,;:-")
     if len(raw) < 5:
         return None
-    if re.match(r"^(abstract|keywords?|introduction|research|fine[- ]tuning|limited task|correspondence|computational|deep learning)\b", raw, re.I):
+    if re.match(
+            r"^(abstract|keywords?|introduction|research|fine[- ]tuning|"
+            r"limited task|correspondence|computational|deep learning)\b",
+            raw, re.I):
         return None
     group = ""
     for name, pattern in GROUPS:
         if re.search(pattern, raw, re.I):
             group = name
             break
-    parts = [p.strip(" ,;:-") for p in re.split(r"[,;|]", raw) if p.strip()]
-    preferred = [p for p in parts if re.search(r"\b(university|institute|laborator|academy|college|hospital|centre|center|network)\b|Microsoft Research|CNRS|ETH|MIT|Caltech", p, re.I)]
+
+    registered = resolve_institution_from_raw(original)
+    if registered:
+        return registered, group
+
+    parts = [
+        part.strip(" ,;:-") for part in re.split(r"[,;|]", raw)
+        if part.strip()
+    ]
+    preferred = [
+        part for part in parts if re.search(
+            r"\b(university|institute|laborator|academy|college|hospital|"
+            r"centre|center|network)\b|Microsoft Research|CNRS|ETH|MIT|Caltech",
+            part, re.I)
+    ]
     candidate = preferred[-1] if preferred else raw
-    candidate = re.sub(r"^(department|school|faculty|division|institute of|laboratory of)\b.*?,\s*", "", candidate, flags=re.I)
-    candidate = re.sub(r"^(?:USA|UK|Canada|China|Germany|France)\s*\d*\s*", "", candidate, flags=re.I)
+    candidate = re.sub(
+        r"^(department|school|faculty|division|laboratory of)\b.*?,\s*",
+        "", candidate, flags=re.I)
+    candidate = re.sub(
+        r"^(?:USA|UK|Canada|China|Germany|France)\s*\d*\s*", "",
+        candidate, flags=re.I)
     candidate = re.sub(r"\s+", " ", candidate).strip(" ,;:-")
-    university = re.search(r"\bUniversity\s+of\s+[A-Z][A-Za-z .&'’-]+|\b[A-Z][A-Za-z .&'’-]+\s+University\b", candidate)
-    institute = re.search(r"\b[A-Z][A-Za-z .&'’-]+\s+(?:Institute|Academy|College|Hospital|Centre|Center|Network)\b|\bMicrosoft Research\b", candidate)
-    if university or institute:
-        candidate = (university or institute).group(0).strip(" ,;:-")
+
+    patterns = [
+        r"\bThe University of [A-Z][A-Za-z .&'’()-]+",
+        r"\bUniversity of [A-Z][A-Za-z .&'’()-]+",
+        r"\b[A-Z][A-Za-z .&'’()-]+ Institute of Technology\b",
+        r"\b[A-Z][A-Za-z .&'’()-]+ (?:University|Institute|Academy|College|"
+        r"Hospital|Centre|Center|Network)\b",
+        r"\bMicrosoft Research\b",
+    ]
+    matches = [
+        match.group(0).strip(" ,;:-")
+        for pattern in patterns for match in re.finditer(pattern, candidate)
+    ]
+    if matches:
+        candidate = max(matches, key=lambda value: (len(value), value))
     elif not re.search(r"\b(?:MIT|ETH|CNRS)\b", candidate):
         return None
-    if len(candidate) < 5 or len(candidate) > 180 or re.match(r"^(research|department|university|institute)$", candidate, re.I):
+    candidate = canonical_institution(candidate)
+    if (len(candidate) < 5 or len(candidate) > 180
+            or is_suspicious_institution_name(candidate)):
         return None
     return candidate, group
-INSTITUTION_CANONICAL_ALIASES = [
-    (r"^University of Toronto Faculty of Medicine$", "University of Toronto"),
-    (r"^University Health Network,? Toronto.*$", "University Health Network"),
-    (r"^Microsoft Research,? Redmond.*$", "Microsoft Research"),
-]
-
-
-def canonical_institution(name: str) -> str:
-    value = re.sub(r"\s+", " ", (name or "")).strip(" ,;:-")
-    for pattern, canonical in INSTITUTION_CANONICAL_ALIASES:
-        if re.match(pattern, value, re.I):
-            return canonical
-    m = re.match(r"^(University of [A-Z][A-Za-z .&'’-]+?)\s+(?:Faculty|School|Department)\b", value)
-    return m.group(1).strip() if m else value
 
 
 _SCOPUS_RECORD_CACHE = None
@@ -746,6 +1088,7 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
     conn = sqlite3.connect(db_path)
     conn.executescript(SCHEMA)
     ensure_schema_migrations(conn)
+    initialize_institution_registry(conn)
     zitems = [] if skip_zotero else fetch_zotero_items()
     zupdated = 0; resolved = 0
     with conn:

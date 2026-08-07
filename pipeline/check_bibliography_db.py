@@ -8,6 +8,8 @@ import sqlite3
 import os
 from pathlib import Path
 
+import build_bibliography_db as bib
+
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS = ROOT / "docs" / "papers"
 INDEX = PAPERS / "_papers_index.json"
@@ -31,6 +33,14 @@ def main() -> int:
         bad_dirs = conn.execute("SELECT COUNT(*) FROM papers WHERE review_dir='' OR review_dir IS NULL").fetchone()[0]
         aliases = conn.execute("SELECT COUNT(*) FROM institution_aliases").fetchone()[0]
         countries = conn.execute("SELECT COUNT(*) FROM paper_institutions WHERE country_name<>''").fetchone()[0]
+        institution_names = [
+            row[0] for row in conn.execute(
+                "SELECT institution_name FROM institutions").fetchall()
+        ]
+        suspicious_institutions = [
+            name for name in institution_names
+            if bib.is_suspicious_institution_name(name)
+        ]
         tables = {
             row[0] for row in conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table'").fetchall()
@@ -47,11 +57,16 @@ def main() -> int:
             "empty_review_dirs": bad_dirs,
             "institution_aliases": aliases,
             "country_links": countries,
+            "suspicious_institution_names": len(suspicious_institutions),
             "citation_snapshots": snapshots,
             "citation_yearly_rows": yearly,
         })
         if empty_titles: report["issues"].append(f"empty titles: {empty_titles}")
         if bad_dirs: report["issues"].append(f"empty review directories: {bad_dirs}")
+        if suspicious_institutions:
+            report["issues"].append(
+                "suspicious institution names: "
+                + ", ".join(suspicious_institutions[:10]))
         conn.close()
     try:
         source_count = len(json.loads(INDEX.read_text(encoding="utf-8")))
