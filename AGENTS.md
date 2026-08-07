@@ -253,6 +253,7 @@ arXiv 가 chronic 429/timeout 인 경우 `search_papers.py --skip-arxiv` 로 우
 - Only one review-generation job may write the canonical SQLite file at a time. The MacBook sync hook refuses to treat Google Drive as a live database and transfers atomically over SSH.
 - Review-generation progress is persisted in `.cache/review_progress.json` and phase labels are printed as `PDF 매칭 → text.md 추출 → figure 추출 → review.md 생성 → HTML 변환`; use the JSON file or the run log for a live status view.
 - Any new paper-ingestion or Zotero-sync workflow that changes `_papers_index.json` MUST either rebuild the DB or leave a clearly visible stale-db validation failure. The DB is not authoritative when its paper count differs from `_papers_index.json`.
+- Affiliation resolution order is Scopus FULL abstract metadata first, then active PDF verification/repair using first and last pages plus abstract-adjacent and Author information blocks. Scopus-only rows must remain marked `scopus-unconfirmed`; PDF-confirmed rows use `scopus+pdf`.
 - Institution aliases belong in `institution_aliases`; never create a second spelling ad hoc in downstream queries.
 - Completion reporting is part of the worker contract: the full run sends a Resend email to `jehyun.lee@gmail.com` when `RESEND_API_KEY` is available.
 ## Common Commands

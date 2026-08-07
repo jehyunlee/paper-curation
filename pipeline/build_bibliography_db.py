@@ -277,13 +277,13 @@ def institution_from_raw(raw: str) -> tuple[str, str] | None:
             group = name
             break
     parts = [p.strip(" ,;:-") for p in re.split(r"[,;|]", raw) if p.strip()]
-    preferred = [p for p in parts if re.search(r"\b(university|institute|laborator|academy|college|hospital)\b|CNRS|ETH|MIT|Caltech", p, re.I)]
+    preferred = [p for p in parts if re.search(r"\b(university|institute|laborator|academy|college|hospital|centre|center|network)\b|Microsoft Research|CNRS|ETH|MIT|Caltech", p, re.I)]
     candidate = preferred[-1] if preferred else raw
     candidate = re.sub(r"^(department|school|faculty|division|institute of|laboratory of)\b.*?,\s*", "", candidate, flags=re.I)
     candidate = re.sub(r"^(?:USA|UK|Canada|China|Germany|France)\s*\d*\s*", "", candidate, flags=re.I)
     candidate = re.sub(r"\s+", " ", candidate).strip(" ,;:-")
     university = re.search(r"\bUniversity\s+of\s+[A-Z][A-Za-z .&'’-]+|\b[A-Z][A-Za-z .&'’-]+\s+University\b", candidate)
-    institute = re.search(r"\b[A-Z][A-Za-z .&'’-]+\s+(?:Institute|Academy|College|Hospital)\b", candidate)
+    institute = re.search(r"\b[A-Z][A-Za-z .&'’-]+\s+(?:Institute|Academy|College|Hospital|Centre|Center|Network)\b|\bMicrosoft Research\b", candidate)
     if university or institute:
         candidate = (university or institute).group(0).strip(" ,;:-")
     elif not re.search(r"\b(?:MIT|ETH|CNRS)\b", candidate):
@@ -291,6 +291,176 @@ def institution_from_raw(raw: str) -> tuple[str, str] | None:
     if len(candidate) < 5 or len(candidate) > 180 or re.match(r"^(research|department|university|institute)$", candidate, re.I):
         return None
     return candidate, group
+INSTITUTION_CANONICAL_ALIASES = [
+    (r"^University of Toronto Faculty of Medicine$", "University of Toronto"),
+    (r"^University Health Network,? Toronto.*$", "University Health Network"),
+    (r"^Microsoft Research,? Redmond.*$", "Microsoft Research"),
+]
+
+
+def canonical_institution(name: str) -> str:
+    value = re.sub(r"\s+", " ", (name or "")).strip(" ,;:-")
+    for pattern, canonical in INSTITUTION_CANONICAL_ALIASES:
+        if re.match(pattern, value, re.I):
+            return canonical
+    m = re.match(r"^(University of [A-Z][A-Za-z .&'’-]+?)\s+(?:Faculty|School|Department)\b", value)
+    return m.group(1).strip() if m else value
+
+
+_SCOPUS_AFFILIATION_CACHE = None
+SCOPUS_AFFILIATION_CACHE_PATH = ROOT / ".cache" / "scopus_affiliations.json"
+
+
+def _load_scopus_affiliation_cache() -> dict:
+    global _SCOPUS_AFFILIATION_CACHE
+    if _SCOPUS_AFFILIATION_CACHE is None:
+        try:
+            _SCOPUS_AFFILIATION_CACHE = json.loads(
+                SCOPUS_AFFILIATION_CACHE_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            _SCOPUS_AFFILIATION_CACHE = {}
+    return _SCOPUS_AFFILIATION_CACHE
+
+
+def fetch_scopus_affiliations(doi: str) -> list[dict]:
+    """Scopus-first affiliation lookup. Failures degrade to PDF parsing."""
+    doi = clean_doi(doi).lower()
+    if not doi:
+        return []
+    cache = _load_scopus_affiliation_cache()
+    if doi in cache:
+        return cache[doi]
+    records = []
+    try:
+        import requests
+        from lib.citedby import scopus
+        ok, _ = scopus.available()
+        if ok:
+            search = requests.get(
+                scopus.SCOPUS_SEARCH_URL, headers=scopus.headers(),
+                params={"query": f'DOI("{doi}")', "count": 1}, timeout=30)
+            entries = ((search.json().get("search-results") or {}).get("entry") or []
+                       if search.status_code == 200 else [])
+            eid = entries[0].get("eid", "") if entries else ""
+            if eid:
+                abstract = requests.get(
+                    f"{scopus.SCOPUS_ABSTRACT_URL}/{eid}",
+                    headers=scopus.headers(), params={"view": "FULL"}, timeout=30)
+                if abstract.status_code == 200:
+                    payload = abstract.json().get("abstracts-retrieval-response") or {}
+                    for aff in payload.get("affiliation") or []:
+                        name = canonical_institution(str(aff.get("affilname") or ""))
+                        if name:
+                            records.append({
+                                "name": name,
+                                "raw_name": str(aff.get("affilname") or name),
+                                "country": str(aff.get("affiliation-country") or ""),
+                                "scopus_id": str(aff.get("@id") or ""),
+                                "source": "scopus",
+                            })
+    except Exception:
+        records = []
+    cache[doi] = records
+    try:
+        SCOPUS_AFFILIATION_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        temp = SCOPUS_AFFILIATION_CACHE_PATH.with_suffix(".tmp")
+        temp.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
+        os.replace(temp, SCOPUS_AFFILIATION_CACHE_PATH)
+    except OSError:
+        pass
+    return records
+
+
+_PDF_FILES = None
+
+
+def locate_pdf(paper: dict, frontmatter: dict) -> Path | None:
+    for value in (paper.get("pdf_path"), frontmatter.get("pdf")):
+        if value and Path(str(value)).exists():
+            return Path(str(value))
+    try:
+        from config_loader import get_zotero_dir
+        root = Path(get_zotero_dir())
+    except Exception:
+        return None
+    global _PDF_FILES
+    if _PDF_FILES is None:
+        try:
+            _PDF_FILES = list(root.rglob("*.pdf"))
+        except OSError:
+            _PDF_FILES = []
+    title_tokens = re.findall(r"[a-z0-9]+", str(paper.get("title") or "").lower())[:10]
+    best, best_score = None, 0
+    for path in _PDF_FILES:
+        stem = path.stem.lower()
+        score = sum(token in stem for token in title_tokens)
+        if score > best_score:
+            best, best_score = path, score
+    return best if best_score >= max(3, len(title_tokens) // 2) else None
+
+
+def _pdf_text_for_affiliations(pdf_path: Path | None, text_path: Path) -> str:
+    """Search first/last PDF pages plus abstract-adjacent and author-info zones."""
+    chunks = []
+    if pdf_path and pdf_path.exists():
+        try:
+            import fitz
+            doc = fitz.open(pdf_path)
+            pages = sorted(set(range(min(3, len(doc)))) |
+                           set(range(max(0, len(doc) - 3), len(doc))))
+            chunks = [doc[i].get_text("text") for i in pages]
+            doc.close()
+        except Exception:
+            chunks = []
+    try:
+        text = text_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        text = ""
+    lines = text.splitlines()
+    chunks.extend(["\n".join(lines[:260]), "\n".join(lines[-600:])])
+    for match in re.finditer(
+            r"(?im)^(?:author information|affiliations?|published online|received:).*$", text):
+        chunks.append(text[max(0, match.start() - 1000):match.start() + 5000])
+    return "\n".join(chunks)
+
+
+def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
+                           fallback_lines: list[str]) -> list[dict]:
+    """Validate Scopus against PDF text and add institutions missing in Scopus."""
+    flat = re.sub(r"\s+", " ", pdf_text)
+    normalized_pdf = norm(flat)
+    out = {}
+    for rec in scopus_records:
+        name = canonical_institution(rec["name"])
+        tokens = [x for x in re.findall(r"[a-z0-9]+", norm(name))
+                  if x not in {"of", "the", "and", "for"}]
+        confirmed = bool(tokens) and sum(t in normalized_pdf for t in tokens) >= max(1, len(tokens) - 1)
+        out[norm(name)] = {
+            **rec, "name": name,
+            "source": "scopus+pdf" if confirmed else "scopus-unconfirmed",
+        }
+
+    segments = list(fallback_lines)
+    segments.extend(re.split(r"(?=\s(?:[1-9]|1\d)(?=[A-Z]))", flat))
+    for raw in segments:
+        if len(raw) > 600:
+            continue
+        parsed = institution_from_raw(raw)
+        if not parsed:
+            continue
+        name, _group = parsed
+        name = canonical_institution(name)
+        key = norm(name)
+        country = country_from_raw(raw)
+        if key in out:
+            out[key]["source"] = "scopus+pdf"
+            out[key]["country"] = out[key].get("country") or country
+        else:
+            out[key] = {
+                "name": name, "raw_name": raw.strip(), "country": country,
+                "scopus_id": "", "source": "pdf",
+            }
+    return list(out.values())
 
 
 def fetch_zotero_items() -> list[dict]:
@@ -386,11 +556,20 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
                 journal = str(meta.get("journal") or p.get("journal") or zdata.get("publicationTitle") or "").strip()
                 date = str(meta.get("date") or p.get("date") or zdata.get("date") or "").strip()
                 source = "local-metadata"
-            header, raw_affs, conf = extract_header(text)
+            # Affiliation precedence: Scopus first, then validate and repair from
+            # the source PDF (first/last pages plus abstract-adjacent zones).
+            scopus_affs = fetch_scopus_affiliations(doi)
+            header, raw_affs, _header_conf = extract_header(text)
+            pdf_path = locate_pdf(p, meta)
+            pdf_text = _pdf_text_for_affiliations(pdf_path, text)
+            affiliation_records = reconcile_affiliations(scopus_affs, pdf_text, raw_affs)
+            sources = {record["source"] for record in affiliation_records}
+            aff_source = "+".join(sorted(sources)) if sources else "missing"
+            conf = 0.95 if "scopus+pdf" in sources else (0.8 if affiliation_records else 0.0)
             if len(date) < 10:
                 date = date_from_header(header) or date
             if update_zotero and zitem and patch_zotero(zitem, {"doi": doi}, official): zupdated += 1
-            conn.execute("INSERT INTO papers (slug,title,publication_date,journal_name,doi,arxiv_id,url,review_dir,zotero_item_key,affiliation_source,affiliation_confidence,header_raw,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET title=excluded.title,publication_date=excluded.publication_date,journal_name=excluded.journal_name,doi=excluded.doi,arxiv_id=excluded.arxiv_id,url=excluded.url,review_dir=excluded.review_dir,zotero_item_key=excluded.zotero_item_key,affiliation_source=excluded.affiliation_source,affiliation_confidence=excluded.affiliation_confidence,header_raw=excluded.header_raw,metadata_json=excluded.metadata_json", (p["slug"],title,date,journal,doi,arxiv,external_url(doi,arxiv),rel(directory),zitem.get("key","") if zitem else p.get("zotero_item_key", ""),"text.md:header-heuristic",conf,header,json.dumps({"publication_source": source, "topics": p.get("topics", [])}, ensure_ascii=False)))
+            conn.execute("INSERT INTO papers (slug,title,publication_date,journal_name,doi,arxiv_id,url,review_dir,zotero_item_key,affiliation_source,affiliation_confidence,header_raw,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET title=excluded.title,publication_date=excluded.publication_date,journal_name=excluded.journal_name,doi=excluded.doi,arxiv_id=excluded.arxiv_id,url=excluded.url,review_dir=excluded.review_dir,zotero_item_key=excluded.zotero_item_key,affiliation_source=excluded.affiliation_source,affiliation_confidence=excluded.affiliation_confidence,header_raw=excluded.header_raw,metadata_json=excluded.metadata_json", (p["slug"],title,date,journal,doi,arxiv,external_url(doi,arxiv),rel(directory),zitem.get("key","") if zitem else p.get("zotero_item_key", ""),aff_source,conf,header,json.dumps({"publication_source": source, "topics": p.get("topics", []), "pdf_path": str(pdf_path or "")}, ensure_ascii=False)))
             pid = conn.execute("SELECT paper_id FROM papers WHERE slug=?", (p["slug"],)).fetchone()[0]
             conn.execute("DELETE FROM paper_authors WHERE paper_id=?", (pid,)); conn.execute("DELETE FROM paper_institutions WHERE paper_id=?", (pid,))
             authors = meta.get("authors") or p.get("authors") or []
@@ -398,19 +577,23 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
             for order, author in enumerate(authors, 1):
                 aid = upsert(conn, "authors", str(author).strip(), "display_name")
                 conn.execute("INSERT OR IGNORE INTO paper_authors VALUES (?,?,?,?,?,?)", (pid,aid,order,int(order==1),0,"review.frontmatter/_papers_index"))
-            for raw in raw_affs:
-                parsed = institution_from_raw(raw)
-                if not parsed: continue
-                name, group = parsed
+            for record in affiliation_records:
+                name = canonical_institution(record["name"])
+                raw = record.get("raw_name") or name
+                group = ""
+                for group_name, pattern in GROUPS:
+                    if re.search(pattern, name, re.I):
+                        group = group_name
+                        break
                 gid = None
                 if group:
                     row = conn.execute("SELECT group_id FROM institution_groups WHERE normalized_name=?", (norm(group),)).fetchone()
                     gid = row[0] if row else conn.execute("INSERT INTO institution_groups (group_name,normalized_name) VALUES (?,?)", (group,norm(group))).lastrowid
                 row = conn.execute("SELECT institution_id FROM institutions WHERE normalized_name=?", (norm(name),)).fetchone()
-                iid = row[0] if row else conn.execute("INSERT INTO institutions (institution_name,normalized_name,group_id,source) VALUES (?,?,?,?)", (name,norm(name),gid,"text.md:normalized")).lastrowid
+                iid = row[0] if row else conn.execute("INSERT INTO institutions (institution_name,normalized_name,group_id,source) VALUES (?,?,?,?)", (name,norm(name),gid,record["source"])).lastrowid
                 conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
-                country = country_from_raw(raw)
-                conn.execute("INSERT OR IGNORE INTO paper_institutions (paper_id,institution_id,raw_name,country_name,source) VALUES (?,?,?,?,?)", (pid,iid,raw,country,"text.md:normalized"))
+                country = record.get("country") or country_from_raw(raw)
+                conn.execute("INSERT OR IGNORE INTO paper_institutions (paper_id,institution_id,raw_name,country_name,source) VALUES (?,?,?,?,?)", (pid,iid,raw,country,record["source"]))
             for kind, path in (("review",review),("text",text)):
                 if path.exists(): conn.execute("INSERT OR REPLACE INTO source_documents VALUES (?,?,?,?,?)", (pid,kind,rel(path),sha256(path),path.stat().st_size))
             print(f"[bibliography] progress={index}/{total} ({index / total * 100:.1f}%) title={title[:100]}", flush=True)
@@ -515,8 +698,12 @@ def main() -> int:
     ap.add_argument("--no-email", action="store_true")
     ap.add_argument("--skip-zotero", action="store_true",
                     help="skip the full Zotero library scan for a local incremental repair")
+    ap.add_argument("--slugs", help="comma-separated slug prefixes to rebuild")
     args = ap.parse_args()
     entries = load_entries()
+    if args.slugs:
+        prefixes = [value.strip() for value in args.slugs.split(",") if value.strip()]
+        entries = [p for p in entries if any(p["slug"].startswith(prefix) for prefix in prefixes)]
     if args.changed_only:
         entries = changed_entries(entries, args.output)
     elif not args.all:
