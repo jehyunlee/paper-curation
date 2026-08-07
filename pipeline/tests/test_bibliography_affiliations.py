@@ -49,6 +49,55 @@ class BibliographyAffiliationTests(unittest.TestCase):
         self.assertEqual(by_name["University of Toronto"]["source"], "scopus+pdf")
         self.assertIn("University Health Network", by_name)
 
+    def test_scopus_college_profile_maps_to_parent_institution(self):
+        rows = bib.reconcile_affiliations([{
+            "name": "College of Engineering",
+            "raw_name": "College of Engineering",
+            "country": "United States",
+            "scopus_id": "60137961",
+            "source": "scopus",
+        }], "University of Illinois at Chicago", [])
+        self.assertEqual(
+            [row["name"] for row in rows],
+            ["University of Illinois at Chicago"],
+        )
+
+    def test_unresolved_college_subunit_is_not_stored_as_institution(self):
+        rows = bib.reconcile_affiliations([{
+            "name": "College of Education",
+            "raw_name": "College of Education",
+            "country": "United States",
+            "scopus_id": "unknown",
+            "source": "scopus",
+        }], "", [])
+        self.assertEqual(rows, [])
+        self.assertTrue(
+            bib.is_suspicious_institution_name("College of Education"))
+        self.assertFalse(
+            bib.is_suspicious_institution_name("College of Staten Island"))
+
+    def test_named_college_subunit_maps_to_explicit_parent(self):
+        self.assertEqual(
+            bib.canonical_institution(
+                "College of Computer Science and Technology, Zhejiang University"),
+            "Zhejiang University",
+        )
+
+    def test_college_raw_affiliation_expands_named_parent(self):
+        self.assertEqual(
+            bib.resolve_institution_from_raw(
+                "Department of Pharmacy Practice, College of Pharmacy, "
+                "National University of Science and Technology, Muscat, Oman",
+                "College of Pharmacy",
+            ),
+            "National University of Science & Technology, Oman",
+        )
+        self.assertEqual(
+            bib.canonical_institution(
+                "College of Humanities, Arts, and Social Sciences"),
+            "Nanyang Technological University",
+        )
+
     def test_longest_registered_parent_wins_over_author_and_department(self):
         cases = {
             (

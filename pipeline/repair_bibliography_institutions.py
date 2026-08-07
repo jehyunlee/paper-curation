@@ -38,8 +38,8 @@ def _should_prune_unresolved(name: str) -> bool:
     if len(name) > 90:
         return True
     if bib.re.search(
-            r"^(?:Department|School|Faculty)\b|\b(?:Authors?|Published|"
-            r"Proceedings|Copyright|is with|are with|work was)\b",
+            r"^(?:College of|Department|School|Faculty)\b|\b(?:Authors?|"
+            r"Published|Proceedings|Copyright|is with|are with|work was)\b",
             name, bib.re.I):
         return True
     return not bool(bib.re.search(
@@ -53,17 +53,22 @@ def audit_and_repair(db_path: Path, *, execute: bool = False) -> dict:
     bib.initialize_institution_registry(conn)
     rows = conn.execute(
         "SELECT pi.paper_id,pi.institution_id,pi.raw_name,pi.country_name,"
-        "pi.source,i.institution_name FROM paper_institutions pi "
+        "pi.source,i.institution_name,p.doi,p.title,p.slug "
+        "FROM paper_institutions pi "
         "JOIN institutions i USING(institution_id) "
+        "JOIN papers p USING(paper_id) "
         "ORDER BY pi.paper_id,pi.institution_id"
     ).fetchall()
 
     changes = []
     unresolved = Counter()
     pruned = []
-    for paper_id, institution_id, raw, country, source, current in rows:
+    for (paper_id, institution_id, raw, country, source, current,
+         doi, title, slug) in rows:
         canonical_current = bib.canonical_institution(current)
-        resolved = bib.resolve_institution_from_raw(raw, current)
+        resolved = bib.cached_scopus_parent(doi, title, current)
+        if not resolved:
+            resolved = bib.resolve_institution_from_raw(raw, current)
         if not resolved and canonical_current != current:
             resolved = canonical_current
         if not resolved and bib.is_suspicious_institution_name(current):
@@ -77,6 +82,7 @@ def audit_and_repair(db_path: Path, *, execute: bool = False) -> dict:
                 "new_name": resolved,
                 "raw_name": raw,
                 "country": country or bib.country_from_raw(raw),
+                "slug": slug,
                 "source": source,
             })
         elif bib.is_suspicious_institution_name(current):
@@ -97,6 +103,9 @@ def audit_and_repair(db_path: Path, *, execute: bool = False) -> dict:
         "pruned_rows": len(pruned),
         "unresolved_rows": sum(unresolved.values()),
         "unresolved_names": len(unresolved),
+        "top_pruned": Counter(
+            row["name"] for row in pruned
+        ).most_common(100),
         "top_changes": Counter(
             (row["old_name"], row["new_name"]) for row in changes
         ).most_common(100),

@@ -321,6 +321,12 @@ INSTITUTION_CANONICAL_ALIASES = [
     (r"^Illinois Institute(?: of Technology)?$", "Illinois Institute of Technology"),
     (r"^Eastern Institute(?: of Technology)?$", "Eastern Institute of Technology"),
     (r"^Polish Academy(?: of Sciences)?$", "Polish Academy of Sciences"),
+    (r"^College of (?:Chemical and Biological Engineering|Computer Science and Technology), Zhejiang University$", "Zhejiang University"),
+    (r"^College of (?:Computer Science and Technology|Intelligent Systems Science and Engineering), Harbin Engineering University$", "Harbin Engineering University"),
+    (r"^College of Computer Science and Technology, Harbin Institute of Technology$", "Harbin Institute of Technology"),
+    (r"^College of Education, Zhejiang University$", "Zhejiang University"),
+    (r"^College of (?:Arts and Sciences|Computing Studies|Education) Pampanga State University.*$", "Pampanga State University"),
+    (r"^College of Humanities, Arts, and Social Sciences$", "Nanyang Technological University"),
     (r"^University of Toronto Faculty of Medicine$", "University of Toronto"),
     (r"^University Health Network,? Toronto.*$", "University Health Network"),
     (r"^Microsoft Research,? Redmond.*$", "Microsoft Research"),
@@ -393,9 +399,50 @@ RAW_INSTITUTION_ALIASES = [
     (r"\bHong Kong University of Science and Technology\b", "The Hong Kong University of Science and Technology"),
     (r"\bChinese University of Hong Kong,?\s*Shenzhen\b", "The Chinese University of Hong Kong, Shenzhen"),
     (r"\bChinese University of Hong Kong\b", "The Chinese University of Hong Kong"),
+    (r"\bPampanga State University\b", "Pampanga State University"),
+    (r"\bHal Marcus College of Science and Engineering\b", "University of West Florida"),
+    (r"\bNational University of Science (?:and|&) Technology,?\s*Muscat,?\s*Oman\b", "National University of Science & Technology, Oman"),
     (r"\bColorado State University\b", "Colorado State University"),
     (r"\bInstitute of Physics\b", "Institute of Physics"),
 ]
+
+# Scopus sometimes returns a university subunit as an independent affiliation.
+# These IDs are stable organization records; normalize them to the degree-granting
+# parent verified against the corresponding article affiliation blocks.
+SCOPUS_AFFILIATION_PARENT_BY_ID = {
+    "60028786": "Iowa State University",
+    "60142023": "The University of North Carolina at Chapel Hill",
+    "60155621": "University of Miami",
+    "60117840": "Zhejiang University",
+    "60362739": "Jilin University",
+    "60417404": "Harbin Engineering University",
+    "60117751": "Zhejiang University",
+    "60097290": "Georgia Institute of Technology",
+    "60117795": "Zhejiang University",
+    "60031330": "Carnegie Mellon University",
+    "60104842": "Carnegie Mellon University",
+    "60137364": "Oregon State University",
+    "60137961": "University of Illinois at Chicago",
+    "60146411": "Michigan State University",
+    "60148980": "Texas A&M University",
+    "60149838": "The Ohio State University",
+    "60149993": "University of Arizona",
+    "60154915": "The University of Iowa",
+    "60155914": "University of Notre Dame",
+    "60279839": "University of Nevada, Reno",
+    "60154476": "University of Colorado Boulder",
+    "60279457": "University of Vermont",
+    "60139609": "Clemson University",
+    "60118484": "Nanyang Technological University",
+    "60417010": "Harbin Engineering University",
+    "130639393": "The Ohio State University",
+    "60145179": "George Mason University",
+    "60008161": "Idaho State University",
+    "60152345": "University of Minnesota",
+    "60190913": "Flinders University",
+    "60149312": "Temple University",
+    "60156837": "University of Washington",
+}
 
 INSTITUTION_SEED_NAMES = {
     "Massachusetts Institute of Technology",
@@ -472,6 +519,7 @@ GENERIC_INSTITUTION_NAMES = {
 
 STANDALONE_INSTITUTION_NAMES = {
     "London School of Economics and Political Science",
+    "College of Staten Island",
     "Allen Institute",
     "Max Planck Institute",
     "University of California",
@@ -507,9 +555,9 @@ def is_suspicious_institution_name(name: str) -> bool:
     if not value or value in GENERIC_INSTITUTION_NAMES or len(value) > 90:
         return True
     return bool(re.search(
-        r"@|\b(?:Department|School of|Faculty|Published|Accepted|Proceedings|"
-        r"Corresponding|Authors?|Laboratory for|is with|are with|work was|"
-        r"Submitted|Copyright)\b|(?:\band|\bof)$", value, re.I))
+        r"@|^College of\b|\b(?:Department|School of|Faculty|Published|Accepted|"
+        r"Proceedings|Corresponding|Authors?|Laboratory for|is with|are with|"
+        r"work was|Submitted|Copyright)\b|(?:\band|\bof)$", value, re.I))
 
 
 def set_institution_registry(names) -> None:
@@ -704,6 +752,28 @@ def _load_scopus_record_cache() -> dict:
         except Exception:
             _SCOPUS_RECORD_CACHE = {}
     return _SCOPUS_RECORD_CACHE
+
+def scopus_parent_institution(scopus_id: str) -> str:
+    return SCOPUS_AFFILIATION_PARENT_BY_ID.get(str(scopus_id or "").strip(), "")
+
+
+def cached_scopus_parent(doi: str, title: str,
+                         affiliation_name: str) -> str:
+    cache = _load_scopus_record_cache()
+    record = cache.get(clean_doi(doi).lower()) if doi else None
+    if not isinstance(record, dict):
+        record = cache.get("title:" + norm(title))
+    if not isinstance(record, dict):
+        return ""
+    wanted = norm(affiliation_name)
+    for affiliation in record.get("affiliations") or []:
+        if norm(str(affiliation.get("name") or "")) != wanted:
+            continue
+        parent = scopus_parent_institution(
+            str(affiliation.get("scopus_id") or ""))
+        if parent:
+            return parent
+    return ""
 
 
 def _format_issn(value) -> str:
@@ -949,7 +1019,15 @@ def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
     normalized_pdf = norm(flat)
     out = {}
     for rec in scopus_records:
-        name = canonical_institution(rec["name"])
+        original_name = str(rec.get("name") or "")
+        parent = scopus_parent_institution(
+            str(rec.get("scopus_id") or ""))
+        name = canonical_institution(parent or original_name)
+        if is_suspicious_institution_name(name):
+            name = resolve_institution_from_raw(
+                str(rec.get("raw_name") or original_name), name)
+        if not name or is_suspicious_institution_name(name):
+            continue
         tokens = [x for x in re.findall(r"[a-z0-9]+", norm(name))
                   if x not in {"of", "the", "and", "for"}]
         confirmed = bool(tokens) and sum(t in normalized_pdf for t in tokens) >= max(1, len(tokens) - 1)
