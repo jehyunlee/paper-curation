@@ -518,15 +518,42 @@ def build_related_section(slug, connections):
     return "\n".join(lines) + "\n"
 
 
+def _rebuild_title_header(frontmatter_yaml):
+    """H1 이 유실된 review.md 용 제목 헤더 복원 (run_update_force.REVIEW_TEMPLATE 와 동일 형식)."""
+    def field(name):
+        m = re.search(r'(?m)^%s:\s*(.+)$' % name, frontmatter_yaml)
+        return m.group(1).strip().strip('"').strip("'") if m else ""
+
+    title = field("title")
+    date = field("date")
+    doi = field("doi")
+    am = re.search(r'(?m)^authors:\n((?:\s+-\s.*\n)+)', frontmatter_yaml)
+    authors = ", ".join(
+        re.sub(r'^\s*-\s*', '', ln).strip().strip('"').strip("'")
+        for ln in am.group(1).splitlines()) if am else ""
+    if doi and doi.upper() not in {"N/A", "미제공", "NONE"}:
+        ref = f"**DOI**: [{doi}](https://doi.org/{doi})"
+    else:
+        url = field("url")
+        ref = f"**URL**: [{url}]({url})" if url else "**DOI**: N/A"
+    return f"# {title}\n\n> **저자**: {authors} | **날짜**: {date} | {ref}\n\n---\n\n"
+
+
 def inject_into_review(md_path, frontmatter_yaml, related_section):
     """review.md에 frontmatter 삽입/교체 + Related Papers 섹션 추가/교체."""
     with open(md_path, "r", encoding="utf-8") as f:
-        content = f.read()
+        original = f.read()
+        content = original
 
-    # 기존 frontmatter + 잔해 제거: 본문은 항상 "# 제목"으로 시작
+    # 기존 frontmatter + 잔해 제거: 본문은 항상 "# 제목"으로 시작한다.
+    # H1 이 유실된 파일(예: 과거 salvage 산출물)을 그대로 두면 frontmatter 가
+    # 중복 삽입되고, review_to_html 이 제목을 slug 경로로 대체해 버린다.
     h1_match = re.search(r'^# .+', content, re.MULTILINE)
     if h1_match:
         content = content[h1_match.start():]
+    else:
+        body = re.sub(r'^---\n.*?\n---\n', '', content, flags=re.DOTALL).lstrip("\n")
+        content = _rebuild_title_header(frontmatter_yaml) + body
 
     # 기존 Related Papers 섹션 제거
     content = re.sub(
@@ -538,9 +565,11 @@ def inject_into_review(md_path, frontmatter_yaml, related_section):
     result = frontmatter_yaml + "\n\n" + content.strip()
     if related_section:
         result += "\n" + related_section
-
+    if result == original:
+        return False
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(result)
+    return True
 
 
 def main():

@@ -1,0 +1,2203 @@
+---
+title: "AI for Science 지형도 — 발표 원고 v2 (50장, 줄글)"
+topic: ai4s
+slides: 50
+corpus_papers: 2658
+body_chars: 58955
+evidence_since: 2025
+generated: 2026-08-06
+tags:
+  - ai4science
+  - 발표원고
+  - 연구동향
+  - ai4s
+---
+
+# AI for Science 지형도 — 발표 원고 50장 (v2 · 줄글)
+
+> [!info] 읽는 법
+> 슬라이드 한 장 = 절(section) 하나. `> [!abstract]` 는 **화면에 띄울 한 줄**, 그 아래 문단이 **말할 내용**이다.
+> 코퍼스 **2,658편** · 대분류 **8개** · 서브카테고리 **82개** 중 상위 **5개씩** · 본문 **58,955자**.
+> 사례는 **2025년 이후 우선**(코퍼스의 83%). 레퍼런스 링크는 논문별 리뷰 문서(`../../docs/papers/<slug>/index.html`)로 연결된다.
+
+## 목차
+
+- **오프닝**
+    - `S01` AI for Science, 2026년 지형도
+    - `S02` 이 지도는 어떻게 만들어졌나
+    - `S03` 코퍼스 한눈에 보기
+    - `S04` 여덟 개 대분류의 지형
+    - `S05` 관통하는 한 줄: 예측 → 설계 → 자율 → 검증
+- **제1부 · AI 기반 신약·신소재 발견**
+    - `S06` 약물–유전자 서명 분석 — 141편
+    - `S07` 단백질 결합부위 예측 — 96편
+    - `S08` 조절서열·유전자 발현 예측 — 68편
+    - `S09` 생물학 위상·표현 해석 — 49편
+    - `S10` 과학 멀티모달 벤치마킹 — 44편
+- **제2부 · LLM·에이전트 평가**
+    - `S11` 웹 증강 RL 추론 에이전트 — 62편
+    - `S12` 프런티어 모델·멀티모달 안전성 평가 — 57편
+    - `S13` 오픈소스 코드 LLM·명령어 튜닝 — 43편
+    - `S14` 자기개선·주석 공정성·통계 타당성 — 42편
+    - `S15` 불확실성 인지 생성·대리모델 — 41편
+- **제3부 · 물리·환경 과학 AI**
+    - `S16` 신경 연산자·물리정보 PDE 해석 — 102편
+    - `S17` 잠재변수 생성 솔버 — 93편
+    - `S18` 과학 파운데이션 모델과 통계 엄밀성 — 88편
+    - `S19` AI 수치예보·기후 모델 — 31편
+    - `S20` 물리 제어 RL 견고성·real-to-sim — 14편
+- **제4부 · 분자 시뮬레이션·생성 모델링**
+    - `S21` 확산모델 보상 미세조정 — 66편
+    - `S22` 등변 힘장·기계학습 원자간 퍼텐셜 — 59편
+    - `S23` 결정구조 생성 모델링 — 47편
+    - `S24` 대리 서술자 검증·반증 — 31편
+    - `S25` 분자 물성·분광 검증 — 30편
+- **제5부 · 과학 자동화 에이전트 AI**
+    - `S26` 도구 사용 과학 에이전트 — 91편
+    - `S27` 자율 과학 발견 에이전트 — 37편
+    - `S28` 임상 LLM 응용 — 31편
+    - `S29` 장비·시설 자동화 에이전트 — 27편
+    - `S30` 다중 에이전트 사회 시뮬레이션 — 21편
+- **제6부 · 형식 방법론·계산 추론**
+    - `S31` 고차논리 형식 정리증명 — 157편
+    - `S32` 이론 한계·AI 조력 증명 — 33편
+    - `S33` 대칭성 인지 솔버·방정식 발견 — 24편
+    - `S34` LLM 지원 구조·물리 설계 최적화 — 14편
+    - `S35` LLM 주도 CFD·멀티피직스 자동화 — 7편
+- **제7부 · 과학 정보추출·질의응답**
+    - `S36` 다국어 사후학습·백본 적응 — 47편
+    - `S37` 과학 도표·시각문서 이해 — 45편
+    - `S38` 자동 주장 검증 — 33편
+    - `S39` 생의학·임상 지식접지 QA — 23편
+    - `S40` RAG와 모호성 해소 — 20편
+- **제8부 · AI 지원 학술 커뮤니케이션**
+    - `S41` 학술 메타데이터·연구 무결성 데이터 — 37편
+    - `S42` LLM 지원 동료심사 — 34편
+    - `S43` 과학 가설 재조합 — 19편
+    - `S44` 그래프 기반 과학 요약 — 15편
+    - `S45` 인용 문맥 추천·검증 — 12편
+- **종합**
+    - `S46` 수렴 신호: 경계가 무너지는 곳
+    - `S47` 부상과 쇠퇴
+    - `S48` 비어 있는 자리
+    - `S49` 2026 검증 전환의 여섯 축
+    - `S50` 그래서 무엇을 할 것인가
+
+---
+
+## S01 · AI for Science, 2026년 지형도
+
+*오프닝* · *표지*
+
+<sub>코퍼스 2,658편 · 대분류 8개 · 서브카테고리 82개 · 2025년 이후 83%</sub>
+
+> [!abstract] 화면에 띄울 한 줄
+> 논문 한 편씩 읽어서는 보이지 않는 것 — 어디에 사람이 몰렸고, 어디가 비었는가.
+
+**이 발표는 논문 소개가 아니다. 2,658편을 한 장의 지도로 눕혀 놓고, 사람과 돈이 어디에 몰렸는지, 반대로 어디가 비어 있는지를 보는 자리다.**
+
+우리가 다루는 코퍼스는 ai4s 토픽에 배정된 논문 2,658편 전수다. 초록만 훑은 목록이 아니라 각 편마다 본문을 읽고 한국어 리뷰를 남긴 결과물이며, 그 리뷰가 곧 이 발표의 근거 문서다. 그래서 오늘 나오는 모든 주장은 슬라이드 아래 레퍼런스를 눌러 원문 리뷰까지 두 번 클릭 안에 내려갈 수 있다. 발표가 끝난 뒤에 '그 숫자 어디서 나왔냐'는 질문이 나오면, 말로 답하지 않고 링크로 답하겠다는 뜻이다.
+
+코퍼스의 성격은 분명히 밝혀 둘 필요가 있다. 이 목록은 인류가 쌓아 온 AI4Science 지식의 축적본이 아니다. 매주 새로 나온 논문을 수집해 쌓은 결과이기 때문에 2026년 논문이 1,819편, 2025년이 377편으로 전체의 83%가 최근 두 해에 몰려 있다. 고전이 적다는 것은 약점이지만, 전략 판단이 목적이라면 오히려 유리하다. 우리가 보려는 것은 '무엇이 위대했는가'가 아니라 '지금 어디에서 전투가 벌어지고 있는가'이기 때문이다.
+
+구조는 두 층이다. 아래층에는 논문이 뭉친 모양대로 잘라낸 서브카테고리 82개가 있고, 위층에는 그것을 묶은 대분류 8개가 있다. 오늘은 그중 편수 상위 다섯 개씩, 모두 마흔 개의 서브카테고리를 한 장씩 다룬다. 즉 슬라이드 한 장이 곧 하나의 연구 최전선이고, 그 장에는 규모(몇 편), 활동 기간(언제부터 언제까지), 상태(가속·안정·부상·감소), 대표 도구, 대표 논문, 그리고 '우리에게 무엇인가'가 함께 실린다.
+
+사례는 의도적으로 2025년 이후로 몰았다. AlphaFold2나 PINN처럼 판을 만든 고전은 맥락을 잡는 데 필요한 만큼만 '배경'으로 한 줄씩 붙이고, 본문은 지난 열여덟 달 사이에 나온 시스템과 숫자로 채웠다. 2023년 이야기를 아무리 정교하게 해도 지금 결정에는 쓸 수 없기 때문이다. 반대로 2026년 논문만 나열하면 흐름이 사라지므로, 각 장은 '무엇이 끝났고 무엇이 남았는지'를 먼저 정리한 뒤 최신 사례로 들어간다.
+
+> [!tip] 정리
+> 오늘 가져가야 할 것은 개별 논문 지식이 아니라 배치 감각이다. 마흔 개 칸 중에서 우리가 들어갈 수 있는 칸, 이미 늦은 칸, 그리고 남들이 아직 손대지 않은 칸을 구분하는 것. 그것이 이 지도의 용도다.
+
+---
+
+## S02 · 이 지도는 어떻게 만들어졌나
+
+*오프닝* · *방법*
+
+> [!abstract] 화면에 띄울 한 줄
+> 사람이 카테고리를 먼저 정하지 않았다. 논문이 뭉친 모양에서 카테고리를 꺼냈다.
+
+**분류가 흔들리면 결론도 흔들린다. 그래서 이 지도를 어떻게 잘랐는지부터 밝힌다. 핵심은 카테고리를 사람이 먼저 정하지 않았다는 점이다.**
+
+통상적인 동향 보고서는 분석자가 먼저 목차를 정하고 논문을 그 칸에 넣는다. 이 방식의 문제는 분석자가 모르는 분야가 목차에서 아예 사라진다는 것이다. 그래서 우리는 순서를 뒤집었다. 먼저 논문 전체를 SPECTER2로 임베딩했다. SPECTER2는 인용 관계로 학습된 논문 특화 임베딩이라, 단어가 겹치지 않아도 같은 문제를 푸는 논문끼리 가까워진다. 그다음 UMAP으로 5차원으로 줄이고 HDBSCAN 밀도 클러스터링을 걸어, 논문이 실제로 뭉친 자리를 그대로 잘라냈다.
+
+잘라낸 미세 클러스터에는 c-TF-IDF로 키워드를 뽑았다. 클러스터를 하나의 문서로 보고 그 안의 단어 빈도를 전체 클래스 역빈도로 나누는 방식이어서, '모델'이나 '학습'처럼 어디에나 나오는 단어는 자동으로 걸러지고 그 클러스터에서만 유별나게 많이 나오는 단어가 남는다. 그렇게 남은 키워드 묶음을 LLM이 읽고 이름을 붙였다. 이름 짓기에만 언어모델을 쓴 것이고, 어떤 논문이 어디에 들어갈지는 언어모델이 아니라 밀도가 결정했다.
+
+논문 한 편은 주 카테고리 하나와 함께 최대 세 개의 카테고리에 동시 배정된다. AI4Science 논문은 대개 한 칸에 얌전히 들어가지 않기 때문이다. 예를 들어 확산모델로 결정 구조를 생성하면서 그 성능을 새 벤치마크로 재는 논문은 '분자 시뮬레이션'과 'LLM·에이전트 평가' 양쪽에 동시에 속한다. 이 중복은 오류가 아니라 이 분야의 실제 모양이다.
+
+그래서 편수는 두 기준으로 읽어야 한다. '고유 배정'은 주 카테고리만 세는 방식이라 여덟 칸을 더하면 코퍼스 크기 2,658편과 정확히 같고, '중복 포함'은 배정된 모든 카테고리를 세는 방식이라 여덟 칸의 합이 7,974편으로 코퍼스의 세 배가 된다. 웹 인덱스(paper-curation 토픽 페이지)의 카테고리 헤더에 붙은 편수는 중복 포함 기준이다 — 사이트는 논문 한 편을 배정된 모든 카테고리에 카드로 노출하기 때문이다. 반대로 이 덱의 서브카테고리 커버리지 산술은 분모가 흔들리면 안 되므로 고유 배정 기준을 쓴다. 뒤 표에는 두 숫자를 나란히 실었으니, 사이트 숫자와 대조할 때는 오른쪽 열을 보면 된다.
+
+각 서브카테고리에 붙은 활동 기간과 상태 표시는 별도의 타임라인 분석에서 왔다. 카테고리별로 논문을 연도순으로 늘어놓고 무엇이 언제 바뀌었는지 서술한 뒤, 가속·안정·부상·감소 네 등급을 매긴 결과다. 여기서 '가속'은 최근 논문 밀도가 계속 오르는 칸, '부상'은 2025년 이후에야 논문이 생긴 칸, '안정'은 꾸준하지만 폭발하지 않는 칸, '감소'는 실제로 줄고 있는 칸을 뜻한다.
+
+한계는 두 가지를 분명히 하고 시작하자. 첫째, 편수는 관심의 밀도이지 중요도가 아니다. 뒤에 나올 CFD 자동화 칸은 일곱 편뿐이지만 보고된 성공률은 이미 운용 수준이다. 둘째, 코퍼스가 최신 편향을 갖는다는 점이다. 어떤 칸이 작아 보인다면 그 분야가 작은 것이 아니라 최근 신규 논문이 적을 수도 있다. 이 두 가지를 감안하지 않으면 지도를 오독하게 된다.
+
+> [!tip] 정리
+> 정리하면 이 지도는 '사람이 아는 분류'가 아니라 '논문이 실제로 뭉친 분류'다. 낯선 이름의 칸이 나오면 그것은 분류 오류가 아니라, 우리가 그 분야를 아직 이름으로 부르지 못하고 있었다는 신호로 읽어야 한다.
+
+---
+
+## S03 · 코퍼스 한눈에 보기
+
+*오프닝* · *코퍼스*
+
+> [!abstract] 화면에 띄울 한 줄
+> 이 코퍼스는 '누적 지식'이 아니라 '현재 전선'에 가깝다.
+
+**숫자를 먼저 보자. 2,658편 중 2026년 논문이 1,819편이다. 우리는 지금 벌어지고 있는 일을 보고 있고, 그것이 이 지도의 강점이자 약점이다.**
+
+| 연도 | 편수 |  |
+|---|---|---|
+| 2018 | 7편 | █ |
+| 2019 | 10편 | █ |
+| 2020 | 10편 | █ |
+| 2021 | 18편 | █ |
+| 2022 | 18편 | █ |
+| 2023 | 113편 | ██ |
+| 2024 | 274편 | █████ |
+| 2025 | 377편 | ██████ |
+| 2026 | 1,819편 | ██████████████████████████████ |
+
+연도 분포를 보면 2018년 이전은 손에 꼽을 정도이고, 2023년 113편, 2024년 274편, 2025년 377편을 거쳐 2026년에 1,819편으로 급증한다. 이 곡선의 상당 부분은 코퍼스 수집 방식에서 온다. 매주 새 논문을 밀어 넣는 파이프라인이므로 최근이 두꺼운 것이 당연하다. 그러나 그것만으로는 설명되지 않는 부분도 있다. AI4Science 자체의 발표량이 실제로 폭증했고, 특히 에이전트·파운데이션 모델·검증 방법론 세 갈래에서 논문 수가 자릿수로 늘었다.
+
+이 분포는 발표 방식에 직접 영향을 준다. 만약 2018년부터 균등하게 쌓인 코퍼스라면 '역사적 흐름'을 말하는 것이 자연스럽다. 그러나 지금 코퍼스는 최근 열여덟 달에 무게중심이 있으므로, 역사 서술은 배경으로 짧게 두고 '현재 무엇이 시도되고 있으며 어디서 막혔는지'를 본론으로 삼는 편이 정직하다. 오늘 마흔 개 칸을 그렇게 구성했다.
+
+주의할 지표가 하나 더 있다. 피인용 데이터가 붙은 논문은 전체의 극히 일부다. 2026년 논문 대부분은 아직 인용될 시간이 없었기 때문이다. 따라서 인용 수는 '중요도 순위'로 쓸 수 없고, 오래된 논문의 무게를 확인하는 보조 지표로만 쓴다. AlphaFold 3가 인용 14,488, 관계형 기계학습 리뷰가 1,662처럼 큰 숫자를 달고 등장하면 그것은 그 논문이 최신이라는 뜻이 아니라 이미 뿌리 노드가 되었다는 뜻이다.
+
+반대로 2018년 이전 소수 논문의 역할은 과소평가하면 안 된다. BERT, Neural ODE, PINN, SCANPY, S2ORC 같은 논문은 편수로는 한두 편이지만 여덟 개 대분류 전부가 인용한다. 그래서 오늘 이 논문들은 개별 슬라이드를 받지 않고, 각 칸의 '배경' 문장 안에서 반복적으로 등장한다. 이름이 여러 칸에서 계속 나오면 그 논문은 인프라가 되었다고 보면 된다.
+
+> [!tip] 정리
+> 요약하면 이 코퍼스는 축적된 교과서가 아니라 전선 사진이다. 교과서로 쓰려면 부족하지만, 다음 열두 달의 예산과 인력을 어디에 둘지 결정하는 데는 이만한 자료가 없다.
+
+---
+
+## S04 · 여덟 개 대분류의 지형
+
+*오프닝* · *지형도*
+
+> [!abstract] 화면에 띄울 한 줄
+> '만드는 연구'와 '재는 연구'가 나란히 1·2위. 이 조합이 2026년의 성격이다.
+
+**여덟 개 대분류의 규모 순서 자체가 하나의 메시지다. '만드는 연구'와 '재는 연구'가 나란히 1·2위이고, 그 뒤를 물리·환경 시뮬레이션이 따른다.**
+
+| 대분류 | 고유 배정 | 중복 포함 | 서브카테고리 | 최대 서브카테고리 |
+|---|---|---|---|---|
+| AI 기반 신약·신소재 발견 | 606 | 1,383 | 13 | Drug Compound Gene Signature Analysis |
+| LLM·에이전트 평가 | 457 | 1,695 | 16 | Web-Augmented RL Reasoning Agents |
+| 물리·환경 과학 AI | 338 | 1,011 | 6 | Neural Operator PDE Solving |
+| 분자 시뮬레이션·생성 모델링 | 307 | 1,048 | 9 | Diffusion Model Reward Fine-tuning |
+| 과학 자동화 에이전트 AI | 282 | 972 | 10 | Scientific Tool-Using AI Agents |
+| 형식 방법론·계산 추론 | 235 | 545 | 5 | Higher-Order Logic Proof Systems |
+| 과학 정보추출·질의응답 | 221 | 761 | 8 | Crosslingual Post-Training Methods |
+| AI 지원 학술 커뮤니케이션 | 212 | 559 | 15 | Academic Metadata & Causal Datasets |
+
+가장 큰 칸은 AI 기반 신약·신소재 발견으로 고유 배정 606편, 중복 포함 1,383편이다. 단백질·유전체·화합물처럼 데이터와 검증 경로가 이미 갖춰진 도메인이 AI를 가장 빠르게 흡수했다는 뜻이다. 두 번째는 LLM·에이전트 평가로 고유 배정 457편, 중복 포함 1,695편이다. 흥미로운 것은 이 칸이 '무엇을 만들었다'가 아니라 '무엇을 못하는지 측정했다'는 논문들로 채워져 있다는 점이다. 만드는 쪽과 재는 쪽이 거의 같은 속도로 자란다는 것은 이 분야가 성숙 단계에 들어섰다는 신호다.
+
+두 기준에서 1·2위가 뒤집히는 것도 그 자체로 정보다. 고유 배정으로는 신약·신소재가 1위지만 중복 포함으로는 LLM·에이전트 평가가 1위로 올라선다. 평가 논문은 남의 칸에 얹히기 때문이다 — 이 칸의 중복 배수는 3.7배로 여덟 칸 중 가장 높고, 신약·신소재는 2.3배로 가장 낮다. 즉 신약·신소재는 자기 도메인 안에서 자족적으로 커지고 있고, 평가·벤치마크는 다른 모든 칸에 기생하며 커지고 있다. 평가 인프라를 특정 부서의 소관으로 묶으면 안 되는 이유가 이 숫자에 있다.
+
+세 번째 물리·환경 과학 AI 338편(중복 포함 1,011편)과 네 번째 분자 시뮬레이션·생성 모델링 307편(1,048편)은 성격이 비슷하다. 둘 다 기존 수치 시뮬레이션 자산을 신경망으로 대체하거나 가속하려는 흐름이며, 둘 다 최근 '정확도'에서 '보장'으로 관심이 옮겨갔다. 다섯 번째 과학 자동화 에이전트 282편(972편)은 가장 시끄러운 칸이고, 여섯 번째 형식 방법론·계산 추론 235편(545편)은 가장 조용하지만 자동화가 가장 깊게 진행된 칸이다.
+
+일곱 번째 과학 정보추출·질의응답 221편(중복 포함 761편)과 여덟 번째 AI 지원 학술 커뮤니케이션 212편(559편)은 규모가 작지만 성격이 다르다. 이 두 칸은 연구 결과를 만드는 대신 연구 과정 자체를 다룬다. 도표를 검증하고, 주장을 추적하고, 심사를 보조하고, 인용 환각을 잡는 일이다. 편수는 적지만 기관 정책에 직접 옮겨 쓸 수 있는 근거는 이 두 칸에 가장 많다.
+
+커버리지도 밝혀 두자. 각 대분류에서 상위 다섯 개 서브카테고리만 다루면, 물리·환경은 97%가 덮이지만 학술 커뮤니케이션은 절반 조금 넘게만 덮인다. 서브카테고리 개수가 15개까지 잘게 쪼개져 있기 때문이다. 잘게 쪼개진 칸은 아직 하나의 이름으로 수렴하지 못한, 즉 방법론 합의가 없는 영역이라는 뜻이기도 하다.
+
+> [!tip] 정리
+> 규모 순서는 참고선일 뿐이다. 오늘 여덟 파트를 이 순서로 돌지만, 마지막에 다시 정렬할 것이다. 편수가 아니라 '우리가 들어갈 수 있는가'를 기준으로.
+
+---
+
+## S05 · 관통하는 한 줄: 예측 → 설계 → 자율 → 검증
+
+*오프닝* · *서사*
+
+> [!abstract] 화면에 띄울 한 줄
+> 2026년은 '무엇을 더 할 수 있나'가 아니라 '무엇을 믿을 수 있나'를 묻는 해다.
+
+**마흔 개 칸을 한 문장으로 꿰면 이렇게 된다. 예측이 끝나고 설계로 갔고, 설계가 자율로 갔고, 2026년에 자율이 검증에 붙잡혔다.**
+
+예측 국면은 2021년까지다. BioBERT와 SciBERT가 과학 텍스트를 다룰 언어 기반을 깔았고, 2017년 PINN과 2018년 Neural ODE가 미분방정식을 신경망으로 푸는 두 축을 만들었으며, 2021년 AlphaFold2가 단백질 구조 예측을 사실상 종료시켰다. 이 시기의 목표는 명확했다. 실험으로 알던 값을 계산으로 맞히는 것.
+
+설계 국면은 2022년부터 2023년이다. 구조를 맞힐 수 있게 되자 곧바로 방향이 뒤집혔다. ProteinMPNN과 RFdiffusion은 원하는 기능을 주면 서열을 설계했고, Pangu-Weather와 GraphCast는 운용 수치예보를 성능으로 넘어섰으며, A-Lab과 Coscientist는 언어모델을 실제 실험 장비에 붙였다. '맞히기'에서 '만들기'로 넘어간 시기다.
+
+자율 국면은 2024년부터 2025년이다. AI Scientist 계열이 논문 초안까지 뽑고, Virtual Lab이 습식 실험으로 검증된 나노바디를 설계하고, Agent Laboratory가 문헌조사부터 보고서까지 비용을 84% 줄이며 돌았다. 동시에 반대편 결과도 쏟아졌다. ScienceAgentBench와 AFMBench는 자율 에이전트의 성공률이 기대보다 훨씬 낮음을 보였고, LLM-SRBench는 방정식 발견의 기호 정확도 천장이 31.5%임을 못박았다.
+
+그래서 2026년은 검증 국면이다. 이 해에 서로 모르는 여덟 개 분야가 동시에 같은 결론에 도달했다. 재료 쪽에서는 자율 실험실이 발견했다고 주장한 신물질 43종이 재분석에서 무너졌고, 형식 증명 쪽에서는 벤치마크 자체의 결함을 검사하는 감사 논문이 등장했으며, PINN 쪽에서는 실패 모드를 계통적으로 진단하기 시작했고, 평가 쪽에서는 적은 라벨로도 유효한 신뢰구간을 만드는 통계 기법이 표준이 되었다. 심지어 에이전트 연구 안에서 '이들은 결과를 내지만 과학적으로 추론하지 않는다'는 실증 논문이 나왔다.
+
+이 흐름이 오늘 발표의 뼈대다. 각 칸에서 반복적으로 같은 구조가 나타난다. 2025년까지 무언가를 할 수 있게 되었고, 2026년에 그것을 어떻게 신뢰할지가 쟁점이 된다. 그래서 각 슬라이드의 마지막 문단은 대부분 '무엇을 더 만들 것인가'가 아니라 '무엇을 검증 장치로 붙일 것인가'로 끝난다.
+
+> [!tip] 정리
+> 결론을 미리 말하면, 지금 사야 할 것은 더 센 모델이 아니라 감사 가능한 폐루프다. 뒤 마흔다섯 장은 이 문장을 칸마다 확인하는 과정이다.
+
+---
+
+## S06 · 약물–유전자 서명 분석
+
+*제1부 · AI 기반 신약·신소재 발견* · **Drug Compound Gene Signature Analysis** · *서브카테고리*
+
+`141편` `2018–2026` `가속` `2025+ 138편`
+
+<sub>AI 기반 신약·신소재 발견 고유 배정 606편(중복 포함 1,383편 · 웹 인덱스 기준) · 서브카테고리 13개 · 본 파트 5개로 66% 커버</sub>
+
+> [!quote] 파트 도입
+> 코퍼스 최대 카테고리. 구조 예측이 풀린 뒤 필드 전체가 '설계'와 '검증'으로 이동했다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026년 사이 세포 모델은 '읽기'에서 '반응 예측·분자 설계'로 넘어갔고, 곧바로 해석성 검증이 따라붙었다.
+
+**141편으로 코퍼스에서 가장 큰 칸이다. 질문 하나로 요약된다. 약을 넣었을 때 세포가 어떻게 변하는지를 실험 없이 예측할 수 있는가.**
+
+이 분야의 계산 기반은 2018년 SCANPY 같은 단일세포 분석 도구가 깔았다. 수만 개 세포의 유전자 발현을 표준화된 파이프라인으로 다룰 수 있게 되면서, 약물 반응을 세포 단위로 보는 일이 비로소 데이터 과학의 문제가 됐다. 그러나 여기까지는 관측이다. 2025년 이후의 변화는 관측을 예측으로, 다시 예측을 설계로 바꾼 것이다.
+
+전환의 상징은 2025년 Cell2Sentence다. 단일세포 RNA 시퀀싱 결과를 발현량 순서대로 유전자 이름을 늘어놓은 '세포 문장'으로 바꿔 언어모델에 그대로 먹이는 발상인데, 이를 270억 파라미터 규모까지 밀어 올렸다. 전사체 데이터와 생물학 텍스트 지식이 같은 토큰 공간에서 만나면, 모델은 '이 세포 상태를 서술하라'와 '이 조건에서 어떤 상태가 될지 예측하라'를 같은 방식으로 처리한다. 서열 쪽에서는 2025년 Evo 2와 2026년 EDEN 스케일링 법칙이 게놈 규모 파운데이션 모델을 표준 인프라로 만들었다.
+
+2026년의 주력은 섭동–반응 모델과 가상세포다. AetherCell, AlphaCell, CURE, PerturbODE 같은 이름들이 공통으로 하려는 일은 하나다. 아직 시험하지 않은 약물과 아직 써 보지 않은 세포주에 대해 발현 변화를 미리 계산하는 것. 여기서 한 걸음 더 나간 것이 전사체 교란 신호를 조건으로 분자 자체를 생성하는 접근이다. 원하는 세포 상태 변화를 먼저 적어 놓고 그것을 만들어 낼 화합물을 확산모델로 뽑는, 이른바 전사체 기반 약물 설계가 2026년에 문제 정의부터 정식화됐다.[2]
+
+그러나 같은 해에 반대 방향의 논문들도 몰려나왔다. 희소 오토인코더로 모델 내부 표현을 열어 실제로 어떤 조절 구조를 학습했는지 검사하고, CLAMP처럼 파운데이션 모델의 규제 구조를 탐침하고, 인과 전이가능성을 따지고, 기존 성능 비교의 베이스라인 설정이 잘못됐다고 지적한다. 성능 숫자 경쟁이 한 바퀴 돌자, '왜 맞았는지 모르면 못 쓴다'는 요구가 곧바로 따라붙은 것이다. 신약 개발은 규제 산업이므로 이 요구는 학술적 취향이 아니라 사업 조건이다.[1]
+
+우리 입장에서 중요한 것은 병목의 위치다. 모델은 이미 오픈이고, 논문에 나온 아키텍처는 대부분 재현 가능하다. 부족한 것은 데이터다. 구체적으로 말하면 '무엇을 넣었을 때 무엇이 변했는지'가 기록된 섭동 스크린 데이터다. 이 데이터를 가진 조직은 곧바로 상위 성능에 도달하고, 없는 조직은 남의 데이터로 학습된 모델을 자기 세포주에 적용하며 일반화 실패를 반복한다.
+
+> [!tip] 정리
+> 요약하면 스크리닝의 1차 필터가 실험에서 계산으로 넘어갔다. 다음 경쟁은 계산 결과를 얼마나 싸게 실험으로 확인하고, 그 결과를 다시 학습에 되먹이는 순환을 누가 먼저 돌리느냐에서 갈린다.
+
+**대표 도구·시스템** — SCANPY · Evo / Evo 2 · Cell2Sentence · scLDM · BioFM/BioToken · PyHealth 2.0 · AlphaCell · CLAMP
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [CLAMP: A Mechanistic Probe of Regulatory Structure in Foundation Models under Single-Cell Perturbations](../../docs/papers/9404_CLAMP_A_Mechanistic_Probe_of_Regulatory_Structure_in_Foundat/index.html) — Amaya Gallagher-Syed 외, 2026
+2. [AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery](../../docs/papers/3008_AetherCell_A_generative_engine_for_virtual_cell_perturbation/index.html) — 2026.03
+3. [Scaling Large Language Models for Next-Generation Single-Cell Analysis](../../docs/papers/696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html) — Syed Asad Rizvi 외, 2025.04
+4. [PhenoBrain: Phenotype-Conditioned Long-Range Communication for Multi-Modal Brain Network Analysis](../../docs/papers/10178_PhenoBrain_Phenotype-Conditioned_Long-Range_Communication_fo/index.html) — Lingyuan Meng 외, 2026
+5. [Probing, Fusion, and Trustworthiness: A Systematic Evaluation of Foundation Model Representations for Multimodal Cancer Analysis](../../docs/papers/10249_Probing_Fusion_and_Trustworthiness_A_Systematic_Evaluation_o/index.html) — Jingyu Hu 외, 2026
+6. [PyHealth 2.0: A Comprehensive Open-Source Toolkit for Accessible and Reproducible Clinical Deep Learning](../../docs/papers/10278_PyHealth_20_A_Comprehensive_Open-Source_Toolkit_for_Accessib/index.html) — John Wu 외, 2026
+
+---
+
+## S07 · 단백질 결합부위 예측
+
+*제1부 · AI 기반 신약·신소재 발견* · **Protein Binding Site Prediction** · *서브카테고리*
+
+`96편` `2021–2026` `가속` `2025+ 89편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026의 화두는 구조 정확도가 아니라 설계 성공률과 감사(audit)다.
+
+**96편. 이 칸의 이야기는 이미 끝난 문제와 아직 안 끝난 문제를 구분하는 데서 시작한다. 구조 예측은 끝났고, 결합 설계는 시작됐다.**
+
+2021년 AlphaFold2와 RoseTTAFold가 원자 수준 정확도를 달성한 뒤, 이 분야에서 '구조를 맞히는 일'은 더 이상 연구 주제가 아니다. 2024년 AlphaFold 3는 단백질만이 아니라 핵산·소분자·이온·변형 잔기를 하나의 확산 프레임워크에 넣어 상호작용 예측까지 통합했다. 인용 14,488이 말해 주는 것은 이 논문이 좋다는 뜻이 아니라, 이제 이것이 바닥이라는 뜻이다.
+
+2025년의 사건은 두 가지다. 첫째, RFdiffusion을 항체에 특화 미세조정해 사용자가 지정한 에피토프에 결합하는 항체 가변영역을 원자 수준 정확도로 설계할 수 있음이 입증됐다. 표적을 정하면 결합체를 그려 낸다는 뜻이고, 이는 신약 발견의 문법을 탐색에서 설계로 바꾼다. 둘째, 오픈소스 Boltz-1과 Boltz-2가 등장해 AlphaFold 3급 상호작용 모델링의 진입장벽을 사실상 없앴다. 이제 이 능력은 특정 기업의 자산이 아니다.[1]
+
+2026년은 속도와 규모의 해다. TerraBind와 ACER 같은 작업은 코폴딩을 양자화하고 도킹을 서브초 단위로 밀어 넣으며, 결합 부위 수준의 친화도 예측을 붙인다. 정확도가 아니라 처리량이 경쟁축이 되면 스크리닝 전략 자체가 달라진다. 후보 만 개를 계산으로 걸러 백 개만 실험하던 흐름이, 백만 개를 걸러 천 개를 실험하는 흐름으로 바뀐다. MotifCraft처럼 AlphaFold 계열의 hallucination 프레임워크를 모티프 스캐폴딩으로 확장해 기능성 바인더를 대량 설계하는 접근도 같은 방향이다.[2][6]
+
+동시에 감사가 시작됐다. 2026년 ProtDBench는 습식 실험으로 주석된 데이터셋을 기준으로 바인더 설계 평가를 통일했고, PDFBench는 기능 기반 de novo 설계를 여섯 차원 열여섯 지표로 재는 최초의 통합 벤치마크를 내놨다. NanoFold처럼 누출을 제거한 소규모 통제 벤치마크로 아키텍처 선택의 효과만 분리해 보는 작업도 등장했다. 요컨대 '우리 모델이 더 잘 설계한다'는 주장을 검증할 공통 자尺가 이제야 생기는 중이다.[3][4][5]
+
+국내 관점에서 이 칸은 진입이 쉬운 동시에 차별화가 어렵다. 도구가 전부 공개되어 있으니 누구나 설계는 할 수 있다. 결과적으로 경쟁력은 계산이 아니라 습식 검증 처리량에서 결정된다. 설계 백 개를 만들어 실제로 발현·정제·친화도 측정까지 몇 주에 끝낼 수 있는 실험실을 가진 팀이, 계산만 잘하는 팀을 압도한다.
+
+> [!tip] 정리
+> 이 칸의 교훈은 명확하다. 오픈된 능력에는 프리미엄이 없다. 프리미엄은 그 능력의 출력을 빠르게 반증할 수 있는 실험 인프라에 붙는다.
+
+**대표 도구·시스템** — AlphaFold2/3 · RoseTTAFold · ProteinMPNN · RFdiffusion · Boltz-1/Boltz-2 · BindCraft · TerraBind · ProtDBench
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Atomically accurate de novo design of antibodies with RFdiffusion](../../docs/papers/112_Atomically_accurate_de_novo_design_of_antibodies_with_RFdiff/index.html) — Nathaniel R. Bennett 외, 2025.02 · 인용 192
+2. [MotifCraft: scalable functional protein binder design with AlphaFold2 hallucination](../../docs/papers/10062_MotifCraft_scalable_functional_protein_binder_design_with_Al/index.html) — Océane Follonier 외, 2026
+3. [NanoFold: A Compute-Efficient Benchmark for Controlled and Autonomous Research on Protein Structure Models](../../docs/papers/10081_NanoFold_A_Compute-Efficient_Benchmark_for_Controlled_and_Au/index.html) — Chris Hayduk 외, 2026
+4. [PDFBench: A Benchmark for De Novo Protein Design from Function](../../docs/papers/10165_PDFBench_A_Benchmark_for_De_Novo_Protein_Design_from_Functio/index.html) — Jiahao Kuang 외, 2026
+5. [ProtDBench: A Unified Benchmark of Protein Binder Design and Evaluation](../../docs/papers/10261_ProtDBench_A_Unified_Benchmark_of_Protein_Binder_Design_and/index.html) — Cong Liu 외, 2026
+6. [TerraBind: Fast and Accurate Binding Affinity Prediction through Coarse Structural Representations](../../docs/papers/10551_TerraBind_Fast_and_Accurate_Binding_Affinity_Prediction_thro/index.html) — Matteo Rossi 외, 2026
+
+---
+
+## S08 · 조절서열·유전자 발현 예측
+
+*제1부 · AI 기반 신약·신소재 발견* · **Gene Enhancer Expression Prediction** · *서브카테고리*
+
+`68편` `2018–2026` `가속` `2025+ 64편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025 AlphaGenome 이후, 서열→발현은 '예측 가능'에서 '평가 방법을 다시 짜야 하는' 단계로 들어갔다.
+
+**68편. 서열을 넣으면 발현을 예측하는 문제인데, 2025년 AlphaGenome 이후로 이 칸의 쟁점은 성능이 아니라 평가 방법으로 옮겨갔다.[1]**
+
+출발점은 2021년 Enformer 계열이다. 장거리 트랜스포머로 수십만 염기 문맥을 보며 발현을 예측하는 형식이 표준이 됐다. 문제는 조절 요소가 유전자로부터 아주 멀리 떨어져 작동한다는 생물학적 사실이었고, 문맥 길이와 해상도 사이의 트레이드오프가 오래 발목을 잡았다.
+
+2025년 AlphaGenome이 그 트레이드오프를 상당 부분 해소했다. 1메가베이스 입력을 받으면서 염기쌍 해상도를 유지하고, 유전자 발현·스플라이싱·크로마틴 접근성·전사인자 결합·3차 구조까지 열한 개 모달리티에 걸쳐 5,930개 게놈 트랙을 한 번에 예측한다. 이 통합이 실무적으로 의미하는 바는, 의미 불명 변이 하나를 놓고 여러 도구를 갈아타며 해석하던 작업을 단일 모델 호출로 대체할 수 있게 됐다는 것이다.[1]
+
+그러자 2026년에 평가 쪽에서 문제가 터졌다. 섭동 실험 지표에 신호 희석 효과가 섞여 있어 모델 성능이 과대평가된다는 지적이 나오고, 모듈 귀납적 표현으로 일반화를 다시 재는 작업이 이어졌다. 벤치마크를 고쳐야 한다는 이야기는 학계에서 인기가 없지만, 임상 적용을 목표로 한다면 피할 수 없는 단계다.
+
+같은 해 흐름 하나는 메커니즘을 모델 안에 직접 넣는 것이다. 프라임 편집 효율 예측 모델 OptiPrime은 편집 반응의 생물학적 메커니즘을 상미분방정식으로 정식화해 신경망에 결합했고, 74,769건의 효율 데이터와 297,962건의 다중 맥락 데이터로 학습해 해석 가능성과 일반화를 동시에 확보했다. 블랙박스 성능 경쟁에서 한 발 빠져나와, 아는 물리를 넣고 모르는 부분만 학습시키는 전략이다.
+
+또 하나는 모달리티 확장이다. 조직학 이미지에서 전사체를 번역해 내는 Pixel2Gene, 시공간 재구성을 다루는 stVCR와 ChronoTILE 같은 작업이 공간 오믹스와 결합하면서, '어느 세포에서 언제 얼마나 발현되는가'를 이미지 한 장에서 추정하는 방향으로 간다. 분석 생태계도 정리되는 중이다. edgeR을 파이썬으로 이식한 edgePython처럼 도구 체인이 단일 언어로 수렴하면서 파이프라인 유지비가 내려간다.[2]
+
+> [!tip] 정리
+> 이 칸은 유전자치료와 변이 해석에 곧바로 붙는다. 남은 관문은 성능이 아니라 규제기관이 받아들일 수 있는 형태의 불확실성 제시다. 점 추정값 하나로는 심사를 통과할 수 없다.
+
+**대표 도구·시스템** — Enformer-style models · AlphaGenome · Seq2Exp · Pleiades · GENEB · Genome-Factory · Hi-Compass
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [AlphaGenome: advancing regulatory variant effect prediction with a unified DNA sequence model](../../docs/papers/094_AlphaGenome_advancing_regulatory_variant_effect_prediction_w/index.html) — Žiga Avsec 외, 2025 · 인용 106
+2. [Pixel2Gene enables histology-guided reconstruction and prediction of spatial gene expression](../../docs/papers/3209_Pixel2Gene_enables_histology-guided_reconstruction_and_predi/index.html) — 2026.02
+3. [Learning to Discover Regulatory Elements for Gene Expression Prediction](../../docs/papers/483_Learning_to_Discover_Regulatory_Elements_for_Gene_Expression/index.html) — Xingyu Su 외, 2025
+4. [Mechanistic machine learning enables interpretable and generalizable prediction of prime editing outcomes](../../docs/papers/3163_Mechanistic_machine_learning_enables_interpretable_and_gener/index.html) — 2026.02
+5. [Missingness-Aware Conformal Prediction Under Cross-Hospital Distribution Shift](../../docs/papers/10036_Missingness-Aware_Conformal_Prediction_Under_Cross-Hospital/index.html) — Liang You 외, 2026
+6. [PRiMeFlow: capturing complex expression heterogeneity in perturbation response modelling](../../docs/papers/10237_PRiMeFlow_capturing_complex_expression_heterogeneity_in_pert/index.html) — Zichao Yan 외, 2026
+
+---
+
+## S09 · 생물학 위상·표현 해석
+
+*제1부 · AI 기반 신약·신소재 발견* · **Topological Data Analysis for Biology** · *서브카테고리*
+
+`49편` `2023–2026` `가속` `2025+ 48편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2026년, 잘 맞히는 모델의 내부를 여는 해석성이 독립 서브필드가 됐다.
+
+**49편. 이름은 위상 데이터 분석이지만, 2026년 이 칸의 실체는 '잘 맞히는 모델의 내부를 여는 해석성 연구'다.**
+
+배경은 2023년 ESMFold다. 다중서열정렬 없이 단일 서열만으로 원자 구조를 예측하며 메타게놈 규모 아틀라스를 열었고, 그 결과 구조 데이터가 희소 자원에서 흔한 자원으로 바뀌었다. 2026년에는 AlphaFold Database가 4,777개 프로테옴에 걸쳐 3,100만 개 복합체 예측을 담고 그중 고신뢰 180만 건을 공개하는 수준까지 확장됐다. 데이터가 흔해지면 질문이 바뀐다. 더 많이 예측하는 것이 아니라, 이 예측이 무엇에 근거하는지를 묻게 된다.[1]
+
+2026년 AlphaInterp가 그 질문에 정면으로 답했다. AlphaFold 3의 내부 표현을 체계적으로 탐침한 결과, 이 모델은 물리를 계산하는 것이 아니라 진화적 맥락에 의존해 fold를 인식하는 민감한 알고리즘에 가깝다는 결론을 냈다. 다중서열정렬로 구조적 제약이 걸린 위치를 찾아내고, 가중치에 저장된 구조 사전지식을 활성화하는 방식이라는 것이다. 이 결과는 왜 신규 fold나 진화적 정보가 빈약한 서열에서 성능이 급락하는지를 설명해 준다.[1][2]
+
+해석성 도구는 단백질 언어모델 쪽으로도 확장됐다. 희소 오토인코더와 cross-layer transcoder로 모델이 어떤 특징을 어디에 저장했는지 분해하고, ProtoMech처럼 메커니즘 단위로 표현을 정리하는 작업이 이어진다. 위상 쪽 본래 계보인 지속 호몰로지와 기하 서술자는 단백질–리간드 친화도 예측과 숙주–병원체 상호작용 분석에 투입되고 있다. 좌표를 직접 다루지 않고 형상의 연결성만으로 특징을 뽑는다는 점에서, 노이즈가 큰 실험 구조에 강하다.
+
+평가 기반도 같이 깔렸다. MutAtlas와 FLIP2 같은 변이·적합도 아틀라스가 나오면서 모델이 학습 분포를 벗어났을 때 얼마나 무너지는지 측정할 수 있게 됐고, 프로테옴 규모 상호작용 추론을 다루는 ProteomeLM과 FlashPPI는 계산량을 줄여 전수 스캔을 가능하게 했다. 2026년의 또 다른 결과는 DNA 언어모델의 뉴클레오타이드 신호와 단백질 언어모델 표현을 결합하면 생물물리 제약 아래에서 서로를 보완한다는 것이다. 즉 단일 모달리티의 한계가 구조적이라는 뜻이다.[3][4][5]
+
+이 칸은 국내 연구자에게 드물게 유리한 지형이다. 대규모 사전학습 자본이 필요하지 않고, 남이 만든 모델을 열어 보는 일에는 수학과 통계 역량이 더 중요하다. 해석성 결과는 그대로 규제 대응 문서, 특허 명세, 실패 원인 분석에 쓰인다.
+
+> [!tip] 정리
+> 정리하면 이 칸은 '더 잘 맞히기' 경쟁에서 빠져나와 '왜 맞았는지 말하기' 시장을 만드는 중이다. 규제 산업에서 이 시장은 커질 수밖에 없다.
+
+**대표 도구·시스템** — ESMFold · ProteomeLM · FlashPPI · PLIP · MolX · ProtoMech · MutAtlas · FLIP2
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [AlphaFold Database expands to proteome-scale quaternary structures](../../docs/papers/3019_AlphaFold_Database_expands_to_proteome-scale_quaternary_stru/index.html) — 2026.03
+2. [AlphaInterp: Probing AlphaFold 3's Internal Representations Reveals Evolutionary Determinants of Predicted Structure and Confidence](../../docs/papers/3020_AlphaInterp_Probing_AlphaFold_3s_Internal_Representations_Re/index.html) — 2026.04
+3. [MutAtlas: A PDB-Wide Energy-Guided Atlas of Protein Mutation Effects](../../docs/papers/10079_MutAtlas_A_PDB-Wide_Energy-Guided_Atlas_of_Protein_Mutation/index.html) — Ruihan Guo 외, 2026
+4. [ProteomeLM: A Proteome-Scale Language Model Enables Accurate and Rapid Prediction of Protein-Protein Interactions and Gene Essentiality Across Taxa](../../docs/papers/10267_ProteomeLM_A_Proteome-Scale_Language_Model_Enables_Accurate/index.html) — Cyril Malbranke 외, 2026
+5. [FLIP2: Expanding Protein Fitness Landscape Benchmarks for Real-World Machine Learning Applications](../../docs/papers/3104_FLIP2_Expanding_Protein_Fitness_Landscape_Benchmarks_for_Rea/index.html) — 2026.02
+6. [Mechanistic Synergy in Multi-Modal VEP: DNA Context Complements PLMs under Biophysical Constraints](../../docs/papers/10002_Mechanistic_Synergy_in_Multi-Modal_VEP_DNA_Context_Complemen/index.html) — Yoojin Kim 외, 2026
+
+---
+
+## S10 · 과학 멀티모달 벤치마킹
+
+*제1부 · AI 기반 신약·신소재 발견* · **Scientific Multimodal LLM Benchmarking** · *서브카테고리*
+
+`44편` `2019–2026` `가속` `2025+ 32편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026 벤치마크는 지식이 아니라 '연구를 수행하는 능력'을 잰다.
+
+**44편. 벤치마크 논문 44편이 한 칸을 채운다는 사실 자체가 메시지다. 무엇을 못하는지 재는 일이 독립 산업이 됐다.**
+
+계보는 2019년 BioBERT와 SciBERT에서 시작한다. 일반 도메인 BERT를 과학 문헌에 그대로 쓰면 어휘 분포 차이로 성능이 떨어진다는 관찰에서 출발해, PubMed와 과학 논문 코퍼스로 추가 사전학습한 모델이 표준이 됐다. 2022년 Galactica는 한 걸음 더 나가 큐레이션된 과학 코퍼스 자체를 인터페이스로 제안했다. 이 시기의 평가는 대체로 문헌 이해 과제였다.
+
+2024년부터 평가의 대상이 바뀐다. SciCode는 과학자가 직접 큐레이션한 연구 코딩 문제로 '실제 연구를 도울 수 있는가'를 물었고, SciKnowEval과 SciCUEval은 과학 지식을 층위별로 분해해 어느 수준에서 무너지는지를 측정했다. 여기서 중요한 것은 총점이 아니라 분해다. 모델이 사실 회상은 잘하면서 다단계 추론에서 무너진다면, 그 모델을 문헌 요약에는 쓰고 실험 설계에는 쓰지 말아야 한다는 운영 결론이 나온다.
+
+2025년에서 2026년 사이 무게중심은 시각–언어 과학추론으로 옮겨갔다. SciVerse는 멀티모달 모델의 과학 지식 이해와 시각 추론을 분리해 측정하고, P1-VL은 물리 올림피아드 수준의 시각 문제로 지각과 추론 사이의 간극을 드러내며, PhysMent 같은 작업이 이어진다. 논문 절반이 그림인 분야에서 그림을 못 읽는 모델은 문헌 자동화에 쓸 수 없으므로, 이 방향은 응용과 직결된다.[2][3][5]
+
+2026년에는 평가가 재현성 자동화까지 삼킨다. 실험 프로토콜을 컴파일러로 검증하는 BPL 계열 작업과 REPA 같은 재현성 평가가 등장하면서, '모델이 프로토콜을 옳게 썼는가'를 사람이 읽지 않고 기계로 검사하려는 시도가 시작됐다. BioProBench처럼 도메인 프로토콜 수행 능력을 종합적으로 재는 벤치마크도 같은 계열이다.[4]
+
+여기서 우리가 얻을 실무 결론은 냉정하다. 벤치마크를 설계할 수 있는 조직만 도입을 판단할 수 있다. 벤더가 제시한 점수표를 그대로 받아들이면 우리 업무와 무관한 능력에 돈을 쓴다. 그리고 지금 한국어·한국 도메인 과학 벤치마크는 사실상 없다. 이 공백은 곧 심사 근거의 공백이다.
+
+> [!tip] 정리
+> 이 칸의 논문들은 대부분 '생각보다 못한다'로 끝난다. 그 결론을 우리 언어와 우리 데이터로 다시 확인하는 작업이, 새 모델을 만드는 일보다 우리에게 값싸고 유용하다.
+
+**대표 도구·시스템** — BioBERT · SciBERT · Galactica · SciKnowEval · SciCode · SciVerse · P1-VL · REPA
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Scicueval: A comprehensive dataset for evaluating scientific context understanding in large language models](../../docs/papers/713_Scicueval_A_comprehensive_dataset_for_evaluating_scientific/index.html) — Jing Yu 외, 2025
+2. [Sciverse: Unveiling the knowledge comprehension and visual reasoning of lmms on multi-modal scientific problems](../../docs/papers/737_Sciverse_Unveiling_the_knowledge_comprehension_and_visual_re/index.html) — Z. J. Guo 외, 2025
+3. [P1-VL: Bridging Visual Perception and Scientific Reasoning in Physics Olympiads](../../docs/papers/10150_P1-VL_Bridging_Visual_Perception_and_Scientific_Reasoning_in/index.html) — Yun Luo 외, 2026
+4. [BioProBench: Comprehensive Dataset and Benchmark in Biological Protocol Understanding and Reasoning](../../docs/papers/169_Bioprobench_Comprehensive_dataset_and_benchmark_in_biologica/index.html) — Yuyang Liu 외, 2025
+5. [PhysMent: An Interactive Approach For LLM Reasoning In Physics Problems](../../docs/papers/10194_PhysMent_An_Interactive_Approach_For_LLM_Reasoning_In_Physic/index.html) — Joseph Chan 외, 2026
+6. [Benchmarking the Scientific Mind: A Pathology-Derived Biomedical VQA Benchmark for Complex Scientific Reasoning](../../docs/papers/9303_Benchmarking_the_Scientific_Mind_A_Pathology-Derived_Biomedi/index.html) — Ziyu Zhao 외, 2026
+
+---
+
+## S11 · 웹 증강 RL 추론 에이전트
+
+*제2부 · LLM·에이전트 평가* · **Web-Augmented RL Reasoning Agents** · *서브카테고리*
+
+`62편` `2025–2026` `가속` `2025+ 62편`
+
+<sub>LLM·에이전트 평가 고유 배정 457편(중복 포함 1,695편 · 웹 인덱스 기준) · 서브카테고리 16개 · 본 파트 5개로 54% 커버</sub>
+
+> [!quote] 파트 도입
+> 무엇을 못하는지 재는 일이 산업이 됐다. 벤치마크 설계 역량이 곧 도입 판단 역량.
+
+> [!abstract] 화면에 띄울 한 줄
+> 62편이 사실상 2025–2026 한 구간에 몰렸다. 검증가능 보상(RLVR)이 '검색하며 생각하는' 에이전트를 1년 만에 표준으로 만들었다.
+
+**62편이 사실상 2025년 한 해에 몰렸다. 이 칸은 '검증할 수 있는 답이 있는 문제'에서 강화학습이 무엇을 할 수 있는지를 보여 준 기록이다.**
+
+2025년 DeepSeek-R1이 이 흐름의 방아쇠였다. 사람이 만든 추론 궤적을 지도학습으로 주입하지 않고, 정답 검증만으로 보상을 주는 순수 강화학습으로 학습시켰더니 모델이 스스로 자기 검증과 재검토, 전략 전환 같은 행동을 만들어 냈다. Kimi k1.5도 같은 결론에 도달했다. 여기서 핵심 조건은 '검증 가능한 보상'이다. 수학과 코드처럼 답을 기계로 채점할 수 있는 영역이 먼저 열린 이유이기도 하다.[1]
+
+다음 단계는 검색을 학습 루프 안에 넣는 일이었다. Search-R1, WebThinker, WebDancer는 모델이 추론 도중에 검색을 호출하고 그 결과를 반영해 다시 추론하는 궤적 전체를 강화학습으로 다듬는다. 검색을 도구로 붙이는 것과 검색을 포함해 학습하는 것은 전혀 다르다. 후자에서는 모델이 '언제 찾아야 하는지'와 '무엇으로 검색어를 구성할지'를 학습한다. ReTool은 같은 원리를 코드 인터프리터에 적용해 계산이 필요한 순간을 스스로 판단하게 만들었다.[2][3][4]
+
+보상 설계 자체가 연구 주제로 올라온 것이 그다음이다. Critique-GRPO 계열은 스칼라 보상 대신 비평 텍스트를 신호로 쓰고, PAG와 RISE는 자기 검증 단계를 정책에 통합한다. 2026년 DR Tulu는 여기서 한 걸음 더 나가 루브릭 자체를 정책과 함께 진화시키는 RLER을 제안했고, 완전 공개된 80억 파라미터 모델로 딥리서치 성능을 확보했다. 열린 문제에서는 정답이 없으니 채점 기준을 같이 학습시키자는 발상이다.[6]
+
+평가 쪽에서도 대응이 나왔다. 벤치마크가 공개되면 곧 학습 데이터로 흡수되므로, 정적 문제 세트로는 진짜 추론 능력을 재기 어렵다. 그래서 DRE-Bench처럼 문제를 매번 새로 생성해 '유동 지능'을 측정하려는 시도가 등장했다. 속성·공간·순차·개념 네 인지 수준으로 나눠 재면, 특정 유형에서만 강한 모델이 총점으로는 우수해 보이는 착시를 걷어낼 수 있다.
+
+이 칸이 우리에게 주는 신호는 실행 순서에 관한 것이다. 자동화는 '정답을 기계로 확인할 수 있는 업무'부터 도착한다. 우리 조직에서 그런 업무가 무엇인지 목록을 만드는 일이 모델 선택보다 먼저다. 반대로 채점 기준을 말로 설명하기 어려운 업무는, 루브릭을 문서화하는 작업이 곧 자동화 준비 작업이 된다.
+
+> [!tip] 정리
+> 정리하면 보상 설계가 곧 제품 경쟁력이다. 모델은 사 오고 데이터는 모으면 되지만, 우리 업무의 정답 판정 규칙은 우리만 쓸 수 있다.
+
+**대표 도구·시스템** — DeepSeek-R1 · Search-R1 · WebThinker · ReTool · GRPO/Critique-GRPO · WebAgent-R1 · DR Tulu
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning](../../docs/papers/265_DeepSeek-R1_incentivizes_reasoning_in_LLMs_through_reinforce/index.html) — DeepSeek-AI 외, 2025
+2. [WebThinker: Empowering Large Reasoning Models with Deep Research Capability](../../docs/papers/873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html) — Xiaoxi Li 외, 2025
+3. [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](../../docs/papers/674_ReTool_Reinforcement_Learning_for_Strategic_Tool_Use_in_LLMs/index.html) — Jiazhan Feng 외, 2025
+4. [Search-R1: Training LLMs to Reason and Leverage Search Engines with Reinforcement Learning](../../docs/papers/740_Search-R1_Training_LLMs_to_Reason_and_Leverage_Search_Engine/index.html) — Bowen Jin 외, 2025
+5. [WebAgent-R1: Training Web Agents via End-to-End Multi-Turn Reinforcement Learning](../../docs/papers/871_WebAgent-R1_Training_Web_Agents_via_End-to-End_Multi-Turn_Re/index.html) — Zhepei Wei 외, 2025
+6. [Critique-GRPO: Advancing LLM Reasoning with Natural Language and Numerical Feedback](../../docs/papers/243_Critique-GRPO_Advancing_LLM_Reasoning_with_Natural_Language/index.html) — Xiaoying Zhang 외, 2025
+
+---
+
+## S12 · 프런티어 모델·멀티모달 안전성 평가
+
+*제2부 · LLM·에이전트 평가* · **GPT Audio Safety Evaluation** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Frontier Model & Multimodal Safety Evaluation</sub>
+
+`57편` `2023–2026` `가속` `2025+ 46편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026 안전 평가가 정렬의 기하학과 리더보드 통계 검증까지 내려갔다.
+
+**57편. 이름은 음성 안전성이지만 실질은 프런티어 모델 평가 전반이다. 2025년 이후 이 칸의 화두는 정렬의 기하학과 리더보드의 통계적 타당성이다.**
+
+형식적 기반은 시스템 카드가 만들었다. GPT-4, GPT-4o, o1의 시스템 카드는 능력 평가와 함께 탈옥 시도, 음성 인터페이스 특유의 위험, 완화 조치를 한 문서에 정리하는 관행을 정착시켰다. 이 문서 양식이 사실상 산업 표준이 된 것은 규제기관과 도입 기관이 참조할 공통 자료가 그것뿐이었기 때문이다.
+
+2025년 연구는 정렬을 훨씬 구조적으로 다룬다. 대표적인 결과는 안전 정렬 행동이 활성화 공간의 단일 선형 방향으로 통제되지 않는다는 것이다. 거부를 지배하는 주도적 방향과, 가설적 서술이나 역할극처럼 우회 경로를 담당하는 방향들이 서로 직교하게 얽혀 있다. 이 발견은 실무적으로 중요하다. 안전 필터를 하나 세워 두고 통과했다고 안심할 수 없다는 뜻이며, 우회 경로마다 별도 점검이 필요하다는 뜻이다. 같은 흐름에서 온라인 안전 모니터링과 다차원 정렬 지표가 운영 도구로 제안됐다.
+
+2026년에는 과학 도메인 안전·능력 평가가 쏟아졌다. 심전도 판독을 다루는 ECG-R1, 원자 구조 이해를 재는 AtomWorld, 물리 올림피아드 기반 HiPhO, 시각 과제 VT-Bench 같은 벤치마크들이다. 일반 능력 점수가 높은 모델이 도메인 과제에서 무너지는 사례가 반복 확인됐고, 특히 안전 문제는 도메인마다 정의가 다르다는 점이 드러났다. 의료에서의 위험 발화와 화학에서의 위험 발화는 같은 필터로 걸러지지 않는다.[1][4][5][6]
+
+가장 불편한 결과는 평가 자체에 대한 통계적 비판이다. 리더보드 순위가 표본 크기와 문항 구성에 따라 크게 흔들린다는 분석, 프롬프트 기법의 효과가 재현되지 않는다는 보고가 2026년에 나왔다. 순위표 한 줄을 근거로 벤더를 고르는 관행이 통계적으로 지지되지 않는다는 이야기다. GPU 병렬화와 스케일링 법칙 인프라 논문들이 같은 칸에 섞여 있는 것도 이 칸의 성격을 보여 준다. 이 분야는 능력과 비용과 위험을 한꺼번에 재려 한다.
+
+도입 심사 관점에서 결론은 두 줄이다. 첫째, 시스템 카드를 요구하라. 없는 모델은 심사 대상에서 제외해도 된다. 둘째, 우리 업무 표본으로 독립 재현을 하라. 벤더 점수는 가설이고, 우리 데이터에서의 재현 결과만 근거다.
+
+> [!tip] 정리
+> 이 칸은 우리에게 새 기술을 주지 않는다. 대신 도입 심사 문서 양식을 준다. 그것이 더 값어치 있을 때가 많다.
+
+**대표 도구·시스템** — GPT-4o System Card · OpenAI o1 System Card · Online Safety Monitoring · MDTA/LD-Score · Leaderboard Lottery MCB · HiPhO
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [HiPhO: How Far Are (M)LLMs from Humans in the Latest High School Physics Olympiad Benchmark?](../../docs/papers/9783_HiPhO_How_Far_Are_MLLMs_from_Humans_in_the_Latest_High_Schoo/index.html) — Fangchen Yu 외, 2026
+2. [The hidden dimensions of llm alignment: A multi-dimensional safety analysis](../../docs/papers/800_The_hidden_dimensions_of_llm_alignment_A_multi-dimensional_s/index.html) — Wenbo Pan 외, 2025
+3. [Online Safety Monitoring for LLMs](../../docs/papers/10130_Online_Safety_Monitoring_for_LLMs/index.html) — Mona Schirmer 외, 2026
+4. [VT-Bench: A Unified Benchmark for Visual-Tabular Multi-Modal Learning](../../docs/papers/10685_VT-Bench_A_Unified_Benchmark_for_Visual-Tabular_Multi-Modal/index.html) — Ziyi Jia 외, 2026
+5. [AtomWorld: A Benchmark for Evaluating Spatial Reasoning in Large Language Models on Material Structures](../../docs/papers/9267_AtomWorld_A_Benchmark_for_Evaluating_Spatial_Reasoning_in_La/index.html) — Taoyuze Lv 외, 2026
+6. [ECG-R1: Protocol-Guided and Modality-Agnostic MLLM for Reliable ECG Interpretation](../../docs/papers/9559_ECG-R1_Protocol-Guided_and_Modality-Agnostic_MLLM_for_Reliab/index.html) — Jiarui Jin 외, 2026
+
+---
+
+## S13 · 오픈소스 코드 LLM·명령어 튜닝
+
+*제2부 · LLM·에이전트 평가* · **Open-Source Code LLM Instruction Tuning** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Open-Source Code LLM & Instruction Tuning</sub>
+
+`43편` `2021–2026` `가속` `2025+ 33편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026 평가는 함수 맞히기를 떠나 '검증 가능성'과 '저장소 규모'로 갔다.
+
+**43편. 코드 생성 평가가 '함수 하나 맞히기'에서 '저장소를 고치기'로, 다시 '검증 가능한 코드 쓰기'로 두 번 이동했다.**
+
+기준점은 SWE-bench다. 실제 GitHub 이슈 2,294건을 놓고 해결 여부를 채점했더니 초기 최고 모델의 해결률이 1.96%였다. 이 숫자는 당시 코드 생성 능력이 과대평가되어 있었음을 보여 준 동시에, 이후 개선을 측정할 좌표축이 됐다. 그 사이 오픈 계보도 두꺼워졌다. Code Llama, StarCoder2와 The Stack v2(619개 언어), DeepSeek-Coder, Seed-Coder로 이어지며 상용 모델과의 격차가 좁혀졌다.
+
+2025년 이후 가장 의미 있는 이동은 '검증 가능성'이다. VeriBench는 Lean 4 기반으로 AI 코딩 에이전트의 형식 검증 능력을 끝단까지 재고, VeriScale은 적대적 테스트 스위트를 확장해 생성 코드를 압박하며, MathlibPR과 JAXBench는 실제 라이브러리 기여와 수치 라이브러리 과제로 평가를 확장했다. 여기서 통과 기준은 '사람이 보기에 그럴듯하다'가 아니라 '증명기나 테스트가 통과시킨다'다. 이 기준이 도입되면 코드 자동화의 신뢰 문제가 상당 부분 해소된다.[1][2][6]
+
+두 번째 이동은 LLM이 알고리즘 자체를 발견하는 방향이다. AutoNumerics-Zero는 수치 함수 구현을 자동 탐색해 기존 최적 구현을 넘어서는 결과를 보고했고, DeltaEvolve와 GAE 계열은 프로그램을 진화시키며 성능을 개선한다. 여기서 LLM은 코드를 대신 타이핑하는 도구가 아니라 탐색 연산자다. 검증기가 있으므로 무작정 생성해도 안전하고, 그래서 대량 시도가 가능하다.[3][5]
+
+반대편 증거도 함께 봐야 한다. 2025년 Copilot 사용 데이터와 GitClear 분석에서 생산성은 올랐지만 코드 복제가 크게 늘었다는 결과가 나왔다. 즉 단기 산출은 증가하고 중기 유지비는 증가한다. 이 트레이드오프는 조직 규칙으로만 통제된다. 생성 코드에 테스트 동반을 강제하거나, 중복 검출을 CI에 넣는 식이다.[4]
+
+우리 맥락에서 이 칸은 즉시 실행 영역이다. 연구 코드 작성·리팩터링·재현 스크립트 정리는 지금 도구로 충분히 자동화된다. 단, 산출물이 검증 가능한 형태여야 한다. 테스트가 없는 자동 생성 코드는 자산이 아니라 부채다.
+
+> [!tip] 정리
+> 요약하면 코드 자동화는 이미 실무 구간에 있고, 남은 문제는 품질 게이트다. 생성량을 늘리는 투자보다 검증 파이프라인을 붙이는 투자가 먼저다.
+
+**대표 도구·시스템** — HumanEval · StarCoder2 · DeepSeek-Coder · Self-Debug · VeriBench · AutoNumerics-Zero · Vesper
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [VeriBench: An End-to-End Formal Verification Benchmark for AI Coding Agents in Lean 4](../../docs/papers/10676_VeriBench_An_End-to-End_Formal_Verification_Benchmark_for_AI/index.html) — Brando Miranda 외, 2026
+2. [VeriScale: Adversarial Test-Suite Scaling for Verifiable Code Generation](../../docs/papers/10677_VeriScale_Adversarial_Test-Suite_Scaling_for_Verifiable_Code/index.html) — Yifan Bai 외, 2026
+3. [AutoNumerics-Zero: Automated Discovery of State-of-the-Art Mathematical Functions](../../docs/papers/9282_AutoNumerics-Zero_Automated_Discovery_of_State-of-the-Art_Ma/index.html) — Esteban Real 외, 2026
+4. [AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones - GitClear](../../docs/papers/894_AI_Copilot_Code_Quality_2025_Data_Suggests_4x_Growth_in_Code/index.html) — Hongjing Shao 외, 2025
+5. [DeltaEvolve: Accelerating Scientific Discovery through Momentum-Driven Evolution](../../docs/papers/9499_DeltaEvolve_Accelerating_Scientific_Discovery_through_Moment/index.html) — Jiachen Jiang 외, 2026
+6. [JAXBench: Benchmarking Autonomous TPU Kernel Optimization](../../docs/papers/9855_JAXBench_Benchmarking_Autonomous_TPU_Kernel_Optimization/index.html) — Arya Tschand 외, 2026
+
+---
+
+## S14 · 자기개선·주석 공정성·통계 타당성
+
+*제2부 · LLM·에이전트 평가* · **Self-Improvement & Annotation Fairness** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Self-Improvement, Annotation Fairness & Statistical Validity</sub>
+
+`42편` `2020–2026` `가속` `2025+ 40편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, '적은 라벨로 정직하게 평가하는 통계'가 이 분야의 본체가 됐다.
+
+**42편. 이 칸의 출발점은 부정적 결과다. 언어모델은 스스로 추론을 고치지 못한다. 그 인식 위에서 '적은 라벨로 정직하게 평가하는 통계'가 자랐다.**
+
+자기수정에 대한 기대는 한동안 컸다. 모델에게 답을 다시 보게 하면 스스로 오류를 찾을 것이라는 가정이었다. 그러나 외부 피드백 없이는 내재적 자기수정이 작동하지 않는다는 결과가 반복 확인됐고, 이후 연구는 방향을 바꿨다. 실행 결과나 검증기처럼 외부 신호를 붙이는 쪽으로 간 것이다. 2026년 실행 기반 자동 AI 연구는 그 극단적 형태다. 모델이 낸 아이디어를 자동으로 구현·실행해 실제 성능으로 검증하고, 그 실행 피드백으로 탐색과 강화학습을 돌린다.
+
+평가 통계 쪽 성과가 이 칸의 진짜 알맹이다. 예측기반 추론 계열은 모델의 대량 예측과 소량의 인간 라벨을 결합해, 라벨만 썼을 때보다 좁은 신뢰구간을 얻으면서도 통계적 타당성을 유지한다. PPAT, PPAI, 다과제 PPI, 그리고 e-프로세스를 쓰는 CELEUS 같은 방법들이 이 계열이다. 실무적으로 말하면, 평가 예산이 라벨 100개뿐일 때 그 100개로 결론을 내는 법이 존재한다는 뜻이다.[1]
+
+공정성과 일반화 격차 감사도 도메인으로 퍼졌다. BiasFilter는 주석 편향을 걸러내고, 뇌전증 검출 평가 SzCORE와 뇌파 파운데이션 모델 벤치마크 EEG-FM-Bench는 데이터셋을 바꾸면 성능이 무너지는 폭을 정량화했으며, 질량분석 데이터셋 MassSpecGym 감사는 벤치마크 자체의 누출을 지적했다. 공통 결론은 하나다. 단일 데이터셋 성능은 배포 성능을 예측하지 못한다.[2][3]
+
+라벨 신뢰성 문제도 정면으로 다뤄졌다. 의사라벨을 검증하는 절차, 조건부 독립성을 검정하는 semi-knockoffs와 순차 KCI 같은 도구가 등장해 '이 라벨을 믿고 학습해도 되는가'를 사전에 묻는다. 도메인 적응 상황에서 특히 중요한데, 라벨 노이즈가 성능 하락보다 먼저 잘못된 확신을 만들기 때문이다.
+
+우리 관점에서 이 칸은 비용 구조를 바꾼다. 대규모 주석 예산이 없어도 통계로 벌 수 있다. 대신 조건이 있다. 무엇을 재려는지 정의하고, 표본을 무작위로 뽑고, 방법을 사전에 고정해야 한다. 이는 예산이 아니라 규율의 문제다.
+
+> [!tip] 정리
+> 결론은 단순하다. 평가를 못 하는 조직은 도입을 못 한다. 그리고 평가는 돈이 아니라 방법으로 할 수 있다는 것을 이 칸이 증명했다.
+
+**대표 도구·시스템** — Don't Stop Pretraining · BiasFilter · PPAT/PPAI · CELEUS · WATCH · EEG-FM-Bench
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [CELEUS: Certifiable and Efficient LLM Evaluation via E-Processes](../../docs/papers/9386_CELEUS_Certifiable_and_Efficient_LLM_Evaluation_via_E-Proces/index.html) — Zhijian Zhou 외, 2026
+2. [EEG-FM-Bench: A Comprehensive Benchmark for the Systematic Evaluation and Diagnostic Analyses of EEG Foundation Models](../../docs/papers/9563_EEG-FM-Bench_A_Comprehensive_Benchmark_for_the_Systematic_Ev/index.html) — Wei Xiong 외, 2026
+3. [BiasFilter: An inference-time debiasing framework for large language models](../../docs/papers/158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html) — Xiaoqing Cheng 외, 2025
+4. [Pseudo-Label Validation for Unsupervised Domain Adaptation](../../docs/papers/10275_Pseudo-Label_Validation_for_Unsupervised_Domain_Adaptation/index.html) — Nathan Weill 외, 2026
+5. [Quantifying the Generalization Gap in Seizure Detection: A Large-Scale Empirical Benchmark via the SzCORE Challenge](../../docs/papers/10285_Quantifying_the_Generalization_Gap_in_Seizure_Detection_A_La/index.html) — Jonathan Dan 외, 2026
+6. [A Controlled Study of Fairness Interventions for Temporal Graph Transformers on ICU Mortality Prediction](../../docs/papers/9144_A_Controlled_Study_of_Fairness_Interventions_for_Temporal_Gr/index.html) — Jet Locati 외, 2026
+
+---
+
+## S15 · 불확실성 인지 생성·대리모델
+
+*제2부 · LLM·에이전트 평가* · **Uncertainty-Aware Generative Manufacturing Models** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Uncertainty-Aware Generative & Scientific Surrogate Models</sub>
+
+`41편` `2023–2026` `가속` `2025+ 38편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 대리모델의 합격 기준이 정확도에서 커버리지 보장으로 바뀌었다.
+
+**41편. 대리모델이 실험이나 시뮬레이션을 대체하려면 정확도만으로는 부족하다. 필요한 것은 틀릴 때 틀렸다고 말하는 능력, 즉 커버리지 보장이다.**
+
+출발은 방법론 정리였다. 심층학습과 과학 기계학습의 불확실성 정량화를 다룬 서베이들이 PINN과 연산자 학습을 포함해 어떤 기법이 어디에 쓰이는지 지형을 그렸다. 여기서 구분이 중요하다. 데이터 고유 잡음에서 오는 불확실성과 모델 지식 부족에서 오는 불확실성은 대응이 다르다. 전자는 데이터를 더 모아도 줄지 않고, 후자는 줄어든다. 이 구분 없이 오차 막대를 그리면 의사결정을 오도한다.
+
+2025년 이후 실무 지향 작업은 기존 모델에 사후적으로 확률을 입히는 방향이다. 학습된 시뮬레이터나 CT 재구성 파이프라인에 확률 보정을 덧붙여 커버리지 보증을 만드는 접근인데, 모델을 다시 학습하지 않아도 된다는 점에서 도입 장벽이 낮다. 이미 돌아가는 대리모델에 신뢰구간을 붙이는 것만으로 규제·품질 심사 요건을 상당 부분 맞출 수 있다.
+
+생성 설계 쪽에서는 제약과 보상을 추론 시점에 거는 방식이 자리 잡았다. OMatG-IRL처럼 역강화학습으로 재료 생성 정책을 다듬거나, 자기회귀 볼츠만 생성기로 물리 분포를 따르게 하는 작업이 그렇다. 여기서 불확실성은 필터로 쓰인다. 모델이 자신 없다고 표시한 후보를 실험 대기열에서 뒤로 미루는 것만으로 실험 예산이 크게 절약된다.
+
+임상·생체신호 도메인으로의 확산도 두드러진다. 수면 분석 SleepMaMi, 광용적맥파 모델 SIGMA-PPG, 토큰 없이 심전도를 다루는 상태공간 모델 같은 작업들이 파운데이션 모델 형태로 나오면서 불확실성 표기를 기본 탑재하기 시작했다. 기상 쪽에서는 생성형 자료동화 DAISI가 관측과 모델을 확률적으로 결합한다. 도메인은 달라도 요구는 같다. 예측값과 함께 그 예측을 믿을 범위를 달라는 것이다.[3][4][5]
+
+제조와 의료에 이 칸을 적용할 때 게이트는 명확하다. 불확실성 정량화가 없는 대리모델은 반입하지 않는다. 이 규칙 하나가 이후의 사고 대부분을 예방한다. 반대로 우리가 대리모델을 공급하는 입장이라면, 커버리지 보증이 곧 차별화 요소다.
+
+> [!tip] 정리
+> 요약하면 이 칸은 '얼마나 정확한가'에서 '얼마나 정직한가'로 평가 기준을 옮겨 놓았다. 산업 적용에서는 후자가 계약 조건이 된다.
+
+**대표 도구·시스템** — OMatG-IRL · Autoregressive Boltzmann Generators · DAISI · Membership Circuits · SleepMaMi · ProtiCelli
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [From large language models to multimodal AI: A scoping review on the potential of generative AI in medicine](../../docs/papers/359_From_large_language_models_to_multimodal_ai_A_scoping_review/index.html) — Lukas Buess 외, 2025
+2. [Quantum latent distributions in deep generative models](../../docs/papers/10286_Quantum_latent_distributions_in_deep_generative_models/index.html) — Omar Bacarreza 외, 2026
+3. [SIGMA-PPG: Statistical-prior Informed Generative Masking Architecture for PPG Foundation Model](../../docs/papers/10440_SIGMA-PPG_Statistical-prior_Informed__Generative_Masking_Arc/index.html) — Zongheng Guo 외, 2026
+4. [SleepMaMi: A Universal Sleep Foundation Model for Integrating Macro- and Micro-structures](../../docs/papers/10455_SleepMaMi_A_Universal_Sleep_Foundation_Model_for_Integrating/index.html) — Keondo Park 외, 2026
+5. [DAISI: Data Assimilation with Inverse Sampling using Stochastic Interpolants](../../docs/papers/9472_DAISI_Data_Assimilation_with_Inverse_Sampling_using_Stochast/index.html) — Martin Andrae 외, 2026
+6. [Generative machine learning in adaptive control of dynamic manufacturing processes: A review](../../docs/papers/380_Generative_machine_learning_in_adaptive_control_of_dynamic_m/index.html) — S. Lee 외, 2025
+
+---
+
+## S16 · 신경 연산자·물리정보 PDE 해석
+
+*제3부 · 물리·환경 과학 AI* · **Neural Operator PDE Solving** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Neural Operator & Physics-Informed PDE Solving</sub>
+
+`102편` `2017–2026` `가속` `2025+ 95편`
+
+<sub>물리·환경 과학 AI 고유 배정 338편(중복 포함 1,011편 · 웹 인덱스 기준) · 서브카테고리 6개 · 본 파트 5개로 97% 커버</sub>
+
+> [!quote] 파트 도입
+> AI가 운용 수치예보를 이긴 뒤, 경쟁축은 속도에서 보장(guarantee)으로 옮겨갔다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 신경 연산자는 '빠른 근사'에서 '구조를 보존하는 해'로 이동했다.
+
+**102편. PINN이 나온 지 9년이 지났고, 이 칸은 이제 '되는가'가 아니라 '왜 안 되는가'를 계통적으로 진단하는 성숙 단계에 있다.[4]**
+
+출발은 2017년 물리정보 신경망이다. 편미분방정식의 잔차를 손실 함수에 넣어, 데이터가 적어도 지배 방정식을 만족하는 해를 찾게 하는 발상이었다. 여기에 함수공간 사이 매핑을 배우는 신경 연산자 계열이 붙었다. Fourier Neural Operator와 DeepONet은 특정 초기·경계 조건 하나의 해가 아니라 조건의 집합에서 해로 가는 사상 자체를 학습하므로, 한 번 학습하면 새 조건에 대해 즉시 답을 낸다. 이 속도 이득이 산업적 관심을 끌었다.
+
+2025년에 실무 진입 신호가 나왔다. 아키텍처를 계통적으로 비교한 리뷰가 DeepONet 계열, 적분 커널 연산자, 트랜스포머 기반 연산자를 같은 조건에서 평가하며 선택 지침을 정리했고, 산업 규모 메시에 적용한 사례들이 이어졌다. Origo처럼 고전 연산자 분할 이론을 신경망으로 확장해 다물리 모델의 음의 전이와 메커니즘 얽힘을 줄이는 작업, PGD-NO처럼 기하 인코딩을 결정론적 사전계산으로 분리해 천만 노드 규모를 단일 노드에서 처리하는 작업이 대표적이다.[1][2]
+
+가장 인상적인 2025년 결과는 성능 개선이 아니라 발견이다. 기계학습과 고정밀 수치해석을 결합해 3차원 오일러 방정식, 비압축성 다공질 매질 방정식, Boussinesq 방정식에서 불안정 특이점을 처음으로 체계적으로 찾아냈다. 불안정 특이점은 초기조건을 극도로 정밀하게 맞춰야 관측되므로 기존 수치 방법으로는 접근이 어려웠던 대상이다. AI가 수학의 미해결 영역에서 실제 대상을 생산한 사례로 읽어야 한다.
+
+2026년의 주된 활동은 실패 모드 진단이다. PINN 학습을 방해하는 기울기 병리, 여러 손실 항 사이의 consistency barrier, 시간 방향 얽힘이 개별 논문으로 정리됐고, 손실 지형 자체를 다루는 작업도 나왔다. PINNfluence처럼 영향 함수로 개별 학습 데이터의 기여를 귀속시키는 해석 도구도 등장했다. 실패를 이름 붙여 분류할 수 있게 되면 그때부터 공학이 된다.[3][4]
+
+같은 해 또 하나의 축은 구조 보존이다. Hodge 분해와 외미분 같은 미분기하 도구를 써서 보존량을 구조적으로 지키는 연산자, cochain 수준의 증명서를 붙이는 작업이 나왔다. 그리고 연산자 학습이 순방향 해석을 넘어 역문제로 확장됐다. 영상 재구성, 플라즈마 진단, 중력파 신호 분석이 대표적이다.
+
+> [!tip] 정리
+> 이 칸의 경쟁축은 이제 속도가 아니라 보장이다. 기존 수치해석 인력이 자산이 되는 구간이며, 물리를 아는 사람이 모델을 감독해야 성립하는 구간이다.
+
+**대표 도구·시스템** — PINN · DeepONet · FNO · Transolver-3 · PGD-NO · Neural-HSS · Origo · Geo-NeWF · PINNfluence · Coupled Integral PINN · EqGINO · UniDrag
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Origo: Interpretable Multi-physics PDE Foundation Model through Neural Operator Splitting](../../docs/papers/10147_Origo_Interpretable_Multi-physics_PDE_Foundation_Model_throu/index.html) — Li Sun 외, 2026
+2. [PGD-NO: A Neural Operator with Precomputed Geometry Decomposition for 3D Million-Scale Physics Simulations](../../docs/papers/10176_PGD-NO_A_Neural_Operator_with_Precomputed_Geometry_Decomposi/index.html) — Weiheng Zhong 외, 2026
+3. [PINNfluence: Interpreting PINNs through Influence Functions](../../docs/papers/10197_PINNfluence_Interpreting_PINNs_through_Influence_Functions/index.html) — Aleksander Krasowski 외, 2026
+4. [Taming the Loss Landscape of PINNs with Noisy Feynman–Kac Supervision: Operator Preconditioning and Non-Asymptotic Error Bounds](../../docs/papers/10539_Taming_the_Loss_Landscape_of_PINNs_with_Noisy_FeynmanKac_Sup/index.html) — Nathanael Tepakbong 외, 2026
+5. [Topology-Preserving Neural Operator Learning via Hodge Decomposition](../../docs/papers/10600_Topology-Preserving_Neural_Operator_Learning_via_Hodge_Decom/index.html) — Dongzhe Zheng 외, 2026
+6. [EqGINO: Equivariant Geometry-Informed Fourier Neural Operators for 3D PDEs](../../docs/papers/9592_EqGINO_Equivariant_Geometry-Informed_Fourier_Neural_Operator/index.html) — Sungwon Kim 외, 2026
+
+---
+
+## S17 · 잠재변수 생성 솔버
+
+*제3부 · 물리·환경 과학 AI* · **Latent Variable Generative Solvers** · *서브카테고리*
+
+`93편` `2018–2026` `가속` `2025+ 92편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026 확산·흐름 매칭이 장기 롤아웃 안정성을 확보하며 PDE 계열을 가로질렀다.
+
+**93편. 확산모델과 흐름 매칭이 물리 시뮬레이션에 들어와, 오랜 난제였던 장기 롤아웃 안정성을 정면으로 공략한다.**
+
+배경은 2018년 Neural ODE다. 신경망의 깊이를 이산 층이 아니라 연속 시간으로 보고 상미분방정식 초기값 문제로 풀자는 발상이 연속 잠재 동역학의 문법을 만들었다. 이후 물리 시뮬레이션에서 반복적으로 부딪힌 문제는 짧은 구간에서는 잘 맞지만 시간을 길게 굴리면 오차가 누적되어 해가 발산한다는 것이었다. 결정론적 회귀 모델의 근본적 한계였다.
+
+2025년 이후 해법은 생성모델이었다. 확산 사전분포를 편미분방정식 제약과 역물리 문제에 이식한 PODiff, PIDDM 같은 작업들이다. 결정론적으로 다음 상태 하나를 찍는 대신 가능한 상태들의 분포에서 표본을 뽑고, 물리 제약을 그 표본화 과정에 조건으로 넣는다. 오차가 누적되어 물리적으로 불가능한 상태로 흘러가는 대신, 매 단계 물리적으로 가능한 영역 안으로 되끌려 온다.[1]
+
+2026년에는 흐름 매칭과 최적수송이 본격 결합했다. 불균형 최적수송을 쓰는 WFR-MFM, 재귀적 흐름 매칭 같은 작업이 집단과 궤적 추론에 적용됐다. 특히 시계열 생물 데이터처럼 같은 개체를 계속 추적할 수 없는 상황에서, 시점별 분포만 알 때 그 사이 경로를 복원하는 문제에 잘 맞는다. 물리와 생물 양쪽에서 같은 수학이 쓰이는 대표적 사례다.[6]
+
+규모 확장의 신호도 나왔다. Walrus처럼 여러 도메인의 연속체 동역학을 한 모델로 다루는 파운데이션 모델이 등장해, 유체·기체·탄성 문제를 공통 표현으로 학습한다. 대칭성 처리 방식도 바뀌었다. 등변 아키텍처를 설계하는 대신 각 표본을 정준 대표원으로 사상한 뒤 제약 없는 확산모델을 쓰는 정준화 접근이 제안되면서, 구현 복잡도를 크게 낮추고도 대칭 분포를 학습할 수 있게 됐다. 메시 기반 시뮬레이션을 포트-해밀턴 형식으로 정식화해 에너지 구조를 보존하는 작업도 같은 방향이다.[5]
+
+실무 적용에서 오해하기 쉬운 지점을 하나 짚어야 한다. 이 모델들은 시뮬레이터를 없애지 않는다. 오히려 시뮬레이터가 만든 데이터로 사전분포를 학습하고, 관측이 들어오면 그 사전분포를 조건화한다. 즉 기존 시뮬레이션 자산이 많은 조직이 유리하다. 시뮬레이터를 버리는 전략은 대개 실패한다.
+
+> [!tip] 정리
+> 정리하면 생성모델은 시뮬레이션의 대체재가 아니라 증폭기다. 우리가 이미 가진 계산 자산의 가치를 올리는 방향으로 붙여야 이긴다.
+
+**대표 도구·시스템** — Neural ODE · PODiff · PIDDM · WFR-MFM · PACE · Recursive Flow Matching · MENO · Latent Generative Solver · Walrus · SLE-FNO · ReViT · MERLIN
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [PODiff: Latent Diffusion in Proper Orthogonal Decomposition Space for Scientific Super-Resolution](../../docs/papers/10208_PODiff_Latent_Diffusion_in_Proper_Orthogonal_Decomposition_S/index.html) — Onkar Jadhav 외, 2026
+2. [ReViT: Rotational-equivariant Vision Transformers for Neural PDE Solvers](../../docs/papers/10344_ReViT_Rotational-equivariant_Vision_Transformers_for_Neural/index.html) — Hao Wei 외, 2026
+3. [Latent Generative Solvers for Generalizable Long-Term Physics Simulation](../../docs/papers/3149_Latent_Generative_Solvers_for_Generalizable_Long-Term_Physic/index.html) — 2026.02
+4. [Transformed Latent Variable Multi-Output Gaussian Processes](../../docs/papers/10629_Transformed_Latent_Variable_Multi-Output_Gaussian_Processes/index.html) — Xiaoyu Jiang 외, 2026
+5. [Walrus: A Cross-domain Foundation Model for Continuum Dynamics](../../docs/papers/10687_Walrus_A_Cross-domain_Foundation_Model_for_Continuum_Dynamic/index.html) — Michael McCabe 외, 2026
+6. [WFR-MFM: One-Step Inference for Dynamic Unbalanced Optimal Transport](../../docs/papers/10695_WFR-MFM_One-Step_Inference_for_Dynamic_Unbalanced_Optimal_Tr/index.html) — Xinyu Wang 외, 2026
+
+---
+
+## S18 · 과학 파운데이션 모델과 통계 엄밀성
+
+*제3부 · 물리·환경 과학 AI* · **AI Foundation Models for Environmental Science** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: AI Foundation Models, Agents & Statistical Rigor for Science</sub>
+
+`88편` `2020–2026` `가속` `2025+ 78편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026의 핵심은 새 모델이 아니라 통계 감사와 도메인 인프라다.
+
+**88편. 이 칸에서 2026년의 진짜 뉴스는 새 모델이 아니라 감사 도구다. 과학 파운데이션 모델 옆에 통계 검정이 나란히 놓였다.**
+
+기반 개념은 2020년 시뮬레이션 기반 추론이 정리했다. 우도를 쓸 수 없는 복잡한 시뮬레이터에서 관측을 보고 매개변수를 역추정하는 방법론인데, 기후·천문·입자물리처럼 시뮬레이터는 있지만 해석적 우도는 없는 분야의 공통 언어가 됐다. 2021년 Nobel Turing Challenge는 여기에 목표를 얹었다. 인간 개입 없이 노벨상급 발견을 하는 시스템을 만들자는 프레이밍이 이후 자율 과학 담론의 출발점이 됐다.
+
+2024년에서 2025년 사이 그 담론이 운영 가능한 형태로 내려왔다. Virtual Lab은 다중 에이전트 회의를 통해 설계한 나노바디를 습식 실험으로 검증했고, Spacer와 LLM4SR 계열은 문헌에서 가설까지의 경로를 시스템화했다. 환경과학 쪽에서는 파운데이션 모델 서베이가 나오며 기후·대기질·생태 모니터링에 쓰이는 모델들의 지형이 정리됐고, AIRS-Bench와 SciHorizon 같은 준비도 벤치마크가 '지금 이 분야에서 AI가 실제로 뭘 할 수 있나'를 항목별로 재기 시작했다.[1][4][5]
+
+2026년의 특징은 통계 감사의 물결이다. 최대평균차이와 스타인 검정으로 생성 분포가 목표 분포와 같은지 검정하고, knockoff로 변수 귀인의 허위 발견을 통제하고, conformal 예측으로 분포 무가정 유효성을 확보하고, 벤치마크 자체의 무결성을 진단한다. 이 도구들의 공통점은 모델을 더 좋게 만들지 않는다는 것이다. 대신 결과를 신뢰할 수 있는지 판정한다. 과학에 쓰려면 후자가 먼저다.
+
+도메인 인프라도 같이 깔렸다. 핵융합 데이터 레이크, 범용 원자간 퍼텐셜, 실시간 신호 처리를 위한 FPGA·GNN 트리거링 같은 작업들이 2026년에 몰려 있다. 이는 이 분야가 논문 단계에서 시설 운영 단계로 넘어가고 있다는 신호다. 2024년 병리 코파일럿 PathChat처럼 도메인 전문가의 일상 업무에 들어간 사례도 인용 384로 이미 검증됐다.
+
+우리 입장에서 이 칸의 함의는 구매 순서에 있다. 모델보다 감사 파이프라인을 먼저 갖춰야 한다. 모델은 6개월마다 바뀌지만, 검정 절차와 데이터 관리 체계는 남는다. 감사 없이 도입한 파운데이션 모델은 자산이 아니라 설명 책임만 늘리는 비용이다.
+
+> [!tip] 정리
+> 이 칸이 주는 실행 지침은 하나다. 우리 조직에서 '이 결과를 왜 믿는가'에 답할 사람과 절차를 먼저 만들라. 모델은 그다음이다.
+
+**대표 도구·시스템** — GPT-4V · PathChat · Aletheia · CARTOGRAPH · AIRS-Bench · SciHorizon · Knockoff-C2ST · lambda-PSD · MACE-Osaka26 · FLAME · TC-Bench · IAEA Fusion Data Lake
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [LLM4SR: A Survey on Large Language Models for Scientific Research](../../docs/papers/506_LLM4SR_A_Survey_on_Large_Language_Models_for_Scientific_Rese/index.html) — Ziming Luo 외, 2025.01
+2. [Foundation Models for Environmental Science: A Survey of Emerging Frontiers](../../docs/papers/342_Foundation_Models_for_Environmental_Science_A_Survey_of_Emer/index.html) — Runlong Yu 외, 2025.04
+3. [The IAEA Fusion Data Lake Project — Accelerating AI and Big Data Applications through Open Science and FAIR Data](../../docs/papers/3257_The_IAEA_Fusion_Data_Lake_Project__Accelerating_AI_and_Big_D/index.html) — Daljeet Singh Gahle 외, 2026.04
+4. [SciHorizon: Benchmarking AI-for-Science Readiness from Scientific Data to Large Language Models](../../docs/papers/724_SciHorizon_Benchmarking_AI-for-Science_Readiness_from_Scient/index.html) — Chuan Qin 외, 2025.03
+5. [AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents](../../docs/papers/090_AIRS-Bench_a_Suite_of_Tasks_for_Frontier_AI_Research_Science/index.html) — Alisia Lupidi 외, 2026
+6. [Skipping the Zeros in Diffusion Models for Sparse Data Generation](../../docs/papers/10452_Skipping_the_Zeros_in_Diffusion_Models_for_Sparse_Data_Gener/index.html) — Phil Ostheimer 외, 2026
+
+---
+
+## S19 · AI 수치예보·기후 모델
+
+*제3부 · 물리·환경 과학 AI* · **Numerical Weather Forecasting Models** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Numerical Weather & Climate Forecasting Models</sub>
+
+`31편` `2022–2026` `가속` `2025+ 28편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2026년의 경쟁은 정확도가 아니라 확률·스펙트럼 충실도·자료동화다.
+
+**31편. AI가 운용 수치예보를 넘어선 것은 이미 2022년 일이다. 2026년의 경쟁은 확률, 스펙트럼 충실도, 그리고 자료동화다.**
+
+역사는 짧고 극적이다. 2022년 Pangu-Weather가 처음으로 운용 수치예보 성능을 상회했고, 2023년 GraphCast와 FuXi가 중기 예보와 15일 예보에서 동등성을 확보했다. 물리 방정식을 적분하는 대신 재분석 데이터로 학습한 신경망이 더 잘 맞힌다는 사실은 기상 분야의 자기 인식을 흔들었다. 그러나 곧 다음 질문이 왔다. 평균적으로 잘 맞히는 것으로 충분한가.
+
+충분하지 않다는 것이 2026년의 답이다. MOSAIC은 기계학습 기반 예보가 세 가지 방식으로 스펙트럼을 망가뜨린다고 지적한다. 통계적으로 고주파 성분이 감쇠하고, 구조적으로 고주파가 앨리어싱되며, 매개변수적으로 고주파 잔차가 누출된다. 결과적으로 평균 오차는 좋지만 예보 장면이 실제 대기보다 매끄럽다. 이는 극한 현상 예측에서 치명적이다. 블록 희소 어텐션으로 이 세 문제를 동시에 교정하는 확률 예보 모델이 그 대응이다. U-Cast와 ClimateAR도 확률·자기회귀 방향에서 같은 문제를 다룬다.[2][4]
+
+자료동화 쪽 진전이 실무적으로 더 크다. 2026년 SENDAI는 커버리지 1.56%의 초희소 관측만으로 위성 식생지수 필드를 재구성한다. 시뮬레이션에서 유도한 저주파 사전분포와 학습된 고주파 불일치 보정을 계층적으로 결합하는 구조다. 관측이 드문 지역과 변수에 대해 어떻게 채워 넣을지가 기상·농업·재난 분야의 오랜 병목이었으므로, 이 방향은 곧바로 운영에 붙는다. 파운데이션 모델을 동결한 채 추론 시점 래퍼만으로 다중해상도 정제를 수행해 가뭄을 예측하는 작업도 같은 실용주의 계열이다.
+
+물리와 기계학습을 섞는 하이브리드도 자리 잡았다. 태풍 같은 지역 극한 현상에 동역학 모델과 AI 앙상블을 결합하고, 질량을 보존하는 기후 에뮬레이터를 만들고, 해양·해빙 모델에 물리 제약을 넣는다. 저비용 운영 배포 사례들도 2026년에 나왔다. 이는 국가 기상 기관이 아니어도 지역 규모 예측 시스템을 운영할 수 있다는 뜻이다.
+
+국내 적용 관점에서 이 칸은 성숙도가 가장 높다. 기상청·해양·재난 기관에 붙일 수 있는 기술이 이미 공개되어 있고 계산 비용도 낮아졌다. 남은 관문은 신뢰 검증이다. 특히 극한값 외삽 성능은 독립 기관의 검증 없이는 정책 결정에 쓸 수 없다.
+
+> [!tip] 정리
+> 요약하면 이 칸은 '더 정확한 예보'에서 '얼마나 틀릴 수 있는지 아는 예보'로 넘어갔다. 재난 대응에서는 후자만이 쓸 수 있는 정보다.
+
+**대표 도구·시스템** — Pangu-Weather · GraphCast · FuXi · U-Cast · MOSAIC · ClimateAR · FloeNet · HybridOM · MiRS-AI · LoPhyDA · WEATHER-5K · Earth-2
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [(Sparse) Attention to the Details: Preserving Spectral Fidelity in ML-based Weather Forecasting Models](../../docs/papers/10472_Sparse_Attention_to_the_Details_Preserving_Spectral_Fidelity/index.html) — Maksim Zhdanov 외, 2026
+2. [U-Cast: A Surprisingly Simple and Efficient Frontier Probabilistic AI Weather Forecaster](../../docs/papers/10652_U-Cast_A_Surprisingly_Simple_and_Efficient_Frontier_Probabil/index.html) — Salva Rühling Cachay 외, 2026
+3. [Benchmarking Physics-Informed Time-Series Models for Operational Global Station Weather Forecasting](../../docs/papers/9302_Benchmarking_Physics-Informed_Time-Series_Models_for_Operati/index.html) — Tao Han 외, 2026
+4. [ClimateAR: Multi-Scale Autoregressive Generative Modeling for Climate Forecasting](../../docs/papers/9406_ClimateAR_Multi-Scale_Autoregressive_Generative_Modeling_for/index.html) — Yue Yu 외, 2026
+5. [Residual-Guided Multi-Resolution Refinement of Foundation Models: A Case Study in Drought Forecasting](../../docs/papers/10325_Residual-Guided_Multi-Resolution_Refinement_of_Foundation_Mo/index.html) — Wentao Gao 외, 2026
+6. [Closing Africa's Early Warning Gap: AI Weather Forecasting for Disaster Prevention](../../docs/papers/3058_Closing_Africas_Early_Warning_Gap_AI_Weather_Forecasting_for/index.html) — 2026.02
+
+---
+
+## S20 · 물리 제어 RL 견고성·real-to-sim
+
+*제3부 · 물리·환경 과학 AI* · **Offline Reinforcement Learning Robustness** · *서브카테고리*
+
+`14편` `2025+ 10편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 문제는 정책 성능이 아니라 시뮬레이터 밖에서의 재현이다.
+
+**14편의 작은 칸이지만 자율 실험실 논의의 마지막 1미터를 담당한다. 시뮬레이터 안에서 되는 정책이 실제 장비에서도 되는가.**
+
+문제 설정부터 보자. 물리 시스템에서 강화학습을 온라인으로 돌리면 장비가 부서지거나 사람이 위험해진다. 그래서 미리 수집한 데이터로 학습하는 오프라인 강화학습이 기본이 되는데, 이 경우 학습된 정책이 데이터 분포를 벗어난 상황에서 어떻게 행동할지 보장할 수 없다. 이 칸의 두 축은 그래서 견고성 평가와 안전 보장이다. 제어 배리어 함수처럼 제어이론의 안전 조건을 학습 정책에 씌우는 접근이 대표적이다.
+
+2025년의 구체적 성과는 소프트 연속체 팔의 제로샷 sim-to-real 시각 서보잉이다. 운동학과 기계적 특성을 분리해 모델링한 뒤 시뮬레이션에서만 학습한 정책을 실제 하드웨어에 그대로 올려 67% 성공률을 얻었다. 숫자만 보면 낮지만, 소프트 로봇의 비선형 동역학에서 재학습 없이 절반 이상 성공한다는 것은 의미가 크다. 실험실 자동화에서 부드러운 재료, 액체, 변형체를 다루는 작업이 늘 병목이었기 때문이다.
+
+의료 로봇에서 나온 결과는 더 인상적이다. 광간섭단층촬영으로 조직을 실시간 인식하며 혈관 문합을 자율 수행하는 로봇 시스템이 숙련 외과의와 경쟁 가능한 수준을 보고했다. 신경망 기반 봉합 오류 검출을 붙여 실패를 스스로 감지하는 구조인데, 이 '실패 감지 후 정지' 설계가 안전 임계 자동화의 표준 형태다. 성공률보다 실패 인식률이 중요하다는 원리를 이 논문이 잘 보여 준다.
+
+2026년에는 제어 문제의 난이도가 한 단계 올라갔다. 경계 제어가 평형 문제 자체를 변형시키는 상황, 즉 순차적 암시 계산이 필요한 문제에서 평형 제약 하 adjoint 학습을 쓰는 접근이 나왔다. 변형 가능한 선형 물체를 조작하는 일이 대표적 사례다. 케이블을 집어 옮기는 작업이 로봇에게 왜 어려운지를 수학적으로 다루는 단계에 왔다는 뜻이다.
+
+우리 맥락에서 이 칸은 국내 제조 역량과 직접 맞닿는다. 자율 실험실 논의는 대개 소프트웨어 이야기로 흐르지만, 실제 병목은 시료를 집고 옮기고 붓는 물리 작업이다. 정밀기계와 로봇 제조 기반이 있는 조직이라면, 알고리즘을 새로 만들기보다 공개된 정책을 우리 장비에 이식하고 안전 정지 로직을 붙이는 쪽이 빠르다.
+
+> [!tip] 정리
+> 정리하면 자율 실험실의 성패는 언어모델이 아니라 마지막 1미터의 제어에서 갈린다. 그리고 그 1미터는 소프트웨어보다 하드웨어 경험이 있는 팀이 잘한다.
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms](../../docs/papers/891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html) — Hsin-Jung Yang 외, 2025
+2. [Neural Control: Adjoint Learning Through Equilibrium Constraints](../../docs/papers/10090_Neural_Control_Adjoint_Learning_Through_Equilibrium_Constrai/index.html) — Dezhong Tong 외, 2026
+3. [Distinguishing Imitation Error from Intrinsic Motion Learning Difficulty](../../docs/papers/9528_Distinguishing_Imitation_Error_from_Intrinsic_Motion_Learnin/index.html) — Zhaorui Meng 외, 2026
+4. [LASER: Learning Active Sensing for Continuum Field Reconstruction](../../docs/papers/9878_LASER_Learning_Active_Sensing_for_Continuum_Field_Reconstruc/index.html) — Huayu Deng 외, 2026
+5. [Learning Verifiable Mathematical Laws for Scientific Agents via Graph-Hamiltonian World Models](../../docs/papers/9931_Learning_Verifiable_Mathematical_Laws_for_Scientific_Agents/index.html) — Hrishi Sunder, 2026
+6. [Guided by guardrails: Control barrier functions as safety instructors for robotic learning](../../docs/papers/395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html) — Maeva Guerrier 외, 2025
+
+---
+
+## S21 · 확산모델 보상 미세조정
+
+*제4부 · 분자 시뮬레이션·생성 모델링* · **Diffusion Model Reward Fine-tuning** · *서브카테고리*
+
+`66편` `2024–2026` `가속` `2025+ 64편`
+
+<sub>분자 시뮬레이션·생성 모델링 고유 배정 307편(중복 포함 1,048편 · 웹 인덱스 기준) · 서브카테고리 9개 · 본 파트 5개로 76% 커버</sub>
+
+> [!quote] 파트 도입
+> 생성은 값싸졌다. 남은 문제는 합성 가능성과 독립 재분석이다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 보상 미세조정은 '재학습 없는 추론시간 정렬'로 정리됐다.
+
+**66편. 원하는 성질을 가진 분자를 얻으려고 모델을 다시 학습시키던 시대가 끝났다. 이제는 추론 시점에 생성 경로를 끌어당긴다.**
+
+문제는 이렇다. 확산모델로 분자나 단백질을 생성할 수 있게 됐지만, 우리가 원하는 것은 '그럴듯한 분자'가 아니라 '이 표적에 붙고 독성이 없고 합성 가능한 분자'다. 이 조건들은 대개 미분 불가능한 평가 함수로 주어진다. 도킹 점수, 실험 측정값, 규칙 기반 필터가 그렇다. 기울기를 흘릴 수 없으니 기존 방식으로는 학습에 넣을 수 없었다.
+
+2025년 SVDD가 우회로를 제시했다. 확산 과정의 각 단계에서 여러 후보를 뽑고 보상이 높은 쪽을 선택적으로 남기는 방식으로, 모델 가중치를 건드리지 않고 추론 시점에만 정렬을 수행한다. 재학습이 없으므로 보상 함수가 바뀔 때마다 실험을 다시 돌릴 수 있고, 여러 보상을 조합해 실시간으로 바꿀 수도 있다. 같은 해 VIDD는 가치 유도 반복 증류로 이 아이디어를 학습 쪽에 안정적으로 흡수했다.
+
+테스트타임 탐색 자체가 정교해졌다. 부분적으로 노이즈를 다시 넣고 보상 유도로 디노이징하는 과정을 반복하는 반복 정제 방식, 빔 폭을 동적으로 조정하는 트리 탐색 방식이 2025년에 나왔다. 단일 샷 생성보다 계산은 더 들지만, 그 계산이 실험 한 번 값보다 훨씬 싸다는 점이 핵심이다. 분자 설계에서는 추론 비용을 늘려 실험 비용을 줄이는 거래가 거의 항상 이득이다.
+
+2026년에는 강화학습 사후학습이 표준 도구로 들어왔다. GRPO 계열을 생물분자와 결정 생성기에 적용한 SGRPO, CRYSTAL 같은 작업이 그렇고, 다목적 설계를 트리 탐색으로 다루는 MP2D와 MOMST가 나왔다. 여러 목적이 충돌할 때 가중합으로 뭉개지 않고 파레토 전선을 탐색한다는 점이 실무적으로 중요하다.[5][6]
+
+가장 실용적인 진전은 '언제 멈출지'를 통계로 정한 작업들이다. e-프로세스를 이용한 안전한 입자 선택, 비용을 고려한 베이지안 최적화 정지 규칙이 그렇다. 생성은 무한히 할 수 있으므로, 실무에서 진짜 질문은 몇 개를 만들고 어디서 그만두고 실험으로 넘길지다. 이 결정을 감으로 하던 관행에 통계적 근거가 붙었다.
+
+> [!tip] 정리
+> 이 칸의 교훈은 명확하다. 보상 함수는 도메인 지식의 코드화다. 우리 실험실이 실제로 측정할 수 있는 값을 보상으로 쓸 수 있는 팀이, 공개 벤치마크 점수만 올리는 팀을 이긴다.
+
+**대표 도구·시스템** — SVDD · VIDD · GRPO/SGRPO · MP2D · CAGenMol · GILC · PT-MDM · CSMC · LABO · RAMBO
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design](../../docs/papers/446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html) — Xingyu Su 외, 2025
+2. [Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design](../../docs/papers/682_Reward-Guided_Iterative_Refinement_in_Diffusion_Models_at_Te/index.html) — Masatoshi Uehara 외, 2025
+3. [Multi-Objective Protein Design via Memory-Aware Test-Time Scaling in Diffusion Models](../../docs/papers/10068_Multi-Objective_Protein_Design_via_Memory-Aware_Test-Time_Sc/index.html) — Ming Yang 외, 2026
+4. [CAGenMol: Condition-Aware Diffusion Language Model for Goal-Directed Molecular Generation](../../docs/papers/3050_CAGenMol_Condition-Aware_Diffusion_Language_Model_for_Goal-D/index.html) — 2026.04
+5. [MP2D: Constrained Monte Carlo Tree-Guided Diffusion for Multi-Objective Protein Sequence Design](../../docs/papers/3178_MP2D_Constrained_Monte_Carlo_Tree-Guided_Diffusion_for_Multi/index.html) — Zitai Kong 외, 2026.05
+6. [CRYSTAL: Coordinated Multi-Objective Reinforcement Learning for Crystal Generation](../../docs/papers/9465_CRYSTAL_Coordinated_Multi-Objective_Reinforcement_Learning_f/index.html) — Zhan'ao yao 외, 2026
+
+---
+
+## S22 · 등변 힘장·기계학습 원자간 퍼텐셜
+
+*제4부 · 분자 시뮬레이션·생성 모델링* · **Equivariant Force Field Symmetry** · *서브카테고리*
+
+`59편` `2022–2026` `가속` `2025+ 58편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 등변이 기본기가 된 순간 '정말 필요한가'라는 반론과 속도전이 시작됐다.
+
+**59편. 회전·병진 대칭을 구조에 심는 등변 신경망이 기계학습 원자간 퍼텐셜의 기본기가 됐고, 바로 그 순간 '정말 필요한가'라는 반론이 시작됐다.**
+
+정착된 사실부터 정리하자. MACE, NequIP, TensorNet, Orb-v3 같은 등변 메시지 패싱 구조가 기계학습 원자간 퍼텐셜의 표준 백본이 됐다. 대칭을 아키텍처에 넣으면 데이터 효율이 올라가고 에너지 보존이 자동으로 지켜진다는 것이 근거였다. 분자동역학에서 물리 법칙 위반은 곧 시뮬레이션 발산이므로, 이 성질은 취향이 아니라 요구사항이었다.
+
+2026년에 반론이 나왔다. 어텐션 기반 장거리 퍼텐셜 계열인 AllScAIP와 RANGE는 손으로 넣은 기하 귀납편향 없이도, 충분한 데이터와 전역 인코딩만으로 동등하거나 더 나은 정확도에 도달한다고 보고했다. 특히 장거리 상호작용이 중요한 계에서 국소 메시지 패싱의 한계가 드러났다. 언어모델에서 반복된 패턴이 여기서도 나타난 셈이다. 구조적 사전지식은 데이터가 적을 때 이득이고, 많아지면 제약이 된다.[1][3]
+
+속도 쪽 진전이 산업적으로는 더 중요하다. 입출력 인지 커널과 확장 메시지 패싱을 쓴 FlashSchNet 계열은 그래프 신경망 분자동역학을 고전 힘장 속도권으로 끌어올렸다. 정확도가 양자역학급이면서 속도가 고전 힘장급이라면, 기존 시뮬레이션 워크플로를 그대로 대체할 수 있다. 이것이 실제 교체 시점을 결정하는 조건이다.[2]
+
+대칭성 원리 자체가 다른 분야로 수출되는 현상도 두드러진다. 편미분방정식 대리모델, 격자 게이지 이론, 뇌 그래프 분석, 그리고 양자오류정정 디코더까지 옮겨갔다. 2026년의 한 사례는 표면 코드와 고비율 양자 LDPC 코드를 모두 다루는 병진 등변 합성곱 기반 디코더다. 물리 대칭을 아는 사람이 전혀 다른 문제에서 우위를 갖는 구조다. PDE 트랜스포머용 다중스케일 토큰화를 적응 메시 세분화 발상으로 구현한 MeshTok도 같은 계열의 사고다.[5]
+
+우리 관점의 결론은 인프라 교체 판단이다. 사내에 축적된 밀도범함수이론 계산 결과가 있다면 그것이 곧 학습 데이터이고, 그 데이터로 미세조정한 퍼텐셜은 공개 모델보다 우리 계에서 정확하다. 반대로 계산 데이터가 없으면 남의 퍼텐셜을 쓰다가 우리 계에서 실패하는 경험을 반복한다.
+
+> [!tip] 정리
+> 정리하면 이 칸은 계산화학 인프라를 교체할 시점에 도달했다. 판단 기준은 논문 점수가 아니라 우리 계에서의 재현성이며, 그 판단의 재료는 우리가 이미 가진 계산 이력이다.
+
+**대표 도구·시스템** — MACE · NequIP · FlashSchNet · AllScAIP · RANGE · MeshTok · FluxNet · Garnet · GFFMERGE
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Extending the range of graph neural networks with global encodings](../../docs/papers/3095_Extending_the_range_of_graph_neural_networks_with_global_enc/index.html) — Alessandro Caruso 외, 2026.02
+2. [FlashSchNet: Fast and Accurate Coarse-Grained Neural Network Molecular Dynamics](../../docs/papers/3102_FlashSchNet_Fast_and_Accurate_Coarse-Grained_Neural_Network/index.html) — 2026.02
+3. [A recipe for scalable attention-based ML potentials: unlocking long-range accuracy with all-to-all node attention](../../docs/papers/9159_A_recipe_for_scalable_attention-based_ML_potentials_unlockin/index.html) — Eric Qu 외, 2026
+4. [GFFMERGE: Efficient Merging of Graph Neural Force Fields and Beyond](../../docs/papers/9746_GFFMERGE_Efficient_Merging_of_Graph_Neural_Force_Fields_and/index.html) — Parth Verma 외, 2026
+5. [MeshTok: Efficient Multi-Scale Tokenization for Scalable PDE Transformers](../../docs/papers/10026_MeshTok_Efficient_Multi-Scale_Tokenization_for_Scalable_PDE/index.html) — Yanshun Zhao 외, 2026
+6. [Training a force field for proteins and small molecules from scratch](../../docs/papers/3267_Training_a_force_field_for_proteins_and_small_molecules_from/index.html) — 2026.03
+
+---
+
+## S23 · 결정구조 생성 모델링
+
+*제4부 · 분자 시뮬레이션·생성 모델링* · **Crystal Structure Generative Modeling** · *서브카테고리*
+
+`47편` `2023–2026` `가속` `2025+ 46편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 결정 생성은 '많이 만들기'에서 '맞는 분포를 만들기'로 옮겨갔다.
+
+**47편. GNoME가 안정 결정 목록을 열 배로 늘린 뒤, 이 칸의 문제는 '더 만들기'가 아니라 '맞는 분포를 만들기'와 '합성 가능성'으로 옮겨갔다.**
+
+배경은 2023년 GNoME다. 그래프 신경망을 대규모로 학습시켜 220만 개의 새로운 안정 결정 구조를 예측하며, 인류가 알던 안정 무기물 목록을 자릿수 단위로 확장했다. 문제는 그다음이었다. 목록이 커지면 무엇을 먼저 만들어 볼지가 새로운 병목이 된다. 그리고 예측된 안정성이 실제 합성 가능성과 다르다는 사실이 곧 드러났다.
+
+2026년의 방법론적 표준은 리만 흐름 매칭이다. 결정은 주기 경계 조건을 가지므로 좌표 공간이 유클리드가 아니고, 격자 상수와 원자 위치가 서로 결합돼 있다. MolCrystalFlow, OrgFlow, MCFlow, DMFlow 같은 작업들은 이 다양체 구조를 존중하며 생성한다. 유클리드 확산모델을 억지로 쓰면 생성물이 물리적으로 불가능한 격자를 갖는 문제가 있었는데, 그것을 수학적으로 해결한 셈이다.[4][6]
+
+언어모델 계열도 자리를 잡았다. Wyckoff 위치 같은 결정학적 기호 표현을 텍스트로 다루고, 선호 정렬로 원하는 물성 쪽으로 생성을 유도하는 PLaID++, CrysTune, WyFormer 같은 접근이다. 기호 표현을 쓰면 대칭군 제약을 자동으로 만족시킬 수 있고, 사람이 결과를 읽고 검증할 수 있다는 부수 효과도 크다.[1]
+
+생성 다양성과 물리 정확성 문제도 다뤄졌다. 2026년 MetaDNS는 잘 조정된 메타동역학을 이산 신경 샘플러 학습에 결합해 모드 붕괴를 완화하고 에너지 장벽 사이의 고에너지 영역까지 탐색한다. 전원자 수준에서 생물분자 상호작용의 평형 분포를 직접 학습하는 생성 파운데이션 모델도 나왔다. 하나의 구조를 예측하는 것과 구조들의 분포를 맞히는 것은 다른 문제이며, 열역학적 성질을 계산하려면 후자가 필요하다.
+
+역방향 활용도 확장됐다. Boltz-Jump, GLASS, CryoACE 같은 작업은 실험 관측에서 구조를 규명하는 역문제에 생성모델을 쓴다. 회절 패턴이나 저온전자현미경 데이터에서 구조를 복원하는 일에 사전분포로 생성모델을 붙이는 구조다. 실험 데이터가 불완전할 때 특히 효과가 크다.[5]
+
+> [!tip] 정리
+> 요약하면 후보 목록 과잉의 시대다. 생성 성능을 더 올리는 투자보다, 합성 경로 예측과 독립 검증을 붙이는 투자가 실제 물질을 만든다.
+
+**대표 도구·시스템** — GNoME · MatterGen · MolCrystalFlow · PLaID++ · Riemannian MeanFlow · Boltz-Jump · GLASS · MOTIFLOW
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [PLaID++: A Preference Aligned Language Model for Targeted Inorganic Materials Design](../../docs/papers/10199_PLaID_A_Preference_Aligned_Language_Model_for_Targeted_Inorg/index.html) — Andy Xu 외, 2026
+2. [Generative Inversion of Spectroscopic Data for Amorphous Structure Elucidation](../../docs/papers/1099_Generative_Inversion_of_Spectroscopic_Data_for_Amorphous_Str/index.html) — Jiawei Guo 외, 2026
+3. [Generative Structure Search for Efficient and Diverse Discovery of Molecular and Crystal Structures](../../docs/papers/3120_Generative_Structure_Search_for_Efficient_and_Diverse_Discov/index.html) — 2026.04
+4. [MolCrystalFlow: Molecular Crystal Structure Prediction via Flow Matching](../../docs/papers/3173_MolCrystalFlow_Molecular_Crystal_Structure_Prediction_via_Fl/index.html) — 2026.02
+5. [Neutron and X-ray Diffraction Reveal the Limits of Long-Range Machine Learning Potentials for Medium-Range Order in Silica Glass](../../docs/papers/3190_Neutron_and_X-ray_Diffraction_Reveal_the_Limits_of_Long-Rang/index.html) — 2026.04
+6. [OrgFlow: Generative Modeling of Organic Crystal Structures from Molecular Graphs](../../docs/papers/3197_OrgFlow_Generative_Modeling_of_Organic_Crystal_Structures_fr/index.html) — 2026.02
+
+---
+
+## S24 · 대리 서술자 검증·반증
+
+*제4부 · 분자 시뮬레이션·생성 모델링* · **ML Proxy Descriptor Evaluation** · *서브카테고리*
+
+`31편` `2021–2026` `안정` `2025+ 27편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 이 필드의 최대 기여는 새 모델이 아니라 자율 실험실 발견 주장을 반증한 재분석이다.
+
+**31편. 이 칸의 최대 기여는 새 모델이 아니다. 자율 실험실이 발견했다고 주장한 신물질을 재분석해 무너뜨린 작업이다.**
+
+2024년의 그 재분석부터 보자. 자율 물질 발견 시스템 A-Lab이 새로 합성했다고 발표한 43종의 물질을 다시 검토한 결과, 리트벨트 정제 과정의 오류와 무질서 효과 미고려로 인해 실제로는 새로운 물질이 발견되지 않았다는 결론이 나왔다. 인용 97로 이 논문은 이미 이 분야의 참조점이다. 자동화가 만든 결과를 자동화가 검증하지 않으면 어떤 일이 벌어지는지 보여 준 사례이기 때문이다.
+
+이 결과를 냉소로 소비하면 안 된다. 요점은 자율 실험실이 쓸모없다는 것이 아니라, 발견 주장에는 독립 재분석이 구조적으로 필요하다는 것이다. 실험 자동화는 처리량을 올리지만 해석 오류도 같은 속도로 증폭한다. 사람이 하루에 세 개를 분석하며 이상함을 감지하던 단계가 사라지기 때문이다.
+
+방법론 쪽에서는 2025년 화학 파운데이션 모델 관점 논문이 지형을 정리했다. 분자 물성 예측, 기계학습 상호작용 퍼텐셜, 역설계에 파운데이션 모델을 어디까지 적용할 수 있는지 정리하며 과대 기대를 조정했다. LoRA식 효율적 미세조정을 퍼텐셜에 적용하는 실무 경로도 제시됐다. 데이터가 적은 조직이 대형 모델을 자기 계에 맞추는 현실적 방법이다.
+
+LLM을 문헌 마이닝과 역설계에 붙이는 흐름도 이어진다. 금속유기골격체 코퍼스 구축, 공유결합유기골격체용 에이전트 Ara, 제올라이트 합성 계획을 다루는 DiffSyn 같은 작업이다. 2026년 ELECTRAFI는 결정 물질의 주기적 전하 밀도를 실공간 비등방 가우시안의 닫힌 형태 푸리에 변환으로 즉시 예측해, 평면파 계산을 우회한다. 물리 구조를 활용해 계산량을 줄이는 정공법이다.[1]
+
+가장 시사적인 2026년 결과는 서지 메타데이터에서 학습한 지름길 학습을 폭로한 작업이다. 모델이 물질의 물리적 성질이 아니라 어떤 저널에 실렸는지 같은 부수 정보로 예측하고 있었다는 지적인데, 이는 성능 숫자를 그대로 믿으면 안 되는 이유를 가장 극명하게 보여 준다.
+
+> [!tip] 정리
+> 이 칸이 우리에게 주는 규칙은 하나다. 발견 주장에는 독립 재분석 예산을 붙여라. 반증할 수 있는 인력이 곧 신뢰 인프라이고, 그 인력이 없으면 자동화는 오류 생산 설비가 된다.
+
+**대표 도구·시스템** — JARVIS/ALIGNN · DiffSyn · SpbNet · PI-GP · ELECTRAFI · CatFlow · Equitrain-LoRA
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [DiffSyn: a generative diffusion approach to materials synthesis planning](../../docs/papers/3077_DiffSyn_a_generative_diffusion_approach_to_materials_synthes/index.html) — Elton Pan 외, 2026.02
+2. [CatFlow: Co-generation of Slab-Adsorbate Systems via Flow Matching](../../docs/papers/9378_CatFlow_Co-generation_of_Slab-Adsorbate_Systems_via_Flow_Mat/index.html) — Minkyu Kim 외, 2026
+3. [A Perspective on Foundation Models in Chemistry](../../docs/papers/015_A_Perspective_on_Foundation_Models_in_Chemistry/index.html) — Junyoung Choi 외, 2025.04 · 인용 39
+4. [Global Plane Waves from Local Gaussians: Periodic Charge Densities in a Blink](../../docs/papers/9748_Global_Plane_Waves_from_Local_Gaussians_Periodic_Charge_Dens/index.html) — Jonas Elsborg 외, 2026
+5. [Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set](../../docs/papers/3383_Harnessing_Large_Language_Models_to_Collect_and_Analyze_Meta/index.html) — Yeonghun Kang 외, 2025.02
+6. [Foundation models for materials discovery – current state and future directions](../../docs/papers/343_Foundation_models_for_materials_discovery__current_state_and/index.html) — Edward O. Pyzer-Knapp 외, 2025.03
+
+---
+
+## S25 · 분자 물성·분광 검증
+
+*제4부 · 분자 시뮬레이션·생성 모델링* · **Molecular Thermodynamic Property Prediction** · *서브카테고리*
+
+`30편` `2026–2026` `부상` `2025+ 30편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 사실상 전량 2026년 신생 분야 — 물성 예측이 '검증 계층'을 달고 재등장했다.
+
+**30편이 사실상 전부 2026년 논문이다. 물성 예측이라는 오래된 주제가 '검증 계층'을 달고 새 분야로 재등장했다.**
+
+이 칸이 신생인 이유를 먼저 짚자. 물성 예측 자체는 수십 년 된 주제다. 그런데 최근 AI 과학자 워크플로가 분자를 대량 생성하기 시작하면서, 생성물의 성질을 빠르고 신뢰할 수 있게 판정하는 문제가 병목이 됐다. 즉 이 칸은 생성 쪽 발전이 만들어 낸 수요에서 태어났다.
+
+2026년의 대표작은 Peak Risk Score다. 시뮬레이션한 분광 스펙트럼과 실험 스펙트럼 사이의 봉우리 존재·위치·적분 불일치를 확률적으로 채점하는 모델 독립적 프레임워크로, 핵자기공명 기반 구조 규명 워크플로에 검증 계층을 삽입한다. 여기서 중요한 것은 발상이다. 생성 모델을 더 좋게 만들려는 것이 아니라, 생성 결과가 실험과 어긋날 때 그 사실을 정량적으로 알려 주는 게이트를 만든다.
+
+데이터 문제를 우회하는 접근도 나왔다. 핵자기공명 화학 이동 예측에는 원자 단위 할당이 붙은 데이터가 필요한데 그것이 희소하다. 2026년 한 작업은 문헌에서 추출한 미할당 스펙트럼 수백만 건을 순열 불변 집합 지도학습 문제로 재정식화해 학습에 썼다. 라벨의 형식을 바꿔 사용 가능한 데이터의 양을 자릿수로 늘린 사례다.
+
+표현 학습 쪽에서는 MOES-Pred가 분자별로 노이즈 강도를 적응 조절하는 에너지 센티널 메커니즘과 BRICS 기반 모티프 분해를 결합해 디노이징 사전학습을 개선했다. 힘장 학습 정확도와 물성 예측을 동시에 올리는 구조다. 반대 방향으로는 DISSOLVR처럼 딥러닝을 쓰지 않고 해석 가능한 모델로 용해도를 예측해 데이터 고유 잡음 한계에 도달한 작업이 있다. 성능 상한이 데이터 품질로 결정되는 문제에서는 복잡한 모델이 이득을 주지 않는다는 증거다.[1][6]
+
+탐색 쪽에서는 대칭 제약 가우시안 프로세스 SYMGP와 확률적 재매개화를 통한 혼합변수 베이지안 최적화가 나왔다. 실험 예산이 극도로 제한된 상황에서 무엇을 다음에 측정할지 고르는 문제이며, 이 부분이 실제 실험실 운영에서 가장 자주 필요한 계산이다.
+
+> [!tip] 정리
+> 이 칸의 실행 지침은 구체적이다. 우리 AI 워크플로에 '실험 스펙트럼과 불일치하면 정지'라는 게이트를 넣어라. 이것이 자동화에서 신뢰를 만드는 가장 값싼 장치다.
+
+**대표 도구·시스템** — ChemFlow · DISSOLVR · SYMGP · SymSpectra · Peak Risk Score · FlexMS · MOES-Pred · SAND
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [MOES-Pred: Molecular Structural Representation Learning by Adaptive Energy-Sentinel Vibration for Generalized Property Prediction](../../docs/papers/10051_MOES-Pred_Molecular_Structural_Representation_Learning_by__A/index.html) — Zhiran Hou 외, 2026
+2. [Symmetry-Constrained Gaussian Processes for Sample-Efficient Molecular Property Prediction](../../docs/papers/10523_Symmetry-Constrained_Gaussian_Processes_for_Sample-Efficient/index.html) — Kaustubh S. Bukkapatnam 외, 2026
+3. [SymSpectra: Symmetric Information Bottleneck Framework for Molecular Structure Recognition under Imbalanced Settings](../../docs/papers/10524_SymSpectra_Symmetric_Information_Bottleneck_Framework_for_Mo/index.html) — Xiaohan Qin 외, 2026
+4. [Do Larger Models Really Win in Drug Discovery? A Benchmark Assessment of Model Scaling in AI-Driven Molecular Property and Activity Prediction](../../docs/papers/3078_Do_Larger_Models_Really_Win_in_Drug_Discovery_A_Benchmark_As/index.html) — Jinjiang Guo, 2026.04
+5. [Thermodynamic Descriptors from Molecular Dynamics as Machine Learning Features for Extrapolable Property Prediction](../../docs/papers/3259_Thermodynamic_Descriptors_from_Molecular_Dynamics_as_Machine/index.html) — 2026.03
+6. [DISSOLVR: An Interpretable and Fast Framework for Aqueous and Organic Solubility Prediction](../../docs/papers/9525_DISSOLVR_An_Interpretable_and_Fast_Framework_for_Aqueous_and/index.html) — Vansh Ramani 외, 2026
+
+---
+
+## S26 · 도구 사용 과학 에이전트
+
+*제5부 · 과학 자동화 에이전트 AI* · **Scientific Tool-Using AI Agents** · *서브카테고리*
+
+`91편` `2023–2026` `가속` `2025+ 82편`
+
+<sub>과학 자동화 에이전트 AI 고유 배정 282편(중복 포함 972편 · 웹 인덱스 기준) · 서브카테고리 10개 · 본 파트 5개로 73% 커버</sub>
+
+> [!quote] 파트 도입
+> 습식 검증 성공 사례와 '과학적으로 추론하지 않는다'는 반증이 같은 해에 나왔다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 에이전트 경쟁력은 모델이 아니라 도구 카탈로그·프로토콜·과정 감사로 옮겨갔다.
+
+**91편. 이 칸을 한 문장으로 요약하면, 에이전트의 경쟁력이 모델에서 도구 카탈로그와 프로토콜로 옮겨갔다는 것이다.**
+
+2023년에서 2024년 사이 이 분야는 프레이밍 단계였다. AI4Science라는 이름 아래 생의학 에이전트 AgentMD 같은 사례가 나왔지만, 대체로 특정 과제에 특정 도구를 붙인 시연이었다. 문제는 확장성이었다. 새 과제마다 도구 연결을 다시 만들어야 한다면 그것은 자동화가 아니라 수공업이다.
+
+2025년의 변화는 생태계 표준화다. ToolUniverse는 600개 이상의 과학 도구를 통일된 인터페이스로 묶었고, TxAgent는 치료제 추론에 211개 도구를 붙였으며, Biomni는 범용 생의학 에이전트로 다양한 도구를 오케스트레이션한다. 여기서 중요한 것은 도구 개수가 아니라 프로토콜이다. 도구를 등록하고 호출하고 결과를 검증하는 규약이 정해지면, 에이전트 성능은 그 위에서 도구를 추가하는 것만으로 올라간다.[4][6]
+
+같은 해 엔드투엔드 AI 과학자 시스템들이 쏟아졌다. AI Scientist-v2, Kosmos, DeepScientist, 그리고 에이전트용 프리프린트 플랫폼 aiXiv 같은 사례다. DeepScientist는 발견을 베이지안 최적화 문제로 정식화하고 가설–검증–분석 계층 프로세스와 누적 Findings Memory로 탐색과 활용의 균형을 맞춘다. 흥미로운 점은 이런 논문들과 회의적 평가 논문이 같은 학회, 같은 계절에 나왔다는 것이다. 이 분야는 자기 비판을 내장한 채로 자란다.[1][5]
+
+환각 문제에 대한 구조적 대응도 나왔다. GeneAgent는 유전자 집합 분석에서 도메인 데이터베이스로 자기 주장을 검증하는 단계를 넣어 GPT-4 대비 정확도를 크게 올렸다. 이 패턴, 즉 '생성한 주장을 외부 데이터베이스로 즉시 조회해 반증하는 루프'는 도메인이 달라도 그대로 이식된다. 우리 조직에 에이전트를 붙일 때 가장 먼저 복제해야 할 설계이기도 하다.
+
+2026년의 방향은 두 가지다. 하나는 발견 대상의 추상화 수준을 올리는 것으로, 방정식과 인과 법칙을 찾는 에이전트가 등장했다. 다른 하나는 평가를 과정 단위로 내려보내는 것이다. OpenDiscoveryTrace처럼 최종 정답이 아니라 발견 과정의 궤적을 평가하는 벤치마크가 나왔다. 결과만 채점하면 운으로 맞힌 경우를 구분할 수 없기 때문이다.[2]
+
+> [!tip] 정리
+> 도입 단위를 다시 정의해야 한다. 우리가 계약할 것은 모델이 아니라 도구 레지스트리와 감사 로그다. 그 두 개가 없으면 에이전트는 재현 불가능한 시연으로 끝난다.
+
+**대표 도구·시스템** — ToolUniverse · Biomni · TxAgent · AI Scientist-v2 · Kosmos · GeneAgent · TRIAGE · SR-Scientist
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [DeepScientist: Advancing Frontier-Pushing Scientific Findings Progressively](../../docs/papers/10727_deepscientist_advancing_frontier-pushing_scientific_fi/index.html) — Yixuan Weng 외, 2025.09
+2. [OpenDiscoveryTrace: Process Traces for Evaluating AI Scientist Workflows](../../docs/papers/10134_OpenDiscoveryTrace_Process_Traces_for_Evaluating_AI_Scientis/index.html) — Aayam Bansal 외, 2026
+3. [SR-Scientist: Scientific Equation Discovery With Agentic AI](../../docs/papers/10488_SR-Scientist_Scientific_Equation_Discovery_With_Agentic_AI/index.html) — Shijie Xia 외, 2026
+4. [Democratizing AI scientists using ToolUniverse](../../docs/papers/268_Democratizing_AI_scientists_using_ToolUniverse/index.html) — Shanghua Gao 외, 2025.09
+5. [The AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search](../../docs/papers/794_The_AI_Scientist-v2_Workshop-Level_Automated_Scientific_Disc/index.html) — Yutaro Yamada 외, 2025.04
+6. [TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools](../../docs/papers/848_TxAgent_An_AI_Agent_for_Therapeutic_Reasoning_Across_a_Unive/index.html) — Shanghua Gao 외, 2025.03
+
+---
+
+## S27 · 자율 과학 발견 에이전트
+
+*제5부 · 과학 자동화 에이전트 AI* · **Autonomous Scientific Discovery Agents** · *서브카테고리*
+
+`37편` `2024–2026` `가속` `2025+ 28편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 성공 시연과 인식론적 반증이 같은 구간에 도착했다.
+
+**37편. 같은 해에 습식 검증 성공 사례와 '이들은 과학적으로 추론하지 않는다'는 반증이 함께 나왔다. 이 긴장이 이 칸의 전부다.**
+
+2024년은 도메인 확산의 해였다. CRISPR-GPT가 유전자 편집 실험 설계를, CellAgent가 단일세포 분석을, ProtAgents가 단백질 설계를, GIS Copilot이 공간 분석을 각각 자동화했다. 이 시기 논문들의 공통 구조는 전문가 워크플로를 단계로 쪼개고 각 단계에 도구를 붙인 다중 에이전트다. 성공 기준은 대체로 '전문가가 보기에 그럴듯한 결과'였다.
+
+2025년에 두 종류의 결과가 동시에 나왔다. 긍정 쪽에서 Agent Laboratory는 문헌조사·실험·보고서 작성 세 단계를 자율 수행하며 기존 자동화 대비 비용을 84% 줄였고, Virtual Lab은 다중 에이전트 회의로 설계한 나노바디를 습식 실험으로 검증했다. AstroAgents는 운석·토양 질량분석 데이터에서 생명 기원 가설을 자동 생성했다. 부정 쪽에서는 ScienceAgentBench, ScienceBoard, AFMBench가 실제 과제 성공률이 기대보다 훨씬 낮음을 드러냈다.[1][4][6]
+
+이 간극을 설명한 것이 2026년 논문이다. 25,000회 이상의 에이전트 실행을 분석한 결과, LLM 기반 과학 에이전트는 과학적 추론의 인식론적 규범을 따르지 않는다는 결론이 나왔다. 증거를 무시하는 비율이 68%에 달하고, 신념 수정이 제대로 이뤄지지 않으며, 성능과 행동을 결정하는 가장 큰 변수는 워크플로 설계가 아니라 기반 모델이었다. 제목 그대로 '결과는 내지만 과학적으로 추론하지는 않는다'.
+
+대응 방향은 반증 중심 설계다. POPPER 계열과 AIGS는 가설을 세우고 그것을 깨뜨리려 시도하는 루프를 명시적으로 넣는다. 2026년에는 에이전트 운영체제라 부를 수 있는 SCION, EvoMaster 같은 시스템도 나왔다. 개별 에이전트를 똑똑하게 만드는 대신, 실행 환경이 검증과 기록을 강제하는 방향이다.
+
+실무적으로 이 칸에서 배울 것은 구매 기준이다. '자율성'을 사면 안 된다. 대신 반증 루프와 정지 조건을 사야 한다. 에이전트가 실패했을 때 조용히 그럴듯한 답을 내놓는지, 아니면 실패를 선언하고 멈추는지가 유일하게 중요한 성능 지표다.
+
+> [!tip] 정리
+> 정리하면 이 분야는 아직 사람을 대체하지 못한다. 그러나 사람이 감독하는 조건에서 처리량을 늘리는 데는 이미 쓸 만하다. 그 경계를 문서로 정하는 것이 도입의 첫 작업이다.
+
+**대표 도구·시스템** — Virtual Lab · POPPER · CRISPR-GPT · InternAgent · ScienceAgentBench · VASPilot · FermiLink · SCION
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery](../../docs/papers/716_ScienceAgentBench_Toward_Rigorous_Assessment_of_Language_Age/index.html) — Ziru Chen 외, 2025.03
+2. [Scienceboard: Evaluating multimodal autonomous agents in realistic scientific workflows](../../docs/papers/717_Scienceboard_Evaluating_multimodal_autonomous_agents_in_real/index.html) — Qiushi Sun 외, 2025
+3. [Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics](../../docs/papers/137_Autonomous_Agents_for_Scientific_Discovery_Orchestrating_Sci/index.html) — Lianhao Zhou 외, 2025.10
+4. [The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies](../../docs/papers/805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html) — Kyle Swanson 외, 2025.07
+5. [FermiLink: A Unified Agent Framework for Multidomain Autonomous Scientific Simulations](../../docs/papers/3098_FermiLink_A_Unified_Agent_Framework_for_Multidomain_Autonomo/index.html) — 2026.04
+6. [AstroAgents: A Multi-Agent AI for Hypothesis Generation from Mass Spectrometry Data](../../docs/papers/110_AstroAgents_A_Multi-Agent_AI_for_Hypothesis_Generation_from/index.html) — Daniel Saeedi 외, 2025 · 인용 3
+
+---
+
+## S28 · 임상 LLM 응용
+
+*제5부 · 과학 자동화 에이전트 AI* · **Clinical LLM Applications** · *서브카테고리*
+
+`31편` `2023–2026` `가속` `2025+ 24편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 임상 LLM의 관문은 정확도가 아니라 유보(defer)와 검증이다.
+
+**31편. 임상 LLM의 관문은 정확도가 아니다. 언제 사람에게 넘길지, 즉 유보 결정을 어떻게 문서화하는가다.**
+
+2023년에서 2024년 사이의 기반은 다중 에이전트 의료 추론이었다. MedAgents는 여러 전문 역할을 부여한 에이전트들이 토론하며 제로샷으로 의료 추론을 수행하게 했고, AI Hospital과 PIORS는 임상 상호작용 자체를 시뮬레이션했다. 여기서 얻은 교훈은 단일 모델 응답보다 역할 분담과 반복 토론이 오류를 줄인다는 것이었다.
+
+2025년의 초점은 평가 인프라다. 실제 환자로 대화형 에이전트를 시험할 수 없으므로 시뮬레이션 환자가 필요하다. Psyche는 다면적 정신의학 구성을 기반으로 시뮬레이션 환자를 만들어 정신과 상담 에이전트의 임상 적절성을 윤리적 위험 없이 정량 평가하고, PatientSim은 페르소나 기반으로 현실적인 의사–환자 상호작용을 만든다. 이 계열의 가치는 평가 비용을 낮춘 것이 아니라 평가 자체를 가능하게 한 것이다.[2]
+
+2026년에는 데이터 축이 텍스트에서 전자의무기록과 생리신호로 넓어졌다. PathwayLLM은 구조화된 임상 경로로 환자 궤적을 설명 가능하게 모델링하고, 전자의무기록 파운데이션 모델에 희소 오토인코더를 붙여 내부 표현을 해석하려는 시도가 나왔다. 시계열 생체신호를 다루는 상태공간 모델 계열도 같은 흐름이다. 임상 판단은 한 시점의 검사값이 아니라 경과에서 나오므로, 궤적 모델링은 필연적 방향이다.[1]
+
+안전 쪽 작업이 가장 실무적이다. MEDA는 의료 LLM의 환각을 활성화 편집으로 완화하고, AdaThink-Med는 문제 난이도에 따라 추론 길이를 조절하며, Act-or-Defer 계열은 답할지 사람에게 넘길지를 명시적으로 결정한다. 이 마지막 항목이 규제 통과의 핵심이다. 정확도 95%인 시스템보다, 자신 없는 5%를 정확히 골라 넘기는 시스템이 임상에서 안전하다.[4]
+
+인간 쪽 위험도 다뤄졌다. 2024년에서 2025년 사이 AI 대화 에이전트 사용으로 인한 심리적 위험을 실제 경험 기반으로 유형화한 연구가 나와, AI 행동과 심리적 영향과 사용자 맥락의 상호작용을 다중경로로 분석했다. 상담·정신건강 영역에서 기술 성능만 보는 도입은 위험하다는 근거다.
+
+> [!tip] 정리
+> 이 칸의 실행 지침은 한 줄로 정리된다. 규제 문서에 정확도를 쓰기 전에 유보 정책을 써라. 무엇을 모를 때 무엇을 하는지가 임상 시스템의 정체성이다.
+
+**대표 도구·시스템** — MedAgents · AI Hospital · PatientSim · MedSyn · PathwayLLM · MEDA · Salus · HetMedAgent
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [PathwayLLM: Explainable Clinical Trajectory Modeling with Structured Pathways for Sepsis Prediction](../../docs/papers/10162_PathwayLLM_Explainable_Clinical_Trajectory_Modeling_with_Str/index.html) — Zhengqiu Yu 외, 2026
+2. [Patientsim: A Persona-Driven Simulator for Realistic Doctor-Patient Interactions](../../docs/papers/606_Patientsim_A_persona-driven_simulator_for_realistic_doctor-p/index.html) — Daeun Kyung 외, 2025
+3. [Psyche: A multi-faceted patient simulation framework for evaluation of psychiatric assessment conversational agents](../../docs/papers/644_Psyche_A_multi-faceted_patient_simulation_framework_for_eval/index.html) — Jingoo Lee 외, 2025
+4. [MEDA: Medical-Oriented Activation Editing for Hallucination Mitigation in Medical Large Vision-Language Model](../../docs/papers/10006_MEDA_Medical-Oriented_Activation_Editing_for_Hallucination_M/index.html) — Tianbo Wang 외, 2026
+5. [MedScope: Incentivizing "Think with Videos" for Clinical Reasoning via Coarse-to-Fine Tool Calling](../../docs/papers/10017_MedScope_Incentivizing_Think_with_Videos_for_Clinical_Reason/index.html) — Wenjie Li 외, 2026
+6. [Probing Clinical Concepts in an EHR Foundation Model via Sparse Autoencoders](../../docs/papers/10246_Probing_Clinical_Concepts_in_an_EHR_Foundation_Model_via_Spa/index.html) — Shashank Yadav 외, 2026
+
+---
+
+## S29 · 장비·시설 자동화 에이전트
+
+*제5부 · 과학 자동화 에이전트 AI* · **Multi-Agent Quantum Experiment Execution** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Multi-Agent Quantum & Laboratory Experiment Execution</sub>
+
+`27편` `2024–2026` `가속` `2025+ 22편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 에이전트가 장비를 잡았다 — 큐비트 보정, 방사광 빔라인, 지구관측.
+
+**27편. 에이전트가 소프트웨어를 벗어나 장비를 잡기 시작했다. 초전도 큐비트 보정, 방사광 빔라인, 지구관측 위성이 대상이다.**
+
+출발점은 2024년 k-agents다. 초전도 양자 프로세서의 보정 절차를 다중 에이전트가 자율 수행했다. 양자 하드웨어 보정은 숙련자가 며칠씩 매달리는 반복 작업이므로, 자동화 가치가 즉시 계산되는 영역이었다. 같은 시기 로봇 과학자 Genesis가 시스템 생물학 실험을 자동 수행했다.
+
+2025년에는 화학과 양자화학으로 번졌다. ChemAgents는 로봇 화학 실험을 오케스트레이션하고, El Agente Q와 QCopilot은 양자화학 계산과 양자 센서 개발에 에이전트를 붙였다. 생물 실험 자동화 평가를 위한 AutoBio 벤치마크도 나왔는데, 시각·언어·행동 모델이 실험 조작을 얼마나 수행하는지 측정한다. 여기서 확인된 것은 계산 과제보다 물리 조작 과제의 성공률이 현저히 낮다는 사실이다.[6]
+
+시설 단위 적용이 2025년에서 2026년 사이의 특징이다. Advanced Photon Source의 실험 보조 에이전트가 방사광 빔라인 운영에 붙었고, AI 네이티브 가속기 개념이 제시됐다. Earth-Agent는 RGB 이미지를 넘어 다중스펙트럼 데이터와 지구관측 제품을 통합 처리하며, 전문가가 검증한 248개 과제로 평가된다. 관측 장비 운영은 규칙이 명확하고 반복적이므로 에이전트에 잘 맞는다.[1]
+
+관찰 자동화도 실용 단계다. BehaveAgent는 멀티모달 언어모델과 시각-언어 모델을 결합해, 재학습이나 수동 개입 없이 식물부터 인간까지 다양한 종의 행동을 비디오에서 제로샷 분석한다. 행동 주석은 생물학 실험에서 가장 노동집약적인 작업 중 하나이므로, 이 자동화는 곧바로 실험 규모를 바꾼다.
+
+2026년에는 안전 평가가 붙었다. 체화된 발견 프레임워크와 함께, 실험대 수준의 바이오보안 평가 ENPIRE와 ABC-Bench가 나왔다. 에이전트가 실제 시약을 다룰 수 있게 되는 순간 이중용도 위험이 현실이 되므로, 능력 개발과 위험 평가가 같은 속도로 가야 한다는 인식이 반영됐다.[5]
+
+> [!tip] 정리
+> 국내에서 가장 빠른 적용처는 여기다. 방사광·중성자·핵융합 같은 대형시설은 절차가 문서화되어 있고 반복적이며 인력이 부족하다. 단, 보안 평가를 같이 설계해야 한다.
+
+**대표 도구·시스템** — k-agents · ChemAgents · El Agente Q · QCopilot · AutoBio · EAA · Earth-Agent · SP-Mind
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents](../../docs/papers/298_Earth-Agent_Unlocking_the_Full_Landscape_of_Earth_Observatio/index.html) — Peilin Feng 외, 2025.09
+2. [El Agente: An Autonomous Agent for Quantum Chemistry](../../docs/papers/308_El_Agente_An_Autonomous_Agent_for_Quantum_Chemistry/index.html) — Yunheng Zou 외, 2025
+3. [LLM-based Multi-Agent Copilot for Quantum Sensor](../../docs/papers/501_LLM-based_Multi-Agent_Copilot_for_Quantum_Sensor/index.html) — Rong Sha 외, 2025
+4. [Embodied Science: Closing the Discovery Loop with Agentic Embodied AI](../../docs/papers/310_Embodied_Science_Closing_the_Discovery_Loop_with_Agentic_Emb/index.html) — Xiang Zhuang 외, 2026.03
+5. [ABC-Bench: An Agentic Bio-Capabilities Benchmark for Biosecurity](../../docs/papers/9166_ABC-Bench_An_Agentic_Bio-Capabilities_Benchmark_for_Biosecur/index.html) — Andrew Bo Liu 외, 2026
+6. [AutoBio: A Simulation and Benchmark for Robotic Automation in Digital Biology Laboratory](../../docs/papers/118_Autobio_A_simulation_and_benchmark_for_robotic_automation_in/index.html) — Zhiqian Lan 외, 2025
+
+---
+
+## S30 · 다중 에이전트 사회 시뮬레이션
+
+*제5부 · 과학 자동화 에이전트 AI* · **Multi-Agent Social Simulation** · *서브카테고리*
+
+`21편` `2021–2026` `안정` `2025+ 15편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, '에이전트를 더 붙이면 좋아지나'에 대한 정량 답이 나오기 시작했다.
+
+**21편. '에이전트를 더 붙이면 좋아지나'라는 질문에 2025년 이후 정량적 답이 나오기 시작했다. 답은 '조건에 따라 다르다'이고, 그 조건이 밝혀졌다.**
+
+기반은 2023년 LLM 기반 자율 에이전트 서베이가 놓았다. 인용 1,278로 이 분야의 참조점이 된 이 논문은 구성·응용·평가를 통합 프레임워크로 정리했다. 이후 2024년까지는 사회 규모 시뮬레이션과 전략적 추론 분류체계 같은 지형 정리 작업이 이어졌다. 이 시기의 암묵적 가정은 '에이전트를 여러 개 쓰면 집단지성이 생긴다'였다.
+
+2025년 장기 일관성 벤치마크가 그 가정을 흔들었다. Vending-Bench류 실험은 에이전트에게 긴 호흡의 경영 과제를 주고 수백 단계를 굴렸을 때 무엇이 무너지는지 관찰한다. 결과는 능력 부족이 아니라 일관성 붕괴였다. 초기에 세운 계획을 잊고, 이전 결정과 모순되는 행동을 하고, 상태를 잘못 추적한다. 정확도 벤치마크에서는 보이지 않던 실패 유형이다.[3]
+
+같은 해 스케일링 법칙 연구가 나왔다. 도구 활용도, 기반 모델 능력, 과제 특성의 상호작용을 분석해 다중 에이전트 시스템이 언제 성능을 올리고 언제 떨어뜨리는지를 정량화했다. 핵심 결론은 기반 모델이 약할 때는 에이전트를 늘려도 오류가 증폭되고, 과제가 분해 가능할 때만 이득이 난다는 것이다. 무조건 다중 에이전트로 가는 설계가 왜 자주 실패하는지 설명된다.
+
+2026년에는 신뢰성 자체가 학문 대상이 됐다. 안전 임계 공학의 원칙을 빌려 에이전트 신뢰성을 일관성·견고성·예측가능성·안전 네 차원으로 분해하는 프레임워크가 제시됐다. 높은 정확도에도 실제 배포에서 신뢰성이 부족하다는 관찰이 출발점이다. 같은 해 집계 이론도 정교해졌다. 여러 에이전트 출력을 다수결로 합치는 관행을 넘어, 최적 가중을 계산하는 방법이 제안됐다.
+
+우리 관점의 실행 함의는 절제다. 다중 에이전트 구성은 비용이 선형으로 늘고 디버깅 난도는 그보다 빠르게 늘어난다. 단일 에이전트로 충분한 과제를 구분하는 근거가 이제 문헌에 있으니, 설계 검토 때 그 근거를 요구하면 된다.
+
+> [!tip] 정리
+> 정리하면 다중 에이전트는 기본값이 아니라 선택지다. 과제가 실제로 분해되는지, 기반 모델이 충분히 강한지 확인한 뒤에 쓰는 도구다.
+
+**대표 도구·시스템** — Vending-Bench · YC-Bench · CRAFTY institutional agents · EduMirror · AdaSociety
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [YC-Bench: Benchmarking AI Agents for Long-Term Planning and Consistent Execution](../../docs/papers/3398_YC-Bench_Benchmarking_AI_Agents_for_Long-Term_Planning_and_C/index.html) — Muyu He 외, 2026
+2. [EduMirror: Modeling Educational Social Dynamics with Value-driven Multi-agent Simulation](../../docs/papers/9561_EduMirror_Modeling_Educational_Social_Dynamics_with_Value-dr/index.html) — Jingzhe Lin 외, 2026
+3. [Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents](../../docs/papers/865_Vending-Bench_A_Benchmark_for_Long-Term_Coherence_of_Autonom/index.html) — Axel Backlund 외, 2025.02
+4. [Multi-agent risks from advanced AI](../../docs/papers/562_Multi-agent_risks_from_advanced_ai/index.html) — Lewis Hammond 외, 2025
+5. [Towards a Science of AI Agent Reliability](../../docs/papers/822_Towards_a_Science_of_AI_Agent_Reliability/index.html) — Stephan Rabanser 외, 2026.02
+6. [Towards a Science of Scaling Agent Systems](../../docs/papers/823_Towards_a_Science_of_Scaling_Agent_Systems/index.html) — Yubin Kim 외, 2025.12
+
+---
+
+## S31 · 고차논리 형식 정리증명
+
+*제6부 · 형식 방법론·계산 추론* · **Higher-Order Logic Proof Systems** · *서브카테고리*
+
+`157편` `2020–2026` `가속` `2025+ 139편`
+
+<sub>형식 방법론·계산 추론 고유 배정 235편(중복 포함 545편 · 웹 인덱스 기준) · 서브카테고리 5개 · 본 파트 5개로 100% 커버</sub>
+
+> [!quote] 파트 도입
+> 검증기가 있는 도메인은 자동화가 끝나간다. 이제 검증기를 만드는 일이 병목.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2026, 형식 증명은 저장소 규모 자동 형식화와 벤치마크 결함 감사로 넘어갔다.
+
+**157편으로 단일 서브카테고리 중 가장 크다. 수학이 기계 검증 가능한 산업 규모 데이터가 되면서, 이 칸은 AI4Science에서 자동화가 가장 깊게 진행된 영역이 됐다.**
+
+계보를 짧게 정리하면 이렇다. 2020년 GPT-f가 언어모델로 형식 증명을 생성해 Metamath의 공용 라이브러리 set.mm에 실제로 채택된 증명을 기여했다. 2021년 miniF2F가 올림피아드 수준 문제 488개를 Metamath·Lean·Isabelle·HOL Light에 걸쳐 정식화하며 크로스 시스템 벤치마크를 만들었고, 2022년 Draft-Sketch-Prove가 비형식 증명 초안을 형식 증명기로 연결하는 패턴을 확립했다. 2024년 DeepSeek-Prover는 Lean 4 합성 증명 800만 쌍으로 데이터 규모를 산업화했다.[1]
+
+이 계보가 다른 AI4Science 분야와 결정적으로 다른 점은 검증기가 존재한다는 것이다. 증명이 맞는지는 사람이 판단하지 않고 Lean이나 Isabelle이 판단한다. 그래서 강화학습 보상이 공짜로 주어지고, 합성 데이터를 무한히 만들 수 있고, 환각이 원리적으로 걸러진다. 다른 분야가 2026년에 뒤늦게 '검증'을 논하는 동안 이 칸은 처음부터 검증 위에 서 있었다.
+
+2026년의 대표 성과는 M2F다. 수학 교과서와 논문을 프로젝트 규모 Lean 형식화로 자동 변환하는 에이전트 프레임워크로, 검증자 피드백을 루프에 유지하며 3주 만에 153,853줄의 형식화된 Lean 라이브러리를 생성했다. 사람 손으로는 수년이 걸리는 작업량이다. Goedel-Architect, LeanFlow, Numina-Lean-Agent 같은 에이전트형 증명기들이 같은 방향에서 저장소 규모 형식화를 다룬다.[2]
+
+그러나 같은 해에 불편한 감사가 시작됐다. ProofGate는 최신 신경 정리증명기들이 miniF2F와 PutnamBench에서 보고하는 높은 통과율이 실제로는 증명 충실성, 명제 정렬, 문제 공허성 문제로 부풀려져 있다고 지적했다. 즉 형식 검증이 있는 분야조차 '무엇을 증명했다고 주장하는가'의 층위에서 결함이 발생한다. Ground False 같은 작업도 같은 문제를 다룬다.[1][3]
+
+자연어 증명 쪽 진전도 있다. 형식화하지 않은 자연어 증명을 비관적 판정과 의무 커버리지 기준으로 검증하려는 시도인데, 실제 수학 논문 심사에 가장 가까운 문제다. 완전 형식화가 비용상 불가능한 영역에서 부분적 보증을 얻는 실용 노선이다.
+
+> [!tip] 정리
+> 이 칸의 교훈은 다른 모든 칸으로 수출된다. 검증기가 있는 도메인에서는 자동화가 끝난다. 그러므로 새 병목은 우리 도메인의 검증기를 만드는 일이며, 그것이 앞으로 몇 년의 핵심 투자처다.
+
+**대표 도구·시스템** — Lean 4 / Mathlib · Isabelle · Metamath · Dafny · Rocq · miniF2F · DeepSeek-Prover · Lean Copilot · SorryDB · APE-Bench · AXLE
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [miniF2F-Dafny: LLM-Guided Mathematical Theorem Proving via Auto-Active Verification](../../docs/papers/10033_miniF2F-Dafny_LLM-Guided_Mathematical_Theorem_Proving_via_Au/index.html) — Mantas Baksys 외, 2026
+2. [Numina-Lean-Agent: An Open and General Agentic Reasoning System for Formal Mathematics](../../docs/papers/10115_Numina-Lean-Agent_An_Open_and_General_Agentic_Reasoning_Syst/index.html) — Junqi Liu 외, 2026
+3. [ProofGate: A Reproducible Audit of Faithfulness, Alignment, and Vacuity in State-of-the-Art Lean Theorem Provers](../../docs/papers/10257_ProofGate_A_Reproducible_Audit_of_Faithfulness_Alignment_and/index.html) — Edison Yang 외, 2026
+4. [Agentic Separation Logic Specification Synthesis](../../docs/papers/9211_Agentic_Separation_Logic_Specification_Synthesis/index.html) — Tarun Suresh 외, 2026
+5. [APE-Bench: Evaluating Automated Proof Engineering for Formal Math Libraries](../../docs/papers/9251_APE-Bench_Evaluating_Automated_Proof_Engineering_for_Formal/index.html) — Huajian Xin 외, 2026
+6. [DafnyProver: Agentic Verified Code Generation in Dafny](../../docs/papers/9471_DafnyProver_Agentic_Verified_Code_Generation_in_Dafny/index.html) — Benjamin Breen 외, 2026
+
+---
+
+## S32 · 이론 한계·AI 조력 증명
+
+*제6부 · 형식 방법론·계산 추론* · **Theoretical Complexity & Quantum Bounds** · *서브카테고리*
+
+`33편` `2024–2026` `가속` `2025+ 32편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, AI가 실제로 새 근사 한계와 반례를 생산하기 시작했다.
+
+**33편. AI가 새 근사 한계와 반례를 실제로 생산하기 시작했다. 이제 '가능한가'가 아니라 '어떤 협업 프로토콜이 효과적인가'가 질문이다.**
+
+2025년 AlphaEvolve가 분기점이었다. 진화적 탐색과 언어모델을 결합해 MAX-CUT, MAX-k-CUT, 미터적 외판원 문제의 근사 한계를 갱신했다. 이 결과가 중요한 이유는 개선폭이 아니라 종류다. 수치 실험이나 휴리스틱 성능이 아니라, 증명 가능한 이론적 경계를 밀어냈기 때문이다.
+
+2026년에는 더 직접적인 사례가 나왔다. GPT-5 Pro가 삭제가 있는 잡음 결정 문제에서 다수결이 최적이라는 통념에 대한 반례를 제시했다. 반례는 수학에서 가장 검증이 쉬운 기여 형태다. 맞는지 확인하는 데 신뢰가 필요 없고 계산만 필요하다. 이 특성 때문에 언어모델의 첫 실질적 수학 기여가 반례 쪽에서 나오는 것은 자연스럽다.
+
+협업 방법론이 문서화된 것도 2026년이다. Gemini Deep Think를 이용해 이론전산학·경제학·최적화·물리학의 미해결 문제를 다룬 사례 연구가 공통 기법을 일반화했다. 문제를 어떻게 쪼개 제시하고, 모델 출력의 어느 부분을 신뢰하고, 어디서 사람이 개입해야 하는지에 대한 실무 지침이다. 이런 문서가 개별 성공 사례보다 파급이 크다.
+
+학습 패러다임 쪽에서는 TTT-Discover가 흥미롭다. 테스트 시점에 단일 문제에 대해 정책 자체를 강화학습으로 계속 학습시킨다. 고정된 모델에 프롬프트를 반복하는 기존 테스트타임 탐색과 달리, 정책이 그 문제에서 얻은 경험으로 개선된다. 문제 하나에 계산을 몰아넣는 전략이며, 미해결 문제 공략에는 이 방향이 합리적이다.
+
+기계 검증 이론도 확장됐다. MerLean, Scarf-Brouwer-Nash 정리의 Lean 형식화, 게임이론 라이브러리 같은 작업이 경제학·게임이론 결과를 기계 검증 대상으로 옮긴다. 양자 쪽에서는 junta 상태 학습, QAC0 회로 한계, 중첩 기대값 계산의 최적 가속 같은 결과들이 축적됐다. 검증기 지배 구조를 이론적으로 다루는 작업들도 함께 나왔다.[1]
+
+> [!tip] 정리
+> 이 칸은 규모 투자가 필요 없는 드문 영역이다. 필요한 것은 좋은 문제와 검증 능력이다. 국내 이론 연구 그룹이 즉시 참여할 수 있는 자리이며, 실제로 그렇게 하는 그룹이 아직 적다.
+
+**대표 도구·시스템** — AlphaEvolve · Gemini Deep Think · Lean 4 · MerLean · PEP/PEPFlow · Aristotle
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [MerLean: An Agentic Framework for Autoformalization in Quantum Computation](../../docs/papers/532_MerLean_An_Agentic_Framework_for_Autoformalization_in_Quantu/index.html) — Yuanjie Ren 외, 2026.02
+2. [Optimal Quantum Speedups for Repeatedly Nested Expectation Estimation](../../docs/papers/10139_Optimal_Quantum_Speedups_for_Repeatedly_Nested_Expectation_E/index.html) — Yihang Sun 외, 2026
+3. [Proving Your Way to Cooperation: Formalizing Proof-Based Open Source Game Theory in Lean](../../docs/papers/10273_Proving_Your_Way_to_Cooperation_Formalizing_Proof-Based_Open/index.html) — Colomban Duclaux 외, 2026
+4. [Learning Junta Distributions, Quantum Junta States, and QAC^0 Circuits](../../docs/papers/9913_Learning_Junta_Distributions_Quantum_Junta_States_and_QAC0_C/index.html) — Jinge Bao 외, 2026
+5. [Hierarchical Discovery of Adiabatic Hamiltonian Paths and RL Schedules for Quantum Linear System Solvers](../../docs/papers/9780_Hierarchical_Discovery_of_Adiabatic_Hamiltonian_Paths_and_RL/index.html) — Wang chenglong, 2026
+6. [MOOSE-Star: Unlocking Tractable Training for Scientific Discovery by Breaking the Complexity Barrier](../../docs/papers/10058_MOOSE-Star_Unlocking_Tractable_Training_for_Scientific_Disco/index.html) — Zonglin Yang 외, 2026
+
+---
+
+## S33 · 대칭성 인지 솔버·방정식 발견
+
+*제6부 · 형식 방법론·계산 추론* · **Symmetry-Aware PDE Solvers** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Symmetry-Aware PDE Solvers & Equation Discovery</sub>
+
+`24편` `2024–2026` `가속` `2025+ 23편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, LLM 기호회귀의 실제 천장이 숫자로 찍혔다 — 31.5%.
+
+**24편. LLM이 방정식을 프로그램으로 쓰고 진화시키는 시대가 왔지만, 2025년에 그 능력의 천장이 숫자로 찍혔다. 기호 정확도 31.5%다.**
+
+2024년 LLM-SR이 방향을 열었다. 방정식을 수식이 아니라 프로그램으로 표현하고 진화적 탐색으로 개선하는 방식인데, 기존 기호회귀가 연산자 조합 공간을 탐색하던 것과 달리 코드의 표현력을 그대로 쓴다. 물리적 의미가 있는 구조를 사전지식으로 넣기도 쉽다.
+
+2025년 LLM-SRBench가 그 성과를 냉정하게 측정했다. 네 개 과학 분야에 걸친 239개 문제를 암기로 풀 수 없게 설계했더니, 최고 성능 모델의 기호 정확도가 31.5%에 머물렀다. 이 숫자의 의미는 두 가지다. 첫째, 기존 벤치마크 성과의 상당 부분이 학습 데이터 암기였다. 둘째, 방정식 발견은 아직 사람을 대체하지 못하고 후보 생성기로만 쓸 수 있다.[2]
+
+같은 해 실용 노선이 나왔다. CodePDE는 LLM이 편미분방정식 솔버 코드를 생성하는 추론 프레임워크를 제시했고, DrSR은 데이터 구조 분석과 생성 이력 반영을 결합한 이중 추론으로 기호회귀 효율을 올렸다. 여기서 흥미로운 전환은 목표가 '방정식을 발견한다'에서 '방정식을 푸는 코드를 쓴다'로 내려온 것이다. 후자는 검증이 쉽고 실무 가치가 즉시 나온다.[1]
+
+2026년에는 고전 수치기법과의 접합이 진행됐다. AutoNumerics 계열이 수치 함수 구현을 자동 탐색하고, RAPNet은 대수적 다중격자법의 보정 항을 학습으로 대체한다. 전체를 신경망으로 갈아치우는 대신 검증된 알고리즘의 취약 부분만 학습으로 메우는 접근이며, 실패 시 기존 방법으로 되돌릴 수 있어 도입 위험이 낮다.[3][4]
+
+평가 프로토콜도 정비됐다. ASyMOB는 기호 조작 능력을 체계적으로 재고, GeoRepEval은 기하 표현을 평가하며, Holm-Bonferroni 보정을 쓴 솔버 검증 프로토콜이 다중 비교 문제를 다룬다. 여러 문제에서 여러 방법을 비교하며 우연한 우세를 유의미하다고 발표하는 관행에 통계적 제동이 걸린 셈이다.[5][6]
+
+> [!tip] 정리
+> 이 칸의 실무 결론은 절제된 낙관이다. 방정식 발견 자체는 아직 보조 도구다. 그러나 물리 제약을 명시적으로 걸고 코드 생성으로 범위를 좁히면, 지금 당장 쓸 수 있다.
+
+**대표 도구·시스템** — LLM-SR · DrSR · IGSR · LLM-SRBench · CodePDE · AutoNumerics · SIGS · RAPNet · ASyMOB
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [CodePDE: An Inference Framework for LLM-driven PDE Solver Generation](../../docs/papers/232_CodePDE_An_Inference_Framework_for_LLM-driven_PDE_Solver_Gen/index.html) — Shanda Li 외, 2025
+2. [LLM-SRBench: A New Benchmark for Scientific Equation Discovery with Large Language Models](../../docs/papers/504_Llm-srbench_A_new_benchmark_for_scientific_equation_discover/index.html) — Parshin Shojaee 외, 2025
+3. [RAPNet: Accelerating Algebraic Multigrid with Learned Sparse Corrections](../../docs/papers/10294_RAPNet_Accelerating_Algebraic_Multigrid_with_Learned_Sparse/index.html) — Yali Fink 외, 2026
+4. [AutoNumerics: An Autonomous, PDE-Agnostic Multi-Agent Pipeline for Scientific Computing](../../docs/papers/142_AutoNumerics_An_Autonomous_PDE-Agnostic_Multi-Agent_Pipeline/index.html) — Jianda Du 외, 2026.02
+5. [ASyMOB: Algebraic Symbolic Mathematical Operations Benchmark](../../docs/papers/9263_ASyMOB_Algebraic_Symbolic_Mathematical_Operations_Benchmark/index.html) — Michael Shalyt 외, 2026
+6. [Holm-Bonferroni Verification of Math Solvers: A Hessian-Mismatch Diagnostic for Benchmark-Level Failure Modes](../../docs/papers/9787_Holm-Bonferroni_Verification_of_Math_Solvers_A_Hessian-Misma/index.html) — Jinze Yu 외, 2026
+
+---
+
+## S34 · LLM 지원 구조·물리 설계 최적화
+
+*제6부 · 형식 방법론·계산 추론* · **LLM-Assisted Structural Optimization** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: LLM-Assisted Structural & Physical Design Optimization</sub>
+
+`14편` `2023–2026` `가속` `2025+ 10편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 설계 루프에 시뮬레이터를 붙이자 주 단위 작업이 분 단위가 됐다.
+
+**14편. 작은 칸이지만 제조 R&D에 가장 직접 닿는다. 설계 루프에 시뮬레이터를 넣자 주 단위 작업이 분 단위가 됐다.**
+
+출발점은 2023년 LMEA다. 언어모델을 진화 알고리즘의 교차·변이 연산자로 쓴다는 발상인데, 설계 후보를 무작위로 섞는 대신 도메인 상식을 가진 연산자가 섞는다는 점이 차이다. 2024년에는 유한요소해석을 루프에 넣은 기계설계 에이전트와, 그래프 신경망·강화학습·몬테카를로 트리 탐색을 결합해 비선형 응답을 갖는 메타물질을 역설계하는 GraphMetaMat이 나왔다.
+
+2025년의 구체적 성과는 자동차 설계다. 스케치부터 공기역학 시뮬레이션까지 전 주기를 다중 에이전트로 묶어, 수 주가 걸리던 설계 반복을 수 분으로 줄였다는 보고가 나왔다. 시각-언어 모델, 언어모델, 기하 딥러닝을 각각 전문화된 에이전트로 배치하는 구조다. 여기서 속도 향상의 원천은 모델 성능이 아니라 도구 연결의 자동화다. 사람이 파일을 옮기고 설정을 바꾸던 시간이 사라진 것이다.
+
+2026년에는 물리 계산 자체를 바꾸는 작업이 나왔다. 사전계산 수치 그린함수를 이용해 전자기 소자의 전파 역설계를 준실시간으로 수행하는 방법이다. 기존에는 반복마다 전체 시뮬레이션을 다시 돌리거나 대량의 학습 데이터가 필요했는데, 그린함수를 미리 계산해 두면 설계 변경의 효과를 즉시 평가할 수 있다. 학습 데이터가 필요 없다는 점이 실무적으로 크다.
+
+평가 쪽에서는 물리 정렬 벤치마크가 등장했다. BuildArena는 구조 설계 과제를 물리 엔진으로 채점하고, CADEngBench는 Z3 정리증명기로 설계 제약 만족을 검사한다. 언어모델이 그럴듯한 설계 설명을 생성하는 것과 실제로 성립하는 구조를 만드는 것은 다르며, 이 차이를 기계로 판정하는 장치가 필요했다.[1][2]
+
+반도체 공정으로의 확장도 시작됐다. 리소그래피 세계모델 LithoDreamer와 GRPO로 튜닝한 흐름 매칭 LithoGRPO 같은 작업이다. 공정 시뮬레이션은 비싸고 데이터는 기업 내부에 있으므로, 이 영역은 공개 연구보다 산업 내부에서 먼저 진행될 가능성이 크다.[3][4]
+
+> [!tip] 정리
+> 우리 맥락에서 이 칸은 즉시 실행 가능하되 조건이 있다. 시뮬레이터 라이선스와 과거 설계 데이터가 있어야 한다. 그 두 자산이 없으면 논문은 재현되지 않는다.
+
+**대표 도구·시스템** — LMEA · LEO · ImprovEvolve · GraphMetaMat · AutoMS · AutoCircuit · CADEngBench · BuildArena · LithoGRPO
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [BuildArena: A Physics-Aligned Interactive Benchmark of LLMs for Engineering Construction](../../docs/papers/9361_BuildArena_A_Physics-Aligned_Interactive_Benchmark_of_LLMs_f/index.html) — Tian Xia 외, 2026
+2. [CADEngBench: Can AI Systems Co-Author Engineering Designs? A Hierarchical Benchmark for Physics-Verified Parametric CAD Generation](../../docs/papers/9362_CADEngBench_Can_AI_Systems_Co-Author_Engineering_Designs_A_H/index.html) — Harmanjot Singh 외, 2026
+3. [LithoDreamer: A Physics-Informed World Model for Multi-Stage Computational Lithography](../../docs/papers/9950_LithoDreamer_A_Physics-Informed_World_Model_for_Multi-Stage/index.html) — Yuqi Jiang 외, 2026
+4. [LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching](../../docs/papers/9952_LithoGRPO_Fast_Inverse_Lithography_via_GRPO_Reinforced_Flow/index.html) — Yao Lai 외, 2026
+5. [AutoCircuit: Agentic Pareto Front Exploration for Analog Circuit Designs](../../docs/papers/9274_AutoCircuit_Agentic_Pareto_Front_Exploration_for_Analog_Circ/index.html) — Doyun Kim 외, 2026
+6. [AutoMS: Multi-Agent Evolutionary Search for Cross-Physics Inverse Microstructure Design](../../docs/papers/9281_AutoMS_Multi-Agent_Evolutionary_Search_for_Cross-Physics_Inv/index.html) — Zhenyuan Zhao 외, 2026
+
+---
+
+## S35 · LLM 주도 CFD·멀티피직스 자동화
+
+*제6부 · 형식 방법론·계산 추론* · **LLM-Driven CFD Simulation Automation** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: LLM-Driven CFD & Multiphysics Simulation Automation</sub>
+
+`7편` `2024–2026` `부상` `2025+ 5편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 최소 규모(7편)인데 2025–2026 보고된 성공률은 이미 운용 가능 수준이다.
+
+**7편으로 이 발표에서 가장 작은 칸이다. 그런데 보고된 성공률은 이미 운용 수준이다. 편수와 성숙도는 별개라는 사실을 보여 주는 사례다.**
+
+배경은 2024년 MetaOpenFOAM이다. 자연어 지시에서 시작해 메시 전처리, 솔버 설정, 실행, 후처리까지 전산유체역학 전 워크플로를 다중 에이전트로 자동화했다. MetaGPT식 조립라인 패러다임에 검색증강생성을 결합한 구조인데, 핵심은 OpenFOAM의 방대한 설정 파일 문법을 사람이 외우지 않아도 되게 만든 것이다.[4][6]
+
+2025년 OpenFOAMGPT 2.0은 450회 이상의 시뮬레이션에서 100% 성공을 보고했다. 이 숫자는 조건을 봐야 한다. 표준적인 유형의 문제에 한정된 성공률이지만, 그럼에도 실무 함의는 크다. 해석 엔지니어의 작업 중 상당 부분이 표준 유형이기 때문이다. 같은 해 MooseAgent는 유한요소해석 프레임워크 MOOSE의 입력 파일 생성에서 93% 성공률을 달성했다.[2][3][4]
+
+2026년 TurboAgent는 한 단계 위로 올라갔다. 조건부 확산 모델로 형상을 생성하고, 트랜스포머 대체모델로 성능을 빠르게 평가하고, 언어모델이 최적화 방향을 결정하고, 고충실도 CFD·FEA로 최종 검증하는 폐루프를 터보기계 공력 설계에 적용했다. 각 요소가 새롭지는 않지만, 이것들을 하나의 자율 루프로 닫았다는 점이 성과다. 설계–해석–검증이 사람 개입 없이 순환한다.[1]
+
+신뢰성 문제도 다뤄졌다. 2026년 PhyNiKCE는 기호 지식 엔진과 결정적 검색증강생성으로 물리적 타당성을 강제한다. 언어모델이 그럴듯하지만 물리적으로 틀린 경계조건을 설정하는 실패가 이 분야의 대표적 위험이므로, 확률적 생성 위에 결정적 규칙 검사를 얹는 설계가 나온 것이다. 2025년 MLLM 기반 VER처럼 고차원 관측에서 내재 좌표계와 지배 방정식을 제로샷으로 찾는 작업도 같은 계열의 야심을 보여 준다.
+
+우리 맥락에서 이 칸의 가치는 인력 구조에 있다. 해석 엔지니어 한 명이 팀 규모 처리량을 갖게 되는 구간이며, 실제 병목은 사내 케이스 데이터베이스다. 과거 해석 사례가 정리되어 있으면 검색증강생성으로 즉시 활용되고, 없으면 에이전트가 매번 처음부터 헤맨다.
+
+> [!tip] 정리
+> 정리하면 이 칸은 작지만 투자 대비 회수가 가장 빠른 후보다. 시작 조건은 모델이 아니라 과거 해석 사례의 정리 상태다.
+
+**대표 도구·시스템** — MetaOpenFOAM · OpenFOAMGPT · MooseAgent · TurboAgent · PhyNiKCE · OpenFOAM · MOOSE
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [TurboAgent: An LLM-Driven Autonomous Multi-Agent Framework for Turbomachinery Aerodynamic Design](../../docs/papers/3270_TurboAgent_An_LLM-Driven_Autonomous_Multi-Agent_Framework_fo/index.html) — 2026.04
+2. [Mooseagent: A llm based multi-agent framework for automating moose simulation](../../docs/papers/559_Mooseagent_A_llm_based_multi-agent_framework_for_automating/index.html) — Tao Zhang 외, 2025
+3. [OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics](../../docs/papers/588_OpenFOAMGPT_20_end-to-end_trustworthy_automation_for_computa/index.html) — Jingsen Feng 외, 2025.04
+4. [OpenFOAMGPT: A retrieval-augmented large language model (LLM) agent for OpenFOAM-based computational fluid dynamics](../../docs/papers/589_OpenFOAMGPT_A_retrieval-augmented_large_language_model_LLM_a/index.html) — Sandeep Pandey 외, 2025
+5. [MLLM-based discovery of intrinsic coordinates and governing equations from high-dimensional data](../../docs/papers/547_Mllm-based_discovery_of_intrinsic_coordinates_and_governing/index.html) — 2025
+6. [MetaOpenFOAM: an LLM-based multi-agent framework for CFD](../../docs/papers/535_MetaOpenFOAM_an_LLM-based_multi-agent_framework_for_CFD/index.html) — Yuxuan Chen 외, 2024
+
+---
+
+## S36 · 다국어 사후학습·백본 적응
+
+*제7부 · 과학 정보추출·질의응답* · **Crosslingual Post-Training Methods** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Crosslingual Post-Training & Backbone Adaptation</sub>
+
+`47편` `2018–2026` `가속` `2025+ 30편`
+
+<sub>과학 정보추출·질의응답 고유 배정 221편(중복 포함 761편 · 웹 인덱스 기준) · 서브카테고리 8개 · 본 파트 5개로 76% 커버</sub>
+
+> [!quote] 파트 도입
+> 과학 도메인 언어모델이 검색·도표·주장 검증까지 확장하며 연구 무결성 인프라가 됐다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 사후학습 기술의 무게중심이 언어에서 생물·생체신호 백본으로 옮겨갔다.
+
+**47편. 다국어 사후학습 기술이 이 칸의 이름이지만, 2026년의 실제 무게중심은 그 기술이 생물·생체신호 백본으로 이주하는 현상이다.**
+
+기반은 잘 알려져 있다. 2018년 BERT가 양방향 사전학습을 정착시켰고, 2019년 XLM-R이 100개 언어 2테라바이트 데이터로 다국어 표현학습의 규모를 증명했다. 병렬 코퍼스 없이도 언어 간 전이가 일어난다는 사실은 저자원 언어 처리의 전제를 바꿨다. 2023년 Toolformer와 ToolLLM은 여기에 도구 사용을 자기지도 방식으로 얹었다.
+
+2024년 오픈 프런티어 기술보고서들이 기준선을 다시 그었다. DeepSeek-V3는 6,710억 파라미터 혼합전문가 구조에서 토큰당 370억만 활성화해 효율을 확보했고, 보조 손실 없는 부하 균형과 다중 토큰 예측을 도입했다. Qwen2.5, Gemma 2, Phi-4가 같은 시기에 나오며 오픈 모델의 성능이 상용 모델을 실질적으로 추격했다. 이 보고서들의 가치는 성능표가 아니라 학습 레시피 공개다.
+
+2026년 연구는 사후학습 메커니즘을 정밀하게 파고든다. SEAD는 엔트로피를 이용해 온-정책 증류를 유도하고, vOPD는 통제변량으로 분산을 줄이며, GRAIL은 토큰 재가중으로 검증가능 보상 강화학습의 신호를 다듬는다. 이런 작업들은 화려하지 않지만, 같은 데이터로 더 나은 모델을 얻는 방법이므로 자원이 제한된 조직에 직접적 이득이다.[3][4]
+
+가장 눈에 띄는 흐름은 이식이다. 언어 쪽에서 개발된 사후학습 기계가 뇌자도 모델 MEG-XL, 신경 신호 모델 NeuroCLUS, 그리고 CalM·Ares·BioArc·ORA 같은 생물 도메인 파운데이션 모델로 옮겨갔다. 토큰화 방식과 사전학습 목표만 도메인에 맞추면, 증류와 강화학습 레시피는 거의 그대로 작동한다는 것이 확인되고 있다. 이는 도메인 연구자가 언어모델 연구를 따라 읽어야 하는 이유다.[1][2][5]
+
+우리 맥락에서 이 칸은 가장 값싼 레버다. 백본을 새로 만들 필요가 없다. 공개 모델에 한국어 과학 코퍼스와 도메인 코퍼스로 사후학습을 걸면, 우리 업무에서의 성능은 범용 상용 모델을 넘길 수 있다. 필요한 것은 계산 자원이 아니라 정리된 코퍼스다.
+
+> [!tip] 정리
+> 정리하면 이 칸은 '어떻게 더 크게 만들까'가 아니라 '가진 모델을 어떻게 우리 것으로 만들까'에 대한 답이다. 실행 난도가 낮고 효과가 즉시 측정된다.
+
+**대표 도구·시스템** — BERT · XLM-RoBERTa · SimAlign · Toolformer · ToolLLM/ToolBench · DeepSeek-V3 · Qwen2.5 · Gemma 2 · Phi-4 · SEAD · GRAIL · MEG-XL · NeuroCLUS · Mind-Omni
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [MEG-XL: Data-Efficient Brain-to-Text via Long-Context Pre-Training](../../docs/papers/10019_MEG-XL_Data-Efficient_Brain-to-Text_via_Long-Context_Pre-Tra/index.html) — Dulhan Jayalath 외, 2026
+2. [NeuroCLUS: A Foundation Model with Functional Clustering for Intracranial Neural Decoding](../../docs/papers/10102_NeuroCLUS_A_Foundation_Model_with_Functional_Clustering_for/index.html) — Hui Zheng 외, 2026
+3. [GRAIL: Gradient-Reweighted Advantages for Reinforcement Learning with Verifiable Rewards](../../docs/papers/9755_GRAIL_Gradient-Reweighted_Advantages_for_Reinforcement_Learn/index.html) — Tej Deep Pala 외, 2026
+4. [SEAD: Competence-Aware On-Policy Distillation via Entropy-Guided Supervision](../../docs/papers/10399_SEAD_Competence-Aware_On-Policy_Distillation_via_Entropy-Gui/index.html) — Chia-Hsuan Lee 외, 2026
+5. [BIOARC: Discovering Optimal Neural Architectures for Biological Foundation Models](../../docs/papers/9331_BIOARC_Discovering_Optimal_Neural_Architectures_for_Biologic/index.html) — Yi Fang 외, 2026
+6. [Mind-Omni: A Unified Multi-Task Framework for Brain-Vision-Language Modeling via Discrete Diffusion](../../docs/papers/10031_Mind-Omni_A_Unified_Multi-Task_Framework_for_Brain-Vision-La/index.html) — Yizhuo Lu 외, 2026
+
+---
+
+## S37 · 과학 도표·시각문서 이해
+
+*제7부 · 과학 정보추출·질의응답* · **Scientific Figure Caption Datasets** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Scientific Figure, Diagram & Visual-Document Understanding</sub>
+
+`45편` `2021–2026` `가속` `2025+ 29편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 도표 이해는 '캡션 생성'에서 '무결성 검증과 도메인 통합'으로 이동했다.
+
+**45편. 논문의 절반은 그림이다. 그림을 읽고 그리고 검증하는 일이 2025년 이후 독립된 산업이 됐다.**
+
+출발은 데이터셋이다. 2021년 SciCap이 arXiv에서 200만 개 도표–캡션 쌍을 공개하고, 후속 작업이 도표를 언급하는 본문 문단과 광학문자인식 결과까지 붙였다. 이로써 '그림을 설명하라'는 과제가 대규모 학습 가능한 문제가 됐다. 반대 방향으로 AutomaTikZ는 TikZ 코드를 중간 표현으로 삼아 텍스트에서 과학 벡터그래픽을 합성했다. 그림을 픽셀이 아니라 프로그램으로 다루면 편집과 검증이 가능해진다.
+
+2024년에서 2025년 사이 평가가 대학원 수준으로 올라갔다. MMSCI는 여러 분야의 시각 복합 정보를, SciFIBench는 멀티모달 모델의 도표 이해를, MatViX는 재료 문헌의 시각 정보 추출을, ScImage는 과학 이미지 생성 품질을 각각 측정한다. 공통 결과는 일반 이미지 캡셔닝에서 강한 모델이 과학 도표에서는 크게 무너진다는 것이다. 축 라벨, 단위, 오차 막대, 서브플롯 참조 같은 요소가 일반 이미지에는 없기 때문이다.
+
+가장 실용적인 방향은 무결성 검증이다. 도표 내 텍스트와 시각 요소의 세밀한 정렬을 검증하는 과제가 정식화되고, 이를 위한 데이터셋과 프레임워크가 나왔다. 이것이 왜 중요한가. 연구 부정 사례의 상당 부분이 이미지 조작과 도표 불일치에서 드러나기 때문이다. 사람이 눈으로 걸러 온 이 작업을 자동화하면, 출판 전 검사에 붙일 수 있다.
+
+생산성 도구도 등장했다. Paper2Poster는 논문을 포스터로 변환하고, MLBCAP 계열은 캡션 생성을 보조한다. 연구자 일상에서 반복되는 변환 작업이므로 체감 효과가 크고, 실패해도 위험이 낮다. 도입 우선순위를 매길 때 이런 저위험 고빈도 작업부터 잡는 것이 합리적이다.[1]
+
+2026년에는 무게중심이 도메인 통합 비전-언어 모델로 옮겨갔다. 의료 쪽 UniMedVL·SynerMedGen·MedSIGHT, 지리공간 쪽 UrbanMLLM·TimeSpot·FrontierSpatial 같은 작업들이다. 일반 과학 도표 이해라는 문제가 도메인별 전문 시각 이해로 분화하는 중이며, 이는 이 기술이 응용 단계에 접어들었다는 신호다.[2][4][5][6]
+
+> [!tip] 정리
+> 이 칸에서 우리가 잡을 자리는 연구 무결성 인프라다. 학회와 출판사가 자동 도표 검증을 필요로 하고 있고, 아직 표준이 없다. 진입 시점으로는 지금이 이르지 않다.
+
+**대표 도구·시스템** — SciCap · SciCap+ · FigCaps-HF · AutomaTikZ/CLiMA · TikZero · MMSCI · SciFIBench · MatViX · Paper2Poster · MLBCAP · UniMedVL · MatDeplot
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Paper2poster: Towards multimodal poster automation from scientific papers](../../docs/papers/599_Paper2poster_Towards_multimodal_poster_automation_from_scien/index.html) — Wei Pang 외, 2025
+2. [UniMedVL: Unifying Medical Multimodal Understanding and Generation through Observation-Knowledge-Analysis](../../docs/papers/10664_UniMedVL_Unifying_Medical_Multimodal_Understanding_and_Gener/index.html) — Junzhi Ning 외, 2026
+3. [S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding](../../docs/papers/691_S1-MMAlign_A_Large-Scale_Multi-Disciplinary_Dataset_for_Scie/index.html) — He Wang 외, 2026.01
+4. [MedSIGHT: Towards Grounded Visual Comprehension in Medical Large Vision-Language Models](../../docs/papers/10018_MedSIGHT_Towards_Grounded_Visual_Comprehension_in_Medical_La/index.html) — Aofei Chang 외, 2026
+5. [SynerMedGen: Synergizing Medical Multimodal Understanding with Generation via Task Alignment](../../docs/papers/10526_SynerMedGen_Synergizing_Medical_Multimodal_Understanding_wit/index.html) — Weiren zhao 외, 2026
+6. [TimeSpot: Benchmarking Geo-Temporal Understanding in Vision–Language Models in Real-World Settings](../../docs/papers/10589_TimeSpot_Benchmarking_Geo-Temporal_Understanding_in_VisionLa/index.html) — Azmine Toushik Wasi 외, 2026
+
+---
+
+## S38 · 자동 주장 검증
+
+*제7부 · 과학 정보추출·질의응답* · **Automated Fact-Checking Systems** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Automated Fact-Checking & Claim Verification</sub>
+
+`33편` `2020–2026` `가속` `2025+ 12편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 검증은 멀티모달·코퍼스 규모·주장 수명주기 관리로 확장됐다.
+
+**33편. 주장 검증의 진짜 난제는 모델 성능이 아니다. 반박 증거가 세상에 아직 존재하지 않을 때 무엇을 할 것인가다.**
+
+기술적 계보는 정리되어 있다. 2021년 MultiVerS는 전문서 단위 약지도 학습으로 과학 주장 검증을 다뤘고, 2023년 ProgramFC·HiSS·FactKG는 복잡한 주장을 프로그램 유도나 계층 분해로 쪼개 검증하는 패턴을 만들었다. 지식그래프를 근거로 삼는 접근도 이 시기에 자리 잡았다.
+
+이 분야의 가장 중요한 논문은 성능 개선이 아니라 비판이다. 2022년 한 작업은 기존 자연어처리 기반 사실검증이 '반박 증거가 존재한다'는 가정 위에 서 있지만, 실제 허위정보는 신뢰할 만한 반박 증거가 아직 없는 환경에서 발생한다고 지적했다. 즉 벤치마크가 현실보다 쉬운 문제를 풀고 있었다는 것이다. 이 지적은 AI 생성 과학 콘텐츠 검증에 그대로 적용된다. 새로 생성된 주장에는 반박 문헌이 존재할 수 없다.
+
+2025년 DEFAME은 멀티모달로 범위를 넓혔다. 텍스트와 이미지를 함께 포함하는 주장을 6단계 동적 파이프라인으로 검증하고, 외부 도구와 멀티모달 언어모델로 증거를 수집·평가하며, 설명 가능한 검증 보고서를 생성한다. 판정만 내놓는 시스템은 실무에서 쓰이지 않는다는 점을 반영한 설계다. 사람이 검토할 수 있는 근거 문서가 함께 나와야 한다.[1]
+
+규모 쪽 진전도 크다. 2025년에서 2026년 사이 코퍼스 규모 주장 마이닝이 가능해졌다. NSF-SciFy는 280만 개 주장을, SciClaimHunt는 8.7만 개를 추출해 데이터셋화했다. 개별 문장을 검증하는 문제에서, 문헌 전체의 주장 지형을 지도화하는 문제로 스케일이 올라간 것이다. Claimify와 CIBER 같은 추출·검증 파이프라인도 정착했다.[2][4]
+
+2026년의 개념적 전환은 수명주기 관리다. ClaimGarden 같은 작업은 주장을 한 번 판정하고 끝내지 않고, 상태를 추적하며 새 증거가 나올 때 갱신한다. 과학에서 참·거짓은 시간에 따라 바뀌므로 이 설계가 옳다. 그리고 AI가 주장을 대량 생성하는 환경에서는 이런 추적 인프라 없이는 문헌이 관리 불가능해진다.[3]
+
+> [!tip] 정리
+> 요약하면 AI 생성 과학이 늘어날수록 주장 단위 추적이 필수 인프라가 된다. 논문 단위 관리로는 감당할 수 없다. 이 인프라를 먼저 만드는 곳이 표준을 쥔다.
+
+**대표 도구·시스템** — MultiVerS · ProgramFC · FactKG · HiSS · SFAVEL · ClaimVer · DEFAME · Claimify · CIBER · SciClaimHunt · NSF-SciFy · ClaimGarden · EHR-ReasonCon
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts](../../docs/papers/267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html) — Tobias Braun 외, 2025
+2. [NSF-SCIFY: Mining the NSF Awards Database for Scientific Claims](../../docs/papers/579_Nsf-scify_Mining_the_nsf_awards_database_for_scientific_clai/index.html) — D. Rao 외, 2025
+3. [ClaimGarden: Update-Aware Claim-State Control for AI Scientist Workflows](../../docs/papers/9403_ClaimGarden_Update-Aware_Claim-State_Control_for_AI_Scientis/index.html) — Hafumi Nishi, 2026
+4. [Sciclaimhunt: A large dataset for evidence-based scientific claim verification](../../docs/papers/710_Sciclaimhunt_A_large_dataset_for_evidence-based_scientific_c/index.html) — Sujit Kumar 외, 2025
+5. [SCOPE: Symbolic Constraint-Guided Active Perception](../../docs/papers/10396_SCOPE_Symbolic_Constraint-Guided_Active_Perception/index.html) — Wentao Cao 외, 2026
+6. [Towards Error-Free EHRs: Reasoning-Intensive Consistency Verification Between Clinical Notes and Structured Tables in Electronic Health Records](../../docs/papers/10615_Towards_Error-Free_EHRs_Reasoning-Intensive_Consistency_Veri/index.html) — Yeonsu Kwon 외, 2026
+
+---
+
+## S39 · 생의학·임상 지식접지 QA
+
+*제7부 · 과학 정보추출·질의응답* · **Biomedical Knowledge Graph QA** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Biomedical & Clinical Knowledge-Grounded QA</sub>
+
+`23편` `2023–2026` `가속` `2025+ 20편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 임상 QA 평가가 정확도에서 다국어 신뢰성 5축으로 확장됐다.
+
+**23편. 임상 질의응답 평가가 정확도 한 축에서 다국어 신뢰성 다섯 축으로 넓어졌다. 여기서 비용은 정확도와 동등한 지위의 지표다.**
+
+도메인 특화 계보는 ClinicalGPT, BioMedLM, ClinicalGPT-R1로 이어진다. 일반 모델을 임상 텍스트로 적응시키는 흐름인데, 최근에는 단순 적응보다 검색 결합이 표준이 됐다. 임상 지식은 빠르게 갱신되고 출처를 밝혀야 하므로, 파라미터에 지식을 넣는 방식이 근본적으로 불리하다.
+
+2025년 CLEAR가 실무적으로 중요한 결과를 냈다. 임상 노트에서 정보를 추출할 때 임상 엔티티를 먼저 인식하고 관련 부분만 검색해 언어모델에 넘기는 방식으로, 기존 임베딩 기반 검색 대비 토큰 사용을 70% 이상 줄였다. 임상 도입에서 비용은 성능과 동급 제약이다. 환자 한 명당 수십 번 호출되는 시스템에서 토큰 70% 절감은 채택 여부를 가른다.
+
+지식 구조 활용도 정교해졌다. 딥싱킹 언어모델과 검색증강생성을 결합해 생의학 지식을 채굴하는 IP-RAR와 지식그래프 BioStrataKG, 문서 간 추론을 요구하는 데이터셋 BioCDQA 같은 작업이 나왔다. 단일 문서 질의응답과 여러 논문을 종합해야 하는 질의응답은 난도가 다르며, 실제 임상 질문은 대부분 후자다.
+
+2026년 CLINIC은 평가 프레임을 바꿨다. 의료 언어모델의 신뢰성을 진실성·공정성·안전·견고성·프라이버시 다섯 축으로 나누고, 15개 언어 18개 과제 28,800개 표본으로 측정한다. 다국어를 포함했다는 점이 특히 중요하다. 영어에서 안전한 모델이 다른 언어에서 안전하지 않을 수 있고, 이는 비영어권 도입 기관에게 직접적 위험이다.[2]
+
+지식 갱신 문제도 다뤄졌다. MedREK 계열의 의료 지식 편집은 모델 전체를 재학습하지 않고 특정 사실만 고치려 하고, EHR-RAGp와 PACE-RAG는 전자의무기록 검색과 인구집단 사전지식을 결합한다. 임상 가이드라인이 바뀔 때마다 모델을 다시 학습할 수 없으므로, 이 방향은 운영상 필수다.[6]
+
+> [!tip] 정리
+> 국내 관점에서 결론은 뾰족하다. 한국어 임상 신뢰성 벤치마크가 없다는 것은 도입 심사의 근거가 없다는 뜻이다. 이 공백을 메우는 작업은 연구이면서 동시에 규제 인프라다.
+
+**대표 도구·시스템** — ClinicalGPT · BioMedLM · CLEAR · MedBioLM · LLMEval-Med · MedREK · MedDocBench · MedMosaic · EHR-RAGp · OGCaReBench · CLINIC
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [A retrieval-augmented knowledge mining method with deep thinking LLMs for biomedical research and clinical support](../../docs/papers/018_A_retrieval-augmented_knowledge_mining_method_with_deep_thin/index.html) — Yichun Feng 외, 2025 · 인용 10
+2. [CLINIC : Evaluating Multilingual Trustworthiness in Language Models for Healthcare](../../docs/papers/9407_CLINIC__Evaluating_Multilingual_Trustworthiness_in_Language/index.html) — Akash Ghosh 외, 2026
+3. [Clinical entity augmented retrieval for clinical information extraction](../../docs/papers/224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html) — Iván López 외, 2025
+4. [LLMEval-Med: A Real-world Clinical Benchmark for Medical LLMs with Physician Validation](../../docs/papers/507_Llmeval-med_A_real-world_clinical_benchmark_for_medical_llms/index.html) — Ming Zhang 외, 2025
+5. [MedDocBench: Benchmarking Vision-Language Models for Reliable Structured Extraction from Real-World Clinical Forms](../../docs/papers/10010_MedDocBench_Benchmarking_Vision-Language_Models_for_Reliable/index.html) — Qijia Tian 외, 2026
+6. [MedREK: Retrieval-Based Editing for Medical LLMs with Key-Aware Prompts](../../docs/papers/10016_MedREK_Retrieval-Based_Editing_for_Medical_LLMs_with_Key-Awa/index.html) — Shujun Xia 외, 2026
+
+---
+
+## S40 · RAG와 모호성 해소
+
+*제7부 · 과학 정보추출·질의응답* · **Retrieval-Augmented Generation Systems** · *서브카테고리*
+
+<sub>타임라인 분석 명칭: Retrieval-Augmented Generation & Ambiguity Resolution</sub>
+
+`20편` `2019–2026` `안정` `2025+ 8편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, RAG의 남은 난제는 검색이 아니라 되묻기와 가설 생성이다.
+
+**20편. RAG는 성숙기에 들어섰다. 남은 난제는 검색 성능이 아니라, 질문이 애매할 때 되묻는 능력과 장문 생성의 근거 추적이다.**
+
+기술 계보는 짧게 정리된다. 2020년 REALM이 사전학습 단계에 검색을 내재화했고, 2022년 Atlas는 110억 파라미터로 5,400억 파라미터 모델을 능가하는 소수샷 성능을 보여 파라미터 대신 외부 지식을 쓰는 전략의 효율을 증명했다. 희소 어휘 확장 계열인 SPLADE는 검색 효율을 올렸다. 2024년 종합 서베이가 아키텍처·학습 전략·응용 세 관점으로 지형을 정리하며 인용 617을 기록했다.
+
+지금 실무 병목은 다른 데 있다. 사용자 질문이 애매할 때 시스템이 그것을 모르고 답한다는 문제다. CLAM, INTENT-SIM, LaMAI 같은 작업은 모호한 질의를 감지해 되묻는 대화형 명료화를 다룬다. 검색 품질을 1% 올리는 것보다, 잘못 이해한 질문에 자신 있게 답하는 사고를 막는 것이 실사용 만족도에 훨씬 크게 작용한다.
+
+장문 생성 쪽은 별도 문제다. STORM은 위키 문서 작성 전에 여러 관점의 질문을 생성해 사전조사를 수행하고, SurveyX는 속성 트리로 서베이 구조를 설계한 뒤 채운다. 이 계열의 공통 인식은, 긴 문서는 검색 결과를 이어 붙여 만들 수 없고 구조를 먼저 정해야 한다는 것이다. 사람이 글 쓰는 방식과 같다.[1]
+
+2025년에는 RAG가 가설 생성으로 확장됐다. 과학적 발견을 위한 가설 생성을 다룬 서베이가 프롬프팅부터 복합 프레임워크까지 방법을 분류하고 평가 전략을 정리했으며, HypoGeniC와 ResearchLink는 데이터와 지식그래프 위에서 가설을 만든다. 검색이 답을 찾는 도구에서 질문을 만드는 도구로 옮겨가는 흐름이다.
+
+우리 조직 관점에서 사내 RAG는 이미 상품 단계다. 차별화는 두 곳에서 난다. 첫째, 되묻기 정책이다. 어떤 조건에서 답하지 않고 확인할지를 규칙으로 정해야 한다. 둘째, 인용 검증기다. 생성된 인용이 실제 문서를 가리키는지 기계적으로 확인하는 장치 없이는 신뢰가 축적되지 않는다.
+
+> [!tip] 정리
+> 정리하면 RAG의 기술 경쟁은 끝났고 운영 설계 경쟁이 남았다. 되묻기와 인용 검증, 이 두 가지가 사내 시스템의 품질을 결정한다.
+
+**대표 도구·시스템** — REALM · SPLADE v2 · Atlas · CLAM · INTENT-SIM · LaMAI · STORM · SurveyX · HypoGeniC · ResearchLink · OpenTSLM
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [SurveyX: Academic survey automation via large language models](../../docs/papers/781_Surveyx_Academic_survey_automation_via_large_language_models/index.html) — Xun Liang 외, 2025
+2. [A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models](../../docs/papers/031_A_Survey_on_Hypothesis_Generation_for_Scientific_Discovery_i/index.html) — Atilla Kaan Alkan 외, 2025.04 · 인용 2
+3. [Enhancing chart-to-code generation in multimodal large language models via iterative dual preference learning](../../docs/papers/315_Enhancing_chart-to-code_generation_in_multimodal_large_langu/index.html) — Zhihan Zhang 외, 2025
+4. [OpenTSLM: Time-Series Language Models for Reasoning over Multivariate Medical Text- and Time-Series Data](../../docs/papers/10136_OpenTSLM_Time-Series_Language_Models_for_Reasoning_over_Mult/index.html) — Patrick Langer 외, 2026
+5. [Research hypothesis generation over scientific knowledge graphs](../../docs/papers/666_Research_hypothesis_generation_over_scientific_knowledge_gra/index.html) — Agustín Borrego 외, 2025.04
+6. [Improving RAG for LLM-based Mental Health Risk Detection through Contrastive Embeddings](../../docs/papers/9816_Improving_RAG_for_LLM-based_Mental_Health_Risk_Detection_thr/index.html) — ZHIHAO YANG 외, 2026
+
+---
+
+## S41 · 학술 메타데이터·연구 무결성 데이터
+
+*제8부 · AI 지원 학술 커뮤니케이션* · **Academic Metadata & Causal Datasets** · *서브카테고리*
+
+`37편` `2020–2026` `가속` `2025+ 17편`
+
+<sub>AI 지원 학술 커뮤니케이션 고유 배정 212편(중복 포함 559편 · 웹 인덱스 기준) · 서브카테고리 15개 · 본 파트 5개로 55% 커버</sub>
+
+> [!quote] 파트 도입
+> AI 저작·심사 정책을 감정이 아니라 데이터로 설계할 근거가 쌓였다.
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 학술 인프라 데이터가 AI 저작 정책의 실증 근거가 됐다.
+
+**37편. 편수는 적지만 이 칸의 데이터는 기관 정책 문서에 그대로 옮겨 쓸 수 있다. AI 저작 정책의 실증 근거가 여기서 나온다.**
+
+인프라 층은 S2ORC 같은 대규모 전문 코퍼스가 만들었다. 논문 전문과 인용 관계를 기계 판독 가능한 형태로 제공하면서 계량서지학과 검색 연구의 공용 기반이 됐다. 이 층이 없으면 이후의 모든 감사 연구가 불가능하다. 데이터 인프라가 정책 인프라의 전제라는 점을 이 칸이 잘 보여 준다.
+
+가장 인용 가치가 높은 결과는 2025년 표절 실증이다. 자동 연구 에이전트가 생성한 연구 문서를 검사한 결과 24%가 기존 논문에서 정교하게 표절된 것이었고, 그 표절이 내장 탐지 시스템을 우회하며 출처를 인정하지 않았다. '에이전트가 혁신적 아이디어를 생성한다'는 주장에 대한 가장 강력한 반증이며, AI 저작 정책 논의에서 감정 대신 숫자를 쓸 수 있게 해 준다.
+
+철회 연구도 데이터화됐다. WithdrarXiv는 arXiv에서 철회된 논문 14,000편 이상을 수집해 철회 이유를 10개 범주로 분류하는 자동 체계를 만들었다. 왜 논문이 철회되는지에 대한 통계적 그림이 생기면, 사전 예방 장치를 어디에 둘지 결정할 수 있다. 이런 데이터셋이 없던 시절에는 개별 사례 보도에 의존해 정책을 만들었다.
+
+문헌 조직화 도구도 실용 단계다. 2025년 CHIME과 SurveyForge는 언어모델로 문헌을 계층적으로 조직해 서베이 초안을 만든다. 여기서 중요한 것은 요약 품질이 아니라 구조 제안이다. 수백 편을 어떤 축으로 분류할지 제안받고 사람이 수정하는 방식이 실제 작업 흐름에 맞다.[1]
+
+2026년에는 검증 벤치마크와 거버넌스가 나왔다. SPOT과 MISSCIPLUS는 과학 문헌의 오류와 왜곡된 주장을 언어모델이 탐지할 수 있는지 측정하고, CRA와 SciContrib-Bench 계열은 AI 과학자의 자율성 수준과 기여 귀속을 다루는 프레임워크를 제안한다. 누가 무엇을 했는지 기록하는 문제는 학술 윤리이면서 동시에 인사·평가 제도의 문제다.[3]
+
+> [!tip] 정리
+> 이 칸의 실행 지침은 명확하다. AI 저작 정책 초안을 쓸 때 정서적 논쟁을 하지 말고 이 데이터를 인용하라. 24%라는 숫자 하나가 회의 시간을 크게 줄인다.
+
+**대표 도구·시스템** — S2ORC · ORB · ReviewArena · CHIME · SurveyForge · SPOT · WithdrarXiv · MASSW · Sibyl · CauScale
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Surveyforge: On the outline heuristics, memory-driven generation, and multi-dimensional evaluation for automated survey writing](../../docs/papers/780_Surveyforge_On_the_outline_heuristics_memory-driven_generati/index.html) — Xiangchao Yan 외, 2025
+2. [ReviewArena: A Large-Scale Cross-Conference Dataset and Benchmark for LLM Peer Review](../../docs/papers/10341_ReviewArena_A_Large-Scale_Cross-Conference_Dataset_and_Bench/index.html) — Samarth P 외, 2026
+3. [SciContrib-Bench: Mapping the Autonomy Landscape of AI Scientists Through Stage-Dependent Detectability](../../docs/papers/10386_SciContrib-Bench_Mapping_the_Autonomy_Landscape_of_AI_Scient/index.html) — Raghav Agarwal 외, 2026
+4. [Sibyl: Temporal Backtesting for Literature-Based Scientific Discovery with Large Language Model Agents](../../docs/papers/10438_Sibyl_Temporal_Backtesting_for_Literature-Based_Scientific_D/index.html) — Blagoy Rangelov, 2026
+5. [When AI Co-Scientists Fail: SPOT—a Benchmark for Automated Verification of Scientific Research](../../docs/papers/881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/index.html) — Guijin Son 외, 2025
+6. [Agent Systems for Academic Research Automation](../../docs/papers/9203_Agent_Systems_for_Academic_Research_Automation/index.html) — Pierfrancesco Beneventano 외, 2026
+
+---
+
+## S42 · LLM 지원 동료심사
+
+*제8부 · AI 지원 학술 커뮤니케이션* · **LLM-Assisted Peer Review Feedback** · *서브카테고리*
+
+`34편` `2022–2026` `가속` `2025+ 18편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 논쟁은 '허용할까'에서 '무엇을 검증하게 할까'로 넘어갔다.
+
+**34편. 리뷰 자동화는 이미 현실이고, 학계의 논쟁은 '허용할까'에서 '무엇을 검증하게 할까'로 넘어갔다.**
+
+현황 인식부터 보자. 2025년 Nature 보도는 AI 소프트웨어가 학술지 동료평가에 점진적으로 침투하고 있으며, 효율 향상과 제도 가치 훼손 우려가 동시에 존재한다고 정리했다. 인용 49로 이 기사는 정책 논의의 참조점이 됐다. 금지 여부를 논하기에는 이미 늦었고, 어떤 용도까지 허용할지를 정해야 하는 단계라는 것이 요점이다.
+
+기술 쪽 계보는 2022년 R3의 인간 참여 반복 개정에서 시작해 2023년 GPT-4 대규모 피드백 파일럿으로 이어졌다. 2025년에는 다중 에이전트와 미세조정 리뷰어가 쏟아졌다. MARG는 역할 분담으로 리뷰 품질을 올리고, OpenReviewer는 리뷰 데이터로 직접 학습하며, REMOR와 TreeReview는 리뷰 구조 자체를 설계한다. 성능은 올랐지만 근본 문제는 남았다. 리뷰의 가치는 정확성만이 아니라 책임에서 오는데, 모델은 책임을 지지 않는다.[1]
+
+심사 제도를 시뮬레이션해 분석하는 계열도 중요하다. AgentReview와 ReviewMT는 심사 과정을 에이전트로 재현해 편향을 정량화한다. 심사자 구성, 토론 순서, 반박 기회가 결과에 미치는 영향을 실험할 수 있게 되면서, 제도 설계 논의에 데이터가 붙었다. 실제 심사를 대상으로는 할 수 없는 실험이므로 시뮬레이션의 가치가 크다.
+
+평가 벤치마크도 나왔다. 2025년 AAAR-1.0은 방정식 추론, 실험 설계, 논문 약점 식별, 리뷰 비판이라는 네 가지 전문가급 과제로 언어모델의 연구 보조 능력을 측정한다. 여기서 드러난 패턴은 일관된다. 모델은 형식적 결함 지적에는 유용하고, 기여의 중요성 판단에는 약하다. 이는 곧 허용 범위의 경계선이다.[2]
+
+협업 실험도 흥미롭다. 2025년 AgentRxiv는 공유 프리프린트 서버를 통해 에이전트들이 서로의 결과를 읽고 누적 개선하게 만들었다. 단독 자율 연구 시스템의 한계를 협업으로 넘으려는 시도인데, 동시에 오류가 누적 전파될 위험도 함께 커진다. 2026년 검증 우선 입장 논문들이 강조하는 바가 이것이다. AI는 논문을 심판하지 말고 주장을 검증해야 한다.
+
+> [!tip] 정리
+> 기관 정책 초안은 두 줄로 충분하다. 심사 보조는 허용하고 판정은 금지한다. 그리고 AI 사용 사실을 기록하게 한다. 이 칸의 문헌이 그 근거를 전부 제공한다.
+
+**대표 도구·시스템** — R3 · CRITIC · MARG · OpenReviewer · CycleResearcher · REMOR · TreeReview · ReviewAgents · GoodPoint · AAAR-1.0
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Remor: Automated peer review generation with llm reasoning and multi-objective reinforcement learning](../../docs/papers/665_Remor_Automated_peer_review_generation_with_llm_reasoning_an/index.html) — Pawin Taechoyotin 외, 2025
+2. [AAAR-1.0: Assessing AI's Potential to Assist Research](../../docs/papers/041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html) — Renze Lou et al., 2025
+3. [Position: Preventing the Collapse of Peer Review Requires Verification-First AI](../../docs/papers/10216_Position_Preventing_the_Collapse_of_Peer_Review_Requires_Ver/index.html) — Lei You 외, 2026
+4. [GoodPoint: Learning Constructive Scientific Paper Feedback from Author Responses](../../docs/papers/9751_GoodPoint_Learning_Constructive_Scientific_Paper_Feedback_fr/index.html) — Jimin Mun 외, 2026
+5. [Position: The AI Conference Peer Review Crisis Demands Author Feedback and Reviewer Rewards](../../docs/papers/628_Position_The_ai_conference_peer_review_crisis_demands_author/index.html) — Jaeho Kim 외, 2025
+6. [ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews](../../docs/papers/676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html) — Xiaojin Gao 외, 2025
+
+---
+
+## S43 · 과학 가설 재조합
+
+*제8부 · AI 지원 학술 커뮤니케이션* · **Scientific Hypothesis Recombination** · *서브카테고리*
+
+`19편` `2015–2026` `가속` `2025+ 13편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 평가 기준이 '새로운가'에서 '반증 가능한가'로 이동했다.
+
+**19편. 아이디어 생성은 이미 된다. 2025년 이후의 질문은 그 아이디어가 반증 가능한지를 어떻게 재느냐로 바뀌었다.**
+
+이 칸의 가장 오래된 뿌리는 2015년 지식그래프 관계형 기계학습 리뷰다. 인용 1,662로, 누락된 사실을 예측하는 문제를 잠재 특성 모델과 그래프 패턴 마이닝으로 정리했다. 2022년에는 의미망 링크 예측으로 연구 방향 자체를 예측하는 작업이 나왔다. 아직 연결되지 않은 개념 쌍 중 앞으로 연결될 것을 맞히는 문제인데, 이것이 곧 가설 생성의 형식적 정의다.
+
+2024년 SciMON은 신규성을 명시적 목표로 넣어 아이디어를 생성했고, 같은 시기 100명 이상의 자연어처리 연구자를 동원한 블라인드 평가가 진행됐다. 결과는 미묘했다. 모델 생성 아이디어가 신규성에서는 사람과 비슷하거나 앞섰지만 실현 가능성에서는 뒤졌다. 이 패턴은 이후 반복 확인된다. 새로운 조합을 만드는 일은 쉽고, 그 조합이 실제로 작동할지 판단하는 일은 어렵다.
+
+2025년 ResearchBench는 평가를 분해했다. 발견 과정을 영감 검색, 가설 구성, 가설 순위 결정 세 단계로 나눠 각각을 측정한다. 총점 하나로는 어디가 약한지 알 수 없기 때문이다. 실제로 모델은 관련 문헌을 찾아오는 단계는 잘하고, 그중 무엇이 중요한지 순위를 매기는 단계에서 무너진다. 이는 도구 설계에 직접 반영할 수 있는 정보다.[1]
+
+같은 해 흥미로운 제안도 나왔다. 언어모델의 내재된 편향을 진단 도구로 활용해, 과학과 사회의 '불문율' 즉 암묵적 고정관념과 휴리스틱을 명시적으로 드러내고 비판 대상으로 만들자는 것이다. 모델의 결함을 없애려 하지 않고 사회 관찰 도구로 쓰는 발상이며, 사회과학 쪽 응용 여지가 크다. MOOSE-Chem, SciMuse, HypoGen 같은 생성 프레임워크도 이 시기에 확산됐다.
+
+2026년의 전환은 감사다. NOVA-Test는 반증가능성 게이트를 걸어 가설을 심사한다. 즉 '새로운가'를 묻는 대신 '틀렸을 때 그것을 알 수 있는 실험이 존재하는가'를 묻는다. 과학철학의 기본 요건을 평가 지표로 옮긴 것이며, 자동 가설 생성이 대량화될 때 유일하게 작동하는 필터다. SciPaths와 PaperGym 같은 작업은 발견 경로 예측과 훈련 환경화를 다룬다.[2][3]
+
+> [!tip] 정리
+> 정리하면 다음 단계는 평가 기준의 교체다. '새롭다'에서 '검증 가능하다'로. 이 기준을 먼저 도입하는 조직이 아이디어 홍수 속에서 실제 성과를 낸다.
+
+**대표 도구·시스템** — SciMON · MOOSE-Chem · SciMuse · HypoGen · ResearchBench · NOVA-Test · SciPaths · EO-Agents · PaperGym
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [ResearchBench: Benchmarking LLMs in Scientific Discovery via Inspiration-Based Task Decomposition](../../docs/papers/669_Researchbench_Benchmarking_llms_in_scientific_discovery_via/index.html) — Yujie Liu 외, 2025
+2. [NOVA-Test: Auditing LLM-Generated Research Hypotheses with Structural Analogy, Prior-Work, and Falsifiability Tests](../../docs/papers/10114_NOVA-Test_Auditing_LLM-Generated_Research_Hypotheses_with_St/index.html) — David Scott Lewis 외, 2026
+3. [SciPaths: Forecasting Pathways to Scientific Discovery](../../docs/papers/10392_SciPaths_Forecasting_Pathways_to_Scientific_Discovery/index.html) — Eric Chamoun 외, 2026
+4. [EO-Agents: A Three-Agent LLM Pipeline for Earth Observation Hypothesis Generation](../../docs/papers/9588_EO-Agents_A_Three-Agent_LLM_Pipeline_for_Earth_Observation_H/index.html) — Mahyar Ghazanfari 외, 2026
+5. [Exploiting LLMs for Automatic Hypothesis Assessment via a Logit-Based Calibrated Prior](../../docs/papers/330_Exploiting_LLMs_for_Automatic_Hypothesis_Assessment_via_a_Lo/index.html) — Yue Gong 외, 2025
+6. [Sparks of science: Hypothesis generation using structured paper data](../../docs/papers/763_Sparks_of_science_Hypothesis_generation_using_structured_pap/index.html) — C. O'Neill 외, 2025
+
+---
+
+## S44 · 그래프 기반 과학 요약
+
+*제8부 · AI 지원 학술 커뮤니케이션* · **Graph-Based Scientific Summarization** · *서브카테고리*
+
+`15편` `2019–2026` `안정` `2025+ 3편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 요약의 쟁점은 압축률이 아니라 과잉 일반화다.
+
+**15편. 요약 자동화의 쟁점은 압축률이 아니다. 원문보다 넓게 결론을 말해 버리는 과잉 일반화 편향이다.**
+
+기반 데이터셋부터 보자. 2020년 SciTLDR은 논문을 한 문장으로 줄이는 극단 요약 과제와 5.4천 규모 다중 목표 데이터셋을 제시하고, 제목을 보조 신호로 쓰는 학습 전략을 함께 내놨다. 2023년 SciReviewGen은 규모를 키웠다. 문헌 리뷰 1만 편 이상과 인용 논문 69만 건으로 구성해, 질의 기반 다중 문서 요약으로서 리뷰 자동 생성을 학습 가능한 문제로 만들었다.[4]
+
+그래프 구조를 쓰는 이유는 분명하다. 여러 논문을 요약할 때 문서를 나열해 넣으면 중복과 모순이 뒤섞인다. 인용 관계와 개념 관계를 그래프로 놓고 요약하면 무엇이 근거이고 무엇이 파생인지 구분할 수 있다. 2019년 인용그래프 어텐션 기반 관련연구 요약에서 시작해 HAESum, MoDeST 같은 계층 구조 활용 모델로 이어진다.[1]
+
+가장 중요한 결과는 2025년 일반화 편향 감사다. 10개 주요 언어모델의 요약 4,900건을 분석한 결과, 모델 요약이 인간 작성 요약보다 체계적으로 더 넓은 결론을 도출했다. '특정 조건의 실험에서 관찰됐다'가 '일반적으로 그렇다'로 바뀌는 식이다. 과학 소통에서 이 오류는 치명적이다. 조건을 지운 결론은 잘못된 정책 판단으로 곧바로 이어진다.
+
+이 발견의 실무적 함의는 도구 설계에 있다. 요약 자동화를 도입할 때 품질 검사 항목에 '결론 범위 확장 여부'를 넣어야 한다. 원문의 한정어가 요약에서 사라졌는지 기계적으로 비교하는 것은 어렵지 않다. 어려운 것은 그 검사를 안 하고 넘어가려는 관성이다.
+
+적용 범위도 넓어졌다. GLIMPSE와 CGI2 같은 메타리뷰 요약은 여러 심사 의견을 종합하는 문제를 다룬다. 편집자가 서로 다른 리뷰를 읽고 판단을 정리하는 작업이므로, 여기서도 같은 위험이 있다. 소수 의견을 지우고 다수 의견만 남기면 요약은 매끄러워지지만 정보는 사라진다.[5]
+
+> [!tip] 정리
+> 이 칸의 실행 지침은 구체적이다. 요약 파이프라인에 한정어 보존 검사를 붙여라. 요약이 원문보다 확신에 차 있으면 그것은 요약이 아니라 왜곡이다.
+
+**대표 도구·시스템** — SciTLDR/CATTS · MS2 · KGSum · SciReviewGen · HAESum · GLIMPSE · XSum · MoDeST
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [MoDeST: A dataset for Multi Domain Scientific Title Generation](../../docs/papers/10765_modest_a_dataset_for_multi_domain_scientific_title_gen/index.html) — Necva Bölücü 외, 2025.05
+2. [Generalization Bias in Large Language Model Summarization of Scientific Research](../../docs/papers/373_Generalization_Bias_in_Large_Language_Model_Summarization_of/index.html) — Uwe Peters 외, 2025.03
+3. [Ask, retrieve, summarize: A modular pipeline for scientific literature summarization](../../docs/papers/108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html) — Pierre Achkar 외, 2025
+4. [SciReviewGen: a large-scale dataset for automatic literature review generation](../../docs/papers/732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html) — Tetsu Kasanishi 외, 2023
+5. [Glimpse: Pragmatically informative multi-document summarization for scholarly reviews](../../docs/papers/385_Glimpse_Pragmatically_informative_multi-document_summarizati/index.html) — Maxime Darrin 외, 2024
+6. [Hierarchical attention graph for scientific document summarization in global and local level](../../docs/papers/401_Hierarchical_attention_graph_for_scientific_document_summari/index.html) — Chenlong Zhao 외, 2024
+
+---
+
+## S45 · 인용 문맥 추천·검증
+
+*제8부 · AI 지원 학술 커뮤니케이션* · **Citation Context Recommendation** · *서브카테고리*
+
+`12편` `2022–2026` `안정` `2025+ 5편`
+
+> [!abstract] 화면에 띄울 한 줄
+> 2025–2026, 인용 생성이 쉬워진 만큼 인용 환각 탐지가 본론이 됐다.
+
+**12편. 인용을 자동으로 달아 주는 기술이 성숙할수록, 존재하지 않는 인용을 잡아내는 기술이 더 중요해진다.**
+
+기술 계보는 단계적이다. 2022년 강화학습으로 인용 문장을 제어 가능하게 생성하는 작업이 나오고, 2023년에는 초록만 쓰지 않고 실제로 인용되는 텍스트 구간을 근거로 삼는 방식이 제안됐다. 원 논문에서 무엇이 인용되는지가 초록에 다 담기지 않으므로, 이 전환은 인용 문장의 충실도를 크게 올렸다.
+
+2024년 CiteBART는 접근 방식을 바꿨다. 인용 토큰을 마스킹하는 맞춤 사전학습으로 로컬 인용 추천을 생성 문제로 풀었다. 기존의 사전 검색 후 재순위 방식과 달리 문맥에서 직접 후보를 생성하므로, 검색 인덱스에 없는 조합도 제안할 수 있다. 장점과 위험이 같은 뿌리에서 나온다. 생성 방식은 존재하지 않는 논문을 만들어 낼 수도 있다.[6]
+
+2025년에는 작성 흐름 통합이 진행됐다. ScholarCopilot은 검색을 글쓰기 과정에 통합해 인용과 문장을 함께 생성하고, SciRGC는 인용 의도를 인식하고 인용 네트워크를 활용해 다단계 추천과 문장 정렬을 수행한다. 인용 의도 구분이 중요한 이유는, 같은 논문을 배경으로 인용하는 것과 반박하기 위해 인용하는 것이 전혀 다른 문장을 요구하기 때문이다.[2][3]
+
+2026년의 초점은 검증이다. CiteCheck은 언어모델이 만들어 낸 인용 환각을 탐지하고, MIRAI는 인용 영향력을 예측한다. 인용 환각은 학술 부정 중 가장 탐지하기 쉬운 유형인데도 실제로는 자주 통과된다. 심사자가 모든 참고문헌을 확인하지 않기 때문이다. 자동 검증기가 붙으면 이 유형은 사실상 사라질 수 있다.[1][4]
+
+우리 조직 관점에서 이 칸은 기관 리스크 관리의 문제다. 연구자가 언어모델로 초고를 쓰는 것은 이미 일반적이며 막을 수 없다. 막을 수 없는 것은 검사로 다뤄야 한다. 투고 전 인용 검증을 자동으로 돌리는 절차 하나만 있으면 대부분의 사고가 예방된다.
+
+> [!tip] 정리
+> 정리하면 글쓰기 도구에 인용 검증기를 기본 탑재하지 않는 것은 리스크를 방치하는 것이다. 기술은 이미 있고 비용도 낮다. 남은 것은 절차화 결정이다.
+
+**대표 도구·시스템** — CiteBART · ILCiteR · HiGTL · SciRGC · ScholarCopilot · CiteCheck · MIRAI
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [CiteCheck: Retrieval-Grounded Detection of LLM Citation Hallucinations in Scientific Text](../../docs/papers/3378_CiteCheck_Retrieval-Grounded_Detection_of_LLM_Citation_Hallu/index.html) — Khashayar Khajavi 외, 2026.05
+2. [Scirgc: Multi-granularity citation recommendation and citation sentence preference alignment](../../docs/papers/1091_Scirgc_Multi-granularity_citation_recommendation_and_citatio/index.html) — Xi Chen 외, 2025
+3. [ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations](../../docs/papers/702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html) — Yubo Wang 외, 2025
+4. [MIRAI: Prediction and Generation of High-Impact Academic Research](../../docs/papers/3388_MIRAI_Prediction_and_Generation_of_High-Impact_Academic_Rese/index.html) — Alex Li 외, 2026.06
+5. [A Multi-Agent LLM Framework with Hierarchical Citation Graph for Automated Survey Generation](../../docs/papers/9154_A_Multi-Agent_LLM_Framework_with_Hierarchical_Citation_Graph/index.html) — Nguyen Anh Minh 외, 2026
+6. [Citebart: Learning to generate citations for local citation recommendation](../../docs/papers/219_Citebart_Learning_to_generate_citations_for_local_citation_r/index.html) — Ege Yiğit Çelik 외, 2024
+
+---
+
+## S46 · 수렴 신호: 경계가 무너지는 곳
+
+*종합* · *종합*
+
+> [!abstract] 화면에 띄울 한 줄
+> 서로 다른 분야가 같은 문제를 풀기 시작하면, 그 지점이 다음 3년의 표준이 된다.
+
+**마흔 개 칸을 다 돌고 나면 경계가 무너지는 자리가 눈에 띈다. 서로 다른 분야가 같은 문제를 풀기 시작하는 지점이며, 그곳이 다음 3년의 표준이 된다.**
+
+첫 번째 수렴은 에이전트와 실험실의 통합이다. 언어모델 다중 에이전트와 자율 실험실 로봇공학이 빠르게 하나가 되고 있다. A-Lab, AMASE, SAMPLE, ChemAgents 계열은 가설 생성부터 실험 실행, 결과 해석까지 폐루프를 구현하며 '에이전트형 AI'와 '신약·신소재 발견'의 경계를 지운다. 2026년에는 공기 차단 환경에서 리튬 할라이드 이온 전도체를 자율 발견하거나, 산업 폐기물에서 선택적 침전으로 핵심 소재를 회수하는 사례까지 나왔다. 정책 함의는 분명하다. 자율 실험실 인프라 투자와 함께 안전·데이터 무결성 표준이 필요하다.
+
+두 번째는 물리정보 신경망의 범용화다. PINN과 신경 연산자가 전자기학, 유체역학, 기후, 양자계에서 동시에 채택되며 범용 과학 계산 프레임워크로 수렴하고 있다. 흥미로운 것은 형식 방법론 카테고리와 분자 시뮬레이션 카테고리 양쪽에서 PINN 관련 논문이 동시에 증가한다는 점이다. 서로 인용하지 않는 커뮤니티가 같은 도구를 쓰기 시작하면, 그 도구는 인프라가 됐다는 뜻이다. 여기서 필요한 것은 재현성과 검증 표준이다.
+
+세 번째는 기초모델과 정보추출의 통합이다. SciBERT와 BioBERT에서 출발한 과학 도메인 언어모델이 이제 멀티모달 검색, 인용 추천, 도표 이해, 동료 심사 지원으로 확장되며 정보추출 카테고리와 학술 커뮤니케이션 카테고리가 겹쳐진다. 연구 결과를 만드는 도구와 연구 과정을 관리하는 도구가 같은 백본을 공유하는 구조다.
+
+이 세 수렴의 공통점을 짚어야 한다. 셋 다 개별 모델 도입으로는 따라갈 수 없다. 자율 실험실은 장비와 프로토콜과 데이터 관리가 함께 있어야 하고, 물리 AI는 시뮬레이션 자산과 검증 인력이 필요하고, 학술 인프라는 기관 규정과 함께 움직인다. 즉 수렴이 일어나는 지점은 모두 '인프라 + 표준' 층이다.
+
+역으로 이것이 기회이기도 하다. 모델 성능 경쟁에서는 자본 규모가 이기지만, 인프라와 표준 경쟁에서는 먼저 도착한 쪽이 이긴다. 국내 기관이 세계 최고 모델을 만들 가능성은 낮지만, 자율 실험실 안전 표준이나 물리 AI 검증 프로토콜을 먼저 정립할 가능성은 충분하다.
+
+> [!tip] 정리
+> 정리하면 수렴 지점은 곧 표준 제정의 기회다. 지금 필요한 것은 더 나은 모델이 아니라, 이 세 층에 대한 우리 쪽 규격 문서다.
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Agentic LLM Reasoning in a Self-Driving Laboratory for Air-Sensitive Lithium Halide Spinel Conductors](../../docs/papers/3011_Agentic_LLM_Reasoning_in_a_Self-Driving_Laboratory_for_Air-S/index.html) — Yuxing Fei 외, 2026.04
+2. [Agentic workflow enables the recovery of critical materials from complex feedstocks via selective precipitation](../../docs/papers/3012_Agentic_workflow_enables_the_recovery_of_critical_materials/index.html) — 2026.03
+3. [Bridging decision-making engines and workflow design in self-driving laboratories: A NIMO-IvoryOS integration study](../../docs/papers/3048_Bridging_decision-making_engines_and_workflow_design_in_self/index.html) — 2026.03
+4. [On the Role of Consistency Between Physics and Data in Physics-Informed Neural Networks](../../docs/papers/3195_On_the_Role_of_Consistency_Between_Physics_and_Data_in_Physi/index.html) — 2026.02
+5. [Stochastic Dimension-Free Zeroth-Order Estimator for High-Dimensional and High-Order PINNs](../../docs/papers/3246_Stochastic_Dimension-Free_Zeroth-Order_Estimator_for_High-Di/index.html) — 2026.03
+6. [climt-paraformer: Stable Emulation of Convective Parameterization using a Temporal Memory-aware Transformer](../../docs/papers/3056_climt-paraformer_Stable_Emulation_of_Convective_Parameteriza/index.html) — 2026.04
+
+---
+
+## S47 · 부상과 쇠퇴
+
+*종합* · *종합*
+
+> [!abstract] 화면에 띄울 한 줄
+> 단독 LLM으로 과학하겠다는 접근은 접히는 중이고, 그 자리를 신경-기호와 추론시간 확장이 채운다.
+
+**부상 신호보다 쇠퇴 신호를 읽는 쪽이 더 돈이 된다. 지금 접히고 있는 접근에 지금 착수하면 3년을 버리기 때문이다.**
+
+부상 신호 첫째는 신경-기호 결합이다. 언어모델의 생성 능력과 형식 논리·기호 규칙을 결합한 접근이 역합성, 정리 증명, CFD 자동화에서 빠르게 올라왔다. PhyNiKCE, MerLean 같은 사례가 공통으로 하는 일은 언어모델 단독의 약점인 물리적·논리적 타당성 부족을 기호 제약으로 메우는 것이다. 규제 대상 분야에서는 이 조합이 사실상 유일한 선택지다. 검증 가능성과 해석 가능성이 요건으로 명시되기 때문이다.[2][4]
+
+부상 신호 둘째는 추론 시간 확장이다. DeepSeek-R1과 o1 계열의 성공으로, 학습 시간 규모를 늘리는 대신 추론 시점에 계산을 투입하는 전략이 주류가 됐다. 사고 연쇄, 자기 검증, 탐색을 추론 시점에 붙이면 같은 모델로 훨씬 어려운 문제를 풀 수 있다. 이 전략이 중요한 이유는 자본 요구가 다르다는 것이다. 사전학습에는 수천억이 들지만, 추론 시간 탐색 설계는 아이디어와 엔지니어링의 문제다. 단, 에너지와 비용 지표를 함께 재는 규율이 필요하다.
+
+쇠퇴 신호는 하나지만 강력하다. 외부 도구·검증·실험 피드백 없이 언어모델 단독으로 과학 가설을 생성하고 검증하려는 접근이 신뢰를 잃었다. 구현 능력 부재, 환각, 자기수정 실패가 반복 확인됐고, 최신 연구들은 일관되게 다중 에이전트·도구 통합·폐루프 시스템으로 전환했다. 순수 언어모델 기반 과학 발견을 주장하는 논문 비중은 실제로 줄고 있다.
+
+이 쇠퇴를 오해하면 안 된다. 언어모델이 쓸모없다는 뜻이 아니라, 언어모델이 혼자 판단하게 두는 설계가 실패한다는 뜻이다. 같은 모델을 도구 호출과 검증기 사이에 배치하면 여전히 강력하다. 실패한 것은 모델이 아니라 아키텍처다.
+
+실행 관점의 결론은 세 줄로 정리된다. 첫째, 신규 과제를 설계할 때 '검증기가 무엇인가'를 먼저 적는다. 둘째, 추론 시간 계산을 쓸 여지가 있는지 확인한다. 셋째, '언어모델이 알아서 판단한다'는 문장이 제안서에 있으면 반려한다.
+
+> [!tip] 정리
+> 요약하면 신경-기호와 추론시간 확장은 지금 올라타야 하고, 단독 언어모델 발견은 지금 정리해야 한다. 이 판단만으로도 과제 포트폴리오의 질이 달라진다.
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Protect*: Steerable Retrosynthesis through Neuro-Symbolic State Encoding](../../docs/papers/3219_Protect_Steerable_Retrosynthesis_through_Neuro-Symbolic_Stat/index.html) — 2026.02
+2. [PhyNiKCE: A Neurosymbolic Agentic Framework for Autonomous Computational Fluid Dynamics](../../docs/papers/3206_PhyNiKCE_A_Neurosymbolic_Agentic_Framework_for_Autonomous_Co/index.html) — 2026.02
+3. [A Generative Neuro-Symbolic AI for Protein Sequence Design](../../docs/papers/2990_A_Generative_Neuro-Symbolic_AI_for_Protein_Sequence_Design/index.html) — 2026.04
+4. [MerLean: An Agentic Framework for Autoformalization in Quantum Computation](../../docs/papers/532_MerLean_An_Agentic_Framework_for_Autoformalization_in_Quantu/index.html) — Yuanjie Ren 외, 2026.02
+5. [SEVerA: Verified Synthesis of Self-Evolving Agents](../../docs/papers/750_SEVerA_Verified_Synthesis_of_Self-Evolving_Agents/index.html) — Debangshu Banerjee 외, 2026.03
+6. [An AI system to help scientists write expert-level empirical software](../../docs/papers/3288_An_AI_system_to_help_scientists_write_expert-level_empirical/index.html) — Eser Aygün 외, 2026.05
+
+---
+
+## S48 · 비어 있는 자리
+
+*종합* · *종합*
+
+> [!abstract] 화면에 띄울 한 줄
+> 가장 큰 공백은 기술이 아니다 — AI가 만든 과학을 검증할 체계가 없다.
+
+**가장 큰 공백은 기술이 아니다. AI가 만든 과학을 체계적으로 검증할 인프라가 없다는 것, 그것이 이 코퍼스가 가리키는 가장 큰 빈자리다.**
+
+핵심 공백을 먼저 명시하자. AI가 자율 생성한 가설·논문·실험 결과에 대한 재현성 검증과 감사 프레임워크가 사실상 존재하지 않는다. 데이터 무결성 위협은 이미 현실이고, 동료 심사 시스템의 언어모델 취약성도 지적됐지만, 이를 근본적으로 해결하는 검증 인프라 연구는 극히 드물다. 생산 쪽 논문 수와 검증 쪽 논문 수의 비대칭이 이 공백의 크기다.
+
+코퍼스 메타 분석이 짚은 미개척 영역도 같은 방향을 가리킨다. AI 생성 과학 콘텐츠의 장기 학문적 영향과 지식재산권 귀속 문제, 자율 실험실의 실험실-임상 전환율, 에이전트 시스템의 장기 일관성과 분포 외 신뢰성 표준, 저소득 국가와 자원 제약 환경에서의 접근성과 형평성, 그리고 AI 기반 기후·기상 모델의 극단 이벤트 외삽에 대한 독립 검증이다.
+
+이 목록의 성격을 눈여겨봐야 한다. 다섯 개 모두 '더 좋은 모델을 만드는 문제'가 아니다. 제도, 표준, 형평성, 독립 검증에 관한 문제들이다. 모델 개발 경쟁에서는 자본과 인력 규모가 결정적이지만, 이 영역에서는 문제를 먼저 정의하고 방법론을 세운 쪽이 표준을 갖는다. 후발 주자가 선점할 수 있는 몇 안 되는 자리다.
+
+특히 형평성 항목은 국내 기관이 국제적 발언권을 얻을 수 있는 통로다. 자원 제약 환경에서 작동하는 AI4Science 방법론, 즉 대규모 계산 없이도 신뢰할 수 있는 결과를 내는 절차를 정립하는 일은 학문적 기여이면서 외교적 자산이다. 지금 이 주제를 다루는 논문이 거의 없다는 것은 경쟁이 없다는 뜻이다.
+
+극단 이벤트 외삽 검증은 실용적으로 가장 급하다. AI 예보 모델이 기상청 운영에 들어가고 있는데, 극한 현상에 대한 성능은 학습 분포 밖 문제이므로 원리적으로 보장되지 않는다. 독립 검증 체계 없이 정책 결정에 쓰이는 상황이 이미 시작됐다.
+
+**미개척 영역(코퍼스 메타 분석)**
+
+- AI 생성 과학 콘텐츠의 장기 학문적 영향 및 지식재산권 귀속 연구
+- 자율 실험실의 실험실-임상 전환율 및 born-qualified 제조 가능성 통합
+- AI 에이전트 시스템의 장기 일관성 및 분포 외 신뢰성 표준 벤치마크
+- 저소득 국가 및 자원 제약 환경에서의 AI4Science 접근성 및 형평성
+- AI 기반 기후·기상 모델의 극단 이벤트 외삽 신뢰성 독립 검증
+
+> [!tip] 정리
+> 공백은 진입 지점이다. 검증·감사·형평성 세 영역은 자본보다 규율이 결정하는 영역이며, 지금 시작하면 3년 안에 표준을 쥘 수 있다.
+
+**레퍼런스** (제목 클릭 → 논문 리뷰)
+
+1. [Data integrity in materials science in the era of AI: balancing accelerated discovery with responsible science and innovation](../../docs/papers/252_Data_integrity_in_materials_science_in_the_era_of_AI_balanci/index.html) — Nik Reeves-McLaren 외, 2026
+2. [Lazyreview a dataset for uncovering lazy thinking in nlp peer reviews](../../docs/papers/481_Lazyreview_a_dataset_for_uncovering_lazy_thinking_in_nlp_pee/index.html) — Sukannya Purkayastha 외, 2025
+3. [Detecting LLM-written Peer Reviews](../../docs/papers/270_Detecting_llm-written_peer_reviews/index.html) — Vishisht Rao 외, 2025
+4. [AI Scientists Fail Without Strong Implementation Capability](../../docs/papers/081_Ai_scientists_fail_without_strong_implementation_capability/index.html) — Min Zhu 외, 2025
+5. [All that glitters is not novel: Plagiarism in ai generated research](../../docs/papers/093_All_that_glitters_is_not_novel_Plagiarism_in_ai_generated_re/index.html) — Tarun Gupta 외, 2025
+6. [Are we there yet? revealing the risks of utilizing large language models in scholarly peer review](../../docs/papers/104_Are_we_there_yet_revealing_the_risks_of_utilizing_large_lang/index.html) — Rui Ye 외, 2024
+
+---
+
+## S49 · 2026 검증 전환의 여섯 축
+
+*종합* · *종합*
+
+> [!abstract] 화면에 띄울 한 줄
+> 같은 해에, 서로 모르는 여덟 개 분야가 같은 결론에 도달했다 — 성능이 아니라 증거.
+
+**2026년, 서로 인용하지 않는 여덟 개 분야가 같은 결론에 도달했다. 필요한 것은 성능이 아니라 증거라는 결론이다. 그 결론이 여섯 개 축으로 나타났다.**
+
+첫째, 벤치마크 감사다. 단백질 설계 평가를 통일한 ProtDBench, 형식 증명기의 통과율이 충실성·정렬·공허성 문제로 부풀려졌음을 보인 ProofGate, 유전체 모델 평가를 다시 짠 GENEB 계열이 같은 일을 한다. 모델을 재는 자尺 자체를 검사하는 작업이며, 이 단계 없이 나온 성능 비교는 무의미하다는 인식이 자리 잡았다.
+
+둘째, 실패 모드 진단이다. PINN의 기울기 병리와 consistency barrier처럼 실패를 유형화해 이름을 붙이는 작업, 그리고 A-Lab의 신물질 43종 주장을 재분석해 무너뜨린 작업이 이 축에 속한다. 언제 무너지는지 아는 시스템만 운영에 쓸 수 있다.
+
+셋째, 기계적 해석성이다. 희소 오토인코더와 cross-layer transcoder로 모델 내부 표현을 분해하고, AlphaInterp처럼 예측이 무엇에 근거하는지 규명한다. 규제 산업에서는 성능 증명보다 근거 설명이 먼저 요구되므로, 이 축은 학술적 호기심이 아니라 인허가 요건에 가깝다.
+
+넷째, 통계적 인증이다. 예측기반 추론으로 적은 라벨에서 유효한 신뢰구간을 만들고, conformal 예측으로 분포 무가정 보증을 얻고, knockoff로 허위 발견을 통제하고, 등가 검정으로 '차이가 없음'을 제대로 주장한다. 평가 예산 부족을 통계 설계로 메우는 기술이다.
+
+다섯째, 출처와 기여 추적이다. 철회 논문 데이터셋 WithdrarXiv, 기여 귀속 프레임워크, 실험 데이터 계보 관리 도구들이 여기 속한다. 여섯째, 검증 우선 규범이다. AI는 논문을 심판하지 말고 주장을 검증해야 한다는 입장 논문과, 반증가능성 게이트를 건 NOVA-Test 같은 감사 도구가 이 축을 만든다.
+
+> [!tip] 정리
+> 이 여섯 축은 그대로 조직 체크리스트가 된다. 새 AI 도구 도입 검토서에 여섯 항목을 넣고 각각에 대해 우리가 무엇을 갖췄는지 적게 하라. 빈칸이 곧 위험 목록이다.
+
+---
+
+## S50 · 그래서 무엇을 할 것인가
+
+*종합* · *마무리*
+
+> [!abstract] 화면에 띄울 한 줄
+> 따라잡기 경쟁은 이미 졌다. 이길 수 있는 자리는 검증·도메인 데이터·대형시설이다.
+
+**따라잡기 경쟁은 이미 졌다. 사전학습 자본으로 겨루는 게임에 우리 자리는 없다. 그러나 이 지도에는 우리가 이길 수 있는 칸이 분명히 표시되어 있다.**
+
+첫째, 검증 인프라를 산다. 모델 도입 예산의 일정 비율을 독립 재현과 감사에 고정 배정하는 규칙을 만들어야 한다. 근거는 이 발표 안에 있다. 자율 실험실의 신물질 43종 주장이 재분석에서 무너졌고, 에이전트 실행 25,000건 분석에서 증거 무시 비율이 68%였다. 재현을 못 하는 조직은 성공과 착각을 구분할 수 없다.
+
+둘째, 도메인 데이터가 해자다. 이 발표에서 반복된 패턴은 하나다. 모델은 공개되어 있고 성능 격차는 데이터에서 온다. 섭동 스크린 데이터, 사내 밀도범함수이론 계산 이력, 과거 CFD 해석 케이스, 임상 노트가 그것이다. 백본은 사 오고 데이터로 이기는 전략이 유일하게 지속 가능하다. 그리고 이 데이터는 지금 정리하지 않으면 5년 뒤에도 없다.
+
+셋째, 대형시설이 가장 빠른 적용처다. 방사광·중성자·핵융합 같은 국가 시설은 절차가 문서화되어 있고 반복적이며 만성적으로 인력이 부족하다. 에이전트가 장비를 운영하는 사례는 2025년부터 실제로 돌고 있고, 국내에서는 즉시 실행 가능하다. 단 바이오보안·안전 평가를 같은 과제 안에 넣어야 한다.
+
+넷째, 한국어와 한국 도메인 벤치마크의 부재를 메운다. 과학 멀티모달 평가와 임상 신뢰성 평가 모두 한국어 자료가 없다. 이는 연구 공백이 아니라 도입 심사 근거의 공백이다. 벤치마크를 만드는 일은 규모 투자 없이 가능하고, 만들어 두면 이후 모든 도입 결정의 기준이 된다.
+
+다섯째, 정책 문서는 지금 쓸 수 있다. 심사 보조는 허용하고 판정은 금지한다, AI 사용 사실을 기록한다, 투고 전 인용 검증을 의무화한다. 이 세 조항의 근거는 각각 동료심사·표절·인용 환각 칸에 이미 있다. 정책을 미루는 이유가 근거 부족이라면, 그 이유는 더 이상 성립하지 않는다.
+
+**관전 포인트 (다음 12개월)**
+
+- 자율 에이전트의 습식 검증 성공률이 공개 벤치마크에서 재현되는가
+- 형식 검증기가 수학 밖(재료·코드·회로)으로 얼마나 확장되는가
+- AI 수치예보의 극단 이벤트 외삽에 대한 독립 검증 결과
+- AI 생성 논문·리뷰에 대한 학회·출판사 표준의 성립 여부
+
+> [!tip] 정리
+> 이 발표의 근거는 전부 코퍼스 안에 있고, 각 슬라이드의 레퍼런스에서 논문 리뷰 원문으로 바로 내려갈 수 있다. 다음 회의에서 필요한 것은 자료가 아니라 결정이다.
+
+---
+
+## 부록 · 전체 레퍼런스 257편
+
+- [(Sparse) Attention to the Details: Preserving Spectral Fidelity in ML-based Weather Forecasting Models](../../docs/papers/10472_Sparse_Attention_to_the_Details_Preserving_Spectral_Fidelity/index.html) — Maksim Zhdanov 외, 2026
+- [A Controlled Study of Fairness Interventions for Temporal Graph Transformers on ICU Mortality Prediction](../../docs/papers/9144_A_Controlled_Study_of_Fairness_Interventions_for_Temporal_Gr/index.html) — Jet Locati 외, 2026
+- [A Generative Neuro-Symbolic AI for Protein Sequence Design](../../docs/papers/2990_A_Generative_Neuro-Symbolic_AI_for_Protein_Sequence_Design/index.html) — 2026.04
+- [A Multi-Agent LLM Framework with Hierarchical Citation Graph for Automated Survey Generation](../../docs/papers/9154_A_Multi-Agent_LLM_Framework_with_Hierarchical_Citation_Graph/index.html) — Nguyen Anh Minh 외, 2026
+- [A recipe for scalable attention-based ML potentials: unlocking long-range accuracy with all-to-all node attention](../../docs/papers/9159_A_recipe_for_scalable_attention-based_ML_potentials_unlockin/index.html) — Eric Qu 외, 2026
+- [ABC-Bench: An Agentic Bio-Capabilities Benchmark for Biosecurity](../../docs/papers/9166_ABC-Bench_An_Agentic_Bio-Capabilities_Benchmark_for_Biosecur/index.html) — Andrew Bo Liu 외, 2026
+- [AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents](../../docs/papers/090_AIRS-Bench_a_Suite_of_Tasks_for_Frontier_AI_Research_Science/index.html) — Alisia Lupidi 외, 2026
+- [APE-Bench: Evaluating Automated Proof Engineering for Formal Math Libraries](../../docs/papers/9251_APE-Bench_Evaluating_Automated_Proof_Engineering_for_Formal/index.html) — Huajian Xin 외, 2026
+- [ASyMOB: Algebraic Symbolic Mathematical Operations Benchmark](../../docs/papers/9263_ASyMOB_Algebraic_Symbolic_Mathematical_Operations_Benchmark/index.html) — Michael Shalyt 외, 2026
+- [AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery](../../docs/papers/3008_AetherCell_A_generative_engine_for_virtual_cell_perturbation/index.html) — 2026.03
+- [Agent Systems for Academic Research Automation](../../docs/papers/9203_Agent_Systems_for_Academic_Research_Automation/index.html) — Pierfrancesco Beneventano 외, 2026
+- [Agentic LLM Reasoning in a Self-Driving Laboratory for Air-Sensitive Lithium Halide Spinel Conductors](../../docs/papers/3011_Agentic_LLM_Reasoning_in_a_Self-Driving_Laboratory_for_Air-S/index.html) — Yuxing Fei 외, 2026.04
+- [Agentic Separation Logic Specification Synthesis](../../docs/papers/9211_Agentic_Separation_Logic_Specification_Synthesis/index.html) — Tarun Suresh 외, 2026
+- [Agentic workflow enables the recovery of critical materials from complex feedstocks via selective precipitation](../../docs/papers/3012_Agentic_workflow_enables_the_recovery_of_critical_materials/index.html) — 2026.03
+- [AlphaFold Database expands to proteome-scale quaternary structures](../../docs/papers/3019_AlphaFold_Database_expands_to_proteome-scale_quaternary_stru/index.html) — 2026.03
+- [AlphaInterp: Probing AlphaFold 3's Internal Representations Reveals Evolutionary Determinants of Predicted Structure and Confidence](../../docs/papers/3020_AlphaInterp_Probing_AlphaFold_3s_Internal_Representations_Re/index.html) — 2026.04
+- [An AI system to help scientists write expert-level empirical software](../../docs/papers/3288_An_AI_system_to_help_scientists_write_expert-level_empirical/index.html) — Eser Aygün 외, 2026.05
+- [AtomWorld: A Benchmark for Evaluating Spatial Reasoning in Large Language Models on Material Structures](../../docs/papers/9267_AtomWorld_A_Benchmark_for_Evaluating_Spatial_Reasoning_in_La/index.html) — Taoyuze Lv 외, 2026
+- [AutoCircuit: Agentic Pareto Front Exploration for Analog Circuit Designs](../../docs/papers/9274_AutoCircuit_Agentic_Pareto_Front_Exploration_for_Analog_Circ/index.html) — Doyun Kim 외, 2026
+- [AutoMS: Multi-Agent Evolutionary Search for Cross-Physics Inverse Microstructure Design](../../docs/papers/9281_AutoMS_Multi-Agent_Evolutionary_Search_for_Cross-Physics_Inv/index.html) — Zhenyuan Zhao 외, 2026
+- [AutoNumerics-Zero: Automated Discovery of State-of-the-Art Mathematical Functions](../../docs/papers/9282_AutoNumerics-Zero_Automated_Discovery_of_State-of-the-Art_Ma/index.html) — Esteban Real 외, 2026
+- [AutoNumerics: An Autonomous, PDE-Agnostic Multi-Agent Pipeline for Scientific Computing](../../docs/papers/142_AutoNumerics_An_Autonomous_PDE-Agnostic_Multi-Agent_Pipeline/index.html) — Jianda Du 외, 2026.02
+- [BIOARC: Discovering Optimal Neural Architectures for Biological Foundation Models](../../docs/papers/9331_BIOARC_Discovering_Optimal_Neural_Architectures_for_Biologic/index.html) — Yi Fang 외, 2026
+- [Benchmarking Physics-Informed Time-Series Models for Operational Global Station Weather Forecasting](../../docs/papers/9302_Benchmarking_Physics-Informed_Time-Series_Models_for_Operati/index.html) — Tao Han 외, 2026
+- [Benchmarking the Scientific Mind: A Pathology-Derived Biomedical VQA Benchmark for Complex Scientific Reasoning](../../docs/papers/9303_Benchmarking_the_Scientific_Mind_A_Pathology-Derived_Biomedi/index.html) — Ziyu Zhao 외, 2026
+- [Bridging decision-making engines and workflow design in self-driving laboratories: A NIMO-IvoryOS integration study](../../docs/papers/3048_Bridging_decision-making_engines_and_workflow_design_in_self/index.html) — 2026.03
+- [BuildArena: A Physics-Aligned Interactive Benchmark of LLMs for Engineering Construction](../../docs/papers/9361_BuildArena_A_Physics-Aligned_Interactive_Benchmark_of_LLMs_f/index.html) — Tian Xia 외, 2026
+- [CADEngBench: Can AI Systems Co-Author Engineering Designs? A Hierarchical Benchmark for Physics-Verified Parametric CAD Generation](../../docs/papers/9362_CADEngBench_Can_AI_Systems_Co-Author_Engineering_Designs_A_H/index.html) — Harmanjot Singh 외, 2026
+- [CAGenMol: Condition-Aware Diffusion Language Model for Goal-Directed Molecular Generation](../../docs/papers/3050_CAGenMol_Condition-Aware_Diffusion_Language_Model_for_Goal-D/index.html) — 2026.04
+- [CELEUS: Certifiable and Efficient LLM Evaluation via E-Processes](../../docs/papers/9386_CELEUS_Certifiable_and_Efficient_LLM_Evaluation_via_E-Proces/index.html) — Zhijian Zhou 외, 2026
+- [CLAMP: A Mechanistic Probe of Regulatory Structure in Foundation Models under Single-Cell Perturbations](../../docs/papers/9404_CLAMP_A_Mechanistic_Probe_of_Regulatory_Structure_in_Foundat/index.html) — Amaya Gallagher-Syed 외, 2026
+- [CLINIC : Evaluating Multilingual Trustworthiness in Language Models for Healthcare](../../docs/papers/9407_CLINIC__Evaluating_Multilingual_Trustworthiness_in_Language/index.html) — Akash Ghosh 외, 2026
+- [CRYSTAL: Coordinated Multi-Objective Reinforcement Learning for Crystal Generation](../../docs/papers/9465_CRYSTAL_Coordinated_Multi-Objective_Reinforcement_Learning_f/index.html) — Zhan'ao yao 외, 2026
+- [CatFlow: Co-generation of Slab-Adsorbate Systems via Flow Matching](../../docs/papers/9378_CatFlow_Co-generation_of_Slab-Adsorbate_Systems_via_Flow_Mat/index.html) — Minkyu Kim 외, 2026
+- [CiteCheck: Retrieval-Grounded Detection of LLM Citation Hallucinations in Scientific Text](../../docs/papers/3378_CiteCheck_Retrieval-Grounded_Detection_of_LLM_Citation_Hallu/index.html) — Khashayar Khajavi 외, 2026.05
+- [ClaimGarden: Update-Aware Claim-State Control for AI Scientist Workflows](../../docs/papers/9403_ClaimGarden_Update-Aware_Claim-State_Control_for_AI_Scientis/index.html) — Hafumi Nishi, 2026
+- [ClimateAR: Multi-Scale Autoregressive Generative Modeling for Climate Forecasting](../../docs/papers/9406_ClimateAR_Multi-Scale_Autoregressive_Generative_Modeling_for/index.html) — Yue Yu 외, 2026
+- [Closing Africa's Early Warning Gap: AI Weather Forecasting for Disaster Prevention](../../docs/papers/3058_Closing_Africas_Early_Warning_Gap_AI_Weather_Forecasting_for/index.html) — 2026.02
+- [DAISI: Data Assimilation with Inverse Sampling using Stochastic Interpolants](../../docs/papers/9472_DAISI_Data_Assimilation_with_Inverse_Sampling_using_Stochast/index.html) — Martin Andrae 외, 2026
+- [DISSOLVR: An Interpretable and Fast Framework for Aqueous and Organic Solubility Prediction](../../docs/papers/9525_DISSOLVR_An_Interpretable_and_Fast_Framework_for_Aqueous_and/index.html) — Vansh Ramani 외, 2026
+- [DafnyProver: Agentic Verified Code Generation in Dafny](../../docs/papers/9471_DafnyProver_Agentic_Verified_Code_Generation_in_Dafny/index.html) — Benjamin Breen 외, 2026
+- [Data integrity in materials science in the era of AI: balancing accelerated discovery with responsible science and innovation](../../docs/papers/252_Data_integrity_in_materials_science_in_the_era_of_AI_balanci/index.html) — Nik Reeves-McLaren 외, 2026
+- [DeltaEvolve: Accelerating Scientific Discovery through Momentum-Driven Evolution](../../docs/papers/9499_DeltaEvolve_Accelerating_Scientific_Discovery_through_Moment/index.html) — Jiachen Jiang 외, 2026
+- [DiffSyn: a generative diffusion approach to materials synthesis planning](../../docs/papers/3077_DiffSyn_a_generative_diffusion_approach_to_materials_synthes/index.html) — Elton Pan 외, 2026.02
+- [Distinguishing Imitation Error from Intrinsic Motion Learning Difficulty](../../docs/papers/9528_Distinguishing_Imitation_Error_from_Intrinsic_Motion_Learnin/index.html) — Zhaorui Meng 외, 2026
+- [Do Larger Models Really Win in Drug Discovery? A Benchmark Assessment of Model Scaling in AI-Driven Molecular Property and Activity Prediction](../../docs/papers/3078_Do_Larger_Models_Really_Win_in_Drug_Discovery_A_Benchmark_As/index.html) — Jinjiang Guo, 2026.04
+- [ECG-R1: Protocol-Guided and Modality-Agnostic MLLM for Reliable ECG Interpretation](../../docs/papers/9559_ECG-R1_Protocol-Guided_and_Modality-Agnostic_MLLM_for_Reliab/index.html) — Jiarui Jin 외, 2026
+- [EEG-FM-Bench: A Comprehensive Benchmark for the Systematic Evaluation and Diagnostic Analyses of EEG Foundation Models](../../docs/papers/9563_EEG-FM-Bench_A_Comprehensive_Benchmark_for_the_Systematic_Ev/index.html) — Wei Xiong 외, 2026
+- [EO-Agents: A Three-Agent LLM Pipeline for Earth Observation Hypothesis Generation](../../docs/papers/9588_EO-Agents_A_Three-Agent_LLM_Pipeline_for_Earth_Observation_H/index.html) — Mahyar Ghazanfari 외, 2026
+- [EduMirror: Modeling Educational Social Dynamics with Value-driven Multi-agent Simulation](../../docs/papers/9561_EduMirror_Modeling_Educational_Social_Dynamics_with_Value-dr/index.html) — Jingzhe Lin 외, 2026
+- [Embodied Science: Closing the Discovery Loop with Agentic Embodied AI](../../docs/papers/310_Embodied_Science_Closing_the_Discovery_Loop_with_Agentic_Emb/index.html) — Xiang Zhuang 외, 2026.03
+- [EqGINO: Equivariant Geometry-Informed Fourier Neural Operators for 3D PDEs](../../docs/papers/9592_EqGINO_Equivariant_Geometry-Informed_Fourier_Neural_Operator/index.html) — Sungwon Kim 외, 2026
+- [Extending the range of graph neural networks with global encodings](../../docs/papers/3095_Extending_the_range_of_graph_neural_networks_with_global_enc/index.html) — Alessandro Caruso 외, 2026.02
+- [FLIP2: Expanding Protein Fitness Landscape Benchmarks for Real-World Machine Learning Applications](../../docs/papers/3104_FLIP2_Expanding_Protein_Fitness_Landscape_Benchmarks_for_Rea/index.html) — 2026.02
+- [FermiLink: A Unified Agent Framework for Multidomain Autonomous Scientific Simulations](../../docs/papers/3098_FermiLink_A_Unified_Agent_Framework_for_Multidomain_Autonomo/index.html) — 2026.04
+- [FlashSchNet: Fast and Accurate Coarse-Grained Neural Network Molecular Dynamics](../../docs/papers/3102_FlashSchNet_Fast_and_Accurate_Coarse-Grained_Neural_Network/index.html) — 2026.02
+- [GFFMERGE: Efficient Merging of Graph Neural Force Fields and Beyond](../../docs/papers/9746_GFFMERGE_Efficient_Merging_of_Graph_Neural_Force_Fields_and/index.html) — Parth Verma 외, 2026
+- [GRAIL: Gradient-Reweighted Advantages for Reinforcement Learning with Verifiable Rewards](../../docs/papers/9755_GRAIL_Gradient-Reweighted_Advantages_for_Reinforcement_Learn/index.html) — Tej Deep Pala 외, 2026
+- [Generative Inversion of Spectroscopic Data for Amorphous Structure Elucidation](../../docs/papers/1099_Generative_Inversion_of_Spectroscopic_Data_for_Amorphous_Str/index.html) — Jiawei Guo 외, 2026
+- [Generative Structure Search for Efficient and Diverse Discovery of Molecular and Crystal Structures](../../docs/papers/3120_Generative_Structure_Search_for_Efficient_and_Diverse_Discov/index.html) — 2026.04
+- [Global Plane Waves from Local Gaussians: Periodic Charge Densities in a Blink](../../docs/papers/9748_Global_Plane_Waves_from_Local_Gaussians_Periodic_Charge_Dens/index.html) — Jonas Elsborg 외, 2026
+- [GoodPoint: Learning Constructive Scientific Paper Feedback from Author Responses](../../docs/papers/9751_GoodPoint_Learning_Constructive_Scientific_Paper_Feedback_fr/index.html) — Jimin Mun 외, 2026
+- [HiPhO: How Far Are (M)LLMs from Humans in the Latest High School Physics Olympiad Benchmark?](../../docs/papers/9783_HiPhO_How_Far_Are_MLLMs_from_Humans_in_the_Latest_High_Schoo/index.html) — Fangchen Yu 외, 2026
+- [Hierarchical Discovery of Adiabatic Hamiltonian Paths and RL Schedules for Quantum Linear System Solvers](../../docs/papers/9780_Hierarchical_Discovery_of_Adiabatic_Hamiltonian_Paths_and_RL/index.html) — Wang chenglong, 2026
+- [Holm-Bonferroni Verification of Math Solvers: A Hessian-Mismatch Diagnostic for Benchmark-Level Failure Modes](../../docs/papers/9787_Holm-Bonferroni_Verification_of_Math_Solvers_A_Hessian-Misma/index.html) — Jinze Yu 외, 2026
+- [Improving RAG for LLM-based Mental Health Risk Detection through Contrastive Embeddings](../../docs/papers/9816_Improving_RAG_for_LLM-based_Mental_Health_Risk_Detection_thr/index.html) — ZHIHAO YANG 외, 2026
+- [JAXBench: Benchmarking Autonomous TPU Kernel Optimization](../../docs/papers/9855_JAXBench_Benchmarking_Autonomous_TPU_Kernel_Optimization/index.html) — Arya Tschand 외, 2026
+- [LASER: Learning Active Sensing for Continuum Field Reconstruction](../../docs/papers/9878_LASER_Learning_Active_Sensing_for_Continuum_Field_Reconstruc/index.html) — Huayu Deng 외, 2026
+- [Latent Generative Solvers for Generalizable Long-Term Physics Simulation](../../docs/papers/3149_Latent_Generative_Solvers_for_Generalizable_Long-Term_Physic/index.html) — 2026.02
+- [Learning Junta Distributions, Quantum Junta States, and QAC^0 Circuits](../../docs/papers/9913_Learning_Junta_Distributions_Quantum_Junta_States_and_QAC0_C/index.html) — Jinge Bao 외, 2026
+- [Learning Verifiable Mathematical Laws for Scientific Agents via Graph-Hamiltonian World Models](../../docs/papers/9931_Learning_Verifiable_Mathematical_Laws_for_Scientific_Agents/index.html) — Hrishi Sunder, 2026
+- [LithoDreamer: A Physics-Informed World Model for Multi-Stage Computational Lithography](../../docs/papers/9950_LithoDreamer_A_Physics-Informed_World_Model_for_Multi-Stage/index.html) — Yuqi Jiang 외, 2026
+- [LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching](../../docs/papers/9952_LithoGRPO_Fast_Inverse_Lithography_via_GRPO_Reinforced_Flow/index.html) — Yao Lai 외, 2026
+- [MEDA: Medical-Oriented Activation Editing for Hallucination Mitigation in Medical Large Vision-Language Model](../../docs/papers/10006_MEDA_Medical-Oriented_Activation_Editing_for_Hallucination_M/index.html) — Tianbo Wang 외, 2026
+- [MEG-XL: Data-Efficient Brain-to-Text via Long-Context Pre-Training](../../docs/papers/10019_MEG-XL_Data-Efficient_Brain-to-Text_via_Long-Context_Pre-Tra/index.html) — Dulhan Jayalath 외, 2026
+- [MIRAI: Prediction and Generation of High-Impact Academic Research](../../docs/papers/3388_MIRAI_Prediction_and_Generation_of_High-Impact_Academic_Rese/index.html) — Alex Li 외, 2026.06
+- [MOES-Pred: Molecular Structural Representation Learning by Adaptive Energy-Sentinel Vibration for Generalized Property Prediction](../../docs/papers/10051_MOES-Pred_Molecular_Structural_Representation_Learning_by__A/index.html) — Zhiran Hou 외, 2026
+- [MOOSE-Star: Unlocking Tractable Training for Scientific Discovery by Breaking the Complexity Barrier](../../docs/papers/10058_MOOSE-Star_Unlocking_Tractable_Training_for_Scientific_Disco/index.html) — Zonglin Yang 외, 2026
+- [MP2D: Constrained Monte Carlo Tree-Guided Diffusion for Multi-Objective Protein Sequence Design](../../docs/papers/3178_MP2D_Constrained_Monte_Carlo_Tree-Guided_Diffusion_for_Multi/index.html) — Zitai Kong 외, 2026.05
+- [Mechanistic Synergy in Multi-Modal VEP: DNA Context Complements PLMs under Biophysical Constraints](../../docs/papers/10002_Mechanistic_Synergy_in_Multi-Modal_VEP_DNA_Context_Complemen/index.html) — Yoojin Kim 외, 2026
+- [Mechanistic machine learning enables interpretable and generalizable prediction of prime editing outcomes](../../docs/papers/3163_Mechanistic_machine_learning_enables_interpretable_and_gener/index.html) — 2026.02
+- [MedDocBench: Benchmarking Vision-Language Models for Reliable Structured Extraction from Real-World Clinical Forms](../../docs/papers/10010_MedDocBench_Benchmarking_Vision-Language_Models_for_Reliable/index.html) — Qijia Tian 외, 2026
+- [MedREK: Retrieval-Based Editing for Medical LLMs with Key-Aware Prompts](../../docs/papers/10016_MedREK_Retrieval-Based_Editing_for_Medical_LLMs_with_Key-Awa/index.html) — Shujun Xia 외, 2026
+- [MedSIGHT: Towards Grounded Visual Comprehension in Medical Large Vision-Language Models](../../docs/papers/10018_MedSIGHT_Towards_Grounded_Visual_Comprehension_in_Medical_La/index.html) — Aofei Chang 외, 2026
+- [MedScope: Incentivizing "Think with Videos" for Clinical Reasoning via Coarse-to-Fine Tool Calling](../../docs/papers/10017_MedScope_Incentivizing_Think_with_Videos_for_Clinical_Reason/index.html) — Wenjie Li 외, 2026
+- [MerLean: An Agentic Framework for Autoformalization in Quantum Computation](../../docs/papers/532_MerLean_An_Agentic_Framework_for_Autoformalization_in_Quantu/index.html) — Yuanjie Ren 외, 2026.02
+- [MeshTok: Efficient Multi-Scale Tokenization for Scalable PDE Transformers](../../docs/papers/10026_MeshTok_Efficient_Multi-Scale_Tokenization_for_Scalable_PDE/index.html) — Yanshun Zhao 외, 2026
+- [Mind-Omni: A Unified Multi-Task Framework for Brain-Vision-Language Modeling via Discrete Diffusion](../../docs/papers/10031_Mind-Omni_A_Unified_Multi-Task_Framework_for_Brain-Vision-La/index.html) — Yizhuo Lu 외, 2026
+- [Missingness-Aware Conformal Prediction Under Cross-Hospital Distribution Shift](../../docs/papers/10036_Missingness-Aware_Conformal_Prediction_Under_Cross-Hospital/index.html) — Liang You 외, 2026
+- [MolCrystalFlow: Molecular Crystal Structure Prediction via Flow Matching](../../docs/papers/3173_MolCrystalFlow_Molecular_Crystal_Structure_Prediction_via_Fl/index.html) — 2026.02
+- [MotifCraft: scalable functional protein binder design with AlphaFold2 hallucination](../../docs/papers/10062_MotifCraft_scalable_functional_protein_binder_design_with_Al/index.html) — Océane Follonier 외, 2026
+- [Multi-Objective Protein Design via Memory-Aware Test-Time Scaling in Diffusion Models](../../docs/papers/10068_Multi-Objective_Protein_Design_via_Memory-Aware_Test-Time_Sc/index.html) — Ming Yang 외, 2026
+- [MutAtlas: A PDB-Wide Energy-Guided Atlas of Protein Mutation Effects](../../docs/papers/10079_MutAtlas_A_PDB-Wide_Energy-Guided_Atlas_of_Protein_Mutation/index.html) — Ruihan Guo 외, 2026
+- [NOVA-Test: Auditing LLM-Generated Research Hypotheses with Structural Analogy, Prior-Work, and Falsifiability Tests](../../docs/papers/10114_NOVA-Test_Auditing_LLM-Generated_Research_Hypotheses_with_St/index.html) — David Scott Lewis 외, 2026
+- [NanoFold: A Compute-Efficient Benchmark for Controlled and Autonomous Research on Protein Structure Models](../../docs/papers/10081_NanoFold_A_Compute-Efficient_Benchmark_for_Controlled_and_Au/index.html) — Chris Hayduk 외, 2026
+- [Neural Control: Adjoint Learning Through Equilibrium Constraints](../../docs/papers/10090_Neural_Control_Adjoint_Learning_Through_Equilibrium_Constrai/index.html) — Dezhong Tong 외, 2026
+- [NeuroCLUS: A Foundation Model with Functional Clustering for Intracranial Neural Decoding](../../docs/papers/10102_NeuroCLUS_A_Foundation_Model_with_Functional_Clustering_for/index.html) — Hui Zheng 외, 2026
+- [Neutron and X-ray Diffraction Reveal the Limits of Long-Range Machine Learning Potentials for Medium-Range Order in Silica Glass](../../docs/papers/3190_Neutron_and_X-ray_Diffraction_Reveal_the_Limits_of_Long-Rang/index.html) — 2026.04
+- [Numina-Lean-Agent: An Open and General Agentic Reasoning System for Formal Mathematics](../../docs/papers/10115_Numina-Lean-Agent_An_Open_and_General_Agentic_Reasoning_Syst/index.html) — Junqi Liu 외, 2026
+- [On the Role of Consistency Between Physics and Data in Physics-Informed Neural Networks](../../docs/papers/3195_On_the_Role_of_Consistency_Between_Physics_and_Data_in_Physi/index.html) — 2026.02
+- [Online Safety Monitoring for LLMs](../../docs/papers/10130_Online_Safety_Monitoring_for_LLMs/index.html) — Mona Schirmer 외, 2026
+- [OpenDiscoveryTrace: Process Traces for Evaluating AI Scientist Workflows](../../docs/papers/10134_OpenDiscoveryTrace_Process_Traces_for_Evaluating_AI_Scientis/index.html) — Aayam Bansal 외, 2026
+- [OpenTSLM: Time-Series Language Models for Reasoning over Multivariate Medical Text- and Time-Series Data](../../docs/papers/10136_OpenTSLM_Time-Series_Language_Models_for_Reasoning_over_Mult/index.html) — Patrick Langer 외, 2026
+- [Optimal Quantum Speedups for Repeatedly Nested Expectation Estimation](../../docs/papers/10139_Optimal_Quantum_Speedups_for_Repeatedly_Nested_Expectation_E/index.html) — Yihang Sun 외, 2026
+- [OrgFlow: Generative Modeling of Organic Crystal Structures from Molecular Graphs](../../docs/papers/3197_OrgFlow_Generative_Modeling_of_Organic_Crystal_Structures_fr/index.html) — 2026.02
+- [Origo: Interpretable Multi-physics PDE Foundation Model through Neural Operator Splitting](../../docs/papers/10147_Origo_Interpretable_Multi-physics_PDE_Foundation_Model_throu/index.html) — Li Sun 외, 2026
+- [P1-VL: Bridging Visual Perception and Scientific Reasoning in Physics Olympiads](../../docs/papers/10150_P1-VL_Bridging_Visual_Perception_and_Scientific_Reasoning_in/index.html) — Yun Luo 외, 2026
+- [PDFBench: A Benchmark for De Novo Protein Design from Function](../../docs/papers/10165_PDFBench_A_Benchmark_for_De_Novo_Protein_Design_from_Functio/index.html) — Jiahao Kuang 외, 2026
+- [PGD-NO: A Neural Operator with Precomputed Geometry Decomposition for 3D Million-Scale Physics Simulations](../../docs/papers/10176_PGD-NO_A_Neural_Operator_with_Precomputed_Geometry_Decomposi/index.html) — Weiheng Zhong 외, 2026
+- [PINNfluence: Interpreting PINNs through Influence Functions](../../docs/papers/10197_PINNfluence_Interpreting_PINNs_through_Influence_Functions/index.html) — Aleksander Krasowski 외, 2026
+- [PLaID++: A Preference Aligned Language Model for Targeted Inorganic Materials Design](../../docs/papers/10199_PLaID_A_Preference_Aligned_Language_Model_for_Targeted_Inorg/index.html) — Andy Xu 외, 2026
+- [PODiff: Latent Diffusion in Proper Orthogonal Decomposition Space for Scientific Super-Resolution](../../docs/papers/10208_PODiff_Latent_Diffusion_in_Proper_Orthogonal_Decomposition_S/index.html) — Onkar Jadhav 외, 2026
+- [PRiMeFlow: capturing complex expression heterogeneity in perturbation response modelling](../../docs/papers/10237_PRiMeFlow_capturing_complex_expression_heterogeneity_in_pert/index.html) — Zichao Yan 외, 2026
+- [PathwayLLM: Explainable Clinical Trajectory Modeling with Structured Pathways for Sepsis Prediction](../../docs/papers/10162_PathwayLLM_Explainable_Clinical_Trajectory_Modeling_with_Str/index.html) — Zhengqiu Yu 외, 2026
+- [PhenoBrain: Phenotype-Conditioned Long-Range Communication for Multi-Modal Brain Network Analysis](../../docs/papers/10178_PhenoBrain_Phenotype-Conditioned_Long-Range_Communication_fo/index.html) — Lingyuan Meng 외, 2026
+- [PhyNiKCE: A Neurosymbolic Agentic Framework for Autonomous Computational Fluid Dynamics](../../docs/papers/3206_PhyNiKCE_A_Neurosymbolic_Agentic_Framework_for_Autonomous_Co/index.html) — 2026.02
+- [PhysMent: An Interactive Approach For LLM Reasoning In Physics Problems](../../docs/papers/10194_PhysMent_An_Interactive_Approach_For_LLM_Reasoning_In_Physic/index.html) — Joseph Chan 외, 2026
+- [Pixel2Gene enables histology-guided reconstruction and prediction of spatial gene expression](../../docs/papers/3209_Pixel2Gene_enables_histology-guided_reconstruction_and_predi/index.html) — 2026.02
+- [Position: Preventing the Collapse of Peer Review Requires Verification-First AI](../../docs/papers/10216_Position_Preventing_the_Collapse_of_Peer_Review_Requires_Ver/index.html) — Lei You 외, 2026
+- [Probing Clinical Concepts in an EHR Foundation Model via Sparse Autoencoders](../../docs/papers/10246_Probing_Clinical_Concepts_in_an_EHR_Foundation_Model_via_Spa/index.html) — Shashank Yadav 외, 2026
+- [Probing, Fusion, and Trustworthiness: A Systematic Evaluation of Foundation Model Representations for Multimodal Cancer Analysis](../../docs/papers/10249_Probing_Fusion_and_Trustworthiness_A_Systematic_Evaluation_o/index.html) — Jingyu Hu 외, 2026
+- [ProofGate: A Reproducible Audit of Faithfulness, Alignment, and Vacuity in State-of-the-Art Lean Theorem Provers](../../docs/papers/10257_ProofGate_A_Reproducible_Audit_of_Faithfulness_Alignment_and/index.html) — Edison Yang 외, 2026
+- [ProtDBench: A Unified Benchmark of Protein Binder Design and Evaluation](../../docs/papers/10261_ProtDBench_A_Unified_Benchmark_of_Protein_Binder_Design_and/index.html) — Cong Liu 외, 2026
+- [Protect*: Steerable Retrosynthesis through Neuro-Symbolic State Encoding](../../docs/papers/3219_Protect_Steerable_Retrosynthesis_through_Neuro-Symbolic_Stat/index.html) — 2026.02
+- [ProteomeLM: A Proteome-Scale Language Model Enables Accurate and Rapid Prediction of Protein-Protein Interactions and Gene Essentiality Across Taxa](../../docs/papers/10267_ProteomeLM_A_Proteome-Scale_Language_Model_Enables_Accurate/index.html) — Cyril Malbranke 외, 2026
+- [Proving Your Way to Cooperation: Formalizing Proof-Based Open Source Game Theory in Lean](../../docs/papers/10273_Proving_Your_Way_to_Cooperation_Formalizing_Proof-Based_Open/index.html) — Colomban Duclaux 외, 2026
+- [Pseudo-Label Validation for Unsupervised Domain Adaptation](../../docs/papers/10275_Pseudo-Label_Validation_for_Unsupervised_Domain_Adaptation/index.html) — Nathan Weill 외, 2026
+- [PyHealth 2.0: A Comprehensive Open-Source Toolkit for Accessible and Reproducible Clinical Deep Learning](../../docs/papers/10278_PyHealth_20_A_Comprehensive_Open-Source_Toolkit_for_Accessib/index.html) — John Wu 외, 2026
+- [Quantifying the Generalization Gap in Seizure Detection: A Large-Scale Empirical Benchmark via the SzCORE Challenge](../../docs/papers/10285_Quantifying_the_Generalization_Gap_in_Seizure_Detection_A_La/index.html) — Jonathan Dan 외, 2026
+- [Quantum latent distributions in deep generative models](../../docs/papers/10286_Quantum_latent_distributions_in_deep_generative_models/index.html) — Omar Bacarreza 외, 2026
+- [RAPNet: Accelerating Algebraic Multigrid with Learned Sparse Corrections](../../docs/papers/10294_RAPNet_Accelerating_Algebraic_Multigrid_with_Learned_Sparse/index.html) — Yali Fink 외, 2026
+- [ReViT: Rotational-equivariant Vision Transformers for Neural PDE Solvers](../../docs/papers/10344_ReViT_Rotational-equivariant_Vision_Transformers_for_Neural/index.html) — Hao Wei 외, 2026
+- [Residual-Guided Multi-Resolution Refinement of Foundation Models: A Case Study in Drought Forecasting](../../docs/papers/10325_Residual-Guided_Multi-Resolution_Refinement_of_Foundation_Mo/index.html) — Wentao Gao 외, 2026
+- [ReviewArena: A Large-Scale Cross-Conference Dataset and Benchmark for LLM Peer Review](../../docs/papers/10341_ReviewArena_A_Large-Scale_Cross-Conference_Dataset_and_Bench/index.html) — Samarth P 외, 2026
+- [S1-MMAlign: A Large-Scale, Multi-Disciplinary Dataset for Scientific Figure-Text Understanding](../../docs/papers/691_S1-MMAlign_A_Large-Scale_Multi-Disciplinary_Dataset_for_Scie/index.html) — He Wang 외, 2026.01
+- [SCOPE: Symbolic Constraint-Guided Active Perception](../../docs/papers/10396_SCOPE_Symbolic_Constraint-Guided_Active_Perception/index.html) — Wentao Cao 외, 2026
+- [SEAD: Competence-Aware On-Policy Distillation via Entropy-Guided Supervision](../../docs/papers/10399_SEAD_Competence-Aware_On-Policy_Distillation_via_Entropy-Gui/index.html) — Chia-Hsuan Lee 외, 2026
+- [SEVerA: Verified Synthesis of Self-Evolving Agents](../../docs/papers/750_SEVerA_Verified_Synthesis_of_Self-Evolving_Agents/index.html) — Debangshu Banerjee 외, 2026.03
+- [SIGMA-PPG: Statistical-prior Informed Generative Masking Architecture for PPG Foundation Model](../../docs/papers/10440_SIGMA-PPG_Statistical-prior_Informed__Generative_Masking_Arc/index.html) — Zongheng Guo 외, 2026
+- [SR-Scientist: Scientific Equation Discovery With Agentic AI](../../docs/papers/10488_SR-Scientist_Scientific_Equation_Discovery_With_Agentic_AI/index.html) — Shijie Xia 외, 2026
+- [SciContrib-Bench: Mapping the Autonomy Landscape of AI Scientists Through Stage-Dependent Detectability](../../docs/papers/10386_SciContrib-Bench_Mapping_the_Autonomy_Landscape_of_AI_Scient/index.html) — Raghav Agarwal 외, 2026
+- [SciPaths: Forecasting Pathways to Scientific Discovery](../../docs/papers/10392_SciPaths_Forecasting_Pathways_to_Scientific_Discovery/index.html) — Eric Chamoun 외, 2026
+- [Sibyl: Temporal Backtesting for Literature-Based Scientific Discovery with Large Language Model Agents](../../docs/papers/10438_Sibyl_Temporal_Backtesting_for_Literature-Based_Scientific_D/index.html) — Blagoy Rangelov, 2026
+- [Skipping the Zeros in Diffusion Models for Sparse Data Generation](../../docs/papers/10452_Skipping_the_Zeros_in_Diffusion_Models_for_Sparse_Data_Gener/index.html) — Phil Ostheimer 외, 2026
+- [SleepMaMi: A Universal Sleep Foundation Model for Integrating Macro- and Micro-structures](../../docs/papers/10455_SleepMaMi_A_Universal_Sleep_Foundation_Model_for_Integrating/index.html) — Keondo Park 외, 2026
+- [Stochastic Dimension-Free Zeroth-Order Estimator for High-Dimensional and High-Order PINNs](../../docs/papers/3246_Stochastic_Dimension-Free_Zeroth-Order_Estimator_for_High-Di/index.html) — 2026.03
+- [SymSpectra: Symmetric Information Bottleneck Framework for Molecular Structure Recognition under Imbalanced Settings](../../docs/papers/10524_SymSpectra_Symmetric_Information_Bottleneck_Framework_for_Mo/index.html) — Xiaohan Qin 외, 2026
+- [Symmetry-Constrained Gaussian Processes for Sample-Efficient Molecular Property Prediction](../../docs/papers/10523_Symmetry-Constrained_Gaussian_Processes_for_Sample-Efficient/index.html) — Kaustubh S. Bukkapatnam 외, 2026
+- [SynerMedGen: Synergizing Medical Multimodal Understanding with Generation via Task Alignment](../../docs/papers/10526_SynerMedGen_Synergizing_Medical_Multimodal_Understanding_wit/index.html) — Weiren zhao 외, 2026
+- [Taming the Loss Landscape of PINNs with Noisy Feynman–Kac Supervision: Operator Preconditioning and Non-Asymptotic Error Bounds](../../docs/papers/10539_Taming_the_Loss_Landscape_of_PINNs_with_Noisy_FeynmanKac_Sup/index.html) — Nathanael Tepakbong 외, 2026
+- [TerraBind: Fast and Accurate Binding Affinity Prediction through Coarse Structural Representations](../../docs/papers/10551_TerraBind_Fast_and_Accurate_Binding_Affinity_Prediction_thro/index.html) — Matteo Rossi 외, 2026
+- [The IAEA Fusion Data Lake Project — Accelerating AI and Big Data Applications through Open Science and FAIR Data](../../docs/papers/3257_The_IAEA_Fusion_Data_Lake_Project__Accelerating_AI_and_Big_D/index.html) — Daljeet Singh Gahle 외, 2026.04
+- [Thermodynamic Descriptors from Molecular Dynamics as Machine Learning Features for Extrapolable Property Prediction](../../docs/papers/3259_Thermodynamic_Descriptors_from_Molecular_Dynamics_as_Machine/index.html) — 2026.03
+- [TimeSpot: Benchmarking Geo-Temporal Understanding in Vision–Language Models in Real-World Settings](../../docs/papers/10589_TimeSpot_Benchmarking_Geo-Temporal_Understanding_in_VisionLa/index.html) — Azmine Toushik Wasi 외, 2026
+- [Topology-Preserving Neural Operator Learning via Hodge Decomposition](../../docs/papers/10600_Topology-Preserving_Neural_Operator_Learning_via_Hodge_Decom/index.html) — Dongzhe Zheng 외, 2026
+- [Towards Error-Free EHRs: Reasoning-Intensive Consistency Verification Between Clinical Notes and Structured Tables in Electronic Health Records](../../docs/papers/10615_Towards_Error-Free_EHRs_Reasoning-Intensive_Consistency_Veri/index.html) — Yeonsu Kwon 외, 2026
+- [Towards a Science of AI Agent Reliability](../../docs/papers/822_Towards_a_Science_of_AI_Agent_Reliability/index.html) — Stephan Rabanser 외, 2026.02
+- [Training a force field for proteins and small molecules from scratch](../../docs/papers/3267_Training_a_force_field_for_proteins_and_small_molecules_from/index.html) — 2026.03
+- [Transformed Latent Variable Multi-Output Gaussian Processes](../../docs/papers/10629_Transformed_Latent_Variable_Multi-Output_Gaussian_Processes/index.html) — Xiaoyu Jiang 외, 2026
+- [TurboAgent: An LLM-Driven Autonomous Multi-Agent Framework for Turbomachinery Aerodynamic Design](../../docs/papers/3270_TurboAgent_An_LLM-Driven_Autonomous_Multi-Agent_Framework_fo/index.html) — 2026.04
+- [U-Cast: A Surprisingly Simple and Efficient Frontier Probabilistic AI Weather Forecaster](../../docs/papers/10652_U-Cast_A_Surprisingly_Simple_and_Efficient_Frontier_Probabil/index.html) — Salva Rühling Cachay 외, 2026
+- [UniMedVL: Unifying Medical Multimodal Understanding and Generation through Observation-Knowledge-Analysis](../../docs/papers/10664_UniMedVL_Unifying_Medical_Multimodal_Understanding_and_Gener/index.html) — Junzhi Ning 외, 2026
+- [VT-Bench: A Unified Benchmark for Visual-Tabular Multi-Modal Learning](../../docs/papers/10685_VT-Bench_A_Unified_Benchmark_for_Visual-Tabular_Multi-Modal/index.html) — Ziyi Jia 외, 2026
+- [VeriBench: An End-to-End Formal Verification Benchmark for AI Coding Agents in Lean 4](../../docs/papers/10676_VeriBench_An_End-to-End_Formal_Verification_Benchmark_for_AI/index.html) — Brando Miranda 외, 2026
+- [VeriScale: Adversarial Test-Suite Scaling for Verifiable Code Generation](../../docs/papers/10677_VeriScale_Adversarial_Test-Suite_Scaling_for_Verifiable_Code/index.html) — Yifan Bai 외, 2026
+- [WFR-MFM: One-Step Inference for Dynamic Unbalanced Optimal Transport](../../docs/papers/10695_WFR-MFM_One-Step_Inference_for_Dynamic_Unbalanced_Optimal_Tr/index.html) — Xinyu Wang 외, 2026
+- [Walrus: A Cross-domain Foundation Model for Continuum Dynamics](../../docs/papers/10687_Walrus_A_Cross-domain_Foundation_Model_for_Continuum_Dynamic/index.html) — Michael McCabe 외, 2026
+- [YC-Bench: Benchmarking AI Agents for Long-Term Planning and Consistent Execution](../../docs/papers/3398_YC-Bench_Benchmarking_AI_Agents_for_Long-Term_Planning_and_C/index.html) — Muyu He 외, 2026
+- [climt-paraformer: Stable Emulation of Convective Parameterization using a Temporal Memory-aware Transformer](../../docs/papers/3056_climt-paraformer_Stable_Emulation_of_Convective_Parameteriza/index.html) — 2026.04
+- [miniF2F-Dafny: LLM-Guided Mathematical Theorem Proving via Auto-Active Verification](../../docs/papers/10033_miniF2F-Dafny_LLM-Guided_Mathematical_Theorem_Proving_via_Au/index.html) — Mantas Baksys 외, 2026
+- [A Perspective on Foundation Models in Chemistry](../../docs/papers/015_A_Perspective_on_Foundation_Models_in_Chemistry/index.html) — Junyoung Choi 외, 2025.04 · 인용 39
+- [A Survey on Hypothesis Generation for Scientific Discovery in the Era of Large Language Models](../../docs/papers/031_A_Survey_on_Hypothesis_Generation_for_Scientific_Discovery_i/index.html) — Atilla Kaan Alkan 외, 2025.04 · 인용 2
+- [A retrieval-augmented knowledge mining method with deep thinking LLMs for biomedical research and clinical support](../../docs/papers/018_A_retrieval-augmented_knowledge_mining_method_with_deep_thin/index.html) — Yichun Feng 외, 2025 · 인용 10
+- [AAAR-1.0: Assessing AI's Potential to Assist Research](../../docs/papers/041_Aaar-10_Assessing_ais_potential_to_assist_research/index.html) — Renze Lou et al., 2025
+- [AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones - GitClear](../../docs/papers/894_AI_Copilot_Code_Quality_2025_Data_Suggests_4x_Growth_in_Code/index.html) — Hongjing Shao 외, 2025
+- [AI Scientists Fail Without Strong Implementation Capability](../../docs/papers/081_Ai_scientists_fail_without_strong_implementation_capability/index.html) — Min Zhu 외, 2025
+- [All that glitters is not novel: Plagiarism in ai generated research](../../docs/papers/093_All_that_glitters_is_not_novel_Plagiarism_in_ai_generated_re/index.html) — Tarun Gupta 외, 2025
+- [AlphaGenome: advancing regulatory variant effect prediction with a unified DNA sequence model](../../docs/papers/094_AlphaGenome_advancing_regulatory_variant_effect_prediction_w/index.html) — Žiga Avsec 외, 2025 · 인용 106
+- [Ask, retrieve, summarize: A modular pipeline for scientific literature summarization](../../docs/papers/108_Ask_retrieve_summarize_A_modular_pipeline_for_scientific_lit/index.html) — Pierre Achkar 외, 2025
+- [AstroAgents: A Multi-Agent AI for Hypothesis Generation from Mass Spectrometry Data](../../docs/papers/110_AstroAgents_A_Multi-Agent_AI_for_Hypothesis_Generation_from/index.html) — Daniel Saeedi 외, 2025 · 인용 3
+- [Atomically accurate de novo design of antibodies with RFdiffusion](../../docs/papers/112_Atomically_accurate_de_novo_design_of_antibodies_with_RFdiff/index.html) — Nathaniel R. Bennett 외, 2025.02 · 인용 192
+- [AutoBio: A Simulation and Benchmark for Robotic Automation in Digital Biology Laboratory](../../docs/papers/118_Autobio_A_simulation_and_benchmark_for_robotic_automation_in/index.html) — Zhiqian Lan 외, 2025
+- [Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics](../../docs/papers/137_Autonomous_Agents_for_Scientific_Discovery_Orchestrating_Sci/index.html) — Lianhao Zhou 외, 2025.10
+- [BiasFilter: An inference-time debiasing framework for large language models](../../docs/papers/158_Biasfilter_An_inference-time_debiasing_framework_for_large_l/index.html) — Xiaoqing Cheng 외, 2025
+- [BioProBench: Comprehensive Dataset and Benchmark in Biological Protocol Understanding and Reasoning](../../docs/papers/169_Bioprobench_Comprehensive_dataset_and_benchmark_in_biologica/index.html) — Yuyang Liu 외, 2025
+- [Clinical entity augmented retrieval for clinical information extraction](../../docs/papers/224_Clinical_entity_augmented_retrieval_for_clinical_information/index.html) — Iván López 외, 2025
+- [CodePDE: An Inference Framework for LLM-driven PDE Solver Generation](../../docs/papers/232_CodePDE_An_Inference_Framework_for_LLM-driven_PDE_Solver_Gen/index.html) — Shanda Li 외, 2025
+- [Critique-GRPO: Advancing LLM Reasoning with Natural Language and Numerical Feedback](../../docs/papers/243_Critique-GRPO_Advancing_LLM_Reasoning_with_Natural_Language/index.html) — Xiaoying Zhang 외, 2025
+- [DEFAME: Dynamic Evidence-based Fact-checking with Multimodal Experts](../../docs/papers/267_Defame_Dynamic_evidencebased_fact-checking_with_multimodal_e/index.html) — Tobias Braun 외, 2025
+- [DeepScientist: Advancing Frontier-Pushing Scientific Findings Progressively](../../docs/papers/10727_deepscientist_advancing_frontier-pushing_scientific_fi/index.html) — Yixuan Weng 외, 2025.09
+- [DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning](../../docs/papers/265_DeepSeek-R1_incentivizes_reasoning_in_LLMs_through_reinforce/index.html) — DeepSeek-AI 외, 2025
+- [Democratizing AI scientists using ToolUniverse](../../docs/papers/268_Democratizing_AI_scientists_using_ToolUniverse/index.html) — Shanghua Gao 외, 2025.09
+- [Detecting LLM-written Peer Reviews](../../docs/papers/270_Detecting_llm-written_peer_reviews/index.html) — Vishisht Rao 외, 2025
+- [Earth-Agent: Unlocking the Full Landscape of Earth Observation with Agents](../../docs/papers/298_Earth-Agent_Unlocking_the_Full_Landscape_of_Earth_Observatio/index.html) — Peilin Feng 외, 2025.09
+- [El Agente: An Autonomous Agent for Quantum Chemistry](../../docs/papers/308_El_Agente_An_Autonomous_Agent_for_Quantum_Chemistry/index.html) — Yunheng Zou 외, 2025
+- [Enhancing chart-to-code generation in multimodal large language models via iterative dual preference learning](../../docs/papers/315_Enhancing_chart-to-code_generation_in_multimodal_large_langu/index.html) — Zhihan Zhang 외, 2025
+- [Exploiting LLMs for Automatic Hypothesis Assessment via a Logit-Based Calibrated Prior](../../docs/papers/330_Exploiting_LLMs_for_Automatic_Hypothesis_Assessment_via_a_Lo/index.html) — Yue Gong 외, 2025
+- [Foundation Models for Environmental Science: A Survey of Emerging Frontiers](../../docs/papers/342_Foundation_Models_for_Environmental_Science_A_Survey_of_Emer/index.html) — Runlong Yu 외, 2025.04
+- [Foundation models for materials discovery – current state and future directions](../../docs/papers/343_Foundation_models_for_materials_discovery__current_state_and/index.html) — Edward O. Pyzer-Knapp 외, 2025.03
+- [From large language models to multimodal AI: A scoping review on the potential of generative AI in medicine](../../docs/papers/359_From_large_language_models_to_multimodal_ai_A_scoping_review/index.html) — Lukas Buess 외, 2025
+- [Generalization Bias in Large Language Model Summarization of Scientific Research](../../docs/papers/373_Generalization_Bias_in_Large_Language_Model_Summarization_of/index.html) — Uwe Peters 외, 2025.03
+- [Generative machine learning in adaptive control of dynamic manufacturing processes: A review](../../docs/papers/380_Generative_machine_learning_in_adaptive_control_of_dynamic_m/index.html) — S. Lee 외, 2025
+- [Guided by guardrails: Control barrier functions as safety instructors for robotic learning](../../docs/papers/395_Guided_by_guardrails_Control_barrier_functions_as_safety_ins/index.html) — Maeva Guerrier 외, 2025
+- [Harnessing Large Language Models to Collect and Analyze Metal–Organic Framework Property Data Set](../../docs/papers/3383_Harnessing_Large_Language_Models_to_Collect_and_Analyze_Meta/index.html) — Yeonghun Kang 외, 2025.02
+- [Iterative Distillation for Reward-Guided Fine-Tuning of Diffusion Models in Biomolecular Design](../../docs/papers/446_Iterative_Distillation_for_Reward-Guided_Fine-Tuning_of_Diff/index.html) — Xingyu Su 외, 2025
+- [LLM-SRBench: A New Benchmark for Scientific Equation Discovery with Large Language Models](../../docs/papers/504_Llm-srbench_A_new_benchmark_for_scientific_equation_discover/index.html) — Parshin Shojaee 외, 2025
+- [LLM-based Multi-Agent Copilot for Quantum Sensor](../../docs/papers/501_LLM-based_Multi-Agent_Copilot_for_Quantum_Sensor/index.html) — Rong Sha 외, 2025
+- [LLM4SR: A Survey on Large Language Models for Scientific Research](../../docs/papers/506_LLM4SR_A_Survey_on_Large_Language_Models_for_Scientific_Rese/index.html) — Ziming Luo 외, 2025.01
+- [LLMEval-Med: A Real-world Clinical Benchmark for Medical LLMs with Physician Validation](../../docs/papers/507_Llmeval-med_A_real-world_clinical_benchmark_for_medical_llms/index.html) — Ming Zhang 외, 2025
+- [Lazyreview a dataset for uncovering lazy thinking in nlp peer reviews](../../docs/papers/481_Lazyreview_a_dataset_for_uncovering_lazy_thinking_in_nlp_pee/index.html) — Sukannya Purkayastha 외, 2025
+- [Learning to Discover Regulatory Elements for Gene Expression Prediction](../../docs/papers/483_Learning_to_Discover_Regulatory_Elements_for_Gene_Expression/index.html) — Xingyu Su 외, 2025
+- [MLLM-based discovery of intrinsic coordinates and governing equations from high-dimensional data](../../docs/papers/547_Mllm-based_discovery_of_intrinsic_coordinates_and_governing/index.html) — 2025
+- [MoDeST: A dataset for Multi Domain Scientific Title Generation](../../docs/papers/10765_modest_a_dataset_for_multi_domain_scientific_title_gen/index.html) — Necva Bölücü 외, 2025.05
+- [Mooseagent: A llm based multi-agent framework for automating moose simulation](../../docs/papers/559_Mooseagent_A_llm_based_multi-agent_framework_for_automating/index.html) — Tao Zhang 외, 2025
+- [Multi-agent risks from advanced AI](../../docs/papers/562_Multi-agent_risks_from_advanced_ai/index.html) — Lewis Hammond 외, 2025
+- [NSF-SCIFY: Mining the NSF Awards Database for Scientific Claims](../../docs/papers/579_Nsf-scify_Mining_the_nsf_awards_database_for_scientific_clai/index.html) — D. Rao 외, 2025
+- [OpenFOAMGPT 2.0: end-to-end, trustworthy automation for computational fluid dynamics](../../docs/papers/588_OpenFOAMGPT_20_end-to-end_trustworthy_automation_for_computa/index.html) — Jingsen Feng 외, 2025.04
+- [OpenFOAMGPT: A retrieval-augmented large language model (LLM) agent for OpenFOAM-based computational fluid dynamics](../../docs/papers/589_OpenFOAMGPT_A_retrieval-augmented_large_language_model_LLM_a/index.html) — Sandeep Pandey 외, 2025
+- [Paper2poster: Towards multimodal poster automation from scientific papers](../../docs/papers/599_Paper2poster_Towards_multimodal_poster_automation_from_scien/index.html) — Wei Pang 외, 2025
+- [Patientsim: A Persona-Driven Simulator for Realistic Doctor-Patient Interactions](../../docs/papers/606_Patientsim_A_persona-driven_simulator_for_realistic_doctor-p/index.html) — Daeun Kyung 외, 2025
+- [Position: The AI Conference Peer Review Crisis Demands Author Feedback and Reviewer Rewards](../../docs/papers/628_Position_The_ai_conference_peer_review_crisis_demands_author/index.html) — Jaeho Kim 외, 2025
+- [Psyche: A multi-faceted patient simulation framework for evaluation of psychiatric assessment conversational agents](../../docs/papers/644_Psyche_A_multi-faceted_patient_simulation_framework_for_eval/index.html) — Jingoo Lee 외, 2025
+- [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](../../docs/papers/674_ReTool_Reinforcement_Learning_for_Strategic_Tool_Use_in_LLMs/index.html) — Jiazhan Feng 외, 2025
+- [Remor: Automated peer review generation with llm reasoning and multi-objective reinforcement learning](../../docs/papers/665_Remor_Automated_peer_review_generation_with_llm_reasoning_an/index.html) — Pawin Taechoyotin 외, 2025
+- [Research hypothesis generation over scientific knowledge graphs](../../docs/papers/666_Research_hypothesis_generation_over_scientific_knowledge_gra/index.html) — Agustín Borrego 외, 2025.04
+- [ResearchBench: Benchmarking LLMs in Scientific Discovery via Inspiration-Based Task Decomposition](../../docs/papers/669_Researchbench_Benchmarking_llms_in_scientific_discovery_via/index.html) — Yujie Liu 외, 2025
+- [ReviewAgents: Bridging the Gap Between Human and AI-Generated Paper Reviews](../../docs/papers/676_Reviewagents_Bridging_the_gap_between_human_and_ai-generated/index.html) — Xiaojin Gao 외, 2025
+- [Reward-Guided Iterative Refinement in Diffusion Models at Test-Time with Applications to Protein and DNA Design](../../docs/papers/682_Reward-Guided_Iterative_Refinement_in_Diffusion_Models_at_Te/index.html) — Masatoshi Uehara 외, 2025
+- [Scaling Large Language Models for Next-Generation Single-Cell Analysis](../../docs/papers/696_Scaling_Large_Language_Models_for_Next-Generation_Single-Cel/index.html) — Syed Asad Rizvi 외, 2025.04
+- [ScholarCopilot: Training Large Language Models for Academic Writing with Accurate Citations](../../docs/papers/702_Scholarcopilot_Training_large_language_models_for_academic_w/index.html) — Yubo Wang 외, 2025
+- [SciHorizon: Benchmarking AI-for-Science Readiness from Scientific Data to Large Language Models](../../docs/papers/724_SciHorizon_Benchmarking_AI-for-Science_Readiness_from_Scient/index.html) — Chuan Qin 외, 2025.03
+- [Sciclaimhunt: A large dataset for evidence-based scientific claim verification](../../docs/papers/710_Sciclaimhunt_A_large_dataset_for_evidence-based_scientific_c/index.html) — Sujit Kumar 외, 2025
+- [Scicueval: A comprehensive dataset for evaluating scientific context understanding in large language models](../../docs/papers/713_Scicueval_A_comprehensive_dataset_for_evaluating_scientific/index.html) — Jing Yu 외, 2025
+- [ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery](../../docs/papers/716_ScienceAgentBench_Toward_Rigorous_Assessment_of_Language_Age/index.html) — Ziru Chen 외, 2025.03
+- [Scienceboard: Evaluating multimodal autonomous agents in realistic scientific workflows](../../docs/papers/717_Scienceboard_Evaluating_multimodal_autonomous_agents_in_real/index.html) — Qiushi Sun 외, 2025
+- [Scirgc: Multi-granularity citation recommendation and citation sentence preference alignment](../../docs/papers/1091_Scirgc_Multi-granularity_citation_recommendation_and_citatio/index.html) — Xi Chen 외, 2025
+- [Sciverse: Unveiling the knowledge comprehension and visual reasoning of lmms on multi-modal scientific problems](../../docs/papers/737_Sciverse_Unveiling_the_knowledge_comprehension_and_visual_re/index.html) — Z. J. Guo 외, 2025
+- [Search-R1: Training LLMs to Reason and Leverage Search Engines with Reinforcement Learning](../../docs/papers/740_Search-R1_Training_LLMs_to_Reason_and_Leverage_Search_Engine/index.html) — Bowen Jin 외, 2025
+- [Sparks of science: Hypothesis generation using structured paper data](../../docs/papers/763_Sparks_of_science_Hypothesis_generation_using_structured_pap/index.html) — C. O'Neill 외, 2025
+- [SurveyX: Academic survey automation via large language models](../../docs/papers/781_Surveyx_Academic_survey_automation_via_large_language_models/index.html) — Xun Liang 외, 2025
+- [Surveyforge: On the outline heuristics, memory-driven generation, and multi-dimensional evaluation for automated survey writing](../../docs/papers/780_Surveyforge_On_the_outline_heuristics_memory-driven_generati/index.html) — Xiangchao Yan 외, 2025
+- [The AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search](../../docs/papers/794_The_AI_Scientist-v2_Workshop-Level_Automated_Scientific_Disc/index.html) — Yutaro Yamada 외, 2025.04
+- [The Virtual Lab of AI agents designs new SARS-CoV-2 nanobodies](../../docs/papers/805_The_Virtual_Lab_of_AI_agents_designs_new_SARS-CoV-2_nanobodi/index.html) — Kyle Swanson 외, 2025.07
+- [The hidden dimensions of llm alignment: A multi-dimensional safety analysis](../../docs/papers/800_The_hidden_dimensions_of_llm_alignment_A_multi-dimensional_s/index.html) — Wenbo Pan 외, 2025
+- [Towards a Science of Scaling Agent Systems](../../docs/papers/823_Towards_a_Science_of_Scaling_Agent_Systems/index.html) — Yubin Kim 외, 2025.12
+- [TxAgent: An AI Agent for Therapeutic Reasoning Across a Universe of Tools](../../docs/papers/848_TxAgent_An_AI_Agent_for_Therapeutic_Reasoning_Across_a_Unive/index.html) — Shanghua Gao 외, 2025.03
+- [Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents](../../docs/papers/865_Vending-Bench_A_Benchmark_for_Long-Term_Coherence_of_Autonom/index.html) — Axel Backlund 외, 2025.02
+- [WebAgent-R1: Training Web Agents via End-to-End Multi-Turn Reinforcement Learning](../../docs/papers/871_WebAgent-R1_Training_Web_Agents_via_End-to-End_Multi-Turn_Re/index.html) — Zhepei Wei 외, 2025
+- [WebThinker: Empowering Large Reasoning Models with Deep Research Capability](../../docs/papers/873_WebThinker_Empowering_Large_Reasoning_Models_with_Deep_Resea/index.html) — Xiaoxi Li 외, 2025
+- [When AI Co-Scientists Fail: SPOT—a Benchmark for Automated Verification of Scientific Research](../../docs/papers/881_When_ai_co-scientists_fail_Spot-a_benchmark_for_automated_ve/index.html) — Guijin Son 외, 2025
+- [Zero-shot sim-to-real transfer for reinforcement learning-based visual servoing of soft continuum arms](../../docs/papers/891_Zero-shot_sim-to-real_transfer_for_reinforcement_learning-ba/index.html) — Hsin-Jung Yang 외, 2025
+- [Are we there yet? revealing the risks of utilizing large language models in scholarly peer review](../../docs/papers/104_Are_we_there_yet_revealing_the_risks_of_utilizing_large_lang/index.html) — Rui Ye 외, 2024
+- [Citebart: Learning to generate citations for local citation recommendation](../../docs/papers/219_Citebart_Learning_to_generate_citations_for_local_citation_r/index.html) — Ege Yiğit Çelik 외, 2024
+- [Glimpse: Pragmatically informative multi-document summarization for scholarly reviews](../../docs/papers/385_Glimpse_Pragmatically_informative_multi-document_summarizati/index.html) — Maxime Darrin 외, 2024
+- [Hierarchical attention graph for scientific document summarization in global and local level](../../docs/papers/401_Hierarchical_attention_graph_for_scientific_document_summari/index.html) — Chenlong Zhao 외, 2024
+- [MetaOpenFOAM: an LLM-based multi-agent framework for CFD](../../docs/papers/535_MetaOpenFOAM_an_LLM-based_multi-agent_framework_for_CFD/index.html) — Yuxuan Chen 외, 2024
+- [SciReviewGen: a large-scale dataset for automatic literature review generation](../../docs/papers/732_Scireviewgen_a_large-scale_dataset_for_automatic_literature/index.html) — Tetsu Kasanishi 외, 2023
+
+*생성: `pipeline/build_slide_essay.py --topic ai4s` · 2026-08-06 · 근거 코퍼스 2,658편 · 본문 58,955자*

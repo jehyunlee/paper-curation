@@ -607,9 +607,14 @@ def convert_review(md_path, topic, slug_dir):
 
     theme = THEMES.get(topic, THEMES["ai4s"])
 
-    # Extract title
+    # Extract title — 본문 H1 → frontmatter title → slug 이름 순.
+    # slug_dir 은 절대경로라서 그대로 쓰면 <title>/<h1> 에 로컬 경로가 새어 나간다.
     title_m = re.search(r'^#\s+(.+)', md, re.MULTILINE)
-    title = title_m.group(1).strip() if title_m else slug_dir
+    if title_m:
+        title = title_m.group(1).strip()
+    else:
+        _tm = re.search(r'(?m)^title:\s*(.+)$', _fm_m.group(1)) if _fm_m else None
+        title = _tm.group(1).strip().strip('"').strip("'") if _tm else _slug
 
     # Extract metadata blockquote
     meta_m = re.search(r'^>\s*\*\*저자\*\*.*$', md, re.MULTILINE)

@@ -259,6 +259,38 @@ USER_ID = get_zotero_user_id()
 COLLECTIONS = get_collections()
 
 # Checkpoint
+PROGRESS_FILE = PROJECT_ROOT / ".cache" / "review_progress.json"
+_progress_lock = threading.Lock()
+_progress_state = {"topic": "", "total": 0, "done": 0, "failed": 0,
+                   "slug": "", "phase": "", "status": "idle",
+                   "updated_at": ""}
+
+
+def _update_progress(*, topic=None, total=None, done=None, failed=None,
+                     slug=None, phase=None, status=None):
+    with _progress_lock:
+        for key, value in (("topic", topic), ("total", total), ("done", done),
+                           ("failed", failed), ("slug", slug), ("phase", phase),
+                           ("status", status)):
+            if value is not None:
+                _progress_state[key] = value
+        _progress_state["updated_at"] = datetime.now().isoformat(timespec="seconds")
+        try:
+            from lib.atomic_io import atomic_write_json
+            PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            atomic_write_json(str(PROGRESS_FILE), dict(_progress_state))
+        except Exception:
+            pass
+
+
+def _paper_progress(slug, phase):
+    with _progress_lock:
+        total = int(_progress_state.get("total") or 0)
+        done = int(_progress_state.get("done") or 0)
+    percent = (done / total * 100) if total else 0
+    _update_progress(slug=slug, phase=phase)
+    return f"[review {done}/{total} {percent:.1f}% | {phase}] {slug}"
+
 CHECKPOINT_FILE = str(PIPELINE_DIR / "_update_force_checkpoint.json")
 
 
@@ -1761,7 +1793,7 @@ def _do_process(item, slug, slug_dir, pdf_path):
     Returns (status, reason) — status is 'ok' or 'fail'."""
 
     # Extract text
-    log(f"  {slug}: extracting text...")
+    log(_paper_progress(slug, "text.md 추출"))
     extract_text(pdf_path, slug_dir)
     text_path = os.path.join(slug_dir, "text.md")
     if not os.path.exists(text_path) or os.path.getsize(text_path) < 100:
@@ -1774,12 +1806,12 @@ def _do_process(item, slug, slug_dir, pdf_path):
         return "fail", f"sanity_mismatch:{reason}"
 
     # Extract figures
-    log(f"  {slug}: extracting figures...")
+    log(_paper_progress(slug, "figure 추출"))
     figures = extract_figures(pdf_path, slug_dir)
     log(f"  {slug}: {len(figures)} figures extracted")
 
     # Write review
-    log(f"  {slug}: writing review...")
+    log(_paper_progress(slug, "review.md 생성"))
     write_review(item, slug_dir, figures)
     review_path = os.path.join(slug_dir, "review.md")
     if not os.path.exists(review_path) or os.path.getsize(review_path) < 200:
@@ -1791,6 +1823,7 @@ def _do_process(item, slug, slug_dir, pdf_path):
     # are kept below for backward-compat tooling but no longer invoked.
 
     # Convert to HTML
+    log(_paper_progress(slug, "HTML 변환"))
     convert_to_html(slug)
     html_path = os.path.join(slug_dir, "index.html")
     if not os.path.exists(html_path) or os.path.getsize(html_path) < 200:
@@ -1820,6 +1853,7 @@ def process_paper(item, slug, cp):
             shutil.rmtree(fig_dir)
 
     # Find PDF
+    log(_paper_progress(slug, "PDF 매칭"))
     pdf_path, match_method = find_pdf(item)
     if not pdf_path:
         log(f"  {slug}: no PDF found (method={match_method})")
@@ -2175,6 +2209,8 @@ def main():
         remaining = remaining[:args.limit]
 
     log(f"To process: {len(remaining)} (completed: {len(cp['completed'])}, failed: {len(cp['failed'])})")
+    _update_progress(topic=args.topic, total=len(remaining), done=0,
+                     failed=len(cp["failed"]), status="running")
     log(f"Concurrency: {args.concurrency}")
     log(f"Estimated time: ~{len(remaining) * 5 / args.concurrency / 60:.1f} hours")
 
@@ -2193,11 +2229,13 @@ def main():
             try:
                 result = future.result()
                 done += 1
+                _update_progress(done=done, failed=len(cp["failed"]))
                 elapsed = time.time() - start_time
                 rate = elapsed / done if done else 0
                 eta = rate * (len(remaining) - done) / 3600
                 log(f"[{done}/{len(remaining)}] {slug}: {result} (ETA: {eta:.1f}h)")
             except Exception as e:
+                _update_progress(done=done, failed=len(cp["failed"]))
                 log(f"[{done}/{len(remaining)}] {slug}: ERROR {e}")
                 with _cp_lock:
                     cp["failed"].append({"slug": slug, "reason": str(e)})
@@ -2211,6 +2249,9 @@ def main():
     # No separate retry pass needed.
 
     log(f"\nFinal: {len(cp['completed'])} completed, {len(cp['failed'])} failed")
+    _update_progress(done=done, failed=len(cp["failed"]),
+                     status="completed" if not cp["failed"] else "completed_with_failures",
+                     phase="post-processing")
 
     # ── Persist Zotero item key + PDF path → slug mapping into _papers_index.json ──
     # build_papers_index will preserve `zotero_item_key` and `pdf_path` via prev.get(...).
@@ -2573,6 +2614,12 @@ def main():
         # Step 7-10: Always run (fast steps)
         run_step("inject_frontmatter",
                  ["python", "pipeline/inject_frontmatter.py", "--topic", topic], 600)
+        # Keep the collection-independent bibliography DB synchronized with every
+        # review/frontmatter refresh. `--changed-only` makes this incremental and
+        # avoids a full-corpus rebuild when no source documents changed.
+        run_step("build_bibliography_db",
+                 ["python", "pipeline/build_bibliography_db.py", "--changed-only",
+                  "--update-zotero", "--no-email"], 7200)
         run_step("generate_moc",
                  ["python", "pipeline/generate_moc.py", "--topic", topic], 600)
         # 네트워크 시각화는 Research Insights 와 묶인 Option(O-2) — --insights 일 때만.

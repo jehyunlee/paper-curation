@@ -119,9 +119,12 @@ setup.py 출력의 "다음 단계" 섹션을 사용자에게 전달한다. 특�
 | 10 | `pipeline/prepare_deploy.py` | PNG→WebP, API-key strip/restore, `wrangler deploy` → Cloudflare, idempotent gh-pages stub sync, Cloudflare 200 OK polling, then master commit (code/config only — docs/* gitignored) |
 | Recover | `pipeline/audit_matching.py` | PDF↔review mismatch audit (duplicate text.md + 4-axis cross-check). Output `{topic}/_audit_report.json` |
 | Recover | `pipeline/fix_matching.py` | Recovery tool: delete review/figure artifacts for audit-flagged slugs + print re-review command. Default dry-run, `--execute` for real |
+| Recover | `pipeline/fix_review_headers.py` | **제목 헤더 복구** — review.md 본문의 `# 제목` + `> **저자**:` 헤더가 유실되면 `review_to_html` 이 제목을 slug 디렉터리 **절대경로**로 대체해 `<title>`·`<h1>`·`og:title` 에 로컬 경로가 노출된다. `review.md.broken.bak` 에 원본 헤더가 있으면 그대로 회수하고, 없으면 frontmatter(title/authors/date/doi)로 재구성한 뒤 `index.html` 을 재생성한다. 기본 dry-run, `--execute` 로 적용. `validate_papers.py` 의 `NO_TITLE_HEADER` 체크가 재발을 잡는다 |
 |Tool|`pipeline/run_citedby.py`|**Citedby** — DOI 하나로 인용논문 수집(OpenAlex·Scopus·S2·arXiv) → 독창성 추출 → 주제 필터 + 5W1H 요약 → **자기완결 HTML 문서** + CSV. 브라우저 [PDF 출력] 버튼으로 링크 살아있는 PDF. 내 Zotero 라이브러리에 있는 논문은 `zotero://open-pdf` 바로열기 링크. 코어는 `pipeline/lib/citedby/`|
 | Tool | `pipeline/run_citedby.py --pdf-first` | **PDF-first citedby** — 인용논문을 코퍼스·내 Zotero 로컬 DB(`zotero.sqlite`)와 대조해 **근거 등급**(코퍼스 전처리물 > 보유 PDF 전문 > 초록 > 제목)을 매기고, 전문을 청킹·임베딩해 `_citedby_index.json` 생성(`--build-index`). 리포트에 Deep Research 패널(BM25+dense RRF, BYOK) · 논문별 `zotero://open-pdf` 링크 · **컬렉션 배정 제안**(기존 컬렉션만) 포함. Deep Research 는 `serve_local.py` 로 열어야 동작 |
 |Tool|`pipeline/run_metrics.py`|**Metrics** — 코퍼스 논문의 피인용수·레퍼런스 수집 → `docs/papers/{slug}/citations.md`(피인용 **이력** 누적 + 임계값 10회 이상이면 인용논문 목록) + `references.md`(DOI>URL>서지 순 표기). 기본 30일 증분. 피인용수는 소스별 보존(Scopus·Crossref·OpenAlex) + OpenAlex 연차보정 백분위. 코어는 `pipeline/lib/metrics/`|
+| Tool | `pipeline/build_slide_deck.py` | **Slide deck** — 토픽 코퍼스(`_category_summaries` / `_timeline_narrative` / `_new_classification` / `_insights` + `_papers_index`)에서 대분류 8개 × 편수 상위 서브카테고리 5개 = 40장 + 오프닝·종합 10장 = **발표 슬라이드 50장 원고**를 생성. **편수는 `_category_summaries.json` 의 `count` 를 믿지 않고 `load_corpus()` 가 `recount_categories()` 로 `_new_classification.json` 에서 다시 센다** — 요약본은 `build_category_summaries.py` 가 돌던 시점의 스냅샷이라 이후 신규 논문이 빠진다. 두 기준을 함께 싣는다: `count`(고유 배정 = primary만, 8개 합 = 코퍼스 크기, 커버리지 산술의 분모) + `card_count`(중복 포함 = all_categories, **토픽 인덱스 `build_topic_index.py` 의 카테고리 헤더 편수와 동일** — 사이트는 논문을 배정된 모든 카테고리에 카드로 노출). 사례는 `--since`(기본 2025) 이후 우선, 불릿의 시스템명이 대표 논문과 일치할 때만 `[n]` 인용 마커를 붙이고 레퍼런스는 **논문별 리뷰 문서(`docs/papers/{slug}/index.html`)로 링크**. 출력은 `reports/build/{topic}_slides_50.html`(자기완결·인쇄용) + `reports/source/{topic}_slides_50.md`(Obsidian) |
+| Tool | `pipeline/build_slide_essay.py` | **Slide essay (v2)** — `build_slide_deck.py` 의 데이터·레퍼런스·인용 마커 로직을 재사용하되, 슬라이드 한 장을 **책 한 절 분량의 줄글**로 쓴 판본. 본문은 `pipeline/lib/slide_prose_ai4s.py` 의 `PROSE`(lead/body/close, 50장·약 5.8만자)에서 오고, 화면에 띄울 한 줄은 v1 헤드라인을 그대로 쓴다. `pipeline/lib/slide_prose_ai4s.py` 의 손으로 쓴 `{N}편` 은 코퍼스가 늘면 어긋나므로 `pipeline/tests/test_build_slide_deck.py` 의 `Ai4sProseCountDriftTests` 가 게이트한다. 출력은 `reports/build/{topic}_slides_50_v2.html` + `reports/source/{topic}_slides_50_v2.md` |
 
 Step 0 scripts are for full/update modes only (skipped in --local). Step 1 is the heavy batch (default `--concurrency 16`, Tier 4 — see README "Concurrency 가이드"). Wall-clock is ~20~30분 for ~80 papers at concurrency 16; ~1.5h at 4 (Tier 1 보수값).
 
@@ -239,6 +242,19 @@ tar -xzf specter2_0.tar.gz   # base/ + adapters/
 
 arXiv 가 chronic 429/timeout 인 경우 `search_papers.py --skip-arxiv` 로 우회 (OpenAlex + S2 만 사용, 윈도우당 ~8분 단축). README "한국 망 환경 우회" 섹션 참고.
 
+## Bibliography DB (persistent corpus memory)
+
+`pipeline/build_bibliography_db.py` is the canonical builder for the collection-independent bibliographic DB. It stores title, authors, first author, DOI/URL, publication date, journal, Zotero item key, one review directory, normalized institutions, parent groups, country names, and institution aliases. Do not rely on conversational memory for this dataset.
+
+- Query by institution/country/author: `PYTHONUTF8=1 python pipeline/query_bibliography.py --institution "Cambridge" --sort date`
+- Validate completeness before using or publishing: `PYTHONUTF8=1 python pipeline/check_bibliography_db.py --strict`
+- The canonical DB is `Google Drive/내 드라이브/paper-curation/bibliography.sqlite3`, shared by the MacBook and Mac mini. `PAPER_CURATION_BIBLIO_DB` may override it for isolated tests.
+- Rebuild the full DB only with `--all`; the full-corpus worker uses a persistent Mac mini LaunchAgent and writes progress to `.cache/logs/bibliography_full.log`.
+- Only one review-generation job may write the shared SQLite file at a time. Build locally, then publish atomically; never run simultaneous writers on both machines.
+- Review-generation progress is persisted in `.cache/review_progress.json` and phase labels are printed as `PDF 매칭 → text.md 추출 → figure 추출 → review.md 생성 → HTML 변환`; use the JSON file or the run log for a live status view.
+- Any new paper-ingestion or Zotero-sync workflow that changes `_papers_index.json` MUST either rebuild the DB or leave a clearly visible stale-db validation failure. The DB is not authoritative when its paper count differs from `_papers_index.json`.
+- Institution aliases belong in `institution_aliases`; never create a second spelling ad hoc in downstream queries.
+- Completion reporting is part of the worker contract: the full run sends a Resend email to `jehyun.lee@gmail.com` when `RESEND_API_KEY` is available.
 ## Common Commands
 
 All scripts require `PYTHONUTF8=1` on Windows to avoid cp949 encoding issues. Single entrypoint is `pipeline/run_full.py` (3축: `--mode/--source/--images`); 개별 스크립트는 디버깅·복구용으로만 직접 호출.

@@ -37,6 +37,22 @@ def log(msg):
 
 # ── 1. 문장 완결 체크 ──
 
+def check_title_header(review_path):
+    """review.md 본문에 H1 제목이 있는지 검사.
+
+    H1 이 없으면 review_to_html 이 제목을 slug 디렉터리(절대경로)로 대체해
+    <title>/<h1>/og:title 에 로컬 경로가 노출된다. 복구는
+    `python pipeline/fix_review_headers.py --execute`.
+    """
+    with open(review_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    body = re.sub(r'^---\n.*?\n---\n', '', content, flags=re.DOTALL)
+    if re.search(r'^#\s+\S', body, re.MULTILINE):
+        return []
+    return ["  NO_TITLE_HEADER: 본문에 '# 제목' 없음 → HTML 제목이 경로로 대체됨"
+            " (fix_review_headers.py --execute)"]
+
+
 def check_truncated_sections(review_path):
     """섹션 본문이 확실히 잘린 경우만 감지 (보수적).
 
@@ -472,6 +488,7 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
     log(f"Validating {len(topic_papers)} papers (topic: {topic})")
 
     total_truncated = 0
+    total_title = 0
     total_link = 0
     total_fig = 0
     total_pylist = 0
@@ -486,6 +503,11 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
 
         paper_issues = []
         slug_fixed = False
+
+        # 0. 제목 헤더 유실 (HTML 제목이 절대경로로 새는 원인)
+        title_issues = check_title_header(review_path)
+        paper_issues.extend(title_issues)
+        total_title += len(title_issues)
 
         # 1. Truncated sections
         trunc = check_truncated_sections(review_path)
@@ -584,6 +606,7 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
     log(f"Validation Summary ({topic})")
     log(f"{'='*60}")
     log(f"  Papers checked: {len(topic_papers)}")
+    log(f"  Missing title header: {total_title}")
     log(f"  Truncated sections: {total_truncated}")
     log(f"  Broken links: {total_link}")
     log(f"  Figure issues: {total_fig}")
@@ -595,7 +618,7 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
     log(f"  Connection coverage gaps: {len(conn_issues)}")
     if fix:
         log(f"  Auto-fixed: {total_fixed} papers")
-    total_all = (total_truncated + total_link + total_fig + total_pylist
+    total_all = (total_title + total_truncated + total_link + total_fig + total_pylist
                  + len(timeline_issues) + len(schema_issues)
                  + len(doi_issues) + len(dup_issues) + len(conn_issues))
     if total_all == 0:
