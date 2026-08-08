@@ -415,7 +415,10 @@ def push(base_receipt: Path | None):
 
 def seed_legacy_recovery(base_receipt: Path | None) -> dict:
     """Publish the verified retained pre-migration DB as a monotonic recovery generation."""
-    _ensure_publishable()
+    if _remigration_marker().exists():
+        raise RuntimeError("remigration required before legacy recovery seed")
+    if not LOCAL_DB.exists():
+        raise RuntimeError(f"missing local DB: {LOCAL_DB}")
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
     if not base.exists():
         raise RuntimeError("legacy recovery seed requires the pulled generation receipt")
