@@ -190,8 +190,19 @@ def _ensure_publishable() -> None:
         raise RuntimeError("strict bibliography validation failed; push blocked") from exc
 
 
-def _ensure_pull_allowed() -> None:
-    if _remigration_marker().exists():
+def _ensure_pull_allowed(manifest: dict | None = None) -> None:
+    marker = _remigration_marker()
+    if not marker.exists():
+        return
+    if manifest is None:
+        raise RuntimeError("remigration required before bibliography synchronization")
+    try:
+        blocked = json.loads(marker.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("invalid remigration hard-stop marker") from exc
+    if (manifest.get("requires_controlled_remigration")
+            or manifest.get("generation", -1)
+            <= blocked.get("manifest_generation", -1)):
         raise RuntimeError("remigration required before bibliography synchronization")
 
 
@@ -315,7 +326,6 @@ def bootstrap():
 
 
 def pull():
-    _ensure_pull_allowed()
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
         db, mf = Path(directory) / "db", Path(directory) / "manifest"
@@ -326,6 +336,7 @@ def pull():
             raise RuntimeError("remote manifest is not canonical")
         rollback = bool(manifest.get("requires_controlled_remigration"))
         _validate_manifest(manifest, rollback=rollback)
+        _ensure_pull_allowed(manifest)
         remote_object = manifest["object"]
         _copy_from_authority(remote_object, db)
         if sha(db) != manifest["sha256"]:

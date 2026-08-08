@@ -161,6 +161,20 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.assertEqual(result["base_sha256"], expected["sha256"])
             self.assertTrue(result["requires_controlled_remigration"])
             self.assertEqual(result["operation"], "legacy_recovery_seed")
+    def test_hard_stop_allows_newer_normal_generation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "bibliography.sqlite3"
+            marker = sync.migrator.marker_path(db)
+            marker.write_text(json.dumps({
+                "manifest_generation": 3,
+            }), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db):
+                sync._ensure_pull_allowed({"generation": 4})
+                with self.assertRaisesRegex(RuntimeError, "remigration required"):
+                    sync._ensure_pull_allowed({
+                        "generation": 3,
+                        "requires_controlled_remigration": True,
+                    })
     def test_pull_of_published_rollback_writes_hard_stop_marker(self):
         with tempfile.TemporaryDirectory() as directory:
             directory_path = Path(directory)
@@ -208,7 +222,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     json.loads(marker.read_text())["manifest_generation"], 8)
                 with self.assertRaisesRegex(RuntimeError, "remigration required"):
                     sync.pull()
-            self.assertEqual(run.call_count, 3)
+            self.assertEqual(run.call_count, 4)
 
 
     def test_push_rejects_missing_base_receipt_before_any_transport(self):
