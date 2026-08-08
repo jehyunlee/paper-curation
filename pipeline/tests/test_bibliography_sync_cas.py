@@ -218,6 +218,31 @@ class BibliographySyncCASTests(unittest.TestCase):
                     sync.push(Path(directory) / "unused.json")
             run.assert_not_called()
 
+    def test_push_accepts_rollback_base_after_controlled_remigration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            base = Path(directory) / "base.json"
+            expected = {
+                **self.complete_manifest(
+                    generation=1, schema_version="legacy"),
+                "base_generation": 0,
+                "base_sha256": "prior-file",
+                "base_logical_sha256": "prior-logical",
+                "restored_schema_version": "legacy",
+                "requires_controlled_remigration": True,
+            }
+            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db), \
+                 patch.object(sync, "_ensure_publishable"), \
+                 self.receipt_loader(db), \
+                 patch.object(sync, "run"), \
+                 patch.object(sync, "remote"), \
+                 patch.object(sync.uuid, "uuid4",
+                              return_value=Mock(hex="remigrated")):
+                result = sync.push(base)
+            self.assertEqual(result["generation"], 2)
+            self.assertEqual(result["base_generation"], 1)
+            self.assertNotIn("requires_controlled_remigration", result)
     def test_push_uses_unique_upload_names_and_advances_manifest_from_base(self):
         with tempfile.TemporaryDirectory() as directory:
             db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")

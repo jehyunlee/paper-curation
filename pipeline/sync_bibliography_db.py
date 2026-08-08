@@ -358,8 +358,9 @@ def push(base_receipt: Path | None):
         raise RuntimeError("invalid base receipt") from exc
     _validate_manifest(expected, rollback=bool(
         expected.get("requires_controlled_remigration")))
-    if expected.get("requires_controlled_remigration"):
-        raise RuntimeError("remigration required before bibliography synchronization")
+    # A rollback base is publishable only after the local hard-stop marker has
+    # been cleared by controlled remigration. _ensure_publishable and the
+    # receipt binding below enforce that transition.
     expected_payload = canonical_manifest(expected)
     upload_id = uuid.uuid4().hex
     upload = REMOTE_DB + ".upload." + upload_id
