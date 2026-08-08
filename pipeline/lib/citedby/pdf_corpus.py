@@ -41,7 +41,7 @@ CHUNK_SIZE = 2200
 CHUNK_OVERLAP = 400
 EMBED_BATCH = 32
 EMBED_DIM = 768
-EMBED_MODEL = "gemini-embedding-001"
+EMBED_MODEL = "qwen/qwen3-embedding-8b"
 
 # 참고문헌부터는 본문이 아니다 — 청크에 들어가면 검색 노이즈가 되고 임베딩
 # 품질도 떨어진다. text.md 파이프라인과 같은 판단.
@@ -312,36 +312,44 @@ def build_chunks(papers: list[dict], *, progress=None) -> tuple[list, dict]:
 
 
 def embed_chunks(chunks: list[dict], *, progress=None) -> bytes | None:
-    """청크를 Gemini 로 임베딩해 int8 사이드카 바이트로 만든다.
+    """청크를 OpenRouter(기본)로 임베딩해 int8 사이드카 바이트로 만든다.
 
-    반드시 L2-normalize 후 int8 로 양자화한다 — `gemini-embedding-001` 은
-    output_dimensionality != 3072 일 때 **비정규화 벡터**를 돌려주기 때문이다
-    (build_search_index 의 오래된 gotcha).
+    L2-normalize 후 int8 양자화. OpenRouter embed 는 이미 정규화되지만
+    ``quantize_int8_l2`` 는 멱등(이미 단위벡터면 그대로)이다.
     """
     if not chunks:
         return None
     bsi = _import_search_index()
+
     try:
-        from google import genai
-    except ImportError:
-        logger.warning("google-genai 없음 — 임베딩 생략")
-        return None
-
-    key = (os.environ.get("GOOGLE_API_KEY")
-           or os.environ.get("GEMINI_API_KEY")
-           or bsi._load_gemini_key_from_config())
-    if not key:
-        logger.warning("GOOGLE_API_KEY 없음 — 임베딩 생략")
-        return None
-
-    client = genai.Client(api_key=key)
+        from lib.llm_client import get_embed_config
+        emb_cfg = get_embed_config()
+    except Exception:
+        emb_cfg = {"backend": "gemini", "model": EMBED_MODEL, "api_key": ""}
+    if emb_cfg.get("backend") == "openrouter":
+        client = "openrouter"
+        model = emb_cfg.get("model") or EMBED_MODEL
+    else:
+        try:
+            from google import genai
+        except ImportError:
+            logger.warning("google-genai 없음 — 임베딩 생략")
+            return None
+        key = (emb_cfg.get("api_key")
+               or os.environ.get("GOOGLE_API_KEY")
+               or os.environ.get("GEMINI_API_KEY")
+               or bsi._load_gemini_key_from_config())
+        if not key:
+            logger.warning("OPENROUTER_API_KEY/GOOGLE_API_KEY 없음 — 임베딩 생략")
+            return None
+        client = genai.Client(api_key=key)
+        model = "gemini-embedding-001"
     out = bytearray()
     total = len(chunks)
     for start in range(0, total, EMBED_BATCH):
         batch = chunks[start:start + EMBED_BATCH]
         try:
-            vecs = bsi.embed_batch(client, [c["text"] for c in batch],
-                                   EMBED_MODEL)
+            vecs = bsi.embed_batch(client, [c["text"] for c in batch], model)
         except Exception as e:  # noqa: BLE001
             logger.warning("임베딩 배치 실패 (%d~): %s", start, str(e)[:100])
             return None

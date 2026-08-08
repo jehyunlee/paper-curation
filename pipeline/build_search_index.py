@@ -550,27 +550,37 @@ def _retry_after_seconds(err) -> float | None:
 
 
 def embed_batch(client, texts: list, model: str) -> list:
-    """Embed a batch with gemini-embedding-001 (RETRIEVAL_DOCUMENT) + retry.
+    """Embed a batch via OpenRouter (preferred) or legacy Gemini + retry.
 
-    768-dim 출력을 task_type RETRIEVAL_DOCUMENT 로 요청한다. Retry-After 를
-    존중하고 backoff 를 EMBED_BACKOFF_CAP_S 로 cap 하며, 반환 벡터 수가
-    입력 수와 다르면 (조용한 chunk↔embedding misalignment 대신) 시끄럽게
-    실패한다. 정규화는 호출측 quantize_int8_l2() 가 수행한다 (gemini 는
-    output_dimensionality != 3072 일 때 비정규화 벡터를 돌려주므로).
+    ``client`` may be ``"openrouter"`` (string sentinel) or a ``genai.Client``.
+    OpenRouter path ignores ``client`` and uses ``lib.openrouter.embed``.
+    정규화는 OpenRouter 쪽에서 L2 를 수행하거나, Gemini 폴백은 호출측
+    ``quantize_int8_l2()`` 가 수행한다.
     """
-    from google.genai import types as _gtypes
-
-    cfg = _gtypes.EmbedContentConfig(
-        task_type="RETRIEVAL_DOCUMENT",
-        output_dimensionality=768,
-    )
     last_err = None
+    use_or = (client == "openrouter"
+              or str(model).startswith("qwen/")
+              or "embedding" in str(model).lower() and "/" in str(model))
+    # Prefer OpenRouter whenever configured, even if a genai client was passed.
+    try:
+        from lib import openrouter as orouter
+        if orouter.available():
+            use_or = True
+    except Exception:
+        pass
+
     for attempt in range(EMBED_MAX_ATTEMPTS):
         try:
+            if use_or:
+                from lib import openrouter as orouter
+                return orouter.embed(texts, model=model, dimensions=768)
+            from google.genai import types as _gtypes
+            cfg = _gtypes.EmbedContentConfig(
+                task_type="RETRIEVAL_DOCUMENT",
+                output_dimensionality=768,
+            )
             resp = client.models.embed_content(model=model, contents=texts, config=cfg)
             vecs = [list(e.values) for e in (resp.embeddings or [])]
-            # Per-batch length guard — a short/long batch would otherwise
-            # silently misalign chunks↔embeddings downstream (zip()).
             if len(vecs) != len(texts):
                 raise RuntimeError(
                     f"embedding count {len(vecs)} != input count {len(texts)}"
@@ -808,8 +818,8 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
 
     total_chars = sum(len(c["text"]) for c in pending_chunks)
     approx_tokens = total_chars // 3  # conservative estimate
-    # gemini-embedding-001: $0.15 / 1M input tokens
-    print(f"      approx {approx_tokens:,} input tokens ~= ${approx_tokens * 0.00000015:.4f} (gemini-embedding-001)")
+    # qwen/qwen3-embedding-8b via OpenRouter: ~$0.01 / 1M input tokens
+    print(f"      approx {approx_tokens:,} input tokens ~= ${approx_tokens * 0.00000001:.4f} ({model})")
 
     # Cache key per chunk (sha256(model + text)); reused everywhere below.
     for ch in pending_chunks:
@@ -817,7 +827,7 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
 
     # --- Content-addressed embedding cache (incremental) ---
     # sha → 양자화된 emb(b64). 이전 index + sidecar 에서 로드한 뒤, 캐시에
-    # 없는 chunk 만 Gemini 로 보낸다. dry-run 도 캐시 hit 은 재사용한다.
+    # 없는 chunk 만 OpenRouter 로 보낸다. dry-run 도 캐시 hit 은 재사용한다.
     sha_to_emb: dict = load_embedding_cache(topic_dir, model)
     miss_chunks = [c for c in pending_chunks if c["text_sha"] not in sha_to_emb]
     n_hit = len(pending_chunks) - len(miss_chunks)
@@ -835,21 +845,26 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         dim = 0  # filled in below from any cached vector
     else:
         print(f"[3/4] Embedding {len(miss_chunks)} chunks with {model}...")
-        try:
-            from google import genai
-        except ImportError:
-            print("ERROR: google-genai package not installed. Run: pip install google-genai")
-            sys.exit(1)
-
-        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or _load_gemini_key_from_config()
-        if not api_key:
-            print("ERROR: GOOGLE_API_KEY not set (env var or config.json).")
-            print("       Set GOOGLE_API_KEY/GEMINI_API_KEY or run 'python pipeline/setup.py' to save it into config.json.")
-            sys.exit(1)
-
-        client = genai.Client(api_key=api_key)
-        # gemini-embedding-001 은 요청당 최대 100 input 까지 받지만, 한국망
-        # 타임아웃·부분실패 노출면을 줄이려 50 으로 둔다.
+        from lib import openrouter as orouter
+        from lib.llm_client import get_embed_config
+        emb_cfg = get_embed_config()
+        if emb_cfg["backend"] == "openrouter":
+            client = "openrouter"
+        else:
+            try:
+                from google import genai
+            except ImportError:
+                print("ERROR: OPENROUTER_API_KEY 없거나 google-genai 미설치.")
+                print("       export OPENROUTER_API_KEY=sk-or-v1-...  (권장)")
+                sys.exit(1)
+            api_key = (os.environ.get("GOOGLE_API_KEY")
+                       or os.environ.get("GEMINI_API_KEY")
+                       or _load_gemini_key_from_config())
+            if not api_key:
+                print("ERROR: OPENROUTER_API_KEY / GOOGLE_API_KEY not set.")
+                sys.exit(1)
+            client = genai.Client(api_key=api_key)
+        # OpenRouter / Gemini 모두 배치 크기 여유를 두고 50 으로 둔다.
         BATCH = 50
         t0 = time.time()
         embedded = 0
@@ -961,24 +976,35 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
     print("Done.")
 
 
-def _run_search_index(topic, *, model="gemini-embedding-001", limit=None, dry_run=False,
+def _default_embed_model():
+    try:
+        from lib.llm_client import get_embed_config
+        return get_embed_config()["model"]
+    except Exception:
+        return "qwen/qwen3-embedding-8b"
+
+
+def _run_search_index(topic, *, model=None, limit=None, dry_run=False,
                       include_text="auto"):
     """Programmatic entrypoint for build_search_index."""
-    return build_index(topic, model, limit, dry_run, include_text=include_text)
+    return build_index(topic, model or _default_embed_model(), limit, dry_run,
+                       include_text=include_text)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Build Deep Research search index")
     parser.add_argument("--topic", required=True, help="topic alias (e.g. ai4s, scisci)")
-    parser.add_argument("--model", default="gemini-embedding-001")
+    parser.add_argument("--model", default=None,
+                        help="embedding model (default: OpenRouter qwen/qwen3-embedding-8b)")
     parser.add_argument("--limit", type=int, default=None, help="limit number of papers (debug)")
     parser.add_argument("--dry-run", action="store_true", help="chunk only, no API calls")
     parser.add_argument("--include-text", choices=["auto", "yes", "no"], default="auto",
                         help="text.md 고신호 청크 보강. auto=로컬 토픽만 ON(클라우드 review-only). "
                              "yes 는 배포 토픽에 거부됨(저작권).")
     args = parser.parse_args()
-    _run_search_index(topic=args.topic, model=args.model, limit=args.limit,
-                      dry_run=args.dry_run, include_text=args.include_text)
+    _run_search_index(topic=args.topic, model=args.model or _default_embed_model(),
+                      limit=args.limit, dry_run=args.dry_run,
+                      include_text=args.include_text)
 
 
 if __name__ == "__main__":

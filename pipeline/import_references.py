@@ -144,10 +144,10 @@ JSON array 외의 텍스트(설명, 마크다운 fence)는 절대 출력하지 �
 
 
 def parse_with_haiku(refs: list[str], anthropic_key: str, batch_size: int = 30) -> list[dict]:
-    """Haiku 로 batch 단위로 참고문헌 파싱."""
-    import anthropic  # type: ignore
+    """Haiku 로 batch 단위로 참고문헌 파싱 (OpenRouter 우선)."""
+    from lib.llm_client import get_chat_client, resolve_model
 
-    client = anthropic.Anthropic(api_key=anthropic_key)
+    client = get_chat_client(api_key=anthropic_key or None, timeout=180.0, max_retries=3)
     results: list[dict] = []
     total_batches = (len(refs) + batch_size - 1) // batch_size
 
@@ -160,7 +160,7 @@ def parse_with_haiku(refs: list[str], anthropic_key: str, batch_size: int = 30) 
         for attempt in range(3):
             try:
                 resp = client.messages.create(
-                    model="claude-haiku-4-5",
+                    model=resolve_model("haiku"),
                     max_tokens=8000,
                     system=PARSE_SYSTEM_PROMPT,
                     messages=[{"role": "user", "content": prompt}],

@@ -50,12 +50,23 @@ _CONFIG_KEYS = {
 
 
 def resolve_keys() -> dict[str, str]:
-    """LLM 제공자별 API 키. env 우선, 없으면 config.json.
+    """LLM 제공자별 API 키. OpenRouter 우선, 그다음 env → config.json.
 
-    scisci 의 `MyAPIKEY` 폴백은 제거했다 (개인 로컬 모듈 의존).
+    OpenRouter 키가 있으면 Anthropic-shaped shim 슬롯(`anthropic`)에도 넣는다.
     """
     keys: dict[str, str] = {}
+    try:
+        from config_loader import get_openrouter_config
+        or_cfg = get_openrouter_config()
+        if or_cfg and or_cfg.get("api_key"):
+            keys["openrouter"] = or_cfg["api_key"]
+            keys["anthropic"] = or_cfg["api_key"]
+    except Exception as e:  # noqa: BLE001
+        logger.debug("openrouter config: %s", e)
+
     for provider, names in _ENV_KEYS.items():
+        if provider in keys:
+            continue
         for n in names:
             v = (os.environ.get(n) or "").strip()
             if v:
@@ -107,10 +118,10 @@ _JSON_SYSTEM = "You are a JSON-only responder. Output ONLY valid JSON."
 
 def _call_anthropic(key: str, model: str, prompt: str, max_tokens: int,
                     system: str = _JSON_SYSTEM) -> str:
-    from anthropic import Anthropic
-    client = Anthropic(api_key=key, timeout=180.0, max_retries=4)
+    from lib.llm_client import get_chat_client, resolve_model
+    client = get_chat_client(api_key=key, timeout=180.0, max_retries=4)
     resp = client.messages.create(
-        model=model, max_tokens=max_tokens, system=system,
+        model=resolve_model(model), max_tokens=max_tokens, system=system,
         messages=[{"role": "user", "content": prompt}],
     )
     return "".join(b.text for b in resp.content
@@ -452,8 +463,28 @@ _STREAM_SYSTEM = (
 
 def _stream_anthropic(key, model, prompt, max_tokens, on_delta, web_search,
                       on_event):
-    from anthropic import Anthropic
+    from lib.llm_client import get_chat_client, resolve_model
+    from lib import openrouter as orouter
 
+    # OpenRouter path: text stream (no Anthropic server web_search tools).
+    use_openrouter = orouter.available() or str(key or "").startswith("sk-or-")
+    if use_openrouter and not (web_search and key and str(key).startswith("sk-ant-")):
+        client = get_chat_client(api_key=key, timeout=600.0, max_retries=4)
+        answer = []
+        with client.messages.stream(
+            model=resolve_model(model),
+            max_tokens=max_tokens,
+            system=_STREAM_SYSTEM,
+            messages=[{"role": "user", "content": prompt}],
+        ) as stream:
+            for chunk in stream.text_stream:
+                if chunk:
+                    answer.append(chunk)
+                    on_delta(chunk)
+        return "".join(answer), False
+
+    # Native Anthropic SDK (web_search / event stream)
+    from anthropic import Anthropic
     client = Anthropic(api_key=key, timeout=600.0, max_retries=4)
     kwargs = {
         "model": model,

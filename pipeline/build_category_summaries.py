@@ -14,7 +14,7 @@ import json
 import os
 import re
 from collections import defaultdict
-from anthropic import Anthropic
+from lib.llm_client import get_chat_client
 
 from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir
 PAPERS_DIR = str(_PAPERS_DIR)
@@ -202,7 +202,7 @@ def _run_category_summary(topic="ai4s", *, regen_ko=False, categories=None):
         key = (pc, sc)
         sub_papers[key].append(p)
 
-    client = Anthropic(timeout=180.0, max_retries=4)
+    client = get_chat_client(timeout=180.0, max_retries=4)
 
     if regen_ko and os.path.exists(sum_path):
         with open(sum_path, "r", encoding="utf-8") as f:

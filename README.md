@@ -39,12 +39,12 @@
 설치도, API 키도 필요 없습니다. 위 라이브 데모 링크를 열면 바로 열람할 수 있습니다.
 
 - **웹에서 보기** — [Humanoid](https://paper-curation.jehyunlee.dev/humanoid/) · [Physical AI](https://paper-curation.jehyunlee.dev/physical-ai/). 카테고리별 카드, 검색, 타임라인, 논문별 한국어 리뷰 페이지가 모두 정적으로 제공됩니다.
-- **Deep Research 사용법** — 토픽 페이지 상단의 검색창에 자연어로 질문하면 됩니다. **검색(retrieval)은 키가 전혀 필요 없습니다** — 질의 임베딩은 서버(worker `/api/embed`)가 대신 계산합니다. 답변 생성만 본인 API 키(BYOK)를 입력하면 되고, Anthropic·OpenAI·Google 키 prefix를 자동 감지해 그중 하나로 근거 답변을 스트리밍합니다. 코퍼스 밖 최신 정보가 필요하면 **웹 검색 토글**을 켜 인라인 링크 인용으로 보강할 수 있습니다.
+- **Deep Research 사용법** — 토픽 페이지 상단의 검색창에 자연어로 질문하면 됩니다. **검색(retrieval)은 키가 전혀 필요 없습니다** — 질의 임베딩은 서버(worker `/api/embed`, OpenRouter)가 대신 계산합니다. 답변 생성만 본인 **OpenRouter** API 키(BYOK)를 입력하면 근거 답변을 스트리밍합니다. 코퍼스 밖 최신 정보가 필요하면 **웹 검색 토글**을 켜 인라인 링크 인용으로 보강할 수 있습니다.
 - **RSS 구독** — 각 토픽은 Atom 피드를 제공합니다: [Humanoid feed](https://paper-curation.jehyunlee.dev/humanoid/feed.xml) · [Physical AI feed](https://paper-curation.jehyunlee.dev/physical-ai/feed.xml). 리더로 구독하면 새로 추가되는 리뷰를 받아볼 수 있습니다.
 
 ## 🔧 운영자로 설치하기
 
-Zotero 컬렉션 + PDF + API 키(필수: Anthropic · Google · Zotero, OpenAI는 선택)만 있으면 됩니다.
+Zotero 컬렉션 + PDF + API 키(필수: OpenRouter · Zotero, 다이어그램용 Hermes는 선택)만 있으면 됩니다.
 
 **가장 쉬운 방법 — Claude Code에서 한 줄** (전체 설치 플로우는 [CLAUDE.md](CLAUDE.md)의 "Installation Flow (Claude Code)" 참고):
 
@@ -58,9 +58,12 @@ git clone https://github.com/jehyunlee/paper-curation.git && cd paper-curation
 conda create -n py312 -c conda-forge python=3.12 pip -y && conda activate py312
 pip install -r requirements.txt
 
-# 2) API 키 (리뷰=Anthropic, 검색 임베딩·Figure 검증·TTS=Google)
-export ANTHROPIC_API_KEY=...
-export GOOGLE_API_KEY=...
+# 2) API 키 (LLM·임베딩·vision·TTS=OpenRouter, 다이어그램 이미지=Hermes)
+export OPENROUTER_API_KEY=...
+# 선택: 타임라인/workflow 다이어그램 (미설정 시 PaperBanana 폴백)
+export HERMES_GATEWAY_BASE_URL=http://localhost:8642/v1
+export HERMES_GATEWAY_API_KEY=...
+export HERMES_GATEWAY_MODEL=hermes-agent
 
 # 3) config.json 생성(대화형) → 첫 파이프라인 실행
 PYTHONUTF8=1 python pipeline/setup.py
@@ -82,7 +85,7 @@ PYTHONUTF8=1 python pipeline/setup.py
 | Figure 검증 (vision judge) | `claude-haiku-4-5` | $1 / $5 |
 | 타임라인 내러티브 | `claude-opus-5` (5) | $5 / $25 |
 | 분류 | — (HDBSCAN + UMAP) | **LLM 호출 0회 → $0** |
-| 검색 임베딩 | Google `gemini-embedding-001` | Google 임베딩 요금(소액) |
+| 검색 임베딩 | OpenRouter `qwen/qwen3-embedding-8b` (768d) | ~$0.01 / 1M tokens |
 
 **편당 리뷰 대략치** — 리뷰 1편은 논문 본문 발췌 + 프롬프트를 입력, 6섹션 한국어 리뷰를 출력합니다. 대략 입력 ~15k · 출력 ~4k 토큰으로 잡으면:
 

@@ -999,8 +999,8 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
         embeddings, slugs, originalities
     )
 
-    from anthropic import Anthropic
-    client = Anthropic(timeout=180.0, max_retries=4)
+    from lib.llm_client import get_chat_client
+    client = get_chat_client(timeout=180.0, max_retries=4)
 
     if skip_classification:
         log("\n  [Steps 4-5] SKIP (--skip-classification: preserving existing categories)")

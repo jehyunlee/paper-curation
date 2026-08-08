@@ -39,5 +39,25 @@
     "branch": "master",
     "pages_base_url": "https://your-username.github.io/paper-curation"
   },
-  "paperbanana_dir": "/path/to/your/PaperBanana"
+  "paperbanana_dir": "/path/to/your/PaperBanana",
+  "_comment_openrouter": "LLM·임베딩·비전·TTS 는 OpenRouter 단일 키로 통일합니다. OPENROUTER_API_KEY env 가 config 보다 우선. models.* 와 OPENROUTER_MODEL_* env 로 역할별 모델을 덮어쓸 수 있습니다. embed 기본 qwen/qwen3-embedding-8b + dimensions=768.",
+  "openrouter": {
+    "api_key": "YOUR_OPENROUTER_API_KEY_HERE",
+    "base_url": "https://openrouter.ai/api/v1",
+    "models": {
+      "haiku": "anthropic/claude-haiku-4.5",
+      "sonnet": "anthropic/claude-sonnet-5",
+      "opus": "anthropic/claude-opus-5",
+      "embed": "qwen/qwen3-embedding-8b",
+      "vision": "google/gemini-2.5-flash",
+      "tts": "openai/gpt-4o-mini-tts"
+    },
+    "embed_dimensions": 768
+  },
+  "_comment_hermes": "타임라인/워크플로 다이어그램 이미지 생성 전용. sns_for_paper hermes-tunnel (localhost:8642) 과 동일. 미설정·실패 시 PaperBanana 폴백. HERMES_GATEWAY_* env 가 우선.",
+  "hermes": {
+    "base_url": "http://localhost:8642/v1",
+    "api_key": "YOUR_HERMES_GATEWAY_API_KEY_HERE",
+    "model": "hermes-agent"
+  }
 }

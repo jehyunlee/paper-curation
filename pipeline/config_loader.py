@@ -316,7 +316,105 @@ def get_search_keywords(topic):
 
 def get_paperbanana_dir():
     cfg = load_config()
-    return cfg.get("paperbanana_dir", "")
+    return cfg.get("paperbanana_dir", "") or os.environ.get("PAPERBANANA_DIR", "")
+
+
+def get_openrouter_config():
+    """OpenRouter (LLM / embed / vision / TTS) 설정.
+
+    env 가 config.json 보다 우선. api_key 없으면 None (호출부가 legacy
+    Anthropic/Google/OpenAI 로 폴백).
+
+    config.json 예시::
+
+        "openrouter": {
+          "api_key": "sk-or-v1-...",
+          "base_url": "https://openrouter.ai/api/v1",
+          "models": {
+            "haiku": "anthropic/claude-haiku-4.5",
+            "sonnet": "anthropic/claude-sonnet-5",
+            "opus": "anthropic/claude-opus-5",
+            "embed": "qwen/qwen3-embedding-8b",
+            "vision": "google/gemini-2.5-flash",
+            "tts": "openai/gpt-4o-mini-tts"
+          },
+          "embed_dimensions": 768
+        }
+    """
+    cfg = load_config().get("openrouter", {}) or {}
+    api_key = (os.environ.get("OPENROUTER_API_KEY")
+               or cfg.get("api_key") or "").strip()
+    if not api_key:
+        return None
+    models = dict(cfg.get("models") or {})
+    # Per-role env overrides (OPENROUTER_MODEL_HAIKU etc.)
+    for role, env_name in (
+        ("haiku", "OPENROUTER_MODEL_HAIKU"),
+        ("sonnet", "OPENROUTER_MODEL_SONNET"),
+        ("opus", "OPENROUTER_MODEL_OPUS"),
+        ("embed", "OPENROUTER_MODEL_EMBED"),
+        ("vision", "OPENROUTER_MODEL_VISION"),
+        ("tts", "OPENROUTER_MODEL_TTS"),
+    ):
+        v = os.environ.get(env_name, "").strip()
+        if v:
+            models[role] = v
+    # Sensible defaults when a role is unset
+    models.setdefault("haiku", "anthropic/claude-haiku-4.5")
+    models.setdefault("sonnet", "anthropic/claude-sonnet-5")
+    models.setdefault("opus", "anthropic/claude-opus-5")
+    models.setdefault("embed", "qwen/qwen3-embedding-8b")
+    models.setdefault("vision", "google/gemini-2.5-flash")
+    models.setdefault("tts", "openai/gpt-4o-mini-tts")
+    dim_raw = (os.environ.get("OPENROUTER_EMBED_DIMENSIONS")
+               or cfg.get("embed_dimensions") or 768)
+    try:
+        embed_dimensions = int(dim_raw)
+    except (TypeError, ValueError):
+        embed_dimensions = 768
+    return {
+        "api_key": api_key,
+        "base_url": (os.environ.get("OPENROUTER_BASE_URL")
+                     or cfg.get("base_url")
+                     or "https://openrouter.ai/api/v1").rstrip("/"),
+        "models": models,
+        "embed_dimensions": embed_dimensions,
+        "http_referer": (os.environ.get("OPENROUTER_HTTP_REFERER")
+                         or cfg.get("http_referer") or ""),
+        "app_title": (os.environ.get("OPENROUTER_APP_TITLE")
+                      or cfg.get("app_title") or "paper-curation"),
+    }
+
+
+def get_hermes_config():
+    """Hermes gateway (다이어그램/타임라인 이미지 전용) 설정.
+
+    sns_for_paper 터널과 동일 키를 재사용한다. base_url+api_key 없으면 None
+    → PaperBanana 폴백.
+
+    config.json 예시::
+
+        "hermes": {
+          "base_url": "http://localhost:8642/v1",
+          "api_key": "...",
+          "model": "hermes-agent"
+        }
+    """
+    cfg = load_config().get("hermes", {}) or {}
+    base_url = (os.environ.get("HERMES_GATEWAY_BASE_URL")
+                or cfg.get("base_url") or "").strip().rstrip("/")
+    api_key = (os.environ.get("HERMES_GATEWAY_API_KEY")
+               or cfg.get("api_key") or "").strip()
+    if not base_url or not api_key:
+        return None
+    return {
+        "base_url": base_url,
+        "api_key": api_key,
+        "model": (os.environ.get("HERMES_GATEWAY_MODEL")
+                  or cfg.get("model") or "hermes-agent"),
+        "timeout": float(os.environ.get("HERMES_GATEWAY_TIMEOUT")
+                         or cfg.get("timeout") or 300),
+    }
 
 
 def get_zotero_dir():

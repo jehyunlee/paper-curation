@@ -1442,6 +1442,28 @@ def _run_topic_index(topic=None, cross=None):
     // OpenAI→소형)로 재정렬. 단발성 non-stream 호출. 어떤 실패든(파싱/타임아웃/
     // 인증) RRF 상위 topK 로 조용히 폴백한다 — 답변 경로는 그대로.
     async function rerankCall(backend, apiKey, model, sys, user) {
+      if (backend === 'openrouter') {
+        const resp = await deepFetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'authorization': 'Bearer ' + apiKey,
+            'X-Title': 'paper-curation',
+          },
+          body: JSON.stringify({
+            model: model,
+            max_tokens: 512,
+            messages: [
+              { role: 'system', content: sys },
+              { role: 'user', content: user },
+            ],
+          }),
+        });
+        if (!resp.ok) throw new Error('OpenRouter rerank ' + resp.status);
+        const data = await resp.json();
+        return (data.choices && data.choices[0] && data.choices[0].message
+                && data.choices[0].message.content) || '';
+      }
       if (backend === 'anthropic') {
         const resp = await deepFetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
@@ -1754,13 +1776,19 @@ def _run_topic_index(topic=None, cross=None):
     function detectBackend(key) {
       if (!key) return '';
       const k = String(key).trim();
+      // OpenRouter first (sk-or-v1-...); also treat unknown keys as openrouter
+      // so BYOK defaults to the unified backend.
+      if (k.startsWith('sk-or-') || k.startsWith('sk-or-v1-')) return 'openrouter';
       if (k.startsWith('sk-ant-')) return 'anthropic';
       if (k.startsWith('sk-')) return 'openai';
       if (k.startsWith('AIza')) return 'google';
+      // Prefer OpenRouter for any other pasted key shape
+      if (k.length > 20) return 'openrouter';
       return '';
     }
 
     const MODEL_MAP = {
+      openrouter: { fast: 'anthropic/claude-sonnet-5', smart: 'anthropic/claude-opus-5', top: 'anthropic/claude-opus-5' },
       anthropic: { fast: 'claude-sonnet-5', smart: 'claude-opus-5', top: 'claude-opus-5' },
       openai:    { fast: 'gpt-4.1',          smart: 'gpt-5.5',           top: 'gpt-5.5' },
       google:    { fast: 'gemini-3.1-flash-lite', smart: 'gemini-3.5-flash', top: 'gemini-3.5-flash' },
@@ -1777,6 +1805,7 @@ def _run_topic_index(topic=None, cross=None):
     // the user sees what they're picking. Keyed by the same backend
     // names detectBackend() returns.
     const MODEL_LABEL = {
+      openrouter: { fast: 'Sonnet 5 (OR)', smart: 'Opus 5 (OR)', top: 'Opus 5 (OR)' },
       anthropic: { fast: 'Sonnet 5', smart: 'Opus 5', top: 'Opus 5' },
       openai:    { fast: 'GPT-4.1',   smart: 'GPT-5.5',    top: 'GPT-5.5' },
       google:    { fast: 'Gemini 3.1 Flash-Lite', smart: 'Gemini 3.5 Flash', top: 'Gemini 3.5 Flash' },
@@ -1811,6 +1840,57 @@ def _run_topic_index(topic=None, cross=None):
     // 과 충돌하지 않도록 웹 출처의 사용 조건과 표기법을 명시한다 — [ref:N] 은
     // 코퍼스 발췌 전용이고, 웹 출처는 마크다운 링크로만 표기한다.
     const WEB_SEARCH_ADDENDUM = '\\n\\nWEB SEARCH MODE: the web_search tool is enabled for this request. Corpus excerpts remain the PRIMARY source and [ref:N] markers apply ONLY to them. You MAY search the web when recent news, tech-company blog posts, or papers outside the corpus would materially improve the answer. Attribute every web-sourced claim inline as a markdown link [source name](url) — never with [ref:N]. Use a descriptive source name (publication or article title), never a bare URL — the client converts each link into a numbered entry in the References list. If web results conflict with corpus excerpts, say so explicitly.';
+
+    async function callOpenRouter(apiKey, model, prompt, spec, onDelta) {
+      let maxTokens = spec.max_tokens;
+      const messages = [
+        { role: 'system', content: prompt.system + (deepWebSearchOn() ? WEB_SEARCH_ADDENDUM : '') },
+        { role: 'user', content: prompt.user },
+      ];
+      const body = {
+        model: model,
+        max_tokens: maxTokens,
+        messages: messages,
+        stream: true,
+      };
+      const resp = await deepFetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'authorization': 'Bearer ' + apiKey,
+          'X-Title': 'paper-curation',
+        },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) {
+        const detail = await resp.text();
+        throw new Error('OpenRouter ' + resp.status + ': ' + detail.slice(0, 200));
+      }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      let full = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\\n');
+        buf = lines.pop() || '';
+        for (const line of lines) {
+          const s = line.trim();
+          if (!s.startsWith('data:')) continue;
+          const payload = s.slice(5).trim();
+          if (!payload || payload === '[DONE]') continue;
+          try {
+            const j = JSON.parse(payload);
+            const delta = j.choices && j.choices[0] && j.choices[0].delta;
+            const t = delta && delta.content;
+            if (t) { full += t; if (onDelta) onDelta(t); }
+          } catch (e) {}
+        }
+      }
+      return full;
+    }
 
     async function callAnthropic(apiKey, model, prompt, spec, onDelta) {
       let maxTokens = spec.max_tokens;
@@ -2031,6 +2111,7 @@ def _run_topic_index(topic=None, cross=None):
       };
       DEEP.lastBackend = backend;
       DEEP.lastModel = model;
+      if (backend === 'openrouter') return callOpenRouter(apiKey, model, p, spec, onDelta);
       if (backend === 'anthropic') return callAnthropic(apiKey, model, p, spec, onDelta);
       if (backend === 'openai')    return callOpenAI(apiKey, model, p, spec, onDelta);
       if (backend === 'google')    return callGoogle(apiKey, model, p, spec, onDelta);
@@ -2599,6 +2680,7 @@ def _run_topic_index(topic=None, cross=None):
       const onDelta = function(txt) { DEEP.currentAnswer += txt; renderDeepAnswer(DEEP.currentAnswer); };
       DEEP.lastBackend = backend;
       DEEP.lastModel = model;
+      if (backend === 'openrouter') return callOpenRouter(apiKey, model, prompt, spec, onDelta);
       if (backend === 'anthropic') return callAnthropic(apiKey, model, prompt, spec, onDelta);
       if (backend === 'openai') return callOpenAI(apiKey, model, prompt, spec, onDelta);
       if (backend === 'google') return callGoogle(apiKey, model, prompt, spec, onDelta);
@@ -3468,6 +3550,10 @@ def _run_topic_index(topic=None, cross=None):
     if _cfg_path.exists():
         with open(_cfg_path, "r", encoding="utf-8") as _f:
             _cfg_keys = json.load(_f)
+    _or_block = _cfg_keys.get("openrouter") if isinstance(_cfg_keys.get("openrouter"), dict) else {}
+    _OPENROUTER_KEY = (os.environ.get("OPENROUTER_API_KEY")
+                       or _or_block.get("api_key", "")
+                       or _cfg_keys.get("openrouter_api_key", ""))
     _ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY") or _cfg_keys.get("anthropic_api_key", "")
     _OPENAI_KEY = os.environ.get("OPENAI_API_KEY") or _cfg_keys.get("openai_api_key", "")
     _GEMINI_KEY = (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -3477,18 +3563,16 @@ def _run_topic_index(topic=None, cross=None):
     _LOCAL_EMAILS_RAW = (os.environ.get("PAPER_CURATION_LOCAL_EMAILS", "")
                          or ",".join(_cfg_keys.get("local_emails", []) or []))
     _LOCAL_EMAILS = [e.strip() for e in _LOCAL_EMAILS_RAW.split(",") if e.strip()]
-    # ── Deep Research multi-backend keys ──────────────────────────────
-    # We baked these at build time for local dev (where prepare_deploy
-    # strips them on the way to Cloudflare). At runtime the modal
-    # accepts any one of the three; we sniff the prefix to pick the
-    # backend (sk-ant-* → Anthropic, sk-* → OpenAI, AIza* → Google).
-    # `_LLM_KEY` is the unified slot; `_ANTHROPIC_KEY` is kept for
-    # backward-compat with any code still referencing it. The embedding
-    # step (Deep Research RAG) continues to require an OpenAI key —
-    # that's a separate slot.
+    # ── Deep Research BYOK — OpenRouter preferred ─────────────────────
+    # Baked for local dev; prepare_deploy strips before Cloudflare upload.
+    # Prefers OPENROUTER_API_KEY; legacy Anthropic/OpenAI/Google still work
+    # via detectBackend prefix sniff.
+    _default_llm = _OPENROUTER_KEY or _ANTHROPIC_KEY or ""
     JS = ("let _ANTHROPIC_KEY = " + json.dumps(_ANTHROPIC_KEY) + " || localStorage.getItem('_ANTHROPIC_KEY') || '';\n"
           "let _OPENAI_KEY = " + json.dumps(_OPENAI_KEY) + " || localStorage.getItem('_OPENAI_KEY') || '';\n"
-          "let _LLM_KEY = localStorage.getItem('_LLM_KEY') || _ANTHROPIC_KEY || '';\n" + ("window._PC_CROSS = " + ("true" if cross else "false") + ";\n") + JS)
+          "let _OPENROUTER_KEY = " + json.dumps(_OPENROUTER_KEY) + " || localStorage.getItem('_OPENROUTER_KEY') || '';\n"
+          "let _LLM_KEY = localStorage.getItem('_LLM_KEY') || _OPENROUTER_KEY || _ANTHROPIC_KEY || '';\n"
+          + ("window._PC_CROSS = " + ("true" if cross else "false") + ";\n") + JS)
 
 
     def render_insights_section():
