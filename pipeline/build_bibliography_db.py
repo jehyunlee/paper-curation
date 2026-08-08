@@ -115,6 +115,21 @@ PAPER_SCHEMA_COLUMNS = {
     "bibliography_source": "TEXT",
 }
 AFFILIATION_SCHEMA_VERSION = "affiliation-2"
+def fresh_schema_origin_receipt_id(*, schema_version: str, registry_sha256: str,
+                                   event_head: str, policy_version: str,
+                                   source_sha256: str) -> str:
+    """Return the deterministic immutable origin ID for a new affiliation schema."""
+    origin = {
+        "operation": "fresh-schema",
+        "schema_version": schema_version,
+        "registry_sha256": registry_sha256,
+        "event_head": event_head,
+        "policy_version": policy_version,
+        "source_sha256": source_sha256,
+    }
+    return hashlib.sha256(json.dumps(
+        origin, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")).hexdigest()
 AFFILIATION_OBSERVATION_NAMESPACE = uuid.UUID("8d81aeb5-6231-5e97-8a65-cc9e5658bd22")
 REGISTRY_PATH = Path(__file__).with_name("affiliation_registry.json")
 AFFILIATION_SCHEMA = """
@@ -1758,7 +1773,14 @@ def project_affiliation_registry(conn: sqlite3.Connection) -> dict:
         if audit_row:
             migration_receipt_id, base_generation = audit_row
         else:
-            base_generation, migration_receipt_id = 0, "fresh-schema"
+            base_generation = 0
+            migration_receipt_id = fresh_schema_origin_receipt_id(
+                schema_version=AFFILIATION_SCHEMA_VERSION,
+                registry_sha256=digest,
+                event_head=registry["event_head"],
+                policy_version=registry["policy_version"],
+                source_sha256=registry["source_sha256"],
+            )
     organization_ids = {org["organization_id"] for org in registry["organizations"]}
     if organization_ids:
         conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL "

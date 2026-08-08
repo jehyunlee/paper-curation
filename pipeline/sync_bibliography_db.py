@@ -68,6 +68,46 @@ def canonical_manifest(manifest: dict) -> str:
     return json.dumps(manifest, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
+def _fresh_schema_origin_fields(metadata: dict) -> dict:
+    return {
+        "operation": "fresh-schema",
+        "schema_version": metadata["schema_version"],
+        "registry_sha256": metadata["registry_sha256"],
+        "event_head": metadata["event_head"],
+        "policy_version": metadata["policy_version"],
+        "source_sha256": metadata["source_sha256"],
+    }
+
+
+def _fresh_schema_origin_receipt(metadata: dict) -> dict:
+    origin = _fresh_schema_origin_fields(metadata)
+    return {
+        **origin,
+        "receipt_id": hashlib.sha256(
+            canonical_manifest(origin).encode("utf-8")).hexdigest(),
+    }
+
+
+def _is_fresh_schema_origin(manifest: dict) -> bool:
+    try:
+        return manifest["migration_receipt_id"] == _fresh_schema_origin_receipt(
+            manifest)["receipt_id"]
+    except KeyError:
+        return False
+
+
+def _fresh_schema_receipt_path() -> Path:
+    return migrator.receipt_path(LOCAL_DB, "fresh-schema")
+
+
+def _validate_fresh_schema_receipt(receipt: dict, manifest: dict) -> None:
+    expected = _fresh_schema_origin_receipt(manifest)
+    if (not isinstance(receipt, dict) or set(receipt) != set(expected)
+            or receipt != expected
+            or not _is_fresh_schema_origin(manifest)):
+        raise RuntimeError("fresh-schema origin receipt does not bind current provenance")
+
+
 def _local_affiliation_metadata() -> dict:
     return _inspect_sqlite(LOCAL_DB, require_affiliation=False)
 
@@ -245,6 +285,35 @@ def _load_current_migration_receipt(manifest: dict) -> tuple[dict, Path, str]:
         raise RuntimeError("migration receipt does not bind current migration provenance")
     _verify_migration_audit(receipt, manifest, LOCAL_DB)
     return receipt, path, receipt_digest
+def _has_migration_audit(database: Path) -> bool:
+    connection = sqlite3.connect(database)
+    try:
+        row = connection.execute(
+            "SELECT 1 FROM affiliation_migration_audit "
+            "WHERE operation='migrate' LIMIT 1").fetchone()
+    except sqlite3.Error:
+        return False
+    finally:
+        connection.close()
+    return row is not None
+
+
+def _load_current_origin_receipt(manifest: dict) -> tuple[dict, Path, str]:
+    if not _is_fresh_schema_origin(manifest):
+        return _load_current_migration_receipt(manifest)
+    if _has_migration_audit(LOCAL_DB):
+        raise RuntimeError("fresh-schema origin is invalid for a migrated DB")
+    path = _fresh_schema_receipt_path()
+    receipt = _fresh_schema_origin_receipt(manifest)
+    if path.exists():
+        try:
+            saved = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("invalid local fresh-schema origin receipt") from exc
+        _validate_fresh_schema_receipt(saved, manifest)
+    else:
+        migrator._atomic_json(path, receipt)
+    return receipt, path, sha(path)
 
 
 def _remote_q(value: str) -> str:
@@ -359,15 +428,25 @@ def pull():
         if receipt_value.get("receipt_id") != manifest["migration_receipt_id"]:
             raise RuntimeError("remote migration receipt ID mismatch")
         if not rollback:
-            if (receipt_value.get("operation") != "migrate"
-                    or receipt_value.get("schema_to") != manifest["schema_version"]
-                    or any(receipt_value.get(key) != manifest[key] for key in (
-                        "registry_sha256", "event_head", "policy_version", "source_sha256"))):
+            if _is_fresh_schema_origin(manifest):
+                _validate_fresh_schema_receipt(receipt_value, manifest)
+                if _has_migration_audit(db):
+                    raise RuntimeError(
+                        "fresh-schema origin is invalid for a migrated DB")
+            elif (receipt_value.get("operation") != "migrate"
+                  or receipt_value.get("schema_to") != manifest["schema_version"]
+                  or any(receipt_value.get(key) != manifest[key] for key in (
+                      "registry_sha256", "event_head", "policy_version",
+                      "source_sha256"))):
                 raise RuntimeError(
                     "remote migration receipt does not bind migration provenance")
-            _verify_migration_audit(receipt_value, manifest, db)
+            else:
+                _verify_migration_audit(receipt_value, manifest, db)
         os.replace(db, LOCAL_DB)
-        migrator._atomic_json(_migration_receipt_path(), receipt_value)
+        if _is_fresh_schema_origin(manifest):
+            migrator._atomic_json(_fresh_schema_receipt_path(), receipt_value)
+        else:
+            migrator._atomic_json(_migration_receipt_path(), receipt_value)
         LOCAL_DB.with_suffix(".base.json").write_text(
             canonical_manifest(manifest), encoding="utf-8")
         marker = _remigration_marker()
@@ -405,7 +484,7 @@ def push(base_receipt: Path | None):
     upload = REMOTE_DB + ".upload." + upload_id
     receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
     manifest = local_manifest()
-    _, receipt_path, receipt_digest = _load_current_migration_receipt(manifest)
+    _, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
     manifest["generation"] = expected["generation"] + 1
     manifest["base_generation"] = expected["generation"]
     manifest["base_sha256"] = expected["sha256"]

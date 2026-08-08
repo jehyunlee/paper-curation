@@ -574,6 +574,20 @@ class BibliographyAffiliationTests(unittest.TestCase):
         }
         self.assertTrue(set(bib.PAPER_SCHEMA_COLUMNS).issubset(columns))
         conn.close()
+    def test_fresh_schema_origin_receipt_id_is_deterministic(self):
+        origin = {
+            "schema_version": "affiliation-2",
+            "registry_sha256": "registry",
+            "event_head": "event",
+            "policy_version": "policy",
+            "source_sha256": "source",
+        }
+        receipt_id = bib.fresh_schema_origin_receipt_id(**origin)
+        self.assertEqual(receipt_id, bib.fresh_schema_origin_receipt_id(
+            **{key: origin[key] for key in reversed(origin)}))
+        self.assertNotEqual(receipt_id, "fresh-schema")
+        self.assertNotEqual(receipt_id, bib.fresh_schema_origin_receipt_id(
+            **{**origin, "event_head": "changed"}))
 
 
 if __name__ == "__main__":

@@ -30,6 +30,23 @@ class BibliographySyncCASTests(unittest.TestCase):
         connection.commit()
         connection.close()
         return path
+    def make_fresh_db(self, path):
+        self.make_latest_db(path)
+        metadata = {
+            "schema_version": "affiliation-2",
+            "registry_sha256": "registry",
+            "event_head": "event",
+            "policy_version": "policy",
+            "source_sha256": "source",
+        }
+        receipt = sync._fresh_schema_origin_receipt(metadata)
+        connection = sqlite3.connect(path)
+        connection.execute(
+            "UPDATE affiliation_registry_metadata SET migration_receipt_id=?",
+            (receipt["receipt_id"],))
+        connection.commit()
+        connection.close()
+        return path
     def add_migration_audit(self, path, receipt):
         connection = sqlite3.connect(path)
         connection.execute(
@@ -128,6 +145,104 @@ class BibliographySyncCASTests(unittest.TestCase):
         manifest.pop("migration_receipt_object")
         with self.assertRaisesRegex(RuntimeError, "migration_receipt_object"):
             sync._validate_manifest(manifest)
+    def test_fresh_schema_origin_receipt_is_content_derived_and_stable(self):
+        metadata = {
+            "schema_version": "affiliation-2",
+            "registry_sha256": "registry",
+            "event_head": "event",
+            "policy_version": "policy",
+            "source_sha256": "source",
+        }
+        receipt = sync._fresh_schema_origin_receipt(metadata)
+        self.assertEqual(
+            receipt["receipt_id"],
+            sync._fresh_schema_origin_receipt({
+                key: metadata[key] for key in reversed(metadata)
+            })["receipt_id"])
+        self.assertNotEqual(receipt["receipt_id"], "fresh-schema")
+        manifest = {**metadata, "migration_receipt_id": receipt["receipt_id"]}
+        sync._validate_fresh_schema_receipt(receipt, manifest)
+        receipt["event_head"] = "tampered"
+        with self.assertRaisesRegex(RuntimeError, "fresh-schema origin receipt"):
+            sync._validate_fresh_schema_receipt(receipt, manifest)
+
+    def test_fresh_schema_origin_sidecar_is_constructed_and_reused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
+            with patch.object(sync, "LOCAL_DB", db):
+                manifest = sync.local_manifest()
+                receipt, path, digest = sync._load_current_origin_receipt(manifest)
+                loaded, loaded_path, loaded_digest = (
+                    sync._load_current_origin_receipt(manifest))
+            self.assertEqual(receipt, loaded)
+            self.assertEqual(path, loaded_path)
+            self.assertEqual(digest, loaded_digest)
+            self.assertEqual(receipt["receipt_id"], manifest["migration_receipt_id"])
+            self.assertTrue(path.exists())
+    def test_fresh_schema_push_changed_generation_and_pull(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory_path = Path(directory)
+            source = self.make_fresh_db(directory_path / "source.sqlite3")
+            remote_db = directory_path / "remote.sqlite3"
+            shutil.copyfile(source, remote_db)
+            generations = str(remote_db) + ".generations"
+            manifest_path = str(remote_db) + ".manifest.json"
+            lock_path = str(remote_db) + ".publish.lock"
+            with patch.object(sync, "LOCAL_DB", source):
+                initial = sync.local_manifest()
+                receipt, receipt_path, receipt_digest = (
+                    sync._load_current_origin_receipt(initial))
+            base_manifest = {
+                **initial,
+                "migration_receipt_sha256": receipt_digest,
+                "migration_receipt_object": (
+                    f"{generations}/{0:020d}-{receipt_digest}.migration.json"),
+                "object": (
+                    f"{generations}/{0:020d}-"
+                    f"{initial['logical_sha256']}.sqlite3"),
+            }
+            Path(generations).mkdir()
+            shutil.copyfile(source, base_manifest["object"])
+            shutil.copyfile(receipt_path, base_manifest["migration_receipt_object"])
+            Path(manifest_path).write_text(
+                sync.canonical_manifest(base_manifest), encoding="utf-8")
+            source.with_suffix(".base.json").write_text(
+                sync.canonical_manifest(base_manifest), encoding="utf-8")
+            patches = (
+                patch.object(sync, "REMOTE_DB", str(remote_db)),
+                patch.object(sync, "MANIFEST", manifest_path),
+                patch.object(sync, "LOCK", lock_path),
+                patch.object(sync, "GENERATIONS", generations),
+                patch.object(sync, "_authority_is_local", return_value=True),
+                patch.object(sync, "_ensure_publishable"),
+            )
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], \
+                 patch.object(sync, "LOCAL_DB", source):
+                first = sync.push(None)
+                connection = sqlite3.connect(source)
+                connection.execute("CREATE TABLE later_projection (value TEXT)")
+                connection.commit()
+                connection.close()
+                second = sync.push(None)
+            destination = directory_path / "destination.sqlite3"
+            with patches[0], patches[1], patches[2], patches[3], patches[4], \
+                 patch.object(sync, "LOCAL_DB", destination):
+                pulled = sync.pull()
+            self.assertEqual(first["migration_receipt_id"], second["migration_receipt_id"])
+            self.assertNotEqual(first["logical_sha256"], second["logical_sha256"])
+            self.assertEqual(pulled, second)
+            self.assertTrue(sync.migrator.receipt_path(
+                destination, "fresh-schema").exists())
+
+    def test_tampered_fresh_schema_origin_sidecar_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
+            with patch.object(sync, "LOCAL_DB", db):
+                manifest = sync.local_manifest()
+                path = sync._fresh_schema_receipt_path()
+                path.write_text('{"receipt_id":"tampered"}', encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError, "fresh-schema origin receipt"):
+                    sync._load_current_origin_receipt(manifest)
 
     def test_bootstrap_refuses_to_fabricate_legacy_authority(self):
         with self.assertRaisesRegex(RuntimeError, "receipt-bound recovery"):
