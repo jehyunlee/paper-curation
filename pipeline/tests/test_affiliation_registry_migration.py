@@ -262,7 +262,7 @@ class AffiliationRegistryMigrationTests(unittest.TestCase):
             self.assertEqual(history, [(1, 0, "superseded"), (2, 1, "unseen")])
             self.assertEqual(pending, ("rejected", 0, 1))
 
-    def test_removed_slot_is_superseded_and_not_current(self):
+    def test_removed_slot_keeps_one_current_terminal_observation(self):
         with tempfile.TemporaryDirectory() as directory:
             registry_path, snapshot = self.make_registry_file(directory)
             conn = sqlite3.connect(Path(directory) / "removed.sqlite3")
@@ -279,7 +279,7 @@ class AffiliationRegistryMigrationTests(unittest.TestCase):
             self.assertEqual(conn.execute(
                 "SELECT is_current,resolution_status FROM observed_affiliations "
                 "WHERE observation_slot_id=?", (slot_id,)).fetchone(),
-                (0, "superseded"))
+                (1, "superseded"))
             self.assertEqual(conn.execute(
                 "SELECT active_observation_count FROM affiliation_pending_cases").fetchone()[0], 0)
             conn.close()

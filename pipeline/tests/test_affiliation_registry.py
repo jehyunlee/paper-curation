@@ -610,6 +610,28 @@ class AffiliationRegistryTests(unittest.TestCase):
                 observed["issues"],
             )
 
+    def test_terminal_slots_require_a_current_superseded_observation(self):
+        conn = sqlite3.connect(":memory:")
+        conn.executescript("""
+            CREATE TABLE observed_affiliation_slots (
+                observation_slot_id TEXT PRIMARY KEY);
+            CREATE TABLE observed_affiliations (
+                observation_slot_id TEXT NOT NULL,
+                observation_version INTEGER NOT NULL,
+                resolution_status TEXT NOT NULL,
+                is_current INTEGER NOT NULL);
+        """)
+        conn.execute(
+            "INSERT INTO observed_affiliation_slots VALUES (?)", ("terminal-slot",))
+        conn.execute(
+            "INSERT INTO observed_affiliations VALUES (?,?,?,?)",
+            ("terminal-slot", 1, "superseded", 1),
+        )
+        self.assertEqual(checker.invalid_slot_current_version_count(conn), 0)
+        conn.execute("UPDATE observed_affiliations SET is_current=0 "
+                     "WHERE observation_slot_id=?", ("terminal-slot",))
+        self.assertEqual(checker.invalid_slot_current_version_count(conn), 1)
+        conn.close()
     def test_projection_rejects_orphan_compatibility_group_rows(self):
         tiny = registry.build_registry({"1": {"af_name": ["One"]}})
         with tempfile.TemporaryDirectory() as directory:

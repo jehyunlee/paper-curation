@@ -309,6 +309,91 @@ class BibliographyAffiliationTests(unittest.TestCase):
             1)
         connection.close()
 
+    def test_removed_source_slot_remains_current_and_is_not_reresolved(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        connection.execute("PRAGMA foreign_keys=OFF")
+        connection.execute(
+            "INSERT INTO observed_affiliation_slots VALUES (?,?,?,?,?,?)",
+            ("removed-slot", 1, "review", "paper", 0, "seen"))
+        connection.execute(
+            "INSERT INTO observed_affiliations "
+            "(observation_id,observation_slot_id,observation_version,"
+            "raw_content_sha256,raw_name,normalized_raw_name,"
+            "observed_country_code,observed_country_name,"
+            "external_identifiers_json,raw_context_sha256,resolution_status,"
+            "registry_sha256,policy_version,first_seen_at,last_seen_at,is_current) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ("removed-observation", "removed-slot", 1, "content",
+             "Removed University", "removed university", "", "", "{}",
+             "context", "unseen", "digest", "policy", "seen", "seen", 1))
+        connection.execute(
+            "INSERT INTO affiliation_pending_cases "
+            "(pending_id,normalized_raw_name,observed_country_code,"
+            "external_identifiers_json,status,reason_code,first_seen_at,"
+            "last_seen_at,active_observation_count,lifetime_observation_count) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)",
+            ("pending", "removed university", "", "{}", "open", "unseen",
+             "seen", "seen", 1, 1))
+        connection.execute(
+            "INSERT INTO affiliation_pending_observations VALUES (?,?,?)",
+            ("pending", "removed-observation", "seen"))
+        bib.supersede_removed_affiliation_slots(
+            connection, 1, "paper", set(), {"policy_version": "policy"})
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM observed_affiliations "
+                "WHERE observation_slot_id='removed-slot' AND is_current=1").fetchone()[0],
+            1)
+        self.assertEqual(
+            connection.execute(
+                "SELECT resolution_status FROM observed_affiliations "
+                "WHERE observation_id='removed-observation'").fetchone()[0],
+            "superseded")
+        self.assertEqual(
+            connection.execute(
+                "SELECT active_observation_count FROM affiliation_pending_cases "
+                "WHERE pending_id='pending'").fetchone()[0],
+            0)
+        decision_count = connection.execute(
+            "SELECT COUNT(*) FROM affiliation_resolution_decisions "
+            "WHERE observation_id='removed-observation'").fetchone()[0]
+        bib.reresolve_current_affiliations(
+            connection, {"policy_version": "policy"}, "digest")
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM affiliation_resolution_decisions "
+                "WHERE observation_id='removed-observation'").fetchone()[0],
+            decision_count)
+        connection.close()
+
+    def test_repair_restores_current_terminal_observation_for_legacy_slot(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        connection.execute(
+            "INSERT INTO papers (paper_id,slug,title,review_dir) "
+            "VALUES (1,'paper','Paper','docs/papers/paper')")
+        connection.execute(
+            "INSERT INTO observed_affiliation_slots VALUES (?,?,?,?,?,?)",
+            ("legacy-slot", 1, "review", "paper", 0, "seen"))
+        connection.execute(
+            "INSERT INTO observed_affiliations "
+            "(observation_id,observation_slot_id,observation_version,"
+            "raw_content_sha256,raw_name,normalized_raw_name,"
+            "observed_country_code,observed_country_name,"
+            "external_identifiers_json,raw_context_sha256,resolution_status,"
+            "registry_sha256,policy_version,first_seen_at,last_seen_at,is_current) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ("legacy-observation", "legacy-slot", 1, "content",
+             "Removed University", "removed university", "", "", "{}",
+             "context", "superseded", "digest", "policy", "seen", "seen", 0))
+        bib.repair_terminal_superseded_current_slots(connection)
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM observed_affiliations "
+                "WHERE observation_slot_id='legacy-slot' AND is_current=1").fetchone()[0],
+            1)
+        connection.close()
     def test_source_records_preserve_each_source_slot_before_deduplication(self):
         records = bib.source_affiliation_records(
             [{"name": "Same University", "scopus_id": "one"},

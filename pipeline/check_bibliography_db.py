@@ -15,6 +15,17 @@ def issue(conn, sql, message, issues):
     if n:
         issues.append(f'{message}: {n}')
 
+def invalid_slot_current_version_count(conn):
+    return conn.execute(
+        "SELECT COUNT(*) FROM observed_affiliation_slots s WHERE "
+        "(SELECT COUNT(*) FROM observed_affiliations o "
+        " WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)<>1 "
+        "OR ((SELECT observation_version FROM observed_affiliations o "
+        "     WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)"
+        "    <>(SELECT MAX(observation_version) FROM observed_affiliations o "
+        "       WHERE o.observation_slot_id=s.observation_slot_id))"
+    ).fetchone()[0]
+
 
 def projection_issues(conn, registry, issues):
     expected_orgs = {
@@ -518,25 +529,9 @@ def main(argv=None) -> int:
                 operational_baseline_issues(conn, baseline, registry, report, issues)
             if conn.execute('PRAGMA quick_check').fetchone()[0] != 'ok': issues.append('sqlite quick_check failed')
             if conn.execute('PRAGMA foreign_key_check').fetchone() is not None: issues.append('foreign key violation')
-            issue(
-                conn,
-                "SELECT COUNT(*) FROM observed_affiliation_slots s WHERE "
-                "(SELECT COUNT(*) FROM observed_affiliations o "
-                " WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)>1 "
-                "OR ((SELECT COUNT(*) FROM observed_affiliations o "
-                "     WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)=1 "
-                "    AND (SELECT observation_version FROM observed_affiliations o "
-                "         WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)"
-                "        <>(SELECT MAX(observation_version) FROM observed_affiliations o "
-                "           WHERE o.observation_slot_id=s.observation_slot_id)) "
-                "OR ((SELECT COUNT(*) FROM observed_affiliations o "
-                "     WHERE o.observation_slot_id=s.observation_slot_id AND o.is_current=1)=0 "
-                "    AND COALESCE((SELECT resolution_status FROM observed_affiliations o "
-                "                  WHERE o.observation_slot_id=s.observation_slot_id "
-                "                  ORDER BY observation_version DESC LIMIT 1),'')<>'superseded')",
-                'slot current-version invariant',
-                issues,
-            )
+            invalid_slot_count = invalid_slot_current_version_count(conn)
+            if invalid_slot_count:
+                issues.append(f"slot current-version invariant: {invalid_slot_count}")
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases WHERE active_observation_count<0 OR lifetime_observation_count<active_observation_count OR (status IN ('open','proposed') AND (active_observation_count=0 OR resolved_event_id<>'')) OR (status IN ('resolved','rejected') AND (active_observation_count<>0 OR resolved_event_id=''))",'pending status/count/terminal-reference invariant',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases p WHERE active_observation_count != (SELECT COUNT(*) FROM affiliation_pending_observations l JOIN observed_affiliations o USING(observation_id) WHERE l.pending_id=p.pending_id AND o.is_current=1 AND o.resolution_status IN ('ambiguous','unseen'))",'pending active recount mismatch',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases p WHERE lifetime_observation_count != (SELECT COUNT(*) FROM affiliation_pending_observations l WHERE l.pending_id=p.pending_id)",'pending lifetime recount mismatch',issues)

@@ -1657,7 +1657,8 @@ def reresolve_current_affiliations(conn: sqlite3.Connection, registry: dict,
         "SELECT observation_id,normalized_raw_name,observed_country_code,"
         "observed_country_name,external_identifiers_json,resolved_organization_id,"
         "resolution_status,current_decision_id "
-        "FROM observed_affiliations WHERE is_current=1 ORDER BY observation_id"
+        "FROM observed_affiliations WHERE is_current=1 "
+        "AND resolution_status!='superseded' ORDER BY observation_id"
     ).fetchall()
     for (observation_id, normalized, country_code, country, external_json,
          old_selected, old_status, previous) in rows:
@@ -1822,6 +1823,7 @@ def project_affiliation_registry(conn: sqlite3.Connection) -> dict:
             for evidence_id in edge.get("evidence_ids", []):
                 conn.execute("INSERT INTO affiliation_relationship_evidence VALUES (?,?)",
                              (edge["relationship_id"], evidence_id))
+    repair_terminal_superseded_current_slots(conn)
     reresolve_current_affiliations(conn, registry, digest)
     _project_compatibility_groups(conn, registry)
     conn.execute("INSERT OR REPLACE INTO affiliation_registry_metadata VALUES (1,?,?,?,?,?,?,?,?,?)",
@@ -1921,10 +1923,10 @@ def record_affiliation_observation(
     content = hashlib.sha256(affiliation_registry.canonical_json_bytes(
         [raw, normalized_country, external_identifiers, context_digest])).hexdigest()
     prior = conn.execute(
-        "SELECT observation_id,observation_version,raw_content_sha256,current_decision_id "
-        "FROM observed_affiliations WHERE observation_slot_id=? AND is_current=1",
+        "SELECT observation_id,observation_version,raw_content_sha256,current_decision_id,"
+        "resolution_status FROM observed_affiliations WHERE observation_slot_id=? AND is_current=1",
         (slot_id,)).fetchone()
-    if prior and prior[2] == content:
+    if prior and prior[2] == content and prior[4] != "superseded":
         conn.execute("UPDATE observed_affiliations SET last_seen_at=? WHERE observation_id=?",
                      (now, prior[0]))
         return slot_id
@@ -2033,7 +2035,7 @@ def supersede_removed_affiliation_slots(
                      (decision_id, observation_id, sequence, "superseded", None,
                       "source_slot_removed", 1.0, digest, registry["policy_version"],
                       now, now, previous_decision or ""))
-        conn.execute("UPDATE observed_affiliations SET is_current=0,resolution_status='superseded',"
+        conn.execute("UPDATE observed_affiliations SET resolution_status='superseded',"
                      "current_decision_id=? WHERE observation_id=?", (decision_id, observation_id))
         for (pending_id,) in conn.execute(
                 "SELECT pending_id FROM affiliation_pending_observations WHERE observation_id=?",
@@ -2046,6 +2048,32 @@ def supersede_removed_affiliation_slots(
         pending_ids.update(local_pending_ids)
         if terminal_decisions is not None:
             terminal_decisions.update(local_terminal)
+def repair_terminal_superseded_current_slots(conn: sqlite3.Connection) -> None:
+    """Restore one current terminal row for legacy slots that lost it on removal."""
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    rows = conn.execute(
+        "SELECT o.observation_id,o.current_decision_id FROM observed_affiliation_slots s "
+        "JOIN observed_affiliations o USING(observation_slot_id) "
+        "WHERE o.resolution_status='superseded' "
+        "AND o.observation_version=(SELECT MAX(latest.observation_version) "
+        "FROM observed_affiliations latest WHERE latest.observation_slot_id=s.observation_slot_id) "
+        "AND NOT EXISTS (SELECT 1 FROM observed_affiliations current_row "
+        "WHERE current_row.observation_slot_id=s.observation_slot_id AND current_row.is_current=1) "
+        "ORDER BY o.observation_slot_id"
+    ).fetchall()
+    pending_ids: set[str] = set()
+    terminal: dict[str, tuple[str, str]] = {}
+    for observation_id, decision_id in rows:
+        conn.execute(
+            "UPDATE observed_affiliations SET is_current=1 WHERE observation_id=?",
+            (observation_id,))
+        for (pending_id,) in conn.execute(
+                "SELECT pending_id FROM affiliation_pending_observations "
+                "WHERE observation_id=?", (observation_id,)):
+            pending_ids.add(pending_id)
+            terminal[pending_id] = ("rejected", decision_id or "")
+    if pending_ids:
+        recount_affiliation_pending_cases(conn, pending_ids, terminal, now)
 
 def source_affiliation_records(scopus_records: list[dict],
                                fallback_lines: list[str]) -> list[dict]:

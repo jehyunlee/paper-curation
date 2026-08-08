@@ -51,12 +51,12 @@ def _required_manifest_fields(*, rollback: bool = False) -> set[str]:
     fields = {
         "database", "generation", "sha256", "logical_sha256", "schema_version",
         "registry_sha256", "event_head", "policy_version", "source_sha256",
-        "migration_receipt_id", "updated_at", "object",
+        "migration_receipt_id", "migration_receipt_sha256",
+        "migration_receipt_object", "updated_at", "object",
     }
     if rollback:
         fields |= {
             "base_generation", "base_sha256", "base_logical_sha256",
-            "migration_receipt_id", "migration_receipt_sha256",
             "restored_schema_version", "requires_controlled_remigration",
         }
     return fields
@@ -74,6 +74,10 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False) -> None:
     if manifest["object"] != (
             f"{GENERATIONS}/{manifest['generation']:020d}-{manifest['logical_sha256']}.sqlite3"):
         raise RuntimeError("manifest immutable object name mismatch")
+    if manifest["migration_receipt_object"] != (
+            f"{GENERATIONS}/{manifest['generation']:020d}-"
+            f"{manifest['migration_receipt_sha256']}.migration.json"):
+        raise RuntimeError("manifest immutable migration receipt name mismatch")
 
 
 def _inspect_sqlite(path: Path, *, require_affiliation: bool) -> dict:
@@ -184,6 +188,30 @@ def local_manifest() -> dict:
         "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         **metadata,
     }
+def _migration_receipt_path() -> Path:
+    return migrator.receipt_path(LOCAL_DB, "migrate")
+
+
+def _load_current_migration_receipt(manifest: dict) -> tuple[dict, Path, str]:
+    path = _migration_receipt_path()
+    if not path.exists():
+        raise RuntimeError("missing local migration receipt sidecar")
+    try:
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("invalid local migration receipt sidecar") from exc
+    receipt_digest = sha(path)
+    if (receipt.get("operation") != "migrate"
+            or receipt.get("receipt_id") != manifest["migration_receipt_id"]
+            or receipt.get("result_sha256") != manifest["sha256"]
+            or receipt.get("result_logical_sha256") != manifest["logical_sha256"]
+            or receipt.get("schema_to") != manifest["schema_version"]
+            or any(receipt.get(key) != manifest[key] for key in (
+                "registry_sha256", "event_head", "policy_version", "source_sha256"))):
+        raise RuntimeError("migration receipt does not bind the current local DB")
+    migrator._verify_current_result(LOCAL_DB, receipt)
+    _verify_migration_audit(receipt, manifest)
+    return receipt, path, receipt_digest
 
 
 def _remote_q(value: str) -> str:
@@ -206,6 +234,16 @@ def _remote_fsync(path: str) -> str:
         "d=os.open(sys.argv[3],os.O_RDONLY); os.fsync(d); os.close(d)' "
         f"{_remote_q(path)} {_remote_q(str(Path(path).parent))} "
         f"{_remote_q(str(Path(path).parent.parent))}; "
+    )
+
+
+def _atomic_remote_copy(source: str, destination: str, token: str) -> str:
+    temporary = f"{destination}.current.{token}"
+    return (
+        f"cp {_remote_q(source)} {_remote_q(temporary)}; "
+        + _remote_fsync(temporary)
+        + f"mv {_remote_q(temporary)} {_remote_q(destination)}; "
+        + _remote_fsync(destination)
     )
 
 
@@ -245,42 +283,10 @@ def _verify_migration_audit(receipt: dict, manifest: dict) -> None:
 
 
 def bootstrap():
-    """Create generation zero only if remote DB and manifest are still unchanged."""
-    digest = remote(
-        f"test -f {_remote_q(REMOTE_DB)} && shasum -a 256 {_remote_q(REMOTE_DB)} | awk '{{print $1}}'",
-        capture=True,
-    ).stdout.strip()
-    if not digest:
-        raise RuntimeError("cannot bootstrap: remote bibliography DB is missing")
-    metadata = _remote_bootstrap_metadata()
-    manifest = {"database": Path(REMOTE_DB).name, "generation": 0, "sha256": digest,
-                "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "object": f"{GENERATIONS}/{0:020d}-{metadata['logical_sha256']}.sqlite3",
-                **metadata}
-    _validate_manifest(manifest)
-    payload = canonical_manifest(manifest)
-    generation = manifest["object"]
-    script = (
-        f"mkdir {_remote_q(LOCK)} || exit 75; trap 'rmdir {_remote_q(LOCK)}' EXIT; "
-        f"test ! -e {_remote_q(MANIFEST)} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(REMOTE_DB)} | awk '{{print $1}}')\" = {_remote_q(digest)} || exit 74; "
-        f"mkdir -p {_remote_q(GENERATIONS)}; "
-        f"if test -e {_remote_q(generation)}; then "
-        f"test \"$(shasum -a 256 {_remote_q(generation)} | awk '{{print $1}}')\" = {_remote_q(digest)} "
-        f"&& python3 -c 'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
-        "ok=c.execute(\"PRAGMA quick_check\").fetchone()[0]==\"ok\"; c.close(); raise SystemExit(not ok)' "
-        f"{_remote_q(generation)} || {{ rm -f {_remote_q(generation)}; cp {_remote_q(REMOTE_DB)} {_remote_q(generation)}; }}; "
-        f"else cp {_remote_q(REMOTE_DB)} {_remote_q(generation)}; fi; "
-        f"test \"$(shasum -a 256 {_remote_q(generation)} | awk '{{print $1}}')\" = {_remote_q(digest)} || exit 74; "
-        + _remote_fsync(generation)
-        + _atomic_remote_json(MANIFEST, payload)
-    )
-    try:
-        remote(script)
-    except subprocess.CalledProcessError as exc:
-        raise RuntimeError("bootstrap conflict or remote publish lock busy") from exc
-    print(canonical_manifest(manifest))
-    return manifest
+    """Legacy bootstrap is intentionally forbidden without receipt recovery."""
+    raise RuntimeError(
+        "cannot bootstrap authority without a receipt-bound recovery set; "
+        "use --seed-legacy-recovery")
 
 
 def pull():
@@ -309,7 +315,20 @@ def pull():
                     raise RuntimeError(f"remote manifest {key} mismatch")
         elif manifest["schema_version"] != manifest["restored_schema_version"]:
             raise RuntimeError("rollback manifest restored schema mismatch")
+        receipt = Path(directory) / "migration-receipt"
+        run(["scp", "-q", HOST + ":" + manifest["migration_receipt_object"], str(receipt)])
+        if sha(receipt) != manifest["migration_receipt_sha256"]:
+            raise RuntimeError("remote migration receipt hash mismatch")
+        try:
+            receipt_value = json.loads(receipt.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("remote migration receipt is invalid") from exc
+        if receipt_value.get("receipt_id") != manifest["migration_receipt_id"]:
+            raise RuntimeError("remote migration receipt ID mismatch")
+        if not rollback:
+            migrator._verify_current_result(db, receipt_value)
         os.replace(db, LOCAL_DB)
+        migrator._atomic_json(_migration_receipt_path(), receipt_value)
         LOCAL_DB.with_suffix(".base.json").write_text(
             canonical_manifest(manifest), encoding="utf-8")
         marker = _remigration_marker()
@@ -342,44 +361,50 @@ def push(base_receipt: Path | None):
     if expected.get("requires_controlled_remigration"):
         raise RuntimeError("remigration required before bibliography synchronization")
     expected_payload = canonical_manifest(expected)
-    upload = REMOTE_DB + ".upload." + uuid.uuid4().hex
+    upload_id = uuid.uuid4().hex
+    upload = REMOTE_DB + ".upload." + upload_id
+    receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
     manifest = local_manifest()
+    _, receipt_path, receipt_digest = _load_current_migration_receipt(manifest)
     manifest["generation"] = expected["generation"] + 1
     manifest["base_generation"] = expected["generation"]
     manifest["base_sha256"] = expected["sha256"]
     manifest["base_logical_sha256"] = expected["logical_sha256"]
+    manifest["migration_receipt_sha256"] = receipt_digest
     manifest["object"] = (
         f"{GENERATIONS}/{manifest['generation']:020d}-{manifest['logical_sha256']}.sqlite3")
+    manifest["migration_receipt_object"] = (
+        f"{GENERATIONS}/{manifest['generation']:020d}-{receipt_digest}.migration.json")
     _validate_manifest(manifest)
     payload = canonical_manifest(manifest)
     run(["scp", "-q", str(LOCAL_DB), HOST + ":" + upload])
+    run(["scp", "-q", str(receipt_path), HOST + ":" + receipt_upload])
     object_path = manifest["object"]
+    receipt_object = manifest["migration_receipt_object"]
     script = (
         f"mkdir {_remote_q(LOCK)} || exit 75; trap 'rmdir {_remote_q(LOCK)}' EXIT; "
         f"test -f {_remote_q(MANIFEST)} || exit 74; "
         f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; "
         f"test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
         f"test \"$(shasum -a 256 {_remote_q(upload)} | awk '{{print $1}}')\" = {_remote_q(manifest['sha256'])} || exit 74; "
+        f"test \"$(shasum -a 256 {_remote_q(receipt_upload)} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
         f"python3 -c 'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
         "ok=c.execute(\"PRAGMA quick_check\").fetchone()[0]==\"ok\"; c.close(); raise SystemExit(not ok)' "
-        f"{_remote_q(upload)} || exit 74; "
-        f"mkdir -p {_remote_q(GENERATIONS)}; "
-        f"if test -e {_remote_q(object_path)}; then "
-        f"test \"$(shasum -a 256 {_remote_q(object_path)} | awk '{{print $1}}')\" = {_remote_q(manifest['sha256'])} "
-        f"&& python3 -c 'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
-        "ok=c.execute(\"PRAGMA quick_check\").fetchone()[0]==\"ok\"; c.close(); raise SystemExit(not ok)' "
-        f"{_remote_q(object_path)} && rm -f {_remote_q(upload)} || "
-        f"{{ rm -f {_remote_q(object_path)}; mv {_remote_q(upload)} {_remote_q(object_path)}; }}; "
-        f"else mv {_remote_q(upload)} {_remote_q(object_path)}; fi; "
-        f"test \"$(shasum -a 256 {_remote_q(object_path)} | awk '{{print $1}}')\" = {_remote_q(manifest['sha256'])} || exit 74; "
+        f"{_remote_q(upload)} || exit 74; mkdir -p {_remote_q(GENERATIONS)}; "
+        f"for pair in {_remote_q(upload)}:{_remote_q(object_path)} {_remote_q(receipt_upload)}:{_remote_q(receipt_object)}; do "
+        "src=${pair%%:*}; dst=${pair#*:}; if test -e \"$dst\"; then "
+        "test \"$(shasum -a 256 \"$dst\" | awk '{print $1}')\" = \"$(shasum -a 256 \"$src\" | awk '{print $1}')\" "
+        "&& rm -f \"$src\" || { rm -f \"$dst\"; mv \"$src\" \"$dst\"; }; else mv \"$src\" \"$dst\"; fi; done; "
         + _remote_fsync(object_path)
+        + _remote_fsync(receipt_object)
+        + _atomic_remote_copy(object_path, REMOTE_DB, upload_id)
         + _atomic_remote_json(MANIFEST, payload)
     )
     try:
         remote(script)
     except subprocess.CalledProcessError as exc:
         try:
-            remote(f"rm -f {_remote_q(upload)}")
+            remote(f"rm -f {_remote_q(upload)} {_remote_q(receipt_upload)}")
         except subprocess.CalledProcessError:
             pass
         raise RuntimeError("CAS conflict or remote publish lock busy") from exc
@@ -387,6 +412,73 @@ def push(base_receipt: Path | None):
     print(payload)
     return manifest
 
+
+def seed_legacy_recovery(base_receipt: Path | None) -> dict:
+    """Publish the verified retained pre-migration DB as a monotonic recovery generation."""
+    _ensure_publishable()
+    base = base_receipt or LOCAL_DB.with_suffix(".base.json")
+    if not base.exists():
+        raise RuntimeError("legacy recovery seed requires the pulled generation receipt")
+    expected = json.loads(base.read_text(encoding="utf-8"))
+    required = {"database", "generation", "sha256", "logical_sha256"}
+    if any(expected.get(key) in (None, "") for key in required):
+        raise RuntimeError("legacy recovery seed base receipt is incomplete")
+    manifest = local_manifest()
+    receipt, receipt_path, receipt_digest = _load_current_migration_receipt(manifest)
+    backup = Path(receipt["backup"])
+    if not backup.exists() or sha(backup) != receipt["backup_sha256"]:
+        raise RuntimeError("legacy recovery seed requires the retained migration backup")
+    probe = sqlite3.connect(backup)
+    try:
+        if (probe.execute("PRAGMA quick_check").fetchone()[0] != "ok"
+                or migrator.logical_digest(probe) != receipt["base_logical_sha256"]
+                or migrator._schema_name(probe) != receipt["schema_from"]):
+            raise RuntimeError("legacy recovery backup provenance mismatch")
+    finally:
+        probe.close()
+    if (receipt["base_generation"] != expected["generation"]
+            or receipt["base_sha256"] != expected["sha256"]
+            or receipt["base_logical_sha256"] != expected["logical_sha256"]):
+        raise RuntimeError("legacy recovery receipt does not bind the retained generation")
+    generation = expected["generation"] + 1
+    result = {
+        "database": expected["database"], "generation": generation,
+        "sha256": sha(backup), "logical_sha256": receipt["base_logical_sha256"],
+        "schema_version": receipt["schema_from"],
+        "registry_sha256": receipt["registry_sha256"], "event_head": receipt["event_head"],
+        "policy_version": receipt["policy_version"], "source_sha256": receipt["source_sha256"],
+        "migration_receipt_id": receipt["receipt_id"],
+        "migration_receipt_sha256": receipt_digest,
+        "migration_receipt_object": f"{GENERATIONS}/{generation:020d}-{receipt_digest}.migration.json",
+        "base_generation": expected["generation"], "base_sha256": expected["sha256"],
+        "base_logical_sha256": expected["logical_sha256"],
+        "restored_schema_version": receipt["schema_from"],
+        "requires_controlled_remigration": True, "operation": "legacy_recovery_seed",
+        "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "object": f"{GENERATIONS}/{generation:020d}-{receipt['base_logical_sha256']}.sqlite3",
+    }
+    _validate_manifest(result, rollback=True)
+    payload, expected_payload = canonical_manifest(result), canonical_manifest(expected)
+    upload_id = uuid.uuid4().hex
+    upload, receipt_upload = REMOTE_DB + ".seed." + upload_id, REMOTE_DB + ".seed-receipt." + upload_id
+    run(["scp", "-q", str(backup), HOST + ":" + upload])
+    run(["scp", "-q", str(receipt_path), HOST + ":" + receipt_upload])
+    script = (
+        f"mkdir {_remote_q(LOCK)} || exit 75; trap 'rmdir {_remote_q(LOCK)}' EXIT; "
+        f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
+        f"test \"$(shasum -a 256 {_remote_q(upload)} | awk '{{print $1}}')\" = {_remote_q(result['sha256'])} || exit 74; "
+        f"test \"$(shasum -a 256 {_remote_q(receipt_upload)} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
+        f"mkdir -p {_remote_q(GENERATIONS)}; mv {_remote_q(upload)} {_remote_q(result['object'])}; "
+        f"mv {_remote_q(receipt_upload)} {_remote_q(result['migration_receipt_object'])}; "
+        + _remote_fsync(result["object"]) + _remote_fsync(result["migration_receipt_object"])
+        + _atomic_remote_copy(result["object"], REMOTE_DB, upload_id)
+        + _atomic_remote_json(MANIFEST, payload))
+    try:
+        remote(script)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("legacy recovery seed CAS conflict or remote publish lock busy") from exc
+    base.write_text(payload, encoding="utf-8")
+    return result
 
 def published_rollback(target_generation: int, base_receipt: Path | None,
                        migration_receipt: Path | None) -> dict:
@@ -415,7 +507,7 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
     missing = sorted(key for key in required_receipt if migration.get(key) in (None, ""))
     if missing:
         raise RuntimeError("migration receipt lacks required provenance: " + ",".join(missing))
-    receipt_digest = hashlib.sha256(migration_receipt.read_bytes()).hexdigest()
+    receipt_digest = sha(migration_receipt)
     if (migration["operation"] != "migrate"
             or migration["receipt_id"] != expected["migration_receipt_id"]
             or migration["result_sha256"] != expected["sha256"]
@@ -424,6 +516,8 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
             or any(migration[key] != expected[key] for key in (
                 "registry_sha256", "event_head", "policy_version", "source_sha256"))):
         raise RuntimeError("migration receipt does not bind the current generation")
+    if receipt_digest != expected["migration_receipt_sha256"]:
+        raise RuntimeError("migration receipt is not the synchronized receipt artifact")
     if target_generation < 0 or target_generation >= expected["generation"]:
         raise RuntimeError("rollback target must be an older retained generation")
     _verify_migration_audit(migration, expected)
@@ -481,6 +575,8 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
     object_path = (
         f"{GENERATIONS}/{manifest['generation']:020d}-{target_logical}.sqlite3")
     manifest["object"] = object_path
+    manifest["migration_receipt_object"] = (
+        f"{GENERATIONS}/{manifest['generation']:020d}-{receipt_digest}.migration.json")
     _validate_manifest(manifest, rollback=True)
     payload = canonical_manifest(manifest)
     script = (
@@ -503,6 +599,12 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
         f"test \"$(shasum -a 256 {_remote_q(object_path)} | awk '{{print $1}}')\" = "
         f"{_remote_q(target_digest)} || exit 74; "
         + _remote_fsync(object_path)
+        + f"test -f {_remote_q(expected['migration_receipt_object'])} || exit 74; "
+        + f"test \"$(shasum -a 256 {_remote_q(expected['migration_receipt_object'])} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
+        + f"cp {_remote_q(expected['migration_receipt_object'])} {_remote_q(manifest['migration_receipt_object'])}; "
+        + _remote_fsync(manifest["migration_receipt_object"])
+        + _atomic_remote_copy(
+            object_path, REMOTE_DB, f"rollback-{manifest['generation']}")
         + _atomic_remote_json(MANIFEST, payload)
     )
     try:
@@ -522,6 +624,7 @@ def main():
     group.add_argument("--status", action="store_true")
     group.add_argument("--bootstrap", action="store_true")
     group.add_argument("--rollback-generation", type=int)
+    group.add_argument("--seed-legacy-recovery", action="store_true")
     parser.add_argument("--base-receipt", type=Path)
     parser.add_argument("--migration-receipt", type=Path)
     args = parser.parse_args()
@@ -534,6 +637,8 @@ def main():
             published_rollback(
                 args.rollback_generation, args.base_receipt,
                 args.migration_receipt)
+        elif args.seed_legacy_recovery:
+            seed_legacy_recovery(args.base_receipt)
         elif args.bootstrap:
             bootstrap()
         else:

@@ -31,6 +31,13 @@ class BibliographySyncCASTests(unittest.TestCase):
         connection.close()
         return path
 
+    def receipt_loader(self, db):
+        path = sync.migrator.receipt_path(db, "migrate")
+        path.write_text("{}", encoding="utf-8")
+        return patch.object(
+            sync, "_load_current_migration_receipt",
+            return_value=({}, path, sync.sha(path)))
+
     def complete_manifest(self, *, generation=0, sha256="file-digest",
                           logical_sha256="logical-digest",
                           schema_version="affiliation-2"):
@@ -45,6 +52,9 @@ class BibliographySyncCASTests(unittest.TestCase):
             "policy_version": "policy",
             "source_sha256": "source",
             "migration_receipt_id": "receipt",
+            "migration_receipt_sha256": "receipt-sha",
+            "migration_receipt_object": (
+                f"{sync.GENERATIONS}/{generation:020d}-receipt-sha.migration.json"),
             "updated_at": "2026-08-08T00:00:00Z",
             "object": (
                 f"{sync.GENERATIONS}/{generation:020d}-{logical_sha256}.sqlite3"),
@@ -65,30 +75,33 @@ class BibliographySyncCASTests(unittest.TestCase):
         manifest = {"sha256": "digest", "generation": 3, "updated_at": "fixed"}
         self.assertEqual(sync.canonical_manifest(manifest),
                          '{"generation":3,"sha256":"digest","updated_at":"fixed"}')
+    def test_manifest_requires_content_addressed_migration_receipt(self):
+        manifest = self.complete_manifest()
+        sync._validate_manifest(manifest)
+        manifest.pop("migration_receipt_object")
+        with self.assertRaisesRegex(RuntimeError, "migration_receipt_object"):
+            sync._validate_manifest(manifest)
+
+    def test_bootstrap_refuses_to_fabricate_legacy_authority(self):
+        with self.assertRaisesRegex(RuntimeError, "receipt-bound recovery"):
+            sync.bootstrap()
+    def test_push_rejects_missing_migration_receipt_before_transport(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            base = Path(directory) / "base.json"
+            base.write_text(sync.canonical_manifest(self.complete_manifest()), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db), \
+                 patch.object(sync, "_ensure_publishable"), \
+                 patch.object(sync, "run") as run:
+                with self.assertRaisesRegex(RuntimeError, "missing local migration receipt"):
+                    sync.push(base)
+            run.assert_not_called()
 
     def test_bootstrap_binds_remote_affiliation_metadata(self):
-        digest = "a" * 64
-        remote = Mock(side_effect=[
-            Mock(stdout=digest),
-            Mock(stdout=json.dumps({
-                "registry_sha256": "registry",
-                "schema_version": "affiliation-2",
-                "event_head": "event",
-                "policy_version": "policy",
-                "source_sha256": "source",
-                "migration_receipt_id": "receipt",
-                "logical_sha256": "b" * 64,
-            })),
-            Mock(stdout=""),
-        ])
-        with patch.object(sync, "remote", remote), \
-             patch.object(sync.time, "strftime",
-                          return_value="2026-08-08T00:00:00Z"):
-            manifest = sync.bootstrap()
-        self.assertEqual(manifest["schema_version"], "affiliation-2")
-        self.assertEqual(manifest["registry_sha256"], "registry")
-        self.assertIn('"schema_version":"affiliation-2"',
-                      remote.call_args_list[2].args[0])
+        with patch.object(sync, "remote") as remote:
+            with self.assertRaisesRegex(RuntimeError, "receipt-bound recovery"):
+                sync.bootstrap()
+        remote.assert_not_called()
 
     def test_pull_of_published_rollback_writes_hard_stop_marker(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -96,6 +109,8 @@ class BibliographySyncCASTests(unittest.TestCase):
             local_db = directory_path / "bibliography.sqlite3"
             remote_db = directory_path / "remote.sqlite3"
             sqlite3.connect(remote_db).close()
+            receipt = directory_path / "receipt.json"
+            receipt.write_text('{"receipt_id":"receipt"}', encoding="utf-8")
             logical = sync._logical_sha(remote_db)
             manifest = {
                 **self.complete_manifest(
@@ -107,15 +122,21 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "base_logical_sha256": "base-logical",
                 "requires_controlled_remigration": True,
                 "migration_receipt_id": "receipt",
-                "migration_receipt_sha256": "receipt-sha",
+                "migration_receipt_sha256": sync.sha(receipt),
                 "restored_schema_version": "legacy",
             }
+            manifest["migration_receipt_object"] = (
+                f"{sync.GENERATIONS}/{manifest['generation']:020d}-"
+                f"{manifest['migration_receipt_sha256']}.migration.json")
 
             def transport(command, **_kwargs):
                 destination = Path(command[-1])
-                if command[-2].endswith(sync.MANIFEST):
+                source = command[-2]
+                if source.endswith(sync.MANIFEST):
                     destination.write_text(
                         sync.canonical_manifest(manifest), encoding="utf-8")
+                elif source.endswith(manifest["migration_receipt_object"]):
+                    shutil.copyfile(receipt, destination)
                 else:
                     shutil.copyfile(remote_db, destination)
                 return Mock()
@@ -129,7 +150,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     json.loads(marker.read_text())["manifest_generation"], 8)
                 with self.assertRaisesRegex(RuntimeError, "remigration required"):
                     sync.pull()
-            self.assertEqual(run.call_count, 2)
+            self.assertEqual(run.call_count, 3)
 
 
     def test_push_rejects_missing_base_receipt_before_any_transport(self):
@@ -165,6 +186,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             ids = [Mock(hex="first"), Mock(hex="second")]
             with patch.object(sync, "LOCAL_DB", db), \
                  patch.object(sync, "_ensure_publishable"), \
+                 self.receipt_loader(db), \
                  patch.object(sync, "run", run), \
                  patch.object(sync, "remote", remote), \
                  patch.object(sync.uuid, "uuid4", side_effect=ids), \
@@ -172,9 +194,13 @@ class BibliographySyncCASTests(unittest.TestCase):
                 first = sync.push(first_base)
                 second = sync.push(second_base)
             uploads = [call.args[0][3] for call in run.call_args_list]
-            self.assertEqual(uploads, [sync.HOST + ":" + sync.REMOTE_DB + ".upload.first",
-                                       sync.HOST + ":" + sync.REMOTE_DB + ".upload.second"])
-            self.assertNotEqual(uploads[0], uploads[1])
+            self.assertEqual(uploads, [
+                sync.HOST + ":" + sync.REMOTE_DB + ".upload.first",
+                sync.HOST + ":" + sync.REMOTE_DB + ".receipt.upload.first",
+                sync.HOST + ":" + sync.REMOTE_DB + ".upload.second",
+                sync.HOST + ":" + sync.REMOTE_DB + ".receipt.upload.second",
+            ])
+            self.assertNotEqual(uploads[0], uploads[2])
             self.assertEqual(first["generation"], 8)
             self.assertEqual(second["generation"], 8)
             self.assertEqual(json.loads(first_base.read_text()), first)
@@ -188,13 +214,15 @@ class BibliographySyncCASTests(unittest.TestCase):
                 self.complete_manifest(generation=1)), encoding="utf-8")
             with patch.object(sync, "LOCAL_DB", db), patch.object(sync, "run"), \
                  patch.object(sync, "_ensure_publishable"), \
+                 self.receipt_loader(db), \
                  patch.object(sync, "remote") as remote, \
                  patch.object(sync.uuid, "uuid4", return_value=Mock(hex="generation")):
                 sync.push(base)
             script = remote.call_args.args[0]
             self.assertIn(".generations/", script)
-            self.assertLess(script.index("mv " + sync.REMOTE_DB + ".upload.generation"),
-                            script.rindex("manifest.json"))
+            self.assertLess(
+                script.index(sync.REMOTE_DB + ".upload.generation"),
+                script.rindex("manifest.json"))
 
     def test_push_converts_remote_cas_conflict_to_safe_error_and_removes_upload(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -205,6 +233,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             remote = Mock(side_effect=subprocess.CalledProcessError(74, ["ssh"]))
             with patch.object(sync, "LOCAL_DB", db), \
                  patch.object(sync, "_ensure_publishable"), \
+                 self.receipt_loader(db), \
                  patch.object(sync, "run"), \
                  patch.object(sync, "remote", remote), \
                  patch.object(sync.uuid, "uuid4", return_value=Mock(hex="conflict")):
@@ -228,7 +257,6 @@ class BibliographySyncCASTests(unittest.TestCase):
                 generation=5, sha256="current",
                 logical_sha256="current-logical")
             expected["migration_receipt_id"] = "migration-receipt"
-            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
             migration_receipt = Path(directory) / "migration.json"
             migration_receipt.write_text(json.dumps({
                 "operation": "migrate",
@@ -245,6 +273,11 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "policy_version": "policy",
                 "source_sha256": "source",
             }), encoding="utf-8")
+            expected["migration_receipt_sha256"] = sync.sha(migration_receipt)
+            expected["migration_receipt_object"] = (
+                f"{sync.GENERATIONS}/{expected['generation']:020d}-"
+                f"{expected['migration_receipt_sha256']}.migration.json")
+            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
 
             def transport(command, **_kwargs):
                 shutil.copyfile(target_source, Path(command[-1]))
@@ -285,7 +318,6 @@ class BibliographySyncCASTests(unittest.TestCase):
                 generation=3, sha256="current",
                 logical_sha256="current-logical")
             expected["migration_receipt_id"] = "migration-receipt"
-            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
             migration_receipt = Path(directory) / "migration.json"
             migration_receipt.write_text(json.dumps({
                 "operation": "migrate",
@@ -302,6 +334,11 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "policy_version": "policy",
                 "source_sha256": "source",
             }), encoding="utf-8")
+            expected["migration_receipt_sha256"] = sync.sha(migration_receipt)
+            expected["migration_receipt_object"] = (
+                f"{sync.GENERATIONS}/{expected['generation']:020d}-"
+                f"{expected['migration_receipt_sha256']}.migration.json")
+            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
             with patch.object(sync, "LOCAL_DB", db), \
                  patch.object(sync, "_ensure_publishable"), \
                  patch.object(sync, "remote") as remote:
@@ -333,6 +370,9 @@ class BibliographySyncCASTests(unittest.TestCase):
             "registry_sha256": "registry", "event_head": "event",
             "policy_version": "policy", "source_sha256": "source",
             "migration_receipt_id": "receipt", "updated_at": "2026-08-08T00:00:00Z",
+            "migration_receipt_sha256": "receipt-sha",
+            "migration_receipt_object": (
+                f"{sync.GENERATIONS}/{1:020d}-receipt-sha.migration.json"),
             "object": f"{sync.GENERATIONS}/1-{'b' * 64}.sqlite3",
         }
         with self.assertRaisesRegex(RuntimeError, "immutable object name"):
@@ -345,12 +385,14 @@ class BibliographySyncCASTests(unittest.TestCase):
                 self.complete_manifest(generation=1)), encoding="utf-8")
             with patch.object(sync, "LOCAL_DB", db), patch.object(sync, "run"), \
                  patch.object(sync, "_ensure_publishable"), \
+                 self.receipt_loader(db), \
                  patch.object(sync, "remote") as remote, \
                  patch.object(sync.uuid, "uuid4", return_value=Mock(hex="orphan")):
                 sync.push(base)
             script = remote.call_args.args[0]
             self.assertIn("if test -e", script)
-            self.assertIn("rm -f " + sync.REMOTE_DB + ".upload.orphan", script)
+            self.assertIn(sync.REMOTE_DB + ".upload.orphan", script)
+            self.assertIn('rm -f "$src"', script)
             self.assertIn("os.fsync", script)
             self.assertLess(script.index("os.fsync"), script.rindex("manifest.json"))
 

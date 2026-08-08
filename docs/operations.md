@@ -398,7 +398,7 @@ PYTHONUTF8=1 python pipeline/query_bibliography.py --author "Yuan" --sort date -
 PYTHONUTF8=1 python pipeline/check_bibliography_db.py --strict
 ```
 
-Registry updates must be projected before publication. The strict checker rejects stale registry/baseline/correction projections, any remigration-required marker, relationship-row drift, and observation slots without exactly one current version.
+Registry updates must be projected before publication. The strict checker rejects stale registry/baseline/correction projections, any remigration-required marker, relationship-row drift, and every observation slot without exactly one current version; terminal superseded slots retain one current `superseded` observation.
 
 ```bash
 # Controlled local migration; creates a verified backup and receipt.
