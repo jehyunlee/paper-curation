@@ -588,6 +588,47 @@ class BibliographyAffiliationTests(unittest.TestCase):
         self.assertNotEqual(receipt_id, "fresh-schema")
         self.assertNotEqual(receipt_id, bib.fresh_schema_origin_receipt_id(
             **{**origin, "event_head": "changed"}))
+    def test_project_rotates_fresh_origin_but_preserves_migrated_origin(self):
+        r1 = {
+            "registry_version": "r1", "event_head": "event-r1",
+            "policy_version": "policy", "source_sha256": "source",
+            "organizations": [], "alias_candidates": [], "relationships": [],
+        }
+        r2 = {**r1, "registry_version": "r2", "event_head": "event-r2"}
+        conn = sqlite3.connect(":memory:")
+        with patch.object(bib.affiliation_registry, "load_registry",
+                          side_effect=[r1, r2, r2]), \
+             patch.object(bib.affiliation_registry, "validate_registry"), \
+             patch.object(bib, "_registry_digest",
+                          side_effect=["registry-r1", "registry-r2", "registry-r2"]), \
+             patch.object(bib, "repair_terminal_superseded_current_slots"), \
+             patch.object(bib, "reresolve_current_affiliations"), \
+             patch.object(bib, "_project_compatibility_groups"):
+            bib.project_affiliation_registry(conn)
+            fresh_r1 = conn.execute(
+                "SELECT migration_receipt_id FROM affiliation_registry_metadata"
+            ).fetchone()[0]
+            bib.project_affiliation_registry(conn)
+            fresh_r2 = conn.execute(
+                "SELECT migration_receipt_id FROM affiliation_registry_metadata"
+            ).fetchone()[0]
+            conn.execute(
+                "INSERT INTO affiliation_migration_audit "
+                "(receipt_id,operation,base_generation,base_logical_sha256,"
+                "result_logical_sha256,registry_sha256,schema_from,schema_to,"
+                "backup_path,backup_sha256,started_at,finished_at,report_json) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ("migration-origin", "migrate", 7, "base", "result",
+                 "registry-r1", "legacy", "affiliation-2", "backup", "digest",
+                 "2026-08-08T00:00:00Z", "2026-08-08T00:00:00Z", "{}"))
+            bib.project_affiliation_registry(conn)
+            migrated_r2 = conn.execute(
+                "SELECT migration_receipt_id,base_generation "
+                "FROM affiliation_registry_metadata"
+            ).fetchone()
+        conn.close()
+        self.assertNotEqual(fresh_r1, fresh_r2)
+        self.assertEqual(migrated_r2, ("migration-origin", 7))
 
 
 if __name__ == "__main__":

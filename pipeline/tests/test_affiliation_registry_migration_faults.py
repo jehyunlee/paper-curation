@@ -285,3 +285,68 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
         connection.execute.return_value.fetchone.return_value = (1, 3, 2)
         with self.assertRaisesRegex(RuntimeError, "checkpoint did not complete"):
             migrator._checkpoint_fully(connection)
+
+    def test_real_wal_reader_prevents_complete_checkpoint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "wal.sqlite3"
+            writer = sqlite3.connect(db)
+            reader = None
+            try:
+                writer.execute("PRAGMA journal_mode=WAL")
+                writer.execute("CREATE TABLE sample (value INTEGER)")
+                writer.execute("INSERT INTO sample VALUES (1)")
+                writer.commit()
+                reader = sqlite3.connect(db)
+                reader.execute("BEGIN")
+                self.assertEqual(
+                    reader.execute("SELECT value FROM sample").fetchall(), [(1,)])
+                writer.execute("INSERT INTO sample VALUES (2)")
+                writer.commit()
+                with self.assertRaisesRegex(
+                        RuntimeError, "checkpoint did not complete"):
+                    migrator._checkpoint_fully(writer)
+            finally:
+                if reader is not None:
+                    reader.close()
+                writer.close()
+
+    def test_builder_and_migration_share_exclusive_writer_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "bibliography.sqlite3"
+            descriptor = migrator.acquire_lock(db)
+            try:
+                with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                    bib.build([], db, skip_zotero=True, offline=True)
+            finally:
+                bib.affiliation_registry.release_bibliography_writer_lock(
+                    db, descriptor)
+            self.assertFalse(migrator.lock_path(db).exists())
+
+    def test_receipt_recovery_excludes_builder_until_sidecar_is_durable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "legacy.sqlite3"
+            self.legacy_db(db)
+            base = Path(directory) / "base.json"
+            base.write_text(json.dumps(self.complete_base(db)), encoding="utf-8")
+            migrator.migrate(db, execute=True, base_receipt=base)
+            sidecar = migrator.receipt_path(db, "migrate")
+            sidecar.unlink()
+            original_atomic_json = migrator._atomic_json
+            builder_attempted = False
+
+            def publish_while_probing_writer(path, value):
+                nonlocal builder_attempted
+                if path == sidecar:
+                    builder_attempted = True
+                    with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                        bib.build([], db, skip_zotero=True, offline=True)
+                original_atomic_json(path, value)
+
+            with patch.object(migrator, "_atomic_json",
+                              side_effect=publish_while_probing_writer):
+                recovered = migrator.migrate(
+                    db, execute=True, base_receipt=None)
+            self.assertTrue(builder_attempted)
+            self.assertEqual(
+                recovered, json.loads(sidecar.read_text(encoding="utf-8")))
+            self.assertFalse(migrator.lock_path(db).exists())

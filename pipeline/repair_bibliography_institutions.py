@@ -113,7 +113,7 @@ def _atomic_json(path: Path, value: dict) -> None:
 
 
 def lock_path(db: Path) -> Path:
-    return db.with_suffix(db.suffix + ".affiliation-migrate.lock")
+    return bib.affiliation_registry.bibliography_writer_lock_path(db)
 
 
 def marker_path(db: Path) -> Path:
@@ -125,10 +125,7 @@ def receipt_path(db: Path, operation: str) -> Path:
 
 
 def acquire_lock(db: Path) -> int:
-    try:
-        return os.open(lock_path(db), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-    except FileExistsError as exc:
-        raise RuntimeError("migration lock busy; remove only after confirming no migration is running") from exc
+    return bib.affiliation_registry.acquire_bibliography_writer_lock(db)
 
 
 def _schema_name(conn: sqlite3.Connection) -> str:
@@ -465,10 +462,7 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
     finally:
         if source is not None:
             source.close()
-        try:
-            os.close(fd)
-        finally:
-            lock_path(db).unlink(missing_ok=True)
+        bib.affiliation_registry.release_bibliography_writer_lock(db, fd)
 
 
 def _verify_current_result(db: Path, receipt: dict) -> None:
@@ -603,10 +597,7 @@ def rollback(db: Path, *, expected_receipt: Path | None = None) -> dict:
         raise
     finally:
         temporary.unlink(missing_ok=True)
-        try:
-            os.close(fd)
-        finally:
-            lock_path(db).unlink(missing_ok=True)
+        bib.affiliation_registry.release_bibliography_writer_lock(db, fd)
 
 
 def main() -> int:

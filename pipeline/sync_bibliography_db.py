@@ -88,6 +88,15 @@ def _fresh_schema_origin_receipt(metadata: dict) -> dict:
     }
 
 
+def _is_valid_fresh_schema_receipt(receipt: object) -> bool:
+    if not isinstance(receipt, dict):
+        return False
+    try:
+        return receipt == _fresh_schema_origin_receipt(receipt)
+    except KeyError:
+        return False
+
+
 def _is_fresh_schema_origin(manifest: dict) -> bool:
     try:
         return manifest["migration_receipt_id"] == _fresh_schema_origin_receipt(
@@ -102,8 +111,7 @@ def _fresh_schema_receipt_path() -> Path:
 
 def _validate_fresh_schema_receipt(receipt: dict, manifest: dict) -> None:
     expected = _fresh_schema_origin_receipt(manifest)
-    if (not isinstance(receipt, dict) or set(receipt) != set(expected)
-            or receipt != expected
+    if (not _is_valid_fresh_schema_receipt(receipt) or receipt != expected
             or not _is_fresh_schema_origin(manifest)):
         raise RuntimeError("fresh-schema origin receipt does not bind current provenance")
 
@@ -279,10 +287,8 @@ def _load_current_migration_receipt(manifest: dict) -> tuple[dict, Path, str]:
     receipt_digest = sha(path)
     if (receipt.get("operation") != "migrate"
             or receipt.get("receipt_id") != manifest["migration_receipt_id"]
-            or receipt.get("schema_to") != manifest["schema_version"]
-            or any(receipt.get(key) != manifest[key] for key in (
-                "registry_sha256", "event_head", "policy_version", "source_sha256"))):
-        raise RuntimeError("migration receipt does not bind current migration provenance")
+            or receipt.get("schema_to") != manifest["schema_version"]):
+        raise RuntimeError("migration receipt does not bind immutable migration provenance")
     _verify_migration_audit(receipt, manifest, LOCAL_DB)
     return receipt, path, receipt_digest
 def _has_migration_audit(database: Path) -> bool:
@@ -310,7 +316,12 @@ def _load_current_origin_receipt(manifest: dict) -> tuple[dict, Path, str]:
             saved = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
             raise RuntimeError("invalid local fresh-schema origin receipt") from exc
-        _validate_fresh_schema_receipt(saved, manifest)
+        if not _is_valid_fresh_schema_receipt(saved):
+            raise RuntimeError("invalid local fresh-schema origin receipt")
+        if saved["receipt_id"] != receipt["receipt_id"]:
+            migrator._atomic_json(path, receipt)
+        else:
+            _validate_fresh_schema_receipt(saved, manifest)
     else:
         migrator._atomic_json(path, receipt)
     return receipt, path, sha(path)
@@ -371,7 +382,7 @@ def _verify_migration_audit(receipt: dict, manifest: dict, database: Path) -> No
             or result_logical != receipt["result_logical_sha256"]
             or registry != receipt["registry_sha256"]
             or schema_from != receipt["schema_from"] or schema_to != receipt["schema_to"]):
-        raise RuntimeError("migration receipt does not match DB audit")
+        raise RuntimeError("migration provenance does not match DB audit")
     try:
         audited = json.loads(report)
     except json.JSONDecodeError as exc:
@@ -434,12 +445,9 @@ def pull():
                     raise RuntimeError(
                         "fresh-schema origin is invalid for a migrated DB")
             elif (receipt_value.get("operation") != "migrate"
-                  or receipt_value.get("schema_to") != manifest["schema_version"]
-                  or any(receipt_value.get(key) != manifest[key] for key in (
-                      "registry_sha256", "event_head", "policy_version",
-                      "source_sha256"))):
+                  or receipt_value.get("schema_to") != manifest["schema_version"]):
                 raise RuntimeError(
-                    "remote migration receipt does not bind migration provenance")
+                    "remote migration receipt does not bind immutable migration provenance")
             else:
                 _verify_migration_audit(receipt_value, manifest, db)
         os.replace(db, LOCAL_DB)
@@ -485,6 +493,10 @@ def push(base_receipt: Path | None):
     receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
     manifest = local_manifest()
     _, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
+    if (manifest["migration_receipt_id"] == expected["migration_receipt_id"]
+            and receipt_digest != expected["migration_receipt_sha256"]):
+        raise RuntimeError(
+            "current receipt sidecar differs from the synchronized origin receipt")
     manifest["generation"] = expected["generation"] + 1
     manifest["base_generation"] = expected["generation"]
     manifest["base_sha256"] = expected["sha256"]

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import unicodedata
 import uuid
@@ -35,6 +36,37 @@ RELATIONSHIP_TYPES = frozenset({
 })
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
+def bibliography_writer_lock_path(database: Path) -> Path:
+    """Return the process-wide writer lock shared by builders and migrations."""
+    return database.with_suffix(database.suffix + ".affiliation-migrate.lock")
+
+
+def acquire_bibliography_writer_lock(database: Path) -> int:
+    """Acquire exclusive writer ownership for one bibliography database."""
+    path = bibliography_writer_lock_path(database)
+    try:
+        descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    except FileExistsError as exc:
+        raise RuntimeError(
+            "bibliography writer lock busy; remove only after confirming no "
+            "builder or migration is running"
+        ) from exc
+    try:
+        os.write(descriptor, f"{os.getpid()}\n".encode())
+        os.fsync(descriptor)
+    except BaseException:
+        os.close(descriptor)
+        path.unlink(missing_ok=True)
+        raise
+    return descriptor
+
+
+def release_bibliography_writer_lock(database: Path, descriptor: int) -> None:
+    """Release a lock acquired by :func:`acquire_bibliography_writer_lock`."""
+    try:
+        os.close(descriptor)
+    finally:
+        bibliography_writer_lock_path(database).unlink(missing_ok=True)
 
 def nfc(value: str) -> str:
     """Return a Unicode-NFC string or reject non-string registry data."""

@@ -87,7 +87,7 @@ class BibliographySyncCASTests(unittest.TestCase):
         path.write_text("{}", encoding="utf-8")
         return patch.object(
             sync, "_load_current_migration_receipt",
-            return_value=({}, path, sync.sha(path)))
+            return_value=({}, path, "receipt-sha"))
 
     def complete_manifest(self, *, generation=0, sha256="file-digest",
                           logical_sha256="logical-digest",
@@ -179,6 +179,54 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.assertEqual(digest, loaded_digest)
             self.assertEqual(receipt["receipt_id"], manifest["migration_receipt_id"])
             self.assertTrue(path.exists())
+    def test_fresh_schema_origin_rotates_when_registry_provenance_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
+            with patch.object(sync, "LOCAL_DB", db):
+                first = sync.local_manifest()
+                sync._load_current_origin_receipt(first)
+                connection = sqlite3.connect(db)
+                connection.execute(
+                    "UPDATE affiliation_registry_metadata SET registry_sha256=?,"
+                    "event_head=?,migration_receipt_id=?",
+                    ("registry-r2", "event-r2", sync._fresh_schema_origin_receipt({
+                        **first, "registry_sha256": "registry-r2",
+                        "event_head": "event-r2",
+                    })["receipt_id"]))
+                connection.commit()
+                connection.close()
+                second = sync.local_manifest()
+                _, path, _ = sync._load_current_origin_receipt(second)
+            self.assertNotEqual(
+                first["migration_receipt_id"], second["migration_receipt_id"])
+            self.assertTrue(path.exists())
+
+    def test_push_rejects_changed_sidecar_under_unchanged_origin_id(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
+            with patch.object(sync, "LOCAL_DB", db):
+                manifest = sync.local_manifest()
+            base = Path(directory) / "base.json"
+            expected = {
+                **manifest, "migration_receipt_sha256": "synchronized-sha",
+                "migration_receipt_object": (
+                    f"{sync.GENERATIONS}/{0:020d}-"
+                    "synchronized-sha.migration.json"),
+                "object": (
+                    f"{sync.GENERATIONS}/{0:020d}-"
+                    f"{manifest['logical_sha256']}.sqlite3"),
+            }
+            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
+            sidecar = Path(directory) / "changed.json"
+            sidecar.write_text("changed", encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db), \
+                 patch.object(sync, "_ensure_publishable"), \
+                 patch.object(sync, "_load_current_origin_receipt",
+                              return_value=({}, sidecar, sync.sha(sidecar))), \
+                 patch.object(sync, "run") as run:
+                with self.assertRaisesRegex(RuntimeError, "sidecar differs"):
+                    sync.push(base)
+            run.assert_not_called()
     def test_fresh_schema_push_changed_generation_and_pull(self):
         with tempfile.TemporaryDirectory() as directory:
             directory_path = Path(directory)
@@ -266,6 +314,10 @@ class BibliographySyncCASTests(unittest.TestCase):
             connection = sqlite3.connect(db)
             connection.execute("CREATE TABLE later_projection (value TEXT)")
             connection.execute("INSERT INTO later_projection VALUES ('reviewed')")
+            connection.execute(
+                "UPDATE affiliation_registry_metadata SET registry_sha256=?,"
+                "event_head=?,policy_version=?,source_sha256=?",
+                ("registry-r2", "event-r2", "policy-r2", "source-r2"))
             connection.commit()
             connection.close()
             receipt_path = sync.migrator.receipt_path(db, "migrate")
@@ -274,6 +326,8 @@ class BibliographySyncCASTests(unittest.TestCase):
                 manifest = sync.local_manifest()
                 loaded, _, _ = sync._load_current_migration_receipt(manifest)
             self.assertEqual(loaded, receipt)
+            self.assertEqual(manifest["registry_sha256"], "registry-r2")
+            self.assertEqual(manifest["migration_receipt_id"], receipt["receipt_id"])
             self.assertNotEqual(receipt["result_sha256"], manifest["sha256"])
     def test_tampered_local_receipt_provenance_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -284,7 +338,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             sync.migrator.receipt_path(db, "migrate").write_text(
                 json.dumps(receipt), encoding="utf-8")
             with patch.object(sync, "LOCAL_DB", db):
-                with self.assertRaisesRegex(RuntimeError, "migration provenance"):
+                with self.assertRaisesRegex(RuntimeError, "DB migration audit receipt mismatch"):
                     sync._load_current_migration_receipt(sync.local_manifest())
 
     def test_pull_accepts_later_generation_and_rejects_tampered_audit(self):
@@ -295,6 +349,10 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.add_migration_audit(source, receipt)
             connection = sqlite3.connect(source)
             connection.execute("CREATE TABLE later_projection (value TEXT)")
+            connection.execute(
+                "UPDATE affiliation_registry_metadata SET registry_sha256=?,"
+                "event_head=?,policy_version=?,source_sha256=?",
+                ("registry-r2", "event-r2", "policy-r2", "source-r2"))
             connection.commit()
             connection.close()
             receipt_file = directory_path / "receipt.json"

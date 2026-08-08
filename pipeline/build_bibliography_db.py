@@ -1761,26 +1761,23 @@ def project_affiliation_registry(conn: sqlite3.Connection) -> dict:
     digest = _registry_digest()
     conn.executescript(AFFILIATION_SCHEMA)
     existing_metadata = conn.execute(
-        "SELECT base_generation,migration_receipt_id FROM "
-        "affiliation_registry_metadata WHERE singleton=1").fetchone()
-    if existing_metadata and existing_metadata[1]:
-        base_generation, migration_receipt_id = existing_metadata
+        "SELECT base_generation FROM affiliation_registry_metadata "
+        "WHERE singleton=1").fetchone()
+    audit_row = conn.execute(
+        "SELECT receipt_id,base_generation FROM affiliation_migration_audit "
+        "WHERE operation='migrate' ORDER BY finished_at DESC LIMIT 1"
+    ).fetchone()
+    if audit_row:
+        migration_receipt_id, base_generation = audit_row
     else:
-        audit_row = conn.execute(
-            "SELECT receipt_id,base_generation FROM affiliation_migration_audit "
-            "WHERE operation='migrate' ORDER BY finished_at DESC LIMIT 1"
-        ).fetchone()
-        if audit_row:
-            migration_receipt_id, base_generation = audit_row
-        else:
-            base_generation = 0
-            migration_receipt_id = fresh_schema_origin_receipt_id(
-                schema_version=AFFILIATION_SCHEMA_VERSION,
-                registry_sha256=digest,
-                event_head=registry["event_head"],
-                policy_version=registry["policy_version"],
-                source_sha256=registry["source_sha256"],
-            )
+        base_generation = existing_metadata[0] if existing_metadata else 0
+        migration_receipt_id = fresh_schema_origin_receipt_id(
+            schema_version=AFFILIATION_SCHEMA_VERSION,
+            registry_sha256=digest,
+            event_head=registry["event_head"],
+            policy_version=registry["policy_version"],
+            source_sha256=registry["source_sha256"],
+        )
     organization_ids = {org["organization_id"] for org in registry["organizations"]}
     if organization_ids:
         conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL "
@@ -2158,7 +2155,7 @@ def is_latest_affiliation_schema(conn: sqlite3.Connection) -> bool:
             return False
     return True
 
-def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
+def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = False,
           skip_zotero: bool = False, offline: bool = False) -> dict:
     total = len(entries)
     print(f"[bibliography] starting {total} papers", flush=True)
@@ -2362,6 +2359,19 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
     conn.commit()
     conn.execute("PRAGMA optimize"); conn.close()
     return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"db":str(db_path)}
+
+
+def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
+          skip_zotero: bool = False, offline: bool = False) -> dict:
+    """Build while excluding migration recovery and every other DB writer."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = affiliation_registry.acquire_bibliography_writer_lock(db_path)
+    try:
+        return _build_unlocked(
+            entries, db_path, update_zotero=update_zotero,
+            skip_zotero=skip_zotero, offline=offline)
+    finally:
+        affiliation_registry.release_bibliography_writer_lock(db_path, descriptor)
 
 
 def send_completion_email(result: dict) -> None:
