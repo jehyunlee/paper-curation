@@ -73,6 +73,8 @@ def _preserve_database_baseline(path: str, baseline: dict[str, Any]) -> dict[str
     return baseline
 
 def command_import(args: argparse.Namespace) -> int:
+    if getattr(args, "operator_curated", False) and args.legacy_aliases:
+        raise ValueError("operator-curated import forbids unpinned legacy aliases")
     source, digest = _read_source(args.source)
     aliases: dict[str, str] = {}
     if args.legacy_aliases:
@@ -81,7 +83,8 @@ def command_import(args: argparse.Namespace) -> int:
                                                     for key, value in aliases.items()):
             raise ValueError("legacy aliases must be a string-to-string JSON object")
     registry = build_registry(source, source_sha256=digest, timestamp=args.timestamp,
-                              version=args.version, canonical_aliases=aliases)
+                              version=args.version, canonical_aliases=aliases,
+                              operator_curated=getattr(args, "operator_curated", False))
     corrections = correction_projection(registry)
     baseline = _preserve_database_baseline(
         args.baseline,
@@ -568,6 +571,8 @@ def parser() -> argparse.ArgumentParser:
     imp.add_argument("--source", required=True); imp.add_argument("--legacy-aliases")
     imp.add_argument("--registry", required=True); imp.add_argument("--corrections", required=True)
     imp.add_argument("--baseline", required=True); imp.add_argument("--offline", action="store_true")
+    imp.add_argument("--operator-curated", action="store_true",
+                     help="accept only the pinned 4,747-record operator-curated source")
     imp.add_argument("--check", action="store_true"); imp.add_argument("--timestamp", default="1970-01-01T00:00:00Z")
     imp.add_argument("--effective-date", default="1970-01-01"); imp.add_argument("--version", type=int, default=1)
     imp.set_defaults(func=command_import)

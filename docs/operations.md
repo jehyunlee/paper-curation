@@ -2,6 +2,20 @@
 
 Detailed recipes, concurrency tuning, and recovery flows for the paper-curation pipeline.
 ## Affiliation registry proposal review
+### Pinned operator-curated baseline import
+
+The audited 4,747-record source may be accepted only through this explicit, SHA-pinned mode; it records `operator:jehyunlee` approval and hash-bound replay evidence. It is not a general trust switch:
+
+```bash
+python pipeline/audit_affiliation_registry.py import \
+  --source <audited-fixed-4747-source.json> \
+  --registry pipeline/affiliation_registry.json \
+  --corrections pipeline/affiliation_registry_corrections.jsonl \
+  --baseline pipeline/affiliation_registry_baseline.json \
+  --operator-curated
+```
+
+The command rejects any source whose bytes do not match the pinned SHA-256 or whose record count is not exactly 4,747. New or unseen institutions, normal source imports, network resolution, and Scopus enrichment remain proposal-only until authoritative evidence or separate operator review; Scopus is never hierarchy authority.
 
 The bibliography builder is deliberately offline. Run the resolver as a scheduled post-run job on either Mac; it appends every policy and provider result to proposal JSONL, while only provider-owned attempts enter `affiliation_enrichment_attempts`:
 

@@ -1593,7 +1593,7 @@ def _project_compatibility_groups(conn: sqlite3.Connection, registry: dict) -> N
         group_name = target["canonical_name_en"]
         normalized_group = affiliation_registry.normalize_name(group_name)
         conn.execute(
-            "INSERT INTO institution_groups "
+            "INSERT OR IGNORE INTO institution_groups "
             "(group_name,normalized_name,organization_id) VALUES (?,?,?)",
             (group_name, normalized_group, targets[0]))
         group_id = conn.execute(

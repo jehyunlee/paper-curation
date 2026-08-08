@@ -309,6 +309,60 @@ class BibliographyAffiliationTests(unittest.TestCase):
             1)
         connection.close()
 
+    def test_compatibility_groups_reuse_one_parent_for_multiple_children(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        connection.execute("PRAGMA foreign_keys=OFF")
+        organizations = [
+            {
+                "organization_id": organization_id,
+                "canonical_name_en": name,
+                "status": "active",
+            }
+            for organization_id, name in (
+                ("child-1", "Child One"),
+                ("child-2", "Child Two"),
+                ("parent", "Parent University"),
+            )
+        ]
+        registry = {
+            "organizations": organizations,
+            "relationships": [
+                {
+                    "subject_organization_id": child,
+                    "object_organization_id": "parent",
+                    "relationship_type": "part_of",
+                    "status": "accepted",
+                }
+                for child in ("child-1", "child-2")
+            ],
+            "events": [],
+        }
+        connection.executemany(
+            "INSERT INTO institutions "
+            "(institution_name,normalized_name,organization_id,source) "
+            "VALUES (?,?,?,?)",
+            [
+                ("Child One", "child one", "child-1", "test"),
+                ("Child Two", "child two", "child-2", "test"),
+            ],
+        )
+        bib._project_compatibility_groups(connection, registry)
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM institution_groups "
+                "WHERE organization_id='parent'"
+            ).fetchone()[0],
+            1,
+        )
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(DISTINCT group_id) FROM institutions"
+            ).fetchone()[0],
+            1,
+        )
+        connection.close()
+
     def test_removed_source_slot_remains_current_and_is_not_reresolved(self):
         connection = sqlite3.connect(":memory:")
         connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)

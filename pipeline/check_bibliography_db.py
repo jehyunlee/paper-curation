@@ -139,6 +139,12 @@ def projection_issues(conn, registry, issues):
         organizations = {
             row["organization_id"]: row for row in registry["organizations"]
         }
+        represented_subjects = {
+            row[0] for row in conn.execute(
+                "SELECT organization_id FROM institutions "
+                "WHERE organization_id IS NOT NULL"
+            )
+        }
         choices = {}
         for edge in registry.get("relationships", []):
             kind = edge.get("relationship_type")
@@ -189,7 +195,9 @@ def projection_issues(conn, registry, issues):
             (subject, parent) for subject, parent in assigned_groups
             if subject is not None and parent is not None
         }
-        if actual_groups != set(expected_groups.items()):
+        if actual_groups != {
+                (subject, parent) for subject, parent in expected_groups.items()
+                if subject in represented_subjects}:
             issues.append("compatibility group projection mismatch")
 
 def correction_projection_issues(path, registry, issues):
@@ -414,6 +422,14 @@ def evidence_issues(registry, release_date, issues, warnings):
             evidence = evidence_by_id.get(evidence_id)
             if not isinstance(evidence, dict):
                 issues.append("relationship evidence missing from registry")
+                continue
+            if evidence.get("authority") == "operator_curated":
+                if (registry.get("import_mode") == "pinned_operator_curated"
+                        and registry.get("source_sha256")
+                        == bib.affiliation_registry.SOURCE_SHA256
+                        and bib.affiliation_registry._official_evidence_valid(evidence)):
+                    continue
+                issues.append("operator-curated relationship evidence provenance invalid")
                 continue
             revalidated_at = evidence.get("revalidated_at")
             try:

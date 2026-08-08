@@ -24,6 +24,11 @@ ZERO_DIGEST = "0" * 64
 REGISTRY_SCHEMA_VERSION = "affiliation-2"
 POLICY_VERSION = "official-relationships-v1"
 SOURCE_SHA256 = "c6077715a3b14b7e0655da519be3bae39d03d9882addaea1899ef24d2ca3f72a"
+OPERATOR_CURATED_APPROVER = "operator:jehyunlee"
+OPERATOR_CURATED_RECORD_COUNT = 4747
+OPERATOR_CURATED_CANONICAL_SHA256 = "3d439c95968232148ad1d2df933bc0c1b47e695462b682ae01393329c2fe858b"
+HKUST_CANONICAL_SOURCE_KEY = "60008592"
+HKUST_EXCLUDED_SOURCE_KEYS = frozenset({"60276981", "60112417", "60112621"})
 
 GENERIC_GROUP_RE = re.compile(
     r"^(?:(?:faculty|school|college|department)(?:\s+of\b.*)?|"
@@ -166,7 +171,7 @@ def _replacement_tokens(key: str, record: Mapping[str, Any], source_keys: set[st
 
 
 def _organization(key: str, record: Mapping[str, Any], source_sha256: str,
-                  canonical_aliases: Mapping[str, str]) -> dict[str, Any]:
+                  canonical_aliases: Mapping[str, str], *, status: str = "proposed") -> dict[str, Any]:
     source_name = _name(record) or f"Unspecified affiliation {key}"
     name = nfc(canonical_aliases.get(source_name, source_name))
     organization_id = _id("source", source_sha256, key)
@@ -179,14 +184,17 @@ def _organization(key: str, record: Mapping[str, Any], source_sha256: str,
         "normalized_name": normalize_name(name),
         "country": _country(record),
         "organization_type": "other",
-        "status": "proposed",
+        "status": status,
         "identifiers": [{"authority": "source_af_id", "value": key}],
         "aliases": [{"alias_id": _id("alias", source_sha256, key + ":" + alias),
                      "name": alias, "normalized_alias": normalize_name(alias),
                      "country_discriminator": _country(record)} for alias in aliases],
     }
-def _group_organization(group: str, country: str, source_sha256: str) -> dict[str, Any]:
-    """Create a source-proposed group identity without accepting membership."""
+
+
+def _group_organization(group: str, country: str, source_sha256: str, *,
+                        status: str = "proposed") -> dict[str, Any]:
+    """Create a deterministic group identity without inferring source identity."""
     normalized = normalize_name(group)
     organization_id = _id("group", source_sha256, f"{country}:{normalized}")
     alias_id = _id("group-alias", source_sha256, f"{country}:{normalized}")
@@ -196,7 +204,7 @@ def _group_organization(group: str, country: str, source_sha256: str) -> dict[st
         "normalized_name": normalized,
         "country": country,
         "organization_type": "other",
-        "status": "proposed",
+        "status": status,
         "identifiers": [],
         "aliases": [{"alias_id": alias_id, "name": group, "normalized_alias": normalized,
                      "country_discriminator": country}],
@@ -221,162 +229,325 @@ def _identity_candidates(organizations: Iterable[Mapping[str, Any]]) -> list[dic
                 "country_discriminator": alias["country_discriminator"],
                 "name": alias["name"],
                 "status": "accepted_identity",
-                "provenance": "reviewed_identity",
+                "provenance": organization.get("identity_provenance", "reviewed_identity"),
             })
     return sorted(candidates, key=lambda item: (item["normalized_alias"], item["country_discriminator"],
                                                   item["organization_id"], item["alias_id"]))
 
 
 
-def _after(key: str, record: Mapping[str, Any], organization: Mapping[str, Any], issues: list[str]) -> dict[str, Any]:
-    """Build a conservative correction: no imported group label becomes an edge."""
+def _corrected_groups(key: str, record: Mapping[str, Any], issues: list[str], *,
+                      curated: bool = False) -> list[str]:
+    """Return audited labels; never derive a parent from a substring match."""
     groups = _groups(record)
-    after_groups: list[str] = []
+    if curated and key in HKUST_EXCLUDED_SOURCE_KEYS:
+        return []
     if "group_label_typo_criso" in issues:
-        after_groups = ["Commonwealth Scientific and Industrial Research Organisation (CSIRO)"]
-    elif "group_label_abbreviation_hkust" in issues:
-        after_groups = ["Hong Kong University of Science and Technology"]
-    elif "flattened_multi_parent_group" in issues:
-        after_groups = ["Spanish National Research Council (CSIC)", "University of Seville"]
-    # HEC and generic labels intentionally have no after group: no official edge exists.
-    return {"organization_id": organization["organization_id"],
-            "canonical_name_en": organization["canonical_name_en"],
-            "country": organization["country"],
-            "accepted_relationship_ids": [],
-            "proposed_group_labels": after_groups,
-            "resolution": "standalone_pending_official_evidence"}
+        return ["Commonwealth Scientific and Industrial Research Organisation (CSIRO)"]
+    if "group_label_abbreviation_hkust" in issues:
+        return ["Hong Kong University of Science and Technology"]
+    if "flattened_multi_parent_group" in issues:
+        return ["Spanish National Research Council (CSIC)", "University of Seville"]
+    if "unsupported_hec_montreal_parent" in issues:
+        return [group for group in groups
+                if normalize_name(group) != normalize_name(
+                    "University of Montreal" if curated else "HEC Montréal")]
+    return [group for group in groups if not GENERIC_GROUP_RE.match(group.strip())]
+
+
+def _after(key: str, record: Mapping[str, Any], organization: Mapping[str, Any], issues: list[str],
+           *, curated: bool = False, relationship_ids: list[str] | None = None) -> dict[str, Any]:
+    groups = _corrected_groups(key, record, issues, curated=curated)
+    return {
+        "organization_id": organization["organization_id"],
+        "canonical_name_en": organization["canonical_name_en"],
+        "country": organization["country"],
+        "accepted_relationship_ids": relationship_ids or [],
+        "proposed_group_labels": groups,
+        "resolution": "operator_curated_hierarchy" if curated else "standalone_pending_official_evidence",
+    }
 
 
 def build_registry(source: Mapping[str, Any], *, source_sha256: str = SOURCE_SHA256,
                    timestamp: str = "1970-01-01T00:00:00Z", version: int = 1,
-                   canonical_aliases: Mapping[str, str] | None = None) -> dict[str, Any]:
-    """Build an offline registry of source proposals and relationship proposals."""
+                   canonical_aliases: Mapping[str, str] | None = None,
+                   operator_curated: bool = False,
+                   _validate_result: bool = True) -> dict[str, Any]:
+    """Build source proposals or the explicitly pinned operator-curated baseline."""
     if not isinstance(source, Mapping):
         raise ValueError("source must be an object keyed by source affiliation ID")
-    source_keys = {nfc(str(source_key)) for source_key in source}
+    if operator_curated and (
+            source_sha256 != SOURCE_SHA256
+            or len(source) != OPERATOR_CURATED_RECORD_COUNT
+            or canonical_sha256(source) != OPERATOR_CURATED_CANONICAL_SHA256):
+        raise ValueError("operator-curated import requires the pinned 4,747-record source")
+    if operator_curated and canonical_aliases:
+        raise ValueError("operator-curated import forbids unpinned canonical aliases")
+    source_records: dict[str, Mapping[str, Any]] = {}
+    for raw_key, record in source.items():
+        key = nfc(str(raw_key))
+        if key in source_records or not isinstance(record, Mapping):
+            raise ValueError(f"source record {raw_key!r} is not an object")
+        source_records[key] = record
+    source_keys = set(source_records)
     canonical_aliases = canonical_aliases or {}
     organizations: list[dict[str, Any]] = []
+    organization_by_source: dict[str, dict[str, Any]] = {}
+    root_key_by_source: dict[str, str] = {}
+    if operator_curated:
+        resolving: set[str] = set()
+
+        def resolve_root(key: str) -> str:
+            if key in root_key_by_source:
+                return root_key_by_source[key]
+            if key in resolving:
+                raise ValueError(f"cyclic af_id_replace target for {key}")
+            resolving.add(key)
+            targets = {token["token"] for token in _replacement_tokens(
+                key, source_records[key], source_keys)
+                if token["category"] == "alias target"}
+            invalid = [token for token in _replacement_tokens(key, source_records[key], source_keys)
+                       if token["category"] == "missing target"]
+            if invalid:
+                raise ValueError(f"missing af_id_replace target for {key}")
+            if len(targets) > 1:
+                raise ValueError(f"conflicting af_id_replace targets for {key}")
+            root = resolve_root(next(iter(targets))) if targets else key
+            resolving.remove(key)
+            root_key_by_source[key] = root
+            return root
+
+        for key in sorted(source_records):
+            resolve_root(key)
+        for root in sorted(set(root_key_by_source.values())):
+            organization = _organization(root, source_records[root], source_sha256, canonical_aliases,
+                                         status="active")
+            organization["identity_provenance"] = "operator_curated"
+            identifiers = []
+            aliases = []
+            for key in sorted(key for key, value in root_key_by_source.items() if value == root):
+                record = source_records[key]
+                identifiers.append({"authority": "source_af_id", "value": key})
+                names = {_name(record) or f"Unspecified affiliation {key}",
+                         nfc(canonical_aliases.get(
+                             _name(record) or f"Unspecified affiliation {key}",
+                             _name(record) or f"Unspecified affiliation {key}")),
+                         *[nfc(value) for value in record.get("af_abbgroupname", [])
+                           if isinstance(value, str)]}
+                for name in names:
+                    aliases.append({
+                        "alias_id": _id("alias", source_sha256, key + ":" + name),
+                        "name": name, "normalized_alias": normalize_name(name),
+                        "country_discriminator": _country(record),
+                    })
+            organization["identifiers"] = identifiers
+            organization["aliases"] = sorted(aliases, key=lambda alias: (
+                alias["normalized_alias"], alias["country_discriminator"], alias["alias_id"]))
+            organizations.append(organization)
+            for key, value in root_key_by_source.items():
+                if value == root:
+                    organization_by_source[key] = organization
+    else:
+        for key in sorted(source_records):
+            organization = _organization(key, source_records[key], source_sha256, canonical_aliases)
+            organizations.append(organization)
+            organization_by_source[key] = organization
+            root_key_by_source[key] = key
+    by_identity: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for organization in organizations:
+        by_identity.setdefault(
+            (organization["normalized_name"], organization["country"]), []).append(organization)
     group_organizations: dict[str, dict[str, Any]] = {}
     corrections: list[dict[str, Any]] = []
     evidence: list[dict[str, Any]] = []
+    relationships: list[dict[str, Any]] = []
     proposals: list[dict[str, Any]] = []
-    for raw_key in sorted(source, key=str):
-        record = source[raw_key]
-        if not isinstance(record, Mapping):
-            raise ValueError(f"source record {raw_key!r} is not an object")
-        key = nfc(str(raw_key))
-        organization = _organization(key, record, source_sha256, canonical_aliases)
+    relationships_by_edge: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+
+    for key in sorted(source_records):
+        organization = organization_by_source[key]
+        record = source_records[key]
         issues = _issue_codes(key, record)
         source_aliases = {alias["normalized_alias"] for alias in organization["aliases"]}
+        groups_for_mode = (_corrected_groups(key, record, issues, curated=True)
+                           if operator_curated else _groups(record))
+        relationship_ids: list[str] = []
         proposal_ids: list[str] = []
         proposed_groups: list[str] = []
-        for group in sorted(set(_groups(record)), key=lambda value: (normalize_name(value), value)):
-            if normalize_name(group) in source_aliases or _proposal_is_forbidden(group, issues):
+        for group in sorted(set(groups_for_mode), key=lambda value: (normalize_name(value), value)):
+            if not operator_curated and (
+                    normalize_name(group) in source_aliases or _proposal_is_forbidden(group, issues)):
                 continue
-            group_organization = _group_organization(group, _country(record), source_sha256)
-            group_organizations.setdefault(group_organization["organization_id"], group_organization)
+            target = None
+            if (operator_curated and "group_label_abbreviation_hkust" in issues
+                    and key not in HKUST_EXCLUDED_SOURCE_KEYS):
+                target = organization_by_source.get(HKUST_CANONICAL_SOURCE_KEY)
+                if target is None:
+                    raise ValueError("HKUST curated target is missing")
+            if target is None:
+                matches = by_identity.get((normalize_name(group), organization["country"]), [])
+                target = matches[0] if len(matches) == 1 else None
+            if target is None:
+                candidate = _group_organization(
+                    group, organization["country"], source_sha256,
+                    status="active" if operator_curated else "proposed")
+                if operator_curated:
+                    candidate["identity_provenance"] = "operator_curated"
+                target = group_organizations.setdefault(candidate["organization_id"], candidate)
+            if target["organization_id"] == organization["organization_id"]:
+                continue
             evidence_id = _id("source-evidence", source_sha256, f"{key}:{normalize_name(group)}")
-            proposal_id = _id("relationship-proposal", source_sha256, f"{key}:{normalize_name(group)}")
-            evidence.append({
-                "evidence_id": evidence_id, "authority": "source_untrusted", "status": "proposed",
-                "source_key": key, "field": "af_groupname", "quote": group,
-                "payload_sha256": canonical_sha256({"source_key": key, "af_groupname": group}),
-            })
-            proposals.append({
-                "relationship_id": proposal_id, "relationship_type": "member_of",
-                "subject_organization_id": organization["organization_id"],
-                "object_organization_id": group_organization["organization_id"],
-                "evidence_ids": [evidence_id], "status": "proposed",
-                "requires_official_membership_evidence": True,
-            })
-            proposal_ids.append(proposal_id)
-            proposed_groups.append(group)
-        disposition = "corrected" if issues else (
-            "pending manual review" if proposal_ids else "standalone no-group"
-        )
+            edge_key = (organization["organization_id"], target["organization_id"], "part_of")
+            relationship_id = (_id("relationship", source_sha256, ":".join(edge_key))
+                               if operator_curated else
+                               _id("relationship", source_sha256, f"{key}:{normalize_name(group)}"))
+            if operator_curated:
+                payload = {
+                    "import_mode": "pinned_operator_curated",
+                    "source_sha256": source_sha256, "source_key": key,
+                    "original_group_labels": _groups(record),
+                    "corrected_group_label": group, "issue_codes": issues,
+                }
+                evidence.append({
+                    "evidence_id": evidence_id, "authority": "operator_curated",
+                    "status": "accepted", "review_status": "approved",
+                    "approved_by": [OPERATOR_CURATED_APPROVER], "quote": group,
+                    "cross_border_explicit": _country(record) != target["country"],
+                    "payload": payload, "payload_sha256": canonical_sha256(payload),
+                    "quote_sha256": canonical_sha256(group),
+                })
+                relationship = relationships_by_edge.get(edge_key)
+                if relationship is None:
+                    relationship = {
+                        "relationship_id": relationship_id, "relationship_type": "part_of",
+                        "subject_organization_id": organization["organization_id"],
+                        "object_organization_id": target["organization_id"],
+                        "evidence_ids": [], "status": "accepted",
+                        "approved_by": [OPERATOR_CURATED_APPROVER],
+                    }
+                    relationships_by_edge[edge_key] = relationship
+                    relationships.append(relationship)
+                relationship["evidence_ids"].append(evidence_id)
+                relationship_ids.append(relationship_id)
+            else:
+                evidence.append({
+                    "evidence_id": evidence_id, "authority": "source_untrusted", "status": "proposed",
+                    "source_key": key, "field": "af_groupname", "quote": group,
+                    "payload_sha256": canonical_sha256({"source_key": key, "af_groupname": group}),
+                })
+                proposals.append({
+                    "relationship_id": relationship_id, "relationship_type": "member_of",
+                    "subject_organization_id": organization["organization_id"],
+                    "object_organization_id": target["organization_id"],
+                    "evidence_ids": [evidence_id], "status": "proposed",
+                    "requires_official_membership_evidence": True,
+                })
+                proposal_ids.append(relationship_id)
+                proposed_groups.append(group)
+        after = _after(key, record, organization, issues, curated=operator_curated,
+                       relationship_ids=relationship_ids)
         correction = {
             "source_sha256": source_sha256, "source_key": key, "source_record": copy.deepcopy(record),
-            "organization_ids": [organization["organization_id"]], "relationship_ids": [],
+            "organization_ids": [organization["organization_id"]], "relationship_ids": relationship_ids,
             "relationship_proposal_ids": proposal_ids, "aliases": copy.deepcopy(organization["aliases"]),
             "af_id_replace_tokens": _replacement_tokens(key, record, source_keys),
             "before": {"af_name": copy.deepcopy(record.get("af_name", [])),
                        "af_groupname": copy.deepcopy(record.get("af_groupname", [])),
                        "af_id_replace": copy.deepcopy(record.get("af_id_replace", []))},
             "original_group_labels": _groups(record),
-            "proposed_corrected_group_labels": _after(key, record, organization, issues)["proposed_group_labels"],
-            "proposed_relationship_group_labels": proposed_groups,
-            "after": _after(key, record, organization, issues),
-            "disposition": (
-                "identity_proposed_relationship_pending"
-                if proposal_ids else "identity_proposed"
-            ),
+            "proposed_corrected_group_labels": after["proposed_group_labels"],
+            "proposed_relationship_group_labels": proposed_groups, "after": after,
+            "disposition": ("identity_accepted_operator_curated" if operator_curated
+                            else ("identity_proposed_relationship_pending" if proposal_ids
+                                  else "identity_proposed")),
             "issue_codes": issues,
-            "correction_decisions": [
-                {
-                    "field": "af_groupname",
-                    "action": "replace_proposed_label",
-                    "corrected_values": copy.deepcopy(
-                        _after(key, record, organization, issues)["proposed_group_labels"]),
-                    "acceptance": "pending_official_relationship_evidence",
-                }
-            ] if issues else [],
+            "correction_decisions": [{
+                "field": "af_groupname",
+                "action": "replace_accepted_label" if operator_curated else "replace_proposed_label",
+                "corrected_values": copy.deepcopy(after["proposed_group_labels"]),
+                "acceptance": ("operator_curated" if operator_curated
+                               else "pending_official_relationship_evidence"),
+            }] if issues else [],
             "evidence": {
-                "status": "proposed",
-                "authority": "source_untrusted",
-                "official_identity_evidence_required": True,
+                "status": "accepted" if operator_curated else "proposed",
+                "authority": "operator_curated" if operator_curated else "source_untrusted",
+                "official_identity_evidence_required": not operator_curated,
                 "official_membership_evidence_required": bool(proposal_ids),
-                "references": [],
+                "references": [relationship_id for relationship_id in relationship_ids],
             },
-            "confidence": 0.0,
-            "reviewers": [],
-            "decision_provenance": "untrusted_source_audit",
-            "rationale": (
-                "This source record was exhaustively audited, but its identity and aliases "
-                "remain proposal-only until a distinct reviewed identity event supplies "
-                "permitted identity evidence. Group labels remain proposal-only until "
-                "official relationship evidence is approved."
-            ),
+            "confidence": 1.0 if operator_curated else 0.0,
+            "reviewers": [OPERATOR_CURATED_APPROVER] if operator_curated else [],
+            "decision_provenance": ("operator_curated_pinned_source" if operator_curated
+                                    else "untrusted_source_audit"),
+            "rationale": ("Operator-curated acceptance is limited to this SHA-bound pinned source."
+                          if operator_curated else
+                          "This source record remains proposal-only until distinct reviewed evidence is approved."),
         }
-        organizations.append(organization)
         corrections.append(correction)
+
     events: list[dict[str, Any]] = []
     previous = ZERO_DIGEST
     def append_event(event_type: str, event_key: str, payload: dict[str, Any]) -> None:
         nonlocal previous
         event = {"sequence": len(events) + 1, "event_id": _id("event", source_sha256, event_key),
-                 "type": event_type, "timestamp": timestamp, "actor": "offline-import",
+                 "type": event_type, "timestamp": timestamp,
+                 "actor": OPERATOR_CURATED_APPROVER if operator_curated else "offline-import",
                  "policy_version": POLICY_VERSION, "previous_digest": previous,
                  "payload": copy.deepcopy(payload)}
         event["digest"] = _event_digest(event)
         previous = event["digest"]
         events.append(event)
-    for organization, correction in sorted(zip(organizations, corrections), key=lambda item: item[1]["source_key"]):
-        append_event("source_identity_proposed", correction["source_key"],
-                     {"organization": organization, "correction": correction})
-        if correction["issue_codes"]:
-            append_event("known_correction_decided", f"correction:{correction['source_key']}", {
-                "source_key": correction["source_key"],
-                "correction": correction,
-                "decisions": correction["correction_decisions"],
+    if operator_curated:
+        corrections_by_key = {correction["source_key"]: correction for correction in corrections}
+        for organization in sorted(organizations, key=lambda item: item["organization_id"]):
+            root = next(key for key, value in organization_by_source.items()
+                        if value is organization and root_key_by_source[key] == key)
+            append_event("source_identity_accepted", root, {
+                "organization": organization, "correction": corrections_by_key[root],
             })
+        for correction in sorted(corrections, key=lambda item: item["source_key"]):
+            if root_key_by_source[correction["source_key"]] != correction["source_key"]:
+                append_event("source_decision_created", f"decision:{correction['source_key']}", {
+                    "source_key": correction["source_key"], "correction": correction,
+                })
+    else:
+        for organization, correction in sorted(zip(organizations, corrections),
+                                               key=lambda item: item[1]["source_key"]):
+            append_event("source_identity_proposed", correction["source_key"], {
+                "organization": organization, "correction": correction,
+            })
+            if correction["issue_codes"]:
+                append_event("known_correction_decided", f"correction:{correction['source_key']}", {
+                    "source_key": correction["source_key"], "correction": correction,
+                    "decisions": correction["correction_decisions"],
+                })
     for organization in sorted(group_organizations.values(), key=lambda item: item["organization_id"]):
-        append_event("group_identity_proposed", organization["organization_id"], {"organization": organization})
+        append_event("group_identity_accepted" if operator_curated else "group_identity_proposed",
+                     organization["organization_id"], {"organization": organization})
     evidence_by_id = {item["evidence_id"]: item for item in evidence}
+    for relationship in sorted(relationships, key=lambda item: item["relationship_id"]):
+        append_event("relationship_accepted", relationship["relationship_id"], {
+            "relationship": relationship,
+            "evidence": [evidence_by_id[item] for item in relationship["evidence_ids"]]})
     for proposal in sorted(proposals, key=lambda item: item["relationship_id"]):
         append_event("relationship_proposed", proposal["relationship_id"], {
             "relationship_proposal": proposal,
-            "evidence": [evidence_by_id[evidence_id] for evidence_id in proposal["evidence_ids"]],
-        })
-    all_organizations = sorted([*organizations, *group_organizations.values()], key=lambda item: item["organization_id"])
+            "evidence": [evidence_by_id[item] for item in proposal["evidence_ids"]]})
+    all_organizations = sorted([*organizations, *group_organizations.values()],
+                               key=lambda item: item["organization_id"])
     registry = {
         "schema_version": REGISTRY_SCHEMA_VERSION, "registry_version": version,
         "policy_version": POLICY_VERSION, "source_sha256": source_sha256,
+        "import_mode": "pinned_operator_curated" if operator_curated else "source_proposals",
         "organizations": all_organizations, "alias_candidates": _identity_candidates(all_organizations),
-        "relationships": [], "relationship_proposals": sorted(proposals, key=lambda item: item["relationship_id"]),
+        "relationships": sorted(relationships, key=lambda item: item["relationship_id"]),
+        "relationship_proposals": sorted(proposals, key=lambda item: item["relationship_id"]),
         "evidence": sorted(evidence, key=lambda item: item["evidence_id"]),
         "events": events, "event_head": previous,
     }
-    validate_registry(registry, require_replay=True)
+    if _validate_result:
+        validate_registry(registry, require_replay=True)
     return registry
 
 
@@ -386,7 +557,8 @@ def correction_projection(registry: Mapping[str, Any]) -> list[dict[str, Any]]:
     for event in registry.get("events", []):
         if event.get("type") not in {
                 "source_decision_created", "source_decision_superseded",
-                "source_identity_proposed", "known_correction_decided"}:
+                "source_identity_proposed", "source_identity_accepted",
+                "known_correction_decided"}:
             continue
         correction = event.get("payload", {}).get("correction")
         if isinstance(correction, Mapping):
@@ -424,8 +596,10 @@ def replay_registry(registry: Mapping[str, Any]) -> dict[str, Any]:
         if not isinstance(payload, Mapping):
             raise ValueError("event payload must be an object")
         if event.get("type") in {"source_decision_created", "source_identity_proposed",
-                                 "group_identity_proposed"}:
-            organizations.append(copy.deepcopy(payload["organization"]))
+                                 "group_identity_proposed", "source_identity_accepted",
+                                 "group_identity_accepted"}:
+            if "organization" in payload:
+                organizations.append(copy.deepcopy(payload["organization"]))
         elif event.get("type") == "relationship_accepted":
             relationships.append(copy.deepcopy(payload["relationship"]))
             evidence.extend(copy.deepcopy(payload["evidence"]))
@@ -461,6 +635,40 @@ def replay_registry(registry: Mapping[str, Any]) -> dict[str, Any]:
             "event_head": previous}
 
 
+def _validate_operator_curated_registry(registry: Mapping[str, Any]) -> None:
+    correction_events = [
+        event["payload"]["correction"]
+        for event in registry["events"]
+        if isinstance(event.get("payload"), Mapping)
+        and isinstance(event["payload"].get("correction"), Mapping)
+    ]
+    correction_keys = [item.get("source_key") for item in correction_events]
+    reconstructed_source = {
+        item["source_key"]: item.get("source_record")
+        for item in correction_events
+        if isinstance(item.get("source_key"), str)
+    }
+    if (registry.get("source_sha256") != SOURCE_SHA256
+            or len(correction_events) != OPERATOR_CURATED_RECORD_COUNT
+            or len(set(correction_keys)) != OPERATOR_CURATED_RECORD_COUNT
+            or canonical_sha256(reconstructed_source)
+            != OPERATOR_CURATED_CANONICAL_SHA256):
+        raise ValueError("operator-curated correction provenance mismatch")
+    events = registry.get("events", [])
+    if not events:
+        raise ValueError("operator-curated event provenance missing")
+    expected = build_registry(
+        reconstructed_source,
+        source_sha256=SOURCE_SHA256,
+        timestamp=events[0].get("timestamp", ""),
+        version=registry.get("registry_version"),
+        operator_curated=True,
+        _validate_result=False,
+    )
+    if registry != expected:
+        raise ValueError("operator-curated registry projection mismatch")
+
+
 def validate_registry(registry: Mapping[str, Any], *, require_replay: bool = True,
                       effective_date: str | None = None) -> None:
     """Validate canonical ordering, immutable event replay, and publishable graph evidence."""
@@ -477,6 +685,11 @@ def validate_registry(registry: Mapping[str, Any], *, require_replay: bool = Tru
     if not all(isinstance(value, list) for value in (organizations, alias_candidates, relationships,
                                                       relationship_proposals, evidence, registry.get("events"))):
         raise ValueError("registry collections must be arrays")
+    replayed = None
+    if require_replay or registry.get("import_mode") == "pinned_operator_curated":
+        replayed = replay_registry(registry)
+    if registry.get("import_mode") == "pinned_operator_curated":
+        _validate_operator_curated_registry(registry)
     if organizations != sorted(organizations, key=lambda x: x["organization_id"]):
         raise ValueError("organizations are not sorted by immutable ID")
     if alias_candidates != _identity_candidates(organizations):
@@ -496,6 +709,15 @@ def validate_registry(registry: Mapping[str, Any], *, require_replay: bool = Tru
             raise ValueError("non-NFC canonical name")
         _unique(organization.get("identifiers", []), ("authority", "value"), "identifier within organization")
         _unique(organization.get("aliases", []), ("alias_id",), "alias ID")
+    _unique(
+        [
+            identifier
+            for organization in organizations
+            for identifier in organization.get("identifiers", [])
+        ],
+        ("authority", "value"),
+        "identifier across organizations",
+    )
     for relationship in relationships:
         if relationship.get("relationship_type") not in RELATIONSHIP_TYPES:
             raise ValueError("unsupported relationship type")
@@ -515,6 +737,9 @@ def validate_registry(registry: Mapping[str, Any], *, require_replay: bool = Tru
         if not refs or any(
                 ref not in evidence_by_id
                 or not _official_evidence_valid(evidence_by_id[ref], effective_date)
+                or (evidence_by_id[ref].get("authority") == "operator_curated"
+                    and (registry.get("import_mode") != "pinned_operator_curated"
+                         or registry.get("source_sha256") != SOURCE_SHA256))
                 for ref in refs):
             raise ValueError("relationship lacks accepted official evidence")
     for proposal in relationship_proposals:
@@ -531,15 +756,14 @@ def validate_registry(registry: Mapping[str, Any], *, require_replay: bool = Tru
         if proposal.get("status") != "proposed" or not proposal.get("requires_official_membership_evidence"):
             raise ValueError("relationship proposal must remain pending official evidence")
     _validate_relationship_graph(relationships, organizations, evidence_by_id)
-    if require_replay:
-        replayed = replay_registry(registry)
-        if (replayed["organizations"] != organizations
-                or replayed["alias_candidates"] != alias_candidates
-                or replayed["relationships"] != relationships
-                or replayed["relationship_proposals"] != relationship_proposals
-                or replayed["evidence"] != evidence
-                or replayed["event_head"] != registry.get("event_head")):
-            raise ValueError("registry projection does not match event replay")
+    if require_replay and (
+            replayed["organizations"] != organizations
+            or replayed["alias_candidates"] != alias_candidates
+            or replayed["relationships"] != relationships
+            or replayed["relationship_proposals"] != relationship_proposals
+            or replayed["evidence"] != evidence
+            or replayed["event_head"] != registry.get("event_head")):
+        raise ValueError("registry projection does not match event replay")
 def _validate_interval(relationship: Mapping[str, Any]) -> None:
     """Reject malformed relationship validity intervals while allowing open intervals."""
     interval = relationship.get("validity_interval")
@@ -560,6 +784,23 @@ def _official_evidence_valid(evidence: Mapping[str, Any],
                              effective_date: str | None = None) -> bool:
     if not isinstance(evidence, Mapping):
         return False
+    if evidence.get("authority") == "operator_curated":
+        payload = evidence.get("payload")
+        return (
+            evidence.get("status") == "accepted"
+            and evidence.get("review_status") == "approved"
+            and evidence.get("approved_by") == [OPERATOR_CURATED_APPROVER]
+            and isinstance(evidence.get("quote"), str) and bool(evidence["quote"].strip())
+            and isinstance(payload, Mapping)
+            and payload.get("import_mode") == "pinned_operator_curated"
+            and payload.get("source_sha256") == SOURCE_SHA256
+            and isinstance(payload.get("source_key"), str)
+            and isinstance(payload.get("original_group_labels"), list)
+            and isinstance(payload.get("corrected_group_label"), str)
+            and isinstance(payload.get("issue_codes"), list)
+            and evidence.get("payload_sha256") == canonical_sha256(payload)
+            and evidence.get("quote_sha256") == canonical_sha256(evidence["quote"])
+        )
     quote = evidence.get("quote")
     payload = evidence.get("payload")
     revalidated_at = evidence.get("revalidated_at")

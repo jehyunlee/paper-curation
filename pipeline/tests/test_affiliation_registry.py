@@ -84,6 +84,187 @@ class AffiliationRegistryTests(unittest.TestCase):
         self.assertEqual(len(correction_events), 1)
         self.assertEqual(correction_events[0]["payload"]["source_key"], "60029470")
         self.assertEqual(registry.correction_projection(built), rows)
+    def test_pinned_operator_curated_import_accepts_bound_evidence_and_corrections(self):
+        source = {
+            "60029470": {"af_name": ["CSIRO Lab"], "af_country": ["AU"], "af_groupname": ["CRISO"]},
+            "60008592": {"af_name": ["Hong Kong University of Science and Technology"],
+                         "af_country": ["HK"], "af_groupname": ["HKUST"]},
+            "126622688": {"af_name": ["SRI at HKUST"], "af_country": ["HK"],
+                           "af_id_replace": ["60008592"]},
+            "55": {"af_name": ["HKUST Platform"], "af_country": ["CN"], "af_groupname": ["HKUST"]},
+            "60276981": {"af_name": ["HKUST Guangzhou"], "af_country": ["CN"],
+                         "af_groupname": ["HKUST"]},
+            "60112417": {"af_name": ["Shenzhen PKU-HKUST Medical Center"], "af_country": ["CN"],
+                         "af_groupname": ["HKUST"]},
+            "60112621": {"af_name": ["PKU-HKUST Institution"], "af_country": ["CN"],
+                         "af_groupname": ["HKUST"]},
+            "60111413": {"af_name": ["SRI"], "af_country": ["US"], "af_groupname": ["Parent"]},
+            "60111414": {"af_name": ["SRI Duplicate"], "af_country": ["US"],
+                         "af_groupname": ["Parent"], "af_id_replace": ["60111413"]},
+            "60029832": {"af_name": ["Joint Lab"], "af_country": ["ES"],
+                          "af_groupname": ["CSIC and University of Sevilla"]},
+            "60002970": {"af_name": ["HEC Unit"], "af_country": ["CA"],
+                          "af_groupname": ["University of Montreal"]},
+        }
+        digest = "a" * 64
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                registry.canonical_sha256(source)):
+            built = registry.build_registry(source, source_sha256=digest, operator_curated=True)
+        rows = {row["source_key"]: row for row in registry.correction_projection(built)}
+        organizations = {
+            item["organization_id"]: item for item in built["organizations"] if item["identifiers"]
+        }
+        hkust = next(item for item in organizations.values()
+                     if {identifier["value"] for identifier in item["identifiers"]}
+                     >= {"60008592", "126622688"})
+        sri = next(item for item in organizations.values()
+                   if {identifier["value"] for identifier in item["identifiers"]}
+                   >= {"60111413", "60111414"})
+        self.assertTrue(all(item["status"] == "active" for item in built["organizations"]))
+        self.assertTrue(all(item["authority"] == "operator_curated" for item in built["evidence"]))
+        self.assertEqual(rows["60002970"]["after"]["accepted_relationship_ids"], [])
+        self.assertTrue(all(not rows[key]["relationship_ids"] for key in registry.HKUST_EXCLUDED_SOURCE_KEYS))
+        self.assertEqual(rows["126622688"]["organization_ids"], [hkust["organization_id"]])
+        self.assertEqual(
+            {identifier["value"] for identifier in hkust["identifiers"]},
+            {"60008592", "126622688"},
+        )
+        self.assertEqual(
+            {identifier["value"] for identifier in sri["identifiers"]},
+            {"60111413", "60111414"},
+        )
+        sri_edge = next(edge for edge in built["relationships"]
+                        if edge["subject_organization_id"] == sri["organization_id"])
+        self.assertEqual(len(sri_edge["evidence_ids"]), 2)
+        self.assertEqual(rows["60111413"]["relationship_ids"], rows["60111414"]["relationship_ids"])
+        hkust_edge = next(edge for edge in built["relationships"]
+                          if edge["subject_organization_id"] != hkust["organization_id"]
+                          and edge["object_organization_id"] == hkust["organization_id"])
+        self.assertTrue(all(
+            item["cross_border_explicit"] for item in built["evidence"]
+            if item["evidence_id"] in hkust_edge["evidence_ids"]
+        ))
+        self.assertEqual(
+            len([event for event in built["events"] if "organization" in event["payload"]]),
+            len(built["organizations"]),
+        )
+        self.assertEqual(len(rows), len(source))
+        self.assertEqual(set(rows), set(source))
+        self.assertEqual(registry.replay_registry(built)["event_head"], built["event_head"])
+        tampered = copy.deepcopy(built)
+        tampered["evidence"][0]["payload"]["source_key"] = "tampered"
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                registry.canonical_sha256(source)):
+            with self.assertRaisesRegex(
+                    ValueError, "operator-curated registry projection mismatch"):
+                registry.validate_registry(tampered, require_replay=False)
+            correction_tampered = copy.deepcopy(built)
+            correction_event = next(
+                event for event in correction_tampered["events"]
+                if isinstance(event.get("payload", {}).get("correction"), dict)
+            )
+            correction_event["payload"]["correction"]["source_record"]["af_name"] = [
+                "Tampered"
+            ]
+            with self.assertRaisesRegex(
+                    ValueError, "event hash chain mismatch"):
+                registry.validate_registry(
+                    correction_tampered, require_replay=False)
+
+    def test_operator_curated_mode_rejects_unpinned_source(self):
+        with self.assertRaisesRegex(ValueError, "pinned 4,747-record"):
+            registry.build_registry({"1": {"af_name": ["One"]}}, operator_curated=True)
+    def test_operator_curated_replacement_targets_fail_closed(self):
+        digest = "c" * 64
+        cases = (
+            ({"1": {"af_name": ["One"], "af_id_replace": ["2"]},
+              "2": {"af_name": ["Two"], "af_id_replace": ["1"]}}, "cyclic"),
+            ({"1": {"af_name": ["One"], "af_id_replace": ["2", "3"]},
+              "2": {"af_name": ["Two"]}, "3": {"af_name": ["Three"]}}, "conflicting"),
+            ({"1": {"af_name": ["One"], "af_id_replace": ["missing"]}}, "missing"),
+        )
+        for source, error in cases:
+            with self.subTest(error=error), mock.patch.object(
+                    registry, "SOURCE_SHA256", digest), mock.patch.object(
+                    registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                    registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                    registry.canonical_sha256(source)):
+                with self.assertRaisesRegex(ValueError, error):
+                    registry.build_registry(source, source_sha256=digest, operator_curated=True)
+    def test_operator_curated_ambiguous_group_target_creates_group_identity(self):
+        source = {
+            "1": {"af_name": ["Child"], "af_country": ["US"], "af_groupname": ["Shared Parent"]},
+            "2": {"af_name": ["Shared Parent"], "af_country": ["US"]},
+            "3": {"af_name": ["Shared Parent"], "af_country": ["US"]},
+        }
+        digest = "b" * 64
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                registry.canonical_sha256(source)):
+            built = registry.build_registry(source, source_sha256=digest, operator_curated=True)
+        edge = built["relationships"][0]
+        source_parent_ids = {
+            item["organization_id"] for item in built["organizations"]
+            if item["canonical_name_en"] == "Shared Parent" and item["identifiers"]
+        }
+        self.assertNotIn(edge["object_organization_id"], source_parent_ids)
+
+    def test_operator_curated_mode_rejects_asserted_digest_for_different_content(self):
+        source = {"1": {"af_name": ["Different"]}}
+        digest = "d" * 64
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)):
+            with self.assertRaisesRegex(ValueError, "pinned 4,747-record"):
+                registry.build_registry(
+                    source, source_sha256=digest, operator_curated=True)
+
+    def test_operator_curated_import_rejects_unpinned_legacy_aliases(self):
+        args = SimpleNamespace(operator_curated=True, legacy_aliases="aliases.json")
+        with self.assertRaisesRegex(ValueError, "forbids unpinned legacy aliases"):
+            audit.command_import(args)
+
+    def test_operator_curated_library_rejects_unpinned_canonical_aliases(self):
+        source = {"1": {"af_name": ["One"]}}
+        digest = "f" * 64
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                registry.canonical_sha256(source)):
+            with self.assertRaisesRegex(
+                    ValueError, "forbids unpinned canonical aliases"):
+                registry.build_registry(
+                    source,
+                    source_sha256=digest,
+                    operator_curated=True,
+                    canonical_aliases={"One": "Changed"},
+                )
+
+    def test_operator_curated_relationship_cycle_fails_closed(self):
+        source = {
+            "1": {
+                "af_name": ["One"],
+                "af_country": ["US"],
+                "af_groupname": ["Two"],
+            },
+            "2": {
+                "af_name": ["Two"],
+                "af_country": ["US"],
+                "af_groupname": ["One"],
+            },
+        }
+        digest = "e" * 64
+        with mock.patch.object(registry, "SOURCE_SHA256", digest), mock.patch.object(
+                registry, "OPERATOR_CURATED_RECORD_COUNT", len(source)), mock.patch.object(
+                registry, "OPERATOR_CURATED_CANONICAL_SHA256",
+                registry.canonical_sha256(source)):
+            with self.assertRaisesRegex(ValueError, "part_of relationship cycle"):
+                registry.build_registry(
+                    source, source_sha256=digest, operator_curated=True)
     def test_operational_threshold_boundaries_are_fail_closed(self):
         approved = {
             "current_observation_count": 1000,
@@ -470,6 +651,32 @@ class AffiliationRegistryTests(unittest.TestCase):
         registry_with_evidence["evidence"][0]["revalidated_at"] = "2026-05-09T00:00:00Z"
         checker.evidence_issues(registry_with_evidence, "2026-08-08", issues, warnings)
         self.assertIn("relationship evidence revalidation exceeds 90 days", issues)
+
+    def test_operator_curated_evidence_is_not_subject_to_web_revalidation_expiry(self):
+        issues, warnings = [], []
+        checker.evidence_issues(self.snapshot, "2026-08-08", issues, warnings)
+        self.assertEqual(issues, [])
+        self.assertEqual(warnings, [])
+
+    def test_operator_curated_evidence_exemption_requires_pinned_provenance(self):
+        untrusted = {
+            "import_mode": "source_proposals",
+            "source_sha256": "wrong",
+            "relationships": [{
+                "status": "accepted",
+                "evidence_ids": ["operator-evidence"],
+            }],
+            "evidence": [{
+                "evidence_id": "operator-evidence",
+                "authority": "operator_curated",
+                "status": "accepted",
+            }],
+        }
+        issues, warnings = [], []
+        checker.evidence_issues(untrusted, "2026-08-08", issues, warnings)
+        self.assertEqual(
+            issues, ["operator-curated relationship evidence provenance invalid"])
+        self.assertEqual(warnings, [])
     def _pending_db(self, path, names):
         conn = sqlite3.connect(path)
         conn.executescript("""
