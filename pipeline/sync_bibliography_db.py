@@ -9,6 +9,7 @@ import os
 import shlex
 import socket
 import sqlite3
+import shutil
 import subprocess
 import tempfile
 import time
@@ -35,8 +36,32 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _authority_is_local() -> bool:
+    remote_db = Path(REMOTE_DB).expanduser()
+    try:
+        return remote_db.exists() and remote_db.resolve() == LOCAL_DB.resolve()
+    except OSError:
+        return False
+
+
 def remote(command, capture=False):
+    if _authority_is_local():
+        return run(["/bin/sh", "-c", command], capture=capture)
     return run(["ssh", HOST, command], capture=capture)
+
+
+def _copy_from_authority(source: str, destination: Path) -> None:
+    if _authority_is_local():
+        shutil.copyfile(Path(source), destination)
+        return
+    run(["scp", "-q", HOST + ":" + source, str(destination)])
+
+
+def _copy_to_authority(source: Path, destination: str) -> None:
+    if _authority_is_local():
+        shutil.copyfile(source, Path(destination))
+        return
+    run(["scp", "-q", str(source), HOST + ":" + destination])
 
 
 def canonical_manifest(manifest: dict) -> str:
@@ -294,7 +319,7 @@ def pull():
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
         db, mf = Path(directory) / "db", Path(directory) / "manifest"
-        run(["scp", "-q", HOST + ":" + MANIFEST, str(mf)])
+        _copy_from_authority(MANIFEST, mf)
         raw_manifest = mf.read_text(encoding="utf-8")
         manifest = json.loads(raw_manifest)
         if raw_manifest != canonical_manifest(manifest):
@@ -302,7 +327,7 @@ def pull():
         rollback = bool(manifest.get("requires_controlled_remigration"))
         _validate_manifest(manifest, rollback=rollback)
         remote_object = manifest["object"]
-        run(["scp", "-q", HOST + ":" + remote_object, str(db)])
+        _copy_from_authority(remote_object, db)
         if sha(db) != manifest["sha256"]:
             raise RuntimeError("remote manifest hash mismatch")
         if _logical_sha(db) != manifest["logical_sha256"]:
@@ -316,7 +341,7 @@ def pull():
         elif manifest["schema_version"] != manifest["restored_schema_version"]:
             raise RuntimeError("rollback manifest restored schema mismatch")
         receipt = Path(directory) / "migration-receipt"
-        run(["scp", "-q", HOST + ":" + manifest["migration_receipt_object"], str(receipt)])
+        _copy_from_authority(manifest["migration_receipt_object"], receipt)
         if sha(receipt) != manifest["migration_receipt_sha256"]:
             raise RuntimeError("remote migration receipt hash mismatch")
         try:
@@ -378,8 +403,8 @@ def push(base_receipt: Path | None):
         f"{GENERATIONS}/{manifest['generation']:020d}-{receipt_digest}.migration.json")
     _validate_manifest(manifest)
     payload = canonical_manifest(manifest)
-    run(["scp", "-q", str(LOCAL_DB), HOST + ":" + upload])
-    run(["scp", "-q", str(receipt_path), HOST + ":" + receipt_upload])
+    _copy_to_authority(LOCAL_DB, upload)
+    _copy_to_authority(receipt_path, receipt_upload)
     object_path = manifest["object"]
     receipt_object = manifest["migration_receipt_object"]
     script = (
@@ -484,8 +509,8 @@ def seed_legacy_recovery(base_receipt: Path | None) -> dict:
     payload, expected_payload = canonical_manifest(result), canonical_manifest(expected)
     upload_id = uuid.uuid4().hex
     upload, receipt_upload = REMOTE_DB + ".seed." + upload_id, REMOTE_DB + ".seed-receipt." + upload_id
-    run(["scp", "-q", str(backup), HOST + ":" + upload])
-    run(["scp", "-q", str(receipt_path), HOST + ":" + receipt_upload])
+    _copy_to_authority(backup, upload)
+    _copy_to_authority(receipt_path, receipt_upload)
     script = (
         f"mkdir {_remote_q(LOCK)} || exit 75; trap 'rmdir {_remote_q(LOCK)}' EXIT; "
         f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
@@ -555,7 +580,7 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
 
     with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
         target = Path(directory) / "rollback.sqlite3"
-        run(["scp", "-q", HOST + ":" + listing, str(target)])
+        _copy_from_authority(listing, target)
         target_digest = sha(target)
         target_logical = _logical_sha(target)
         filename_digest = Path(listing).stem.split("-", 1)[-1]

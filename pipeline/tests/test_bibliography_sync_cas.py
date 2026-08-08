@@ -71,6 +71,19 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.assertEqual(manifest["logical_sha256"], sync._logical_sha(db))
             self.assertEqual(manifest["schema_version"], "affiliation-2")
             self.assertEqual(manifest["migration_receipt_id"], "receipt")
+    def test_local_authority_transport_avoids_self_ssh(self):
+        with tempfile.TemporaryDirectory() as directory:
+            authority = Path(directory) / "bibliography.sqlite3"
+            authority.write_bytes(b"authority")
+            destination = Path(directory) / "copy"
+            with patch.object(sync, "LOCAL_DB", authority), \
+                 patch.object(sync, "REMOTE_DB", str(authority)), \
+                 patch.object(sync, "run") as run:
+                sync._copy_from_authority(str(authority), destination)
+                sync.remote("true")
+            self.assertEqual(destination.read_bytes(), b"authority")
+            run.assert_called_once_with(
+                ["/bin/sh", "-c", "true"], capture=False)
     def test_manifest_serialization_is_byte_identical_for_compare_and_write(self):
         manifest = {"sha256": "digest", "generation": 3, "updated_at": "fixed"}
         self.assertEqual(sync.canonical_manifest(manifest),
