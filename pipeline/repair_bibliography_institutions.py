@@ -60,6 +60,44 @@ def _fsync(path: Path) -> None:
     with path.open("rb") as stream:
         os.fsync(stream.fileno())
     _fsync_directory(path.parent)
+def _checkpoint_fully(conn: sqlite3.Connection) -> None:
+    result = conn.execute("PRAGMA wal_checkpoint(FULL)").fetchone()
+    if result is None or len(result) != 3 or result[0] != 0 or result[1] != result[2]:
+        raise RuntimeError("SQLite WAL checkpoint did not complete")
+    _fsync(Path(conn.execute("PRAGMA database_list").fetchone()[2]))
+
+
+def _verify_standalone_database(db: Path, expected_logical_hash: str) -> None:
+    """Verify the checkpointed main database is independently reopenable."""
+    copied = db.with_name(f".{db.name}.{os.getpid()}.receipt-verify.sqlite3")
+    standalone = None
+    try:
+        shutil.copyfile(db, copied)
+        _fsync(copied)
+        standalone = sqlite3.connect(copied)
+        if standalone.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("standalone receipt database integrity check failed")
+        if standalone.execute("PRAGMA foreign_key_check").fetchone() is not None:
+            raise RuntimeError("standalone receipt database foreign-key check failed")
+        if logical_digest(standalone) != expected_logical_hash:
+            raise RuntimeError("standalone receipt database logical hash mismatch")
+    finally:
+        if standalone is not None:
+            standalone.close()
+        copied.unlink(missing_ok=True)
+
+
+def _is_sha256(value: object) -> bool:
+    return (isinstance(value, str) and len(value) == 64
+            and all(character in "0123456789abcdef" for character in value))
+
+
+def _receipt_id(report: dict) -> str:
+    """Bind report inputs that do not depend on the metadata receipt ID itself."""
+    bound = {key: value for key, value in report.items()
+             if key not in {"receipt_id", "result_sha256", "result_logical_sha256"}}
+    return hashlib.sha256(json.dumps(
+        bound, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def _atomic_json(path: Path, value: dict) -> None:
@@ -226,80 +264,91 @@ def _backup(source: sqlite3.Connection, backup: Path, base_logical_hash: str,
         temporary.unlink(missing_ok=True)
 
 
-def _recover_missing_receipt(db: Path) -> dict:
-    """Rebuild a missing sidecar only from the committed migration authority."""
-    source = sqlite3.connect(db)
+def _recover_missing_receipt(db: Path, source: sqlite3.Connection) -> dict:
+    """Rebuild a sidecar only from the committed migration authority."""
+    if not bib.is_latest_affiliation_schema(source):
+        raise RuntimeError("receipt recovery requires the latest affiliation schema")
+    issues = validate(source)
+    if issues:
+        raise RuntimeError("receipt recovery database validation failed: " + "; ".join(issues))
+    metadata = source.execute(
+        "SELECT schema_version,registry_sha256,event_head,policy_version,source_sha256,"
+        "base_generation,migration_receipt_id FROM affiliation_registry_metadata "
+        "WHERE singleton=1").fetchone()
+    if metadata is None:
+        raise RuntimeError("receipt recovery metadata is missing")
+    (schema_version, metadata_registry, metadata_event_head, metadata_policy,
+     metadata_source, metadata_generation, receipt_id) = metadata
+    if not _is_sha256(receipt_id):
+        raise RuntimeError("receipt recovery metadata receipt id is invalid")
+    audit = source.execute(
+        "SELECT operation,base_generation,base_logical_sha256,result_logical_sha256,"
+        "registry_sha256,schema_from,schema_to,backup_path,backup_sha256,"
+        "started_at,finished_at,report_json FROM affiliation_migration_audit "
+        "WHERE receipt_id=?",
+        (receipt_id,),
+    ).fetchone()
+    if audit is None:
+        raise RuntimeError("receipt recovery migration audit is missing")
     try:
-        if not bib.is_latest_affiliation_schema(source):
-            raise RuntimeError("receipt recovery requires the latest affiliation schema")
-        issues = validate(source)
-        if issues:
-            raise RuntimeError("receipt recovery database validation failed: " + "; ".join(issues))
-        metadata = source.execute(
-            "SELECT schema_version,registry_sha256,event_head,policy_version,source_sha256,"
-            "base_generation,migration_receipt_id FROM affiliation_registry_metadata "
-            "WHERE singleton=1").fetchone()
-        if metadata is None:
-            raise RuntimeError("receipt recovery metadata is missing")
-        (schema_version, metadata_registry, metadata_event_head, metadata_policy,
-         metadata_source, metadata_generation, receipt_id) = metadata
-        if not isinstance(receipt_id, str) or not receipt_id:
-            raise RuntimeError("receipt recovery metadata receipt id is missing")
-        audit = source.execute(
-            "SELECT operation,base_generation,base_logical_sha256,result_logical_sha256,"
-            "registry_sha256,schema_from,schema_to,backup_path,backup_sha256,"
-            "started_at,finished_at,report_json FROM affiliation_migration_audit "
-            "WHERE receipt_id=?",
-            (receipt_id,),
-        ).fetchone()
-        if audit is None:
-            raise RuntimeError("receipt recovery migration audit is missing")
-        try:
-            report = json.loads(audit[11])
-        except (TypeError, json.JSONDecodeError) as exc:
-            raise RuntimeError("receipt recovery migration audit is invalid") from exc
-        if not isinstance(report, dict) or "result_sha256" in report:
-            raise RuntimeError("receipt recovery migration audit report is invalid")
-        required = {
-            "operation", "database", "backup", "backup_sha256", "base_sha256",
-            "base_logical_sha256", "result_logical_sha256", "registry_sha256",
-            "event_head", "policy_version", "source_sha256", "schema_from",
-            "schema_version", "schema_to", "base_generation", "started_at",
-            "finished_at", "issues", "receipt_id",
-        }
-        missing = sorted(key for key in required if report.get(key) in (None, ""))
-        if missing or report["operation"] != "migrate":
-            raise RuntimeError("receipt recovery migration audit provenance is invalid")
-        if report["database"] not in {str(db), db.name} or report["receipt_id"] != receipt_id:
-            raise RuntimeError("receipt recovery migration audit identity mismatch")
-        if audit[:11] != (
-                "migrate", report["base_generation"], report["base_logical_sha256"],
-                report["result_logical_sha256"], report["registry_sha256"],
-                report["schema_from"], report["schema_to"], report["backup"],
-                report["backup_sha256"], report["started_at"], report["finished_at"]):
-            raise RuntimeError("receipt recovery migration audit mismatch")
-        if (schema_version != report["schema_to"]
-                or report["schema_version"] != report["schema_to"]
-                or metadata_generation != report["base_generation"]
-                or (metadata_registry, metadata_event_head, metadata_policy, metadata_source)
-                != (report["registry_sha256"], report["event_head"],
-                    report["policy_version"], report["source_sha256"])):
-            raise RuntimeError("receipt recovery metadata provenance mismatch")
-        for key, value in _registry_provenance().items():
-            if report[key] != value:
-                raise RuntimeError(f"receipt recovery {key} mismatch")
-        if logical_digest(source) != report["result_logical_sha256"]:
-            raise RuntimeError("receipt recovery database logical hash mismatch")
-        backup = Path(report["backup"])
-        if not backup.exists() or digest(backup) != report["backup_sha256"]:
-            raise RuntimeError("receipt recovery migration backup provenance mismatch")
-        source.execute("PRAGMA wal_checkpoint(FULL)")
-        receipt = dict(report)
-        receipt["result_sha256"] = digest(db)
-        return receipt
-    finally:
-        source.close()
+        report = json.loads(audit[11])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("receipt recovery migration audit is invalid") from exc
+    required = {
+        "operation", "database", "backup", "backup_sha256", "base_sha256",
+        "base_logical_sha256", "result_logical_sha256", "registry_sha256",
+        "event_head", "policy_version", "source_sha256", "schema_from",
+        "schema_version", "schema_to", "base_generation", "started_at",
+        "finished_at", "issues", "receipt_id",
+    }
+    if (not isinstance(report, dict) or set(report) != required
+            or report["operation"] != "migrate" or report["issues"] != []):
+        raise RuntimeError("receipt recovery migration audit provenance is invalid")
+    if (not all(_is_sha256(report[key]) for key in (
+            "backup_sha256", "base_sha256", "base_logical_sha256",
+            "result_logical_sha256", "registry_sha256", "source_sha256"))
+            or not isinstance(report["base_generation"], int)
+            or report["base_generation"] < 0
+            or not _is_sha256(report["receipt_id"])):
+        raise RuntimeError("receipt recovery migration audit report is invalid")
+    if report["database"] not in {str(db), db.name} or report["receipt_id"] != receipt_id:
+        raise RuntimeError("receipt recovery migration audit identity mismatch")
+    if _receipt_id(report) != receipt_id:
+        raise RuntimeError("receipt recovery migration audit receipt id mismatch")
+    if audit[:11] != (
+            "migrate", report["base_generation"], report["base_logical_sha256"],
+            report["result_logical_sha256"], report["registry_sha256"],
+            report["schema_from"], report["schema_to"], report["backup"],
+            report["backup_sha256"], report["started_at"], report["finished_at"]):
+        raise RuntimeError("receipt recovery migration audit mismatch")
+    if (schema_version != report["schema_to"]
+            or report["schema_version"] != report["schema_to"]
+            or metadata_generation != report["base_generation"]
+            or (metadata_registry, metadata_event_head, metadata_policy, metadata_source)
+            != (report["registry_sha256"], report["event_head"],
+                report["policy_version"], report["source_sha256"])):
+        raise RuntimeError("receipt recovery metadata provenance mismatch")
+    for key, value in _registry_provenance().items():
+        if report[key] != value:
+            raise RuntimeError(f"receipt recovery {key} mismatch")
+    if logical_digest(source) != report["result_logical_sha256"]:
+        raise RuntimeError("receipt recovery database logical hash mismatch")
+    backup = Path(report["backup"])
+    if not backup.exists() or digest(backup) != report["backup_sha256"]:
+        raise RuntimeError("receipt recovery migration backup provenance mismatch")
+    _checkpoint_fully(source)
+    _verify_standalone_database(db, report["result_logical_sha256"])
+    receipt = dict(report)
+    receipt["result_sha256"] = digest(db)
+    return receipt
 
+
+def _existing_receipt_matches(path: Path, expected: dict) -> bool:
+    try:
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return receipt == expected
 
 def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
     if not db.exists():
@@ -314,7 +363,7 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
                 "registry_sha256": bib._registry_digest()}
         if already:
             plan["issues"] = validate(conn)
-            if not execute or receipt_path(db, "migrate").exists():
+            if not execute:
                 return plan
         if not execute:
             return plan
@@ -331,11 +380,21 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
     try:
         source = sqlite3.connect(db)
         if bib.is_latest_affiliation_schema(source):
-            if receipt_path(db, "migrate").exists():
-                return {"database": str(db), "already_latest": True, "execute": execute,
-                        "issues": validate(source), "registry_sha256": bib._registry_digest()}
-            receipt = _recover_missing_receipt(db)
-            _atomic_json(receipt_path(db, "migrate"), receipt)
+            receipt = _recover_missing_receipt(db, source)
+            sidecar = receipt_path(db, "migrate")
+            receipt_matches = _existing_receipt_matches(sidecar, receipt)
+            if not receipt_matches:
+                _atomic_json(sidecar, receipt)
+            marker_path(db).unlink(missing_ok=True)
+            if receipt_matches:
+                return {
+                    "database": str(db),
+                    "already_latest": True,
+                    "execute": execute,
+                    "issues": validate(source),
+                    "registry_sha256": bib._registry_digest(),
+                    "receipt_id": receipt["receipt_id"],
+                }
             return receipt
         source.execute("PRAGMA foreign_keys = OFF")
         # The write snapshot must precede every provenance check and the backup.
@@ -346,17 +405,6 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
         backup_hash = _backup(
             source, backup, base_logical_hash, expected["schema_version"])
         started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-        receipt_id = hashlib.sha256(json.dumps({
-            "operation": "migrate",
-            "database": str(db),
-            "base_sha256": base_hash,
-            "base_logical_sha256": base_logical_hash,
-            "backup_sha256": backup_hash,
-            **_registry_provenance(),
-            "base_schema_version": expected["schema_version"],
-            "base_generation": expected["generation"],
-            "started_at": started,
-        }, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
         try:
             for statement in _ddl_statements(bib.AFFILIATION_SCHEMA):
                 source.execute(statement)
@@ -370,20 +418,11 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
                 bib.record_affiliation_observation(
                     source, paper_id, {"raw_name": raw, "country": country, "source": source_name},
                     ordinal, registry)
-            source.execute(
-                "UPDATE affiliation_registry_metadata SET base_generation=?,"
-                "migration_receipt_id=? WHERE singleton=1",
-                (expected.get("generation", 0), receipt_id))
-            issues = validate(source)
-            if issues:
-                raise RuntimeError("; ".join(issues))
-            result_logical_hash = logical_digest(source)
             provenance = _registry_provenance()
             receipt = {
                 "operation": "migrate", "database": str(db), "backup": str(backup),
                 "backup_sha256": backup_hash, "base_sha256": base_hash,
                 "base_logical_sha256": base_logical_hash,
-                "result_logical_sha256": result_logical_hash,
                 "registry_sha256": provenance["registry_sha256"],
                 "event_head": provenance["event_head"],
                 "policy_version": provenance["policy_version"],
@@ -393,8 +432,18 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
                 "schema_to": bib.AFFILIATION_SCHEMA_VERSION,
                 "base_generation": expected["generation"], "started_at": started,
                 "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "issues": [],
-                "receipt_id": receipt_id,
             }
+            receipt_id = _receipt_id(receipt)
+            receipt["receipt_id"] = receipt_id
+            source.execute(
+                "UPDATE affiliation_registry_metadata SET base_generation=?,"
+                "migration_receipt_id=? WHERE singleton=1",
+                (expected.get("generation", 0), receipt_id))
+            issues = validate(source)
+            if issues:
+                raise RuntimeError("; ".join(issues))
+            result_logical_hash = logical_digest(source)
+            receipt["result_logical_sha256"] = result_logical_hash
             source.execute("INSERT INTO affiliation_migration_audit VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                            (receipt_id, "migrate", receipt["base_generation"],
                             base_logical_hash, result_logical_hash,
@@ -403,7 +452,8 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
                             json.dumps(receipt, sort_keys=True, separators=(",", ":"))))
             source.commit()
             source.execute("PRAGMA foreign_keys = ON")
-            source.execute("PRAGMA wal_checkpoint(FULL)")
+            _checkpoint_fully(source)
+            _verify_standalone_database(db, receipt["result_logical_sha256"])
         except BaseException:
             source.rollback()
             source.execute("PRAGMA foreign_keys = ON")
