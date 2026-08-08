@@ -167,3 +167,70 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
             self.assertFalse(Path(str(db) + "-wal").exists())
             self.assertFalse(Path(str(db) + "-shm").exists())
             self.assertFalse(any(Path(directory).glob(".*.rollback-quarantine.*")))
+    def test_receipt_crash_keeps_migration_and_audit_in_one_committed_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "legacy.sqlite3"
+            self.legacy_db(db)
+            base = Path(directory) / "base.json"
+            base.write_text(json.dumps(self.complete_base(db)), encoding="utf-8")
+            sidecar = migrator.receipt_path(db, "migrate")
+            with patch.object(migrator, "_atomic_json", side_effect=RuntimeError("publish fault")):
+                with self.assertRaisesRegex(RuntimeError, "publish fault"):
+                    migrator.migrate(db, execute=True, base_receipt=base)
+            self.assertFalse(sidecar.exists())
+            conn = sqlite3.connect(db)
+            try:
+                self.assertTrue(bib.is_latest_affiliation_schema(conn))
+                receipt_id = conn.execute(
+                    "SELECT migration_receipt_id FROM affiliation_registry_metadata "
+                    "WHERE singleton=1").fetchone()[0]
+                audit = conn.execute(
+                    "SELECT receipt_id,report_json FROM affiliation_migration_audit").fetchone()
+                self.assertEqual(audit[0], receipt_id)
+                self.assertEqual(json.loads(audit[1])["receipt_id"], receipt_id)
+            finally:
+                conn.close()
+
+    def test_already_latest_missing_receipt_is_reconstructed_from_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "legacy.sqlite3"
+            self.legacy_db(db)
+            base = Path(directory) / "base.json"
+            base.write_text(json.dumps(self.complete_base(db)), encoding="utf-8")
+            original = migrator.migrate(db, execute=True, base_receipt=base)
+            sidecar = migrator.receipt_path(db, "migrate")
+            sidecar.unlink()
+            recovered = migrator.migrate(db, execute=True, base_receipt=None)
+            self.assertEqual(recovered, json.loads(sidecar.read_text(encoding="utf-8")))
+            self.assertEqual(recovered["receipt_id"], original["receipt_id"])
+            self.assertEqual(recovered["result_logical_sha256"], original["result_logical_sha256"])
+            self.assertEqual(recovered["result_sha256"], migrator.digest(db))
+            before = sidecar.read_bytes()
+            existing = migrator.migrate(db, execute=True, base_receipt=None)
+            self.assertTrue(existing["already_latest"])
+            self.assertEqual(sidecar.read_bytes(), before)
+
+    def test_missing_receipt_recovery_rejects_tampered_audit_or_metadata_provenance(self):
+        for target, statement, error in (
+                ("audit", "UPDATE affiliation_migration_audit SET registry_sha256='tampered'",
+                 "migration audit mismatch"),
+                ("metadata", "UPDATE affiliation_registry_metadata "
+                 "SET migration_receipt_id='tampered' WHERE singleton=1",
+                 "migration audit is missing")):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as directory:
+                db = Path(directory) / "legacy.sqlite3"
+                self.legacy_db(db)
+                base = Path(directory) / "base.json"
+                base.write_text(json.dumps(self.complete_base(db)), encoding="utf-8")
+                migrator.migrate(db, execute=True, base_receipt=base)
+                sidecar = migrator.receipt_path(db, "migrate")
+                sidecar.unlink()
+                conn = sqlite3.connect(db)
+                try:
+                    conn.execute(statement)
+                    conn.commit()
+                finally:
+                    conn.close()
+                with self.assertRaisesRegex(RuntimeError, error):
+                    migrator.migrate(db, execute=True, base_receipt=None)
+                self.assertFalse(sidecar.exists())
