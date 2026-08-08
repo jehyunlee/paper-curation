@@ -401,8 +401,11 @@ def _verify_complete_migration_receipt(receipt: dict, manifest: dict,
     connection = sqlite3.connect(database)
     try:
         row = connection.execute(
-            "SELECT report_json FROM affiliation_migration_audit "
-            "WHERE receipt_id=?", (receipt["receipt_id"],)).fetchone()
+            "SELECT operation,base_generation,base_logical_sha256,"
+            "result_logical_sha256,registry_sha256,schema_from,schema_to,"
+            "backup_path,backup_sha256,started_at,finished_at,report_json "
+            "FROM affiliation_migration_audit WHERE receipt_id=?",
+            (receipt["receipt_id"],)).fetchone()
     except sqlite3.Error as exc:
         raise RuntimeError("bibliography DB lacks migration audit") from exc
     finally:
@@ -410,15 +413,23 @@ def _verify_complete_migration_receipt(receipt: dict, manifest: dict,
     if row is None:
         raise RuntimeError("migration receipt is absent from DB audit")
     try:
-        audited = json.loads(row[0])
+        audited = json.loads(row[11])
     except (TypeError, json.JSONDecodeError) as exc:
         raise RuntimeError("DB migration audit is invalid") from exc
-    if not isinstance(audited, dict):
-        raise RuntimeError("DB migration audit is invalid")
+    try:
+        migrator.validate_migration_audit_report(audited)
+    except RuntimeError as exc:
+        raise RuntimeError(
+            "changed migration receipt has incomplete immutable audit") from exc
     expected = {**audited, "result_sha256": receipt.get("result_sha256")}
-    if (receipt != expected
-            or audited.get("receipt_id") != receipt.get("receipt_id")
-            or migrator._receipt_id(audited) != receipt.get("receipt_id")):
+    columns = (
+        audited["operation"], audited["base_generation"],
+        audited["base_logical_sha256"], audited["result_logical_sha256"],
+        audited["registry_sha256"], audited["schema_from"],
+        audited["schema_to"], audited["backup"],
+        audited["backup_sha256"], audited["started_at"], audited["finished_at"],
+    )
+    if receipt != expected or row[:11] != columns:
         raise RuntimeError(
             "changed migration receipt does not exactly match immutable audit")
     _verify_migration_audit(receipt, manifest, database)

@@ -276,7 +276,7 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
                 conn.commit()
             finally:
                 conn.close()
-            with self.assertRaisesRegex(RuntimeError, "receipt id mismatch"):
+            with self.assertRaisesRegex(RuntimeError, "migration audit report is invalid"):
                 migrator.migrate(db, execute=True, base_receipt=None)
             self.assertFalse(sidecar.exists())
 

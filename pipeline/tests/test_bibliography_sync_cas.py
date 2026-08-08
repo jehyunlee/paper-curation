@@ -50,10 +50,12 @@ class BibliographySyncCASTests(unittest.TestCase):
     def add_migration_audit(self, path, receipt):
         connection = sqlite3.connect(path)
         connection.execute(
-            "CREATE TABLE affiliation_migration_audit (operation TEXT,"
-            "base_generation INTEGER,base_logical_sha256 TEXT,"
-            "result_logical_sha256 TEXT,registry_sha256 TEXT,schema_from TEXT,"
-            "schema_to TEXT,report_json TEXT,receipt_id TEXT)")
+            "CREATE TABLE affiliation_migration_audit ("
+            "receipt_id TEXT,operation TEXT,base_generation INTEGER,"
+            "base_logical_sha256 TEXT,result_logical_sha256 TEXT,"
+            "registry_sha256 TEXT,schema_from TEXT,schema_to TEXT,"
+            "backup_path TEXT,backup_sha256 TEXT,started_at TEXT,"
+            "finished_at TEXT,report_json TEXT)")
         report = {
             key: receipt[key] for key in (
                 "base_generation", "base_sha256", "base_logical_sha256",
@@ -62,11 +64,17 @@ class BibliographySyncCASTests(unittest.TestCase):
         }
         report["receipt_id"] = receipt["receipt_id"]
         connection.execute(
-            "INSERT INTO affiliation_migration_audit VALUES (?,?,?,?,?,?,?,?,?)",
-            (receipt["operation"], receipt["base_generation"],
-             receipt["base_logical_sha256"], receipt["result_logical_sha256"],
-             receipt["registry_sha256"], receipt["schema_from"],
-             receipt["schema_to"], json.dumps(report), receipt["receipt_id"]))
+            "INSERT INTO affiliation_migration_audit VALUES "
+            "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (receipt["receipt_id"], receipt["operation"],
+             receipt["base_generation"], receipt["base_logical_sha256"],
+             receipt["result_logical_sha256"], receipt["registry_sha256"],
+             receipt["schema_from"], receipt["schema_to"],
+             receipt.get("backup", "backup.sqlite3"),
+             receipt.get("backup_sha256", "f" * 64),
+             receipt.get("started_at", "2026-08-08T00:00:00Z"),
+             receipt.get("finished_at", "2026-08-08T00:01:00Z"),
+             json.dumps(report)))
         connection.commit()
         connection.close()
 
@@ -245,6 +253,8 @@ class BibliographySyncCASTests(unittest.TestCase):
     def test_changed_migration_origin_requires_bound_controlled_remigration(self):
         with tempfile.TemporaryDirectory() as directory:
             db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            registry_sha = "1" * 64
+            source_sha = "2" * 64
             expected = {
                 **self.complete_manifest(generation=3, schema_version="legacy"),
                 "sha256": "a" * 64,
@@ -256,6 +266,8 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "base_logical_sha256": "e" * 64,
                 "object": (
                     f"{sync.GENERATIONS}/{3:020d}-{'b' * 64}.sqlite3"),
+                "registry_sha256": registry_sha,
+                "source_sha256": source_sha,
             }
             receipt = {
                 "operation": "migrate",
@@ -265,10 +277,10 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "base_generation": expected["generation"],
                 "base_sha256": expected["sha256"],
                 "base_logical_sha256": expected["logical_sha256"],
-                "registry_sha256": "registry",
+                "registry_sha256": registry_sha,
                 "event_head": "event",
                 "policy_version": "policy",
-                "source_sha256": "source",
+                "source_sha256": source_sha,
                 "schema_from": "legacy",
                 "schema_version": "affiliation-2",
                 "schema_to": "affiliation-2",
@@ -280,8 +292,9 @@ class BibliographySyncCASTests(unittest.TestCase):
             receipt["receipt_id"] = sync.migrator._receipt_id(receipt)
             connection = sqlite3.connect(db)
             connection.execute(
-                "UPDATE affiliation_registry_metadata SET migration_receipt_id=?",
-                (receipt["receipt_id"],))
+                "UPDATE affiliation_registry_metadata SET "
+                "migration_receipt_id=?,registry_sha256=?,source_sha256=?",
+                (receipt["receipt_id"], registry_sha, source_sha))
             connection.commit()
             connection.close()
             receipt["result_logical_sha256"] = sync._logical_sha(db)
@@ -330,6 +343,46 @@ class BibliographySyncCASTests(unittest.TestCase):
                         RuntimeError, "changed without fresh rotation"):
                     sync._validate_origin_transition(
                         ordinary, manifest, receipt, "new-receipt-digest")
+                complete_report = {
+                    key: value for key, value in receipt.items()
+                    if key != "result_sha256"
+                }
+                for shape in ("missing", "extra"):
+                    with self.subTest(audit_shape=shape):
+                        malformed = dict(complete_report)
+                        if shape == "missing":
+                            malformed.pop("backup")
+                        else:
+                            malformed["unexpected"] = "field"
+                        malformed["receipt_id"] = sync.migrator._receipt_id(
+                            malformed)
+                        connection = sqlite3.connect(db)
+                        connection.execute(
+                            "UPDATE affiliation_migration_audit "
+                            "SET receipt_id=?,report_json=? WHERE receipt_id=?",
+                            (malformed["receipt_id"], json.dumps(
+                                malformed, sort_keys=True, separators=(",", ":")),
+                             receipt["receipt_id"]))
+                        connection.commit()
+                        connection.close()
+                        malformed_sidecar = {
+                            **malformed,
+                            "result_sha256": receipt["result_sha256"],
+                        }
+                        with self.assertRaisesRegex(
+                                RuntimeError, "incomplete immutable audit"):
+                            sync._verify_complete_migration_receipt(
+                                malformed_sidecar, manifest, db)
+                        connection = sqlite3.connect(db)
+                        connection.execute(
+                            "UPDATE affiliation_migration_audit "
+                            "SET receipt_id=?,report_json=? WHERE receipt_id=?",
+                            (receipt["receipt_id"], json.dumps(
+                                complete_report, sort_keys=True,
+                                separators=(",", ":")),
+                             malformed["receipt_id"]))
+                        connection.commit()
+                        connection.close()
     def test_fresh_schema_push_changed_generation_and_pull(self):
         with tempfile.TemporaryDirectory() as directory:
             directory_path = Path(directory)

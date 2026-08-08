@@ -100,6 +100,38 @@ def _receipt_id(report: dict) -> str:
         bound, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+MIGRATION_AUDIT_REPORT_FIELDS = frozenset({
+    "operation", "database", "backup", "backup_sha256", "base_sha256",
+    "base_logical_sha256", "result_logical_sha256", "registry_sha256",
+    "event_head", "policy_version", "source_sha256", "schema_from",
+    "schema_version", "schema_to", "base_generation", "started_at",
+    "finished_at", "issues", "receipt_id",
+})
+
+
+def validate_migration_audit_report(report: object) -> None:
+    """Validate the complete immutable report shape used by migration receipts."""
+    if (not isinstance(report, dict)
+            or set(report) != MIGRATION_AUDIT_REPORT_FIELDS
+            or report.get("operation") != "migrate"
+            or report.get("issues") != []):
+        raise RuntimeError("migration audit report provenance is invalid")
+    if (not all(_is_sha256(report[key]) for key in (
+                "backup_sha256", "base_sha256", "base_logical_sha256",
+                "result_logical_sha256", "registry_sha256", "source_sha256"))
+            or not isinstance(report["base_generation"], int)
+            or report["base_generation"] < 0
+            or not _is_sha256(report["receipt_id"])
+            or report["schema_version"] != report["schema_to"]
+            or any(not isinstance(report[key], str) or not report[key]
+                   for key in (
+                       "database", "backup", "event_head", "policy_version",
+                       "schema_from", "schema_version", "schema_to",
+                       "started_at", "finished_at"))
+            or _receipt_id(report) != report["receipt_id"]):
+        raise RuntimeError("migration audit report is invalid")
+
+
 def _atomic_json(path: Path, value: dict) -> None:
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     try:
@@ -291,27 +323,9 @@ def _recover_missing_receipt(db: Path, source: sqlite3.Connection) -> dict:
         report = json.loads(audit[11])
     except (TypeError, json.JSONDecodeError) as exc:
         raise RuntimeError("receipt recovery migration audit is invalid") from exc
-    required = {
-        "operation", "database", "backup", "backup_sha256", "base_sha256",
-        "base_logical_sha256", "result_logical_sha256", "registry_sha256",
-        "event_head", "policy_version", "source_sha256", "schema_from",
-        "schema_version", "schema_to", "base_generation", "started_at",
-        "finished_at", "issues", "receipt_id",
-    }
-    if (not isinstance(report, dict) or set(report) != required
-            or report["operation"] != "migrate" or report["issues"] != []):
-        raise RuntimeError("receipt recovery migration audit provenance is invalid")
-    if (not all(_is_sha256(report[key]) for key in (
-            "backup_sha256", "base_sha256", "base_logical_sha256",
-            "result_logical_sha256", "registry_sha256", "source_sha256"))
-            or not isinstance(report["base_generation"], int)
-            or report["base_generation"] < 0
-            or not _is_sha256(report["receipt_id"])):
-        raise RuntimeError("receipt recovery migration audit report is invalid")
+    validate_migration_audit_report(report)
     if report["database"] not in {str(db), db.name} or report["receipt_id"] != receipt_id:
         raise RuntimeError("receipt recovery migration audit identity mismatch")
-    if _receipt_id(report) != receipt_id:
-        raise RuntimeError("receipt recovery migration audit receipt id mismatch")
     if audit[:11] != (
             "migrate", report["base_generation"], report["base_logical_sha256"],
             report["result_logical_sha256"], report["registry_sha256"],
