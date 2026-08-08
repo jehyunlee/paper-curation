@@ -30,6 +30,40 @@ class BibliographySyncCASTests(unittest.TestCase):
         connection.commit()
         connection.close()
         return path
+    def add_migration_audit(self, path, receipt):
+        connection = sqlite3.connect(path)
+        connection.execute(
+            "CREATE TABLE affiliation_migration_audit (operation TEXT,"
+            "base_generation INTEGER,base_logical_sha256 TEXT,"
+            "result_logical_sha256 TEXT,registry_sha256 TEXT,schema_from TEXT,"
+            "schema_to TEXT,report_json TEXT,receipt_id TEXT)")
+        report = {
+            key: receipt[key] for key in (
+                "base_generation", "base_sha256", "base_logical_sha256",
+                "registry_sha256", "event_head", "policy_version",
+                "source_sha256", "schema_from", "schema_to")
+        }
+        report["receipt_id"] = receipt["receipt_id"]
+        connection.execute(
+            "INSERT INTO affiliation_migration_audit VALUES (?,?,?,?,?,?,?,?,?)",
+            (receipt["operation"], receipt["base_generation"],
+             receipt["base_logical_sha256"], receipt["result_logical_sha256"],
+             receipt["registry_sha256"], receipt["schema_from"],
+             receipt["schema_to"], json.dumps(report), receipt["receipt_id"]))
+        connection.commit()
+        connection.close()
+
+    def migration_receipt(self):
+        return {
+            "operation": "migrate", "receipt_id": "receipt",
+            "base_generation": 0, "base_sha256": "base-file",
+            "base_logical_sha256": "base-logical",
+            "result_sha256": "migration-file",
+            "result_logical_sha256": "migration-logical",
+            "schema_from": "legacy", "schema_to": "affiliation-2",
+            "registry_sha256": "registry", "event_head": "event",
+            "policy_version": "policy", "source_sha256": "source",
+        }
 
     def receipt_loader(self, db):
         path = sync.migrator.receipt_path(db, "migrate")
@@ -109,6 +143,86 @@ class BibliographySyncCASTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "missing local migration receipt"):
                     sync.push(base)
             run.assert_not_called()
+    def test_receipt_provenance_allows_later_generation_with_immutable_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            receipt = self.migration_receipt()
+            self.add_migration_audit(db, receipt)
+            connection = sqlite3.connect(db)
+            connection.execute("CREATE TABLE later_projection (value TEXT)")
+            connection.execute("INSERT INTO later_projection VALUES ('reviewed')")
+            connection.commit()
+            connection.close()
+            receipt_path = sync.migrator.receipt_path(db, "migrate")
+            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db):
+                manifest = sync.local_manifest()
+                loaded, _, _ = sync._load_current_migration_receipt(manifest)
+            self.assertEqual(loaded, receipt)
+            self.assertNotEqual(receipt["result_sha256"], manifest["sha256"])
+    def test_tampered_local_receipt_provenance_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            receipt = self.migration_receipt()
+            self.add_migration_audit(db, receipt)
+            receipt["event_head"] = "tampered"
+            sync.migrator.receipt_path(db, "migrate").write_text(
+                json.dumps(receipt), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db):
+                with self.assertRaisesRegex(RuntimeError, "migration provenance"):
+                    sync._load_current_migration_receipt(sync.local_manifest())
+
+    def test_pull_accepts_later_generation_and_rejects_tampered_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory_path = Path(directory)
+            source = self.make_latest_db(directory_path / "source.sqlite3")
+            receipt = self.migration_receipt()
+            self.add_migration_audit(source, receipt)
+            connection = sqlite3.connect(source)
+            connection.execute("CREATE TABLE later_projection (value TEXT)")
+            connection.commit()
+            connection.close()
+            receipt_file = directory_path / "receipt.json"
+            receipt_file.write_text(json.dumps(receipt), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", source):
+                manifest = sync.local_manifest()
+            manifest.update({
+                "generation": 3,
+                "migration_receipt_sha256": sync.sha(receipt_file),
+                "migration_receipt_object": (
+                    f"{sync.GENERATIONS}/{3:020d}-{sync.sha(receipt_file)}.migration.json"),
+                "object": f"{sync.GENERATIONS}/{3:020d}-{manifest['logical_sha256']}.sqlite3",
+            })
+            payload = sync.canonical_manifest(manifest)
+
+            def transport(command, **_kwargs):
+                source_name, destination = command[-2], Path(command[-1])
+                if source_name.endswith(".manifest.json"):
+                    destination.write_text(payload, encoding="utf-8")
+                elif source_name.endswith(".migration.json"):
+                    shutil.copyfile(receipt_file, destination)
+                else:
+                    shutil.copyfile(source, destination)
+                return Mock()
+
+            destination = directory_path / "destination.sqlite3"
+            with patch.object(sync, "LOCAL_DB", destination), \
+                 patch.object(sync, "run", side_effect=transport):
+                self.assertEqual(sync.pull(), manifest)
+            connection = sqlite3.connect(source)
+            connection.execute(
+                "UPDATE affiliation_migration_audit SET registry_sha256='tampered'")
+            connection.commit()
+            connection.close()
+            manifest["sha256"] = sync.sha(source)
+            manifest["logical_sha256"] = sync._logical_sha(source)
+            manifest["object"] = (
+                f"{sync.GENERATIONS}/{3:020d}-{manifest['logical_sha256']}.sqlite3")
+            payload = sync.canonical_manifest(manifest)
+            with patch.object(sync, "LOCAL_DB", directory_path / "tampered.sqlite3"), \
+                 patch.object(sync, "run", side_effect=transport):
+                with self.assertRaisesRegex(RuntimeError, "does not match DB audit"):
+                    sync.pull()
 
     def test_bootstrap_binds_remote_affiliation_metadata(self):
         with patch.object(sync, "remote") as remote:
@@ -504,4 +618,5 @@ class BibliographySyncCASTests(unittest.TestCase):
             }
             with patch.object(sync, "LOCAL_DB", db):
                 with self.assertRaisesRegex(RuntimeError, "lacks migration audit"):
-                    sync._verify_migration_audit(receipt, self.complete_manifest())
+                    sync._verify_migration_audit(
+                        receipt, self.complete_manifest(), db)

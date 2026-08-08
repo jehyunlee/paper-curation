@@ -239,14 +239,11 @@ def _load_current_migration_receipt(manifest: dict) -> tuple[dict, Path, str]:
     receipt_digest = sha(path)
     if (receipt.get("operation") != "migrate"
             or receipt.get("receipt_id") != manifest["migration_receipt_id"]
-            or receipt.get("result_sha256") != manifest["sha256"]
-            or receipt.get("result_logical_sha256") != manifest["logical_sha256"]
             or receipt.get("schema_to") != manifest["schema_version"]
             or any(receipt.get(key) != manifest[key] for key in (
                 "registry_sha256", "event_head", "policy_version", "source_sha256"))):
-        raise RuntimeError("migration receipt does not bind the current local DB")
-    migrator._verify_current_result(LOCAL_DB, receipt)
-    _verify_migration_audit(receipt, manifest)
+        raise RuntimeError("migration receipt does not bind current migration provenance")
+    _verify_migration_audit(receipt, manifest, LOCAL_DB)
     return receipt, path, receipt_digest
 
 
@@ -283,9 +280,9 @@ def _atomic_remote_copy(source: str, destination: str, token: str) -> str:
     )
 
 
-def _verify_migration_audit(receipt: dict, manifest: dict) -> None:
-    """Bind published rollback to the DB's immutable migration audit."""
-    connection = sqlite3.connect(LOCAL_DB)
+def _verify_migration_audit(receipt: dict, manifest: dict, database: Path) -> None:
+    """Verify immutable migration provenance recorded in a specific DB."""
+    connection = sqlite3.connect(database)
     try:
         row = connection.execute(
             "SELECT operation,base_generation,base_logical_sha256,"
@@ -294,28 +291,28 @@ def _verify_migration_audit(receipt: dict, manifest: dict) -> None:
             (receipt["receipt_id"],),
         ).fetchone()
     except sqlite3.Error as exc:
-        raise RuntimeError("current bibliography DB lacks migration audit") from exc
+        raise RuntimeError("bibliography DB lacks migration audit") from exc
     finally:
         connection.close()
     if row is None:
-        raise RuntimeError("migration receipt is absent from current DB audit")
+        raise RuntimeError("migration receipt is absent from DB audit")
     operation, generation, base_logical, result_logical, registry, schema_from, schema_to, report = row
     if (operation != "migrate" or generation != receipt["base_generation"]
             or base_logical != receipt["base_logical_sha256"]
             or result_logical != receipt["result_logical_sha256"]
             or registry != receipt["registry_sha256"]
             or schema_from != receipt["schema_from"] or schema_to != receipt["schema_to"]):
-        raise RuntimeError("migration receipt does not match current DB audit")
+        raise RuntimeError("migration receipt does not match DB audit")
     try:
         audited = json.loads(report)
     except json.JSONDecodeError as exc:
-        raise RuntimeError("current DB migration audit is invalid") from exc
+        raise RuntimeError("DB migration audit is invalid") from exc
     if (audited.get("receipt_id") != receipt["receipt_id"]
             or any(audited.get(key) != receipt[key] for key in (
                 "base_generation", "base_sha256", "base_logical_sha256",
                 "registry_sha256", "event_head", "policy_version",
                 "source_sha256", "schema_from", "schema_to"))):
-        raise RuntimeError("current DB migration audit receipt mismatch")
+        raise RuntimeError("DB migration audit receipt mismatch")
 
 
 def bootstrap():
@@ -362,7 +359,13 @@ def pull():
         if receipt_value.get("receipt_id") != manifest["migration_receipt_id"]:
             raise RuntimeError("remote migration receipt ID mismatch")
         if not rollback:
-            migrator._verify_current_result(db, receipt_value)
+            if (receipt_value.get("operation") != "migrate"
+                    or receipt_value.get("schema_to") != manifest["schema_version"]
+                    or any(receipt_value.get(key) != manifest[key] for key in (
+                        "registry_sha256", "event_head", "policy_version", "source_sha256"))):
+                raise RuntimeError(
+                    "remote migration receipt does not bind migration provenance")
+            _verify_migration_audit(receipt_value, manifest, db)
         os.replace(db, LOCAL_DB)
         migrator._atomic_json(_migration_receipt_path(), receipt_value)
         LOCAL_DB.with_suffix(".base.json").write_text(
@@ -487,7 +490,7 @@ def seed_legacy_recovery(base_receipt: Path | None) -> dict:
                 "source_sha256"))):
         raise RuntimeError(
             "legacy recovery seed migration receipt does not bind current provenance")
-    _verify_migration_audit(receipt, manifest)
+    _verify_migration_audit(receipt, manifest, LOCAL_DB)
     backup = Path(receipt["backup"])
     if not backup.exists() or sha(backup) != receipt["backup_sha256"]:
         raise RuntimeError("legacy recovery seed requires the retained migration backup")
@@ -579,7 +582,7 @@ def published_rollback(target_generation: int, base_receipt: Path | None,
         raise RuntimeError("migration receipt is not the synchronized receipt artifact")
     if target_generation < 0 or target_generation >= expected["generation"]:
         raise RuntimeError("rollback target must be an older retained generation")
-    _verify_migration_audit(migration, expected)
+    _verify_migration_audit(migration, expected, LOCAL_DB)
 
     listing = remote(
         f"set -- {_remote_q(GENERATIONS)}/{target_generation:020d}-*.sqlite3; "
