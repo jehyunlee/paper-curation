@@ -103,6 +103,51 @@ class BibliographySyncCASTests(unittest.TestCase):
                 sync.bootstrap()
         remote.assert_not_called()
 
+    def test_seed_legacy_recovery_accepts_audited_pre_receipt_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory_path = Path(directory)
+            db = self.make_latest_db(directory_path / "bibliography.sqlite3")
+            backup = directory_path / "legacy.sqlite3"
+            sqlite3.connect(backup).close()
+            backup_logical = sync._logical_sha(backup)
+            expected = self.complete_manifest(
+                generation=0, sha256=sync.sha(db),
+                logical_sha256=sync._logical_sha(db))
+            expected.pop("migration_receipt_sha256")
+            expected.pop("migration_receipt_object")
+            base = directory_path / "base.json"
+            base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
+            receipt_path = sync.migrator.receipt_path(db, "migrate")
+            receipt_path.write_text(json.dumps({
+                "operation": "migrate",
+                "receipt_id": "receipt",
+                "base_generation": 0,
+                "base_sha256": sync.sha(backup),
+                "base_logical_sha256": backup_logical,
+                "backup": str(backup),
+                "backup_sha256": sync.sha(backup),
+                "schema_from": "legacy",
+                "registry_sha256": "registry",
+                "event_head": "event",
+                "policy_version": "policy",
+                "source_sha256": "source",
+            }), encoding="utf-8")
+            with patch.object(sync, "LOCAL_DB", db), \
+                 patch.object(sync, "_ensure_publishable"), \
+                 patch.object(sync, "_verify_migration_audit") as verify_audit, \
+                 patch.object(sync, "run"), \
+                 patch.object(sync, "remote"), \
+                 patch.object(sync.uuid, "uuid4", return_value=Mock(hex="seed")), \
+                 patch.object(sync.time, "strftime",
+                              return_value="2026-08-08T00:00:00Z"):
+                result = sync.seed_legacy_recovery(base)
+            verify_audit.assert_called_once()
+            self.assertEqual(result["generation"], 1)
+            self.assertEqual(result["sha256"], sync.sha(backup))
+            self.assertEqual(result["logical_sha256"], backup_logical)
+            self.assertEqual(result["base_sha256"], expected["sha256"])
+            self.assertTrue(result["requires_controlled_remigration"])
+            self.assertEqual(result["operation"], "legacy_recovery_seed")
     def test_pull_of_published_rollback_writes_hard_stop_marker(self):
         with tempfile.TemporaryDirectory() as directory:
             directory_path = Path(directory)

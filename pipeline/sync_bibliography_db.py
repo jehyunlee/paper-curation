@@ -424,7 +424,30 @@ def seed_legacy_recovery(base_receipt: Path | None) -> dict:
     if any(expected.get(key) in (None, "") for key in required):
         raise RuntimeError("legacy recovery seed base receipt is incomplete")
     manifest = local_manifest()
-    receipt, receipt_path, receipt_digest = _load_current_migration_receipt(manifest)
+    for key in (
+            "database", "sha256", "logical_sha256", "schema_version",
+            "registry_sha256", "event_head", "policy_version",
+            "source_sha256", "migration_receipt_id"):
+        if manifest.get(key) != expected.get(key):
+            raise RuntimeError(
+                f"legacy recovery seed base receipt does not match local {key}")
+    receipt_path = _migration_receipt_path()
+    if not receipt_path.exists():
+        raise RuntimeError("legacy recovery seed requires the original migration receipt")
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("legacy recovery seed migration receipt is invalid") from exc
+    receipt_digest = sha(receipt_path)
+    if (receipt.get("operation") != "migrate"
+            or receipt.get("receipt_id") != manifest["migration_receipt_id"]
+            or receipt.get("base_generation") != expected["generation"]
+            or any(receipt.get(key) != manifest[key] for key in (
+                "registry_sha256", "event_head", "policy_version",
+                "source_sha256"))):
+        raise RuntimeError(
+            "legacy recovery seed migration receipt does not bind current provenance")
+    _verify_migration_audit(receipt, manifest)
     backup = Path(receipt["backup"])
     if not backup.exists() or sha(backup) != receipt["backup_sha256"]:
         raise RuntimeError("legacy recovery seed requires the retained migration backup")
@@ -436,10 +459,6 @@ def seed_legacy_recovery(base_receipt: Path | None) -> dict:
             raise RuntimeError("legacy recovery backup provenance mismatch")
     finally:
         probe.close()
-    if (receipt["base_generation"] != expected["generation"]
-            or receipt["base_sha256"] != expected["sha256"]
-            or receipt["base_logical_sha256"] != expected["logical_sha256"]):
-        raise RuntimeError("legacy recovery receipt does not bind the retained generation")
     generation = expected["generation"] + 1
     result = {
         "database": expected["database"], "generation": generation,
