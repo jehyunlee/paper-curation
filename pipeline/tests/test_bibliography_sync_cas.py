@@ -245,38 +245,85 @@ class BibliographySyncCASTests(unittest.TestCase):
     def test_changed_migration_origin_requires_bound_controlled_remigration(self):
         with tempfile.TemporaryDirectory() as directory:
             db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
-            connection = sqlite3.connect(db)
-            connection.execute(
-                "UPDATE affiliation_registry_metadata SET migration_receipt_id=?",
-                ("new-migration-origin",))
-            connection.commit()
-            connection.close()
             expected = {
                 **self.complete_manifest(generation=3, schema_version="legacy"),
-                "sha256": "rollback-file",
-                "logical_sha256": "rollback-logical",
+                "sha256": "a" * 64,
+                "logical_sha256": "b" * 64,
                 "restored_schema_version": "legacy",
                 "requires_controlled_remigration": True,
+                "base_generation": 2,
+                "base_sha256": "d" * 64,
+                "base_logical_sha256": "e" * 64,
+                "object": (
+                    f"{sync.GENERATIONS}/{3:020d}-{'b' * 64}.sqlite3"),
             }
             receipt = {
-                **self.migration_receipt(),
-                "receipt_id": "new-migration-origin",
+                "operation": "migrate",
+                "database": str(db),
+                "backup": str(Path(directory) / "backup.sqlite3"),
+                "backup_sha256": "c" * 64,
                 "base_generation": expected["generation"],
                 "base_sha256": expected["sha256"],
                 "base_logical_sha256": expected["logical_sha256"],
+                "registry_sha256": "registry",
+                "event_head": "event",
+                "policy_version": "policy",
+                "source_sha256": "source",
+                "schema_from": "legacy",
+                "schema_version": "affiliation-2",
+                "schema_to": "affiliation-2",
+                "started_at": "2026-08-08T00:00:00Z",
+                "finished_at": "2026-08-08T00:01:00Z",
+                "issues": [],
+                "result_logical_sha256": sync._logical_sha(db),
             }
+            receipt["receipt_id"] = sync.migrator._receipt_id(receipt)
+            connection = sqlite3.connect(db)
+            connection.execute(
+                "UPDATE affiliation_registry_metadata SET migration_receipt_id=?",
+                (receipt["receipt_id"],))
+            connection.commit()
+            connection.close()
             receipt["result_logical_sha256"] = sync._logical_sha(db)
             self.add_migration_audit(db, receipt)
+            connection = sqlite3.connect(db)
+            connection.execute(
+                "UPDATE affiliation_migration_audit SET report_json=? "
+                "WHERE receipt_id=?",
+                (json.dumps(receipt, sort_keys=True, separators=(",", ":")),
+                 receipt["receipt_id"]))
+            connection.commit()
+            connection.close()
             with patch.object(sync, "LOCAL_DB", db):
                 manifest = sync.local_manifest()
                 receipt["result_sha256"] = manifest["sha256"]
                 sync._validate_origin_transition(
                     expected, manifest, receipt, "new-receipt-digest")
+                sidecar = sync.migrator.receipt_path(db, "migrate")
+                sidecar.write_text(json.dumps(receipt), encoding="utf-8")
+                base = Path(directory) / "rollback.base.json"
+                base.write_text(
+                    sync.canonical_manifest(expected), encoding="utf-8")
+                with patch.object(sync, "_ensure_publishable"), \
+                     patch.object(sync, "_copy_to_authority"), \
+                     patch.object(sync, "remote"), \
+                     patch.object(sync.uuid, "uuid4",
+                                  return_value=Mock(hex="controlled")):
+                    published = sync.push(base)
+                self.assertEqual(published["generation"], 4)
+                self.assertEqual(
+                    published["migration_receipt_id"], receipt["receipt_id"])
                 tampered = {**receipt, "result_sha256": "0" * 64}
                 with self.assertRaisesRegex(
                         RuntimeError, "does not bind the local result"):
                     sync._validate_origin_transition(
                         expected, manifest, tampered, "tampered-digest")
+                audited_field_tamper = {**receipt, "backup": "other-backup"}
+                with self.assertRaisesRegex(
+                        RuntimeError, "exactly match immutable audit"):
+                    sync._validate_origin_transition(
+                        expected, manifest, audited_field_tamper,
+                        "tampered-audit-field")
                 ordinary = dict(expected)
                 ordinary.pop("requires_controlled_remigration")
                 with self.assertRaisesRegex(
@@ -339,6 +386,25 @@ class BibliographySyncCASTests(unittest.TestCase):
                 finally:
                     sync.migrator.bib.affiliation_registry.release_bibliography_writer_lock(
                         destination, descriptor)
+                real_acquire = sync.migrator.acquire_lock
+
+                def acquire_after_rollback(target):
+                    sync.migrator._atomic_json(sync._remigration_marker(), {
+                        "operation": "remigration_required",
+                        "manifest_generation": second["generation"],
+                        "migration_receipt_id": second["migration_receipt_id"],
+                        "created_at": second["updated_at"],
+                    })
+                    return real_acquire(target)
+
+                with patch.object(
+                        sync.migrator, "acquire_lock",
+                        side_effect=acquire_after_rollback):
+                    with self.assertRaisesRegex(
+                            RuntimeError, "remigration required"):
+                        sync.pull()
+                self.assertFalse(destination.exists())
+                sync._remigration_marker().unlink()
                 pulled = sync.pull()
             self.assertEqual(first["migration_receipt_id"], second["migration_receipt_id"])
             self.assertNotEqual(first["logical_sha256"], second["logical_sha256"])

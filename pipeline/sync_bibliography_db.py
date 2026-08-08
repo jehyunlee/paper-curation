@@ -395,6 +395,60 @@ def _verify_migration_audit(receipt: dict, manifest: dict, database: Path) -> No
         raise RuntimeError("DB migration audit receipt mismatch")
 
 
+def _verify_complete_migration_receipt(receipt: dict, manifest: dict,
+                                       database: Path) -> None:
+    """Bind a changed origin to the complete immutable audit payload."""
+    connection = sqlite3.connect(database)
+    try:
+        row = connection.execute(
+            "SELECT report_json FROM affiliation_migration_audit "
+            "WHERE receipt_id=?", (receipt["receipt_id"],)).fetchone()
+    except sqlite3.Error as exc:
+        raise RuntimeError("bibliography DB lacks migration audit") from exc
+    finally:
+        connection.close()
+    if row is None:
+        raise RuntimeError("migration receipt is absent from DB audit")
+    try:
+        audited = json.loads(row[0])
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("DB migration audit is invalid") from exc
+    if not isinstance(audited, dict):
+        raise RuntimeError("DB migration audit is invalid")
+    expected = {**audited, "result_sha256": receipt.get("result_sha256")}
+    if (receipt != expected
+            or audited.get("receipt_id") != receipt.get("receipt_id")
+            or migrator._receipt_id(audited) != receipt.get("receipt_id")):
+        raise RuntimeError(
+            "changed migration receipt does not exactly match immutable audit")
+    _verify_migration_audit(receipt, manifest, database)
+
+
+def _ensure_installable_pull(manifest: dict) -> None:
+    """Revalidate local hard stops and prevent generation regression."""
+    _ensure_pull_allowed(manifest)
+    base = LOCAL_DB.with_suffix(".base.json")
+    if not base.exists():
+        return
+    try:
+        raw = base.read_text(encoding="utf-8")
+        installed = json.loads(raw)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("invalid installed base receipt") from exc
+    if raw != canonical_manifest(installed):
+        raise RuntimeError("installed base receipt is not canonical")
+    installed_generation = installed.get("generation")
+    remote_generation = manifest.get("generation")
+    if (not isinstance(installed_generation, int)
+            or not isinstance(remote_generation, int)):
+        raise RuntimeError("installed or remote generation is invalid")
+    if installed_generation > remote_generation:
+        raise RuntimeError("remote manifest would regress the installed generation")
+    if (installed_generation == remote_generation
+            and canonical_manifest(installed) != canonical_manifest(manifest)):
+        raise RuntimeError("remote manifest conflicts with the installed generation")
+
+
 def bootstrap():
     """Legacy bootstrap is intentionally forbidden without receipt recovery."""
     raise RuntimeError(
@@ -413,7 +467,7 @@ def pull():
             raise RuntimeError("remote manifest is not canonical")
         rollback = bool(manifest.get("requires_controlled_remigration"))
         _validate_manifest(manifest, rollback=rollback)
-        _ensure_pull_allowed(manifest)
+        _ensure_installable_pull(manifest)
         remote_object = manifest["object"]
         _copy_from_authority(remote_object, db)
         if sha(db) != manifest["sha256"]:
@@ -452,6 +506,7 @@ def pull():
                 _verify_migration_audit(receipt_value, manifest, db)
         descriptor = migrator.acquire_lock(LOCAL_DB)
         try:
+            _ensure_installable_pull(manifest)
             os.replace(db, LOCAL_DB)
             if _is_fresh_schema_origin(manifest):
                 migrator._atomic_json(_fresh_schema_receipt_path(), receipt_value)
@@ -506,7 +561,7 @@ def _validate_origin_transition(expected: dict, manifest: dict,
                     "source_sha256"))):
             raise RuntimeError(
                 "controlled remigration receipt does not bind the local result")
-        _verify_migration_audit(receipt, manifest, LOCAL_DB)
+        _verify_complete_migration_receipt(receipt, manifest, LOCAL_DB)
         return
     raise RuntimeError(
         "origin receipt changed without fresh rotation or controlled remigration")
