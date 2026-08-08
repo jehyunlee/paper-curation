@@ -1,226 +1,501 @@
 #!/usr/bin/env python3
-"""Audit and repair malformed institution names in the bibliography database."""
+"""Controlled, local-only migrator for existing bibliography databases."""
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import shutil
 import sqlite3
-from collections import Counter
+import sys
+import time
 from pathlib import Path
 
 import build_bibliography_db as bib
 
 
-def _group_for(name: str) -> str:
-    for group, pattern in bib.GROUPS:
-        if bib.re.search(pattern, name, bib.re.I):
-            return group
-    return ""
+def digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _source_rank(source: str) -> int:
+def logical_digest(conn: sqlite3.Connection) -> str:
+    """Hash logical DB content while excluding the self-referential migration audit."""
+    value = hashlib.sha256()
+    tables = [
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name NOT LIKE 'sqlite_%' AND name<>'affiliation_migration_audit' "
+            "ORDER BY name")
+    ]
+    for table in tables:
+        columns = [row[1] for row in conn.execute(
+            f'PRAGMA table_info("{table}")')]
+        value.update(json.dumps([table, columns], separators=(",", ":")).encode())
+        if not columns:
+            continue
+        quoted = ",".join(f'"{column}"' for column in columns)
+        for row in conn.execute(
+                f'SELECT {quoted} FROM "{table}" ORDER BY {quoted}'):
+            encoded = [
+                {"__bytes__": item.hex()} if isinstance(item, bytes) else item
+                for item in row
+            ]
+            value.update(json.dumps(
+                encoded, ensure_ascii=False, sort_keys=True,
+                separators=(",", ":"), default=str).encode("utf-8"))
+            value.update(b"\n")
+    return value.hexdigest()
+
+
+def _fsync_directory(directory: Path) -> None:
+    descriptor = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _fsync(path: Path) -> None:
+    with path.open("rb") as stream:
+        os.fsync(stream.fileno())
+    _fsync_directory(path.parent)
+
+
+def _atomic_json(path: Path, value: dict) -> None:
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        temporary.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True,
+                                       separators=(",", ":")), encoding="utf-8")
+        _fsync(temporary)
+        os.replace(temporary, path)
+        _fsync(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def lock_path(db: Path) -> Path:
+    return db.with_suffix(db.suffix + ".affiliation-migrate.lock")
+
+
+def marker_path(db: Path) -> Path:
+    return db.with_suffix(db.suffix + ".remigration-required.json")
+
+
+def receipt_path(db: Path, operation: str) -> Path:
+    return db.with_suffix(db.suffix + f".affiliation-{operation}.json")
+
+
+def acquire_lock(db: Path) -> int:
+    try:
+        return os.open(lock_path(db), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError as exc:
+        raise RuntimeError("migration lock busy; remove only after confirming no migration is running") from exc
+
+
+def _schema_name(conn: sqlite3.Connection) -> str:
+    return bib.AFFILIATION_SCHEMA_VERSION if bib.is_latest_affiliation_schema(conn) else "legacy"
+
+
+def _ddl_statements(script: str) -> list[str]:
+    """Split SQLite statements without executescript's implicit transaction commit."""
+    statements, pending = [], ""
+    for line in script.splitlines(keepends=True):
+        pending += line
+        if sqlite3.complete_statement(pending):
+            statement = pending.strip()
+            if statement:
+                statements.append(statement)
+            pending = ""
+    if pending.strip():
+        raise RuntimeError("incomplete affiliation schema DDL")
+    return statements
+class _SchemaInstalledConnection:
+    """Proxy that prevents a public projector from re-running transactional DDL."""
+
+    def __init__(self, connection: sqlite3.Connection) -> None:
+        self._connection = connection
+
+    def executescript(self, script: str) -> None:
+        if script != bib.AFFILIATION_SCHEMA:
+            raise RuntimeError("unexpected projector schema script")
+
+    def __getattr__(self, name: str):
+        return getattr(self._connection, name)
+
+
+
+
+def _registry_provenance() -> dict:
+    registry = bib.affiliation_registry.load_registry(bib.REGISTRY_PATH)
     return {
-        "scopus+pdf": 4,
-        "scopus": 3,
-        "pdf": 2,
-        "scopus-unconfirmed": 1,
-    }.get(source or "", 0)
-
-
-def _should_prune_unresolved(name: str) -> bool:
-    if name in bib.STANDALONE_INSTITUTION_NAMES:
-        return False
-    if name in bib.GENERIC_INSTITUTION_NAMES:
-        return True
-    if bib.re.search(r"(?:\band|\bof)$", name, bib.re.I):
-        return True
-    if len(name) > 90:
-        return True
-    if bib.re.search(
-            r"^(?:College of|Department|School|Faculty)\b|\b(?:Authors?|"
-            r"Published|Proceedings|Copyright|is with|are with|work was)\b",
-            name, bib.re.I):
-        return True
-    return not bool(bib.re.search(
-        r"\b(?:University|Institute|Academy|College|Hospital|Laboratory|"
-        r"Centre|Center|Research|Network)\b|MIT|ETH|CNRS", name, bib.re.I))
-
-
-def audit_and_repair(db_path: Path, *, execute: bool = False) -> dict:
-    conn = sqlite3.connect(db_path)
-    conn.execute("PRAGMA foreign_keys = ON")
-    bib.initialize_institution_registry(conn)
-    rows = conn.execute(
-        "SELECT pi.paper_id,pi.institution_id,pi.raw_name,pi.country_name,"
-        "pi.source,i.institution_name,p.doi,p.title,p.slug "
-        "FROM paper_institutions pi "
-        "JOIN institutions i USING(institution_id) "
-        "JOIN papers p USING(paper_id) "
-        "ORDER BY pi.paper_id,pi.institution_id"
-    ).fetchall()
-
-    changes = []
-    unresolved = Counter()
-    pruned = []
-    for (paper_id, institution_id, raw, country, source, current,
-         doi, title, slug) in rows:
-        canonical_current = bib.canonical_institution(current)
-        resolved = bib.cached_scopus_parent(doi, title, current)
-        if not resolved:
-            resolved = bib.resolve_institution_from_raw(raw, current)
-        if not resolved and canonical_current != current:
-            resolved = canonical_current
-        if not resolved and bib.is_suspicious_institution_name(current):
-            parsed = bib.institution_from_raw(raw)
-            resolved = parsed[0] if parsed else ""
-        if resolved and resolved != current and not bib.is_suspicious_institution_name(resolved):
-            changes.append({
-                "paper_id": paper_id,
-                "old_id": institution_id,
-                "old_name": current,
-                "new_name": resolved,
-                "raw_name": raw,
-                "country": country or bib.country_from_raw(raw),
-                "slug": slug,
-                "source": source,
-            })
-        elif bib.is_suspicious_institution_name(current):
-            if _should_prune_unresolved(current):
-                pruned.append({
-                    "paper_id": paper_id,
-                    "institution_id": institution_id,
-                    "name": current,
-                    "raw_name": raw,
-                })
-            else:
-                unresolved[current] += 1
-
-    report = {
-        "database": str(db_path),
-        "paper_institution_rows": len(rows),
-        "changes": len(changes),
-        "pruned_rows": len(pruned),
-        "unresolved_rows": sum(unresolved.values()),
-        "unresolved_names": len(unresolved),
-        "top_pruned": Counter(
-            row["name"] for row in pruned
-        ).most_common(100),
-        "top_changes": Counter(
-            (row["old_name"], row["new_name"]) for row in changes
-        ).most_common(100),
-        "top_unresolved": unresolved.most_common(100),
-        "executed": execute,
+        "registry_sha256": bib._registry_digest(),
+        "event_head": registry["event_head"],
+        "policy_version": registry["policy_version"],
+        "source_sha256": registry["source_sha256"],
     }
-    if not execute:
+
+
+def _verify_base(db: Path, conn: sqlite3.Connection, base_receipt: Path | None) -> dict:
+    if base_receipt is None:
+        raise RuntimeError("execute requires a complete base receipt")
+    if not base_receipt.exists():
+        raise RuntimeError(f"missing expected base receipt: {base_receipt}")
+    try:
+        expected = json.loads(base_receipt.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("invalid expected base receipt") from exc
+    if not isinstance(expected, dict):
+        raise RuntimeError("invalid expected base receipt")
+    required = {
+        "database", "sha256", "logical_sha256", "schema_version", "generation",
+        "registry_sha256", "event_head", "policy_version", "source_sha256",
+    }
+    missing = sorted(key for key in required if expected.get(key) in (None, ""))
+    if missing:
+        raise RuntimeError("expected base receipt lacks required provenance: " + ",".join(missing))
+    if expected["database"] not in {str(db), db.name}:
+        raise RuntimeError("expected base receipt database path mismatch")
+    if expected["sha256"] != digest(db):
+        raise RuntimeError("expected base receipt database hash mismatch")
+    if expected["logical_sha256"] != logical_digest(conn):
+        raise RuntimeError("expected base receipt logical hash mismatch")
+    if expected["schema_version"] != _schema_name(conn):
+        raise RuntimeError("expected base receipt schema mismatch")
+    if not isinstance(expected["generation"], int) or expected["generation"] < 0:
+        raise RuntimeError("expected base receipt generation is invalid")
+    actual = _registry_provenance()
+    for key, value in actual.items():
+        if expected[key] != value:
+            raise RuntimeError(f"expected base receipt {key} mismatch")
+    return expected
+
+
+def validate(conn: sqlite3.Connection) -> list[str]:
+    issues = []
+    if conn.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+        issues.append("quick_check failed")
+    if conn.execute("PRAGMA foreign_key_check").fetchone() is not None:
+        issues.append("foreign-key violation")
+    bad_current = conn.execute(
+        "SELECT COUNT(*) FROM observed_affiliation_slots s WHERE "
+        "(SELECT COUNT(*) FROM observed_affiliations o WHERE "
+        "o.observation_slot_id=s.observation_slot_id AND o.is_current=1) != 1"
+    ).fetchone()[0]
+    if bad_current:
+        issues.append(f"slots without exactly one current observation: {bad_current}")
+    bad_pending = conn.execute(
+        "SELECT COUNT(*) FROM affiliation_pending_cases WHERE "
+        "active_observation_count < 0 OR lifetime_observation_count < active_observation_count "
+        "OR (status IN ('open','proposed') AND active_observation_count=0) "
+        "OR (status IN ('resolved','rejected') AND active_observation_count<>0)"
+    ).fetchone()[0]
+    if bad_pending:
+        issues.append(f"pending invariant violations: {bad_pending}")
+    return issues
+
+
+def _backup(source: sqlite3.Connection, backup: Path, base_logical_hash: str,
+            base_schema: str) -> str:
+    """Durably stage a SQLite snapshot while the source write lock is held."""
+    temporary = backup.with_name(f".{backup.name}.{os.getpid()}.tmp")
+    target = None
+    try:
+        snapshot = source.serialize()
+        with temporary.open("wb") as handle:
+            handle.write(snapshot)
+            handle.flush()
+            os.fsync(handle.fileno())
+        target = sqlite3.connect(temporary)
+        target.commit()
+        if target.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("SQLite backup integrity check failed")
+        if logical_digest(target) != base_logical_hash:
+            raise RuntimeError("SQLite backup logical hash mismatch")
+        if _schema_name(target) != base_schema:
+            raise RuntimeError("SQLite backup schema mismatch")
+        target.close()
+        target = None
+        _fsync(temporary)
+        os.replace(temporary, backup)
+        _fsync(backup)
+        return digest(backup)
+    finally:
+        if target is not None:
+            target.close()
+        temporary.unlink(missing_ok=True)
+
+
+def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
+    if not db.exists():
+        raise RuntimeError(f"missing database: {db}")
+    conn = sqlite3.connect(db)
+    try:
+        already = bib.is_latest_affiliation_schema(conn)
+        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        plan = {"database": str(db), "already_latest": already, "execute": execute,
+                "legacy_links": conn.execute("SELECT COUNT(*) FROM paper_institutions").fetchone()[0]
+                if "paper_institutions" in tables else 0,
+                "registry_sha256": bib._registry_digest()}
+        if already:
+            plan["issues"] = validate(conn)
+            return plan
+        if not execute:
+            return plan
+    finally:
         conn.close()
-        return report
+    if base_receipt is None:
+        raise RuntimeError(
+            "execute requires a matching base receipt with database, schema, "
+            "registry, and generation provenance")
 
-    backup = db_path.with_suffix(db_path.suffix + ".pre-institution-repair")
-    shutil.copy2(db_path, backup)
-    report["backup"] = str(backup)
+    fd = acquire_lock(db)
+    backup = db.with_suffix(db.suffix + ".pre-affiliation-2.sqlite3")
+    source = None
+    try:
+        source = sqlite3.connect(db)
+        source.execute("PRAGMA foreign_keys = OFF")
+        # The write snapshot must precede every provenance check and the backup.
+        source.execute("BEGIN IMMEDIATE")
+        expected = _verify_base(db, source, base_receipt)
+        base_logical_hash = expected["logical_sha256"]
+        base_hash = expected["sha256"]
+        backup_hash = _backup(
+            source, backup, base_logical_hash, expected["schema_version"])
+        started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        receipt_id = hashlib.sha256(json.dumps({
+            "operation": "migrate",
+            "database": str(db),
+            "base_sha256": base_hash,
+            "base_logical_sha256": base_logical_hash,
+            "backup_sha256": backup_hash,
+            **_registry_provenance(),
+            "base_schema_version": expected["schema_version"],
+            "base_generation": expected["generation"],
+            "started_at": started,
+        }, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        try:
+            for statement in _ddl_statements(bib.AFFILIATION_SCHEMA):
+                source.execute(statement)
+            bib.ensure_legacy_institution_schema(source)
+            registry = bib.project_affiliation_registry(_SchemaInstalledConnection(source))
+            rows = source.execute(
+                "SELECT pi.paper_id,pi.raw_name,pi.country_name,pi.source FROM paper_institutions pi "
+                "ORDER BY pi.paper_id,pi.institution_id"
+            ).fetchall()
+            for ordinal, (paper_id, raw, country, source_name) in enumerate(rows):
+                bib.record_affiliation_observation(
+                    source, paper_id, {"raw_name": raw, "country": country, "source": source_name},
+                    ordinal, registry)
+            source.execute(
+                "UPDATE affiliation_registry_metadata SET base_generation=?,"
+                "migration_receipt_id=? WHERE singleton=1",
+                (expected.get("generation", 0), receipt_id))
+            issues = validate(source)
+            if issues:
+                raise RuntimeError("; ".join(issues))
+            source.commit()
+            source.execute("PRAGMA foreign_keys = ON")
+        except BaseException:
+            source.rollback()
+            source.execute("PRAGMA foreign_keys = ON")
+            raise
+        source.execute("PRAGMA wal_checkpoint(FULL)")
+        result_logical_hash = logical_digest(source)
+        provenance = _registry_provenance()
+        receipt = {
+            "operation": "migrate", "database": str(db), "backup": str(backup),
+            "backup_sha256": backup_hash, "base_sha256": base_hash,
+            "base_logical_sha256": base_logical_hash,
+            "result_logical_sha256": result_logical_hash,
+            "registry_sha256": provenance["registry_sha256"],
+            "event_head": provenance["event_head"],
+            "policy_version": provenance["policy_version"],
+            "source_sha256": provenance["source_sha256"],
+            "schema_from": expected["schema_version"],
+            "schema_version": bib.AFFILIATION_SCHEMA_VERSION,
+            "schema_to": bib.AFFILIATION_SCHEMA_VERSION,
+            "base_generation": expected["generation"], "started_at": started,
+            "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "issues": [],
+        }
+        receipt["receipt_id"] = receipt_id
+        source.execute("INSERT INTO affiliation_migration_audit VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       (receipt_id, "migrate", receipt["base_generation"],
+                        base_logical_hash, result_logical_hash,
+                        receipt["registry_sha256"], "legacy", receipt["schema_version"], str(backup),
+                        backup_hash, started, receipt["finished_at"],
+                        json.dumps(receipt, sort_keys=True, separators=(",", ":"))))
+        source.commit()
+        source.execute("PRAGMA wal_checkpoint(FULL)")
+        receipt["result_sha256"] = digest(db)
+        _atomic_json(receipt_path(db, "migrate"), receipt)
+        marker_path(db).unlink(missing_ok=True)
+        return receipt
+    finally:
+        if source is not None:
+            source.close()
+        try:
+            os.close(fd)
+        finally:
+            lock_path(db).unlink(missing_ok=True)
 
-    with conn:
-        for row in pruned:
-            conn.execute(
-                "DELETE FROM paper_institutions WHERE paper_id=? "
-                "AND institution_id=?",
-                (row["paper_id"], row["institution_id"]),
-            )
-        for row in changes:
-            group = _group_for(row["new_name"])
-            group_id = None
-            if group:
-                found = conn.execute(
-                    "SELECT group_id FROM institution_groups "
-                    "WHERE normalized_name=?", (bib.norm(group),)).fetchone()
-                group_id = found[0] if found else conn.execute(
-                    "INSERT INTO institution_groups (group_name,normalized_name) "
-                    "VALUES (?,?)", (group, bib.norm(group))).lastrowid
 
-            found = conn.execute(
-                "SELECT institution_id,group_id,source FROM institutions "
-                "WHERE normalized_name=?", (bib.norm(row["new_name"]),)).fetchone()
-            if found:
-                target_id = found[0]
-                if group_id and not found[1]:
-                    conn.execute(
-                        "UPDATE institutions SET group_id=? WHERE institution_id=?",
-                        (group_id, target_id))
-            else:
-                target_id = conn.execute(
-                    "INSERT INTO institutions "
-                    "(institution_name,normalized_name,group_id,source) "
-                    "VALUES (?,?,?,?)",
-                    (row["new_name"], bib.norm(row["new_name"]), group_id,
-                     row["source"]),
-                ).lastrowid
+def _verify_current_result(db: Path, receipt: dict) -> None:
+    """Require rollback to replace exactly the migration result it names."""
+    current = sqlite3.connect(db)
+    try:
+        if current.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("current database integrity check failed")
+        if digest(db) != receipt["result_sha256"]:
+            raise RuntimeError("current database file hash mismatch")
+        if logical_digest(current) != receipt["result_logical_sha256"]:
+            raise RuntimeError("current database logical hash mismatch")
+        if _schema_name(current) != receipt["schema_to"]:
+            raise RuntimeError("current database schema mismatch")
+        for key, value in _registry_provenance().items():
+            if receipt[key] != value:
+                raise RuntimeError(f"current database {key} mismatch")
+        audit = current.execute(
+            "SELECT operation,base_generation,base_logical_sha256,"
+            "result_logical_sha256,registry_sha256,schema_from,schema_to,report_json "
+            "FROM affiliation_migration_audit WHERE receipt_id=?",
+            (receipt["receipt_id"],),
+        ).fetchone()
+        if audit is None:
+            raise RuntimeError("current database migration audit is missing")
+        if audit[:7] != (
+                "migrate", receipt["base_generation"], receipt["base_logical_sha256"],
+                receipt["result_logical_sha256"], receipt["registry_sha256"],
+                receipt["schema_from"], receipt["schema_to"]):
+            raise RuntimeError("current database migration audit mismatch")
+        try:
+            report = json.loads(audit[7])
+        except (TypeError, json.JSONDecodeError) as exc:
+            raise RuntimeError("current database migration audit is invalid") from exc
+        for key, value in receipt.items():
+            if key != "result_sha256" and report.get(key) != value:
+                raise RuntimeError("current database migration audit receipt mismatch")
+    finally:
+        current.close()
 
-            existing = conn.execute(
-                "SELECT raw_name,country_name,source FROM paper_institutions "
-                "WHERE paper_id=? AND institution_id=?",
-                (row["paper_id"], target_id),
-            ).fetchone()
-            if existing:
-                source = (row["source"] if _source_rank(row["source"]) >
-                          _source_rank(existing[2]) else existing[2])
-                conn.execute(
-                    "UPDATE paper_institutions SET country_name=?,source=? "
-                    "WHERE paper_id=? AND institution_id=?",
-                    (existing[1] or row["country"], source,
-                     row["paper_id"], target_id),
-                )
-                conn.execute(
-                    "DELETE FROM paper_institutions WHERE paper_id=? "
-                    "AND institution_id=?",
-                    (row["paper_id"], row["old_id"]),
-                )
-            else:
-                conn.execute(
-                    "UPDATE paper_institutions SET institution_id=?,"
-                    "country_name=? WHERE paper_id=? AND institution_id=?",
-                    (target_id, row["country"], row["paper_id"], row["old_id"]),
-                )
-            normalized_alias = bib.norm(row["raw_name"])
-            updated = conn.execute(
-                "UPDATE institution_aliases SET institution_id=? "
-                "WHERE raw_name=? OR normalized_alias=?",
-                (target_id, row["raw_name"], normalized_alias),
-            ).rowcount
-            if not updated:
-                conn.execute(
-                    "INSERT INTO institution_aliases "
-                    "(raw_name,normalized_alias,institution_id) VALUES (?,?,?)",
-                    (row["raw_name"], normalized_alias, target_id),
-                )
 
-        conn.execute(
-            "DELETE FROM institution_aliases WHERE institution_id NOT IN "
-            "(SELECT DISTINCT institution_id FROM paper_institutions)")
-        conn.execute(
-            "DELETE FROM institutions WHERE institution_id NOT IN "
-            "(SELECT DISTINCT institution_id FROM paper_institutions)")
-        conn.execute("PRAGMA optimize")
+def rollback(db: Path, *, expected_receipt: Path | None = None) -> dict:
+    backup = db.with_suffix(db.suffix + ".pre-affiliation-2.sqlite3")
+    receipt_file = expected_receipt or receipt_path(db, "migrate")
+    if not backup.exists() or not receipt_file.exists():
+        raise RuntimeError("missing migration backup or receipt")
+    try:
+        receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("invalid migration receipt") from exc
+    if receipt.get("backup") != str(backup) or receipt.get("backup_sha256") != digest(backup):
+        raise RuntimeError("migration backup receipt/hash mismatch")
+    required = {
+        "operation", "receipt_id", "backup", "backup_sha256", "base_sha256",
+        "base_logical_sha256", "result_sha256", "result_logical_sha256",
+        "schema_from", "schema_to", "base_generation",
+        "registry_sha256", "event_head", "policy_version", "source_sha256",
+    }
+    missing = sorted(key for key in required if receipt.get(key) in (None, ""))
+    if missing or receipt.get("operation") != "migrate":
+        raise RuntimeError("invalid migration receipt provenance")
+    probe = sqlite3.connect(backup)
+    try:
+        if _schema_name(probe) != receipt["schema_from"]:
+            raise RuntimeError("migration backup schema mismatch")
+        if probe.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("migration backup integrity check failed")
+        if logical_digest(probe) != receipt["base_logical_sha256"]:
+            raise RuntimeError("migration backup logical hash mismatch")
+    finally:
+        probe.close()
 
-    report["institutions_after"] = conn.execute(
-        "SELECT COUNT(*) FROM institutions").fetchone()[0]
-    report["links_after"] = conn.execute(
-        "SELECT COUNT(*) FROM paper_institutions").fetchone()[0]
-    conn.close()
-    return report
+    fd = acquire_lock(db)
+    temporary = db.with_name(f".{db.name}.rollback.{os.getpid()}.tmp")
+    quarantined: list[tuple[Path, Path]] = []
+    quarantines_removed = False
+    try:
+        _verify_current_result(db, receipt)
+        shutil.copyfile(backup, temporary)
+        _fsync(temporary)
+        restored = sqlite3.connect(temporary)
+        try:
+            if restored.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                raise RuntimeError("rollback temporary integrity check failed")
+            if _schema_name(restored) != receipt["schema_from"]:
+                raise RuntimeError("rollback temporary schema mismatch")
+            if logical_digest(restored) != receipt["base_logical_sha256"]:
+                raise RuntimeError("rollback temporary logical hash mismatch")
+        finally:
+            restored.close()
+
+        for path in (db, Path(str(db) + "-wal"), Path(str(db) + "-shm")):
+            if path.exists():
+                quarantine = path.with_name(
+                    f".{path.name}.rollback-quarantine.{os.getpid()}")
+                quarantine.unlink(missing_ok=True)
+                os.replace(path, quarantine)
+                quarantined.append((path, quarantine))
+        _fsync_directory(db.parent)
+        os.replace(temporary, db)
+        _fsync(db)
+        restored = sqlite3.connect(db)
+        try:
+            if (digest(db) != receipt["backup_sha256"]
+                    or logical_digest(restored) != receipt["base_logical_sha256"]
+                    or _schema_name(restored) != receipt["schema_from"]):
+                raise RuntimeError("rollback restore provenance mismatch")
+        finally:
+            restored.close()
+        for _, quarantine in quarantined:
+            quarantine.unlink(missing_ok=True)
+        quarantines_removed = True
+        _fsync_directory(db.parent)
+        result = {"operation": "rollback", "database": str(db), "backup": str(backup),
+                  "backup_sha256": digest(backup), "schema_version": receipt["schema_from"],
+                  "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        _atomic_json(receipt_path(db, "rollback"), result)
+        _atomic_json(marker_path(db), {
+            "operation": "remigration_required", "database": str(db),
+            "rollback_receipt": str(receipt_path(db, "rollback")),
+            "required_schema_version": bib.AFFILIATION_SCHEMA_VERSION,
+            "created_at": result["finished_at"],
+        })
+        return result
+    except BaseException:
+        if quarantined and not quarantines_removed:
+            db.unlink(missing_ok=True)
+            for original, quarantine in quarantined:
+                if quarantine.exists():
+                    os.replace(quarantine, original)
+            _fsync_directory(db.parent)
+        raise
+    finally:
+        temporary.unlink(missing_ok=True)
+        try:
+            os.close(fd)
+        finally:
+            lock_path(db).unlink(missing_ok=True)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, default=bib.DEFAULT_DB)
+    parser.add_argument("--registry", type=Path, default=bib.REGISTRY_PATH)
+    parser.add_argument("--base-receipt", type=Path)
+    parser.add_argument("--report", type=Path)
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--report", type=Path,
-                        default=bib.ROOT / ".cache" / "institution_repair_report.json")
+    parser.add_argument("--rollback", action="store_true")
     args = parser.parse_args()
-    result = audit_and_repair(args.db, execute=args.execute)
-    args.report.parent.mkdir(parents=True, exist_ok=True)
-    args.report.write_text(
-        json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    bib.REGISTRY_PATH = args.registry
+    try:
+        result = rollback(args.db, expected_receipt=args.base_receipt) if args.rollback else migrate(
+            args.db, execute=args.execute, base_receipt=args.base_receipt)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 5 if "lock busy" in str(exc) else 1
+    if args.report:
+        _atomic_json(args.report, result)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 

@@ -1,8 +1,44 @@
 # Paper-Curation Operations Manual
 
-Detailed recipes, concurrency tuning, and recovery flows for the
-paper-curation pipeline. The trigger-side dispatcher lives in
-`SKILL.md` — this file is the operator's reference.
+Detailed recipes, concurrency tuning, and recovery flows for the paper-curation pipeline.
+## Affiliation registry proposal review
+
+The bibliography builder is deliberately offline. Run the resolver as a scheduled post-run job on either Mac; it appends every policy and provider result to proposal JSONL, while only provider-owned attempts enter `affiliation_enrichment_attempts`:
+
+```bash
+python pipeline/audit_affiliation_registry.py resolve-pending \
+  --db .cache/bibliography.sqlite3 --registry pipeline/affiliation_registry.json \
+  --proposals .cache/affiliation-proposals.jsonl --allow-network \
+  --retrieved-at 2026-08-08T00:00:00Z
+```
+
+`--name` and `--country` support an explicit case. Verified-TLS ROR is queried first; only exact country-consistent identities are proposals, and ROR official URLs are recorded for organization/member-page review. Wikipedia exact-title lookup is a discovery fallback only; Scopus is optional metadata only. Each provider gets at most two attempts (one retry); five provider failures open the circuit breaker. Provider failures, limits, and missing credentials remain pending and return exit code 6 for a retryable incomplete batch. Faculty, School, College, and Department fragments are never guessed. Generic-fragment, request-budget, and circuit-breaker policy records remain in proposal JSONL but are never written as provider attempts.
+
+Review proposal JSONL into a separate approved JSONL. Identity approval requires `confidence: 1.0` and exact country-consistent ROR evidence. Relationship approval requires an approved official organization/member-page URL and exact quote; seed labels and Scopus cannot establish membership. Apply under the sidecar lock, then Git-sync the tracked artifacts:
+
+```bash
+python pipeline/audit_affiliation_registry.py apply-approved \
+  --registry pipeline/affiliation_registry.json \
+  --corrections pipeline/affiliation_registry_corrections.jsonl \
+  --baseline pipeline/affiliation_registry_baseline.json \
+  --approvals reviewed-affiliation-approvals.jsonl \
+  --timestamp 2026-08-08T00:00:00Z --effective-date 2026-08-08 \
+  --expected-registry-sha256 <current-canonical-registry-sha256> \
+  --expected-event-head <current-event-head> \
+  --receipt .cache/affiliation-apply-approved-2026-08-08.json
+```
+
+Low-confidence or conflicting cases remain pending; never hand-edit registry artifacts. After projecting an approved registry into the bibliography DB, bind release drift thresholds to that reviewed snapshot. The strict checker then blocks publication when active unresolved observations grow beyond the bounded allowance, any unresolved case is older than 30 days, identity/country mismatches increase materially, or one umbrella group exceeds the concentration threshold.
+
+```bash
+python pipeline/audit_affiliation_registry.py snapshot-db-baseline \
+  --db .cache/bibliography.sqlite3 \
+  --registry pipeline/affiliation_registry.json \
+  --baseline pipeline/affiliation_registry_baseline.json \
+  --captured-at 2026-08-08T00:00:00Z
+python pipeline/check_bibliography_db.py --strict --release-date 2026-08-08
+```
+The trigger-side dispatcher lives in `SKILL.md`; this file is the operator's reference.
 
 ## Pipeline overview
 
@@ -338,6 +374,17 @@ npx wrangler secret put AUDIO_REPLY_TO    # 답장이 갈 운영자 메일, 예:
 The bibliography DB is the persistent memory layer for author, institution, country, DOI/URL, journal, date, Zotero key, and local review-directory queries. It is collection-independent and must be checked after corpus changes.
 The Mac mini's `.cache/bibliography.sqlite3` is canonical. The MacBook keeps a local copy; `pipeline/sync_bibliography_db.py --pull` runs before review generation and `--push` runs afterward. Google Drive is backup/transport only, not a live SQLite volume.
 Review generation also writes `.cache/review_progress.json`. The live phase label cycles through `PDF 매칭 → text.md 추출 → figure 추출 → review.md 생성 → HTML 변환`, while the log includes the completed/total percentage.
+Bootstrap establishes generation zero only when the remote object and manifest are unchanged; run it once before the first CAS-protected push:
+```bash
+python pipeline/sync_bibliography_db.py --bootstrap
+```
+`--bootstrap` has no caller-supplied CAS arguments: it atomically verifies the remote object and manifest and emits generation zero. Every later publish supplies the immutable pull/bootstrap receipt as `--base-receipt` (and migration receipt when applicable), for example:
+```bash
+python pipeline/sync_bibliography_db.py --push \
+  --base-receipt .cache/bibliography.base.json \
+  --migration-receipt .cache/bibliography-migration.json
+```
+All subsequent migration/publish operations use the immutable pull/base receipt, not a reconstructed receipt.
 
 ```bash
 # Institution-centered literature search
@@ -349,6 +396,29 @@ PYTHONUTF8=1 python pipeline/query_bibliography.py --author "Yuan" --sort date -
 
 # Completeness gate
 PYTHONUTF8=1 python pipeline/check_bibliography_db.py --strict
+```
+
+Registry updates must be projected before publication. The strict checker rejects stale registry/baseline/correction projections, any remigration-required marker, relationship-row drift, and observation slots without exactly one current version.
+
+```bash
+# Controlled local migration; creates a verified backup and receipt.
+# The base receipt comes from the last successful sync pull/bootstrap.
+python pipeline/repair_bibliography_institutions.py \
+  --db .cache/bibliography.sqlite3 \
+  --base-receipt .cache/bibliography.base.json --execute
+python pipeline/check_bibliography_db.py --strict
+
+# Local rollback restores the verified pre-migration backup and deliberately
+# leaves a remigration-required marker, which blocks push until migration reruns.
+python pipeline/repair_bibliography_institutions.py \
+  --db .cache/bibliography.sqlite3 --rollback
+
+# Published rollback never rewinds the manifest. It republishes a retained
+# immutable object as a newer CAS generation, binds the migration receipt,
+# and forces a controlled remigration before the next push.
+python pipeline/sync_bibliography_db.py \
+  --rollback-generation <older-generation> \
+  --migration-receipt .cache/bibliography.sqlite3.affiliation-migrate.json
 ```
 
 The DB is stale when its paper count differs from `docs/papers/_papers_index.json`. After Zotero ingestion, forced rebuilds, or review corpus changes, run the builder with `--all` on the Mac mini worker before treating institution statistics as current. Institution spelling changes must be added to `institution_aliases`, not patched in individual queries.

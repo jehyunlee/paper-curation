@@ -35,6 +35,11 @@
 !pipeline/eval/
 !pipeline/eval/*.json
 !pipeline/eval/*.jsonl
+!pipeline/affiliation_registry.json
+!pipeline/affiliation_registry_corrections.jsonl
+!pipeline/affiliation_registry_baseline.json
+!pipeline/affiliation_evidence/
+!pipeline/affiliation_evidence/*
 pipeline/eval/results/
 
 # Cloudflare Worker function (handles /api/audio-email + serves static assets).

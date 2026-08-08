@@ -1,0 +1,654 @@
+import copy
+import json
+import hashlib
+import tempfile
+import sqlite3
+from types import SimpleNamespace
+import sys
+import unittest
+from pathlib import Path
+from unittest import mock
+
+PIPELINE_DIR = Path(__file__).resolve().parents[1]
+if str(PIPELINE_DIR) not in sys.path:
+    sys.path.insert(0, str(PIPELINE_DIR))
+
+import audit_affiliation_registry as audit
+import check_bibliography_db as checker
+from pipeline.lib import affiliation_registry as registry
+
+
+REGISTRY_PATH = Path(__file__).resolve().parents[1] / "affiliation_registry.json"
+BASELINE_PATH = Path(__file__).resolve().parents[1] / "affiliation_registry_baseline.json"
+
+
+class AffiliationRegistryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.snapshot = registry.load_registry(REGISTRY_PATH)
+    def _review_identities(self, snapshot):
+        approvals = []
+        for organization in snapshot["organizations"]:
+            approvals.append({
+                "kind": "identity",
+                "policy_version": snapshot["policy_version"],
+                "organization_id": organization["organization_id"],
+                "approved_by": ["reviewer-one", "reviewer-two"],
+                "confidence": 1.0,
+                "evidence": {
+                    "provider": "ror",
+                    "match": "exact_country_consistent",
+                    "external_id": f"https://ror.org/{organization['organization_id'][-12:]}",
+                },
+            })
+        return registry.promote_approved(snapshot, approvals, timestamp="2026-08-08T00:00:00Z")
+
+    def test_canonical_bytes_normalize_nfc_sort_keys_and_end_in_lf(self):
+        composed = {"é": ["café", {"b": 2, "a": "e\u0301"}]}
+        decomposed = {"e\u0301": ["cafe\u0301", {"a": "é", "b": 2}]}
+        expected = b'{"\xc3\xa9":["caf\xc3\xa9",{"a":"\xc3\xa9","b":2}]}\n'
+        self.assertEqual(registry.canonical_json_bytes(composed), expected)
+        self.assertEqual(registry.canonical_json_bytes(decomposed), expected)
+        self.assertEqual(registry.canonical_sha256(composed), registry.canonical_sha256(decomposed))
+
+    def test_snapshot_replays_and_has_one_correction_for_each_source_key(self):
+        corrections = registry.correction_projection(self.snapshot)
+        baseline = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(len(corrections), 4747)
+        self.assertEqual([row["source_key"] for row in corrections],
+                         sorted(row["source_key"] for row in corrections))
+        self.assertEqual(len({row["source_key"] for row in corrections}), 4747)
+        self.assertEqual(baseline["correction_reconciliation"]["correction_rows"], len(corrections))
+        self.assertEqual(baseline["correction_reconciliation"]["source_keys"], 4747)
+        self.assertEqual(registry.replay_registry(self.snapshot)["event_head"], self.snapshot["event_head"])
+
+    def test_untrusted_source_identities_remain_pending_and_known_corrections_are_events(self):
+        source = {
+            "60029470": {"af_name": ["CRISO"], "af_groupname": ["CRISO"]},
+            "2": {"af_name": ["Unreviewed Institute"], "af_abbgroupname": ["UI"]},
+        }
+        built = registry.build_registry(source)
+        rows = registry.correction_projection(built)
+        self.assertEqual(built["alias_candidates"], [])
+        self.assertTrue(all(item["status"] == "proposed" for item in built["organizations"]))
+        self.assertTrue(all(row["evidence"]["status"] == "proposed" for row in rows))
+        corrected = next(row for row in rows if row["source_key"] == "60029470")
+        self.assertEqual(corrected["disposition"], "identity_proposed")
+        self.assertEqual(
+            corrected["correction_decisions"][0]["acceptance"],
+            "pending_official_relationship_evidence",
+        )
+        correction_events = [
+            event for event in built["events"] if event["type"] == "known_correction_decided"
+        ]
+        self.assertEqual(len(correction_events), 1)
+        self.assertEqual(correction_events[0]["payload"]["source_key"], "60029470")
+        self.assertEqual(registry.correction_projection(built), rows)
+    def test_operational_threshold_boundaries_are_fail_closed(self):
+        approved = {
+            "current_observation_count": 1000,
+            "active_pending_total": 100,
+            "identity_country_mismatches": 2,
+            "group_shares": {"Umbrella": 0.20},
+        }
+        at_boundary = {
+            "current_observation_count": 1100,
+            "active_pending_total": 105,
+            "oldest_active_age_days": 30,
+            "identity_country_mismatches": 5,
+            "group_shares": {"Umbrella": 0.25},
+        }
+        self.assertEqual(
+            checker.operational_threshold_issues(approved, at_boundary), [])
+        beyond = {
+            **at_boundary,
+            "active_pending_total": 106,
+            "oldest_active_age_days": 31,
+            "identity_country_mismatches": 6,
+            "group_shares": {"Umbrella": 0.36},
+        }
+        issues = checker.operational_threshold_issues(approved, beyond)
+        self.assertTrue(any("baseline allowance" in issue for issue in issues))
+        self.assertTrue(any("per-run allowance" in issue for issue in issues))
+        self.assertTrue(any("exceeds 30 days" in issue for issue in issues))
+        self.assertTrue(any("identity/country" in issue for issue in issues))
+        self.assertTrue(any("group share" in issue for issue in issues))
+
+    def test_event_tampering_and_noncanonical_snapshot_are_rejected(self):
+        tampered = copy.deepcopy(self.snapshot)
+        tampered["events"][0]["actor"] = "tampered"
+        with self.assertRaisesRegex(ValueError, "hash chain mismatch"):
+            registry.validate_registry(tampered)
+
+        with self.subTest("canonical load rejects reordered pretty JSON"):
+            import tempfile
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "registry.json"
+                path.write_text(
+                    json.dumps(self.snapshot, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+                with self.assertRaisesRegex(ValueError, "canonical JSON"):
+                    registry.load_registry(path, validate=False)
+
+    def test_relationship_requires_accepted_official_evidence(self):
+        tiny = registry.build_registry({
+            "1": {"af_name": ["One"]},
+            "2": {"af_name": ["Two"]},
+        })
+        first, second = tiny["organizations"]
+        for organization in tiny["organizations"]:
+            organization["status"] = "active"
+        tiny["alias_candidates"] = registry._identity_candidates(tiny["organizations"])
+        tiny["relationships"] = [{
+            "relationship_id": "edge-1",
+            "subject_organization_id": first["organization_id"],
+            "object_organization_id": second["organization_id"],
+            "relationship_type": "member_of",
+            "status": "accepted",
+            "approved_by": ["reviewer-one"],
+            "evidence_ids": ["unofficial"],
+        }]
+        tiny["evidence"] = [{"evidence_id": "unofficial", "authority": "source_untrusted", "status": "accepted"}]
+        with self.assertRaisesRegex(ValueError, "accepted official evidence"):
+            registry.validate_registry(tiny, require_replay=False)
+    def test_ror_exact_candidates_reject_country_conflict_and_generic_fragments(self):
+        payload = {"items": [{"id": "https://ror.org/01", "name": "Example University",
+                              "aliases": ["EU"], "country": {"country_name": "Canada"},
+                              "links": ["https://example.edu"]}]}
+        self.assertEqual(registry.ror_exact_candidates(payload, "EU", "Canada")[0]["external_id"],
+                         "https://ror.org/01")
+        self.assertEqual(registry.ror_exact_candidates(payload, "EU", "United States"), [])
+        v2_payload = {"items": [{
+            "id": "https://ror.org/02",
+            "names": [{"value": "Example Institute", "types": ["ror_display", "label"]}],
+            "locations": [{"geonames_details": {
+                "country_code": "US", "country_name": "United States",
+            }}],
+            "links": [{"type": "website", "value": "https://example.org"}],
+        }]}
+        candidate = registry.ror_exact_candidates(
+            v2_payload, "Example Institute", "US"
+        )[0]
+        self.assertEqual(candidate["name"], "Example Institute")
+        self.assertEqual(candidate["country"], "US")
+        self.assertEqual(candidate["links"], ["https://example.org"])
+        self.assertTrue(registry.is_generic_fragment("Department of Physics"))
+
+    def test_apply_approved_requires_exact_official_relationship_evidence_and_two_reviewers(self):
+        tiny = self._review_identities(
+            registry.build_registry({"1": {"af_name": ["One"]}, "2": {"af_name": ["Two"]}}))
+        first, second = tiny["organizations"]
+        approval = {
+            "kind": "relationship", "policy_version": tiny["policy_version"],
+            "approved_by": ["reviewer-one"],
+            "relationship": {"subject_organization_id": first["organization_id"],
+                             "object_organization_id": second["organization_id"],
+                             "relationship_type": "member_of",
+                             "validity_interval": {"start": "2020-01-01", "end": ""}},
+            "evidence": {"authority": "official", "status": "accepted",
+                         "url": "https://one.example/member", "quote": "One is a member.",
+                         "payload": {"source": "official-page"}},
+        }
+        approval["evidence"]["payload_sha256"] = registry.canonical_sha256(approval["evidence"]["payload"])
+        approval["evidence"]["quote_sha256"] = registry.canonical_sha256(approval["evidence"]["quote"])
+        with self.assertRaisesRegex(ValueError, "two reviewer approvals"):
+            registry.promote_approved(tiny, [approval], timestamp="2026-08-08T00:00:00Z")
+        approval["approved_by"].append("reviewer-two")
+        promoted = registry.promote_approved(tiny, [approval], timestamp="2026-08-08T00:00:00Z")
+        self.assertEqual(len(promoted["relationships"]), 1)
+        self.assertEqual(len(tiny["relationships"]), 0)
+
+    def test_replay_does_not_mutate_historical_event_payloads(self):
+        tiny = registry.build_registry({"1": {"af_name": ["One"]}})
+        event_payload = copy.deepcopy(tiny["events"][0]["payload"])
+        with mock.patch.object(registry.copy, "deepcopy", wraps=copy.deepcopy) as deepcopy:
+            replayed = registry.replay_registry(tiny)
+        self.assertGreater(deepcopy.call_count, 0)
+        replayed["organizations"][0]["aliases"][0]["name"] = "mutated"
+        self.assertEqual(tiny["events"][0]["payload"], event_payload)
+        self.assertEqual(registry.replay_registry(tiny)["organizations"][0]["aliases"][0]["name"],
+                         event_payload["organization"]["aliases"][0]["name"])
+
+    def test_official_evidence_quote_and_payload_digests_are_tamper_detected(self):
+        tiny = self._review_identities(
+            registry.build_registry({"1": {"af_name": ["One"]}, "2": {"af_name": ["Two"]}}))
+        first, second = tiny["organizations"]
+        evidence = {"authority": "official", "status": "accepted", "url": "https://one.example/member",
+                    "quote": "One is a member.", "payload": {"source": "official-page"}}
+        evidence["payload_sha256"] = registry.canonical_sha256(evidence["payload"])
+        evidence["quote_sha256"] = registry.canonical_sha256(evidence["quote"])
+        approval = {"kind": "relationship", "policy_version": tiny["policy_version"],
+                    "approved_by": ["reviewer-one", "reviewer-two"],
+                    "relationship": {"subject_organization_id": first["organization_id"],
+                                     "object_organization_id": second["organization_id"],
+                                     "relationship_type": "member_of"},
+                    "evidence": evidence}
+        promoted = registry.promote_approved(tiny, [approval], timestamp="2026-08-08T00:00:00Z")
+        relationship_evidence_id = promoted["relationships"][0]["evidence_ids"][0]
+        next(item for item in promoted["evidence"]
+             if item["evidence_id"] == relationship_evidence_id)["quote"] = "tampered"
+        with self.assertRaisesRegex(ValueError, "accepted official evidence"):
+            registry.validate_registry(promoted, require_replay=False)
+    def test_promotion_fails_closed_for_graph_and_evidence_violations(self):
+        source = {
+            "1": {"af_name": ["One"], "af_country": ["US"]},
+            "2": {"af_name": ["Two"], "af_country": ["CA"]},
+        }
+        reviewed = self._review_identities(registry.build_registry(source))
+        first, second = reviewed["organizations"]
+        approval = {
+            "kind": "relationship",
+            "policy_version": reviewed["policy_version"],
+            "approved_by": ["reviewer-one", "reviewer-two"],
+            "relationship": {
+                "subject_organization_id": first["organization_id"],
+                "object_organization_id": second["organization_id"],
+                "relationship_type": "part_of",
+                "validity_interval": {"start": "2020-01-01", "end": ""},
+            },
+            "evidence": {
+                "authority": "official",
+                "status": "accepted",
+                "url": "https://one.example/governance",
+                "quote": "One is part of Two.",
+                "payload": {"source": "official"},
+            },
+        }
+        approval["evidence"]["payload_sha256"] = registry.canonical_sha256(
+            approval["evidence"]["payload"])
+        approval["evidence"]["quote_sha256"] = registry.canonical_sha256(
+            approval["evidence"]["quote"])
+        with self.assertRaisesRegex(ValueError, "cross-border structural"):
+            registry.promote_approved(reviewed, [approval], timestamp="2026-08-08T00:00:00Z")
+        approval["evidence"]["cross_border_explicit"] = True
+        promoted = registry.promote_approved(
+            reviewed, [approval], timestamp="2026-08-08T00:00:00Z")
+        reversed_approval = copy.deepcopy(approval)
+        reversed_approval["relationship"].update({
+            "subject_organization_id": second["organization_id"],
+            "object_organization_id": first["organization_id"],
+        })
+        reversed_approval["evidence"].update({
+            "url": "https://two.example/governance",
+            "quote": "Two is part of One.",
+            "payload": {"source": "official-reverse"},
+        })
+        reversed_approval["evidence"]["payload_sha256"] = registry.canonical_sha256(
+            reversed_approval["evidence"]["payload"])
+        reversed_approval["evidence"]["quote_sha256"] = registry.canonical_sha256(
+            reversed_approval["evidence"]["quote"])
+        with self.assertRaisesRegex(ValueError, "cycle"):
+            registry.promote_approved(promoted, [reversed_approval], timestamp="2026-08-08T00:00:00Z")
+        overlapping = copy.deepcopy(approval)
+        overlapping["relationship"]["validity_interval"] = {
+            "start": "2021-01-01", "end": "2022-01-01",
+        }
+        overlapping["evidence"].update({
+            "url": "https://one.example/governance-overlap",
+            "quote": "One remained part of Two.",
+            "payload": {"source": "official-overlap"},
+        })
+        overlapping["evidence"]["payload_sha256"] = registry.canonical_sha256(
+            overlapping["evidence"]["payload"])
+        overlapping["evidence"]["quote_sha256"] = registry.canonical_sha256(
+            overlapping["evidence"]["quote"])
+        with self.assertRaisesRegex(ValueError, "overlapping"):
+            registry.promote_approved(promoted, [overlapping], timestamp="2026-08-08T00:00:00Z")
+        expired = copy.deepcopy(promoted)
+        edge_evidence_id = expired["relationships"][0]["evidence_ids"][0]
+        next(item for item in expired["evidence"]
+             if item["evidence_id"] == edge_evidence_id)["revalidated_at"] = "2026-01-01T00:00:00Z"
+        with self.assertRaisesRegex(ValueError, "accepted official evidence"):
+            registry.validate_registry(expired, require_replay=False, effective_date="2026-08-08")
+        unapproved = copy.deepcopy(promoted)
+        edge_evidence_id = unapproved["relationships"][0]["evidence_ids"][0]
+        next(item for item in unapproved["evidence"]
+             if item["evidence_id"] == edge_evidence_id)["review_status"] = "proposed"
+        with self.assertRaisesRegex(ValueError, "accepted official evidence"):
+            registry.validate_registry(unapproved, require_replay=False, effective_date="2026-08-08")
+        deep = registry.build_registry({
+            str(index): {"af_name": [f"Organization {index}"]}
+            for index in range(10)
+        })
+        for organization in deep["organizations"]:
+            organization["status"] = "active"
+        deep["alias_candidates"] = registry._identity_candidates(deep["organizations"])
+        deep["relationships"], deep["evidence"] = [], []
+        organizations = deep["organizations"]
+        for index in range(9):
+            payload = {"edge": index}
+            evidence = {
+                "evidence_id": f"depth-evidence-{index}",
+                "authority": "official",
+                "status": "accepted",
+                "review_status": "approved",
+                "approved_by": ["reviewer-one"],
+                "revalidated_at": "2026-08-08T00:00:00Z",
+                "url": f"https://example.org/{index}",
+                "quote": f"Organization {index} is part of Organization {index + 1}.",
+                "payload": payload,
+                "payload_sha256": registry.canonical_sha256(payload),
+            }
+            evidence["quote_sha256"] = registry.canonical_sha256(evidence["quote"])
+            deep["evidence"].append(evidence)
+            deep["relationships"].append({
+                "relationship_id": f"depth-edge-{index}",
+                "subject_organization_id": organizations[index]["organization_id"],
+                "object_organization_id": organizations[index + 1]["organization_id"],
+                "relationship_type": "part_of",
+                "status": "accepted",
+                "approved_by": ["reviewer-one"],
+                "evidence_ids": [evidence["evidence_id"]],
+            })
+        with self.assertRaisesRegex(ValueError, "depth exceeds 8"):
+            registry.validate_registry(deep, require_replay=False, effective_date="2026-08-08")
+
+    def test_provider_failure_preserves_accepted_artifacts_and_proposal_prefix(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proposals = Path(directory) / "proposals.jsonl"
+            prefix = b'{"existing":"proposal"}\n'
+            proposals.write_bytes(prefix)
+            registry_before = hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest()
+            corrections = REGISTRY_PATH.with_name(
+                "affiliation_registry_corrections.jsonl")
+            corrections_before = hashlib.sha256(corrections.read_bytes()).hexdigest()
+            args = SimpleNamespace(
+                registry=REGISTRY_PATH,
+                allow_network=True,
+                request_budget=3,
+                max_retries=0,
+                circuit_breaker_failures=3,
+                retry_backoff_seconds=0,
+                name=["Example University"],
+                country="US",
+                db=None,
+                retrieved_at="2026-08-08T00:00:00Z",
+                proposals=proposals,
+            )
+            with mock.patch.object(
+                    audit, "_request_with_budget",
+                    side_effect=OSError("provider unavailable")):
+                self.assertEqual(audit.command_resolve_pending(args), 6)
+
+            self.assertEqual(
+                hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest(),
+                registry_before)
+            self.assertEqual(
+                hashlib.sha256(corrections.read_bytes()).hexdigest(),
+                corrections_before)
+            self.assertTrue(proposals.read_bytes().startswith(prefix))
+            appended = [
+                json.loads(line) for line in proposals.read_text(
+                    encoding="utf-8").splitlines()[1:]
+            ]
+            self.assertEqual(appended[0]["status"], "failed")
+            self.assertEqual(appended[0]["reason"], "provider_failure")
+    def test_identity_approval_requires_exact_confidence_and_replay(self):
+        tiny = registry.build_registry({"1": {"af_name": ["One"]}})
+        organization = tiny["organizations"][0]
+        approval = {
+            "kind": "identity",
+            "policy_version": tiny["policy_version"],
+            "organization_id": organization["organization_id"],
+            "approved_by": ["reviewer-one", "reviewer-two"],
+            "evidence": {
+                "provider": "ror",
+                "match": "exact_country_consistent",
+                "external_id": "https://ror.org/01",
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "confidence 1.0"):
+            registry.promote_approved(tiny, [approval], timestamp="2026-08-08T00:00:00Z")
+        approval["confidence"] = 1.0
+        promoted = registry.promote_approved(tiny, [approval], timestamp="2026-08-08T00:00:00Z")
+        self.assertEqual(registry.replay_registry(promoted)["organizations"], promoted["organizations"])
+
+    def test_pending_attempt_persistence_uses_pending_schema_and_counters(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "affiliation.sqlite3"
+            conn = sqlite3.connect(path)
+            conn.executescript("""
+                CREATE TABLE affiliation_pending_cases (
+                    pending_id TEXT PRIMARY KEY, status TEXT NOT NULL, attempt_count INTEGER NOT NULL,
+                    last_attempt_at TEXT NOT NULL, proposal_digest TEXT NOT NULL);
+                CREATE TABLE affiliation_enrichment_attempts (
+                    attempt_id TEXT PRIMARY KEY, pending_id TEXT NOT NULL, provider TEXT NOT NULL,
+                    started_at TEXT NOT NULL, finished_at TEXT NOT NULL, outcome TEXT NOT NULL,
+                    response_digest TEXT NOT NULL, error_class TEXT NOT NULL, proposal_digest TEXT NOT NULL);
+            """)
+            conn.execute(
+                "INSERT INTO affiliation_pending_cases VALUES (?,?,?,?,?)",
+                ("pending-1", "open", 0, "", ""),
+            )
+            conn.commit()
+            conn.close()
+            attempt = audit._attempt(
+                {"query": "Example University", "country": "US",
+                 "retrieved_at": "2026-08-08T00:00:00Z", "target_index": 0},
+                provider="ror", status="proposal", payload_sha256="response",
+                candidate_external_id="https://ror.org/01",
+            )
+            audit._persist_pending_attempts(
+                str(path), [attempt], {("Example University", "US"): {"pending-1"}})
+            conn = sqlite3.connect(path)
+            self.assertEqual(
+                conn.execute(
+                    "SELECT pending_id,provider,outcome,response_digest,proposal_digest "
+                    "FROM affiliation_enrichment_attempts").fetchone()[0:4],
+                ("pending-1", "ror", "success", "response"),
+            )
+            self.assertEqual(
+                conn.execute(
+                    "SELECT status,attempt_count,last_attempt_at FROM affiliation_pending_cases"
+                ).fetchone(),
+                ("proposed", 1, "2026-08-08T00:00:00Z"),
+            )
+            conn.close()
+
+    def test_correction_projection_and_evidence_freshness_are_exact(self):
+        tiny = registry.build_registry({"1": {"af_name": ["One"]}})
+        rows = registry.correction_projection(tiny)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "corrections.jsonl"
+            path.write_bytes(b"".join(registry.canonical_json_bytes(row) for row in rows))
+            issues = []
+            checker.correction_projection_issues(path, tiny, issues)
+            self.assertEqual(issues, [])
+            path.write_bytes(b'{"not":"the projection"}\n')
+            checker.correction_projection_issues(path, tiny, issues)
+            self.assertIn("registry correction ledger projection mismatch", issues)
+        registry_with_evidence = {
+            "relationships": [{"status": "accepted", "evidence_ids": ["evidence-1"]}],
+            "evidence": [{"evidence_id": "evidence-1",
+                          "revalidated_at": "2026-06-08T00:00:00Z"}],
+        }
+        issues, warnings = [], []
+        checker.evidence_issues(registry_with_evidence, "2026-08-08", issues, warnings)
+        self.assertEqual(issues, [])
+        self.assertEqual(warnings, ["relationship evidence revalidation due within 30 days"])
+        registry_with_evidence["evidence"][0]["revalidated_at"] = "2026-05-09T00:00:00Z"
+        checker.evidence_issues(registry_with_evidence, "2026-08-08", issues, warnings)
+        self.assertIn("relationship evidence revalidation exceeds 90 days", issues)
+    def _pending_db(self, path, names):
+        conn = sqlite3.connect(path)
+        conn.executescript("""
+            CREATE TABLE affiliation_pending_cases (
+                pending_id TEXT PRIMARY KEY, observed_country_code TEXT NOT NULL,
+                status TEXT NOT NULL, attempt_count INTEGER NOT NULL DEFAULT 0,
+                last_attempt_at TEXT NOT NULL DEFAULT '', proposal_digest TEXT NOT NULL DEFAULT '');
+            CREATE TABLE observed_affiliations (
+                observation_id TEXT PRIMARY KEY, raw_name TEXT NOT NULL,
+                is_current INTEGER NOT NULL, resolution_status TEXT NOT NULL);
+            CREATE TABLE affiliation_pending_observations (
+                pending_id TEXT NOT NULL, observation_id TEXT NOT NULL);
+            CREATE TABLE affiliation_enrichment_attempts (
+                attempt_id TEXT PRIMARY KEY, pending_id TEXT NOT NULL,
+                provider TEXT NOT NULL CHECK(provider IN ('official','ror','wikidata','wikipedia','scopus')),
+                started_at TEXT NOT NULL, finished_at TEXT NOT NULL,
+                outcome TEXT NOT NULL CHECK(outcome IN ('success','no_match','unavailable',
+                    'subscription_required','timeout','rate_limited','error','budget_exhausted')),
+                response_digest TEXT NOT NULL DEFAULT '', error_class TEXT NOT NULL DEFAULT '',
+                proposal_digest TEXT NOT NULL DEFAULT '');
+        """)
+        for index, name in enumerate(names):
+            pending_id = f"pending-{index}"
+            observation_id = f"observation-{index}"
+            conn.execute(
+                "INSERT INTO affiliation_pending_cases "
+                "(pending_id,observed_country_code,status) VALUES (?,?,?)",
+                (pending_id, "US", "open"),
+            )
+            conn.execute(
+                "INSERT INTO observed_affiliations VALUES (?,?,?,?)",
+                (observation_id, name, 1, "unseen"),
+            )
+            conn.execute(
+                "INSERT INTO affiliation_pending_observations VALUES (?,?)",
+                (pending_id, observation_id),
+            )
+        conn.commit()
+        return conn
+
+    def test_policy_attempts_stay_jsonl_and_out_of_pending_attempts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            def resolve(names, budget=1, circuit_failures=5, request=None):
+                database = Path(directory) / f"{len(names)}-{budget}-{circuit_failures}.sqlite3"
+                proposals = database.with_suffix(".jsonl")
+                conn = self._pending_db(database, names)
+                conn.close()
+                args = SimpleNamespace(
+                    registry=REGISTRY_PATH, allow_network=True, request_budget=budget,
+                    max_retries=0, circuit_breaker_failures=circuit_failures,
+                    retry_backoff_seconds=0, name=[], country="", db=str(database),
+                    retrieved_at="2026-08-08T00:00:00Z", proposals=proposals,
+                )
+                def fake_request(_url, _context, _args, state):
+                    state["requests"] += 1
+                    if isinstance(request, BaseException):
+                        raise request
+                    return request
+
+                with mock.patch.object(
+                        audit, "_request_with_budget", side_effect=fake_request):
+                    result = audit.command_resolve_pending(args)
+                conn = sqlite3.connect(database)
+                rows = conn.execute(
+                    "SELECT provider,outcome FROM affiliation_enrichment_attempts ORDER BY provider"
+                ).fetchall()
+                counters = conn.execute(
+                    "SELECT attempt_count FROM affiliation_pending_cases ORDER BY pending_id"
+                ).fetchall()
+                conn.close()
+                return result, rows, counters, [
+                    json.loads(line) for line in proposals.read_text(encoding="utf-8").splitlines()
+                ]
+
+            result, rows, counters, proposals = resolve(["Department of Physics"])
+            self.assertEqual((result, rows, counters), (0, [], [(0,)]))
+            self.assertEqual(proposals[0]["provider"], "policy")
+
+            result, rows, counters, proposals = resolve(
+                ["Alpha Institute", "Beta Institute"],
+                request=({"items": []}, b"{}", 0),
+            )
+            self.assertEqual(result, 6)
+            self.assertEqual(rows, [("ror", "no_match")])
+            self.assertEqual(counters, [(1,), (0,)])
+            self.assertTrue(any(row["provider"] == "policy" for row in proposals))
+
+            result, rows, counters, proposals = resolve(
+                ["Alpha Institute", "Beta Institute"], circuit_failures=1,
+                request=OSError("provider unavailable"),
+            )
+            self.assertEqual(result, 6)
+            self.assertEqual(rows, [("ror", "unavailable")])
+            self.assertEqual(counters, [(1,), (0,)])
+            self.assertTrue(any(row["provider"] == "policy" for row in proposals))
+
+    def test_checker_release_date_cli_blocks_stale_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            conn = sqlite3.connect(database)
+            import build_bibliography_db as bib
+            conn.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+            snapshot_bytes = REGISTRY_PATH.read_bytes()
+            snapshot = registry.load_registry(REGISTRY_PATH)
+            conn.execute(
+                "INSERT INTO affiliation_registry_metadata VALUES (1,?,?,?,?,?,?,?,?,?)",
+                (bib.AFFILIATION_SCHEMA_VERSION, snapshot["registry_version"],
+                 hashlib.sha256(snapshot_bytes).hexdigest(), snapshot["event_head"],
+                 snapshot["policy_version"], snapshot["source_sha256"],
+                 "2026-08-08T00:00:00Z", 0, "fresh-schema"),
+            )
+            conn.commit()
+            conn.close()
+            stale_registry = {
+                "relationships": [{"status": "accepted", "evidence_ids": ["stale"]}],
+                "evidence": [{"evidence_id": "stale",
+                              "revalidated_at": "2026-05-09T00:00:00Z"}],
+            }
+            observed = {}
+            real_evidence_issues = checker.evidence_issues
+
+            def check_staleness(_registry, release_date, issues, warnings):
+                observed["release_date"] = release_date
+                observed["issues"] = issues
+                real_evidence_issues(stale_registry, release_date, issues, warnings)
+
+            with mock.patch.object(
+                    checker, "evidence_issues", side_effect=check_staleness):
+                checker.main([
+                    "--db", str(database),
+                    "--registry", str(REGISTRY_PATH),
+                    "--baseline", str(BASELINE_PATH),
+                    "--release-date", "2026-08-08",
+                ])
+            self.assertEqual(observed["release_date"], "2026-08-08")
+            self.assertIn(
+                "relationship evidence revalidation exceeds 90 days",
+                observed["issues"],
+            )
+
+    def test_projection_rejects_orphan_compatibility_group_rows(self):
+        tiny = registry.build_registry({"1": {"af_name": ["One"]}})
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "groups.sqlite3"
+            conn = sqlite3.connect(database)
+            conn.executescript("""
+                CREATE TABLE affiliation_organizations (
+                    organization_id TEXT PRIMARY KEY, canonical_name_en TEXT,
+                    normalized_name TEXT, organization_type TEXT, country_code TEXT,
+                    country_name_en TEXT, country_scope TEXT, status TEXT,
+                    created_event_id TEXT, registry_version INTEGER);
+                CREATE TABLE affiliation_identifiers (
+                    authority TEXT, identifier_value TEXT, organization_id TEXT, status TEXT,
+                    valid_from TEXT, valid_to TEXT, evidence_id TEXT);
+                CREATE TABLE affiliation_aliases (
+                    alias_id TEXT, alias_text TEXT, normalized_alias TEXT,
+                    language_code TEXT, alias_type TEXT, created_event_id TEXT);
+                CREATE TABLE affiliation_alias_candidates (
+                    alias_id TEXT, organization_id TEXT, country_discriminator TEXT,
+                    evidence_id TEXT, confidence REAL, review_status TEXT, event_id TEXT);
+                CREATE TABLE affiliation_relationships (
+                    relationship_id TEXT, subject_organization_id TEXT,
+                    object_organization_id TEXT, relationship_type TEXT, valid_from TEXT,
+                    valid_to TEXT, status TEXT, confidence REAL, created_event_id TEXT,
+                    managed_by TEXT);
+                CREATE TABLE affiliation_relationship_evidence (
+                    relationship_id TEXT, evidence_id TEXT);
+                CREATE TABLE institution_groups (
+                    group_id INTEGER PRIMARY KEY, group_name TEXT, normalized_name TEXT,
+                    organization_id TEXT);
+                CREATE TABLE institutions (
+                    institution_id INTEGER PRIMARY KEY, organization_id TEXT,
+                    group_id INTEGER, country_name_en TEXT);
+            """)
+            conn.execute(
+                "INSERT INTO institution_groups (group_name,normalized_name,organization_id) "
+                "VALUES (?,?,NULL)", ("orphan", "orphan"),
+            )
+            issues = []
+            checker.projection_issues(conn, tiny, issues)
+            conn.close()
+            self.assertIn("orphan compatibility group organization", issues)

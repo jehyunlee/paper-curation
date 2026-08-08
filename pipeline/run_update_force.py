@@ -300,18 +300,37 @@ def log(msg):
 
 
 def sync_bibliography_db(direction):
-    """Pull before review work or push after it; Mac mini is the canonical host."""
-    try:
-        result = subprocess.run(
-            [sys.executable, str(PIPELINE_DIR / "sync_bibliography_db.py"), direction],
-            cwd=str(PROJECT_ROOT), capture_output=True, text=True, timeout=180,
-        )
-        if result.returncode != 0:
-            log(f"[bibliography-sync] WARNING ({direction}): {result.stderr.strip()[:300]}")
-        elif result.stdout.strip():
-            log(f"[bibliography-sync] {result.stdout.strip()}")
-    except Exception as exc:
-        log(f"[bibliography-sync] WARNING ({direction}): {exc}")
+    """A bibliography synchronization failure blocks the update publication path."""
+    result = subprocess.run(
+        [sys.executable, str(PIPELINE_DIR / "sync_bibliography_db.py"), direction],
+        cwd=str(PROJECT_ROOT), capture_output=True, text=True, timeout=180,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"bibliography sync failed ({direction}): "
+            f"{result.stderr.strip() or result.stdout.strip()}")
+    if result.stdout.strip():
+        log(f"[bibliography-sync] {result.stdout.strip()}")
+
+
+def run_bibliography_release_steps(run_step):
+    """Build, validate, then publish; a failed gate prevents the push call."""
+    run_step(
+        "build_bibliography_db",
+        ["python", "pipeline/build_bibliography_db.py", "--changed-only",
+         "--offline", "--skip-zotero", "--no-email"],
+        7200,
+    )
+    run_step(
+        "check_bibliography_db",
+        ["python", "pipeline/check_bibliography_db.py", "--strict"],
+        600,
+    )
+    run_step(
+        "sync_bibliography_db (push)",
+        ["python", "pipeline/sync_bibliography_db.py", "--push"],
+        180,
+    )
 
 
 def load_checkpoint():
@@ -2349,6 +2368,9 @@ def main():
             "evaluate_retrieval",
             "evaluate_retrieval (_cross)",
             "refresh_retrieval_eval_snapshot",
+            "build_bibliography_db",
+            "check_bibliography_db",
+            "sync_bibliography_db (push)",
         }
 
         def run_step(step_name, cmd, step_timeout=600):
@@ -2631,13 +2653,9 @@ def main():
         run_step("inject_frontmatter",
                  ["python", "pipeline/inject_frontmatter.py", "--topic", topic], 600)
         # Keep the collection-independent bibliography DB synchronized with every
-        # review/frontmatter refresh. `--changed-only` makes this incremental and
-        # avoids a full-corpus rebuild when no source documents changed.
-        run_step("build_bibliography_db",
-                 ["python", "pipeline/build_bibliography_db.py", "--changed-only",
-                  "--update-zotero", "--no-email"], 7200)
-        run_step("sync_bibliography_db (push)",
-                 ["python", "pipeline/sync_bibliography_db.py", "--push"], 180)
+        # review/frontmatter refresh. The ordered helper makes strict validation
+        # a hard publication gate and `--changed-only` keeps it incremental.
+        run_bibliography_release_steps(run_step)
         run_step("generate_moc",
                  ["python", "pipeline/generate_moc.py", "--topic", topic], 600)
         # 네트워크 시각화는 Research Insights 와 묶인 Option(O-2) — --insights 일 때만.

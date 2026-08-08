@@ -135,6 +135,195 @@ class BibliographyAffiliationTests(unittest.TestCase):
                 "Example University",
             )
         bib._ROR_ENGLISH_CACHE = None
+    def test_offline_ror_resolution_neither_calls_provider_nor_writes_cache(self):
+        with tempfile.TemporaryDirectory() as td:
+            cache = Path(td) / "ror_english_aliases.json"
+            with patch.object(bib, "_ROR_ENGLISH_CACHE_PATH", cache), \
+                 patch.object(bib, "request_json") as request:
+                bib._ROR_ENGLISH_CACHE = None
+                self.assertEqual(
+                    bib.resolve_english_institution(
+                        "Universität für Unbekannte Forschung", "Germany",
+                        allow_remote=True, offline=True),
+                    "")
+                request.assert_not_called()
+                self.assertFalse(cache.exists())
+        bib._ROR_ENGLISH_CACHE = None
+
+    def test_offline_reconciliation_call_chain_never_calls_remote_provider(self):
+        with tempfile.TemporaryDirectory() as td:
+            cache = Path(td) / "ror_english_aliases.json"
+            with patch.object(bib, "_ROR_ENGLISH_CACHE_PATH", cache), \
+                 patch.object(bib, "request_json") as request:
+                bib._ROR_ENGLISH_CACHE = None
+                rows = bib.reconcile_affiliations(
+                    [], "Universität für Unbekannte Forschung, Germany", [],
+                    offline=True)
+                self.assertEqual(rows, [])
+                request.assert_not_called()
+                self.assertFalse(cache.exists())
+        bib._ROR_ENGLISH_CACHE = None
+
+    def test_registry_projection_reresolves_current_unseen_observation(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        connection.execute("PRAGMA foreign_keys=OFF")
+        organization_id = "org-example"
+        alias_id = "alias-example"
+        connection.execute(
+            "INSERT INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (organization_id, "Example University", "example university",
+             "other", "", "Germany", "unknown", "active", "", 1))
+        connection.execute(
+            "INSERT INTO affiliation_aliases VALUES (?,?,?,?,?,?)",
+            (alias_id, "Example University", "example university", "",
+             "source", ""))
+        connection.execute(
+            "INSERT INTO affiliation_alias_candidates VALUES (?,?,?,?,?,?,?)",
+            (alias_id, organization_id, "", "", 1.0, "accepted", ""))
+        connection.execute(
+            "INSERT INTO observed_affiliation_slots VALUES (?,?,?,?,?,?)",
+            ("slot", 1, "pdf", "paper", 0, "seen"))
+        connection.execute(
+            "INSERT INTO observed_affiliations "
+            "(observation_id,observation_slot_id,observation_version,"
+            "raw_content_sha256,raw_name,normalized_raw_name,"
+            "observed_country_code,observed_country_name,"
+            "external_identifiers_json,raw_context_sha256,"
+            "resolution_status,current_decision_id,registry_sha256,"
+            "policy_version,first_seen_at,last_seen_at,is_current) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ("observation", "slot", 1, "content", "Example University",
+             "example university", "DE", "Germany", "{}", "context",
+             "unseen", "decision-old", "old", "policy", "seen", "seen", 1))
+        connection.execute(
+            "INSERT INTO affiliation_resolution_decisions VALUES "
+            "(?,?,?,?,?,?,?,?,?,?,?,?)",
+            ("decision-old", "observation", 1, "unseen", None, "old", 0.0,
+             "old", "policy", "seen", "seen", ""))
+        connection.execute(
+            "INSERT INTO affiliation_pending_cases "
+            "(pending_id,normalized_raw_name,observed_country_code,"
+            "external_identifiers_json,status,reason_code,first_seen_at,"
+            "last_seen_at,active_observation_count,lifetime_observation_count) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)",
+            ("pending", "example university", "DE", "{}", "open", "old",
+             "seen", "seen", 1, 1))
+        connection.execute(
+            "INSERT INTO affiliation_pending_observations VALUES (?,?,?)",
+            ("pending", "observation", "seen"))
+
+        bib.reresolve_current_affiliations(
+            connection, {"policy_version": "policy-2"}, "registry-2")
+
+        row = connection.execute(
+            "SELECT resolution_status,resolved_organization_id,registry_sha256 "
+            "FROM observed_affiliations WHERE observation_id='observation'"
+        ).fetchone()
+        self.assertEqual(row, ("resolved", organization_id, "registry-2"))
+        pending = connection.execute(
+            "SELECT status,active_observation_count FROM "
+            "affiliation_pending_cases WHERE pending_id='pending'").fetchone()
+        self.assertEqual(pending, ("resolved", 0))
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM affiliation_resolution_decisions "
+                "WHERE observation_id='observation'").fetchone()[0],
+            2)
+        self.assertEqual(
+            connection.execute(
+                "SELECT COUNT(*) FROM affiliation_decision_candidates "
+                "WHERE decision_id='decision-old'").fetchone()[0],
+            0)
+        connection.close()
+
+    def test_external_identifier_precedes_alias_candidates(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        for organization_id, name in (("id-match", "Identifier University"),
+                                      ("alias-match", "Alias University")):
+            connection.execute(
+                "INSERT INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (organization_id, name, name.casefold(), "university", "",
+                 "Germany", "unknown", "active", "", 1))
+        connection.execute(
+            "INSERT INTO affiliation_identifiers VALUES (?,?,?,?,?,?,?)",
+            ("scopus", "42", "id-match", "active", "", "", "evidence"))
+        connection.execute(
+            "INSERT INTO affiliation_aliases VALUES (?,?,?,?,?,?)",
+            ("alias", "Shared University", "shared university", "", "source", ""))
+        connection.execute(
+            "INSERT INTO affiliation_alias_candidates VALUES (?,?,?,?,?,?,?)",
+            ("alias", "alias-match", "", "", 1.0, "accepted", ""))
+        candidates, reason = bib._registry_candidates(
+            connection, "shared university", "Germany", "DE", {"scopus_id": "42"})
+        self.assertEqual((candidates, reason),
+                         (["id-match"], "offline_registry_exact_identifier"))
+        connection.close()
+
+    def test_compatibility_groups_discard_legacy_unbound_rows(self):
+        connection = sqlite3.connect(":memory:")
+        connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        connection.execute(
+            "INSERT INTO institutions (institution_name,normalized_name,source) "
+            "VALUES ('Child University','child university','test')")
+        connection.execute(
+            "INSERT INTO institution_groups (group_name,normalized_name) "
+            "VALUES ('legacy heuristic','legacy heuristic')")
+        connection.execute("UPDATE institutions SET group_id=1")
+        registry = {
+            "organizations": [{
+                "organization_id": "child", "canonical_name_en": "Child University",
+                "status": "active",
+            }, {
+                "organization_id": "parent", "canonical_name_en": "Parent University",
+                "status": "active",
+            }],
+            "relationships": [{
+                "subject_organization_id": "child",
+                "object_organization_id": "parent",
+                "relationship_type": "part_of", "status": "accepted",
+            }],
+            "events": [],
+        }
+        connection.executemany(
+            "INSERT INTO affiliation_organizations "
+            "(organization_id,canonical_name_en,normalized_name,organization_type,"
+            "country_code,country_name_en,country_scope,status,created_event_id,"
+            "registry_version) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            [
+                ("child", "Child University", "child university", "university",
+                 "", "", "unknown", "active", "test", 1),
+                ("parent", "Parent University", "parent university", "university",
+                 "", "", "unknown", "active", "test", 1),
+            ],
+        )
+        connection.execute("UPDATE institutions SET organization_id='child'")
+        bib._project_compatibility_groups(connection, registry)
+        self.assertEqual(
+            connection.execute(
+                "SELECT group_name FROM institution_groups").fetchall(),
+            [("Parent University",)])
+        self.assertEqual(
+            connection.execute("SELECT group_id FROM institutions").fetchone()[0],
+            1)
+        connection.close()
+
+    def test_source_records_preserve_each_source_slot_before_deduplication(self):
+        records = bib.source_affiliation_records(
+            [{"name": "Same University", "scopus_id": "one"},
+             {"name": "Same University", "scopus_id": "two"}],
+            ["Same University", "Same University"])
+        self.assertEqual(len(records), 4)
+        self.assertEqual(
+            [(record["source"], record["source_record_key"],
+              record["_source_ordinal"]) for record in records],
+            [("scopus", "scopus:one", 0), ("scopus", "scopus:two", 1),
+             ("review", "review:header", 0), ("review", "review:header", 1)])
+        self.assertEqual(
+            records[0]["context"]["scopus_affiliation"]["scopus_id"], "one")
+        self.assertEqual(
+            records[2]["context"]["review_affiliation"], "Same University")
 
     def test_longest_registered_parent_wins_over_author_and_department(self):
         cases = {

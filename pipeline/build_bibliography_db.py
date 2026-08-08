@@ -18,9 +18,15 @@ import sqlite3
 import ssl
 import sys
 import time
+import unicodedata
 import urllib.parse
 import urllib.request
+import uuid
 from pathlib import Path
+try:
+    from .lib import affiliation_registry
+except ImportError:
+    from lib import affiliation_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "docs" / "papers"
@@ -33,8 +39,6 @@ DEFAULT_DB = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", str(
 )))
 MAILTO = "jehyun.lee@gmail.com"
 SSL_CTX = ssl.create_default_context()
-SSL_CTX.check_hostname = False
-SSL_CTX.verify_mode = ssl.CERT_NONE
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -56,14 +60,19 @@ CREATE TABLE IF NOT EXISTS paper_authors (
  is_corresponding_author INTEGER NOT NULL DEFAULT 0, source TEXT NOT NULL,
  PRIMARY KEY (paper_id, author_id));
 CREATE TABLE IF NOT EXISTS institution_groups (
- group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL UNIQUE, normalized_name TEXT NOT NULL UNIQUE);
+ group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL, normalized_name TEXT NOT NULL,
+ organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id));
+CREATE INDEX IF NOT EXISTS idx_institution_groups_name ON institution_groups(normalized_name);
 CREATE TABLE IF NOT EXISTS institutions (
- institution_id INTEGER PRIMARY KEY, institution_name TEXT NOT NULL UNIQUE,
- normalized_name TEXT NOT NULL UNIQUE, group_id INTEGER REFERENCES institution_groups(group_id),
+ institution_id INTEGER PRIMARY KEY, institution_name TEXT NOT NULL,
+ normalized_name TEXT NOT NULL, country_name_en TEXT NOT NULL DEFAULT '',
+ group_id INTEGER REFERENCES institution_groups(group_id),
+ organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id),
  source TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS institution_aliases (
- alias_id INTEGER PRIMARY KEY, raw_name TEXT NOT NULL UNIQUE, normalized_alias TEXT NOT NULL UNIQUE,
- institution_id INTEGER NOT NULL REFERENCES institutions(institution_id));
+ alias_id INTEGER PRIMARY KEY, raw_name TEXT NOT NULL, normalized_alias TEXT NOT NULL,
+ institution_id INTEGER NOT NULL REFERENCES institutions(institution_id),
+ UNIQUE(normalized_alias,institution_id));
 CREATE TABLE IF NOT EXISTS paper_institutions (
  paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
  institution_id INTEGER NOT NULL REFERENCES institutions ON DELETE CASCADE,
@@ -105,6 +114,123 @@ PAPER_SCHEMA_COLUMNS = {
     "published_online_date": "TEXT",
     "bibliography_source": "TEXT",
 }
+AFFILIATION_SCHEMA_VERSION = "affiliation-2"
+AFFILIATION_OBSERVATION_NAMESPACE = uuid.UUID("8d81aeb5-6231-5e97-8a65-cc9e5658bd22")
+REGISTRY_PATH = Path(__file__).with_name("affiliation_registry.json")
+AFFILIATION_SCHEMA = """
+CREATE TABLE IF NOT EXISTS affiliation_organizations (
+ organization_id TEXT PRIMARY KEY, canonical_name_en TEXT NOT NULL, normalized_name TEXT NOT NULL,
+ organization_type TEXT NOT NULL CHECK (organization_type IN
+  ('university','research_organization','company','hospital','government','facility','laboratory','association','network','other')),
+ country_code TEXT NOT NULL DEFAULT '', country_name_en TEXT NOT NULL DEFAULT '',
+ country_scope TEXT NOT NULL CHECK (country_scope IN ('domestic','multinational','unknown')),
+ status TEXT NOT NULL CHECK (status IN ('active','historical','redirected','proposed')),
+ created_event_id TEXT NOT NULL, registry_version INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_aff_org_normalized ON affiliation_organizations(normalized_name,country_code);
+CREATE TABLE IF NOT EXISTS affiliation_organization_redirects (
+ old_organization_id TEXT PRIMARY KEY REFERENCES affiliation_organizations(organization_id),
+ survivor_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
+ event_id TEXT NOT NULL, CHECK(old_organization_id<>survivor_organization_id));
+CREATE TABLE IF NOT EXISTS affiliation_identifiers (
+ authority TEXT NOT NULL CHECK (authority IN ('ror','wikidata','scopus','grid','isni','source')),
+ identifier_value TEXT NOT NULL, organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
+ status TEXT NOT NULL CHECK (status IN ('active','deprecated')), valid_from TEXT NOT NULL DEFAULT '',
+ valid_to TEXT NOT NULL DEFAULT '', evidence_id TEXT NOT NULL,
+ PRIMARY KEY(authority,identifier_value,valid_from),
+ UNIQUE(organization_id,authority,identifier_value,valid_from));
+CREATE TABLE IF NOT EXISTS affiliation_aliases (
+ alias_id TEXT PRIMARY KEY, alias_text TEXT NOT NULL, normalized_alias TEXT NOT NULL, language_code TEXT NOT NULL DEFAULT '',
+ alias_type TEXT NOT NULL CHECK(alias_type IN ('official','english','native','acronym','legacy','source')),
+ created_event_id TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_aff_alias_norm ON affiliation_aliases(normalized_alias);
+CREATE TABLE IF NOT EXISTS affiliation_alias_candidates (
+ alias_id TEXT NOT NULL REFERENCES affiliation_aliases(alias_id), organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
+ country_discriminator TEXT NOT NULL DEFAULT '', evidence_id TEXT NOT NULL, confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1),
+ review_status TEXT NOT NULL CHECK(review_status IN ('accepted','pending','rejected','superseded')),
+ event_id TEXT NOT NULL, PRIMARY KEY(alias_id,organization_id,country_discriminator,event_id));
+CREATE INDEX IF NOT EXISTS idx_aff_alias_candidate_lookup
+ ON affiliation_alias_candidates(alias_id,country_discriminator,review_status);
+CREATE TABLE IF NOT EXISTS affiliation_relationships (
+ relationship_id TEXT PRIMARY KEY, subject_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
+ object_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
+ relationship_type TEXT NOT NULL CHECK(relationship_type IN
+  ('part_of','jointly_operated_by','member_of','network_member_of')),
+ valid_from TEXT NOT NULL DEFAULT '', valid_to TEXT NOT NULL DEFAULT '',
+ status TEXT NOT NULL CHECK(status IN ('accepted','historical','superseded')),
+ confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1), created_event_id TEXT NOT NULL,
+ managed_by TEXT NOT NULL CHECK(managed_by IN ('registry','manual')),
+ CHECK(subject_organization_id<>object_organization_id),
+ CHECK(valid_to='' OR valid_from='' OR valid_from<valid_to),
+ UNIQUE(subject_organization_id,object_organization_id,relationship_type,valid_from,valid_to));
+CREATE TABLE IF NOT EXISTS affiliation_relationship_evidence (
+ relationship_id TEXT NOT NULL REFERENCES affiliation_relationships(relationship_id),
+ evidence_id TEXT NOT NULL, PRIMARY KEY(relationship_id,evidence_id));
+CREATE TABLE IF NOT EXISTS observed_affiliation_slots (
+ observation_slot_id TEXT PRIMARY KEY, paper_id INTEGER NOT NULL REFERENCES papers(paper_id) ON DELETE CASCADE,
+ source_kind TEXT NOT NULL CHECK(source_kind IN ('scopus','pdf','review','legacy')),
+ source_record_key TEXT NOT NULL, source_ordinal INTEGER NOT NULL CHECK(source_ordinal>=0), created_at TEXT NOT NULL,
+ UNIQUE(paper_id,source_kind,source_record_key,source_ordinal));
+CREATE TABLE IF NOT EXISTS observed_affiliations (
+ observation_id TEXT PRIMARY KEY, observation_slot_id TEXT NOT NULL REFERENCES observed_affiliation_slots(observation_slot_id) ON DELETE CASCADE,
+ observation_version INTEGER NOT NULL CHECK(observation_version>=1), raw_content_sha256 TEXT NOT NULL,
+ raw_name TEXT NOT NULL, normalized_raw_name TEXT NOT NULL, observed_country_code TEXT NOT NULL DEFAULT '',
+ observed_country_name TEXT NOT NULL DEFAULT '', external_identifiers_json TEXT NOT NULL DEFAULT '{}',
+ raw_context_sha256 TEXT NOT NULL, resolved_organization_id TEXT REFERENCES affiliation_organizations(organization_id),
+ resolution_status TEXT NOT NULL CHECK(resolution_status IN ('resolved','ambiguous','unseen','rejected','superseded')),
+ current_decision_id TEXT, registry_sha256 TEXT NOT NULL, policy_version TEXT NOT NULL,
+ first_seen_at TEXT NOT NULL, last_seen_at TEXT NOT NULL, is_current INTEGER NOT NULL CHECK(is_current IN (0,1)),
+ supersedes_observation_id TEXT REFERENCES observed_affiliations(observation_id),
+ superseded_by_observation_id TEXT REFERENCES observed_affiliations(observation_id),
+ UNIQUE(observation_slot_id,observation_version),
+ UNIQUE(observation_slot_id,observation_version,raw_content_sha256));
+CREATE UNIQUE INDEX IF NOT EXISTS idx_observed_aff_one_current ON observed_affiliations(observation_slot_id) WHERE is_current=1;
+CREATE INDEX IF NOT EXISTS idx_observed_aff_pending
+ ON observed_affiliations(is_current,resolution_status,normalized_raw_name,observed_country_code);
+CREATE TABLE IF NOT EXISTS affiliation_resolution_decisions (
+ decision_id TEXT PRIMARY KEY, observation_id TEXT NOT NULL REFERENCES observed_affiliations(observation_id) ON DELETE CASCADE,
+ decision_sequence INTEGER NOT NULL, outcome TEXT NOT NULL CHECK(outcome IN ('resolved','ambiguous','unseen','rejected','superseded')),
+ selected_organization_id TEXT REFERENCES affiliation_organizations(organization_id), reason_code TEXT NOT NULL,
+ confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1), registry_sha256 TEXT NOT NULL, policy_version TEXT NOT NULL,
+ effective_date TEXT NOT NULL, decided_at TEXT NOT NULL,
+ previous_decision_id TEXT REFERENCES affiliation_resolution_decisions(decision_id),
+ UNIQUE(observation_id,decision_sequence));
+CREATE TABLE IF NOT EXISTS affiliation_decision_candidates (
+ decision_id TEXT NOT NULL REFERENCES affiliation_resolution_decisions(decision_id) ON DELETE CASCADE,
+ organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id), candidate_rank INTEGER NOT NULL,
+ reason_code TEXT NOT NULL, PRIMARY KEY(decision_id,organization_id), UNIQUE(decision_id,candidate_rank));
+CREATE TABLE IF NOT EXISTS affiliation_pending_cases (
+ pending_id TEXT PRIMARY KEY, normalized_raw_name TEXT NOT NULL, observed_country_code TEXT NOT NULL DEFAULT '',
+ external_identifiers_json TEXT NOT NULL DEFAULT '{}',
+ status TEXT NOT NULL CHECK(status IN ('open','proposed','resolved','rejected')), reason_code TEXT NOT NULL,
+ first_seen_at TEXT NOT NULL, last_seen_at TEXT NOT NULL,
+ active_observation_count INTEGER NOT NULL DEFAULT 0 CHECK(active_observation_count>=0),
+ lifetime_observation_count INTEGER NOT NULL CHECK(lifetime_observation_count>0 AND lifetime_observation_count>=active_observation_count),
+ attempt_count INTEGER NOT NULL DEFAULT 0, last_attempt_at TEXT NOT NULL DEFAULT '',
+ proposal_digest TEXT NOT NULL DEFAULT '', resolved_event_id TEXT NOT NULL DEFAULT '',
+ CHECK((status IN ('open','proposed') AND active_observation_count>0 AND resolved_event_id='')
+   OR (status IN ('resolved','rejected') AND active_observation_count=0 AND resolved_event_id<>'')),
+ UNIQUE(normalized_raw_name,observed_country_code,external_identifiers_json));
+CREATE TABLE IF NOT EXISTS affiliation_pending_observations (
+ pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
+ observation_id TEXT NOT NULL UNIQUE REFERENCES observed_affiliations(observation_id) ON DELETE CASCADE,
+ linked_at TEXT NOT NULL, PRIMARY KEY(pending_id,observation_id));
+CREATE TABLE IF NOT EXISTS affiliation_enrichment_attempts (
+ attempt_id TEXT PRIMARY KEY, pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
+ provider TEXT NOT NULL CHECK(provider IN ('official','ror','wikidata','wikipedia','scopus')),
+ started_at TEXT NOT NULL, finished_at TEXT NOT NULL,
+ outcome TEXT NOT NULL CHECK(outcome IN
+  ('success','no_match','unavailable','subscription_required','timeout','rate_limited','error','budget_exhausted')),
+ response_digest TEXT NOT NULL DEFAULT '', error_class TEXT NOT NULL DEFAULT '', proposal_digest TEXT NOT NULL DEFAULT '');
+CREATE INDEX IF NOT EXISTS idx_affiliation_attempt_pending ON affiliation_enrichment_attempts(pending_id);
+CREATE TABLE IF NOT EXISTS affiliation_registry_metadata (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), schema_version TEXT NOT NULL, registry_version INTEGER NOT NULL,
+ registry_sha256 TEXT NOT NULL, event_head TEXT NOT NULL, policy_version TEXT NOT NULL, source_sha256 TEXT NOT NULL,
+ projected_at TEXT NOT NULL, base_generation INTEGER NOT NULL DEFAULT 0, migration_receipt_id TEXT NOT NULL DEFAULT '');
+CREATE TABLE IF NOT EXISTS affiliation_migration_audit (
+ receipt_id TEXT PRIMARY KEY, operation TEXT NOT NULL, base_generation INTEGER NOT NULL, base_logical_sha256 TEXT NOT NULL,
+ result_logical_sha256 TEXT NOT NULL, registry_sha256 TEXT NOT NULL, schema_from TEXT NOT NULL, schema_to TEXT NOT NULL,
+ backup_path TEXT NOT NULL, backup_sha256 TEXT NOT NULL, started_at TEXT NOT NULL, finished_at TEXT NOT NULL, report_json TEXT NOT NULL);
+"""
 
 
 def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
@@ -116,6 +242,112 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
         if name not in existing:
             conn.execute(f"ALTER TABLE papers ADD COLUMN {name} {sql_type}")
 
+
+
+def ensure_legacy_institution_schema(conn: sqlite3.Connection) -> None:
+    """Rebuild legacy compatibility tables without global name uniqueness."""
+    existing_tables = {
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    institution_columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(institutions)")
+    }
+    group_columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(institution_groups)")
+    }
+    alias_sql_row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' "
+        "AND name='institution_aliases'").fetchone()
+    institution_sql_row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' "
+        "AND name='institutions'").fetchone()
+    alias_sql = alias_sql_row[0] if alias_sql_row else ""
+    institution_sql = institution_sql_row[0] if institution_sql_row else ""
+    if ({"country_name_en"} <= institution_columns
+            and {"organization_id"} <= group_columns
+            and "normalized_nameTEXTNOTNULLUNIQUE" not in re.sub(
+                r"\s+", "", institution_sql)
+            and "UNIQUE" in alias_sql.upper()
+            and "normalized_alias,institution_id" in re.sub(
+                r"\s+", "", alias_sql)):
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_institutions_identity "
+            "ON institutions(normalized_name,country_name_en)")
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_institution_groups_name "
+            "ON institution_groups(normalized_name)")
+        return
+
+    def rows(table: str) -> list[dict]:
+        if table not in existing_tables:
+            return []
+        cursor = conn.execute(f'SELECT * FROM "{table}"')
+        names = [item[0] for item in cursor.description]
+        return [dict(zip(names, row)) for row in cursor.fetchall()]
+
+    groups = rows("institution_groups")
+    institutions = rows("institutions")
+    aliases = rows("institution_aliases")
+    links = rows("paper_institutions")
+    for table in (
+            "paper_institutions", "institution_aliases", "institutions",
+            "institution_groups"):
+        if table in existing_tables:
+            conn.execute(f'DROP TABLE "{table}"')
+    compatibility_schema = """
+        CREATE TABLE institution_groups (
+          group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL,
+          normalized_name TEXT NOT NULL,
+          organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id));
+        CREATE INDEX idx_institution_groups_name
+          ON institution_groups(normalized_name);
+        CREATE TABLE institutions (
+          institution_id INTEGER PRIMARY KEY, institution_name TEXT NOT NULL,
+          normalized_name TEXT NOT NULL, country_name_en TEXT NOT NULL DEFAULT '',
+          group_id INTEGER REFERENCES institution_groups(group_id),
+          organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id),
+          source TEXT NOT NULL);
+        CREATE INDEX idx_institutions_identity
+          ON institutions(normalized_name,country_name_en);
+        CREATE TABLE institution_aliases (
+          alias_id INTEGER PRIMARY KEY, raw_name TEXT NOT NULL,
+          normalized_alias TEXT NOT NULL,
+          institution_id INTEGER NOT NULL REFERENCES institutions(institution_id),
+          UNIQUE(normalized_alias,institution_id));
+        CREATE TABLE paper_institutions (
+          paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+          institution_id INTEGER NOT NULL REFERENCES institutions ON DELETE CASCADE,
+          raw_name TEXT NOT NULL, country_name TEXT, source TEXT NOT NULL,
+          PRIMARY KEY (paper_id,institution_id));
+    """
+    for statement in compatibility_schema.split(";"):
+        if statement.strip():
+            conn.execute(statement)
+    for row in groups:
+        conn.execute(
+            "INSERT INTO institution_groups VALUES (?,?,?,?)",
+            (row.get("group_id"), row.get("group_name", ""),
+             row.get("normalized_name", ""), row.get("organization_id")))
+    for row in institutions:
+        conn.execute(
+            "INSERT INTO institutions VALUES (?,?,?,?,?,?,?)",
+            (row.get("institution_id"),
+             row.get("institution_name") or row.get("normalized_name", ""),
+             row.get("normalized_name", ""),
+             row.get("country_name_en", ""), row.get("group_id"),
+             row.get("organization_id"), row.get("source", "legacy")))
+    for row in aliases:
+        conn.execute(
+            "INSERT OR IGNORE INTO institution_aliases VALUES (?,?,?,?)",
+            (row.get("alias_id"), row.get("raw_name", ""),
+             row.get("normalized_alias", ""), row.get("institution_id")))
+    for row in links:
+        conn.execute(
+            "INSERT OR IGNORE INTO paper_institutions VALUES (?,?,?,?,?)",
+            (row.get("paper_id"), row.get("institution_id"),
+             row.get("raw_name", ""), row.get("country_name", ""),
+             row.get("source", "legacy")))
 
 def norm(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip()).casefold()
@@ -231,13 +463,14 @@ def _load_ror_english_cache() -> dict:
 
 
 def resolve_english_institution(name: str, country: str = "",
-                                *, allow_remote: bool = False) -> str:
+                                *, allow_remote: bool = False,
+                                offline: bool = False) -> str:
     """Resolve a local-language organization label to an English ROR label."""
     name = re.sub(r"\s+", " ", name or "").strip(" ,;:-")
     static = _INSTITUTION_ENGLISH_ALIASES_BY_NORM.get(norm(name))
     if static:
         return static
-    if not is_local_language_institution(name) or not allow_remote:
+    if not is_local_language_institution(name) or not allow_remote or offline:
         return ""
 
     cache = _load_ror_english_cache()
@@ -791,7 +1024,8 @@ def resolve_institution_from_raw(raw: str, current_name: str = "") -> str:
     return ""
 
 
-def institution_from_raw(raw: str) -> tuple[str, str] | None:
+def institution_from_raw(
+        raw: str, *, allow_remote: bool = True) -> tuple[str, str] | None:
     original = raw
     raw = _clean_affiliation_text(raw)
     raw = re.sub(r"^[\d\s*†‡(),.-]+", "", raw)
@@ -809,7 +1043,7 @@ def institution_from_raw(raw: str) -> tuple[str, str] | None:
             break
 
     english = resolve_english_institution(
-        raw, country_from_raw(original), allow_remote=True)
+        raw, country_from_raw(original), allow_remote=allow_remote)
     if english:
         return canonical_institution(english), group
 
@@ -1132,8 +1366,9 @@ def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
     return result
 
 
-def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
-                           fallback_lines: list[str]) -> list[dict]:
+def reconcile_affiliations(
+        scopus_records: list[dict], pdf_text: str,
+        fallback_lines: list[str], *, offline: bool = False) -> list[dict]:
     """Validate Scopus against PDF text and add institutions missing in Scopus."""
     flat = re.sub(r"\s+", " ", pdf_text)
     normalized_pdf = norm(flat)
@@ -1142,7 +1377,7 @@ def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
         original_name = str(rec.get("name") or "")
         english = resolve_english_institution(
             original_name, str(rec.get("country") or ""),
-            allow_remote=True)
+            allow_remote=not offline)
         parent = scopus_parent_institution(
             str(rec.get("scopus_id") or ""))
         name = canonical_institution(parent or english or original_name)
@@ -1164,7 +1399,7 @@ def reconcile_affiliations(scopus_records: list[dict], pdf_text: str,
     for raw in segments:
         if len(raw) > 600:
             continue
-        parsed = institution_from_raw(raw)
+        parsed = institution_from_raw(raw, allow_remote=not offline)
         if not parsed:
             continue
         name, _group = parsed
@@ -1281,16 +1516,631 @@ def upsert(conn, table: str, name: str, column: str) -> int:
     return conn.execute(f"INSERT INTO {table} ({column},normalized_name,source) VALUES (?,?,?)" if table == "institutions" else f"INSERT INTO {table} ({column},normalized_name) VALUES (?,?)", (name, key, "text.md:normalized") if table == "institutions" else (name, key)).lastrowid
 
 
+def _registry_digest() -> str:
+    return hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest()
+
+
+def _project_compatibility_groups(conn: sqlite3.Connection, registry: dict) -> None:
+    """Project one current, lowest-precedence official edge into legacy group_id."""
+    tables = {
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    if not {"institutions", "institution_groups"} <= tables:
+        return
+    columns = {
+        row[1] for row in conn.execute("PRAGMA table_info(institutions)")
+    }
+    if not {"organization_id", "group_id"} <= columns:
+        return
+    # Compatibility groups are a disposable projection, never an authority.
+    # Clearing every link prevents unbound legacy heuristic groups from leaking.
+    conn.execute("UPDATE institutions SET group_id=NULL")
+    conn.execute("DELETE FROM institution_groups")
+    organizations = {
+        row["organization_id"]: row for row in registry["organizations"]
+    }
+    effective_date = max(
+        (str(event.get("timestamp") or "")[:10]
+         for event in registry.get("events", [])),
+        default=time.strftime("%Y-%m-%d", time.gmtime()),
+    )
+    precedence = {"part_of": 1, "jointly_operated_by": 2, "member_of": 3}
+    eligible: dict[str, list[tuple[int, str]]] = {}
+    for edge in registry.get("relationships", []):
+        relationship_type = edge.get("relationship_type")
+        if edge.get("status") != "accepted" or relationship_type not in precedence:
+            continue
+        subject = organizations.get(edge["subject_organization_id"])
+        object_organization = organizations.get(edge["object_organization_id"])
+        if (not subject or not object_organization or
+                subject.get("status") == "proposed" or
+                object_organization.get("status") == "proposed"):
+            continue
+        interval = edge.get("validity_interval") or {}
+        valid_from = edge.get("valid_from", interval.get("start", ""))
+        valid_to = edge.get("valid_to", interval.get("end", ""))
+        if (valid_from and effective_date < valid_from) or (
+                valid_to and effective_date >= valid_to):
+            continue
+        eligible.setdefault(edge["subject_organization_id"], []).append(
+            (precedence[relationship_type], edge["object_organization_id"]))
+    for subject_id, candidates in sorted(eligible.items()):
+        best = min(rank for rank, _object_id in candidates)
+        targets = sorted({
+            object_id for rank, object_id in candidates if rank == best
+        })
+        if len(targets) != 1:
+            continue
+        target = organizations.get(targets[0])
+        if not target:
+            continue
+        group_name = target["canonical_name_en"]
+        normalized_group = affiliation_registry.normalize_name(group_name)
+        conn.execute(
+            "INSERT INTO institution_groups "
+            "(group_name,normalized_name,organization_id) VALUES (?,?,?)",
+            (group_name, normalized_group, targets[0]))
+        group_id = conn.execute(
+            "SELECT group_id FROM institution_groups WHERE organization_id=?",
+            (targets[0],)).fetchone()[0]
+        conn.execute(
+            "UPDATE institutions SET group_id=? WHERE organization_id=?",
+            (group_id, subject_id))
+
+
+def _registry_candidates(conn: sqlite3.Connection, normalized: str, country: str,
+                         country_code: str, external_identifiers: dict) -> tuple[list[str], str]:
+    """Resolve reviewed identifiers before accepted alias candidates."""
+    authority_for = {
+        "ror": ("ror",), "ror_id": ("ror",),
+        "wikidata": ("wikidata",), "wikidata_id": ("wikidata",),
+        # Imported source affiliation IDs predate authority-specific review and
+        # are projected as `source`; retain them as exact, non-alias evidence.
+        "scopus": ("scopus", "source"), "scopus_id": ("scopus", "source"),
+        "grid": ("grid",), "grid_id": ("grid",),
+        "isni": ("isni",), "isni_id": ("isni",),
+    }
+    identifiers = sorted(
+        (authority, str(value))
+        for key, value in external_identifiers.items()
+        for authority in authority_for.get(
+            key, ("source",) if key.startswith("source_") else ())
+        if str(value).strip()
+    )
+    country_terms = {affiliation_registry.normalize_name(value) for value in
+                     (country, country_code) if value}
+    if identifiers:
+        clauses, params = [], []
+        for authority, value in identifiers:
+            clauses.append("(i.authority=? AND i.identifier_value=?)")
+            params.extend((authority, value))
+        rows = conn.execute(
+            "SELECT DISTINCT i.organization_id,o.country_name_en "
+            "FROM affiliation_identifiers i JOIN affiliation_organizations o "
+            "ON o.organization_id=i.organization_id "
+            "WHERE i.status='active' AND o.status IN ('active','historical') "
+            f"AND ({' OR '.join(clauses)}) ORDER BY i.organization_id",
+            params).fetchall()
+        matches = sorted({
+            organization_id for organization_id, organization_country in rows
+            if not country_terms or not organization_country or
+            affiliation_registry.normalize_name(organization_country) in country_terms
+        })
+        if matches:
+            return matches, "offline_registry_exact_identifier"
+    if country:
+        rows = conn.execute(
+            "SELECT DISTINCT c.organization_id FROM affiliation_aliases a "
+            "JOIN affiliation_alias_candidates c USING(alias_id) "
+            "JOIN affiliation_organizations o ON o.organization_id=c.organization_id "
+            "WHERE a.normalized_alias=? AND c.review_status='accepted' "
+            "AND o.status IN ('active','historical') "
+            "AND (c.country_discriminator='' OR c.country_discriminator=?) "
+            "ORDER BY c.organization_id", (normalized, country)).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT DISTINCT c.organization_id FROM affiliation_aliases a "
+            "JOIN affiliation_alias_candidates c USING(alias_id) "
+            "JOIN affiliation_organizations o ON o.organization_id=c.organization_id "
+            "WHERE a.normalized_alias=? AND c.review_status='accepted' "
+            "AND o.status IN ('active','historical') "
+            "ORDER BY c.organization_id", (normalized,)).fetchall()
+    return [row[0] for row in rows], "offline_registry_exact_alias"
+def reresolve_current_affiliations(conn: sqlite3.Connection, registry: dict,
+                                   registry_digest: str) -> None:
+    """Re-evaluate every current observation after a registry projection changes."""
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    pending_ids: set[str] = set()
+    terminal: dict[str, tuple[str, str]] = {}
+    rows = conn.execute(
+        "SELECT observation_id,normalized_raw_name,observed_country_code,"
+        "observed_country_name,external_identifiers_json,resolved_organization_id,"
+        "resolution_status,current_decision_id "
+        "FROM observed_affiliations WHERE is_current=1 ORDER BY observation_id"
+    ).fetchall()
+    for (observation_id, normalized, country_code, country, external_json,
+         old_selected, old_status, previous) in rows:
+        identifiers = json.loads(external_json or "{}")
+        candidates, resolution_reason = _registry_candidates(
+            conn, normalized, country, country_code, identifiers)
+        status = "resolved" if len(candidates) == 1 else (
+            "ambiguous" if candidates else "unseen")
+        selected = candidates[0] if status == "resolved" else None
+        prior = conn.execute(
+            "SELECT registry_sha256,policy_version FROM "
+            "affiliation_resolution_decisions WHERE decision_id=?",
+            (previous,)).fetchone()
+        prior_candidates = [
+            row[0] for row in conn.execute(
+                "SELECT organization_id FROM affiliation_decision_candidates "
+                "WHERE decision_id=? ORDER BY candidate_rank", (previous,))]
+        needs_decision = (
+            (status, selected) != (old_status, old_selected) or
+            candidates != prior_candidates or
+            prior != (registry_digest, registry["policy_version"]))
+        if not needs_decision:
+            continue
+        sequence = conn.execute(
+            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM "
+            "affiliation_resolution_decisions WHERE observation_id=?",
+            (observation_id,)).fetchone()[0]
+        decision_id = hashlib.sha256(
+            f"registry-reresolve:{observation_id}:{sequence}:{registry_digest}".encode()
+        ).hexdigest()
+        conn.execute(
+            "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (decision_id, observation_id, sequence, status, selected,
+             resolution_reason, 1.0 if selected else 0.0,
+             registry_digest, registry["policy_version"], now, now, previous or ""))
+        for rank, candidate in enumerate(candidates, 1):
+            conn.execute(
+                "INSERT INTO affiliation_decision_candidates VALUES (?,?,?,?)",
+                (decision_id, candidate, rank, resolution_reason))
+        conn.execute(
+            "UPDATE observed_affiliations SET resolved_organization_id=?,"
+            "resolution_status=?,current_decision_id=?,registry_sha256=?,policy_version=? "
+            "WHERE observation_id=?",
+            (selected, status, decision_id, registry_digest,
+             registry["policy_version"], observation_id))
+        linked = {row[0] for row in conn.execute(
+            "SELECT pending_id FROM affiliation_pending_observations "
+            "WHERE observation_id=?", (observation_id,))}
+        pending_ids.update(linked)
+        if status == "resolved":
+            for pending_id in linked:
+                terminal[pending_id] = ("resolved", decision_id)
+        else:
+            identifiers = json.loads(external_json or "{}")
+            pending_id = hashlib.sha256(
+                affiliation_registry.canonical_json_bytes(
+                    [normalized, country_code, identifiers])
+            ).hexdigest()
+            conn.execute(
+                "INSERT OR IGNORE INTO affiliation_pending_cases "
+                "(pending_id,normalized_raw_name,observed_country_code,"
+                "external_identifiers_json,status,reason_code,first_seen_at,last_seen_at,"
+                "active_observation_count,lifetime_observation_count) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (pending_id, normalized, country_code, external_json, "open",
+                 "registry_projection_no_unique_alias", now, now, 1, 1))
+            actual_pending = conn.execute(
+                "SELECT pending_id FROM affiliation_pending_cases WHERE "
+                "normalized_raw_name=? AND observed_country_code=? AND "
+                "external_identifiers_json=?",
+                (normalized, country_code, external_json)).fetchone()[0]
+            conn.execute(
+                "INSERT OR IGNORE INTO affiliation_pending_observations VALUES (?,?,?)",
+                (actual_pending, observation_id, now))
+            pending_ids.add(actual_pending)
+            terminal.pop(actual_pending, None)
+
+    if pending_ids:
+        recount_affiliation_pending_cases(conn, pending_ids, terminal, now)
+
+
+def project_affiliation_registry(conn: sqlite3.Connection) -> dict:
+    """Make the managed registry projection an exact, offline snapshot."""
+    registry = affiliation_registry.load_registry(REGISTRY_PATH)
+    affiliation_registry.validate_registry(registry)
+    digest = _registry_digest()
+    conn.executescript(AFFILIATION_SCHEMA)
+    existing_metadata = conn.execute(
+        "SELECT base_generation,migration_receipt_id FROM "
+        "affiliation_registry_metadata WHERE singleton=1").fetchone()
+    if existing_metadata and existing_metadata[1]:
+        base_generation, migration_receipt_id = existing_metadata
+    else:
+        audit_row = conn.execute(
+            "SELECT receipt_id,base_generation FROM affiliation_migration_audit "
+            "WHERE operation='migrate' ORDER BY finished_at DESC LIMIT 1"
+        ).fetchone()
+        if audit_row:
+            migration_receipt_id, base_generation = audit_row
+        else:
+            base_generation, migration_receipt_id = 0, "fresh-schema"
+    organization_ids = {org["organization_id"] for org in registry["organizations"]}
+    if organization_ids:
+        conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL "
+                     "WHERE resolved_organization_id NOT IN (" + ",".join("?" for _ in organization_ids) + ")",
+                     tuple(organization_ids))
+    else:
+        conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL")
+    if conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='institutions'").fetchone():
+        if organization_ids:
+            conn.execute("UPDATE institutions SET organization_id=NULL WHERE organization_id NOT IN ("
+                         + ",".join("?" for _ in organization_ids) + ")", tuple(organization_ids))
+        else:
+            conn.execute("UPDATE institutions SET organization_id=NULL WHERE organization_id IS NOT NULL")
+    conn.execute("DELETE FROM affiliation_relationship_evidence")
+    conn.execute("DELETE FROM affiliation_relationships")
+    conn.execute("DELETE FROM affiliation_alias_candidates")
+    conn.execute("DELETE FROM affiliation_aliases")
+    conn.execute("DELETE FROM affiliation_identifiers")
+    conn.execute("DELETE FROM affiliation_organization_redirects")
+    if organization_ids:
+        conn.execute("DELETE FROM affiliation_organizations WHERE organization_id NOT IN ("
+                     + ",".join("?" for _ in organization_ids) + ")", tuple(organization_ids))
+    else:
+        conn.execute("DELETE FROM affiliation_organizations")
+    for org in registry["organizations"]:
+        conn.execute("INSERT OR IGNORE INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+                     (org["organization_id"], org["canonical_name_en"], org["normalized_name"],
+                      org["organization_type"], "", org.get("country", ""), "unknown",
+                      org["status"], "", registry["registry_version"]))
+        conn.execute("UPDATE affiliation_organizations SET canonical_name_en=?,normalized_name=?,"
+                     "organization_type=?,country_code='',country_name_en=?,country_scope='unknown',"
+                     "status=?,created_event_id='',registry_version=? WHERE organization_id=?",
+                     (org["canonical_name_en"], org["normalized_name"], org["organization_type"],
+                      org.get("country", ""), org["status"], registry["registry_version"],
+                      org["organization_id"]))
+        for ident in org.get("identifiers", []):
+            authority = ident["authority"]
+            if authority.startswith("source_"):
+                authority = "source"
+            conn.execute("INSERT INTO affiliation_identifiers "
+                         "(authority,identifier_value,organization_id,status,"
+                         "valid_from,valid_to,evidence_id) VALUES (?,?,?,?,?,?,?)",
+                         (authority, ident["value"], org["organization_id"],
+                          "active", "", "", ""))
+        for alias in org.get("aliases", []):
+            conn.execute("INSERT INTO affiliation_aliases VALUES (?,?,?,?,?,?)",
+                         (alias["alias_id"], alias["name"], alias["normalized_alias"], "", "source", ""))
+    for candidate in registry["alias_candidates"]:
+        conn.execute("INSERT INTO affiliation_alias_candidates VALUES (?,?,?,?,?,?,?)",
+                     (candidate["alias_id"], candidate["organization_id"],
+                      candidate.get("country_discriminator", ""), "", 1.0, "accepted", ""))
+    for edge in registry["relationships"]:
+        if edge.get("status") in {"accepted", "historical"}:
+            interval = edge.get("validity_interval") or {}
+            conn.execute("INSERT INTO affiliation_relationships VALUES (?,?,?,?,?,?,?,?,?,?)",
+                         (edge["relationship_id"], edge["subject_organization_id"], edge["object_organization_id"],
+                          edge["relationship_type"],
+                          edge.get("valid_from", interval.get("start", "")),
+                          edge.get("valid_to", interval.get("end", "")),
+                          edge["status"], edge.get("confidence", 1.0),
+                          edge.get("created_event_id", ""), "registry"))
+            for evidence_id in edge.get("evidence_ids", []):
+                conn.execute("INSERT INTO affiliation_relationship_evidence VALUES (?,?)",
+                             (edge["relationship_id"], evidence_id))
+    reresolve_current_affiliations(conn, registry, digest)
+    _project_compatibility_groups(conn, registry)
+    conn.execute("INSERT OR REPLACE INTO affiliation_registry_metadata VALUES (1,?,?,?,?,?,?,?,?,?)",
+                 (AFFILIATION_SCHEMA_VERSION, registry["registry_version"], digest,
+                  registry["event_head"], registry["policy_version"],
+                  registry["source_sha256"],
+                  time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                  base_generation, migration_receipt_id))
+    return registry
+
+
+def recount_affiliation_pending_cases(conn: sqlite3.Connection, pending_ids: set[str],
+                                     terminal_decisions: dict[str, tuple[str, str]],
+                                     now: str) -> None:
+    """Finalize all affected pending cases after one observation-version write."""
+    for pending_id in sorted(pending_ids):
+        counts = conn.execute(
+            "SELECT COUNT(*), COALESCE(SUM(o.is_current=1 AND o.resolution_status "
+            "IN ('ambiguous','unseen')),0) FROM affiliation_pending_observations l "
+            "JOIN observed_affiliations o USING(observation_id) WHERE l.pending_id=?",
+            (pending_id,)).fetchone()
+        lifetime, active = counts
+        if not lifetime:
+            conn.execute("DELETE FROM affiliation_pending_cases WHERE pending_id=?",
+                         (pending_id,))
+        elif active:
+            proposal_digest = conn.execute(
+                "SELECT proposal_digest FROM affiliation_pending_cases WHERE pending_id=?",
+                (pending_id,)).fetchone()[0]
+            conn.execute(
+                "UPDATE affiliation_pending_cases SET lifetime_observation_count=?,"
+                "active_observation_count=?,status=?,resolved_event_id='',"
+                "last_seen_at=? WHERE pending_id=?",
+                (lifetime, active, "proposed" if proposal_digest else "open", now, pending_id))
+        else:
+            status, decision_id = terminal_decisions.get(
+                pending_id, ("rejected", ""))
+            conn.execute(
+                "UPDATE affiliation_pending_cases SET lifetime_observation_count=?,"
+                "active_observation_count=0,status=?,resolved_event_id=?,"
+                "last_seen_at=? WHERE pending_id=?",
+                (lifetime, status, decision_id, now, pending_id))
+
+
+def _uuid5_affiliation_observation(parts: list[object]) -> str:
+    """Return the approved stable UUIDv5 identity for canonical observation data."""
+    return str(uuid.uuid5(
+        AFFILIATION_OBSERVATION_NAMESPACE,
+        affiliation_registry.canonical_json_bytes(parts).decode("utf-8"),
+    ))
+
+
+def _paper_stable_slug(conn: sqlite3.Connection, paper_id: int,
+                       paper_key: str | None) -> str:
+    if paper_key:
+        return paper_key
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(papers)")}
+    if "slug" in columns:
+        row = conn.execute(
+            "SELECT slug FROM papers WHERE paper_id=?", (paper_id,)).fetchone()
+        if row and row[0]:
+            return str(row[0])
+    return str(paper_id)
+
+
+def record_affiliation_observation(
+        conn: sqlite3.Connection, paper_id: int, record: dict, ordinal: int,
+        registry: dict, *, paper_key: str | None = None,
+        pending_ids: set[str] | None = None,
+        terminal_decisions: dict[str, tuple[str, str]] | None = None,
+        pending_now: str | None = None) -> str | None:
+    """Store every raw source slot and resolve only exact reviewed aliases offline."""
+    raw = unicodedata.normalize(
+        "NFC", str(record.get("raw_name") or record.get("name") or "").strip())
+    if not raw:
+        return
+    source = str(record.get("source") or "review").split("+")[0]
+    source = source if source in {"scopus", "pdf", "review"} else "legacy"
+    country = str(record.get("country") or country_from_raw(raw) or "")
+    country_code = str(record.get("country_code") or "").strip().upper()
+    external_identifiers = dict(record.get("external_identifiers") or {})
+    if record.get("scopus_id"):
+        external_identifiers.setdefault("scopus_id", str(record["scopus_id"]))
+    external_json = affiliation_registry.canonical_json_bytes(external_identifiers).decode("utf-8")
+    context = record.get("context") or record.get("raw_context") or {}
+    context_json = affiliation_registry.canonical_json_bytes(context)
+    normalized = affiliation_registry.normalize_name(raw)
+    source_record_key = str(record.get("source_record_key") or paper_key or paper_id)
+    stable_slug = _paper_stable_slug(conn, paper_id, paper_key)
+    slot_id = _uuid5_affiliation_observation(
+        [stable_slug, source, source_record_key, ordinal])
+    now = pending_now or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    conn.execute("INSERT OR IGNORE INTO observed_affiliation_slots VALUES (?,?,?,?,?,?)",
+                 (slot_id, paper_id, source, source_record_key, ordinal, now))
+    context_digest = hashlib.sha256(context_json).hexdigest()
+    normalized_country = country_code or affiliation_registry.normalize_name(country)
+    content = hashlib.sha256(affiliation_registry.canonical_json_bytes(
+        [raw, normalized_country, external_identifiers, context_digest])).hexdigest()
+    prior = conn.execute(
+        "SELECT observation_id,observation_version,raw_content_sha256,current_decision_id "
+        "FROM observed_affiliations WHERE observation_slot_id=? AND is_current=1",
+        (slot_id,)).fetchone()
+    if prior and prior[2] == content:
+        conn.execute("UPDATE observed_affiliations SET last_seen_at=? WHERE observation_id=?",
+                     (now, prior[0]))
+        return slot_id
+    affected_pending_ids = set()
+    local_terminal: dict[str, tuple[str, str]] = {}
+    if prior:
+        affected_pending_ids.update(row[0] for row in conn.execute(
+            "SELECT pending_id FROM affiliation_pending_observations WHERE observation_id=?",
+            (prior[0],)))
+    version = prior[1] + 1 if prior else 1
+    observation_id = _uuid5_affiliation_observation([slot_id, version, content])
+    candidates, resolution_reason = _registry_candidates(
+        conn, normalized, country, country_code, external_identifiers)
+    status, selected = ("resolved", candidates[0]) if len(candidates) == 1 else (
+        ("ambiguous", None) if candidates else ("unseen", None))
+    digest = _registry_digest()
+    if prior:
+        supersession_id = hashlib.sha256(
+            ("superseded:" + prior[0] + ":" + observation_id).encode()).hexdigest()
+        sequence = conn.execute(
+            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM "
+            "affiliation_resolution_decisions WHERE observation_id=?", (prior[0],)
+        ).fetchone()[0]
+        conn.execute(
+            "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (supersession_id, prior[0], sequence, "superseded", None,
+             "superseded_to_observation:" + observation_id, 1.0, digest,
+             registry["policy_version"], now, now, prior[3] or None))
+        conn.execute(
+            "UPDATE observed_affiliations SET is_current=0,"
+            "resolution_status='superseded',current_decision_id=? "
+            "WHERE observation_id=?",
+            (supersession_id, prior[0]))
+        for pending_id in affected_pending_ids:
+            local_terminal[pending_id] = ("rejected", supersession_id)
+    conn.execute("INSERT INTO observed_affiliations VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 (observation_id, slot_id, version, content, raw, normalized, country_code, country,
+                  external_json, context_digest, selected, status, None, digest,
+                  registry["policy_version"], now, now, 1, prior[0] if prior else None, None))
+    if prior:
+        conn.execute(
+            "UPDATE observed_affiliations SET superseded_by_observation_id=? "
+            "WHERE observation_id=?",
+            (observation_id, prior[0]))
+    decision_id = hashlib.sha256(("decision:" + observation_id).encode()).hexdigest()
+    conn.execute(
+        "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        (decision_id, observation_id, 1, status, selected,
+         resolution_reason if selected else "offline_registry_no_unique_alias",
+         1.0 if selected else 0.0, digest, registry["policy_version"], now, now, None))
+    for rank, candidate in enumerate(candidates, 1):
+        conn.execute(
+            "INSERT INTO affiliation_decision_candidates VALUES (?,?,?,?)",
+            (decision_id, candidate, rank, resolution_reason))
+    conn.execute("UPDATE observed_affiliations SET current_decision_id=? WHERE observation_id=?",
+                 (decision_id, observation_id))
+    if status == "resolved":
+        for pending_id in affected_pending_ids:
+            local_terminal[pending_id] = ("resolved", decision_id)
+    else:
+        pending_id = hashlib.sha256(
+            affiliation_registry.canonical_json_bytes(
+                [normalized, country_code, external_identifiers])).hexdigest()
+        conn.execute(
+            "INSERT OR IGNORE INTO affiliation_pending_cases "
+            "(pending_id,normalized_raw_name,observed_country_code,"
+            "external_identifiers_json,status,reason_code,first_seen_at,last_seen_at,"
+            "active_observation_count,lifetime_observation_count) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (pending_id, normalized, country_code, external_json, "open",
+             "offline_registry_no_unique_alias", now, now, 1, 1))
+        conn.execute("INSERT OR IGNORE INTO affiliation_pending_observations VALUES (?,?,?)",
+                     (pending_id, observation_id, now))
+        affected_pending_ids.add(pending_id)
+        local_terminal.pop(pending_id, None)
+    if pending_ids is None:
+        recount_affiliation_pending_cases(conn, affected_pending_ids, local_terminal, now)
+    else:
+        pending_ids.update(affected_pending_ids)
+        if terminal_decisions is not None:
+            terminal_decisions.update(local_terminal)
+    return slot_id
+def supersede_removed_affiliation_slots(
+        conn: sqlite3.Connection, paper_id: int, paper_key: str,
+        seen_slots: set[str], registry: dict, *, pending_ids: set[str] | None = None,
+        terminal_decisions: dict[str, tuple[str, str]] | None = None,
+        pending_now: str | None = None) -> None:
+    """Close current versions for source slots removed from a rebuilt paper."""
+    now = pending_now or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    digest = _registry_digest()
+    local_pending_ids: set[str] = set()
+    local_terminal: dict[str, tuple[str, str]] = {}
+    rows = conn.execute(
+        "SELECT o.observation_id,o.current_decision_id FROM observed_affiliation_slots s "
+        "JOIN observed_affiliations o USING(observation_slot_id) "
+        "WHERE s.paper_id=? AND o.is_current=1",
+        (paper_id,)).fetchall()
+    for observation_id, previous_decision in rows:
+        if conn.execute("SELECT observation_slot_id FROM observed_affiliations WHERE observation_id=?",
+                        (observation_id,)).fetchone()[0] in seen_slots:
+            continue
+        decision_id = hashlib.sha256(("removed:" + observation_id).encode()).hexdigest()
+        sequence = conn.execute(
+            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM affiliation_resolution_decisions "
+            "WHERE observation_id=?", (observation_id,)).fetchone()[0]
+        conn.execute("INSERT OR IGNORE INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                     (decision_id, observation_id, sequence, "superseded", None,
+                      "source_slot_removed", 1.0, digest, registry["policy_version"],
+                      now, now, previous_decision or ""))
+        conn.execute("UPDATE observed_affiliations SET is_current=0,resolution_status='superseded',"
+                     "current_decision_id=? WHERE observation_id=?", (decision_id, observation_id))
+        for (pending_id,) in conn.execute(
+                "SELECT pending_id FROM affiliation_pending_observations WHERE observation_id=?",
+                (observation_id,)):
+            local_pending_ids.add(pending_id)
+            local_terminal[pending_id] = ("rejected", decision_id)
+    if pending_ids is None:
+        recount_affiliation_pending_cases(conn, local_pending_ids, local_terminal, now)
+    else:
+        pending_ids.update(local_pending_ids)
+        if terminal_decisions is not None:
+            terminal_decisions.update(local_terminal)
+
+def source_affiliation_records(scopus_records: list[dict],
+                               fallback_lines: list[str]) -> list[dict]:
+    """Preserve each source-cardinality record before compatibility deduplication."""
+    records = []
+    for ordinal, source_record in enumerate(scopus_records):
+        record = dict(source_record)
+        raw = str(record.get("raw_name") or record.get("name") or "").strip()
+        if not raw:
+            continue
+        record.update({
+            "raw_name": raw,
+            "source": "scopus",
+            "source_record_key": f"scopus:{record.get('scopus_id') or ordinal}",
+            "context": {"scopus_affiliation": source_record},
+            "_source_ordinal": ordinal,
+        })
+        records.append(record)
+    for ordinal, raw in enumerate(fallback_lines):
+        raw = str(raw).strip()
+        if not raw:
+            continue
+        records.append({
+            "raw_name": raw,
+            "source": "review",
+            "source_record_key": "review:header",
+            "context": {"review_affiliation": raw},
+            "_source_ordinal": ordinal,
+        })
+    return records
+
+
+def is_latest_affiliation_schema(conn: sqlite3.Connection) -> bool:
+    metadata = conn.execute(
+        "SELECT schema_version FROM affiliation_registry_metadata WHERE singleton=1"
+    ).fetchone() if conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' "
+        "AND name='affiliation_registry_metadata'").fetchone() else None
+    if metadata != (AFFILIATION_SCHEMA_VERSION,):
+        return False
+    required_columns = {
+        "affiliation_organizations": {"organization_id", "status"},
+        "affiliation_organization_redirects": {
+            "old_organization_id", "survivor_organization_id", "event_id"},
+        "observed_affiliations": {
+            "observation_id", "supersedes_observation_id",
+            "superseded_by_observation_id"},
+        "affiliation_pending_cases": {
+            "pending_id", "active_observation_count",
+            "lifetime_observation_count", "resolved_event_id"},
+        "affiliation_enrichment_attempts": {
+            "attempt_id", "pending_id", "provider", "started_at", "finished_at",
+            "outcome", "response_digest", "error_class", "proposal_digest"},
+    }
+    for table, expected in required_columns.items():
+        columns = {
+            row[1] for row in conn.execute(f'PRAGMA table_info("{table}")')
+        }
+        if not expected <= columns:
+            return False
+    return True
+
 def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
-          skip_zotero: bool = False) -> dict:
+          skip_zotero: bool = False, offline: bool = False) -> dict:
     total = len(entries)
     print(f"[bibliography] starting {total} papers", flush=True)
     start = time.perf_counter(); db_path.parent.mkdir(parents=True, exist_ok=True)
+    if db_path.exists() and db_path.stat().st_size:
+        probe = sqlite3.connect(db_path)
+        try:
+            if not is_latest_affiliation_schema(probe):
+                raise RuntimeError(
+                    "bibliography DB requires controlled migration: "
+                    f"python pipeline/repair_bibliography_institutions.py --db {db_path} --execute")
+        finally:
+            probe.close()
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(SCHEMA)
     ensure_schema_migrations(conn)
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        ensure_legacy_institution_schema(conn)
+        conn.commit()
+    except BaseException:
+        conn.rollback()
+        raise
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
+    registry = project_affiliation_registry(conn)
     initialize_institution_registry(conn)
-    zitems = [] if skip_zotero else fetch_zotero_items()
+    conn.commit()
+    zitems = [] if skip_zotero or offline else fetch_zotero_items()
     zupdated = 0; resolved = 0
     with conn:
         for index, p in enumerate(entries, 1):
@@ -1312,7 +2162,7 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
                 zdata.get("archiveID", ""), zdata.get("url", ""), zdoi)
             official = resolve_publication(
                 title, doi or zdoi, arxiv
-            ) if (arxiv or doi.lower().startswith("10.48550")) else {}
+            ) if (not offline and (arxiv or doi.lower().startswith("10.48550"))) else {}
             if official.get("doi"):
                 doi = official["doi"]
                 resolved += 1
@@ -1336,7 +2186,7 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
                 "issn": str(zdata.get("ISSN") or "").strip(),
                 "document_type": str(zdata.get("itemType") or "").strip(),
             }
-            scopus_record = fetch_scopus_record(doi, title)
+            scopus_record = {} if offline else fetch_scopus_record(doi, title)
             header, raw_affs, _header_conf = extract_header(text)
             pdf_path = locate_pdf(p, meta)
             pdf_text = _pdf_text_for_affiliations(pdf_path, text)
@@ -1352,7 +2202,10 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
             # Affiliation precedence: the same Scopus response is validated and
             # repaired from source-PDF front/back matter.
             affiliation_records = reconcile_affiliations(
-                scopus_record.get("affiliations") or [], pdf_text, raw_affs)
+                scopus_record.get("affiliations") or [], pdf_text, raw_affs,
+                offline=offline)
+            source_records = source_affiliation_records(
+                scopus_record.get("affiliations") or [], raw_affs)
             sources = {record["source"] for record in affiliation_records}
             aff_source = "+".join(sorted(sources)) if sources else "missing"
             conf = 0.95 if "scopus+pdf" in sources else (
@@ -1402,26 +2255,61 @@ def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
             for order, author in enumerate(authors, 1):
                 aid = upsert(conn, "authors", str(author).strip(), "display_name")
                 conn.execute("INSERT OR IGNORE INTO paper_authors VALUES (?,?,?,?,?,?)", (pid,aid,order,int(order==1),0,"review.frontmatter/_papers_index"))
+            seen_slots = set()
+            pending_ids: set[str] = set()
+            terminal_decisions: dict[str, tuple[str, str]] = {}
+            pending_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            for record in source_records:
+                slot_id = record_affiliation_observation(
+                    conn, pid, record, record["_source_ordinal"], registry,
+                    paper_key=p["slug"], pending_ids=pending_ids,
+                    terminal_decisions=terminal_decisions, pending_now=pending_now)
+                if slot_id:
+                    seen_slots.add(slot_id)
             for record in affiliation_records:
                 name = canonical_institution(record["name"])
                 raw = record.get("raw_name") or name
-                group = ""
-                for group_name, pattern in GROUPS:
-                    if re.search(pattern, name, re.I):
-                        group = group_name
-                        break
-                gid = None
-                if group:
-                    row = conn.execute("SELECT group_id FROM institution_groups WHERE normalized_name=?", (norm(group),)).fetchone()
-                    gid = row[0] if row else conn.execute("INSERT INTO institution_groups (group_name,normalized_name) VALUES (?,?)", (group,norm(group))).lastrowid
-                row = conn.execute("SELECT institution_id FROM institutions WHERE normalized_name=?", (norm(name),)).fetchone()
-                iid = row[0] if row else conn.execute("INSERT INTO institutions (institution_name,normalized_name,group_id,source) VALUES (?,?,?,?)", (name,norm(name),gid,record["source"])).lastrowid
-                conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
                 country = record.get("country") or country_from_raw(raw)
+                external_identifiers = dict(record.get("external_identifiers") or {})
+                if record.get("scopus_id"):
+                    external_identifiers.setdefault("scopus_id", str(record["scopus_id"]))
+                candidates, _reason = _registry_candidates(
+                    conn, affiliation_registry.normalize_name(raw), country,
+                    str(record.get("country_code") or "").strip().upper(),
+                    external_identifiers)
+                organization_id = candidates[0] if len(candidates) == 1 else None
+                if organization_id:
+                    row = conn.execute(
+                        "SELECT institution_id FROM institutions "
+                        "WHERE organization_id=?", (organization_id,)).fetchone()
+                else:
+                    row = conn.execute(
+                        "SELECT institution_id FROM institutions "
+                        "WHERE normalized_name=? AND country_name_en=?",
+                        (norm(name), country)).fetchone()
+                iid = row[0] if row else conn.execute(
+                    "INSERT INTO institutions "
+                    "(institution_name,normalized_name,country_name_en,"
+                    "organization_id,source) VALUES (?,?,?,?,?)",
+                    (name, norm(name), country, organization_id,
+                     record["source"])).lastrowid
+                if organization_id:
+                    conn.execute("UPDATE institutions SET organization_id=? WHERE institution_id=?",
+                                 (organization_id, iid))
+                conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
                 conn.execute("INSERT OR IGNORE INTO paper_institutions (paper_id,institution_id,raw_name,country_name,source) VALUES (?,?,?,?,?)", (pid,iid,raw,country,record["source"]))
+            supersede_removed_affiliation_slots(
+                conn, pid, p["slug"], seen_slots, registry, pending_ids=pending_ids,
+                terminal_decisions=terminal_decisions, pending_now=pending_now)
+            if pending_ids:
+                recount_affiliation_pending_cases(
+                    conn, pending_ids, terminal_decisions, pending_now)
             for kind, path in (("review",review),("text",text)):
                 if path.exists(): conn.execute("INSERT OR REPLACE INTO source_documents VALUES (?,?,?,?,?)", (pid,kind,rel(path),sha256(path),path.stat().st_size))
+            conn.commit()
             print(f"[bibliography] progress={index}/{total} ({index / total * 100:.1f}%) title={title[:100]}", flush=True)
+    _project_compatibility_groups(conn, registry)
+    conn.commit()
     conn.execute("PRAGMA optimize"); conn.close()
     return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"db":str(db_path)}
 
@@ -1524,6 +2412,8 @@ def main() -> int:
     ap.add_argument("--skip-zotero", action="store_true",
                     help="skip the full Zotero library scan for a local incremental repair")
     ap.add_argument("--slugs", help="comma-separated slug prefixes to rebuild")
+    ap.add_argument("--offline", action="store_true",
+                    help="use the deterministic offline affiliation registry")
     args = ap.parse_args()
     entries = load_entries()
     if args.slugs:
@@ -1534,9 +2424,21 @@ def main() -> int:
     elif not args.all:
         entries = random.Random(args.seed).sample(entries, min(args.sample, len(entries)))
     if not entries:
+        if args.output.exists():
+            try:
+                result = build([], args.output, False, True, args.offline)
+            except RuntimeError as exc:
+                print(str(exc), file=sys.stderr)
+                return 3
+            print(json.dumps({**result, "changed": 0}, ensure_ascii=False, indent=2))
+            return 0
         print(json.dumps({"processed": 0, "changed": 0, "db": str(args.output)}, ensure_ascii=False, indent=2))
         return 0
-    result = build(entries, args.output, args.update_zotero, args.skip_zotero)
+    try:
+        result = build(entries, args.output, args.update_zotero, args.skip_zotero, args.offline)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
     conn = sqlite3.connect(args.output)
     result.update({
         "papers": conn.execute("SELECT COUNT(*) FROM papers").fetchone()[0],
