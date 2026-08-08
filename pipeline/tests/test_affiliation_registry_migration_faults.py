@@ -310,6 +310,42 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
                     reader.close()
                 writer.close()
 
+    def test_busy_wal_migration_recovers_receipt_after_reader_releases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "legacy.sqlite3"
+            self.legacy_db(db)
+            writer = sqlite3.connect(db)
+            writer.execute("PRAGMA journal_mode=WAL")
+            writer.close()
+            base = Path(directory) / "base.json"
+            base.write_text(json.dumps(self.complete_base(db)), encoding="utf-8")
+            reader = sqlite3.connect(db)
+            reader.execute("BEGIN")
+            self.assertEqual(
+                reader.execute("SELECT paper_id FROM papers").fetchall(), [(1,)])
+            try:
+                with self.assertRaisesRegex(
+                        RuntimeError, "checkpoint did not complete"):
+                    migrator.migrate(db, execute=True, base_receipt=base)
+            finally:
+                reader.close()
+            sidecar = migrator.receipt_path(db, "migrate")
+            self.assertFalse(sidecar.exists())
+            connection = sqlite3.connect(db)
+            try:
+                self.assertTrue(bib.is_latest_affiliation_schema(connection))
+                self.assertEqual(
+                    connection.execute(
+                        "SELECT COUNT(*) FROM affiliation_migration_audit"
+                    ).fetchone()[0], 1)
+            finally:
+                connection.close()
+            recovered = migrator.migrate(
+                db, execute=True, base_receipt=None)
+            self.assertTrue(sidecar.exists())
+            self.assertEqual(recovered["receipt_id"], json.loads(
+                sidecar.read_text(encoding="utf-8"))["receipt_id"])
+
     def test_builder_and_migration_share_exclusive_writer_lock(self):
         with tempfile.TemporaryDirectory() as directory:
             db = Path(directory) / "bibliography.sqlite3"
@@ -350,3 +386,19 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
             self.assertEqual(
                 recovered, json.loads(sidecar.read_text(encoding="utf-8")))
             self.assertFalse(migrator.lock_path(db).exists())
+
+    def test_builder_cli_reports_lock_contention_as_exit_five(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "bibliography.sqlite3"
+            db.touch()
+            descriptor = migrator.acquire_lock(db)
+            try:
+                with patch.object(bib, "load_entries", return_value=[]), \
+                     patch.object(sys, "argv", [
+                         "build_bibliography_db.py", "--output", str(db),
+                         "--no-email",
+                     ]):
+                    self.assertEqual(bib.main(), 5)
+            finally:
+                bib.affiliation_registry.release_bibliography_writer_lock(
+                    db, descriptor)

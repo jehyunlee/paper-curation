@@ -450,28 +450,69 @@ def pull():
                     "remote migration receipt does not bind immutable migration provenance")
             else:
                 _verify_migration_audit(receipt_value, manifest, db)
-        os.replace(db, LOCAL_DB)
-        if _is_fresh_schema_origin(manifest):
-            migrator._atomic_json(_fresh_schema_receipt_path(), receipt_value)
-        else:
-            migrator._atomic_json(_migration_receipt_path(), receipt_value)
-        LOCAL_DB.with_suffix(".base.json").write_text(
-            canonical_manifest(manifest), encoding="utf-8")
-        marker = _remigration_marker()
-        if manifest.get("requires_controlled_remigration"):
-            marker.write_text(canonical_manifest({
-                "operation": "remigration_required",
-                "manifest_generation": manifest.get("generation"),
-                "migration_receipt_id": manifest.get("migration_receipt_id"),
-                "created_at": manifest.get("updated_at"),
-            }), encoding="utf-8")
-        else:
-            marker.unlink(missing_ok=True)
+        descriptor = migrator.acquire_lock(LOCAL_DB)
+        try:
+            os.replace(db, LOCAL_DB)
+            if _is_fresh_schema_origin(manifest):
+                migrator._atomic_json(_fresh_schema_receipt_path(), receipt_value)
+            else:
+                migrator._atomic_json(_migration_receipt_path(), receipt_value)
+            migrator._atomic_json(
+                LOCAL_DB.with_suffix(".base.json"), manifest)
+            marker = _remigration_marker()
+            if manifest.get("requires_controlled_remigration"):
+                migrator._atomic_json(marker, {
+                    "operation": "remigration_required",
+                    "manifest_generation": manifest.get("generation"),
+                    "migration_receipt_id": manifest.get("migration_receipt_id"),
+                    "created_at": manifest.get("updated_at"),
+                })
+            else:
+                marker.unlink(missing_ok=True)
+        finally:
+            migrator.bib.affiliation_registry.release_bibliography_writer_lock(
+                LOCAL_DB, descriptor)
     print(canonical_manifest(manifest))
     return manifest
 
 
-def push(base_receipt: Path | None):
+def _validate_origin_transition(expected: dict, manifest: dict,
+                                receipt: dict, receipt_digest: str) -> None:
+    """Allow only exact reuse, deterministic fresh rotation, or remigration."""
+    if manifest["migration_receipt_id"] == expected["migration_receipt_id"]:
+        if receipt_digest != expected["migration_receipt_sha256"]:
+            raise RuntimeError(
+                "current receipt sidecar differs from the synchronized origin receipt")
+        return
+    if (_is_fresh_schema_origin(expected) and _is_fresh_schema_origin(manifest)
+            and not _has_migration_audit(LOCAL_DB)):
+        _validate_fresh_schema_receipt(receipt, manifest)
+        return
+    if expected.get("requires_controlled_remigration"):
+        required = {
+            "operation": "migrate",
+            "base_generation": expected["generation"],
+            "base_sha256": expected["sha256"],
+            "base_logical_sha256": expected["logical_sha256"],
+            "schema_from": expected["schema_version"],
+            "schema_to": manifest["schema_version"],
+            "result_sha256": manifest["sha256"],
+            "result_logical_sha256": manifest["logical_sha256"],
+            "receipt_id": manifest["migration_receipt_id"],
+        }
+        if (any(receipt.get(key) != value for key, value in required.items())
+                or any(receipt.get(key) != manifest[key] for key in (
+                    "registry_sha256", "event_head", "policy_version",
+                    "source_sha256"))):
+            raise RuntimeError(
+                "controlled remigration receipt does not bind the local result")
+        _verify_migration_audit(receipt, manifest, LOCAL_DB)
+        return
+    raise RuntimeError(
+        "origin receipt changed without fresh rotation or controlled remigration")
+
+
+def _push_locked(base_receipt: Path | None):
     _ensure_publishable()
     if not LOCAL_DB.exists():
         raise RuntimeError(f"missing local DB: {LOCAL_DB}")
@@ -492,11 +533,8 @@ def push(base_receipt: Path | None):
     upload = REMOTE_DB + ".upload." + upload_id
     receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
     manifest = local_manifest()
-    _, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
-    if (manifest["migration_receipt_id"] == expected["migration_receipt_id"]
-            and receipt_digest != expected["migration_receipt_sha256"]):
-        raise RuntimeError(
-            "current receipt sidecar differs from the synchronized origin receipt")
+    receipt, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
+    _validate_origin_transition(expected, manifest, receipt, receipt_digest)
     manifest["generation"] = expected["generation"] + 1
     manifest["base_generation"] = expected["generation"]
     manifest["base_sha256"] = expected["sha256"]
@@ -539,9 +577,20 @@ def push(base_receipt: Path | None):
         except subprocess.CalledProcessError:
             pass
         raise RuntimeError("CAS conflict or remote publish lock busy") from exc
-    base.write_text(payload, encoding="utf-8")
+    migrator._atomic_json(base, manifest)
     print(payload)
     return manifest
+
+
+def push(base_receipt: Path | None):
+    """Publish one stable local DB/receipt snapshot under the shared writer lock."""
+    LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = migrator.acquire_lock(LOCAL_DB)
+    try:
+        return _push_locked(base_receipt)
+    finally:
+        migrator.bib.affiliation_registry.release_bibliography_writer_lock(
+            LOCAL_DB, descriptor)
 
 
 def seed_legacy_recovery(base_receipt: Path | None) -> dict:

@@ -227,6 +227,62 @@ class BibliographySyncCASTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "sidecar differs"):
                     sync.push(base)
             run.assert_not_called()
+
+    def test_push_snapshot_contends_with_every_local_writer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
+            descriptor = sync.migrator.acquire_lock(db)
+            try:
+                with patch.object(sync, "LOCAL_DB", db), \
+                     patch.object(sync, "run") as run:
+                    with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                        sync.push(None)
+                run.assert_not_called()
+            finally:
+                sync.migrator.bib.affiliation_registry.release_bibliography_writer_lock(
+                    db, descriptor)
+
+    def test_changed_migration_origin_requires_bound_controlled_remigration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
+            connection = sqlite3.connect(db)
+            connection.execute(
+                "UPDATE affiliation_registry_metadata SET migration_receipt_id=?",
+                ("new-migration-origin",))
+            connection.commit()
+            connection.close()
+            expected = {
+                **self.complete_manifest(generation=3, schema_version="legacy"),
+                "sha256": "rollback-file",
+                "logical_sha256": "rollback-logical",
+                "restored_schema_version": "legacy",
+                "requires_controlled_remigration": True,
+            }
+            receipt = {
+                **self.migration_receipt(),
+                "receipt_id": "new-migration-origin",
+                "base_generation": expected["generation"],
+                "base_sha256": expected["sha256"],
+                "base_logical_sha256": expected["logical_sha256"],
+            }
+            receipt["result_logical_sha256"] = sync._logical_sha(db)
+            self.add_migration_audit(db, receipt)
+            with patch.object(sync, "LOCAL_DB", db):
+                manifest = sync.local_manifest()
+                receipt["result_sha256"] = manifest["sha256"]
+                sync._validate_origin_transition(
+                    expected, manifest, receipt, "new-receipt-digest")
+                tampered = {**receipt, "result_sha256": "0" * 64}
+                with self.assertRaisesRegex(
+                        RuntimeError, "does not bind the local result"):
+                    sync._validate_origin_transition(
+                        expected, manifest, tampered, "tampered-digest")
+                ordinary = dict(expected)
+                ordinary.pop("requires_controlled_remigration")
+                with self.assertRaisesRegex(
+                        RuntimeError, "changed without fresh rotation"):
+                    sync._validate_origin_transition(
+                        ordinary, manifest, receipt, "new-receipt-digest")
     def test_fresh_schema_push_changed_generation_and_pull(self):
         with tempfile.TemporaryDirectory() as directory:
             directory_path = Path(directory)
@@ -275,6 +331,14 @@ class BibliographySyncCASTests(unittest.TestCase):
             destination = directory_path / "destination.sqlite3"
             with patches[0], patches[1], patches[2], patches[3], patches[4], \
                  patch.object(sync, "LOCAL_DB", destination):
+                descriptor = sync.migrator.acquire_lock(destination)
+                try:
+                    with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                        sync.pull()
+                    self.assertFalse(destination.exists())
+                finally:
+                    sync.migrator.bib.affiliation_registry.release_bibliography_writer_lock(
+                        destination, descriptor)
                 pulled = sync.pull()
             self.assertEqual(first["migration_receipt_id"], second["migration_receipt_id"])
             self.assertNotEqual(first["logical_sha256"], second["logical_sha256"])

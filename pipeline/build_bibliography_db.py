@@ -2487,6 +2487,9 @@ def main() -> int:
         if args.output.exists():
             try:
                 result = build([], args.output, False, True, args.offline)
+            except affiliation_registry.BibliographyWriterLockBusyError as exc:
+                print(str(exc), file=sys.stderr)
+                return 5
             except RuntimeError as exc:
                 print(str(exc), file=sys.stderr)
                 return 3
@@ -2496,6 +2499,9 @@ def main() -> int:
         return 0
     try:
         result = build(entries, args.output, args.update_zotero, args.skip_zotero, args.offline)
+    except affiliation_registry.BibliographyWriterLockBusyError as exc:
+        print(str(exc), file=sys.stderr)
+        return 5
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
         return 3

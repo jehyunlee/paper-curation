@@ -36,6 +36,10 @@ RELATIONSHIP_TYPES = frozenset({
 })
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
+
+class BibliographyWriterLockBusyError(RuntimeError):
+    """Another process owns the bibliography database writer boundary."""
+
 def bibliography_writer_lock_path(database: Path) -> Path:
     """Return the process-wide writer lock shared by builders and migrations."""
     return database.with_suffix(database.suffix + ".affiliation-migrate.lock")
@@ -47,7 +51,7 @@ def acquire_bibliography_writer_lock(database: Path) -> int:
     try:
         descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     except FileExistsError as exc:
-        raise RuntimeError(
+        raise BibliographyWriterLockBusyError(
             "bibliography writer lock busy; remove only after confirming no "
             "builder or migration is running"
         ) from exc
