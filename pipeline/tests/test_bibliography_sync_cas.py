@@ -1220,6 +1220,7 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
                     patch.object(sync, "run") as runner, \
                     patch.object(checker, "main", return_value=0) as check_main:
                 with sync.bibliography_writer_lock(database) as descriptor:
+                    self.assertFalse(os.get_inheritable(descriptor))
                     sync._ensure_publishable(
                         held_writer_lock_descriptor=descriptor)
             runner.assert_not_called()
