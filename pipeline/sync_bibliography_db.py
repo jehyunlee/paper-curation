@@ -82,9 +82,10 @@ def bibliography_writer_lock(database: Path = LOCAL_DB):
         yield descriptor
 
 
-def run(cmd, *, capture=False, timeout=None):
-    return subprocess.run(cmd, check=True, text=True, capture_output=capture,
-                          timeout=timeout)
+def run(cmd, *, capture=False, timeout=None, pass_fds=()):
+    return subprocess.run(
+        cmd, check=True, text=True, capture_output=capture, timeout=timeout,
+        pass_fds=pass_fds)
 
 
 def sha(path: Path) -> str:
@@ -699,7 +700,8 @@ def _remigration_marker() -> Path:
 
 
 def _ensure_publishable(
-        affiliation_artifacts: dict[str, Path | str] | None = None) -> None:
+        affiliation_artifacts: dict[str, Path | str] | None = None,
+        inherited_writer_lock_fd: int | None = None) -> None:
     marker = _remigration_marker()
     if marker.exists():
         raise RuntimeError("remigration required before bibliography synchronization")
@@ -716,6 +718,9 @@ def _ensure_publishable(
     artifact_paths = _artifact_paths(affiliation_artifacts)
     command = [
         sys.executable, str(checker), "--db", str(LOCAL_DB), "--strict"]
+    if inherited_writer_lock_fd is not None:
+        command.extend([
+            "--inherited-writer-lock-fd", str(inherited_writer_lock_fd)])
     if artifact_paths:
         command.extend([
             "--cohort", str(artifact_paths["cohort"]),
@@ -725,7 +730,11 @@ def _ensure_publishable(
             str(artifact_paths["generation_descriptor"]),
         ])
     try:
-        run(command)
+        run(
+            command,
+            pass_fds=(
+                (inherited_writer_lock_fd,)
+                if inherited_writer_lock_fd is not None else ()))
     except subprocess.CalledProcessError as exc:
         raise RuntimeError(
             "strict bibliography validation failed; push blocked") from exc
@@ -1135,9 +1144,11 @@ def _cas_conflict(exc: subprocess.CalledProcessError) -> RuntimeError:
 
 
 def _push_locked(base_receipt: Path | None, lease: dict,
-                 affiliation_artifacts: dict[str, Path | str] | None = None):
+                 affiliation_artifacts: dict[str, Path | str] | None,
+                 writer_lock_descriptor: int):
     artifact_paths = _artifact_paths(affiliation_artifacts)
-    _ensure_publishable(artifact_paths)
+    _ensure_publishable(
+        artifact_paths, inherited_writer_lock_fd=writer_lock_descriptor)
     if not LOCAL_DB.exists():
         raise RuntimeError(f"missing local DB: {LOCAL_DB}")
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
@@ -1245,8 +1256,10 @@ def push(base_receipt: Path | None,
     _push_preflight(base_receipt, affiliation_artifacts)
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
     with authority_lease() as lease:
-        with bibliography_writer_lock(LOCAL_DB):
-            return _push_locked(base_receipt, lease, affiliation_artifacts)
+        with bibliography_writer_lock(LOCAL_DB) as writer_lock_descriptor:
+            return _push_locked(
+                base_receipt, lease, affiliation_artifacts,
+                writer_lock_descriptor)
 
 
 def _seed_legacy_recovery_locked(base_receipt: Path | None, lease: dict) -> dict:

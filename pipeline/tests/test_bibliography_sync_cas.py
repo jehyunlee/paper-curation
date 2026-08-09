@@ -18,6 +18,7 @@ PIPELINE_DIR = Path(__file__).resolve().parents[1]
 if str(PIPELINE_DIR) not in sys.path:
     sys.path.insert(0, str(PIPELINE_DIR))
 
+import check_bibliography_db as checker
 import sync_bibliography_db as sync
 import run_update_force as update
 
@@ -1200,6 +1201,51 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
             with sync.bibliography_lock(database, "writer", timeout=1):
                 self.assertTrue(lock.exists())
 
+    def test_publishability_checker_inherits_active_writer_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.touch()
+            metadata = {
+                "schema_version": sync.bibliography.AFFILIATION_SCHEMA_VERSION,
+                "registry_sha256": "registry",
+                "event_head": "event",
+                "policy_version": "policy",
+                "source_sha256": "source",
+                "migration_receipt_id": "receipt",
+            }
+            with patch.object(sync, "LOCAL_DB", database), \
+                    patch.object(
+                        sync, "_local_affiliation_metadata",
+                        return_value=metadata), \
+                    patch.object(sync, "run") as runner:
+                with sync.bibliography_writer_lock(database) as descriptor:
+                    sync._ensure_publishable(
+                        inherited_writer_lock_fd=descriptor)
+            command = runner.call_args.args[0]
+            self.assertEqual(
+                runner.call_args.kwargs["pass_fds"], (descriptor,))
+            self.assertEqual(
+                command[command.index("--inherited-writer-lock-fd") + 1],
+                str(descriptor))
+
+    def test_inherited_writer_lock_is_inode_bound(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.touch()
+            with sync.bibliography_writer_lock(database) as descriptor:
+                self.assertEqual(
+                    checker.inherited_writer_lock_descriptor(
+                        database, descriptor),
+                    descriptor)
+                other = os.open(
+                    str(Path(directory) / "other.lock"),
+                    os.O_CREAT | os.O_RDWR, 0o600)
+                try:
+                    with self.assertRaisesRegex(RuntimeError, "another inode"):
+                        checker.inherited_writer_lock_descriptor(
+                            database, other)
+                finally:
+                    os.close(other)
     @unittest.skipUnless(sys.platform == "darwin", "APFS authority probe is Darwin-specific")
     def test_authority_program_acquires_on_apfs(self):
         with tempfile.TemporaryDirectory() as directory:
