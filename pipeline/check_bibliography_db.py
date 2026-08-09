@@ -739,6 +739,12 @@ def main(argv=None, *, held_writer_lock_descriptor: int | None = None) -> int:
     ap.add_argument('--generation-descriptor', type=Path)
     ap.add_argument('--ledger', type=Path)
     args=ap.parse_args(argv); issues=[]; warnings=[]; report={'ok':False,'issues':issues,'warnings':warnings}
+    pull_journal = args.db.with_suffix(".pull-install.json")
+    if pull_journal.exists():
+        issues.append("incomplete bibliography pull install journal")
+        report["pull_install_incomplete"] = True
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 3
     marker = args.db.with_suffix(args.db.suffix + ".remigration-required.json")
     if marker.exists():
         issues.extend(rollback_validation_issues(args.db, marker))
@@ -759,6 +765,14 @@ def main(argv=None, *, held_writer_lock_descriptor: int | None = None) -> int:
             if owns_reader_lock
             else validate_held_writer_lock_descriptor(
                 args.db, held_writer_lock_descriptor))
+        if pull_journal.exists():
+            issues.append("incomplete bibliography pull install journal")
+            report["pull_install_incomplete"] = True
+            if owns_reader_lock:
+                bib.affiliation_registry.release_bibliography_reader_lock(
+                    args.db, lock_descriptor)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 3
         descriptor_path = args.generation_descriptor
         descriptor_before = (
             descriptor_path.read_bytes() if descriptor_path and descriptor_path.exists() else None)

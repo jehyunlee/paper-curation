@@ -58,6 +58,10 @@ FROZEN_LEGACY_RELATIONSHIP_ID_SET_SHA256 = (
 class BibliographyWriterLockBusyError(RuntimeError):
     """Another process owns the bibliography database writer boundary."""
 
+    def __init__(self, message: str, *, reason: str):
+        super().__init__(message)
+        self.reason = reason
+
 def bibliography_writer_lock_path(database: Path) -> Path:
     """Return the stable inode shared by every bibliography reader and writer."""
     return database.with_suffix(database.suffix + ".flock")
@@ -84,7 +88,7 @@ def _acquire_bibliography_lock(database: Path, mode: str, *, timeout: float) -> 
     if nested:
         message = f"bibliography {mode} lock busy: nested acquisition is forbidden"
         if mode == "writer":
-            raise BibliographyWriterLockBusyError(message)
+            raise BibliographyWriterLockBusyError(message, reason="nested")
         raise RuntimeError(message)
     descriptor = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
     os.set_inheritable(descriptor, False)
@@ -100,7 +104,8 @@ def _acquire_bibliography_lock(database: Path, mode: str, *, timeout: float) -> 
                 if time.monotonic() >= deadline:
                     message = f"bibliography {mode} lock busy"
                     if mode == "writer":
-                        raise BibliographyWriterLockBusyError(message) from exc
+                        raise BibliographyWriterLockBusyError(
+                            message, reason="timeout") from exc
                     raise RuntimeError(message) from exc
                 time.sleep(0.25)
         with _LOCK_STATE_GUARD:
@@ -108,7 +113,8 @@ def _acquire_bibliography_lock(database: Path, mode: str, *, timeout: float) -> 
                 fcntl.flock(descriptor, fcntl.LOCK_UN)
                 message = f"bibliography {mode} lock busy: nested acquisition is forbidden"
                 if mode == "writer":
-                    raise BibliographyWriterLockBusyError(message)
+                    raise BibliographyWriterLockBusyError(
+                        message, reason="nested")
                 raise RuntimeError(message)
             held[descriptor] = key
         return descriptor

@@ -351,7 +351,8 @@ class BibliographySyncCASTests(unittest.TestCase):
             with patch.object(
                     sync.os, "replace",
                     side_effect=lambda source, target: calls.append(
-                        (Path(source), Path(target)))):
+                        (Path(source), Path(target)))), \
+                 patch.object(sync.migrator, "_fsync"):
                 sync._install_artifacts_descriptor_last(
                     staged, destinations)
             self.assertEqual(
@@ -456,6 +457,49 @@ class BibliographySyncCASTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
                     with sync.bibliography_lock(db, "writer", timeout=0):
                         pass
+
+    def test_measured_pull_lock_releases_when_inheritance_check_fails(self):
+        metrics = {
+            "acquisitions": 0, "timeouts": 0, "busyRejections": 0,
+            "acquisitionFailures": 0, "releaseFailures": 0,
+        }
+        with patch.object(
+                sync.affiliation_registry,
+                "acquire_bibliography_writer_lock", return_value=88), \
+             patch.object(
+                 sync.affiliation_registry,
+                 "release_bibliography_writer_lock") as release, \
+             patch.object(
+                 sync.os, "get_inheritable",
+                 side_effect=OSError("inspection failed")):
+            with self.assertRaisesRegex(OSError, "inspection failed"):
+                with sync._measured_pull_writer_lock(metrics):
+                    pass
+        release.assert_called_once_with(sync.LOCAL_DB, 88)
+        self.assertEqual(metrics["releaseOutcome"], "released")
+
+    def test_measured_pull_lock_preserves_body_error_on_release_failure(self):
+        metrics = {
+            "acquisitions": 0, "timeouts": 0, "busyRejections": 0,
+            "acquisitionFailures": 0, "releaseFailures": 0,
+        }
+        with patch.object(
+                sync.affiliation_registry,
+                "acquire_bibliography_writer_lock", return_value=89), \
+             patch.object(
+                 sync.affiliation_registry,
+                 "release_bibliography_writer_lock",
+                 side_effect=OSError("release failed")), \
+             patch.object(sync.os, "get_inheritable", return_value=False):
+            with self.assertRaisesRegex(RuntimeError, "primary install failure"):
+                with sync._measured_pull_writer_lock(metrics):
+                    raise RuntimeError("primary install failure")
+        self.assertEqual(metrics["releaseOutcome"], "unknown")
+        self.assertEqual(metrics["releaseFailures"], 1)
+        self.assertEqual(
+            metrics["releaseError"],
+            {"type": "OSError", "message": "release failed"})
+        self.assertNotIn("releasedMonotonicNs", metrics)
 
     def test_changed_migration_origin_requires_bound_controlled_remigration(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -666,10 +710,27 @@ class BibliographySyncCASTests(unittest.TestCase):
             destination = directory_path / "destination.sqlite3"
             with patches[0], patches[1], patches[2], patches[3], patches[4], \
                  patch.object(sync, "LOCAL_DB", destination):
+                failed_receipt = directory_path / "failed-pull-phase.json"
                 with sync.bibliography_writer_lock(destination):
                     with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
-                        sync.pull()
+                        sync.pull(phase_receipt=failed_receipt)
                     self.assertFalse(destination.exists())
+                failed_phase = json.loads(
+                    failed_receipt.read_text(encoding="utf-8"))
+                self.assertEqual(failed_phase["status"], "failed")
+                self.assertEqual(
+                    failed_phase["localLockMetrics"]["busyRejections"], 1)
+                self.assertEqual(
+                    failed_phase["localLockMetrics"]["acquisitions"], 0)
+                self.assertIsNone(
+                    failed_phase["localLockMetrics"]["holdSeconds"])
+                self.assertEqual(
+                    failed_phase["localLockMetrics"]["acquisitionOutcome"],
+                    "nested")
+                failed_attempt = Path(failed_phase["attemptReceipt"])
+                self.assertTrue(failed_attempt.exists())
+                self.assertEqual(
+                    failed_attempt.read_bytes(), failed_receipt.read_bytes())
 
                 real_ensure = sync._ensure_installable_pull
                 calls = 0
@@ -714,6 +775,153 @@ class BibliographySyncCASTests(unittest.TestCase):
     def test_bootstrap_refuses_to_fabricate_legacy_authority(self):
         with self.assertRaisesRegex(RuntimeError, "receipt-bound recovery"):
             sync.bootstrap()
+
+    def test_pull_cli_forwards_phase_receipt_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = Path(directory) / "phase.json"
+            with patch.object(
+                    sys, "argv",
+                    ["sync_bibliography_db.py", "--pull",
+                     "--phase-receipt", str(receipt)]), \
+                 patch.object(sync, "pull", return_value={}) as pull:
+                self.assertEqual(sync.main(), 0)
+            pull.assert_called_once_with(None, receipt)
+
+    def test_pull_receipt_rejects_managed_output_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.write_bytes(b"managed")
+            with patch.object(sync, "LOCAL_DB", database), \
+                 patch.object(sync, "_copy_from_authority") as copy:
+                with self.assertRaisesRegex(
+                        RuntimeError, "must not alias"):
+                    sync.pull(phase_receipt=database)
+            copy.assert_not_called()
+            self.assertEqual(database.read_bytes(), b"managed")
+
+    def test_pull_receipt_rejects_case_variant_managed_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.write_bytes(b"managed")
+            case_variant = Path(directory) / "Bibliography.sqlite3"
+            with patch.object(sync, "LOCAL_DB", database), \
+                 patch.object(sync, "_copy_from_authority") as copy:
+                with self.assertRaisesRegex(
+                        RuntimeError, "must not alias"):
+                    sync.pull(phase_receipt=case_variant)
+            copy.assert_not_called()
+            self.assertEqual(database.read_bytes(), b"managed")
+
+    def test_pull_receipt_finalization_preserves_primary_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            receipt = Path(directory) / "latest.json"
+            atomic_json = sync.migrator._atomic_json
+            writes = 0
+
+            def fail_finalization(path, value):
+                nonlocal writes
+                writes += 1
+                if writes > 1:
+                    raise OSError("receipt storage failed")
+                atomic_json(path, value)
+
+            with patch.object(sync, "LOCAL_DB", database), \
+                 patch.object(
+                     sync, "_pull_once",
+                     side_effect=RuntimeError("primary pull failure")), \
+                 patch.object(
+                     sync.migrator, "_atomic_json",
+                     side_effect=fail_finalization), \
+                 patch("builtins.print"):
+                with self.assertRaisesRegex(
+                        RuntimeError, "primary pull failure"):
+                    sync.pull(phase_receipt=receipt)
+            self.assertEqual(writes, 2)
+
+    def test_attempt_finalization_failure_never_publishes_passed_latest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            latest = Path(directory) / "latest.json"
+            atomic_json = sync.migrator._atomic_json
+            writes = 0
+
+            def complete_pull(
+                    _artifacts, _manifest_metrics, _install_metrics,
+                    _lock_metrics, phase_state):
+                phase_state["manifest"] = {"generation": 2}
+                return phase_state["manifest"]
+
+            def fail_attempt_finalization(path, value):
+                nonlocal writes
+                writes += 1
+                if writes == 2:
+                    raise OSError("attempt finalization failed")
+                atomic_json(path, value)
+
+            with patch.object(sync, "LOCAL_DB", database), \
+                 patch.object(sync, "_pull_once", side_effect=complete_pull), \
+                 patch.object(
+                     sync.migrator, "_atomic_json",
+                     side_effect=fail_attempt_finalization):
+                with self.assertRaisesRegex(
+                        OSError, "attempt finalization failed"):
+                    sync.pull(phase_receipt=latest)
+            self.assertEqual(writes, 2)
+            self.assertFalse(latest.exists())
+            attempts = list(
+                (Path(directory) / "affiliation-pull-phase-receipts").glob(
+                    "*.json"))
+            self.assertEqual(len(attempts), 1)
+            attempt = json.loads(attempts[0].read_text(encoding="utf-8"))
+            self.assertEqual(attempt["status"], "in_progress")
+
+    def test_latest_receipt_failure_keeps_authoritative_passed_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            latest = Path(directory) / "latest.json"
+            atomic_json = sync.migrator._atomic_json
+
+            def complete_pull(
+                    _artifacts, _manifest_metrics, _install_metrics,
+                    _lock_metrics, phase_state):
+                phase_state["manifest"] = {"generation": 1}
+                return phase_state["manifest"]
+
+            def fail_latest(path, value):
+                if Path(path) == latest.resolve():
+                    raise OSError("latest unavailable")
+                atomic_json(path, value)
+
+            with patch.object(sync, "LOCAL_DB", database), \
+                 patch.object(sync, "_pull_once", side_effect=complete_pull), \
+                 patch.object(
+                     sync.migrator, "_atomic_json",
+                     side_effect=fail_latest), \
+                 patch("builtins.print"):
+                self.assertEqual(
+                    sync.pull(phase_receipt=latest),
+                    {"generation": 1})
+            attempts = list(
+                (Path(directory) / "affiliation-pull-phase-receipts").glob(
+                    "*.json"))
+            self.assertEqual(len(attempts), 1)
+            attempt = json.loads(attempts[0].read_text(encoding="utf-8"))
+            self.assertEqual(attempt["status"], "passed")
+            self.assertEqual(
+                attempt["latestReceiptRole"],
+                "best_effort_copy_not_audit_authority")
+            self.assertFalse(latest.exists())
+
+    def test_checker_rejects_incomplete_pull_install_journal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.with_suffix(".pull-install.json").write_text(
+                '{"status":"prepared"}', encoding="utf-8")
+            with patch("builtins.print"):
+                self.assertEqual(
+                    checker.main(["--db", str(database)]), 3)
+
     def test_push_rejects_missing_migration_receipt_before_transport(self):
         with tempfile.TemporaryDirectory() as directory:
             db = self.make_latest_db(Path(directory) / "bibliography.sqlite3")
@@ -786,6 +994,22 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "object": f"{sync.GENERATIONS}/{3:020d}-{manifest['logical_sha256']}.sqlite3",
             })
             manifest.update(self.authority_fields())
+            artifact_data = {
+                "cohort": b'{"cohort":true}\n',
+                "decisions": b'{"decisions":[]}\n',
+                "ledger": b'{"event":"closed"}\n',
+                "generation_descriptor": b'{"generation":"strict"}\n',
+            }
+            manifest["strict_affiliation_generation"] = True
+            manifest["affiliation_artifacts"] = {
+                role: {
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                    "object": sync._artifact_object(
+                        manifest["generation"], role,
+                        hashlib.sha256(data).hexdigest()),
+                }
+                for role, data in artifact_data.items()
+            }
             payload = sync.canonical_manifest(manifest)
 
             def transport(command, **_kwargs):
@@ -795,13 +1019,132 @@ class BibliographySyncCASTests(unittest.TestCase):
                 elif source_name.endswith(".migration.json"):
                     shutil.copyfile(receipt_file, destination)
                 else:
-                    shutil.copyfile(source, destination)
+                    for role, binding in manifest["affiliation_artifacts"].items():
+                        if source_name.endswith(binding["object"]):
+                            destination.write_bytes(artifact_data[role])
+                            break
+                    else:
+                        shutil.copyfile(source, destination)
                 return Mock()
 
             destination = directory_path / "destination.sqlite3"
+            phase_receipt = directory_path / "pull-phase.json"
+            artifact_destinations = {
+                role: directory_path / f"installed-{role}"
+                for role in sync.AFFILIATION_ARTIFACT_ROLES
+            }
+            lock_path = sync.bibliography_writer_lock_path(destination)
+            holder = subprocess.Popen(
+                [
+                    sys.executable, "-u", "-c",
+                    "import fcntl,os,sys,time; "
+                    "fd=os.open(sys.argv[1],os.O_CREAT|os.O_RDWR,0o600); "
+                    "fcntl.flock(fd,fcntl.LOCK_EX); print('locked'); "
+                    "time.sleep(0.75); os.close(fd)",
+                    str(lock_path),
+                ],
+                stdout=subprocess.PIPE, text=True,
+            )
+            self.assertEqual(holder.stdout.readline().strip(), "locked")
+            try:
+                with patch.object(sync, "LOCAL_DB", destination), \
+                     patch.object(sync, "run", side_effect=transport):
+                    self.assertEqual(
+                        sync.pull(
+                            artifact_destinations,
+                            phase_receipt=phase_receipt),
+                        manifest)
+            finally:
+                holder.wait(timeout=5)
+            phase = json.loads(phase_receipt.read_text(encoding="utf-8"))
+            self.assertEqual(phase["kind"], "affiliation-pull-phase-receipt")
+            self.assertEqual(phase["status"], "passed")
+            self.assertEqual(
+                phase["latestReceiptRole"],
+                "best_effort_copy_not_audit_authority")
+            self.assertEqual(phase["manifest"], manifest)
+            self.assertEqual(
+                phase["manifestMetrics"],
+                {"reads": 2, "revalidations": 1, "changesDetected": 0})
+            lock_metrics = phase["localLockMetrics"]
+            self.assertEqual(lock_metrics["acquisitions"], 1)
+            self.assertEqual(lock_metrics["timeouts"], 0)
+            self.assertEqual(lock_metrics["busyRejections"], 0)
+            self.assertEqual(lock_metrics["recoveries"], 0)
+            self.assertEqual(lock_metrics["recoveryStatus"], "not_required")
+            self.assertEqual(lock_metrics["acquisitionOutcome"], "acquired")
+            self.assertEqual(lock_metrics["releaseOutcome"], "released")
+            self.assertFalse(lock_metrics["descriptorInheritable"])
+            self.assertGreaterEqual(lock_metrics["waitSeconds"], 0.25)
+            self.assertGreaterEqual(lock_metrics["holdSeconds"], 0)
+            self.assertLessEqual(
+                lock_metrics["requestedMonotonicNs"],
+                lock_metrics["acquiredMonotonicNs"])
+            self.assertLessEqual(
+                lock_metrics["acquiredMonotonicNs"],
+                lock_metrics["releasedMonotonicNs"])
+            self.assertEqual(
+                lock_metrics["waitSeconds"],
+                sync._seconds_between(
+                    lock_metrics["requestedMonotonicNs"],
+                    lock_metrics["acquiredMonotonicNs"]))
+            self.assertEqual(
+                lock_metrics["holdSeconds"],
+                sync._seconds_between(
+                    lock_metrics["acquiredMonotonicNs"],
+                    lock_metrics["releasedMonotonicNs"]))
+            install = phase["installMetrics"]
+            self.assertTrue(install["databaseInstalled"])
+            self.assertTrue(install["migrationReceiptInstalled"])
+            self.assertTrue(install["artifactDescriptorInstalledLast"])
+            self.assertTrue(install["baseReceiptInstalled"])
+            self.assertTrue(install["installJournalPrepared"])
+            self.assertTrue(install["installJournalCleared"])
+            self.assertTrue(install["stagedFilesFsynced"])
+            self.assertTrue(install["durabilityBarriersPassed"])
+            self.assertFalse(
+                destination.with_suffix(".pull-install.json").exists())
+            self.assertEqual(
+                install["installedHashes"]["databaseSha256"],
+                manifest["sha256"])
+            self.assertEqual(
+                install["installedHashes"]["databaseLogicalSha256"],
+                manifest["logical_sha256"])
+            self.assertEqual(
+                install["installedHashes"]["sourceMigrationReceiptSha256"],
+                manifest["migration_receipt_sha256"])
+            self.assertEqual(
+                install["installedHashes"]["migrationReceiptSha256"],
+                sync.sha(sync.migrator.receipt_path(destination, "migrate")))
+            self.assertEqual(
+                install["installedHashes"]["affiliationArtifacts"],
+                {
+                    role: hashlib.sha256(data).hexdigest()
+                    for role, data in artifact_data.items()
+                })
+            attempt_receipt = Path(phase["attemptReceipt"])
+            self.assertTrue(attempt_receipt.exists())
+            self.assertEqual(
+                attempt_receipt.read_bytes(), phase_receipt.read_bytes())
+            install_journal = destination.with_suffix(".pull-install.json")
+            install_journal.write_text(
+                '{"status":"prepared"}', encoding="utf-8")
+            recovery_receipt = directory_path / "recovery-pull-phase.json"
             with patch.object(sync, "LOCAL_DB", destination), \
                  patch.object(sync, "run", side_effect=transport):
-                self.assertEqual(sync.pull(), manifest)
+                self.assertEqual(
+                    sync.pull(
+                        artifact_destinations,
+                        phase_receipt=recovery_receipt),
+                    manifest)
+            recovered_phase = json.loads(
+                recovery_receipt.read_text(encoding="utf-8"))
+            self.assertEqual(
+                recovered_phase["localLockMetrics"]["recoveries"], 1)
+            self.assertEqual(
+                recovered_phase["localLockMetrics"]["recoveryStatus"],
+                "completed_by_authoritative_reinstall")
+            self.assertFalse(install_journal.exists())
             connection = sqlite3.connect(source)
             connection.execute(
                 "UPDATE affiliation_migration_audit SET registry_sha256='tampered'")
@@ -815,7 +1158,9 @@ class BibliographySyncCASTests(unittest.TestCase):
             with patch.object(sync, "LOCAL_DB", directory_path / "tampered.sqlite3"), \
                  patch.object(sync, "run", side_effect=transport):
                 with self.assertRaisesRegex(RuntimeError, "does not match DB audit"):
-                    sync.pull()
+                    sync.pull(
+                        artifact_destinations,
+                        phase_receipt=directory_path / "tampered-phase.json")
 
     def test_bootstrap_binds_remote_affiliation_metadata(self):
         with patch.object(sync, "remote") as remote:

@@ -16,7 +16,9 @@ import tempfile
 import time
 import uuid
 import sys
+import unicodedata
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from threading import Event, Thread
 import build_bibliography_db as bibliography
@@ -568,6 +570,7 @@ def _install_artifacts_descriptor_last(
         destination = destinations[role]
         destination.parent.mkdir(parents=True, exist_ok=True)
         os.replace(staged[role], destination)
+        migrator._fsync(destination)
 
 
 def _validate_manifest(manifest: dict, *, rollback: bool = False,
@@ -994,14 +997,147 @@ def bootstrap():
         "use --seed-legacy-recovery")
 
 
-def pull(affiliation_artifacts: dict[str, Path | str] | None = None):
-    LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
-    artifact_destinations = _artifact_destinations(affiliation_artifacts)
+def _pull_phase_receipt_path() -> Path:
+    return LOCAL_DB.parent / "affiliation-pull-phase-receipt.json"
+
+
+def _pull_phase_receipt_directory() -> Path:
+    return LOCAL_DB.parent / "affiliation-pull-phase-receipts"
+
+
+def _pull_install_journal_path() -> Path:
+    return LOCAL_DB.with_suffix(".pull-install.json")
+
+
+def _filesystem_identity_key(path: Path) -> str:
+    resolved = path.expanduser().resolve()
+    normalized = unicodedata.normalize(
+        "NFD", os.path.normpath(str(resolved)))
+    return normalized.casefold()
+
+
+def _validate_pull_phase_receipt_destination(
+        receipt_path: Path, artifact_destinations: dict[str, Path]) -> None:
+    resolved = receipt_path.expanduser().resolve()
+    managed = (
+        LOCAL_DB,
+        LOCAL_DB.with_suffix(".base.json"),
+        _fresh_schema_receipt_path(),
+        _migration_receipt_path(),
+        _remigration_marker(),
+        bibliography_writer_lock_path(LOCAL_DB),
+        _pull_install_journal_path(),
+        *artifact_destinations.values(),
+    )
+    aliases_managed = any(
+        _filesystem_identity_key(resolved) == _filesystem_identity_key(path)
+        or (resolved.exists() and path.exists()
+            and os.path.samefile(resolved, path))
+        for path in managed
+    )
+    if aliases_managed:
+        raise RuntimeError(
+            "pull phase receipt must not alias a managed generation output")
+    if (_filesystem_identity_key(resolved.parent)
+            == _filesystem_identity_key(_pull_phase_receipt_directory())):
+        raise RuntimeError(
+            "custom pull phase receipt must not use the immutable attempt directory")
+    if resolved.exists() and resolved.is_dir():
+        raise RuntimeError("pull phase receipt path is a directory")
+
+
+def _utc_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _seconds_between(start_ns: int, finish_ns: int) -> float:
+    return round((finish_ns - start_ns) / 1_000_000_000, 9)
+
+
+@contextmanager
+def _measured_pull_writer_lock(metrics: dict):
+    requested_ns = time.monotonic_ns()
+    metrics.update({
+        "requestedMonotonicNs": requested_ns,
+        "timeoutSeconds": LOCAL_WRITER_TIMEOUT_SECONDS,
+    })
+    try:
+        descriptor = affiliation_registry.acquire_bibliography_writer_lock(
+            LOCAL_DB, timeout=LOCAL_WRITER_TIMEOUT_SECONDS)
+    except affiliation_registry.BibliographyWriterLockBusyError as exc:
+        rejected_ns = time.monotonic_ns()
+        metrics.update({
+            "acquisitionOutcome": exc.reason,
+            "rejectedMonotonicNs": rejected_ns,
+            "waitSeconds": _seconds_between(requested_ns, rejected_ns),
+        })
+        if exc.reason == "nested":
+            metrics["busyRejections"] += 1
+        else:
+            metrics["timeouts"] += 1
+        raise
+    except BaseException:
+        rejected_ns = time.monotonic_ns()
+        metrics.update({
+            "acquisitionOutcome": "error",
+            "rejectedMonotonicNs": rejected_ns,
+            "waitSeconds": _seconds_between(requested_ns, rejected_ns),
+        })
+        metrics["acquisitionFailures"] += 1
+        raise
+    acquired_ns = time.monotonic_ns()
+    try:
+        metrics.update({
+            "acquiredMonotonicNs": acquired_ns,
+            "acquisitions": metrics["acquisitions"] + 1,
+            "waitSeconds": _seconds_between(requested_ns, acquired_ns),
+            "acquisitionOutcome": "acquired",
+        })
+        metrics["descriptorInheritable"] = os.get_inheritable(descriptor)
+        if metrics["descriptorInheritable"]:
+            raise RuntimeError(
+                "bibliography writer lock descriptor is inheritable")
+        yield descriptor
+    finally:
+        body_error = sys.exc_info()[1]
+        release_finished_ns = None
+        try:
+            affiliation_registry.release_bibliography_writer_lock(
+                LOCAL_DB, descriptor)
+        except BaseException as release_error:
+            metrics.update({
+                "releaseFailures": metrics["releaseFailures"] + 1,
+                "releaseOutcome": "unknown",
+                "releaseError": {
+                    "type": type(release_error).__name__,
+                    "message": str(release_error),
+                },
+            })
+            if body_error is None:
+                raise
+        else:
+            release_finished_ns = time.monotonic_ns()
+            metrics.update({
+                "releaseOutcome": "released",
+                "releasedMonotonicNs": release_finished_ns,
+                "holdSeconds": _seconds_between(
+                    acquired_ns, release_finished_ns),
+            })
+        finally:
+            metrics["releaseAttemptFinishedMonotonicNs"] = (
+                release_finished_ns or time.monotonic_ns())
+
+
+def _pull_once(artifact_destinations: dict[str, Path],
+               manifest_metrics: dict, install_metrics: dict,
+               lock_metrics: dict, phase_state: dict) -> dict:
     with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
         db, mf = Path(directory) / "db", Path(directory) / "manifest"
         _copy_from_authority(MANIFEST, mf)
         raw_manifest = mf.read_text(encoding="utf-8")
+        manifest_metrics["reads"] += 1
         manifest = json.loads(raw_manifest)
+        phase_state["manifest"] = manifest
         if raw_manifest != canonical_manifest(manifest):
             raise RuntimeError("remote manifest is not canonical")
         rollback = bool(manifest.get("requires_controlled_remigration"))
@@ -1044,25 +1180,63 @@ def pull(affiliation_artifacts: dict[str, Path | str] | None = None):
             else:
                 _verify_migration_audit(receipt_value, manifest, db)
         staged_artifacts = _stage_artifacts(manifest, Path(directory))
+        install_metrics["strictArtifactSetRequired"] = bool(
+            _manifest_artifacts(manifest))
         if _manifest_artifacts(manifest) and not artifact_destinations:
-            raise RuntimeError("strict affiliation generation requires artifact destinations")
-        with bibliography_writer_lock(LOCAL_DB):
+            raise RuntimeError(
+                "strict affiliation generation requires artifact destinations")
+        with _measured_pull_writer_lock(lock_metrics):
             _ensure_installable_pull(manifest)
             current_manifest = Path(directory) / "current-manifest"
             _copy_from_authority(MANIFEST, current_manifest)
-            if current_manifest.read_text(encoding="utf-8") != canonical_manifest(manifest):
+            current_raw = current_manifest.read_text(encoding="utf-8")
+            manifest_metrics["reads"] += 1
+            manifest_metrics["revalidations"] += 1
+            if current_raw != canonical_manifest(manifest):
+                manifest_metrics["changesDetected"] += 1
                 raise RuntimeError("remote manifest changed while pull was staged")
             _validate_artifact_equality(manifest, staged_artifacts)
+            migrator._fsync(db)
+            for staged_path in staged_artifacts.values():
+                migrator._fsync(staged_path)
+            install_metrics["stagedFilesFsynced"] = True
+            install_journal = _pull_install_journal_path()
+            recovering = install_journal.exists()
+            lock_metrics.update({
+                "recoveries": 1 if recovering else 0,
+                "recoveryStatus": (
+                    "reinstalling_authoritative_generation"
+                    if recovering else "not_required"),
+            })
+            migrator._atomic_json(install_journal, {
+                "kind": "bibliography-pull-install-journal",
+                "schemaVersion": 1,
+                "status": "prepared",
+                "attemptId": phase_state["attemptId"],
+                "manifest": manifest,
+                "artifactDestinations": {
+                    role: str(path)
+                    for role, path in sorted(artifact_destinations.items())
+                },
+            })
+            install_metrics["installJournalPrepared"] = True
             os.replace(db, LOCAL_DB)
+            migrator._fsync(LOCAL_DB)
+            install_metrics["databaseInstalled"] = True
             if _is_fresh_schema_origin(manifest):
-                migrator._atomic_json(_fresh_schema_receipt_path(), receipt_value)
+                installed_receipt = _fresh_schema_receipt_path()
             else:
-                migrator._atomic_json(_migration_receipt_path(), receipt_value)
+                installed_receipt = _migration_receipt_path()
+            migrator._atomic_json(installed_receipt, receipt_value)
+            install_metrics["migrationReceiptInstalled"] = True
             _install_artifacts_descriptor_last(
                 staged_artifacts, artifact_destinations)
             _validate_artifact_equality(manifest, artifact_destinations)
+            install_metrics["artifactDescriptorInstalledLast"] = bool(
+                staged_artifacts)
             migrator._atomic_json(
                 LOCAL_DB.with_suffix(".base.json"), manifest)
+            install_metrics["baseReceiptInstalled"] = True
             marker = _remigration_marker()
             if manifest.get("requires_controlled_remigration"):
                 migrator._atomic_json(marker, {
@@ -1073,6 +1247,139 @@ def pull(affiliation_artifacts: dict[str, Path | str] | None = None):
                 })
             else:
                 marker.unlink(missing_ok=True)
+                migrator._fsync_directory(marker.parent)
+            install_metrics["installedHashes"] = {
+                "databaseSha256": sha(LOCAL_DB),
+                "databaseLogicalSha256": _logical_sha(LOCAL_DB),
+                "baseReceiptSha256": sha(LOCAL_DB.with_suffix(".base.json")),
+                "migrationReceiptSha256": sha(installed_receipt),
+                "sourceMigrationReceiptSha256": manifest[
+                    "migration_receipt_sha256"],
+                "affiliationArtifacts": {
+                    role: sha(path)
+                    for role, path in sorted(artifact_destinations.items())
+                },
+            }
+            install_metrics["durabilityBarriersPassed"] = True
+            install_journal.unlink()
+            migrator._fsync_directory(install_journal.parent)
+            install_metrics["installJournalCleared"] = True
+            if recovering:
+                lock_metrics["recoveryStatus"] = (
+                    "completed_by_authoritative_reinstall")
+    return manifest
+
+
+def pull(affiliation_artifacts: dict[str, Path | str] | None = None,
+         phase_receipt: Path | str | None = None):
+    """Install one generation and preserve an attempt-unique phase receipt."""
+    LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
+    artifact_destinations = _artifact_destinations(affiliation_artifacts)
+    receipt_path = (
+        Path(phase_receipt).expanduser().resolve()
+        if phase_receipt is not None else _pull_phase_receipt_path())
+    _validate_pull_phase_receipt_destination(
+        receipt_path, artifact_destinations)
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    attempt_directory = _pull_phase_receipt_directory()
+    attempt_directory.mkdir(parents=True, exist_ok=True)
+    while True:
+        attempt_id = uuid.uuid4().hex
+        attempt_path = attempt_directory / f"{attempt_id}.json"
+        if not attempt_path.exists():
+            break
+    started_at = _utc_timestamp()
+    started_ns = time.monotonic_ns()
+    error = None
+    phase_state = {"manifest": None, "attemptId": attempt_id}
+    manifest_metrics = {"reads": 0, "revalidations": 0, "changesDetected": 0}
+    install_metrics = {
+        "databaseInstalled": False,
+        "migrationReceiptInstalled": False,
+        "artifactDescriptorInstalledLast": False,
+        "baseReceiptInstalled": False,
+        "installJournalPrepared": False,
+        "installJournalCleared": False,
+        "stagedFilesFsynced": False,
+        "durabilityBarriersPassed": False,
+    }
+    lock_metrics = {
+        "acquisitions": 0,
+        "timeouts": 0,
+        "busyRejections": 0,
+        "acquisitionFailures": 0,
+        "releaseFailures": 0,
+        "recoveries": None,
+        "recoveryStatus": "not_observed_lock_not_acquired",
+        "waitSeconds": None,
+        "holdSeconds": None,
+        "descriptorInheritable": None,
+        "acquisitionOutcome": "not_attempted",
+        "releaseOutcome": "not_attempted",
+        "timeoutSeconds": LOCAL_WRITER_TIMEOUT_SECONDS,
+    }
+    in_progress = {
+        "kind": "affiliation-pull-phase-receipt",
+        "schemaVersion": 2,
+        "attemptId": attempt_id,
+        "attemptReceipt": str(attempt_path),
+        "latestReceipt": str(receipt_path),
+        "status": "in_progress",
+        "startedAt": started_at,
+        "host": socket.gethostname(),
+        "manifest": None,
+        "manifestMetrics": manifest_metrics,
+        "localLockMetrics": lock_metrics,
+        "installMetrics": install_metrics,
+        "latestReceiptRole": "best_effort_copy_not_audit_authority",
+    }
+    migrator._atomic_json(attempt_path, in_progress)
+    try:
+        manifest = _pull_once(
+            artifact_destinations, manifest_metrics, install_metrics,
+            lock_metrics, phase_state)
+    except BaseException as exc:
+        error = {"type": type(exc).__name__, "message": str(exc)}
+        raise
+    finally:
+        finished_ns = time.monotonic_ns()
+        report = {
+            "kind": "affiliation-pull-phase-receipt",
+            "schemaVersion": 2,
+            "attemptId": attempt_id,
+            "attemptReceipt": str(attempt_path),
+            "latestReceipt": str(receipt_path),
+            "status": "passed" if error is None else "failed",
+            "startedAt": started_at,
+            "finishedAt": _utc_timestamp(),
+            "durationSeconds": _seconds_between(started_ns, finished_ns),
+            "host": socket.gethostname(),
+            "manifest": phase_state["manifest"],
+            "manifestMetrics": manifest_metrics,
+            "localLockMetrics": lock_metrics,
+            "installMetrics": install_metrics,
+            "latestReceiptRole": "best_effort_copy_not_audit_authority",
+        }
+        if error is not None:
+            report["error"] = error
+        try:
+            migrator._atomic_json(attempt_path, report)
+        except BaseException as attempt_error:
+            if error is None:
+                raise
+            print(
+                "pull attempt receipt finalization failed while preserving "
+                f"{error['type']}: {attempt_error}",
+                file=sys.stderr)
+        else:
+            try:
+                migrator._atomic_json(receipt_path, report)
+            except BaseException as latest_error:
+                print(
+                    "best-effort latest pull receipt update failed; "
+                    f"authoritative attempt receipt is {attempt_path}: "
+                    f"{latest_error}",
+                    file=sys.stderr)
     print(canonical_manifest(manifest))
     return manifest
 
@@ -1600,10 +1907,11 @@ def main():
     parser.add_argument("--decisions", type=Path)
     parser.add_argument("--ledger", type=Path)
     parser.add_argument("--generation-descriptor", type=Path)
+    parser.add_argument("--phase-receipt", type=Path)
     args = parser.parse_args()
     try:
         if args.pull:
-            pull(_cli_affiliation_artifacts(args))
+            pull(_cli_affiliation_artifacts(args), args.phase_receipt)
         elif args.push:
             push(args.base_receipt, _cli_affiliation_artifacts(args))
         elif args.rollback_generation is not None:

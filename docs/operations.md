@@ -102,18 +102,29 @@ never supply a compatibility parent. A map change needs data-owner and independe
 architect/critic approval, `country_map_changed` and correction events,
 reprojection, cohort redisposition, and a strict check before automatic apply.
 
-The identity oracle is ROR Schema 2.1 at commit
-`20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63`, cached at
+The identity oracle is ROR Schema 2.1 from the
+`https://github.com/ror-community/ror-schema` repository at commit
+`20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63`. Its immutable source URL is
+`https://raw.githubusercontent.com/ror-community/ror-schema/20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63/ror_schema_v2_1.json`;
+the command-owned copy is
 `.cache/affiliation-oracles/ror-schema/20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63/ror_schema_v2_1.json`
 with raw SHA-256
 `5df548a5f7a927fc9e94f196d2c3e78c96c25343909999dfda5110b535e2ddf7`.
-The public-suffix oracle is the official PSL ICANN+PRIVATE snapshot
-`2026-07-25_14-20-03_UTC`, commit
-`e1b8015c3b2f0f4f8c18659c2480fc1a22c07b20` (MPL-2.0), cached at
+License status is `NOASSERTION`: the pinned repository tree has no license file
+and the upstream repository declares no license. Do not infer or substitute a
+license.
+
+The public-suffix oracle is sourced from the official canonical URL
+`https://publicsuffix.org/list/public_suffix_list.dat`. The pinned immutable
+source is
+`https://raw.githubusercontent.com/publicsuffix/list/e1b8015c3b2f0f4f8c18659c2480fc1a22c07b20/public_suffix_list.dat`,
+snapshot `2026-07-25_14-20-03_UTC`, commit
+`e1b8015c3b2f0f4f8c18659c2480fc1a22c07b20`, both ICANN and PRIVATE sections,
+license MPL-2.0. Its command-owned copy is
 `.cache/affiliation-oracles/psl/2026-07-25_14-20-03_UTC-e1b8015/public_suffix_list.dat`
 with raw SHA-256
 `fe6adc7fb8014f57d28d69b18d0aa3e581efb432544922e12131a5d4a87bd954`.
-There is no runtime fallback.
+There is no runtime fallback for either oracle.
 
 ROR pages have 5-second connect, 15-second read-idle, and 30-second total
 deadlines; 2,097,152 wire and 8,388,608 decoded-byte limits; and maxima of 10
@@ -594,8 +605,35 @@ python pipeline/sync_bibliography_db.py --pull \
   --cohort .cache/affiliation-frozen-cohort.json \
   --decisions .cache/affiliation-decisions.json \
   --ledger .cache/affiliation-ledger.jsonl \
-  --generation-descriptor .cache/affiliation-generation.json
+  --generation-descriptor .cache/affiliation-generation.json \
+  --phase-receipt .cache/affiliation-pull-phase-receipt.json
 ```
+Every valid pull creates an attempt-unique `in_progress` journal under
+`.cache/affiliation-pull-phase-receipts/` before fetching the authority, then
+atomically finalizes that same record and updates the shown latest-receipt path
+(the shown path is also the default). Final attempt records are never reused.
+They record UTC phase duration, exact monotonic writer-lock request,
+acquisition, successful release, and derived wait/hold durations; typed
+acquisition/release outcomes; the 120-second timeout budget and
+timeout/busy/failure counts; manifest revalidation counts; descriptor-last
+status; and installed DB/base/migration/artifact hashes. Pull fsyncs every
+staged file before replacement and every installed file and destination
+directory in descriptor-last order. Immediately before the first active-file
+replacement it writes the durable install journal
+`.cache/bibliography.pull-install.json`. Strict readers reject that journal; a
+later pull under the writer lock reinstalls the current authority generation
+in full, completes all durability barriers, clears/fsyncs the journal, and
+reports the observed recovery count/status. The attempt-unique record is the
+sole audit authority and is finalized before the shown latest path is updated.
+An attempt-finalization error leaves the durable record `in_progress`, never
+publishes a successful latest copy, and fails the command. The latest path is
+best-effort discovery only: failure to refresh it emits the authoritative
+attempt path but does not rewrite or invalidate a successfully finalized
+attempt. Failed pulls finalize a failed attempt record before returning the
+primary error. Custom receipt paths that alias any managed generation output by
+resolved filesystem identity, hard link, Unicode normalization, or case
+variant—or that enter the immutable attempt directory—are rejected before
+authority access.
 A missing, partial, or hash-mismatched declared artifact fails closed. All subsequent
 migration/publish operations use the immutable pull/base receipt, not a reconstructed
 receipt.
