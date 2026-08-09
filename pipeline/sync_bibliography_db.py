@@ -690,7 +690,8 @@ def _remigration_marker() -> Path:
     return LOCAL_DB.with_suffix(LOCAL_DB.suffix + ".remigration-required.json")
 
 
-def _ensure_publishable() -> None:
+def _ensure_publishable(
+        affiliation_artifacts: dict[str, Path | str] | None = None) -> None:
     marker = _remigration_marker()
     if marker.exists():
         raise RuntimeError("remigration required before bibliography synchronization")
@@ -704,10 +705,22 @@ def _ensure_publishable() -> None:
         raise RuntimeError(
             f"{bibliography.AFFILIATION_SCHEMA_VERSION} metadata is missing; migrate and validate before push")
     checker = ROOT / "pipeline" / "check_bibliography_db.py"
+    artifact_paths = _artifact_paths(affiliation_artifacts)
+    command = [
+        sys.executable, str(checker), "--db", str(LOCAL_DB), "--strict"]
+    if artifact_paths:
+        command.extend([
+            "--cohort", str(artifact_paths["cohort"]),
+            "--decisions", str(artifact_paths["decisions"]),
+            "--ledger", str(artifact_paths["ledger"]),
+            "--generation-descriptor",
+            str(artifact_paths["generation_descriptor"]),
+        ])
     try:
-        run([sys.executable, str(checker), "--db", str(LOCAL_DB), "--strict"])
+        run(command)
     except subprocess.CalledProcessError as exc:
-        raise RuntimeError("strict bibliography validation failed; push blocked") from exc
+        raise RuntimeError(
+            "strict bibliography validation failed; push blocked") from exc
 
 
 def _ensure_pull_allowed(manifest: dict | None = None) -> None:
@@ -1067,9 +1080,12 @@ def _validate_origin_transition(expected: dict, manifest: dict,
         return
     raise RuntimeError(
         "origin receipt changed without fresh rotation or controlled remigration")
-def _push_preflight(base_receipt: Path | None) -> None:
+def _push_preflight(
+        base_receipt: Path | None,
+        affiliation_artifacts: dict[str, Path | str] | None = None) -> None:
     """Reject local provenance failures before acquiring a remote authority lease."""
-    _ensure_publishable()
+    artifact_paths = _artifact_paths(affiliation_artifacts)
+    _ensure_publishable(artifact_paths)
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
     if not base.exists():
         raise RuntimeError("stale/missing base receipt; pull before push")
@@ -1081,7 +1097,7 @@ def _push_preflight(base_receipt: Path | None) -> None:
         expected,
         rollback=bool(expected.get("requires_controlled_remigration")),
         allow_legacy=True)
-    manifest = local_manifest()
+    manifest = local_manifest(artifact_paths)
     receipt, _, receipt_digest = _load_current_origin_receipt(manifest)
     _validate_origin_transition(expected, manifest, receipt, receipt_digest)
 
@@ -1095,7 +1111,8 @@ def _cas_conflict(exc: subprocess.CalledProcessError) -> RuntimeError:
 
 def _push_locked(base_receipt: Path | None, lease: dict,
                  affiliation_artifacts: dict[str, Path | str] | None = None):
-    _ensure_publishable()
+    artifact_paths = _artifact_paths(affiliation_artifacts)
+    _ensure_publishable(artifact_paths)
     if not LOCAL_DB.exists():
         raise RuntimeError(f"missing local DB: {LOCAL_DB}")
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
@@ -1116,7 +1133,6 @@ def _push_locked(base_receipt: Path | None, lease: dict,
     upload_id = uuid.uuid4().hex
     upload = REMOTE_DB + ".upload." + upload_id
     receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
-    artifact_paths = _artifact_paths(affiliation_artifacts)
     manifest = local_manifest(artifact_paths)
     receipt, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
     _validate_origin_transition(expected, manifest, receipt, receipt_digest)
@@ -1201,7 +1217,7 @@ def _push_locked(base_receipt: Path | None, lease: dict,
 def push(base_receipt: Path | None,
          affiliation_artifacts: dict[str, Path | str] | None = None):
     """Validate locally, then acquire remote lease and local exclusive flock."""
-    _push_preflight(base_receipt)
+    _push_preflight(base_receipt, affiliation_artifacts)
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
     with authority_lease() as lease:
         with bibliography_writer_lock(LOCAL_DB):
