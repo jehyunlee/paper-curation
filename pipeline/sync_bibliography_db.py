@@ -418,21 +418,29 @@ _GIT_TARGETS = (
 )
 
 
-def _git_provenance() -> dict:
+def _git_provenance(
+        root: Path = ROOT,
+        targets: tuple[str, ...] = _GIT_TARGETS) -> dict:
     revision = subprocess.run(
-        ["git", "-C", str(ROOT), "rev-parse", "HEAD"], check=True, text=True,
+        ["git", "-C", str(root), "rev-parse", "HEAD"], check=True, text=True,
         capture_output=True).stdout.strip()
     dirty = subprocess.run(
-        ["git", "-C", str(ROOT), "diff", "--quiet", "--", *_GIT_TARGETS],
+        ["git", "-C", str(root), "diff", "--quiet", revision, "--", *targets],
         check=False, text=True, capture_output=True)
     if dirty.returncode:
-        raise RuntimeError("target publication artifacts are dirty")
-    blobs = {
-        target: subprocess.run(
-            ["git", "-C", str(ROOT), "rev-parse", f"{revision}:{target}"],
+        raise RuntimeError("target publication artifacts differ from HEAD")
+    blobs = {}
+    for target in targets:
+        blob = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", f"{revision}:{target}"],
             check=True, text=True, capture_output=True).stdout.strip()
-        for target in _GIT_TARGETS
-    }
+        working_blob = subprocess.run(
+            ["git", "-C", str(root), "hash-object", "--", target],
+            check=True, text=True, capture_output=True).stdout.strip()
+        if working_blob != blob:
+            raise RuntimeError(
+                f"target publication artifact bytes differ from HEAD: {target}")
+        blobs[target] = blob
     return {"git_revision": revision, "git_blobs": blobs}
 
 
@@ -457,18 +465,13 @@ def _sql_contract_sha256(path: Path) -> str:
 def _strict_result_sha256(metadata: dict) -> str:
     return hashlib.sha256(canonical_manifest(metadata).encode()).hexdigest()
 
-def _generation_provenance(metadata: dict) -> dict:
-    """Record source identity without requiring a clean worktree."""
-    try:
-        revision = subprocess.run(
-            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], check=True, text=True,
-            capture_output=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        revision = "unavailable"
+def _generation_provenance(metadata: dict, git_revision: str) -> dict:
+    """Bind the same Git revision and registry/event/ledger heads as the manifest."""
     return {
-        "git_revision": revision,
+        "git_revision": git_revision,
         "registry_sha256": metadata["registry_sha256"],
-        "evidence_ledger_head": metadata["event_head"],
+        "event_head": metadata["event_head"],
+        "ledger_head": metadata["ledger_head"],
     }
 def _artifact_paths(artifacts: dict[str, Path | str] | None) -> dict[str, Path]:
     """Require a complete explicit strict-affiliation artifact set."""
@@ -609,13 +612,22 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False,
             or not 0 < manifest["fence_token"] < (1 << 64)):
         raise RuntimeError("manifest fence token is invalid")
     provenance = manifest.get("generation_provenance")
-    if provenance is not None and (
-            not isinstance(provenance, dict)
-            or not all(provenance.get(key) for key in (
-                "git_revision", "registry_sha256", "evidence_ledger_head"))
-            or provenance["registry_sha256"] != manifest["registry_sha256"]
-            or provenance["evidence_ledger_head"] != manifest["event_head"]):
-        raise RuntimeError("manifest generation provenance is invalid")
+    if provenance is not None:
+        if not isinstance(provenance, dict):
+            raise RuntimeError("manifest generation provenance is invalid")
+        common_invalid = (
+            provenance.get("git_revision") != manifest["git_revision"]
+            or provenance.get("registry_sha256") != manifest["registry_sha256"])
+        current_invalid = (
+            provenance.get("event_head") != manifest["event_head"]
+            or provenance.get("ledger_head") != manifest["ledger_head"])
+        legacy_valid = (
+            allow_legacy
+            and provenance.get("evidence_ledger_head") == manifest["event_head"]
+            and set(provenance) == {
+                "git_revision", "registry_sha256", "evidence_ledger_head"})
+        if common_invalid or (current_invalid and not legacy_valid):
+            raise RuntimeError("manifest generation provenance is invalid")
 
 
 def _inspect_sqlite(path: Path, *, require_affiliation: bool) -> dict:
@@ -781,7 +793,8 @@ def local_manifest(affiliation_artifacts: dict[str, Path | str] | None = None) -
         **metadata,
         **contracts,
         "strict_result_sha256": _strict_result_sha256(strict_metadata),
-        "generation_provenance": _generation_provenance(metadata),
+        "generation_provenance": _generation_provenance(
+            metadata, contracts["git_revision"]),
     }
     _add_artifact_bindings(manifest, _artifact_paths(affiliation_artifacts))
     return manifest

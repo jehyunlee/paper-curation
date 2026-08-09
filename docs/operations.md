@@ -68,29 +68,77 @@ or one globally unique accepted survivor may be reported as a lookup-only result
 path creates, enriches, aliases, or merges an identity.
 
 Country values use the tracked ISO 3166-1:2020 derivative from Debian `iso-codes`
-4.18.0-1 (`data/iso_3166-1.json`, LGPL-2.1-or-later). The map version and canonical
-hash are generation-bound. `CN`/China and `TW`/Taiwan remain distinct site codes;
-a branch retains its physical site country, a legal entity its domicile, and parent
-geography is obtained only through an accepted relationship. Multinational umbrellas
-have `country_scope=multinational` and no country code. Only accepted `part_of` edges
-may populate the legacy compatibility `group_id`; `jointly_operated_by` retains every JV
-operator in the canonical graph but never supplies a compatibility parent. `member_of`
-and `network_member_of` are likewise non-parental. Only the literal reviewed alias
-manifest is accepted; there is no locale, package, fuzzy, transliteration, or successor
-fallback. A map change needs data-owner and independent reviewer approval, a
-`country_map_changed` event, correction events, reprojection, redisposition, and a
-strict check before application.
+upstream 4.18.0 (2025-04-11), source package 4.18.0-1, exact source
+`https://sources.debian.org/data/main/i/iso-codes/4.18.0-1/data/iso_3166-1.json`
+(`data/iso_3166-1.json`, LGPL-2.1-or-later). The command-owned raw cache is
+`.cache/affiliation-oracles/iso-codes/4.18.0-1/iso_3166-1.json`; its raw SHA-256 is
+`f01b812b57fba9f31ff621bf33e7c7570a01964dbeb5be2167e94decf538c89f` and
+the canonical map SHA-256 is
+`079e9037803744d92198452b06ae230ba8952ea6e592b666dbb81206247278e3`.
+The closed input domain is current alpha-2, alpha-3, and exact English short names,
+plus only these literal aliases:
+
+- `China→CN`; `Taiwan→TW`; `Hong Kong→HK`; `Macao/Macau→MO`;
+  `South Korea`/`Republic of Korea`/`Korea, South`/`Korea South→KR`;
+  `North Korea`/`Democratic People's Republic of Korea`/`Korea, North`/
+  `Korea North→KP`; `Turkey→TR`.
+- `United States`/`United States of America`/`USA`/`U.S.A.`/`U.S.→US`;
+  `United Kingdom`/`Great Britain`/`Britain`/`UK`/`U.K.→GB`;
+  `Russia→RU`; `Vietnam→VN`; `Iran→IR`; `Syria→SY`; `Laos→LA`;
+  `Moldova→MD`; `Tanzania→TZ`; `Brunei→BN`; `Bolivia→BO`;
+  `Venezuela→VE`; `Czech Republic→CZ`; `Ivory Coast→CI`;
+  `Cape Verde→CV`; `Swaziland→SZ`; `Macedonia`/`FYROM→MK`;
+  `East Timor→TL`; `Palestine`/`Palestinian Territories→PS`.
+
+Current territories including `HK`, `MO`, `TW`, and `PS` remain distinct site
+codes. Numeric codes, `XK`, `EL`, historical `AN/BU/CS/DD/NT/SU/TP/YU/ZR`,
+localizations, successor guesses, fuzzy matches, and package/runtime fallbacks are
+unmappable. A branch retains its physical site country, a legal entity its
+domicile, and parent geography is obtained only through an accepted relationship.
+Multinational umbrellas have `country_scope=multinational` and no country code.
+Only accepted `part_of` edges may populate legacy `group_id`;
+`jointly_operated_by`, `member_of`, and `network_member_of` are non-parental and
+never supply a compatibility parent. A map change needs data-owner and independent
+architect/critic approval, `country_map_changed` and correction events,
+reprojection, cohort redisposition, and a strict check before automatic apply.
 
 The identity oracle is ROR Schema 2.1 at commit
-`20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63`; the public-suffix oracle is the official
-PSL snapshot `2026-07-25_14-20-03_UTC` commit
-`e1b8015c3b2f0f4f8c18659c2480fc1a22c07b20` (MPL-2.0). Cache their raw bytes,
-hashes, licenses, envelope/parser/extractor versions, and fixed fetch budgets in the
-evidence-oracle manifest. Fetching has no proxy or runtime fallback: validate every DNS
-answer as public, connect only to a vetted address, retain the original hostname for
-SNI/certificate verification/Host through each redirect, and persist bounded extracted
-quotes/digests rather than pages. Wikipedia is discovery-only; Scopus is optional
-enrichment and never authority.
+`20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63`, cached at
+`.cache/affiliation-oracles/ror-schema/20ec1cf1edc3e0051de0ea2eae2bfdf536b9ba63/ror_schema_v2_1.json`
+with raw SHA-256
+`5df548a5f7a927fc9e94f196d2c3e78c96c25343909999dfda5110b535e2ddf7`.
+The public-suffix oracle is the official PSL ICANN+PRIVATE snapshot
+`2026-07-25_14-20-03_UTC`, commit
+`e1b8015c3b2f0f4f8c18659c2480fc1a22c07b20` (MPL-2.0), cached at
+`.cache/affiliation-oracles/psl/2026-07-25_14-20-03_UTC-e1b8015/public_suffix_list.dat`
+with raw SHA-256
+`fe6adc7fb8014f57d28d69b18d0aa3e581efb432544922e12131a5d4a87bd954`.
+There is no runtime fallback.
+
+ROR pages have 5-second connect, 15-second read-idle, and 30-second total
+deadlines; 2,097,152 wire and 8,388,608 decoded-byte limits; and maxima of 10
+pages or 200 records. An official-site chain has 5-second connect per address,
+10-second read-idle, 30-second total, and at most three redirects. Its limits are
+1,048,576 wire/4,194,304 decoded bytes per response and 2,097,152
+wire/8,388,608 decoded bytes per chain. Limit+1 fails. Only `identity` and
+streamed `gzip`, and final `text/html`, `application/xhtml+xml`, or
+`application/ld+json`, are accepted.
+
+Automatic fetch rejects every proxy setting, permits HTTPS port 443 only,
+validates the complete A/AAAA set as global, and dials a selected vetted IP
+directly without re-resolution while retaining the original IDNA hostname for
+TLS SNI, certificate verification, and `Host` on every redirect. Every redirect
+repeats those checks and must retain the pinned-PSL registrable domain.
+Charset precedence is UTF-8 BOM, one HTTP charset, one declaration in the first
+1,024 wire bytes, then strict UTF-8. Labels are only `utf-8`/`utf8`,
+`windows-1252`/`cp1252`, and `iso-8859-1`/`latin1`; disagreement, ambiguity,
+decode replacement, or unsupported labels fail closed. Extraction precedence is
+scoped Organization/CollegeOrUniversity JSON-LD, visible title, visible h1, then
+explicit legal/contact organization name; country is JSON-LD PostalAddress then
+visible legal/contact address. Same-tier multiplicity or lower-tier conflict
+fails. Retain no page: at most four exact pointer-bound quotes, 512 UTF-8 bytes
+each and 2,048 bytes total, plus digests and transport metadata. Wikipedia is
+discovery-only; Scopus is optional enrichment and never authority.
 Before any network investigation, `pin-oracles` and `check-oracles` operate only on the
 command-installed immutable cache; they never download substitutes. Freeze the exact
 5,162 IDs with `freeze-pending-cohort --db … --registry … --cohort … --timestamp …`.
@@ -117,19 +165,37 @@ Git blobs; then publish the matching generation through CAS. A second host fetch
 before CAS pull and proves DB/logical hashes, registry/event contracts, oracle/country
 hashes, cohort, ledger, relationship equation, and strict result equality.
 
-Use the stable local lock pathname only with POSIX advisory `flock`: shared for readers,
-exclusive for writers and recovery. The pathname is not ownership and is never deleted;
-kernel close, process death, and reboot release it. The Mac mini authority issues,
-renews, and checks a 90-second monotonic lease under its own short `flock`, with a
-durable increasing fence token and boot ID. Acquire remote lease before local exclusive;
-a current unexpired token alone may advance the manifest. Do not use PID files, remote
-`mkdir`, wall-clock early takeover, or manual lock/lease/manifest cleanup. On a failed
-writer, acquire exclusive, recover only a proven journal state (or quarantine
-unreferenced staging), revalidate heads, and retry. After owner death wait for lease
-expiry; after authority reboot obtain a higher fence. A stale token, unknown hash,
-descriptor mismatch, evidence gap, automatic relationship, duplicate active identity
-key, or cohort/transition accounting mismatch blocks publication rather than bypassing
-the gate.
+Use the stable local lock pathname only with POSIX advisory `flock`: shared for
+readers, exclusive for writers and recovery. Reader timeout is 30 seconds,
+writer/recovery timeout 120 seconds, and nonblocking poll interval 0.25 seconds.
+The pathname is diagnostic, not ownership, and is never deleted or replaced;
+kernel close, process death, and reboot release ownership. Descriptors are
+noninheritable and are never passed to a subprocess. A timeout reports busy and
+fails closed; no PID, mtime, stale-file deletion, or manual cleanup authorizes
+takeover.
+
+The Mac mini authority uses a stable control `flock` and issues a 90-second
+boot-bound monotonic lease with a cryptographically random writer UUID and
+durable increasing fence token. Heartbeats renew every 20 seconds; acquisition
+polls every 2 seconds for at most 120 seconds; each authority RPC times out after
+10 seconds; commit requires at least 30 seconds remaining. Acquire remote lease
+before local exclusive. Release local exclusive before exact-owner lease release.
+Only the current unexpired host/boot/token/run/writer/client tuple may renew or
+advance the manifest. Owner death waits for exact expiry; authority reboot
+invalidates the boot ID and the next acquisition increments the fence. Early
+takeover, stale-token renew/commit, PID tests, remote `mkdir`, wall-clock
+takeover, descriptor inheritance, and manual lock/lease/fence/manifest edits are
+prohibited.
+
+Recovery obtains exclusive and completes only proven `PREPARED`,
+`LEDGER_DURABLE`, `DB_COMMITTED`, or `DESCRIPTOR_COMMITTED` journal state;
+unreferenced immutable staging is quarantined. A busy lock/lease, unknown hash,
+descriptor mismatch, evidence gap, automatic relationship, duplicate active
+identity key, cohort/transition accounting mismatch, heartbeat failure, or
+non-APFS/POSIX authority blocks publication. Report the wait/timeout/recovery,
+lease acquisition/renewal/expiry/takeover/fence rejection/boot-change, journal,
+Git/CAS, and second-host counters for every phase, including explicit zero or
+not-executed values.
 
 ```bash
 python pipeline/audit_affiliation_registry.py apply-investigated \

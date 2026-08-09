@@ -200,6 +200,34 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.assertEqual(manifest["logical_sha256"], sync._logical_sha(db))
             self.assertEqual(manifest["schema_version"], "affiliation-3")
             self.assertEqual(manifest["migration_receipt_id"], "receipt")
+            provenance = manifest["generation_provenance"]
+            self.assertEqual(provenance["event_head"], "event")
+            self.assertEqual(provenance["ledger_head"], "ledger")
+            self.assertNotIn("evidence_ledger_head", provenance)
+
+    def test_manifest_provenance_binds_distinct_event_and_ledger_heads(self):
+        manifest = self.complete_manifest()
+        manifest["generation_provenance"] = {
+            "git_revision": manifest["git_revision"],
+            "registry_sha256": manifest["registry_sha256"],
+            "event_head": manifest["event_head"],
+            "ledger_head": manifest["ledger_head"],
+        }
+        sync._validate_manifest(manifest)
+        tampered = json.loads(json.dumps(manifest))
+        tampered["generation_provenance"]["ledger_head"] = "event"
+        with self.assertRaisesRegex(RuntimeError, "generation provenance"):
+            sync._validate_manifest(tampered)
+        legacy = dict(manifest)
+        legacy["generation_provenance"] = {
+            "git_revision": manifest["git_revision"],
+            "registry_sha256": manifest["registry_sha256"],
+            "evidence_ledger_head": manifest["event_head"],
+        }
+        with self.assertRaisesRegex(RuntimeError, "generation provenance"):
+            sync._validate_manifest(legacy)
+        sync._validate_manifest(legacy, allow_legacy=True)
+
     def test_local_authority_transport_avoids_self_ssh(self):
         with tempfile.TemporaryDirectory() as directory:
             authority = Path(directory) / "bibliography.sqlite3"
@@ -1201,6 +1229,30 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
             with sync.bibliography_lock(database, "writer", timeout=1):
                 self.assertTrue(lock.exists())
 
+    def test_git_provenance_rejects_staged_target_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = "pipeline/registry.json"
+            path = root / target
+            path.parent.mkdir(parents=True)
+            path.write_text("committed\\n", encoding="utf-8")
+            for command in (
+                    ["git", "init", "-q"],
+                    ["git", "config", "user.name", "Test"],
+                    ["git", "config", "user.email", "test@example.com"],
+                    ["git", "add", target],
+                    ["git", "commit", "-qm", "base"]):
+                subprocess.run(
+                    command, cwd=root, check=True, capture_output=True, text=True)
+            clean = sync._git_provenance(root, (target,))
+            self.assertEqual(set(clean["git_blobs"]), {target})
+            path.write_text("staged\\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "add", target], cwd=root, check=True,
+                capture_output=True, text=True)
+            with self.assertRaisesRegex(RuntimeError, "differ from HEAD"):
+                sync._git_provenance(root, (target,))
+
     def test_publishability_checker_reuses_active_writer_lock_in_process(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "bibliography.sqlite3"
@@ -1346,7 +1398,7 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
                 "base_generation": 0, "base_sha256": "old-db",
                 "base_logical_sha256": "old-logical",
                 "generation_provenance": {
-                    "git_revision": "test-revision", "registry_sha256": "registry",
+                    "git_revision": "revision", "registry_sha256": "registry",
                     "evidence_ledger_head": "event",
                 },
             }
