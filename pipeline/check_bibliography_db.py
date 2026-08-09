@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate bibliography DB and affiliation-2 registry projection."""
+"""Validate bibliography DB and affiliation-3 registry projection."""
 from __future__ import annotations
 import argparse, hashlib, json, math, os, sqlite3
 from datetime import date, datetime, timezone
@@ -8,6 +8,230 @@ import build_bibliography_db as bib
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS = ROOT / "docs" / "papers"
 INDEX = PAPERS / "_papers_index.json"
+FROZEN_PENDING_COUNT = 5162
+FROZEN_PENDING_SNAPSHOT_SHA256 = "16d99fbca4a3a305314593b0060157625085351676a86e089530a616b7166f62"
+FROZEN_PENDING_ID_SET_SHA256 = "52ff02c15bbc0cb3d370807ba35c073cb6ef0fe72f259d5a6ed96620ba32e3f3"
+FROZEN_RELATIONSHIP_COUNT = 2245
+FROZEN_RELATIONSHIP_SNAPSHOT_SHA256 = "5f7a45272994384188ea9d516bac9b244feae3b18402bc73e6def00c57479738"
+FROZEN_RELATIONSHIP_ID_SET_SHA256 = "9f077283ca47393d284acc30420bf1a98e08a4d3f5774909a1091969b6a67cab"
+EMPTY_RELATIONSHIP_ID_SET_SHA256 = "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+
+
+def canonical_sha256(value):
+    return hashlib.sha256(
+        bib.affiliation_registry.canonical_json_bytes(value)).hexdigest()
+
+
+def generation_descriptor_issues(path, metadata, issues):
+    """Reject a descriptor that changes while a locked reader inspects its generation."""
+    if not path.exists():
+        issues.append("missing generation descriptor")
+        return None
+    try:
+        raw = path.read_bytes()
+        descriptor = json.loads(raw)
+    except Exception as exc:
+        issues.append(f"invalid generation descriptor: {exc}")
+        return None
+    if bib.affiliation_registry.canonical_json_bytes(descriptor) != raw:
+        issues.append("generation descriptor is not canonical JSON")
+    if canonical_sha256(descriptor) != metadata["generation_descriptor_sha256"]:
+        issues.append("generation descriptor digest mismatch")
+    if descriptor.get("generation_id") != metadata["generation_id"]:
+        issues.append("generation descriptor ID mismatch")
+    for key in (
+            "registry_sha256", "event_head", "ledger_head", "cohort_version",
+            "cohort_sha256"):
+        if descriptor.get(key) != metadata.get(key):
+            issues.append(f"generation descriptor {key} mismatch")
+    body = dict(descriptor)
+    generation_id = body.pop("generation_id", None)
+    if canonical_sha256(body) != generation_id:
+        issues.append("generation descriptor body digest mismatch")
+    journal_value = str(descriptor.get("journal") or "")
+    if journal_value and Path(journal_value).exists():
+        issues.append("incomplete generation journal")
+    return raw
+
+
+def ledger_issues(path, metadata, issues):
+    """Verify canonical ordered ledger entries and the selected hash-chain head."""
+    if not path.exists():
+        issues.append("missing affiliation evidence ledger")
+        return
+    previous = None
+    try:
+        lines = path.read_bytes().splitlines(keepends=True)
+        if not lines:
+            raise ValueError("ledger is empty")
+        for raw in lines:
+            entry = json.loads(raw)
+            if bib.affiliation_registry.canonical_json_bytes(entry) != raw:
+                raise ValueError("ledger entry is not canonical JSON")
+            claimed = entry.get("ledger_head")
+            payload = dict(entry)
+            payload.pop("ledger_head", None)
+            if canonical_sha256(payload) != claimed:
+                raise ValueError("ledger entry digest mismatch")
+            if previous is not None and entry.get("previous_ledger_head") != previous:
+                raise ValueError("ledger chain is discontinuous")
+            previous = claimed
+    except Exception as exc:
+        issues.append(f"affiliation evidence ledger invalid: {exc}")
+        return
+    if previous != metadata["ledger_head"]:
+        issues.append("affiliation evidence ledger head mismatch")
+
+
+def closed_cohort_issues(
+        cohort_path, decisions_path, metadata, issues, *, conn=None):
+    """Independently recompute the frozen closed set and its SQLite join."""
+    try:
+        cohort_raw = cohort_path.read_bytes()
+        decisions_raw = decisions_path.read_bytes()
+        cohort = json.loads(cohort_raw)
+        decisions_artifact = json.loads(decisions_raw)
+    except Exception as exc:
+        issues.append(f"closed cohort artifact read failed: {exc}")
+        return
+    if bib.affiliation_registry.canonical_json_bytes(cohort) != cohort_raw:
+        issues.append("frozen cohort artifact is not canonical JSON")
+    if bib.affiliation_registry.canonical_json_bytes(
+            decisions_artifact) != decisions_raw:
+        issues.append("closed decision artifact is not canonical JSON")
+    identifiers = cohort.get("pending_ids")
+    if (
+            not isinstance(identifiers, list)
+            or identifiers != sorted(set(identifiers))
+            or len(identifiers) != FROZEN_PENDING_COUNT
+            or canonical_sha256(identifiers) != FROZEN_PENDING_ID_SET_SHA256
+            or cohort.get("pending_count") != FROZEN_PENDING_COUNT
+            or cohort.get("pending_ids_sha256") != FROZEN_PENDING_ID_SET_SHA256
+            or cohort.get("approved_pending_snapshot_sha256")
+            != FROZEN_PENDING_SNAPSHOT_SHA256
+            or cohort.get("legacy_relationship_count")
+            != FROZEN_RELATIONSHIP_COUNT
+            or cohort.get("legacy_relationship_ids_sha256")
+            != FROZEN_RELATIONSHIP_ID_SET_SHA256
+            or cohort.get("approved_relationship_snapshot_sha256")
+            != FROZEN_RELATIONSHIP_SNAPSHOT_SHA256):
+        issues.append("frozen cohort set/count/hash mismatch")
+        return
+    decisions = decisions_artifact.get("decisions")
+    allowed = {
+        "RESOLVED", "MANUAL_HOLD", "IDENTITY_CONFLICT", "AMBIGUOUS_HOMONYM",
+        "COUNTRY_MISSING_OR_UNMAPPABLE", "RELATIONSHIP_ONLY", "EVIDENCE_STALE",
+        "PROVIDER_OR_SECURITY_INCOMPLETE", "NO_MATCH_OR_GENERIC", "UNCLASSIFIED",
+    }
+    if not isinstance(decisions, list):
+        issues.append("closed cohort decisions missing")
+        return
+    decision_ids = [
+        row.get("pending_id") for row in decisions if isinstance(row, dict)]
+    dispositions = [
+        row.get("disposition") for row in decisions if isinstance(row, dict)]
+    if (
+            len(decision_ids) != len(decisions)
+            or decision_ids != identifiers
+            or len(set(decision_ids)) != len(decision_ids)):
+        issues.append("closed cohort has outside, duplicate, or missing IDs")
+    if any(value not in allowed for value in dispositions):
+        issues.append("closed cohort disposition vocabulary mismatch")
+    if any(value == "UNCLASSIFIED" for value in dispositions):
+        issues.append("closed cohort contains UNCLASSIFIED")
+    decision_digest = canonical_sha256(decisions)
+    if decisions_artifact.get("decisions_sha256") != decision_digest:
+        issues.append("closed cohort decision digest mismatch")
+    cohort_digest = canonical_sha256(cohort)
+    if (
+            decisions_artifact.get("cohort_sha256") != cohort_digest
+            or cohort_digest != metadata["cohort_sha256"]
+            or metadata.get("cohort_version") != "affiliation-frozen-cohort-v1"):
+        issues.append("cohort artifact digest/version mismatch")
+    if conn is None:
+        return
+    tables = {
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")}
+    if "affiliation_cohort_dispositions" not in tables:
+        issues.append("closed cohort SQLite join table missing")
+        return
+    projected = conn.execute(
+        "SELECT pending_id,disposition,decision_sha256,decision_row_sha256 "
+        "FROM affiliation_cohort_dispositions WHERE cohort_sha256=? "
+        "ORDER BY pending_id", (cohort_digest,)).fetchall()
+    expected = [
+        (row["pending_id"], row["disposition"], decision_digest,
+         canonical_sha256(row))
+        for row in decisions
+    ]
+    if projected != expected:
+        issues.append("closed cohort SQLite join mismatch")
+
+
+def relationship_transition_issues(registry, metadata, issues):
+    """Verify the frozen 2,245-edge equation separately from current projection."""
+    current_ids = sorted(
+        row["relationship_id"] for row in registry.get("relationships", [])
+        if row.get("status") in {"accepted", "historical"})
+    current_hash = canonical_sha256(current_ids)
+    if (
+            current_ids
+            or current_hash != EMPTY_RELATIONSHIP_ID_SET_SHA256
+            or metadata["relationship_set_sha256"] != current_hash
+            or metadata["relationship_count"] != 0):
+        issues.append("current accepted relationship projection mismatch")
+    transitions = [
+        event for event in registry.get("events", [])
+        if event.get("type") == "relationship_policy_transition"]
+    if len(transitions) != 1:
+        issues.append("relationship transition event count mismatch")
+        return
+    payload = transitions[0].get("payload") or {}
+    pre_ids = payload.get("pre_relationship_ids")
+    demoted = payload.get("demoted_relationships")
+    retained = payload.get("official_retained_relationship_ids")
+    if (
+            not isinstance(pre_ids, list)
+            or pre_ids != sorted(set(pre_ids))
+            or len(pre_ids) != FROZEN_RELATIONSHIP_COUNT
+            or canonical_sha256(pre_ids) != FROZEN_RELATIONSHIP_ID_SET_SHA256
+            or payload.get("pre_relationship_ids_sha256")
+            != FROZEN_RELATIONSHIP_ID_SET_SHA256
+            or payload.get("pre_relationship_snapshot_sha256")
+            != FROZEN_RELATIONSHIP_SNAPSHOT_SHA256
+            or payload.get("legacy_count") != FROZEN_RELATIONSHIP_COUNT
+            or not isinstance(demoted, list)
+            or not isinstance(retained, list)
+            or payload.get("official_retained_count") != len(retained)
+            or payload.get("demoted_or_superseded_count") != len(demoted)
+            or len(retained) + len(demoted) != FROZEN_RELATIONSHIP_COUNT):
+        issues.append("legacy relationship transition equation/hash mismatch")
+        return
+    accounted = sorted(
+        [row.get("relationship_id") for row in demoted] + retained)
+    if accounted != pre_ids:
+        issues.append("legacy relationship transition classification mismatch")
+    demoted_sources = sorted(
+        row.get("relationship_id") for row in demoted)
+    pre_id_set = set(pre_ids)
+    proposal_sources = {
+        row.get("source_relationship_id")
+        for row in registry.get("relationship_proposals", [])
+        if row.get("source_relationship_id") in pre_id_set
+    }
+    superseded_sources = {
+        change.get("before", {}).get("source_relationship_id")
+        for event in registry.get("events", [])
+        if event.get("type") == "pinned_root_consolidated"
+        for change in (event.get("payload") or {}).get(
+            "proposal_supersessions", [])
+        if change.get("before", {}).get("source_relationship_id") in pre_id_set
+    }
+    if (
+            proposal_sources & superseded_sources
+            or demoted_sources != sorted(proposal_sources | superseded_sources)):
+        issues.append("demoted relationship proposal conservation mismatch")
 
 
 def issue(conn, sql, message, issues):
@@ -27,14 +251,22 @@ def invalid_slot_current_version_count(conn):
     ).fetchone()[0]
 
 
-def projection_issues(conn, registry, issues):
+def projection_issues(conn, registry, issues, registry_digest=""):
+    tables = {
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    projection_organizations = [
+        *registry["organizations"], *bib.registry_redirect_stubs(registry)]
     expected_orgs = {
         (
             row["organization_id"], row["canonical_name_en"], row["normalized_name"],
-            row["organization_type"], "", row.get("country", ""), "unknown",
-            row["status"], "", registry["registry_version"],
+            row["organization_type"], *bib.canonical_affiliation_country(
+                str(row.get("country") or ""), str(row.get("country_code") or "")),
+            row["status"], str(row.get("created_event_id") or row.get(
+                "identity_provenance") or f"registry:{registry_digest}"), registry["registry_version"],
         )
-        for row in registry["organizations"]
+        for row in projection_organizations
     }
     actual_orgs = {
         tuple(row) for row in conn.execute(
@@ -47,7 +279,9 @@ def projection_issues(conn, registry, issues):
     expected_identifiers = {
         (
             "source" if item["authority"].startswith("source_") else item["authority"],
-            item["value"], org["organization_id"], "active", "", "", "",
+            item["value"], org["organization_id"], "active", "", "",
+            str(item.get("evidence_id") or item.get("provenance") or org.get(
+                "created_event_id") or org.get("identity_provenance") or f"registry:{registry_digest}"),
         )
         for org in registry["organizations"]
         for item in org.get("identifiers", [])
@@ -60,7 +294,10 @@ def projection_issues(conn, registry, issues):
     if actual_identifiers != expected_identifiers:
         issues.append("registry identifier projection mismatch")
     expected_aliases = {
-        (row["alias_id"], row["name"], row["normalized_alias"], "", "source", "")
+        (row["alias_id"], row["name"], row["normalized_alias"], "",
+         str(row.get("alias_type") or "source"), str(row.get("created_event_id") or
+         row.get("provenance") or org.get("created_event_id") or org.get(
+             "identity_provenance") or f"registry:{registry_digest}"))
         for org in registry["organizations"] for row in org["aliases"]
     }
     actual_aliases = {
@@ -72,7 +309,11 @@ def projection_issues(conn, registry, issues):
         issues.append("registry alias projection mismatch")
     expected_candidates = {
         (row["alias_id"], row["organization_id"],
-         row.get("country_discriminator", ""), "", 1.0, "accepted", "")
+         bib.canonical_affiliation_country(
+             str(row.get("country_discriminator") or ""))[0],
+         str(row.get("evidence_id") or row.get("provenance") or f"registry:{registry_digest}"),
+         1.0, "accepted", str(row.get("event_id") or row.get(
+             "provenance") or f"registry:{registry_digest}"))
         for row in registry["alias_candidates"]
     }
     actual_candidates = {
@@ -82,6 +323,24 @@ def projection_issues(conn, registry, issues):
     }
     if actual_candidates != expected_candidates:
         issues.append("registry alias candidate projection mismatch")
+    expected_redirects = {
+        (
+            row.get("old_organization_id") or row.get("from_organization_id"),
+            row.get("survivor_organization_id") or row.get("to_organization_id"),
+            row.get("event_id") or "",
+        )
+        for row in registry.get("redirects", [])
+    }
+    if "affiliation_organization_redirects" not in tables:
+        issues.append("affiliation redirect projection schema required")
+    else:
+        actual_redirects = {
+            tuple(row) for row in conn.execute(
+                "SELECT old_organization_id,survivor_organization_id,event_id "
+                "FROM affiliation_organization_redirects")
+        }
+        if actual_redirects != expected_redirects:
+            issues.append("registry redirect projection mismatch")
     expected_edges = set()
     for row in registry["relationships"]:
         if row.get("status") not in {"accepted", "historical"}:
@@ -96,7 +355,8 @@ def projection_issues(conn, registry, issues):
             row.get("valid_to", interval.get("end", "")),
             row["status"],
             float(row.get("confidence", 1.0)),
-            row.get("created_event_id", ""),
+            str(row.get("created_event_id") or row.get("event_id") or row.get(
+                "provenance") or f"registry:{registry_digest}"),
             "registry",
         ))
     actual_edge_rows = {
@@ -133,9 +393,7 @@ def projection_issues(conn, registry, issues):
              for event in registry.get("events", [])),
             default="",
         )
-        precedence = {
-            "part_of": 1, "jointly_operated_by": 2, "member_of": 3,
-        }
+        precedence = {"part_of": 1}
         organizations = {
             row["organization_id"]: row for row in registry["organizations"]
         }
@@ -452,6 +710,10 @@ def main(argv=None) -> int:
     ap.add_argument('--release-date',
                     default=datetime.now(timezone.utc).date().isoformat())
     ap.add_argument('--strict', action='store_true'); ap.add_argument('--strict-warnings', action='store_true')
+    ap.add_argument('--cohort', type=Path)
+    ap.add_argument('--decisions', type=Path)
+    ap.add_argument('--generation-descriptor', type=Path)
+    ap.add_argument('--ledger', type=Path)
     args=ap.parse_args(argv); issues=[]; warnings=[]; report={'ok':False,'issues':issues,'warnings':warnings}
     marker = args.db.with_suffix(args.db.suffix + ".remigration-required.json")
     if marker.exists():
@@ -467,6 +729,10 @@ def main(argv=None) -> int:
         issues.append(f"registry baseline read failed: {exc}")
     if not args.db.exists(): issues.append(f'missing database: {args.db}')
     else:
+        lock_descriptor = bib.affiliation_registry.acquire_bibliography_reader_lock(args.db)
+        descriptor_path = args.generation_descriptor
+        descriptor_before = (
+            descriptor_path.read_bytes() if descriptor_path and descriptor_path.exists() else None)
         conn=sqlite3.connect(args.db); conn.execute('PRAGMA foreign_keys=ON')
         tables={r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         paper_columns = {row[1] for row in conn.execute("PRAGMA table_info(papers)")}
@@ -498,18 +764,77 @@ def main(argv=None) -> int:
                 issues.append("suspicious institution names: " + ", ".join(suspicious[:10]))
             if local_language:
                 issues.append("local-language institution names: " + ", ".join(local_language[:10]))
-        if 'affiliation_registry_metadata' not in tables: issues.append('affiliation-2 migration required')
+        if 'affiliation_registry_metadata' not in tables: issues.append('affiliation-3 migration required')
         else:
             try: registry=bib.affiliation_registry.load_registry(args.registry)
             except Exception as exc: issues.append(f'invalid registry: {exc}'); registry=None
-            meta=conn.execute('SELECT schema_version,registry_sha256,event_head,policy_version,source_sha256,base_generation,migration_receipt_id FROM affiliation_registry_metadata WHERE singleton=1').fetchone()
+            metadata_columns = {
+                row[1] for row in conn.execute(
+                    "PRAGMA table_info(affiliation_registry_metadata)")}
+            required_metadata_columns = {
+                "registry_contract_version", "event_contract_version",
+                "country_map_version", "country_map_sha256",
+                "evidence_oracle_version", "evidence_oracle_sha256",
+                "ledger_head", "cohort_version", "cohort_sha256",
+                "relationship_set_sha256", "relationship_count",
+                "generation_descriptor_sha256", "generation_id",
+            }
+            if not required_metadata_columns <= metadata_columns:
+                issues.append("affiliation metadata contract migration required")
+                meta = None
+            else:
+                meta=conn.execute(
+                    'SELECT schema_version,registry_sha256,event_head,policy_version,'
+                    'source_sha256,base_generation,migration_receipt_id,'
+                    'registry_contract_version,event_contract_version,country_map_version,'
+                    'country_map_sha256,evidence_oracle_version,evidence_oracle_sha256,'
+                    'ledger_head,cohort_version,cohort_sha256,relationship_set_sha256,'
+                    'relationship_count,generation_descriptor_sha256,generation_id '
+                    'FROM affiliation_registry_metadata WHERE singleton=1').fetchone()
             expected=hashlib.sha256(args.registry.read_bytes()).hexdigest() if args.registry.exists() else ''
             if not meta or meta[0]!=bib.AFFILIATION_SCHEMA_VERSION: issues.append('stale affiliation schema metadata')
             elif meta[1]!=expected or (registry and (meta[2],meta[3],meta[4]) != (registry['event_head'],registry['policy_version'],registry['source_sha256'])): issues.append('registry metadata digest/replay mismatch')
+            bindings = None
+            if registry and meta:
+                try:
+                    bindings = bib._registry_contract_bindings(registry)
+                except RuntimeError as exc:
+                    bindings = None
+                    if args.strict:
+                        issues.append(str(exc))
+                expected_contracts = tuple(bindings.values()) if bindings else ()
+                if bindings and tuple(meta[7:16]) != expected_contracts[:9]:
+                    issues.append("registry/event/country/oracle/ledger/cohort metadata mismatch")
+                relationship_transition_issues(registry, {
+                    "relationship_set_sha256": meta[16],
+                    "relationship_count": meta[17],
+                }, issues)
+                if (
+                        registry.get("generation_descriptor_sha256")
+                        and registry.get("generation_id")
+                        and meta[18:20] != (
+                            registry["generation_descriptor_sha256"],
+                            registry["generation_id"])):
+                    issues.append("generation metadata mismatch")
+                strict_metadata_strings = (
+                    *meta[7:17], meta[18], meta[19])
+                if args.strict and (
+                        not bindings
+                        or any(not value for value in expected_contracts)
+                        or any(not value for value in strict_metadata_strings)
+                        or not isinstance(meta[17], int)
+                        or meta[17] < 0):
+                    issues.append("missing strict independent contract binding")
             if meta:
                 migration_receipt_id = meta[6]
                 if not migration_receipt_id:
                     issues.append("missing migration receipt binding")
+                elif bindings and migration_receipt_id == bib.fresh_schema_origin_receipt_id(
+                        schema_version=bib.AFFILIATION_SCHEMA_VERSION,
+                        registry_sha256=meta[1], event_head=meta[2],
+                        policy_version=meta[3], source_sha256=meta[4],
+                        contracts=bindings):
+                    pass
                 elif migration_receipt_id != "fresh-schema":
                     audit = conn.execute(
                         "SELECT base_generation,schema_to "
@@ -519,9 +844,11 @@ def main(argv=None) -> int:
                         issues.append("migration receipt binding missing from audit")
                     elif audit != (meta[5], bib.AFFILIATION_SCHEMA_VERSION):
                         issues.append("migration receipt metadata mismatch")
+                else:
+                    issues.append("nondeterministic fresh schema receipt")
             if registry and baseline:
                 registry_sha = hashlib.sha256(args.registry.read_bytes()).hexdigest()
-                if baseline.get("schema_version") != bib.AFFILIATION_SCHEMA_VERSION:
+                if baseline.get("schema_version") != bib.affiliation_registry.REGISTRY_SCHEMA_VERSION:
                     issues.append("registry baseline schema mismatch")
                 if baseline.get("registry_sha256") != registry_sha:
                     issues.append("registry baseline digest mismatch")
@@ -548,25 +875,54 @@ def main(argv=None) -> int:
             invalid_slot_count = invalid_slot_current_version_count(conn)
             if invalid_slot_count:
                 issues.append(f"slot current-version invariant: {invalid_slot_count}")
+            issue(conn, "SELECT COUNT(*) FROM affiliation_organizations WHERE "
+                        "country_scope='domestic' AND (country_code='' OR country_name_en='') "
+                        "OR country_scope='multinational' AND (country_code<>'' OR country_name_en<>'') "
+                        "OR country_scope='unknown' AND (country_code<>'' OR country_name_en<>'')",
+                  "canonical country/scope invariant", issues)
+            issue(conn, "SELECT COUNT(*) FROM (SELECT 1 FROM affiliation_organizations "
+                        "WHERE status='active' AND country_code<>'' "
+                        "GROUP BY normalized_name,country_code HAVING COUNT(*)>1)",
+                  "duplicate active nonempty identity key", issues)
+            issue(conn, "SELECT COUNT(*) FROM (SELECT 1 FROM affiliation_identifiers "
+                        "WHERE status='active' GROUP BY authority,identifier_value "
+                        "HAVING COUNT(DISTINCT organization_id)<>1)",
+                  "active external identifier conservation invariant", issues)
+            issue(conn, "SELECT COUNT(*) FROM affiliation_organization_redirects r "
+                        "JOIN affiliation_organization_redirects next "
+                        "ON next.old_organization_id=r.survivor_organization_id",
+                  "non-direct organization redirect", issues)
+            issue(conn, "SELECT COUNT(*) FROM affiliation_organization_redirects r "
+                        "JOIN affiliation_organizations o ON o.organization_id=r.old_organization_id "
+                        "WHERE o.status='active'",
+                  "active redirect loser", issues)
+            issue(conn, "SELECT COUNT(*) FROM observed_affiliations WHERE "
+                        "observed_country_code<>'' AND observed_country_name=''",
+                  "observation canonical country invariant", issues)
+            issue(conn, "SELECT COUNT(*) FROM observed_affiliations o "
+                        "JOIN affiliation_resolution_decisions d ON d.decision_id=o.current_decision_id "
+                        "WHERE o.is_current=1 AND o.observed_country_code='' "
+                        "AND d.outcome='resolved' "
+                        "AND d.reason_code NOT IN ('offline_registry_exact_identifier',"
+                        "'global_unique_missing_country')",
+                  "missing-country lookup mutated identity", issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases WHERE active_observation_count<0 OR lifetime_observation_count<active_observation_count OR (status IN ('open','proposed') AND (active_observation_count=0 OR resolved_event_id<>'')) OR (status IN ('resolved','rejected') AND (active_observation_count<>0 OR resolved_event_id=''))",'pending status/count/terminal-reference invariant',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases p WHERE active_observation_count != (SELECT COUNT(*) FROM affiliation_pending_observations l JOIN observed_affiliations o USING(observation_id) WHERE l.pending_id=p.pending_id AND o.is_current=1 AND o.resolution_status IN ('ambiguous','unseen'))",'pending active recount mismatch',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_pending_cases p WHERE lifetime_observation_count != (SELECT COUNT(*) FROM affiliation_pending_observations l WHERE l.pending_id=p.pending_id)",'pending lifetime recount mismatch',issues)
             issue(conn, "SELECT COUNT(*) FROM affiliation_pending_cases p LEFT JOIN affiliation_resolution_decisions d "
                         "ON d.decision_id=p.resolved_event_id WHERE "
                         "(p.status='resolved' AND (d.decision_id IS NULL OR d.outcome<>'resolved' OR d.reason_code='' "
-                        "OR d.registry_sha256<>(SELECT registry_sha256 FROM affiliation_registry_metadata WHERE singleton=1) "
-                        "OR d.policy_version<>(SELECT policy_version FROM affiliation_registry_metadata WHERE singleton=1))) "
+                        "OR d.registry_sha256='' OR d.policy_version='')) "
                         "OR (p.status='rejected' AND (d.decision_id IS NULL OR d.outcome NOT IN ('rejected','superseded') OR d.reason_code='' "
-                        "OR d.registry_sha256<>(SELECT registry_sha256 FROM affiliation_registry_metadata WHERE singleton=1) "
-                        "OR d.policy_version<>(SELECT policy_version FROM affiliation_registry_metadata WHERE singleton=1)))",
-                  'terminal decision ownership/outcome/reason/registry-policy invariant',issues)
+                        "OR d.registry_sha256='' OR d.policy_version=''))",
+                  'terminal decision ownership/outcome/reason/provenance invariant',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_relationships r WHERE r.status='accepted' AND NOT EXISTS (SELECT 1 FROM affiliation_relationship_evidence e WHERE e.relationship_id=r.relationship_id)",'accepted relationship lacks evidence',issues)
             issue(conn,"SELECT COUNT(*) FROM affiliation_relationships WHERE subject_organization_id=object_organization_id",'self relationship',issues)
             required = {"affiliation_enrichment_attempts", "affiliation_resolution_decisions",
                         "affiliation_pending_observations", "affiliation_alias_candidates"}
             missing = required - tables
             if missing:
-                issues.append("missing affiliation-2 tables: " + ",".join(sorted(missing)))
+                issues.append("missing affiliation-3 tables: " + ",".join(sorted(missing)))
             issue(conn, "SELECT COUNT(*) FROM affiliation_pending_cases p WHERE "
                         "p.attempt_count<>(SELECT COUNT(*) FROM affiliation_enrichment_attempts a "
                         "WHERE a.pending_id=p.pending_id) OR "
@@ -588,6 +944,17 @@ def main(argv=None) -> int:
             issue(conn, "SELECT COUNT(*) FROM affiliation_relationships "
                         "WHERE managed_by<>'registry' OR status NOT IN ('accepted','historical')",
                   "non-registry relationship projection", issues)
+            issue(conn, "SELECT COUNT(*) FROM (SELECT subject_organization_id FROM "
+                        "affiliation_relationships WHERE relationship_type='part_of' "
+                        "AND status='accepted' AND valid_to='' GROUP BY subject_organization_id "
+                        "HAVING COUNT(*)>1)",
+                  "multiple current part_of parents", issues)
+            if "affiliation_projection_provenance" not in tables:
+                issues.append("affiliation provenance projection schema required")
+            else:
+                issue(conn, "SELECT COUNT(*) FROM affiliation_projection_provenance "
+                            "WHERE provenance_json='' OR provenance_json IS NULL",
+                      "blank projected provenance", issues)
             issue(conn, "WITH RECURSIVE walk(start,node,path) AS ("
                         "SELECT subject_organization_id,object_organization_id,subject_organization_id||','||object_organization_id "
                         "FROM affiliation_relationships UNION ALL "
@@ -627,19 +994,58 @@ def main(argv=None) -> int:
                         "n.observation_id=o.superseded_by_observation_id AND "
                         "n.supersedes_observation_id=o.observation_id))",
                   "observation supersession symmetry", issues)
-            issue(conn, "SELECT COUNT(*) FROM observed_affiliations o WHERE "
+            issue(conn, "SELECT COUNT(*) FROM observed_affiliations o "
+                        "JOIN affiliation_resolution_decisions d "
+                        "ON d.decision_id=o.current_decision_id WHERE "
                         "o.is_current=1 AND o.resolution_status='ambiguous' AND "
+                        "((d.reason_code='global_unique_missing_country' AND "
                         "(SELECT COUNT(*) FROM affiliation_decision_candidates c "
-                        "WHERE c.decision_id=o.current_decision_id)<2",
+                        "WHERE c.decision_id=o.current_decision_id)<1) OR "
+                        "(d.reason_code<>'global_unique_missing_country' AND "
+                        "(SELECT COUNT(*) FROM affiliation_decision_candidates c "
+                        "WHERE c.decision_id=o.current_decision_id)<2))",
                   "ambiguous decision candidate loss", issues)
             if registry:
-                projection_issues(conn, registry, issues)
+                projection_issues(conn, registry, issues, expected)
             # The registry API itself verifies event-chain ordering and accepted-edge policy.
             if registry:
                 try: bib.affiliation_registry.validate_registry(registry)
                 except Exception as exc: issues.append(f'registry replay/evidence invalid: {exc}')
+                oracle_validator = getattr(
+                    bib.affiliation_registry, "validate_evidence_oracle_manifest", None)
+                if callable(oracle_validator):
+                    try:
+                        oracle_validator(registry)
+                    except Exception as exc:
+                        issues.append(f"evidence oracle invalid: {exc}")
                 evidence_issues(registry, args.release_date, issues, warnings)
+        if args.strict:
+            if not meta:
+                issues.append("strict generation metadata missing")
+            elif (
+                    not args.cohort or not args.decisions
+                    or not descriptor_path or not args.ledger):
+                issues.append(
+                    "strict cohort/decision/ledger/generation descriptor arguments required")
+            else:
+                metadata = {
+                    "registry_sha256": meta[1],
+                    "event_head": meta[2],
+                    "ledger_head": meta[13],
+                    "cohort_version": meta[14],
+                    "cohort_sha256": meta[15],
+                    "generation_descriptor_sha256": meta[18],
+                    "generation_id": meta[19],
+                }
+                closed_cohort_issues(
+                    args.cohort, args.decisions, metadata, issues, conn=conn)
+                ledger_issues(args.ledger, metadata, issues)
+                descriptor_after = generation_descriptor_issues(
+                    descriptor_path, metadata, issues)
+                if descriptor_before != descriptor_after:
+                    issues.append("generation descriptor changed during locked read")
         conn.close()
+        bib.affiliation_registry.release_bibliography_reader_lock(args.db, lock_descriptor)
     try:
         source_count = len(json.loads(INDEX.read_text(encoding="utf-8")))
         report["source_index_papers"] = source_count

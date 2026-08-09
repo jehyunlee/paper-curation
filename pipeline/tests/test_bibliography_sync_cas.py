@@ -1,9 +1,15 @@
+from contextlib import nullcontext
+import fcntl
+import hashlib
 import json
+import os
+import signal
 import subprocess
 import shutil
 import sqlite3
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -17,23 +23,52 @@ import run_update_force as update
 
 
 class BibliographySyncCASTests(unittest.TestCase):
+    def setUp(self):
+        self.authority_patch = patch.object(sync, "AUTHORITY_RPC", self.authority_rpc)
+        self.authority_patch.start()
+        self.addCleanup(self.authority_patch.stop)
+        self.git_patch = patch.object(
+            sync, "_git_provenance", return_value={
+                "git_revision": "test-revision",
+                "git_blobs": {
+                    target: f"test-blob-{index}"
+                    for index, target in enumerate(sync._GIT_TARGETS)
+                },
+            })
+        self.git_patch.start()
+        self.addCleanup(self.git_patch.stop)
+
+    @staticmethod
+    def authority_rpc(action, owner):
+        if action == "acquire":
+            return {"status": "ok", "lease": {
+                **owner, "fence_token": 1, "authority_host_uuid": "test-host",
+                "authority_boot_id": "test-boot",
+            }}
+        return {"status": "ok"}
     def make_latest_db(self, path):
         connection = sqlite3.connect(path)
         connection.execute(
             "CREATE TABLE affiliation_registry_metadata ("
             "singleton INTEGER PRIMARY KEY,schema_version TEXT,registry_sha256 TEXT,"
             "event_head TEXT,policy_version TEXT,source_sha256 TEXT,"
-            "migration_receipt_id TEXT)")
+            "migration_receipt_id TEXT,registry_contract_version TEXT,"
+            "event_contract_version TEXT,country_map_version TEXT,"
+            "country_map_sha256 TEXT,evidence_oracle_version TEXT,"
+            "evidence_oracle_sha256 TEXT,ledger_head TEXT,cohort_version TEXT,"
+            "cohort_sha256 TEXT)")
         connection.execute(
             "INSERT INTO affiliation_registry_metadata VALUES "
-            "(1,'affiliation-2','registry','event','policy','source','receipt')")
+            "(1,'affiliation-3','registry','event','policy','source','receipt',"
+            "'registry-contract','event-contract','country-map','country-digest',"
+            "'oracle','oracle-digest','ledger','cohort','cohort-digest')")
         connection.commit()
         connection.close()
         return path
     def make_fresh_db(self, path):
         self.make_latest_db(path)
         metadata = {
-            "schema_version": "affiliation-2",
+            "schema_version": "affiliation-3",
             "registry_sha256": "registry",
             "event_head": "event",
             "policy_version": "policy",
@@ -85,7 +120,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             "base_logical_sha256": "base-logical",
             "result_sha256": "migration-file",
             "result_logical_sha256": "migration-logical",
-            "schema_from": "legacy", "schema_to": "affiliation-2",
+            "schema_from": "legacy", "schema_to": "affiliation-3",
             "registry_sha256": "registry", "event_head": "event",
             "policy_version": "policy", "source_sha256": "source",
         }
@@ -96,10 +131,23 @@ class BibliographySyncCASTests(unittest.TestCase):
         return patch.object(
             sync, "_load_current_migration_receipt",
             return_value=({}, path, "receipt-sha"))
+    def authority_fields(self):
+        return {
+            "lease_protocol": sync.LEASE_PROTOCOL_VERSION,
+            "fence_token": 1,
+            "authority_host_uuid": "test-host",
+            "authority_boot_id": "test-boot",
+            "owner_run_id": "test-run",
+            "owner_writer_uuid": "test-writer",
+            "owner_client_host_uuid": "test-client",
+        }
+
+    def authority_lease(self):
+        return nullcontext(self.authority_fields())
 
     def complete_manifest(self, *, generation=0, sha256="file-digest",
                           logical_sha256="logical-digest",
-                          schema_version="affiliation-2"):
+                          schema_version="affiliation-3"):
         return {
             "database": "bibliography.sqlite3",
             "generation": generation,
@@ -117,6 +165,27 @@ class BibliographySyncCASTests(unittest.TestCase):
             "updated_at": "2026-08-08T00:00:00Z",
             "object": (
                 f"{sync.GENERATIONS}/{generation:020d}-{logical_sha256}.sqlite3"),
+            "registry_contract_version": "registry-contract",
+            "event_contract_version": "event-contract",
+            "country_map_version": "country-map",
+            "country_map_sha256": "country-digest",
+            "evidence_oracle_version": "oracle",
+            "evidence_oracle_sha256": "oracle-digest",
+            "ledger_head": "ledger",
+            "cohort_version": "cohort",
+            "cohort_sha256": "cohort-digest",
+            "relationship_set_sha256": "relationship-digest",
+            "sql_contract_sha256": "sql-digest",
+            "strict_result_sha256": "strict-digest",
+            "git_revision": "revision",
+            "git_blobs": {target: "blob" for target in sync._GIT_TARGETS},
+            "lease_protocol": sync.LEASE_PROTOCOL_VERSION,
+            "fence_token": 1,
+            "authority_host_uuid": "test-host",
+            "authority_boot_id": "test-boot",
+            "owner_run_id": "test-run",
+            "owner_writer_uuid": "test-writer",
+            "owner_client_host_uuid": "test-client",
         }
     def test_local_manifest_hashes_exact_bytes_and_starts_at_generation_zero(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -128,7 +197,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             self.assertEqual(manifest["generation"], 0)
             self.assertEqual(manifest["sha256"], sync.sha(db))
             self.assertEqual(manifest["logical_sha256"], sync._logical_sha(db))
-            self.assertEqual(manifest["schema_version"], "affiliation-2")
+            self.assertEqual(manifest["schema_version"], "affiliation-3")
             self.assertEqual(manifest["migration_receipt_id"], "receipt")
     def test_local_authority_transport_avoids_self_ssh(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -142,7 +211,8 @@ class BibliographySyncCASTests(unittest.TestCase):
                 sync.remote("true")
             self.assertEqual(destination.read_bytes(), b"authority")
             run.assert_called_once_with(
-                ["/bin/sh", "-c", "true"], capture=False)
+                ["/bin/sh", "-c", "true"], capture=False,
+                timeout=sync.AUTHORITY_RPC_TIMEOUT_SECONDS)
     def test_manifest_serialization_is_byte_identical_for_compare_and_write(self):
         manifest = {"sha256": "digest", "generation": 3, "updated_at": "fixed"}
         self.assertEqual(sync.canonical_manifest(manifest),
@@ -153,9 +223,112 @@ class BibliographySyncCASTests(unittest.TestCase):
         manifest.pop("migration_receipt_object")
         with self.assertRaisesRegex(RuntimeError, "migration_receipt_object"):
             sync._validate_manifest(manifest)
+    def test_strict_affiliation_bindings_require_all_immutable_roles(self):
+        manifest = self.complete_manifest(generation=7)
+        artifact_data = {
+            "cohort": b'{"cohort":true}\n',
+            "decisions": b'{"decisions":[]}\n',
+            "ledger": b'{"event":"closed"}\n',
+            "generation_descriptor": b'{"generation":"strict"}\n',
+        }
+        manifest["strict_affiliation_generation"] = True
+        manifest["affiliation_artifacts"] = {
+            role: {
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "object": sync._artifact_object(
+                    manifest["generation"], role, hashlib.sha256(data).hexdigest()),
+            }
+            for role, data in artifact_data.items()
+        }
+        sync._validate_manifest(manifest)
+        manifest["affiliation_artifacts"].pop("ledger")
+        with self.assertRaisesRegex(RuntimeError, "roles are incomplete"):
+            sync._validate_manifest(manifest)
+
+    def test_strict_affiliation_declared_binding_rejects_missing_hash_or_object(self):
+        manifest = self.complete_manifest(generation=7)
+        manifest["strict_affiliation_generation"] = True
+        manifest["affiliation_artifacts"] = {
+            role: {
+                "sha256": "a" * 64,
+                "object": sync._artifact_object(7, role, "a" * 64),
+            }
+            for role in sync.AFFILIATION_ARTIFACT_ROLES
+        }
+        manifest["affiliation_artifacts"]["decisions"].pop("sha256")
+        with self.assertRaisesRegex(RuntimeError, "binding is invalid: decisions"):
+            sync._validate_manifest(manifest)
+    def test_strict_affiliation_artifacts_stage_byte_identically(self):
+        artifact_data = {
+            "cohort": b'{"cohort":true}\n',
+            "decisions": b'{"decisions":[]}\n',
+            "ledger": b'{"ledger":"head"}\n',
+            "generation_descriptor": b'{"generation":"strict"}\n',
+        }
+        manifest = self.complete_manifest(generation=9)
+        manifest["strict_affiliation_generation"] = True
+        manifest["affiliation_artifacts"] = {
+            role: {
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "object": sync._artifact_object(
+                    manifest["generation"], role,
+                    hashlib.sha256(data).hexdigest()),
+            }
+            for role, data in artifact_data.items()
+        }
+        remote = {
+            binding["object"]: artifact_data[role]
+            for role, binding in manifest["affiliation_artifacts"].items()
+        }
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+                sync, "_copy_from_authority",
+                side_effect=lambda source, target: target.write_bytes(
+                    remote[source])):
+            staged = sync._stage_artifacts(manifest, Path(directory))
+            sync._validate_artifact_equality(manifest, staged)
+            self.assertEqual(
+                {role: path.read_bytes() for role, path in staged.items()},
+                artifact_data,
+            )
+            staged["decisions"].write_bytes(b"tampered\n")
+            with self.assertRaisesRegex(
+                    RuntimeError, "artifact equality mismatch: decisions"):
+                sync._validate_artifact_equality(manifest, staged)
+
+    def test_strict_affiliation_descriptor_is_installed_last(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            staged = {
+                role: root / f"staged-{role}"
+                for role in sync.AFFILIATION_ARTIFACT_ROLES
+            }
+            destinations = {
+                role: root / "installed" / role
+                for role in sync.AFFILIATION_ARTIFACT_ROLES
+            }
+            for path in staged.values():
+                path.write_bytes(b"artifact")
+            calls = []
+            with patch.object(
+                    sync.os, "replace",
+                    side_effect=lambda source, target: calls.append(
+                        (Path(source), Path(target)))):
+                sync._install_artifacts_descriptor_last(
+                    staged, destinations)
+            self.assertEqual(
+                [source for source, _ in calls],
+                [staged[role] for role in (
+                    "cohort", "decisions", "ledger",
+                    "generation_descriptor")],
+            )
+            self.assertEqual(
+                calls[-1],
+                (staged["generation_descriptor"],
+                 destinations["generation_descriptor"]),
+            )
     def test_fresh_schema_origin_receipt_is_content_derived_and_stable(self):
         metadata = {
-            "schema_version": "affiliation-2",
+            "schema_version": "affiliation-3",
             "registry_sha256": "registry",
             "event_head": "event",
             "policy_version": "policy",
@@ -224,6 +397,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     f"{sync.GENERATIONS}/{0:020d}-"
                     f"{manifest['logical_sha256']}.sqlite3"),
             }
+            expected.update(self.authority_fields())
             base.write_text(sync.canonical_manifest(expected), encoding="utf-8")
             sidecar = Path(directory) / "changed.json"
             sidecar.write_text("changed", encoding="utf-8")
@@ -239,16 +413,10 @@ class BibliographySyncCASTests(unittest.TestCase):
     def test_push_snapshot_contends_with_every_local_writer(self):
         with tempfile.TemporaryDirectory() as directory:
             db = self.make_fresh_db(Path(directory) / "bibliography.sqlite3")
-            descriptor = sync.migrator.acquire_lock(db)
-            try:
-                with patch.object(sync, "LOCAL_DB", db), \
-                     patch.object(sync, "run") as run:
-                    with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
-                        sync.push(None)
-                run.assert_not_called()
-            finally:
-                sync.migrator.bib.affiliation_registry.release_bibliography_writer_lock(
-                    db, descriptor)
+            with sync.bibliography_writer_lock(db):
+                with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                    with sync.bibliography_lock(db, "writer", timeout=0):
+                        pass
 
     def test_changed_migration_origin_requires_bound_controlled_remigration(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -282,8 +450,8 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "policy_version": "policy",
                 "source_sha256": source_sha,
                 "schema_from": "legacy",
-                "schema_version": "affiliation-2",
-                "schema_to": "affiliation-2",
+                "schema_version": "affiliation-3",
+                "schema_to": "affiliation-3",
                 "started_at": "2026-08-08T00:00:00Z",
                 "finished_at": "2026-08-08T00:01:00Z",
                 "issues": [],
@@ -405,6 +573,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     f"{generations}/{0:020d}-"
                     f"{initial['logical_sha256']}.sqlite3"),
             }
+            base_manifest.update(self.authority_fields())
             Path(generations).mkdir()
             shutil.copyfile(source, base_manifest["object"])
             shutil.copyfile(receipt_path, base_manifest["migration_receipt_object"])
@@ -431,28 +600,29 @@ class BibliographySyncCASTests(unittest.TestCase):
             destination = directory_path / "destination.sqlite3"
             with patches[0], patches[1], patches[2], patches[3], patches[4], \
                  patch.object(sync, "LOCAL_DB", destination):
-                descriptor = sync.migrator.acquire_lock(destination)
-                try:
+                with sync.bibliography_writer_lock(destination):
                     with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
                         sync.pull()
                     self.assertFalse(destination.exists())
-                finally:
-                    sync.migrator.bib.affiliation_registry.release_bibliography_writer_lock(
-                        destination, descriptor)
-                real_acquire = sync.migrator.acquire_lock
 
-                def acquire_after_rollback(target):
-                    sync.migrator._atomic_json(sync._remigration_marker(), {
-                        "operation": "remigration_required",
-                        "manifest_generation": second["generation"],
-                        "migration_receipt_id": second["migration_receipt_id"],
-                        "created_at": second["updated_at"],
-                    })
-                    return real_acquire(target)
+                real_ensure = sync._ensure_installable_pull
+                calls = 0
+
+                def require_remigration(manifest):
+                    nonlocal calls
+                    calls += 1
+                    if calls == 2:
+                        sync.migrator._atomic_json(sync._remigration_marker(), {
+                            "operation": "remigration_required",
+                            "manifest_generation": second["generation"],
+                            "migration_receipt_id": second["migration_receipt_id"],
+                            "created_at": second["updated_at"],
+                        })
+                    return real_ensure(manifest)
 
                 with patch.object(
-                        sync.migrator, "acquire_lock",
-                        side_effect=acquire_after_rollback):
+                        sync, "_ensure_installable_pull",
+                        side_effect=require_remigration):
                     with self.assertRaisesRegex(
                             RuntimeError, "remigration required"):
                         sync.pull()
@@ -549,6 +719,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     f"{sync.GENERATIONS}/{3:020d}-{sync.sha(receipt_file)}.migration.json"),
                 "object": f"{sync.GENERATIONS}/{3:020d}-{manifest['logical_sha256']}.sqlite3",
             })
+            manifest.update(self.authority_fields())
             payload = sync.canonical_manifest(manifest)
 
             def transport(command, **_kwargs):
@@ -692,7 +863,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                     json.loads(marker.read_text())["manifest_generation"], 8)
                 with self.assertRaisesRegex(RuntimeError, "remigration required"):
                     sync.pull()
-            self.assertEqual(run.call_count, 4)
+            self.assertEqual(run.call_count, 5)
 
 
     def test_push_rejects_missing_base_receipt_before_any_transport(self):
@@ -711,7 +882,7 @@ class BibliographySyncCASTests(unittest.TestCase):
             db = Path(directory) / "bibliography.sqlite3"
             sqlite3.connect(db).close()
             with patch.object(sync, "LOCAL_DB", db), patch.object(sync, "run") as run:
-                with self.assertRaisesRegex(RuntimeError, "affiliation-2 metadata is missing"):
+                with self.assertRaisesRegex(RuntimeError, "affiliation-3 metadata is missing"):
                     sync.push(Path(directory) / "unused.json")
             run.assert_not_called()
 
@@ -804,7 +975,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                  patch.object(sync, "run"), \
                  patch.object(sync, "remote", remote), \
                  patch.object(sync.uuid, "uuid4", return_value=Mock(hex="conflict")):
-                with self.assertRaisesRegex(RuntimeError, "CAS conflict or remote publish lock busy"):
+                with self.assertRaisesRegex(RuntimeError, "CAS conflict: canonical manifest changed"):
                     sync.push(base)
             self.assertEqual(remote.call_count, 2)
             self.assertIn("rm -f " + sync.REMOTE_DB + ".upload.conflict", remote.call_args_list[1].args[0])
@@ -834,7 +1005,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "result_sha256": expected["sha256"],
                 "result_logical_sha256": expected["logical_sha256"],
                 "schema_from": "legacy",
-                "schema_to": "affiliation-2",
+                "schema_to": "affiliation-3",
                 "registry_sha256": "registry",
                 "event_head": "event",
                 "policy_version": "policy",
@@ -895,7 +1066,7 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "result_sha256": expected["sha256"],
                 "result_logical_sha256": expected["logical_sha256"],
                 "schema_from": "legacy",
-                "schema_to": "affiliation-2",
+                "schema_to": "affiliation-3",
                 "registry_sha256": "registry",
                 "event_head": "event",
                 "policy_version": "policy",
@@ -932,14 +1103,9 @@ class BibliographySyncCASTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "required provenance"):
             sync._validate_manifest({"generation": 1, "sha256": "a" * 64})
         manifest = {
-            "database": "bibliography.sqlite3", "generation": 1, "sha256": "a" * 64,
-            "logical_sha256": "b" * 64, "schema_version": "affiliation-2",
-            "registry_sha256": "registry", "event_head": "event",
-            "policy_version": "policy", "source_sha256": "source",
-            "migration_receipt_id": "receipt", "updated_at": "2026-08-08T00:00:00Z",
-            "migration_receipt_sha256": "receipt-sha",
-            "migration_receipt_object": (
-                f"{sync.GENERATIONS}/{1:020d}-receipt-sha.migration.json"),
+            **self.complete_manifest(generation=1),
+            "sha256": "a" * 64,
+            "logical_sha256": "b" * 64,
             "object": f"{sync.GENERATIONS}/1-{'b' * 64}.sqlite3",
         }
         with self.assertRaisesRegex(RuntimeError, "immutable object name"):
@@ -970,9 +1136,166 @@ class BibliographySyncCASTests(unittest.TestCase):
                 "receipt_id": "receipt", "base_generation": 0,
                 "base_logical_sha256": "base", "result_logical_sha256": "result",
                 "registry_sha256": "registry", "schema_from": "legacy",
-                "schema_to": "affiliation-2",
+                "schema_to": "affiliation-3",
             }
             with patch.object(sync, "LOCAL_DB", db):
                 with self.assertRaisesRegex(RuntimeError, "lacks migration audit"):
                     sync._verify_migration_audit(
                         receipt, self.complete_manifest(), db)
+class BibliographySyncFlockLeaseTests(unittest.TestCase):
+    def test_live_local_writer_excludes_and_stable_path_survives(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            lock = sync.bibliography_writer_lock_path(database)
+            descriptor = os.open(lock, os.O_CREAT | os.O_RDWR, 0o600)
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX)
+                with self.assertRaisesRegex(RuntimeError, "writer lock busy"):
+                    with sync.bibliography_lock(database, "writer", timeout=0):
+                        pass
+                self.assertTrue(lock.exists())
+            finally:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+                os.close(descriptor)
+            with sync.bibliography_lock(database, "writer", timeout=0):
+                self.assertTrue(lock.exists())
+
+    def test_sigkill_releases_kernel_flock_without_removing_stable_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            lock = sync.bibliography_writer_lock_path(database)
+            child = subprocess.Popen([
+                sys.executable, "-c",
+                "import fcntl,os,sys,time; f=os.open(sys.argv[1],os.O_CREAT|os.O_RDWR,0o600); "
+                "fcntl.flock(f,fcntl.LOCK_EX); print('locked', flush=True); time.sleep(60)",
+                str(lock),
+            ], stdout=subprocess.PIPE, text=True)
+            self.assertEqual(child.stdout.readline().strip(), "locked")
+            os.kill(child.pid, signal.SIGKILL)
+            child.wait(timeout=5)
+            child.stdout.close()
+            with sync.bibliography_lock(database, "writer", timeout=1):
+                self.assertTrue(lock.exists())
+
+    def test_authority_lease_polls_then_returns_higher_fence(self):
+        owner = {"owner_run_id": "run", "owner_writer_uuid": "writer",
+                 "owner_client_host_uuid": "client"}
+        responses = iter([
+            {"status": "busy"},
+            {"status": "ok", "lease": {**owner, "fence_token": 8,
+                                       "authority_host_uuid": "host",
+                                       "authority_boot_id": "boot"}},
+            {"status": "ok"},
+        ])
+        with patch.object(sync, "_lease_owner", return_value=owner), \
+             patch.object(sync, "_authority_rpc", side_effect=lambda *_: next(responses)), \
+             patch.object(sync.time, "sleep"):
+            with sync.authority_lease() as lease:
+                self.assertEqual(lease["fence_token"], 8)
+                self.assertEqual(lease["lease_protocol"], sync.LEASE_PROTOCOL_VERSION)
+
+    def test_stale_or_rebooted_fence_is_rejected_before_manifest_command(self):
+        owner = {
+            "owner_run_id": "run", "owner_writer_uuid": "writer",
+            "owner_client_host_uuid": "client", "authority_boot_id": "new-boot",
+            "fence_token": 9,
+            "authority_host_uuid": "host",
+        }
+        with patch.object(sync, "remote",
+                          side_effect=subprocess.CalledProcessError(74, ["ssh"])):
+            with self.assertRaises(subprocess.CalledProcessError):
+                sync._authority_commit("echo should-not-commit", owner)
+
+    def test_pull_rejects_manifest_race_before_install(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "bibliography.sqlite3"
+            manifest = {
+                "database": "bibliography.sqlite3", "generation": 1, "sha256": "db",
+                "logical_sha256": "logical", "schema_version": "legacy",
+                "registry_sha256": "registry", "event_head": "event",
+                "policy_version": "policy", "source_sha256": "source",
+                "migration_receipt_id": "receipt",
+                "migration_receipt_sha256": "1c5e693fde3f8917588cee744dd0eab51df2000657b27faa350179c272e9be22",
+                "updated_at": "2026-08-08T00:00:00Z",
+                "lease_protocol": sync.LEASE_PROTOCOL_VERSION, "fence_token": 1,
+                "authority_boot_id": "boot", "owner_run_id": "run",
+                "authority_host_uuid": "host",
+                "owner_writer_uuid": "writer", "owner_client_host_uuid": "client",
+                "registry_contract_version": "registry-contract",
+                "event_contract_version": "event-contract",
+                "country_map_version": "country-map",
+                "country_map_sha256": "country-digest",
+                "evidence_oracle_version": "oracle",
+                "evidence_oracle_sha256": "oracle-digest",
+                "ledger_head": "ledger", "cohort_version": "cohort",
+                "cohort_sha256": "cohort-digest",
+                "relationship_set_sha256": "relationship-digest",
+                "sql_contract_sha256": "sql-digest",
+                "strict_result_sha256": "strict-digest",
+                "git_revision": "revision",
+                "git_blobs": {target: "blob" for target in sync._GIT_TARGETS},
+                "object": f"{sync.GENERATIONS}/00000000000000000001-logical.sqlite3",
+                "migration_receipt_object": (
+                    f"{sync.GENERATIONS}/00000000000000000001-"
+                    "1c5e693fde3f8917588cee744dd0eab51df2000657b27faa350179c272e9be22.migration.json"
+                ),
+                "requires_controlled_remigration": True, "restored_schema_version": "legacy",
+                "base_generation": 0, "base_sha256": "old-db",
+                "base_logical_sha256": "old-logical",
+                "generation_provenance": {
+                    "git_revision": "test-revision", "registry_sha256": "registry",
+                    "evidence_ledger_head": "event",
+                },
+            }
+            copies = 0
+
+            def copy(source, destination):
+                nonlocal copies
+                if source == sync.MANIFEST:
+                    copies += 1
+                    value = dict(manifest)
+                    if copies == 2:
+                        value["generation"] = 2
+                    destination.write_text(sync.canonical_manifest(value), encoding="utf-8")
+                elif source.endswith(".migration.json"):
+                    destination.write_text('{"receipt_id":"receipt"}', encoding="utf-8")
+                else:
+                    destination.write_bytes(b"db")
+
+            with patch.object(sync, "_copy_from_authority", side_effect=copy), \
+                 patch.object(sync, "_ensure_installable_pull"), \
+                 patch.object(
+                     sync,
+                     "sha",
+                     side_effect=lambda path: (
+                         "db" if Path(path).read_bytes() == b"db"
+                         else "1c5e693fde3f8917588cee744dd0eab51df2000657b27faa350179c272e9be22"
+                     ),
+                 ), \
+                 patch.object(sync, "_logical_sha", return_value="logical"), \
+                 patch.object(sync, "_inspect_sqlite", return_value={}):
+                with patch.object(sync, "LOCAL_DB", db):
+                    with self.assertRaisesRegex(RuntimeError, "changed while pull"):
+                        sync.pull()
+    def test_authority_commit_is_fail_closed_after_heartbeat_failure(self):
+        fenced = sync.Event()
+        fenced.set()
+        owner = {
+            "_fenced": fenced, "fence_token": 2,
+            "authority_host_uuid": "host", "authority_boot_id": "boot",
+            "owner_run_id": "run", "owner_writer_uuid": "writer",
+            "owner_client_host_uuid": "client",
+        }
+        with patch.object(sync, "remote") as remote:
+            with self.assertRaisesRegex(RuntimeError, "renewal fenced"):
+                sync._authority_commit("false", owner)
+        remote.assert_not_called()
+
+    def test_manifest_rejects_missing_complete_affiliation_contract(self):
+        manifest = {
+            "database": "bibliography.sqlite3", "generation": 1,
+            "sha256": "a" * 64, "logical_sha256": "b" * 64,
+            "schema_version": "affiliation-3",
+        }
+        with self.assertRaisesRegex(RuntimeError, "required provenance"):
+            sync._validate_manifest(manifest)

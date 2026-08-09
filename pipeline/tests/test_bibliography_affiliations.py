@@ -1,4 +1,5 @@
 import tempfile
+import hashlib
 import unittest
 import sqlite3
 from unittest.mock import patch
@@ -630,11 +631,12 @@ class BibliographyAffiliationTests(unittest.TestCase):
         conn.close()
     def test_fresh_schema_origin_receipt_id_is_deterministic(self):
         origin = {
-            "schema_version": "affiliation-2",
+            "schema_version": bib.AFFILIATION_SCHEMA_VERSION,
             "registry_sha256": "registry",
             "event_head": "event",
             "policy_version": "policy",
             "source_sha256": "source",
+            "contracts": {"ledger_head": "ledger", "cohort_sha256": "cohort"},
         }
         receipt_id = bib.fresh_schema_origin_receipt_id(**origin)
         self.assertEqual(receipt_id, bib.fresh_schema_origin_receipt_id(
@@ -643,10 +645,26 @@ class BibliographyAffiliationTests(unittest.TestCase):
         self.assertNotEqual(receipt_id, bib.fresh_schema_origin_receipt_id(
             **{**origin, "event_head": "changed"}))
     def test_project_rotates_fresh_origin_but_preserves_migrated_origin(self):
+        contracts = {
+            "registry_contract_version": bib.affiliation_registry.REGISTRY_CONTRACT_VERSION,
+            "event_contract_version": bib.affiliation_registry.EVENT_CONTRACT_VERSION,
+            "country_map_version": bib.affiliation_registry.COUNTRY_MAP_VERSION,
+            "country_map_sha256": bib.affiliation_registry.COUNTRY_MAP_SHA256,
+            "evidence_oracle_version": "oracle",
+            "evidence_oracle_sha256": "oracle-sha",
+            "ledger_head": "ledger",
+            "cohort_version": "cohort",
+            "cohort_sha256": "cohort-sha",
+            "accepted_relationship_set_sha256": hashlib.sha256(
+                bib.affiliation_registry.canonical_json_bytes([])).hexdigest(),
+            "generation_descriptor_sha256": "descriptor",
+            "generation_id": "generation",
+        }
         r1 = {
             "registry_version": "r1", "event_head": "event-r1",
             "policy_version": "policy", "source_sha256": "source",
             "organizations": [], "alias_candidates": [], "relationships": [],
+            **contracts,
         }
         r2 = {**r1, "registry_version": "r2", "event_head": "event-r2"}
         conn = sqlite3.connect(":memory:")
@@ -683,6 +701,113 @@ class BibliographyAffiliationTests(unittest.TestCase):
         conn.close()
         self.assertNotEqual(fresh_r1, fresh_r2)
         self.assertEqual(migrated_r2, ("migration-origin", 7))
+    def test_country_projection_keeps_china_and_taiwan_distinct(self):
+        self.assertEqual(
+            bib.canonical_affiliation_country("China"), ("CN", "China", "domestic"))
+        self.assertEqual(
+            bib.canonical_affiliation_country("Taiwan"),
+            ("TW", "Taiwan, Province of China", "domestic"))
+
+    def test_missing_country_exact_identifier_is_lookup_only(self):
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        conn.execute(
+            "INSERT INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+            ("survivor", "Example University", "example university", "other",
+             "US", "United States", "domestic", "active", "event", 1))
+        conn.execute(
+            "INSERT INTO affiliation_identifiers VALUES (?,?,?,?,?,?,?)",
+            ("ror", "https://ror.org/01", "survivor", "active", "", "", "evidence"))
+        candidates, reason = bib._registry_candidates(
+            conn, "example university", "", "", {"ror": "https://ror.org/01"})
+        self.assertEqual((candidates, reason), (["survivor"],
+                                                   "offline_registry_exact_identifier"))
+        conn.close()
+
+    def test_jv_operator_never_projects_a_compatibility_group(self):
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        conn.executemany(
+            "INSERT INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+            [
+                ("site", "JV Site", "jv site", "facility", "CN", "China",
+                 "domestic", "active", "event", 1),
+                ("operator-a", "Operator A", "operator a", "company", "CN",
+                 "China", "domestic", "active", "event", 1),
+                ("parent", "Parent", "parent", "other", "CN", "China",
+                 "domestic", "active", "event", 1),
+            ],
+        )
+        conn.execute(
+            "INSERT INTO institutions (institution_name,normalized_name,country_name_en,"
+            "organization_id,source) VALUES (?,?,?,?,?)",
+            ("JV Site", "jv site", "China", "site", "fixture"))
+        registry = {
+            "organizations": [
+                {"organization_id": "site", "canonical_name_en": "JV Site",
+                 "status": "active"},
+                {"organization_id": "operator-a", "canonical_name_en": "Operator A",
+                 "status": "active"},
+                {"organization_id": "parent", "canonical_name_en": "Parent",
+                 "status": "active"},
+            ],
+            "relationships": [
+                {"relationship_id": "jv", "subject_organization_id": "site",
+                 "object_organization_id": "operator-a",
+                 "relationship_type": "jointly_operated_by", "status": "accepted"},
+                {"relationship_id": "part", "subject_organization_id": "site",
+                 "object_organization_id": "parent", "relationship_type": "part_of",
+                 "status": "accepted"},
+            ],
+            "events": [],
+        }
+        bib._project_compatibility_groups(conn, registry)
+        group = conn.execute(
+            "SELECT g.organization_id FROM institutions i LEFT JOIN institution_groups g "
+            "ON g.group_id=i.group_id WHERE i.organization_id='site'").fetchone()[0]
+        self.assertEqual(group, "parent")
+        conn.close()
+    def test_exact_duplicate_replays_per_source_slot_and_global_missing_country_is_lookup_only(self):
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+        conn.execute(
+            "INSERT INTO papers (paper_id,slug,title,review_dir) "
+            "VALUES (1,'paper','p','p')")
+        conn.execute(
+            "INSERT INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
+            ("tsinghua-cn", "Tsinghua University", "tsinghua university",
+             "university", "CN", "China", "domestic", "active", "event", 1))
+        conn.execute(
+            "INSERT INTO affiliation_aliases VALUES (?,?,?,?,?,?)",
+            ("tsinghua-alias", "Tsinghua University", "tsinghua university",
+             "", "official", "event"))
+        conn.execute(
+            "INSERT INTO affiliation_alias_candidates VALUES (?,?,?,?,?,?,?)",
+            ("tsinghua-alias", "tsinghua-cn", "CN", "evidence", 1.0,
+             "accepted", "event"))
+        registry = {"policy_version": "policy"}
+        with patch.object(bib, "_registry_digest", return_value="registry"):
+            bib.record_affiliation_observation(
+                conn, 1, {"name": "Tsinghua University", "country": "China",
+                          "source": "review", "source_record_key": "future", "context": {}},
+                0, registry, paper_key="future-paper")
+            bib.record_affiliation_observation(
+                conn, 1, {"name": "Tsinghua University", "country": "China",
+                          "source": "review", "source_record_key": "future", "context": {}},
+                1, registry, paper_key="future-paper")
+            bib.record_affiliation_observation(
+                conn, 1, {"name": "Tsinghua University", "source": "review",
+                          "source_record_key": "future", "context": {}},
+                2, registry, paper_key="future-paper")
+        self.assertEqual(conn.execute(
+            "SELECT COUNT(*) FROM observed_affiliations WHERE is_current=1 "
+            "AND resolved_organization_id='tsinghua-cn'").fetchone()[0], 2)
+        self.assertEqual(conn.execute(
+            "SELECT COUNT(*) FROM observed_affiliations "
+            "WHERE is_current=1 AND observed_country_code=''").fetchone()[0], 1)
+        self.assertEqual(conn.execute(
+            "SELECT COUNT(*) FROM affiliation_pending_cases").fetchone()[0], 1)
+        conn.close()
 
 
 if __name__ == "__main__":

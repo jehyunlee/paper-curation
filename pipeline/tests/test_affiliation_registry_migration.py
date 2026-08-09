@@ -67,7 +67,7 @@ class AffiliationRegistryMigrationTests(unittest.TestCase):
         }), encoding="utf-8")
         return path
 
-    def test_fresh_builder_creates_affiliation_2_projection(self):
+    def test_fresh_builder_creates_affiliation_3_projection(self):
         with tempfile.TemporaryDirectory() as directory:
             registry_path, _ = self.make_registry_file(directory)
             db = Path(directory) / "fresh.sqlite3"
@@ -78,7 +78,7 @@ class AffiliationRegistryMigrationTests(unittest.TestCase):
                 self.assertTrue(bib.is_latest_affiliation_schema(conn))
                 self.assertEqual(conn.execute(
                     "SELECT schema_version FROM affiliation_registry_metadata").fetchone()[0],
-                    "affiliation-2")
+                    "affiliation-3")
                 self.assertEqual(conn.execute(
                     "SELECT COUNT(*) FROM affiliation_organizations").fetchone()[0], 2)
             finally:

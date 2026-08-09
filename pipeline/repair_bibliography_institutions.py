@@ -161,7 +161,15 @@ def acquire_lock(db: Path) -> int:
 
 
 def _schema_name(conn: sqlite3.Connection) -> str:
-    return bib.AFFILIATION_SCHEMA_VERSION if bib.is_latest_affiliation_schema(conn) else "legacy"
+    if bib.is_latest_affiliation_schema(conn):
+        return bib.AFFILIATION_SCHEMA_VERSION
+    try:
+        row = conn.execute(
+            "SELECT schema_version FROM affiliation_registry_metadata WHERE singleton=1"
+        ).fetchone()
+    except sqlite3.Error:
+        row = None
+    return str(row[0]) if row and row[0] else "legacy"
 
 
 def _ddl_statements(script: str) -> list[str]:
@@ -180,8 +188,10 @@ def _ddl_statements(script: str) -> list[str]:
 class _SchemaInstalledConnection:
     """Proxy that prevents a public projector from re-running transactional DDL."""
 
-    def __init__(self, connection: sqlite3.Connection) -> None:
+    def __init__(self, connection: sqlite3.Connection, *,
+                 skip_affiliation_reresolve: bool = False) -> None:
         self._connection = connection
+        self.skip_affiliation_reresolve = skip_affiliation_reresolve
 
     def executescript(self, script: str) -> None:
         if script != bib.AFFILIATION_SCHEMA:
@@ -231,7 +241,22 @@ def _verify_base(db: Path, conn: sqlite3.Connection, base_receipt: Path | None) 
         raise RuntimeError("expected base receipt schema mismatch")
     if not isinstance(expected["generation"], int) or expected["generation"] < 0:
         raise RuntimeError("expected base receipt generation is invalid")
-    actual = _registry_provenance()
+    if expected["schema_version"] == "legacy":
+        actual = _registry_provenance()
+    else:
+        try:
+            row = conn.execute(
+                "SELECT registry_sha256,event_head,policy_version,source_sha256 "
+                "FROM affiliation_registry_metadata WHERE singleton=1").fetchone()
+        except sqlite3.Error as exc:
+            raise RuntimeError(
+                "expected base receipt database provenance is missing") from exc
+        if row is None:
+            raise RuntimeError(
+                "expected base receipt database provenance is missing")
+        actual = dict(zip(
+            ("registry_sha256", "event_head", "policy_version", "source_sha256"),
+            row))
     for key, value in actual.items():
         if expected[key] != value:
             raise RuntimeError(f"expected base receipt {key} mismatch")
@@ -386,7 +411,6 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
             "registry, and generation provenance")
 
     fd = acquire_lock(db)
-    backup = db.with_suffix(db.suffix + ".pre-affiliation-2.sqlite3")
     source = None
     try:
         source = sqlite3.connect(db)
@@ -407,6 +431,12 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
                     "receipt_id": receipt["receipt_id"],
                 }
             return receipt
+        source_schema = _schema_name(source)
+        backup_suffix = (
+            ".pre-affiliation-3.sqlite3"
+            if source_schema == "affiliation-2"
+            else ".pre-affiliation-2.sqlite3")
+        backup = db.with_suffix(db.suffix + backup_suffix)
         source.execute("PRAGMA foreign_keys = OFF")
         # The write snapshot must precede every provenance check and the backup.
         source.execute("BEGIN IMMEDIATE")
@@ -419,16 +449,21 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
         try:
             for statement in _ddl_statements(bib.AFFILIATION_SCHEMA):
                 source.execute(statement)
+            bib.ensure_schema_migrations(source)
             bib.ensure_legacy_institution_schema(source)
-            registry = bib.project_affiliation_registry(_SchemaInstalledConnection(source))
-            rows = source.execute(
-                "SELECT pi.paper_id,pi.raw_name,pi.country_name,pi.source FROM paper_institutions pi "
-                "ORDER BY pi.paper_id,pi.institution_id"
-            ).fetchall()
-            for ordinal, (paper_id, raw, country, source_name) in enumerate(rows):
-                bib.record_affiliation_observation(
-                    source, paper_id, {"raw_name": raw, "country": country, "source": source_name},
-                    ordinal, registry)
+            registry = bib.project_affiliation_registry(_SchemaInstalledConnection(
+                source,
+                skip_affiliation_reresolve=expected["schema_version"] == "affiliation-2"))
+            if expected["schema_version"] == "legacy":
+                rows = source.execute(
+                    "SELECT pi.paper_id,pi.raw_name,pi.country_name,pi.source "
+                    "FROM paper_institutions pi ORDER BY pi.paper_id,pi.institution_id"
+                ).fetchall()
+                for ordinal, (paper_id, raw, country, source_name) in enumerate(rows):
+                    bib.record_affiliation_observation(
+                        source, paper_id,
+                        {"raw_name": raw, "country": country, "source": source_name},
+                        ordinal, registry)
             provenance = _registry_provenance()
             receipt = {
                 "operation": "migrate", "database": str(db), "backup": str(backup),
@@ -458,7 +493,8 @@ def migrate(db: Path, *, execute: bool, base_receipt: Path | None) -> dict:
             source.execute("INSERT INTO affiliation_migration_audit VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                            (receipt_id, "migrate", receipt["base_generation"],
                             base_logical_hash, result_logical_hash,
-                            receipt["registry_sha256"], "legacy", receipt["schema_version"], str(backup),
+                           receipt["registry_sha256"], receipt["schema_from"],
+                           receipt["schema_version"], str(backup),
                             backup_hash, started, receipt["finished_at"],
                             json.dumps(receipt, sort_keys=True, separators=(",", ":"))))
             source.commit()
@@ -519,14 +555,20 @@ def _verify_current_result(db: Path, receipt: dict) -> None:
 
 
 def rollback(db: Path, *, expected_receipt: Path | None = None) -> dict:
-    backup = db.with_suffix(db.suffix + ".pre-affiliation-2.sqlite3")
     receipt_file = expected_receipt or receipt_path(db, "migrate")
-    if not backup.exists() or not receipt_file.exists():
+    if not receipt_file.exists():
         raise RuntimeError("missing migration backup or receipt")
     try:
         receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise RuntimeError("invalid migration receipt") from exc
+    backup = Path(str(receipt.get("backup") or ""))
+    allowed_backups = {
+        db.with_suffix(db.suffix + ".pre-affiliation-2.sqlite3"),
+        db.with_suffix(db.suffix + ".pre-affiliation-3.sqlite3"),
+    }
+    if backup not in allowed_backups or not backup.exists():
+        raise RuntimeError("missing migration backup or receipt")
     if receipt.get("backup") != str(backup) or receipt.get("backup_sha256") != digest(backup):
         raise RuntimeError("migration backup receipt/hash mismatch")
     required = {

@@ -356,7 +356,7 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
             finally:
                 bib.affiliation_registry.release_bibliography_writer_lock(
                     db, descriptor)
-            self.assertFalse(migrator.lock_path(db).exists())
+            self.assertTrue(migrator.lock_path(db).exists())
 
     def test_receipt_recovery_excludes_builder_until_sidecar_is_durable(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -385,7 +385,7 @@ class AffiliationMigrationFaultTests(unittest.TestCase):
             self.assertTrue(builder_attempted)
             self.assertEqual(
                 recovered, json.loads(sidecar.read_text(encoding="utf-8")))
-            self.assertFalse(migrator.lock_path(db).exists())
+            self.assertTrue(migrator.lock_path(db).exists())
 
     def test_builder_cli_reports_lock_contention_as_exit_five(self):
         with tempfile.TemporaryDirectory() as directory:

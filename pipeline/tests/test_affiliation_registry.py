@@ -1,4 +1,5 @@
 import copy
+import base64
 import json
 import hashlib
 import tempfile
@@ -61,6 +62,58 @@ class AffiliationRegistryTests(unittest.TestCase):
         self.assertEqual(baseline["correction_reconciliation"]["correction_rows"], len(corrections))
         self.assertEqual(baseline["correction_reconciliation"]["source_keys"], 4747)
         self.assertEqual(registry.replay_registry(self.snapshot)["event_head"], self.snapshot["event_head"])
+    def test_relationship_transition_preserves_every_legacy_edge_field(self):
+        tampered = copy.deepcopy(self.snapshot)
+        transition = next(
+            event for event in tampered["events"]
+            if event["type"] == "relationship_policy_transition")
+        transition["payload"]["demoted_relationships"][0][
+            "relationship_proposal"]["relationship_type"] = "member_of"
+        transition["digest"] = registry._event_digest(transition)
+        tampered["event_head"] = transition["digest"]
+        with self.assertRaisesRegex(
+                ValueError, "relationship policy transition demotion is malformed"):
+            registry.validate_registry(tampered)
+
+    def test_pinned_root_consolidation_replays_and_conserves_proposals(self):
+        consolidated = registry.consolidate_pinned_roots(
+            self.snapshot, timestamp="2026-08-10T00:00:00Z",
+            actor="test-pinned-consolidation")
+        registry.validate_registry(consolidated)
+        active_keys = [
+            key
+            for row in consolidated["organizations"]
+            if row["status"] == "active"
+            for key in [registry.organization_identity_key(
+                row["canonical_name_en"], row["country"],
+                country_scope=row.get("country_scope"))]
+            if key is not None
+        ]
+        self.assertEqual(len(active_keys), len(set(active_keys)))
+        events = [
+            event for event in consolidated["events"]
+            if event["type"] == "pinned_root_consolidated"
+        ]
+        self.assertEqual(len(events), 143)
+        self.assertEqual(len(consolidated["redirects"]), 332)
+        self.assertEqual(len(consolidated["relationship_proposals"]), 2019)
+        current_sources = {
+            row["source_relationship_id"]
+            for row in consolidated["relationship_proposals"]
+        }
+        superseded_sources = {
+            change["before"]["source_relationship_id"]
+            for event in events
+            for change in event["payload"]["proposal_supersessions"]
+        }
+        self.assertFalse(current_sources & superseded_sources)
+        self.assertEqual(len(current_sources | superseded_sources), 2245)
+        self.assertTrue(all(
+            row["subject_organization_id"] != row["object_organization_id"]
+            for row in consolidated["relationship_proposals"]))
+        self.assertEqual(
+            registry.replay_registry(consolidated)["event_head"],
+            consolidated["event_head"])
 
     def test_untrusted_source_identities_remain_pending_and_known_corrections_are_events(self):
         source = {
@@ -160,7 +213,7 @@ class AffiliationRegistryTests(unittest.TestCase):
                 registry, "OPERATOR_CURATED_CANONICAL_SHA256",
                 registry.canonical_sha256(source)):
             with self.assertRaisesRegex(
-                    ValueError, "operator-curated registry projection mismatch"):
+                    ValueError, "relationship lacks accepted official evidence"):
                 registry.validate_registry(tampered, require_replay=False)
             correction_tampered = copy.deepcopy(built)
             correction_event = next(
@@ -341,7 +394,8 @@ class AffiliationRegistryTests(unittest.TestCase):
                          "https://ror.org/01")
         self.assertEqual(registry.ror_exact_candidates(payload, "EU", "United States"), [])
         v2_payload = {"items": [{
-            "id": "https://ror.org/02",
+            "id": "https://ror.org/02abcde12",
+            "status": "active",
             "names": [{"value": "Example Institute", "types": ["ror_display", "label"]}],
             "locations": [{"geonames_details": {
                 "country_code": "US", "country_name": "United States",
@@ -353,7 +407,7 @@ class AffiliationRegistryTests(unittest.TestCase):
         )[0]
         self.assertEqual(candidate["name"], "Example Institute")
         self.assertEqual(candidate["country"], "US")
-        self.assertEqual(candidate["links"], ["https://example.org"])
+        self.assertEqual(candidate["links"], ["https://example.org/"])
         self.assertTrue(registry.is_generic_fragment("Department of Physics"))
 
     def test_apply_approved_requires_exact_official_relationship_evidence_and_two_reviewers(self):
@@ -546,10 +600,12 @@ class AffiliationRegistryTests(unittest.TestCase):
                 db=None,
                 retrieved_at="2026-08-08T00:00:00Z",
                 proposals=proposals,
+                oracle_dir=directory,
             )
-            with mock.patch.object(
-                    audit, "_request_with_budget",
-                    side_effect=OSError("provider unavailable")):
+            with mock.patch.object(audit, "_oracle_manifest", return_value={}), \
+                    mock.patch.object(
+                        audit, "_request_with_budget",
+                        side_effect=OSError("provider unavailable")):
                 self.assertEqual(audit.command_resolve_pending(args), 6)
 
             self.assertEqual(
@@ -729,6 +785,7 @@ class AffiliationRegistryTests(unittest.TestCase):
                     max_retries=0, circuit_breaker_failures=circuit_failures,
                     retry_backoff_seconds=0, name=[], country="", db=str(database),
                     retrieved_at="2026-08-08T00:00:00Z", proposals=proposals,
+                    oracle_dir=directory,
                 )
                 def fake_request(_url, _context, _args, state):
                     state["requests"] += 1
@@ -736,8 +793,9 @@ class AffiliationRegistryTests(unittest.TestCase):
                         raise request
                     return request
 
-                with mock.patch.object(
-                        audit, "_request_with_budget", side_effect=fake_request):
+                with mock.patch.object(audit, "_oracle_manifest", return_value={}), \
+                        mock.patch.object(
+                            audit, "_request_with_budget", side_effect=fake_request):
                     result = audit.command_resolve_pending(args)
                 conn = sqlite3.connect(database)
                 rows = conn.execute(
@@ -782,7 +840,10 @@ class AffiliationRegistryTests(unittest.TestCase):
             snapshot_bytes = REGISTRY_PATH.read_bytes()
             snapshot = registry.load_registry(REGISTRY_PATH)
             conn.execute(
-                "INSERT INTO affiliation_registry_metadata VALUES (1,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO affiliation_registry_metadata "
+                "(singleton,schema_version,registry_version,registry_sha256,event_head,"
+                "policy_version,source_sha256,projected_at,base_generation,migration_receipt_id) "
+                "VALUES (1,?,?,?,?,?,?,?,?,?)",
                 (bib.AFFILIATION_SCHEMA_VERSION, snapshot["registry_version"],
                  hashlib.sha256(snapshot_bytes).hexdigest(), snapshot["event_head"],
                  snapshot["policy_version"], snapshot["source_sha256"],
@@ -881,3 +942,327 @@ class AffiliationRegistryTests(unittest.TestCase):
             checker.projection_issues(conn, tiny, issues)
             conn.close()
             self.assertIn("orphan compatibility group organization", issues)
+    def test_investigator_pins_oracle_and_rejects_proxy_and_nonpublic_dns(self):
+        self.assertEqual(audit.ROR_V2_ENDPOINT, "https://api.ror.org/v2/organizations")
+        self.assertEqual(audit.ROR_SCHEMA_VERSION, "2.1")
+        self.assertEqual(audit.PSL_VERSION, "2026-07-25_14-20-03_UTC")
+        with mock.patch.dict("os.environ", {"HTTPS_PROXY": "http://proxy.invalid"}, clear=False):
+            with self.assertRaisesRegex(ValueError, "proxy"):
+                audit._require_no_proxy()
+        with mock.patch.object(audit.socket, "getaddrinfo", return_value=[
+                (0, 0, 0, "", ("8.8.8.8", 443)), (0, 0, 0, "", ("127.0.0.1", 443))]):
+            with self.assertRaisesRegex(ValueError, "non-public"):
+                audit._public_addresses("example.edu", 443)
+
+    def test_evaluator_requires_fresh_dual_identity_evidence_and_never_relationships(self):
+        ror = audit._attempt(
+            {"query": "Example University", "country": "US", "retrieved_at": "2026-08-08T00:00:00Z"},
+            provider="ror", status="proposal", url="https://api.ror.org/v2/organizations?query=Example",
+            candidate_external_id="https://ror.org/01abcde12",
+            candidate_name="  Example University  ", candidate_country="US",
+            official_websites=["https://example.edu/", "https://example.edu/"],
+            reason="active_ror_v2_exact_name_country_typed_website", payload_sha256="a" * 64)
+        official = audit._attempt(
+            {"query": "Example University", "country": "US", "retrieved_at": "2026-08-08T00:00:00Z"},
+            provider="official", status="corroborated", url="https://example.edu/",
+            candidate_external_id="https://ror.org/01abcde12",
+            candidate_name="Example University", candidate_country="US", payload_sha256="b" * 64)
+        decision = audit.evaluate_identity_attempts([ror, official], "2026-08-09T00:00:00Z")[0]
+        self.assertEqual((decision["action"], decision["reason"]),
+                         ("eligible_identity_only", "dual_corroborated"))
+        self.assertEqual(
+            decision["candidate"],
+            {
+                "ror_id": "https://ror.org/01abcde12",
+                "name": "Example University",
+                "country": "US",
+                "official_websites": ["https://example.edu/"],
+                "evidence_oracle_version": registry.EVIDENCE_ORACLE_VERSION,
+                "evidence_oracle_sha256": registry.EVIDENCE_ORACLE_SHA256,
+                "evidence": [
+                    {"provider": "official", "retrieved_at": "2026-08-08T00:00:00Z",
+                     "payload_sha256": "b" * 64, "url": "https://example.edu/"},
+                    {"provider": "ror", "retrieved_at": "2026-08-08T00:00:00Z",
+                     "payload_sha256": "a" * 64,
+                     "url": "https://api.ror.org/v2/organizations?query=Example"},
+                ],
+            },
+        )
+        self.assertEqual(
+            registry.apply_identity_transitions(
+                registry.build_registry({}), [decision],
+                timestamp="2026-08-09T00:00:00Z", dry_run=True,
+            )["resolutions"][0]["action"],
+            "create",
+        )
+        stale = audit.evaluate_identity_attempts(
+            [ror, official], "2026-10-01T00:00:00Z")[0]
+        self.assertEqual(stale["action"], "pending")
+        self.assertNotIn("candidate", stale)
+        legacy = dict(ror, url="https://api.ror.org/organizations?query=Example")
+        self.assertEqual(
+            audit.evaluate_identity_attempts([legacy, official], "2026-08-09T00:00:00Z")[0]["action"],
+            "pending",
+        )
+        unsafe_website = dict(ror, official_websites=["https://other.example.edu/"])
+        self.assertEqual(
+            audit.evaluate_identity_attempts([unsafe_website, official], "2026-08-09T00:00:00Z")[0]["action"],
+            "pending",
+        )
+        unsafe_alias = dict(ror, query="Example U")
+        unsafe_alias_official = dict(official, query="Example U")
+        self.assertEqual(
+            audit.evaluate_identity_attempts([unsafe_alias, unsafe_alias_official],
+                                             "2026-08-09T00:00:00Z")[0]["action"],
+            "pending",
+        )
+        relationship = dict(official, relationship_payload={"type": "part_of"})
+        blocked = audit.evaluate_identity_attempts([ror, relationship], "2026-08-09T00:00:00Z")[0]
+        self.assertEqual(blocked["reason"], "relationship_payload_requires_review")
+        self.assertNotIn("candidate", blocked)
+        self.assertEqual(set(blocked), {"query", "country", "action", "reason", "attempts_sha256", "decision_at"})
+        firewall_registry = registry.build_registry({})
+        rejected = registry.apply_identity_transitions(
+            firewall_registry, [dict(decision, relationship_payload={"type": "part_of"})],
+            timestamp="2026-08-09T00:00:00Z", dry_run=True,
+        )
+        self.assertEqual(rejected["resolutions"][0]["action"], "reject")
+        self.assertEqual(rejected["registry"]["relationships"], firewall_registry["relationships"])
+        missing = audit.evaluate_identity_attempts(
+            [dict(ror, country=""), dict(official, country="")], "2026-08-09T00:00:00Z")[0]
+        self.assertEqual(missing["reason"], "country_missing")
+
+    def test_evidence_segments_are_content_addressed_and_idempotent(self):
+        attempt = audit._attempt(
+            {"query": "Example", "country": "US", "retrieved_at": "2026-08-08T00:00:00Z"},
+            provider="ror", status="pending", reason="no_match")
+        with tempfile.TemporaryDirectory() as directory:
+            audit._persist_evidence_segments(directory, [attempt])
+            audit._persist_evidence_segments(directory, [attempt])
+            root = Path(directory)
+            self.assertEqual(len(list((root / "segments").glob("*.jsonl"))), 1)
+            self.assertEqual(len((root / "index.jsonl").read_text(encoding="utf-8").splitlines()), 1)
+    def test_investigated_apply_rejects_head_mismatch_before_transition(self):
+        with tempfile.TemporaryDirectory() as directory:
+            decisions = Path(directory) / "decisions.json"
+            rows = []
+            decisions.write_bytes(audit.canonical_json_bytes({
+                "registry_sha256": "wrong", "event_head": self.snapshot["event_head"],
+                "ledger_head": "", "cohort_head": "", "decisions": rows,
+                "decisions_sha256": audit.canonical_sha256(rows)}))
+            args = SimpleNamespace(registry=str(REGISTRY_PATH), decisions=str(decisions),
+                expected_registry_sha256=audit.canonical_sha256(self.snapshot),
+                expected_event_head=self.snapshot["event_head"], expected_ledger_head="",
+                expected_cohort_head="", max_apply=100, timestamp="2026-08-08T00:00:00Z",
+                dry_run=True)
+            with self.assertRaisesRegex(ValueError, "HEAD_MISMATCH"):
+                audit.command_apply_investigated(args)
+
+    def test_investigated_recovery_quarantines_unreferenced_prepared_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            segment = root / "evidence" / "segments" / "a.jsonl"
+            segment.parent.mkdir(parents=True)
+            segment.write_bytes(b"evidence\n")
+            index = root / "evidence" / "index.jsonl"
+            index.write_bytes(audit.canonical_json_bytes({
+                "segment_sha256": "a", "row_count": 1}))
+            temporary = root / "staged"
+            temporary.write_bytes(b"staged")
+            journal = root / "apply.journal"
+            journal.write_bytes(audit.canonical_json_bytes({
+                "state": "PREPARED", "evidence_segment": str(segment),
+                "evidence_segment_sha256": "a",
+                "ledger": str(root / "ledger.jsonl"),
+                "ledger_entry": base64.b64encode(b"ledger\n").decode(),
+                "publication": [{
+                    "target": str(root / "target"),
+                    "temporary": str(temporary),
+                    "after": base64.b64encode(b"target\n").decode(),
+                }],
+            }))
+            audit._recover_investigated_apply(journal)
+            self.assertFalse(journal.exists())
+            self.assertTrue((root / "evidence" / "quarantine" / "a.jsonl").exists())
+            self.assertFalse(temporary.exists())
+            self.assertEqual(index.read_bytes(), b"")
+
+    def test_non_dry_investigated_apply_uses_ledger_and_db_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            snapshot = copy.deepcopy(self.snapshot)
+            for key in (
+                    "ledger_head", "cohort_version", "cohort_sha256",
+                    "generation_descriptor_sha256", "generation_id"):
+                snapshot.pop(key, None)
+            registry_path = root / "registry.json"
+            registry_path.write_bytes(audit.canonical_json_bytes(snapshot))
+            decision = {"pending_id": "pending-1", "query": "Example", "country": "US",
+                        "action": "eligible_identity_only", "disposition": "RESOLVED",
+                        "reason": "dual_corroborated", "decision_at": "2026-08-08T00:00:00Z"}
+            decisions = {"registry_sha256": audit.canonical_sha256(snapshot),
+                         "event_head": snapshot["event_head"], "ledger_head": "",
+                         "cohort_head": "", "cohort_sha256": audit.canonical_sha256([]),
+                         "decisions": [decision]}
+            decisions["decisions_sha256"] = audit.canonical_sha256(decisions["decisions"])
+            decision_path = root / "decisions.json"
+            decision_path.write_bytes(audit.canonical_json_bytes(decisions))
+            args = SimpleNamespace(registry=str(registry_path), decisions=str(decision_path),
+                expected_registry_sha256=audit.canonical_sha256(snapshot),
+                expected_event_head=snapshot["event_head"], expected_ledger_head="",
+                expected_cohort_head="", max_apply=100, timestamp="2026-08-08T00:00:00Z",
+                dry_run=False, db=str(root / "bibliography.db"), evidence_dir=str(root / "evidence"),
+                ledger=str(root / "ledger.jsonl"), corrections=str(root / "corrections.jsonl"),
+                baseline=str(root / "baseline.json"), receipt=str(root / "receipt.json"),
+                effective_date="2026-08-08", journal=str(root / "journal.json"),
+                generation_descriptor=str(root / "generation.json"))
+            transition = mock.Mock(return_value={
+                "registry": copy.deepcopy(snapshot),
+                "resolutions": [{
+                    "query": "Example", "country": "US",
+                    "action": "eligible_identity_only",
+                    "organization_id": "organization-1",
+                    "reason": "dual_corroborated",
+                }],
+            })
+            db_heads = {
+                "registry_sha256": audit.canonical_sha256(snapshot),
+                "event_head": snapshot["event_head"],
+                "ledger_head": snapshot["event_head"],
+                "cohort_head": "", "generation_descriptor_sha256": "old-descriptor",
+                "generation_id": "old-generation",
+            }
+            with mock.patch.object(
+                    audit.affiliation_registry, "apply_identity_transitions", transition,
+                    create=True), mock.patch.object(
+                        audit, "_apply_decisions_to_db") as apply_db, mock.patch.object(
+                            audit, "_database_apply_heads", return_value=db_heads):
+                self.assertEqual(audit.command_apply_investigated(args), 0)
+            self.assertTrue(Path(args.ledger).exists())
+            self.assertFalse(Path(args.journal).exists())
+            apply_db.assert_called_once()
+    def test_investigated_apply_rejects_incomplete_identity_transition(self):
+        decision = {
+            "query": "Example", "country": "US",
+            "action": "eligible_identity_only",
+        }
+        with self.assertRaisesRegex(
+                ValueError, "INCOMPLETE_IDENTITY_TRANSITION"):
+            audit._eligible_resolution_map([decision], [])
+        with self.assertRaisesRegex(
+                ValueError, "INCOMPLETE_IDENTITY_TRANSITION"):
+            audit._eligible_resolution_map([decision], [{
+                "query": "Example", "country": "US",
+                "action": "reject", "organization_id": None,
+            }])
+
+    def test_zero_eligible_apply_finalizes_ledger_join_and_descriptor(self):
+        bib = checker.bib
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            snapshot = registry.build_registry({})
+            registry_path = root / "registry.json"
+            corrections_path = root / "affiliation_registry_corrections.jsonl"
+            baseline_path = root / "baseline.json"
+            database = root / "bibliography.sqlite3"
+            registry_path.write_bytes(audit.canonical_json_bytes(snapshot))
+            corrections = registry.correction_projection(snapshot)
+            corrections_path.write_bytes(audit._jsonl_bytes(corrections))
+            baseline = registry.baseline_projection(
+                snapshot, corrections, effective_date="2026-08-08")
+            baseline["database_baseline"] = {"sentinel": 1}
+            baseline_path.write_bytes(audit.canonical_json_bytes(baseline))
+
+            connection = sqlite3.connect(database)
+            connection.execute("PRAGMA foreign_keys=ON")
+            connection.executescript(bib.SCHEMA + bib.AFFILIATION_SCHEMA)
+            bib.project_affiliation_registry(
+                connection, registry=snapshot, ensure_schema=False)
+            connection.execute(
+                "INSERT INTO affiliation_pending_cases "
+                "(pending_id,normalized_raw_name,observed_country_code,"
+                "external_identifiers_json,status,reason_code,first_seen_at,"
+                "last_seen_at,active_observation_count,lifetime_observation_count) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?)",
+                ("pending-1", "example", "", "{}", "open", "country_missing",
+                 "2026-08-08T00:00:00Z", "2026-08-08T00:00:00Z", 1, 1))
+            connection.commit()
+            connection.close()
+
+            decision_rows = [{
+                "pending_id": "pending-1",
+                "query": "Example",
+                "country": "",
+                "action": "pending",
+                "disposition": "COUNTRY_MISSING_OR_UNMAPPABLE",
+                "reason": "country_missing",
+                "decision_at": "2026-08-08T00:00:00Z",
+            }]
+            cohort_sha256 = audit.canonical_sha256(["pending-1"])
+            decisions = {
+                "schema_version": "affiliation-decisions-v1",
+                "cohort_sha256": cohort_sha256,
+                "decisions": decision_rows,
+                "decisions_sha256": audit.canonical_sha256(decision_rows),
+                "unclassified_count": 0,
+                "heads": {
+                    "registry_sha256": audit.canonical_sha256(snapshot),
+                    "event_head": snapshot["event_head"],
+                    "database_sha256": audit._database_sha256(database),
+                },
+            }
+            decisions_path = root / "decisions.json"
+            decisions_path.write_bytes(audit.canonical_json_bytes(decisions))
+            args = SimpleNamespace(
+                registry=str(registry_path),
+                decisions=str(decisions_path),
+                expected_registry_sha256="",
+                expected_event_head="",
+                expected_ledger_head="",
+                expected_cohort_head="",
+                max_apply=100,
+                canary=False,
+                timestamp="2026-08-08T00:00:00Z",
+                dry_run=False,
+                db=str(database),
+                evidence_dir=str(root / "evidence"),
+                ledger=str(root / "ledger.jsonl"),
+                corrections=str(corrections_path),
+                baseline=str(baseline_path),
+                receipt=str(root / "receipt.json"),
+                effective_date="2026-08-08",
+                journal=str(root / "journal.json"),
+                generation_descriptor=str(root / "generation.json"),
+            )
+
+            self.assertEqual(audit.command_apply_investigated(args), 0)
+            self.assertFalse(Path(args.journal).exists())
+            self.assertEqual(audit._verified_ledger_tail(Path(args.ledger)),
+                             registry.load_registry(registry_path)["ledger_head"])
+            receipt = json.loads(Path(args.receipt).read_text(encoding="utf-8"))
+            descriptor = json.loads(
+                Path(args.generation_descriptor).read_text(encoding="utf-8"))
+            self.assertTrue(receipt["vacuous_noop"])
+            self.assertEqual(receipt["applied_count"], 0)
+            self.assertEqual(descriptor["ledger_head"], receipt["ledger_head"])
+            self.assertEqual(
+                json.loads(baseline_path.read_text(encoding="utf-8"))[
+                    "database_baseline"],
+                {"sentinel": 1},
+            )
+            connection = sqlite3.connect(database)
+            try:
+                joined = connection.execute(
+                    "SELECT pending_id,disposition,decision_sha256 "
+                    "FROM affiliation_cohort_dispositions").fetchall()
+                metadata = connection.execute(
+                    "SELECT ledger_head,cohort_sha256,generation_id "
+                    "FROM affiliation_registry_metadata WHERE singleton=1").fetchone()
+            finally:
+                connection.close()
+            self.assertEqual(joined, [(
+                "pending-1", "COUNTRY_MISSING_OR_UNMAPPABLE",
+                decisions["decisions_sha256"])])
+            self.assertEqual(metadata, (
+                receipt["ledger_head"], cohort_sha256,
+                descriptor["generation_id"]))
