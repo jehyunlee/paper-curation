@@ -180,6 +180,12 @@ class BibliographySyncCASTests(unittest.TestCase):
             "strict_result_sha256": "strict-digest",
             "git_revision": "revision",
             "git_blobs": {target: "blob" for target in sync._GIT_TARGETS},
+            "generation_provenance": {
+                "git_revision": "revision",
+                "registry_sha256": "registry",
+                "event_head": "event",
+                "ledger_head": "ledger",
+            },
             "lease_protocol": sync.LEASE_PROTOCOL_VERSION,
             "fence_token": 1,
             "authority_host_uuid": "test-host",
@@ -214,6 +220,10 @@ class BibliographySyncCASTests(unittest.TestCase):
             "ledger_head": manifest["ledger_head"],
         }
         sync._validate_manifest(manifest)
+        missing = dict(manifest)
+        missing.pop("generation_provenance")
+        with self.assertRaisesRegex(RuntimeError, "generation_provenance"):
+            sync._validate_manifest(missing)
         tampered = json.loads(json.dumps(manifest))
         tampered["generation_provenance"]["ledger_head"] = "event"
         with self.assertRaisesRegex(RuntimeError, "generation provenance"):
@@ -465,6 +475,10 @@ class BibliographySyncCASTests(unittest.TestCase):
                     f"{sync.GENERATIONS}/{3:020d}-{'b' * 64}.sqlite3"),
                 "registry_sha256": registry_sha,
                 "source_sha256": source_sha,
+            }
+            expected["generation_provenance"] = {
+                **expected["generation_provenance"],
+                "registry_sha256": registry_sha,
             }
             receipt = {
                 "operation": "migrate",

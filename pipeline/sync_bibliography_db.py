@@ -397,6 +397,7 @@ def _required_manifest_fields(*, rollback: bool = False) -> set[str]:
         "ledger_head", "cohort_version", "cohort_sha256",
         "relationship_set_sha256", "sql_contract_sha256",
         "strict_result_sha256", "git_revision", "git_blobs",
+        "generation_provenance",
         "migration_receipt_id", "migration_receipt_sha256",
         "migration_receipt_object", "updated_at", "object",
         "lease_protocol", "fence_token", "authority_host_uuid",
