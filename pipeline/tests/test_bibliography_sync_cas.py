@@ -348,11 +348,16 @@ class BibliographySyncCASTests(unittest.TestCase):
             for path in staged.values():
                 path.write_bytes(b"artifact")
             calls = []
+            directory_fsyncs = []
             with patch.object(
                     sync.os, "replace",
                     side_effect=lambda source, target: calls.append(
                         (Path(source), Path(target)))), \
-                 patch.object(sync.migrator, "_fsync"):
+                 patch.object(sync.migrator, "_fsync"), \
+                 patch.object(
+                     sync.migrator, "_fsync_directory",
+                     side_effect=lambda path: directory_fsyncs.append(
+                         Path(path))):
                 sync._install_artifacts_descriptor_last(
                     staged, destinations)
             self.assertEqual(
@@ -365,6 +370,15 @@ class BibliographySyncCASTests(unittest.TestCase):
                 calls[-1],
                 (staged["generation_descriptor"],
                  destinations["generation_descriptor"]),
+            )
+            self.assertEqual(
+                directory_fsyncs,
+                [
+                    destinations[role].parent
+                    for role in (
+                        "cohort", "decisions", "ledger",
+                        "generation_descriptor")
+                ],
             )
     def test_fresh_schema_origin_receipt_is_content_derived_and_stable(self):
         metadata = {
@@ -500,6 +514,31 @@ class BibliographySyncCASTests(unittest.TestCase):
             metrics["releaseError"],
             {"type": "OSError", "message": "release failed"})
         self.assertNotIn("releasedMonotonicNs", metrics)
+    def test_measured_pull_lock_surfaces_release_only_failure(self):
+        metrics = {
+            "acquisitions": 0, "timeouts": 0, "busyRejections": 0,
+            "acquisitionFailures": 0, "releaseFailures": 0,
+        }
+        with patch.object(
+                sync.affiliation_registry,
+                "acquire_bibliography_writer_lock", return_value=90), \
+             patch.object(
+                 sync.affiliation_registry,
+                 "release_bibliography_writer_lock",
+                 side_effect=OSError("release failed")), \
+             patch.object(sync.os, "get_inheritable", return_value=False):
+            with self.assertRaisesRegex(OSError, "release failed"):
+                with sync._measured_pull_writer_lock(metrics):
+                    pass
+        self.assertEqual(metrics["releaseOutcome"], "unknown")
+        self.assertEqual(metrics["releaseFailures"], 1)
+        self.assertEqual(
+            metrics["releaseError"],
+            {"type": "OSError", "message": "release failed"})
+        self.assertNotIn("releasedMonotonicNs", metrics)
+        self.assertNotIn("holdSeconds", metrics)
+        self.assertIn("releaseAttemptFinishedMonotonicNs", metrics)
+
 
     def test_changed_migration_origin_requires_bound_controlled_remigration(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -921,6 +960,27 @@ class BibliographySyncCASTests(unittest.TestCase):
             with patch("builtins.print"):
                 self.assertEqual(
                     checker.main(["--db", str(database)]), 3)
+    def test_checker_rechecks_pull_install_journal_under_reader_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "bibliography.sqlite3"
+            database.write_bytes(b"not opened before journal recheck")
+            journal = database.with_suffix(".pull-install.json")
+
+            def acquire_reader_lock(_database):
+                journal.write_text('{"status":"prepared"}', encoding="utf-8")
+                return 91
+
+            with patch.object(
+                    checker.bib.affiliation_registry,
+                    "acquire_bibliography_reader_lock",
+                    side_effect=acquire_reader_lock), \
+                 patch.object(
+                     checker.bib.affiliation_registry,
+                     "release_bibliography_reader_lock") as release, \
+                 patch("builtins.print"):
+                self.assertEqual(
+                    checker.main(["--db", str(database)]), 3)
+            release.assert_called_once_with(database, 91)
 
     def test_push_rejects_missing_migration_receipt_before_transport(self):
         with tempfile.TemporaryDirectory() as directory:

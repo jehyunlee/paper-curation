@@ -571,6 +571,7 @@ def _install_artifacts_descriptor_last(
         destination.parent.mkdir(parents=True, exist_ok=True)
         os.replace(staged[role], destination)
         migrator._fsync(destination)
+        migrator._fsync_directory(destination.parent)
 
 
 def _validate_manifest(manifest: dict, *, rollback: bool = False,
