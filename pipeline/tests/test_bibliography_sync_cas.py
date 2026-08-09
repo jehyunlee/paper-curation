@@ -511,6 +511,29 @@ class BibliographySyncCASTests(unittest.TestCase):
                         RuntimeError, "changed without fresh rotation"):
                     sync._validate_origin_transition(
                         ordinary, manifest, receipt, "new-receipt-digest")
+                connection = sqlite3.connect(db)
+                connection.execute(
+                    "CREATE TABLE post_migration_projection(marker TEXT NOT NULL)")
+                connection.execute(
+                    "INSERT INTO post_migration_projection VALUES ('strict-final')")
+                connection.commit()
+                connection.close()
+                strict_manifest = sync.local_manifest()
+                self.assertNotEqual(
+                    strict_manifest["logical_sha256"],
+                    receipt["result_logical_sha256"])
+                strict_manifest["strict_affiliation_generation"] = True
+                strict_manifest["affiliation_artifacts"] = {
+                    role: {
+                        "sha256": "a" * 64,
+                        "object": sync._artifact_object(
+                            strict_manifest["generation"], role, "a" * 64),
+                    }
+                    for role in sync.AFFILIATION_ARTIFACT_ROLES
+                }
+                sync._validate_origin_transition(
+                    ordinary, strict_manifest, receipt,
+                    "new-receipt-digest")
                 complete_report = {
                     key: value for key, value in receipt.items()
                     if key != "result_sha256"

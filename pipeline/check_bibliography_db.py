@@ -41,7 +41,7 @@ def generation_descriptor_issues(path, metadata, issues):
         issues.append("generation descriptor ID mismatch")
     for key in (
             "registry_sha256", "event_head", "ledger_head", "cohort_version",
-            "cohort_sha256"):
+            "cohort_sha256", "decision_artifact_sha256"):
         if descriptor.get(key) != metadata.get(key):
             issues.append(f"generation descriptor {key} mismatch")
     body = dict(descriptor)
@@ -94,6 +94,13 @@ def closed_cohort_issues(
     except Exception as exc:
         issues.append(f"closed cohort artifact read failed: {exc}")
         return
+    if (
+            cohort.get("schema_version") != "affiliation-frozen-cohort-v1"
+            or decisions_artifact.get("schema_version") !=
+            "affiliation-investigation-v2"
+            or not isinstance(cohort.get("heads"), dict)
+            or decisions_artifact.get("heads") != cohort["heads"]):
+        issues.append("closed cohort schema or frozen-head binding mismatch")
     if bib.affiliation_registry.canonical_json_bytes(cohort) != cohort_raw:
         issues.append("frozen cohort artifact is not canonical JSON")
     if bib.affiliation_registry.canonical_json_bytes(
@@ -1028,6 +1035,12 @@ def main(argv=None) -> int:
                 issues.append(
                     "strict cohort/decision/ledger/generation descriptor arguments required")
             else:
+                try:
+                    decision_binding = json.loads(
+                        args.decisions.read_bytes()).get(
+                            "decisions_sha256", "")
+                except (OSError, json.JSONDecodeError, AttributeError):
+                    decision_binding = ""
                 metadata = {
                     "registry_sha256": meta[1],
                     "event_head": meta[2],
@@ -1036,6 +1049,7 @@ def main(argv=None) -> int:
                     "cohort_sha256": meta[15],
                     "generation_descriptor_sha256": meta[18],
                     "generation_id": meta[19],
+                    "decision_artifact_sha256": decision_binding,
                 }
                 closed_cohort_issues(
                     args.cohort, args.decisions, metadata, issues, conn=conn)

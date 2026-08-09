@@ -1058,6 +1058,23 @@ def _validate_origin_transition(expected: dict, manifest: dict,
             and not _has_migration_audit(LOCAL_DB)):
         _validate_fresh_schema_receipt(receipt, manifest)
         return
+    if (
+            manifest.get("strict_affiliation_generation") is True
+            and _manifest_artifacts(manifest)
+            and receipt.get("operation") == "migrate"):
+        required = {
+            "base_generation": expected["generation"],
+            "base_sha256": expected["sha256"],
+            "base_logical_sha256": expected["logical_sha256"],
+            "schema_from": expected["schema_version"],
+            "schema_to": manifest["schema_version"],
+            "receipt_id": manifest["migration_receipt_id"],
+        }
+        if any(receipt.get(key) != value for key, value in required.items()):
+            raise RuntimeError(
+                "strict generation migration receipt does not bind the synchronized base")
+        _verify_complete_migration_receipt(receipt, manifest, LOCAL_DB)
+        return
     if expected.get("requires_controlled_remigration"):
         required = {
             "operation": "migrate",
