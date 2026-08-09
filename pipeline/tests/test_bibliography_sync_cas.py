@@ -1200,6 +1200,38 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
             with sync.bibliography_lock(database, "writer", timeout=1):
                 self.assertTrue(lock.exists())
 
+    @unittest.skipUnless(sys.platform == "darwin", "APFS authority probe is Darwin-specific")
+    def test_authority_program_acquires_on_apfs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            control = root / "publish.control.lock"
+            fence = root / "publish.fence"
+            lease = root / "publish.lease.json"
+            owner = {
+                "owner_run_id": "run",
+                "owner_writer_uuid": "writer",
+                "owner_client_host_uuid": "client",
+            }
+            acquired = subprocess.run(
+                [
+                    sys.executable, "-c", sync._AUTHORITY_PROGRAM,
+                    str(control), str(fence), str(lease), "acquire",
+                    sync.canonical_manifest(owner),
+                ],
+                check=True, capture_output=True, text=True,
+            )
+            payload = json.loads(acquired.stdout)
+            self.assertEqual(payload["status"], "ok")
+            self.assertEqual(payload["lease"]["fence_token"], 1)
+            subprocess.run(
+                [
+                    sys.executable, "-c", sync._AUTHORITY_PROGRAM,
+                    str(control), str(fence), str(lease), "release",
+                    sync.canonical_manifest(payload["lease"]),
+                ],
+                check=True, capture_output=True, text=True,
+            )
+            self.assertFalse(lease.exists())
     def test_authority_lease_polls_then_returns_higher_fence(self):
         owner = {"owner_run_id": "run", "owner_writer_uuid": "writer",
                  "owner_client_host_uuid": "client"}

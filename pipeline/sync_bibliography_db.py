@@ -106,7 +106,7 @@ def remote(command, capture=False):
     return run(["ssh", "-o", f"ConnectTimeout={AUTHORITY_RPC_TIMEOUT_SECONDS}",
                 HOST, command], capture=capture, timeout=AUTHORITY_RPC_TIMEOUT_SECONDS)
 _AUTHORITY_PROGRAM = r'''
-import fcntl, hashlib, json, os, subprocess, sys, time
+import fcntl, hashlib, json, os, plistlib, subprocess, sys, time
 control, fence_path, lease_path, action, owner_json = sys.argv[1:6]
 owner = json.loads(owner_json)
 def durable(path, value):
@@ -128,10 +128,18 @@ def load(path):
     try:
         with open(path, encoding="utf-8") as handle: return json.load(handle)
     except FileNotFoundError: return None
+def filesystem_type(path):
+    if sys.platform == "darwin":
+        rows = subprocess.check_output(["df", "-P", path], text=True).splitlines()
+        device = rows[-1].split()[0]
+        info = plistlib.loads(subprocess.check_output(
+            ["diskutil", "info", "-plist", device]))
+        return str(info.get("FilesystemType", "")).lower()
+    return subprocess.check_output(
+        ["stat", "-f", "-c", "%T", path], text=True).strip().lower()
 if action == "acquire":
     try:
-        filesystem = subprocess.check_output(
-            ["stat", "-f", "%T", os.path.dirname(control) or "."], text=True).strip()
+        filesystem = filesystem_type(os.path.dirname(control) or ".")
     except Exception:
         raise SystemExit(74)
     if filesystem != "apfs":
