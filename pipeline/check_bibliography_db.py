@@ -22,8 +22,9 @@ def canonical_sha256(value):
         bib.affiliation_registry.canonical_json_bytes(value)).hexdigest()
 
 
-def inherited_writer_lock_descriptor(database: Path, descriptor: int) -> int:
-    """Validate a writer-lock descriptor inherited from the CAS publisher."""
+def validate_held_writer_lock_descriptor(
+        database: Path, descriptor: int) -> int:
+    """Validate the CAS publisher's writer lock in the current process."""
     lock_path = bib.affiliation_registry.bibliography_writer_lock_path(database)
     try:
         descriptor_stat = os.fstat(descriptor)
@@ -31,10 +32,10 @@ def inherited_writer_lock_descriptor(database: Path, descriptor: int) -> int:
         if (
                 descriptor_stat.st_dev != path_stat.st_dev
                 or descriptor_stat.st_ino != path_stat.st_ino):
-            raise RuntimeError("inherited writer lock refers to another inode")
+            raise RuntimeError("held writer lock refers to another inode")
         fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except (OSError, ValueError) as exc:
-        raise RuntimeError("invalid inherited bibliography writer lock") from exc
+        raise RuntimeError("invalid held bibliography writer lock") from exc
     return descriptor
 
 
@@ -726,7 +727,7 @@ def evidence_issues(registry, release_date, issues, warnings):
                 issues.append("relationship evidence revalidation exceeds 90 days")
             elif age_days >= 60:
                 warnings.append("relationship evidence revalidation due within 30 days")
-def main(argv=None) -> int:
+def main(argv=None, *, held_writer_lock_descriptor: int | None = None) -> int:
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--db', type=Path, default=bib.DEFAULT_DB); ap.add_argument('--registry', type=Path, default=bib.REGISTRY_PATH)
     ap.add_argument('--baseline', type=Path, default=Path(__file__).with_name('affiliation_registry_baseline.json'))
@@ -737,8 +738,6 @@ def main(argv=None) -> int:
     ap.add_argument('--decisions', type=Path)
     ap.add_argument('--generation-descriptor', type=Path)
     ap.add_argument('--ledger', type=Path)
-    ap.add_argument(
-        '--inherited-writer-lock-fd', type=int, help=argparse.SUPPRESS)
     args=ap.parse_args(argv); issues=[]; warnings=[]; report={'ok':False,'issues':issues,'warnings':warnings}
     marker = args.db.with_suffix(args.db.suffix + ".remigration-required.json")
     if marker.exists():
@@ -754,12 +753,12 @@ def main(argv=None) -> int:
         issues.append(f"registry baseline read failed: {exc}")
     if not args.db.exists(): issues.append(f'missing database: {args.db}')
     else:
-        owns_reader_lock = args.inherited_writer_lock_fd is None
+        owns_reader_lock = held_writer_lock_descriptor is None
         lock_descriptor = (
             bib.affiliation_registry.acquire_bibliography_reader_lock(args.db)
             if owns_reader_lock
-            else inherited_writer_lock_descriptor(
-                args.db, args.inherited_writer_lock_fd))
+            else validate_held_writer_lock_descriptor(
+                args.db, held_writer_lock_descriptor))
         descriptor_path = args.generation_descriptor
         descriptor_before = (
             descriptor_path.read_bytes() if descriptor_path and descriptor_path.exists() else None)

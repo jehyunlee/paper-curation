@@ -1201,7 +1201,7 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
             with sync.bibliography_lock(database, "writer", timeout=1):
                 self.assertTrue(lock.exists())
 
-    def test_publishability_checker_inherits_active_writer_lock(self):
+    def test_publishability_checker_reuses_active_writer_lock_in_process(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "bibliography.sqlite3"
             database.touch()
@@ -1217,24 +1217,25 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
                     patch.object(
                         sync, "_local_affiliation_metadata",
                         return_value=metadata), \
-                    patch.object(sync, "run") as runner:
+                    patch.object(sync, "run") as runner, \
+                    patch.object(checker, "main", return_value=0) as check_main:
                 with sync.bibliography_writer_lock(database) as descriptor:
                     sync._ensure_publishable(
-                        inherited_writer_lock_fd=descriptor)
-            command = runner.call_args.args[0]
+                        held_writer_lock_descriptor=descriptor)
+            runner.assert_not_called()
+            checker_args = check_main.call_args.args[0]
             self.assertEqual(
-                runner.call_args.kwargs["pass_fds"], (descriptor,))
-            self.assertEqual(
-                command[command.index("--inherited-writer-lock-fd") + 1],
-                str(descriptor))
+                check_main.call_args.kwargs["held_writer_lock_descriptor"],
+                descriptor)
+            self.assertNotIn("--inherited-writer-lock-fd", checker_args)
 
-    def test_inherited_writer_lock_is_inode_bound(self):
+    def test_held_writer_lock_is_inode_bound(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "bibliography.sqlite3"
             database.touch()
             with sync.bibliography_writer_lock(database) as descriptor:
                 self.assertEqual(
-                    checker.inherited_writer_lock_descriptor(
+                    checker.validate_held_writer_lock_descriptor(
                         database, descriptor),
                     descriptor)
                 other = os.open(
@@ -1242,7 +1243,7 @@ class BibliographySyncFlockLeaseTests(unittest.TestCase):
                     os.O_CREAT | os.O_RDWR, 0o600)
                 try:
                     with self.assertRaisesRegex(RuntimeError, "another inode"):
-                        checker.inherited_writer_lock_descriptor(
+                        checker.validate_held_writer_lock_descriptor(
                             database, other)
                 finally:
                     os.close(other)
