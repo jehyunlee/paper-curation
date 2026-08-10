@@ -694,13 +694,10 @@ def _ensure_publishable(
         raise RuntimeError("remigration required before bibliography synchronization")
     if not LOCAL_DB.exists():
         raise RuntimeError(f"missing local DB: {LOCAL_DB}")
-    metadata = _local_affiliation_metadata()
-    if (metadata.get("schema_version") != bibliography.AFFILIATION_SCHEMA_VERSION or not all(
-            metadata.get(key) for key in (
-                "registry_sha256", "event_head", "policy_version",
-                "source_sha256", "migration_receipt_id"))):
-        raise RuntimeError(
-            f"{bibliography.AFFILIATION_SCHEMA_VERSION} metadata is missing; migrate and validate before push")
+    # The affiliation registry was retired: there is no metadata singleton, no
+    # registry digest and no migration receipt to assert any more. The
+    # publication gate is now `check_bibliography_db.py --strict`, invoked just
+    # below, which checks the data instead of a contract row.
     checker_path = ROOT / "pipeline" / "check_bibliography_db.py"
     artifact_paths = _artifact_paths(affiliation_artifacts)
     checker_args = ["--db", str(LOCAL_DB), "--strict"]
