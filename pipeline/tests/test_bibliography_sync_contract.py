@@ -183,6 +183,79 @@ class GitTargetTests(unittest.TestCase):
                     sync._validate_git_blobs({"git_blobs": blobs})
 
 
+class CliSurfaceTests(unittest.TestCase):
+    """The CLI must offer exactly the operations that still exist.
+
+    Trimming the retired registry's flags took `--phase-receipt` with them, and
+    `run_update_force` calls `--pull` with it on every cycle — the cycle died on
+    `'Namespace' object has no attribute 'phase_receipt'`.
+    """
+
+    def _help(self):
+        return subprocess.run(
+            [sys.executable, str(PIPELINE_DIR / "sync_bibliography_db.py"),
+             "--help"], capture_output=True, text=True, timeout=120).stdout
+
+    def test_surviving_flags_are_offered(self):
+        help_text = self._help()
+        for flag in ("--pull", "--push", "--status", "--bootstrap",
+                     "--base-receipt", "--phase-receipt"):
+            with self.subTest(flag=flag):
+                self.assertIn(flag, help_text)
+
+    def test_retired_registry_flags_are_gone(self):
+        help_text = self._help()
+        for flag in ("--cohort", "--decisions", "--ledger",
+                     "--generation-descriptor", "--migration-receipt",
+                     "--rollback-generation", "--seed-legacy-recovery"):
+            with self.subTest(flag=flag):
+                self.assertNotIn(flag, help_text)
+
+
+class PullResilienceTests(unittest.TestCase):
+    """An unreachable authority must not stop papers being reviewed.
+
+    The opening `--pull` only refreshes a base receipt. When the Mac mini was
+    unreachable (`lookup ssh.jehyunlee.dev: no such host`) that failure aborted
+    the whole run before a single review was written. `--push` keeps failing
+    hard: publishing is the point of the release path.
+    """
+
+    def setUp(self):
+        import run_update_force as update
+        self.update = update
+
+    def _fake_run(self, returncode, stderr):
+        from types import SimpleNamespace
+
+        def run(*args, **kwargs):
+            return SimpleNamespace(returncode=returncode, stdout="",
+                                   stderr=stderr)
+        return run
+
+    def test_unreachable_pull_is_survivable(self):
+        from unittest.mock import patch
+        with patch.object(self.update.subprocess, "run",
+                          self._fake_run(255, "lookup ssh.example.dev: no such host")):
+            self.assertFalse(
+                self.update.sync_bibliography_db("--pull", required=False))
+
+    def test_unreachable_push_still_raises(self):
+        from unittest.mock import patch
+        with patch.object(self.update.subprocess, "run",
+                          self._fake_run(255, "lookup ssh.example.dev: no such host")):
+            with self.assertRaises(RuntimeError):
+                self.update.sync_bibliography_db("--push")
+
+    def test_a_real_failure_still_raises_even_when_optional(self):
+        """Only unreachability is tolerated — corruption is not."""
+        from unittest.mock import patch
+        with patch.object(self.update.subprocess, "run",
+                          self._fake_run(2, "SQLite integrity check failed")):
+            with self.assertRaises(RuntimeError):
+                self.update.sync_bibliography_db("--pull", required=False)
+
+
 class ManifestRoundTripTests(unittest.TestCase):
     """A manifest this module builds is a manifest this module accepts."""
 

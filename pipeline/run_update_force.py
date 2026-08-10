@@ -300,18 +300,37 @@ def log(msg):
     print(f"[{ts}] {msg}", flush=True)
 
 
-def sync_bibliography_db(direction):
-    """A bibliography synchronization failure blocks the update publication path."""
+def sync_bibliography_db(direction, *, required=True):
+    """Synchronize the bibliography DB with the authority host.
+
+    `--push` is required: publishing a generation is the point of the release
+    path and a failure there has to stop it. The opening `--pull` is not — it
+    refreshes a base receipt, and when the authority is simply unreachable
+    (DNS failure, tunnel down, laptop off the network) refusing to review papers
+    is the wrong response. An unreachable host is reported and the run
+    continues on the local DB; the closing push will fail loudly if it is still
+    unreachable then.
+    """
     result = subprocess.run(
         [sys.executable, str(PIPELINE_DIR / "sync_bibliography_db.py"), direction],
         cwd=str(PROJECT_ROOT), capture_output=True, text=True, timeout=180,
     )
     if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip()
+        unreachable = any(
+            marker in detail for marker in (
+                "no such host", "Connection closed", "Connection refused",
+                "Operation timed out", "Host key verification failed",
+                "Could not resolve hostname", "Network is unreachable"))
+        if not required and unreachable:
+            log(f"[bibliography-sync] {direction} SKIPPED — authority "
+                f"unreachable; continuing on the local DB")
+            return False
         raise RuntimeError(
-            f"bibliography sync failed ({direction}): "
-            f"{result.stderr.strip() or result.stdout.strip()}")
+            f"bibliography sync failed ({direction}): {detail}")
     if result.stdout.strip():
         log(f"[bibliography-sync] {result.stdout.strip()}")
+    return True
 
 
 def run_bibliography_release_steps(run_step):
@@ -1333,6 +1352,23 @@ _REVIEW_INT_TAGS = ("fig_essence", "fig_achievement", "fig_how",
                     "novelty", "technical", "significance", "clarity", "overall")
 
 
+def _review_response_is_complete(data):
+    """Is a model response a usable review, or a partial one?
+
+    A call that returned only `essence` was cached and then replayed forever:
+    the paper's Achievement and Originality sections stayed empty and deleting
+    review.md changed nothing, because regeneration read the same cache. 488
+    papers were holding such an entry. Requiring the narrative fields keeps a
+    partial answer out of the cache — it is still returned to the caller for
+    this run, it just never becomes permanent.
+    """
+    if not isinstance(data, dict):
+        return False
+    required = ("essence", "known", "gap", "why", "approach", "achievement",
+                "how", "originality", "verdict")
+    return all(str(data.get(field) or "").strip() for field in required)
+
+
 def _salvage_review_data(data):
     """Recover a structured review when the model invoked `emit_review` but
     dumped the XML-tagged review into one field instead of filling the schema.
@@ -1470,6 +1506,7 @@ def write_review(item, slug_dir, figures):
         data = cached_call(
             cache_dir, prompt, WRITE_REVIEW_MODEL, _make_call,
             schema_version=WRITE_REVIEW_SCHEMA_VERSION,
+            is_complete=_review_response_is_complete,
         )
         data = _salvage_review_data(data)
 
@@ -2381,7 +2418,7 @@ def main():
         cp = {"completed": [], "failed": [], "phase": "init"}
         previously_completed = set()
 
-    sync_bibliography_db("--pull")
+    sync_bibliography_db("--pull", required=False)
     # Fetch items
     log(f"Fetching Zotero collection '{args.topic}' ({collection_key})...")
     items = fetch_zotero_items(collection_key)

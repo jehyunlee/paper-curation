@@ -1143,6 +1143,9 @@ def main():
     group.add_argument("--status", action="store_true")
     group.add_argument("--bootstrap", action="store_true")
     parser.add_argument("--base-receipt", type=Path)
+    # Pull records a durable phase receipt; the path is overridable so a caller
+    # can keep per-attempt evidence outside the default location.
+    parser.add_argument("--phase-receipt", type=Path)
     args = parser.parse_args()
     try:
         if args.pull:

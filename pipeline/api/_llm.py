@@ -50,7 +50,8 @@ def cache_key(prompt: str, model: str, schema_version: str = "v1") -> str:
 
 def cached_call(cache_dir: str | Path, prompt: str, model: str,
                 fn: Callable[[], Any], *,
-                schema_version: str = "v1", force: bool = False) -> Any:
+                schema_version: str = "v1", force: bool = False,
+                is_complete: Callable[[Any], bool] | None = None) -> Any:
     """Run ``fn()`` once for a given (prompt, model, schema_version);
     cache the JSON-serialisable return value under ``cache_dir``.
 
@@ -59,6 +60,14 @@ def cached_call(cache_dir: str | Path, prompt: str, model: str,
     the stored entry.
 
     Note: ``fn`` may raise; failures are NOT cached.
+
+    ``is_complete`` guards against caching a *successful but partial* answer.
+    A review call that returned only ``essence`` was stored and then replayed
+    forever, so the paper's Achievement and Originality sections were
+    permanently empty and regenerating the review changed nothing — 488 papers
+    ended up holding such an entry. A result that fails this predicate is
+    returned to the caller but never written, and a cached entry that fails it
+    is discarded rather than replayed.
     """
     cache_dir = Path(cache_dir)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -68,12 +77,16 @@ def cached_call(cache_dir: str | Path, prompt: str, model: str,
     if cache_path.exists() and not force:
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
-                return json.load(f)["result"]
+                cached = json.load(f)["result"]
+            if is_complete is None or is_complete(cached):
+                return cached
         except (json.JSONDecodeError, KeyError):
             # Corrupt cache — fall through and recompute.
             pass
 
     result = fn()
+    if is_complete is not None and not is_complete(result):
+        return result
     payload = {"result": result, "model": model,
                "schema_version": schema_version}
     tmp = cache_path.with_suffix(".tmp")
