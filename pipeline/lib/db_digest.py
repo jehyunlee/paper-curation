@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sqlite3
+from pathlib import Path
 
 
 def schema_name(conn: sqlite3.Connection) -> str:
@@ -49,3 +51,37 @@ def logical_digest(conn: sqlite3.Connection) -> str:
             value.update(b"\n")
     return value.hexdigest()
 
+
+
+# Durability helpers the sync path needs. They came from the retired
+# `repair_bibliography_institutions.py`; a published generation has to be on
+# disk before the manifest that names it becomes visible.
+
+
+def _fsync_directory(directory: Path) -> None:
+    descriptor = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _fsync(path: Path) -> None:
+    with Path(path).open("rb") as stream:
+        os.fsync(stream.fileno())
+    _fsync_directory(Path(path).parent)
+
+
+def _atomic_json(path: Path, value: dict) -> None:
+    """Write JSON so a reader never sees a partial file."""
+    path = Path(path)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        temporary.write_text(
+            json.dumps(value, ensure_ascii=False, sort_keys=True,
+                       separators=(",", ":")), encoding="utf-8")
+        _fsync(temporary)
+        os.replace(temporary, path)
+        _fsync(path)
+    finally:
+        temporary.unlink(missing_ok=True)

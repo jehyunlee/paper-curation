@@ -2631,11 +2631,7 @@ def main():
             "refresh_retrieval_eval_snapshot",
             "build_bibliography_db",
             "check_bibliography_db",
-            # "sync_bibliography_db (push)" is deliberately NOT critical while
-            # the CAS manifest still demands the retired registry's artifacts
-            # (see that module's docstring). The local DB and its strict gate
-            # are what a cycle depends on; failing to mirror the DB to the
-            # other host must not abort classification, indexing and deploy.
+            "sync_bibliography_db (push)",
         }
 
         def run_step(step_name, cmd, step_timeout=600):

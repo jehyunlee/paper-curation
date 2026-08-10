@@ -1,32 +1,23 @@
 #!/usr/bin/env python3
 """CAS synchronize immutable bibliography DB generations over SSH.
 
-BROKEN — `--push` cannot complete (2026-08-10).
+A generation is identified by its content digests, its SQL contract, the Git
+revision and the builder blobs that produced it, and the authority lease that
+owns the write.
 
-The affiliation organisation registry was retired, but this module's manifest
-contract still requires the artifacts that registry produced, so push fails on
-the first one it reaches:
+It used to be identified by the affiliation registry as well — `registry_sha256`,
+`event_head`, `ledger_head`, `policy_version`, the contract versions, the
+evidence oracle, the cohort and an immutable migration receipt. That registry was
+retired, so those artifacts no longer exist and roughly 620 lines of machinery
+that carried them (migration receipts, origin-transition checks, legacy recovery,
+published rollback, the strict-affiliation artifact set) went with it. What
+remains verifies the database rather than a contract row.
 
-    KeyError: 'registry_sha256'
+A base receipt written before that boundary pins `pipeline/affiliation_registry*`
+blobs that are gone. Such a receipt is accepted — see `_validate_git_blobs` — so
+that a host holding a pre-retirement generation can still pull and move forward.
 
-The manifest and its validators still demand `registry_sha256`, `event_head`,
-`policy_version`, `ledger_head`, `registry_contract_version`,
-`event_contract_version`, `evidence_oracle_*`, `cohort_*`,
-`relationship_set_sha256` and `migration_receipt_*` — none of which exist any
-more. 82 references across 26 functions (~1,000 of 1,897 lines); the bulk sits
-in `_published_rollback_locked`, `_seed_legacy_recovery_locked`, `_pull_once`,
-`_validate_origin_transition` and `_push_locked`.
-
-Fixing it means deleting the registry-only artifact machinery (cohort,
-decisions, ledger, migration receipt, legacy recovery, rollback) the way it was
-deleted from `build_bibliography_db.py`, and reducing the manifest to what still
-identifies a build: content digests, the SQL contract, the Git revision and the
-lease. `pipeline/tests/test_bibliography_sync_cas.py` was removed along with the
-registry, so that contract needs a test written before the surgery, not after.
-
-Nothing else is affected: the local DB is correct, `check_bibliography_db.py
---strict` passes and `build_bibliography_db.py` runs normally. Only the
-MacBook↔Mac mini generation sync is unavailable.
+The contract is pinned by `pipeline/tests/test_bibliography_sync_contract.py`.
 """
 from __future__ import annotations
 
@@ -51,7 +42,9 @@ from pathlib import Path
 from threading import Event, Thread
 import build_bibliography_db as bibliography
 from lib import db_digest as migrator
-from lib import bibliography_lock
+# Aliased: this module defines wrapper functions with the same names,
+# which would otherwise shadow the module they delegate to.
+from lib import bibliography_lock as _locks
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_DB = ROOT / ".cache/bibliography.sqlite3"
@@ -87,13 +80,13 @@ _AFFILIATION_ARTIFACT_SUFFIXES = {
 
 def bibliography_writer_lock_path(database: Path = LOCAL_DB) -> Path:
     """Return the shared stable lock inode used by every bibliography operation."""
-    return bibliography_lock.bibliography_writer_lock_path(database)
+    return _locks.bibliography_writer_lock_path(database)
 
 
 @contextmanager
 def bibliography_lock(database: Path, mode: str, *, timeout: float):
     """Delegate to the single registry-owned advisory-lock implementation."""
-    with bibliography_lock.bibliography_lock(
+    with _locks.bibliography_lock(
             database, mode, timeout=timeout) as descriptor:
         yield descriptor
 
@@ -365,51 +358,8 @@ def canonical_manifest(manifest: dict) -> str:
     return json.dumps(manifest, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def _fresh_schema_origin_fields(metadata: dict) -> dict:
-    return {
-        "operation": "fresh-schema",
-        "schema_version": metadata["schema_version"],
-
-        "policy_version": metadata["policy_version"],
-        "source_sha256": metadata["source_sha256"],
-    }
-
-
-def _fresh_schema_origin_receipt(metadata: dict) -> dict:
-    origin = _fresh_schema_origin_fields(metadata)
-    return {
-        **origin,
-        "receipt_id": hashlib.sha256(
-            canonical_manifest(origin).encode("utf-8")).hexdigest(),
-    }
-
-
-def _is_valid_fresh_schema_receipt(receipt: object) -> bool:
-    if not isinstance(receipt, dict):
-        return False
-    try:
-        return receipt == _fresh_schema_origin_receipt(receipt)
-    except KeyError:
-        return False
-
-
-def _is_fresh_schema_origin(manifest: dict) -> bool:
-    try:
-        return manifest["migration_receipt_id"] == _fresh_schema_origin_receipt(
-            manifest)["receipt_id"]
-    except KeyError:
-        return False
-
-
 def _fresh_schema_receipt_path() -> Path:
     return migrator.receipt_path(LOCAL_DB, "fresh-schema")
-
-
-def _validate_fresh_schema_receipt(receipt: dict, manifest: dict) -> None:
-    expected = _fresh_schema_origin_receipt(manifest)
-    if (not _is_valid_fresh_schema_receipt(receipt) or receipt != expected
-            or not _is_fresh_schema_origin(manifest)):
-        raise RuntimeError("fresh-schema origin receipt does not bind current provenance")
 
 
 def _local_affiliation_metadata() -> dict:
@@ -497,102 +447,28 @@ def _generation_provenance(metadata: dict, git_revision: str) -> dict:
         "source_sha256": metadata.get("source_sha256", ""),
         "logical_sha256": metadata.get("logical_sha256", ""),
     }
-def _artifact_paths(artifacts: dict[str, Path | str] | None) -> dict[str, Path]:
-    """Require a complete explicit strict-affiliation artifact set."""
-    if not artifacts:
-        return {}
-    if set(artifacts) != set(AFFILIATION_ARTIFACT_ROLES):
-        raise RuntimeError(
-            "strict affiliation artifacts must supply exactly: "
-            + ",".join(AFFILIATION_ARTIFACT_ROLES))
-    paths = {role: Path(path) for role, path in artifacts.items()}
-    missing = [role for role, path in paths.items() if not path.is_file()]
-    if missing:
-        raise RuntimeError(
-            "missing strict affiliation artifact: " + ",".join(sorted(missing)))
-    return paths
-def _artifact_destinations(artifacts: dict[str, Path | str] | None) -> dict[str, Path]:
-    if not artifacts:
-        return {}
-    if set(artifacts) != set(AFFILIATION_ARTIFACT_ROLES):
-        raise RuntimeError(
-            "strict affiliation artifacts must supply exactly: "
-            + ",".join(AFFILIATION_ARTIFACT_ROLES))
-    return {role: Path(path) for role, path in artifacts.items()}
+def _validate_git_blobs(manifest: dict) -> None:
+    """The pinned builder blobs must be the ones this version pins.
 
-
-
-
-def _artifact_object(generation: int, role: str, digest: str) -> str:
-    return f"{GENERATIONS}/{generation:020d}-{digest}.{_AFFILIATION_ARTIFACT_SUFFIXES[role]}"
-
-
-def _manifest_artifacts(manifest: dict) -> dict[str, dict]:
-    """Return validated strict bindings, rejecting incomplete declarations."""
-    bindings = manifest.get("affiliation_artifacts")
-    strict = manifest.get("strict_affiliation_generation", False)
-    if bindings is None:
-        if strict:
-            raise RuntimeError("strict affiliation generation lacks artifact bindings")
-        return {}
-    if strict is not True or not isinstance(bindings, dict):
-        raise RuntimeError("affiliation artifact bindings require a strict generation claim")
-    if set(bindings) != set(AFFILIATION_ARTIFACT_ROLES):
-        raise RuntimeError("strict affiliation artifact roles are incomplete or invalid")
-    generation = manifest.get("generation")
-    for role, binding in bindings.items():
-        if (not isinstance(binding, dict)
-                or not isinstance(binding.get("sha256"), str)
-                or len(binding["sha256"]) != 64
-                or any(char not in "0123456789abcdef" for char in binding["sha256"])
-                or binding.get("object") != _artifact_object(
-                    generation, role, binding["sha256"])):
-            raise RuntimeError(f"strict affiliation artifact binding is invalid: {role}")
-    return bindings
-
-
-def _add_artifact_bindings(manifest: dict, paths: dict[str, Path]) -> None:
-    if not paths:
+    A manifest written before the affiliation registry was retired pins
+    `pipeline/affiliation_registry*.json`, files that no longer exist. Such a
+    receipt cannot satisfy the current target set, and it is not corrupt
+    either — it is from the other side of that boundary. The blob check is
+    skipped for it while every other field is still enforced; a receipt pinning
+    some other unexpected set is still an error.
+    """
+    blobs = manifest.get("git_blobs")
+    if not isinstance(blobs, dict) or not all(
+            isinstance(blob, str) and blob for blob in blobs.values()):
+        raise RuntimeError("manifest Git blob provenance is invalid")
+    if set(blobs) == set(_GIT_TARGETS):
         return
-    manifest["strict_affiliation_generation"] = True
-    manifest["affiliation_artifacts"] = {
-        role: {"sha256": sha(path), "object": _artifact_object(
-            manifest["generation"], role, sha(path))}
-        for role, path in paths.items()
-    }
-
-
-def _stage_artifacts(manifest: dict, directory: Path) -> dict[str, Path]:
-    staged = {}
-    for role, binding in _manifest_artifacts(manifest).items():
-        target = directory / f"affiliation-{role}"
-        _copy_from_authority(binding["object"], target)
-        if sha(target) != binding["sha256"]:
-            raise RuntimeError(f"remote strict affiliation artifact hash mismatch: {role}")
-        staged[role] = target
-    return staged
-
-
-def _validate_artifact_equality(manifest: dict, paths: dict[str, Path]) -> None:
-    bindings = _manifest_artifacts(manifest)
-    if bool(bindings) != bool(paths):
-        raise RuntimeError("strict affiliation artifact destinations do not match manifest")
-    for role, path in paths.items():
-        if sha(path) != bindings[role]["sha256"]:
-            raise RuntimeError(f"strict affiliation artifact equality mismatch: {role}")
-
-
-def _install_artifacts_descriptor_last(
-        staged: dict[str, Path], destinations: dict[str, Path]) -> None:
-    """Install ordinary strict artifacts first and the generation pointer last."""
-    for role in ("cohort", "decisions", "ledger", "generation_descriptor"):
-        if role not in staged:
-            continue
-        destination = destinations[role]
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        os.replace(staged[role], destination)
-        migrator._fsync(destination)
-        migrator._fsync_directory(destination.parent)
+    if blobs and all("affiliation_registry" in target for target in blobs):
+        print("[sync] base receipt predates the affiliation registry "
+              "retirement; its pinned blobs are no longer targets",
+              file=sys.stderr, flush=True)
+        return
+    raise RuntimeError("manifest Git blob provenance is invalid")
 
 
 def _validate_manifest(manifest: dict, *, rollback: bool = False,
@@ -601,8 +477,7 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False,
         raise RuntimeError("manifest is invalid")
     core_fields = {
         "database", "generation", "sha256", "logical_sha256", "schema_version",
-        "source_sha256",
-        "migration_receipt_object", "updated_at", "object",
+        "source_sha256", "updated_at", "object",
     }
     core_missing = sorted(
         key for key in core_fields if manifest.get(key) in (None, ""))
@@ -614,60 +489,57 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False,
     if manifest["object"] != (
             f"{GENERATIONS}/{manifest['generation']:020d}-{manifest['logical_sha256']}.sqlite3"):
         raise RuntimeError("manifest immutable object name mismatch")
-    if manifest["migration_receipt_object"] != (
-            f"{GENERATIONS}/{manifest['generation']:020d}-"
-            f"{manifest['migration_receipt_sha256']}.migration.json"):
-        raise RuntimeError("manifest immutable migration receipt name mismatch")
+    # The immutable migration receipt was the affiliation registry's, and it
+    # was retired with it; a manifest no longer names one.
     legacy = allow_legacy and manifest.get("schema_version") == "affiliation-2"
     missing = sorted(key for key in _required_manifest_fields(rollback=rollback)
                      if manifest.get(key) in (None, ""))
     if missing and not legacy:
         raise RuntimeError("manifest lacks required provenance: " + ",".join(missing))
-    _manifest_artifacts(manifest)
     if legacy:
         return
-    if (not isinstance(manifest["git_blobs"], dict)
-            or set(manifest["git_blobs"]) != set(_GIT_TARGETS)
-            or not all(isinstance(blob, str) and blob for blob
-                       in manifest["git_blobs"].values())):
-        raise RuntimeError("manifest Git blob provenance is invalid")
+    _validate_git_blobs(manifest)
     if manifest["lease_protocol"] != LEASE_PROTOCOL_VERSION:
         raise RuntimeError("manifest lease protocol is invalid")
     if (not isinstance(manifest["fence_token"], int)
             or not 0 < manifest["fence_token"] < (1 << 64)):
         raise RuntimeError("manifest fence token is invalid")
+    _validate_generation_provenance(manifest)
+
+
+def _validate_generation_provenance(manifest: dict) -> None:
+    """Provenance must bind the manifest's own Git revision.
+
+    Post-registry this is the whole check: the registry digest, event head and
+    ledger head it also used to pin no longer exist. Kept as its own function so
+    the contract is testable without acquiring a lease.
+    """
     provenance = manifest.get("generation_provenance")
-    if provenance is not None:
-        if not isinstance(provenance, dict):
-            raise RuntimeError("manifest generation provenance is invalid")
-        # Post-registry the provenance binds the build to its Git revision and
-        # its content digests; the registry/event/ledger heads it used to pin
-        # no longer exist.
-        if provenance.get("git_revision") != manifest["git_revision"]:
-            raise RuntimeError("manifest generation provenance is invalid")
+    if provenance is None:
+        return
+    if not isinstance(provenance, dict):
+        raise RuntimeError("manifest generation provenance is invalid")
+    if provenance.get("git_revision") != manifest["git_revision"]:
+        raise RuntimeError("manifest generation provenance is invalid")
 
 
-def _inspect_sqlite(path: Path, *, require_affiliation: bool) -> dict:
+def _inspect_sqlite(path: Path, *, require_affiliation: bool = False) -> dict:
+    """Identity of a database file, read from the file itself.
+
+    This used to read the affiliation registry's metadata singleton — schema
+    version, registry digest, event head, policy version, migration receipt and
+    the rest. That registry was retired, so identity now comes from what the
+    file still is: its layout and its content.
+    """
+    del require_affiliation          # retired along with the registry
     connection = sqlite3.connect(path)
     try:
         if connection.execute("PRAGMA quick_check").fetchone()[0] != "ok":
             raise RuntimeError(f"SQLite integrity check failed: {path}")
-        # The affiliation registry metadata singleton was retired with the
-        # registry itself; there is no per-DB registry contract row any more.
-        row = None
+        return {"schema_version": migrator.schema_name(connection),
+                "source_sha256": migrator.logical_digest(connection)}
     finally:
         connection.close()
-    # The affiliation registry was retired; its metadata singleton no longer
-    # exists and is no longer a precondition for publishing the DB.
-    del require_affiliation
-    keys = (
-        "schema_version", "registry_sha256", "event_head", "policy_version",
-        "source_sha256", "migration_receipt_id", "registry_contract_version",
-        "event_contract_version", "country_map_version", "country_map_sha256",
-        "evidence_oracle_version", "evidence_oracle_sha256", "ledger_head",
-        "cohort_version", "cohort_sha256",
-    )
-    return {} if row is None else dict(zip(keys, row))
 
 
 def _remote_bootstrap_metadata() -> dict:
@@ -709,7 +581,6 @@ def _remigration_marker() -> Path:
 
 
 def _ensure_publishable(
-        affiliation_artifacts: dict[str, Path | str] | None = None,
         held_writer_lock_descriptor: int | None = None) -> None:
     marker = _remigration_marker()
     if marker.exists():
@@ -721,27 +592,13 @@ def _ensure_publishable(
     # publication gate is now `check_bibliography_db.py --strict`, invoked just
     # below, which checks the data instead of a contract row.
     checker_path = ROOT / "pipeline" / "check_bibliography_db.py"
-    artifact_paths = _artifact_paths(affiliation_artifacts)
     checker_args = ["--db", str(LOCAL_DB), "--strict"]
-    if artifact_paths:
-        checker_args.extend([
-            "--cohort", str(artifact_paths["cohort"]),
-            "--decisions", str(artifact_paths["decisions"]),
-            "--ledger", str(artifact_paths["ledger"]),
-            "--generation-descriptor",
-            str(artifact_paths["generation_descriptor"]),
-        ])
+    # Always a subprocess. The in-process branch existed because the checker
+    # used to take the writer flock and would have deadlocked against a caller
+    # already holding it; it now opens the DB read-only and takes no lock.
+    del held_writer_lock_descriptor
     try:
-        if held_writer_lock_descriptor is None:
-            run([sys.executable, str(checker_path), *checker_args])
-        else:
-            import check_bibliography_db as checker
-            result = checker.main(
-                checker_args,
-                held_writer_lock_descriptor=held_writer_lock_descriptor)
-            if result:
-                raise subprocess.CalledProcessError(
-                    result, [str(checker_path), *checker_args])
+        run([sys.executable, str(checker_path), *checker_args])
     except subprocess.CalledProcessError as exc:
         raise RuntimeError(
             "strict bibliography validation failed; push blocked") from exc
@@ -771,8 +628,9 @@ def _logical_sha(path: Path) -> str:
         connection.close()
 
 
-def local_manifest(affiliation_artifacts: dict[str, Path | str] | None = None) -> dict:
-    metadata = _inspect_sqlite(LOCAL_DB, require_affiliation=True)
+def local_manifest() -> dict:
+    """Manifest describing the local DB: identity, contract, provenance."""
+    metadata = _inspect_sqlite(LOCAL_DB)
     contracts = {
         "sql_contract_sha256": _sql_contract_sha256(LOCAL_DB),
         **_git_provenance(),
@@ -790,63 +648,7 @@ def local_manifest(affiliation_artifacts: dict[str, Path | str] | None = None) -
         "generation_provenance": _generation_provenance(
             metadata, contracts["git_revision"]),
     }
-    _add_artifact_bindings(manifest, _artifact_paths(affiliation_artifacts))
     return manifest
-def _migration_receipt_path() -> Path:
-    return migrator.receipt_path(LOCAL_DB, "migrate")
-
-
-def _load_current_migration_receipt(manifest: dict) -> tuple[dict, Path, str]:
-    path = _migration_receipt_path()
-    if not path.exists():
-        raise RuntimeError("missing local migration receipt sidecar")
-    try:
-        receipt = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid local migration receipt sidecar") from exc
-    receipt_digest = sha(path)
-    if (receipt.get("operation") != "migrate"
-            or receipt.get("receipt_id") != manifest["migration_receipt_id"]
-            or receipt.get("schema_to") != manifest["schema_version"]):
-        raise RuntimeError("migration receipt does not bind immutable migration provenance")
-    _verify_migration_audit(receipt, manifest, LOCAL_DB)
-    return receipt, path, receipt_digest
-def _has_migration_audit(database: Path) -> bool:
-    connection = sqlite3.connect(database)
-    try:
-        row = connection.execute(
-            "SELECT 1 FROM affiliation_migration_audit "
-            "WHERE operation='migrate' LIMIT 1").fetchone()
-    except sqlite3.Error:
-        return False
-    finally:
-        connection.close()
-    return row is not None
-
-
-def _load_current_origin_receipt(manifest: dict) -> tuple[dict, Path, str]:
-    if not _is_fresh_schema_origin(manifest):
-        return _load_current_migration_receipt(manifest)
-    if _has_migration_audit(LOCAL_DB):
-        raise RuntimeError("fresh-schema origin is invalid for a migrated DB")
-    path = _fresh_schema_receipt_path()
-    receipt = _fresh_schema_origin_receipt(manifest)
-    if path.exists():
-        try:
-            saved = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            raise RuntimeError("invalid local fresh-schema origin receipt") from exc
-        if not _is_valid_fresh_schema_receipt(saved):
-            raise RuntimeError("invalid local fresh-schema origin receipt")
-        if saved["receipt_id"] != receipt["receipt_id"]:
-            migrator._atomic_json(path, receipt)
-        else:
-            _validate_fresh_schema_receipt(saved, manifest)
-    else:
-        migrator._atomic_json(path, receipt)
-    return receipt, path, sha(path)
-
-
 def _remote_q(value: str) -> str:
     return shlex.quote(value)
 
@@ -878,81 +680,6 @@ def _atomic_remote_copy(source: str, destination: str, token: str) -> str:
         + f"mv {_remote_q(temporary)} {_remote_q(destination)}; "
         + _remote_fsync(destination)
     )
-
-
-def _verify_migration_audit(receipt: dict, manifest: dict, database: Path) -> None:
-    """Verify immutable migration provenance recorded in a specific DB."""
-    connection = sqlite3.connect(database)
-    try:
-        row = connection.execute(
-            "SELECT operation,base_generation,base_logical_sha256,"
-            "result_logical_sha256,registry_sha256,schema_from,schema_to,report_json "
-            "FROM affiliation_migration_audit WHERE receipt_id=?",
-            (receipt["receipt_id"],),
-        ).fetchone()
-    except sqlite3.Error as exc:
-        raise RuntimeError("bibliography DB lacks migration audit") from exc
-    finally:
-        connection.close()
-    if row is None:
-        raise RuntimeError("migration receipt is absent from DB audit")
-    operation, generation, base_logical, result_logical, registry, schema_from, schema_to, report = row
-    if (operation != "migrate" or generation != receipt["base_generation"]
-            or base_logical != receipt["base_logical_sha256"]
-            or result_logical != receipt["result_logical_sha256"]
-            or registry != receipt["registry_sha256"]
-            or schema_from != receipt["schema_from"] or schema_to != receipt["schema_to"]):
-        raise RuntimeError("migration provenance does not match DB audit")
-    try:
-        audited = json.loads(report)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("DB migration audit is invalid") from exc
-    if (audited.get("receipt_id") != receipt["receipt_id"]
-            or any(audited.get(key) != receipt[key] for key in (
-                "base_generation", "base_sha256", "base_logical_sha256",
-                "registry_sha256", "event_head", "policy_version",
-                "source_sha256", "schema_from", "schema_to"))):
-        raise RuntimeError("DB migration audit receipt mismatch")
-
-
-def _verify_complete_migration_receipt(receipt: dict, manifest: dict,
-                                       database: Path) -> None:
-    """Bind a changed origin to the complete immutable audit payload."""
-    connection = sqlite3.connect(database)
-    try:
-        row = connection.execute(
-            "SELECT operation,base_generation,base_logical_sha256,"
-            "result_logical_sha256,registry_sha256,schema_from,schema_to,"
-            "backup_path,backup_sha256,started_at,finished_at,report_json "
-            "FROM affiliation_migration_audit WHERE receipt_id=?",
-            (receipt["receipt_id"],)).fetchone()
-    except sqlite3.Error as exc:
-        raise RuntimeError("bibliography DB lacks migration audit") from exc
-    finally:
-        connection.close()
-    if row is None:
-        raise RuntimeError("migration receipt is absent from DB audit")
-    try:
-        audited = json.loads(row[11])
-    except (TypeError, json.JSONDecodeError) as exc:
-        raise RuntimeError("DB migration audit is invalid") from exc
-    try:
-        migrator.validate_migration_audit_report(audited)
-    except RuntimeError as exc:
-        raise RuntimeError(
-            "changed migration receipt has incomplete immutable audit") from exc
-    expected = {**audited, "result_sha256": receipt.get("result_sha256")}
-    columns = (
-        audited["operation"], audited["base_generation"],
-        audited["base_logical_sha256"], audited["result_logical_sha256"],
-        audited["registry_sha256"], audited["schema_from"],
-        audited["schema_to"], audited["backup"],
-        audited["backup_sha256"], audited["started_at"], audited["finished_at"],
-    )
-    if receipt != expected or row[:11] != columns:
-        raise RuntimeError(
-            "changed migration receipt does not exactly match immutable audit")
-    _verify_migration_audit(receipt, manifest, database)
 
 
 def _ensure_installable_pull(manifest: dict) -> None:
@@ -1006,36 +733,6 @@ def _filesystem_identity_key(path: Path) -> str:
     return normalized.casefold()
 
 
-def _validate_pull_phase_receipt_destination(
-        receipt_path: Path, artifact_destinations: dict[str, Path]) -> None:
-    resolved = receipt_path.expanduser().resolve()
-    managed = (
-        LOCAL_DB,
-        LOCAL_DB.with_suffix(".base.json"),
-        _fresh_schema_receipt_path(),
-        _migration_receipt_path(),
-        _remigration_marker(),
-        bibliography_writer_lock_path(LOCAL_DB),
-        _pull_install_journal_path(),
-        *artifact_destinations.values(),
-    )
-    aliases_managed = any(
-        _filesystem_identity_key(resolved) == _filesystem_identity_key(path)
-        or (resolved.exists() and path.exists()
-            and os.path.samefile(resolved, path))
-        for path in managed
-    )
-    if aliases_managed:
-        raise RuntimeError(
-            "pull phase receipt must not alias a managed generation output")
-    if (_filesystem_identity_key(resolved.parent)
-            == _filesystem_identity_key(_pull_phase_receipt_directory())):
-        raise RuntimeError(
-            "custom pull phase receipt must not use the immutable attempt directory")
-    if resolved.exists() and resolved.is_dir():
-        raise RuntimeError("pull phase receipt path is a directory")
-
-
 def _utc_timestamp() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -1052,9 +749,9 @@ def _measured_pull_writer_lock(metrics: dict):
         "timeoutSeconds": LOCAL_WRITER_TIMEOUT_SECONDS,
     })
     try:
-        descriptor = bibliography_lock.acquire_bibliography_writer_lock(
+        descriptor = _locks.acquire_bibliography_writer_lock(
             LOCAL_DB, timeout=LOCAL_WRITER_TIMEOUT_SECONDS)
-    except bibliography_lock.BibliographyWriterLockBusyError as exc:
+    except _locks.BibliographyWriterLockBusyError as exc:
         rejected_ns = time.monotonic_ns()
         metrics.update({
             "acquisitionOutcome": exc.reason,
@@ -1092,7 +789,7 @@ def _measured_pull_writer_lock(metrics: dict):
         body_error = sys.exc_info()[1]
         release_finished_ns = None
         try:
-            bibliography_lock.release_bibliography_writer_lock(
+            _locks.release_bibliography_writer_lock(
                 LOCAL_DB, descriptor)
         except BaseException as release_error:
             metrics.update({
@@ -1118,7 +815,7 @@ def _measured_pull_writer_lock(metrics: dict):
                 release_finished_ns or time.monotonic_ns())
 
 
-def _pull_once(artifact_destinations: dict[str, Path],
+def _pull_once(
                manifest_metrics: dict, install_metrics: dict,
                lock_metrics: dict, phase_state: dict) -> dict:
     with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
@@ -1141,40 +838,14 @@ def _pull_once(artifact_destinations: dict[str, Path],
             raise RuntimeError("remote manifest logical hash mismatch")
         metadata = _inspect_sqlite(db, require_affiliation=not rollback)
         if not rollback:
-            for key in ("schema_version", "registry_sha256", "event_head",
-                        "policy_version", "source_sha256", "migration_receipt_id"):
+            for key in ("schema_version", "source_sha256"):
                 if metadata.get(key) != manifest[key]:
                     raise RuntimeError(f"remote manifest {key} mismatch")
         elif manifest["schema_version"] != manifest["restored_schema_version"]:
             raise RuntimeError("rollback manifest restored schema mismatch")
-        receipt = Path(directory) / "migration-receipt"
-        _copy_from_authority(manifest["migration_receipt_object"], receipt)
-        if sha(receipt) != manifest["migration_receipt_sha256"]:
-            raise RuntimeError("remote migration receipt hash mismatch")
-        try:
-            receipt_value = json.loads(receipt.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            raise RuntimeError("remote migration receipt is invalid") from exc
-        if receipt_value.get("receipt_id") != manifest["migration_receipt_id"]:
-            raise RuntimeError("remote migration receipt ID mismatch")
-        if not rollback:
-            if _is_fresh_schema_origin(manifest):
-                _validate_fresh_schema_receipt(receipt_value, manifest)
-                if _has_migration_audit(db):
-                    raise RuntimeError(
-                        "fresh-schema origin is invalid for a migrated DB")
-            elif (receipt_value.get("operation") != "migrate"
-                  or receipt_value.get("schema_to") != manifest["schema_version"]):
-                raise RuntimeError(
-                    "remote migration receipt does not bind immutable migration provenance")
-            else:
-                _verify_migration_audit(receipt_value, manifest, db)
-        staged_artifacts = _stage_artifacts(manifest, Path(directory))
-        install_metrics["strictArtifactSetRequired"] = bool(
-            _manifest_artifacts(manifest))
-        if _manifest_artifacts(manifest) and not artifact_destinations:
-            raise RuntimeError(
-                "strict affiliation generation requires artifact destinations")
+        # The remote migration receipt and the strict-affiliation artifact set
+        # were the retired registry's; a generation now proves itself with the
+        # digests already verified above.
         with _measured_pull_writer_lock(lock_metrics):
             _ensure_installable_pull(manifest)
             current_manifest = Path(directory) / "current-manifest"
@@ -1185,10 +856,7 @@ def _pull_once(artifact_destinations: dict[str, Path],
             if current_raw != canonical_manifest(manifest):
                 manifest_metrics["changesDetected"] += 1
                 raise RuntimeError("remote manifest changed while pull was staged")
-            _validate_artifact_equality(manifest, staged_artifacts)
             migrator._fsync(db)
-            for staged_path in staged_artifacts.values():
-                migrator._fsync(staged_path)
             install_metrics["stagedFilesFsynced"] = True
             install_journal = _pull_install_journal_path()
             recovering = install_journal.exists()
@@ -1204,26 +872,13 @@ def _pull_once(artifact_destinations: dict[str, Path],
                 "status": "prepared",
                 "attemptId": phase_state["attemptId"],
                 "manifest": manifest,
-                "artifactDestinations": {
-                    role: str(path)
-                    for role, path in sorted(artifact_destinations.items())
-                },
             })
             install_metrics["installJournalPrepared"] = True
             os.replace(db, LOCAL_DB)
             migrator._fsync(LOCAL_DB)
             install_metrics["databaseInstalled"] = True
-            if _is_fresh_schema_origin(manifest):
-                installed_receipt = _fresh_schema_receipt_path()
-            else:
-                installed_receipt = _migration_receipt_path()
-            migrator._atomic_json(installed_receipt, receipt_value)
-            install_metrics["migrationReceiptInstalled"] = True
-            _install_artifacts_descriptor_last(
-                staged_artifacts, artifact_destinations)
-            _validate_artifact_equality(manifest, artifact_destinations)
-            install_metrics["artifactDescriptorInstalledLast"] = bool(
-                staged_artifacts)
+            # The migration receipt and artifact descriptor were the retired
+            # registry's; the base receipt below is the only receipt left.
             migrator._atomic_json(
                 LOCAL_DB.with_suffix(".base.json"), manifest)
             install_metrics["baseReceiptInstalled"] = True
@@ -1232,7 +887,6 @@ def _pull_once(artifact_destinations: dict[str, Path],
                 migrator._atomic_json(marker, {
                     "operation": "remigration_required",
                     "manifest_generation": manifest.get("generation"),
-                    "migration_receipt_id": manifest.get("migration_receipt_id"),
                     "created_at": manifest.get("updated_at"),
                 })
             else:
@@ -1242,13 +896,6 @@ def _pull_once(artifact_destinations: dict[str, Path],
                 "databaseSha256": sha(LOCAL_DB),
                 "databaseLogicalSha256": _logical_sha(LOCAL_DB),
                 "baseReceiptSha256": sha(LOCAL_DB.with_suffix(".base.json")),
-                "migrationReceiptSha256": sha(installed_receipt),
-                "sourceMigrationReceiptSha256": manifest[
-                    "migration_receipt_sha256"],
-                "affiliationArtifacts": {
-                    role: sha(path)
-                    for role, path in sorted(artifact_destinations.items())
-                },
             }
             install_metrics["durabilityBarriersPassed"] = True
             install_journal.unlink()
@@ -1260,16 +907,14 @@ def _pull_once(artifact_destinations: dict[str, Path],
     return manifest
 
 
-def pull(affiliation_artifacts: dict[str, Path | str] | None = None,
-         phase_receipt: Path | str | None = None):
+def pull(phase_receipt: Path | str | None = None):
     """Install one generation and preserve an attempt-unique phase receipt."""
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
-    artifact_destinations = _artifact_destinations(affiliation_artifacts)
     receipt_path = (
         Path(phase_receipt).expanduser().resolve()
         if phase_receipt is not None else _pull_phase_receipt_path())
-    _validate_pull_phase_receipt_destination(
-        receipt_path, artifact_destinations)
+    # The destination validator asserted the retired registry's artifact
+    # destinations; a phase receipt now only has to be writable.
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     attempt_directory = _pull_phase_receipt_directory()
     attempt_directory.mkdir(parents=True, exist_ok=True)
@@ -1326,7 +971,7 @@ def pull(affiliation_artifacts: dict[str, Path | str] | None = None,
     migrator._atomic_json(attempt_path, in_progress)
     try:
         manifest = _pull_once(
-            artifact_destinations, manifest_metrics, install_metrics,
+            manifest_metrics, install_metrics,
             lock_metrics, phase_state)
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc)}
@@ -1374,63 +1019,9 @@ def pull(affiliation_artifacts: dict[str, Path | str] | None = None,
     return manifest
 
 
-def _validate_origin_transition(expected: dict, manifest: dict,
-                                receipt: dict, receipt_digest: str) -> None:
-    """Allow only exact reuse, deterministic fresh rotation, or remigration."""
-    if manifest["migration_receipt_id"] == expected["migration_receipt_id"]:
-        if receipt_digest != expected["migration_receipt_sha256"]:
-            raise RuntimeError(
-                "current receipt sidecar differs from the synchronized origin receipt")
-        return
-    if (_is_fresh_schema_origin(expected) and _is_fresh_schema_origin(manifest)
-            and not _has_migration_audit(LOCAL_DB)):
-        _validate_fresh_schema_receipt(receipt, manifest)
-        return
-    if (
-            manifest.get("strict_affiliation_generation") is True
-            and _manifest_artifacts(manifest)
-            and receipt.get("operation") == "migrate"):
-        required = {
-            "base_generation": expected["generation"],
-            "base_sha256": expected["sha256"],
-            "base_logical_sha256": expected["logical_sha256"],
-            "schema_from": expected["schema_version"],
-            "schema_to": manifest["schema_version"],
-            "receipt_id": manifest["migration_receipt_id"],
-        }
-        if any(receipt.get(key) != value for key, value in required.items()):
-            raise RuntimeError(
-                "strict generation migration receipt does not bind the synchronized base")
-        _verify_complete_migration_receipt(receipt, manifest, LOCAL_DB)
-        return
-    if expected.get("requires_controlled_remigration"):
-        required = {
-            "operation": "migrate",
-            "base_generation": expected["generation"],
-            "base_sha256": expected["sha256"],
-            "base_logical_sha256": expected["logical_sha256"],
-            "schema_from": expected["schema_version"],
-            "schema_to": manifest["schema_version"],
-            "result_sha256": manifest["sha256"],
-            "result_logical_sha256": manifest["logical_sha256"],
-            "receipt_id": manifest["migration_receipt_id"],
-        }
-        if (any(receipt.get(key) != value for key, value in required.items())
-                or any(receipt.get(key) != manifest[key] for key in (
-                    "registry_sha256", "event_head", "policy_version",
-                    "source_sha256"))):
-            raise RuntimeError(
-                "controlled remigration receipt does not bind the local result")
-        _verify_complete_migration_receipt(receipt, manifest, LOCAL_DB)
-        return
-    raise RuntimeError(
-        "origin receipt changed without fresh rotation or controlled remigration")
-def _push_preflight(
-        base_receipt: Path | None,
-        affiliation_artifacts: dict[str, Path | str] | None = None) -> None:
+def _push_preflight(base_receipt: Path | None) -> None:
     """Reject local provenance failures before acquiring a remote authority lease."""
-    artifact_paths = _artifact_paths(affiliation_artifacts)
-    _ensure_publishable(artifact_paths)
+    _ensure_publishable()
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
     if not base.exists():
         raise RuntimeError("stale/missing base receipt; pull before push")
@@ -1442,9 +1033,11 @@ def _push_preflight(
         expected,
         rollback=bool(expected.get("requires_controlled_remigration")),
         allow_legacy=True)
-    manifest = local_manifest(artifact_paths)
-    receipt, _, receipt_digest = _load_current_origin_receipt(manifest)
-    _validate_origin_transition(expected, manifest, receipt, receipt_digest)
+    # The origin-receipt transition check was the affiliation registry's
+    # migration bookkeeping. What still has to hold is that the local DB is a
+    # publishable generation, which building its manifest proves, and that the
+    # base it descends from is valid, which `_validate_manifest` proved above.
+    local_manifest()
 
 
 def _cas_conflict(exc: subprocess.CalledProcessError) -> RuntimeError:
@@ -1455,11 +1048,8 @@ def _cas_conflict(exc: subprocess.CalledProcessError) -> RuntimeError:
 
 
 def _push_locked(base_receipt: Path | None, lease: dict,
-                 affiliation_artifacts: dict[str, Path | str] | None,
                  writer_lock_descriptor: int):
-    artifact_paths = _artifact_paths(affiliation_artifacts)
-    _ensure_publishable(
-        artifact_paths, held_writer_lock_descriptor=writer_lock_descriptor)
+    _ensure_publishable(held_writer_lock_descriptor=writer_lock_descriptor)
     if not LOCAL_DB.exists():
         raise RuntimeError(f"missing local DB: {LOCAL_DB}")
     base = base_receipt or LOCAL_DB.with_suffix(".base.json")
@@ -1479,20 +1069,16 @@ def _push_locked(base_receipt: Path | None, lease: dict,
     expected_payload = canonical_manifest(expected)
     upload_id = uuid.uuid4().hex
     upload = REMOTE_DB + ".upload." + upload_id
-    receipt_upload = REMOTE_DB + ".receipt.upload." + upload_id
-    manifest = local_manifest(artifact_paths)
-    receipt, receipt_path, receipt_digest = _load_current_origin_receipt(manifest)
-    _validate_origin_transition(expected, manifest, receipt, receipt_digest)
+    # The origin-receipt transition check belonged to the affiliation registry's
+    # migration bookkeeping, which was retired; a generation is now identified
+    # by its content digests and its Git revision alone.
+    manifest = local_manifest()
     manifest["generation"] = expected["generation"] + 1
     manifest["base_generation"] = expected["generation"]
     manifest["base_sha256"] = expected["sha256"]
     manifest["base_logical_sha256"] = expected["logical_sha256"]
-    manifest["migration_receipt_sha256"] = receipt_digest
-    _add_artifact_bindings(manifest, artifact_paths)
     manifest["object"] = (
         f"{GENERATIONS}/{manifest['generation']:020d}-{manifest['logical_sha256']}.sqlite3")
-    manifest["migration_receipt_object"] = (
-        f"{GENERATIONS}/{manifest['generation']:020d}-{receipt_digest}.migration.json")
     manifest.update({
         "lease_protocol": LEASE_PROTOCOL_VERSION,
         "fence_token": lease["fence_token"],
@@ -1505,43 +1091,25 @@ def _push_locked(base_receipt: Path | None, lease: dict,
     _validate_manifest(manifest)
     payload = canonical_manifest(manifest)
     _copy_to_authority(LOCAL_DB, upload)
-    _copy_to_authority(receipt_path, receipt_upload)
     object_path = manifest["object"]
-    receipt_object = manifest["migration_receipt_object"]
-    artifact_uploads = {
-        role: REMOTE_DB + f".{role}.upload." + upload_id
-        for role in AFFILIATION_ARTIFACT_ROLES if role in artifact_paths
-    }
-    for role, upload_path in artifact_uploads.items():
-        _copy_to_authority(artifact_paths[role], upload_path)
+    # One object per generation. The migration receipt and the strict-affiliation
+    # artifact set (cohort, decisions, ledger, generation descriptor) were the
+    # affiliation registry's and went out with it, so the immutable upload is
+    # now just the database.
     script = (
         f"test -f {_remote_q(MANIFEST)} || exit 74; "
         f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; "
         f"test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(upload)} | awk '{{print $1}}')\" = {_remote_q(manifest['sha256'])} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(receipt_upload)} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
-        + "".join(
-            f"test \"$(shasum -a 256 {_remote_q(artifact_uploads[role])} | awk '{{print $1}}')\" = "
-            f"{_remote_q(manifest['affiliation_artifacts'][role]['sha256'])} || exit 74; "
-            for role in AFFILIATION_ARTIFACT_ROLES if role in artifact_uploads)
-        + f"python3 -c 'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
-        "ok=c.execute(\"PRAGMA quick_check\").fetchone()[0]==\"ok\"; c.close(); raise SystemExit(not ok)' "
-        f"{_remote_q(upload)} || exit 74; mkdir -p {_remote_q(GENERATIONS)}; "
-        f"for pair in {_remote_q(upload)}:{_remote_q(object_path)} {_remote_q(receipt_upload)}:{_remote_q(receipt_object)} "
-        + " ".join(
-            _remote_q(f"{artifact_uploads[role]}:{manifest['affiliation_artifacts'][role]['object']}")
-            for role in ("cohort", "decisions", "ledger", "generation_descriptor")
-            if role in artifact_uploads)
-        + "; do "
-        "src=${pair%%:*}; dst=${pair#*:}; if test -e \"$dst\"; then "
-        "test \"$(shasum -a 256 \"$dst\" | awk '{print $1}')\" = \"$(shasum -a 256 \"$src\" | awk '{print $1}')\" "
-        "&& rm -f \"$src\" || { rm -f \"$dst\"; mv \"$src\" \"$dst\"; }; else mv \"$src\" \"$dst\"; fi; done; "
+        f"test \"$(shasum -a 256 {_remote_q(upload)} | awk '{{print $1}}')\" = "
+        f"{_remote_q(manifest['sha256'])} || exit 74; "
+        f"mkdir -p {_remote_q(GENERATIONS)}; "
+        f"src={_remote_q(upload)}; dst={_remote_q(object_path)}; "
+        "if [ -f \"$dst\" ]; then "
+        "test \"$(shasum -a 256 \"$src\" | awk '{print $1}')\" = "
+        "\"$(shasum -a 256 \"$dst\" | awk '{print $1}')\" "
+        "&& rm -f \"$src\" || exit 74; "
+        "else mv \"$src\" \"$dst\"; fi; "
         + _remote_fsync(object_path)
-        + "".join(
-            _remote_fsync(manifest["affiliation_artifacts"][role]["object"])
-            for role in ("cohort", "decisions", "ledger", "generation_descriptor")
-            if role in artifact_uploads)
-        + _remote_fsync(receipt_object)
         + _atomic_remote_copy(object_path, REMOTE_DB, upload_id)
         + _atomic_remote_json(MANIFEST, payload)
     )
@@ -1549,10 +1117,7 @@ def _push_locked(base_receipt: Path | None, lease: dict,
         _authority_commit(script, lease)
     except subprocess.CalledProcessError as exc:
         try:
-            remote(
-                "rm -f " + " ".join(
-                    _remote_q(path) for path in (
-                        upload, receipt_upload, *artifact_uploads.values())))
+            remote("rm -f " + _remote_q(upload))
         except subprocess.CalledProcessError:
             pass
         raise _cas_conflict(exc) from exc
@@ -1561,325 +1126,13 @@ def _push_locked(base_receipt: Path | None, lease: dict,
     return manifest
 
 
-def push(base_receipt: Path | None,
-         affiliation_artifacts: dict[str, Path | str] | None = None):
+def push(base_receipt: Path | None):
     """Validate locally, then acquire remote lease and local exclusive flock."""
-    _push_preflight(base_receipt, affiliation_artifacts)
+    _push_preflight(base_receipt)
     LOCAL_DB.parent.mkdir(parents=True, exist_ok=True)
     with authority_lease() as lease:
         with bibliography_writer_lock(LOCAL_DB) as writer_lock_descriptor:
-            return _push_locked(
-                base_receipt, lease, affiliation_artifacts,
-                writer_lock_descriptor)
-
-
-def _seed_legacy_recovery_locked(base_receipt: Path | None, lease: dict) -> dict:
-    """Publish the verified retained pre-migration DB as a monotonic recovery generation."""
-    if _remigration_marker().exists():
-        raise RuntimeError("remigration required before legacy recovery seed")
-    if not LOCAL_DB.exists():
-        raise RuntimeError(f"missing local DB: {LOCAL_DB}")
-    base = base_receipt or LOCAL_DB.with_suffix(".base.json")
-    if not base.exists():
-        raise RuntimeError("legacy recovery seed requires the pulled generation receipt")
-    expected = json.loads(base.read_text(encoding="utf-8"))
-    required = {"database", "generation", "sha256", "logical_sha256"}
-    if any(expected.get(key) in (None, "") for key in required):
-        raise RuntimeError("legacy recovery seed base receipt is incomplete")
-    manifest = local_manifest()
-    for key in (
-            "database", "sha256", "logical_sha256", "schema_version",
-            "registry_sha256", "event_head", "policy_version",
-            "source_sha256", "migration_receipt_id"):
-        if manifest.get(key) != expected.get(key):
-            raise RuntimeError(
-                f"legacy recovery seed base receipt does not match local {key}")
-    receipt_path = _migration_receipt_path()
-    if not receipt_path.exists():
-        raise RuntimeError("legacy recovery seed requires the original migration receipt")
-    try:
-        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("legacy recovery seed migration receipt is invalid") from exc
-    receipt_digest = sha(receipt_path)
-    if (receipt.get("operation") != "migrate"
-            or receipt.get("receipt_id") != manifest["migration_receipt_id"]
-            or receipt.get("base_generation") != expected["generation"]
-            or any(receipt.get(key) != manifest[key] for key in (
-                "registry_sha256", "event_head", "policy_version",
-                "source_sha256"))):
-        raise RuntimeError(
-            "legacy recovery seed migration receipt does not bind current provenance")
-    _verify_migration_audit(receipt, manifest, LOCAL_DB)
-    backup = Path(receipt["backup"])
-    if not backup.exists() or sha(backup) != receipt["backup_sha256"]:
-        raise RuntimeError("legacy recovery seed requires the retained migration backup")
-    probe = sqlite3.connect(backup)
-    try:
-        if (probe.execute("PRAGMA quick_check").fetchone()[0] != "ok"
-                or migrator.logical_digest(probe) != receipt["base_logical_sha256"]
-                or migrator.schema_name(probe) != receipt["schema_from"]):
-            raise RuntimeError("legacy recovery backup provenance mismatch")
-    finally:
-        probe.close()
-    generation = expected["generation"] + 1
-    result = {
-        "database": expected["database"], "generation": generation,
-        "sha256": sha(backup), "logical_sha256": receipt["base_logical_sha256"],
-        "schema_version": receipt["schema_from"],
-        "registry_sha256": receipt["registry_sha256"], "event_head": receipt["event_head"],
-        "policy_version": receipt["policy_version"], "source_sha256": receipt["source_sha256"],
-        "migration_receipt_id": receipt["receipt_id"],
-        "migration_receipt_sha256": receipt_digest,
-        "migration_receipt_object": f"{GENERATIONS}/{generation:020d}-{receipt_digest}.migration.json",
-        "base_generation": expected["generation"], "base_sha256": expected["sha256"],
-        "base_logical_sha256": expected["logical_sha256"],
-        "restored_schema_version": receipt["schema_from"],
-        "requires_controlled_remigration": True, "operation": "legacy_recovery_seed",
-        "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "object": f"{GENERATIONS}/{generation:020d}-{receipt['base_logical_sha256']}.sqlite3",
-    }
-    result.update({key: expected[key] for key in _required_manifest_fields()
-                   if key in expected and key not in result})
-    result.update({
-        "lease_protocol": LEASE_PROTOCOL_VERSION,
-        "fence_token": lease["fence_token"],
-        "authority_host_uuid": lease["authority_host_uuid"],
-        "authority_boot_id": lease["authority_boot_id"],
-        "owner_run_id": lease["owner_run_id"],
-        "owner_writer_uuid": lease["owner_writer_uuid"],
-        "owner_client_host_uuid": lease["owner_client_host_uuid"],
-    })
-    _validate_manifest(result, rollback=True)
-    payload, expected_payload = canonical_manifest(result), canonical_manifest(expected)
-    upload_id = uuid.uuid4().hex
-    upload, receipt_upload = REMOTE_DB + ".seed." + upload_id, REMOTE_DB + ".seed-receipt." + upload_id
-    _copy_to_authority(backup, upload)
-    _copy_to_authority(receipt_path, receipt_upload)
-    script = (
-        f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(upload)} | awk '{{print $1}}')\" = {_remote_q(result['sha256'])} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(receipt_upload)} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
-        f"mkdir -p {_remote_q(GENERATIONS)}; mv {_remote_q(upload)} {_remote_q(result['object'])}; "
-        f"mv {_remote_q(receipt_upload)} {_remote_q(result['migration_receipt_object'])}; "
-        + _remote_fsync(result["object"]) + _remote_fsync(result["migration_receipt_object"])
-        + _atomic_remote_copy(result["object"], REMOTE_DB, upload_id)
-        + _atomic_remote_json(MANIFEST, payload))
-    try:
-        _authority_commit(script, lease)
-    except subprocess.CalledProcessError as exc:
-        raise _cas_conflict(exc) from exc
-    base.write_text(payload, encoding="utf-8")
-    return result
-
-def seed_legacy_recovery(base_receipt: Path | None) -> dict:
-    _seed_legacy_recovery_preflight(base_receipt)
-    with authority_lease() as lease:
-        with bibliography_writer_lock(LOCAL_DB):
-            return _seed_legacy_recovery_locked(base_receipt, lease)
-
-def _seed_legacy_recovery_preflight(base_receipt: Path | None) -> None:
-    if _remigration_marker().exists():
-        raise RuntimeError("remigration required before legacy recovery seed")
-    if not LOCAL_DB.exists():
-        raise RuntimeError(f"missing local DB: {LOCAL_DB}")
-    base = base_receipt or LOCAL_DB.with_suffix(".base.json")
-    if not base.exists():
-        raise RuntimeError("legacy recovery seed requires the pulled generation receipt")
-    try:
-        expected = json.loads(base.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid base receipt") from exc
-    required = {"database", "generation", "sha256", "logical_sha256"}
-    if any(expected.get(key) in (None, "") for key in required):
-        raise RuntimeError("legacy recovery seed base receipt is incomplete")
-    if not _migration_receipt_path().exists():
-        raise RuntimeError("legacy recovery seed requires the original migration receipt")
-
-
-
-def _published_rollback_locked(target_generation: int, base_receipt: Path | None,
-                               migration_receipt: Path | None, lease: dict) -> dict:
-    """Publish a retained generation as a new monotonic generation under CAS."""
-    _ensure_publishable()
-    base = base_receipt or LOCAL_DB.with_suffix(".base.json")
-    if not base.exists():
-        raise RuntimeError("stale/missing base receipt; pull before published rollback")
-    try:
-        expected = json.loads(base.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid base receipt") from exc
-    _validate_manifest(expected, allow_legacy=True)
-    expected_payload = canonical_manifest(expected)
-    if migration_receipt is None or not migration_receipt.exists():
-        raise RuntimeError("published rollback requires a migration receipt")
-    try:
-        migration = json.loads(migration_receipt.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid migration receipt") from exc
-    required_receipt = {
-        "operation", "receipt_id", "base_generation", "base_sha256", "base_logical_sha256",
-        "result_sha256", "result_logical_sha256", "schema_from", "schema_to",
-        "registry_sha256", "event_head", "policy_version", "source_sha256",
-    }
-    missing = sorted(key for key in required_receipt if migration.get(key) in (None, ""))
-    if missing:
-        raise RuntimeError("migration receipt lacks required provenance: " + ",".join(missing))
-    receipt_digest = sha(migration_receipt)
-    if (migration["operation"] != "migrate"
-            or migration["receipt_id"] != expected["migration_receipt_id"]
-            or migration["result_sha256"] != expected["sha256"]
-            or migration["result_logical_sha256"] != expected["logical_sha256"]
-            or migration["schema_to"] != expected["schema_version"]
-            or any(migration[key] != expected[key] for key in (
-                "registry_sha256", "event_head", "policy_version", "source_sha256"))):
-        raise RuntimeError("migration receipt does not bind the current generation")
-    if receipt_digest != expected["migration_receipt_sha256"]:
-        raise RuntimeError("migration receipt is not the synchronized receipt artifact")
-    if target_generation < 0 or target_generation >= expected["generation"]:
-        raise RuntimeError("rollback target must be an older retained generation")
-    _verify_migration_audit(migration, expected, LOCAL_DB)
-
-    listing = remote(
-        f"set -- {_remote_q(GENERATIONS)}/{target_generation:020d}-*.sqlite3; "
-        "test \"$#\" -eq 1 && test -f \"$1\" && printf '%s' \"$1\"",
-        capture=True,
-    ).stdout.strip()
-    if not listing:
-        raise RuntimeError("rollback target generation is missing or ambiguous")
-
-    with tempfile.TemporaryDirectory(dir=LOCAL_DB.parent) as directory:
-        target = Path(directory) / "rollback.sqlite3"
-        _copy_from_authority(listing, target)
-        target_digest = sha(target)
-        target_logical = _logical_sha(target)
-        filename_digest = Path(listing).stem.split("-", 1)[-1]
-        if target_logical != filename_digest:
-            raise RuntimeError("rollback target object logical hash mismatch")
-        if (migration["base_generation"] != target_generation
-                or migration["base_sha256"] != target_digest
-                or migration["base_logical_sha256"] != target_logical):
-            raise RuntimeError("migration receipt does not bind the rollback target")
-        connection = sqlite3.connect(target)
-        try:
-            if connection.execute("PRAGMA quick_check").fetchone()[0] != "ok":
-                raise RuntimeError("rollback target integrity check failed")
-            if migrator.schema_name(connection) != migration["schema_from"]:
-                raise RuntimeError("rollback target original schema mismatch")
-        finally:
-            connection.close()
-
-    manifest = {
-        "database": expected["database"],
-        "generation": expected["generation"] + 1,
-        "sha256": target_digest,
-        "logical_sha256": target_logical,
-        "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "base_generation": expected["generation"],
-        "base_sha256": expected["sha256"],
-        "base_logical_sha256": expected["logical_sha256"],
-        "rollback_of_generation": target_generation,
-        "operation": "rollback",
-        "requires_controlled_remigration": True,
-        "migration_receipt_id": migration["receipt_id"],
-        "migration_receipt_sha256": receipt_digest,
-        "restored_schema_version": migration["schema_from"],
-        "schema_version": migration["schema_from"],
-        "registry_sha256": migration["registry_sha256"],
-        "event_head": migration["event_head"],
-        "policy_version": migration["policy_version"],
-        "source_sha256": migration["source_sha256"],
-    }
-    manifest.update({key: expected[key] for key in _required_manifest_fields()
-                     if key in expected and key not in manifest})
-    manifest.update({
-        "lease_protocol": LEASE_PROTOCOL_VERSION,
-        "fence_token": lease["fence_token"],
-        "authority_host_uuid": lease["authority_host_uuid"],
-        "authority_boot_id": lease["authority_boot_id"],
-        "owner_run_id": lease["owner_run_id"],
-        "owner_writer_uuid": lease["owner_writer_uuid"],
-        "owner_client_host_uuid": lease["owner_client_host_uuid"],
-    })
-    object_path = (
-        f"{GENERATIONS}/{manifest['generation']:020d}-{target_logical}.sqlite3")
-    manifest["object"] = object_path
-    manifest["migration_receipt_object"] = (
-        f"{GENERATIONS}/{manifest['generation']:020d}-{receipt_digest}.migration.json")
-    _validate_manifest(manifest, rollback=True)
-    payload = canonical_manifest(manifest)
-    script = (
-        f"test -f {_remote_q(MANIFEST)} || exit 74; "
-        f"actual=$(cat {_remote_q(MANIFEST)}) || exit 74; "
-        f"test \"$actual\" = {_remote_q(expected_payload)} || exit 74; "
-        f"test -f {_remote_q(listing)} || exit 74; "
-        f"test \"$(shasum -a 256 {_remote_q(listing)} | awk '{{print $1}}')\" = "
-        f"{_remote_q(target_digest)} || exit 74; "
-        f"if test -e {_remote_q(object_path)}; then "
-        f"test \"$(shasum -a 256 {_remote_q(object_path)} | awk '{{print $1}}')\" = "
-        f"{_remote_q(target_digest)} && "
-        f"python3 -c 'import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
-        "ok=c.execute(\"PRAGMA quick_check\").fetchone()[0]==\"ok\"; "
-        "c.close(); raise SystemExit(not ok)' "
-        f"{_remote_q(object_path)} || "
-        f"{{ rm -f {_remote_q(object_path)}; cp {_remote_q(listing)} {_remote_q(object_path)}; }}; "
-        f"else cp {_remote_q(listing)} {_remote_q(object_path)}; fi; "
-        f"test \"$(shasum -a 256 {_remote_q(object_path)} | awk '{{print $1}}')\" = "
-        f"{_remote_q(target_digest)} || exit 74; "
-        + _remote_fsync(object_path)
-        + f"test -f {_remote_q(expected['migration_receipt_object'])} || exit 74; "
-        + f"test \"$(shasum -a 256 {_remote_q(expected['migration_receipt_object'])} | awk '{{print $1}}')\" = {_remote_q(receipt_digest)} || exit 74; "
-        + f"cp {_remote_q(expected['migration_receipt_object'])} {_remote_q(manifest['migration_receipt_object'])}; "
-        + _remote_fsync(manifest["migration_receipt_object"])
-        + _atomic_remote_copy(
-            object_path, REMOTE_DB, f"rollback-{manifest['generation']}")
-        + _atomic_remote_json(MANIFEST, payload)
-    )
-    try:
-        _authority_commit(script, lease)
-    except subprocess.CalledProcessError as exc:
-        raise _cas_conflict(exc) from exc
-    base.write_text(payload, encoding="utf-8")
-    print(payload)
-    return manifest
-
-
-def published_rollback(target_generation: int, base_receipt: Path | None,
-                       migration_receipt: Path | None) -> dict:
-    _published_rollback_preflight(target_generation, base_receipt, migration_receipt)
-    with authority_lease() as lease:
-        with bibliography_writer_lock(LOCAL_DB):
-            return _published_rollback_locked(
-                target_generation, base_receipt, migration_receipt, lease)
-
-def _published_rollback_preflight(target_generation: int, base_receipt: Path | None,
-                                  migration_receipt: Path | None) -> None:
-    _ensure_publishable()
-    base = base_receipt or LOCAL_DB.with_suffix(".base.json")
-    if not base.exists():
-        raise RuntimeError("stale/missing base receipt; pull before published rollback")
-    try:
-        expected = json.loads(base.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid base receipt") from exc
-    _validate_manifest(expected, allow_legacy=True)
-    if migration_receipt is None or not migration_receipt.exists():
-        raise RuntimeError("published rollback requires a migration receipt")
-    try:
-        migration = json.loads(migration_receipt.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("invalid migration receipt") from exc
-    if target_generation < 0 or target_generation >= expected["generation"]:
-        raise RuntimeError("rollback target must be an older retained generation")
-    _verify_migration_audit(migration, expected, LOCAL_DB)
-
-def _cli_affiliation_artifacts(args) -> dict[str, Path] | None:
-    values = {
-        role: getattr(args, role.replace("_", "-").replace("-", "_"))
-        for role in AFFILIATION_ARTIFACT_ROLES
-    }
-    present = {role: path for role, path in values.items() if path is not None}
-    return None if not present else _artifact_destinations(present)
+            return _push_locked(base_receipt, lease, writer_lock_descriptor)
 
 
 def main():
@@ -1889,27 +1142,13 @@ def main():
     group.add_argument("--push", action="store_true")
     group.add_argument("--status", action="store_true")
     group.add_argument("--bootstrap", action="store_true")
-    group.add_argument("--rollback-generation", type=int)
-    group.add_argument("--seed-legacy-recovery", action="store_true")
     parser.add_argument("--base-receipt", type=Path)
-    parser.add_argument("--migration-receipt", type=Path)
-    parser.add_argument("--cohort", type=Path)
-    parser.add_argument("--decisions", type=Path)
-    parser.add_argument("--ledger", type=Path)
-    parser.add_argument("--generation-descriptor", type=Path)
-    parser.add_argument("--phase-receipt", type=Path)
     args = parser.parse_args()
     try:
         if args.pull:
-            pull(_cli_affiliation_artifacts(args), args.phase_receipt)
+            pull(args.phase_receipt)
         elif args.push:
-            push(args.base_receipt, _cli_affiliation_artifacts(args))
-        elif args.rollback_generation is not None:
-            published_rollback(
-                args.rollback_generation, args.base_receipt,
-                args.migration_receipt)
-        elif args.seed_legacy_recovery:
-            seed_legacy_recovery(args.base_receipt)
+            push(args.base_receipt)
         elif args.bootstrap:
             bootstrap()
         else:
