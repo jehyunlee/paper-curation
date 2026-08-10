@@ -556,9 +556,15 @@ def _run_topic_index(topic=None, cross=None):
         return "\n".join(html_parts)
 
     def render_exec_summary(text):
-        if not text: return ""
+        if not text:
+            return ""
         paras = [p.strip() for p in text.split("\n\n") if p.strip()]
-        return "\n    ".join(f"<p>{esc(p)}</p>" for p in paras)
+
+        def _render_para(paragraph):
+            safe = esc(paragraph)
+            return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", safe)
+
+        return "\n    ".join(f"<p>{_render_para(p)}</p>" for p in paras)
 
     # CSS with theme
     accent = theme["accent"]

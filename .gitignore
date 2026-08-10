@@ -35,11 +35,10 @@
 !pipeline/eval/
 !pipeline/eval/*.json
 !pipeline/eval/*.jsonl
-!pipeline/affiliation_registry.json
-!pipeline/affiliation_registry_corrections.jsonl
-!pipeline/affiliation_registry_baseline.json
-!pipeline/affiliation_evidence/
-!pipeline/affiliation_evidence/*
+# Operator-curated affiliation group table: the pinned reproducibility
+# baseline. PAPER_CURATION_AFGROUP_DICT overrides it with a live copy.
+!pipeline/data/
+!pipeline/data/*.json
 pipeline/eval/results/
 
 # Cloudflare Worker function (handles /api/audio-email + serves static assets).

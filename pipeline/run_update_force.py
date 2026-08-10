@@ -20,6 +20,7 @@ Paper-Curation --local --update-force 배치 실행 스크립트.
 import argparse
 import json
 import os
+import queue
 import re
 import shutil
 import subprocess
@@ -315,10 +316,24 @@ def sync_bibliography_db(direction):
 
 def run_bibliography_release_steps(run_step):
     """Build, validate, then publish; a failed gate prevents the push call."""
+    # Institution normalisation needs the ROR index and the curated group table.
+    # Both live under gitignored `.cache/`, so without this step a wiped cache
+    # degrades silently to raw PDF affiliation strings.
+    run_step(
+        "setup_affiliation_sources",
+        ["python", "pipeline/setup_affiliation_sources.py"],
+        1800,
+    )
+    # No --offline/--skip-zotero here. Both switches disable the Zotero read
+    # (build_bibliography_db.py:1797) and --offline also disables Scopus
+    # (:1851), which would leave newly ingested papers without a
+    # `zotero_item_key` and outside the Zotero-first bibliography policy —
+    # exactly the papers that need it. The Zotero library scan is a fixed ~200s
+    # per cycle no matter how many papers changed.
     run_step(
         "build_bibliography_db",
         ["python", "pipeline/build_bibliography_db.py", "--changed-only",
-         "--offline", "--skip-zotero", "--no-email"],
+         "--no-email"],
         7200,
     )
     run_step(
@@ -1822,6 +1837,230 @@ def paper_has_other_topics(slug):
 MAX_RETRIES = 3
 
 
+def _index_entries_for_ingest():
+    """`_papers_index.json` entries the ingest thread needs to build rows.
+
+    Read once up front: the ingest thread must not re-read a 10 MB index on
+    every flush, and the index may be rewritten while the pool is running.
+    """
+    path = os.path.join(PAPERS_DIR, "_papers_index.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return []
+
+
+class BibliographyIngestor:
+    """Loads reviewed papers into the bibliography DB during the run.
+
+    Reviews run at `--concurrency 16`; SQLite takes one writer at a time and the
+    DB ships with `journal_mode=delete` and `busy_timeout=0`, so sixteen workers
+    writing directly would either serialise behind the lock or fail outright
+    with "database is locked". Instead every worker hands its slug to a queue
+    and a single background thread does all the writing — reviews stay fully
+    parallel, and rows land in the DB while the run is still going instead of
+    only at the end.
+
+    Batches are flushed by size or by idle time, whichever comes first. The
+    table-wide consolidation passes (~1.6 s each run) are deferred and executed
+    once by `close()`.
+    """
+
+    def __init__(self, db_path, index_entries, batch=8, idle=20.0):
+        self._db_path = db_path
+        self._by_slug = {e["slug"]: e for e in index_entries}
+        self._batch = max(1, batch)
+        self._idle = idle
+        self._queue = queue.Queue()
+        self._thread = None
+        self._stats = {"ingested": 0, "flushes": 0, "errors": 0, "skipped": 0}
+        self._lock = threading.Lock()
+
+    def start(self):
+        if self._thread is not None:
+            return self
+        self._thread = threading.Thread(
+            target=self._run, name="bibliography-ingest", daemon=True)
+        self._thread.start()
+        log("  [bibliography] 실시간 적재 스레드 시작 "
+            f"(batch={self._batch}, idle={self._idle:.0f}s)")
+        return self
+
+    def submit(self, slug):
+        """Non-blocking hand-off from a review worker."""
+        if self._thread is not None:
+            self._queue.put(slug)
+
+    def close(self, timeout=1800):
+        """Drain, then run the deferred table-wide passes."""
+        if self._thread is None:
+            return self._stats
+        self._queue.put(None)
+        self._thread.join(timeout)
+        try:
+            import build_bibliography_db as bib
+            final = bib.finalize(_pathlib.Path(self._db_path))
+            self._stats["finalize"] = final
+        except Exception as exc:
+            self._stats["errors"] += 1
+            log(f"  [bibliography] finalize 실패: {type(exc).__name__}: {exc}")
+        log(f"  [bibliography] 적재 완료: {self._stats}")
+        return self._stats
+
+    def _run(self):
+        pending, deadline = [], None
+        while True:
+            timeout = None if deadline is None else max(
+                0.1, deadline - time.monotonic())
+            try:
+                slug = self._queue.get(timeout=timeout)
+            except queue.Empty:
+                self._flush(pending)
+                pending, deadline = [], None
+                continue
+            if slug is None:
+                self._flush(pending)
+                return
+            pending.append(slug)
+            deadline = deadline or (time.monotonic() + self._idle)
+            if len(pending) >= self._batch:
+                self._flush(pending)
+                pending, deadline = [], None
+
+    def _flush(self, slugs):
+        slugs = [s for s in slugs if s]
+        if not slugs:
+            return
+        import build_bibliography_db as bib
+        # Only papers whose sidecar is readable are ingested here. Without one
+        # the builder would page the entire Zotero library (~200 s) on every
+        # batch, so those are left to the post-run `--changed-only` build that
+        # pages it once. `skip_zotero=True` is therefore safe: the sidecar is
+        # the Zotero record.
+        entries = [self._by_slug[s] for s in slugs
+                   if s in self._by_slug
+                   and bib.load_sidecar(bib.PAPERS_DIR / s) is not None]
+        deferred = len(slugs) - len(entries)
+        if deferred:
+            with self._lock:
+                self._stats["skipped"] += deferred
+        if not entries:
+            return
+        try:
+            bib.build(entries, _pathlib.Path(self._db_path),
+                      skip_zotero=True, offline=False,
+                      defer_consolidation=True)
+            with self._lock:
+                self._stats["ingested"] += len(entries)
+                self._stats["flushes"] += 1
+            log(f"  [bibliography] {len(entries)}편 적재 "
+                f"(누적 {self._stats['ingested']})")
+        except Exception as exc:
+            with self._lock:
+                self._stats["errors"] += 1
+            # Never fail a review run over ingestion: the sidecars survive and
+            # the post-run `--changed-only` build picks the papers up.
+            log(f"  [bibliography] 적재 실패 ({len(entries)}편, "
+                f"사이드카는 보존): {type(exc).__name__}: {exc}")
+
+
+SIDECAR_NAME = "bibliography.json"
+SIDECAR_SCHEMA = "bibliography-sidecar-1"
+
+
+def write_bibliography_sidecar(item, slug_dir, pdf_path):
+    """Persist bibliographic facts at review time, next to the review.
+
+    Review generation is the only moment where the Zotero record, the freshly
+    extracted `text.md` and the matched PDF are all in hand at once. Writing them
+    out here means the later DB build does not have to page the whole Zotero
+    library back over the network (a fixed ~200 s that also failed with a 502 and
+    silently dropped 939 `zotero_item_key` values) nor re-open every PDF.
+
+    A file, not a direct DB write: reviews run at `--concurrency 16`, and a
+    per-paper insert would serialise all of them behind one SQLite writer lock.
+
+    `text_md_sha256` pins the affiliations to the text they came from, so a
+    stale sidecar is ignored rather than trusted.
+    """
+    import hashlib
+
+    text_path = os.path.join(slug_dir, "text.md")
+    payload = {
+        "schema": SIDECAR_SCHEMA,
+        "captured_at": datetime.now().isoformat(timespec="seconds"),
+        "zotero": {k: item.get(k) for k in (
+            "key", "title", "DOI", "publicationTitle", "date", "volume",
+            "issue", "pages", "publisher", "ISSN", "itemType", "url",
+            "archiveID", "extra", "journalAbbreviation") if item.get(k)},
+        "authors": [
+            (" ".join(p for p in (c.get("firstName"), c.get("lastName")) if p)
+             or c.get("name", ""))
+            for c in (item.get("creators") or [])
+            if c.get("creatorType") in (None, "author")],
+    }
+    try:
+        with open(text_path, "rb") as fh:
+            payload["text_md_sha256"] = hashlib.sha256(fh.read()).hexdigest()
+    except OSError:
+        payload["text_md_sha256"] = ""
+
+    try:
+        payload["affiliations"] = _extract_affiliations_for_sidecar(
+            slug_dir, pdf_path, payload["authors"], payload["zotero"])
+    except Exception as exc:                      # never block a review
+        payload["affiliations"] = []
+        payload["affiliation_error"] = f"{type(exc).__name__}: {exc}"
+
+    tmp = os.path.join(slug_dir, SIDECAR_NAME + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=1)
+    os.replace(tmp, os.path.join(slug_dir, SIDECAR_NAME))
+    return payload
+
+
+def _extract_affiliations_for_sidecar(slug_dir, pdf_path, authors, zotero):
+    """Institutions for one paper, using the bibliography builder's own code.
+
+    Imported rather than reimplemented: the extraction window, the ROR
+    normalisation, the country rule and the parent-group rules must stay
+    identical to what `build_bibliography_db.py` would produce, or the sidecar
+    becomes a second, diverging source of truth.
+    """
+    from pathlib import Path
+
+    import build_bibliography_db as bib
+
+    text_path = Path(slug_dir) / "text.md"
+    if not text_path.exists():
+        return []
+    _header, raw_affs, _conf = bib.extract_header(text_path)
+    pdf = Path(pdf_path) if pdf_path and os.path.exists(pdf_path) else None
+    window = bib._pdf_text_for_affiliations(pdf, text_path)
+    records = bib.reconcile_affiliations(
+        [], window, raw_affs, offline=True,
+        paper_title=str(zotero.get("title") or ""), authors=authors)
+    out = []
+    for record in records:
+        name = bib.canonical_institution(record["name"])
+        country = record.get("country") or bib.country_from_raw(
+            record.get("raw_name", ""))
+        ror = bib.ror_normalize(record.get("raw_name", ""), name, country,
+                                offline=True)
+        out.append({
+            "raw_name": record.get("raw_name", ""),
+            "name": ror.get("institution") or name,
+            "country_name": country,
+            "ror_id": ror.get("ror_id", ""),
+            "parent_name": ror.get("parent", ""),
+            "parent_ror_id": ror.get("parent_ror_id", ""),
+            "name_source": ror.get("evidence", ""),
+            "source": record.get("source", "pdf"),
+        })
+    return out
+
+
 def _do_process(item, slug, slug_dir, pdf_path):
     """Single attempt: text.md → figures → review.md → index.html.
     Returns (status, reason) — status is 'ok' or 'fail'."""
@@ -1850,6 +2089,15 @@ def _do_process(item, slug, slug_dir, pdf_path):
     review_path = os.path.join(slug_dir, "review.md")
     if not os.path.exists(review_path) or os.path.getsize(review_path) < 200:
         return "fail", "review_write_failed"
+
+    # Bibliography sidecar: Zotero record + authors + ROR-normalised
+    # institutions, captured while the item, text.md and the PDF are all in
+    # hand. `build_bibliography_db.py` consumes it instead of re-paging the
+    # whole Zotero library and re-opening every PDF.
+    log(_paper_progress(slug, "서지 추출"))
+    sidecar = write_bibliography_sidecar(item, slug_dir, pdf_path)
+    log(f"  {slug}: 저자 {len(sidecar['authors'])}명 · "
+        f"기관 {len(sidecar['affiliations'])}곳")
 
     # Phase 3: tool-use schema enforces structured output, so the
     # post-hoc fixers (fix_python_list_literals / fix_evaluation_format /
@@ -2253,6 +2501,13 @@ def main():
     start_time = time.time()
     done = 0
 
+    # One writer, many reviewers: workers hand finished slugs to this thread
+    # rather than contending for the SQLite write lock themselves.
+    ingestor = BibliographyIngestor(
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                     ".cache", "bibliography.sqlite3"),
+        _index_entries_for_ingest()).start()
+
     with ThreadPoolExecutor(max_workers=args.concurrency) as executor:
         futures = {}
         for item, slug in remaining:
@@ -2264,6 +2519,8 @@ def main():
             try:
                 result = future.result()
                 done += 1
+                if str(result) in ("ok", "completed", "success"):
+                    ingestor.submit(slug)
                 _update_progress(done=done, failed=len(cp["failed"]))
                 elapsed = time.time() - start_time
                 rate = elapsed / done if done else 0
@@ -2275,6 +2532,10 @@ def main():
                 with _cp_lock:
                     cp["failed"].append({"slug": slug, "reason": str(e)})
                 save_checkpoint(cp)
+
+    # Drain the queue and run the deferred table-wide passes before any
+    # post-processing step reads the DB.
+    ingestor.close()
 
     elapsed_total = (time.time() - start_time) / 3600
     log(f"\nPass 1 done! {done} papers in {elapsed_total:.1f}h")

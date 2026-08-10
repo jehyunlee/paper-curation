@@ -23,9 +23,9 @@ import urllib.request
 import uuid
 from pathlib import Path
 try:
-    from .lib import affiliation_registry
+    from .lib import bibliography_lock, country_map
 except ImportError:
-    from lib import affiliation_registry
+    from lib import bibliography_lock, country_map
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "docs" / "papers"
@@ -56,14 +56,25 @@ CREATE TABLE IF NOT EXISTS paper_authors (
  is_corresponding_author INTEGER NOT NULL DEFAULT 0, source TEXT NOT NULL,
  PRIMARY KEY (paper_id, author_id));
 CREATE TABLE IF NOT EXISTS institution_groups (
- group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL, normalized_name TEXT NOT NULL,
- organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id));
+ group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL, normalized_name TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS idx_institution_groups_name ON institution_groups(normalized_name);
 CREATE TABLE IF NOT EXISTS institutions (
  institution_id INTEGER PRIMARY KEY, institution_name TEXT NOT NULL,
- normalized_name TEXT NOT NULL, country_name_en TEXT NOT NULL DEFAULT '',
+ normalized_name TEXT NOT NULL,
+ -- Two countries, because a multinational has both. `country_name_en` is where
+ -- the affiliation sat (the site: Microsoft Research Asia is in China);
+ -- `hq_country_name_en` is where the organisation is headquartered (Microsoft
+ -- is American). ROR supplies the headquarters, the PDF supplies the site.
+ country_name_en TEXT NOT NULL DEFAULT '',
+ hq_country_name_en TEXT NOT NULL DEFAULT '',
  group_id INTEGER REFERENCES institution_groups(group_id),
- organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id),
+ -- ROR-backed identity. `parent_name` is the research umbrella an institution
+ -- rolls up to (Max Planck Society, Helmholtz, Chinese Academy of Sciences);
+ -- ministries and governing boards are never eligible.
+ ror_id TEXT NOT NULL DEFAULT '',
+ parent_name TEXT NOT NULL DEFAULT '',
+ parent_ror_id TEXT NOT NULL DEFAULT '',
+ name_source TEXT NOT NULL DEFAULT '',
  source TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS institution_aliases (
  alias_id INTEGER PRIMARY KEY, raw_name TEXT NOT NULL, normalized_alias TEXT NOT NULL,
@@ -129,12 +140,11 @@ def fresh_schema_origin_receipt_id(*, schema_version: str, registry_sha256: str,
         origin, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")).hexdigest()
 AFFILIATION_OBSERVATION_NAMESPACE = uuid.UUID("8d81aeb5-6231-5e97-8a65-cc9e5658bd22")
-REGISTRY_PATH = Path(__file__).with_name("affiliation_registry.json")
 def canonical_affiliation_country(country: str = "", country_code: str = "",
                                   country_scope: str | None = None) -> tuple[str, str, str]:
     """Return the closed registry country projection; unknown input is never guessed."""
-    resolve = getattr(affiliation_registry, "country_resolution", None)
-    canonicalize = getattr(affiliation_registry, "canonical_country", None)
+    resolve = country_map.country_resolution
+    canonicalize = country_map.canonical_country
     for value in (country_code, country):
         if not value:
             continue
@@ -150,8 +160,7 @@ def canonical_affiliation_country(country: str = "", country_code: str = "",
         if state != "present" or not code:
             continue
         names = {
-            alpha2: name for alpha2, _alpha3, name in getattr(
-                affiliation_registry, "ISO_3166_1_ROWS", ())
+            alpha2: name for alpha2, _alpha3, name in country_map.ISO_3166_1_ROWS
         }
         name = names.get(code)
         if name:
@@ -160,138 +169,6 @@ def canonical_affiliation_country(country: str = "", country_code: str = "",
         return "", "", "multinational"
     return "", "", "unknown"
 
-AFFILIATION_SCHEMA = """
-CREATE TABLE IF NOT EXISTS affiliation_organizations (
- organization_id TEXT PRIMARY KEY, canonical_name_en TEXT NOT NULL, normalized_name TEXT NOT NULL,
- organization_type TEXT NOT NULL CHECK (organization_type IN
-  ('university','research_organization','company','hospital','government','facility','laboratory','association','network','other')),
- country_code TEXT NOT NULL DEFAULT '', country_name_en TEXT NOT NULL DEFAULT '',
- country_scope TEXT NOT NULL CHECK (country_scope IN ('domestic','multinational','unknown')),
- status TEXT NOT NULL CHECK (status IN ('active','historical','redirected','proposed')),
- created_event_id TEXT NOT NULL, registry_version INTEGER NOT NULL);
-CREATE INDEX IF NOT EXISTS idx_aff_org_normalized ON affiliation_organizations(normalized_name,country_code);
-CREATE TABLE IF NOT EXISTS affiliation_organization_redirects (
- old_organization_id TEXT PRIMARY KEY REFERENCES affiliation_organizations(organization_id),
- survivor_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
- event_id TEXT NOT NULL, CHECK(old_organization_id<>survivor_organization_id));
-CREATE TABLE IF NOT EXISTS affiliation_identifiers (
- authority TEXT NOT NULL CHECK (authority IN ('ror','wikidata','scopus','grid','isni','source')),
- identifier_value TEXT NOT NULL, organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
- status TEXT NOT NULL CHECK (status IN ('active','deprecated')), valid_from TEXT NOT NULL DEFAULT '',
- valid_to TEXT NOT NULL DEFAULT '', evidence_id TEXT NOT NULL,
- PRIMARY KEY(authority,identifier_value,valid_from),
- UNIQUE(organization_id,authority,identifier_value,valid_from));
-CREATE TABLE IF NOT EXISTS affiliation_aliases (
- alias_id TEXT PRIMARY KEY, alias_text TEXT NOT NULL, normalized_alias TEXT NOT NULL, language_code TEXT NOT NULL DEFAULT '',
- alias_type TEXT NOT NULL CHECK(alias_type IN ('official','english','native','acronym','legacy','source')),
- created_event_id TEXT NOT NULL);
-CREATE INDEX IF NOT EXISTS idx_aff_alias_norm ON affiliation_aliases(normalized_alias);
-CREATE TABLE IF NOT EXISTS affiliation_alias_candidates (
- alias_id TEXT NOT NULL REFERENCES affiliation_aliases(alias_id), organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
- country_discriminator TEXT NOT NULL DEFAULT '', evidence_id TEXT NOT NULL, confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1),
- review_status TEXT NOT NULL CHECK(review_status IN ('accepted','pending','rejected','superseded')),
- event_id TEXT NOT NULL, PRIMARY KEY(alias_id,organization_id,country_discriminator,event_id));
-CREATE INDEX IF NOT EXISTS idx_aff_alias_candidate_lookup
- ON affiliation_alias_candidates(alias_id,country_discriminator,review_status);
-CREATE TABLE IF NOT EXISTS affiliation_relationships (
- relationship_id TEXT PRIMARY KEY, subject_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
- object_organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id),
- relationship_type TEXT NOT NULL CHECK(relationship_type IN
-  ('part_of','jointly_operated_by','member_of','network_member_of')),
- valid_from TEXT NOT NULL DEFAULT '', valid_to TEXT NOT NULL DEFAULT '',
- status TEXT NOT NULL CHECK(status IN ('accepted','historical','superseded')),
- confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1), created_event_id TEXT NOT NULL,
- managed_by TEXT NOT NULL CHECK(managed_by IN ('registry','manual')),
- CHECK(subject_organization_id<>object_organization_id),
- CHECK(valid_to='' OR valid_from='' OR valid_from<valid_to),
- UNIQUE(subject_organization_id,object_organization_id,relationship_type,valid_from,valid_to));
-CREATE TABLE IF NOT EXISTS affiliation_relationship_evidence (
- relationship_id TEXT NOT NULL REFERENCES affiliation_relationships(relationship_id),
- evidence_id TEXT NOT NULL, PRIMARY KEY(relationship_id,evidence_id));
-CREATE TABLE IF NOT EXISTS observed_affiliation_slots (
- observation_slot_id TEXT PRIMARY KEY, paper_id INTEGER NOT NULL REFERENCES papers(paper_id) ON DELETE CASCADE,
- source_kind TEXT NOT NULL CHECK(source_kind IN ('scopus','pdf','review','legacy')),
- source_record_key TEXT NOT NULL, source_ordinal INTEGER NOT NULL CHECK(source_ordinal>=0), created_at TEXT NOT NULL,
- UNIQUE(paper_id,source_kind,source_record_key,source_ordinal));
-CREATE TABLE IF NOT EXISTS observed_affiliations (
- observation_id TEXT PRIMARY KEY, observation_slot_id TEXT NOT NULL REFERENCES observed_affiliation_slots(observation_slot_id) ON DELETE CASCADE,
- observation_version INTEGER NOT NULL CHECK(observation_version>=1), raw_content_sha256 TEXT NOT NULL,
- raw_name TEXT NOT NULL, normalized_raw_name TEXT NOT NULL, observed_country_code TEXT NOT NULL DEFAULT '',
- observed_country_name TEXT NOT NULL DEFAULT '', external_identifiers_json TEXT NOT NULL DEFAULT '{}',
- raw_context_sha256 TEXT NOT NULL, resolved_organization_id TEXT REFERENCES affiliation_organizations(organization_id),
- resolution_status TEXT NOT NULL CHECK(resolution_status IN ('resolved','ambiguous','unseen','rejected','superseded')),
- current_decision_id TEXT, registry_sha256 TEXT NOT NULL, policy_version TEXT NOT NULL,
- first_seen_at TEXT NOT NULL, last_seen_at TEXT NOT NULL, is_current INTEGER NOT NULL CHECK(is_current IN (0,1)),
- supersedes_observation_id TEXT REFERENCES observed_affiliations(observation_id),
- superseded_by_observation_id TEXT REFERENCES observed_affiliations(observation_id),
- UNIQUE(observation_slot_id,observation_version),
- UNIQUE(observation_slot_id,observation_version,raw_content_sha256));
-CREATE UNIQUE INDEX IF NOT EXISTS idx_observed_aff_one_current ON observed_affiliations(observation_slot_id) WHERE is_current=1;
-CREATE INDEX IF NOT EXISTS idx_observed_aff_pending
- ON observed_affiliations(is_current,resolution_status,normalized_raw_name,observed_country_code);
-CREATE TABLE IF NOT EXISTS affiliation_resolution_decisions (
- decision_id TEXT PRIMARY KEY, observation_id TEXT NOT NULL REFERENCES observed_affiliations(observation_id) ON DELETE CASCADE,
- decision_sequence INTEGER NOT NULL, outcome TEXT NOT NULL CHECK(outcome IN ('resolved','ambiguous','unseen','rejected','superseded')),
- selected_organization_id TEXT REFERENCES affiliation_organizations(organization_id), reason_code TEXT NOT NULL,
- confidence REAL NOT NULL CHECK(confidence BETWEEN 0 AND 1), registry_sha256 TEXT NOT NULL, policy_version TEXT NOT NULL,
- effective_date TEXT NOT NULL, decided_at TEXT NOT NULL,
- previous_decision_id TEXT REFERENCES affiliation_resolution_decisions(decision_id),
- UNIQUE(observation_id,decision_sequence));
-CREATE TABLE IF NOT EXISTS affiliation_decision_candidates (
- decision_id TEXT NOT NULL REFERENCES affiliation_resolution_decisions(decision_id) ON DELETE CASCADE,
- organization_id TEXT NOT NULL REFERENCES affiliation_organizations(organization_id), candidate_rank INTEGER NOT NULL,
- reason_code TEXT NOT NULL, PRIMARY KEY(decision_id,organization_id), UNIQUE(decision_id,candidate_rank));
-CREATE TABLE IF NOT EXISTS affiliation_pending_cases (
- pending_id TEXT PRIMARY KEY, normalized_raw_name TEXT NOT NULL, observed_country_code TEXT NOT NULL DEFAULT '',
- external_identifiers_json TEXT NOT NULL DEFAULT '{}',
- status TEXT NOT NULL CHECK(status IN ('open','proposed','resolved','rejected')), reason_code TEXT NOT NULL,
- first_seen_at TEXT NOT NULL, last_seen_at TEXT NOT NULL,
- active_observation_count INTEGER NOT NULL DEFAULT 0 CHECK(active_observation_count>=0),
- lifetime_observation_count INTEGER NOT NULL CHECK(lifetime_observation_count>0 AND lifetime_observation_count>=active_observation_count),
- attempt_count INTEGER NOT NULL DEFAULT 0, last_attempt_at TEXT NOT NULL DEFAULT '',
- proposal_digest TEXT NOT NULL DEFAULT '', resolved_event_id TEXT NOT NULL DEFAULT '',
- CHECK((status IN ('open','proposed') AND active_observation_count>0 AND resolved_event_id='')
-   OR (status IN ('resolved','rejected') AND active_observation_count=0 AND resolved_event_id<>'')),
- UNIQUE(normalized_raw_name,observed_country_code,external_identifiers_json));
-CREATE TABLE IF NOT EXISTS affiliation_pending_observations (
- pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
- observation_id TEXT NOT NULL UNIQUE REFERENCES observed_affiliations(observation_id) ON DELETE CASCADE,
- linked_at TEXT NOT NULL, PRIMARY KEY(pending_id,observation_id));
-CREATE TABLE IF NOT EXISTS affiliation_enrichment_attempts (
- attempt_id TEXT PRIMARY KEY, pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
- provider TEXT NOT NULL CHECK(provider IN ('official','ror','wikidata','wikipedia','scopus')),
- started_at TEXT NOT NULL, finished_at TEXT NOT NULL,
- outcome TEXT NOT NULL CHECK(outcome IN
-  ('success','no_match','unavailable','subscription_required','timeout','rate_limited','error','budget_exhausted')),
- response_digest TEXT NOT NULL DEFAULT '', error_class TEXT NOT NULL DEFAULT '', proposal_digest TEXT NOT NULL DEFAULT '');
-CREATE INDEX IF NOT EXISTS idx_affiliation_attempt_pending ON affiliation_enrichment_attempts(pending_id);
-CREATE TABLE IF NOT EXISTS affiliation_cohort_dispositions (
- cohort_sha256 TEXT NOT NULL, pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
- disposition TEXT NOT NULL CHECK(disposition IN
-  ('RESOLVED','MANUAL_HOLD','IDENTITY_CONFLICT','AMBIGUOUS_HOMONYM',
-   'COUNTRY_MISSING_OR_UNMAPPABLE','RELATIONSHIP_ONLY','EVIDENCE_STALE',
-   'PROVIDER_OR_SECURITY_INCOMPLETE','NO_MATCH_OR_GENERIC')),
- decision_sha256 TEXT NOT NULL, decision_row_sha256 TEXT NOT NULL,
- evidence_segment_sha256 TEXT NOT NULL, decided_at TEXT NOT NULL,
- PRIMARY KEY(cohort_sha256,pending_id));
-CREATE TABLE IF NOT EXISTS affiliation_registry_metadata (
- singleton INTEGER PRIMARY KEY CHECK(singleton=1), schema_version TEXT NOT NULL, registry_version INTEGER NOT NULL,
- registry_sha256 TEXT NOT NULL, event_head TEXT NOT NULL, policy_version TEXT NOT NULL, source_sha256 TEXT NOT NULL,
- projected_at TEXT NOT NULL, base_generation INTEGER NOT NULL DEFAULT 0, migration_receipt_id TEXT NOT NULL DEFAULT '',
- registry_contract_version TEXT NOT NULL DEFAULT '', event_contract_version TEXT NOT NULL DEFAULT '',
- country_map_version TEXT NOT NULL DEFAULT '', country_map_sha256 TEXT NOT NULL DEFAULT '',
- evidence_oracle_version TEXT NOT NULL DEFAULT '', evidence_oracle_sha256 TEXT NOT NULL DEFAULT '',
- ledger_head TEXT NOT NULL DEFAULT '', cohort_version TEXT NOT NULL DEFAULT '', cohort_sha256 TEXT NOT NULL DEFAULT '',
- relationship_set_sha256 TEXT NOT NULL DEFAULT '', relationship_count INTEGER NOT NULL DEFAULT 0,
- generation_descriptor_sha256 TEXT NOT NULL DEFAULT '', generation_id TEXT NOT NULL DEFAULT '');
-CREATE TABLE IF NOT EXISTS affiliation_projection_provenance (
- projection_kind TEXT NOT NULL, projection_key TEXT NOT NULL, provenance_json TEXT NOT NULL,
- PRIMARY KEY(projection_kind,projection_key));
-CREATE TABLE IF NOT EXISTS affiliation_migration_audit (
- receipt_id TEXT PRIMARY KEY, operation TEXT NOT NULL, base_generation INTEGER NOT NULL, base_logical_sha256 TEXT NOT NULL,
- result_logical_sha256 TEXT NOT NULL, registry_sha256 TEXT NOT NULL, schema_from TEXT NOT NULL, schema_to TEXT NOT NULL,
- backup_path TEXT NOT NULL, backup_sha256 TEXT NOT NULL, started_at TEXT NOT NULL, finished_at TEXT NOT NULL, report_json TEXT NOT NULL);
-"""
 AFFILIATION_COHORT_DISPOSITION_SQL = """
 CREATE TABLE IF NOT EXISTS affiliation_cohort_dispositions (
  cohort_sha256 TEXT NOT NULL, pending_id TEXT NOT NULL REFERENCES affiliation_pending_cases(pending_id) ON DELETE CASCADE,
@@ -322,18 +199,6 @@ AFFILIATION_METADATA_COLUMNS = {
 }
 
 
-def affiliation_metadata_requires_migration(conn: sqlite3.Connection) -> bool:
-    """Whether an existing projection lacks required contract bindings."""
-    if not conn.execute(
-            "SELECT 1 FROM sqlite_master WHERE type='table' "
-            "AND name='affiliation_registry_metadata'").fetchone():
-        return False
-    columns = {
-        row[1] for row in conn.execute(
-            "PRAGMA table_info(affiliation_registry_metadata)")}
-    return not set(AFFILIATION_METADATA_COLUMNS) <= columns
-
-
 def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
     """Add bibliographic columns to databases created by earlier releases."""
     tables = {row[0] for row in conn.execute(
@@ -345,18 +210,19 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
         for name, sql_type in PAPER_SCHEMA_COLUMNS.items():
             if name not in existing:
                 conn.execute(f"ALTER TABLE papers ADD COLUMN {name} {sql_type}")
-    metadata_columns = AFFILIATION_METADATA_COLUMNS
-    tables = {row[0] for row in conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='table'")}
-    if "affiliation_registry_metadata" in tables:
-        existing_metadata = {
-            row[1] for row in conn.execute(
-                "PRAGMA table_info(affiliation_registry_metadata)")}
-        for name, sql_type in metadata_columns.items():
-            if name not in existing_metadata:
+    if "institutions" in tables:
+        existing = {row[1] for row in
+                    conn.execute("PRAGMA table_info(institutions)").fetchall()}
+        for name, sql_type in (("ror_id", "TEXT NOT NULL DEFAULT ''"),
+                               ("hq_country_name_en", "TEXT NOT NULL DEFAULT ''"),
+                               ("parent_name", "TEXT NOT NULL DEFAULT ''"),
+                               ("parent_ror_id", "TEXT NOT NULL DEFAULT ''"),
+                               ("name_source", "TEXT NOT NULL DEFAULT ''")):
+            if name not in existing:
                 conn.execute(
-                    "ALTER TABLE affiliation_registry_metadata "
-                    f"ADD COLUMN {name} {sql_type}")
+                    f"ALTER TABLE institutions ADD COLUMN {name} {sql_type}")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_institutions_parent "
+                     "ON institutions(parent_name)")
 
 
 
@@ -381,7 +247,7 @@ def ensure_legacy_institution_schema(conn: sqlite3.Connection) -> None:
     alias_sql = alias_sql_row[0] if alias_sql_row else ""
     institution_sql = institution_sql_row[0] if institution_sql_row else ""
     if ({"country_name_en"} <= institution_columns
-            and {"organization_id"} <= group_columns
+            and "organization_id" not in institution_columns
             and "normalized_nameTEXTNOTNULLUNIQUE" not in re.sub(
                 r"\s+", "", institution_sql)
             and "UNIQUE" in alias_sql.upper()
@@ -414,15 +280,18 @@ def ensure_legacy_institution_schema(conn: sqlite3.Connection) -> None:
     compatibility_schema = """
         CREATE TABLE institution_groups (
           group_id INTEGER PRIMARY KEY, group_name TEXT NOT NULL,
-          normalized_name TEXT NOT NULL,
-          organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id));
+          normalized_name TEXT NOT NULL);
         CREATE INDEX idx_institution_groups_name
           ON institution_groups(normalized_name);
         CREATE TABLE institutions (
           institution_id INTEGER PRIMARY KEY, institution_name TEXT NOT NULL,
           normalized_name TEXT NOT NULL, country_name_en TEXT NOT NULL DEFAULT '',
           group_id INTEGER REFERENCES institution_groups(group_id),
-          organization_id TEXT UNIQUE REFERENCES affiliation_organizations(organization_id),
+          ror_id TEXT NOT NULL DEFAULT '',
+  hq_country_name_en TEXT NOT NULL DEFAULT '',
+          parent_name TEXT NOT NULL DEFAULT '',
+          parent_ror_id TEXT NOT NULL DEFAULT '',
+          name_source TEXT NOT NULL DEFAULT '',
           source TEXT NOT NULL);
         CREATE INDEX idx_institutions_identity
           ON institutions(normalized_name,country_name_en);
@@ -442,17 +311,19 @@ def ensure_legacy_institution_schema(conn: sqlite3.Connection) -> None:
             conn.execute(statement)
     for row in groups:
         conn.execute(
-            "INSERT INTO institution_groups VALUES (?,?,?,?)",
+            "INSERT INTO institution_groups VALUES (?,?,?)",
             (row.get("group_id"), row.get("group_name", ""),
-             row.get("normalized_name", ""), row.get("organization_id")))
+             row.get("normalized_name", "")))
     for row in institutions:
         conn.execute(
-            "INSERT INTO institutions VALUES (?,?,?,?,?,?,?)",
+            "INSERT INTO institutions (institution_id,institution_name,"
+            "normalized_name,country_name_en,group_id,source) "
+            "VALUES (?,?,?,?,?,?)",
             (row.get("institution_id"),
              row.get("institution_name") or row.get("normalized_name", ""),
              row.get("normalized_name", ""),
              row.get("country_name_en", ""), row.get("group_id"),
-             row.get("organization_id"), row.get("source", "legacy")))
+             row.get("source", "legacy")))
     for row in aliases:
         conn.execute(
             "INSERT OR IGNORE INTO institution_aliases VALUES (?,?,?,?)",
@@ -730,7 +601,10 @@ GROUPS = [
 ]
 
 COUNTRIES = [
-    ("United States", r"\b(?:USA|U\.S\.A\.|United States|US)\b"),
+    # Bare "US" is not accepted: it collides with unit codes in non-US
+    # affiliations ("Univ. Rennes, BIOSIT, UMS CNRS 3840, US INSERM"), which is
+    # how a CNRS lab ended up in the United States.
+    ("United States", r"\b(?:USA|U\.S\.A\.|U\.S\.|United States)\b"),
     ("United Kingdom", r"\b(?:UK|U\.K\.|United Kingdom|England)\b"),
     ("South Korea", r"\b(?:South Korea|Republic of Korea|Korea)\b"),
     ("China", r"\bChina\b"),
@@ -756,11 +630,56 @@ COUNTRIES = [
     ("Belgium", r"\bBelgium\b"),
 ]
 
+# Display names for the 24 countries the corpus is dominated by. Everything else
+# falls back to the ISO 3166-1 short name from `lib/country_map.py`.
+_COUNTRY_DISPLAY = {name: name for name, _pattern in COUNTRIES}
+_COUNTRY_DISPLAY_BY_CODE = {
+    "KR": "South Korea", "US": "United States", "GB": "United Kingdom",
+    "CN": "China", "TW": "Taiwan", "NL": "Netherlands", "RU": "Russia",
+    "IR": "Iran", "VN": "Vietnam", "CZ": "Czech Republic", "HK": "Hong Kong",
+}
+
+
+def _iso_country_display() -> dict[str, str]:
+    """alpha-2 → the name this DB shows, preferring the corpus's own spellings."""
+    names = {a2: name for a2, _a3, name in country_map.ISO_3166_1_ROWS}
+    names.update(_COUNTRY_DISPLAY_BY_CODE)
+    return names
+
+
+_ISO_COUNTRY_NAMES = _iso_country_display()
+_ISO_COUNTRY_PATTERN = re.compile(
+    "|".join(
+        r"\b" + re.escape(alias) + r"\b"
+        for alias in sorted(
+            {name for _a2, _a3, name in country_map.ISO_3166_1_ROWS}
+            | {alias for alias, _code in country_map.LEGACY_COUNTRY_ALIASES},
+            key=len, reverse=True)),
+    re.I)
+
+
 def country_from_raw(raw: str) -> str:
+    """Resolve the country an affiliation segment ends with.
+
+    An affiliation reads "Department, Institution, City, Country", so the
+    country is the *last* place name in the segment. The previous version
+    returned the first entry of a 24-row list that happened to match anywhere,
+    which is why "USA 6Computational Social Science, ETH Zurich, Zurich,
+    Switzerland" resolved ETH Zurich to the United States: the orphan "USA"
+    belonged to the preceding affiliation and "United States" sorts first.
+    """
+    best_name, best_end = "", -1
     for name, pattern in COUNTRIES:
-        if re.search(pattern, raw, re.I):
-            return name
-    return ""
+        for match in re.finditer(pattern, raw, re.I):
+            if match.end() > best_end:
+                best_name, best_end = name, match.end()
+    for match in _ISO_COUNTRY_PATTERN.finditer(raw):
+        if match.end() <= best_end:
+            continue
+        state, code = country_map.country_resolution(match.group(0))
+        if state == "present" and code in _ISO_COUNTRY_NAMES:
+            best_name, best_end = _ISO_COUNTRY_NAMES[code], match.end()
+    return best_name
 
 
 INSTITUTION_CANONICAL_ALIASES = [
@@ -825,6 +744,30 @@ INSTITUTION_CANONICAL_ALIASES = [
     (r"^Chinese University of Hong Kong$", "The Chinese University of Hong Kong"),
     (r"^Chinese University of Hong Kong, Shenzhen$", "The Chinese University of Hong Kong, Shenzhen"),
     (r"^Hong Kong University of Science and Technology$", "The Hong Kong University of Science and Technology"),
+    # Sub-organisations and legal entities that belong to one institution.
+    # Curated explicitly rather than derived: automatic brand-head merging was
+    # tried and rejected — grouping by leading distinctive token collapses MIT
+    # with UMass Amherst and Massachusetts General, UIUC with UIC and Illinois
+    # Tech, and "Munich Data Science Institute" with "Munich Center for Machine
+    # Learning", because the head is often a city or a shared adjective.
+    (r"^Stanford$|^Stanford (?:Engineering|Healthcare|Health Care|Medicine|"
+     r"Institute for Human-Centered Artificial Intelligence|HAI|Graduate School"
+     r"(?: of Business)?|Law School|Doerr School.*|School of (?:Medicine|"
+     r"Engineering|Humanities.*))$", "Stanford University"),
+    (r"^University of Illinois Urbana-?Champaign[.,].*$",
+     "University of Illinois Urbana-Champaign"),
+    (r"^Meta(?: AI(?: Research)?| Ai| Platforms.*| Reality Labs)?$", "Meta"),
+    (r"^Google(?: LLC.*| Switzerland GmbH| Inc\.?| Research)?$", "Google"),
+    (r"^Microsoft(?: Search| International Holdings B\.V\.| Corporation)?$",
+     "Microsoft"),
+    (r"^ETH Z[^a-zA-Z]*urich$", "ETH Zurich"),
+    # "UC <campus>" is the University of California family. ROR carries most of
+    # these as aliases; the three it misses are spelled out here.
+    (r"^UC ?Davis$", "University of California, Davis"),
+    (r"^UCLA$|^UC Los Angeles$", "University of California, Los Angeles"),
+    (r"^UCSF$|^UC San Francisco$", "University of California, San Francisco"),
+    (r"^Berkeley$", "University of California, Berkeley"),
+    (r"^DeepMind(?: Technologies(?: Limited)?)?$", "Google DeepMind"),
 ]
 
 RAW_INSTITUTION_ALIASES = [
@@ -995,7 +938,7 @@ _INSTITUTION_REGISTRY_BY_TOKEN: dict[str, list[str]] = {}
 def _clean_affiliation_text(value: str) -> str:
     value = re.sub(r"([A-Za-z])-\s+([a-z])", r"\1\2", value or "")
     value = re.sub(r"^[a-z](?=[A-Z])", "", value)
-    value = re.sub(r"(?<![A-Za-z])\d+(?=[A-Z])", " ", value)
+    value = re.sub(r"(?<![A-Za-z])\d+\s*(?=[A-Z])", " ", value)
     value = re.sub(r"\{[^}]*\}|\S+@\S+", " ", value)
     return re.sub(r"\s+", " ", value).strip(" ,;:-")
 
@@ -1011,12 +954,109 @@ def _apply_institution_aliases(value: str) -> str:
     return value
 
 
+# Prose that only ever appears in a title, abstract or reference entry — never
+# inside an affiliation line. Each pattern here is backed by a real row that
+# reached the shipped DB through the old front/back-matter window.
+_PROSE_INSTITUTION_CUES = re.compile(
+    r"\bAbstract\b"                       # "University of Helsinki Abstract World models…"
+    r"|\barXiv\b|\bpreprint\b|\bdoi\.org\b|\bet al\b"   # reference entries
+    r"|\bpp\.|\bVol\.|\bIn Proceedings\b|\(\s*(?:19|20)\d{2}\s*\)"
+    r"|^(?:A|An|The)\s+(?:\w+\s+){0,4}"
+    r"(?:Network|Model|Framework|Approach|Method|Study|Analysis|Survey|Dataset|"
+    r"Benchmark|Measure|System)\b"        # "A Dynamic Network", "A Neural Network"
+    r"|\b(?:we|our|this paper|is proposed|are proposed|propose[sd]?|introduce)\b",
+    re.I)
+
+# A real organisation names itself with one of these. Used only to disqualify
+# names that end in a machine-learning artefact word, so that "University Health
+# Network" and "HUN-REN Hungarian Research Network" survive while "Encoder
+# Network", "Policy Network" and "Acer Liquid Network" do not.
+_ORGANISATION_CUES = re.compile(
+    r"universit|institut|laborator|college|academy|hospital|cent(?:er|re)|"
+    r"school|research|ministry|agency|foundation|association|society|council|"
+    r"observator|museum|clinic|bureau|\bnational\b|\bstate\b|\bcorp|\binc\b|"
+    r"\bltd\b|\bllc\b|\bgmbh\b|\bco\.|\bcompany\b|\bgroup\b|\btrust\b", re.I)
+
+_ARTEFACT_TAIL = re.compile(
+    r"\b(?:networks?|models?|encoder|decoder|transformer|benchmark|dataset|"
+    r"framework|algorithm|architecture|pipeline|module)$", re.I)
+
+# Where an affiliation line stops and the rest of the page begins. Cutting here
+# keeps the institution that leads the segment ("5Goethe University Frankfurt,
+# Germany.∗Corresponding authors. Emails: … Fig. 1. Motion retargeting") instead
+# of discarding the whole over-long segment.
+_AFFILIATION_STOP = re.compile(
+    r"(?i)(?:\bcorresponding\s+author|\bcorrespondence\s+to|\be-?mails?\s*:|"
+    r"\bfig(?:ure)?\.?\s*\d|\babstract\b|\bkeywords?\b|\bintroduction\b|"
+    r"https?://|\barXiv\b|\bwork (?:was|performed)\b|\bequal contribution|"
+    # Venue boilerplate. "…, Seoul, South Korea. PMLR 306, 2026." made every
+    # author of that paper Korean.
+    r"\bproceedings\s+of\b|\bcopyright\b|\bPMLR\b|\bpreprint\b|"
+    r"\b(?:accepted|published|submitted)\s+(?:at|to|in|as)\b|"
+    r"\b\d{1,2}\s*(?:st|nd|rd|th)\s+(?:international\s+)?conference\b)")
+
+
+def _person_name_tokens(authors) -> set[str]:
+    """Surname/given-name tokens of this paper's own authors."""
+    if isinstance(authors, str):
+        authors = re.split(r"[,;]|\band\b", authors)
+    tokens = set()
+    for author in authors or []:
+        for token in re.findall(r"[A-Za-z][A-Za-z'’-]{1,}", str(author)):
+            if len(token) >= 2:
+                tokens.add(token.casefold())
+    return tokens
+
+
+def _strip_leading_author_names(raw: str, author_tokens: set[str]) -> str:
+    """Drop the author byline that runs straight into the affiliation.
+
+    Front matter reads "Iz Beltagy Kyle Lo Arman Cohan Allen Institute for AI";
+    without this the parser mints "Text Iz Beltagy Kyle Lo Arman Cohan Allen
+    Institute". Only this paper's own author tokens are removed, so real
+    multiword names ("Seoul National University") are never touched.
+    """
+    if not author_tokens:
+        return raw
+    words = raw.split()
+    cut = 0
+    for index, word in enumerate(words):
+        if re.sub(r"[^A-Za-z'’-]", "", word).casefold() in author_tokens:
+            cut = index + 1
+        elif cut and index - cut >= 2:
+            break
+    return " ".join(words[cut:]) if cut else raw
+
+
+def _trim_affiliation_segment(raw: str) -> str:
+    """Cut a candidate segment at the first non-affiliation boundary.
+
+    Also drops a leading orphan country: splitting on superscript markers leaves
+    the tail of the previous affiliation at the front ("USA 6Computational Social
+    Science, ETH Zurich, Zurich, Switzerland"), and that stray country was what
+    put ETH Zurich in the United States.
+    """
+    stop = _AFFILIATION_STOP.search(raw)
+    if stop:
+        raw = raw[:stop.start()]
+    raw = raw.strip(" ,;:-.*∗†‡")
+    lead = _ISO_COUNTRY_PATTERN.match(raw) or re.match(
+        r"(?i)(?:USA|U\.S\.A\.|UK|U\.K\.|PRC)\b", raw)
+    if lead and lead.end() < len(raw):
+        raw = raw[lead.end():].strip(" ,;:-.*∗†‡")
+    return raw
+
+
 def is_suspicious_institution_name(name: str) -> bool:
     value = _apply_institution_aliases(_clean_affiliation_text(name))
     if value in STANDALONE_INSTITUTION_NAMES:
         return False
     if (not value or value in GENERIC_INSTITUTION_NAMES or len(value) > 90
             or is_local_language_institution(value)):
+        return True
+    if _PROSE_INSTITUTION_CUES.search(value):
+        return True
+    if _ARTEFACT_TAIL.search(value) and not _ORGANISATION_CUES.search(value):
         return True
     return bool(re.search(
         r"@|^College of\b|\b(?:Department|School of|Faculty|Published|Accepted|"
@@ -1279,9 +1319,17 @@ def fetch_scopus_record(doi: str, title: str = "") -> dict:
     title = re.sub(r"\s+", " ", title or "").strip()
     if not doi and not title:
         return {"bibliography": {}, "affiliations": []}
+    # Look under both keys. The cache was largely built before Zotero supplied
+    # DOIs, so it holds 3,102 title-keyed records against 818 DOI-keyed ones;
+    # keying only by DOI made every Zotero-enriched paper a cache miss and
+    # turned a 15-minute rebuild into a 5-hour one.
     cache_key = doi or "title:" + norm(title)
     cache = _load_scopus_record_cache()
     cached = cache.get(cache_key)
+    if not (isinstance(cached, dict) and "bibliography" in cached) and doi and title:
+        alternate = cache.get("title:" + norm(title))
+        if isinstance(alternate, dict) and "bibliography" in alternate:
+            cached = alternate
     if isinstance(cached, dict) and "bibliography" in cached:
         return cached
     legacy_affiliations = cached if isinstance(cached, list) else []
@@ -1372,16 +1420,35 @@ def locate_pdf(paper: dict, frontmatter: dict) -> Path | None:
     return best if best_score >= max(3, len(title_tokens) // 2) else None
 
 
+_AUTHOR_INFO_CUE = re.compile(
+    r"(?im)^(?:author information|affiliations?|published online|received:).*$")
+
+
 def _pdf_text_for_affiliations(pdf_path: Path | None, text_path: Path) -> str:
-    """Search first/last PDF pages plus abstract-adjacent and author-info zones."""
+    """Front matter only: leading PDF pages, author-info back matter, pre-abstract text.
+
+    The affiliation block lives in front matter. The previous tail window
+    (``text.md`` ``lines[-600:]``) fed the *reference list* to the institution
+    parser, which minted institutions out of cited paper titles — "A Neural
+    Network", "A Dynamic Network", "Acer Liquid Network", "Application of a
+    Convolutional Neural Network". Measured across 120 papers that window
+    contributed zero unique institutions, so it is not read at all.
+
+    Back-matter PDF pages are kept only when they actually carry an
+    author-information cue; that is what "Author information blocks" means in
+    the affiliation contract, and it keeps Nature-style back matter working
+    without re-admitting the bibliography.
+    """
     chunks = []
     if pdf_path and pdf_path.exists():
         try:
             import fitz
             doc = fitz.open(pdf_path)
-            pages = sorted(set(range(min(3, len(doc)))) |
-                           set(range(max(0, len(doc) - 3), len(doc))))
-            chunks = [doc[i].get_text("text") for i in pages]
+            chunks = [doc[i].get_text("text") for i in range(min(3, len(doc)))]
+            for index in range(max(3, len(doc) - 3), len(doc)):
+                page = doc[index].get_text("text")
+                if _AUTHOR_INFO_CUE.search(page):
+                    chunks.append(page)
             doc.close()
         except Exception:
             chunks = []
@@ -1389,11 +1456,9 @@ def _pdf_text_for_affiliations(pdf_path: Path | None, text_path: Path) -> str:
         text = text_path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         text = ""
-    lines = text.splitlines()
-    chunks.extend(["\n".join(lines[:260]), "\n".join(lines[-600:])])
-    for match in re.finditer(
-            r"(?im)^(?:author information|affiliations?|published online|received:).*$", text):
-        chunks.append(text[max(0, match.start() - 1000):match.start() + 5000])
+    chunks.append("\n".join(text.splitlines()[:260]))
+    for match in _AUTHOR_INFO_CUE.finditer(text):
+        chunks.append(text[max(0, match.start() - 400):match.start() + 1200])
     return "\n".join(chunks)
 
 _MONTHS = {
@@ -1452,43 +1517,70 @@ def pdf_bibliography(pdf_text: str) -> dict:
 
 
 def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
-    """Use Scopus as the baseline, then verify and repair it from the PDF."""
+    """Zotero-backed local metadata is ground truth; Scopus and PDF fill gaps only.
+
+    Zotero records are transcribed from the publisher's own record, so they are
+    authoritative for bibliographic fields. Scopus and PDF front matter are
+    gap-fillers, never overrides. The previous behaviour did the opposite —
+    ``if scopus: result[field] = scopus[field]`` overwrote every field Scopus
+    returned, and the PDF regex pass then overwrote that in turn, so a correct
+    publisher-sourced volume/issue/pages/journal could be replaced by a Scopus
+    variant or by a running-header misparse.
+    """
     fields = (
         "title", "journal", "date", "doi", "url", "volume", "issue", "pages",
         "publisher", "issn", "eissn", "document_type", "scopus_eid",
         "received_date", "accepted_date", "published_online_date",
     )
     result = {field: str(local.get(field) or "").strip() for field in fields}
-    used = ["local-metadata"]
-    if scopus:
-        for field in fields:
-            if scopus.get(field):
-                result[field] = str(scopus[field]).strip()
-        used = ["scopus"]
+    used = ["zotero-local"] if any(result.values()) else []
 
-    pdf_used = False
-    for field in ("journal", "doi", "volume", "issue", "pages",
-                  "received_date", "accepted_date", "published_online_date"):
-        if pdf.get(field):
-            result[field] = str(pdf[field]).strip()
-            pdf_used = True
-    if result["published_online_date"]:
+    # `scopus_eid` has no local counterpart, so Scopus stays authoritative there.
+    for label, source, owned in (("scopus", scopus, ("scopus_eid",)),
+                                 ("pdf", pdf, ())):
+        if not source:
+            continue
+        filled = False
+        for field in fields:
+            value = str(source.get(field) or "").strip()
+            if not value:
+                continue
+            if result.get(field) and field not in owned:
+                continue
+            result[field] = value
+            filled = True
+        if filled:
+            used.append(label)
+
+    if not result["date"] and result["published_online_date"]:
         result["date"] = result["published_online_date"]
-    if result["doi"]:
+    if result["doi"] and not result["url"]:
         result["url"] = external_url(result["doi"], "")
-    if pdf_used:
-        used.append("pdf")
-    result["source"] = "+".join(used)
+    result["source"] = "+".join(used) or "empty"
     return result
 
 
 def reconcile_affiliations(
         scopus_records: list[dict], pdf_text: str,
-        fallback_lines: list[str], *, offline: bool = False) -> list[dict]:
+        fallback_lines: list[str], *, offline: bool = False,
+        paper_title: str = "", authors=()) -> list[dict]:
     """Validate Scopus against PDF text and add institutions missing in Scopus."""
     flat = re.sub(r"\s+", " ", pdf_text)
     normalized_pdf = norm(flat)
+    title_key = norm(paper_title)
+    author_tokens = _person_name_tokens(authors)
     out = {}
+
+    def from_own_title(name: str) -> bool:
+        """Reject the paper's own title leaking in as an institution.
+
+        Front matter starts with the title, so a segment that is contained in
+        it ("A Dynamic Network", "A Novel Framework for Dynamic Semantic
+        Network") is a title fragment, not an affiliation.
+        """
+        key = norm(name)
+        return bool(title_key) and len(key) >= 8 and key in title_key
+
     for rec in scopus_records:
         original_name = str(rec.get("name") or "")
         english = resolve_english_institution(
@@ -1496,7 +1588,9 @@ def reconcile_affiliations(
             allow_remote=not offline)
         parent = scopus_parent_institution(
             str(rec.get("scopus_id") or ""))
-        name = canonical_institution(parent or english or original_name)
+        # Scopus is never hierarchy authority: its parent rollup is the last
+        # resort, behind the resolved English name and the reported name.
+        name = canonical_institution(english or original_name or parent)
         if is_suspicious_institution_name(name):
             name = resolve_institution_from_raw(
                 str(rec.get("raw_name") or original_name), name)
@@ -1504,22 +1598,35 @@ def reconcile_affiliations(
             continue
         tokens = [x for x in re.findall(r"[a-z0-9]+", norm(name))
                   if x not in {"of", "the", "and", "for"}]
-        confirmed = bool(tokens) and sum(t in normalized_pdf for t in tokens) >= max(1, len(tokens) - 1)
+        # Every distinctive token must appear; the old "len-1" slack confirmed
+        # any common word pair (e.g. "neural"+"network") against the paper body.
+        confirmed = bool(tokens) and all(t in normalized_pdf for t in tokens)
         out[norm(name)] = {
             **rec, "name": name,
             "source": "scopus+pdf" if confirmed else "scopus-unconfirmed",
         }
 
     segments = list(fallback_lines)
-    segments.extend(re.split(r"(?=\s(?:[1-9]|1\d)(?=[A-Z]))", flat))
+    # Split on superscript affiliation markers. The digit may be glued to the
+    # next word ("2Princeton") or spaced off it ("5 UC Berkeley"); the old
+    # pattern only handled the glued form and silently swallowed the rest of
+    # the line, losing every institution after the first marker.
+    for line in list(fallback_lines) + [flat]:
+        segments.extend(re.split(r"(?=(?<![A-Za-z0-9])[1-9]\d?\s*[A-Z])", line))
     for raw in segments:
-        if len(raw) > 600:
+        raw = _strip_leading_author_names(
+            _trim_affiliation_segment(raw), author_tokens)
+        # An affiliation line is short. 600 characters was a third of a page of
+        # prose, which is how abstract and body text became institution names.
+        if not raw or len(raw) > 240:
             continue
         parsed = institution_from_raw(raw, allow_remote=not offline)
         if not parsed:
             continue
         name, _group = parsed
         name = canonical_institution(name)
+        if not name or from_own_title(name) or is_suspicious_institution_name(name):
+            continue
         key = norm(name)
         country = country_from_raw(raw)
         if key in out:
@@ -1527,10 +1634,39 @@ def reconcile_affiliations(
             out[key]["country"] = out[key].get("country") or country
         else:
             out[key] = {
-                "name": name, "raw_name": raw.strip(), "country": country,
+                "name": name, "raw_name": raw, "country": country,
                 "scopus_id": "", "source": "pdf",
             }
     return list(out.values())
+
+
+SIDECAR_NAME = "bibliography.json"
+SIDECAR_SCHEMA = "bibliography-sidecar-1"
+
+
+def load_sidecar(directory: Path) -> dict | None:
+    """Read the review-time bibliography sidecar, or None if unusable.
+
+    Written by `run_update_force.write_bibliography_sidecar` while the Zotero
+    item, `text.md` and the PDF were all still in hand. Refused when the schema
+    is unknown, the Zotero key is missing, or `text.md` changed since capture —
+    a stale sidecar must not silently outrank a fresh extraction.
+    """
+    try:
+        payload = json.loads(
+            (directory / SIDECAR_NAME).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if payload.get("schema") != SIDECAR_SCHEMA:
+        return None
+    if not (payload.get("zotero") or {}).get("key"):
+        return None
+    recorded = payload.get("text_md_sha256") or ""
+    text = directory / "text.md"
+    if recorded and text.exists():
+        if hashlib.sha256(text.read_bytes()).hexdigest() != recorded:
+            return None
+    return payload
 
 
 def fetch_zotero_items() -> list[dict]:
@@ -1544,11 +1680,24 @@ def fetch_zotero_items() -> list[dict]:
     out, start = [], 0
     while True:
         url = f"https://api.zotero.org/users/{user}/items/top?format=json&limit=100&start={start}"
-        try:
-            batch = request_json(url, {"Zotero-API-Key": key, "User-Agent": "paper-curation-bibliography/1.0"}, 40)
-        except Exception as e:
-            print(f"Zotero read warning: {e}", file=sys.stderr)
-            break
+        batch = None
+        # A single transient 502 used to `break` and hand back a partial
+        # library: one such failure at item 3,400 of 5,604 silently dropped 939
+        # `zotero_item_key` values, because every unmatched paper simply looks
+        # like a paper Zotero does not have.
+        for attempt in range(4):
+            try:
+                batch = request_json(url, {"Zotero-API-Key": key, "User-Agent": "paper-curation-bibliography/1.0"}, 40)
+                break
+            except Exception as exc:
+                print(f"Zotero read retry {attempt + 1}/4 at start={start}: {exc}",
+                      file=sys.stderr, flush=True)
+                time.sleep(2 ** attempt)
+        if batch is None:
+            raise RuntimeError(
+                f"Zotero library read failed at start={start} after 4 attempts; "
+                f"refusing to build with {len(out)} of an unknown item count. "
+                "Re-run, or pass --skip-zotero to build without Zotero keys.")
         if not batch:
             break
         out.extend(batch)
@@ -1632,568 +1781,6 @@ def upsert(conn, table: str, name: str, column: str) -> int:
     return conn.execute(f"INSERT INTO {table} ({column},normalized_name,source) VALUES (?,?,?)" if table == "institutions" else f"INSERT INTO {table} ({column},normalized_name) VALUES (?,?)", (name, key, "text.md:normalized") if table == "institutions" else (name, key)).lastrowid
 
 
-def _registry_digest() -> str:
-    return hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest()
-
-
-def _project_compatibility_groups(conn: sqlite3.Connection, registry: dict) -> None:
-    """Project one current, lowest-precedence official edge into legacy group_id."""
-    tables = {
-        row[0] for row in conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table'")
-    }
-    if not {"institutions", "institution_groups"} <= tables:
-        return
-    columns = {
-        row[1] for row in conn.execute("PRAGMA table_info(institutions)")
-    }
-    if not {"organization_id", "group_id"} <= columns:
-        return
-    # Compatibility groups are a disposable projection, never an authority.
-    # Clearing every link prevents unbound legacy heuristic groups from leaking.
-    conn.execute("UPDATE institutions SET group_id=NULL")
-    conn.execute("DELETE FROM institution_groups")
-    organizations = {
-        row["organization_id"]: row for row in registry["organizations"]
-    }
-    effective_date = max(
-        (str(event.get("timestamp") or "")[:10]
-         for event in registry.get("events", [])),
-        default=time.strftime("%Y-%m-%d", time.gmtime()),
-    )
-    precedence = {"part_of": 1}
-    eligible: dict[str, list[tuple[int, str]]] = {}
-    for edge in registry.get("relationships", []):
-        relationship_type = edge.get("relationship_type")
-        if edge.get("status") != "accepted" or relationship_type not in precedence:
-            continue
-        subject = organizations.get(edge["subject_organization_id"])
-        object_organization = organizations.get(edge["object_organization_id"])
-        if (not subject or not object_organization or
-                subject.get("status") == "proposed" or
-                object_organization.get("status") == "proposed"):
-            continue
-        interval = edge.get("validity_interval") or {}
-        valid_from = edge.get("valid_from", interval.get("start", ""))
-        valid_to = edge.get("valid_to", interval.get("end", ""))
-        if (valid_from and effective_date < valid_from) or (
-                valid_to and effective_date >= valid_to):
-            continue
-        eligible.setdefault(edge["subject_organization_id"], []).append(
-            (precedence[relationship_type], edge["object_organization_id"]))
-    for subject_id, candidates in sorted(eligible.items()):
-        best = min(rank for rank, _object_id in candidates)
-        targets = sorted({
-            object_id for rank, object_id in candidates if rank == best
-        })
-        if len(targets) != 1:
-            continue
-        target = organizations.get(targets[0])
-        if not target:
-            continue
-        group_name = target["canonical_name_en"]
-        normalized_group = affiliation_registry.normalize_name(group_name)
-        conn.execute(
-            "INSERT OR IGNORE INTO institution_groups "
-            "(group_name,normalized_name,organization_id) VALUES (?,?,?)",
-            (group_name, normalized_group, targets[0]))
-        group_id = conn.execute(
-            "SELECT group_id FROM institution_groups WHERE organization_id=?",
-            (targets[0],)).fetchone()[0]
-        conn.execute(
-            "UPDATE institutions SET group_id=? WHERE organization_id=?",
-            (group_id, subject_id))
-
-
-def _registry_candidates(conn: sqlite3.Connection, normalized: str, country: str,
-                         country_code: str, external_identifiers: dict) -> tuple[list[str], str]:
-    """Resolve reviewed identifiers before accepted alias candidates."""
-    authority_for = {
-        "ror": ("ror",), "ror_id": ("ror",),
-        "wikidata": ("wikidata",), "wikidata_id": ("wikidata",),
-        # Imported source affiliation IDs predate authority-specific review and
-        # are projected as `source`; retain them as exact, non-alias evidence.
-        "scopus": ("scopus", "source"), "scopus_id": ("scopus", "source"),
-        "grid": ("grid",), "grid_id": ("grid",),
-        "isni": ("isni",), "isni_id": ("isni",),
-    }
-    identifiers = sorted(
-        (authority, str(value))
-        for key, value in external_identifiers.items()
-        for authority in authority_for.get(
-            key, ("source",) if key.startswith("source_") else ())
-        if str(value).strip()
-    )
-    country_terms = {value for value in (country_code,) if value}
-    if identifiers:
-        clauses, params = [], []
-        for authority, value in identifiers:
-            clauses.append("(i.authority=? AND i.identifier_value=?)")
-            params.extend((authority, value))
-        rows = conn.execute(
-            "SELECT DISTINCT i.organization_id,o.country_code "
-            "FROM affiliation_identifiers i JOIN affiliation_organizations o "
-            "ON o.organization_id=i.organization_id "
-            "WHERE i.status='active' AND o.status IN ('active','historical') "
-            f"AND ({' OR '.join(clauses)}) ORDER BY i.organization_id",
-            params).fetchall()
-        matches = sorted({
-            organization_id for organization_id, organization_country in rows
-            if not country_terms or not organization_country or
-            organization_country in country_terms
-        })
-        if matches:
-            return matches, "offline_registry_exact_identifier"
-    if country_code:
-        rows = conn.execute(
-            "SELECT DISTINCT c.organization_id FROM affiliation_aliases a "
-            "JOIN affiliation_alias_candidates c USING(alias_id) "
-            "JOIN affiliation_organizations o ON o.organization_id=c.organization_id "
-            "WHERE a.normalized_alias=? AND c.review_status='accepted' "
-            "AND o.status IN ('active','historical') "
-            "AND (c.country_discriminator='' OR c.country_discriminator=?) "
-            "ORDER BY c.organization_id", (normalized, country_code)).fetchall()
-    else:
-        rows = conn.execute(
-            "SELECT DISTINCT c.organization_id FROM affiliation_aliases a "
-            "JOIN affiliation_alias_candidates c USING(alias_id) "
-            "JOIN affiliation_organizations o ON o.organization_id=c.organization_id "
-            "WHERE a.normalized_alias=? AND c.review_status='accepted' "
-            "AND o.status IN ('active','historical') "
-            "ORDER BY c.organization_id", (normalized,)).fetchall()
-    candidates = [row[0] for row in rows]
-    if not country_code and len(candidates) == 1:
-        return candidates, "global_unique_missing_country"
-    return candidates, "offline_registry_exact_alias"
-def reresolve_current_affiliations(conn: sqlite3.Connection, registry: dict,
-                                   registry_digest: str) -> None:
-    """Re-evaluate every current observation after a registry projection changes."""
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    pending_ids: set[str] = set()
-    terminal: dict[str, tuple[str, str]] = {}
-    rows = conn.execute(
-        "SELECT observation_id,normalized_raw_name,observed_country_code,"
-        "observed_country_name,external_identifiers_json,resolved_organization_id,"
-        "resolution_status,current_decision_id "
-        "FROM observed_affiliations WHERE is_current=1 "
-        "AND resolution_status!='superseded' ORDER BY observation_id"
-    ).fetchall()
-    for (observation_id, normalized, country_code, country, external_json,
-         old_selected, old_status, previous) in rows:
-        identifiers = json.loads(external_json or "{}")
-        candidates, resolution_reason = _registry_candidates(
-            conn, normalized, country, country_code, identifiers)
-        lookup_only = resolution_reason == "global_unique_missing_country"
-        status = "resolved" if len(candidates) == 1 and not lookup_only else (
-            "ambiguous" if candidates else "unseen")
-        selected = candidates[0] if status == "resolved" else None
-        prior = conn.execute(
-            "SELECT registry_sha256,policy_version FROM "
-            "affiliation_resolution_decisions WHERE decision_id=?",
-            (previous,)).fetchone()
-        prior_candidates = [
-            row[0] for row in conn.execute(
-                "SELECT organization_id FROM affiliation_decision_candidates "
-                "WHERE decision_id=? ORDER BY candidate_rank", (previous,))]
-        needs_decision = (
-            (status, selected) != (old_status, old_selected) or
-            candidates != prior_candidates or
-            prior != (registry_digest, registry["policy_version"]))
-        if not needs_decision:
-            continue
-        sequence = conn.execute(
-            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM "
-            "affiliation_resolution_decisions WHERE observation_id=?",
-            (observation_id,)).fetchone()[0]
-        decision_id = hashlib.sha256(
-            f"registry-reresolve:{observation_id}:{sequence}:{registry_digest}".encode()
-        ).hexdigest()
-        conn.execute(
-            "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-            (decision_id, observation_id, sequence, status, selected,
-             resolution_reason, 1.0 if selected else 0.0,
-             registry_digest, registry["policy_version"], now, now, previous or ""))
-        for rank, candidate in enumerate(candidates, 1):
-            conn.execute(
-                "INSERT INTO affiliation_decision_candidates VALUES (?,?,?,?)",
-                (decision_id, candidate, rank, resolution_reason))
-        conn.execute(
-            "UPDATE observed_affiliations SET resolved_organization_id=?,"
-            "resolution_status=?,current_decision_id=?,registry_sha256=?,policy_version=? "
-            "WHERE observation_id=?",
-            (selected, status, decision_id, registry_digest,
-             registry["policy_version"], observation_id))
-        linked = {row[0] for row in conn.execute(
-            "SELECT pending_id FROM affiliation_pending_observations "
-            "WHERE observation_id=?", (observation_id,))}
-        pending_ids.update(linked)
-        if status == "resolved":
-            for pending_id in linked:
-                terminal[pending_id] = ("resolved", decision_id)
-        else:
-            identifiers = json.loads(external_json or "{}")
-            pending_id = hashlib.sha256(
-                affiliation_registry.canonical_json_bytes(
-                    [normalized, country_code, identifiers])
-            ).hexdigest()
-            conn.execute(
-                "INSERT OR IGNORE INTO affiliation_pending_cases "
-                "(pending_id,normalized_raw_name,observed_country_code,"
-                "external_identifiers_json,status,reason_code,first_seen_at,last_seen_at,"
-                "active_observation_count,lifetime_observation_count) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                (pending_id, normalized, country_code, external_json, "open",
-                 "registry_projection_no_unique_alias", now, now, 1, 1))
-            actual_pending = conn.execute(
-                "SELECT pending_id FROM affiliation_pending_cases WHERE "
-                "normalized_raw_name=? AND observed_country_code=? AND "
-                "external_identifiers_json=?",
-                (normalized, country_code, external_json)).fetchone()[0]
-            conn.execute(
-                "INSERT OR IGNORE INTO affiliation_pending_observations VALUES (?,?,?)",
-                (actual_pending, observation_id, now))
-            pending_ids.add(actual_pending)
-            terminal.pop(actual_pending, None)
-
-    if pending_ids:
-        recount_affiliation_pending_cases(conn, pending_ids, terminal, now)
-
-
-def _registry_contract_bindings(registry: dict) -> dict[str, str]:
-    """Return deterministic contracts for the current phased registry generation."""
-    relationship_ids = sorted(
-        edge["relationship_id"] for edge in registry.get("relationships", [])
-        if edge.get("status") in {"accepted", "historical"})
-    registry_digest = affiliation_registry.canonical_sha256(registry)
-    cohort_version = str(registry.get("cohort_version") or "unfrozen-v1")
-    cohort_sha256 = str(
-        registry.get("cohort_sha256")
-        or affiliation_registry.canonical_sha256([]))
-    generation_id = str(
-        registry.get("generation_id")
-        or affiliation_registry.canonical_sha256({
-            "registry_sha256": registry_digest,
-            "event_head": registry.get("event_head", ""),
-            "cohort_version": cohort_version,
-            "cohort_sha256": cohort_sha256,
-        }))
-    bindings = {
-        "registry_contract_version": str(registry.get("registry_contract_version") or getattr(
-            affiliation_registry, "REGISTRY_CONTRACT_VERSION", "")),
-        "event_contract_version": str(registry.get("event_contract_version") or getattr(
-            affiliation_registry, "EVENT_CONTRACT_VERSION", "")),
-        "country_map_version": str(registry.get("country_map_version") or getattr(
-            affiliation_registry, "COUNTRY_MAP_VERSION", "")),
-        "country_map_sha256": str(registry.get("country_map_sha256") or getattr(
-            affiliation_registry, "COUNTRY_MAP_SHA256", "")),
-        "evidence_oracle_version": str(
-            registry.get("evidence_oracle_version")
-            or getattr(affiliation_registry, "EVIDENCE_ORACLE_VERSION", "")),
-        "evidence_oracle_sha256": str(
-            registry.get("evidence_oracle_sha256")
-            or getattr(affiliation_registry, "EVIDENCE_ORACLE_SHA256", "")),
-        "ledger_head": str(registry.get("ledger_head") or registry.get("event_head") or ""),
-        "cohort_version": cohort_version,
-        "cohort_sha256": cohort_sha256,
-        "relationship_set_sha256": str(
-            registry.get("accepted_relationship_set_sha256")
-            or registry.get("relationship_set_sha256")
-            or affiliation_registry.canonical_sha256(relationship_ids)),
-        "generation_descriptor_sha256": str(
-            registry.get("generation_descriptor_sha256") or generation_id),
-        "generation_id": generation_id,
-    }
-    if not all(bindings.values()):
-        missing = ", ".join(sorted(key for key, value in bindings.items() if not value))
-        raise RuntimeError(f"missing independent affiliation contracts: {missing}")
-    return bindings
-
-
-def _projection_provenance(kind: str, key: str, row: dict) -> tuple[str, str, str]:
-    """Preserve the registry-owned source row, rather than manufacturing blank owners."""
-    return kind, key, affiliation_registry.canonical_json_bytes(row).decode("utf-8")
-
-
-def registry_redirect_stubs(registry: dict) -> list[dict]:
-    """Project redirect sources as inert historical rows for SQLite FK ownership."""
-    by_id: dict[str, dict] = {}
-    for event in registry.get("events", []):
-        if event.get("type") not in {"pinned_root_consolidated", "identity_merged"}:
-            continue
-        payload = event.get("payload") or {}
-        for organization in payload.get("losers_before", []):
-            if not isinstance(organization, dict) or not organization.get("organization_id"):
-                continue
-            stub = dict(organization)
-            stub["status"] = "redirected"
-            stub["identifiers"] = []
-            stub["aliases"] = []
-            stub["created_event_id"] = event.get("event_id", "")
-            by_id[stub["organization_id"]] = stub
-    current = {row["organization_id"] for row in registry.get("organizations", [])}
-    required = {
-        row.get("from_organization_id") for row in registry.get("redirects", [])
-    } - current
-    missing = required - by_id.keys()
-    if missing:
-        raise RuntimeError(
-            "registry redirect history lacks loser projections: "
-            + ",".join(sorted(missing)))
-    return [by_id[key] for key in sorted(required)]
-
-def project_affiliation_registry(
-        conn: sqlite3.Connection, registry: dict | None = None, *,
-        ensure_schema: bool = True, reresolve: bool = True) -> dict:
-    """Make the managed registry projection an exact, offline snapshot."""
-    registry = registry or affiliation_registry.load_registry(REGISTRY_PATH)
-    affiliation_registry.validate_registry(registry)
-    digest = affiliation_registry.canonical_sha256(registry)
-    if affiliation_metadata_requires_migration(conn):
-        raise RuntimeError(
-            "affiliation registry metadata requires controlled migration")
-    if ensure_schema:
-        conn.executescript(AFFILIATION_SCHEMA)
-    existing_metadata = conn.execute(
-        "SELECT base_generation FROM affiliation_registry_metadata "
-        "WHERE singleton=1").fetchone()
-    audit_row = conn.execute(
-        "SELECT receipt_id,base_generation FROM affiliation_migration_audit "
-        "WHERE operation='migrate' ORDER BY finished_at DESC LIMIT 1"
-    ).fetchone()
-    if audit_row:
-        migration_receipt_id, base_generation = audit_row
-    else:
-        base_generation = existing_metadata[0] if existing_metadata else 0
-        bindings = _registry_contract_bindings(registry)
-        migration_receipt_id = fresh_schema_origin_receipt_id(
-            schema_version=AFFILIATION_SCHEMA_VERSION,
-            registry_sha256=digest,
-            event_head=registry["event_head"],
-            policy_version=registry["policy_version"],
-            source_sha256=registry["source_sha256"],
-            contracts=bindings,
-        )
-    redirect_stubs = registry_redirect_stubs(registry)
-    projection_organizations = [*registry["organizations"], *redirect_stubs]
-    organization_ids = {
-        org["organization_id"] for org in projection_organizations}
-    for redirect in registry.get("redirects", []):
-        old_id = redirect.get("from_organization_id")
-        survivor_id = redirect.get("to_organization_id")
-        if not old_id or not survivor_id:
-            continue
-        conn.execute(
-            "UPDATE observed_affiliations SET resolved_organization_id=? "
-            "WHERE resolved_organization_id=?", (survivor_id, old_id))
-        conn.execute(
-            "UPDATE affiliation_resolution_decisions SET selected_organization_id=? "
-            "WHERE selected_organization_id=?", (survivor_id, old_id))
-        decision_candidates = conn.execute(
-            "SELECT decision_id,candidate_rank,reason_code "
-            "FROM affiliation_decision_candidates WHERE organization_id=?",
-            (old_id,)).fetchall()
-        conn.execute(
-            "DELETE FROM affiliation_decision_candidates WHERE organization_id=?",
-            (old_id,))
-        conn.executemany(
-            "INSERT OR IGNORE INTO affiliation_decision_candidates "
-            "(decision_id,organization_id,candidate_rank,reason_code) "
-            "VALUES (?,?,?,?)",
-            [(decision_id, survivor_id, rank, reason)
-             for decision_id, rank, reason in decision_candidates])
-        if conn.execute(
-                "SELECT 1 FROM sqlite_master WHERE type='table' "
-                "AND name='institutions'").fetchone():
-            conn.execute(
-                "UPDATE institutions SET organization_id=? WHERE organization_id=?",
-                (survivor_id, old_id))
-    if organization_ids:
-        conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL "
-                     "WHERE resolved_organization_id NOT IN (" + ",".join("?" for _ in organization_ids) + ")",
-                     tuple(organization_ids))
-    else:
-        conn.execute("UPDATE observed_affiliations SET resolved_organization_id=NULL")
-    if conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='institutions'").fetchone():
-        if organization_ids:
-            conn.execute("UPDATE institutions SET organization_id=NULL WHERE organization_id NOT IN ("
-                         + ",".join("?" for _ in organization_ids) + ")", tuple(organization_ids))
-        else:
-            conn.execute("UPDATE institutions SET organization_id=NULL WHERE organization_id IS NOT NULL")
-    conn.execute("DELETE FROM affiliation_relationship_evidence")
-    conn.execute("DELETE FROM affiliation_relationships")
-    conn.execute("DELETE FROM affiliation_alias_candidates")
-    conn.execute("DELETE FROM affiliation_aliases")
-    conn.execute("DELETE FROM affiliation_identifiers")
-    conn.execute("DELETE FROM affiliation_organization_redirects")
-    conn.execute("DELETE FROM affiliation_projection_provenance")
-    if organization_ids:
-        conn.execute("DELETE FROM affiliation_organizations WHERE organization_id NOT IN ("
-                     + ",".join("?" for _ in organization_ids) + ")", tuple(organization_ids))
-    else:
-        conn.execute("DELETE FROM affiliation_organizations")
-    for org in projection_organizations:
-        country_code, country_name, country_scope = canonical_affiliation_country(
-            str(org.get("country") or ""), str(org.get("country_code") or ""),
-            str(org.get("country_scope") or "") or None)
-        owner = str(org.get("created_event_id") or org.get("identity_provenance") or
-                    f"registry:{digest}")
-        conn.execute("INSERT OR IGNORE INTO affiliation_organizations VALUES (?,?,?,?,?,?,?,?,?,?)",
-                     (org["organization_id"], org["canonical_name_en"], org["normalized_name"],
-                      org["organization_type"], country_code, country_name, country_scope,
-                      org["status"], owner, registry["registry_version"]))
-        conn.execute("UPDATE affiliation_organizations SET canonical_name_en=?,normalized_name=?,"
-                     "organization_type=?,country_code=?,country_name_en=?,country_scope=?,"
-                     "status=?,created_event_id=?,registry_version=? WHERE organization_id=?",
-                     (org["canonical_name_en"], org["normalized_name"], org["organization_type"],
-                      country_code, country_name, country_scope, org["status"], owner,
-                      registry["registry_version"], org["organization_id"]))
-        conn.execute("INSERT INTO affiliation_projection_provenance VALUES (?,?,?)",
-                     _projection_provenance("organization", org["organization_id"], org))
-        for ident in org.get("identifiers", []):
-            authority = ident["authority"]
-            if authority.startswith("source_"):
-                authority = "source"
-            evidence_id = str(ident.get("evidence_id") or ident.get("provenance") or owner)
-            conn.execute("INSERT INTO affiliation_identifiers "
-                         "(authority,identifier_value,organization_id,status,"
-                         "valid_from,valid_to,evidence_id) VALUES (?,?,?,?,?,?,?)",
-                         (authority, ident["value"], org["organization_id"],
-                          "active", "", "", evidence_id))
-            conn.execute("INSERT INTO affiliation_projection_provenance VALUES (?,?,?)",
-                         _projection_provenance(
-                             "identifier", f"{authority}:{ident['value']}:{org['organization_id']}", ident))
-        for alias in org.get("aliases", []):
-            alias_owner = str(alias.get("created_event_id") or alias.get("provenance") or owner)
-            conn.execute("INSERT INTO affiliation_aliases VALUES (?,?,?,?,?,?)",
-                         (alias["alias_id"], alias["name"], alias["normalized_alias"], "",
-                          str(alias.get("alias_type") or "source"), alias_owner))
-            conn.execute("INSERT INTO affiliation_projection_provenance VALUES (?,?,?)",
-                         _projection_provenance("alias", alias["alias_id"], alias))
-    for redirect in registry.get("redirects", []):
-        old_id = redirect.get("old_organization_id") or redirect.get(
-            "from_organization_id")
-        survivor_id = redirect.get("survivor_organization_id") or redirect.get(
-            "to_organization_id")
-        event_id = redirect.get("event_id") or ""
-        if old_id and survivor_id and event_id:
-            conn.execute(
-                "INSERT INTO affiliation_organization_redirects VALUES (?,?,?)",
-                (old_id, survivor_id, event_id))
-    for candidate in registry["alias_candidates"]:
-        country_discriminator, _country_name, _country_scope = canonical_affiliation_country(
-            str(candidate.get("country_discriminator") or ""))
-        candidate_owner = str(candidate.get("evidence_id") or candidate.get("provenance") or
-                              f"registry:{digest}")
-        candidate_event = str(candidate.get("event_id") or candidate.get("provenance") or
-                              f"registry:{digest}")
-        conn.execute("INSERT INTO affiliation_alias_candidates VALUES (?,?,?,?,?,?,?)",
-                     (candidate["alias_id"], candidate["organization_id"],
-                      country_discriminator, candidate_owner, 1.0, "accepted", candidate_event))
-        conn.execute("INSERT INTO affiliation_projection_provenance VALUES (?,?,?)",
-                     _projection_provenance(
-                         "alias_candidate",
-                         f"{candidate['alias_id']}:{candidate['organization_id']}", candidate))
-    for edge in registry["relationships"]:
-        if edge.get("status") in {"accepted", "historical"}:
-            interval = edge.get("validity_interval") or {}
-            owner = str(edge.get("created_event_id") or edge.get("event_id") or
-                        edge.get("provenance") or f"registry:{digest}")
-            conn.execute("INSERT INTO affiliation_relationships VALUES (?,?,?,?,?,?,?,?,?,?)",
-                         (edge["relationship_id"], edge["subject_organization_id"], edge["object_organization_id"],
-                          edge["relationship_type"],
-                          edge.get("valid_from", interval.get("start", "")),
-                          edge.get("valid_to", interval.get("end", "")),
-                          edge["status"], edge.get("confidence", 1.0), owner, "registry"))
-            conn.execute("INSERT INTO affiliation_projection_provenance VALUES (?,?,?)",
-                         _projection_provenance("relationship", edge["relationship_id"], edge))
-            for evidence_id in edge.get("evidence_ids", []):
-                conn.execute("INSERT INTO affiliation_relationship_evidence VALUES (?,?)",
-                             (edge["relationship_id"], evidence_id))
-                evidence = next((item for item in registry.get("evidence", [])
-                                 if item.get("evidence_id") == evidence_id), {
-                                     "evidence_id": evidence_id, "relationship_id": edge["relationship_id"]})
-                conn.execute("INSERT OR IGNORE INTO affiliation_projection_provenance VALUES (?,?,?)",
-                             _projection_provenance("evidence", evidence_id, evidence))
-    for event in registry.get("events", []):
-        event_id = str(event.get("event_id") or "")
-        if event_id:
-            conn.execute("INSERT OR IGNORE INTO affiliation_projection_provenance VALUES (?,?,?)",
-                         _projection_provenance("event", event_id, event))
-    repair_terminal_superseded_current_slots(conn)
-    if reresolve and not getattr(conn, "skip_affiliation_reresolve", False):
-        reresolve_current_affiliations(conn, registry, digest)
-    _project_compatibility_groups(conn, registry)
-    bindings = _registry_contract_bindings(registry)
-    relationship_ids = sorted(
-        edge["relationship_id"] for edge in registry["relationships"]
-        if edge.get("status") in {"accepted", "historical"})
-    relationship_set_sha256 = hashlib.sha256(
-        affiliation_registry.canonical_json_bytes(relationship_ids)).hexdigest()
-    if bindings["relationship_set_sha256"] != relationship_set_sha256:
-        raise RuntimeError("relationship contract hash does not match registry projection")
-    metadata = (
-        AFFILIATION_SCHEMA_VERSION, registry["registry_version"], digest,
-        registry["event_head"], registry["policy_version"], registry["source_sha256"],
-        time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), base_generation,
-        migration_receipt_id,
-        bindings["registry_contract_version"], bindings["event_contract_version"],
-        bindings["country_map_version"], bindings["country_map_sha256"],
-        bindings["evidence_oracle_version"], bindings["evidence_oracle_sha256"],
-        bindings["ledger_head"], bindings["cohort_version"], bindings["cohort_sha256"],
-        relationship_set_sha256, len(relationship_ids),
-        bindings["generation_descriptor_sha256"], bindings["generation_id"],
-    )
-    conn.execute(
-        "INSERT OR REPLACE INTO affiliation_registry_metadata "
-        "(singleton,schema_version,registry_version,registry_sha256,event_head,"
-        "policy_version,source_sha256,projected_at,base_generation,migration_receipt_id,"
-        "registry_contract_version,event_contract_version,country_map_version,"
-        "country_map_sha256,evidence_oracle_version,evidence_oracle_sha256,"
-        "ledger_head,cohort_version,cohort_sha256,relationship_set_sha256,"
-        "relationship_count,generation_descriptor_sha256,generation_id) "
-        "VALUES (1,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        metadata)
-    return registry
-
-
-def recount_affiliation_pending_cases(conn: sqlite3.Connection, pending_ids: set[str],
-                                     terminal_decisions: dict[str, tuple[str, str]],
-                                     now: str) -> None:
-    """Finalize all affected pending cases after one observation-version write."""
-    for pending_id in sorted(pending_ids):
-        counts = conn.execute(
-            "SELECT COUNT(*), COALESCE(SUM(o.is_current=1 AND o.resolution_status "
-            "IN ('ambiguous','unseen')),0) FROM affiliation_pending_observations l "
-            "JOIN observed_affiliations o USING(observation_id) WHERE l.pending_id=?",
-            (pending_id,)).fetchone()
-        lifetime, active = counts
-        if not lifetime:
-            conn.execute("DELETE FROM affiliation_pending_cases WHERE pending_id=?",
-                         (pending_id,))
-        elif active:
-            proposal_digest = conn.execute(
-                "SELECT proposal_digest FROM affiliation_pending_cases WHERE pending_id=?",
-                (pending_id,)).fetchone()[0]
-            conn.execute(
-                "UPDATE affiliation_pending_cases SET lifetime_observation_count=?,"
-                "active_observation_count=?,status=?,resolved_event_id='',"
-                "last_seen_at=? WHERE pending_id=?",
-                (lifetime, active, "proposed" if proposal_digest else "open", now, pending_id))
-        else:
-            status, decision_id = terminal_decisions.get(
-                pending_id, ("rejected", ""))
-            conn.execute(
-                "UPDATE affiliation_pending_cases SET lifetime_observation_count=?,"
-                "active_observation_count=0,status=?,resolved_event_id=?,"
-                "last_seen_at=? WHERE pending_id=?",
-                (lifetime, status, decision_id, now, pending_id))
-
-
-def _uuid5_affiliation_observation(parts: list[object]) -> str:
-    """Return the approved stable UUIDv5 identity for canonical observation data."""
-    return str(uuid.uuid5(
-        AFFILIATION_OBSERVATION_NAMESPACE,
-        affiliation_registry.canonical_json_bytes(parts).decode("utf-8"),
-    ))
 
 
 def _paper_stable_slug(conn: sqlite3.Connection, paper_id: int,
@@ -2209,274 +1796,24 @@ def _paper_stable_slug(conn: sqlite3.Connection, paper_id: int,
     return str(paper_id)
 
 
-def record_affiliation_observation(
-        conn: sqlite3.Connection, paper_id: int, record: dict, ordinal: int,
-        registry: dict, *, paper_key: str | None = None,
-        pending_ids: set[str] | None = None,
-        terminal_decisions: dict[str, tuple[str, str]] | None = None,
-        pending_now: str | None = None) -> str | None:
-    """Store every raw source slot and resolve only exact reviewed aliases offline."""
-    raw = unicodedata.normalize(
-        "NFC", str(record.get("raw_name") or record.get("name") or "").strip())
-    if not raw:
-        return
-    source = str(record.get("source") or "review").split("+")[0]
-    source = source if source in {"scopus", "pdf", "review"} else "legacy"
-    country = str(record.get("country") or country_from_raw(raw) or "")
-    country_code, country, _country_scope = canonical_affiliation_country(
-        country, str(record.get("country_code") or ""),
-        str(record.get("country_scope") or "") or None)
-    external_identifiers = dict(record.get("external_identifiers") or {})
-    if record.get("scopus_id"):
-        external_identifiers.setdefault("scopus_id", str(record["scopus_id"]))
-    external_json = affiliation_registry.canonical_json_bytes(external_identifiers).decode("utf-8")
-    context = record.get("context") or record.get("raw_context") or {}
-    context_json = affiliation_registry.canonical_json_bytes(context)
-    normalized = affiliation_registry.normalize_name(raw)
-    candidates, resolution_reason = _registry_candidates(
-        conn, normalized, country, country_code, external_identifiers)
-    lookup_only = resolution_reason == "global_unique_missing_country"
-    source_record_key = str(record.get("source_record_key") or paper_key or paper_id)
-    stable_slug = _paper_stable_slug(conn, paper_id, paper_key)
-    slot_id = _uuid5_affiliation_observation(
-        [stable_slug, source, source_record_key, ordinal])
-    now = pending_now or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    conn.execute("INSERT OR IGNORE INTO observed_affiliation_slots VALUES (?,?,?,?,?,?)",
-                 (slot_id, paper_id, source, source_record_key, ordinal, now))
-    context_digest = hashlib.sha256(context_json).hexdigest()
-    normalized_country = country_code or affiliation_registry.normalize_name(country)
-    content = hashlib.sha256(affiliation_registry.canonical_json_bytes(
-        [raw, normalized_country, external_identifiers, context_digest])).hexdigest()
-    prior = conn.execute(
-        "SELECT observation_id,observation_version,raw_content_sha256,current_decision_id,"
-        "resolution_status FROM observed_affiliations WHERE observation_slot_id=? AND is_current=1",
-        (slot_id,)).fetchone()
-    if prior and prior[2] == content and prior[4] != "superseded":
-        conn.execute("UPDATE observed_affiliations SET last_seen_at=? WHERE observation_id=?",
-                     (now, prior[0]))
-        return slot_id
-    affected_pending_ids = set()
-    local_terminal: dict[str, tuple[str, str]] = {}
-    if prior:
-        affected_pending_ids.update(row[0] for row in conn.execute(
-            "SELECT pending_id FROM affiliation_pending_observations WHERE observation_id=?",
-            (prior[0],)))
-    version = prior[1] + 1 if prior else 1
-    observation_id = _uuid5_affiliation_observation([slot_id, version, content])
-    status, selected = ("resolved", candidates[0]) if (
-        len(candidates) == 1 and not lookup_only) else (
-        ("ambiguous", None) if candidates else ("unseen", None))
-    digest = _registry_digest()
-    if prior:
-        supersession_id = hashlib.sha256(
-            ("superseded:" + prior[0] + ":" + observation_id).encode()).hexdigest()
-        sequence = conn.execute(
-            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM "
-            "affiliation_resolution_decisions WHERE observation_id=?", (prior[0],)
-        ).fetchone()[0]
-        conn.execute(
-            "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-            (supersession_id, prior[0], sequence, "superseded", None,
-             "superseded_to_observation:" + observation_id, 1.0, digest,
-             registry["policy_version"], now, now, prior[3] or None))
-        conn.execute(
-            "UPDATE observed_affiliations SET is_current=0,"
-            "resolution_status='superseded',current_decision_id=? "
-            "WHERE observation_id=?",
-            (supersession_id, prior[0]))
-        for pending_id in affected_pending_ids:
-            local_terminal[pending_id] = ("rejected", supersession_id)
-    conn.execute("INSERT INTO observed_affiliations VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                 (observation_id, slot_id, version, content, raw, normalized, country_code, country,
-                  external_json, context_digest, selected, status, None, digest,
-                  registry["policy_version"], now, now, 1, prior[0] if prior else None, None))
-    if prior:
-        conn.execute(
-            "UPDATE observed_affiliations SET superseded_by_observation_id=? "
-            "WHERE observation_id=?",
-            (observation_id, prior[0]))
-    decision_id = hashlib.sha256(("decision:" + observation_id).encode()).hexdigest()
-    conn.execute(
-        "INSERT INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-        (decision_id, observation_id, 1, status, selected,
-         resolution_reason if selected else "offline_registry_no_unique_alias",
-         1.0 if selected else 0.0, digest, registry["policy_version"], now, now, None))
-    for rank, candidate in enumerate(candidates, 1):
-        conn.execute(
-            "INSERT INTO affiliation_decision_candidates VALUES (?,?,?,?)",
-            (decision_id, candidate, rank, resolution_reason))
-    conn.execute("UPDATE observed_affiliations SET current_decision_id=? WHERE observation_id=?",
-                 (decision_id, observation_id))
-    if status == "resolved":
-        for pending_id in affected_pending_ids:
-            local_terminal[pending_id] = ("resolved", decision_id)
-    else:
-        pending_id = hashlib.sha256(
-            affiliation_registry.canonical_json_bytes(
-                [normalized, country_code, external_identifiers])).hexdigest()
-        conn.execute(
-            "INSERT OR IGNORE INTO affiliation_pending_cases "
-            "(pending_id,normalized_raw_name,observed_country_code,"
-            "external_identifiers_json,status,reason_code,first_seen_at,last_seen_at,"
-            "active_observation_count,lifetime_observation_count) VALUES (?,?,?,?,?,?,?,?,?,?)",
-            (pending_id, normalized, country_code, external_json, "open",
-             "offline_registry_no_unique_alias", now, now, 1, 1))
-        conn.execute("INSERT OR IGNORE INTO affiliation_pending_observations VALUES (?,?,?)",
-                     (pending_id, observation_id, now))
-        affected_pending_ids.add(pending_id)
-        local_terminal.pop(pending_id, None)
-    if pending_ids is None:
-        recount_affiliation_pending_cases(conn, affected_pending_ids, local_terminal, now)
-    else:
-        pending_ids.update(affected_pending_ids)
-        if terminal_decisions is not None:
-            terminal_decisions.update(local_terminal)
-    return slot_id
-def supersede_removed_affiliation_slots(
-        conn: sqlite3.Connection, paper_id: int, paper_key: str,
-        seen_slots: set[str], registry: dict, *, pending_ids: set[str] | None = None,
-        terminal_decisions: dict[str, tuple[str, str]] | None = None,
-        pending_now: str | None = None) -> None:
-    """Close current versions for source slots removed from a rebuilt paper."""
-    now = pending_now or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    digest = _registry_digest()
-    local_pending_ids: set[str] = set()
-    local_terminal: dict[str, tuple[str, str]] = {}
-    rows = conn.execute(
-        "SELECT o.observation_id,o.current_decision_id FROM observed_affiliation_slots s "
-        "JOIN observed_affiliations o USING(observation_slot_id) "
-        "WHERE s.paper_id=? AND o.is_current=1",
-        (paper_id,)).fetchall()
-    for observation_id, previous_decision in rows:
-        if conn.execute("SELECT observation_slot_id FROM observed_affiliations WHERE observation_id=?",
-                        (observation_id,)).fetchone()[0] in seen_slots:
-            continue
-        decision_id = hashlib.sha256(("removed:" + observation_id).encode()).hexdigest()
-        sequence = conn.execute(
-            "SELECT COALESCE(MAX(decision_sequence),0)+1 FROM affiliation_resolution_decisions "
-            "WHERE observation_id=?", (observation_id,)).fetchone()[0]
-        conn.execute("INSERT OR IGNORE INTO affiliation_resolution_decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                     (decision_id, observation_id, sequence, "superseded", None,
-                      "source_slot_removed", 1.0, digest, registry["policy_version"],
-                      now, now, previous_decision or ""))
-        conn.execute("UPDATE observed_affiliations SET resolution_status='superseded',"
-                     "current_decision_id=? WHERE observation_id=?", (decision_id, observation_id))
-        for (pending_id,) in conn.execute(
-                "SELECT pending_id FROM affiliation_pending_observations WHERE observation_id=?",
-                (observation_id,)):
-            local_pending_ids.add(pending_id)
-            local_terminal[pending_id] = ("rejected", decision_id)
-    if pending_ids is None:
-        recount_affiliation_pending_cases(conn, local_pending_ids, local_terminal, now)
-    else:
-        pending_ids.update(local_pending_ids)
-        if terminal_decisions is not None:
-            terminal_decisions.update(local_terminal)
-def repair_terminal_superseded_current_slots(conn: sqlite3.Connection) -> None:
-    """Restore one current terminal row for legacy slots that lost it on removal."""
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    rows = conn.execute(
-        "SELECT o.observation_id,o.current_decision_id FROM observed_affiliation_slots s "
-        "JOIN observed_affiliations o USING(observation_slot_id) "
-        "WHERE o.resolution_status='superseded' "
-        "AND o.observation_version=(SELECT MAX(latest.observation_version) "
-        "FROM observed_affiliations latest WHERE latest.observation_slot_id=s.observation_slot_id) "
-        "AND NOT EXISTS (SELECT 1 FROM observed_affiliations current_row "
-        "WHERE current_row.observation_slot_id=s.observation_slot_id AND current_row.is_current=1) "
-        "ORDER BY o.observation_slot_id"
-    ).fetchall()
-    pending_ids: set[str] = set()
-    terminal: dict[str, tuple[str, str]] = {}
-    for observation_id, decision_id in rows:
-        conn.execute(
-            "UPDATE observed_affiliations SET is_current=1 WHERE observation_id=?",
-            (observation_id,))
-        for (pending_id,) in conn.execute(
-                "SELECT pending_id FROM affiliation_pending_observations "
-                "WHERE observation_id=?", (observation_id,)):
-            pending_ids.add(pending_id)
-            terminal[pending_id] = ("rejected", decision_id or "")
-    if pending_ids:
-        recount_affiliation_pending_cases(conn, pending_ids, terminal, now)
-
-def source_affiliation_records(scopus_records: list[dict],
-                               fallback_lines: list[str]) -> list[dict]:
-    """Preserve each source-cardinality record before compatibility deduplication."""
-    records = []
-    for ordinal, source_record in enumerate(scopus_records):
-        record = dict(source_record)
-        raw = str(record.get("raw_name") or record.get("name") or "").strip()
-        if not raw:
-            continue
-        record.update({
-            "raw_name": raw,
-            "source": "scopus",
-            "source_record_key": f"scopus:{record.get('scopus_id') or ordinal}",
-            "context": {"scopus_affiliation": source_record},
-            "_source_ordinal": ordinal,
-        })
-        records.append(record)
-    for ordinal, raw in enumerate(fallback_lines):
-        raw = str(raw).strip()
-        if not raw:
-            continue
-        records.append({
-            "raw_name": raw,
-            "source": "review",
-            "source_record_key": "review:header",
-            "context": {"review_affiliation": raw},
-            "_source_ordinal": ordinal,
-        })
-    return records
-
-
-def is_latest_affiliation_schema(conn: sqlite3.Connection) -> bool:
-    metadata = conn.execute(
-        "SELECT schema_version FROM affiliation_registry_metadata WHERE singleton=1"
-    ).fetchone() if conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' "
-        "AND name='affiliation_registry_metadata'").fetchone() else None
-    if metadata != (AFFILIATION_SCHEMA_VERSION,):
-        return False
-    if affiliation_metadata_requires_migration(conn):
-        return False
-    required_columns = {
-        "affiliation_organizations": {"organization_id", "status"},
-        "affiliation_organization_redirects": {
-            "old_organization_id", "survivor_organization_id", "event_id"},
-        "observed_affiliations": {
-            "observation_id", "supersedes_observation_id",
-            "superseded_by_observation_id"},
-        "affiliation_pending_cases": {
-            "pending_id", "active_observation_count",
-            "lifetime_observation_count", "resolved_event_id"},
-        "affiliation_enrichment_attempts": {
-            "attempt_id", "pending_id", "provider", "started_at", "finished_at",
-            "outcome", "response_digest", "error_class", "proposal_digest"},
-    }
-    for table, expected in required_columns.items():
-        columns = {
-            row[1] for row in conn.execute(f'PRAGMA table_info("{table}")')
-        }
-        if not expected <= columns:
-            return False
-    return True
-
 def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = False,
-          skip_zotero: bool = False, offline: bool = False) -> dict:
+          skip_zotero: bool = False, offline: bool = False,
+          defer_consolidation: bool = False) -> dict:
     total = len(entries)
     print(f"[bibliography] starting {total} papers", flush=True)
     start = time.perf_counter(); db_path.parent.mkdir(parents=True, exist_ok=True)
-    if db_path.exists() and db_path.stat().st_size:
-        probe = sqlite3.connect(db_path)
-        try:
-            if not is_latest_affiliation_schema(probe):
-                raise RuntimeError(
-                    "bibliography DB requires controlled migration: "
-                    f"python pipeline/repair_bibliography_institutions.py --db {db_path} --execute")
-        finally:
-            probe.close()
-    conn = sqlite3.connect(db_path)
+    # The affiliation organisation registry was retired: it resolved nothing
+    # (`institutions.organization_id` was NULL for all 2,339 rows because the
+    # resolver never produced a unique candidate), and its entire payload
+    # reduced to two usable aliases. Institutions now come straight from Scopus
+    # plus PDF front matter, so there is no registry schema to gate on.
+    conn = sqlite3.connect(db_path, timeout=60.0)
+    # WAL so the review run's ingest thread can write while other processes
+    # read, and a busy timeout so a momentary overlap waits instead of raising
+    # "database is locked" — the default journal is `delete` with timeout 0.
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 60000")
+    conn.execute("PRAGMA synchronous = NORMAL")
     conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(SCHEMA)
     ensure_schema_migrations(conn)
@@ -2491,10 +1828,19 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
         raise
     finally:
         conn.execute("PRAGMA foreign_keys = ON")
-    registry = project_affiliation_registry(conn)
     initialize_institution_registry(conn)
     conn.commit()
-    zitems = [] if skip_zotero or offline else fetch_zotero_items()
+    # Review generation writes a per-paper `bibliography.json` sidecar holding
+    # the Zotero record it already had in hand. When every paper being built has
+    # one, the Zotero library needs no paging at all — that read costs a fixed
+    # ~200 s and its failure mode is silent `zotero_item_key` loss.
+    sidecars = {p["slug"]: load_sidecar(PAPERS_DIR / p["slug"]) for p in entries}
+    need_zotero = any(s is None for s in sidecars.values())
+    zitems = ([] if skip_zotero or offline or not need_zotero
+              else fetch_zotero_items())
+    if entries and not need_zotero:
+        print(f"[bibliography] 사이드카 {len(entries)}건 사용 — "
+              "Zotero 재조회 생략", flush=True)
     zupdated = 0; resolved = 0
     with conn:
         for index, p in enumerate(entries, 1):
@@ -2505,10 +1851,14 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             title = str(meta.get("title") or p.get("title") or p["slug"]).strip()
             doi = clean_doi(str(meta.get("doi") or p.get("doi") or ""))
             arxiv = clean_arxiv(str(meta.get("arxiv") or p.get("arxiv") or ""))
+            sidecar = sidecars.get(p["slug"])
             zitem = zotero_match(
                 {"title": title, "doi": doi, "arxiv": arxiv}, zitems
             ) if zitems else None
-            zdata = zitem.get("data", {}) if zitem else {}
+            # The sidecar carries the same Zotero record, captured at review
+            # time, so it stands in when the library was not paged.
+            zdata = (zitem.get("data", {}) if zitem
+                     else ((sidecar or {}).get("zotero") or {}))
             zdoi = clean_doi(zdata.get("DOI", ""))
             if not doi and zdoi:
                 doi = zdoi
@@ -2521,15 +1871,23 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 doi = official["doi"]
                 resolved += 1
 
+            # Zotero first: its records are transcribed from the publisher, so
+            # they outrank review.md frontmatter (LLM-extracted from the PDF)
+            # and the index snapshot. `official` (OpenAlex/Crossref) only
+            # matters for arXiv preprints that have since been published, which
+            # is a gap Zotero cannot cover, so it stays ahead of the local files
+            # but behind Zotero itself.
             local_bib = {
-                "title": title,
+                "title": str(
+                    zdata.get("title") or title or ""
+                ).strip(),
                 "journal": str(
-                    official.get("journal") or meta.get("journal")
-                    or p.get("journal") or zdata.get("publicationTitle") or ""
+                    zdata.get("publicationTitle") or official.get("journal")
+                    or meta.get("journal") or p.get("journal") or ""
                 ).strip(),
                 "date": str(
-                    official.get("date") or meta.get("date")
-                    or p.get("date") or zdata.get("date") or ""
+                    zdata.get("date") or official.get("date")
+                    or meta.get("date") or p.get("date") or ""
                 ).strip(),
                 "doi": doi,
                 "url": external_url(doi, arxiv) or str(zdata.get("url") or ""),
@@ -2557,9 +1915,9 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             # repaired from source-PDF front/back matter.
             affiliation_records = reconcile_affiliations(
                 scopus_record.get("affiliations") or [], pdf_text, raw_affs,
-                offline=offline)
-            source_records = source_affiliation_records(
-                scopus_record.get("affiliations") or [], raw_affs)
+                offline=offline, paper_title=title,
+                authors=(sidecar or {}).get("authors")
+                        or meta.get("authors") or p.get("authors") or [])
             sources = {record["source"] for record in affiliation_records}
             aff_source = "+".join(sorted(sources)) if sources else "missing"
             conf = 0.95 if "scopus+pdf" in sources else (
@@ -2586,7 +1944,8 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 bibliography["received_date"], bibliography["accepted_date"],
                 bibliography["published_online_date"], bibliography["source"],
                 rel(directory),
-                zitem.get("key", "") if zitem else p.get("zotero_item_key", ""),
+                (zitem.get("key", "") if zitem
+                 else zdata.get("key", "") or p.get("zotero_item_key", "")),
                 aff_source, conf, header,
                 json.dumps({
                     "publication_source": bibliography["source"],
@@ -2604,81 +1963,307 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 values)
             pid = conn.execute("SELECT paper_id FROM papers WHERE slug=?", (p["slug"],)).fetchone()[0]
             conn.execute("DELETE FROM paper_authors WHERE paper_id=?", (pid,)); conn.execute("DELETE FROM paper_institutions WHERE paper_id=?", (pid,))
-            authors = meta.get("authors") or p.get("authors") or []
+            # Zotero's creator list (captured in the sidecar) is transcribed
+            # from the publisher, so it outranks review.md's LLM extraction.
+            authors = ((sidecar or {}).get("authors")
+                       or meta.get("authors") or p.get("authors") or [])
             if isinstance(authors, str): authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
             for order, author in enumerate(authors, 1):
                 aid = upsert(conn, "authors", str(author).strip(), "display_name")
                 conn.execute("INSERT OR IGNORE INTO paper_authors VALUES (?,?,?,?,?,?)", (pid,aid,order,int(order==1),0,"review.frontmatter/_papers_index"))
-            seen_slots = set()
-            pending_ids: set[str] = set()
-            terminal_decisions: dict[str, tuple[str, str]] = {}
-            pending_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-            for record in source_records:
-                slot_id = record_affiliation_observation(
-                    conn, pid, record, record["_source_ordinal"], registry,
-                    paper_key=p["slug"], pending_ids=pending_ids,
-                    terminal_decisions=terminal_decisions, pending_now=pending_now)
-                if slot_id:
-                    seen_slots.add(slot_id)
             for record in affiliation_records:
                 name = canonical_institution(record["name"])
                 raw = record.get("raw_name") or name
-                country = record.get("country") or country_from_raw(raw)
-                external_identifiers = dict(record.get("external_identifiers") or {})
-                if record.get("scopus_id"):
-                    external_identifiers.setdefault("scopus_id", str(record["scopus_id"]))
-                candidates, _reason = _registry_candidates(
-                    conn, affiliation_registry.normalize_name(raw), country,
-                    str(record.get("country_code") or "").strip().upper(),
-                    external_identifiers)
-                organization_id = candidates[0] if len(candidates) == 1 else None
-                if organization_id:
-                    row = conn.execute(
-                        "SELECT institution_id FROM institutions "
-                        "WHERE organization_id=?", (organization_id,)).fetchone()
-                else:
-                    row = conn.execute(
-                        "SELECT institution_id FROM institutions "
-                        "WHERE normalized_name=? AND country_name_en=?",
-                        (norm(name), country)).fetchone()
-                iid = row[0] if row else conn.execute(
-                    "INSERT INTO institutions "
-                    "(institution_name,normalized_name,country_name_en,"
-                    "organization_id,source) VALUES (?,?,?,?,?)",
-                    (name, norm(name), country, organization_id,
-                     record["source"])).lastrowid
-                if organization_id:
-                    conn.execute("UPDATE institutions SET organization_id=? WHERE institution_id=?",
-                                 (organization_id, iid))
+                country = country_from_raw(raw) or record.get("country") or ""
+                # ROR is the naming authority: it collapses "Stanford"/"Stanford
+                # University", "Universität Wien"/"University of Vienna" and
+                # 清华大学/"Tsinghua University" onto one record, and it supplies
+                # the research umbrella an institute belongs to.
+                ror = ror_normalize(raw, name, country, offline=offline)
+                name = ror["institution"] or name
+                country = ror["country_name"] or country
+                iid = resolve_institution_row(
+                    conn, name, country, record["source"], ror)
                 conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
                 conn.execute("INSERT OR IGNORE INTO paper_institutions (paper_id,institution_id,raw_name,country_name,source) VALUES (?,?,?,?,?)", (pid,iid,raw,country,record["source"]))
-            supersede_removed_affiliation_slots(
-                conn, pid, p["slug"], seen_slots, registry, pending_ids=pending_ids,
-                terminal_decisions=terminal_decisions, pending_now=pending_now)
-            if pending_ids:
-                recount_affiliation_pending_cases(
-                    conn, pending_ids, terminal_decisions, pending_now)
             for kind, path in (("review",review),("text",text)):
                 if path.exists(): conn.execute("INSERT OR REPLACE INTO source_documents VALUES (?,?,?,?,?)", (pid,kind,rel(path),sha256(path),path.stat().st_size))
             conn.commit()
             print(f"[bibliography] progress={index}/{total} ({index / total * 100:.1f}%) title={title[:100]}", flush=True)
-    _project_compatibility_groups(conn, registry)
+    # The consolidation passes walk the whole institutions table (~1.6 s), so a
+    # streaming ingest defers them and runs them once when the run ends.
+    if defer_consolidation:
+        pruned = recountried = reparented = 0
+    else:
+        pruned = prune_orphan_institutions(conn)
+        recountried = consolidate_institution_countries(conn)
+        reparented = consolidate_institution_parents(conn)
     conn.commit()
     conn.execute("PRAGMA optimize"); conn.close()
-    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"db":str(db_path)}
+    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"orphan_institutions_pruned":pruned,"institution_countries_consolidated":recountried,"institution_parents_cleared":reparented,"db":str(db_path)}
+
+
+_ROR_INDEX = None
+_ROR_MISSING_REPORTED = False
+
+
+def ror_normalize(raw: str, fallback_name: str, country: str,
+                  offline: bool = False) -> dict:
+    """Resolve an affiliation string through ROR, falling back to the parser.
+
+    Tries the raw affiliation first — it still carries the comma structure that
+    tells an institute apart from its umbrella — then the parser's cleaned name.
+    """
+    global _ROR_INDEX, _ROR_MISSING_REPORTED
+    from lib import ror_index
+    if _ROR_INDEX is None:
+        _ROR_INDEX = ror_index.RorIndex()
+    if not _ROR_INDEX.available:
+        if not _ROR_MISSING_REPORTED:
+            print("[bibliography] ROR index missing; institution names are not "
+                  "normalised. Build it with: python pipeline/lib/ror_index.py",
+                  flush=True)
+            _ROR_MISSING_REPORTED = True
+        return {"institution": "", "parent": "", "ror_id": "",
+                "parent_ror_id": "", "country_name": "", "evidence": "no-index"}
+    for candidate in (raw, fallback_name):
+        if not candidate:
+            continue
+        outcome = _ROR_INDEX.resolve_affiliation(
+            candidate, country, allow_remote=not offline)
+        if outcome["evidence"] not in {"unresolved", "empty"}:
+            if not outcome.get("parent"):
+                outcome = dict(outcome)
+                outcome["parent"] = curated_group_for(
+                    outcome.get("institution") or candidate)
+            return outcome
+    curated = curated_group_for(fallback_name or raw)
+    return {"institution": "", "parent": curated, "ror_id": "",
+            "parent_ror_id": "", "country_name": "",
+            "evidence": "curated-group" if curated else "unresolved"}
+
+
+def curated_group_for(name: str) -> str:
+    """Parent group from the operator-curated Scopus table.
+
+    Layered under ROR: it only ever fills a gap, never overrides an edge ROR
+    actually records.
+    """
+    try:
+        from lib import affiliation_groups
+    except ImportError:
+        return ""
+    group = affiliation_groups.group_for(name)
+    return "" if norm(group) == norm(name) else group
+
+
+def resolve_institution_row(conn: sqlite3.Connection, name: str, country: str,
+                            source: str, ror: dict | None = None) -> int:
+    """One row per institution, not one row per (institution, extracted country).
+
+    Keying on ``(normalized_name, country_name_en)`` split single institutions
+    across rows whenever the country was absent from one affiliation string and
+    present in another: 536 duplicate name groups, 697 surplus rows, "Harvard
+    University" three times. An institution is identified by its name; the
+    country is an attribute filled in as soon as any affiliation string carries
+    it, and the ROR identity plus parent group are filled the same way.
+    """
+    ror = ror or {}
+    key = norm(name)
+    row = conn.execute(
+        "SELECT institution_id, country_name_en, ror_id, parent_name "
+        "FROM institutions WHERE normalized_name=? "
+        "ORDER BY country_name_en='', institution_id", (key,)).fetchone()
+    if row is None:
+        return conn.execute(
+            "INSERT INTO institutions (institution_name,normalized_name,"
+            "country_name_en,ror_id,parent_name,parent_ror_id,name_source,"
+            "source) VALUES (?,?,?,?,?,?,?,?)",
+            (name, key, country, ror.get("ror_id", ""),
+             ror.get("parent", ""), ror.get("parent_ror_id", ""),
+             ror.get("evidence", ""), source)).lastrowid
+    institution_id, existing_country, existing_ror, existing_parent = row
+    if country and not existing_country:
+        conn.execute(
+            "UPDATE institutions SET country_name_en=? WHERE institution_id=?",
+            (country, institution_id))
+    if ror.get("ror_id") and not existing_ror:
+        conn.execute(
+            "UPDATE institutions SET ror_id=?, name_source=? "
+            "WHERE institution_id=?",
+            (ror["ror_id"], ror.get("evidence", ""), institution_id))
+    if ror.get("parent") and not existing_parent:
+        conn.execute(
+            "UPDATE institutions SET parent_name=?, parent_ror_id=? "
+            "WHERE institution_id=?",
+            (ror["parent"], ror.get("parent_ror_id", ""), institution_id))
+    return institution_id
+
+
+def consolidate_institution_parents(conn: sqlite3.Connection) -> int:
+    """Re-derive `parent_name` on every rebuild instead of trusting it.
+
+    `parent_name` is a derived field, but `resolve_institution_row` only ever
+    *fills* an empty one, so a value written by an older pass was permanent:
+    "MIT → University of Amsterdam" (a multi-affiliation line), "Shanghai Jiao
+    Tong University → Peking University" and "UC Berkeley → Argonne National
+    Laboratory" (a wrong row in the curated table) all survived the rules that
+    now reject them, exactly as a stale country survived before the country
+    consolidation pass. The parent is therefore recomputed from scratch here.
+
+    Precedence: ROR ancestry decides whenever ROR records any parent at all,
+    even when that ancestor is then rejected — Berkeley's ROR parent is the
+    University of California System, a governance layer, so Berkeley has no
+    research umbrella and the curated table's Argonne claim must not fill the
+    hole. The curated table speaks only where ROR is silent, which is the
+    Helmholtz Institute Ulm case it exists for.
+    """
+    try:
+        from lib.ror_index import (ADMINISTRATIVE_BODY, UNIVERSITY_SYSTEM,
+                                   RorIndex)
+        from lib import affiliation_groups
+    except ImportError:
+        return 0
+    index = RorIndex()
+    changed = 0
+    try:
+        rows = conn.execute(
+            "SELECT institution_id, institution_name, ror_id, parent_name "
+            "FROM institutions").fetchall()
+        for institution_id, name, ror_id, current in rows:
+            # Headquarters comes from the ROR record itself; the observed site
+            # country stays in `country_name_en` and is not touched here.
+            if ror_id and index.available:
+                root = index.root_org(ror_id)
+                hq = (root or {}).get("country_name", "")
+                if hq:
+                    conn.execute(
+                        "UPDATE institutions SET hq_country_name_en=? "
+                        "WHERE institution_id=? AND hq_country_name_en<>?",
+                        (hq, institution_id, hq))
+            parent, parent_ror = "", ""
+            ror_states_a_parent = False
+            if ror_id and index.available:
+                org = index.org(ror_id)
+                ror_states_a_parent = bool(org and org.get("parent_id"))
+                eligible = index.eligible_parent(ror_id)
+                if eligible:
+                    parent, parent_ror = eligible["display"], eligible["ror_id"]
+            if not parent and not ror_states_a_parent:
+                parent = affiliation_groups.group_for(name)
+            if parent:
+                parent = affiliation_groups.roll_up(parent)
+            if parent and (ADMINISTRATIVE_BODY.search(parent)
+                           or UNIVERSITY_SYSTEM.search(parent)
+                           or norm(parent) == norm(name)):
+                parent, parent_ror = "", ""
+            if parent != current:
+                conn.execute(
+                    "UPDATE institutions SET parent_name=?, parent_ror_id=? "
+                    "WHERE institution_id=?",
+                    (parent, parent_ror, institution_id))
+                changed += 1
+    finally:
+        index.close()
+    return changed
+
+
+def consolidate_institution_countries(conn: sqlite3.Connection) -> int:
+    """Set each institution's country by majority vote over its own links.
+
+    First-write-wins let one bad affiliation string decide forever: "Indian
+    Institute of Technology Roorkee" was fixed to the United States by a segment
+    that packed six affiliations onto one line, and the later, correct
+    "4Indian Institute of Technology Roor- kee, India" could not overwrite it.
+    A country supported by more source strings beats one supported by fewer.
+    """
+    updated = 0
+    for institution_id, current in conn.execute(
+            "SELECT institution_id, country_name_en FROM institutions").fetchall():
+        votes = conn.execute(
+            "SELECT country_name, COUNT(*) n FROM paper_institutions "
+            "WHERE institution_id=? AND country_name<>'' "
+            "GROUP BY country_name ORDER BY n DESC, country_name",
+            (institution_id,)).fetchall()
+        if not votes:
+            continue
+        winner, top = votes[0]
+        if winner == current:
+            continue
+        tally = dict(votes)
+        # A country no source string supports is stale — an earlier cycle wrote
+        # it and the link that justified it is gone. Replace it unconditionally.
+        # Otherwise a strict majority is required to unseat the incumbent.
+        if current not in tally or top > tally[current]:
+            conn.execute(
+                "UPDATE institutions SET country_name_en=? WHERE institution_id=?",
+                (winner, institution_id))
+            updated += 1
+    return updated
+
+
+def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
+    """Drop institutions no paper links to any more.
+
+    `paper_institutions` rows are deleted and rewritten per paper, but the
+    `institutions` rows they pointed at were never collected, so every name the
+    parser ever invented stayed in the table for good — 1,497 of 4,463 rows
+    after one rebuild, including all of the pre-fix garbage. The rebuilt link
+    table is the authority for which institutions exist.
+    """
+    orphans = [row[0] for row in conn.execute(
+        "SELECT institution_id FROM institutions i WHERE NOT EXISTS("
+        " SELECT 1 FROM paper_institutions pi"
+        " WHERE pi.institution_id = i.institution_id)")]
+    if not orphans:
+        return 0
+    marks = ",".join("?" * len(orphans))
+    conn.execute(
+        f"DELETE FROM institution_aliases WHERE institution_id IN ({marks})",
+        orphans)
+    conn.execute(
+        f"DELETE FROM institutions WHERE institution_id IN ({marks})", orphans)
+    return len(orphans)
+
+
+def finalize(db_path: Path) -> dict:
+    """Run only the table-wide passes a streaming ingest deferred.
+
+    `parent_name`, `country_name_en` and orphan removal are derived over the
+    whole institutions table, so a per-batch ingest skips them and calls this
+    once when the run ends.
+    """
+    if not db_path.exists():
+        return {"pruned": 0, "countries": 0, "parents": 0}
+    descriptor = bibliography_lock.acquire_bibliography_writer_lock(db_path)
+    try:
+        conn = sqlite3.connect(db_path, timeout=60.0)
+        conn.execute("PRAGMA busy_timeout = 60000")
+        try:
+            result = {"pruned": prune_orphan_institutions(conn),
+                      "countries": consolidate_institution_countries(conn),
+                      "parents": consolidate_institution_parents(conn)}
+            conn.commit()
+        finally:
+            conn.close()
+        return result
+    finally:
+        bibliography_lock.release_bibliography_writer_lock(db_path, descriptor)
 
 
 def build(entries: list[dict], db_path: Path, update_zotero: bool = False,
-          skip_zotero: bool = False, offline: bool = False) -> dict:
+          skip_zotero: bool = False, offline: bool = False,
+          defer_consolidation: bool = False) -> dict:
     """Build while excluding migration recovery and every other DB writer."""
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor = affiliation_registry.acquire_bibliography_writer_lock(db_path)
+    descriptor = bibliography_lock.acquire_bibliography_writer_lock(db_path)
     try:
         return _build_unlocked(
             entries, db_path, update_zotero=update_zotero,
-            skip_zotero=skip_zotero, offline=offline)
+            skip_zotero=skip_zotero, offline=offline,
+            defer_consolidation=defer_consolidation)
     finally:
-        affiliation_registry.release_bibliography_writer_lock(db_path, descriptor)
+        bibliography_lock.release_bibliography_writer_lock(db_path, descriptor)
 
 
 def send_completion_email(result: dict) -> None:
@@ -2734,7 +2319,8 @@ def changed_entries(entries: list[dict], db_path: Path) -> list[dict]:
     """Return papers whose source review/text files are new or changed."""
     if not db_path.exists():
         return entries
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=60.0)
+    conn.execute("PRAGMA busy_timeout = 60000")
     known = {}
     for slug, kind, digest in conn.execute(
         "SELECT p.slug, sd.document_type, sd.sha256 FROM papers p "
@@ -2785,7 +2371,7 @@ def main() -> int:
         if args.output.exists():
             try:
                 result = build([], args.output, False, True, args.offline)
-            except affiliation_registry.BibliographyWriterLockBusyError as exc:
+            except bibliography_lock.BibliographyWriterLockBusyError as exc:
                 print(str(exc), file=sys.stderr)
                 return 5
             except RuntimeError as exc:
@@ -2797,7 +2383,7 @@ def main() -> int:
         return 0
     try:
         result = build(entries, args.output, args.update_zotero, args.skip_zotero, args.offline)
-    except affiliation_registry.BibliographyWriterLockBusyError as exc:
+    except bibliography_lock.BibliographyWriterLockBusyError as exc:
         print(str(exc), file=sys.stderr)
         return 5
     except RuntimeError as exc:

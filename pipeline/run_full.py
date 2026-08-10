@@ -57,7 +57,8 @@ def build_parser():
     p = argparse.ArgumentParser(description="Paper-curation end-to-end orchestrator (3-axis)")
     p.add_argument("--topic", required=True)
     p.add_argument("--mode", choices=["curate", "rebuild", "reclassify", "retime", "deploy",
-                                       "audit", "fix-matching", "dedup", "validate", "recover"],
+                                       "audit", "fix-matching", "dedup", "validate", "recover",
+                                       "report"],
                    required=True,
                    help="MECE action axis. curate/rebuild/reclassify/retime/deploy "
                         "for pipeline runs; audit/fix-matching/dedup/validate/recover "
@@ -86,6 +87,8 @@ def build_parser():
     p.add_argument("--concurrency", type=int, default=16,
                    help="Parallel review workers (Tier 4 default; see README for Tier-by-Tier table).")
     p.add_argument("--slugs", default="", help="특정 슬러그만 force-rebuild.")
+    p.add_argument("--top", type=int, default=15,
+                   help="--mode report: 리포트에 포함할 상위 기관 수 (기본 15).")
     p.add_argument("--strict-pdf", action="store_true",
                    help="fuzzy PDF 매칭 차단 (ID-first 실패 시 skip).")
     p.add_argument("--also-reclassify", action="store_true",
@@ -202,6 +205,13 @@ def build_tool_plan(args):
     자체가 작업의 전부이므로 모두 critical (실패 시 abort).
     """
     py = sys.executable
+    if args.mode == "report":
+        # Institution report: research-flow narrative, timeline chart, parallel
+        # labs, notable researchers. Reads the bibliography DB only — no corpus
+        # mutation and no API calls, so it is safe to re-run at any time.
+        cmd = [py, "-u", str(PIPELINE / "build_institution_report.py"),
+               "--topic", args.topic, "--top", str(args.top)]
+        return [(cmd, None, True)]
     if args.mode == "audit":
         return [([py, "-u", str(PIPELINE / "audit_matching.py"),
                   "--topic", args.topic], None, True)]

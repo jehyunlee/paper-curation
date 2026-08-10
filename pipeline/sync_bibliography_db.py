@@ -22,8 +22,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from threading import Event, Thread
 import build_bibliography_db as bibliography
-import repair_bibliography_institutions as migrator
-from lib import affiliation_registry
+from lib import db_digest as migrator
+from lib import bibliography_lock
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_DB = ROOT / ".cache/bibliography.sqlite3"
@@ -59,13 +59,13 @@ _AFFILIATION_ARTIFACT_SUFFIXES = {
 
 def bibliography_writer_lock_path(database: Path = LOCAL_DB) -> Path:
     """Return the shared stable lock inode used by every bibliography operation."""
-    return affiliation_registry.bibliography_writer_lock_path(database)
+    return bibliography_lock.bibliography_writer_lock_path(database)
 
 
 @contextmanager
 def bibliography_lock(database: Path, mode: str, *, timeout: float):
     """Delegate to the single registry-owned advisory-lock implementation."""
-    with affiliation_registry.bibliography_lock(
+    with bibliography_lock.bibliography_lock(
             database, mode, timeout=timeout) as descriptor:
         yield descriptor
 
@@ -415,9 +415,6 @@ def _required_manifest_fields(*, rollback: bool = False) -> set[str]:
 
 
 _GIT_TARGETS = (
-    "pipeline/affiliation_registry.json",
-    "pipeline/affiliation_registry_corrections.jsonl",
-    "pipeline/affiliation_registry_baseline.json",
 )
 
 
@@ -445,13 +442,6 @@ def _git_provenance(
                 f"target publication artifact bytes differ from HEAD: {target}")
         blobs[target] = blob
     return {"git_revision": revision, "git_blobs": blobs}
-
-
-def _relationship_set_sha256() -> str:
-    registry = json.loads((ROOT / "pipeline/affiliation_registry.json").read_text(
-        encoding="utf-8"))
-    values = sorted(item["relationship_id"] for item in registry["relationships"])
-    return hashlib.sha256(canonical_manifest(values).encode()).hexdigest()
 
 
 def _sql_contract_sha256(path: Path) -> str:
@@ -640,24 +630,14 @@ def _inspect_sqlite(path: Path, *, require_affiliation: bool) -> dict:
     try:
         if connection.execute("PRAGMA quick_check").fetchone()[0] != "ok":
             raise RuntimeError(f"SQLite integrity check failed: {path}")
-        try:
-            row = connection.execute(
-                "SELECT schema_version,registry_sha256,event_head,policy_version,"
-                "source_sha256,migration_receipt_id,registry_contract_version,"
-                "event_contract_version,country_map_version,country_map_sha256,"
-                "evidence_oracle_version,evidence_oracle_sha256,ledger_head,"
-                "cohort_version,cohort_sha256 FROM affiliation_registry_metadata "
-                "WHERE singleton=1"
-            ).fetchone()
-        except sqlite3.Error:
-            row = None
+        # The affiliation registry metadata singleton was retired with the
+        # registry itself; there is no per-DB registry contract row any more.
+        row = None
     finally:
         connection.close()
-    if require_affiliation and (
-            row is None or row[0] != bibliography.AFFILIATION_SCHEMA_VERSION
-            or not all(row[1:])):
-        raise RuntimeError(
-            f"{bibliography.AFFILIATION_SCHEMA_VERSION} metadata is missing from bibliography DB")
+    # The affiliation registry was retired; its metadata singleton no longer
+    # exists and is no longer a precondition for publishing the DB.
+    del require_affiliation
     keys = (
         "schema_version", "registry_sha256", "event_head", "policy_version",
         "source_sha256", "migration_receipt_id", "registry_contract_version",
@@ -669,28 +649,19 @@ def _inspect_sqlite(path: Path, *, require_affiliation: bool) -> dict:
 
 
 def _remote_bootstrap_metadata() -> dict:
+    # The remote probe used to assert the affiliation-3 registry contract row.
+    # With the registry retired it reports only what still exists: integrity
+    # and the logical content digest the CAS compare-and-swap comes down to.
     program = (
         "import json,sqlite3,sys;"
         "from pathlib import Path;"
         "sys.path.insert(0,str(Path(sys.argv[1]).parent.parent/'pipeline'));"
-        "import repair_bibliography_institutions as m;"
+        "from lib import db_digest as m;"
         "c=sqlite3.connect(sys.argv[1]);"
         "ok=c.execute('PRAGMA quick_check').fetchone()[0];"
-        "r=c.execute('SELECT schema_version,registry_sha256,event_head,policy_version,"
-        "source_sha256,migration_receipt_id,registry_contract_version,"
-        "event_contract_version,country_map_version,country_map_sha256,"
-        "evidence_oracle_version,evidence_oracle_sha256,ledger_head,"
-        "cohort_version,cohort_sha256 FROM affiliation_registry_metadata "
-        "WHERE singleton=1').fetchone();"
-        "logical=m.logical_digest(c);c.close();"
-        "assert ok=='ok' and r and r[0]=='affiliation-3' and all(r[1:]);"
-        "print(json.dumps({'schema_version':r[0],'registry_sha256':r[1],"
-        "'event_head':r[2],'policy_version':r[3],'source_sha256':r[4],"
-        "'migration_receipt_id':r[5],'registry_contract_version':r[6],"
-        "'event_contract_version':r[7],'country_map_version':r[8],"
-        "'country_map_sha256':r[9],'evidence_oracle_version':r[10],"
-        "'evidence_oracle_sha256':r[11],'ledger_head':r[12],"
-        "'cohort_version':r[13],'cohort_sha256':r[14],'logical_sha256':logical},"
+        "logical=m.logical_digest(c);schema=m.schema_name(c);c.close();"
+        "assert ok=='ok';"
+        "print(json.dumps({'schema_version':schema,'logical_sha256':logical},"
         "sort_keys=True,separators=(',',':')))"
     )
     try:
@@ -784,7 +755,6 @@ def _logical_sha(path: Path) -> str:
 def local_manifest(affiliation_artifacts: dict[str, Path | str] | None = None) -> dict:
     metadata = _inspect_sqlite(LOCAL_DB, require_affiliation=True)
     contracts = {
-        "relationship_set_sha256": _relationship_set_sha256(),
         "sql_contract_sha256": _sql_contract_sha256(LOCAL_DB),
         **_git_provenance(),
     }
@@ -1063,9 +1033,9 @@ def _measured_pull_writer_lock(metrics: dict):
         "timeoutSeconds": LOCAL_WRITER_TIMEOUT_SECONDS,
     })
     try:
-        descriptor = affiliation_registry.acquire_bibliography_writer_lock(
+        descriptor = bibliography_lock.acquire_bibliography_writer_lock(
             LOCAL_DB, timeout=LOCAL_WRITER_TIMEOUT_SECONDS)
-    except affiliation_registry.BibliographyWriterLockBusyError as exc:
+    except bibliography_lock.BibliographyWriterLockBusyError as exc:
         rejected_ns = time.monotonic_ns()
         metrics.update({
             "acquisitionOutcome": exc.reason,
@@ -1103,7 +1073,7 @@ def _measured_pull_writer_lock(metrics: dict):
         body_error = sys.exc_info()[1]
         release_finished_ns = None
         try:
-            affiliation_registry.release_bibliography_writer_lock(
+            bibliography_lock.release_bibliography_writer_lock(
                 LOCAL_DB, descriptor)
         except BaseException as release_error:
             metrics.update({
@@ -1629,7 +1599,7 @@ def _seed_legacy_recovery_locked(base_receipt: Path | None, lease: dict) -> dict
     try:
         if (probe.execute("PRAGMA quick_check").fetchone()[0] != "ok"
                 or migrator.logical_digest(probe) != receipt["base_logical_sha256"]
-                or migrator._schema_name(probe) != receipt["schema_from"]):
+                or migrator.schema_name(probe) != receipt["schema_from"]):
             raise RuntimeError("legacy recovery backup provenance mismatch")
     finally:
         probe.close()
@@ -1775,7 +1745,7 @@ def _published_rollback_locked(target_generation: int, base_receipt: Path | None
         try:
             if connection.execute("PRAGMA quick_check").fetchone()[0] != "ok":
                 raise RuntimeError("rollback target integrity check failed")
-            if migrator._schema_name(connection) != migration["schema_from"]:
+            if migrator.schema_name(connection) != migration["schema_from"]:
                 raise RuntimeError("rollback target original schema mismatch")
         finally:
             connection.close()

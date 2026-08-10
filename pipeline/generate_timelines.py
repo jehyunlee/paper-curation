@@ -29,6 +29,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 import time
@@ -78,7 +79,7 @@ def category_input_hash(papers):
 # Step 1: Narrative Generation (Opus streaming)
 # ═══════════════════════════════════════════
 
-def opus_streaming_call(prompt, max_tokens=12000):
+def opus_streaming_call(prompt, max_tokens=24000):
     """Opus streaming 호출. SDK retry는 request-level만 처리하므로 mid-stream
     Connection reset/ReadError를 잡아서 수동 retry (exp backoff)."""
     import time as _time
@@ -105,6 +106,32 @@ def opus_streaming_call(prompt, max_tokens=12000):
             print(f"[opus_streaming_call] attempt {attempt+1}/5 failed: {type(e).__name__}: {str(e)[:120]}; sleeping {wait}s", flush=True)
             _time.sleep(wait)
     raise RuntimeError(f"opus_streaming_call exhausted retries: {last_err}")
+
+
+def _split_method_caption(method_part, category, topic, paper_count, *, fallback_caption=None):
+    """Split only the explicit CAPTION marker, preserving internal Markdown rules."""
+    matches = list(re.finditer(r"(?im)^\s*CAPTION:\s*", method_part))
+    if not matches:
+        return method_part.strip(), fallback_caption or f"Timeline for {category} in {topic} ({paper_count} papers)."
+    marker = matches[-1]
+    method = method_part[:marker.start()].rstrip()
+    method = re.sub(r"\n\s*---\s*$", "", method).rstrip()
+    caption = method_part[marker.end():].strip()
+    return method, caption
+
+
+def _parse_summary_json(json_part):
+    """Decode the first JSON object while tolerating fences or trailing prose."""
+    candidate = json_part.strip()
+    if candidate.startswith("```"):
+        candidate = re.sub(r"^```(?:json)?\s*", "", candidate, count=1, flags=re.IGNORECASE)
+    start = candidate.find("{")
+    if start < 0:
+        raise json.JSONDecodeError("missing JSON object", candidate, 0)
+    summary, _ = json.JSONDecoder().raw_decode(candidate[start:])
+    if not isinstance(summary, dict) or not summary:
+        raise json.JSONDecodeError("summary must be a non-empty object", candidate, start)
+    return summary
 
 
 def build_category_narrative(papers, topic, category):
@@ -230,25 +257,13 @@ OUTPUT 2 — STRUCTURED SUMMARY (JSON) for reuse in main timeline:
         method_part = text
         json_part = "{}"
 
-    # Parse method + caption
-    if "---" in method_part:
-        mp = method_part.split("---", 1)
-        method = mp[0].strip()
-        caption = mp[1].strip()
-        for prefix in ["CAPTION:", "SECTION 2:"]:
-            caption = caption.replace(prefix, "").strip()
-    else:
-        method = method_part
-        caption = f"Timeline for {category} in {topic} ({len(papers)} papers)."
+    # Parse method + caption without treating internal Markdown separators as
+    # the output boundary.
+    method, caption = _split_method_caption(method_part, category, topic, len(papers))
 
-    # Parse JSON summary
+    # Parse JSON summary, accepting fenced JSON followed by explanatory prose.
     try:
-        jt = json_part.strip()
-        if jt.startswith("```"):
-            jt = jt.split("```")[1]
-            if jt.startswith("json"):
-                jt = jt[4:]
-        summary = json.loads(jt)
+        summary = _parse_summary_json(json_part)
     except (json.JSONDecodeError, IndexError):
         log(f"  WARNING: Failed to parse JSON summary for {category}")
         summary = {
@@ -290,12 +305,17 @@ Requirements:
 - Show how categories influenced each other (use interaction data from summaries)
 - Highlight TOP 5 most important milestones across all categories
 - Show emergence of new categories and decline of approaches
+- Derive a TEMPORAL WIDTH PROFILE for every stream from its dated milestones and sub-themes
+- Every stream must visibly expand, contract, branch, or merge over time; aggregate category size alone is not a constant width
+- Start each stream near its evidence-based emergence year instead of extending all streams from 2000
+- Render all {len(category_summaries)} streams; label every left origin with its full category name, never only a stream letter
 - Use sub-theme info to add richness (key branches within each stream)
 
 ## Research Timeline: {topic}
 
 ### STREAM A: {{category_name}} ({{start}}->{{end}})
 Relative size: {{LARGE/MEDIUM/SMALL based on paper count}}
+Temporal width profile: {{year:NARROW -> year:MEDIUM -> year:WIDE -> year:NARROW, grounded in dated activity}}
 Key branches: {{2-3 most important sub-themes from summary}}
 - **"{{sub_theme}}"** ({{start}}-{{end}}): {{brief description}}
 Status: {{current status from summary}}
@@ -325,6 +345,10 @@ Streams ordered by relative size (largest to smallest):
 - White background, clean sans-serif font
 - NO title in image, NO watermarks, NO color name text, NO specific paper counts
 - 16:9 aspect ratio, English only
+- FORBIDDEN: flat constant-width rectangular bands. Every stream needs conspicuous width changes over time
+- COMPLETENESS: all {len(category_summaries)} category streams and their full names must remain visible; do not omit, combine, or abbreviate streams
+- Width at each year represents activity/influence in that period, not the category's all-time paper total
+- Show visible convergence, branching, and influence arrows where category interactions support them
 
 ---
 
@@ -335,15 +359,13 @@ A one-paragraph figure caption.
     log(f"  Opus main narrative (streaming): synthesizing {len(category_summaries)} categories...")
     text = opus_streaming_call(prompt, max_tokens=10000)
 
-    if "---" in text:
-        parts = text.split("---", 1)
-        method = parts[0].strip()
-        caption = parts[1].strip()
-        for prefix in ["CAPTION:", "SECTION 2:"]:
-            caption = caption.replace(prefix, "").strip()
-    else:
-        method = text
-        caption = f"Research timeline for {topic}."
+    method, caption = _split_method_caption(
+        text,
+        topic,
+        topic,
+        sum(summary.get("paper_count", 0) for summary in category_summaries),
+        fallback_caption=f"Research timeline for {topic}.",
+    )
 
     log(f"  Main narrative: {len(method)} chars method, {len(caption)} chars caption")
     return method, caption
@@ -745,16 +767,18 @@ _JUDGE_CRITERIA = (
     "You are judging candidate timeline diagrams of how research categories evolve "
     "over time. Every candidate renders the SAME underlying data — pick the single "
     "best RENDERING, by these criteria in priority order:\n"
-    "1) COLOR: each category has a distinct, appropriate color used CONSISTENTLY for "
+    "1) COMPLETENESS: every category stream is present and labeled with its full "
+    "category name; reject candidates that omit streams or show only letters.\n"
+    "2) COLOR: each category has a distinct, appropriate color used CONSISTENTLY for "
     "that category across the whole timeline; the palette is clear (no two categories "
     "in near-identical colors).\n"
-    "2) DYNAMICS: the emergence and disappearance of categories over time, and their "
+    "3) DYNAMICS: the emergence and disappearance of categories over time, and their "
     "merging (convergence) and branching (divergence), are clearly and accurately shown.\n"
-    "3) CLEAN TEXT: NO unwanted text — no color-name labels (e.g. 'blue'/'red'), no "
+    "4) CLEAN TEXT: NO unwanted text — no color-name labels (e.g. 'blue'/'red'), no "
     "category index numbers, no watermarks, no raw paper counts, no chart title. "
-    "(Category names used as labels/legend are fine.)\n"
-    "Prefer the candidate that best satisfies 1, then 2, then 3; break ties by overall "
-    "readability and clean layout."
+    "(Category names used as labels/legend are required.)\n"
+    "Prefer the candidate that best satisfies 1, then 2, then 3, then 4; break ties by "
+    "overall readability and clean layout."
 )
 
 
@@ -853,7 +877,8 @@ def deploy_candidate(results, deploy_path, caption=""):
 
 def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
                    images_only=False, main_only=False, category_only=False,
-                   categories=None, mode="all", force_narrative=False):
+                   categories=None, mode="all", force_narrative=False,
+                   refresh_main=False):
     """Programmatic entrypoint for generate_timelines.
 
     `mode` is reserved for the api facade (legacy compatibility); the
@@ -1059,7 +1084,16 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
         method_path = os.path.join(method_texts_dir, "_method_text_main.txt")
         caption_path = os.path.join(method_texts_dir, "_caption_main.txt")
 
-        if not os.path.exists(method_path):
+        if refresh_main:
+            if not category_summaries:
+                raise RuntimeError("cannot refresh main narrative without category summaries")
+            log("\n--- Refreshing main narrative from category summaries ---")
+            method_text, caption = build_main_narrative_from_summaries(category_summaries, topic)
+            with open(method_path, "w", encoding="utf-8") as f:
+                f.write(method_text)
+            with open(caption_path, "w", encoding="utf-8") as f:
+                f.write(caption)
+        elif not os.path.exists(method_path):
             if not category_summaries:
                 log("ERROR: No narratives available. Run without --images-only first.")
                 return
@@ -1102,12 +1136,14 @@ def main():
     parser.add_argument("--categories", nargs="+", help="Specific categories")
     parser.add_argument("--force-narrative", action="store_true",
                         help="narrative 입력 해시 캐시 무시하고 모든 카테고리 narrative 강제 재생성")
+    parser.add_argument("--refresh-main", action="store_true",
+                        help="regenerate the main narrative from cached category summaries before rendering")
     args = parser.parse_args()
     _run_timeline(topic=args.topic, candidates=args.candidates,
                   narrative_only=args.narrative_only,
                   images_only=args.images_only, main_only=args.main_only,
                   category_only=args.category_only, categories=args.categories,
-                  force_narrative=args.force_narrative)
+                  force_narrative=args.force_narrative, refresh_main=args.refresh_main)
 
 
 if __name__ == "__main__":

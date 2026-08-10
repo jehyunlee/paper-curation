@@ -266,6 +266,40 @@ def cleanup(*, execute=False, purge_text=False):
     return _run_cleanup(execute=execute, purge_text=purge_text)
 
 
+def institution_report(topic="ai4s", *, top=15):
+    """Top-N institution report: research-flow narrative, timeline chart,
+    author-overlap labs, notable researchers, linked bibliography.
+
+    Reads `.cache/bibliography.sqlite3` only — no corpus mutation, no API calls.
+    Writes reports/source/{topic}_institutions_top{n}.md and
+    reports/build/{topic}_institutions_top{n}.html.
+    """
+    from build_institution_report import (BUILD_DIR, SOURCE_DIR, fetch,
+                                          render_html, render_markdown)
+    institutions, meta = fetch(topic, top)
+    SOURCE_DIR.mkdir(parents=True, exist_ok=True)
+    BUILD_DIR.mkdir(parents=True, exist_ok=True)
+    stem = f"{topic}_institutions_top{top}"
+    md_path = SOURCE_DIR / f"{stem}.md"
+    html_path = BUILD_DIR / f"{stem}.html"
+    md_path.write_text(render_markdown(institutions, meta), encoding="utf-8")
+    html_path.write_text(render_html(institutions, meta), encoding="utf-8")
+    return {"topic": topic, "institutions": len(institutions),
+            "papers_covered": sum(i["count"] for i in institutions),
+            "md": str(md_path), "html": str(html_path)}
+
+
+def affiliation_sources(*, check=False, refresh_ror=False):
+    """Ensure the ROR index and curated group table exist (idempotent)."""
+    import setup_affiliation_sources as setup
+    if check:
+        return setup.report()
+    return {"dump": setup.ensure_dump(force=refresh_ror),
+            "index": setup.ensure_index(force=refresh_ror),
+            "curated": setup.ensure_curated_dict(),
+            "state": setup.report()}
+
+
 __all__ = [
     # search / zotero
     "search", "register", "register_fix_pdfs", "register_fix_metadata",
@@ -281,4 +315,6 @@ __all__ = [
     "topic_index", "review_to_html", "deploy",
     # validate / audit / cleanup
     "validate", "audit_matching", "fix_matching", "cleanup",
+    # bibliography-backed reports
+    "institution_report", "affiliation_sources",
 ]

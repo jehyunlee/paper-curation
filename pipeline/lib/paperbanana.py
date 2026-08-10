@@ -130,6 +130,13 @@ def _extract_final_image_b64(result: dict, exp_mode: str) -> str | None:
     return result.get(key)
 
 
+def _resolve_output_path(output_path: str | Path | None) -> Path | None:
+    """Resolve caller-relative output before PaperBanana changes process cwd."""
+    if output_path is None:
+        return None
+    return Path(output_path).expanduser().resolve()
+
+
 def generate_diagram(method: str, caption: str,
                      aspect_ratio: str = "16:9",
                      critic_rounds: int = 3,
@@ -151,6 +158,9 @@ def generate_diagram(method: str, caption: str,
         PNG image bytes, or None if generation failed.
     """
     prev_cwd = os.getcwd()
+    # PaperBanana temporarily changes cwd below. Resolve a caller-relative target
+    # before that transition so generated images stay in the requested project path.
+    resolved_output = _resolve_output_path(output_path)
     try:
         _ensure_path()
         os.chdir(str(PAPERBANANA_DIR))
@@ -246,11 +256,10 @@ def generate_diagram(method: str, caption: str,
         img.save(png_buf, "PNG")
         png_bytes = png_buf.getvalue()
 
-        if output_path is not None:
-            out = Path(output_path)
-            out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_bytes(png_bytes)
-            logger.info(f"Diagram saved: {out}")
+        if resolved_output is not None:
+            resolved_output.parent.mkdir(parents=True, exist_ok=True)
+            resolved_output.write_bytes(png_bytes)
+            logger.info(f"Diagram saved: {resolved_output}")
 
         return png_bytes
 
