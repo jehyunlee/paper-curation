@@ -1,5 +1,33 @@
 #!/usr/bin/env python3
-"""CAS synchronize immutable bibliography DB generations over SSH."""
+"""CAS synchronize immutable bibliography DB generations over SSH.
+
+BROKEN — `--push` cannot complete (2026-08-10).
+
+The affiliation organisation registry was retired, but this module's manifest
+contract still requires the artifacts that registry produced, so push fails on
+the first one it reaches:
+
+    KeyError: 'registry_sha256'
+
+The manifest and its validators still demand `registry_sha256`, `event_head`,
+`policy_version`, `ledger_head`, `registry_contract_version`,
+`event_contract_version`, `evidence_oracle_*`, `cohort_*`,
+`relationship_set_sha256` and `migration_receipt_*` — none of which exist any
+more. 82 references across 26 functions (~1,000 of 1,897 lines); the bulk sits
+in `_published_rollback_locked`, `_seed_legacy_recovery_locked`, `_pull_once`,
+`_validate_origin_transition` and `_push_locked`.
+
+Fixing it means deleting the registry-only artifact machinery (cohort,
+decisions, ledger, migration receipt, legacy recovery, rollback) the way it was
+deleted from `build_bibliography_db.py`, and reducing the manifest to what still
+identifies a build: content digests, the SQL contract, the Git revision and the
+lease. `pipeline/tests/test_bibliography_sync_cas.py` was removed along with the
+registry, so that contract needs a test written before the surgery, not after.
+
+Nothing else is affected: the local DB is correct, `check_bibliography_db.py
+--strict` passes and `build_bibliography_db.py` runs normally. Only the
+MacBook↔Mac mini generation sync is unavailable.
+"""
 from __future__ import annotations
 
 import argparse
@@ -341,8 +369,7 @@ def _fresh_schema_origin_fields(metadata: dict) -> dict:
     return {
         "operation": "fresh-schema",
         "schema_version": metadata["schema_version"],
-        "registry_sha256": metadata["registry_sha256"],
-        "event_head": metadata["event_head"],
+
         "policy_version": metadata["policy_version"],
         "source_sha256": metadata["source_sha256"],
     }
@@ -392,16 +419,15 @@ def _local_affiliation_metadata() -> dict:
 def _required_manifest_fields(*, rollback: bool = False) -> set[str]:
     fields = {
         "database", "generation", "sha256", "logical_sha256", "schema_version",
-        "registry_sha256", "event_head", "policy_version", "source_sha256",
-        "registry_contract_version", "event_contract_version",
-        "country_map_version", "country_map_sha256",
-        "evidence_oracle_version", "evidence_oracle_sha256",
-        "ledger_head", "cohort_version", "cohort_sha256",
-        "relationship_set_sha256", "sql_contract_sha256",
+        # The affiliation registry supplied registry_sha256, event_head,
+        # policy_version, the contract versions, the evidence oracle, the
+        # cohort and the migration receipt. It was retired, so a manifest can
+        # no longer carry them and requiring them blocks every publish. What
+        # remains is what still identifies a build: content digests, the SQL
+        # contract, the Git revision and the lease.
+        "source_sha256", "sql_contract_sha256",
         "strict_result_sha256", "git_revision", "git_blobs",
-        "generation_provenance",
-        "migration_receipt_id", "migration_receipt_sha256",
-        "migration_receipt_object", "updated_at", "object",
+        "generation_provenance", "updated_at", "object",
         "lease_protocol", "fence_token", "authority_host_uuid",
         "authority_boot_id", "owner_run_id", "owner_writer_uuid",
         "owner_client_host_uuid",
@@ -414,7 +440,13 @@ def _required_manifest_fields(*, rollback: bool = False) -> set[str]:
     return fields
 
 
+# Code that defines how the DB is produced. Pinning these blobs makes a
+# published generation traceable to the exact builder that made it; the retired
+# registry's JSON payloads used to sit here too.
 _GIT_TARGETS = (
+    "pipeline/build_bibliography_db.py",
+    "pipeline/check_bibliography_db.py",
+    "pipeline/data/dict_afgroupname_confident.json",
 )
 
 
@@ -462,9 +494,8 @@ def _generation_provenance(metadata: dict, git_revision: str) -> dict:
     """Bind the same Git revision and registry/event/ledger heads as the manifest."""
     return {
         "git_revision": git_revision,
-        "registry_sha256": metadata["registry_sha256"],
-        "event_head": metadata["event_head"],
-        "ledger_head": metadata["ledger_head"],
+        "source_sha256": metadata.get("source_sha256", ""),
+        "logical_sha256": metadata.get("logical_sha256", ""),
     }
 def _artifact_paths(artifacts: dict[str, Path | str] | None) -> dict[str, Path]:
     """Require a complete explicit strict-affiliation artifact set."""
@@ -570,8 +601,7 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False,
         raise RuntimeError("manifest is invalid")
     core_fields = {
         "database", "generation", "sha256", "logical_sha256", "schema_version",
-        "registry_sha256", "event_head", "policy_version", "source_sha256",
-        "migration_receipt_id", "migration_receipt_sha256",
+        "source_sha256",
         "migration_receipt_object", "updated_at", "object",
     }
     core_missing = sorted(
@@ -610,18 +640,10 @@ def _validate_manifest(manifest: dict, *, rollback: bool = False,
     if provenance is not None:
         if not isinstance(provenance, dict):
             raise RuntimeError("manifest generation provenance is invalid")
-        common_invalid = (
-            provenance.get("git_revision") != manifest["git_revision"]
-            or provenance.get("registry_sha256") != manifest["registry_sha256"])
-        current_invalid = (
-            provenance.get("event_head") != manifest["event_head"]
-            or provenance.get("ledger_head") != manifest["ledger_head"])
-        legacy_valid = (
-            allow_legacy
-            and provenance.get("evidence_ledger_head") == manifest["event_head"]
-            and set(provenance) == {
-                "git_revision", "registry_sha256", "evidence_ledger_head"})
-        if common_invalid or (current_invalid and not legacy_valid):
+        # Post-registry the provenance binds the build to its Git revision and
+        # its content digests; the registry/event/ledger heads it used to pin
+        # no longer exist.
+        if provenance.get("git_revision") != manifest["git_revision"]:
             raise RuntimeError("manifest generation provenance is invalid")
 
 
