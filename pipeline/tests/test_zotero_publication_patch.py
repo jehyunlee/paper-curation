@@ -194,6 +194,68 @@ class LibraryProtectionTests(unittest.TestCase):
         self.assertTrue(bib._titles_agree(
             louvain, {"title": "Mapping scientific communities at scale"}))
 
+    def test_a_pdf_scraped_doi_is_never_written_to_zotero(self):
+        # The ICC paper cites Altman and Cohen, so `pdf_bibliography` scraped
+        # their DOI out of its reference list. Zotero held no DOI to outrank
+        # it, and the patch wrote a Frontiers DOI onto item RM7J55RG.
+        item = {"key": "RM7J55RG", "version": 40234,
+                "data": {"itemType": "journalArticle",
+                         "title": "The reorganization of the American "
+                                  "innovation ecosystem",
+                         "publicationTitle": "Industrial and Corporate Change"}}
+        bibliography = {
+            "title": "The reorganization of the American innovation ecosystem",
+            "doi": "10.3389/frma.2021.751553",
+            "url": "https://doi.org/10.3389/frma.2021.751553",
+            "journal": "Industrial and Corporate Change",
+            "volume": "34",
+            "field_sources": {"title": "zotero-local", "doi": "pdf",
+                              "url": "pdf", "journal": "zotero-local",
+                              "volume": "zotero-local"},
+        }
+        captured = {}
+
+        def fake_urlopen(request, **_kwargs):
+            captured["payload"] = json.loads(request.data)
+            return _Response()
+
+        with patch("config_loader.get_zotero_api_key", return_value="secret"), \
+             patch("config_loader.get_zotero_user_id", return_value="7"), \
+             patch.object(bib.urllib.request, "urlopen", side_effect=fake_urlopen):
+            bib.patch_zotero(item, bibliography)
+
+        payload = captured["payload"]
+        self.assertNotIn("DOI", payload)
+        self.assertNotIn("url", payload)
+        self.assertEqual(payload["volume"], "34")   # a Zotero-sourced field
+
+    def test_a_registered_doi_is_still_written(self):
+        item = {"key": "K", "version": 1,
+                "data": {"itemType": "preprint", "title": "A Paper"}}
+        bibliography = {"title": "A Paper", "doi": "10.1038/x",
+                        "field_sources": {"doi": "scopus"}}
+        captured = {}
+
+        def fake_urlopen(request, **_kwargs):
+            captured["payload"] = json.loads(request.data)
+            return _Response()
+
+        with patch("config_loader.get_zotero_api_key", return_value="secret"), \
+             patch("config_loader.get_zotero_user_id", return_value="7"), \
+             patch.object(bib.urllib.request, "urlopen", side_effect=fake_urlopen):
+            self.assertTrue(bib.patch_zotero(item, bibliography))
+        self.assertEqual(captured["payload"]["DOI"], "10.1038/x")
+
+    def test_reconcile_records_where_each_field_came_from(self):
+        merged = bib.reconcile_bibliography(
+            {"title": "A Paper"},
+            {"journal": "Some Journal"},
+            {"doi": "10.3389/frma.2021.751553"})
+        self.assertEqual(merged["field_sources"]["title"], "zotero-local")
+        self.assertEqual(merged["field_sources"]["journal"], "scopus")
+        self.assertEqual(merged["field_sources"]["doi"], "pdf")
+        self.assertEqual(merged["field_sources"]["url"], "pdf")
+
 
 class AuthorNameParserTests(unittest.TestCase):
     def test_name_parser_supports_comma_and_mononym(self):

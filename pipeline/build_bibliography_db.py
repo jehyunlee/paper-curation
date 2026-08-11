@@ -1777,6 +1777,8 @@ def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
     )
     result = {field: str(local.get(field) or "").strip() for field in fields}
     used = ["zotero-local"] if any(result.values()) else []
+    field_sources = {field: "zotero-local"
+                     for field in fields if result[field]}
 
     # `scopus_eid` has no local counterpart, so Scopus stays authoritative there.
     for label, source, owned in (("scopus", scopus, ("scopus_eid",)),
@@ -1791,6 +1793,9 @@ def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
             if result.get(field) and field not in owned:
                 continue
             result[field] = value
+            # Which source supplied each field, so a caller can tell a
+            # publisher-registered value from one scraped off a page.
+            field_sources[field] = label
             filled = True
         if filled:
             used.append(label)
@@ -1799,7 +1804,9 @@ def reconcile_bibliography(local: dict, scopus: dict, pdf: dict) -> dict:
         result["date"] = result["published_online_date"]
     if result["doi"] and not result["url"]:
         result["url"] = external_url(result["doi"], "")
+        field_sources["url"] = field_sources.get("doi", "")
     result["source"] = "+".join(used) or "empty"
+    result["field_sources"] = field_sources
     return result
 
 
@@ -2046,11 +2053,25 @@ def patch_zotero(item: dict, bibliography: dict) -> bool | None:
             "pages": "pages",
             "publisher": "publisher",
         }
+        # A DOI recovered by regex from the page has no authority to redefine
+        # a library item. `pdf_bibliography` takes the first DOI in its window,
+        # and the window reaches the reference list: the Industrial and
+        # Corporate Change paper cites Altman and Cohen, so its scraped DOI was
+        # theirs, Zotero held no DOI of its own to outrank it, and the patch
+        # wrote a Frontiers DOI onto item RM7J55RG. Identity fields may only be
+        # written from a registered record.
+        sources = bibliography.get("field_sources") or {}
+        scraped = {field for field in ("doi", "url")
+                   if sources.get(field) == "pdf"}
         patch = {
             zotero_field: bibliography[source_field]
             for source_field, zotero_field in field_map.items()
-            if bibliography.get(source_field)
+            if bibliography.get(source_field) and source_field not in scraped
         }
+        if scraped:
+            print(f"Zotero identity fields not written ({item.get('key')}): "
+                  f"{sorted(scraped)} came from the PDF, not a registry",
+                  file=sys.stderr)
         issns = "; ".join(
             value for value in (bibliography.get("issn"), bibliography.get("eissn"))
             if value)
