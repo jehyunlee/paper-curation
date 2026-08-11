@@ -9,6 +9,7 @@ for arXiv records; Zotero keys are matched from the user's library and, with
 from __future__ import annotations
 import os
 import argparse
+import difflib
 import hashlib
 import json
 import random
@@ -429,13 +430,26 @@ def fm(path: Path) -> dict:
         return {}
 
 
+# A DOI is "10." + a registrant + "/" + a suffix; nothing else is one. Review
+# frontmatter is LLM-extracted, and when a PDF carried no DOI the model wrote
+# the absence down as a word rather than leaving the field empty: "N/A" (177
+# papers), "미제공" (78), "미공개" (11), "미기재" (7), "-" (7), "논문", "해당",
+# "제공되지". Those strings reached `papers.doi`, and `zotero_match` compares
+# DOIs, so every paper carrying the same placeholder matched the single Zotero
+# item whose DOI field held that same string — 177 papers inherited the title,
+# journal and pagination of an item called "Semantic Scholar", and 342 papers
+# in total ended up sharing another paper's Zotero record.
+_DOI_PATTERN = re.compile(r"^10\.\d{4,9}/\S+$")
+
+
 def clean_doi(s: str) -> str:
     s = (s or "").strip()
-    s = re.sub(r"^https?://doi\.org/", "", s, flags=re.I)
+    s = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", s, flags=re.I)
+    s = re.sub(r"^doi:\s*", "", s, flags=re.I)
     s = s.rstrip(" .;,)")
     if s.lower().startswith("10.48550/arxiv.") or s.lower().startswith("arxiv:"):
         return ""
-    return s
+    return s if _DOI_PATTERN.match(s) else ""
 
 
 def clean_arxiv(s: str) -> str:
@@ -1975,6 +1989,28 @@ def _zotero_creator_name(creator: dict) -> str:
     )
 
 
+def _zotero_title(item: dict) -> str:
+    return str((item.get("data") or {}).get("title") or "")
+
+
+def _titles_agree(item: dict, bibliography: dict) -> bool:
+    """Whether a Zotero item and a bibliography record describe one paper.
+
+    An empty title on either side carries no evidence, so it is not treated as
+    a conflict. Everything else is compared on normalized text: the 308
+    mismatched rows measured in this corpus sat below 0.6 similarity while
+    genuine subtitle and punctuation drift stayed far above it.
+    """
+    item_title = norm(_zotero_title(item))
+    record_title = norm(str(bibliography.get("title") or ""))
+    if not item_title or not record_title:
+        return True
+    if item_title == record_title:
+        return True
+    return difflib.SequenceMatcher(
+        None, item_title, record_title).ratio() >= 0.6
+
+
 def patch_zotero(item: dict, bibliography: dict) -> bool | None:
     """Patch Zotero with the accepted formal-publication record.
 
@@ -1984,6 +2020,18 @@ def patch_zotero(item: dict, bibliography: dict) -> bool | None:
     success/failure must treat None as "already up to date", not failure.
     """
     if not bibliography.get("doi"):
+        return False
+    # Never write into a library item describing a different paper. Zotero item
+    # RM7J55RG holds "The reorganization of the American innovation ecosystem
+    # and the challenge of translating science" (Industrial and Corporate
+    # Change, Arora et al.) — and the DOI and URL of a 2021 Frontiers paper by
+    # Altman and Cohen, because a patch wrote them there. DOI and url are the
+    # two fields this function writes that identify the work itself, so a
+    # mismatched title makes the write destructive to the user's own library.
+    if not _titles_agree(item, bibliography):
+        print(f"Zotero update refused ({item.get('key')}): title mismatch — "
+              f"item={_zotero_title(item)!r} record={bibliography.get('title')!r}",
+              file=sys.stderr)
         return False
     try:
         from config_loader import get_zotero_api_key, get_zotero_user_id
@@ -2134,10 +2182,25 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             zitem = zotero_match(
                 {"title": title, "doi": doi, "arxiv": arxiv}, zitems
             ) if zitems else None
+            # An item describing a different paper is not evidence about this
+            # one. Zotero item ZA7W3PFQ is titled "Mapping scientific
+            # communities at scale" yet carries the DOI of Blondel's "Fast
+            # Unfolding of Communities in Large Networks", so the Louvain paper
+            # was stored under the other work's title, journal and pagination —
+            # 20 papers reached the DB that way. Zotero stays authoritative for
+            # the paper it actually describes.
+            if zitem is not None and not _titles_agree(zitem, {"title": title}):
+                print(f"[bibliography] Zotero item {zitem.get('key')} describes "
+                      f"{_zotero_title(zitem)[:60]!r}, not {title[:60]!r} — "
+                      f"ignored", file=sys.stderr)
+                zitem = None
             # The sidecar carries the same Zotero record, captured at review
             # time, so it stands in when the library was not paged.
-            zdata = (zitem.get("data", {}) if zitem
-                     else ((sidecar or {}).get("zotero") or {}))
+            sidecar_zotero = (sidecar or {}).get("zotero") or {}
+            if sidecar_zotero and not _titles_agree(
+                    {"data": sidecar_zotero}, {"title": title}):
+                sidecar_zotero = {}
+            zdata = (zitem.get("data", {}) if zitem else sidecar_zotero)
             zdoi = clean_doi(zdata.get("DOI", ""))
             if not doi and zdoi:
                 doi = zdoi
@@ -2821,7 +2884,10 @@ def main() -> int:
         entries = [p for p in entries if any(p["slug"].startswith(prefix) for prefix in prefixes)]
     if args.changed_only:
         entries = changed_entries(entries, args.output)
-    elif not args.all:
+    elif not args.all and not args.slugs:
+        # `--slugs` already names the exact set to process. Sampling it again
+        # silently dropped the rest: a repair run over 352 named slugs
+        # processed 30 of them and reported success.
         entries = random.Random(args.seed).sample(entries, min(args.sample, len(entries)))
     if not entries:
         if args.output.exists():

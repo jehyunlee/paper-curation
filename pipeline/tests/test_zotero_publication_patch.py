@@ -91,6 +91,111 @@ class ZoteroPublicationPatchTests(unittest.TestCase):
              patch.object(bib.urllib.request, "urlopen", side_effect=explode):
             self.assertIsNone(bib.patch_zotero(item, bibliography))
 
+class PlaceholderDoiTests(unittest.TestCase):
+    """A word meaning "no DOI" is not a DOI.
+
+    Review frontmatter is LLM-extracted; with no DOI on the PDF the model wrote
+    the absence down as text. Those strings reached `papers.doi` and then
+    `zotero_match`, which compares DOIs — so all 177 papers carrying "N/A"
+    matched the one Zotero item whose DOI field held "N/A" and inherited its
+    title, journal and pagination.
+    """
+
+    PLACEHOLDERS = ["N/A", "n/a", "-", "---", "미제공", "미공개", "미기재",
+                    "논문", "해당", "제공되지", "없음", "TBD", "none"]
+
+    def test_placeholders_are_not_dois(self):
+        for value in self.PLACEHOLDERS:
+            with self.subTest(value=value):
+                self.assertEqual(bib.clean_doi(value), "")
+
+    def test_real_dois_survive(self):
+        for value in ("10.3389/frma.2021.751553",
+                      "10.1038/s41586-026-10652-y",
+                      "10.1145/3770855.3818827",
+                      "10.52202/085713-0312"):
+            with self.subTest(value=value):
+                self.assertEqual(bib.clean_doi(value), value)
+
+    def test_url_and_prefix_forms_are_unwrapped(self):
+        for value in ("https://doi.org/10.3389/frma.2021.751553",
+                      "http://dx.doi.org/10.3389/frma.2021.751553",
+                      "doi:10.3389/frma.2021.751553",
+                      "10.3389/frma.2021.751553."):
+            with self.subTest(value=value):
+                self.assertEqual(bib.clean_doi(value),
+                                 "10.3389/frma.2021.751553")
+
+    def test_arxiv_dois_are_still_dropped(self):
+        self.assertEqual(bib.clean_doi("10.48550/arXiv.2505.13400"), "")
+
+    def test_placeholder_no_longer_matches_a_zotero_item(self):
+        items = [{"key": "XIN7LQIB",
+                  "data": {"title": "Semantic Scholar", "DOI": "N/A"}}]
+        self.assertIsNone(
+            bib.zotero_match({"title": "TheoremQA: A Theorem-driven Question "
+                                       "Answering Dataset",
+                              "doi": "N/A", "arxiv": ""}, items))
+
+    def test_a_real_doi_still_matches(self):
+        items = [{"key": "RM7J55RG",
+                  "data": {"title": "The Scholarly Knowledge Ecosystem",
+                           "DOI": "10.3389/frma.2021.751553"}}]
+        self.assertEqual(
+            bib.zotero_match({"title": "The Scholarly Knowledge Ecosystem",
+                              "doi": "10.3389/frma.2021.751553",
+                              "arxiv": ""}, items)["key"], "RM7J55RG")
+
+
+class LibraryProtectionTests(unittest.TestCase):
+    """A patch must not rewrite a library item describing another paper."""
+
+    OTHER_PAPER = {
+        "key": "RM7J55RG", "version": 40234,
+        "data": {"itemType": "journalArticle",
+                 "title": "The reorganization of the American innovation "
+                          "ecosystem and the challenge of translating science",
+                 "publicationTitle": "Industrial and Corporate Change"},
+    }
+    RECORD = {"doi": "10.3389/frma.2021.751553",
+              "title": "The Scholarly Knowledge Ecosystem: Challenges and "
+                       "Opportunities for the Field of Information",
+              "journal": "Frontiers in Research Metrics and Analytics"}
+
+    def test_mismatched_item_is_refused_without_a_write(self):
+        def explode(*_args, **_kwargs):
+            raise AssertionError("a mismatched item must not be written to")
+
+        with patch("config_loader.get_zotero_api_key", return_value="secret"), \
+             patch("config_loader.get_zotero_user_id", return_value="7"), \
+             patch.object(bib.urllib.request, "urlopen", side_effect=explode):
+            self.assertIs(bib.patch_zotero(self.OTHER_PAPER, self.RECORD),
+                          False)
+
+    def test_subtitle_drift_is_not_a_mismatch(self):
+        item = {"key": "K", "version": 1,
+                "data": {"title": "The Scholarly Knowledge Ecosystem: "
+                                  "Challenges and Opportunities for the "
+                                  "Field of Information."}}
+        self.assertTrue(bib._titles_agree(item, self.RECORD))
+
+    def test_an_untitled_item_is_not_treated_as_a_conflict(self):
+        self.assertTrue(bib._titles_agree({"data": {}}, self.RECORD))
+
+    def test_ingest_guard_matches_the_patch_guard(self):
+        # The build path applies the same rule: an item describing another
+        # paper supplies no bibliography for this one.
+        louvain = {"key": "ZA7W3PFQ",
+                   "data": {"title": "Mapping scientific communities at scale",
+                            "DOI": "10.1088/1742-5468/2008/10/P10008"}}
+        self.assertFalse(bib._titles_agree(
+            louvain, {"title": "Fast Unfolding of Communities in Large "
+                               "Networks"}))
+        self.assertTrue(bib._titles_agree(
+            louvain, {"title": "Mapping scientific communities at scale"}))
+
+
+class AuthorNameParserTests(unittest.TestCase):
     def test_name_parser_supports_comma_and_mononym(self):
         self.assertEqual(
             bib._zotero_author_creator("Curie, Marie"),

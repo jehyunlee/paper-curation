@@ -76,6 +76,41 @@ def collect(db: Path, report: dict, issues: list[str], warnings: list[str]) -> N
         if orphans:
             issues.append(f"orphan institutions: {orphans}")
 
+        # A paper must carry its own bibliography. Each of these was measured
+        # in the shipped DB and each produced the same damage — a row holding
+        # another work's title, journal and pagination. Gated so a repair
+        # cannot silently rot back.
+        from lib import zotero_identity
+        identity = zotero_identity.audit(conn, ROOT / "docs" / "papers")
+        report["placeholder_doi_papers"] = identity["placeholder_doi_papers"]
+        report["papers_on_a_shared_zotero_key"] = \
+            identity["papers_on_a_shared_key"]
+        report["title_disagreements"] = identity["title_disagreements"]
+        if identity["placeholder_doi_papers"]:
+            issues.append(
+                f"non-DOI values in papers.doi: "
+                f"{identity['placeholder_doi_papers']} "
+                f"({', '.join(identity['placeholder_doi_values'][:6])})")
+        report["correction_pairs"] = identity["correction_pairs"]
+        if identity["papers_on_a_shared_key"]:
+            worst = identity["shared_key_detail"][0]
+            # Two papers claiming one Zotero record is either contamination or
+            # the same paper filed under two slugs. The second needs an
+            # operator's decision (pipeline/dedup_zotero.py,
+            # pipeline/audit_matching.py), so it is surfaced without blocking.
+            warnings.append(
+                f"papers sharing a Zotero item: "
+                f"{identity['papers_on_a_shared_key']} across "
+                f"{identity['shared_zotero_keys']} items "
+                f"(worst: {worst['zotero_item_key']} — "
+                f"{', '.join(slug[:28] for slug in worst['slugs'])})")
+        if identity["title_disagreements"]:
+            worst = identity["title_disagreement_detail"][0]
+            issues.append(
+                f"papers titled as another work: "
+                f"{identity['title_disagreements']} "
+                f"(worst: {worst['slug'][:40]} — DB {worst['db_title'][:40]!r})")
+
         # Connections are LLM claims: whether a claim is *true* cannot be
         # checked here and this gate does not pretend to. What is checkable is
         # that both endpoints are real papers — the JSON files this replaced
