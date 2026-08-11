@@ -2538,6 +2538,16 @@ def main():
     start_time = time.time()
     done = 0
 
+    # The ingest thread ROR-normalises institutions as it writes, so the index
+    # has to exist before reviews start — not in the release steps, which run
+    # after them. Idempotent: a warm cache makes this a no-op.
+    try:
+        subprocess.run(
+            [sys.executable, str(PIPELINE_DIR / "setup_affiliation_sources.py")],
+            cwd=str(PROJECT_ROOT), capture_output=True, text=True, timeout=1800)
+    except Exception as exc:                       # never block reviewing
+        log(f"[affiliation-sources] 준비 실패 (계속 진행): {exc}")
+
     # One writer, many reviewers: workers hand finished slugs to this thread
     # rather than contending for the SQLite write lock themselves.
     ingestor = BibliographyIngestor(
