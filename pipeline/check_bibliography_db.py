@@ -76,6 +76,55 @@ def collect(db: Path, report: dict, issues: list[str], warnings: list[str]) -> N
         if orphans:
             issues.append(f"orphan institutions: {orphans}")
 
+        # Connections are LLM claims: whether a claim is *true* cannot be
+        # checked here and this gate does not pretend to. What is checkable is
+        # that both endpoints are real papers — the JSON files this replaced
+        # held 79 pairs pointing at papers deleted long ago, with nothing to
+        # notice — and that every row names the model that asserted it, so a
+        # later reader can tell derived data from bibliographic fact.
+        if "paper_connections" in tables:
+            report["connections"] = scalar(
+                conn, "SELECT COUNT(*) FROM paper_connections")
+            broken = scalar(
+                conn,
+                "SELECT COUNT(*) FROM paper_connections c WHERE NOT EXISTS("
+                " SELECT 1 FROM papers p WHERE p.paper_id=c.paper_id) OR NOT"
+                " EXISTS(SELECT 1 FROM papers p"
+                "        WHERE p.paper_id=c.related_paper_id)")
+            report["connection_dangling_endpoints"] = broken
+            if broken:
+                issues.append(f"connections with missing endpoints: {broken}")
+            unattributed = scalar(
+                conn,
+                "SELECT COUNT(*) FROM paper_connections"
+                " WHERE model IS NULL OR model=''")
+            report["connections_without_model"] = unattributed
+            if unattributed:
+                issues.append(
+                    f"connections not attributed to a model: {unattributed}")
+            self_linked = scalar(
+                conn, "SELECT COUNT(*) FROM paper_connections"
+                      " WHERE paper_id=related_paper_id")
+            if self_linked:
+                issues.append(f"self-referential connections: {self_linked}")
+
+        # Author-level affiliation. A row must agree with the paper-level table:
+        # an author cannot sit at an institution the paper is not linked to.
+        if "paper_author_institutions" in tables:
+            report["author_institution_links"] = scalar(
+                conn, "SELECT COUNT(*) FROM paper_author_institutions")
+            inconsistent = scalar(
+                conn,
+                "SELECT COUNT(*) FROM paper_author_institutions pai"
+                " WHERE NOT EXISTS(SELECT 1 FROM paper_institutions pi"
+                "  WHERE pi.paper_id=pai.paper_id"
+                "    AND pi.institution_id=pai.institution_id)")
+            report["author_institution_inconsistent"] = inconsistent
+            if inconsistent:
+                issues.append(
+                    "author affiliations absent from paper_institutions: "
+                    f"{inconsistent}")
+
         # The name gates exist to catch parser garbage. A name ROR resolved is
         # by definition not parser garbage, so only unresolved names are judged
         # — otherwise "Yale School of Medicine" and "Technische Universität

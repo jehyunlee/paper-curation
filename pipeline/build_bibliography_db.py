@@ -97,6 +97,26 @@ CREATE TABLE IF NOT EXISTS paper_author_institutions (
  PRIMARY KEY (paper_id, author_id, institution_id));
 CREATE INDEX IF NOT EXISTS idx_pai_author ON paper_author_institutions(author_id);
 CREATE INDEX IF NOT EXISTS idx_pai_inst ON paper_author_institutions(institution_id);
+-- Paper-to-paper connections. These are LLM claims, not bibliographic fact, so
+-- they are kept apart from the publisher-verified tables and every row names
+-- the model that asserted it — the registry's lesson was that derived data
+-- stored as if it were ground truth becomes impossible to audit later.
+--
+-- They lived in nine `docs/{topic}/_paper_connections.json` files, one copy per
+-- topic the two papers happened to share: 136,819 stored connections for 23,098
+-- distinct pairs (83% duplication), 110 of them pointing at papers that no
+-- longer exist, and unqueryable without loading every file.
+--
+-- `topics` records which topic views asserted the pair, so the per-topic JSON
+-- the site builds from can still be regenerated from here.
+CREATE TABLE IF NOT EXISTS paper_connections (
+ paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ related_paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ relation TEXT NOT NULL, reason TEXT, topics TEXT, model TEXT,
+ generated_at TEXT, source TEXT NOT NULL,
+ PRIMARY KEY (paper_id, related_paper_id, relation));
+CREATE INDEX IF NOT EXISTS idx_conn_related ON paper_connections(related_paper_id);
+CREATE INDEX IF NOT EXISTS idx_conn_relation ON paper_connections(relation);
 CREATE TABLE IF NOT EXISTS source_documents (
  paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE, document_type TEXT NOT NULL,
  path TEXT NOT NULL, sha256 TEXT, bytes INTEGER, PRIMARY KEY (paper_id, document_type));
@@ -2405,6 +2425,92 @@ def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
     return len(orphans)
 
 
+def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dict:
+    """Fill `paper_author_institutions` for papers built before it existed.
+
+    The mapping derives from `text.md` and the paper's existing institution
+    rows, so it needs neither Zotero nor Scopus nor the PDF — a full rebuild
+    would spend twenty minutes redoing work whose answer is already on disk.
+    Idempotent: a paper that already has links is skipped.
+    """
+    descriptor = bibliography_lock.acquire_bibliography_writer_lock(db_path)
+    try:
+        conn = sqlite3.connect(db_path, timeout=60.0)
+        conn.execute("PRAGMA busy_timeout = 60000")
+        conn.execute("PRAGMA foreign_keys = ON")
+        try:
+            pending = conn.execute(
+                "SELECT p.paper_id, p.slug FROM papers p WHERE NOT EXISTS("
+                " SELECT 1 FROM paper_author_institutions pai"
+                " WHERE pai.paper_id=p.paper_id) ORDER BY p.paper_id").fetchall()
+            if limit:
+                pending = pending[:limit]
+            filled = linked = skipped = 0
+            for pid, slug in pending:
+                text = PAPERS_DIR / slug / "text.md"
+                if not text.exists():
+                    skipped += 1
+                    continue
+                header = extract_header(text)[0]
+                authors = conn.execute(
+                    "SELECT a.author_id, a.display_name, pa.author_order"
+                    " FROM paper_authors pa JOIN authors a"
+                    " ON a.author_id=pa.author_id WHERE pa.paper_id=?"
+                    " ORDER BY pa.author_order", (pid,)).fetchall()
+                if not authors:
+                    skipped += 1
+                    continue
+                # No early exit on a missing marker map: a single-affiliation
+                # paper resolves below without any superscripts.
+                markers = author_affiliation_markers(
+                    header, [name for _, name, _ in authors])
+                marker_text = marker_affiliations(header)
+                institutions = conn.execute(
+                    "SELECT institution_id, raw_name FROM paper_institutions"
+                    " WHERE paper_id=?", (pid,)).fetchall()
+                by_marker = {}
+                for marker, label in marker_text.items():
+                    for iid, raw in institutions:
+                        raw = raw or ""
+                        if (raw[:60] and raw[:60] in label) or \
+                           (label[:60] and label[:60] in raw):
+                            by_marker[marker] = iid
+                            break
+                rows = [
+                    (pid, aid, by_marker[marker], marker, order,
+                     "pdf.byline-marker")
+                    for aid, name, order in authors
+                    for marker in markers.get(name, [])
+                    if marker in by_marker]
+                if not rows and len(institutions) == 1:
+                    # A single-affiliation paper needs no markers: the byline
+                    # says every author sits there. 1,062 papers were being
+                    # skipped for lack of superscripts they never needed.
+                    only = institutions[0][0]
+                    rows = [(pid, aid, only, None, order, "pdf.sole-affiliation")
+                            for aid, _name, order in authors]
+                if not rows:
+                    skipped += 1
+                    continue
+                conn.executemany(
+                    "INSERT OR IGNORE INTO paper_author_institutions "
+                    "(paper_id,author_id,institution_id,marker,author_order,"
+                    "source) VALUES (?,?,?,?,?,?)", rows)
+                filled += 1
+                linked += len(rows)
+                if filled % 200 == 0:
+                    conn.commit()
+                    print(f"[backfill] papers={filled} links={linked}",
+                          flush=True)
+            conn.commit()
+            return {"candidates": len(pending), "papers_filled": filled,
+                    "links": linked, "skipped": skipped}
+        finally:
+            conn.close()
+    finally:
+        bibliography_lock.release_bibliography_writer_lock(db_path, descriptor)
+
+
 def finalize(db_path: Path) -> dict:
     """Run only the table-wide passes a streaming ingest deferred.
 
@@ -2529,6 +2635,9 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=20260807)
     ap.add_argument("--output", type=Path, default=DEFAULT_DB)
     ap.add_argument("--update-zotero", action="store_true")
+    ap.add_argument("--backfill-author-institutions", action="store_true",
+                    help="text.md 바이라인 첨자로 저자↔기관 링크만 채운다 "
+                         "(Zotero·Scopus·PDF 접근 없음)")
     ap.add_argument("--changed-only", action="store_true",
                     help="process only papers whose review.md/text.md changed")
     ap.add_argument("--no-email", action="store_true")
@@ -2538,6 +2647,10 @@ def main() -> int:
     ap.add_argument("--offline", action="store_true",
                     help="use the deterministic offline affiliation registry")
     args = ap.parse_args()
+    if args.backfill_author_institutions:
+        print(json.dumps(backfill_author_institutions(args.output),
+                         ensure_ascii=False, indent=2))
+        return 0
     entries = load_entries()
     if args.slugs:
         prefixes = [value.strip() for value in args.slugs.split(",") if value.strip()]
