@@ -225,5 +225,120 @@ class PdfBibliographyIssueTests(unittest.TestCase):
         self.assertEqual(bib.pdf_bibliography("Issue S1, 2024")["issue"], "S1")
 
 
+# Verbatim from the LC Agent PDF (Anal. Chem. 2026, 98, 18151−18163). The
+# separator is U+2212 MINUS SIGN and the heading carries a leading "■".
+ACS_AUTHOR_INFORMATION = (
+    "■AUTHOR INFORMATION\n"
+    "Corresponding Authors\n"
+    "Youn-Suk Choi \u2212Samsung Advanced Institute of Technology,\n"
+    "Samsung Electronics Co. Ltd., Suwon 16678, Republic of\n"
+    "Korea;\norcid.org/0000-0001-7119-8788;\n"
+    "Email: ysuk.choi@samsung.com\n"
+    "Seokho Kang \u2212Department of Industrial Engineering,\n"
+    "Sungkyunkwan University, Suwon 16419, Republic of Korea;\n"
+    "orcid.org/0000-0002-0960-0294; Email: s.kang@skku.edu\n"
+    "Author Contributions\n"
+    "\u00a7Y.K. and H.K. contributed equally to this work.\n"
+)
+
+
+class AuthorInformationBlockTests(unittest.TestCase):
+    """An ACS paper keeps its only affiliations in back-matter author info."""
+
+    def test_heading_with_leading_symbol_is_found(self):
+        self.assertTrue(bib._AUTHOR_INFO_CUE.search(ACS_AUTHOR_INFORMATION))
+
+    def test_entries_yield_their_affiliations(self):
+        found = bib.author_information_affiliations(ACS_AUTHOR_INFORMATION)
+        joined = " | ".join(found)
+        self.assertIn("Samsung Advanced Institute of Technology", joined)
+        self.assertIn("Sungkyunkwan University", joined)
+
+    def test_block_stops_before_author_contributions(self):
+        found = " | ".join(bib.author_information_affiliations(
+            ACS_AUTHOR_INFORMATION))
+        self.assertNotIn("contributed equally", found)
+
+    def test_orcid_and_email_are_not_affiliations(self):
+        for value in bib.author_information_affiliations(
+                ACS_AUTHOR_INFORMATION):
+            self.assertNotIn("orcid", value.lower())
+            self.assertNotIn("@", value)
+
+
+class CompositeLocalLanguageAffiliationTests(unittest.TestCase):
+    """ROR knows the parts of a composite affiliation, not the whole string."""
+
+    FRENCH = ("Institut de Physique Théorique, Université Paris-Saclay, "
+              "CNRS, CEA, Gif-sur-Yvette, France")
+
+    def _stub_resolver(self, answers):
+        seen = []
+
+        def resolver(name, country="", *, allow_remote=False, offline=False):
+            seen.append(name)
+            return answers.get(name, "")
+
+        return resolver, seen
+
+    def test_segment_resolution_returns_the_english_name(self):
+        from unittest.mock import patch
+        resolver, seen = self._stub_resolver(
+            {"Université Paris-Saclay": "University of Paris-Saclay"})
+        with patch.object(bib, "resolve_english_institution", resolver):
+            parsed = bib.institution_from_raw(self.FRENCH, allow_remote=True)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed[0], "University of Paris-Saclay")
+        # The whole string is asked first, then the organisation-naming parts.
+        self.assertEqual(seen[0], self.FRENCH)
+        self.assertIn("Université Paris-Saclay", seen)
+
+    def test_plain_place_segments_are_not_queried(self):
+        from unittest.mock import patch
+        resolver, seen = self._stub_resolver({})
+        with patch.object(bib, "resolve_english_institution", resolver):
+            bib.institution_from_raw(self.FRENCH, allow_remote=True)
+        self.assertNotIn("Gif-sur-Yvette", seen)
+        self.assertNotIn("France", seen)
+
+
+class HeaderCueBoundaryTests(unittest.TestCase):
+    """Acronym cues must not fire inside ordinary words."""
+
+    def _candidates(self, body: str) -> list[str]:
+        import tempfile
+        from pathlib import Path
+        with tempfile.NamedTemporaryFile(
+                "w", suffix=".md", encoding="utf-8", delete=False) as handle:
+            handle.write(body)
+            path = Path(handle.name)
+        try:
+            return bib.extract_header(path)[1]
+        finally:
+            path.unlink()
+
+    def test_licence_prose_is_not_an_affiliation(self):
+        # An IOP cover sheet sentence: "permitted" contains "MIT".
+        found = self._candidates(
+            "Everyone is permitted to use all or part of the original content "
+            "in this article, provided that they adhere to the licence\n")
+        self.assertEqual(found, [])
+
+    def test_methods_prose_is_not_an_affiliation(self):
+        # "method" contains "ETH".
+        found = self._candidates(
+            "We evaluate this method against every published baseline here\n")
+        self.assertEqual(found, [])
+
+    def test_a_real_byline_still_parses(self):
+        found = self._candidates(
+            "Steering Sequence Generation in Protein Language Models\n"
+            "Francesco Calvanese1,2, Martin Weigt2\n"
+            "1Institut de Physique Théorique, Université Paris-Saclay, "
+            "CNRS, CEA, Gif-sur-Yvette, France\n")
+        self.assertTrue(
+            any("Paris-Saclay" in value for value in found), found)
+
+
 if __name__ == "__main__":
     unittest.main()

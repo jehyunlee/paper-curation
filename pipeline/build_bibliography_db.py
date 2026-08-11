@@ -739,7 +739,13 @@ def extract_header(text_path: Path) -> tuple[str, list[str], float]:
         text = text[:stop.start()]
     lines = [x.strip() for x in text.splitlines() if x.strip()][:40]
     raw = "\n".join(lines)
-    cues = re.compile(r"university|institute|laborator|school|college|department|center|centre|hospital|academy|ETH|MIT|Caltech|CNRS|대학교|연구원|연구소|병원|학부|학과|@", re.I)
+    cues = re.compile(
+        r"university|institute|laborator|school|college|department|center|"
+        r"centre|hospital|academy|대학교|연구원|연구소|병원|학부|학과|@"
+        # Acronyms need boundaries: unanchored "MIT" matched "permitted" and
+        # "ETH" matched "method", so a licence paragraph on an IOP cover sheet
+        # and any sentence about methodology became affiliation candidates.
+        r"|\bETH\b|\bMIT\b|\bCaltech\b|\bCNRS\b", re.I)
     candidates = []
     for line in lines:
         # A byline that packs every affiliation onto one line runs past any
@@ -1377,6 +1383,25 @@ def institution_from_raw(
     if registered:
         return registered, group
 
+    # A composite affiliation names its parts in the local language:
+    # "Institut de Physique Théorique, Université Paris-Saclay, CNRS, CEA,
+    # Gif-sur-Yvette, France". ROR holds no record for the whole string and the
+    # English-only patterns below match none of the parts, so all four
+    # affiliations of that paper were dropped. ROR does know the parts, so ask
+    # it about each one that names an organisation and take the first it
+    # recognises — that is also what turns the local-language name into the
+    # English one the DB stores ("Université Paris-Saclay" → "University of
+    # Paris-Saclay", "Sorbonne Université" → "Sorbonne University").
+    for segment in re.split(r"[,;|]", raw):
+        segment = segment.strip(" ,;:-()")
+        if (not (5 <= len(segment) <= 120)
+                or not _ORGANISATION_CUES.search(segment)):
+            continue
+        english = resolve_english_institution(
+            segment, country_from_raw(original), allow_remote=allow_remote)
+        if english:
+            return canonical_institution(english), group
+
     parts = [
         part.strip(" ,;:-") for part in re.split(r"[,;|]", raw)
         if part.strip()
@@ -1591,7 +1616,36 @@ def locate_pdf(paper: dict, frontmatter: dict) -> Path | None:
 
 
 _AUTHOR_INFO_CUE = re.compile(
-    r"(?im)^(?:author information|affiliations?|published online|received:).*$")
+    # ACS prints the heading as "■AUTHOR INFORMATION"; anchoring on the letter
+    # alone missed it, so an ACS paper's only affiliation block — which sits in
+    # the back matter — never entered any window.
+    r"(?im)^[\s\W]{0,4}(?:author information|affiliations?|published online|"
+    r"received:).*$")
+
+
+def author_information_affiliations(text: str) -> list[str]:
+    """Affiliations from a back-matter author-information block.
+
+    ACS writes one entry per author as "Name −Affiliation, City, Country;"
+    under "■AUTHOR INFORMATION", using U+2212 MINUS SIGN as the separator. The
+    block carries no superscript markers, so the marker splitter walked past
+    it and the whole flattened block exceeded the 240-character segment cap;
+    both LC Agent affiliations (Samsung Advanced Institute of Technology,
+    Sungkyunkwan University) were lost that way.
+    """
+    out = []
+    for head in _AUTHOR_INFO_CUE.finditer(text):
+        block = text[head.end():head.end() + 2500]
+        block = re.split(
+            r"(?im)^[\s\W]{0,4}(?:author contributions|notes|acknowledg|"
+            r"references|funding|supporting information)\b", block)[0]
+        for chunk in re.split(r"[−–—]", block)[1:]:
+            chunk = re.split(
+                r";|\borcid\b|\bemail\b|https?://", chunk, flags=re.I)[0]
+            chunk = re.sub(r"\s+", " ", chunk).strip(" ,.;:-")
+            if 5 <= len(chunk) <= 240:
+                out.append(chunk)
+    return out
 
 
 def _pdf_text_for_affiliations(pdf_path: Path | None, text_path: Path) -> str:
@@ -1782,6 +1836,9 @@ def reconcile_affiliations(
         }
 
     segments = list(fallback_lines)
+    # An author-information block names each affiliation without a superscript
+    # marker, so the splitter below cannot reach it.
+    segments.extend(author_information_affiliations(pdf_text))
     # Split on superscript affiliation markers. The digit may be glued to the
     # next word ("2Princeton") or spaced off it ("5 UC Berkeley"); the old
     # pattern only handled the glued form and silently swallowed the rest of
