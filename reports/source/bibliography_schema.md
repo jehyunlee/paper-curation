@@ -1,6 +1,6 @@
 # Bibliography DB — 구조와 연결
 
-`.cache/bibliography.sqlite3` · 테이블 10개 · 논문 4,195편
+`.cache/bibliography.sqlite3` · 테이블 12개 · 논문 4,196편
 
 ## 파이프라인 위치
 
@@ -38,7 +38,7 @@
 
 ## 테이블
 
-### `papers` — 4,195행
+### `papers` — 4,196행
 
 출처: Zotero record (ground truth) + Scopus/PDF gap-fill
 
@@ -54,7 +54,7 @@
 | `bibliography_source` | TEXT |  |
 | _+19개 컬럼_ | | |
 
-### `authors` — 12,906행
+### `authors` — 12,908행
 
 출처: Zotero creators → review.md frontmatter → index
 
@@ -64,7 +64,7 @@
 | `display_name` | TEXT |  |
 | `normalized_name` | TEXT |  |
 
-### `paper_authors` — 16,316행
+### `paper_authors` — 16,319행
 
 출처: authorship order, first/corresponding flags
 
@@ -92,7 +92,7 @@
 | `name_source` | TEXT |  |
 | _+4개 컬럼_ | | |
 
-### `paper_institutions` — 10,006행
+### `paper_institutions` — 10,002행
 
 출처: Scopus FULL + PDF front matter
 
@@ -104,7 +104,7 @@
 | `country_name` | TEXT |  |
 | `source` | TEXT |  |
 
-### `institution_aliases` — 8,284행
+### `institution_aliases` — 8,286행
 
 출처: raw affiliation strings seen in PDFs
 
@@ -149,7 +149,35 @@
 | `group_name` | TEXT |  |
 | _+1개 컬럼_ | | |
 
-### `source_documents` — 8,340행
+### `paper_author_institutions` — 5,103행
+
+출처: —
+
+| 컬럼 | 타입 | |
+|---|---|---|
+| `paper_id` | INTEGER | FK → `papers` |
+| `author_id` | INTEGER | FK → `authors` |
+| `institution_id` | INTEGER | FK → `institutions` |
+| `marker` | TEXT |  |
+| `author_order` | INTEGER |  |
+| `source` | TEXT |  |
+
+### `paper_connections` — 51,932행
+
+출처: —
+
+| 컬럼 | 타입 | |
+|---|---|---|
+| `paper_id` | INTEGER | FK → `papers` |
+| `related_paper_id` | INTEGER | FK → `papers` |
+| `relation` | TEXT | PK |
+| `reason` | TEXT |  |
+| `topics` | TEXT |  |
+| `model` | TEXT |  |
+| `generated_at` | TEXT |  |
+| `source` | TEXT |  |
+
+### `source_documents` — 8,342행
 
 출처: review.md / text.md content hashes
 
@@ -167,18 +195,18 @@
 
 - `zotero-local` — 3,021
 - `zotero-local+scopus` — 587
-- `zotero-local+pdf` — 332
+- `zotero-local+pdf` — 333
 - `zotero-local+scopus+pdf` — 255
 
 **소속 출처 (paper_institutions)**
 
-- `scopus+pdf` — 8,945
+- `scopus+pdf` — 8,941
 - `scopus-unconfirmed` — 759
 - `pdf` — 302
 
 **원문 (source_documents)**
 
-- `review` — 4,195
-- `text` — 4,145
+- `review` — 4,196
+- `text` — 4,146
 
 기관 2,260개 중 ROR 해결 1,600개 · 상위그룹 135종
