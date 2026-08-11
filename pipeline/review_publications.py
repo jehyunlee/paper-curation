@@ -277,13 +277,37 @@ def db_authors(conn: sqlite3.Connection, paper_id: int) -> list[str]:
         " ORDER BY pa.author_order", (paper_id,))]
 
 
-def scan(db: Path, limit: int | None) -> dict:
+def _load_previous() -> tuple[list[dict], set[str]]:
+    """Proposals and examined slugs from an earlier run.
+
+    A full scan is 2,149 candidates against two rate-limited APIs — the better
+    part of an hour — so it has to survive being interrupted and continue rather
+    than re-asking about papers already answered.
+    """
+    if not PROPOSALS.exists():
+        return [], set()
+    try:
+        payload = json.loads(PROPOSALS.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return [], set()
+    return (payload.get("proposals") or [],
+            set(payload.get("examined") or []))
+
+
+def scan(db: Path, limit: int | None, *, restart: bool = False) -> dict:
     conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
     try:
-        pool = candidates(conn, limit)
-        proposals, checked = [], 0
+        proposals, examined = ([], set()) if restart else _load_previous()
+        pool = [p for p in candidates(conn, None)
+                if p["slug"] not in examined]
+        if limit:
+            pool = pool[:limit]
+        checked = len(examined)
+        done = 0
         for paper in pool:
             checked += 1
+            done += 1
+            examined.add(paper["slug"])
             found = propose(paper)
             if found:
                 found["current"]["authors"] = db_authors(conn, paper["paper_id"])
@@ -292,23 +316,26 @@ def scan(db: Path, limit: int | None) -> dict:
                 # Checkpoint. A scan of every candidate takes the better part of
                 # an hour against two rate-limited APIs, and losing all of it to
                 # an interrupted run means nobody ever finishes one.
-                _write_proposals(proposals, checked)
-                print(f"[scan] checked={checked} proposals={len(proposals)}",
+                _write_proposals(proposals, checked, examined)
+                print(f"[scan] this run={done} / {len(pool)} · "
+                      f"examined total={checked} · proposals={len(proposals)}",
                       flush=True)
             time.sleep(0.12)            # OpenAlex courtesy rate
     finally:
         conn.close()
-    _write_proposals(proposals, checked)
+    _write_proposals(proposals, checked, examined)
     return {"candidates_examined": checked, "proposals": len(proposals),
-            "file": str(PROPOSALS)}
+            "examined_total": len(examined), "file": str(PROPOSALS)}
 
 
-def _write_proposals(proposals: list[dict], checked: int) -> None:
+def _write_proposals(proposals: list[dict], checked: int,
+                     examined: set[str] | None = None) -> None:
     PROPOSALS.parent.mkdir(parents=True, exist_ok=True)
     tmp = PROPOSALS.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(
         {"generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-         "checked": checked, "proposals": proposals},
+         "checked": checked, "examined": sorted(examined or []),
+         "proposals": proposals},
         ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(PROPOSALS)
 
@@ -450,9 +477,11 @@ def main() -> int:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--decisions", type=Path)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--restart", action="store_true",
+                    help="이전 스캔 결과를 버리고 처음부터")
     args = ap.parse_args()
     if args.scan:
-        result = scan(args.db, args.limit)
+        result = scan(args.db, args.limit, restart=args.restart)
     elif args.page:
         result = build_page()
     else:
