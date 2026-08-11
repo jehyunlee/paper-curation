@@ -1680,7 +1680,12 @@ def pdf_bibliography(pdf_text: str) -> dict:
         result["volume"] = header.group(2).strip()
         result["pages"] = re.sub(r"\s*[-–—]\s*", "-", header.group(3))
 
-    issue = re.search(r"\b(?:Issue|No\.)\s+([A-Za-z0-9.-]+)", pdf_text, re.I)
+    # An issue identifier carries a digit ("Issue 24", "No. 3-4", "Issue S1").
+    # Bare words must not match: prose like "the issue of strategic behavior"
+    # once put issue="of" into a NeurIPS paper's record.
+    issue = re.search(
+        r"\b(?:Issue|No\.)\s+([A-Za-z]?\d+(?:[.-]\d+)?[A-Za-z]?)\b",
+        pdf_text, re.I)
     if issue:
         result["issue"] = issue.group(1)
     return result
@@ -2252,14 +2257,15 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
     # The consolidation passes walk the whole institutions table (~1.6 s), so a
     # streaming ingest defers them and runs them once when the run ends.
     if defer_consolidation:
-        pruned = recountried = reparented = 0
+        stale_pruned = pruned = recountried = reparented = 0
     else:
+        stale_pruned = prune_missing_papers(conn)
         pruned = prune_orphan_institutions(conn)
         recountried = consolidate_institution_countries(conn)
         reparented = consolidate_institution_parents(conn)
     conn.commit()
     conn.execute("PRAGMA optimize"); conn.close()
-    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"orphan_institutions_pruned":pruned,"institution_countries_consolidated":recountried,"institution_parents_cleared":reparented,"db":str(db_path)}
+    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"stale_papers_pruned":stale_pruned,"orphan_institutions_pruned":pruned,"institution_countries_consolidated":recountried,"institution_parents_cleared":reparented,"db":str(db_path)}
 
 
 _ROR_INDEX = None
@@ -2461,6 +2467,39 @@ def consolidate_institution_countries(conn: sqlite3.Connection) -> int:
     return updated
 
 
+def prune_missing_papers(conn: sqlite3.Connection) -> int:
+    """Drop papers whose review directory vanished from the corpus.
+
+    Papers are keyed to ``docs/papers/<slug>``; deleting or renaming a slug
+    removed the directory but never the row, so the DB drifted ahead of the
+    source index (DB=4197, index=4196) and ``--strict`` failed on the count
+    mismatch. The directory on disk is the authority: no directory, no paper.
+    Dependent rows are removed explicitly — CASCADE only fires when the
+    connection has ``PRAGMA foreign_keys`` on, which not every caller does.
+    """
+    stale = [row[0] for row in conn.execute(
+        "SELECT paper_id, review_dir FROM papers")
+        if not (ROOT / row[1]).is_dir()]
+    if not stale:
+        return 0
+    marks = ",".join("?" * len(stale))
+    for table, column in (
+            ("paper_authors", "paper_id"),
+            ("paper_institutions", "paper_id"),
+            ("paper_author_institutions", "paper_id"),
+            ("source_documents", "paper_id"),
+            ("paper_connections", "paper_id"),
+            ("paper_connections", "related_paper_id"),
+    ):
+        try:
+            conn.execute(
+                f"DELETE FROM {table} WHERE {column} IN ({marks})", stale)
+        except sqlite3.OperationalError:
+            pass  # optional table absent in minimal test databases
+    conn.execute(f"DELETE FROM papers WHERE paper_id IN ({marks})", stale)
+    return len(stale)
+
+
 def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
     """Drop institutions no paper links to any more.
 
@@ -2586,13 +2625,14 @@ def finalize(db_path: Path) -> dict:
     once when the run ends.
     """
     if not db_path.exists():
-        return {"pruned": 0, "countries": 0, "parents": 0}
+        return {"stale_papers": 0, "pruned": 0, "countries": 0, "parents": 0}
     descriptor = bibliography_lock.acquire_bibliography_writer_lock(db_path)
     try:
         conn = sqlite3.connect(db_path, timeout=60.0)
         conn.execute("PRAGMA busy_timeout = 60000")
         try:
-            result = {"pruned": prune_orphan_institutions(conn),
+            result = {"stale_papers": prune_missing_papers(conn),
+                      "pruned": prune_orphan_institutions(conn),
                       "countries": consolidate_institution_countries(conn),
                       "parents": consolidate_institution_parents(conn)}
             conn.commit()

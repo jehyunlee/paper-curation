@@ -210,5 +210,20 @@ class ScopusPrecedenceTests(unittest.TestCase):
         self.assertEqual(miss[0]["source"], "scopus-unconfirmed")
 
 
+class PdfBibliographyIssueTests(unittest.TestCase):
+    """`issue` must be an identifier, never a word from body prose."""
+
+    def test_prose_issue_of_does_not_match(self):
+        # "Strategic Hypothesis Testing" (NeurIPS 2025) shipped issue="of"
+        # captured from "the issue of strategic behavior".
+        out = bib.pdf_bibliography("we study the issue of strategic behavior")
+        self.assertNotIn("issue", out)
+
+    def test_real_issue_identifiers_match(self):
+        self.assertEqual(bib.pdf_bibliography("Volume 98, Issue 24")["issue"], "24")
+        self.assertEqual(bib.pdf_bibliography("Vol. 12, No. 3-4")["issue"], "3-4")
+        self.assertEqual(bib.pdf_bibliography("Issue S1, 2024")["issue"], "S1")
+
+
 if __name__ == "__main__":
     unittest.main()
