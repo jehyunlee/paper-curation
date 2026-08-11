@@ -2226,6 +2226,32 @@ _MODE_LEGACY_MAP = {
 }
 
 
+def scoped_post_processing(args) -> bool:
+    """Whether post-processing may restrict itself to this run's changed set.
+
+    `--resume` recovers the changed set from the checkpoint; `--slugs` states
+    it outright. Either way the corpus-wide passes — retraining the topic
+    model over every paper, then rewriting every category's narrative and
+    timeline image — are not what the run asked for. A full run (`--mode
+    rebuild` with no `--slugs`) has no changed subset and must regenerate
+    everything.
+    """
+    return bool(getattr(args, "resume", False)) or bool(getattr(args, "slugs", ""))
+
+
+def review_html_targets(args, newly_completed):
+    """Slugs whose pages need re-rendering, or None for the whole corpus.
+
+    `review_to_html` has no up-to-date check: every target is re-converted and
+    rewritten, so `--all` costs ~4 minutes across 4,196 papers. A `--slugs` run
+    states its target set. `--resume` deliberately keeps the whole corpus — the
+    weekly run is also how a changed page template reaches every paper.
+    """
+    if getattr(args, "slugs", "") and newly_completed:
+        return sorted(newly_completed)
+    return None
+
+
 def _apply_mode_mapping(args):
     """Translate --mode into legacy flag values.
 
@@ -2648,7 +2674,13 @@ def main():
         log("POST-PROCESSING: index → classify → summaries → insights → HTML → topic index")
         log("=" * 60)
 
-        is_update = args.resume  # --resume implies update mode
+        # Scoping the corpus-wide passes to this run's changed set. Before
+        # this, `--slugs` fell through to full mode and paid ~70 minutes of
+        # corpus-wide work (topic_modeling 18.5 min over 4,196 papers, then
+        # every category's narrative and timeline image) for 89 seconds of
+        # review generation — including on `--mode rebuild --slugs`, the
+        # audit/recovery command in AGENTS.md.
+        is_update = scoped_post_processing(args)
         do_reclassify = args.category  # --category forces topic_modeling
 
         # extract_insights 는 paper connections(Core — '같이 보면 좋은 논문' 박스)만
@@ -3001,8 +3033,18 @@ def main():
         except Exception as e:
             log(f"  [verify_umap] WARNING: verification failed ({str(e)[:100]})")
 
-        run_step("review_to_html",
-                 ["python", "pipeline/review_to_html.py", "--all"], 600)
+        # Render the changed pages plus the neighbours whose "같이 보면 좋은
+        # 논문" box holds a reverse edge to one of them; fall back to the whole
+        # corpus when this run has no stated target set.
+        html_targets = review_html_targets(args, newly_completed)
+        if html_targets:
+            run_step("review_to_html (changed)",
+                     ["python", "pipeline/review_to_html.py",
+                      "--slugs", ",".join(html_targets),
+                      "--with-connected"], 600)
+        else:
+            run_step("review_to_html",
+                     ["python", "pipeline/review_to_html.py", "--all"], 600)
         run_step("build_topic_index",
                  ["python", "pipeline/build_topic_index.py", topic], 600)
 

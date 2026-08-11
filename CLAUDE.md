@@ -273,11 +273,11 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source web
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source zotero
 
 # 특정 슬러그만 force-rebuild (감사·복구 시)
-#   주의: --mode rebuild 는 토픽 전체의 categorization/insights/timelines 까지 재생성한다 (수 시간, API 비용 ↑).
-#   PDF 한 편 교체 후 review.md만 갱신하고 싶으면 다음 패턴이 가볍다:
-#     rm docs/papers/{NNN}_*/review.md
-#     python pipeline/run_full.py --topic ai4s --mode curate --source zotero --skip-dedup
-#   (이후 분류 영향까지 반영하려면 --mode reclassify 별도 실행)
+#   --slugs 는 "이 논문들만 바뀌었다"는 선언이라 후처리도 그 범위로 좁혀진다:
+#   topic_modeling 은 저장된 HDBSCAN 번들을 재사용(--skip-classification)하고,
+#   narrative/timeline 은 바뀐 카테고리만, review_to_html 은 해당 논문 + 연결된
+#   이웃 페이지만 다시 만든다. (--slugs 없는 --mode rebuild 는 전편 재생성이므로
+#   토픽 전체 재생성이 그대로 맞다.)
 PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode rebuild --slugs 088,1093 --strict-pdf
 
 # 분류만 다시 (Phase 3 node-based, LLM 호출 없음)
