@@ -2150,6 +2150,7 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             markers_by_author = author_affiliation_markers(header, authors)
             affiliation_by_marker = marker_affiliations(header)
             institution_by_marker = {}
+            linked_institution_ids = []
             for record in affiliation_records:
                 name = canonical_institution(record["name"])
                 raw = record.get("raw_name") or name
@@ -2165,6 +2166,8 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                     conn, name, country, record["source"], ror)
                 conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
                 conn.execute("INSERT OR IGNORE INTO paper_institutions (paper_id,institution_id,raw_name,country_name,source) VALUES (?,?,?,?,?)", (pid,iid,raw,country,record["source"]))
+                if iid not in linked_institution_ids:
+                    linked_institution_ids.append(iid)
                 # Tie this institution back to the marker whose text it came
                 # from, matching on the longest shared prefix so that a trimmed
                 # or ROR-renamed record still finds its label.
@@ -2175,16 +2178,26 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                        (text_of_marker[:60] and text_of_marker[:60] in raw):
                         institution_by_marker[marker] = iid
                         break
-            for author, (aid, order) in author_ids.items():
-                for marker in markers_by_author.get(author, []):
-                    iid = institution_by_marker.get(marker)
-                    if iid is None:
-                        continue
-                    conn.execute(
-                        "INSERT OR IGNORE INTO paper_author_institutions "
-                        "(paper_id,author_id,institution_id,marker,author_order,source) "
-                        "VALUES (?,?,?,?,?,?)",
-                        (pid, aid, iid, marker, order, "pdf.byline-marker"))
+            author_links = [
+                (pid, aid, institution_by_marker[marker], marker, order,
+                 "pdf.byline-marker")
+                for author, (aid, order) in author_ids.items()
+                for marker in markers_by_author.get(author, [])
+                if marker in institution_by_marker]
+            if not author_links and linked_institution_ids:
+                # Same rule as the backfill: one affiliation means everyone sits
+                # there; several with no superscripts means the split is unknown,
+                # so the rows are kept but tagged unresolved.
+                tag = ("pdf.sole-affiliation"
+                       if len(linked_institution_ids) == 1
+                       else "pdf.unmarked-multi")
+                author_links = [(pid, aid, iid, None, order, tag)
+                                for aid, order in author_ids.values()
+                                for iid in linked_institution_ids]
+            conn.executemany(
+                "INSERT OR IGNORE INTO paper_author_institutions "
+                "(paper_id,author_id,institution_id,marker,author_order,source) "
+                "VALUES (?,?,?,?,?,?)", author_links)
             for kind, path in (("review",review),("text",text)):
                 if path.exists(): conn.execute("INSERT OR REPLACE INTO source_documents VALUES (?,?,?,?,?)", (pid,kind,rel(path),sha256(path),path.stat().st_size))
             conn.commit()
@@ -2482,13 +2495,20 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dic
                     for aid, name, order in authors
                     for marker in markers.get(name, [])
                     if marker in by_marker]
-                if not rows and len(institutions) == 1:
-                    # A single-affiliation paper needs no markers: the byline
-                    # says every author sits there. 1,062 papers were being
-                    # skipped for lack of superscripts they never needed.
-                    only = institutions[0][0]
-                    rows = [(pid, aid, only, None, order, "pdf.sole-affiliation")
-                            for aid, _name, order in authors]
+                if not rows and institutions:
+                    # No superscripts to read. With one affiliation the byline
+                    # already says everyone sits there. With several, who sits
+                    # where is genuinely unknown, so every author is linked to
+                    # every institution under a source of its own — the paper's
+                    # institutions are still recorded against its authors, while
+                    # `pdf.unmarked-multi` marks the rows unresolved so a
+                    # first-author query can exclude them rather than silently
+                    # crediting one author with three employers.
+                    tag = ("pdf.sole-affiliation" if len(institutions) == 1
+                           else "pdf.unmarked-multi")
+                    rows = [(pid, aid, iid, None, order, tag)
+                            for aid, _name, order in authors
+                            for iid, _raw in institutions]
                 if not rows:
                     skipped += 1
                     continue
