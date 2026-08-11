@@ -1889,8 +1889,38 @@ def zotero_match(p: dict, items: list[dict]) -> dict | None:
     return candidates[0] if len(candidates) == 1 else None
 
 
-def patch_zotero(item: dict, bibliography: dict) -> bool:
-    """Patch Zotero with the Scopus record after PDF reconciliation."""
+def _zotero_author_creator(display_name: str) -> dict:
+    """Convert a publication-index display name to a Zotero person creator."""
+    name = re.sub(r"\s+", " ", display_name or "").strip()
+    if "," in name:
+        last_name, first_name = (part.strip() for part in name.split(",", 1))
+    elif " " in name:
+        first_name, last_name = name.rsplit(" ", 1)
+    else:
+        first_name, last_name = "", name
+    return {
+        "creatorType": "author",
+        "firstName": first_name,
+        "lastName": last_name,
+    }
+
+
+def _zotero_creator_name(creator: dict) -> str:
+    return re.sub(
+        r"\s+", " ",
+        f"{creator.get('firstName', '')} {creator.get('lastName', '')}".strip()
+        or str(creator.get("name") or "").strip(),
+    )
+
+
+def patch_zotero(item: dict, bibliography: dict) -> bool | None:
+    """Patch Zotero with the accepted formal-publication record.
+
+    Returns True when the item was patched, None when the record already
+    matches (nothing to write), False on failure. Callers that count
+    updates can keep truth-testing the result; callers that report
+    success/failure must treat None as "already up to date", not failure.
+    """
     if not bibliography.get("doi"):
         return False
     try:
@@ -1918,10 +1948,27 @@ def patch_zotero(item: dict, bibliography: dict) -> bool:
             patch["ISSN"] = issns
         patch["itemType"] = "journalArticle"
         current = item.get("data") or {}
+        proposed_authors = [
+            str(author).strip() for author in bibliography.get("authors", [])
+            if str(author).strip()
+        ]
+        if proposed_authors:
+            current_creators = current.get("creators") or []
+            current_authors = [
+                _zotero_creator_name(creator) for creator in current_creators
+                if creator.get("creatorType") == "author"
+            ]
+            if current_authors != proposed_authors:
+                patch["creators"] = [
+                    _zotero_author_creator(author) for author in proposed_authors
+                ] + [
+                    creator for creator in current_creators
+                    if creator.get("creatorType") != "author"
+                ]
         patch = {key_: value for key_, value in patch.items()
                  if str(current.get(key_) or "") != str(value)}
         if not patch:
-            return False
+            return None
         req = urllib.request.Request(
             f"https://api.zotero.org/users/{user}/items/{item['key']}",
             data=json.dumps(patch).encode(), method="PATCH",

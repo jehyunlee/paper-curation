@@ -29,6 +29,7 @@ import sqlite3
 import sys
 import time
 import urllib.parse
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -439,12 +440,28 @@ def build_page() -> dict:
     return {"proposals": len(proposals), "page": str(PAGE)}
 
 
+def fetch_zotero_item(key: str) -> dict | None:
+    """One item, with its version, straight from the Zotero API."""
+    from config_loader import get_zotero_api_key, get_zotero_user_id
+    url = (f"https://api.zotero.org/users/{get_zotero_user_id()}"
+           f"/items/{urllib.parse.quote(key)}")
+    request = urllib.request.Request(
+        url, headers={"Zotero-API-Key": get_zotero_api_key(),
+                      "Zotero-API-Version": "3"})
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        print(f"  [warn] Zotero {key} 조회 실패: {exc}", file=sys.stderr)
+        return None
+
+
 def apply_decisions(decisions_path: Path, db: Path, *, dry_run: bool) -> dict:
     payload = json.loads(PROPOSALS.read_text(encoding="utf-8"))
     by_slug = {item["slug"]: item for item in payload["proposals"]}
     decisions = json.loads(decisions_path.read_text(encoding="utf-8"))
     accepted = [slug for slug, ok in decisions.items() if ok and slug in by_slug]
-    patched, failed = [], []
+    patched, unchanged, failed = [], [], []
     for slug in accepted:
         item = by_slug[slug]
         key = item["zotero_item_key"]
@@ -455,15 +472,28 @@ def apply_decisions(decisions_path: Path, db: Path, *, dry_run: bool) -> dict:
             patched.append(slug)
             continue
         try:
-            ok = bib.patch_zotero({"key": key, "data": {"key": key}},
-                                  item["proposed"])
-            (patched if ok else failed).append(
-                slug if ok else {"slug": slug, "why": "patch_zotero 실패"})
+            # Zotero requires the item's current version in
+            # `If-Unmodified-Since-Version`; a fabricated stub carries none and
+            # every write came back 400. Fetch the live item and hand that over.
+            live = fetch_zotero_item(key)
+            if live is None:
+                failed.append({"slug": slug, "why": "Zotero 아이템 조회 실패"})
+                continue
+            ok = bib.patch_zotero(live, item["proposed"])
+            if ok is None:
+                # Zotero already carries every proposed value — a re-run
+                # after a partial apply must not report this as failure.
+                unchanged.append(slug)
+            elif ok:
+                patched.append(slug)
+            else:
+                failed.append({"slug": slug, "why": "patch_zotero 실패"})
         except Exception as exc:
             failed.append({"slug": slug, "why": f"{type(exc).__name__}: {exc}"})
     return {"accepted": len(accepted),
             "declined": sum(1 for ok in decisions.values() if not ok),
-            "patched": len(patched), "failed": failed, "dry_run": dry_run,
+            "patched": len(patched), "unchanged": unchanged,
+            "failed": failed, "dry_run": dry_run,
             "next": "python pipeline/build_bibliography_db.py --changed-only"}
 
 
