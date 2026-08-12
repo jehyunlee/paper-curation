@@ -400,5 +400,48 @@ class BylineMarkerLayoutTests(unittest.TestCase):
                 ["Miao Li", "Jey Han Lau", "Eduard Hovy"]), {})
 
 
+class InlineBylineTests(unittest.TestCase):
+    """ACM-style bylines state the affiliation on the author's own line."""
+
+    ACM = ("A Survey on Uncertainty Quantification Methods for Deep Learning\n"
+           "WENCHONG HE, University of Florida, USA\n"
+           "ZHE JIANG∗, University of Florida, USA\n"
+           "YUKUN LI, Tufts University, USA\n")
+    AUTHORS = ["Wenchong He", "Zhe Jiang", "Yukun Li"]
+
+    def test_each_author_gets_its_own_line(self):
+        got = bib.inline_author_affiliations(self.ACM, self.AUTHORS)
+        self.assertEqual(got, {
+            "Wenchong He": "University of Florida, USA",
+            "Zhe Jiang": "University of Florida, USA",
+            "Yukun Li": "Tufts University, USA"})
+
+    def test_a_correspondence_mark_does_not_hide_the_author(self):
+        self.assertIn("Zhe Jiang",
+                      bib.inline_author_affiliations(self.ACM, self.AUTHORS))
+
+    def test_an_affiliation_block_is_not_a_byline(self):
+        # "Institute for Artificial Intelligence, Peking University" reads as
+        # name-comma-organisation but names no author of this paper.
+        got = bib.inline_author_affiliations(
+            "Institute for Artificial Intelligence, Peking University\n"
+            "State Key Laboratory of General Artificial Intelligence, BIGAI\n",
+            self.AUTHORS)
+        self.assertEqual(got, {})
+
+    def test_a_line_without_an_organisation_is_ignored(self):
+        got = bib.inline_author_affiliations(
+            "WENCHONG HE, wenchong@ufl.edu\n", self.AUTHORS)
+        self.assertEqual(got, {})
+
+    def test_a_diacritic_in_zotero_still_matches(self):
+        got = bib.inline_author_affiliations(
+            "JUN LU, Nantong University, China\n", ["Jun Lü"])
+        self.assertEqual(got, {"Jun Lü": "Nantong University, China"})
+
+    def test_no_authors_maps_nothing(self):
+        self.assertEqual(bib.inline_author_affiliations(self.ACM, []), {})
+
+
 if __name__ == "__main__":
     unittest.main()

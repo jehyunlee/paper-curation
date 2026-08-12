@@ -758,6 +758,51 @@ def affiliation_window(text_path: Path) -> str:
     return "\n".join(_strip_editorial_blocks("\n".join(lines[:320])).splitlines())
 
 
+def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
+    """Bylines that print each author's affiliation on the author's own line.
+
+    ACM and several society templates skip superscripts entirely:
+
+        WENCHONG HE, University of Florida, USA
+        ZHE JIANG∗, University of Florida, USA
+
+    There is no marker to resolve — the line states the affiliation — so the
+    marker machinery reads nothing and the paper falls back to linking every
+    author to every institution. Measured on this corpus it is a small class,
+    8 of the 536 papers still unresolved, but it is the strongest evidence
+    there is: the byline says it outright.
+
+    A line qualifies only when the text before the first comma ends in one of
+    this paper's own author surnames and the remainder names an organisation,
+    so an affiliation block ("Institute for AI, Peking University") cannot
+    pass for a byline.
+    """
+    if isinstance(authors, str):
+        authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
+    surnames: dict[str, str] = {}
+    for name in authors or []:
+        parts = [p for p in re.split(r"\s+", str(name).strip()) if p]
+        if parts:
+            surnames.setdefault(_fold(parts[-1]), str(name))
+    if not surnames:
+        return {}
+
+    out: dict[str, str] = {}
+    for line in raw_header.splitlines():
+        line = re.sub(r"^#+\s*", "", line).strip()
+        if "," not in line or len(line) > 200:
+            continue
+        head, _, rest = line.partition(",")
+        tokens = [t for t in re.split(r"\s+", head.strip()) if t]
+        if not tokens:
+            continue
+        resolved = surnames.get(_fold(tokens[-1].rstrip("*∗†‡§¶⋆")))
+        rest = rest.strip()
+        if resolved and resolved not in out and _ORGANISATION_CUES.search(rest):
+            out[resolved] = rest
+    return out
+
+
 def marker_affiliations(raw_header: str) -> dict[str, str]:
     """Map each affiliation marker to the affiliation text it labels.
 
@@ -2845,6 +2890,19 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     for marker in markers.get(name, [])
                     if marker in by_marker]
                 if not rows and institutions:
+                    # No superscripts, but the byline may name each author's
+                    # affiliation on the author's own line (ACM style). That
+                    # states the mapping outright, so it outranks the guess.
+                    inline = inline_author_affiliations(
+                        header, [name for _, name, _ in authors])
+                    rows = [
+                        (pid, aid, iid, None, order, "pdf.inline-affiliation")
+                        for aid, name, order in authors
+                        for iid, raw in institutions
+                        if name in inline and (
+                            ((raw or "")[:60] and (raw or "")[:60] in inline[name])
+                            or (inline[name][:60] and inline[name][:60] in (raw or "")))]
+                if not rows and institutions:
                     # No superscripts to read. With one affiliation the byline
                     # already says everyone sits there. With several, who sits
                     # where is genuinely unknown, so every author is linked to
@@ -2861,7 +2919,7 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 if not rows:
                     skipped += 1
                     continue
-                if rows[0][5] == "pdf.byline-marker":
+                if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same
