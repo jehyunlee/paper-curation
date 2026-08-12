@@ -375,6 +375,37 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
   "파일 없음" 이 된다. `audit_zotero_pdf.resolve_pdf_path` 가 두 구분자 모두에서 파일명을 잘라
   로컬 디렉토리에서 찾는다.
 
+## 분야별 기관·연구자 분석 (Field leaders)
+
+`python pipeline/report_field_leaders.py --topic ai4s --top 20`
+
+**근거 등급을 반드시 구분한다.** 논문이 어떤 기관 소속을 달고 있다는 사실
+(`paper_institutions`)은 그대로 세도 되지만, **저자를 그 기관 중 하나에 귀속**시키려면
+바이라인 위첨자가 필요하다. 기관이 여럿인데 마커가 없으면 빌더는 저자×기관 전조합을
+넣는다 — `paper_author_institutions` 의 86%(31,566/36,667)가 이 `pdf.unmarked-multi`
+추정이다. 이걸로 기관별 연구자를 세면 **그 기관에 있던 적 없는 사람**이 상위에 올라온다.
+
+리포트가 세는 링크는 셋뿐이다:
+
+|source|의미|
+|---|---|
+|`openalex`|출판사가 기탁한 저자↔기관 매핑 (ROR 기반) — 가장 강함|
+|`pdf.byline-marker`|위첨자가 실제로 해석된 것|
+|`pdf.sole-affiliation`|기관이 하나뿐이라 모호함이 없는 것|
+
+`--include-guessed` 를 주면 전조합까지 포함하되 리포트에 경고가 찍힌다.
+
+**OpenAlex 보강** — `python pipeline/enrich_openalex_authorships.py --execute`
+DOI 보유 논문에 대해 저자별 기관(ROR)·교신저자 플래그·OpenAlex 저자 ID·ORCID 를 가져와
+`source='openalex'` 로 **기존 PDF 링크 옆에** 추가한다(덮어쓰지 않음). 이게 없으면
+교신저자와 ORCID 는 DB 전체에서 0건이다.
+
+**피인용** — `python pipeline/run_metrics.py` (기본 30일 증분).
+`--quiet` 는 진행 출력을 끄고, 수집은 전량을 모은 뒤 일괄 기록하므로 중간에 파일이
+늘지 않는다. DOI 가 있어야 조회되므로 상한은 DOI 보유 논문 수다(현재 1,812/4,196 = 43%).
+리포트가 커버리지를 함께 출력하는 이유 — 일부만 수집된 피인용으로 순위를 매기면
+**수집된 논문이 먼저 올라올 뿐**이다.
+
 ## paper-curio (Zotero 플러그인) — 두 번째 리뷰 생성기
 
 소스: `/Users/jehyunlee/Documents/내노트북/01_Work/01_Devs/AX/paper-curio` (TypeScript, Zotero 플러그인).
