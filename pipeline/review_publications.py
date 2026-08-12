@@ -43,7 +43,12 @@ DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 PROPOSALS = ROOT / ".cache" / "publication_proposals.json"
 PAGE = ROOT / "reports" / "build" / "publication_review.html"
 MIN_TITLE_SIMILARITY = 0.90
-_OPENALEX_STATE = {"refusals": 0}
+# OpenAlex refuses under load. The breaker used to latch for the whole run, so
+# one blip during a 2,384-paper backfill demoted every remaining paper to
+# Crossref alone — recall fell from 5-in-30 to 10-in-550. It now pauses and
+# recovers instead.
+_OPENALEX_STATE = {"refusals": 0, "blocked_until": 0.0}
+_OPENALEX_COOLDOWN_SECONDS = 180
 PREPRINT_HOSTS = ("arxiv", "biorxiv", "medrxiv", "chemrxiv", "ssrn",
                   "researchsquare", "preprints.org", "osf.io", "hal.science")
 
@@ -123,11 +128,18 @@ def search_openalex(title: str) -> list[dict]:
     silent empty list looked exactly like "not published yet", which is the one
     answer this must never guess at.
     """
-    # Circuit breaker: once OpenAlex has refused three times it refuses for the
-    # rest of the run, and the exponential backoff was costing 30 s per paper
-    # for an answer that never came. Crossref carries the scan from there.
-    if _OPENALEX_STATE["refusals"] >= 3:
+    # Circuit breaker with a cooldown. Three refusals pause OpenAlex for a few
+    # minutes rather than for the run: the exponential backoff was costing 30 s
+    # per paper for an answer that never came, but latching the breaker cost
+    # the better provider entirely — Crossref alone resolved 10 of 550 where
+    # both together resolved 5 of 30.
+    now = time.time()
+    if _OPENALEX_STATE["blocked_until"] > now:
         return []
+    if _OPENALEX_STATE["blocked_until"]:
+        _OPENALEX_STATE["blocked_until"] = 0.0
+        _OPENALEX_STATE["refusals"] = 0
+        print("  [info] OpenAlex 재시도 재개", file=sys.stderr)
     url = ("https://api.openalex.org/works?per-page=5&search="
            + urllib.parse.quote(title[:250]))
     mail = _contact_email()
@@ -142,9 +154,12 @@ def search_openalex(title: str) -> list[dict]:
                 return []
             if attempt == 2:
                 _OPENALEX_STATE["refusals"] += 1
-                if _OPENALEX_STATE["refusals"] == 3:
-                    print("  [warn] OpenAlex 반복 429 — 이번 실행에서는 "
-                          "Crossref 만 사용한다", file=sys.stderr)
+                if _OPENALEX_STATE["refusals"] >= 3:
+                    _OPENALEX_STATE["blocked_until"] = (
+                        time.time() + _OPENALEX_COOLDOWN_SECONDS)
+                    print(f"  [warn] OpenAlex 반복 429 — "
+                          f"{_OPENALEX_COOLDOWN_SECONDS}초 쉬었다 재시도",
+                          file=sys.stderr)
                 return []
             time.sleep(delay)
             delay *= 2

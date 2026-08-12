@@ -29,6 +29,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import sqlite3
 import sys
 import time
@@ -137,6 +139,50 @@ def resolve(paper: dict) -> dict | None:
             "why": why}
 
 
+_FRONTMATTER_DOI = re.compile(r'(?m)^doi:\s*.*$')
+
+
+def write_frontmatter_doi(slug: str, doi: str) -> bool:
+    """Put the resolved DOI in the paper's own review.md frontmatter.
+
+    The database alone is not enough. `run_metrics.py` reads DOIs from
+    `_papers_index.json`, and `build_papers_index.py` rebuilds that file from
+    review.md frontmatter — so a DOI kept only in SQLite is invisible to the
+    citation collector and is erased by the next index build. These papers
+    carry `doi: "N/A"`, the placeholder that once matched 177 of them to a
+    single Zotero item; this replaces it with the real value.
+    """
+    path = bib.PAPERS_DIR / slug / "review.md"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    end = text.find("\n---", 3)
+    if not text.startswith("---") or end < 0:
+        return False
+    head, tail = text[:end], text[end:]
+    line = f'doi: "{doi}"'
+    head = (_FRONTMATTER_DOI.sub(line, head, count=1)
+            if _FRONTMATTER_DOI.search(head)
+            else head.rstrip("\n") + "\n" + line)
+    tmp = path.with_suffix(".md.tmp")
+    tmp.write_text(head + tail, encoding="utf-8")
+    os.replace(tmp, path)
+    return True
+
+
+def backfill_frontmatter(db: Path) -> dict:
+    """Write every stored resolution into its paper's review.md."""
+    conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+    try:
+        rows = conn.execute(
+            "SELECT slug, doi FROM doi_resolutions ORDER BY slug").fetchall()
+    finally:
+        conn.close()
+    written = sum(1 for slug, doi in rows if write_frontmatter_doi(slug, doi))
+    return {"resolutions": len(rows), "frontmatter_written": written}
+
+
 def run(db: Path, *, execute: bool, limit: int | None) -> dict:
     conn = sqlite3.connect(db, timeout=60.0)
     conn.execute("PRAGMA busy_timeout = 60000")
@@ -172,6 +218,10 @@ def run(db: Path, *, execute: bool, limit: int | None) -> dict:
                      found["matched_title"], found["similarity"], now))
                 conn.execute("UPDATE papers SET doi=? WHERE paper_id=?",
                              (found["doi"], paper["paper_id"]))
+                # The paper's own file is the durable home: the index build
+                # rebuilds `_papers_index.json` from frontmatter, and that is
+                # where `run_metrics.py` looks for a DOI.
+                write_frontmatter_doi(paper["slug"], found["doi"])
         if index % 25 == 0:
             if execute:
                 conn.commit()
@@ -190,8 +240,14 @@ def main() -> int:
     ap.add_argument("--execute", action="store_true",
                     help="write (default is dry-run)")
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--backfill-frontmatter", action="store_true",
+                    help="이미 저장된 해석 결과를 review.md 에 반영만 한다")
     args = ap.parse_args()
 
+    if args.backfill_frontmatter:
+        print(json.dumps(backfill_frontmatter(args.db), ensure_ascii=False,
+                         indent=2))
+        return 0
     report = run(args.db, execute=args.execute, limit=args.limit)
     print(json.dumps({"executed": args.execute, **report},
                      ensure_ascii=False, indent=2))

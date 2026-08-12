@@ -41,7 +41,44 @@ def _load_index() -> list[dict]:
     if not INDEX_PATH.exists():
         raise SystemExit(f"논문 인덱스를 찾을 수 없다: {INDEX_PATH}")
     data = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-    return data if isinstance(data, list) else (data.get("papers") or [])
+    papers = data if isinstance(data, list) else (data.get("papers") or [])
+    return _fill_dois_from_db(papers)
+
+
+def _fill_dois_from_db(papers: list[dict]) -> list[dict]:
+    """Take the DOI the bibliography DB knows when the index has none.
+
+    `build_papers_index.py` derives `doi` from review.md frontmatter alone,
+    while the DB reconciles Zotero, Scopus, the PDF and the resolutions
+    `resolve_missing_dois.py` recovered. The index therefore knew 1,404 DOIs
+    against the DB's 2,071, and every source here is queried by DOI — so 667
+    papers whose DOI was already known could never have their citations
+    collected.
+    """
+    db = PIPELINE_DIR.parent / ".cache" / "bibliography.sqlite3"
+    if not db.exists():
+        return papers
+    try:
+        import sqlite3
+        conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        try:
+            known = {slug: doi for slug, doi in conn.execute(
+                "SELECT slug, doi FROM papers WHERE doi LIKE '10.%'")}
+        finally:
+            conn.close()
+    except Exception as exc:                      # DB is optional here
+        print(f"  서지 DB DOI 조회 생략: {exc}", file=sys.stderr)
+        return papers
+    filled = 0
+    for paper in papers:
+        if not (paper.get("doi") or "").strip().startswith("10."):
+            doi = known.get(paper.get("slug", ""))
+            if doi:
+                paper["doi"] = doi
+                filled += 1
+    if filled:
+        print(f"  서지 DB 에서 DOI 보충 {filled:,}편")
+    return papers
 
 
 def _select(papers: list[dict], args) -> list[dict]:
