@@ -24,9 +24,9 @@ import urllib.request
 import uuid
 from pathlib import Path
 try:
-    from .lib import bibliography_lock, country_map
+    from .lib import bibliography_lock, country_map, doi as _doi
 except ImportError:
-    from lib import bibliography_lock, country_map
+    from lib import bibliography_lock, country_map, doi as _doi
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "docs" / "papers"
@@ -430,33 +430,14 @@ def fm(path: Path) -> dict:
         return {}
 
 
-# A DOI is "10." + a registrant + "/" + a suffix; nothing else is one. Review
-# frontmatter is LLM-extracted, and when a PDF carried no DOI the model wrote
-# the absence down as a word rather than leaving the field empty: "N/A" (177
-# papers), "미제공" (78), "미공개" (11), "미기재" (7), "-" (7), "논문", "해당",
-# "제공되지". Those strings reached `papers.doi`, and `zotero_match` compares
-# DOIs, so every paper carrying the same placeholder matched the single Zotero
-# item whose DOI field held that same string — 177 papers inherited the title,
-# journal and pagination of an item called "Semantic Scholar", and 342 papers
-# in total ended up sharing another paper's Zotero record.
-_DOI_PATTERN = re.compile(r"^10\.\d{4,9}/\S+$")
-
-
-def clean_doi(s: str) -> str:
-    s = (s or "").strip()
-    s = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", s, flags=re.I)
-    s = re.sub(r"^doi:\s*", "", s, flags=re.I)
-    s = s.rstrip(" .;,)")
-    if s.lower().startswith("10.48550/arxiv.") or s.lower().startswith("arxiv:"):
-        return ""
-    return s if _DOI_PATTERN.match(s) else ""
-
-
-def clean_arxiv(s: str) -> str:
-    s = (s or "").strip()
-    s = re.sub(r"^arXiv:", "", s, flags=re.I)
-    s = re.sub(r"^https?://arxiv\.org/(?:abs|pdf)/", "", s, flags=re.I)
-    return s.rstrip(" .;,)")
+# What counts as a DOI now lives in `lib/doi.py`, because every boundary that
+# accepts one has to agree. Keeping the rule here meant `build_papers_index.py`
+# had its own answer: 715 of the 1,762 DOI values in `_papers_index.json` are
+# not DOIs — "N/A" on 123 papers, "미제공" on 57 — and one is the template
+# string `10.1007/sxxxxx-yyy-zzzz-1`.
+_DOI_PATTERN = _doi.DOI_PATTERN
+clean_doi = _doi.clean_doi
+clean_arxiv = _doi.clean_arxiv
 
 
 def arxiv_from(*values: str) -> str:

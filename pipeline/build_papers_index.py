@@ -19,6 +19,7 @@ PAPERS_DIR = str(_PAPERS_DIR)
 
 
 from lib.dateutil import normalize_date as normalize_date_to_yyyymm
+from lib.doi import clean_doi
 
 
 _CITATION_KEYS = ("citation_count", "citations_source", "citations_asof",
@@ -97,7 +98,12 @@ def parse_review(slug):
             "title": fm.get("title") or slug,
             "authors": (fm.get("authors") or [])[:5],
             "date": normalize_date_to_yyyymm(str(fm.get("date") or "")),
-            "doi": str(fm.get("doi") or ""),
+            # `lib.doi.clean_doi` decides, so the index agrees with the
+            # bibliography DB. Frontmatter is LLM-extracted and writes the
+            # absence of a DOI as a word — "N/A" on 123 papers, "미제공" on 57
+            # — and those strings were being stored and then queried as if
+            # they identified something.
+            "doi": clean_doi(str(fm.get("doi") or "")),
             "license": str(fm.get("license") or ""),
             "essence": str(fm.get("essence") or "")[:500],
             "score": float(scores_dict.get("overall", fm.get("score", 0)) or 0),
@@ -120,7 +126,7 @@ def parse_review(slug):
     date = normalize_date_to_yyyymm(date_raw)
 
     doi_m = re.search(r'\*\*DOI\*\*:\s*\[?([^\]\s\)]+)', body)
-    doi = doi_m.group(1).strip() if doi_m else ""
+    doi = clean_doi(doi_m.group(1).strip() if doi_m else "")
 
     essence = ""
     ess_m = re.search(r'## Essence\s*\n(.*?)(?=\n## |\Z)', body, re.DOTALL)
