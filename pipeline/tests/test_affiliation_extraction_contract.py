@@ -340,5 +340,65 @@ class HeaderCueBoundaryTests(unittest.TestCase):
             any("Paris-Saclay" in value for value in found), found)
 
 
+class BylineMarkerLayoutTests(unittest.TestCase):
+    """Every layout a publisher uses to attach a marker to a name.
+
+    All are verbatim from this corpus. The parser demanded the glued form and
+    read only the end of a comma-chunk, so it mapped one author per byline:
+    310 of 400 sampled papers had markers it could not see, and each fell back
+    to linking every author to every institution.
+    """
+
+    def test_glued_marker(self):
+        got = bib.author_affiliation_markers(
+            "A Sentiment Consolidation Framework\n"
+            "Miao Li1 Jey Han Lau1 Eduard Hovy1,2\n",
+            ["Miao Li", "Jey Han Lau", "Eduard Hovy"])
+        self.assertEqual(got, {"Miao Li": ["1"], "Jey Han Lau": ["1"],
+                               "Eduard Hovy": ["1", "2"]})
+
+    def test_spaced_marker(self):
+        got = bib.author_affiliation_markers(
+            "A Sober Look at LLMs\n"
+            "Agustinus Kristiadi 1 Felix Strieth-Kalthoff 2 Marta Skreta 3\n",
+            ["Agustinus Kristiadi", "Felix Strieth-Kalthoff", "Marta Skreta"])
+        self.assertEqual(got, {"Agustinus Kristiadi": ["1"],
+                               "Felix Strieth-Kalthoff": ["2"],
+                               "Marta Skreta": ["3"]})
+
+    def test_comma_left_by_a_stripped_orcid(self):
+        got = bib.author_affiliation_markers(
+            "A Review of LLM-Assisted Ideation\n"
+            "Sitong Li ,1 Stefano Padilla ,1 Junyu Dong ,2 and Mike Chantler *,1\n",
+            ["Sitong Li", "Stefano Padilla", "Junyu Dong", "Mike Chantler"])
+        self.assertEqual(got, {"Sitong Li": ["1"], "Stefano Padilla": ["1"],
+                               "Junyu Dong": ["2"], "Mike Chantler": ["1"]})
+
+    def test_a_diacritic_in_zotero_still_matches_a_stripped_byline(self):
+        got = bib.author_affiliation_markers(
+            "Title\nXi-Chen Wang1 Jun Lu3 Wei-Guan Chen1\n",
+            ["Xi-Chen Wang", "Jun Lü", "Wei-Guan Chen"])
+        self.assertEqual(got["Jun Lü"], ["3"])
+
+    def test_an_affiliation_block_is_not_a_byline(self):
+        # "1Heriot-Watt University, Edinburgh, UK 2Ocean University" passed the
+        # old digit-counting test. Only lines carrying this paper's own author
+        # surnames are considered now.
+        got = bib.author_affiliation_markers(
+            "1Heriot-Watt University, Edinburgh, UK 2Ocean University, China\n",
+            ["Sitong Li", "Stefano Padilla"])
+        self.assertEqual(got, {})
+
+    def test_a_paper_with_no_authors_maps_nothing(self):
+        self.assertEqual(
+            bib.author_affiliation_markers("Miao Li1 Jey Han Lau1\n", []), {})
+
+    def test_a_byline_without_markers_maps_nothing(self):
+        self.assertEqual(
+            bib.author_affiliation_markers(
+                "Title\nMiao Li, Jey Han Lau, Eduard Hovy\n",
+                ["Miao Li", "Jey Han Lau", "Eduard Hovy"]), {})
+
+
 if __name__ == "__main__":
     unittest.main()

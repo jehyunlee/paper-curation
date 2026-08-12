@@ -640,70 +640,138 @@ def _split_marked_affiliations(line: str) -> list[str]:
 # `paper_institutions` flattens that away, so a paper reads as though every
 # author sat at every institution. Recovering the markers is what makes
 # first-author attribution possible.
-_BYLINE_MARKERS = re.compile(r"((?:\d{1,2})(?:\s*,\s*\d{1,2})*)\s*[†‡§¶*]*\s*$")
+# Markers attach to a name in every layout a publisher can invent:
+#
+#     Miao Li1 Jey Han Lau1 Eduard Hovy1,2      glued
+#     Agustinus Kristiadi 1 Felix Strieth 2     spaced
+#     Sitong Li ,1 Stefano Padilla ,1           comma left by a stripped ORCID
+#     Mike Chantler *,1                         correspondence star first
+#
+# The previous parser demanded the glued form and read only the end of a
+# chunk, so it mapped one author per byline and refused the other three
+# layouts: 310 of 400 sampled papers had markers it could not see, and every
+# one of them fell back to linking every author to every institution.
+_MARKER_RUN = r"(\d{1,2}(?:\s*,\s*\d{1,2})*)"
+_MARKER_AFTER_NAME = re.compile(
+    r"[\s,]*[†‡§¶*∗⋆]*[\s,]*" + _MARKER_RUN)
 _MARKER_HEAD = re.compile(r"^(\d{1,2})\s*(.+)$")
 
 
-def _byline_candidates(raw_header: str) -> list[str]:
-    """Lines that look like an author byline, most promising first."""
+def _fold(token: str) -> str:
+    """ASCII-folded, case-insensitive key for a name token.
+
+    Zotero transcribes the publisher's diacritics ("Jun Lü") while the PDF
+    byline is often stripped ("Jun Lu4"); without folding every such author
+    loses their affiliation.
+    """
+    folded = unicodedata.normalize("NFKD", token)
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    return folded.lower().strip(".,'\u2019-")
+
+
+def _byline_candidates(raw_header: str, surnames: set[str]) -> list[str]:
+    """Lines that carry at least two of this paper's own author surnames.
+
+    Counting digits was the old test, and an affiliation block passes it
+    ("1Heriot-Watt University, Edinburgh, UK 2Ocean University"). The author
+    list is already in hand, so it is the far better discriminator.
+    """
     out = []
     for line in raw_header.splitlines():
         stripped = re.sub(r"^#+\s*", "", line).strip()
         if not stripped or len(stripped) > 600:
             continue
-        digits = len(re.findall(r"[A-Za-z]\d{1,2}\b", stripped))
-        if digits >= 2 and stripped.count(",") >= 1:
-            out.append((digits, stripped))
+        hits = sum(1 for token in re.split(r"[\s,;]+", stripped)
+                   if _fold(re.sub(r"[\d†‡§¶*∗⋆,]+$", "", token)) in surnames)
+        if hits >= 2:
+            out.append((hits, stripped))
     out.sort(key=lambda pair: -pair[0])
     return [text for _, text in out]
 
 
 def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]:
-    """Map each author name to the affiliation markers printed after it."""
+    """Map each author name to the affiliation markers printed after it.
+
+    Anchored on the surnames this paper actually has rather than on chunk
+    boundaries, so every author on the line is read, not just the last one.
+    """
     if isinstance(authors, str):
         authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
-    def key_of(token: str) -> str:
-        # Zotero transcribes the publisher's diacritics ("Jun Lü") while the PDF
-        # byline is often stripped ("Jun Lu4"). Fold to ASCII before matching or
-        # every such author loses their affiliation.
-        folded = unicodedata.normalize("NFKD", token)
-        folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
-        return folded.lower().strip(".,'\u2019-")
 
-    surnames = {}
+    surnames: dict[str, str] = {}
     for name in authors or []:
         parts = [p for p in re.split(r"\s+", str(name).strip()) if p]
         if parts:
-            surnames.setdefault(key_of(parts[-1]), str(name))
+            surnames.setdefault(_fold(parts[-1]), str(name))
+    if not surnames:
+        return {}
+
     mapping: dict[str, list[str]] = {}
-    for byline in _byline_candidates(raw_header):
-        chunks = re.split(r",(?![\s]*\d)|\band\b", byline)
-        for chunk in chunks:
-            chunk = chunk.strip().rstrip(".")
-            if not chunk:
+    for byline in _byline_candidates(raw_header, set(surnames)):
+        for token_match in re.finditer(r"[^\s,;]+", byline):
+            token = token_match.group(0)
+            # The marker may be glued to the surname ("Li1", "Hovy1,2"), so the
+            # token is not the name. Strip the trailing marker characters and
+            # read the markers from exactly where the name ends — that one
+            # position is what makes the glued and spaced layouts the same
+            # problem instead of two.
+            core = re.sub(r"[\d†‡§¶*∗⋆,]+$", "", token)
+            if not core:
                 continue
-            found = _BYLINE_MARKERS.search(chunk)
-            if not found:
+            resolved = surnames.get(_fold(core))
+            if not resolved or resolved in mapping:
                 continue
-            markers = [m.strip() for m in found.group(1).split(",") if m.strip()]
-            name_part = chunk[:found.start()].strip(" ,†‡§¶*")
-            tokens = [t for t in re.split(r"\s+", name_part) if t]
-            if not tokens:
+            tail = _MARKER_AFTER_NAME.match(
+                byline, token_match.start() + len(core))
+            if not tail:
                 continue
-            resolved = surnames.get(key_of(tokens[-1]))
-            if resolved and resolved not in mapping:
+            markers = [m.strip() for m in tail.group(1).split(",") if m.strip()]
+            if markers:
                 mapping[resolved] = markers
         if mapping:
             break
     return mapping
 
 
+def affiliation_window(text_path: Path) -> str:
+    """A wider slice of `text.md` for reading the marker→affiliation block.
+
+    `extract_header` stops at the abstract, which is right for finding the
+    byline and wrong for finding what the byline points at: two-column
+    conference layouts print the affiliations as a page-one footnote, so
+    PyMuPDF emits them *after* the abstract. 171 of 200 sampled papers had
+    their author→marker map read successfully and then no marker→affiliation
+    block to join it to.
+    """
+    try:
+        text = text_path.read_text(encoding="utf-8", errors="replace")[:24000]
+    except OSError:
+        return ""
+    lines = []
+    for line in text.splitlines():
+        head = re.match(r"^\s*[-–—]?\s*(\d+)\s+(.*)$", line)
+        if head and not _ORGANISATION_CUES.search(head.group(2)[:80]):
+            line = head.group(2)
+        line = re.sub(r"\s+", " ", line).strip()
+        if line:
+            lines.append(line)
+    return "\n".join(_strip_editorial_blocks("\n".join(lines[:320])).splitlines())
+
+
 def marker_affiliations(raw_header: str) -> dict[str, str]:
-    """Map each affiliation marker to the affiliation text it labels."""
+    """Map each affiliation marker to the affiliation text it labels.
+
+    Requiring the line to *begin* with a marker missed the common layout that
+    runs the whole block together — "1Heriot-Watt University, Edinburgh, UK
+    2Ocean University, China" — and any line whose first affiliation had
+    already been consumed. Every line carrying an organisation name is split
+    on its markers instead, which took the second stage of the byline mapping
+    from 12% of papers to most of them.
+    """
     out: dict[str, str] = {}
     for line in raw_header.splitlines():
         line = re.sub(r"^#+\s*", "", line).strip()
-        if not line or not re.match(r"^\d{1,2}\s*[A-Z]", line):
+        if not line or not _ORGANISATION_CUES.search(line):
             continue
         for piece in _split_marked_affiliations(line):
             head = _MARKER_HEAD.match(piece.strip())
@@ -711,6 +779,8 @@ def marker_affiliations(raw_header: str) -> dict[str, str]:
                 continue
             marker, body = head.group(1), head.group(2).strip(" ,;")
             if len(body) < 5 or marker in out:
+                continue
+            if not _ORGANISATION_CUES.search(body):
                 continue
             out[marker] = body
     return out
@@ -723,7 +793,14 @@ def extract_header(text_path: Path) -> tuple[str, list[str], float]:
         return "", [], 0.0
     normalized = []
     for line in text.splitlines():
-        line = re.sub(r"^\s*[-–—]?\s*\d+\s+", "", line)
+        # A leading number is usually a PDF line number, but on an affiliation
+        # line it is the marker the byline points at ("1 Heriot-Watt
+        # University, Edinburgh, UK"). Stripping it unconditionally erased the
+        # mapping before `marker_affiliations` could read it, so it is kept
+        # when an organisation name follows.
+        head = re.match(r"^\s*[-–—]?\s*(\d+)\s+(.*)$", line)
+        if head and not _ORGANISATION_CUES.search(head.group(2)[:80]):
+            line = head.group(2)
         line = re.sub(r"\s+", " ", line).strip()
         if line:
             normalized.append(line)
@@ -2361,6 +2438,11 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             # each affiliation has an institution_id.
             markers_by_author = author_affiliation_markers(header, authors)
             affiliation_by_marker = marker_affiliations(header)
+            if not affiliation_by_marker:
+                # Same reason as the backfill: a two-column layout prints the
+                # affiliations as a footnote that lands after the abstract.
+                affiliation_by_marker = marker_affiliations(
+                    affiliation_window(text))
             institution_by_marker = {}
             linked_institution_ids = []
             for record in affiliation_records:
@@ -2684,13 +2766,20 @@ def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
     return len(orphans)
 
 
-def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dict:
+def backfill_author_institutions(db_path: Path, limit: int | None = None,
+                                 retry_guessed: bool = True) -> dict:
     """Fill `paper_author_institutions` for papers built before it existed.
 
     The mapping derives from `text.md` and the paper's existing institution
     rows, so it needs neither Zotero nor Scopus nor the PDF — a full rebuild
     would spend twenty minutes redoing work whose answer is already on disk.
-    Idempotent: a paper that already has links is skipped.
+
+    A paper that already has resolved links is skipped. One whose only links
+    are `pdf.unmarked-multi` is retried, because that tag means "the byline
+    defeated the parser", and the parser improves: widening it to the spaced,
+    comma-and-ORCID and glued marker layouts took a 400-paper sample from 9%
+    parsed to 78%. Without the retry those papers would keep their guess
+    forever.
     """
     descriptor = bibliography_lock.acquire_bibliography_writer_lock(db_path)
     try:
@@ -2702,6 +2791,16 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dic
                 "SELECT p.paper_id, p.slug FROM papers p WHERE NOT EXISTS("
                 " SELECT 1 FROM paper_author_institutions pai"
                 " WHERE pai.paper_id=p.paper_id) ORDER BY p.paper_id").fetchall()
+            if retry_guessed:
+                pending += conn.execute(
+                    "SELECT p.paper_id, p.slug FROM papers p WHERE EXISTS("
+                    " SELECT 1 FROM paper_author_institutions pai"
+                    " WHERE pai.paper_id=p.paper_id"
+                    "   AND pai.source='pdf.unmarked-multi')"
+                    " AND NOT EXISTS(SELECT 1 FROM paper_author_institutions pai"
+                    "   WHERE pai.paper_id=p.paper_id"
+                    "     AND pai.source<>'pdf.unmarked-multi')"
+                    " ORDER BY p.paper_id").fetchall()
             if limit:
                 pending = pending[:limit]
             filled = linked = skipped = 0
@@ -2724,6 +2823,10 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dic
                 markers = author_affiliation_markers(
                     header, [name for _, name, _ in authors])
                 marker_text = marker_affiliations(header)
+                if not marker_text:
+                    # The byline is in the header; what it points at may be a
+                    # page-one footnote emitted after the abstract.
+                    marker_text = marker_affiliations(affiliation_window(text))
                 institutions = conn.execute(
                     "SELECT institution_id, raw_name FROM paper_institutions"
                     " WHERE paper_id=?", (pid,)).fetchall()
@@ -2758,6 +2861,15 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None) -> dic
                 if not rows:
                     skipped += 1
                     continue
+                if rows[0][5] == "pdf.byline-marker":
+                    # A retried paper still carries the guess that stood in
+                    # while the parser could not read its byline. Resolved rows
+                    # replace it; leaving both would let a query count the same
+                    # author at institutions the byline never gave them.
+                    conn.execute(
+                        "DELETE FROM paper_author_institutions"
+                        " WHERE paper_id=? AND source='pdf.unmarked-multi'",
+                        (pid,))
                 conn.executemany(
                     "INSERT OR IGNORE INTO paper_author_institutions "
                     "(paper_id,author_id,institution_id,marker,author_order,"
