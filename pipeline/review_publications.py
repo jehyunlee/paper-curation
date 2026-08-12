@@ -51,9 +51,13 @@ PREPRINT_HOSTS = ("arxiv", "biorxiv", "medrxiv", "chemrxiv", "ssrn",
 # the paper's name. The first proposal this produced was a Figshare *dataset*
 # whose author list had shrunk from three names to one — accepted, it would have
 # rewritten a paper's bibliography to point at a data deposit.
+# Crossref and OpenAlex do not share a type vocabulary: a NeurIPS or EMNLP
+# paper is "proceedings-article" at Crossref and "conference-paper" at
+# OpenAlex. Listing only Crossref's rejected every conference paper OpenAlex
+# returned — most of an AI4S corpus.
 FORMAL_TYPES = ("article", "journal-article", "proceedings-article",
-                "book-chapter", "review", "letter", "editorial",
-                "book-part", "reference-entry")
+                "conference-paper", "book-chapter", "review", "letter",
+                "editorial", "book-part", "reference-entry")
 REPOSITORY_VENUES = ("figshare", "zenodo", "datacite", "researchgate",
                      "semantic scholar", "osf", "dryad", "mendeley data",
                      "open science framework", "papers with code",
@@ -205,12 +209,22 @@ def search_crossref(title: str) -> list[dict]:
 
 
 def candidate_works(title: str) -> list[dict]:
-    """Both providers, OpenAlex first; Crossref covers its rate limiting."""
+    """Both providers, OpenAlex first; Crossref covers its rate limiting.
+
+    Deduplicated on the *cleaned* DOI. OpenAlex returns
+    "https://doi.org/10.18653/v1/2024.emnlp-main.70" where Crossref returns
+    "10.18653/v1/2024.emnlp-main.70"; comparing the raw strings let the same
+    work through twice, which reads as two independent candidates.
+    """
     works = search_openalex(title)
-    seen = {(w.get("doi") or "").lower() for w in works}
+    seen = {bib.clean_doi(str(w.get("doi") or "")).lower() for w in works}
+    seen.discard("")
     for work in search_crossref(title):
-        if (work.get("doi") or "").lower() not in seen:
-            works.append(work)
+        key = bib.clean_doi(str(work.get("doi") or "")).lower()
+        if key and key in seen:
+            continue
+        seen.add(key)
+        works.append(work)
     return works
 
 

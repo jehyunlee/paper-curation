@@ -1897,6 +1897,33 @@ SIDECAR_NAME = "bibliography.json"
 SIDECAR_SCHEMA = "bibliography-sidecar-1"
 
 
+DOI_RESOLUTION_SCHEMA = """
+CREATE TABLE IF NOT EXISTS doi_resolutions (
+ slug TEXT PRIMARY KEY, doi TEXT NOT NULL, source TEXT NOT NULL,
+ matched_title TEXT NOT NULL DEFAULT '', similarity REAL,
+ resolved_at TEXT NOT NULL)"""
+
+
+def ensure_doi_resolution_table(conn: sqlite3.Connection) -> None:
+    conn.execute(DOI_RESOLUTION_SCHEMA)
+
+
+def cached_doi_resolution(conn: sqlite3.Connection, slug: str) -> str:
+    """A DOI recovered for this paper by an earlier resolution pass.
+
+    The builder reads DOIs from Zotero, the review frontmatter and the PDF.
+    None of those learn anything, so a DOI found by searching OpenAlex or
+    Crossref has nowhere to live and would be lost on the next rebuild. This
+    table is that home; `resolve_missing_dois.py` writes it.
+    """
+    try:
+        row = conn.execute(
+            "SELECT doi FROM doi_resolutions WHERE slug=?", (slug,)).fetchone()
+    except sqlite3.OperationalError:      # table absent on an older DB
+        return ""
+    return clean_doi(row[0]) if row else ""
+
+
 def load_sidecar(directory: Path) -> dict | None:
     """Read the review-time bibliography sidecar, or None if unusable.
 
@@ -2233,6 +2260,17 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             if official.get("doi"):
                 doi = official["doi"]
                 resolved += 1
+            # A DOI recovered offline by `resolve_missing_dois.py` and kept in
+            # `doi_resolutions`. Without this the resolution would not survive:
+            # the builder derives `doi` from Zotero, the review frontmatter and
+            # the PDF, none of which learn anything, so the next rebuild would
+            # blank 2,384 papers again. The table records how each one was
+            # matched, so a bad row can be found and dropped.
+            if not doi:
+                cached = cached_doi_resolution(conn, p["slug"])
+                if cached:
+                    doi = cached
+                    resolved += 1
 
             # Zotero first: its records are transcribed from the publisher, so
             # they outrank review.md frontmatter (LLM-extracted from the PDF)
