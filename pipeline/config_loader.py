@@ -319,11 +319,50 @@ def get_paperbanana_dir():
     return cfg.get("paperbanana_dir", "")
 
 
+def _hostname():
+    """짧은 호스트명 (소문자, 도메인/`.local` 제거)."""
+    import socket
+    return socket.gethostname().split(".")[0].strip().lower()
+
+
 def get_zotero_dir():
-    """Zotero PDF 저장 디렉토리."""
-    cfg = load_config()
-    return (cfg.get("zotero", {}).get("pdf_dir", "")
-            or os.environ.get("ZOTERO_DIR", ""))
+    """Zotero PDF 저장 디렉토리 — 머신마다 다른 경로를 순서대로 해결한다.
+
+    같은 라이브러리를 여러 대에서 쓰면 경로가 머신마다 다르다: 이 노트북은
+    Google Drive CloudStorage 아래, macmini 는 홈 디렉토리 아래, Windows 는
+    ``C:\\Users\\...\\Zotero``. Zotero 의 linked_file 첨부는 **만들어진 머신의
+    절대경로를 그대로** 들고 있어서, 한 경로를 코드나 config 에 박아두면 다른
+    머신에서는 전부 "파일 없음" 이 된다 (실제로 1,025편이 그렇게 집계됐다).
+
+    해결 순서 — 먼저 맞는 것이 이긴다:
+
+      1. ``ZOTERO_DIR`` 환경변수 — 머신이 언제든 직접 선언하는 최상위 수단
+      2. ``zotero.pdf_dir_by_host[<hostname>]`` — 머신별 명시 매핑
+      3. ``zotero.pdf_dir_candidates`` 중 **실제로 존재하는** 첫 경로
+      4. ``zotero.pdf_dir`` — 단일 머신 기본값
+
+    2·3 이 비어 있으면 기존 동작(4번)과 동일하다.
+    """
+    cfg = load_config().get("zotero", {})
+
+    env = os.environ.get("ZOTERO_DIR", "").strip()
+    if env:
+        return env
+
+    by_host = cfg.get("pdf_dir_by_host") or {}
+    if isinstance(by_host, dict):
+        host = _hostname()
+        for name, path in by_host.items():
+            if str(name).split(".")[0].strip().lower() == host and path:
+                return path
+
+    for path in cfg.get("pdf_dir_candidates") or []:
+        # 존재하는 것만 채택 — 후보 목록은 "이 중 하나가 이 머신의 것" 이라는
+        # 뜻이지, 순서가 우선순위라는 뜻이 아니다.
+        if path and os.path.isdir(os.path.expanduser(str(path))):
+            return os.path.expanduser(str(path))
+
+    return cfg.get("pdf_dir", "")
 
 
 def get_github_repo():

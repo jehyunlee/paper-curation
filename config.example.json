@@ -5,7 +5,15 @@
     "collections": {
       "my_topic": "Your Zotero Collection Name"
     },
-    "pdf_dir": "/path/to/your/zotero/pdfs"
+    "pdf_dir": "/path/to/your/zotero/pdfs",
+    "pdf_dir_by_host": {
+      "my-laptop": "/Users/me/Library/CloudStorage/GoogleDrive-me/내 드라이브/Zotero",
+      "my-server": "/Users/me/Documents/Zotero"
+    },
+    "pdf_dir_candidates": [
+      "~/Zotero",
+      "/path/to/other/machine/Zotero"
+    ]
   },
   "unpaywall_email": "your.email@example.com",
   "_comment_search_keywords": "search_keywords 는 토픽별 Core-1 검색 키워드입니다. primary 는 핵심 키워드(매칭 0.5점), secondary 는 보조 키워드(매칭 0.2점). ai4s/scisci 는 빌트인 기본값이 있어 생략 가능하고, 그 외 신규 토픽은 여기에 추가해야 합니다.",

@@ -366,7 +366,14 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 - **OpenAI API (optional)**: reader BYOK answer generation + `extract_insights` cross-category fallback. No longer required for the search index. Key from `OPENAI_API_KEY` env var or the `openai_api_key` field in `config.json`.
 - **PyMuPDF (fitz)**: PDF text extraction and figure rendering
 - **Pillow**: PNG→WebP conversion in `pipeline/prepare_deploy.py`
-- **Zotero PDF storage**: Path configured in `config.json` (`zotero.pdf_dir`)
+- **Zotero PDF storage**: `config.json` 의 `zotero.pdf_dir`. 같은 라이브러리를 여러 머신에서
+  쓰면 경로가 다르므로 `get_zotero_dir()` 이 순서대로 해결한다 —
+  ① `ZOTERO_DIR` 환경변수 → ② `zotero.pdf_dir_by_host[<hostname>]` (짧은 호스트명, 대소문자·
+  `.local` 무시) → ③ `zotero.pdf_dir_candidates` 중 **실제로 존재하는** 첫 경로 → ④ `zotero.pdf_dir`.
+  Zotero 의 `linked_file` 첨부는 **만들어진 머신의 절대경로**를 그대로 들고 있어서
+  (`C:\\Users\\jehyu\\GoogleDrive\\Zotero\\...`), 경로를 하나로 박으면 다른 머신에서 1,025편이
+  "파일 없음" 이 된다. `audit_zotero_pdf.resolve_pdf_path` 가 두 구분자 모두에서 파일명을 잘라
+  로컬 디렉토리에서 찾는다.
 
 ## paper-curio (Zotero 플러그인) — 두 번째 리뷰 생성기
 
