@@ -367,3 +367,38 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 - **PyMuPDF (fitz)**: PDF text extraction and figure rendering
 - **Pillow**: PNG→WebP conversion in `pipeline/prepare_deploy.py`
 - **Zotero PDF storage**: Path configured in `config.json` (`zotero.pdf_dir`)
+
+## paper-curio (Zotero 플러그인) — 두 번째 리뷰 생성기
+
+소스: `/Users/jehyunlee/Documents/내노트북/01_Work/01_Devs/AX/paper-curio` (TypeScript, Zotero 플러그인).
+앞으로 서지정보 DB 등록은 **실질적으로 이쪽을 통해 이루어진다**.
+
+같은 Zotero 라이브러리와 같은 `docs/papers/{slug}/` 를 공유하며, `src/core/pipeline.ts` 가
+text.md → figures → review.md → index.html → `_papers_index.json` 순으로 본체와 동일한 산출물을
+쓴다. 무거운 단계는 `src/extract/pybridge.ts` 가 이 저장소의 py312 함수(`extract_text`,
+`extract_figures`, `write_review`)를 직접 호출하고, 실패 시 TS(pdf.js/멀티프로바이더)로 폴백한다.
+자기가 만든 항목은 Zotero item 의 `extra` 에 `papercurio: {slug};{date}` 마커를 남긴다 —
+출처 판별은 이 마커가 유일하게 확실한 신호다(슬러그 대소문자는 정황 증거일 뿐).
+
+**서지 DB 등록 완성도** (`pipeline/audit_ingest_inputs.py` 로 실측, papercurio 224편 vs 본체 3,972편):
+
+|지표|papercurio|본체|
+|---|---|---|
+|`source_documents(text)` 보유|78.1%|100%|
+|저자↔기관 링크|70.1%|79.2%|
+|기관 링크|82.1%|84.0%|
+|`scopus-unconfirmed` 소속|22.8%|8.0%|
+|`zotero_item_key` 누락|0편|44편|
+
+- text.md 가 없는 49편 중 **40편은 Zotero 에 PDF 자체가 없다** — 추출할 원문이 없으니 본체도 동일하게
+  비운다. papercurio 결함이 아니다. 나머지 10편은 PDF 가 리뷰 생성 **이후** 첨부된 경우다.
+- `scopus-unconfirmed` 가 2.8배 높은 건 위 결과다: 대조할 본문이 없으면 Scopus 소속을 확인할 수 없어
+  신뢰도 0.95(`scopus+pdf`) 로 승격되지 못한다.
+- **유일하게 papercurio 가 쓰지 않는 산출물은 `bibliography.json` 사이드카**다. 이게 없으면
+  `build_bibliography_db.py` 가 매 빌드마다 Zotero 라이브러리 전체를 페이징한다(~200초, 실패 시
+  `zotero_item_key` 조용히 유실). 본체는 리뷰 생성 시 이 파일을 남긴다.
+
+**PDF 를 나중에 붙일 때 주의**: 아이템의 `url` 을 눌러 받은 PDF 는 그 url 이 가리키는 논문이지 그
+아이템의 논문이 아닐 수 있고, Zotmoov 가 파일명을 **아이템 제목으로 자동 변경**하므로 파일명으로는
+절대 판별할 수 없다. 본문 텍스트로 확인해야 한다 —
+`python pipeline/inspect_zotero_item.py --keys <KEY> --check-pdf`.

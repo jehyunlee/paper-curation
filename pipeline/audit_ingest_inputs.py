@@ -15,14 +15,21 @@ Review generation feeds the DB through four files in `docs/papers/<slug>/`:
                      failure mode is silent `zotero_item_key` loss)
   figures/           not used by the DB
 
-A generator that writes only review.md produces a paper the DB can register
-but never populate. Measured here: the 49 papers papercurio wrote — their
-Zotero items carry a `papercurio:` marker in `extra` — have no text.md, and
-against the papers that do have one they hold author-institution links for
-16% instead of 85%, carry unconfirmed Scopus affiliations 52% of the time
-instead of 9%, and have no affiliation at all 30% of the time instead of 15%.
-`--changed-only` is blind to them too: with no `source_documents` row of type
-`text`, nothing but review.md can mark them changed.
+A generator that writes only review.md registers a paper the DB can never
+populate, so this reports the gap per paper. Measured against paper-curio,
+the Zotero plugin that now does most of the registering: it writes text.md
+whenever a PDF exists (py312 bridge, pdf.js fallback), and of its 224 papers
+the 49 without one are papers whose Zotero item holds no PDF at all — 40 of
+them — plus a handful where the PDF was attached after the review. The main
+pipeline would leave those blank too.
+
+What that costs is still real: no text means no byline superscripts, so
+author-institution links reach 70% against the main pipeline's 79%, and a
+Scopus affiliation cannot be confirmed against the paper's own words, so
+`scopus-unconfirmed` runs 22.8% against 8.0%. `--changed-only` is blind to
+them as well, having no `source_documents` row of type `text` to hash.
+
+The one artifact paper-curio never writes is `bibliography.json`.
 
 Read-only.
 """
