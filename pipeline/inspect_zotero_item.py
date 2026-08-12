@@ -123,14 +123,56 @@ def keys_for_slugs(db: Path, slugs: list[str]) -> list[str]:
         conn.close()
 
 
-def inspect(key: str, db: Path) -> dict:
+def pdf_identity(children: list[dict], candidates: dict[str, str]) -> list[dict]:
+    """Which paper each attached PDF actually contains.
+
+    The filename proves nothing. Zotero names an attachment from the item's
+    own metadata, so a PDF fetched by following a wrong `url` still lands
+    under a right-looking name. Only the text decides, so each candidate title
+    is scored against the first pages: an item whose DOI belongs to another
+    work can then be told apart from one whose *file* does.
+    """
+    from audit_zotero_pdf import pdf_first_page_text, resolve_pdf_path, tokens
+
+    out = []
+    for child in children:
+        data = child.get("data") or {}
+        if data.get("contentType") != "application/pdf":
+            continue
+        path = resolve_pdf_path(data)
+        record = {"filename": data.get("filename") or data.get("path") or "",
+                  "resolved": str(path) if path else None}
+        text = pdf_first_page_text(path) if path else None
+        if not text:
+            record["verdict"] = "unreadable" if path else "file not found"
+            out.append(record)
+            continue
+        body = tokens(text)
+        scores = {}
+        for label, title in candidates.items():
+            title_tokens = tokens(title)
+            scores[label] = (
+                round(len(title_tokens & body) / len(title_tokens), 2)
+                if title_tokens else 0.0)
+        record["title_overlap"] = scores
+        best = max(scores, key=scores.get) if scores else ""
+        record["verdict"] = (f"contains: {best}"
+                             if scores.get(best, 0) >= 0.5
+                             else "no candidate matched")
+        record["first_line"] = " ".join(text.split())[:110]
+        out.append(record)
+    return out
+
+
+def inspect(key: str, db: Path, check_pdf: bool = False) -> dict:
     item = fetch_item(key)
     if item is None:
         return {"key": key, "found": False}
     data = item.get("data") or {}
     doi = str(data.get("DOI") or "")
     children = fetch_children(key)
-    return {
+    resolved = crossref(doi)
+    report = {
         "key": key,
         "found": True,
         "version": item.get("version"),
@@ -150,9 +192,15 @@ def inspect(key: str, db: Path) -> dict:
              "linkMode": (c.get("data") or {}).get("linkMode"),
              "url": (c.get("data") or {}).get("url")}
             for c in children],
-        "doi_resolves_to": crossref(doi),
+        "doi_resolves_to": resolved,
         "corpus_papers": corpus_papers(db, key),
     }
+    if check_pdf:
+        candidates = {"the item itself": str(data.get("title") or "")}
+        if resolved.get("title"):
+            candidates["the work its DOI belongs to"] = resolved["title"]
+        report["pdf_identity"] = pdf_identity(children, candidates)
+    return report
 
 
 def render(report: dict) -> str:
@@ -182,6 +230,17 @@ def render(report: dict) -> str:
         lines.append(f"      journal   {resolved['journal']} "
                      f"({resolved['publisher']}, {resolved['issued']})")
         lines.append(f"      authors   {', '.join(resolved['authors'])}")
+    if report.get("pdf_identity") is not None:
+        lines.append("  ── which paper the attached PDF actually contains ──")
+        for pdf in report["pdf_identity"] or []:
+            lines.append(f"      file      {pdf['filename'][:74]}")
+            for label, score in (pdf.get("title_overlap") or {}).items():
+                lines.append(f"        overlap {score:>5}  vs {label}")
+            lines.append(f"        VERDICT {pdf['verdict']}")
+            if pdf.get("first_line"):
+                lines.append(f"        text    {pdf['first_line'][:90]}")
+        if not report["pdf_identity"]:
+            lines.append("      — (no PDF attachment)")
     lines.append("  ── corpus papers pointing at this item ──")
     for paper in report["corpus_papers"] or []:
         lines.append(f"      {paper['slug'][:60]}")
@@ -197,6 +256,8 @@ def main() -> int:
     ap.add_argument("--slugs", help="comma-separated slug prefixes")
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--check-pdf", action="store_true",
+                    help="read each attached PDF and say which paper it holds")
     args = ap.parse_args()
 
     keys = [k.strip() for k in (args.keys or "").split(",") if k.strip()]
@@ -207,7 +268,8 @@ def main() -> int:
         print("--keys 또는 --slugs 가 필요하다", file=sys.stderr)
         return 2
 
-    reports = [inspect(key, args.db) for key in dict.fromkeys(keys)]
+    reports = [inspect(key, args.db, check_pdf=args.check_pdf)
+               for key in dict.fromkeys(keys)]
     if args.json:
         print(json.dumps(reports, ensure_ascii=False, indent=2))
     else:

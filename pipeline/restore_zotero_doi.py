@@ -174,7 +174,9 @@ def main() -> int:
             step = plan(key)
         except Exception as exc:
             step = {"key": key, "action": f"error: {type(exc).__name__}: {exc}"}
-        if args.execute and step.get("action") == "replace":
+        # Both writing actions carry a `patch`; keying on "replace" alone
+        # silently skipped every "clear" and reported the plan as if done.
+        if args.execute and "patch" in step:
             step["result"] = apply(step)
         steps.append(step)
 
