@@ -178,6 +178,27 @@ def upsert_author(conn, authors, display_name: str, openalex_id: str,
     return aid
 
 
+def backfill_paper_institutions(conn: sqlite3.Connection) -> int:
+    """Add the paper-institution row behind every author-institution row.
+
+    An earlier pass wrote only the author link, which left 8,107 rows failing
+    `check_bibliography_db --strict` and put 1,219 institutions on the orphan
+    list. The statement is derivable, so it is repaired rather than re-fetched.
+    """
+    cur = conn.execute("""
+        INSERT OR IGNORE INTO paper_institutions
+          (paper_id, institution_id, raw_name, country_name, source)
+        SELECT DISTINCT pai.paper_id, pai.institution_id, i.institution_name,
+               NULLIF(i.country_name_en, ''), 'openalex'
+        FROM paper_author_institutions pai
+        JOIN institutions i ON i.institution_id = pai.institution_id
+        WHERE pai.source = 'openalex'
+          AND NOT EXISTS (SELECT 1 FROM paper_institutions pi
+                          WHERE pi.paper_id = pai.paper_id
+                            AND pi.institution_id = pai.institution_id)""")
+    return cur.rowcount
+
+
 def enrich(db: Path, *, execute: bool, limit: int | None,
            refresh_days: int) -> dict:
     conn = sqlite3.connect(db, timeout=60.0)
@@ -235,6 +256,18 @@ def enrich(db: Path, *, execute: bool, limit: int | None,
                 iid = upsert_institution(conn, by_ror, by_name, inst)
                 if iid is None:
                     continue
+                # An author of this paper sits at this institution, so the
+                # paper carries it. `check_bibliography_db --strict` enforces
+                # that every author-institution row has a paper-institution
+                # row behind it, and `paper_institutions` is also what keeps
+                # an institution off the orphan list. Writing only the author
+                # link left 8,107 inconsistent rows and 1,219 orphans.
+                conn.execute(
+                    "INSERT OR IGNORE INTO paper_institutions"
+                    " (paper_id, institution_id, raw_name, country_name,"
+                    "  source) VALUES (?,?,?,?,'openalex')",
+                    (paper_id, iid, str(inst.get("display_name") or ""),
+                     _ror_country(str(inst.get("ror") or "")) or None))
                 conn.execute(
                     "INSERT OR IGNORE INTO paper_author_institutions"
                     " (paper_id, author_id, institution_id, marker,"
@@ -261,6 +294,9 @@ def enrich(db: Path, *, execute: bool, limit: int | None,
             conn.commit()
             print(f"  [openalex] {index}/{len(rows)}", file=sys.stderr, flush=True)
 
+    # Repairs rows an earlier pass left without their paper-institution row,
+    # and covers the case where this run was interrupted mid-paper.
+    report["paper_institution_backfill"] = backfill_paper_institutions(conn)
     report["new_institutions"] = (
         conn.execute("SELECT COUNT(*) FROM institutions").fetchone()[0]
         - before_inst)

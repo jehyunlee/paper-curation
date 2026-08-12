@@ -63,6 +63,10 @@ def make_db(path: Path) -> Path:
           author_id INTEGER, institution_id INTEGER, marker TEXT,
           author_order INTEGER, source TEXT NOT NULL,
           PRIMARY KEY (paper_id, author_id, institution_id));
+        CREATE TABLE paper_institutions (paper_id INTEGER,
+          institution_id INTEGER, raw_name TEXT NOT NULL,
+          country_name TEXT, source TEXT NOT NULL,
+          PRIMARY KEY (paper_id, institution_id));
         INSERT INTO papers VALUES (1,'0001_x','X','10.1038/s41586-026-1','{}');
         INSERT INTO institutions (institution_name, normalized_name, source,
           ror_id) VALUES ('University of Oxford','university of oxford','pdf',
@@ -140,6 +144,44 @@ class EnrichmentTests(unittest.TestCase):
         second = self._conn().execute(
             "SELECT COUNT(*) FROM paper_author_institutions").fetchone()[0]
         self.assertEqual(first, second)
+
+    def test_paper_institution_rows_back_every_author_link(self):
+        # `check_bibliography_db --strict` refuses an author-institution row
+        # with no paper-institution row behind it, and treats an institution
+        # no paper links to as an orphan. Writing only the author link left
+        # 8,107 inconsistent rows and 1,219 orphans in the live DB.
+        self._run()
+        conn = self._conn()
+        inconsistent = conn.execute("""
+            SELECT COUNT(*) FROM paper_author_institutions pai
+            WHERE NOT EXISTS (SELECT 1 FROM paper_institutions pi
+                              WHERE pi.paper_id = pai.paper_id
+                                AND pi.institution_id = pai.institution_id)
+        """).fetchone()[0]
+        self.assertEqual(inconsistent, 0)
+        orphans = conn.execute("""
+            SELECT COUNT(*) FROM institutions i
+            WHERE NOT EXISTS (SELECT 1 FROM paper_institutions pi
+                              WHERE pi.institution_id = i.institution_id)
+        """).fetchone()[0]
+        self.assertEqual(orphans, 0)
+
+    def test_backfill_repairs_links_written_without_one(self):
+        self._run()
+        conn = self._conn()
+        conn.execute("DELETE FROM paper_institutions")
+        conn.commit()
+        conn.close()
+        repaired = sqlite3.connect(self.db)
+        count = enrich.backfill_paper_institutions(repaired)
+        repaired.commit()
+        self.assertGreater(count, 0)
+        self.assertEqual(repaired.execute("""
+            SELECT COUNT(*) FROM paper_author_institutions pai
+            WHERE NOT EXISTS (SELECT 1 FROM paper_institutions pi
+                              WHERE pi.paper_id = pai.paper_id
+                                AND pi.institution_id = pai.institution_id)
+        """).fetchone()[0], 0)
 
     def test_a_missing_work_is_counted_not_fatal(self):
         report = self._run(work=None)
