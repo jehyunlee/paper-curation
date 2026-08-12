@@ -40,7 +40,7 @@ import urllib.parse
 import urllib.error
 from collections import defaultdict
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from config_loader import (
     get_zotero_api_key,
@@ -179,7 +179,11 @@ def resolve_pdf_path(att_data):
         p = Path(path)
         if p.is_absolute() and p.exists():
             return p
-        base = os.path.basename(path)
+        # 라이브러리를 두 대에서 쓰면 linked_file 이 다른 OS 의 절대경로로 남는다
+        # ("C:\\Users\\...\\Zotero\\Foo.pdf"). POSIX 의 os.path.basename 은
+        # 백슬래시를 구분자로 보지 않아 경로 전체를 파일명으로 돌려주고, 그래서
+        # 1,025편이 "파일 없음" 으로 집계됐다. 두 구분자 모두에서 잘라낸다.
+        base = PureWindowsPath(path.replace("\\", "/")).name
         if zdir and (zdir / base).exists():
             return zdir / base
     if filename and zdir and (zdir / filename).exists():
