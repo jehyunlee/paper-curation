@@ -48,19 +48,18 @@ from config_loader import (
     _ssl_ctx,
 )
 
-API_KEY = get_zotero_api_key()
-USER_ID = get_zotero_user_id()
+# Zotero 자격증명은 호출 지점에서 해석한다 (import 시 키 요구·네트워크 왕복 없음).
 
 
 # ── Zotero API helpers ───────────────────────────────────────────────────────
 
 def _api(endpoint, method="GET", data=None, if_unmod_version=None, params=None):
-    base = f"https://api.zotero.org/users/{USER_ID}/{endpoint}"
+    base = f"https://api.zotero.org/users/{get_zotero_user_id()}/{endpoint}"
     if params:
         base += "?" + urllib.parse.urlencode(params)
     body = json.dumps(data).encode("utf-8") if data is not None else None
     headers = {
-        "Zotero-API-Key": API_KEY,
+        "Zotero-API-Key": get_zotero_api_key(),
         "User-Agent": "paper-curation-dedup/1.0",
     }
     if data is not None:

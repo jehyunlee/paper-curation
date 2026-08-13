@@ -11,6 +11,7 @@ security document, not a legal one — for copyright/deploy legality see
 | Asset | Boundary | Notes |
 |---|---|---|
 | API keys (Anthropic/OpenAI/Gemini) | `config.json`, env | gitignored; never committed |
+| Zotero API key | **env only** (`ZOTERO_API_KEY`) | `config.json` is not read for it — see S1 note |
 | Source + pipeline | git → GitHub (public) | code is backed up by the remote |
 | Public deploy | Cloudflare, arXiv/OpenReview OA only | license-gated by `prepare_deploy.py` |
 | Local-only data | this Mac | `docs/papers/**`, `docs/_agent/**`, `docs/_local_keys.json`, Zotero library — **not** in git |
@@ -24,8 +25,18 @@ security document, not a legal one — for copyright/deploy legality see
   objects and reads raw commit/tag/blob bytes through `git cat-file --batch`;
   it does not depend on diff generation. This covers merge-resolution blobs,
   `.gitattributes -diff`, NUL/binary blobs, and annotated-tag messages.
-- **Patterns:** Anthropic/OpenAI, AWS `AKIA`, GitHub `gh*`, and Google `AIza`;
-  whitespace-split and standard-base64 forms are normalized and checked.
+- **Patterns:** Anthropic/OpenAI, AWS `AKIA`, GitHub `gh*`, Google `AIza`, Resend
+  `re_`, plus two binding-anchored rules for keys that have no vendor prefix:
+  `ZOTERO_API_KEY`-shaped assignments and any `api_key|secret|token|password`
+  bound to a 20+ char literal (JSON or code). Whitespace-split and
+  standard-base64 forms are normalized and checked.
+- **Why the binding rules exist:** a live Zotero key sat in
+  `pipeline/_archive/_batch_zotero.py` as `os.environ.get("ZOTERO_API_KEY",
+  "<24 chars>")` and reached `origin/master`, `origin/gh-pages` and
+  `origin/pr-3`. Zotero keys are 24 bare alphanumerics, so every prefix-anchored
+  pattern above was blind to it. Fixed 2026-08-13: the key is now read from the
+  environment only, and `pipeline/tests/test_no_hardcoded_secrets.py` fails the
+  build if any tracked file carries a secret-shaped literal again.
 - **Backstop:** `.github/workflows/secret-scan.yml` scans the complete current
   HEAD snapshot and tag objects on every push/PR; GitHub-native push protection
   remains the pre-receive prevention layer.

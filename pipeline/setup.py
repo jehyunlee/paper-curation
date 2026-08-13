@@ -46,8 +46,11 @@ def step_config():
     print("=== Paper Curation 초기 설정 ===\n")
     print("[1/6] config.json 생성\n")
 
-    # Zotero 설정
-    api_key = input("  Zotero API Key (https://www.zotero.org/settings/keys): ").strip()
+    # Zotero 설정 — API key 는 config.json 에 저장하지 않는다 (환경변수 전용).
+    if not os.environ.get("ZOTERO_API_KEY", "").strip():
+        print("  · Zotero API Key 는 config.json 이 아니라 환경변수로 관리합니다.")
+        print("    발급: https://www.zotero.org/settings/keys")
+        print("    설정: export ZOTERO_API_KEY=...  ([2/6] 단계에서 다시 확인합니다)")
     email = input("  이메일 (Zotero/Unpaywall용): ").strip()
 
     # 컬렉션 alias 설정
@@ -65,7 +68,6 @@ def step_config():
 
     cfg = {
         "zotero": {
-            "api_key": api_key or "YOUR_ZOTERO_API_KEY_HERE",
             "email": email or "your.email@example.com",
             "collections": {
                 alias or "my_topic": collection_name or "Your Zotero Collection Name"
@@ -94,12 +96,17 @@ def step_config():
 # 각 항목: env 변수명 → config.json 필드 경로(path) → 없으면 안 되는 이유(why).
 # env 또는 config.json 어느 한쪽에라도 값이 있으면 통과하고, 둘 다 비면 직접
 # 입력받아 config.json 에 저장한다 (config.json 은 .gitignore 로 보호됨).
+#
+# 예외: "env_only": True 인 항목은 config.json 에 절대 쓰지 않고 환경변수에만
+# 둔다. ZOTERO_API_KEY 가 여기 해당한다 — 이 키가 소스에 하드코딩돼 public
+# master 로 유출된 사고(2026-08-13) 이후 저장 경로 자체를 없앴다.
 # OPENAI_API_KEY 는 더 이상 필수가 아니다 — Deep Research 임베딩이 Gemini 로 이동.
 REQUIRED_KEYS = [
     {
         "env": "ZOTERO_API_KEY",
-        "path": ("zotero", "api_key"),
-        "placeholder": "YOUR_ZOTERO_API_KEY_HERE",
+        "env_only": True,
+        # 예전 설치본이 여기에 키를 저장했다. 발견하면 회수한다.
+        "legacy_path": ("zotero", "api_key"),
         "why": "Zotero 컬렉션·PDF 가져오기",
         "issue": "https://www.zotero.org/settings/keys",
         "prompt": "Zotero API Key",
@@ -146,13 +153,33 @@ def _cfg_set(cfg, path, value):
     node[path[-1]] = value
 
 
+def _cfg_unset(cfg, path):
+    """중첩 path 의 값을 지운다. 실제로 지웠으면 True.
+
+    예전 설치본이 config.json 에 남긴 비밀값(zotero.api_key)을 회수하는 용도다."""
+    node = cfg
+    for k in path[:-1]:
+        if not isinstance(node, dict):
+            return False
+        node = node.get(k)
+    if isinstance(node, dict) and path[-1] in node:
+        del node[path[-1]]
+        return True
+    return False
+
+
 def _key_value(cfg, spec):
     """필수 키를 env → config.json 순으로 찾는다. placeholder 는 빈 값 취급.
+
+    "env_only": True 인 스펙은 config.json 을 아예 보지 않는다 — 그 키는
+    환경변수 말고는 존재해선 안 된다.
 
     반환: (value, source) — 값이 없으면 ("", None)."""
     env_val = os.environ.get(spec["env"], "").strip()
     if env_val:
         return env_val, "env"
+    if spec.get("env_only"):
+        return "", None
     cfg_val = _cfg_get(cfg, spec["path"]).strip()
     if cfg_val and cfg_val != spec.get("placeholder"):
         return cfg_val, "config.json"
@@ -171,7 +198,12 @@ def _prompt_required(spec):
     print()
     print(f"  ✗ {spec['env']} 미설정 — {spec['why']}에 필요합니다.")
     print(f"    발급: {spec['issue']}")
-    print("    지금 입력하면 config.json 에 저장되어 다음 실행에서도 자동 사용됩니다.")
+    if spec.get("env_only"):
+        print("    이 키는 config.json 에 저장하지 않습니다 (환경변수 전용).")
+        print(f"    이번 실행에만 적용되므로, 셸 설정에 `export {spec['env']}=...` 를")
+        print("    추가해야 다음 실행에서도 유지됩니다.")
+    else:
+        print("    지금 입력하면 config.json 에 저장되어 다음 실행에서도 자동 사용됩니다.")
     print("    입력을 건너뛰면 설치가 여기서 중단됩니다.")
     user_input = input(f"    {spec['prompt']} (Enter 로 중단): ").strip()
     if not user_input:
@@ -190,6 +222,10 @@ def step_env_check(cfg):
     config 에도 반영해 downstream(config_loader / Zotero 연결 테스트)이 항상 읽도록 한다.
     입력을 건너뛰면 sys.exit(1) 로 설치를 중단한다 (config.json 은 .gitignore 보호).
 
+    단 "env_only" 키(ZOTERO_API_KEY)는 config.json 에 쓰지 않고 프로세스 환경에만
+    싣는다. config.json 은 백업·동기화로 새어나가는 파일이고, 실제로 이 키가
+    소스에 박힌 채 public master 에 올라간 적이 있다(2026-08-13).
+
     OPENAI_API_KEY 는 더 이상 필수가 아니다 — Deep Research 임베딩이 Gemini 로
     이동했다. reader BYOK 답변 백엔드 / insights fallback 으로만 선택적으로 유용."""
     print("\n[2/6] Core API 키 확인")
@@ -201,8 +237,15 @@ def step_env_check(cfg):
             value = _prompt_required(spec)
             source = "입력"
         os.environ[spec["env"]] = value
-        # config 에 아직 정확히 반영 안 된 값이면 저장 (env-only → config 영속화 포함)
-        if _cfg_get(cfg, spec["path"]).strip() != value:
+        if spec.get("env_only"):
+            # 환경변수 전용 키는 절대 config.json 에 남기지 않는다.
+            # 예전 설치본이 저장해둔 값이 있으면 이 자리에서 회수한다.
+            legacy = spec.get("legacy_path")
+            if legacy and _cfg_unset(cfg, legacy):
+                dirty = True
+                print(f"  · config.json 의 {'.'.join(legacy)} 제거 — 환경변수 전용으로 전환")
+        elif _cfg_get(cfg, spec["path"]).strip() != value:
+            # config 에 아직 정확히 반영 안 된 값이면 저장
             _cfg_set(cfg, spec["path"], value)
             dirty = True
         print(f"  ✓ {spec['env']} 설정됨 ({source}) — {spec['why']}")
@@ -225,9 +268,9 @@ def step_zotero_test(cfg):
 
     print("\n[3/6] Zotero 연결 테스트")
 
-    api_key = cfg.get("zotero", {}).get("api_key", "")
-    if not api_key or api_key == "YOUR_ZOTERO_API_KEY_HERE":
-        print("  ✗ Zotero API key가 설정되지 않았습니다")
+    api_key = os.environ.get("ZOTERO_API_KEY", "").strip()
+    if not api_key:
+        print("  ✗ ZOTERO_API_KEY 환경변수가 설정되지 않았습니다")
         return False
 
     # User ID 조회

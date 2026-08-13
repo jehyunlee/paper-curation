@@ -247,17 +247,20 @@ def check_config(rep, cfg):
 
     zot = cfg.get("zotero", {}) if isinstance(cfg.get("zotero"), dict) else {}
 
-    # zotero.api_key — placeholder 는 미설정 취급
-    api_key = str(zot.get("api_key", "")).strip()
-    if api_key and api_key != "YOUR_ZOTERO_API_KEY_HERE":
-        rep.ok("zotero.api_key", "설정됨")
-    elif os.environ.get("ZOTERO_API_KEY", "").strip():
-        rep.ok("zotero.api_key", "env ZOTERO_API_KEY 로 대체")
+    # Zotero API key — 환경변수 전용. config.json 에 남아있으면 유출 위험으로 경고.
+    if os.environ.get("ZOTERO_API_KEY", "").strip():
+        rep.ok("ZOTERO_API_KEY", "env 설정됨")
     else:
         rep.fail(
-            "zotero.api_key 미설정",
+            "ZOTERO_API_KEY 미설정",
             "Zotero 컬렉션·PDF 가져오기에 필요",
-            "https://www.zotero.org/settings/keys 에서 발급 후 config.json 에 기입",
+            "https://www.zotero.org/settings/keys 에서 발급 후 export ZOTERO_API_KEY=...",
+        )
+    if str(zot.get("api_key", "")).strip():
+        rep.warn(
+            "config.json 에 zotero.api_key 잔존",
+            "파이프라인은 더 이상 이 값을 읽지 않지만, 백업·동기화로 새어나갈 수 있습니다",
+            "config.json 에서 zotero.api_key 줄을 삭제하세요 (환경변수만 사용)",
         )
 
     # zotero.collections — 최소 1개
@@ -391,9 +394,13 @@ def check_zotero(rep, cfg, do_network):
         rep.note("Zotero API 연결 테스트는 생략됨 (--network 로 활성화)")
         return
 
-    api_key = (str(zot.get("api_key", "")).strip() or os.environ.get("ZOTERO_API_KEY", "").strip())
-    if not api_key or api_key == "YOUR_ZOTERO_API_KEY_HERE":
-        rep.fail("Zotero API 연결 불가", "API key 미설정", "config.json 의 zotero.api_key 지정")
+    api_key = os.environ.get("ZOTERO_API_KEY", "").strip()
+    if not api_key:
+        rep.fail(
+            "Zotero API 연결 불가",
+            "ZOTERO_API_KEY 환경변수 미설정",
+            "export ZOTERO_API_KEY=... (config.json 의 zotero.api_key 는 읽지 않음)",
+        )
         return
 
     # User ID 조회

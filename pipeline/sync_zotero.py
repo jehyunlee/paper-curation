@@ -25,8 +25,7 @@ PAPERS_DIR = str(_PAPERS_DIR)
 
 from config_loader import get_zotero_api_key, get_zotero_user_id, get_collections, _ssl_ctx
 
-API_KEY = get_zotero_api_key()
-USER_ID = get_zotero_user_id()
+# Zotero 자격증명은 호출 지점에서 해석한다 (import 시 키 요구·네트워크 왕복 없음).
 COLLECTIONS = get_collections()
 
 
@@ -57,10 +56,10 @@ def fetch_zotero_items(collection_key):
     items = []
     start = 0
     while True:
-        url = (f"https://api.zotero.org/users/{USER_ID}/collections/"
+        url = (f"https://api.zotero.org/users/{get_zotero_user_id()}/collections/"
                f"{collection_key}/items/top?limit=100&start={start}&format=json")
         req = urllib.request.Request(url, headers={
-            "Zotero-API-Key": API_KEY, "User-Agent": "Mozilla/5.0"
+            "Zotero-API-Key": get_zotero_api_key(), "User-Agent": "Mozilla/5.0"
         })
         with urllib.request.urlopen(req, timeout=30, context=_ssl_ctx) as resp:
             batch = json.load(resp)

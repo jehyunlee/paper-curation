@@ -29,6 +29,26 @@ RAW_PATTERNS = (
     ("AWS access key", re.compile(rb"AKIA[0-9A-Z]{16}")),
     ("GitHub token", re.compile(rb"gh[pousr]_[A-Za-z0-9]{20,}")),
     ("Google API key", re.compile(rb"AIza[0-9A-Za-z_-]{35}")),
+    ("Resend API key", re.compile(rb"\bre_[A-Za-z0-9]{20,}")),
+    # Zotero keys are 24 bare alphanumerics — no vendor prefix to anchor on, so
+    # anchor on the binding instead. This is the shape that got a live key onto
+    # public master in pipeline/_archive/_batch_zotero.py (2026-08-13):
+    #     os.environ.get("ZOTERO_API_KEY", "<24 chars>")
+    # A prefix-only scanner cannot see it, which is why it shipped.
+    ("Zotero API key", re.compile(
+        rb"""(?ix)
+        (?: zotero[-_ ]?api[-_ ]?key | zotero[-_ ]?key )
+        \s* ["']? \s* [=:,] \s* ["']
+        [A-Za-z0-9]{20,32}
+        ["']
+        """)),
+    ("hardcoded credential", re.compile(
+        rb"""(?ix)
+        \b (?: api[-_]?key | apikey | secret | token | password ) \b
+        ["']? \s* [=:] \s* ["']       # JSON ("api_key": "...") and code (api_key = "...")
+        [A-Za-z0-9_\-]{20,}
+        ["']
+        """)),
 )
 BASE64_TOKEN = re.compile(rb"(?<![A-Za-z0-9+/=])[A-Za-z0-9+/]{24,}={0,2}(?![A-Za-z0-9+/=])")
 WHITESPACE = re.compile(rb"\s+")

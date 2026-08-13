@@ -53,8 +53,7 @@ from config_loader import (
     _ssl_ctx,
 )
 
-API_KEY = get_zotero_api_key()
-USER_ID = get_zotero_user_id()
+# Zotero 자격증명은 호출 지점에서 해석한다 (import 시 키 요구·네트워크 왕복 없음).
 ZOTERO_DIR = get_zotero_dir()
 LOGS_DIR = PROJECT_ROOT / "pipeline" / "_logs"
 
@@ -71,10 +70,10 @@ _STOP = {
 # ── Zotero API ────────────────────────────────────────────────────────────────
 
 def _api(endpoint, params=None, retries=4):
-    base = f"https://api.zotero.org/users/{USER_ID}/{endpoint}"
+    base = f"https://api.zotero.org/users/{get_zotero_user_id()}/{endpoint}"
     if params:
         base += "?" + urllib.parse.urlencode(params)
-    headers = {"Zotero-API-Key": API_KEY, "User-Agent": "paper-curation-audit/1.0"}
+    headers = {"Zotero-API-Key": get_zotero_api_key(), "User-Agent": "paper-curation-audit/1.0"}
     last = None
     for attempt in range(retries):
         try:
@@ -112,10 +111,10 @@ def list_children(item_key):
 
 def _api_patch(item_key, fields, version):
     """PATCH 부분 업데이트 (지정 필드만). If-Unmodified-Since-Version 필수."""
-    url = f"https://api.zotero.org/users/{USER_ID}/items/{item_key}"
+    url = f"https://api.zotero.org/users/{get_zotero_user_id()}/items/{item_key}"
     body = json.dumps(fields).encode("utf-8")
     headers = {
-        "Zotero-API-Key": API_KEY,
+        "Zotero-API-Key": get_zotero_api_key(),
         "User-Agent": "paper-curation-audit/1.0",
         "Content-Type": "application/json",
         "If-Unmodified-Since-Version": str(version),

@@ -255,8 +255,10 @@ if TOPIC_MODELING_PYTHON != sys.executable:
 
 ZOTERO_DIR = get_zotero_dir()
 
-API_KEY = get_zotero_api_key()
-USER_ID = get_zotero_user_id()
+# Zotero 자격증명은 import 시점이 아니라 실제 호출 지점에서 해석한다.
+# USER_ID 조회는 API key 를 쓰는 네트워크 왕복이라, import 시 부르면 (a) 키가
+# 없는 환경에서 import 만으로 죽고 (b) 매 import 마다 Zotero 를 두드린다.
+# get_zotero_api_key() 는 환경변수 조회, get_zotero_user_id() 는 캐시된다.
 COLLECTIONS = get_collections()
 
 # Checkpoint
@@ -403,14 +405,14 @@ def fetch_zotero_items(collection_key):
     items = []
     start = 0
     while True:
-        url = (f"https://api.zotero.org/users/{USER_ID}/collections/"
+        url = (f"https://api.zotero.org/users/{get_zotero_user_id()}/collections/"
                f"{collection_key}/items/top?limit=100&start={start}&format=json&sort=title")
         # Korea-to-Zotero links drop connections mid-stream; retry with exp backoff.
         last_err = None
         batch = None
         for attempt in range(5):
             try:
-                req = urllib.request.Request(url, headers={"Zotero-API-Key": API_KEY})
+                req = urllib.request.Request(url, headers={"Zotero-API-Key": get_zotero_api_key()})
                 with urllib.request.urlopen(req, timeout=30, context=_ssl_ctx) as resp:
                     batch = json.load(resp)
                 break
@@ -487,8 +489,8 @@ def find_pdf(item):
 
     # Priority 1: Zotero children API (authoritative attachment path)
     try:
-        url = f"https://api.zotero.org/users/{USER_ID}/items/{key}/children?format=json"
-        req = urllib.request.Request(url, headers={"Zotero-API-Key": API_KEY})
+        url = f"https://api.zotero.org/users/{get_zotero_user_id()}/items/{key}/children?format=json"
+        req = urllib.request.Request(url, headers={"Zotero-API-Key": get_zotero_api_key()})
         with urllib.request.urlopen(req, timeout=10, context=_ssl_ctx) as resp:
             children = json.load(resp)
         for c in children:

@@ -1,6 +1,6 @@
 {
   "zotero": {
-    "api_key": "YOUR_ZOTERO_API_KEY_HERE",
+    "_comment_api_key": "Zotero API key 는 여기에 쓰지 않습니다. 환경변수 ZOTERO_API_KEY 만 읽습니다.",
     "email": "your.email@example.com",
     "collections": {
       "my_topic": "Your Zotero Collection Name"

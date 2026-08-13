@@ -35,8 +35,7 @@ from config_loader import (
 )
 from lib.bib_enrich import enrich as enrich_bib, to_zotero_item
 
-API_KEY = get_zotero_api_key()
-USER_ID = get_zotero_user_id()
+# Zotero 자격증명은 호출 지점에서 해석한다 (import 시 키 요구·네트워크 왕복 없음).
 ZOTERO_DIR = get_zotero_dir()
 UNPAYWALL_EMAIL = get_unpaywall_email()
 
@@ -61,7 +60,7 @@ def safe_filename(title, max_len=80):
 
 def zotero_api(endpoint, method="GET", data=None, params=None):
     """Zotero Web API 호출. JSON 반환."""
-    base_url = f"https://api.zotero.org/users/{USER_ID}/{endpoint}"
+    base_url = f"https://api.zotero.org/users/{get_zotero_user_id()}/{endpoint}"
     if params:
         base_url += "?" + urllib.parse.urlencode(params)
 
@@ -71,7 +70,7 @@ def zotero_api(endpoint, method="GET", data=None, params=None):
         data=body,
         method=method,
         headers={
-            "Zotero-API-Key": API_KEY,
+            "Zotero-API-Key": get_zotero_api_key(),
             "Content-Type": "application/json",
             "User-Agent": "paper-curation/1.0",
         },
@@ -568,12 +567,12 @@ def _is_metadata_thin(d):
 
 def _patch_item(item_key, version, patch):
     """단일 아이템 PATCH. version 은 If-Unmodified-Since-Version 헤더로."""
-    base_url = f"https://api.zotero.org/users/{USER_ID}/items/{item_key}"
+    base_url = f"https://api.zotero.org/users/{get_zotero_user_id()}/items/{item_key}"
     body = json.dumps(patch).encode("utf-8")
     req = urllib.request.Request(
         base_url, data=body, method="PATCH",
         headers={
-            "Zotero-API-Key": API_KEY,
+            "Zotero-API-Key": get_zotero_api_key(),
             "Content-Type": "application/json",
             "If-Unmodified-Since-Version": str(version),
             "User-Agent": "paper-curation/1.0",

@@ -29,7 +29,7 @@ Claude Code가 자동으로 다음 과정을 수행합니다:
 
 1. **레포지토리 클론** 및 **Python 의존성 설치**
 2. **인터랙티브 설정** — 아래 항목을 차례로 질문합니다:
-   - Zotero API Key (또는 `ZOTERO_API_KEY` 환경변수 사용)
+   - (Zotero API Key 는 묻지 않습니다 — `ZOTERO_API_KEY` 환경변수 전용)
    - 이메일 (Zotero/Unpaywall용)
    - 컬렉션 alias — 파이프라인에서 `--topic` 인자로 사용할 짧은 이름 (예: `bioml`, `climate`)
    - Zotero 컬렉션 이름 — alias에 매핑할 실제 Zotero 컬렉션
@@ -81,7 +81,7 @@ python pipeline/setup.py
 ```json
 {
   "zotero": {
-    "api_key": "your_zotero_api_key",
+    "_comment": "Zotero API key 는 여기 두지 않습니다 — 환경변수 ZOTERO_API_KEY 전용",
     "email": "your_email@example.com",
     "collections": {
       "my_topic": "My Zotero Collection Name"
@@ -101,20 +101,25 @@ python pipeline/setup.py
 
 | Field | Description |
 |-------|-------------|
-| `api_key` | Zotero API key ([Settings → Feeds/API](https://www.zotero.org/settings/keys)) |
+| ~~`api_key`~~ | **config.json 에 두지 않습니다.** Zotero API key 는 환경변수 `ZOTERO_API_KEY` 에서만 읽습니다 ([발급](https://www.zotero.org/settings/keys)) |
 | `email` | 이메일 (Zotero 및 Unpaywall용) |
 | `collections` | Topic alias → Zotero 컬렉션 이름 매핑. Collection key는 Zotero API를 통해 자동 변환됩니다. |
 | `pdf_dir` | Zotero PDF가 저장된 로컬 경로 |
 | `search_keywords` | 토픽별 Core-1 검색 키워드 (`{topic: {primary: [...], secondary: [...]}}`). `primary` 매칭 0.5점, `secondary` 0.2점. `ai4s`/`scisci` 는 빌트인 기본값이 있어 생략 가능하고, 그 외 신규 토픽은 여기에 추가합니다. (선택) |
 | `paperbanana_dir` | [PaperBanana](https://github.com/dwzhu-pku/PaperBanana) clone 경로 (선택) |
 
-### 환경변수 (선택)
+### 환경변수
 
-`config.json` 대신 환경변수로도 설정할 수 있습니다:
+`ZOTERO_API_KEY` 는 **필수이며 환경변수 전용**입니다 — 파이프라인은 `config.json` 의
+`zotero.api_key` 를 읽지 않습니다. 나머지 키는 `config.json` 으로도 설정할 수 있습니다.
+
+```bash
+export ZOTERO_API_KEY=...   # ~/.zshrc 등 셸 설정에 넣어 두세요
+```
 
 | 환경변수 | 용도 |
 |----------|------|
-| `ZOTERO_API_KEY` | Zotero API key |
+| `ZOTERO_API_KEY` | Zotero API key (**환경변수 전용 — config.json 불가**) |
 | `ZOTERO_USER_ID` | Zotero user ID |
 | `ZOTERO_DIR` | Zotero PDF 저장 경로 |
 | `ANTHROPIC_API_KEY` | Claude API key (리뷰·인사이트 — 필수) |
@@ -210,12 +215,12 @@ pipeline/generate_timelines.py
 
 ```
 config.json
-  ├── zotero.api_key     → 모든 Zotero API 호출
+  ├── (Zotero API key)   → config.json 이 아니라 환경변수 ZOTERO_API_KEY
   ├── zotero.email       → Zotero 계정 식별
   ├── zotero.collections → Topic alias → Collection name
   │     ↓ (자동 변환)
   │   Zotero API: name → collection key
-  │   Zotero API: api_key → user ID
+  │   Zotero API: ZOTERO_API_KEY → user ID
   └── unpaywall_email    → Open Access PDF 조회
 ```
 

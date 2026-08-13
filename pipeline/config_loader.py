@@ -50,7 +50,6 @@ def load_config():
     else:
         _config_cache = {
             "zotero": {
-                "api_key": os.environ.get("ZOTERO_API_KEY", ""),
                 "email": os.environ.get("UNPAYWALL_EMAIL", ""),
                 "collections": {},
             },
@@ -61,8 +60,20 @@ def load_config():
 
 
 def get_zotero_api_key():
-    cfg = load_config()
-    return cfg.get("zotero", {}).get("api_key", "") or os.environ.get("ZOTERO_API_KEY", "")
+    """Zotero API key. 환경변수 ZOTERO_API_KEY 가 유일한 출처다.
+
+    예전에는 config.json 의 zotero.api_key 를 먼저 읽었다. 그 경로를 없앤 이유:
+    config.json 은 .gitignore 로 보호되지만 백업·클라우드 동기화·붙여넣기로
+    쉽게 새어나가고, 한 번이라도 커밋되면 회수가 불가능하다 (2026-08-13,
+    pipeline/_archive/_batch_zotero.py 에 하드코딩된 키가 public master 로
+    유출된 사고). 비밀값은 프로세스 환경에만 둔다.
+
+    미설정 시 빈 문자열을 반환한다 — 여러 모듈이 import 시점에 이 함수를
+    호출하므로 (register_zotero / run_update_force / sync_zotero 등) 여기서
+    예외를 던지면 Zotero 를 쓰지 않는 단계까지 import 만으로 죽는다. 실제
+    Zotero 호출이 필요한 지점은 get_zotero_user_id() 가 막는다.
+    """
+    return os.environ.get("ZOTERO_API_KEY", "").strip()
 
 
 def get_google_key():
@@ -141,7 +152,12 @@ def get_zotero_user_id():
 
     api_key = get_zotero_api_key()
     if not api_key:
-        raise ValueError("Zotero API key not found. Set config.json or ZOTERO_API_KEY env var.")
+        raise ValueError(
+            "ZOTERO_API_KEY 환경변수가 설정되지 않았습니다. "
+            "https://www.zotero.org/settings/keys 에서 키를 발급한 뒤 "
+            "`export ZOTERO_API_KEY=...` 로 설정하세요. "
+            "config.json 의 zotero.api_key 는 더 이상 읽지 않습니다."
+        )
 
     try:
         url = "https://api.zotero.org/keys/current"
@@ -162,10 +178,13 @@ def _fetch_collection_keys():
     if _collection_key_cache is not None:
         return _collection_key_cache
 
-    api_key = get_zotero_api_key()
-    user_id = get_zotero_user_id()
-
     try:
+        # 자격증명 해석도 try 안에 둔다. 키가 없으면 get_zotero_user_id() 가
+        # ValueError 를 던지는데, 이 함수는 이미 "실패하면 빈 매핑 + 경고" 라는
+        # 계약을 갖고 있다. 밖에서 던지면 collections 를 모듈 로드 시점에
+        # 해석하는 스크립트가 import 만으로 죽는다.
+        api_key = get_zotero_api_key()
+        user_id = get_zotero_user_id()
         url = f"https://api.zotero.org/users/{user_id}/collections?format=json&limit=100"
         req = urllib.request.Request(url, headers={
             "Zotero-API-Key": api_key, "User-Agent": "Mozilla/5.0",

@@ -27,7 +27,7 @@ pip install anthropic google-genai pymupdf Pillow requests opendataloader-pdf
 
 ### Step 2: config.json 생성
 사용자에게 아래 정보를 **하나씩 질문**하고 config.json을 생성한다:
-1. **Zotero API Key** — 환경변수 `ZOTERO_API_KEY`가 있으면 자동 사용, 없으면 질문
+1. **Zotero API Key** — **환경변수 `ZOTERO_API_KEY` 전용.** `config.json` 에 저장하지 않고 묻지도 않는다. 없으면 발급 링크를 안내하고 설치를 중단한다 (과거 이 키가 소스에 하드코딩된 채 public master 로 유출된 사고가 있었다 — 2026-08-13)
 2. **이메일** — Zotero/Unpaywall용
 3. **Zotero 컬렉션 이름** — "Zotero에서 큐레이션할 컬렉션 이름이 뭔가요?"
 4. **Topic alias** — "앞으로 이 Collection의 Paper Curation을 운영하려면 부르기 편한 이름을 하나 정하는 게 좋습니다. 짧은 이름을 하나 지어주세요. 뭐라고 부를까요?" (예: `bioml`, `climate`)

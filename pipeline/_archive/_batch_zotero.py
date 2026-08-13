@@ -1,13 +1,38 @@
-"""Batch register papers 111-507 from awesome-humanoid CSV to Zotero Humanoid collection."""
+"""Batch register papers 111-507 from awesome-humanoid CSV to Zotero Humanoid collection.
+
+일회성 마이그레이션 스크립트(보관용). 자격증명·계정 식별자·로컬 경로는 전부
+환경변수에서만 읽는다 — 이 파일에 Zotero API key 가 하드코딩돼 있다가 public
+master 로 유출된 적이 있다(2026-08-13). 상수로 되돌리지 말 것.
+
+실행 예::
+
+    export ZOTERO_API_KEY=...            # 필수
+    export ZOTERO_USER_ID=...            # 필수
+    export ZOTERO_COLLECTION_KEY=...     # 필수 (대상 컬렉션)
+    export ZOTERO_DIR=/path/to/pdfs      # 필수 (PDF 저장 위치)
+    export BATCH_CSV_PATH=/path/to/awesome-humanoid-robot-learning.csv
+"""
 import csv, json, os, re, sys, time, urllib.request, xml.etree.ElementTree as ET
 from pathlib import Path
 from pyzotero import zotero
 
-API_KEY = os.environ.get("ZOTERO_API_KEY", "4R2R3iQKe7I7NBHWlCWDRk8X")
-USER_ID = "1356104"
-COLLECTION_KEY = "UEGVPZW7"  # Humanoid
-PDF_DIR = Path(r"C:\Users\jehyu\GoogleDrive\Zotero")
-CSV_PATH = Path(r"C:\Users\jehyu\Arbeitplatz\claude_output\awesome-humanoid-robot-learning.csv")
+
+def _require_env(name):
+    """비밀값·계정 식별자는 환경변수에만 존재한다. 없으면 즉시 중단."""
+    value = os.environ.get(name, "").strip()
+    if not value:
+        sys.exit(
+            f"{name} 환경변수가 필요합니다. 이 스크립트는 자격증명을 "
+            f"소스코드나 config.json 에서 읽지 않습니다."
+        )
+    return value
+
+
+API_KEY = _require_env("ZOTERO_API_KEY")
+USER_ID = _require_env("ZOTERO_USER_ID")
+COLLECTION_KEY = _require_env("ZOTERO_COLLECTION_KEY")
+PDF_DIR = Path(_require_env("ZOTERO_DIR"))
+CSV_PATH = Path(_require_env("BATCH_CSV_PATH"))
 
 zot = zotero.Zotero(USER_ID, "user", API_KEY)
 NS = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
