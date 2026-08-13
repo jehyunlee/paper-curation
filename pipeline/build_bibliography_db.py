@@ -669,6 +669,12 @@ _MARKER_AFTER_NAME = re.compile(
 _MARKER_HEAD = re.compile(r"^(" + _MARKER_ATOM + r")\s*(.+)$")
 
 
+_LIGATURES = str.maketrans({
+    "æ": "ae", "Æ": "AE", "ø": "o", "Ø": "O", "ß": "ss",
+    "œ": "oe", "Œ": "OE", "ł": "l", "Ł": "L", "đ": "d",
+    "Đ": "D", "þ": "th", "Þ": "TH", "ð": "d", "Ð": "D",
+    "ı": "i", "ŧ": "t", "ħ": "h",
+})
 _SPACING_ACCENTS = {ord(ch): None for ch in
                     "\u00a8\u00b4\u0060\u005e\u02c6\u02dc"
                     "\u00af\u02da\u02dd\u02d8\u02c7\u00b0"}
@@ -686,6 +692,10 @@ def _fold(token: str) -> str:
     # U+00A8 into a space plus a combining mark, and the space would then split
     # the surname in two. They never occur inside a real name.
     folded = (token or "").translate(_SPACING_ACCENTS)
+    # NFKD does not touch these: they are letters in their own right, not
+    # composed characters. A PDF prints "Biskjaer" where Zotero records
+    # "Biskjær", and without this the two are different people.
+    folded = folded.translate(_LIGATURES)
     folded = unicodedata.normalize("NFKD", folded)
     folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
     return folded.lower().strip(".,'\u2019-")
@@ -1103,7 +1113,7 @@ def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
         resolved = author_on(line)
         if not resolved or resolved in out:
             continue
-        block = []
+        block, email = [], ""
         for follower in lines[index + 1:index + 7]:
             if not follower or _FRONT_MATTER_END.match(follower):
                 break
@@ -1113,11 +1123,17 @@ def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
             # block either: this template right-aligns it beside the name, so
             # PyMuPDF emits name, e-mail, affiliation in that order.
             if _EMAIL_LINE.search(follower):
+                email = email or _EMAIL_LINE.search(follower).group(0)
                 continue
             block.append(follower)
         text = ", ".join(block).strip(" ,")
         if text and _AFFILIATION_ORG_CUE.search(text):
             out[resolved] = text
+        elif email:
+            # Some templates print only the address: "Grégoire Mialon" then
+            # "gmialon@meta.com" and straight on to the next author. The
+            # caller resolves the domain against the paper's own institutions.
+            out[resolved] = email
     return out if len(out) >= 2 else {}
 
 
@@ -3893,13 +3909,20 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     # with no marker anywhere; PyMuPDF reads them in order.
                     stacked = stacked_author_affiliations(
                         header, [name for _, name, _ in authors])
-                    rows = [
-                        (pid, aid, iid, None, order, "pdf.stacked-byline")
-                        for aid, name, order in authors
-                        if name in stacked
-                        for iid in [best_institution_for(stacked[name],
-                                                         institutions)]
-                        if iid is not None]
+                    rows = []
+                    for aid, name, order in authors:
+                        value = stacked.get(name)
+                        if not value:
+                            continue
+                        iid = best_institution_for(value, institutions)
+                        if iid is None and "@" in value:
+                            # The stacked block can be an e-mail rather than a
+                            # name: "Grégoire Mialon / gmialon@meta.com". The
+                            # domain says which institution that is.
+                            iid = institution_for_email(value, institutions)
+                        if iid is not None:
+                            rows.append((pid, aid, iid, None, order,
+                                         "pdf.stacked-byline"))
                 if not rows and institutions:
                     # ACS states the mapping in a back-matter block instead of
                     # a byline: "Yousung Jung -Department of Chemical and

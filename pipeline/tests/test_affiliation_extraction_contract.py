@@ -1045,5 +1045,56 @@ class OneAuthorPerLineTests(unittest.TestCase):
         self.assertEqual(got, {})
 
 
+class LigatureFoldingTests(unittest.TestCase):
+    """NFKD leaves these alone: they are letters, not composed characters."""
+
+    def test_ae_folds_to_ae(self):
+        # The PDF prints "Biskjaer" where Zotero records "Biskjær"; without
+        # this they are two different people and the byline loses an author.
+        self.assertEqual(bib._fold("Biskjær"), bib._fold("Biskjaer"))
+
+    def test_the_other_letters_fold_too(self):
+        for pair in (("Søndergaard", "Sondergaard"), ("Straße", "Strasse"),
+                     ("Łukasz", "Lukasz"), ("Œuvre", "Oeuvre")):
+            with self.subTest(pair=pair):
+                self.assertEqual(bib._fold(pair[0]), bib._fold(pair[1]))
+
+    def test_ordinary_accents_still_fold(self):
+        self.assertEqual(bib._fold("Dessì"), bib._fold("Dessi"))
+
+
+class StackedEmailTests(unittest.TestCase):
+    """A stacked byline can print the address instead of the affiliation."""
+
+    HEADER = ("Augmented Language Models: a Survey\n"
+              "Grégoire Mialon∗\n"
+              "gmialon@meta.com\n"
+              "Roberto Dessì∗†\n"
+              "rdessi@meta.com\n"
+              "Maria Lomeli∗\n"
+              "marialomeli@meta.com\n")
+    AUTHORS = ["G. Mialon", "Roberto Dessì", "M. Lomeli"]
+
+    def test_the_address_is_returned_when_no_name_follows(self):
+        got = bib.stacked_author_affiliations(self.HEADER, self.AUTHORS)
+        self.assertEqual(got["Roberto Dessì"], "rdessi@meta.com")
+
+    def test_the_domain_resolves_to_the_papers_institution(self):
+        got = bib.stacked_author_affiliations(self.HEADER, self.AUTHORS)
+        self.assertEqual(
+            bib.institution_for_email(got["G. Mialon"],
+                                      [(1, "Meta"), (2, "Pompeu Fabra University")]),
+            1)
+
+    def test_a_real_affiliation_still_wins_over_the_address(self):
+        header = ("Title\nAlwin de Rooij\nTilburg University\n"
+                  "alwinderooij@tilburguniversity.edu\n"
+                  "Michael Mose Biskjaer\nAarhus University\nmmb@cc.au.dk\n")
+        got = bib.stacked_author_affiliations(
+            header, ["Alwin de Rooij", "Michael Mose Biskjær"])
+        self.assertIn("Tilburg University", got["Alwin de Rooij"])
+        self.assertIn("Aarhus University", got["Michael Mose Biskjær"])
+
+
 if __name__ == "__main__":
     unittest.main()
