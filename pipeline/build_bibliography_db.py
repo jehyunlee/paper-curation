@@ -3934,7 +3934,8 @@ def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
 
 def backfill_author_institutions(db_path: Path, limit: int | None = None,
                                  retry_guessed: bool = True,
-                                 offline: bool = False) -> dict:
+                                 offline: bool = False,
+                                 recompute: bool = False) -> dict:
     """Fill `paper_author_institutions` for papers built before it existed.
 
     The mapping derives from `text.md` and the paper's existing institution
@@ -3954,10 +3955,28 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
         conn.execute("PRAGMA busy_timeout = 60000")
         conn.execute("PRAGMA foreign_keys = ON")
         try:
-            pending = conn.execute(
-                "SELECT p.paper_id, p.slug FROM papers p WHERE NOT EXISTS("
-                " SELECT 1 FROM paper_author_institutions pai"
-                " WHERE pai.paper_id=p.paper_id) ORDER BY p.paper_id").fetchall()
+            if recompute:
+                # Every PDF-derived row is discarded and re-derived. The stored
+                # rows are the output of whatever the parsers were when the
+                # backfill last touched each paper, and a dozen parser changes
+                # later that is a mixture of vintages: 45% of the pairs the
+                # accuracy check compares against OpenAlex are rows the current
+                # parsers no longer produce at all. Publisher deposits
+                # (openalex, scopus) and llm.byline are left alone; they do not
+                # come from these parsers.
+                conn.execute(
+                    "DELETE FROM paper_author_institutions"
+                    " WHERE source LIKE 'pdf.%'")
+                pending = conn.execute(
+                    "SELECT paper_id, slug FROM papers"
+                    " ORDER BY paper_id").fetchall()
+                retry_guessed = False
+            else:
+                pending = conn.execute(
+                    "SELECT p.paper_id, p.slug FROM papers p WHERE NOT EXISTS("
+                    " SELECT 1 FROM paper_author_institutions pai"
+                    " WHERE pai.paper_id=p.paper_id) ORDER BY p.paper_id"
+                ).fetchall()
             if retry_guessed:
                 pending += conn.execute(
                     "SELECT p.paper_id, p.slug FROM papers p WHERE EXISTS("
@@ -4359,6 +4378,8 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=20260807)
     ap.add_argument("--output", type=Path, default=DEFAULT_DB)
     ap.add_argument("--update-zotero", action="store_true")
+    ap.add_argument("--recompute-author-institutions", action="store_true",
+                    help="PDF 유래 링크를 전량 폐기하고 현재 파서로 다시 만든다")
     ap.add_argument("--backfill-author-institutions", action="store_true",
                     help="text.md 바이라인 첨자로 저자↔기관 링크만 채운다 "
                          "(Zotero·Scopus·PDF 접근 없음)")
@@ -4371,8 +4392,9 @@ def main() -> int:
     ap.add_argument("--offline", action="store_true",
                     help="use the deterministic offline affiliation registry")
     args = ap.parse_args()
-    if args.backfill_author_institutions:
-        print(json.dumps(backfill_author_institutions(args.output),
+    if args.backfill_author_institutions or args.recompute_author_institutions:
+        print(json.dumps(backfill_author_institutions(
+            args.output, recompute=args.recompute_author_institutions),
                          ensure_ascii=False, indent=2))
         return 0
     entries = load_entries()

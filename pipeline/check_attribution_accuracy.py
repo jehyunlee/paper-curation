@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
-"""Are the author-to-institution links right, not just present.
+"""Author-institution pairs worth a human look, ranked by how wrong they smell.
 
     python pipeline/check_attribution_accuracy.py
-    python pipeline/check_attribution_accuracy.py --source pdf.byline-marker --limit 10
-    python pipeline/check_attribution_accuracy.py --json
+    python pipeline/check_attribution_accuracy.py --limit 30 --json
 
-`check_attribution_regression.py` counts how many papers resolve. Nothing
-counted whether they resolve *correctly*, and the difference is not academic:
-reviewing sixteen papers by hand found four wrong, including an Indonesian
-institute on a Tsinghua paper and "National Center for PTSD" on a nuclear
-materials paper. Both would have gone straight into an institution ranking.
+This was written as an accuracy metric and that was a mistake worth recording.
+It compared what a PDF parser read against what OpenAlex deposited and reported
+the agreement rate, which came out at 0 of 335 and then 1.7% of 1,017. Neither
+number meant what it looked like:
 
-The check is OpenAlex, which carries what the publisher deposited. Where it
-and a PDF parser both answer for the same author on the same paper, they
-should agree; where they do not, one of them is wrong and the pair is worth
-looking at. Institutions are compared by ROR id, falling back to the folded
-name, because OpenAlex mints its own rows for the same organisations.
+    Ming Y. Lu   OpenAlex: Brigham and Women's Hospital, Mass General, MIT
+                 PDF     : Broad Institute, Harvard Medical School
 
-Two things this does not do. It cannot judge a paper OpenAlex has never seen,
-which is most of the corpus. And a disagreement is not proof the PDF side is
-wrong — OpenAlex records the affiliation at publication, and a preprint's
-byline can legitimately differ. Read the pairs, do not just take the rate.
+Both are right. A Harvard Medical School faculty member holding hospital
+appointments is ordinary, and the two sources simply chose different ones. The
+byline of another paper names the National Key Laboratory of Data Space
+Technology and System where OpenAlex names Peking University — the university
+that laboratory belongs to. Rolling up to parents recovered a handful of those
+and could not recover the rest, because only 588 of 3,526 institutions have a
+parent recorded at all.
+
+So there is no agreement rate to report. What the comparison is good for is
+finding the pairs where the two sources are not describing the same place at
+all — "University of Hong Kong" against "Massachusetts Institute of
+Technology" is not a co-affiliation, it is an error in one of them. Those are
+ranked first, by country disagreement, and printed for review.
+
+The only measurements of accuracy this corpus has are hand checks: 88.6% of 70
+pairs when the rendered-page reader was graded against the marker parser, and
+four wrong of sixteen when the shared-byline rule was reviewed by eye. A
+sampled human check is the instrument; this is the thing that decides what to
+sample.
 
 Read-only.
 """
@@ -42,122 +52,124 @@ import build_bibliography_db as bib            # noqa: E402
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
-# Everything derived from the PDF. `pdf.unmarked-multi` is deliberately absent:
-# it links every author to every institution by construction, so measuring it
-# against OpenAlex would measure the fallback, not a parser.
 PDF_SOURCES = ("llm.byline", "pdf.byline-marker", "pdf.inline-affiliation",
                "pdf.author-information", "pdf.stacked-byline",
                "pdf.shared-byline", "pdf.sole-author",
                "pdf.sole-affiliation")
 
 
-def institution_keys(conn: sqlite3.Connection) -> dict[int, str]:
-    """One key per organisation, so two rows for it compare equal."""
-    return {
-        institution_id: (ror or bib._fold(name or ""))
-        for institution_id, name, ror in conn.execute(
-            "SELECT institution_id, institution_name, COALESCE(ror_id,'')"
-            " FROM institutions")}
+def institution_facts(conn: sqlite3.Connection) -> dict[int, dict]:
+    """Name, country and the names this institution may also be called by."""
+    parents: dict[str, str] = {}
+    facts: dict[int, dict] = {}
+    for institution_id, name, ror, parent, country in conn.execute(
+            "SELECT institution_id, institution_name, COALESCE(ror_id,''),"
+            " COALESCE(parent_name,''), COALESCE(country_name_en,'')"
+            " FROM institutions"):
+        keys = {ror or bib._fold(name or "")}
+        if parent:
+            keys.add(bib._fold(parent))
+        facts[institution_id] = {"name": name, "country": country,
+                                 "keys": {k for k in keys if k}}
+        parents[bib._fold(name or "")] = bib._fold(parent) if parent else ""
+    for entry in facts.values():
+        for key in list(entry["keys"]):
+            grand = parents.get(key)
+            if grand:
+                entry["keys"].add(grand)
+    return facts
 
 
-def compare(conn: sqlite3.Connection) -> dict:
-    keys = institution_keys(conn)
-    names = dict(conn.execute(
-        "SELECT institution_id, institution_name FROM institutions"))
+def review_candidates(conn: sqlite3.Connection) -> list[dict]:
+    facts = institution_facts(conn)
     deposited: dict[tuple, set] = defaultdict(set)
-    parsed: dict[str, dict[tuple, set]] = defaultdict(lambda: defaultdict(set))
+    parsed: dict[tuple, set] = defaultdict(set)
+    origin: dict[tuple, str] = {}
     for paper_id, author_id, institution_id, source in conn.execute(
             "SELECT paper_id, author_id, institution_id, source"
             " FROM paper_author_institutions"):
-        key = keys.get(institution_id)
-        if not key:
+        if institution_id not in facts:
             continue
         if source == "openalex":
-            deposited[(paper_id, author_id)].add((key, institution_id))
+            deposited[(paper_id, author_id)].add(institution_id)
         elif source in PDF_SOURCES:
-            parsed[source][(paper_id, author_id)].add((key, institution_id))
+            parsed[(paper_id, author_id)].add(institution_id)
+            origin[(paper_id, author_id)] = source
 
-    report = {"by_source": {}, "pairs": 0, "agree": 0, "partial": 0,
-              "disagree": 0, "detail": []}
-    for source, mapping in parsed.items():
-        agree = partial = disagree = 0
-        for pair, found in mapping.items():
-            reference = deposited.get(pair)
-            if not reference:
-                continue
-            left = {key for key, _ in found}
-            right = {key for key, _ in reference}
-            if left == right:
-                agree += 1
-            elif left & right:
-                partial += 1
-            else:
-                disagree += 1
-                report["detail"].append({
-                    "source": source, "paper_id": pair[0],
-                    "author_id": pair[1],
-                    "pdf": sorted(names.get(i, "") for _, i in found),
-                    "openalex": sorted(names.get(i, "") for _, i in reference)})
-        total = agree + partial + disagree
-        if not total:
+    out = []
+    for pair, found in parsed.items():
+        reference = deposited.get(pair)
+        if not reference:
             continue
-        report["by_source"][source] = {
-            "pairs": total, "agree": agree, "partial": partial,
-            "disagree": disagree,
-            "rate": round((agree + partial) / total, 3)}
-        report["pairs"] += total
-        report["agree"] += agree
-        report["partial"] += partial
-        report["disagree"] += disagree
-    return report
+        left = set().union(*(facts[i]["keys"] for i in found))
+        right = set().union(*(facts[i]["keys"] for i in reference))
+        if left & right:
+            continue                       # the two describe the same place
+        countries_left = {facts[i]["country"] for i in found if facts[i]["country"]}
+        countries_right = {facts[i]["country"] for i in reference
+                           if facts[i]["country"]}
+        # A co-affiliation is normally in one country; a parser that read the
+        # wrong byline line usually is not.
+        conflict = bool(countries_left and countries_right
+                        and not (countries_left & countries_right))
+        out.append({
+            "paper_id": pair[0], "author_id": pair[1],
+            "source": origin[pair], "country_conflict": conflict,
+            "pdf": sorted(facts[i]["name"] for i in found),
+            "openalex": sorted(facts[i]["name"] for i in reference),
+            "pdf_countries": sorted(countries_left),
+            "openalex_countries": sorted(countries_right)})
+    out.sort(key=lambda row: (not row["country_conflict"], row["source"]))
+    return out
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
-    ap.add_argument("--source", help="list disagreements for one class")
-    ap.add_argument("--limit", type=int, default=10)
+    ap.add_argument("--source", help="one evidence class only")
+    ap.add_argument("--limit", type=int, default=20)
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
-    conn.row_factory = None
     try:
-        report = compare(conn)
+        rows = review_candidates(conn)
         slugs = dict(conn.execute("SELECT paper_id, slug FROM papers"))
         people = dict(conn.execute(
             "SELECT author_id, display_name FROM authors"))
     finally:
         conn.close()
 
+    if args.source:
+        rows = [r for r in rows if r["source"] == args.source]
+    conflicts = [r for r in rows if r["country_conflict"]]
+
     if args.json:
-        print(json.dumps(report, ensure_ascii=False, indent=2))
+        print(json.dumps({"candidates": len(rows),
+                          "country_conflicts": len(conflicts),
+                          "detail": rows[:args.limit]},
+                         ensure_ascii=False, indent=2))
         return 0
 
-    print("OpenAlex 가 기록한 소속과 PDF 파서가 읽은 소속의 일치\n")
-    print(f"  {'근거 등급':26s}{'비교':>7s}{'일치':>7s}{'부분':>7s}"
-          f"{'불일치':>8s}{'일치율':>9s}")
-    for source, row in sorted(report["by_source"].items()):
-        print(f"  {source:26s}{row['pairs']:7d}{row['agree']:7d}"
-              f"{row['partial']:7d}{row['disagree']:8d}"
-              f"{row['rate'] * 100:8.1f}%")
-    total = report["pairs"]
-    if total:
-        rate = (report["agree"] + report["partial"]) / total
-        print(f"\n  {'전체':26s}{total:7d}{report['agree']:7d}"
-              f"{report['partial']:7d}{report['disagree']:8d}"
-              f"{rate * 100:8.1f}%")
-    else:
-        print("\n  비교 가능한 쌍이 없다 — OpenAlex 보강을 먼저 실행한다.")
+    print("OpenAlex 와 PDF 가 같은 저자에 대해 서로 다른 기관을 말하는 쌍\n")
+    print(f"  검토 대상 {len(rows):,}쌍 · 그중 국가까지 어긋남 "
+          f"{len(conflicts):,}쌍\n")
+    by_source: dict[str, int] = defaultdict(int)
+    for row in rows:
+        by_source[row["source"]] += 1
+    for source, count in sorted(by_source.items(), key=lambda kv: -kv[1]):
+        hard = sum(1 for r in rows
+                   if r["source"] == source and r["country_conflict"])
+        print(f"  {source:26s} {count:5d}쌍  국가 불일치 {hard}")
 
-    if args.source:
-        shown = [d for d in report["detail"] if d["source"] == args.source]
-        print(f"\n── {args.source} 불일치 {len(shown)}건 중 {args.limit}건")
-        for item in shown[:args.limit]:
-            print(f"  {slugs.get(item['paper_id'], '')[:44]:44s} "
-                  f"{people.get(item['author_id'], '')[:20]}")
-            print(f"     OpenAlex: {item['openalex']}")
-            print(f"     PDF     : {item['pdf']}")
+    print(f"\n── 국가까지 어긋난 쌍 (가장 의심스러운 것부터) {args.limit}건")
+    for row in conflicts[:args.limit]:
+        print(f"  {slugs.get(row['paper_id'], '')[:40]:40s} "
+              f"{people.get(row['author_id'], '')[:18]:18s} [{row['source']}]")
+        print(f"     OpenAlex: {row['openalex']} {row['openalex_countries']}")
+        print(f"     PDF     : {row['pdf']} {row['pdf_countries']}")
+    print("\n일치율은 내지 않는다. 겸직과 상하 관계 때문에 두 출처의 불일치가"
+          " 곧 오류가 아니며, 정확도는 표본 수동 검증으로만 확인된다.")
     return 0
 
 

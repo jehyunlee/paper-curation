@@ -375,6 +375,37 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
   "파일 없음" 이 된다. `audit_zotero_pdf.resolve_pdf_path` 가 두 구분자 모두에서 파일명을 잘라
   로컬 디렉토리에서 찾는다.
 
+### 저자↔기관 정확도는 교차 검증으로 못 잰다 (2026-08-13 측정)
+
+OpenAlex 기탁 소속과 PDF 파서 결과를 비교해 일치율을 내려 했으나 **지표로
+쓸 수 없다.** 335쌍에서 0%, 상위 관계까지 펼쳐 1,017쌍에서 1.7% 가 나왔는데
+둘 다 오류가 아니라 **겸직과 입도 차이**였다.
+
+```
+Ming Y. Lu   OpenAlex: Brigham and Women's Hospital, Mass General, MIT
+             PDF     : Broad Institute, Harvard Medical School      ← 양쪽 다 맞음
+
+Gang Huang   OpenAlex: Peking University
+             PDF     : National Key Laboratory of Data Space …      ← 후자가 전자 산하
+```
+
+- 한 저자가 여러 기관에 속하는 게 정상이고, 두 출처가 **서로 다른 소속을 골라**
+  기록해도 불일치로 셈된다
+- 상위 관계로 펼쳐도 `parent_name` 이 3,526곳 중 588곳에만 있어 대부분 해결 안 됨
+
+**`check_attribution_accuracy.py` 는 일치율을 내지 않는다.** 두 출처가 완전히
+다른 기관을 말하는 쌍만 뽑아 **국가 불일치 순으로** 정렬해 사람이 볼 목록을
+만든다 — `University of Hong Kong` vs `Massachusetts Institute of Technology`
+같은 건 겸직이 아니라 한쪽의 오류다.
+
+**정확도는 표본 수동 검증으로만 확인된다.** 지금까지의 실측:
+
+|검증|결과|
+|---|---|
+|LLM 판독 vs 마커 파서 (30편, 70쌍)|88.6% 일치, 불일치 8건 중 2건은 파서가 틀림|
+|`shared-byline` 수동 검토 (16편)|4편 오류 발견 → 규칙 수정|
+|라벨↔정식명 정합성 (13,208건)|불일치 368건(2.79%), 다수는 번역·정식명 오탐|
+
 ### 저자↔기관 파서를 고칠 때 반드시 회귀를 먼저 잰다
 
 `pipeline/check_attribution_regression.py --snapshot` → 수정 → `--compare`.
