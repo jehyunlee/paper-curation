@@ -668,6 +668,11 @@ _MARKER_AFTER_NAME = re.compile(
 _MARKER_HEAD = re.compile(r"^(" + _MARKER_ATOM + r")\s*(.+)$")
 
 
+_SPACING_ACCENTS = {ord(ch): None for ch in
+                    "\u00a8\u00b4\u0060\u005e\u02c6\u02dc"
+                    "\u00af\u02da\u02dd\u02d8\u02c7\u00b0"}
+
+
 def _fold(token: str) -> str:
     """ASCII-folded, case-insensitive key for a name token.
 
@@ -675,7 +680,12 @@ def _fold(token: str) -> str:
     byline is often stripped ("Jun Lu4"); without folding every such author
     loses their affiliation.
     """
-    folded = unicodedata.normalize("NFKD", token)
+    # A PDF may print the accent as a *spacing* character before the letter —
+    # "G¨atzner" for "Gätzner". This runs before NFKD on purpose: NFKD expands
+    # U+00A8 into a space plus a combining mark, and the space would then split
+    # the surname in two. They never occur inside a real name.
+    folded = (token or "").translate(_SPACING_ACCENTS)
+    folded = unicodedata.normalize("NFKD", folded)
     folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
     return folded.lower().strip(".,'\u2019-")
 
@@ -748,6 +758,114 @@ def best_institution_for(label: str, institutions) -> int | None:
     return best if best_score >= AFFILIATION_MATCH_FLOOR else None
 
 
+# Which characters a paper keys its affiliations with cannot be fixed in
+# advance. "Architecture Design for Human-Driven Systems" writes
+#
+#     Mahyar T. Moghaddam∗, Moamin B. Abughazala†, ...
+#     ∗MMMI Institute, University of Southern Denmark
+#     †DISIM Department, University of L'Aquila
+#
+# where ∗ and † are the affiliation markers, while an ACL paper writes "Yu
+# Zhang♣∗" and there ∗ means equal contribution. The same character, opposite
+# roles. Excluding ∗ and † by rule read one correctly and lost the other, so
+# the alphabet is read off the affiliation block instead: whatever a line
+# naming an organisation begins with is a marker in *this* paper.
+_CANDIDATE_MARKER = re.compile(
+    r"^(\d{1,2}|[a-j]|[*∗†‡§¶⋆♣♢♡♠◊△▽○●□■◆★])(?=[A-Z\s])\s*(.+)$")
+
+
+def _marker_regexes(alphabet: set[str]):
+    """(trailing-marker stripper, marker-run reader) for one paper's alphabet.
+
+    Built per paper because the alphabet is: `a` keys the affiliations of a
+    PNAS article and is an ordinary letter everywhere else.
+    """
+    # Expanded by class, not by character. A block usually shows an
+    # organisation cue on only some of its lines, so seeing "1" is evidence
+    # that this paper numbers its affiliations — not that 2 and 3 are
+    # something else. Restricting to the exact characters found cost 330
+    # papers their mapping. Symbols stay literal: that is where the
+    # discrimination lives, since ∗ is a marker in one template and equal
+    # contribution in another.
+    atoms = []
+    if any(atom.isdigit() for atom in alphabet):
+        atoms.append(r"\d{1,2}")
+    if any(atom.isalpha() and atom.islower() for atom in alphabet):
+        atoms.append(r"[a-j]")
+    symbols = sorted(atom for atom in alphabet
+                     if not atom.isdigit() and not atom.isalpha())
+    atoms.extend(re.escape(symbol) for symbol in symbols)
+    alternation = "|".join(atoms)
+    singles = "".join(re.escape(symbol) for symbol in symbols)
+    if any(atom.isalpha() and atom.islower() for atom in alphabet):
+        singles += "a-j"
+    # Digits come off too: PNAS writes "Waya,1" where `a` is the affiliation
+    # and `1` marks the corresponding author. Either way they hide the surname.
+    # Whatever trails a name has to come off before the surname can be
+    # matched, marker or not: "Yu Zhang♣∗" ends in an equal-contribution star
+    # that is deliberately absent from this paper's alphabet.
+    trailing = re.compile(r"[" + singles + r"\d,*∗†‡§¶⋆]+$")
+    # An equal-contribution star can stand between the name and the marker
+    # ("Seungik Cho * 1"). Decorations this paper does *not* use as markers are
+    # skipped; ones it does are left for the run itself to read.
+    skip = "".join(ch for ch in "*∗†‡§¶⋆♦♢♣♡♠◊△▽○●□■◆★"
+                   if ch not in alphabet)
+    lead = r"[\s,]*" + (r"[" + re.escape(skip) + r"]*" if skip else "") + r"[\s,]*"
+    run = re.compile(lead + r"((?:" + alternation + r")"
+                     r"(?:\s*,?\s*(?:" + alternation + r"))*)")
+    return trailing, run
+
+
+# Lines that begin like an affiliation but are not one.
+_NOT_AN_AFFILIATION = re.compile(
+    r"(?i)^(?:equal(?:ly)? contribut|these authors|corresponding|work done|"
+    r"now at|shared|joint first)")
+
+
+def infer_marker_alphabet(text: str) -> set[str]:
+    """The marker characters this paper's affiliation block actually uses.
+
+    Two passes. A marker followed by an organisation name is proof, and it is
+    also what identifies the block; once the block is known, its sibling lines
+    contribute their markers too. "♣Ubiquitous Knowledge Processing Lab (UKP
+    Lab)" names no word the organisation cue lists, so demanding proof of every
+    line dropped ♣ and cost the paper its first author.
+
+    Splitting each line first keeps "*Equal contribution 1Department of
+    Mathematics, ETH" from nominating the star: the marker it hides is the 1.
+    """
+    proven: set[str] = set()
+    seen: set[str] = set()
+    for line in text.splitlines():
+        line = re.sub(r"^#+\s*", "", line).strip()
+        if not line:
+            continue
+        for piece in _split_marked_affiliations(line):
+            piece = piece.strip()
+            head = _CANDIDATE_MARKER.match(piece)
+            if not head or _SECTION_HEADING.match(piece):
+                continue
+            body = head.group(2)
+            if _NOT_AN_AFFILIATION.match(body):
+                continue
+            seen.add(head.group(1))
+            if _AFFILIATION_ORG_CUE.search(body):
+                proven.add(head.group(1))
+    if not proven:
+        return set()
+    # Only markers of the same kind: a proven symbol does not make a stray
+    # digit elsewhere in the document a marker.
+    kinds = {_marker_kind(marker) for marker in proven}
+    return proven | {marker for marker in seen
+                     if _marker_kind(marker) in kinds}
+
+
+def _marker_kind(marker: str) -> str:
+    if marker.isdigit():
+        return "digit"
+    return "letter" if marker.isalpha() else "symbol"
+
+
 def _split_marker_run(run: str) -> list[str]:
     """"1,2" is two markers and so is "♢♣" — but "12" is one.
 
@@ -769,7 +887,8 @@ def _split_marker_run(run: str) -> list[str]:
     return out
 
 
-def _byline_candidates(raw_header: str, surnames: set[str]) -> list[str]:
+def _byline_candidates(raw_header: str, surnames: set[str],
+                       trailing=None) -> list[str]:
     """Lines that carry at least two of this paper's own author surnames.
 
     Counting digits was the old test, and an affiliation block passes it
@@ -785,11 +904,15 @@ def _byline_candidates(raw_header: str, surnames: set[str]) -> list[str]:
     Read line by line, Zimmermann has no marker and the mapping is lost for a
     22-institution collaboration. Joined, the pair reads like any other byline.
     """
+    def strip(token: str) -> str:
+        # The same stripper the marker reader uses, so a line cannot be
+        # rejected here and then parsed successfully there.
+        return (trailing.sub("", token) if trailing else
+                re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token))
+
     def score(text: str) -> int:
-        return sum(
-            1 for token in re.split(r"[\s,;]+", text)
-            if _fold(re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token))
-            in surnames)
+        return sum(1 for token in re.split(r"[\s,;]+", text)
+                   if _fold(token) in surnames or _fold(strip(token)) in surnames)
 
     lines = [re.sub(r"^#+\s*", "", line).strip()
              for line in raw_header.splitlines()]
@@ -808,7 +931,9 @@ def _byline_candidates(raw_header: str, surnames: set[str]) -> list[str]:
     return [text for _, text in out]
 
 
-def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]:
+def author_affiliation_markers(raw_header: str, authors,
+                               alphabet: set[str] | None = None
+                               ) -> dict[str, list[str]]:
     """Map each author name to the affiliation markers printed after it.
 
     Anchored on the surnames this paper actually has rather than on chunk
@@ -825,8 +950,11 @@ def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]
     if not surnames:
         return {}
 
+    trailing, run = (_marker_regexes(alphabet) if alphabet
+                     else (None, _MARKER_AFTER_NAME))
+
     mapping: dict[str, list[str]] = {}
-    for byline in _byline_candidates(raw_header, set(surnames)):
+    for byline in _byline_candidates(raw_header, set(surnames), trailing):
         for token_match in re.finditer(r"[^\s,;]+", byline):
             token = token_match.group(0)
             # The marker may be glued to the surname ("Li1", "Hovy1,2"), so the
@@ -834,14 +962,20 @@ def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]
             # read the markers from exactly where the name ends — that one
             # position is what makes the glued and spaced layouts the same
             # problem instead of two.
-            core = re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token)
-            if not core:
-                continue
+            # The whole token may already be the surname ("Costa" under an
+            # alphabet containing "a"), so it is tried before anything is
+            # stripped off the end.
+            core = token
             resolved = surnames.get(_fold(core))
+            if not resolved:
+                core = ((trailing.sub("", token) if trailing else
+                         re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token)))
+                if not core:
+                    continue
+                resolved = surnames.get(_fold(core))
             if not resolved or resolved in mapping:
                 continue
-            tail = _MARKER_AFTER_NAME.match(
-                byline, token_match.start() + len(core))
+            tail = run.match(byline, token_match.start() + len(core))
             if not tail:
                 continue
             markers = _split_marker_run(tail.group(1))
@@ -1013,8 +1147,42 @@ _AFFILIATION_ORG_CUE = re.compile(
 _SECTION_HEADING = re.compile(r"^\s*[.\d]+\s*[.)]?\s+[A-Z]")
 
 
-def marker_affiliations(raw_header: str,
-                        wanted: set[str] | None = None) -> dict[str, str]:
+def _marker_atom(alphabet: set[str] | None) -> str:
+    """Regex alternation for one paper's markers, or the default set."""
+    if not alphabet:
+        return _MARKER_ATOM
+    atoms = []
+    if any(a.isdigit() for a in alphabet):
+        atoms.append(r"\d{1,2}")
+    if any(a.isalpha() and a.islower() for a in alphabet):
+        atoms.append(r"[a-j]")
+    atoms.extend(re.escape(a) for a in sorted(alphabet)
+                 if not a.isdigit() and not a.isalpha())
+    return "(?:" + "|".join(atoms) + ")"
+
+
+def read_byline_markers(raw_header: str, authors, text_path: Path | None
+                        ) -> tuple[dict[str, list[str]], set[str]]:
+    """Author→markers, read whichever way maps more of this paper's authors.
+
+    Inferring the alphabet is a heuristic, and a wrong guess is worse than no
+    guess: a footnote elsewhere in the document nominated § and ‡ for a paper
+    whose byline is numbered, and the restriction dropped all five authors.
+    Both readings are cheap, and the paper's own author count decides between
+    them, so widening the parser can no longer narrow it.
+    """
+    plain = author_affiliation_markers(raw_header, authors)
+    alphabet = infer_marker_alphabet(raw_header)
+    if not alphabet and text_path is not None:
+        alphabet = infer_marker_alphabet(affiliation_window(text_path))
+    if not alphabet:
+        return plain, set()
+    keyed = author_affiliation_markers(raw_header, authors, alphabet)
+    return ((keyed, alphabet) if len(keyed) >= len(plain) else (plain, set()))
+
+
+def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
+                        alphabet: set[str] | None = None) -> dict[str, str]:
     """Map each affiliation marker to the affiliation text it labels.
 
     Requiring the line to *begin* with a marker missed the common layout that
@@ -1037,13 +1205,20 @@ def marker_affiliations(raw_header: str,
     would read the reference list as affiliations, which is how this parser
     once minted institutions out of cited paper titles.
     """
+    # The block has to be read with the same alphabet as the byline. Reading
+    # it with the fixed symbol set left "⋆Tsinghua University" unparsed while
+    # the byline had already resolved "Chen Qian⋆".
+    atom = _marker_atom(alphabet)
+    head_re = re.compile(r"^(" + atom + r")\s*(.+)$")
+    split_re = re.compile(r"(?=(?<![A-Za-z0-9])(?:" + atom + r")\s*[A-Z])")
+
     lines = [re.sub(r"^#+\s*", "", line).strip()
              for line in raw_header.splitlines()]
     joined: list[str] = []
     index = 0
     while index < len(lines):
         line = lines[index]
-        if line and re.fullmatch(_MARKER_ATOM, line) and index + 1 < len(lines):
+        if line and re.fullmatch(atom, line) and index + 1 < len(lines):
             joined.append(f"{line}{lines[index + 1]}")
             index += 2
             continue
@@ -1054,8 +1229,8 @@ def marker_affiliations(raw_header: str,
     for line in joined:
         if not line or not _AFFILIATION_ORG_CUE.search(line):
             continue
-        for piece in _split_marked_affiliations(line):
-            head = _MARKER_HEAD.match(piece.strip())
+        for piece in split_re.split(line):
+            head = head_re.match(piece.strip())
             if not head:
                 continue
             marker, body = head.group(1), head.group(2).strip(" ,;")
@@ -2776,13 +2951,15 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 conn.execute("INSERT OR IGNORE INTO paper_authors VALUES (?,?,?,?,?,?)", (pid,aid,order,int(order==1),0,"review.frontmatter/_papers_index"))
             # The byline superscripts say who sat where. Resolved below, once
             # each affiliation has an institution_id.
-            markers_by_author = author_affiliation_markers(header, authors)
-            affiliation_by_marker = marker_affiliations(header)
+            markers_by_author, marker_alphabet = read_byline_markers(
+                header, authors, text)
+            affiliation_by_marker = marker_affiliations(
+                header, None, marker_alphabet)
             if not affiliation_by_marker:
                 # Same reason as the backfill: a two-column layout prints the
                 # affiliations as a footnote that lands after the abstract.
                 affiliation_by_marker = marker_affiliations(
-                    affiliation_window(text))
+                    affiliation_window(text), None, marker_alphabet)
             institution_by_marker = {}
             linked_institution_ids = []
             for record in affiliation_records:
@@ -3161,21 +3338,25 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     continue
                 # No early exit on a missing marker map: a single-affiliation
                 # paper resolves below without any superscripts.
-                markers = author_affiliation_markers(
-                    header, [name for _, name, _ in authors])
+                # Read what this paper keys its affiliations with before
+                # reading its byline: ∗ is an affiliation marker in one
+                # template and "equal contribution" in another.
+                markers, alphabet = read_byline_markers(
+                    header, [name for _, name, _ in authors], text)
                 # Only the markers this byline used, so widening the search to
                 # the whole document cannot pull an affiliation out of the
                 # reference list.
                 wanted = {m for ms in markers.values() for m in ms}
-                marker_text = marker_affiliations(header, wanted)
+                marker_text = marker_affiliations(header, wanted, alphabet)
                 if not marker_text and wanted:
                     # The byline is in the header; what it points at may be a
                     # page-one footnote emitted after the abstract, or a block
                     # at the very end of the file.
                     marker_text = (
-                        marker_affiliations(affiliation_window(text), wanted)
+                        marker_affiliations(
+                            affiliation_window(text), wanted, alphabet)
                         or marker_affiliations(
-                            author_information_text(text), wanted))
+                            author_information_text(text), wanted, alphabet))
                 institutions = conn.execute(
                     "SELECT institution_id, raw_name FROM paper_institutions"
                     " WHERE paper_id=?", (pid,)).fetchall()

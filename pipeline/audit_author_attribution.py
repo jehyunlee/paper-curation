@@ -100,7 +100,7 @@ def classify(conn: sqlite3.Connection, paper_id: int, slug: str,
         if len(names) >= 2:
             return "C", {"record": authors[:3], "pdf": names[:3]}
 
-    markers = bib.author_affiliation_markers(header, authors)
+    markers, alphabet = bib.read_byline_markers(header, authors, text)
     inline = bib.inline_author_affiliations(header, authors)
     named = bib.author_information_pairs(
         bib.author_information_text(text), authors)
@@ -112,10 +112,11 @@ def classify(conn: sqlite3.Connection, paper_id: int, slug: str,
         " WHERE paper_id=?", (paper_id,)).fetchall()
     if markers:
         wanted = {m for values in markers.values() for m in values}
-        block = (bib.marker_affiliations(header, wanted)
-                 or bib.marker_affiliations(bib.affiliation_window(text), wanted)
+        block = (bib.marker_affiliations(header, wanted, alphabet)
                  or bib.marker_affiliations(
-                     bib.author_information_text(text), wanted))
+                     bib.affiliation_window(text), wanted, alphabet)
+                 or bib.marker_affiliations(
+                     bib.author_information_text(text), wanted, alphabet))
         if not block:
             return "E", {"markers": sorted(wanted)[:6]}
         if any(bib.best_institution_for(label, institutions)

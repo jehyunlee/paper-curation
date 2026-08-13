@@ -671,5 +671,83 @@ class StackedBylineTests(unittest.TestCase):
                 self.AUTHORS), {})
 
 
+class MarkerAlphabetTests(unittest.TestCase):
+    """Which characters key a paper's affiliations is a property of the paper.
+
+    ∗ marks the affiliation in one template and equal contribution in another,
+    so no fixed rule reads both. The alphabet is read off the affiliation
+    block: whatever a line naming an organisation begins with is a marker here.
+    """
+
+    ARXIV = ("Architecture Design for Human-Driven Systems\n"
+             "Mahyar T. Moghaddam∗, Moamin B. Abughazala†, "
+             "Vittorio Cortellessa†\n"
+             "∗MMMI Institute, University of Southern Denmark, Odense\n"
+             "†DISIM Department, University of L'Aquila, L'Aquila, Italy\n")
+    ACL = ("A Comprehensive Survey\n"
+           "Yu Zhang♣∗, Xiusi Chen♢♣∗, Sheng Wang♡\n"
+           "♣University of Illinois at Urbana-Champaign\n"
+           "♢University of California, Los Angeles\n"
+           "♡University of Washington\n")
+    PNAS = ("Productivity, prominence, and the effects of academic environment\n"
+            "Samuel F. Waya,1, Allison C. Morgana, Daniel B. Larremorea,b,2\n"
+            "aDepartment of Computer Science, University of Colorado Boulder\n")
+
+    def test_a_star_is_a_marker_when_the_block_uses_it(self):
+        self.assertEqual(bib.infer_marker_alphabet(self.ARXIV), {"∗", "†"})
+
+    def test_the_same_star_is_not_a_marker_when_the_block_does_not(self):
+        # Here ∗ means equal contribution and only the suits key affiliations.
+        self.assertEqual(bib.infer_marker_alphabet(self.ACL),
+                         {"♣", "♢", "♡"})
+
+    def test_lowercase_letters_key_a_pnas_byline(self):
+        self.assertEqual(bib.infer_marker_alphabet(self.PNAS), {"a"})
+
+    def test_the_byline_is_read_with_the_papers_own_alphabet(self):
+        got = bib.author_affiliation_markers(
+            self.ARXIV, ["Mahyar T. Moghaddam", "Moamin B. Abughazala",
+                         "Vittorio Cortellessa"],
+            bib.infer_marker_alphabet(self.ARXIV))
+        self.assertEqual(got["Mahyar T. Moghaddam"], ["∗"])
+        self.assertEqual(got["Vittorio Cortellessa"], ["†"])
+
+    def test_equal_contribution_stays_out_when_it_is_not_in_the_alphabet(self):
+        got = bib.author_affiliation_markers(
+            self.ACL, ["Yu Zhang", "Xiusi Chen", "Sheng Wang"],
+            bib.infer_marker_alphabet(self.ACL))
+        self.assertEqual(got["Yu Zhang"], ["♣"])
+        self.assertEqual(got["Xiusi Chen"], ["♢", "♣"])
+
+    def test_a_corresponding_author_digit_does_not_hide_the_surname(self):
+        # "Waya,1" is affiliation a and corresponding author 1.
+        got = bib.author_affiliation_markers(
+            self.PNAS, ["Samuel F. Way", "Allison C. Morgan",
+                        "Daniel B. Larremore"],
+            bib.infer_marker_alphabet(self.PNAS))
+        self.assertEqual(got["Samuel F. Way"], ["a"])
+        self.assertEqual(got["Allison C. Morgan"], ["a"])
+
+    def test_digits_still_work_with_no_alphabet_inferred(self):
+        header = ("A Sober Look at LLMs\n"
+                  "Agustinus Kristiadi 1 Felix Strieth-Kalthoff 2\n")
+        got = bib.author_affiliation_markers(
+            header, ["Agustinus Kristiadi", "Felix Strieth-Kalthoff"], set())
+        self.assertEqual(got["Agustinus Kristiadi"], ["1"])
+
+
+class SpacingAccentTests(unittest.TestCase):
+    """A PDF may print the accent as a character standing before the letter."""
+
+    def test_a_spacing_diaeresis_folds_like_the_composed_letter(self):
+        # "G¨atzner" in the PDF, "Gätzner" in the record.
+        self.assertEqual(bib._fold("G\u00a8atzner"), bib._fold("Gätzner"))
+
+    def test_folding_does_not_swallow_spaces(self):
+        # NFKD turns U+00A8 into a space plus a combining mark, so the accent
+        # has to be removed first or the surname is split in two.
+        self.assertEqual(bib._fold("Indian Institute"), "indian institute")
+
+
 if __name__ == "__main__":
     unittest.main()

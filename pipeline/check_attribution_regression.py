@@ -65,14 +65,14 @@ def resolve_one(conn: sqlite3.Connection, paper_id: int,
         return "sole-affiliation"
 
     header = bib.extract_header(text)[0]
-    markers = bib.author_affiliation_markers(header, authors)
+    markers, alphabet = bib.read_byline_markers(header, authors, text)
     if markers:
         wanted = {m for values in markers.values() for m in values}
-        block = (bib.marker_affiliations(header, wanted)
+        block = (bib.marker_affiliations(header, wanted, alphabet)
                  or bib.marker_affiliations(
-                     bib.affiliation_window(text), wanted)
+                     bib.affiliation_window(text), wanted, alphabet)
                  or bib.marker_affiliations(
-                     bib.author_information_text(text), wanted))
+                     bib.author_information_text(text), wanted, alphabet))
         if any(bib.best_institution_for(label, institutions)
                for label in block.values()):
             return "byline-marker"
