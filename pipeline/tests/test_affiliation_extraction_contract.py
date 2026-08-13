@@ -995,5 +995,55 @@ class EmailKeyedMarkerTests(unittest.TestCase):
         self.assertEqual(set(got), {"1", "3"})
 
 
+class ConcatenatedMarkerTests(unittest.TestCase):
+    """"12" is markers 1 and 2 when the block only defines 1 and 2."""
+
+    def test_a_run_above_the_block_is_split(self):
+        self.assertEqual(
+            bib.split_runs_beyond({"Yuhui Chen": ["12"]}, {"1", "2"}),
+            {"Yuhui Chen": ["1", "2"]})
+
+    def test_three_digits_split_the_same_way(self):
+        self.assertEqual(
+            bib.split_runs_beyond({"Hang Yin": ["123"]}, {"1", "2", "3"}),
+            {"Hang Yin": ["1", "2", "3"]})
+
+    def test_a_paper_that_really_has_twelve_keeps_its_twelve(self):
+        defined = {str(n) for n in range(1, 13)}
+        self.assertEqual(
+            bib.split_runs_beyond({"A": ["12"]}, defined), {"A": ["12"]})
+
+    def test_a_run_with_a_digit_the_block_never_defines_is_left_alone(self):
+        # "19" cannot be 1 and 9 when the block stops at 2.
+        self.assertEqual(
+            bib.split_runs_beyond({"A": ["19"]}, {"1", "2"}), {"A": ["19"]})
+
+    def test_no_block_leaves_everything_alone(self):
+        self.assertEqual(
+            bib.split_runs_beyond({"A": ["12"]}, set()), {"A": ["12"]})
+
+
+class OneAuthorPerLineTests(unittest.TestCase):
+    """A byline can set one author per line, so no line holds two surnames."""
+
+    HEADER = ("BridgeData V2: A Dataset for Robot Learning at Scale\n"
+              "Homer Walke1\n"
+              "Kevin Black1\n"
+              "Moo Jin Kim2\n"
+              "1UC Berkeley 2Stanford\n")
+    AUTHORS = ["Homer Walke", "Kevin Black", "Moo Jin Kim"]
+
+    def test_consecutive_one_name_lines_form_a_byline(self):
+        got = bib.author_affiliation_markers(self.HEADER, self.AUTHORS)
+        self.assertEqual(got["Homer Walke"], ["1"])
+        self.assertEqual(got["Moo Jin Kim"], ["2"])
+
+    def test_a_single_isolated_name_is_not_a_byline(self):
+        got = bib.author_affiliation_markers(
+            "Title\nHomer Walke1\nAbstract\nWe introduce a dataset.\n",
+            self.AUTHORS)
+        self.assertEqual(got, {})
+
+
 if __name__ == "__main__":
     unittest.main()

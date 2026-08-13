@@ -940,6 +940,26 @@ def _byline_candidates(raw_header: str, surnames: set[str],
             joined = f"{line} {lines[index + 1]}"
             if len(joined) <= 600 and score(joined) > max(hits, 1):
                 out.append((score(joined), joined))
+    # A byline can also set one author per line:
+    #
+    #     Homer Walke1
+    #     Kevin Black1
+    #     Moo Jin Kim2
+    #
+    # No single line then holds two surnames and every one of them is
+    # discarded. Consecutive one-name lines are gathered into a byline of
+    # their own. Only the header is searched, so a reference list — where
+    # names also stand one per line — is never reached.
+    run: list[str] = []
+    for line in lines + [""]:
+        if line and score(line) == 1 and len(line) <= 80:
+            run.append(line)
+            continue
+        if len(run) >= 2:
+            gathered = " ".join(run)
+            if len(gathered) <= 600:
+                out.append((len(run), gathered))
+        run = []
     out.sort(key=lambda pair: -pair[0])
     return [text for _, text in out]
 
@@ -1217,6 +1237,9 @@ _KNOWN_ORGANISATIONS = frozenset({
     "ibm research", "huawei noah's ark lab", "tencent ai lab",
     "alibaba damo academy", "baidu research", "salesforce research",
     "adobe research", "bytedance seed", "moonshot ai", "zhipu ai",
+    # Publishers appear as affiliations of their own staff.
+    "mdpi", "elsevier", "springer nature", "wiley", "frontiers media",
+    "digital science", "clarivate", "scopus", "web of science",
 })
 
 # A citation, not a place: "Nature 596, 583 (2021)", "Smith et al., 2023".
@@ -1371,6 +1394,36 @@ def _marker_atom(alphabet: set[str] | None) -> str:
     return "(?:" + "|".join(atoms) + ")"
 
 
+def split_runs_beyond(markers: dict[str, list[str]],
+                      defined: set[str]) -> dict[str, list[str]]:
+    """Split a digit run the affiliation block cannot possibly define.
+
+        Yuhui Chen12 … 1SKL-MAIS, Institute of Automation
+                       2School of Artificial Intelligence, UCAS
+
+    The block defines 1 and 2, so "12" is not a twelfth institution — it is
+    the first and the second. Only runs above the largest marker the block
+    actually declares are split, so a paper that really does list twelve
+    affiliations keeps its 12.
+    """
+    numbers = sorted(int(m) for m in defined if m.isdigit())
+    if not numbers:
+        return markers
+    largest = numbers[-1]
+    known = {str(n) for n in numbers}
+    out: dict[str, list[str]] = {}
+    for name, values in markers.items():
+        expanded: list[str] = []
+        for value in values:
+            if (value.isdigit() and int(value) > largest
+                    and all(digit in known for digit in value)):
+                expanded.extend(value)
+            else:
+                expanded.append(value)
+        out[name] = expanded
+    return out
+
+
 def read_byline_markers(raw_header: str, authors, text_path: Path | None
                         ) -> tuple[dict[str, list[str]], set[str]]:
     """Author→markers, read whichever way maps more of this paper's authors.
@@ -1388,7 +1441,15 @@ def read_byline_markers(raw_header: str, authors, text_path: Path | None
     if not alphabet:
         return plain, set()
     keyed = author_affiliation_markers(raw_header, authors, alphabet)
-    return ((keyed, alphabet) if len(keyed) >= len(plain) else (plain, set()))
+    markers = keyed if len(keyed) >= len(plain) else plain
+    used = alphabet if len(keyed) >= len(plain) else set()
+    # The block says which markers exist; a run above the largest of them is
+    # several markers written together, not a number.
+    defined = set(marker_affiliations(raw_header, None, used))
+    if not defined and text_path is not None:
+        defined = set(marker_affiliations(
+            affiliation_window(text_path), None, used))
+    return split_runs_beyond(markers, defined or alphabet), used
 
 
 def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
