@@ -813,5 +813,43 @@ class TruncatedLabelMatchTests(unittest.TestCase):
                                         "University"), 0.0)
 
 
+class WrappedInNarrowColumnTests(unittest.TestCase):
+    """A two-column footnote wraps after a word or two.
+
+    "1ShanghaiTech" lands on one line and "University;" on the next, so the
+    marker sits on a line naming no organisation and the organisation sits on
+    a line carrying no marker. 42 of the 48 papers in this stage held their
+    affiliation in text.md and were failing for exactly this reason.
+    """
+
+    WRAPPED = ("1ShanghaiTech\n"
+               "University;\n"
+               "2Shanghai Jiao\n"
+               "Tong University.\n")
+
+    def test_a_wrapped_affiliation_is_read(self):
+        got = bib.marker_affiliations(self.WRAPPED, {"1", "2"}, {"1", "2"})
+        self.assertIn("ShanghaiTech University", got.get("1", ""))
+
+    def test_body_prose_is_not_absorbed(self):
+        # A marker-led line that never reaches an organisation stays alone.
+        text = ("1Introduction\n"
+                "Computed tomography is a ubiquitous imaging technique\n"
+                "used across medicine and manufacturing.\n")
+        self.assertEqual(bib.marker_affiliations(text, {"1"}, {"1"}), {})
+
+    def test_the_join_stops_at_a_section_heading(self):
+        text = ("1ShanghaiTech\n"
+                "2. Related Work\n"
+                "University of Somewhere\n")
+        self.assertEqual(bib.marker_affiliations(text, {"1"}, {"1"}), {})
+
+    def test_an_unwrapped_block_still_works(self):
+        got = bib.marker_affiliations(
+            "1Heriot-Watt University, Edinburgh, UK 2Ocean University, China\n",
+            {"1", "2"}, {"1", "2"})
+        self.assertIn("Heriot-Watt University", got.get("1", ""))
+
+
 if __name__ == "__main__":
     unittest.main()

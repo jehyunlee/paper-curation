@@ -1159,6 +1159,14 @@ _AFFILIATION_ORG_CUE = re.compile(
 _SECTION_HEADING = re.compile(r"^\s*[.\d]+\s*[.)]?\s+[A-Z]")
 
 
+# A numbered section opens many papers and is not an affiliation, even when
+# the number is glued to the word: "1Introduction", "2Related Work".
+_BODY_OPENING = re.compile(
+    r"(?i)^(?:\d{1,2}|[a-j])\s*\.?\s*(?:introduction|related work|background|"
+    r"abstract|methods?|results?|discussion|conclusion|preliminaries|"
+    r"experiments?|acknowledg)")
+
+
 def _marker_atom(alphabet: set[str] | None) -> str:
     """Regex alternation for one paper's markers, or the default set."""
     if not alphabet:
@@ -1226,6 +1234,10 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
 
     lines = [re.sub(r"^#+\s*", "", line).strip()
              for line in raw_header.splitlines()]
+    # Same guard as `_CANDIDATE_MARKER`: a marker is followed by a capital or
+    # a space. Without it a lowercase alphabet made the "a" of "agents" a
+    # marker and swallowed the sentence after it.
+    lead_re = re.compile(r"^(?:" + atom + r")(?=[A-Z\s])\s*\S")
     joined: list[str] = []
     index = 0
     while index < len(lines):
@@ -1234,6 +1246,30 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
             joined.append(f"{line}{lines[index + 1]}")
             index += 2
             continue
+        # A two-column layout sets its footnote in a narrow measure, so the
+        # affiliation wraps after a word or two: "1ShanghaiTech" on one line
+        # and "University;" on the next. The organisation cue is then on a line
+        # that carries no marker and the marker is on a line that names no
+        # organisation, so neither is read. Once a line begins with a marker,
+        # the following lines are pulled in until it names one.
+        if line and lead_re.match(line) and not _AFFILIATION_ORG_CUE.search(line):
+            merged, step = line, 1
+            while step <= 3 and index + step < len(lines):
+                nxt = lines[index + step]
+                if not nxt or _SECTION_HEADING.match(nxt):
+                    break
+                merged = f"{merged} {nxt}"
+                step += 1
+                if _AFFILIATION_ORG_CUE.search(merged):
+                    break
+            # The organisation has to be near the marker. Reading further and
+            # accepting the first university named three lines later turned
+            # "1Introduction …" into an affiliation by way of the body text.
+            if (_AFFILIATION_ORG_CUE.search(merged[:120])
+                    and not _BODY_OPENING.match(merged[len(line) - len(line.lstrip()):])):
+                joined.append(merged)
+                index += step
+                continue
         joined.append(line)
         index += 1
 
