@@ -28,6 +28,7 @@ if str(PIPELINE) not in sys.path:
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 DEFAULT_OUT = ROOT / "docs" / "img" / "workflows" / "attribution_pipeline.png"
+CAT_OUT = ROOT / "attribution_workflow.png"
 
 # Order matters: it is the order the backfill tries them, which is the order of
 # how directly each source states who worked where.
@@ -43,6 +44,55 @@ CLASSES = [
     ("pdf.sole-affiliation", "sole affiliation", "one place, no ambiguity"),
     ("llm.byline", "rendered first page", "read by Claude, then matched"),
 ]
+
+
+# One cat per evidence class, in the order the pipeline tries them. The cast
+# is the point: a reader should see at a glance that the top of the ladder is
+# somebody handing over a record and the bottom is somebody squinting at a page.
+CAT_CAST = [
+    ("openalex", "a well-dressed postal cat delivering a sealed envelope stamped "
+     "with a ROR seal — the publisher's own deposit, handed over, not guessed"),
+    ("scopus", "a second postal cat with a smaller satchel, delivering fewer "
+     "envelopes but the same kind"),
+    ("pdf.byline-marker", "a scholarly cat in half-moon glasses tracing "
+     "superscript numbers from author names down to a numbered list"),
+    ("pdf.stacked-byline", "a cat reading a column of names with each "
+     "affiliation stacked directly underneath"),
+    ("pdf.inline-affiliation", "a cat following one long line where the name "
+     "and the institution sit side by side"),
+    ("pdf.author-information", "a cat flipping to the back of the paper to a "
+     "boxed AUTHOR INFORMATION block"),
+    ("pdf.shared-byline", "a cat gesturing at one affiliation under a whole "
+     "group of names, meaning it belongs to all of them"),
+    ("pdf.sole-author", "a small cat beside a single author holding several "
+     "institution badges at once"),
+    ("pdf.sole-affiliation", "a cat pointing at the only institution on the "
+     "page, nothing to disambiguate"),
+    ("llm.byline", "a cat wearing a tiny headlamp, peering at a rendered page "
+     "image through a magnifier when every other cat has given up"),
+]
+
+CAT_RULES = """
+VISUAL STYLE — CAT WORKFLOW
+- Every stage is a cat character doing the work, warm and hand-drawn, in the
+  style of a friendly children's science book. Soft rounded shapes.
+- White background, clean modern layout, soft pastel palette.
+- The ten source cats form a visible LADDER, top to bottom, each holding a
+  small sign with its tag and paper count. A cat only acts when the ones above
+  it came back empty — draw them queued, not working in parallel.
+- Every cat's output flows into ONE gate: a stern librarian cat at a desk who
+  checks each slip against the paper's own institution list before stamping it.
+  Nothing reaches the archive without passing this desk. Make the gate obvious.
+- Behind the desk, a card-catalogue cabinet labelled ROR, with a small
+  hand-written notebook beside it for the names ROR does not have.
+- Two inspector cats loop back to the ladder: one comparing before/after
+  photographs (regression), one holding a magnifier over a short list
+  (review queue).
+- One grey, dimmed cat sits apart in a roped-off corner with a box marked
+  "unresolved" — visibly excluded, not part of the flow.
+- NO title text, NO watermarks, NO color name labels. English labels only,
+  short. Icons and cats speak louder than words.
+"""
 
 
 def counts(db: Path) -> dict:
@@ -143,15 +193,39 @@ CAPTION = (
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
-    ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--out", type=Path)
+    ap.add_argument("--style", default="academic", choices=("academic", "cat"))
     ap.add_argument("--aspect", default="16:9")
     ap.add_argument("--rounds", type=int, default=3)
     ap.add_argument("--dry-run", action="store_true",
                     help="print the description without drawing")
     args = ap.parse_args()
 
+    if args.out is None:
+        # The cat figure is linked from a document that ships, so it lives at
+        # the repository root beside workflow.png rather than under the
+        # gitignored docs/ tree.
+        args.out = CAT_OUT if args.style == "cat" else DEFAULT_OUT
     stats = counts(args.db)
     method = method_text(stats)
+    caption = CAPTION
+    if args.style == "cat":
+        cast = "\n".join(
+            f"- **{source}** — {look} — "
+            f"{stats['by_source'].get(source, 0):,} papers"
+            for source, look in CAT_CAST)
+        method = (method + "\n\n## The cast\n\n" + cast + "\n" + CAT_RULES)
+        caption = (
+            "A warm hand-drawn cat workflow. Ten cats queue in a vertical "
+            "ladder, each holding a sign with its tag and paper count, each "
+            "acting only when the cats above came back empty. Every cat's slip "
+            "flows to one librarian cat at a desk who checks it against the "
+            "paper's own institution list and stamps it — the only way into "
+            "the archive behind her, a card-catalogue cabinet labelled ROR "
+            "with a small notebook beside it. Two inspector cats loop back to "
+            "the ladder. One grey cat sits apart in a roped-off corner with a "
+            "box marked unresolved. Children's science-book style, pastel, "
+            "white background, short English labels only.")
     if args.dry_run:
         print(method)
         return 0
@@ -159,7 +233,7 @@ def main() -> int:
     from lib import paperbanana
     args.out.parent.mkdir(parents=True, exist_ok=True)
     image = paperbanana.generate_diagram(
-        method=method, caption=CAPTION, aspect_ratio=args.aspect,
+        method=method, caption=caption, aspect_ratio=args.aspect,
         critic_rounds=args.rounds, output_path=args.out)
     if not image:
         print("PaperBanana 가 이미지를 만들지 못했다", file=sys.stderr)

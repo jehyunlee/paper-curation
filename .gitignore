@@ -14,6 +14,7 @@
 !CLAUDE.md
 !AGENTS.md
 !workflow.png
+!attribution_workflow.png
 !SECURITY.md
 
 # Pipeline scripts
@@ -83,6 +84,7 @@ reports/output/
 !docs/setup-guide.md
 !docs/operations.md
 !docs/architecture.md
+!docs/attribution.md
 
 # Public assets (conference talk slides, etc.) — tracked on master + GitHub-served
 !docs/public/
