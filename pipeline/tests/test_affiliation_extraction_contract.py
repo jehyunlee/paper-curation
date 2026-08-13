@@ -851,5 +851,62 @@ class WrappedInNarrowColumnTests(unittest.TestCase):
         self.assertIn("Heriot-Watt University", got.get("1", ""))
 
 
+class AffiliationShapeTests(unittest.TestCase):
+    """A marker-led segment names a place, a company, or neither.
+
+    `_AFFILIATION_ORG_CUE` lists the words a university's name contains, and
+    companies do not contain them. "1Genentech 2Guide Labs 3Department of
+    Computer Science, New York University" was refused whole because its first
+    segment named a company, taking the two universities behind it along.
+    """
+
+    def test_a_company_is_an_affiliation(self):
+        for name in ("Genentech", "Together AI", "ByteDance", "NVIDIA",
+                     "Guide Labs", "Microsoft Research"):
+            with self.subTest(name=name):
+                self.assertTrue(bib.looks_like_affiliation(name))
+
+    def test_an_abbreviated_campus_is_an_affiliation(self):
+        # ROR reads these: UC Berkeley is University of California, Berkeley.
+        for name in ("UC Berkeley", "UT Austin", "UC San Diego"):
+            with self.subTest(name=name):
+                self.assertTrue(bib.looks_like_affiliation(name))
+
+    def test_a_cited_title_is_not(self):
+        # These reached the shipped DB as institutions once.
+        for name in ("A Neural Network", "A Dynamic Network",
+                     "Acer Liquid Network"):
+            with self.subTest(name=name):
+                self.assertFalse(bib.looks_like_affiliation(name))
+
+    def test_a_citation_is_refused_outright(self):
+        for name in ("Nature 596, 583 (2021)", "Smith et al., 2023",
+                     "arXiv preprint arXiv:1802.08219", "J. Chem. vol. 12"):
+            with self.subTest(name=name):
+                self.assertFalse(bib.looks_like_affiliation(name))
+
+    def test_body_prose_is_not_an_affiliation(self):
+        self.assertFalse(bib.looks_like_affiliation(
+            "agents could potentially discover new materials and"))
+
+    def test_a_university_still_passes_without_asking_ror(self):
+        self.assertTrue(bib.looks_like_affiliation(
+            "Department of Computer Science, New York University"))
+
+
+class CompanyBlockTests(unittest.TestCase):
+    """The block that motivated widening the test."""
+
+    BLOCK = ("*Equal contribution 1Genentech 2Guide Labs 3Department of "
+             "Computer Science, New York University\n")
+
+    def test_every_marker_in_the_block_is_read(self):
+        got = bib.marker_affiliations(self.BLOCK, {"1", "2", "3"},
+                                      {"1", "2", "3"})
+        self.assertEqual(got["1"], "Genentech")
+        self.assertEqual(got["2"], "Guide Labs")
+        self.assertIn("New York University", got["3"])
+
+
 if __name__ == "__main__":
     unittest.main()

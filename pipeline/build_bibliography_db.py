@@ -11,6 +11,7 @@ import os
 import argparse
 import difflib
 import hashlib
+import functools
 import json
 import random
 import re
@@ -1167,6 +1168,77 @@ _BODY_OPENING = re.compile(
     r"experiments?|acknowledg)")
 
 
+# Organisations ROR does not hold a record for. The list is deliberately short
+# and grows only when a real affiliation is seen to fall through: ROR already
+# knows Genentech, Together AI, ByteDance, UC Berkeley and UT Austin, so a
+# hand-kept dictionary would mostly duplicate it and drift out of date.
+_KNOWN_ORGANISATIONS = frozenset({
+    "nvidia", "microsoft research", "guide labs", "openai", "anthropic",
+    "google research", "google brain", "meta ai", "amazon science",
+    "ibm research", "huawei noah's ark lab", "tencent ai lab",
+    "alibaba damo academy", "baidu research", "salesforce research",
+    "adobe research", "bytedance seed", "moonshot ai", "zhipu ai",
+})
+
+# A citation, not a place: "Nature 596, 583 (2021)", "Smith et al., 2023".
+_LOOKS_LIKE_CITATION = re.compile(
+    r"\bet al\b|\(\s*(?:19|20)\d{2}\s*\)|\bpp?\.\s*\d|"
+    r"\barXiv\b|\bdoi\b|\bvol\.|\bno\.\s*\d", re.I)
+
+
+@functools.lru_cache(maxsize=4096)
+def _ror_knows(name: str) -> bool:
+    """Whether ROR holds a record for this name. Cached; opens the index once."""
+    try:
+        from .lib.ror_index import RorIndex
+    except ImportError:
+        try:
+            from lib.ror_index import RorIndex
+        except ImportError:
+            return False
+    index = _ror_knows.index if hasattr(_ror_knows, "index") else RorIndex()
+    _ror_knows.index = index
+    if not index.available:
+        return False
+    try:
+        return bool(index.resolve(name))
+    except Exception:
+        return False
+
+
+def looks_like_affiliation(text: str) -> bool:
+    """Whether a marker-led segment names a place rather than prose.
+
+    `_AFFILIATION_ORG_CUE` alone was the test, and it lists the words a
+    university's name contains. Companies do not contain them: "1Genentech
+    2Guide Labs 3Department of Computer Science, New York University" was
+    refused whole because its first segment named a company, and the two
+    universities behind it went with it.
+
+    The cue was written to keep a reference list out of the institution table —
+    a previous build shipped "A Neural Network" and "Acer Liquid Network" as
+    institutions, read from cited titles — and that reason still holds. So it
+    is widened rather than dropped: ROR is asked, a short list covers what ROR
+    does not hold, and anything shaped like a citation is refused outright.
+    """
+    text = (text or "").strip()
+    if not text:
+        return False
+    # The organisation cue decides first and without a length limit: an
+    # affiliation line often carries a full postal address, and capping it at
+    # 200 characters rejected 116 papers that used to resolve.
+    if _AFFILIATION_ORG_CUE.search(text):
+        return True
+    if _LOOKS_LIKE_CITATION.search(text) or len(text) > 200:
+        return False
+    head = re.split(r"[,;]", text)[0].strip(" .;:")
+    if not head or not head[:1].isupper():
+        return False
+    if _fold(head) in _KNOWN_ORGANISATIONS:
+        return True
+    return _ror_knows(head)
+
+
 def _marker_atom(alphabet: set[str] | None) -> str:
     """Regex alternation for one paper's markers, or the default set."""
     if not alphabet:
@@ -1252,7 +1324,7 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
         # that carries no marker and the marker is on a line that names no
         # organisation, so neither is read. Once a line begins with a marker,
         # the following lines are pulled in until it names one.
-        if line and lead_re.match(line) and not _AFFILIATION_ORG_CUE.search(line):
+        if line and lead_re.match(line) and not looks_like_affiliation(line):
             merged, step = line, 1
             while step <= 3 and index + step < len(lines):
                 nxt = lines[index + step]
@@ -1260,12 +1332,12 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
                     break
                 merged = f"{merged} {nxt}"
                 step += 1
-                if _AFFILIATION_ORG_CUE.search(merged):
+                if looks_like_affiliation(merged):
                     break
             # The organisation has to be near the marker. Reading further and
             # accepting the first university named three lines later turned
             # "1Introduction …" into an affiliation by way of the body text.
-            if (_AFFILIATION_ORG_CUE.search(merged[:120])
+            if (looks_like_affiliation(merged[:120])
                     and not _BODY_OPENING.match(merged[len(line) - len(line.lstrip()):])):
                 joined.append(merged)
                 index += step
@@ -1275,7 +1347,7 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
 
     out: dict[str, str] = {}
     for line in joined:
-        if not line or not _AFFILIATION_ORG_CUE.search(line):
+        if not line or not looks_like_affiliation(line):
             continue
         for piece in split_re.split(line):
             head = head_re.match(piece.strip())
@@ -1286,7 +1358,7 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
                 continue
             if wanted is not None and marker not in wanted:
                 continue
-            if not _AFFILIATION_ORG_CUE.search(body):
+            if not looks_like_affiliation(body):
                 continue
             if _SECTION_HEADING.match(body):
                 continue
