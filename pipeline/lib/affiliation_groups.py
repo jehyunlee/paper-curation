@@ -162,8 +162,90 @@ def brand_group_for(name: str) -> str:
     return ""
 
 
+REGISTRY_PATH = Path(__file__).resolve().parents[1] / "data" / "institution_registry.json"
+_registry: dict | None = None
+
+
+def registry() -> dict:
+    """Organisations ROR cannot settle: split brands, new bodies, non-bodies.
+
+    ROR answers for the overwhelming majority and stays the authority. This
+    covers the three things it does not: a multinational whose country records
+    carry no parent edge (Nvidia, unlike Google), an organisation too new to
+    have a record (Shanghai Innovation Institute, 2025), and a string that is
+    not an organisation at all ("Independent Researcher", on 41 papers).
+    """
+    global _registry
+    if _registry is not None:
+        return _registry
+    try:
+        data = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        data = {}
+    # Keys are normalised on load, not by hand. `normalize` folds plurals —
+    # "Complex Systems" becomes "complex system" — so a key typed the way the
+    # institution is spelled would never match.
+    _registry = {
+        section: {ror_index.normalize(key): value
+                  for key, value in (data.get(section) or {}).items()}
+        for section in ("parent", "canonical", "exclude")}
+    return _registry
+
+
+def registry_group(name: str) -> str:
+    """The group this registry puts a name under, or ''.
+
+    Matched on the leading words so the country records come with it:
+    "Nvidia (United Kingdom)" and "Nvidia (United States)" both start with
+    nvidia and both belong under NVIDIA.
+    """
+    folded = ror_index.normalize(name or "")
+    if not folded:
+        return ""
+    entries = registry()["parent"]
+    for key, entry in entries.items():
+        if folded == key or folded.startswith(key + " "):
+            group = str(entry.get("group") or "")
+            if group and ror_index.normalize(group) != folded:
+                return group
+    canonical = registry()["canonical"].get(folded)
+    return str((canonical or {}).get("parent") or "")
+
+
+def in_registry(name: str) -> bool:
+    """Whether the registry has an opinion about this name.
+
+    Distinct from `registry_group`, which returns nothing for the brand itself
+    — "NVIDIA" is its own group and must not point at itself — but the name is
+    still covered, and the audit needs to know that.
+    """
+    folded = ror_index.normalize(name or "")
+    if not folded:
+        return False
+    if folded in registry()["canonical"] or folded in registry()["exclude"]:
+        return True
+    return any(folded == key or folded.startswith(key + " ")
+               for key in registry()["parent"])
+
+
+def registry_canonical(name: str) -> str:
+    """The spelling this registry fixes for an organisation ROR lacks."""
+    entry = registry()["canonical"].get(ror_index.normalize(name or ""))
+    return str((entry or {}).get("name") or "")
+
+
+def is_excluded(name: str) -> bool:
+    """Whether the string names no organisation at all."""
+    return ror_index.normalize(name or "") in registry()["exclude"]
+
+
 def group_for(name: str) -> str:
     """Curated parent group for an institution name, or ''."""
+    # The registry decides first: it exists precisely for the names the
+    # curated table and ROR both leave ungrouped.
+    from_registry = registry_group(name)
+    if from_registry:
+        return from_registry
     mapping = load()
     for key in ror_index.alias_keys(name):
         if key in mapping:

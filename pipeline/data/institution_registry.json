@@ -1,0 +1,151 @@
+{
+  "_readme": [
+    "Organisations ROR cannot settle, and what to do about each.",
+    "",
+    "ROR answers for 89.6% of this corpus's institution links and stays the",
+    "authority. This file is only for the three things it does not settle:",
+    "",
+    "  parent   ROR holds the country records but no edge between them.",
+    "           Google (Ireland) has parent Google (United States); Nvidia",
+    "           (United Kingdom) and Nvidia (United States) have no parent at",
+    "           all, so they rank as two unrelated companies. `parent` groups",
+    "           them without pretending either record is the other.",
+    "",
+    "  canonical  ROR has no record. Shanghai Innovation Institute (2025),",
+    "           Zhongguancun Academy and Galbot are real and simply too new.",
+    "           `canonical` fixes one spelling so counts do not split.",
+    "",
+    "  exclude  Not an organisation. 'Independent Researcher' appears on 41",
+    "           papers and is a statement that there is no affiliation.",
+    "",
+    "Keys are folded names: lowercase, accents removed. Add an entry only when",
+    "a real affiliation is seen to fall through; a hand-kept list that",
+    "duplicates ROR will drift out of date and be trusted anyway.",
+    "",
+    "`seen` records the paper count at the time of the entry. It is a note for",
+    "whoever reads this next, not something the code uses.",
+    "",
+    "Maintain with: python pipeline/audit_institution_names.py --propose"
+  ],
+  "parent": {
+    "nvidia": {
+      "group": "NVIDIA",
+      "note": "ROR splits Nvidia (United States) / (United Kingdom) / (India) with no parent edge, unlike Google and Microsoft",
+      "seen": 82
+    },
+    "meta": {
+      "group": "Meta",
+      "note": "Meta (United States) and the Facebook-era records carry no parent edge",
+      "seen": 56
+    },
+    "amd": {
+      "group": "AMD",
+      "note": "seven country records, no parent edge",
+      "seen": 1
+    },
+    "microsoft research": {
+      "group": "Microsoft Research",
+      "note": "ROR holds Microsoft Research (United Kingdom) and (India) under Microsoft (United States); the bare name matches both",
+      "seen": 37
+    },
+    "cmu": {
+      "group": "Carnegie Mellon University",
+      "note": "19 ROR candidates for the abbreviation",
+      "seen": 6
+    },
+    "georgia tech": {
+      "group": "Georgia Institute of Technology",
+      "note": "matches the country of Georgia as well as the institute",
+      "seen": 4
+    }
+  },
+  "canonical": {
+    "shanghai innovation institute": {
+      "name": "Shanghai Innovation Institute",
+      "country": "China",
+      "note": "founded 2025, not yet in ROR",
+      "seen": 34
+    },
+    "zhongguancun academy": {
+      "name": "Zhongguancun Academy",
+      "country": "China",
+      "note": "not in ROR",
+      "seen": 23
+    },
+    "shanghai qi zhi institute": {
+      "name": "Shanghai Qi Zhi Institute",
+      "country": "China",
+      "note": "not in ROR",
+      "seen": 22
+    },
+    "beijing innovation center": {
+      "name": "Beijing Innovation Center of Humanoid Robotics",
+      "country": "China",
+      "note": "not in ROR",
+      "seen": 13
+    },
+    "galbot": {
+      "name": "Galbot",
+      "country": "China",
+      "note": "robotics company, not in ROR",
+      "seen": 12
+    },
+    "beingbeyond": {
+      "name": "BeingBeyond",
+      "country": "China",
+      "note": "not in ROR",
+      "seen": 12
+    },
+    "northwestern institute on complex systems": {
+      "name": "Northwestern Institute on Complex Systems",
+      "country": "United States",
+      "parent": "Northwestern University",
+      "note": "NICO is a Northwestern centre; ROR holds no record for it",
+      "seen": 41
+    },
+    "purdue university": {
+      "name": "Purdue University",
+      "ror": "https://ror.org/02dqehb95",
+      "country": "United States",
+      "note": "ROR has it; the local dump's name table does not, so the lookup misses",
+      "seen": 17
+    },
+    "robotics at google": {
+      "name": "Robotics at Google",
+      "country": "United States",
+      "parent": "Google",
+      "note": "a Google team, no ROR record",
+      "seen": 8
+    },
+    "university of science and technology (guangzhou)": {
+      "name": "University of Science and Technology (Guangzhou)",
+      "country": "China",
+      "note": "not in ROR",
+      "seen": 10
+    },
+    "camio inc.": {
+      "name": "Camio Inc.",
+      "country": "United States",
+      "note": "company, not in ROR",
+      "seen": 10
+    }
+  },
+  "exclude": {
+    "independent researcher": {
+      "note": "a statement that there is no affiliation",
+      "seen": 41
+    },
+    "independent": {
+      "note": "same",
+      "seen": 0
+    },
+    "unaffiliated": {
+      "note": "same",
+      "seen": 0
+    },
+    "none": {
+      "note": "extraction artefact",
+      "seen": 0
+    }
+  }
+}
