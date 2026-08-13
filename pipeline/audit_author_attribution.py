@@ -52,7 +52,7 @@ DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 RESOLVED_SOURCES = ("openalex", "scopus", "pdf.byline-marker",
                     "pdf.inline-affiliation",
                     "pdf.author-information", "pdf.stacked-byline",
-                    "pdf.sole-affiliation")
+                    "pdf.sole-author", "pdf.sole-affiliation")
 
 STAGES = {
     "A": "text.md 없음",

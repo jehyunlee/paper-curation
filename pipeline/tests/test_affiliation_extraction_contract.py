@@ -780,5 +780,38 @@ class ScopusInstitutionNameTests(unittest.TestCase):
         self.assertEqual(bib.scopus_institution_name(""), "")
 
 
+class TruncatedLabelMatchTests(unittest.TestCase):
+    """A PDF can break a name mid-word and leave the rest behind."""
+
+    def test_a_truncated_token_matches_the_whole_one(self):
+        # The label stopped at "Polytechni-"; the row kept "Polytechni- cal
+        # University", which rejoins to "polytechnical".
+        self.assertGreaterEqual(
+            bib.affiliation_match_score(
+                "1Northwest Polytechni- cal University",
+                "Northwest Polytechni-"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_a_short_prefix_is_not_enough(self):
+        # Four characters would make "Univ" match anything.
+        self.assertLess(
+            bib.affiliation_match_score("Tsinghua University", "Tsin"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_two_different_organisations_still_do_not_match(self):
+        self.assertLess(
+            bib.affiliation_match_score(
+                "Northwest Polytechnical University",
+                "Northeastern University"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_a_label_of_only_generic_words_matches_nothing(self):
+        # "University" alone names no organisation; refusing is correct and no
+        # amount of reasoning could recover which one it was.
+        self.assertEqual(
+            bib.affiliation_match_score("2University of British Columbia",
+                                        "University"), 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

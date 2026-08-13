@@ -734,7 +734,19 @@ def affiliation_match_score(left: str, right: str) -> float:
     a, b = _affiliation_tokens(left), _affiliation_tokens(right)
     if not a or not b:
         return 0.0
-    return len(a & b) / min(len(a), len(b))
+    shared = a & b
+    # A label can stop mid-word where the PDF broke the line and the
+    # continuation stayed behind: "Northwest Polytechni-" against "Northwest
+    # Polytechni- cal University". The truncated token is a prefix of the whole
+    # one, and five characters is long enough that a prefix is not a
+    # coincidence between two different organisations.
+    for short in a - shared:
+        if len(short) >= 5 and any(long.startswith(short) for long in b - shared):
+            shared = shared | {short}
+    for short in b - shared:
+        if len(short) >= 5 and any(long.startswith(short) for long in a - shared):
+            shared = shared | {short}
+    return len(shared) / min(len(a), len(b))
 
 
 # Below this, two strings are different organisations. Measured here: a genuine
@@ -3167,9 +3179,16 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 # Same rule as the backfill: one affiliation means everyone sits
                 # there; several with no superscripts means the split is unknown,
                 # so the rows are kept but tagged unresolved.
-                tag = ("pdf.sole-affiliation"
-                       if len(linked_institution_ids) == 1
-                       else "pdf.unmarked-multi")
+                # there. One author means every affiliation the paper prints
+                # is that author's, however many — an author can hold several
+                # appointments and nothing is being guessed. Several of each
+                # is the genuinely unknown case.
+                if len(linked_institution_ids) == 1:
+                    tag = "pdf.sole-affiliation"
+                elif len(author_ids) == 1:
+                    tag = "pdf.sole-author"
+                else:
+                    tag = "pdf.unmarked-multi"
                 author_links = [(pid, aid, iid, None, order, tag)
                                 for aid, order in author_ids.values()
                                 for iid in linked_institution_ids]
@@ -3602,8 +3621,17 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     # `pdf.unmarked-multi` marks the rows unresolved so a
                     # first-author query can exclude them rather than silently
                     # crediting one author with three employers.
-                    tag = ("pdf.sole-affiliation" if len(institutions) == 1
-                           else "pdf.unmarked-multi")
+                    # One institution: the byline already says everyone sits
+                    # there. One author: every affiliation the paper prints is
+                    # that author's, however many — an author can hold several
+                    # appointments, and nothing here is being guessed. Several
+                    # of each is the genuinely unknown case.
+                    if len(institutions) == 1:
+                        tag = "pdf.sole-affiliation"
+                    elif len(authors) == 1:
+                        tag = "pdf.sole-author"
+                    else:
+                        tag = "pdf.unmarked-multi"
                     rows = [(pid, aid, iid, None, order, tag)
                             for aid, _name, order in authors
                             for iid, _raw in institutions]
@@ -3612,7 +3640,8 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     continue
                 if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation",
                                   "pdf.author-information",
-                                  "pdf.stacked-byline", "scopus"):
+                                  "pdf.stacked-byline", "scopus",
+                                  "pdf.sole-author"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same

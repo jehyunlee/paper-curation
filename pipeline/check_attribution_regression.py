@@ -63,6 +63,9 @@ def resolve_one(conn: sqlite3.Connection, paper_id: int,
         return None
     if len(institutions) == 1:
         return "sole-affiliation"
+    if len(authors) == 1:
+        # Every affiliation on a single-author paper is that author's.
+        return "sole-author"
 
     header = bib.extract_header(text)[0]
     markers, alphabet = bib.read_byline_markers(header, authors, text)
