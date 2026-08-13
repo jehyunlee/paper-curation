@@ -123,12 +123,94 @@ def review_candidates(conn: sqlite3.Connection) -> list[dict]:
     return out
 
 
+PAPERS_DIR = ROOT / "docs" / "papers"
+
+
+def adjudicate(slug: str, pdf_names: list[str],
+               openalex_names: list[str]) -> str:
+    """Which side the paper's own front matter supports.
+
+    Neither source is authoritative. OpenAlex put "Rutgers Sexual and
+    Reproductive Health and Rights", a Dutch organisation, on a paper whose
+    byline reads "1Rutgers University"; the parser had it right. The document
+    settles it, so each side's institution is looked for in the front matter
+    the byline was read from.
+    """
+    text = PAPERS_DIR / slug / "text.md"
+    if not text.exists():
+        return "no-text"
+    try:
+        window = bib._fold(bib.affiliation_window(text))
+    except Exception:
+        return "no-text"
+
+    def present(names: list[str]) -> bool:
+        for name in names:
+            tokens = bib._affiliation_tokens(name)
+            distinctive = [x for x in tokens if len(x) >= 5]
+            if distinctive and all(x in window for x in distinctive[:3]):
+                return True
+        return False
+
+    in_pdf, in_oa = present(pdf_names), present(openalex_names)
+    if in_pdf and not in_oa:
+        return "pdf-supported"
+    if in_oa and not in_pdf:
+        return "openalex-supported"
+    if in_pdf and in_oa:
+        return "both-present"
+    return "neither-present"
+
+
+def render_review(rows: list[dict], conflicts: list[dict],
+                  slugs: dict, people: dict) -> str:
+    """A list to read, ordered so the likeliest errors come first.
+
+    No rate is given. A disagreement between the two sources is not by itself
+    an error — a Harvard Medical School faculty member listed by OpenAlex at
+    Mass General is both — so this is a queue for a person, not a score.
+    """
+    lines = [
+        "# 저자↔기관 검토 목록",
+        "",
+        f"OpenAlex 와 PDF 파서가 같은 저자에 대해 **공통점이 없는 기관**을 "
+        f"말하는 쌍 **{len(rows):,}건**.",
+        f"그중 국가까지 어긋난 것이 **{len(conflicts):,}건** — 겸직으로는 "
+        f"설명되지 않으므로 한쪽이 틀렸다고 보아야 한다.",
+        "",
+        "일치율은 계산하지 않는다. 겸직(한 저자, 여러 소속)과 입도 차이"
+        "(연구소 ↔ 그 상위 대학) 때문에 불일치가 곧 오류가 아니다.",
+        "",
+        "|우선|논문|저자|근거 등급|OpenAlex|PDF|원문 판정|",
+        "|:--:|---|---|---|---|---|---|",
+    ]
+    for row in rows:
+        mark = "⚠️" if row["country_conflict"] else "·"
+        left = " / ".join(row["openalex"])[:70]
+        right = " / ".join(row["pdf"])[:70]
+        if row["country_conflict"]:
+            left += f" ({', '.join(row['openalex_countries'])})"
+            right += f" ({', '.join(row['pdf_countries'])})"
+        verdict = row.get("verdict", "")
+        lines.append(
+            f"|{mark}|{slugs.get(row['paper_id'], '')[:44]}|"
+            f"{people.get(row['author_id'], '')[:24]}|{row['source']}|"
+            f"{left}|{right}|{verdict}|")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
     ap.add_argument("--source", help="one evidence class only")
     ap.add_argument("--limit", type=int, default=20)
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--out", type=Path,
+                    help="검토 목록을 마크다운으로 저장한다")
+    ap.add_argument("--adjudicate", action="store_true",
+                    help="원문 front matter 로 어느 쪽이 맞는지 판정한다")
+    ap.add_argument("--conflicts-only", action="store_true",
+                    help="국가까지 어긋난 쌍만 (검토 우선순위)")
     args = ap.parse_args()
 
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
@@ -143,6 +225,37 @@ def main() -> int:
     if args.source:
         rows = [r for r in rows if r["source"] == args.source]
     conflicts = [r for r in rows if r["country_conflict"]]
+    if args.conflicts_only:
+        rows = conflicts
+
+    if args.adjudicate:
+        from collections import Counter
+        verdicts = Counter()
+        for row in conflicts:
+            row["verdict"] = adjudicate(
+                slugs.get(row["paper_id"], ""), row["pdf"], row["openalex"])
+            verdicts[row["verdict"]] += 1
+        total = sum(verdicts.values()) or 1
+        print(f"국가까지 어긋난 {total:,}쌍을 원문과 대조\n")
+        for verdict, count in verdicts.most_common():
+            print(f"  {verdict:22s} {count:5d}  ({count / total * 100:4.1f}%)")
+        print("\n  pdf-supported      = 원문이 파서 쪽 기관을 담고 있다")
+        print("  openalex-supported = 원문이 OpenAlex 쪽을 담고 있다")
+        print("  both/neither       = 원문만으로 판정 불가")
+        if args.out:
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(
+                render_review(conflicts, conflicts, slugs, people),
+                encoding="utf-8")
+            print(f"\n저장: {args.out}")
+        return 0
+
+    if args.out:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(
+            render_review(rows, conflicts, slugs, people), encoding="utf-8")
+        print(f"저장: {args.out}  ({len(rows):,}쌍)")
+        return 0
 
     if args.json:
         print(json.dumps({"candidates": len(rows),
