@@ -772,6 +772,27 @@ def affiliation_match_score(left: str, right: str) -> float:
 AFFILIATION_MATCH_FLOOR = 0.60
 
 
+def assignment_disagrees(label: str, institution_name: str) -> bool:
+    """Whether a row's canonical name contradicts the text that chose it.
+
+    `paper_institutions.raw_name` is what the matcher compares against, and a
+    row can be canonicalised to something else entirely: RDT-1B's "Department
+    of Computer Science & Technology, Institute for AI, BNRist Center,
+    Tsinghua-Bosch Joint ML Center, THBI Lab, Tsinghua University" is stored
+    under "Institut Ilmu Sosial dan Manajemen STIAMI". The raw text matches
+    perfectly, so nothing downstream noticed — and a shared-affiliation rule
+    then hands that institution to every author on the paper.
+
+    Only used where one wrong row spreads to a whole byline. A canonical name
+    with no distinctive token in common with the label is refused.
+    """
+    label_tokens = _affiliation_tokens(label)
+    name_tokens = _affiliation_tokens(institution_name)
+    if not label_tokens or not name_tokens:
+        return False
+    return not (label_tokens & name_tokens)
+
+
 def best_institution_for(label: str, institutions) -> int | None:
     """The institution row a marker's text names, or None if none is close.
 
@@ -1157,8 +1178,16 @@ def shared_affiliation_block(raw_header: str, authors) -> list[str]:
     if not found:
         return []
     joined = " ".join(found)
-    if _CANDIDATE_MARKER.match(joined) or re.search(r"[A-Za-z]\d\b", joined):
-        return []                      # a marked block says who sat where
+    # A marked block says who sat where and must not be flattened. The marker
+    # can lead ("2work performed while at Google DeepMind") or trail ("MIT†",
+    # "Google DeepMind‡"), and looking only for a digit after a letter missed
+    # both: nine authors of "Learning Universal Policies" were handed two of
+    # its three institutions, and every SIMA author was given UBC.
+    marks = re.escape(_MARKER_SYMBOLS + "†‡∗*⋆")
+    if (_CANDIDATE_MARKER.match(joined)
+            or re.search(r"[A-Za-z][" + marks + r"]", joined)
+            or re.search(r"[A-Za-z]\d\b|\b\d[A-Za-z]", joined)):
+        return []
     return found
 
 
@@ -3980,6 +4009,10 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 institutions = conn.execute(
                     "SELECT institution_id, raw_name FROM paper_institutions"
                     " WHERE paper_id=?", (pid,)).fetchall()
+                names = dict(conn.execute(
+                    "SELECT pi.institution_id, i.institution_name"
+                    " FROM paper_institutions pi JOIN institutions i"
+                    " USING(institution_id) WHERE pi.paper_id=?", (pid,)))
                 if not marker_text and wanted:
                     # Some blocks print the marker after the institution, and
                     # some key it to an e-mail rather than a name.
@@ -4025,6 +4058,14 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                         for iid in [best_institution_for(paired[name],
                                                          institutions)]
                         if iid is not None]
+                # `markers` can be empty because the byline has none, or
+                # because this parser could not read the ones it has. Only the
+                # first licenses flattening: "Learning Universal Policies"
+                # keys MIT†, Google DeepMind‡ and UC Berkeley§ in plain sight,
+                # and sharing them out gave nine authors two of the three.
+                byline_marks = set(re.findall(
+                    r"[" + re.escape(_MARKER_SYMBOLS + "†‡∗*⋆") + r"]",
+                    header.split("\n\n")[0][:1200]))
                 if not rows and institutions and not markers:
                     # The block numbers its affiliations and the byline uses
                     # none of those numbers: "Songming Liu∗, Lingxuan Wu∗ …
@@ -4043,7 +4084,18 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                         iid for label in numbered.values()
                         for iid in [best_institution_for(label, institutions)]
                         if iid is not None}
-                    if len(numbered) == 1 and resolved_ids:
+                    claimed = {m for m in numbered if m in byline_marks}
+                    # One extracted marker is not one affiliation. SIMA
+                    # declares 1, 2 and 3 and only the third parsed, so the
+                    # rule handed every author University of British Columbia.
+                    # The alphabet says how many the block really defines.
+                    partial = len(alphabet) > 1
+                    if (len(numbered) == 1 and resolved_ids and not claimed
+                            and not partial):
+                        label = next(iter(numbered.values()))
+                        resolved_ids = {
+                            iid for iid in resolved_ids
+                            if not assignment_disagrees(label, names.get(iid, ""))}
                         rows = [(pid, aid, iid, None, order,
                                  "pdf.shared-byline")
                                 for aid, _name, order in authors
@@ -4059,6 +4111,9 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                                     author_information_text(text)))
                     iid = (best_institution_for(declared, institutions)
                            if declared else None)
+                    if iid is not None and assignment_disagrees(
+                            declared, names.get(iid, "")):
+                        iid = None
                     if iid is not None:
                         rows = [(pid, aid, iid, None, order,
                                  "pdf.shared-byline")
@@ -4072,7 +4127,9 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     matched = [iid for line in shared
                                for iid in [best_institution_for(line,
                                                                 institutions)]
-                               if iid is not None]
+                               if iid is not None
+                               and not assignment_disagrees(
+                                   line, names.get(iid, ""))]
                     rows = [(pid, aid, iid, None, order, "pdf.shared-byline")
                             for aid, _name, order in authors
                             for iid in dict.fromkeys(matched)]
