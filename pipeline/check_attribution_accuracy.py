@@ -45,7 +45,7 @@ DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 # Everything derived from the PDF. `pdf.unmarked-multi` is deliberately absent:
 # it links every author to every institution by construction, so measuring it
 # against OpenAlex would measure the fallback, not a parser.
-PDF_SOURCES = ("pdf.byline-marker", "pdf.inline-affiliation",
+PDF_SOURCES = ("llm.byline", "pdf.byline-marker", "pdf.inline-affiliation",
                "pdf.author-information", "pdf.stacked-byline",
                "pdf.shared-byline", "pdf.sole-author",
                "pdf.sole-affiliation")

@@ -18,6 +18,7 @@ never there, so this report refuses it and uses only:
   pdf.byline-marker    superscripts actually resolved
   pdf.inline-affiliation the byline names it on the author's own line (ACM)
   pdf.author-information a back-matter block names it per author (ACS)
+  llm.byline           the rendered first page, read and then matched
   pdf.sole-affiliation one institution on the paper, so no ambiguity
 
 `--include-guessed` puts the fallback back in, and the report says so, because
@@ -38,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
-TRUSTED_SOURCES = ("openalex", "scopus", "pdf.byline-marker",
+TRUSTED_SOURCES = ("openalex", "scopus", "llm.byline", "pdf.byline-marker",
                    "pdf.inline-affiliation",
                    "pdf.author-information", "pdf.stacked-byline",
                    "pdf.sole-author", "pdf.sole-affiliation")
