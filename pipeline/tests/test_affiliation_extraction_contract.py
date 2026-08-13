@@ -1137,5 +1137,55 @@ class GreekMarkerTests(unittest.TestCase):
             set())
 
 
+class SharedAffiliationBlockTests(unittest.TestCase):
+    """A byline that marks nobody is saying its authors share the affiliation."""
+
+    AUTHORS = ["Haozhe Xie", "Beichen Wen", "Jiarui Zheng", "Zhaoxi Chen"]
+
+    def test_one_affiliation_under_the_names_is_everyones(self):
+        got = bib.shared_affiliation_block(
+            "DynamicVLA\nHaozhe Xie*\nBeichen Wen*\nJiarui Zheng\n"
+            "Ziwei Liu S-Lab, Nanyang Technological University\n",
+            self.AUTHORS)
+        self.assertEqual(len(got), 1)
+        self.assertIn("Nanyang Technological University", got[0])
+
+    def test_the_name_is_stripped_when_it_shares_the_line(self):
+        got = bib.shared_affiliation_block(
+            "T\nHaozhe Xie*\nBeichen Wen*\n"
+            "Zhaoxi Chen S-Lab, Nanyang Technological University\n",
+            self.AUTHORS)
+        self.assertNotIn("Zhaoxi Chen", got[0])
+
+    def test_two_affiliation_lines_are_both_shared(self):
+        got = bib.shared_affiliation_block(
+            "BitVLA\nHaozhe Xie\nBeichen Wen\nJiarui Zheng\n"
+            "Key Laboratory of AI Safety, Institute of Computing Technology\n"
+            "University of Chinese Academy of Sciences.\n",
+            self.AUTHORS)
+        self.assertEqual(len(got), 2)
+
+    def test_a_marked_block_is_refused(self):
+        # Markers say who sat where; flattening them would throw that away.
+        self.assertEqual(
+            bib.shared_affiliation_block(
+                "T\nHaozhe Xie1\nBeichen Wen2\n"
+                "1Nanyang Technological University\n"
+                "2Tsinghua University\n", self.AUTHORS), [])
+
+    def test_a_name_the_record_never_saw_does_not_end_the_search(self):
+        # _papers_index keeps five authors, so a byline can carry more.
+        got = bib.shared_affiliation_block(
+            "T\nHaozhe Xie*\nBeichen Wen*\nHaiwen Diao\n"
+            "S-Lab, Nanyang Technological University\n", self.AUTHORS)
+        self.assertEqual(len(got), 1)
+
+    def test_a_single_author_paper_is_left_to_the_sole_author_rule(self):
+        self.assertEqual(
+            bib.shared_affiliation_block(
+                "T\nHaozhe Xie\nNanyang Technological University\n",
+                ["Haozhe Xie"]), [])
+
+
 if __name__ == "__main__":
     unittest.main()

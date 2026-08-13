@@ -1068,6 +1068,76 @@ _FRONT_MATTER_END = re.compile(
     r"1\.?\s+introduction|ccs concepts|acm reference)\b")
 
 
+def shared_affiliation_block(raw_header: str, authors) -> list[str]:
+    """Affiliations a byline gives every author because it marks none of them.
+
+        Haozhe Xie*
+        Beichen Wen*
+        Jiarui Zheng
+        Ziwei Liu S-Lab, Nanyang Technological University
+
+    The names are listed, the affiliation follows once, and nothing keys one
+    to the other. That is not missing information — it is the paper saying its
+    authors share it. BitVLA does the same with two affiliation lines, and
+    every author is at both.
+
+    The block must sit directly under the names in the *header*, so this reads
+    what the byline prints and never a reference list. Any marker anywhere in
+    the block disqualifies it: a marked block says who sat where and must be
+    resolved properly rather than flattened.
+    """
+    if isinstance(authors, str):
+        authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
+    surnames = set()
+    for name in authors or []:
+        parts = [x for x in re.split(r"\s+", str(name).strip()) if x]
+        if parts:
+            surnames.add(_fold(parts[-1]))
+    if len(surnames) < 2:
+        return []
+
+    lines = [line.strip() for line in raw_header.splitlines() if line.strip()]
+    named, found = 0, []
+    for index, line in enumerate(lines):
+        tokens = [x for x in re.split(r"[\s,;]+", line) if x]
+        if any(_fold(tok.strip(".,*∗†‡§¶⋆")) in surnames for tok in tokens):
+            named += 1
+            if looks_like_affiliation(line):
+                # The last author and the affiliation share a line:
+                # "Ziwei Liu S-Lab, Nanyang Technological University". Only
+                # the part after the name is the affiliation.
+                tail = line
+                for position, tok in enumerate(tokens):
+                    if _fold(tok.strip(".,*∗†‡§¶⋆")) in surnames:
+                        tail = " ".join(tokens[position + 1:])
+                if tail and looks_like_affiliation(tail):
+                    found.append(tail)
+            continue
+        if named >= 2 and looks_like_affiliation(line):
+            found.append(line)
+            for follower in lines[index + 1:index + 3]:
+                if looks_like_affiliation(follower):
+                    found.append(follower)
+                else:
+                    break
+            break
+        if named >= 2:
+            # The record keeps only the first five authors, so a byline can
+            # carry names it has never heard of. A line shaped like a person's
+            # name is stepped over rather than ending the search.
+            shaped = [x for x in re.split(r"\s+", line.strip(" *∗†‡")) if x]
+            if (1 < len(shaped) <= 4 and all(x[:1].isupper() for x in shaped)
+                    and not any(ch.isdigit() for ch in line)):
+                continue
+            break
+    if not found:
+        return []
+    joined = " ".join(found)
+    if _CANDIDATE_MARKER.match(joined) or re.search(r"[A-Za-z]\d\b", joined):
+        return []                      # a marked block says who sat where
+    return found
+
+
 def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
     """Bylines that stack each author's affiliation under the author's name.
 
@@ -1262,6 +1332,8 @@ _KNOWN_ORGANISATIONS = frozenset({
     "alibaba damo academy", "baidu research", "salesforce research",
     "adobe research", "bytedance seed", "moonshot ai", "zhipu ai",
     # Publishers appear as affiliations of their own staff.
+    "maum.ai", "maum ai", "krafton", "naver cloud", "kakaobrain",
+    "lg ai research", "samsung research", "sk telecom",
     "mdpi", "elsevier", "springer nature", "wiley", "frontiers media",
     "digital science", "clarivate", "scopus", "web of science",
 })
@@ -1469,6 +1541,13 @@ def read_byline_markers(raw_header: str, authors, text_path: Path | None
     them, so widening the parser can no longer narrow it.
     """
     plain = author_affiliation_markers(raw_header, authors)
+    if not plain and text_path is not None:
+        # A translated ChinaXiv record opens with its own summary and abstract
+        # and prints the paper's real byline after "Preamble", past where
+        # `extract_header` stops: "Ke Jiang1,2, Rui-Zhi Huang1 … 1Department
+        # of Psychology, Zhejiang Normal University".
+        raw_header = affiliation_window(text_path)
+        plain = author_affiliation_markers(raw_header, authors)
     alphabet = infer_marker_alphabet(raw_header)
     if not alphabet and text_path is not None:
         alphabet = infer_marker_alphabet(affiliation_window(text_path))
@@ -3923,6 +4002,19 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                                                          institutions)]
                         if iid is not None]
                 if not rows and institutions:
+                    # A byline that lists its authors and then names an
+                    # affiliation without keying it to anyone is saying they
+                    # share it.
+                    shared = shared_affiliation_block(
+                        header, [name for _, name, _ in authors])
+                    matched = [iid for line in shared
+                               for iid in [best_institution_for(line,
+                                                                institutions)]
+                               if iid is not None]
+                    rows = [(pid, aid, iid, None, order, "pdf.shared-byline")
+                            for aid, _name, order in authors
+                            for iid in dict.fromkeys(matched)]
+                if not rows and institutions:
                     # arXiv/IEEE columns stack the affiliation under the name
                     # with no marker anywhere; PyMuPDF reads them in order.
                     stacked = stacked_author_affiliations(
@@ -3995,7 +4087,7 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation",
                                   "pdf.author-information",
                                   "pdf.stacked-byline", "scopus",
-                                  "pdf.sole-author"):
+                                  "pdf.sole-author", "pdf.shared-byline"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same
