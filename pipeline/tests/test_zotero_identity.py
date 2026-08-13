@@ -174,5 +174,67 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(report["affected_slugs"], [])
 
 
+class BylineDisagreementTests(unittest.TestCase):
+    """A record and its PDF that share no author are not the same paper."""
+
+    def _setup(self, header, authors):
+        import tempfile
+        directory = Path(tempfile.mkdtemp())
+        (directory / "438_x").mkdir()
+        (directory / "438_x" / "text.md").write_text(header, encoding="utf-8")
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(
+            "CREATE TABLE papers (paper_id INTEGER PRIMARY KEY, slug TEXT,"
+            " title TEXT);"
+            "CREATE TABLE authors (author_id INTEGER PRIMARY KEY,"
+            " display_name TEXT);"
+            "CREATE TABLE paper_authors (paper_id INTEGER, author_id INTEGER,"
+            " author_order INTEGER);"
+            "INSERT INTO papers VALUES (1,'438_x','Introspective growth');")
+        for index, name in enumerate(authors, 1):
+            conn.execute("INSERT INTO authors VALUES (?,?)", (index, name))
+            conn.execute("INSERT INTO paper_authors VALUES (1,?,?)",
+                         (index, index))
+        # People who write other papers in the corpus. The detector asks
+        # whether a byline name is a surname it has ever seen, so a corpus of
+        # two authors would call every real name a noun phrase.
+        for offset, name in enumerate(("Siyang Wu", "Honglin Bao",
+                                       "Qiguang Chen"), 100):
+            conn.execute("INSERT INTO authors VALUES (?,?)", (offset, name))
+        conn.commit()
+        return conn, directory
+
+    def _run(self, header, authors):
+        conn, directory = self._setup(header, authors)
+        return zi.byline_disagreements(
+            conn, directory, lambda path: path.read_text(encoding="utf-8"))
+
+    RECORD = ["Yongtao Liu", "Marti Checa"]
+
+    def test_a_foreign_byline_is_reported(self):
+        found = self._run(
+            "Introspective growth\nSiyang Wu, Honglin Bao\n", self.RECORD)
+        self.assertEqual([r["slug"] for r in found], ["438_x"])
+
+    def test_the_papers_own_byline_is_not_reported(self):
+        self.assertEqual(
+            self._run("Introspective growth\nYongtao Liu, Marti Checa\n",
+                      self.RECORD), [])
+
+    def test_a_report_without_a_byline_is_not_reported(self):
+        # A white paper opens with a table of contents; its authors sit far
+        # from the front and nothing there contradicts them.
+        self.assertEqual(
+            self._run("AAAI Presidential Panel\nTable of Contents\n"
+                      "Introduction\nAI Reasoning\n", self.RECORD), [])
+
+    def test_a_noun_phrase_is_not_an_author(self):
+        # "Citation Analysis" and "Robot Manipulation" have a person's shape;
+        # neither surname is one the corpus has ever seen.
+        self.assertEqual(
+            self._run("Title\nCitation Analysis, Robot Manipulation\n",
+                      self.RECORD), [])
+
+
 if __name__ == "__main__":
     unittest.main()

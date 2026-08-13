@@ -680,6 +680,74 @@ def _fold(token: str) -> str:
     return folded.lower().strip(".,'\u2019-")
 
 
+# Joining a marker to an institution row is a name-matching problem, and it was
+# being done with `raw[:60] in label`. That fails on everything a PDF does to a
+# name: a line-break hyphen ("Indian Institute of Technology Roor- kee"), a
+# department prefix present on one side only, a comma that moved. 141 papers
+# read their markers and their affiliation block and then matched nothing.
+_AFFILIATION_STOPWORDS = frozenset({
+    "of", "the", "and", "for", "at", "in", "de", "da", "di", "du", "des",
+    "der", "und", "dept", "department", "departments", "div", "division",
+    "school", "faculty", "college", "unit", "group", "team", "lab",
+    "laboratory", "laboratories", "center", "centre", "institute", "institut",
+    "university", "universite", "universitat", "universidad", "universita",
+    "state", "national", "research", "science", "sciences", "technology",
+    "engineering", "usa", "uk", "china", "korea", "japan", "germany",
+    "france", "canada", "india", "singapore", "australia", "city", "campus",
+})
+
+
+def _affiliation_tokens(value: str) -> set[str]:
+    """Comparable tokens for an affiliation string.
+
+    A PDF breaks words across lines with a hyphen, so "Roor- kee" and
+    "Roorkee" have to become one token before anything is compared.
+    """
+    # A label still carries the marker it was split on ("4Indian Institute…"),
+    # which would glue to the first word and make it a different token. Only a
+    # *leading* marker is removed, so "LIP6" and "Bio21" keep their digits.
+    value = re.sub(r"^\s*(?:\d{1,2}|[" + _MARKER_SYMBOLS + r"])\s*", "",
+                   value or "")
+    folded = _fold(value)
+    folded = re.sub(r"[-\u2010-\u2015]\s+", "", folded)      # re-join "Roor- kee"
+    return {token for token in re.findall(r"[a-z0-9]+", folded)
+            if len(token) >= 3 and token not in _AFFILIATION_STOPWORDS}
+
+
+def affiliation_match_score(left: str, right: str) -> float:
+    """How strongly two affiliation strings name the same organisation.
+
+    Containment rather than Jaccard: one side is often the byline's short form
+    ("Vanderbilt University") and the other the full postal string, so the
+    smaller set being contained in the larger is the signal.
+    """
+    a, b = _affiliation_tokens(left), _affiliation_tokens(right)
+    if not a or not b:
+        return 0.0
+    return len(a & b) / min(len(a), len(b))
+
+
+# Below this, two strings are different organisations. Measured here: a genuine
+# pair ("Vanderbilt University" against "Department of Computer Science,
+# Vanderbilt University, Nashville, TN") scores 1.0.
+AFFILIATION_MATCH_FLOOR = 0.60
+
+
+def best_institution_for(label: str, institutions) -> int | None:
+    """The institution row a marker's text names, or None if none is close.
+
+    Taking the first row whose 60-character prefix happened to appear was both
+    too strict — any drift broke it — and too loose, since a shared prefix like
+    "Department of Computer Science," matched the wrong row.
+    """
+    best, best_score = None, 0.0
+    for institution_id, raw in institutions:
+        score = affiliation_match_score(raw or "", label)
+        if score > best_score:
+            best, best_score = institution_id, score
+    return best if best_score >= AFFILIATION_MATCH_FLOOR else None
+
+
 def _split_marker_run(run: str) -> list[str]:
     """"1,2" is two markers and so is "♢♣" — but "12" is one.
 
@@ -687,7 +755,10 @@ def _split_marker_run(run: str) -> list[str]:
     symbol runs are split character by character.
     """
     out = []
-    for piece in run.split(","):
+    # "1 2" is two markers spaced apart; "12" is one number. Splitting on
+    # whitespace as well as commas is what separates them — read as one token,
+    # "1 2" matched no affiliation and cost 94 papers their mapping.
+    for piece in re.split(r"[,\s]+", run):
         piece = piece.strip()
         if not piece:
             continue
@@ -851,20 +922,60 @@ def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
     return out
 
 
-def marker_affiliations(raw_header: str) -> dict[str, str]:
+# `_ORGANISATION_CUES` is deliberately broad — it also accepts "state",
+# "national" and "research" — which is right for judging a name and wrong for
+# finding an affiliation in a whole document: it read the body heading ".2.
+# State Space Models for Time Series" as one. An affiliation names a kind of
+# organisation outright.
+_AFFILIATION_ORG_CUE = re.compile(
+    r"universit|institut|laborator|college|academy|hospital|polytech|"
+    r"school of|faculty|department of|centre for|center for|"
+    r"\bcorporation\b|\binc\b|\bltd\b|\bllc\b|\bgmbh\b|"
+    r"research (?:center|centre|institute|laborator)", re.I)
+# "2.1 Related Work", ".2. State Space Models" — a numbered section, not a place.
+_SECTION_HEADING = re.compile(r"^\s*[.\d]+\s*[.)]?\s+[A-Z]")
+
+
+def marker_affiliations(raw_header: str,
+                        wanted: set[str] | None = None) -> dict[str, str]:
     """Map each affiliation marker to the affiliation text it labels.
 
     Requiring the line to *begin* with a marker missed the common layout that
     runs the whole block together — "1Heriot-Watt University, Edinburgh, UK
     2Ocean University, China" — and any line whose first affiliation had
     already been consumed. Every line carrying an organisation name is split
-    on its markers instead, which took the second stage of the byline mapping
-    from 12% of papers to most of them.
+    on its markers instead.
+
+    A marker also gets a line of its own when the PDF wraps:
+
+        1
+        Department of Marketing, ESCP Business School
+
+    so a line that is nothing but a marker is joined to the one below it.
+
+    `wanted` restricts the search to the markers a byline actually used. That
+    is what makes it safe to scan a whole paper rather than its front matter:
+    the affiliations of 15 of these papers sit past any window — one at
+    character 89,582 of 89,729 — and an unrestricted scan of a full document
+    would read the reference list as affiliations, which is how this parser
+    once minted institutions out of cited paper titles.
     """
+    lines = [re.sub(r"^#+\s*", "", line).strip()
+             for line in raw_header.splitlines()]
+    joined: list[str] = []
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if line and re.fullmatch(_MARKER_ATOM, line) and index + 1 < len(lines):
+            joined.append(f"{line}{lines[index + 1]}")
+            index += 2
+            continue
+        joined.append(line)
+        index += 1
+
     out: dict[str, str] = {}
-    for line in raw_header.splitlines():
-        line = re.sub(r"^#+\s*", "", line).strip()
-        if not line or not _ORGANISATION_CUES.search(line):
+    for line in joined:
+        if not line or not _AFFILIATION_ORG_CUE.search(line):
             continue
         for piece in _split_marked_affiliations(line):
             head = _MARKER_HEAD.match(piece.strip())
@@ -873,7 +984,11 @@ def marker_affiliations(raw_header: str) -> dict[str, str]:
             marker, body = head.group(1), head.group(2).strip(" ,;")
             if len(body) < 5 or marker in out:
                 continue
-            if not _ORGANISATION_CUES.search(body):
+            if wanted is not None and marker not in wanted:
+                continue
+            if not _AFFILIATION_ORG_CUE.search(body):
+                continue
+            if _SECTION_HEADING.match(body):
                 continue
             out[marker] = body
     return out
@@ -2611,13 +2726,14 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 if iid not in linked_institution_ids:
                     linked_institution_ids.append(iid)
                 # Tie this institution back to the marker whose text it came
-                # from, matching on the longest shared prefix so that a trimmed
-                # or ROR-renamed record still finds its label.
+                # from. The prefix test this replaces failed on a line-break
+                # hyphen, a department prefix on one side only, or a comma
+                # that moved; `affiliation_match_score` compares tokens.
                 for marker, text_of_marker in affiliation_by_marker.items():
                     if marker in institution_by_marker:
                         continue
-                    if (raw[:60] and raw[:60] in text_of_marker) or \
-                       (text_of_marker[:60] and text_of_marker[:60] in raw):
+                    if affiliation_match_score(raw, text_of_marker) >= \
+                            AFFILIATION_MATCH_FLOOR:
                         institution_by_marker[marker] = iid
                         break
             author_links = [
@@ -2970,22 +3086,27 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 # paper resolves below without any superscripts.
                 markers = author_affiliation_markers(
                     header, [name for _, name, _ in authors])
-                marker_text = marker_affiliations(header)
-                if not marker_text:
+                # Only the markers this byline used, so widening the search to
+                # the whole document cannot pull an affiliation out of the
+                # reference list.
+                wanted = {m for ms in markers.values() for m in ms}
+                marker_text = marker_affiliations(header, wanted)
+                if not marker_text and wanted:
                     # The byline is in the header; what it points at may be a
-                    # page-one footnote emitted after the abstract.
-                    marker_text = marker_affiliations(affiliation_window(text))
+                    # page-one footnote emitted after the abstract, or a block
+                    # at the very end of the file.
+                    marker_text = (
+                        marker_affiliations(affiliation_window(text), wanted)
+                        or marker_affiliations(
+                            author_information_text(text), wanted))
                 institutions = conn.execute(
                     "SELECT institution_id, raw_name FROM paper_institutions"
                     " WHERE paper_id=?", (pid,)).fetchall()
                 by_marker = {}
                 for marker, label in marker_text.items():
-                    for iid, raw in institutions:
-                        raw = raw or ""
-                        if (raw[:60] and raw[:60] in label) or \
-                           (label[:60] and label[:60] in raw):
-                            by_marker[marker] = iid
-                            break
+                    iid = best_institution_for(label, institutions)
+                    if iid is not None:
+                        by_marker[marker] = iid
                 rows = [
                     (pid, aid, by_marker[marker], marker, order,
                      "pdf.byline-marker")
@@ -3002,10 +3123,9 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     rows = [
                         (pid, aid, iid, None, order, "pdf.author-information")
                         for aid, name, order in authors
-                        for iid, raw in institutions
-                        if name in named and (
-                            ((raw or "")[:60] and (raw or "")[:60] in named[name])
-                            or (named[name][:60] and named[name][:60] in (raw or "")))]
+                        if name in named
+                        for iid in [best_institution_for(named[name], institutions)]
+                        if iid is not None]
                 if not rows and institutions:
                     # No superscripts, but the byline may name each author's
                     # affiliation on the author's own line (ACM style). That
@@ -3015,10 +3135,9 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     rows = [
                         (pid, aid, iid, None, order, "pdf.inline-affiliation")
                         for aid, name, order in authors
-                        for iid, raw in institutions
-                        if name in inline and (
-                            ((raw or "")[:60] and (raw or "")[:60] in inline[name])
-                            or (inline[name][:60] and inline[name][:60] in (raw or "")))]
+                        if name in inline
+                        for iid in [best_institution_for(inline[name], institutions)]
+                        if iid is not None]
                 if not rows and institutions:
                     # No superscripts to read. With one affiliation the byline
                     # already says everyone sits there. With several, who sits

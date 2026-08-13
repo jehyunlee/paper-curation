@@ -516,5 +516,102 @@ class AuthorInformationPairTests(unittest.TestCase):
         self.assertIn("Seoul National University", got["Yousung Jung"])
 
 
+class AffiliationMatchingTests(unittest.TestCase):
+    """Joining a marker to an institution row is name matching, not prefixes.
+
+    `raw[:60] in label` failed on everything a PDF does to a name, and 141
+    papers read their markers and their affiliation block and then matched
+    nothing.
+    """
+
+    def test_a_line_break_hyphen_is_the_same_name(self):
+        self.assertGreaterEqual(
+            bib.affiliation_match_score(
+                "Indian Institute of Technology Roorkee",
+                "4Indian Institute of Technology Roor- kee, India"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_a_department_prefix_on_one_side_only_still_matches(self):
+        self.assertGreaterEqual(
+            bib.affiliation_match_score(
+                "Vanderbilt University",
+                "Department of Computer Science, Vanderbilt University, "
+                "Nashville, TN, USA"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_two_different_organisations_do_not_match(self):
+        self.assertLess(
+            bib.affiliation_match_score(
+                "Department of Computer Science, Stanford University",
+                "Department of Computer Science, Tsinghua University"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_a_shared_department_prefix_alone_is_not_a_match(self):
+        # The prefix test matched these; the tokens that decide are the ones
+        # that name the organisation, not the ones every paper shares.
+        self.assertLess(
+            bib.affiliation_match_score(
+                "Department of Computer Science, University of Oxford",
+                "Department of Computer Science, University of Cambridge"),
+            bib.AFFILIATION_MATCH_FLOOR)
+
+    def test_the_best_row_wins_not_the_first(self):
+        institutions = [
+            (1, "Department of Computer Science, Tsinghua University"),
+            (2, "Department of Computer Science, Vanderbilt University"),
+        ]
+        self.assertEqual(
+            bib.best_institution_for(
+                "1Department of Computer Science, Vanderbilt University, "
+                "Nashville, TN", institutions), 2)
+
+    def test_nothing_close_enough_returns_none(self):
+        self.assertIsNone(bib.best_institution_for(
+            "Max Planck Institute for Intelligent Systems",
+            [(1, "Seoul National University")]))
+
+
+class WrappedAffiliationBlockTests(unittest.TestCase):
+    """A marker can wrap onto its own line, and sit far from the byline."""
+
+    BLOCK = ("Yamin Li 1 Shiyu Wang 1 Catie Chang 1\n"
+             "1\n"
+             "Department of Computer Science, Vanderbilt University\n")
+
+    def test_a_marker_alone_on_a_line_joins_the_next(self):
+        got = bib.marker_affiliations(self.BLOCK)
+        self.assertIn("1", got)
+        self.assertIn("Vanderbilt University", got["1"])
+
+    def test_wanted_restricts_what_a_full_document_scan_reads(self):
+        # Scanning a whole paper unrestricted is how a reference list becomes
+        # affiliations; only the markers the byline used are accepted.
+        text = self.BLOCK + "2 Proceedings of the International Conference\n"
+        self.assertEqual(set(bib.marker_affiliations(text, {"1"})), {"1"})
+
+    def test_no_wanted_set_keeps_the_old_behaviour(self):
+        self.assertIn("1", bib.marker_affiliations(self.BLOCK, None))
+
+    def test_spaced_markers_are_separate(self):
+        # "Ruichen Qiu * 1 2" means markers 1 and 2. Read as one token, "1 2"
+        # matches no affiliation and the paper loses its mapping.
+        self.assertEqual(bib._split_marker_run("1 2"), ["1", "2"])
+        self.assertEqual(bib._split_marker_run("12"), ["12"])
+        got = bib.author_affiliation_markers(
+            "MechMath\nRuichen Qiu * 1 2 Yichuan Cao * 2 3\n",
+            ["Ruichen Qiu", "Yichuan Cao"])
+        self.assertEqual(got["Ruichen Qiu"], ["1", "2"])
+        self.assertEqual(got["Yichuan Cao"], ["2", "3"])
+
+    def test_a_body_heading_is_not_an_affiliation(self):
+        # Scanning a whole document, ".2. State Space Models for Time Series"
+        # was read as affiliation 2 while the real one sat beside it.
+        text = ("2\n.2. State Space Models for Time Series\n"
+                "1Northwest Polytechni- cal University\n")
+        got = bib.marker_affiliations(text, {"1", "2"})
+        self.assertNotIn("2", got)
+        self.assertIn("1", got)
+
+
 if __name__ == "__main__":
     unittest.main()

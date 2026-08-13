@@ -113,6 +113,75 @@ def _correction_pair(titles: list[str]) -> bool:
         _CORRECTION_PREFIX.match(title) for title in titles)
 
 
+# A byline names people. "Research Policy" and "Aarhus University" match a
+# two-capitalised-words shape too, so an organisation word disqualifies a
+# candidate outright — otherwise a journal name reads as an author.
+_PERSON_SHAPE = re.compile(r"^[A-Z][a-z'’\-]+(?:\s+[A-Z][a-z'’\-.]*){1,3}$")
+_NOT_A_PERSON = re.compile(
+    r"universit|institut|college|school|department|laborator|academy|"
+    r"policy|review|journal|proceedings|press|society|center|centre|"
+    r"hospital|company|corporation|research", re.I)
+
+
+def _pdf_byline_names(header: str, known_surnames: set[str]) -> list[str]:
+    """Names that look like people in a paper's front matter.
+
+    Shape alone is not enough: "Citation Analysis", "Robot Manipulation" and
+    "Human Demonstration" are two capitalised words too. The corpus already
+    holds 12,900 author names, so a surname it has seen is the test — "Chen"
+    passes, "Analysis" does not.
+    """
+    out = []
+    for line in header.splitlines()[:12]:
+        for chunk in re.split(r"[,;]|\band\b", line):
+            chunk = re.sub(r"[\d*∗†‡§¶♣♢♡♠]+", "", chunk).strip()
+            if not _PERSON_SHAPE.match(chunk) or _NOT_A_PERSON.search(chunk):
+                continue
+            if _norm(chunk.split()[-1]) in known_surnames:
+                out.append(chunk)
+    return out
+
+
+def byline_disagreements(conn: sqlite3.Connection, papers_dir: Path,
+                         header_of) -> list[dict]:
+    """Papers whose PDF byline names nobody the record calls an author.
+
+    A record and its PDF that share no author are not the same paper. The
+    Industrial and Corporate Change item earlier in this corpus was found that
+    way, and so is "Introspective growth", whose record lists Yongtao Liu
+    while its PDF byline reads Siyang Wu.
+
+    Both halves are required: the PDF must actually carry a byline — a report
+    with a table of contents has none, and its authors legitimately appear
+    nowhere near the front — and none of its names may match the record.
+    """
+    known_surnames = {
+        _norm(name.split()[-1]) for (name,) in conn.execute(
+            "SELECT display_name FROM authors") if name.split()}
+    out = []
+    for paper_id, slug, title in conn.execute(
+            "SELECT paper_id, slug, title FROM papers ORDER BY paper_id"):
+        text = papers_dir / slug / "text.md"
+        if not text.exists():
+            continue
+        authors = [row[0] for row in conn.execute(
+            "SELECT a.display_name FROM paper_authors pa"
+            " JOIN authors a USING(author_id) WHERE pa.paper_id=?"
+            " ORDER BY pa.author_order", (paper_id,))]
+        if len(authors) < 2:
+            continue
+        header = header_of(text)
+        folded = _norm(header)
+        if any((parts := name.split()) and _norm(parts[-1]) in folded
+               for name in authors):
+            continue
+        names = _pdf_byline_names(header, known_surnames)
+        if len(names) >= 2:
+            out.append({"slug": slug, "title": title,
+                        "record_authors": authors[:3], "pdf_byline": names[:3]})
+    return out
+
+
 def shared_zotero_keys(conn: sqlite3.Connection,
                        papers_dir: Path | None = None) -> list[dict]:
     """Zotero items attached to more than one paper, worst first.
@@ -174,6 +243,12 @@ def audit(conn: sqlite3.Connection, papers_dir: Path) -> dict:
     """
     placeholders = placeholder_dois(conn)
     shared = shared_zotero_keys(conn, papers_dir)
+    try:
+        import build_bibliography_db as _bib
+        bylines = byline_disagreements(
+            conn, papers_dir, lambda path: _bib.extract_header(path)[0])
+    except Exception:                       # header parsing is optional here
+        bylines = []
     unresolved = [row for row in shared if row["kind"] == "unresolved"]
     disagreements = title_disagreements(conn, papers_dir)
     affected = (
@@ -188,6 +263,7 @@ def audit(conn: sqlite3.Connection, papers_dir: Path) -> dict:
         "correction_pairs": sum(
             1 for row in shared if row["kind"] == "correction"),
         "title_disagreements": len(disagreements),
+        "byline_disagreements": len(bylines),
         "affected_papers": len(affected),
         "affected_slugs": sorted(affected),
         "placeholder_doi_values": sorted(
@@ -196,4 +272,5 @@ def audit(conn: sqlite3.Connection, papers_dir: Path) -> dict:
         "correction_pair_detail": [
             row for row in shared if row["kind"] == "correction"][:20],
         "title_disagreement_detail": disagreements[:20],
+        "byline_disagreement_detail": bylines[:20],
     }
