@@ -1096,5 +1096,46 @@ class StackedEmailTests(unittest.TestCase):
         self.assertIn("Aarhus University", got["Michael Mose Biskjær"])
 
 
+class GreekMarkerTests(unittest.TestCase):
+    """Greek letters key one byline the way suit symbols key another."""
+
+    OLMO = ("OLMo: Accelerating the Science of Language Models\n"
+            "Dirk Groeneveldα Iz Beltagyα\n"
+            "Ananya Harsh Jhaα Hamish Ivisonαβ\n"
+            "Arman Cohanγα Jennifer Dumasα\n"
+            "αAllen Institute for Artificial Intelligence\n"
+            "βUniversity of Washington\n"
+            "γYale University\n")
+    AUTHORS = ["Dirk Groeneveld", "Iz Beltagy", "Hamish Ivison", "Arman Cohan"]
+
+    def test_the_block_defines_the_greek_alphabet(self):
+        self.assertEqual(bib.infer_marker_alphabet(self.OLMO),
+                         {"α", "β", "γ"})
+
+    def test_authors_are_mapped_to_greek_markers(self):
+        got = bib.author_affiliation_markers(
+            self.OLMO, self.AUTHORS, bib.infer_marker_alphabet(self.OLMO))
+        self.assertEqual(got["Dirk Groeneveld"], ["α"])
+
+    def test_a_run_of_greek_letters_is_several_markers(self):
+        got = bib.author_affiliation_markers(
+            self.OLMO, self.AUTHORS, bib.infer_marker_alphabet(self.OLMO))
+        self.assertEqual(got["Hamish Ivison"], ["α", "β"])
+        self.assertEqual(got["Arman Cohan"], ["γ", "α"])
+
+    def test_the_block_resolves_to_institutions(self):
+        got = bib.marker_affiliations(self.OLMO, {"α", "β", "γ"},
+                                      {"α", "β", "γ"})
+        self.assertIn("Allen Institute", got["α"])
+        self.assertIn("University of Washington", got["β"])
+
+    def test_a_greek_letter_in_prose_is_not_a_marker(self):
+        # Nothing in the block leads with one, so none is an affiliation key.
+        self.assertEqual(
+            bib.infer_marker_alphabet(
+                "We set α = 0.5 and β = 0.9 for the University of Nowhere.\n"),
+            set())
+
+
 if __name__ == "__main__":
     unittest.main()

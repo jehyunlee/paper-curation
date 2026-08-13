@@ -623,10 +623,17 @@ def _strip_editorial_blocks(text: str) -> str:
 # Superscript affiliation markers. The digit may be glued to the next word
 # ("2Princeton") or spaced off it ("5 UC Berkeley"), and must not fire inside a
 # legitimate name ("L3S", "Bio21", "LIP6").
+# Greek letters key the OLMo byline the way suit symbols key an ACL one:
+# "Dirk Groeneveldα … αAllen Institute for Artificial Intelligence". They are
+# only ever treated as markers when the affiliation block itself leads a line
+# with one, so a Greek letter in a formula cannot become an affiliation key.
+_MARKER_SYMBOLS = "♣♢♡♠◊△▽○●□■◆★§¶αβγδεζηθ"
+
+
 # Suit symbols key ACL affiliation blocks the way digits key everyone
 # else's ("♣University of Illinois at Urbana-Champaign").
 _AFFILIATION_MARKER = re.compile(
-    r"(?=(?<![A-Za-z0-9])(?:[1-9]\d?|[♣♢♡♠◊△▽○●□■◆★])\s*[A-Z])")
+    r"(?=(?<![A-Za-z0-9])(?:[1-9]\d?|[" + _MARKER_SYMBOLS + r"])\s*[A-Z])")
 
 
 def _split_marked_affiliations(line: str) -> list[str]:
@@ -661,7 +668,6 @@ def _split_marked_affiliations(line: str) -> list[str]:
 # mapping at all. `∗` and `†` are excluded from the alphabet on purpose: they
 # mark equal contribution and correspondence, not an affiliation, and they sit
 # beside the real markers in exactly these bylines.
-_MARKER_SYMBOLS = "♣♢♡♠◊△▽○●□■◆★§¶"
 _MARKER_ATOM = r"(?:\d{1,2}|[" + _MARKER_SYMBOLS + r"])"
 _MARKER_RUN = r"(" + _MARKER_ATOM + r"(?:\s*,?\s*" + _MARKER_ATOM + r")*)"
 _MARKER_AFTER_NAME = re.compile(
@@ -794,7 +800,7 @@ def best_institution_for(label: str, institutions) -> int | None:
 # the alphabet is read off the affiliation block instead: whatever a line
 # naming an organisation begins with is a marker in *this* paper.
 _CANDIDATE_MARKER = re.compile(
-    r"^(\d{1,2}|[a-j]|[*∗†‡§¶⋆♣♢♡♠◊△▽○●□■◆★])\s*\.?\s*(?=[A-Z])(.+)$")
+    r"^(\d{1,2}|[a-j]|[*∗†‡⋆" + _MARKER_SYMBOLS + r"])\s*\.?\s*(?=[A-Z])(.+)$")
 
 
 def _marker_regexes(alphabet: set[str]):
@@ -813,14 +819,14 @@ def _marker_regexes(alphabet: set[str]):
     atoms = []
     if any(atom.isdigit() for atom in alphabet):
         atoms.append(r"\d{1,2}")
-    if any(atom.isalpha() and atom.islower() for atom in alphabet):
+    if any(_is_ascii_letter_marker(atom) for atom in alphabet):
         atoms.append(r"[a-j]")
     symbols = sorted(atom for atom in alphabet
-                     if not atom.isdigit() and not atom.isalpha())
+                     if not atom.isdigit() and not _is_ascii_letter_marker(atom))
     atoms.extend(re.escape(symbol) for symbol in symbols)
     alternation = "|".join(atoms)
     singles = "".join(re.escape(symbol) for symbol in symbols)
-    if any(atom.isalpha() and atom.islower() for atom in alphabet):
+    if any(_is_ascii_letter_marker(atom) for atom in alphabet):
         singles += "a-j"
     # Digits come off too: PNAS writes "Waya,1" where `a` is the affiliation
     # and `1` marks the corresponding author. Either way they hide the surname.
@@ -886,7 +892,7 @@ def infer_marker_alphabet(text: str) -> set[str]:
 def _marker_kind(marker: str) -> str:
     if marker.isdigit():
         return "digit"
-    return "letter" if marker.isalpha() else "symbol"
+    return "letter" if _is_ascii_letter_marker(marker) else "symbol"
 
 
 def _split_marker_run(run: str) -> list[str]:
@@ -931,7 +937,7 @@ def _byline_candidates(raw_header: str, surnames: set[str],
         # The same stripper the marker reader uses, so a line cannot be
         # rejected here and then parsed successfully there.
         return (trailing.sub("", token) if trailing else
-                re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token))
+                re.sub(r"[\d†‡*∗⋆," + _MARKER_SYMBOLS + r"]+$", "", token))
 
     def score(text: str) -> int:
         return sum(1 for token in re.split(r"[\s,;]+", text)
@@ -1012,7 +1018,7 @@ def author_affiliation_markers(raw_header: str, authors,
             resolved = surnames.get(_fold(core))
             if not resolved:
                 core = ((trailing.sub("", token) if trailing else
-                         re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token)))
+                         re.sub(r"[\d†‡*∗⋆," + _MARKER_SYMBOLS + r"]+$", "", token)))
                 if not core:
                     continue
                 resolved = surnames.get(_fold(core))
@@ -1024,8 +1030,10 @@ def author_affiliation_markers(raw_header: str, authors,
             markers = _split_marker_run(tail.group(1))
             if markers:
                 mapping[resolved] = markers
-        if mapping:
-            break
+    # No early exit. A long byline wraps over many lines — OLMo runs to ten —
+    # and stopping at the first line that yielded anything mapped four authors
+    # of thirty. Every candidate line is read; `resolved in mapping` already
+    # keeps the first reading of each author.
     return mapping
 
 
@@ -1396,6 +1404,16 @@ _CAPTION_LINE = re.compile(
     r"section|sec\.?|chapter|appendix|theorem|lemma|proof|listing)\b")
 
 
+def _is_ascii_letter_marker(atom: str) -> bool:
+    """Whether a marker is an ASCII lowercase letter.
+
+    `"α".isalpha()` and `"α".islower()` are both true, so a plain lowercase
+    test routed Greek markers into the `[a-j]` branch and the OLMo block —
+    "αAllen Institute for Artificial Intelligence" — matched nothing.
+    """
+    return atom.isascii() and atom.isalpha() and atom.islower()
+
+
 def _marker_atom(alphabet: set[str] | None) -> str:
     """Regex alternation for one paper's markers, or the default set."""
     if not alphabet:
@@ -1403,10 +1421,10 @@ def _marker_atom(alphabet: set[str] | None) -> str:
     atoms = []
     if any(a.isdigit() for a in alphabet):
         atoms.append(r"\d{1,2}")
-    if any(a.isalpha() and a.islower() for a in alphabet):
+    if any(_is_ascii_letter_marker(a) for a in alphabet):
         atoms.append(r"[a-j]")
     atoms.extend(re.escape(a) for a in sorted(alphabet)
-                 if not a.isdigit() and not a.isalpha())
+                 if not a.isdigit() and not _is_ascii_letter_marker(a))
     return "(?:" + "|".join(atoms) + ")"
 
 
