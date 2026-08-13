@@ -375,6 +375,28 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
   "파일 없음" 이 된다. `audit_zotero_pdf.resolve_pdf_path` 가 두 구분자 모두에서 파일명을 잘라
   로컬 디렉토리에서 찾는다.
 
+### 저자↔기관 파서를 고칠 때 반드시 회귀를 먼저 잰다
+
+`pipeline/check_attribution_regression.py --snapshot` → 수정 → `--compare`.
+논문 단위로 "어느 파서가 이 논문을 푸는가"를 기록하므로, 총계로는 보이지 않는
+교환(신규 N편 / 손실 N편)이 드러난다. 손실이 있으면 exit 2.
+
+이 절차가 실제로 막은 것들:
+
+|시도|결과|
+|---|---|
+|마커 알파벳을 발견된 문자로만 제한|회귀 330|
+|소속 블록을 고정 기호 집합으로 파싱|회귀 125|
+|문서 각주가 지명한 알파벳을 무조건 신뢰|회귀 11|
+|`looks_like_affiliation` 에 200자 상한|회귀 116 · 신규 23|
+|`extract_header` 줄번호 가드를 ROR 기반으로 교체|회귀 1 · 목표 논문 미해결 → 되돌림|
+|**후행 기호 마커(`MIT†`) + 전원 공통 기호(`■`) 무시**|**회귀 5 · 신규 0 → 되돌림**|
+
+마지막 항목은 형태 자체는 실재한다(`MIT†`, `Google DeepMind‡`, `UC Berkeley§`).
+그러나 대상 논문(`1455`, `1567`)은 그 수정으로도 끝까지 풀리지 않았고 — 블록을
+읽어도 기관 행 대조에서 막힌다 — 대신 정상 동작하던 5편(`AutoGen`, `LIBERO`,
+`Open Catalyst 2020` 등)이 깨졌다. **효과 0, 손실 5.**
+
 ### arXiv API 는 소속·DOI 보강에 쓰지 않는다 (2026-08-13 측정)
 
 arXiv Atom API (`export.arxiv.org/api/query`) 를 저자 소속 또는 DOI 보강에
