@@ -375,6 +375,27 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
   "파일 없음" 이 된다. `audit_zotero_pdf.resolve_pdf_path` 가 두 구분자 모두에서 파일명을 잘라
   로컬 디렉토리에서 찾는다.
 
+### arXiv API 는 소속·DOI 보강에 쓰지 않는다 (2026-08-13 측정)
+
+arXiv Atom API (`export.arxiv.org/api/query`) 를 저자 소속 또는 DOI 보강에
+쓰자는 제안이 반복해서 나오는데, **둘 다 실측 결과 쓸 수 없다.**
+
+|측정 대상|결과|
+|---|---|
+|`<arxiv:affiliation>` — 미해결 논문 56편|**0편 (0%)**, 저자 705명 중 0명|
+|`<arxiv:affiliation>` — 코퍼스 무작위 150편|1편 (0.7%), 저자 1,642명 중 4명 (0.2%)|
+|`<arxiv:doi>` — DOI 없는 arXiv 논문 805편 전수|**4편 (0.5%)**|
+
+- **소속**: `<arxiv:affiliation>` 은 투고자가 제출 폼에 직접 입력해야만 채워지는
+  선택 필드다. arXiv 는 PDF 에서 추출하지 않고 입력을 요구하지도 않는다.
+  스키마에는 있지만 실제로는 거의 비어 있다.
+- **DOI**: 805편 전수 조회에 **약 40분** 걸렸고 (한국망 429 로 5개 배치 실패,
+  배치당 8초 대기 필수) 얻은 것은 4편이다. 비용 대비 가치가 없다.
+- 저자별 소속이 실제로 필요하면 **Scopus (`authors.author[].affiliation`) 와
+  OpenAlex (`authorships`)** 를 쓴다 — 둘 다 출판사 기탁 정보라 채워져 있다.
+  전제 조건은 DOI 이고, DOI 보강은 `resolve_missing_dois.py` 의 제목 검색이
+  담당한다 (2,374편 중 259편, 11%).
+
 ## 분야별 기관·연구자 분석 (Field leaders)
 
 `python pipeline/report_field_leaders.py --topic ai4s --top 20`
