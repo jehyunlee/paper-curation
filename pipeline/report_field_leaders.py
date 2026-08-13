@@ -17,6 +17,7 @@ never there, so this report refuses it and uses only:
   openalex             the mapping the publisher deposited (ROR-backed)
   pdf.byline-marker    superscripts actually resolved
   pdf.inline-affiliation the byline names it on the author's own line (ACM)
+  pdf.author-information a back-matter block names it per author (ACS)
   pdf.sole-affiliation one institution on the paper, so no ambiguity
 
 `--include-guessed` puts the fallback back in, and the report says so, because
@@ -38,7 +39,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
 TRUSTED_SOURCES = ("openalex", "pdf.byline-marker", "pdf.inline-affiliation",
-                   "pdf.sole-affiliation")
+                   "pdf.author-information", "pdf.sole-affiliation")
 
 # Newest snapshot per paper, with the highest count any source reported.
 # Scopus indexes less than OpenAlex, so the sources are kept separate in the

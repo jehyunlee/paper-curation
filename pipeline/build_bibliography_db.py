@@ -622,7 +622,10 @@ def _strip_editorial_blocks(text: str) -> str:
 # Superscript affiliation markers. The digit may be glued to the next word
 # ("2Princeton") or spaced off it ("5 UC Berkeley"), and must not fire inside a
 # legitimate name ("L3S", "Bio21", "LIP6").
-_AFFILIATION_MARKER = re.compile(r"(?=(?<![A-Za-z0-9])[1-9]\d?\s*[A-Z])")
+# Suit symbols key ACL affiliation blocks the way digits key everyone
+# else's ("♣University of Illinois at Urbana-Champaign").
+_AFFILIATION_MARKER = re.compile(
+    r"(?=(?<![A-Za-z0-9])(?:[1-9]\d?|[♣♢♡♠◊△▽○●□■◆★])\s*[A-Z])")
 
 
 def _split_marked_affiliations(line: str) -> list[str]:
@@ -651,10 +654,18 @@ def _split_marked_affiliations(line: str) -> list[str]:
 # chunk, so it mapped one author per byline and refused the other three
 # layouts: 310 of 400 sampled papers had markers it could not see, and every
 # one of them fell back to linking every author to every institution.
-_MARKER_RUN = r"(\d{1,2}(?:\s*,\s*\d{1,2})*)"
+# Not every publisher numbers its affiliations. ACL templates key them with
+# suit symbols — "Yu Zhang♣∗, Xiusi Chen♢♣∗" against "♣University of Illinois
+# at Urbana-Champaign" — and reading only digits left those papers with no
+# mapping at all. `∗` and `†` are excluded from the alphabet on purpose: they
+# mark equal contribution and correspondence, not an affiliation, and they sit
+# beside the real markers in exactly these bylines.
+_MARKER_SYMBOLS = "♣♢♡♠◊△▽○●□■◆★§¶"
+_MARKER_ATOM = r"(?:\d{1,2}|[" + _MARKER_SYMBOLS + r"])"
+_MARKER_RUN = r"(" + _MARKER_ATOM + r"(?:\s*,?\s*" + _MARKER_ATOM + r")*)"
 _MARKER_AFTER_NAME = re.compile(
-    r"[\s,]*[†‡§¶*∗⋆]*[\s,]*" + _MARKER_RUN)
-_MARKER_HEAD = re.compile(r"^(\d{1,2})\s*(.+)$")
+    r"[\s,]*[†‡*∗⋆]*[\s,]*" + _MARKER_RUN)
+_MARKER_HEAD = re.compile(r"^(" + _MARKER_ATOM + r")\s*(.+)$")
 
 
 def _fold(token: str) -> str:
@@ -669,22 +680,59 @@ def _fold(token: str) -> str:
     return folded.lower().strip(".,'\u2019-")
 
 
+def _split_marker_run(run: str) -> list[str]:
+    """"1,2" is two markers and so is "♢♣" — but "12" is one.
+
+    Symbols are written without a separator, digits are not, so only the
+    symbol runs are split character by character.
+    """
+    out = []
+    for piece in run.split(","):
+        piece = piece.strip()
+        if not piece:
+            continue
+        if piece[0].isdigit():
+            out.append(piece)
+        else:
+            out.extend(ch for ch in piece if not ch.isspace())
+    return out
+
+
 def _byline_candidates(raw_header: str, surnames: set[str]) -> list[str]:
     """Lines that carry at least two of this paper's own author surnames.
 
     Counting digits was the old test, and an affiliation block passes it
     ("1Heriot-Watt University, Edinburgh, UK 2Ocean University"). The author
     list is already in hand, so it is the far better discriminator.
+
+    Neighbouring lines are also offered joined, because a wide byline wraps
+    and the wrap can fall between a name and its marker:
+
+        Yoel Zimmermann
+        1, Adib Bazgir
+
+    Read line by line, Zimmermann has no marker and the mapping is lost for a
+    22-institution collaboration. Joined, the pair reads like any other byline.
     """
+    def score(text: str) -> int:
+        return sum(
+            1 for token in re.split(r"[\s,;]+", text)
+            if _fold(re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token))
+            in surnames)
+
+    lines = [re.sub(r"^#+\s*", "", line).strip()
+             for line in raw_header.splitlines()]
+    lines = [line for line in lines if line and len(line) <= 600]
+
     out = []
-    for line in raw_header.splitlines():
-        stripped = re.sub(r"^#+\s*", "", line).strip()
-        if not stripped or len(stripped) > 600:
-            continue
-        hits = sum(1 for token in re.split(r"[\s,;]+", stripped)
-                   if _fold(re.sub(r"[\d†‡§¶*∗⋆,]+$", "", token)) in surnames)
+    for index, line in enumerate(lines):
+        hits = score(line)
         if hits >= 2:
-            out.append((hits, stripped))
+            out.append((hits, line))
+        if index + 1 < len(lines):
+            joined = f"{line} {lines[index + 1]}"
+            if len(joined) <= 600 and score(joined) > max(hits, 1):
+                out.append((score(joined), joined))
     out.sort(key=lambda pair: -pair[0])
     return [text for _, text in out]
 
@@ -715,7 +763,7 @@ def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]
             # read the markers from exactly where the name ends — that one
             # position is what makes the glued and spaced layouts the same
             # problem instead of two.
-            core = re.sub(r"[\d†‡§¶*∗⋆,]+$", "", token)
+            core = re.sub(r"[\d†‡§¶*∗⋆,♣♢♡♠◊△▽○●□■◆★]+$", "", token)
             if not core:
                 continue
             resolved = surnames.get(_fold(core))
@@ -725,7 +773,7 @@ def author_affiliation_markers(raw_header: str, authors) -> dict[str, list[str]]
                 byline, token_match.start() + len(core))
             if not tail:
                 continue
-            markers = [m.strip() for m in tail.group(1).split(",") if m.strip()]
+            markers = _split_marker_run(tail.group(1))
             if markers:
                 mapping[resolved] = markers
         if mapping:
@@ -1740,15 +1788,70 @@ _AUTHOR_INFO_CUE = re.compile(
     r"received:).*$")
 
 
-def author_information_affiliations(text: str) -> list[str]:
-    """Affiliations from a back-matter author-information block.
+def author_information_text(text_path: Path) -> str:
+    """The whole of `text.md`, for finding a back-matter author-info block.
+
+    `affiliation_window` caps at 24,000 characters because it looks for front
+    matter. ACS prints "AUTHOR INFORMATION" at the *end* of the article —
+    character 71,392 of 119,073 in "A Perspective on Foundation Models in
+    Chemistry" — so that cap hides exactly the block this needs.
+    """
+    try:
+        return text_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+
+
+def author_information_pairs(text: str, authors) -> dict[str, str]:
+    """Author → affiliation from a back-matter author-information block.
 
     ACS writes one entry per author as "Name −Affiliation, City, Country;"
-    under "■AUTHOR INFORMATION", using U+2212 MINUS SIGN as the separator. The
-    block carries no superscript markers, so the marker splitter walked past
-    it and the whole flattened block exceeded the 240-character segment cap;
-    both LC Agent affiliations (Samsung Advanced Institute of Technology,
-    Sungkyunkwan University) were lost that way.
+    under "■AUTHOR INFORMATION", using U+2212 MINUS SIGN as the separator, and
+    prints no superscripts anywhere — so the marker machinery reads nothing
+    and the paper falls back to linking every author to every institution.
+    The name is right there in front of the separator, so the mapping is
+    stated, not inferred.
+
+    Only this paper's own author surnames are accepted, which keeps the
+    "Corresponding Authors" / "Authors" subheadings and any editor credit out.
+    """
+    if isinstance(authors, str):
+        authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
+    surnames: dict[str, str] = {}
+    for name in authors or []:
+        parts = [p for p in re.split(r"\s+", str(name).strip()) if p]
+        if parts:
+            surnames.setdefault(_fold(parts[-1]), str(name))
+
+    out: dict[str, str] = {}
+    for head in _AUTHOR_INFO_CUE.finditer(text):
+        block = text[head.end():head.end() + 2500]
+        block = re.split(
+            r"(?im)^[\s\W]{0,4}(?:author contributions|notes|acknowledg|"
+            r"references|funding|supporting information)\b", block)[0]
+        pieces = re.split(r"[−–—]", block)
+        for index, chunk in enumerate(pieces[1:], 1):
+            affiliation = re.split(
+                r";|\borcid\b|\bemail\b|https?://", chunk, flags=re.I)[0]
+            affiliation = re.sub(r"\s+", " ", affiliation).strip(" ,.;:-")
+            if not (5 <= len(affiliation) <= 240):
+                continue
+            # The name sits at the end of the piece before the separator.
+            tokens = [t for t in re.split(r"[\s]+", pieces[index - 1].strip())
+                      if t]
+            for token in reversed(tokens[-3:]):
+                resolved = surnames.get(_fold(token))
+                if resolved and resolved not in out:
+                    out[resolved] = affiliation
+                    break
+    return out
+
+
+def author_information_affiliations(text: str) -> list[str]:
+    """Affiliation strings from the same block, without the names.
+
+    Kept because `reconcile_affiliations` wants segments, not a mapping; the
+    two share one parse so a layout fix cannot help one and miss the other.
     """
     out = []
     for head in _AUTHOR_INFO_CUE.finditer(text):
@@ -2890,6 +2993,20 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     for marker in markers.get(name, [])
                     if marker in by_marker]
                 if not rows and institutions:
+                    # ACS states the mapping in a back-matter block instead of
+                    # a byline: "Yousung Jung -Department of Chemical and
+                    # Biological Engineering, ... Seoul National University".
+                    named = author_information_pairs(
+                        author_information_text(text),
+                        [name for _, name, _ in authors])
+                    rows = [
+                        (pid, aid, iid, None, order, "pdf.author-information")
+                        for aid, name, order in authors
+                        for iid, raw in institutions
+                        if name in named and (
+                            ((raw or "")[:60] and (raw or "")[:60] in named[name])
+                            or (named[name][:60] and named[name][:60] in (raw or "")))]
+                if not rows and institutions:
                     # No superscripts, but the byline may name each author's
                     # affiliation on the author's own line (ACM style). That
                     # states the mapping outright, so it outranks the guess.
@@ -2919,7 +3036,8 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 if not rows:
                     skipped += 1
                     continue
-                if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation"):
+                if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation",
+                                  "pdf.author-information"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same

@@ -443,5 +443,78 @@ class InlineBylineTests(unittest.TestCase):
         self.assertEqual(bib.inline_author_affiliations(self.ACM, []), {})
 
 
+class SymbolMarkerTests(unittest.TestCase):
+    """ACL templates key affiliations with suit symbols, not digits."""
+
+    ACL = ("A Comprehensive Survey of Scientific Large Language Models\n"
+           "Yu Zhang♣∗, Xiusi Chen♢♣∗, Bowen Jin♣∗,\n"
+           "Sheng Wang♡, Jiawei Han♣\n"
+           "♣University of Illinois at Urbana-Champaign\n"
+           "♢University of California, Los Angeles\n"
+           "♡University of Washington\n")
+    AUTHORS = ["Yu Zhang", "Xiusi Chen", "Bowen Jin", "Sheng Wang",
+               "Jiawei Han"]
+
+    def test_symbols_are_read_as_markers(self):
+        got = bib.author_affiliation_markers(self.ACL, self.AUTHORS)
+        self.assertEqual(got["Yu Zhang"], ["♣"])
+        self.assertEqual(got["Sheng Wang"], ["♡"])
+
+    def test_a_symbol_run_is_several_markers(self):
+        # "♢♣" is written without a separator; "12" is one number.
+        self.assertEqual(
+            bib.author_affiliation_markers(self.ACL, self.AUTHORS)["Xiusi Chen"],
+            ["♢", "♣"])
+        self.assertEqual(bib._split_marker_run("12"), ["12"])
+        self.assertEqual(bib._split_marker_run("1,2"), ["1", "2"])
+
+    def test_equal_contribution_marks_are_not_affiliations(self):
+        # ∗ sits right beside the real markers and means something else.
+        for markers in bib.author_affiliation_markers(
+                self.ACL, self.AUTHORS).values():
+            self.assertNotIn("∗", markers)
+            self.assertNotIn("*", markers)
+
+    def test_the_symbol_block_maps_to_affiliations(self):
+        got = bib.marker_affiliations(self.ACL)
+        self.assertEqual(got["♣"], "University of Illinois at Urbana-Champaign")
+        self.assertEqual(got["♡"], "University of Washington")
+
+
+class AuthorInformationPairTests(unittest.TestCase):
+    """ACS names each author's affiliation in a back-matter block."""
+
+    BLOCK = ("■AUTHOR INFORMATION\n"
+             "Corresponding Author\n"
+             "Yousung Jung \u2212Department of Chemical and Biological "
+             "Engineering, Seoul National University, Korea;\n"
+             "orcid.org/0000-0002-1129-158X; Email: yousung@snu.ac.kr\n"
+             "Authors\n"
+             "Junyoung Choi \u2212Department of Chemical Engineering, KAIST, "
+             "Korea;\n"
+             "Author Contributions\nAll authors contributed.\n")
+    AUTHORS = ["Junyoung Choi", "Yousung Jung"]
+
+    def test_each_author_is_paired_with_its_own_affiliation(self):
+        got = bib.author_information_pairs(self.BLOCK, self.AUTHORS)
+        self.assertIn("Seoul National University", got["Yousung Jung"])
+        self.assertIn("KAIST", got["Junyoung Choi"])
+
+    def test_a_subheading_is_not_an_author(self):
+        got = bib.author_information_pairs(self.BLOCK, self.AUTHORS)
+        self.assertEqual(set(got), set(self.AUTHORS))
+
+    def test_an_author_from_another_paper_is_refused(self):
+        self.assertEqual(
+            bib.author_information_pairs(self.BLOCK, ["Someone Else"]), {})
+
+    def test_the_block_is_found_at_the_end_of_a_long_paper(self):
+        # ACS prints it at character 71,392 of 119,073, well past any
+        # front-matter window.
+        padded = ("body text.\n" * 8000) + self.BLOCK
+        got = bib.author_information_pairs(padded, self.AUTHORS)
+        self.assertIn("Seoul National University", got["Yousung Jung"])
+
+
 if __name__ == "__main__":
     unittest.main()
