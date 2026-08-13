@@ -613,5 +613,63 @@ class WrappedAffiliationBlockTests(unittest.TestCase):
         self.assertIn("1", got)
 
 
+class StackedBylineTests(unittest.TestCase):
+    """arXiv and IEEE columns stack the affiliation under the author's name."""
+
+    HEADER = ("AGENTIC RETRIEVAL-AUGMENTED GENERATION: A SURVEY\n"
+              "Aditi Singh\n"
+              "Department of Computer Science\n"
+              "Cleveland State University\n"
+              "Cleveland, OH, USA\n"
+              "a.singh22@csuohio.edu\n"
+              "Abul Ehtesham\n"
+              "The Davey Tree Expert Company\n"
+              "Kent, OH, USA\n"
+              "abul.ehtesham@davey.com\n"
+              "Tala Talaei Khoei\n"
+              "Khoury College of Computer Science\n"
+              "Roux Institute at Northeastern University\n"
+              "Portland, ME, USA\n"
+              "ABSTRACT\n"
+              "Large Language Models have revolutionized artificial "
+              "intelligence at the University of Nowhere.\n")
+    AUTHORS = ["Aditi Singh", "Abul Ehtesham", "T. T. Khoei"]
+
+    def test_every_author_gets_the_lines_under_its_name(self):
+        got = bib.stacked_author_affiliations(self.HEADER, self.AUTHORS)
+        self.assertIn("Cleveland State University", got["Aditi Singh"])
+        self.assertIn("Davey Tree Expert Company", got["Abul Ehtesham"])
+        self.assertIn("Northeastern University", got["T. T. Khoei"])
+
+    def test_an_abbreviated_record_name_still_matches(self):
+        # Zotero records "T. T. Khoei" where the byline reads "Tala Talaei
+        # Khoei", so the surname is what can be compared.
+        self.assertIn("T. T. Khoei",
+                      bib.stacked_author_affiliations(self.HEADER, self.AUTHORS))
+
+    def test_the_block_stops_at_the_email(self):
+        got = bib.stacked_author_affiliations(self.HEADER, self.AUTHORS)
+        self.assertNotIn("@", got["Aditi Singh"])
+
+    def test_the_block_stops_at_the_abstract(self):
+        got = bib.stacked_author_affiliations(self.HEADER, self.AUTHORS)
+        self.assertNotIn("University of Nowhere", got["T. T. Khoei"])
+
+    def test_one_lone_match_is_a_coincidence(self):
+        # A name followed by a university line proves nothing on its own; a
+        # byline is several of them in a row.
+        self.assertEqual(
+            bib.stacked_author_affiliations(
+                "Title\nAditi Singh\nCleveland State University\n",
+                self.AUTHORS), {})
+
+    def test_a_line_with_an_organisation_is_not_a_name(self):
+        self.assertEqual(
+            bib.stacked_author_affiliations(
+                "Cleveland State University\nDepartment of Computer Science\n"
+                "Roux Institute at Northeastern University\nPortland, ME\n",
+                self.AUTHORS), {})
+
+
 if __name__ == "__main__":
     unittest.main()

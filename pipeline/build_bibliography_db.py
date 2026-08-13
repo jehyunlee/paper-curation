@@ -877,6 +877,76 @@ def affiliation_window(text_path: Path) -> str:
     return "\n".join(_strip_editorial_blocks("\n".join(lines[:320])).splitlines())
 
 
+_EMAIL_LINE = re.compile(r"[\w.+-]+@[\w.-]+|@\s*[\w.-]+\.\w+")
+_FRONT_MATTER_END = re.compile(
+    r"(?i)^\s*(?:abstract|초록|keywords?|index terms|introduction|"
+    r"1\.?\s+introduction|ccs concepts|acm reference)\b")
+
+
+def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
+    """Bylines that stack each author's affiliation under the author's name.
+
+    arXiv and IEEE templates set the authors in columns with no markers at
+    all, and PyMuPDF reads them column by column:
+
+        Aditi Singh
+        Department of Computer Science
+        Cleveland State University
+        Cleveland, OH, USA
+        a.singh22@csuohio.edu
+        Abul Ehtesham
+        The Davey Tree Expert Company
+        ...
+
+    Nothing here is a superscript, so the marker machinery finds nothing and
+    the paper is filed as "the PDF does not say" — while the PDF says it
+    plainly. The affiliation is the run of lines between a name and the next
+    name, stopping at the author's e-mail or at the abstract.
+
+    Two authors must be found this way before any of it is believed: one name
+    followed by a line mentioning a university is a coincidence, four in a row
+    is a byline.
+    """
+    if isinstance(authors, str):
+        authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
+    # Zotero abbreviates: the byline reads "Tala Talaei Khoei" while the
+    # record says "T. T. Khoei", so the surname is what can be compared.
+    by_surname: dict[str, str] = {}
+    for name in authors or []:
+        parts = [p for p in re.split(r"\s+", str(name).strip()) if p]
+        if parts:
+            by_surname.setdefault(_fold(parts[-1]), str(name))
+    if not by_surname:
+        return {}
+
+    def author_on(line: str) -> str | None:
+        """The author this line names, if the line is a name and not a place."""
+        tokens = [x for x in re.split(r"\s+", line) if x]
+        if not (1 < len(tokens) <= 5) or _AFFILIATION_ORG_CUE.search(line):
+            return None
+        if any(ch.isdigit() for ch in line) or "," in line:
+            return None
+        return by_surname.get(_fold(tokens[-1].strip(".,")))
+
+    lines = [line.strip() for line in raw_header.splitlines()]
+    out: dict[str, str] = {}
+    for index, line in enumerate(lines):
+        resolved = author_on(line)
+        if not resolved or resolved in out:
+            continue
+        block = []
+        for follower in lines[index + 1:index + 7]:
+            if not follower or _FRONT_MATTER_END.match(follower):
+                break
+            if author_on(follower) or _EMAIL_LINE.search(follower):
+                break
+            block.append(follower)
+        text = ", ".join(block).strip(" ,")
+        if text and _AFFILIATION_ORG_CUE.search(text):
+            out[resolved] = text
+    return out if len(out) >= 2 else {}
+
+
 def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
     """Bylines that print each author's affiliation on the author's own line.
 
@@ -930,7 +1000,7 @@ def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
 _AFFILIATION_ORG_CUE = re.compile(
     r"universit|institut|laborator|college|academy|hospital|polytech|"
     r"school of|faculty|department of|centre for|center for|"
-    r"\bcorporation\b|\binc\b|\bltd\b|\bllc\b|\bgmbh\b|"
+    r"\bcorporation\b|\bcompany\b|\binc\b|\bltd\b|\bllc\b|\bgmbh\b|"
     r"research (?:center|centre|institute|laborator)", re.I)
 # "2.1 Related Work", ".2. State Space Models" — a numbered section, not a place.
 _SECTION_HEADING = re.compile(r"^\s*[.\d]+\s*[.)]?\s+[A-Z]")
@@ -3114,6 +3184,18 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     for marker in markers.get(name, [])
                     if marker in by_marker]
                 if not rows and institutions:
+                    # arXiv/IEEE columns stack the affiliation under the name
+                    # with no marker anywhere; PyMuPDF reads them in order.
+                    stacked = stacked_author_affiliations(
+                        header, [name for _, name, _ in authors])
+                    rows = [
+                        (pid, aid, iid, None, order, "pdf.stacked-byline")
+                        for aid, name, order in authors
+                        if name in stacked
+                        for iid in [best_institution_for(stacked[name],
+                                                         institutions)]
+                        if iid is not None]
+                if not rows and institutions:
                     # ACS states the mapping in a back-matter block instead of
                     # a byline: "Yousung Jung -Department of Chemical and
                     # Biological Engineering, ... Seoul National University".
@@ -3156,7 +3238,8 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     skipped += 1
                     continue
                 if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation",
-                                  "pdf.author-information"):
+                                  "pdf.author-information",
+                                  "pdf.stacked-byline"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same
