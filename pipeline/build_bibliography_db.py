@@ -2078,6 +2078,88 @@ def scopus_author_pairs(doi: str, title: str, authors) -> dict[str, str]:
     return out
 
 
+# A department, a college or a named centre is part of an institution, not one.
+# ROR knows the ones that are independent — "Center for Open Science" has a
+# record, "Center for Computational Science and Engineering" does not — so the
+# name alone cannot decide.
+_SUB_UNIT_NAME = re.compile(
+    r"(?i)^(college|department|dept|school|faculty|division|graduate school|"
+    r"centre|center|laborator)\b")
+
+
+def drop_sub_unit_institutions(conn: sqlite3.Connection) -> dict:
+    """Remove institutions that name part of one, keeping ROR-known bodies.
+
+    Scopus names were minted unchecked before `scopus_institution_name`
+    existed, so the rows are already in the DB. They cannot be repaired into
+    their parent — Scopus does not say which university a college belongs to —
+    so they are removed rather than left to distort an institution ranking.
+    """
+    try:
+        from .lib.ror_index import RorIndex
+    except ImportError:
+        from lib.ror_index import RorIndex
+    index = RorIndex()
+    try:
+        doomed = []
+        for institution_id, name, ror_id in conn.execute(
+                "SELECT institution_id, institution_name, COALESCE(ror_id,'')"
+                " FROM institutions"):
+            if ror_id or not _SUB_UNIT_NAME.match(name or ""):
+                continue
+            if not (index.available and index.resolve(name)):
+                doomed.append(institution_id)
+    finally:
+        index.close()
+    if not doomed:
+        return {"institutions": 0, "paper_links": 0, "author_links": 0}
+    marks = ",".join("?" * len(doomed))
+    author_links = conn.execute(
+        f"SELECT COUNT(*) FROM paper_author_institutions"
+        f" WHERE institution_id IN ({marks})", doomed).fetchone()[0]
+    paper_links = conn.execute(
+        f"SELECT COUNT(*) FROM paper_institutions"
+        f" WHERE institution_id IN ({marks})", doomed).fetchone()[0]
+    for table in ("paper_author_institutions", "paper_institutions",
+                  "institution_aliases", "institutions"):
+        conn.execute(f"DELETE FROM {table} WHERE institution_id IN ({marks})",
+                     doomed)
+    return {"institutions": len(doomed), "paper_links": paper_links,
+            "author_links": author_links}
+
+
+def scopus_institution_name(affilname: str, country: str = "") -> str:
+    """A Scopus affiliation name, or "" when it names only part of one.
+
+    Scopus indexes the unit it was given, so a paper comes back under "College
+    of Engineering and Applied Science" with the university it belongs to
+    nowhere in the record. The PDF path already puts every candidate past ROR;
+    Scopus names skipped that and were minted as institutions unchecked.
+    """
+    name = canonical_institution(str(affilname or "").strip())
+    if not name:
+        return ""
+    if not _SUB_UNIT_NAME.match(name):
+        return name
+    # ROR decides, offline. Its records are what separate a real organisation
+    # whose name begins that way — Center for Open Science, Center for
+    # Theoretical Biological Physics — from a university's internal unit.
+    try:
+        from .lib.ror_index import RorIndex
+    except ImportError:
+        try:
+            from lib.ror_index import RorIndex
+        except ImportError:
+            return name
+    index = RorIndex()
+    try:
+        if not index.available:
+            return name
+        return name if index.resolve(name, country) else ""
+    finally:
+        index.close()
+
+
 def scopus_author_affiliations(payload: dict) -> list[dict]:
     """Each indexed author with the institutions Scopus recorded for them.
 
@@ -2166,7 +2248,9 @@ def fetch_scopus_record(doi: str, title: str = "",
                     payload = abstract.json().get("abstracts-retrieval-response") or {}
                     affiliations = []
                     for aff in payload.get("affiliation") or []:
-                        name = canonical_institution(str(aff.get("affilname") or ""))
+                        name = scopus_institution_name(
+                            str(aff.get("affilname") or ""),
+                            str(aff.get("affiliation-country") or ""))
                         if name:
                             affiliations.append({
                                 "name": name,

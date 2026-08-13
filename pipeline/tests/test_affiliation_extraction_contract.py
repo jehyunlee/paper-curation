@@ -749,5 +749,36 @@ class SpacingAccentTests(unittest.TestCase):
         self.assertEqual(bib._fold("Indian Institute"), "indian institute")
 
 
+class ScopusInstitutionNameTests(unittest.TestCase):
+    """Scopus indexes the unit it was given, which is often not an institution.
+
+    A paper comes back under "College of Engineering and Applied Science" with
+    the university it belongs to nowhere in the record. The PDF path already
+    puts every candidate past ROR; Scopus names skipped that check and were
+    minted as institutions unchecked.
+    """
+
+    def test_a_university_passes(self):
+        self.assertEqual(bib.scopus_institution_name("Stanford University"),
+                         "Stanford University")
+
+    def test_an_internal_unit_is_refused(self):
+        for name in ("College of Engineering and Applied Science",
+                     "Department of Computer Science",
+                     "Center for Computational Science and Engineering"):
+            with self.subTest(name=name):
+                self.assertEqual(bib.scopus_institution_name(name), "")
+
+    def test_a_real_organisation_named_like_one_is_kept(self):
+        # ROR holds records for these; the name alone cannot decide.
+        for name in ("Center for Open Science",
+                     "Center for Theoretical Biological Physics"):
+            with self.subTest(name=name):
+                self.assertEqual(bib.scopus_institution_name(name), name)
+
+    def test_an_empty_name_is_refused(self):
+        self.assertEqual(bib.scopus_institution_name(""), "")
+
+
 if __name__ == "__main__":
     unittest.main()
