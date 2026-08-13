@@ -1187,5 +1187,40 @@ class SharedAffiliationBlockTests(unittest.TestCase):
                 ["Haozhe Xie"]), [])
 
 
+class DeclaredSharedAffiliationTests(unittest.TestCase):
+    """Some papers state the shared affiliation in a sentence."""
+
+    FOOTNOTE = ("An Empirical Evaluation of Four Systems\n"
+                "Jungha Kim, Minkyeong Song, and Pyojin Kim∗\n"
+                "Abstract—We evaluate four systems.\n"
+                "All authors are with Department of Mechanical Systems\n"
+                "Engineering, Sookmyung Women’s University, Seoul, South\n"
+                "Korea. {alice3071,smk615}@sookmyung.ac.kr\n")
+
+    def test_the_sentence_is_read_across_line_breaks(self):
+        # IEEE sets it in a two-column footnote, so it wraps.
+        got = bib.declared_shared_affiliation(self.FOOTNOTE)
+        self.assertIn("Sookmyung Women’s University", got)
+
+    def test_the_e_mail_block_is_not_part_of_it(self):
+        self.assertNotIn("@", bib.declared_shared_affiliation(self.FOOTNOTE))
+
+    def test_a_paper_without_the_sentence_declares_nothing(self):
+        self.assertEqual(
+            bib.declared_shared_affiliation(
+                "Songming Liu∗, Lingxuan Wu∗\n"
+                "1Department of Computer Science, Tsinghua University\n"), "")
+
+    def test_a_sentence_naming_no_organisation_is_refused(self):
+        self.assertEqual(
+            bib.declared_shared_affiliation(
+                "All authors are with the project described below.\n"), "")
+
+    def test_references_are_never_searched(self):
+        self.assertEqual(
+            bib.declared_shared_affiliation(
+                "References\nAll authors are with Tsinghua University.\n"), "")
+
+
 if __name__ == "__main__":
     unittest.main()

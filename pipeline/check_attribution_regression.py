@@ -90,6 +90,26 @@ def resolve_one(conn: sqlite3.Connection, paper_id: int,
     if any(bib.best_institution_for(value, institutions)
            for value in named.values()):
         return "author-information"
+
+    # The shared-affiliation paths. Left out at first, which made the
+    # comparison blind to every paper they resolve: a run reported 0 gained
+    # while the backfill went on to fill 46.
+    if not markers:
+        numbered = (bib.marker_affiliations(header, None, alphabet)
+                    or bib.marker_affiliations(
+                        bib.affiliation_window(text), None, alphabet))
+        if len(numbered) == 1 and any(
+                bib.best_institution_for(label, institutions)
+                for label in numbered.values()):
+            return "shared-byline"
+    declared = (bib.declared_shared_affiliation(bib.affiliation_window(text))
+                or bib.declared_shared_affiliation(
+                    bib.author_information_text(text)))
+    if declared and bib.best_institution_for(declared, institutions):
+        return "shared-byline"
+    if any(bib.best_institution_for(line, institutions)
+           for line in bib.shared_affiliation_block(header, authors)):
+        return "shared-byline"
     return None
 
 

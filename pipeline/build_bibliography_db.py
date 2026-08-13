@@ -1068,6 +1068,30 @@ _FRONT_MATTER_END = re.compile(
     r"1\.?\s+introduction|ccs concepts|acm reference)\b")
 
 
+_ALL_AUTHORS_WITH = re.compile(
+    r"(?i)\ball (?:the )?authors?\s+(?:are|is|were)\s+(?:with|at|from)\s+(.{8,200}?)"
+    r"(?:\.\s|\.$|;|\{)")
+
+
+def declared_shared_affiliation(raw_text: str) -> str:
+    """An affiliation the paper states every author holds.
+
+    IEEE journals print it in the page-one footnote rather than the byline:
+    "All authors are with Department of Mechanical Systems Engineering,
+    Sookmyung Women's University, Seoul, South Korea." Nothing has to be
+    inferred — the sentence says it.
+    """
+    head = re.split(r"(?im)^\s*#*\s*(?:references|acknowledg)\b",
+                    raw_text, maxsplit=1)[0]
+    # The sentence wraps in a two-column footnote, so it is only one sentence
+    # once the line breaks are collapsed.
+    found = _ALL_AUTHORS_WITH.search(re.sub(r"\s+", " ", head))
+    if not found:
+        return ""
+    text = re.sub(r"\s+", " ", found.group(1)).strip(" ,.;:")
+    return text if looks_like_affiliation(text) else ""
+
+
 def shared_affiliation_block(raw_header: str, authors) -> list[str]:
     """Affiliations a byline gives every author because it marks none of them.
 
@@ -4001,6 +4025,44 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                         for iid in [best_institution_for(paired[name],
                                                          institutions)]
                         if iid is not None]
+                if not rows and institutions and not markers:
+                    # The block numbers its affiliations and the byline uses
+                    # none of those numbers: "Songming Liu∗, Lingxuan Wu∗ …
+                    # 1Department of Computer Science, Tsinghua University".
+                    # The ∗ marks equal contribution, not a place, so the one
+                    # affiliation is everyone's. Only one, though — several
+                    # unused markers still leave who-sat-where unknown.
+                    numbered = (marker_affiliations(header, None, alphabet)
+                                or marker_affiliations(
+                                    affiliation_window(text), None, alphabet))
+                    # One marker in the block: whatever it names is
+                    # everyone's, even when the DB holds it as two rows —
+                    # "Tsinghua-Bosch Joint ML Center" and "Department of
+                    # Computer Science … Tsinghua University" are one place.
+                    resolved_ids = {
+                        iid for label in numbered.values()
+                        for iid in [best_institution_for(label, institutions)]
+                        if iid is not None}
+                    if len(numbered) == 1 and resolved_ids:
+                        rows = [(pid, aid, iid, None, order,
+                                 "pdf.shared-byline")
+                                for aid, _name, order in authors
+                                for iid in resolved_ids]
+                if not rows and institutions:
+                    # "All authors are with X" states it outright, and IEEE
+                    # prints that in the page-one footnote, not the byline.
+                    # IEEE prints the footnote at the bottom of page one,
+                    # which lands past any front-matter window.
+                    declared = (declared_shared_affiliation(
+                                    affiliation_window(text))
+                                or declared_shared_affiliation(
+                                    author_information_text(text)))
+                    iid = (best_institution_for(declared, institutions)
+                           if declared else None)
+                    if iid is not None:
+                        rows = [(pid, aid, iid, None, order,
+                                 "pdf.shared-byline")
+                                for aid, _name, order in authors]
                 if not rows and institutions:
                     # A byline that lists its authors and then names an
                     # affiliation without keying it to anyone is saying they
