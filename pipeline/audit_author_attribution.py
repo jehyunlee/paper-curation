@@ -89,9 +89,13 @@ def classify(conn: sqlite3.Connection, paper_id: int, slug: str,
 
     header = bib.extract_header(text)[0]
     folded = bib._fold(header)
-    own = any((parts := name.split()) and bib._fold(parts[-1]) in folded
-              for name in authors)
-    if not own:
+    # One shared surname is a coincidence — "Wang" and "Li" appear in most
+    # bylines in this corpus. "34 examples of llm applications" records Lei
+    # Wang while its PDF reads Yoel Zimmermann, and landed in D on that one
+    # accidental hit instead of being reported as the mismatch it is.
+    own = sum(1 for name in authors
+              if (parts := name.split()) and bib._fold(parts[-1]) in folded)
+    if own < 2:
         names = zi._pdf_byline_names(header, known_surnames)
         if len(names) >= 2:
             return "C", {"record": authors[:3], "pdf": names[:3]}

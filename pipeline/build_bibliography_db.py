@@ -926,7 +926,9 @@ def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
             return None
         if any(ch.isdigit() for ch in line) or "," in line:
             return None
-        return by_surname.get(_fold(tokens[-1].strip(".,")))
+        # "Daking Rai∗" — the correspondence mark is part of the token.
+        return by_surname.get(
+            _fold(tokens[-1].strip(".,*∗†‡§¶⋆♣♢♡♠")))
 
     lines = [line.strip() for line in raw_header.splitlines()]
     out: dict[str, str] = {}
@@ -938,8 +940,13 @@ def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
         for follower in lines[index + 1:index + 7]:
             if not follower or _FRONT_MATTER_END.match(follower):
                 break
-            if author_on(follower) or _EMAIL_LINE.search(follower):
+            if author_on(follower):
                 break
+            # An e-mail is never an affiliation, but it is not the end of the
+            # block either: this template right-aligns it beside the name, so
+            # PyMuPDF emits name, e-mail, affiliation in that order.
+            if _EMAIL_LINE.search(follower):
+                continue
             block.append(follower)
         text = ", ".join(block).strip(" ,")
         if text and _AFFILIATION_ORG_CUE.search(text):
