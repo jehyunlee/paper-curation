@@ -49,7 +49,8 @@ from lib import zotero_identity as zi          # noqa: E402
 PAPERS_DIR = ROOT / "docs" / "papers"
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
-RESOLVED_SOURCES = ("openalex", "pdf.byline-marker", "pdf.inline-affiliation",
+RESOLVED_SOURCES = ("openalex", "scopus", "pdf.byline-marker",
+                    "pdf.inline-affiliation",
                     "pdf.author-information", "pdf.stacked-byline",
                     "pdf.sole-affiliation")
 

@@ -2040,7 +2040,80 @@ def scopus_bibliography(payload: dict) -> dict:
     }
 
 
-def fetch_scopus_record(doi: str, title: str = "") -> dict:
+def scopus_author_pairs(doi: str, title: str, authors) -> dict[str, str]:
+    """Record author → the institution Scopus recorded for them.
+
+    Scopus writes "Way S.F." where the record says "Samuel F. Way", so the
+    surname is compared and the first initial has to agree — a corpus this
+    size has many authors sharing a surname, and crediting the wrong one is
+    worse than crediting nobody. An author with several affiliations is left
+    out: which is theirs is exactly the ambiguity this whole path exists to
+    avoid guessing at.
+    """
+    if isinstance(authors, str):
+        authors = [x.strip() for x in re.split(r"[,;]", authors) if x.strip()]
+    record = {}
+    for name in authors or []:
+        parts = [x for x in re.split(r"\s+", str(name).strip()) if x]
+        if parts:
+            record.setdefault(_fold(parts[-1]), (str(name), _fold(parts[0])[:1]))
+    if not record:
+        return {}
+
+    fetched = fetch_scopus_record(doi, title, want_authors=True) or {}
+    out: dict[str, str] = {}
+    for row in fetched.get("author_affiliations") or []:
+        surname = _fold(row.get("surname") or
+                        (row.get("indexed_name") or " ").split()[0])
+        found = record.get(surname)
+        if not found:
+            continue
+        name, initial = found
+        given = _fold(row.get("initials") or "")[:1]
+        if initial and given and initial != given:
+            continue
+        affiliations = row.get("affiliations") or []
+        if len(affiliations) == 1 and name not in out:
+            out[name] = affiliations[0]
+    return out
+
+
+def scopus_author_affiliations(payload: dict) -> list[dict]:
+    """Each indexed author with the institutions Scopus recorded for them.
+
+    Scopus keys an author's affiliations by id against the paper's affiliation
+    list, so the mapping is stated rather than parsed. It is the answer for
+    papers whose PDF never prints it — "Productivity, prominence" keys its
+    byline with lowercase letters that no marker parser saw, and "The
+    Increasing Dominance of Teams" was scanned starting at its reference list.
+    """
+    listed = payload.get("affiliation") or []
+    listed = [listed] if isinstance(listed, dict) else listed
+    names = {str(item.get("@id") or ""): str(item.get("affilname") or "")
+             for item in listed}
+    authors = (payload.get("authors") or {}).get("author") or []
+    authors = [authors] if isinstance(authors, dict) else authors
+    out = []
+    for author in authors:
+        affiliations = author.get("affiliation")
+        affiliations = ([affiliations] if isinstance(affiliations, dict)
+                        else affiliations or [])
+        resolved = [names.get(str(item.get("@id") or ""), "")
+                    for item in affiliations]
+        resolved = [name for name in resolved if name]
+        if not resolved:
+            continue
+        out.append({
+            "indexed_name": str(author.get("ce:indexed-name") or ""),
+            "surname": str(author.get("ce:surname") or ""),
+            "initials": str(author.get("ce:initials") or ""),
+            "affiliations": resolved,
+        })
+    return out
+
+
+def fetch_scopus_record(doi: str, title: str = "",
+                        want_authors: bool = False) -> dict:
     """Fetch one Scopus record and reuse it for bibliography and affiliations."""
     doi = clean_doi(doi).lower()
     title = re.sub(r"\s+", " ", title or "").strip()
@@ -2058,7 +2131,12 @@ def fetch_scopus_record(doi: str, title: str = "") -> dict:
         if isinstance(alternate, dict) and "bibliography" in alternate:
             cached = alternate
     if isinstance(cached, dict) and "bibliography" in cached:
-        return cached
+        # Entries written before author-level affiliations were read have no
+        # such key. Re-fetching all 4,234 of them to add a field almost no
+        # caller needs would be wasteful, so only a caller that asks for the
+        # mapping pays for it.
+        if not (want_authors and "author_affiliations" not in cached):
+            return cached
     legacy_affiliations = cached if isinstance(cached, list) else []
     record = {"bibliography": {}, "affiliations": legacy_affiliations}
     try:
@@ -2100,6 +2178,11 @@ def fetch_scopus_record(doi: str, title: str = "") -> dict:
                     record = {
                         "bibliography": scopus_bibliography(payload),
                         "affiliations": affiliations,
+                        # Scopus indexes who sat where, in the same response
+                        # this has always fetched for the paper's institution
+                        # list. Reading only the list threw the mapping away.
+                        "author_affiliations": scopus_author_affiliations(
+                            payload),
                     }
     except Exception:
         pass
@@ -3285,7 +3368,8 @@ def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
 
 
 def backfill_author_institutions(db_path: Path, limit: int | None = None,
-                                 retry_guessed: bool = True) -> dict:
+                                 retry_guessed: bool = True,
+                                 offline: bool = False) -> dict:
     """Fill `paper_author_institutions` for papers built before it existed.
 
     The mapping derives from `text.md` and the paper's existing institution
@@ -3371,6 +3455,23 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     for aid, name, order in authors
                     for marker in markers.get(name, [])
                     if marker in by_marker]
+                if not rows and institutions and not offline:
+                    # Every PDF layout failed. Scopus indexed who sat where in
+                    # the same response this build already fetches for the
+                    # paper's institution list.
+                    paired = scopus_author_pairs(
+                        conn.execute("SELECT doi FROM papers WHERE paper_id=?",
+                                     (pid,)).fetchone()[0] or "",
+                        conn.execute("SELECT title FROM papers WHERE paper_id=?",
+                                     (pid,)).fetchone()[0] or "",
+                        [name for _, name, _ in authors])
+                    rows = [
+                        (pid, aid, iid, None, order, "scopus")
+                        for aid, name, order in authors
+                        if name in paired
+                        for iid in [best_institution_for(paired[name],
+                                                         institutions)]
+                        if iid is not None]
                 if not rows and institutions:
                     # arXiv/IEEE columns stack the affiliation under the name
                     # with no marker anywhere; PyMuPDF reads them in order.
@@ -3427,7 +3528,7 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     continue
                 if rows[0][5] in ("pdf.byline-marker", "pdf.inline-affiliation",
                                   "pdf.author-information",
-                                  "pdf.stacked-byline"):
+                                  "pdf.stacked-byline", "scopus"):
                     # A retried paper still carries the guess that stood in
                     # while the parser could not read its byline. Resolved rows
                     # replace it; leaving both would let a query count the same

@@ -38,7 +38,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
-TRUSTED_SOURCES = ("openalex", "pdf.byline-marker", "pdf.inline-affiliation",
+TRUSTED_SOURCES = ("openalex", "scopus", "pdf.byline-marker",
+                   "pdf.inline-affiliation",
                    "pdf.author-information", "pdf.stacked-byline",
                    "pdf.sole-affiliation")
 
