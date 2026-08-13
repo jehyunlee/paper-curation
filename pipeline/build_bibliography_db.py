@@ -784,7 +784,7 @@ def best_institution_for(label: str, institutions) -> int | None:
 # the alphabet is read off the affiliation block instead: whatever a line
 # naming an organisation begins with is a marker in *this* paper.
 _CANDIDATE_MARKER = re.compile(
-    r"^(\d{1,2}|[a-j]|[*∗†‡§¶⋆♣♢♡♠◊△▽○●□■◆★])(?=[A-Z\s])\s*(.+)$")
+    r"^(\d{1,2}|[a-j]|[*∗†‡§¶⋆♣♢♡♠◊△▽○●□■◆★])\s*\.?\s*(?=[A-Z])(.+)$")
 
 
 def _marker_regexes(alphabet: set[str]):
@@ -1101,6 +1101,45 @@ def stacked_author_affiliations(raw_header: str, authors) -> dict[str, str]:
     return out if len(out) >= 2 else {}
 
 
+def _marker_emails(raw_text: str, wanted: set[str] | None,
+                   alphabet: set[str] | None) -> dict[str, str]:
+    """Markers whose body is an e-mail address rather than a name."""
+    atom = _marker_atom(alphabet)
+    pattern = re.compile(r"(?<![A-Za-z0-9])(" + atom + r")\s*([\w.+-]+@[\w.-]+)")
+    out: dict[str, str] = {}
+    for match in pattern.finditer(raw_text):
+        marker, email = match.group(1), match.group(2)
+        if wanted is not None and marker not in wanted:
+            continue
+        out.setdefault(marker, email)
+    return out
+
+
+def trailing_marker_affiliations(raw_text: str,
+                                 wanted: set[str] | None = None) -> dict[str, str]:
+    """Blocks that print the marker *after* the institution.
+
+        Institute for Human-Centered Artificial Intelligence (HAI)8
+        Stanford University The University of Texas at Austin9
+
+    Every other parser here assumes the marker leads. Reading trailing digits
+    anywhere would turn a reference list into affiliations, so only the text
+    before the abstract is considered — a byline block is always there, and a
+    reference list never is.
+    """
+    head = re.split(r"(?im)^\s*#*\s*(?:abstract|초록|1\.?\s+introduction)\b",
+                    raw_text, maxsplit=1)[0]
+    out: dict[str, str] = {}
+    for match in re.finditer(r"([A-Z][^\n\d]{9,90}?)\s*(\d{1,2})(?=\s|$)", head):
+        name, marker = match.group(1).strip(" ,;·"), match.group(2)
+        if wanted is not None and marker not in wanted:
+            continue
+        if marker in out or not looks_like_affiliation(name):
+            continue
+        out[marker] = name
+    return out
+
+
 def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
     """Bylines that print each author's affiliation on the author's own line.
 
@@ -1239,6 +1278,85 @@ def looks_like_affiliation(text: str) -> bool:
     return _ror_knows(head)
 
 
+# Academic domains whose label is neither a prefix nor the initials of the
+# name they belong to. Kept small on purpose: prefix and initials cover
+# stanford.edu, mit.edu, tsinghua.edu.cn and most of the rest.
+_DOMAIN_ALIASES = {
+    "pku": "peking university", "sjtu": "shanghai jiao tong university",
+    "thu": "tsinghua university", "zju": "zhejiang university",
+    "ustc": "university of science and technology of china",
+    "fudan": "fudan university", "nus": "national university of singapore",
+    "ntu": "nanyang technological university", "kaist": "kaist",
+    "snu": "seoul national university", "postech": "postech",
+    "ethz": "eth zurich", "epfl": "epfl", "tum": "technical university of munich",
+    "ox": "university of oxford", "cam": "university of cambridge",
+    "ucl": "university college london", "imperial": "imperial college london",
+    "berkeley": "university of california, berkeley",
+    "cmu": "carnegie mellon university", "gatech": "georgia institute of technology",
+    "umich": "university of michigan", "illinois": "university of illinois",
+}
+
+
+def _domain_label(email: str) -> str:
+    """The distinctive label of an academic e-mail domain.
+
+    "liangs@stu.pku.edu.cn" is Peking University's, and the part that says so
+    is "pku": the host, the generic academic suffixes and the country code
+    carry no information.
+    """
+    match = re.search(r"@\s*([\w.-]+)", email or "")
+    if not match:
+        return ""
+    parts = [p for p in match.group(1).lower().split(".") if p]
+    generic = {"edu", "ac", "org", "com", "net", "gov", "info", "stu", "mail",
+               "cs", "eecs", "www", "alumni", "student", "students"}
+    parts = [p for p in parts if p not in generic and len(p) > 1]
+    # Drop a trailing two-letter country code ("cn", "uk", "jp").
+    if parts and len(parts[-1]) == 2:
+        parts = parts[:-1]
+    return parts[-1] if parts else ""
+
+
+def institution_for_email(email: str, institutions) -> int | None:
+    """Which of this paper's institutions an e-mail address belongs to.
+
+    A byline can key its markers to e-mail addresses and print the affiliation
+    on a line of its own with no marker at all:
+
+        Shuang Liang1, Zhiyu Tao2, Qingshan Zhou3
+        1liangs@stu.pku.edu.cn, 3zqs@pku.edu.cn
+        Department of Information Management, Peking University
+
+    The choice is between the two to four institutions the paper already has,
+    not among all of them, so a domain label is enough — and only when exactly
+    one candidate matches, because a paper with two Chinese universities must
+    not have either picked by a coin toss.
+    """
+    label = _domain_label(email)
+    if not label:
+        return None
+    alias = _DOMAIN_ALIASES.get(label, "")
+    hits = []
+    for institution_id, raw in institutions:
+        name = _fold(raw or "")
+        if not name:
+            continue
+        words = [w for w in re.findall(r"[a-z]+", name) if len(w) > 2]
+        initials = "".join(w[0] for w in words)
+        if (alias and alias in name) or label in words or initials == label:
+            hits.append(institution_id)
+    return hits[0] if len(set(hits)) == 1 else None
+
+
+# "Figure 1. The gap between the records …" reads as marker 1 once a period is
+# allowed between a marker and its text, and the sentence behind it mentioned
+# "physical laboratories", which passed the organisation test. A caption is
+# never an affiliation.
+_CAPTION_LINE = re.compile(
+    r"(?i)^\s*(?:figure|fig\.?|table|algorithm|alg\.?|equation|eq\.?|"
+    r"section|sec\.?|chapter|appendix|theorem|lemma|proof|listing)\b")
+
+
 def _marker_atom(alphabet: set[str] | None) -> str:
     """Regex alternation for one paper's markers, or the default set."""
     if not alphabet:
@@ -1301,8 +1419,11 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
     # it with the fixed symbol set left "⋆Tsinghua University" unparsed while
     # the byline had already resolved "Chen Qian⋆".
     atom = _marker_atom(alphabet)
-    head_re = re.compile(r"^(" + atom + r")\s*(.+)$")
-    split_re = re.compile(r"(?=(?<![A-Za-z0-9])(?:" + atom + r")\s*[A-Z])")
+    # "1Genentech", "2 MDPI", "1. Artificial Intelligence …" — the separator
+    # between a marker and its affiliation is nothing, a space, or a period.
+    head_re = re.compile(r"^(" + atom + r")\s*\.?\s*(.+)$")
+    split_re = re.compile(
+        r"(?=(?<![A-Za-z0-9])(?:" + atom + r")\s*\.?\s*[A-Z])")
 
     lines = [re.sub(r"^#+\s*", "", line).strip()
              for line in raw_header.splitlines()]
@@ -1347,7 +1468,9 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
 
     out: dict[str, str] = {}
     for line in joined:
-        if not line or not looks_like_affiliation(line):
+        if not line or _CAPTION_LINE.match(line):
+            continue
+        if not looks_like_affiliation(line):
             continue
         for piece in split_re.split(line):
             head = head_re.match(piece.strip())
@@ -1360,7 +1483,11 @@ def marker_affiliations(raw_header: str, wanted: set[str] | None = None,
                 continue
             if not looks_like_affiliation(body):
                 continue
-            if _SECTION_HEADING.match(body):
+            # "1. Artificial Intelligence and Translational Imaging (ATI) Lab,
+            # … University of Crete" has a section heading's shape and is an
+            # affiliation. The heading guard exists to keep body text out, so
+            # it only applies when the body does not name an organisation.
+            if _SECTION_HEADING.match(body) and not looks_like_affiliation(body):
                 continue
             out[marker] = body
     return out
@@ -3655,11 +3782,28 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                 institutions = conn.execute(
                     "SELECT institution_id, raw_name FROM paper_institutions"
                     " WHERE paper_id=?", (pid,)).fetchall()
+                if not marker_text and wanted:
+                    # Some blocks print the marker after the institution, and
+                    # some key it to an e-mail rather than a name.
+                    marker_text = trailing_marker_affiliations(
+                        affiliation_window(text), wanted)
                 by_marker = {}
                 for marker, label in marker_text.items():
                     iid = best_institution_for(label, institutions)
+                    if iid is None and "@" in label:
+                        iid = institution_for_email(label, institutions)
                     if iid is not None:
                         by_marker[marker] = iid
+                if wanted - set(by_marker):
+                    # An e-mail keyed to a marker names its institution by
+                    # domain: "1liangs@stu.pku.edu.cn" is Peking University.
+                    for marker, label in _marker_emails(
+                            affiliation_window(text), wanted, alphabet).items():
+                        if marker in by_marker:
+                            continue
+                        iid = institution_for_email(label, institutions)
+                        if iid is not None:
+                            by_marker[marker] = iid
                 rows = [
                     (pid, aid, by_marker[marker], marker, order,
                      "pdf.byline-marker")

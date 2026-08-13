@@ -908,5 +908,92 @@ class CompanyBlockTests(unittest.TestCase):
         self.assertIn("New York University", got["3"])
 
 
+class MarkerSeparatorTests(unittest.TestCase):
+    """Nothing, a space or a period can stand between a marker and its name."""
+
+    def test_a_period_form_is_read(self):
+        got = bib.marker_affiliations(
+            "1. Artificial Intelligence and Translational Imaging (ATI) Lab, "
+            "University of Crete, Greece\n"
+            "2. Division of Radiology, Karolinska Institutet\n",
+            {"1", "2"}, {"1", "2"})
+        self.assertIn("University of Crete", got["1"])
+        self.assertIn("Karolinska", got["2"])
+        self.assertFalse(got["1"].startswith("."))
+
+    def test_a_space_form_is_read(self):
+        got = bib.marker_affiliations(
+            "3 Department of Information Management, Peking University\n",
+            {"3"}, {"3"})
+        self.assertIn("Peking University", got["3"])
+
+    def test_the_glued_form_still_works(self):
+        got = bib.marker_affiliations(
+            "1Heriot-Watt University, Edinburgh, UK 2Ocean University, China\n",
+            {"1", "2"}, {"1", "2"})
+        self.assertIn("Heriot-Watt", got["1"])
+        self.assertIn("Ocean University", got["2"])
+
+    def test_a_numbered_section_is_still_refused(self):
+        self.assertEqual(
+            bib.marker_affiliations("1. Introduction\n", {"1"}, {"1"}), {})
+
+
+class TrailingMarkerTests(unittest.TestCase):
+    """Some blocks print the marker after the institution, not before it."""
+
+    HEAD = ("Institute for Human-Centered Artificial Intelligence (HAI)8 "
+            "Stanford University9 The University of Illinois "
+            "Urbana-Champaign10\n"
+            "Abstract\n"
+            "We introduce a benchmark. See Smith University 12 for details.\n")
+
+    def test_a_trailing_marker_is_read(self):
+        got = bib.trailing_marker_affiliations(self.HEAD, {"8", "9", "10"})
+        self.assertIn("Human-Centered", got["8"])
+        self.assertIn("Illinois", got["10"])
+
+    def test_nothing_after_the_abstract_is_read(self):
+        # Reading trailing digits anywhere would turn a reference list into
+        # affiliations, so the search stops at the abstract.
+        got = bib.trailing_marker_affiliations(self.HEAD, {"8", "12"})
+        self.assertNotIn("12", got)
+
+
+class EmailKeyedMarkerTests(unittest.TestCase):
+    """A byline can key its markers to e-mail addresses."""
+
+    INSTITUTIONS = [(1, "Department of Information Management, Peking "
+                        "University, Beijing"),
+                    (2, "National Science Library"),
+                    (3, "University of Chinese Academy of Sciences")]
+
+    def test_the_domain_names_the_institution(self):
+        self.assertEqual(
+            bib.institution_for_email("liangs@stu.pku.edu.cn",
+                                      self.INSTITUTIONS), 1)
+
+    def test_a_domain_that_matches_nothing_is_refused(self):
+        self.assertIsNone(
+            bib.institution_for_email("x@unknown-place.org", self.INSTITUTIONS))
+
+    def test_a_domain_matching_two_candidates_is_refused(self):
+        # A coin toss between two universities is not evidence.
+        ambiguous = [(1, "Peking University"), (2, "Peking University Press")]
+        self.assertIsNone(
+            bib.institution_for_email("a@pku.edu.cn", ambiguous))
+
+    def test_initials_resolve_a_domain(self):
+        self.assertEqual(
+            bib.institution_for_email(
+                "a@mit.edu",
+                [(7, "Massachusetts Institute of Technology")]), 7)
+
+    def test_markers_keyed_to_emails_are_found(self):
+        got = bib._marker_emails("1liangs@stu.pku.edu.cn, 3zqs@pku.edu.cn",
+                                 {"1", "3"}, {"1", "3"})
+        self.assertEqual(set(got), {"1", "3"})
+
+
 if __name__ == "__main__":
     unittest.main()
