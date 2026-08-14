@@ -67,6 +67,10 @@ byline wraps over ten lines and where a parser read only the first.
 | Papers the reader read | 54 | 689 |
 | Added time / cost | — | 112 min · **$10.53** (once) |
 
+> A later fix restored institution extraction for papers with no publisher
+> deposit, so the corpus now stands at **3,706 papers resolved (88.3%) and
+> 26,905 links**. See [attribution](docs/attribution.md).
+
 **Papers resolved did not move, and that is the point.** Topping up does not
 reach new papers; it finishes reading papers already resolved. What grows is
 author coverage, which is what the per-institution researcher rankings rest on.

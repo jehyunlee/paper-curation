@@ -1058,20 +1058,14 @@ def author_affiliation_markers(raw_header: str, authors,
     return mapping
 
 
-def affiliation_window(text_path: Path) -> str:
-    """A wider slice of `text.md` for reading the marker→affiliation block.
+def affiliation_window_text(text: str) -> str:
+    """`affiliation_window` for text already in hand.
 
-    `extract_header` stops at the abstract, which is right for finding the
-    byline and wrong for finding what the byline points at: two-column
-    conference layouts print the affiliations as a page-one footnote, so
-    PyMuPDF emits them *after* the abstract. 171 of 200 sampled papers had
-    their author→marker map read successfully and then no marker→affiliation
-    block to join it to.
+    Split out because the PDF fallback in `reconcile_affiliations` has the text
+    and not the path, and was flattening the whole document into one line
+    instead -- which put every candidate over the length cap below it.
     """
-    try:
-        text = text_path.read_text(encoding="utf-8", errors="replace")[:24000]
-    except OSError:
-        return ""
+    text = text[:24000]
     lines = []
     for line in text.splitlines():
         head = re.match(r"^\s*[-–—]?\s*(\d+)\s+(.*)$", line)
@@ -1083,10 +1077,85 @@ def affiliation_window(text_path: Path) -> str:
     return "\n".join(_strip_editorial_blocks("\n".join(lines[:320])).splitlines())
 
 
+def affiliation_window(text_path: Path) -> str:
+    """A wider slice of `text.md` for reading the marker→affiliation block.
+
+    `extract_header` stops at the abstract, which is right for finding the
+    byline and wrong for finding what the byline points at: two-column
+    conference layouts print the affiliations as a page-one footnote, so
+    PyMuPDF emits them *after* the abstract. 171 of 200 sampled papers had
+    their author→marker map read successfully and then no marker→affiliation
+    block to join it to.
+    """
+    try:
+        text = text_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    return affiliation_window_text(text)
+
+
 _EMAIL_LINE = re.compile(r"[\w.+-]+@[\w.-]+|@\s*[\w.-]+\.\w+")
 _FRONT_MATTER_END = re.compile(
     r"(?i)^\s*(?:abstract|초록|keywords?|index terms|introduction|"
     r"1\.?\s+introduction|ccs concepts|acm reference)\b")
+
+
+_LINE_LEADING_MARKER = re.compile(
+    r"^\s*(?:[1-9]\d?|[" + _MARKER_SYMBOLS + r"])\s*[A-Z]")
+
+
+_TRAILING_CLAUSE = re.compile(
+    r"(?i)[.;]\s*(?:correspondence|contact|e-?mail|equal contribution|"
+    r"these authors|corresponding author)\b.*$")
+
+
+def _rejoin_hyphenated(lines: list[str]) -> list[str]:
+    """Put back words a PDF line break split with a hyphen.
+
+    `University of Mary-` / `land` is not a truncation to be worked around: it
+    resolves, on its own, to a different real university in North Dakota. A
+    name broken mid-word must be repaired before anything tries to match it,
+    or the match will succeed and be wrong.
+    """
+    out: list[str] = []
+    for line in lines:
+        if out and out[-1].endswith("-") and line[:1].islower():
+            out[-1] = out[-1][:-1] + line
+            continue
+        out.append(line)
+    return out
+
+
+def _affiliation_candidate_lines(text: str) -> list[str]:
+    """Lines that could state an affiliation, with body prose left out.
+
+    A paper states an affiliation in one of two places, and prose is neither:
+    on a bare line in the front matter, above the abstract, or -- when a
+    two-column layout pushes the block into a page-one footnote -- on a line
+    led by the superscript marker that keys it to an author.
+
+    The distinction has to be structural. Prose is short enough to pass a
+    length cap and does name organisations, so "GPT-4o (OpenAI, 2023) and
+    Claude (Anthropic, 2024)" reads as an affiliation on every test that only
+    looks at the string.
+    """
+    lines = _rejoin_hyphenated(affiliation_window_text(text).splitlines())
+    out, in_front = [], True
+    for index, line in enumerate(lines):
+        # The end marker is missing in feature articles and in PDFs whose
+        # text order PyMuPDF scrambles, and without a cap the whole window
+        # counted as front matter -- which admitted reference-list entries
+        # ("[5] J. A. Morales and P. Reding, Monetary Policy...") and prose
+        # about people ("an immunologist at Imperial College London"). A
+        # byline and its affiliations do not run past the first two dozen
+        # lines of a paper.
+        if in_front and (_FRONT_MATTER_END.match(line) or index >= 25):
+            in_front = False
+        if in_front or _LINE_LEADING_MARKER.match(line):
+            # "…University of Oxford. Correspondence to:" is one line in the
+            # PDF and two facts; keep the affiliation and drop what follows it.
+            out.append(_TRAILING_CLAUSE.sub("", line).strip())
+    return [line for line in out if line]
 
 
 _ALL_AUTHORS_WITH = re.compile(
@@ -2561,6 +2630,23 @@ _SUB_UNIT_NAME = re.compile(
     r"centre|center|laborator)\b")
 
 
+# Words every institution shares. A name built from nothing else has lost the
+# one part that identified it.
+_GENERIC_INSTITUTION_WORDS = frozenset((
+    "research", "development", "center", "centre", "laboratory", "laboratories",
+    "lab", "institute", "institution", "department", "school", "college",
+    "faculty", "division", "academy", "university", "national", "international",
+    "science", "sciences", "technology", "technologies", "engineering", "and",
+    "of", "the", "for", "group", "team", "unit", "program", "programme",
+    "office", "agency", "corporation", "company", "limited", "inc", "ltd", "co"))
+
+
+def _is_generic_institution_name(name: str) -> bool:
+    """No word in this name distinguishes it from any other institution."""
+    return not [word for word in re.findall(r"[a-z]+", name.lower())
+                if word not in _GENERIC_INSTITUTION_WORDS]
+
+
 def drop_sub_unit_institutions(conn: sqlite3.Connection) -> dict:
     """Remove institutions that name part of one, keeping ROR-known bodies.
 
@@ -2579,7 +2665,17 @@ def drop_sub_unit_institutions(conn: sqlite3.Connection) -> dict:
         for institution_id, name, ror_id in conn.execute(
                 "SELECT institution_id, institution_name, COALESCE(ror_id,'')"
                 " FROM institutions"):
-            if ror_id or not _SUB_UNIT_NAME.match(name or ""):
+            if ror_id:
+                continue
+            # Two shapes are not institutions. One names a part of a body
+            # ("Department of Physics"); the other is made only of the words
+            # every institution shares ("Research and Development Center",
+            # "National Centre"), which is what is left when a deposit or a
+            # line wrap loses the proper noun. Neither can be repaired into
+            # the parent -- nothing in the row says which parent -- so both
+            # are removed rather than left to carry links in a ranking.
+            if not (_SUB_UNIT_NAME.match(name or "")
+                    or _is_generic_institution_name(name or "")):
                 continue
             if not (index.available and index.resolve(name)):
                 doomed.append(institution_id)
@@ -3078,7 +3174,20 @@ def reconcile_affiliations(
     # next word ("2Princeton") or spaced off it ("5 UC Berkeley"); the old
     # pattern only handled the glued form and silently swallowed the rest of
     # the line, losing every institution after the first marker.
-    for line in list(fallback_lines) + [flat]:
+    # `flat` is the entire document on one line, so every marker split off it
+    # ran past the 240-character cap below and was discarded -- the PDF was
+    # only ever read through `fallback_lines`, which Scopus supplies, and a
+    # paper with no deposit got no institutions however plainly it named them.
+    #
+    # Reading the window a line at a time fixes that and immediately overruns:
+    # body prose is also short, so "GPT-4o (OpenAI, 2023) and Claude
+    # (Anthropic, 2024)" becomes an affiliation. The oversized `flat` had been
+    # suppressing that by accident. So take only the two shapes a paper
+    # actually states an affiliation in -- a bare line before the abstract, and
+    # a marker-led line anywhere (two-column layouts print them as a page-one
+    # footnote, after the abstract) -- and leave prose out by construction.
+    # `flat` stays for the whole-document confirmation test further up.
+    for line in list(fallback_lines) + _affiliation_candidate_lines(pdf_text):
         segments.extend(_AFFILIATION_MARKER.split(line))
     for raw in segments:
         raw = _strip_leading_author_names(
@@ -3614,6 +3723,19 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 ror = ror_normalize(raw, name, country, offline=offline)
                 name = ror["institution"] or name
                 country = ror["country_name"] or country
+                # A PDF may point at an institution the corpus already knows;
+                # it may not invent one. Of eleven institutions the PDF-only
+                # path created on first run, six were wrong -- a funder read
+                # off an acknowledgement ("Carnegie Corporation of New York"),
+                # a name truncated by a line wrap ("Jiaotong University" for
+                # Xi'an Jiaotong), a department ("Research and Development
+                # Center") -- and each was a real enough name for ROR to
+                # confirm, because what was wrong was the segment, not the
+                # string. They carried 30 of 738 new links. Deposits and the
+                # registry still introduce institutions; the PDF only links.
+                if record["source"] == "pdf" and not known_institution(
+                        conn, name, ror):
+                    continue
                 iid = resolve_institution_row(
                     conn, name, country, record["source"], ror)
                 conn.execute("INSERT OR IGNORE INTO institution_aliases (raw_name,normalized_alias,institution_id) VALUES (?,?,?)", (raw,norm(raw),iid))
@@ -3728,6 +3850,30 @@ def curated_group_for(name: str) -> str:
         return ""
     group = affiliation_groups.group_for(name)
     return "" if norm(group) == norm(name) else group
+
+
+def known_institution(conn: sqlite3.Connection, name: str,
+                      ror: dict | None = None) -> bool:
+    """Whether the corpus already holds this institution.
+
+    Checked by ROR id first, then normalised name, then alias, so a paper that
+    writes "MIT" still matches the "Massachusetts Institute of Technology" row
+    a deposit created. Used to keep the PDF-only path from founding
+    institutions: it may name one the corpus knows, and nothing more.
+    """
+    ror_id = (ror or {}).get("ror_id") or ""
+    if ror_id and conn.execute(
+            "SELECT 1 FROM institutions WHERE ror_id=? LIMIT 1",
+            (ror_id,)).fetchone():
+        return True
+    key = norm(name)
+    if not key:
+        return False
+    return bool(conn.execute(
+        "SELECT 1 FROM institutions WHERE normalized_name=? LIMIT 1",
+        (key,)).fetchone() or conn.execute(
+        "SELECT 1 FROM institution_aliases WHERE normalized_alias=? LIMIT 1",
+        (key,)).fetchone())
 
 
 def resolve_institution_row(conn: sqlite3.Connection, name: str, country: str,
@@ -4267,7 +4413,11 @@ def finalize(db_path: Path) -> dict:
         conn = sqlite3.connect(db_path, timeout=60.0)
         conn.execute("PRAGMA busy_timeout = 60000")
         try:
+            # `drop_sub_unit_institutions` existed for a year and was never
+            # called: it was written as a one-off repair, so every sub-unit
+            # minted after that day stayed. Run it with the other cleanups.
             result = {"stale_papers": prune_missing_papers(conn),
+                      "sub_units": drop_sub_unit_institutions(conn),
                       "pruned": prune_orphan_institutions(conn),
                       "countries": consolidate_institution_countries(conn),
                       "parents": consolidate_institution_parents(conn)}
