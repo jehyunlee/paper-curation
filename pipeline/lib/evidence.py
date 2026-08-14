@@ -5,8 +5,12 @@ from the report and from the attribution audit, so a recompute that moved 151
 papers into that class read as a 2.7 point drop in coverage that had not
 happened. A list copied four times is a list that will disagree with itself.
 
-Order is the order the backfill tries them, which is the order of how directly
-each source states who worked where.
+Order is execution order. The publisher deposits are read first, then the
+eight byline parsers, and the page reader runs last -- not because it is the
+weakest but because it is the only one that costs money and minutes. A 300
+paper A/B (`experiment_ladder_order.py`) settled that: moving the reader above
+the parsers resolves exactly the same papers, so its place in the ladder buys
+depth, not reach, and depth is bought selectively by `--augment` instead.
 """
 from __future__ import annotations
 
@@ -14,7 +18,6 @@ from __future__ import annotations
 RESOLVED_SOURCES: tuple[str, ...] = (
     "openalex",
     "scopus",
-    "llm.byline",
     "pdf.byline-marker",
     "pdf.stacked-byline",
     "pdf.inline-affiliation",
@@ -22,6 +25,7 @@ RESOLVED_SOURCES: tuple[str, ...] = (
     "pdf.shared-byline",
     "pdf.sole-author",
     "pdf.sole-affiliation",
+    "llm.byline",
 )
 
 # Read from the PDF rather than deposited by a publisher. Used where the two

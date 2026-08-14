@@ -49,13 +49,10 @@ if str(PIPELINE) not in sys.path:
     sys.path.insert(0, str(PIPELINE))
 
 import build_bibliography_db as bib            # noqa: E402
+from lib.evidence import PDF_SOURCES           # noqa: E402
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 
-PDF_SOURCES = ("llm.byline", "pdf.byline-marker", "pdf.inline-affiliation",
-               "pdf.author-information", "pdf.stacked-byline",
-               "pdf.shared-byline", "pdf.sole-author",
-               "pdf.sole-affiliation")
 
 
 def institution_facts(conn: sqlite3.Connection) -> dict[int, dict]:

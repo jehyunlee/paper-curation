@@ -41,6 +41,7 @@ if str(PIPELINE) not in sys.path:
     sys.path.insert(0, str(PIPELINE))
 
 import build_bibliography_db as bib            # noqa: E402
+from lib.evidence import RESOLVED_SOURCES      # noqa: E402
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 MODEL = "claude-sonnet-4-5-20250929"
@@ -160,11 +161,6 @@ def resolve(conn: sqlite3.Connection, paper_id: int,
 # $2.83 where the parsers cost 3.9 seconds, so the reader is pointed at the
 # papers that need it rather than at all of them.
 AUGMENT_BELOW = 0.8
-
-RESOLVED_SOURCES = ("openalex", "scopus", "llm.byline", "pdf.byline-marker",
-                    "pdf.inline-affiliation", "pdf.author-information",
-                    "pdf.stacked-byline", "pdf.shared-byline",
-                    "pdf.sole-author", "pdf.sole-affiliation")
 
 
 def targets(conn: sqlite3.Connection, mode: str, limit: int | None) -> list:

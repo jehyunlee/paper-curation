@@ -1266,6 +1266,44 @@ class EvidenceSourceListTests(unittest.TestCase):
         unknown = written - set(RESOLVED_SOURCES) - {UNRESOLVED_SOURCE}
         self.assertEqual(unknown, set())
 
+    def test_no_module_keeps_its_own_copy_of_the_list(self):
+        # The list drifted once because four modules each held a copy, and the
+        # drift read as a coverage drop that had not happened. Importing is the
+        # only thing that keeps them equal, so identity is what is asserted --
+        # an equal-but-separate tuple is exactly the state that failed before.
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib import evidence
+        import extract_byline_llm
+        import check_attribution_accuracy
+        import report_field_leaders
+        import audit_author_attribution
+        for module, attr, want in (
+                (extract_byline_llm, "RESOLVED_SOURCES", evidence.RESOLVED_SOURCES),
+                (audit_author_attribution, "RESOLVED_SOURCES", evidence.RESOLVED_SOURCES),
+                (report_field_leaders, "TRUSTED_SOURCES", evidence.RESOLVED_SOURCES),
+                (check_attribution_accuracy, "PDF_SOURCES", evidence.PDF_SOURCES)):
+            self.assertIs(getattr(module, attr), want,
+                          f"{module.__name__}.{attr} is not the shared list")
+
+    def test_the_page_reader_runs_last(self):
+        # The docstring claims the tuple is execution order, and a reader that
+        # costs money and minutes must stay behind the free parsers. The A/B
+        # showed reordering resolves no extra paper, so a future edit that
+        # quietly promotes it should have to change this test on purpose.
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.evidence import RESOLVED_SOURCES
+        self.assertEqual(RESOLVED_SOURCES[-1], "llm.byline")
+        self.assertLess(RESOLVED_SOURCES.index("scopus"),
+                        RESOLVED_SOURCES.index("pdf.byline-marker"))
+
 
 if __name__ == "__main__":
     unittest.main()
