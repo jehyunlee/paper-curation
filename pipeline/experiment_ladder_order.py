@@ -154,8 +154,13 @@ def parser_links(ctx: dict) -> tuple[dict, str]:
     return {}, ""
 
 
-def llm_links(client, ctx: dict, budget: dict) -> dict:
-    """What the rendered first page gives, grounded the same way."""
+def llm_links(client, ctx: dict, budget: dict, call: dict | None = None) -> dict:
+    """What the rendered first page gives, grounded the same way.
+
+    `call` receives this one page's seconds and tokens. Arm C pays for only the
+    pages it would actually request, so the bill cannot be taken from the run
+    total -- every page is read here, but only some of them are read there.
+    """
     pdf_path = budget.pop("_pdf", None)
     png = llm.first_page_png(pdf_path) if pdf_path else None
     if not png:
@@ -172,10 +177,15 @@ def llm_links(client, ctx: dict, budget: dict) -> dict:
     except Exception:
         budget["failures"] += 1
         return {}
-    budget["seconds"] += time.time() - started
+    elapsed = time.time() - started
+    budget["seconds"] += elapsed
     budget["calls"] += 1
     budget["in_tokens"] += response.usage.input_tokens
     budget["out_tokens"] += response.usage.output_tokens
+    if call is not None:
+        call["seconds"] = elapsed
+        call["in_tokens"] = response.usage.input_tokens
+        call["out_tokens"] = response.usage.output_tokens
     # A refusal or a stop with no text block comes back with empty content.
     if not response.content:
         budget["failures"] += 1
@@ -239,6 +249,12 @@ def main() -> int:
               "failures": 0}
     arm_a = {"resolved": 0, "links": 0, "by_class": Counter(), "seconds": 0.0}
     arm_b = {"resolved": 0, "links": 0, "by_class": Counter(), "seconds": 0.0}
+    # Arm C is the arrangement in use: the parsers run, and the reader is sent
+    # only after the papers they left thin. It is derived from the same two
+    # readings rather than measured separately, so all three arms are the same
+    # 300 papers -- but its cost counts only the pages it would actually buy.
+    arm_c = {"resolved": 0, "links": 0, "by_class": Counter(), "seconds": 0.0,
+             "read": 0, "calls_in": 0, "calls_out": 0, "llm_seconds": 0.0}
     both, only_a, only_b, neither, disagree = 0, 0, 0, 0, 0
     supported, unsupported = Counter(), Counter()
 
@@ -250,7 +266,8 @@ def main() -> int:
         parser_seconds = time.time() - started
 
         budget["_pdf"] = Path(pdf_path)
-        read = llm_links(client, ctx, budget)
+        call: dict = {}
+        read = llm_links(client, ctx, budget, call)
 
         # Arm A: parsers first, the reader only for what they left.
         a_links, a_class = (parsed, parser_class) if parsed else (read, "llm.byline")
@@ -259,6 +276,29 @@ def main() -> int:
         b_links, b_class = (read, "llm.byline") if read else (parsed, parser_class)
         if not read:
             arm_b["seconds"] += parser_seconds
+
+        # Arm C: arm A, then top up when the parsers mapped too few authors.
+        arm_c["seconds"] += parser_seconds
+        n_authors = len(ctx["authors"])
+        covered = len(parsed) / n_authors if n_authors else 0.0
+        if parsed and covered >= llm.AUGMENT_BELOW:
+            c_links, c_class = parsed, parser_class
+        else:
+            # The page is bought here, so this paper's share of the bill is.
+            arm_c["read"] += 1
+            arm_c["llm_seconds"] += call.get("seconds", 0.0)
+            arm_c["calls_in"] += call.get("in_tokens", 0)
+            arm_c["calls_out"] += call.get("out_tokens", 0)
+            if parsed:
+                c_links = {k: set(parsed.get(k) or set()) | set(read.get(k) or set())
+                           for k in set(parsed) | set(read)}
+                c_class = parser_class
+            else:
+                c_links, c_class = read, "llm.byline"
+        if c_links:
+            arm_c["resolved"] += 1
+            arm_c["links"] += sum(len(v) for v in c_links.values())
+            arm_c["by_class"][c_class] += 1
 
         for arm, links, klass in ((arm_a, a_links, a_class),
                                   (arm_b, b_links, b_class)):
@@ -311,6 +351,15 @@ def main() -> int:
             "resolved": arm_b["resolved"], "links": arm_b["links"],
             "by_class": dict(arm_b["by_class"]),
             "parser_seconds": round(arm_b["seconds"], 1)},
+        "arm_c_reader_topup": {
+            "resolved": arm_c["resolved"], "links": arm_c["links"],
+            "by_class": dict(arm_c["by_class"]),
+            "parser_seconds": round(arm_c["seconds"], 1),
+            "pages_read": arm_c["read"],
+            "threshold": llm.AUGMENT_BELOW,
+            "llm_seconds": round(arm_c["llm_seconds"], 1),
+            "usd": round(arm_c["calls_in"] / 1e6 * PRICE_IN
+                         + arm_c["calls_out"] / 1e6 * PRICE_OUT, 2)},
         "extra_links_supported_by_page": {
             "parsers": supported["a"], "reader": supported["b"]},
         "extra_links_not_in_page": {
