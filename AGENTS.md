@@ -449,6 +449,90 @@ arXiv Atom API (`export.arxiv.org/api/query`) 를 저자 소속 또는 DOI 보�
   전제 조건은 DOI 이고, DOI 보강은 `resolve_missing_dois.py` 의 제목 검색이
   담당한다 (2,374편 중 259편, 11%).
 
+### 기관 후보가 없으면 사다리 전체가 놀고 있다 (2026-08-14 측정)
+
+저자↔기관 파서 여덟 개와 LLM 판독기는 **모두 그 논문의 기관 목록
+(`paper_institutions`) 에 접지**한다. 목록이 비어 있으면 페이지를 아무리 잘 읽어도
+붙일 데가 없다. 커버리지가 낮을 때 파서부터 의심하기 전에 **후보가 있는지** 본다.
+
+```sql
+SELECT COUNT(*) FROM papers p
+ WHERE EXISTS(SELECT 1 FROM paper_authors  WHERE paper_id=p.paper_id)
+   AND NOT EXISTS(SELECT 1 FROM paper_institutions WHERE paper_id=p.paper_id);
+```
+
+발견 당시 415편이 여기 걸렸고, 이들은 `--unresolved`(unmarked-multi 필요) 와
+`--augment`(linked>0 필요) 를 **둘 다 빠져나가** 어떤 보강도 받지 못하고 있었다.
+
+|`paper_institutions.source`|건수|
+|---|---:|
+|`scopus+pdf`|8,947|
+|`openalex`|3,204|
+|`scopus-unconfirmed`|761|
+|**`pdf`**|**297**|
+
+기관 후보는 사실상 **기탁이 만들고 PDF 는 확인만** 하고 있었다. 원인은 PDF 경로가
+후보를 뽑을 때 논문 전체를 한 줄로 이어붙인 뒤 마커로 쪼개, 모든 조각이 240자
+상한에 걸려 버려진 것이다. Scopus 가 소속 문자열을 넘겨주는 논문만 살아남았다.
+
+**고칠 때 지켜야 할 세 가지** (전부 실측으로 얻음):
+
+1. **줄 단위로 훑되 자리로 거른다.** 창 전체를 줄 단위로 보면 본문 산문이 들어온다
+   — `GPT-4o (OpenAI, 2023) and Claude (Anthropic, 2024)` 가 소속으로 읽힌다.
+   `looks_like_affiliation` 도 이걸 통과시킨다(True). **틀린 것은 문자열이 아니라
+   자리**이므로 문자열 검사로는 못 막는다. 초록 앞 맨줄(앞 25줄) + 마커로 시작하는
+   줄, 두 자리만 본다.
+2. **하이픈 줄바꿈은 매칭 전에 복원한다.** `University of Mary-` / `land` 는
+   `University of Mary`(노스다코타의 실재 대학)로 **깨끗이 매칭되어 조용히 틀린다.**
+   잘린 이름은 거부가 아니라 복원이 답이다.
+3. **PDF 는 기관을 만들지 못한다.** 첫 실행에서 PDF 단독 경로가 기관 11개를 새로
+   만들었고 **6개가 틀렸다** — 감사문의 재단(`Carnegie Corporation of New York`),
+   줄바꿈에 잘린 이름(`Jiaotong University` ← Xi'an Jiaotong), 부서
+   (`Research and Development Center`). 셋 다 **ROR 이 승인할 만큼 실재하는 이름**
+   이었다. ROR 은 문자열의 실재만 판정하지 그 조각이 소속인지는 모른다. 그 11개가
+   나른 링크는 738건 중 30건(4.1%) 뿐이라, `known_institution()` 으로 **이미 아는
+   기관에만 연결**하게 했다. 기관을 새로 들이는 일은 기탁과 레지스트리가 맡는다.
+
+결과: 근거 확정 3,628(86.5%) → **3,706(88.3%)**, 신뢰 링크 26,212 → **26,905**,
+기관 0 논문 417 → **331**, ai4s 84.8% → **86.8%**, 파서 변경으로 링크를 잃은 논문 0.
+
+### 근거 등급 목록은 `pipeline/lib/evidence.py` 한 곳에만 둔다 (2026-08-14)
+
+`RESOLVED_SOURCES` 가 **네 모듈에 복사되어** 있었고 갈라졌다. `report_field_leaders`
+와 `audit_author_attribution` 에서 `pdf.shared-byline` 이 빠져 있었는데, 전량
+재계산으로 그 등급이 12 → 163편으로 커지자 **일어나지도 않은 2.7%p 커버리지 하락**
+으로 보였다. 목록을 네 번 복사하면 그 목록은 반드시 자기 자신과 어긋난다.
+
+지금은 `pipeline/lib/evidence.py` 가 단일 출처이고 네 소비자가 전부 import 한다
+(`report_field_leaders`, `audit_author_attribution`, `extract_byline_llm`,
+`check_attribution_accuracy`). 테스트가 **동일성(`assertIs`)** 으로 고정한다 —
+값만 같은 별개 튜플이 바로 예전에 깨진 상태이기 때문이다.
+
+튜플 순서는 **실행 순서**다. `llm.byline` 은 맨 뒤에 있고, 이는 약해서가 아니라
+**돈과 시간을 쓰는 유일한 판독기**이기 때문이다. 300편 A/B 에서 순서를 올려도
+해결하는 논문은 완전히 같았다(240 대 240, `only_parsers 0 / only_reader 0`).
+순서는 reach 가 아니라 depth 를 살 뿐이고, depth 는 `--augment` 로 필요한 논문에만
+산다. 테스트가 이 순서도 고정한다.
+
+> **변이 테스트 주의**: `tuple(t)` 는 `t` 를 그대로 돌려준다. 사본을 만들어
+> 검사하려면 `tuple(list(t))` 를 써야 한다. 통과하는 변이 테스트는 테스트가 아니다.
+
+### 정의만 되고 호출되지 않는 정리 함수를 의심한다 (2026-08-14)
+
+`drop_sub_unit_institutions()` 는 **1년 가까이 정의만 되어 있고 어디서도 호출되지
+않았다.** 일회성 복구로 한 번 쓴 뒤 빌드에 연결하지 않아, 그날 이후 만들어진 부서
+행은 계속 쌓였다. 지금은 `finalize()` 에서 다른 정리 단계와 함께 돈다.
+
+판정 기준도 넓혔다. 이름이 `Department`/`College` 로 **시작**할 때만 걸러서는
+`Research and Development Center`·`National Centre` 같은 것이 남는다 — **모든 기관이
+공유하는 단어로만** 이루어져 고유명사가 하나도 없는 이름은 기관이 아니다
+(`_is_generic_institution_name`). 줄바꿈이 고유명사를 삼켰을 때 남는 잔해다.
+
+이런 이름은 **랭킹을 조용히 오염시킨다**. 제거 시 2편이 해결을 잃었는데, 둘 다
+유일한 기관이 `National Centre` 였고 그 문자열은 **논문 어디에도 없었다**(기탁
+오염). 회귀 검사기의 "손실"은 해결 수만 세므로, 거짓 귀속 제거와 구분되지 않는다
+— 회귀가 보고되면 **그 논문의 원문을 직접 확인**한다.
+
 ## 분야별 기관·연구자 분석 (Field leaders)
 
 `python pipeline/report_field_leaders.py --topic ai4s --top 20`
