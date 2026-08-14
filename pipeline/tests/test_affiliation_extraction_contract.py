@@ -1222,5 +1222,50 @@ class DeclaredSharedAffiliationTests(unittest.TestCase):
                 "References\nAll authors are with Tsinghua University.\n"), "")
 
 
+class EvidenceSourceListTests(unittest.TestCase):
+    """One list of evidence classes, shared by everything that counts them.
+
+    It lived in four modules and drifted: pdf.shared-byline was missing from
+    the report and the attribution audit, so a recompute that moved 151 papers
+    into that class read as a 2.7 point drop in coverage that had not
+    happened.
+    """
+
+    def test_every_consumer_reads_the_same_list(self):
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.evidence import RESOLVED_SOURCES
+        import report_field_leaders
+        import audit_author_attribution
+        self.assertIs(report_field_leaders.TRUSTED_SOURCES, RESOLVED_SOURCES)
+        self.assertIs(audit_author_attribution.RESOLVED_SOURCES,
+                      RESOLVED_SOURCES)
+
+    def test_the_fallback_is_never_an_answer(self):
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.evidence import RESOLVED_SOURCES, UNRESOLVED_SOURCE
+        self.assertNotIn(UNRESOLVED_SOURCE, RESOLVED_SOURCES)
+
+    def test_every_class_the_backfill_writes_is_listed(self):
+        # A class the backfill can write but nothing counts is a silent hole.
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.evidence import RESOLVED_SOURCES, UNRESOLVED_SOURCE
+        source = (root / "build_bibliography_db.py").read_text(encoding="utf-8")
+        written = set(re.findall(r'"(pdf\.[a-z-]+)"', source))
+        unknown = written - set(RESOLVED_SOURCES) - {UNRESOLVED_SOURCE}
+        self.assertEqual(unknown, set())
+
+
 if __name__ == "__main__":
     unittest.main()

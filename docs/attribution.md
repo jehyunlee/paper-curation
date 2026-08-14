@@ -27,7 +27,8 @@
 |9|`pdf.sole-affiliation`|기관이 하나면 모호함이 없음|
 |10|`llm.byline`|렌더링한 1페이지를 읽음 — 나머지가 전부 실패했을 때|
 
-10번은 마지막이자 가장 넓다. 후행 마커·그리스 문자·이메일 대체·좁은 각주가
+10번은 마지막이자 가장 넓다. 위 아홉 칸이 **한 명도** 매핑하지 못했을 때, 그리고
+저자의 80% 미만만 매핑했을 때(`--augment`) 실행된다. 후행 마커·그리스 문자·이메일 대체·좁은 각주가
 렌더링된 페이지에서는 그냥 보이기 때문이다. 열두 번의 레이아웃 수정으로 85.8%
 까지 온 뒤, 이 한 칸이 **54편을 한 번에** 풀었다.
 
@@ -113,8 +114,9 @@ Gang Huang   OpenAlex: Peking University
 |기관이 붙은 논문|3,758 / 4,196 (89.6%)|
 |ROR로 확정된 기관 링크|11,839 / 13,208 (89.6%)|
 |저자↔기관 근거 확정 논문|3,628 (86.5%)|
-|신뢰 링크|24,449건|
-|추정 링크 (질의 제외)|8,360건|
+|신뢰 링크|26,212건|
+|기관이 확정된 저자|15,280명|
+|저자 전원이 확정된 논문|2,222 (53.0%)|
 
 ## 실행
 
@@ -124,7 +126,11 @@ python pipeline/build_bibliography_db.py --recompute-author-institutions
 
 # 나머지를 렌더링한 1페이지로 읽기
 python pipeline/extract_byline_llm.py --validate --limit 30   # 먼저 채점
-python pipeline/extract_byline_llm.py --unresolved --execute
+python pipeline/extract_byline_llm.py --unresolved --execute  # 아무도 못 푼 논문
+python pipeline/extract_byline_llm.py --augment --execute     # 일부 저자만 잡힌 논문
+
+# 순서를 바꿀지 재보고 싶을 때 (운영 DB 에 쓰지 않는다)
+python pipeline/experiment_ladder_order.py --topic ai4s --sample 300
 
 # 남은 것의 원인 분류
 python pipeline/audit_author_attribution.py

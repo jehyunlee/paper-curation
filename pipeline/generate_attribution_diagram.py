@@ -17,6 +17,7 @@ and left to rot.
 from __future__ import annotations
 
 import argparse
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -78,7 +79,8 @@ VISUAL STYLE — CAT WORKFLOW
   style of a friendly children's science book. Soft rounded shapes.
 - White background, clean modern layout, soft pastel palette.
 - The ten source cats form a visible LADDER, top to bottom, each holding a
-  small sign with its tag and paper count. A cat only acts when the ones above
+  small sign carrying its tag and nothing else — no counts anywhere in this
+  figure. A cat only acts when the ones above
   it came back empty — draw them queued, not working in parallel.
 - Every cat's output flows into ONE gate: a stern librarian cat at a desk who
   checks each slip against the paper's own institution list before stamping it.
@@ -210,14 +212,21 @@ def main() -> int:
     method = method_text(stats)
     caption = CAPTION
     if args.style == "cat":
-        cast = "\n".join(
-            f"- **{source}** — {look} — "
-            f"{stats['by_source'].get(source, 0):,} papers"
-            for source, look in CAT_CAST)
+        # Strip every count from the prose too. Asking for a figure with no
+        # numbers while handing the model a page of them produces a figure
+        # with numbers.
+        method = re.sub(r"[\d,]+ papers?", "papers", method)
+        method = re.sub(r"\([\d.]+%\)", "", method)
+        method = re.sub(r"[\d,]{3,} of [\d,]{3,}", "most", method)
+        # No counts in the cat figure. The flow is what has to be legible,
+        # and a number drawn into an image is wrong the moment the next
+        # backfill runs. The academic figure keeps its counts.
+        cast = "\n".join(f"- **{source}** — {look}"
+                          for source, look in CAT_CAST)
         method = (method + "\n\n## The cast\n\n" + cast + "\n" + CAT_RULES)
         caption = (
             "A warm hand-drawn cat workflow. Ten cats queue in a vertical "
-            "ladder, each holding a sign with its tag and paper count, each "
+            "ladder, each holding a sign with its tag and no numbers, each "
             "acting only when the cats above came back empty. Every cat's slip "
             "flows to one librarian cat at a desk who checks it against the "
             "paper's own institution list and stamps it — the only way into "

@@ -82,6 +82,9 @@ def read_byline(client, png: bytes) -> list[dict]:
                 "type": "base64", "media_type": "image/png",
                 "data": base64.b64encode(png).decode()}},
             {"type": "text", "text": PROMPT}]}])
+    # A refusal, or a stop with no text block, comes back with empty content.
+    if not response.content:
+        return []
     text = response.content[0].text.strip()
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end < start:
@@ -148,11 +151,24 @@ def resolve(conn: sqlite3.Connection, paper_id: int,
     return rows
 
 
+# A paper whose parsers mapped most of its authors is left alone. Below this
+# the byline was read only in part — typically a wide collaboration where the
+# parser took the first line and stopped — and re-reading the page is worth its
+# cost. Measured on 300 ai4s papers: reading every page produced 14% more links
+# than the parsers, and of the links that differed, 190 were supported by the
+# page against the parsers' 87. Reading every page also cost 30 minutes and
+# $2.83 where the parsers cost 3.9 seconds, so the reader is pointed at the
+# papers that need it rather than at all of them.
+AUGMENT_BELOW = 0.8
+
+RESOLVED_SOURCES = ("openalex", "scopus", "llm.byline", "pdf.byline-marker",
+                    "pdf.inline-affiliation", "pdf.author-information",
+                    "pdf.stacked-byline", "pdf.shared-byline",
+                    "pdf.sole-author", "pdf.sole-affiliation")
+
+
 def targets(conn: sqlite3.Connection, mode: str, limit: int | None) -> list:
-    resolved = ("openalex", "scopus", "pdf.byline-marker",
-                "pdf.inline-affiliation", "pdf.author-information",
-                "pdf.stacked-byline", "pdf.shared-byline", "pdf.sole-author",
-                "pdf.sole-affiliation")
+    resolved = tuple(s for s in RESOLVED_SOURCES if s != "llm.byline")
     marks = ",".join("?" * len(resolved))
     if mode == "validate":
         sql = ("SELECT DISTINCT p.paper_id, p.slug,"
@@ -174,6 +190,38 @@ def targets(conn: sqlite3.Connection, mode: str, limit: int | None) -> list:
     return rows[:limit] if limit else rows
 
 
+def thin_targets(conn: sqlite3.Connection, threshold: float,
+                 limit: int | None) -> list:
+    """Papers the parsers resolved but only partly.
+
+    A wide collaboration wraps its byline over ten lines and a parser that
+    reads one of them still counts as having resolved the paper — the
+    remaining authors simply have no institution. Coverage, not resolution, is
+    what says the page is worth re-reading.
+    """
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
+    rows = conn.execute(
+        f"SELECT p.paper_id, p.slug,"
+        f" json_extract(p.metadata_json,'$.pdf_path'),"
+        f" (SELECT COUNT(*) FROM paper_authors pa"
+        f"  WHERE pa.paper_id=p.paper_id) AS authors,"
+        f" (SELECT COUNT(DISTINCT pai.author_id)"
+        f"  FROM paper_author_institutions pai WHERE pai.paper_id=p.paper_id"
+        f"  AND pai.source IN ({marks})) AS linked,"
+        f" (SELECT COUNT(*) FROM paper_author_institutions pai"
+        f"  WHERE pai.paper_id=p.paper_id AND pai.source='llm.byline') AS done"
+        f" FROM papers p", RESOLVED_SOURCES).fetchall()
+    out = []
+    for paper_id, slug, pdf_path, authors, linked, done in rows:
+        if done or not authors or not linked:
+            continue                      # already read, or nothing to extend
+        if linked / authors >= threshold:
+            continue
+        if pdf_path and Path(pdf_path).exists():
+            out.append((paper_id, slug, pdf_path))
+    return out[:limit] if limit else out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
@@ -181,11 +229,15 @@ def main() -> int:
                     help="grade against papers the marker parser resolved")
     ap.add_argument("--unresolved", action="store_true",
                     help="read the papers no parser could resolve")
+    ap.add_argument("--augment", action="store_true",
+                    help="파서가 저자 일부만 매핑한 논문을 다시 읽는다")
+    ap.add_argument("--threshold", type=float, default=AUGMENT_BELOW,
+                    help=f"저자 커버리지가 이 값 미만이면 보강 (기본 {AUGMENT_BELOW})")
     ap.add_argument("--execute", action="store_true", help="write rows")
     ap.add_argument("--limit", type=int)
     args = ap.parse_args()
-    if not (args.validate or args.unresolved):
-        ap.error("--validate 또는 --unresolved 가 필요하다")
+    if not (args.validate or args.unresolved or args.augment):
+        ap.error("--validate / --unresolved / --augment 중 하나가 필요하다")
     if not os.environ.get("ANTHROPIC_API_KEY"):
         print("ANTHROPIC_API_KEY 가 없다", file=sys.stderr)
         return 2
@@ -194,8 +246,10 @@ def main() -> int:
     client = anthropic.Anthropic(timeout=180.0, max_retries=4)
     conn = sqlite3.connect(args.db, timeout=60.0)
     conn.execute("PRAGMA busy_timeout = 60000")
-    mode = "validate" if args.validate else "unresolved"
-    rows = targets(conn, mode, args.limit)
+    mode = ("validate" if args.validate
+            else "augment" if args.augment else "unresolved")
+    rows = (thin_targets(conn, args.threshold, args.limit) if args.augment
+            else targets(conn, mode, args.limit))
     report = {"mode": mode, "papers": len(rows), "read": 0, "linked": 0,
               "agree": 0, "partial": 0, "disagree": 0, "samples": []}
 
@@ -241,9 +295,13 @@ def main() -> int:
             # `source`, so inserting over an existing (paper, author,
             # institution) triple is silently ignored — and deleting after
             # that removed 81 papers' links and wrote nothing in their place.
-            conn.execute(
-                "DELETE FROM paper_author_institutions WHERE paper_id=?"
-                " AND source='pdf.unmarked-multi'", (paper_id,))
+            # Augmentation extends what the parsers found and never replaces
+            # it: the parser rows are evidence in their own right, and the
+            # reader adds the authors it did not reach.
+            if not args.augment:
+                conn.execute(
+                    "DELETE FROM paper_author_institutions WHERE paper_id=?"
+                    " AND source='pdf.unmarked-multi'", (paper_id,))
             conn.executemany(
                 "INSERT OR IGNORE INTO paper_author_institutions"
                 " (paper_id,author_id,institution_id,marker,author_order,"
