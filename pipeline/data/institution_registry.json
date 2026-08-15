@@ -146,6 +146,14 @@
     "none": {
       "note": "extraction artefact",
       "seen": 0
+    },
+    "kellogg's": {
+      "note": "a food company. ROR matches it to 'Kellogg' and OpenAlex placed a Northwestern author there: the paper says 'Kellogg School of Management, Northwestern University'. A brand that collides with a business school's name is never an affiliation here.",
+      "seen": 1
+    },
+    "kellogg's (canada)": {
+      "note": "same record, country form",
+      "seen": 1
     }
   }
 }
