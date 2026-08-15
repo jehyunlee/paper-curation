@@ -78,6 +78,12 @@ VISUAL STYLE — CAT WORKFLOW
 - Every stage is a cat character doing the work, warm and hand-drawn, in the
   style of a friendly children's science book. Soft rounded shapes.
 - White background, clean modern layout, soft pastel palette.
+- BEFORE the ladder, on its left, a first cat builds the paper's institution
+  list: it holds the front page and copies out only two kinds of line — a bare
+  line above the abstract, and a line that begins with a superscript marker —
+  while a small waste-basket beside it takes the body prose it refused. Draw an
+  arrow from this cat's list into the librarian's desk, and make clear the
+  ladder cannot start without it.
 - The ten source cats form a visible LADDER, top to bottom, each holding a
   small sign carrying its tag and nothing else — no counts anywhere in this
   figure. A cat only acts when the ones above
@@ -92,8 +98,23 @@ VISUAL STYLE — CAT WORKFLOW
   (review queue).
 - One grey, dimmed cat sits apart in a roped-off corner with a box marked
   "unresolved" — visibly excluded, not part of the flow.
-- NO title text, NO watermarks, NO color name labels. English labels only,
-  short. Icons and cats speak louder than words.
+- AFTER the desk, before the archive, one more cat settles who the author is:
+  it holds two name cards spelled differently — one with accents, one without —
+  and clips them together, while wearing a badge marked ORCID. Beside it, two
+  cards that look alike are being kept APART with a small "different people"
+  tag, to show a shared identifier is not enough on its own.
+- NO title text anywhere. Do not draw a heading, a caption bar or a strapline
+  in any corner. The figure begins at Stage 0 and has nothing above it.
+- Write each label ONCE. Never repeat a sentence in two places in one panel,
+  and never leave a partial second copy of it.
+- Spell every English word correctly -- "affiliation" and "byline" above all.
+  A misspelt label makes the figure unusable.
+- Any words that are an instruction to the illustrator must never appear in
+  the picture. Only labels that a reader needs are drawn.
+- Sample text inside a drawn document must be plausible English words, never
+  invented letter strings.
+- NO watermarks, NO color name labels. English labels only, short. Icons and
+  cats speak louder than words.
 """
 
 
@@ -131,10 +152,21 @@ def method_text(stats: dict) -> str:
         f"({stats['confirmed'] / stats['papers'] * 100:.1f}%) are settled on "
         f"evidence; the rest keep a guess that queries exclude.",
         "",
+        "## Stage 0 — The paper's institution list",
+        "",
+        "Nothing below can run until the paper has candidate institutions, "
+        "because every source is matched against that list. It is built from "
+        "the publisher deposit and from the PDF's own front matter -- a bare "
+        "line above the abstract, or a line led by the superscript marker that "
+        "keys it to an author. Body prose is excluded by position rather than "
+        "by wording, since prose is short and names organisations too.",
+        "",
         "## Stage 1 — Sources, tried in order of directness",
         "",
         "Each source is tried only when the ones above it produced nothing, "
-        "and every row is tagged with the class that produced it.",
+        "and every row is tagged with the class that produced it. The page "
+        "reader is last because it is the only one that costs money and "
+        "minutes; it is also sent back to papers the parsers left thin.",
         "",
     ]
     for source, label, note in CLASSES:
@@ -159,7 +191,17 @@ def method_text(stats: dict) -> str:
         f"carry no parent edge, organisations too new to have a record, and "
         f"strings that name no organisation at all.",
         "",
-        "## Stage 4 — Gates",
+        "## Stage 4 — Author identity",
+        "",
+        "A link needs a person as well as a place. Two spellings of one name "
+        "-- accents, hyphen variants, initial spacing -- used to file one "
+        "researcher under two rows and halve their count in a ranking. Names "
+        "fold to a key that keeps the letters of every script. ORCID decides "
+        "identity when present, but only when the two names can be one person: "
+        "the identifier is reliable and the act of attaching it to a name is "
+        "not.",
+        "",
+        "## Stage 5 — Gates",
         "",
         "- **regression** — snapshots which class resolves each paper, then "
         "reports lost, gained and reclassified separately. A widening that "

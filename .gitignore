@@ -85,6 +85,7 @@ reports/output/
 !docs/operations.md
 !docs/architecture.md
 !docs/attribution.md
+!docs/attribution.en.md
 
 # Public assets (conference talk slides, etc.) — tracked on master + GitHub-served
 !docs/public/
