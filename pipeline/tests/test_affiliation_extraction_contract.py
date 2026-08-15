@@ -1360,6 +1360,66 @@ class EvidenceSourceListTests(unittest.TestCase):
             [("linked", 3)])
         conn.close()
 
+    def test_a_name_key_survives_every_script(self):
+        # An earlier fold used [^a-z0-9], which erases Cyrillic, CJK and
+        # Hangul outright: every non-Latin name became the empty key and would
+        # have merged into one author. Folding may remove accents; it may not
+        # remove letters.
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.author_identity import fold_author_name
+        for name in ("А. Г. Иванов", "周武彦", "윤중환", "Валерій Джерелій"):
+            self.assertTrue(fold_author_name(name),
+                            f"{name} folded away to nothing")
+        self.assertNotEqual(fold_author_name("周武彦"),
+                            fold_author_name("윤중환"))
+        # Accents, hyphen variants and initial spacing must agree.
+        self.assertEqual(fold_author_name("Albert-László Barabási"),
+                         fold_author_name("Albert-Laszlo Barabasi"))
+        self.assertEqual(fold_author_name("Alán Aspuru\u2010Guzik"),
+                         fold_author_name("Alan Aspuru-Guzik"))
+        self.assertEqual(fold_author_name("Matthew B.A. McDermott"),
+                         fold_author_name("Matthew B. A. McDermott"))
+
+    def test_a_shared_orcid_does_not_merge_different_people(self):
+        # ORCID is a reliable identifier and an unreliable attachment: it is
+        # OpenAlex or Scopus that ties it to a name. Two of eleven shared
+        # ORCIDs in this corpus joined people who are plainly different, and
+        # OpenAlex itself had them under separate author ids.
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.author_identity import names_compatible
+        for left, right in (("James A. Evans", "James Evans"),
+                            ("Vischia, Pietro", "P. Vischia"),
+                            ("Mark, Roger", "Roger G. Mark")):
+            self.assertTrue(names_compatible(left, right), f"{left}/{right}")
+        for left, right in (("Sungdong Kim", "Sunkyu Kim"),
+                            ("S. B. King", "Aditi T. Merchant")):
+            self.assertFalse(names_compatible(left, right), f"{left}/{right}")
+
+    def test_et_al_is_cut_out_of_an_author_name(self):
+        # "Tim Green 외 다수" invents an author who is the tail of a list, and
+        # the marker is not always final: one row read
+        # "Loubna Ben Allal 외 다수 (Hugging Face".
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        from lib.author_identity import strip_et_al
+        self.assertEqual(strip_et_al("Tim Green 외 다수"), "Tim Green")
+        self.assertEqual(strip_et_al("Renze Lou et al."), "Renze Lou")
+        self.assertEqual(
+            strip_et_al("Loubna Ben Allal 외 다수 (Hugging Face"),
+            "Loubna Ben Allal")
+        self.assertEqual(strip_et_al("Alan Turing"), "Alan Turing")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -538,6 +538,38 @@ PDF 파서도 똑같이 도출했는데 전부 버려졌다. 재계산 후 지�
 손실), `openalex`/`scopus` 까지 넣으면 그것들은 별도 스크립트가 만들므로 복구되지
 않는다(60편 실행에서 546건 손실).
 
+### 저자 신원: ORCID 는 참값이지만 '부착'은 아니다 (2026-08-15)
+
+`authors.normalized_name` 이 **소문자 변환뿐**이라 한 사람이 여러 행으로 갈라져
+있었다 — 악센트 56그룹(`Barabási`/`Barabasi`), 하이픈 변종 42그룹(U+2010/U+002D),
+이니셜 간격 40그룹(`B.A.`/`B. A.`). 랭킹에 그대로 드러났다: ai4s 리포트가
+`Pheng-Ann Heng(3)` 옆에 `Pheng‐Ann Heng(2)` 를 찍어 한 사람 실적을 반토막 냈다.
+`lib/author_identity.fold_author_name()` 이 키다.
+
+**폴딩이 글자를 지우면 안 된다.** 처음 쓴 `[^a-z0-9]` 는 키릴·CJK·한글을 통째로
+지워 **모든 비라틴 이름이 빈 키로 접혀 한 저자로 병합**될 뻔했다. 결합 문자와
+문장부호만 정규화하고 글자는 어느 문자체계든 보존한다.
+
+**ORCID 는 식별자로는 믿을 수 있지만, 이름에 붙인 주체는 OpenAlex/Scopus 다.**
+한 ORCID 를 두 행이 나눠 가진 11건 중 **2건이 서로 다른 사람**이었고
+(`Sungdong Kim`/`Sunkyu Kim`, `S. B. King`/`Aditi T. Merchant`), 둘 다 OpenAlex
+에서는 author id 가 달랐다. 그래서 규칙은:
+
+- 같은 ORCID + 이름이 호환 → 병합 (`Gu, Xuemei`/`Xuemei Gu` 는 이름만으로는 안 접힘)
+- 같은 ORCID + 이름이 비호환 → **병합하지 않고 양쪽의 ORCID 를 지운다.** 어느 쪽이
+  맞는지 기록에 없으므로 한쪽만 남기는 것은 근거 없는 결정이다
+- 호환 판정(`names_compatible`): 성이 일치하고, 나머지 토큰은 같거나 한쪽이 다른
+  쪽의 이니셜. `Sungdong`/`Sunkyu` 는 둘 다 완전한 이름이라 거부된다
+
+`orcid` 에 부분 UNIQUE 인덱스가 걸려 있다 (`WHERE orcid <> ''`).
+
+**`외 다수`/`et al.` 는 저자명이 아니다.** 15행이 오염돼 있었고, 마커가 문자열
+중간에 오는 경우도 있다(`Loubna Ben Allal 외 다수 (Hugging Face`) — 마커부터
+끝까지 자른다.
+
+마이그레이션 결과: authors 19,404 → **19,256** (병합 148), 재폴딩 3,436,
+ORCID 정리 6, et-al 정리 15.
+
 ### 시도는 성공과 별개로 기록한다 (2026-08-15)
 
 `extraction_attempts (paper_id, extractor, attempted_at, outcome, links, detail)`

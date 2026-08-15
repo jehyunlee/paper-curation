@@ -25,9 +25,11 @@ import urllib.request
 import uuid
 from pathlib import Path
 try:
-    from .lib import bibliography_lock, country_map, doi as _doi
+    from .lib import (author_identity, bibliography_lock, country_map,
+                      doi as _doi)
 except ImportError:
-    from lib import bibliography_lock, country_map, doi as _doi
+    from lib import (author_identity, bibliography_lock, country_map,
+                     doi as _doi)
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "docs" / "papers"
@@ -279,6 +281,111 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
                      "ON institutions(parent_name)")
     if "paper_author_institutions" in tables:
         _migrate_pai_primary_key(conn)
+    if "authors" in tables:
+        migrate_author_identity(conn)
+
+
+def _merge_author_rows(conn: sqlite3.Connection, keep: int, drop: int) -> None:
+    """Move every reference from one author row to another, then delete it."""
+    conn.execute(
+        "UPDATE OR IGNORE paper_authors SET author_id=? WHERE author_id=?",
+        (keep, drop))
+    conn.execute("DELETE FROM paper_authors WHERE author_id=?", (drop,))
+    conn.execute(
+        "UPDATE OR IGNORE paper_author_institutions SET author_id=?"
+        " WHERE author_id=?", (keep, drop))
+    conn.execute(
+        "DELETE FROM paper_author_institutions WHERE author_id=?", (drop,))
+    conn.execute("DELETE FROM authors WHERE author_id=?", (drop,))
+
+
+def migrate_author_identity(conn: sqlite3.Connection) -> dict:
+    """Refold author keys, merge rows that were one person, clear bad ORCIDs.
+
+    Three corrections that have to happen together, because each changes what
+    the others see.
+
+    The key becomes `fold_author_name`, so accents, hyphen variants and
+    initial spacing stop filing one person twice. Rows colliding under the new
+    key merge into the lowest id and their links move with them --
+    `UPDATE OR IGNORE` then `DELETE`, because a paper may already list both
+    spellings, in which case the duplicate reference simply goes.
+
+    An ORCID shared by rows whose names cannot be one person is evidence of a
+    bad deposit and nothing else, so it is cleared from both rather than used
+    to merge them. Keeping it on one side would mean deciding which, and
+    nothing in the record says which.
+    """
+    result = {"refolded": 0, "merged": 0, "orcid_cleared": 0, "et_al": 0}
+    rows = conn.execute(
+        "SELECT author_id, display_name, normalized_name, COALESCE(orcid,'')"
+        " FROM authors ORDER BY author_id").fetchall()
+    if not rows:
+        return result
+
+    # "Tim Green 외 다수" is not an author. Clean the display name first, so
+    # the fold below groups it with the real one.
+    for author_id, display, _key, _orcid in rows:
+        cleaned = author_identity.strip_et_al(display or "")
+        if cleaned and cleaned != display:
+            conn.execute("UPDATE authors SET display_name=? WHERE author_id=?",
+                         (cleaned, author_id))
+            result["et_al"] += 1
+    rows = conn.execute(
+        "SELECT author_id, display_name, normalized_name, COALESCE(orcid,'')"
+        " FROM authors ORDER BY author_id").fetchall()
+
+    holders: dict[str, list[tuple[int, str]]] = {}
+    for author_id, display, _key, orcid in rows:
+        if orcid:
+            holders.setdefault(orcid, []).append((author_id, display or ""))
+    suspect: set[int] = set()
+    for _orcid, group in holders.items():
+        if len(group) < 2:
+            continue
+        first = group[0][1]
+        if all(author_identity.names_compatible(first, other)
+               for _, other in group[1:]):
+            # The identifier says one person and the names can be one person,
+            # so they are merged however differently the sources spelled it --
+            # "Gu, Xuemei" and "Xuemei Gu" never fold together on name alone.
+            keep = min(author_id for author_id, _ in group)
+            for author_id, _ in group:
+                if author_id != keep:
+                    _merge_author_rows(conn, keep, author_id)
+                    result["merged"] += 1
+            continue
+        suspect.update(author_id for author_id, _ in group)
+    for author_id in sorted(suspect):
+        conn.execute("UPDATE authors SET orcid='' WHERE author_id=?",
+                     (author_id,))
+        result["orcid_cleared"] += 1
+    rows = conn.execute(
+        "SELECT author_id, display_name, normalized_name, COALESCE(orcid,'')"
+        " FROM authors ORDER BY author_id").fetchall()
+
+    keep_by_key: dict[str, int] = {}
+    for author_id, display, key, _orcid in rows:
+        folded = author_identity.fold_author_name(display or "")
+        if not folded:
+            continue
+        winner = keep_by_key.get(folded)
+        if winner is None:
+            keep_by_key[folded] = author_id
+            if folded != key:
+                result["refolded"] += 1
+            continue
+        _merge_author_rows(conn, winner, author_id)
+        result["merged"] += 1
+    # The key is unique, so rewriting it has to wait until the losers are gone.
+    for folded, author_id in keep_by_key.items():
+        conn.execute("UPDATE authors SET normalized_name=? WHERE author_id=?",
+                     (folded, author_id))
+
+    # An ORCID names one person; two rows may not claim the same one.
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_authors_orcid_unique"
+                 " ON authors(orcid) WHERE orcid <> ''")
+    return result
 
 
 def _migrate_pai_primary_key(conn: sqlite3.Connection) -> None:
@@ -3540,7 +3647,15 @@ def load_entries() -> list[dict]:
 
 
 def upsert(conn, table: str, name: str, column: str) -> int:
-    key = norm(name)
+    # Authors get a fold that survives accents, hyphen variants and initial
+    # spacing; `norm` lowercases and nothing more, which filed one person
+    # under two keys. Institutions keep `norm`: their names are settled by ROR
+    # rather than by string comparison.
+    if table == "authors":
+        name = author_identity.strip_et_al(name)
+        key = author_identity.fold_author_name(name)
+    else:
+        key = norm(name)
     id_col = "author_id" if table == "authors" else "institution_id" if table == "institutions" else "group_id"
     row = conn.execute(f"SELECT {id_col} FROM {table} WHERE normalized_name=?", (key,)).fetchone()
     if row:
