@@ -14,12 +14,6 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 > get tied to institutions, and why the page reader runs last, written up
 > separately.
 
-![Author-to-institution attribution](attribution_workflow.png)
-
-> 🐱 **The evidence ladder** — a rung that answers stops the ones below it, and
-> every source is checked by the librarian cat against the institutions the
-> paper itself names.
-
 ---
 
 ## What It Does

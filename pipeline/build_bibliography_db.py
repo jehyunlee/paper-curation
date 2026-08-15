@@ -3871,7 +3871,28 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 values)
             pid = conn.execute("SELECT paper_id FROM papers WHERE slug=?", (p["slug"],)).fetchone()[0]
             conn.execute("DELETE FROM paper_authors WHERE paper_id=?", (pid,))
-            conn.execute("DELETE FROM paper_institutions WHERE paper_id=?", (pid,))
+            # Delete only the sources this run actually produced. Three
+            # separate incidents taught the rule: an unscoped delete took
+            # `llm.byline` with it, then a scoped one took `openalex`, which
+            # enrichment writes and this script does not. The third is subtler
+            # -- the Scopus response cache holds empty entries for some
+            # papers, so a rebuild re-derives nothing for them and a blanket
+            # "delete what I might rewrite" throws away rows an earlier run
+            # obtained from a live API. `041_Aaar-10` went from six
+            # institutions to three that way, and corpus coverage fell 88.3%
+            # to 80.8%.
+            #
+            # A stale row that no longer matches the paper is the cost of
+            # this, and the cheaper mistake: every row is checked against the
+            # paper's own text before it can carry an author link.
+            produced_sources = {record["source"]
+                                for record in affiliation_records}
+            if produced_sources:
+                marks = ",".join("?" * len(produced_sources))
+                conn.execute(
+                    f"DELETE FROM paper_institutions WHERE paper_id=?"
+                    f" AND source IN ({marks})",
+                    (pid, *sorted(produced_sources)))
             # Only what this rebuild re-derives, which is the PDF classes and
             # nothing else. The unscoped delete that stood here removed
             # `llm.byline` too -- a 415-paper run cost one paper its
@@ -4591,6 +4612,40 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
         bibliography_lock.release_bibliography_writer_lock(db_path, descriptor)
 
 
+def reinstate_linked_institutions(conn: sqlite3.Connection) -> int:
+    """Every institution an author link names must be in the paper's list.
+
+    The two tables are pruned on different rules -- `paper_institutions` keeps
+    what a run did not re-derive, `paper_author_institutions` keeps `openalex`
+    and `llm.byline` whatever happens -- so a rebuild can leave a link
+    pointing at an institution the paper no longer lists. The link is the
+    stronger record: a deposit or the page reader asserted it about a named
+    author, while the paper-level row is only a candidate. So the candidate is
+    restored rather than the link deleted.
+    """
+    rows = conn.execute(
+        "SELECT DISTINCT x.paper_id, x.institution_id, x.source"
+        " FROM paper_author_institutions x WHERE NOT EXISTS("
+        "  SELECT 1 FROM paper_institutions pi"
+        "  WHERE pi.paper_id=x.paper_id"
+        "    AND pi.institution_id=x.institution_id)").fetchall()
+    restored = 0
+    for paper_id, institution_id, source in rows:
+        row = conn.execute(
+            "SELECT institution_name, COALESCE(country_name_en,'')"
+            " FROM institutions WHERE institution_id=?",
+            (institution_id,)).fetchone()
+        if not row:
+            continue
+        conn.execute(
+            "INSERT OR IGNORE INTO paper_institutions"
+            " (paper_id, institution_id, raw_name, country_name, source)"
+            " VALUES (?,?,?,?,?)",
+            (paper_id, institution_id, row[0], row[1], f"link:{source}"))
+        restored += 1
+    return restored
+
+
 def finalize(db_path: Path) -> dict:
     """Run only the table-wide passes a streaming ingest deferred.
 
@@ -4609,6 +4664,7 @@ def finalize(db_path: Path) -> dict:
             # called: it was written as a one-off repair, so every sub-unit
             # minted after that day stayed. Run it with the other cleanups.
             result = {"stale_papers": prune_missing_papers(conn),
+                      "relinked": reinstate_linked_institutions(conn),
                       "sub_units": drop_sub_unit_institutions(conn),
                       "pruned": prune_orphan_institutions(conn),
                       "countries": consolidate_institution_countries(conn),

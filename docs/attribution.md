@@ -246,6 +246,147 @@ LLM 판독기 첫 실행이 **0행을 쓰고 곧이어 81편의 링크를 지웠
 가 `linked | empty | unreadable | error` 를 남긴다. `thin_targets` 는 이제 행이
 아니라 **시도 기록**을 보고 대상을 고른다.
 
+## DB 구조
+
+저자↔기관 귀속에 관여하는 테이블만 추린 ER 다이어그램이다. **라이브 스키마에서
+생성**하므로(`pipeline/generate_schema_diagram.py --format mermaid`) 그림이
+스키마와 어긋날 수 없다.
+
+> 그림 생성 모델로 세 번 시도했으나 **매번 가장 중요한 한 가지**—`source` 가
+> `paper_author_institutions` 의 기본키 안에 있는지—를 틀렸다. 스키마와 불일치하는
+> 스키마 그림은 없느니만 못하므로 Mermaid 로 바꿨다.
+
+```mermaid
+erDiagram
+    authors {
+        int author_id "PK"
+        string display_name
+        string normalized_name
+        string openalex_id
+        string orcid
+    }
+    extraction_attempts {
+        int paper_id "PK,FK"
+        string extractor "PK"
+        string attempted_at
+        string outcome
+        int links
+        string detail
+    }
+    institution_aliases {
+        int alias_id "PK"
+        string raw_name
+        string normalized_alias
+        int institution_id "FK"
+    }
+    institutions {
+        int institution_id "PK"
+        string institution_name
+        string normalized_name
+        string country_name_en
+        int group_id "FK"
+        string source
+        string ror_id
+        string parent_name
+        string parent_ror_id
+        string name_source
+        string hq_country_name_en
+    }
+    paper_author_institutions {
+        int paper_id "PK,FK"
+        int author_id "PK,FK"
+        int institution_id "PK,FK"
+        string marker
+        int author_order
+        string source "PK"
+    }
+    paper_authors {
+        int paper_id "PK,FK"
+        int author_id "PK,FK"
+        int author_order
+        int is_first_author
+        int is_corresponding_author
+        string source
+    }
+    paper_connections {
+        int paper_id "PK,FK"
+        int related_paper_id "PK,FK"
+        string relation "PK"
+        string reason
+        string topics
+        string model
+        string generated_at
+        string source
+    }
+    paper_institutions {
+        int paper_id "PK,FK"
+        int institution_id "PK,FK"
+        string raw_name
+        string country_name
+        string source
+    }
+    papers {
+        int paper_id "PK"
+        string slug
+        string title
+        string publication_date
+        string journal_name
+        string doi
+        string arxiv_id
+        string url
+        string review_dir
+        string zotero_item_key
+        string affiliation_source
+        float affiliation_confidence
+        string header_raw
+        string metadata_json
+        string created_at
+        string volume
+        string issue
+        string pages
+        string publisher
+        string issn
+        string eissn
+        string document_type
+        string scopus_eid
+        string received_date
+        string accepted_date
+        string published_online_date
+        string bibliography_source
+    }
+    source_documents {
+        int paper_id "PK,FK"
+        string document_type "PK"
+        string path
+        string sha256
+        int bytes
+    }
+    papers ||--o{ extraction_attempts : "paper_id"
+    institutions ||--o{ institution_aliases : "institution_id"
+    institution_groups ||--o{ institutions : "group_id"
+    institutions ||--o{ paper_author_institutions : "institution_id"
+    authors ||--o{ paper_author_institutions : "author_id"
+    papers ||--o{ paper_author_institutions : "paper_id"
+    authors ||--o{ paper_authors : "author_id"
+    papers ||--o{ paper_authors : "paper_id"
+    papers ||--o{ paper_connections : "related_paper_id"
+    papers ||--o{ paper_connections : "paper_id"
+    institutions ||--o{ paper_institutions : "institution_id"
+    papers ||--o{ paper_institutions : "paper_id"
+    papers ||--o{ source_documents : "paper_id"
+```
+
+읽는 법 세 가지.
+
+- **`paper_author_institutions` 의 PK 는 네 컬럼**이다. `source` 가 키 안에 있어서
+  한 링크가 증거 종류마다 한 행씩 가질 수 있다. 기탁과 파서가 같은 결론에 도달하면
+  둘 다 기록된다. 집계할 때는 반드시
+  `SELECT DISTINCT paper_id, author_id, institution_id` 로 좁힌 뒤 합산한다.
+- **`extraction_attempts` 는 성공이 아니라 시도**를 적는다. 링크가 없다는 것이
+  "안 돌렸다"인지 "돌렸는데 못 붙였다"인지 구분한다.
+- **`paper_connections` 는 LLM 주장**이지 서지 사실이 아니다. 출판사 검증 테이블과
+  분리돼 있고 모든 행이 모델명을 달고 있다.
+
 ## 현재 수치
 
 |지표|값|
