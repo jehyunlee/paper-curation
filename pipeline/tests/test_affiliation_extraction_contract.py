@@ -1304,6 +1304,62 @@ class EvidenceSourceListTests(unittest.TestCase):
         self.assertLess(RESOLVED_SOURCES.index("scopus"),
                         RESOLVED_SOURCES.index("pdf.byline-marker"))
 
+    def test_source_is_part_of_the_link_key(self):
+        # Two extractors reaching the same link must both leave a record. With
+        # `source` outside the key one of them was silently dropped by INSERT
+        # OR IGNORE, which is how a run once wrote nothing and then deleted
+        # what was already there. 10.1% of the corpus's links are corroborated,
+        # and all of that is unrepresentable under the old key.
+        import sqlite3
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        import build_bibliography_db as bib
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(bib.SCHEMA)
+        conn.execute("INSERT INTO papers (slug, title, review_dir)"
+                     " VALUES ('x', 'T', 'd')")
+        conn.execute("INSERT INTO authors (display_name, normalized_name)"
+                     " VALUES ('A', 'a')")
+        conn.execute("INSERT INTO institutions (institution_name,"
+                     " normalized_name, source)"
+                     " VALUES ('I', 'i', 'test')")
+        for source in ("openalex", "pdf.byline-marker"):
+            conn.execute(
+                "INSERT OR IGNORE INTO paper_author_institutions"
+                " (paper_id, author_id, institution_id, source)"
+                " VALUES (1, 1, 1, ?)", (source,))
+        self.assertEqual(conn.execute(
+            "SELECT COUNT(*) FROM paper_author_institutions").fetchone()[0], 2)
+        conn.close()
+
+    def test_an_attempt_is_recorded_even_when_it_finds_nothing(self):
+        # A table of successes cannot say whether a paper has been read. The
+        # page reader is billed per page, so "no rows" meaning both "never
+        # opened" and "opened, found nothing" is a repeat bill.
+        import sqlite3
+        import sys
+        from pathlib import Path as _P
+        root = _P(__file__).resolve().parents[1]
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        import build_bibliography_db as bib
+        from lib.evidence import attempted, record_attempt
+        conn = sqlite3.connect(":memory:")
+        conn.executescript(bib.SCHEMA)
+        conn.execute("INSERT INTO papers (slug, title, review_dir)"
+                     " VALUES ('x', 'T', 'd')")
+        self.assertEqual(attempted(conn, "llm.byline"), set())
+        record_attempt(conn, 1, "llm.byline", "empty", 0)
+        self.assertEqual(attempted(conn, "llm.byline"), {1})
+        record_attempt(conn, 1, "llm.byline", "linked", 3)
+        self.assertEqual(conn.execute(
+            "SELECT outcome, links FROM extraction_attempts").fetchall(),
+            [("linked", 3)])
+        conn.close()
+
 
 if __name__ == "__main__":
     unittest.main()

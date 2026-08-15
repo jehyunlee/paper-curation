@@ -36,3 +36,35 @@ PDF_SOURCES: tuple[str, ...] = tuple(
 # Every author linked to every institution because the byline could not be
 # read. Never counted as an answer; queries exclude it by name.
 UNRESOLVED_SOURCE = "pdf.unmarked-multi"
+
+
+def record_attempt(conn, paper_id: int, extractor: str, outcome: str,
+                   links: int = 0, detail: str = "") -> None:
+    """Write down that an extractor ran, whatever came of it.
+
+    A table of successes cannot answer "has this been tried?", and for an
+    extractor billed per page that answer decides whether to pay again. The row
+    is replaced rather than appended: what matters is whether the paper, as it
+    stands now, has been read.
+    """
+    from datetime import datetime, timezone
+    conn.execute(
+        "INSERT INTO extraction_attempts"
+        " (paper_id, extractor, attempted_at, outcome, links, detail)"
+        " VALUES (?,?,?,?,?,?)"
+        " ON CONFLICT(paper_id, extractor) DO UPDATE SET"
+        "  attempted_at=excluded.attempted_at, outcome=excluded.outcome,"
+        "  links=excluded.links, detail=excluded.detail",
+        (paper_id, extractor,
+         datetime.now(timezone.utc).isoformat(timespec="seconds"),
+         outcome, links, detail or ""))
+
+
+def attempted(conn, extractor: str) -> set[int]:
+    """Paper ids this extractor has already been run against."""
+    try:
+        return {row[0] for row in conn.execute(
+            "SELECT paper_id FROM extraction_attempts WHERE extractor=?",
+            (extractor,))}
+    except Exception:      # table absent on a database not yet migrated
+        return set()

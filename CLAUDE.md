@@ -517,6 +517,36 @@ SELECT COUNT(*) FROM papers p
 > **변이 테스트 주의**: `tuple(t)` 는 `t` 를 그대로 돌려준다. 사본을 만들어
 > 검사하려면 `tuple(list(t))` 를 써야 한다. 통과하는 변이 테스트는 테스트가 아니다.
 
+### 링크의 증거는 여러 개다 — `source` 는 기본키의 일부 (2026-08-15)
+
+`paper_author_institutions` PK 는 `(paper_id, author_id, institution_id, source)`
+다. `source` 가 키 밖에 있던 동안 **한 링크는 출처를 하나만** 들 수 있었고, 독립된
+두 증거가 일치해도 그 사실이 사라졌다 — 200편 표본에서 기탁 링크의 **15.4%** 를
+PDF 파서도 똑같이 도출했는데 전부 버려졌다. 재계산 후 지금은 26,911개 링크 중
+**2,719개(10.1%)** 가 두 출처 이상의 확증을 달고 있다.
+
+`INSERT OR IGNORE` 가 두 번째 출처를 무시했기 때문에 LLM 판독기 첫 실행이 **0행을
+쓰고 곧이어 81편의 링크를 지웠다.** 삽입은 무시됐고 삭제는 무시되지 않았다.
+
+**집계 규칙**: 링크 하나가 행 여러 개다. 행을 그대로 SUM 하면 **가장 잘 뒷받침된
+링크가 두 번 계산된다**. 인용수·제1저자·교신저자 합산은 반드시
+`SELECT DISTINCT paper_id, author_id, institution_id` 로 좁힌 뒤 집계한다.
+`COUNT(DISTINCT paper_id)` 류는 영향 없다.
+
+**삭제 규칙**: 그 실행이 **다시 만들 출처만** 지운다. 논문 재빌드는 `pdf.%` 만
+지운다 — 무-조건 `WHERE paper_id=?` 는 `llm.byline` 까지 지웠고(415편 실행에서 1편
+손실), `openalex`/`scopus` 까지 넣으면 그것들은 별도 스크립트가 만들므로 복구되지
+않는다(60편 실행에서 546건 손실).
+
+### 시도는 성공과 별개로 기록한다 (2026-08-15)
+
+`extraction_attempts (paper_id, extractor, attempted_at, outcome, links, detail)`
+— `linked | empty | unreadable | error`. 성공만 적는 표는 **"읽어봤나?"** 에 답하지
+못한다. `llm.byline` 행이 없는 논문이 "안 읽음"인지 "읽었는데 못 붙임"인지 구분되지
+않아, 보강 대상을 고를 때 이미 읽은 논문을 미판독으로 셌다. 페이지당 과금되는
+판독기에서 이 차이는 **다시 청구되느냐**의 차이다.
+`lib.evidence.record_attempt()` / `attempted()` 를 쓴다.
+
 ### 정의만 되고 호출되지 않는 정리 함수를 의심한다 (2026-08-14)
 
 `drop_sub_unit_institutions()` 는 **1년 가까이 정의만 되어 있고 어디서도 호출되지

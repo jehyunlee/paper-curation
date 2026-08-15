@@ -96,9 +96,28 @@ CREATE TABLE IF NOT EXISTS paper_author_institutions (
  author_id INTEGER NOT NULL REFERENCES authors ON DELETE CASCADE,
  institution_id INTEGER NOT NULL REFERENCES institutions ON DELETE CASCADE,
  marker TEXT, author_order INTEGER, source TEXT NOT NULL,
- PRIMARY KEY (paper_id, author_id, institution_id));
+ -- `source` is part of the key. Without it one link held one source, so when a
+ -- deposit and the PDF said the same thing -- 15.4% of deposited links in a
+ -- 200-paper sample -- the agreement was thrown away, and an INSERT OR IGNORE
+ -- from a second extractor was silently dropped. That last one bit once: the
+ -- first LLM run wrote nothing and then deleted 81 papers' links, because the
+ -- insert was ignored and the delete that followed was not.
+ PRIMARY KEY (paper_id, author_id, institution_id, source));
 CREATE INDEX IF NOT EXISTS idx_pai_author ON paper_author_institutions(author_id);
 CREATE INDEX IF NOT EXISTS idx_pai_inst ON paper_author_institutions(institution_id);
+-- What was tried, as opposed to what worked. Absence of a row in
+-- `paper_author_institutions` used to mean either "this extractor never ran"
+-- or "it ran and found nothing", and the two cannot be told apart from a table
+-- that records only successes. For an extractor that costs money per page that
+-- difference is the difference between a bill and a repeat bill.
+CREATE TABLE IF NOT EXISTS extraction_attempts (
+ paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ extractor TEXT NOT NULL,
+ attempted_at TEXT NOT NULL,
+ outcome TEXT NOT NULL,          -- linked | empty | unreadable | error
+ links INTEGER NOT NULL DEFAULT 0,
+ detail TEXT,
+ PRIMARY KEY (paper_id, extractor));
 -- Paper-to-paper connections. These are LLM claims, not bibliographic fact, so
 -- they are kept apart from the publisher-verified tables and every row names
 -- the model that asserted it — the registry's lesson was that derived data
@@ -258,6 +277,56 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
                     f"ALTER TABLE institutions ADD COLUMN {name} {sql_type}")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_institutions_parent "
                      "ON institutions(parent_name)")
+    if "paper_author_institutions" in tables:
+        _migrate_pai_primary_key(conn)
+
+
+def _migrate_pai_primary_key(conn: sqlite3.Connection) -> None:
+    """Put `source` into the link table's key on databases that predate it.
+
+    SQLite cannot alter a primary key, so the table is rebuilt. No row is lost
+    or merged: the old key is a strict prefix of the new one, so every existing
+    row stays exactly one row. What changes is what can be written next -- a
+    second extractor reaching the same link now records that it agreed instead
+    of being ignored.
+    """
+    sql = (conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table'"
+        " AND name='paper_author_institutions'").fetchone() or [""])[0] or ""
+    if "institution_id, source)" in sql.replace("\n", " "):
+        return
+    before = conn.execute(
+        "SELECT COUNT(*) FROM paper_author_institutions").fetchone()[0]
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        conn.execute("""
+            CREATE TABLE paper_author_institutions_new (
+             paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+             author_id INTEGER NOT NULL REFERENCES authors ON DELETE CASCADE,
+             institution_id INTEGER NOT NULL
+                 REFERENCES institutions ON DELETE CASCADE,
+             marker TEXT, author_order INTEGER, source TEXT NOT NULL,
+             PRIMARY KEY (paper_id, author_id, institution_id, source))""")
+        conn.execute(
+            "INSERT INTO paper_author_institutions_new"
+            " (paper_id, author_id, institution_id, marker, author_order,"
+            "  source)"
+            " SELECT paper_id, author_id, institution_id, marker,"
+            "        author_order, source FROM paper_author_institutions")
+        conn.execute("DROP TABLE paper_author_institutions")
+        conn.execute("ALTER TABLE paper_author_institutions_new"
+                     " RENAME TO paper_author_institutions")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_pai_author"
+                     " ON paper_author_institutions(author_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_pai_inst"
+                     " ON paper_author_institutions(institution_id)")
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
+    after = conn.execute(
+        "SELECT COUNT(*) FROM paper_author_institutions").fetchone()[0]
+    if after != before:
+        raise RuntimeError(
+            f"key migration changed the row count: {before} -> {after}")
 
 
 
@@ -3688,7 +3757,15 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             pid = conn.execute("SELECT paper_id FROM papers WHERE slug=?", (p["slug"],)).fetchone()[0]
             conn.execute("DELETE FROM paper_authors WHERE paper_id=?", (pid,))
             conn.execute("DELETE FROM paper_institutions WHERE paper_id=?", (pid,))
-            conn.execute("DELETE FROM paper_author_institutions WHERE paper_id=?", (pid,))
+            # Only what this rebuild re-derives, which is the PDF classes and
+            # nothing else. The unscoped delete that stood here removed
+            # `llm.byline` too -- a 415-paper run cost one paper its
+            # page-reader evidence -- and scoping it to "everything this table
+            # can hold" would have taken `openalex` and `scopus` with it, which
+            # arrive from enrichment and are not rebuilt here either.
+            conn.execute(
+                "DELETE FROM paper_author_institutions"
+                " WHERE paper_id=? AND source LIKE 'pdf.%'", (pid,))
             # Zotero's creator list (captured in the sidecar) is transcribed
             # from the publisher, so it outranks review.md's LLM extraction.
             authors = ((sidecar or {}).get("authors")

@@ -93,16 +93,22 @@ def researchers(conn, topic: str, institution_id: int, limit: int,
              COALESCE(SUM(c.citations), 0) citations,
              SUM(COALESCE(pa.is_first_author, 0)) first_author,
              SUM(COALESCE(pa.is_corresponding_author, 0)) corresponding
-      FROM paper_author_institutions pai
+      -- DISTINCT on the triple, not the rows. `source` joined the key so that
+      -- two extractors agreeing on a link both leave a record; without this
+      -- the agreement would double every SUM below -- citations, first-author
+      -- and corresponding counts -- for exactly the best-evidenced links.
+      FROM (SELECT DISTINCT paper_id, author_id, institution_id
+              FROM paper_author_institutions
+             WHERE source IN ({marks})) pai
       JOIN topic_papers tp ON tp.paper_id = pai.paper_id
       JOIN authors a ON a.author_id = pai.author_id
       LEFT JOIN paper_authors pa
         ON pa.paper_id = pai.paper_id AND pa.author_id = pai.author_id
       LEFT JOIN cites c ON c.paper_id = pai.paper_id
-      WHERE pai.institution_id = ? AND pai.source IN ({marks})
+      WHERE pai.institution_id = ?
       GROUP BY a.author_id
       ORDER BY papers DESC, citations DESC, corresponding DESC
-      LIMIT ?""", (topic, institution_id, *sources, limit)).fetchall()
+      LIMIT ?""", (topic, *sources, institution_id, limit)).fetchall()
     return [dict(row) for row in rows]
 
 

@@ -41,7 +41,8 @@ if str(PIPELINE) not in sys.path:
     sys.path.insert(0, str(PIPELINE))
 
 import build_bibliography_db as bib            # noqa: E402
-from lib.evidence import RESOLVED_SOURCES      # noqa: E402
+from lib.evidence import (RESOLVED_SOURCES, attempted,   # noqa: E402
+                          record_attempt)
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 MODEL = "claude-sonnet-4-5-20250929"
@@ -208,8 +209,12 @@ def thin_targets(conn: sqlite3.Connection, threshold: float,
         f"  WHERE pai.paper_id=p.paper_id AND pai.source='llm.byline') AS done"
         f" FROM papers p", RESOLVED_SOURCES).fetchall()
     out = []
+    # "Has a row" and "has been read" are different questions, and only the
+    # second one decides whether to pay for the page again. A paper the reader
+    # read and could not place leaves no row, and used to look untouched.
+    already = attempted(conn, "llm.byline")
     for paper_id, slug, pdf_path, authors, linked, done in rows:
-        if done or not authors or not linked:
+        if done or paper_id in already or not authors or not linked:
             continue                      # already read, or nothing to extend
         if linked / authors >= threshold:
             continue
@@ -252,11 +257,18 @@ def main() -> int:
     for index, (paper_id, slug, pdf_path) in enumerate(rows, 1):
         png = first_page_png(Path(pdf_path))
         if not png:
+            if args.execute:
+                record_attempt(conn, paper_id, "llm.byline", "unreadable", 0)
+                conn.commit()
             continue
         try:
             byline = read_byline(client, png)
         except Exception as exc:
             print(f"  [warn] {slug[:40]}: {exc}", file=sys.stderr)
+            if args.execute:
+                record_attempt(conn, paper_id, "llm.byline", "error", 0,
+                               str(exc)[:200])
+                conn.commit()
             continue
         report["read"] += 1
         produced = resolve(conn, paper_id, byline)
@@ -286,15 +298,12 @@ def main() -> int:
                         report["samples"].append(
                             {"slug": slug[:44],
                              "expected": sorted(expected), "model": sorted(got)})
-        elif args.execute and produced:
-            # The guessed rows go first. The primary key does not include
-            # `source`, so inserting over an existing (paper, author,
-            # institution) triple is silently ignored — and deleting after
-            # that removed 81 papers' links and wrote nothing in their place.
-            # Augmentation extends what the parsers found and never replaces
-            # it: the parser rows are evidence in their own right, and the
-            # reader adds the authors it did not reach.
-            if not args.augment:
+        elif args.execute:
+            # `source` is part of the key now, so a reader row no longer
+            # collides with the parser row for the same link -- agreement is
+            # recorded instead of dropped. Augmentation still only extends:
+            # the parser rows are evidence in their own right.
+            if produced and not args.augment:
                 conn.execute(
                     "DELETE FROM paper_author_institutions WHERE paper_id=?"
                     " AND source='pdf.unmarked-multi'", (paper_id,))
@@ -302,6 +311,11 @@ def main() -> int:
                 "INSERT OR IGNORE INTO paper_author_institutions"
                 " (paper_id,author_id,institution_id,marker,author_order,"
                 " source) VALUES (?,?,?,?,?,?)", produced)
+            # Record the attempt whatever it produced. Without this a paper the
+            # reader read and could not place is indistinguishable from one it
+            # never opened, and the next run pays to read it again.
+            record_attempt(conn, paper_id, "llm.byline",
+                           "linked" if produced else "empty", len(produced))
             conn.commit()
         if index % 10 == 0:
             print(f"  [llm] {index}/{len(rows)}", file=sys.stderr, flush=True)
