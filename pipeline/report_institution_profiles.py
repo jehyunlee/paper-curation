@@ -167,6 +167,47 @@ def top_cited(conn, topic: str, institution_id: int, limit: int) -> list[dict]:
              "doi": r[4], "citations": r[5]} for r in rows]
 
 
+def corpus_top_cited(conn, topic: str, limit: int,
+                     flagged: set[str]) -> tuple[list[dict], int]:
+    """The topic's most-cited papers, with the first author's institution.
+
+    Not restricted to the ranked institutions: this is the topic's own top of
+    the list, and a paper led from somewhere outside the top twenty belongs on
+    it. Papers whose DOI is somebody else's are excluded for the same reason
+    they are excluded per institution -- their counts are borrowed -- and the
+    number excluded is returned so the omission can be stated.
+    """
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
+    rows = conn.execute(f"""
+      WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
+      SELECT p.paper_id, p.title, COALESCE(p.publication_date, ''), p.slug,
+             COALESCE(p.doi, ''), COALESCE(ct.citations, 0),
+             COALESCE(MIN(i.institution_name), '')
+      FROM topic_papers tp
+      JOIN papers p ON p.paper_id = tp.paper_id
+      JOIN cites ct ON ct.paper_id = p.paper_id
+      LEFT JOIN paper_authors pa
+        ON pa.paper_id = p.paper_id AND pa.is_first_author = 1
+      LEFT JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+                   FROM paper_author_institutions
+                  WHERE source IN ({marks})) x
+        ON x.paper_id = pa.paper_id AND x.author_id = pa.author_id
+      LEFT JOIN institutions i ON i.institution_id = x.institution_id
+      GROUP BY p.paper_id
+      ORDER BY COALESCE(ct.citations, 0) DESC
+      LIMIT ?""", (topic, *RESOLVED_SOURCES, limit + 200)).fetchall()
+    clean, excluded = [], 0
+    for r in rows:
+        if r[3] in flagged:
+            excluded += 1
+            continue
+        if len(clean) < limit:
+            clean.append({"paper_id": r[0], "title": r[1], "date": r[2],
+                          "slug": r[3], "doi": r[4], "citations": r[5],
+                          "institution": r[6]})
+    return clean, excluded
+
+
 def researchers(conn, topic: str, institution_id: int, limit: int,
                 papers_each: int) -> list[dict]:
     """Authors at this institution, with the papers that put them there."""
@@ -462,6 +503,10 @@ def build(conn, topic: str, top: int, per_institution: int,
         for paper in inst["top_cited"]:
             paper["ref"] = refs.cite(paper)
 
+    top_list, top_excluded = corpus_top_cited(conn, topic, 20, flagged)
+    for paper in top_list:
+        paper["ref"] = refs.cite(paper)
+
     # One axis for every chart, so the bars can be compared across sections.
     all_years = [y for inst in profiles for y in inst["yearly"]]
     axis = list(range(min(all_years), max(all_years) + 1)) if all_years else []
@@ -471,7 +516,8 @@ def build(conn, topic: str, top: int, per_institution: int,
         f"SELECT COUNT(*) FROM ({TOPIC_PAPERS})", (topic,)).fetchone()[0]
     return {"topic": topic, "papers": total, "profiles": profiles,
             "references": refs.entries, "axis": axis, "peak": peak,
-            "rank_by": rank_by}
+            "rank_by": rank_by, "top_cited": top_list,
+            "top_cited_excluded": top_excluded}
 
 
 def render_html(data: dict) -> str:
@@ -513,6 +559,27 @@ def render_html(data: dict) -> str:
         "기관마다 수집률이 달라, 왼쪽 막대는 영향력만큼이나 수집 범위를 "
         "반영합니다.</p>",
     ]
+    if data.get("top_cited"):
+        excluded = data.get("top_cited_excluded", 0)
+        out.append(
+            "<h2 style=\"border:0;margin-top:28px\">피인용 상위 20편</h2>")
+        out.append(
+            f"<p class=\"meta\">토픽 전체 기준이며 상위 20곳 밖에서 나온 "
+            f"논문도 포함합니다."
+            + (f" DOI 가 자기 것이 아닌 {excluded}편은 제외했습니다."
+               if excluded else "") + "</p>")
+        out.append("<ol class=\"cited\">")
+        for paper in data["top_cited"]:
+            year = (paper["date"] or "")[:4]
+            where = (f" · {esc(paper['institution'])}"
+                     if paper["institution"] else "")
+            out.append(
+                f"<li>{esc(paper['title'])}"
+                f"{' (' + year + ')' if year else ''} — "
+                f"{paper['citations']:,}회{where}"
+                f"<sup><a href=\"#ref-{paper['ref']}\">"
+                f"{paper['ref']}</a></sup></li>")
+        out.append("</ol>")
     for rank, inst in enumerate(data["profiles"], 1):
         out.append(f"<h2>{rank}. {esc(inst['name'])}</h2>")
         out.append(
@@ -584,6 +651,21 @@ def render_markdown(data: dict) -> str:
                    f"{inst['papers_with_citations']}/{inst['papers']}|"
                    f"{inst.get('suspect_dois', 0)}|")
     out.append("")
+    if data.get("top_cited"):
+        excluded = data.get("top_cited_excluded", 0)
+        out.append("## 피인용 상위 20편")
+        out.append("")
+        out.append("토픽 전체 기준이며 상위 20곳 밖에서 나온 논문도 포함합니다."
+                   + (f" DOI 가 자기 것이 아닌 {excluded}편은 제외했습니다."
+                      if excluded else ""))
+        out.append("")
+        for rank, paper in enumerate(data["top_cited"], 1):
+            year = (paper["date"] or "")[:4]
+            where = f" · {paper['institution']}" if paper["institution"] else ""
+            out.append(f"{rank}. {paper['title']}"
+                       f"{' (' + year + ')' if year else ''} — "
+                       f"{paper['citations']:,}회{where}[{paper['ref']}]")
+        out.append("")
     for rank, inst in enumerate(data["profiles"], 1):
         out += [f"## {rank}. {inst['name']}", "",
                 f"{inst['country'] or '국가 미상'} · 논문 {inst['papers']}편 · "

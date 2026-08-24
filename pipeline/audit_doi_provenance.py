@@ -85,7 +85,12 @@ def evidence_for(text: str, doi: str) -> dict | None:
         "looks_like_reference": bool(
             _REFERENCE_SHAPE.search(text[max(0, first - 90):first])),
         "context": " ".join(text[max(0, first - 150):first + 40].split()),
-        "_around": _words(text[max(0, first - 600):first + 200]),
+        # A paper printing its own DOI puts it beside its own title, within a
+        # line or two. 600 characters is a page of a reference list, and a
+        # title appearing anywhere in it cleared the paper wrongly: CIDER's
+        # own title sits 268 characters before a DOI belonging to a 2002
+        # bandit paper it cites.
+        "_around": _words(text[max(0, first - 120):first + 120]),
     }
 
 
