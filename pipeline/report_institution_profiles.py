@@ -72,7 +72,8 @@ FIRST_YEAR = 2016
 
 
 def institutions(conn, topic: str, top: int,
-                 rank_by: str = "papers") -> list[dict]:
+                 rank_by: str = "papers",
+                 flagged: set[str] | None = None) -> list[dict]:
     """Ranked by papers whose *first author* sits at the institution.
 
     Counting every affiliation ranks by participation, which favours whoever
@@ -87,13 +88,30 @@ def institutions(conn, topic: str, top: int,
     # substituted as an empty field and never reached the SQL.
     order = ("citations DESC, papers DESC" if rank_by == "citations"
              else "papers DESC, i.institution_name")
+    # A paper whose DOI belongs to something it cites carries that paper's
+    # citation count, so it is left out of the total rather than merely
+    # marked. Macao Polytechnic has two papers and ranked fifth on 65,305
+    # citations, of which 65,288 came from one paper holding the ImageNet DOI;
+    # its own figure is 17. Flagging that and ranking on it anyway put a
+    # two-paper institution above MIT.
+    #
+    # The paper count is unaffected -- a wrong DOI does not make the paper
+    # disappear -- so only the sum and the collection tally are filtered.
+    flagged = flagged or set()
+    marks_f = ",".join("?" * len(flagged)) if flagged else "''"
+    clean = (f"AND p.slug NOT IN ({marks_f})" if flagged else "")
     rows = conn.execute(f"""
       WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
       SELECT i.institution_id, i.institution_name,
              COALESCE(i.country_name_en, '') country,
              COUNT(DISTINCT pa.paper_id) papers,
-             COALESCE(SUM(ct.citations), 0) citations,
-             COUNT(DISTINCT ct.paper_id) papers_with_citations
+             COALESCE(SUM(CASE WHEN p.slug NOT IN (SELECT value FROM
+                          json_each(?)) THEN ct.citations END), 0) citations,
+             COUNT(DISTINCT CASE WHEN p.slug NOT IN (SELECT value FROM
+                          json_each(?)) THEN ct.paper_id END)
+                 papers_with_citations,
+             COUNT(DISTINCT CASE WHEN p.slug IN (SELECT value FROM
+                          json_each(?)) THEN p.paper_id END) suspect_dois
       FROM (SELECT DISTINCT pai.institution_id, pa.paper_id
               FROM paper_authors pa
               JOIN topic_papers tp ON tp.paper_id = pa.paper_id
@@ -104,13 +122,17 @@ def institutions(conn, topic: str, top: int,
                AND pai.author_id = pa.author_id
              WHERE pa.is_first_author = 1) pa
       JOIN institutions i ON i.institution_id = pa.institution_id
+      JOIN papers p ON p.paper_id = pa.paper_id
       LEFT JOIN cites ct ON ct.paper_id = pa.paper_id
       GROUP BY i.institution_id
       ORDER BY {order}
-      LIMIT ?""", (topic, *RESOLVED_SOURCES, top)).fetchall()
+      LIMIT ?""", (topic, json.dumps(sorted(flagged)),
+                   json.dumps(sorted(flagged)), json.dumps(sorted(flagged)),
+                   *RESOLVED_SOURCES, top)).fetchall()
     return [{"institution_id": r[0], "name": r[1], "country": r[2],
              "papers": r[3], "citations": r[4],
-             "papers_with_citations": r[5]} for r in rows]
+             "papers_with_citations": r[5], "suspect_dois": r[6]}
+            for r in rows]
 
 
 def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
@@ -463,24 +485,9 @@ def build(conn, topic: str, top: int, per_institution: int,
           papers_each: int, use_llm: bool,
           rank_by: str = "papers",
           top_papers: int = 5) -> dict:
-    profiles = institutions(conn, topic, top, rank_by)
     flagged = suspect_slugs()
-    marks = ",".join("?" * len(RESOLVED_SOURCES))
+    profiles = institutions(conn, topic, top, rank_by, flagged)
     for inst in profiles:
-        # How much of this institution's citation total rests on a paper whose
-        # DOI belongs to something it merely cites.
-        slugs = [s for (s,) in conn.execute(f"""
-          WITH topic_papers AS ({TOPIC_PAPERS})
-          SELECT DISTINCT p.slug FROM paper_authors pa
-          JOIN topic_papers tp ON tp.paper_id = pa.paper_id
-          JOIN (SELECT DISTINCT paper_id, author_id, institution_id
-                  FROM paper_author_institutions
-                 WHERE source IN ({marks})) x
-            ON x.paper_id = pa.paper_id AND x.author_id = pa.author_id
-          JOIN papers p ON p.paper_id = pa.paper_id
-          WHERE pa.is_first_author = 1 AND x.institution_id = ?""",
-          (topic, *RESOLVED_SOURCES, inst["institution_id"]))]
-        inst["suspect_dois"] = sum(1 for s in slugs if s in flagged)
         inst["yearly"] = yearly(conn, topic, inst["institution_id"])
         inst["researchers"] = merge_coauthors(researchers(
             conn, topic, inst["institution_id"], per_institution, papers_each))
