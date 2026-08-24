@@ -2612,6 +2612,22 @@ def institution_from_raw(
     original = raw
     raw = _clean_affiliation_text(raw)
     raw = re.sub(r"^[\d\s*†‡(),.-]+", "", raw)
+    # The registry exists for organisations ROR does not have, and until now
+    # nothing in the extraction path consulted it -- so a name could be
+    # registered and still never become a candidate. `Inherent`, whose byline
+    # reads "1Inherent" and whose corresponding address is
+    # faraday@inherentlaboratories.com, produced no institution at all and
+    # left all eleven of its authors unplaced.
+    #
+    # The lookup is on the whole normalised string, not a substring, so
+    # "inherent limitations of the method" does not match.
+    try:
+        from .lib import affiliation_groups as _groups
+    except ImportError:
+        from lib import affiliation_groups as _groups
+    registered = _groups.registry_canonical(raw)
+    if registered:
+        return registered, _groups.group_for(registered)
     if len(raw) < 5:
         return None
     if re.match(

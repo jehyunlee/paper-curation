@@ -128,6 +128,18 @@
       "country": "United States",
       "note": "company, not in ROR",
       "seen": 10
+    },
+    "inherent": {
+      "name": "Inherent Laboratories",
+      "country": "",
+      "note": "byline prints the short form 'Inherent'; the corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country is left empty because the paper does not state one.",
+      "seen": 1
+    },
+    "inherent laboratories": {
+      "name": "Inherent Laboratories",
+      "country": "",
+      "note": "byline prints the short form 'Inherent'; the corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country is left empty because the paper does not state one.",
+      "seen": 0
     }
   },
   "exclude": {
