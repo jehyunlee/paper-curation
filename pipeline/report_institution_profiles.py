@@ -43,6 +43,11 @@ if str(PIPELINE) not in sys.path:
 from lib.evidence import RESOLVED_SOURCES                      # noqa: E402
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
+# Papers whose DOI appears only in their own reference list, from
+# `audit_doi_provenance.py`. Their citation counts belong to the paper they
+# cite, not to them: three papers here carry the AlphaFold 2 DOI and 46,399
+# citations each. A citation ranking that does not say so is fiction.
+DOI_AUDIT = ROOT / "reports" / "build" / "doi_provenance.json"
 MODEL = "claude-sonnet-4-5-20250929"
 
 LATEST_CITATIONS = """
@@ -66,7 +71,8 @@ TOPIC_PAPERS = """
 FIRST_YEAR = 2016
 
 
-def institutions(conn, topic: str, top: int) -> list[dict]:
+def institutions(conn, topic: str, top: int,
+                 rank_by: str = "papers") -> list[dict]:
     """Ranked by papers whose *first author* sits at the institution.
 
     Counting every affiliation ranks by participation, which favours whoever
@@ -76,6 +82,11 @@ def institutions(conn, topic: str, top: int) -> list[dict]:
     comparison rather than guessed at.
     """
     marks = ",".join("?" * len(RESOLVED_SOURCES))
+    # Built as a plain name rather than interpolated inside the f-string: an
+    # f-string evaluates its braces before `.format` can, so `{order}` was
+    # substituted as an empty field and never reached the SQL.
+    order = ("citations DESC, papers DESC" if rank_by == "citations"
+             else "papers DESC, i.institution_name")
     rows = conn.execute(f"""
       WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
       SELECT i.institution_id, i.institution_name,
@@ -83,17 +94,19 @@ def institutions(conn, topic: str, top: int) -> list[dict]:
              COUNT(DISTINCT pa.paper_id) papers,
              COALESCE(SUM(ct.citations), 0) citations,
              COUNT(DISTINCT ct.paper_id) papers_with_citations
-      FROM paper_authors pa
-      JOIN topic_papers tp ON tp.paper_id = pa.paper_id
-      JOIN (SELECT DISTINCT paper_id, author_id, institution_id
-              FROM paper_author_institutions
-             WHERE source IN ({marks})) pai
-        ON pai.paper_id = pa.paper_id AND pai.author_id = pa.author_id
-      JOIN institutions i ON i.institution_id = pai.institution_id
+      FROM (SELECT DISTINCT pai.institution_id, pa.paper_id
+              FROM paper_authors pa
+              JOIN topic_papers tp ON tp.paper_id = pa.paper_id
+              JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+                      FROM paper_author_institutions
+                     WHERE source IN ({marks})) pai
+                ON pai.paper_id = pa.paper_id
+               AND pai.author_id = pa.author_id
+             WHERE pa.is_first_author = 1) pa
+      JOIN institutions i ON i.institution_id = pa.institution_id
       LEFT JOIN cites ct ON ct.paper_id = pa.paper_id
-      WHERE pa.is_first_author = 1
       GROUP BY i.institution_id
-      ORDER BY papers DESC, i.institution_name
+      ORDER BY {order}
       LIMIT ?""", (topic, *RESOLVED_SOURCES, top)).fetchall()
     return [{"institution_id": r[0], "name": r[1], "country": r[2],
              "papers": r[3], "citations": r[4],
@@ -121,6 +134,37 @@ def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
         if head.isdigit() and int(head) >= FIRST_YEAR:
             counts[int(head)] += n
     return dict(counts)
+
+
+def top_cited(conn, topic: str, institution_id: int, limit: int) -> list[dict]:
+    """The institution's most-cited papers, on the same first-author basis.
+
+    DISTINCT on (institution, paper) before joining citations, for the reason
+    the totals needed it: a paper reached twice through the join is a paper
+    counted twice, and Berkeley's total read 264,991 instead of 135,622.
+    """
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
+    rows = conn.execute(f"""
+      WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
+      SELECT p.paper_id, p.title, COALESCE(p.publication_date, ''), p.slug,
+             COALESCE(p.doi, ''), COALESCE(ct.citations, 0)
+      FROM (SELECT DISTINCT pai.institution_id, pa.paper_id
+              FROM paper_authors pa
+              JOIN topic_papers tp ON tp.paper_id = pa.paper_id
+              JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+                      FROM paper_author_institutions
+                     WHERE source IN ({marks})) pai
+                ON pai.paper_id = pa.paper_id
+               AND pai.author_id = pa.author_id
+             WHERE pa.is_first_author = 1) x
+      JOIN papers p ON p.paper_id = x.paper_id
+      LEFT JOIN cites ct ON ct.paper_id = p.paper_id
+      WHERE x.institution_id = ?
+      ORDER BY COALESCE(ct.citations, 0) DESC,
+               COALESCE(p.publication_date, '') DESC
+      LIMIT ?""", (topic, *RESOLVED_SOURCES, institution_id, limit)).fetchall()
+    return [{"paper_id": r[0], "title": r[1], "date": r[2], "slug": r[3],
+             "doi": r[4], "citations": r[5]} for r in rows]
 
 
 def researchers(conn, topic: str, institution_id: int, limit: int,
@@ -365,19 +409,58 @@ def overview_chart(profiles: list[dict], width: int = 900) -> str:
     return "".join(out)
 
 
+def suspect_slugs() -> set[str]:
+    """Papers whose DOI the provenance audit flagged as somebody else's."""
+    try:
+        return {row["slug"] for row in json.loads(
+            DOI_AUDIT.read_text(encoding="utf-8"))}
+    except Exception:                                  # noqa: BLE001
+        return set()
+
+
 def build(conn, topic: str, top: int, per_institution: int,
-          papers_each: int, use_llm: bool) -> dict:
-    profiles = institutions(conn, topic, top)
+          papers_each: int, use_llm: bool,
+          rank_by: str = "papers",
+          top_papers: int = 5) -> dict:
+    profiles = institutions(conn, topic, top, rank_by)
+    flagged = suspect_slugs()
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
     for inst in profiles:
+        # How much of this institution's citation total rests on a paper whose
+        # DOI belongs to something it merely cites.
+        slugs = [s for (s,) in conn.execute(f"""
+          WITH topic_papers AS ({TOPIC_PAPERS})
+          SELECT DISTINCT p.slug FROM paper_authors pa
+          JOIN topic_papers tp ON tp.paper_id = pa.paper_id
+          JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+                  FROM paper_author_institutions
+                 WHERE source IN ({marks})) x
+            ON x.paper_id = pa.paper_id AND x.author_id = pa.author_id
+          JOIN papers p ON p.paper_id = pa.paper_id
+          WHERE pa.is_first_author = 1 AND x.institution_id = ?""",
+          (topic, *RESOLVED_SOURCES, inst["institution_id"]))]
+        inst["suspect_dois"] = sum(1 for s in slugs if s in flagged)
         inst["yearly"] = yearly(conn, topic, inst["institution_id"])
         inst["researchers"] = merge_coauthors(researchers(
             conn, topic, inst["institution_id"], per_institution, papers_each))
+        # Rank the most-cited among papers whose DOI is their own. A list
+        # where every entry inherited its count from the paper it cites --
+        # which is what Stanford's top five were -- ranks borrowed numbers.
+        # The excluded ones are counted so the omission is visible.
+        candidates = top_cited(conn, topic, inst["institution_id"],
+                               top_papers + 40)
+        clean = [x for x in candidates if x["slug"] not in flagged]
+        inst["top_cited"] = clean[:top_papers]
+        inst["top_cited_excluded"] = sum(
+            1 for x in candidates[:top_papers + 40] if x["slug"] in flagged)
     describe(profiles, use_llm)
 
     refs = References()
     for inst in profiles:
         for person in inst["researchers"]:
             person["refs"] = [refs.cite(p) for p in person["papers"]]
+        for paper in inst["top_cited"]:
+            paper["ref"] = refs.cite(paper)
 
     # One axis for every chart, so the bars can be compared across sections.
     all_years = [y for inst in profiles for y in inst["yearly"]]
@@ -387,7 +470,8 @@ def build(conn, topic: str, top: int, per_institution: int,
     total = conn.execute(
         f"SELECT COUNT(*) FROM ({TOPIC_PAPERS})", (topic,)).fetchone()[0]
     return {"topic": topic, "papers": total, "profiles": profiles,
-            "references": refs.entries, "axis": axis, "peak": peak}
+            "references": refs.entries, "axis": axis, "peak": peak,
+            "rank_by": rank_by}
 
 
 def render_html(data: dict) -> str:
@@ -409,11 +493,17 @@ def render_html(data: dict) -> str:
         ".who{font-weight:600}",
         "sup{font-size:10px;color:#D63423;font-weight:600}",
         ".refs{font-size:13px;color:#4a443d}",
+        ".lead{font-size:13px;color:#8a8178;margin:12px 0 2px;font-weight:600}",
+        ".cited{font-size:13px;color:#4a443d;padding-left:20px}",
+        ".cited li{margin:3px 0}",
+        ".warn{color:#b0521f;font-size:11px;border:1px solid #e0c8b8;"
+        "border-radius:3px;padding:0 4px;margin-left:4px}",
         ".refs li{margin:3px 0}",
         "a{color:#D63423;text-decoration:none}a:hover{text-decoration:underline}",
         "</style></head><body>",
-        f"<h1>{esc(data['topic'])} — 가장 활발한 기관 "
-        f"{len(data['profiles'])}곳</h1>",
+        f"<h1>{esc(data['topic'])} — "
+        f"{'총 피인용 수' if data.get('rank_by') == 'citations' else '논문 편수'}"
+        f" 상위 기관 {len(data['profiles'])}곳</h1>",
         f"<p class=\"meta\">대상 논문 {data['papers']:,}편 · "
         f"막대는 연도별 편수 · 위첨자는 맨 뒤 참고문헌 번호</p>",
         f"<div class=\"chart\">{overview_chart(data['profiles'])}</div>",
@@ -428,8 +518,10 @@ def render_html(data: dict) -> str:
         out.append(
             f"<p class=\"meta\">{esc(inst['country'] or '국가 미상')} · "
             f"논문 {inst['papers']}편 · 피인용 {inst['citations']:,}회 "
-            f"({inst['papers_with_citations']}/{inst['papers']}편에서 수집)"
-            f"</p>")
+            f"({inst['papers_with_citations']}/{inst['papers']}편에서 수집"
+            + (f", DOI 의심 {inst['suspect_dois']}편"
+               if inst.get("suspect_dois") else "")
+            + f")</p>")
         out.append(f"<div class=\"chart\">"
                    f"{sparkline(inst['yearly'], data['axis'], data['peak'])}"
                    f"</div>")
@@ -445,6 +537,21 @@ def render_html(data: dict) -> str:
                 f"({person['papers_total']}편) — "
                 f"{esc(person.get('description') or '')}{sups}</li>")
         out.append("</ul>")
+        if inst["top_cited"]:
+            note = (f" <span class=\"warn\">DOI 의심 {inst['top_cited_excluded']}편 제외</span>"
+                    if inst.get("top_cited_excluded") else "")
+            out.append(f"<p class=\"lead\">가장 많이 인용된 논문{note}</p>"
+                       f"<ol class=\"cited\">")
+            for paper in inst["top_cited"]:
+                year = (paper["date"] or "")[:4]
+                warn = ""
+                out.append(
+                    f"<li>{esc(paper['title'])}"
+                    f"{' (' + year + ')' if year else ''} — "
+                    f"{paper['citations']:,}회{warn}"
+                    f"<sup><a href=\"#ref-{paper['ref']}\">"
+                    f"{paper['ref']}</a></sup></li>")
+            out.append("</ol>")
 
     out.append("<h2>참고문헌</h2>")
     out.append("<p class=\"meta\">공저 논문은 한 번호를 여러 기관이 함께 "
@@ -462,17 +569,20 @@ def render_html(data: dict) -> str:
 
 
 def render_markdown(data: dict) -> str:
-    out = [f"# {data['topic']} — 가장 활발한 기관 {len(data['profiles'])}곳",
+    basis = ("총 피인용 수" if data.get("rank_by") == "citations"
+             else "논문 편수")
+    out = [f"# {data['topic']} — {basis} 상위 기관 {len(data['profiles'])}곳",
            "",
            f"- 대상 논문 **{data['papers']:,}편**",
            "- 위첨자 번호는 맨 뒤 참고문헌을 가리키며, 공저 논문은 여러 기관이 "
            "같은 번호를 인용합니다.", "",
-           "|순위|기관|국가|논문|총 피인용|피인용 수집|",
-           "|---:|---|---|---:|---:|---:|"]
+           "|순위|기관|국가|논문|총 피인용|피인용 수집|DOI 의심|",
+           "|---:|---|---|---:|---:|---:|---:|"]
     for rank, inst in enumerate(data["profiles"], 1):
         out.append(f"|{rank}|{inst['name']}|{inst['country'] or '-'}|"
                    f"{inst['papers']}|{inst['citations']:,}|"
-                   f"{inst['papers_with_citations']}/{inst['papers']}|")
+                   f"{inst['papers_with_citations']}/{inst['papers']}|"
+                   f"{inst.get('suspect_dois', 0)}|")
     out.append("")
     for rank, inst in enumerate(data["profiles"], 1):
         out += [f"## {rank}. {inst['name']}", "",
@@ -490,6 +600,18 @@ def render_markdown(data: dict) -> str:
             out.append(f"- **{person['name']}**({person['papers_total']}편) — "
                        f"{person.get('description') or ''}{sups}")
         out.append("")
+        if inst["top_cited"]:
+            note = (f" (DOI 의심 {inst['top_cited_excluded']}편 제외)"
+                    if inst.get("top_cited_excluded") else "")
+            out.append(f"가장 많이 인용된 논문{note}")
+            out.append("")
+            for paper in inst["top_cited"]:
+                year = (paper["date"] or "")[:4]
+                warn = ""
+                out.append(f"1. {paper['title']}"
+                           f"{' (' + year + ')' if year else ''} — "
+                           f"{paper['citations']:,}회{warn}[{paper['ref']}]")
+            out.append("")
     out += ["## 참고문헌", ""]
     for index, paper in enumerate(data["references"], 1):
         year = (paper["date"] or "")[:4]
@@ -506,6 +628,12 @@ def main() -> int:
     ap.add_argument("--top", type=int, default=20)
     ap.add_argument("--researchers", type=int, default=6)
     ap.add_argument("--papers-each", type=int, default=3)
+    ap.add_argument("--top-papers", type=int, default=5,
+                    help="most-cited papers listed under each institution")
+    ap.add_argument("--rank-by", default="papers",
+                    choices=["papers", "citations"],
+                    help="citations ranks by total citations instead of paper "
+                         "count; read the coverage caveat before trusting it")
     ap.add_argument("--no-llm", action="store_true",
                     help="skip the one-line summaries and print a title")
     ap.add_argument("--out", type=Path)
@@ -514,12 +642,14 @@ def main() -> int:
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
     try:
         data = build(conn, args.topic, args.top, args.researchers,
-                     args.papers_each, not args.no_llm)
+                     args.papers_each, not args.no_llm,
+                     args.rank_by, args.top_papers)
     finally:
         conn.close()
 
+    suffix = "" if args.rank_by == "papers" else f"_by_{args.rank_by}"
     out = args.out or (ROOT / "reports" / "build"
-                       / f"{args.topic}_institution_profiles.html")
+                       / f"{args.topic}_institution_profiles{suffix}.html")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(render_html(data), encoding="utf-8")
     md = out.with_suffix(".md")
