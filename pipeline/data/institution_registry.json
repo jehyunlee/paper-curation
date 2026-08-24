@@ -131,14 +131,26 @@
     },
     "inherent": {
       "name": "Inherent Laboratories",
-      "country": "",
-      "note": "byline prints the short form 'Inherent'; the corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country is left empty because the paper does not state one.",
+      "country": "United Kingdom",
+      "note": "byline prints the short form 'Inherent'; the paper's corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country from the company's own privacy policy at inherentlabs.ai/privacy: the controller is 'Inherent Laboratories Ltd', mailing address 1 Pancras Sq, London N1C 4AG, governed by UK GDPR with the ICO as supervisory authority. The homepage calls itself a Public Benefit Corporation, which is a US form, but the entity with an address is the UK Ltd.",
       "seen": 1
     },
     "inherent laboratories": {
       "name": "Inherent Laboratories",
-      "country": "",
-      "note": "byline prints the short form 'Inherent'; the corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country is left empty because the paper does not state one.",
+      "country": "United Kingdom",
+      "note": "byline prints the short form 'Inherent'; the paper's corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country from the company's own privacy policy at inherentlabs.ai/privacy: the controller is 'Inherent Laboratories Ltd', mailing address 1 Pancras Sq, London N1C 4AG, governed by UK GDPR with the ICO as supervisory authority. The homepage calls itself a Public Benefit Corporation, which is a US form, but the entity with an address is the UK Ltd.",
+      "seen": 0
+    },
+    "inherent laboratories ltd": {
+      "name": "Inherent Laboratories",
+      "country": "United Kingdom",
+      "note": "byline prints the short form 'Inherent'; the paper's corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country from the company's own privacy policy at inherentlabs.ai/privacy: the controller is 'Inherent Laboratories Ltd', mailing address 1 Pancras Sq, London N1C 4AG, governed by UK GDPR with the ICO as supervisory authority. The homepage calls itself a Public Benefit Corporation, which is a US form, but the entity with an address is the UK Ltd.",
+      "seen": 0
+    },
+    "inherent labs": {
+      "name": "Inherent Laboratories",
+      "country": "United Kingdom",
+      "note": "byline prints the short form 'Inherent'; the paper's corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country from the company's own privacy policy at inherentlabs.ai/privacy: the controller is 'Inherent Laboratories Ltd', mailing address 1 Pancras Sq, London N1C 4AG, governed by UK GDPR with the ICO as supervisory authority. The homepage calls itself a Public Benefit Corporation, which is a US form, but the entity with an address is the UK Ltd.",
       "seen": 0
     }
   },

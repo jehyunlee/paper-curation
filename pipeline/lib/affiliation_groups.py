@@ -234,6 +234,17 @@ def registry_canonical(name: str) -> str:
     return str((entry or {}).get("name") or "")
 
 
+def registry_country(name: str) -> str:
+    """The country the registry records for an organisation ROR lacks.
+
+    ROR supplies a country for everything it knows, so this is only consulted
+    for the names it does not: without it a registered institution lands with
+    an empty country and drops out of every per-country report.
+    """
+    entry = registry()["canonical"].get(ror_index.normalize(name or ""))
+    return str((entry or {}).get("country") or "")
+
+
 def is_excluded(name: str) -> bool:
     """Whether the string names no organisation at all."""
     return ror_index.normalize(name or "") in registry()["exclude"]

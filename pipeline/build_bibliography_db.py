@@ -3952,6 +3952,16 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 ror = ror_normalize(raw, name, country, offline=offline)
                 name = ror["institution"] or name
                 country = ror["country_name"] or country
+                # ROR answers for everything it knows, so the registry is the
+                # only source of a country for the names it does not. Without
+                # this an organisation the registry supplies lands with an
+                # empty country and disappears from every per-country report.
+                if not country:
+                    try:
+                        from .lib import affiliation_groups as _groups
+                    except ImportError:
+                        from lib import affiliation_groups as _groups
+                    country = _groups.registry_country(name)
                 # A PDF may point at an institution the corpus already knows;
                 # it may not invent one. Of eleven institutions the PDF-only
                 # path created on first run, six were wrong -- a funder read
