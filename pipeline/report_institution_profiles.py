@@ -45,6 +45,16 @@ from lib.evidence import RESOLVED_SOURCES                      # noqa: E402
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 MODEL = "claude-sonnet-4-5-20250929"
 
+LATEST_CITATIONS = """
+  SELECT cs.paper_id,
+         MAX(COALESCE(cs.openalex_count, 0), COALESCE(cs.crossref_count, 0),
+             COALESCE(cs.scopus_count, 0)) AS citations
+  FROM citation_snapshots cs
+  JOIN (SELECT paper_id, MAX(observed_date) d FROM citation_snapshots
+        GROUP BY paper_id) newest
+    ON newest.paper_id = cs.paper_id AND newest.d = cs.observed_date
+"""
+
 TOPIC_PAPERS = """
   SELECT p.paper_id FROM papers p
   JOIN json_each(json_extract(p.metadata_json, '$.topics')) t
@@ -67,10 +77,12 @@ def institutions(conn, topic: str, top: int) -> list[dict]:
     """
     marks = ",".join("?" * len(RESOLVED_SOURCES))
     rows = conn.execute(f"""
-      WITH topic_papers AS ({TOPIC_PAPERS})
+      WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
       SELECT i.institution_id, i.institution_name,
              COALESCE(i.country_name_en, '') country,
-             COUNT(DISTINCT pa.paper_id) papers
+             COUNT(DISTINCT pa.paper_id) papers,
+             COALESCE(SUM(ct.citations), 0) citations,
+             COUNT(DISTINCT ct.paper_id) papers_with_citations
       FROM paper_authors pa
       JOIN topic_papers tp ON tp.paper_id = pa.paper_id
       JOIN (SELECT DISTINCT paper_id, author_id, institution_id
@@ -78,12 +90,14 @@ def institutions(conn, topic: str, top: int) -> list[dict]:
              WHERE source IN ({marks})) pai
         ON pai.paper_id = pa.paper_id AND pai.author_id = pa.author_id
       JOIN institutions i ON i.institution_id = pai.institution_id
+      LEFT JOIN cites ct ON ct.paper_id = pa.paper_id
       WHERE pa.is_first_author = 1
       GROUP BY i.institution_id
       ORDER BY papers DESC, i.institution_name
       LIMIT ?""", (topic, *RESOLVED_SOURCES, top)).fetchall()
     return [{"institution_id": r[0], "name": r[1], "country": r[2],
-             "papers": r[3]} for r in rows]
+             "papers": r[3], "citations": r[4],
+             "papers_with_citations": r[5]} for r in rows]
 
 
 def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
@@ -286,6 +300,71 @@ def merge_coauthors(people: list[dict]) -> list[dict]:
     return out
 
 
+def overview_chart(profiles: list[dict], width: int = 900) -> str:
+    """Institutions down the middle, papers to the right, citations to the left.
+
+    The two sides count different things, so each is scaled to its own maximum
+    and labelled with its own unit. A shared scale would be meaningless -- the
+    largest citation total is three orders of magnitude above the largest
+    paper count -- and a reader who assumed one was shared would conclude that
+    MIT published sixty-five thousand papers.
+
+    The citation side is drawn dimmer on purpose. Citations are collected for
+    only part of the corpus and unevenly -- Oxford has them for 20 of its 44
+    papers, MIT for 34 of 43 -- so the left bars compare coverage as much as
+    impact.
+    """
+    if not profiles:
+        return ""
+    row_h, top, bottom, gutter = 22, 34, 26, 200
+    # The value sits outside its bar, so the longest one -- "264,991" -- needs
+    # room or it renders past the edge of the picture.
+    pad = 62
+    height = top + bottom + row_h * len(profiles)
+    side = (width - gutter) / 2 - pad
+    left_edge, right_edge = pad + side, pad + side + gutter
+    max_papers = max(p["papers"] for p in profiles) or 1
+    max_cites = max(p["citations"] for p in profiles) or 1
+
+    out = [f'<svg viewBox="0 0 {width} {height}" width="100%" '
+           f'preserveAspectRatio="xMidYMid meet" role="img" '
+           f'aria-label="기관별 논문 수와 총 피인용 수">']
+    out.append(f'<text x="{right_edge + 4}" y="16" font-size="12" '
+               f'fill="#D63423" font-weight="600">논문 편수 &#8594;</text>')
+    out.append(f'<text x="{left_edge - 4}" y="16" font-size="12" '
+               f'fill="#8a8178" font-weight="600" text-anchor="end">'
+               f'&#8592; 총 피인용 수</text>')
+    out.append(f'<text x="{right_edge + 4}" y="{height - 8}" font-size="10" '
+               f'fill="#8a8178">최대 {max_papers}편</text>')
+    out.append(f'<text x="{left_edge - 4}" y="{height - 8}" font-size="10" '
+               f'fill="#8a8178" text-anchor="end">최대 {max_cites:,}회 '
+               f'· 두 축은 서로 독립</text>')
+
+    for index, inst in enumerate(profiles):
+        y = top + index * row_h
+        mid = y + row_h / 2
+        name = inst["name"]
+        if len(name) > 27:
+            name = name[:26] + "\u2026"
+        out.append(f'<text x="{width / 2}" y="{mid + 4}" font-size="11" '
+                   f'fill="#2b2723" text-anchor="middle">'
+                   f'{html.escape(name)}</text>')
+        pw = side * inst["papers"] / max_papers
+        out.append(f'<rect x="{right_edge}" y="{y + 4}" width="{pw:.1f}" '
+                   f'height="{row_h - 8}" fill="#D63423" rx="2"/>')
+        out.append(f'<text x="{right_edge + pw + 4:.1f}" y="{mid + 4}" '
+                   f'font-size="10" fill="#6b635a">{inst["papers"]}</text>')
+        cw = side * inst["citations"] / max_cites
+        out.append(f'<rect x="{left_edge - cw:.1f}" y="{y + 4}" '
+                   f'width="{cw:.1f}" height="{row_h - 8}" fill="#b9b0a4" '
+                   f'rx="2"/>')
+        out.append(f'<text x="{left_edge - cw - 4:.1f}" y="{mid + 4}" '
+                   f'font-size="10" fill="#8a8178" text-anchor="end">'
+                   f'{inst["citations"]:,}</text>')
+    out.append("</svg>")
+    return "".join(out)
+
+
 def build(conn, topic: str, top: int, per_institution: int,
           papers_each: int, use_llm: bool) -> dict:
     profiles = institutions(conn, topic, top)
@@ -337,11 +416,20 @@ def render_html(data: dict) -> str:
         f"{len(data['profiles'])}곳</h1>",
         f"<p class=\"meta\">대상 논문 {data['papers']:,}편 · "
         f"막대는 연도별 편수 · 위첨자는 맨 뒤 참고문헌 번호</p>",
+        f"<div class=\"chart\">{overview_chart(data['profiles'])}</div>",
+        "<p class=\"meta\">오른쪽은 주저자 소속 기준 논문 편수, 왼쪽은 그 "
+        "논문들의 총 피인용 수입니다. 단위가 다르므로 두 축은 각각 자기 "
+        "최대값으로 따로 조정됩니다. 피인용은 코퍼스의 일부에서만 수집되었고 "
+        "기관마다 수집률이 달라, 왼쪽 막대는 영향력만큼이나 수집 범위를 "
+        "반영합니다.</p>",
     ]
     for rank, inst in enumerate(data["profiles"], 1):
         out.append(f"<h2>{rank}. {esc(inst['name'])}</h2>")
-        out.append(f"<p class=\"meta\">{esc(inst['country'] or '국가 미상')} · "
-                   f"논문 {inst['papers']}편</p>")
+        out.append(
+            f"<p class=\"meta\">{esc(inst['country'] or '국가 미상')} · "
+            f"논문 {inst['papers']}편 · 피인용 {inst['citations']:,}회 "
+            f"({inst['papers_with_citations']}/{inst['papers']}편에서 수집)"
+            f"</p>")
         out.append(f"<div class=\"chart\">"
                    f"{sparkline(inst['yearly'], data['axis'], data['peak'])}"
                    f"</div>")
@@ -378,10 +466,19 @@ def render_markdown(data: dict) -> str:
            "",
            f"- 대상 논문 **{data['papers']:,}편**",
            "- 위첨자 번호는 맨 뒤 참고문헌을 가리키며, 공저 논문은 여러 기관이 "
-           "같은 번호를 인용합니다.", ""]
+           "같은 번호를 인용합니다.", "",
+           "|순위|기관|국가|논문|총 피인용|피인용 수집|",
+           "|---:|---|---|---:|---:|---:|"]
+    for rank, inst in enumerate(data["profiles"], 1):
+        out.append(f"|{rank}|{inst['name']}|{inst['country'] or '-'}|"
+                   f"{inst['papers']}|{inst['citations']:,}|"
+                   f"{inst['papers_with_citations']}/{inst['papers']}|")
+    out.append("")
     for rank, inst in enumerate(data["profiles"], 1):
         out += [f"## {rank}. {inst['name']}", "",
-                f"{inst['country'] or '국가 미상'} · 논문 {inst['papers']}편", ""]
+                f"{inst['country'] or '국가 미상'} · 논문 {inst['papers']}편 · "
+                f"피인용 {inst['citations']:,}회 "
+                f"({inst['papers_with_citations']}/{inst['papers']}편 수집)", ""]
         years = data["axis"]
         if years:
             head = " | ".join(str(y) for y in years)
