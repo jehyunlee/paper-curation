@@ -4789,7 +4789,18 @@ def main() -> int:
     ap.add_argument("--slugs", help="comma-separated slug prefixes to rebuild")
     ap.add_argument("--offline", action="store_true",
                     help="use the deterministic offline affiliation registry")
+    # `finalize` had no way to be called from a command line, and nothing in
+    # the pipeline called it either -- so the table-wide passes it holds
+    # (reinstating institutions an author link still names, dropping sub-unit
+    # rows, consolidating countries and parents) ran only when a person
+    # imported the module by hand. A --changed-only run that leaves the
+    # database failing `check_bibliography_db --strict` is the symptom.
+    ap.add_argument("--finalize", action="store_true",
+                    help="run only the table-wide maintenance passes")
     args = ap.parse_args()
+    if args.finalize:
+        print(json.dumps(finalize(args.output), ensure_ascii=False, indent=2))
+        return 0
     if args.backfill_author_institutions or args.recompute_author_institutions:
         print(json.dumps(backfill_author_institutions(
             args.output, recompute=args.recompute_author_institutions),
