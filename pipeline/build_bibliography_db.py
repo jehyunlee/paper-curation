@@ -2625,6 +2625,13 @@ def institution_from_raw(
         from .lib import affiliation_groups as _groups
     except ImportError:
         from lib import affiliation_groups as _groups
+    # `exclude` is checked here for the same reason `canonical` is: the list
+    # was consulted nowhere in the extraction path, so a name could be
+    # excluded and keep coming back on the next rebuild. ROR resolves the bare
+    # place name "Hong Kong" to a company called Hong Kong RFID, which had
+    # swallowed HKU, CUHK and HKUST across 53 papers.
+    if _groups.is_excluded(raw):
+        return None
     registered = _groups.registry_canonical(raw)
     if registered:
         return registered, _groups.group_for(registered)
@@ -3950,6 +3957,22 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                 # 清华大学/"Tsinghua University" onto one record, and it supplies
                 # the research umbrella an institute belongs to.
                 ror = ror_normalize(raw, name, country, offline=offline)
+                # The exclusion has to survive ROR as well as precede it: a
+                # segment reading "The University of Hong Kong" is fine going
+                # in and comes back as "Hong Kong RFID (China)" when ROR
+                # matches the place name. Checking only the input would let
+                # the excluded record in through the naming authority.
+                try:
+                    from .lib import affiliation_groups as _g
+                except ImportError:
+                    from lib import affiliation_groups as _g
+                if _g.is_excluded(ror.get("institution") or ""):
+                    # Drop ROR's answer, not the record. Discarding the whole
+                    # record threw away a perfectly good "The University of
+                    # Hong Kong" parsed from the page, and cost 13 papers
+                    # their only institution.
+                    ror = dict(ror, institution="", country_name="",
+                               ror_id="", parent="", parent_ror_id="")
                 name = ror["institution"] or name
                 country = ror["country_name"] or country
                 # ROR answers for everything it knows, so the registry is the

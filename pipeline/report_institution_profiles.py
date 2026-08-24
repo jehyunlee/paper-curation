@@ -57,31 +57,50 @@ FIRST_YEAR = 2016
 
 
 def institutions(conn, topic: str, top: int) -> list[dict]:
-    """Ranked by how many of the topic's papers carry the institution."""
+    """Ranked by papers whose *first author* sits at the institution.
+
+    Counting every affiliation ranks by participation, which favours whoever
+    joins the largest collaborations. Counting first authors ranks by where
+    the work was led. 2,172 of ai4s's 2,663 papers (81.6%) name a first author
+    whose institution is established on evidence; the rest are absent from the
+    comparison rather than guessed at.
+    """
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
     rows = conn.execute(f"""
       WITH topic_papers AS ({TOPIC_PAPERS})
       SELECT i.institution_id, i.institution_name,
              COALESCE(i.country_name_en, '') country,
-             COUNT(DISTINCT pi.paper_id) papers
-      FROM paper_institutions pi
-      JOIN topic_papers tp ON tp.paper_id = pi.paper_id
-      JOIN institutions i ON i.institution_id = pi.institution_id
+             COUNT(DISTINCT pa.paper_id) papers
+      FROM paper_authors pa
+      JOIN topic_papers tp ON tp.paper_id = pa.paper_id
+      JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+              FROM paper_author_institutions
+             WHERE source IN ({marks})) pai
+        ON pai.paper_id = pa.paper_id AND pai.author_id = pa.author_id
+      JOIN institutions i ON i.institution_id = pai.institution_id
+      WHERE pa.is_first_author = 1
       GROUP BY i.institution_id
       ORDER BY papers DESC, i.institution_name
-      LIMIT ?""", (topic, top)).fetchall()
+      LIMIT ?""", (topic, *RESOLVED_SOURCES, top)).fetchall()
     return [{"institution_id": r[0], "name": r[1], "country": r[2],
              "papers": r[3]} for r in rows]
 
 
 def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
+    """Papers per year, on the same first-author basis as the ranking."""
+    marks = ",".join("?" * len(RESOLVED_SOURCES))
     rows = conn.execute(f"""
       WITH topic_papers AS ({TOPIC_PAPERS})
       SELECT COALESCE(p.publication_date, ''), COUNT(DISTINCT p.paper_id)
-      FROM paper_institutions pi
-      JOIN topic_papers tp ON tp.paper_id = pi.paper_id
-      JOIN papers p ON p.paper_id = pi.paper_id
-      WHERE pi.institution_id = ?
-      GROUP BY 1""", (topic, institution_id)).fetchall()
+      FROM paper_authors pa
+      JOIN topic_papers tp ON tp.paper_id = pa.paper_id
+      JOIN (SELECT DISTINCT paper_id, author_id, institution_id
+              FROM paper_author_institutions
+             WHERE source IN ({marks})) pai
+        ON pai.paper_id = pa.paper_id AND pai.author_id = pa.author_id
+      JOIN papers p ON p.paper_id = pa.paper_id
+      WHERE pa.is_first_author = 1 AND pai.institution_id = ?
+      GROUP BY 1""", (topic, *RESOLVED_SOURCES, institution_id)).fetchall()
     counts: Counter[int] = Counter()
     for date, n in rows:
         head = (date or "")[:4]
@@ -193,13 +212,18 @@ def describe(profiles: list[dict], use_llm: bool) -> None:
               file=sys.stderr, flush=True)
 
 
-def sparkline(counts: dict[int, int], width: int = 500) -> str:
-    """A 10:3 plot of papers per year, inline so the page stays one file."""
+def sparkline(counts: dict[int, int], years: list[int], peak: int,
+              width: int = 500) -> str:
+    """A 10:3 plot of papers per year, inline so the page stays one file.
+
+    `years` and `peak` are passed in rather than taken from `counts`, so every
+    institution is drawn on the same axes. Per-chart scaling made an
+    institution with four papers look like one with fifty-seven, and put 2016
+    under one chart's leftmost bar and 2023 under another's.
+    """
     height = round(width * 3 / 10)
-    if not counts:
+    if not years or not peak:
         return ""
-    years = list(range(min(counts), max(counts) + 1))
-    peak = max(counts.values())
     left, right, top, bottom = 34, 8, 10, 22
     plot_w = width - left - right
     plot_h = height - top - bottom
@@ -230,23 +254,61 @@ def sparkline(counts: dict[int, int], width: int = 500) -> str:
     return "".join(parts)
 
 
+def merge_coauthors(people: list[dict]) -> list[dict]:
+    """Fold together researchers whose cited papers are the same set.
+
+    Co-authors at one institution often appear with an identical paper list --
+    Barzilay and Jaakkola, Mark and Pollard -- and giving each their own line
+    printed the same sentence and the same superscripts twice. They are one
+    piece of work by several people, so they get one line naming all of them.
+
+    Only an exact match folds. Overlapping-but-different bodies of work stay
+    apart, because summarising them together would describe neither.
+    """
+    grouped: dict[frozenset[int], dict] = {}
+    order: list[frozenset[int]] = []
+    for person in people:
+        key = frozenset(p["paper_id"] for p in person["papers"])
+        if not key:
+            key = frozenset({-person["author_id"]})
+        if key not in grouped:
+            grouped[key] = dict(person, names=[person["name"]])
+            order.append(key)
+            continue
+        held = grouped[key]
+        held["names"].append(person["name"])
+        held["papers_total"] = max(held["papers_total"], person["papers_total"])
+    out = []
+    for key in order:
+        person = grouped[key]
+        person["name"] = " · ".join(person["names"])
+        out.append(person)
+    return out
+
+
 def build(conn, topic: str, top: int, per_institution: int,
           papers_each: int, use_llm: bool) -> dict:
     profiles = institutions(conn, topic, top)
     for inst in profiles:
         inst["yearly"] = yearly(conn, topic, inst["institution_id"])
-        inst["researchers"] = researchers(
-            conn, topic, inst["institution_id"], per_institution, papers_each)
+        inst["researchers"] = merge_coauthors(researchers(
+            conn, topic, inst["institution_id"], per_institution, papers_each))
     describe(profiles, use_llm)
 
     refs = References()
     for inst in profiles:
         for person in inst["researchers"]:
             person["refs"] = [refs.cite(p) for p in person["papers"]]
+
+    # One axis for every chart, so the bars can be compared across sections.
+    all_years = [y for inst in profiles for y in inst["yearly"]]
+    axis = list(range(min(all_years), max(all_years) + 1)) if all_years else []
+    peak = max((n for inst in profiles for n in inst["yearly"].values()),
+               default=0)
     total = conn.execute(
         f"SELECT COUNT(*) FROM ({TOPIC_PAPERS})", (topic,)).fetchone()[0]
     return {"topic": topic, "papers": total, "profiles": profiles,
-            "references": refs.entries}
+            "references": refs.entries, "axis": axis, "peak": peak}
 
 
 def render_html(data: dict) -> str:
@@ -280,10 +342,16 @@ def render_html(data: dict) -> str:
         out.append(f"<h2>{rank}. {esc(inst['name'])}</h2>")
         out.append(f"<p class=\"meta\">{esc(inst['country'] or '국가 미상')} · "
                    f"논문 {inst['papers']}편</p>")
-        out.append(f"<div class=\"chart\">{sparkline(inst['yearly'])}</div>")
+        out.append(f"<div class=\"chart\">"
+                   f"{sparkline(inst['yearly'], data['axis'], data['peak'])}"
+                   f"</div>")
         out.append("<ul>")
         for person in inst["researchers"]:
-            sups = "".join(f"<sup>{n}</sup>" for n in person.get("refs", []))
+            # The superscript is the only route from a claim to its
+            # evidence, so it has to be clickable rather than decorative.
+            sups = "".join(
+                f'<sup><a href="#ref-{n}">{n}</a></sup>'
+                for n in person.get("refs", []))
             out.append(
                 f"<li><span class=\"who\">{esc(person['name'])}</span>"
                 f"({person['papers_total']}편) — "
@@ -293,12 +361,13 @@ def render_html(data: dict) -> str:
     out.append("<h2>참고문헌</h2>")
     out.append("<p class=\"meta\">공저 논문은 한 번호를 여러 기관이 함께 "
                "인용합니다.</p><ol class=\"refs\">")
-    for paper in data["references"]:
+    for index, paper in enumerate(data["references"], 1):
         year = (paper["date"] or "")[:4]
         link = f"papers/{paper['slug']}/index.html"
         doi = (f" doi:<a href=\"https://doi.org/{esc(paper['doi'])}\">"
                f"{esc(paper['doi'])}</a>" if paper["doi"] else "")
-        out.append(f"<li><a href=\"{esc(link)}\">{esc(paper['title'])}</a>"
+        out.append(f"<li id=\"ref-{index}\">"
+                   f"<a href=\"{esc(link)}\">{esc(paper['title'])}</a>"
                    f"{' (' + year + ')' if year else ''}{doi}</li>")
     out.append("</ol></body></html>")
     return "\n".join(out)
@@ -313,7 +382,7 @@ def render_markdown(data: dict) -> str:
     for rank, inst in enumerate(data["profiles"], 1):
         out += [f"## {rank}. {inst['name']}", "",
                 f"{inst['country'] or '국가 미상'} · 논문 {inst['papers']}편", ""]
-        years = sorted(inst["yearly"])
+        years = data["axis"]
         if years:
             head = " | ".join(str(y) for y in years)
             body = " | ".join(str(inst["yearly"].get(y, 0)) for y in years)

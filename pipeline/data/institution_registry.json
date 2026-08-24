@@ -178,6 +178,18 @@
     "kellogg's (canada)": {
       "note": "same record, country form",
       "seen": 1
+    },
+    "hong kong rfid": {
+      "note": "a company. ROR resolves the bare place name 'Hong Kong' to it, so three different universities -- HKU, CUHK and HKUST -- were all folded into one firm across 53 papers. Same failure as Kellogg's: a place or brand token matching a company record.",
+      "seen": 53
+    },
+    "hong kong rfid (china)": {
+      "note": "same record, country form",
+      "seen": 0
+    },
+    "hong kong": {
+      "note": "a place, not an organisation. It had 79 papers of its own and is the string ROR matches to Hong Kong RFID.",
+      "seen": 79
     }
   }
 }
