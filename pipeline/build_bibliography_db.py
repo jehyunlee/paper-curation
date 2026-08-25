@@ -4223,15 +4223,26 @@ def consolidate_institution_parents(conn: sqlite3.Connection) -> int:
                         "WHERE institution_id=? AND hq_country_name_en<>?",
                         (hq, institution_id, hq))
             parent, parent_ror = "", ""
-            ror_states_a_parent = False
             if ror_id and index.available:
-                org = index.org(ror_id)
-                ror_states_a_parent = bool(org and org.get("parent_id"))
                 eligible = index.eligible_parent(ror_id)
                 if eligible:
                     parent, parent_ror = eligible["display"], eligible["ror_id"]
-            if not parent and not ror_states_a_parent:
-                parent = affiliation_groups.group_for(name)
+            # Where ROR is silent, anything curated may speak. Where ROR
+            # named a parent that was then rejected, only the registry may --
+            # not the curated table.
+            #
+            # The distinction is not pedantic. Relaxing this to "any curated
+            # source" put UC Berkeley under Argonne National Laboratory across
+            # 135 papers, which is the wrong curated row this function's
+            # docstring was written about. The registry is hand-maintained
+            # per organisation and carries its reasoning; the curated table is
+            # bulk and has known bad rows.
+            if not parent:
+                if index.available and ror_id and index.eligible_parent(ror_id) is None \
+                        and (index.org(ror_id) or {}).get("parent_id"):
+                    parent = affiliation_groups.registry_group(name)
+                else:
+                    parent = affiliation_groups.group_for(name)
             if parent:
                 parent = affiliation_groups.roll_up(parent)
             if parent and (ADMINISTRATIVE_BODY.search(parent)

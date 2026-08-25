@@ -57,6 +57,16 @@
       "group": "Georgia Institute of Technology",
       "note": "matches the country of Georgia as well as the institute",
       "seen": 4
+    },
+    "google deepmind": {
+      "group": "Google (United States)",
+      "note": "ROR holds DeepMind as its own organisation with no parent edge to Google, unlike Google's country records which do carry one. The two therefore ranked as separate organisations under --group-by parent. Grouping them does not claim either record is the other.",
+      "seen": 23
+    },
+    "deepmind": {
+      "group": "Google (United States)",
+      "note": "ROR holds DeepMind as its own organisation with no parent edge to Google, unlike Google's country records which do carry one. The two therefore ranked as separate organisations under --group-by parent. Grouping them does not claim either record is the other.",
+      "seen": 0
     }
   },
   "canonical": {
