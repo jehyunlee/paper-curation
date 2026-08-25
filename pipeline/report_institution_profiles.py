@@ -73,7 +73,8 @@ FIRST_YEAR = 2016
 
 def institutions(conn, topic: str, top: int,
                  rank_by: str = "papers",
-                 flagged: set[str] | None = None) -> list[dict]:
+                 flagged: set[str] | None = None,
+                 group_by: str = "institution") -> list[dict]:
     """Ranked by papers whose *first author* sits at the institution.
 
     Counting every affiliation ranks by participation, which favours whoever
@@ -97,13 +98,24 @@ def institutions(conn, topic: str, top: int,
     #
     # The paper count is unaffected -- a wrong DOI does not make the paper
     # disappear -- so only the sum and the collection tally are filtered.
+    # Rolling up to the parent answers a different question: not "which
+    # institution" but "which organisation". Institute of Computational
+    # Biology and Helmholtz Munich held identical totals as siblings because
+    # one paper carried both; under their parent they are one entry.
+    label = ("COALESCE(NULLIF(i.parent_name, ''), i.institution_name)"
+             if group_by == "parent" else "i.institution_name")
     flagged = flagged or set()
     marks_f = ",".join("?" * len(flagged)) if flagged else "''"
     clean = (f"AND p.slug NOT IN ({marks_f})" if flagged else "")
     rows = conn.execute(f"""
       WITH topic_papers AS ({TOPIC_PAPERS}), cites AS ({LATEST_CITATIONS})
-      SELECT i.institution_id, i.institution_name,
-             COALESCE(i.country_name_en, '') country,
+      SELECT MIN(i.institution_id), {label},
+             -- The group's country is the parent's own, not the alphabetically
+             -- first of its members: MIN() over Google's country records
+             -- returned Canada for Google (United States).
+             COALESCE(MIN(CASE WHEN i.institution_name = {label}
+                          THEN i.country_name_en END),
+                      MIN(i.country_name_en), '') country,
              COUNT(DISTINCT pa.paper_id) papers,
              COALESCE(SUM(CASE WHEN p.slug NOT IN (SELECT value FROM
                           json_each(?)) THEN ct.citations END), 0) citations,
@@ -111,7 +123,9 @@ def institutions(conn, topic: str, top: int,
                           json_each(?)) THEN ct.paper_id END)
                  papers_with_citations,
              COUNT(DISTINCT CASE WHEN p.slug IN (SELECT value FROM
-                          json_each(?)) THEN p.paper_id END) suspect_dois
+                          json_each(?)) THEN p.paper_id END) suspect_dois,
+             GROUP_CONCAT(DISTINCT i.institution_id) member_ids,
+             COUNT(DISTINCT i.institution_id) members
       FROM (SELECT DISTINCT pai.institution_id, pa.paper_id
               FROM paper_authors pa
               JOIN topic_papers tp ON tp.paper_id = pa.paper_id
@@ -124,18 +138,20 @@ def institutions(conn, topic: str, top: int,
       JOIN institutions i ON i.institution_id = pa.institution_id
       JOIN papers p ON p.paper_id = pa.paper_id
       LEFT JOIN cites ct ON ct.paper_id = pa.paper_id
-      GROUP BY i.institution_id
+      GROUP BY {label}
       ORDER BY {order}
       LIMIT ?""", (topic, json.dumps(sorted(flagged)),
                    json.dumps(sorted(flagged)), json.dumps(sorted(flagged)),
                    *RESOLVED_SOURCES, top)).fetchall()
     return [{"institution_id": r[0], "name": r[1], "country": r[2],
              "papers": r[3], "citations": r[4],
-             "papers_with_citations": r[5], "suspect_dois": r[6]}
+             "papers_with_citations": r[5], "suspect_dois": r[6],
+             "member_ids": [int(x) for x in (r[7] or "").split(",") if x],
+             "members": r[8]}
             for r in rows]
 
 
-def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
+def yearly(conn, topic: str, ids: list[int]) -> dict[int, int]:
     """Papers per year, on the same first-author basis as the ranking."""
     marks = ",".join("?" * len(RESOLVED_SOURCES))
     rows = conn.execute(f"""
@@ -148,8 +164,10 @@ def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
              WHERE source IN ({marks})) pai
         ON pai.paper_id = pa.paper_id AND pai.author_id = pa.author_id
       JOIN papers p ON p.paper_id = pa.paper_id
-      WHERE pa.is_first_author = 1 AND pai.institution_id = ?
-      GROUP BY 1""", (topic, *RESOLVED_SOURCES, institution_id)).fetchall()
+      WHERE pa.is_first_author = 1
+        AND pai.institution_id IN (SELECT value FROM json_each(?))
+      GROUP BY 1""", (topic, *RESOLVED_SOURCES,
+                      json.dumps(ids))).fetchall()
     counts: Counter[int] = Counter()
     for date, n in rows:
         head = (date or "")[:4]
@@ -158,7 +176,7 @@ def yearly(conn, topic: str, institution_id: int) -> dict[int, int]:
     return dict(counts)
 
 
-def top_cited(conn, topic: str, institution_id: int, limit: int) -> list[dict]:
+def top_cited(conn, topic: str, ids: list[int], limit: int) -> list[dict]:
     """The institution's most-cited papers, on the same first-author basis.
 
     DISTINCT on (institution, paper) before joining citations, for the reason
@@ -181,10 +199,11 @@ def top_cited(conn, topic: str, institution_id: int, limit: int) -> list[dict]:
              WHERE pa.is_first_author = 1) x
       JOIN papers p ON p.paper_id = x.paper_id
       LEFT JOIN cites ct ON ct.paper_id = p.paper_id
-      WHERE x.institution_id = ?
+      WHERE x.institution_id IN (SELECT value FROM json_each(?))
       ORDER BY COALESCE(ct.citations, 0) DESC,
                COALESCE(p.publication_date, '') DESC
-      LIMIT ?""", (topic, *RESOLVED_SOURCES, institution_id, limit)).fetchall()
+      LIMIT ?""", (topic, *RESOLVED_SOURCES, json.dumps(ids),
+                   limit)).fetchall()
     return [{"paper_id": r[0], "title": r[1], "date": r[2], "slug": r[3],
              "doi": r[4], "citations": r[5]} for r in rows]
 
@@ -230,7 +249,7 @@ def corpus_top_cited(conn, topic: str, limit: int,
     return clean, excluded
 
 
-def researchers(conn, topic: str, institution_id: int, limit: int,
+def researchers(conn, topic: str, ids: list[int], limit: int,
                 papers_each: int) -> list[dict]:
     """Authors at this institution, with the papers that put them there."""
     marks = ",".join("?" * len(RESOLVED_SOURCES))
@@ -242,10 +261,11 @@ def researchers(conn, topic: str, institution_id: int, limit: int,
              WHERE source IN ({marks})) pai
       JOIN topic_papers tp ON tp.paper_id = pai.paper_id
       JOIN authors a ON a.author_id = pai.author_id
-      WHERE pai.institution_id = ?
+      WHERE pai.institution_id IN (SELECT value FROM json_each(?))
       GROUP BY a.author_id
       ORDER BY n DESC, a.display_name
-      LIMIT ?""", (topic, *RESOLVED_SOURCES, institution_id, limit)).fetchall()
+      LIMIT ?""", (topic, *RESOLVED_SOURCES, json.dumps(ids),
+                   limit)).fetchall()
     out = []
     for author_id, name, n in rows:
         papers = conn.execute(f"""
@@ -257,10 +277,11 @@ def researchers(conn, topic: str, institution_id: int, limit: int,
                  WHERE source IN ({marks})) pai
           JOIN topic_papers tp ON tp.paper_id = pai.paper_id
           JOIN papers p ON p.paper_id = pai.paper_id
-          WHERE pai.author_id = ? AND pai.institution_id = ?
+          WHERE pai.author_id = ?
+            AND pai.institution_id IN (SELECT value FROM json_each(?))
           ORDER BY COALESCE(p.publication_date,'') DESC
-          LIMIT ?""", (topic, *RESOLVED_SOURCES, author_id, institution_id,
-                       papers_each)).fetchall()
+          LIMIT ?""", (topic, *RESOLVED_SOURCES, author_id,
+                       json.dumps(ids), papers_each)).fetchall()
         out.append({"author_id": author_id, "name": name, "papers_total": n,
                     "papers": [{"paper_id": r[0], "title": r[1],
                                 "date": r[2], "slug": r[3], "doi": r[4]}
@@ -484,18 +505,20 @@ def suspect_slugs() -> set[str]:
 def build(conn, topic: str, top: int, per_institution: int,
           papers_each: int, use_llm: bool,
           rank_by: str = "papers",
-          top_papers: int = 5) -> dict:
+          top_papers: int = 5,
+          group_by: str = "institution") -> dict:
     flagged = suspect_slugs()
-    profiles = institutions(conn, topic, top, rank_by, flagged)
+    profiles = institutions(conn, topic, top, rank_by, flagged,
+                            group_by)
     for inst in profiles:
-        inst["yearly"] = yearly(conn, topic, inst["institution_id"])
+        inst["yearly"] = yearly(conn, topic, inst["member_ids"])
         inst["researchers"] = merge_coauthors(researchers(
-            conn, topic, inst["institution_id"], per_institution, papers_each))
+            conn, topic, inst["member_ids"], per_institution, papers_each))
         # Rank the most-cited among papers whose DOI is their own. A list
         # where every entry inherited its count from the paper it cites --
         # which is what Stanford's top five were -- ranks borrowed numbers.
         # The excluded ones are counted so the omission is visible.
-        candidates = top_cited(conn, topic, inst["institution_id"],
+        candidates = top_cited(conn, topic, inst["member_ids"],
                                top_papers + 40)
         clean = [x for x in candidates if x["slug"] not in flagged]
         inst["top_cited"] = clean[:top_papers]
@@ -591,7 +614,8 @@ def render_html(data: dict) -> str:
         out.append(f"<h2>{rank}. {esc(inst['name'])}</h2>")
         out.append(
             f"<p class=\"meta\">{esc(inst['country'] or '국가 미상')} · "
-            f"논문 {inst['papers']}편 · 피인용 {inst['citations']:,}회 "
+            + (f"구성 기관 {inst['members']}곳 · " if inst.get("members", 1) > 1 else "")
+            + f"논문 {inst['papers']}편 · 피인용 {inst['citations']:,}회 "
             f"({inst['papers_with_citations']}/{inst['papers']}편에서 수집"
             + (f", DOI 의심 {inst['suspect_dois']}편"
                if inst.get("suspect_dois") else "")
@@ -675,7 +699,10 @@ def render_markdown(data: dict) -> str:
         out.append("")
     for rank, inst in enumerate(data["profiles"], 1):
         out += [f"## {rank}. {inst['name']}", "",
-                f"{inst['country'] or '국가 미상'} · 논문 {inst['papers']}편 · "
+                f"{inst['country'] or '국가 미상'} · "
+                + (f"구성 기관 {inst['members']}곳 · "
+                   if inst.get("members", 1) > 1 else "")
+                + f"논문 {inst['papers']}편 · "
                 f"피인용 {inst['citations']:,}회 "
                 f"({inst['papers_with_citations']}/{inst['papers']}편 수집)", ""]
         years = data["axis"]
@@ -717,6 +744,10 @@ def main() -> int:
     ap.add_argument("--top", type=int, default=20)
     ap.add_argument("--researchers", type=int, default=6)
     ap.add_argument("--papers-each", type=int, default=3)
+    ap.add_argument("--group-by", default="institution",
+                    choices=["institution", "parent"],
+                    help="parent rolls each institution up to its parent "
+                         "organisation before ranking")
     ap.add_argument("--top-papers", type=int, default=5,
                     help="most-cited papers listed under each institution")
     ap.add_argument("--rank-by", default="papers",
@@ -732,11 +763,13 @@ def main() -> int:
     try:
         data = build(conn, args.topic, args.top, args.researchers,
                      args.papers_each, not args.no_llm,
-                     args.rank_by, args.top_papers)
+                     args.rank_by, args.top_papers, args.group_by)
     finally:
         conn.close()
 
     suffix = "" if args.rank_by == "papers" else f"_by_{args.rank_by}"
+    if args.group_by == "parent":
+        suffix += "_by_parent"
     out = args.out or (ROOT / "reports" / "build"
                        / f"{args.topic}_institution_profiles{suffix}.html")
     out.parent.mkdir(parents=True, exist_ok=True)
