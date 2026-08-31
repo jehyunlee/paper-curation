@@ -132,15 +132,25 @@ def _portable_url(doi, title):
 
 
 def _load_connections():
-    """Load every docs/<topic>/_paper_connections.json.
+    """Load every docs/<topic>/_paper_connections.json, freshest file winning.
 
     Topic dirs are DISCOVERED from the filesystem (any docs/ subdirectory
     holding a _paper_connections.json) — same rule as rebuild_connections.
     Topic names must not be hardcoded here: setup.py installs arbitrary topic
     aliases, and a fixed list silently drops their connections (surfaced as
-    paper-curio comparisons missing 같이 보면 좋은 논문). Per-paper lists are
-    identical across topic files (the bidirectional view is global; files
-    differ only in WHICH papers are keys), so merge order doesn't matter.
+    paper-curio comparisons missing 같이 보면 좋은 논문).
+
+    A paper in two topics has a key in both files, and those two lists are only
+    identical while both files were synced from the same global store. They are
+    NOT after a single-topic sync: paper-curio's bridge syncs the primary topic
+    only, so the other topic file keeps the previous snapshot. Merging in
+    directory-name order then let the STALE file win by alphabet —
+    ``ai4s-icml2026`` sorts after ``ai4s+scisci`` ('-' > '+'), so a freshly
+    regenerated list was silently replaced by the older one and the new links
+    never reached the page (2026-08-31: slug 10911 rendered 28 stale links
+    instead of its 37 current ones). Merge oldest-first so the newest snapshot
+    wins. A union is wrong here — these files are already-pruned views, and
+    unioning them would resurrect edges that build_slug_resolver dropped.
     """
     global _connections_cache
     if _connections_cache:
@@ -150,10 +160,16 @@ def _load_connections():
         entries = sorted(os.listdir(docs_dir))
     except OSError:
         entries = []
+    paths = []
     for d in entries:
         conn_path = os.path.join(docs_dir, d, "_paper_connections.json")
         if not os.path.exists(conn_path):
             continue
+        try:
+            paths.append((os.path.getmtime(conn_path), d, conn_path))
+        except OSError:
+            continue
+    for _mtime, d, conn_path in sorted(paths, key=lambda x: x[0]):
         try:
             with open(conn_path, "r", encoding="utf-8") as f:
                 _connections_cache.update(json.load(f))

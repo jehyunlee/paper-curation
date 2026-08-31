@@ -113,6 +113,39 @@ def main():
         finally:
             R.PAPERS, R._connections_cache = old_papers, old_cache
 
+    print("== 11. _load_connections: freshest topic file wins for a shared paper ==")
+    # 한 논문이 두 토픽에 속하면 두 파일에 같은 키가 있다. 예전엔 디렉토리 이름
+    # 정렬순으로 update() 해서 알파벳상 뒤에 오는 파일이 이기게 돼 있었고,
+    # 'ai4s-icml2026'('-') 가 'ai4s+scisci'('+') 뒤라 방금 재생성한 목록이 묵은
+    # 목록으로 덮여 새 링크가 페이지에 못 올라왔다(2026-08-31, slug 10911).
+    with tempfile.TemporaryDirectory() as tmp:
+        docs = os.path.join(tmp, "docs")
+        shared = "10911_paper_in_two_topics"
+        # 알파벳상 뒤인 토픽을 먼저(=오래된 것으로) 쓴다.
+        for topic, conns, mtime in [
+            ("ai4s-icml2026", {shared: [{"slug": "1_Stale"}]}, 1_000_000),
+            ("ai4s+scisci", {shared: [{"slug": "2_Fresh"}, {"slug": "3_Fresh"}]},
+             2_000_000),
+        ]:
+            os.makedirs(os.path.join(docs, topic))
+            path = os.path.join(docs, topic, "_paper_connections.json")
+            with open(path, "w", encoding="utf-8") as f:
+                _json.dump(conns, f)
+            os.utime(path, (mtime, mtime))
+        os.makedirs(os.path.join(docs, "papers"))
+
+        old_papers, old_cache = R.PAPERS, R._connections_cache
+        try:
+            R.PAPERS = os.path.join(docs, "papers")
+            R._connections_cache = {}
+            loaded = R._load_connections()
+            targets = [c["slug"] for c in loaded.get(shared, [])]
+            check("알파벳상 뒤인 묵은 파일이 이기지 않음", "1_Stale" not in targets)
+            check("최신 파일의 목록이 그대로 남음",
+                  targets == ["2_Fresh", "3_Fresh"])
+        finally:
+            R.PAPERS, R._connections_cache = old_papers, old_cache
+
     print()
     if fails:
         print(f"RESULT: FAIL ({fails})")

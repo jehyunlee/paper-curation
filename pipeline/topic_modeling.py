@@ -17,6 +17,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 import time
 import numpy as np
 from collections import defaultdict
@@ -689,24 +690,162 @@ def assign_multi_class(topics, probs, sub_topic_names, tid_to_cat,
 # Step 6: Related Papers (Embedding + Sonnet)
 # ═══════════════════════════════════════════
 
-def compute_related_candidates(embeddings, slugs, top_k=5):
-    """코사인 유사도 top-k 후보 선정."""
+# Deep Research 검색(`query_search_index`)과 동일한 RRF 상수. 두 랭킹을
+# 융합하는 규칙을 이 저장소에서 두 벌 유지하지 않는다.
+RELATED_RRF_K = 60
+
+
+def _lexical_score_matrix(slugs, papers):
+    """제목·저자 BM25 점수 행렬 (행 i = 논문 i 를 질의로 쓴 결과).
+
+    SPECTER2 는 **기여 내용**을 임베딩한다. 그래서 같은 제목 시리즈의 후속편이라도
+    다루는 분야가 옮겨가면(수학 증명 → 재료·생물 폐루프 실험) 코사인상 멀어진다.
+    실측: `10911 Accelerating Scientific Research with Gemini in the Real-World`
+    에서 직전편 `044 ... Case Studies and Common Techniques` 가 코사인 465위/2929
+    라 top-5·top-25 창 어디에도 들지 못했다 — 그 논문의 참고문헌에 실제로 인용돼
+    있는데도. 제목 토큰과 저자 이름은 그 계보를 담고 코사인은 담지 못하므로,
+    임베딩 텍스트에 이어붙이지 않고 **따로 채점해 RRF 로 융합**한다(융합 후 12위).
+    """
+    import math
+    from collections import Counter
+    from scipy.sparse import csr_matrix
+    from query_search_index import tokenize, BM25_K1, BM25_B
+
+    by_slug = {p["slug"]: p for p in (papers or []) if p.get("slug")}
+    docs = []
+    for slug in slugs:
+        paper = by_slug.get(slug) or {}
+        # 인덱스에 없는 슬러그는 슬러그 자체가 제목을 담고 있다(`NNN_Title_Words`).
+        title = paper.get("title") or slug.split("_", 1)[-1].replace("_", " ")
+        authors = " ".join(str(a) for a in (paper.get("authors") or [])[:12])
+        docs.append(Counter(tokenize(title) + tokenize(authors)))
+
+    n = len(docs)
+    lengths = np.array([sum(d.values()) or 1 for d in docs], dtype=np.float64)
+    avg_len = float(lengths.mean()) or 1.0
+    doc_freq = Counter()
+    for doc in docs:
+        doc_freq.update(doc.keys())
+
+    vocab = {}
+    w_rows, w_cols, w_vals = [], [], []
+    q_rows, q_cols = [], []
+    for i, doc in enumerate(docs):
+        for term, freq in doc.items():
+            col = vocab.setdefault(term, len(vocab))
+            df = doc_freq[term]
+            idf = math.log(1.0 + (n - df + 0.5) / (df + 0.5))
+            denom = freq + BM25_K1 * (1.0 - BM25_B + BM25_B * lengths[i] / avg_len)
+            w_rows.append(i)
+            w_cols.append(col)
+            w_vals.append(idf * freq * (BM25_K1 + 1.0) / denom)
+            q_rows.append(i)
+            q_cols.append(col)
+    shape = (n, len(vocab) or 1)
+    weights = csr_matrix((w_vals, (w_rows, w_cols)), shape=shape)
+    queries = csr_matrix((np.ones(len(q_rows), dtype=np.float64), (q_rows, q_cols)),
+                         shape=shape)
+    return np.asarray((queries @ weights.T).todense(), dtype=np.float32)
+
+
+def _row_ranks(scores):
+    """행마다 내림차순 0-based 순위. 대각선이 -inf 라 자기 자신은 항상 꼴찌."""
+    order = np.argsort(-scores, axis=1, kind="stable")
+    ranks = np.empty(order.shape, dtype=np.int32)
+    np.put_along_axis(ranks, order,
+                      np.arange(order.shape[1], dtype=np.int32)[None, :], axis=1)
+    return ranks
+
+
+def compute_related_candidates(embeddings, slugs, top_k=5, papers=None):
+    """연관 후보 top-k — dense(SPECTER2 코사인) + lexical(제목·저자 BM25) 하이브리드.
+
+    ``papers``(``{slug,title,authors}`` dict 목록)가 주어지면 두 랭킹을 RRF 로
+    융합한다. 없으면 코사인 단독 — 융합 순위가 코사인 점수 순과 같아져 기존 동작
+    그대로다. 반환 점수는 계속 코사인이다(순서만 융합 순위).
+    """
     from sklearn.metrics.pairwise import cosine_similarity
 
-    log(f"  Computing cosine similarity ({len(slugs)} papers, top_k={top_k})...")
+    mode = "dense+lexical RRF" if papers else "dense only"
+    log(f"  Related candidates ({len(slugs)} papers, top_k={top_k}, {mode})...")
     sim_matrix = cosine_similarity(embeddings)
+    np.fill_diagonal(sim_matrix, -np.inf)
+    fused = (1.0 / (RELATED_RRF_K + _row_ranks(sim_matrix))).astype(np.float32)
+    if papers:
+        lexical = _lexical_score_matrix(slugs, papers)
+        np.fill_diagonal(lexical, -np.inf)
+        lex_ranks = _row_ranks(lexical)
+        del lexical
+        fused += (1.0 / (RELATED_RRF_K + lex_ranks)).astype(np.float32)
+        del lex_ranks
 
+    n = len(slugs)
+    keep = max(0, min(top_k, n - 1))
     candidates = {}
     for i, slug in enumerate(slugs):
-        sims = list(enumerate(sim_matrix[i]))
-        sims.sort(key=lambda x: -x[1])
-        top = [(slugs[j], float(score)) for j, score in sims[1:top_k + 1]]
-        candidates[slug] = top
+        row = fused[i]
+        row[i] = -np.inf  # 자기 자신 제외
+        if keep:
+            picked = np.argpartition(-row, keep - 1)[:keep]
+            picked = picked[np.argsort(-row[picked], kind="stable")]
+        else:
+            picked = np.empty(0, dtype=int)
+        candidates[slug] = [(slugs[j], float(sim_matrix[i, j])) for j in picked]
 
     total = sum(len(v) for v in candidates.values())
     avg = total / len(candidates) if candidates else 0
     log(f"  {total} candidates (avg {avg:.1f}/paper)")
     return candidates
+
+
+def parse_connection_json(text):
+    """배치 응답 JSON 파싱 — 깨진 부분만 버리고 나머지는 살린다.
+
+    응답은 ``{"045": [{"target","relation","reason"}, ...], ...}`` 이다. 예전엔
+    ``json.loads`` 한 방이라 문서 어디든 한 글자가 어긋나면 **배치 전체(15편)가
+    통째로 버려졌다**. 후보를 25개로 넓히고 제목까지 실으면서 출력이 길어지자
+    실측 오류율이 눈에 띄게 올랐다(코퍼스 재생성 첫 6분에 2건:
+    ``Expecting value: line 203``, ``Expecting property name ... line 131``).
+    한 논문의 이유 문자열이 깨졌다고 나머지 14편의 연결까지 날릴 이유는 없다.
+
+    그래서 실패하면 **논문 단위로 내려가 각 객체를 따로 파싱**한다. 살릴 수 있는
+    것만 살리고 나머지는 조용히 버린다 — 남은 논문은 다음 라운드가 재시도한다.
+    """
+    try:
+        parsed = json.loads(text)
+        if isinstance(parsed, dict):
+            return parsed
+    except Exception:
+        pass
+
+    decoder = json.JSONDecoder()
+    salvaged = {}
+    for match in re.finditer(r'"([^"]+)"\s*:\s*\[', text):
+        key = match.group(1)
+        pos = match.end()
+        items = []
+        while pos < len(text):
+            brace = text.find("{", pos)
+            if brace < 0:
+                break
+            # 다음 논문 키가 먼저 나오면 이 논문의 배열은 여기서 끝난 것이다.
+            closer = text.find("]", pos)
+            if 0 <= closer < brace:
+                break
+            try:
+                obj, end = decoder.raw_decode(text, brace)
+            except ValueError:
+                # 이 객체만 깨졌다 — 다음 '{' 로 건너뛴다.
+                pos = brace + 1
+                continue
+            if isinstance(obj, dict) and obj.get("target"):
+                items.append(obj)
+            pos = end
+        if items:
+            salvaged[key] = items
+    if not salvaged:
+        raise ValueError(f"connection JSON unparseable ({len(text)} chars)")
+    return salvaged
 
 
 def generate_connections_from_candidates(candidates, topic_papers, client,
@@ -757,22 +896,33 @@ def generate_connections_from_candidates(candidates, topic_papers, client,
         f"<= {max_rounds} rounds × {deadline_s}s ...")
 
     def _build_prompt(batch_slugs):
+        # 후보는 **제목과 함께** 넘긴다. 예전에는 `[3001](0.94)` 처럼 슬러그 번호와
+        # 코사인 점수만 줬는데, 그러면 모델은 후보가 무슨 논문인지 모른 채 관계
+        # 유형과 한국어 이유를 지어내야 한다(단백질 설계 논문을 "실행-접지형 연구
+        # 파트너의 이론적 기반" 이라고 쓴 실제 사례). 그리고 `cands[:10]` 로 잘라
+        # 버려서, extract_insights 가 recall 확보용으로 계산한 top-25 중 15개는
+        # 캐시·증분 판정까지 다 거친 뒤 프롬프트에서 조용히 버려지고 있었다.
+        # 후보 수는 호출자의 top_k 가 정한다 — 그게 유일한 정직한 손잡이다.
         papers_block = []
         for slug in batch_slugs:
             p = slug_to_paper.get(slug, {})
             num = slug.split("_")[0]
             title = p.get("title", "")[:60]
             essence = p.get("essence", "")[:150]
-            cands = candidates.get(slug, [])
-            cand_text = ", ".join(
-                f"[{cs.split('_')[0]}]({sim:.2f})" for cs, sim in cands[:10]
-            )
+            cand_lines = []
+            for cs, sim in candidates.get(slug, []):
+                cp = slug_to_paper.get(cs, {})
+                ctitle = (cp.get("title") or cs.split("_", 1)[-1].replace("_", " "))[:60]
+                cand_lines.append(f"    [{cs.split('_')[0]}] ({sim:.2f}) {ctitle}")
             papers_block.append(
-                f"[{num}] {title} | {essence}\n  Candidates: {cand_text}"
+                f"[{num}] {title} | {essence}\n  Candidates:\n"
+                + "\n".join(cand_lines)
             )
 
         return f"""For each paper below, select the most meaningful related papers from its candidates.
-Candidates are sorted by embedding similarity (score in parentheses).
+Candidates are ranked by hybrid retrieval (SPECTER2 cosine + title/author BM25,
+RRF-fused); the number in parentheses is the cosine similarity only, so a low
+one does NOT mean the candidate is unrelated — judge by the titles.
 
 Papers:
 {chr(10).join(papers_block)}
@@ -822,7 +972,7 @@ Rules:
                 text = text[4:].strip()
             if text.endswith("```"):
                 text = text[:-3].strip()
-        return json.loads(text)
+        return parse_connection_json(text)
 
     def _merge(batch_result):
         for num, conns in batch_result.items():
@@ -855,7 +1005,11 @@ Rules:
         수집하고 성공 배치의 슬러그를 attempted 에 기록. 막힌 워커는 join 안 함."""
         round_batches = [todo[i:i + batch_size]
                          for i in range(0, len(todo), batch_size)]
-        executor = ThreadPoolExecutor(max_workers=4)
+        # 워커 수는 env 로 연다 — 다른 튜닝 손잡이(EXTRACT_INSIGHTS_CONN_BATCH /
+        # _DEADLINE / _ROUNDS)와 같은 규약. 기본 4 는 그대로고, 코퍼스 전체
+        # 재생성처럼 한 번에 수백 배치를 태울 때만 올린다(Tier 4 기준 8 안전).
+        _workers = max(1, int(os.environ.get("CONN_MAX_WORKERS", "4")))
+        executor = ThreadPoolExecutor(max_workers=_workers)
         round_deadline = time.monotonic() + deadline_s
         try:
             futures = {executor.submit(process_batch, b): tuple(b)
@@ -1131,7 +1285,8 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
         log("\n" + "=" * 50)
         log("STEP 6: RELATED PAPERS (Embedding + Sonnet)")
         log("=" * 50)
-        candidates = compute_related_candidates(embeddings, slugs, top_k=5)
+        candidates = compute_related_candidates(embeddings, slugs, top_k=5,
+                                                papers=topic_papers)
         # 기존 연결이 0개인 논문(대개 신규)을 우선 배치 — deadline 으로 라운드가
         # 잘려도 사이트에 공백으로 보이는 논문부터 먼저 채운다.
         _edata = {}

@@ -558,7 +558,8 @@ def extract_paper_connections(topic, cat_papers, clients, all_topic_papers=None,
     embeddings, slugs = compute_embeddings(originalities, cache_path)
 
     top_n = int(os.environ.get("EXTRACT_INSIGHTS_TOPN_CAND", "25"))
-    full_cand = compute_related_candidates(embeddings, slugs, top_k=top_n)
+    full_cand = compute_related_candidates(embeddings, slugs, top_k=top_n,
+                                           papers=pool)
     # 대상 논문에 대해서만 연결 생성(후보 값은 전체 토픽에서 온 것)
     candidates = {s: full_cand[s] for s in slugs
                   if s in target_slugs and s in full_cand}
