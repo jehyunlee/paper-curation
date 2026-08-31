@@ -34,8 +34,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lib.originality_extractor import (  # noqa: E402
-    _extract_rule_based, derives_from, load_triggers, read_provenance,
-    text_digest, write_provenance,
+    MIN_ORIGINALITY_CHARS, _extract_rule_based, derives_from, load_triggers,
+    looks_unusable, read_provenance, text_digest, write_provenance,
 )
 
 TRIGGERS = load_triggers()
@@ -256,6 +256,62 @@ class EmbeddingCacheInputGuardTests(unittest.TestCase):
             finally:
                 lib.specter2_embed = real
                 sys.modules["lib.specter2_embed"] = real
+
+
+class UnusableOutputTests(unittest.TestCase):
+    """LLM 이 요약 대신 거부문을 돌려주면 파일에 쓰면 안 된다.
+
+    해시 사이드카는 이걸 못 잡는다 — 출처는 진짜로 그 text.md 가 맞기 때문이다.
+    거부문이 저장되면 SPECTER2 가 *거부문*을 임베딩하고, 거부당한 논문들끼리
+    서로 가까워져 가짜 클러스터가 생긴다. 어설픈 요약보다 훨씬 나쁘다.
+    """
+
+    # 실제 claude-haiku-4-5 가 슬러그 9132(목차만 추출된 논문)에 돌려준 응답.
+    REAL_REFUSAL = (
+        "I cannot provide the requested summary because the provided text is "
+        "only a table of contents and section headings, not the actual paper "
+        "content or abstract. To state what the paper newly contributes, I "
+        "would need access to the abstract, introduction, or contributions "
+        "section that describes the work.")
+
+    GOOD = ("The paper introduces RFdiffusion, a generative model of protein "
+            "backbones created by fine-tuning the RoseTTAFold structure "
+            "prediction network on protein structure denoising tasks. It "
+            "enables de novo design of protein binders, symmetric oligomers "
+            "and enzyme active site scaffolds.")
+
+    def test_real_haiku_refusal_is_caught(self):
+        self.assertEqual(looks_unusable(self.REAL_REFUSAL), "refusal")
+
+    def test_good_summary_passes(self):
+        self.assertEqual(looks_unusable(self.GOOD), "")
+
+    def test_short_output_is_rejected(self):
+        self.assertTrue(looks_unusable("Not enough.").startswith("too-short"))
+        self.assertEqual(looks_unusable("x" * MIN_ORIGINALITY_CHARS), "")
+
+    def test_other_refusal_phrasings(self):
+        for text in (
+            "I'm unable to summarize this document because no abstract is present "
+            "anywhere in the supplied excerpt, so there is nothing to describe here.",
+            "As an AI, I do not have the ability to read the attached PDF file, and "
+            "therefore cannot determine what this particular paper contributes.",
+            "The supplied text is only a list of section headings, so the paper's "
+            "contribution cannot be determined from what was provided to me here.",
+        ):
+            self.assertEqual(looks_unusable(text), "refusal", text[:40])
+
+    def test_prompt_echo_is_rejected(self):
+        prompt = "In 2-4 sentences state ONLY what THIS paper newly contributes"
+        echo = prompt + " — the method it introduces and what that enables for users."
+        self.assertEqual(looks_unusable(echo, prompt_echo=prompt), "prompt-echo")
+
+    def test_contribution_wording_is_not_mistaken_for_refusal(self):
+        """'cannot' 이 논문 내용에 등장하는 것과 모델의 거부는 다르다."""
+        text = ("The paper introduces SafeGuard, a verifier that proves a policy "
+                "cannot enter unsafe states, and shows the controller is unable to "
+                "violate the constraint under bounded disturbance.")
+        self.assertEqual(looks_unusable(text), "")
 
 
 if __name__ == "__main__":

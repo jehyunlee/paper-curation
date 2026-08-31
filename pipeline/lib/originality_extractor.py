@@ -69,6 +69,44 @@ def derives_from(originality: str, paper_text: str) -> bool:
     return key[:_DERIVE_SHINGLE] in _match_key(paper_text)
 
 
+# ── 사용 불가 출력 판정 ──
+# LLM 으로 originality 를 쓰게 하면 **거부 문장이 그대로 파일에 들어가는** 실패가
+# 생긴다. 실측(8편 A/B): text.md 가 목차·슬라이드 덤프인 슬러그 9132 에서
+# claude-haiku-4-5 가 "I cannot provide the requested summary because the provided
+# text is only a table of contents..." 를 돌려줬다(qwen3.8·sonnet 은 정상 요약).
+# 그 문장이 저장되면 SPECTER2 가 *거부문*을 임베딩하고, 거부당한 논문들끼리
+# 서로 가까워져 가짜 클러스터가 생긴다 — 어설픈 요약보다 훨씬 나쁘다.
+# 해시 사이드카는 이걸 못 잡는다(출처는 진짜 맞으므로). 그래서 별도 게이트다.
+_REFUSAL_RE = re.compile(
+    r"\b(i (cannot|can't|can not|am unable|do not have|don't have)"
+    r"|unable to (provide|summari[sz]e|determine)"
+    r"|cannot (provide|determine|summari[sz]e)"
+    r"|would need (access|the actual)"
+    r"|(is|are) only a (table of contents|list of|set of)"
+    r"|no (abstract|content|actual paper)"
+    r"|as an ai\b)", re.I)
+
+# 이 아래로는 기여를 한 문장도 못 담는다. A/B 표본의 정상 출력은 428~893자였다.
+MIN_ORIGINALITY_CHARS = 120
+
+
+def looks_unusable(text: str, prompt_echo: str = "") -> str:
+    """쓸 수 없는 LLM 출력이면 사유 문자열, 쓸 수 있으면 "".
+
+    호출부는 사유가 있으면 **파일을 쓰지 않고** 다음 백엔드로 넘어가야 한다.
+    전부 실패하면 기존 규칙 기반 결과를 그대로 둔다 — 나쁜 것을 쓰느니
+    낡은 것을 두는 편이 낫다.
+    """
+    body = (text or "").strip()
+    if len(body) < MIN_ORIGINALITY_CHARS:
+        return f"too-short({len(body)})"
+    if _REFUSAL_RE.search(body):
+        return "refusal"
+    if prompt_echo and prompt_echo[:60].lower() in body.lower():
+        return "prompt-echo"
+    return ""
+
+
 def read_provenance(slug_dir) -> dict:
     """`originality.meta.json` 을 읽는다. 없거나 스키마가 낯설면 {}."""
     path = os.path.join(str(slug_dir), ORIGINALITY_META)
