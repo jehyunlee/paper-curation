@@ -7,11 +7,88 @@ Strategy:
 2. Fallback: LLM (Claude Haiku) when rule-based finds nothing
 3. Self-learning: LLM-discovered triggers added to triggers JSON
 """
+import hashlib
 import json
+import os
 import re
+import unicodedata
 from pathlib import Path
 
 TRIGGERS_PATH = Path(__file__).parent / "originality_triggers.json"
+
+# ── Provenance ──
+# `originality.md` 는 캐시인데 **자기가 어느 text.md 에서 나왔는지 기록하지
+# 않았다**. 그래서 파일이 존재하고 비어 있지만 않으면 원문을 다시 보지 않고
+# 그대로 신뢰했고, 한번 잘못 들어간 파일은 영구히 남았다 — 실측 29편(0.7%)이
+# 자기 text.md 에서 재현 불가능한 내용을 들고 있었다. 예: 슬러그 256
+# (RFdiffusion, Nature 2023)의 originality 가 "Here, we introduce VibeGen…"
+# (슬러그 065)이었고, 256 의 text.md 에 "VibeGen" 은 0회 등장한다. 이 29편은
+# 임베딩·분류·연관논문이 전부 남의 내용으로 계산돼 왔다.
+#
+# 저장소에 이미 같은 문제를 푼 선례가 있다 — `bibliography.json` 사이드카는
+# `text_md_sha256` 를 같이 적고 해시가 어긋나면 거부한다. 같은 규칙을 쓴다.
+ORIGINALITY_META = "originality.meta.json"
+ORIGINALITY_SCHEMA = 1
+
+_DEHYPHEN_RE = re.compile(r"-\s+")
+_ALNUM_RE = re.compile(r"[^a-z0-9]+")
+# 앞머리 이만큼이 원문에 있으면 그 원문에서 나온 것으로 본다. 짧으면 흔한
+# 상투구("in this paper we propose")가 아무 논문에나 걸리고, 길면 OCR 잡음
+# 한 글자에 정상 파일이 탈락한다.
+_DERIVE_SHINGLE = 100
+
+
+def text_digest(text: str) -> str:
+    """text.md 내용의 sha256 — 사이드카가 가리키는 원문의 신원."""
+    return hashlib.sha256((text or "").encode("utf-8", "replace")).hexdigest()
+
+
+def _match_key(text: str) -> str:
+    """대조용 정규화: NFKD → leak strip → 하이픈 줄바꿈 복원 → 영숫자만.
+
+    추출기는 원문 문장을 *그대로* 잘라 쓰지만, 그 전에 `split_sentences` 가
+    **NFKD 정규화**를 걸어 합자(ﬁ→fi)와 악센트를 분해하고 `_strip_metadata_leaks`
+    가 공백·구두점을 손본다. PDF 는 단어를 하이픈으로 끊어 놓는다. 이 셋을 모두
+    지우지 않으면 멀쩡한 파일이 대조에서 탈락한다 — 실측으로 거친 대조 729편,
+    하이픈만 복원 118편, NFKD 까지 맞춰야 진짜 값 29편이 나온다.
+    """
+    text = unicodedata.normalize("NFKD", text or "")
+    text = _strip_metadata_leaks(text)
+    return _ALNUM_RE.sub("", _DEHYPHEN_RE.sub("", text).lower())
+
+
+def derives_from(originality: str, paper_text: str) -> bool:
+    """이 originality 가 이 text.md 에서 나올 수 있는가.
+
+    추출기가 원문 문장을 그대로 이어 붙이므로 포함 관계로 판정된다. 너무 짧아
+    판정할 근거가 없으면 통과시킨다(제목+essence fallback 이 그런 경우다).
+    """
+    key = _match_key(originality)
+    if len(key) < _DERIVE_SHINGLE:
+        return True
+    return key[:_DERIVE_SHINGLE] in _match_key(paper_text)
+
+
+def read_provenance(slug_dir) -> dict:
+    """`originality.meta.json` 을 읽는다. 없거나 스키마가 낯설면 {}."""
+    path = os.path.join(str(slug_dir), ORIGINALITY_META)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+    except Exception:
+        return {}
+    if not isinstance(meta, dict) or meta.get("schema") != ORIGINALITY_SCHEMA:
+        return {}
+    return meta
+
+
+def write_provenance(slug_dir, text_sha256, extractor):
+    """originality.md 옆에 그 출처를 남긴다."""
+    path = os.path.join(str(slug_dir), ORIGINALITY_META)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"schema": ORIGINALITY_SCHEMA,
+                   "text_md_sha256": text_sha256,
+                   "extractor": extractor}, f, ensure_ascii=False, indent=1)
 
 
 # ── Metadata leak strip ──
@@ -101,7 +178,24 @@ _STOP_TRIGGERS = frozenset({
 })
 
 
-def _extract_rule_based(text, triggers):
+# 트리거 문장부터 어디까지 담을지. 이 함수는 originality 문장을 *고르는* 게
+# 아니라 첫 트리거 문장부터 **문서 끝까지** 잘라 왔다. 초록 창(1000자)으로
+# 부를 때는 창이 곧 경계라 티가 안 났지만, 트리거를 못 찾아 전문으로 재호출하면
+# 경계가 사라져 논문 한 편이 통째로 들어왔다 — 실측 262편이 20KB 초과, 최대
+# 711KB. SPECTER2 는 512 토큰에서 자르므로 그 텍스트의 평균 1.2% 만 임베딩되고
+# 나머지는 디스크만 먹었다.
+#
+# 문장 수와 문자 수를 **둘 다** 건다. 문장 수만으로는 못 막는다 — PDF 추출이
+# 마침표를 잃으면 `split_sentences` 의 `(?<=[.!?])\s+` 가 아무 데서도 쪼개지
+# 못해 논문 한 편이 '문장 1개' 가 되고, 12문장 상한이 통째로 통과시킨다.
+# 초록 한 문단이 대개 4~8 문장이라 12, SPECTER2 가 읽는 512 토큰이 대략
+# 2,000~2,500자라 여유를 둬 4,000자.
+_MAX_SENTENCES = 12
+_MAX_CHARS = 4000
+
+
+def _extract_rule_based(text, triggers, max_sentences=_MAX_SENTENCES,
+                        max_chars=_MAX_CHARS):
     """Rule-based originality extraction with strict co-occurrence."""
     if not text or not text.strip():
         return ""
@@ -138,7 +232,14 @@ def _extract_rule_based(text, triggers):
         if any(s_lower.startswith(ref) for ref in _REFERENTIAL_STARTS):
             start_idx = first_orig_idx - 1
 
-    return _strip_metadata_leaks(". ".join(sentences[start_idx:]))
+    selected = sentences[start_idx:start_idx + max_sentences]
+    out = _strip_metadata_leaks(". ".join(selected))
+    if len(out) > max_chars:
+        # 문장 경계로 자를 수 있으면 거기서, 아니면(=쪼개지지 않은 덩어리)
+        # 문자 상한에서 끊는다. 조각난 문장이 남아도 통째보다 낫다.
+        cut = out.rfind(". ", 0, max_chars)
+        out = out[:cut + 1] if cut > max_chars // 2 else out[:max_chars]
+    return out
 
 
 # ── LLM Fallback ──

@@ -67,9 +67,22 @@ def _anthropic_text(resp):
 # ═══════════════════════════════════════════
 
 def extract_originalities(topic_papers):
-    """각 논문의 text.md 앞 1000자에서 originality 추출."""
+    """각 논문의 text.md 에서 originality 추출 (originality.md 캐시).
+
+    캐시는 **자기 text.md 의 sha256 을 사이드카에 들고 있어야** 신뢰된다.
+    예전엔 파일이 존재하고 비어 있지만 않으면 원문을 다시 보지 않았고, 그래서
+    한번 잘못 들어간 파일이 영구히 남았다 — 실측 29편(0.7%)이 자기 text.md 에서
+    재현 불가능한 내용을 들고 있었다(예: 슬러그 256 RFdiffusion 이 슬러그 065
+    VibeGen 의 문장을 들고 있고, 256 의 text.md 에 VibeGen 은 0회 등장).
+
+    사이드카가 없는 기존 파일은 **재추출하지 않는다**. `derives_from` 으로
+    자기 원문에서 나올 수 있는지 검증해 통과하면 사이드카만 채운다(backfill).
+    전량 재추출은 임베딩을 통째로 흔들어 카테고리를 33% 뒤집으므로, 증거 없이
+    할 일이 아니다. 검증에 실패한 것만 다시 뽑는다.
+    """
     from lib.originality_extractor import (
         _extract_rule_based, _strip_metadata_leaks, load_triggers,
+        derives_from, read_provenance, text_digest, write_provenance,
     )
 
     triggers = load_triggers()
@@ -77,12 +90,23 @@ def extract_originalities(topic_papers):
     cached = 0
     extracted = 0
     no_text = 0
+    backfilled = 0
+    orphaned = []
 
     for p in topic_papers:
         slug = p["slug"]
-        orig_path = os.path.join(PAPERS_DIR, slug, "originality.md")
+        slug_dir = os.path.join(PAPERS_DIR, slug)
+        orig_path = os.path.join(slug_dir, "originality.md")
+        text_path = os.path.join(slug_dir, "text.md")
 
-        # 1차: originality.md 캐시 사용
+        full = None
+        digest = None
+        if os.path.exists(text_path):
+            with open(text_path, "r", encoding="utf-8") as f:
+                full = f.read()
+            digest = text_digest(full)
+
+        # 1차: originality.md 캐시 — 단, 출처가 확인될 때만.
         if os.path.exists(orig_path):
             with open(orig_path, "r", encoding="utf-8") as f:
                 orig = f.read().strip()
@@ -96,36 +120,59 @@ def extract_originalities(topic_papers):
                 if cleaned != orig:
                     with open(orig_path, "w", encoding="utf-8") as f:
                         f.write(cleaned)
-                results[slug] = cleaned
-                cached += 1
-                continue
+
+                meta = read_provenance(slug_dir)
+                recorded = meta.get("text_md_sha256")
+                if digest is None:
+                    trusted = True          # 대조할 원문이 없다 — 있는 걸 쓴다
+                elif recorded == digest:
+                    trusted = True          # 사이드카가 이 원문을 가리킨다
+                elif recorded:
+                    trusted = False         # 원문이 바뀌었다 → 다시 뽑는다
+                elif derives_from(cleaned, full):
+                    trusted = True          # 사이드카는 없지만 원문에서 나온다
+                    write_provenance(slug_dir, digest, "backfill")
+                    backfilled += 1
+                else:
+                    trusted = False         # 이 원문에서 나올 수 없다 = 남의 것
+                    orphaned.append(slug)
+
+                if trusted:
+                    results[slug] = cleaned
+                    cached += 1
+                    continue
 
         # 2차: text.md에서 추출 + originality.md 저장
-        text_path = os.path.join(PAPERS_DIR, slug, "text.md")
-        if not os.path.exists(text_path):
+        if full is None:
             no_text += 1
             results[slug] = f"{p.get('title', '')}. {p.get('essence', '')}"
             with open(orig_path, "w", encoding="utf-8") as f:
                 f.write(results[slug])
             continue
 
-        with open(text_path, "r", encoding="utf-8") as f:
-            full = f.read()
-
         abs_pos = full.lower().find("abstract")
         text = full[abs_pos:abs_pos + 1000] if abs_pos >= 0 else full[:1000]
         orig = _extract_rule_based(text, triggers)
+        source = "rule.abstract"
         if not orig:
             orig = _extract_rule_based(full, triggers)
+            source = "rule.fulltext"
         if not orig:
             orig = f"{p.get('title', '')}. {p.get('essence', '')}"
+            source = "title+essence"
 
         results[slug] = orig
         with open(orig_path, "w", encoding="utf-8") as f:
             f.write(orig)
+        write_provenance(slug_dir, digest, source)
         extracted += 1
 
     log(f"  Originality: {len(results)} papers (cached: {cached}, extracted: {extracted}, no text.md: {no_text})")
+    if backfilled:
+        log(f"    provenance backfilled: {backfilled} (내용 변경 없음)")
+    if orphaned:
+        log(f"    ORPHAN 재추출: {len(orphaned)}편 — 자기 text.md 에서 재현 불가한 "
+            f"캐시였음 (예: {', '.join(s[:34] for s in orphaned[:3])})")
     return results
 
 
@@ -134,7 +181,7 @@ def extract_originalities(topic_papers):
 # ═══════════════════════════════════════════
 
 def compute_embeddings(originalities, cache_path=None):
-    """SPECTER2로 임베딩 계산. 캐시 지원 (incremental: 신규 논문만 추가 계산).
+    """SPECTER2로 임베딩 계산. 캐시 지원 (incremental: 신규·변경 논문만 재계산).
 
     임베딩은 공유 로더 `lib.specter2_embed` 를 통한다 — base + proximity adapter
     + [CLS] pooling (AI2 권장). adapters 미설치 시 base/mean-pooling fallback.
@@ -143,8 +190,16 @@ def compute_embeddings(originalities, cache_path=None):
     (specter2_embed.EMBED_TAG) 와 다르거나 없으면, 구 모델 벡터가 신 모델 벡터와
     섞이는 silent corruption 을 막기 위해 캐시를 통째로 무효화하고 전량 재계산한다
     (구 _embeddings_cache.json 은 mean-pooling 벡터라 태그가 없으므로 자동 무효화).
+
+    입력 가드: 캐시는 **슬러그 집합만** 보고 hit 을 판정했다. 그래서 originality
+    가 바뀌어도 같은 논문이면 옛 벡터를 그대로 돌려줬다 — 모델은 검사하면서
+    입력은 검사하지 않는 반쪽 가드였다. 이제 슬러그별 originality sha256 을 함께
+    저장하고, 기록이 없거나 어긋나는 슬러그만 다시 임베딩한다.
     """
     from lib import specter2_embed
+    from lib.originality_extractor import text_digest
+
+    digests = {s: text_digest(t) for s, t in originalities.items()}
 
     current_slugs = sorted(originalities.keys())
     current_tag = specter2_embed.EMBED_TAG
@@ -163,20 +218,27 @@ def compute_embeddings(originalities, cache_path=None):
         else:
             cached_slugs = data["slugs"]
             cached_embeddings = np.array(data["embeddings"])
+            cached_digests = data.get("originality_sha256") or {}
 
             cached_set = set(cached_slugs)
             current_set = set(current_slugs)
+            # 기록이 없는 슬러그는 '검증 불가' 라 신뢰하지 않는다 — embed_model
+            # 태그 가드와 같은 태도. 최초 1회는 전량 재계산이 되므로, 마이그레이션
+            # 스크립트가 현재 텍스트로 해시를 채워 두고 실제로 바뀐 것만 남긴다.
+            changed = {s for s in cached_set & current_set
+                       if cached_digests.get(s) != digests[s]}
 
-            if cached_set == current_set:
+            if cached_set == current_set and not changed:
                 log(f"  Cache hit: {len(cached_slugs)} papers (exact match, "
                     f"embed_model={current_tag})")
                 return cached_embeddings, cached_slugs
 
             # Incremental update: reuse cached embeddings, compute only new ones
-            new_slugs = sorted(current_set - cached_set)
+            new_slugs = sorted((current_set - cached_set) | changed)
             removed_slugs = cached_set - current_set
             log(f"  Cache stale: cached={len(cached_slugs)}, current={len(current_slugs)}, "
-                f"new={len(new_slugs)}, removed={len(removed_slugs)}")
+                f"new={len(current_set - cached_set)}, "
+                f"originality changed={len(changed)}, removed={len(removed_slugs)}")
 
             # Build slug→embedding map from cache
             slug_to_emb = dict(zip(cached_slugs, cached_embeddings))
@@ -187,7 +249,7 @@ def compute_embeddings(originalities, cache_path=None):
 
             if new_slugs:
                 new_texts = [originalities[s] for s in new_slugs]
-                log(f"  Embedding {len(new_texts)} new papers via shared SPECTER2 loader...")
+                log(f"  Embedding {len(new_texts)} new/changed papers via shared SPECTER2 loader...")
                 new_embeddings = specter2_embed.embed_texts(new_texts)
                 for s, emb in zip(new_slugs, new_embeddings):
                     slug_to_emb[s] = emb
@@ -200,7 +262,9 @@ def compute_embeddings(originalities, cache_path=None):
             if cache_path:
                 os.makedirs(os.path.dirname(cache_path), exist_ok=True)
                 cache_data = {"embed_model": current_tag,
-                              "slugs": slugs, "embeddings": embeddings.tolist()}
+                              "slugs": slugs, "embeddings": embeddings.tolist(),
+                              "originality_sha256": {s: digests[s] for s in slugs
+                                                     if s in digests}}
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(cache_data, f)
                 log(f"  Cache updated: {len(slugs)} papers ({cache_path})")
@@ -220,6 +284,7 @@ def compute_embeddings(originalities, cache_path=None):
             "embed_model": current_tag,
             "slugs": slugs,
             "embeddings": embeddings.tolist(),
+            "originality_sha256": {s: digests[s] for s in slugs if s in digests},
         }
         with open(cache_path, "w", encoding="utf-8") as f:
             json.dump(cache_data, f)

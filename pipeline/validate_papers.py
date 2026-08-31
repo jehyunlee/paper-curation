@@ -438,6 +438,50 @@ def check_duplicate_text_md(topic):
     return issues
 
 
+def check_orphan_originality(topic):
+    """originality.md 가 자기 text.md 에서 나온 것인지 검사한다.
+
+    `originality.md` 는 캐시인데 오래도록 **출처 기록이 없었다**. 파일이 있으면
+    원문을 다시 보지 않았으므로, 한번 잘못 들어간 파일은 영구히 남아 그 논문의
+    임베딩·분류·연관논문을 전부 남의 내용으로 계산하게 만들었다 — 도입 시점
+    실측 29편(0.7%). 예: 슬러그 256(RFdiffusion, Nature 2023)이 슬러그
+    065(VibeGen)의 문장을 들고 있었고, 256 의 text.md 에 VibeGen 은 0회 등장한다.
+
+    이제 `extract_originalities` 가 sha256 사이드카를 남기므로, 이 게이트는
+    사이드카가 원문을 가리키는지와 내용이 실제로 그 원문에서 나오는지를 본다.
+    """
+    from lib.originality_extractor import derives_from, read_provenance, text_digest
+
+    issues = []
+    papers_dir = Path(PAPERS_DIR)
+    index = json.loads((papers_dir / "_papers_index.json").read_text(encoding="utf-8"))
+    topic_slugs = {e["slug"] for e in index if topic in e.get("topics", [])}
+    stale = []
+    for slug in sorted(topic_slugs):
+        slug_dir = papers_dir / slug
+        orig_path, text_path = slug_dir / "originality.md", slug_dir / "text.md"
+        if not orig_path.exists() or not text_path.exists():
+            continue
+        try:
+            orig = orig_path.read_text(encoding="utf-8", errors="replace").strip()
+            full = text_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        if not orig:
+            continue
+        recorded = read_provenance(slug_dir).get("text_md_sha256")
+        if recorded == text_digest(full):
+            continue
+        if derives_from(orig, full):
+            continue
+        stale.append(slug)
+    for slug in stale[:10]:
+        issues.append(f"  [orphan-originality] {slug[:60]}: 자기 text.md 에서 재현 불가")
+    if len(stale) > 10:
+        issues.append(f"  [orphan-originality] ... +{len(stale) - 10} more")
+    return issues
+
+
 def check_connection_coverage(topic):
     """분류된 논문(_new_classification.json assignments)이 연결(_paper_connections.json
     키)을 갖는지 검사한다.
@@ -595,6 +639,13 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
         for i in dup_issues:
             log(i)
 
+    # 6b. Orphan originality (남의 논문 내용을 든 originality.md 캐시)
+    orphan_issues = check_orphan_originality(topic)
+    if orphan_issues:
+        log(f"\n[topic {topic}] orphan originality.md:")
+        for i in orphan_issues:
+            log(i)
+
     # 7. Connection coverage (분류됐는데 연결 없는 논문 — paper-curio 핸드오프 빈틈)
     conn_issues = check_connection_coverage(topic)
     if conn_issues:
@@ -615,12 +666,14 @@ def _run_validate(topic="ai4s", *, fix=False, strict=False):
     log(f"  Schema/whitelist issues: {len(schema_issues)}")
     log(f"  DOI mismatches: {len(doi_issues)}")
     log(f"  Duplicate text.md groups: {len(dup_issues)}")
+    log(f"  Orphan originality.md: {len(orphan_issues)}")
     log(f"  Connection coverage gaps: {len(conn_issues)}")
     if fix:
         log(f"  Auto-fixed: {total_fixed} papers")
     total_all = (total_title + total_truncated + total_link + total_fig + total_pylist
                  + len(timeline_issues) + len(schema_issues)
-                 + len(doi_issues) + len(dup_issues) + len(conn_issues))
+                 + len(doi_issues) + len(dup_issues) + len(orphan_issues)
+                 + len(conn_issues))
     if total_all == 0:
         log(f"  ALL CLEAR!")
     else:
