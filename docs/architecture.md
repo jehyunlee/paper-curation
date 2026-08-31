@@ -35,7 +35,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 카테고리별 논문 목록 + 리뷰 |
-| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: 임베딩 top-20 후보 → Sonnet이 관계 유형 + 한국어 이유 선별. 망 장애에 강건 — multi-round 재시도(막힌 배치만), 연결 0개 논문 우선 처리(priority-first), 그래도 남으면 `--local-fallback`(Option)으로 로컬 모델이 완결</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
+| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: hybrid 후보 검색 — SPECTER2 코사인 순위와 제목·저자 BM25 순위를 각각 매겨 RRF(<code>k=60</code>, Deep Research 인덱스와 같은 상수)로 융합한다. 코사인 단독이면 같은 제목 시리즈의 후속편이라도 기여 내용이 다른 분야로 옮겨간 순간 후보 창 밖으로 밀려난다. Sonnet은 후보 **제목까지 보고** 관계 유형 + 한국어 이유를 쓴다. 망 장애에 강건 — multi-round 재시도(막힌 배치만), 응답 JSON이 깨져도 논문 단위로 살려내 배치 전체를 잃지 않음, 연결 0개 논문 우선 처리(priority-first), 그래도 남으면 `--local-fallback`(Option)으로 로컬 모델이 완결</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
 | **처리 (Option O-2, `--insights`)** | <ul><li>크로스카테고리 Research Insights 분석 (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>네트워크 시각화(<code>network.html</code>) 재생성</li></ul> |
 | **출력** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
