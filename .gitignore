@@ -70,12 +70,18 @@ pipeline/eval/results/
 !operations/price/*.html
 
 # Reusable report sources and editable styles; generated build/output stay local.
+# 예외: 공개용 기관 정규화 표. 서지 DB 에서 저자·논문 정보를 전부 빼고 기관
+# 매핑만 남긴 산출물이라 저장소에 둔다 (pipeline/export_institutions_public.py
+# 가 생성, pipeline/tests/test_export_institutions_public.py 가 유출을 막는다).
 !reports/
 !reports/source/
 !reports/source/*.md
 !reports/styles/
 !reports/styles/*.css
-reports/build/
+reports/build/*
+!reports/build/
+!reports/build/institutions_public.csv
+!reports/build/institutions_public.xlsx
 reports/output/
 
 # Documentation (whitelist specific service files below)
