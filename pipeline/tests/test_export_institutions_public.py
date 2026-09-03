@@ -21,9 +21,12 @@ Run:
 """
 
 import os
+import re
 import sys
+import zipfile
 import unittest
 
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from export_institutions_public import (  # noqa: E402
     clean_raw_name, is_publishable_raw,
@@ -129,6 +132,57 @@ class ExportShapeTests(unittest.TestCase):
         for raw in ("", "   ", "12", "3,", "*†"):
             self.assertFalse(publishable(raw), repr(raw))
 
+
+
+class ShippedArtifactTests(unittest.TestCase):
+    """커밋되는 산출물 **자체**를 훑는다. 순수 함수 테스트로는 못 잡는다.
+
+    2026-09-01: 깨끗하게 생성해 검사까지 통과한 xlsx 를 Excel 로 한 번 열어
+    저장하자 Excel 이 `docProps/core.xml` 에 계정 실명을, `xl/workbook.xml` 에
+    `x15ac:absPath` 로 저장 폴더 절대경로를 심었다. 셀 값은 그대로였으므로
+    시트만 읽는 검사는 통과했다. zip 내부 전체를 봐야 한다.
+    """
+
+    CSV = os.path.join(ROOT, "reports", "build", "institutions_public.csv")
+    XLSX = os.path.join(ROOT, "reports", "build", "institutions_public.xlsx")
+
+    EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w]{2,}")
+    ORCID = re.compile(r"\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b")
+    # 운영자 홈 경로 · 클라우드 동기화 경로 · Windows 절대경로
+    PATHY = re.compile(r"/Users/|/home/[a-z]|CloudStorage|GoogleDrive|[A-Z]:\\\\|Zotero")
+
+    def _scan(self, blob, where):
+        self.assertEqual(self.EMAIL.findall(blob)[:3], [], f"{where}: 이메일")
+        self.assertEqual(self.ORCID.findall(blob)[:3], [], f"{where}: ORCID")
+        self.assertEqual(self.PATHY.findall(blob)[:3], [], f"{where}: 경로")
+
+    def test_csv_carries_no_pii(self):
+        if not os.path.exists(self.CSV):
+            self.skipTest("export not generated")
+        with open(self.CSV, encoding="utf-8-sig") as f:
+            self._scan(f.read(), "csv")
+
+    def test_xlsx_archive_carries_no_pii(self):
+        """셀이 아니라 zip 안의 모든 XML 을 본다 — 공유문자열·문서속성 포함."""
+        if not os.path.exists(self.XLSX):
+            self.skipTest("export not generated")
+        blob = []
+        with zipfile.ZipFile(self.XLSX) as z:
+            for name in z.namelist():
+                blob.append(z.read(name).decode("utf-8", "replace"))
+        self._scan("\n".join(blob), "xlsx archive")
+
+    def test_xlsx_has_no_operator_identity(self):
+        if not os.path.exists(self.XLSX):
+            self.skipTest("export not generated")
+        with zipfile.ZipFile(self.XLSX) as z:
+            core = z.read("docProps/core.xml").decode("utf-8", "replace")
+            book = z.read("xl/workbook.xml").decode("utf-8", "replace")
+        self.assertNotIn("absPath", book, "Excel 이 저장 폴더 절대경로를 심었다")
+        for tag in ("creator", "lastModifiedBy"):
+            m = re.search(rf"<(?:\w+:)?{tag}>([^<]*)<", core)
+            if m:
+                self.assertEqual(m.group(1), "paper-curation", f"docProps {tag}")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

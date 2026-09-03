@@ -368,7 +368,7 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 ## External Dependencies
 
 - **Zotero Web API**: Collection names and API key are configured in `config.json`
-- **Anthropic API**: Codex Haiku/Sonnet for classification, reviews, summaries, and insights (`ANTHROPIC_API_KEY` env var). Deep Research UI도 같은 키를 사용 — 빌드 시 환경변수에서 읽어 HTML에 주입.
+- **Anthropic API** (`ANTHROPIC_API_KEY`): 리뷰 `claude-sonnet-5`(`WRITE_REVIEW_MODEL`, 2026-07-02 에 Haiku 에서 전환), 서브토픽 작명·연결·insights `claude-sonnet-5`, 타임라인 내러티브 `claude-opus-5`, 카테고리 요약·Figure 비전 심사·타임라인 이미지 심사 `claude-haiku-4-5`. **분류(`classify_papers`)는 LLM 을 전혀 호출하지 않는다** — HDBSCAN `approximate_predict` 다. Deep Research UI 도 같은 키를 쓴다(빌드 시 환경변수에서 읽어 HTML 에 주입).
 - **Google Gemini API**: Figure validation in `pipeline/run_update_force.py`, TTS for Audio Overview, and **Deep Research embeddings** — `gemini-embedding-001` (`output_dimensionality=768`, `task_type=RETRIEVAL_DOCUMENT` for the index in `pipeline/build_search_index.py`, `RETRIEVAL_QUERY` for queries). Query embeddings are served to readers by the worker `/api/embed` route (deployed) or `pipeline/serve_local.py` (local), so readers need no key for retrieval. Key from `GOOGLE_API_KEY` env var or `config.json`. **Gotcha**: non-3072 dims come back non-normalized — L2-normalize before int8 quantization.
 - **OpenAI API (optional)**: reader BYOK answer generation + `extract_insights` cross-category fallback. No longer required for the search index. Key from `OPENAI_API_KEY` env var or the `openai_api_key` field in `config.json`.
 - **PyMuPDF (fitz)**: PDF text extraction and figure rendering

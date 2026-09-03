@@ -18,7 +18,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 추출된 텍스트 + Figure |
-| **처리** | <ul><li>Claude Haiku가 한국어 리뷰 6개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
+| **처리** | <ul><li>Claude Sonnet 5가 한국어 리뷰 6개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
 | **출력** | <ul><li><code>papers/{slug}/review.md</code></li><li><code>papers/{slug}/index.html</code></li></ul> |
 | **활용** | 브라우저에서 리뷰 열람, Figure 인라인 표시, Related Papers 자동 연결 |
 
@@ -170,9 +170,11 @@ Tier 1~3 에서는 worker 수를 낮춰 ITPM cap 을 피해야 합니다.
 
 LLM 응답의 JSON 파싱 흔들림을 0 으로 만들기 위해 Anthropic tool-use schema 를 강제합니다. SDK 가 schema mismatch 시 자동 재시도하므로 post-hoc fixer (구 `fix_python_list_literals` / `fix_figure_paths` / `fix_evaluation_format`) 가 모두 폐기됐습니다.
 
+단, **스키마 강제가 모델이 그 스키마를 채운다는 보장은 아닙니다.** `claude-sonnet-5` 는 `emit_review` 를 호출하면서 XML 태그 리뷰를 한 필드에 통째로 밀어넣는 경우가 있고, 그러면 나머지 섹션이 비고 점수가 기본값 3/3/3/3/3 이 됩니다. 이 모델로 전환한 뒤 실제로 review.md 509 편이 그렇게 깨졌습니다. 그래서 두 겹을 둡니다 — `_review_response_is_complete` 가 부분 응답을 **캐시에 넣지 않고**(넣으면 review.md 를 지워도 같은 캐시가 재생됩니다), `_salvage_review_data` 가 tool-parameter 문법을 정규화해 필드를 되찾습니다. 가드 도입 전에 기록된 파일은 `salvage_reviews.py` 가 `.llm_cache` 원본에서 복구합니다.
+
 | 호출처 | tool 이름 | 모델 |
 |---|---|---|
-| `write_review` (논문 1편 리뷰 JSON) | `emit_review` | Haiku |
+| `write_review` (논문 1편 리뷰 JSON) | `emit_review` | Sonnet 5 |
 | `extract_insights.extract_cross_category_insights` | `emit_insights` | Sonnet (+ OpenAI/Gemini fallback) |
 | `extract_insights._call_connections_batch` (Anthropic 분기) | `emit_connections` | Sonnet (+ OpenAI `response_format=json_object` fallback) |
 

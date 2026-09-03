@@ -148,6 +148,15 @@ def write_xlsx(rows, path):
     from openpyxl.utils import get_column_letter
 
     wb = Workbook()
+    # 문서 속성을 명시적으로 채운다. openpyxl 기본값은 무해하지만, 이 파일을
+    # Excel 로 한 번 열어 저장하면 Excel 이 `docProps/core.xml` 에 계정 실명을,
+    # `xl/workbook.xml` 에 `x15ac:absPath` 로 저장 폴더 **절대경로**를 심는다.
+    # 실제로 커밋 직전 판본에 `<cp:lastModifiedBy>Jehyun Lee</cp:lastModifiedBy>`
+    # 와 `/Users/…/reports/build/` 가 들어가 있었다. 셀만 검사하면 못 본다 —
+    # 그래서 테스트가 zip 내부 전체를 훑는다.
+    wb.properties.creator = "paper-curation"
+    wb.properties.lastModifiedBy = "paper-curation"
+    wb.properties.title = "Institution normalization table"
     ws = wb.active
     ws.title = "기관 정규화"
     ws.append(COLUMNS)

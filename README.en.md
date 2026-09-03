@@ -166,7 +166,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | | Description |
 |---|---|
 | **Input** | Extracted text + figures |
-| **Processing** | <ul><li>Claude Haiku writes 6-section Korean reviews (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>Technical jargon kept verbatim</li><li>Concurrent workers (default 16)</li></ul> |
+| **Processing** | <ul><li>Claude Sonnet 5 writes 6-section Korean reviews (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>Technical jargon kept verbatim</li><li>Concurrent workers (default 16)</li></ul> |
 | **Output** | <ul><li><code>papers/{slug}/review.md</code></li><li><code>papers/{slug}/index.html</code></li></ul> |
 | **Usage** | Browse reviews in browser with inline figures and auto-linked related papers |
 
@@ -401,7 +401,7 @@ For calling parts of the pipeline from other code or tuning performance.
 
 **Category-level ThreadPool parallelism** — LLM I/O stages parallelize by category (~4× wall-clock). Worker counts via env vars: `CAT_SUMMARY_PARALLEL` (8, Haiku), `TIMELINE_NARRATIVE_PARALLEL` (8, Opus), `TIMELINE_IMAGE_PARALLEL` (4, Gemini image), `EXTRACT_INSIGHTS_PARALLEL` (4, Sonnet). Lower these under Tier 1–3.
 
-**Tool-use schema enforcement** — LLM responses go through Anthropic tool-use schemas (`emit_review` Haiku, `emit_insights` Sonnet, `emit_connections` Sonnet) so JSON parse jitter is zero and post-hoc fixers were deleted.
+**Tool-use schema enforcement** — LLM responses go through Anthropic tool-use schemas (`emit_review` Sonnet 5, `emit_insights` Sonnet, `emit_connections` Sonnet) so JSON parse jitter is zero and post-hoc fixers were deleted. Sonnet 5 does sometimes invoke `emit_review` and put the whole XML-tagged review into one field instead of filling the schema; `_review_response_is_complete` keeps such a reply out of the cache and `_salvage_review_data` reparses it (`salvage_reviews.py` repairs files written before that guard existed).
 
 **Figure pre-validator — `api/extract.pre_validate_figure`** — cheap heuristics (file < 4 KB, dimension < 100 px, grayscale variance < 30) skip ~30% of Gemini figure-validation calls, returning Gemini's response shape so callers don't branch.
 
