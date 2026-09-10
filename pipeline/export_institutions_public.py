@@ -37,6 +37,8 @@ import os
 import re
 import sqlite3
 import sys
+import zipfile
+from xml.etree import ElementTree
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config_loader import PROJECT_ROOT
@@ -60,11 +62,21 @@ _ORG_WORD = re.compile(
 # "Firstname Lastname" 꼴. 전부 대문자인 약어(ETH, CMU)는 걸리지 않는다.
 _NAMEISH = re.compile(r"\b[A-Z][a-z]{1,15}\s+[A-Z][a-z]{1,15}\b")
 _PII = re.compile(r"[\w.+-]+@[\w-]+\.[\w]{2,}|\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b")
+_LOCAL_PATH = re.compile(
+    r"(?:/Users/|/home/|(?<![A-Za-z0-9])[A-Za-z]:[\\/]|"
+    r"(?:Google)?Drive|CloudStorage|Zotero)",
+    re.I,
+)
 
 MAX_RAW_CHARS = 160
 
 COLUMNS = ["논문 기관명", "실제 기관명", "상위 기관명", "국가",
            "ROR ID", "논문 수", "근거", "검토 필요"]
+_XLSX_SAFE_MEMBERS = re.compile(
+    r"^(?:\[Content_Types\]\.xml|_rels/\.rels|docProps/(?:app|core)\.xml|"
+    r"xl/(?:workbook\.xml|styles\.xml|theme/theme1\.xml|worksheets/sheet\d+\.xml|"
+    r"_rels/workbook\.xml\.rels))$"
+)
 
 
 def clean_raw_name(raw: str) -> str:
@@ -134,8 +146,54 @@ def fetch_rows(db_path):
     return rows, redacted
 
 
+def validate_public_rows(rows):
+    """Reject data outside the deliberately small public export contract."""
+    for row in rows:
+        if set(row) != set(COLUMNS):
+            raise ValueError("public export row has non-public fields")
+        if type(row["논문 수"]) is not int or row["논문 수"] < 0:
+            raise ValueError("public export paper count must be a non-negative integer")
+        for field in COLUMNS:
+            value = row[field]
+            if field == "논문 수":
+                continue
+            if not isinstance(value, str):
+                raise ValueError(f"public export field {field!r} must be text")
+            if value.lstrip().startswith(("=", "+", "-", "@")):
+                raise ValueError(f"spreadsheet formula prefix in public export field {field!r}")
+            if _PII.search(value) or _LOCAL_PATH.search(value):
+                raise ValueError(f"private data in public export field {field!r}")
+
+
+def validate_public_xlsx(path):
+    """Check the generated OOXML package, including metadata and relationships."""
+    with zipfile.ZipFile(path) as archive:
+        names = archive.namelist()
+        if any(not _XLSX_SAFE_MEMBERS.fullmatch(name) for name in names):
+            raise ValueError("unexpected XLSX member in public export")
+        for name in names:
+            content = archive.read(name).decode("utf-8", "replace")
+            if _PII.search(content) or _LOCAL_PATH.search(content):
+                raise ValueError(f"private data in XLSX member {name!r}")
+            root = ElementTree.fromstring(content)
+            for element in root.iter():
+                local_name = element.tag.rsplit("}", 1)[-1]
+                if local_name in {"creator", "lastModifiedBy"} and (element.text or "") not in {"", "paper-curation"}:
+                    raise ValueError("private author metadata in public XLSX export")
+                for value in [element.text or "", *element.attrib.values()]:
+                    if _PII.search(value) or _LOCAL_PATH.search(value):
+                        raise ValueError("private decoded metadata in public XLSX export")
+            if any(element.tag.rsplit("}", 1)[-1] == "f" for element in root.iter()):
+                raise ValueError("formula in public XLSX export")
+            if name.endswith(".rels"):
+                for rel in root:
+                    if rel.attrib.get("TargetMode") == "External":
+                        raise ValueError("external XLSX relationship in public export")
+
+
 def write_csv(rows, path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    validate_public_rows(rows)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLUMNS)
         w.writeheader()
@@ -143,6 +201,7 @@ def write_csv(rows, path):
 
 
 def write_xlsx(rows, path):
+    validate_public_rows(rows)
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font, PatternFill
     from openpyxl.utils import get_column_letter
@@ -172,8 +231,9 @@ def write_xlsx(rows, path):
         ws.column_dimensions[get_column_letter(i)].width = widths[col]
     ws.freeze_panes = "A2"
     ws.auto_filter.ref = ws.dimensions
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     wb.save(path)
+    validate_public_xlsx(path)
 
 
 def main():

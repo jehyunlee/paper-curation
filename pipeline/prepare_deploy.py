@@ -270,26 +270,126 @@ def _search_index_freshness(topic):
     except Exception as exc:
         return {"topic": topic, "fresh": False, "reason": f"invalid index JSON: {exc}"}
 
-    emb_name = index.get("emb_file") or "_search_index_emb.bin"
-    emb_path = topic_dir / emb_name
-    if not emb_path.exists():
-        return {"topic": topic, "fresh": False, "reason": f"embedding sidecar missing: {emb_name}"}
+    if not isinstance(index, dict):
+        return {"topic": topic, "fresh": False, "reason": "index JSON root must be an object"}
+
+    retrieval_mode = index.get("retrieval_mode")
+    result_base = {"topic": topic, "retrieval_mode": retrieval_mode}
+    if retrieval_mode == "bm25":
+        chunks = index.get("chunks")
+        papers = index.get("papers")
+        sparse_problems = []
+        if "model" not in index or index["model"] is not None:
+            sparse_problems.append("model must be null")
+        if type(index.get("dim")) is not int or index["dim"] != 0:
+            sparse_problems.append("dim must be 0")
+        if "quant" not in index or index["quant"] is not None:
+            sparse_problems.append("quant must be null")
+        if "emb_file" in index:
+            sparse_problems.append("emb_file must be absent")
+        if not isinstance(chunks, list):
+            sparse_problems.append("chunks must be an array")
+        elif type(index.get("count")) is not int or index["count"] != len(chunks):
+            sparse_problems.append("count must match chunks")
+        elif any(not isinstance(chunk, dict) or "emb" in chunk for chunk in chunks):
+            sparse_problems.append("chunks must not contain embeddings")
+        if not isinstance(papers, dict):
+            sparse_problems.append("papers must be an object")
+        if sparse_problems:
+            return {
+                **result_base,
+                "fresh": False,
+                "reason": "malformed bm25 index metadata: " + "; ".join(sparse_problems),
+            }
+    elif retrieval_mode == "hybrid":
+        chunks = index.get("chunks")
+        if not isinstance(index.get("model"), str) or not index["model"].strip():
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: model must be non-empty",
+            }
+        if type(index.get("dim")) is not int or index["dim"] <= 0:
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: dim must be positive",
+            }
+        if index.get("quant") != "int8-l2norm":
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: quant must be int8-l2norm",
+            }
+        if not isinstance(index.get("emb_file"), str) or not index["emb_file"].strip():
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: emb_file must be non-empty",
+            }
+        if not isinstance(chunks, list):
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: chunks must be an array",
+            }
+        if type(index.get("count")) is not int or index["count"] != len(chunks):
+            return {
+                **result_base, "fresh": False,
+                "reason": "malformed hybrid index metadata: count must match chunks",
+            }
+    elif retrieval_mode is not None:
+        return {
+            **result_base,
+            "fresh": False,
+            "reason": f"unsupported retrieval_mode: {retrieval_mode!r}",
+        }
+
+    if retrieval_mode != "bm25":
+        emb_name = index.get("emb_file") or "_search_index_emb.bin"
+        emb_path = topic_dir / emb_name
+        if not emb_path.exists():
+            return {
+                **result_base,
+                "fresh": False,
+                "reason": f"embedding sidecar missing: {emb_name}",
+            }
 
     expected = index.get("source_fingerprint")
     if not expected:
+        if retrieval_mode == "bm25":
+            return {
+                **result_base,
+                "fresh": False,
+                "reason": "bm25 index source_fingerprint missing",
+            }
         return {
-            "topic": topic,
+            **result_base,
             "fresh": None,
             "reason": "index predates source fingerprint; rebuild recommended",
         }
 
     from build_search_index import source_fingerprint
+    source_options = index.get("source_options", {})
+    if (
+        not isinstance(source_options, dict)
+        or set(source_options) - {"include_text", "include_personal_notes"}
+        or any(type(value) is not bool for value in source_options.values())
+    ):
+        return {**result_base, "fresh": False, "reason": "invalid source_options"}
     actual, source_count = source_fingerprint(
         topic, (index.get("papers") or {}).keys(),
-        docs_dir=DOCS_DIR, papers_dir=PAPERS_DIR)
+        docs_dir=DOCS_DIR, papers_dir=PAPERS_DIR, **source_options)
     fresh = actual == expected
+    if retrieval_mode == "bm25":
+        recorded_count = index.get("source_file_count")
+        if type(recorded_count) is not int or recorded_count != source_count:
+            return {
+                **result_base,
+                "fresh": False,
+                "reason": (
+                    "bm25 index source_file_count does not match current sources "
+                    f"({recorded_count!r} != {source_count})"
+                ),
+                "source_file_count": source_count,
+            }
     return {
-        "topic": topic,
+        **result_base,
         "fresh": fresh,
         "reason": "" if fresh else "indexed source files changed after build",
         "source_file_count": source_count,
@@ -306,7 +406,10 @@ def _preflight_search_indexes(topics=None):
         for result in stale:
             print(f"    - {result['topic']}: {result['reason']}")
         print("\n  Fix: rebuild each affected index before deploying:")
-        print("       PYTHONUTF8=1 python pipeline/build_search_index.py --topic <topic>")
+        for result in stale:
+            mode_arg = " --mode bm25" if result.get("retrieval_mode") == "bm25" else ""
+            print("       PYTHONUTF8=1 python pipeline/build_search_index.py "
+                  f"--topic {result['topic']}{mode_arg}")
         raise SystemExit("Refusing to deploy: stale search index")
     unknown = [r for r in results if r["fresh"] is None]
     for result in unknown:
@@ -432,55 +535,7 @@ def _sync_gh_pages_stubs(topics, cf_url=CF_BASE_URL):
         )
 
 
-def _reinject_local_keys(docs_dir=None, *, verbose=True):
-    """배포용 strip 으로 비워진 로컬 HTML 키 슬롯을 env→config 값으로 재주입한다.
 
-    키 값은 build 와 동일한 env→config 출처에서 결정론적으로 재유도하므로, deploy
-    가 (kill -9 등으로) Step 6 strip 과 finally restore 사이에서 죽어 로컬 working
-    tree 가 strip 된 채 남아도 별도 백업 없이 복원된다. 배포본에는 영향이 없다 —
-    strip 은 항상 wrangler deploy 직전에 다시 실행되기 때문.
-
-    재주입 대상: _GEMINI_KEY(Audio Overview) · _ANTHROPIC_KEY · _OPENAI_KEY
-    (Deep Research) · _LOCAL_EMAILS(로컬 이메일). 값이 없으면 해당 슬롯은 건너뛴다.
-    반환: 실제로 수정된 파일 수.
-    """
-    docs_dir = Path(docs_dir or DOCS_DIR)
-    try:
-        cfg = load_config() or {}
-    except Exception:
-        cfg = {}
-    gemini = (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-              or cfg.get("gemini_api_key", "") or cfg.get("google_api_key", "")) or ""
-    anthropic = (os.environ.get("ANTHROPIC_API_KEY") or cfg.get("anthropic_api_key", "")) or ""
-    openai = (os.environ.get("OPENAI_API_KEY") or cfg.get("openai_api_key", "")) or ""
-    raw_emails = (os.environ.get("PAPER_CURATION_LOCAL_EMAILS", "")
-                  or ",".join(cfg.get("local_emails", []) or []))
-    emails = [e.strip() for e in raw_emails.split(",") if e.strip()]
-    emails_js = "[" + ", ".join(json.dumps(e) for e in emails) + "]"
-
-    n = 0
-    for html_path in docs_dir.rglob("index.html"):
-        try:
-            text = html_path.read_text(encoding="utf-8")
-        except OSError:
-            continue
-        new = text
-        if gemini:
-            new = new.replace('_GEMINI_KEY = ""', '_GEMINI_KEY = ' + json.dumps(gemini))
-        if anthropic:
-            new = re.sub(r'((?:const|let|var)\s+_ANTHROPIC_KEY\s*=\s*)""',
-                         lambda m: m.group(1) + json.dumps(anthropic), new)
-        if openai:
-            new = re.sub(r'((?:const|let|var)\s+_OPENAI_KEY\s*=\s*)""',
-                         lambda m: m.group(1) + json.dumps(openai), new)
-        if emails:
-            new = new.replace('window._LOCAL_EMAILS = []', 'window._LOCAL_EMAILS = ' + emails_js)
-        if new != text:
-            html_path.write_text(new, encoding="utf-8")
-            n += 1
-    if verbose:
-        print(f"  로컬 HTML 키 재주입: {n} 파일 (env→config)")
-    return n
 
 
 def _deploy_slugs(topics):
@@ -547,15 +602,6 @@ def _run_deploy(topic="ai4s", *, quality=90, dry_run=False, push=False,
                 topics=None, workers=8, cf_strict=False):
     """Programmatic entrypoint for prepare_deploy."""
     topic_dir = str(get_topic_dir(topic))
-
-    # Self-heal: 이전 deploy 가 Step 6 strip 과 finally restore 사이에서 죽으면
-    # (예: kill -9) 로컬 HTML 이 키-strip 된 채 남아 Audio Overview/Deep Research 가
-    # 로컬에서 깨진다. 본격 작업 전에 env→config 로 재주입해 복원한다 (이미 키가 있으면
-    # no-op). 배포 직전 Step 6 가 다시 strip 하므로 배포본에는 영향 없음.
-    if not dry_run:
-        _healed = _reinject_local_keys(DOCS_DIR, verbose=False)
-        if _healed:
-            print(f"  [self-heal] 이전 배포 중단으로 비워진 로컬 키 복원: {_healed} HTML")
 
     print("Step 1: .gitignore")
     if not dry_run:
@@ -836,12 +882,7 @@ def main():
     parser.add_argument("--workers", type=int, default=8, help="Parallel workers for conversion")
     parser.add_argument("--cf-strict", action="store_true",
                         help="Abort (no master commit/push) if Cloudflare 200-OK verification fails/times out")
-    parser.add_argument("--restore-keys", action="store_true",
-                        help="strip 으로 비워진 로컬 HTML 키 슬롯을 env→config 로 재주입하고 종료 (배포 중단 복구 도구)")
     args = parser.parse_args()
-    if args.restore_keys:
-        _reinject_local_keys(DOCS_DIR)
-        return
     _run_deploy(topic=args.topic, quality=args.quality, dry_run=args.dry_run,
                 push=args.push, topics=args.topics, workers=args.workers,
                 cf_strict=args.cf_strict)

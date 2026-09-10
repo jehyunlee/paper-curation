@@ -4,7 +4,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-Academic paper curation pipeline. Papers are fetched from Zotero, reviewed via Codex/Gemini APIs, classified into categories, and published as a searchable HTML index with per-paper review pages. Topic pages also expose a **Deep Research UI** that performs client-side RAG against a pre-built embedding index (Google `gemini-embedding-001`, 768d int8, task-typed) and streams Codex answers with `[ref:N]` citations and inline figures. Retrieval is hybrid BM25+dense fused with RRF and LLM re-ranked; query embeddings are computed for the reader by the worker `/api/embed` route (deployed) or `pipeline/serve_local.py` (local), so readers need no API key for retrieval — keys (BYOK) are only for answer generation.
+검색은 두 모드다. 기본 `hybrid`는 아래의 Google 임베딩 경로이고,
+`build_search_index.py --mode bm25`는 API 키·NumPy·벡터 없이 내용 인덱스를 만든다.
+BM25 인덱스의 브라우저 답변은 Google 질의 임베딩 없이 선택한 LLM만 사용한다.
+
+Academic paper curation pipeline. The P1 shared single-PDF review endpoint uses Anthropic `claude-sonnet-5` only; the existing Chat/Deep Research surfaces remain independently multi-provider (Anthropic/OpenAI/Google). The explicit full workflow can fetch papers from Zotero, review and classify them, and publish a searchable HTML index with per-paper review pages. Topic pages expose a **Deep Research UI** that performs client-side RAG against a pre-built embedding index (Google `gemini-embedding-001`, 768d int8, task-typed) and streams provider-selected answers with `[ref:N]` citations and inline figures. Retrieval is hybrid BM25+dense fused with RRF and LLM re-ranked; query embeddings are computed for the reader by the worker `/api/embed` route (deployed) or `pipeline/serve_local.py` (local), so readers need no API key for retrieval — keys (BYOK) are only for answer generation.
 
 - **Topics**: Configured per-user in `config.json` (e.g., `ai4s`, `scisci`, `bioml`). Per-topic Core-1 search keywords are configurable via the `search_keywords` block (`{topic: {primary: [...], secondary: [...]}}`); `ai4s`/`scisci` ship built-in defaults, so new topics add their own there.
 - **Deploy architecture** (split hosting):
@@ -14,7 +18,7 @@ Academic paper curation pipeline. Papers are fetched from Zotero, reviewed via C
   - User access: `jehyunlee.github.io/paper-curation/{topic}/` → gh-pages stub → Cloudflare URL → full content.
 - **Language**: All reviews are written in Korean with technical terms in English
 
-## Installation Flow (Codex)
+## Installation Flow (Claude Code)
 
 사용자가 "여기에 paper-curation을 설치해줘: https://github.com/jehyunlee/paper-curation" 같은 요청을 하면, 아래 순서대로 진행한다.
 
@@ -22,47 +26,118 @@ Academic paper curation pipeline. Papers are fetched from Zotero, reviewed via C
 ```bash
 git clone https://github.com/jehyunlee/paper-curation.git
 cd paper-curation
-pip install anthropic google-genai pymupdf Pillow requests opendataloader-pdf
+pip install -r requirements.txt
 ```
 
-### Step 2: config.json 생성
-사용자에게 아래 정보를 **하나씩 질문**하고 config.json을 생성한다:
-1. **Zotero API Key** — **환경변수 `ZOTERO_API_KEY` 전용.** `config.json` 에 저장하지 않고 묻지도 않는다. 없으면 발급 링크를 안내하고 설치를 중단한다 (과거 이 키가 소스에 하드코딩된 채 public master 로 유출된 사고가 있었다 — 2026-08-13)
-2. **이메일** — Zotero/Unpaywall용
-3. **Zotero 컬렉션 이름** — "Zotero에서 큐레이션할 컬렉션 이름이 뭔가요?"
-4. **Topic alias** — "앞으로 이 Collection의 Paper Curation을 운영하려면 부르기 편한 이름을 하나 정하는 게 좋습니다. 짧은 이름을 하나 지어주세요. 뭐라고 부를까요?" (예: `bioml`, `climate`)
-5. **Zotero PDF 저장 경로**
-6. **PaperBanana 경로** — "PaperBanana가 이미 설치된 경로가 있으면 알려주세요. 없으면 자동으로 클론합니다." (없으면 생략, setup.py가 자동 클론)
-7. **GitHub 설정** — 선택사항 (정적 호스팅 자동 배포용), 없으면 생략
-8. **GOOGLE_API_KEY** — Deep Research 검색 인덱스 빌드(`build_search_index.py`)가 Google `gemini-embedding-001` 로 임베딩하므로 **필수**다 (Figure 검증·TTS 와 공용). 환경변수에 없으면 setup.py가 직접 입력받아 `config.json` 에 저장한다. `OPENAI_API_KEY` 는 **선택** — 독자 BYOK 답변과 insights fallback 에만 쓰이고, 없어도 설치가 진행된다.
-
-### Step 3: setup.py 실행 및 검증
+### Step 2: Keyless setup
 ```bash
 PYTHONUTF8=1 python pipeline/setup.py
 ```
-setup.py는 6단계 설치 후 곧바로 첫 파이프라인을 실행한다:
-- [1/6] config.json 로드 (없으면 인터랙티브 생성)
-- [2/6] 환경변수 확인 — **`ANTHROPIC_API_KEY` 와 `GOOGLE_API_KEY` (검색 임베딩 `gemini-embedding-001` · Figure 검증 · TTS) 는 필수**. `OPENAI_API_KEY` 는 선택 (독자 BYOK 답변 · insights fallback) 이라 없어도 경고만.
-- [3/6] Zotero 연결 테스트 (User ID + 컬렉션 검증)
-- [4/6] PaperBanana 확인 (없으면 자동 클론)
-- [5/6] SKILL.md 생성
-- [6/6] SKILL.md를 `~/.Codex/skills/paper-curation/` 에 설치
-- [Step 7] `run_update_force.py --topic {alias}` 자동 실행 → Zotero 가져오기 → 리뷰 → 분류 → 인덱스 → Deep Research 검색 인덱스 → (GitHub 설정 시) 배포까지 한 번에. `--no-run` 플래그로 이 자동 실행은 건너뛸 수 있다.
 
-### 컬렉션 오류 처리
-setup.py 출력에 `[COLLECTION_ERROR]`가 포함되면 컬렉션 이름이 잘못된 것이다.
-출력에서 `available` 목록을 추출하여 사용자에게 보여주고 올바른 이름을 다시 질문한다:
+기본 setup은 완전 비대화형이다. `{"zotero":{"collections":{}}}` 형태의 최소
+config를 만들고 `docs/papers/`를 생성한 뒤 SKILL.md를 생성·설치한다. 기존
+non-secret config field는 보존하고 저장 시 legacy `zotero.api_key`만 제거한다.
+API 키를 묻거나 env에서 config로 복사하거나 새로 저장하지 않는다.
+`--no-install`은 SKILL 설치만 생략하며 SKILL 생성/설치 실패는 nonzero다.
 
-> "Zotero에서 '{입력한 이름}' 컬렉션을 찾을 수 없습니다. 사용 가능한 컬렉션은 다음과 같습니다:
-> `컬렉션A`, `컬렉션B`, `컬렉션C`, ...
-> 어떤 컬렉션을 사용하시겠어요?"
+기본 setup에는 network call, Zotero 연결, PaperBanana clone, clustering probe,
+전체 pipeline 실행이 없다.
 
-사용자가 올바른 이름을 알려주면 config.json을 수정하고 setup.py를 다시 실행한다.
+### Step 3: Optional feature requests
 
-### 설치 완료 후 안내
-setup.py 출력의 "다음 단계" 섹션을 사용자에게 전달한다. 특히:
-- 파이프라인 실행 시간이 논문 편수에 따라 크게 달라진다는 점을 안내
-- 사용자의 topic alias가 반영된 실행 명령어를 보여준다
+기본 setup은 keyless다. 선택 기능은 공유 레지스트리에서 먼저 계획하고 명시적으로
+실행한다:
+
+```bash
+python pipeline/run_feature.py --list
+python pipeline/run_feature.py --request feature-request.json
+python pipeline/run_feature.py --request feature-request.json --execute
+```
+
+환경변수가 있으면 OS keyring보다 우선한다. 그렇지 않으면 `paper-curation`
+keyring service의 `credential:<provider>` reference를 사용한다. secret을 argv,
+config, request JSON, 로그에 넣지 말고 `credentials.py`의 stdin 입력만 사용한다.
+요율을 알 수 없거나 budget cap을 넘는 요청은 실행하지 않는다. publish/email은
+명시적 기능이며 cloud authorization, 수신자, export rights를 별도로 확인한다.
+
+```bash
+PYTHONUTF8=1 python pipeline/setup.py --check-feature review
+PYTHONUTF8=1 python pipeline/setup.py \
+  --check-feature zotero-sync --check-feature semantic-search
+```
+
+### Shared feature requests and local review
+
+```bash
+# list capabilities; request plans are read-only
+python pipeline/run_feature.py --list
+python pipeline/run_feature.py --request feature-request.json
+python pipeline/run_feature.py --request feature-request.json --execute
+```
+
+`--request` takes a JSON file path, never an inline JSON argument. Example file:
+
+```json
+{
+  "schema_version": 1,
+  "feature": "summary",
+  "params": {
+    "sources": [{
+      "id": "test-record",
+      "title": "Synthetic validation record",
+      "text": "This synthetic software test contains twelve records. It is not a scientific publication."
+    }],
+    "question": "Report only the dataset size with an exact supporting quote."
+  },
+  "provider": "anthropic",
+  "credential_ref": "credential:anthropic",
+  "budget": {
+    "max_cost_usd": 1.00,
+    "input_per_million_usd": 3.00,
+    "output_per_million_usd": 15.00,
+    "max_output_tokens": 2000
+  }
+}
+```
+
+The response envelope is `{schema_version,feature,status,steps,outputs,provider?,
+model?,provenance?,error?,cost?}`. Unsupported runtime, capability, or permission
+remains explicit in `status`. Unknown pricing and budget-cap breaches block
+execution. Curio's module panel uses this registry; features remain independently
+requested, so a review does not automatically start collection, publish, or email.
+
+Review defaults to Anthropic Sonnet 5 without automatic fallback. OpenAI and Google
+are explicit review-provider choices using the reviewed schema. Ollama
+`qwen3.8:27b-mlx` supports summary and chat only, never reviews.
+
+Credentials are environment overrides first, then OS keyring service
+`paper-curation` via `credential:<provider>` references. Plaintext, null, failed,
+and `keyrings.alt` backends fail safely; there is no plaintext config/file fallback.
+Never put a secret in argv, request JSON, config, logs, or UI. Store it interactively:
+
+```bash
+python -c 'import getpass,sys; sys.stdout.write(getpass.getpass())' | \
+  python pipeline/credentials.py --operation write --provider anthropic
+```
+
+Shared-corpus writers coordinate reservation, registration, and cancellation
+transactions through a common lock and refresh the Curio list. This does not make
+classification, search indexes, timelines, deployment, publication, or email
+automatic. Publication and email remain explicit operations; verify export rights,
+recipient, and cloud authorization separately.
+
+`keyword-search` and `semantic-search` accept `params.operation` of `query` or
+`build` (default `query`). `bibliography-update` is the independent local DB stage:
+`--changed-only --skip-zotero --offline --no-email` ingests changed records without
+Zotero sync, online enrichment, or email; enrichment is optional.
+
+### Comprehensive workflows remain explicit
+
+`pipeline/run_full.py --topic {alias} --mode curate --source zotero` 같은 기존 전체
+workflow는 별도 명령이며 Zotero/Anthropic/Google 등 그 workflow의 설정과
+environment credential이 필요하다. Email/deploy에는 Resend 등 해당 option의
+credential이 추가로 필요하다. Timeline에 쓸 PaperBanana도 운영자가 별도로
+설치·설정하며 setup이 clone하지 않는다.
 
 ## Architecture
 
@@ -263,7 +338,7 @@ arXiv 가 chronic 429/timeout 인 경우 `search_papers.py --skip-arxiv` 로 우
 - Completion reporting is part of the worker contract: the full run sends a Resend email to `jehyun.lee@gmail.com` when `RESEND_API_KEY` is available.
 ## Common Commands
 
-All scripts require `PYTHONUTF8=1` on Windows to avoid cp949 encoding issues. Single entrypoint is `pipeline/run_full.py` (3축: `--mode/--source/--images`); 개별 스크립트는 디버깅·복구용으로만 직접 호출.
+All scripts require `PYTHONUTF8=1` on Windows to avoid cp949 encoding issues. 전체 코퍼스 작업 진입점은 `pipeline/run_full.py` (`--mode/--source/--images`)이고, 단일 PDF 리뷰는 `pipeline/local_review.py`의 별도 plan/execute 경로를 사용한다. 로컬 리뷰는 현재 Python 3.12와 POSIX `fcntl` 잠금이 필요하다. 다른 개별 스크립트는 디버깅·복구용으로 직접 호출한다.
 
 ```bash
 # 주간 운영 — 검색 + Zotero 등록 + sync + 신규 리뷰
@@ -292,6 +367,11 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode retime --images all
 # Worker secrets (1회): wrangler secret put GOOGLE_API_KEY (/api/embed) + RESEND_API_KEY (/api/audio-email)
 PYTHONUTF8=1 python pipeline/run_full.py --topic humanoid --mode deploy
 
+# 키 없는 검색 인덱스 구축 — 기존 리뷰/논문 목록을 사용
+python pipeline/build_search_index.py --topic my_topic --mode bm25
+# --dry-run은 두 모드 모두 파일 변경/가짜 벡터 생성 없음
+python pipeline/build_search_index.py --topic my_topic --mode bm25 --dry-run
+
 # 에이전트/CLI 읽기 전용 검색 — 기본 _cross, 빌드/파일 변경 없음
 python pipeline/query_search_index.py --query "scientific discovery agents" --mode bm25 --json
 python pipeline/query_search_index.py --topic humanoid --query "VLA action tokenization" --mode hybrid --json
@@ -310,6 +390,12 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source web
 ```
 
 ### 개별 스크립트 (디버깅·감사·복구)
+
+검색 모드는 명시적으로 선택한다. BM25 인덱스의 `retrieval_mode`는 `bm25`, `dim`은 0,
+`model`/`quant`는 null이며 `emb_file`과 chunk 벡터는 없다. dense/hybrid 질의는 이를
+임베딩 호출 전에 거부한다. BM25 재구축은 기존 벡터/캐시를 삭제하지 않고, 배포 검사는
+선택된 sparse 모드를 Google 의존 hybrid로 자동 변경하지 않는다. 원문·개인 메모는
+로컬 전용 토픽에만 포함한다. 운영 코퍼스의 모드 전환/재구축은 별도 명시적 실행이다.
 
 ```bash
 # 오매칭 감사·복구
@@ -369,10 +455,10 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 
 ## External Dependencies
 
-- **Zotero Web API**: Collection names and API key are configured in `config.json`
-- **Anthropic API** (`ANTHROPIC_API_KEY`): 리뷰 `claude-sonnet-5`(`WRITE_REVIEW_MODEL`, 2026-07-02 에 Haiku 에서 전환), 서브토픽 작명·연결·insights `claude-sonnet-5`, 타임라인 내러티브 `claude-opus-5`, 카테고리 요약·Figure 비전 심사·타임라인 이미지 심사 `claude-haiku-4-5`. **분류(`classify_papers`)는 LLM 을 전혀 호출하지 않는다** — HDBSCAN `approximate_predict` 다. Deep Research UI 도 같은 키를 쓴다(빌드 시 환경변수에서 읽어 HTML 에 주입).
-- **Google Gemini API**: Figure validation in `pipeline/run_update_force.py`, TTS for Audio Overview, and **Deep Research embeddings** — `gemini-embedding-001` (`output_dimensionality=768`, `task_type=RETRIEVAL_DOCUMENT` for the index in `pipeline/build_search_index.py`, `RETRIEVAL_QUERY` for queries). Query embeddings are served to readers by the worker `/api/embed` route (deployed) or `pipeline/serve_local.py` (local), so readers need no key for retrieval. Key from `GOOGLE_API_KEY` env var or `config.json`. **Gotcha**: non-3072 dims come back non-normalized — L2-normalize before int8 quantization.
-- **OpenAI API (optional)**: reader BYOK answer generation + `extract_insights` cross-category fallback. No longer required for the search index. Key from `OPENAI_API_KEY` env var or the `openai_api_key` field in `config.json`.
+- **Zotero Web API**: Collection names are configured for the full workflow. Resolve `ZOTERO_API_KEY` or `credential:zotero` through the OS keyring; never store/read the key in `config.json`.
+- **Anthropic API**: Shared reviews default to `claude-sonnet-5` from the provider contract. Narrative/vision modules declare their own models and prerequisites. Credentials use environment/OS keyring, never generated HTML. Browser answers use explicit reader BYOK; classification itself remains non-LLM.
+- **Google Gemini API**: Figure validation in `pipeline/run_update_force.py`, TTS for Audio Overview, and **Deep Research embeddings** — `gemini-embedding-001` (`output_dimensionality=768`, `task_type=RETRIEVAL_DOCUMENT` for the index in `pipeline/build_search_index.py`, `RETRIEVAL_QUERY` for queries). Query embeddings are served to readers by the worker `/api/embed` route (deployed) or `pipeline/serve_local.py` (local), so readers need no key for retrieval. CLI credentials come from the `GOOGLE_API_KEY` process environment. **Gotcha**: non-3072 dims come back non-normalized — L2-normalize before int8 quantization.
+- **OpenAI API (optional)**: reader BYOK answer generation + `extract_insights` cross-category fallback. No longer required for the search index. CLI credentials come from the `OPENAI_API_KEY` process environment.
 - **PyMuPDF (fitz)**: PDF text extraction and figure rendering
 - **Pillow**: PNG→WebP conversion in `pipeline/prepare_deploy.py`
 - **Zotero PDF storage**: `config.json` 의 `zotero.pdf_dir`. 같은 라이브러리를 여러 머신에서
@@ -635,19 +721,19 @@ DOI 보유 논문에 대해 저자별 기관(ROR)·교신저자 플래그·OpenA
 리포트가 커버리지를 함께 출력하는 이유 — 일부만 수집된 피인용으로 순위를 매기면
 **수집된 논문이 먼저 올라올 뿐**이다.
 
-## paper-curio (Zotero 플러그인) — 두 번째 리뷰 생성기
+## paper-curio (Zotero 플러그인) — 공통 로컬 리뷰 실행기의 Desktop 진입점
 
 소스: `/Users/jehyunlee/Documents/내노트북/01_Work/01_Devs/AX/paper-curio` (TypeScript, Zotero 플러그인).
-앞으로 서지정보 DB 등록은 **실질적으로 이쪽을 통해 이루어진다**.
-
-같은 Zotero 라이브러리와 같은 `docs/papers/{slug}/` 를 공유하며, `src/core/pipeline.ts` 가
-text.md → figures → review.md → index.html → `_papers_index.json` 순으로 본체와 동일한 산출물을
-쓴다. 무거운 단계는 `src/extract/pybridge.ts` 가 이 저장소의 py312 함수(`extract_text`,
-`extract_figures`, `write_review`)를 직접 호출하고, 실패 시 TS(pdf.js/멀티프로바이더)로 폴백한다.
+Curio의 모듈 패널은 공통 feature registry 요청을 만들고, CLI와 같은 계획 → 비용/전송
+확인 → 명시적 실행 순서를 사용한다. 리뷰 기본값은 Anthropic Sonnet 5이며 OpenAI/Google은
+명시 선택이다. Ollama `qwen3.8:27b-mlx`는 요약·대화 전용이다. 공유 코퍼스 writer는
+reserve/register/cancel 트랜잭션과 공통 잠금으로 조정하고 Curio 목록을 갱신한다.
+분류·연결·검색·타임라인·게시·이메일은 이 작업의 자동 후속 단계가 아니다.
+게시와 이메일은 명시 요청 및 별도 cloud authorization, recipient, export-rights 확인이 필요하다.
 자기가 만든 항목은 Zotero item 의 `extra` 에 `papercurio: {slug};{date}` 마커를 남긴다 —
 출처 판별은 이 마커가 유일하게 확실한 신호다(슬러그 대소문자는 정황 증거일 뿐).
 
-**서지 DB 등록 완성도** (`pipeline/audit_ingest_inputs.py` 로 실측, papercurio 224편 vs 본체 3,972편):
+**리팩터링 이전 서지 DB 등록 완성도** (과거 `pipeline/audit_ingest_inputs.py` 실측, 현재 보장 아님; papercurio 224편 vs 본체 3,972편):
 
 |지표|papercurio|본체|
 |---|---|---|
@@ -661,9 +747,9 @@ text.md → figures → review.md → index.html → `_papers_index.json` 순으
   비운다. papercurio 결함이 아니다. 나머지 10편은 PDF 가 리뷰 생성 **이후** 첨부된 경우다.
 - `scopus-unconfirmed` 가 2.8배 높은 건 위 결과다: 대조할 본문이 없으면 Scopus 소속을 확인할 수 없어
   신뢰도 0.95(`scopus+pdf`) 로 승격되지 못한다.
-- **유일하게 papercurio 가 쓰지 않는 산출물은 `bibliography.json` 사이드카**다. 이게 없으면
-  `build_bibliography_db.py` 가 매 빌드마다 Zotero 라이브러리 전체를 페이징한다(~200초, 실패 시
-  `zotero_item_key` 조용히 유실). 본체는 리뷰 생성 시 이 파일을 남긴다.
+- 당시 누락됐던 `bibliography.json`은 현재 공통 리뷰 실행기의 필수 산출물이다.
+  로컬 리뷰에서는 서지정보·text 해시·리뷰 제공자/모델을 남기고 기관 보강은 별도 단계로 둔다.
+  사이드카·작업 디렉터리·캐시는 로컬 전용이며 `docs/.assetsignore`로 배포에서 제외한다.
 
 **PDF 를 나중에 붙일 때 주의**: 아이템의 `url` 을 눌러 받은 PDF 는 그 url 이 가리키는 논문이지 그
 아이템의 논문이 아닐 수 있고, Zotmoov 가 파일명을 **아이템 제목으로 자동 변경**하므로 파일명으로는

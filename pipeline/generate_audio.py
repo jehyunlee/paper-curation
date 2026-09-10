@@ -17,10 +17,12 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
 import sys
+import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -28,7 +30,8 @@ from google import genai
 from google.genai import types
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config_loader import PAPERS_DIR as _PAPERS_DIR, get_google_key  # noqa: E402
+from config_loader import PAPERS_DIR as _PAPERS_DIR  # noqa: E402
+from lib.credentials import CredentialsError, resolve_credential  # noqa: E402
 import usage_log  # noqa: E402
 
 PAPERS = Path(_PAPERS_DIR)
@@ -340,7 +343,92 @@ def write_mp3(path: Path, pcm: bytes) -> None:
     enc.set_in_sample_rate(SAMPLE_RATE)
     enc.set_channels(1)
     enc.set_quality(2)  # 0=best … 9=worst
-    path.write_bytes(enc.encode(pcm) + enc.flush())
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.",
+                                     suffix=".tmp", delete=False) as f:
+        temp_path = Path(f.name)
+        try:
+            f.write(enc.encode(pcm) + enc.flush())
+            f.flush()
+            os.fsync(f.fileno())
+        except BaseException:
+            temp_path.unlink(missing_ok=True)
+            raise
+    try:
+        os.replace(temp_path, path)
+    except BaseException:
+        temp_path.unlink(missing_ok=True)
+        raise
+
+
+def _write_text_atomic(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.",
+                                     suffix=".tmp", mode="w", encoding="utf-8",
+                                     delete=False) as f:
+        temp_path = Path(f.name)
+        try:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        except BaseException:
+            temp_path.unlink(missing_ok=True)
+            raise
+    try:
+        os.replace(temp_path, path)
+    except BaseException:
+        temp_path.unlink(missing_ok=True)
+        raise
+
+
+def _sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _review_input_text(review: str) -> str:
+    """Remove frontmatter exactly as the script prompt does."""
+    while review.startswith("---"):
+        lines = review.split("\n")
+        end = next((i for i, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
+        if end is None:
+            break
+        review = "\n".join(lines[end + 1:]).lstrip("\n")
+    return review
+
+
+def _script_generation_params(*, speakers, language, audience, length, tone,
+                              focus, direction) -> dict[str, object]:
+    return {
+        "speakers": speakers, "language": language, "audience": audience,
+        "length": length, "tone": tone, "focus": focus, "direction": direction,
+    }
+
+
+def _script_input_hash(review_hash: str, params: dict[str, object]) -> str:
+    payload = json.dumps({"review_sha256": review_hash, "params": params,
+                          "script_model": SCRIPT_MODEL},
+                         ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return _sha256_text(payload)
+
+
+def _load_saved_script(script_path: Path, meta_path: Path, *, params, review_hash):
+    """Return a provenance-matching script, ``None`` when no script exists."""
+    if not script_path.exists():
+        return None
+    try:
+        script = script_path.read_text(encoding="utf-8").strip()
+        metadata = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    if not isinstance(metadata, dict) or metadata.get("script_model") != SCRIPT_MODEL:
+        return False
+    if metadata.get("params") != params or metadata.get("script_sha256") != _sha256_text(script):
+        return False
+    if review_hash is not None and metadata.get("review_sha256") != review_hash:
+        return False
+    if metadata.get("input_sha256") != _script_input_hash(metadata.get("review_sha256"), params):
+        return False
+    return script or False
 
 
 def parse_args() -> argparse.Namespace:
@@ -355,65 +443,93 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--direction", default=None, help="구성 방향 덮어쓰기(미지정 시 언어별 기본값)")
     p.add_argument("--speed", type=float, default=1.0, help="재생 속도 배율(피치 유지, audiotsm 필요)")
     p.add_argument("--out", default=None, help="출력 MP3 경로(기본: <slug>/audio_overview.mp3)")
+    p.add_argument("--regenerate-script", action="store_true",
+                   help="저장된 유효 대본 대신 Gemini로 대본을 다시 생성")
     return p.parse_args()
 
 
-def main() -> int:
-    args = parse_args()
-    api_key = get_google_key()  # env(GEMINI/GOOGLE) → config.json(gemini_api_key/google_api_key)
-    if not api_key:
-        print("ERROR: GEMINI_API_KEY/GOOGLE_API_KEY (env) 또는 config.json(google_api_key) 가 필요합니다.",
-              file=sys.stderr)
-        return 1
+def _run_audio(slug, *, speakers=2, language="ko", audience="student",
+               length=10, tone="friendly", focus="", direction=None, speed=1.0,
+               out=None, regenerate_script=False):
+    """Generate an audio overview and return published artifact metadata."""
+    if speakers not in (1, 2, 3) or language not in ROLES:
+        raise ValueError("unsupported speakers or language")
+    if audience not in AUDIENCE[language] or tone not in TONE[language] or length not in (10, 20, 30):
+        raise ValueError("unsupported audio settings")
+    if speed <= 0:
+        raise ValueError("speed must be positive")
 
-    slug = resolve_slug(args.slug)
+    slug = resolve_slug(slug)
     review_path = PAPERS / slug / "review.md"
-    if not review_path.exists():
-        print(f"ERROR: {review_path} 없음", file=sys.stderr)
-        return 1
-    review = review_path.read_text(encoding="utf-8")
-    # strip YAML frontmatter
-    while review.startswith("---"):
-        lines = review.split("\n")
-        end = next((i for i, l in enumerate(lines[1:], 1) if l.strip() == "---"), None)
-        if end is None:
-            break
-        review = "\n".join(lines[end + 1:]).lstrip("\n")
+    out_dir = PAPERS / slug
+    script_path = out_dir / "audio_script.txt"
+    meta_path = out_dir / "audio_script.meta.json"
+    lang = language
+    direction = direction or DEFAULT_DIRECTION[lang]
+    roles = ROLES[lang][speakers]
+    params = _script_generation_params(
+        speakers=speakers, language=language, audience=audience, length=length,
+        tone=tone, focus=focus, direction=direction)
+    review = None
+    review_hash = None
+    if review_path.exists():
+        review = _review_input_text(review_path.read_text(encoding="utf-8"))
+        review_hash = _sha256_text(review)
+    script = None
+    if not regenerate_script:
+        script = _load_saved_script(script_path, meta_path, params=params,
+                                    review_hash=review_hash)
+        if script is False:
+            raise RuntimeError("saved audio script provenance does not match; use --regenerate-script")
+        if script:
+            if speakers > 1 and not parse_turns(script, [r["label"] for r in roles]):
+                raise RuntimeError("saved audio script has no speaker turns")
+            print(f"[1/2] 저장된 대본 재사용 — {script_path}")
+    if script is None and review is None:
+        raise FileNotFoundError(f"{review_path} 없음")
 
-    conns = load_connections(slug)
-    lang = args.language
-    direction = args.direction or DEFAULT_DIRECTION[lang]
-    roles = ROLES[lang][args.speakers]
+    try:
+        api_key = resolve_credential("google")
+    except CredentialsError as exc:
+        raise RuntimeError("Google credential is required for audio generation") from exc
     client = genai.Client(api_key=api_key)
 
-    print(f"[1/2] 대본 생성 ({SCRIPT_MODEL}) — slug={slug} speakers={args.speakers} "
-          f"lang={lang} length={args.length}m connections={len(conns)}")
-    prompt = build_prompt(review, conns, args.speakers, lang, args.audience,
-                          args.length, args.tone, args.focus, direction)
-    resp = client.models.generate_content(
-        model=SCRIPT_MODEL, contents=prompt,
-        config=types.GenerateContentConfig(temperature=0.85, max_output_tokens=65536))
-    usage_log.record_gemini(resp, SCRIPT_MODEL)
-    script = (resp.text or "").strip()
-    if not script:
-        print("ERROR: 대본이 비었습니다.", file=sys.stderr)
-        return 2
-    out_dir = PAPERS / slug
-    (out_dir / "audio_script.txt").write_text(script, encoding="utf-8")
-    print(f"      → audio_script.txt ({len(script):,}자)")
+    if script is None:
+        conns = load_connections(slug)
+        print(f"[1/2] 대본 생성 ({SCRIPT_MODEL}) — slug={slug} speakers={speakers} "
+              f"lang={lang} length={length}m connections={len(conns)}")
+        prompt = build_prompt(review, conns, speakers, lang, audience,
+                              length, tone, focus, direction)
+        resp = client.models.generate_content(
+            model=SCRIPT_MODEL, contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.85, max_output_tokens=65536))
+        usage_log.record_gemini(resp, SCRIPT_MODEL)
+        script = (resp.text or "").strip()
+        if not script:
+            raise RuntimeError("generated audio script is empty")
+        if speakers > 1 and not parse_turns(script, [r["label"] for r in roles]):
+            raise RuntimeError("generated audio script has no speaker turns")
+        _write_text_atomic(script_path, script)
+        _write_text_atomic(meta_path, json.dumps({
+            "review_sha256": review_hash,
+            "script_sha256": _sha256_text(script),
+            "input_sha256": _script_input_hash(review_hash, params),
+            "params": params,
+            "script_model": SCRIPT_MODEL,
+        }, ensure_ascii=False, indent=2) + "\n")
+        print(f"      → audio_script.txt ({len(script):,}자)")
 
     print(f"[2/2] 음성 합성 ({TTS_MODEL})")
-    if args.speakers == 1:
+    if speakers == 1:
         chunks = chunk_paragraphs(script, MAX_CHUNK_CHARS)
         cfg = speech_single(roles[0]["voice"])
         parts = pool_synth(client, chunks, lambda c, i: (i, tts_call(c, chunks[i], cfg)))
         pcm = concat_pcm(parts)
-    elif args.speakers == 2:
+    elif speakers == 2:
         labels = [r["label"] for r in roles]
         turns = parse_turns(script, labels)
         if not turns:
-            print("ERROR: 화자 라벨 파싱 실패", file=sys.stderr)
-            return 3
+            raise RuntimeError("화자 라벨 파싱 실패")
         chunks = chunk_turns(turns, MAX_CHUNK_CHARS)
         cfg = speech_multi(roles)
         prefix = TTS_PREFIX[lang]
@@ -423,19 +539,35 @@ def main() -> int:
         labels = [r["label"] for r in roles]
         turns = parse_turns(script, labels)
         if not turns:
-            print("ERROR: 화자 라벨 파싱 실패", file=sys.stderr)
-            return 3
+            raise RuntimeError("화자 라벨 파싱 실패")
         vmap = {r["label"]: r["voice"] for r in roles}
         parts = pool_synth(client, turns,
                            lambda c, i: (i, tts_call(c, turns[i][1],
                                                      speech_single(vmap.get(turns[i][0], roles[0]["voice"])))))
         pcm = concat_pcm(parts)
 
-    pcm = time_stretch(pcm, args.speed)
-    out = Path(args.out) if args.out else out_dir / "audio_overview.mp3"
-    write_mp3(out, pcm)
+    pcm = time_stretch(pcm, speed)
+    audio_path = Path(out) if out else out_dir / "audio_overview.mp3"
+    write_mp3(audio_path, pcm)
     dur = len(pcm) / 2 / SAMPLE_RATE
-    print(f"      → {out}  ({out.stat().st_size / 1024:.0f} KiB, ~{dur:.0f}s)")
+    print(f"      → {audio_path}  ({audio_path.stat().st_size / 1024:.0f} KiB, ~{dur:.0f}s)")
+    return {"slug": slug, "audio_path": str(audio_path), "script_path": str(script_path),
+            "script_meta_path": str(meta_path), "speakers": speakers, "language": language,
+            "duration_seconds": dur, "script_model": SCRIPT_MODEL,
+            "review_sha256": review_hash, "input_sha256": _script_input_hash(review_hash, params),
+            "script_sha256": _sha256_text(script)}
+
+
+def main() -> int:
+    args = parse_args()
+    try:
+        _run_audio(args.slug, speakers=args.speakers, language=args.language,
+                   audience=args.audience, length=args.length, tone=args.tone,
+                   focus=args.focus, direction=args.direction, speed=args.speed,
+                   out=args.out, regenerate_script=args.regenerate_script)
+    except (FileNotFoundError, RuntimeError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     return 0
 
 

@@ -187,14 +187,12 @@ def parse_review(slug):
     }
 
 
-def _run_build_index(topic="ai4s"):
+def _build_index_locked(topic="ai4s"):
     """Programmatic entrypoint. Returns the generated index list."""
     index_path = os.path.join(PAPERS_DIR, "_papers_index.json")
-    existing = {}
-    if os.path.exists(index_path):
-        with open(index_path, "r", encoding="utf-8") as f:
-            for p in json.load(f):
-                existing[p["slug"]] = p
+    from lib.corpus_store import load_index_strict, slug_is_reserved
+    existing = {p["slug"]: p for p in load_index_strict(PAPERS_DIR)
+                if p.get("slug")}
 
     index = []
     for slug in sorted(os.listdir(PAPERS_DIR)):
@@ -204,13 +202,18 @@ def _run_build_index(topic="ai4s"):
 
         parsed = parse_review(slug)
         if not parsed:
+            # A new Curio reservation is intentionally incomplete until its
+            # final register call. Keep an existing row unchanged, but do not
+            # manufacture a row for an unfinished new directory.
+            if slug_is_reserved(PAPERS_DIR, slug) and slug in existing:
+                index.append(existing[slug])
             continue
 
         prev = existing.get(slug, {})
 
         # Migrate old flat fields → classifications[topic] structure
         # Only migrate into the topic that matches `topic` arg (prevents cross-contamination)
-        classifications = prev.get("classifications", {})
+        classifications = dict(prev.get("classifications", {}))
         if not classifications and prev.get("primary_category"):
             primary_topic = prev.get("primary_topic", topic)
             classifications[primary_topic] = {
@@ -239,6 +242,10 @@ def _run_build_index(topic="ai4s"):
             "zotero_item_key": prev.get("zotero_item_key", ""),
             "pdf_path": prev.get("pdf_path", ""),
         }
+        # Rebuilding parses review-owned fields, but must not erase metadata
+        # maintained by classification, bibliography, or other corpus passes.
+        for key, value in prev.items():
+            entry.setdefault(key, value)
         # 피인용수 캐시는 citations.md 에서 되읽는다.
         #
         # entry 를 화이트리스트로 새로 만들기 때문에, prev 에서 옮기지 않으면
@@ -252,13 +259,20 @@ def _run_build_index(topic="ai4s"):
     from lib.atomic_io import atomic_write_json
     atomic_write_json(index_path, index)
 
-    with_scores = sum(1 for p in index if p["score"] > 0)
+    with_scores = sum(1 for p in index if p.get("score", 0) > 0)
     with_cats = sum(1 for p in index if p.get("classifications"))
     print(f"Generated _papers_index.json: {len(index)} papers")
     print(f"  With scores: {with_scores}")
     print(f"  With category: {with_cats}")
-    print(f"  With essence: {sum(1 for p in index if p['essence'])}")
+    print(f"  With essence: {sum(1 for p in index if p.get('essence'))}")
     return index
+
+
+def _run_build_index(topic="ai4s"):
+    """Rebuild under the corpus transaction boundary."""
+    from lib.corpus_store import corpus_index_lock
+    with corpus_index_lock(PAPERS_DIR):
+        return _build_index_locked(topic)
 
 
 def main():

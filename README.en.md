@@ -2,7 +2,7 @@
 
 # Paper Curation
 
-**If you have PDFs in a Zotero collection, the rest is automatic.**
+**Install without keys, then explicitly choose a single-PDF review or the full curation workflow.**
 
 Turn hundreds of papers into structured Korean reviews, auto-classify them with AI, and ask natural-language questions grounded in the actual papers. A **personal research knowledge system** that runs locally; deployment is optional. Orchestrated by Claude Code.
 
@@ -18,7 +18,16 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 
 ## What It Does
 
-Features are split into **Core** (always produced by the default pipeline) and **Option** (enabled on demand).
+Start with three routes:
+
+- **Read** — open generated reviews, search, and timelines without a key.
+- **AI** — request a PDF review, summary, chat, or comparison one at a time.
+- **Collection** — Zotero sync and the explicit full curation workflow are separate advanced operations.
+
+Curio's module panel and the CLI share the same feature registry. The generated
+feature-ID and requirement table is in the [Setup Guide](docs/setup-guide.md#shared-feature-registry).
+
+Features are split into **Core** (produced by an explicit full-pipeline run) and **Option** (enabled on demand).
 
 **Core** — one `run_full --mode curate` produces all of these:
 
@@ -43,7 +52,9 @@ Features are split into **Core** (always produced by the default pipeline) and *
 | **Local LLM fallback** | `--local-fallback` | When Related Papers generation is blocked by network failures to the very end, a local model (Ollama/LM Studio/…) completes the remainder. Requires a `local_model` block in config.json |
 | **Workflow diagram** | `generate_workflow.py` | Generates the cat pipeline diagram at the top of this README (PaperBanana, `--style cat/fairy/academic`) |
 
-**What you need**: A Zotero collection with PDFs + API keys (required: Anthropic · Google · Zotero Web API). Search embeddings use Google `gemini-embedding-001`, so no separate OpenAI key is needed (OpenAI is optional — reader BYOK answers / insights fallback).
+**Full curate workflow requirements**: a Zotero collection with PDFs and
+`ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, and `GOOGLE_API_KEY` in the environment.
+OpenAI is an explicit provider choice where the selected feature supports it.
 
 ---
 
@@ -55,11 +66,12 @@ In [Claude Code](https://claude.ai/code), just say:
 
 > *"Install paper-curation here: https://github.com/jehyunlee/paper-curation"*
 
-Clone, dependencies, Zotero setup, and the first pipeline run — all handled automatically.
+Clone, dependencies, and keyless local setup are handled. Setup never starts
+the full pipeline automatically.
 
-### Quickstart — local, in 5 steps
+### Quickstart — keyless local setup
 
-To install by hand, these five steps are the minimal path to running it locally:
+No API key or Zotero collection is required for setup:
 
 ```bash
 # 1) Clone
@@ -72,20 +84,52 @@ conda activate py312
 
 # 3) Install dependencies (includes umap-learn · hdbscan · sentence-transformers)
 pip install -r requirements.txt
-#    The orchestrator then runs topic modeling/classification in-process (no
-#    subprocess), since the clustering libraries live in this same env.
+#    An explicit full-workflow run can later do topic modeling/classification
+#    in-process because the clustering libraries live in this same env.
 
-# 4) Required API keys (reviews = Anthropic; search embeddings / figure validation / TTS = Google).
-#    Search embeddings use Google gemini-embedding-001, so OpenAI is optional (BYOK answers / insights fallback).
-export ANTHROPIC_API_KEY=sk-ant-...
-export GOOGLE_API_KEY=...
-
-# 5) Create config.json (interactive) → first pipeline run
+# 4) Create a keyless local config and generate/install the SKILL.
+#    This does not clone PaperBanana, probe clustering, or run a pipeline.
 python pipeline/setup.py
-#    If your PDFs are already in Zotero, go straight to:
-PYTHONUTF8=1 python pipeline/run_full.py --topic my_topic --mode curate --source zotero
-PYTHONUTF8=1 python pipeline/serve_local.py   # → browse at http://localhost:8000
+
+# List features, then plan a request without writing output.
+python pipeline/run_feature.py --list
+python pipeline/run_feature.py --request feature-request.json
 ```
+
+Fresh setup is fully noninteractive. It creates `docs/papers/` and, when
+needed, this minimal config:
+
+```json
+{
+  "zotero": {
+    "collections": {}
+  }
+}
+```
+
+Existing non-secret config fields are preserved; legacy `zotero.api_key` is
+removed whenever setup saves the file. Setup never prompts for, copies from
+the environment, or newly stores credentials. `--no-install` skips SKILL
+installation; SKILL generation/installation failures still exit nonzero.
+
+No key is stored in configuration. An environment variable overrides an OS-keyring
+reference (`credential:<provider>`) in the `paper-curation` service. Plaintext,
+null, and failed keyring backends are rejected; there is no plaintext config/file
+fallback. Never put a key in argv, request JSON, or logs. See the Setup Guide for
+safe credential input.
+
+For AI work, Anthropic Sonnet 5 is the default review provider with no automatic
+fallback; OpenAI and Google are explicit provider choices. Ollama
+`qwen3.8:27b-mlx` is for summary and chat only, not reviews. A request may include
+`provider`, `credential_ref`, and `budget`; unknown rates or a cap breach block
+execution.
+
+`bibliography-update` is an independent local institution/bibliography-DB stage.
+It ingests changed items by default; `--changed-only --skip-zotero --offline
+--no-email` keeps it offline and avoids Zotero sync, online enrichment, and email.
+Online enrichment is optional.
+Only `zotero-sync` checks remote account connectivity; collection-specific
+permissions and other providers' API authorization remain unverified.
 
 <details>
 <summary><b>Manual installation (setup.py path)</b></summary>
@@ -97,18 +141,44 @@ pip install -r requirements.txt   # full dependency set (anthropic, openai, umap
 python pipeline/setup.py
 ```
 
-`setup.py` interactively creates config.json, tests Zotero connectivity, checks API keys, and kicks off the first pipeline run.
+`setup.py` creates the minimal local config and generates/installs the SKILL.
+It performs no network checks or full-pipeline run unless an explicit
+`--check-feature` requests the corresponding capability check.
 
 </details>
 
-### Prerequisites
+### Single-PDF local review
 
-Checklist — get these ready and the first run won't stall:
+Anthropic Sonnet 5 is the default review provider with no automatic fallback.
+OpenAI and Google are explicit review-provider choices under the reviewed
+schema. Ollama `qwen3.8:27b-mlx` supports summary and chat only, not review.
+Curio's module panel sends the same registry request as the CLI; use
+credential references, never a secret in the request or config.
+
+```bash
+# Read-only plan: validate the request, runtime, and key readiness as JSON.
+python pipeline/local_review.py --request request.json
+
+# Execute only after inspecting that plan.
+python pipeline/local_review.py --request request.json --execute
+```
+
+The generated feature IDs, request envelope, credential handling, and budget
+rules are in the [Setup Guide](docs/setup-guide.md#공유-기능-레지스트리).
+Shared-corpus writers use reserve/register/cancel transactions under a common
+lock and refresh the Curio list. Classification, indexes, timelines,
+publication, and email remain independent operations; publication/email require
+an explicit request and separate cloud authorization, recipient, and export-right
+review.
+
+### Full curate workflow prerequisites (separate)
+
+Prepare these only when explicitly running the comprehensive curate workflow:
 
 | Item | Details |
 |------|---------|
-| **Zotero** | [API Key](https://www.zotero.org/settings/keys) + a collection with paper PDFs |
-| **API keys** | `ANTHROPIC_API_KEY` (reviews/insights — **required**), `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS — **required**), `RESEND_API_KEY` (Audio Overview email when deployed — required for deploy), `OPENAI_API_KEY` (reader BYOK answers / insights fallback — optional) |
+| **Zotero** | Env-only [API Key](https://www.zotero.org/settings/keys) (`ZOTERO_API_KEY`) + a collection with paper PDFs |
+| **API keys** | Environment variables `ANTHROPIC_API_KEY` (reviews/insights) and `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS). `RESEND_API_KEY` is only for deployed Audio Overview email; `OPENAI_API_KEY` remains optional for existing reader BYOK / insights paths |
 | **conda env** | `py312` (Python 3.12) — created by the commands below |
 | **Java Runtime** | For `opendataloader-pdf`'s PDF extraction. macOS: `brew install --cask temurin`. Without it the pipeline falls back to PyMuPDF (lower table/structure quality) |
 
@@ -121,6 +191,18 @@ pip install -r requirements.txt
 ```
 
 Because `requirements.txt` includes umap-learn / hdbscan / sentence-transformers, the orchestrator runs topic modeling/classification **in-process, with no subprocess** — a single `py312` env is all you need.
+
+Run the full workflow separately after supplying its environment credentials
+and full topic/Zotero configuration:
+
+```bash
+export ZOTERO_API_KEY=...
+export ANTHROPIC_API_KEY=...
+export GOOGLE_API_KEY=...
+PYTHONUTF8=1 python pipeline/run_full.py \
+  --topic my_topic --mode curate --source zotero
+PYTHONUTF8=1 python pipeline/serve_local.py
+```
 
 ### Verify your install
 
@@ -189,9 +271,31 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 
 ### 5. Deep Research Index
 
+Keyword retrieval can now be built without Google:
+
+```bash
+python pipeline/build_search_index.py --topic my_topic --mode bm25
+python pipeline/query_search_index.py --topic my_topic --query "scientific discovery" --mode bm25 --json
+```
+
+BM25 builds reuse local reviews and the paper list without NumPy, embedding APIs,
+or vector caches. They replace the selected topic's `_search_index.json` but leave
+prior binary vectors/caches untouched. The default build mode remains `hybrid`.
+Both modes' `--dry-run` is read-only and never publishes fake vectors. Browser
+answers over a BM25 index skip `/api/embed` and use only the selected answer LLM;
+no lexical matches means no unsupported answer. Dense/hybrid queries against a
+BM25 index fail explicitly rather than silently switching modes. Personal notes
+and source-text enrichment are restricted to local-only topics.
+
+Python callers use `pipeline.api.build_search_index(..., mode="bm25")` for
+building and `pipeline.api.query_search_index(..., mode="bm25")` for reading.
+The ambiguous compatibility alias `pipeline.api.search_index` has been removed.
+
+The following table describes the default **hybrid** path:
+
 | | Description |
 |---|---|
-| **Input** | All reviews + personal notes (<code>notes/</code>) |
+| **Input** | Reviews; personal notes (<code>notes/</code>) only for local-only topics |
 | **Processing** | <ul><li>Section-aware chunking</li><li>Google <code>gemini-embedding-001</code> embeddings (768d, <code>task_type=RETRIEVAL_DOCUMENT</code>, L2-normalized then int8-quantized)</li><li>BM25 sparse terms indexed alongside (for hybrid retrieval)</li><li>Personal notes are indexed and reflected in future queries</li></ul> |
 | **Output** | <code>_search_index.json</code> + <code>_search_index_emb.bin</code> |
 | **Usage** | Natural-language query on topic page → the query embedding is computed for the reader by the worker <code>/api/embed</code> route (deployed) or <code>pipeline/serve_local.py</code> (local) with <code>gemini-embedding-001</code> (<code>task_type=RETRIEVAL_QUERY</code>) → **hybrid retrieval** (BM25 + dense, fused with RRF) → an LLM re-ranks the top candidates → user-key prefix auto-detected, and **Anthropic / OpenAI / Google** streams a grounded answer. Retrieval needs no reader key; a key (BYOK) is only for answer generation. Output is natural prose + clickable `[N]` citation chips + auto-inlined figures |
@@ -435,8 +539,10 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 
 | Category | Items |
 |----------|-------|
-| **Required** | Python 3.12 (macOS conda env `py312`), Zotero (API Key + collection + PDFs) |
-| **APIs** | Anthropic (Claude Haiku/Sonnet/Opus), Google (Gemini + `gemini-embedding-001` search embeddings), Zotero Web API, Resend (Audio Overview email when deployed). OpenAI is optional (reader BYOK answers / insights fallback) |
+| **Default setup** | Python 3.12 (macOS conda env `py312`); no API key, Zotero collection, or PaperBanana |
+| **Single-PDF review execution** | `ANTHROPIC_API_KEY` in the CLI environment; Anthropic `claude-sonnet-5` only |
+| **Explicit full curate workflow** | Zotero collection + PDFs and its Zotero/Anthropic/Google environment credentials |
+| **Option-specific APIs** | Resend is needed only for explicit email/deploy work; OpenAI and Google are explicit choices for supported registry features |
 | **Python** | `pip install -r requirements.txt` — anthropic, openai, google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
 | **Optional** | Obsidian (notes/Graph View), PaperBanana (timeline images), Zotero Desktop (one-click PDF) |
 

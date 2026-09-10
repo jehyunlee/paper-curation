@@ -4,7 +4,7 @@ Used by both review pages (`review_to_html.py`, mode="paper") and the topic
 index Deep Research panel (`build_topic_index.py`, mode="deep"). The core JS is
 context-pluggable: each page either bakes a static `window._AUDIO` (paper) or
 installs `window._audioContextProvider` returning a live context (deep).
-localhost-only — the Gemini key is baked at build time and stripped on deploy.
+Readers provide their own Gemini key in browser storage.
 """
 import json
 
@@ -121,12 +121,9 @@ def audio_modal_html(sub_text="팟캐스트형 오디오로 생성합니다. (Ge
 # four onclick-referenced handlers are exported to window at the end.
 AUDIO_JS = r"""
 (function() {
-// _GEMINI_KEY is baked into the page at build time on localhost and
-// stripped on deploy. To let Cloudflare visitors still generate audio,
-// we additionally accept a user-provided key via localStorage and via
-// a one-time prompt the first time they click the button. The key
-// stays in their browser only — it is never sent anywhere except
-// google's TTS / Gemini endpoints.
+// Readers supply a Gemini key via localStorage or a one-time prompt. The key
+// stays in their browser only — it is never sent anywhere except Google's TTS
+// / Gemini endpoints.
 // Read the Gemini key from any slot the user might have used in this
 // browser before — direct _GEMINI_KEY, or _LLM_KEY if they typed a
 // Gemini key into the Deep Research prompt (AIza-prefixed). This lets
@@ -617,10 +614,10 @@ async function runAudioGen() {
     const dur = pcm.length / 2 / SAMPLE_RATE;
     setStatus("✅ 완료 (약 " + Math.round(dur) + "초). 다운로드 가능.");
 
-    // Send by email (optional). LOCAL pages have a baked recipient list;
-    // WEB pages ask the visitor once and remember in localStorage. The send
-    // always targets the deployed worker (absolute AUDIO_EMAIL_ENDPOINT), so
-    // localhost / file:// pages can mail too; the download stays the fallback.
+    // Send by email (optional). The reader enters an address once and it stays
+    // in localStorage. The send always targets the deployed worker (absolute
+    // AUDIO_EMAIL_ENDPOINT), so localhost / file:// pages can mail too; the
+    // download stays the fallback.
     try {
       const recipients = resolveAudioRecipients();
       if (recipients.length) {
@@ -649,18 +646,8 @@ async function runAudioGen() {
 }
 
 // ── Email delivery helpers ──────────────────────────────────────────
-function isLocalHost() {
-  const h = window.location.hostname;
-  return h === "localhost" || h === "127.0.0.1" || h === "0.0.0.0"
-      || h.endsWith(".local") || window.location.protocol === "file:";
-}
-
 function resolveAudioRecipients() {
-  // LOCAL pages: baked list (`window._LOCAL_EMAILS`) — the owner sees
-  // every audio without ever being asked.
-  // WEB pages: localStorage + first-time prompt.
-  const baked = Array.isArray(window._LOCAL_EMAILS) ? window._LOCAL_EMAILS.filter(Boolean) : [];
-  if (isLocalHost() && baked.length) return baked;
+  // Recipients are reader-owned: localStorage + first-time prompt.
   let e = "";
   try { e = localStorage.getItem("_AUDIO_EMAIL") || ""; } catch (er) {}
   if (e) return [e];
@@ -740,25 +727,16 @@ window.runAudioGen = runAudioGen;
 """
 
 
-def audio_script_block(gemini_key, mode="paper", ctx=None, provider_js="",
+def audio_script_block(gemini_key="", mode="paper", ctx=None, provider_js="",
                         local_emails=None):
-    """Wrap AUDIO_JS with the injected key, mode, and either a static context
-    (paper) or a context-provider snippet (deep).
+    """Wrap AUDIO_JS with a reader-owned key slot and page context.
 
-    Always emits the script so deployed pages can still accept a
-    user-provided key at runtime (the JS prompts the visitor on first
-    click and remembers the result in localStorage). When no key is
-    baked at build time we set the global to an empty string so the JS
-    falls through to the localStorage / prompt path.
-
-    ``local_emails`` is a list of recipient addresses baked into the
-    build so the operator never has to retype them on localhost. The
-    array is stripped on deploy by ``prepare_deploy.py`` so visitor
-    pages always start with an empty list and prompt instead.
+    ``gemini_key`` and ``local_emails`` remain accepted for call-site
+    compatibility but are intentionally never emitted. Every artifact starts
+    with empty browser-owned slots and prompts the reader as needed.
     """
-    prefix = "window._GEMINI_KEY = " + json.dumps(gemini_key or "") + ";\n"
+    prefix = "window._GEMINI_KEY = '';\n"
     prefix += "window._AUDIO_MODE = " + json.dumps(mode) + ";\n"
-    prefix += "window._LOCAL_EMAILS = " + json.dumps(local_emails or []) + ";\n"
     if ctx is not None:
         prefix += "window._AUDIO = " + json.dumps(ctx, ensure_ascii=False) + ";\n"
     if provider_js:

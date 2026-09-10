@@ -9,6 +9,23 @@ _local_keys.json
 _zotero_keys.json
 _zotero_meta.json
 
+# Local review locks, provider caches, staging, partials and rollback copies
+papers/.*.local-review*
+papers/._papers_index.json.flock
+papers/.corpus-operation.flock
+papers/*/.corpus-reservation.json
+papers/.extract-stage-*/
+papers/*/_pc_*.json
+papers/*/audio_script.txt
+papers/*/audio_script.meta.json
+papers/**/.local-review*
+papers/**/.cache/
+papers/**/.tmp/
+papers/**/metadata.json
+papers/**/metadata.local.json
+# Bibliography sidecars contain local PDF paths and original Zotero metadata
+papers/*/bibliography.json
+
 # Obsidian / Claude Code / OMC runtime files
 .obsidian/
 **/.obsidian/

@@ -19,8 +19,10 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 PIPELINE = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = PIPELINE.parent
@@ -148,35 +150,37 @@ class ZoteroKeyComesFromTheEnvironmentOnly(unittest.TestCase):
 
 
 class SetupNeverPersistsTheZoteroKey(unittest.TestCase):
-    def test_the_spec_is_env_only_and_has_no_config_path(self):
+    def test_zotero_feature_check_ignores_config_key(self):
         import setup
-        spec = next(s for s in setup.REQUIRED_KEYS if s["env"] == "ZOTERO_API_KEY")
-        self.assertTrue(spec.get("env_only"))
-        self.assertNotIn("path", spec)
+        saved = os.environ.pop("ZOTERO_API_KEY", None)
+        try:
+            with patch.object(setup.urllib.request, "urlopen") as urlopen:
+                result = setup.check_zotero_sync(
+                    {"zotero": {"api_key": "config-side-value"}})
+        finally:
+            if saved is not None:
+                os.environ["ZOTERO_API_KEY"] = saved
 
-    def test_a_legacy_config_key_is_removed_on_setup(self):
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["status"], "missing_credential")
+        urlopen.assert_not_called()
+
+    def test_a_legacy_config_key_is_removed_when_setup_saves(self):
         import setup
         # Short on purpose: scripts/scan-secrets.py refuses any 20+ char
         # literal bound to `api_key`, and it collapses whitespace first, so a
         # long human-readable placeholder trips the scanner too.
         cfg = {"zotero": {"api_key": "stale-value",
                           "email": "a@b.c"}}
-        spec = next(s for s in setup.REQUIRED_KEYS if s["env"] == "ZOTERO_API_KEY")
-        self.assertTrue(setup._cfg_unset(cfg, spec["legacy_path"]))
+        with tempfile.TemporaryDirectory() as tmp:
+            config_path = Path(tmp) / "config.json"
+            with patch.object(setup, "CONFIG_PATH", config_path):
+                setup._save_config(cfg)
+            saved = json.loads(config_path.read_text(encoding="utf-8"))
+
         self.assertNotIn("api_key", cfg["zotero"])
         self.assertEqual(cfg["zotero"]["email"], "a@b.c")
-
-    def test_env_only_specs_ignore_config_values(self):
-        import setup
-        spec = next(s for s in setup.REQUIRED_KEYS if s["env"] == "ZOTERO_API_KEY")
-        saved = os.environ.pop("ZOTERO_API_KEY", None)
-        try:
-            value, source = setup._key_value(
-                {"zotero": {"api_key": "config-side-value"}}, spec)
-        finally:
-            if saved is not None:
-                os.environ["ZOTERO_API_KEY"] = saved
-        self.assertEqual((value, source), ("", None))
+        self.assertEqual(saved, cfg)
 
     def test_the_example_config_does_not_ship_an_api_key_field(self):
         example = json.loads((PROJECT_ROOT / "config.example.json")

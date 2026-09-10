@@ -13,6 +13,7 @@ Pure function — no file IO, no rendering. Run:
 
 import os
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import review_to_html as R  # noqa: E402
@@ -145,6 +146,33 @@ def main():
                   targets == ["2_Fresh", "3_Fresh"])
         finally:
             R.PAPERS, R._connections_cache = old_papers, old_cache
+
+    print("== 12. canonical HTML never embeds operator credentials or recipient emails ==")
+    with tempfile.TemporaryDirectory() as tmp:
+        paper_dir = os.path.join(tmp, "123_Test")
+        os.makedirs(paper_dir)
+        review = os.path.join(paper_dir, "review.md")
+        with open(review, "w", encoding="utf-8") as f:
+            f.write("# Public review\n\n> **저자**: Public Author\n\n## Essence\n\nSafe text.\n")
+        old_key = os.environ.get("GEMINI_API_KEY")
+        old_emails = os.environ.get("PAPER_CURATION_LOCAL_EMAILS")
+        try:
+            os.environ["GEMINI_API_KEY"] = "AIzaOperatorSecret"
+            os.environ["PAPER_CURATION_LOCAL_EMAILS"] = "operator@example.com"
+            html = R.convert_review(review, "ai4s", paper_dir)
+            check("operator key is absent", "AIzaOperatorSecret" not in html)
+            check("operator email is absent", "operator@example.com" not in html)
+            check("BYOK audio remains available", "Audio Overview" in html
+                  and 'window._GEMINI_KEY = "";' in html)
+        finally:
+            if old_key is None:
+                os.environ.pop("GEMINI_API_KEY", None)
+            else:
+                os.environ["GEMINI_API_KEY"] = old_key
+            if old_emails is None:
+                os.environ.pop("PAPER_CURATION_LOCAL_EMAILS", None)
+            else:
+                os.environ["PAPER_CURATION_LOCAL_EMAILS"] = old_emails
 
     print()
     if fails:

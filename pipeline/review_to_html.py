@@ -19,34 +19,22 @@ from lib.audio_overview import (
 )
 PAPERS = str(_PAPERS_DIR)
 
-# Zotero PDF attachment keys (slug → key). Written by build_topic_index;
-# absent on the very first build, harmless when missing — button just doesn't
-# render for papers without a known key.
+# Zotero PDF attachment keys (slug → key). Written by build_topic_index.
+# Load lazily: the keyless local-review renderer must not consult corpus state.
 _ZOTERO_KEYS_PATH = os.path.join(os.path.dirname(_PAPERS_DIR), "_zotero_keys.json")
-try:
-    with open(_ZOTERO_KEYS_PATH, "r", encoding="utf-8") as _f:
-        _ZOTERO_KEYS = json.load(_f)
-except Exception:
-    _ZOTERO_KEYS = {}
+_ZOTERO_KEYS = None
 
-# Gemini key for the browser-direct Audio Overview feature. Baked into the
-# review page at build time (like the Deep Research keys in build_topic_index),
-# then stripped from every deployed page by prepare_deploy.py. On Cloudflare the
-# value is "" so the generate button stays disabled (localhost-only feature).
-_GEMINI_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or ""
-_LOCAL_EMAILS_RAW = os.environ.get("PAPER_CURATION_LOCAL_EMAILS", "")
-if not _GEMINI_KEY or not _LOCAL_EMAILS_RAW:
-    _cfg_path = os.path.join(os.path.dirname(os.path.dirname(_PAPERS_DIR)), "config.json")
-    try:
-        with open(_cfg_path, "r", encoding="utf-8") as _f:
-            _cfg = json.load(_f)
-        if not _GEMINI_KEY:
-            _GEMINI_KEY = _cfg.get("gemini_api_key") or _cfg.get("google_api_key", "")
-        if not _LOCAL_EMAILS_RAW:
-            _LOCAL_EMAILS_RAW = ",".join(_cfg.get("local_emails", []) or [])
-    except Exception:
-        pass
-_LOCAL_EMAILS = [e.strip() for e in _LOCAL_EMAILS_RAW.split(",") if e.strip()]
+def _zotero_keys():
+    global _ZOTERO_KEYS
+    if _ZOTERO_KEYS is None:
+        try:
+            with open(_ZOTERO_KEYS_PATH, "r", encoding="utf-8") as stream:
+                value = json.load(stream)
+            _ZOTERO_KEYS = value if isinstance(value, dict) else {}
+        except Exception:
+            _ZOTERO_KEYS = {}
+    return _ZOTERO_KEYS
+
 
 THEMES = {
     "ai4s": {"accent": "#D63423", "accent_dark": "#A62018", "accent_bg": "#FEF0EF",
@@ -266,14 +254,13 @@ def audio_bar_html():
 def audio_modal_html():
     return _audio_modal_lib(
         "이 논문 리뷰를 팟캐스트형 오디오로 생성합니다. "
-        "(Gemini · 키는 브라우저에만 저장 · 완성본은 이메일로도 전송)"
+        "(Gemini · 키와 수신 주소는 브라우저에만 저장)"
     )
 
 
 def audio_script_block(ctx):
-    """Wrap the shared Audio Overview JS with this paper's static context."""
-    return _audio_script_lib(_GEMINI_KEY, mode="paper", ctx=ctx,
-                              local_emails=_LOCAL_EMAILS)
+    """Wrap the shared Audio Overview JS without operator credentials."""
+    return _audio_script_lib("", mode="paper", ctx=ctx, local_emails=[])
 
 
 def parse_scores(md):
@@ -748,8 +735,13 @@ async function downloadPageHtml() {
 """).replace("PAYLOAD_SRC", PAYLOAD_NAME)
 
 
-def convert_review(md_path, topic, slug_dir):
-    """Convert review.md to index.html with canonical template."""
+def convert_review(md_path, topic, slug_dir, *, keyless=False):
+    """Convert review.md to canonical HTML.
+
+    ``keyless=True`` omits local Zotero/corpus connections and the optional
+    Gemini Audio integration. It never resolves those credentials, making it
+    suitable for standalone public artifacts.
+    """
     with open(md_path, 'r', encoding='utf-8') as f:
         md = f.read()
 
@@ -765,7 +757,8 @@ def convert_review(md_path, topic, slug_dir):
         _fm_doi = _dm.group(1).strip().strip('"').strip("'") if _dm else ""
     _lic_cls = _lic.normalize(_lic_raw)
     # 게이팅은 배포 사본(PC_PUBLIC_BUILD=1)에서만 — 로컬 렌더는 항상 full
-    _is_public = (os.environ.get("PC_PUBLIC_BUILD") == "1"
+    _is_public = (not keyless
+                  and os.environ.get("PC_PUBLIC_BUILD") == "1"
                   and bool(set(_paper_topics(_slug)) & _deploy_topics()))
     _fig_strict = os.environ.get("PC_FIGURE_POLICY", "") == "strict"
     _allow_figs = (not _is_public) or _lic.figure_public_ok(_lic_cls, strict=_fig_strict)
@@ -831,8 +824,9 @@ def convert_review(md_path, topic, slug_dir):
         '<button class="dl-btn" onclick="downloadPageHtml()">.html 다운로드</button>'
         '<span class="dl-note" id="dl-note"></span>'
         '</div>')
-    # Audio Overview button (localhost-only; disabled when no key on deploy)
-    body_parts.append(audio_bar_html())
+    # Audio Overview uses a visitor-provided browser key in every render mode.
+    if not keyless:
+        body_parts.append(audio_bar_html())
 
     # Metadata
     if meta_line:
@@ -842,7 +836,10 @@ def convert_review(md_path, topic, slug_dir):
         # looks identical wherever it appears. Only rendered when we have a
         # PDF attachment key for this slug (otherwise harmless skip).
         # slug_dir is a full path (docs/papers/<slug>) — strip to bare slug for lookup
-        zkey = _ZOTERO_KEYS.get(os.path.basename(slug_dir), "")
+        zkey = (
+            _zotero_keys().get(os.path.basename(slug_dir), "")
+            if not keyless else ""
+        )
         pdf_btn = ""
         if zkey:
             pdf_btn = (
@@ -899,7 +896,7 @@ def convert_review(md_path, topic, slug_dir):
     # A→B edge implies B→A and a paper connected for several reasons appears once
     # with all reasons in its ``reasons`` array. So we render the paper's edge
     # list directly — no incoming scan, no per-relation duplication.
-    connections = _load_connections()
+    connections = {} if keyless else _load_connections()
     slug_dir_name = os.path.basename(slug_dir)
     conns = list(connections.get(slug_dir_name, []))
     if conns:
@@ -1112,7 +1109,9 @@ def convert_review(md_path, topic, slug_dir):
                 body_html)
 
     # Assemble
-    css = get_css(theme) + "\n" + get_audio_css(theme)
+    css = get_css(theme)
+    if not keyless:
+        css += "\n" + get_audio_css(theme)
     html = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1129,7 +1128,7 @@ def convert_review(md_path, topic, slug_dir):
 </head>
 <body>
 {body_html}
-{"" if _nd_restrict else audio_modal_html()}
+{"" if (_nd_restrict or keyless) else audio_modal_html()}
 <div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {{
@@ -1149,10 +1148,10 @@ document.addEventListener('DOMContentLoaded', function() {{
 window._PAGE_SLUG = {json.dumps(slug_dir_name)};
 {_DL_JS}
 </script>
-{"" if _nd_restrict else audio_script_block(audio_ctx)}
+{"" if (_nd_restrict or keyless) else audio_script_block(audio_ctx)}
 <footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">
 게재 논문은 arXiv&middot;OpenReview 등 공개 프리프린트이며 원문 저작권은 원저작자에게 귀속됩니다 &middot; 이 페이지의 리뷰&middot;요약&middot;해설은 생성형 AI가 생성한 2차적 분석물입니다<br>
-Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com
+Paper Curation
 </footer>
 </body>
 </html>"""

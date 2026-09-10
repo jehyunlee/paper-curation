@@ -14,6 +14,8 @@ import ssl
 import urllib.request
 from pathlib import Path
 
+from lib.credentials import CredentialsError, resolve_credential
+
 # Corporate proxy intercepts HTTPS with self-signed cert; skip verification
 _ssl_ctx = ssl.create_default_context()
 _ssl_ctx.check_hostname = False
@@ -60,35 +62,19 @@ def load_config():
 
 
 def get_zotero_api_key():
-    """Zotero API key. 환경변수 ZOTERO_API_KEY 가 유일한 출처다.
-
-    예전에는 config.json 의 zotero.api_key 를 먼저 읽었다. 그 경로를 없앤 이유:
-    config.json 은 .gitignore 로 보호되지만 백업·클라우드 동기화·붙여넣기로
-    쉽게 새어나가고, 한 번이라도 커밋되면 회수가 불가능하다 (2026-08-13,
-    pipeline/_archive/_batch_zotero.py 에 하드코딩된 키가 public master 로
-    유출된 사고). 비밀값은 프로세스 환경에만 둔다.
-
-    미설정 시 빈 문자열을 반환한다 — 여러 모듈이 import 시점에 이 함수를
-    호출하므로 (register_zotero / run_update_force / sync_zotero 등) 여기서
-    예외를 던지면 Zotero 를 쓰지 않는 단계까지 import 만으로 죽는다. 실제
-    Zotero 호출이 필요한 지점은 get_zotero_user_id() 가 막는다.
-    """
-    return os.environ.get("ZOTERO_API_KEY", "").strip()
+    """Return the Zotero credential from environment or the secure OS store."""
+    try:
+        return resolve_credential("zotero")
+    except CredentialsError:
+        return ""
 
 
 def get_google_key():
-    """Google(Gemini) API 키. env(GOOGLE_API_KEY/GEMINI_API_KEY) 우선, 없으면
-    config.json(gemini_api_key/google_api_key). figure 검증·TTS·임베딩 공용 해석기.
-
-    참고: figure 검증처럼 'env 키 유무'를 Gemini on/off 스위치로 쓰던 호출부는
-    이 함수가 config.json 까지 보므로 env 를 pop 해도 키가 남는다. 그런 곳은
-    PAPER_CURATION_NO_GEMINI 환경 플래그로 명시 비활성화한다
-    (reextract_figures.py 의 geometric-only 모드 참조)."""
-    cfg = load_config()
-    return (os.environ.get("GOOGLE_API_KEY")
-            or os.environ.get("GEMINI_API_KEY")
-            or cfg.get("gemini_api_key", "")
-            or cfg.get("google_api_key", "")) or ""
+    """Return the Google credential from environment or the secure OS store."""
+    try:
+        return resolve_credential("google")
+    except CredentialsError:
+        return ""
 
 
 def get_local_model_config():
@@ -153,10 +139,9 @@ def get_zotero_user_id():
     api_key = get_zotero_api_key()
     if not api_key:
         raise ValueError(
-            "ZOTERO_API_KEY 환경변수가 설정되지 않았습니다. "
+            "Zotero 자격증명이 환경변수 또는 OS 보안 저장소에 설정되지 않았습니다. "
             "https://www.zotero.org/settings/keys 에서 키를 발급한 뒤 "
-            "`export ZOTERO_API_KEY=...` 로 설정하세요. "
-            "config.json 의 zotero.api_key 는 더 이상 읽지 않습니다."
+            "`ZOTERO_API_KEY` 환경변수 또는 `credential:zotero` OS 저장소에 설정하세요."
         )
 
     try:

@@ -171,14 +171,33 @@ def insights(topic, *, insights_only=False, connections_only=False, categories=N
 
 def timeline(topic, *, main_only=False, category_only=False,
              narrative_only=False, images_only=False, candidates=3,
-             categories=None):
+             categories=None, force_narrative=False, refresh_main=False):
     """Generate timeline narrative + PaperBanana images."""
     from generate_timelines import _run_timeline
     return _run_timeline(topic=topic, main_only=main_only,
                          category_only=category_only,
                          narrative_only=narrative_only,
                          images_only=images_only, candidates=candidates,
-                         categories=categories)
+                         categories=categories,
+                         force_narrative=force_narrative,
+                         refresh_main=refresh_main)
+
+
+def audio(slug, *, speakers=2, language="ko", audience="student",
+          length=10, tone="friendly", focus="", direction=None, speed=1.0,
+          out=None, regenerate_script=False):
+    """Generate only an audio artifact; never send it by email."""
+    from generate_audio import _run_audio
+    return _run_audio(
+        slug, speakers=speakers, language=language, audience=audience,
+        length=length, tone=tone, focus=focus, direction=direction,
+        speed=speed, out=out, regenerate_script=regenerate_script)
+
+
+def feature(request, *, execute=False):
+    """Use the exact capability plan/result contract shared with Curio."""
+    from run_feature import run_request
+    return run_request(request, execute=execute)
 
 
 # --------------------------------------------------------------------------- #
@@ -191,23 +210,12 @@ def network(topic):
     return _run_network(topic=topic)
 
 
-def build_search_index(topic, *, model="gemini-embedding-001", limit=None,
-                       dry_run=False, include_text="auto"):
-    """Build the Deep Research index; this mutates index artifacts."""
+def build_search_index(topic, *, mode="hybrid", model="gemini-embedding-001",
+                       limit=None, dry_run=False, include_text="auto"):
+    """Build the Deep Research index; ``dry_run=True`` is strictly read-only."""
     from build_search_index import _run_search_index
-    return _run_search_index(topic=topic, model=model, limit=limit,
+    return _run_search_index(topic=topic, mode=mode, model=model, limit=limit,
                              dry_run=dry_run, include_text=include_text)
-
-
-def search_index(topic, *, model="gemini-embedding-001", limit=None,
-                 dry_run=False, include_text="auto"):
-    """Compatibility alias for :func:`build_search_index`.
-
-    Historically this misleading name built an index rather than querying it.
-    New code should call ``build_search_index`` or ``query_search_index``.
-    """
-    return build_search_index(topic, model=model, limit=limit, dry_run=dry_run,
-                              include_text=include_text)
 
 
 def query_search_index(topic="_cross", query="", *, top_k=10, mode="hybrid",
@@ -309,9 +317,9 @@ __all__ = [
     # index / topic / classify
     "build_papers_index", "topic_model", "classify",
     # narrative
-    "category_summary", "insights", "timeline",
+    "category_summary", "insights", "timeline", "audio", "feature",
     # html / network / search index / deploy
-    "network", "build_search_index", "search_index", "query_search_index",
+    "network", "build_search_index", "query_search_index",
     "topic_index", "review_to_html", "deploy",
     # validate / audit / cleanup
     "validate", "audit_matching", "fix_matching", "cleanup",

@@ -10,6 +10,7 @@ and zero-based-rank RRF (k=60).  Querying never builds or changes an index.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -69,15 +70,78 @@ def _load_index(topic: str, docs_dir: str | Path | None) -> tuple[dict[str, Any]
     chunks = index.get("chunks")
     if not isinstance(chunks, list):
         raise ValueError("invalid search index: chunks must be a list")
-    count, dim = index.get("count"), index.get("dim")
+    count = index.get("count")
     if not isinstance(count, int) or isinstance(count, bool) or count < 0:
         raise ValueError("invalid search index: count must be a non-negative integer")
-    if not isinstance(dim, int) or isinstance(dim, bool) or dim <= 0:
-        raise ValueError("invalid search index: dim must be a positive integer")
     if count != len(chunks):
         raise ValueError(f"search index count mismatch: count={count}, chunks={len(chunks)}")
-    if not isinstance(index.get("papers"), dict):
+    papers = index.get("papers")
+    if not isinstance(papers, dict):
         raise ValueError("invalid search index: papers must be an object")
+
+    retrieval_mode = index.get("retrieval_mode")
+    if retrieval_mode not in {None, "hybrid", "bm25"}:
+        raise ValueError(
+            f"invalid search index: unsupported retrieval_mode {retrieval_mode!r}")
+    dim = index.get("dim")
+    if retrieval_mode == "bm25":
+        if not isinstance(dim, int) or isinstance(dim, bool) or dim != 0:
+            raise ValueError("invalid sparse search index: dim must be 0")
+        if "model" not in index or index["model"] is not None:
+            raise ValueError("invalid sparse search index: model must be null")
+        if "quant" not in index or index["quant"] is not None:
+            raise ValueError("invalid sparse search index: quant must be null")
+        if "emb_file" in index:
+            raise ValueError("invalid sparse search index: emb_file must be absent")
+        fingerprint = index.get("source_fingerprint")
+        if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
+            raise ValueError(
+                "invalid sparse search index: source_fingerprint must be a SHA256")
+        source_count = index.get("source_file_count")
+        if (not isinstance(source_count, int) or isinstance(source_count, bool)
+                or source_count < 0):
+            raise ValueError(
+                "invalid sparse search index: source_file_count must be non-negative")
+        built_at = index.get("built_at")
+        if not isinstance(built_at, int) or isinstance(built_at, bool) or built_at < 0:
+            raise ValueError(
+                "invalid sparse search index: built_at must be a non-negative integer")
+        for position, chunk in enumerate(chunks):
+            if not isinstance(chunk, dict):
+                raise ValueError(
+                    f"invalid sparse search index: chunk {position} must be an object")
+            if "emb" in chunk:
+                raise ValueError(
+                    f"invalid sparse search index: chunk {position} emb must be absent")
+            for field in ("slug", "section", "text", "text_sha"):
+                if not isinstance(chunk.get(field), str):
+                    raise ValueError(
+                        f"invalid sparse search index: chunk {position} {field} "
+                        "must be a string")
+            expected_sha = hashlib.sha256(
+                chunk["text"].encode("utf-8")).hexdigest()
+            if chunk["text_sha"] != expected_sha:
+                raise ValueError(
+                    f"invalid sparse search index: chunk {position} text_sha mismatch")
+            if chunk["slug"] not in papers:
+                raise ValueError(
+                    f"invalid sparse search index: chunk {position} references "
+                    f"unknown paper {chunk['slug']!r}")
+    else:
+        # Missing retrieval_mode is the legacy dense schema and deliberately
+        # keeps its former validation contract.
+        if not isinstance(dim, int) or isinstance(dim, bool) or dim <= 0:
+            raise ValueError("invalid search index: dim must be a positive integer")
+        if retrieval_mode == "hybrid":
+            if not isinstance(index.get("model"), str) or not index["model"]:
+                raise ValueError(
+                    "invalid hybrid search index: model must be a non-empty string")
+            if index.get("quant") != "int8-l2norm":
+                raise ValueError(
+                    "invalid hybrid search index: quant must be 'int8-l2norm'")
+            if not isinstance(index.get("emb_file"), str) or not index["emb_file"]:
+                raise ValueError(
+                    "invalid hybrid search index: emb_file must be a non-empty string")
     return index, topic_dir
 
 
@@ -232,6 +296,12 @@ def query_search_index(topic: str, query: str, *, top_k: int = 10, mode: str = "
         raise ValueError("max_year must be an integer or None")
 
     index, topic_dir = _load_index(topic, docs_dir)
+    index_mode = index.get("retrieval_mode")
+    if index_mode == "bm25" and mode in {"dense", "hybrid"}:
+        raise ValueError(
+            f"{mode} retrieval requires a dense/hybrid index; "
+            "this index was built with retrieval_mode='bm25'")
+
     chunks = index["chunks"]
     eligible = _eligible_indexes(index, min_year, max_year)
     query_terms = tokenize(query)
@@ -240,11 +310,20 @@ def query_search_index(topic: str, query: str, *, top_k: int = 10, mode: str = "
         position: _bm25_score(documents[position], lengths[position], idf, average_length, query_terms)
         for position in eligible
     }
-    bm25_rank = _rank(bm25_scores, eligible)
+    bm25_eligible = (
+        [position for position in eligible if bm25_scores[position] > 0]
+        if mode == "bm25"
+        else eligible
+    )
+    bm25_rank = _rank(bm25_scores, bm25_eligible)
 
     dense_scores: dict[int, float] = {}
     dense_rank: dict[int, int] = {}
     if mode in {"dense", "hybrid"}:
+        if query_vector is None:
+            from serve_local import GEMINI_MODEL, EMBED_DIM
+            if index.get("model") != GEMINI_MODEL or index["dim"] != EMBED_DIM:
+                raise ValueError("query embedding model/dimension differs from the index; rebuild explicitly with the configured query model")
         vector = _normalize_query_vector(query_vector, index["dim"]) if query_vector is not None else _embed_query(query, index["dim"])
         raw_embeddings = _load_embedding_bytes(index, topic_dir)
         dense_scores = _dense_scores(
@@ -252,15 +331,22 @@ def query_search_index(topic: str, query: str, *, top_k: int = 10, mode: str = "
         dense_rank = _rank(dense_scores, eligible)
 
     if mode == "bm25":
-        final_scores = {position: 1 / (RRF_K + bm25_rank[position]) for position in eligible}
+        final_scores = {
+            position: 1 / (RRF_K + bm25_rank[position])
+            for position in bm25_eligible
+        }
+        ranking_pool = bm25_eligible
     elif mode == "dense":
         final_scores = {position: 1 / (RRF_K + dense_rank[position]) for position in eligible}
+        ranking_pool = eligible
     else:
         final_scores = {
             position: 1 / (RRF_K + dense_rank[position]) + 1 / (RRF_K + bm25_rank[position])
             for position in eligible
         }
-    ordered = sorted(eligible, key=lambda position: (-final_scores[position], position))
+        ranking_pool = eligible
+    ordered = sorted(
+        ranking_pool, key=lambda position: (-final_scores[position], position))
 
     results: list[dict[str, Any]] = []
     per_paper: Counter[str] = Counter()

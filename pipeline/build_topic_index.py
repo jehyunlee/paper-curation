@@ -1023,38 +1023,92 @@ def _run_topic_index(topic=None, cross=None):
       if (p) p.style.display = '';
     }
 
+    function validateDeepIndex(index) {
+      if (!index || typeof index !== 'object' || !Array.isArray(index.chunks)
+          || !index.papers || typeof index.papers !== 'object') {
+        throw new Error('Invalid search index: papers/chunks metadata is missing.');
+      }
+      const hasMode = Object.prototype.hasOwnProperty.call(index, 'retrieval_mode');
+      const mode = hasMode ? index.retrieval_mode : '';
+      if (mode === 'bm25') {
+        let invalid = index.dim !== 0 || index.model !== null || index.quant !== null
+          || Object.prototype.hasOwnProperty.call(index, 'emb_file')
+          || index.count !== index.chunks.length;
+        for (const chunk of index.chunks) {
+          if (!chunk || typeof chunk.slug !== 'string' || typeof chunk.section !== 'string'
+              || typeof chunk.text !== 'string' || typeof chunk.text_sha !== 'string'
+              || Object.prototype.hasOwnProperty.call(chunk, 'emb')) {
+            invalid = true;
+            break;
+          }
+        }
+        if (invalid) {
+          throw new Error('Invalid BM25 search index: sparse metadata must be content-only (dim=0, model/quant=null, no embeddings).');
+        }
+        return 'bm25';
+      }
+      if (hasMode && mode !== 'hybrid') {
+        throw new Error('Invalid search index retrieval_mode: ' + String(mode));
+      }
+      if (!Number.isInteger(index.dim) || index.dim <= 0) {
+        throw new Error('Invalid dense search index: a positive embedding dimension is required.');
+      }
+      return mode === 'hybrid' ? 'hybrid' : 'dense';
+    }
+
+    function deepIsSparse(index) {
+      return DEEP.index === index && DEEP.retrievalMode === 'bm25';
+    }
+
     async function deepLoadIndex() {
       if (DEEP.index) return DEEP.index;
       if (DEEP.loading) {
         while (DEEP.loading) await new Promise(r => setTimeout(r, 100));
-        return DEEP.index;
+        if (DEEP.index) return DEEP.index;
+        return deepLoadIndex();
       }
       DEEP.loading = true;
       deepSetStatus('\U0001F4E6 Loading search index...');
       try {
         const resp = await fetch('_search_index.json');
         if (!resp.ok) throw new Error('Index fetch failed: ' + resp.status);
-        DEEP.index = await resp.json();
+        const index = await resp.json();
+        const retrievalMode = validateDeepIndex(index);
+        let embI8 = null;
         // 신형 포맷: 임베딩은 바이너리 사이드카(emb_file) — JSON 에서 빠져
         // cold-load 의 JSON.parse 가 가볍고, 쿼리 시 per-chunk atob 도 없다.
         // ArrayBuffer → Int8Array 뷰 (파싱 0ms). 구형(chunk.emb b64)은
-        // getChunkVec 가 그대로 지원하므로 미재빌드 토픽도 동작.
-        if (DEEP.index.emb_file) {
-          const er = await fetch(DEEP.index.emb_file);
+        // getChunkVec 가 그대로 지원하므로 미재빌드 토픽도 동작. BM25
+        // content-only 포맷은 여기서 사이드카를 절대 요청하지 않는다.
+        if (retrievalMode !== 'bm25' && index.emb_file) {
+          const er = await fetch(index.emb_file);
           if (!er.ok) throw new Error('Embedding sidecar fetch failed: ' + er.status);
           const buf = await er.arrayBuffer();
-          const expect = (DEEP.index.count || 0) * (DEEP.index.dim || 0);
+          const expect = (index.count || 0) * (index.dim || 0);
           if (buf.byteLength !== expect) {
             throw new Error('Embedding sidecar size mismatch: ' + buf.byteLength + ' != ' + expect + ' — rebuild the index (build_search_index)');
           }
-          DEEP.embI8 = new Int8Array(buf);
-        } else {
-          DEEP.embI8 = null;
+          embI8 = new Int8Array(buf);
         }
         // Deep Research init: lexical(BM25) 인덱스를 미리 구축해 둔다.
         // (이후 hybridRetrieve 가 같은 캐시를 재사용)
-        try { buildBM25(DEEP.index); } catch (e) { console.warn('[bm25] build skipped:', e && e.message || e); }
-        return DEEP.index;
+        if (retrievalMode === 'bm25') {
+          buildBM25(index);
+        } else {
+          try { buildBM25(index); } catch (e) { console.warn('[bm25] build skipped:', e && e.message || e); }
+        }
+        // Publish only a fully validated index. A failed metadata/sidecar load
+        // must not leave DEEP.index truthy and make the next attempt bypass it.
+        DEEP.index = index;
+        DEEP.retrievalMode = retrievalMode;
+        DEEP.embI8 = embI8;
+        return index;
+      } catch (e) {
+        DEEP.index = null;
+        DEEP.retrievalMode = '';
+        DEEP.embI8 = null;
+        DEEP.bm25 = null;
+        throw e;
       } finally {
         DEEP.loading = false;
       }
@@ -1129,6 +1183,12 @@ def _run_topic_index(topic=None, cross=None):
       const data = await resp.json();
       const raw = (data && data.embedding) || [];
       if (!raw.length) throw new Error('embed-proxy-unreachable: empty embedding');
+      if (DEEP.index && (data.model !== DEEP.index.model || data.dim !== DEEP.index.dim || raw.length !== DEEP.index.dim)) {
+        throw new Error('embedding-model-mismatch: explicitly rebuild the index for the configured query model');
+      }
+      if (!raw.every(v => typeof v === 'number' && Number.isFinite(v))) {
+        throw new Error('embedding-model-mismatch: invalid query vector');
+      }
       // gemini-embedding-001 은 output_dimensionality != 3072 일 때 정규화되지
       // 않은 벡터를 반환한다 — 코사인 유사도(정규화된 문서 벡터 가정)와 맞추려면
       // int8 양자화와 동일하게 L2 정규화가 필수.
@@ -1386,6 +1446,41 @@ def _run_topic_index(topic=None, cross=None):
         s += idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * doc.len / avgdl));
       }
       return s;
+    }
+
+    // Content-only indices have no vector fallback: only chunks with a
+    // positive lexical BM25 score are evidence. This keeps a no-match query
+    // from turning arbitrary corpus rows into an apparently grounded answer.
+    function sparseRetrieve(index, query, timeFilter, journalFilter, topN) {
+      const chunks = index.chunks, papers = index.papers;
+      const qToks = deepTokenize(query);
+      if (!qToks.length) return [];
+      const bm25 = buildBM25(index);
+      const scored = [];
+      for (let i = 0; i < chunks.length; i++) {
+        const c = chunks[i];
+        const paper = papers[c.slug];
+        if (!paper) continue;
+        if (timeFilter) {
+          const y = parseInt(paper.year);
+          if (timeFilter.min && (!y || y < timeFilter.min)) continue;
+          if (timeFilter.max && (!y || y > timeFilter.max)) continue;
+        }
+        if (!journalMatches(paper.journal, journalFilter)) continue;
+        const score = bm25Score(bm25, qToks, i);
+        if (score > 0) scored.push({ i: i, score: score });
+      }
+      scored.sort(function(a, b) { return (b.score - a.score) || (a.i - b.i); });
+      const used = Object.create(null);
+      const out = [];
+      for (const hit of scored) {
+        if (out.length >= topN) break;
+        const c = chunks[hit.i];
+        used[c.slug] = (used[c.slug] || 0) + 1;
+        if (used[c.slug] > 3) continue;
+        out.push({ chunk: c, paper: papers[c.slug], rrf: hit.score });
+      }
+      return out;
     }
 
     // dense + BM25 두 랭킹을 RRF(score = Σ 1/(60+rank)) 로 융합해 top-N 후보를
@@ -2684,10 +2779,14 @@ def _run_topic_index(topic=None, cross=None):
 
     // Retrieve seed candidates for ONE investigation aspect. Returns [].
     async function retrieveSeeds(index, q) {
-      const qv = await embedQuery(q);
-      if (index.dim && qv.length !== index.dim) return [];
       const tf = parseTimeFilter(q);
       const jf = parseJournalFilter(q, index);
+      if (deepIsSparse(index)) {
+        const sparse = sparseRetrieve(index, q, tf, jf, 16);
+        return sparse.slice(0, 6);
+      }
+      const qv = await embedQuery(q);
+      if (index.dim && qv.length !== index.dim) return [];
       const chrono = isChronological(q);
       const authorHit = matchCorpusAuthor(q, index);
       if (authorHit) {
@@ -2750,9 +2849,22 @@ def _run_topic_index(topic=None, cross=None):
       }
       const topModel = resolveModel(backend, 'top');
       const topLabel = (MODEL_LABEL[backend] && MODEL_LABEL[backend].top) || topModel;
+      // A sparse index has no semantic fallback. Prove that the original
+      // question has lexical evidence before spending a BYOK call on planning.
+      if (deepIsSparse(index)) {
+        const initial = sparseRetrieve(
+          index, query, parseTimeFilter(query), parseJournalFilter(query, index), 1);
+        if (!initial.length) {
+          deepSetStatus('관련 논문을 찾지 못했어요. 질의를 다시 입력해보세요. (keyword/BM25)', true);
+          return false;
+        }
+      }
       // PLAN 1 — investigation plan (pre-search): what aspects to research.
       deepSetStatus('\U0001F52D 조사 계획 수립 중...');
-      const aspects = await planInvestigation(query, lang, backend, apiKey);
+      let aspects = await planInvestigation(query, lang, backend, apiKey);
+      if (deepIsSparse(index) && aspects.indexOf(query) === -1) {
+        aspects = [query].concat(aspects).slice(0, 6);
+      }
       deepThrowIfAborted();
       deepRenderAspects(aspects);
       // SEED retrieval per aspect (union) — broader than a single query.
@@ -2760,7 +2872,9 @@ def _run_topic_index(topic=None, cross=None):
       for (let ai = 0; ai < aspects.length; ai++) {
         deepThrowIfAborted();
         deepMarkAspect(ai, '검색 중...', false);
-        deepSetStatus('\U0001F50D 핵심 논문 검색 중 (' + (ai + 1) + '/' + aspects.length + ')...');
+        deepSetStatus('\U0001F50D 핵심 논문 '
+          + (deepIsSparse(index) ? 'keyword/BM25 ' : '')
+          + '검색 중 (' + (ai + 1) + '/' + aspects.length + ')...');
         let sc = [];
         try {
           sc = await retrieveSeeds(index, aspects[ai]);
@@ -2899,8 +3013,8 @@ def _run_topic_index(topic=None, cross=None):
       // Without this, a silent fallthrough on missing keys / prompt
       // cancel can look identical to "nothing happened".
       deepSetStatus('⏳ Deep Research 시작...');
-      // 질의 임베딩은 이제 같은 출처 /api/embed 프록시가 처리하므로 별도
-      // OpenAI 임베딩 키를 더 받지 않는다. 답변 생성/재정렬용 LLM 키 하나면 된다.
+      // 답변 생성/재정렬용 BYOK 키는 검색 방식과 독립이다. Sparse 는 BM25
+      // 로만 검색하고, dense/hybrid 만 같은 출처 /api/embed 프록시를 쓴다.
       if (!_LLM_KEY) {
         const lk = prompt('답변 생성용 API Key를 입력하세요 (Anthropic sk-ant-… / OpenAI sk-… / Google AIza… 중 하나):');
         if (!lk) { deepSetStatus('API Key가 필요합니다.', true); return; }
@@ -2942,22 +3056,38 @@ def _run_topic_index(topic=None, cross=None):
           if (ok) { deepSetStatus('✅ 완료'); setTimeout(() => deepSetStatus(''), 2500); }
           return;
         }
-        deepSetStatus('\U0001F50D 질의 임베딩 중... (' + (index.model || 'embedding') + ')');
-        const queryVec = await embedQuery(query);
-        // 차원 상수는 인덱스 헤더(index.dim)를 따른다 — 질의 임베딩 차원이
-        // 인덱스와 다르면(예: 인덱스 미재빌드) 코사인 유사도가 무의미해지므로 차단.
-        if (index.dim && queryVec.length !== index.dim) {
-          throw new Error('임베딩 차원(' + queryVec.length + ')이 검색 인덱스 차원(' + index.dim + ')과 다릅니다 — 인덱스를 재빌드하세요 (build_search_index).');
+        const sparseMode = deepIsSparse(index);
+        let queryVec = null;
+        if (sparseMode) {
+          deepSetStatus('\U0001F4DA 관련 논문 검색 중... (keyword/BM25)');
+        } else {
+          deepSetStatus('\U0001F50D 질의 임베딩 중... (' + (index.model || 'embedding') + ')');
+          queryVec = await embedQuery(query);
+          // 차원 상수는 인덱스 헤더(index.dim)를 따른다 — 질의 임베딩 차원이
+          // 인덱스와 다르면(예: 인덱스 미재빌드) 코사인 유사도가 무의미해지므로 차단.
+          if (index.dim && queryVec.length !== index.dim) {
+            throw new Error('임베딩 차원(' + queryVec.length + ')이 검색 인덱스 차원(' + index.dim + ')과 다릅니다 — 인덱스를 재빌드하세요 (build_search_index).');
+          }
+          deepSetStatus('\U0001F4DA 관련 논문 검색 중... (BM25 + dense)');
         }
-        deepSetStatus('\U0001F4DA 관련 논문 검색 중... (BM25 + dense)');
         const timeFilter = parseTimeFilter(query);
         const journalFilter = parseJournalFilter(query, index);
         const chronological = isChronological(query);
         // 저자 인지 검색: 질의가 코퍼스 저자를 가리키면 메타로 직접 후보 구성
         // (저자명은 임베딩/BM25에 없어 일반 검색으로는 매칭 불가).
-        const authorHit = matchCorpusAuthor(query, index);
+        const authorHit = sparseMode ? null : matchCorpusAuthor(query, index);
         let candidates, selected;
-        if (authorHit) {
+        if (sparseMode) {
+          const _len = document.getElementById('deep-length').value || 'short';
+          const _topK = (_len === 'long') ? 16 : 8;
+          const _topN = (_len === 'long') ? 40 : 20;
+          candidates = sparseRetrieve(index, query, timeFilter, journalFilter, _topN);
+          if (candidates.length === 0) {
+            deepSetStatus('관련 논문을 찾지 못했어요. 질의를 다시 입력해보세요. (keyword/BM25)', true);
+            return;
+          }
+          selected = candidates.slice(0, _topK);
+        } else if (authorHit) {
           deepSetStatus('\U0001F464 저자 "' + authorHit.label + '" 논문 ' + authorHit.slugs.length + '편' + (chronological ? ' · 시간순' : '') + ' 정리 중...');
           candidates = authorCandidates(index, authorHit, queryVec, timeFilter, chronological, journalFilter);
           if (candidates.length === 0) {
@@ -2986,9 +3116,9 @@ def _run_topic_index(topic=None, cross=None):
         }
         // Group chunks by paper so each paper appears as a single reference
         // entry. The retrieval step still uses chunk-level cosine similarity
-        // (so different sections can independently boost a paper into the
-        // top-k), but downstream prompt construction and references list
-        // operate on unique papers -- otherwise the same paper shows up as
+        // or BM25 score (so different sections can independently boost a paper
+        // into the top-k), but downstream prompt construction and references
+        // list operate on unique papers -- otherwise the same paper shows up as
         // [1], [2], [3] when its Essence/How/Achievement chunks all match.
         const byPaper = new Map();
         for (const s of selected) {
@@ -3468,32 +3598,17 @@ def _run_topic_index(topic=None, cross=None):
       }
     });"""
 
-    # --- Build-time: inject API keys from env vars into JS ---
-    _cfg_path = Path(__file__).resolve().parent.parent / "config.json"
-    _cfg_keys = {}
-    if _cfg_path.exists():
-        with open(_cfg_path, "r", encoding="utf-8") as _f:
-            _cfg_keys = json.load(_f)
-    _ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY") or _cfg_keys.get("anthropic_api_key", "")
-    _OPENAI_KEY = os.environ.get("OPENAI_API_KEY") or _cfg_keys.get("openai_api_key", "")
-    _GEMINI_KEY = (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-                   or _cfg_keys.get("gemini_api_key", "") or _cfg_keys.get("google_api_key", ""))
-    # Local-only Audio Overview recipients (baked for localhost convenience;
-    # stripped by prepare_deploy.py before Cloudflare upload).
-    _LOCAL_EMAILS_RAW = (os.environ.get("PAPER_CURATION_LOCAL_EMAILS", "")
-                         or ",".join(_cfg_keys.get("local_emails", []) or []))
-    _LOCAL_EMAILS = [e.strip() for e in _LOCAL_EMAILS_RAW.split(",") if e.strip()]
+    # Browser credentials are always reader-owned. Do not read operator
+    # credentials or recipient lists here: local and deploy artifacts have
+    # the same no-secret boundary. Query embeddings use the existing proxy.
     # ── Deep Research multi-backend keys ──────────────────────────────
-    # We baked these at build time for local dev (where prepare_deploy
-    # strips them on the way to Cloudflare). At runtime the modal
-    # accepts any one of the three; we sniff the prefix to pick the
-    # backend (sk-ant-* → Anthropic, sk-* → OpenAI, AIza* → Google).
-    # `_LLM_KEY` is the unified slot; `_ANTHROPIC_KEY` is kept for
-    # backward-compat with any code still referencing it. The embedding
-    # step (Deep Research RAG) continues to require an OpenAI key —
-    # that's a separate slot.
-    JS = ("let _ANTHROPIC_KEY = " + json.dumps(_ANTHROPIC_KEY) + " || localStorage.getItem('_ANTHROPIC_KEY') || '';\n"
-          "let _OPENAI_KEY = " + json.dumps(_OPENAI_KEY) + " || localStorage.getItem('_OPENAI_KEY') || '';\n"
+    # At runtime the modal accepts any one of the three; we sniff the prefix
+    # to pick the backend (sk-ant-* → Anthropic, sk-* → OpenAI, AIza* → Google).
+    # `_LLM_KEY` is the unified answer-provider slot; `_ANTHROPIC_KEY` is kept
+    # for existing callers. Sparse retrieval needs no embedding provider;
+    # dense/hybrid query embeddings use the same-origin proxy.
+    JS = ("let _ANTHROPIC_KEY = '' || localStorage.getItem('_ANTHROPIC_KEY') || '';\n"
+          "let _OPENAI_KEY = '' || localStorage.getItem('_OPENAI_KEY') || '';\n"
           "let _LLM_KEY = localStorage.getItem('_LLM_KEY') || _ANTHROPIC_KEY || '';\n" + ("window._PC_CROSS = " + ("true" if cross else "false") + ";\n") + JS)
 
 
@@ -3848,8 +3963,8 @@ def _run_topic_index(topic=None, cross=None):
         '<div id="lightbox" class="lightbox"><img id="lightbox-img" alt=""></div>\n\n'
         f'<script>\n{JS}\n</script>\n\n'
         + _audio_modal("이 Deep Research 답변을 팟캐스트형 오디오로 생성합니다. (Gemini · 키는 브라우저에만 저장 · 완성본은 이메일로도 전송)") + "\n"
-        + _audio_script(_GEMINI_KEY, mode="deep", provider_js=_AUDIO_PROVIDER_JS,
-                        local_emails=_LOCAL_EMAILS) + "\n"
+        + _audio_script("", mode="deep", provider_js=_AUDIO_PROVIDER_JS,
+                        local_emails=[]) + "\n"
         + '<footer style="text-align:center;padding:2rem 0 1rem;color:#999;font-size:0.85rem;border-top:1px solid #eee;margin-top:3rem;">'
         '게재 논문은 arXiv&middot;OpenReview 등 공개 프리프린트이며 저작권은 원저작자에게 귀속됩니다 &middot; 리뷰&middot;요약&middot;Deep Research 답변은 생성형 AI가 생성한 결과물입니다'
         '<br>Developed by Jehyun Lee, KIST AIX Strategy Department | jehyun.lee@gmail.com'

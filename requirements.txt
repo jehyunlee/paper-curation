@@ -18,6 +18,8 @@
 anthropic
 openai
 google-genai
+keyring>=25.6,<26
+jsonschema>=4.23,<5
 pymupdf
 Pillow
 requests

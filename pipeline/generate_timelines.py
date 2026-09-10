@@ -40,14 +40,86 @@ from pathlib import Path
 # PaperBanana wrapper (config.json의 paperbanana_dir 경로 사용)
 # generate_diagram() 사용: from lib.paperbanana import generate_diagram
 
-from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir, IMG_TIMELINES_DIR
+from config_loader import (PAPERS_DIR as _PAPERS_DIR, get_paperbanana_dir,
+                           get_topic_dir, IMG_TIMELINES_DIR)
 from lib.categories import category_slug
+from lib.credentials import credential_status, resolve_credential
 PAPERS_DIR = str(_PAPERS_DIR)
 
 
 def log(msg):
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {msg}", flush=True)
+
+
+def diagnose_timeline_capabilities(*, narrative_only=False, images_only=False):
+    """Return non-secret, non-importing availability for the requested mode."""
+    if narrative_only and images_only:
+        return {"available": False, "status": "invalid-mode",
+                "reason": "narrative_only and images_only are mutually exclusive"}
+    if narrative_only:
+        return {"available": True, "status": "ready", "requires": ["anthropic"]}
+    paperbanana_dir = get_paperbanana_dir()
+    if not paperbanana_dir:
+        return {"available": False, "status": "unavailable",
+                "reason": "paperbanana_dir is not configured"}
+    root = Path(paperbanana_dir)
+    config = root / "configs" / "model_config.yaml"
+    if not root.is_dir():
+        return {"available": False, "status": "unavailable",
+                "reason": "PaperBanana installation is unavailable"}
+    if not config.is_file():
+        return {"available": False, "status": "needs-configuration",
+                "reason": "PaperBanana model_config.yaml is required; template is not active"}
+    try:
+        import yaml
+    except ImportError as exc:
+        return {"available": False, "status": "unavailable",
+                "reason": f"cannot safely read PaperBanana model config: {type(exc).__name__}"}
+    try:
+        with config.open(encoding="utf-8") as f:
+            model_config = yaml.safe_load(f)
+    except (OSError, yaml.YAMLError) as exc:
+        return {"available": False, "status": "unavailable",
+                "reason": f"cannot safely read PaperBanana model config: {type(exc).__name__}"}
+    defaults = model_config.get("defaults", {}) if isinstance(model_config, dict) else {}
+    models = {
+        "main_model_name": defaults.get("main_model_name"),
+        "image_gen_model_name": defaults.get("image_gen_model_name"),
+    }
+    if not all(isinstance(model, str) and model.strip() for model in models.values()):
+        return {"available": False, "status": "needs-configuration",
+                "reason": "PaperBanana active config must name main and image models",
+                "models": models}
+
+    def provider_for(model):
+        name = model.strip().lower()
+        if name.startswith("gemini"):
+            return "google"
+        if name.startswith(("gpt", "o1", "o3", "o4")):
+            return "openai"
+        if name.startswith("claude"):
+            return "anthropic"
+        return None
+
+    providers = {provider_for(model) for model in models.values()}
+    if None in providers:
+        return {"available": False, "status": "unverified-backend",
+                "reason": "PaperBanana active config selects an unsupported backend",
+                "models": models}
+    # Candidate selection is a separate Anthropic vision call whenever more
+    # than one candidate is rendered (the default is three).
+    providers.add("anthropic")
+    credentials = {provider: credential_status(provider) for provider in sorted(providers)}
+    missing = [status["reference"] for status in credentials.values()
+               if not status["configured"]]
+    if missing:
+        return {"available": False, "status": "needs-credential",
+                "reason": "required PaperBanana backend credentials are not configured",
+                "models": models, "roles": {"candidate_judge": _JUDGE_MODEL},
+                "credentials": credentials, "missing": missing}
+    return {"available": True, "status": "ready", "models": models,
+            "roles": {"candidate_judge": _JUDGE_MODEL}, "credentials": credentials}
 
 
 def category_input_hash(papers):
@@ -84,7 +156,8 @@ def opus_streaming_call(prompt, max_tokens=24000):
     Connection reset/ReadError를 잡아서 수동 retry (exp backoff)."""
     import time as _time
     from anthropic import Anthropic
-    client = Anthropic(timeout=600.0, max_retries=4)
+    client = Anthropic(api_key=resolve_credential("anthropic"),
+                       timeout=600.0, max_retries=4)
 
     last_err = None
     for attempt in range(5):
@@ -793,7 +866,8 @@ def select_best_candidate(results, caption=""):
     try:
         import base64
         from anthropic import Anthropic
-        judge = Anthropic(timeout=180.0, max_retries=3)
+        judge = Anthropic(api_key=resolve_credential("anthropic"),
+                          timeout=180.0, max_retries=3)
         content = []
         for n, (_i, _kb, path) in enumerate(results, 1):
             with open(path, "rb") as fh:
@@ -884,6 +958,12 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
     `mode` is reserved for the api facade (legacy compatibility); the
     actual behavior is controlled by the boolean flags.
     """
+    if narrative_only and images_only:
+        raise ValueError("narrative_only and images_only are mutually exclusive")
+    if images_only:
+        capability = diagnose_timeline_capabilities(images_only=True)
+        if not capability["available"]:
+            return capability
     # --force-narrative 는 env 로 흘려보내 narrative 입력 해시 캐시를 우회한다.
     if force_narrative:
         os.environ["TIMELINE_FORCE_NARRATIVE"] = "1"
@@ -893,6 +973,15 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
 
     narratives_path = os.path.join(topic_dir, "_category_narratives.json")
     method_texts_dir = candidates_dir  # method texts saved alongside candidates
+
+    # Image-only must consume persisted narrative artifacts only.  In
+    # particular, do not invoke an Anthropic narrative builder to fill a
+    # missing main method text.
+    if images_only:
+        if not os.path.exists(narratives_path):
+            return {"status": "insufficient-data",
+                    "reason": "no saved timeline narratives; run narrative-only first",
+                    "narratives_path": narratives_path}
 
     # Load data
     with open(os.path.join(PAPERS_DIR, "_papers_index.json"), "r", encoding="utf-8") as f:
@@ -913,6 +1002,24 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
             cat_papers[p["primary_category"]].append(p)
 
     target_cats = categories if categories else sorted(k for k in cat_papers.keys() if k != "Other")
+
+    if images_only:
+        missing_methods = []
+        if not main_only:
+            missing_methods.extend(
+                os.path.join(method_texts_dir, f"_method_text_{category_slug(cat)}.txt")
+                for cat in target_cats
+                if not os.path.exists(os.path.join(
+                    method_texts_dir, f"_method_text_{category_slug(cat)}.txt"))
+            )
+        if not category_only:
+            main_method = os.path.join(method_texts_dir, "_method_text_main.txt")
+            if not os.path.exists(main_method):
+                missing_methods.append(main_method)
+        if missing_methods:
+            return {"status": "insufficient-data",
+                    "reason": "saved timeline method text is missing; run narrative-only first",
+                    "missing_paths": missing_methods}
 
     # ═══════════════════════════════════════
     # STEP 1: Generate all narratives

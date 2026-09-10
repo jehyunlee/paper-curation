@@ -23,6 +23,7 @@ Run:
 import os
 import re
 import sys
+import tempfile
 import zipfile
 import unittest
 
@@ -30,6 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from export_institutions_public import (  # noqa: E402
     clean_raw_name, is_publishable_raw,
+    validate_public_rows, validate_public_xlsx, write_csv, write_xlsx,
 )
 
 
@@ -131,6 +133,73 @@ class ExportShapeTests(unittest.TestCase):
     def test_empty_and_marker_only_strings_are_not_published(self):
         for raw in ("", "   ", "12", "3,", "*†"):
             self.assertFalse(publishable(raw), repr(raw))
+
+
+class PublicWriterContractTests(unittest.TestCase):
+
+    ROW = {
+        "논문 기관명": "Example University",
+        "실제 기관명": "Example University",
+        "상위 기관명": "",
+        "국가": "Republic of Korea",
+        "ROR ID": "012345678",
+        "논문 수": 7,
+        "근거": "ROR",
+        "검토 필요": "",
+    }
+
+    def test_real_export_shape_preserves_allowed_statistics_and_attribution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            csv_path = os.path.join(tmp, "institutions_public.csv")
+            xlsx_path = os.path.join(tmp, "institutions_public.xlsx")
+            write_csv([self.ROW], csv_path)
+            write_xlsx([self.ROW], xlsx_path)
+            with open(csv_path, encoding="utf-8-sig") as stream:
+                exported = list(__import__("csv").DictReader(stream))
+            self.assertEqual(exported[0]["논문 수"], "7")
+            self.assertEqual(exported[0]["근거"], "ROR")
+            validate_public_xlsx(xlsx_path)
+
+    def test_private_values_and_non_public_fields_are_rejected(self):
+        for field, value in (
+            ("실제 기관명", "/Users/operator/private"),
+            ("근거", "owner@example.com"),
+        ):
+            row = dict(self.ROW)
+            row[field] = value
+            with self.assertRaises(ValueError):
+                validate_public_rows([row])
+        row = dict(self.ROW)
+        row["metadata_json"] = "private"
+        with self.assertRaises(ValueError):
+            validate_public_rows([row])
+
+    def test_formula_prefixes_are_rejected_before_csv_or_excel_write(self):
+        for value in ('=HYPERLINK("https://example.test")', " +SUM(1,2)", "@SUM(1,2)", "-1+2"):
+            with self.assertRaisesRegex(ValueError, "formula"):
+                validate_public_rows([{**self.ROW, "실제 기관명": value}])
+
+    def test_resaved_personal_author_metadata_is_rejected(self):
+        from openpyxl import load_workbook
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "public.xlsx")
+            write_xlsx([self.ROW], path)
+            workbook = load_workbook(path)
+            workbook.properties.lastModifiedBy = "Private Operator"
+            workbook.save(path)
+            with self.assertRaisesRegex(ValueError, "author metadata"):
+                validate_public_xlsx(path)
+
+    def test_resaved_formula_is_rejected_even_without_external_relationship(self):
+        from openpyxl import load_workbook
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "public.xlsx")
+            write_xlsx([self.ROW], path)
+            workbook = load_workbook(path)
+            workbook.active["A2"] = '=HYPERLINK("https://example.test")'
+            workbook.save(path)
+            with self.assertRaisesRegex(ValueError, "formula"):
+                validate_public_xlsx(path)
 
 
 

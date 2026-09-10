@@ -309,6 +309,12 @@ def main():
     if not confirm_rebuild(args):
         sys.exit(2)
 
+    from lib.corpus_store import corpus_operation_lock
+    with corpus_operation_lock(PIPELINE.parent / "docs" / "papers", exclusive=True):
+        _execute_plan(args, plan, images)
+
+
+def _execute_plan(args, plan, images):
     # Mark this run so next Claude session can detect unclean shutdown
     # (e.g. Windows update reboot mid-run). Cleared at successful end.
     mark_running(

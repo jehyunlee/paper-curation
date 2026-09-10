@@ -1,12 +1,12 @@
 """
 Build a Deep Research search index (for client-side RAG).
 
-Reads every review.md that belongs to the given topic, splits each one
+Reads every review.md that belongs to the given topic and splits each one
 into section-aware chunks (Essence, Motivation, How, Achievement,
-Originality), embeds each chunk with Google `gemini-embedding-001`
-(task_type RETRIEVAL_DOCUMENT, output_dimensionality=768),
-L2-normalises and quantises the 768-dim float32 vectors down to int8,
-then writes `docs/{topic}/_search_index.json`.
+Originality).  ``--mode bm25`` publishes those chunks as a content-only
+index.  The default ``--mode hybrid`` additionally embeds each chunk with
+Google `gemini-embedding-001` (task_type RETRIEVAL_DOCUMENT,
+output_dimensionality=768), L2-normalises and quantises the vectors to int8.
 
 주의(gotcha): gemini-embedding-001 은 output_dimensionality 가 3072 가
 아닐 때 정규화되지 않은 벡터를 돌려준다. int8 양자화 전에 반드시 L2
@@ -20,10 +20,11 @@ similarity retrieval client-side before calling Claude with the top-k
 chunks as context.
 
 Usage:
-  PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s
+  PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s --mode bm25
+  PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s --mode hybrid
   PYTHONUTF8=1 python pipeline/build_search_index.py --topic scisci
   PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s --limit 10    # debug
-  PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s --dry-run     # chunk only, no API
+  PYTHONUTF8=1 python pipeline/build_search_index.py --topic ai4s --dry-run     # read-only plan
 """
 
 import argparse
@@ -33,12 +34,15 @@ import json
 import os
 import re
 import sys
+import tempfile
 import time
 from pathlib import Path
 
 PIPELINE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(PIPELINE_DIR))
-from config_loader import DOCS_DIR, PAPERS_DIR, PROJECT_ROOT, get_topic_dir, get_papers_index_path
+from config_loader import DOCS_DIR, PAPERS_DIR, get_google_key, get_topic_dir, get_papers_index_path
+
+BUILD_MODES = {"hybrid", "bm25"}
 
 # Zotero metadata (normalized-title -> {url, doi}) captured by build_topic_index.
 # Gives a real external URL for papers whose review.md frontmatter has a
@@ -46,7 +50,19 @@ from config_loader import DOCS_DIR, PAPERS_DIR, PROJECT_ROOT, get_topic_dir, get
 _ZMETA_CACHE = None
 
 
-def source_fingerprint(topic, slugs, *, docs_dir=None, papers_dir=None):
+def _is_local_topic(topic: str, docs_root: Path) -> bool:
+    assets_ignore = docs_root / ".assetsignore"
+    if not assets_ignore.exists():
+        return False
+    want = f"{topic}/"
+    return any(
+        line.strip() == want
+        for line in assets_ignore.read_text(encoding="utf-8").splitlines()
+    )
+
+
+def source_fingerprint(topic, slugs, *, docs_dir=None, papers_dir=None,
+                       include_text=False, include_personal_notes=None):
     """Fingerprint files that feed one topic index without parsing/re-embedding.
 
     Path + size + nanosecond mtime make deploy freshness checks cheap. The
@@ -54,14 +70,21 @@ def source_fingerprint(topic, slugs, *, docs_dir=None, papers_dir=None):
     """
     docs_root = Path(docs_dir) if docs_dir is not None else Path(DOCS_DIR)
     papers_root = Path(papers_dir) if papers_dir is not None else Path(PAPERS_DIR)
+    if include_personal_notes is None:
+        include_personal_notes = _is_local_topic(topic, docs_root)
     files = []
     for slug in sorted(set(slugs)):
-        for name in ("review.md", "notes.md"):
+        names = ["review.md"]
+        if include_text:
+            names.append("text.md")
+        if include_personal_notes:
+            names.append("notes.md")
+        for name in names:
             path = papers_root / slug / name
             if path.exists():
                 files.append((f"papers/{slug}/{name}", path))
     notes_root = docs_root / "notes" / topic
-    if notes_root.exists():
+    if include_personal_notes and notes_root.exists():
         for path in sorted(notes_root.rglob("*.md")):
             if not path.name.startswith("_"):
                 files.append((f"notes/{topic}/{path.relative_to(notes_root).as_posix()}", path))
@@ -118,24 +141,9 @@ def _resolve_external(title, doi, arxiv):
     return doi, arxiv, ext
 
 
-def _load_gemini_key_from_config() -> str:
-    """Fallback: read gemini/google api key from config.json (written by setup.py)."""
-    try:
-        cfg_path = PROJECT_ROOT / "config.json"
-        if cfg_path.exists():
-            with open(cfg_path, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-            return (cfg.get("gemini_api_key") or cfg.get("google_api_key") or "") or ""
-    except Exception:
-        pass
-    return ""
-
-try:
-    import numpy as np
-except ImportError:
-    print("ERROR: numpy not installed. Run: pip install numpy")
-    sys.exit(1)
-
+def _resolve_google_key() -> str:
+    """Resolve the optional Google credential without reading config files."""
+    return get_google_key()
 
 # Sections worth indexing (order matters — determines which chunk is
 # retrieved first when there is a tie). "How" carries method details,
@@ -225,7 +233,7 @@ def _captions_from_text(text_md: str) -> dict:
     return out
 
 
-def extract_figures(md_text: str, slug: str) -> list:
+def extract_figures(md_text: str, slug: str, *, include_source_text: bool = True) -> list:
     """Return every figure that physically exists on disk for this paper.
 
     PyMuPDF extracts up to 5 figures per paper, but the Claude-written
@@ -238,11 +246,9 @@ def extract_figures(md_text: str, slug: str) -> list:
          (English, PyMuPDF extraction of the PDF body)
       3. A numeric "Figure N" placeholder
 
-    text.md is git-ignored, so step 2 only succeeds when the build
-    runs locally (operator side). The captions still get baked into
-    _search_index.json which IS shipped to Cloudflare, so visitors
-    benefit from the better captions even though text.md itself
-    never reaches the public site.
+    Step 2 is enabled only for local topics whose source-text gate is on.
+    Public indexes use review-authored captions or the numeric fallback so
+    no excerpt from text.md is copied into a deployed artifact.
     """
     # 1) Captions Claude wrote in review.md (Korean alt text on the image)
     caption_by_path: dict = {}
@@ -252,10 +258,11 @@ def extract_figures(md_text: str, slug: str) -> list:
         if cap and path not in caption_by_path:
             caption_by_path[path] = cap
 
-    # 2) Captions from PyMuPDF-extracted text (only if text.md is on disk)
+    # 2) Captions from PyMuPDF-extracted text (local-only: even short source
+    # excerpts must not be copied into a public search index).
     text_path = PAPERS_DIR / slug / "text.md"
     text_caption_by_num: dict = {}
-    if text_path.exists():
+    if include_source_text and text_path.exists():
         try:
             text_md = text_path.read_text(encoding="utf-8")
             text_caption_by_num = _captions_from_text(text_md)
@@ -305,7 +312,8 @@ def clean_chunk_text(text: str) -> str:
     return text.strip()
 
 
-def parse_review(md_path: Path, slug: str) -> dict:
+def parse_review(md_path: Path, slug: str, *, include_source_text: bool = True,
+                 include_personal_notes: bool = True) -> dict:
     """Return {title, year, figures, chunks, authors, first_author, doi, arxiv} for a review.md.
 
     Authors / DOI / arXiv come from the schema v1 frontmatter when
@@ -369,7 +377,8 @@ def parse_review(md_path: Path, slug: str) -> dict:
         year = int(ym.group(0))
 
     sections = extract_sections(text)
-    figures = extract_figures(text, slug)
+    figures = extract_figures(
+        text, slug, include_source_text=include_source_text)
 
     chunks = []
     for sec_name in SECTIONS_TO_INDEX:
@@ -391,7 +400,7 @@ def parse_review(md_path: Path, slug: str) -> dict:
     # (Obsidian-edited, git-ignored), include it as an extra chunk so
     # Deep Research can cite the operator's own ideas and hypotheses.
     notes_path = md_path.parent / "notes.md"
-    if notes_path.exists():
+    if include_personal_notes and notes_path.exists():
         try:
             notes_text = notes_path.read_text(encoding="utf-8")
             notes_cleaned = clean_chunk_text(notes_text)
@@ -423,6 +432,12 @@ def quantize_int8_l2(vec: list) -> bytes:
     and also ensures every component is in [-1, 1] so we can multiply by
     127 without needing a per-vector scale factor.
     """
+    # Keep numpy out of module import and BM25-only execution entirely.
+    try:
+        import numpy as np
+    except ImportError:
+        print("ERROR: numpy not installed. Run: pip install numpy")
+        raise SystemExit(1)
     arr = np.asarray(vec, dtype=np.float32)
     norm = float(np.linalg.norm(arr))
     if norm > 0:
@@ -460,14 +475,33 @@ def load_embedding_cache(topic_dir: Path, model: str) -> dict:
     Entries whose model does not match are ignored (model is part of the sha).
     """
     cache: dict = {}
+    cache_dim: int | None = None
+
+    def add_entry(sha, emb, declared_dim=None):
+        nonlocal cache_dim
+        if not isinstance(sha, str) or not isinstance(emb, str):
+            return
+        try:
+            raw = base64.b64decode(emb, validate=True)
+        except Exception:
+            return
+        dim = len(raw)
+        if dim <= 0 or (declared_dim is not None and dim != declared_dim):
+            return
+        if cache_dim is None:
+            cache_dim = dim
+        if dim != cache_dim:
+            return
+        cache[sha] = emb
 
     # 1) previous index — derive sha from stored text + (its) model
     prev_path = topic_dir / "_search_index.json"
     if prev_path.exists():
         try:
             prev = json.loads(prev_path.read_text(encoding="utf-8"))
-            prev_model = prev.get("model", model)
-            if prev_model == model:
+            prev_model = prev.get("model")
+            prev_mode = prev.get("retrieval_mode")
+            if prev_mode in (None, "hybrid") and prev_model == model:
                 prev_chunks = prev.get("chunks", [])
                 # 신형 포맷: emb 는 바이너리 사이드카(emb_file)에 chunk 순서대로
                 # dim 바이트씩 — 거기서 잘라 b64 로 복원해 캐시에 넣는다.
@@ -489,8 +523,10 @@ def load_embedding_cache(topic_dir: Path, model: str) -> dict:
                         ).decode("ascii")
                     if not emb:
                         continue
-                    sha = ch.get("text_sha") or _chunk_sha(model, txt)
-                    cache[sha] = emb
+                    # Recompute instead of trusting an unrelated content hash
+                    # from a malformed/mixed index.
+                    sha = _chunk_sha(model, txt)
+                    add_entry(sha, emb, prev_dim)
         except Exception as e:
             print(f"      WARN: could not read prior index for cache ({e})")
 
@@ -500,8 +536,11 @@ def load_embedding_cache(topic_dir: Path, model: str) -> dict:
         try:
             side = json.loads(side_path.read_text(encoding="utf-8"))
             if side.get("model") == model:
+                side_dim = side.get("dim")
+                if not isinstance(side_dim, int) or isinstance(side_dim, bool) or side_dim <= 0:
+                    side_dim = None
                 for sha, emb in (side.get("emb") or {}).items():
-                    cache[sha] = emb
+                    add_entry(sha, emb, side_dim)
         except Exception as e:
             print(f"      WARN: could not read embedding cache ({e})")
 
@@ -510,9 +549,21 @@ def load_embedding_cache(topic_dir: Path, model: str) -> dict:
 
 def save_embedding_cache(topic_dir: Path, model: str, sha_to_emb: dict) -> None:
     """Persist the full {text_sha: emb_b64} map to the sidecar (atomic)."""
+    dims = {
+        len(base64.b64decode(emb, validate=True))
+        for emb in sha_to_emb.values()
+    }
+    if len(dims) != 1 or not dims or next(iter(dims)) <= 0:
+        raise ValueError("embedding cache must contain one positive vector dimension")
+    dim = next(iter(dims))
     side_path = topic_dir / EMBED_CACHE_NAME
     tmp = side_path.with_suffix(side_path.suffix + ".tmp")
-    payload = {"model": model, "count": len(sha_to_emb), "emb": sha_to_emb}
+    payload = {
+        "model": model,
+        "dim": dim,
+        "count": len(sha_to_emb),
+        "emb": sha_to_emb,
+    }
     tmp.write_text(
         json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
         encoding="utf-8",
@@ -642,15 +693,16 @@ def textmd_high_signal_chunks(slug: str) -> list:
 
 def is_local_topic(topic: str) -> bool:
     """배포(Cloudflare) 제외 토픽인지 — docs/.assetsignore 에 '{topic}/' 가 있으면 로컬."""
-    ai = DOCS_DIR / ".assetsignore"
-    if not ai.exists():
-        return False
-    want = f"{topic}/"
-    return any(line.strip() == want for line in ai.read_text(encoding="utf-8").splitlines())
+    return _is_local_topic(topic, Path(DOCS_DIR))
 
 
 def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
-                include_text: str = "auto"):
+                include_text: str = "auto", mode: str = "hybrid"):
+    if mode not in BUILD_MODES:
+        raise ValueError("mode must be one of: hybrid, bm25")
+    if include_text not in {"auto", "yes", "no"}:
+        raise ValueError("include_text must be one of: auto, yes, no")
+
     topic_dir = get_topic_dir(topic)
     if not topic_dir.exists():
         print(f"ERROR: topic dir {topic_dir} does not exist")
@@ -699,7 +751,12 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         if not review_path.exists():
             skipped += 1
             continue
-        parsed = parse_review(review_path, slug)
+        parsed = parse_review(
+            review_path,
+            slug,
+            include_source_text=use_text,
+            include_personal_notes=local,
+        )
         if not parsed or not parsed["chunks"]:
             skipped += 1
             continue
@@ -756,13 +813,11 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
           f"(review {len(pending_chunks) - text_chunk_count} + text.md {text_chunk_count}), {skipped} skipped")
 
     # --- Index personal notes from docs/notes/{topic}/ (git-ignored) ---
-    # These are operator-authored markdown files (hypotheses, meeting notes,
-    # gap analyses, etc.) edited in Obsidian or any text editor. They are
-    # chunked and embedded alongside paper reviews so Deep Research can
-    # cite the operator's own thinking in its answers.
+    # These operator-authored files are deliberately local-only. Public
+    # topics never copy personal notes into either retrieval mode.
     _notes_dir = DOCS_DIR / "notes" / topic
     _notes_count = 0
-    if _notes_dir.exists():
+    if local and _notes_dir.exists():
         for _note_path in sorted(_notes_dir.rglob("*.md")):
             if _note_path.name.startswith("_"):
                 continue
@@ -803,36 +858,89 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         print(f"      + {_notes_count} personal notes from {_notes_dir}")
 
     if not pending_chunks:
-        print("ERROR: no chunks to embed")
+        print("ERROR: no chunks to index")
         sys.exit(3)
 
     total_chars = sum(len(c["text"]) for c in pending_chunks)
     approx_tokens = total_chars // 3  # conservative estimate
-    # gemini-embedding-001: $0.15 / 1M input tokens
-    print(f"      approx {approx_tokens:,} input tokens ~= ${approx_tokens * 0.00000015:.4f} (gemini-embedding-001)")
+    if mode == "hybrid":
+        # gemini-embedding-001: $0.15 / 1M input tokens
+        print(f"      approx {approx_tokens:,} input tokens ~= "
+              f"${approx_tokens * 0.00000015:.4f} (gemini-embedding-001)")
+    else:
+        print(f"      {total_chars:,} content characters (BM25; no embedding cost)")
 
-    # Cache key per chunk (sha256(model + text)); reused everywhere below.
+    if dry_run:
+        print(f"[3/4] --dry-run: would publish {mode} index with "
+              f"{len(papers_meta)} papers / {len(pending_chunks)} chunks")
+        print("      read-only plan: no credentials, embeddings, cache, JSON, or binary writes")
+        print("Done.")
+        return {
+            "retrieval_mode": mode,
+            "count": len(pending_chunks),
+            "paper_count": len(papers_meta),
+            "dry_run": True,
+        }
+
+    if mode == "bm25":
+        print("[3/4] Building content-only BM25 index (no embeddings)")
+        out_chunks = []
+        for chunk in pending_chunks:
+            text_sha = hashlib.sha256(chunk["text"].encode("utf-8")).hexdigest()
+            out_chunks.append({
+                "slug": chunk["slug"],
+                "section": chunk["section"],
+                "text": chunk["text"],
+                "text_sha": text_sha,
+            })
+        out = {
+            "retrieval_mode": "bm25",
+            "model": None,
+            "dim": 0,
+            "quant": None,
+            "count": len(out_chunks),
+            "papers": papers_meta,
+            "chunks": out_chunks,
+        }
+        source_fp, source_count = source_fingerprint(
+            topic,
+            papers_meta,
+            include_text=use_text,
+            include_personal_notes=local,
+        )
+        out["source_fingerprint"] = source_fp
+        out["source_file_count"] = source_count
+        out["source_options"] = {
+            "include_text": use_text,
+            "include_personal_notes": local,
+        }
+        out["built_at"] = int(time.time())
+
+        print("[4/4] Atomically publishing JSON...")
+        out_path = topic_dir / "_search_index.json"
+        _atomic_write_json(out_path, out)
+        size_kb = out_path.stat().st_size // 1024
+        print(f"      wrote {out_path} ({size_kb:,} KB)")
+        print("Done.")
+        return out
+
+    # Hybrid cache key includes the embedding model; sparse content hashes
+    # are intentionally unrelated and never enter this cache.
     for ch in pending_chunks:
         ch["text_sha"] = _chunk_sha(model, ch["text"])
 
     # --- Content-addressed embedding cache (incremental) ---
     # sha → 양자화된 emb(b64). 이전 index + sidecar 에서 로드한 뒤, 캐시에
-    # 없는 chunk 만 Gemini 로 보낸다. dry-run 도 캐시 hit 은 재사용한다.
+    # 없는 chunk 만 Gemini 로 보낸다.
     sha_to_emb: dict = load_embedding_cache(topic_dir, model)
     miss_chunks = [c for c in pending_chunks if c["text_sha"] not in sha_to_emb]
     n_hit = len(pending_chunks) - len(miss_chunks)
     print(f"      cache: {n_hit} hit / {len(miss_chunks)} miss (of {len(pending_chunks)})")
 
     # --- Embed (cache misses only) ---
-    if dry_run:
-        print("[3/4] --dry-run: zero-vectors for cache misses")
-        for c in miss_chunks:
-            qbytes = quantize_int8_l2([0.0] * 768)
-            sha_to_emb[c["text_sha"]] = base64.b64encode(qbytes).decode("ascii")
-        dim = 768
-    elif not miss_chunks:
+    dim = _embedding_map_dim(sha_to_emb)
+    if not miss_chunks:
         print("[3/4] All chunks served from cache — no API calls")
-        dim = 0  # filled in below from any cached vector
     else:
         print(f"[3/4] Embedding {len(miss_chunks)} chunks with {model}...")
         try:
@@ -841,10 +949,10 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
             print("ERROR: google-genai package not installed. Run: pip install google-genai")
             sys.exit(1)
 
-        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or _load_gemini_key_from_config()
+        api_key = _resolve_google_key()
         if not api_key:
-            print("ERROR: GOOGLE_API_KEY not set (env var or config.json).")
-            print("       Set GOOGLE_API_KEY/GEMINI_API_KEY or run 'python pipeline/setup.py' to save it into config.json.")
+            print("ERROR: Google credential is not configured in the environment or OS secure store.")
+            print("       Set GOOGLE_API_KEY/GEMINI_API_KEY or credential:google, or choose --mode bm25 for keyless keyword search.")
             sys.exit(1)
 
         client = genai.Client(api_key=api_key)
@@ -863,7 +971,8 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
                 # cache hits) so a later run resumes instead of re-embedding
                 # the ~N good batches we already paid for. Do NOT clobber the
                 # existing _search_index.json — leave it stale-but-valid.
-                save_embedding_cache(topic_dir, model, sha_to_emb)
+                if sha_to_emb:
+                    save_embedding_cache(topic_dir, model, sha_to_emb)
                 remaining = len(miss_chunks) - embedded
                 print(f"ERROR: embedding aborted after {embedded}/{len(miss_chunks)} "
                       f"new chunks ({e})")
@@ -874,6 +983,12 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
             # freshly-embedded (quantized) vectors into the sha→emb map.
             for c, emb in zip(batch, vecs):
                 qbytes = quantize_int8_l2(emb)
+                if dim and len(qbytes) != dim:
+                    print(f"ERROR: embedding dimension changed from {dim} to "
+                          f"{len(qbytes)} for model {model!r} — aborting")
+                    sys.exit(4)
+                if not dim:
+                    dim = len(qbytes)
                 sha_to_emb[c["text_sha"]] = base64.b64encode(qbytes).decode("ascii")
             embedded += len(batch)
             done = embedded
@@ -881,13 +996,9 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
             rate = done / elapsed if elapsed > 0 else 0
             eta = (len(miss_chunks) - done) / rate if rate > 0 else 0
             print(f"      {done}/{len(miss_chunks)}  ({rate:.1f}/s, ETA {eta:.0f}s)")
-        dim = 0  # filled in below
-
-    # dim from the int8 byte length of any cached/embedded vector (1 byte/dim)
-    if pending_chunks:
-        _sample = sha_to_emb.get(pending_chunks[0]["text_sha"])
-        if _sample:
-            dim = len(base64.b64decode(_sample))
+    if dim <= 0:
+        print("ERROR: hybrid build produced no positive embedding dimension")
+        sys.exit(4)
     print(f"      dim={dim}")
 
     # --- Assemble JSON (every chunk's emb must now be present) ---
@@ -928,6 +1039,7 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
     )
 
     out = {
+        "retrieval_mode": "hybrid",
         "model": model,
         "dim": dim,
         "quant": "int8-l2norm",
@@ -936,48 +1048,90 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         "papers": papers_meta,
         "chunks": out_chunks,
     }
-    source_fp, source_count = source_fingerprint(topic, papers_meta)
+    source_fp, source_count = source_fingerprint(
+        topic,
+        papers_meta,
+        include_text=use_text,
+        include_personal_notes=local,
+    )
     out["source_fingerprint"] = source_fp
     out["source_file_count"] = source_count
+    out["source_options"] = {
+        "include_text": use_text,
+        "include_personal_notes": local,
+    }
     out["built_at"] = int(time.time())
 
     bin_path = topic_dir / EMB_BIN_NAME
-    bin_path.write_bytes(bytes(emb_blob))
+    _atomic_write_bytes(bin_path, bytes(emb_blob))
     out_path = topic_dir / "_search_index.json"
-    out_path.write_text(
-        json.dumps(out, ensure_ascii=False, separators=(",", ":")),
-        encoding="utf-8",
-    )
+    _atomic_write_json(out_path, out)
     size_kb = out_path.stat().st_size // 1024
     bin_kb = bin_path.stat().st_size // 1024
     print(f"      wrote {out_path} ({size_kb:,} KB) + {EMB_BIN_NAME} ({bin_kb:,} KB)")
 
     # Refresh the sidecar cache so the next build resumes from real vectors.
-    # Skip on dry-run — its zero-vectors must never poison the cache.
-    if not dry_run:
-        # Keep only shas that are part of this build (prune drifted entries).
-        live = {c["text_sha"]: sha_to_emb[c["text_sha"]] for c in pending_chunks}
-        save_embedding_cache(topic_dir, model, live)
+    # Keep only shas that are part of this build (prune drifted entries).
+    live = {c["text_sha"]: sha_to_emb[c["text_sha"]] for c in pending_chunks}
+    save_embedding_cache(topic_dir, model, live)
     print("Done.")
+    return out
 
 
-def _run_search_index(topic, *, model="gemini-embedding-001", limit=None, dry_run=False,
-                      include_text="auto"):
+def _embedding_map_dim(sha_to_emb: dict) -> int:
+    if not sha_to_emb:
+        return 0
+    dims = {
+        len(base64.b64decode(emb, validate=True))
+        for emb in sha_to_emb.values()
+    }
+    if len(dims) != 1 or next(iter(dims)) <= 0:
+        raise ValueError("embedding cache mixes vector dimensions")
+    return next(iter(dims))
+
+
+def _atomic_write_bytes(path: Path, data: bytes) -> None:
+    fd, tmp_name = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    tmp_path = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp_path, path)
+    except BaseException:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _atomic_write_json(path: Path, payload: dict) -> None:
+    data = json.dumps(
+        payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    _atomic_write_bytes(path, data)
+
+
+def _run_search_index(topic, *, mode="hybrid", model="gemini-embedding-001",
+                      limit=None, dry_run=False, include_text="auto"):
     """Programmatic entrypoint for build_search_index."""
-    return build_index(topic, model, limit, dry_run, include_text=include_text)
+    return build_index(
+        topic, model, limit, dry_run, include_text=include_text, mode=mode)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Build Deep Research search index")
     parser.add_argument("--topic", required=True, help="topic alias (e.g. ai4s, scisci)")
+    parser.add_argument("--mode", choices=sorted(BUILD_MODES), default="hybrid",
+                        help="hybrid embeds with Google; bm25 is content-only (default: hybrid)")
     parser.add_argument("--model", default="gemini-embedding-001")
     parser.add_argument("--limit", type=int, default=None, help="limit number of papers (debug)")
-    parser.add_argument("--dry-run", action="store_true", help="chunk only, no API calls")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="print a read-only build plan; write nothing")
     parser.add_argument("--include-text", choices=["auto", "yes", "no"], default="auto",
                         help="text.md 고신호 청크 보강. auto=로컬 토픽만 ON(클라우드 review-only). "
                              "yes 는 배포 토픽에 거부됨(저작권).")
     args = parser.parse_args()
-    _run_search_index(topic=args.topic, model=args.model, limit=args.limit,
+    _run_search_index(topic=args.topic, mode=args.mode, model=args.model, limit=args.limit,
                       dry_run=args.dry_run, include_text=args.include_text)
 
 

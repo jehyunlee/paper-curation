@@ -26,12 +26,142 @@ def scalar(conn: sqlite3.Connection, sql: str) -> int:
     return conn.execute(sql).fetchone()[0]
 
 
-def collect(db: Path, report: dict, issues: list[str], warnings: list[str]) -> None:
+def validate_sidecar_only_sources(
+    conn: sqlite3.Connection,
+    entries: list[dict],
+    papers_dir: Path,
+    report: dict,
+    issues: list[str],
+) -> None:
+    """Check deferred local reviews against the hashes recorded by ingestion.
+
+    ``sidecar-only`` is a persistent provenance marker, not a pending flag.
+    Once the normal builder records the current review and text hashes, the
+    entry is fresh without any index rewrite.
+    """
+    marked = [
+        entry for entry in entries
+        if isinstance(entry, dict)
+        and entry.get("bibliography_status") == "sidecar-only"
+    ]
+    report["sidecar_only_papers"] = len(marked)
+    report["sidecar_only_sources_fresh"] = 0
+    report["sidecar_only_sources_stale"] = 0
+    report["sidecar_only_sources_not_ingested"] = 0
+    report["sidecar_only_sources_unverifiable"] = 0
+    if not marked:
+        return
+
+    tables = {
+        row[0] for row in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    missing_schema = []
+    required_columns = {
+        "papers": {"paper_id", "slug"},
+        "source_documents": {"paper_id", "document_type", "sha256"},
+    }
+    for table, required in required_columns.items():
+        if table not in tables:
+            missing_schema.append(f"{table} table")
+            continue
+        columns = {
+            row[1] for row in conn.execute(f"PRAGMA table_info({table})")
+        }
+        missing_schema.extend(
+            f"{table}.{column}" for column in sorted(required - columns)
+        )
+    if missing_schema:
+        report["sidecar_only_sources_unverifiable"] = len(marked)
+        issues.append(
+            "cannot validate sidecar-only bibliography sources; missing DB "
+            "schema: " + ", ".join(missing_schema))
+        return
+
+    for entry in marked:
+        slug = entry.get("slug")
+        if not isinstance(slug, str) or not slug:
+            report["sidecar_only_sources_unverifiable"] += 1
+            issues.append("sidecar-only bibliography index entry has no slug")
+            continue
+        if (slug in {".", ".."} or "/" in slug or "\\" in slug
+                or "\x00" in slug):
+            report["sidecar_only_sources_unverifiable"] += 1
+            issues.append(
+                f"sidecar-only bibliography index entry has unsafe slug: "
+                f"{slug!r}")
+            continue
+
+        paper = conn.execute(
+            "SELECT paper_id FROM papers WHERE slug=?", (slug,)
+        ).fetchone()
+        if paper is None:
+            report["sidecar_only_sources_not_ingested"] += 1
+            issues.append(
+                f"sidecar-only bibliography not ingested: {slug} has no DB "
+                "paper row")
+            continue
+
+        recorded = dict(conn.execute(
+            "SELECT document_type, sha256 FROM source_documents "
+            "WHERE paper_id=? AND document_type IN ('review','text')",
+            (paper[0],),
+        ))
+        missing_files = []
+        missing_hashes = []
+        changed = []
+        for kind in ("review", "text"):
+            path = papers_dir / slug / f"{kind}.md"
+            if not path.is_file():
+                missing_files.append(path.name)
+                continue
+            digest = recorded.get(kind)
+            if not isinstance(digest, str) or len(digest) != 64:
+                missing_hashes.append(path.name)
+                continue
+            try:
+                current = bib.sha256(path)
+            except OSError:
+                missing_files.append(path.name)
+                continue
+            if current != digest:
+                changed.append(path.name)
+
+        if missing_files:
+            report["sidecar_only_sources_unverifiable"] += 1
+            issues.append(
+                f"sidecar-only bibliography source missing for {slug}: "
+                + ", ".join(missing_files))
+        elif missing_hashes:
+            report["sidecar_only_sources_not_ingested"] += 1
+            issues.append(
+                f"sidecar-only bibliography not ingested for {slug}; "
+                "missing DB source hashes: " + ", ".join(missing_hashes))
+        elif changed:
+            report["sidecar_only_sources_stale"] += 1
+            issues.append(
+                f"sidecar-only bibliography DB stale for {slug}; changed "
+                "since ingestion: " + ", ".join(changed))
+        else:
+            report["sidecar_only_sources_fresh"] += 1
+
+
+def collect(
+    db: Path,
+    report: dict,
+    issues: list[str],
+    warnings: list[str],
+    index_entries: list[dict] | None = None,
+) -> None:
     conn = sqlite3.connect(db)
     conn.execute("PRAGMA foreign_keys = ON")
     try:
         tables = {row[0] for row in conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table'")}
+        if index_entries is not None:
+            validate_sidecar_only_sources(
+                conn, index_entries, INDEX.parent, report, issues)
+
         required = {"papers", "authors", "institutions", "paper_authors",
                     "paper_institutions", "institution_aliases"}
         missing = required - tables
@@ -253,20 +383,27 @@ def main() -> int:
     issues: list[str] = []
     warnings: list[str] = []
 
+    index_entries: list[dict] | None = None
+    try:
+        loaded = json.loads(INDEX.read_text(encoding="utf-8"))
+        if not isinstance(loaded, list):
+            raise ValueError("top level must be a list")
+        index_entries = loaded
+        report["source_index_papers"] = len(index_entries)
+    except Exception as exc:
+        issues.append(f"index read failed: {exc}")
+
     if not args.db.exists():
         issues.append(f"missing database: {args.db}")
     else:
-        collect(args.db, report, issues, warnings)
+        collect(args.db, report, issues, warnings, index_entries)
 
-    try:
-        source_count = len(json.loads(INDEX.read_text(encoding="utf-8")))
-        report["source_index_papers"] = source_count
-        if "db_papers" in report and report["db_papers"] != source_count:
+    if index_entries is not None and "db_papers" in report:
+        source_count = len(index_entries)
+        if report["db_papers"] != source_count:
             issues.append(
                 f"paper count mismatch: DB={report['db_papers']} "
                 f"index={source_count}")
-    except Exception as exc:
-        issues.append(f"index read failed: {exc}")
 
     report["issues"] = issues
     report["warnings"] = warnings

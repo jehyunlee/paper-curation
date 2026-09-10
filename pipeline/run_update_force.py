@@ -18,6 +18,7 @@ Paper-Curation --local --update-force 배치 실행 스크립트.
 """
 
 import argparse
+import fcntl
 import json
 import os
 import queue
@@ -248,18 +249,17 @@ def _resolve_topic_modeling_python():
     )
 
 
-TOPIC_MODELING_PYTHON = _resolve_topic_modeling_python()
-if TOPIC_MODELING_PYTHON != sys.executable:
-    print(f"[env] UMAP/HDBSCAN 단계 인터프리터: {TOPIC_MODELING_PYTHON} "
-          f"(현재 env 가 py312 가 아니거나 프로브 실패 → py312 라우팅; 사유는 _state/env_probe.json)")
-
-ZOTERO_DIR = get_zotero_dir()
+# Batch-only configuration is resolved by ``main()``.  Keeping these unset at
+# import time lets focused entrypoints (for example ``local_review.py``) reuse
+# the extraction/review functions without probing clustering runtimes or
+# loading unrelated provider configuration.
+ZOTERO_DIR = None
 
 # Zotero 자격증명은 import 시점이 아니라 실제 호출 지점에서 해석한다.
 # USER_ID 조회는 API key 를 쓰는 네트워크 왕복이라, import 시 부르면 (a) 키가
 # 없는 환경에서 import 만으로 죽고 (b) 매 import 마다 Zotero 를 두드린다.
 # get_zotero_api_key() 는 환경변수 조회, get_zotero_user_id() 는 캐시된다.
-COLLECTIONS = get_collections()
+COLLECTIONS = None
 
 # Checkpoint
 PROGRESS_FILE = PROJECT_ROOT / ".cache" / "review_progress.json"
@@ -484,6 +484,9 @@ def find_pdf(item):
       - fuzzy                   : weak title-keyword match (LAST RESORT, logged)
       - no_match                : no candidate — caller skips the paper
     """
+    global ZOTERO_DIR
+    if ZOTERO_DIR is None:
+        ZOTERO_DIR = get_zotero_dir()
     key = item.get("key", "")
     title = item.get("title", "")
 
@@ -859,7 +862,7 @@ def _collect_graphic_rects(page, pw, ph):
     return rects
 
 
-def extract_figures(pdf_path, slug_dir):
+def extract_figures(pdf_path, slug_dir, *, validate_with_gemini=True):
     fig_dir = os.path.join(slug_dir, "figures")
     os.makedirs(fig_dir, exist_ok=True)
 
@@ -879,10 +882,12 @@ def extract_figures(pdf_path, slug_dir):
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from api.extract import pre_validate_figure
 
-    # 키 해석: env(GOOGLE_API_KEY/GEMINI_API_KEY) → config.json. 단 reextract_figures
-    # 가 geometric-only 강제 시 세팅하는 PAPER_CURATION_NO_GEMINI 가 있으면 키 유무와
-    # 무관하게 Gemini 검증을 끈다 (env pop 만으론 config.json 키가 남아 스위치가 안 먹음).
-    have_gemini = (not os.environ.get("PAPER_CURATION_NO_GEMINI")
+    # 키 해석: env(GOOGLE_API_KEY/GEMINI_API_KEY) → config.json. Focused callers
+    # use ``validate_with_gemini=False`` so this expression short-circuits
+    # before any unrelated provider configuration is read. The legacy
+    # re-extraction tool also retains its process-wide opt-out.
+    have_gemini = (validate_with_gemini
+                   and not os.environ.get("PAPER_CURATION_NO_GEMINI")
                    and bool(get_google_key().strip()))
     # Log a degraded-Gemini warning at most once per run instead of silently
     # accepting full pages when the validator throws.
@@ -1345,7 +1350,7 @@ REVIEW_TOOL_SCHEMA = {
 WRITE_REVIEW_SCHEMA_VERSION = "v1"
 # 기존 review.md 는 재생성하지 않으므로 모델 변경은 신규 리뷰부터 적용된다
 # (캐시 키에 model 포함 — 변경 시 기존 캐시는 자연 무효).
-WRITE_REVIEW_MODEL = os.environ.get("WRITE_REVIEW_MODEL", "claude-sonnet-5")
+WRITE_REVIEW_MODEL = "claude-sonnet-5"
 
 
 _REVIEW_STR_TAGS = ("essence", "known", "gap", "why", "approach", "achievement",
@@ -1441,9 +1446,18 @@ def _salvage_review_data(data):
     return fixed
 
 
-def write_review(item, slug_dir, figures):
+def write_review(
+        item, slug_dir, figures, *, provider="anthropic", model=None,
+        credential_ref=None, max_output_tokens=4000, cache_dir=None,
+        cache_evidence=None):
     text_path = os.path.join(slug_dir, "text.md")
     if not os.path.exists(text_path):
+        return False
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from lib.text_providers import generate_structured, validate_review_payload
+    from lib.text_providers import DEFAULT_MODELS
+    selected_model = model or DEFAULT_MODELS.get(provider)
+    if not selected_model:
         return False
 
     with open(text_path, "r", encoding="utf-8") as f:
@@ -1451,7 +1465,8 @@ def write_review(item, slug_dir, figures):
 
     title = item.get("title", "")
     authors = ", ".join(
-        f"{c.get('firstName', '')} {c.get('lastName', '')}".strip()
+        (f"{c.get('firstName', '')} {c.get('lastName', '')}".strip()
+         or c.get("name", ""))
         for c in item.get("creators", [])
     )
     date = item.get("date", "")
@@ -1463,13 +1478,6 @@ def write_review(item, slug_dir, figures):
         fig_refs += f"\n- Fig {fig['name']}: {fig['caption'][:80]}"
 
     try:
-        from anthropic import Anthropic
-        client = Anthropic(timeout=180.0, max_retries=4)
-
-        # Tool-use forces a structured JSON response that matches
-        # REVIEW_TOOL_SCHEMA. The SDK auto-retries on schema validation
-        # failures so we no longer need post-hoc list-literal / figure
-        # path / evaluation fixers.
         prompt = (
             "논문을 분석하고 `emit_review` 도구를 호출해 리뷰 필드를 채워라.\n\n"
             "모든 narrative 필드는 한국어 서술. 단 Jargon — 기술 용어·모델명·데이터셋·"
@@ -1485,32 +1493,50 @@ def write_review(item, slug_dir, figures):
         # cached_call: same (slug + prompt + model + schema_version) → cache
         # hit, no Anthropic call. Re-runs of --mode rebuild on unchanged
         # papers cost zero LLM calls.
-        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from api._llm import cached_call, paper_cache_dir
+        from api._llm import cache_key, cached_call, paper_cache_dir
         slug = os.path.basename(slug_dir.rstrip("/\\"))
-        cache_dir = paper_cache_dir(slug)
+        selected_cache_dir = cache_dir or paper_cache_dir(slug)
+        cache_model = f"{provider}:{selected_model}"
+        selected_cache_path = (
+            _pathlib.Path(selected_cache_dir)
+            / f"{cache_key(prompt, cache_model, WRITE_REVIEW_SCHEMA_VERSION)}.json"
+        )
 
         def _make_call():
-            response = client.messages.create(
-                model=WRITE_REVIEW_MODEL,
-                max_tokens=4000,
-                tools=[REVIEW_TOOL_SCHEMA],
-                tool_choice={"type": "tool", "name": "emit_review"},
-                messages=[{"role": "user", "content": prompt}],
+            response = generate_structured(
+                provider, selected_model, "", prompt,
+                REVIEW_TOOL_SCHEMA["input_schema"], capability="review",
+                max_output_tokens=max_output_tokens,
+                credential_ref=credential_ref,
             )
-            for block in response.content:
-                # SDK returns ToolUseBlock; check by attribute presence.
-                if getattr(block, "type", None) == "tool_use" \
-                        and getattr(block, "name", None) == "emit_review":
-                    return dict(block.input)
-            raise RuntimeError("emit_review tool was not invoked")
+            return response["data"]
 
         data = cached_call(
-            cache_dir, prompt, WRITE_REVIEW_MODEL, _make_call,
+            selected_cache_dir, prompt, cache_model, _make_call,
             schema_version=WRITE_REVIEW_SCHEMA_VERSION,
             is_complete=_review_response_is_complete,
         )
-        data = _salvage_review_data(data)
+        if cache_evidence is not None:
+            verified_cache = False
+            try:
+                cached_payload = json.loads(
+                    selected_cache_path.read_text(encoding="utf-8"))
+                verified_cache = (
+                    cached_payload.get("model") == cache_model
+                    and cached_payload.get("schema_version")
+                    == WRITE_REVIEW_SCHEMA_VERSION
+                    and cached_payload.get("result") == data
+                    and _review_response_is_complete(data)
+                )
+            except Exception:
+                pass
+            cache_evidence.update({
+                "path": str(selected_cache_path),
+                "provider": provider,
+                "model": selected_model,
+                "verified": verified_cache,
+            })
+        data = validate_review_payload(data)
 
         # Build figure insertions
         def fig_block(fig_num_str):
@@ -2008,7 +2034,9 @@ SIDECAR_NAME = "bibliography.json"
 SIDECAR_SCHEMA = "bibliography-sidecar-1"
 
 
-def write_bibliography_sidecar(item, slug_dir, pdf_path):
+def write_bibliography_sidecar(
+        item, slug_dir, pdf_path, *, include_affiliations=True,
+        review_provider="anthropic", review_model=None):
     """Persist bibliographic facts at review time, next to the review.
 
     Review generation is the only moment where the Zotero record, the freshly
@@ -2026,18 +2054,32 @@ def write_bibliography_sidecar(item, slug_dir, pdf_path):
     import hashlib
 
     text_path = os.path.join(slug_dir, "text.md")
+    creators = [
+        dict(creator) for creator in (item.get("creators") or [])
+        if isinstance(creator, dict)
+    ]
+    zotero = {k: item.get(k) for k in (
+        "key", "title", "DOI", "publicationTitle", "date", "volume",
+        "issue", "pages", "publisher", "ISSN", "itemType", "url",
+        "abstractNote", "archiveID", "extra", "journalAbbreviation")
+        if item.get(k)}
+    if creators:
+        zotero["creators"] = creators
     payload = {
         "schema": SIDECAR_SCHEMA,
         "captured_at": datetime.now().isoformat(timespec="seconds"),
-        "zotero": {k: item.get(k) for k in (
-            "key", "title", "DOI", "publicationTitle", "date", "volume",
-            "issue", "pages", "publisher", "ISSN", "itemType", "url",
-            "archiveID", "extra", "journalAbbreviation") if item.get(k)},
+        "zotero": zotero,
+        "creators": creators,
         "authors": [
             (" ".join(p for p in (c.get("firstName"), c.get("lastName")) if p)
              or c.get("name", ""))
-            for c in (item.get("creators") or [])
+            for c in creators
             if c.get("creatorType") in (None, "author")],
+        "review": {
+            "provider": review_provider,
+            "model": review_model or WRITE_REVIEW_MODEL,
+            "schema_version": WRITE_REVIEW_SCHEMA_VERSION,
+        },
     }
     try:
         with open(text_path, "rb") as fh:
@@ -2046,8 +2088,11 @@ def write_bibliography_sidecar(item, slug_dir, pdf_path):
         payload["text_md_sha256"] = ""
 
     try:
-        payload["affiliations"] = _extract_affiliations_for_sidecar(
-            slug_dir, pdf_path, payload["authors"], payload["zotero"])
+        payload["affiliations"] = (
+            _extract_affiliations_for_sidecar(
+                slug_dir, pdf_path, payload["authors"], payload["zotero"])
+            if include_affiliations else []
+        )
     except Exception as exc:                      # never block a review
         payload["affiliations"] = []
         payload["affiliation_error"] = f"{type(exc).__name__}: {exc}"
@@ -2153,7 +2198,7 @@ def _do_process(item, slug, slug_dir, pdf_path):
     return "ok", ""
 
 
-def process_paper(item, slug, cp):
+def _process_paper_locked(item, slug, cp):
     """Process a single paper with up to MAX_RETRIES auto-retries on failure."""
     if slug in cp["completed"]:
         return "skipped"
@@ -2212,6 +2257,30 @@ def process_paper(item, slug, cp):
         cp["failed"].append({"slug": slug, "reason": last_reason})
     save_checkpoint(cp)
     return last_reason
+
+
+def process_paper(item, slug, cp):
+    """Process one slug while sharing local_review's output lock inode."""
+    slug_dir = os.path.join(PAPERS_DIR, slug)
+    os.makedirs(PAPERS_DIR, exist_ok=True)
+    lock_path = os.path.join(PAPERS_DIR, f".{slug}.local-review.lock")
+    descriptor = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            log(f"  {slug}: local review is already writing this output")
+            return "busy"
+        from lib.corpus_store import slug_is_reserved
+        if slug_is_reserved(PAPERS_DIR, slug):
+            log(f"  {slug}: corpus reservation is still active")
+            return "busy"
+        return _process_paper_locked(item, slug, cp)
+    finally:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+        finally:
+            os.close(descriptor)
 
 
 # ── Main ──
@@ -2392,8 +2461,13 @@ def main():
         print("[conn] --conn-full → CONN_FULL_REBUILD=1 "
               "(전체 연결 재생성; 자식 프로세스 env 상속)")
 
+    # Batch-only configuration stays lazy so importing the reusable local
+    # extraction/review functions never loads Zotero/provider settings.
+    global _STRICT_PDF, ZOTERO_DIR, COLLECTIONS
+    ZOTERO_DIR = get_zotero_dir()
+    COLLECTIONS = get_collections()
+
     # Propagate strict-pdf flag to find_pdf()
-    global _STRICT_PDF
     _STRICT_PDF = args.strict_pdf
     if _STRICT_PDF:
         print("[strict-pdf] fuzzy PDF matching disabled — papers without authoritative PDF links will be skipped")
@@ -2629,10 +2703,10 @@ def main():
     if _slug_to_zotero_key or _slug_to_pdf_path:
         try:
             from lib.atomic_io import atomic_write_json
+            from lib.corpus_store import corpus_index_lock, load_index_strict
             idx_path = os.path.join(PAPERS_DIR, "_papers_index.json")
-            if os.path.exists(idx_path):
-                with open(idx_path, "r", encoding="utf-8") as f:
-                    _idx = json.load(f)
+            with corpus_index_lock(PAPERS_DIR):
+                _idx = load_index_strict(PAPERS_DIR)
                 _patched_key = 0
                 _patched_pdf = 0
                 for _e in _idx:
@@ -2803,6 +2877,13 @@ def main():
                      step_timeout=5400)
 
         # Step 2: topic_modeling
+        topic_modeling_python = _resolve_topic_modeling_python()
+        if topic_modeling_python != sys.executable:
+            print(
+                f"[env] UMAP/HDBSCAN 단계 인터프리터: {topic_modeling_python} "
+                "(현재 env 가 py312 가 아니거나 프로브 실패 → py312 라우팅; "
+                "사유는 _state/env_probe.json)"
+            )
         # --category: always run (reclassify all)
         # --resume without --category: skip (keep existing categories)
         # full mode: always run
@@ -2821,7 +2902,7 @@ def main():
             except Exception:
                 pass
             run_step("topic_modeling",
-                     [TOPIC_MODELING_PYTHON, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
         elif is_update:
             # Update mode normally runs --skip-classification (refresh coords +
             # connections only, reuse the existing HDBSCAN bundle). But
@@ -2835,17 +2916,17 @@ def main():
                 log("  [topic_modeling] HDBSCAN bundle missing — running full "
                     "topic_modeling to build it (first run for this topic)")
                 run_step("topic_modeling",
-                         [TOPIC_MODELING_PYTHON, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
             else:
                 run_step("topic_modeling (coords+connections)",
-                         [TOPIC_MODELING_PYTHON, "pipeline/topic_modeling.py", "--topic", topic, "--skip-classification"] + tm_local, 3600)
+                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic, "--skip-classification"] + tm_local, 3600)
         else:
             run_step("topic_modeling",
-                     [TOPIC_MODELING_PYTHON, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
 
         # Step 3: classify (always — new papers only in update mode without --category)
         run_step("classify_papers",
-                 [TOPIC_MODELING_PYTHON, "pipeline/classify_papers.py", "--topic", topic], 600)
+                 [topic_modeling_python, "pipeline/classify_papers.py", "--topic", topic], 600)
 
         # Step 4: Determine changed categories
         changed_cats = []
@@ -3024,7 +3105,7 @@ def main():
             if missing:
                 log(f"\n  [verify_umap] {len(missing)} papers missing UMAP coordinates — re-running topic_modeling...")
                 run_step("topic_modeling (umap fix)",
-                         [TOPIC_MODELING_PYTHON, "pipeline/topic_modeling.py", "--topic", topic, "--skip-connections"], 3600)
+                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic, "--skip-connections"], 3600)
                 if args.insights:   # 네트워크는 Option(O-2) — --insights 일 때만
                     run_step("generate_network (rebuild)",
                              ["python", "pipeline/generate_network.py", "--topic", topic], 600)

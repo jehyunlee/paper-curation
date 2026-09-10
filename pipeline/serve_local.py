@@ -16,12 +16,9 @@ Gemini 키로 프록시해 로컬 미리보기에서도 검색이 동작하게 �
 
 추가 의존성 없음 — 표준 라이브러리(http.server + urllib + base64)만 사용.
 
-키 우선순위:
-- 임베딩: GOOGLE_API_KEY/GEMINI_API_KEY env → config.json
-  (gemini_api_key/google_api_key) → docs/_local_keys.json (google_key/gemini_key).
-- 이메일: RESEND_API_KEY/AUDIO_FROM/AUDIO_REPLY_TO env → config.json
-  (resend_api_key/audio_from/audio_reply_to) → docs/_local_keys.json
-  (resend_key/audio_from/audio_reply_to).
+Credentials are resolved lazily from documented environment aliases, then the
+secure OS store. Sender and reply-to are non-secret settings and may come from
+the environment or config.json.
 
 참고: Resend 샌드박스 발신자(onboarding@resend.dev)는 도메인 인증 전까지
 Resend 계정 본인 이메일로만 배달된다. 타인에게 보내려면 커스텀 도메인 인증 +
@@ -43,15 +40,16 @@ import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-# config_loader 를 그대로 재사용 (sys.path 트릭 — config_loader 는 건드리지 않는다).
+# config_loader 를 non-secret sender/reply-to settings에만 재사용한다.
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 DOCS_DIR = PROJECT_ROOT / "docs"
 sys.path.insert(0, str(PIPELINE_DIR))
 try:
     from config_loader import load_config
-except Exception:  # config.json 없거나 import 실패해도 env/_local_keys 로 동작
+except Exception:
     load_config = None
+from lib.credentials import CredentialsError, resolve_credential
 
 # Gemini 임베딩 설정 (인덱스 빌드와 동일 — RETRIEVAL_QUERY 만 다르다).
 GEMINI_MODEL = "gemini-embedding-001"
@@ -73,36 +71,12 @@ _ssl_ctx = ssl.create_default_context()
 _ssl_ctx.check_hostname = False
 _ssl_ctx.verify_mode = ssl.CERT_NONE
 
-_GOOGLE_KEY_CACHE = None
-
-
 def resolve_google_key():
-    """Gemini 키 조회. env → config.json → docs/_local_keys.json 순. 캐싱(비어있으면 재시도)."""
-    global _GOOGLE_KEY_CACHE
-    if _GOOGLE_KEY_CACHE:
-        return _GOOGLE_KEY_CACHE
-
-    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or ""
-
-    if not key and load_config is not None:
-        try:
-            cfg = load_config() or {}
-            key = cfg.get("gemini_api_key") or cfg.get("google_api_key") or ""
-        except Exception:
-            key = ""
-
-    if not key:
-        local_keys = DOCS_DIR / "_local_keys.json"
-        if local_keys.exists():
-            try:
-                data = json.loads(local_keys.read_text(encoding="utf-8"))
-                key = data.get("google_key") or data.get("gemini_key") or ""
-            except Exception:
-                key = ""
-
-    if key:
-        _GOOGLE_KEY_CACHE = key
-    return key
+    """Return a fresh optional Google credential without file fallback."""
+    try:
+        return resolve_credential("google")
+    except CredentialsError:
+        return ""
 
 
 def gemini_embed(text, api_key):
@@ -140,34 +114,23 @@ def gemini_embed(text, api_key):
 def resolve_resend_config():
     """Resend 설정 조회 — (api_key, from, reply_to).
 
-    우선순위: env(RESEND_API_KEY/AUDIO_FROM/AUDIO_REPLY_TO) → config.json
-    (resend_api_key/audio_from/audio_reply_to) → docs/_local_keys.json
-    (resend_key/audio_from/audio_reply_to). worker 와 동일하게 from 기본값은
-    Resend 샌드박스 발신자.
+    API 키는 환경변수 또는 OS 보안 저장소만 사용한다. 발신자/회신 주소는
+    비밀값이 아니므로 환경변수 다음 config.json에서 읽는다.
     """
-    api_key = os.environ.get("RESEND_API_KEY") or ""
+    try:
+        api_key = resolve_credential("resend")
+    except CredentialsError:
+        api_key = ""
     audio_from = os.environ.get("AUDIO_FROM") or ""
     reply_to = os.environ.get("AUDIO_REPLY_TO") or ""
 
-    if (not api_key or not audio_from or not reply_to) and load_config is not None:
+    if (not audio_from or not reply_to) and load_config is not None:
         try:
             cfg = load_config() or {}
-            api_key = api_key or cfg.get("resend_api_key") or ""
             audio_from = audio_from or cfg.get("audio_from") or ""
             reply_to = reply_to or cfg.get("audio_reply_to") or ""
         except Exception:
             pass
-
-    if not api_key or not audio_from or not reply_to:
-        local_keys = DOCS_DIR / "_local_keys.json"
-        if local_keys.exists():
-            try:
-                data = json.loads(local_keys.read_text(encoding="utf-8"))
-                api_key = api_key or data.get("resend_key") or data.get("resend_api_key") or ""
-                audio_from = audio_from or data.get("audio_from") or ""
-                reply_to = reply_to or data.get("audio_reply_to") or ""
-            except Exception:
-                pass
 
     return api_key, (audio_from or DEFAULT_FROM), reply_to
 
@@ -237,10 +200,11 @@ def resolve_local_emails():
 
 
 def _inject_local_keys(data):
-    """배포 시 strip 된 빈 키 슬롯(_GEMINI_KEY/_LOCAL_EMAILS)을 env→config 값으로
-    즉석 주입한다(로컬 서빙 전용, bytes in/out). 리뷰 페이지가 deploy strip 된 채
-    남아 있어도 로컬 Audio Overview 가 동작하게 한다. 배포본(Cloudflare)에는
-    serve_local 이 없으므로 BYOK strip 상태가 그대로 유지된다."""
+    """배포 시 strip 된 빈 슬롯을 로컬 설정으로 즉석 주입한다 (bytes in/out).
+
+    Gemini credential is resolved fresh from the environment or OS store;
+    local email recipients are non-secret env/config settings.
+    """
     key = resolve_google_key()
     if key:
         data = data.replace(b'_GEMINI_KEY = ""',
@@ -514,7 +478,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
         if not api_key:
             self._send_json(503, {
                 "error": "Gemini 키 없음 — GOOGLE_API_KEY env 또는 "
-                         "config.json(gemini_api_key) 를 설정하세요.",
+                         "credential:google OS 보안 저장소를 설정하세요.",
             })
             return
 
@@ -569,8 +533,8 @@ class LocalHandler(SimpleHTTPRequestHandler):
         api_key, audio_from, reply_to = resolve_resend_config()
         if not api_key:
             self._send_json(503, {
-                "error": "RESEND_API_KEY 없음 — env 또는 config.json(resend_api_key) "
-                         "또는 docs/_local_keys.json(resend_key) 를 설정하세요.",
+                "error": "Resend 자격증명 없음 — RESEND_API_KEY env 또는 "
+                         "credential:resend OS 보안 저장소를 설정하세요.",
             })
             return
 

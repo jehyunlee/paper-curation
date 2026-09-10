@@ -7,19 +7,14 @@ import 하던 5개 심볼이다:
     SCOPUS_SEARCH_URL, _get_scopus_api_keys, _get_next_scopus_key,
     _rotate_scopus_key, scopus_results_to_df
 
-NOTE: `pybliometrics` 패키지 자체는 의존성이 아니다. 이 모듈은 pybliometrics 가
-남긴 **설정 파일**(`~/.config/pybliometrics.cfg`)에서 API 키만 configparser 로
-읽고, 호출은 순수 `requests` 로 한다. 따라서 requirements 에 pybliometrics 를
-추가할 필요가 없다.
+Credential lookup is lazy and uses the shared environment-or-OS-keyring resolver.
 """
 from __future__ import annotations
 
-import configparser
-import json
 import datetime
 import logging
-import os
-from pathlib import Path
+
+from lib.credentials import CredentialsError, resolve_credential
 
 logger = logging.getLogger(__name__)
 
@@ -31,28 +26,9 @@ def _today() -> str:
 SCOPUS_SEARCH_URL = "https://api.elsevier.com/content/search/scopus"
 SCOPUS_ABSTRACT_URL = "https://api.elsevier.com/content/abstract/eid"
 
-_CFG_CANDIDATES = (
-    Path.home() / ".config" / "pybliometrics.cfg",
-    Path.home() / ".pybliometrics" / "pybliometrics.cfg",
-)
-
-# 환경변수 우선 — pybliometrics 를 안 쓰는 사용자도 키만 있으면 되게.
-# (실제로 SCOPUS_API_KEY 만 있고 cfg 파일이 없어 Scopus 를 통째로 못 쓰던 버그가
-#  있었다. cfg 부재를 "기관망 밖" 으로 오진하기까지 했다.)
-_ENV_KEY_NAMES = ("SCOPUS_API_KEY", "ELSEVIER_API_KEY")
-_ENV_TOKEN_NAMES = ("SCOPUS_INST_TOKEN", "ELSEVIER_INST_TOKEN")
-
 _api_keys: list[str] | None = None
 _key_index = 0
 _key_origin = ""
-
-
-def config_path() -> Path | None:
-    """존재하는 pybliometrics.cfg 경로. 없으면 None."""
-    for p in _CFG_CANDIDATES:
-        if p.exists():
-            return p
-    return None
 
 
 def inst_token() -> str:
@@ -60,42 +36,17 @@ def inst_token() -> str:
 
     없으면 빈 문자열 — 기관 IP 안에서는 없어도 동작한다.
     """
-    for name in _ENV_TOKEN_NAMES:
-        v = (os.environ.get(name) or "").strip()
-        if v:
-            return v
-    cfg_path = config_path()
-    if cfg_path:
-        cfg = configparser.ConfigParser()
-        try:
-            cfg.read(cfg_path)
-            return (cfg.get("Authentication", "InstToken", fallback="") or "").strip()
-        except Exception:  # noqa: BLE001
-            pass
-    return ""
-
-
-def _keys_from_config_json() -> list[str]:
-    """config.json 의 scopus_api_key / elsevier_api_key."""
     try:
-        cfg_path = Path(__file__).resolve().parents[3] / "config.json"
-        if not cfg_path.exists():
-            return []
-        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-    except Exception:  # noqa: BLE001
-        return []
-    for field in ("scopus_api_key", "elsevier_api_key"):
-        v = (cfg.get(field) or "").strip()
-        if v:
-            return [v]
-    return []
+        return resolve_credential("scopus-inst")
+    except CredentialsError:
+        return ""
 
 
 def get_api_keys() -> list[str]:
     """Scopus API 키 목록 (1회 캐싱).
 
-    탐색 순서: 환경변수 → config.json → pybliometrics.cfg.
-    키가 여러 개면 쉼표로 구분한다 (쿼터 소진 시 회전).
+    환경변수와 OS 보안 저장소를 순서대로 조회한다. 키가 여러 개면 쉼표로
+    구분한다 (쿼터 소진 시 회전).
 
     Raises:
         FileNotFoundError: 어디에도 키가 없을 때.
@@ -104,36 +55,19 @@ def get_api_keys() -> list[str]:
     if _api_keys is not None:
         return _api_keys
 
-    for name in _ENV_KEY_NAMES:
-        raw = (os.environ.get(name) or "").strip()
-        if raw:
-            keys = [k.strip().strip('"') for k in raw.split(",") if k.strip()]
-            if keys:
-                _api_keys, _key_origin = keys, f"env:{name}"
-                logger.info("Loaded %d Scopus API key(s) from %s", len(keys), name)
-                return _api_keys
-
-    keys = _keys_from_config_json()
-    if keys:
-        _api_keys, _key_origin = keys, "config.json"
-        logger.info("Loaded %d Scopus API key(s) from config.json", len(keys))
-        return _api_keys
-
-    cfg_path = config_path()
-    if cfg_path:
-        cfg = configparser.ConfigParser()
-        cfg.read(cfg_path)
-        keys_str = cfg.get("Authentication", "APIKey", fallback="")
-        keys = [k.strip().strip('"') for k in keys_str.split(",") if k.strip()]
-        if keys:
-            _api_keys, _key_origin = keys, str(cfg_path)
-            logger.info("Loaded %d Scopus API key(s) from %s", len(keys), cfg_path)
-            return _api_keys
-
-    raise FileNotFoundError(
-        "Scopus API key not found. Set SCOPUS_API_KEY, add scopus_api_key to "
-        "config.json, or create ~/.config/pybliometrics.cfg"
-    )
+    try:
+        raw = resolve_credential("scopus")
+    except CredentialsError as exc:
+        raise FileNotFoundError(
+            "Scopus API key not found. Set SCOPUS_API_KEY/ELSEVIER_API_KEY "
+            "or credential:scopus in the OS secure store."
+        ) from exc
+    keys = [key.strip().strip('"') for key in raw.split(",") if key.strip()]
+    if not keys:
+        raise FileNotFoundError("Scopus API key is empty.")
+    _api_keys, _key_origin = keys, "credential:scopus"
+    logger.info("Loaded %d Scopus API key(s) from credential:scopus", len(keys))
+    return _api_keys
 
 
 def key_origin() -> str:

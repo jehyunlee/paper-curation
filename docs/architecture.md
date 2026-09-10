@@ -41,9 +41,17 @@
 
 ### 5. Deep Research 인덱스
 
+아래 표는 기본 `hybrid` 경로입니다. `build_search_index.py --mode bm25`는 동일한
+리뷰 청킹을 사용하되 임베딩 API/NumPy/벡터 캐시 없이 내용 인덱스만 생성합니다.
+이때 `retrieval_mode="bm25"`, `dim=0`, `model=null`, `quant=null`이고 `emb_file`과
+chunk 벡터는 없습니다. 브라우저는 BM25로 조회하고 선택된 LLM으로 답변하므로
+`/api/embed`에 의존하지 않습니다. 일치 문서가 없으면 답변 생성을 시작하지 않습니다.
+CLI의 dense/hybrid 질의는 sparse 인덱스를 임베딩 요청 전에 거부합니다.
+두 빌드 모드 모두 `--dry-run`은 파일 변경 없이 끝나며 가짜 벡터를 저장하지 않습니다.
+
 | | 설명 |
 |---|---|
-| **입력** | 전체 리뷰 + 개인 메모(<code>notes/</code>) |
+| **입력** | 리뷰 + 로컬 전용 토픽의 개인 메모(<code>notes/</code>). 원문 보강도 로컬 전용 |
 | **처리** | <ul><li>Section-aware chunking</li><li>Google <code>gemini-embedding-001</code> 임베딩 (768d, <code>task_type=RETRIEVAL_DOCUMENT</code>, L2 정규화 후 int8 양자화)</li><li>BM25 sparse 텀도 함께 인덱싱 (hybrid 검색용)</li><li>개인 메모도 인덱싱되어 다음 질의에 반영</li></ul> |
 | **출력** | <code>_search_index.json</code> + <code>_search_index_emb.bin</code> |
 | **활용** | 토픽 페이지에서 자연어 질의 → 질의 임베딩은 worker <code>/api/embed</code> (배포) 또는 <code>pipeline/serve_local.py</code> (로컬) 가 <code>gemini-embedding-001</code> (<code>task_type=RETRIEVAL_QUERY</code>) 로 대신 계산 → **hybrid 검색** (BM25 + dense, RRF 융합) → LLM 이 상위 후보를 한 문장씩 re-rank → 사용자 키 prefix 자동 감지로 **Anthropic / OpenAI / Google 중 하나**가 논문 근거 답변 스트리밍. 검색에는 독자 키가 전혀 필요 없고, 키(BYOK)는 답변 생성에만 쓰입니다. 응답은 자연어 본문 + 클릭 가능 `[N]` 인용 + 자동 figure 인라인. Fast/Smart 토글 라벨은 감지된 백엔드의 실제 모델명을 표시 (예: `Fast (cost: Sonnet 5)`) |

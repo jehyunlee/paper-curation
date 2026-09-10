@@ -1,6 +1,6 @@
 # Paper Curation
 
-**Zotero 컬렉션에 PDF만 있으면, 나머지는 자동입니다.**
+**키 없이 설치하고, 단일 PDF 리뷰부터 전체 큐레이션까지 필요한 범위만 명시적으로 실행합니다.**
 
 논문 PDF → 한국어 구조화 리뷰 → 자동 분류 → 연구 동향 타임라인 → 검색 가능한 사이트 + **Deep Research**(논문 근거 RAG Q&A)까지 — Claude Code가 오케스트레이션하는 개인 논문 큐레이션 파이프라인.
 
@@ -9,13 +9,14 @@
 - **Humanoid** — https://paper-curation.jehyunlee.dev/humanoid/
 - **Physical AI** — https://paper-curation.jehyunlee.dev/physical-ai/
 
-**핵심 기능 5줄 요약:**
+**세 가지 경로:**
 
-- **리뷰 자동화** — PDF에서 텍스트·Figure를 추출해 Claude가 6개 섹션 한국어 리뷰를 자동 작성
-- **분류·네트워크** — SPECTER2 + HDBSCAN + UMAP로 카테고리를 자동 생성·배정하고 D3.js 인터랙티브 네트워크로 시각화
-- **Deep Research RAG** — 자연어 질의 → hybrid 검색(BM25+dense) → LLM 답변 + `[N]` 인용, 필요하면 **웹 검색 토글**로 코퍼스 밖 근거까지
-- **Audio Overview** — 리뷰·답변을 팟캐스트형 한국어 오디오로(Gemini TTS → 브라우저 MP3, 배포 시 이메일)
-- **[paper-curio](https://github.com/jehyunlee/paper-curio)** — Zotero 플러그인에서 PDF AI Chat, 2~6편 비교 리포트, 컬렉션 우클릭 전체 처리(리뷰·분류·내러티브·main/category 타임라인, 배포 제외)
+- **Read** — 생성된 리뷰·검색·타임라인을 키 없이 읽습니다.
+- **AI** — PDF 리뷰, 요약, 대화, 비교를 필요할 때 하나씩 요청합니다.
+- **Collection** — Zotero 컬렉션 동기화와 명시적 전체 큐레이션은 별도 고급 작업입니다.
+
+Curio 모듈 패널과 CLI가 같은 기능 레지스트리를 사용합니다. 기능 ID·요구조건 표는
+[Setup Guide의 생성 영역](docs/setup-guide.md#공유-기능-레지스트리)을 기준으로 합니다.
 
 🇬🇧 [English README](README.en.md)
 
@@ -49,7 +50,9 @@
 
 ## 🔧 운영자로 설치하기
 
-Zotero 컬렉션 + PDF + API 키(필수: Anthropic · Google · Zotero, OpenAI는 선택)만 있으면 됩니다.
+기본 설치에는 API 키나 Zotero 컬렉션이 필요하지 않습니다. `setup.py`는 완전
+비대화형으로 최소 `config.json`과 `docs/papers/`를 만들며, 키를 묻거나
+`config.json`에 복사하지 않고 전체 파이프라인도 자동 실행하지 않습니다.
 
 **가장 쉬운 방법 — Claude Code에서 한 줄** (전체 설치 플로우는 [CLAUDE.md](CLAUDE.md)의 "Installation Flow (Claude Code)" 참고):
 
@@ -63,15 +66,48 @@ git clone https://github.com/jehyunlee/paper-curation.git && cd paper-curation
 conda create -n py312 -c conda-forge python=3.12 pip -y && conda activate py312
 pip install -r requirements.txt
 
-# 2) API 키 (리뷰=Anthropic, 검색 임베딩·Figure 검증·TTS=Google)
-export ANTHROPIC_API_KEY=...
-export GOOGLE_API_KEY=...
-
-# 3) config.json 생성(대화형) → 첫 파이프라인 실행
+# 2) 키 없는 로컬 config + SKILL 생성/설치 (파이프라인은 실행하지 않음)
 PYTHONUTF8=1 python pipeline/setup.py
+
+# 기능 목록과 요청 계획(쓰기 없음)
+python pipeline/run_feature.py --list
+python pipeline/run_feature.py --request feature-request.json
 ```
 
-**설치 진단** — 문제가 있으면 `PYTHONUTF8=1 python pipeline/doctor.py` 로 py312 환경 · 필수 패키지 · API 키 · Zotero 연결을 한 번에 점검합니다.
+기본 설치는 keyless입니다. 키는 설정 파일에 저장하지 않습니다. 환경변수가 있으면
+OS keyring보다 우선하며, 없으면 `credential:<provider>` 참조가 OS keyring
+서비스 `paper-curation`의 비밀값을 가리킵니다. 평문·null·실패 backend는
+거부되고 평문 config/file fallback은 없습니다. 키를 argv·요청 JSON·로그에 넣지
+마세요. 안전한 저장 예시는 Setup Guide의 credentials 절을 참고하세요.
+
+`--no-install`은 SKILL 설치만 건너뜁니다. setup은 PaperBanana를 클론하거나
+클러스터링을 시험하거나 첫 전체 실행을 시작하지 않습니다. 전체
+`run_full.py --mode curate`는 Zotero·Anthropic·Google 등 해당 워크플로의
+환경변수와 설정을 준비한 뒤 별도로 실행합니다. 배포/이메일도 별도 옵션입니다.
+
+### AI: 단일 PDF 리뷰
+
+Zotero에서는 최신 Curio의 Review 메뉴를 선택하고, 설정에서 제공자 하나와 키를
+연결하면 됩니다. CLI는 [Setup Guide의 PDF 요청 예시](docs/setup-guide.md#단일-pdf-로컬-리뷰)를
+`review-request.json`으로 저장한 뒤 실행합니다.
+
+```bash
+python pipeline/local_review.py --request review-request.json
+python pipeline/local_review.py --request review-request.json --execute
+```
+
+`run_feature.py --request`도 **JSON 파일 경로**를 받습니다. 기능별 입력과 전송 대상은
+[레지스트리에서 생성한 기능표](docs/setup-guide.md#공유-기능-레지스트리)를 확인하세요.
+
+기본 리뷰는 Anthropic Sonnet 5이며 자동 fallback이 없습니다. OpenAI와 Google은
+명시적으로 고르는 provider입니다. Ollama `qwen3.8:27b-mlx`는 요약·대화 전용이며
+리뷰 대체가 아닙니다. `provider`, `credential_ref`, `budget`은 요청에서 선택할
+수 있고, 예산의 알 수 없는 요율 또는 상한 초과는 실행을 막습니다. 요청 계획을
+먼저 확인한 뒤에만 `--execute`를 붙이세요.
+
+기관·서지 DB 갱신은 `bibliography-update`의 별도 로컬 단계입니다. 기본은 변경분만
+ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동기화,
+온라인 보강, 이메일 없이 실행합니다. 온라인 보강은 선택 사항입니다.
 
 사전 준비 체크리스트, config.json 스키마, 설치 확인, 문제 해결 → **[Setup Guide](docs/setup-guide.md)**
 
@@ -129,7 +165,10 @@ PYTHONUTF8=1 python pipeline/setup.py
 | **로컬 LLM fallback** | `--local-fallback` | 망 전멸 시 로컬 모델(Ollama 등)로 연결 생성 완결 — [운영 매뉴얼](docs/operations.md#korean-network-workarounds) |
 | **워크플로 다이어그램** | `generate_workflow.py` | 상단 고양이 다이어그램 생성(PaperBanana, `--style cat/fairy/academic`) |
 
-**필요한 것**: Zotero 컬렉션 + PDF + API 키(필수: Anthropic · Google · Zotero). OpenAI는 선택.
+**전체 curate 워크플로 요구사항**: Zotero 컬렉션 + PDF와 환경변수
+`ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`. OpenAI는 기존
+Chat/Deep Research 등의 선택 경로용입니다. 리뷰에서 Anthropic은 기본값이고,
+OpenAI·Google은 검토된 스키마의 명시 선택입니다.
 
 ## 파이프라인
 
@@ -176,6 +215,10 @@ PYTHONUTF8=1 python pipeline/run_citedby.py \
 
 **CLI/에이전트 검색** — 인덱스를 재빌드하지 않는 읽기 전용 질의 경로:
 ```bash
+# Google 없이 키워드 인덱스 구축 (기존 리뷰/논문 목록 필요)
+python pipeline/build_search_index.py --topic my_topic --mode bm25
+python pipeline/query_search_index.py --topic my_topic --query "과학적 발견 자동화" --mode bm25 --json
+
 # 통합 컬렉션(_cross), API 키 없이 BM25
 python pipeline/query_search_index.py --query "과학적 발견 자동화" --mode bm25
 
@@ -185,6 +228,17 @@ python pipeline/query_search_index.py --topic humanoid --query "VLA action token
 기본 컬렉션은 `_cross`이며 `hybrid`·`dense`·`bm25`를 지원합니다. Python에서는
 `pipeline.api.query_search_index()`를 호출합니다. 질의는 인덱스를 변경하지 않으며,
 curate/rebuild가 인덱스를 갱신하고 deploy preflight가 fingerprint freshness를 확인합니다.
+구축은 `pipeline.api.build_search_index(..., mode="bm25")`입니다. 구축을 뜻하던
+모호한 `pipeline.api.search_index` 호환 별칭은 제거했습니다.
+
+`build_search_index.py --mode bm25`는 임베딩 API·NumPy·벡터 캐시 없이
+`_search_index.json`만 만듭니다. 선택한 토픽의 기존 인덱스 JSON은 바뀌지만 이전
+벡터 파일/캐시는 지우지 않습니다. 기본 `--mode hybrid`는 기존 Google 임베딩 경로입니다.
+`--dry-run`은 두 모드 모두 파일을 바꾸지 않는 미리보기이며 가짜 벡터를 저장하지 않습니다.
+BM25 인덱스를 사용하는 브라우저 답변도 `/api/embed`를 호출하지 않고 선택한 LLM만
+사용합니다. 키워드 일치가 없으면 근거 없는 문서를 골라 답변하지 않습니다.
+BM25 인덱스에 `dense`/`hybrid` 질의를 보내면 자동 폴백 대신 명시적으로 실패합니다.
+개인 메모와 원문 보강은 로컬 전용 토픽에 한하며 공개 토픽에는 넣지 않습니다.
 
 **검색 품질 회귀 테스트** — 8개 컬렉션의 고정 40질의·고정 Gemini query vector로
 `recall@5/10`, `MRR@10`, 실패 질의를 네트워크 없이 측정합니다. 인덱스 재빌드 뒤에는
