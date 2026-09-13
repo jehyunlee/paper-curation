@@ -1146,10 +1146,17 @@ def extract_figures(pdf_path, slug_dir, *, validate_with_gemini=True):
             nx1 = x1 + adj.get("right", 0) * damping
             # Clamp to the rect hull (± MARGIN) — the box can never escape the
             # detected graphic region back to a full page.
+            previous_box = (x0, y0, x1, y1)
             x0 = min(max(nx0, hx0), hx1)
             y0 = min(max(ny0, hy0), hy1)
             x1 = min(max(nx1, hx0), hx1)
             y1 = min(max(ny1, hy0), hy1)
+            # The first box already spans the clamp bounds, so an "expand"
+            # verdict clamps back onto the identical box. Re-rendering and
+            # re-validating that identical PNG was a second paid vision call
+            # with no possible effect; keep the render and stop here.
+            if all(abs(a - b) < 0.5 for a, b in zip(previous_box, (x0, y0, x1, y1))):
+                break
 
         if not rendered_ok:
             continue

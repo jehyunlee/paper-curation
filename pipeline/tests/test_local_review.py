@@ -275,8 +275,11 @@ class LocalReviewContractTests(unittest.TestCase):
         (figure_dir / "fig1.png").write_bytes(b"old-figure")
 
     def test_keyless_plan_needs_only_anthropic_without_import_or_write(self):
+        from lib.credentials import CredentialNotConfigured
         with (
             patch.dict(os.environ, {}, clear=True),
+            patch("lib.credentials.resolve_credential",
+                  side_effect=CredentialNotConfigured("not configured in test")),
             patch.object(
                 local, "_load_engine", side_effect=AssertionError("heavy import")
             ) as loader,

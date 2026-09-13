@@ -1,9 +1,10 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 PIPELINE = Path(__file__).resolve().parents[1]
 if str(PIPELINE) not in sys.path:
@@ -114,6 +115,54 @@ class TimelineCapabilityTests(unittest.TestCase):
                 timelines._run_timeline(topic="test", narrative_only=True,
                                         category_only=True)
 
+        images.assert_not_called()
+
+    def test_scoped_narrative_run_keeps_other_categories_and_skips_unneeded_synthesis(self):
+        """One changed category must not erase the others' Opus cache or
+        rebuild the executive summary from a subset."""
+        def paper(slug, category, year):
+            return {"slug": slug, "title": slug, "date": f"{year}-01-01", "topics": ["test"],
+                    "essence": "e", "classifications": {"test": {"primary_category": category,
+                                                                 "sub_category": "s"}}}
+        index = [paper("1_a", "Alpha", 2024), paper("2_b", "Beta", 2023), paper("3_c", "Beta", 2025)]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            papers = root / "papers"
+            papers.mkdir()
+            (papers / "_papers_index.json").write_text(json.dumps(index), encoding="utf-8")
+            topic_dir = root / "topic"
+            topic_dir.mkdir()
+            candidates_dir = root / "_img_timelines" / "test"
+            candidates_dir.mkdir(parents=True)
+            beta_hash = timelines.category_input_hash([p for p in index if p["classifications"]["test"]["primary_category"] == "Beta"])
+            # Prior full run left both categories cached; Beta's inputs are unchanged.
+            (topic_dir / "_category_narratives.json").write_text(json.dumps([
+                {"category": "Alpha", "sub_themes": [], "_input_hash": "stale"},
+                {"category": "Beta", "sub_themes": ["kept"], "_input_hash": beta_hash},
+            ]), encoding="utf-8")
+            for slug in ("alpha", "beta"):
+                (candidates_dir / f"_method_text_{slug}.txt").write_text("m", encoding="utf-8")
+            (candidates_dir / "_method_text_main.txt").write_text("main", encoding="utf-8")
+            (topic_dir / "_timeline_narrative.json").write_text("{}", encoding="utf-8")
+            narrative = MagicMock(return_value=("method", "caption", {"category": "Alpha", "sub_themes": ["new"]}))
+            with patch.object(timelines, "PAPERS_DIR", str(papers)), \
+                 patch.object(timelines, "__file__", str(root / "generate_timelines.py")), \
+                 patch.object(timelines, "get_topic_dir", return_value=topic_dir), \
+                 patch.object(timelines, "build_category_narrative", narrative), \
+                 patch.object(timelines, "build_main_narrative_from_summaries", return_value=("main2", "cap")) as main_call, \
+                 patch.object(timelines, "build_executive_summary", return_value="exec") as exec_call, \
+                 patch.object(timelines, "generate_candidates") as images, \
+                 patch.dict(os.environ, {"TIMELINE_NARRATIVE_PARALLEL": "1"}):
+                timelines._run_timeline(topic="test", narrative_only=True, categories=["Alpha"])
+            saved = {s["category"]: s for s in json.loads((topic_dir / "_category_narratives.json").read_text())}
+
+        narrative.assert_called_once()
+        self.assertEqual(saved["Beta"]["_input_hash"], beta_hash, "unchanged category cache must survive a scoped run")
+        self.assertEqual(saved["Alpha"]["sub_themes"], ["new"])
+        self.assertEqual(exec_call.call_args.args[0][0]["category"], "Alpha")
+        self.assertEqual([s["category"] for s in exec_call.call_args.args[0]], ["Alpha", "Beta"],
+                         "synthesis must cover the whole topic, not the changed subset")
+        main_call.assert_called_once()
         images.assert_not_called()
 
 

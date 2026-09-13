@@ -1,3 +1,5 @@
+import contextlib
+import io
 import json
 import multiprocessing
 import sys
@@ -13,7 +15,13 @@ if str(PIPELINE_DIR) not in sys.path:
 
 from lib.corpus_store import (CorpusStoreBusyError, CorpusStoreError, cancel,
                               corpus_index_lock, corpus_operation_lock,
-                              register, reserve)
+                              main, register, reserve)
+
+MARKED_SLUGS = (
+    "10067_Multi-marginal_temporal_Schrödinger_Bridge_Matching_from_unp",
+    "10138_Optimal_Guarantees_for_Auditing_Rényi_Differentially_Private",
+    "9520_Discovering_Scaling_Exponents_with_Physics-Informed_Müntz-Sz",
+)
 
 
 def _reserve_worker(papers, number, queue):
@@ -130,6 +138,10 @@ class CorpusStoreTests(unittest.TestCase):
         reservation = reserve(self.papers, {"key": "safe", "title": "Safe paper"})
         with self.assertRaises(CorpusStoreError):
             cancel(self.papers, "../outside", reservation["token"])
+        for invalid_slug in ("003_bad\x00slug", "003_bad\nslug", "003_bad\u200dslug"):
+            with self.assertRaises(CorpusStoreError):
+                reserve(self.papers, {"key": invalid_slug, "title": "Invalid paper"},
+                        requested_slug=invalid_slug)
         outside = Path(self.tmp.name) / "outside"
         outside.mkdir()
         link = self.papers / "002_link"
@@ -189,6 +201,61 @@ class CorpusStoreTests(unittest.TestCase):
         with self.assertRaises(CorpusStoreBusyError):
             with corpus_operation_lock(self.papers, exclusive=True):
                 pass
+
+    def test_unicode_combining_mark_slugs_are_scanned_and_reused(self):
+        entries = []
+        for number, slug in enumerate(MARKED_SLUGS):
+            (self.papers / slug).mkdir()
+            entries.append({
+                "slug": slug,
+                "key": f"marked-{number}",
+                "title": f"Marked paper {number}",
+            })
+        (self.papers / "_papers_index.json").write_text(
+            json.dumps(entries, ensure_ascii=False), encoding="utf-8")
+
+        unrelated = reserve(
+            self.papers, {"key": "unrelated", "title": "New unrelated paper"})
+        self.assertEqual(unrelated["slug"], "10139_New_unrelated_paper")
+        cancel(self.papers, unrelated["slug"], unrelated["token"])
+
+        reused = reserve(self.papers, {"key": "marked-0", "title": "Marked paper 0"})
+        self.assertEqual(reused["slug"], MARKED_SLUGS[0])
+        self.assertTrue(reused["existing"])
+        self._bundle(MARKED_SLUGS[0], {"key": "marked-0", "title": "Marked paper 0"})
+        register(self.papers, MARKED_SLUGS[0], reused["token"],
+                 {"key": "marked-0", "title": "Marked paper 0"})
+
+        cancelled = reserve(self.papers, {"key": "marked-1", "title": "Marked paper 1"})
+        self.assertEqual(cancelled["slug"], MARKED_SLUGS[1])
+        cancel(self.papers, MARKED_SLUGS[1], cancelled["token"])
+
+    def test_noncomposable_combining_mark_slug_is_safe(self):
+        slug = "10139_A⃝"
+        reservation = reserve(
+            self.papers, {"key": "noncomposable", "title": "Noncomposable mark"},
+            requested_slug=slug)
+        self.assertEqual(reservation["slug"], slug)
+        cancel(self.papers, slug, reservation["token"])
+
+    def test_cli_reports_invalid_slug_error_code_without_request_details(self):
+        request = self.papers / "request.json"
+        request.write_text(json.dumps({
+            "schema_version": 1,
+            "op": "reserve",
+            "papers_dir": str(self.papers),
+            "identity": {"key": "invalid"},
+            "requested_slug": "001_bad/slash",
+        }), encoding="utf-8")
+        output = io.StringIO()
+        with patch.object(sys, "argv", ["corpus_store.py", "--request", str(request)]), \
+             contextlib.redirect_stdout(output):
+            self.assertEqual(main(), 1)
+        response = json.loads(output.getvalue())
+        self.assertEqual(response["status"], "failed")
+        self.assertEqual(response["error"], "invalid corpus request")
+        self.assertEqual(response["error_code"], "invalid-slug")
+        self.assertNotIn("001_bad/slash", output.getvalue())
 
 
 if __name__ == "__main__":

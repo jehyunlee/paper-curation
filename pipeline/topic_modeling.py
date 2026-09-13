@@ -863,330 +863,12 @@ def compute_related_candidates(embeddings, slugs, top_k=5, papers=None):
     return candidates
 
 
-def parse_connection_json(text):
-    """배치 응답 JSON 파싱 — 깨진 부분만 버리고 나머지는 살린다.
-
-    응답은 ``{"045": [{"target","relation","reason"}, ...], ...}`` 이다. 예전엔
-    ``json.loads`` 한 방이라 문서 어디든 한 글자가 어긋나면 **배치 전체(15편)가
-    통째로 버려졌다**. 후보를 25개로 넓히고 제목까지 실으면서 출력이 길어지자
-    실측 오류율이 눈에 띄게 올랐다(코퍼스 재생성 첫 6분에 2건:
-    ``Expecting value: line 203``, ``Expecting property name ... line 131``).
-    한 논문의 이유 문자열이 깨졌다고 나머지 14편의 연결까지 날릴 이유는 없다.
-
-    그래서 실패하면 **논문 단위로 내려가 각 객체를 따로 파싱**한다. 살릴 수 있는
-    것만 살리고 나머지는 조용히 버린다 — 남은 논문은 다음 라운드가 재시도한다.
-    """
-    try:
-        parsed = json.loads(text)
-        if isinstance(parsed, dict):
-            return parsed
-    except Exception:
-        pass
-
-    decoder = json.JSONDecoder()
-    salvaged = {}
-    for match in re.finditer(r'"([^"]+)"\s*:\s*\[', text):
-        key = match.group(1)
-        pos = match.end()
-        items = []
-        while pos < len(text):
-            brace = text.find("{", pos)
-            if brace < 0:
-                break
-            # 다음 논문 키가 먼저 나오면 이 논문의 배열은 여기서 끝난 것이다.
-            closer = text.find("]", pos)
-            if 0 <= closer < brace:
-                break
-            try:
-                obj, end = decoder.raw_decode(text, brace)
-            except ValueError:
-                # 이 객체만 깨졌다 — 다음 '{' 로 건너뛴다.
-                pos = brace + 1
-                continue
-            if isinstance(obj, dict) and obj.get("target"):
-                items.append(obj)
-            pos = end
-        if items:
-            salvaged[key] = items
-    if not salvaged:
-        raise ValueError(f"connection JSON unparseable ({len(text)} chars)")
-    return salvaged
-
-
-def generate_connections_from_candidates(candidates, topic_papers, client,
-                                         batch_size=25, deadline_s=300, max_rounds=3,
-                                         local_fallback=None, priority_slugs=None,
-                                         request_timeout_s=90.0):
-    """임베딩 top-20 후보 -> Sonnet이 이유/관계 작성.
-
-    BEST-EFFORT + 행 방지: 연결은 정규 사이클의 ``extract_insights --only
-    connections`` 가 다시 채우므로, 한국망↔Anthropic 의 stale-connection(half-open
-    소켓) 으로 *토픽 모델링 전체가 멈추면 안 된다*. 과거엔 막힌 배치 하나가
-    client 의 max_retries(4) × timeout(180s) = 12분을 잡고, 게다가 ``with
-    ThreadPoolExecutor`` 의 암묵적 ``shutdown(wait=True)`` 가 그 좀비 워커를 join
-    하면서 런 전체를 영구히 정지시켰다(메인스레드가 lock 대기에 묶임). 영구 수정:
-      1) 이 단계 전용 client 는 ``timeout=90, max_retries=1`` 로 막힌 호출을 ~3분
-         안에 끝낸다.
-      2) 라운드마다 wall-clock ``deadline_s`` 를 둬, 그 안에 끝난 배치만 쓴다.
-      3) ``shutdown(wait=False, cancel_futures=True)`` — 좀비 워커를 join 하지
-         않는다(아직 시작 안 한 배치는 취소; 도는 워커는 짧은 timeout 으로 곧 끝남).
-      4) MULTI-ROUND: 한 라운드를 돈 뒤 *막혀서 처리 못 한 논문만* 골라 다음
-         라운드에서 재시도한다(최대 ``max_rounds``). 네트워크가 잠깐 느렸을 뿐이면
-         2라운드에서 대개 완결되고, 끝까지 막힌 논문만 기존 연결을 유지한 채
-         남는다. 성공한 배치의 논문은 *결과가 비어도* '처리됨' 으로 봐서(연결이
-         없는 게 정상인 논문) 재시도 루프가 무한반복되지 않는다.
-      5) LOCAL FALLBACK (opt-in): ``local_fallback`` 가 주어지면, max_rounds 를
-         다 돌고도 남은 papers 를 *로컬에서 도는 OpenAI 호환 모델* 로 마저
-         연결한다. 클라우드 키·네트워크가 끝까지 막힌 환경에서 사용자가
-         ``--local-fallback`` 으로 켰을 때만 동작하며, 엔드포인트가 응답 없으면
-         조용히 건너뛴다(런은 절대 막지 않는다). lib/local_llm 참조.
-      6) PRIORITY-FIRST: ``priority_slugs``(기존 연결이 0개인 논문 — 대개 신규)
-         를 매 라운드 큐의 *맨 앞* 에 배치한다. 배치가 슬러그 정렬순으로 제출되면
-         번호 큰 신규 논문이 항상 꼬리에 몰려, deadline 이 잘릴 때마다 같은
-         논문들이 반복 탈락하는 체계적 편향이 생긴다(2026-06-12 실측: ai4s 신규
-         6편이 두 런 연속 탈락). 망 예산이 부족해도 사용자에게 공백으로 보이는
-         논문부터 먼저 채운다.
-    """
-    from concurrent.futures import (ThreadPoolExecutor, FIRST_COMPLETED,
-                                    wait as _futures_wait)
-
-    # 막힌 호출이 토픽모델링을 오래 잡지 않게 짧은 timeout/무재시도 클라이언트.
-    conn_client = client.with_options(timeout=request_timeout_s, max_retries=1)
-
-    slug_to_paper = {p["slug"]: p for p in topic_papers}
-    num_to_slug = {p["slug"].split("_")[0]: p["slug"] for p in topic_papers}
-    all_connections = {}
-    all_slugs = sorted(candidates.keys())
-    log(f"  {len(all_slugs)} papers, batch_size={batch_size}, "
-        f"<= {max_rounds} rounds × {deadline_s}s ...")
-
-    def _build_prompt(batch_slugs):
-        # 후보는 **제목과 함께** 넘긴다. 예전에는 `[3001](0.94)` 처럼 슬러그 번호와
-        # 코사인 점수만 줬는데, 그러면 모델은 후보가 무슨 논문인지 모른 채 관계
-        # 유형과 한국어 이유를 지어내야 한다(단백질 설계 논문을 "실행-접지형 연구
-        # 파트너의 이론적 기반" 이라고 쓴 실제 사례). 그리고 `cands[:10]` 로 잘라
-        # 버려서, extract_insights 가 recall 확보용으로 계산한 top-25 중 15개는
-        # 캐시·증분 판정까지 다 거친 뒤 프롬프트에서 조용히 버려지고 있었다.
-        # 후보 수는 호출자의 top_k 가 정한다 — 그게 유일한 정직한 손잡이다.
-        papers_block = []
-        for slug in batch_slugs:
-            p = slug_to_paper.get(slug, {})
-            num = slug.split("_")[0]
-            title = p.get("title", "")[:60]
-            essence = p.get("essence", "")[:150]
-            cand_lines = []
-            for cs, sim in candidates.get(slug, []):
-                cp = slug_to_paper.get(cs, {})
-                ctitle = (cp.get("title") or cs.split("_", 1)[-1].replace("_", " "))[:60]
-                cand_lines.append(f"    [{cs.split('_')[0]}] ({sim:.2f}) {ctitle}")
-            papers_block.append(
-                f"[{num}] {title} | {essence}\n  Candidates:\n"
-                + "\n".join(cand_lines)
-            )
-
-        return f"""For each paper below, select the most meaningful related papers from its candidates.
-Candidates are ranked by hybrid retrieval (SPECTER2 cosine + title/author BM25,
-RRF-fused); the number in parentheses is the cosine similarity only, so a low
-one does NOT mean the candidate is unrelated — judge by the titles.
-
-Papers:
-{chr(10).join(papers_block)}
-
-Connection types:
-- alternative: Same problem, different approach
-- extension: Builds on or extends this work
-- foundation: Theoretical/methodological foundation
-- counterpoint: Opposite perspective or critiques
-- application: Applies this method to a real problem
-
-Output ONLY valid JSON:
-{{
-  "045": [
-    {{"target": "123", "relation": "alternative", "reason": "한국어 이유 1문장"}}
-  ]
-}}
-
-Rules:
-- reason은 한국어로 구체적으로 (1문장)
-- 유사도가 높아도 의미 없는 연결은 제외
-- target은 candidate 목록의 논문 번호만 사용"""
-
-    def process_batch(batch_slugs):
-        prompt = _build_prompt(batch_slugs)
-        resp = conn_client.messages.create(
-            model=LLM_MODEL,
-            # batch_size=25 × 후보 다수 선택 + 한국어 이유의 JSON 출력은 10k 토큰을
-            # 넘겨 응답이 잘리고(Unterminated string) 배치 전체가 버려진다. 25편을
-            # 여유 있게 담도록 상향.
-            max_tokens=16000,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        parts = []
-        for block in (getattr(resp, "content", None) or []):
-            text_part = getattr(block, "text", None)
-            if text_part:
-                parts.append(text_part)
-            elif isinstance(block, dict) and block.get("type") == "text" and block.get("text"):
-                parts.append(block["text"])
-        if not parts:
-            raise ValueError("Anthropic response contained no text block")
-        text = "\n".join(parts).strip()
-        if text.startswith("```"):
-            text = text[3:].strip()
-            if text.startswith("json"):
-                text = text[4:].strip()
-            if text.endswith("```"):
-                text = text[:-3].strip()
-        return parse_connection_json(text)
-
-    def _merge(batch_result):
-        for num, conns in batch_result.items():
-            slug = num_to_slug.get(num)
-            if not slug:
-                continue
-            resolved = []
-            for c in conns:
-                target_slug = num_to_slug.get(c.get("target", ""))
-                if target_slug:
-                    resolved.append({
-                        "slug": target_slug,
-                        "relation": c.get("relation", "alternative"),
-                        "reason": c.get("reason", ""),
-                    })
-            if resolved:
-                existing = all_connections.get(slug, [])
-                seen = {r["slug"] for r in existing}
-                for r in resolved:
-                    if r["slug"] not in seen:
-                        existing.append(r)
-                        seen.add(r["slug"])
-                all_connections[slug] = existing
-
-    all_slug_set = set(all_slugs)
-    attempted = set()  # 배치가 성공적으로 끝난 슬러그 (연결 0개여도 포함 → 재시도 X)
-
-    def _run_round(todo):
-        """todo 슬러그를 배치로 나눠 한 라운드 처리. deadline_s 안에 끝난 배치만
-        수집하고 성공 배치의 슬러그를 attempted 에 기록. 막힌 워커는 join 안 함."""
-        round_batches = [todo[i:i + batch_size]
-                         for i in range(0, len(todo), batch_size)]
-        # 워커 수는 env 로 연다 — 다른 튜닝 손잡이(EXTRACT_INSIGHTS_CONN_BATCH /
-        # _DEADLINE / _ROUNDS)와 같은 규약. 기본 4 는 그대로고, 코퍼스 전체
-        # 재생성처럼 한 번에 수백 배치를 태울 때만 올린다(Tier 4 기준 8 안전).
-        _workers = max(1, int(os.environ.get("CONN_MAX_WORKERS", "4")))
-        executor = ThreadPoolExecutor(max_workers=_workers)
-        round_deadline = time.monotonic() + deadline_s
-        try:
-            futures = {executor.submit(process_batch, b): tuple(b)
-                       for b in round_batches}
-            pending = set(futures)
-            while pending:
-                remaining = round_deadline - time.monotonic()
-                if remaining <= 0:
-                    break
-                done, pending = _futures_wait(
-                    pending, timeout=min(remaining, 30.0),
-                    return_when=FIRST_COMPLETED)
-                for future in done:
-                    bslugs = futures[future]
-                    try:
-                        _merge(future.result())
-                        attempted.update(bslugs)   # 성공 → 다음 라운드에서 제외
-                    except Exception as e:
-                        log(f"    batch ERROR (재시도 대상): {str(e)[:90]}")
-        finally:
-            # 좀비 워커를 join 하지 않는다(=런이 멈추지 않게). 시작 안 한 배치는
-            # 취소; 도는 워커는 conn_client 의 짧은 timeout 안에서 스스로 끝난다.
-            executor.shutdown(wait=False, cancel_futures=True)
-
-    prio = set(priority_slugs or ())
-
-    def _ordered(slug_set):
-        """기존 연결 0개(신규) 논문을 큐 맨 앞에 — 잘려도 공백부터 채운다."""
-        return sorted(slug_set, key=lambda s: (s not in prio, s))
-
-    if prio:
-        log(f"  [connections] priority-first: 연결 없는 {len(prio & all_slug_set)} "
-            f"papers 를 첫 배치로")
-
-    for rnd in range(max_rounds):
-        todo = _ordered(all_slug_set - attempted)
-        if not todo:
-            break
-        if rnd:
-            log(f"  [connections] round {rnd + 1}/{max_rounds}: "
-                f"{len(todo)} papers 재시도 (막힌/실패 배치만)")
-        _run_round(todo)
-
-    def _run_local_fallback(todo, cfg):
-        """남은 papers 를 로컬 OpenAI 호환 모델로 마저 연결. 성공분은 attempted 에
-        기록하고 _merge 로 합친다. 엔드포인트가 응답 없거나 SDK 가 없으면 todo 를
-        그대로(미완) 돌려준다 — 런은 절대 막지 않는다."""
-        from lib import local_llm
-        base_url, model = cfg["base_url"], cfg["model"]
-        if not local_llm.probe(base_url):
-            log(f"  [connections] local-fallback: {base_url} 응답 없음 — 건너뜀")
-            return set(todo)
-        # Ollama 면 네이티브 /api/chat (요청 단위 num_ctx + 정식 think:false),
-        # 그 외(LM Studio/llama.cpp/vLLM)는 OpenAI 호환 경로.
-        use_native = local_llm.detect_ollama(base_url)
-        lc = None
-        if not use_native:
-            lc = local_llm.get_client(cfg)
-            if lc is None:
-                log("  [connections] local-fallback: openai SDK 로드 실패 — 건너뜀")
-                return set(todo)
-        lbatch = max(1, int(cfg.get("batch_size", 8)))   # 로컬은 작은 배치가 안정적
-        lretries = max(1, int(cfg.get("retries", 2)))    # 형식 깨짐은 확률적 → 재시도
-        log(f"  [connections] local-fallback: {len(todo)} papers → {model} "
-            f"@ {base_url} (batch={lbatch}, native={use_native})")
-        done_n = 0
-        for i in range(0, len(todo), lbatch):
-            batch = todo[i:i + lbatch]
-            for attempt in range(lretries):
-                try:
-                    if use_native:
-                        result = local_llm.chat_json_native(
-                            base_url, model, _build_prompt(batch),
-                            num_ctx=int(cfg.get("num_ctx", 8192)),
-                            timeout=float(cfg.get("timeout", 600)))
-                    else:
-                        result = local_llm.chat_json(
-                            lc, model, _build_prompt(batch),
-                            reasoning_effort=cfg.get("reasoning_effort"),
-                            json_mode=bool(cfg.get("json_mode")))
-                    _merge(result)
-                    attempted.update(batch)   # 연결 0개여도 '처리됨'
-                    done_n += len(batch)
-                    break
-                except Exception as e:
-                    tag = "재시도" if attempt + 1 < lretries else "포기"
-                    log(f"    local batch ERROR ({tag}): {str(e)[:90]}")
-        log(f"  [connections] local-fallback: {done_n}/{len(todo)} papers 처리")
-        return all_slug_set - attempted
-
-    missing = all_slug_set - attempted
-
-    # opt-in: 끝까지 막힌 잔여분을 로컬 모델로 마저 연결 (클라우드 키·네트워크 불필요)
-    if missing and local_fallback:
-        missing = _run_local_fallback(_ordered(missing), local_fallback)
-
-    if missing:
-        log(f"  [connections] {len(missing)} papers 미완 — 기존 연결 유지, "
-            f"extract_insights 가 정규 사이클에 갱신")
-    else:
-        log(f"  [connections] {len(all_slug_set)} papers 전부 처리 완료")
-
-    return all_connections
-
-
 # ═══════════════════════════════════════════
 # Main
 # ═══════════════════════════════════════════
 
 def _run_topic_model(topic="ai4s", *, skip_connections=False,
-                      skip_classification=False, min_cats=8, max_cats=12,
-                      local_fallback=None):
+                      skip_classification=False, min_cats=8, max_cats=12):
     """Programmatic entrypoint for topic_modeling."""
     topic_dir = str(get_topic_dir(topic))
 
@@ -1218,12 +900,13 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
         embeddings, slugs, originalities
     )
 
-    from anthropic import Anthropic
-    client = Anthropic(timeout=180.0, max_retries=4)
-
     if skip_classification:
         log("\n  [Steps 4-5] SKIP (--skip-classification: preserving existing categories)")
     else:
+        # Category naming is the only model-backed step left in this module;
+        # connections below are computed in embedding space without a model.
+        from anthropic import Anthropic
+        client = Anthropic(timeout=180.0, max_retries=4)
         # Step 4: Name sub-topics
         log("\n" + "=" * 50)
         log("STEP 4: SUB-TOPIC NAMING (Sonnet)")
@@ -1348,86 +1031,20 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
     # Step 6
     if not skip_connections:
         log("\n" + "=" * 50)
-        log("STEP 6: RELATED PAPERS (Embedding + Sonnet)")
+        log("STEP 6: RELATED PAPERS (SPECTER2 + BM25, embedding space only)")
         log("=" * 50)
-        candidates = compute_related_candidates(embeddings, slugs, top_k=5,
+        # Connections are a deterministic function of the embedding geometry
+        # and the recorded metadata. Recomputing every paper costs nothing but
+        # CPU, so there is no incremental LLM cache and no judge to retry.
+        from lib.related import build_connections, max_links
+        candidates = compute_related_candidates(embeddings, slugs, top_k=max_links(),
                                                 papers=topic_papers)
-        # 기존 연결이 0개인 논문(대개 신규)을 우선 배치 — deadline 으로 라운드가
-        # 잘려도 사이트에 공백으로 보이는 논문부터 먼저 채운다.
-        _edata = {}
-        try:
-            conn_path = os.path.join(topic_dir, "_paper_connections.json")
-            with open(conn_path, "r", encoding="utf-8") as f:
-                _existing = json.load(f)
-            _edata = _existing.get("connections", _existing) \
-                if isinstance(_existing, dict) else {}
-        except Exception:
-            pass  # 파일 없음(첫 런) 등 — 전부 동순위로 진행
-
-        # ── 증분 연결 생성(k=5 전용 캐시): top-k 멤버십 변동(=hub) + 신규 + 갭
-        # 논문만 LLM 호출. 변화 없는 논문은 건너뛰고 sync 의 bidi 재구성으로 inbound
-        # 만 무료 갱신. CONN_INCREMENTAL=0/off → full(기존 동작), CONN_FULL_REBUILD=1
-        # → 강제 full. 오류 시 안전하게 full 로 fallback.
-        from lib import conn_cache
-        from lib import specter2_embed
-        _inc_on = os.environ.get("CONN_INCREMENTAL", "1").strip().lower() \
-            not in ("0", "off", "false", "no")
-        _full_rebuild = os.environ.get("CONN_FULL_REBUILD", "").strip().lower() \
-            in ("1", "on", "true", "yes")
-        _force_full = _full_rebuild or not _inc_on
-        try:
-            _embed_tag = specter2_embed.EMBED_TAG
-        except Exception:
-            _embed_tag = None
-        _prev_cache = conn_cache.load_topk_cache(topic_dir, 5, scope="tm")
-        dirty, reason = conn_cache.compute_dirty(
-            candidates, _prev_cache,
-            _edata, 5, _embed_tag, force=_force_full, log=log)
-        _total = len(candidates)
-        _pct = int(round(100 * (1 - len(dirty) / _total))) if _total else 0
-        log(f"  [conn] incremental k=5: {len(dirty)}/{_total} dirty ({reason}); "
-            f"skipping {_total - len(dirty)} unchanged -> ~{_pct}% fewer LLM calls")
-        gen_candidates = conn_cache.restrict_candidates(candidates, dirty)
-        priority_slugs = {s for s in gen_candidates if not _edata.get(s)}
-
-        if gen_candidates:
-            connections = generate_connections_from_candidates(
-                gen_candidates, topic_papers, client, local_fallback=local_fallback,
-                priority_slugs=priority_slugs
-            )
-        else:
-            log("  [conn] 0 dirty — LLM 호출 생략, consumer view 만 재구성")
-            connections = {}
-        # 캐시 갱신 기준은 verify 가 깎기 *전* 의 raw 생성 결과 키 — verify 가 제거한
-        # spurious slug 도 '생성됨' 으로 봐 무한 재시도를 막는다.
-        _generated = set(connections.keys())
-        # T2-4: optional LLM audit of generated connections. Env VERIFY_CONNECTIONS
-        # (off|sample|strict, default sample) — sample = flag-only (log spurious,
-        # keep all); strict = drop spurious before persistence. Best-effort: any
-        # error/missing client leaves connections untouched (never blocks the run).
-        try:
-            from lib import verify
-            essence_by_slug = {
-                p["slug"]: {"title": p.get("title", ""),
-                            "essence": p.get("essence", "")}
-                for p in topic_papers
-            }
-            verify.apply_connection_verification(
-                connections, essence_by_slug, client, log=log)
-        except Exception as e:
-            log(f"  [verify] connections hook skipped: {str(e)[:80]}")
+        connections = build_connections(candidates, topic_papers, topic=topic)
+        linked = sum(1 for links in connections.values() if links)
+        log(f"  {linked}/{len(connections)} papers linked "
+            f"({sum(len(v) for v in connections.values())} directed edges)")
         from lib.connections import sync_topic_connections
         sync_topic_connections(connections, topic, slugs, topic_dir, log=log)
-        # 성공 시에만 캐시 갱신. 실제 생성된 slug 만 current set 으로 올리고, dirty
-        # 였지만 결과를 못 받은 slug 은 prev set 유지 → 다음 run 재시도(실패 런 미저장).
-        try:
-            _next_sets = conn_cache.next_cache_sets(
-                candidates, _prev_cache, dirty, _generated)
-            conn_cache.save_topk_cache(
-                topic_dir, candidates, 5, _embed_tag,
-                scope="tm", sets=_next_sets)
-        except Exception as e:
-            log(f"  [conn] cache save failed: {str(e)[:80]}")
 
     log("\n" + "=" * 50)
     log("DONE!")

@@ -606,6 +606,9 @@ def main():
     )
     parser.add_argument("--port", type=int, default=8000, help="리슨 포트 (기본 8000)")
     parser.add_argument("--topic", default="", help="열어볼 토픽 (URL 안내용, 예: ai4s)")
+    parser.add_argument("--bind", default="127.0.0.1",
+                        help="리슨 주소 (기본 127.0.0.1). 이 서버는 운영자 키로 Gemini·Opus를 "
+                             "대신 호출하므로 다른 기기에 열려면 명시적으로 지정한다.")
     args = parser.parse_args()
 
     if not DOCS_DIR.exists():
@@ -616,7 +619,7 @@ def main():
     url = f"http://localhost:{args.port}/{sub}"
 
     handler = functools.partial(LocalHandler, directory=str(DOCS_DIR))
-    httpd = ThreadingHTTPServer(("", args.port), handler)
+    httpd = ThreadingHTTPServer((args.bind, args.port), handler)
 
     has_key = bool(resolve_google_key())
     print(f"docs/ 서빙 + /api/embed → Gemini ({GEMINI_MODEL}, {EMBED_DIM}d) 프록시")

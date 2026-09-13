@@ -17,6 +17,18 @@ class FeatureDocumentationTests(unittest.TestCase):
         guide = (PIPELINE.parent / "docs/setup-guide.md").read_text()
         self.assertEqual(guide, render_feature_docs.replace_table(guide, render_feature_docs.render_table(registry)))
 
+    def test_user_guides_cover_every_registered_capability_and_figures(self):
+        registry = json.loads((PIPELINE / "features.json").read_text())["features"]
+        root = PIPELINE.parent
+        for guide in ("docs/user-guide.md", "docs/user-guide.en.md"):
+            text = (root / guide).read_text()
+            missing = [f["id"] for f in registry if f"`{f['id']}`" not in text]
+            self.assertEqual(missing, [], f"{guide} lacks capability IDs")
+        for figure in ("usage_workflow.png", "usage_workflow.en.png"):
+            self.assertTrue((root / figure).is_file(), figure)
+        self.assertIn("usage_workflow.png", (root / "README.md").read_text())
+        self.assertIn("usage_workflow.en.png", (root / "README.en.md").read_text())
+
     def test_metadata_changes_require_doc_regeneration(self):
         registry = json.loads((PIPELINE / "features.json").read_text())["features"]
         original = render_feature_docs.render_table(registry)

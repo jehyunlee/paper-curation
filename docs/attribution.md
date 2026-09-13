@@ -417,8 +417,10 @@ python pipeline/experiment_ladder_order.py --topic ai4s --sample 300
 python pipeline/audit_author_attribution.py
 python pipeline/audit_author_attribution.py --stage D --limit 5
 
-# 그림 다시 그리기 (수치는 DB 에서 읽는다)
-python pipeline/generate_attribution_diagram.py --style cat
+# 그림 다시 그리기 — 사다리 순서는 lib/evidence.py 에서, 수치는 DB 에서 읽는다
+python pipeline/generate_attribution_diagram.py --style cat --candidates 4
+#   → pipeline/_img_workflows/attribution_*.png 에 후보를 남기고 1번을
+#     attribution_workflow.png 로 복사한다. 다른 후보가 나으면 직접 덮어쓴다.
 ```
 
 ## 결과물

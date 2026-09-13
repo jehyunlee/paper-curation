@@ -15,6 +15,7 @@ import re
 import secrets
 import sys
 import time
+import unicodedata
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -27,11 +28,12 @@ from lib.atomic_io import atomic_write_json
 INDEX_NAME = "_papers_index.json"
 RESERVATION_NAME = ".corpus-reservation.json"
 IDENTITY_FIELDS = {"slug", "key", "zotero_item_key", "doi", "title"}
-_SLUG_RE = re.compile(r"\d+_[\w-]+")
 
 
 class CorpusStoreError(RuntimeError):
-    pass
+    def __init__(self, message: str, code: str = "invalid-request"):
+        super().__init__(message)
+        self.code = code
 
 
 class CorpusStoreBusyError(CorpusStoreError):
@@ -45,9 +47,24 @@ def _papers_dir(papers_dir: str | Path) -> Path:
 
 
 def _safe_slug(slug: object) -> str:
-    if not isinstance(slug, str) or not _SLUG_RE.fullmatch(slug):
-        raise CorpusStoreError("invalid slug")
+    if not _is_safe_slug(slug):
+        raise CorpusStoreError("invalid slug", code="invalid-slug")
     return slug
+
+
+def _is_safe_slug(slug: object) -> bool:
+    """Allow stable Unicode filenames without admitting path syntax."""
+    if not isinstance(slug, str):
+        return False
+    prefix, separator, suffix = slug.partition("_")
+    if not separator or not prefix or not suffix or not prefix.isascii() or not prefix.isdecimal():
+        return False
+    return all(
+        character.isalnum()
+        or unicodedata.category(character).startswith("M")
+        or character in "_-"
+        for character in suffix
+    )
 
 
 def _slug_dir(papers: Path, slug: object) -> Path:
@@ -147,11 +164,15 @@ def load_index_strict(papers_dir: str | Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise CorpusStoreError("corpus index is corrupt") from exc
+        contents = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise CorpusStoreError("corpus index is inaccessible", code="filesystem-error") from exc
+    try:
+        value = json.loads(contents)
+    except json.JSONDecodeError as exc:
+        raise CorpusStoreError("corpus index is corrupt", code="invalid-index") from exc
     if not isinstance(value, list) or any(not isinstance(entry, dict) for entry in value):
-        raise CorpusStoreError("corpus index must be a list of objects")
+        raise CorpusStoreError("corpus index must be a list of objects", code="invalid-index")
     return value
 
 
@@ -198,7 +219,7 @@ def _all_slugs(papers: Path, entries: list[dict[str, Any]]) -> set[str]:
     names = {_safe_slug(e["slug"]) for e in entries if e.get("slug")}
     if papers.exists():
         for directory in papers.iterdir():
-            if directory.is_dir() and _SLUG_RE.fullmatch(directory.name):
+            if directory.is_dir() and _is_safe_slug(directory.name):
                 _slug_dir(papers, directory.name)
                 names.add(directory.name)
     return names
@@ -218,8 +239,13 @@ def _read_reservation(papers: Path, slug: str) -> dict[str, Any] | None:
     if not marker.exists():
         return None
     try:
-        value = json.loads(marker.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+        contents = marker.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise CorpusStoreError(f"{slug} reservation is inaccessible",
+                               code="filesystem-error") from exc
+    try:
+        value = json.loads(contents)
+    except json.JSONDecodeError as exc:
         raise CorpusStoreError(f"{slug} reservation is corrupt") from exc
     if not isinstance(value, dict) or not isinstance(value.get("token"), str):
         raise CorpusStoreError(f"{slug} reservation is corrupt")
@@ -258,13 +284,14 @@ def reserve(papers_dir: str | Path, identity: dict[str, Any], requested_slug: st
             entries = load_index_strict(papers)
             existing = next((entry for entry in entries if _identity_match(entry, identity)), None)
             if existing is not None and not _identity_consistent(existing, identity):
-                raise CorpusStoreError("existing index identity conflicts with reservation")
+                raise CorpusStoreError("existing index identity conflicts with reservation",
+                                       code="identity-conflict")
             slug = _safe_slug(existing["slug"]) if existing and existing.get("slug") else ""
             if not slug:
                 indexed_slugs = {entry.get("slug") for entry in entries}
                 for directory in papers.iterdir():
                     if (not directory.is_dir() or directory.is_symlink()
-                            or not _SLUG_RE.fullmatch(directory.name)):
+                            or not _is_safe_slug(directory.name)):
                         continue
                     pending = _read_reservation(papers, directory.name)
                     if pending and _identity_match(pending.get("identity", {}), identity):
@@ -332,9 +359,14 @@ def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any
         if not _complete_bundle(directory):
             raise CorpusStoreError("completed paper bundle is required before register")
         try:
-            sidecar = json.loads((directory / "bibliography.json").read_text(encoding="utf-8"))
+            contents = (directory / "bibliography.json").read_text(encoding="utf-8")
+        except OSError as exc:
+            raise CorpusStoreError("bibliography sidecar is inaccessible",
+                                   code="filesystem-error") from exc
+        try:
+            sidecar = json.loads(contents)
             zotero = sidecar.get("zotero") if isinstance(sidecar, dict) else None
-        except (OSError, json.JSONDecodeError) as exc:
+        except json.JSONDecodeError as exc:
             raise CorpusStoreError("bibliography sidecar is invalid") from exc
         if not isinstance(zotero, dict) or not _identity_consistent(zotero, identity):
             raise CorpusStoreError("bibliography sidecar identity does not match reservation")
@@ -409,11 +441,21 @@ def main() -> int:
         return 0
     except CorpusStoreBusyError:
         print(json.dumps({"schema_version": 1, "op": op, "status": "busy",
-                          "error": "corpus operation is busy"}, ensure_ascii=False))
+                          "error": "corpus operation is busy", "error_code": "busy"}, ensure_ascii=False))
         return 1
-    except (OSError, json.JSONDecodeError, CorpusStoreError):
+    except CorpusStoreError as exc:
         print(json.dumps({"schema_version": 1, "op": op, "status": "failed",
-                          "error": "invalid corpus request"}, ensure_ascii=False))
+                          "error": "invalid corpus request", "error_code": exc.code}, ensure_ascii=False))
+        return 1
+    except OSError:
+        print(json.dumps({"schema_version": 1, "op": op, "status": "failed",
+                          "error": "invalid corpus request", "error_code": "filesystem-error"},
+                         ensure_ascii=False))
+        return 1
+    except json.JSONDecodeError:
+        print(json.dumps({"schema_version": 1, "op": op, "status": "failed",
+                          "error": "invalid corpus request", "error_code": "invalid-request"},
+                         ensure_ascii=False))
         return 1
 
 

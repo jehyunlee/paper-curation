@@ -1099,6 +1099,22 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
                 except Exception as e:
                     log(f"  [category narrative failed] {c}: {str(e)[:150]}")
 
+        # A scoped run (--categories) must not discard the other categories'
+        # cached narratives: dropping them from _category_narratives.json
+        # erased their `_input_hash`, so every later run paid Opus again for
+        # categories that never changed, and the main narrative / executive
+        # summary below were synthesized from the changed subset only and
+        # then published as if they covered the whole topic.
+        regenerated = {
+            c for c, s in summary_by_cat.items()
+            if s is not prev_cache.get(c)
+        }
+        for cat_name, cached in prev_cache.items():
+            if cat_name in summary_by_cat or cat_name not in cat_papers:
+                continue
+            if cat_papers.get(cat_name):
+                summary_by_cat[cat_name] = cached
+
         # 결정적 순서: 카테고리명 정렬. `_input_hash` 가 들어간 캐시판은 디스크에
         # 저장하고, downstream(main narrative / executive summary) 에는 캐시
         # 메타키를 제거한 깨끗한 사본을 넘긴다 (프롬프트 오염 방지).
@@ -1112,16 +1128,26 @@ def _run_timeline(topic="ai4s", *, candidates=3, narrative_only=False,
             json.dump(cached_summaries, f, ensure_ascii=False, indent=2)
         log(f"\nStep 1 done: {len(category_summaries)} narratives → {narratives_path}")
 
-        if not category_only:
+        main_method_path = os.path.join(method_texts_dir, "_method_text_main.txt")
+        exec_summary_path = os.path.join(topic_dir, "_timeline_narrative.json")
+        synthesis_needed = (
+            bool(regenerated) or force_narrative or refresh_main
+            or not os.path.exists(main_method_path)
+            or not os.path.exists(exec_summary_path)
+        )
+        if not category_only and not synthesis_needed:
+            log("\n[cache] no category narrative changed — main narrative and "
+                "executive summary reused (no Opus call)")
+
+        if not category_only and synthesis_needed:
             log("\n--- Main narrative (from category summaries) ---")
             method_text, caption = build_main_narrative_from_summaries(category_summaries, topic)
-            with open(os.path.join(method_texts_dir, "_method_text_main.txt"), "w", encoding="utf-8") as f:
+            with open(main_method_path, "w", encoding="utf-8") as f:
                 f.write(method_text)
             with open(os.path.join(method_texts_dir, "_caption_main.txt"), "w", encoding="utf-8") as f:
                 f.write(caption)
             log("Main narrative saved.")
 
-        if not category_only:
             log("\n--- Executive summary (Korean) ---")
             exec_summary = build_executive_summary(category_summaries, topic)
             save_timeline_narrative(topic_dir, exec_summary, category_summaries)

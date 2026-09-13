@@ -644,11 +644,14 @@ def extract_paper_connections(topic, cat_papers, clients, all_topic_papers=None,
             # set 으로 올리고, dirty 였지만 결과를 못 받은(deadline 절단 등) slug 은
             # prev set 을 유지해 다음 run 에 재시도되게 한다(hub inbound 누락 방지).
             try:
+                _generated = set(all_connections.keys())
                 _next_sets = conn_cache.next_cache_sets(
-                    candidates, _prev_cache, dirty, set(all_connections.keys()))
+                    candidates, _prev_cache, dirty, _generated)
                 conn_cache.save_topk_cache(
                     topic_dir, candidates, top_n, _embed_tag,
-                    scope="ei", sets=_next_sets)
+                    scope="ei", sets=_next_sets,
+                    empty=conn_cache.next_empty_slugs(
+                        _prev_cache, dirty, _generated, all_connections))
             except Exception as e:
                 log(f"  [conn] cache save failed: {str(e)[:80]}")
         except Exception as e:

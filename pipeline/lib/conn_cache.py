@@ -91,10 +91,13 @@ def load_topk_cache(topic_dir, top_k, scope=""):
     return {}
 
 
-def save_topk_cache(topic_dir, candidates, top_k, embed_model, scope="", sets=None):
+def save_topk_cache(topic_dir, candidates, top_k, embed_model, scope="", sets=None,
+                    empty=None):
     """Persist the top-k sets so the next diff is correct.
 
-    Content: ``{"top_k": int, "embed_model": str|None, "sets": {slug: [targets]}}``.
+    Content: ``{"top_k": int, "embed_model": str|None, "sets": {slug: [targets]},
+    "empty": [slug, ...]}``. ``empty`` lists papers the LLM processed and found
+    NO connections for; without it the GAP rule re-billed them on every run.
     Atomic-ish (write tmp then ``os.replace``). Call this ONLY after a successful
     generate+sync — a failed run should be retried, not cached as done.
 
@@ -107,6 +110,7 @@ def save_topk_cache(topic_dir, candidates, top_k, embed_model, scope="", sets=No
         "top_k": int(top_k),
         "embed_model": embed_model,
         "sets": sets if sets is not None else topk_sets(candidates),
+        "empty": sorted(set(empty or ())),
     }
     os.makedirs(topic_dir, exist_ok=True)
     tmp = path + ".tmp"
@@ -135,7 +139,11 @@ def next_cache_sets(candidates, prev_cache, dirty, generated):
     prev = (prev_cache or {}).get("sets") or {}
     dirty = set(dirty or [])
     generated = set(generated or [])
-    out = {}
+    # A scoped run (extract_insights --categories) hands in only the changed
+    # categories' candidates. Papers outside that scope were not re-ranked, so
+    # their previous membership must survive; dropping them made the next
+    # run treat hundreds of untouched papers as NEW and pay Sonnet again.
+    out = {slug: list(prev_set) for slug, prev_set in prev.items() if slug not in cur}
     for slug, cur_set in cur.items():
         if slug in dirty and slug not in generated:
             # Intended to regenerate but got no result (deadline-truncated/skipped).
@@ -146,6 +154,23 @@ def next_cache_sets(candidates, prev_cache, dirty, generated):
             continue
         out[slug] = cur_set                    # non-dirty, or dirty-and-regenerated → advance
     return out
+
+
+def next_empty_slugs(prev_cache, dirty, generated, connections):
+    """Papers the LLM processed and found no connections for.
+
+    Carries the previous record forward for papers not regenerated this run,
+    adds this run's processed-but-empty papers, and drops any paper that now
+    has connections. Persisted as ``empty`` so :func:`compute_dirty` stops
+    re-sending a legitimately isolated paper on every run.
+    """
+    prev_empty = set((prev_cache or {}).get("empty") or [])
+    dirty = set(dirty or [])
+    generated = set(generated or [])
+    connections = connections or {}
+    carried = {s for s in prev_empty if s not in dirty}
+    fresh = {s for s in generated if not connections.get(s)}
+    return sorted((carried | fresh) - {s for s in generated if connections.get(s)})
 
 
 def compute_dirty(candidates, prev_cache, existing_conns, top_k, embed_model,
@@ -164,7 +189,8 @@ def compute_dirty(candidates, prev_cache, existing_conns, top_k, embed_model,
       (b) slugs whose current top-k set != the previous set
           (MEMBERSHIP CHANGED — closes the hub trap, covers gained & lost);
       (c) slugs with no existing connections in ``existing_conns``
-          (GAP safety — bridge-deferred / previously-failed papers).
+          (GAP safety — bridge-deferred / previously-failed papers), unless the
+          cache records them in ``empty`` (processed, legitimately isolated).
 
     Any exception inside the diff returns ``(all_keys, "error-fallback:...")``:
     the safe failure direction is FULL regen (correct but costly), never a
@@ -185,6 +211,7 @@ def compute_dirty(candidates, prev_cache, existing_conns, top_k, embed_model,
                     f"embed_model-changed:{prev_model!r}->{embed_model!r}")
 
         prev_sets = prev_cache.get("sets") or {}
+        prev_empty = set(prev_cache.get("empty") or [])
         cur_sets = topk_sets(candidates)
         existing_conns = existing_conns or {}
 
@@ -197,8 +224,8 @@ def compute_dirty(candidates, prev_cache, existing_conns, top_k, embed_model,
             if list(prev) != list(cur):
                 dirty.add(slug)            # (b) MEMBERSHIP CHANGED (hub trap)
                 continue
-            if not existing_conns.get(slug):
-                dirty.add(slug)            # (c) GAP safety
+            if not existing_conns.get(slug) and slug not in prev_empty:
+                dirty.add(slug)            # (c) GAP safety (unless known-empty)
         return dirty, "incremental"
     except Exception as e:  # safe direction: full regen, never a thin graph
         log(f"  [conn] dirty computation error -> FULL fallback: {str(e)[:120]}")

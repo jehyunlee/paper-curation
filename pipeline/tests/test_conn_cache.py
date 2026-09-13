@@ -84,8 +84,8 @@ def main():
     heavy = [m for m in ("umap", "hdbscan", "sentence_transformers", "torch",
                           "numba", "llvmlite")
              if m in sys.modules]
-    check("conn_cache imported", "conn_cache" in sys.modules)
-    check("connections imported", "connections" in sys.modules)
+    check("conn_cache imported", "lib.conn_cache" in sys.modules)
+    check("connections imported", "lib.connections" in sys.modules)
     check(f"no heavy deps loaded (found: {heavy or 'none'})", not heavy)
 
     # ── candidates: {slug: [(target, score), ...]} as compute_related_candidates returns
@@ -381,6 +381,44 @@ def main():
               == conn_cache.topk_sets(CAND))
         check("unscoped load does not see scoped caches",
               conn_cache.load_topk_cache(td, 5) == {})
+
+    #     # ── scoped run must not erase out-of-scope membership ──────────────────
+    print("== 10. scoped candidates keep out-of-scope cached sets ==")
+    prev10 = {"top_k": 5, "embed_model": "tag",
+              "sets": {"100_O": ["050_M"], "200_P": ["210_PN"], "900_Z": ["910_ZN"]}}
+    scoped = {"100_O": [("050_M", 0.9), ("300_N", 0.8)], "300_N": [("100_O", 0.8)]}
+    sets10 = conn_cache.next_cache_sets(scoped, prev10, {"100_O", "300_N"},
+                                        {"100_O", "300_N"})
+    check("out-of-scope P carried over", sets10.get("200_P") == ["210_PN"])
+    check("out-of-scope Z carried over", sets10.get("900_Z") == ["910_ZN"])
+    check("in-scope O advanced", sets10["100_O"] == sorted(["050_M", "300_N"]))
+    d10, _ = conn_cache.compute_dirty(
+        {"200_P": [("210_PN", 0.9)], "900_Z": [("910_ZN", 0.9)]},
+        {"top_k": 5, "embed_model": "tag", "sets": sets10},
+        {"200_P": [{"slug": "210_PN"}], "900_Z": [{"slug": "910_ZN"}]}, 5, "tag")
+    check("next full run does not re-bill untouched papers", d10 == set())
+
+    #     # ── processed-but-empty papers are not re-sent forever ─────────────────
+    print("== 11. legitimately isolated paper is recorded, not re-billed ==")
+    cur11 = {"400_I": [("100_O", 0.3)], "100_O": [("400_I", 0.3)]}
+    generated11 = {"400_I", "100_O"}
+    connections11 = {"400_I": [], "100_O": [{"slug": "400_I", "relation": "alternative", "reason": "r"}]}
+    empty11 = conn_cache.next_empty_slugs({}, {"400_I", "100_O"}, generated11, connections11)
+    check("only the empty result is recorded", empty11 == ["400_I"])
+    with tempfile.TemporaryDirectory() as td:
+        conn_cache.save_topk_cache(td, cur11, 5, "tag", scope="ei",
+                                  sets=conn_cache.next_cache_sets(cur11, {}, set(cur11), generated11),
+                                  empty=empty11)
+        prev11 = conn_cache.load_topk_cache(td, 5, scope="ei")
+    check("empty list persisted", prev11.get("empty") == ["400_I"])
+    d11, reason11 = conn_cache.compute_dirty(cur11, prev11, {"100_O": connections11["100_O"]}, 5, "tag")
+    check("known-empty paper is not dirty", "400_I" not in d11 and reason11 == "incremental")
+    moved = {"400_I": [("200_P", 0.5)], "100_O": [("400_I", 0.3)]}
+    d11b, _ = conn_cache.compute_dirty(moved, prev11, {"100_O": connections11["100_O"]}, 5, "tag")
+    check("membership change still re-flags the empty paper", "400_I" in d11b)
+    empty_next = conn_cache.next_empty_slugs(prev11, {"400_I"}, {"400_I"},
+                                             {"400_I": [{"slug": "200_P"}]})
+    check("paper that gained connections leaves the empty record", empty_next == [])
 
     print()
     if failures:

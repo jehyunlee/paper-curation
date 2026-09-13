@@ -6,9 +6,33 @@
 
 Turn hundreds of papers into structured Korean reviews, auto-classify them with AI, and ask natural-language questions grounded in the actual papers. A **personal research knowledge system** that runs locally; deployment is optional. Orchestrated by Claude Code.
 
-![Paper Curation pipeline](workflow.png)
+**Three paths — choose only what you need, inspect the plan, then execute:**
 
-> 🐱 **The whole pipeline in one picture** — collection, review, classification, related-paper linking, timelines, Deep Research, and deploy, all handled by cats.
+![Three usage paths](usage_workflow.en.png)
+
+| Path | What | Needs | Where |
+|------|------|-------|-------|
+| **Read** | Browse generated reviews, search and timelines; export the public institution table and reports | no key | website · Zotero context menu **Open paper-curation Review HTML** · module panel |
+| **AI** | PDF review, grounded summary/chat/comparison, AI Chat | one selected provider (Anthropic default / OpenAI / Google; summary and chat also run on local Ollama) | Zotero context menu **Review generation** · **Paper Curation modules** · CLI |
+| **Collection** | Search indexes, metrics, bibliography DB, audio, timelines, Zotero sync, publication, email, full collection processing | per-capability requirements and explicit confirmation | module panel **Collection / Optional features** tabs · `run_feature.py` · `run_full.py` |
+
+Every task follows **plan (requirements, destination, cost) → confirm → execute**. A
+single review never drags classification, indexing, timelines or deployment along.
+Failures are never re-sent to another provider, and API keys live in the **OS keyring**,
+not in settings files.
+
+📘 **[User Guide](docs/user-guide.en.md)** — where each setting lives and how each task
+runs, step by step (install and connect → store keys → review → modules → reading
+status messages). The Zotero plugin (Curio) and the CLI share one feature registry; the
+generated ID/requirement table in the
+[Setup Guide](docs/setup-guide.md#공유-기능-레지스트리) is the reference.
+
+<details>
+<summary>🐱 The full curation pipeline (Collection path) in one picture</summary>
+
+![Paper Curation full pipeline](workflow.png)
+
+</details>
 
 > 📚 **[Attribution — who worked where](docs/attribution.en.md)** — how authors
 > get tied to institutions, and why the page reader runs last, written up
@@ -18,43 +42,43 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 
 ## What It Does
 
-Start with three routes:
+**Capabilities by path** — each is requested independently; IDs come from `pipeline/features.json`:
 
-- **Read** — open generated reviews, search, and timelines without a key.
-- **AI** — request a PDF review, summary, chat, or comparison one at a time.
-- **Collection** — Zotero sync and the explicit full curation workflow are separate advanced operations.
+| Path | Capability (ID) | Description |
+|------|-----------------|-------------|
+| Read | browsing · `institution-export` · `extract` | Read generated reviews/search/timelines without a key, export the public institution table, extract text and figures from a local PDF |
+| AI | **Structured review** `review` | Text/figure extraction from the PDF → the selected provider writes a 6-section Korean review (Essence·Motivation·Achievement·How·Originality·Evaluation) → HTML + bibliography sidecar |
+| AI | `summary` · `chat` · `comparison` | **Claims with verbatim quotations** grounded only in the selected PDF texts; answers whose quotations cannot be found are rejected. Summary and chat also run on local Ollama |
+| AI | **AI Chat / Citedby** | Multi-turn PDF conversation and citation genealogy — existing Zotero plugin features |
+| Collection | `keyword-search` · `semantic-search` | BM25 index/query without a key · Gemini-embedding hybrid index/query (Google key) |
+| Collection | `metrics` · `bibliography-update` | Citation/reference accumulation · bibliography DB and institution attribution (offline by default) |
+| Collection | `audio` · `timeline-text` · `timeline-image` | Podcast-style MP3 from an existing review (Gemini TTS), category narratives, PaperBanana timeline images — each separately |
+| Collection | `zotero-sync` · `publish` · `email` | Remote deletion sync (dry-run default), Cloudflare publication, forwarding an existing MP3 — **all require explicit confirmation** |
 
-Curio's module panel and the CLI share the same feature registry. The generated
-feature-ID and requirement table is in the [Setup Guide](docs/setup-guide.md#shared-feature-registry).
-
-Features are split into **Core** (produced by an explicit full-pipeline run) and **Option** (enabled on demand).
-
-**Core** — one `run_full --mode curate` produces all of these:
+**Full curation (advanced)** — `run_full.py --mode curate` runs these in order. A single review does not trigger them:
 
 | Feature | Description |
 |---------|-------------|
-| **Structured Review** | Extracts text/figures from PDF. Claude generates 6-section Korean reviews (Essence-Motivation-Achievement-How-Originality-Evaluation) |
-| **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers automatically |
-| **Related Papers** | Hybrid candidate retrieval (SPECTER2 cosine + title/author BM25, RRF-fused) narrows the corpus; Claude Sonnet then picks the real connections **from candidate titles**, writing a relation type (alternative/extension/…) + one-sentence Korean reason. Network-resilient: multi-round retry + zero-connection-papers-first ordering |
-| **Deep Research (multi-backend)** | Natural-language Q&A with hybrid search (BM25 + dense) + LLM answers grounded in paper text. Prefix-detects the key and routes to **Anthropic · OpenAI · Google** automatically. Natural prose + clickable `[N]` citation chips |
-| **Audio Overview** | Generates a **2-3 speaker Korean podcast (Gemini TTS)** from any review or Deep Research answer. Runs in-browser → MP3 encoded client-side → download + (when deployed) **automatic email delivery with attachment** |
-| **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) |
+| **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
+| **Related Papers** | Hybrid candidate retrieval (SPECTER2 cosine + title/author BM25, RRF-fused) narrows the corpus; Claude picks the real connections from candidate titles with a relation type and a one-sentence Korean reason |
+| **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
+| **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
-| **Citedby** | Starts from one DOI and produces a citation genealogy, timeline, narrative, Deep(er) Research, and separate PDF/Markdown/Obsidian/Audio exports |
 | **Paper Discovery** | Parallel search across arXiv, Semantic Scholar, OpenAlex + auto-registration to Zotero (optional) |
 
-**Option** — enabled by flag/mode only:
+**Full-curation options** — enabled by flag/mode only:
 
-| Feature | How to enable | Description |
-|---------|---------------|-------------|
-| **Content Deploy (O-1)** | `--mode deploy` | Cloudflare Workers (static assets + `/api/embed` + `/api/audio-email`) + gh-pages redirect stubs. Deploying activates Audio Overview email delivery |
-| **Research Insights + Network (O-2)** | `--insights` | Cross-category insight analysis + regenerates the interactive UMAP 2D/3D network (category filters, ego network, hub/bridge) |
-| **Local LLM fallback** | `--local-fallback` | When Related Papers generation is blocked by network failures to the very end, a local model (Ollama/LM Studio/…) completes the remainder. Requires a `local_model` block in config.json |
-| **Workflow diagram** | `generate_workflow.py` | Generates the cat pipeline diagram at the top of this README (PaperBanana, `--style cat/fairy/academic`) |
+| Option | How to enable | Description |
+|--------|---------------|-------------|
+| **Content Deploy (O-1)** | `--mode deploy` or capability `publish` | Cloudflare Workers (static assets + `/api/embed`) + gh-pages redirect stubs. Audio email is the separate `email` capability |
+| **Research Insights + Network (O-2)** | `--insights` | Cross-category insight analysis + regenerates the interactive UMAP 2D/3D network |
+| **Local model for the connections stage** | `--local-fallback` | When Related Papers generation is blocked by network failures to the very end, a local model (Ollama/LM Studio/…) completes only that stage. An explicit opt-in, not a provider fallback for reviews or search |
+| **Workflow diagrams** | `generate_usage_diagram.py` · `generate_workflow.py` | Usage-path figure (matplotlib, no key) · the cat pipeline diagram (PaperBanana, `--style cat/fairy/academic`) |
 
-**Full curate workflow requirements**: a Zotero collection with PDFs and
-`ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, and `GOOGLE_API_KEY` in the environment.
-OpenAI is an explicit provider choice where the selected feature supports it.
+**Full curate workflow requirements**: a Zotero collection with PDFs and the
+credentials `ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` (environment or
+OS-keyring `credential:<provider>` references). OpenAI is an explicit provider choice
+where the selected feature supports it.
 
 ---
 
@@ -147,7 +171,16 @@ It performs no network checks or full-pipeline run unless an explicit
 
 </details>
 
-### Single-PDF local review
+### Start from Zotero (Paper Curio)
+
+1. Install `paper-curio.xpi` from the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest) via Zotero **Tools → Plugins**.
+2. In Zotero **Settings → Paper Curio → Output Location**, enter this checkout's path (leave the Python path empty for `py312`).
+3. In **Settings → Paper Curio → API Keys**, pick one review provider and **Save to OS keyring**.
+4. Right-click a paper item → **paper-curation Review generation** → inspect the plan → execute. Summary, chat, comparison and collection tasks run the same way from **Paper Curation modules**.
+
+Per-screen settings and status messages are explained in the **[User Guide](docs/user-guide.en.md)**.
+
+### Start from the command line
 
 Anthropic Sonnet 5 is the default review provider with no automatic fallback.
 OpenAI and Google are explicit review-provider choices under the reviewed
@@ -157,14 +190,15 @@ credential references, never a secret in the request or config.
 
 ```bash
 # Read-only plan: validate the request, runtime, and key readiness as JSON.
-python pipeline/local_review.py --request request.json
+python pipeline/local_review.py --request review-request.json
 
 # Execute only after inspecting that plan.
-python pipeline/local_review.py --request request.json --execute
+python pipeline/local_review.py --request review-request.json --execute
 ```
 
-The generated feature IDs, request envelope, credential handling, and budget
-rules are in the [Setup Guide](docs/setup-guide.md#공유-기능-레지스트리).
+`--request` takes a JSON file path. The generated feature IDs, request envelope,
+credential handling, and budget rules are in the
+[Setup Guide](docs/setup-guide.md#공유-기능-레지스트리).
 Shared-corpus writers use reserve/register/cancel transactions under a common
 lock and refresh the Curio list. Classification, indexes, timelines,
 publication, and email remain independent operations; publication/email require
@@ -177,8 +211,8 @@ Prepare these only when explicitly running the comprehensive curate workflow:
 
 | Item | Details |
 |------|---------|
-| **Zotero** | Env-only [API Key](https://www.zotero.org/settings/keys) (`ZOTERO_API_KEY`) + a collection with paper PDFs |
-| **API keys** | Environment variables `ANTHROPIC_API_KEY` (reviews/insights) and `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS). `RESEND_API_KEY` is only for deployed Audio Overview email; `OPENAI_API_KEY` remains optional for existing reader BYOK / insights paths |
+| **Zotero** | [API Key](https://www.zotero.org/settings/keys) as `ZOTERO_API_KEY` or OS-keyring `credential:zotero` + a collection with paper PDFs |
+| **API keys** | `ANTHROPIC_API_KEY` (reviews/insights) and `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS), from the environment or the OS keyring. `RESEND_API_KEY` is only for the explicit `email` capability; `OPENAI_API_KEY` remains optional for reader BYOK / insights paths |
 | **conda env** | `py312` (Python 3.12) — created by the commands below |
 | **Java Runtime** | For `opendataloader-pdf`'s PDF extraction. macOS: `brew install --cask temurin`. Without it the pipeline falls back to PyMuPDF (lower table/structure quality) |
 
@@ -540,11 +574,23 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 | Category | Items |
 |----------|-------|
 | **Default setup** | Python 3.12 (macOS conda env `py312`); no API key, Zotero collection, or PaperBanana |
-| **Single-PDF review execution** | `ANTHROPIC_API_KEY` in the CLI environment; Anthropic `claude-sonnet-5` only |
-| **Explicit full curate workflow** | Zotero collection + PDFs and its Zotero/Anthropic/Google environment credentials |
+| **Single-PDF review execution** | One review provider credential (Anthropic `claude-sonnet-5` default; OpenAI or Google by explicit choice) in the environment or the OS keyring; macOS/Linux for local reviews |
+| **Explicit full curate workflow** | Zotero collection + PDFs and its Zotero/Anthropic/Google credentials |
 | **Option-specific APIs** | Resend is needed only for explicit email/deploy work; OpenAI and Google are explicit choices for supported registry features |
 | **Python** | `pip install -r requirements.txt` — anthropic, openai, google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
 | **Optional** | Obsidian (notes/Graph View), PaperBanana (timeline images), Zotero Desktop (one-click PDF) |
+
+---
+
+## Documentation
+
+| Document | Contents |
+|----------|----------|
+| **[User Guide](docs/user-guide.en.md)** | Three paths · where settings live (Zotero Settings → Paper Curio) · step-by-step review and module execution · reading status messages · FAQ |
+| **[Setup Guide](docs/setup-guide.md)** | Prerequisites · Claude Code/manual install · config.json · generated feature registry table · troubleshooting (Korean) |
+| **[Operations Manual](docs/operations.md)** | Full-workflow modes and safety flags · concurrency · Korean-network workarounds · deploy (O-1) · recovery |
+| **[Architecture & Internals](docs/architecture.md)** | Stage-by-stage internals · reliability design · requirements |
+| **[Attribution](docs/attribution.en.md)** | Author-to-institution attribution, evidence grades, validation |
 
 ---
 
