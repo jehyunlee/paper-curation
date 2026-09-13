@@ -1,5 +1,8 @@
 # Paper Curation User Guide
 
+Start with the [Beginner Manual](manual/beginner.en.md) or use the
+[Power-user Manual](manual/advanced.en.md) for automation and collection operations.
+
 A step-by-step guide to **where each setting lives and how each task runs**.
 Installation options are in the [Setup Guide](setup-guide.md), full-workflow
 operations in the [Operations Manual](operations.md), and internals in
@@ -116,7 +119,7 @@ python pipeline/local_review.py --request review-request.json --execute  # execu
 
 ### 3-3. Summary, chat and comparison (module panel) — `summary` · `chat` · `comparison`
 
-1. With the evidence papers selected (one or more; comparison needs two or more), right-click → **Paper Curation modules** → **Paper AI** tab.
+1. With the evidence papers selected (one or more; comparison needs two or more), use the last Paper Curio right-click entry → **(adv.) run Paper Curation modules** → **Paper AI** tab.
    (Right-click **paper-curation Comparison** opens the *Grounded comparison* card of the same panel directly.)
 2. Press **Use selected PDF texts** to fill `sources` with the selected papers' text.
 3. Choose a provider. Summary and chat also accept local **Ollama `qwen3.8:27b-mlx`** (free, on-device). Comparison and review support cloud providers only.
@@ -133,7 +136,7 @@ Right-click → **paper-curation AI Chat — single / multiple**. This existing 
 
 ## 4. Path C — Collection and optional features
 
-Run them from the **Collection** / **Optional features** tabs of **Paper Curation modules**, or from the command line with `run_feature.py`: write a request JSON file, pass it with `--request`, inspect the plan, then add `--execute`.
+Run them from the **Collection** / **Optional features** tabs of **(adv.) run Paper Curation modules**, or from the command line with `run_feature.py`: write a request JSON file, pass it with `--request`, inspect the plan, then add `--execute`.
 
 ```bash
 python pipeline/run_feature.py --list                                   # capabilities and requirements

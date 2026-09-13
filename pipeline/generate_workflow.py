@@ -102,7 +102,6 @@ The system is orchestrated by **Claude Code** (Anthropic's CLI agent) which coor
 - **PaperBanana** (diagram engine, banana icon): auto-generates per-category research trend timeline diagrams from Claude Opus narratives
 - **Obsidian** (knowledge IDE, purple gem logo): personal notes editing, [[wiki-links]] between papers, Graph View for cross-query knowledge topology
 - **Google Gemini** (Google logo): gemini-embedding-001 for the Deep Research RAG index, figure validation, and Audio Overview TTS
-- **Local LLM** (small server/home icon, OPTIONAL): Ollama/LM Studio fallback that completes Related-Papers connections when the network to Anthropic is down
 
 Data flow: Zotero → Claude Code → Claude (review/classify) → PaperBanana (timelines) → Deep Research (RAG Q&A) → Obsidian (compounding knowledge)
 
@@ -114,7 +113,6 @@ The pipeline has two tiers. The diagram MUST make the tier of every element obvi
 - **OPTION (opt-in, dashed-border zones, each zone labeled with a small "OPTION" badge/ribbon)**:
   * O-1 Content Deploy (`--mode deploy`): Cloudflare Workers + gh-pages redirect stubs + Resend email delivery
   * O-2 Research Insights + Network (`--insights`): cross-category insights analysis + interactive network visualization
-  * Local LLM fallback (`--local-fallback`): Ollama/LM Studio completes stranded connections during network outages
   * Workflow diagram generation (this very diagram, standalone)
 - Core flow uses solid arrows/borders; every Option element lives inside a clearly dashed enclosure with an "OPTION" tag. A reader must instantly see "this part is optional".
 
@@ -171,7 +169,7 @@ VISUAL_RULES_DEFAULT = """
 - Fan-out / fan-in arrows for parallel operations
 - Dashed lines for optional/skippable paths
 - CORE vs OPTION: Core flow solid; every OPTION group (Deploy O-1, Insights+Network O-2,
-  Local LLM fallback, Workflow diagram) inside a dashed rounded enclosure with a small
+  Workflow diagram) inside a dashed rounded enclosure with a small
   "OPTION" ribbon/badge on its corner — instantly distinguishable from the Core flow
 - White background, clean modern style, soft rounded shapes
 - NO verbose descriptions in boxes — icons speak louder than words
@@ -184,7 +182,6 @@ VISUAL_RULES_DEFAULT = """
   * PaperBanana (banana icon) — timeline diagram generation
   * Obsidian (purple gem icon) — knowledge compounding destination
   * Google Gemini (Google logo) — Deep Research embeddings + figure validation + TTS
-  * Local LLM (tiny home-server icon, inside the OPTION zone) — offline connections fallback
 """
 
 VISUAL_RULES_ACADEMIC = """
@@ -210,8 +207,8 @@ NODE STYLE
 EDGES
 - Solid thin arrows for primary data flow
 - Dashed arrows for optional / preflight paths (dedup preflight, audit recovery)
-- CORE vs OPTION: Core nodes/edges solid; OPTION groups (Deploy O-1, Insights+Network O-2,
-  Local LLM fallback) enclosed in thin dashed rounded rectangles, each with a small
+- CORE vs OPTION: Core nodes/edges solid; OPTION groups (Deploy O-1, Insights+Network O-2)
+  enclosed in thin dashed rounded rectangles, each with a small
   italic "Option" label at the enclosure corner
 - Diamond decision nodes only for the 3-axis MECE mode gate
   ("mode: curate / rebuild / reclassify / retime / deploy")
@@ -322,11 +319,9 @@ def build_style_text(phases, style):
 - Cats ARE the icons — each cat's pose/action replaces a traditional icon
 - Small paw prints or yarn balls as decorative connectors between phases
 - CORE vs OPTION (IMPORTANT): Core cats sit along the main solid path. OPTION features
-  (Deploy O-1, Research Insights + Network O-2, Local LLM fallback) are dashed-fence
+  (Deploy O-1, Research Insights + Network O-2) are dashed-fence
   "play pens" — each pen has a tiny wooden sign reading "OPTION", and the cats inside
   wear a small star-shaped name tag. A reader must instantly see which cats are optional.
-- The Local LLM fallback pen contains a cozy cat napping next to a tiny home server
-  (it only wakes up when the cloud is unreachable — show tiny zzz)
 """
     elif style == "fairy":
         return f"""
@@ -376,7 +371,7 @@ def main():
                "PaperBanana (category trend timelines), Google Gemini (embedding index, "
                "figure validation, TTS), and Obsidian (knowledge compounding). "
                "Core stages flow solid; Option zones (Deploy O-1, Insights+Network O-2, "
-               "Local LLM fallback) are dashed enclosures labeled OPTION.")
+               "Workflow diagram) are dashed enclosures labeled OPTION.")
 
     os.makedirs(WORKFLOW_DIR, exist_ok=True)
 

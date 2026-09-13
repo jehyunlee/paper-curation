@@ -118,7 +118,7 @@ python pipeline/local_review.py --request review-request.json --execute  # 확�
 
 ### 3-3. 요약 · 질의 · 비교 (기능 모듈) — `summary` · `chat` · `comparison`
 
-1. 근거로 쓸 논문(1편 이상, 비교는 2편 이상)을 선택한 상태에서 우클릭 → **Paper Curation 기능 모듈** → **논문 AI** 탭.
+1. 근거로 쓸 논문(1편 이상, 비교는 2편 이상)을 선택한 상태에서 우클릭 메뉴 맨 아래 → **(adv.) run Paper Curation modules** → **논문 AI** 탭.
    (우클릭 **paper-curation Comparison**은 같은 화면의 *근거 기반 비교* 카드를 바로 엽니다.)
 2. 카드에서 **선택한 PDF 본문 사용**을 누르면 선택 논문의 본문이 `sources`에 채워집니다.
 3. 제공자를 고릅니다. 요약·질의는 로컬 **Ollama `qwen3.8:27b-mlx`** 도 선택할 수 있습니다(무료, 로컬). 비교와 리뷰는 클라우드 제공자만 지원합니다.
@@ -135,7 +135,7 @@ python pipeline/local_review.py --request review-request.json --execute  # 확�
 
 ## 4. 경로 C — 컬렉션 관리 · 선택 기능
 
-모두 우클릭 → **Paper Curation 기능 모듈**의 **컬렉션 관리** / **선택 기능** 탭, 또는 명령줄 `run_feature.py`에서 실행합니다. 명령줄은 요청 JSON 파일을 만들어 `--request` 로 넘기고, 계획을 확인한 뒤 `--execute`를 붙입니다.
+모두 우클릭 → **(adv.) run Paper Curation modules**의 **컬렉션 관리** / **선택 기능** 탭, 또는 명령줄 `run_feature.py`에서 실행합니다. 명령줄은 요청 JSON 파일을 만들어 `--request` 로 넘기고, 계획을 확인한 뒤 `--execute`를 붙입니다.
 
 ```bash
 python pipeline/run_feature.py --list                                   # 기능 목록·요구조건

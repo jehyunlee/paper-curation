@@ -1,7 +1,8 @@
 # Paper Curation · Paper Curio 고급 운영 매뉴얼
 
 이 문서는 두 제품을 함께 운영하는 사용자를 위한 안전한 작업 절차와 복구 기준이다.
-처음 쓰는 경우에는 [초보자 안내](beginner.md), 문서 길잡이는 [매뉴얼 색인](index.md)을 먼저 본다.
+처음 쓰는 경우에는 [초보자 안내](beginner.md), [English advanced manual](advanced.en.md),
+문서 길잡이는 [매뉴얼 색인](index.md)을 먼저 본다.
 
 - **Paper Curation**: 로컬 `paper-curation` 저장소의 Python 파이프라인과 `docs/` 코퍼스.
 - **Paper Curio**: Zotero 9 플러그인. Light 모드는 PDF 대화, Enhanced 모드는 Curation 공통 실행기를 호출한다.
@@ -26,6 +27,7 @@
 | --- | --- | --- |
 | Curio Light | 첨부 PDF AI Chat·Comparative Chat | Curation 설치, 리뷰 파일 생성, 컬렉션 변경 |
 | Curio Enhanced 최소 리뷰 | 단일 PDF의 `text.md`, `figures/`, `review.md`, `index.html`, `bibliography.json` | originality, connections, 분류, 전역 DB/색인 |
+| Curio Enhanced `(adv.) run Paper Curation modules` | 선택한 Paper Curation 모듈 실행 | 다른 모듈의 암묵적 연쇄, 제공자 교체 |
 | `run_feature.py` | 선택 기능의 계획 또는 실행 | 다른 기능 연쇄, 제공자 교체 |
 | `run_full.py` | 과거부터 있던 전체 오케스트레이터 | 공통 기능의 plan/execute 계약 대체 |
 
@@ -279,14 +281,17 @@ python pipeline/run_feature.py --list
 
 ### 5.1 현재 connections 구현
 
-connections의 현재 코드는 `pipeline/lib/related.py`와 `pipeline/topic_modeling.py`를 기준으로 본다.
+connections의 현재 코드는 `pipeline/lib/related.py`, `pipeline/topic_modeling.py`,
+`pipeline/extract_insights.py`를 기준으로 본다.
 후보 순위는 SPECTER2 cosine 유사도와 title/author BM25를 결합하고, `related.py`는 그 순위와 기록된
 메타데이터만으로 최대 링크 수, `foundation`/`extension`/`alternative`, 한국어 근거 문장을 결정한다.
-즉 이 단계는 provider SDK를 부르거나 LLM judge로 관계를 발명하지 않는다. 전체 파이프라인은 이
-코퍼스 임베딩·후보·동기화 흐름을 사용하며, Curio 최소 리뷰는 connections를 만들지 않는다.
+즉 이 단계는 provider SDK를 부르거나 LLM judge로 관계를 발명하지 않는다. Curio 최소 리뷰는
+connections를 만들지 않는다.
 
-일부 기존 CLI와 운영 문서에는 연결용 `--local-fallback` 옵션 설명이 남아 있다. 현재 연결 생성은
-LLM judge를 호출하지 않으므로, 이 옵션을 켠다고 연결에 로컬 LLM 심사가 추가되는 것으로 해석하지 않는다.
+Step 6과 전체 workflow의 후속 connections pass는 같은 결정론적 builder를 사용한다. 후자는
+카테고리 대상 범위, 토픽 전체 후보 풀, 기존 결과와의 병합 저장을 유지한다.
+`EXTRACT_INSIGHTS_TOPN_CAND`는 후보 폭만 조정한다. 이 relation/reason은 탐색 보조용
+메타데이터 휴리스틱이며, 확립된 인과 또는 인용 관계를 뜻하지 않는다.
 
 ### 5.2 Curio 컬렉션 전체 처리
 
@@ -402,7 +407,7 @@ Cloudflare, Resend은 여기서 검증 가능한 가격 추정이 없을 수 있
 2. 이미 있는 `text.md`, review, index, sidecar, cache를 확인한다.
 3. 첫 실행은 단일 논문·작은 `top_k`·낮은 출력 토큰으로 범위를 좁힌다.
 4. `exists`, `busy`, `partial`, `needs-*` 상태를 해결하기 전 같은 유료 요청을 반복하지 않는다.
-5. 전체 rebuild나 `--conn-full`은 월간/대량 변경처럼 실제 전체 재계산이 필요한 때만 쓴다.
+5. 전체 rebuild는 월간/대량 변경처럼 실제 전체 재계산이 필요한 때만 쓴다.
 6. 오류 응답의 provider/model/transmission/estimate와 로컬 로그를 보관하되 비밀값은 기록하지 않는다.
 
 ### 8.3 빠른 진단표
@@ -418,7 +423,7 @@ Cloudflare, Resend은 여기서 검증 가능한 가격 추정이 없을 수 있
 | `busy` | 다른 Curio/CLI 작업 종료를 기다리고 동일 request를 병렬 재시도하지 않음 |
 | 전체 실행 실패 | `--dry-run`, 좁은 `--slugs`, `--strict-pdf`로 입력 매칭부터 재현 |
 
-## 9. 확인 가능한 출처와 문서 불일치
+## 9. 확인 가능한 출처와 현재 구현
 
 이 문서는 다음 현재 소스를 근거로 한다.
 
@@ -426,12 +431,18 @@ Cloudflare, Resend은 여기서 검증 가능한 가격 추정이 없을 수 있
 - `pipeline/run_feature.py`: plan/execute, 예산 검증, 잠금, build/query, 배포·동기화 안전 조건
 - `pipeline/local_review.py`: 최소 리뷰 요청·산출물·원자적 공개·partial 상태
 - `pipeline/lib/credentials.py`: 환경변수 → native OS keyring 순서, 파일 fallback 부재
-- `pipeline/lib/related.py`, `pipeline/topic_modeling.py`: connections 현재 구현 경로
+- `pipeline/lib/related.py`, `pipeline/topic_modeling.py`, `pipeline/extract_insights.py`: SPECTER2 cosine + 제목·저자 BM25 RRF 후보와 결정론적 connections builder
+- `pipeline/run_full.py`: legacy 전체 오케스트레이터의 source routing, dry-run, recovery/rebuild 옵션
 - `pipeline/run_full.py`: legacy 전체 오케스트레이터의 source routing, dry-run, recovery/rebuild 옵션
 - [사용자 안내](../user-guide.md), [운영 매뉴얼](../operations.md), [설치 안내](../setup-guide.md)
 - Paper Curio의 `README.md`: Light/Enhanced, UI, Citedby, collection-wide 처리, root 탐색
 
-중요한 불일치: 일부 오래된 안내는 review endpoint가 Anthropic 단일 모델이라고 표현한다. 현재
-`local_review.py`는 요청의 `provider`/`model` 선택을 검증하고, registry와 Curio README는 Anthropic,
-OpenAI, Google을 명시적 선택지로 둔다. 제공자 선택과 실패 시 비자동 전송은 현재 소스 계약을 따른다.
-또한 오래된 connections 설명의 LLM judge 전제를 쓰지 말고 위 현재 구현 파일을 확인한다.
+리뷰는 `local_review.py`의 Anthropic `claude-sonnet-5` 기본값을 쓰되, 요청의 `provider`/`model`을
+검증하여 OpenAI 또는 Google을 **명시적으로** 선택할 수 있다. `features.json`도 세 provider만
+review 지원 대상으로 등록한다. 제공자 자동 fallback은 없다.
+
+`topic_modeling.py`의 Step 6은 SPECTER2 cosine과 제목·저자 BM25 순위를 RRF(`k=60`)로 융합하고,
+`lib/related.py`의 결정론적 builder가 저장된 메타데이터만으로 relation·한국어 reason을 만든다.
+이 경로에는 LLM judge나 네트워크 fallback이 없다. 전체 workflow의 후속
+`extract_insights.py`도 같은 후보 계산과 builder를 사용하며, 카테고리 범위와 병합 저장을 유지한다.
+relation/reason은 탐색용 메타데이터 휴리스틱이지 확립된 인과 또는 인용 관계가 아니다.

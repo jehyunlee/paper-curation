@@ -141,7 +141,8 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 
 | 단계 | 모델 | 단가 (입력 / 출력) |
 |------|------|------|
-| 리뷰 · 연결 · 인사이트 | `claude-sonnet-5` | $2 / $10 (인트로, ~2026-08-31) → $3 / $15 |
+| 리뷰 기본 제공자 · 인사이트 | `claude-sonnet-5` | $2 / $10 (인트로, ~2026-08-31) → $3 / $15 |
+| 연결 선택·관계·이유 생성 | SPECTER2/BM25 후보 + 메타데이터 규칙 | 이 단계의 LLM 호출 없음 |
 | Figure 검증 (vision judge) | `claude-haiku-4-5` | $1 / $5 |
 | 타임라인 내러티브 | `claude-opus-5` (5) | $5 / $25 |
 | 분류 | — (HDBSCAN + UMAP) | **LLM 호출 0회 → $0** |
@@ -182,7 +183,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | 기능 | 설명 |
 |------|------|
 | **자동 분류** | Bottom-up 토픽 모델링(SPECTER2 + HDBSCAN + UMAP)으로 카테고리 자동 생성·배정 — LLM 호출 0회 |
-| **같이 보면 좋은 논문** | hybrid 후보 검색(SPECTER2 dense + 제목·저자 BM25를 RRF 융합)을 Claude가 후보 제목까지 보고 선별 — 관계 유형 + 한국어 이유 1문장 |
+| **같이 보면 좋은 논문** | `topic_modeling.py`와 `extract_insights.py`는 SPECTER2 dense + 제목·저자 BM25를 RRF로 융합하고 동일한 결정론적 builder로 관계 유형과 한국어 이유를 생성합니다. 연결 단계는 LLM을 호출하지 않으며, 관계는 메타데이터 기반 휴리스틱이지 인용·인과관계의 확정 판정이 아닙니다. |
 | **Deep Research** | 자연어 질의 → hybrid 검색(BM25+dense) → 독자 BYOK 제공자의 답변 + `[N]` 인용 |
 | **타임라인** | 카테고리별 연구 동향 내러티브 + 다이어그램(PaperBanana) + main research timeline |
 | **지식 축적** | Obsidian 연동 — 메모가 다음 질의에 반영되는 compounding knowledge |
@@ -194,7 +195,6 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 |------|---------|------|
 | **콘텐츠 배포 (O-1)** | `--mode deploy` 또는 기능 `publish` | Cloudflare Workers + gh-pages 스텁 — [운영 매뉴얼](docs/operations.md#deploy-option-o-1). Audio 이메일은 별도 `email` 기능 |
 | **Insights + 네트워크 (O-2)** | `--insights` | 크로스카테고리 인사이트 + UMAP 2D/3D 인터랙티브 네트워크 재생성 |
-| **연결 단계 로컬 모델 보완** | `--local-fallback` | 망 전멸 시 "같이 보면 좋은 논문" 연결 단계만 로컬 모델(Ollama 등)로 마저 연결 — 리뷰·검색의 제공자 폴백이 아닌 명시적 opt-in — [운영 매뉴얼](docs/operations.md#korean-network-workarounds) |
 | **워크플로 다이어그램** | `generate_usage_diagram.py` · `generate_workflow.py` | 사용 경로 그림(matplotlib, 키 없음) · 상단 고양이 다이어그램(PaperBanana, `--style cat/fairy/academic`) |
 
 **전체 curate 워크플로 요구사항**: Zotero 컬렉션 + PDF와 자격증명
@@ -209,12 +209,12 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 2. **구조화 리뷰** — Claude가 6섹션 한국어 `review.md`
 3. **피인용·레퍼런스** — `citations.md`(이력 누적) + `references.md`. 기본 30일 증분, 외부 API 장애가 파이프라인을 죽이지 않는 soft step(`--skip-metrics`)
 4. **토픽 모델링 + 분류** — SPECTER2 + HDBSCAN + UMAP로 카테고리 자동 생성·배정
-5. **같이 보면 좋은 논문** — SPECTER2 코사인 + 제목·저자 BM25를 RRF로 융합한 hybrid 후보를 Claude가 선별(multi-round 재시도)
+5. **같이 보면 좋은 논문** — SPECTER2 코사인 + 제목·저자 BM25를 RRF로 융합해 후보를 정렬하고, `lib.related.build_connections`가 순위와 기록된 메타데이터로 연결을 생성합니다. 전체 실행의 `extract_insights.py`도 동일한 builder를 사용합니다.
 6. **카테고리 요약 + 타임라인 내러티브/main·category 다이어그램** & **Deep Research 검색 인덱스**(BM25 + Gemini 임베딩)
 7. **토픽 인덱스** `index.html`(Deep Research·Audio Overview 내장) → **로컬 열람**(`serve_local.py`) 또는 **배포**
 
 **브라우저 안에서**: Deep Research(키 자동 감지)와 Audio Overview(Gemini TTS → MP3)가 동작합니다.
-**Option 분기**: `--insights`(크로스카테고리 인사이트 + 네트워크) · `--mode deploy`(Cloudflare + gh-pages) · `--local-fallback`(망 전멸 시 로컬 LLM).
+**Option 분기**: `--insights`(크로스카테고리 인사이트 + 네트워크) · `--mode deploy`(Cloudflare + gh-pages).
 
 ## Citedby — 한 논문에서 시작하는 인용 계보 분석
 

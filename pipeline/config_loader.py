@@ -77,54 +77,6 @@ def get_google_key():
         return ""
 
 
-def get_local_model_config():
-    """로컬 LLM fallback (Ollama / LM Studio / llama.cpp / vLLM) 설정.
-
-    OpenAI 호환 엔드포인트 한 개를 가정한다. 환경변수가 config.json 보다 우선.
-    base_url 과 model 이 둘 다 있어야 유효하고, 그렇지 않으면 None 을 반환해
-    호출자가 "로컬 fallback 미설정" 으로 조용히 건너뛰게 한다.
-
-    config.json 예시::
-
-        "local_model": {
-          "base_url": "http://localhost:11434/v1",
-          "model": "qwen2.5:7b-instruct",
-          "api_key": "ollama",      # 로컬 서버는 대개 무시하지만 SDK 가 비어있으면 거부
-          "batch_size": 8,          # (선택) 로컬 연결 배치 크기
-          "timeout": 300            # (선택) per-call 초
-        }
-    """
-    cfg = load_config().get("local_model", {}) or {}
-    base_url = os.environ.get("LOCAL_MODEL_BASE_URL") or cfg.get("base_url")
-    model = os.environ.get("LOCAL_MODEL_NAME") or cfg.get("model")
-    if not base_url or not model:
-        return None
-    out = {
-        "base_url": base_url,
-        "model": model,
-        "api_key": os.environ.get("LOCAL_MODEL_API_KEY") or cfg.get("api_key") or "local",
-    }
-    if cfg.get("batch_size"):
-        out["batch_size"] = int(cfg["batch_size"])
-    if cfg.get("timeout"):
-        out["timeout"] = float(cfg["timeout"])
-    if cfg.get("reasoning_effort"):
-        # thinking 모델(EXAONE-4.5 등): "none" 이면 think OFF — 없으면 content 가
-        # 빈 채 thinking 채널만 채우는 모델이 있다 (lib/local_llm.chat_json 참조)
-        out["reasoning_effort"] = str(cfg["reasoning_effort"])
-    if cfg.get("json_mode"):
-        # response_format json_object — 서버 문법 제약으로 JSON 유효성 보장
-        out["json_mode"] = True
-    if cfg.get("num_ctx"):
-        # Ollama 네이티브 경로 전용: 요청 단위 컨텍스트(기본 8192). 신형 Ollama 가
-        # 모델 최대치(128K+)로 로드해 느려지는 것을 요청 단위로 줄인다.
-        out["num_ctx"] = int(cfg["num_ctx"])
-    if cfg.get("retries"):
-        # 형식 깨짐은 확률적이라 배치당 재시도 횟수(기본 2)
-        out["retries"] = int(cfg["retries"])
-    return out
-
-
 def get_zotero_user_id():
     """Zotero API Key로 User ID를 자동 조회. 캐싱."""
     global _user_id_cache

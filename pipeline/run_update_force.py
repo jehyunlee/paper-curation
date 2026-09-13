@@ -2431,19 +2431,10 @@ def main():
     parser.add_argument("--insights", action="store_true",
                         help="extract_insights 에서 cross-category insights(Option)까지 재생성. "
                              "기본은 paper connections(Core, '같이 보면 좋은 논문')만 생성 (--only connections).")
-    parser.add_argument("--local-fallback", action="store_true",
-                        help="topic_modeling 연결 단계에서 max retry round 를 다 돌고도 막힌 "
-                             "papers 를 로컬 OpenAI 호환 모델(Ollama/LM Studio 등)로 마저 연결. "
-                             "config.json 의 local_model 또는 LOCAL_MODEL_BASE_URL/NAME 필요.")
     parser.add_argument("--no-deploy", action="store_true",
                         help="end-of-run prepare_deploy(wrangler deploy + gh-pages + master push)를 건너뛴다. "
                              "무인 자동복구(auto_recover --execute)처럼 배포를 원치 않는 경우용. "
                              "환경변수 PAPER_CURATION_NO_DEPLOY 로도 켤 수 있다.")
-    parser.add_argument("--conn-full", action="store_true",
-                        help="연결 캐시(_conn_topk_cache_k*.json)를 무시하고 이번 실행에서 전체 연결을 "
-                             "재생성한다 (월간/대량 추가 후 주기적 full rebuild 용). 자식 프로세스"
-                             "(extract_insights / topic_modeling)가 환경변수 CONN_FULL_REBUILD=1 로 "
-                             "상속한다. 환경변수 CONN_FULL_REBUILD=1 로도 직접 켤 수 있다.")
     # ── Phase 2: 3-axis mode (new, MECE). When --mode is set, it overrides the
     # legacy flag combinations and emits DeprecationWarnings for any legacy
     # flags that were also specified. Omitting --mode keeps 100% legacy
@@ -2459,14 +2450,6 @@ def main():
     # Apply --mode → legacy flags mapping. Pure translation; no behavior change
     # when --mode is absent (args.mode is None → all legacy flags honored as-is).
     _apply_mode_mapping(args)
-
-    # --conn-full → force full connection regen for child subprocesses
-    # (extract_insights / topic_modeling). They read CONN_FULL_REBUILD from env,
-    # which is inherited across subprocess.run, so setting it here is enough.
-    if getattr(args, "conn_full", False):
-        os.environ["CONN_FULL_REBUILD"] = "1"
-        print("[conn] --conn-full → CONN_FULL_REBUILD=1 "
-              "(전체 연결 재생성; 자식 프로세스 env 상속)")
 
     # Batch-only configuration stays lazy so importing the reusable local
     # extraction/review functions never loads Zotero/provider settings.
@@ -2894,8 +2877,6 @@ def main():
         # --category: always run (reclassify all)
         # --resume without --category: skip (keep existing categories)
         # full mode: always run
-        # opt-in: connection 단계가 끝까지 막히면 로컬 모델로 마저 연결 (--local-fallback)
-        tm_local = ["--local-fallback"] if getattr(args, "local_fallback", False) else []
         old_cats_by_slug = {}
         if do_reclassify:
             # Snapshot current classifications before reclassification
@@ -2909,7 +2890,7 @@ def main():
             except Exception:
                 pass
             run_step("topic_modeling",
-                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic], 3600)
         elif is_update:
             # Update mode normally runs --skip-classification (refresh coords +
             # connections only, reuse the existing HDBSCAN bundle). But
@@ -2923,13 +2904,13 @@ def main():
                 log("  [topic_modeling] HDBSCAN bundle missing — running full "
                     "topic_modeling to build it (first run for this topic)")
                 run_step("topic_modeling",
-                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic], 3600)
             else:
                 run_step("topic_modeling (coords+connections)",
-                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic, "--skip-classification"] + tm_local, 3600)
+                         [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic, "--skip-classification"], 3600)
         else:
             run_step("topic_modeling",
-                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic] + tm_local, 3600)
+                     [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic], 3600)
 
         # Step 3: classify (always — new papers only in update mode without --category)
         run_step("classify_papers",

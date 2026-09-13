@@ -18,7 +18,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 추출된 텍스트 + Figure |
-| **처리** | <ul><li>Claude Sonnet 5가 한국어 리뷰 6개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
+| **처리** | <ul><li>기본 Anthropic Claude Sonnet 5가 한국어 리뷰 6개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Evaluation); OpenAI와 Google은 명시적 provider 선택이며 자동 fallback이 아님</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
 | **출력** | <ul><li><code>papers/{slug}/review.md</code></li><li><code>papers/{slug}/index.html</code></li></ul> |
 | **활용** | 브라우저에서 리뷰 열람, Figure 인라인 표시, Related Papers 자동 연결 |
 
@@ -35,7 +35,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 카테고리별 논문 목록 + 리뷰 |
-| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: hybrid 후보 검색 — SPECTER2 코사인 순위와 제목·저자 BM25 순위를 각각 매겨 RRF(<code>k=60</code>, Deep Research 인덱스와 같은 상수)로 융합한다. 코사인 단독이면 같은 제목 시리즈의 후속편이라도 기여 내용이 다른 분야로 옮겨간 순간 후보 창 밖으로 밀려난다. Sonnet은 후보 **제목까지 보고** 관계 유형 + 한국어 이유를 쓴다. 망 장애에 강건 — multi-round 재시도(막힌 배치만), 응답 JSON이 깨져도 논문 단위로 살려내 배치 전체를 잃지 않음, 연결 0개 논문 우선 처리(priority-first), 그래도 남으면 `--local-fallback`(Option)으로 로컬 모델이 완결</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
+| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: SPECTER2 코사인 순위와 제목·저자 BM25 순위를 RRF(<code>k=60</code>)로 융합한 뒤, 결정론적 builder가 저장된 메타데이터(공저자·발행 순서·카테고리·유사도)만으로 관계 유형과 한국어 이유를 만든다. Step 6과 후속 <code>extract_insights.py</code> connections pass 모두 이 경로를 쓰며, 후자는 카테고리 대상 범위·토픽 전체 후보 풀·병합 저장을 유지한다. LLM judge·네트워크 retry·로컬 모델 fallback은 없다. relation/reason은 탐색용 휴리스틱이며 확립된 인과 또는 인용 관계를 뜻하지 않는다.</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
 | **처리 (Option O-2, `--insights`)** | <ul><li>크로스카테고리 Research Insights 분석 (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>네트워크 시각화(<code>network.html</code>) 재생성</li></ul> |
 | **출력** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -170,7 +170,6 @@ LLM I/O bound 단계는 카테고리 단위로 병렬화돼 wall-clock 이 약 4
 | `build_category_summaries` (카테고리 한글 description + sub-themes) | `CAT_SUMMARY_PARALLEL` | 8 | Haiku |
 | `generate_timelines` STEP 1 narrative | `TIMELINE_NARRATIVE_PARALLEL` | 8 | Opus streaming |
 | `generate_timelines` STEP 2 PaperBanana 이미지 | `TIMELINE_IMAGE_PARALLEL` | 4 | Gemini image |
-| `extract_insights` per-category paper_connections | `EXTRACT_INSIGHTS_PARALLEL` | 4 | Sonnet |
 
 Tier 1~3 에서는 worker 수를 낮춰 ITPM cap 을 피해야 합니다.
 
@@ -184,7 +183,6 @@ LLM 응답의 JSON 파싱 흔들림을 0 으로 만들기 위해 Anthropic tool-
 |---|---|---|
 | `write_review` (논문 1편 리뷰 JSON) | `emit_review` | Sonnet 5 |
 | `extract_insights.extract_cross_category_insights` | `emit_insights` | Sonnet (+ OpenAI/Gemini fallback) |
-| `extract_insights._call_connections_batch` (Anthropic 분기) | `emit_connections` | Sonnet (+ OpenAI `response_format=json_object` fallback) |
 
 ### 5. Figure pre-validator — `api/extract.pre_validate_figure`
 

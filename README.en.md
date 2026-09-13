@@ -60,7 +60,7 @@ generated ID/requirement table in the
 | Feature | Description |
 |---------|-------------|
 | **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
-| **Related Papers** | Hybrid candidate retrieval (SPECTER2 cosine + title/author BM25, RRF-fused) narrows the corpus; Claude picks the real connections from candidate titles with a relation type and a one-sentence Korean reason |
+| **Related Papers** | `topic_modeling.py` RRF-fuses SPECTER2 cosine and title/author BM25 rankings; a deterministic builder uses the rank and recorded metadata to produce relation types and evidence-based Korean reasons. The full-curation `extract_insights.py` caller still imports a removed legacy judge, so that connection path is currently blocked |
 | **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
 | **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
@@ -72,7 +72,6 @@ generated ID/requirement table in the
 |--------|---------------|-------------|
 | **Content Deploy (O-1)** | `--mode deploy` or capability `publish` | Cloudflare Workers (static assets + `/api/embed`) + gh-pages redirect stubs. Audio email is the separate `email` capability |
 | **Research Insights + Network (O-2)** | `--insights` | Cross-category insight analysis + regenerates the interactive UMAP 2D/3D network |
-| **Local model for the connections stage** | `--local-fallback` | When Related Papers generation is blocked by network failures to the very end, a local model (Ollama/LM Studio/…) completes only that stage. An explicit opt-in, not a provider fallback for reviews or search |
 | **Workflow diagrams** | `generate_usage_diagram.py` · `generate_workflow.py` | Usage-path figure (matplotlib, no key) · the cat pipeline diagram (PaperBanana, `--style cat/fairy/academic`) |
 
 **Full curate workflow requirements**: a Zotero collection with PDFs and the
@@ -299,7 +298,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | | Description |
 |---|---|
 | **Input** | Per-category paper lists + reviews |
-| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: hybrid candidate retrieval — SPECTER2 cosine and title/author BM25 are ranked separately and fused with RRF (k=60, the same constant the Deep Research index uses), so a same-series successor whose contribution moved to another domain is not lost to cosine alone. Sonnet then curates the relation type + Korean reason from the candidate **titles**. Network-resilient — multi-round retry (only stuck batches), per-paper JSON salvage so one malformed reply costs one paper instead of the whole batch, zero-connection-papers-first ordering, and an opt-in `--local-fallback` to a local model for anything still stranded</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
+| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: both <code>topic_modeling.py</code> and <code>extract_insights.py</code> rank SPECTER2 cosine and title/author BM25 separately, fuse them with RRF (k=60), and use <code>lib.related.build_connections</code> to select links and derive metadata-based relations and Korean reasons. This connection step makes no cloud or local LLM calls. Relations are heuristics, not verified citation or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
 | **Processing (Option O-2, `--insights`)** | <ul><li>Cross-category Research Insights (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>Regenerates the network visualization (<code>network.html</code>)</li></ul> |
 | **Output** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -484,14 +483,7 @@ PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --since 2026-04-01 
 
 OpenAlex returns 1k+ items per keyword and dominates the result pool, so missing arXiv rarely degrades coverage.
 
-**3. Korean-network ↔ Anthropic stale connections** — on bad days the Related Papers step (batched Sonnet calls) gets stuck on half-open sockets. Defenses are automatic (multi-round retry + zero-connection-papers-first + anything unfinished keeps its previous connections and self-heals next cycle). If you run a local model, `--local-fallback` completes the remainder on the spot:
-
-```bash
-# Add a local_model block to config.json (Ollama example — measured: EXAONE-4.0-32B, ~32s per 8-paper batch)
-PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source zotero --local-fallback
-```
-
-Ollama is auto-detected and served via its native API; LM Studio/llama.cpp/vLLM use the OpenAI-compatible path. A dead endpoint is skipped silently.
+**3. Related Papers** — connection ranking and relation generation run locally after SPECTER2 embeddings. There is no Anthropic connection judge to retry; check model availability, embedding inputs, and local output paths instead. Cross-category Research Insights remains a separate, explicitly requested LLM stage.
 
 ---
 
@@ -539,7 +531,7 @@ For calling parts of the pipeline from other code or tuning performance.
 
 **Category-level ThreadPool parallelism** — LLM I/O stages parallelize by category (~4× wall-clock). Worker counts via env vars: `CAT_SUMMARY_PARALLEL` (8, Haiku), `TIMELINE_NARRATIVE_PARALLEL` (8, Opus), `TIMELINE_IMAGE_PARALLEL` (4, Gemini image), `EXTRACT_INSIGHTS_PARALLEL` (4, Sonnet). Lower these under Tier 1–3.
 
-**Tool-use schema enforcement** — LLM responses go through Anthropic tool-use schemas (`emit_review` Sonnet 5, `emit_insights` Sonnet, `emit_connections` Sonnet) so JSON parse jitter is zero and post-hoc fixers were deleted. Sonnet 5 does sometimes invoke `emit_review` and put the whole XML-tagged review into one field instead of filling the schema; `_review_response_is_complete` keeps such a reply out of the cache and `_salvage_review_data` reparses it (`salvage_reviews.py` repairs files written before that guard existed).
+**Tool-use schema enforcement** — LLM responses go through Anthropic tool-use schemas (`emit_review` Sonnet 5, `emit_insights` Sonnet) so JSON parse jitter is zero and post-hoc fixers were deleted. Sonnet 5 does sometimes invoke `emit_review` and put the whole XML-tagged review into one field instead of filling the schema; `_review_response_is_complete` keeps such a reply out of the cache and `_salvage_review_data` reparses it (`salvage_reviews.py` repairs files written before that guard existed).
 
 **Figure pre-validator — `api/extract.pre_validate_figure`** — cheap heuristics (file < 4 KB, dimension < 100 px, grayscale variance < 30) skip ~30% of Gemini figure-validation calls, returning Gemini's response shape so callers don't branch.
 
@@ -586,6 +578,7 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 
 | Document | Contents |
 |----------|----------|
+| **[Beginner and Power-user Manuals](docs/manual/index.en.md)** | Paper Curation + Paper Curio, English tutorials, operations recipes, and PaperBanana diagrams |
 | **[User Guide](docs/user-guide.en.md)** | Three paths · where settings live (Zotero Settings → Paper Curio) · step-by-step review and module execution · reading status messages · FAQ |
 | **[Setup Guide](docs/setup-guide.md)** | Prerequisites · Claude Code/manual install · config.json · generated feature registry table · troubleshooting (Korean) |
 | **[Operations Manual](docs/operations.md)** | Full-workflow modes and safety flags · concurrency · Korean-network workarounds · deploy (O-1) · recovery |

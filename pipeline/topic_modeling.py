@@ -1063,27 +1063,12 @@ def main():
                         help="Skip Steps 4-5 (naming/grouping/assignment). Run embedding, UMAP, connections only.")
     parser.add_argument("--min-cats", type=int, default=8)
     parser.add_argument("--max-cats", type=int, default=12)
-    parser.add_argument("--local-fallback", action="store_true",
-                        help="max retry round 를 다 돌고도 연결 못 한 papers 를 "
-                             "로컬 OpenAI 호환 모델(Ollama/LM Studio/llama.cpp/vLLM)로 "
-                             "마저 연결한다. config.json 의 local_model 블록 또는 "
-                             "LOCAL_MODEL_BASE_URL/LOCAL_MODEL_NAME 환경변수 필요.")
     args = parser.parse_args()
-
-    local_fallback = None
-    if args.local_fallback:
-        from config_loader import get_local_model_config
-        local_fallback = get_local_model_config()
-        if local_fallback is None:
-            print("[local-fallback] 설정 없음 — config.json 의 local_model 또는 "
-                  "LOCAL_MODEL_BASE_URL + LOCAL_MODEL_NAME 환경변수를 설정하세요. "
-                  "이번 실행은 로컬 fallback 없이 진행합니다.", flush=True)
 
     _run_topic_model(topic=args.topic,
                      skip_connections=args.skip_connections,
                      skip_classification=args.skip_classification,
-                     min_cats=args.min_cats, max_cats=args.max_cats,
-                     local_fallback=local_fallback)
+                     min_cats=args.min_cats, max_cats=args.max_cats)
 
 
 if __name__ == "__main__":

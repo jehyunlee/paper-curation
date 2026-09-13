@@ -1,5 +1,7 @@
 # Paper Curation · Paper Curio 사용 매뉴얼
 
+[English manuals](index.en.md)
+
 논문 한 편을 읽는 사람부터 개인 논문 라이브러리를 운영하는 사람까지, 필요한 작업만 선택하는 한국어 매뉴얼입니다.
 
 | 매뉴얼 | 대상 | 도착점 |

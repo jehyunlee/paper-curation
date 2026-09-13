@@ -366,26 +366,15 @@ brew install --cask temurin   # Java for opendataloader-pdf
 - **arXiv chronic 429**: `search_papers.py --skip-arxiv` (OpenAlex + S2 only)
 - **OpenDataLoader fallback**: PyMuPDF takes over silently; install
   Temurin Java to get pdffigures2 structure
-- **Anthropic stale connections (half-open sockets)**: the Related-Papers
-  connection step defends itself automatically — multi-round retry (only
-  stuck batches), zero-connection-papers-first ordering, and unfinished
-  papers keep their previous connections (self-heals next cycle). If a
-  local model is available, `--local-fallback` completes the remainder
-  on the spot (measured: EXAONE-4.0-32B, ~32 s per 8-paper batch):
-
-  ```bash
-  # config.json — add a local_model block (Ollama example)
-  #   "local_model": {
-  #     "base_url": "http://localhost:11434/v1",
-  #     "model": "exaone-4.0:latest",
-  #     "num_ctx": 8192, "retries": 2, "batch_size": 8
-  #   }
-  PYTHONUTF8=1 python pipeline/run_full.py --topic ai4s --mode curate --source zotero --local-fallback
-  ```
-
-  Ollama is auto-detected (native API: per-request `num_ctx`, `think:false`);
-  LM Studio/llama.cpp/vLLM use the OpenAI-compatible path. A dead endpoint
-  is skipped silently — the pipeline never blocks on it.
+- **Related-Papers connections**: `topic_modeling.py` builds them locally and
+  deterministically from SPECTER2 cosine plus title/author BM25 RRF ranks;
+  `extract_insights.py` uses the same candidate and `lib/related.py`
+  `build_connections` path while preserving its category scope, whole-topic
+  candidate pool, and merged persistence. `lib/related.py` derives relation
+  and Korean reason from recorded metadata.
+  It makes no Anthropic request and has no LLM retry or local-model fallback.
+  `EXTRACT_INSIGHTS_TOPN_CAND` controls candidate breadth. Relations are
+  metadata-derived heuristic aids, not established causal or citation links.
 
 ## Schema v1 frontmatter (Phase 3)
 
