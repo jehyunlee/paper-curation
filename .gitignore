@@ -97,6 +97,11 @@ reports/output/
 !docs/attribution.en.md
 !docs/user-guide.md
 !docs/user-guide.en.md
+!docs/manual/
+!docs/manual/*.md
+!docs/manual/generate_figures.py
+!docs/manual/images/
+!docs/manual/images/*.png
 
 # Public assets (conference talk slides, etc.) — tracked on master + GitHub-served
 !docs/public/

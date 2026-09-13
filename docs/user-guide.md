@@ -1,5 +1,8 @@
 # Paper Curation 활용 매뉴얼
 
+처음 시작하면 **[초보자용 간단버전](manual/beginner.md)**, 자동화와 라이브러리 운영은
+**[파워유저용 심화버전](manual/advanced.md)** 을 보세요. [매뉴얼 목차](manual/index.md)에서 두 제품의 관계와 읽는 순서를 안내합니다.
+
 **어디에서 무엇을 설정하고, 어떻게 동작시키는지**를 단계별로 정리한 문서입니다.
 설치 절차의 세부 옵션은 [Setup Guide](setup-guide.md), 전체 큐레이션 운영은
 [Operations Manual](operations.md), 내부 구조는 [Architecture](architecture.md)를 참고하세요.
