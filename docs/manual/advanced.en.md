@@ -4,7 +4,7 @@ This document gives safe operating procedures and recovery criteria for users ru
 
 - **Paper Curation:** the Python pipeline in the local `paper-curation` repository and its `docs/` corpus.
 - **Paper Curio:** a Zotero 9 plugin. Light mode provides PDF chat; Enhanced mode calls Curation's shared runner.
-- The actual runtime contract in `pipeline/features.json`, `pipeline/run_feature.py`, and each module source takes precedence over this guide.
+- Inspect `pipeline/features.json` and `pipeline/run_feature.py` for the feature list and request shape.
 - See the [operations manual](../operations.md) for full operations, the [setup guide](../setup-guide.md) for installation, and [architecture](../architecture.md) for structure.
 
 ![Paper Curation architecture: Zotero/Paper Curio and the CLI connect through the shared feature registry and local corpus to selected external providers and optional deployment targets.](images/architecture.png)
@@ -104,7 +104,7 @@ python pipeline/credentials.py --operation status --provider anthropic
 
 `--operation read` is for plugin-internal IPC and must not be run in a terminal.
 
-Shared review, summary, question-answering, and comparison do not fall back to another provider when the selected provider fails. This no-fallback guarantee applies to the shared feature provider; it does not forbid the independent cross-category-insights fallback described by that feature's own runtime.
+Shared review, summary, question-answering, and comparison do not fall back to another provider when the selected provider fails. This no-fallback guarantee applies only to shared-feature provider selection; it does not forbid independent fallback behavior in other pipeline stages.
 
 ## 3. Safe request-JSON recipes
 
@@ -221,11 +221,11 @@ Online mode can use configured bibliography sources, but pricing may not permit 
 
 ### 5.1 Current connections implementation
 
-Connections are built deterministically from `pipeline/lib/related.py` and `pipeline/topic_modeling.py`. Candidate ranking fuses SPECTER2 cosine similarity with title/author BM25 using reciprocal-rank fusion (RRF, `k=60`). The metadata builder then uses that ranking and recorded metadata only to choose up to the link limit, assign `foundation`, `extension`, or `alternative`, and write Korean rationale text. This path uses no provider SDK, LLM judge, local fallback, or network fallback. A Curio minimal review does not create connections.
+Connections are built deterministically by `pipeline/lib/related.py` from candidates computed in `pipeline/topic_modeling.py`. Candidate ranking fuses SPECTER2 cosine similarity with title/author BM25 using reciprocal-rank fusion (RRF, `k=60`). The metadata builder then uses that ranking and recorded metadata only to choose up to the link limit, assign `foundation`, `extension`, or `alternative`, and write Korean rationale text. This path uses no provider SDK or LLM judge. A Curio minimal review does not create connections.
 
-The full workflow uses this same deterministic metadata builder for its connections stage. Cross-category insights are a separate feature and may use its explicitly configured fallback; that is not a provider fallback for shared review/text features and does not alter connection construction.
+Step 6 in `topic_modeling.py` and the subsequent connections pass in `extract_insights.py` use the same deterministic SPECTER2/BM25/RRF metadata builder. The latter preserves category-target scope, a topic-wide candidate pool, and merged-result storage.
 
-Relation labels are metadata heuristics, not verified citations, causality, or proof of a scientific extension. Shared surname keys and publication years can be incomplete or ambiguous. Inspect the stored `evidence` and the papers themselves.
+Relation labels and rationale are metadata heuristics, not verified citations, causality, or proof of a scientific extension. Shared surname keys and publication years can be incomplete or ambiguous. Inspect the stored `evidence` and the papers themselves.
 
 ### 5.2 Curio collection-wide processing
 
@@ -323,22 +323,5 @@ BM25 search and offline bibliography updates are local. Semantic embeddings, clo
 | Bibliography update pending | Inspect review output, then separately plan/execute `bibliography-update` |
 | `busy` | Wait for another Curio/CLI job; do not retry the same request in parallel |
 | Full run fails | Start by reproducing input matching with `--dry-run`, narrow `--slugs`, and `--strict-pdf` |
-
-## 9. Verifiable sources and current implementation
-
-This guide is grounded in:
-
-- `pipeline/features.json`: shared feature IDs, parameters, runtimes, providers, transmission, and cost classes
-- `pipeline/run_feature.py`: planning/execution, budget checks, locks, build/query, deployment and synchronization conditions
-- `pipeline/local_review.py`: minimal-review request, outputs, atomic publication, and `partial` status
-- `pipeline/lib/credentials.py`: environment-variable then native OS-keyring lookup, with no file fallback
-- `pipeline/lib/related.py`, `pipeline/topic_modeling.py`: SPECTER2 cosine + title/author BM25 RRF candidates and deterministic connections metadata builder
-- `pipeline/extract_insights.py`, `pipeline/run_full.py`: full orchestration and separate cross-category-insights behavior
-- [User guide](../user-guide.en.md), [operations manual](../operations.md), and [setup guide](../setup-guide.md)
-- Paper Curio `README.md`: Light/Enhanced modes, UI, Citedby, collection-wide processing, and root discovery
-
-Reviews default to Anthropic `claude-sonnet-5`; request validation permits explicit OpenAI or Google selection. `features.json` registers only those three providers for review, and shared-feature providers do not automatically fall back.
-
-For connections, Step 6 of `topic_modeling.py` fuses SPECTER2 cosine and title/author BM25 rankings with RRF (`k=60`). The deterministic builder in `lib/related.py` uses persisted metadata to create relation labels and Korean rationale. It does not call an LLM judge and has no local or network fallback. Cross-category insights remain a distinct runtime with its own explicitly configured fallback policy.
 
 [한국어 고급 안내](advanced.md) · [Manual index](index.en.md)
