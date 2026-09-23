@@ -40,9 +40,12 @@ PYTHONUTF8=1 python pipeline/setup.py
 
 ### 1-2. Install the Zotero plugin — Zotero
 
-1. Download `paper-curio.xpi` from the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest).
+1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), download the **XPI that matches your Zotero major version** (check **Help → About Zotero**).
+   - Zotero **10.x** → `paper-curio-zotero10.xpi`
+   - Zotero **9.x** (also 7 / 8) → `paper-curio-zotero9.xpi`
+   Both files are built from the same source with the same features; only the Zotero compatibility range differs.
 2. Zotero → **Tools → Plugins → ⚙️ → Install Plugin From File…** → choose the file.
-3. Later updates are picked up automatically by Zotero.
+3. Later updates are picked up automatically by Zotero and stay within your Zotero major's line. After upgrading Zotero from 9 to 10, install `paper-curio-zotero10.xpi` once by hand (preferences and key references are preserved).
 
 ### 1-3. Connect the two — Zotero → Settings → Paper Curio → **Output Location**
 

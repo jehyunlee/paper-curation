@@ -3,7 +3,7 @@
 This document gives safe operating procedures and recovery criteria for users running both products. Start with the [beginner guide](beginner.en.md) or the [manual index](index.en.md) when new to them.
 
 - **Paper Curation:** the Python pipeline in the local `paper-curation` repository and its `docs/` corpus.
-- **Paper Curio:** a Zotero 9 plugin. Light mode provides PDF chat; Enhanced mode calls Curation's shared runner.
+- **Paper Curio:** a Zotero 9 / 10 plugin (each release ships one XPI per Zotero major). Light mode provides PDF chat; Enhanced mode calls Curation's shared runner.
 - Inspect `pipeline/features.json` and `pipeline/run_feature.py` for the feature list and request shape.
 - See the [operations manual](../operations.md) for full operations, the [setup guide](../setup-guide.md) for installation, and [architecture](../architecture.md) for structure.
 

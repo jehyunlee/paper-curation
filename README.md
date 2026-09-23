@@ -101,7 +101,7 @@ OS keyring보다 우선하며, 없으면 `credential:<provider>` 참조가 OS ke
 
 ### Zotero에서 시작하기 (Paper Curio)
 
-1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)의 `paper-curio.xpi`를 Zotero **Tools → Plugins**에서 설치합니다.
+1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 **사용 중인 Zotero 버전에 맞는 XPI**를 받아 Zotero **Tools → Plugins**에서 설치합니다 — Zotero 10은 `paper-curio-zotero10.xpi`, Zotero 9(7·8 포함)는 `paper-curio-zotero9.xpi`. 릴리스마다 두 파일이 함께 나오며 기능은 동일합니다.
 2. Zotero **Settings → Paper Curio → 출력 위치**에 위 체크아웃 경로를 넣습니다(Python 경로는 비우면 `py312`).
 3. **Settings → Paper Curio → API 키**에서 리뷰 제공자 하나를 고르고 키를 **OS 키 저장소에 저장**합니다.
 4. 논문 항목 우클릭 → **paper-curation Review 생성** → 계획 확인 → 실행. 요약·질의·비교 등은 우클릭 **Paper Curation 기능 모듈**에서 같은 방식으로 실행합니다.

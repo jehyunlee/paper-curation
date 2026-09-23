@@ -16,7 +16,7 @@
 | 도구 | 하는 일 | 처음 사용할 때 |
 |---|---|---|
 | **Paper Curation** | Python 기반 엔진·웹 문서·명령줄. PDF에서 리뷰와 HTML을 만들고, 선택적으로 검색·서지·오디오 등을 실행합니다. | 설치 후 명령줄로 계획을 확인하거나 Curio의 공통 엔진이 됩니다. |
-| **Paper Curio** | Zotero 9 플러그인. Zotero의 논문 항목에서 대화, 리뷰, 공통 기능 모듈을 엽니다. | Zotero 안에서 PDF와 대화하거나 리뷰를 요청합니다. |
+| **Paper Curio** | Zotero 9 / 10 플러그인. Zotero의 논문 항목에서 대화, 리뷰, 공통 기능 모듈을 엽니다. | Zotero 안에서 PDF와 대화하거나 리뷰를 요청합니다. |
 
 - **읽기·내보내기**는 키 없이 가능합니다. 기존 리뷰 HTML 열기, 공개 사이트 열람, 로컬 PDF 추출, 키워드 검색 등이 여기에 해당합니다.
 - **AI**(리뷰·요약·질의·비교)는 선택한 제공자만 사용하며, 실패해도 다른 회사 모델로 자동 전송하지 않습니다.
@@ -42,8 +42,8 @@ python pipeline/run_feature.py --list
 
 ## 2. Paper Curio 설치 및 연결
 
-1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 `paper-curio.xpi`를 받습니다.
-2. Zotero 9에서 **Tools → Plugins → ⚙️ → Install Plugin From File…**를 열고 XPI를 선택합니다.
+1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 사용 중인 Zotero 버전에 맞는 XPI를 받습니다. Zotero **10**이면 `paper-curio-zotero10.xpi`, Zotero **9**(7·8 포함)는 `paper-curio-zotero9.xpi`입니다. 버전은 **Help → About Zotero**에서 확인합니다.
+2. Zotero에서 **Tools → Plugins → ⚙️ → Install Plugin From File…**를 열고 XPI를 선택합니다.
 3. Zotero → **Settings → Paper Curio → 출력 위치**에서 다음을 설정합니다.
 
 | 항목 | 값 |

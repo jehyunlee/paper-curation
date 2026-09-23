@@ -39,9 +39,12 @@ PYTHONUTF8=1 python pipeline/setup.py
 
 ### 1-2. Zotero 플러그인 설치 — Zotero
 
-1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 `paper-curio.xpi`를 내려받습니다.
+1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 **사용 중인 Zotero 버전에 맞는 XPI**를 내려받습니다(Zotero 버전은 **Help → About Zotero**에서 확인).
+   - Zotero **10.x** → `paper-curio-zotero10.xpi`
+   - Zotero **9.x**(7·8 포함) → `paper-curio-zotero9.xpi`
+   두 파일은 같은 소스·같은 기능이며 Zotero 호환 범위만 다릅니다.
 2. Zotero → **Tools → Plugins → ⚙️ → Install Plugin From File…** → 내려받은 파일 선택.
-3. 이후 업데이트는 Zotero가 자동으로 확인합니다.
+3. 이후 업데이트는 Zotero가 자동으로 확인하며, 설치한 Zotero 버전용 파일만 받습니다. Zotero를 9에서 10으로 올리면 `paper-curio-zotero10.xpi`를 한 번 수동 설치하세요(설정·키 참조는 유지됩니다).
 
 ### 1-3. 두 프로그램 연결 — Zotero → Settings → Paper Curio → **출력 위치**
 

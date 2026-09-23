@@ -5,7 +5,7 @@
 문서 길잡이는 [매뉴얼 색인](index.md)을 먼저 본다.
 
 - **Paper Curation**: 로컬 `paper-curation` 저장소의 Python 파이프라인과 `docs/` 코퍼스.
-- **Paper Curio**: Zotero 9 플러그인. Light 모드는 PDF 대화, Enhanced 모드는 Curation 공통 실행기를 호출한다.
+- **Paper Curio**: Zotero 9 / 10 플러그인(릴리스마다 메이저 버전별 XPI 제공). Light 모드는 PDF 대화, Enhanced 모드는 Curation 공통 실행기를 호출한다.
 - 기능 목록과 요청 형식은 `pipeline/features.json`과 `pipeline/run_feature.py`에서 확인할 수 있다.
 - 전체 운영의 세부 단계는 [운영 매뉴얼](../operations.md), 설치는 [설치 안내](../setup-guide.md), 구조는 [아키텍처](../architecture.md)를 참고한다.
 

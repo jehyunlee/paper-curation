@@ -172,7 +172,7 @@ It performs no network checks or full-pipeline run unless an explicit
 
 ### Start from Zotero (Paper Curio)
 
-1. Install `paper-curio.xpi` from the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest) via Zotero **Tools → Plugins**.
+1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), install the **XPI that matches your Zotero major version** via Zotero **Tools → Plugins** — `paper-curio-zotero10.xpi` for Zotero 10, `paper-curio-zotero9.xpi` for Zotero 9 (also 7 / 8). Every release ships both files with identical features.
 2. In Zotero **Settings → Paper Curio → Output Location**, enter this checkout's path (leave the Python path empty for `py312`).
 3. In **Settings → Paper Curio → API Keys**, pick one review provider and **Save to OS keyring**.
 4. Right-click a paper item → **paper-curation Review generation** → inspect the plan → execute. Summary, chat, comparison and collection tasks run the same way from **Paper Curation modules**.

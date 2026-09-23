@@ -13,7 +13,7 @@ This is a conceptual diagram, not a screen capture. In text, the sequence is:
 | Tool | What it does | First use |
 |---|---|---|
 | **Paper Curation** | Python engine, web documents, and CLI. Creates reviews and HTML from PDFs and can optionally run search, bibliography, audio, and other work. | Inspect a plan at the command line after installation, or use it as Curio's shared engine. |
-| **Paper Curio** | Zotero 9 plugin. Opens chat, review, and shared-feature modules from Zotero paper items. | Chat with a PDF in Zotero or request a review. |
+| **Paper Curio** | Zotero 9 / 10 plugin. Opens chat, review, and shared-feature modules from Zotero paper items. | Chat with a PDF in Zotero or request a review. |
 
 - **Reading and exporting** do not need a key: opening existing review HTML, viewing public sites, extracting a local PDF, and keyword search are examples.
 - **AI work** (review, summary, question answering, comparison) uses only the selected provider; a failure does not automatically send content to another company's model.
@@ -39,8 +39,8 @@ The basic installation is complete when the final command prints the feature-lis
 
 ## 2. Install and connect Paper Curio
 
-1. Download `paper-curio.xpi` from the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest).
-2. In Zotero 9, open **Tools → Plugins → ⚙️ → Install Plugin From File…** and select the XPI.
+1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), download the XPI for your Zotero major version: `paper-curio-zotero10.xpi` for Zotero **10**, `paper-curio-zotero9.xpi` for Zotero **9** (also 7 / 8). Check your version under **Help → About Zotero**.
+2. In Zotero, open **Tools → Plugins → ⚙️ → Install Plugin From File…** and select the XPI.
 3. Open Zotero → **Settings → Paper Curio → Output location** and set:
 
 | Field | Value |
