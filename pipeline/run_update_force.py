@@ -724,6 +724,45 @@ def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
 
 # ── Phase 2: Extract text.md (OpenDataLoader → PyMuPDF fallback) ──
 
+_ODL_IMAGE_REFERENCE_RE = re.compile(
+    r"!\[(?P<alt>[^\]]*)\]\((?P<destination><[^>\n]*>|[^)\n]*)\)"
+)
+_ODL_IMAGES_DIRECTORY_RE = re.compile(
+    r"(?:^|[\\/])[^\\/]*_images(?:[\\/]|$)", re.IGNORECASE
+)
+_ODL_IMAGE_NUMBER_RE = re.compile(
+    r"image(?:file|[_\s-])?0*(\d+)(?:\D|$)", re.IGNORECASE
+)
+
+
+def _normalize_odl_markdown_images(text):
+    """Replace untracked OpenDataLoader image exports with figure placeholders."""
+    def replace_image(match):
+        alt = match.group("alt")
+        destination = match.group("destination")
+        image_number = re.fullmatch(r"\s*image\s+(\d+)\s*", alt,
+                                    re.IGNORECASE)
+        path = destination[1:-1] if (
+            destination.startswith("<") and destination.endswith(">")
+        ) else destination
+
+        # Keep ordinary Markdown images intact. ODL uses a sibling *_images
+        # directory, while its older output exposes the image number in alt text.
+        if not image_number and not _ODL_IMAGES_DIRECTORY_RE.search(path):
+            return match.group(0)
+
+        if image_number:
+            number = image_number.group(1)
+        else:
+            filename = re.split(r"[\\/]", path)[-1]
+            filename_match = _ODL_IMAGE_NUMBER_RE.search(filename)
+            number = filename_match.group(1) if filename_match else None
+        return f"[Figure {number}]" if number else "[Figure]"
+
+    text = _ODL_IMAGE_REFERENCE_RE.sub(replace_image, text)
+    return re.sub(r"\n{3,}", "\n\n", text)
+
+
 def extract_text(pdf_path, slug_dir):
     text_path = os.path.join(slug_dir, "text.md")
 
@@ -733,7 +772,7 @@ def extract_text(pdf_path, slug_dir):
     # which silently ImportError'd and fell through to PyMuPDF every time.
     # Requires Java Runtime (e.g. `brew install --cask temurin`).
     try:
-        import tempfile, re
+        import tempfile
         from opendataloader_pdf import convert as odl_convert
         with tempfile.TemporaryDirectory() as tmpdir:
             odl_convert(input_path=[pdf_path], output_dir=tmpdir,
@@ -743,20 +782,13 @@ def extract_text(pdf_path, slug_dir):
                 with open(os.path.join(tmpdir, md_files[0]), "r", encoding="utf-8") as f:
                     text = f.read()
                 if text and len(text) > 100:
-                    # OpenDataLoader exports its own image dump and embeds
-                    # `![image N](relative/path.png)` lines pointing to a
-                    # sibling dir that paper-curation never tracks (we use
-                    # PyMuPDF for figures/). Collapse those refs into
-                    # `[Figure N]` so the body flow survives but the broken
-                    # paths don't pollute Claude review prompts.
-                    text = re.sub(r'!\[image\s*(\d+)\]\([^)]*\)',
-                                  r'[Figure \1]', text)
-                    text = re.sub(r'\n{3,}', '\n\n', text)
+                    text = _normalize_odl_markdown_images(text)
                     with open(text_path, "w", encoding="utf-8") as f:
                         f.write(text)
                     return True
-    except ImportError:
-        pass  # OpenDataLoader not installed → fallback
+    except ImportError as e:
+        log("  OpenDataLoader unavailable; falling back to PyMuPDF. "
+            f"Install it with `pip install -r requirements.txt` ({e})")
     except Exception as e:
         log(f"  OpenDataLoader failed: {e}, falling back to PyMuPDF")
 
