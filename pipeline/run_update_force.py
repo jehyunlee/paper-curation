@@ -358,6 +358,12 @@ def run_bibliography_release_steps(run_step):
         7200,
     )
     run_step(
+        "finalize_bibliography_db",
+        ["python", "pipeline/build_bibliography_db.py", "--finalize",
+         "--no-email"],
+        600,
+    )
+    run_step(
         "check_bibliography_db",
         ["python", "pipeline/check_bibliography_db.py", "--strict"],
         600,
@@ -2807,6 +2813,7 @@ def main():
             "evaluate_retrieval (_cross)",
             "refresh_retrieval_eval_snapshot",
             "build_bibliography_db",
+            "finalize_bibliography_db",
             "check_bibliography_db",
             "sync_bibliography_db (push)",
         }
