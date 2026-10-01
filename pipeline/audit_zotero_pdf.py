@@ -102,6 +102,22 @@ def list_collection_items(collection_key):
     return items
 
 
+def list_collection_all_items(collection_key, *, sleep=0.4):
+    """Return every item in a collection, including attachments and notes."""
+    items, start = [], 0
+    while True:
+        batch = _api(f"collections/{collection_key}/items",
+                     params={"limit": 100, "start": start, "format": "json"})
+        if not batch:
+            break
+        items.extend(batch)
+        if len(batch) < 100:
+            break
+        start += 100
+        time.sleep(sleep)
+    return items
+
+
 def list_children(item_key):
     try:
         return _api(f"items/{item_key}/children", params={"format": "json"})
@@ -299,14 +315,22 @@ def audit_item(item, *, check_content=True):
                         norm_text = re.sub(r"[^a-z0-9]", "", text.lower())
                         doi_hit = bool(doi) and norm_doi(doi) in norm_text
                         arxiv_hit = bool(arxiv) and arxiv.replace(".", "") in norm_text
+                        normalized_title = norm_title(title)
+                        exact_title_hit = (bool(normalized_title)
+                                           and normalized_title in norm_text)
                         title_hit = 0.0
                         if title_tok:
                             title_hit = len(title_tok & body_tok) / len(title_tok)
                         detail["content_title_overlap"] = round(title_hit, 2)
+                        detail["content_exact_title_hit"] = exact_title_hit
                         detail["content_doi_hit"] = doi_hit
                         detail["content_arxiv_hit"] = arxiv_hit
-                        # 명시 신호(DOI/arXiv) 없고 제목 키워드도 거의 없으면 mismatch
-                        if not doi_hit and not arxiv_hit and title_hit < 0.30:
+                        # 명시 신호(DOI/arXiv/정규화 제목) 없고 제목 키워드도
+                        # 거의 없으면 mismatch. 짧은 약어 제목(예: From AGI
+                        # to ASI)은 tokens()에 남는 단어가 없어 exact match가
+                        # 없으면 올바른 PDF도 거짓 양성이 된다.
+                        if (not doi_hit and not arxiv_hit and not exact_title_hit
+                                and title_hit < 0.30):
                             flags.append("CONTENT_MISMATCH")
                             content_state = "mismatch"
                         else:
@@ -372,14 +396,19 @@ def audit_topic(topic, *, check_content=True, sleep=0.3):
         print(f"  ! collection for '{topic}' not configured — skip", file=sys.stderr)
         return None
     print(f"[{datetime.now():%H:%M:%S}] {topic}: fetching items ({ck})...")
-    items = list_collection_items(ck)
-    print(f"  {len(items)} top-level items; fetching children...")
-    t0 = time.time()
-    for i, it in enumerate(items, 1):
-        it["_children"] = list_children(it["key"])
-        if i % 50 == 0 or i == len(items):
-            print(f"  [{i}/{len(items)}] {time.time()-t0:.0f}s")
-        time.sleep(sleep)
+    all_items = list_collection_all_items(ck, sleep=sleep)
+    children_by_parent = defaultdict(list)
+    items = []
+    for item in all_items:
+        parent_key = item.get("data", {}).get("parentItem")
+        if parent_key:
+            children_by_parent[parent_key].append(item)
+        else:
+            items.append(item)
+    for item in items:
+        item["_children"] = children_by_parent[item["key"]]
+    print(f"  {len(items)} top-level items; grouped "
+          f"{sum(len(children) for children in children_by_parent.values())} children.")
 
     dup_groups = find_duplicate_groups(items)
     key_to_dupgroup = {}
