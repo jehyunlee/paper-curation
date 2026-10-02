@@ -122,9 +122,52 @@ def _build_cat_block(cat_name, papers, essence_chars=None):
     return (f"### {cat_name} ({len(papers)} papers)\n" + "\n".join(lines))
 
 
+# Haiku 4.5 has a 200k-token context window, unlike the 1M Sonnet window the
+# prompt budget above is sized for. One category block from a 2.7k-paper topic
+# already exceeds it (~297k tokens for "Autonomous AI Scientific Discovery"),
+# so a block is compressed in line-aligned chunks that each fit one call.
+_HAIKU_MAX_INPUT_TOKENS = 150000
+
+
+def _split_block_lines(block, max_tokens):
+    """Split a category block at paper-line boundaries into chunks whose
+    estimated size stays under ``max_tokens``. The header goes first in each
+    chunk so the model keeps the category context."""
+    header, _, body = block.partition("\n")
+    chunks, current, size = [], [], 0
+    budget = max(1, max_tokens - _est_tokens(header) - 2000)
+    for line in body.splitlines():
+        cost = _est_tokens(line) + 1
+        if current and size + cost > budget:
+            chunks.append(header + "\n" + "\n".join(current))
+            current, size = [], 0
+        current.append(line)
+        size += cost
+    if current:
+        chunks.append(header + "\n" + "\n".join(current))
+    return chunks
+
+
 def _haiku_summarize_block(block, client, target_chars):
     """Compress a category block while preserving category header, paper
     numbers/years, and distilled technical signal."""
+    if _est_tokens(block) > _HAIKU_MAX_INPUT_TOKENS:
+        header = block.partition("\n")[0]
+        chunks = _split_block_lines(block, _HAIKU_MAX_INPUT_TOKENS)
+        per_chunk = max(1500, target_chars // len(chunks))
+        log(f"    [haiku-summarize] block exceeds Haiku context; "
+            f"{len(chunks)} chunks x ≤{per_chunk} chars")
+        parts = []
+        for chunk in chunks:
+            summary = _haiku_summarize_block(chunk, client, per_chunk)
+            lines = summary.splitlines()
+            if lines and lines[0].strip() == header.strip():
+                lines = lines[1:]
+            parts.append("\n".join(lines).strip())
+        merged = header + "\n" + "\n".join(part for part in parts if part)
+        if len(merged) <= target_chars:
+            return merged
+        return _haiku_summarize_block(merged, client, target_chars)
     prompt = (
         f"Compress the following academic-paper list to at most {target_chars} characters. "
         f"Preserve:\n"
