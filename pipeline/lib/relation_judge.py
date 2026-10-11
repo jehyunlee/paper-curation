@@ -149,13 +149,15 @@ def _sanitize(text: str, source_name: str, target_name: str, key_names: dict) ->
     the source's, and bare keys "C3" → candidate names. Bare "대상"/"후보"
     are ordinary Korean ("교수자를 대상으로", "후보 물질") and are left alone.
     """
-    text = re.sub(r"(?:기준|출처)\s*논문", source_name, text)
+    # Names come from titles and may contain backslashes (LaTeX); pass them
+    # through a function so re.sub never parses them as a template.
+    text = re.sub(r"(?:기준|출처)\s*논문", lambda _m: source_name, text)
 
     def candidate(match):
         key = match.group(1)
         return key_names.get(int(key), target_name) if key else target_name
     text = re.sub(r"(?:대상|후보)\s*논문(?:\s*C(\d+))?", candidate, text)
-    text = re.sub(r"이\s*논문", source_name, text)
+    text = re.sub(r"이\s*논문", lambda _m: source_name, text)
     text = re.sub(_KEY, lambda m: key_names.get(int(m.group(1)), m.group(0)), text)
     return re.sub(r"\s{2,}", " ", text).strip()
 
@@ -201,13 +203,23 @@ def _tool_schema() -> dict:
 
 
 def _parse_response(response) -> list[dict]:
+    kinds = []
     for block in getattr(response, "content", []) or []:
+        kinds.append(getattr(block, "type", "?"))
         if getattr(block, "type", None) == "tool_use" and getattr(block, "name", None) == "judge_relations":
             data = getattr(block, "input", None)
-            if isinstance(data, dict) and isinstance(data.get("judgments"), list):
-                return data["judgments"]
+            judgments = data.get("judgments") if isinstance(data, dict) else None
+            if isinstance(judgments, str):
+                # Haiku occasionally serialises the array as a JSON string.
+                try:
+                    judgments = json.loads(judgments)
+                except ValueError:
+                    judgments = None
+            if isinstance(judgments, list):
+                return judgments
     reason = getattr(response, "stop_reason", None)
-    raise ValueError(f"judge_relations tool was not returned (stop_reason={reason})")
+    raise ValueError(f"judge_relations tool was not returned "
+                     f"(stop_reason={reason}, blocks={kinds})")
 
 
 def _cost(tokens_in: int, tokens_out: int, model: str) -> float:
@@ -339,22 +351,30 @@ def judge_connections(connections, papers, *, topic, cache_dir, client, log=prin
                 stats["budget_skipped"] += len(pairs)
                 return
             spend["reserved"] += worst
-        try:
-            judged, (tin, tout) = _judge_source(
-                client, model, source_slug, profiles[source_slug], pairs)
-        except Exception as exc:  # network, rate limit, parse failure
+        for attempt in (1, 2):
+            if attempt == 2:
+                with lock:
+                    if spend["actual"] + spend["reserved"] + worst > cap:
+                        stats["budget_skipped"] += len(pairs)
+                        return
+                    spend["reserved"] += worst
+            try:
+                judged, (tin, tout) = _judge_source(
+                    client, model, source_slug, profiles[source_slug], pairs)
+            except Exception as exc:  # network, rate limit, parse failure
+                with lock:
+                    spend["reserved"] -= worst
+                    stats["failed_calls"] += 1
+                    if not first_error:
+                        first_error.append(f"{type(exc).__name__}: {str(exc)[:200]}")
+                continue
             with lock:
                 spend["reserved"] -= worst
-                stats["failed_calls"] += 1
-                if not first_error:
-                    first_error.append(f"{type(exc).__name__}: {str(exc)[:160]}")
+                spend["actual"] += _cost(tin, tout, model)
+                stats["calls"] += 1
+                for target, data in judged.items():
+                    pair_data[frozenset((source_slug, target))] = data
             return
-        with lock:
-            spend["reserved"] -= worst
-            spend["actual"] += _cost(tin, tout, model)
-            stats["calls"] += 1
-            for target, data in judged.items():
-                pair_data[frozenset((source_slug, target))] = data
 
     if assigned:
         with ThreadPoolExecutor(max_workers=workers) as pool:

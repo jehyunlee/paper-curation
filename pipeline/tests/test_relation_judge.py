@@ -216,5 +216,27 @@ class RelationJudgeTests(unittest.TestCase):
         self.assertEqual(judge.pair_cache_dir().name, ".llm_cache")
         self.assertNotIn("ai4s", str(judge.pair_cache_dir()))
 
+    def test_sanitizer_treats_names_as_literal_text(self):
+        self.assertEqual(judge._sanitize("기준 논문은 빠르다.", r"\lambda-Net", "B", {}),
+                         r"\lambda-Net은 빠르다.")
+        self.assertEqual(judge._sanitize("이 논문은 C1과 다르다.", r"\mathrm{X}", "B", {1: r"\beta-VAE"}),
+                         r"\mathrm{X}은 \beta-VAE과 다르다.")
+
+    def test_judgments_serialised_as_json_string_are_accepted(self):
+        import json as _json
+        raw = SimpleNamespace(content=[SimpleNamespace(type="tool_use", name="judge_relations",
+                                                        input={"judgments": _json.dumps([judgment()])})],
+                              usage=SimpleNamespace(input_tokens=10, output_tokens=5))
+        result = judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name,
+                                         client=FakeClient([raw]), log=lambda _: None)
+        self.assertEqual(result["a"][0]["basis"], "model")
+
+    def test_failed_call_is_retried_once(self):
+        client = FakeClient([RuntimeError("transient"), response([judgment()])])
+        result = judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name,
+                                         client=client, log=lambda _: None)
+        self.assertEqual(len(client.messages.calls), 2)
+        self.assertEqual(result["a"][0]["basis"], "model")
+
 if __name__ == "__main__":
     unittest.main()
