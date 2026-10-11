@@ -31,7 +31,6 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 DOCS = ROOT / "docs"
 CONNECTIONS_NAME = "_paper_connections.json"
-MODEL = "claude-sonnet-5"          # extract_insights.py's paper-connection model
 SOURCE = "extract_insights/paper_connections"
 
 
@@ -72,15 +71,33 @@ def load_json_connections() -> tuple[dict, dict]:
                     continue
                 for entry in (item.get("reasons")
                               or [{"relation": item.get("relation"),
-                                   "reason": item.get("reason")}]):
+                                   "reason": item.get("reason"),
+                                   "basis": item.get("basis"),
+                                   "model": item.get("model")}]):
                     relation = (entry.get("relation") or "related").strip()
+                    if relation == "related":
+                        relation = "alternative"
+                    basis = entry.get("basis", item.get("basis"))
+                    model = (entry.get("model", item.get("model")) or "").strip()
+                    if basis == "model":
+                        claim_model = model or "legacy:unknown"
+                    elif basis == "metadata":
+                        claim_model = "none:metadata"
+                    else:
+                        claim_model = "legacy:unknown"
                     key = (src, dst, relation)
                     claim = claims.setdefault(
                         key, {"reason": (entry.get("reason") or "").strip(),
-                              "topics": set()})
+                              "model": claim_model, "topics": set()})
                     claim["topics"].add(topic)
                     if not claim["reason"] and entry.get("reason"):
                         claim["reason"] = entry["reason"].strip()
+                    # Content-model provenance outranks metadata and legacy
+                    # duplicates for the same directional claim.
+                    if (claim_model != "legacy:unknown" and
+                            (claim["model"] in {"legacy:unknown", "none:metadata"}
+                             or claim_model != "none:metadata")):
+                        claim["model"] = claim_model
                     count += 1
         per_topic[topic] = count
     return claims, per_topic
@@ -102,7 +119,7 @@ def import_connections(db: Path, *, dry_run: bool = False) -> dict:
             if src_id == dst_id:            # a paper is not related to itself
                 continue
             rows.append((src_id, dst_id, relation, claim["reason"],
-                         ",".join(sorted(claim["topics"])), MODEL, now, SOURCE))
+                         ",".join(sorted(claim["topics"])), claim["model"], now, SOURCE))
         if not dry_run:
             conn.execute("DELETE FROM paper_connections")
             conn.executemany(

@@ -25,6 +25,7 @@ class BibliographyReleaseStepsTests(unittest.TestCase):
                 "setup_affiliation_sources",
                 "build_bibliography_db",
                 "finalize_bibliography_db",
+                "sync_paper_connections",
                 "check_bibliography_db",
                 "sync_bibliography_db (push)",
             ],
@@ -39,7 +40,8 @@ class BibliographyReleaseStepsTests(unittest.TestCase):
                 "--no-email",
             ],
         )
-        self.assertEqual(calls[3][1][-1], "--strict")
+        self.assertEqual(calls[3][1], ["python", "pipeline/sync_paper_connections.py", "--import"])
+        self.assertEqual(calls[4][1][-1], "--strict")
 
 
 if __name__ == "__main__":

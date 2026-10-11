@@ -36,6 +36,7 @@ REVERSE_RELATION = {
     "application": "foundation",
     "alternative": "alternative",
     "counterpoint": "counterpoint",
+    "related": "alternative",
 }
 
 # Canonical display/sort priority for relations (also used to pick the "primary"
@@ -44,17 +45,22 @@ REL_ORDER = {"foundation": 0, "alternative": 1, "extension": 2,
              "application": 3, "counterpoint": 4}
 
 
+def _normalize_relation(relation):
+    return "alternative" if relation == "related" else relation
+
+
 def _entry_reasons(entry):
-    """Normalize a connection entry to a list of (relation, reason) pairs.
+    """Normalize a connection entry to reason dictionaries.
 
     Accepts both the new multi-reason schema (``reasons: [{relation, reason}]``)
     and the legacy single ``relation``/``reason`` fields.
     """
     rs = entry.get("reasons")
     if isinstance(rs, list) and rs:
-        return [((r.get("relation") or "alternative"), r.get("reason", ""))
-                for r in rs]
-    return [((entry.get("relation") or "alternative"), entry.get("reason", ""))]
+        return [{**entry, **r, "relation": _normalize_relation(
+            r.get("relation") or "alternative")} for r in rs]
+    return [{**entry, "relation": _normalize_relation(
+        entry.get("relation") or "alternative")}]
 
 
 def _title_part(slug):
@@ -128,18 +134,23 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
     ones. The top-level ``relation``/``reason`` mirror the highest-priority reason
     for consumers that read a single relation.
     """
-    # buckets[src][tgt] = {relation: (reason, is_forward)} — one reason / relation
+    # buckets[src][tgt] = {relation: (payload, is_forward)} — one reason / relation
     buckets = {}
 
-    def _add(src, tgt, rel, reason, is_forward):
+    def _add(src, tgt, payload, is_forward):
         if not src or not tgt or src == tgt:
             return
+        rel = _normalize_relation(payload["relation"])
+        payload = {key: payload.get(key, "") for key in
+                   ("relation", "reason", "basis", "model", "evidence")}
+        payload["relation"] = rel
         relmap = buckets.setdefault(src, OrderedDict()).setdefault(tgt, OrderedDict())
         cur = relmap.get(rel)
-        # Keep one reason per relation: prefer a forward reason; otherwise keep
-        # the first one seen (stable).
-        if cur is None or (is_forward and not cur[1]):
-            relmap[rel] = (reason, is_forward)
+        # A content judgement is stronger than retrieval metadata; after that,
+        # a source-perspective reason wins over a synthesized reverse.
+        model = payload["basis"] == "model"
+        if cur is None or (model, is_forward) > (cur[0]["basis"] == "model", cur[1]):
+            relmap[rel] = (payload, is_forward)
 
     for src, conns in conns_by_slug.items():
         if resolve is not None:
@@ -152,16 +163,22 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
                 tgt = resolve(tgt)
                 if tgt is None:              # target deleted/ambiguous → drop this edge
                     continue
-            for rel, reason in _entry_reasons(entry):
-                _add(src, tgt, rel, reason, True)
-                _add(tgt, src, REVERSE_RELATION.get(rel, rel), reason, False)
+            for forward in _entry_reasons(entry):
+                _add(src, tgt, forward, True)
+                reverse = dict(forward)
+                reverse["relation"] = _normalize_relation(
+                    entry.get("reverse_relation") or
+                    REVERSE_RELATION.get(forward["relation"], forward["relation"]))
+                reverse["reason"] = (entry.get("reverse_reason") if
+                                     entry.get("reverse_reason") is not None else
+                                     forward.get("reason", ""))
+                _add(tgt, src, reverse, False)
 
     result = {}
     for src, tgts in buckets.items():
         items = []
         for tgt, relmap in tgts.items():
-            reasons = [{"relation": rel, "reason": rr[0]}
-                       for rel, rr in relmap.items()]
+            reasons = [dict(rr[0]) for rr in relmap.values()]
             reasons.sort(key=lambda r: REL_ORDER.get(r["relation"], 9))
             primary = reasons[0]
             items.append({
@@ -169,6 +186,9 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
                 "relation": primary["relation"],
                 "reason": primary["reason"],
                 "reasons": reasons,
+                "basis": primary["basis"],
+                "model": primary["model"],
+                "evidence": primary["evidence"],
             })
         items.sort(key=lambda c: (REL_ORDER.get(c["relation"], 9), c["slug"]))
         result[src] = items

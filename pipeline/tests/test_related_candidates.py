@@ -13,8 +13,8 @@ Techniques`` — a paper it literally cites:
      dense+lexical RRF lifts recall@5 6.80% -> 8.89% and recall@25
      17.15% -> 23.01%.
   2. The fused candidate ranking feeds ``lib.related.build_connections`` in
-     full rank order. Its relation, Korean reason, and evidence are derived
-     from recorded metadata, never an LLM judge.
+     full rank order. Its no-model fallback is explicitly labelled metadata,
+     never pretending that retrieval metadata is a content judgment.
 
 And one latent bug fixed on the way: 38 papers in the live ai4s+scisci corpus
 share an identical embedding with another paper (degenerate originality text),
@@ -174,7 +174,7 @@ class DeterministicConnectionTests(unittest.TestCase):
         self.assertEqual([link["slug"] for link in got[TARGET]],
                          [slug for slug, _score in candidates[TARGET]])
 
-    def test_build_connections_uses_metadata_backed_relation_and_evidence(self):
+    def test_build_connections_uses_honest_metadata_fallback_and_evidence(self):
         papers = [dict(p) for p in PAPERS]
         for paper in papers:
             paper["primary_category"] = "AI for Science"
@@ -184,11 +184,14 @@ class DeterministicConnectionTests(unittest.TestCase):
         got = related.build_connections(
             {TARGET: [(PREDECESSOR, 0.75)]}, papers, limit=1)
         link = got[TARGET][0]
-        self.assertEqual(link["relation"], "foundation")
-        self.assertEqual(link["evidence"]["shared_authors"], ["tu"])
-        self.assertTrue(link["evidence"]["same_category"])
-        self.assertIn("SPECTER2 임베딩 유사도 0.75", link["reason"])
-        self.assertIn("1년 앞선 연구", link["reason"])
+        self.assertEqual(link["relation"], "alternative")
+        self.assertEqual(link["basis"], "metadata")
+        self.assertEqual(link["model"], "")
+        self.assertEqual(link["evidence"], {
+            "cosine": 0.75, "source_year": 2025, "target_year": 2024,
+        })
+        self.assertEqual(link["reason"],
+                         "관계 미분석 — 임베딩 유사도로 추천된 후보입니다.")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

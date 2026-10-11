@@ -535,11 +535,12 @@ _GEMINI_CC_MODEL = os.environ.get("EXTRACT_INSIGHTS_CC_GEMINI_MODEL", "gemini-3.
 
 def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
                               topic_dir=None, topic_slugs=None):
-    """Build deterministic SPECTER2/BM25 related-paper connections.
+    """Build retrieved connections, then content-judge their relations when enabled.
 
     topic_modeling / paper-curio 와 **동일한 SPECTER2 임베딩 기준**을 공유한다:
     후보는 cosine와 제목/저자 BM25 RRF 순위이고, ``lib.related``가 기록된
-    메타데이터만으로 관계와 이유를 결정한다. 연결 단계는 provider를 호출하지 않는다.
+    메타데이터 후보는 ``RELATION_JUDGE=on``(기본)일 때만 별도 content judge가
+    관계와 이유를 판정한다. ``off``면 provider를 만들거나 호출하지 않는다.
 
     연결을 생성할 대상은 `cat_papers`(= --categories 필터 반영)에 한정하되, 후보
     풀은 `all_topic_papers` 전체에서 뽑아 cross-category 연결을 유지한다."""
@@ -589,6 +590,23 @@ def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
     linked = sum(1 for links in all_connections.values() if links)
     log(f"  연결 생성: {linked}/{len(all_connections)}편, "
         f"{sum(len(links) for links in all_connections.values())} directed edges")
+    if os.environ.get("RELATION_JUDGE", "on").lower() != "off":
+        from lib.credentials import CredentialsError, resolve_credential
+        from lib.relation_judge import judge_connections, pair_cache_dir
+        # The key may live only in the OS keyring (the shell can strip
+        # ANTHROPIC_API_KEY), so resolve it the way local reviews do instead
+        # of relying on the SDK's environment lookup.
+        try:
+            api_key = resolve_credential("anthropic")
+        except CredentialsError as exc:
+            raise SystemExit(
+                "relation judge needs an Anthropic credential "
+                f"({exc}); pass --no-relation-judge to keep metadata candidates")
+        client = Anthropic(api_key=api_key,
+                           timeout=float(os.environ.get("EXTRACT_INSIGHTS_HTTP_TIMEOUT", "120")),
+                           max_retries=int(os.environ.get("EXTRACT_INSIGHTS_HTTP_RETRIES", "1")))
+        all_connections = judge_connections(
+            all_connections, pool, topic=topic, cache_dir=pair_cache_dir(), client=client, log=log)
 
     # 영속화: merge_to_global → filter_for_topic → per-topic JSON
     if topic_dir and topic_slugs:
@@ -635,7 +653,7 @@ def _run_insights(topic="ai4s", *, insights_only=False, connections_only=False,
         except Exception as e:
             log(f"  [backend] OpenAI init failed: {str(e)[:80]}")
     client = clients["anthropic"] or clients["openai"]
-    log(f"  [backend] paper connections: deterministic SPECTER2/BM25; "
+    log(f"  [backend] paper connections: SPECTER2/BM25 + content judge; "
         f"cross-category insights: {'/'.join(_CC_BACKENDS)}")
 
     if run_insights:
@@ -697,6 +715,8 @@ def main():
     parser.add_argument("--topic", default="ai4s")
     parser.add_argument("--insights-only", action="store_true", help="Cross-category insights only")
     parser.add_argument("--connections-only", action="store_true", help="Paper connections only")
+    parser.add_argument("--no-relation-judge", action="store_true",
+                        help="Skip LLM relation judging; retain metadata fallback candidates")
     parser.add_argument("--only", choices=["connections", "insights", "all"], default="all",
                         help="생성 대상 선택. connections=paper connections(Core)만, "
                              "insights=cross-category insights(Option)만, all=둘 다(기본, 하위호환).")
@@ -705,6 +725,8 @@ def main():
     # --only 를 기존 *_only 게이트로 매핑 (둘 다 동일 효과; --insights-only/--connections-only 와 OR).
     insights_only = args.insights_only or args.only == "insights"
     connections_only = args.connections_only or args.only == "connections"
+    if args.no_relation_judge:
+        os.environ["RELATION_JUDGE"] = "off"
     _run_insights(topic=args.topic, insights_only=insights_only,
                   connections_only=connections_only, categories=args.categories)
 

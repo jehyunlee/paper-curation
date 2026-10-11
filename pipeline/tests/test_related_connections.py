@@ -19,7 +19,7 @@ PIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PIPELINE not in sys.path:
     sys.path.insert(0, PIPELINE)
 
-from lib.related import build_connections  # noqa: E402
+from lib.related import METADATA_REASON, build_connections  # noqa: E402
 
 
 PAPERS = [
@@ -44,13 +44,22 @@ class DeterministicBuilderTests(unittest.TestCase):
         self.assertEqual(len(result["001_Source"]), 1)
         link = result["001_Source"][0]
         self.assertEqual(link["slug"], "002_Earlier")
-        self.assertEqual(link["relation"], "foundation")
-        self.assertIn("SPECTER2", link["reason"])
-        self.assertEqual(link["evidence"]["shared_authors"], ["lovelace"])
+        self.assertEqual(link["relation"], "alternative")
+        self.assertEqual(link["reason"], METADATA_REASON)
+        self.assertEqual(link["basis"], "metadata")
+        self.assertEqual(link["model"], "")
+        self.assertEqual(link["evidence"], {
+            "cosine": 0.91, "source_year": 2024, "target_year": 2022,
+        })
 
 
 class ExtractInsightsWiringTests(unittest.TestCase):
     def setUp(self):
+        # These tests cover retrieval wiring only. The judge resolves a real
+        # keyring credential, so leaving it on would make a paid API call.
+        self.judge_off = patch.dict(os.environ, {"RELATION_JUDGE": "off"})
+        self.judge_off.start()
+        self.addCleanup(self.judge_off.stop)
         self.topic_modeling = types.ModuleType("topic_modeling")
         self.topic_modeling.extract_originalities = lambda papers: papers
         self.topic_modeling.compute_embeddings = lambda originalities, cache_path: (
@@ -76,7 +85,7 @@ class ExtractInsightsWiringTests(unittest.TestCase):
         connections = self.ei.extract_paper_connections(
             "demo", {"Methods": PAPERS}, PAPERS
         )
-        self.assertEqual(connections["001_Source"][0]["relation"], "foundation")
+        self.assertEqual(connections["001_Source"][0]["relation"], "alternative")
         self.assertEqual(connections["003_Alternative"], [])
 
     def test_narrow_and_other_categories_do_not_become_targets(self):

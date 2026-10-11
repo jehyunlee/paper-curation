@@ -363,6 +363,13 @@ def run_bibliography_release_steps(run_step):
          "--no-email"],
         600,
     )
+    # Related-paper claims live in the per-topic JSON views; nothing else
+    # refreshed the DB's paper_connections table, so it drifted from them.
+    run_step(
+        "sync_paper_connections",
+        ["python", "pipeline/sync_paper_connections.py", "--import"],
+        600,
+    )
     run_step(
         "check_bibliography_db",
         ["python", "pipeline/check_bibliography_db.py", "--strict"],
@@ -2814,6 +2821,7 @@ def main():
             "refresh_retrieval_eval_snapshot",
             "build_bibliography_db",
             "finalize_bibliography_db",
+            "sync_paper_connections",
             "check_bibliography_db",
             "sync_bibliography_db (push)",
         }
