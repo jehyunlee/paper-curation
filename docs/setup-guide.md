@@ -468,7 +468,7 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic my_topic --mode curate --source
 |---|---|---|
 | `op_CALL_KW: pop from empty list` (numba 트레이스백) | `py312` env 밖에서 분류가 실행됨 | `conda activate py312` 후 재실행 |
 | `ModuleNotFoundError: umap` / `hdbscan` / `sentence_transformers` | 의존성 누락 | env 활성화 후 `pip install -r requirements.txt` (umap-learn·hdbscan·sentence-transformers 포함) |
-| Figure 품질이 낮음 / 표·구조가 깨짐 | Java 미설치로 PyMuPDF fallback | `brew install --cask temurin` (macOS) 후 재실행 |
+| `text.md`의 표·구조가 깨짐 / 로그에 `OpenDataLoader unavailable` 또는 `OpenDataLoader failed` | `opendataloader-pdf` 미설치 또는 Java 미설치로 PyMuPDF fallback | `pip install -r requirements.txt` 후 `brew install --cask temurin` (macOS), 재실행 |
 | SPECTER2 / arXiv 다운로드가 멈춤 (한국 망) | huggingface LFS·arXiv 차단 | [operations.md "Korean network workarounds"](operations.md#korean-network-workarounds) 의 S3 미러 명령 사용 |
 | 전체 Zotero workflow의 `[COLLECTION_ERROR]` | Zotero 컬렉션 이름 오타 | 출력의 사용 가능한 컬렉션 목록에서 올바른 이름 선택 후 재실행 |
 | 검색 인덱스가 빈 임베딩으로 빌드됨 | `GOOGLE_API_KEY` 미설정 | `export GOOGLE_API_KEY=...` 후 재실행 — 검색 임베딩은 Google `gemini-embedding-001` 사용 (OpenAI 키는 더 이상 필수 아님) |
