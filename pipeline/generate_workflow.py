@@ -258,6 +258,7 @@ _CHARACTER_DB = {
     "register_zotero":         ("Register",  "green",   "tuxedo cat with round glasses, carries a stack of tiny books on its head", "carries a tiny book stack, green wings"),
     "sync_zotero":             ("Sync",      "green",   "tuxedo cat checking a pocket watch, syncing two book piles", "syncs two floating book stacks, green wings"),
     "run_update_force":        ("Review",    "orange",  "fluffy white cat wearing a beret, writes with a quill pen, ink spot on nose", "writes with a quill pen, orange wings"),
+    "run_metrics":             ("Metrics",   "plum",    "hairless Sphynx cat at a small dashboard, reading rising citation-count bars", "reads glowing citation bars, plum wings"),
     "build_papers_index":      ("Index",     "amber",   "Abyssinian cat stacking tiny index cards into a filing cabinet", "sorts floating index cards, amber wings"),
     "classify_papers":         ("Classify",  "red",     "calico cat sorting colorful paper cards with both paws, focused expression", "sorts colorful cards, red wings"),
     "topic_modeling":          ("Related",   "crimson", "a cinnamon Somali cat reading two papers side by side, tying them with a red thread and writing a short note between them to judge one related pair", "reads two scrolls tied by red thread, crimson wings"),

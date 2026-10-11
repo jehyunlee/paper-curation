@@ -152,12 +152,17 @@ def build_cat_prompt(lang: str) -> tuple[str, str]:
     entry_points = "\n".join(f"- {item}" for item in labels["entry"])
     runner_steps = "\n".join(f"- {item}" for item in labels["engine_steps"])
     lanes = []
+    # Field names ("Lane name:", "Requirement:") and colour words were
+    # rendered verbatim by the image model, so the prompt carries only the
+    # strings to print, each quoted, with its role stated in prose.
     for key, name, requirement, cells in labels["lanes"]:
+        steps = "\n".join(f'  - "{cell}"' for cell in cells)
         lanes.append(
-            f"#### {key}\n"
-            f"- Lane name: {name}\n"
-            f"- Requirement: {requirement}\n"
-            + "\n".join(f"- {cell}" for cell in cells)
+            f'#### {key} path\n'
+            f'Banner above this path (not a cat): "{name}", with the smaller '
+            f'subtitle "{requirement}".\n'
+            f'Exactly three cats walk this path, each over one pill, left to right:\n'
+            f'{steps}'
         )
     footer = "\n".join(f"- {item}" for item in labels["footer"])
     method = f"""## {labels["title"]}
@@ -182,6 +187,8 @@ def build_cat_prompt(lang: str) -> tuple[str, str]:
 - Draw Read, AI, and Collection as separate winding paw-print paths tinted green, blue, and orange respectively.
 - Put every Collection cat inside a dashed fence with a small OPTION-like sign meaning explicit request only.
 - Render the supplied labels exactly as written, using short pill labels; add no extra text, no numbers, and no filenames beyond the two entry-point names.
+- Print only the quoted strings and the headings' Korean/English text. Never print role words such as "banner", "subtitle", "path", "lane", "requirement", "step", or any colour name.
+- A path's banner and subtitle sit above its three cats; they are never drawn as a cat or a step pill.
 - Use only the supplied title, entry points, runner, lane, credentials, and safety text.
 """
     caption = (
