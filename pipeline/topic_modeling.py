@@ -25,6 +25,7 @@ from datetime import datetime
 from pathlib import Path
 
 from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir
+from lib.credentials import anthropic_client
 
 PAPERS_DIR = str(_PAPERS_DIR)
 
@@ -905,8 +906,7 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
     else:
         # Category naming is the only model-backed step left in this module;
         # connections below are computed in embedding space without a model.
-        from anthropic import Anthropic
-        client = Anthropic(timeout=180.0, max_retries=4)
+        client = anthropic_client(timeout=180.0, max_retries=4)
         # Step 4: Name sub-topics
         log("\n" + "=" * 50)
         log("STEP 4: SUB-TOPIC NAMING (Sonnet)")

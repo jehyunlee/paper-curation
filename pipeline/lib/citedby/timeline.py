@@ -268,9 +268,9 @@ def _select_best(results: list, caption: str = ""):
     if len(results) == 1:
         return results[0]
     try:
-        from anthropic import Anthropic
+        from lib.credentials import anthropic_client
 
-        judge = Anthropic(timeout=180.0, max_retries=3)
+        judge = anthropic_client(timeout=180.0, max_retries=3)
         content = []
         for n, (_i, _sz, _path, png) in enumerate(results, 1):
             content.append({"type": "text", "text": f"--- Candidate {n} ---"})

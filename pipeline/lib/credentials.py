@@ -110,6 +110,20 @@ def resolve_credential(
     raise CredentialNotConfigured("credential is not configured")
 
 
+def anthropic_client(**kwargs: Any) -> Any:
+    """Anthropic client whose key comes from the environment or OS keyring.
+
+    Without a configured key it falls back to the SDK's own environment lookup,
+    so a missing key still fails at call time exactly as before.
+    """
+    from anthropic import Anthropic
+
+    try:
+        return Anthropic(api_key=resolve_credential("anthropic"), **kwargs)
+    except CredentialsError:
+        return Anthropic(**kwargs)
+
+
 def store_credential(provider: str, value: str) -> str:
     """Store a credential in the configured OS keyring and return its reference."""
     provider = _provider(provider)

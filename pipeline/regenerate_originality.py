@@ -39,6 +39,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config_loader import PAPERS_DIR as _PAPERS_DIR
+from lib.credentials import CredentialsError, anthropic_client, resolve_credential
 from lib.originality_extractor import (
     looks_unusable, read_provenance, text_digest, write_provenance,
 )
@@ -110,18 +111,19 @@ def call_local(window, timeout=900.0):
 def build_backends(names):
     """이름 목록 → [(label, callable)]. 키·엔드포인트가 없으면 조용히 제외."""
     chain = []
-    anthropic_client = None
+    client = None
     for name in names:
         if name in ANTHROPIC_MODELS:
-            if anthropic_client is None:
-                if not os.environ.get("ANTHROPIC_API_KEY"):
-                    log(f"  [backend] {name}: ANTHROPIC_API_KEY 없음 — 제외")
+            if client is None:
+                try:
+                    resolve_credential("anthropic")
+                except CredentialsError:
+                    log(f"  [backend] {name}: Anthropic credential 없음 — 제외")
                     continue
-                from anthropic import Anthropic
-                anthropic_client = Anthropic(timeout=180.0, max_retries=3)
+                client = anthropic_client(timeout=180.0, max_retries=3)
             model = ANTHROPIC_MODELS[name]
             chain.append((f"llm.{name}",
-                          lambda w, m=model, c=anthropic_client: call_anthropic(c, m, w)))
+                          lambda w, m=model, c=client: call_anthropic(c, m, w)))
         elif name == "local":
             chain.append(("llm.local", call_local))
         else:

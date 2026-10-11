@@ -41,6 +41,7 @@ if str(PIPELINE) not in sys.path:
     sys.path.insert(0, str(PIPELINE))
 
 import build_bibliography_db as bib            # noqa: E402
+from lib.credentials import CredentialsError, anthropic_client, resolve_credential  # noqa: E402
 from lib.evidence import (RESOLVED_SOURCES, attempted,   # noqa: E402
                           record_attempt)
 
@@ -239,12 +240,13 @@ def main() -> int:
     args = ap.parse_args()
     if not (args.validate or args.unresolved or args.augment):
         ap.error("--validate / --unresolved / --augment 중 하나가 필요하다")
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("ANTHROPIC_API_KEY 가 없다", file=sys.stderr)
+    try:
+        resolve_credential("anthropic")
+    except CredentialsError:
+        print("Anthropic credential 가 없다", file=sys.stderr)
         return 2
 
-    import anthropic
-    client = anthropic.Anthropic(timeout=180.0, max_retries=4)
+    client = anthropic_client(timeout=180.0, max_retries=4)
     conn = sqlite3.connect(args.db, timeout=60.0)
     conn.execute("PRAGMA busy_timeout = 60000")
     mode = ("validate" if args.validate

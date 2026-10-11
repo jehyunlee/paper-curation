@@ -10,7 +10,7 @@ PDF↔review 오매칭 자동 복구 오케스트레이터 (T1-1 auto-recovery).
   2. 확정 오매칭 집합 결정:
        - "high" 버킷 슬러그는 전부 AUTO 확정
        - "medium" 버킷은 LLM(Anthropic tool-schema) 판정으로 true-mismatch 인
-         것만 확정. `--no-llm` 이거나 ANTHROPIC_API_KEY 가 없으면 LLM 을 건너뛰고
+         것만 확정. `--no-llm` 이거나 Anthropic credential 이 없으면 LLM 을 건너뛰고
          medium 은 보수적으로 '미확정' 처리.
   3. dry-run(기본): 어떤 슬러그를 fix+re-review 할지 계획만 출력하고 STOP — 변경 없음.
   4. --execute: 확정 슬러그에 대해 fix_matching.py --execute (자체 백업 생성) →
@@ -19,7 +19,7 @@ PDF↔review 오매칭 자동 복구 오케스트레이터 (T1-1 auto-recovery).
 
 안전장치:
   - 기본 dry-run (--execute 없으면 절대 삭제/재리뷰 안 함)
-  - 어떤 에러(키 없음/네트워크/파싱 실패)에도 크래시하지 않고 현재 동작으로 graceful fallback
+  - 어떤 에러(credential 없음/네트워크/파싱 실패)에도 크래시하지 않고 현재 동작으로 graceful fallback
   - fix_matching.py 가 자체 백업을 만들고, 다른 토픽 공유 슬러그는 건너뛴다
 
 Usage:
@@ -38,7 +38,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from config_loader import get_topic_dir, load_config
+from config_loader import get_topic_dir
+from lib.credentials import CredentialsError, anthropic_client, resolve_credential
 
 PIPELINE = Path(__file__).resolve().parent
 PY = sys.executable
@@ -125,8 +126,7 @@ def _anthropic_judge(medium_results, *, model=JUDGE_MODEL):
 
     실패 시 예외를 raise — 호출부(build_plan)가 잡아 medium 을 '미확정'으로 fallback.
     """
-    from anthropic import Anthropic
-    client = Anthropic(timeout=180.0, max_retries=4)
+    client = anthropic_client(timeout=180.0, max_retries=4)
     prompt = _build_judge_prompt(medium_results)
     resp = client.messages.create(
         model=model,
@@ -226,10 +226,11 @@ def build_plan(report, *, no_llm=False, llm_judge=None, has_anthropic_key=None,
         })
 
     if has_anthropic_key is None:
-        has_anthropic_key = bool(
-            os.environ.get("ANTHROPIC_API_KEY")
-            or (load_config() or {}).get("anthropic_api_key", "")
-        )
+        try:
+            resolve_credential("anthropic")
+            has_anthropic_key = True
+        except CredentialsError:
+            has_anthropic_key = False
 
     medium_confirmed, medium_rejected, medium_skipped = [], [], []
     llm_used = False

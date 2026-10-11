@@ -42,6 +42,7 @@ if str(PIPELINE) not in sys.path:
 
 import build_bibliography_db as bib            # noqa: E402
 import extract_byline_llm as llm               # noqa: E402
+from lib.credentials import CredentialsError, anthropic_client, resolve_credential  # noqa: E402
 
 PAPERS_DIR = ROOT / "docs" / "papers"
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
@@ -227,12 +228,13 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=20260814)
     ap.add_argument("--out", type=Path)
     args = ap.parse_args()
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("ANTHROPIC_API_KEY 가 없다", file=sys.stderr)
+    try:
+        resolve_credential("anthropic")
+    except CredentialsError:
+        print("Anthropic credential 가 없다", file=sys.stderr)
         return 2
 
-    import anthropic
-    client = anthropic.Anthropic(timeout=180.0, max_retries=4)
+    client = anthropic_client(timeout=180.0, max_retries=4)
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
     rows = conn.execute(
         "SELECT DISTINCT p.paper_id, p.slug,"

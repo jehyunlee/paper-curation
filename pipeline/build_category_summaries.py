@@ -14,9 +14,9 @@ import json
 import os
 import re
 from collections import defaultdict
-from anthropic import Anthropic
 
 from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir
+from lib.credentials import anthropic_client
 PAPERS_DIR = str(_PAPERS_DIR)
 
 def _anthropic_text(resp):
@@ -202,7 +202,7 @@ def _run_category_summary(topic="ai4s", *, regen_ko=False, categories=None):
         key = (pc, sc)
         sub_papers[key].append(p)
 
-    client = Anthropic(timeout=180.0, max_retries=4)
+    client = anthropic_client(timeout=180.0, max_retries=4)
 
     if regen_ko and os.path.exists(sum_path):
         with open(sum_path, "r", encoding="utf-8") as f:

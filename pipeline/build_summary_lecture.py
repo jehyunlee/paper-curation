@@ -21,6 +21,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from lib.credentials import CredentialsError, anthropic_client, resolve_credential
+
 PIPE = Path(__file__).resolve().parent
 # 레저/산출물 경로는 docs/_agent/dashun_wang (없으면 env 로 넘겨받음)
 os.environ.setdefault("PC_AGENT_DIR", str(PIPE.parent / "docs" / "_agent" / "dashun_wang"))
@@ -124,10 +126,13 @@ def synthesize_summary(course, led, evidence):
         errs.append(("gemini", str(e)[:140]))
 
     # 2) Anthropic claude-sonnet-5 — 파이프라인 기본 합성 모델 (Gemini 쿼터 소진 시 fallback)
-    if os.environ.get("ANTHROPIC_API_KEY"):
+    try:
+        resolve_credential("anthropic")
+    except CredentialsError:
+        pass
+    else:
         try:
-            from anthropic import Anthropic
-            ac = Anthropic(timeout=600.0, max_retries=4)
+            ac = anthropic_client(timeout=600.0, max_retries=4)
             out = []
             with ac.messages.stream(model="claude-sonnet-5", max_tokens=32000,
                                     messages=[{"role": "user", "content": prompt}]) as stream:
@@ -236,7 +241,6 @@ def build_audio(report_text):
     """정리편 Audio Overview. 대본=Claude Sonnet(2인 대화), 음성=Gemini 멀티스피커 TTS."""
     import generate_audio as ga
     import lameenc
-    from anthropic import Anthropic
     from concurrent.futures import ThreadPoolExecutor, as_completed
     lang = "ko"
     roles = ga.ROLES[lang][2]
@@ -252,7 +256,7 @@ def build_audio(report_text):
         sz = max(1, -(-len(report_text) // n_seg))
         segs = [report_text[i:i + sz] for i in range(0, len(report_text), sz)]
 
-    ac = Anthropic(timeout=600.0, max_retries=4)
+    ac = anthropic_client(timeout=600.0, max_retries=4)
     scripts = [""] * len(segs)
     print(f"     대본 병렬 생성 {len(segs)} parts (claude-sonnet-5)", flush=True)
     with ThreadPoolExecutor(max_workers=3) as ex:

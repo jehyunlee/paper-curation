@@ -41,6 +41,7 @@ if str(PIPELINE) not in sys.path:
     sys.path.insert(0, str(PIPELINE))
 
 from lib.evidence import RESOLVED_SOURCES                      # noqa: E402
+from lib.credentials import anthropic_client                   # noqa: E402
 
 DEFAULT_DB = ROOT / ".cache" / "bibliography.sqlite3"
 # Papers whose DOI appears only in their own reference list, from
@@ -316,8 +317,7 @@ def describe(profiles: list[dict], use_llm: bool) -> None:
         for _inst, person in todo:
             person["description"] = person["papers"][0]["title"]
         return
-    import anthropic
-    client = anthropic.Anthropic(timeout=180.0, max_retries=4)
+    client = anthropic_client(timeout=180.0, max_retries=4)
     batch = 25
     for start in range(0, len(todo), batch):
         chunk = todo[start:start + batch]
