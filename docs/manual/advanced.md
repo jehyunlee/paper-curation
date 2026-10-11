@@ -282,18 +282,28 @@ python pipeline/run_feature.py --list
 
 ### 5.1 현재 connections 구현
 
-connections의 현재 코드는 `pipeline/lib/related.py`, `pipeline/topic_modeling.py`,
-`pipeline/extract_insights.py`를 기준으로 본다.
-후보 순위는 SPECTER2 cosine 유사도와 title/author BM25를 RRF(`k=60`)로 결합하고, `related.py`는 그 순위와
-기록된 메타데이터만으로 최대 링크 수, `foundation`/`extension`/`alternative`, 한국어 근거 문장을
-결정한다. 즉 이 단계는 provider SDK를 부르거나 LLM judge로 관계를 발명하지 않는다. Curio 최소 리뷰는
-connections를 만들지 않는다.
+`topic_modeling.py`의 Step 6은 메타데이터 후보만 만든다. SPECTER2 cosine 유사도와 title/author BM25를
+RRF(`k=60`)로 결합해 논문당 `RELATION_LINKS`개(기본 5개)까지 고르고, 뒤이은
+`extract_insights.py` connections pass가 각 쌍의 리뷰 Essence·Motivation Gap/Approach·첫 Achievement를 읽어
+Claude Haiku에 보낸다. Haiku는 두 논문의 짧은 이름을 모두 부르고 공통 문제·방법·발견과 차이를 말하는 중립적
+한국어 한 문장을 쓰며, 같은 문장이 양쪽 논문 페이지에 표시된다. Curio 최소 리뷰는 connections를 만들지 않는다.
 
-`topic_modeling.py`의 Step 6과 `extract_insights.py`의 전체 workflow 후속 connections pass는 같은
-결정론적 builder를 사용한다. 후자는 카테고리 대상 범위, 토픽 전체 후보 풀, 기존 결과와의 병합 저장을
-유지한다.
-`EXTRACT_INSIGHTS_TOPN_CAND`는 후보 폭만 조정한다. 이 relation/reason은 탐색 보조용
-메타데이터 휴리스틱이며, 확립된 인과 또는 인용 관계를 뜻하지 않는다.
+judge는 `this_builds_on_candidate`, `candidate_builds_on_this`, `candidate_applies_this`, `alternative`,
+`counterpoint`, `unrelated`처럼 방향을 명시한 키를 반환하고 코드는 역방향 관계를 유도하며, 불가능한 출판연도
+계보는 `alternative`로 바꾼다. 공개 관계는 `foundation`·`extension`·`application`·`alternative`·`counterpoint`이고
+`unrelated` 쌍은 제거한다. judge가 꺼져 있거나 실패·예산 초과면 후보를 지우지 않고 “관계 미분석 — 임베딩
+유사도로 추천된 후보입니다.”를 정직한 fallback으로 남긴다. 새 모델 판정은 같은 쌍의 이전 메타데이터·legacy
+줄을 대체하며, 퇴역한 SPECTER2 임베딩 문구는 fallback 텍스트로만 보인다.
+
+`RELATION_JUDGE=on|off`(기본 `on`), `RELATION_JUDGE_MODEL`(기본 `claude-haiku-4-5`),
+`RELATION_JUDGE_MAX_USD`(기본이자 실행당 하드 상한 `5.0`), `RELATION_JUDGE_WORKERS`(기본 `6`)로 제어하고,
+`extract_insights.py --no-relation-judge`로 judge를 끈다. Anthropic 키는 환경변수 또는 `lib.credentials`를
+통한 OS keyring에서 읽는다. `docs/papers/.llm_cache/relation_pairs/`의 공유 캐시는 프롬프트 버전·모델·양쪽
+slug·양쪽 profile hash로 키를 만들므로 새롭거나 바뀐 쌍만 과금된다. 후보 5개면 Haiku 비용은 편당 약 $0.009,
+ai4s 2,709편 전체 실행은 약 $18였다.
+
+이는 리뷰 내용에 대한 모델 판정이며 검증된 인용·인과관계나 과학적 확장의 증거가 아니다. 독자는 두 논문을
+직접 확인해야 한다.
 
 ### 5.2 Curio 컬렉션 전체 처리
 

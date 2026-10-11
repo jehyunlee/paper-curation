@@ -334,7 +334,8 @@ Phase 2 added per-category parallelism for the post-review phase:
 - `CAT_SUMMARY_PARALLEL` (default 8) — Haiku per-category summaries
 - `TIMELINE_NARRATIVE_PARALLEL` (default 8) — Opus per-category narratives
 - `TIMELINE_IMAGE_PARALLEL` (default 4) — PaperBanana per-category images
-- `EXTRACT_INSIGHTS_PARALLEL` (default 4) — Sonnet per-category paper_connections
+- `EXTRACT_INSIGHTS_PARALLEL` (default 4) — Sonnet per-category summaries and connections orchestration
+- `RELATION_JUDGE_WORKERS` (default 6) — concurrent Claude Haiku pair judgements
 
 Wall-clock for finalize phase: ~25 min → ~6 min at Tier 4.
 
@@ -366,15 +367,34 @@ brew install --cask temurin   # Java for opendataloader-pdf
 - **arXiv chronic 429**: `search_papers.py --skip-arxiv` (OpenAlex + S2 only)
 - **OpenDataLoader fallback**: PyMuPDF takes over silently; install
   Temurin Java to get pdffigures2 structure
-- **Related-Papers connections**: `topic_modeling.py` builds them locally and
-  deterministically from SPECTER2 cosine plus title/author BM25 RRF ranks;
-  `extract_insights.py` uses the same candidate and `lib/related.py`
-  `build_connections` path while preserving its category scope, whole-topic
-  candidate pool, and merged persistence. `lib/related.py` derives relation
-  and Korean reason from recorded metadata.
-  It makes no Anthropic request and has no LLM retry or local-model fallback.
-  `EXTRACT_INSIGHTS_TOPN_CAND` controls candidate breadth. Relations are
-  metadata-derived heuristic aids, not established causal or citation links.
+- **Related-Papers connections**: `topic_modeling.py` Step 6 produces only
+  candidates: SPECTER2 cosine plus title/author BM25 ranks fused with RRF
+  (`k=60`), up to `RELATION_LINKS` per paper (default 5). The
+  `extract_insights.py` connections pass reads each pair’s Essence, Motivation
+  Gap/Approach, and first Achievement and asks Claude Haiku for one neutral
+  Korean sentence that names both short paper names and states the shared
+  problem/method/finding and difference. It is shown identically on both pages.
+  Model outcomes map to `foundation`, `extension`, `application`,
+  `alternative`, or `counterpoint`; reverse direction is derived in code and an
+  impossible publication-year lineage becomes `alternative`. `unrelated` pairs
+  are removed. When the judge is off, fails, or reaches budget, retain the
+  candidate as “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” with relation
+  `alternative`.
+
+  Control it with `RELATION_JUDGE=on|off` (default `on`),
+  `RELATION_JUDGE_MODEL` (default `claude-haiku-4-5`),
+  `RELATION_JUDGE_MAX_USD` (default and hard per-run cap `5.0`), and
+  `RELATION_JUDGE_WORKERS` (default `6`), or pass
+  `extract_insights.py --no-relation-judge`. The Anthropic key is resolved from
+  the environment or OS keyring by `lib.credentials`. Shared cache entries live
+  in `docs/papers/.llm_cache/relation_pairs/` and are keyed by prompt version,
+  model, both slugs, and both profile hashes; only new or changed pairs are
+  charged. Measured cost is about $0.009 per paper with five candidates, or
+  about $18 for all 2,709 ai4s papers. During bibliography release steps,
+  `sync_paper_connections.py --import` imports these links; each
+  `paper_connections` row records its actual basis in `model` (judge model ID,
+  `none:metadata`, or `legacy:unknown`). Model judgements are exploratory, not
+  verified causal or citation relationships.
 
 ## Schema v1 frontmatter (Phase 3)
 

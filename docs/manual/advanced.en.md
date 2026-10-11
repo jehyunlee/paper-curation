@@ -221,11 +221,13 @@ Online mode can use configured bibliography sources, but pricing may not permit 
 
 ### 5.1 Current connections implementation
 
-Connections are built deterministically by `pipeline/lib/related.py` from candidates computed in `pipeline/topic_modeling.py`. Candidate ranking fuses SPECTER2 cosine similarity with title/author BM25 using reciprocal-rank fusion (RRF, `k=60`). The metadata builder then uses that ranking and recorded metadata only to choose up to the link limit, assign `foundation`, `extension`, or `alternative`, and write Korean rationale text. This path uses no provider SDK or LLM judge. A Curio minimal review does not create connections.
+`topic_modeling.py` Step 6 builds metadata candidates only: it RRF-fuses SPECTER2 cosine similarity and title/author BM25 (`k=60`) and keeps up to `RELATION_LINKS` candidates per paper (default 5). The subsequent `extract_insights.py` connections pass reads each pair’s review Essence, Motivation Gap/Approach, and first Achievement, then asks Claude Haiku to write one neutral Korean sentence naming both short paper names, their shared problem, method, or finding, and their difference. The identical sentence appears on both paper pages. A Curio minimal review does not create connections.
 
-Step 6 in `topic_modeling.py` and the subsequent connections pass in `extract_insights.py` use the same deterministic SPECTER2/BM25/RRF metadata builder. The latter preserves category-target scope, a topic-wide candidate pool, and merged-result storage.
+The judge returns the direction-explicit keys `this_builds_on_candidate`, `candidate_builds_on_this`, `candidate_applies_this`, `alternative`, `counterpoint`, or `unrelated`; code derives the reverse link and turns impossible publication-year lineages into `alternative`. Published relation labels are `foundation`, `extension`, `application`, `alternative`, and `counterpoint`; `unrelated` pairs are removed. If judging is off, fails, or reaches budget, the candidate remains as the honest fallback “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” A new model judgement supersedes older metadata or legacy lines; retired SPECTER2-embedding wording is fallback text only.
 
-Relation labels and rationale are metadata heuristics, not verified citations, causality, or proof of a scientific extension. Shared surname keys and publication years can be incomplete or ambiguous. Inspect the stored `evidence` and the papers themselves.
+Set `RELATION_JUDGE=on|off` (default `on`), `RELATION_JUDGE_MODEL` (default `claude-haiku-4-5`), `RELATION_JUDGE_MAX_USD` (default and hard per-run cap `5.0`), and `RELATION_JUDGE_WORKERS` (default `6`); `extract_insights.py --no-relation-judge` disables judging. The Anthropic key comes from the environment or OS keyring through `lib.credentials`. Shared cache entries under `docs/papers/.llm_cache/relation_pairs/` are keyed by prompt version, model, both slugs, and both profile hashes, so only new or changed pairs cost money. Haiku measures about $0.009 per paper with five candidates; a 2,709-paper ai4s pass cost about $18.
+
+These are model judgements from review content, not verified citations, causality, or proof of a scientific extension. Readers should check both papers.
 
 ### 5.2 Curio collection-wide processing
 
@@ -308,7 +310,7 @@ BM25 search and offline bibliography updates are local. Semantic embeddings, clo
 2. Check existing `text.md`, review, index, sidecar, and cache.
 3. Start with one paper, small `top_k`, and low output tokens.
 4. Resolve `exists`, `busy`, `partial`, and `needs-*` before repeating a paid request.
-5. Use full review rebuilds only when the inputs actually require them. Connections are recomputed locally; they have no LLM-cache reset flag or judge retry mode.
+5. Use full review rebuilds only when the inputs actually require them. Relation-pair cache keys change with the prompt version, model, slugs, or profile hashes; do not delete the shared cache to force a paid re-judgement.
 6. Retain provider/model/transmission/estimate from errors and local logs, but never secrets.
 
 ### 8.3 Quick diagnostic table
