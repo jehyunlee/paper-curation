@@ -167,11 +167,13 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
         if cur is None or (model, is_forward) > (cur[0]["basis"] == "model", cur[1]):
             relmap[rel] = (payload, is_forward)
 
+    processed = set()   # sources that were judged, even if nothing survived
     for src, conns in conns_by_slug.items():
         if resolve is not None:
             src = resolve(src)
             if src is None:                  # source paper deleted/ambiguous → drop its edges
                 continue
+        processed.add(src)
         for entry in conns or []:
             tgt = entry.get("slug")
             if resolve is not None:
@@ -212,6 +214,10 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
             })
         items.sort(key=lambda c: (REL_ORDER.get(c["relation"], 9), c["slug"]))
         result[src] = items
+    # A paper whose every candidate was judged unrelated keeps an explicit
+    # empty list: "processed, nothing related" is not the same as "never run".
+    for src in processed:
+        result.setdefault(src, [])
     return result
 
 

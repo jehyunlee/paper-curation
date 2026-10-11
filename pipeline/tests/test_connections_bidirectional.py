@@ -130,5 +130,14 @@ class ModelPrecedenceTests(unittest.TestCase):
         })
         self.assertEqual(view["a"][0]["reason"], "같은 문제를 다른 방법으로 푼다.")
 
+class ProcessedEmptyTests(unittest.TestCase):
+    def test_source_with_no_related_paper_stays_as_empty_list(self):
+        from lib.connections import make_bidirectional_deduped
+        view = make_bidirectional_deduped({"a": [], "b": [{"slug": "c", "relation": "alternative",
+                                                          "basis": "model", "reason": "B와 C."}]})
+        self.assertEqual(view["a"], [])
+        self.assertEqual(view["b"][0]["slug"], "c")
+        self.assertNotIn("d", view)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
