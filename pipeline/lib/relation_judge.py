@@ -414,3 +414,28 @@ def judge_connections(connections, papers, *, topic, cache_dir, client, log=prin
         "actual=${actual:.4f} (cap ${cap:.2f})".format(
             papers=len(connections), actual=spend["actual"], cap=cap, **stats))
     return result
+
+
+def judge_if_enabled(connections, papers, *, topic, log=print) -> dict:
+    """Judge freshly built candidates — the single entry every writer uses.
+
+    Both ``topic_modeling`` Step 6 and the ``extract_insights`` connections
+    pass rewrite a topic's connections. If only one of them judged, the other
+    would overwrite judged pairs with metadata candidates. Judged pairs come
+    from the shared cache, so calling this again costs only for new pairs.
+    Without a credential the candidates stay as the honest fallback.
+    """
+    if os.environ.get("RELATION_JUDGE", "on").lower() == "off":
+        return connections
+    from lib.credentials import CredentialsError, resolve_credential
+    try:
+        api_key = resolve_credential("anthropic")
+    except CredentialsError as exc:
+        log(f"  관계 판정 건너뜀: Anthropic 자격증명 없음 ({exc}) — 미분석 후보로 유지")
+        return connections
+    from anthropic import Anthropic
+    client = Anthropic(api_key=api_key,
+                       timeout=float(os.environ.get("EXTRACT_INSIGHTS_HTTP_TIMEOUT", "120")),
+                       max_retries=int(os.environ.get("EXTRACT_INSIGHTS_HTTP_RETRIES", "1")))
+    return judge_connections(connections, papers, topic=topic,
+                             cache_dir=pair_cache_dir(), client=client, log=log)

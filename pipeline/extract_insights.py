@@ -590,23 +590,8 @@ def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
     linked = sum(1 for links in all_connections.values() if links)
     log(f"  연결 생성: {linked}/{len(all_connections)}편, "
         f"{sum(len(links) for links in all_connections.values())} directed edges")
-    if os.environ.get("RELATION_JUDGE", "on").lower() != "off":
-        from lib.credentials import CredentialsError, resolve_credential
-        from lib.relation_judge import judge_connections, pair_cache_dir
-        # The key may live only in the OS keyring (the shell can strip
-        # ANTHROPIC_API_KEY), so resolve it the way local reviews do instead
-        # of relying on the SDK's environment lookup.
-        try:
-            api_key = resolve_credential("anthropic")
-        except CredentialsError as exc:
-            raise SystemExit(
-                "relation judge needs an Anthropic credential "
-                f"({exc}); pass --no-relation-judge to keep metadata candidates")
-        client = Anthropic(api_key=api_key,
-                           timeout=float(os.environ.get("EXTRACT_INSIGHTS_HTTP_TIMEOUT", "120")),
-                           max_retries=int(os.environ.get("EXTRACT_INSIGHTS_HTTP_RETRIES", "1")))
-        all_connections = judge_connections(
-            all_connections, pool, topic=topic, cache_dir=pair_cache_dir(), client=client, log=log)
+    from lib.relation_judge import judge_if_enabled
+    all_connections = judge_if_enabled(all_connections, pool, topic=topic, log=log)
 
     # 영속화: merge_to_global → filter_for_topic → per-topic JSON
     if topic_dir and topic_slugs:

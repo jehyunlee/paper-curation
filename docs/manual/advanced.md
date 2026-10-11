@@ -282,9 +282,8 @@ python pipeline/run_feature.py --list
 
 ### 5.1 현재 connections 구현
 
-`topic_modeling.py`의 Step 6은 메타데이터 후보만 만든다. SPECTER2 cosine 유사도와 title/author BM25를
-RRF(`k=60`)로 결합해 논문당 `RELATION_LINKS`개(기본 5개)까지 고르고, 뒤이은
-`extract_insights.py` connections pass가 각 쌍의 리뷰 Essence·Motivation Gap/Approach·첫 Achievement를 읽어
+`topic_modeling.py`의 Step 6과 `extract_insights.py` connections pass는 SPECTER2 cosine 유사도와 title/author BM25를
+RRF(`k=60`)로 결합해 논문당 `RELATION_LINKS`개(기본 5개)까지 고른 뒤, 같은 judge(`judge_if_enabled`, 캐시된 쌍은 무료)가 각 쌍의 리뷰 Essence·Motivation Gap/Approach·첫 Achievement를 읽어
 Claude Haiku에 보낸다. Haiku는 두 논문의 짧은 이름을 모두 부르고 공통 문제·방법·발견과 차이를 말하는 중립적
 한국어 한 문장을 쓰며, 같은 문장이 양쪽 논문 페이지에 표시된다. Curio 최소 리뷰는 connections를 만들지 않는다.
 

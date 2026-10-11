@@ -238,5 +238,31 @@ class RelationJudgeTests(unittest.TestCase):
         self.assertEqual(len(client.messages.calls), 2)
         self.assertEqual(result["a"][0]["basis"], "model")
 
+    def test_missing_credential_keeps_candidates_instead_of_aborting(self):
+        from lib.credentials import CredentialNotConfigured
+        logs = []
+        with patch("lib.credentials.resolve_credential",
+                   side_effect=CredentialNotConfigured("credential is not configured")):
+            result = judge.judge_if_enabled(connections(), papers(), topic="demo", log=logs.append)
+        self.assertEqual(result, connections())
+        self.assertTrue(any("자격증명" in line for line in logs))
+
+    def test_judge_off_constructs_no_client(self):
+        with patch.dict(os.environ, {"RELATION_JUDGE": "off"}), \
+             patch("lib.credentials.resolve_credential", side_effect=AssertionError("resolved")):
+            self.assertEqual(judge.judge_if_enabled(connections(), papers(), topic="demo"), connections())
+
+
+class WriterCoverageTests(unittest.TestCase):
+    """Every module that rewrites a topic's connections must route them
+    through the judge, or a run that skips one writer undoes the other."""
+
+    def test_both_connection_writers_call_the_judge(self):
+        root = Path(__file__).resolve().parents[1]
+        for name in ("topic_modeling.py", "extract_insights.py"):
+            source = (root / name).read_text(encoding="utf-8")
+            self.assertIn("sync_topic_connections", source, name)
+            self.assertIn("judge_if_enabled(", source, name)
+
 if __name__ == "__main__":
     unittest.main()

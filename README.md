@@ -209,7 +209,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 2. **구조화 리뷰** — Claude가 6섹션 한국어 `review.md`
 3. **피인용·레퍼런스** — `citations.md`(이력 누적) + `references.md`. 기본 30일 증분, 외부 API 장애가 파이프라인을 죽이지 않는 soft step(`--skip-metrics`)
 4. **토픽 모델링 + 분류** — SPECTER2 + HDBSCAN + UMAP로 카테고리 자동 생성·배정
-5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6은 SPECTER2 코사인 + 제목·저자 BM25 RRF(`k=60`) 후보만 쓰고, `extract_insights.py` connections pass가 리뷰의 Essence·Motivation Gap/Approach·첫 Achievement를 Haiku judge에 보내 관계와 양쪽 페이지에 같은 한국어 한 문장 설명을 만듭니다. `unrelated`는 제거하며, 판단 실패·비활성화·예산 초과 시에는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”를 남깁니다.
+5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6과 `extract_insights.py` connections pass 모두 SPECTER2 코사인 + 제목·저자 BM25 RRF(`k=60`) 후보를 같은 judge(`judge_if_enabled`)에 통과시킵니다. judge는 리뷰의 Essence·Motivation Gap/Approach·첫 Achievement를 Claude Haiku에 보내 관계와 양쪽 페이지에 같은 한국어 한 문장 설명을 만듭니다. `unrelated`는 제거하며, 판단 실패·비활성화·예산 초과 시에는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”를 남깁니다.
 6. **카테고리 요약 + 타임라인 내러티브/main·category 다이어그램** & **Deep Research 검색 인덱스**(BM25 + Gemini 임베딩)
 7. **토픽 인덱스** `index.html`(Deep Research·Audio Overview 내장) → **로컬 열람**(`serve_local.py`) 또는 **배포**
 

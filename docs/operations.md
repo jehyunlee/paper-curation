@@ -367,10 +367,11 @@ brew install --cask temurin   # Java for opendataloader-pdf
 - **arXiv chronic 429**: `search_papers.py --skip-arxiv` (OpenAlex + S2 only)
 - **OpenDataLoader fallback**: PyMuPDF takes over silently; install
   Temurin Java to get pdffigures2 structure
-- **Related-Papers connections**: `topic_modeling.py` Step 6 produces only
-  candidates: SPECTER2 cosine plus title/author BM25 ranks fused with RRF
-  (`k=60`), up to `RELATION_LINKS` per paper (default 5). The
-  `extract_insights.py` connections pass reads each pair’s Essence, Motivation
+- **Related-Papers connections**: `topic_modeling.py` Step 6 and the
+  `extract_insights.py` connections pass both take SPECTER2 cosine plus
+  title/author BM25 ranks fused with RRF (`k=60`), up to `RELATION_LINKS` per
+  paper (default 5), and route them through the same judge
+  (`judge_if_enabled`; cached pairs cost nothing), which reads each pair’s Essence, Motivation
   Gap/Approach, and first Achievement and asks Claude Haiku for one neutral
   Korean sentence that names both short paper names and states the shared
   problem/method/finding and difference. It is shown identically on both pages.
