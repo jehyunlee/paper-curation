@@ -328,8 +328,8 @@ class ScopusConfigTests(unittest.TestCase):
         """
         scopus._api_keys = None
         with patch.dict(os.environ, {}, clear=True), \
-             patch.object(scopus, "config_path", return_value=None), \
-             patch.object(scopus, "_keys_from_config_json", return_value=[]):
+             patch.object(scopus, "resolve_credential",
+                          side_effect=scopus.CredentialsError("not configured")):
             ok, reason = scopus.available()
         scopus._api_keys = None
         self.assertFalse(ok)
@@ -1056,14 +1056,17 @@ class ScopusKeyResolutionTests(unittest.TestCase):
 
     def setUp(self):
         scopus._api_keys = None
+        scopus._key_index = 0
         scopus._key_origin = ""
 
     tearDown = setUp
 
     def test_env_var_is_used(self):
-        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K1"}, clear=True):
+        with patch.dict(os.environ, {"SCOPUS_API_KEY": "K1"}, clear=True), \
+             patch("lib.credentials._keyring",
+                   side_effect=AssertionError("environment must precede keyring")):
             self.assertEqual(scopus.get_api_keys(), ["K1"])
-            self.assertEqual(scopus.key_origin(), "env:SCOPUS_API_KEY")
+            self.assertEqual(scopus.key_origin(), "credential:scopus")
 
     def test_elsevier_alias_env_var(self):
         with patch.dict(os.environ, {"ELSEVIER_API_KEY": "K2"}, clear=True):
@@ -1074,16 +1077,17 @@ class ScopusKeyResolutionTests(unittest.TestCase):
             self.assertEqual(scopus.get_api_keys(), ["A", "B", "C"])
 
     def test_available_true_with_env_key_and_no_cfg(self):
-        """cfg 파일이 없어도 환경변수만 있으면 사용 가능해야 한다."""
+        """OS keyring 없이 환경변수만 있으면 사용 가능해야 한다."""
         with patch.dict(os.environ, {"SCOPUS_API_KEY": "K"}, clear=True), \
-             patch.object(scopus, "config_path", return_value=None):
+             patch("lib.credentials._keyring",
+                   side_effect=AssertionError("environment must precede keyring")):
             ok, reason = scopus.available()
         self.assertTrue(ok, reason)
 
     def test_missing_key_everywhere_raises(self):
         with patch.dict(os.environ, {}, clear=True), \
-             patch.object(scopus, "config_path", return_value=None), \
-             patch.object(scopus, "_keys_from_config_json", return_value=[]):
+             patch.object(scopus, "resolve_credential",
+                          side_effect=scopus.CredentialsError("not configured")):
             with self.assertRaises(FileNotFoundError):
                 scopus.get_api_keys()
 

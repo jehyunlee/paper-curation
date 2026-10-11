@@ -1147,7 +1147,11 @@ def _byline_candidates(raw_header: str, surnames: set[str],
     out = []
     for index, line in enumerate(lines):
         hits = score(line)
-        if hits >= 2:
+        # A caller can request one Zotero author while reconciling a single
+        # affiliation.  That still identifies a byline when the matching name
+        # carries a marker (validated by the caller below); requiring two
+        # known surnames discarded accent-folded matches such as "Lü" / "Lu".
+        if hits >= (1 if len(surnames) == 1 else 2):
             out.append((hits, line))
         if index + 1 < len(lines):
             joined = f"{line} {lines[index + 1]}"

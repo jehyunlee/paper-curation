@@ -335,19 +335,22 @@ class ShippedDatabaseTests(unittest.TestCase):
             " AND LOWER(parent_name)=LOWER(institution_name)"), 0)
 
     def test_no_school_or_department_shaped_institution_names(self):
-        """A school or department is a sub-unit, never an institution.
+        """Unresolved school or department names are sub-units, not institutions.
 
         Only the strongly diagnostic forms are asserted. `SUBUNIT_NAME` is
         deliberately over-broad for the Wikipedia fallback, where a rejected
         candidate falls back safely to the umbrella, so it also flags real
         research centres ("Center for Information Technology Policy").
+        ROR-registered bodies — including government departments and ROR child
+        organisations — are institutions by the registry's own definition.
         """
         bad = [n for (n,) in self.conn.execute(
             "SELECT institution_name FROM institutions "
-            "WHERE institution_name LIKE 'School of%'"
+            "WHERE COALESCE(ror_id, '')=''"
+            "  AND (institution_name LIKE 'School of%'"
             "   OR institution_name LIKE 'Department of%'"
             "   OR institution_name LIKE 'Faculty of%'"
-            "   OR institution_name LIKE 'Division of%'")]
+            "   OR institution_name LIKE 'Division of%')")]
         self.assertEqual(bad, [])
 
     def test_ror_coverage_does_not_regress(self):

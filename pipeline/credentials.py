@@ -11,8 +11,8 @@ import argparse
 import json
 import sys
 
-try:  # Script execution: ``python pipeline/credentials.py``.
-    from lib.credentials import (
+if __package__:  # Package import: retain the pipeline.lib exception hierarchy.
+    from .lib.credentials import (
         CredentialNotConfigured,
         CredentialsError,
         credential_status,
@@ -20,8 +20,8 @@ try:  # Script execution: ``python pipeline/credentials.py``.
         resolve_credential,
         store_credential,
     )
-except ModuleNotFoundError:  # Package import in tests and Curio.
-    from pipeline.lib.credentials import (
+else:  # Script execution: ``python pipeline/credentials.py``.
+    from lib.credentials import (
         CredentialNotConfigured,
         CredentialsError,
         credential_status,
