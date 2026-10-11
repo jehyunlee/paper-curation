@@ -49,6 +49,21 @@ def _normalize_relation(relation):
     return "alternative" if relation == "related" else relation
 
 
+# Reasons written by the retired metadata templates. They never described
+# content (cosine, category labels, surname overlap), and some state facts that
+# are wrong, so they are shown as the honest no-model fallback instead.
+_LEGACY_TEMPLATE_PREFIXES = ("SPECTER2 임베딩 유사도", "SPECTER2 유사도")
+
+
+def _demote_legacy_template(reason):
+    from lib.related import METADATA_REASON
+    if (reason.get("basis") or "") in ("", "legacy") and str(
+            reason.get("reason") or "").startswith(_LEGACY_TEMPLATE_PREFIXES):
+        return {**reason, "relation": "alternative", "reason": METADATA_REASON,
+                "basis": "metadata", "model": ""}
+    return reason
+
+
 def _entry_reasons(entry):
     """Normalize a connection entry to reason dictionaries.
 
@@ -57,10 +72,10 @@ def _entry_reasons(entry):
     """
     rs = entry.get("reasons")
     if isinstance(rs, list) and rs:
-        return [{**entry, **r, "relation": _normalize_relation(
-            r.get("relation") or "alternative")} for r in rs]
-    return [{**entry, "relation": _normalize_relation(
-        entry.get("relation") or "alternative")}]
+        return [_demote_legacy_template({**entry, **r, "relation": _normalize_relation(
+            r.get("relation") or "alternative")}) for r in rs]
+    return [_demote_legacy_template({**entry, "relation": _normalize_relation(
+        entry.get("relation") or "alternative")})]
 
 
 def _title_part(slug):
@@ -179,6 +194,11 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
         items = []
         for tgt, relmap in tgts.items():
             reasons = [dict(rr[0]) for rr in relmap.values()]
+            # A content judgement of this pair supersedes every older claim
+            # about it: a legacy or metadata line with a different relation
+            # would otherwise sit beside the judged one and contradict it.
+            if any(r["basis"] == "model" for r in reasons):
+                reasons = [r for r in reasons if r["basis"] == "model"]
             reasons.sort(key=lambda r: REL_ORDER.get(r["relation"], 9))
             primary = reasons[0]
             items.append({

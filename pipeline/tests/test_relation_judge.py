@@ -48,8 +48,8 @@ def connections(source="a", target="b"):
 
 
 def judgment(target="C1", relation="this_builds_on_candidate"):
-    return {"target": target, "relation": relation, "reason_source": "분자 설계 방법을 확장해 검증 범위를 넓힌다.",
-            "reason_target": "기존 분자 설계 방법을 검증하며 적용 범위를 비교한다.", "reverse_relation": "foundation"}
+    return {"target": target, "relation": relation,
+            "reason": "Source는 Target의 분자 설계 방법을 가져와 검증 범위를 넓힌다."}
 
 
 class RelationJudgeTests(unittest.TestCase):
@@ -79,7 +79,7 @@ class RelationJudgeTests(unittest.TestCase):
         second = judge.judge_connections(connections("b", "a"), papers(), topic="demo", cache_dir=self.temp.name, client=client, log=lambda _: None)
         self.assertEqual(len(client.messages.calls), 1)
         self.assertEqual(second["b"][0]["relation"], "extension")
-        self.assertEqual(second["b"][0]["reason"], judgment()["reason_target"])
+        self.assertEqual(second["b"][0]["reason"], judgment()["reason"])
 
     def test_unrelated_drops_link_and_prompt_excludes_metadata(self):
         client = FakeClient([response([judgment(relation="unrelated")])])
@@ -109,8 +109,8 @@ class RelationJudgeTests(unittest.TestCase):
         result = judge.judge_connections(both, papers(), topic="demo", cache_dir=self.temp.name,
                                          client=client, log=lambda _: None)
         self.assertEqual(len(client.messages.calls), 1)
-        self.assertEqual(result["a"][0]["reason"], judgment()["reason_source"])
-        self.assertEqual(result["b"][0]["reason"], judgment()["reason_target"])
+        self.assertEqual(result["a"][0]["reason"], judgment()["reason"])
+        self.assertEqual(result["b"][0]["reason"], judgment()["reason"])
         self.assertEqual(result["b"][0]["relation"], "extension")
 
     def test_budget_counts_korean_prompt_near_one_token_per_char(self):
@@ -188,15 +188,6 @@ class RelationJudgeTests(unittest.TestCase):
                          "Talking to instruments")
         self.assertEqual(judge.short_name("제목: A B C D E F G"), "A B C D E…")
 
-    def test_sanitizer_rewrites_leaked_internal_labels_per_page(self):
-        source_view = judge._sanitize("NIMO는 기준 논문에서 제시한 인터페이스를 후보 C2가 적용한다.",
-                                      "Talking to instruments", "NIMO", self_terms=("기준", "출처"))
-        self.assertNotIn("기준", source_view)
-        self.assertIn("이 논문에서 제시한", source_view)
-        target_view = judge._sanitize("후보 논문은 기준 논문의 표준 위에 안전을 더한다.",
-                                      "Safe-SDL", "Talking to instruments", self_terms=("후보", "대상"))
-        self.assertEqual(target_view, "이 논문은 Talking to instruments의 표준 위에 안전을 더한다.")
-
     def test_year_guard_rejects_impossible_lineage(self):
         # b (2023) is earlier than a (2024): b cannot build on a.
         client = FakeClient([response([judgment(relation="candidate_builds_on_this")])])
@@ -207,16 +198,19 @@ class RelationJudgeTests(unittest.TestCase):
         self.assertEqual(judge._guard_direction("foundation", 2024, 2023), "foundation")
         self.assertEqual(judge._guard_direction("extension", 2024, 2024), "extension")
 
-    def test_sanitizer_replaces_bare_candidate_keys(self):
+    def test_sanitizer_rewrites_only_paper_references(self):
         names = {1: "NIMO-IvoryOS", 3: "Safe-SDL"}
-        source_view = judge._sanitize("C3은 이 논문의 표준 위에 안전을 더하고 C1과 다르다.", "Talking", "Safe-SDL",
-                                      self_terms=("기준", "출처"), key_names=names)
-        self.assertEqual(source_view, "Safe-SDL은 이 논문의 표준 위에 안전을 더하고 NIMO-IvoryOS과 다르다.")
-        target_view = judge._sanitize("C3은 Talking의 표준을 전제한다.", "Safe-SDL", "Talking",
-                                      self_terms=("후보", "대상"), key_names=names, self_key=3)
-        self.assertEqual(target_view, "이 논문은 Talking의 표준을 전제한다.")
-        # Chemical formulae and unrelated tokens survive.
-        self.assertIn("C3H8", judge._sanitize("C3H8 연소", "A", "B", self_terms=("기준",), key_names=names))
+        text = judge._sanitize("기준 논문과 후보 논문 C3 모두 안전을 다루며 C1과 다르다.",
+                               "Talking", "Safe-SDL", names)
+        self.assertEqual(text, "Talking과 Safe-SDL 모두 안전을 다루며 NIMO-IvoryOS과 다르다.")
+        self.assertEqual(judge._sanitize("이 논문은 표준을 정리한다.", "Talking", "X", names),
+                         "Talking은 표준을 정리한다.")
+
+    def test_sanitizer_keeps_ordinary_korean_and_formulae(self):
+        names = {3: "Safe-SDL"}
+        for text in ("12,000명 교수자를 대상으로 추적했다.", "후보 물질을 선별한다.",
+                     "C3H8 연소 반응을 다룬다."):
+            self.assertEqual(judge._sanitize(text, "A", "B", names), text)
 
     def test_pair_cache_is_shared_across_topics(self):
         self.assertEqual(judge.pair_cache_dir().name, ".llm_cache")

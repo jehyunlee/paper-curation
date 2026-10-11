@@ -96,5 +96,39 @@ class BidirectionalConnectionTests(unittest.TestCase):
         self.assertEqual(claims[("A", "D", "counterpoint")]["model"], "judge-v1")
 
 
+
+class ModelPrecedenceTests(unittest.TestCase):
+    def test_model_judgement_supersedes_legacy_claims_for_the_pair(self):
+        from lib.connections import make_bidirectional_deduped
+        view = make_bidirectional_deduped({
+            "a": [{"slug": "b", "relation": "foundation", "basis": "model",
+                   "model": "m", "reason": "A와 B는 같은 문제를 다룬다."}],
+            "b": [{"slug": "a", "relation": "counterpoint",
+                   "reason": "예전 판단: B는 A를 반박한다."}],
+        })
+        reasons = view["a"][0]["reasons"]
+        self.assertEqual([r["basis"] for r in reasons], ["model"])
+        self.assertEqual(view["b"][0]["relation"], "extension")
+
+    def test_retired_template_reason_is_shown_as_honest_fallback(self):
+        from lib.connections import make_bidirectional_deduped
+        from lib.related import METADATA_REASON
+        view = make_bidirectional_deduped({
+            "a": [{"slug": "b", "relation": "foundation",
+                   "reason": "SPECTER2 임베딩 유사도 0.92 · 공저자 1명 공유(Zhang)."}],
+        })
+        item = view["a"][0]
+        self.assertEqual(item["reason"], METADATA_REASON)
+        self.assertEqual(item["relation"], "alternative")
+        self.assertEqual(item["basis"], "metadata")
+
+    def test_legacy_model_written_reason_is_kept_without_a_new_judgement(self):
+        from lib.connections import make_bidirectional_deduped
+        view = make_bidirectional_deduped({
+            "a": [{"slug": "b", "relation": "alternative",
+                   "reason": "같은 문제를 다른 방법으로 푼다."}],
+        })
+        self.assertEqual(view["a"][0]["reason"], "같은 문제를 다른 방법으로 푼다.")
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

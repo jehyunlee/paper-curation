@@ -9,10 +9,10 @@ from pathlib import Path
 
 from config_loader import PAPERS_DIR
 
-PROMPT_VERSION = "relation-judge-v6"
+PROMPT_VERSION = "relation-judge-v7"
 METADATA_REASON = "관계 미분석 — 임베딩 유사도로 추천된 후보입니다."
 RELATIONS = {"foundation", "extension", "alternative", "application", "counterpoint"}
-OUTPUT_TOKENS_PER_PAIR = 450
+OUTPUT_TOKENS_PER_PAIR = 260
 PRICES = {
     "claude-haiku-4-5": (1.0, 5.0),
     "claude-sonnet-5": (3.0, 15.0),
@@ -138,31 +138,25 @@ def short_name(profile: str) -> str:
     return " ".join(words[:5]) + ("…" if len(words) > 5 else "")
 
 
-_INTERNAL = r"(?:기준|출처|대상|후보)\s*(?:논문|연구)?(?:\s*C\d+)?"
-
-
 _KEY = r"(?<![A-Za-z0-9])C(\d+)(?![0-9A-Za-z])"
 
 
-def _sanitize(text: str, self_name: str, other_name: str, *, self_terms: tuple,
-              key_names: dict | None = None, self_key: int | None = None) -> str:
-    """Replace leaked internal labels with what the reader can see. On a page
-    the paper itself is "이 논문"; any other paper is called by its short name.
+def _sanitize(text: str, source_name: str, target_name: str, key_names: dict) -> str:
+    """Rewrite leaked internal references to the names a reader sees.
 
-    ``key_names`` maps candidate keys (C1, C2, …) to short names; ``self_key``
-    is the key that denotes the page's own paper, if any.
+    Only references to a *paper* are touched: "기준/출처 논문" → the source's
+    short name, "대상/후보 논문 [Cn]" → that candidate's, a stray "이 논문" →
+    the source's, and bare keys "C3" → candidate names. Bare "대상"/"후보"
+    are ordinary Korean ("교수자를 대상으로", "후보 물질") and are left alone.
     """
-    def repl(match):
-        word = match.group(0)
-        return "이 논문" if word.startswith(self_terms) else other_name
-    text = re.sub(_INTERNAL, repl, text)
+    text = re.sub(r"(?:기준|출처)\s*논문", source_name, text)
 
-    def key_repl(match):
-        index = int(match.group(1))
-        if self_key is not None and index == self_key:
-            return "이 논문"
-        return (key_names or {}).get(index, match.group(0))
-    text = re.sub(_KEY, key_repl, text)
+    def candidate(match):
+        key = match.group(1)
+        return key_names.get(int(key), target_name) if key else target_name
+    text = re.sub(r"(?:대상|후보)\s*논문(?:\s*C(\d+))?", candidate, text)
+    text = re.sub(r"이\s*논문", source_name, text)
+    text = re.sub(_KEY, lambda m: key_names.get(int(m.group(1)), m.group(0)), text)
     return re.sub(r"\s{2,}", " ", text).strip()
 
 
@@ -182,11 +176,10 @@ def _prompt(source_slug: str, source: str, candidates: list[tuple[str, str]]) ->
    - counterpoint: 한쪽이 다른 쪽의 가정·결론을 반박하거나 한계를 드러낸다
    - unrelated: 주제어만 겹치고 실질적인 문제·방법·발견의 연결이 없다 (확신이 없으면 unrelated)
    "결과를 시각화해야 한다", "같이 쓰일 수 있다" 같은 가능성만으로 builds_on/applies를 고르지 마십시오.
-2. reason_source — 기준 논문 페이지에 표시됩니다. 기준 논문은 "이 논문", 후보는 그 약칭으로 부르십시오. 두 논문이 공유하는 구체적 문제·방법·발견과, 무엇이 다른지를 한국어 1~2문장(150자 안팎)으로.
-3. reason_target — 후보 논문 페이지에 표시됩니다. 후보는 "이 논문", 기준 논문은 그 약칭으로 부르십시오. 같은 연결을 1~2문장으로.
+2. reason — 이 문장은 두 논문의 페이지 양쪽에 그대로 표시됩니다. 두 논문을 모두 약칭으로 부르며, 공유하는 구체적 문제·방법·발견과 무엇이 다른지를 한국어 1~2문장(150자 안팎)으로 쓰십시오.
 
-금지: "기준 논문", "후보", "출처", "대상" 같은 표현, C1·C2 같은 후보 키(문장에서는 반드시 약칭), 유사도 점수, 카테고리, 한 논문만 요약하는 문장.
-좋은 예(reason_source): "둘 다 LLM이 만든 실험 명령의 물리적 위험을 다루지만, 이 논문은 제어장벽함수로 실행 중 차단하고 MADS-CPS는 실행 기록을 사후 검증 가능한 계약으로 남긴다."
+금지: "이 논문", "기준 논문", "후보", "출처", "대상" 같은 지칭, C1·C2 같은 후보 키, 유사도 점수, 카테고리, 한 논문만 요약하는 문장.
+좋은 예: "Safe-SDL과 MADS-CPS 모두 LLM이 만든 실험 명령의 물리적 위험을 다루지만, Safe-SDL은 제어장벽함수로 실행 중 차단하고 MADS-CPS는 실행 기록을 사후 검증 가능한 계약으로 남긴다."
 
 [기준 논문] 약칭: {short_name(source)}
 {source}
@@ -195,11 +188,11 @@ def _prompt(source_slug: str, source: str, candidates: list[tuple[str, str]]) ->
 
 
 def _tool_schema() -> dict:
-    relation = {"type": "string", "enum": list(MODEL_LINKS)}
     item = {"type": "object", "properties": {
-        "target": {"type": "string", "description": "candidate key such as C1"}, "relation": relation,
-        "reason_source": {"type": "string"}, "reason_target": {"type": "string"}},
-        "required": ["target", "relation", "reason_source", "reason_target"]}
+        "target": {"type": "string", "description": "candidate key such as C1"},
+        "relation": {"type": "string", "enum": list(MODEL_LINKS)},
+        "reason": {"type": "string"}},
+        "required": ["target", "relation", "reason"]}
     return {"name": "judge_relations",
             "description": "Return one content-grounded judgment per candidate.",
             "input_schema": {"type": "object",
@@ -254,17 +247,13 @@ def _judge_source(client, model, source_slug, source_profile, pairs):
             continue
         relation = _guard_direction(MODEL_LINKS[item["relation"]],
                                     _year_of(source_profile), _year_of(_profile))
-        source_name, target_name = short_name(source_profile), short_name(_profile)
+        reason = _sanitize(str(item.get("reason") or ""), short_name(source_profile),
+                           short_name(_profile), key_names)
+        # One neutral sentence names both papers, so both pages show it as is.
         data = {"source": source_slug, "target": target, "relation": relation,
-                "reason_source": _sanitize(str(item.get("reason_source") or ""),
-                                           source_name, target_name,
-                                           self_terms=("기준", "출처"),
-                                           key_names=key_names),
                 "reverse_relation": REVERSE.get(relation, "unrelated"),
-                "reason_target": _sanitize(str(item.get("reason_target") or ""),
-                                           target_name, source_name,
-                                           self_terms=("후보", "대상"),
-                                           key_names=key_names, self_key=position)}
+                "reason_source": reason, "reason_target": reason,
+                "model": model, "prompt_version": PROMPT_VERSION}
         if not data["reason_source"] or not data["reason_target"]:
             continue
         path.parent.mkdir(parents=True, exist_ok=True)
