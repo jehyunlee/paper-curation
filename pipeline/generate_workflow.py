@@ -9,7 +9,7 @@ Paper Curation Workflow 다이어그램 생성 (PaperBanana).
 Usage:
   PYTHONUTF8=1 python pipeline/generate_workflow.py
   PYTHONUTF8=1 python pipeline/generate_workflow.py --candidates 10
-  PYTHONUTF8=1 python pipeline/generate_workflow.py --style fairy
+  PYTHONUTF8=1 python pipeline/generate_workflow.py --style cat
 """
 
 import argparse
@@ -28,6 +28,21 @@ def _extract_section(content, heading):
     pattern = rf'#{{2,3}}\s+{re.escape(heading)}\s*\n(.*?)(?=\n#{{2,3}}\s|\Z)'
     m = re.search(pattern, content, re.DOTALL)
     return m.group(1).strip() if m else ""
+
+
+def _parse_phase_rows(steps_section):
+    """Return pipeline phases, using the first script in a multi-script cell."""
+    phases = []
+    for m in re.finditer(
+        r'\|\s*([\d.]+[ab]?|Entry|Recover)\s*\|\s*`([^`]+)`'
+        r'(?:\s*\+\s*`[^`]+`)*\s*\|\s*(.+?)\s*\|',
+        steps_section,
+    ):
+        step, script, description = m.groups()
+        script = re.sub(r'^pipeline/', '', script)
+        script = re.sub(r'\.py$', '', script)
+        phases.append(f"Step {step}: {script}\n  {description.strip()}")
+    return phases
 
 
 def build_method_text():
@@ -50,17 +65,7 @@ def build_method_text():
     if not steps_section:
         steps_section = _extract_section(claude, "Pipeline Scripts (execution order)")
 
-    phases = []
-    for m in re.finditer(
-        r'\|\s*([\d.]+[ab]?|Entry|Recover)\s*\|\s*`([^`]+)`\s*\|\s*(.+?)\s*\|',
-        steps_section
-    ):
-        step, script, description = m.groups()
-        # Strip path/extension so file names never reach the diagram prompt.
-        # e.g. `pipeline/run_update_force.py` → `run_update_force`
-        script = re.sub(r'^pipeline/', '', script)
-        script = re.sub(r'\.py$', '', script)
-        phases.append(f"Step {step}: {script}\n  {description.strip()}")
+    phases = _parse_phase_rows(steps_section)
 
     # 2. Project Structure (README)
     structure_section = _extract_section(readme, "Project Structure")
@@ -93,27 +98,37 @@ def build_method_text():
     if m:
         mermaid_block = m.group(1).strip()
 
+    canonical_graph = ""
+    if mermaid_block:
+        canonical_graph = f"""
+### CANONICAL WORKFLOW GRAPH (use this as the source of truth — every
+### node and edge here MUST appear in the diagram, including the
+### in-browser Deep Research multi-backend choice, the Audio Overview
+### node, the Cloudflare Worker `/api/audio-email` function, the Resend
+### email send, and the Local-vs-Deploy fork)
+{mermaid_block}
+"""
+
     method = f"""## Paper Curation Pipeline — Zotero + Claude Code + Deep Research + Obsidian
 
 ### TOOL ECOSYSTEM (show as interconnected logos/icons at the top)
 The system is orchestrated by **Claude Code** (Anthropic's CLI agent) which coordinates five tools:
 - **Zotero** (reference manager, red Z logo): paper collection, PDF storage, linked files
-- **Claude** (Anthropic LLM, Anthropic logo): structured reviews (Haiku), topic naming (Sonnet), timeline narratives (Opus), Deep Research answers (Extended Thinking)
+- **Claude** (Anthropic LLM, Anthropic logo): structured reviews (Sonnet), related-paper relation judge (Haiku), category summaries (Sonnet), timeline narratives (Opus)
 - **PaperBanana** (diagram engine, banana icon): auto-generates per-category research trend timeline diagrams from Claude Opus narratives
 - **Obsidian** (knowledge IDE, purple gem logo): personal notes editing, [[wiki-links]] between papers, Graph View for cross-query knowledge topology
 - **Google Gemini** (Google logo): gemini-embedding-001 for the Deep Research RAG index, figure validation, and Audio Overview TTS
 
-Data flow: Zotero → Claude Code → Claude (review/classify) → PaperBanana (timelines) → Deep Research (RAG Q&A) → Obsidian (compounding knowledge)
+Data flow: Zotero → Claude Code → Claude (reviews and relation judgment) → PaperBanana (timelines) → Deep Research (reader-key RAG Q&A) → Obsidian (compounding knowledge)
 
 Each tool MUST be represented by its recognizable logo/icon. Show Claude Code as the central orchestrator connecting all tools.
 
 ### CORE vs OPTION (CRITICAL — must be visually distinguishable!)
 The pipeline has two tiers. The diagram MUST make the tier of every element obvious at a glance:
-- **CORE (always runs, solid style)**: data collection → structured review → topic modeling/classification → Related Papers connections → category summaries + timelines → Deep Research index → topic index page → local browsing (serve_local) → in-browser Deep Research + Audio Overview.
+- **CORE (always runs, solid style)**: data collection → structured review → HDBSCAN/UMAP topic modeling (zero LLM calls) → Related Papers connections → category summaries + timelines → Deep Research index → topic index page → local browsing (serve_local) → in-browser Deep Research + Audio Overview.
 - **OPTION (opt-in, dashed-border zones, each zone labeled with a small "OPTION" badge/ribbon)**:
   * O-1 Content Deploy (`--mode deploy`): Cloudflare Workers + gh-pages redirect stubs + Resend email delivery
   * O-2 Research Insights + Network (`--insights`): cross-category insights analysis + interactive network visualization
-  * Workflow diagram generation (this very diagram, standalone)
 - Core flow uses solid arrows/borders; every Option element lives inside a clearly dashed enclosure with an "OPTION" tag. A reader must instantly see "this part is optional".
 
 ### PIPELINE PHASES (left to right flow)
@@ -132,16 +147,12 @@ The pipeline has two tiers. The diagram MUST make the tier of every element obvi
 ### KEY DESIGN PRINCIPLES
 {design_section}
 
-### CANONICAL WORKFLOW GRAPH (use this as the source of truth — every
-### node and edge here MUST appear in the diagram, including the
-### in-browser Deep Research multi-backend choice, the Audio Overview
-### node, the Cloudflare Worker `/api/audio-email` function, the Resend
-### email send, and the Local-vs-Deploy fork)
-{mermaid_block}
+{canonical_graph}
 
 ### IN-BROWSER FEATURES (must be visible in the diagram, separate from
 ### the build-time pipeline above)
-- Deep Research: client-side natural-language Q&A. Detects user-pasted
+- Deep Research: client-side natural-language Q&A using the reader's own
+  Anthropic, OpenAI, or Google key. Detects user-pasted
   API key by prefix and routes to ONE OF Anthropic (sk-ant-…) /
   OpenAI (sk-…) / Google (AIza…) — three logos shown as a fan-in choice.
 - Audio Overview: in-browser podcast generation. Calls Gemini TTS,
@@ -168,8 +179,8 @@ VISUAL_RULES_DEFAULT = """
 - Decision diamonds for mode switches (--update, --category, --timeline) with minimal labels
 - Fan-out / fan-in arrows for parallel operations
 - Dashed lines for optional/skippable paths
-- CORE vs OPTION: Core flow solid; every OPTION group (Deploy O-1, Insights+Network O-2,
-  Workflow diagram) inside a dashed rounded enclosure with a small
+- CORE vs OPTION: Core flow solid; every OPTION group (Deploy O-1, Insights+Network O-2)
+  is inside a dashed rounded enclosure with a small
   "OPTION" ribbon/badge on its corner — instantly distinguishable from the Core flow
 - White background, clean modern style, soft rounded shapes
 - NO verbose descriptions in boxes — icons speak louder than words
@@ -178,7 +189,7 @@ VISUAL_RULES_DEFAULT = """
 - Show recognizable logos/icons for these tools near the stages they power:
   * Claude Code (Anthropic terminal CLI icon) — central orchestrator
   * Zotero (red Z logo) — paper source
-  * Claude (Anthropic logo) — LLM review/classify/insights/Deep Research
+  * Claude (Anthropic logo) — structured reviews, relation judge, category summaries, timelines
   * PaperBanana (banana icon) — timeline diagram generation
   * Obsidian (purple gem icon) — knowledge compounding destination
   * Google Gemini (Google logo) — Deep Research embeddings + figure validation + TTS
@@ -249,6 +260,7 @@ _CHARACTER_DB = {
     "run_update_force":        ("Review",    "orange",  "fluffy white cat wearing a beret, writes with a quill pen, ink spot on nose", "writes with a quill pen, orange wings"),
     "build_papers_index":      ("Index",     "amber",   "Abyssinian cat stacking tiny index cards into a filing cabinet", "sorts floating index cards, amber wings"),
     "classify_papers":         ("Classify",  "red",     "calico cat sorting colorful paper cards with both paws, focused expression", "sorts colorful cards, red wings"),
+    "topic_modeling":          ("Related",   "crimson", "a cinnamon Somali cat reading two papers side by side, tying them with a red thread and writing a short note between them to judge one related pair", "reads two scrolls tied by red thread, crimson wings"),
     "build_category_summaries":("Summarize", "coral",   "Siamese cat wearing a monocle, connecting yarn threads on a corkboard", "connects threads between stars, coral wings"),
     "extract_insights":        ("Insights",  "rose",    "Ragdoll cat with a magnifying glass studying a web of connected papers", "traces glowing lines between paper clusters, rose wings"),
     "generate_timelines":      ("Timeline",  "purple",  "gray Russian Blue with a tiny paintbrush in mouth, palette on tail", "holds a paintbrush, purple wings"),
@@ -278,6 +290,8 @@ def _build_characters_from_phases(phases, style):
         if not m:
             continue
         script = m.group(1)
+        if script == "generate_workflow":
+            continue
 
         if script in _CHARACTER_DB:
             keyword, color, cat_desc, fairy_desc = _CHARACTER_DB[script]
@@ -336,13 +350,17 @@ def build_style_text(phases, style):
     return ""
 
 
-def main():
+def _parse_args(argv=None):
     parser = argparse.ArgumentParser(description="Generate paper-curation workflow diagram")
     parser.add_argument("--candidates", type=int, default=5)
-    parser.add_argument("--style", default="academic",
+    parser.add_argument("--style", default="cat",
                         choices=["default", "cat", "fairy", "academic"],
                         help="Visual style preset. academic = serious paper figure (no characters, no filenames)")
-    args = parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = _parse_args(argv)
 
     from lib.paperbanana import generate_diagram
     from datetime import datetime
@@ -367,11 +385,13 @@ def main():
     log(f"Generating {args.candidates} workflow candidates (21:9, PaperBanana)")
 
     caption = ("Paper Curation Pipeline: Claude Code orchestrates Zotero (paper source), "
-               "Claude (AI reviews, classification, related-papers connections, Deep Research), "
+               "Claude (structured reviews, Haiku relation judge, category summaries, timeline narratives), "
                "PaperBanana (category trend timelines), Google Gemini (embedding index, "
                "figure validation, TTS), and Obsidian (knowledge compounding). "
-               "Core stages flow solid; Option zones (Deploy O-1, Insights+Network O-2, "
-               "Workflow diagram) are dashed enclosures labeled OPTION.")
+               "Deep Research uses the reader's Anthropic, OpenAI, or Google key. "
+               "Classification uses HDBSCAN/UMAP with zero LLM calls. "
+               "Core stages flow solid; Option zones (Deploy O-1, Insights+Network O-2) "
+               "are dashed enclosures labeled OPTION.")
 
     os.makedirs(WORKFLOW_DIR, exist_ok=True)
 
