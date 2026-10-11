@@ -194,7 +194,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 |------|---------|------|
 | **콘텐츠 배포 (O-1)** | `--mode deploy` 또는 기능 `publish` | Cloudflare Workers + gh-pages 스텁 — [운영 매뉴얼](docs/operations.md#deploy-option-o-1). Audio 이메일은 별도 `email` 기능 |
 | **Insights + 네트워크 (O-2)** | `--insights` | 크로스카테고리 인사이트 + UMAP 2D/3D 인터랙티브 네트워크 재생성 |
-| **워크플로 다이어그램** | `generate_usage_diagram.py` · `generate_workflow.py` | 사용 경로 그림(matplotlib, 키 없음) · 상단 고양이 다이어그램(PaperBanana, `--style cat/fairy/academic`) |
+| **워크플로 다이어그램** | `generate_usage_diagram.py` · `generate_workflow.py` | 사용 경로·파이프라인 고양이 그림(PaperBanana, 기본 `--style cat`) · 키 없이 다시 그리려면 사용 경로 그림 `--style plain`(matplotlib) |
 
 **전체 curate 워크플로 요구사항**: Zotero 컬렉션 + PDF와 자격증명
 `ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`(환경변수 또는 OS 키 저장소의

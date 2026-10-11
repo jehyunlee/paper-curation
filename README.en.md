@@ -72,7 +72,7 @@ generated ID/requirement table in the
 |--------|---------------|-------------|
 | **Content Deploy (O-1)** | `--mode deploy` or capability `publish` | Cloudflare Workers (static assets + `/api/embed`) + gh-pages redirect stubs. Audio email is the separate `email` capability |
 | **Research Insights + Network (O-2)** | `--insights` | Cross-category insight analysis + regenerates the interactive UMAP 2D/3D network |
-| **Workflow diagrams** | `generate_usage_diagram.py` · `generate_workflow.py` | Usage-path figure (matplotlib, no key) · the cat pipeline diagram (PaperBanana, `--style cat/fairy/academic`) |
+| **Workflow diagrams** | `generate_usage_diagram.py` · `generate_workflow.py` | Usage-path and pipeline cat illustrations (PaperBanana, default `--style cat`) · keyless redraw of the usage figure with `--style plain` (matplotlib) |
 
 **Full curate workflow requirements**: a Zotero collection with PDFs and the
 credentials `ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` (environment or
