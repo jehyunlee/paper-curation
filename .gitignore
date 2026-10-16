@@ -90,6 +90,7 @@ reports/output/
 # Documentation (whitelist specific service files below)
 !docs/
 !docs/index.html
+!docs/feature-map.html
 !docs/setup-guide.md
 !docs/operations.md
 !docs/architecture.md

@@ -579,6 +579,7 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 | Document | Contents |
 |----------|----------|
 | **[Beginner and Power-user Manuals](docs/manual/index.en.md)** | Paper Curation + Paper Curio, English tutorials, operations recipes, and PaperBanana diagrams |
+| **[Feature Map](docs/feature-map.html)** | Interactive tree of features and pipeline stages; click a node for its description, feature ID, cost, and data destination (Korean; regenerate with `pipeline/build_feature_map.py`) |
 | **[User Guide](docs/user-guide.en.md)** | Three paths · where settings live (Zotero Settings → Paper Curio) · step-by-step review and module execution · reading status messages · FAQ |
 | **[Setup Guide](docs/setup-guide.md)** | Prerequisites · Claude Code/manual install · config.json · generated feature registry table · troubleshooting (Korean) |
 | **[Operations Manual](docs/operations.md)** | Full-workflow modes and safety flags · concurrency · Korean-network workarounds · deploy (O-1) · recovery |
