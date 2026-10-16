@@ -22,7 +22,9 @@ class FeatureMapTests(unittest.TestCase):
         self.features = json.loads(fm.REGISTRY.read_text(encoding="utf-8"))["features"]
         self.pmap = json.loads(fm.PIPELINE_MAP.read_text(encoding="utf-8"))
         self.tree = fm.build_tree(self.features, self.pmap)
+        self.english_tree = fm.build_tree(self.features, self.pmap, english=True)
         self.nodes = list(_walk(self.tree))
+        self.english_nodes = list(_walk(self.english_tree))
         self.by_key = {n["key"]: n for n in self.nodes if n.get("key")}
 
     def test_top_level_is_three_questions(self):
@@ -70,6 +72,22 @@ class FeatureMapTests(unittest.TestCase):
         html = fm.TEMPLATE.replace("__TREE__", json.dumps(self.tree, ensure_ascii=False))
         self.assertNotIn("http://", html)
         self.assertNotIn("https://", html)
+
+    def test_english_tree_has_equivalent_feature_and_step_coverage(self):
+        english_keys = {n["key"] for n in self.english_nodes if n.get("key")}
+        self.assertEqual(english_keys, set(self.by_key))
+        self.assertEqual(
+            [n["key"] for n in self.english_nodes if n.get("key", "").startswith("feature:")],
+            [n["key"] for n in self.nodes if n.get("key", "").startswith("feature:")],
+        )
+
+    def test_english_output_has_navigation_and_no_untranslated_ui_tokens(self):
+        html = fm.render_html(self.english_tree, english=True)
+        self.assertIn('lang="en"', html)
+        self.assertIn('href="feature-map.html"', html)
+        self.assertNotRegex(html, "[가-힣]")
+        for token in ("__TITLE__", "__HELP__", "__PIPELINE__"):
+            self.assertNotIn(token, html)
 
 
 if __name__ == "__main__":

@@ -30,6 +30,8 @@
 
 🇬🇧 [English README](README.en.md)
 
+> **[기능 지도 바로 열기](https://tech.jehyunlee.dev/paper-curation/feature-map.html)** — 기능·파이프라인을 펼치고 클릭해 설명, 비용, 전송 대상을 확인하세요. 설치 없이 브라우저에서 동작합니다. [English](https://tech.jehyunlee.dev/paper-curation/feature-map.en.html)
+
 <details>
 <summary>🐱 전체 큐레이션(Collection 경로) 파이프라인 한 장 — 수집부터 배포까지</summary>
 
@@ -310,7 +312,7 @@ PYTHONUTF8=1 python pipeline/serve_local.py     # localhost:8000 + /api/embed + 
 | 문서 | 내용 |
 |------|------|
 | **[초보자·파워유저 매뉴얼](docs/manual/index.md)** | Paper Curation + Paper Curio 간단버전·심화버전 · PaperBanana 개념도 |
-| **[기능 지도](docs/feature-map.html)** | 기능·파이프라인을 트리로 펼쳐 보고 클릭하면 설명·기능 ID·비용·전송 대상을 보여주는 인터랙티브 HTML (`pipeline/build_feature_map.py`로 재생성) |
+| **[기능 지도](https://tech.jehyunlee.dev/paper-curation/feature-map.html)** | 기능·파이프라인을 트리로 펼쳐 보고 클릭하면 설명·기능 ID·비용·전송 대상을 보여주는 인터랙티브 HTML (`pipeline/build_feature_map.py`로 재생성) |
 | **[활용 매뉴얼](docs/user-guide.md)** | 세 가지 경로 · 설정 위치(Zotero Settings → Paper Curio) · 리뷰/모듈 단계별 실행 · 상태 메시지 해석 · FAQ |
 | **[Setup Guide](docs/setup-guide.md)** | 사전 준비 · Claude Code/수동 설치 · config.json · 설치 확인 · 문제 해결 |
 | **[Operations Manual](docs/operations.md)** | 모드/안전 플래그 · Concurrency · 한국 망 우회(SPECTER2/arXiv/로컬 fallback) · 배포(O-1) · 복구 |

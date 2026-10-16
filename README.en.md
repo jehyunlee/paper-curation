@@ -27,6 +27,8 @@ status messages). The Zotero plugin (Curio) and the CLI share one feature regist
 generated ID/requirement table in the
 [Setup Guide](docs/setup-guide.md#공유-기능-레지스트리) is the reference.
 
+> **[Open the interactive feature map](https://tech.jehyunlee.dev/paper-curation/feature-map.en.html)** — Explore features and pipeline stages; click to see descriptions, costs, and data destinations. Runs directly in your browser—no installation required. [한국어](https://tech.jehyunlee.dev/paper-curation/feature-map.html)
+
 <details>
 <summary>🐱 The full curation pipeline (Collection path) in one picture</summary>
 
@@ -579,7 +581,7 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 | Document | Contents |
 |----------|----------|
 | **[Beginner and Power-user Manuals](docs/manual/index.en.md)** | Paper Curation + Paper Curio, English tutorials, operations recipes, and PaperBanana diagrams |
-| **[Feature Map](docs/feature-map.html)** | Interactive tree of features and pipeline stages; click a node for its description, feature ID, cost, and data destination (Korean; regenerate with `pipeline/build_feature_map.py`) |
+| **[Feature Map](https://tech.jehyunlee.dev/paper-curation/feature-map.en.html)** | English interactive tree of features and pipeline stages; click a node for its description, feature ID, cost, and data destination (regenerate both languages with `pipeline/build_feature_map.py`) |
 | **[User Guide](docs/user-guide.en.md)** | Three paths · where settings live (Zotero Settings → Paper Curio) · step-by-step review and module execution · reading status messages · FAQ |
 | **[Setup Guide](docs/setup-guide.md)** | Prerequisites · Claude Code/manual install · config.json · generated feature registry table · troubleshooting (Korean) |
 | **[Operations Manual](docs/operations.md)** | Full-workflow modes and safety flags · concurrency · Korean-network workarounds · deploy (O-1) · recovery |
