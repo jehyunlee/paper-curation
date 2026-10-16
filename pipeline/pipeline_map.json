@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "description": "Full curation (run_full.py --mode curate) as stages. Each step names the script it runs, the run_update_force step names that implement it, what it reads and writes, and the registry features that do the same job on demand. pipeline/tests/test_pipeline_map.py checks every field against the code.",
+  "stages": [
+    {
+      "id": "collect",
+      "label": "수집",
+      "desc": "논문을 모아 Zotero와 맞춥니다.",
+      "steps": [
+        {
+          "id": "search",
+          "label": "검색·등록",
+          "script": "search_papers",
+          "optional": true,
+          "desc": "arXiv · Semantic Scholar · OpenAlex 병렬 검색 후 Zotero에 등록합니다. --source web일 때만.",
+          "cost": "external",
+          "outputs": [
+            "Zotero 항목"
+          ]
+        },
+        {
+          "id": "sync",
+          "label": "동기화",
+          "script": "sync_zotero",
+          "features": [
+            "zotero-sync"
+          ],
+          "desc": "Zotero 컬렉션의 변경분을 가져옵니다.",
+          "cost": "external",
+          "outputs": [
+            "Zotero 동기화 상태"
+          ]
+        },
+        {
+          "id": "dedup",
+          "label": "중복 정리",
+          "script": "dedup_zotero",
+          "desc": "같은 논문의 중복 Zotero 항목을 찾습니다. 기본은 보고만(dry-run).",
+          "cost": "external"
+        },
+        {
+          "id": "pdf-audit",
+          "label": "PDF 연결 감사",
+          "script": "audit_zotero_pdf",
+          "optional": true,
+          "desc": "서지정보와 PDF 내용이 맞는지 확인하고 의심 항목 목록을 만듭니다.",
+          "cost": "external",
+          "outputs": [
+            "_zotero_pdf_audit.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "label": "리뷰",
+      "desc": "논문마다 텍스트를 추출하고 구조화 리뷰를 만듭니다.",
+      "steps": [
+        {
+          "id": "extract",
+          "label": "텍스트·그림 추출",
+          "script": "run_update_force",
+          "features": [
+            "extract"
+          ],
+          "desc": "OpenDataLoader로 본문을, PyMuPDF로 그림을 추출합니다. OpenDataLoader가 없으면 경고 후 PyMuPDF로 대체합니다.",
+          "cost": "local",
+          "inputs": [
+            "Zotero PDF"
+          ],
+          "outputs": [
+            "text.md",
+            "figures/"
+          ]
+        },
+        {
+          "id": "sanity",
+          "label": "서지-PDF 일치 검사",
+          "script": "run_update_force",
+          "desc": "Zotero 제목·DOI와 PDF 내용이 다르면 리뷰하지 않습니다.",
+          "cost": "local",
+          "inputs": [
+            "text.md"
+          ]
+        },
+        {
+          "id": "structured-review",
+          "label": "구조화 리뷰",
+          "script": "run_update_force",
+          "features": [
+            "review"
+          ],
+          "desc": "Claude Sonnet이 6섹션 한국어 리뷰를 씁니다.",
+          "cost": "paid",
+          "model": "claude-sonnet-5",
+          "inputs": [
+            "text.md",
+            "figures/"
+          ],
+          "outputs": [
+            "review.md",
+            "index.html",
+            "bibliography.json"
+          ]
+        },
+        {
+          "id": "metrics",
+          "label": "피인용·레퍼런스",
+          "script": "run_metrics",
+          "run_steps": [
+            "run_metrics"
+          ],
+          "features": [
+            "metrics"
+          ],
+          "desc": "피인용 이력과 레퍼런스를 누적합니다. 외부 API가 실패해도 파이프라인은 계속됩니다.",
+          "cost": "external",
+          "outputs": [
+            "citations.md",
+            "references.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "analyze",
+      "label": "분석",
+      "desc": "카테고리와 논문 사이의 관계를 만듭니다.",
+      "steps": [
+        {
+          "id": "index",
+          "label": "논문 목록",
+          "script": "build_papers_index",
+          "run_steps": [
+            "build_papers_index"
+          ],
+          "desc": "리뷰에서 논문 메타데이터를 모아 전체 목록을 만듭니다.",
+          "cost": "local",
+          "inputs": [
+            "review.md"
+          ],
+          "outputs": [
+            "_papers_index.json"
+          ]
+        },
+        {
+          "id": "classify",
+          "label": "토픽 모델링·분류",
+          "script": "topic_modeling",
+          "run_steps": [
+            "topic_modeling",
+            "classify_papers"
+          ],
+          "desc": "SPECTER2 + UMAP + HDBSCAN으로 카테고리를 만들고 배정합니다. LLM 호출 0회, 한 논문은 최대 3개 카테고리.",
+          "cost": "local",
+          "inputs": [
+            "_papers_index.json"
+          ],
+          "outputs": [
+            "_new_classification.json",
+            "_umap_coords.json"
+          ]
+        },
+        {
+          "id": "related",
+          "label": "같이 보면 좋은 논문",
+          "script": "extract_insights",
+          "run_steps": [
+            "extract_insights"
+          ],
+          "desc": "SPECTER2 + 제목·저자 BM25 후보를 고른 뒤 Claude Haiku가 두 리뷰를 읽고 공통점과 차이를 한 문장으로 씁니다. 무관한 쌍은 제거하고 판정 결과는 캐시합니다.",
+          "cost": "paid",
+          "model": "claude-haiku-4-5",
+          "inputs": [
+            "review.md"
+          ],
+          "outputs": [
+            "_paper_connections.json"
+          ]
+        },
+        {
+          "id": "summaries",
+          "label": "카테고리 요약",
+          "script": "build_category_summaries",
+          "run_steps": [
+            "build_category_summaries"
+          ],
+          "desc": "카테고리별 요약과 세부 주제를 만듭니다.",
+          "cost": "paid",
+          "model": "claude-sonnet-5",
+          "outputs": [
+            "_category_summaries.json"
+          ]
+        },
+        {
+          "id": "timelines",
+          "label": "타임라인",
+          "script": "generate_timelines",
+          "run_steps": [
+            "generate_timelines"
+          ],
+          "features": [
+            "timeline-text",
+            "timeline-image"
+          ],
+          "desc": "카테고리별 연구 흐름 내러티브와 PaperBanana 타임라인 그림을 만듭니다.",
+          "cost": "paid",
+          "model": "claude-opus-5",
+          "outputs": [
+            "research_timeline.png",
+            "category_timeline_*.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "publish",
+      "label": "출판",
+      "desc": "읽을 수 있는 결과물과 검색 인덱스, 서지 DB를 만듭니다.",
+      "steps": [
+        {
+          "id": "frontmatter",
+          "label": "메타데이터 주입",
+          "script": "inject_frontmatter",
+          "run_steps": [
+            "inject_frontmatter"
+          ],
+          "desc": "review.md에 메타데이터와 같이 보면 좋은 논문 목록을 넣습니다.",
+          "cost": "local",
+          "inputs": [
+            "_paper_connections.json"
+          ],
+          "outputs": [
+            "review.md"
+          ]
+        },
+        {
+          "id": "validate",
+          "label": "검증",
+          "script": "validate_papers",
+          "desc": "섹션·링크·그림·타임라인이 맞는지 검사합니다(--strict).",
+          "cost": "local"
+        },
+        {
+          "id": "html",
+          "label": "논문 페이지",
+          "script": "review_to_html",
+          "run_steps": [
+            "review_to_html"
+          ],
+          "desc": "논문별 index.html을 만듭니다.",
+          "cost": "local",
+          "inputs": [
+            "review.md"
+          ],
+          "outputs": [
+            "index.html"
+          ]
+        },
+        {
+          "id": "topic-index",
+          "label": "토픽 인덱스",
+          "script": "build_topic_index",
+          "run_steps": [
+            "build_topic_index"
+          ],
+          "desc": "카테고리 카드, Deep Research, Audio Overview가 들어간 토픽 페이지를 만듭니다.",
+          "cost": "local",
+          "outputs": [
+            "docs/<topic>/index.html"
+          ]
+        },
+        {
+          "id": "search-index",
+          "label": "검색 인덱스",
+          "script": "build_search_index",
+          "run_steps": [
+            "build_search_index",
+            "build_cross_index"
+          ],
+          "features": [
+            "keyword-search",
+            "semantic-search"
+          ],
+          "desc": "BM25 + Gemini 임베딩 hybrid 색인과 전체 통합 색인을 만듭니다.",
+          "cost": "paid",
+          "outputs": [
+            "_search_index.json"
+          ]
+        },
+        {
+          "id": "bibliography",
+          "label": "서지 DB",
+          "script": "build_bibliography_db",
+          "features": [
+            "bibliography-update"
+          ],
+          "desc": "서지 DB를 갱신하고(기관 소스 준비 → 반영 → 정리 → 같이 보면 좋은 논문 반영 → 엄격 검사) 맥미니로 보냅니다.",
+          "cost": "local",
+          "outputs": [
+            ".cache/bibliography.sqlite3"
+          ],
+          "run_steps": [
+            "setup_affiliation_sources",
+            "build_bibliography_db",
+            "finalize_bibliography_db",
+            "sync_paper_connections",
+            "check_bibliography_db",
+            "sync_bibliography_db"
+          ]
+        },
+        {
+          "id": "cleanup",
+          "label": "정리",
+          "script": "cleanup",
+          "run_steps": [
+            "cleanup"
+          ],
+          "desc": "더 이상 쓰지 않는 타임라인 이미지와 임시 파일을 지웁니다.",
+          "cost": "local"
+        },
+        {
+          "id": "deploy",
+          "label": "배포",
+          "script": "prepare_deploy",
+          "optional": true,
+          "features": [
+            "publish"
+          ],
+          "desc": "Cloudflare Workers와 gh-pages 스텁으로 배포합니다. --mode deploy 또는 자격증명이 있으면 실행됩니다.",
+          "cost": "external"
+        }
+      ]
+    }
+  ],
+  "options": [
+    {
+      "id": "insights",
+      "label": "O-2 Insights + 네트워크",
+      "script": "generate_network",
+      "run_steps": [
+        "generate_network"
+      ],
+      "desc": "--insights: 카테고리 간 인사이트와 UMAP 2D/3D 인터랙티브 네트워크를 만듭니다.",
+      "cost": "paid"
+    },
+    {
+      "id": "workflow-diagram",
+      "label": "워크플로 그림",
+      "script": "generate_workflow",
+      "desc": "고양이 스타일 사용 경로·파이프라인 그림을 만듭니다(--style plain 대체 가능).",
+      "cost": "paid"
+    }
+  ]
+}

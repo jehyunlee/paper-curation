@@ -23,6 +23,7 @@
 !pipeline/
 !pipeline/*.py
 !pipeline/features.json
+!pipeline/pipeline_map.json
 !pipeline/lib/
 !pipeline/lib/*.py
 !pipeline/lib/citedby/
