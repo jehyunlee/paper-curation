@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Bibliography DB · 스키마 지도</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172b3a;
+      --muted: #526674;
+      --soft: #748894;
+      --paper: #f4f3ec;
+      --card: #fffefa;
+      --line: #d8dedb;
+      --teal: #087f70;
+      --teal-light: #e5f4ee;
+      --blue: #557b9c;
+      --orange: #b97132;
+      --shadow: 0 14px 34px rgba(34, 51, 56, .08), 0 2px 7px rgba(34, 51, 56, .05);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(ellipse at 82% -10%, rgba(149, 200, 176, .22), transparent 34rem),
+        linear-gradient(180deg, #f8f7f0 0, var(--paper) 34rem);
+    }
+    button, input, select { font: inherit; }
+    button { color: inherit; }
+    :focus-visible { outline: 3px solid #159f88; outline-offset: 3px; }
+    .page { width: min(1600px, 100%); margin: 0 auto; padding: clamp(18px, 3.2vw, 48px); }
+    .eyebrow {
+      display: flex; align-items: center; gap: 9px; margin: 0 0 13px;
+      color: var(--teal); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 23px; height: 2px; background: currentColor; }
+    .language-nav { display: flex; justify-content: flex-end; margin-bottom: 18px; font-size: .82rem; font-weight: 700; }
+    .language-nav a { color: var(--teal); }
+    h1 { max-width: 900px; margin: 0; font-size: clamp(2rem, 5vw, 4.2rem); line-height: 1.06; letter-spacing: -.055em; }
+    .intro { max-width: 850px; margin: 18px 0 0; color: var(--muted); font-size: clamp(.98rem, 1.3vw, 1.12rem); line-height: 1.8; }
+    .snapshot {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+      width: fit-content; max-width: 100%; margin-top: 23px; padding: 10px 14px;
+      border: 1px solid #c9dcd2; border-radius: 12px; background: rgba(255,255,250,.8);
+      color: #315c50; font-size: .82rem; font-weight: 700;
+    }
+    .snapshot .dot { width: 7px; height: 7px; border-radius: 50%; background: #128670; box-shadow: 0 0 0 4px #e3f2eb; }
+    .snapshot code { color: #244b42; font-family: var(--mono); font-size: .8rem; }
+    .warning {
+      display: grid; grid-template-columns: 5px 1fr; gap: 13px; max-width: 1100px;
+      margin: 22px 0 30px; padding: 14px 17px 14px 0; border: 1px solid #e9d7ad;
+      border-radius: 12px; background: #fff8e8; color: #67532e; font-size: .9rem; line-height: 1.65;
+    }
+    .warning::before { content: ""; background: #d59a3c; border-radius: 0 4px 4px 0; }
+    .warning strong { color: #493a20; }
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      padding: 14px; border: 1px solid #dce2dd; border-radius: 16px 16px 0 0;
+      background: rgba(255,255,252,.88); box-shadow: 0 4px 16px rgba(40,56,57,.035);
+    }
+    .search-wrap { position: relative; flex: 1 1 300px; min-width: min(100%, 230px); }
+    .search-wrap::before {
+      content: ""; position: absolute; left: 14px; top: 13px; width: 11px; height: 11px;
+      border: 1.7px solid #758894; border-radius: 50%; pointer-events: none;
+    }
+    .search-wrap::after { content: ""; position: absolute; left: 25px; top: 25px; width: 6px; height: 1.7px; background: #758894; transform: rotate(45deg); pointer-events: none; }
+    .search-wrap input, .controls select {
+      width: 100%; min-height: 42px; border: 1px solid #cbd5d2; border-radius: 10px;
+      background: #fff; color: var(--ink); font-size: .9rem;
+    }
+    .search-wrap input { padding: 9px 13px 9px 39px; }
+    .controls select { width: auto; min-width: 180px; padding: 9px 33px 9px 12px; }
+    .control-button {
+      min-height: 42px; padding: 8px 13px; border: 1px solid #cbd5d2; border-radius: 10px;
+      background: #fff; color: #294253; font-size: .86rem; font-weight: 700; cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease;
+    }
+    .control-button:hover { border-color: #81b3a7; background: #f3faf6; }
+    .control-button:active { transform: translateY(1px); }
+    .control-button[aria-pressed="true"] { border-color: #77b6a5; background: #e5f4ee; color: #126452; }
+    .result-count { margin-left: auto; padding: 0 4px; color: var(--muted); font-size: .82rem; white-space: nowrap; }
+    .diagram-scroll {
+      position: relative; overflow: auto; overscroll-behavior-x: contain;
+      border: 1px solid #dce2dd; border-top: 0; border-radius: 0 0 16px 16px;
+      background: linear-gradient(180deg, rgba(255,255,252,.92), rgba(250,250,245,.96));
+      box-shadow: var(--shadow); scrollbar-color: #9caaa7 #eef0eb;
+    }
+    .diagram-canvas { position: relative; min-width: 1260px; padding: 22px; isolation: isolate; }
+    .diagram-grid {
+      position: relative; z-index: 1; display: grid;
+      grid-template-columns: minmax(250px, .94fr) minmax(330px, 1.24fr) minmax(270px, 1fr) minmax(270px, 1fr);
+      gap: 15px; align-items: start;
+    }
+    .group { min-width: 0; }
+    .group-heading { min-height: 62px; padding: 4px 4px 13px; }
+    .group-kicker { display: flex; align-items: center; gap: 7px; color: var(--soft); font-size: .68rem; font-weight: 800; letter-spacing: .12em; }
+    .group-kicker::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--group-color); }
+    .group-heading h2 { margin: 5px 0 0; font-size: 1.05rem; letter-spacing: -.025em; }
+    .group-heading p { margin: 4px 0 0; color: var(--soft); font-size: .75rem; line-height: 1.4; }
+    .group-paper { --group-color: #bd8146; }
+    .group-people { --group-color: #198875; }
+    .group-evidence { --group-color: #5b7fa0; }
+    .group-enrichment { --group-color: #866db0; }
+    .table-card {
+      position: relative; margin: 0 0 13px; overflow: clip; border: 1px solid #d8dfdb;
+      border-radius: 13px; background: var(--card); box-shadow: 0 3px 9px rgba(30,48,50,.035);
+      transition: opacity .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .table-card:hover { border-color: #b8cbc5; box-shadow: 0 8px 20px rgba(30,48,50,.08); }
+    .table-card.is-selected { border-color: #26a086; box-shadow: 0 0 0 2px rgba(38,160,134,.15), 0 10px 26px rgba(30,48,50,.08); }
+    .table-card.is-neighbor { border-color: #89b8a9; }
+    .table-card.is-dim { opacity: .42; }
+    .table-card[hidden] { display: none; }
+    .table-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+      padding: 12px 13px 10px; border: 0; border-bottom: 1px solid #edf0eb; background: transparent;
+      text-align: left; cursor: pointer;
+    }
+    .table-head:hover { background: #f6faf6; }
+    .table-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+    .table-title code { font-family: var(--mono); font-size: .83rem; font-weight: 800; color: #1e4152; overflow-wrap: anywhere; }
+    .table-title span { color: #667986; font-size: .78rem; white-space: nowrap; }
+    .open-indicator { flex: none; color: #7e918f; font-size: .8rem; }
+    .table-summary { padding: 9px 13px 10px; color: #526570; font-size: .78rem; line-height: 1.55; }
+    .table-summary p { margin: 0; }
+    .table-flow-hint { display: flex; gap: 5px; margin-top: 7px; color: #557467; font-size: .7rem; font-weight: 650; }
+    .table-flow-hint span + span::before { content: "→"; margin-right: 5px; color: #93a7a0; }
+    .unique-rule { padding: 5px 13px 8px; color: #89601f; font-size: .68rem; line-height: 1.45; }
+    .unique-rule code { font-family: var(--mono); font-size: .66rem; }
+    .column-list { padding: 0 8px 8px; }
+    .column-row { margin: 0; }
+    .column-row[hidden] { display: none; }
+    .column-button {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 6px; align-items: center;
+      width: 100%; min-height: 34px; padding: 5px 6px; border: 0; border-radius: 6px;
+      background: transparent; text-align: left; cursor: pointer;
+    }
+    .column-button:hover { background: #eef6f1; }
+    .column-top { display: flex; min-width: 0; align-items: center; gap: 6px; }
+    .column-top code { min-width: 0; color: #314956; font-family: var(--mono); font-size: .71rem; overflow-wrap: anywhere; }
+    .column-type { color: #82918e; font-family: var(--mono); font-size: .61rem; white-space: nowrap; }
+    .badge-row { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 3px; }
+    .badge { display: inline-flex; align-items: center; padding: 1px 4px; border: 1px solid #d8dfdf; border-radius: 4px; color: #58717b; font-size: .56rem; font-weight: 800; line-height: 1.35; white-space: nowrap; }
+    .badge.pk { border-color: #d6bd8e; background: #fff7e5; color: #7d5d25; }
+    .badge.fk { border-color: #b9cddd; background: #eef5fa; color: #446986; }
+    .badge.unique { border-color: #d6c7e4; background: #f6f0fb; color: #745593; }
+    .badge.nn { border-color: #c9ddd3; background: #eef8f2; color: #36715d; }
+    .column-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 8px; color: #7b8a8d; font-family: var(--mono); font-size: .58rem; line-height: 1.3; }
+    .column-meta .default { color: #7b6b4c; }
+    .column-meta .fk-target { color: #56758a; }
+    .empty-state { display: none; padding: 38px 20px; color: var(--muted); text-align: center; }
+    .empty-state.show { display: block; }
+    .edge-layer { position: absolute; z-index: 0; inset: 0 auto auto 0; pointer-events: none; overflow: visible; }
+    .edge { fill: none; stroke: var(--blue); stroke-width: 1.55; opacity: .27; transition: opacity .2s ease, stroke .2s ease, stroke-width .2s ease; }
+    .edge.logical { stroke: var(--orange); stroke-dasharray: 6 5; opacity: .62; }
+    .edge.is-active { stroke: var(--teal); stroke-width: 2.8; opacity: .98; }
+    .edge.logical.is-active { stroke: var(--orange); }
+    .edge.is-dim { opacity: .055; }
+    .legend {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 9px 18px;
+      padding: 15px 17px; border: 1px solid #dce2dd; border-top: 0;
+      border-radius: 0 0 14px 14px; background: rgba(255,255,252,.82); color: #546972; font-size: .76rem; line-height: 1.6;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; }
+    .line-swatch { display: inline-block; width: 28px; border-top: 2px solid var(--blue); }
+    .line-swatch.logical { border-color: var(--orange); border-top-style: dashed; }
+    .legend-note { flex: 1 1 310px; color: #63756f; }
+    .key-guide { margin-top: 25px; border-top: 1px solid #d9dfd9; padding-top: 16px; color: #697a7c; font-size: .77rem; line-height: 1.7; }
+    .key-guide code { color: #385866; font-family: var(--mono); }
+    .footer { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; margin-top: 16px; color: #84918f; font-size: .7rem; }
+    .bubble {
+      position: fixed; z-index: 20; display: none; width: min(390px, calc(100vw - 24px)); max-height: min(78vh, 660px);
+      overflow-y: auto; padding: 17px 17px 15px; border: 1px solid #b7d0c6; border-radius: 15px;
+      background: #fffefa; box-shadow: 0 20px 60px rgba(22,42,47,.22), 0 3px 12px rgba(22,42,47,.12);
+    }
+    .bubble.open { display: block; animation: bubble-in .16s ease-out; }
+    @keyframes bubble-in { from { opacity: .3; transform: translateY(5px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .bubble::before { content: ""; position: absolute; top: 17px; left: -7px; width: 12px; height: 12px; border-left: 1px solid #b7d0c6; border-bottom: 1px solid #b7d0c6; background: #fffefa; transform: rotate(45deg); }
+    .bubble.flip::before { right: -7px; left: auto; border: 0; border-top: 1px solid #b7d0c6; border-right: 1px solid #b7d0c6; }
+    .bubble-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid #e5ebe6; }
+    .bubble-label { margin: 0 0 4px; color: var(--teal); font-size: .65rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .bubble h2 { margin: 0; font-size: 1.08rem; letter-spacing: -.025em; overflow-wrap: anywhere; }
+    .bubble h2 code { font-family: var(--mono); font-size: .95rem; }
+    .bubble-close { flex: none; width: 30px; height: 30px; border: 1px solid #d8e1dc; border-radius: 8px; background: #fff; color: #56706e; font-size: 1.1rem; cursor: pointer; }
+    .bubble-column-note { margin: 11px 0 12px; color: #405964; font-size: .87rem; line-height: 1.65; }
+    .bubble-flow { display: grid; gap: 8px; }
+    .flow-step { padding: 9px 10px; border: 1px solid #edf0eb; border-radius: 9px; background: #fafbf7; }
+    .flow-step strong { display: block; margin-bottom: 3px; color: #497466; font-size: .65rem; letter-spacing: .04em; }
+    .flow-step p { margin: 0; color: #52636c; font-size: .78rem; line-height: 1.55; }
+    .bubble-refs { margin-top: 11px; color: #80908d; font-size: .67rem; line-height: 1.6; }
+    .bubble-refs code { font-family: var(--mono); color: #55716b; overflow-wrap: anywhere; }
+    .bubble-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .bubble-meta .badge { font-size: .61rem; }
+    @media (max-width: 680px) {
+      .page { padding: 19px 14px 26px; }
+      .warning { font-size: .83rem; }
+      .controls { gap: 8px; padding: 10px; }
+      .search-wrap { flex-basis: 100%; }
+      .controls select { flex: 1 1 155px; min-width: 0; }
+      .result-count { margin-left: 0; flex: 1 1 auto; text-align: right; }
+      .diagram-canvas { min-width: 1180px; padding: 15px; }
+      .diagram-grid { grid-template-columns: 245px 315px 260px 260px; gap: 12px; }
+      .bubble { width: min(340px, calc(100vw - 24px)); }
+      .bubble::before { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <nav class="language-nav" aria-label="언어 선택"><a href="bibliography-schema.en.html" lang="en">English</a></nav>
+      <p class="eyebrow">DATA MAP / LOCAL SQLITE</p>
+      <h1>서지 데이터베이스<br>스키마 지도</h1>
+      <p class="intro">논문 메타데이터가 저자·기관, 근거 자료, 지표와 외부 보강 데이터로 이어지는 구조를 살펴봅니다. 표 제목이나 열 이름을 누르면 해당 데이터의 출처와 처리 방식이 말풍선으로 열립니다.</p>
+      <div class="snapshot" aria-label="로컬 데이터베이스 스키마 스냅샷 안내">
+        <span class="dot" aria-hidden="true"></span>
+        <span>로컬 스키마 스냅샷 · 실시간 연결 아님</span>
+        <code>.cache/bibliography.sqlite3</code>
+        <span>스키마 + 별도 로컬 표본 파일 · DB 원본은 변경하지 않음</span>
+      </div>
+      <aside class="warning">
+        <div><strong>출처 표시는 사실 검증 표시가 아닙니다.</strong> <code>source</code> 같은 값은 데이터가 온 경로를 기록합니다. 저자–기관 연결과 논문 관계에는 추출기·OpenAlex·모델의 추정이 포함될 수 있으며, 연결 행이 있다고 실제 소속이나 관계가 입증되는 것은 아닙니다. 기관의 <code>country_name_en</code>은 관측된 소속 기관의 소재국, <code>hq_country_name_en</code>은 본부 소재국으로 서로 다를 수 있습니다.</div>
+      </aside>
+    </header>
+
+    <section id="sample-explorer" aria-label="실제 데이터 탐색">
+      <h2>실제 데이터 탐색</h2>
+      <p id="sample-status" role="status">표본 파일 없음. <code>python3 pipeline/export_bibliography_samples.py</code> 실행 후 이 페이지를 다시 여세요.</p>
+      <div id="sample-ui" hidden>
+        <div class="sample-controls">
+          <label>논문 검색 <input id="sample-search" type="search" placeholder="제목 · DOI · 논문 ID"></label>
+          <label>논문 <select id="sample-paper" aria-label="표본 논문 선택"></select></label>
+          <label>범위 <select id="sample-scope"><option value="paper">선택 논문과 관련된 행</option><option value="all">100편 표본 전체</option></select></label>
+          <label>테이블 <select id="sample-table"></select></label>
+          <button type="button" id="sample-clear">행 필터 해제</button>
+        </div>
+        <p id="sample-info" aria-live="polite"></p>
+        <p class="sample-help">밑줄 친 FK 값을 누르면 연결된 실제 행으로 이동합니다. 구조도의 테이블·열을 누르면 말풍선에서 해당 예제를 열 수 있습니다. NULL과 빈 문자열은 구분하여 표시합니다.</p>
+        <div class="sample-scroll" tabindex="0" aria-label="가로 스크롤 가능한 실제 데이터 표"><table id="sample-records"></table></div>
+        <div class="sample-controls"><button type="button" id="sample-prev">이전</button><span id="sample-page" aria-live="polite"></span><button type="button" id="sample-next">다음</button></div>
+      </div>
+    </section>
+
+    <section aria-label="스키마 지도 조작">
+      <div class="controls">
+        <label class="search-wrap"><span class="sr-only" hidden>테이블과 열 검색</span><input id="search" type="search" placeholder="테이블·열·설명 검색" autocomplete="off" aria-label="테이블, 열, 설명 검색"></label>
+        <label class="sr-only" hidden for="group-filter">그룹 필터</label>
+        <select id="group-filter" aria-label="그룹 필터">
+          <option value="all">모든 그룹</option>
+          <option value="paper">논문 중심</option>
+          <option value="people">저자 · 소속</option>
+          <option value="evidence">근거 · 지표</option>
+          <option value="enrichment">외부 보강 · 관계</option>
+        </select>
+        <button class="control-button" id="focus-toggle" type="button" aria-pressed="true" title="선택한 테이블과 직접 연결된 테이블을 강조">관계 강조</button>
+        <button class="control-button" id="reset" type="button">초기화</button>
+        <span class="result-count" id="result-count" aria-live="polite"></span>
+      </div>
+      <div class="diagram-scroll" id="diagram-scroll" tabindex="0" aria-label="가로로 스크롤 가능한 데이터베이스 스키마 지도">
+        <div class="diagram-canvas" id="diagram-canvas">
+          <svg class="edge-layer" id="edge-layer" aria-hidden="true" focusable="false">
+            <defs>
+              <marker id="arrow-fk" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L7,3 z" fill="#557b9c"></path></marker>
+              <marker id="arrow-logical" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L7,3 z" fill="#b97132"></path></marker>
+              <marker id="arrow-active" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L7,3 z" fill="#087f70"></path></marker>
+            </defs>
+            <g id="edge-paths"></g>
+          </svg>
+          <div class="diagram-grid" id="diagram-grid"></div>
+          <div class="empty-state" id="empty-state">검색 조건에 맞는 테이블이나 열이 없습니다.</div>
+        </div>
+      </div>
+      <div class="legend" aria-label="스키마 범례">
+        <span class="legend-item"><span class="line-swatch" aria-hidden="true"></span><strong>실선</strong> SQLite 외래키 (FK)</span>
+        <span class="legend-item"><span class="line-swatch logical" aria-hidden="true"></span><strong>점선</strong> 논리 링크, DB 외래키 아님</span>
+        <span class="legend-item"><span class="badge pk">PK</span> 기본키 · 복합키 순번 표기</span>
+        <span class="legend-item"><span class="badge fk">FK</span> 외래키 · 대상 표시</span>
+        <span class="legend-item"><span class="badge unique">U</span> UNIQUE 인덱스·제약</span>
+        <span class="legend-item"><span class="badge nn">NN</span> NOT NULL · 기본값 표시</span>
+        <span class="legend-note">선택한 테이블을 중심으로 직접 연결된 선을 강조합니다. FK는 행의 참조 무결성을 보장할 뿐, 연결 내용 자체의 진실성을 보증하지 않습니다.</span>
+      </div>
+    </section>
+
+    <div class="key-guide">
+      <strong>읽는 법</strong> — <code>PK 1</code> 등은 복합 기본키의 위치입니다. <code>FK → papers.paper_id · ON DELETE CASCADE</code>는 PRAGMA가 보고한 실제 SQL 참조입니다. <code>doi_resolutions.slug → papers.slug</code>는 재빌드 때 DOI 해석을 논문에 연결하는 코드상 논리 링크로, 실제 외래키 제약은 없습니다. <code>UNIQUE WHERE orcid &lt;&gt; ''</code>는 ORCID가 빈 문자열이 아닐 때만 적용되는 부분 고유 인덱스입니다.
+    </div>
+    <footer class="footer">
+      <span>설명 근거: <code>pipeline/build_bibliography_db.py</code> 및 각 보강·지표 모듈 (아래 카드별 참조)</span>
+      <span>Standalone HTML · CSS/JavaScript 내장 · 네트워크 요청 없음</span>
+    </footer>
+  </main>
+
+  <aside class="bubble" id="bubble" role="dialog" aria-modal="false" aria-labelledby="bubble-title" tabindex="-1">
+    <div class="bubble-head">
+      <div><p class="bubble-label" id="bubble-label">DATA FLOW</p><h2 id="bubble-title"></h2></div>
+      <button class="bubble-close" id="bubble-close" type="button" aria-label="설명 말풍선 닫기">×</button>
+    </div>
+    <p class="bubble-column-note" id="bubble-note"></p>
+    <div class="bubble-meta" id="bubble-meta"></div>
+    <div class="bubble-flow" id="bubble-flow"></div>
+    <div class="bubble-refs" id="bubble-refs"></div>
+  </aside>
+
+  <style>
+    #sample-explorer { margin: 28px 0; padding: 22px; border: 1px solid #d9e1dc; border-radius: 18px; background: #fff; }
+    #sample-explorer h2 { margin: 0 0 12px; }
+    #sample-status, #sample-info, .sample-help { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+    .sample-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .sample-controls label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; min-width: 0; max-width: 100%; }
+    .sample-controls input, .sample-controls select, .sample-controls button, #sample-open { padding: 9px; border: 1px solid #cbdad2; border-radius: 7px; background: #f6faf8; color: #163b35; max-width: 100%; }
+    #sample-paper { width: 380px; }
+    .sample-scroll { overflow: auto; max-height: 420px; border: 1px solid #e0e7e3; }
+    #sample-records { border-collapse: collapse; font: 12px/1.6 var(--sans); width: 100%; }
+    #sample-records th, #sample-records td { padding: 9px 12px; border-bottom: 1px solid #e4ebe6; text-align: left; min-width: 90px; max-width: 400px; overflow-wrap: anywhere; }
+    #sample-records th { position: sticky; top: 0; background: #edf5ef; z-index: 1; white-space: nowrap; }
+    #sample-records .selected-column { background: #fff0c9; }
+    #sample-records button { border: 0; background: none; color: #087f70; text-decoration: underline; cursor: pointer; font: inherit; }
+    #sample-records .null-value { color: #7a8580; font-style: italic; }
+    #sample-open { cursor: pointer; width: 100%; margin-top: 12px; }
+  </style>
+  <script>
+    (() => {
+      'use strict';
+      const C = (name, type, note, meta = {}) => ({ name, type, note, ...meta });
+      const tables = [
+        {
+          id: 'papers', group: 'paper', label: '논문',
+          summary: '논문별 서지정보와 로컬 리뷰 경로를 모으는 중심 테이블.',
+          flow: {
+            source: 'Zotero 서지 레코드(가능하면 리뷰 시점 sidecar), 로컬 인덱스·frontmatter, Scopus와 PDF 앞부분.',
+            process: 'Zotero 값 우선. Scopus·PDF는 빈 항목만 보충하며, Scopus EID는 별도 예외. DOI·날짜를 정리하고 필드 출처를 메타데이터에 남깁니다.',
+            use: '논문을 식별하고 저자·소속·원문·인용 이력 등 종속 데이터를 연결하는 기본 레코드.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · reconcile_bibliography / build', 'AGENTS.md · Bibliography DB / sidecar 운영 원칙'],
+          uniqueRules: ['UNIQUE(slug)'],
+          columns: [
+            C('paper_id','INTEGER','DB 내부에서 논문을 가리키는 정수 식별자.',{pk:1}),
+            C('slug','TEXT','로컬 인덱스의 논문 키이자 리뷰 디렉터리와 연결되는 값. doi_resolutions도 이 값으로 논리 연결됩니다.',{nn:true,unique:'UNIQUE(slug)'}),
+            C('title','TEXT','Zotero 우선 제목. 그 값이 없을 때만 Scopus·PDF 제목으로 채웁니다.',{nn:true}),
+            C('publication_date','TEXT','통합된 발행일. Zotero 우선, 빈 값은 Scopus·PDF가 보충하며 온라인 발행일을 날짜 대용으로 쓸 수 있습니다.'),
+            C('journal_name','TEXT','저널명. Zotero 값이 있으면 보존하고 외부 메타데이터는 빈 항목만 보충.'),
+            C('doi','TEXT','정리된 DOI. Zotero/frontmatter/PDF 유입값 외에 별도 DOI 해석 결과도 빌더가 읽습니다.'),
+            C('arxiv_id','TEXT','로컬 논문 인덱스에서 들어오는 arXiv 식별자.'),
+            C('url','TEXT','원 URL. 없고 DOI가 있으면 DOI 기반 URL로 만들어질 수 있습니다.'),
+            C('review_dir','TEXT','해당 논문의 로컬 리뷰 디렉터리 상대 경로.' ,{nn:true}),
+            C('zotero_item_key','TEXT','Zotero 항목을 가리키는 라이브러리 키. sidecar 또는 조회한 Zotero 레코드에서 채웁니다.'),
+            C('affiliation_source','TEXT','소속 추출에 사용된 경로를 요약한 출처 표식. 검증 등급이나 사실 확인을 뜻하지 않습니다.'),
+            C('affiliation_confidence','REAL','소속 추출 결과에 부여한 규칙 기반 점수(예: scopus+pdf 여부). 보정된 확률이나 정답 보증이 아닙니다.'),
+            C('header_raw','TEXT','PDF 앞부분에서 얻은 원시 헤더 문자열. 후속 소속·서지 파싱의 재료이지 정제된 사실 필드가 아닙니다.'),
+            C('metadata_json','TEXT','발행 출처, formal DOI 해석 출처, 토픽, PDF 경로 등 추가 빌드 메타데이터.',{nn:true,def:"'{}'"}),
+            C('created_at','TEXT','DB가 레코드를 처음 생성한 시각의 SQLite 기본값.',{nn:true,def:'CURRENT_TIMESTAMP'}),
+            C('volume','TEXT','저널 권. 서지 조정 순서를 따르며 Zotero 값이 우선.'),
+            C('issue','TEXT','저널 호. Zotero 값이 우선이고 다른 출처는 누락값만 보충.'),
+            C('pages','TEXT','페이지 범위 또는 페이지 표기. 원 출처의 문자열 형태를 보존.'),
+            C('publisher','TEXT','출판사명. Zotero 우선, 나머지는 gap-fill.'),
+            C('issn','TEXT','인쇄판 ISSN 서지 필드.'),
+            C('eissn','TEXT','전자판 ISSN 서지 필드.'),
+            C('document_type','TEXT','출처에서 얻은 논문/문헌 유형 표기.'),
+            C('scopus_eid','TEXT','Scopus EID. 로컬 Zotero 대응 필드가 없어 Scopus가 값을 제공하면 채택.'),
+            C('received_date','TEXT','원고 접수일 메타데이터.'),
+            C('accepted_date','TEXT','원고 채택일 메타데이터.'),
+            C('published_online_date','TEXT','온라인 선출판일. publication_date가 없을 때 날짜 대용으로 사용될 수 있음.'),
+            C('bibliography_source','TEXT','통합 서지에 참여한 원천을 표시하는 태그. 원천 간 일치·검증을 주장하지 않습니다.')
+          ]
+        },
+        {
+          id: 'doi_resolutions', group: 'paper', label: 'DOI 해석',
+          summary: '외부 검색으로 찾은 DOI와 매칭 근거를 논문 slug별로 보존.',
+          flow: {
+            source: 'DOI가 비어 있는 논문 제목·저자와 OpenAlex/Crossref 후보.',
+            process: '정규화 제목 유사도 기준, 첫 저자 성 일치, 정식 문헌 유형, 저장소 DOI 제외를 확인하고 후보가 정확히 하나일 때만 저장.',
+            use: '재빌드 때 사라지지 않게 DOI 해석 결과를 보존하고 papers.slug와 연결. 이 연결은 SQL FK가 아닙니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · DOI_RESOLUTION_SCHEMA / cached_doi_resolution', 'pipeline/resolve_missing_dois.py · accept / resolve / run'],
+          uniqueRules: ['PRIMARY KEY(slug)', 'papers.slug로 논리 연결 · SQL FK 없음'],
+          columns: [
+            C('slug','TEXT','papers.slug를 복사해 논문을 가리키는 키. SQLite 외래키가 아니라 코드가 사용하는 논리 링크.',{pk:1}),
+            C('doi','TEXT','OpenAlex 또는 Crossref 후보에서 받아 정리한 DOI. 단 하나의 후보가 기준을 통과한 경우 저장.',{nn:true}),
+            C('source','TEXT','후보 DOI를 제공한 원천(openalex 또는 crossref) 표기. 사실 검증의 등급은 아님.',{nn:true}),
+            C('matched_title','TEXT','후보 레코드에서 비교에 사용한 제목. 원 논문과 동일하다는 증명값은 아님.',{nn:true,def:"''"}),
+            C('similarity','REAL','정규화된 제목 비교 점수. 사람의 확인이나 정답 확률을 의미하지 않습니다.'),
+            C('resolved_at','TEXT','DOI 후보를 채택해 저장한 UTC 시각 문자열.',{nn:true})
+          ]
+        },
+        {
+          id: 'authors', group: 'people', label: '저자',
+          summary: '표시명과 이름 정규화 키를 둡니다. 외부 식별자는 별도 보강될 수 있습니다.',
+          flow: {
+            source: '리뷰 시점 Zotero creator 목록 또는 OpenAlex authorship 응답.',
+            process: 'et al. 표기를 정리하고 이름을 접어 정규화 키를 만듭니다. OpenAlex ID·ORCID는 빈 값일 때 보강하며, 잘못 연결될 수 있습니다.',
+            use: 'paper_authors와 author–institution 연결에서 저자 행을 참조. 이름/식별자 일치만으로 실제 인물 동일성이 확정되지는 않습니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · upsert / author_identity migration', 'pipeline/enrich_openalex_authorships.py · upsert_author / ensure_schema'],
+          uniqueRules: ['UNIQUE(normalized_name)', "부분 UNIQUE(orcid) WHERE orcid <> ''"],
+          columns: [
+            C('author_id','INTEGER','DB 내부 저자 식별자.',{pk:1}),
+            C('display_name','TEXT','creator 또는 외부 authorship에서 받은 표시 이름. 표기 자체가 인물 검증을 뜻하지 않음.',{nn:true}),
+            C('normalized_name','TEXT','공백·대소문자·이름 표기 변형을 접은 저자 매칭 키. 같은 키로 합쳐져도 동일 인물이라는 보증은 아님.',{nn:true,unique:'UNIQUE(normalized_name)'}),
+            C('openalex_id','TEXT','OpenAlex author 식별자. 응답에서 이름을 매칭해 채우며 연결 오류 가능성이 있습니다.',{nn:true,def:"''"}),
+            C('orcid','TEXT','OpenAlex 응답에서 얻은 ORCID. 비어 있지 않은 값만 고유 인덱스 대상이며, 이름과의 연결은 별도로 검증된 사실이 아닙니다.',{nn:true,def:"''",unique:"UNIQUE WHERE orcid <> ''"})
+          ]
+        },
+        {
+          id: 'paper_authors', group: 'people', label: '논문–저자',
+          summary: '논문별 저자 순서와 출처 표식을 연결하는 다대다 테이블.',
+          flow: {
+            source: 'Sidecar에 보존된 Zotero creator 순서, 로컬 리뷰 메타데이터; OpenAlex authorship 보강.',
+            process: '저자 순번을 매기고 first/corresponding 표시를 기록합니다. OpenAlex는 교신 표시를 덧붙일 수 있으며 최초 creator 입력의 미확인은 0과 구별되지 않을 수 있습니다.',
+            use: '논문 저자 목록·순서 조회. source는 입력 경로이지 확인 상태가 아닙니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · build author upsert', 'pipeline/enrich_openalex_authorships.py · enrich authorship upsert'],
+          uniqueRules: ['PRIMARY KEY(paper_id, author_id)'],
+          columns: [
+            C('paper_id','INTEGER','저자 목록이 속한 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('author_id','INTEGER','목록에 연결된 저자.',{pk:2,nn:true,fk:{to:'authors.author_id',onDelete:'CASCADE'}}),
+            C('author_order','INTEGER','저자 목록의 1부터 시작하는 순번.',{nn:true}),
+            C('is_first_author','INTEGER','첫 저자 표시(정수 플래그). 입력 출처에 따라 결정되며 별도 확인 표시는 아닙니다.',{nn:true,def:'0'}),
+            C('is_corresponding_author','INTEGER','교신 저자 표시(정수 플래그). OpenAlex 응답에서 보강될 수 있고, 0이 언제나 미확인과 다르지는 않습니다.',{nn:true,def:'0'}),
+            C('source','TEXT','이 저자 연결을 만든 입력 경로(예: 로컬 creator 목록 또는 openalex). 검증 상태가 아닙니다.',{nn:true})
+          ]
+        },
+        {
+          id: 'institution_groups', group: 'people', label: '기관 그룹',
+          summary: 'institutions.group_id가 참조할 수 있는 그룹 이름 사전.',
+          flow: {
+            source: '기존 그룹 데이터와 기관 그룹 정리 흐름의 그룹 표기.',
+            process: '그룹명과 비교용 정규화명을 저장합니다. normalized_name에는 고유 제약이 없어 여러 행이 같은 키를 가질 수 있습니다.',
+            use: 'institutions.group_id의 선택적 FK 대상. parent_name / parent_ror_id와는 별도의 표현입니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · SCHEMA / ensure_legacy_institution_schema'],
+          columns: [
+            C('group_id','INTEGER','기관 그룹 행의 내부 식별자.',{pk:1}),
+            C('group_name','TEXT','그룹 이름 표기.',{nn:true}),
+            C('normalized_name','TEXT','그룹명 검색·비교용 정규화 문자열. UNIQUE가 아닙니다.',{nn:true})
+          ]
+        },
+        {
+          id: 'institutions', group: 'people', label: '기관',
+          summary: '정규화 기관명, ROR 식별자, 관측 소재국·본부국과 상위 연구 그룹.',
+          flow: {
+            source: 'Scopus 기관 문자열과 PDF 앞부분의 소속; ROR 정규화·상위기관, 별도 OpenAlex 보강.',
+            process: '기관명을 ROR 우선으로 정리하고 기존 기관/별칭에 매칭합니다. 소재국과 본부국은 따로 보존하며, parent는 ROR·curated group에서 유도될 수 있습니다.',
+            use: '기관별 논문 조회와 상위 그룹 집계. source/name_source는 유입 경로·정규화 근거이지 사실 보증이 아닙니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · reconcile_affiliations / ror_normalize / resolve_institution_row', 'AGENTS.md · affiliation source / country semantics'],
+          columns: [
+            C('institution_id','INTEGER','DB 내부 기관 식별자.',{pk:1}),
+            C('institution_name','TEXT','표준 표시 기관명. ROR 매칭 결과 또는 정리된 입력명을 쓸 수 있습니다.',{nn:true}),
+            C('normalized_name','TEXT','기관명 비교용 정규화 문자열. 실제 DB에는 UNIQUE 제약이 없습니다.',{nn:true}),
+            C('country_name_en','TEXT','논문 소속 주소에서 관측한 기관 소재국(사이트). 본부 소재국과 다를 수 있음.',{nn:true,def:"''"}),
+            C('group_id','INTEGER','선택적 institution_groups 참조. parent_name과는 별개의 연결.',{fk:{to:'institution_groups.group_id',onDelete:'NO ACTION'}}),
+            C('source','TEXT','기관 레코드가 유입된 경로 태그(예: Scopus/PDF/OpenAlex 관련). 확인 상태가 아님.',{nn:true}),
+            C('ror_id','TEXT','ROR 기관 식별 문자열. 로컬 외래키가 아니라 외부 레지스트리 ID.',{nn:true,def:"''"}),
+            C('parent_name','TEXT','기관이 속한다고 판단한 연구 상위 그룹명. ROR/curated 규칙에서 재계산될 수 있습니다.',{nn:true,def:"''"}),
+            C('parent_ror_id','TEXT','연구 상위 그룹의 ROR ID 문자열. SQL FK 제약은 없습니다.',{nn:true,def:"''"}),
+            C('name_source','TEXT','기관명 정규화에 사용한 근거(예: ROR evidence 유형). 기관 확인을 보증하지 않습니다.',{nn:true,def:"''"}),
+            C('hq_country_name_en','TEXT','ROR 조직의 본부 소재국. country_name_en의 소속 사이트 국가와 구별합니다.',{nn:true,def:"''"})
+          ]
+        },
+        {
+          id: 'institution_aliases', group: 'people', label: '기관 별칭',
+          summary: '원문 기관명 표현을 정규화 기관 행에 연결합니다.',
+          flow: {
+            source: '소속 문자열의 raw 표기(논문/PDF 또는 수집된 레코드).',
+            process: '공백·대소문자 중심의 정규화 키와 institution_id를 함께 저장. 원문은 재검토 가능한 별칭으로 보존.',
+            use: '다른 철자의 기관명을 기존 기관으로 찾는 데 활용. 정규화 일치도 기관 실체를 증명하지는 않습니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · institution alias upsert / known_institution'],
+          uniqueRules: ['UNIQUE(normalized_alias, institution_id)'],
+          columns: [
+            C('alias_id','INTEGER','별칭 행의 내부 식별자.',{pk:1}),
+            C('raw_name','TEXT','수집 당시의 원시 기관 표기. 정제 전 문자열일 수 있습니다.',{nn:true}),
+            C('normalized_alias','TEXT','별칭 비교용 정규화 문자열.',{nn:true,unique:'복합 UNIQUE 1/2'}),
+            C('institution_id','INTEGER','이 별칭이 가리키는 institutions 행.',{nn:true,fk:{to:'institutions.institution_id',onDelete:'NO ACTION'},unique:'복합 UNIQUE 2/2'})
+          ]
+        },
+        {
+          id: 'paper_institutions', group: 'people', label: '논문–기관',
+          summary: '한 논문에 관측된 기관과 그 문자열·출처를 잇습니다.',
+          flow: {
+            source: 'Scopus 기관 레코드를 PDF 텍스트와 대조하고, 문서의 소속 문자열을 보충; OpenAlex 보강이 추가될 수 있음.',
+            process: '기관 이름·ROR·국가를 정리한 뒤 paper_id와 institution_id 조합으로 보존. 행의 source 값으로 유입 경로를 남깁니다.',
+            use: '논문별 기관 검색/집계. 이 행은 저자 개인의 소속을 뜻하지 않으며, 추출된 문자열 자체가 검증된 사실은 아닙니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · reconcile_affiliations / build affiliation insert', 'pipeline/enrich_openalex_authorships.py · backfill_paper_institutions'],
+          uniqueRules: ['PRIMARY KEY(paper_id, institution_id)'],
+          columns: [
+            C('paper_id','INTEGER','기관 문자열이 연결된 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('institution_id','INTEGER','정규화된 institutions 행.',{pk:2,nn:true,fk:{to:'institutions.institution_id',onDelete:'CASCADE'}}),
+            C('raw_name','TEXT','논문/수집 응답에서 기관을 가리킨 원문 이름.',{nn:true}),
+            C('country_name','TEXT','해당 affiliation 문자열에서 얻은 국가. institutions.country_name_en과 본부국을 혼동하지 않도록 별도 보존.'),
+            C('source','TEXT','이 논문–기관 연결의 출처 태그. scopus-unconfirmed 같은 표식도 가능하며 확인 사실이 아닙니다.',{nn:true})
+          ]
+        },
+        {
+          id: 'paper_author_institutions', group: 'people', label: '저자–기관 연결',
+          summary: '논문 안에서 특정 저자와 기관을 연결한 근거·출처를 보존합니다.',
+          flow: {
+            source: 'PDF byline/첨자·author-information 추출, OpenAlex의 publisher-deposited authorship 또는 별도 추출기.',
+            process: '인쇄 marker와 저자 순서를 보존합니다. 표식이 없어 여러 기관을 저자 전원에 연결한 행은 unresolved로 구분하며, 이는 사실 검증된 귀속이 아닙니다.',
+            use: '논문 단위 affiliation 결과를 저자별로 좁혀 집계. 서로 다른 출처의 주장은 source별 별도 행으로 유지합니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · paper_author_institutions schema / PDF byline mapping', 'pipeline/enrich_openalex_authorships.py · OpenAlex links', 'pipeline/lib/evidence.py · extraction source classes'],
+          uniqueRules: ['PRIMARY KEY(paper_id, author_id, institution_id, source)'],
+          columns: [
+            C('paper_id','INTEGER','이 저자–기관 주장이 발생한 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('author_id','INTEGER','연결 대상으로 추출된 저자. 연결의 사실성은 FK가 보증하지 않습니다.',{pk:2,nn:true,fk:{to:'authors.author_id',onDelete:'CASCADE'}}),
+            C('institution_id','INTEGER','연결 대상으로 추출된 기관.',{pk:3,nn:true,fk:{to:'institutions.institution_id',onDelete:'CASCADE'}}),
+            C('marker','TEXT','PDF byline에 인쇄된 소속 첨자/표식. OpenAlex 등 다른 경로에서는 비어 있을 수 있음.'),
+            C('author_order','INTEGER','해당 논문 저자 순번(있는 경우). 추출기 응답 순서를 반영합니다.'),
+            C('source','TEXT','연결을 만든 경로·추정 등급(예: pdf.byline-marker, pdf.unmarked-multi, openalex). provenance이며 확인 판정이 아닙니다.',{pk:4,nn:true})
+          ]
+        },
+        {
+          id: 'source_documents', group: 'evidence', label: '원천 문서',
+          summary: '로컬 리뷰·텍스트 파일의 위치와 변경 감지 정보를 기록합니다.',
+          flow: {
+            source: '빌더가 논문 리뷰 디렉터리의 review.md와 text.md 존재 여부를 확인.',
+            process: '상대 경로, SHA-256, 바이트 수를 기록합니다. 문서 본문은 이 테이블에 복사하지 않습니다.',
+            use: '변경 감지·재처리 범위 판단 및 논문별 원천 파일 안내.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · source_documents insert', 'pipeline/audit_ingest_inputs.py · source document change checks'],
+          uniqueRules: ['PRIMARY KEY(paper_id, document_type)'],
+          columns: [
+            C('paper_id','INTEGER','파일이 속한 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('document_type','TEXT','로컬 파일 종류(빌더는 review 또는 text로 기록).',{pk:2,nn:true}),
+            C('path','TEXT','프로젝트 기준 상대 파일 경로. 파일 본문은 저장하지 않습니다.',{nn:true}),
+            C('sha256','TEXT','파일 바이트에서 계산한 SHA-256 변경 감지값.'),
+            C('bytes','INTEGER','수집 시점 파일 크기(바이트).')
+          ]
+        },
+        {
+          id: 'extraction_attempts', group: 'evidence', label: '추출 시도',
+          summary: '성공만이 아니라 실행 후 빈 결과·읽기 실패·오류도 기록합니다.',
+          flow: {
+            source: 'author-affiliation 추출기 실행 기록.',
+            process: 'paper_id와 extractor별 최신 시도를 upsert. outcome은 linked / empty / unreadable / error 등이며, 성공 행만 세는 테이블이 아닙니다.',
+            use: '실행 여부·재시도 필요성·비용이 드는 추출의 중복 방지 판단.'
+          },
+          refs: ['pipeline/lib/evidence.py · record_attempt / attempted', 'pipeline/build_bibliography_db.py · extraction_attempts schema'],
+          uniqueRules: ['PRIMARY KEY(paper_id, extractor)'],
+          columns: [
+            C('paper_id','INTEGER','추출을 시도한 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('extractor','TEXT','실행된 추출기 이름/버전 식별자.',{pk:2,nn:true}),
+            C('attempted_at','TEXT','시도를 기록한 UTC 시각(시간대가 포함된 ISO 문자열).',{nn:true}),
+            C('outcome','TEXT','시도 결과. 링크 성공뿐 아니라 empty / unreadable / error도 저장.',{nn:true}),
+            C('links','INTEGER','그 시도에서 산출한 연결 수. 결과가 없어도 기본값 0.',{nn:true,def:'0'}),
+            C('detail','TEXT','추출기 결과나 실패 맥락을 요약하는 선택 메모.')
+          ]
+        },
+        {
+          id: 'citation_snapshots', group: 'evidence', label: '인용 스냅샷',
+          summary: '날짜별 여러 제공자의 피인용 수를 합치지 않고 보존합니다.',
+          flow: {
+            source: 'citations.md의 과거 관측과 인용 수집 단계의 OpenAlex·Crossref·Scopus 응답.',
+            process: 'paper_id와 관측일별 upsert. 각 제공자 수치는 별도 열이며 누락값은 NULL로 유지; OpenAlex 정규화 백분위를 함께 저장할 수 있습니다.',
+            use: '시간에 따른 인용량과 제공자별 관측 차이를 비교.'
+          },
+          refs: ['pipeline/lib/metrics/collect.py · fetch_citation_counts', 'pipeline/lib/metrics/db.py · sync_metrics_database', 'pipeline/lib/metrics/store.py · citation history'],
+          uniqueRules: ['PRIMARY KEY(paper_id, observed_date)'],
+          columns: [
+            C('paper_id','INTEGER','인용 수치를 관측한 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('observed_date','TEXT','인용 수치를 저장한 관측일.',{pk:2,nn:true}),
+            C('openalex_count','INTEGER','해당 날짜 OpenAlex가 보고한 피인용 수. 다른 제공자와 합산하지 않음.'),
+            C('crossref_count','INTEGER','해당 날짜 Crossref가 보고한 피인용 수. 미수집/실패는 NULL일 수 있음.'),
+            C('scopus_count','INTEGER','해당 날짜 Scopus가 보고한 피인용 수. Scopus 색인 기준의 별도 측정값.'),
+            C('normalized_percentile','REAL','OpenAlex 연차 보정 인용 백분위. 원시 인용 수와 다른 측정값.')
+          ]
+        },
+        {
+          id: 'citation_yearly', group: 'evidence', label: '연도별 인용',
+          summary: '출처별 인용 흐름을 연도 단위로 저장합니다.',
+          flow: {
+            source: '연도별 인용 결과(현 수집 경로는 OpenAlex counts_by_year).',
+            process: '연도와 정수 인용 수를 변환해 paper/year/source 키로 upsert하고 조회 시각을 기록.',
+            use: '연도별 인용 추세를 스냅샷 합계와 별도로 살펴봅니다.'
+          },
+          refs: ['pipeline/lib/metrics/collect.py · OpenAlex work', 'pipeline/lib/metrics/db.py · yearly upsert'],
+          uniqueRules: ['PRIMARY KEY(paper_id, citation_year, source)'],
+          columns: [
+            C('paper_id','INTEGER','연도별 인용 기록의 논문.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('citation_year','INTEGER','인용이 집계된 연도.',{pk:2,nn:true}),
+            C('source','TEXT','연도별 수치의 제공자 식별자(현 동기화는 openalex).',{pk:3,nn:true}),
+            C('citation_count','INTEGER','해당 출처가 연도별로 보고한 인용 수.',{nn:true}),
+            C('retrieved_at','TEXT','연도별 결과를 DB에 반영한 관측일/조회 시각 문자열.',{nn:true})
+          ]
+        },
+        {
+          id: 'openalex_enrichment', group: 'enrichment', label: 'OpenAlex 보강',
+          summary: '논문별 OpenAlex 응답과 보강 실행의 요약·시각을 보존합니다.',
+          flow: {
+            source: 'DOI로 요청한 OpenAlex works 응답.',
+            process: '저자와 기관 연결은 별도 테이블에 기록하고, 이 행에는 work ID·인용 수·authorship/기관/교신 집계와 수집 시각을 upsert.',
+            use: '논문 단위 보강 이력 확인과 오래된 응답 갱신 판단. 응답은 공급자에 등록된 매핑이지 검증 완료 사실이 아닙니다.'
+          },
+          refs: ['pipeline/enrich_openalex_authorships.py · ensure_schema / fetch_work / enrich'],
+          uniqueRules: ['PRIMARY KEY(paper_id) · papers에 ON DELETE CASCADE'],
+          columns: [
+            C('paper_id','INTEGER','보강된 논문. 기본키이자 papers.paper_id를 참조하는 실제 FK.',{pk:1,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('openalex_id','TEXT','OpenAlex work(논문) 식별자. authors.openalex_id의 저자 ID와는 다릅니다.',{nn:true,def:"''"}),
+            C('cited_by_count','INTEGER','응답에서 받은 work의 피인용 수.'),
+            C('authorships','INTEGER','응답 authorships 배열의 항목 수.',{nn:true,def:'0'}),
+            C('linked_institutions','INTEGER','저자별 기관 연결을 추가한 수. 확인된 소속 수로 해석하면 안 됩니다.',{nn:true,def:'0'}),
+            C('corresponding','INTEGER','응답에서 교신 저자로 표시된 authorship 수.',{nn:true,def:'0'}),
+            C('retrieved_at','TEXT','OpenAlex 응답을 DB에 쓴 UTC 시각.',{nn:true})
+          ]
+        },
+        {
+          id: 'paper_connections', group: 'enrichment', label: '논문 관계 주장',
+          summary: '관련 논문 추천과 관계 판단을 출처·모델과 함께 저장합니다.',
+          flow: {
+            source: '임베딩/제목·저자 후보 검색, 관계 판정 단계 및 토픽별 연결 데이터.',
+            process: '후보 관계와 이유·토픽·모델·생성시각을 기록. 관계는 LLM/알고리즘이 만든 주장이지 서지 사실이 아닙니다.',
+            use: '관련 논문 탐색 및 토픽별 연결 JSON 재생성. 두 paper FK는 참조 행의 존재만 보장합니다.'
+          },
+          refs: ['pipeline/build_bibliography_db.py · paper_connections schema', 'pipeline/extract_insights.py · extract_paper_connections', 'pipeline/lib/related.py · candidate connection building'],
+          uniqueRules: ['PRIMARY KEY(paper_id, related_paper_id, relation)'],
+          columns: [
+            C('paper_id','INTEGER','관계를 제안한 쪽의 논문. 실제 FK는 papers.paper_id를 참조.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('related_paper_id','INTEGER','관련 대상으로 제안된 논문. paper_id와 별도로 papers를 참조.',{pk:2,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
+            C('relation','TEXT','제안된 관계 유형/라벨. 해석 결과이며 검증된 분류 사실이 아닙니다.',{pk:3,nn:true}),
+            C('reason','TEXT','관계를 제안한 설명 또는 판단 근거.'),
+            C('topics','TEXT','이 연결이 생성·재사용된 토픽 식별자들.'),
+            C('model','TEXT','관계 평가에 사용한 모델 이름/버전(있을 때).'),
+            C('generated_at','TEXT','관계 결과가 생성된 시각 문자열.'),
+            C('source','TEXT','연결 자료의 출처·생성 경로. 모델 결과를 사실로 승격시키지 않습니다.',{nn:true})
+          ]
+        }
+      ];
+
+      const groups = [
+        { id:'paper', kicker:'01 / CORE RECORDS', title:'논문 중심', note:'서지 레코드와 DOI 논리 연결', color:'#bd8146' },
+        { id:'people', kicker:'02 / PEOPLE & AFFILIATIONS', title:'저자 · 소속', note:'저자, 기관, 중간 연결 테이블', color:'#198875' },
+        { id:'evidence', kicker:'03 / EVIDENCE & METRICS', title:'근거 · 지표', note:'추출 시도, 원천 파일, 인용 관측', color:'#5b7fa0' },
+        { id:'enrichment', kicker:'04 / ENRICHMENT', title:'외부 보강 · 관계', note:'OpenAlex 응답과 관계 주장', color:'#866db0' }
+      ];
+
+      // Edges come from PRAGMA foreign_key_list. The DOI slug edge is deliberately
+      // separate: code joins it, but SQLite declares no FK for it.
+      const edges = [
+        {from:'paper_authors',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_authors',to:'authors',field:'author_id',toField:'author_id',kind:'fk',action:'CASCADE'},
+        {from:'institutions',to:'institution_groups',field:'group_id',toField:'group_id',kind:'fk',action:'NO ACTION'},
+        {from:'institution_aliases',to:'institutions',field:'institution_id',toField:'institution_id',kind:'fk',action:'NO ACTION'},
+        {from:'paper_institutions',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_institutions',to:'institutions',field:'institution_id',toField:'institution_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_author_institutions',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_author_institutions',to:'authors',field:'author_id',toField:'author_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_author_institutions',to:'institutions',field:'institution_id',toField:'institution_id',kind:'fk',action:'CASCADE'},
+        {from:'extraction_attempts',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_connections',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'paper_connections',to:'papers',field:'related_paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'source_documents',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'citation_snapshots',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'citation_yearly',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'},
+        {from:'doi_resolutions',to:'papers',field:'slug',toField:'slug',kind:'logical'} ,
+        {from:'openalex_enrichment',to:'papers',field:'paper_id',toField:'paper_id',kind:'fk',action:'CASCADE'}
+      ];
+
+      const grid = document.getElementById('diagram-grid');
+      const canvas = document.getElementById('diagram-canvas');
+      const svg = document.getElementById('edge-layer');
+      const edgePaths = document.getElementById('edge-paths');
+      const scrollArea = document.getElementById('diagram-scroll');
+      const bubble = document.getElementById('bubble');
+      const bubbleTitle = document.getElementById('bubble-title');
+      const bubbleLabel = document.getElementById('bubble-label');
+      const bubbleNote = document.getElementById('bubble-note');
+      const bubbleFlow = document.getElementById('bubble-flow');
+      const bubbleMeta = document.getElementById('bubble-meta');
+      const bubbleRefs = document.getElementById('bubble-refs');
+      const search = document.getElementById('search');
+      const groupFilter = document.getElementById('group-filter');
+      const focusToggle = document.getElementById('focus-toggle');
+      const countLabel = document.getElementById('result-count');
+      const emptyState = document.getElementById('empty-state');
+      let activeTable = null;
+      let activeAnchor = null;
+      let focusRelations = true;
+      let filterRaf = 0;
+
+      const safe = (value) => String(value ?? '');
+      const make = (tag, className, text) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const createBadge = (text, kind = '') => {
+        const badge = make('span', `badge ${kind}`, text);
+        return badge;
+      };
+      const tableById = new Map(tables.map(table => [table.id, table]));
+
+      function renderTables() {
+        for (const group of groups) {
+          const section = make('section', `group group-${group.id}`);
+          section.dataset.group = group.id;
+          section.style.setProperty('--group-color', group.color);
+          const heading = make('header', 'group-heading');
+          heading.append(make('div', 'group-kicker', group.kicker));
+          heading.append(make('h2', '', group.title));
+          heading.append(make('p', '', group.note));
+          section.append(heading);
+          for (const table of tables.filter(item => item.group === group.id)) {
+            const card = make('article', 'table-card');
+            card.dataset.card = table.id;
+            card.dataset.group = table.group;
+            card.dataset.search = `${table.id} ${table.label} ${table.summary} ${table.flow.source} ${table.flow.process} ${table.flow.use}`.toLocaleLowerCase('ko');
+            const head = make('button', 'table-head');
+            head.type = 'button';
+            head.dataset.tableTrigger = table.id;
+            head.setAttribute('aria-haspopup', 'dialog');
+            head.setAttribute('aria-controls', 'bubble');
+            const title = make('span', 'table-title');
+            title.append(make('code', '', table.id));
+            title.append(make('span', '', table.label));
+            head.append(title, make('span', 'open-indicator', '설명 ↗'));
+            card.append(head);
+            const summary = make('div', 'table-summary');
+            summary.append(make('p', '', table.summary));
+            const flowHint = make('div', 'table-flow-hint');
+            flowHint.append(make('span', '', '출처'), make('span', '', '처리'), make('span', '', '활용'));
+            summary.append(flowHint);
+            card.append(summary);
+            if (table.uniqueRules?.length) {
+              const unique = make('div', 'unique-rule');
+              unique.append(make('span', '', '고유 규칙 · '));
+              for (let index = 0; index < table.uniqueRules.length; index++) {
+                if (index) unique.append(make('span', '', ' · '));
+                unique.append(make('code', '', table.uniqueRules[index]));
+              }
+              card.append(unique);
+            }
+            const list = make('div', 'column-list');
+            for (const column of table.columns) {
+              const row = make('div', 'column-row');
+              row.dataset.columnName = column.name;
+              row.dataset.search = `${column.name} ${column.type} ${column.note}`.toLocaleLowerCase('ko');
+              const button = make('button', 'column-button');
+              button.type = 'button';
+              button.dataset.columnTrigger = column.name;
+              button.dataset.tableTrigger = table.id;
+              button.setAttribute('aria-haspopup', 'dialog');
+              button.setAttribute('aria-controls', 'bubble');
+              button.setAttribute('aria-label', `${table.id}.${column.name} 설명 열기`);
+              const top = make('span', 'column-top');
+              top.append(make('code', '', column.name), make('span', 'column-type', column.type));
+              const badges = make('span', 'badge-row');
+              if (column.pk) badges.append(createBadge(`PK ${column.pk}`, 'pk'));
+              if (column.fk) badges.append(createBadge('FK', 'fk'));
+              if (column.unique) badges.append(createBadge('U', 'unique'));
+              if (column.nn) badges.append(createBadge('NN', 'nn'));
+              button.append(top, badges);
+              row.append(button);
+              const meta = make('div', 'column-meta');
+              if (column.fk) meta.append(make('span', 'fk-target', `→ ${column.fk.to} · ON DELETE ${column.fk.onDelete}`));
+              if (column.unique) meta.append(make('span', '', column.unique));
+              if (column.def !== undefined) meta.append(make('span', 'default', `DEFAULT ${column.def}`));
+              row.append(meta);
+              list.append(row);
+            }
+            card.append(list);
+            const refs = make('div', 'column-meta');
+            refs.style.cssText = 'padding:0 13px 11px;line-height:1.45;font-family:var(--sans);font-size:.61rem;color:#81908b';
+            refs.textContent = `근거: ${table.refs.join(' · ')}`;
+            card.append(refs);
+            section.append(card);
+          }
+          grid.append(section);
+        }
+      }
+
+      function textStep(label, value) {
+        const section = make('section', 'flow-step');
+        section.append(make('strong', '', label), make('p', '', value));
+        return section;
+      }
+      function openBubble(table, anchor, column = null) {
+        activeTable = table.id;
+        activeAnchor = anchor;
+        bubbleLabel.textContent = column ? 'COLUMN / DATA FLOW' : 'TABLE / DATA FLOW';
+        bubbleTitle.replaceChildren();
+        if (column) {
+          bubbleTitle.append(make('code', '', `${table.id}.${column.name}`));
+          bubbleNote.textContent = column.note;
+        } else {
+          bubbleTitle.append(make('code', '', table.id));
+          bubbleNote.textContent = `${table.label} · ${table.summary}`;
+        }
+        bubbleMeta.replaceChildren();
+        if (column) {
+          if (column.pk) bubbleMeta.append(createBadge(`PK ${column.pk}`, 'pk'));
+          if (column.fk) bubbleMeta.append(createBadge(`FK → ${column.fk.to}`, 'fk'));
+          if (column.unique) bubbleMeta.append(createBadge('UNIQUE', 'unique'));
+          if (column.nn) bubbleMeta.append(createBadge('NOT NULL', 'nn'));
+          if (column.def !== undefined) bubbleMeta.append(createBadge(`DEFAULT ${column.def}`));
+          if (!column.pk && !column.fk && !column.unique && !column.nn && column.def === undefined) bubbleMeta.append(createBadge('nullable / no key constraint'));
+        }
+        bubbleFlow.replaceChildren(
+          textStep('SOURCE · 데이터가 오는 곳', table.flow.source),
+          textStep('PROCESS · 정리·처리 방식', table.flow.process),
+          textStep('USE · 어디에 쓰이는가', table.flow.use)
+        );
+        bubbleRefs.textContent = `코드 참조: ${table.refs.join(' · ')}`;
+        let sampleButton = document.getElementById('sample-open');
+        if (!sampleButton) {
+          sampleButton = make('button', '', '실제 데이터 예제 보기');
+          sampleButton.id = 'sample-open';
+          sampleButton.type = 'button';
+          bubble.append(sampleButton);
+        }
+        sampleButton.onclick = () => {
+          closeBubble();
+          window.showBibliographySample?.(table.id, column?.name);
+        };
+        bubble.classList.add('open');
+        bubble.setAttribute('aria-label', `${table.id}${column ? '.' + column.name : ''} 설명`);
+        updateSelection();
+        requestAnimationFrame(() => {
+          placeBubble(anchor);
+          document.getElementById('bubble-close').focus({preventScroll:true});
+        });
+      }
+      function placeBubble(anchor) {
+        if (!anchor || !bubble.classList.contains('open')) return;
+        bubble.classList.remove('flip');
+        bubble.style.left = '12px';
+        bubble.style.top = '12px';
+        const rect = anchor.getBoundingClientRect();
+        const size = bubble.getBoundingClientRect();
+        const gap = 13;
+        let left = rect.right + gap;
+        if (left + size.width > window.innerWidth - 10) {
+          left = rect.left - size.width - gap;
+          bubble.classList.add('flip');
+        }
+        left = Math.max(10, Math.min(left, window.innerWidth - size.width - 10));
+        let top = rect.top + Math.min(18, rect.height / 2);
+        top = Math.max(10, Math.min(top, window.innerHeight - size.height - 10));
+        bubble.style.left = `${left}px`;
+        bubble.style.top = `${top}px`;
+      }
+      function closeBubble(restoreFocus = false) {
+        bubble.classList.remove('open', 'flip');
+        if (restoreFocus && activeAnchor?.isConnected) activeAnchor.focus({preventScroll:true});
+        activeAnchor = null;
+      }
+
+      function applyFilters() {
+        const query = search.value.trim().toLocaleLowerCase('ko');
+        const group = groupFilter.value;
+        let shownTables = 0;
+        let shownColumns = 0;
+        for (const card of grid.querySelectorAll('.table-card')) {
+          const table = tableById.get(card.dataset.card);
+          const groupMatch = group === 'all' || table.group === group;
+          const nameMatch = !query || card.dataset.search.includes(query);
+          let columnMatch = false;
+          let matchingColumns = 0;
+          for (const row of card.querySelectorAll('.column-row')) {
+            const matched = !query || nameMatch || row.dataset.search.includes(query);
+            row.hidden = !matched;
+            if (matched) { columnMatch = true; matchingColumns++; }
+          }
+          card.hidden = !(groupMatch && (nameMatch || columnMatch));
+          if (!card.hidden) { shownTables++; shownColumns += matchingColumns; }
+        }
+        for (const section of grid.querySelectorAll('.group')) {
+          const any = [...section.querySelectorAll('.table-card')].some(card => !card.hidden);
+          section.hidden = !(group === 'all' || section.dataset.group === group) || !any;
+        }
+        emptyState.classList.toggle('show', shownTables === 0);
+        countLabel.textContent = `${shownTables}개 테이블 · ${shownColumns}개 열 표시`;
+        if (activeTable && (grid.querySelector(`[data-card="${activeTable}"]`)?.hidden || activeAnchor?.closest('.column-row')?.hidden)) {
+          activeTable = null;
+          closeBubble();
+        }
+        scheduleEdges();
+      }
+
+      function updateSelection() {
+        const related = new Set();
+        for (const edge of edges) {
+          if (edge.from === activeTable) related.add(edge.to);
+          if (edge.to === activeTable) related.add(edge.from);
+        }
+        for (const card of grid.querySelectorAll('.table-card')) {
+          const id = card.dataset.card;
+          card.classList.toggle('is-selected', id === activeTable);
+          card.classList.toggle('is-neighbor', id !== activeTable && related.has(id));
+          card.classList.toggle('is-dim', Boolean(activeTable && focusRelations && id !== activeTable && !related.has(id)));
+        }
+        for (const path of edgePaths.querySelectorAll('.edge')) {
+          const edge = edges[Number(path.dataset.edgeIndex)];
+          const involved = edge.from === activeTable || edge.to === activeTable;
+          path.classList.toggle('is-active', Boolean(activeTable && involved));
+          path.classList.toggle('is-dim', Boolean(activeTable && focusRelations && !involved));
+          const marker = edge.kind === 'logical' ? 'url(#arrow-logical)' : (activeTable && involved ? 'url(#arrow-active)' : 'url(#arrow-fk)');
+          path.setAttribute('marker-end', marker);
+        }
+      }
+
+      function svgNode(tag, attrs = {}) {
+        const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, String(value));
+        return node;
+      }
+      function edgeTitle(edge) {
+        if (edge.kind === 'logical') return `${edge.from}.${edge.field} → ${edge.to}.${edge.toField} · 코드 논리 링크 (SQL FK 없음)`;
+        return `${edge.from}.${edge.field} → ${edge.to}.${edge.toField} · SQL FOREIGN KEY · ON DELETE ${edge.action}`;
+      }
+      function drawEdges() {
+        const canvasRect = canvas.getBoundingClientRect();
+        const width = Math.max(canvas.scrollWidth, canvas.clientWidth, 1180);
+        const height = Math.max(canvas.scrollHeight, grid.scrollHeight + 44);
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.style.width = `${width}px`;
+        svg.style.height = `${height}px`;
+        edgePaths.replaceChildren();
+        const occurrences = new Map();
+        edges.forEach((edge, index) => {
+          const from = grid.querySelector(`[data-card="${edge.from}"]`);
+          const to = grid.querySelector(`[data-card="${edge.to}"]`);
+          if (!from || !to || from.hidden || to.hidden) return;
+          const fr = from.getBoundingClientRect();
+          const tr = to.getBoundingClientRect();
+          const fx = fr.left - canvasRect.left;
+          const fy = fr.top - canvasRect.top;
+          const tx = tr.left - canvasRect.left;
+          const ty = tr.top - canvasRect.top;
+          const dx = (tx + tr.width / 2) - (fx + fr.width / 2);
+          const dy = (ty + tr.height / 2) - (fy + fr.height / 2);
+          const key = `${edge.from}>${edge.to}`;
+          const seen = occurrences.get(key) || 0;
+          occurrences.set(key, seen + 1);
+          let x1, y1, x2, y2, d;
+          const offset = seen === 0 ? -5 : 5;
+          if (Math.abs(dx) > 110) {
+            const direction = dx > 0 ? 1 : -1;
+            x1 = direction > 0 ? fx + fr.width : fx;
+            x2 = direction > 0 ? tx : tx + tr.width;
+            y1 = fy + fr.height / 2 + offset;
+            y2 = ty + tr.height / 2 + offset;
+            const bend = Math.max(38, Math.abs(x2 - x1) * .42);
+            d = `M ${x1} ${y1} C ${x1 + direction * bend} ${y1}, ${x2 - direction * bend} ${y2}, ${x2} ${y2}`;
+          } else {
+            const direction = dy >= 0 ? 1 : -1;
+            x1 = fx + fr.width / 2 + offset;
+            x2 = tx + tr.width / 2 + offset;
+            y1 = direction > 0 ? fy + fr.height : fy;
+            y2 = direction > 0 ? ty : ty + tr.height;
+            const bend = Math.max(30, Math.abs(y2 - y1) * .42);
+            d = `M ${x1} ${y1} C ${x1} ${y1 + direction * bend}, ${x2} ${y2 - direction * bend}, ${x2} ${y2}`;
+          }
+          const path = svgNode('path', { d, class:`edge ${edge.kind === 'logical' ? 'logical' : ''}`, 'data-edge-index':index, 'marker-end':edge.kind === 'logical' ? 'url(#arrow-logical)' : 'url(#arrow-fk)' });
+          const title = svgNode('title');
+          title.textContent = edgeTitle(edge);
+          path.append(title);
+          edgePaths.append(path);
+        });
+        updateSelection();
+      }
+      function scheduleEdges() {
+        if (filterRaf) cancelAnimationFrame(filterRaf);
+        filterRaf = requestAnimationFrame(() => { filterRaf = 0; drawEdges(); });
+      }
+
+      renderTables();
+      applyFilters();
+      grid.addEventListener('click', event => {
+        const trigger = event.target.closest('[data-table-trigger]');
+        if (!trigger) return;
+        const table = tableById.get(trigger.dataset.tableTrigger);
+        if (!table) return;
+        const column = trigger.dataset.columnTrigger ? table.columns.find(item => item.name === trigger.dataset.columnTrigger) : null;
+        if (bubble.classList.contains('open') && activeTable === table.id && activeAnchor === trigger) {
+          closeBubble();
+          activeTable = table.id;
+          updateSelection();
+          return;
+        }
+        openBubble(table, trigger, column);
+      });
+      search.addEventListener('input', applyFilters);
+      groupFilter.addEventListener('change', applyFilters);
+      focusToggle.addEventListener('click', () => {
+        focusRelations = !focusRelations;
+        focusToggle.setAttribute('aria-pressed', String(focusRelations));
+        focusToggle.textContent = focusRelations ? '관계 강조' : '전체 관계 보기';
+        updateSelection();
+      });
+      document.getElementById('reset').addEventListener('click', () => {
+        search.value = '';
+        groupFilter.value = 'all';
+        activeTable = null;
+        closeBubble();
+        applyFilters();
+        scrollArea.scrollTo({left:0, top:0, behavior:'smooth'});
+        search.focus({preventScroll:true});
+      });
+      document.getElementById('bubble-close').addEventListener('click', () => closeBubble(true));
+      document.addEventListener('pointerdown', event => {
+        if (!bubble.classList.contains('open')) return;
+        if (bubble.contains(event.target) || event.target.closest('[data-table-trigger]')) return;
+        closeBubble();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && bubble.classList.contains('open')) {
+          event.preventDefault();
+          closeBubble(true);
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (bubble.classList.contains('open')) placeBubble(activeAnchor);
+        scheduleEdges();
+      });
+      scrollArea.addEventListener('scroll', () => {
+        if (bubble.classList.contains('open')) placeBubble(activeAnchor);
+      }, {passive:true});
+      if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(scheduleEdges);
+        observer.observe(grid);
+      }
+      window.addEventListener('load', scheduleEdges, {once:true});
+    })();
+  </script>
+  <script>
+    (async () => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+      if (local) {
+        await new Promise(resolve => {
+          const script = document.createElement('script');
+          script.src = 'bibliography-samples.js';
+          script.onload = script.onerror = resolve;
+          document.head.append(script);
+        });
+      }
+      const sample = window.BIBLIOGRAPHY_SAMPLE;
+      window.showBibliographySample = () => $('sample-explorer').scrollIntoView({behavior:'smooth'});
+      if (!sample) {
+        $('sample-status').textContent = local
+          ? '로컬 표본 파일이 없습니다. python3 pipeline/export_bibliography_samples.py 실행 후 다시 여세요.'
+          : '공개 페이지는 스키마와 관계 설명만 제공합니다. 실제 논문 표본은 게시하지 않습니다. 로컬 표본은 저장소에서 생성하여 로컬 페이지로 확인하세요.';
+        return;
+      }
+      const tables = sample.tables, papers = tables.papers;
+      const paperSelect = $('sample-paper'), tableSelect = $('sample-table'), scope = $('sample-scope');
+      let page = 0, column = null, rowFilter = null;
+      const pageSize = 10;
+      const node = (tag, text) => { const el = document.createElement(tag); el.textContent = text; return el; };
+      const option = (value, text) => { const el = node('option', text); el.value = value; return el; };
+      $('sample-ui').hidden = false;
+      const stamp = new Date(sample.generated_at).toLocaleString('ko-KR', {timeZoneName:'short'});
+      $('sample-status').textContent = `실제 논문 ${sample.paper_count}편 / 전체 ${sample.total_papers}편 · 추출 ${stamp} · ${sample.selection}. 로컬 읽기 전용 스냅샷이며 실시간 연결이 아닙니다. 원문·로컬 경로·자유형 메타데이터는 제외합니다.`;
+      if (sample.missing_tables.length) $('sample-status').append(node('span', ` DB에 없는 테이블: ${sample.missing_tables.join(', ')}`));
+      scope.options[1].textContent = `${sample.paper_count}편 표본 전체`;
+      for (const name of Object.keys(tables)) tableSelect.append(option(name, `${name} (${tables[name].length})`));
+      function fillPapers() {
+        const old = paperSelect.value, query = $('sample-search').value.trim().toLowerCase();
+        paperSelect.replaceChildren();
+        for (const p of papers.filter(p => [p.paper_id,p.title,p.doi].join(' ').toLowerCase().includes(query))) {
+          paperSelect.append(option(p.paper_id, `${p.paper_id} · ${p.title}`));
+        }
+        if ([...paperSelect.options].some(o => o.value === old)) paperSelect.value = old;
+        page = 0; rowFilter = null; render();
+      }
+      function paperRows(name) {
+        const rows = tables[name] || [];
+        if (scope.value === 'all') return rows;
+        const paper = papers.find(p => String(p.paper_id) === paperSelect.value);
+        if (!paper) return [];
+        const id = paper.paper_id;
+        const links = [...(tables.paper_authors || []), ...(tables.paper_author_institutions || [])].filter(r => r.paper_id === id);
+        const authorIds = new Set(links.map(r => r.author_id));
+        const instIds = new Set([...(tables.paper_institutions || []), ...(tables.paper_author_institutions || [])].filter(r => r.paper_id === id).map(r => r.institution_id));
+        const groupIds = new Set((tables.institutions || []).filter(r => instIds.has(r.institution_id)).map(r => r.group_id));
+        if (name === 'authors') return rows.filter(r => authorIds.has(r.author_id));
+        if (name === 'institutions' || name === 'institution_aliases') return rows.filter(r => instIds.has(r.institution_id));
+        if (name === 'institution_groups') return rows.filter(r => groupIds.has(r.group_id));
+        if (name === 'doi_resolutions') return rows.filter(r => r.slug === paper.slug);
+        if (name === 'paper_connections') return rows.filter(r => r.paper_id === id || r.related_paper_id === id);
+        return rows.filter(r => r.paper_id === id);
+      }
+      function navigate(table, key, value) {
+        tableSelect.value = table;
+        scope.value = 'all';
+        rowFilter = {key, value}; column = key; page = 0; render();
+      }
+      function render() {
+        const name = tableSelect.value;
+        let rows = paperRows(name);
+        if (rowFilter) rows = rows.filter(r => r[rowFilter.key] === rowFilter.value);
+        const maxPage = Math.max(0, Math.ceil(rows.length / pageSize) - 1);
+        page = Math.min(page, maxPage);
+        const excluded = sample.omitted[name] || [];
+        $('sample-info').textContent = `${name} · ${rows.length}행` +
+          (rowFilter ? ` · ${rowFilter.key} = ${rowFilter.value}` : '') +
+          (column ? ` · 강조 열: ${column}` : '') +
+          (excluded.length ? ` · 비공개 필드 제외: ${excluded.join(', ')}` : '') +
+          (column && excluded.includes(column) ? ' (선택한 열은 내보내지 않았습니다)' : '');
+        const grid = $('sample-records'); grid.replaceChildren();
+        const cols = sample.columns[name] || [];
+        const head = document.createElement('thead'), hr = document.createElement('tr');
+        for (const key of cols) { const th = node('th', key); th.scope = 'col'; if (column === key) th.className = 'selected-column'; hr.append(th); }
+        head.append(hr); grid.append(head);
+        const body = document.createElement('tbody');
+        for (const row of rows.slice(page * pageSize, (page + 1) * pageSize)) {
+          const tr = document.createElement('tr');
+          for (const key of cols) {
+            const value = row[key], td = document.createElement('td');
+            if (column === key) td.className = 'selected-column';
+            const fk = (sample.foreign_keys[name] || []).find(f => f.column === key);
+            const logical = name === 'doi_resolutions' && key === 'slug';
+            if (value != null && (fk || logical)) {
+              const button = node('button', String(value)); button.type = 'button';
+              const target = fk ? fk.table : 'papers', targetKey = fk ? fk.target : 'slug';
+              button.title = `${target}.${targetKey} 실제 행 보기${logical ? ' (논리 링크)' : ''}`;
+              button.onclick = () => navigate(target, targetKey, value);
+              td.append(button);
+            } else {
+              td.textContent = value === null ? 'NULL' : value === '' ? '"" (빈 문자열)' : String(value);
+              if (value === null) td.classList.add('null-value');
+            }
+            tr.append(td);
+          }
+          body.append(tr);
+        }
+        if (!rows.length) { const tr = document.createElement('tr'), td = node('td', '이 범위에는 실제 데이터가 없습니다. 표본 전체 범위나 다른 논문을 선택하세요.'); td.colSpan = Math.max(1, cols.length); tr.append(td); body.append(tr); }
+        grid.append(body);
+        $('sample-page').textContent = rows.length ? `${page + 1} / ${maxPage + 1} 페이지 · ${page * pageSize + 1}–${Math.min(rows.length,(page + 1) * pageSize)} / ${rows.length}행` : '0행';
+        $('sample-prev').disabled = page === 0;
+        $('sample-next').disabled = page >= maxPage;
+        const selected = grid.querySelector('th.selected-column');
+        if (selected) grid.parentElement.scrollLeft = Math.max(0, selected.offsetLeft - grid.offsetLeft);
+      }
+      window.showBibliographySample = (name, key) => {
+        if (Object.hasOwn(tables, name)) tableSelect.value = name;
+        column = key || null; rowFilter = null; page = 0; render();
+        $('sample-explorer').scrollIntoView({behavior:'smooth'});
+        tableSelect.focus({preventScroll:true});
+      };
+      $('sample-search').addEventListener('input', fillPapers);
+      for (const select of [paperSelect, tableSelect, scope]) select.addEventListener('change', () => {
+        rowFilter = null; page = 0; column = null; render();
+      });
+      $('sample-clear').onclick = () => {rowFilter = null; column = null; page = 0; render();};
+      $('sample-prev').onclick = () => {page--; render();};
+      $('sample-next').onclick = () => {page++; render();};
+      fillPapers();
+    })();
+  </script>
+</body>
+</html>

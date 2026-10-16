@@ -93,6 +93,8 @@ reports/output/
 !docs/index.html
 !docs/feature-map.html
 !docs/feature-map.en.html
+!docs/bibliography-schema.html
+!docs/bibliography-schema.en.html
 !docs/setup-guide.md
 !docs/operations.md
 !docs/architecture.md
