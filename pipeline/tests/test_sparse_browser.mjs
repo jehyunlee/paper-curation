@@ -167,22 +167,79 @@ function binaryResponse(values) {
   };
 }
 
-function streamResponse(answer) {
-  const payload = "data: " + JSON.stringify({
-    choices: [{ delta: { content: answer }, finish_reason: null }],
-  }) + "\n\ndata: [DONE]\n\n";
+function providerDelta(backend, text) {
+  if (backend === "anthropic") {
+    return { type: "content_block_delta", index: 1, delta: { type: "text_delta", text } };
+  }
+  if (backend === "google") {
+    return { candidates: [{ index: 0, content: { parts: [{ text }] } }] };
+  }
+  return { choices: [{ index: 0, delta: { content: text }, finish_reason: null }] };
+}
+
+function eventStreamResponse(events, fragmentSize = Infinity) {
+  const payload = events.map((event) => "data: " +
+    (typeof event === "string" ? event : JSON.stringify(event)) + "\n\n").join("");
   const bytes = new TextEncoder().encode(payload);
-  let sent = false;
+  let offset = 0;
   return {
     ok: true,
     status: 200,
     body: { getReader() { return { async read() {
-      if (sent) return { done: true, value: undefined };
-      sent = true;
-      return { done: false, value: bytes };
+      if (offset >= bytes.length) return { done: true, value: undefined };
+      const end = Math.min(bytes.length, offset + fragmentSize);
+      const value = bytes.slice(offset, end);
+      offset = end;
+      return { done: false, value };
     } }; } },
     async text() { return ""; },
   };
+}
+
+function streamResponse(answer, backend = "openai") {
+  return eventStreamResponse([providerDelta(backend, answer), "[DONE]"]);
+}
+
+function deferred() {
+  let resolve;
+  const promise = new Promise((done) => { resolve = done; });
+  return { promise, resolve };
+}
+
+// Explicit read barriers make overlapping runs deterministic, without sleeps,
+// network calls, or relying on provider response timing. Abort is deliberately
+// ignored here so a late post-cancellation chunk exercises the consumer guard.
+function controlledProviderStream(backend) {
+  const queue = [], barriers = [];
+  let waiting = null, reads = 0;
+  function deliver(part) {
+    if (waiting) { const resolve = waiting; waiting = null; resolve(part); }
+    else queue.push(part);
+  }
+  return {
+    response: {
+      ok: true, status: 200,
+      body: { getReader() { return { read() {
+        reads++;
+        for (const barrier of barriers) if (reads >= barrier.count) barrier.resolve();
+        if (queue.length) return Promise.resolve(queue.shift());
+        return new Promise((resolve) => { waiting = resolve; });
+      } }; } },
+    },
+    delta(text) {
+      const wire = "data: " + JSON.stringify(providerDelta(backend, text)) + "\n\n";
+      deliver({ done: false, value: new TextEncoder().encode(wire) });
+    },
+    end() { deliver({ done: true, value: undefined }); },
+    waitForRead(count) {
+      if (reads >= count) return Promise.resolve();
+      return new Promise((resolve) => { barriers.push({ count, resolve }); });
+    },
+  };
+}
+
+function completionResponse(text) {
+  return jsonResponse({ choices: [{ message: { content: text } }] });
 }
 
 function sparseFixture() {
@@ -235,7 +292,7 @@ function denseFixture(marker) {
 function makeHarness(indices, options = {}) {
   const queue = indices.slice();
   let loadedIndex;
-  const stats = { calls: [], providerBodies: [], statuses: [] };
+  const stats = { calls: [], providerBodies: [], statuses: [], prompts: [] };
   const document = makeDocument(stats);
   const fetchImpl = async (url, init = {}) => {
     const target = String(url);
@@ -250,17 +307,28 @@ function makeHarness(indices, options = {}) {
       if (options.embedStatus) return jsonResponse({ error: "unavailable" }, options.embedStatus);
       return jsonResponse({ embedding: [1, 0], model: options.embedModel || loadedIndex.model, dim: loadedIndex.dim });
     }
-    if (target.includes("api.openai.com/v1/chat/completions")) {
-      stats.providerBodies.push(JSON.parse(init.body));
-      return streamResponse(options.answer || "Grounded result [ref:1]");
+    if (target.includes("api.openai.com/v1/chat/completions") ||
+        target.includes("api.anthropic.com/v1/messages") ||
+        target.includes("generativelanguage.googleapis.com")) {
+      const body = JSON.parse(init.body);
+      stats.providerBodies.push(body);
+      if (options.providerResponse) {
+        return options.providerResponse(body, stats.providerBodies.length, target, init);
+      }
+      const backend = target.includes("api.anthropic.com") ? "anthropic" :
+        target.includes("generativelanguage.googleapis.com") ? "google" : "openai";
+      return streamResponse(options.answer || "Grounded result [ref:1]", backend);
     }
+    if (target === "_paper_connections.json") return jsonResponse({});
     if (target.startsWith("../papers/") && target.endsWith("/text.md")) {
+      if (options.textResponse) return options.textResponse(target, init);
       return { ok: false, status: 404, async text() { return ""; } };
     }
     throw new Error("unexpected fetch: " + target);
   };
 
-  const storage = new Map([["_LLM_KEY", "sk-test-byok-not-a-credential"]]);
+  const key = options.key || "sk-test-byok-not-a-credential";
+  const storage = new Map([["_LLM_KEY", key]]);
   const context = {
     console,
     document,
@@ -270,7 +338,11 @@ function makeHarness(indices, options = {}) {
       setItem(key, value) { storage.set(key, String(value)); },
       removeItem(key) { storage.delete(key); },
     },
-    prompt() { throw new Error("unexpected prompt"); },
+    prompt(message) {
+      stats.prompts.push(message);
+      if (options.prompt) return options.prompt(message);
+      throw new Error("unexpected prompt");
+    },
     setTimeout() { return 1; },
     clearTimeout() {},
     AbortController,
@@ -284,8 +356,8 @@ function makeHarness(indices, options = {}) {
   vm.createContext(context);
   const prelude = [
     "let _ANTHROPIC_KEY = '';",
-    "let _OPENAI_KEY = 'sk-test-byok-not-a-credential';",
-    "let _LLM_KEY = 'sk-test-byok-not-a-credential';",
+    "let _OPENAI_KEY = '';",
+    "let _LLM_KEY = " + JSON.stringify(key) + ";",
     "window._PC_CROSS = false;",
   ].join("\n");
   const expose = `
@@ -295,11 +367,15 @@ function makeHarness(indices, options = {}) {
       sparseRetrieve,
       retrieveSeeds,
       runDeepResearch,
+      deepRequestStop,
       state: () => ({
         index: DEEP.index,
         mode: DEEP.retrievalMode || '',
         answer: DEEP.currentAnswer,
+        query: DEEP.currentQuery,
         refs: DEEP.currentRefs.slice(),
+        running: DEEP.running,
+        ftCache: DEEP._ftCache,
         embLength: DEEP.embI8 ? DEEP.embI8.length : 0,
       }),
     };
@@ -405,6 +481,202 @@ console.log("[6] legacy dense retrieval remains dense and has no lexical fallbac
   assert(h.api.state().mode === "hybrid", "explicit hybrid metadata retains the dense/hybrid path");
   assert(h.stats.providerBodies.length === 0, "failed dense embedding does not fall back to lexical answer generation");
   assert(h.api.state().answer === "" && h.api.state().refs.length === 0, "failed dense retrieval leaves no pretend evidence");
+}
+
+const providerCases = [
+  { backend: "anthropic", key: "sk-ant-test" },
+  { backend: "openai", key: "sk-synthetic-not-a-credential" },
+  { backend: "google", key: "AIza-synthetic-not-a-credential" },
+];
+
+console.log("[7] normal Korean provider SSE, split UTF-8 and citation tokens");
+for (const { backend, key } of providerCases) {
+  const first = "한국어 연구 결과는 정상입니다 [ref:", last = "1].";
+  let events;
+  if (backend === "anthropic") {
+    events = [
+      { type: "content_block_start", index: 0, content_block: { type: "thinking" } },
+      { type: "content_block_delta", index: 0, delta: { type: "thinking_delta", thinking: "본문이 아닌 사고 과정" } },
+      { type: "content_block_start", index: 1, content_block: { type: "text", text: "" } },
+      providerDelta(backend, first),
+      { type: "content_block_stop", index: 1 },
+      { type: "content_block_start", index: 2, content_block: { type: "text", text: "" } },
+      { type: "content_block_delta", index: 2, delta: { type: "text_delta", text: last } },
+    ];
+  } else if (backend === "openai") {
+    events = [
+      { choices: [{ index: 0, delta: { role: "assistant" } }] },
+      { choices: [
+        { index: 0, delta: { content: first } },
+        { index: 1, delta: { content: "선택하지 않은 대체 답변" } },
+      ] },
+      providerDelta(backend, last), "[DONE]",
+    ];
+  } else {
+    events = [
+      { candidates: [
+        { index: 0, content: { parts: [{ text: "한국어 연구 결과는 " }, { text: "정상입니다 [ref:" }] } },
+        { index: 1, content: { parts: [{ text: "선택하지 않은 대체 답변" }] } },
+      ] },
+      providerDelta(backend, last),
+    ];
+  }
+  const h = makeHarness([sparseFixture()], {
+    key, providerResponse: () => eventStreamResponse(events, 1),
+  });
+  await h.api.runDeepResearch("protein catalyst");
+  assert(h.api.state().answer === first + last, backend + " preserves Korean text and citations across byte/event boundaries");
+  assert(!h.api.state().running, backend + " releases the run after a normal stream");
+}
+
+console.log("[8] a second entry cannot interleave independent provider streams");
+for (const { backend, key } of providerCases) {
+  const output = controlledProviderStream(backend);
+  const h = makeHarness([sparseFixture()], {
+    key,
+    providerResponse: (_, n) => n === 1 ? output.response :
+      streamResponse("다른 질문의 문장이 섞였습니다 [ref:1].", backend),
+  });
+  const pending = h.api.runDeepResearch("protein catalyst");
+  await output.waitForRead(1);
+  output.delta("첫 질문의 한국어 보고서 [ref:");
+  await output.waitForRead(2);
+  await h.api.runDeepResearch("climate policy");
+  assert(h.stats.providerBodies.length === 1, backend + " ignores repeat Enter/rerun while streaming");
+  assert(h.api.state().query === "protein catalyst" && h.api.state().refs[0].slug === "protein", backend + " retains the active query and reference numbering");
+  assert(h.api.state().answer === "첫 질문의 한국어 보고서 [ref:", backend + " does not reset a partial citation on re-entry");
+  output.delta("1].");
+  output.end();
+  await pending;
+  assert(h.api.state().answer === "첫 질문의 한국어 보고서 [ref:1].", backend + " produces one intact report, not interwoven sentences");
+}
+
+console.log("[9] parallel Deeper drafts keep section order and one assembly stream");
+{
+  const output = controlledProviderStream("openai");
+  const writers = [], writersReady = deferred();
+  let assemblies = 0;
+  const h = makeHarness([sparseFixture()], {
+    providerResponse: (body) => {
+      if (body.stream) return ++assemblies === 1 ? output.response :
+        streamResponse("중복 취합기의 답변 [ref:1].");
+      if (body.max_completion_tokens === 800) return completionResponse('["protein catalyst"]');
+      if (body.max_completion_tokens === 1500) return completionResponse(JSON.stringify([
+        { title: "첫 단락", refs: [1] }, { title: "둘째 단락", refs: [1] },
+      ]));
+      if (writers.length >= 2) return completionResponse("중복 실행의 단락 [ref:1].");
+      const writer = deferred();
+      writers.push(writer);
+      if (writers.length === 2) writersReady.resolve();
+      return writer.promise;
+    },
+  });
+  h.document.getElementById("deep-deeper").checked = true;
+  const pending = h.api.runDeepResearch("protein catalyst");
+  await writersReady.promise;
+  writers[1].resolve(completionResponse("둘째 단락의 결과 [ref:1]."));
+  writers[0].resolve(completionResponse("첫 단락의 결과 [ref:1]."));
+  await output.waitForRead(1);
+  const assembler = h.stats.providerBodies.find((body) => body.stream);
+  const drafts = assembler.messages[1].content;
+  assert(drafts.indexOf("첫 단락의 결과") < drafts.indexOf("둘째 단락의 결과"), "out-of-order section completions reach the assembler in outline order");
+  const before = h.stats.providerBodies.length;
+  await h.api.runDeepResearch("climate policy");
+  assert(h.stats.providerBodies.length === before, "Deeper re-entry cannot launch another planner/assembler");
+  output.delta("취합한 한국어 보고서 [ref:");
+  await output.waitForRead(2);
+  output.delta("1].");
+  output.end();
+  await pending;
+  assert(h.api.state().answer === "취합한 한국어 보고서 [ref:1].", "Deeper streams one intact report with the original citations");
+}
+
+console.log("[10] stop rejects late deltas, then permits a clean new report");
+{
+  const output = controlledProviderStream("openai");
+  const h = makeHarness([sparseFixture()], {
+    providerResponse: (_, n) => n === 1 ? output.response : streamResponse("새 보고서 [ref:1]."),
+  });
+  const pending = h.api.runDeepResearch("protein catalyst");
+  await output.waitForRead(1);
+  output.delta("중단 전의 완결된 문장 [ref:1].");
+  await output.waitForRead(2);
+  h.api.deepRequestStop();
+  await h.api.runDeepResearch("climate policy");
+  assert(h.stats.providerBodies.length === 1, "stop does not unlock the run while the old stream is still pending");
+  output.delta(" 중단 뒤 늦게 도착한 조각 [ref:");
+  output.end();
+  await pending;
+  assert(h.api.state().answer === "중단 전의 완결된 문장 [ref:1].", "late post-abort deltas never enter the saved partial report");
+  await h.api.runDeepResearch("climate policy");
+  assert(h.api.state().answer === "새 보고서 [ref:1]." && h.api.state().refs[0].slug === "climate", "a later run has a fresh answer and its own references");
+}
+
+console.log("[11] authentication retries release the old run before restarting");
+{
+  const output = controlledProviderStream("openai");
+  const h = makeHarness([sparseFixture()], {
+    prompt: () => "sk-replacement-synthetic-key",
+    providerResponse: (_, n) => n === 1 ? jsonResponse({ error: "invalid_api_key" }, 401) :
+      n === 2 ? output.response : streamResponse("중복 요청 [ref:1]."),
+  });
+  const pending = h.api.runDeepResearch("protein catalyst");
+  await output.waitForRead(1);
+  const calls = callsMatching(h.stats, (url) => url.includes("api.openai.com"));
+  assert(calls.length === 2 && h.stats.prompts.length === 1, "auth failure still performs the explicit replacement-key retry");
+  assert(calls[0].init.signal.aborted && !calls[1].init.signal.aborted, "the failed attempt is cancelled without aborting its replacement");
+  assert(h.api.state().running, "the replacement owns the running lock");
+  await h.api.runDeepResearch("climate policy");
+  assert(h.stats.providerBodies.length === 2, "re-entry remains blocked during an auth retry");
+  output.delta("새 키로 완결한 답변 [ref:1].");
+  output.end();
+  await pending;
+  assert(h.api.state().answer === "새 키로 완결한 답변 [ref:1]." && !h.api.state().running, "auth retry completes and releases its own run");
+}
+{
+  const h = makeHarness([sparseFixture()], {
+    prompt: () => "sk-still-invalid-synthetic-key",
+    providerResponse: () => jsonResponse({ error: "invalid_api_key" }, 401),
+  });
+  await h.api.runDeepResearch("protein catalyst");
+  assert(h.stats.providerBodies.length === 4 && h.stats.prompts.length === 3, "auth retry remains capped at three replacements");
+  assert(!h.api.state().running && h.api.state().answer === "", "exhausted auth attempts leave no active run or fabricated report");
+}
+
+console.log("[12] retired Deeper workers cannot join a retry or overwrite its cache");
+{
+  const output = controlledProviderStream("openai");
+  const oldText = deferred();
+  let climateFetches = 0, failedWriter = false;
+  const h = makeHarness([sparseFixture()], {
+    prompt: () => "sk-replacement-synthetic-key",
+    textResponse: (url) => {
+      if (url.includes("/climate/") && climateFetches++ === 0) return oldText.promise;
+      return { ok: false, status: 404, async text() { return ""; } };
+    },
+    providerResponse: (body) => {
+      if (body.stream) return output.response;
+      if (body.max_completion_tokens === 800) return completionResponse('["protein climate"]');
+      if (body.max_completion_tokens === 1500) return completionResponse(JSON.stringify([
+        { title: "첫 단락", refs: [1] }, { title: "둘째 단락", refs: [2] },
+      ]));
+      if (!failedWriter) { failedWriter = true; return jsonResponse({ error: "invalid_api_key" }, 401); }
+      return completionResponse("새 시도의 단락 [ref:1][ref:2].");
+    },
+  });
+  h.document.getElementById("deep-deeper").checked = true;
+  const pending = h.api.runDeepResearch("protein climate");
+  await output.waitForRead(1);
+  const before = h.stats.providerBodies.length;
+  oldText.resolve({ ok: true, async text() { return "오래된 시도의 원문 조각"; } });
+  // Drain only already-queued promise continuations from the retired worker.
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+  assert(h.stats.providerBodies.length === before, "a retired section never starts an LLM request with the retry's signal");
+  assert(h.api.state().ftCache.climate === null, "late old text cannot replace the retry's per-run cache entry");
+  output.delta("재시도한 종합 결과 [ref:1][ref:2].");
+  output.end();
+  await pending;
+  assert(h.api.state().answer === "재시도한 종합 결과 [ref:1][ref:2].", "only the retry's report is published");
 }
 
 if (failures) {

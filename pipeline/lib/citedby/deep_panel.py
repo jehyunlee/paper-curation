@@ -91,7 +91,7 @@ _CSS = """
 # 패널 JS. 인덱스는 리포트와 같은 디렉토리에 있다고 가정한다.
 _JS = r"""
 (function(){
-  var IDX=null, EMB=null, READY=false, LAST_MODEL='';
+  var IDX=null, EMB=null, READY=false, RUNNING=false, LAST_MODEL='';
   var WEB_COUNT=0, WEB_SOURCES=0, WEB_URLS={};
   var LAST={q:'',answer:'',refs:[],model:'',deeper:false,web:false,plan:''};
   var $=function(id){return document.getElementById(id);};
@@ -605,7 +605,9 @@ _JS = r"""
 
   async function run(){
     var q=($('drQ')||{}).value||''; q=q.trim();
-    if(!q||!READY) return;
+    // Disabling the button does not disable Enter in the question input.
+    if(!q||!READY||RUNNING) return;
+    RUNNING=true;
     var deeper=!!(($('drDeeper')||{}).checked);
     var web=!!(($('drWeb')||{}).checked);
     $('drGo').disabled=true; $('drAns').textContent='';
@@ -624,7 +626,7 @@ _JS = r"""
       }
       var hits=rrf(sparse, dense(dvec));
       if(!hits.length){ status('관련 내용을 찾지 못했습니다', true);
-        $('drGo').disabled=false; return; }
+        return; }
 
       var refs=hits.map(function(h){
         var c=IDX.chunks[h[0]], p=(IDX.papers||{})[c.slug]||{};
@@ -669,7 +671,7 @@ _JS = r"""
              (web?(' · web 검색 '+WEB_COUNT+'회 · 출처 '+WEB_SOURCES+'건'):'')+
              (LAST_MODEL?(' · '+LAST_MODEL):''));
     }catch(e){ status(String(e.message||e), true); }
-    $('drGo').disabled=false;
+    finally{ RUNNING=false; $('drGo').disabled=false; }
   }
 
   window._citedbyReferenceTools={

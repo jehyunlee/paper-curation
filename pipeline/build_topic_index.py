@@ -979,8 +979,9 @@ def _run_topic_index(topic=None, cross=None):
       if (opts.signal === undefined) { const sig = deepSignal(); if (sig) opts.signal = sig; }
       return fetch(url, opts);
     }
-    function deepThrowIfAborted() {
-      if (DEEP.userAborted || (DEEP.abort && DEEP.abort.signal && DEEP.abort.signal.aborted)) {
+    function deepThrowIfAborted(run) {
+      if (run === undefined) run = DEEP.abort;
+      if (DEEP.userAborted || run !== DEEP.abort || (run && run.signal.aborted)) {
         const e = new Error('aborted-by-user');
         e.name = 'AbortError';
         throw e;
@@ -1004,6 +1005,9 @@ def _run_topic_index(topic=None, cross=None):
       deepToggleStop(true);
     }
     function deepEndRun() {
+      // Promise.all can reject while other section agents are still pending.
+      // Cancel their requests before an auth retry can start another run.
+      if (DEEP.abort) DEEP.abort.abort();
       DEEP.running = false;
       DEEP.abort = null;
       deepToggleStop(false);
@@ -2126,7 +2130,9 @@ def _run_topic_index(topic=None, cross=None):
       p.system += '\\n\\n' + (lang === 'ko'
         ? '\uBD84\uB7C9 \uC9C0\uCE68: \uB2F5\uBCC0\uC744 ' + spec.ko + '\uB85C \uC791\uC131\uD558\uC138\uC694. \uBD84\uB7C9\uC774 \uAE38\uC218\uB85D \uAC01 \uB17C\uBB38\uC744 \uB354 \uAE4A\uC774 \uC788\uAC8C \uB2E4\uB8E8\uACE0, \uC8FC\uC81C \uADF8\uB8F9\uC744 \uB354 \uC138\uBD84\uD654\uD558\uC138\uC694.'
         : 'Length directive: write the answer as ' + spec.en + '. Longer lengths should cover each paper in more depth and introduce finer thematic subdivisions.');
+      const run = DEEP.abort;
       const onDelta = (txt) => {
+        deepThrowIfAborted(run);
         DEEP.currentAnswer += txt;
         renderDeepAnswer(DEEP.currentAnswer);
       };
@@ -2512,18 +2518,19 @@ def _run_topic_index(topic=None, cross=None):
       return picked.map(function(p) { return p.text; }).join(' … ');
     }
     async function _ftFetch(slug, terms) {
-      if (Object.prototype.hasOwnProperty.call(DEEP._ftCache, slug)) return DEEP._ftCache[slug];
-      if (DEEP._ftInflight[slug]) return DEEP._ftInflight[slug];
+      const cache = DEEP._ftCache, inflight = DEEP._ftInflight;
+      if (Object.prototype.hasOwnProperty.call(cache, slug)) return cache[slug];
+      if (inflight[slug]) return inflight[slug];
       const p = (async function() {
         try {
           const r = await deepFetch('../papers/' + slug + '/text.md');
-          if (!r.ok) return (DEEP._ftCache[slug] = null);
+          if (!r.ok) return (cache[slug] = null);
           const t = await r.text();
-          return (DEEP._ftCache[slug] = _ftHighSignal(t, terms) || null);
-        } catch (e) { return (DEEP._ftCache[slug] = null); }
-        finally { delete DEEP._ftInflight[slug]; }
+          return (cache[slug] = _ftHighSignal(t, terms) || null);
+        } catch (e) { return (cache[slug] = null); }
+        finally { delete inflight[slug]; }
       })();
-      DEEP._ftInflight[slug] = p;
+      inflight[slug] = p;
       return p;
     }
     // For one section: windowed text.md for its top-N refs (by evidence rank,
@@ -2697,7 +2704,12 @@ def _run_topic_index(topic=None, cross=None):
         + (lang === 'ko' ? '단락 초안:' : 'Section drafts:') + '\\n\\n' + body;
       const spec = { max_tokens: 60000, thinking: 8000 };
       const prompt = { system: sys, user: user };
-      const onDelta = function(txt) { DEEP.currentAnswer += txt; renderDeepAnswer(DEEP.currentAnswer); };
+      const run = DEEP.abort;
+      const onDelta = function(txt) {
+        deepThrowIfAborted(run);
+        DEEP.currentAnswer += txt;
+        renderDeepAnswer(DEEP.currentAnswer);
+      };
       DEEP.lastBackend = backend;
       DEEP.lastModel = model;
       if (backend === 'anthropic') return callAnthropic(apiKey, model, prompt, spec, onDelta);
@@ -2839,6 +2851,7 @@ def _run_topic_index(topic=None, cross=None):
     // Deeper Research orchestrator: two-stage planning (investigate -> connect)
     // around connection-graph expansion. Returns true if an answer was made.
     async function runDeeperResearch(index, query) {
+      const run = DEEP.abort;
       const lang = detectLang(query);
       DEEP._ftCache = {}; DEEP._ftInflight = {};  // per-run windowed text.md cache (로컬 전용)
       const _ftTerms = _ftQueryTerms(query);
@@ -2953,11 +2966,14 @@ def _run_topic_index(topic=None, cross=None):
       // MAP — per-section agents write in parallel (each on its assigned refs).
       deepSetStatus('✍️ 단락별 작성 중 (' + sections.length + '개 에이전트 · ' + topLabel + ')...');
       const drafts = await Promise.all(sections.map(async function(sec, i) {
+        deepThrowIfAborted(run);
         deepMarkSection(i, '작성 중...', false);
         const secFT = await sectionFullTexts(sec, all, _ftTerms);  // 섹션 top refs 원문 윈도우 (404=요약 폴백)
+        deepThrowIfAborted(run);
         return writeSection(query, all, lang, backend, apiKey, topModel, sec, secFT)
-          .then(function(txt) { const _tx = sanitizeSectionDraft(txt, all.length); deepMarkSection(i, _tx ? '완료' : '내용 없음', true); return { title: sec.title, text: _tx }; })
+          .then(function(txt) { deepThrowIfAborted(run); const _tx = sanitizeSectionDraft(txt, all.length); deepMarkSection(i, _tx ? '완료' : '내용 없음', true); return { title: sec.title, text: _tx }; })
           .catch(function(e) {
+            deepThrowIfAborted(run);
             if (deepIsAbort(e)) throw e;  // user 중단 → abort the whole run
             if (isAuthError(e)) throw e;  // bad key → fail fast to the outer retry
             console.warn('[section] failed:', e && e.message || e);
@@ -2965,6 +2981,7 @@ def _run_topic_index(topic=None, cross=None):
             return { title: sec.title, text: '' };
           });
       }));
+      deepThrowIfAborted(run);
       // 6) Orchestrator assembles + streams the final report into #deep-answer.
       deepSetStatus('\U0001F9F5 최종 리포트 취합 중 (' + topLabel + ')...');
       // The assembler can throw (e.g. a provider rejects the large max_tokens,
@@ -2981,6 +2998,7 @@ def _run_topic_index(topic=None, cross=None):
         console.warn('[deeper] assembler failed — falling back to drafts:', e && e.message || e);
         DEEP.currentAnswer = '';
       }
+      deepThrowIfAborted(run);
       // Guard: the assembler is a 2nd LLM pass. If it dropped all [ref:N] or
       // introduced markers the section agents never cited (renumber / hallucination),
       // fall back to the concatenated section drafts whose [ref:N] are correct —
@@ -3006,7 +3024,9 @@ def _run_topic_index(topic=None, cross=None):
 
     async function runDeepResearch(query) {
       query = (query || '').trim();
-      if (!query) return;
+      // Enter remains active while streaming; all entry points share one lock.
+      // Otherwise independent streams append into the same answer/ref state.
+      if (!query || DEEP.running) return;
       DEEP.currentQuery = query;
       deepShowPanel();
       // Visible heartbeat — proves the function was actually called.
@@ -3046,6 +3066,7 @@ def _run_topic_index(topic=None, cross=None):
       DEEP.webUsed = deepWebSearchOn();
       deepUpdateButtons(false);
       deepBeginRun();
+      let retry = false;
       try {
         const index = await deepLoadIndex();
         deepThrowIfAborted();
@@ -3174,6 +3195,7 @@ def _run_topic_index(topic=None, cross=None):
         const tier = document.getElementById('deep-model').value || 'fast';
         const length = document.getElementById('deep-length').value || 'short';
         await callLLM(query, dedupedSelected, lang, tier, length, fullTexts);
+        deepThrowIfAborted();
         finalizeDeepAnswer();
         DEEP._authRetry = 0;
         deepSetStatus('\u2705 완료');
@@ -3207,19 +3229,21 @@ def _run_topic_index(topic=None, cross=None):
           DEEP._authRetry = (DEEP._authRetry || 0) + 1;
           if (DEEP._authRetry <= 3) {
             const nk = clearKeyAndRePrompt(scope);
-            if (nk) {
-              await runDeepResearch(query);
-              return;
-            }
+            retry = !!nk;
           }
-          deepSetStatus('API Key Invalid. Try with another one.', true);
-          DEEP._authRetry = 0;
-          return;
+          if (!retry) {
+            deepSetStatus('API Key Invalid. Try with another one.', true);
+            DEEP._authRetry = 0;
+          }
+        } else {
+          deepSetStatus('오류: ' + e.message, true);
         }
-        deepSetStatus('오류: ' + e.message, true);
       } finally {
         deepEndRun();
       }
+      // Release/cancel the failed attempt first, without an older finally
+      // clearing the retry's controller or a running guard swallowing it.
+      if (retry) await runDeepResearch(query);
     }
 
     function setSearchMode(mode) {
