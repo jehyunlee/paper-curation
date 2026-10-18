@@ -73,6 +73,7 @@ python pipeline/run_feature.py --request feature-request.json --execute
 | 모듈 | 기능 ID | 기능 / Feature | 제공자 | 전송 대상 | 비용 유형 |
 |---|---|---|---|---|---|
 | M1 | `review` | 논문 리뷰 / Paper review | anthropic, openai, google | selected cloud provider | paid |
+| M1 | `related-papers` | 관련 논문 연결 갱신 / Related paper connections | anthropic | Anthropic Sonnet 5.5 receives bounded related-candidate titles, abstracts, and review excerpts for relation judgment; no full-text deployment, classification refit, or review regeneration | paid |
 | M1 | `summary` | 근거 기반 요약 / Grounded summary | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `chat` | 근거 기반 질의 / Grounded chat | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `comparison` | 근거 기반 비교 / Grounded comparison | anthropic, openai, google | selected cloud provider | paid |

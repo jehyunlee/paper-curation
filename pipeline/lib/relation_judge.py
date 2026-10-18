@@ -13,9 +13,9 @@ PROMPT_VERSION = "relation-judge-v7"
 METADATA_REASON = "관계 미분석 — 임베딩 유사도로 추천된 후보입니다."
 RELATIONS = {"foundation", "extension", "alternative", "application", "counterpoint"}
 OUTPUT_TOKENS_PER_PAIR = 260
+DEFAULT_MODEL = "claude-sonnet-5-5"
 PRICES = {
-    "claude-haiku-4-5": (1.0, 5.0),
-    "claude-sonnet-5": (3.0, 15.0),
+    DEFAULT_MODEL: (2.0, 10.0),
 }
 
 
@@ -189,41 +189,42 @@ def _prompt(source_slug: str, source: str, candidates: list[tuple[str, str]]) ->
 {rendered}"""
 
 
-def _tool_schema() -> dict:
+def _output_schema() -> dict:
     item = {"type": "object", "properties": {
         "target": {"type": "string", "description": "candidate key such as C1"},
         "relation": {"type": "string", "enum": list(MODEL_LINKS)},
         "reason": {"type": "string"}},
-        "required": ["target", "relation", "reason"]}
-    return {"name": "judge_relations",
-            "description": "Return one content-grounded judgment per candidate.",
-            "input_schema": {"type": "object",
-                             "properties": {"judgments": {"type": "array", "items": item}},
-                             "required": ["judgments"]}}
+        "required": ["target", "relation", "reason"],
+        "additionalProperties": False}
+    return {"type": "object",
+            "properties": {"judgments": {"type": "array", "items": item}},
+            "required": ["judgments"],
+            "additionalProperties": False}
 
 
 def _parse_response(response) -> list[dict]:
     kinds = []
     for block in getattr(response, "content", []) or []:
         kinds.append(getattr(block, "type", "?"))
-        if getattr(block, "type", None) == "tool_use" and getattr(block, "name", None) == "judge_relations":
-            data = getattr(block, "input", None)
-            judgments = data.get("judgments") if isinstance(data, dict) else None
-            if isinstance(judgments, str):
-                # Haiku occasionally serialises the array as a JSON string.
-                try:
-                    judgments = json.loads(judgments)
-                except ValueError:
-                    judgments = None
-            if isinstance(judgments, list):
-                return judgments
+        if getattr(block, "type", None) != "text":
+            continue
+        try:
+            data = json.loads(getattr(block, "text", ""))
+        except (TypeError, ValueError):
+            continue
+        judgments = data.get("judgments") if isinstance(data, dict) else None
+        if isinstance(judgments, list):
+            return judgments
     reason = getattr(response, "stop_reason", None)
-    raise ValueError(f"judge_relations tool was not returned "
+    raise ValueError(f"judge_relations JSON was not returned "
                      f"(stop_reason={reason}, blocks={kinds})")
 
 
 def _cost(tokens_in: int, tokens_out: int, model: str) -> float:
-    price_in, price_out = PRICES.get(model, PRICES["claude-haiku-4-5"])
+    try:
+        price_in, price_out = PRICES[model]
+    except KeyError as exc:
+        raise ValueError(f"unknown relation judge model pricing: {model}") from exc
     return tokens_in * price_in / 1_000_000 + tokens_out * price_out / 1_000_000
 
 
@@ -239,8 +240,10 @@ def _judge_source(client, model, source_slug, source_profile, pairs):
     prompt = _prompt(source_slug, source_profile, [(t, prof) for t, prof, _ in pairs])
     response = client.messages.create(
         model=model, max_tokens=400 + OUTPUT_TOKENS_PER_PAIR * len(pairs),
-        messages=[{"role": "user", "content": prompt}], tools=[_tool_schema()],
-        tool_choice={"type": "tool", "name": "judge_relations"})
+        messages=[{"role": "user", "content": prompt}],
+        thinking={"type": "between_tools"},
+        output_config={"effort": "medium",
+                       "format": {"type": "json_schema", "schema": _output_schema()}})
     usage = getattr(response, "usage", None)
     tokens = (int(getattr(usage, "input_tokens", 0) or 0),
               int(getattr(usage, "output_tokens", 0) or 0))
@@ -277,23 +280,18 @@ def _judge_source(client, model, source_slug, source_profile, pairs):
 def judge_connections(connections, papers, *, topic, cache_dir, client, log=print) -> dict:
     """Judge metadata candidates, preserving them unchanged whenever judging fails.
 
-    Three phases so a run pays once per undirected pair and never exceeds its
-    cap: (1) plan — read the pair cache and assign every uncached pair to the
-    first source that lists it; (2) execute — one call per source, run
-    concurrently, each reserving its worst-case cost against the cap and
-    reconciling to the reported usage; (3) assemble — every entry, from either
-    direction, reads the shared pair judgment.
+    Three phases so a run pays once per undirected pair: (1) plan — read the
+    pair cache and assign every uncached pair to the first source that lists it;
+    (2) execute — one call per source, run concurrently, and record reported
+    usage; (3) assemble — every entry, from either direction, reads the shared
+    pair judgment.
     """
     import threading
     from concurrent.futures import ThreadPoolExecutor
 
     if os.environ.get("RELATION_JUDGE", "on").lower() == "off":
         return connections
-    model = os.environ.get("RELATION_JUDGE_MODEL", "claude-haiku-4-5")
-    try:
-        cap = float(os.environ.get("RELATION_JUDGE_MAX_USD", "5.0"))
-    except ValueError:
-        cap = 5.0
+    model = os.environ.get("RELATION_JUDGE_MODEL", DEFAULT_MODEL)
     try:
         workers = max(1, int(os.environ.get("RELATION_JUDGE_WORKERS", "6")))
     except ValueError:
@@ -307,7 +305,7 @@ def judge_connections(connections, papers, *, topic, cache_dir, client, log=prin
         return profiles[slug]
 
     stats = {"pairs": 0, "hits": 0, "calls": 0, "judged": 0, "dropped": 0,
-             "fallback": 0, "failed_calls": 0, "budget_skipped": 0}
+             "fallback": 0, "failed_calls": 0}
     pair_data = {}          # frozenset({a, b}) -> judgment dict
     assigned = {}           # source -> [(target, target_profile, cache_path)]
     claimed = set()
@@ -337,39 +335,22 @@ def judge_connections(connections, papers, *, topic, cache_dir, client, log=prin
 
     # ── 2. execute ──────────────────────────────────────────────────────────
     lock = threading.Lock()
-    spend = {"reserved": 0.0, "actual": 0.0}
+    spend = {"actual": 0.0}
     first_error = []
 
     def run(source_slug):
         pairs = assigned[source_slug]
-        prompt = _prompt(source_slug, profiles[source_slug],
-                         [(t, prof) for t, prof, _ in pairs])
-        worst = _cost(_estimate_input_tokens(prompt),
-                     400 + OUTPUT_TOKENS_PER_PAIR * len(pairs), model)
-        with lock:
-            if spend["actual"] + spend["reserved"] + worst > cap:
-                stats["budget_skipped"] += len(pairs)
-                return
-            spend["reserved"] += worst
         for attempt in (1, 2):
-            if attempt == 2:
-                with lock:
-                    if spend["actual"] + spend["reserved"] + worst > cap:
-                        stats["budget_skipped"] += len(pairs)
-                        return
-                    spend["reserved"] += worst
             try:
                 judged, (tin, tout) = _judge_source(
                     client, model, source_slug, profiles[source_slug], pairs)
             except Exception as exc:  # network, rate limit, parse failure
                 with lock:
-                    spend["reserved"] -= worst
                     stats["failed_calls"] += 1
                     if not first_error:
                         first_error.append(f"{type(exc).__name__}: {str(exc)[:200]}")
                 continue
             with lock:
-                spend["reserved"] -= worst
                 spend["actual"] += _cost(tin, tout, model)
                 stats["calls"] += 1
                 for target, data in judged.items():
@@ -410,9 +391,8 @@ def judge_connections(connections, papers, *, topic, cache_dir, client, log=prin
         result[source_slug] = updated
     log("  관계 판정: papers={papers}, pairs={pairs}, cache hits={hits}, calls={calls}, "
         "judged={judged}, unrelated-dropped={dropped}, fallback={fallback}, "
-        "failed-calls={failed_calls}, budget-skipped={budget_skipped}, "
-        "actual=${actual:.4f} (cap ${cap:.2f})".format(
-            papers=len(connections), actual=spend["actual"], cap=cap, **stats))
+        "failed-calls={failed_calls}, actual=${actual:.4f}".format(
+            papers=len(connections), actual=spend["actual"], **stats))
     return result
 
 

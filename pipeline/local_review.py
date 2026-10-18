@@ -19,6 +19,7 @@ import re
 import shutil
 import sys
 import tempfile
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -63,6 +64,7 @@ _ALLOWED_REQUEST_FIELDS = {
     "output_dir",
     "item",
     "overwrite",
+    "regenerate",
 }
 _ALLOWED_CREATOR_FIELDS = {"firstName", "lastName", "creatorType", "name"}
 _REQUIRED_OUTPUT_NAMES = ("text.md", "review.md", "index.html", "bibliography.json")
@@ -247,6 +249,13 @@ def _validate_request(payload: Any) -> dict[str, Any]:
         raise LocalReviewError("failed", "invalid reservation token")
     if not isinstance(payload.get("overwrite"), bool):
         raise LocalReviewError("failed", "overwrite must be a boolean")
+    regenerate = payload.get("regenerate", False)
+    if not isinstance(regenerate, bool):
+        raise LocalReviewError("failed", "regenerate must be a boolean")
+    if regenerate and not payload["overwrite"]:
+        raise LocalReviewError(
+            "failed", "regenerate=true requires overwrite=true"
+        )
 
     pdf_raw = payload.get("pdf_path")
     output_raw = payload.get("output_dir")
@@ -334,6 +343,7 @@ def _validate_request(payload: Any) -> dict[str, Any]:
         "output_dir": output_dir,
         "item": normalized_item,
         "overwrite": payload["overwrite"],
+        "regenerate": regenerate,
     }
 
 
@@ -836,6 +846,13 @@ def _cache_dir(output_dir: Path) -> Path:
     return output_dir.parent / f".{output_dir.name}.local-review-cache"
 
 
+def _execution_cache_dir(request: dict[str, Any]) -> Path:
+    cache_dir = _cache_dir(request["output_dir"])
+    if request["regenerate"]:
+        return cache_dir / f"regenerate-{uuid.uuid4().hex}"
+    return cache_dir
+
+
 def _verified_cache_path(
     cache_dir: Path, cache_evidence: dict[str, Any], request: dict[str, Any]
 ) -> Path | None:
@@ -925,7 +942,7 @@ def _execute(request: dict[str, Any], pdf_info: dict[str, Any]) -> dict[str, Any
         # leak into canonical URLs, figure links, or page metadata.
         stage = work_root / output_dir.name
         stage.mkdir()
-        cache_dir = _cache_dir(output_dir)
+        cache_dir = _execution_cache_dir(request)
         cache_evidence: dict[str, Any] = {}
         keep_work_root = False
         try:

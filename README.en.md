@@ -13,13 +13,18 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 | Path | What | Needs | Where |
 |------|------|-------|-------|
 | **Read** | Browse generated reviews, search and timelines; export the public institution table and reports | no key | website · Zotero context menu **Open paper-curation Review HTML** · module panel |
-| **AI** | PDF review, grounded summary/chat/comparison, AI Chat | one selected provider (Anthropic default / OpenAI / Google; summary and chat also run on local Ollama) | Zotero context menu **Review generation** · **Paper Curation modules** · CLI |
+| **AI** | PDF review, grounded summary/chat/comparison, AI Chat | selected provider; Curio Review generation also needs Anthropic for relations (Anthropic default / OpenAI / Google; summary and chat also run on local Ollama) | Zotero context menu **Review generation** · **Paper Curation modules** · CLI |
 | **Collection** | Search indexes, metrics, bibliography DB, audio, timelines, Zotero sync, publication, email, full collection processing | per-capability requirements and explicit confirmation | module panel **Collection / Optional features** tabs · `run_feature.py` · `run_full.py` |
 
-Every task follows **plan (requirements, destination, cost) → confirm → execute**. A
-single review never drags classification, indexing, timelines or deployment along.
-Failures are never re-sent to another provider, and API keys live in the **OS keyring**,
-not in settings files.
+Standalone module and CLI tasks follow **plan (requirements, destination, cost) → confirm → execute**.
+Standalone `local_review.py` performs only extraction, review generation, HTML and
+bibliography sidecar output. Curio **Review generation** additionally registers the
+review and runs the shared related-papers feature immediately after internal readiness
+and credential checks. Curio never passes a review budget. This one-click action has no plan dialog, OK, or cancel step;
+it sends metadata and review excerpts to Anthropic Sonnet 5.5. It does not trigger classification, whole-corpus
+category refitting, indexes, timelines, deployment, or bibliography-DB integration.
+Failures are never re-sent to another provider, and API keys live in the **OS
+keyring**, not in settings files.
 
 📘 **[User Guide](docs/user-guide.en.md)** — where each setting lives and how each task
 runs, step by step (install and connect → store keys → review → modules → reading
@@ -49,7 +54,7 @@ generated ID/requirement table in the
 | Path | Capability (ID) | Description |
 |------|-----------------|-------------|
 | Read | browsing · `institution-export` · `extract` | Read generated reviews/search/timelines without a key, export the public institution table, extract text and figures from a local PDF |
-| AI | **Structured review** `review` | Text/figure extraction from the PDF → the selected provider writes a 6-section Korean review (Essence·Motivation·Achievement·How·Originality·Evaluation) → HTML + bibliography sidecar |
+| AI | **Structured review** `review` | `local_review.py`: text/figure extraction → the selected provider writes a 6-section Korean review (Essence·Motivation·Achievement·How·Originality·Evaluation) → HTML + bibliography sidecar. Curio Review generation additionally registers it and creates related-paper links |
 | AI | `summary` · `chat` · `comparison` | **Claims with verbatim quotations** grounded only in the selected PDF texts; answers whose quotations cannot be found are rejected. Summary and chat also run on local Ollama |
 | AI | **AI Chat / Citedby** | Multi-turn PDF conversation and citation genealogy — existing Zotero plugin features |
 | Collection | `keyword-search` · `semantic-search` | BM25 index/query without a key · Gemini-embedding hybrid index/query (Google key) |
@@ -57,12 +62,14 @@ generated ID/requirement table in the
 | Collection | `audio` · `timeline-text` · `timeline-image` | Podcast-style MP3 from an existing review (Gemini TTS), category narratives, PaperBanana timeline images — each separately |
 | Collection | `zotero-sync` · `publish` · `email` | Remote deletion sync (dry-run default), Cloudflare publication, forwarding an existing MP3 — **all require explicit confirmation** |
 
-**Full curation (advanced)** — `run_full.py --mode curate` runs these in order. A single review does not trigger them:
+**Full curation (advanced)** — `run_full.py --mode curate` runs these in order. Curio
+Review generation performs only its registered related-papers step, not the other
+full-curation stages:
 
 | Feature | Description |
 |---------|-------------|
 | **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
-| **Related Papers** | SPECTER2 cosine and title/author BM25 are RRF-fused (`k=60`) into up to five candidates per paper; the `extract_insights.py` content judge reads the reviews and has Claude Haiku write one neutral Korean sentence naming both short paper names, their shared problem/method/finding, and their difference. `unrelated` pairs are removed; an unavailable judgement retains the honest fallback “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” |
+| **Related Papers** | SPECTER2 cosine and title/author BM25 are RRF-fused (`k=60`) into up to five candidates per paper, including papers without a category; Claude Sonnet 5.5 receives metadata and review excerpts to judge the relation and write one neutral Korean sentence naming both short paper names, their shared problem/method/finding, and their difference. `unrelated` pairs are removed; an unavailable judgement retains the honest fallback “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” No category refit is required. Existing saved relations are not automatically re-judged; because the cache key includes the model, new Sonnet 5.5 calls do not reuse Haiku judgements. |
 | **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
 | **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
@@ -176,8 +183,8 @@ It performs no network checks or full-pipeline run unless an explicit
 
 1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), install the **XPI that matches your Zotero major version** via Zotero **Tools → Plugins** — `paper-curio-zotero10.xpi` for Zotero 10, `paper-curio-zotero9.xpi` for Zotero 9 (also 7 / 8). Every release ships both files with identical features.
 2. In Zotero **Settings → Paper Curio → Output Location**, enter this checkout's path (leave the Python path empty for `py312`).
-3. In **Settings → Paper Curio → API Keys**, pick one review provider and **Save to OS keyring**.
-4. Right-click a paper item → **paper-curation Review generation** → inspect the plan → execute. Summary, chat, comparison and collection tasks run the same way from **Paper Curation modules**.
+3. In **Settings → Paper Curio → API Keys**, save the selected review provider's key **and an Anthropic key** to the OS keyring. The selected provider generates the review; Anthropic Sonnet 5.5 is separately required for its related-papers step and is not a fallback.
+4. Right-click a paper item → **paper-curation Review generation** to start immediately after internal readiness and credential checks. The nonmodal progress window remains open until a terminal status, so Zotero reading and importing can continue. A repeat click during generation shows that it is active and offers **Wait** (the default) or **Start over**. After Start over is chosen, the progress window displays restarting while it waits. It cooperatively cancels only after the current Python stage safely finishes atomic publication, completes the old work's reservation cleanup, then regenerates the current paper and unprocessed selected items with overwrite and without the saved review cache. It never starts duplicate concurrent generations, and charges already made are not refunded. Summary, chat, comparison and collection tasks use plan confirmation from **Paper Curation modules**.
 
 Per-screen settings and status messages are explained in the **[User Guide](docs/user-guide.en.md)**.
 
@@ -200,11 +207,19 @@ python pipeline/local_review.py --request review-request.json --execute
 `--request` takes a JSON file path. The generated feature IDs, request envelope,
 credential handling, and budget rules are in the
 [Setup Guide](docs/setup-guide.md#공유-기능-레지스트리).
-Shared-corpus writers use reserve/register/cancel transactions under a common
-lock and refresh the Curio list. Classification, indexes, timelines,
-publication, and email remain independent operations; publication/email require
-an explicit request and separate cloud authorization, recipient, and export-right
-review.
+To plan or execute only the shared connection pass for a registered review:
+
+```bash
+python pipeline/refresh_paper_connections.py --slug SLUG
+python pipeline/refresh_paper_connections.py --slug SLUG --execute
+```
+
+The feature equivalent is `related-papers` with
+`params: {"slug":"SLUG"}`. Shared-corpus writers use
+reserve/register/cancel transactions under a common lock and refresh the Curio
+list. Classification, indexes, timelines, publication, and email remain
+independent operations; publication/email require an explicit request and
+separate cloud authorization, recipient, and export-right review.
 
 ### Full curate workflow prerequisites (separate)
 
@@ -300,7 +315,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | | Description |
 |---|---|
 | **Input** | Per-category paper lists + reviews |
-| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Both Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass route SPECTER2-cosine plus title/author-BM25 RRF (<code>k=60</code>) candidates through the same judge (<code>judge_if_enabled</code>), which sends each pair’s Essence, Motivation Gap/Approach, and first Achievement to Claude Haiku, which writes the same neutral Korean one-sentence explanation on both paper pages. It may label links <code>foundation</code>, <code>extension</code>, <code>application</code>, <code>alternative</code>, or <code>counterpoint</code>; direction is derived in code and impossible year lineages become <code>alternative</code>. <code>unrelated</code> pairs are removed, while disabled, failed, or budget-limited judgements retain “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” Relations are not verified citations or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
+| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Both Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass route SPECTER2-cosine plus title/author-BM25 RRF (<code>k=60</code>) candidates through the same judge (<code>judge_if_enabled</code>), which sends each pair’s Essence, Motivation Gap/Approach, and first Achievement to Claude Sonnet 5.5, which writes the same neutral Korean one-sentence explanation on both paper pages. It may label links <code>foundation</code>, <code>extension</code>, <code>application</code>, <code>alternative</code>, or <code>counterpoint</code>; direction is derived in code and impossible year lineages become <code>alternative</code>. <code>unrelated</code> pairs are removed, while disabled or failed judgements retain “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” Relations are not verified citations or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
 | **Processing (Option O-2, `--insights`)** | <ul><li>Cross-category Research Insights (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>Regenerates the network visualization (<code>network.html</code>)</li></ul> |
 | **Output** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -485,7 +500,7 @@ PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --since 2026-04-01 
 
 OpenAlex returns 1k+ items per keyword and dominates the result pool, so missing arXiv rarely degrades coverage.
 
-**3. Related Papers** — candidates are local SPECTER2/title-author-BM25 RRF results, but the connections pass uses Claude Haiku by default. Set `RELATION_JUDGE=off`, use `extract_insights.py --no-relation-judge`, or inspect the Anthropic credential (environment or OS keyring via `lib.credentials`) when a judgement cannot run; the link remains as “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” The shared cache is `docs/papers/.llm_cache/relation_pairs/`, keyed by prompt version, model, both slugs, and both profile hashes, so only new or changed pairs are charged. `RELATION_JUDGE_MODEL` defaults to `claude-haiku-4-5`, `RELATION_JUDGE_MAX_USD` to `5.0` per run, and `RELATION_JUDGE_WORKERS` to `6`.
+**3. Related Papers** — candidates are local SPECTER2/title-author-BM25 RRF results, but the connections pass uses Claude Sonnet 5.5 by default. Set `RELATION_JUDGE=off`, use `extract_insights.py --no-relation-judge`, or inspect the Anthropic credential (environment or OS keyring via `lib.credentials`) when a judgement cannot run; the link remains as “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” The shared cache is `docs/papers/.llm_cache/relation_pairs/`, keyed by prompt version, model, both slugs, and both profile hashes, so only new or changed pairs are charged. Existing saved relations are not automatically re-judged, and new Sonnet 5.5 calls do not reuse Haiku judgements. Candidate-count and output-token limits remain; `RELATION_JUDGE_MODEL` defaults to `claude-sonnet-5-5` and `RELATION_JUDGE_WORKERS` to `6`.
 
 ---
 

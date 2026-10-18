@@ -16,12 +16,12 @@ operations in the [Operations Manual](operations.md), and internals in
 
 | Concept | Meaning |
 |---------|---------|
-| **Three paths** | **Read** (browse and export, no key) · **AI** (review, summary, chat, comparison with one selected provider) · **Collection** (indexes, metrics, bibliography, audio, timelines, sync, publish, email — only when explicitly requested) |
-| **Plan → confirm → execute** | Every task first produces a **plan** showing requirements, transmission destination and estimated cost. Only after you **confirm** does it **execute**. Planning writes no files and makes no API calls. |
+| **Three paths** | **Read** (browse and export, no key) · **AI** (review, summary, chat, comparison with a selected provider; Curio review also needs Anthropic for relations) · **Collection** (indexes, metrics, bibliography, audio, timelines, sync, publish, email — only when explicitly requested) |
+| **Plan → confirm → execute** | Standalone module and command-line tasks first produce a **plan** showing requirements, transmission destination and estimated cost. Only after you **confirm** does it **execute**. Planning writes no files and makes no API calls. Curio's one-click Review generation is the exception: it starts after internal readiness and credential checks. |
 | **Shared registry** | The Zotero plugin (Paper Curio) and the command line (`run_feature.py`) read the same capability list, `pipeline/features.json`. The generated table in the [Setup Guide](setup-guide.md#공유-기능-레지스트리) is the reference for IDs and requirements. |
 | **Credentials** | API keys are resolved from **environment variables first, then the OS keyring** (macOS Keychain etc.). Settings files, request JSON and logs never hold plaintext keys. |
 | **No silent fallback** | If the selected provider fails, nothing is re-sent to another company's model. Failures are reported as status codes. |
-| **One capability = one task** | Requesting a review produces only a review. Classification, search indexes, timelines, email and publication each require their own request. |
+| **One capability = one task** | Standalone `local_review.py` produces only extraction/review/HTML/bibliography output. Curio Review generation additionally registers its review and creates related-paper links; classification, search indexes, timelines, email and publication each require their own request. |
 
 ## 1. Install and connect (once)
 
@@ -54,7 +54,7 @@ PYTHONUTF8=1 python pipeline/setup.py
 | **paper-curation root** | Absolute path of the checkout from 1-1 (the folder containing `docs/papers/`). Leave empty to auto-detect `~/Documents/.../paper-curation` and similar. |
 | **Python path** | Empty uses the default conda `py312`. Enter the interpreter path if you created it elsewhere. |
 | **Fallback output dir** | Read-only browsing of an existing corpus on a machine without paper-curation. New reviews are not possible there. |
-| **Overwrite existing reviews** | OFF by default; papers that already have a review are skipped. |
+| **Overwrite existing reviews** | OFF by default. A native pipeline-created existing review is skipped; a Curio-generated existing review is reused to retry its registration and related-paper links without regenerating the review. |
 
 The status line at the top of the pane switches to "connected" once the link works.
 
@@ -65,7 +65,8 @@ The status line at the top of the pane switches to "connected" once the link wor
    - The value goes into the OS keyring; Zotero settings keep only a `credential:<provider>` reference.
    - Saving an **empty value** with the same button deletes the stored key.
    - If the button reports that paper-curation and the Python keyring runtime must be connected first, finish 1-3.
-3. Other chat providers (OpenAI/Gemini) and literature-database keys (Scopus etc.) live in the collapsed **Other chat providers and optional features** section and are saved the same way.
+3. Also save an **Anthropic** key. Curio Review generation uses Anthropic Sonnet 5.5 for the related-papers stage even when OpenAI or Google is the selected review provider; it is not a fallback.
+4. Other chat providers (OpenAI/Gemini) and literature-database keys (Scopus etc.) live in the collapsed **Other chat providers and optional features** section and are saved the same way.
 
 From the terminal (the key is never echoed):
 
@@ -78,10 +79,6 @@ PYTHONUTF8=1 python pipeline/setup.py --check-feature review                # re
 
 > Plaintext key preferences from v0.9.x are no longer read. Re-save each key with the procedure above after upgrading.
 > Automation may inject environment variables (`ANTHROPIC_API_KEY` etc.); they take precedence over the OS keyring.
-
-### 1-5. Cost ceiling (optional) — **Review cost ceiling** in the same **API keys** section
-
-Enter a maximum USD amount together with the current provider's **input/output rates (USD per million tokens)**. Missing rates or a conservative estimate above the ceiling **block** execution (`budget-unavailable` / `budget-exceeded`). Leave it empty for no ceiling.
 
 ## 2. Path A — Read and export (no key)
 
@@ -99,15 +96,11 @@ Enter a maximum USD amount together with the current provider's **input/output r
 
 1. Select the **paper item** in the library (the parent item, not the PDF attachment row). A local PDF must be attached.
 2. Right-click → **paper-curation Review generation**.
-3. A **plan dialog** appears. Check:
-   - provider and model (matching the Review provider in Settings)
-   - **Output** — the reserved final directory `docs/papers/{number}_{title}/`
-   - estimated cost and ceiling — only the title, abstract, figure captions and a text excerpt are sent to the selected provider
-4. **OK** runs: PDF text/figure extraction → review → `review.md` + `index.html` + `bibliography.json`. Cancelling releases the reservation without any API call.
-5. The completion toast "Review completed … **bibliography DB integration pending**" is normal: the review is done; global bibliography integration is the separate task in 4-2.
-6. Open the result: right-click → **Open paper-curation Review HTML**.
+3. With no plan dialog, OK, or cancel step, internal readiness and credential checks run and then generation starts immediately; Curio never passes a review budget: PDF text/figure extraction → review → `review.md` + `index.html` + `bibliography.json` → corpus registration → shared related-papers feature. Only the title, abstract, figure captions and a text excerpt go to the selected provider; the follow-on **Related papers** step sends metadata and review excerpts to Anthropic Sonnet 5.5. Anthropic credentials are required even when the selected review provider is OpenAI or Google. The latter considers category-unassigned papers and does not refit categories, rebuild search, generate timelines, deploy, or integrate the bibliography DB.
+4. A terminal **completed** status means registration and related-paper links finished. **partial** with **Retry connections** means the review was registered and preserved but linking failed; use that control to retry only links. It is not reported as success with zero links.
+5. Open the result: right-click → **Open paper-curation Review HTML**.
 
-Multiple selected items are processed in order, each with its own plan confirmation.
+Multiple selected items are processed in order. The nonmodal progress window remains until a terminal status, so reading and importing in Zotero can continue. A repeat click during generation shows that it is active and offers **Wait** (the default) or **Start over**. After Start over is chosen, the progress window displays restarting while it waits for the current Python stage to finish atomic publication safely, then cooperatively cancels the remaining old work and finishes its owned-reservation cleanup. It regenerates the current paper and unprocessed selected items with overwrite and bypasses the saved review cache. It never creates concurrent duplicate generations, and charges already incurred are not refunded. With overwrite OFF, retrying a Curio-generated review reuses the existing review and retries registration/connections; a native pipeline-created existing review retains normal skip semantics.
 
 ### 3-2. Generate a review (command line) — `review`
 
@@ -119,6 +112,15 @@ python pipeline/local_review.py --request review-request.json --execute  # execu
 ```
 
 `--request` takes a **JSON file path**. Exit code 0 means `ready`/`completed`/`exists`; 2 means a blocked status.
+
+`local_review.py` remains standalone: it only extracts, generates the review, and
+writes HTML and the bibliography sidecar. Its optional request-budget contract is unchanged and does not apply to Curio. To plan or execute the shared connections
+for an already registered review:
+
+```bash
+python pipeline/refresh_paper_connections.py --slug SLUG
+python pipeline/refresh_paper_connections.py --slug SLUG --execute
+```
 
 ### 3-3. Summary, chat and comparison (module panel) — `summary` · `chat` · `comparison`
 
@@ -151,6 +153,11 @@ Request format: `{"schema_version":1,"feature":"<capability id>","params":{...},
 
 ### 4-1. Search indexes and queries
 
+The `related-papers` feature accepts
+`params: {"slug":"SLUG"}`. It needs Anthropic credentials,
+uses the same relation pass as Curio Review generation, and does not
+refit categories or rebuild search.
+
 | ID | Needs | Notes |
 |----|-------|-------|
 | `keyword-search` | no key | `params.operation` `build` creates the BM25 index, `query` (default) searches it. Works without Google |
@@ -165,7 +172,7 @@ Request format: `{"schema_version":1,"feature":"<capability id>","params":{...},
 | ID | Needs | Notes |
 |----|-------|-------|
 | `metrics` | no key (public APIs) | Accumulates citations/references into `citations.md` and `references.md` |
-| `bibliography-update` | no key (offline by default) | Resolves "bibliography DB integration pending" after reviews. Ingests changed items into the local DB; never touches remote Zotero or email |
+| `bibliography-update` | no key (offline by default) | Independent local DB ingestion of changed items; never touches remote Zotero or email |
 | `institution-export` | no key | Public institution normalization table (CSV and XLSX) |
 
 ### 4-3. Audio and timelines
@@ -200,23 +207,23 @@ While a full run holds the corpus, reviews and module tasks on the same corpus w
 | Status | Meaning | Action |
 |--------|---------|--------|
 | `ready` | Plan complete, executable | Review it, then execute |
-| `exists` | A completed review of the same paper already exists | Enable **Overwrite existing reviews** to replace it |
-| `needs-key` | No credential for the selected provider | Store it in the OS keyring (1-4) |
+| `exists` | A native pipeline-created completed review already exists | Enable **Overwrite existing reviews** to replace it |
+| `needs-key` | No credential for the selected provider or for Anthropic relation judging | Store the required key in the OS keyring (1-4) |
 | `needs-runtime` | Python 3.12, PyMuPDF, provider SDK, PaperBanana etc. not ready | Check 1-1 and 1-3; run `setup.py --check-feature <id>` |
 | `insufficient-data` | PDF missing/unreadable/mismatched, or weak evidence | Check the attachment and the selected item |
-| `budget-exceeded` / `budget-unavailable` | Ceiling exceeded / rates unknown | Adjust 1-5. No model was called |
+| `budget-exceeded` / `budget-unavailable` | Ceiling exceeded / rates unknown | Adjust the budget and rates for the standalone request. No model was called |
 | `blocked` | The task needs `confirm:true` | Add the confirmation if intended |
 | `busy` | Another corpus task (full run, another review) is active | Retry after it finishes |
 | `completed` | Success | — |
-| **partial** ("index/marker update failed") | Review files are complete; only index registration or the Zotero marker failed | Open the shown HTML directly. Re-running the same item reuses the finished folder and retries registration only (no paid call) |
+| **partial** ("connections failed") | The review is registered and preserved, but related-paper linking did not finish | Use **Retry connections**; it retries the relation stage without regenerating the review |
 
 Plugin error messages include a `[code]` such as `[corpus-busy]`. The wording is a fixed safe message; raw third-party errors are not shown because they can contain credentials.
 
 ## 6. FAQ
 
-- **What leaves my machine?** Review: title, abstract, figure captions and a text excerpt (up to 12,000 characters) to **the selected provider only**. Summary/chat/comparison: the selected PDF text. Reading, keyword search, extraction and offline bibliography updates transmit nothing.
+- **What leaves my machine?** Curio review generation sends title, abstract, figure captions and a text excerpt (up to 12,000 characters) to **the selected review provider**, then metadata and review excerpts to **Anthropic Sonnet 5.5** for related-paper judging. Candidate-count and output-token limits remain. Standalone `local_review.py` performs only the first transfer and local review/HTML/bibliography output. Summary/chat/comparison: the selected PDF text. Reading, keyword search, extraction and offline bibliography updates transmit nothing.
 - **Is another provider tried automatically?** No. Failures are reported as status; retries are explicit.
 - **Where could a key remain in plaintext?** Nowhere. Settings hold only `credential:<provider>` references; values live in the OS keyring. `credentials.py --operation read` is a private plugin pipe — do not run it in a terminal.
 - **Reviews fail on Windows.** Local reviews and corpus locks need POSIX file locking. Reading and AI Chat work.
-- **Cost?** Roughly $0.05–0.15 per review depending on model and length. Set the ceiling in 1-5 for a hard bound. Summary and chat can run free on Ollama.
-- **Is the full pipeline (`run_full`) gone?** No. It remains the advanced task in 4-5; what changed is that a single review no longer drags the whole pipeline along.
+- **Cost?** Roughly $0.05–0.15 per review depending on model and length; Curio Review generation has no monetary cap. Standalone summary and chat requests may still set an optional budget, and can run free on Ollama.
+- **Is the full pipeline (`run_full`) gone?** No. It remains the advanced task in 4-5. Curio Review generation only adds registration and related papers; it does not trigger classification, corpus-wide category refitting, search rebuilding, timelines, deployment, or bibliography DB integration.

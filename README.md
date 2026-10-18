@@ -16,12 +16,17 @@
 | 경로 | 무엇을 | 필요한 것 | 어디에서 |
 |------|--------|-----------|----------|
 | **Read** | 생성된 리뷰·검색·타임라인 열람, 공개 기관표·보고서 내보내기 | 키 없음 | 웹 사이트 · Zotero 우클릭 **Review HTML 열기** · 기능 모듈 |
-| **AI** | PDF 리뷰, 근거 기반 요약·질의·비교, AI Chat | 선택한 제공자 하나 (Anthropic 기본 / OpenAI / Google, 요약·질의는 로컬 Ollama 가능) | Zotero 우클릭 **Review 생성** · **Paper Curation 기능 모듈** · CLI |
+| **AI** | PDF 리뷰, 근거 기반 요약·질의·비교, AI Chat | 선택한 제공자 + Curio Review 생성의 관계용 Anthropic (Anthropic 기본 / OpenAI / Google, 요약·질의는 로컬 Ollama 가능) | Zotero 우클릭 **Review 생성** · **Paper Curation 기능 모듈** · CLI |
 | **Collection** | 검색 색인·지표·서지 DB·오디오·타임라인, Zotero 동기화·배포·이메일, 컬렉션 전체 처리 | 기능별 요구조건, 명시적 확인 | 기능 모듈 **컬렉션 관리 / 선택 기능** 탭 · `run_feature.py` · `run_full.py` |
 
-모든 작업은 **계획(요구조건·전송 대상·비용) → 확인 → 실행** 순서이며, 리뷰 하나가
-분류·색인·타임라인·배포를 자동으로 끌고 가지 않습니다. 실패해도 다른 제공자로
-자동 전송하지 않고, API 키는 설정 파일이 아닌 **OS 키 저장소**에 둡니다.
+독립 기능 모듈과 CLI 작업은 **계획(요구조건·전송 대상·비용) → 확인 → 실행** 순서입니다.
+독립 `local_review.py`는 추출·리뷰·HTML·서지 사이드카만 만듭니다. Curio **Review 생성**은
+클릭 즉시 내부 준비 상태·자격증명을 검사한 뒤 리뷰 등록과 공유 관련 논문 기능을
+자동으로 더합니다. Curio는 리뷰 예산을 전달하지 않습니다. 이 원클릭 작업에는 계획 확인 창·OK·취소가 없고, 별도 Anthropic Sonnet
+5.5에 메타데이터·리뷰 발췌를 전송합니다. 분류,
+코퍼스 전체 카테고리 재적합, 색인, 타임라인, 배포, 서지 DB 반영은 자동 실행하지
+않습니다. 실패해도 다른 제공자로 자동 전송하지 않고, API 키는 설정 파일이 아닌
+**OS 키 저장소**에 둡니다.
 
 📘 **[활용 매뉴얼](docs/user-guide.md)** — 어디에서 무엇을 설정하고 어떻게 동작시키는지 단계별 안내
 (설치·연결 → 키 저장 → 리뷰 → 모듈 → 상태 메시지 읽는 법). Zotero 플러그인 Curio와 CLI는
@@ -105,8 +110,8 @@ OS keyring보다 우선하며, 없으면 `credential:<provider>` 참조가 OS ke
 
 1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 **사용 중인 Zotero 버전에 맞는 XPI**를 받아 Zotero **Tools → Plugins**에서 설치합니다 — Zotero 10은 `paper-curio-zotero10.xpi`, Zotero 9(7·8 포함)는 `paper-curio-zotero9.xpi`. 릴리스마다 두 파일이 함께 나오며 기능은 동일합니다.
 2. Zotero **Settings → Paper Curio → 출력 위치**에 위 체크아웃 경로를 넣습니다(Python 경로는 비우면 `py312`).
-3. **Settings → Paper Curio → API 키**에서 리뷰 제공자 하나를 고르고 키를 **OS 키 저장소에 저장**합니다.
-4. 논문 항목 우클릭 → **paper-curation Review 생성** → 계획 확인 → 실행. 요약·질의·비교 등은 우클릭 **Paper Curation 기능 모듈**에서 같은 방식으로 실행합니다.
+3. **Settings → Paper Curio → API 키**에서 선택한 리뷰 제공자의 키와 **Anthropic 키**를 **OS 키 저장소에 저장**합니다. 선택한 제공자는 리뷰를 만들고, Anthropic Sonnet 5.5는 관련 논문 단계에 별도로 필요하며 fallback이 아닙니다.
+4. 논문 항목 우클릭 → **paper-curation Review 생성**을 누르면 내부 준비 상태·자격증명 검사 후 즉시 시작합니다. 비모달 진행 창은 최종 상태까지 열려 있어 Zotero에서 읽기·가져오기를 계속할 수 있습니다. 실행 중 같은 메뉴를 다시 누르면 현재 생성 중임을 보여 주고 **대기**(기본값) 또는 **처음부터 다시 시작**을 고릅니다. 다시 시작을 고르면 진행 창은 기다리는 동안 재시작 중을 표시합니다. 현재 Python 단계가 원자적 게시를 안전하게 마친 뒤 이전 작업과 예약 정리를 끝내고, 같은 논문과 아직 처리하지 않은 선택 항목을 덮어써 캐시 없이 다시 생성합니다. 중복 생성은 시작하지 않으며 이미 발생한 API 비용은 환불되지 않습니다. 요약·질의·비교 등은 우클릭 **Paper Curation 기능 모듈**에서 계획 확인 후 실행합니다.
 
 화면별 설정 항목과 상태 메시지 해석은 **[활용 매뉴얼](docs/user-guide.md)** 을 따릅니다.
 
@@ -122,6 +127,16 @@ python pipeline/local_review.py --request review-request.json --execute  # 확�
 
 `run_feature.py --request`도 **JSON 파일 경로**를 받습니다. 기능별 입력과 전송 대상은
 [레지스트리에서 생성한 기능표](docs/setup-guide.md#공유-기능-레지스트리)를 확인하세요.
+
+등록된 리뷰의 공유 연결 단계만 계획·실행하려면:
+
+```bash
+python pipeline/refresh_paper_connections.py --slug SLUG
+python pipeline/refresh_paper_connections.py --slug SLUG --execute
+```
+
+기능 요청에서는 `related-papers`의
+`params: {"slug":"SLUG"}`를 사용합니다.
 
 기본 리뷰는 Anthropic Sonnet 5이며 자동 fallback이 없습니다. OpenAI와 Google은
 명시적으로 고르는 provider입니다. Ollama `qwen3.8:27b-mlx`는 요약·대화 전용이며
@@ -144,7 +159,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | 단계 | 모델 | 단가 (입력 / 출력) |
 |------|------|------|
 | 리뷰 기본 제공자 · 인사이트 | `claude-sonnet-5` | $3 / $15 |
-| 연결 후보·관계·설명 생성 | SPECTER2/BM25 RRF 후보 + `claude-haiku-4-5` judge | 후보당 Haiku 호출; 5개 후보 기준 편당 약 $0.009 |
+| 연결 후보·관계·설명 생성 | SPECTER2/BM25 RRF 후보 + `claude-sonnet-5-5` judge | $2 / $10 |
 | Figure 검증 (vision judge) | `claude-haiku-4-5` | $1 / $5 |
 | 타임라인 내러티브 | `claude-opus-5` (5) | $5 / $25 |
 | 분류 | — (HDBSCAN + UMAP) | **LLM 호출 0회 → $0** |
@@ -153,16 +168,16 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 **편당 리뷰 대략치** — 리뷰 1편은 논문 본문 발췌 + 프롬프트를 입력, 6섹션 한국어 리뷰를 출력합니다. 대략 입력 ~15k · 출력 ~4k 토큰으로 잡으면:
 
 - `15k × $3/1M + 4k × $15/1M ≈ $0.045 + $0.06 = ~$0.11`
-- 여기에 관련 논문 판정(새 쌍만, 편당 약 $0.009) + Figure 검증(Haiku)을 얹으면 **편당 대략 $0.12–0.15** 수준입니다.
+- 관련 논문 판정은 새 쌍에만 Sonnet 5.5를 호출합니다. 후보 수와 출력 토큰 제한은 유지됩니다. Figure 검증(Haiku) 비용은 별도입니다.
 
 **월간 운영 대략치** — 주간 ~20편(월 ~80편) 사이클 기준:
 
 - 리뷰: 80편 × ~$0.11 ≈ **$9**
-- 관련 논문 판정(새 쌍만, 판정된 쌍은 캐시) + 카테고리 요약 ≈ **$1–3**
+- 관련 논문 판정(새 쌍만, 판정된 쌍은 캐시)은 Sonnet 5.5 토큰 사용량에 따라 달라짐
 - 타임라인(변경된 카테고리만, Opus, 비정기) ≈ **$1–3**
-- **합계 ≈ 월 $10–20** 수준 (Insights opt-in `--insights` 또는 전체 타임라인 재생성 시 증가)
+- **합계**는 관련 논문 판정의 Sonnet 5.5 사용량에 따라 달라집니다 (Insights opt-in `--insights` 또는 전체 타임라인 재생성 시 증가).
 
-> **각주**: 관련 논문 판정은 실행당 `RELATION_JUDGE_MAX_USD`(기본 $5) 상한이 있어, 수천 편짜리 토픽을 처음 판정할 때(ai4s 2,709편 전체 ≈ $18)는 상한을 올려야 합니다. 분류 단계는 LLM을 전혀 호출하지 않으므로(HDBSCAN) 비용이 없습니다. Deep Research 답변 생성은 독자 BYOK라 운영자 비용에 포함되지 않습니다.
+> **각주**: 관련 논문 판정에는 금액 상한이 없습니다. 분류 단계는 LLM을 전혀 호출하지 않으므로(HDBSCAN) 비용이 없습니다. Deep Research 답변 생성은 독자 BYOK라 운영자 비용에 포함되지 않습니다.
 
 ## 기능
 
@@ -171,7 +186,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | 경로 | 기능 (ID) | 설명 |
 |------|-----------|------|
 | Read | 열람 · `institution-export` · `extract` | 생성된 리뷰·검색·타임라인 열람(키 없음), 공개 기관표 내보내기, 로컬 PDF 텍스트·그림 추출 |
-| AI | **구조화 리뷰** `review` | PDF에서 텍스트/Figure 추출 → 선택한 제공자가 6개 섹션(Essence·Motivation·Achievement·How·Originality·Evaluation) 한국어 리뷰 작성 → HTML + 서지 사이드카 |
+| AI | **구조화 리뷰** `review` | `local_review.py`: PDF에서 텍스트/Figure 추출 → 선택한 제공자가 6개 섹션(Essence·Motivation·Achievement·How·Originality·Evaluation) 한국어 리뷰 작성 → HTML + 서지 사이드카. Curio Review 생성은 등록과 관련 논문 연결도 수행 |
 | AI | `summary` · `chat` · `comparison` | 선택한 PDF 본문만 근거로 **원문 인용이 붙은 주장**을 생성. 인용을 찾을 수 없는 답변은 거부. 요약·질의는 로컬 Ollama 가능 |
 | AI | **AI Chat / Citedby** | PDF와 멀티턴 대화, 인용 계보 분석 — Zotero 플러그인의 기존 기능 |
 | Collection | `keyword-search` · `semantic-search` | BM25 색인·조회(키 없음) / Gemini 임베딩 hybrid 색인·조회(Google 키) |
@@ -179,12 +194,13 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | Collection | `audio` · `timeline-text` · `timeline-image` | 기존 리뷰의 팟캐스트형 MP3(Gemini TTS), 카테고리 내러티브, PaperBanana 타임라인 그림 — 각각 따로 |
 | Collection | `zotero-sync` · `publish` · `email` | 원격 삭제 동기화(dry-run 기본), Cloudflare 배포, 기존 MP3 전달 — **모두 명시적 확인 필수** |
 
-**전체 큐레이션(고급)** — `run_full.py --mode curate`가 아래를 순서대로 실행합니다. 리뷰 하나로는 실행되지 않습니다:
+**전체 큐레이션(고급)** — `run_full.py --mode curate`가 아래를 순서대로 실행합니다. Curio
+Review 생성은 등록된 리뷰의 관련 논문 연결만 수행하며, 나머지 전체 단계는 실행하지 않습니다:
 
 | 기능 | 설명 |
 |------|------|
 | **자동 분류** | Bottom-up 토픽 모델링(SPECTER2 + HDBSCAN + UMAP)으로 카테고리 자동 생성·배정 — LLM 호출 0회 |
-| **같이 보면 좋은 논문** | SPECTER2 코사인과 제목·저자 BM25를 RRF(`k=60`)로 융합해 논문당 최대 5개 후보를 고른 뒤, 리뷰 내용을 읽는 Haiku judge가 두 논문의 짧은 이름을 모두 포함해 공통점과 차이를 설명하는 한국어 한 문장을 씁니다. `unrelated`는 제거하고 판단 불가는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”로 표시합니다. 관계는 인용·인과관계의 확정 판정이 아닙니다. |
+| **같이 보면 좋은 논문** | SPECTER2 코사인과 제목·저자 BM25를 RRF(`k=60`)로 융합해 카테고리가 없는 논문까지 논문당 최대 5개 후보를 고른 뒤, Anthropic Sonnet 5.5 judge가 메타데이터·리뷰 발췌를 읽고 두 논문의 짧은 이름을 모두 포함해 공통점과 차이를 설명하는 한국어 한 문장을 씁니다. `unrelated`는 제거하고 판단 불가는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”로 표시합니다. 카테고리 재적합은 필요 없고, 관계는 인용·인과관계의 확정 판정이 아닙니다. 기존에 저장된 관계는 자동 재판정하지 않으며, 모델을 포함한 캐시 키 때문에 새 Sonnet 5.5 호출은 Haiku 판정을 재사용하지 않습니다. |
 | **Deep Research** | 자연어 질의 → hybrid 검색(BM25+dense) → 독자 BYOK 제공자의 답변 + `[N]` 인용 |
 | **타임라인** | 카테고리별 연구 동향 내러티브 + 다이어그램(PaperBanana) + main research timeline |
 | **지식 축적** | Obsidian 연동 — 메모가 다음 질의에 반영되는 compounding knowledge |
@@ -210,7 +226,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 2. **구조화 리뷰** — Claude가 6섹션 한국어 `review.md`
 3. **피인용·레퍼런스** — `citations.md`(이력 누적) + `references.md`. 기본 30일 증분, 외부 API 장애가 파이프라인을 죽이지 않는 soft step(`--skip-metrics`)
 4. **토픽 모델링 + 분류** — SPECTER2 + HDBSCAN + UMAP로 카테고리 자동 생성·배정
-5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6과 `extract_insights.py` connections pass 모두 SPECTER2 코사인 + 제목·저자 BM25 RRF(`k=60`) 후보를 같은 judge(`judge_if_enabled`)에 통과시킵니다. judge는 리뷰의 Essence·Motivation Gap/Approach·첫 Achievement를 Claude Haiku에 보내 관계와 양쪽 페이지에 같은 한국어 한 문장 설명을 만듭니다. `unrelated`는 제거하며, 판단 실패·비활성화·예산 초과 시에는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”를 남깁니다.
+5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6과 `extract_insights.py` connections pass 모두 SPECTER2 코사인 + 제목·저자 BM25 RRF(`k=60`) 후보를 같은 judge(`judge_if_enabled`)에 통과시킵니다. judge는 리뷰의 Essence·Motivation Gap/Approach·첫 Achievement를 Claude Sonnet 5.5에 보내 관계와 양쪽 페이지에 같은 한국어 한 문장 설명을 만듭니다. `unrelated`는 제거하며, 판단 실패·비활성화 시에는 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”를 남깁니다. 후보 수와 출력 토큰 제한은 유지됩니다.
 6. **카테고리 요약 + 타임라인 내러티브/main·category 다이어그램** & **Deep Research 검색 인덱스**(BM25 + Gemini 임베딩)
 7. **토픽 인덱스** `index.html`(Deep Research·Audio Overview 내장) → **로컬 열람**(`serve_local.py`) 또는 **배포**
 

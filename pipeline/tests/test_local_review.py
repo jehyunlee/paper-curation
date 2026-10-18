@@ -312,6 +312,72 @@ class LocalReviewContractTests(unittest.TestCase):
         self.assertFalse(local._lock_path(self.output).exists())
         loader.assert_not_called()
 
+    def test_regenerate_defaults_false_and_requires_overwrite(self):
+        request = local._validate_request(self.request())
+        self.assertFalse(request["regenerate"])
+        request = local._validate_request(self.request(overwrite=True, regenerate=True))
+        self.assertTrue(request["regenerate"])
+
+        result = local.run_request(self.request(regenerate=True))
+        self.assertEqual(result["status"], "failed")
+        self.assertIn("requires overwrite", result["error"])
+
+    def test_regenerate_plan_does_not_create_a_fresh_cache_directory(self):
+        cache_dir = local._cache_dir(self.output)
+        with (
+            patch.dict(
+                os.environ, {"ANTHROPIC_API_KEY": "sk-ant-ready-secret"}, clear=False
+            ),
+            patch.object(local, "_missing_runtimes", return_value=[]),
+            patch.object(
+                local, "_load_engine", side_effect=AssertionError("execute only")
+            ) as loader,
+        ):
+            result = local.run_request(
+                self.request(overwrite=True, regenerate=True)
+            )
+        self.assertEqual(result["status"], "ready")
+        self.assertFalse(cache_dir.exists())
+        self.assertFalse(self.output.exists())
+        loader.assert_not_called()
+
+    def test_regenerate_uses_fresh_cache_without_replacing_bundle_early(self):
+        self.write_existing_bundle()
+        cache_dir = local._cache_dir(self.output)
+        cache_dir.mkdir()
+        (cache_dir / "existing.json").write_text("old cache", encoding="utf-8")
+        old_review = (self.output / "review.md").read_text(encoding="utf-8")
+
+        class RegenerateEngine(FakeEngine):
+            def write_review(self, *args, cache_dir, **kwargs):
+                cache_path = Path(cache_dir)
+                self.bundle_was_unchanged = (
+                    (self.output / "review.md").read_text(encoding="utf-8")
+                    == old_review
+                )
+                self.cache_path = cache_path
+                self.cache_was_fresh = not cache_path.exists()
+                return super().write_review(*args, cache_dir=cache_dir, **kwargs)
+
+        engine = RegenerateEngine()
+        engine.output = self.output
+        result, _engine, _renderer = self.run_execute(
+            engine=engine,
+            payload=self.request(overwrite=True, regenerate=True),
+        )
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(engine.bundle_was_unchanged)
+        self.assertEqual(engine.cache_path.parent.resolve(), cache_dir.resolve())
+        self.assertNotEqual(engine.cache_path.resolve(), cache_dir.resolve())
+        self.assertTrue(engine.cache_was_fresh)
+        self.assertEqual((cache_dir / "existing.json").read_text(encoding="utf-8"), "old cache")
+        generated = [
+            path for path in cache_dir.iterdir()
+            if path.is_dir() and path.name.startswith("regenerate-")
+        ]
+        self.assertEqual(len(generated), 1)
+        self.assertTrue((generated[0] / "mock.json").is_file())
+
     def test_runtime_preflight_requires_python312_and_posix_locking(self):
         with patch.object(local.sys, "version_info", (3, 14, 0)):
             missing = local._missing_runtimes("anthropic")

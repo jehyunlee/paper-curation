@@ -46,6 +46,64 @@ class FeatureRunnerTests(unittest.TestCase):
     def request(self, feature, **params):
         return {"schema_version": 1, "feature": feature, "params": params}
 
+    def test_related_plan_is_read_only_and_discloses_unknown_paid_cost(self):
+        with patch("refresh_paper_connections.plan_connections",
+                   return_value={"status": "ready", "topics": ["demo"], "outputs": []}) as plan, \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner, "_credential", return_value="test"), \
+             patch.object(runner, "_child") as child:
+            result = runner.run_request(self.request("related-papers", slug=self.paper.name))
+        self.assertEqual(result["status"], "ready", result)
+        self.assertEqual(result["provider"], "anthropic")
+        self.assertEqual(result["model"], "claude-sonnet-5-5")
+        self.assertEqual(result["cost"], {"status": "unknown"})
+        plan.assert_called_once_with(self.paper.name)
+        execute.assert_not_called()
+        child.assert_not_called()
+
+    def test_related_execution_delegates_without_outer_lock_or_unrequested_steps(self):
+        with patch("refresh_paper_connections.plan_connections", return_value={"status": "ready"}), \
+             patch("refresh_paper_connections.refresh_connections",
+                   return_value={"outputs": ["index.html"], "related_count": 5}) as execute, \
+             patch("lib.corpus_store.corpus_operation_lock", side_effect=AssertionError("nested lock")), \
+             patch.object(runner, "_credential", return_value="test"), \
+             patch.object(runner, "_child") as child:
+            result = runner.run_request(self.request("related-papers", slug=self.paper.name), execute=True)
+        self.assertEqual(result["status"], "completed", result)
+        self.assertEqual(result["related_count"], 5)
+        execute.assert_called_once_with(self.paper.name)
+        child.assert_not_called()
+
+    def test_related_legacy_caps_provider_and_path_are_validated_before_execution(self):
+        request = self.request("related-papers", slug=self.paper.name)
+        invalid = [
+            request | {"provider": "google"},
+            request | {"params": {"slug": "../escape"}},
+            request | {"params": {"slug": self.paper.name, "max_cost_usd": -1}},
+            request | {"budget": {"max_cost_usd": float("nan")}},
+            request | {"budget": {"max_cost_usd": True}},
+            request | {"budget": {"max_cost_usd": 0}},
+            request | {"budget": {"input_per_million_usd": 1}},
+            request | {"budget": {"max_cost_usd": .1}},
+            request | {"budget": {"max_output_tokens": 100}},
+        ]
+        with patch("refresh_paper_connections.refresh_connections") as execute:
+            for payload in invalid:
+                self.assertEqual(runner.run_request(payload, execute=True)["status"], "failed", payload)
+        execute.assert_not_called()
+
+    def test_related_failures_are_not_reported_as_successful_zero_results(self):
+        request = self.request("related-papers", slug=self.paper.name)
+        with patch("refresh_paper_connections.plan_connections", side_effect=ValueError("missing corpus")):
+            self.assertEqual(runner.run_request(request)["status"], "insufficient-data")
+        with patch("refresh_paper_connections.plan_connections", return_value={"status": "ready"}), \
+             patch("refresh_paper_connections.refresh_connections", side_effect=RuntimeError("private value")), \
+             patch.object(runner, "_credential", return_value="test"):
+            result = runner.run_request(request, execute=True)
+        self.assertEqual(result["status"], "failed")
+        self.assertNotIn("private value", json.dumps(result))
+        self.assertNotIn("related_count", result)
+
     def test_registry_has_real_labels_schemas_and_all_module_groups(self):
         features = runner._registry()
         self.assertEqual({f["group"] for f in features}, {f"M{i}" for i in range(9)})
@@ -53,6 +111,9 @@ class FeatureRunnerTests(unittest.TestCase):
         self.assertTrue(all(f["label_ko"] and f["label_en"] and f["params_schema"] for f in features))
         by_id = {f["id"]: f for f in features}
         self.assertEqual(by_id["review"]["group"], "M1")
+        self.assertEqual(by_id["related-papers"]["params_schema"]["properties"], {
+            "slug": {"type": "string", "minLength": 1},
+        })
         self.assertEqual(by_id["extract"]["group"], "M0")
         self.assertNotEqual(by_id["timeline-text"]["credential"]["cost_class"], "local")
 

@@ -1,4 +1,5 @@
 """Focused tests for content-grounded connection judging (no network)."""
+import json
 import os
 import sys
 import tempfile
@@ -31,8 +32,8 @@ class FakeClient:
 
 
 def response(judgments):
-    return SimpleNamespace(content=[SimpleNamespace(type="tool_use", name="judge_relations",
-                                                     input={"judgments": judgments})],
+    return SimpleNamespace(content=[SimpleNamespace(type="text",
+                                                     text=json.dumps({"judgments": judgments}))],
                            usage=SimpleNamespace(input_tokens=100, output_tokens=50))
 
 
@@ -56,7 +57,7 @@ class RelationJudgeTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.env = patch.dict(os.environ, {"RELATION_JUDGE": "on", "RELATION_JUDGE_MAX_USD": "5"}, clear=False)
+        self.env = patch.dict(os.environ, {"RELATION_JUDGE": "on"}, clear=False)
         self.env.start()
         self.addCleanup(self.env.stop)
 
@@ -95,12 +96,12 @@ class RelationJudgeTests(unittest.TestCase):
         result = judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name, client=client, log=lambda _: None)
         self.assertEqual(result, connections())
 
-    def test_budget_cap_stops_calls_and_keeps_metadata(self):
+    def test_legacy_budget_cap_cannot_suppress_judging(self):
         with patch.dict(os.environ, {"RELATION_JUDGE_MAX_USD": "0"}):
-            client = FakeClient([])
+            client = FakeClient([response([judgment()])])
             result = judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name, client=client, log=lambda _: None)
-        self.assertEqual(client.messages.calls, [])
-        self.assertEqual(result, connections())
+        self.assertEqual(len(client.messages.calls), 1)
+        self.assertEqual(result["a"][0]["basis"], "model")
 
 
     def test_mutual_candidates_are_judged_once_per_pair(self):
@@ -113,18 +114,16 @@ class RelationJudgeTests(unittest.TestCase):
         self.assertEqual(result["b"][0]["reason"], judgment()["reason"])
         self.assertEqual(result["b"][0]["relation"], "extension")
 
-    def test_budget_counts_korean_prompt_near_one_token_per_char(self):
+    def test_legacy_budget_cap_does_not_limit_korean_prompt(self):
         prompt = judge._prompt("a", "핵심: " + "분자" * 400, [("b", "핵심: " + "설계" * 400)])
         self.assertGreaterEqual(judge._estimate_input_tokens(prompt), len(prompt))
-        # A cap below the one-call worst case must refuse the call outright.
-        worst = judge._cost(judge._estimate_input_tokens(prompt), 260, "claude-haiku-4-5")
-        with patch.dict(os.environ, {"RELATION_JUDGE_MAX_USD": str(worst / 2)}), \
+        with patch.dict(os.environ, {"RELATION_JUDGE_MAX_USD": "0"}), \
              patch.object(judge, "paper_profile", side_effect=lambda slug, _p: "핵심: " + ("분자" if slug == "a" else "설계") * 400):
-            client = FakeClient([])
+            client = FakeClient([response([judgment()])])
             result = judge.judge_connections(connections(), papers(), topic="demo",
                                              cache_dir=self.temp.name, client=client, log=lambda _: None)
-        self.assertEqual(client.messages.calls, [])
-        self.assertEqual(result, connections())
+        self.assertEqual(len(client.messages.calls), 1)
+        self.assertEqual(result["a"][0]["basis"], "model")
 
     def test_call_exception_keeps_metadata_and_is_reported(self):
         client = FakeClient([RuntimeError("rate limited")])
@@ -222,14 +221,42 @@ class RelationJudgeTests(unittest.TestCase):
         self.assertEqual(judge._sanitize("이 논문은 C1과 다르다.", r"\mathrm{X}", "B", {1: r"\beta-VAE"}),
                          r"\mathrm{X}은 \beta-VAE과 다르다.")
 
-    def test_judgments_serialised_as_json_string_are_accepted(self):
+    def test_json_structured_output_is_accepted(self):
         import json as _json
-        raw = SimpleNamespace(content=[SimpleNamespace(type="tool_use", name="judge_relations",
-                                                        input={"judgments": _json.dumps([judgment()])})],
+        raw = SimpleNamespace(content=[SimpleNamespace(type="thinking", thinking="", signature="sig"),
+                                       SimpleNamespace(type="text",
+                                                        text=_json.dumps({"judgments": [judgment()]}))],
                               usage=SimpleNamespace(input_tokens=10, output_tokens=5))
         result = judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name,
                                          client=FakeClient([raw]), log=lambda _: None)
         self.assertEqual(result["a"][0]["basis"], "model")
+
+    def test_default_request_uses_sonnet_structured_output_without_sampling_or_tools(self):
+        client = FakeClient([response([judgment()])])
+        with patch.dict(os.environ, {"RELATION_JUDGE_MODEL": judge.DEFAULT_MODEL}):
+            judge.judge_connections(connections(), papers(), topic="demo", cache_dir=self.temp.name,
+                                    client=client, log=lambda _: None)
+        request = client.messages.calls[0]
+        self.assertEqual(request["model"], "claude-sonnet-5-5")
+        self.assertEqual(request["thinking"], {"type": "between_tools"})
+        self.assertEqual(request["output_config"]["effort"], "medium")
+        self.assertEqual(request["output_config"]["format"]["type"], "json_schema")
+        self.assertEqual(request["output_config"]["format"]["schema"], judge._output_schema())
+        schema = request["output_config"]["format"]["schema"]
+        self.assertIs(schema["additionalProperties"], False)
+        self.assertIs(schema["properties"]["judgments"]["items"]["additionalProperties"], False)
+        for unsupported in ("tools", "tool_choice", "temperature", "top_p", "top_k"):
+            self.assertNotIn(unsupported, request)
+
+    def test_sonnet_pricing_and_cache_are_model_isolated(self):
+        self.assertEqual(judge.DEFAULT_MODEL, "claude-sonnet-5-5")
+        self.assertEqual(judge._cost(1_000_000, 1_000_000, judge.DEFAULT_MODEL), 12.0)
+        self.assertNotEqual(
+            judge._cache_path(self.temp.name, "a", "source", "b", "target", judge.DEFAULT_MODEL),
+            judge._cache_path(self.temp.name, "a", "source", "b", "target", "different-model"),
+        )
+        with self.assertRaisesRegex(ValueError, "unknown relation judge model pricing"):
+            judge._cost(1, 1, "claude-haiku-4-5")
 
     def test_failed_call_is_retried_once(self):
         client = FakeClient([RuntimeError("transient"), response([judgment()])])

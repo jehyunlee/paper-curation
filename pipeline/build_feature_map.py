@@ -100,6 +100,8 @@ TRANSMISSION_KO = {
     "selected provider; Ollama stays on loopback": "선택한 제공자 (Ollama는 이 컴퓨터 안에서만)",
     "none": "없음",
     "Google embedding API": "Google 임베딩 API",
+    "Anthropic Sonnet 5.5 receives bounded related-candidate titles, abstracts, and review excerpts for relation judgment; no full-text deployment, classification refit, or review regeneration":
+        "Anthropic Sonnet 5.5로 제한된 후보 논문의 제목·초록·리뷰 발췌를 전송해 관계를 판정합니다. 원문 배포·전체 재분류·리뷰 재생성은 하지 않습니다.",
     "Crossref/OpenAlex/Scopus source APIs": "Crossref · OpenAlex · Scopus API",
     "none offline; configured bibliography sources when online; never Zotero Web paging":
         "offline이면 없음, online이면 설정된 서지 소스 (Zotero 웹 페이징은 하지 않음)",
@@ -130,7 +132,7 @@ EN_PIPELINE = {
     "analyze": ("Analyze", "Build relationships between categories and papers."),
     "index": ("Paper index", "Collect paper metadata from reviews into a complete index."),
     "classify": ("Topic modeling and classification", "Create and assign categories with SPECTER2, UMAP, and HDBSCAN. Zero LLM calls; at most three categories per paper."),
-    "related": ("Related papers", "Choose candidates with SPECTER2 plus title/author BM25, then have Claude Haiku read both reviews and write one sentence on their commonality and difference. Remove unrelated pairs and cache decisions."),
+    "related": ("Related papers", "Choose candidates with SPECTER2 plus title/author BM25, then have Claude Sonnet 5.5 read both reviews and write one sentence on their commonality and difference. Remove unrelated pairs and cache decisions."),
     "summaries": ("Category summaries", "Create a summary and subthemes for each category."),
     "timelines": ("Timelines", "Create category research-trend narratives and PaperBanana timeline images."),
     "publish": ("Publish", "Create readable artifacts, search indexes, and the bibliography database."),

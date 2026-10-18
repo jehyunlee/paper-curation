@@ -98,6 +98,8 @@ def _validate(feature: dict, request: Any) -> dict:
             raise FeatureBlocked("failed", "invalid budget")
         if "max_output_tokens" in budget and (type(budget["max_output_tokens"]) is not int or not 1 <= budget["max_output_tokens"] <= 32000):
             raise FeatureBlocked("failed", "invalid output token limit")
+        if feature["id"] == "related-papers":
+            raise FeatureBlocked("failed", "related-papers does not support budget controls")
         if "max_cost_usd" in budget and feature["id"] not in TEXT_FEATURES | {"review"}:
             if feature["credential"]["cost_class"] != "local" and not (
                 feature["id"] == "bibliography-update" and params.get("offline", True)
@@ -186,6 +188,16 @@ def _preflight(feature: dict, request: dict, params: dict) -> dict:
                     raise FeatureBlocked("insufficient-data", "semantic retrieval requires an explicit hybrid index rebuild")
                 _load_embedding_bytes(index, directory)
         plan["steps"] = [f"{params['operation']}:{'bm25' if feature_id == 'keyword-search' else 'hybrid'}"]
+    elif feature_id == "related-papers":
+        from refresh_paper_connections import plan_connections
+        from lib.relation_judge import DEFAULT_MODEL
+        try:
+            details = plan_connections(params["slug"])
+        except ValueError as exc:
+            raise FeatureBlocked("insufficient-data", "related-paper corpus inputs are unavailable") from exc
+        plan.update(details)
+        plan["cost"] = {"status": "unknown"}
+        plan["model"] = DEFAULT_MODEL
     elif feature_id == "extract":
         pdf, output = Path(params["pdf_path"]), Path(params["output_dir"])
         if not pdf.is_absolute() or not output.is_absolute():
@@ -314,6 +326,10 @@ def _extract(params: dict) -> dict:
 def _execute(feature: dict, params: dict) -> dict:
     feature_id = feature["id"]
     pipe = ROOT / "pipeline"
+    if feature_id == "related-papers":
+        from refresh_paper_connections import refresh_connections
+        # The shared stage owns its writer lease for both CLI and Curio calls.
+        return refresh_connections(params["slug"])
     if feature_id == "extract":
         return _extract(params)
     if feature_id == "email":

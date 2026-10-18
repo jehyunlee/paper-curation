@@ -165,12 +165,15 @@
           "id": "related",
           "label": "같이 보면 좋은 논문",
           "script": "extract_insights",
+          "features": [
+            "related-papers"
+          ],
           "run_steps": [
             "extract_insights"
           ],
-          "desc": "SPECTER2 + 제목·저자 BM25 후보를 고른 뒤 Claude Haiku가 두 리뷰를 읽고 공통점과 차이를 한 문장으로 씁니다. 무관한 쌍은 제거하고 판정 결과는 캐시합니다.",
+          "desc": "SPECTER2 + 제목·저자 BM25 후보를 고른 뒤 Claude Sonnet 5.5가 두 리뷰를 읽고 공통점과 차이를 한 문장으로 씁니다. 무관한 쌍은 제거하고 판정 결과는 캐시합니다.",
           "cost": "paid",
-          "model": "claude-haiku-4-5",
+          "model": "claude-sonnet-5-5",
           "inputs": [
             "review.md"
           ],
