@@ -38,6 +38,9 @@ papers/*/bibliography.json
 notes/
 papers/*/notes.md
 
+# Local bibliography explorer sample: real corpus rows, not a public asset
+bibliography-samples.js
+
 # Multi-paper comparisons (paper-curio local feature)
 papers/_comparisons/
 
