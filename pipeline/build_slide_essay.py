@@ -1,12 +1,12 @@
-"""AI4Science 발표 원고 v2 — 슬라이드 50장을 '줄글'로 쓴 판본.
+"""AI4Science 발표 원고 v2 — 슬라이드 전 장을 '줄글'로 쓴 판본.
 
 v1(`build_slide_deck.py`)이 불릿 요약 카드였다면, v2는 슬라이드 한 장당
 책 한 절(section) 분량의 서술형 본문을 싣는다. 데이터·레퍼런스·인용 마커
 로직은 v1 모듈을 그대로 재사용하고, 본문 줄글만 `lib/slide_prose_ai4s.py`
 에서 가져온다.
 
-  - `reports/build/{topic}_slides_50_v2.html`  : 브라우저·인쇄용(자기완결)
-  - `reports/source/{topic}_slides_50_v2.md`   : Obsidian 용
+  - `reports/build/{topic}_slides_<N>_v2.html`  : 브라우저·인쇄용(자기완결)
+  - `reports/source/{topic}_slides_<N>_v2.md`   : Obsidian 용
 
 Usage:
   PYTHONUTF8=1 python pipeline/build_slide_essay.py --topic ai4s
@@ -15,7 +15,7 @@ import argparse
 import html as H
 import re
 import sys
-from collections import Counter, defaultdict
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
@@ -29,38 +29,30 @@ from lib.slide_prose_ai4s import PROSE  # noqa: E402
 
 REPORTS = PROJECT_ROOT / "reports"
 
-# 오프닝·종합 슬라이드의 고정 골격 (제목·표시 헤드라인). 본문은 PROSE 에서 온다.
+# 오프닝·종합 슬라이드의 고정 골격(id·종류·파트·제목). 헤드라인·본문은
+# NARRATIVE[id] / PROSE[id] (lib/slide_prose_ai4s.py) 에서 온다.
 FRAME = [
-    ("cover", "표지", "오프닝", "AI for Science, 2026년 지형도",
-     "논문 한 편씩 읽어서는 보이지 않는 것 — 어디에 사람이 몰렸고, 어디가 비었는가."),
-    ("method", "방법", "오프닝", "이 지도는 어떻게 만들어졌나",
-     "사람이 카테고리를 먼저 정하지 않았다. 논문이 뭉친 모양에서 카테고리를 꺼냈다."),
-    ("corpus", "코퍼스", "오프닝", "코퍼스 한눈에 보기",
-     "이 코퍼스는 '누적 지식'이 아니라 '현재 전선'에 가깝다."),
-    ("landscape", "지형도", "오프닝", "여덟 개 대분류의 지형",
-     "'만드는 연구'와 '재는 연구'가 나란히 1·2위. 이 조합이 2026년의 성격이다."),
-    ("arc", "서사", "오프닝", "관통하는 한 줄: 예측 → 설계 → 자율 → 검증",
-     "2026년은 '무엇을 더 할 수 있나'가 아니라 '무엇을 믿을 수 있나'를 묻는 해다."),
+    ("cover", "표지", "오프닝", "AI for Science, 2026년 지형도"),
+    ("method", "방법", "오프닝", "이 지도는 어떻게 만들어졌나"),
+    ("corpus", "코퍼스", "오프닝", "코퍼스 한눈에 보기"),
+    ("landscape", "지형도", "오프닝", "{n_cats}개 대분류의 지형"),
+    ("arc", "서사", "오프닝", None),
 ]
 
 CLOSING = [
-    ("convergence", "종합", "수렴 신호: 경계가 무너지는 곳",
-     "서로 다른 분야가 같은 문제를 풀기 시작하면, 그 지점이 다음 3년의 표준이 된다."),
-    ("riseandfall", "종합", "부상과 쇠퇴",
-     "단독 LLM으로 과학하겠다는 접근은 접히는 중이고, 그 자리를 신경-기호와 추론시간 확장이 채운다."),
-    ("gaps", "종합", "비어 있는 자리",
-     "가장 큰 공백은 기술이 아니다 — AI가 만든 과학을 검증할 체계가 없다."),
-    ("verification", "종합", "2026 검증 전환의 여섯 축",
-     "같은 해에, 서로 모르는 여덟 개 분야가 같은 결론에 도달했다 — 성능이 아니라 증거."),
-    ("action", "마무리", "그래서 무엇을 할 것인가",
-     "따라잡기 경쟁은 이미 졌다. 이길 수 있는 자리는 검증·도메인 데이터·대형시설이다."),
+    ("convergence", "종합", "수렴 신호: 경계가 무너지는 곳"),
+    ("riseandfall", "종합", "부상과 쇠퇴"),
+    ("gaps", "종합", "비어 있는 자리"),
+    ("verification", "종합", None),
+    ("action", "마무리", "그래서 무엇을 할 것인가"),
 ]
 
 
-def prose_for(key, fallback_points=None):
+def prose_for(key, ctx, cat=None, sub=None, fallback_points=None):
     """줄글 본문을 가져온다. 아직 집필되지 않은 칸은 v1 불릿으로 임시 대체한다."""
     p = PROSE.get(key)
     if p:
+        p = ctx.fill_all(p, cat=cat, sub=sub)
         return {"lead": p.get("lead", ""), "body": list(p.get("body", [])),
                 "close": p.get("close", ""), "drafted": True}
     return {"lead": "", "body": list(fallback_points or []), "close": "", "drafted": False}
@@ -68,31 +60,10 @@ def prose_for(key, fallback_points=None):
 
 def build(topic, per_category=5, link_base="../../docs/papers", since=2025):
     summaries, classification, timeline, insights, index = B.load_corpus(topic)
-    assigned = {a["slug"]: a for a in classification.get("assignments", [])}
-    idx_by_slug = {p["slug"]: p for p in index}
-    papers = [idx_by_slug[s] for s in assigned if s in idx_by_slug]
-
-    by_prefix = {}
-    for p in index:
-        by_prefix.setdefault(p["slug"].split("_")[0], p)
-
-    by_sub = defaultdict(list)
-    for slug, a in assigned.items():
-        p = idx_by_slug.get(slug)
-        if p:
-            by_sub[(a.get("primary_category"), a.get("sub_category"))].append(p)
-
-    years = Counter()
-    for p in papers:
-        y = B.year_of(p.get("date"))
-        if 2015 <= y <= 2030:
-            years[y] += 1
-
-    analyses = timeline.get("category_analyses", {})
-    cats = sorted(summaries, key=lambda c: -c.get("count", 0))
-    total = len(papers)
-    recent_share = round(sum(v for y, v in years.items() if y >= since) / max(1, total) * 100)
-    n_subs = sum(len(c.get("sub_themes", [])) for c in cats)
+    corpus = B.prepare_corpus(summaries, classification, timeline, index, per_category, since)
+    papers, by_prefix, by_sub = corpus["papers"], corpus["by_prefix"], corpus["by_sub"]
+    years, cats, analyses, ctx = corpus["years"], corpus["cats"], corpus["analyses"], corpus["ctx"]
+    total, recent_share, n_subs = corpus["total"], corpus["recent_share"], corpus["n_subs"]
 
     slides = []
 
@@ -120,76 +91,82 @@ def build(topic, per_category=5, link_base="../../docs/papers", since=2025):
                                         key=lambda s: -s.get("count", 0))[0]["name"]
                                  if c.get("sub_themes") else "-")] for c in cats]},
     }
-    for key, kind, part, title, headline in FRAME:
-        pr = prose_for(key)
-        add(key=key, kind=kind, part=part, title_ko=title, headline=headline,
+    for key, kind, part, title in FRAME:
+        fr = B.frame_entry(key, ctx)
+        pr = prose_for(key, ctx)
+        add(key=key, kind=kind, part=part,
+            title_ko=ctx.fill(title) if title else (fr.get("title_ko") or key),
+            headline=fr["headline"],
             lead=pr["lead"], body=pr["body"], close=pr["close"], drafted=pr["drafted"],
             table=frame_tables.get(key),
             stat_line=(f"코퍼스 {total:,}편 · 대분류 {len(cats)}개 · 서브카테고리 {n_subs}개 · "
                        f"{since}년 이후 {recent_share}%" if key == "cover" else ""))
 
-    # ── 본문 40장 ──────────────────────────────────────────────────────────
-    for ci, c in enumerate(cats, start=1):
+    # ── 본문 ───────────────────────────────────────────────────────────────
+    ci = 0
+    for c, st in corpus["order"]:
         cat = c["category"]
         cat_ko = B.CATEGORY_KO.get(cat, cat)
-        part = f"제{ci}부 · {cat_ko}"
         subs = sorted(c.get("sub_themes", []), key=lambda s: -s.get("count", 0))[:per_category]
+        si = subs.index(st) + 1
+        if si == 1:
+            ci += 1
+        part = f"제{ci}부 · {cat_ko}"
         share = round(sum(s.get("count", 0) for s in subs) / max(1, c.get("count", 1)) * 100)
-        for si, st in enumerate(subs, start=1):
-            name = st.get("name")
-            tl = B.match_timeline(analyses, cat, name)
-            nar = B.NARRATIVE.get(name, {})
-            tools = (tl or {}).get("representative_tools", []) or []
-            kds = [re.sub(r"\s+", " ", k) for k in ((tl or {}).get("key_developments") or [])]
-            pr = prose_for(name, fallback_points=nar.get("points") or kds)
+        name = st.get("name")
+        tl = B.match_timeline(analyses, cat, name)
+        nar = ctx.fill_all(B.NARRATIVE.get(name, {}), cat=c, sub=st)
+        tools = (tl or {}).get("representative_tools", []) or []
+        kds = [re.sub(r"\s+", " ", k) for k in ((tl or {}).get("key_developments") or [])]
+        pr = prose_for(name, ctx, cat=c, sub=st, fallback_points=nar.get("points") or kds)
 
-            texts = ([pr["lead"]] if pr["lead"] else []) + pr["body"] + \
-                    ([pr["close"]] if pr["close"] else [])
-            named = [w for w in re.findall(r"[A-Za-z][A-Za-z0-9]*(?:[-–][A-Za-z0-9]+)*",
-                                          " ".join(texts))
-                     if len(w) >= 4 and (sum(1 for ch in w if ch.isupper()) >= 2
-                                         or any(ch.isdigit() for ch in w))]
-            probes = named + list(B._tokens(name)) + [w for k in kds
-                                                      for w in re.findall(r"[A-Z][A-Za-z0-9\-]{3,}", k)]
-            pool = by_sub.get((cat, name), [])
-            refs = B.pick_papers(pool, tools, probes, link_base, limit=6, since=since)
-            body_text = " ".join(texts)
-            forced = [p for p in pool if B.title_phrase_hit(p, body_text)]
-            if forced:
-                seen, merged = set(), []
-                for r in [B.make_ref(p, link_base) for p in forced] + refs:
-                    fp = B.title_fingerprint(r["title"])
-                    if fp in seen:
-                        continue
-                    seen.add(fp)
-                    merged.append(r)
-                refs = merged[:max(6, len(forced) + 4)]
+        texts = ([pr["lead"]] if pr["lead"] else []) + pr["body"] + \
+                ([pr["close"]] if pr["close"] else [])
+        named = [w for w in re.findall(r"[A-Za-z][A-Za-z0-9]*(?:[-–][A-Za-z0-9]+)*",
+                                      " ".join(texts))
+                 if len(w) >= 4 and (sum(1 for ch in w if ch.isupper()) >= 2
+                                     or any(ch.isdigit() for ch in w))]
+        probes = named + list(B._tokens(name)) + [w for k in kds
+                                                  for w in re.findall(r"[A-Z][A-Za-z0-9\-]{3,}", k)]
+        pool = by_sub.get((cat, name), [])
+        refs = B.pick_papers(pool, tools, probes, link_base, limit=6, since=since)
+        body_text = " ".join(texts)
+        forced = [p for p in pool if B.title_phrase_hit(p, body_text)]
+        if forced:
+            seen, merged = set(), []
+            for r in [B.make_ref(p, link_base) for p in forced] + refs:
+                fp = B.title_fingerprint(r["title"])
+                if fp in seen:
+                    continue
+                seen.add(fp)
+                merged.append(r)
+            refs = merged[:max(6, len(forced) + 4)]
 
-            marked = B.attach_markers(texts, refs, tools)
-            lead = marked[0] if pr["lead"] else ""
-            offset = 1 if pr["lead"] else 0
-            body = marked[offset:offset + len(pr["body"])]
-            close = marked[-1] if pr["close"] else ""
+        marked = B.attach_markers(texts, refs, tools)
+        lead = marked[0] if pr["lead"] else ""
+        offset = 1 if pr["lead"] else 0
+        body = marked[offset:offset + len(pr["body"])]
+        close = marked[-1] if pr["close"] else ""
 
-            n_recent = sum(1 for p in pool if B.year_of(p.get("date")) >= since)
-            badges = [f"{st.get('count', 0)}편"]
-            if tl:
-                badges += [f"{tl.get('start')}–{tl.get('end')}",
-                           B.STATUS_KO.get(tl.get("status"), "")]
-            badges.append(f"{since}+ {n_recent}편")
+        n_recent = ctx.n_recent_by_sub.get(name, 0)
+        badges = [f"{st.get('count', 0)}편"]
+        if tl:
+            badges += [f"{tl.get('start')}–{tl.get('end')}",
+                       B.STATUS_KO.get(tl.get("status"), "")]
+        badges.append(f"{since}+ {n_recent}편")
 
-            add(key=name, kind="서브카테고리", part=part, category=cat, category_ko=cat_ko,
-                title_ko=nar.get("ko") or name, title_en=name,
-                alias_en=((tl or {}).get("name") if (tl and tl.get("name") != name) else ""),
-                badges=[b for b in badges if b],
-                context=(B.CATEGORY_LEAD.get(cat, "") if si == 1 else ""),
-                cat_meta=(f"{cat_ko} 고유 배정 {c.get('count', 0):,}편"
-                          f"(중복 포함 {c.get('card_count', 0):,}편 · 웹 인덱스 기준) · 서브카테고리 "
-                          f"{len(c.get('sub_themes', []))}개 · 본 파트 {len(subs)}개로 {share}% 커버"
-                          if si == 1 else ""),
-                headline=nar.get("headline") or "",
-                lead=lead, body=body, close=close, drafted=pr["drafted"],
-                tools=tools, refs=refs, sowhat=nar.get("sowhat") or "")
+        add(key=name, kind="서브카테고리", part=part, category=cat, category_ko=cat_ko,
+            title_ko=nar.get("ko") or name, title_en=name,
+            alias_en=((tl or {}).get("name") if (tl and tl.get("name") != name) else ""),
+            badges=[b for b in badges if b],
+            context=(ctx.fill(B.CATEGORY_LEAD.get(cat, ""), cat=c) if si == 1 else ""),
+            cat_meta=(f"{cat_ko} 고유 배정 {c.get('count', 0):,}편"
+                      f"(중복 포함 {c.get('card_count', 0):,}편 · 웹 인덱스 기준) · 서브카테고리 "
+                      f"{len(c.get('sub_themes', []))}개 · 본 파트 {len(subs)}개로 {share}% 커버"
+                      if si == 1 else ""),
+            headline=nar.get("headline") or "",
+            lead=lead, body=body, close=close, drafted=pr["drafted"],
+            tools=tools, refs=refs, sowhat=nar.get("sowhat") or "")
 
     # ── 종합 5장 ───────────────────────────────────────────────────────────
     cross = insights.get("cross_category", []) or []
@@ -198,46 +175,31 @@ def build(topic, per_category=5, link_base="../../docs/papers", since=2025):
         by_type[item.get("type")].append(item)
     meta = insights.get("meta", {}) or {}
 
-    def insight_refs(items, limit=6):
-        pool = [by_prefix[str(ev)] for it in items for ev in it.get("evidence", [])
-                if str(ev) in by_prefix]
-        seen, uniq = set(), []
-        for p in sorted(pool, key=lambda p: (0 if B.year_of(p.get("date")) >= since else 1,
-                                            -B.year_of(p.get("date")),
-                                            -(p.get("citation_count") or 0))):
-            if p["slug"] in seen:
-                continue
-            seen.add(p["slug"])
-            uniq.append(B.make_ref(p, link_base))
-            if len(uniq) >= limit:
-                break
-        return uniq
-
+    verification = B.frame_entry("verification", ctx)
+    action = B.frame_entry("action", ctx)
     closing_refs = {
-        "convergence": insight_refs(by_type.get("convergence", [])),
-        "riseandfall": insight_refs(by_type.get("emerging", []) + by_type.get("declining", [])),
-        "gaps": insight_refs(by_type.get("gap", [])),
-        "verification": [],
+        "convergence": B.insight_refs(by_type.get("convergence", []), by_prefix, link_base, since, limit=6),
+        "riseandfall": B.insight_refs(by_type.get("emerging", []) + by_type.get("declining", []),
+                                      by_prefix, link_base, since, limit=6),
+        "gaps": B.insight_refs(by_type.get("gap", []), by_prefix, link_base, since, limit=6),
+        "verification": B.refs_by_names(verification.get("refs") or [], papers, link_base, since, limit=8),
         "action": [],
     }
     closing_extra = {
         "gaps": {"미개척 영역(코퍼스 메타 분석)": meta.get("underserved_domains") or []},
-        "action": {"관전 포인트 (다음 12개월)": [
-            "자율 에이전트의 습식 검증 성공률이 공개 벤치마크에서 재현되는가",
-            "형식 검증기가 수학 밖(재료·코드·회로)으로 얼마나 확장되는가",
-            "AI 수치예보의 극단 이벤트 외삽에 대한 독립 검증 결과",
-            "AI 생성 논문·리뷰에 대한 학회·출판사 표준의 성립 여부",
-        ]},
+        "action": action.get("extra") or {},
     }
-    for key, kind, title, headline in CLOSING:
-        pr = prose_for(key)
+    for key, kind, title in CLOSING:
+        fr = B.frame_entry(key, ctx)
+        pr = prose_for(key, ctx)
         refs = closing_refs.get(key) or []
         texts = ([pr["lead"]] if pr["lead"] else []) + pr["body"] + \
                 ([pr["close"]] if pr["close"] else [])
         marked = B.attach_markers(texts, refs, [])
         lead = marked[0] if pr["lead"] else ""
         offset = 1 if pr["lead"] else 0
-        add(key=key, kind=kind, part="종합", title_ko=title, headline=headline,
+        add(key=key, kind=kind, part="종합",
+            title_ko=title or fr.get("title_ko") or key, headline=fr["headline"],
             lead=lead, body=marked[offset:offset + len(pr["body"])],
             close=marked[-1] if pr["close"] else "",
             drafted=pr["drafted"], refs=refs, extra=closing_extra.get(key))

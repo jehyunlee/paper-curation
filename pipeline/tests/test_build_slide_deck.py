@@ -8,6 +8,7 @@ class TitleCleaningTests(unittest.TestCase):
     def test_clean_title_strips_latex_and_markdown(self):
         self.assertEqual(B.clean_title(r"$\texttt{FlashSchNet}$: Fast MD"), "FlashSchNet: Fast MD")
         self.assertEqual(B.clean_title("**3D 오일러** 방정식"), "3D 오일러 방정식")
+        self.assertEqual(B.clean_title(r"Series for $\boldsymbol{\frac{1}{\pi}}$"), "Series for 1/π")
 
     def test_fingerprint_matches_duplicate_slugs(self):
         a = r"$\texttt{FlashSchNet}$: Fast and Accurate Coarse-Grained Neural Network"
@@ -80,15 +81,20 @@ if __name__ == "__main__":
 
 
 class SlideEssayTests(unittest.TestCase):
-    """v2(줄글) 판본: 50장 골격과 본문 집필 완료 여부를 고정한다."""
+    """v2(줄글) 판본: 오프닝·종합 골격과 집필본 형식을 고정한다."""
 
-    def test_prose_covers_every_slide(self):
+    def test_prose_and_narrative_cover_every_frame_slide(self):
         from pipeline import build_slide_essay as E
-        from pipeline.lib.slide_prose_ai4s import PROSE
+        from pipeline.lib.slide_prose_ai4s import NARRATIVE, PROSE
         frame = {k for k, *_ in E.FRAME} | {k for k, *_ in E.CLOSING}
-        self.assertEqual(len(frame), 10)
-        self.assertTrue(frame <= set(PROSE), f"오프닝/종합 미집필: {frame - set(PROSE)}")
-        self.assertEqual(len(PROSE), 50, "본문 40장 + 오프닝·종합 10장 = 50장이어야 한다")
+        self.assertEqual(frame, set(B.FRAME_KEYS))
+        self.assertTrue(frame <= set(PROSE), f"오프닝/종합 줄글 미집필: {frame - set(PROSE)}")
+        self.assertTrue(frame <= set(NARRATIVE), f"오프닝/종합 불릿 미집필: {frame - set(NARRATIVE)}")
+        # 본문 키는 두 사전이 같은 서브카테고리 집합을 가져야 한다.
+        self.assertEqual(set(PROSE) - frame, set(NARRATIVE) - frame)
+        for key in ("arc", "verification", "action"):
+            self.assertGreaterEqual(len(NARRATIVE[key].get("points", [])), 4, key)
+        self.assertTrue(NARRATIVE["verification"].get("refs"))
 
     def test_every_prose_entry_has_lead_body_close(self):
         from pipeline.lib.slide_prose_ai4s import PROSE
@@ -99,6 +105,78 @@ class SlideEssayTests(unittest.TestCase):
                 self.assertTrue(v.get("close"), f"{key}: close 없음")
                 chars = len(v["lead"]) + sum(len(x) for x in v["body"]) + len(v["close"])
                 self.assertGreater(chars, 800, f"{key}: 본문 {chars}자 — 절 분량 미달")
+
+    def test_every_narrative_sub_entry_has_five_points(self):
+        from pipeline.lib.slide_prose_ai4s import NARRATIVE
+        for key, v in NARRATIVE.items():
+            if key in B.FRAME_KEYS:
+                continue
+            with self.subTest(key=key):
+                self.assertTrue(v.get("ko") and v.get("headline") and v.get("sowhat"), key)
+                self.assertEqual(len(v.get("points", [])), 5, key)
+
+
+class ProseContextTests(unittest.TestCase):
+    """집필본 플레이스홀더 치환: 편수·슬라이드 번호·이름을 빌드 시점 코퍼스에서 읽는다."""
+
+    def _ctx(self):
+        cats = [
+            {"category": "A", "count": 60, "card_count": 90,
+             "sub_themes": [{"name": "a-big", "count": 40}, {"name": "a-small", "count": 20}]},
+            {"category": "B", "count": 40, "card_count": 50,
+             "sub_themes": [{"name": "b-only", "count": 40}]},
+        ]
+        years = {2024: 10, 2025: 30, 2026: 60}
+        slide_no = {"a-big": 6, "a-small": 7, "b-only": 8}
+        return B.ProseContext(cats, years, 100, 5, 2025, 3, slide_no,
+                              {"a-big": 35, "a-small": 10, "b-only": 40}), cats
+
+    def test_global_placeholders(self):
+        ctx, _ = self._ctx()
+        self.assertEqual(ctx.fill("{total}편/{cards}편, {n_cats}개, {n_subs}개, {n_body}장, "
+                                  "{since}+ {recent_share}%, {y:2026}편"),
+                         "100편/140편, 2개, 3개, 3장, 2025+ 90%, 60편")
+        self.assertEqual(ctx.fill("{n:A}·{n:a-big}·{cards:B}·{s:b-only}"), "60·40·50·S08")
+
+    def test_scoped_placeholders_require_context(self):
+        ctx, cats = self._ctx()
+        a = cats[0]
+        self.assertEqual(ctx.fill("{cat_count}/{cat_cards}/{cat_share}%/{nsubs}", cat=a), "60/90/60%/2")
+        self.assertEqual(ctx.fill("{count}편 중 {recent}편, {sub_share}%", sub=a["sub_themes"][0]),
+                         "40편 중 35편, 67%")
+        with self.assertRaises(KeyError):
+            ctx.fill("{count}")
+        with self.assertRaises(KeyError):
+            ctx.fill("{cat_count}")
+
+    def test_unknown_names_fail_loudly(self):
+        ctx, _ = self._ctx()
+        with self.assertRaisesRegex(KeyError, "없는 이름"):
+            ctx.fill("{n:Nope}")
+        with self.assertRaisesRegex(KeyError, "없는 이름"):
+            ctx.fill("{s:a-nope}")
+        with self.assertRaisesRegex(KeyError, "알 수 없는"):
+            ctx.fill("{bogus}")
+
+    def test_fill_all_recurses_and_leaves_plain_braces(self):
+        ctx, cats = self._ctx()
+        out = ctx.fill_all({"points": ["{count}편", {"x": ["{total}"]}], "k": 1},
+                           sub=cats[1]["sub_themes"][0])
+        self.assertEqual(out, {"points": ["40편", {"x": ["100"]}], "k": 1})
+        self.assertEqual(ctx.fill("집합 {1, 2} 는 그대로"), "집합 {1, 2} 는 그대로")
+
+    def test_category_wins_name_collision_and_sub_key_forces_sub(self):
+        cats = [{"category": "Same", "count": 300, "card_count": 800,
+                 "sub_themes": [{"name": "Same", "count": 26}]}]
+        ctx = B.ProseContext(cats, {}, 300, 5, 2025, 1, {"Same": 6}, {"Same": 20})
+        self.assertEqual(ctx.fill("{n:Same}/{sub:Same}/{cards:Same}/{s:Same}"), "300/26/800/S06")
+        with self.assertRaises(KeyError):
+            ctx.fill("{sub:Nope}")
+
+    def test_thousands_separator(self):
+        cats = [{"category": "A", "count": 1234, "card_count": 2345, "sub_themes": []}]
+        ctx = B.ProseContext(cats, {}, 1234, 5, 2025, 0, {}, {})
+        self.assertEqual(ctx.fill("{total}편 {cards}편 {n:A}"), "1,234편 2,345편 1,234")
 
 
 class CategoryRecountTests(unittest.TestCase):
@@ -182,61 +260,103 @@ class TaxonomyPinTests(unittest.TestCase):
 
 
 class Ai4sProseCountDriftTests(unittest.TestCase):
-    """ai4s 코퍼스가 있을 때, 손으로 쓴 줄글의 '{N}편' 이 실제 편수와 맞는지 본다.
+    """ai4s 코퍼스가 있을 때, 집필본이 라이브 분류체계와 맞물리는지 본다.
 
-    같은 분류체계 안에서 신규 논문으로 편수만 어긋난 경우를 잡는 게이트다. 분류체계
-    자체가 바뀜 경우(카테고리 이름이 다름)는 비교할 대상이 없으므로 이유를 밝히고
-    건너뛴다 — 그 상태는 TaxonomyPinTests 가 보증하듯 빌드 자체가 거부된다.
+    편수는 플레이스홀더라 숫자 드리프트는 없다. 남는 위험은 (1) 집필본 키가 라이브
+    상위 서브카테고리와 어긋남, (2) `{n:NAME}`/`{s:NAME}` 가 없는 이름을 가리킴,
+    (3) 지형도 줄글이 어떤 대분류의 편수를 빠뜨림 — 셋 다 여기서 잡는다. 분류체계
+    자체가 바뀐 경우는 비교할 대상이 없으므로 이유를 밝히고 건너뛴다(빌드는
+    TaxonomyPinTests 가 보증하듯 거부된다).
     """
 
     @staticmethod
-    def _live_counts():
+    def _live():
         import json
         from pathlib import Path
-        from collections import Counter
-        root = Path(__file__).resolve().parents[2] / "docs" / "ai4s"
-        cls_path = root / "_new_classification.json"
-        sum_path = root / "_category_summaries.json"
-        if not (cls_path.exists() and sum_path.exists()):
-            return None, None
-        cls = json.loads(cls_path.read_text(encoding="utf-8"))
-        summaries = json.loads(sum_path.read_text(encoding="utf-8"))
+        root = Path(__file__).resolve().parents[2] / "docs"
+        tdir = root / "ai4s"
+        paths = [tdir / "_new_classification.json", tdir / "_category_summaries.json",
+                 tdir / "_timeline_narrative.json", root / "papers" / "_papers_index.json"]
+        if not all(p.exists() for p in paths):
+            return None
+        cls, summaries, timeline, index = [json.loads(p.read_text(encoding="utf-8")) for p in paths]
         gap = B.authored_taxonomy_gap(summaries)
         if gap:
             raise unittest.SkipTest(
                 f"덱 집필본({B.PROSE_AUTHORED})과 다른 분류체계: 미집필 카테고리 {len(gap)}개 "
-                f"({gap[0]} 등) — 편수 비교 불가, 빌드는 TaxonomyMismatch 로 거부됨. 재집필 필요")
+                f"({gap[0]} 등) — 빌드는 TaxonomyMismatch 로 거부됨. 재집필 필요")
         B.recount_categories(summaries, cls)
-        subs = Counter()
-        for a in cls.get("assignments", []):
-            subs[a.get("sub_category")] += 1
-        return summaries, subs
+        return B.prepare_corpus(summaries, cls, timeline, index, per_category=5, since=2025)
 
-    def test_prose_leads_match_live_subcategory_counts(self):
-        import re
-        summaries, subs = self._live_counts()
-        if summaries is None:
+    def test_authored_keys_match_live_top_subcategories(self):
+        corpus = self._live()
+        if corpus is None:
+            self.skipTest("docs/ai4s 코퍼스 없음")
+        from pipeline.lib.slide_prose_ai4s import NARRATIVE, PROSE
+        live = {st["name"] for _, st in corpus["order"]}
+        frame = set(B.FRAME_KEYS)
+        self.assertEqual(set(NARRATIVE) - frame, live,
+                         "집필본 서브카테고리 키가 라이브 상위 서브카테고리와 다르다")
+        self.assertEqual(set(PROSE) - frame, live)
+
+    def test_every_placeholder_resolves_against_live_corpus(self):
+        corpus = self._live()
+        if corpus is None:
+            self.skipTest("docs/ai4s 코퍼스 없음")
+        from pipeline.lib.slide_prose_ai4s import CATEGORY_LEAD, NARRATIVE, PROSE
+        ctx = corpus["ctx"]
+        for c, st in corpus["order"]:
+            with self.subTest(sub=st["name"]):
+                ctx.fill_all(NARRATIVE[st["name"]], cat=c, sub=st)
+                ctx.fill_all(PROSE[st["name"]], cat=c, sub=st)
+        for c in corpus["cats"]:
+            with self.subTest(cat=c["category"]):
+                ctx.fill(CATEGORY_LEAD[c["category"]], cat=c)
+        for key in B.FRAME_KEYS:
+            with self.subTest(frame=key):
+                ctx.fill_all(NARRATIVE[key])
+                ctx.fill_all(PROSE[key])
+
+    def test_landscape_prose_names_every_category_count(self):
+        corpus = self._live()
+        if corpus is None:
             self.skipTest("docs/ai4s 코퍼스 없음")
         from pipeline.lib.slide_prose_ai4s import PROSE
-        known = {st["name"] for c in summaries for st in c.get("sub_themes", [])}
-        for key, v in PROSE.items():
-            m = re.match(r"([\d,]+)편", v.get("lead", ""))
-            if not m or key not in known:
-                continue
-            with self.subTest(key=key):
-                self.assertEqual(int(m.group(1).replace(",", "")), subs[key],
-                                 f"{key}: 줄글 첫 문장 편수가 코퍼스와 다르다")
-
-    def test_landscape_prose_matches_live_category_counts(self):
-        summaries, _ = self._live_counts()
-        if summaries is None:
-            self.skipTest("docs/ai4s 코퍼스 없음")
-        from pipeline.lib.slide_prose_ai4s import PROSE
-        text = " ".join([PROSE["landscape"]["lead"], *PROSE["landscape"]["body"],
-                         PROSE["landscape"]["close"], *PROSE["method"]["body"]])
-        for c in summaries:
+        ctx = corpus["ctx"]
+        text = " ".join(ctx.fill(t) for t in [PROSE["landscape"]["lead"], *PROSE["landscape"]["body"],
+                                              PROSE["landscape"]["close"], *PROSE["method"]["body"]])
+        for c in corpus["cats"]:
             with self.subTest(category=c["category"]):
                 self.assertIn(f"{c['count']:,}편", text)
                 self.assertIn(f"{c['card_count']:,}편", text)
-        self.assertIn(f"{sum(c['count'] for c in summaries):,}편", text)
-        self.assertIn(f"{sum(c['card_count'] for c in summaries):,}편", text)
+        self.assertIn(f"{corpus['total']:,}편", text)
+        self.assertIn(f"{corpus['cards_total']:,}편", text)
+
+    def test_authored_text_never_hardcodes_live_counts(self):
+        """코퍼스 편수는 플레이스홀더여야 한다. 라이브 값과 같은 '{N}편' 리터럴은 하드코딩이다
+        (논문이 보고한 데이터셋 규모처럼 코퍼스와 무관한 수치는 허용)."""
+        import re
+        corpus = self._live()
+        if corpus is None:
+            self.skipTest("docs/ai4s 코퍼스 없음")
+        from pipeline.lib.slide_prose_ai4s import CATEGORY_LEAD, NARRATIVE, PROSE
+        ctx = corpus["ctx"]
+
+        def texts(v):
+            return [v.get("lead", ""), v.get("close", ""), v.get("headline", ""),
+                    v.get("sowhat", ""), *v.get("body", []), *v.get("points", [])]
+
+        for c, st in corpus["order"]:
+            forbidden = {st["count"], ctx.n_recent_by_sub.get(st["name"]), c["count"],
+                         c["card_count"], ctx.total, ctx.cards}
+            for t in texts(NARRATIVE[st["name"]]) + texts(PROSE[st["name"]]) + [CATEGORY_LEAD[c["category"]]]:
+                for n in forbidden:
+                    with self.subTest(sub=st["name"], n=n):
+                        self.assertIsNone(re.search(rf"(?<![\d,{{:]){n:,}편", t),
+                                          f"{st['name']}: {n:,}편 하드코딩 — {t[:60]!r}")
+        for key in B.FRAME_KEYS:
+            for t in texts(NARRATIVE[key]) + texts(PROSE[key]):
+                for n in (ctx.total, ctx.cards):
+                    with self.subTest(frame=key, n=n):
+                        self.assertIsNone(re.search(rf"(?<![\d,{{:]){n:,}편", t),
+                                          f"{key}: {n:,}편 하드코딩 — {t[:60]!r}")

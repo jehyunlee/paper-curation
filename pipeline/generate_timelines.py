@@ -207,6 +207,93 @@ def _parse_summary_json(json_part):
     return summary
 
 
+_SUBTHEME_HEAD_RE = re.compile(
+    r"^###\s*SUB-THEME\s+[A-Z0-9]+:\s*(?P<name>.+?)\s*\((?P<start>\d{4})\s*(?:(?:->|→|-)\s*(?P<end>\d{4}))?,?\s*"
+    r"(?:status:\s*)?(?P<status>(?:ACCELERATING|STABLE|DECLINING|EMERGING)(?:/(?:ACCELERATING|STABLE|DECLINING|EMERGING))?)\)\s*$", re.M)
+_SUBTHEME_BRANCH_RE = re.compile(r"^-\s*\*\*\"?(?P<label>[^\"*]+?)\"?\*\*\s*\((?P<years>[^)]*)\):\s*(?P<desc>.+)$", re.M)
+_TOOL_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9])([A-Z][A-Za-z0-9]*(?:[-/][A-Za-z0-9]+)*(?:\s[0-9](?:\.[0-9])?)?)")
+_TOOL_STOP = {"LLM", "LLMs", "RL", "AI", "ML", "ODE", "DFT", "GAN", "GANs", "VAE", "MoE", "OOD",
+              "CV", "NMR", "RNA", "DNA", "GRN", "PEFT", "QA", "NLP", "SOTA", "The", "A"}
+
+
+def summary_from_method_text(method_text, category, sub_counts):
+    """Rebuild the structured summary from METHOD TEXT alone.
+
+    Long categories (hundreds of papers, 20 sub-themes) can exhaust the
+    output budget before `===JSON===`, which used to leave `sub_themes: []`
+    in `_timeline_narrative.json` and strip every downstream consumer (deck,
+    topic index badges) of period/status/tools for that category. The method
+    text carries the same facts in a fixed grammar, so parse it instead of
+    paying for a second call. `representative_tools` are the capitalised
+    system names in the branch descriptions; `key_developments` are the
+    branch labels with their year ranges.
+    """
+    sections = re.split(r"(?m)^(?=###\s*SUB-THEME)", method_text)
+    counts = dict(sub_counts or {})
+
+    def _count_for(name):
+        # Opus freely rephrases sub-category labels in headers
+        # ("Discrete Diffusion & Flow Molecule Generation" for
+        # "Discrete Diffusion Molecule Generation"); use the same token
+        # overlap rule as build_slide_deck.match_timeline (≥ 0.4).
+        if name in counts:
+            return counts[name]
+        toks = set(re.findall(r"[a-z0-9]+", name.lower()))
+        best, best_score = 0, 0.0
+        for label, n in counts.items():
+            ltoks = set(re.findall(r"[a-z0-9]+", label.lower()))
+            if not toks or not ltoks:
+                continue
+            score = len(toks & ltoks) / max(len(toks), len(ltoks))
+            if score > best_score:
+                best, best_score = n, score
+        return best if best_score >= 0.4 else 0
+
+    sub_themes = []
+    for sec in sections:
+        head = _SUBTHEME_HEAD_RE.search(sec)
+        if not head:
+            continue
+        name = head.group("name").strip()
+        size = re.search(r"(?m)^Relative size:\s*([A-Z][A-Z-]*)", sec)
+        branches = _SUBTHEME_BRANCH_RE.findall(sec)
+        tools, seen = [], set()
+        for _label, _years, desc in branches:
+            for tok in _TOOL_TOKEN_RE.findall(desc):
+                tok = tok.strip()
+                if (len(tok) < 4 or tok in _TOOL_STOP or tok.lower() in seen
+                        or not any(ch.isupper() for ch in tok[1:]) and not any(ch.isdigit() for ch in tok)):
+                    continue
+                seen.add(tok.lower())
+                tools.append(tok)
+                if len(tools) >= 8:
+                    break
+            if len(tools) >= 8:
+                break
+        sub_themes.append({
+            "name": name,
+            "paper_count": _count_for(name),
+            "start": head.group("start"), "end": head.group("end") or head.group("start"),
+            "status": head.group("status").split("/")[-1],
+            "relative_size": (size.group(1).split("-")[0] if size else "MEDIUM"),
+            "key_developments": [f"{label.strip()} ({years.strip()})" for label, years, _ in branches][:6],
+            "representative_tools": tools,
+            "_source": "method_text",
+        })
+    if not sub_themes:
+        return None
+    years = [int(s["start"]) for s in sub_themes] + [int(s["end"]) for s in sub_themes]
+    return {
+        "category": category,
+        "paper_count": sum((sub_counts or {}).values()),
+        "sub_category_counts": dict(sub_counts or {}),
+        "time_span": f"{min(years)}-{max(years)}",
+        "sub_themes": sub_themes,
+        "milestones": [], "interactions": [], "emergence_decline": [],
+        "current_state_summary": "",
+    }
+
+
 def build_category_narrative(papers, topic, category):
     """카테고리 내 논문 전체를 Opus로 분석.
     Returns: (method_text, caption, summary_json)"""
@@ -338,13 +425,18 @@ OUTPUT 2 — STRUCTURED SUMMARY (JSON) for reuse in main timeline:
     try:
         summary = _parse_summary_json(json_part)
     except (json.JSONDecodeError, IndexError):
-        log(f"  WARNING: Failed to parse JSON summary for {category}")
-        summary = {
-            "category": category,
-            "paper_count": len(papers),
-            "sub_category_counts": dict(sub_counts.most_common()),
-            "current_state_summary": caption[:200],
-        }
+        log(f"  WARNING: Failed to parse JSON summary for {category}; "
+            "deriving sub_themes from method text")
+        summary = summary_from_method_text(method, category, dict(sub_counts.most_common()))
+        if summary is None:
+            summary = {
+                "category": category,
+                "paper_count": len(papers),
+                "sub_category_counts": dict(sub_counts.most_common()),
+                "current_state_summary": caption[:200],
+            }
+        else:
+            summary["current_state_summary"] = caption[:200]
 
     log(f"  Narrative: {len(method)} chars method, {len(json.dumps(summary))} chars summary")
     return method, caption, summary
