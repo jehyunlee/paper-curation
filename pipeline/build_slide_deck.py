@@ -44,6 +44,24 @@ STATUS_KO = {
     "DECLINING": "감소",
 }
 
+# 이 덱과 v2 줄글(lib/slide_prose_ai4s.py)은 아래 CATEGORY_KO 의 8개 대분류와 그
+# 서브카테고리(NARRATIVE/PROSE 키)를 기준으로 손으로 집필한 날짜별 산출물이다.
+# topic_modeling 이 분류체계를 다시 짜면(카테고리 이름이 바뀜) 집필본은 더 이상 그
+# 코퍼스를 설명하지 않으므로 load_corpus() 가 TaxonomyMismatch 로 빌드를 거부한다.
+# 같은 분류체계 안에서 편수만 늘어난 경우는 빌드되고, 대신 tests/test_build_slide_deck.py 의
+# Ai4sProseCountDriftTests 가 줄글의 '{N}편' 을 고치라고 알린다.
+PROSE_AUTHORED = "2026-08-10"
+
+
+class TaxonomyMismatch(RuntimeError):
+    """Live `_category_summaries.json` names categories the deck was not written for."""
+
+
+def authored_taxonomy_gap(summaries):
+    """Live categories that have no hand-written Korean name/lead (= not authored)."""
+    return sorted({c.get("category") for c in summaries} - set(CATEGORY_KO))
+
+
 CATEGORY_KO = {
     "AI-Driven Drug and Materials Discovery": "AI 기반 신약·신소재 발견",
     "LLM Benchmarking and Agent Evaluation": "LLM·에이전트 평가",
@@ -592,6 +610,13 @@ def load_corpus(topic):
     ins_path = tdir / "_insights.json"
     insights = json.loads(ins_path.read_text(encoding="utf-8")) if ins_path.exists() else {}
     index = read("_papers_index.json", root=Path(PAPERS_DIR))
+    gap = authored_taxonomy_gap(summaries)
+    if gap:
+        raise TaxonomyMismatch(
+            f"{topic}: 덱 집필본({PROSE_AUTHORED}, 대분류 {len(CATEGORY_KO)}개)에 없는 카테고리 "
+            f"{len(gap)}개가 라이브 분류체계에 있다: {', '.join(gap)}. "
+            "topic_modeling 이 분류체계를 다시 짠 상태라 CATEGORY_KO/CATEGORY_LEAD/NARRATIVE 와 "
+            "lib/slide_prose_ai4s.py 를 새 분류체계로 재집필해야 빌드할 수 있다.")
     recount_categories(summaries, classification)
     return summaries, classification, timeline, insights, index
 
@@ -807,7 +832,7 @@ def build_slides(topic, summaries, classification, timeline, insights, index,
     # ── S01–S05 오프닝 ─────────────────────────────────────────────────────
     add(kind="표지", part="오프닝",
         title_ko="AI for Science, 2026년 지형도",
-        title_en=f"{total:,}편 코퍼스가 말하는 8개 지형과 {len(cats) * per_category}개 최전선",
+        title_en=f"{total:,}편 코퍼스가 말하는 {len(cats)}개 지형과 {len(cats) * per_category}개 최전선",
         headline="논문 한 편씩 읽어서는 보이지 않는 것 — 어디에 사람이 몰렸고, 어디가 비었는가.",
         points=[
             f"대상 코퍼스: **{topic}** 토픽 {total:,}편(리뷰 완료 전수). 사례는 **{since}년 이후를 우선**해 골랐다.",
@@ -826,8 +851,8 @@ def build_slides(topic, summaries, classification, timeline, insights, index,
             "임베딩: SPECTER2(논문 특화)로 전 논문을 벡터화 → UMAP 5차원 축소 → HDBSCAN 밀도 클러스터링.",
             f"미세 클러스터를 c-TF-IDF로 키워드화하고 LLM이 명명 → 서브카테고리 {n_subs}개 → 대분류 {len(cats)}개로 그룹핑.",
             "각 논문은 primary_category 1개 + all_categories 최대 3개를 가진다(다중 배정).",
-            f"편수는 두 기준으로 센다 — **고유 배정**(primary 1편=1칸, 8개 합 {total:,}편)과 "
-            f"**중복 포함**(all_categories, 8개 합 {cards_total:,}편). "
+            f"편수는 두 기준으로 센다 — **고유 배정**(primary 1편=1칸, {len(cats)}개 합 {total:,}편)과 "
+            f"**중복 포함**(all_categories, {len(cats)}개 합 {cards_total:,}편). "
             "웹 인덱스의 카테고리 헤더 편수는 중복 포함 기준이고, 이 덱의 커버리지 산술은 고유 배정 기준이다.",
             "시기(start–end)·상태(가속/안정/부상/감소)·대표 도구는 카테고리별 타임라인 분석에서 가져왔다.",
             "한계 1: 편수는 '연구 관심의 밀도'이지 '중요도'가 아니다. 작지만 결정적인 칸이 있다(S35 CFD 자동화 7편).",
@@ -852,8 +877,8 @@ def build_slides(topic, summaries, classification, timeline, insights, index,
         sowhat="전략 판단에는 '현재 전선' 지도가 오히려 유리하다. 다만 고전의 부재를 결론으로 착각하면 안 된다.")
 
     add(kind="지형도", part="오프닝",
-        title_ko="8개 대분류 지형도",
-        title_en="The eight territories",
+        title_ko=f"{len(cats)}개 대분류 지형도",
+        title_en=f"The {len(cats)} territories",
         headline="'만드는 연구'(신약·신소재)와 '재는 연구'(평가·벤치마크)가 나란히 1·2위. 이 조합이 2026년의 성격이다.",
         table={"head": ["대분류", "고유 배정", "중복 포함", "서브카테고리", "최대 서브카테고리"],
                "rows": [[CATEGORY_KO.get(c["category"], c["category"]), f"{c.get('count', 0):,}",
@@ -865,7 +890,7 @@ def build_slides(topic, summaries, classification, timeline, insights, index,
         points=[
             "규모 상위 3개(신약·신소재, LLM 평가, 물리·환경)가 전체의 절반을 넘는다.",
             "가장 작은 학술 커뮤니케이션 카테고리는 편수는 적지만 기관 정책에 가장 직접적인 근거를 준다.",
-            "이후 8개 파트는 이 순서(편수 내림차순)로 진행한다.",
+            f"이후 {len(cats)}개 파트는 이 순서(편수 내림차순)로 진행한다.",
         ],
         sowhat="예산 배분에서 편수는 출발점일 뿐이다. 파트마다 '우리에게 무엇인가'를 따로 달아 뒀다.")
 
@@ -1376,7 +1401,11 @@ def main():
     ap.add_argument("--out-dir", default=None, help="출력 루트 (기본 reports/)")
     args = ap.parse_args()
 
-    summaries, classification, timeline, insights, index = load_corpus(args.topic)
+    try:
+        summaries, classification, timeline, insights, index = load_corpus(args.topic)
+    except TaxonomyMismatch as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 2
     slides, stats = build_slides(args.topic, summaries, classification, timeline, insights, index,
                                  per_category=args.per_category, link_base=args.link_base,
                                  since=args.since)

@@ -73,7 +73,7 @@ python pipeline/run_feature.py --request feature-request.json --execute
 | 모듈 | 기능 ID | 기능 / Feature | 제공자 | 전송 대상 | 비용 유형 |
 |---|---|---|---|---|---|
 | M1 | `review` | 논문 리뷰 / Paper review | anthropic, openai, google | selected cloud provider | paid |
-| M1 | `related-papers` | 관련 논문 연결 갱신 / Related paper connections | none / configured sources | none; neighbours are found locally in SPECTER2 embedding space, no model is called | local |
+| M1 | `related-papers` | 토픽 분류·관련 논문 연결 / Topic classification and related papers | none / configured sources | none; the paper is classified with the stored HDBSCAN bundle and neighbours are found locally in SPECTER2 embedding space, no model is called | local |
 | M1 | `summary` | 근거 기반 요약 / Grounded summary | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `chat` | 근거 기반 질의 / Grounded chat | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `comparison` | 근거 기반 비교 / Grounded comparison | anthropic, openai, google | selected cloud provider | paid |

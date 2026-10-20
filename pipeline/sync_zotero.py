@@ -256,6 +256,10 @@ def _run_sync(topic, *, dry_run=False, force_delete=False):
                 paper["topics"] = remaining
                 cls = paper.get("classifications", {})
                 cls.pop(topic, None)
+                # primary_topic must stay one of `topics`; a stale primary left
+                # a paper counted in a topic it no longer belongs to.
+                if paper.get("primary_topic") == topic:
+                    paper["primary_topic"] = remaining[0]
                 changes += 1
                 break
         log(f"  Removed '{topic}': {p['slug'][:40]}")

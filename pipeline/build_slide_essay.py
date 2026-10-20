@@ -579,8 +579,12 @@ def main():
     ap.add_argument("--out-dir", default=None)
     args = ap.parse_args()
 
-    slides, stats = build(args.topic, per_category=args.per_category,
-                          link_base=args.link_base, since=args.since)
+    try:
+        slides, stats = build(args.topic, per_category=args.per_category,
+                              link_base=args.link_base, since=args.since)
+    except B.TaxonomyMismatch as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 2
     root = Path(args.out_dir) if args.out_dir else REPORTS
     html_path = root / "build" / f"{args.topic}_slides_{len(slides)}_v2.html"
     md_path = root / "source" / f"{args.topic}_slides_{len(slides)}_v2.md"

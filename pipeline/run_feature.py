@@ -326,8 +326,15 @@ def _execute(feature: dict, params: dict) -> dict:
     pipe = ROOT / "pipeline"
     if feature_id == "related-papers":
         from refresh_paper_connections import refresh_connections
+        from classify_papers import BundleError
         # The shared stage owns its writer lease for both CLI and Curio calls.
-        return refresh_connections(params["slug"])
+        try:
+            return refresh_connections(params["slug"])
+        except BundleError as exc:
+            # A stale/incomplete HDBSCAN bundle is corpus state the operator
+            # must retrain (topic_modeling.py); the message carries no secrets.
+            raise FeatureBlocked("insufficient-data",
+                                 f"topic model bundle is unusable: {exc}") from exc
     if feature_id == "extract":
         return _extract(params)
     if feature_id == "email":

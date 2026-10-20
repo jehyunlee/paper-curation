@@ -141,7 +141,8 @@ class RefreshConnectionsTest(unittest.TestCase):
         with patch("review_to_html._run_review_to_html", return_value={"converted": 0, "skipped": 1}):
             # Directly cover the post-render contract through a minimal locked
             # run; all upstream stages are fixed, so no provider is reached.
-            with patch.object(self.mod, "plan_connections", return_value={}), \
+            with patch.object(self.mod, "plan_connections",
+                              return_value={"classify_topics": [], "classification_plan": []}), \
                  patch.object(self.mod, "_context", return_value=(self.index[0], self.index, ["demo"])), \
                  patch.object(self.mod, "_embedding_for_target", return_value=(self.index, [[0, 1], [1, 0]])), \
                  patch.object(topic_modeling, "compute_related_candidates", return_value={self.slug: []}), \
@@ -176,6 +177,87 @@ class RefreshConnectionsTest(unittest.TestCase):
         self.assertEqual((link["slug"], link["basis"], link["evidence"]),
                          (self.other, "embedding", {"cosine": .8123}))
         self.assertIn("0.81", link["reason"])
+
+
+    def _bundle(self, topic):
+        (self.docs / topic).mkdir(exist_ok=True)
+        (self.docs / topic / "_hdbscan_model.joblib").write_bytes(b"bundle")
+
+    def _two_topics(self):
+        """`demo` has a model bundle; `nobundle` does not."""
+        self.index[0]["topics"] = ["demo", "nobundle"]
+        self.index[1]["topics"] = ["demo", "nobundle"]
+        (self.papers / "_papers_index.json").write_text(json.dumps(self.index))
+        (self.docs / "nobundle").mkdir()
+        (self.docs / "nobundle" / "_embeddings_cache.json").write_text(json.dumps({
+            "embed_model": "test", "slugs": [self.other], "embeddings": [[1.0, 0.0]],
+            "originality_sha256": {},
+        }))
+        self._bundle("demo")
+
+    def _snapshot(self):
+        return {str(p): p.read_bytes() for p in self.docs.rglob("*") if p.is_file()}
+
+    def test_plan_reports_classification_plan_and_writes_nothing(self):
+        self._two_topics()
+        before = self._snapshot()
+        with patch.dict(sys.modules, {"classify_papers": None, "joblib": None}):
+            result = self.mod.plan_connections(self.slug)
+        self.assertEqual(result["classification_plan"], [
+            {"topic": "demo", "model_bundle": True, "classified": False},
+            {"topic": "nobundle", "model_bundle": False, "classified": False}])
+        self.assertEqual(result["classify_topics"], ["demo"])
+        self.assertEqual(result["steps"], ["classify_papers", "refresh_paper_connections"])
+        self.assertEqual(self._snapshot(), before)
+
+    def test_plan_without_any_bundle_skips_classification_step(self):
+        result = self.mod.plan_connections(self.slug)
+        self.assertEqual(result["classify_topics"], [])
+        self.assertEqual(result["steps"], ["refresh_paper_connections"])
+        self.assertFalse(result["classification_plan"][0]["model_bundle"])
+
+    def _run_locked(self, fake_classify):
+        fake = type(sys)("classify_papers")
+        fake._run_classify = fake_classify
+        with patch.dict(sys.modules, {"classify_papers": fake}), \
+             patch.object(self.mod, "_embedding_for_target", return_value=(self.index[:2], [[0, 1], [1, 0]])), \
+             patch.object(topic_modeling, "compute_related_candidates",
+                          return_value={self.slug: [(self.other, .9)]}), \
+             patch("lib.connections.load_global_connections", return_value={}), \
+             patch("lib.connections.merge_to_global") as merge, \
+             patch("lib.connections.sync_topic_connections"), \
+             patch("review_to_html._run_review_to_html", return_value={"converted": 2, "skipped": 0}):
+            return self.mod._refresh_connections_locked(self.slug), merge
+
+    def test_execute_classifies_only_bundle_topics_before_connections(self):
+        self._two_topics()
+        calls = []
+
+        def fake_classify(topic, *, slugs=None, dry_run=False):
+            calls.append((topic, slugs, dry_run))
+            index = json.loads((self.papers / "_papers_index.json").read_text())
+            index[0]["classifications"] = {topic: {
+                "primary_category": "Cat A", "all_categories": ["Cat A"],
+                "sub_category": "", "sub_categories": []}}
+            (self.papers / "_papers_index.json").write_text(json.dumps(index))
+
+        result, merge = self._run_locked(fake_classify)
+        self.assertEqual(calls, [("demo", [self.slug], False)])
+        self.assertEqual(result["classified_topics"], ["demo"])
+        self.assertEqual(result["unclassified_topics"], ["nobundle"])
+        self.assertEqual(result["status"], "completed")
+        self.assertIn(str(self.docs / "demo" / "_new_classification.json"), result["outputs"])
+        self.assertIn(str(self.docs / "demo" / "_umap_coords.json"), result["outputs"])
+        self.assertEqual(len(calls), 1)
+        merge.assert_called()
+
+    def test_execute_fails_closed_when_classification_is_missing(self):
+        self._two_topics()
+        with self.assertRaisesRegex(RuntimeError, "classification did not complete for topic: demo"):
+            self._run_locked(lambda topic, *, slugs=None, dry_run=False: None)
+        self.assertFalse((self.docs / "_global_connections.json").exists())
+        self.assertFalse((self.papers / "_global_connections.json").exists())
+        self.assertEqual(list(self.docs.rglob("_paper_connections.json")), [])
 
 
 if __name__ == "__main__":

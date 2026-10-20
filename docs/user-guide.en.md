@@ -21,7 +21,7 @@ operations in the [Operations Manual](operations.md), and internals in
 | **Shared registry** | The Zotero plugin (Paper Curio) and the command line (`run_feature.py`) read the same capability list, `pipeline/features.json`. The generated table in the [Setup Guide](setup-guide.md#공유-기능-레지스트리) is the reference for IDs and requirements. |
 | **Credentials** | API keys are resolved from **environment variables first, then the OS keyring** (macOS Keychain etc.). Settings files, request JSON and logs never hold plaintext keys. |
 | **No silent fallback** | If the selected provider fails, nothing is re-sent to another company's model. Failures are reported as status codes. |
-| **One capability = one task** | Standalone `local_review.py` produces only extraction/review/HTML/bibliography output. Curio Review generation additionally registers its review and creates related-paper links; classification, search indexes, timelines, email and publication each require their own request. |
+| **One capability = one task** | Standalone `local_review.py` produces only extraction/review/HTML/bibliography output. Curio Review generation additionally registers its review, classifies it into the topic's existing categories (HDBSCAN approximate_predict, only for topics with a model bundle, no LLM) and creates related-paper links; corpus-wide category refitting (topic_modeling), search indexes, timelines, email, publication and bibliography DB integration each require their own request. |
 
 ## 1. Install and connect (once)
 
@@ -230,4 +230,4 @@ Plugin error messages include a `[code]` such as `[corpus-busy]`. The wording is
 - **Where could a key remain in plaintext?** Nowhere. Settings hold only `credential:<provider>` references; values live in the OS keyring. `credentials.py --operation read` is a private plugin pipe — do not run it in a terminal.
 - **Reviews fail on Windows.** Local reviews and corpus locks need POSIX file locking. Reading and AI Chat work.
 - **Cost?** Roughly $0.05–0.15 per review depending on model and length; Curio Review generation has no monetary cap. Standalone summary and chat requests may still set an optional budget, and can run free on Ollama.
-- **Is the full pipeline (`run_full`) gone?** No. It remains the advanced task in 4-5. Curio Review generation only adds registration and related papers; it does not trigger classification, corpus-wide category refitting, search rebuilding, timelines, deployment, or bibliography DB integration.
+- **Is the full pipeline (`run_full`) gone?** No. It remains the advanced task in 4-5. Curio Review generation only adds registration, classification into existing categories (HDBSCAN approximate_predict, only for topics with a model bundle, no LLM) and related papers; it does not trigger corpus-wide category refitting (topic_modeling), search rebuilding, timelines, deployment, or bibliography DB integration.

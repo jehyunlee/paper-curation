@@ -293,6 +293,14 @@ def check_timeline_mismatch(topic):
     if not categories or category_slug is None:
         return issues
 
+    # generate_timelines renders one image per *primary* category. The
+    # whitelist also carries taxonomy categories that only appear in
+    # all_categories (no paper has them as primary); those have no timeline.
+    assignments = cls.get("assignments", []) if isinstance(cls, dict) else []
+    primaries = {a.get("primary_category") for a in assignments if isinstance(a, dict)}
+    if primaries:
+        categories = [c for c in categories if c in primaries]
+
     expected_slugs = {category_slug(c) for c in categories}
     # Check both png and webp (deploy-stage webp)
     actual_slugs = set()
@@ -334,8 +342,15 @@ def check_classifications_schema(topic):
                   if isinstance(c, dict)}
     bad_schema = 0
     bad_cat_refs = []
+    stale_members = []
     for p in idx:
         if topic not in p.get("topics", []):
+            # `topics` is the membership authority. A primary_topic or a
+            # classification pointing at a topic the paper left makes the
+            # connection/classification passes count it as a member again.
+            if (p.get("primary_topic") == topic
+                    or topic in (p.get("classifications") or {})):
+                stale_members.append(p.get("slug", "?"))
             continue
         c = p.get("classifications", {}).get(topic)
         if not isinstance(c, dict):
@@ -354,6 +369,11 @@ def check_classifications_schema(topic):
             bad_cat_refs.append((p.get("slug", "?"), bad))
     if bad_schema:
         issues.append(f"  [schema] {bad_schema} papers have malformed classifications[{topic}]")
+    for slug in stale_members[:5]:
+        issues.append(f"  [membership] {slug[:55]}: primary_topic/classifications name "
+                      f"'{topic}' but topics does not")
+    if len(stale_members) > 5:
+        issues.append(f"  [membership] ... +{len(stale_members)-5} more stale members")
     for slug, bad in bad_cat_refs[:5]:
         issues.append(f"  [whitelist] {slug[:55]}: unknown category(s) {bad}")
     if len(bad_cat_refs) > 5:

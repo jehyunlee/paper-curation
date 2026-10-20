@@ -4313,6 +4313,7 @@ def prune_missing_papers(conn: sqlite3.Connection) -> int:
     mismatch. The directory on disk is the authority: no directory, no paper.
     Dependent rows are removed explicitly — CASCADE only fires when the
     connection has ``PRAGMA foreign_keys`` on, which not every caller does.
+    That includes ``citation_snapshots`` and ``extraction_attempts``.
     """
     stale = [row[0] for row in conn.execute(
         "SELECT paper_id, review_dir FROM papers")
@@ -4327,6 +4328,8 @@ def prune_missing_papers(conn: sqlite3.Connection) -> int:
             ("source_documents", "paper_id"),
             ("paper_connections", "paper_id"),
             ("paper_connections", "related_paper_id"),
+            ("citation_snapshots", "paper_id"),
+            ("extraction_attempts", "paper_id"),
     ):
         try:
             conn.execute(
@@ -4335,6 +4338,27 @@ def prune_missing_papers(conn: sqlite3.Connection) -> int:
             pass  # optional table absent in minimal test databases
     conn.execute(f"DELETE FROM papers WHERE paper_id IN ({marks})", stale)
     return len(stale)
+
+
+def prune_orphan_rows(conn: sqlite3.Connection) -> int:
+    """Delete child rows whose foreign-key parent no longer exists.
+
+    Uses only the ``table``/``rowid`` columns of ``PRAGMA foreign_key_check``;
+    parents are never touched. Returns the number of rows deleted.
+    """
+    by_table: dict[str, list[int]] = {}
+    for table, rowid, _parent, _fk in conn.execute("PRAGMA foreign_key_check"):
+        if rowid is not None:
+            by_table.setdefault(table, []).append(rowid)
+    deleted = 0
+    for table, rowids in by_table.items():
+        for start in range(0, len(rowids), 500):
+            chunk = rowids[start:start + 500]
+            marks = ",".join("?" * len(chunk))
+            deleted += conn.execute(
+                f'DELETE FROM "{table}" WHERE rowid IN ({marks})',
+                chunk).rowcount
+    return deleted
 
 
 def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
@@ -4734,6 +4758,9 @@ def finalize(db_path: Path) -> dict:
             # called: it was written as a one-off repair, so every sub-unit
             # minted after that day stayed. Run it with the other cleanups.
             result = {"stale_papers": prune_missing_papers(conn),
+                      # CASCADE never fired for callers with foreign keys off,
+                      # so rows left behind by earlier prunes are removed here.
+                      "orphans": prune_orphan_rows(conn),
                       "relinked": reinstate_linked_institutions(conn),
                       "sub_units": drop_sub_unit_institutions(conn),
                       "pruned": prune_orphan_institutions(conn),

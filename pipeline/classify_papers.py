@@ -67,6 +67,15 @@ def load_index():
     return json.loads(p.read_text(encoding="utf-8")), p
 
 
+class BundleError(RuntimeError):
+    """The topic's HDBSCAN bundle is missing, incomplete, or trained on other vectors.
+
+    Raised (not sys.exit) so in-process callers such as
+    refresh_paper_connections can report it through their JSON contract;
+    the CLI maps it to exit 2.
+    """
+
+
 def load_bundle(topic_dir):
     """Load the joblib bundle saved by topic_modeling.py.
 
@@ -76,16 +85,14 @@ def load_bundle(topic_dir):
     import joblib
     bundle_path = Path(topic_dir) / "_hdbscan_model.joblib"
     if not bundle_path.exists():
-        log(f"ERROR: {bundle_path} missing — run topic_modeling.py first to "
-            f"train and persist the HDBSCAN model.")
-        sys.exit(2)
+        raise BundleError(f"{bundle_path} missing — run topic_modeling.py first to "
+                          f"train and persist the HDBSCAN model.")
     bundle = joblib.load(bundle_path)
     required = {"hdbscan_model", "umap_cluster", "centroids",
                 "tid_to_cat", "tid_to_subname"}
     missing = required - set(bundle.keys())
     if missing:
-        log(f"ERROR: bundle at {bundle_path} missing keys: {sorted(missing)}.")
-        sys.exit(2)
+        raise BundleError(f"bundle at {bundle_path} missing keys: {sorted(missing)}.")
 
     # 임베딩 모드 가드: 번들의 HDBSCAN manifold 가 어떤 임베딩으로 학습됐는지를
     # 현재 분류에 쓸 임베딩 모드와 대조한다. 다르면 신 모델 벡터를 구 모델
@@ -94,13 +101,12 @@ def load_bundle(topic_dir):
     from lib import specter2_embed
     bundle_tag = bundle.get("embed_model", "specter2_base_mean")
     if bundle_tag != specter2_embed.EMBED_TAG:
-        log("ERROR: 분류 임베딩 모드가 학습된 모델 번들과 다릅니다 "
-            f"(번들 embed_model={bundle_tag!r}, 현재={specter2_embed.EMBED_TAG!r}).\n"
-            "       임베딩이 바뀌었으니 신 모델 벡터를 구 모델 manifold 에 그대로\n"
-            "       투영할 수 없습니다. topic_modeling.py 를 먼저 재실행해 같은\n"
-            "       임베딩으로 HDBSCAN 모델을 다시 학습·저장한 뒤 classify_papers 를\n"
-            "       돌리세요.")
-        sys.exit(2)
+        raise BundleError(
+            "분류 임베딩 모드가 학습된 모델 번들과 다릅니다 "
+            f"(번들 embed_model={bundle_tag!r}, 현재={specter2_embed.EMBED_TAG!r}). "
+            "임베딩이 바뀌었으니 신 모델 벡터를 구 모델 manifold 에 그대로 투영할 수 "
+            "없습니다. topic_modeling.py 를 먼저 재실행해 같은 임베딩으로 HDBSCAN "
+            "모델을 다시 학습·저장한 뒤 classify_papers 를 돌리세요.")
 
     return bundle
 
@@ -311,7 +317,12 @@ def _run_classify(topic, *, slugs=None, dry_run=False):
             atomic_write_json(cpath, existing)
             log(f"[write] {cpath}  (+{len(viz)} new viz coords)")
 
-    cats_list = sorted({a["primary_category"] for a in assignments})
+    # The whitelist is the bundle taxonomy, not just the primaries in use:
+    # all_categories (top-N by centroid cosine) may name a category that no
+    # paper has as primary, and validate_papers rejects names outside it.
+    cats_list = sorted({a["primary_category"] for a in assignments}
+                       | {c for a in assignments for c in a["all_categories"]}
+                       | set(bundle["tid_to_cat"].values()))
     cls_data = {
         "categories": [{"name": c} for c in cats_list],
         "assignments": assignments,
@@ -319,6 +330,76 @@ def _run_classify(topic, *, slugs=None, dry_run=False):
     cls_path = Path(topic_dir) / "_new_classification.json"
     atomic_write_json(cls_path, cls_data)
     log(f"[write] {cls_path}  ({len(cats_list)} categories)")
+
+
+def refit_bundle(topic, *, dry_run=False):
+    """Rebuild `_hdbscan_model.joblib` on the current vectors, keeping every label.
+
+    Used when the embedding mode changed after the bundle was trained (the
+    guard in `load_bundle` refuses such a bundle). Full `topic_modeling.py`
+    would re-cluster, rename categories through a model and rewrite every
+    published classification; this refit does none of that. It fits
+    UMAP+HDBSCAN on the current `_embeddings_cache.json` and maps each new
+    cluster to the existing (category, sub_category) by majority vote of the
+    papers already classified in it. Papers are not reassigned. A cluster whose
+    majority label is not in the topic's whitelist aborts the refit.
+    """
+    topic_dir = str(get_topic_dir(topic))
+    all_papers, _ = load_index()
+    topic_papers = [p for p in all_papers if topic in p.get("topics", [])]
+    labelled = {p["slug"]: p["classifications"][topic] for p in topic_papers
+                if (p.get("classifications") or {}).get(topic, {}).get("primary_category")}
+    if len(labelled) < 2:
+        raise BundleError(f"{topic}: too few classified papers to refit a bundle")
+    cls_path = Path(topic_dir) / "_new_classification.json"
+    whitelist = {c.get("name") for c in json.loads(cls_path.read_text(encoding="utf-8"))
+                 .get("categories", []) if isinstance(c, dict)}
+
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from topic_modeling import extract_originalities, compute_embeddings, run_clustering
+    from lib import specter2_embed
+    originalities = extract_originalities(topic_papers)
+    cache_path = os.path.join(topic_dir, "_embeddings_cache.json")
+    embeddings, slugs = compute_embeddings(originalities, cache_path)
+    keep = [i for i, s in enumerate(slugs) if s in labelled]
+    embeddings, slugs = np.asarray(embeddings)[keep], [slugs[i] for i in keep]
+    orig_map = dict(zip(slugs, [originalities[s] for s in slugs]))
+    (labels, _probs, _kw, centroids, _c2, _c3,
+     hdbscan_model, umap_cluster, umap_2d, umap_3d) = run_clustering(embeddings, slugs, orig_map)
+
+    tid_to_cat, tid_to_subname = {}, {}
+    for tid in centroids:
+        members = [labelled[s] for s, t in zip(slugs, labels) if t == tid]
+        cat = Counter(m["primary_category"] for m in members).most_common(1)[0][0]
+        sub = Counter(m.get("sub_category", "") for m in members
+                      if m["primary_category"] == cat).most_common(1)[0][0]
+        if cat not in whitelist:
+            raise BundleError(f"{topic}: cluster {tid} majority category {cat!r} is not in "
+                              f"_new_classification.json")
+        tid_to_cat[int(tid)], tid_to_subname[int(tid)] = cat, sub or cat
+    log(f"[refit] {len(centroids)} sub-clusters -> {len(set(tid_to_cat.values()))} existing "
+        f"categories (labels preserved, {len(labelled)} papers)")
+    if dry_run:
+        return None
+
+    import joblib
+    from datetime import datetime
+    bundle = {
+        "hdbscan_model": hdbscan_model, "umap_cluster": umap_cluster,
+        "centroids": {int(k): v for k, v in centroids.items()},
+        "tid_to_cat": tid_to_cat, "tid_to_subname": tid_to_subname,
+        "embed_model": specter2_embed.EMBED_TAG,
+        "umap_2d": umap_2d, "umap_3d": umap_3d,
+        "trained_at": datetime.now().isoformat(),
+        "refit_from_labels": True,
+        "n_papers": len(slugs), "n_subclusters": len(centroids),
+    }
+    bundle_path = Path(topic_dir) / "_hdbscan_model.joblib"
+    tmp = bundle_path.with_suffix(".joblib.tmp")
+    joblib.dump(bundle, tmp)
+    os.replace(tmp, bundle_path)
+    log(f"[write] {bundle_path}")
+    return bundle
 
 
 def compute_viz_coords(vecs_768, bundle):
@@ -351,8 +432,18 @@ def main():
                          "papers are (re)classified; others keep existing entries.")
     ap.add_argument("--dry-run", action="store_true",
                     help="Print assignment summary without writing JSONs.")
+    ap.add_argument("--refit-bundle", action="store_true",
+                    help="Rebuild _hdbscan_model.joblib on the current embedding mode while "
+                         "keeping every existing category label (no LLM, no reassignment).")
     args = ap.parse_args()
-    _run_classify(topic=args.topic, slugs=args.slugs, dry_run=args.dry_run)
+    try:
+        if args.refit_bundle:
+            refit_bundle(args.topic, dry_run=args.dry_run)
+            return
+        _run_classify(topic=args.topic, slugs=args.slugs, dry_run=args.dry_run)
+    except BundleError as exc:
+        log(f"ERROR: {exc}")
+        sys.exit(2)
 
 
 if __name__ == "__main__":

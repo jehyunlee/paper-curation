@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Incrementally refresh one reviewed paper's related-paper links in embedding space.
+"""Classify one reviewed paper and refresh its related-paper links.
 
-No model is called: neighbours come from SPECTER2 vectors (plus title/author
-BM25 through RRF) in the paper's topic embedding caches.
+No model is called. First the paper is routed into each topic's existing
+categories with the stored HDBSCAN bundle (``classify_papers``, approximate
+predict; topics without a bundle are skipped). Then neighbours come from
+SPECTER2 vectors (plus title/author BM25 through RRF) in the paper's topic
+embedding caches.
 
 ``plan_connections`` is strictly read-only. ``refresh_connections`` owns the
 exclusive corpus-operation lock; callers must not wrap it in another corpus
@@ -108,9 +111,29 @@ def _cached_embeddings(topic: str, pool: list[dict]) -> tuple[dict[str, Any], di
     return dict(zip(slugs, vectors)), data
 
 
+def _has_model_bundle(topic: str) -> bool:
+    docs_root = Path(DOCS_DIR).resolve()
+    try:
+        bundle = _inside(docs_root, docs_root / topic / "_hdbscan_model.joblib",
+                         kind="topic model bundle")
+    except ValueError:
+        return False
+    return bundle.is_file()
+
+
+def _is_classified(paper: dict, topic: str) -> bool:
+    entry = (paper.get("classifications") or {}).get(topic)
+    return (isinstance(entry, dict) and bool(entry.get("primary_category"))
+            and isinstance(entry.get("all_categories"), list)
+            and bool(entry["all_categories"]))
+
+
 def plan_connections(slug: str) -> dict:
-    """Return the read-only retrieval plan for one registered paper."""
+    """Return the read-only classification and retrieval plan for one registered paper."""
     paper, index, topics = _context(slug)
+    classification_plan = [{"topic": t, "model_bundle": _has_model_bundle(t),
+                            "classified": _is_classified(paper, t)} for t in topics]
+    classify_topics = [c["topic"] for c in classification_plan if c["model_bundle"]]
     from lib.related import max_links
     limit = max_links()
     details = []
@@ -126,6 +149,10 @@ def plan_connections(slug: str) -> dict:
             "status": "ready",
             "embedding_required": sum(d["missing_embedding_count"] for d in details),
             "candidate_limit": limit, "topic_plan": details,
+            "classification_plan": classification_plan,
+            "classify_topics": classify_topics,
+            "steps": (["classify_papers"] if classify_topics else [])
+                     + ["refresh_paper_connections"],
             "registered_slug": paper["slug"]}
 
 
@@ -199,11 +226,27 @@ def _published_topic_connections() -> dict[str, dict]:
 
 
 def _refresh_connections_locked(slug: str) -> dict:
-    """Embed/retrieve one paper and publish its bidirectional views.
+    """Classify, then embed/retrieve one paper and publish its bidirectional views.
 
     Called only while the exclusive corpus operation lock is held.
     """
     plan = plan_connections(slug)
+    _, _, all_topics = _context(slug)
+    classify_topics = sorted(t for t in all_topics if _has_model_bundle(t))
+    unclassified_topics = [t for t in all_topics if t not in classify_topics]
+    classify_outputs: list[str] = []
+    if classify_topics:
+        from classify_papers import _run_classify
+        for topic in classify_topics:
+            _run_classify(topic, slugs=[slug], dry_run=False)
+            # Re-read the index: classification must be durable before any
+            # connection or global mutation happens.
+            done, _, _ = _context(slug)
+            if not _is_classified(done, topic):
+                raise RuntimeError(f"classification did not complete for topic: {topic}")
+            topic_dir = Path(DOCS_DIR) / topic
+            classify_outputs += [str(topic_dir / "_new_classification.json"),
+                                 str(topic_dir / "_umap_coords.json")]
     paper, index, topics = _context(slug)
     published_views = _published_topic_connections()
     from lib.related import build_connections, max_links
@@ -282,12 +325,14 @@ def _refresh_connections_locked(slug: str) -> dict:
     rendered = _run_review_to_html(slugs=sorted(affected_slugs), with_connected=False)
     if rendered.get("converted") != len(affected_slugs) or rendered.get("skipped"):
         raise RuntimeError("connection pages did not render completely")
-    outputs = [str(Path(DOCS_DIR) / t / "_paper_connections.json") for t in affected_topics]
+    outputs = list(classify_outputs)
+    outputs += [str(Path(DOCS_DIR) / t / "_paper_connections.json") for t in affected_topics]
     outputs += [str(Path(PAPERS_DIR) / s / "index.html") for s in sorted(affected_slugs)]
     return {"outputs": outputs, "topics": affected_topics,
             "related_count": len(connections.get(slug, [])), "status": "completed",
             "rendered": rendered, "candidate_count": len(selected),
-            "plan": plan}
+            "classified_topics": classify_topics,
+            "unclassified_topics": unclassified_topics, "plan": plan}
 
 
 def refresh_connections(slug: str) -> dict:

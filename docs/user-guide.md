@@ -20,7 +20,7 @@
 | **공통 레지스트리** | Zotero 플러그인(Paper Curio)과 명령줄(`run_feature.py`)이 같은 기능 목록 `pipeline/features.json`을 사용합니다. 기능 ID·요구조건 표는 [Setup Guide의 생성 영역](setup-guide.md#공유-기능-레지스트리)이 기준입니다. |
 | **자격증명** | API 키는 **환경변수 → OS 키 저장소**(macOS Keychain 등) 순으로 읽습니다. 설정 파일·요청 JSON·로그에는 평문 키를 저장하지 않습니다. |
 | **자동 폴백 없음** | 선택한 제공자가 실패해도 다른 회사 모델로 자동 전송하지 않습니다. 실패는 상태 코드로 그대로 보고합니다. |
-| **한 기능 = 한 작업** | 독립 `local_review.py`는 추출·리뷰·HTML·서지만 만듭니다. Curio Review 생성은 등록과 관련 논문 연결을 추가하며, 분류·검색 색인·타임라인·메일·배포는 각각 따로 요청해야 실행됩니다. |
+| **한 기능 = 한 작업** | 독립 `local_review.py`는 추출·리뷰·HTML·서지만 만듭니다. Curio Review 생성은 등록, 기존 카테고리 분류(HDBSCAN approximate_predict, 모델 번들이 있는 토픽만, LLM 없음), 관련 논문 연결을 추가하며, 코퍼스 전체 카테고리 재적합(topic_modeling)·검색 색인·타임라인·메일·배포·서지 DB 반영은 각각 따로 요청해야 실행됩니다. |
 
 ## 1. 설치와 연결 (처음 한 번)
 
@@ -228,4 +228,4 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic my_topic --mode curate --source
 - **키가 평문으로 남는 곳은?** 없습니다. 설정에는 `credential:<provider>` 참조만, 값은 OS 키 저장소. `credentials.py --operation read`는 플러그인 내부 파이프 전용이므로 터미널에서 실행하지 마세요.
 - **Windows에서 리뷰가 안 된다.** 로컬 리뷰·코퍼스 잠금은 POSIX 파일 잠금이 필요합니다. 읽기와 AI Chat은 동작합니다.
 - **비용은?** 리뷰 1편은 대략 $0.05–0.15(모델·분량에 따라 다름)이며 Curio Review 생성에는 금액 상한이 없습니다. 독립 요약·질의 요청은 선택적으로 예산을 지정할 수 있고, Ollama로는 무료 실행할 수 있습니다.
-- **기존 전체 파이프라인(run_full)은 없어졌나?** 아닙니다. 4-5의 고급 작업으로 그대로입니다. Curio Review 생성은 등록과 관련 논문만 더하며 분류·코퍼스 전체 카테고리 재적합·검색 재구축·타임라인·배포·서지 DB 반영을 자동 실행하지 않습니다.
+- **기존 전체 파이프라인(run_full)은 없어졌나?** 아닙니다. 4-5의 고급 작업으로 그대로입니다. Curio Review 생성은 등록, 기존 카테고리 분류(HDBSCAN approximate_predict, 모델 번들이 있는 토픽만, LLM 없음), 관련 논문 연결만 더하며 코퍼스 전체 카테고리 재적합(topic_modeling)·검색 재구축·타임라인·배포·서지 DB 반영을 자동 실행하지 않습니다.

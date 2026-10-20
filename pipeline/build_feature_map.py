@@ -100,8 +100,8 @@ TRANSMISSION_KO = {
     "selected provider; Ollama stays on loopback": "선택한 제공자 (Ollama는 이 컴퓨터 안에서만)",
     "none": "없음",
     "Google embedding API": "Google 임베딩 API",
-    "none; neighbours are found locally in SPECTER2 embedding space, no model is called":
-        "없음 (SPECTER2 임베딩 공간에서 로컬로 이웃을 찾고, 모델을 호출하지 않음)",
+    "none; the paper is classified with the stored HDBSCAN bundle and neighbours are found locally in SPECTER2 embedding space, no model is called":
+        "없음 (저장된 HDBSCAN 번들로 분류하고 SPECTER2 임베딩 공간에서 로컬로 이웃을 찾으며, 모델을 호출하지 않음)",
     "Crossref/OpenAlex/Scopus source APIs": "Crossref · OpenAlex · Scopus API",
     "none offline; configured bibliography sources when online; never Zotero Web paging":
         "offline이면 없음, online이면 설정된 서지 소스 (Zotero 웹 페이징은 하지 않음)",

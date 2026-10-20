@@ -150,8 +150,44 @@ class CategoryRecountTests(unittest.TestCase):
         self.assertEqual(summaries[0]["sub_themes"][0]["count"], 7)
 
 
+class TaxonomyPinTests(unittest.TestCase):
+    """덱은 CATEGORY_KO 의 분류체계로 집필된 날짜별 산출물이다. 다른 분류체계에서는 빌드를 거부한다."""
+
+    def test_gap_lists_only_unauthored_categories(self):
+        authored = next(iter(B.CATEGORY_KO))
+        summaries = [{"category": authored}, {"category": "Brand New Category"}]
+        self.assertEqual(B.authored_taxonomy_gap(summaries), ["Brand New Category"])
+        self.assertEqual(B.authored_taxonomy_gap([{"category": authored}]), [])
+
+    def test_load_corpus_refuses_unauthored_taxonomy(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp:
+            tdir = Path(tmp) / "topic"
+            papers = Path(tmp) / "papers"
+            tdir.mkdir()
+            papers.mkdir()
+            (tdir / "_category_summaries.json").write_text(
+                json.dumps([{"category": "Brand New Category", "count": 1, "sub_themes": []}]),
+                encoding="utf-8")
+            for name in ("_new_classification.json", "_timeline_narrative.json"):
+                (tdir / name).write_text("{}", encoding="utf-8")
+            (papers / "_papers_index.json").write_text("[]", encoding="utf-8")
+            with mock.patch.object(B, "get_topic_dir", return_value=tdir), \
+                    mock.patch.object(B, "PAPERS_DIR", papers):
+                with self.assertRaisesRegex(B.TaxonomyMismatch, "Brand New Category"):
+                    B.load_corpus("topic")
+
+
 class Ai4sProseCountDriftTests(unittest.TestCase):
-    """ai4s 코퍼스가 있을 때, 손으로 쓴 줄글의 '{N}편' 이 실제 편수와 맞는지 본다."""
+    """ai4s 코퍼스가 있을 때, 손으로 쓴 줄글의 '{N}편' 이 실제 편수와 맞는지 본다.
+
+    같은 분류체계 안에서 신규 논문으로 편수만 어긋난 경우를 잡는 게이트다. 분류체계
+    자체가 바뀜 경우(카테고리 이름이 다름)는 비교할 대상이 없으므로 이유를 밝히고
+    건너뛴다 — 그 상태는 TaxonomyPinTests 가 보증하듯 빌드 자체가 거부된다.
+    """
 
     @staticmethod
     def _live_counts():
@@ -165,6 +201,11 @@ class Ai4sProseCountDriftTests(unittest.TestCase):
             return None, None
         cls = json.loads(cls_path.read_text(encoding="utf-8"))
         summaries = json.loads(sum_path.read_text(encoding="utf-8"))
+        gap = B.authored_taxonomy_gap(summaries)
+        if gap:
+            raise unittest.SkipTest(
+                f"덱 집필본({B.PROSE_AUTHORED})과 다른 분류체계: 미집필 카테고리 {len(gap)}개 "
+                f"({gap[0]} 등) — 편수 비교 불가, 빌드는 TaxonomyMismatch 로 거부됨. 재집필 필요")
         B.recount_categories(summaries, cls)
         subs = Counter()
         for a in cls.get("assignments", []):

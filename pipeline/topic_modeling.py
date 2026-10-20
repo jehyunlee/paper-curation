@@ -947,7 +947,11 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
         log(f"  Updated classifications in _papers_index.json")
 
         # Update _new_classification.json
-        cats_list = sorted(set(a["primary_category"] for a in assignments))
+        # Whitelist = full taxonomy (tid_to_cat), not only the primaries in use;
+        # all_categories can name a category nobody has as primary.
+        cats_list = sorted(set(a["primary_category"] for a in assignments)
+                           | {c for a in assignments for c in a["all_categories"]}
+                           | set(tid_to_cat.values()))
         cls_data = {
             "categories": [{"name": c} for c in cats_list],
             "assignments": [

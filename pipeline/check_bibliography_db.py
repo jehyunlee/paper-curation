@@ -195,6 +195,15 @@ def collect(
         if empty_dirs:
             issues.append(f"empty review directories: {empty_dirs}")
 
+        # Child rows whose parent is gone (e.g. citation_snapshots left by a
+        # prune that ran with foreign keys off). `--finalize` removes them.
+        fk_violations = len(conn.execute("PRAGMA foreign_key_check").fetchall())
+        report["foreign_key_violations"] = fk_violations
+        if fk_violations:
+            issues.append(
+                f"foreign key violations: {fk_violations} "
+                "(run build_bibliography_db.py --finalize)")
+
         # Institutions the parser invented but no paper links to. The build
         # prunes these; a non-zero count means a writer bypassed the pruner.
         orphans = scalar(
