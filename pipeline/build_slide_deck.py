@@ -270,6 +270,12 @@ def match_timeline(analyses, category, name):
     return best if best_score >= 0.4 else None
 
 
+def top_sub_name(c):
+    """대분류에서 편수가 가장 큰 서브카테고리 이름(없으면 '')."""
+    subs = c.get("sub_themes") or []
+    return sorted(subs, key=lambda s: -s.get("count", 0))[0]["name"] if subs else ""
+
+
 def year_of(date_str):
     m = re.match(r"(\d{4})", str(date_str or ""))
     return int(m.group(1)) if m else 0
@@ -572,8 +578,7 @@ def build_slides(topic, summaries, classification, timeline, insights, index,
                "rows": [[CATEGORY_KO.get(c["category"], c["category"]), f"{c.get('count', 0):,}",
                          f"{c.get('card_count', 0):,}",
                          str(len(c.get("sub_themes", []))),
-                         (sorted(c.get("sub_themes", []), key=lambda s: -s.get("count", 0))[0]["name"]
-                          if c.get("sub_themes") else "-")]
+                         ctx.ko_by_name.get(top_sub_name(c), top_sub_name(c) or "-")]
                         for c in cats]},
         points=list(fr.get("points") or []) + [
             f"이후 {len(cats)}개 파트는 이 순서(고유 배정 편수 내림차순)로 진행한다.",

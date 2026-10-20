@@ -87,9 +87,8 @@ def build(topic, per_category=5, link_base="../../docs/papers", since=2025):
                       "rows": [[B.CATEGORY_KO.get(c["category"], c["category"]),
                                 f"{c.get('count', 0):,}", f"{c.get('card_count', 0):,}",
                                 str(len(c.get("sub_themes", []))),
-                                (sorted(c.get("sub_themes", []),
-                                        key=lambda s: -s.get("count", 0))[0]["name"]
-                                 if c.get("sub_themes") else "-")] for c in cats]},
+                                ctx.ko_by_name.get(B.top_sub_name(c), B.top_sub_name(c) or "-")]
+                               for c in cats]},
     }
     for key, kind, part, title in FRAME:
         fr = B.frame_entry(key, ctx)

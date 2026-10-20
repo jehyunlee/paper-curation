@@ -29,6 +29,9 @@ opendataloader-pdf
 # --- Audio Overview CLI fallback (generate_audio.py: PCM → MP3) ---
 lameenc
 
+# --- Slide deck export (build_slide_pptx.py) ---
+python-pptx>=1.0,<2
+
 # --- Topic modeling / classification (also required in the py312 env) ---
 numpy
 scikit-learn
