@@ -16,14 +16,37 @@ if str(PIPELINE_DIR) not in sys.path:
 import run_update_force as engine
 
 
+# Section-filling fields clear the 50-character floor the real contract
+# enforces (validate_papers SHORT_SECTION); short fields may stay short.
+_SECTION = "이 문장은 한 섹션을 채우는 서술로, 검증 게이트의 최소 길이를 넘기도록 충분히 길게 썼다. "
 VALID = {
-    "essence": "핵심 결과를 충분히 설명하는 문장입니다.", "fig_essence": 0,
+    "essence": "핵심 결과를 충분히 설명하는 문장입니다. " + _SECTION, "fig_essence": 0,
     "known": "기존 연구입니다.", "gap": "해결할 간극입니다.", "why": "중요한 이유입니다.",
-    "approach": "제안 방법입니다.", "achievement": "검증된 성과입니다.", "fig_achievement": 0,
-    "how": "실험 방법입니다.", "fig_how": 0, "originality": "독창성입니다.",
-    "limitation": "한계입니다.", "novelty": 4, "technical": 4, "significance": 4,
+    "approach": "제안 방법입니다.", "achievement": "검증된 성과입니다. " + _SECTION, "fig_achievement": 0,
+    "how": "실험 방법입니다. " + _SECTION, "fig_how": 0, "originality": "독창성입니다. " + _SECTION,
+    "limitation": "한계입니다. " + _SECTION, "novelty": 4, "technical": 4, "significance": 4,
     "clarity": 4, "overall": 4, "verdict": "신뢰할 수 있는 결론입니다.",
 }
+
+
+class ReviewCompletenessGateTests(unittest.TestCase):
+    """Partial answers that validate_papers would flag must never be cached as complete."""
+
+    def test_valid_fixture_is_complete(self):
+        self.assertTrue(engine._review_response_is_complete(dict(VALID)))
+
+    def test_empty_limitation_is_partial(self):
+        # 10751/10905: Limitation & Further Study rendered empty because the
+        # gate never required the field.
+        self.assertFalse(engine._review_response_is_complete({**VALID, "limitation": ""}))
+
+    def test_short_section_field_is_partial(self):
+        # 10788: a 20-character Achievement passed the tool schema (minLength
+        # 20) and became a permanent SHORT_SECTION.
+        self.assertFalse(engine._review_response_is_complete({**VALID, "achievement": "검증된 성과를 스무 글자로 다 채운다."}))
+
+    def test_short_non_section_fields_stay_allowed(self):
+        self.assertTrue(engine._review_response_is_complete({**VALID, "known": "짧은 문장.", "verdict": "짧은 총평."}))
 
 
 class ReviewProviderIntegrationTests(unittest.TestCase):

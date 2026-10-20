@@ -312,6 +312,8 @@ PYTHONUTF8=1 python pipeline/run_citedby.py \
 ## Safety flags
 
 - `--strict-pdf` — block fuzzy PDF matching; ID (Zotero/DOI/arXiv) only
+- PDF match order (`find_pdf`): Zotero attachment path → DOI in filename → arXiv id in filename → **Zotero web snapshot** (`zotero_snapshot_html`: the item's saved text/html attachment rendered to `.cache/zotero-snapshots/<attKey>.pdf`, visible text only — tool/service/dataset pages that never had a PDF no longer receive a fuzzy-matched paper; the first line `[web-snapshot] <url> <saved>` makes `write_review` add a "review the web resource in the same template" note while the paper prompt stays byte-identical so cache keys hold; storage root `ZOTERO_STORAGE_DIR` → `zotero.storage_dir` → `~/Zotero/storage`) → fuzzy (disabled by `--strict-pdf`)
+- Duplicate slugs of one Zotero item (different topics, separate reviews): `python pipeline/merge_duplicate_slugs.py --pairs keep:drop --item-key keep=KEY --execute`, then related-papers `--execute` per kept slug, `build_bibliography_db.py --finalize`, `build_topic_index` / `build_search_index`. `dedup_text.py` remains the tool for slugs that share one text.md.
 - `--slugs A,B,C` — restrict to specific slug prefixes
 - `--dry-run` — print plan, no execution
 - `--skip-dedup` / `--dedup-execute` — control Zotero dedup preflight

@@ -799,16 +799,18 @@ class LocalReviewContractTests(unittest.TestCase):
         stage = self.root / "writer-stage"
         stage.mkdir()
         (stage / "text.md").write_text("source text " * 100, encoding="utf-8")
+        # Section-filling fields must clear the writer's 50-character floor.
+        section = "이 문장은 한 섹션을 채우는 서술로, 검증 게이트의 최소 길이를 넘기도록 충분히 길게 썼다."
         data = {
-            "essence": "핵심",
+            "essence": "핵심 " + section,
             "known": "알려짐",
             "gap": "공백",
             "why": "이유",
             "approach": "접근",
-            "achievement": "성과",
-            "how": "방법",
-            "originality": "독창성",
-            "limitation": "한계",
+            "achievement": "성과 " + section,
+            "how": "방법 " + section,
+            "originality": "독창성 " + section,
+            "limitation": "한계 " + section,
             "verdict": "판정",
             "fig_essence": 0,
             "fig_achievement": 0,
@@ -889,7 +891,8 @@ class RealPrimitiveIntegrationTests(unittest.TestCase):
         payload = {
             name: (0 if name.startswith("fig_") else 3)
             if spec["type"] == "integer"
-            else "검증용 논문의 동작과 근거를 설명하는 테스트 리뷰 문장입니다."
+            else ("검증용 논문의 동작과 근거를 설명하는 테스트 리뷰 문장입니다. "
+                  "섹션을 채우는 필드는 작성기의 최소 길이 튋을 넘어야 하므로 두 문장으로 썼다.")
             for name, spec in properties.items()
         }
         with tempfile.TemporaryDirectory() as directory:

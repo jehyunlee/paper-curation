@@ -24,7 +24,12 @@ from typing import Any
 from config_loader import DOCS_DIR, PAPERS_DIR
 
 _SCHEMA_VERSION = 1
-_SLUG = re.compile(r"^\d{3,}_[A-Za-z0-9][A-Za-z0-9_-]*$")
+# Same alphabet as run_update_force.make_slug: `str.isalnum()` (Unicode
+# letters such as ö, é, π, ² included) plus `_` and `-`. macOS stores names
+# NFD-decomposed, so combining marks (U+0300-U+036F: Schrödinger, Rényi) must
+# pass too. An ASCII-only class used to reject eight real slugs from this
+# stage. Path containment is enforced separately by `_inside`.
+_SLUG = re.compile(r"^\d{3,}_[^\W_][\w\u0300-\u036f-]*$", re.UNICODE)
 
 
 def _load_json(path: Path) -> Any:

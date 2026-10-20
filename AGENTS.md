@@ -177,6 +177,7 @@ credential이 추가로 필요하다. Timeline에 쓸 PaperBanana도 운영자�
 | 0 | `pipeline/register_zotero.py` | Zotero registration + PDF download |
 | 0 | `pipeline/sync_zotero.py` | Sync deletions/renames from Zotero |
 | 0.5 | `pipeline/dedup_zotero.py` | Zotero collection dedup (title60 + DOI + arXiv + PDF). Preflight (dry-run) auto-integrated into `run_update_force` |
+| 0.6 | `pipeline/merge_duplicate_slugs.py` | **코퍼스 slug 병합** — 한 Zotero 아이템이 토픽별 sync 로 두 slug 가 된 경우(각자 추출·리뷰·다른 토픽). `dedup_text.py` 는 같은 text.md 일 때 한쪽을 삭제만 하므로 토픽 소속이 사라진다 → 이 도구는 keep.topics 에 drop 토픽을 합치고 zotero_item_key 를 채운 뒤 drop 을 인덱스·디렉토리·분류·연결·임베딩 캐시·UMAP 좌표·요약/인사이트 사이드카에서 제거/리매핑, wiki-link 리디렉트, drop 디렉토리는 `.cache/merge-backups/<ts>/` 에 tgz. 정식본 규칙 `choose_keep`: Curio 마커 > 인덱스 키 일치 > Zotero DOI 일치 > 제목 일치 > 토픽 수 > 점수 > 낮은 번호. 기본 dry-run, `--pairs keep:drop,...` `--item-key keep=KEY` `--execute`. 실행 후 keep 마다 related-papers `--execute`(새 토픽 분류+연결) → `build_bibliography_db.py --finalize` → `build_topic_index` / `build_search_index` |
 | 1 | `pipeline/run_update_force.py` | Full batch: Zotero fetch → PDF parse → figure extract → **Zotero↔text sanity gate** → review → HTML. ID-first `find_pdf()` with `--strict-pdf` blocking fuzzy |
 | 1.5 | `pipeline/run_metrics.py` | **피인용수·레퍼런스** — `citations.md`(이력 append + 피인용 10회↑ 인용목록) + `references.md`(DOI>URL>서지). 기본 30일 증분이라 매 사이클 태워도 비용 거의 없음. **soft step**(외부 API 장애가 파이프라인을 죽이지 않음). `--skip-metrics` 로 생략 |
 | 2 | `pipeline/build_papers_index.py` | Rebuild `_papers_index.json` with integrity fields (`text_md_sha256`, `doi_verified`, `zotero_item_key`) via atomic write |
@@ -425,6 +426,7 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 ### 안전 플래그 (run_full / run_update_force 공통)
 
 - `--strict-pdf` — fuzzy 매칭 차단, ID(Zotero/DOI/arXiv)로만
+- PDF 매칭 순서(`find_pdf`): Zotero 첨부 경로 → DOI 파일명 → arXiv 파일명 → **Zotero 웹 스냅샷**(`zotero_snapshot_html`: 아이템의 저장된 text/html 첨부를 가시 텍스트만 남겨 `.cache/zotero-snapshots/<attKey>.pdf` 로 렌더. 도구·서비스·데이터셋 페이지처럼 PDF 가 없는 항목이 fuzzy 로 엉뚱한 논문 PDF 를 받던 경로를 끊는다. 스냅샷 첫 줄 `[web-snapshot] <url> <저장일>` 마커를 `write_review` 가 보면 "웹 자료를 같은 틀로 리뷰" 지시를 추가하고, 논문 프롬프트는 바이트 동일해 캐시 키가 유지된다. 저장소 위치 `ZOTERO_STORAGE_DIR` → `zotero.storage_dir` → `~/Zotero/storage`) → fuzzy(`--strict-pdf` 면 없음)
 - `--slugs A,B,C` — 특정 슬러그만 처리
 - `--dry-run` — 실행 계획만 출력
 - `--skip-dedup` / `--dedup-execute` — Zotero dedup preflight 제어

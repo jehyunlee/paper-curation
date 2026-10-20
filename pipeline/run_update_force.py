@@ -485,6 +485,110 @@ def _extract_arxiv_id_from_item(item):
 # Global flag toggled by CLI. When True, fuzzy fallback is disabled entirely.
 _STRICT_PDF = False
 
+# Zotero web snapshots (imported_url / imported_file, text/html) rendered to
+# PDF so a non-paper item (a tool page, a report, a dataset landing page) is
+# reviewed from its own saved content instead of a fuzzy-matched PDF.
+SNAPSHOT_PDF_DIR = PROJECT_ROOT / ".cache" / "zotero-snapshots"
+_SNAPSHOT_DROP_TAGS = ("script", "style", "noscript", "svg", "iframe", "template")
+# First line of every rendered snapshot. It travels through text.md, so
+# write_review can tell a web resource from a paper without a side channel,
+# and the prompt for real papers stays byte-identical (cache keys intact).
+SNAPSHOT_MARKER = "[web-snapshot]"
+_SNAPSHOT_REVIEW_NOTE = (
+    "이 입력은 논문이 아니라 웹 자료(도구·서비스·데이터셋·보고서 페이지)의 저장 스냅샷이다. "
+    "논문이 아니라는 이유로 거부하거나 '올바른 PDF를 다시 수집하라'고 쓰지 말고, 그 자료 자체를 "
+    "같은 틀로 리뷰하라 — Essence: 이 자료가 무엇을 제공하는가, Motivation(known/gap/why): "
+    "어떤 문제·수요를 겨냥하는가, Achievement: 제공 기능·규모·수치(스냅샷에 적힌 것만), "
+    "How: 작동 방식·구성 요소, Originality: 기존 대안 대비 차이, Limitation: 스냅샷에서 확인할 수 없는 "
+    "점과 연구 활용 시 제약. 점수는 연구 자료로서의 유용성 기준.\n\n"
+)
+
+
+def _snapshot_attachment(children):
+    """First saved HTML snapshot among an item's child attachments, or None."""
+    for c in children:
+        cd = c.get("data", {}) if isinstance(c, dict) else {}
+        if cd.get("itemType") != "attachment":
+            continue
+        if cd.get("contentType") != "text/html":
+            continue
+        if cd.get("linkMode") not in ("imported_url", "imported_file"):
+            continue
+        if cd.get("key") and cd.get("filename"):
+            return cd
+    return None
+
+
+def _snapshot_visible_html(raw_html, title=""):
+    """Reduce a saved page to the markup MuPDF's Story can lay out: no scripts,
+    styles or embedded apps, text blocks kept as paragraphs."""
+    import html as _html
+    body = raw_html
+    for tag in _SNAPSHOT_DROP_TAGS:
+        body = re.sub(rf"<{tag}\b[^>]*>.*?</{tag}\s*>", " ", body, flags=re.S | re.I)
+    body = re.sub(r"<!--.*?-->", " ", body, flags=re.S)
+    # Block boundaries become paragraph breaks; everything else is inline text.
+    body = re.sub(r"</?(?:p|div|section|article|li|ul|ol|h[1-6]|br|tr|td|th|table|header|footer|main|nav|aside|blockquote|pre)\b[^>]*>",
+                  "\n", body, flags=re.I)
+    text = _html.unescape(re.sub(r"<[^>]+>", " ", body))
+    blocks = []
+    for line in text.split("\n"):
+        line = re.sub(r"\s+", " ", line).strip()
+        if line and (not blocks or blocks[-1] != line):
+            blocks.append(line)
+    paragraphs = "".join(f"<p>{_html.escape(b)}</p>" for b in blocks)
+    heading = f"<h1>{_html.escape(title)}</h1>" if title else ""
+    return f"<html><body>{heading}{paragraphs}</body></html>", blocks
+
+
+def render_snapshot_pdf(html_path, pdf_path, title="", source_url="", saved=""):
+    """Render a saved HTML snapshot to a text PDF. Returns the visible text
+    length so callers can refuse empty app shells."""
+    import fitz
+    import html as _html
+    with open(html_path, "r", encoding="utf-8", errors="ignore") as fh:
+        raw = fh.read()
+    cleaned, blocks = _snapshot_visible_html(raw, title)
+    visible = sum(len(b) for b in blocks)
+    if visible < 100:
+        return visible
+    marker = f"{SNAPSHOT_MARKER} {source_url or html_path} {saved}".strip()
+    cleaned = cleaned.replace("<body>", f"<body><p>{_html.escape(marker)}</p>", 1)
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+    tmp = pdf_path + ".tmp"
+    story = fitz.Story(html=cleaned)
+    writer = fitz.DocumentWriter(tmp)
+    rect = fitz.paper_rect("a4")
+    area = rect + (36, 36, -36, -36)
+    more = True
+    while more:
+        device = writer.begin_page(rect)
+        more, _ = story.place(area)
+        story.draw(device)
+        writer.end_page()
+    writer.close()
+    os.replace(tmp, pdf_path)
+    return visible
+
+
+def _snapshot_pdf_for(item, attachment):
+    """PDF rendered from the item's saved web snapshot, cached by attachment key.
+
+    Returns None when the snapshot file is absent or carries no visible text.
+    """
+    from config_loader import get_zotero_storage_dir
+    html_path = os.path.join(get_zotero_storage_dir(), attachment["key"], attachment["filename"])
+    if not os.path.isfile(html_path):
+        return None
+    pdf_path = str(SNAPSHOT_PDF_DIR / f"{attachment['key']}.pdf")
+    if os.path.isfile(pdf_path) and os.path.getmtime(pdf_path) >= os.path.getmtime(html_path):
+        return pdf_path
+    visible = render_snapshot_pdf(
+        html_path, pdf_path, title=item.get("title", ""),
+        source_url=attachment.get("url") or item.get("url") or "",
+        saved=str(item.get("accessDate") or "")[:10])
+    return pdf_path if visible >= 100 else None
+
 
 def find_pdf(item):
     """Find local PDF path for a Zotero item.
@@ -494,6 +598,7 @@ def find_pdf(item):
       - zotero_children_basename: Zotero child API path's basename found under ZOTERO_DIR
       - doi_filename            : DOI string appears in a PDF filename under ZOTERO_DIR
       - arxiv_filename          : arXiv ID appears in a PDF filename under ZOTERO_DIR
+      - zotero_snapshot_html    : the item's own saved web snapshot, rendered to PDF
       - fuzzy                   : weak title-keyword match (LAST RESORT, logged)
       - no_match                : no candidate — caller skips the paper
     """
@@ -502,6 +607,7 @@ def find_pdf(item):
         ZOTERO_DIR = get_zotero_dir()
     key = item.get("key", "")
     title = item.get("title", "")
+    snapshot = None
 
     # Priority 1: Zotero children API (authoritative attachment path)
     try:
@@ -509,6 +615,7 @@ def find_pdf(item):
         req = urllib.request.Request(url, headers={"Zotero-API-Key": get_zotero_api_key()})
         with urllib.request.urlopen(req, timeout=10, context=_ssl_ctx) as resp:
             children = json.load(resp)
+        snapshot = _snapshot_attachment(children)
         for c in children:
             cd = c.get("data", {})
             if cd.get("itemType") != "attachment":
@@ -612,6 +719,24 @@ def find_pdf(item):
             _audit_append({"key": key, "title": title[:80],
                            "method": "arxiv_ambiguous", "arxiv_id": arxiv_id,
                            "candidates": arxiv_matches[:5]})
+
+    # Priority 3b: the item's own saved web snapshot (tool pages, reports,
+    # dataset landing pages — items that never had a PDF). Rendered to a PDF
+    # under .cache so the rest of the pipeline is unchanged. Sits above the
+    # fuzzy directory scan because it is this item's content, not a guess:
+    # the scan once matched "Semantic Scholar" to the S2ORC paper's PDF.
+    if snapshot is not None:
+        try:
+            rendered = _snapshot_pdf_for(item, snapshot)
+        except Exception as e:
+            rendered = None
+            _audit_append({"key": key, "title": title[:80],
+                           "method": "snapshot_render_error", "error": str(e)[:200]})
+        if rendered:
+            _audit_append({"key": key, "title": title[:80],
+                           "method": "zotero_snapshot_html", "path": rendered,
+                           "attachment": snapshot.get("key")})
+            return rendered, "zotero_snapshot_html"
 
     # Priority 4 (optional): fuzzy title match — STRICTER than before.
     # The original 3-of-5 keyword rule caused the 139-paper mismatch bug.
@@ -1411,6 +1536,13 @@ _REVIEW_INT_TAGS = ("fig_essence", "fig_achievement", "fig_how",
                     "novelty", "technical", "significance", "clarity", "overall")
 
 
+# Fields that fill a review.md section on their own. validate_papers reports
+# a section under 50 characters as SHORT_SECTION (Evaluation is exempt), so a
+# response below that floor is a partial answer and must not be cached.
+_SECTION_FIELDS = ("essence", "achievement", "how", "originality", "limitation")
+_SECTION_MIN_CHARS = 50
+
+
 def _review_response_is_complete(data):
     """Is a model response a usable review, or a partial one?
 
@@ -1424,8 +1556,11 @@ def _review_response_is_complete(data):
     if not isinstance(data, dict):
         return False
     required = ("essence", "known", "gap", "why", "approach", "achievement",
-                "how", "originality", "verdict")
-    return all(str(data.get(field) or "").strip() for field in required)
+                "how", "originality", "limitation", "verdict")
+    if not all(str(data.get(field) or "").strip() for field in required):
+        return False
+    return all(len(str(data.get(field) or "").strip()) >= _SECTION_MIN_CHARS
+               for field in _SECTION_FIELDS)
 
 
 def _salvage_review_data(data):
@@ -1529,9 +1664,16 @@ def write_review(
     for fig in figures:
         fig_refs += f"\n- Fig {fig['name']}: {fig['caption'][:80]}"
 
+    # A rendered web snapshot announces itself on its first line; papers get
+    # the unchanged prompt so their cache keys do not move.
+    snapshot_note = ""
+    if SNAPSHOT_MARKER in paper_text[:600]:
+        snapshot_note = _SNAPSHOT_REVIEW_NOTE
+
     try:
         prompt = (
             "논문을 분석하고 `emit_review` 도구를 호출해 리뷰 필드를 채워라.\n\n"
+            + snapshot_note +
             "모든 narrative 필드는 한국어 서술. 단 Jargon — 기술 용어·모델명·데이터셋·"
             "알고리즘·수식·프레임워크·제품명 등 — 은 원문 그대로 유지하고 번역하지 "
             "말 것. 예: \"diffusion model을 사용한다\" (O), "

@@ -321,6 +321,24 @@ def get_zotero_dir():
     return cfg.get("pdf_dir", "")
 
 
+def get_zotero_storage_dir():
+    """Zotero 자체 저장소(`<data dir>/storage`) — 웹 스냅샷 같은 imported 첨부가 사는 곳.
+
+    linked_file PDF 는 `get_zotero_dir()` 의 기본 디렉터리에 있지만, Zotero 가 직접
+    받아 저장한 첨부(imported_url / imported_file)는 데이터 디렉터리 아래
+    `storage/<attachmentKey>/<filename>` 에 있다. 해결 순서: `ZOTERO_STORAGE_DIR`
+    환경변수 → `zotero.storage_dir` 설정 → `~/Zotero/storage`.
+    """
+    env = os.environ.get("ZOTERO_STORAGE_DIR", "").strip()
+    if env:
+        return os.path.expanduser(env)
+    cfg = load_config().get("zotero", {})
+    configured = str(cfg.get("storage_dir") or "").strip()
+    if configured:
+        return os.path.expanduser(configured)
+    return os.path.expanduser("~/Zotero/storage")
+
+
 def get_github_repo():
     """GitHub repo (owner/repo 형식)."""
     cfg = load_config()
