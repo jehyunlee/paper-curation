@@ -103,12 +103,12 @@ NARRATIVE = {
         "headline": "논문을 쓰는 AI 과학자는 등장했고, 평가의 무게는 결과물에서 과정 추적으로 옮겨갔다.",
         "points": [
             "2025 AI Scientist-v2가 에이전트 트리 서치로 가설·실험·논문 작성을 자율 수행해 동료 심사를 통과한 AI 생성 논문을 냈다.",
-            "2025 DeepScientist가 약 5,000개 아이디어를 만들고 1,100개를 검증하는 데 20,000 GPU시간을 썼다.",
+            "2026 INTO THE UNKNOWN은 미공개 연구 과제를 과학자 rubric으로 채점해, 9개 agent의 논문 135편 중 조건을 모두 만족한 사례가 없었다.",
             "2025 EXP-Bench는 end-to-end 성공률 0.5%를 보고해 시연과 실제 실험 수행 능력의 간극을 드러냈다.",
             "2026 OpenDiscoveryTrace와 FabScore가 최종 출력 대신 추론 과정 추적과 조작 감사로 평가축을 옮겼다.",
             "배경: 2024 The AI Scientist가 아이디어에서 원고까지 이어지는 파이프라인 자동화의 출발점을 만들었다.",
         ],
-        "sowhat": "AI 과학자는 만들 수 있게 됐지만 믿을 수 있는지는 별개다. 과정 로그와 인간 체크포인트를 설계하는 쪽이 도입 판단의 주도권을 쥔다.",
+        "sowhat": "AI 과학자는 만들 수 있게 됐지만 믿을 수 있는지는 별개다. 과학자 rubric 기반 평가와 과정 로그, 인간 체크포인트를 설계하는 쪽이 도입 판단의 주도권을 쥔다.",
     },
     "Autonomous Scientific Discovery Systems": {
         "ko": "자율 과학 발견 시스템",
@@ -116,11 +116,11 @@ NARRATIVE = {
         "points": [
             "2025 Kosmos가 200개 이상의 agent rollout로 평균 42,000줄 코드와 1,500편 논문을 처리해 79.4% 정확도의 보고서를 냈다.",
             "2026 AI scientists produce results without reasoning scientifically가 25,000개 이상 실행에서 증거 무시 68%, 신념 수정 부재 26%를 보고했다.",
-            "2025 AI Scientists Fail Without Strong Implementation Capability가 병목을 아이디어가 아니라 구현 능력에 있다고 주장했다.",
-            "2026 Autonomous biomedical research with an artificial intelligence agent의 Biomni가 150개 도구와 59개 데이터베이스를 묶었다.",
+            "2026 Safe-SDL이 SDL의 Syntax-to-Safety Gap을 짚고 ODD와 CBF, CRUTD 프로토콜을 결합한 계층적 안전 프레임워크를 냈다.",
+            "2026 Talking to instruments는 SDL 확장의 병목이 알고리즘이 아닌 장비 통합 계층(device-integration layer)이라 지적했다.",
             "배경: 2023 CRESt, k-agents가 LLM을 물리 실험실의 조력자로 끌어들인 출발점이다.",
         ],
-        "sowhat": "시스템 능력과 추론 신뢰도가 따로 움직인다. 검증기를 먼저 세우고 자율성을 단계적으로 늘리는 설계가 안전하다.",
+        "sowhat": "시스템 능력과 추론 신뢰도가 따로 움직이고, 자율 실험실의 병목도 모델이 아니라 장비 통합·안전 인프라에 있다. 검증기와 통합·안전 계층을 먼저 세우고 자율성을 늘리는 설계가 안전하다.",
     },
     "Agentic Drug Discovery Workflows": {
         "ko": "에이전틱 신약 발굴",
@@ -775,7 +775,7 @@ PROSE = {
         "body": [
             "2024년 The AI Scientist가 아이디어 생성부터 원고 작성까지 한 줄로 잇는 파이프라인을 보였고, 2025년 AI Scientist-v2가 에이전트 트리 서치를 도입해 가설 수립, 실험 설계·실행, 분석과 시각화, 논문 작성을 자율 수행했다. 이 시스템이 낸 논문은 동료 심사를 통과한 최초의 AI 생성 학술 논문이 됐고, 2026년 Towards end-to-end automation of AI research는 같은 계보를 아이디어에서 동료 검토까지의 전 수명주기 자동화로 정리했다. 최근 {recent}편이 쏟아졌다는 사실이 이 흐름의 속도를 말해 준다.",
             "규모를 키우는 접근도 나왔다. DeepScientist는 과학적 발견을 Bayesian Optimization 문제로 형식화하고 hypothesize-verify-analyze 평가와 누적 Findings Memory로 탐색과 활용을 조절한다. 20,000 GPU시간을 써서 약 5,000개의 아이디어를 만들고 1,100개를 실험으로 검증했다. AgentRxiv는 에이전트들이 공유 프리프린트 서버로 서로의 결과를 읽고 쌓게 했고, ToolUniverse는 600개 이상의 모델·데이터셋·API를 묶어 어떤 LLM으로도 AI 과학자를 조립하게 하는 오픈소스 생태계를 열었다. 진입장벽은 낮아지는 중이다.",
-            "그러나 같은 칸에서 간극이 드러난다. 2025년 EXP-Bench는 end-to-end 성공률을 0.5%로 보고했다. NeuriCo는 20주간 180회의 에이전트 실행을 관찰해 실행(execution)에는 강하고 연구 품질 판단(judgment)에는 구조적으로 약하다는 meta-intelligence gap을 규명했다. What the Records Don't Carry는 130회 이상의 실제 협업에서, 공식 기록에 담기지 않은 연구자의 암묵적 판단을 AI가 그럴듯한 완성으로 메운다고 보였다. 논문 한 편을 통과시키는 능력과 연구를 믿을 만하게 수행하는 능력은 다르다.",
+            "그러나 같은 칸에서 간극이 드러난다. 2025년 EXP-Bench는 end-to-end 성공률을 0.5%로 보고했다. NeuriCo는 20주간 180회의 에이전트 실행을 관찰해 실행(execution)에는 강하고 연구 품질 판단(judgment)에는 구조적으로 약하다는 meta-intelligence gap을 규명했다. What the Records Don't Carry는 130회 이상의 실제 협업에서, 공식 기록에 담기지 않은 연구자의 암묵적 판단을 AI가 그럴듯한 완성으로 메운다고 보였다. 논문 한 편을 통과시키는 능력과 연구를 믿을 만하게 수행하는 능력은 다르다. 2026년 INTO THE UNKNOWN은 이 간극을 열린 문제로 확인했다. 에이전트에게 미공개 연구 방향을 주고 후속 논문을 쓰게 한 뒤 해당 분야 과학자가 정한 성공 조건과 무결성 조건으로 평가했는데, 9개 최신 agent가 쓴 135편 중 조건을 모두 만족한 논문은 하나도 없었다.",
             "그래서 2026년의 평가 도구는 결과물이 아니라 과정을 본다. OpenDiscoveryTrace는 558개 trajectory를 9-필드 구조로 기록해, output-only 평가에서는 보이지 않던 모델 간 에러 유형과 자기 수정 패턴의 차이를 드러냈다. ClaimGarden은 자동화의 단위를 논문이 아니라 개별 claim의 상태로 바꿔 증거가 갱신되면 재검증하게 한다. Negative Knowledge는 실패한 시도를 재사용 가능한 기록으로 남겨 후속 에이전트가 채택하거나 기각하도록 강제한다. 또 Artificial intelligence tools expand scientists' impact but contract science's focus는 AI 도구 채택이 개인의 영향력을 키우는 반면 집단 과학의 탐색 범위를 좁힌다고 41.3백만 편 데이터로 보였다.",
             "국내 기관에는 두 가지 시사점이 있다. 첫째, 에이전트를 직접 만드는 비용은 ToolUniverse 같은 공개 기반으로 크게 내려갔으므로 구축 능력은 차별점이 아니다. 둘째, 도입의 병목은 검증이다. 최종 논문이 아니라 과정 추적과 인간 체크포인트를 요구하는 내부 기준을 먼저 세우고, 에이전트 산출물의 공동 탐색 축소 효과까지 감안해 연구 포트폴리오를 설계해야 한다.",
         ],
@@ -787,7 +787,7 @@ PROSE = {
             "대표 사례는 Kosmos다. 구조화된 world model로 data analysis agent와 literature search agent가 정보를 공유하고, 200개 이상의 agent rollout에서 평균 42,000줄의 코드와 1,500편의 논문을 처리해 79.4% 정확도로 과학 보고서를 생성한다. Biomni는 150개 전문 도구, 105개 소프트웨어 패키지, 59개 데이터베이스를 하나의 행동 공간으로 묶어 사전 정의된 템플릿 없이 생의학 과제를 수행한다. AI-Newton은 사전 지식 없이 물리 법칙을 재발견하는 시도로 key_developments에 올랐고, Earth-Agent, BehaveAgent, LabOS 같은 도메인별 변형도 대표 도구로 등장했다.",
             "2026년에는 이 시스템을 어떻게 지을지에 대한 프레임이 갈린다. Embodied Science와 PLAD는 발견을 물리 세계와의 폐루프 상호작용으로 다시 정의했고, Autonomous Agents for Scientific Discovery는 과학자, 언어, 코드, 물리 장비를 조율하는 에이전트로 전 생애주기를 자동화하는 패러다임을 제시했다. Toward a Fully Autonomous, AI-Native Particle Accelerator는 AI 보조에서 완전 자율 운영까지 3단계 로드맵을 낸다. Machine-checked refutation은 도파민 신용 할당의 널리 쓰인 수렴 정리 재서술이 거짓임을 Lean 4로 기계 검증하고 Kairos를 제안해, 에이전트가 검증기와 결합했을 때의 가능성을 보여 준다.",
             "그러나 가장 무거운 증거는 반대편에 있다. AI scientists produce results without reasoning scientifically는 25,000개 이상의 agent 실행을 분석해, 성능과 행동의 주된 결정자는 base model이며 증거 무시가 68%, 신념 수정 부재가 26%에 달하고 수렴적 다중 증거도 부족하다고 보고했다. 좋은 결과를 내도 과정은 과학의 규범을 따르지 않는다는 뜻이다. AI Scientists Fail Without Strong Implementation Capability는 벤치마크 증거와 28편의 AI Scientist 생성 논문 평가로, 병목이 아이디어 생성이 아니라 실험 검증을 위한 구현 능력이라고 주장한다.",
-            "인간 중심 대안도 있다. ChatBCI는 완전 자율 대신 Janusian Design Principles에 따라 인간 전문가와 AI가 협업해 EEG 기반 motor imagery decoding 프로젝트를 신속하게 수행했다. TIDE는 물리 지식 없이 비디오에서 상태 변수를 추출하는 모델이 인간 과학자의 직관적 변수와 정렬되도록 시간 미분 정규화를 넣는다. Automating the practice of science는 과학 자동화가 연구자의 업무 방식과 패러다임에 미칠 사회적 함의를 평가한다. 자율성을 높이는 방향과 인간 판단을 구조에 넣는 방향이 병행한다.",
+            "자율 실험실로 넘어가면 병목은 모델 밖에 있다. Talking to instruments는 SDL 확장을 가로막는 핵심이 알고리즘이나 로봇이 아니라 이기종 장비를 orchestration하는 소프트웨어 통합 계층(device-integration layer)임을 지적하고, 표준화 지형과 procurement scorecard를 제안한다. Safe-SDL은 AI 기반 SDL의 Syntax-to-Safety Gap을 식별하고 ODD, CBF, Transactional Safety Protocol(CRUTD)을 결합한 안전 프레임워크를 내놓았다. 한편 ChatBCI는 완전 자율 대신 인간 전문가와 AI의 협업을 택했다. 자율성의 한계는 모델이 아니라 통합과 안전 인프라가 정한다.",
             "국내 관점의 결론은 간극을 같이 보라는 것이다. 폐루프 시연만 보고 자율 발견 플랫폼에 투자하면 추론 규범 위반을 놓친다. 반대로 반증만 보고 보류하면 물리 실험실과 결합한 성과의 기회를 놓친다. 증거 수용과 신념 수정 같은 추론 규범을 점검하는 평가와, 인간 검증을 의무화하는 연구윤리 조항을 도입 요건으로 함께 두는 것이 현실적이다.",
         ],
         "close": "이 칸의 핵심은 자율성의 크기가 아니라 검증의 위치다. 에이전트가 낸 결과물의 신뢰는 모델 성능이 아니라 기계 검증과 인간 검증의 배치에서 나온다.",

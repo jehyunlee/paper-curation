@@ -20,6 +20,17 @@ class TitleCleaningTests(unittest.TestCase):
         self.assertTrue(B.title_phrase_hit(paper, "2025 Discovery of Unstable Singularities: ML과 결합"))
         self.assertFalse(B.title_phrase_hit(paper, "2025 특이점 발견 연구가 나왔다"))
 
+    def test_title_phrase_hit_accepts_pre_colon_name(self):
+        """부제 없이 이름만 부르는 호명('Into the Unknown은 …')도 제목 호명으로 본다."""
+        paper = {"title": "Into the Unknown: Benchmarking AI agents on open research"}
+        self.assertTrue(B.title_phrase_hit(paper, "2026 INTO THE UNKNOWN은 과학자 rubric으로 채점했다"))
+        self.assertTrue(B.title_phrase_hit({"title": "Safe-SDL:Establishing Safety Boundaries"},
+                                           "2026 Safe-SDL이 Syntax-to-Safety Gap을 짚었다"))
+        # 단어 경계: 'Unknowns' 나 한 단어짜리 일반명은 호명이 아니다
+        self.assertFalse(B.title_phrase_hit(paper, "Into the Unknowns 라는 표현"))
+        self.assertFalse(B.title_phrase_hit({"title": "Robustness: a survey of methods"},
+                                            "Robustness 가 중요하다"))
+
 
 class CitationMarkerTests(unittest.TestCase):
     def test_ref_keys_takes_headword_only(self):

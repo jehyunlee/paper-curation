@@ -44,6 +44,14 @@ def _paper_row(p):
     }
 
 
+def _newest_reviews(pool, limit=4):
+    """가장 최근에 리뷰된 논문. 피인용 0인 신규 유입분이 순위 목록에서 밀려나도
+    집필자가 볼 수 있게 따로 실는다(리뷰 날짜가 없는 논문은 제외)."""
+    dated = [p for p in pool if p.get("review_date")]
+    dated.sort(key=lambda p: str(p.get("review_date")), reverse=True)
+    return [_paper_row(p) | {"review_date": p.get("review_date")} for p in dated[:limit]]
+
+
 def _rank_papers(pool, since, limit):
     """덱의 레퍼런스 선정과 같은 우선순위: since 이후 → 피인용 → 최신."""
     ordered = sorted(pool, key=lambda p: (0 if B.year_of(p.get("date")) >= since else 1,
@@ -137,6 +145,7 @@ def build_dossier(topic, per_category=5, since=2025, papers_per_sub=16):
                     "representative_tools": tl.get("representative_tools") or [],
                 } if tl else None,
                 "papers": _rank_papers(pool, since, papers_per_sub),
+                "newest_reviews": _newest_reviews(pool),
                 "years": dict(sorted(Counter(B.year_of(p.get("date")) for p in pool).items())),
             })
         dossiers.append(entry)

@@ -313,14 +313,25 @@ def title_fingerprint(title):
 
 
 def title_phrase_hit(paper, text):
-    """불릿이 논문 제목을 그대로 부르는지 검사한다(앞 4단어, 18자 이상일 때만)."""
-    words = clean_title(paper.get("title")).split()
-    if len(words) < 3:
-        return False
-    phrase = " ".join(words[:4]).rstrip(":,.")
-    if len(phrase) < 18:
-        return False
-    return re.search(re.escape(phrase), text, re.I) is not None
+    """불릿이 논문 제목을 그대로 부르는지 검사한다.
+
+    두 가지 호명을 받는다: (1) 제목 앞 4단어(18자 이상), (2) 콜론 앞의 이름 부분
+    ("Into the Unknown: Benchmarking …" 의 "Into the Unknown", "Safe-SDL: …" 의 "Safe-SDL") —
+    집필자는 보통 부제 없이 이름만 부른다. 이름 부분은 두 단어 이상이거나
+    하이픈·숫자가 들어간 시스템명일 때만, 단어 경계로 맞춘다.
+    """
+    title = clean_title(paper.get("title"))
+    words = title.split()
+    candidates = []
+    if len(words) >= 3:
+        phrase = " ".join(words[:4]).rstrip(":,.")
+        if len(phrase) >= 18:
+            candidates.append(phrase)
+    head = title.split(":", 1)[0].strip() if ":" in title else ""
+    if head and len(head) >= 8 and (len(head.split()) >= 2 or re.search(r"[-\d]", head)):
+        candidates.append(head)
+    return any(re.search(r"(?<![A-Za-z0-9])" + re.escape(c) + r"(?![A-Za-z0-9])", text, re.I)
+               for c in candidates)
 
 
 def make_ref(paper, link_base):
