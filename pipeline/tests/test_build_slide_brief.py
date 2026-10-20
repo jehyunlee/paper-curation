@@ -38,6 +38,78 @@ class TextRuleTests(unittest.TestCase):
         self.assertLessEqual(len(out), 31)
         self.assertEqual(Bf.shorten("짧다", 30), "짧다")
 
+    def test_shorten_cuts_at_clause_connective_not_noun_phrase_comma(self):
+        t = "보정이 관측되는 데이터와 부합하는지를, 이론을 이용해 확인하는 검정을 제안하며, 상보적 문제를 다룬다."
+        self.assertGreater(len(t), 45)
+        out = Bf.shorten(t, 45)
+        self.assertFalse(out.endswith("부합하는지를"), out)   # 명사구 쉼표에서 자르면 조사로 끝난다
+        self.assertTrue(out.endswith("제안하며") or out.endswith("…"), out)
+
+    def test_nominalize_converts_declarative_endings(self):
+        cases = {
+            "구조를 보여 준다.": "구조를 보여 줌.",
+            "성능이 높다. 재현은 어렵다.": "성능이 높음. 재현은 어려움.",
+            "GPT-5로 평가했다": "GPT-5로 평가했음",
+            "이것은 중요한 문제이다.": "이것은 중요한 문제임.",
+            "한계는 없다.": "한계는 없음.",
+            "결과를 받는다": "결과를 받음",
+            "값이 크다": "값이 큼",
+            "자동화하는 멀티에이전트 시스템이며": "자동화하는 멀티에이전트 시스템임",
+            "왔음을 지적하고": "왔음을 지적함",
+            "응용에 확산되고 있어": "응용에 확산되고 있음",
+            "결과가 좋지만": "결과가 좋음",
+            "벤치마크 3종에서 SOTA": "벤치마크 3종에서 SOTA",
+            "실험을 수행함": "실험을 수행함",
+            "잘린 문장…": "잘린 문장…",
+        }
+        for src, want in cases.items():
+            self.assertEqual(Bf.nominalize(src), want, src)
+
+    def test_text_lines_counts_wrapping_and_newlines(self):
+        self.assertEqual(Bf.text_lines("짧다", Inches(3), 10.5), 1)
+        self.assertGreaterEqual(Bf.text_lines("가" * 60, Inches(2), 10.5), 3)
+        self.assertEqual(Bf.text_lines("가\n나", Inches(3), 10.5), 2)
+
+    def test_body_font_scale_leaves_titles_alone(self):
+        prs = Presentation()
+        s = prs.slides.add_slide(prs.slide_layouts[6])
+        _, tf = Bf.textbox(s, 0, 0, Inches(3), Inches(1))
+        Bf.add_runs(tf.paragraphs[0], "본문", 10, Bf.INK)
+        Bf.add_runs(tf.paragraphs[0], "제목", 24, Bf.INK, scale=False)
+        sizes = [r.font.size.pt for r in tf.paragraphs[0].runs]
+        self.assertAlmostEqual(sizes[0], 10 * Bf.FS, places=1)
+        self.assertEqual(sizes[1], 24)
+
+    def test_source_links_prefers_doi_then_url(self):
+        import os
+        import sqlite3
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            db = Path(d) / "b.sqlite3"
+            con = sqlite3.connect(db)
+            con.execute("CREATE TABLE papers (slug TEXT, doi TEXT, url TEXT)")
+            con.executemany("INSERT INTO papers VALUES (?,?,?)", [
+                ("a", "10.1000/xyz", "https://arxiv.org/abs/1"),
+                ("b", "", "https://openreview.net/forum?id=Q"),
+                ("c", None, None),
+            ])
+            con.commit()
+            con.close()
+            old = os.environ.get("PAPER_CURATION_BIBLIO_DB")
+            os.environ["PAPER_CURATION_BIBLIO_DB"] = str(db)
+            try:
+                links = Bf.source_links({"a", "b", "c", "zzz"})
+            finally:
+                if old is None:
+                    del os.environ["PAPER_CURATION_BIBLIO_DB"]
+                else:
+                    os.environ["PAPER_CURATION_BIBLIO_DB"] = old
+        self.assertEqual(links["a"], ("doi.org/10.1000/xyz", "https://doi.org/10.1000/xyz"))
+        self.assertEqual(links["b"][1], "https://openreview.net/forum?id=Q")
+        self.assertNotIn("https://", links["b"][0])
+        self.assertNotIn("c", links)
+        self.assertNotIn("zzz", links)
+
     def test_strip_year_removes_leading_year_or_background_label(self):
         self.assertEqual(Bf.strip_year("2026 FooBench가 쟀다."), "FooBench가 쟀다.")
         self.assertEqual(Bf.strip_year("2018–2021 SCANPY류"), "SCANPY류")
@@ -124,6 +196,23 @@ class LiveCorpusSmokeTests(unittest.TestCase):
                     if not is_sources:
                         self.assertNotRegex(shp.text_frame.text, r"\bS\d{2}\b", "58장 덱의 슬라이드 번호가 새면 안 된다")
         self.assertTrue(any(s.has_notes_slide and s.notes_slide.notes_text_frame.text for s in prs.slides))
+        # 문체 계약: 슬라이드 본문에 서술형 종결('~다.')·메타 문구·저자명 출처가 없고, 출처는 DOI/URL 링크
+        verb = re.compile(r"(?:[가-힣]다|[어아해예지네]요|죠)\s*[.!]?\s*$")
+        meta = re.compile(r"도판은|읽는 법|핵심.{0,3}으로 고른|출처:|[A-Z][a-z]+ [A-Z][a-z]+ 외")
+        n_links = 0
+        for s in prs.slides:
+            for shp in s.shapes:
+                if not shp.has_text_frame:
+                    continue
+                for para in shp.text_frame.paragraphs:
+                    text = "".join(r.text for r in para.runs)
+                    n_links += sum(1 for r in para.runs if r.hyperlink and r.hyperlink.address)
+                    for sent in re.split(r"(?<=[.!])\s+|\n", text):
+                        self.assertIsNone(verb.search(sent), f"서술형 종결: {sent[-50:]}")
+                        self.assertIsNone(meta.search(sent), f"메타/저자 출처 문구: {sent[:60]}")
+                    if "Fig." in text:
+                        self.assertTrue(any(r.hyperlink and r.hyperlink.address for r in para.runs), text)
+        self.assertGreaterEqual(n_links, len(brief.sources))
         self.assertEqual(len({(p["slug"], f["n"]) for _, p, f in brief.sources}),
                          len({(p["slug"], f["n"]) for _, p, f in brief.sources}))
         xml = "".join(s._element.xml for s in prs.slides)

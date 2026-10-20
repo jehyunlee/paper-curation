@@ -22,7 +22,9 @@ Usage:
 """
 import argparse
 import json
+import os
 import re
+import sqlite3
 import sys
 from collections import defaultdict
 from datetime import date
@@ -44,7 +46,11 @@ PROJECT_ROOT = PIPE.parent
 
 import build_slide_deck as B  # noqa: E402
 from config_loader import PAPERS_DIR, get_topic_dir  # noqa: E402
-from lib.slide_prose_ai4s import CATEGORY_KO, CATEGORY_LEAD, NARRATIVE, PROSE  # noqa: E402
+from lib.slide_prose_ai4s import CATEGORY_KO, PROSE  # noqa: E402
+from lib.slide_brief_ai4s import BRIEF_LEAD, BRIEF_NARRATIVE, ACTION_RATIONALE  # noqa: E402
+
+NARRATIVE = BRIEF_NARRATIVE      # 브리핑 문체(명사 종결·음슴체) 판본 — 58장 덱의 NARRATIVE 와 키 동일
+CATEGORY_LEAD = BRIEF_LEAD
 
 REPORTS = PROJECT_ROOT / "reports"
 CACHE = PROJECT_ROOT / ".cache" / "slide-brief"
@@ -62,6 +68,7 @@ MUTED = RGBColor(0x6B, 0x72, 0x80)
 LINE = RGBColor(0xD9, 0xDE, 0xE5)
 PANEL = RGBColor(0xF4, 0xF6, 0xF8)
 ACCENT = RGBColor(0x1A, 0x6F, 0xC4)
+LINK = RGBColor(0x1F, 0x4E, 0x9A)
 GOLD = RGBColor(0xE0, 0x9F, 0x1F)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 RED = RGBColor(0xC0, 0x39, 0x2B)
@@ -71,6 +78,7 @@ PALETTE = ["1F4E79", "2A9D8F", "E76F51", "C9A227", "6A4C93",
            "3C8D5A", "B23A48", "4C78A8", "8C6D3F", "5C6B73"]
 
 FONT_LATIN = "Helvetica Neue"
+FS = 1.2   # 본문 글자 배율(타이틀 제외). 가독성 요구로 20% 확대
 FONT_EA = "Malgun Gothic"   # Office(Win·Mac) 동봉. 비우면 PowerPoint(Mac) 가 바탕체로 대체한다.
 KOREAN_TTC = "/System/Library/Fonts/AppleSDGothicNeo.ttc"  # 지도(matplotlib) 렌더용
 
@@ -93,9 +101,9 @@ def rgb(hex_str):
     return RGBColor(int(hex_str[0:2], 16), int(hex_str[2:4], 16), int(hex_str[4:6], 16))
 
 
-def _set_font(run, size, bold=False, italic=False, color=INK):
+def _set_font(run, size, bold=False, italic=False, color=INK, scale=True):
     f = run.font
-    f.size = Pt(size)
+    f.size = Pt(round(size * (FS if scale else 1.0), 1))
     f.bold = bold
     f.italic = italic
     f.name = FONT_LATIN
@@ -108,22 +116,22 @@ def _set_font(run, size, bold=False, italic=False, color=INK):
     ea.set("typeface", FONT_EA)
 
 
-def add_runs(paragraph, text, size, color=INK, bold=False, italic=False):
-    """`**굵게**` 마크다운을 run 으로 풀어 넣는다."""
+def add_runs(paragraph, text, size, color=INK, bold=False, italic=False, scale=True):
+    """`**굵게**` 마크다운을 run 으로 풀어 넣는다. `scale=False` 는 슬라이드 타이틀(배율 제외)."""
     pos = 0
     for m in _MD_BOLD.finditer(text):
         if m.start() > pos:
             r = paragraph.add_run()
             r.text = text[pos:m.start()]
-            _set_font(r, size, bold, italic, color)
+            _set_font(r, size, bold, italic, color, scale)
         r = paragraph.add_run()
         r.text = m.group(1)
-        _set_font(r, size, True, italic, color)
+        _set_font(r, size, True, italic, color, scale)
         pos = m.end()
     if pos < len(text):
         r = paragraph.add_run()
         r.text = text[pos:]
-        _set_font(r, size, bold, italic, color)
+        _set_font(r, size, bold, italic, color, scale)
 
 
 def textbox(slide, x, y, w, h, *, anchor=MSO_ANCHOR.TOP, fill=None, line=None, inset=0.08,
@@ -199,9 +207,16 @@ def ko_names(text):
 
 def text_budget(w, h, size=10.5, reserve=Inches(0.0)):
     """카드 폭·높이에 들어가는 대략의 글자 수(한글 기준). 넘치면 shorten 으로 자른다."""
+    size = size * FS
     cpl = int((w - Inches(0.36)) / (Inches(0.0118) * size))
     lines = int((h - reserve) / (Pt(size) * 1.4))
     return max(40, int(cpl * lines * 0.95))
+
+
+def text_lines(text, w, size=10.5):
+    """폭 w 에 size pt 로 적었을 때 줄 수(한글 기준 추정). 줄바꿈 문자는 그대로 센다."""
+    cpl = max(1, int(w / (Inches(0.0118) * size * FS)))
+    return sum(max(1, -(-len(line) // cpl)) for line in (text or "").split("\n"))
 
 
 def shorten(text, n):
@@ -209,11 +224,119 @@ def shorten(text, n):
     if len(text) <= n:
         return text
     cut = text[:n]
-    for sep in ("다. ", "다, ", ". ", ", "):
+    # 문장 경계 → 절 경계(연결어미 뒤의 쉼표). 명사구 중간의 쉼표에서는 자르지 않는다('…데이터와 부합하는지를' 방지)
+    for sep in _CUT_SEPS:
         i = cut.rfind(sep)
         if i >= n * 0.55:
-            return cut[:i + 1].rstrip(",")
+            return cut[:i + len(sep) - 1].rstrip(", ")
     return cut.rstrip() + "…"
+
+
+_CUT_SEPS = ("다. ", "다, ", ". ", "고, ", "며, ", "지만, ", "으나, ", "면서, ", "있어, ", "없어, ", "해, ", "돼, ", "되어, ", "하여, ")
+
+
+# ── 명사형 종결(음슴체) 변환 ─────────────────────────────────────────────────
+# 리뷰 essence·인사이트 설명처럼 저작 단계를 거치지 않은 문장은 규칙으로 '~다.' 를 '~음/~ㅁ' 으로 바꾼다.
+# 저작 텍스트(lib/slide_brief_ai4s.py)는 이미 명사형이라 여기 오지 않는다.
+
+_HANGUL0 = 0xAC00
+_JONG = ["", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ",
+         "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"]
+_JONG_M, _JONG_N, _JONG_B, _JONG_L = 16, 4, 17, 8
+# ㅂ 규칙 활용 어간(좁다·잡다·입다…)은 그대로 '~음', 나머지 ㅂ 어간은 '~우+ㅁ'(어렵다→어려움)
+_B_REGULAR = {"좁", "잡", "입", "씹", "뽑", "업", "접", "집", "굽"}
+# 절 끝에서 잘린 연결형 → 명사형 (있어→있음, 보여 줘→보여 줌)
+_ENDING_MAP = {"있어": "있음", "없어": "없음", "되어": "됨", "하여": "함", "해": "함", "돼": "됨", "줘": "줌", "이어": "임"}
+_CONNECTIVE = re.compile(r"(?:며|고|지만|으나|면서|어서|아서|고자)$")   # 어간은 남긴다: 시스템이며→시스템이→시스템임
+_ENDING = re.compile(r"(?P<stem>[가-힣]+?)(?P<tail>는다|ㄴ다|다)(?P<punct>[.!]?)$")
+
+
+def _jamo(ch):
+    code = ord(ch) - _HANGUL0
+    return code // 588, (code % 588) // 28, code % 28
+
+
+def _compose(cho, jung, jong):
+    return chr(_HANGUL0 + cho * 588 + jung * 28 + jong)
+
+
+def _nominal_stem(stem):
+    """어간 → 명사형. 받침 없음·ㄴ받침(현재형)→ㅁ 받침, ㅆ받침(과거)·그 외 받침→'음'."""
+    if not stem or not ("가" <= stem[-1] <= "힣"):
+        return stem
+    cho, jung, jong = _jamo(stem[-1])
+    if jong == 0:
+        return stem[:-1] + _compose(cho, jung, _JONG_M)
+    if jong == _JONG_N:   # 한다→함, 된다→됨, 본다→봄
+        return stem[:-1] + _compose(cho, jung, _JONG_M)
+    if jong == _JONG_B and stem[-1] not in _B_REGULAR:   # 어렵→어려움
+        return stem[:-1] + _compose(cho, jung, 0) + "움"
+    if jong == _JONG_L:   # 길다→긺, 살다→삶
+        return stem[:-1] + _compose(cho, jung, 10)   # ㄻ
+    return stem + "음"
+
+
+def _nominal_sentence(sent):
+    sent = sent.strip()
+    if not sent:
+        return sent
+    body, punct = (sent[:-1], sent[-1]) if sent[-1] in ".!" else (sent, "")
+    m = re.search(r"([가-힣]+)$", body)
+    if not m:
+        return sent
+    word = m.group(1)
+    head = body[:m.start()]
+    for suf, rep in _ENDING_MAP.items():
+        if word.endswith(suf) and (len(word) > len(suf) or head.endswith(" ")):   # '보여 줘' 의 '줘'
+            return head + word[:-len(suf)] + rep + punct
+    if word.endswith("는다") and len(word) > 2:
+        new = word[:-2] + "음"                      # 먹는다→먹음
+    elif word.endswith("다") and len(word) > 1:
+        new = _nominal_stem(word[:-1])              # 한다→함, 했다→했음, 이다→임, 높다→높음
+    else:
+        c = _CONNECTIVE.search(word)                # 문장 중간에서 잘린 '~이며' '~하고' 등
+        if c and c.start() > 0:
+            new = _nominal_stem(word[:c.start()])
+        else:
+            return sent
+    return head + new + punct
+
+
+def nominalize(text):
+    """'~다.' 서술형 종결을 명사형으로. 문장 단위로 처리하고 라틴 문자·숫자로 끝나는 문장은 그대로 둔다."""
+    text = re.sub(r"\s+", " ", text or "").strip()
+    if not text:
+        return text
+    parts = re.split(r"(?<=[.!])\s+", text)
+    out = [_nominal_sentence(pt) for pt in parts]
+    res = " ".join(out)
+    return re.sub(r"…$", "", res) if res.endswith("…") and not text.endswith("…") else res
+
+
+# ── 출처 링크 ───────────────────────────────────────────────────────────────
+
+
+def source_links(slugs):
+    """slug → (표시 문자열, URL). DOI 가 있으면 doi.org, 없으면 원문 URL(arXiv 등).
+    인덱스에는 검증된 DOI 만 실려 있어 서지 DB(.cache/bibliography.sqlite3) 를 함께 본다."""
+    db_path = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", str(PROJECT_ROOT / ".cache" / "bibliography.sqlite3")))
+    out = {}
+    if db_path.exists():
+        con = sqlite3.connect(str(db_path))
+        try:
+            rows = con.execute("SELECT slug, doi, url FROM papers").fetchall()
+        finally:
+            con.close()
+        for slug, doi, url in rows:
+            if slug not in slugs:
+                continue
+            doi = (doi or "").strip()
+            url = (url or "").strip()
+            if doi:
+                out[slug] = (f"doi.org/{doi}", f"https://doi.org/{doi}")
+            elif url:
+                out[slug] = (re.sub(r"^https?://(www\.)?", "", url), url)
+    return out
 
 
 # ── 도판 인덱스 ─────────────────────────────────────────────────────────────
@@ -367,6 +490,7 @@ class Brief:
         self.figs = figs
         self.colors = colors
         self.sub_ko_by_no = sub_ko_by_no
+        self.links = source_links({p["slug"] for p in corpus["papers"]})
         self.prs = Presentation()
         self.prs.slide_width, self.prs.slide_height = W, H
         self.footers = []
@@ -384,7 +508,7 @@ class Brief:
         _, tf = textbox(s, M, Inches(0.22), INNER_W, Inches(0.28), inset=0.0)
         add_runs(tf.paragraphs[0], section, 10, accent, bold=True)
         _, tf = textbox(s, M, Inches(0.46), INNER_W - Inches(3.2), Inches(0.6), anchor=MSO_ANCHOR.MIDDLE, inset=0.0)
-        add_runs(tf.paragraphs[0], title, 24, NAVY, bold=True)
+        add_runs(tf.paragraphs[0], title, 24, NAVY, bold=True, scale=False)
         if subtitle:
             _, tf = textbox(s, M, Inches(1.0), INNER_W, Inches(0.28), inset=0.0)
             add_runs(tf.paragraphs[0], subtitle, 11, MUTED)
@@ -394,7 +518,7 @@ class Brief:
     def footer(self, s, dark=False):
         color = RGBColor(0xB8, 0xC4, 0xD0) if dark else MUTED
         _, tf = textbox(s, M, H - Inches(0.42), Inches(8), Inches(0.3), inset=0.0, anchor=MSO_ANCHOR.MIDDLE)
-        add_runs(tf.paragraphs[0], "AI for Science 지형도 2026  |  과학기술정보통신부 보고  |  근거: 논문 리뷰 코퍼스 "
+        add_runs(tf.paragraphs[0], "AI for Science 지형도 2026  |  과학기술정보통신부 보고  |  논문 리뷰 코퍼스 "
                  f"{self.ctx.total:,}편", 8, color)
         box, tf = textbox(s, W - M - Inches(1.2), H - Inches(0.42), Inches(1.2), Inches(0.3), inset=0.0,
                           anchor=MSO_ANCHOR.MIDDLE)
@@ -420,11 +544,12 @@ class Brief:
         rect(s, x, y, w, h, PANEL)
         rect(s, x, y, Inches(0.07), h, color)
         _, tf = textbox(s, x + Inches(0.2), y + Inches(0.1), w - Inches(0.3), h * 0.58, anchor=MSO_ANCHOR.BOTTOM, inset=0.0)
-        add_runs(tf.paragraphs[0], number, 34, color, bold=True)
+        add_runs(tf.paragraphs[0], number, 34, color, bold=True, scale=False)
         _, tf = textbox(s, x + Inches(0.2), y + h * 0.62, w - Inches(0.3), h * 0.36, inset=0.0)
         add_runs(tf.paragraphs[0], label, 11, MUTED)
 
     def card(self, s, x, y, w, h, title, body, *, color=ACCENT, number=None, tag=None, size=11):
+        """제목·태그·본문 카드. 제목이 두 줄로 접히면 본문을 그만큼 내린다. 본문 시작 y 를 돌려준다."""
         rect(s, x, y, w, h, WHITE, line=LINE)
         rect(s, x, y, w, Inches(0.06), color)
         ty = y + Inches(0.16)
@@ -438,15 +563,19 @@ class Brief:
             tx = x + Inches(0.6)
         else:
             tx = x + Inches(0.18)
-        _, tf = textbox(s, tx, ty - Inches(0.02), w - (tx - x) - Inches(0.15), Inches(0.5), inset=0.0, anchor=MSO_ANCHOR.MIDDLE)
+        tw = w - (tx - x) - Inches(0.15)
+        t_lines = text_lines(title, tw, size + 2)
+        th = Inches(0.5) + (Pt((size + 2) * FS) * 1.2 if t_lines > 1 else 0)
+        _, tf = textbox(s, tx, ty - Inches(0.02), tw, th, inset=0.0, anchor=MSO_ANCHOR.MIDDLE)
         add_runs(tf.paragraphs[0], title, size + 2, NAVY, bold=True)
-        by = ty + Inches(0.5)
+        by = ty + th
         if tag:
             _, tf = textbox(s, x + Inches(0.18), by, w - Inches(0.36), Inches(0.26), inset=0.0)
             add_runs(tf.paragraphs[0], tag, 9, color, bold=True)
             by += Inches(0.26)
         _, tf = textbox(s, x + Inches(0.18), by, w - Inches(0.36), y + h - by - Inches(0.12), inset=0.0)
         add_runs(tf.paragraphs[0], body, size, INK)
+        return by
 
     def figure(self, s, paper, fig, x, y, w, h, *, title=None, caption=None, sub_name=None,
                title_size=11, cap_size=9.5, cap_lines=3, frame=True):
@@ -466,11 +595,18 @@ class Brief:
             add_runs(p, caption, cap_size, INK)
         p = tf.add_paragraph()
         p.space_before = Pt(2)
-        ref = B.make_ref(paper, "")
-        src = "출처: " + ", ".join(x for x in (ref["author"], ref["date"]) if x) + f", Fig. {fig['n']}"
+        label, url = self.links.get(paper["slug"], ("", ""))
+        if label:
+            r = p.add_run()
+            r.text = label
+            _set_font(r, 8, color=LINK)
+            r.hyperlink.address = url
+        tail = f"  ·  Fig. {fig['n']}"
         if sub_name:
-            src += f"  ·  {sub_name}"
-        add_runs(p, src, 8, MUTED)
+            tail += f"  ·  {sub_name}"
+        r = p.add_run()
+        r.text = tail
+        _set_font(r, 8, color=MUTED)
         self.sources.append((len(self.prs.slides), paper, fig))
 
     def bar_chart(self, s, x, y, w, h, labels, values, color, *, horizontal=True, size=10,
@@ -483,13 +619,13 @@ class Brief:
         ch = gf.chart
         ch.has_legend = False
         ch.has_title = False
-        ch.font.size = Pt(size)
+        ch.font.size = Pt(round(size * FS))
         ch.font.name = FONT_LATIN
         plot = ch.plots[0]
         plot.gap_width = 60
         plot.has_data_labels = True
         dl = plot.data_labels
-        dl.font.size = Pt(size)
+        dl.font.size = Pt(round(size * FS))
         dl.font.color.rgb = INK
         dl.number_format = number_format
         dl.number_format_is_linked = False
@@ -506,7 +642,7 @@ class Brief:
         va.visible = False
         va.has_major_gridlines = False
         va.maximum_scale = max(values) * (1.18 if horizontal else 1.22)
-        ca.tick_labels.font.size = Pt(size)
+        ca.tick_labels.font.size = Pt(round(size * FS))
         ca.tick_labels.font.color.rgb = INK
         ca.format.line.color.rgb = LINE
         ca.has_major_gridlines = False
@@ -529,16 +665,16 @@ class Brief:
         self.s_cover()
         self.s_summary()
         self.s_toc()
-        self.divider("I", "코퍼스와 방법", "무엇을, 어떻게 읽었나", ["연도 분포", "분류 방법", "지형도", "10개 지형의 규모"])
+        self.divider("I", "코퍼스와 방법", "대상과 분류 절차", ["연도 분포", "분류 방법", "지형도", "10개 지형의 규모"])
         self.s_corpus()
         self.s_method()
         self.s_landscape_map()
         self.s_landscape_sizes()
-        self.divider("II", "10개 지형", "대분류별 전선과 대표 연구", [CATEGORY_KO.get(x["category"], x["category"]) for x in c["cats"]])
+        self.divider("II", "10개 지형", "대분류별 전선 · 대표 연구", [CATEGORY_KO.get(x["category"], x["category"]) for x in c["cats"]])
         for i, cat in enumerate(c["cats"], start=1):
             self.s_category_overview(i, cat)
             self.s_category_figures(i, cat)
-        self.divider("III", "흐름과 신호", "지형을 가로지르는 움직임", ["관통 서사", "수렴 신호", "부상과 쇠퇴", "비어 있는 자리"])
+        self.divider("III", "흐름과 신호", "지형 횡단 신호", ["관통 서사", "수렴 신호", "부상과 쇠퇴", "비어 있는 자리"])
         self.s_arc()
         self.s_convergence()
         self.s_riseandfall()
@@ -546,10 +682,10 @@ class Brief:
         self.divider("IV", "검증으로의 전환", "2026년 공통 주제", ["여섯 축", "근거 도판"])
         self.s_verification()
         self.s_verification_evidence()
-        self.divider("V", "정책 제언", "국내 연구기관·기업·정부가 설 자리", ["다섯 가지 행동", "관전 포인트 12개월"])
+        self.divider("V", "정책 제언", "국내 연구기관·기업·정부의 과제", ["다섯 가지 행동", "관전 포인트 12개월"])
         self.s_actions()
         self.s_watchlist()
-        self.divider("부록", "방법 상세와 출처", "", ["분류 방법 상세", "지형-서브카테고리 표", "도판 출처"])
+        self.divider("부록", "방법 상세 · 출처", "", ["분류 방법 상세", "지형-서브카테고리 표", "도판 출처"])
         self.s_appendix_method()
         self.s_appendix_table()
         self.s_appendix_sources()
@@ -570,9 +706,9 @@ class Brief:
         _, tf = textbox(s, M, Inches(1.45), INNER_W, Inches(0.5), inset=0.0)
         add_runs(tf.paragraphs[0], "AI FOR SCIENCE  ·  연구 지형 브리핑", 13, RGBColor(0xB8, 0xC4, 0xD0), bold=True)
         _, tf = textbox(s, M, Inches(2.3), Inches(7.2), Inches(2.3), inset=0.0)
-        add_runs(tf.paragraphs[0], "AI for Science", 42, WHITE, bold=True)
+        add_runs(tf.paragraphs[0], "AI for Science", 42, WHITE, bold=True, scale=False)
         p = tf.add_paragraph()
-        add_runs(p, "2026년 지형도", 42, WHITE, bold=True)
+        add_runs(p, "2026년 지형도", 42, WHITE, bold=True, scale=False)
         p = tf.add_paragraph()
         p.space_before = Pt(12)
         add_runs(p, f"논문 리뷰 코퍼스 {self.ctx.total:,}편이 보여 주는", 17, RGBColor(0xDC, 0xE4, 0xEC))
@@ -582,7 +718,7 @@ class Brief:
         add_runs(tf.paragraphs[0], self.fill(NARRATIVE["cover"]["headline"]), 13, GOLD)
         _, tf = textbox(s, M, H - Inches(0.75), INNER_W, Inches(0.5), inset=0.0, anchor=MSO_ANCHOR.MIDDLE)
         add_runs(tf.paragraphs[0], f"과학기술정보통신부 보고용  |  {date.today().strftime('%Y년 %m월 %d일')}  |  "
-                 f"근거: paper-curation ai4s 코퍼스(리뷰 완료 전수), 사례는 {self.ctx.since}년 이후 우선",
+                 f"paper-curation ai4s 코퍼스(리뷰 완료 전수) · 사례 {self.ctx.since}년 이후 우선",
                  10, RGBColor(0xB8, 0xC4, 0xD0))
         self._footer_no.append(len(self.prs.slides))
         self.footers.append((textbox(s, W - M - Inches(1.2), H - Inches(0.42), Inches(1.2), Inches(0.3), inset=0.0)[1],
@@ -591,15 +727,15 @@ class Brief:
 
     def s_summary(self):
         s = self.slide()
-        self.chrome(s, "한눈에 보기", "핵심 요약", "코퍼스가 말하는 네 가지 숫자와 세 가지 메시지")
+        self.chrome(s, "한눈에 보기", "핵심 요약", "숫자 넷 · 메시지 넷")
         self._num(s)
         ctx = self.ctx
         kw = (INNER_W - Inches(0.6)) / 4
         y = TOP + Inches(0.1)
-        kpis = [(f"{ctx.total:,}편", "리뷰 완료 논문 전수(ai4s 코퍼스)", NAVY),
+        kpis = [(f"{ctx.total:,}편", "리뷰 완료 논문 전수", NAVY),
                 (f"{len(self.corpus['cats'])}개", f"대분류 지형 · 서브카테고리 {ctx.n_subs}개", ACCENT),
-                (f"{ctx.recent_share}%", f"{ctx.since}년 이후 논문 비중 — '현재 전선'에 가까운 코퍼스", GOLD),
-                (f"{ctx.years.get(2026, 0):,}편", "2026년 한 해 논문 — 전년(2025) " + f"{ctx.years.get(2025, 0):,}편의 "
+                (f"{ctx.recent_share}%", f"{ctx.since}년 이후 논문 비중", GOLD),
+                (f"{ctx.years.get(2026, 0):,}편", f"2026년 논문 · 전년 {ctx.years.get(2025, 0):,}편의 "
                  f"{ctx.years.get(2026, 0) / max(1, ctx.years.get(2025, 1)):.1f}배", RED)]
         for i, (num, label, color) in enumerate(kpis):
             self.kpi(s, M + i * (kw + Inches(0.2)), y, kw, Inches(1.45), num, label, color)
@@ -625,10 +761,10 @@ class Brief:
         self.chrome(s, "목차", "발표 구성", "")
         self._num(s)
         parts = [("I", "코퍼스와 방법", "연도 분포 · 분류 방법 · 지형도 · 규모"),
-                 ("II", "10개 지형", "대분류별 개요(차트·대표 도판)와 대표 연구"),
+                 ("II", "10개 지형", "대분류별 개요 · 대표 연구"),
                  ("III", "흐름과 신호", "관통 서사 · 수렴 · 부상/쇠퇴 · 공백"),
-                 ("IV", "검증으로의 전환", "2026년 공통 주제 — 여섯 축과 근거"),
-                 ("V", "정책 제언", "다섯 가지 행동 · 관전 포인트 12개월")]
+                 ("IV", "검증으로의 전환", "여섯 축 · 근거"),
+                 ("V", "정책 제언", "행동 5 · 관전 포인트 12개월")]
         y = TOP + Inches(0.15)
         for i, (no, title, desc) in enumerate(parts):
             yy = y + i * Inches(0.98)
@@ -647,9 +783,9 @@ class Brief:
         rect(s, 0, 0, W, H, NAVY)
         rect(s, 0, 0, Inches(0.35), H, GOLD)
         _, tf = textbox(s, Inches(1.0), Inches(1.5), Inches(3), Inches(1.6), inset=0.0)
-        add_runs(tf.paragraphs[0], no, 72, GOLD, bold=True)
+        add_runs(tf.paragraphs[0], no, 72, GOLD, bold=True, scale=False)
         _, tf = textbox(s, Inches(1.0), Inches(3.2), Inches(11), Inches(1.0), inset=0.0)
-        add_runs(tf.paragraphs[0], title, 36, WHITE, bold=True)
+        add_runs(tf.paragraphs[0], title, 36, WHITE, bold=True, scale=False)
         if subtitle:
             p = tf.add_paragraph()
             add_runs(p, subtitle, 16, RGBColor(0xB8, 0xC4, 0xD0))
@@ -679,7 +815,7 @@ class Brief:
         _, tf = textbox(s, x, TOP + Inches(0.1), w, Inches(1.2), fill=PANEL, inset=0.18, anchor=MSO_ANCHOR.MIDDLE)
         add_runs(tf.paragraphs[0], f"{self.ctx.recent_share}%", 30, NAVY, bold=True)
         p = tf.add_paragraph()
-        add_runs(p, f"{self.ctx.since}년 이후 논문 비중. 이 덱의 사례가 {self.ctx.since}+ 중심인 이유다.", 11, INK)
+        add_runs(p, f"{self.ctx.since}년 이후 논문 비중", 11, INK)
         _, tf = textbox(s, x, TOP + Inches(1.5), w, BOTTOM - TOP - Inches(1.6), inset=0.05)
         first = True
         for pt in NARRATIVE["corpus"].get("points", []):
@@ -689,20 +825,20 @@ class Brief:
             add_runs(p, "•  " + self.fill(pt), 11.5, INK)
         p = tf.add_paragraph()
         p.space_before = Pt(6)
-        add_runs(p, "읽는 법  ", 10, ACCENT, bold=True)
-        add_runs(p, self.fill(NARRATIVE["corpus"]["sowhat"]), 10.5, MUTED)
+        add_runs(p, "시사점  ", 10, ACCENT, bold=True)
+        add_runs(p, self.fill(NARRATIVE["corpus"]["sowhat"]), 10.5, INK)
         self.notes(s, self.prose_notes("corpus"))
 
     def s_method(self):
         s = self.slide()
         self.chrome(s, "I. 코퍼스와 방법", "이 지도는 어떻게 만들어졌나", self.fill(NARRATIVE["method"]["headline"]))
         self._num(s)
-        steps = [("전수 리뷰", f"{self.ctx.total:,}편 본문을 읽고\n한국어 리뷰 작성"),
-                 ("의미 임베딩", "SPECTER2(논문 특화)로\n벡터화"),
-                 ("클러스터링", "UMAP 5차원 축소 →\nHDBSCAN 밀도 군집"),
+        steps = [("전수 리뷰", f"{self.ctx.total:,}편 본문 정독 ·\n한국어 리뷰"),
+                 ("의미 임베딩", "SPECTER2\n논문 특화 벡터"),
+                 ("클러스터링", "UMAP 5차원 →\nHDBSCAN 밀도 군집"),
                  ("서브카테고리 명명", f"c-TF-IDF 키워드 →\n{self.ctx.n_subs}개 이름"),
                  ("대분류 그룹핑", f"{len(self.corpus['cats'])}개 지형 ·\n다중 배정(최대 3)"),
-                 ("타임라인 분석", "기간·상태·대표 도구,\n수렴/공백 신호")]
+                 ("타임라인 분석", "기간·상태·대표 도구\n수렴/공백 신호")]
         n = len(steps)
         gap = Inches(0.18)
         bw = (INNER_W - gap * (n - 1)) / n
@@ -720,12 +856,12 @@ class Brief:
             add_runs(p, d, 9.5, RGBColor(0xDC, 0xE4, 0xEC))
         y += Inches(1.85)
         half = (INNER_W - Inches(0.3)) / 2
-        boxes = [("편수는 두 기준으로 센다",
-                  f"고유 배정(primary 1편 = 1칸, 합 {self.ctx.total:,}편)과 중복 포함(all_categories, 합 {self.ctx.cards:,}편). "
-                  "웹 인덱스의 카테고리 헤더는 중복 포함, 이 덱의 커버리지 산술은 고유 배정 기준이다."),
-                 ("시기·상태·대표 도구의 출처",
-                  "카테고리별 타임라인 분석(논문을 연도순으로 늘어놓고 전환점을 서술)에서 가져왔다. "
-                  "상태는 가속·안정·부상·감소 네 등급.")]
+        boxes = [("편수 기준 두 가지",
+                  f"고유 배정(primary, 1편 = 1칸, 합 {self.ctx.total:,}편) · 중복 포함(all_categories, 합 {self.ctx.cards:,}편). "
+                  "커버리지 산술은 고유 배정 기준"),
+                 ("시기·상태·대표 도구",
+                  "카테고리별 타임라인 분석(연도순 전환점) 기반. "
+                  "상태 등급: 가속·안정·부상·감소")]
         for i, (t, d) in enumerate(boxes):
             self.card(s, M + i * (half + Inches(0.3)), y, half, Inches(1.35), t, d, color=NAVY, size=10.5)
         y += Inches(1.55)
@@ -739,15 +875,14 @@ class Brief:
     def s_landscape_map(self):
         s = self.slide()
         self.chrome(s, "I. 코퍼스와 방법", f"{len(self.corpus['cats'])}개 지형 — 의미 지도",
-                    "SPECTER2 임베딩을 UMAP 으로 펼친 2차원 지도 · 점 하나 = 논문 한 편 · 색 = 고유 배정 대분류")
+                    "SPECTER2 임베딩의 UMAP 2차원 지도 · 점 = 논문 1편 · 색 = 고유 배정 대분류")
         self._num(s)
         png = render_landscape(self.topic, self.corpus["cats"], self.corpus["classification"],
                                CACHE / self.topic / "landscape.png", self.colors)
         fit_picture(s, png, M, TOP + Inches(0.02), INNER_W, BOTTOM - TOP - Inches(0.4), frame=False, pad=0)
         _, tf = textbox(s, M, BOTTOM - Inches(0.36), INNER_W, Inches(0.34), inset=0.0, anchor=MSO_ANCHOR.MIDDLE)
-        add_runs(tf.paragraphs[0], "읽는 법  ", 10, ACCENT, bold=True)
-        add_runs(tf.paragraphs[0], "가까이 놓인 논문은 내용이 닮았다. 경계가 번지는 곳(예: 자율 AI 과학 발견과 LLM 벤치마크 사이)이 "
-                 "III부에서 다룰 '수렴 신호'의 자리다. 라벨 위치는 각 대분류의 중앙값.", 10, MUTED)
+        add_runs(tf.paragraphs[0], "해석  ", 10, ACCENT, bold=True)
+        add_runs(tf.paragraphs[0], "인접 = 내용 유사 · 경계가 번지는 곳(자율 AI 과학 발견 ↔ LLM 벤치마크) = III부 수렴 신호 · 라벨 = 대분류 중앙값", 10, MUTED)
         self.notes(s, self.prose_notes("landscape"))
 
     def s_landscape_sizes(self):
@@ -766,13 +901,13 @@ class Brief:
         ch.has_legend = True
         ch.legend.position = XL_LEGEND_POSITION.BOTTOM
         ch.legend.include_in_layout = False
-        ch.legend.font.size = Pt(10)
-        ch.font.size = Pt(10)
+        ch.legend.font.size = Pt(round(10 * FS))
+        ch.font.size = Pt(round(10 * FS))
         plot = ch.plots[0]
         plot.gap_width = 45
         plot.overlap = -10
         plot.has_data_labels = True
-        plot.data_labels.font.size = Pt(9)
+        plot.data_labels.font.size = Pt(round(9 * FS))
         plot.data_labels.number_format = "#,##0"
         plot.data_labels.number_format_is_linked = False
         plot.data_labels.position = XL_LABEL_POSITION.OUTSIDE_END
@@ -783,7 +918,7 @@ class Brief:
         ch.value_axis.has_major_gridlines = False
         ch.value_axis.maximum_scale = max(c.get("card_count", 0) for c in cats) * 1.15
         ch.category_axis.reverse_order = True
-        ch.category_axis.tick_labels.font.size = Pt(10)
+        ch.category_axis.tick_labels.font.size = Pt(round(10 * FS))
         ch.category_axis.format.line.color.rgb = LINE
         x = M + cw + Inches(0.3)
         w = INNER_W - cw - Inches(0.3)
@@ -887,7 +1022,7 @@ class Brief:
         add_runs(tf.paragraphs[0], self.fill(CATEGORY_LEAD.get(name, ""), cat=cat), 14, NAVY, bold=True)
         y += Inches(0.95)
         _, tf = textbox(s, M, y, lw, Inches(0.26), inset=0.0)
-        add_runs(tf.paragraphs[0], f"상위 서브카테고리 {len(subs)}개 (편수)", 10, MUTED, bold=True)
+        add_runs(tf.paragraphs[0], f"상위 서브카테고리 {len(subs)}개 · 편수", 10, MUTED, bold=True)
         labels = []
         for st in subs:
             tl = B.match_timeline(self.corpus["analyses"], name, st["name"]) or {}
@@ -915,7 +1050,7 @@ class Brief:
         if figs:
             p, fig, point, sub, nar = figs[0]
             self.figure(s, p, fig, rx, TOP + Inches(0.08), rw, BOTTOM - TOP - Inches(0.1),
-                        caption=point or shorten(p.get("essence", ""), 120),
+                        caption=point or nominalize(shorten(p.get("essence", ""), 120)),
                         sub_name=nar.get("ko") or sub["name"], cap_lines=3)
         notes = [self.fill(CATEGORY_LEAD.get(name, ""), cat=cat)]
         for st in subs:
@@ -929,7 +1064,7 @@ class Brief:
         name = cat["category"]
         ko = CATEGORY_KO.get(name, name)
         color = rgb(self.colors[name])
-        self.chrome(s, f"II. 10개 지형  ·  제{i}부", f"{ko} — 대표 연구", f"{self.ctx.since}년 이후 사례 중심 · 도판은 각 논문 리뷰가 '핵심' 으로 고른 Figure", accent=color)
+        self.chrome(s, f"II. 10개 지형  ·  제{i}부", f"{ko} — 대표 연구", f"{self.ctx.since}년 이후 사례 중심", accent=color)
         self._num(s)
         figs = self._cat_fig_cache.get(name) or self._cat_figures(cat, limit=4)
         figs = figs[1:4] if len(figs) > 3 else figs[-3:]
@@ -940,7 +1075,7 @@ class Brief:
         fh = BOTTOM - y - Inches(0.8)
         for j, (p, fig, point, sub, nar) in enumerate(figs):
             x = M + j * (fw + gap)
-            self.figure(s, p, fig, x, y, fw, fh, caption=shorten(point or p.get("essence", ""), 105),
+            self.figure(s, p, fig, x, y, fw, fh, caption=nominalize(shorten(point or p.get("essence", ""), 105)),
                         sub_name=nar.get("ko") or sub["name"], cap_lines=3, title_size=10.5, cap_size=9)
         # 하단: 시사점 스트립 (편수 최대 서브카테고리의 sowhat)
         subs = sorted(cat.get("sub_themes", []), key=lambda x: -x.get("count", 0))[:self.ctx.per_category]
@@ -1026,9 +1161,9 @@ class Brief:
             desc = ko_names(it.get("description", ""))
             pol = ko_names(it.get("policy_implication", "") or "")
             if pol and budget >= 240:
-                body = shorten(desc, budget - 120) + "\n정책 함의 — " + shorten(pol, 100)
+                body = nominalize(shorten(desc, budget - 120)) + "\n정책 함의 — " + nominalize(shorten(pol, 100))
             else:
-                body = shorten(desc, budget)
+                body = nominalize(shorten(desc, budget))
             self.card(s, M + k * (cw + gap), y, cw, top_h, f"{tag} · {it.get('title')}", body,
                       color=col, tag=cats_ko, size=10.5)
         y2 = y + top_h + Inches(0.18)
@@ -1038,7 +1173,7 @@ class Brief:
             label, lst = extra_items
             ew = INNER_W * (0.42 if figs else 1.0)
             per = max(45, text_budget(ew, bot_h - Inches(0.7)) // max(1, len(lst)) - 4)
-            self.card(s, x, y2, ew, bot_h, label, "\n".join("•  " + shorten(ko_names(v), per) for v in lst),
+            self.card(s, x, y2, ew, bot_h, label, "\n".join("•  " + nominalize(shorten(ko_names(v), per)) for v in lst),
                       color=GOLD, size=10.5)
             x += ew + Inches(0.25)
         if figs:
@@ -1046,7 +1181,7 @@ class Brief:
             for k, (p, fig, it) in enumerate(figs):
                 self.figure(s, p, fig, x + k * (fw + Inches(0.25)), y2, fw, bot_h,
                             title=shorten(B.clean_title(p.get("title", "")), 48),
-                            caption=shorten(p.get("essence", ""), 85), sub_name=it.get("title"),
+                            caption=nominalize(shorten(p.get("essence", ""), 85)), sub_name=it.get("title"),
                             cap_lines=2, title_size=9.5, cap_size=8.5)
         _, tf = textbox(s, M, BOTTOM - Inches(0.7), INNER_W, Inches(0.66), anchor=MSO_ANCHOR.MIDDLE, fill=PANEL, inset=0.18)
         add_runs(tf.paragraphs[0], "시사점  ", 10.5, ACCENT, bold=True)
@@ -1079,7 +1214,8 @@ class Brief:
         nar = NARRATIVE["verification"]
         self.chrome(s, "IV. 검증으로의 전환", nar.get("title_ko") or "검증 전환의 축", self.fill(nar["headline"]))
         self._num(s)
-        pts = [self.fill(p) for p in nar.get("points", [])]
+        raw_pts = [self.ctx.fill(p) for p in nar.get("points", [])]   # S번호 유지
+        pts = [strip_srefs(p, self.sub_ko_by_no) for p in raw_pts]
         cols = 3
         rows = (len(pts) + cols - 1) // cols
         gap = Inches(0.22)
@@ -1091,7 +1227,12 @@ class Brief:
             title, systems, body = (m.group(1), m.group(2) or "", m.group(3)) if m else (f"축 {k + 1}", "", pt)
             x = M + (k % cols) * (cw + gap)
             y = TOP + Inches(0.08) + (k // cols) * (ch + gap)
-            self.card(s, x, y, cw, ch, title, body, color=NAVY, number=k + 1, tag=systems.strip(), size=10.5)
+            self.card(s, x, y, cw, ch, title, body, color=NAVY, number=k + 1, tag=systems.strip(), size=12)
+            related = [self.sub_ko_by_no[int(no)] for no in _SREF.findall(raw_pts[k]) if int(no) in self.sub_ko_by_no]
+            if related:
+                _, tf = textbox(s, x + Inches(0.18), y + ch - Inches(0.5), cw - Inches(0.36), Inches(0.42), inset=0.0,
+                                anchor=MSO_ANCHOR.BOTTOM)
+                add_runs(tf.paragraphs[0], "관련 지형  " + " · ".join(related), 8.5, ACCENT)
         _, tf = textbox(s, M, BOTTOM - Inches(0.75), INNER_W, Inches(0.7), anchor=MSO_ANCHOR.MIDDLE, fill=PANEL, inset=0.18)
         add_runs(tf.paragraphs[0], "시사점  ", 10.5, ACCENT, bold=True)
         add_runs(tf.paragraphs[0], self.fill(nar["sowhat"]), 11.5, INK)
@@ -1100,7 +1241,7 @@ class Brief:
     def s_verification_evidence(self):
         s = self.slide()
         nar = NARRATIVE["verification"]
-        self.chrome(s, "IV. 검증으로의 전환", "근거 — 검증 전환을 보여 주는 연구", "여섯 축에서 호명된 시스템의 논문 도판")
+        self.chrome(s, "IV. 검증으로의 전환", "근거 — 검증 전환 대표 연구", "여섯 축의 대표 시스템")
         self._num(s)
         refs = B.refs_by_names(nar.get("refs") or [], self.corpus["papers"], "", self.ctx.since, limit=12)
         by_slug = {p["slug"]: p for p in self.corpus["papers"]}
@@ -1125,32 +1266,25 @@ class Brief:
                     cap = (f"[{m.group(1)}] " + m.group(2)) if m else pt
                     break
             self.figure(s, p, fig, M + j * (fw + gap), y, fw, BOTTOM - y - Inches(0.1),
-                        caption=cap or shorten(p.get("essence", ""), 120), cap_lines=4, title_size=10.5, cap_size=9)
+                        caption=cap or nominalize(shorten(p.get("essence", ""), 120)), cap_lines=4, title_size=10.5, cap_size=9)
         self.notes(s, self.prose_notes("verification"))
 
     # ── V ──
     _ORDINALS = ["첫째", "둘째", "셋째", "넷째", "다섯째", "여섯째"]
 
-    def _ordinal_segments(self, key):
-        """줄글 본문을 '첫째는 … 둘째는 …' 단위로 잘라 행동 카드의 근거 문단으로 쓴다."""
-        pr = PROSE.get(key) or {}
-        text = " ".join(pr.get("body", []))
-        text = self.fill(text)
-        marks = [(m.start(), i) for i, w in enumerate(self._ORDINALS) for m in re.finditer(w + r"[는은]\s", text)]
-        marks.sort()
-        segs = {}
-        for (pos, i), nxt in zip(marks, marks[1:] + [(len(text), None)]):
-            seg = text[pos:nxt[0]].strip()
-            seg = re.sub(r"^" + self._ORDINALS[i] + r"[는은]\s*", "", seg)
-            seg = seg.split("실행 순서", 1)[0].strip()
-            # '검증기 우선 투자다.' 처럼 제목을 되풀이하는 짧은 첫 문장은 뗀다
-            seg = re.sub(r"^[^.]{2,16}다\.\s*", "", seg)
-            segs.setdefault(i, seg)
-        tail = text[marks[-1][0]:] if marks else ""
-        # '실행 순서도 제안한다. …' 종합 문단: 제안 선언과 마무리 경고는 빼고 순서 설명만
-        m = re.search(r"실행 순서[^.]*\.\s*((?:[^.]*\.){1,3})", tail)
-        order = m.group(1).strip() if m else ""
-        order = re.split(r"마지막으로", order)[0].strip()
+    def _ordinal_segments(self):
+        """ACTION_RATIONALE(브리핑 문체 5문단)에서 '첫째~다섯째' 근거와 '실행 순서' 문단을 뽑는다."""
+        segs, order = {}, ""
+        for para_text in ACTION_RATIONALE:
+            t = self.fill(para_text).strip()
+            if t.startswith("실행 순서"):
+                order = re.sub(r"^실행 순서[^:：]*[:：]?\s*", "", t).strip()
+                continue
+            for i, w in enumerate(self._ORDINALS):
+                m = re.match(r"^" + w + r"[는은]?\s*[:：,]?\s*(.*)$", t, re.S)
+                if m:
+                    segs.setdefault(i, m.group(1).strip())
+                    break
         return segs, order
 
     def s_actions(self):
@@ -1160,7 +1294,7 @@ class Brief:
         self._num(s)
         raw_pts = [self.ctx.fill(p) for p in nar.get("points", [])]   # S번호 유지
         pts = [strip_srefs(p, self.sub_ko_by_no) for p in raw_pts]
-        segs, order = self._ordinal_segments("action")
+        segs, order = self._ordinal_segments()
 
         def _toks(t):
             return {w for w in re.findall(r"[가-힣A-Za-z]{2,}", t)}
@@ -1182,10 +1316,14 @@ class Brief:
             related = [self.sub_ko_by_no[int(no)] for no in _SREF.findall(raw_pts[k]) if int(no) in self.sub_ko_by_no]
             x = M + k * (cw + gap)
             color = NAVY if k < n - 1 else GOLD
-            self.card(s, x, y, cw, ch, title, body, color=color, number=k + 1, size=10.5)
+            by = self.card(s, x, y, cw, ch, title, body, color=color, number=k + 1, size=10.5)
             # 근거 문단(줄글) + 관련 서브카테고리
-            ty = y + Inches(0.66) + Inches(0.22) * 4
+            ty = by + Pt(10.5 * FS) * 1.4 * text_lines(body, cw - Inches(0.36), 10.5) + Inches(0.16)
             seg = seg_for.get(k, "")
+            # 첫 문장이 카드 제목을 되풀이하면('검증기 우선 투자.') 뺀다
+            lead = re.match(r"^([^.]{2,18})\.\s*", seg)
+            if lead and len(_toks(lead.group(1)) & _toks(title)) >= 1:
+                seg = seg[lead.end():]
             if seg:
                 _, tf = textbox(s, x + Inches(0.18), ty, cw - Inches(0.36), ch - (ty - y) - Inches(0.6), inset=0.0)
                 add_runs(tf.paragraphs[0], "왜  ", 9, color, bold=True)
@@ -1205,7 +1343,7 @@ class Brief:
     def s_watchlist(self):
         s = self.slide()
         nar = NARRATIVE["action"]
-        self.chrome(s, "V. 정책 제언", "관전 포인트 — 다음 12개월", "이 네 가지가 어떻게 판가름 나는지가 다음 보고의 축이다")
+        self.chrome(s, "V. 정책 제언", "관전 포인트 — 다음 12개월", "다음 보고의 네 축")
         self._num(s)
         items = []
         for label, lst in (nar.get("extra") or {}).items():
@@ -1232,12 +1370,12 @@ class Brief:
         self.chrome(s, "부록 A", "분류 방법 상세", "")
         self._num(s)
         half = (INNER_W - Inches(0.3)) / 2
-        left = [("코퍼스", f"paper-curation 의 ai4s 토픽에 배정된 논문 {self.ctx.total:,}편 전수. 각 편은 본문을 읽고 한국어 리뷰(핵심·성취·방법·독창성·한계)를 남긴 결과물이며, 이 덱의 모든 도판은 그 리뷰가 고른 Figure 다."),
-                ("임베딩·클러스터링", "SPECTER2(논문 특화 임베딩) → UMAP 5차원 → HDBSCAN 밀도 클러스터링. 미세 클러스터를 c-TF-IDF 키워드로 요약하고 LLM 이 이름을 붙여 서브카테고리를 만든 뒤 대분류로 묶었다."),
-                ("배정", "논문마다 primary_category 1개 + all_categories 최대 3개. 편수 집계는 '고유 배정'(primary) 과 '중복 포함'(all) 두 기준을 함께 쓴다.")]
-        right = [("타임라인·상태", "대분류마다 논문을 연도순으로 늘어놓고 전환점을 서술한 뒤 서브카테고리별 기간·상태(가속/안정/부상/감소)·대표 도구를 뽑았다."),
-                 ("인사이트", "대분류를 가로지르는 수렴·부상·쇠퇴·공백 신호와 미개척 영역은 별도 메타 분석에서 왔다."),
-                 ("한계", "편수는 관심의 밀도이지 중요도가 아니다. 코퍼스는 최신 편향을 갖는다(" + f"{self.ctx.since}년 이후 {self.ctx.recent_share}%). 2026년 논문은 피인용이 쌓일 시간이 없어 인용으로 줄 세우지 않았다.")]
+        left = [("코퍼스", f"paper-curation ai4s 토픽 논문 {self.ctx.total:,}편 전수. 편마다 본문 정독 후 한국어 리뷰(핵심·성취·방법·독창성·한계) 작성. 도판 출처 = 각 리뷰"),
+                ("임베딩·클러스터링", "SPECTER2(논문 특화 임베딩) → UMAP 5차원 → HDBSCAN 밀도 군집 → c-TF-IDF 키워드 → LLM 명명 → 대분류 그룹핑"),
+                ("배정", "논문당 primary_category 1개 + all_categories 최대 3개. 집계는 '고유 배정'(primary) 과 '중복 포함'(all) 병기")]
+        right = [("타임라인·상태", "대분류별 논문 연도순 전환점 서술 → 서브카테고리별 기간·상태(가속/안정/부상/감소)·대표 도구 추출"),
+                 ("인사이트", "대분류 횡단 수렴·부상·쇠퇴·공백 신호와 미개척 영역은 별도 메타 분석 결과"),
+                 ("한계", f"편수 = 관심의 밀도, 중요도 아님. 최신 편향({self.ctx.since}년 이후 {self.ctx.recent_share}%). 2026년 논문은 피인용 미축적 → 인용 순위 미사용")]
         for col, items in enumerate((left, right)):
             y = TOP + Inches(0.1)
             ch = (BOTTOM - y - Inches(0.3)) / 3
@@ -1247,7 +1385,7 @@ class Brief:
 
     def s_appendix_table(self):
         s = self.slide()
-        self.chrome(s, "부록 B", "지형 × 상위 서브카테고리", "고유 배정 편수 기준 · 괄호는 상태")
+        self.chrome(s, "부록 B", "지형 × 상위 서브카테고리", "고유 배정 편수 · 괄호 = 상태")
         self._num(s)
         cats = self.corpus["cats"]
         rows = []
@@ -1299,7 +1437,7 @@ class Brief:
         per = 30
         for start in range(0, len(items), per):
             s = self.slide()
-            self.chrome(s, "부록 C", "도판 출처", "슬라이드 번호 · 논문 · Figure · 리뷰 문서 링크(docs/papers/<slug>/)")
+            self.chrome(s, "부록 C", "도판 출처", "슬라이드 · 논문(리뷰 링크) · Figure · DOI/URL")
             self._num(s)
             chunk = items[start:start + per]
             half = (len(chunk) + 1) // 2
@@ -1311,18 +1449,22 @@ class Brief:
                     para_ = para(tf, first)
                     first = False
                     para_.space_after = Pt(4)
-                    ref = B.make_ref(p, "")
-                    meta = ", ".join(x for x in (ref["author"], ref["date"]) if x)
                     r = para_.add_run()
                     r.text = f"S{no:02d}  "
                     _set_font(r, 8.5, True, False, ACCENT)
                     r = para_.add_run()
-                    r.text = shorten(B.clean_title(p.get("title", "")), 70)
+                    r.text = shorten(B.clean_title(p.get("title", "")), 58)
                     _set_font(r, 8.5, False, False, NAVY)
                     r.hyperlink.address = f"../../docs/papers/{p['slug']}/index.html"
+                    label, url = self.links.get(p["slug"], ("", ""))
                     r = para_.add_run()
-                    r.text = f" — {meta} · Fig. {fig['n']}"
+                    r.text = f"  Fig. {fig['n']}  "
                     _set_font(r, 8.5, False, False, MUTED)
+                    if label:
+                        r = para_.add_run()
+                        r.text = label
+                        _set_font(r, 8.5, False, False, LINK)
+                        r.hyperlink.address = url
 
 
 def build_brief(topic, per_category=5, since=2025):
