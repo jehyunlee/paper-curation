@@ -282,27 +282,21 @@ python pipeline/run_feature.py --list
 
 ### 5.1 현재 connections 구현
 
-`topic_modeling.py`의 Step 6과 `extract_insights.py` connections pass는 SPECTER2 cosine 유사도와 title/author BM25를
-RRF(`k=60`)로 결합해 논문당 `RELATION_LINKS`개(기본 5개)까지 고른 뒤, 같은 judge(`judge_if_enabled`, 캐시된 쌍은 무료)가 각 쌍의 리뷰 Essence·Motivation Gap/Approach·첫 Achievement를 읽어
-Claude Haiku에 보낸다. Haiku는 두 논문의 짧은 이름을 모두 부르고 공통 문제·방법·발견과 차이를 말하는 중립적
-한국어 한 문장을 쓰며, 같은 문장이 양쪽 논문 페이지에 표시된다. Curio 최소 리뷰는 connections를 만들지 않는다.
+`topic_modeling.py`의 Step 6, `extract_insights.py` connections pass, 단일 논문 갱신 `refresh_paper_connections.py`는 모두
+**SPECTER2 임베딩 공간에서** 연결을 찾는다. 논문마다 코사인 최근접 이웃 순위와 제목·저자 BM25 순위를 RRF(`k=60`)로
+합쳐 토픽별로 `RELATED_LINKS`편(기본 5편)을 선택한다. 토픽 병합·역방향 연결 후 표시 개수는 이 한도를 넘을 수 있다.
+**LLM은 호출하지 않는다** — 후보 선택·관계 판정·무관 쌍 제거·설명 문장 어디에도
+모델이 없다. 관계 라벨은 방향 없는 `alternative`, 설명은 “SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.83).”처럼
+근거 수치를 밝힌다. 양방향 뷰는 `lib/connections.py`가 만들며, 옛 LLM 판정 항목(`basis`가 `embedding`이 아닌 항목)은 읽지 않는다.
+Curio 최소 리뷰는 connections를 만들지 않는다.
 
-judge는 `this_builds_on_candidate`, `candidate_builds_on_this`, `candidate_applies_this`, `alternative`,
-`counterpoint`, `unrelated`처럼 방향을 명시한 키를 반환하고 코드는 역방향 관계를 유도하며, 불가능한 출판연도
-계보는 `alternative`로 바꾼다. 공개 관계는 `foundation`·`extension`·`application`·`alternative`·`counterpoint`이고
-`unrelated` 쌍은 제거한다. judge가 꺼져 있거나 실패·예산 초과면 후보를 지우지 않고 “관계 미분석 — 임베딩
-유사도로 추천된 후보입니다.”를 정직한 fallback으로 남긴다. 새 모델 판정은 같은 쌍의 이전 메타데이터·legacy
-줄을 대체하며, 퇴역한 SPECTER2 임베딩 문구는 fallback 텍스트로만 보인다.
+코퍼스 전체를 다시 계산하려면 `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`를 실행한다.
+기존 연결 파일 유무와 관계없이 인덱스의 모든 토픽 소속을 포함한다. 토픽별 `_embeddings_cache.json`을 쓰고 빠지거나 변경된
+벡터를 로컬에서 임베딩한다. 공용 exclusive corpus 잠금 아래 전역 저장소를 원자적으로 교체한 뒤 토픽·`_cross` 뷰,
+논문 페이지, `review.md`의 Related Papers 블록, 네트워크 및 기존 서지 DB를 갱신한다. 빈 결과의 이전 연결도 지운다.
+`--recompute --dry-run`은 파일을 쓰거나 임베딩하지 않고 계획만 출력한다. API 비용은 없다.
 
-`RELATION_JUDGE=on|off`(기본 `on`), `RELATION_JUDGE_MODEL`(기본 `claude-haiku-4-5`),
-`RELATION_JUDGE_MAX_USD`(기본이자 실행당 하드 상한 `5.0`), `RELATION_JUDGE_WORKERS`(기본 `6`)로 제어하고,
-`extract_insights.py --no-relation-judge`로 judge를 끈다. Anthropic 키는 환경변수 또는 `lib.credentials`를
-통한 OS keyring에서 읽는다. `docs/papers/.llm_cache/relation_pairs/`의 공유 캐시는 프롬프트 버전·모델·양쪽
-slug·양쪽 profile hash로 키를 만들므로 새롭거나 바뀐 쌍만 과금된다. 후보 5개면 Haiku 비용은 편당 약 $0.009,
-ai4s 2,709편 전체 실행은 약 $18였다.
-
-이는 리뷰 내용에 대한 모델 판정이며 검증된 인용·인과관계나 과학적 확장의 증거가 아니다. 독자는 두 논문을
-직접 확인해야 한다.
+연결은 임베딩 유사도일 뿐 검증된 인용·인과·확장 관계가 아니다. 독자는 두 논문을 직접 확인해야 한다.
 
 ### 5.2 Curio 컬렉션 전체 처리
 
@@ -311,7 +305,9 @@ Zotero 컬렉션을 우클릭해 **이 컬렉션 전체 처리**를 선택한다
 이 흐름에 포함되지 않는다. 이 경로는 전체 코퍼스를 변경하므로 단일 논문 리뷰와 분리해 실행한다.
 
 Citedby는 Enhanced의 별도 메뉴다. 선택 논문의 DOI에서 OpenAlex·Scopus·Semantic Scholar·arXiv를 조회하고,
-독창성 추출과 선택적 LLM 필터/5W1H를 거쳐 자기완결 HTML 보고서를 만든다. PDF 출력과 Zotero 일괄 등록은
+독창성 추출과 선택적 주제 필터/5W1H를 거쳐 자기완결 HTML 보고서를 만든다. 주제 필터는 `OPENAI_API_KEY`가
+있으면 OpenAI Decision API(`gpt-6-luna`)로 논문별 관련성 확률을 받아 0.5 이상만 남기고, 키가 없으면 LLM JSON
+판정을 쓴다. PDF 출력과 Zotero 일괄 등록은
 지원된다. Zotero 일괄 등록에서는 DOI/arXiv/title 중복을 확인한다. 등록 후 전체 큐레이션이 필요하면 별도 실행으로 이어간다.
 
 ### 5.3 legacy 전체 작업: 명시적 dry-run

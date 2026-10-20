@@ -16,7 +16,7 @@
 
 # --- Core: LLM / web / PDF / image ---
 anthropic
-openai
+openai>=3.35,<4  # client.decisions (Decision API) 는 3.x 부터
 google-genai
 keyring>=25.6,<26
 jsonschema>=4.23,<5

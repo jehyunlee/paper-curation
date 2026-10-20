@@ -15,9 +15,9 @@ class DiagramPromptTests(unittest.TestCase):
     def test_multi_path_phase_row_uses_first_script(self):
         phases = generate_workflow._parse_phase_rows(
             "| 4.5 | `pipeline/topic_modeling.py` + `pipeline/extract_insights.py` + "
-            "`pipeline/lib/related.py` | judge related paper pairs |"
+            "`pipeline/lib/related.py` | find related papers in embedding space |"
         )
-        self.assertEqual(phases, ["Step 4.5: topic_modeling\n  judge related paper pairs"])
+        self.assertEqual(phases, ["Step 4.5: topic_modeling\n  find related papers in embedding space"])
 
     def test_workflow_cat_prompt_has_correct_claude_and_option_facts(self):
         method = generate_workflow.build_method_text()

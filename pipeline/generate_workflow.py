@@ -114,18 +114,18 @@ def build_method_text():
 ### TOOL ECOSYSTEM (show as interconnected logos/icons at the top)
 The system is orchestrated by **Claude Code** (Anthropic's CLI agent) which coordinates five tools:
 - **Zotero** (reference manager, red Z logo): paper collection, PDF storage, linked files
-- **Claude** (Anthropic LLM, Anthropic logo): structured reviews (Sonnet), related-paper relation judge (Haiku), category summaries (Sonnet), timeline narratives (Opus)
+- **Claude** (Anthropic LLM, Anthropic logo): structured reviews (Sonnet), category summaries (Sonnet), timeline narratives (Opus)
 - **PaperBanana** (diagram engine, banana icon): auto-generates per-category research trend timeline diagrams from Claude Opus narratives
 - **Obsidian** (knowledge IDE, purple gem logo): personal notes editing, [[wiki-links]] between papers, Graph View for cross-query knowledge topology
 - **Google Gemini** (Google logo): gemini-embedding-001 for the Deep Research RAG index, figure validation, and Audio Overview TTS
 
-Data flow: Zotero → Claude Code → Claude (reviews and relation judgment) → PaperBanana (timelines) → Deep Research (reader-key RAG Q&A) → Obsidian (compounding knowledge)
+Data flow: Zotero → Claude Code → Claude (reviews) → PaperBanana (timelines) → Deep Research (reader-key RAG Q&A) → Obsidian (compounding knowledge)
 
 Each tool MUST be represented by its recognizable logo/icon. Show Claude Code as the central orchestrator connecting all tools.
 
 ### CORE vs OPTION (CRITICAL — must be visually distinguishable!)
 The pipeline has two tiers. The diagram MUST make the tier of every element obvious at a glance:
-- **CORE (always runs, solid style)**: data collection → structured review → HDBSCAN/UMAP topic modeling (zero LLM calls) → Related Papers connections → category summaries + timelines → Deep Research index → topic index page → local browsing (serve_local) → in-browser Deep Research + Audio Overview.
+- **CORE (always runs, solid style)**: data collection → structured review → HDBSCAN/UMAP topic modeling (zero LLM calls) → Related Papers connections (embedding nearest neighbours, zero LLM calls) → category summaries + timelines → Deep Research index → topic index page → local browsing (serve_local) → in-browser Deep Research + Audio Overview.
 - **OPTION (opt-in, dashed-border zones, each zone labeled with a small "OPTION" badge/ribbon)**:
   * O-1 Content Deploy (`--mode deploy`): Cloudflare Workers + gh-pages redirect stubs + Resend email delivery
   * O-2 Research Insights + Network (`--insights`): cross-category insights analysis + interactive network visualization
@@ -189,7 +189,7 @@ VISUAL_RULES_DEFAULT = """
 - Show recognizable logos/icons for these tools near the stages they power:
   * Claude Code (Anthropic terminal CLI icon) — central orchestrator
   * Zotero (red Z logo) — paper source
-  * Claude (Anthropic logo) — structured reviews, relation judge, category summaries, timelines
+  * Claude (Anthropic logo) — structured reviews, category summaries, timelines
   * PaperBanana (banana icon) — timeline diagram generation
   * Obsidian (purple gem icon) — knowledge compounding destination
   * Google Gemini (Google logo) — Deep Research embeddings + figure validation + TTS
@@ -261,7 +261,7 @@ _CHARACTER_DB = {
     "run_metrics":             ("Metrics",   "plum",    "hairless Sphynx cat at a small dashboard, reading rising citation-count bars", "reads glowing citation bars, plum wings"),
     "build_papers_index":      ("Index",     "amber",   "Abyssinian cat stacking tiny index cards into a filing cabinet", "sorts floating index cards, amber wings"),
     "classify_papers":         ("Classify",  "red",     "calico cat sorting colorful paper cards with both paws, focused expression", "sorts colorful cards, red wings"),
-    "topic_modeling":          ("Related",   "crimson", "a cinnamon Somali cat reading two papers side by side, tying them with a red thread and writing a short note between them to judge one related pair", "reads two scrolls tied by red thread, crimson wings"),
+    "topic_modeling":          ("Related",   "crimson", "a cinnamon Somali cat looking at a star map of paper dots and tying each dot to its nearest neighbours with red threads", "ties nearby dots on a star map with red thread, crimson wings"),
     "build_category_summaries":("Summarize", "coral",   "Siamese cat wearing a monocle, connecting yarn threads on a corkboard", "connects threads between stars, coral wings"),
     "extract_insights":        ("Insights",  "rose",    "Ragdoll cat with a magnifying glass studying a web of connected papers", "traces glowing lines between paper clusters, rose wings"),
     "generate_timelines":      ("Timeline",  "purple",  "gray Russian Blue with a tiny paintbrush in mouth, palette on tail", "holds a paintbrush, purple wings"),
@@ -386,7 +386,7 @@ def main(argv=None):
     log(f"Generating {args.candidates} workflow candidates (21:9, PaperBanana)")
 
     caption = ("Paper Curation Pipeline: Claude Code orchestrates Zotero (paper source), "
-               "Claude (structured reviews, Haiku relation judge, category summaries, timeline narratives), "
+               "Claude (structured reviews, category summaries, timeline narratives), "
                "PaperBanana (category trend timelines), Google Gemini (embedding index, "
                "figure validation, TTS), and Obsidian (knowledge compounding). "
                "Deep Research uses the reader's Anthropic, OpenAI, or Google key. "

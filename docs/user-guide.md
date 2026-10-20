@@ -64,8 +64,7 @@ PYTHONUTF8=1 python pipeline/setup.py
    - 값은 OS 키 저장소로 들어가고, Zotero 설정에는 `credential:<provider>` 참조만 남습니다.
    - 같은 버튼에 **빈 값**을 저장하면 그 키가 삭제됩니다.
    - 버튼이 “먼저 paper-curation과 Python keyring 환경을 연결하세요”라고 하면 1-3을 먼저 끝내세요.
-3. **Anthropic 키도** 저장합니다. Curio Review 생성은 OpenAI·Google을 리뷰 제공자로 골라도 관련 논문 단계에서 Anthropic Sonnet 5.5를 쓰며, 이는 fallback이 아닙니다.
-4. 다른 대화 제공자(OpenAI/Gemini)나 문헌 DB 키(Scopus 등)는 접힌 **다른 대화 제공자 및 선택 기능** 영역에서 같은 방식으로 저장합니다.
+3. 다른 대화 제공자(OpenAI/Gemini)나 문헌 DB 키(Scopus 등)는 접힌 **다른 대화 제공자 및 선택 기능** 영역에서 같은 방식으로 저장합니다.
 
 터미널에서 저장하려면(키를 화면에 표시하지 않음):
 
@@ -95,7 +94,7 @@ PYTHONUTF8=1 python pipeline/setup.py --check-feature review                # �
 
 1. 라이브러리에서 **논문 항목**을 선택합니다(PDF 첨부 줄이 아닌 상위 항목). 로컬 PDF가 첨부되어 있어야 합니다.
 2. 우클릭 → **paper-curation Review 생성**.
-3. 계획 창·OK·취소 없이 내부 준비 상태·자격증명을 검사한 뒤 즉시 실행합니다. Curio는 리뷰 예산을 전달하지 않습니다: PDF 텍스트·그림 추출 → 리뷰 → `review.md` + `index.html` + `bibliography.json` → 코퍼스 등록 → 공유 관련 논문 기능. 제목·초록·그림 캡션·본문 발췌만 선택한 제공자에 전송되고, 이어지는 **관련 논문** 단계는 메타데이터·리뷰 발췌를 Anthropic Sonnet 5.5에 전송합니다. 리뷰 제공자가 OpenAI·Google이어도 Anthropic 자격증명이 필요합니다. 관련 논문은 카테고리 미배정 논문도 포함하며 카테고리 재적합·검색 재구축·타임라인·배포·서지 DB 반영은 하지 않습니다.
+3. 계획 창·OK·취소 없이 내부 준비 상태·자격증명을 검사한 뒤 즉시 실행합니다. Curio는 리뷰 예산을 전달하지 않습니다: PDF 텍스트·그림 추출 → 리뷰 → `review.md` + `index.html` + `bibliography.json` → 코퍼스 등록 → 공유 관련 논문 기능. 제목·초록·그림 캡션·본문 발췌만 선택한 제공자에 전송되고, 이어지는 **관련 논문** 단계는 SPECTER2 임베딩 공간에서 로컬로 계산하므로 아무것도 전송하지 않고 키도 필요 없습니다. 관련 논문은 카테고리 미배정 논문도 포함하며 카테고리 재적합·검색 재구축·타임라인·배포·서지 DB 반영은 하지 않습니다.
 4. 최종 **completed** 상태는 등록과 관련 논문 연결까지 끝난 경우입니다. **partial**과 **연결 재시도**가 보이면 리뷰는 등록·보존됐지만 연결이 실패한 것이므로 그 제어로 연결만 재시도합니다. 연결 0개를 성공으로 표시하지 않습니다.
 5. 결과 열기: 우클릭 → **paper-curation Review HTML 열기**.
 
@@ -152,9 +151,14 @@ python pipeline/run_feature.py --request feature-request.json --execute # 실행
 ### 4-1. 검색 색인·조회
 
 `related-papers` 기능은
-`params: {"slug":"SLUG"}`를 받습니다. Anthropic 자격증명이
-필요하고 Curio Review 생성과 같은 관계 판정을 하며 카테고리 재적합·검색
+`params: {"slug":"SLUG"}`를 받습니다. 자격증명이 필요 없고, Curio Review 생성과
+같은 임베딩 공간 최근접 이웃 계산을 하며(LLM 호출 없음) 카테고리 재적합·검색
 재구축은 하지 않습니다.
+
+이 로컬 기능의 요청에는 `provider`와 `credential_ref`를 넣지 않습니다.
+Anthropic 필드를 보내는 옛 Paper Curio는 이 계약에 맞춘 업데이트가 필요합니다.
+그 버전에서 연결 단계가 실패하면 리뷰를 다시 생성하지 말고
+`python pipeline/refresh_paper_connections.py --slug SLUG --execute`로 연결만 갱신합니다.
 
 | 기능 ID | 필요한 것 | 메모 |
 |---------|-----------|------|
@@ -206,7 +210,7 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic my_topic --mode curate --source
 |------|------|-------|
 | `ready` | 계획 완료, 실행 가능 | 내용 확인 후 실행 |
 | `exists` | 파이프라인이 만든 같은 논문의 완성된 리뷰가 이미 있음 | 덮어쓰려면 설정 **기존 review 덮어쓰기** ON |
-| `needs-key` | 선택한 제공자 또는 Anthropic 관계 판정 키가 없음 | 필요한 키를 1-4에서 OS 키 저장소에 저장 |
+| `needs-key` | 선택한 제공자의 키가 없음 | 필요한 키를 1-4에서 OS 키 저장소에 저장 |
 | `needs-runtime` | Python 3.12·PyMuPDF·제공자 SDK·PaperBanana 등 준비 안 됨 | 1-1, 1-3 확인. `setup.py --check-feature <기능>` |
 | `insufficient-data` | PDF 없음/읽기 실패/메타데이터 불일치, 근거 부족 | PDF 첨부·항목 선택 확인 |
 | `budget-exceeded` / `budget-unavailable` | 상한 초과 / 단가 미확정 | 독립 기능 요청의 예산·단가를 조정. 모델은 호출되지 않았음 |
@@ -219,7 +223,7 @@ PYTHONUTF8=1 python pipeline/run_full.py --topic my_topic --mode curate --source
 
 ## 6. 자주 묻는 질문
 
-- **무엇이 외부로 전송되나?** Curio Review 생성은 제목·초록·그림 캡션·본문 발췌(최대 12,000자)를 **선택한 리뷰 제공자**에게 보내고, 이어 메타데이터·리뷰 발췌를 **Anthropic Sonnet 5.5**에 보내 관련 논문을 판정합니다. 후보 수와 출력 토큰 제한은 유지됩니다. 독립 `local_review.py`는 첫 전송과 로컬 리뷰·HTML·서지 출력만 수행합니다. 요약·질의·비교: 선택한 PDF 본문. 읽기·키워드 검색·추출·오프라인 서지 반영은 전송이 없습니다.
+- **무엇이 외부로 전송되나?** Curio Review 생성은 제목·초록·그림 캡션·본문 발췌(최대 12,000자)를 **선택한 리뷰 제공자**에게 보내고. 관련 논문은 임베딩 공간에서 로컬로 계산해 전송이 없습니다. 독립 `local_review.py`는 첫 전송과 로컬 리뷰·HTML·서지 출력만 수행합니다. 요약·질의·비교: 선택한 PDF 본문. 읽기·키워드 검색·추출·오프라인 서지 반영은 전송이 없습니다.
 - **다른 제공자로 자동 재시도하나?** 하지 않습니다. 실패는 상태로 보고되며, 재시도는 사용자가 명시적으로 합니다.
 - **키가 평문으로 남는 곳은?** 없습니다. 설정에는 `credential:<provider>` 참조만, 값은 OS 키 저장소. `credentials.py --operation read`는 플러그인 내부 파이프 전용이므로 터미널에서 실행하지 마세요.
 - **Windows에서 리뷰가 안 된다.** 로컬 리뷰·코퍼스 잠금은 POSIX 파일 잠금이 필요합니다. 읽기와 AI Chat은 동작합니다.

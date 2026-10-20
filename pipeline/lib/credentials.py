@@ -110,6 +110,14 @@ def resolve_credential(
     raise CredentialNotConfigured("credential is not configured")
 
 
+def optional_credential(provider: str) -> str:
+    """`resolve_credential` for optional features: "" when not configured."""
+    try:
+        return resolve_credential(provider)
+    except CredentialsError:
+        return ""
+
+
 def anthropic_client(**kwargs: Any) -> Any:
     """Anthropic client whose key comes from the environment or OS keyring.
 

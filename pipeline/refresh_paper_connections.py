@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Incrementally refresh judged related-paper links for one reviewed paper.
+"""Incrementally refresh one reviewed paper's related-paper links in embedding space.
+
+No model is called: neighbours come from SPECTER2 vectors (plus title/author
+BM25 through RRF) in the paper's topic embedding caches.
 
 ``plan_connections`` is strictly read-only. ``refresh_connections`` owns the
 exclusive corpus-operation lock; callers must not wrap it in another corpus
@@ -10,7 +13,6 @@ from __future__ import annotations
 import argparse
 import contextlib
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -107,7 +109,7 @@ def _cached_embeddings(topic: str, pool: list[dict]) -> tuple[dict[str, Any], di
 
 
 def plan_connections(slug: str) -> dict:
-    """Return the read-only retrieval/judging plan for one registered paper."""
+    """Return the read-only retrieval plan for one registered paper."""
     paper, index, topics = _context(slug)
     from lib.related import max_links
     limit = max_links()
@@ -179,46 +181,31 @@ def _embedding_for_target(slug: str, paper: dict, topic: str, pool: list[dict]) 
     return ordered, np.asarray([mapping[p["slug"]] for p in ordered])
 
 
-def _judge_or_raise(connections: dict, papers: list[dict], topic: str) -> dict:
-    """Use the existing judge, but reject its metadata fallback as incomplete."""
-    from lib.credentials import CredentialsError, resolve_credential
-    from lib.relation_judge import DEFAULT_MODEL, judge_connections, pair_cache_dir
-    try:
-        key = resolve_credential("anthropic")
-    except CredentialsError as exc:
-        raise RuntimeError(f"relation judge unavailable: {exc}") from exc
-    try:
-        from anthropic import Anthropic
-    except ImportError as exc:
-        raise RuntimeError("relation judge dependency unavailable") from exc
-    if os.environ.get("RELATION_JUDGE", "on").lower() == "off":
-        raise RuntimeError("relation judge is disabled; candidate relationships are incomplete")
-    old_model = os.environ.get("RELATION_JUDGE_MODEL")
-    os.environ["RELATION_JUDGE_MODEL"] = DEFAULT_MODEL
-    try:
-        judged = judge_connections(connections, papers, topic=topic,
-                                   cache_dir=pair_cache_dir(),
-                                   client=Anthropic(api_key=key, timeout=120, max_retries=0),
-                                   log=lambda _m: None)
-    finally:
-        if old_model is None:
-            os.environ.pop("RELATION_JUDGE_MODEL", None)
-        else:
-            os.environ["RELATION_JUDGE_MODEL"] = old_model
-    # A processed empty list is valid only when the judge actually resolved all
-    # candidates as unrelated. Any surviving metadata entry means a call or cache failure.
-    if any(e.get("basis") == "metadata" for items in judged.values() for e in items):
-        raise RuntimeError("relation judge incomplete (dependency, cache, or call failure)")
-    return judged
+def _published_topic_connections() -> dict[str, dict]:
+    """Snapshot unfiltered consumer views before legacy edges are discarded."""
+    docs_root = Path(DOCS_DIR).resolve()
+    views = {}
+    for path in sorted(docs_root.glob("*/_paper_connections.json")):
+        view = _load_json(_inside(docs_root, path, kind="topic connections"))
+        if (not isinstance(view, dict)
+                or any(not isinstance(source, str) or not isinstance(entries, list)
+                       or any(not isinstance(entry, dict)
+                              or not isinstance(entry.get("slug"), str)
+                              for entry in entries)
+                       for source, entries in view.items())):
+            raise ValueError(f"invalid published connections for topic: {path.parent.name}")
+        views[path.parent.name] = view
+    return views
 
 
 def _refresh_connections_locked(slug: str) -> dict:
-    """Embed/retrieve/judge one paper and publish its bidirectional views.
+    """Embed/retrieve one paper and publish its bidirectional views.
 
     Called only while the exclusive corpus operation lock is held.
     """
     plan = plan_connections(slug)
     paper, index, topics = _context(slug)
+    published_views = _published_topic_connections()
     from lib.related import build_connections, max_links
     from topic_modeling import RELATED_RRF_K, compute_related_candidates
     merged_candidates: dict[str, float] = {}
@@ -239,33 +226,55 @@ def _refresh_connections_locked(slug: str) -> dict:
     selected = sorted(merged_candidates.items(), key=lambda x: (-fused_ranks[x[0]], x[0]))[:max_links()]
     all_papers = {p["slug"]: p for p in index if isinstance(p, dict) and p.get("slug")}
     candidate_papers = [paper] + [all_papers[s] for s, _ in selected if s in all_papers]
-    raw = build_connections({slug: selected}, candidate_papers, topic=topics[0], limit=len(selected))
-    judged = _judge_or_raise(raw, candidate_papers, topics[0])
+    connections = build_connections({slug: selected}, candidate_papers, limit=len(selected))
 
-    from lib.connections import load_global_connections, merge_to_global, sync_topic_connections
-    # Replacing this source's primary-topic claims can remove reverse links
-    # from old neighbours too; their topic views and pages are affected even
-    # when every newly retrieved candidate is judged unrelated.
-    previous = load_global_connections().get(slug, [])
-    affected_slugs = ({slug} | {e["slug"] for e in judged.get(slug, [])}
-                      | {e.get("slug") for e in previous
+    from lib.connections import (build_slug_resolver, load_global_connections,
+                                 make_bidirectional_deduped, merge_to_global,
+                                 sync_topic_connections)
+    # The global loader filters out old model/metadata edges. The published
+    # views are therefore the only remaining record of some removed neighbours,
+    # including reverse-only links, when this refresh finds no replacement.
+    previous = load_global_connections()
+    affected_slugs = ({slug} | {e["slug"] for e in connections.get(slug, [])}
+                      | {e.get("slug") for e in previous.get(slug, [])
                          if e.get("source_topic") == topics[0] and e.get("slug")})
+    for view in published_views.values():
+        affected_slugs.update(e["slug"] for e in view.get(slug, []))
+        affected_slugs.update(source for source, entries in view.items()
+                              if any(e["slug"] == slug for e in entries))
+    affected_slugs.intersection_update(all_papers)
     affected_topics = sorted({t for p in index if isinstance(p, dict) and p.get("slug") in affected_slugs
                               for t in ((p.get("topics") or [])
                                         + ([p["primary_topic"]] if isinstance(p.get("primary_topic"), str) else [])
                                         + list((p.get("classifications") or {})))
                               if isinstance(t, str)})
-    affected_topics = sorted(set(affected_topics) | set(topics))
-    # Publish raw source claims exactly once before deriving every topic view.
+    affected_topics = sorted(set(affected_topics) | set(topics)
+                             | {t for t, view in published_views.items()
+                                if affected_slugs.intersection(view)})
+    old_sources = {source for topic in affected_topics
+                   for source in published_views.get(topic, {}) if source in all_papers}
+    # Publish raw source claims before deriving every topic view.
     # Calling sync on a lexically earlier neighbour topic first would otherwise
     # render its view from stale global state.
-    merge_to_global(judged, source_topic=topics[0])
+    merge_to_global(connections, source_topic=topics[0])
+    current_view = make_bidirectional_deduped(load_global_connections(),
+                                            resolve=build_slug_resolver(all_papers))
+    # Keep deleted published sources explicitly empty, so a newer view clears
+    # an older topic's cached legacy entry. Active reverse-only sources need no
+    # raw key, and unrelated clean sources must not become render targets.
+    cleared = {source: [] for source in sorted(old_sources - current_view.keys())}
+    if cleared:
+        merge_to_global(cleared)
     for topic in affected_topics:
         topic_dir = _inside(Path(DOCS_DIR).resolve(), Path(DOCS_DIR).resolve() / topic,
                             kind="topic")
-        topic_slugs = [p["slug"] for p in _topic_pool(topic, index)]
-        sync_topic_connections({}, topic, topic_slugs,
-                               str(topic_dir), log=lambda _m: None)
+        topic_slugs = (list(all_papers) if topic == "_cross"
+                       else [p["slug"] for p in _topic_pool(topic, index)])
+        view = sync_topic_connections({}, topic, topic_slugs,
+                                      str(topic_dir), log=lambda _m: None) or {}
+        old_view = published_views.get(topic, {})
+        affected_slugs.update(source for source in set(old_view) | set(view)
+                              if source in all_papers and old_view.get(source) != view.get(source))
 
     from review_to_html import _run_review_to_html
     import review_to_html
@@ -276,7 +285,7 @@ def _refresh_connections_locked(slug: str) -> dict:
     outputs = [str(Path(DOCS_DIR) / t / "_paper_connections.json") for t in affected_topics]
     outputs += [str(Path(PAPERS_DIR) / s / "index.html") for s in sorted(affected_slugs)]
     return {"outputs": outputs, "topics": affected_topics,
-            "related_count": len(judged.get(slug, [])), "status": "completed",
+            "related_count": len(connections.get(slug, [])), "status": "completed",
             "rendered": rendered, "candidate_count": len(selected),
             "plan": plan}
 

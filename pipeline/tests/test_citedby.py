@@ -573,10 +573,23 @@ class KeyResolutionTests(unittest.TestCase):
         self.assertEqual(keys["openai"], "sk-2")
 
     def test_alias_env_names(self):
-        with patch.dict(os.environ, {"CLAUDE_API_KEY": "sk-ant-alias"},
-                        clear=True):
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "AIza-alias"},
+                        clear=True), \
+             patch("lib.credentials._keyring") as kr:
+            kr.return_value.get_password.return_value = None
             keys = topic_filter.resolve_keys()
-        self.assertEqual(keys.get("anthropic"), "sk-ant-alias")
+        self.assertEqual(keys, {"google": "AIza-alias"})
+
+    def test_keyring_is_used_and_plaintext_config_is_never_read(self):
+        from unittest.mock import Mock
+        keyring = Mock()
+        keyring.get_password.side_effect = lambda _svc, p: {"openai": "sk-store"}.get(p)
+        with patch.dict(os.environ, {}, clear=True), \
+             patch("lib.credentials._keyring", return_value=keyring), \
+             patch("builtins.open",
+                   side_effect=AssertionError("plaintext config must not be read")):
+            keys = topic_filter.resolve_keys()
+        self.assertEqual(keys, {"openai": "sk-store"})
 
 
 class LlmCascadeTests(unittest.TestCase):
@@ -682,6 +695,14 @@ class BatchResultMappingTests(unittest.TestCase):
 
 
 class TopicFilterTests(unittest.TestCase):
+    """llm_json 캐스케이드 경로 — OpenAI 키가 없어 Decision API 를 타지 않는다."""
+
+    def setUp(self):
+        keys = patch.object(topic_filter, "resolve_keys",
+                            return_value={"anthropic": "k"})
+        keys.start()
+        self.addCleanup(keys.stop)
+
     @staticmethod
     def _papers(n):
         return [{"title": f"P{i}", "abstract": f"abs {i}"} for i in range(n)]
@@ -723,6 +744,119 @@ class TopicFilterTests(unittest.TestCase):
         with patch.object(topic_filter, "llm_json", return_value=payload):
             topic_filter.filter_by_topic(papers, "t")
         self.assertNotIn("topic_reason", papers[0])
+
+
+class _FakeDecisionAnswer:
+    def __init__(self, data):
+        self._data = data
+
+    def model_dump(self):
+        return dict(self._data)
+
+
+class _FakeOpenAI:
+    """`OpenAI(...).decisions.create(...)` 만 흉내 낸다. 호출 인자를 기록한다."""
+
+    calls: list = []
+    answers: list = []
+    error: Exception | None = None
+
+    def __init__(self, **kwargs):
+        self.decisions = self
+
+    def create(self, **kwargs):
+        type(self).calls.append(kwargs)
+        if type(self).error is not None:
+            raise type(self).error
+        from types import SimpleNamespace
+        return SimpleNamespace(answers=[_FakeDecisionAnswer(a)
+                                        for a in type(self).answers])
+
+
+class DecisionTopicFilterTests(unittest.TestCase):
+    """OpenAI 키가 있으면 주제 필터는 Decision API 확률로 판정한다."""
+
+    KEYS = {"openai": "sk-test", "anthropic": "k"}
+
+    def setUp(self):
+        _FakeOpenAI.calls, _FakeOpenAI.answers, _FakeOpenAI.error = [], [], None
+        sdk = patch("openai.OpenAI", _FakeOpenAI)
+        sdk.start()
+        self.addCleanup(sdk.stop)
+
+    @staticmethod
+    def _papers(n):
+        return [{"title": f"P{i}", "abstract": f"abs {i}"} for i in range(n)]
+
+    @staticmethod
+    def _pred(p):
+        return {"type": "predicate", "name": None, "probability": p}
+
+    def test_threshold_selects_and_attaches_probability(self):
+        _FakeOpenAI.answers = [self._pred(0.91), self._pred(0.49),
+                               self._pred(0.5)]
+        with patch.object(topic_filter, "llm_json") as cascade:
+            out = topic_filter.filter_by_topic(self._papers(3), "융합연구",
+                                               keys=self.KEYS)
+        cascade.assert_not_called()
+        self.assertEqual([p["title"] for p in out], ["P0", "P2"])
+        self.assertEqual(out[0]["topic_probability"], 0.91)
+        self.assertNotIn("topic_reason", out[0])
+
+    def test_request_has_one_predicate_per_paper_on_luna(self):
+        _FakeOpenAI.answers = [self._pred(0.1), self._pred(0.1)]
+        topic_filter.filter_by_topic(self._papers(2), "융합연구", keys=self.KEYS)
+        (call,) = _FakeOpenAI.calls
+        self.assertEqual(call["model"], "gpt-6-luna")
+        self.assertEqual([q["type"] for q in call["questions"]],
+                         ["predicate", "predicate"])
+        self.assertIn("[Paper 2]", call["questions"][1]["instructions"])
+        self.assertIn("융합연구", call["input"])
+        self.assertIn("[Paper 2]", call["input"])
+
+    def test_refusal_drops_only_that_paper(self):
+        _FakeOpenAI.answers = [{"type": "refusal", "name": None},
+                               self._pred(0.8)]
+        out = topic_filter.filter_by_topic(self._papers(2), "t", keys=self.KEYS)
+        self.assertEqual([p["title"] for p in out], ["P1"])
+
+    def test_decision_failure_falls_back_to_cascade_for_that_batch(self):
+        _FakeOpenAI.error = RuntimeError("503")
+        payload = {"results": [{"paper": 1, "relevant": True, "reason": "직접"}]}
+        with patch.object(topic_filter, "llm_json", return_value=payload):
+            out = topic_filter.filter_by_topic(self._papers(1), "t", keys=self.KEYS)
+        self.assertEqual(out[0]["topic_reason"], "직접")
+        self.assertNotIn("topic_probability", out[0])
+
+    def test_answer_count_mismatch_is_a_failure(self):
+        _FakeOpenAI.answers = [self._pred(0.9)]
+        with patch.object(topic_filter, "llm_json", return_value=None) as cascade:
+            out = topic_filter.filter_by_topic(self._papers(2), "t", keys=self.KEYS)
+        cascade.assert_called_once()
+        self.assertEqual(out, [])
+
+    def test_cache_replays_without_network(self):
+        _FakeOpenAI.answers = [self._pred(0.7)]
+        with tempfile.TemporaryDirectory() as tmp:
+            first = topic_filter.filter_by_topic(self._papers(1), "t",
+                                                 keys=self.KEYS, cache_dir=tmp)
+            _FakeOpenAI.error = RuntimeError("must not be called")
+            second = topic_filter.filter_by_topic(self._papers(1), "t",
+                                                  keys=self.KEYS, cache_dir=tmp)
+        self.assertEqual(len(_FakeOpenAI.calls), 1)
+        self.assertEqual(first, second)
+
+    def test_question_limit_is_enforced(self):
+        from lib.citedby.decisions import MAX_QUESTIONS, decide
+        with self.assertRaises(ValueError):
+            decide("x", [{"type": "predicate", "instructions": "q"}]
+                   * (MAX_QUESTIONS + 1), key="sk-test")
+
+    def test_export_carries_probability(self):
+        import run_citedby
+        rec = run_citedby._export_paper({"title": "P", "topic_probability": 0.91})
+        self.assertEqual(rec["topic_probability"], 0.91)
+        self.assertIsNone(run_citedby._export_paper({"title": "P"})["topic_probability"])
 
 
 class SummaryTests(unittest.TestCase):
@@ -844,7 +978,8 @@ class AnalysisOrchestrationTests(unittest.TestCase):
         payload = {"results": [{"paper": 1, "relevant": True, "reason": "r"},
                                {"paper": 2, "relevant": False, "reason": ""},
                                {"paper": 3, "relevant": False, "reason": ""}]}
-        with patch.object(topic_filter, "llm_json", return_value=payload):
+        with patch.object(topic_filter, "llm_json", return_value=payload), \
+             patch.object(topic_filter, "resolve_keys", return_value={}):
             out = analysis.run_topic_analysis(papers, topic="t",
                                               make_summaries=False)
         self.assertEqual((out["matched"], out["total"]), (1, 3))
@@ -864,6 +999,7 @@ class AnalysisOrchestrationTests(unittest.TestCase):
                           return_value={"title": "Seed", "doi": "10.1/seed"}), \
              patch("lib.originality_extractor._extract_rule_based",
                    return_value="We propose X."), \
+             patch.object(topic_filter, "resolve_keys", return_value={}), \
              patch.object(topic_filter, "llm_json", return_value={"results": [
                  {"paper": 1, "relevant": True, "reason": "직접 관련"}]}):
             out = analysis.run_citedby(

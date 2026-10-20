@@ -113,7 +113,7 @@ def load_connections(slug: str) -> list[dict]:
     if idx.exists():
         for p in json.loads(idx.read_text(encoding="utf-8")):
             titles[p["slug"]] = p.get("title", p["slug"])
-    labels = {"alternative": "다른 접근", "extension": "후속 연구", "foundation": "기반 연구",
+    labels = {"alternative": "유사 연구", "extension": "후속 연구", "foundation": "기반 연구",
               "counterpoint": "반론/비판", "application": "응용 사례"}
     out = []
     for c in conns_all.get(slug, []):

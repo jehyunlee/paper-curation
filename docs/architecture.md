@@ -35,7 +35,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 카테고리별 논문 목록 + 리뷰 |
-| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: <code>topic_modeling.py</code> Step 6과 <code>extract_insights.py</code> connections pass는 SPECTER2 코사인과 제목·저자 BM25를 RRF(<code>k=60</code>)로 융합한 논문당 최대 5개 후보를 같은 judge(<code>judge_if_enabled</code>)에 통과시킨다. judge는 각 쌍의 Essence·Motivation Gap/Approach·첫 Achievement를 Claude Haiku에 보내, 두 짧은 논문명·공통점·차이를 담은 중립적 한국어 한 문장을 양쪽 페이지에 같은 내용으로 쓴다. judge는 foundation/extension/application/alternative/counterpoint 또는 unrelated를 판정하고 방향은 코드가 반대로 유도하며 불가능한 출판연도 계보는 alternative가 된다. unrelated는 제거하고, 꺼짐·실패·예산 초과 시 “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.”를 남긴다. 관계는 확립된 인과 또는 인용 관계를 뜻하지 않는다.</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
+| **처리 (Core)** | <ul><li>Claude Sonnet이 카테고리 요약·세부 주제 작성</li><li>**같이 보면 좋은 논문**: <code>topic_modeling.py</code> Step 6과 <code>extract_insights.py</code> connections pass는 SPECTER2 코사인과 제목·저자 BM25를 RRF(<code>k=60</code>)로 융합해 토픽별로 논문당 최대 5편을 선택한다. 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있다. LLM은 호출하지 않는다. 관계 라벨은 방향 없는 <code>alternative</code>(유사 연구), 설명은 코사인 유사도 근거이며, 확립된 인과 또는 인용 관계를 뜻하지 않는다.</li><li>Claude Opus가 카테고리별 연구 동향 내러티브 작성</li><li>PaperBanana가 카테고리당 다이어그램 후보를 여러 장 생성하고, Claude 비전 심사가 그중 최적안을 선별 — 카테고리별 색상이 일관되게 배치됐는지, 카테고리의 등장·소멸·융합·분기가 또렷한지, 색상 이름·번호 같은 불필요한 텍스트가 없는지를 기준으로</li></ul> |
 | **처리 (Option O-2, `--insights`)** | <ul><li>크로스카테고리 Research Insights 분석 (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>네트워크 시각화(<code>network.html</code>) 재생성</li></ul> |
 | **출력** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -76,6 +76,7 @@ CLI의 dense/hybrid 질의는 sparse 인덱스를 임베딩 요청 전에 거부
 |------|------|
 | **수집·정규화** | OpenAlex·Scopus·Semantic Scholar·arXiv 결과를 DOI > arXiv ID > 정규화 제목 순으로 병합합니다. 웹 검색 결과도 같은 identity resolver를 거쳐 corpus hit와 중복되지 않습니다. |
 | **근거 선택** | `pdf_corpus.tier_papers()`가 corpus 전처리물 > Zotero PDF > 초록 > 제목 순으로 근거를 선택합니다. Corpus 논문은 기존 section chunk와 embedding을 재사용합니다. |
+| **주제 필터** | `--topic`이 있으면 `topic_filter.filter_by_topic()`이 15편 배치마다 OpenAI Decision API(`lib/citedby/decisions.py`, `gpt-6-luna`)에 논문별 predicate 질문을 보내 관련성 확률을 받고 0.5 이상을 남깁니다(`topic_probability`). 답은 질문 순서대로 오므로 개수 불일치·JSON 파싱 실패가 없고, 출력 토큰이 0입니다. OpenAI 키가 없거나 호출이 실패한 배치는 `llm_json` 캐스케이드(Anthropic → Google → OpenAI Chat)로 판정합니다(`topic_reason`). 5W1H 요약·컬렉션 추천·논문 연결 설명은 문장이 필요하므로 Decision API를 쓰지 않습니다. |
 | **타임라인** | 생성·소멸·분기·융합을 중심으로 종합 narrative와 stream별 설명을 만들고 PaperBanana 후보를 생성·비평해 그림을 고릅니다. 전체 wall-clock 상한은 1800초이며, 실패해도 narrative와 보고서는 보존됩니다. |
 | **Deep(er) Research** | `_citedby_index.json`과 int8 embedding sidecar를 BM25+dense RRF로 검색합니다. 답변 계획·related-paper 탐색·선택적 웹 검색·streaming 응답을 `/api/citedby-answer`가 제공합니다. |
 | **Reference identity** | 웹 citation이 DOI·arXiv·제목으로 corpus와 일치하면 corpus reference로 승격합니다. 본문 `[ref:N]`은 Reference section의 동일 항목을 가리킵니다. |
@@ -254,5 +255,5 @@ Deep Research 질의 -> Obsidian 메모 작성 -> 인덱스 재빌드 -> 다음 
 |------|------|
 | **필수** | Python 3.12 (macOS conda env `py312`), Zotero (API Key + 컬렉션 + PDF) |
 | **API** | Anthropic (Claude Haiku/Sonnet/Opus), Google (Gemini + `gemini-embedding-001` 검색 임베딩), Zotero Web API, Resend (배포 시 Audio Overview 이메일). OpenAI 는 선택 (답변 BYOK·insights fallback) |
-| **Python** | `pip install -r requirements.txt` — anthropic, openai, google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
+| **Python** | `pip install -r requirements.txt` — anthropic, openai (>=3.35, Decision API), google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
 | **선택** | Obsidian (메모/Graph View), PaperBanana (타임라인 이미지), Zotero Desktop (PDF 원클릭) |

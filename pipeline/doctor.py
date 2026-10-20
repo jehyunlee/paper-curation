@@ -186,6 +186,17 @@ def check_packages(rep):
             f"pip install {' '.join(missing_cluster)}",
         )
 
+    rep.section("2c. OpenAI SDK (선택 — Citedby 주제 필터 Decision API)")
+    if not _can_import("openai")[0]:
+        rep.warn("openai 미설치", "OpenAI BYOK 답변·Decision API 주제 필터 불가",
+                 "pip install 'openai>=3.35,<4'")
+    elif not _can_import("openai.resources.decisions")[0]:
+        rep.warn("openai SDK 구버전", "client.decisions 없음(3.35 미만) — 주제 필터가 "
+                 "매 배치 Decision 실패 후 LLM JSON 판정으로 넘어감",
+                 "pip install -U 'openai>=3.35,<4'")
+    else:
+        rep.ok("openai", "client.decisions 사용 가능")
+
 
 # ---------------------------------------------------------------------------
 # 3. Java 런타임 (opendataloader-pdf)
@@ -298,25 +309,35 @@ def check_config(rep, cfg):
 
 
 # ---------------------------------------------------------------------------
-# 5. API 키 (env / config.json)
+# 5. API 키 (환경변수 → OS keyring, `lib.credentials`)
 # ---------------------------------------------------------------------------
-def _resolve_key(cfg, env_names, cfg_keys):
-    """env → config.json 순으로 키를 찾는다. (found_bool, source) 반환. 값은 노출 안 함."""
-    for name in env_names:
-        if os.environ.get(name, "").strip():
-            return True, f"env:{name}"
-    if isinstance(cfg, dict):
-        for k in cfg_keys:
-            if str(cfg.get(k, "")).strip():
-                return True, f"config:{k}"
+# 파이프라인은 config.json 의 평문 키를 읽지 않는다. 남아 있으면 경고만 한다.
+_PLAINTEXT_CONFIG_KEYS = ("anthropic_api_key", "openai_api_key", "google_api_key",
+                          "gemini_api_key", "resend_api_key")
+
+
+def _resolve_key(provider):
+    """파이프라인과 같은 경로로 키를 찾는다. (found_bool, source). 값은 노출 안 함."""
+    if str(PIPELINE_DIR) not in sys.path:
+        sys.path.insert(0, str(PIPELINE_DIR))
+    from lib.credentials import credential_status
+    status = credential_status(provider)
+    if status["configured"]:
+        return True, f"{status['source']}:{status['reference']}"
     return False, ""
 
 
 def check_api_keys(rep, cfg):
     rep.section("5. API 키")
 
+    if isinstance(cfg, dict):
+        stale = [k for k in _PLAINTEXT_CONFIG_KEYS if str(cfg.get(k, "")).strip()]
+        if stale:
+            rep.warn("config.json 평문 키 무시됨", f"{', '.join(stale)} — 파이프라인은 읽지 않음",
+                     "환경변수 또는 OS keyring(credential:<provider>)으로 옮기고 config.json에서 삭제")
+
     # 필수 2종
-    found, src = _resolve_key(cfg, ["ANTHROPIC_API_KEY"], ["anthropic_api_key"])
+    found, src = _resolve_key("anthropic")
     if found:
         rep.ok("ANTHROPIC_API_KEY", f"설정됨 ({src}) — 리뷰·내러티브·Deep Research 답변")
     else:
@@ -326,9 +347,7 @@ def check_api_keys(rep, cfg):
             "export ANTHROPIC_API_KEY=sk-ant-...  (https://console.anthropic.com/settings/keys)",
         )
 
-    found, src = _resolve_key(
-        cfg, ["GOOGLE_API_KEY", "GEMINI_API_KEY"], ["google_api_key", "gemini_api_key"]
-    )
+    found, src = _resolve_key("google")
     if found:
         rep.ok("GOOGLE_API_KEY", f"설정됨 ({src}) — figure 검증·TTS·Deep Research 임베딩")
     else:
@@ -339,16 +358,18 @@ def check_api_keys(rep, cfg):
         )
 
     # 선택
-    found, src = _resolve_key(cfg, ["OPENAI_API_KEY"], ["openai_api_key"])
+    found, src = _resolve_key("openai")
     if found:
-        rep.ok("OPENAI_API_KEY", f"설정됨 ({src}) — reader BYOK 답변 / insights fallback")
+        rep.ok("OPENAI_API_KEY", f"설정됨 ({src}) — reader BYOK 답변 / insights fallback / "
+               "Citedby 주제 필터(Decision API)")
     else:
         rep.warn(
             "OPENAI_API_KEY 미설정 (선택)",
-            "reader BYOK 답변 백엔드 / insights cross-category fallback 에만 사용",
+            "reader BYOK 답변 백엔드 / insights cross-category fallback / "
+            "Citedby 주제 필터(Decision API, 없으면 LLM JSON 판정)에 사용",
         )
 
-    found, src = _resolve_key(cfg, ["CLOUDFLARE_API_TOKEN", "CF_API_TOKEN"], [])
+    found, src = _resolve_key("cloudflare")
     if found:
         rep.ok("CLOUDFLARE_API_TOKEN", f"설정됨 ({src}) — Cloudflare Workers 배포")
     else:
@@ -357,7 +378,7 @@ def check_api_keys(rep, cfg):
             "wrangler deploy (Cloudflare) 에만 필요 — 로컬 운영은 불필요",
         )
 
-    found, src = _resolve_key(cfg, ["CLOUDFLARE_ACCOUNT_ID"], [])
+    found, src = _resolve_key("cloudflare-account")
     if found:
         rep.ok("CLOUDFLARE_ACCOUNT_ID", f"설정됨 ({src}) — Cloudflare 계정 식별")
     else:

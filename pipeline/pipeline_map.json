@@ -171,11 +171,10 @@
           "run_steps": [
             "extract_insights"
           ],
-          "desc": "SPECTER2 + 제목·저자 BM25 후보를 고른 뒤 Claude Sonnet 5.5가 두 리뷰를 읽고 공통점과 차이를 한 문장으로 씁니다. 무관한 쌍은 제거하고 판정 결과는 캐시합니다.",
-          "cost": "paid",
-          "model": "claude-sonnet-5-5",
+          "desc": "SPECTER2 코사인과 제목·저자 BM25 순위를 RRF로 합쳐 토픽별로 논문당 최대 5편을 선택합니다. 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있습니다. LLM 호출 0회.",
+          "cost": "local",
           "inputs": [
-            "review.md"
+            "_embeddings_cache.json"
           ],
           "outputs": [
             "_paper_connections.json"

@@ -190,14 +190,12 @@ def _preflight(feature: dict, request: dict, params: dict) -> dict:
         plan["steps"] = [f"{params['operation']}:{'bm25' if feature_id == 'keyword-search' else 'hybrid'}"]
     elif feature_id == "related-papers":
         from refresh_paper_connections import plan_connections
-        from lib.relation_judge import DEFAULT_MODEL
         try:
             details = plan_connections(params["slug"])
         except ValueError as exc:
             raise FeatureBlocked("insufficient-data", "related-paper corpus inputs are unavailable") from exc
         plan.update(details)
-        plan["cost"] = {"status": "unknown"}
-        plan["model"] = DEFAULT_MODEL
+        plan["cost"] = {"status": "none"}
     elif feature_id == "extract":
         pdf, output = Path(params["pdf_path"]), Path(params["output_dir"])
         if not pdf.is_absolute() or not output.is_absolute():

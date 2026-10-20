@@ -334,8 +334,6 @@ Phase 2 added per-category parallelism for the post-review phase:
 - `CAT_SUMMARY_PARALLEL` (default 8) — Haiku per-category summaries
 - `TIMELINE_NARRATIVE_PARALLEL` (default 8) — Opus per-category narratives
 - `TIMELINE_IMAGE_PARALLEL` (default 4) — PaperBanana per-category images
-- `EXTRACT_INSIGHTS_PARALLEL` (default 4) — Sonnet per-category summaries and connections orchestration
-- `RELATION_JUDGE_WORKERS` (default 6) — concurrent Claude Haiku pair judgements
 
 Wall-clock for finalize phase: ~25 min → ~6 min at Tier 4.
 
@@ -367,35 +365,28 @@ brew install --cask temurin   # Java for opendataloader-pdf
 - **arXiv chronic 429**: `search_papers.py --skip-arxiv` (OpenAlex + S2 only)
 - **OpenDataLoader fallback**: PyMuPDF takes over silently; install
   Temurin Java to get pdffigures2 structure
-- **Related-Papers connections**: `topic_modeling.py` Step 6 and the
-  `extract_insights.py` connections pass both take SPECTER2 cosine plus
-  title/author BM25 ranks fused with RRF (`k=60`), up to `RELATION_LINKS` per
-  paper (default 5), and route them through the same judge
-  (`judge_if_enabled`; cached pairs cost nothing), which reads each pair’s Essence, Motivation
-  Gap/Approach, and first Achievement and asks Claude Haiku for one neutral
-  Korean sentence that names both short paper names and states the shared
-  problem/method/finding and difference. It is shown identically on both pages.
-  Model outcomes map to `foundation`, `extension`, `application`,
-  `alternative`, or `counterpoint`; reverse direction is derived in code and an
-  impossible publication-year lineage becomes `alternative`. `unrelated` pairs
-  are removed. When the judge is off, fails, or reaches budget, retain the
-  candidate as “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” with relation
-  `alternative`.
+- **Related-Papers connections**: `topic_modeling.py` Step 6, the
+  `extract_insights.py` connections pass, and `refresh_paper_connections.py`
+  find connections in SPECTER2 embedding space only: cosine nearest-neighbour
+  ranks fused with title/author BM25 ranks through RRF (`k=60`), up to
+  `RELATED_LINKS` per paper per topic (default 5). Cross-topic unions and reverse
+  links can exceed that displayed count. No LLM is called and no credential is
+  needed. Every edge is `relation: alternative`, `basis: embedding`, with the
+  cosine as evidence and in the reason. `lib.connections.load_global_connections`
+  ignores entries left by the retired LLM relation judges.
 
-  Control it with `RELATION_JUDGE=on|off` (default `on`),
-  `RELATION_JUDGE_MODEL` (default `claude-haiku-4-5`),
-  `RELATION_JUDGE_MAX_USD` (default and hard per-run cap `5.0`), and
-  `RELATION_JUDGE_WORKERS` (default `6`), or pass
-  `extract_insights.py --no-relation-judge`. The Anthropic key is resolved from
-  the environment or OS keyring by `lib.credentials`. Shared cache entries live
-  in `docs/papers/.llm_cache/relation_pairs/` and are keyed by prompt version,
-  model, both slugs, and both profile hashes; only new or changed pairs are
-  charged. Measured cost is about $0.009 per paper with five candidates, or
-  about $18 for all 2,709 ai4s papers. During bibliography release steps,
-  `sync_paper_connections.py --import` imports these links; each
-  `paper_connections` row records its actual basis in `model` (judge model ID,
-  `none:metadata`, or `legacy:unknown`). Model judgements are exploratory, not
-  verified causal or citation relationships.
+  Recompute the whole corpus with
+  `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute` (topic
+  embedding caches; missing/changed vectors embedded locally; global store
+  atomically replaced under the exclusive corpus lease; all indexed topic
+  memberships included, even those without existing connection files).
+  Views (including `_cross`), pages, `review.md` Related Papers blocks, and
+  networks are rebuilt, and the existing bibliography DB is synchronized.
+  `--recompute --dry-run` only reports the plan; it does not extract or embed.
+  `sync_paper_connections.py --import` imports only embedding edges and refuses
+  incomplete inputs before replacing data. Each `paper_connections` row has
+  `model = none:embedding` and JSON `evidence` retaining the numeric cosine.
+  Connections are similarity, not verified causal or citation relationships.
 
 ## Schema v1 frontmatter (Phase 3)
 
@@ -524,6 +515,16 @@ Default behavior and controls:
 - `--pdf-first` applies the evidence order corpus review > Zotero PDF > abstract >
   title. Use `--build-index` with it to write `_citedby_index.json` plus the
   int8 embedding sidecar from those enriched sources.
+- With `--topic`, the topic filter uses the OpenAI Decision API (`gpt-6-luna`)
+  whenever an OpenAI credential resolves (`OPENAI_API_KEY` or `credential:openai`
+  in the OS keyring; plaintext `config.json` keys are never read): one predicate question
+  per paper, 15 papers per call, kept when the probability is at least 0.5
+  (`TOPIC_THRESHOLD` in `lib/citedby/topic_filter.py`). Passing papers carry
+  `topic_probability` in the report export. A batch whose Decision call fails
+  (network, refusal of the whole request, answer-count mismatch) is judged by the
+  existing LLM JSON cascade instead and carries `topic_reason`. Decision answers
+  are cached under the run's LLM cache dir, so a re-run with the same topic makes
+  no call. Requires `openai>=3.35`; `doctor.py` section 2c flags an older SDK.
 - `--serve` reuses a healthy paper-curation server or starts one; `--open` launches
   the generated `http://localhost:8000/...` URL. Do not open the report as
   `file://` when using Deep(er) Research.

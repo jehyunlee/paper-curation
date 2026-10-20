@@ -6,6 +6,11 @@ Topic-specific _paper_connections.json files are derived from global by filterin
 
 This ensures cross-topic connections are preserved regardless of execution order.
 
+Connections are found in embedding space only (``lib.related``): every stored
+edge has ``basis == "embedding"``. Entries written by the retired LLM relation
+judges (``basis`` ``model``/``metadata``/missing) are discarded on load, so no
+view, page, or DB import can surface an LLM-judged connection again.
+
 The global file stores the *raw, directional* edges exactly as generated (one
 ``source_topic``-tagged entry per A→B). The per-topic ``_paper_connections.json``
 files — which every renderer consumes — are derived as a **bidirectional,
@@ -17,6 +22,8 @@ paper connected for several reasons appears once with all reasons listed. See
 import json
 import os
 from collections import OrderedDict
+
+from lib.atomic_io import atomic_write_json
 
 PAPERS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__)))), "docs", "papers")
@@ -49,21 +56,6 @@ def _normalize_relation(relation):
     return "alternative" if relation == "related" else relation
 
 
-# Reasons written by the retired metadata templates. They never described
-# content (cosine, category labels, surname overlap), and some state facts that
-# are wrong, so they are shown as the honest no-model fallback instead.
-_LEGACY_TEMPLATE_PREFIXES = ("SPECTER2 임베딩 유사도", "SPECTER2 유사도")
-
-
-def _demote_legacy_template(reason):
-    from lib.related import METADATA_REASON
-    if (reason.get("basis") or "") in ("", "legacy") and str(
-            reason.get("reason") or "").startswith(_LEGACY_TEMPLATE_PREFIXES):
-        return {**reason, "relation": "alternative", "reason": METADATA_REASON,
-                "basis": "metadata", "model": ""}
-    return reason
-
-
 def _entry_reasons(entry):
     """Normalize a connection entry to reason dictionaries.
 
@@ -72,10 +64,10 @@ def _entry_reasons(entry):
     """
     rs = entry.get("reasons")
     if isinstance(rs, list) and rs:
-        return [_demote_legacy_template({**entry, **r, "relation": _normalize_relation(
-            r.get("relation") or "alternative")}) for r in rs]
-    return [_demote_legacy_template({**entry, "relation": _normalize_relation(
-        entry.get("relation") or "alternative")})]
+        return [{**entry, **r, "relation": _normalize_relation(
+            r.get("relation") or "alternative")} for r in rs]
+    return [{**entry, "relation": _normalize_relation(
+        entry.get("relation") or "alternative")}]
 
 
 def _title_part(slug):
@@ -161,13 +153,11 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
         payload["relation"] = rel
         relmap = buckets.setdefault(src, OrderedDict()).setdefault(tgt, OrderedDict())
         cur = relmap.get(rel)
-        # A content judgement is stronger than retrieval metadata; after that,
-        # a source-perspective reason wins over a synthesized reverse.
-        model = payload["basis"] == "model"
-        if cur is None or (model, is_forward) > (cur[0]["basis"] == "model", cur[1]):
+        # A source-perspective reason wins over a synthesized reverse.
+        if cur is None or (is_forward and not cur[1]):
             relmap[rel] = (payload, is_forward)
 
-    processed = set()   # sources that were judged, even if nothing survived
+    processed = set()   # sources that were processed, even with no neighbour
     for src, conns in conns_by_slug.items():
         if resolve is not None:
             src = resolve(src)
@@ -184,11 +174,7 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
                 _add(src, tgt, forward, True)
                 reverse = dict(forward)
                 reverse["relation"] = _normalize_relation(
-                    entry.get("reverse_relation") or
                     REVERSE_RELATION.get(forward["relation"], forward["relation"]))
-                reverse["reason"] = (entry.get("reverse_reason") if
-                                     entry.get("reverse_reason") is not None else
-                                     forward.get("reason", ""))
                 _add(tgt, src, reverse, False)
 
     result = {}
@@ -196,11 +182,6 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
         items = []
         for tgt, relmap in tgts.items():
             reasons = [dict(rr[0]) for rr in relmap.values()]
-            # A content judgement of this pair supersedes every older claim
-            # about it: a legacy or metadata line with a different relation
-            # would otherwise sit beside the judged one and contradict it.
-            if any(r["basis"] == "model" for r in reasons):
-                reasons = [r for r in reasons if r["basis"] == "model"]
             reasons.sort(key=lambda r: REL_ORDER.get(r["relation"], 9))
             primary = reasons[0]
             items.append({
@@ -214,25 +195,30 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
             })
         items.sort(key=lambda c: (REL_ORDER.get(c["relation"], 9), c["slug"]))
         result[src] = items
-    # A paper whose every candidate was judged unrelated keeps an explicit
-    # empty list: "processed, nothing related" is not the same as "never run".
+    # A processed paper with no neighbour keeps an explicit empty list:
+    # "processed, nothing related" is not the same as "never run".
     for src in processed:
         result.setdefault(src, [])
     return result
 
 
 def load_global_connections():
-    """Load global connections file. Returns empty dict if not found."""
-    if os.path.exists(GLOBAL_CONN_PATH):
-        with open(GLOBAL_CONN_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {}
+    """Load the global store, keeping only embedding-space edges.
+
+    Returns an empty dict if the file is missing.
+    """
+    if not os.path.exists(GLOBAL_CONN_PATH):
+        return {}
+    with open(GLOBAL_CONN_PATH, "r", encoding="utf-8") as f:
+        stored = json.load(f)
+    from lib.related import EMBEDDING_BASIS
+    return {slug: [c for c in conns if c.get("basis") == EMBEDDING_BASIS]
+            for slug, conns in stored.items()}
 
 
 def save_global_connections(connections):
-    """Save global connections file."""
-    with open(GLOBAL_CONN_PATH, "w", encoding="utf-8") as f:
-        json.dump(connections, f, ensure_ascii=False, indent=2)
+    """Replace the global store without exposing a partially written JSON file."""
+    atomic_write_json(GLOBAL_CONN_PATH, connections)
 
 
 def merge_to_global(new_connections, source_topic=None):

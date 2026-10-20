@@ -241,12 +241,10 @@ def collect(
                 f"{identity['title_disagreements']} "
                 f"(worst: {worst['slug'][:40]} — DB {worst['db_title'][:40]!r})")
 
-        # Connections are LLM claims: whether a claim is *true* cannot be
-        # checked here and this gate does not pretend to. What is checkable is
-        # that both endpoints are real papers — the JSON files this replaced
-        # held 79 pairs pointing at papers deleted long ago, with nothing to
-        # notice — and that every row names the model that asserted it, so a
-        # later reader can tell derived data from bibliographic fact.
+        # Connections are embedding neighbours, not verified citations or
+        # lineage. Check endpoint integrity and a nonempty provenance marker
+        # (none:embedding), not the truth of a scientific relationship.
+        # The sync layer validates and preserves numeric cosine evidence.
         if "paper_connections" in tables:
             report["connections"] = scalar(
                 conn, "SELECT COUNT(*) FROM paper_connections")

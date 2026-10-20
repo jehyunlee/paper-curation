@@ -13,7 +13,7 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 | Path | What | Needs | Where |
 |------|------|-------|-------|
 | **Read** | Browse generated reviews, search and timelines; export the public institution table and reports | no key | website · Zotero context menu **Open paper-curation Review HTML** · module panel |
-| **AI** | PDF review, grounded summary/chat/comparison, AI Chat | selected provider; Curio Review generation also needs Anthropic for relations (Anthropic default / OpenAI / Google; summary and chat also run on local Ollama) | Zotero context menu **Review generation** · **Paper Curation modules** · CLI |
+| **AI** | PDF review, grounded summary/chat/comparison, AI Chat | selected provider (Anthropic default / OpenAI / Google; summary and chat also run on local Ollama) | Zotero context menu **Review generation** · **Paper Curation modules** · CLI |
 | **Collection** | Search indexes, metrics, bibliography DB, audio, timelines, Zotero sync, publication, email, full collection processing | per-capability requirements and explicit confirmation | module panel **Collection / Optional features** tabs · `run_feature.py` · `run_full.py` |
 
 Standalone module and CLI tasks follow **plan (requirements, destination, cost) → confirm → execute**.
@@ -21,7 +21,7 @@ Standalone `local_review.py` performs only extraction, review generation, HTML a
 bibliography sidecar output. Curio **Review generation** additionally registers the
 review and runs the shared related-papers feature immediately after internal readiness
 and credential checks. Curio never passes a review budget. This one-click action has no plan dialog, OK, or cancel step;
-it sends metadata and review excerpts to Anthropic Sonnet 5.5. It does not trigger classification, whole-corpus
+related papers are found locally in embedding space, so nothing beyond the review request leaves the machine. It does not trigger classification, whole-corpus
 category refitting, indexes, timelines, deployment, or bibliography-DB integration.
 Failures are never re-sent to another provider, and API keys live in the **OS
 keyring**, not in settings files.
@@ -69,7 +69,7 @@ full-curation stages:
 | Feature | Description |
 |---------|-------------|
 | **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
-| **Related Papers** | SPECTER2 cosine and title/author BM25 are RRF-fused (`k=60`) into up to five candidates per paper, including papers without a category; Claude Sonnet 5.5 receives metadata and review excerpts to judge the relation and write one neutral Korean sentence naming both short paper names, their shared problem/method/finding, and their difference. `unrelated` pairs are removed; an unavailable judgement retains the honest fallback “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” No category refit is required. Existing saved relations are not automatically re-judged; because the cache key includes the model, new Sonnet 5.5 calls do not reuse Haiku judgements. |
+| **Related Papers** | Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF (`k=60`), including papers without a category. Cross-topic unions and reverse links can exceed five displayed neighbours. **No LLM is called** — the reason states the cosine evidence and the relation label is the direction-free `alternative` (similar research). Links are not verified citations or causal relationships. |
 | **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
 | **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
@@ -86,7 +86,8 @@ full-curation stages:
 **Full curate workflow requirements**: a Zotero collection with PDFs and the
 credentials `ZOTERO_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` (environment or
 OS-keyring `credential:<provider>` references). OpenAI is an explicit provider choice
-where the selected feature supports it.
+where the selected feature supports it, and powers the optional Citedby Decision API
+topic filter.
 
 ---
 
@@ -183,7 +184,7 @@ It performs no network checks or full-pipeline run unless an explicit
 
 1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), install the **XPI that matches your Zotero major version** via Zotero **Tools → Plugins** — `paper-curio-zotero10.xpi` for Zotero 10, `paper-curio-zotero9.xpi` for Zotero 9 (also 7 / 8). Every release ships both files with identical features.
 2. In Zotero **Settings → Paper Curio → Output Location**, enter this checkout's path (leave the Python path empty for `py312`).
-3. In **Settings → Paper Curio → API Keys**, save the selected review provider's key **and an Anthropic key** to the OS keyring. The selected provider generates the review; Anthropic Sonnet 5.5 is separately required for its related-papers step and is not a fallback.
+3. In **Settings → Paper Curio → API Keys**, save the selected review provider's key to the OS keyring. The related-papers step runs in embedding space and needs no key.
 4. Right-click a paper item → **paper-curation Review generation** to start immediately after internal readiness and credential checks. The nonmodal progress window remains open until a terminal status, so Zotero reading and importing can continue. A repeat click during generation shows that it is active and offers **Wait** (the default) or **Start over**. After Start over is chosen, the progress window displays restarting while it waits. It cooperatively cancels only after the current Python stage safely finishes atomic publication, completes the old work's reservation cleanup, then regenerates the current paper and unprocessed selected items with overwrite and without the saved review cache. It never starts duplicate concurrent generations, and charges already made are not refunded. Summary, chat, comparison and collection tasks use plan confirmation from **Paper Curation modules**.
 
 Per-screen settings and status messages are explained in the **[User Guide](docs/user-guide.en.md)**.
@@ -228,7 +229,7 @@ Prepare these only when explicitly running the comprehensive curate workflow:
 | Item | Details |
 |------|---------|
 | **Zotero** | [API Key](https://www.zotero.org/settings/keys) as `ZOTERO_API_KEY` or OS-keyring `credential:zotero` + a collection with paper PDFs |
-| **API keys** | `ANTHROPIC_API_KEY` (reviews/insights) and `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS), from the environment or the OS keyring. `RESEND_API_KEY` is only for the explicit `email` capability; `OPENAI_API_KEY` remains optional for reader BYOK / insights paths |
+| **API keys** | `ANTHROPIC_API_KEY` (reviews/insights) and `GOOGLE_API_KEY` (search embeddings `gemini-embedding-001` / figure validation / TTS), from the environment or the OS keyring. `RESEND_API_KEY` is only for the explicit `email` capability; `OPENAI_API_KEY` remains optional for reader BYOK / insights paths and the Citedby Decision API topic filter |
 | **conda env** | `py312` (Python 3.12) — created by the commands below |
 | **Java Runtime** | For `opendataloader-pdf`'s PDF extraction. macOS: `brew install --cask temurin`. Without it the pipeline falls back to PyMuPDF (lower table/structure quality) |
 
@@ -315,7 +316,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | | Description |
 |---|---|
 | **Input** | Per-category paper lists + reviews |
-| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Both Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass route SPECTER2-cosine plus title/author-BM25 RRF (<code>k=60</code>) candidates through the same judge (<code>judge_if_enabled</code>), which sends each pair’s Essence, Motivation Gap/Approach, and first Achievement to Claude Sonnet 5.5, which writes the same neutral Korean one-sentence explanation on both paper pages. It may label links <code>foundation</code>, <code>extension</code>, <code>application</code>, <code>alternative</code>, or <code>counterpoint</code>; direction is derived in code and impossible year lineages become <code>alternative</code>. <code>unrelated</code> pairs are removed, while disabled or failed judgements retain “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” Relations are not verified citations or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
+| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass link each paper to its nearest neighbours in SPECTER2 embedding space, fused with title/author BM25 through RRF (<code>k=60</code>). No LLM is called; the relation is the direction-free <code>alternative</code> and the reason states the cosine evidence. Links are not verified citations or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
 | **Processing (Option O-2, `--insights`)** | <ul><li>Cross-category Research Insights (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>Regenerates the network visualization (<code>network.html</code>)</li></ul> |
 | **Output** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -413,6 +414,10 @@ PYTHONUTF8=1 python pipeline/run_citedby.py \
 - **PaperBanana visualization** — timeline image and narrative are generated by default;
   use `--no-timeline` to skip them
 - **PDF-first evidence tiers** — reviewed corpus > locally held Zotero PDF > abstract > title
+- **Decision API topic filter** — with `--topic` and `OPENAI_API_KEY`, the OpenAI Decision
+  API (`gpt-6-luna`) scores each paper's topic-relevance probability and keeps those at
+  0.5 or above (`topic_probability`). Without the key, or for a batch whose call fails,
+  LLM JSON judging handles it. Requires the `openai>=3.35` SDK
 - **Deep(er) Research** — BM25+dense hybrid retrieval, answer planning, related-paper
   discovery, optional web search, streamed output, and `[ref:N]` citations
 - **Corpus-first identity resolution** — DOI, arXiv ID, and normalized-title matching
@@ -500,7 +505,7 @@ PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --since 2026-04-01 
 
 OpenAlex returns 1k+ items per keyword and dominates the result pool, so missing arXiv rarely degrades coverage.
 
-**3. Related Papers** — candidates are local SPECTER2/title-author-BM25 RRF results, but the connections pass uses Claude Sonnet 5.5 by default. Set `RELATION_JUDGE=off`, use `extract_insights.py --no-relation-judge`, or inspect the Anthropic credential (environment or OS keyring via `lib.credentials`) when a judgement cannot run; the link remains as “관계 미분석 — 임베딩 유사도로 추천된 후보입니다.” The shared cache is `docs/papers/.llm_cache/relation_pairs/`, keyed by prompt version, model, both slugs, and both profile hashes, so only new or changed pairs are charged. Existing saved relations are not automatically re-judged, and new Sonnet 5.5 calls do not reuse Haiku judgements. Candidate-count and output-token limits remain; `RELATION_JUDGE_MODEL` defaults to `claude-sonnet-5-5` and `RELATION_JUDGE_WORKERS` to `6`.
+**3. Related Papers** — connections are SPECTER2 embedding-space neighbours fused with title/author BM25 (RRF), computed locally with no LLM call and no credential. `RELATED_LINKS` sets the per-paper, per-topic selection limit (default 5); unions and reverse links can increase the displayed count. To recompute all indexed topics, re-render pages and networks, and synchronize the existing bibliography DB, run `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`. Add `--dry-run` for a genuinely read-only plan.
 
 ---
 
@@ -586,7 +591,7 @@ Deep Research query -> Obsidian note -> re-index -> your notes cited in next que
 | **Single-PDF review execution** | One review provider credential (Anthropic `claude-sonnet-5` default; OpenAI or Google by explicit choice) in the environment or the OS keyring; macOS/Linux for local reviews |
 | **Explicit full curate workflow** | Zotero collection + PDFs and its Zotero/Anthropic/Google credentials |
 | **Option-specific APIs** | Resend is needed only for explicit email/deploy work; OpenAI and Google are explicit choices for supported registry features |
-| **Python** | `pip install -r requirements.txt` — anthropic, openai, google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
+| **Python** | `pip install -r requirements.txt` — anthropic, openai (>=3.35, Decision API), google-genai, pymupdf, Pillow, requests, pyzotero, opendataloader-pdf, numpy, scikit-learn, joblib, umap-learn, hdbscan, sentence-transformers |
 | **Optional** | Obsidian (notes/Graph View), PaperBanana (timeline images), Zotero Desktop (one-click PDF) |
 
 ---

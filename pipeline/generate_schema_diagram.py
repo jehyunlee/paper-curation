@@ -57,8 +57,11 @@ NOTES = {
         "Identity is the folded name, and ORCID when present. A partial "
         "unique index forbids two rows claiming one ORCID.",
     "paper_connections":
-        "LLM claims, not bibliographic fact. Kept apart from the "
-        "publisher-verified tables, and every row names the model.",
+        "Embedding-space similarity neighbours, not verified research "
+        "relationships or bibliographic facts. SPECTER2 cosine and title/author "
+        "BM25 ranks are RRF-fused for retrieval; structured numeric cosine "
+        "evidence is preserved separately from the human-readable reason. "
+        "No LLM judges or explains these connections.",
 }
 
 

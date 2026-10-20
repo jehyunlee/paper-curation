@@ -1831,15 +1831,13 @@ def _run_topic_index(topic=None, cross=None):
         const fa = paper.first_author || '';
         const authorTag = fa ? (' — ' + fa.split(/\\s+/).slice(-1)[0] + ' et al.') : '';
         const idTag = paper.doi ? (' [DOI: ' + paper.doi + ']') : (paper.arxiv ? (' [arXiv:' + paper.arxiv + ']') : '');
-        const relTag = (s.relation && !s.isSeed)
-          ? (' [연결관계: ' + (RELATION_KO[s.relation] || s.relation) + (s.reason ? (' — ' + s.reason) : '') + ']')
-          : '';
+        const relTag = connectionEvidenceTag(s);
         lines.push('[' + n + '] Paper: "' + paper.title + '"' + authorTag + ' (' + (paper.year || 'n/a') + ', category: ' + (paper.category || 'n/a') + ')' + idTag + relTag + figs + '\\n' + sectionsBlock + originalBlock);
       }
       const deeperNote = deeper
         ? (lang === 'ko'
-            ? '아래에는 질문의 핵심 논문과, 그와 연결된 논문들(기반·후속/확장·대안·응용·반론)이 함께 제공됩니다. 연결 논문에는 [연결관계: 관계 — 이유] 태그가 붙어 있습니다. 단순 나열이 아니라 연구 계보를 짚어 종합하세요: 무엇이 기반이 되었고, 무엇이 이를 후속·확장·응용했으며, 어떤 반론·대안이 제기됐는지 흐름으로 엮고, 후속/반론 관계를 본문에 명시하세요.\\n\\n'
-            : 'Below are the core papers for the question together with their connected papers (foundation / extension / alternative / application / counterpoint). Connected papers carry a [연결관계: relation — reason] tag. Do not merely list them — trace the research lineage: what laid the foundation, what extended/applied it, and what counterarguments or alternatives arose, weaving the follow-up/rebuttal relations explicitly into the prose.\\n\\n')
+            ? '아래에는 질문의 핵심 논문과 임베딩 공간에서 가까운 유사 연구가 함께 제공됩니다. [검색 근거:] 태그는 검색 단서일 뿐, 기반·후속·응용·반론·대안 관계를 검증한 근거가 아닙니다. 논문 발췌 내용을 비교·종합하되, 연구 계보나 논문 사이의 관계는 발췌에 명시된 근거가 있을 때만 서술하세요.\\n\\n'
+            : 'Below are the core papers for the question and their embedding-space neighbours. The [검색 근거:] tags are retrieval hints, not verified evidence of foundation, extension, application, rebuttal, or alternative relationships. Compare and synthesize the excerpts; describe research lineage or relations between papers only when explicitly supported by the excerpts.\\n\\n')
         : '';
       const user = deeperNote + 'Excerpts from paper reviews:\\n\\n' + lines.join('\\n\\n---\\n\\n') + '\\n\\n---\\nQuestion: ' + query;
       return { system: lang === 'ko' ? systemKo : systemEn, user: user };
@@ -2391,13 +2389,19 @@ def _run_topic_index(topic=None, cross=None):
 
     // ── Deeper Research: expand over the paper-connection graph ────────
     // Seed retrieval finds the core papers for the query; we then pull their
-    // KNOWN connected papers (foundation / extension / alternative /
-    // application / counterpoint) from _paper_connections.json and synthesize
-    // across the neighbourhood so the answer traces lineage + counterpoints.
+    // embedding neighbours from _paper_connections.json. Similarity is a
+    // retrieval hint, never evidence of a typed relationship between papers.
     const RELATION_KO = {
-      foundation: '기반', extension: '후속·확장', alternative: '대안',
-      application: '응용', counterpoint: '반론', related: '관련'
+      alternative: '유사 연구'
     };
+
+    function connectionEvidenceTag(s) {
+      if (s.isSeed || s.basis !== 'embedding') return '';
+      const cosine = s.evidence && s.evidence.cosine;
+      return ' [검색 근거: ' + RELATION_KO.alternative + ' (embedding'
+        + (Number.isFinite(cosine) ? ', cosine ' + cosine.toFixed(4) : '')
+        + '); 논문 간 관계 미검증]';
+    }
 
     async function loadConnections() {
       if (DEEP._conn) return DEEP._conn;
@@ -2406,6 +2410,29 @@ def _run_topic_index(topic=None, cross=None):
         DEEP._conn = r.ok ? await r.json() : {};
       } catch (e) { DEEP._conn = {}; }
       return DEEP._conn;
+    }
+
+    function rankConnectedPapers(index, seedSet, conn) {
+      const expand = new Map();
+      for (const seed of seedSet) {
+        const seen = new Set();
+        for (const c of (conn[seed] || [])) {
+          if (!c || c.basis !== 'embedding' || !c.slug || seedSet.has(c.slug)) continue;
+          if (!index.papers[c.slug] || seen.has(c.slug)) continue;
+          seen.add(c.slug);
+          if (!expand.has(c.slug)) {
+            expand.set(c.slug, { slug: c.slug, relation: 'alternative', basis: 'embedding', evidence: {}, count: 0 });
+          }
+          const ex = expand.get(c.slug);
+          ex.count += 1;
+          const cosine = c.evidence && c.evidence.cosine;
+          if (Number.isFinite(cosine) && (!Number.isFinite(ex.evidence.cosine) || cosine > ex.evidence.cosine)) {
+            ex.evidence.cosine = cosine;
+          }
+        }
+      }
+      // Rank only by the number of distinct seeds sharing the neighbour.
+      return Array.from(expand.values()).sort(function(a, b) { return b.count - a.count; }).slice(0, 80);
     }
 
     // Representative chunk {section,text} for a paper slug (Essence-first).
@@ -2422,7 +2449,7 @@ def _run_topic_index(topic=None, cross=None):
       return { section: c.section, text: c.text };
     }
 
-    // Render the expansion structure into #deep-plan (core + connected by relation).
+    // Render the expansion structure into #deep-plan (core + similar papers).
     function deepRenderExpansion(seeds, connected) {
       const wrap = document.getElementById('deep-plan');
       const list = document.getElementById('deep-plan-list');
@@ -2446,13 +2473,13 @@ def _run_topic_index(topic=None, cross=None):
         list.appendChild(li);
       }
       for (const s of seeds) addItem('★ ' + (s.paper.title || s.slug), '핵심');
-      for (const c of connected) addItem((c.paper.title || c.slug), RELATION_KO[c.relation] || c.relation);
+      for (const c of connected) addItem((c.paper.title || c.slug), RELATION_KO.alternative);
       wrap.classList.add('active');
       wrap.style.display = 'block';
     }
 
     // Numbered evidence block for the multi-agent report (curated review
-    // excerpts + relation tags + figure URLs + optional windowed text.md (fullTexts). Numbering
+    // excerpts + retrieval hints + figure URLs + optional windowed text.md (fullTexts). Numbering
     // matches DEEP.currentRefs so [ref:N] stays consistent across all agents.
     function buildEvidenceText(selected, allowSet, fullTexts) {
       const lines = [];
@@ -2468,9 +2495,7 @@ def _run_topic_index(topic=None, cross=None):
         const fa = paper.first_author || '';
         const authorTag = fa ? (' — ' + fa.split(/\\s+/).slice(-1)[0] + ' et al.') : '';
         const idTag = paper.doi ? (' [DOI: ' + paper.doi + ']') : (paper.arxiv ? (' [arXiv:' + paper.arxiv + ']') : '');
-        const relTag = (s.relation && !s.isSeed)
-          ? (' [연결관계: ' + (RELATION_KO[s.relation] || s.relation) + (s.reason ? (' — ' + s.reason) : '') + ']')
-          : '';
+        const relTag = connectionEvidenceTag(s);
         lines.push('[' + n + '] Paper: "' + paper.title + '"' + authorTag + ' (' + (paper.year || 'n/a') + ', category: ' + (paper.category || 'n/a') + ')' + idTag + relTag + figs + '\\n' + sectionsBlock);
         if (fullTexts && fullTexts[s.slug]) {
           lines[lines.length - 1] += '\\n  [원문 발췌 (method·실험·수치 밀집 구간)]:\\n    ' + fullTexts[s.slug];
@@ -2606,42 +2631,37 @@ def _run_topic_index(topic=None, cross=None):
       throw new Error('Unsupported backend: ' + backend);
     }
 
-    // Fallback report outline derived from which relations are present.
+    // Fallback report outline: compare neighbours without inventing relations.
     function defaultSections(all, lang) {
-      const rels = {};
-      for (const s of all) if (!s.isSeed && s.relation) rels[s.relation] = 1;
       const ko = lang === 'ko';
       const secs = [];
-      secs.push(ko ? { title: '연구 배경과 기반', focus: 'foundation·핵심 논문의 문제의식과 기반' }
-                   : { title: 'Background & Foundations', focus: 'foundation papers and the core problem' });
+      secs.push(ko ? { title: '연구 배경과 문제의식', focus: '발췌에 드러난 연구 배경과 핵심 질문' }
+                   : { title: 'Background & Motivation', focus: 'research context and core questions supported by the excerpts' });
       secs.push(ko ? { title: '핵심 접근과 성과', focus: '핵심(seed) 논문들의 방법과 기여' }
                    : { title: 'Core Approaches & Contributions', focus: 'methods and contributions of the core papers' });
-      if (rels.extension || rels.application)
-        secs.push(ko ? { title: '후속 연구와 응용', focus: 'extension·application 논문들의 확장과 적용' }
-                     : { title: 'Extensions & Applications', focus: 'extension/application papers' });
-      if (rels.counterpoint || rels.alternative)
-        secs.push(ko ? { title: '반론과 대안', focus: 'counterpoint·alternative 논문들의 비판과 대안' }
-                     : { title: 'Counterpoints & Alternatives', focus: 'counterpoint/alternative papers' });
+      if (all.some(function(s) { return !s.isSeed; }))
+        secs.push(ko ? { title: '유사 연구 비교', focus: '발췌에 근거한 방법·결과의 공통점과 차이점' }
+                     : { title: 'Comparison with Similar Research', focus: 'similarities and differences in methods and results supported by the excerpts' });
       secs.push(ko ? { title: '종합과 전망', focus: '전체를 아우르는 종합과 향후 방향' }
                    : { title: 'Synthesis & Outlook', focus: 'overall synthesis and outlook' });
       return secs;
     }
 
     // Orchestrator: plan 3-5 report sections (fast model, JSON). Falls back to
-    // a relation-derived outline on any failure.
+    // a neutral comparison outline on any failure.
     async function planReportSections(query, all, aspects, lang, backend, apiKey) {
       const fallback = defaultSections(all, lang);
       const model = resolveModel(backend, 'fast');
       if (!model) return fallback;
       const lst = all.map(function(s, i) {
-        const tag = s.isSeed ? '핵심' : (RELATION_KO[s.relation] || s.relation || '관련');
+        const tag = s.isSeed ? '핵심' : RELATION_KO.alternative;
         return '[' + (i + 1) + '] (' + tag + ') ' + (s.paper.title || s.slug);
       }).join('\\n');
       const aspText = (aspects && aspects.length)
         ? aspects.map(function(a, i) { return '  ' + (i + 1) + '. ' + a; }).join('\\n') : '';
       const sys = (lang === 'ko')
-        ? '당신은 학술 리서치 리포트의 구조를 설계하는 편집장입니다. 조사 계획과 근거 논문 목록(핵심/연결관계 표시)을 보고, 모아진 논문들을 어떻게 연결할지 4~8개 단락으로 세밀하게 구성하세요. 연구 계보(기반→핵심→후속·응용→반론)가 드러나게 하고, 각 단락이 다룰 근거 논문 번호를 refs 배열로 지정하세요 — 모든 근거 논문이 최소 한 단락에는 포함되도록 폭넓게 분배하세요. 오직 JSON 배열만 출력: [{"title":"단락 제목","focus":"한 줄 요지","refs":[1,5,9]}]'
-        : 'You design the structure of an academic research report. Given the investigation plan and the evidence list (core/relation-tagged), organise how the gathered papers connect into 4-8 fine-grained sections revealing the research lineage (foundation→core→extension/application→counterpoint). Assign each section the evidence paper numbers it covers via a refs array — distribute broadly so EVERY evidence paper appears in at least one section. Output ONLY a JSON array: [{"title":"...","focus":"...","refs":[1,5,9]}]';
+        ? '당신은 학술 리서치 리포트의 구조를 설계하는 편집장입니다. 조사 계획과 논문 목록(핵심/유사 연구 표시)을 보고, 질문의 주제·방법·결과를 비교·종합할 4~8개 단락으로 세밀하게 구성하세요. 유사 연구는 임베딩 검색 이웃이지 검증된 기반·후속·반론·대안 관계가 아닙니다. 제목이나 유사도만으로 연구 계보를 추론하지 마세요. 각 단락이 다룰 근거 논문 번호를 refs 배열로 지정하세요 — 모든 근거 논문이 최소 한 단락에는 포함되도록 폭넓게 분배하세요. 오직 JSON 배열만 출력: [{"title":"단락 제목","focus":"한 줄 요지","refs":[1,5,9]}]'
+        : 'You design the structure of an academic research report. Given the investigation plan and paper list (core/similar research), organise 4-8 fine-grained sections comparing and synthesizing the topics, methods, and results relevant to the question. Similar papers are embedding retrieval neighbours, not verified foundation, extension, rebuttal, or alternative relationships. Do not infer research lineage from titles or similarity. Assign each section the evidence paper numbers it covers via a refs array — distribute broadly so EVERY evidence paper appears in at least one section. Output ONLY a JSON array: [{"title":"...","focus":"...","refs":[1,5,9]}]';
       const user = (lang === 'ko' ? '질문: ' : 'Question: ') + query + '\\n\\n'
         + (aspText ? ((lang === 'ko' ? '조사 계획:\\n' : 'Investigation plan:\\n') + aspText + '\\n\\n') : '')
         + (lang === 'ko' ? '근거 논문:\\n' : 'Evidence papers:\\n') + lst + '\\n\\n'
@@ -2680,8 +2700,8 @@ def _run_topic_index(topic=None, cross=None):
       const refSet = (sec.refs && sec.refs.length) ? new Set(sec.refs) : null;
       const evidence = buildEvidenceText(all, refSet, fullTexts);
       const sys = (lang === 'ko')
-        ? '당신은 리서치 리포트의 한 단락을 집필하는 전문 작성자입니다. 아래 번호가 매겨진 발췌문만 근거로, 지정된 단락 주제를 자연스러운 한국어 서술로 작성하세요.\\n\\n인용 규칙(가장 중요):\\n- 논문을 지칭하는 모든 문장에 **반드시** ``[ref:N]`` 마커를 붙이세요(N=발췌 번호). "한 서베이는~", "또 다른 연구는~"처럼 논문을 언급하면서 마커를 빠뜨리면 안 됩니다.\\n- 형식은 **오직 ``[ref:N]``** 만 허용. ``[N]``·"[19]" 같은 맨 대괄호나 논문 제목만 쓰는 것은 금지 — 후처리는 ``[ref:N]`` 만 링크로 변환합니다.\\n- 여러 근거는 ``[ref:1][ref:2]`` 처럼 이어 붙이세요. 예: "He et al.은 ~을 제안했다[ref:3].", "이를 확장한 후속 연구[ref:7]는~", "이에 대한 반론[ref:12]도 제기됐다."\\n\\n출력 규칙:\\n- 단락 제목·머리말 없이 **본문만** 출력. "~하겠습니다"·"먼저 ~ 확인하겠습니다"·"Let me ~"·"The excerpts give me ~" 같은 계획·사고과정 메타를 절대 출력하지 말고 곧바로 한국어 본문 문장부터 시작하세요(영어 메타 문장 금지).\\n- 발췌 밖 지식 금지, 근거 없는 주장 생략. 발췌 논문을 폭넓게 활용하되 단락 주제와 무관한 논문은 인용하지 마세요.\\n- [연결관계:] 태그가 있는 논문은 그 관계를 문장에 녹이세요. 연관 Figure는 ![caption](url) 로 삽입(발췌에 명시된 URL만, 임의 URL 금지).'
-        : 'You write ONE section of a research report from the numbered excerpts below, in natural Korean prose.\\n\\nCITATION RULES (most important):\\n- EVERY sentence that refers to a paper MUST carry a [ref:N] marker (N = excerpt number). Never mention a paper ("one survey…", "another study…") without its [ref:N].\\n- Use ONLY the [ref:N] form. Bare brackets like [19] or [N], or naming a paper with no marker, are forbidden — a post-processor converts ONLY [ref:N] into links.\\n- Chain multiple sources as [ref:1][ref:2].\\n\\nOUTPUT RULES:\\n- Output ONLY the body — no heading, no preamble, and NO planning/meta such as "I will…", "Let me…", "먼저 … 하겠습니다", "The excerpts give me…". Begin directly with the Korean prose (no English meta sentences).\\n- No outside knowledge; omit unsupported claims. Use the papers broadly but do not cite ones irrelevant to this section.\\n- For [연결관계:]-tagged papers weave the relation into the prose. Embed figures with ![caption](url) using only listed URLs.';
+        ? '당신은 리서치 리포트의 한 단락을 집필하는 전문 작성자입니다. 아래 번호가 매겨진 발췌문만 근거로, 지정된 단락 주제를 자연스러운 한국어 서술로 작성하세요.\\n\\n인용 규칙(가장 중요):\\n- 논문을 지칭하는 모든 문장에 **반드시** ``[ref:N]`` 마커를 붙이세요(N=발췌 번호). "한 서베이는~", "또 다른 연구는~"처럼 논문을 언급하면서 마커를 빠뜨리면 안 됩니다.\\n- 형식은 **오직 ``[ref:N]``** 만 허용. ``[N]``·"[19]" 같은 맨 대괄호나 논문 제목만 쓰는 것은 금지 — 후처리는 ``[ref:N]`` 만 링크로 변환합니다.\\n- 여러 근거는 ``[ref:1][ref:2]`` 처럼 이어 붙이세요. 예: "He et al.은 ~을 제안했다[ref:3].", "다른 연구[ref:7]는 ~을 평가했다."\\n\\n출력 규칙:\\n- 단락 제목·머리말 없이 **본문만** 출력. "~하겠습니다"·"먼저 ~ 확인하겠습니다"·"Let me ~"·"The excerpts give me ~" 같은 계획·사고과정 메타를 절대 출력하지 말고 곧바로 한국어 본문 문장부터 시작하세요(영어 메타 문장 금지).\\n- 발췌 밖 지식 금지, 근거 없는 주장 생략. 발췌 논문을 폭넓게 활용하되 단락 주제와 무관한 논문은 인용하지 마세요.\\n- [검색 근거:] 태그는 임베딩 유사도에 따른 검색 단서일 뿐, 기반·후속·반론·대안 관계의 근거가 아닙니다. 방법·결과를 비교·종합하되 연구 계보와 논문 간 관계는 발췌에 명시된 경우에만 서술하세요. 연관 Figure는 ![caption](url) 로 삽입(발췌에 명시된 URL만, 임의 URL 금지).'
+        : 'You write ONE section of a research report from the numbered excerpts below, in natural Korean prose.\\n\\nCITATION RULES (most important):\\n- EVERY sentence that refers to a paper MUST carry a [ref:N] marker (N = excerpt number). Never mention a paper ("one survey…", "another study…") without its [ref:N].\\n- Use ONLY the [ref:N] form. Bare brackets like [19] or [N], or naming a paper with no marker, are forbidden — a post-processor converts ONLY [ref:N] into links.\\n- Chain multiple sources as [ref:1][ref:2].\\n\\nOUTPUT RULES:\\n- Output ONLY the body — no heading, no preamble, and NO planning/meta such as "I will…", "Let me…", "먼저 … 하겠습니다", "The excerpts give me…". Begin directly with the Korean prose (no English meta sentences).\\n- No outside knowledge; omit unsupported claims. Use the papers broadly but do not cite ones irrelevant to this section.\\n- The [검색 근거:] tags are embedding similarity retrieval hints, not evidence of foundation, extension, rebuttal, or alternative relationships. Compare and synthesize methods and results; describe research lineage or relations only when explicitly supported by the excerpts. Embed figures with ![caption](url) using only listed URLs.';
       const lenDir = (lang === 'ko')
         ? '\\n분량 지침: 이 단락을 8~15개 문단(약 1800~3600자)으로 매우 충실하고 자세하게 작성하세요.'
         : '\\nLength: write this section as 8-15 detailed paragraphs (~1500-3000 words).';
@@ -2698,8 +2718,8 @@ def _run_topic_index(topic=None, cross=None):
         return '## ' + d.title + '\\n' + (d.text || (lang === 'ko' ? '(내용 없음)' : '(no content)'));
       }).join('\\n\\n');
       const sys = (lang === 'ko')
-        ? '당신은 여러 단락 초안을 하나의 일관된 한국어 리서치 리포트로 취합하는 책임 편집장입니다. 규칙: (1) ``[ref:N]`` 인용 마커는 반드시 그대로 보존(번호 변경·삭제 금지). (2) 간결한 서론(질문 맥락)과 종합 결론을 추가. (3) **각 단락의 분량과 깊이를 최대한 보존하세요 — 요약·압축하지 말고**, 단락 간 명백히 중복되는 문장만 정리하며 매끄럽게 연결하고 ## 제목으로 구조화. (4) 연구 계보(기반→핵심→후속·응용→반론)가 한눈에 드러나게. (5) 초안에 있던 ![caption](url) figure 는 적절한 위치에 유지하되 새 URL 은 만들지 말 것. (6) 초안에 없는 사실을 새로 지어내지 말 것. (7) 초안의 인라인 웹 출처 링크 ``[source](url)`` 는 그대로 보존(변경·삭제 금지) — 후처리가 번호 레퍼런스로 흡수합니다. (8) **메타·서두 절대 금지**: 역할이나 이 규칙을 복창하지 말고, "~하겠습니다"·"초안을 파악했습니다" 같은 진행 설명 없이 곧바로 리포트 서론 문장부터 출력하세요.'
-        : 'You are the lead editor assembling section drafts into ONE coherent Korean research report. Keep all [ref:N] markers exactly (never renumber or drop them); add a short intro and synthesizing conclusion; PRESERVE the depth and length of each section — do NOT summarize or compress, only trim clearly duplicated sentences across sections; structure with ## headings; make the research lineage (foundation→core→extension/application→counterpoint) clear; keep ![caption](url) figures from the drafts but invent no new URLs; preserve inline [source](url) web-source links from the drafts exactly (never alter or drop them); do not fabricate facts beyond the drafts. Output ONLY the report itself — no preamble, no restating your role or these rules, no "I will…"/"let me…" meta; begin directly with the report intro.';
+        ? '당신은 여러 단락 초안을 하나의 일관된 한국어 리서치 리포트로 취합하는 책임 편집장입니다. 규칙: (1) ``[ref:N]`` 인용 마커는 반드시 그대로 보존(번호 변경·삭제 금지). (2) 간결한 서론(질문 맥락)과 종합 결론을 추가. (3) **각 단락의 분량과 깊이를 최대한 보존하세요 — 요약·압축하지 말고**, 단락 간 명백히 중복되는 문장만 정리하며 매끄럽게 연결하고 ## 제목으로 구조화. (4) 근거에 따른 방법·결과의 비교와 종합을 유지하고, 임베딩 유사도만으로 연구 계보나 기반·후속·반론·대안 관계를 만들지 말 것. (5) 초안에 있던 ![caption](url) figure 는 적절한 위치에 유지하되 새 URL 은 만들지 말 것. (6) 초안에 없는 사실을 새로 지어내지 말 것. (7) 초안의 인라인 웹 출처 링크 ``[source](url)`` 는 그대로 보존(변경·삭제 금지) — 후처리가 번호 레퍼런스로 흡수합니다. (8) **메타·서두 절대 금지**: 역할이나 이 규칙을 복창하지 말고, "~하겠습니다"·"초안을 파악했습니다" 같은 진행 설명 없이 곧바로 리포트 서론 문장부터 출력하세요.'
+        : 'You are the lead editor assembling section drafts into ONE coherent Korean research report. Keep all [ref:N] markers exactly (never renumber or drop them); add a short intro and synthesizing conclusion; PRESERVE the depth and length of each section — do NOT summarize or compress, only trim clearly duplicated sentences across sections; structure with ## headings; preserve evidence-grounded comparisons and synthesis, never invent research lineage or foundation, extension, rebuttal, or alternative relationships from embedding similarity; keep ![caption](url) figures from the drafts but invent no new URLs; preserve inline [source](url) web-source links from the drafts exactly (never alter or drop them); do not fabricate facts beyond the drafts. Output ONLY the report itself — no preamble, no restating your role or these rules, no "I will…"/"let me…" meta; begin directly with the report intro.';
       const user = (lang === 'ko' ? '원 질문: ' : 'Question: ') + query + '\\n\\n'
         + (lang === 'ko' ? '단락 초안:' : 'Section drafts:') + '\\n\\n' + body;
       const spec = { max_tokens: 60000, thinking: 8000 };
@@ -2914,40 +2934,16 @@ def _run_topic_index(topic=None, cross=None):
       // Cap seeds (rank by best RRF) so connected papers get budget.
       const cappedSeeds = Array.from(seedMap.values()).sort(function(a, b) { return b.best - a.best; }).slice(0, 28);
       const seedSet = new Set(cappedSeeds.map(function(s) { return s.slug; }));
-      // 2) Graph expansion — pull connected papers (typed) of the seeds.
-      deepSetStatus('\U0001F578️ 연결된 후속·반론·기반 논문 확장 중...');
+      // 2) Graph expansion — retrieve embedding neighbours of the seeds.
+      deepSetStatus('\U0001F578️ 임베딩 유사 논문 확장 중...');
       const conn = await loadConnections();
-      const expand = new Map();
-      for (const seed of seedSet) {
-        const lst = conn[seed] || [];
-        for (const c of lst) {
-          if (!c || !c.slug || seedSet.has(c.slug)) continue;
-          if (!index.papers[c.slug]) continue;  // must exist in this topic index
-          if (!expand.has(c.slug)) {
-            expand.set(c.slug, { slug: c.slug, relation: c.relation || 'related', reason: c.reason || '', count: 0 });
-          }
-          const ex = expand.get(c.slug);
-          ex.count += 1;
-          // If another seed flags this target as dissent (counterpoint/alternative),
-          // let that relation win the tag + ranking boost so rebuttals aren't buried.
-          if (relBoost(c.relation || 'related') > relBoost(ex.relation)) {
-            ex.relation = c.relation || 'related';
-            ex.reason = c.reason || ex.reason;
-          }
-        }
-      }
-      // Rank by centrality (# seeds linking), gently boosting dissent
-      // (counterpoint / alternative) so rebuttals aren't buried.
-      function relBoost(rel) { return (rel === 'counterpoint' || rel === 'alternative') ? 0.5 : 0; }
-      const connectedRanked = Array.from(expand.values())
-        .sort(function(a, b) { return (b.count + relBoost(b.relation)) - (a.count + relBoost(a.relation)); })
-        .slice(0, 80);
+      const connectedRanked = rankConnectedPapers(index, seedSet, conn);
       const connectedEntries = [];
       for (const c of connectedRanked) {
         const paper = index.papers[c.slug];
         const ch = bestChunkForSlug(index, c.slug);
         if (!paper || !ch) continue;
-        connectedEntries.push({ slug: c.slug, paper: paper, chunks: [ch], best: 0, isSeed: false, relation: c.relation, reason: c.reason });
+        connectedEntries.push({ slug: c.slug, paper: paper, chunks: [ch], best: 0, isSeed: false, relation: c.relation, basis: c.basis, evidence: c.evidence });
       }
       deepRenderExpansion(cappedSeeds, connectedEntries);
       // Evidence set (seeds first, then connected). Renumber refs.
@@ -3937,7 +3933,7 @@ def _run_topic_index(topic=None, cross=None):
         '        <label class="deep-deeper-lbl" title="체크 시: 답변 생성에 웹 검색을 허용합니다 — 관련 뉴스·빅테크 블로그·코퍼스 밖 최신 논문 참조. Anthropic/Gemini 키에서 동작 (OpenAI 키는 미지원). 검색 호출 비용이 소액 추가됩니다. 기본 OFF = 코퍼스 발췌만 사용.">\n'
         '          <input type="checkbox" id="deep-websearch"> &#x1F310; web\n'
         '        </label>\n'
-        '        <label class="deep-deeper-lbl" title="체크 시: 핵심 논문의 연결 그래프(후속·반론·기반·응용)를 따라 확장하고, 단락별 에이전트가 작성한 뒤 오케스트레이터가 취합합니다. 분량 Long·최상위 모델이 자동 적용 (LLM 호출·시간·비용 증가).">\n'
+        '        <label class="deep-deeper-lbl" title="체크 시: 핵심 논문의 임베딩 유사 연구를 추가 검색하고, 단락별 에이전트가 발췌 근거로 작성한 뒤 오케스트레이터가 취합합니다. 유사도가 논문 간 관계를 검증하지는 않습니다. 분량 Long·최상위 모델이 자동 적용 (LLM 호출·시간·비용 증가).">\n'
         '          <input type="checkbox" id="deep-deeper"> Deeper\n'
         '        </label>\n'
         '        <span class="deep-deeper-note" id="deep-deeper-note"></span>\n'

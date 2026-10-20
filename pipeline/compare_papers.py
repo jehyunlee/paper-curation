@@ -45,7 +45,7 @@ _AXES = ["문제 설정과 관점", "방법론", "Originality", "결과와 성�
 
 # 연결 관계의 한글 라벨 (review 페이지와 동일)
 _REL_LABELS = {
-    "alternative": "다른 접근",
+    "alternative": "유사 연구",
     "extension": "후속 연구",
     "foundation": "기반 연구",
     "counterpoint": "반론/비판",
@@ -56,7 +56,7 @@ _REL_LABELS = {
 _REL_COLORS = {
     "기반 연구": "#2374D6",
     "후속 연구": "#2E9E5B",
-    "다른 접근": "#E8890C",
+    "유사 연구": "#E8890C",
     "반론/비판": "#D63423",
     "응용 사례": "#8E44AD",
 }
@@ -333,15 +333,10 @@ def _valid_comp(out):
 
 def compare_llm(papers):
     from anthropic import Anthropic
-    key = os.environ.get("ANTHROPIC_API_KEY")
+    from lib.credentials import optional_credential
+    key = optional_credential("anthropic")
     if not key:
-        try:
-            with open(os.path.join(ROOT, "config.json"), encoding="utf-8") as f:
-                key = json.load(f).get("anthropic_api_key")
-        except Exception:
-            pass
-    if not key:
-        raise SystemExit("ANTHROPIC_API_KEY 없음")
+        raise SystemExit("ANTHROPIC_API_KEY 또는 credential:anthropic 없음")
     client = Anthropic(api_key=key, timeout=300.0, max_retries=4)
     base_prompt = _build_prompt(papers)
     required = ", ".join(_TOOL["input_schema"]["required"])

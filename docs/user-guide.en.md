@@ -65,8 +65,7 @@ The status line at the top of the pane switches to "connected" once the link wor
    - The value goes into the OS keyring; Zotero settings keep only a `credential:<provider>` reference.
    - Saving an **empty value** with the same button deletes the stored key.
    - If the button reports that paper-curation and the Python keyring runtime must be connected first, finish 1-3.
-3. Also save an **Anthropic** key. Curio Review generation uses Anthropic Sonnet 5.5 for the related-papers stage even when OpenAI or Google is the selected review provider; it is not a fallback.
-4. Other chat providers (OpenAI/Gemini) and literature-database keys (Scopus etc.) live in the collapsed **Other chat providers and optional features** section and are saved the same way.
+3. Other chat providers (OpenAI/Gemini) and literature-database keys (Scopus etc.) live in the collapsed **Other chat providers and optional features** section and are saved the same way.
 
 From the terminal (the key is never echoed):
 
@@ -96,7 +95,7 @@ PYTHONUTF8=1 python pipeline/setup.py --check-feature review                # re
 
 1. Select the **paper item** in the library (the parent item, not the PDF attachment row). A local PDF must be attached.
 2. Right-click → **paper-curation Review generation**.
-3. With no plan dialog, OK, or cancel step, internal readiness and credential checks run and then generation starts immediately; Curio never passes a review budget: PDF text/figure extraction → review → `review.md` + `index.html` + `bibliography.json` → corpus registration → shared related-papers feature. Only the title, abstract, figure captions and a text excerpt go to the selected provider; the follow-on **Related papers** step sends metadata and review excerpts to Anthropic Sonnet 5.5. Anthropic credentials are required even when the selected review provider is OpenAI or Google. The latter considers category-unassigned papers and does not refit categories, rebuild search, generate timelines, deploy, or integrate the bibliography DB.
+3. With no plan dialog, OK, or cancel step, internal readiness and credential checks run and then generation starts immediately; Curio never passes a review budget: PDF text/figure extraction → review → `review.md` + `index.html` + `bibliography.json` → corpus registration → shared related-papers feature. Only the title, abstract, figure captions and a text excerpt go to the selected provider; the follow-on **Related papers** step runs locally in SPECTER2 embedding space, transmits nothing, and needs no key. It considers category-unassigned papers and does not refit categories, rebuild search, generate timelines, deploy, or integrate the bibliography DB.
 4. A terminal **completed** status means registration and related-paper links finished. **partial** with **Retry connections** means the review was registered and preserved but linking failed; use that control to retry only links. It is not reported as success with zero links.
 5. Open the result: right-click → **Open paper-curation Review HTML**.
 
@@ -154,9 +153,14 @@ Request format: `{"schema_version":1,"feature":"<capability id>","params":{...},
 ### 4-1. Search indexes and queries
 
 The `related-papers` feature accepts
-`params: {"slug":"SLUG"}`. It needs Anthropic credentials,
-uses the same relation pass as Curio Review generation, and does not
-refit categories or rebuild search.
+`params: {"slug":"SLUG"}`. It needs no credential, runs the same
+embedding-space nearest-neighbour pass as Curio Review generation (no LLM
+call), and does not refit categories or rebuild search.
+
+Omit `provider` and `credential_ref` for this local feature. Older Paper Curio
+versions that send Anthropic fields require a caller update. If their connection
+step fails, preserve the review and refresh only its links with
+`python pipeline/refresh_paper_connections.py --slug SLUG --execute`.
 
 | ID | Needs | Notes |
 |----|-------|-------|
@@ -208,7 +212,7 @@ While a full run holds the corpus, reviews and module tasks on the same corpus w
 |--------|---------|--------|
 | `ready` | Plan complete, executable | Review it, then execute |
 | `exists` | A native pipeline-created completed review already exists | Enable **Overwrite existing reviews** to replace it |
-| `needs-key` | No credential for the selected provider or for Anthropic relation judging | Store the required key in the OS keyring (1-4) |
+| `needs-key` | No credential for the selected provider | Store the required key in the OS keyring (1-4) |
 | `needs-runtime` | Python 3.12, PyMuPDF, provider SDK, PaperBanana etc. not ready | Check 1-1 and 1-3; run `setup.py --check-feature <id>` |
 | `insufficient-data` | PDF missing/unreadable/mismatched, or weak evidence | Check the attachment and the selected item |
 | `budget-exceeded` / `budget-unavailable` | Ceiling exceeded / rates unknown | Adjust the budget and rates for the standalone request. No model was called |
@@ -221,7 +225,7 @@ Plugin error messages include a `[code]` such as `[corpus-busy]`. The wording is
 
 ## 6. FAQ
 
-- **What leaves my machine?** Curio review generation sends title, abstract, figure captions and a text excerpt (up to 12,000 characters) to **the selected review provider**, then metadata and review excerpts to **Anthropic Sonnet 5.5** for related-paper judging. Candidate-count and output-token limits remain. Standalone `local_review.py` performs only the first transfer and local review/HTML/bibliography output. Summary/chat/comparison: the selected PDF text. Reading, keyword search, extraction and offline bibliography updates transmit nothing.
+- **What leaves my machine?** Curio review generation sends title, abstract, figure captions and a text excerpt (up to 12,000 characters) to **the selected review provider**. Related papers are computed locally in embedding space and transmit nothing. Standalone `local_review.py` performs only the first transfer and local review/HTML/bibliography output. Summary/chat/comparison: the selected PDF text. Reading, keyword search, extraction and offline bibliography updates transmit nothing.
 - **Is another provider tried automatically?** No. Failures are reported as status; retries are explicit.
 - **Where could a key remain in plaintext?** Nowhere. Settings hold only `credential:<provider>` references; values live in the OS keyring. `credentials.py --operation read` is a private plugin pipe — do not run it in a terminal.
 - **Reviews fail on Windows.** Local reviews and corpus locks need POSIX file locking. Reading and AI Chat work.

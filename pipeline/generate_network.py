@@ -482,7 +482,7 @@ let colorBy = "cat"; // "cat" or "sub"
 const catSubs = {cat_subs_json};
 const relColors = {json.dumps(RELATION_COLORS)};
 const relLabels = {{
-  alternative:"\\uD83D\\uDD04 \\uB2E4\\uB978 \\uC811\\uADFC",
+  alternative:"\\uD83D\\uDD04 \\uC720\\uC0AC \\uC5F0\\uAD6C",
   extension:"\\uD83D\\uDD17 \\uD6C4\\uC18D \\uC5F0\\uAD6C",
   foundation:"\\uD83C\\uDFDB \\uAE30\\uBC18 \\uC5F0\\uAD6C",
   counterpoint:"\\u2696\\uFE0F \\uBC18\\uB860/\\uBE44\\uD310",

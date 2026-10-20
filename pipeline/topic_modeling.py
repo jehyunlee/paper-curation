@@ -1031,18 +1031,13 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
     # Step 6
     if not skip_connections:
         log("\n" + "=" * 50)
-        log("STEP 6: RELATED PAPERS (SPECTER2 + BM25 candidates, content judge)")
+        log("STEP 6: RELATED PAPERS (SPECTER2 embedding space + title/author BM25)")
         log("=" * 50)
-        # Retrieval picks candidates in embedding space; the content judge
-        # explains them. This step rewrites the topic's connections, so it must
-        # judge too — otherwise a run that skips extract_insights would replace
-        # judged pairs with unexplained candidates. Cached pairs cost nothing.
+        # Connected papers are found in embedding space only; no model is called.
         from lib.related import build_connections, max_links
-        from lib.relation_judge import judge_if_enabled
         candidates = compute_related_candidates(embeddings, slugs, top_k=max_links(),
                                                 papers=topic_papers)
-        connections = build_connections(candidates, topic_papers, topic=topic)
-        connections = judge_if_enabled(connections, topic_papers, topic=topic, log=log)
+        connections = build_connections(candidates, topic_papers)
         linked = sum(1 for links in connections.values() if links)
         log(f"  {linked}/{len(connections)} papers linked "
             f"({sum(len(v) for v in connections.values())} directed edges)")

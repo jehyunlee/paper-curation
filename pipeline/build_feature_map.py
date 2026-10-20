@@ -100,8 +100,8 @@ TRANSMISSION_KO = {
     "selected provider; Ollama stays on loopback": "선택한 제공자 (Ollama는 이 컴퓨터 안에서만)",
     "none": "없음",
     "Google embedding API": "Google 임베딩 API",
-    "Anthropic Sonnet 5.5 receives bounded related-candidate titles, abstracts, and review excerpts for relation judgment; no full-text deployment, classification refit, or review regeneration":
-        "Anthropic Sonnet 5.5로 제한된 후보 논문의 제목·초록·리뷰 발췌를 전송해 관계를 판정합니다. 원문 배포·전체 재분류·리뷰 재생성은 하지 않습니다.",
+    "none; neighbours are found locally in SPECTER2 embedding space, no model is called":
+        "없음 (SPECTER2 임베딩 공간에서 로컬로 이웃을 찾고, 모델을 호출하지 않음)",
     "Crossref/OpenAlex/Scopus source APIs": "Crossref · OpenAlex · Scopus API",
     "none offline; configured bibliography sources when online; never Zotero Web paging":
         "offline이면 없음, online이면 설정된 서지 소스 (Zotero 웹 페이징은 하지 않음)",
@@ -132,7 +132,7 @@ EN_PIPELINE = {
     "analyze": ("Analyze", "Build relationships between categories and papers."),
     "index": ("Paper index", "Collect paper metadata from reviews into a complete index."),
     "classify": ("Topic modeling and classification", "Create and assign categories with SPECTER2, UMAP, and HDBSCAN. Zero LLM calls; at most three categories per paper."),
-    "related": ("Related papers", "Choose candidates with SPECTER2 plus title/author BM25, then have Claude Sonnet 5.5 read both reviews and write one sentence on their commonality and difference. Remove unrelated pairs and cache decisions."),
+    "related": ("Related papers", "Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF. Cross-topic unions and reverse links can exceed five displayed neighbours. Zero LLM calls."),
     "summaries": ("Category summaries", "Create a summary and subthemes for each category."),
     "timelines": ("Timelines", "Create category research-trend narratives and PaperBanana timeline images."),
     "publish": ("Publish", "Create readable artifacts, search indexes, and the bibliography database."),
@@ -295,7 +295,10 @@ def build_tree(features, pmap=None, english=False):
                     node("Obsidian integration", "Knowledge compounding: notes inform subsequent questions."),
                 ]),
                 node("Analysis and management tools", "Tools used outside the pipeline.", kind="group", tone="tools", children=[
-                    node("Citedby", "Collect a paper's citation genealogy from OpenAlex, Scopus, S2, and arXiv into an HTML report."),
+                    node("Citedby", "Collect a paper's citation genealogy from OpenAlex, Scopus, S2, and arXiv into an HTML report. With --topic, citing papers are filtered by topic relevance before the 5W1H summaries.",
+                         run="python pipeline/run_citedby.py --doi <doi> --topic <topic>",
+                         facts=[["Topic filter", "OpenAI Decision API (gpt-6-luna): relevance probability per paper, kept at 0.5 or above (needs OPENAI_API_KEY and openai>=3.35)"],
+                                ["Without the key", "LLM JSON judging (Anthropic → Google → OpenAI Chat); also used for a batch whose Decision call fails"]]),
                     node("Author and institution affiliation", "Resolve authors and institutions in order: OpenAlex → Scopus → PDF byline → ROR/ORCID."),
                     node("Recovery tools", "Use auto_recover, fix_matching, and validate to find and repair wrongly connected PDFs and broken reviews."),
                     node("Institution reports", "Use the bibliography database to create reports on research trends, parallel laboratories, and representative researchers."),
@@ -331,7 +334,10 @@ def build_tree(features, pmap=None, english=False):
                 node("Obsidian 연동", "메모가 다음 질의에 반영되는 지식 축적."),
             ]),
             node("분석·관리 도구", "파이프라인 밖에서 쓰는 도구.", kind="group", tone="tools", children=[
-                node("Citedby", "한 논문의 인용 계보를 OpenAlex · Scopus · S2 · arXiv에서 모아 HTML 보고서로 만듭니다."),
+                node("Citedby", "한 논문의 인용 계보를 OpenAlex · Scopus · S2 · arXiv에서 모아 HTML 보고서로 만듭니다. --topic을 주면 5W1H 요약 전에 주제 관련성으로 인용논문을 거릅니다.",
+                     run="python pipeline/run_citedby.py --doi <doi> --topic <topic>",
+                     facts=[["주제 필터", "OpenAI Decision API(gpt-6-luna)가 논문별 관련성 확률을 매겨 0.5 이상만 남김 (OPENAI_API_KEY, openai>=3.35 필요)"],
+                            ["키가 없을 때", "LLM JSON 판정(Anthropic → Google → OpenAI Chat). Decision 호출이 실패한 배치도 이 경로"]]),
                 node("저자·기관 귀속", "OpenAlex → Scopus → PDF 바이라인 → ROR/ORCID 순서로 저자와 기관을 확정합니다."),
                 node("복구 도구", "auto_recover · fix_matching · validate로 잘못 연결된 PDF와 깨진 리뷰를 찾아 고칩니다."),
                 node("기관 보고서", "서지 DB로 연구 흐름·병렬 연구실·대표 연구자 보고서를 만듭니다."),

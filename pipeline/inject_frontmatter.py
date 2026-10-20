@@ -34,7 +34,7 @@ from config_loader import (
 PAPERS_DIR = str(_PAPERS_DIR)
 
 RELATION_ICONS = {
-    "alternative": "\U0001F504 다른 접근",
+    "alternative": "\U0001F504 유사 연구",
     "extension": "\U0001F517 후속 연구",
     "foundation": "\U0001F3DB 기반 연구",
     "counterpoint": "\u2696\uFE0F 반론/비판",

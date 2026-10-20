@@ -94,6 +94,9 @@ def _export_paper(paper: dict) -> dict:
         },
         "source": _s("source"),
         "originality": _s("originality"),
+        # 주제 필터 근거 — Decision API 경로는 확률, llm_json 경로는 한 문장 사유.
+        "topic_probability": (float(_s("topic_probability"))
+                              if _s("topic_probability") else None),
         "topic_reason": _s("topic_reason"),
     }
 

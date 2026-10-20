@@ -10,8 +10,7 @@ security document, not a legal one — for copyright/deploy legality see
 
 | Asset | Boundary | Notes |
 |---|---|---|
-| API keys (Anthropic/OpenAI/Gemini) | `config.json`, env | gitignored; never committed |
-| Zotero API key | **env only** (`ZOTERO_API_KEY`) | `config.json` is not read for it — see S1 note |
+| API keys (Anthropic/OpenAI/Gemini/Resend/Zotero) | env → OS keyring (`credential:<provider>`, `lib/credentials.py`) | plaintext `config.json` keys are never read; `doctor.py` warns if any remain — see S1 note |
 | Source + pipeline | git → GitHub (public) | code is backed up by the remote |
 | Public deploy | Cloudflare, arXiv/OpenReview OA only | license-gated by `prepare_deploy.py` |
 | Local-only data | this Mac | `docs/papers/**`, `docs/_agent/**`, `docs/_local_keys.json`, Zotero library — **not** in git |

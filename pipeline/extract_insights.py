@@ -20,8 +20,8 @@ from collections import defaultdict
 from datetime import datetime
 
 from anthropic import Anthropic
-from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir, load_config
-from lib.credentials import anthropic_client
+from config_loader import PAPERS_DIR as _PAPERS_DIR, get_topic_dir
+from lib.credentials import anthropic_client, optional_credential
 
 PAPERS_DIR = str(_PAPERS_DIR)
 
@@ -466,10 +466,9 @@ def _cc_openai_call(prompt, schema):
         from openai import OpenAI
     except ImportError as e:
         raise RuntimeError(f"openai SDK missing: {e}")
-    api_key = (os.environ.get("OPENAI_API_KEY") or
-               load_config().get("openai_api_key", ""))
+    api_key = optional_credential("openai")
     if not api_key:
-        raise RuntimeError("no OpenAI API key (OPENAI_API_KEY env or config)")
+        raise RuntimeError("no OpenAI API key (OPENAI_API_KEY env or credential:openai)")
     oai = OpenAI(api_key=api_key, timeout=180.0, max_retries=1)
     func_def = {
         "type": "function",
@@ -498,12 +497,9 @@ def _cc_gemini_call(prompt, schema):
         from google.genai import types as gtypes
     except ImportError as e:
         raise RuntimeError(f"google-genai SDK missing: {e}")
-    api_key = (os.environ.get("GEMINI_API_KEY")
-               or os.environ.get("GOOGLE_API_KEY")
-               or load_config().get("gemini_api_key", "")
-               or load_config().get("google_api_key", ""))
+    api_key = optional_credential("google")
     if not api_key:
-        raise RuntimeError("no Gemini API key (GEMINI_API_KEY/GOOGLE_API_KEY env or config)")
+        raise RuntimeError("no Gemini API key (GOOGLE_API_KEY/GEMINI_API_KEY env or credential:google)")
     gem = genai.Client(api_key=api_key)
     resp = gem.models.generate_content(
         model=_GEMINI_CC_MODEL,
@@ -536,12 +532,11 @@ _GEMINI_CC_MODEL = os.environ.get("EXTRACT_INSIGHTS_CC_GEMINI_MODEL", "gemini-3.
 
 def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
                               topic_dir=None, topic_slugs=None):
-    """Build retrieved connections, then content-judge their relations when enabled.
+    """Find connected papers in embedding space. No model is called.
 
     topic_modeling / paper-curio 와 **동일한 SPECTER2 임베딩 기준**을 공유한다:
-    후보는 cosine와 제목/저자 BM25 RRF 순위이고, ``lib.related``가 기록된
-    메타데이터 후보는 ``RELATION_JUDGE=on``(기본)일 때만 별도 content judge가
-    관계와 이유를 판정한다. ``off``면 provider를 만들거나 호출하지 않는다.
+    후보는 cosine와 제목/저자 BM25 RRF 순위이고, ``lib.related``가 그 순위대로
+    연결을 기록한다. LLM 판정은 없다.
 
     연결을 생성할 대상은 `cat_papers`(= --categories 필터 반영)에 한정하되, 후보
     풀은 `all_topic_papers` 전체에서 뽑아 cross-category 연결을 유지한다."""
@@ -586,13 +581,10 @@ def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
         log("  후보 없음 — skip")
         return {}
 
-    all_connections = build_connections(candidates, pool, topic=topic,
-                                        limit=link_limit)
+    all_connections = build_connections(candidates, pool, limit=link_limit)
     linked = sum(1 for links in all_connections.values() if links)
     log(f"  연결 생성: {linked}/{len(all_connections)}편, "
         f"{sum(len(links) for links in all_connections.values())} directed edges")
-    from lib.relation_judge import judge_if_enabled
-    all_connections = judge_if_enabled(all_connections, pool, topic=topic, log=log)
 
     # 영속화: merge_to_global → filter_for_topic → per-topic JSON
     if topic_dir and topic_slugs:
@@ -635,13 +627,13 @@ def _run_insights(topic="ai4s", *, insights_only=False, connections_only=False,
             log(f"  [backend] Anthropic init failed: {str(e)[:80]}")
         try:
             from openai import OpenAI
-            _oai_key = os.environ.get("OPENAI_API_KEY") or load_config().get("openai_api_key", "")
+            _oai_key = optional_credential("openai")
             if _oai_key:
                 clients["openai"] = OpenAI(api_key=_oai_key, timeout=_http_timeout, max_retries=_http_retries)
         except Exception as e:
             log(f"  [backend] OpenAI init failed: {str(e)[:80]}")
     client = clients["anthropic"] or clients["openai"]
-    log(f"  [backend] paper connections: SPECTER2/BM25 + content judge; "
+    log(f"  [backend] paper connections: SPECTER2 embedding + BM25 (no model); "
         f"cross-category insights: {'/'.join(_CC_BACKENDS)}")
 
     if run_insights:
@@ -703,8 +695,6 @@ def main():
     parser.add_argument("--topic", default="ai4s")
     parser.add_argument("--insights-only", action="store_true", help="Cross-category insights only")
     parser.add_argument("--connections-only", action="store_true", help="Paper connections only")
-    parser.add_argument("--no-relation-judge", action="store_true",
-                        help="Skip LLM relation judging; retain metadata fallback candidates")
     parser.add_argument("--only", choices=["connections", "insights", "all"], default="all",
                         help="생성 대상 선택. connections=paper connections(Core)만, "
                              "insights=cross-category insights(Option)만, all=둘 다(기본, 하위호환).")
@@ -713,8 +703,6 @@ def main():
     # --only 를 기존 *_only 게이트로 매핑 (둘 다 동일 효과; --insights-only/--connections-only 와 OR).
     insights_only = args.insights_only or args.only == "insights"
     connections_only = args.connections_only or args.only == "connections"
-    if args.no_relation_judge:
-        os.environ["RELATION_JUDGE"] = "off"
     _run_insights(topic=args.topic, insights_only=insights_only,
                   connections_only=connections_only, categories=args.categories)
 

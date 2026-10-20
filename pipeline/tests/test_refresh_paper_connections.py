@@ -1,7 +1,7 @@
 """Focused contract tests for incremental related-paper refresh.
 
-The real SPECTER/Anthropic implementations are deliberately replaced here: these
-are orchestration tests and must never spend provider money.
+The real SPECTER2 encoder is replaced here: these are orchestration tests. No
+provider is involved — connections are found in embedding space.
 """
 from __future__ import annotations
 
@@ -81,10 +81,8 @@ class RefreshConnectionsTest(unittest.TestCase):
         d = self.papers / old
         d.mkdir(); (d / "review.md").write_text("# old"); (d / "originality.md").write_text(old)
         calls, events = [], []
-        fake_connections = {self.slug: [{"slug": self.other, "basis": "model"}]}
         with patch.object(self.mod, "_embedding_for_target", return_value=(self.index[:2], [[0, 1], [1, 0]])), \
              patch.object(topic_modeling, "compute_related_candidates", return_value={self.slug: [(self.other, .9)]}), \
-             patch.object(self.mod, "_judge_or_raise", return_value=fake_connections), \
              patch("lib.connections.load_global_connections", return_value={
                  self.slug: [{"slug": old, "source_topic": "demo"}],
                  "99999_Keep": [{"slug": self.other, "source_topic": "other"}],
@@ -147,7 +145,6 @@ class RefreshConnectionsTest(unittest.TestCase):
                  patch.object(self.mod, "_context", return_value=(self.index[0], self.index, ["demo"])), \
                  patch.object(self.mod, "_embedding_for_target", return_value=(self.index, [[0, 1], [1, 0]])), \
                  patch.object(topic_modeling, "compute_related_candidates", return_value={self.slug: []}), \
-                 patch.object(self.mod, "_judge_or_raise", return_value={self.slug: []}), \
                  patch("lib.connections.load_global_connections", return_value={}), \
                  patch("lib.connections.merge_to_global"), \
                  patch("lib.connections.sync_topic_connections"):
@@ -163,43 +160,22 @@ class RefreshConnectionsTest(unittest.TestCase):
         self.assertEqual(result["status"], "failed")
         self.assertEqual(result["schema_version"], 1)
 
-    def test_all_unrelated_is_completed_but_metadata_fallback_is_failure(self):
-        raw = {self.slug: [{"slug": self.other, "basis": "metadata"}]}
-        # The judge adapter's explicit postcondition distinguishes a valid empty
-        # result (all unrelated) from its unsafe metadata fallback.
-        with patch.dict("os.environ", {"RELATION_JUDGE": "on"}), \
-             patch("lib.credentials.resolve_credential", return_value="key"), \
-             patch.dict("sys.modules", {"anthropic": type("A", (), {"Anthropic": lambda **_: object()})}), \
-             patch("lib.relation_judge.judge_connections", return_value={self.slug: []}):
-            self.assertEqual(self.mod._judge_or_raise(raw, self.index, "demo"), {self.slug: []})
-        with patch.dict("os.environ", {"RELATION_JUDGE": "on"}), \
-             patch("lib.credentials.resolve_credential", return_value="key"), \
-             patch.dict("sys.modules", {"anthropic": type("A", (), {"Anthropic": lambda **_: object()})}), \
-             patch("lib.relation_judge.judge_connections", return_value=raw):
-            with self.assertRaises(RuntimeError):
-                self.mod._judge_or_raise(raw, self.index, "demo")
-
-    def test_refresh_uses_relation_judge_default_model(self):
-        raw = {self.slug: [{"slug": self.other, "basis": "metadata"}]}
-        observed = []
-
-        def fake_judge(*_args, **_kwargs):
-            observed.append(os.environ["RELATION_JUDGE_MODEL"])
-            return {self.slug: []}
-
-        with patch.dict("os.environ", {"RELATION_JUDGE": "on"}, clear=False), \
-             patch("lib.credentials.resolve_credential", return_value="key"), \
-             patch.dict("sys.modules", {"anthropic": type("A", (), {"Anthropic": lambda **_: object()})}), \
-             patch("lib.relation_judge.judge_connections", side_effect=fake_judge):
-            self.mod._judge_or_raise(raw, self.index, "demo")
-        from lib.relation_judge import DEFAULT_MODEL
-        self.assertEqual(observed, [DEFAULT_MODEL])
-
-    def test_disabled_judge_is_incomplete_not_all_unrelated(self):
-        raw = {self.slug: [{"slug": self.other, "basis": "metadata"}]}
-        with patch.dict("os.environ", {"RELATION_JUDGE": "off"}):
-            with self.assertRaises(RuntimeError):
-                self.mod._judge_or_raise(raw, self.index, "demo")
+    def test_refresh_writes_embedding_neighbours_without_any_provider(self):
+        merged = []
+        with patch.dict("sys.modules", {"anthropic": None, "openai": None}), \
+             patch.object(self.mod, "_embedding_for_target", return_value=(self.index[:2], [[0, 1], [1, 0]])), \
+             patch.object(topic_modeling, "compute_related_candidates",
+                          return_value={self.slug: [(self.other, .8123)]}), \
+             patch("lib.connections.load_global_connections", return_value={}), \
+             patch("lib.connections.merge_to_global", side_effect=lambda c, **k: merged.append(c)), \
+             patch("lib.connections.sync_topic_connections"), \
+             patch("review_to_html._run_review_to_html", return_value={"converted": 2, "skipped": 0}):
+            result = self.mod._refresh_connections_locked(self.slug)
+        self.assertEqual(result["status"], "completed")
+        (link,) = merged[0][self.slug]
+        self.assertEqual((link["slug"], link["basis"], link["evidence"]),
+                         (self.other, "embedding", {"cosine": .8123}))
+        self.assertIn("0.81", link["reason"])
 
 
 if __name__ == "__main__":

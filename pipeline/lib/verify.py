@@ -1,58 +1,38 @@
 """
-LLM verification pass over generated paper-connections and cross-category insights.
+LLM verification pass over generated cross-category insights.
 
-Generated connections (``{slug: [{"slug": target, "relation", "reason"}]}``) and
-cross-category insights (claims citing paper numbers) currently ship with **zero**
-correctness checks. This module adds an opt-in, *best-effort* LLM audit that asks a
-cheap Haiku-class model whether a claimed relation / cited evidence actually holds.
+Cross-category insights (claims citing paper numbers) are model-written, so this
+module adds a best-effort audit that asks a cheap Haiku-class model whether the
+cited papers actually back each claim. Paper connections are NOT audited here:
+they are found in embedding space without any model (``lib.related``).
 
 Design goals
 ------------
 * **Dependency-light.** This module imports ONLY the Python standard library. The
   LLM client is *passed in* (any object exposing the Anthropic ``messages.create``
   shape, or a stub with the same interface), so importing ``verify`` never pulls in
-  ``umap`` / ``hdbscan`` / ``sentence-transformers`` / SPECTER2. That keeps it
-  importable in lightweight contexts (tests, CI) and trivially mockable.
+  ``umap`` / ``hdbscan`` / ``sentence-transformers`` / SPECTER2.
 * **Never breaks the default path.** On ANY failure (no client, network error,
-  malformed/empty JSON, missing essence) verification is *skipped* and the
-  originals are kept untouched — connections stay ``kept=True`` and insights stay
+  malformed/empty JSON) verification is *skipped* and insights stay
   ``supported=True``. Nothing is ever dropped because of an error.
 
 Public API
 ----------
-``verify_connections(connections, essence_by_slug, client, sample_n)``
-    Sample up to ``sample_n`` generated A→B edges and ask the model whether the
-    claimed relation between the two papers is supported by their essences.
-    Returns a list of per-connection verdict records
-    ``{source, target, relation, reason, kept, verdict, verify_reason}``.
-
 ``verify_insights(insights, paper_meta, client)``
     For each cross-category insight, ask the model whether its cited papers
     actually back the claim. Annotates each insight *in place* with
     ``supported: bool`` (+ ``verify_reason``) and returns the list of insights.
 
-Integration helpers (thin env-driven wrappers used by the pipeline hooks)
-``apply_connection_verification(connections, essence_by_slug, client, ...)``
 ``apply_insight_verification(insights, paper_meta, client, ...)``
+    Thin env-driven wrapper used by the ``extract_insights`` hook.
 """
 
 import json
 import os
-import random
 import re
 
 # Cheap auditor model. Overridable via env for cost/quality tuning.
 VERIFY_MODEL = os.environ.get("VERIFY_MODEL", "claude-haiku-4-5")
-
-# Human-readable relation definitions mirroring topic_modeling's connection types.
-_RELATION_DEFS = {
-    "alternative": "same problem, different approach",
-    "extension": "builds on or extends the other work",
-    "foundation": "provides a theoretical/methodological foundation",
-    "counterpoint": "opposite perspective or critique",
-    "application": "applies the other paper's method to a real problem",
-}
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Small pure helpers (no I/O, no deps)
@@ -77,26 +57,6 @@ def _canon_num(slug):
 def _short(text, n):
     """Collapse whitespace and truncate to ``n`` chars (None-safe)."""
     return (text or "").strip().replace("\n", " ")[:n]
-
-
-def _essence_of(essence_by_slug, slug):
-    """Resolve an essence/abstract for ``slug`` from a flexible mapping.
-
-    Accepts ``{slug: text}`` or ``{slug: {"essence"|"abstract"|"title": ...}}`` and
-    falls back to a bare-number key ('045') when the full slug is not present.
-    """
-    v = essence_by_slug.get(slug)
-    if v is None:
-        v = essence_by_slug.get(_slug_num(slug))
-    if v is None:
-        cnum = _canon_num(slug)
-        for k, val in essence_by_slug.items():
-            if _canon_num(k) == cnum:
-                v = val
-                break
-    if isinstance(v, dict):
-        return v.get("essence") or v.get("abstract") or v.get("title") or ""
-    return v or ""
 
 
 def _parse_json_block(text):
@@ -132,87 +92,6 @@ def _call_text(client, prompt, *, max_tokens=300, model=None):
     )
     block = resp.content[0]
     return (getattr(block, "text", None) or "").strip()
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Core: connection verification
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _verify_one_connection(client, src, tgt, relation, reason, ess_a, ess_b):
-    rel_def = _RELATION_DEFS.get(relation, relation or "related")
-    prompt = (
-        "You are auditing an automatically-generated 'related papers' link.\n\n"
-        f"Paper A [{_slug_num(src)}]: {_short(ess_a, 600)}\n\n"
-        f"Paper B [{_slug_num(tgt)}]: {_short(ess_b, 600)}\n\n"
-        f'Claimed relation: A relates to B as "{relation}" ({rel_def}).\n'
-        f"Claimed reason: {_short(reason, 300)}\n\n"
-        "Judging ONLY from the two descriptions above, is this a genuine, "
-        "topically meaningful connection (the two papers really share the claimed "
-        "relationship or research area)? A link between papers on completely "
-        "unrelated topics is NOT supported, even if a few generic words overlap.\n"
-        "Respond with ONLY a JSON object, no prose:\n"
-        '{"kept": true|false, "verdict": "supported"|"spurious", '
-        '"reason": "<=1 short sentence"}'
-    )
-    data = _parse_json_block(_call_text(client, prompt, max_tokens=300))
-    kept = bool(data.get("kept", True))
-    verdict = str(data.get("verdict") or ("supported" if kept else "spurious"))
-    return {"kept": kept, "verdict": verdict,
-            "verify_reason": str(data.get("reason", ""))[:200]}
-
-
-def verify_connections(connections, essence_by_slug, client, sample_n=12):
-    """Audit generated paper-connections for spurious links.
-
-    Args:
-        connections: ``{source_slug: [{"slug"|"target", "relation", "reason"}, ...]}``
-        essence_by_slug: ``{slug: text}`` or ``{slug: {"essence"/"title": ...}}``.
-        client: LLM client with ``.messages.create`` (Anthropic or stub). ``None``
-            means verification is impossible → returns ``[]`` (caller keeps all).
-        sample_n: max number of edges to verify; ``<= 0`` verifies all edges.
-
-    Returns:
-        ``list`` of per-connection records, each
-        ``{source, target, relation, reason, kept, verdict, verify_reason}``.
-        A per-edge API/parse error defaults that edge to ``kept=True``,
-        ``verdict="error"`` so nothing is dropped on failure.
-    """
-    if client is None or not connections:
-        return []
-
-    edges = []
-    for src, conns in connections.items():
-        for c in (conns or []):
-            tgt = c.get("slug") or c.get("target")
-            if not tgt:
-                continue
-            edges.append((src, tgt, c.get("relation", ""), c.get("reason", "")))
-    if not edges:
-        return []
-
-    if sample_n and sample_n > 0 and len(edges) > sample_n:
-        # Deterministic sample so repeated runs audit the same edges.
-        edges_sample = random.Random(1234).sample(edges, sample_n)
-    else:
-        edges_sample = edges
-
-    results = []
-    for src, tgt, relation, reason in edges_sample:
-        rec = {"source": src, "target": tgt, "relation": relation,
-               "reason": reason, "kept": True, "verdict": "error",
-               "verify_reason": ""}
-        try:
-            v = _verify_one_connection(
-                client, src, tgt, relation, reason,
-                _essence_of(essence_by_slug, src),
-                _essence_of(essence_by_slug, tgt))
-            rec.update(v)
-        except Exception as e:  # graceful: keep edge on any failure
-            rec["kept"] = True
-            rec["verdict"] = "error"
-            rec["verify_reason"] = f"verify-error: {str(e)[:80]}"
-        results.append(rec)
-    return results
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -309,60 +188,9 @@ def verify_insights(insights, paper_meta, client):
 # Pipeline hooks (env-driven wrappers; never raise)
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _conn_mode():
-    raw = (os.environ.get("VERIFY_CONNECTIONS", "sample") or "sample").strip().lower()
-    return raw if raw in ("off", "sample", "strict") else "sample"
-
-
 def _insights_enabled():
     raw = (os.environ.get("VERIFY_INSIGHTS", "1") or "1").strip().lower()
     return raw not in ("0", "off", "false", "no")
-
-
-def apply_connection_verification(connections, essence_by_slug, client,
-                                  *, mode=None, sample_n=None, log=print):
-    """topic_modeling / extract_insights hook for paper-connections.
-
-    mode (default from env ``VERIFY_CONNECTIONS``, fallback ``sample``):
-      ``off``    no-op.
-      ``sample`` verify a sample, LOG spurious-looking edges, keep ALL.
-      ``strict`` verify a sample, DROP spurious edges from ``connections`` in place.
-
-    ``sample_n`` defaults to env ``VERIFY_CONNECTIONS_SAMPLE`` (12). Returns the
-    (possibly pruned) ``connections`` dict. Never raises.
-    """
-    try:
-        mode = mode or _conn_mode()
-        if mode == "off":
-            return connections
-        if not connections or client is None:
-            log("  [verify] connections: skipped (no client / no connections)")
-            return connections
-        if sample_n is None:
-            sample_n = int(os.environ.get("VERIFY_CONNECTIONS_SAMPLE", "12"))
-        results = verify_connections(connections, essence_by_slug, client,
-                                     sample_n=sample_n)
-        spurious = [r for r in results
-                    if not r.get("kept", True) and r.get("verdict") != "error"]
-        log(f"  [verify] connections: checked {len(results)}, "
-            f"{len(spurious)} flagged spurious (mode={mode})")
-        for r in spurious:
-            log(f"    [verify] spurious {_slug_num(r['source'])}->"
-                f"{_slug_num(r['target'])} ({r.get('relation')}): "
-                f"{r.get('verify_reason', '')[:80]}")
-        if mode == "strict" and spurious:
-            drop = {(r["source"], r["target"]) for r in spurious}
-            removed = 0
-            for src, conns in list(connections.items()):
-                kept = [c for c in (conns or [])
-                        if (src, c.get("slug") or c.get("target")) not in drop]
-                removed += len(conns or []) - len(kept)
-                connections[src] = kept
-            log(f"  [verify] connections: dropped {removed} spurious edge(s) (strict)")
-        return connections
-    except Exception as e:
-        log(f"  [verify] connections: skipped on error ({str(e)[:80]})")
-        return connections
 
 
 def apply_insight_verification(insights, paper_meta, client, *, drop=True, log=print):

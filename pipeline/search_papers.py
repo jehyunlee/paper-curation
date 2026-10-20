@@ -73,8 +73,8 @@ def _make_anthropic_client():
     """Anthropic 클라이언트 생성. 키 없거나 실패하면 None (→ 키워드 폴백)."""
     try:
         from anthropic import Anthropic
-        from config_loader import load_config
-        key = os.environ.get("ANTHROPIC_API_KEY") or load_config().get("anthropic_api_key", "")
+        from lib.credentials import optional_credential
+        key = optional_credential("anthropic")
         if not key:
             print("  경고: ANTHROPIC_API_KEY 없음 — hybrid relevance 건너뜀 (keyword 폴백)",
                   file=sys.stderr)

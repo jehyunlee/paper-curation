@@ -174,7 +174,7 @@ class DeterministicConnectionTests(unittest.TestCase):
         self.assertEqual([link["slug"] for link in got[TARGET]],
                          [slug for slug, _score in candidates[TARGET]])
 
-    def test_build_connections_uses_honest_metadata_fallback_and_evidence(self):
+    def test_build_connections_records_embedding_evidence(self):
         papers = [dict(p) for p in PAPERS]
         for paper in papers:
             paper["primary_category"] = "AI for Science"
@@ -185,13 +185,11 @@ class DeterministicConnectionTests(unittest.TestCase):
             {TARGET: [(PREDECESSOR, 0.75)]}, papers, limit=1)
         link = got[TARGET][0]
         self.assertEqual(link["relation"], "alternative")
-        self.assertEqual(link["basis"], "metadata")
+        self.assertEqual(link["basis"], "embedding")
         self.assertEqual(link["model"], "")
-        self.assertEqual(link["evidence"], {
-            "cosine": 0.75, "source_year": 2025, "target_year": 2024,
-        })
+        self.assertEqual(link["evidence"], {"cosine": 0.75})
         self.assertEqual(link["reason"],
-                         "관계 미분석 — 임베딩 유사도로 추천된 후보입니다.")
+                         "SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.75).")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

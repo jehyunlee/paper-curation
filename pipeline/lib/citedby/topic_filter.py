@@ -10,16 +10,18 @@ scisci `scie/lib/topic_filter.py` 이식본. 인용논문 목록을 사용자가
   2. **`llm_call_with_retry` → `api/_llm.cached_call`** — scisci 자체 재시도
      헬퍼(utils.py) 대신 paper-curation 의 SHA-256 캐시 호출을 쓴다. 같은
      (프롬프트, 모델) 조합은 재실행 시 **LLM 호출 0회** → 동일 DOI 재분석이 공짜.
-  3. **`import MyAPIKEY` 제거** — 개인 로컬 모듈 의존을 걷어내고 env →
-     config.json 순으로만 키를 찾는다.
+  3. **`import MyAPIKEY` 제거** — 개인 로컬 모듈 의존을 걷어내고 공용
+     `lib.credentials`(환경변수 → OS keyring)로만 키를 찾는다.
+
+주제 필터는 OpenAI 키가 있으면 **Decision API**(`decisions.py`)로 논문별 관련성
+확률을 받는다. 판정만 필요하고 문장은 필요 없는 단계라서다. 5W1H 요약은 글을
+써야 하므로 계속 `llm_json` 캐스케이드를 쓴다.
 """
 from __future__ import annotations
 
 import json
 import logging
-import os
 import re
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -32,52 +34,24 @@ DEFAULT_MODELS = (
 )
 
 FILTER_BATCH_SIZE = 15
+# Decision API 관련성 확률이 이 값 이상이면 주제 일치로 본다.
+TOPIC_THRESHOLD = 0.5
 SUMMARY_BATCH_SIZE = 5      # 출력이 길어 배치를 작게 잡는다
 
 _LANG_NAME = {"ko": "Korean", "en": "English"}
 
-_ENV_KEYS = {
-    "anthropic": ("ANTHROPIC_API_KEY", "CLAUDE_API_KEY"),
-    "google": ("GOOGLE_API_KEY", "GEMINI_API_KEY"),
-    "openai": ("OPENAI_API_KEY",),
-}
-
-_CONFIG_KEYS = {
-    "anthropic": ("anthropic_api_key",),
-    "google": ("google_api_key", "gemini_api_key"),
-    "openai": ("openai_api_key",),
-}
+_PROVIDERS = ("anthropic", "google", "openai")
 
 
 def resolve_keys() -> dict[str, str]:
-    """LLM 제공자별 API 키. env 우선, 없으면 config.json.
+    """LLM 제공자별 API 키 — 환경변수 → OS keyring (`lib.credentials`).
 
-    scisci 의 `MyAPIKEY` 폴백은 제거했다 (개인 로컬 모듈 의존).
+    평문 `config.json` 키는 읽지 않는다. 설정되지 않은 제공자는 빠진다.
     """
-    keys: dict[str, str] = {}
-    for provider, names in _ENV_KEYS.items():
-        for n in names:
-            v = (os.environ.get(n) or "").strip()
-            if v:
-                keys[provider] = v
-                break
+    from lib.credentials import optional_credential
 
-    missing = [p for p in _ENV_KEYS if p not in keys]
-    if missing:
-        cfg = {}
-        try:
-            cfg_path = Path(__file__).resolve().parents[3] / "config.json"
-            if cfg_path.exists():
-                cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-        except Exception as e:  # noqa: BLE001 — 키 조회 실패가 전체를 죽이지 않게
-            logger.debug("config.json 읽기 실패: %s", e)
-        for provider in missing:
-            for field in _CONFIG_KEYS[provider]:
-                v = (cfg.get(field) or "").strip()
-                if v:
-                    keys[provider] = v
-                    break
-    return keys
+    keys = {provider: optional_credential(provider) for provider in _PROVIDERS}
+    return {provider: key for provider, key in keys.items() if key}
 
 
 def _parse_json(text: str):
@@ -254,17 +228,57 @@ def _apply_batch_results(slots: list, items: list, start: int, size: int,
             slots[start + idx] = builder(item)
 
 
+def _topic_questions(topic: str, n_papers: int) -> list[dict]:
+    return [{"type": "predicate", "name": f"paper_{i}",
+             "instructions": (f'[Paper {i}] is clearly and substantively related to the '
+                              f'topic "{topic}" — sharing keywords alone does not count.')}
+            for i in range(1, n_papers + 1)]
+
+
+def _decide_topic_batch(batch: list[dict], topic: str, *, key: str,
+                        cache_dir=None) -> list[dict | None] | None:
+    """Decision API 로 배치의 관련성 확률을 받는다. 호출 실패면 None.
+
+    논문마다 predicate 질문 하나 — 답이 질문 순서대로 오므로 `paper` 인덱스
+    복구(`_apply_batch_results`)가 필요 없다. 거부(refusal)된 논문은 None.
+    """
+    from .decisions import decide
+
+    answers = decide(f'Topic: "{topic}"\n\n{_format_for_filter(batch)}',
+                     _topic_questions(topic, len(batch)),
+                     key=key, cache_dir=cache_dir)
+    if answers is None:
+        return None
+    verdicts: list[dict | None] = []
+    for answer in answers:
+        if answer.get("type") != "predicate":
+            verdicts.append(None)
+            continue
+        probability = float(answer["probability"])
+        verdicts.append({"relevant": probability >= TOPIC_THRESHOLD,
+                         "probability": probability})
+    return verdicts
+
+
 def filter_by_topic(papers: list[dict], topic: str, *,
                     keys: dict | None = None,
                     models=None,
                     cache_dir=None,
                     progress_callback=None) -> list[dict]:
-    """주제 관련성으로 논문을 거른다. 통과분에 `topic_reason` 을 붙여 반환."""
+    """주제 관련성으로 논문을 거른다.
+
+    OpenAI 키가 있으면 배치마다 Decision API(`gpt-6-luna`)로 관련성 확률을
+    받아 `TOPIC_THRESHOLD` 이상만 통과시키고, 통과분에 `topic_probability`
+    를 붙인다. 키가 없거나 Decision 호출이 실패한 배치는 `llm_json` 캐스케이드로
+    판정하고 통과분에 `topic_reason` 을 붙인다.
+    """
     papers = list(papers or [])
     total = len(papers)
     if not total or not topic.strip():
         return []
 
+    keys = resolve_keys() if keys is None else keys
+    decision_key = keys.get("openai", "")
     verdicts: list[dict | None] = [None] * total
 
     for start in range(0, total, FILTER_BATCH_SIZE):
@@ -273,6 +287,13 @@ def filter_by_topic(papers: list[dict], topic: str, *,
         if progress_callback:
             progress_callback("topic_filter",
                               f"주제 필터링: {start + 1}-{end}/{total}", end, total)
+
+        if decision_key:
+            decided = _decide_topic_batch(batch, topic, key=decision_key,
+                                          cache_dir=cache_dir)
+            if decided is not None:
+                verdicts[start:end] = decided
+                continue
 
         result = llm_json(
             _FILTER_PROMPT.format(topic=topic, papers=_format_for_filter(batch),
@@ -293,7 +314,10 @@ def filter_by_topic(papers: list[dict], topic: str, *,
         v = verdicts[i]
         if v and v["relevant"]:
             p = dict(paper)
-            p["topic_reason"] = v["reason"]
+            if "probability" in v:
+                p["topic_probability"] = round(v["probability"], 3)
+            else:
+                p["topic_reason"] = v["reason"]
             filtered.append(p)
 
     logger.info("Topic filter: %d/%d papers match %r", len(filtered), total, topic)

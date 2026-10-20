@@ -40,6 +40,18 @@ DEFAULT_DB = Path(os.environ.get("PAPER_CURATION_BIBLIO_DB", str(
 MAILTO = "jehyun.lee@gmail.com"
 SSL_CTX = ssl.create_default_context()
 
+PAPER_CONNECTIONS_SCHEMA = """
+CREATE TABLE IF NOT EXISTS paper_connections (
+ paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ related_paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
+ relation TEXT NOT NULL, reason TEXT, topics TEXT, model TEXT,
+ evidence TEXT NOT NULL DEFAULT '{}',
+ generated_at TEXT, source TEXT NOT NULL,
+ PRIMARY KEY (paper_id, related_paper_id, relation));
+CREATE INDEX IF NOT EXISTS idx_conn_related ON paper_connections(related_paper_id);
+CREATE INDEX IF NOT EXISTS idx_conn_relation ON paper_connections(relation);
+"""
+
 SCHEMA = """
 PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS papers (
@@ -120,10 +132,9 @@ CREATE TABLE IF NOT EXISTS extraction_attempts (
  links INTEGER NOT NULL DEFAULT 0,
  detail TEXT,
  PRIMARY KEY (paper_id, extractor));
--- Paper-to-paper connections. These are LLM claims, not bibliographic fact, so
--- they are kept apart from the publisher-verified tables and every row names
--- the model that asserted it — the registry's lesson was that derived data
--- stored as if it were ground truth becomes impossible to audit later.
+-- Paper-to-paper connections are embedding neighbours, not bibliographic fact.
+-- Keep them apart from publisher-verified tables. `model` is none:embedding;
+-- `evidence` holds explicit item/reason JSON, including numeric cosine values.
 --
 -- They lived in nine `docs/{topic}/_paper_connections.json` files, one copy per
 -- topic the two papers happened to share: 136,819 stored connections for 23,098
@@ -132,14 +143,9 @@ CREATE TABLE IF NOT EXISTS extraction_attempts (
 --
 -- `topics` records which topic views asserted the pair, so the per-topic JSON
 -- the site builds from can still be regenerated from here.
-CREATE TABLE IF NOT EXISTS paper_connections (
- paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
- related_paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE,
- relation TEXT NOT NULL, reason TEXT, topics TEXT, model TEXT,
- generated_at TEXT, source TEXT NOT NULL,
- PRIMARY KEY (paper_id, related_paper_id, relation));
-CREATE INDEX IF NOT EXISTS idx_conn_related ON paper_connections(related_paper_id);
-CREATE INDEX IF NOT EXISTS idx_conn_relation ON paper_connections(relation);
+-- Obsolete judged tables are replaced only by an authorized connection import,
+-- never migrated or copied by the bibliography schema setup.
+""" + PAPER_CONNECTIONS_SCHEMA + """
 CREATE TABLE IF NOT EXISTS source_documents (
  paper_id INTEGER NOT NULL REFERENCES papers ON DELETE CASCADE, document_type TEXT NOT NULL,
  path TEXT NOT NULL, sha256 TEXT, bytes INTEGER, PRIMARY KEY (paper_id, document_type));
@@ -4768,8 +4774,9 @@ def send_completion_email(result: dict) -> None:
         local_keys = json.loads((ROOT / "docs" / "_local_keys.json").read_text(encoding="utf-8"))
     except Exception:
         pass
-    api_key = (os.environ.get("RESEND_API_KEY") or config.get("resend_api_key")
-               or local_keys.get("resend_key") or local_keys.get("resend_api_key") or "")
+    # 비밀값은 환경변수 → OS keyring 만. 발신자·회신 주소는 비밀이 아니므로 파일에서도 읽는다.
+    from lib.credentials import optional_credential
+    api_key = optional_credential("resend")
     sender = (os.environ.get("AUDIO_FROM") or config.get("audio_from")
               or local_keys.get("audio_from") or "Paper Curation <onboarding@resend.dev>")
     reply_to = os.environ.get("AUDIO_REPLY_TO") or config.get("audio_reply_to") or local_keys.get("audio_reply_to") or ""

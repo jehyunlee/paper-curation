@@ -919,7 +919,7 @@ def convert_review(md_path, topic, slug_dir, *, keyless=False):
             return f' data-portable="{esc(u)}"'
 
         type_labels = {
-            "alternative": "다른 접근",
+            "alternative": "유사 연구",
             "extension": "후속 연구",
             "foundation": "기반 연구",
             "counterpoint": "반론/비판",
@@ -998,7 +998,7 @@ def convert_review(md_path, topic, slug_dir, *, keyless=False):
             rel = c.get("relation", "alternative")
             ctitle = slug_titles.get(cslug, cslug)
             # One card per paper. Every reason is listed equally, each carrying its
-            # own relation badge (기반 연구 / 다른 접근 / ...).
+            # own relation badge (기반 연구 / 유사 연구 / ...).
             rlist = c.get("reasons") or [{"relation": rel, "reason": c.get("reason", "")}]
             reason_html = []
             for rr in rlist:

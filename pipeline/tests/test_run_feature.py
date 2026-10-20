@@ -46,20 +46,37 @@ class FeatureRunnerTests(unittest.TestCase):
     def request(self, feature, **params):
         return {"schema_version": 1, "feature": feature, "params": params}
 
-    def test_related_plan_is_read_only_and_discloses_unknown_paid_cost(self):
+    def test_related_plan_is_read_only_local_and_needs_no_credential(self):
         with patch("refresh_paper_connections.plan_connections",
                    return_value={"status": "ready", "topics": ["demo"], "outputs": []}) as plan, \
              patch("refresh_paper_connections.refresh_connections") as execute, \
-             patch.object(runner, "_credential", return_value="test"), \
+             patch.object(runner, "_credential", side_effect=AssertionError("no credential")), \
              patch.object(runner, "_child") as child:
             result = runner.run_request(self.request("related-papers", slug=self.paper.name))
         self.assertEqual(result["status"], "ready", result)
-        self.assertEqual(result["provider"], "anthropic")
-        self.assertEqual(result["model"], "claude-sonnet-5-5")
-        self.assertEqual(result["cost"], {"status": "unknown"})
+        self.assertIsNone(result.get("provider"))
+        self.assertNotIn("model", result)
+        self.assertEqual(result["cost"], {"status": "none"})
         plan.assert_called_once_with(self.paper.name)
         execute.assert_not_called()
         child.assert_not_called()
+
+    def test_related_rejects_provider_and_credential_fields_before_planning(self):
+        request = self.request("related-papers", slug=self.paper.name)
+        with patch("refresh_paper_connections.plan_connections") as plan, \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner, "_credential", side_effect=AssertionError("no credential")):
+            for fields in (
+                {"provider": "anthropic"},
+                {"provider": "anthropic", "credential_ref": "credential:anthropic"},
+                {"provider": "google"},
+                {"credential_ref": "credential:anthropic"},
+            ):
+                with self.subTest(fields=fields):
+                    result = runner.run_request(request | fields, execute=True)
+                    self.assertEqual(result["status"], "failed", result)
+        plan.assert_not_called()
+        execute.assert_not_called()
 
     def test_related_execution_delegates_without_outer_lock_or_unrequested_steps(self):
         with patch("refresh_paper_connections.plan_connections", return_value={"status": "ready"}), \

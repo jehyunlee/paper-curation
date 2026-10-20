@@ -616,11 +616,11 @@
           ]
         },
         {
-          id: 'paper_connections', group: 'enrichment', label: '논문 관계 주장',
-          summary: '관련 논문 추천과 관계 판단을 출처·모델과 함께 저장합니다.',
+          id: 'paper_connections', group: 'enrichment', label: '논문 유사도 연결',
+          summary: '임베딩 기반 이웃과 코사인 수치 근거를 저장합니다. LLM 판정은 없습니다.',
           flow: {
-            source: '임베딩/제목·저자 후보 검색, 관계 판정 단계 및 토픽별 연결 데이터.',
-            process: '후보 관계와 이유·토픽·모델·생성시각을 기록. 관계는 LLM/알고리즘이 만든 주장이지 서지 사실이 아닙니다.',
+            source: 'SPECTER2 코사인과 제목·저자 BM25 순위의 RRF 결합 및 토픽별 연결 데이터.',
+            process: '유사도 연결과 코사인 evidence·이유·토픽·생성시각을 기록. 임베딩 이웃은 인용·계보·반론의 증거가 아닙니다.',
             use: '관련 논문 탐색 및 토픽별 연결 JSON 재생성. 두 paper FK는 참조 행의 존재만 보장합니다.'
           },
           refs: ['pipeline/build_bibliography_db.py · paper_connections schema', 'pipeline/extract_insights.py · extract_paper_connections', 'pipeline/lib/related.py · candidate connection building'],
@@ -628,12 +628,13 @@
           columns: [
             C('paper_id','INTEGER','관계를 제안한 쪽의 논문. 실제 FK는 papers.paper_id를 참조.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
             C('related_paper_id','INTEGER','관련 대상으로 제안된 논문. paper_id와 별도로 papers를 참조.',{pk:2,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
-            C('relation','TEXT','제안된 관계 유형/라벨. 해석 결과이며 검증된 분류 사실이 아닙니다.',{pk:3,nn:true}),
-            C('reason','TEXT','관계를 제안한 설명 또는 판단 근거.'),
+            C('relation','TEXT','방향 없는 alternative(유사 연구) 라벨. 계보나 다른 접근을 판정하지 않습니다.',{pk:3,nn:true}),
+            C('reason','TEXT','코사인 유사도를 표시한 설명.'),
+            C('evidence','TEXT','연결 항목과 reason별 수치 근거(cosine)를 저장한 JSON. 내보내기에서도 원래 정밀도를 유지합니다.',{nn:true,def:"'{}'"}),
             C('topics','TEXT','이 연결이 생성·재사용된 토픽 식별자들.'),
-            C('model','TEXT','관계 평가에 사용한 모델 이름/버전(있을 때).'),
+            C('model','TEXT','none:embedding. LLM 모델이나 관계 판정 provenance가 아닙니다.'),
             C('generated_at','TEXT','관계 결과가 생성된 시각 문자열.'),
-            C('source','TEXT','연결 자료의 출처·생성 경로. 모델 결과를 사실로 승격시키지 않습니다.',{nn:true})
+            C('source','TEXT','연결 자료의 출처·생성 경로. 유사도를 서지 사실로 승격시키지 않습니다.',{nn:true})
           ]
         }
       ];
