@@ -616,11 +616,11 @@
           ]
         },
         {
-          id: 'paper_connections', group: 'enrichment', label: 'Paper relationship claim',
-          summary: 'Stores related paper recommendations and relationship judgments along with source and model.',
+          id: 'paper_connections', group: 'enrichment', label: 'Paper similarity links',
+          summary: 'Stores embedding neighbours and numeric cosine evidence. No LLM judgment is involved.',
           flow: {
-            source: 'Embedding/title·author candidate search, relationship judgment steps, and topic-based link data.',
-            process: 'Records candidate relationships with rationale, topics, model, and generation timestamp. Relationships are LLM/algorithm-generated claims, not bibliographic facts.',
+            source: 'SPECTER2 cosine and title/author BM25 rankings fused through RRF, and topic-based link data.',
+            process: 'Records similarity links with cosine evidence, reason, topics and generation timestamp. Neighbours do not establish citations, lineage or dissent.',
             use: 'Related paper exploration and topic-based link JSON regeneration. Both paper FKs guarantee only the existence of referenced rows.'
           },
           refs: ['pipeline/build_bibliography_db.py · paper_connections schema', 'pipeline/extract_insights.py · extract_paper_connections', 'pipeline/lib/related.py · candidate connection building'],
@@ -628,12 +628,13 @@
           columns: [
             C('paper_id','INTEGER','The paper that proposed the relationship. The actual FK references papers.paper_id.',{pk:1,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
             C('related_paper_id','INTEGER','The paper proposed as a related target. References papers separately from paper_id.',{pk:2,nn:true,fk:{to:'papers.paper_id',onDelete:'CASCADE'}}),
-            C('relation','TEXT','Proposed relationship type/label. This is an interpretation result, not a validated classification fact.',{pk:3,nn:true}),
-            C('reason','TEXT','The explanation or rationale provided for the relationship proposal.'),
+            C('relation','TEXT','The direction-free alternative (similar research) label, not a judgment about lineage or different approaches.',{pk:3,nn:true}),
+            C('reason','TEXT','Explanation displaying the cosine similarity.'),
+            C('evidence','TEXT','Item-level and reason-level numeric evidence (cosine) stored as JSON; exported JSON retains its original precision.',{nn:true,def:"'{}'"}),
             C('topics','TEXT','Topic identifiers used for generating or reusing this link.'),
-            C('model','TEXT','Model name/version used for relationship evaluation, if applicable.'),
+            C('model','TEXT','none:embedding, not an LLM model or relationship judgment provenance.'),
             C('generated_at','TEXT','Timestamp string indicating when the relationship result was generated.'),
-            C('source','TEXT','Provenance and generation path of linked data. Does not promote model outputs to facts.',{nn:true})
+            C('source','TEXT','Provenance and generation path of linked data. Does not promote similarity to bibliographic fact.',{nn:true})
           ]
         }
       ];
