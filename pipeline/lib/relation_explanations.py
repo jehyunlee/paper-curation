@@ -25,7 +25,7 @@ from lib import text_providers
 from lib.atomic_io import atomic_write_json
 
 CACHE_DIR = PROJECT_ROOT / ".cache" / "relation_explanations"
-PROMPT_VERSION = "paper-summary-comparison-v2"
+PROMPT_VERSION = "paper-summary-comparison-v3"
 GROUNDED_PROMPT_VERSION = "paper-comparison-v5"   # read-only: cached explanations
 PROVIDER = "anthropic"
 RELATIONS = ("alternative", "foundation", "extension", "application", "counterpoint")
@@ -134,7 +134,8 @@ relation은 target이 source에 대해 갖는 역할이다. alternative는 비�
 foundation은 target이 source의 구체적 기반, extension은 target이 source의 방법·결과를 직접 확장,
 application은 target이 source의 방법을 다른 문제에 적용, counterpoint는 같은 주장에 대한 반대
 결과다. 요약에 그 관계가 명시될 때만 alternative 외의 관계를 고른다. 먼저 나온 논문이 나중
-논문을 확장·적용할 수는 없다.
+논문을 확장·적용할 수는 없다. 서베이·종설과 그 서베이가 다루는 분야의 개별 연구는, 한쪽이
+다른 쪽의 방법을 직접 쓰거나 확장했다고 요약에 명시되지 않는 한 alternative다.
 forward_reason/forward_relation은 source 관점에서 target을, reverse_reason/reverse_relation은
 target 관점에서 source를 설명한다. reverse는 forward 문장을 반복하지 않고 relation도 따로
 판단한다. 요청된 JSON 스키마의 네 문자열 필드로만 응답한다."""
