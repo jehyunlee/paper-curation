@@ -191,7 +191,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | 경로 | 기능 (ID) | 설명 |
 |------|-----------|------|
 | Read | 열람 · `institution-export` · `extract` | 생성된 리뷰·검색·타임라인 열람(키 없음), 공개 기관표 내보내기, 로컬 PDF 텍스트·그림 추출 |
-| AI | **구조화 리뷰** `review` | `local_review.py`: PDF에서 텍스트/Figure 추출 → 선택한 제공자가 7개 섹션(Essence·Motivation·Achievement·How·Originality·Limitation & Further Study·Evaluation) 한국어 리뷰 작성. Limitation 아래 Data Artifacts는 [데이터 인위성 지도](https://app.jehyunlee.dev/dataartifact/) 기준으로 논문이 범할 수 있는 오류를 짚음 → HTML + 서지 사이드카. Curio Review 생성은 등록과 관련 논문 연결도 수행 |
+| AI | **구조화 리뷰** `review` | `local_review.py`: PDF에서 텍스트/Figure 추출 → 선택한 제공자가 7개 섹션(Essence·Motivation·Achievement·How·Originality·Limitation & Further Study·Evaluation) 한국어 리뷰 작성. Limitation 아래 Data Artifacts는 [데이터 인위성 지도](https://app.jehyunlee.dev/dataartifact/) 기준으로 논문이 범할 수 있는 오류를 짚음(새로 생성·재생성되는 리뷰에만 포함, 기존 리뷰에 일괄 보강하지 않음) → HTML + 서지 사이드카. Curio Review 생성은 등록과 관련 논문 연결도 수행 |
 | AI | `summary` · `chat` · `comparison` | 선택한 PDF 본문만 근거로 **원문 인용이 붙은 주장**을 생성. 인용을 찾을 수 없는 답변은 거부. 요약·질의는 로컬 Ollama 가능 |
 | AI | **AI Chat / Citedby** | PDF와 멀티턴 대화, 인용 계보 분석 — Zotero 플러그인의 기존 기능 |
 | Collection | `keyword-search` · `semantic-search` | BM25 색인·조회(키 없음) / Gemini 임베딩 hybrid 색인·조회(Google 키) |
