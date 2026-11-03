@@ -39,7 +39,7 @@ PATHS_EN = {
 
 DETAILS_EN = {
     "review": "Extract text and figures from a PDF, then have the selected provider write a seven-section Korean review (Essence, Motivation, Achievement, How, Originality, Limitation & Further Study with Data Artifacts, Evaluation).",
-    "related-papers": "Classify with the stored topic model and select neighbours locally with SPECTER2/BM25. Send source excerpts from both papers to Anthropic claude-sonnet-5 for paid, quote-grounded relationship explanations.",
+    "related-papers": "Classify with the stored topic model and select neighbours locally with SPECTER2/BM25. Send short summaries of both papers to Anthropic claude-sonnet-5 for paid relationship explanations.",
     "summary": "Create a summary with verbatim quotations using only the selected PDF text. Claims without a located quotation are rejected.",
     "chat": "Question and answer grounded in the PDF text, with source quotations in every answer.",
     "comparison": "Compare papers on the same criteria and attach source quotations to every claim.",
@@ -70,7 +70,7 @@ OUTPUTS_EN = {
 
 DETAILS = {
     "review": "PDF에서 텍스트·그림을 추출하고 선택한 제공자가 7개 섹션 한국어 리뷰(Essence·Motivation·Achievement·How·Originality·Limitation & Further Study(Data Artifacts 포함)·Evaluation)를 씁니다.",
-    "related-papers": "저장된 토픽 모델로 분류하고 SPECTER2/BM25로 이웃 후보를 로컬에서 고릅니다. 두 논문의 원문 발췌를 Anthropic claude-sonnet-5에 전송해 인용 근거가 붙은 관계 설명을 유료로 생성합니다.",
+    "related-papers": "저장된 토픽 모델로 분류하고 SPECTER2/BM25로 이웃 후보를 로컬에서 고릅니다. 두 논문의 요약(제목·분류·리뷰 핵심·독창성 요약)을 Anthropic claude-sonnet-5에 전송해 관계 설명을 유료로 생성합니다.",
     "summary": "선택한 PDF 본문만 근거로 원문 인용이 붙은 요약을 만듭니다. 인용을 찾지 못한 주장은 거부합니다.",
     "chat": "PDF 본문에 근거한 질의응답. 답마다 원문 인용을 붙입니다.",
     "comparison": "여러 논문을 같은 기준으로 비교하고 각 주장에 원문 인용을 붙입니다.",
@@ -106,7 +106,7 @@ TRANSMISSION_KO = {
     "selected provider; Ollama stays on loopback": "선택한 제공자 (Ollama는 이 컴퓨터 안에서만)",
     "none": "없음",
     "Google embedding API": "Google 임베딩 API",
-    "Anthropic; source excerpts from both selected papers for quote-grounded relationship explanations; changed hybrid view cache misses also use Google embeddings":
+    "Anthropic; summaries (title, classification, review essence, originality summary) of both selected papers for relationship explanations; changed hybrid view cache misses also use Google embeddings":
         "Anthropic (두 논문 원문 발췌로 관계 설명); 변경된 hybrid 검색 캐시 미스는 Google 임베딩도 사용",
     "Crossref/OpenAlex/Scopus source APIs": "Crossref · OpenAlex · Scopus API",
     "none offline; configured bibliography sources when online; never Zotero Web paging":
@@ -138,7 +138,7 @@ EN_PIPELINE = {
     "analyze": ("Analyze", "Build relationships between categories and papers."),
     "index": ("Paper index", "Collect paper metadata from reviews into a complete index."),
     "classify": ("Topic modeling and classification", "Create and assign categories with SPECTER2, UMAP, and HDBSCAN. Zero LLM calls; at most three categories per paper."),
-    "related": ("Related papers", "Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF. Send paired source excerpts to Anthropic claude-sonnet-5 for paid explanations with supporting quotations. Cross-topic unions and reverse links can exceed five displayed neighbours."),
+    "related": ("Related papers", "Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF. Send paired paper summaries to Anthropic claude-sonnet-5 for short paid explanations. Cross-topic unions and reverse links can exceed five displayed neighbours."),
     "summaries": ("Category summaries", "Create a summary and subthemes for each category."),
     "timelines": ("Timelines", "Create category research-trend narratives and PaperBanana timeline images."),
     "publish": ("Publish", "Create readable artifacts, search indexes, and the bibliography database."),

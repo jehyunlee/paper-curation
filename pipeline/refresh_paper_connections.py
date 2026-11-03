@@ -6,7 +6,7 @@ categories with the stored HDBSCAN bundle (``classify_papers``, approximate
 predict; topics without a bundle are skipped). Then neighbours come from
 SPECTER2 vectors (plus title/author BM25 through RRF) in the paper's topic
 embedding caches. Anthropic then explains each selected pair from both papers'
-source text; retrieval scores are provenance, not reader-facing explanations.
+summaries (classification, review essence, originality); retrieval scores are provenance, not reader-facing explanations.
 Existing retrieval-backed incoming links are also re-explained. The raw store
 is replaced atomically only after every target-related explanation succeeds.
 
@@ -161,7 +161,7 @@ def plan_connections(slug: str) -> dict:
             "candidate_limit": limit, "topic_plan": details,
             "explanation": {"provider": "anthropic",
                             "model": DEFAULT_MODELS["anthropic"],
-                            "transmission": "source excerpts from selected pairs and existing retrieval-backed incoming pairs",
+                            "transmission": "paper summaries for selected pairs and existing retrieval-backed incoming pairs",
                             "credential_ref": "credential:anthropic",
                             "cost_class": "paid"},
             "classification_plan": classification_plan,

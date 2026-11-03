@@ -436,8 +436,13 @@ brew install --cask temurin   # Java for opendataloader-pdf
   ranks fused with title/author BM25 ranks through RRF (`k=60`), up to
   `RELATED_LINKS` per paper per topic (default 5). Cross-topic unions and reverse
   links can exceed that displayed count. LLM explanations are a separate paid
-  stage on cache misses: substantive Korean reasons must be grounded in both
-  original papers, with exact quotes and independently worded reverse reasons.
+  stage on cache misses: a short Sonnet 5 call (about 2k input tokens per pair)
+  over both papers' summaries (title, date, first three authors, classification,
+  review essence, truncated `originality.md`; no original text or exact quotes).
+  Reasons must be substantive Korean with independently worded reverse reasons.
+  Earlier text-grounded explanations are reused from `.cache/relation_explanations/`
+  while the paper's `text.md` is unchanged; papers with neither essence nor
+  originality summary are skipped.
   Each reason states the research field/application domain (corpus
   classification labels are passed as hints and checked against the text), the
   shared problem, and method/data/scope differences; reasons that talk about

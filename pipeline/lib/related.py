@@ -1,4 +1,4 @@
-"""Retrieved paper connections with original-text-grounded explanations.
+"""Retrieved paper connections with summary-based explanations.
 
 Connected papers are the nearest neighbours of a paper in SPECTER2 embedding
 space, re-ranked with a title/author BM25 ranking through RRF so that a title
@@ -6,10 +6,11 @@ series is not lost (``topic_modeling.compute_related_candidates``). This module
 turns those ranked candidates into ``_paper_connections.json`` entries:
 
 * **selection** — the fused rank order decides; ``max_links`` per paper. A
-  paper without usable original text can neither be explained nor explain, so
+  paper with neither review essence nor originality summary can neither be explained nor explain, so
   it is skipped as a neighbour and gets no outgoing links.
-* **explanation** — compares both original papers through the shared structured
-  text adapter; a separate reverse explanation uses the other perspective.
+* **explanation** — compares both papers' summaries (title, date, authors, classification,
+  essence, originality) through the shared structured text adapter; earlier
+  text-grounded explanations are reused from cache; a separate reverse explanation uses the other perspective.
   Each unordered pair is explained once, concurrently across
   ``RELATED_EXPLAIN_WORKERS`` threads; the opposite edge reuses it.
 * **provenance** — ``basis=embedding`` and cosine record retrieval, not a

@@ -25,8 +25,8 @@ Curio **Review generation** additionally registers the
 review and runs the shared related-papers feature immediately after internal readiness
 and credential checks. Curio never passes a review budget. This one-click action has no plan dialog, OK, or cancel step;
 related-paper candidates are retrieved locally using SPECTER2 cosine + title/author BM25/RRF,
-but explanation cache misses send excerpts from both papers to Anthropic Sonnet 5 in an
-additional paid LLM call. Search refresh preserves the existing mode/model and
+but explanation cache misses send summaries of both papers (title, classification, review essence,
+originality summary) to Anthropic Sonnet 5 in an additional short paid LLM call. Search refresh preserves the existing mode/model and
 reuses cached embeddings; new hybrid chunks may require Google embedding calls.
 Refresh failures retain the completed review and explicitly report the failed stage.
 It does not trigger whole-corpus category refitting, timelines, deployment, or bibliography-DB integration.
@@ -76,19 +76,20 @@ topic/search/network views, not the other full-curation stages:
 | Feature | Description |
 |---------|-------------|
 | **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
-| **Related Papers** | Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF (`k=60`), including papers without a category. Cross-topic unions and reverse links can exceed five displayed neighbours. Retrieval is unchanged: the LLM does not choose neighbours. Anthropic Sonnet 5 writes substantive Korean explanations grounded in both papers' original text, comparing their shared question and specific methodological extensions/differences rather than repeating cosine scores or generic embedding-proximity text. |
+| **Related Papers** | Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF (`k=60`), including papers without a category. Cross-topic unions and reverse links can exceed five displayed neighbours. Retrieval is unchanged: the LLM does not choose neighbours. Anthropic Sonnet 5 writes substantive Korean explanations grounded in both papers' summaries (title, date, authors, classification, review essence, originality summary), comparing their shared question and specific methodological extensions/differences rather than repeating cosine scores or generic embedding-proximity text. |
 | **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
 | **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
 | **Paper Discovery** | Parallel search across arXiv, Semantic Scholar, OpenAlex + auto-registration to Zotero (optional) |
 
-Related-paper explanations retain the generating `model`, exact source-text quotations
-from both papers (`source_quote` / `target_quote`), and a separately worded `reverse`
-reason with its own evidence. `basis: embedding` and cosine record retrieval provenance,
-not semantic evidence. Follow-up, counterexample, or refutation claims require direct
-paper evidence and the correct direction; similarity or publication order alone is
-insufficient. Missing source text or failed quote validation is an explicit error,
-not a reason to substitute a generic similarity sentence.
+Related-paper explanations retain the generating `model` and a separately worded `reverse`
+reason with its own evidence. New explanations neither send original text excerpts nor
+require exact quotations; earlier text-grounded explanations are reused (with their
+`source_quote` / `target_quote`) while the paper's `text.md` is unchanged. `basis: embedding` and cosine record retrieval provenance,
+not semantic evidence. Follow-up, counterexample, or refutation claims require support in the summaries and
+a direction consistent with publication chronology; similarity alone is insufficient.
+A paper with neither review essence nor originality summary cannot be explained (the pair is skipped),
+and a provider failure is an explicit error, not a reason to substitute a generic similarity sentence.
 
 The explanation default is the same Anthropic Sonnet 5 (`claude-sonnet-5`) as reviews.
 Explanation cache misses incur paid calls; valid cached pair explanations avoid repeat
@@ -339,8 +340,8 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 
 | | Description |
 |---|---|
-| **Input** | Per-category paper lists + reviews; both papers' original <code>text.md</code> for related-paper explanations |
-| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass keep SPECTER2 cosine + title/author BM25/RRF (<code>k=60</code>) retrieval. Anthropic Sonnet 5 then compares both original texts to write grounded Korean explanations, retaining the generating model, exact quotes from both papers, and a distinct reverse-perspective reason. Explanation cache misses are paid calls; cosine remains retrieval provenance, not a substitute for the explanation or evidence of follow-up/refutation.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
+| **Input** | Per-category paper lists + reviews; both papers' summaries (title, date, authors, classification, review essence, <code>originality.md</code>) for related-paper explanations |
+| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass keep SPECTER2 cosine + title/author BM25/RRF (<code>k=60</code>) retrieval. Anthropic Sonnet 5 then compares the two papers' summaries (about 2k input tokens per pair) to write Korean explanations, retaining the generating model and a distinct reverse-perspective reason; earlier text-grounded explanations are reused from cache. Explanation cache misses are short paid calls; cosine remains retrieval provenance, not a substitute for the explanation or evidence of follow-up/refutation.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
 | **Processing (Option O-2, `--insights`)** | <ul><li>Cross-category Research Insights (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>Regenerates the network visualization (<code>network.html</code>)</li></ul> |
 | **Output** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -529,7 +530,7 @@ PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --since 2026-04-01 
 
 OpenAlex returns 1k+ items per keyword and dominates the result pool, so missing arXiv rarely degrades coverage.
 
-**3. Related Papers** — candidate retrieval remains local SPECTER2 cosine + title/author BM25/RRF; it is not replaced by LLM neighbour selection. Explanations use Anthropic Sonnet 5 with original-text evidence from both papers and need Anthropic credentials on cache misses, which incur paid calls even if embeddings are cached. The generating model, quotes, and distinct reverse reasons are retained. `RELATED_LINKS` sets the per-paper, per-topic selection limit (default 5); unions and reverse links can increase the displayed count. To recompute all indexed topics, re-render pages and networks, and synchronize the existing bibliography DB, run `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`. Add `--dry-run` for a genuinely read-only plan; recomputation is not an offline/no-LLM workaround.
+**3. Related Papers** — candidate retrieval remains local SPECTER2 cosine + title/author BM25/RRF; it is not replaced by LLM neighbour selection. Explanations use Anthropic Sonnet 5 over both papers' summaries (not original text) and need Anthropic credentials on cache misses, which incur short paid calls even if embeddings are cached. The generating model and distinct reverse reasons are retained; earlier text-grounded explanations are reused while the paper's `text.md` is unchanged. `RELATED_LINKS` sets the per-paper, per-topic selection limit (default 5); unions and reverse links can increase the displayed count. To recompute all indexed topics, re-render pages and networks, and synchronize the existing bibliography DB, run `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`. Add `--dry-run` for a genuinely read-only plan; recomputation is not an offline/no-LLM workaround.
 
 ---
 
