@@ -278,8 +278,12 @@ def _target_connection_update(slug: str, connections: dict, previous: dict,
             if (isinstance(cosine, bool) or not isinstance(cosine, (int, float))
                     or not -1 <= cosine <= 1 or not math.isfinite(cosine)):
                 raise ValueError(f"incoming connection requires valid cosine evidence: {source}")
-            explained = build_connections({source: [(slug, cosine)]},
-                                          [papers[source], papers[slug]], limit=1)[source][0]
+            links = build_connections({source: [(slug, cosine)]},
+                                      [papers[source], papers[slug]], limit=1)[source]
+            if not links:
+                # A source without original text cannot ground the reason.
+                continue
+            explained = links[0]
             replacement = {**entry, **explained,
                            "evidence": {**explained["evidence"], "cosine": cosine},
                            "reverse": {**explained["reverse"], "evidence": {

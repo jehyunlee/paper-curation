@@ -194,7 +194,8 @@ class ExplainedConnectionTests(unittest.TestCase):
         self.assertEqual([link["slug"] for link in got[TARGET]],
                          [slug for slug, _score in candidates[TARGET][:3]])
         by_slug = {paper["slug"]: paper for paper in PAPERS}
-        self.assertEqual(explain.call_args_list, [
+        # Pairs are explained concurrently; the links above keep the fused order.
+        self.assertCountEqual(explain.call_args_list, [
             call(by_slug[TARGET], by_slug[slug]) for slug, _ in candidates[TARGET][:3]
         ])
 
@@ -217,6 +218,58 @@ class ExplainedConnectionTests(unittest.TestCase):
         self.assertEqual(link["evidence"], {**expected["evidence"], "cosine": 0.75})
         self.assertEqual(link["reason"], expected["reason"])
         self.assertNotIn("코사인", link["reason"])
+
+
+
+class PairDedupAndMissingTextTests(unittest.TestCase):
+    def _papers(self):
+        return [{"slug": s, "title": s} for s in ("001_A", "002_B", "003_C")]
+
+    @staticmethod
+    def _explanation(source, target):
+        def side(a, b):
+            return {"relation": "alternative", "reason": f"{a['slug']} 관점에서 {b['slug']}",
+                    "evidence": {"source_quote": a["slug"], "target_quote": b["slug"]}}
+        return {**side(source, target), "model": "m", "reverse": side(target, source)}
+
+    def test_mutual_neighbours_cost_one_call_and_read_from_each_side(self):
+        papers = self._papers()
+        with patch.object(related, "explain_pair", side_effect=self._explanation) as explain:
+            got = related.build_connections(
+                {"001_A": [("002_B", 0.9)], "002_B": [("001_A", 0.9)]}, papers)
+        explain.assert_called_once()
+        self.assertEqual(got["001_A"][0]["reason"], "001_A 관점에서 002_B")
+        self.assertEqual(got["002_B"][0]["reason"], "002_B 관점에서 001_A")
+        self.assertEqual(got["002_B"][0]["reverse"]["reason"], "001_A 관점에서 002_B")
+
+    def test_pair_without_source_text_is_skipped_not_templated(self):
+        from lib.relation_explanations import MissingSourceText
+        papers = self._papers()
+
+        def explain(source, target):
+            if "003_C" in (source["slug"], target["slug"]):
+                raise MissingSourceText("missing or unreadable source text.md: 003_C")
+            return self._explanation(source, target)
+
+        with patch.object(related, "explain_pair", side_effect=explain):
+            got = related.build_connections({"001_A": [("003_C", 0.95), ("002_B", 0.9)]}, papers)
+        self.assertEqual([link["slug"] for link in got["001_A"]], ["002_B"])
+
+    def test_provider_failure_still_raises_after_all_pairs_ran(self):
+        papers = self._papers()
+        calls = []
+
+        def explain(source, target):
+            calls.append(target["slug"])
+            if target["slug"] == "002_B":
+                raise RuntimeError("provider down")
+            return self._explanation(source, target)
+
+        with patch.object(related, "explain_pair", side_effect=explain):
+            with self.assertRaisesRegex(RuntimeError, "provider down"):
+                related.build_connections({"001_A": [("002_B", 0.9), ("003_C", 0.8)]}, papers)
+        self.assertCountEqual(calls, ["002_B", "003_C"])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

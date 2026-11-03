@@ -99,6 +99,10 @@ class RelationExplanationError(ValueError):
     """A paper pair cannot be explained safely from the available evidence."""
 
 
+class MissingSourceText(RelationExplanationError):
+    """The paper has no usable original text to ground an explanation."""
+
+
 def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
@@ -122,12 +126,12 @@ def _source(paper: dict) -> dict:
         raw = resolved.read_bytes()
         text = raw.decode("utf-8")
     except (OSError, UnicodeError, RuntimeError) as exc:
-        raise RelationExplanationError(f"missing or unreadable source text.md: {slug}") from exc
+        raise MissingSourceText(f"missing or unreadable source text.md: {slug}") from exc
     if not text.strip() or "\x00" in text:
-        raise RelationExplanationError(f"empty or invalid source text.md: {slug}")
+        raise MissingSourceText(f"empty or invalid source text.md: {slug}")
     title = paper.get("title") if isinstance(paper.get("title"), str) else ""
     if title and re.findall(r"\w+", text.casefold()) == re.findall(r"\w+", title.casefold()):
-        raise RelationExplanationError(f"source text.md contains only a title: {slug}")
+        raise MissingSourceText(f"source text.md contains only a title: {slug}")
     body = text
     for heading in re.finditer(
             r"(?im)^\s{0,3}(?:#{1,6}\s*)?(?:\d+\.?\s+)?(?:references|bibliography|참고문헌)\s*$", text):

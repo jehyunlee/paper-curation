@@ -275,7 +275,8 @@ class RebuildConnectionsTests(unittest.TestCase):
              patch.object(rebuild, "sync_existing_database", side_effect=checked("db", lambda: None)), \
              patch("builtins.print"):
             rebuild.run_rebuild(recompute=True)
-        self.assertEqual(events, ["index", "global", "extract", "explain", "explain", "save", "render", "inject",
+        # A↔B is one unordered pair: explained once, read from both sides.
+        self.assertEqual(events, ["index", "global", "extract", "explain", "save", "render", "inject",
                                   "network", "db", "released"])
 
     def test_live_review_lease_and_pending_reservation_block_before_snapshot(self):
@@ -358,8 +359,7 @@ class RebuildConnectionsTests(unittest.TestCase):
         published_paths = [self.global_path, self.docs / "demo" / "_paper_connections.json",
                            self.papers / self.a / "review.md", self.papers / self.b / "review.md"]
         before = {path: path.read_bytes() for path in published_paths}
-        self.explain_pair.side_effect = [self.explanation(self.index[0], self.index[1]),
-                                        RuntimeError("explanation provider unavailable")]
+        self.explain_pair.side_effect = RuntimeError("explanation provider unavailable")
         with patch.dict(sys.modules, {"topic_modeling": self.model()}), \
              patch.object(rebuild, "save_global_connections") as save, \
              patch.object(rebuild, "atomic_write_json") as write, \
@@ -370,7 +370,7 @@ class RebuildConnectionsTests(unittest.TestCase):
              patch("builtins.print") as printed:
             with self.assertRaisesRegex(RuntimeError, "explanation provider unavailable"):
                 rebuild.run_rebuild(recompute=True)
-        self.assertEqual(self.explain_pair.call_count, 2)
+        self.assertEqual(self.explain_pair.call_count, 1)
         for operation in (save, write, render, inject, network, database, self.importer):
             operation.assert_not_called()
         self.assertEqual({path: path.read_bytes() for path in published_paths}, before)
