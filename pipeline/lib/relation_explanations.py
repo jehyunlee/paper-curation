@@ -25,7 +25,7 @@ from lib import text_providers
 from lib.atomic_io import atomic_write_json
 
 CACHE_DIR = PROJECT_ROOT / ".cache" / "relation_explanations"
-PROMPT_VERSION = "paper-summary-comparison-v1"
+PROMPT_VERSION = "paper-summary-comparison-v2"
 GROUNDED_PROMPT_VERSION = "paper-comparison-v5"   # read-only: cached explanations
 PROVIDER = "anthropic"
 RELATIONS = ("alternative", "foundation", "extension", "application", "counterpoint")
@@ -101,21 +101,24 @@ reason을 실질적으로 뒷받침해야 한다. reverse 인용문의 source는
 실제 원문 부분 문자열로 복원한다. 단어·구두점·하이픈·생략부호 변경은 허용하지 않는다.
 요청된 JSON 스키마로만 응답한다."""
 
-_DIRECTION_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "relation": {"type": "string", "enum": list(RELATIONS)},
-        "reason": {"type": "string", "minLength": 40, "maxLength": 400},
-    },
-    "required": ["relation", "reason"],
-    "additionalProperties": False,
-}
+# Flat on purpose: with nested {forward: {relation, reason}} objects Sonnet
+# tool use intermittently serialized the inner fields as XML-like text
+# (5 of 13 live calls), so the wire schema has four top-level strings.
+_REASON = {"type": "string", "minLength": 40, "maxLength": 400}
+_RELATION = {"type": "string", "enum": list(RELATIONS)}
 EXPLANATION_SCHEMA = {
     "type": "object",
-    "properties": {"forward": _DIRECTION_SCHEMA, "reverse": _DIRECTION_SCHEMA},
-    "required": ["forward", "reverse"],
+    "properties": {"forward_relation": _RELATION, "forward_reason": _REASON,
+                   "reverse_relation": _RELATION, "reverse_reason": _REASON},
+    "required": ["forward_relation", "forward_reason", "reverse_relation", "reverse_reason"],
     "additionalProperties": False,
 }
+
+
+def _nested(flat: dict) -> dict:
+    return {name: {"relation": flat[f"{name}_relation"], "reason": flat[f"{name}_reason"]}
+            for name in ("forward", "reverse")}
+
 
 SYSTEM_PROMPT = """검색으로 이미 짝지어진 두 논문을 독자에게 소개하는 연구 편집자다.
 입력은 각 논문의 제목, 연도, 저자, 코퍼스 분류(fields), 리뷰 요약(essence), 독창성 요약
@@ -132,8 +135,9 @@ foundation은 target이 source의 구체적 기반, extension은 target이 sourc
 application은 target이 source의 방법을 다른 문제에 적용, counterpoint는 같은 주장에 대한 반대
 결과다. 요약에 그 관계가 명시될 때만 alternative 외의 관계를 고른다. 먼저 나온 논문이 나중
 논문을 확장·적용할 수는 없다.
-forward는 source 관점에서 target을, reverse는 target 관점에서 source를 설명하며, reverse는
-forward 문장을 반복하지 않고 relation도 따로 판단한다. 요청된 JSON 스키마로만 응답한다."""
+forward_reason/forward_relation은 source 관점에서 target을, reverse_reason/reverse_relation은
+target 관점에서 source를 설명한다. reverse는 forward 문장을 반복하지 않고 relation도 따로
+판단한다. 요청된 JSON 스키마의 네 문자열 필드로만 응답한다."""
 
 
 # Retrieval chose the pair; a reason that talks about how it was retrieved
@@ -279,7 +283,7 @@ def _validate(data, source: dict, target: dict) -> None:
         jsonschema.validate(data, EXPLANATION_SCHEMA)
     except jsonschema.ValidationError as exc:
         raise RelationExplanationError("invalid comparison explanation schema") from exc
-    _check_directions(data, source, target)
+    _check_directions(_nested(data), source, target)
 
 
 def _summary(paper: dict) -> dict:
@@ -411,10 +415,23 @@ def explain_pair(source: dict, target: dict) -> dict:
         request_prompt = prompt
         for attempt in range(2):
             if not cached:
-                result = text_providers.generate_structured(
-                    PROVIDER, model, SYSTEM_PROMPT, request_prompt, EXPLANATION_SCHEMA,
-                    capability="comparison", max_output_tokens=MAX_OUTPUT_TOKENS,
-                    credential_ref=f"credential:{PROVIDER}")
+                try:
+                    result = text_providers.generate_structured(
+                        PROVIDER, model, SYSTEM_PROMPT, request_prompt, EXPLANATION_SCHEMA,
+                        capability="comparison", max_output_tokens=MAX_OUTPUT_TOKENS,
+                        credential_ref=f"credential:{PROVIDER}")
+                except text_providers.ProviderSchemaError as exc:
+                    # A missing or malformed field (seen live) gets the same single
+                    # repair attempt as a payload failing local validation.
+                    if attempt == 1:
+                        raise
+                    detail = getattr(exc.__cause__, "message", "") or str(exc)
+                    request_prompt = json.dumps({
+                        **context, "validation_error": f"schema: {detail}"[:300],
+                        "repair_instruction": "네 문자열 필드(forward_relation, forward_reason, "
+                                              "reverse_relation, reverse_reason)를 모두 채운 JSON을 반환한다.",
+                    }, ensure_ascii=False)
+                    continue
             if (not isinstance(result, dict) or result.get("model") != model
                     or result.get("provider") != PROVIDER):
                 raise RelationExplanationError("comparison explanation has invalid model provenance")
@@ -432,7 +449,7 @@ def explain_pair(source: dict, target: dict) -> dict:
                 break
         if not cached:
             atomic_write_json(cache, {"identity": identity, "result": result})
-        found = (data, left["sha256"], right["sha256"], PROMPT_VERSION)
+        found = (_nested(data), left["sha256"], right["sha256"], PROMPT_VERSION)
 
     data, left_sha, right_sha, version = found
 

@@ -56,10 +56,8 @@ class RelationExplanationTests(unittest.TestCase):
         paths = patch.multiple(explanations, PAPERS_DIR=self.papers, CACHE_DIR=self.cache)
         paths.start()
         self.addCleanup(paths.stop)
-        self.payload = {
-            "forward": {"relation": "alternative", "reason": FORWARD_REASON},
-            "reverse": {"relation": "alternative", "reason": REVERSE_REASON},
-        }
+        self.payload = {"forward_relation": "alternative", "forward_reason": FORWARD_REASON,
+                        "reverse_relation": "alternative", "reverse_reason": REVERSE_REASON}
         provider = patch.object(text_providers, "generate_structured", side_effect=self._generate)
         self.generate = provider.start()
         self.addCleanup(provider.stop)
@@ -128,7 +126,7 @@ class RelationExplanationTests(unittest.TestCase):
 
     def test_invalid_payload_is_repaired_once_then_cached(self):
         bad = self._generate("anthropic", MODEL)
-        bad["data"]["forward"]["reason"] = "SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.95)."
+        bad["data"]["forward_reason"] = "SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.95)."
         good = self._generate("anthropic", MODEL)
         with patch.object(text_providers, "generate_structured", side_effect=[bad, good]) as generate:
             result = self._explain()
@@ -139,6 +137,17 @@ class RelationExplanationTests(unittest.TestCase):
         self.assertEqual(result["reason"], FORWARD_REASON)
         self.assertEqual(len(self._cache_paths()), 1)
 
+    def test_adapter_unwraps_a_single_unknown_wrapper_key(self):
+        # Observed live: tool input {"parameter name": {"forward": ..., "reverse": ...}}.
+        schema = explanations.EXPLANATION_SCHEMA
+        fixed = text_providers._decode_stringified_containers({"parameter name": self.payload}, schema)
+        text_providers._validate_schema_shape(fixed, schema)
+        self.assertEqual(fixed, self.payload)
+        partial = {"wrapper": {"forward_reason": FORWARD_REASON}}
+        self.assertEqual(text_providers._decode_stringified_containers(partial, schema), partial)
+        known = {"forward_reason": self.payload}
+        self.assertEqual(text_providers._decode_stringified_containers(known, schema), known)
+
     def test_retrieval_talk_english_short_and_repeated_reasons_are_rejected(self):
         for forward in ("SPECTER2 임베딩에서 가까운 후보 탐색 연구로, 탐색 비용과 정확도를 함께 비교할 수 있습니다.",
                         "BM25 순위가 높은 후보 탐색 연구로, 탐색 비용과 정확도를 함께 비교할 수 있습니다.",
@@ -146,17 +155,32 @@ class RelationExplanationTests(unittest.TestCase):
                         "짧음"):
             with self.subTest(forward=forward):
                 payload = copy.deepcopy(self.payload)
-                payload["forward"]["reason"] = forward
+                payload["forward_reason"] = forward
                 self._assert_invalid(payload)
         payload = copy.deepcopy(self.payload)
-        payload["reverse"]["reason"] = payload["forward"]["reason"]
+        payload["reverse_reason"] = payload["forward_reason"]
         self._assert_invalid(payload)
 
     def test_relation_must_respect_publication_order(self):
         payload = copy.deepcopy(self.payload)
         # Canonical order puts 001 (2025) first: the 2023 target cannot extend it.
-        payload["forward"]["relation"] = "extension"
+        payload["forward_relation"] = "extension"
         self._assert_invalid(payload)
+
+    def test_schema_violation_from_provider_gets_one_repair(self):
+        good = self._generate("anthropic", MODEL)
+        with patch.object(text_providers, "generate_structured",
+                          side_effect=[text_providers.ProviderSchemaError("missing field"), good]) as generate:
+            result = self._explain()
+        self.assertEqual(generate.call_count, 2)
+        self.assertIn("validation_error", json.loads(generate.call_args.args[3]))
+        self.assertEqual(result["reason"], FORWARD_REASON)
+        with patch.object(text_providers, "generate_structured",
+                          side_effect=text_providers.ProviderSchemaError("missing field")) as generate:
+            self.source["essence"] = "다른 요약으로 바꿔 캐시를 피하는 후보 탐색 방법을 제안한다."
+            with self.assertRaises(text_providers.ProviderSchemaError):
+                self._explain()
+        self.assertEqual(generate.call_count, 2)
 
     def test_provider_failure_propagates_without_cache(self):
         with patch.object(text_providers, "generate_structured",

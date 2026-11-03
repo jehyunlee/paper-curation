@@ -29,6 +29,8 @@ class ProviderSelectionError(TextProviderError): pass
 class AuthenticationError(TextProviderError): pass
 class ProviderResponseError(TextProviderError): pass
 class ProviderTruncatedError(ProviderResponseError): pass
+class ProviderSchemaError(ProviderResponseError):
+    """The response parsed but does not match the requested schema."""
 class UnsupportedCapabilityError(TextProviderError): pass
 
 
@@ -112,11 +114,19 @@ def _decode_stringified_containers(data: dict, schema: dict) -> dict:
     Anthropic tool use returned the Data Artifacts array as a JSON-encoded
     string (LabOS 10973), sometimes of the whole object
     (``{"data_artifacts": "{\"data_artifacts\": [...]}"}``); the content was
-    complete, only its encoding differed.
+    complete, only its encoding differed. It also wrapped a whole comparison
+    object under one unknown key (``{"parameter name": {"forward": ...}}``);
+    such a single wrapper around a value that has every required property is
+    removed. Validation still runs on the result.
     """
     properties = schema.get("properties") if isinstance(schema, dict) else None
     if not isinstance(properties, dict):
         return data
+    required = set(schema.get("required") or ())
+    if (isinstance(data, dict) and len(data) == 1 and required):
+        (key, inner), = data.items()
+        if key not in properties and isinstance(inner, dict) and required <= set(inner):
+            data = inner
     fixed = dict(data)
     for name, spec in properties.items():
         value = fixed.get(name)
@@ -141,7 +151,7 @@ def _validate_schema_shape(data: dict, schema: dict) -> None:
     except ImportError as exc:
         raise ProviderResponseError("JSON schema validation is unavailable") from exc
     except Exception as exc:
-        raise ProviderResponseError("provider returned invalid structured payload") from exc
+        raise ProviderSchemaError("provider returned invalid structured payload") from exc
 
 
 def _ollama_url() -> str:
