@@ -39,6 +39,11 @@ joblib
 umap-learn
 hdbscan
 sentence-transformers
+# SPECTER2 proximity adapter. Without it embeddings fall back to base/mean
+# pooling, the cache tag mismatches, and every topic is re-embedded.
+# adapters 1.3 requires transformers 4.57.
+adapters==1.3.0
+transformers==4.57.6
 
 # --- Citedby (인용논문 분석: pipeline/lib/citedby/) ---
 # 지연 import 라 citedby 를 쓰지 않으면 로드되지 않는다.
