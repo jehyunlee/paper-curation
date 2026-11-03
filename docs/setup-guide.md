@@ -72,8 +72,8 @@ python pipeline/run_feature.py --request feature-request.json --execute
 <!-- GENERATED FEATURE REGISTRY: pipeline/run_feature.py --list; parent generator owns this region. -->
 | 모듈 | 기능 ID | 기능 / Feature | 제공자 | 전송 대상 | 비용 유형 |
 |---|---|---|---|---|---|
-| M1 | `review` | 논문 리뷰 / Paper review | anthropic, openai, google | selected cloud provider | paid |
-| M1 | `related-papers` | 토픽 분류·관련 논문 연결 / Topic classification and related papers | none / configured sources | none; the paper is classified with the stored HDBSCAN bundle and neighbours are found locally in SPECTER2 embedding space, no model is called | local |
+| M1 | `review` | 논문 리뷰 / Paper review | anthropic, openai, google | selected cloud provider; registered hybrid view cache misses also use Google embeddings | paid |
+| M1 | `related-papers` | 토픽 분류·관련 논문 연결 / Topic classification and related papers | anthropic | Anthropic; source excerpts from both selected papers for quote-grounded relationship explanations; changed hybrid view cache misses also use Google embeddings | paid |
 | M1 | `summary` | 근거 기반 요약 / Grounded summary | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `chat` | 근거 기반 질의 / Grounded chat | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `comparison` | 근거 기반 비교 / Grounded comparison | anthropic, openai, google | selected cloud provider | paid |
@@ -224,21 +224,51 @@ python pipeline/local_review.py --request request.json --execute
 
 stdout은 마지막까지 JSON만 출력합니다. 상태는 `ready`, `needs-key`,
 `needs-runtime`, `insufficient-data`, `failed`, `completed`, `exists` 중 하나입니다.
-`overwrite: false`이고 기존 산출물이 완전하며 요청과 일치하면 `exists`입니다.
+`overwrite: false`이고 기존 산출물이 완전하며 요청과 일치하면 리뷰를 재사용합니다.
+실행 시 필요한 화면 갱신까지 성공하면 `exists`이며, 갱신 실패는 `failed`입니다.
 불완전하거나 불일치하는 기존 묶음은 `failed`이며 자동으로 덮어쓰지 않습니다.
 리뷰 생성 뒤 HTML 등 후속 단계가 실패하면 응답의 `partial`에 보존된 리뷰와
 캐시 상태를 표시합니다. 캐시 보존은 다른 입력의 재실행까지 무료라는 뜻이 아닙니다.
 
 `--execute`는 PDF sanity 검증, canonical text 추출, geometric figure 추출(Gemini
-검증 비활성), Sonnet 5 리뷰, canonical HTML, 필수 `bibliography.json` sidecar만
-해당 `output_dir`에 publish합니다. 즉 `text.md`, `figures/`, `review.md`,
-`index.html`, `bibliography.json`과 필요한 그림 다운로드 payload를 생성합니다. 분류, 논문 검색, semantic index,
-타임라인, 이메일, 배포, Zotero Web API/remote DB sync는 실행하지 않습니다.
-CLI 자체는 전역 `_papers_index.json`이나 서지 DB도 수정하지 않습니다.
+검증 비활성), 선택한 제공자의 리뷰, canonical HTML, 필수 `bibliography.json`
+sidecar를 해당 `output_dir`에 생성합니다. 즉 `text.md`, `figures/`, `review.md`,
+`index.html`, `bibliography.json`과 필요한 그림 다운로드 payload를 만듭니다.
+출력이 canonical `docs/papers/`의 등록된 논문이면 성공한 리뷰 생성·재생성 뒤
+소속 토픽 페이지, 검색 인덱스, 이미 존재하는 인터랙티브 네트워크도 갱신합니다.
+관련된 기존 `_cross` 통합 화면도 갱신 대상입니다. 코퍼스 밖 출력은 독립 산출물로
+남으며, CLI의 리뷰 요청 자체가 논문 등록이나 서지 DB ingest를 대신하지는 않습니다.
 
 공유 코퍼스에 쓰는 작업은 reserve/register/cancel 트랜잭션과 공통 잠금으로
-충돌을 조정하고 Curio 목록을 갱신합니다. 이는 분류·검색 인덱스·타임라인·배포를
-자동 실행한다는 뜻이 아닙니다. 기존 전체 workflow는 아래의 별도 고급 작업입니다.
+충돌을 조정하고 Curio 목록을 갱신합니다. 신규 Curio 예약 논문은 리뷰 생성 직후가
+아니라 **등록이 완료된 뒤** 화면을 갱신합니다. 이 화면 갱신은 전체 코퍼스 분류,
+관련 논문 연결 재계산, 논문 수집, 타임라인, 이메일, 배포·게시, Zotero Web API/
+remote DB sync를 실행하지 않습니다. 분류·관련 논문 기능과 기존 전체 workflow는
+별도 단계입니다.
+
+### 리뷰 후 화면 갱신과 복구
+
+기존 검색 인덱스의 `bm25`/`hybrid` 모드, 모델, 원문·개인 메모 포함 정책과
+로컬 전용 제한을 유지합니다. 인덱스가 없으면 기본 hybrid로 생성합니다.
+임베딩 캐시는 재사용하지만 hybrid의 새 청크·변경된 청크에는 Google 임베딩
+자격증명과 유료 호출이 필요할 수 있습니다. BM25는 임베딩 키를 요구하지 않습니다.
+
+화면 갱신 실패는 생성된 리뷰를 보존하고 `failed` 상태, 완료/실패 단계와
+partial 산출물·재시도 명령을 노출합니다. 이 상태를 색인 완료로 취급하지 마세요.
+아래 명령은 화면만 복구하며 유료 리뷰나 분류·연결 재계산을 다시 실행하지 않습니다:
+
+```bash
+# 한 논문의 소속 토픽 화면 재시도
+python pipeline/refresh_paper_views.py --slug 042_Some_Paper
+
+# 기존 코퍼스 전체 토픽 화면 catchup (등록된 토픽 소속 + 설정된 토픽)
+python pipeline/refresh_paper_views.py --all-topics
+```
+
+완전하고 입력이 일치하는 기존 리뷰 묶음에 `local_review.py --execute`를 다시
+요청해도 리뷰를 재생성하지 않고 화면 갱신을 재시도합니다. 토픽 이동 뒤의 이전
+화면 정리 등 상세 복구는 [Operations Manual](operations.md#review-view-refresh-and-recovery)을
+참고하세요. 배포·게시·이메일은 어느 복구 명령에서도 자동 실행하지 않습니다.
 
 ## Google 없는 키워드 검색과 답변
 
@@ -278,8 +308,8 @@ python pipeline/build_search_index.py --topic my_topic --mode bm25 --dry-run
 ## 전체 curate/full 워크플로 (명시적 별도 실행)
 
 기존 종합 큐레이션은 setup이나 단일 PDF 리뷰가 자동으로 이어서 실행하지
-않습니다. Zotero 컬렉션 수집·분류·검색 인덱스·타임라인·배포가 필요할 때 해당
-설정과 환경변수를 준비한 뒤 명시적으로 실행합니다.
+않습니다. 리뷰 후 자동 화면 갱신과 달리 Zotero 컬렉션 수집, 전체 분류·연결
+재계산, 타임라인, 배포는 해당 설정과 환경변수를 준비한 뒤 명시적으로 실행합니다.
 
 ### 전체 워크플로 환경변수
 
@@ -383,7 +413,8 @@ fresh setup의 `zotero.collections` 등에 기존 full-pipeline 설정을 필요
 
 | Script | Purpose |
 |--------|---------|
-| `pipeline/local_review.py` | 단일 PDF plan/execute; 논문별 산출물과 sidecar만 생성 |
+| `pipeline/local_review.py` | 단일 PDF plan/execute; 논문별 산출물·sidecar 생성 후 등록된 코퍼스 논문의 로컬 화면 갱신 |
+| `pipeline/refresh_paper_views.py` | 리뷰 재실행 없이 `--slug` 또는 `--all-topics`로 토픽 페이지·검색 인덱스·기존 네트워크 복구 |
 | `pipeline/config_loader.py` | 공유 설정; API 키는 환경변수/OS keyring, 평문 config 키는 읽지 않음 |
 | `pipeline/sync_zotero.py` | Zotero에서 삭제/제목 변경 동기화 |
 | `pipeline/run_update_force.py` | 배치 리뷰 생성 (PDF → 텍스트 → Figure → 리뷰) |

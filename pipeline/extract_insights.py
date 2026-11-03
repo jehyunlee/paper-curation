@@ -532,11 +532,12 @@ _GEMINI_CC_MODEL = os.environ.get("EXTRACT_INSIGHTS_CC_GEMINI_MODEL", "gemini-3.
 
 def extract_paper_connections(topic, cat_papers, all_topic_papers=None,
                               topic_dir=None, topic_slugs=None):
-    """Find connected papers in embedding space. No model is called.
+    """Retrieve connected papers, then explain each selected pair with an LLM.
 
     topic_modeling / paper-curio 와 **동일한 SPECTER2 임베딩 기준**을 공유한다:
     후보는 cosine와 제목/저자 BM25 RRF 순위이고, ``lib.related``가 그 순위대로
-    연결을 기록한다. LLM 판정은 없다.
+    연결을 기록한다. LLM은 후보를 다시 고르지 않고 두 논문의 원문에 근거한
+    한국어 연결 이유를 생성한다. 설명 실패 시 연결을 저장하지 않고 예외를 전파한다.
 
     연결을 생성할 대상은 `cat_papers`(= --categories 필터 반영)에 한정하되, 후보
     풀은 `all_topic_papers` 전체에서 뽑아 cross-category 연결을 유지한다."""
@@ -633,7 +634,7 @@ def _run_insights(topic="ai4s", *, insights_only=False, connections_only=False,
         except Exception as e:
             log(f"  [backend] OpenAI init failed: {str(e)[:80]}")
     client = clients["anthropic"] or clients["openai"]
-    log(f"  [backend] paper connections: SPECTER2 embedding + BM25 (no model); "
+    log(f"  [backend] paper connections: SPECTER2 + BM25 retrieval, grounded LLM explanations; "
         f"cross-category insights: {'/'.join(_CC_BACKENDS)}")
 
     if run_insights:
@@ -679,7 +680,7 @@ def _run_insights(topic="ai4s", *, insights_only=False, connections_only=False,
 
     if run_connections:
         log("\n" + "=" * 50)
-        log("PAPER CONNECTIONS (SPECTER2 + BM25)")
+        log("PAPER CONNECTIONS (SPECTER2 + BM25 retrieval + LLM explanations)")
         log("=" * 50)
 
         topic_slugs = [p["slug"] for p in topic_papers]

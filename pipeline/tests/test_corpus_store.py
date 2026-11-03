@@ -49,6 +49,133 @@ class CorpusStoreTests(unittest.TestCase):
         (directory / "bibliography.json").write_text(
             json.dumps({"zotero": identity}), encoding="utf-8")
 
+    def _canonical_papers(self):
+        self.papers = Path(self.tmp.name) / "docs" / "papers"
+        self.papers.mkdir(parents=True)
+        return self.papers
+
+    def _view_report(self, status="completed"):
+        return {"status": status, "topics": ["demo"],
+                "steps": [{"topic": "demo", "builder": "search", "status": status}],
+                "errors": ["demo/search: unavailable"] if status == "failed" else [],
+                "retry_command": "python refresh_paper_views.py --slug 001_Registered"}
+
+    def test_register_refreshes_committed_membership_after_index_lock_and_marker_release(self):
+        import refresh_paper_views as views
+
+        papers = self._canonical_papers()
+        identity = {"key": "K", "title": "Registered paper"}
+        slug = "001_Registered"
+        (papers / slug).mkdir()
+        (papers / "_papers_index.json").write_text(json.dumps([{
+            "slug": slug, **identity, "topics": ["old"], "primary_topic": "old-primary",
+            "classifications": {"stale": {"primary_category": "Retained metadata"}},
+        }]), encoding="utf-8")
+        reservation = reserve(papers, identity)
+        self._bundle(slug, identity)
+
+        def refresh(refreshed_slug, **kwargs):
+            self.assertEqual(refreshed_slug, slug)
+            self.assertEqual(kwargs, {"papers_dir": papers.resolve(),
+                                      "previous_topics": ["old", "old-primary"], "allow_paid": True})
+            self.assertFalse((papers / slug / ".corpus-reservation.json").exists())
+            committed, = json.loads((papers / "_papers_index.json").read_text())
+            self.assertEqual(committed["topics"], ["new"])
+            self.assertEqual(committed["primary_topic"], "new-primary")
+            with corpus_index_lock(papers, timeout=0):
+                pass
+            with corpus_operation_lock(papers, exclusive=True, timeout=0):
+                pass
+            return self._view_report()
+
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", side_effect=refresh) as refreshed:
+            result = register(papers, slug, reservation["token"], {
+                **identity, "topics": ["new"], "primary_topic": "new-primary",
+            })
+        self.assertTrue(result["registered"])
+        self.assertEqual(result["status"], "completed", result)
+        refreshed.assert_called_once()
+
+    def test_register_view_failure_is_nonzero_cli_but_registration_and_bundle_remain(self):
+        import refresh_paper_views as views
+
+        papers = self._canonical_papers()
+        identity = {"key": "K", "title": "Registered paper"}
+        reservation = reserve(papers, identity, requested_slug="001_Registered")
+        self._bundle(reservation["slug"], identity)
+        before = {path.name: path.read_bytes() for path in (papers / reservation["slug"]).iterdir()
+                  if path.name != ".corpus-reservation.json"}
+        request = Path(self.tmp.name) / "register.json"
+        request.write_text(json.dumps({
+            "schema_version": 1, "op": "register", "papers_dir": str(papers),
+            "slug": reservation["slug"], "token": reservation["token"],
+            "entry": {**identity, "topics": ["demo"]},
+        }), encoding="utf-8")
+        stdout = io.StringIO()
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", return_value=self._view_report("failed")), \
+             patch.object(sys, "argv", ["corpus_store.py", "--request", str(request)]), \
+             contextlib.redirect_stdout(stdout):
+            code = main()
+        result = json.loads(stdout.getvalue())
+        self.assertEqual(code, 1)
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(result["registered"])
+        self.assertTrue(result["partial"]["registered"])
+        self.assertTrue(result["partial"]["published"])
+        self.assertTrue(result["partial"]["retry_safe"])
+        self.assertEqual(result["partial"]["retry_command"], result["views"]["retry_command"])
+        self.assertTrue(all(Path(path).is_file() for path in result["outputs"]))
+        self.assertFalse((papers / reservation["slug"] / ".corpus-reservation.json").exists())
+        committed, = json.loads((papers / "_papers_index.json").read_text())
+        self.assertEqual(committed["slug"], reservation["slug"])
+        self.assertEqual({path.name: path.read_bytes() for path in (papers / reservation["slug"]).iterdir()}, before)
+
+    def test_register_unexpected_refresh_error_keeps_committed_registration(self):
+        import refresh_paper_views as views
+
+        papers = self._canonical_papers()
+        identity = {"key": "K", "title": "Registered paper"}
+        reservation = reserve(papers, identity)
+        self._bundle(reservation["slug"], identity)
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", side_effect=RuntimeError("builder crashed")):
+            result = register(papers, reservation["slug"], reservation["token"], {**identity, "topics": ["demo"]})
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(result["registered"])
+        self.assertTrue(result["views"]["errors"])
+        self.assertIn(reservation["slug"], result["partial"]["retry_command"])
+        self.assertFalse((papers / reservation["slug"] / ".corpus-reservation.json").exists())
+
+    def test_standalone_register_does_not_refresh_canonical_topic_views(self):
+        import refresh_paper_views as views
+
+        identity = {"key": "K", "title": "Standalone paper"}
+        reservation = reserve(self.papers, identity)
+        self._bundle(reservation["slug"], identity)
+        with patch.object(views, "PAPERS_DIR", Path(self.tmp.name) / "docs" / "papers"), \
+             patch.object(views, "refresh_paper_views", side_effect=AssertionError("standalone")) as refresh:
+            result = register(self.papers, reservation["slug"], reservation["token"], identity)
+        self.assertTrue(result["registered"])
+        refresh.assert_not_called()
+
+    def test_reserved_review_budget_restriction_survives_until_registration(self):
+        import refresh_paper_views as views
+        from lib.corpus_store import restrict_view_refresh_to_budget
+
+        papers = self._canonical_papers()
+        identity = {"key": "K", "title": "Capped paper"}
+        reservation = reserve(papers, identity)
+        restrict_view_refresh_to_budget(papers, reservation["slug"], reservation["token"])
+        self._bundle(reservation["slug"], identity)
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", return_value=self._view_report("failed")) as refresh:
+            result = register(papers, reservation["slug"], reservation["token"], {**identity, "topics": ["demo"]})
+        self.assertFalse(refresh.call_args.kwargs["allow_paid"])
+        self.assertTrue(result["registered"])
+        self.assertEqual(result["status"], "failed")
+
     def test_concurrent_reservations_allocate_unique_numbers_and_register(self):
         queue = multiprocessing.Queue()
         workers = [multiprocessing.Process(target=_reserve_worker, args=(str(self.papers), n, queue)) for n in range(2)]

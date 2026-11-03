@@ -13,7 +13,9 @@ import json
 import os
 import re
 import secrets
+import shlex
 import sys
+import tempfile
 import time
 import unicodedata
 from pathlib import Path
@@ -344,14 +346,35 @@ def _complete_bundle(directory: Path) -> bool:
                for name in ("text.md", "review.md", "index.html", "bibliography.json"))
 
 
-def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any]) -> dict[str, Any]:
-    if not isinstance(entry, dict):
-        raise CorpusStoreError("entry must be an object")
+def restrict_view_refresh_to_budget(papers_dir: str | Path, slug: str, token: str) -> None:
+    """Carry an executed review's cost restriction to later registration."""
     papers = _papers_dir(papers_dir)
     with corpus_index_lock(papers):
         marker = _owned_reservation(papers, slug, token)
         reservation = _read_reservation(papers, slug)
         assert reservation is not None
+        if reservation.get("view_refresh_allow_paid") is False:
+            return
+        reservation["view_refresh_allow_paid"] = False
+        fd, temporary = tempfile.mkstemp(prefix=".reservation-budget-", dir=marker.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                json.dump(reservation, stream, ensure_ascii=False)
+            os.replace(temporary, marker)
+        finally:
+            Path(temporary).unlink(missing_ok=True)
+
+
+def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(entry, dict):
+        raise CorpusStoreError("entry must be an object")
+    from refresh_paper_views import PAPERS_DIR as canonical_papers, paper_topics, refresh_paper_views
+    papers = _papers_dir(papers_dir)
+    with corpus_index_lock(papers):
+        marker = _owned_reservation(papers, slug, token)
+        reservation = _read_reservation(papers, slug)
+        assert reservation is not None
+        allow_paid = reservation.get("view_refresh_allow_paid", True) is True
         identity = reservation.get("identity")
         if not isinstance(identity, dict) or not _identity_consistent(entry, identity):
             raise CorpusStoreError("entry identity does not match reservation")
@@ -372,6 +395,10 @@ def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any
             raise CorpusStoreError("bibliography sidecar identity does not match reservation")
         entries = load_index_strict(papers)
         previous = next((candidate for candidate in entries if candidate.get("slug") == slug), {})
+        try:
+            previous_topics = paper_topics(previous)
+        except ValueError as exc:
+            raise CorpusStoreError("invalid previous topic membership", code="invalid-index") from exc
         merged = dict(entry)
         merged["slug"] = slug
         if not merged.get("classifications") and previous.get("classifications"):
@@ -396,7 +423,31 @@ def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any
         replacement.append(merged)
         atomic_write_json(index_path(papers), replacement)
         marker.unlink()
-        return {"slug": slug, "registered": True}
+    result: dict[str, Any] = {"slug": slug, "registered": True}
+    if papers != Path(canonical_papers).expanduser().resolve():
+        return result
+    # Registration is committed and its marker and writer lock are gone before
+    # taking the exclusive view-builder lease. Never roll back a paid review
+    # merely because an optional credential or a downstream builder is missing.
+    try:
+        views = refresh_paper_views(slug, papers_dir=papers, previous_topics=previous_topics,
+                                    allow_paid=allow_paid)
+    except Exception as exc:
+        command = [sys.executable, str(_PIPELINE_DIR / "refresh_paper_views.py"), "--slug", slug]
+        for topic in previous_topics:
+            command += ["--previous-topic", topic]
+        views = {"status": "failed", "topics": [], "steps": [],
+                 "errors": [f"view refresh failed: {type(exc).__name__}"],
+                 "retry_command": shlex.join(command)}
+    result["views"] = views
+    result["status"] = "completed" if views["status"] == "completed" else "failed"
+    if result["status"] == "failed":
+        result["error"] = "Paper registration is retained; retry view refresh only."
+        result["outputs"] = [str(directory / name) for name in
+                             ("text.md", "review.md", "index.html", "bibliography.json")]
+        result["partial"] = {"registered": True, "published": True, "retry_safe": True,
+                             "retry_command": views["retry_command"]}
+    return result
 
 
 def cancel(papers_dir: str | Path, slug: str, token: str) -> dict[str, Any]:
@@ -438,7 +489,7 @@ def main() -> int:
         result = handle_request(request)
         print(json.dumps({"schema_version": 1, "op": op, "status": "completed",
                           **result}, ensure_ascii=False))
-        return 0
+        return 1 if result.get("status") == "failed" else 0
     except CorpusStoreBusyError:
         print(json.dumps({"schema_version": 1, "op": op, "status": "busy",
                           "error": "corpus operation is busy", "error_code": "busy"}, ensure_ascii=False))

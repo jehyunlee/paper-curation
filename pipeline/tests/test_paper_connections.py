@@ -5,9 +5,10 @@ the two papers shared: 149,496 stored connections for 51,932 distinct claims,
 79 pairs pointing at papers deleted long ago, and no way to ask "what connects
 to X" without loading all nine files.
 
-They are embedding neighbours, so these tests also pin the separation between
-retrieval evidence and publisher-verified bibliographic facts.
+SPECTER2/BM25 retrieves the neighbours and an LLM explains their content. These
+tests preserve model/quote provenance separately from verified bibliography.
 """
+import copy
 import json
 import sqlite3
 import sys
@@ -209,6 +210,28 @@ class ConnectionSyncTests(unittest.TestCase):
                          "relation,reason,topics,model,source)"
                          " VALUES (1,2,'foundation','obsolete judgement','ai4s','old-judge','test')")
 
+    @staticmethod
+    def explained_edge():
+        source_quote = "We extend sequential search with parallel candidate evaluation."
+        target_quote = "Our baseline evaluates one candidate in each search iteration."
+        return {
+            "slug": "002_b", "relation": "foundation", "basis": "embedding",
+            "model": "claude-sonnet-5",
+            "reason": ("현재 논문은 비교 대상의 순차 탐색을 기반으로 후보를 병렬 평가합니다. "
+                       "두 논문은 동일한 과제를 다루며 평가 순서에 따른 탐색 비용과 정확도의 차이를 분석합니다."),
+            "evidence": {"cosine": .8765, "source_quote": source_quote, "target_quote": target_quote,
+                         "source_sha256": "a" * 64, "target_sha256": "b" * 64,
+                         "provider": "anthropic", "prompt_version": "paper-comparison-v1"},
+            "reverse": {
+                "relation": "extension",
+                "reason": ("이 논문이 제시한 순차 탐색은 비교 논문에서 병렬 후보 평가로 확장됩니다. "
+                           "공통 과제에서 후보 평가의 순서와 비용이 어떻게 달라지는지 대조할 수 있습니다."),
+                "evidence": {"cosine": .8765, "source_quote": target_quote, "target_quote": source_quote,
+                             "source_sha256": "b" * 64, "target_sha256": "a" * 64,
+                             "provider": "anthropic", "prompt_version": "paper-comparison-v1"},
+            },
+        }
+
     def test_roundtrip_preserves_distinct_item_and_reason_evidence(self):
         edge = {**self.edge, "reason": "요약 설명", "evidence": {
             "cosine": .8765, "rank": 2, "rrf": .040983606557377046},
@@ -236,6 +259,71 @@ class ConnectionSyncTests(unittest.TestCase):
         conns.import_connections(self.db)
         conns.export_connections(self.db)
         self.assertEqual(self.read_graph("ai4s")["001_a"], [edge])
+
+    def test_roundtrip_preserves_header_and_each_reason_model_and_quote_evidence(self):
+        edge = self.explained_edge()
+        first = {key: copy.deepcopy(value) for key, value in edge.items() if key != "slug"}
+        second = copy.deepcopy(first)
+        first["model"] = "comparison-reason-model-a"
+        second.update(relation="alternative", model="comparison-reason-model-b",
+                      reason="두 방법은 같은 탐색 과제를 다루지만 후보 평가를 순차 또는 병렬로 수행하여 비용 구조가 다릅니다.")
+        second["evidence"]["cosine"] = .7456
+        edge["model"] = "comparison-header-model"
+        edge["reasons"] = [first, second]
+        self.write_graphs({"001_a": [edge]})
+        self.assertEqual(conns.import_connections(self.db)["imported"], 2)
+        with sqlite3.connect(self.db) as conn:
+            rows = conn.execute("SELECT relation, model, evidence FROM paper_connections").fetchall()
+        self.assertEqual({relation: model for relation, model, _ in rows}, {
+            "foundation": "comparison-reason-model-a", "alternative": "comparison-reason-model-b",
+        })
+        for relation, _, evidence in rows:
+            stored = json.loads(evidence)
+            expected = first if relation == "foundation" else second
+            self.assertEqual(stored["item"]["model"], edge["model"])
+            self.assertEqual(stored["item"]["evidence"], edge["evidence"])
+            self.assertEqual(stored["item"]["reverse"], edge["reverse"])
+            self.assertEqual(stored["reason"]["model"], expected["model"])
+            self.assertEqual(stored["reason"]["evidence"], expected["evidence"])
+            self.assertEqual(stored["reason"]["reverse"], expected["reverse"])
+        self.write_graphs({})
+        for _ in range(2):
+            conns.export_connections(self.db)
+            for topic in ("ai4s", "scisci"):
+                self.assertEqual(self.read_graph(topic)["001_a"], [edge])
+            conns.import_connections(self.db)
+
+    def test_bidirectional_grounded_reasons_survive_db_and_reprojection(self):
+        from lib.connections import make_bidirectional_deduped
+
+        edge = self.explained_edge()
+        view = make_bidirectional_deduped({"001_a": [edge], "003_empty": []})
+        self.write_graphs(view)
+        self.assertEqual(conns.import_connections(self.db)["imported"], 2)
+        with sqlite3.connect(self.db) as conn:
+            self.assertEqual(conn.execute(
+                "SELECT relation, model FROM paper_connections ORDER BY relation").fetchall(),
+                [("extension", "claude-sonnet-5"), ("foundation", "claude-sonnet-5")])
+        self.write_graphs({})
+        conns.export_connections(self.db)
+        restored = self.read_graph("ai4s")
+        self.assertEqual(restored, view)
+        self.assertEqual(make_bidirectional_deduped(restored), view)
+        self.assertEqual(restored["001_a"][0]["reason"], edge["reason"])
+        self.assertEqual(restored["002_b"][0]["reason"], edge["reverse"]["reason"])
+        self.assertNotEqual(restored["001_a"][0]["reason"], restored["002_b"][0]["reason"])
+
+    def test_conflicting_cross_topic_model_provenance_aborts_without_db_changes(self):
+        edge = self.explained_edge()
+        self.write_graphs({"001_a": [edge]})
+        conns.import_connections(self.db)
+        before = self.snapshot()
+        self.write_graph("scisci", {
+            "001_a": [{**edge, "model": "another-comparison-model"}], "002_b": [],
+        })
+        with self.assertRaisesRegex(ValueError, "conflicting copies"):
+            conns.import_connections(self.db)
+        self.assertEqual(self.snapshot(), before)
 
     def test_last_edge_removal_replaces_stale_sources_and_empty_topics(self):
         conns.import_connections(self.db)
@@ -286,6 +374,9 @@ class ConnectionSyncTests(unittest.TestCase):
                    json.dumps({"001_a": [{**self.edge, "reasons": {}}], "002_b": []}),
                    json.dumps({"001_a": [{**self.edge, "reasons": [None]}], "002_b": []}),
                    json.dumps({"001_a": [{**self.edge, "reason": 4}], "002_b": []}),
+                   json.dumps({"001_a": [{**self.edge, "model": 4}], "002_b": []}),
+                   json.dumps({"001_a": [{**self.edge, "reverse": None}], "002_b": []}),
+                   json.dumps({"001_a": [{**self.edge, "reverse": {}}], "002_b": []}),
                    json.dumps({"001_a": [{**self.edge, "evidence": []}], "002_b": []}),
                    json.dumps({"001_a": [{**self.edge, "evidence": {"cosine": "0.8"}}], "002_b": []}),
                    json.dumps({"001_a": [{**self.edge, "evidence": {"cosine": True}}], "002_b": []}),

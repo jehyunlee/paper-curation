@@ -38,7 +38,8 @@ PATHS_EN = {
 }
 
 DETAILS_EN = {
-    "review": "Extract text and figures from a PDF, then have the selected provider write a six-section Korean review (Essence, Motivation, Achievement, How, Originality, Evaluation).",
+    "review": "Extract text and figures from a PDF, then have the selected provider write a seven-section Korean review (Essence, Motivation, Achievement, How, Originality, Limitation & Further Study with Data Artifacts, Evaluation).",
+    "related-papers": "Classify with the stored topic model and select neighbours locally with SPECTER2/BM25. Send source excerpts from both papers to Anthropic claude-sonnet-5 for paid, quote-grounded relationship explanations.",
     "summary": "Create a summary with verbatim quotations using only the selected PDF text. Claims without a located quotation are rejected.",
     "chat": "Question and answer grounded in the PDF text, with source quotations in every answer.",
     "comparison": "Compare papers on the same criteria and attach source quotations to every claim.",
@@ -58,6 +59,7 @@ DETAILS_EN = {
 
 OUTPUTS_EN = {
     "review": "review.md · index.html · bibliography.json",
+    "related-papers": "Topic assignments · related-paper links with supporting quotations",
     "summary": "Summary with quotations", "chat": "Answer with quotations", "comparison": "Comparison table with quotations",
     "extract": "text.md · figures/", "keyword-search": "_search_index.json (BM25)",
     "semantic-search": "_search_index.json + embeddings", "metrics": "citations.md · references.md",
@@ -67,7 +69,8 @@ OUTPUTS_EN = {
 }
 
 DETAILS = {
-    "review": "PDF에서 텍스트·그림을 추출하고 선택한 제공자가 6개 섹션 한국어 리뷰(Essence·Motivation·Achievement·How·Originality·Evaluation)를 씁니다.",
+    "review": "PDF에서 텍스트·그림을 추출하고 선택한 제공자가 7개 섹션 한국어 리뷰(Essence·Motivation·Achievement·How·Originality·Limitation & Further Study(Data Artifacts 포함)·Evaluation)를 씁니다.",
+    "related-papers": "저장된 토픽 모델로 분류하고 SPECTER2/BM25로 이웃 후보를 로컬에서 고릅니다. 두 논문의 원문 발췌를 Anthropic claude-sonnet-5에 전송해 인용 근거가 붙은 관계 설명을 유료로 생성합니다.",
     "summary": "선택한 PDF 본문만 근거로 원문 인용이 붙은 요약을 만듭니다. 인용을 찾지 못한 주장은 거부합니다.",
     "chat": "PDF 본문에 근거한 질의응답. 답마다 원문 인용을 붙입니다.",
     "comparison": "여러 논문을 같은 기준으로 비교하고 각 주장에 원문 인용을 붙입니다.",
@@ -87,6 +90,7 @@ DETAILS = {
 
 OUTPUTS = {
     "review": "review.md · index.html · bibliography.json",
+    "related-papers": "토픽 분류 · 원문 인용 근거가 붙은 관련 논문 연결",
     "summary": "인용이 붙은 요약", "chat": "인용이 붙은 답변", "comparison": "인용이 붙은 비교표",
     "extract": "text.md · figures/", "keyword-search": "_search_index.json (BM25)",
     "semantic-search": "_search_index.json + 임베딩", "metrics": "citations.md · references.md",
@@ -97,11 +101,13 @@ OUTPUTS = {
 
 TRANSMISSION_KO = {
     "selected cloud provider": "선택한 클라우드 제공자",
+    "selected cloud provider; registered hybrid view cache misses also use Google embeddings":
+        "선택한 클라우드 제공자; 등록 논문의 hybrid 검색 캐시 미스는 Google 임베딩도 사용",
     "selected provider; Ollama stays on loopback": "선택한 제공자 (Ollama는 이 컴퓨터 안에서만)",
     "none": "없음",
     "Google embedding API": "Google 임베딩 API",
-    "none; the paper is classified with the stored HDBSCAN bundle and neighbours are found locally in SPECTER2 embedding space, no model is called":
-        "없음 (저장된 HDBSCAN 번들로 분류하고 SPECTER2 임베딩 공간에서 로컬로 이웃을 찾으며, 모델을 호출하지 않음)",
+    "Anthropic; source excerpts from both selected papers for quote-grounded relationship explanations; changed hybrid view cache misses also use Google embeddings":
+        "Anthropic (두 논문 원문 발췌로 관계 설명); 변경된 hybrid 검색 캐시 미스는 Google 임베딩도 사용",
     "Crossref/OpenAlex/Scopus source APIs": "Crossref · OpenAlex · Scopus API",
     "none offline; configured bibliography sources when online; never Zotero Web paging":
         "offline이면 없음, online이면 설정된 서지 소스 (Zotero 웹 페이징은 하지 않음)",
@@ -132,7 +138,7 @@ EN_PIPELINE = {
     "analyze": ("Analyze", "Build relationships between categories and papers."),
     "index": ("Paper index", "Collect paper metadata from reviews into a complete index."),
     "classify": ("Topic modeling and classification", "Create and assign categories with SPECTER2, UMAP, and HDBSCAN. Zero LLM calls; at most three categories per paper."),
-    "related": ("Related papers", "Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF. Cross-topic unions and reverse links can exceed five displayed neighbours. Zero LLM calls."),
+    "related": ("Related papers", "Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF. Send paired source excerpts to Anthropic claude-sonnet-5 for paid explanations with supporting quotations. Cross-topic unions and reverse links can exceed five displayed neighbours."),
     "summaries": ("Category summaries", "Create a summary and subthemes for each category."),
     "timelines": ("Timelines", "Create category research-trend narratives and PaperBanana timeline images."),
     "publish": ("Publish", "Create readable artifacts, search indexes, and the bibliography database."),

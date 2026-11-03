@@ -98,13 +98,13 @@ def _validate(feature: dict, request: Any) -> dict:
             raise FeatureBlocked("failed", "invalid budget")
         if "max_output_tokens" in budget and (type(budget["max_output_tokens"]) is not int or not 1 <= budget["max_output_tokens"] <= 32000):
             raise FeatureBlocked("failed", "invalid output token limit")
-        if feature["id"] == "related-papers":
-            raise FeatureBlocked("failed", "related-papers does not support budget controls")
         if "max_cost_usd" in budget and feature["id"] not in TEXT_FEATURES | {"review"}:
             if feature["credential"]["cost_class"] != "local" and not (
                 feature["id"] == "bibliography-update" and params.get("offline", True)
             ):
                 raise FeatureBlocked("budget-unavailable", "this capability has no verified monetary estimator")
+        if feature["id"] == "related-papers":
+            raise FeatureBlocked("failed", "related-papers does not support budget controls")
     return params
 
 
@@ -195,7 +195,11 @@ def _preflight(feature: dict, request: dict, params: dict) -> dict:
         except ValueError as exc:
             raise FeatureBlocked("insufficient-data", "related-paper corpus inputs are unavailable") from exc
         plan.update(details)
-        plan["cost"] = {"status": "none"}
+        plan["model"] = details["explanation"]["model"]
+        plan["steps"] = [*plan["steps"], "explain_related_papers"]
+        plan["cost"] = {"status": "unknown", "cost_class": "paid"}
+        if importlib.util.find_spec("anthropic") is None:
+            raise FeatureBlocked("needs-runtime", "Anthropic SDK is required for related-paper explanations")
     elif feature_id == "extract":
         pdf, output = Path(params["pdf_path"]), Path(params["output_dir"])
         if not pdf.is_absolute() or not output.is_absolute():

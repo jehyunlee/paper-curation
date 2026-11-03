@@ -1,4 +1,4 @@
-"""Related-paper candidate retrieval and deterministic connection building.
+"""Related-paper retrieval and independently generated connection explanations.
 
 Guards the three defects found on 2026-08-31 while investigating why
 ``10911 Accelerating Scientific Research with Gemini in the Real-World`` did not
@@ -13,8 +13,8 @@ Techniques`` — a paper it literally cites:
      dense+lexical RRF lifts recall@5 6.80% -> 8.89% and recall@25
      17.15% -> 23.01%.
   2. The fused candidate ranking feeds ``lib.related.build_connections`` in
-     full rank order. Its no-model fallback is explicitly labelled metadata,
-     never pretending that retrieval metadata is a content judgment.
+     full rank order. The explanation model describes those retrieved pairs;
+     it neither picks candidates nor replaces their rank with a model score.
 
 And one latent bug fixed on the way: 38 papers in the live ai4s+scisci corpus
 share an identical embedding with another paper (degenerate originality text),
@@ -29,6 +29,7 @@ Run:
 import os
 import sys
 import unittest
+from unittest.mock import call, patch
 
 import numpy as np
 
@@ -164,32 +165,58 @@ class HybridRecallTests(unittest.TestCase):
         self.assertIn(PREDECESSOR, [c for c, _ in got[TARGET]])
 
 
-class DeterministicConnectionTests(unittest.TestCase):
+class ExplainedConnectionTests(unittest.TestCase):
+
+    @staticmethod
+    def _explanation(source, target):
+        return {
+            "relation": "alternative",
+            "reason": ("두 논문은 과학 연구의 자동화를 다루지만, 첫 논문은 실험실의 실제 작업을 "
+                       "평가하고 비교 논문은 사례 분석을 통해 도구 사용과 작업 분해의 차이를 설명합니다."),
+            "model": "explanation-test-model",
+            "evidence": {"source_quote": "The study evaluates research tasks in real laboratories.",
+                         "target_quote": "The case studies describe tool use and task decomposition."},
+            "reverse": {
+                "relation": "alternative",
+                "reason": ("사례 연구가 도구 사용과 과제 분해의 접근법을 제시한 반면, 비교 대상은 실제 "
+                           "실험실 작업을 평가하므로 연구 자동화의 설계와 적용 조건을 서로 대조할 수 있습니다."),
+                "evidence": {"source_quote": "The case studies describe tool use and task decomposition.",
+                             "target_quote": "The study evaluates research tasks in real laboratories."},
+            },
+        }
 
     def test_build_connections_preserves_fused_candidate_order(self):
         candidates = TM.compute_related_candidates(EMB, SLUGS, top_k=5,
                                                    papers=PAPERS)
-        got = related.build_connections({TARGET: candidates[TARGET]}, PAPERS,
-                                        limit=5)
+        with patch.object(related, "explain_pair", side_effect=self._explanation) as explain:
+            got = related.build_connections({TARGET: candidates[TARGET]}, PAPERS,
+                                            limit=3)
         self.assertEqual([link["slug"] for link in got[TARGET]],
-                         [slug for slug, _score in candidates[TARGET]])
+                         [slug for slug, _score in candidates[TARGET][:3]])
+        by_slug = {paper["slug"]: paper for paper in PAPERS}
+        self.assertEqual(explain.call_args_list, [
+            call(by_slug[TARGET], by_slug[slug]) for slug, _ in candidates[TARGET][:3]
+        ])
 
-    def test_build_connections_records_embedding_evidence(self):
+    def test_build_connections_keeps_explanation_and_embedding_evidence_separate(self):
         papers = [dict(p) for p in PAPERS]
         for paper in papers:
             paper["primary_category"] = "AI for Science"
         next(p for p in papers if p["slug"] == TARGET)["date"] = "2025-01-01"
         next(p for p in papers if p["slug"] == PREDECESSOR)["date"] = "2024-01-01"
 
-        got = related.build_connections(
-            {TARGET: [(PREDECESSOR, 0.75)]}, papers, limit=1)
+        with patch.object(related, "explain_pair", side_effect=self._explanation) as explain:
+            got = related.build_connections(
+                {TARGET: [(PREDECESSOR, 0.75)]}, papers, limit=1)
         link = got[TARGET][0]
+        expected = self._explanation(papers[0], papers[1])
+        explain.assert_called_once_with(papers[0], papers[1])
         self.assertEqual(link["relation"], "alternative")
         self.assertEqual(link["basis"], "embedding")
-        self.assertEqual(link["model"], "")
-        self.assertEqual(link["evidence"], {"cosine": 0.75})
-        self.assertEqual(link["reason"],
-                         "SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.75).")
+        self.assertEqual(link["model"], "explanation-test-model")
+        self.assertEqual(link["evidence"], {**expected["evidence"], "cosine": 0.75})
+        self.assertEqual(link["reason"], expected["reason"])
+        self.assertNotIn("코사인", link["reason"])
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

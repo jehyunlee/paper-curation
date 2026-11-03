@@ -274,6 +274,196 @@ class LocalReviewContractTests(unittest.TestCase):
         figure_dir.mkdir()
         (figure_dir / "fig1.png").write_bytes(b"old-figure")
 
+    def use_canonical_output(self, *, registered=True):
+        papers = self.root / "docs" / "papers"
+        papers.mkdir(parents=True)
+        self.output = papers / self.output.name
+        entries = [{"slug": self.output.name, "title": self.item["title"], "topics": ["demo"]}]
+        (papers / "_papers_index.json").write_text(
+            json.dumps(entries if registered else []), encoding="utf-8"
+        )
+        return papers
+
+    def view_report(self, status="completed"):
+        return {
+            "status": status, "topics": ["demo"],
+            "steps": [{"topic": "demo", "builder": "search", "status": status}],
+            "errors": ["demo/search: unavailable"] if status == "failed" else [],
+            "retry_command": f"python refresh_paper_views.py --slug {self.output.name}",
+        }
+
+    def test_registered_review_and_regeneration_refresh_only_after_locks_release(self):
+        import refresh_paper_views as views
+        from lib.corpus_store import corpus_operation_lock
+
+        papers = self.use_canonical_output()
+        observed = []
+        def refresh(slug, **kwargs):
+            self.assertEqual(slug, self.output.name)
+            self.assertEqual(kwargs, {"papers_dir": papers.resolve(), "dry_run": False, "allow_paid": True})
+            self.assertTrue(all((self.output / name).is_file() for name in local._REQUIRED_OUTPUT_NAMES))
+            with corpus_operation_lock(papers, exclusive=True):
+                pass
+            with local._exclusive_output_lock(self.output):
+                pass
+            observed.append(slug)
+            return self.view_report()
+
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", side_effect=refresh):
+            first, engine, _renderer = self.run_execute()
+            second, regenerated, _renderer = self.run_execute(
+                payload=self.request(overwrite=True, regenerate=True)
+            )
+        self.assertEqual(first["status"], "completed", first)
+        self.assertEqual(second["status"], "completed", second)
+        self.assertEqual(observed, [self.output.name, self.output.name])
+        self.assertEqual(sum(call[0] == "review" for call in engine.calls), 1)
+        self.assertEqual(sum(call[0] == "review" for call in regenerated.calls), 1)
+
+    def test_failed_view_refresh_keeps_published_bundle_and_retry_avoids_paid_review(self):
+        import refresh_paper_views as views
+
+        papers = self.use_canonical_output()
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", side_effect=[self.view_report("failed"), self.view_report()]) as refresh:
+            failed, engine, _renderer = self.run_execute()
+            before = {name: (self.output / name).read_bytes() for name in local._REQUIRED_OUTPUT_NAMES}
+            with patch.dict(os.environ, {}, clear=True), \
+                 patch.object(local, "_load_engine", side_effect=AssertionError("no paid retry")) as loader:
+                retried = local.run_request(self.request(), execute=True)
+        self.assertEqual(failed["status"], "failed")
+        self.assertEqual(failed["views"]["status"], "failed")
+        self.assertTrue(failed["partial"]["published"])
+        self.assertTrue(failed["partial"]["review_ready"])
+        self.assertTrue(failed["partial"]["retry_safe"])
+        self.assertEqual(failed["partial"]["retry_command"], failed["views"]["retry_command"])
+        self.assertTrue(all(Path(path).is_file() for path in failed["outputs"].values()))
+        self.assertEqual(retried["status"], "exists", retried)
+        self.assertEqual(retried["views"]["status"], "completed")
+        self.assertEqual(refresh.call_count, 2)
+        self.assertEqual(sum(call[0] == "review" for call in engine.calls), 1)
+        self.assertEqual({name: (self.output / name).read_bytes() for name in before}, before)
+        loader.assert_not_called()
+
+    def test_unexpected_view_exception_is_explicit_without_discarding_review(self):
+        import refresh_paper_views as views
+
+        papers = self.use_canonical_output()
+        secret = "VIEW-FAILURE-SECRET"
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", side_effect=RuntimeError(secret)), \
+             patch.dict(os.environ, {"GOOGLE_API_KEY": secret}):
+            result, _engine, _renderer = self.run_execute()
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(result["partial"]["published"])
+        self.assertTrue(result["views"]["errors"])
+        self.assertNotIn(secret, json.dumps(result))
+        self.assertTrue((self.output / "review.md").is_file())
+
+    def test_reserved_curio_review_defers_views_until_registration(self):
+        import refresh_paper_views as views
+        from lib.corpus_store import reserve
+
+        papers = self.use_canonical_output(registered=False)
+        reservation = reserve(papers, {"key": self.item["key"], "title": self.item["title"]},
+                              requested_slug=self.output.name)
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "_run_builder", side_effect=AssertionError("registration required")) as builder:
+            result, _engine, _renderer = self.run_execute(
+                payload=self.request(reservation_token=reservation["token"])
+            )
+        self.assertEqual(result["status"], "completed", result)
+        self.assertEqual(result["views"]["status"], "deferred")
+        self.assertTrue((self.output / ".corpus-reservation.json").is_file())
+        self.assertEqual(json.loads((papers / "_papers_index.json").read_text()), [])
+        builder.assert_not_called()
+
+    def test_capped_reserved_review_carries_budget_to_register_but_plan_preserves_marker(self):
+        import refresh_paper_views as views
+        from lib.corpus_store import register, reserve
+
+        papers = self.use_canonical_output(registered=False)
+        identity = {"key": self.item["key"], "title": self.item["title"]}
+        reservation = reserve(papers, identity, requested_slug=self.output.name)
+        marker = self.output / ".corpus-reservation.json"
+        before = marker.read_bytes()
+        payload = self.request(reservation_token=reservation["token"], budget={
+            "max_cost_usd": 100, "input_per_million_usd": 1,
+            "output_per_million_usd": 1, "max_output_tokens": 4000,
+        })
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "_run_builder", side_effect=AssertionError("defer builders")) as builder, \
+             patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-review-key"}), \
+             patch.object(local, "_missing_runtimes", return_value=[]):
+            planned = local.run_request(payload)
+            self.assertEqual(planned["status"], "ready", planned)
+            self.assertEqual(marker.read_bytes(), before)
+            completed, _engine, _renderer = self.run_execute(payload=payload)
+        self.assertEqual(completed["status"], "completed", completed)
+        self.assertEqual(completed["views"]["status"], "deferred")
+        self.assertFalse(json.loads(marker.read_text())["view_refresh_allow_paid"])
+        builder.assert_not_called()
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", return_value=self.view_report("failed")) as refresh:
+            registered = register(papers, self.output.name, reservation["token"], {**identity, "topics": ["demo"]})
+        self.assertFalse(refresh.call_args.kwargs["allow_paid"])
+        self.assertTrue(registered["registered"])
+        self.assertEqual(registered["status"], "failed")
+        self.assertFalse(marker.exists())
+        self.assertTrue((self.output / "review.md").is_file())
+
+    def test_standalone_review_never_invokes_canonical_view_builders(self):
+        import refresh_paper_views as views
+
+        canonical = self.root / "docs" / "papers"
+        with patch.object(views, "PAPERS_DIR", canonical), \
+             patch.object(views, "refresh_paper_views", side_effect=AssertionError("standalone")) as refresh:
+            result, _engine, _renderer = self.run_execute()
+        self.assertEqual(result["status"], "completed", result)
+        self.assertEqual(result["views"]["status"], "skipped")
+        self.assertFalse(canonical.exists())
+        refresh.assert_not_called()
+
+    def test_canonical_existing_bundle_preflight_plans_views_without_writes_or_network(self):
+        import refresh_paper_views as views
+
+        papers = self.use_canonical_output()
+        self.write_existing_bundle()
+        before = {str(path.relative_to(self.root)): path.read_bytes()
+                  for path in self.root.rglob("*") if path.is_file()}
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "_run_builder", side_effect=AssertionError("preflight builder")) as builder, \
+             patch("lib.corpus_store.corpus_operation_lock", side_effect=AssertionError("preflight lock")) as lock, \
+             patch("socket.socket.connect", side_effect=AssertionError("preflight network")) as network, \
+             patch.object(local, "_load_engine", side_effect=AssertionError("preflight review")) as loader:
+            result = local.run_request(self.request())
+        self.assertEqual(result["status"], "exists", result)
+        self.assertEqual(result["views"]["status"], "planned")
+        self.assertEqual({str(path.relative_to(self.root)): path.read_bytes()
+                          for path in self.root.rglob("*") if path.is_file()}, before)
+        builder.assert_not_called()
+        lock.assert_not_called()
+        network.assert_not_called()
+        loader.assert_not_called()
+
+    def test_review_budget_does_not_authorize_separate_unpriced_view_embeddings(self):
+        import refresh_paper_views as views
+
+        papers = self.use_canonical_output()
+        failure = self.view_report("failed")
+        failure["embedding_cost"] = {"cost": "unpriced", "covered_by_review_budget": False}
+        with patch.object(views, "PAPERS_DIR", papers), \
+             patch.object(views, "refresh_paper_views", return_value=failure) as refresh:
+            result, _engine, _renderer = self.run_execute(payload=self.request(budget={
+                "max_cost_usd": 100, "input_per_million_usd": 1,
+                "output_per_million_usd": 1, "max_output_tokens": 4000,
+            }))
+        self.assertEqual(result["status"], "failed", result)
+        self.assertTrue(result["partial"]["published"])
+        self.assertFalse(refresh.call_args.kwargs["allow_paid"])
+        self.assertFalse(result["estimate"]["view_refresh_cost"]["covered_by_review_budget"])
+
     def test_keyless_plan_needs_only_anthropic_without_import_or_write(self):
         from lib.credentials import CredentialNotConfigured
         with (
@@ -444,7 +634,7 @@ class LocalReviewContractTests(unittest.TestCase):
             ("sidecar", False, local.PROVIDER, local.MODEL), engine.calls
         )
         review_call = next(call for call in engine.calls if call[0] == "review")
-        self.assertEqual(review_call[1:5], ("anthropic", local.MODEL, None, 4000))
+        self.assertEqual(review_call[1:5], ("anthropic", local.MODEL, None, local.REVIEW_MAX_OUTPUT_TOKENS))
         self.assertEqual(
             renderer.calls,
             [("review.md", "ai4s", self.output.name, True)],
@@ -824,7 +1014,9 @@ class LocalReviewContractTests(unittest.TestCase):
         fake_anthropic = SimpleNamespace(Anthropic=lambda **_kwargs: object())
         with (
             patch.dict(sys.modules, {"anthropic": fake_anthropic}),
-            patch("api._llm.cached_call", return_value=data),
+            patch("api._llm.cached_call",
+                  side_effect=lambda *a, **k: {"data_artifacts": []}
+                  if k.get("schema_version") == "data-artifacts-v1" else data),
         ):
             wrote = batch.write_review(
                 self.item,
@@ -935,16 +1127,27 @@ class RealPrimitiveIntegrationTests(unittest.TestCase):
                 patch("anthropic.Anthropic") as client_factory,
             ):
                 create = client_factory.return_value.messages.create
-                create.return_value = SimpleNamespace(content=[SimpleNamespace(
-                    type="tool_use", name="emit_review", input=payload,
-                )])
+                artifacts = {"data_artifacts": [{
+                    "id": "selection", "rel": 2, "evidence": "단일 실험실 데이터만 썼다.",
+                    "note": "다른 환경에서도 같은지 확인한다."}]}
+
+                def tool_reply(**kwargs):
+                    name = kwargs["tool_choice"]["name"]
+                    return SimpleNamespace(content=[SimpleNamespace(
+                        type="tool_use", name=name,
+                        input=payload if name == "emit_review" else artifacts,
+                    )])
+
+                create.side_effect = tool_reply
                 first = local.run_request(request, execute=True)
                 self.assertEqual(first["status"], "completed", first)
                 os.environ["GOOGLE_API_KEY"] = "GOOGLE-INTEGRATION-SENTINEL"
                 request["overwrite"] = True
                 second = local.run_request(request, execute=True)
                 self.assertEqual(second["status"], "completed", second)
-                self.assertEqual(create.call_count, 1, "identical retry must use the real cache")
+                self.assertEqual(create.call_count, 2, "identical retry must use the real caches")
+                self.assertEqual([c.kwargs["tool_choice"]["name"] for c in create.call_args_list],
+                                 ["emit_review", "emit_json"])
                 self.assertEqual(create.call_args.kwargs["model"], "claude-sonnet-5")
                 network.assert_not_called()
                 google.assert_not_called()
@@ -953,6 +1156,7 @@ class RealPrimitiveIntegrationTests(unittest.TestCase):
             sidecar = json.loads((output / "bibliography.json").read_text(encoding="utf-8"))
             self.assertIn(title, html)
             self.assertIn("Research Consortium", review)
+            self.assertIn("### Data Artifacts\n\n- **선택 편향** (Selection bias) · 2 포착·표본 · ●●○", review)
             self.assertEqual(sidecar["creators"], creators)
             self.assertEqual(sidecar["review"]["model"], "claude-sonnet-5")
             self.assertNotIn("INTEGRATION-SENTINEL", html)

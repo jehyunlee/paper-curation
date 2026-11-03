@@ -7,12 +7,12 @@ stored connections for 23,098 distinct pairs — 83% duplication — 110 of them
 pointing at papers that no longer exist, and no way to ask "what connects to X"
 without loading all nine files.
 
-They are embedding-space neighbours (SPECTER2 + title/author BM25, see
+They are retrieval neighbours (SPECTER2 + title/author BM25, see
 `lib/related.py`), not bibliographic fact, so they go in their own table, never
-mixed into the publisher-verified ones; every row's `model` is `none:embedding`.
-Only `basis == "embedding"` entries are imported — anything left from the
-retired LLM relation judges is skipped. The integrity gate checks only what is
-checkable: that both endpoints are real papers.
+mixed into the publisher-verified ones. Generated explanations retain their
+model, exact quote evidence, and separately worded reverse. Older neutral
+embedding-only rows retain `none:embedding`. Only `basis == "embedding"`
+entries are imported; retired non-retrieval relation judgments are skipped.
 
     python pipeline/sync_paper_connections.py --import        # JSON  → DB
     python pipeline/sync_paper_connections.py --export        # DB    → JSON
@@ -135,6 +135,19 @@ def _validate_reason(entry, path: Path) -> None:
     if "evidence" in entry and "cosine" in entry["evidence"]:
         if type(entry["evidence"]["cosine"]) not in (int, float):
             raise ValueError(f"{path}: evidence cosine must be numeric")
+    if "reverse" in entry:
+        reverse = entry["reverse"]
+        if not isinstance(reverse, dict):
+            raise ValueError(f"{path}: reverse explanation must be an object")
+        if (not isinstance(reverse.get("relation"), str) or not reverse["relation"].strip()
+                or not isinstance(reverse.get("reason"), str) or not reverse["reason"].strip()
+                or not isinstance(reverse.get("evidence"), dict)):
+            raise ValueError(f"{path}: invalid reverse explanation")
+
+
+def _model(entry: dict, item: dict) -> str:
+    inherited = item.get("model", "") if item.get("basis") == EMBEDDING_BASIS else ""
+    return entry.get("model", inherited)
 
 
 def _relation(entry: dict) -> str:
@@ -186,19 +199,27 @@ def load_json_connections() -> tuple[dict, dict]:
                 header_source = (item if item.get("basis") == EMBEDDING_BASIS
                                  and _relation(item) == _relation(primary) else primary)
                 header = {"relation": _relation(header_source),
-                          "reason": header_source.get("reason", "")}
-                if "evidence" in header_source:
-                    header["evidence"] = header_source["evidence"]
+                          "reason": header_source.get("reason", ""),
+                          "basis": EMBEDDING_BASIS, "model": _model(header_source, item)}
+                for field in ("evidence", "reverse"):
+                    if field in header_source:
+                        header[field] = header_source[field]
                 for position, entry in retained:
                     relation = _relation(entry)
                     reason = entry.get("reason", item.get("reason", ""))
-                    evidence = {"item": header, "reason": {
-                        "evidence": entry["evidence"]} if "evidence" in entry else {},
+                    model = _model(entry, item)
+                    reason_metadata = {"basis": EMBEDDING_BASIS, "model": model}
+                    for field in ("evidence", "reverse"):
+                        if field in entry:
+                            reason_metadata[field] = entry[field]
+                    evidence = {"item": header, "reason": reason_metadata,
                         "position": position}
                     key = (src, item["slug"], relation)
                     claim = claims.setdefault(key, {"reason": reason, "evidence": evidence,
-                                                     "model": EMBEDDING_MODEL, "topics": set()})
-                    if claim["reason"] != reason or claim["evidence"] != evidence:
+                                                     "model": model or EMBEDDING_MODEL,
+                                                     "topics": set()})
+                    if (claim["reason"] != reason or claim["evidence"] != evidence
+                            or claim["model"] != (model or EMBEDDING_MODEL)):
                         raise ValueError(f"{path}: conflicting copies of connection {key!r}")
                     claim["topics"].add(topic)
                     count += 1
@@ -268,26 +289,31 @@ def export_connections(db: Path, *, dry_run: bool = False) -> dict:
     conn = _connect(db, read_only=True)
     try:
         rows = []
-        for src, dst, relation, reason, topics, evidence in conn.execute(
-                "SELECT ps.slug, pd.slug, c.relation, c.reason, c.topics, c.evidence "
+        for src, dst, relation, reason, topics, model, evidence in conn.execute(
+                "SELECT ps.slug, pd.slug, c.relation, c.reason, c.topics, c.model, c.evidence "
                 "FROM paper_connections c "
                 "JOIN papers ps ON ps.paper_id=c.paper_id "
-                "JOIN papers pd ON pd.paper_id=c.related_paper_id "
-                "WHERE c.model = ?", (EMBEDDING_MODEL,)):
+                "JOIN papers pd ON pd.paper_id=c.related_paper_id"):
             metadata = json.loads(evidence)
-            rows.append((src, dst, relation, reason, topics, metadata))
-        rows.sort(key=lambda row: (row[0], row[1], row[5]["position"], row[2]))
-        for src, dst, relation, reason, topics, metadata in rows:
+            item = metadata.get("item", {})
+            if (not isinstance(item, dict) or item.get("basis", EMBEDDING_BASIS
+                    if model == EMBEDDING_MODEL else None) != EMBEDDING_BASIS):
+                continue
+            rows.append((src, dst, relation, reason, topics, model, metadata))
+        rows.sort(key=lambda row: (row[0], row[1], row[6]["position"], row[2]))
+        for src, dst, relation, reason, topics, model, metadata in rows:
             for topic in (topics or "").split(","):
                 if not topic:
                     continue
                 sources = by_topic.setdefault(topic, {})
                 entry = sources.setdefault(src, {}).setdefault(
                     dst, {"slug": dst, **metadata["item"], "basis": EMBEDDING_BASIS,
-                          "model": "", "reasons": []})
+                          "model": metadata["item"].get("model", ""
+                              if model == EMBEDDING_MODEL else model), "reasons": []})
                 entry["reasons"].append({"relation": relation,
                                          "reason": reason or "",
-                                         "basis": EMBEDDING_BASIS, "model": "",
+                                         "basis": EMBEDDING_BASIS, "model": ""
+                                         if model == EMBEDDING_MODEL else model,
                                          **metadata["reason"]})
     finally:
         conn.close()

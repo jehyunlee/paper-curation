@@ -40,15 +40,15 @@ def _safe_error(exc: Exception) -> TextProviderError:
 
 
 def _validate_selection(provider: str, model: str | None, capability: str) -> str:
-    if not isinstance(capability, str) or capability not in {"summary", "chat", "comparison", "review"}:
+    if not isinstance(capability, str) or capability not in {"summary", "chat", "comparison", "review", "data_artifacts"}:
         raise UnsupportedCapabilityError("unsupported text capability")
     if not isinstance(provider, str) or provider not in DEFAULT_MODELS:
         raise ProviderSelectionError("unsupported text provider")
     chosen = model or DEFAULT_MODELS[provider]
     if chosen != DEFAULT_MODELS[provider]:
         raise ProviderSelectionError("unsupported model for provider")
-    if capability == "review" and provider not in CLOUD_PROVIDERS:
-        raise UnsupportedCapabilityError("review requires a cloud provider")
+    if capability in {"review", "data_artifacts"} and provider not in CLOUD_PROVIDERS:
+        raise UnsupportedCapabilityError(f"{capability} requires a cloud provider")
     if provider == "ollama" and capability not in {"summary", "chat"}:
         raise UnsupportedCapabilityError("unsupported Ollama capability")
     return chosen
@@ -104,6 +104,34 @@ def _strict_schema(schema: dict) -> dict:
                 close(child)
     close(result)
     return result
+
+
+def _decode_stringified_containers(data: dict, schema: dict) -> dict:
+    """Parse top-level array/object properties that arrived as JSON text.
+
+    Anthropic tool use returned the Data Artifacts array as a JSON-encoded
+    string (LabOS 10973), sometimes of the whole object
+    (``{"data_artifacts": "{\"data_artifacts\": [...]}"}``); the content was
+    complete, only its encoding differed.
+    """
+    properties = schema.get("properties") if isinstance(schema, dict) else None
+    if not isinstance(properties, dict):
+        return data
+    fixed = dict(data)
+    for name, spec in properties.items():
+        value = fixed.get(name)
+        kind = spec.get("type") if isinstance(spec, dict) else None
+        if isinstance(value, str) and kind in {"array", "object"}:
+            try:
+                parsed = json.loads(value)
+            except ValueError:
+                continue
+            expected = list if kind == "array" else dict
+            if isinstance(parsed, dict) and isinstance(parsed.get(name), expected) and set(parsed) == {name}:
+                parsed = parsed[name]
+            if isinstance(parsed, expected):
+                fixed[name] = parsed
+    return fixed
 
 
 def _validate_schema_shape(data: dict, schema: dict) -> None:
@@ -200,6 +228,7 @@ def generate_structured(provider, model, system, prompt, schema, *, capability, 
         raise _safe_error(exc) from exc
     if not data:
         raise ProviderResponseError("provider returned empty structured payload")
+    data = _decode_stringified_containers(data, validation_schema)
     if capability == "review":
         data = validate_review_payload(data)
     _validate_schema_shape(data, validation_schema)

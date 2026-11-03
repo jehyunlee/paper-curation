@@ -29,6 +29,9 @@ FEATURE = "review"
 PROVIDER = "anthropic"
 MODEL = "claude-sonnet-5"
 REVIEW_TEXT_CHARACTER_LIMIT = 12_000
+# Seven sections plus the Data Artifacts list run past 4,000 Korean output
+# tokens on long papers (LabOS 10973 was truncated at 4,000).
+REVIEW_MAX_OUTPUT_TOKENS = 6_000
 SIDECAR_SCHEMA = "bibliography-sidecar-1"
 
 STEPS = [
@@ -40,6 +43,7 @@ STEPS = [
     "render-canonical-html-keyless",
     "write-bibliography-sidecar",
     "publish-atomically",
+    "refresh-registered-topic-views",
 ]
 
 _REQUIRED_ITEM_FIELDS = {
@@ -207,8 +211,8 @@ def _budget(value: Any) -> dict[str, float | int] | None:
         if isinstance(raw, bool) or not isinstance(raw, (int, float)) or not math.isfinite(raw) or raw < 0:
             raise LocalReviewError("failed", f"budget.{key} must be a finite nonnegative number")
         if key == "max_output_tokens":
-            if int(raw) != raw or raw < 1 or raw > 4000:
-                raise LocalReviewError("failed", "budget.max_output_tokens must be an integer from 1 to 4000")
+            if int(raw) != raw or raw < 1 or raw > REVIEW_MAX_OUTPUT_TOKENS:
+                raise LocalReviewError("failed", f"budget.max_output_tokens must be an integer from 1 to {REVIEW_MAX_OUTPUT_TOKENS}")
             result[key] = int(raw)
         else:
             result[key] = float(raw)
@@ -410,7 +414,7 @@ def _budget_bound(request: dict[str, Any], pdf_bytes: int) -> dict[str, Any] | N
         request["item"], ensure_ascii=False, separators=(",", ":")
     ).encode("utf-8"))
     input_tokens = REVIEW_TEXT_CHARACTER_LIMIT * 4 + item_bytes + pdf_bytes + 16_384
-    output_tokens = int(budget.get("max_output_tokens", 4000))
+    output_tokens = int(budget.get("max_output_tokens", REVIEW_MAX_OUTPUT_TOKENS))
     cost = (input_tokens * float(budget["input_per_million_usd"])
             + output_tokens * float(budget["output_per_million_usd"])) / 1_000_000
     return {
@@ -660,6 +664,9 @@ def _validate_reservation(request: dict[str, Any]) -> None:
         return
     try:
         _owned_reservation(Path(papers_dir).resolve(), slug, token or "")
+        if "max_cost_usd" in (request.get("budget") or {}):
+            from lib.corpus_store import restrict_view_refresh_to_budget
+            restrict_view_refresh_to_budget(papers_dir, slug, token or "")
     except CorpusStoreError as exc:
         raise LocalReviewError("failed", "reservation ownership mismatch") from exc
 
@@ -994,7 +1001,7 @@ def _execute(request: dict[str, Any], pdf_info: dict[str, Any]) -> dict[str, Any
                     model=request["model"],
                     credential_ref=request["credential_ref"],
                     max_output_tokens=int(
-                        (request["budget"] or {}).get("max_output_tokens", 4000)
+                        (request["budget"] or {}).get("max_output_tokens", REVIEW_MAX_OUTPUT_TOKENS)
                     ),
                     cache_dir=cache_dir,
                     cache_evidence=cache_evidence,
@@ -1077,6 +1084,44 @@ def _execute(request: dict[str, Any], pdf_info: dict[str, Any]) -> dict[str, Any
                 shutil.rmtree(work_root, ignore_errors=True)
 
 
+def _with_view_refresh(result: dict[str, Any], request: dict[str, Any], *, dry_run: bool) -> dict[str, Any]:
+    """Keep a published review usable even when a downstream builder fails."""
+    try:
+        from refresh_paper_views import PAPERS_DIR as canonical_papers, refresh_paper_views
+        if request["output_dir"].parent != Path(canonical_papers).expanduser().resolve():
+            result["views"] = {"status": "skipped", "topics": [], "steps": [], "errors": [],
+                               "reason": "standalone output outside the canonical corpus"}
+            return result
+        budget = request.get("budget") or {}
+        views = refresh_paper_views(
+            request["output_dir"].name, papers_dir=request["output_dir"].parent,
+            dry_run=dry_run, allow_paid="max_cost_usd" not in budget,
+        )
+    except Exception as exc:
+        import shlex
+        views = {
+            "status": "failed", "topics": [], "steps": [],
+            "errors": [_sanitize_text(f"view refresh failed: {type(exc).__name__}")],
+            "retry_command": shlex.join([
+                sys.executable, str(_PIPELINE_DIR / "refresh_paper_views.py"),
+                "--slug", request["output_dir"].name,
+            ]),
+        }
+    result["views"] = views
+    if views.get("embedding_cost"):
+        result.setdefault("estimate", {})["view_refresh_cost"] = views["embedding_cost"]
+    if views["status"] == "failed" and result["status"] in {"ready", "completed", "exists"}:
+        result["status"] = "failed"
+        result["error"] = ("Review artifacts are retained; topic view refresh failed. Retry views only."
+                           if result.get("outputs") else "Topic view refresh cannot be planned; review was not executed.")
+        if result.get("outputs"):
+            result["partial"] = {
+                "published": True, "review_ready": True, "retry_safe": True,
+                "retry_command": views["retry_command"],
+            }
+    return result
+
+
 def run_request(payload: Any, *, execute: bool = False) -> dict[str, Any]:
     """Validate and plan/execute one request without ever printing to stdout."""
     request: dict[str, Any] | None = None
@@ -1093,15 +1138,30 @@ def run_request(payload: Any, *, execute: bool = False) -> dict[str, Any]:
             )
         pdf_info, preflight_response = _preflight(request)
         if preflight_response is not None:
-            return preflight_response
+            if execute and preflight_response["status"] == "exists":
+                from lib.corpus_store import corpus_operation_lock
+                with corpus_operation_lock(request["output_dir"].parent):
+                    with _exclusive_output_lock(request["output_dir"]):
+                        _validate_reservation(request)
+                        result = _existing_bundle_response(request, pdf_info)
+                        if result is None:
+                            raise LocalReviewError("failed", "existing review changed during retry; review was not regenerated")
+                if result["status"] != "exists":
+                    return result
+                return _with_view_refresh(result, request, dry_run=False)
+            return _with_view_refresh(preflight_response, request, dry_run=True)
         if not execute:
-            return _response(
+            result = _response(
                 "ready", estimate=_plan_estimate(pdf_info, request),
                 provider=request["provider"], model=request["model"],
             )
+            return _with_view_refresh(result, request, dry_run=True)
         from lib.corpus_store import corpus_operation_lock
         with corpus_operation_lock(request["output_dir"].parent):
-            return _execute(request, pdf_info)
+            result = _execute(request, pdf_info)
+        if result["status"] in {"completed", "exists"}:
+            return _with_view_refresh(result, request, dry_run=False)
+        return result
     except LocalReviewError as exc:
         provider, model = (
             (request["provider"], request["model"])

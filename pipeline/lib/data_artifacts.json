@@ -1,0 +1,596 @@
+{
+ "source": "https://app.jehyunlee.dev/dataartifact/",
+ "note": "데이터 인위성 지도(Data Artifact Atlas)의 단계(STAGES)와 효과(N) 목록. 원본 페이지 갱신 시 다시 추출한다.",
+ "stages": [
+  {
+   "id": "design",
+   "no": 1,
+   "ko": "지표 설계",
+   "en": "Metric design"
+  },
+  {
+   "id": "capture",
+   "no": 2,
+   "ko": "포착·표본",
+   "en": "Capture & sampling"
+  },
+  {
+   "id": "observe",
+   "no": 3,
+   "ko": "관찰·측정",
+   "en": "Observation & instruments"
+  },
+  {
+   "id": "report",
+   "no": 4,
+   "ko": "응답·보고",
+   "en": "Self-report"
+  },
+  {
+   "id": "process",
+   "no": 5,
+   "ko": "처리·분석",
+   "en": "Processing & analysis"
+  },
+  {
+   "id": "interpret",
+   "no": 6,
+   "ko": "해석·결정",
+   "en": "Interpretation"
+  },
+  {
+   "id": "feedback",
+   "no": 7,
+   "ko": "피드백·게이밍",
+   "en": "Feedback & gaming"
+  }
+ ],
+ "effects": [
+  {
+   "id": "legibility",
+   "stage": "design",
+   "ko": "가독성 강제",
+   "en": "Legibility (Seeing like a State)",
+   "summary": "국가·조직이 관리하려고 복잡한 현실을 셀 수 있는 형태로 단순화하고, 나아가 현실 자체를 그 틀에 맞게 바꾸는 현상"
+  },
+  {
+   "id": "mcnamara",
+   "stage": "design",
+   "ko": "맥나마라 오류",
+   "en": "McNamara fallacy",
+   "summary": "측정하기 쉬운 것만 재고, 측정하기 어려운 것은 무시하거나 중요하지 않다고, 끝내는 존재하지 않는다고 여기는 사고"
+  },
+  {
+   "id": "streetlight",
+   "stage": "design",
+   "ko": "가로등 효과",
+   "en": "Streetlight effect",
+   "summary": "답이 있을 법한 곳이 아니라 데이터가 쉽게 손에 들어오는 곳에서 답을 찾는 경향"
+  },
+  {
+   "id": "surrogation",
+   "stage": "design",
+   "ko": "대리지표 동일시",
+   "en": "Surrogation",
+   "summary": "지표가 전략을 대신하는 측정 도구라는 사실을 잊고 지표 자체를 전략으로 여기는 현상"
+  },
+  {
+   "id": "proxy",
+   "stage": "design",
+   "ko": "대리지표 붕괴",
+   "en": "Proxy failure / Surrogate endpoint",
+   "summary": "직접 재기 어려운 목표 대신 쓰는 대리지표가 개입·최적화 과정에서 실제 목표와의 관계를 잃는 현상"
+  },
+  {
+   "id": "defchange",
+   "stage": "design",
+   "ko": "정의 변경·시계열 단절",
+   "en": "Definitional change / Series break",
+   "summary": "측정 대상의 정의, 분류 기준, 집계 방식이 바뀌어 현실의 변화 없이 수치가 움직이는 현상"
+  },
+  {
+   "id": "selection",
+   "stage": "capture",
+   "ko": "선택 편향",
+   "en": "Selection bias",
+   "summary": "데이터에 들어오는 대상이 무작위가 아니어서 표본이 모집단과 체계적으로 달라지는 현상의 총칭"
+  },
+  {
+   "id": "survivorship",
+   "stage": "capture",
+   "ko": "생존자 편향",
+   "en": "Survivorship bias",
+   "summary": "어떤 과정을 통과해 살아남은 사례만 관찰하고 탈락한 사례를 보지 못해 잘못된 결론을 내리는 현상."
+  },
+  {
+   "id": "nonresponse",
+   "stage": "capture",
+   "ko": "무응답 편향",
+   "en": "Non-response bias",
+   "summary": "응답하지 않은 사람이 응답한 사람과 체계적으로 달라 결과가 왜곡되는 현상"
+  },
+  {
+   "id": "coverage",
+   "stage": "capture",
+   "ko": "포괄 범위 편향",
+   "en": "Coverage bias / Digital divide",
+   "summary": "표본틀이나 수집 수단이 애초에 모집단 일부에만 닿아 빠진 집단이 데이터에서 보이지 않는 현상"
+  },
+  {
+   "id": "selfselect",
+   "stage": "capture",
+   "ko": "자기선택 편향",
+   "en": "Self-selection / Volunteer bias",
+   "summary": "참여 여부를 대상이 스스로 정해, 강한 동기나 의견을 가진 사람이 과다 대표되는 현상."
+  },
+  {
+   "id": "healthyuser",
+   "stage": "capture",
+   "ko": "건강한 사용자 효과",
+   "en": "Healthy user / worker effect",
+   "summary": "어떤 행동(약 복용, 검진, 운동, 취업)을 고르는 사람이 원래 더 건강하거나 성실해서, 그 행동의 효과가 부풀려 보이는 현상."
+  },
+  {
+   "id": "attrition",
+   "stage": "capture",
+   "ko": "탈락 편향",
+   "en": "Attrition bias",
+   "summary": "추적 조사나 실험 도중 이탈한 사람이 남은 사람과 달라 최종 결과가 기우는 현상."
+  },
+  {
+   "id": "berkson",
+   "stage": "capture",
+   "ko": "버크슨 역설",
+   "en": "Berkson’s paradox",
+   "summary": "특정 관문(입원, 합격, 선발)을 통과한 사람만 보면 실제로는 무관한 두 특성 사이에 가짜 음의 상관이 생기는 현상"
+  },
+  {
+   "id": "fatigue",
+   "stage": "capture",
+   "ko": "조사 피로",
+   "en": "Survey fatigue",
+   "summary": "조사가 너무 잦거나 길어 응답자가 응답을 거부하거나 성의 없이 답하는 현상"
+  },
+  {
+   "id": "detection",
+   "stage": "capture",
+   "ko": "검출 편향",
+   "en": "Detection / Surveillance bias",
+   "summary": "더 많이, 더 정밀하게 찾을수록 더 많이 발견되어 발생 자체가 늘어난 것처럼 보이는 현상."
+  },
+  {
+   "id": "reactivity",
+   "stage": "observe",
+   "ko": "측정 반응성",
+   "en": "Reactivity",
+   "summary": "측정 대상이 측정된다는 사실을 알고 행동이나 답을 바꾸는 현상의 총칭"
+  },
+  {
+   "id": "hawthorne",
+   "stage": "observe",
+   "ko": "호손 효과",
+   "en": "Hawthorne effect",
+   "summary": "관찰·연구 대상이 된다는 사실만으로 사람들이 행동을 바꾸어 성과가 오르는 현상"
+  },
+  {
+   "id": "demand",
+   "stage": "observe",
+   "ko": "요구 특성",
+   "en": "Demand characteristics",
+   "summary": "실험·조사 참가자가 연구 목적을 짐작하고 그에 맞춰(또는 반대로) 행동하는 현상"
+  },
+  {
+   "id": "expectancy",
+   "stage": "observe",
+   "ko": "관찰자 기대 효과",
+   "en": "Observer-expectancy effect",
+   "summary": "연구자·측정자가 기대하는 결과가 관찰, 기록, 해석, 또는 대상에게 보내는 무의식적 신호를 통해 결과에 스며드는 현상."
+  },
+  {
+   "id": "cleverhans",
+   "stage": "observe",
+   "ko": "영리한 한스 효과",
+   "en": "Clever Hans effect",
+   "summary": "측정 대상이 과제 자체가 아니라 질문자의 무의식적 신호를 읽어 정답을 맞히는 현상"
+  },
+  {
+   "id": "pygmalion",
+   "stage": "observe",
+   "ko": "피그말리온 효과",
+   "en": "Pygmalion / Golem effect",
+   "summary": "평가자가 대상에게 높은 기대를 가지면 실제 성과가 오르는 현상(낮은 기대로 성과가 떨어지면 골렘 효과)"
+  },
+  {
+   "id": "johnhenry",
+   "stage": "observe",
+   "ko": "존 헨리 효과",
+   "en": "John Henry effect",
+   "summary": "통제집단이 자신이 비교 대상이라는 사실을 알고 평소보다 분발해 처치 효과가 작아 보이는 현상"
+  },
+  {
+   "id": "placebo",
+   "stage": "observe",
+   "ko": "위약·노시보 효과",
+   "en": "Placebo / Nocebo effect",
+   "summary": "처치의 실제 성분과 무관하게 처치를 받는다는 기대만으로 증상이 나아지거나(위약) 부작용이 생기는(노시보) 현상"
+  },
+  {
+   "id": "novelty",
+   "stage": "observe",
+   "ko": "신기성 효과",
+   "en": "Novelty effect",
+   "summary": "새 제도·도구·화면이 도입되면 새롭다는 이유만으로 초기 사용량이나 성과가 오르고, 시간이 지나면 사라지는 현상."
+  },
+  {
+   "id": "chilling",
+   "stage": "observe",
+   "ko": "위축 효과",
+   "en": "Chilling / Panopticon effect",
+   "summary": "감시받거나 기록된다는 인식 때문에 사람들이 합법적인 행동, 검색, 표현까지 스스로 줄이는 현상"
+  },
+  {
+   "id": "pretest",
+   "stage": "observe",
+   "ko": "사전검사 효과",
+   "en": "Pretest sensitization / Testing effect",
+   "summary": "사전 측정을 받은 경험 자체가 사후 측정 결과를 바꾸는 현상"
+  },
+  {
+   "id": "meremeasure",
+   "stage": "observe",
+   "ko": "단순 측정 효과",
+   "en": "Mere-measurement / Question-behavior effect",
+   "summary": "어떤 행동에 대한 의향을 묻기만 해도 그 행동을 실제로 할 가능성이 달라지는 현상."
+  },
+  {
+   "id": "drift",
+   "stage": "observe",
+   "ko": "측정 도구 변동",
+   "en": "Instrumentation / Rater drift",
+   "summary": "측정 장비, 센서, 평가자의 기준이 시간이 지나며 조금씩 변해 실제 변화 없이 측정값이 움직이는 현상."
+  },
+  {
+   "id": "desirability",
+   "stage": "report",
+   "ko": "사회적 바람직성 편향",
+   "en": "Social desirability bias",
+   "summary": "응답자가 사회적으로 바람직해 보이는 방향으로 답을 꾸미는 현상"
+  },
+  {
+   "id": "shyvoter",
+   "stage": "report",
+   "ko": "샤이 투표자 효과",
+   "en": "Shy voter / Bradley effect",
+   "summary": "사회적으로 눈치 보이는 후보나 정당을 지지하는 사람이 여론조사에서 지지를 숨겨 실제 결과와 조사가 어긋나는 현상."
+  },
+  {
+   "id": "falsification",
+   "stage": "report",
+   "ko": "선호 위장",
+   "en": "Preference falsification",
+   "summary": "사회적 압력 때문에 사람들이 공개적으로는 사적인 선호와 다른 선호를 내세우는 현상"
+  },
+  {
+   "id": "silence",
+   "stage": "report",
+   "ko": "침묵의 나선",
+   "en": "Spiral of silence",
+   "summary": "자신이 소수 의견이라고 느끼는 사람이 고립을 피하려 의견 표현을 줄이고, 그 결과 다수 의견이 더 커 보이는 순환"
+  },
+  {
+   "id": "acquiescence",
+   "stage": "report",
+   "ko": "묵종 편향",
+   "en": "Acquiescence bias",
+   "summary": "질문 내용과 관계없이 ‘예’, ‘동의한다’ 쪽으로 답하는 경향"
+  },
+  {
+   "id": "wording",
+   "stage": "report",
+   "ko": "질문 문구 효과",
+   "en": "Question wording / Framing effect",
+   "summary": "같은 내용이라도 단어 선택이나 프레임에 따라 응답 분포가 크게 달라지는 현상."
+  },
+  {
+   "id": "order",
+   "stage": "report",
+   "ko": "문항 순서 효과",
+   "en": "Question order effect",
+   "summary": "앞선 질문이 뒤 질문의 응답 기준을 바꿔 결과가 달라지는 현상."
+  },
+  {
+   "id": "scale",
+   "stage": "report",
+   "ko": "응답 척도 효과",
+   "en": "Response scale / Anchoring",
+   "summary": "선택지 범위, 예시 숫자, 척도 양끝 표현이 응답자에게 ‘보통’의 기준점을 주어 답을 끌어당기는 현상."
+  },
+  {
+   "id": "recall",
+   "stage": "report",
+   "ko": "회상 편향",
+   "en": "Recall bias / Telescoping",
+   "summary": "과거 경험을 기억해 답할 때 지금의 상태나 결과에 따라 기억이 달라지거나, 사건 시점을 실제보다 가깝게 기억하는 현상(텔레스코핑)."
+  },
+  {
+   "id": "interviewer",
+   "stage": "report",
+   "ko": "면접자 효과",
+   "en": "Interviewer effect",
+   "summary": "면접자의 성별, 인종, 나이, 말투, 소속이 응답자의 답을 바꾸는 현상."
+  },
+  {
+   "id": "mode",
+   "stage": "report",
+   "ko": "조사 방식 효과",
+   "en": "Mode effect",
+   "summary": "같은 질문이라도 대면, 전화면접, ARS(자동응답), 웹 등 조사 방식에 따라 응답자 구성과 답이 달라지는 현상."
+  },
+  {
+   "id": "satisficing",
+   "stage": "report",
+   "ko": "만족화 응답",
+   "en": "Satisficing / Straightlining",
+   "summary": "응답자가 최적의 답 대신 ‘그럭저럭 괜찮은’ 답을 골라 인지 부담을 줄이는 현상"
+  },
+  {
+   "id": "reference",
+   "stage": "report",
+   "ko": "참조 집단 편향",
+   "en": "Reference bias / Response shift",
+   "summary": "자기평가의 기준이 집단이나 시점마다 달라 같은 점수가 다른 뜻을 갖는 현상"
+  },
+  {
+   "id": "panel",
+   "stage": "report",
+   "ko": "패널 조건화",
+   "en": "Panel conditioning",
+   "summary": "같은 사람을 반복 조사하면 조사 경험이 응답자의 지식, 태도, 행동, 응답 방식을 바꿔 새 응답자와 달라지는 현상."
+  },
+  {
+   "id": "simpson",
+   "stage": "process",
+   "ko": "심슨의 역설",
+   "en": "Simpson’s paradox",
+   "summary": "하위 집단마다 같은 방향인 경향이 집단을 합치면 반대로 뒤집히는 현상"
+  },
+  {
+   "id": "ecological",
+   "stage": "process",
+   "ko": "생태학적 오류",
+   "en": "Ecological fallacy",
+   "summary": "지역·집단 단위의 상관관계를 개인 단위의 관계로 잘못 해석하는 현상."
+  },
+  {
+   "id": "regression",
+   "stage": "process",
+   "ko": "평균으로의 회귀",
+   "en": "Regression to the mean",
+   "summary": "극단적인 값이 측정된 뒤 다음 측정에서는 우연 변동 때문에 평균 쪽으로 돌아오는 현상"
+  },
+  {
+   "id": "forking",
+   "stage": "process",
+   "ko": "p-해킹·갈림길 정원",
+   "en": "p-hacking / Garden of forking paths",
+   "summary": "데이터를 본 뒤 변수, 하위 집단, 제외 기준, 모형을 바꿔 가며 유의한 결과를 찾는 현상"
+  },
+  {
+   "id": "publication",
+   "stage": "process",
+   "ko": "출판 편향",
+   "en": "Publication bias / File drawer",
+   "summary": "유의하거나 흥미로운 결과만 출판·보도되고, 효과 없음 결과는 서랍 속에 남아 문헌 전체가 효과를 과장하는 현상(Rosenthal, 1979)."
+  },
+  {
+   "id": "decline",
+   "stage": "process",
+   "ko": "감퇴 효과",
+   "en": "Decline effect",
+   "summary": "처음 보고된 큰 효과가 반복 연구를 거치며 점점 작아지는 현상"
+  },
+  {
+   "id": "annotation",
+   "stage": "process",
+   "ko": "라벨 인공물",
+   "en": "Annotation artifacts / Label bias",
+   "summary": "AI 학습 데이터를 만드는 라벨러의 기준, 습관, 지름길이 데이터에 새겨져 모델이 과제가 아니라 그 흔적을 학습하는 현상."
+  },
+  {
+   "id": "averages",
+   "stage": "process",
+   "ko": "평균의 함정",
+   "en": "Flaw of averages",
+   "summary": "분포를 하나의 평균값으로 요약해 계획하거나 설계하면, 평균이 누구의 현실도 대표하지 못해 실패하는 현상(Sam Savage)."
+  },
+  {
+   "id": "herding",
+   "stage": "process",
+   "ko": "여론조사 허딩",
+   "en": "Pollster herding",
+   "summary": "조사기관이 다른 조사와 동떨어진 결과를 내는 위험을 피하려고 가중치나 모형을 조정해 결과를 다른 조사에 맞추는 현상."
+  },
+  {
+   "id": "confirmation",
+   "stage": "interpret",
+   "ko": "확증 편향",
+   "en": "Confirmation bias",
+   "summary": "기존 믿음을 지지하는 데이터는 쉽게 받아들이고 반대 데이터는 무시하거나 깎아내리는 경향"
+  },
+  {
+   "id": "sharpshooter",
+   "stage": "interpret",
+   "ko": "텍사스 명사수 오류",
+   "en": "Texas sharpshooter fallacy",
+   "summary": "무작위로 흩어진 데이터에서 몰린 부분만 골라 나중에 과녁을 그리고 의미 있는 패턴이라고 주장하는 오류."
+  },
+  {
+   "id": "baserate",
+   "stage": "interpret",
+   "ko": "기저율 무시",
+   "en": "Base-rate neglect",
+   "summary": "사건의 전체 발생 비율(분모)을 무시하고 개별 정보나 적중 사례에만 집중해 확률을 잘못 판단하는 현상."
+  },
+  {
+   "id": "quantfix",
+   "stage": "interpret",
+   "ko": "정량화 고착",
+   "en": "Quantification fixation",
+   "summary": "같은 정보라도 숫자로 표현된 속성에 판단의 무게가 과도하게 쏠리는 현상"
+  },
+  {
+   "id": "precision",
+   "stage": "interpret",
+   "ko": "거짓 정밀성",
+   "en": "False precision",
+   "summary": "불확실성이 큰 추정치를 소수점까지 보고해 실제보다 정확해 보이게 만드는 현상"
+  },
+  {
+   "id": "correlation",
+   "stage": "interpret",
+   "ko": "상관·인과 혼동",
+   "en": "Correlation–causation confusion",
+   "summary": "두 변수가 함께 움직인다는 사실을 한쪽이 다른 쪽의 원인이라는 근거로 읽는 오류"
+  },
+  {
+   "id": "preparedness",
+   "stage": "interpret",
+   "ko": "대비의 역설",
+   "en": "Preparedness paradox",
+   "summary": "경고와 대비가 성공해 재난이 일어나지 않으면 데이터에 피해가 남지 않아, 대비가 과잉이었던 것처럼 보이는 현상."
+  },
+  {
+   "id": "goodhart",
+   "stage": "feedback",
+   "ko": "굿하트 법칙",
+   "en": "Goodhart’s law",
+   "summary": "어떤 지표를 목표로 삼아 압력을 가하면 그 지표는 원래 재려던 것을 더 이상 잘 나타내지 못한다는 법칙"
+  },
+  {
+   "id": "campbell",
+   "stage": "feedback",
+   "ko": "캠벨의 법칙",
+   "en": "Campbell’s law",
+   "summary": "양적 사회지표가 사회적 의사결정에 많이 쓰일수록 부패 압력을 더 받고, 감시하려던 사회 과정을 더 왜곡한다는 법칙"
+  },
+  {
+   "id": "cobra",
+   "stage": "feedback",
+   "ko": "코브라 효과",
+   "en": "Cobra effect / Perverse incentive",
+   "summary": "문제를 줄이려고 만든 보상이 오히려 문제를 키우는 행동을 부르는 현상"
+  },
+  {
+   "id": "gaming",
+   "stage": "feedback",
+   "ko": "지표 게이밍",
+   "en": "Gaming / Juking the stats",
+   "summary": "실제 성과를 높이는 대신 지표 산정 방식의 허점을 이용해 수치만 끌어올리는 행동"
+  },
+  {
+   "id": "cream",
+   "stage": "feedback",
+   "ko": "크림 스키밍",
+   "en": "Cream skimming / Risk selection",
+   "summary": "성과가 공개·평가되면 결과가 좋을 대상만 골라 받고 어려운 대상을 피하는 현상"
+  },
+  {
+   "id": "teaching",
+   "stage": "feedback",
+   "ko": "시험용 교육",
+   "en": "Teaching to the test / Score inflation",
+   "summary": "평가가 시험 점수에 묶이면 시험에 나오는 것만 가르치고 출제 방식에 맞춘 연습이 늘어 점수가 실제 역량보다 빨리 오르는 현상."
+  },
+  {
+   "id": "ratchet",
+   "stage": "feedback",
+   "ko": "래칫 효과",
+   "en": "Ratchet effect",
+   "summary": "올해 실적이 내년 목표의 기준이 되면 일부러 실적을 억제하거나 숨겨 다음 목표를 낮게 유지하려는 현상"
+  },
+  {
+   "id": "lucas",
+   "stage": "feedback",
+   "ko": "루카스 비판",
+   "en": "Lucas critique",
+   "summary": "과거 데이터에서 찾은 경제 관계를 정책에 쓰면, 사람들이 바뀐 정책에 맞춰 기대와 행동을 바꾸기 때문에 그 관계가 무너진다는 비판(로버트 루카스, 1976)."
+  },
+  {
+   "id": "reflexivity",
+   "stage": "feedback",
+   "ko": "재귀성",
+   "en": "Reflexivity (Soros)",
+   "summary": "참여자의 인식이 현실을 바꾸고, 바뀐 현실이 다시 인식을 바꾸는 쌍방향 순환"
+  },
+  {
+   "id": "selffulfill",
+   "stage": "feedback",
+   "ko": "자기실현적 예언",
+   "en": "Self-fulfilling prophecy",
+   "summary": "처음엔 틀린 예측이나 정의가 사람들의 행동을 바꿔 결국 사실이 되는 현상"
+  },
+  {
+   "id": "selfdefeat",
+   "stage": "feedback",
+   "ko": "자기부정적 예언",
+   "en": "Self-defeating prophecy",
+   "summary": "예측이 알려지면서 사람들이 그 예측을 피하도록 행동해 예측이 빗나가는 현상."
+  },
+  {
+   "id": "performativity",
+   "stage": "feedback",
+   "ko": "수행성",
+   "en": "Performativity",
+   "summary": "세상을 설명하려던 모델이나 측정이 사용되면서 세상을 그 모델에 맞게 바꾸는 현상"
+  },
+  {
+   "id": "bandwagon",
+   "stage": "feedback",
+   "ko": "밴드왜건·언더독 효과",
+   "en": "Bandwagon / Underdog effect",
+   "summary": "여론조사 결과 공표가 유권자의 선택을 앞선 쪽으로 몰거나(밴드왜건) 뒤진 쪽으로 동정표를 보내게(언더독) 하는 현상"
+  },
+  {
+   "id": "runaway",
+   "stage": "feedback",
+   "ko": "폭주 피드백 루프",
+   "en": "Runaway feedback loop",
+   "summary": "시스템의 판단이 데이터 수집 위치를 정하고, 그렇게 모인 데이터가 다시 같은 판단을 강화하는 순환"
+  },
+  {
+   "id": "algoconf",
+   "stage": "feedback",
+   "ko": "알고리즘 교란",
+   "en": "Algorithmic confounding",
+   "summary": "추천·랭킹 시스템이 보여 준 것에 사용자가 반응하므로, 수집된 행동 데이터가 사용자 선호가 아니라 시스템 노출의 결과가 되는 현상(Chaney 외, 2018)."
+  },
+  {
+   "id": "collapse",
+   "stage": "feedback",
+   "ko": "모델 붕괴",
+   "en": "Model collapse",
+   "summary": "AI가 만든 데이터를 다음 세대 AI 학습에 반복해 쓰면 원래 분포의 꼬리(드문 사례)부터 사라지고 출력이 획일화·퇴화하는 현상(Shumailov 외, 2024, 『네이처』)."
+  },
+  {
+   "id": "rewardhack",
+   "stage": "feedback",
+   "ko": "명세 게이밍",
+   "en": "Specification gaming / Reward hacking",
+   "summary": "AI·자동화 시스템이 설계자가 의도한 목표 대신 보상 함수나 평가 기준의 허점을 이용해 점수를 극대화하는 현상"
+  },
+  {
+   "id": "benchmark",
+   "stage": "feedback",
+   "ko": "벤치마크 과적합",
+   "en": "Benchmark overfitting / Contamination",
+   "summary": "공개 평가셋 점수가 연구·경쟁의 목표가 되면서 모델이 그 평가셋에 맞춰지거나, 시험 문항이 학습 데이터에 섞여 점수가 실제 능력보다 부풀려지는 현상."
+  },
+  {
+   "id": "matthew",
+   "stage": "feedback",
+   "ko": "마태 효과",
+   "en": "Matthew effect / Popularity bias",
+   "summary": "이미 주목받는 대상이 그 주목 때문에 더 많은 주목과 자원을 얻는 누적 이익 현상"
+  }
+ ]
+}

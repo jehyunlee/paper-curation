@@ -697,11 +697,14 @@ def is_local_topic(topic: str) -> bool:
 
 
 def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
-                include_text: str = "auto", mode: str = "hybrid"):
+                include_text: str = "auto", mode: str = "hybrid",
+                include_personal_notes: str = "auto"):
     if mode not in BUILD_MODES:
         raise ValueError("mode must be one of: hybrid, bm25")
     if include_text not in {"auto", "yes", "no"}:
         raise ValueError("include_text must be one of: auto, yes, no")
+    if include_personal_notes not in {"auto", "yes", "no"}:
+        raise ValueError("include_personal_notes must be one of: auto, yes, no")
 
     topic_dir = get_topic_dir(topic)
     if not topic_dir.exists():
@@ -726,6 +729,9 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
 
     # --- text.md 보강 정책: 클라우드=review-only(A), 로컬=review+text(B) ---
     local = is_local_topic(topic)
+    if include_personal_notes == "yes" and not local:
+        raise ValueError("personal notes cannot be included in a public topic")
+    use_notes = local if include_personal_notes == "auto" else include_personal_notes == "yes"
     if include_text == "auto":
         use_text = local
     elif include_text == "yes":
@@ -755,7 +761,7 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
             review_path,
             slug,
             include_source_text=use_text,
-            include_personal_notes=local,
+            include_personal_notes=use_notes,
         )
         if not parsed or not parsed["chunks"]:
             skipped += 1
@@ -817,7 +823,7 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
     # topics never copy personal notes into either retrieval mode.
     _notes_dir = DOCS_DIR / "notes" / topic
     _notes_count = 0
-    if local and _notes_dir.exists():
+    if use_notes and _notes_dir.exists():
         for _note_path in sorted(_notes_dir.rglob("*.md")):
             if _note_path.name.startswith("_"):
                 continue
@@ -906,13 +912,13 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
             topic,
             papers_meta,
             include_text=use_text,
-            include_personal_notes=local,
+            include_personal_notes=use_notes,
         )
         out["source_fingerprint"] = source_fp
         out["source_file_count"] = source_count
         out["source_options"] = {
             "include_text": use_text,
-            "include_personal_notes": local,
+            "include_personal_notes": use_notes,
         }
         out["built_at"] = int(time.time())
 
@@ -1052,13 +1058,13 @@ def build_index(topic: str, model: str, limit: int | None, dry_run: bool,
         topic,
         papers_meta,
         include_text=use_text,
-        include_personal_notes=local,
+        include_personal_notes=use_notes,
     )
     out["source_fingerprint"] = source_fp
     out["source_file_count"] = source_count
     out["source_options"] = {
         "include_text": use_text,
-        "include_personal_notes": local,
+        "include_personal_notes": use_notes,
     }
     out["built_at"] = int(time.time())
 
@@ -1112,10 +1118,12 @@ def _atomic_write_json(path: Path, payload: dict) -> None:
 
 
 def _run_search_index(topic, *, mode="hybrid", model="gemini-embedding-001",
-                      limit=None, dry_run=False, include_text="auto"):
+                      limit=None, dry_run=False, include_text="auto",
+                      include_personal_notes="auto"):
     """Programmatic entrypoint for build_search_index."""
     return build_index(
-        topic, model, limit, dry_run, include_text=include_text, mode=mode)
+        topic, model, limit, dry_run, include_text=include_text, mode=mode,
+        include_personal_notes=include_personal_notes)
 
 
 def main():
@@ -1130,9 +1138,12 @@ def main():
     parser.add_argument("--include-text", choices=["auto", "yes", "no"], default="auto",
                         help="text.md 고신호 청크 보강. auto=로컬 토픽만 ON(클라우드 review-only). "
                              "yes 는 배포 토픽에 거부됨(저작권).")
+    parser.add_argument("--include-personal-notes", choices=["auto", "yes", "no"], default="auto",
+                        help="personal notes: auto enables only local topics; yes is rejected for public topics")
     args = parser.parse_args()
     _run_search_index(topic=args.topic, mode=args.mode, model=args.model, limit=args.limit,
-                      dry_run=args.dry_run, include_text=args.include_text)
+                      dry_run=args.dry_run, include_text=args.include_text,
+                      include_personal_notes=args.include_personal_notes)
 
 
 if __name__ == "__main__":

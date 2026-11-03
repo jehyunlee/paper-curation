@@ -154,7 +154,10 @@ def _run_topic_index(topic=None, cross=None):
     if cross:
         topic_papers = []
     else:
-        topic_papers = [p for p in papers_index if TOPIC in p.get("topics", [])]
+        topic_papers = [
+            p for p in papers_index
+            if p.get("primary_topic") == TOPIC or TOPIC in (p.get("topics") or [])
+        ]
     slug_to_index = {p["slug"]: p for p in topic_papers}
 
     # Assignment slug → category mapping (multi-class)
@@ -240,6 +243,8 @@ def _run_topic_index(topic=None, cross=None):
 
     # Build category → papers mapping
     cat_order = [c["name"] for c in categories] if categories else ["Other"]
+    if "Other" not in cat_order:
+        cat_order.append("Other")
     cat_papers = defaultdict(list)
     unmatched = []
 
@@ -247,8 +252,14 @@ def _run_topic_index(topic=None, cross=None):
         slug = p_idx["slug"]
         p_cls = p_idx.get("classifications", {}).get(TOPIC, {})
         all_cats = slug_to_all_cats.get(slug, p_cls.get("all_categories", [p_cls.get("primary_category", "Other")]))
+        if not isinstance(all_cats, list):
+            all_cats = []
+        all_cats = list(dict.fromkeys(
+            cat for cat in all_cats if isinstance(cat, str) and cat.strip()
+        ))
         if not all_cats:
-            all_cats = [slug_to_cat.get(slug, "Other")]
+            primary_cat = slug_to_cat.get(slug, p_cls.get("primary_category"))
+            all_cats = [primary_cat] if isinstance(primary_cat, str) and primary_cat.strip() else ["Other"]
         review, dir_name = parse_review_md(slug)
         if dir_name is None:
             unmatched.append(slug)
@@ -302,13 +313,15 @@ def _run_topic_index(topic=None, cross=None):
             "fig_caption": fig_caption,
             "license": p_idx.get("license", ""),
         }
-        # Multi-class: add to ALL matching categories, with per-category sub_category
+        # Preserve recorded categories even when the taxonomy sidecar is stale.
+        # Multi-class: add to ALL assigned categories, with per-category sub_category.
         sub_categories_map = p_cls.get("sub_categories", {})
         for cat in all_cats:
-            if cat in cat_order or cat == "Other":
-                card = dict(paper_data)
-                card["sub_category"] = sub_categories_map.get(cat, p_cls.get("sub_category", "General") if cat == p_cls.get("primary_category") else "General")
-                cat_papers[cat].append(card)
+            if cat not in cat_order:
+                cat_order.append(cat)
+            card = dict(paper_data)
+            card["sub_category"] = sub_categories_map.get(cat, p_cls.get("sub_category", "General") if cat == p_cls.get("primary_category") else "General")
+            cat_papers[cat].append(card)
 
     if unmatched:
         print(f"WARNING unmatched: {unmatched}")
@@ -4007,8 +4020,6 @@ def _run_topic_index(topic=None, cross=None):
     try:
         import urllib.request as _urllib_request
         import time as _time
-        _api_key = get_zotero_api_key()
-        _user_id = get_zotero_user_id()
         # The map is shared across all topics + git-ignored (localhost only).
         # Re-paginating the whole Zotero library on every topic build only risks
         # an API hang for no benefit, so reuse a recent (<24h) file. Force a
@@ -4018,7 +4029,12 @@ def _run_topic_index(topic=None, cross=None):
         _zm_existing = Path(DOCS_DIR) / "_zotero_meta.json"
         _zk_fresh = (_zk_existing.exists() and _zm_existing.exists()
                      and (_time.time() - _zk_existing.stat().st_mtime) < 86400)
-        if os.environ.get("SKIP_ZOTERO_KEYS") or _zk_fresh:
+        _skip_zotero = bool(os.environ.get("SKIP_ZOTERO_KEYS"))
+        _api_key = "" if _skip_zotero or _zk_fresh else get_zotero_api_key()
+        _user_id = get_zotero_user_id() if _api_key else ""
+        if _skip_zotero:
+            print("Zotero keys: skipped (SKIP_ZOTERO_KEYS)")
+        elif _zk_fresh:
             print(f"Zotero keys: reusing existing {_zk_existing} (fresh; skip re-fetch)")
         elif _api_key and _user_id:
             _items = []

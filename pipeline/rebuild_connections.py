@@ -8,26 +8,27 @@ Connections are stored in two layers (see ``lib/connections.py``):
     run through ``sync_topic_connections``.
   * ``docs/<topic>/_paper_connections.json`` — the **consumer view** every
     renderer reads: the *bidirectional + per-target-deduped* projection of the
-    global store (each A→B implies B→A with the relation flipped, and a paper
+    global store (each A→B provides a separate B→A explanation, and a paper
     connected for several reasons appears once with all reasons listed).
 
 Normal pipeline runs already produce this automatically — ``sync_topic_connections``
 applies the transform on every run, and ``review_to_html`` renders each reason
 with its own relation badge and turns every ``[NNN]`` reference into a link. So
 **both paper-curation and paper-curio emit connections in exactly this shape going
-forward.** This script is the reproducible, LLM-free way to:
+forward.** This script can:
 
   * recompute every topic's connections in SPECTER2 embedding space from its
     ``_embeddings_cache.json`` (``--recompute``; missing vectors are embedded
-    locally, no LLM is called) and replace the whole global store,
-  * re-apply the transform to the existing global store, and
+    locally, and an LLM explains the selected pairs using both papers' source
+    text) and replace the whole global store only after all explanations succeed,
+  * re-apply the transform to the existing global store without LLM calls, and
   * re-render every affected paper page (and, by default, the D3 networks),
 
 e.g. after editing the transform/render logic or to reproduce the state on demand.
 
 Usage:
   PYTHONUTF8=1 python pipeline/rebuild_connections.py                  # all topics: data + pages + networks
-  PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute      # recompute neighbours in embedding space first
+  PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute      # retrieve neighbours and regenerate LLM explanations first
   PYTHONUTF8=1 python pipeline/rebuild_connections.py --topics ai4s scisci
   PYTHONUTF8=1 python pipeline/rebuild_connections.py --no-render      # rebuild topic JSON only
   PYTHONUTF8=1 python pipeline/rebuild_connections.py --no-networks    # data + pages, skip networks
@@ -217,12 +218,14 @@ def plan_rebuild(topics=None, *, recompute=False):
 
 
 def recompute_global(topics, dry_run=False, *, index=None):
-    """Replace the global store with embedding-space neighbours for ``topics``.
+    """Replace the global store with retrieved, LLM-explained topic neighbours.
 
     Same retrieval as ``topic_modeling`` Step 6: SPECTER2 cosine fused with
     title/author BM25 (RRF) over the topic's papers. Vectors come from the
     topic's ``_embeddings_cache.json``; only missing or changed ones are embedded,
     locally. Every topic paper is a source, so nothing is left from a prior run.
+    Selected pairs receive source-grounded LLM explanations before the global
+    store is replaced; explanation failures propagate without publishing edges.
     """
     index = load_index() if index is None else index
     mapping = topic_slug_map(index)
@@ -230,7 +233,7 @@ def recompute_global(topics, dry_run=False, *, index=None):
         topic_path(topic)
     if dry_run:
         for topic in topics:
-            print(f"  [dry-run] {topic}: would recompute {len(mapping.get(topic, ()))} papers")
+            print(f"  [dry-run] {topic}: would retrieve and explain {len(mapping.get(topic, ()))} papers")
         print(f"  [dry-run] would replace the global store, including all {len(index)} sources")
         return None
 
@@ -239,7 +242,7 @@ def recompute_global(topics, dry_run=False, *, index=None):
     for topic in topics:
         pool = [p for p in index if p["slug"] in mapping.get(topic, ())]
         if len(pool) < 2:
-            print(f"  {topic}: {len(pool)} papers, 0 embedding edges")
+            print(f"  {topic}: {len(pool)} papers, 0 selected pairs to explain")
             continue
         from lib.related import build_connections, max_links
         from topic_modeling import (compute_embeddings, compute_related_candidates,
@@ -261,7 +264,7 @@ def recompute_global(topics, dry_run=False, *, index=None):
             seen = {c["slug"] for c in bucket}
             bucket.extend(dict(c, source_topic=topic) for c in links if c["slug"] not in seen)
         print(f"  {topic}: {len(connections)} papers, "
-              f"{sum(len(v) for v in connections.values())} embedding edges")
+              f"{sum(len(v) for v in connections.values())} LLM-explained retrieval edges")
     save_global_connections(store)
     print(f"  global store replaced: {len(store)} sources")
     return store
@@ -419,13 +422,13 @@ def _run_rebuild(topics, *, recompute, dry_run, no_render, no_inject, no_network
     store = plan["global_connections"]
     print(f"Topics: {', '.join(topics)}")
     if recompute:
-        print("[0/4] Recomputing neighbours in SPECTER2 embedding space...")
+        print("[0/4] Retrieving SPECTER2 + BM25 neighbours and generating LLM explanations...")
         computed = recompute_global([t for t in topics if t != "_cross"],
                                     dry_run=dry_run, index=index)
         if not dry_run:
             store = computed
         else:
-            print("  [dry-run] view/link counts use the current graph; no neighbours are calculated")
+            print("  [dry-run] view/link counts use the current graph; no neighbours or explanations are generated")
 
     print("[1/4] Rebuilding topic connection files (bidirectional + deduped)...")
     view = authoritative_view(store, index)
@@ -467,7 +470,7 @@ def main():
                     help="Skip refreshing the ## Related Papers block in review.md (paper-curio/Obsidian)")
     ap.add_argument("--no-networks", action="store_true", help="Skip network regeneration")
     ap.add_argument("--recompute", action="store_true",
-                    help="Recompute all neighbours in embedding space and replace the global store")
+                    help="Retrieve all neighbours, regenerate grounded LLM explanations, and replace the global store")
     ap.add_argument("--dry-run", action="store_true", help="Report only; write nothing")
     args = ap.parse_args()
 

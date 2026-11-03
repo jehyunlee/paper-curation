@@ -6,7 +6,7 @@ BERTopic 기반 hierarchical topic modeling + UMAP 시각화 좌표 생성.
 3. BERTopic fine-grained clustering → 40~60 sub-topics
 4. Sonnet names sub-topics, then groups into 8~12 categories (bottom-up)
 5. UMAP 2D 좌표 저장
-6. 임베딩 코사인 유사도 top-20 → Sonnet이 이유/관계 작성
+6. SPECTER2 + 제목·저자 BM25 RRF로 후보 선택 → 양쪽 원문 근거로 LLM이 이유·관계 설명
 
 Usage:
   PYTHONUTF8=1 python pipeline/topic_modeling.py --topic ai4s
@@ -1035,9 +1035,9 @@ def _run_topic_model(topic="ai4s", *, skip_connections=False,
     # Step 6
     if not skip_connections:
         log("\n" + "=" * 50)
-        log("STEP 6: RELATED PAPERS (SPECTER2 embedding space + title/author BM25)")
+        log("STEP 6: RELATED PAPERS (SPECTER2 + BM25 retrieval, grounded LLM explanations)")
         log("=" * 50)
-        # Connected papers are found in embedding space only; no model is called.
+        # Retrieval selects neighbours; the LLM explains their substantive relationship.
         from lib.related import build_connections, max_links
         candidates = compute_related_candidates(embeddings, slugs, top_k=max_links(),
                                                 papers=topic_papers)

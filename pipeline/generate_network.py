@@ -34,13 +34,85 @@ def log(msg):
     print(f"[{ts}] {msg}", flush=True)
 
 
+def _validate_slug(slug, path):
+    if (not isinstance(slug, str) or not slug.strip()
+            or slug in {".", ".."} or "/" in slug or "\\" in slug
+            or "\x00" in slug):
+        raise ValueError(f"Invalid paper slug in {path}: {slug!r}")
+
+
+def _load_connections(topic_dir):
+    path = os.path.join(topic_dir, "_paper_connections.json")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            connections = json.load(f)
+    except FileNotFoundError:
+        return {}
+
+    if not isinstance(connections, dict):
+        raise ValueError(f"Invalid connections in {path}: expected an object")
+    for slug, entries in connections.items():
+        _validate_slug(slug, path)
+        if not isinstance(entries, list):
+            raise ValueError(f"Invalid connections for {slug!r} in {path}: expected an array")
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise ValueError(f"Invalid connection for {slug!r} in {path}: expected an object")
+            _validate_slug(entry.get("slug"), path)
+            reasons = entry.get("reasons", [])
+            if not isinstance(reasons, list):
+                raise ValueError(f"Invalid connection reasons for {slug!r} in {path}: expected an array")
+            for reason in [entry, *reasons]:
+                if not isinstance(reason, dict):
+                    raise ValueError(f"Invalid connection reason for {slug!r} in {path}: expected an object")
+                for field in ("relation", "reason"):
+                    if field in reason and not isinstance(reason[field], str):
+                        raise ValueError(f"Invalid connection {field} for {slug!r} in {path}: expected a string")
+    return connections
+
+
+def _cross_membership(topic_dir):
+    path = os.path.join(topic_dir, "_search_index.json")
+    with open(path, "r", encoding="utf-8") as f:
+        index = json.load(f)
+    if not isinstance(index, dict) or not isinstance(index.get("papers"), dict):
+        raise ValueError(f"Invalid search index in {path}: papers must be an object")
+    for slug, metadata in index["papers"].items():
+        _validate_slug(slug, path)
+        if not isinstance(metadata, dict):
+            raise ValueError(f"Invalid search metadata for {slug!r} in {path}: expected an object")
+        if "category" in metadata and not isinstance(metadata["category"], str):
+            raise ValueError(f"Invalid search category for {slug!r} in {path}: expected a string")
+    return index["papers"]
+
+
+def _paper_classification(paper, topic, metadata):
+    classifications = paper.get("classifications") or {}
+    if topic != "_cross":
+        return classifications.get(topic, {})
+
+    # The aggregate is a view, not a topic assigned to the authoritative paper.
+    # Prefer the source classification selected by the merged search index.
+    sources = [paper.get("primary_topic"), *(paper.get("topics") or [])]
+    candidates = [classifications[source] for source in sources
+                  if source != "_cross" and source in classifications]
+    category = metadata.get("category")
+    if category:
+        for classification in candidates:
+            if classification.get("primary_category") == category:
+                return classification
+    if candidates:
+        return candidates[0]
+    return {"primary_category": category} if category else {}
+
+
 def build_network_data(topic):
     with open(os.path.join(PAPERS_DIR, "_papers_index.json"), "r", encoding="utf-8") as f:
         all_papers = json.load(f)
 
     topic_dir = str(get_topic_dir(topic))
-    with open(os.path.join(topic_dir, "_paper_connections.json"), "r", encoding="utf-8") as f:
-        connections = json.load(f)
+    connections = _load_connections(topic_dir)
+    cross_members = _cross_membership(topic_dir) if topic == "_cross" else {}
 
     # Load UMAP coordinates if available
     umap_path = os.path.join(topic_dir, "_umap_coords.json")
@@ -49,7 +121,19 @@ def build_network_data(topic):
         with open(umap_path, "r", encoding="utf-8") as f:
             umap_coords = json.load(f)
 
-    topic_papers = [p for p in all_papers if topic in p.get("topics", [])]
+    topic_papers = []
+    seen_slugs = set()
+    for paper in all_papers:
+        slug = paper["slug"]
+        member = (slug in cross_members if topic == "_cross" else
+                  paper.get("primary_topic") == topic or topic in (paper.get("topics") or []))
+        if member and slug not in seen_slugs:
+            topic_papers.append(paper)
+            seen_slugs.add(slug)
+    classifications = {
+        paper["slug"]: _paper_classification(paper, topic, cross_members.get(paper["slug"], {}))
+        for paper in topic_papers
+    }
 
     # Tab10 base colors + shade function for sub-categories
     TAB10 = [
@@ -72,7 +156,7 @@ def build_network_data(topic):
         return f"#{r:02x}{g:02x}{b:02x}"
 
     all_cat_names = sorted(set(
-        p.get("classifications", {}).get(topic, {}).get("primary_category", "Other")
+        classifications[p["slug"]].get("primary_category", "Other")
         for p in topic_papers
     ))
     SHAPES = ["circle", "square", "triangle", "diamond"]
@@ -92,7 +176,7 @@ def build_network_data(topic):
     slug_set = set()
     for p in topic_papers:
         slug = p["slug"]
-        cls = p.get("classifications", {}).get(topic, {})
+        cls = classifications[slug]
         cat = cls.get("primary_category", "Other")
         sub = cls.get("sub_category", "")
         score = p.get("score", 0) or 0

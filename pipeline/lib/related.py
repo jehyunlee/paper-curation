@@ -1,4 +1,4 @@
-"""Related-paper connections, found in embedding space. No model is called.
+"""Retrieved paper connections with original-text-grounded explanations.
 
 Connected papers are the nearest neighbours of a paper in SPECTER2 embedding
 space, re-ranked with a title/author BM25 ranking through RRF so that a title
@@ -6,16 +6,16 @@ series is not lost (``topic_modeling.compute_related_candidates``). This module
 turns those ranked candidates into ``_paper_connections.json`` entries:
 
 * **selection** — the fused rank order decides; ``max_links`` per paper.
-* **relation** — always ``alternative`` (the neutral, mutual label). Retrieval
-  cannot establish a directed relationship, and no LLM is asked to invent one.
-* **reason** — states the embedding evidence (SPECTER2 cosine).
-
-Stdlib only. Never import a provider SDK here; ``tests/test_related_connections.py``
-guards that connection finding cannot regress into an LLM judge again.
+* **explanation** — compares both original papers through the shared structured
+  text adapter; a separate reverse explanation uses the other perspective.
+* **provenance** — ``basis=embedding`` and cosine record retrieval, not a
+  bibliographic citation or influence claim. Explanation failures are explicit.
 """
 from __future__ import annotations
 
 import os
+
+from lib.relation_explanations import explain_pair
 
 MAX_LINKS_ENV = "RELATED_LINKS"
 DEFAULT_MAX_LINKS = 5
@@ -29,10 +29,6 @@ def max_links() -> int:
     except ValueError:
         value = DEFAULT_MAX_LINKS
     return max(1, min(value, 20))
-
-
-def embedding_reason(cosine: float) -> str:
-    return f"SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 {cosine:.2f})."
 
 
 def build_connections(candidates: dict, papers: list[dict], *, limit: int | None = None) -> dict:
@@ -52,9 +48,12 @@ def build_connections(candidates: dict, papers: list[dict], *, limit: int | None
                 if target_slug not in by_slug or target_slug == slug:
                     continue
                 cosine = round(float(cosine), 4)
-                links.append({"slug": target_slug, "relation": "alternative",
-                              "reason": embedding_reason(cosine),
-                              "basis": EMBEDDING_BASIS, "model": "",
-                              "evidence": {"cosine": cosine}})
+                explanation = explain_pair(by_slug[slug], by_slug[target_slug])
+                reverse = explanation["reverse"]
+                links.append({"slug": target_slug, **explanation,
+                              "basis": EMBEDDING_BASIS,
+                              "evidence": {**explanation["evidence"], "cosine": cosine},
+                              "reverse": {**reverse, "evidence": {
+                                  **reverse["evidence"], "cosine": cosine}}})
         result[slug] = links
     return result

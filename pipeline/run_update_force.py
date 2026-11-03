@@ -39,6 +39,7 @@ from config_loader import (
     get_topic_dir, get_google_key,
 )
 from lib.categories import category_slug
+from lib import data_artifacts
 PAPERS_DIR = str(_PAPERS_DIR)
 PROJECT_ROOT = PIPELINE_DIR.parent
 
@@ -1462,6 +1463,8 @@ REVIEW_TEMPLATE = """# {title}
 
 {limitation}
 
+{data_artifacts}
+
 ## Evaluation
 
 - Novelty: {novelty}/5
@@ -1635,7 +1638,7 @@ def _salvage_review_data(data):
 
 def write_review(
         item, slug_dir, figures, *, provider="anthropic", model=None,
-        credential_ref=None, max_output_tokens=4000, cache_dir=None,
+        credential_ref=None, max_output_tokens=6000, cache_dir=None,
         cache_evidence=None):
     text_path = os.path.join(slug_dir, "text.md")
     if not os.path.exists(text_path):
@@ -1648,7 +1651,8 @@ def write_review(
         return False
 
     with open(text_path, "r", encoding="utf-8") as f:
-        paper_text = f.read()[:15000]
+        full_text = f.read()
+    paper_text = full_text[:15000]
 
     title = item.get("title", "")
     authors = ", ".join(
@@ -1731,6 +1735,13 @@ def write_review(
                 "verified": verified_cache,
             })
         data = validate_review_payload(data)
+        # A separate call: inside the review schema the trailing array was
+        # returned empty or collapsed with the rest into `essence`, and the
+        # combined output overran the token budget (LabOS 10973).
+        artifacts = data_artifacts.analyze(
+            title=title, abstract=abstract, paper_text=full_text,
+            provider=provider, model=selected_model,
+            credential_ref=credential_ref, cache_dir=selected_cache_dir)
 
         # Build figure insertions
         def fig_block(fig_num_str):
@@ -1773,6 +1784,7 @@ def write_review(
             fig_how=fig_block(data.get("fig_how", 0)),
             originality=data.get("originality", ""),
             limitation=data.get("limitation", ""),
+            data_artifacts=data_artifacts.render(artifacts),
             novelty=data.get("novelty", 3),
             # Tool-use schema field is `technical`; legacy SDK responses
             # used `tech` so we accept both during the migration window.
@@ -2517,6 +2529,41 @@ def review_html_targets(args, newly_completed):
     return None
 
 
+def _search_index_command(topic):
+    """Rebuild without changing an existing index's retrieval/source policy."""
+    from refresh_paper_views import _search_settings
+
+    settings = _search_settings(get_topic_dir(topic))
+    command = [
+        "python", "pipeline/build_search_index.py", "--topic", topic,
+        "--mode", settings["mode"],
+        "--include-text", settings["include_text"],
+        "--include-personal-notes", settings["include_personal_notes"],
+    ]
+    if settings["model"] is not None:
+        command += ["--model", settings["model"]]
+    return command
+
+
+def run_cross_view_refresh(run_step, topic):
+    """Refresh a relevant aggregate without changing its sources or mode."""
+    from refresh_paper_views import _cross_plan
+
+    papers = _pathlib.Path(PAPERS_DIR).resolve()
+    cross_dir = papers.parent / "_cross"
+    if not any((cross_dir / name).exists()
+               for name in ("index.html", "_search_index.json", "network.html")):
+        run_step("build_cross_index",
+                 ["python", "pipeline/build_cross_index.py", "--no-page"], 300)
+        return
+
+    labels = {"cross": ("build_cross_index", 300),
+              "network": ("generate_network (_cross)", 600)}
+    for step in _cross_plan(papers, [topic], all_topics=False):
+        name, timeout = labels[step["builder"]]
+        run_step(name, step["command"], timeout)
+
+
 def _apply_mode_mapping(args):
     """Translate --mode into legacy flag values.
 
@@ -3258,13 +3305,13 @@ def main():
         run_bibliography_release_steps(run_step)
         run_step("generate_moc",
                  ["python", "pipeline/generate_moc.py", "--topic", topic], 600)
-        # 네트워크 시각화는 Research Insights 와 묶인 Option(O-2) — --insights 일 때만.
-        # (LLM 호출은 없지만 기능 분류상 인사이트 분석 부가물로 함께 게이트)
-        if args.insights:
+        # Refresh an existing visualization without opting into LLM insights;
+        # creating the optional network still requires --insights.
+        if args.insights or (get_topic_dir(topic) / "network.html").is_file():
             run_step("generate_network",
                      ["python", "pipeline/generate_network.py", "--topic", topic], 600)
         else:
-            log("  [generate_network] SKIP (Option O-2 — --insights 일 때만 재생성)")
+            log("  [generate_network] SKIP (no existing network and --insights not requested)")
 
         # Verify UMAP coordinate coverage before deploy
         try:
@@ -3283,7 +3330,7 @@ def main():
                 log(f"\n  [verify_umap] {len(missing)} papers missing UMAP coordinates — re-running topic_modeling...")
                 run_step("topic_modeling (umap fix)",
                          [topic_modeling_python, "pipeline/topic_modeling.py", "--topic", topic, "--skip-connections"], 3600)
-                if args.insights:   # 네트워크는 Option(O-2) — --insights 일 때만
+                if args.insights or (get_topic_dir(topic) / "network.html").is_file():
                     run_step("generate_network (rebuild)",
                              ["python", "pipeline/generate_network.py", "--topic", topic], 600)
             else:
@@ -3312,8 +3359,8 @@ def main():
         run_step("build_rss",
                  ["python", "pipeline/build_rss.py", topic], 300)
 
-        # Deep Research search index (section-aware chunks + Gemini embeddings).
-        # Reads GOOGLE_API_KEY/GEMINI_API_KEY from env or config.json.
+        # Preserve the existing search mode, model, and source inclusion policy.
+        # A new index keeps the search builder's standard hybrid defaults.
         # Cleanup stale category narratives/timelines before building the
         # search index so Deep Research never surfaces renamed categories.
         # Always runs --execute because post-processing has just rewritten
@@ -3322,13 +3369,11 @@ def main():
                  ["python", "pipeline/cleanup.py", "--execute"], 300)
 
         run_step("build_search_index",
-                 ["python", "pipeline/build_search_index.py", "--topic", topic], 900)
+                 _search_index_command(topic), 900)
 
-        # `_cross` is a cheap merge of existing topic sidecars (no embedding
-        # calls). Keep the agent/CLI default collection synchronized after every
-        # source-topic rebuild; the generic page itself need not be regenerated.
-        run_step("build_cross_index",
-                 ["python", "pipeline/build_cross_index.py", "--no-page"], 300)
+        # Merge without embeddings, retaining an existing aggregate's policy
+        # and refreshing its page plus any already-enabled network.
+        run_cross_view_refresh(run_step, topic)
 
         # Fixed query vectors make this a deterministic, network-free deploy
         # gate. A source collection and the merged agent collection must both

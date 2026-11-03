@@ -104,7 +104,8 @@ The response envelope is `{schema_version,feature,status,steps,outputs,provider?
 model?,provenance?,error?,cost?}`. Unsupported runtime, capability, or permission
 remains explicit in `status`. Unknown pricing and budget-cap breaches block
 execution. Curio's module panel uses this registry; features remain independently
-requested, so a review does not automatically start collection, publish, or email.
+requested, so a review does not automatically start the full collection workflow,
+deployment, publication, or email.
 
 Review defaults to Anthropic Sonnet 5 without automatic fallback. OpenAI and Google
 are explicit review-provider choices using the reviewed schema. Ollama
@@ -121,10 +122,32 @@ python -c 'import getpass,sys; sys.stdout.write(getpass.getpass())' | \
 ```
 
 Shared-corpus writers coordinate reservation, registration, and cancellation
-transactions through a common lock and refresh the Curio list. This does not make
-classification, search indexes, timelines, deployment, publication, or email
-automatic. Publication and email remain explicit operations; verify export rights,
-recipient, and cloud authorization separately.
+transactions through a common lock and refresh the Curio list. Successful review
+generation/regeneration for a registered paper in canonical `docs/papers/` also
+refreshes its topic pages, search indexes, and pre-existing interactive networks
+(including the relevant existing `_cross` view). A new Curio reservation defers
+this refresh until registration commits; an output outside the canonical corpus
+remains standalone. An execute request that reuses a complete matching review
+bundle can retry the view refresh without generating the review again.
+
+`pipeline/refresh_paper_views.py` is the views-only recovery/catchup entrypoint:
+
+```bash
+python pipeline/refresh_paper_views.py --slug 042_Some_Paper
+python pipeline/refresh_paper_views.py --all-topics
+```
+
+`--all-topics` covers indexed corpus memberships and configured topics, not just
+directories with existing output. Existing search mode (`bm25`/`hybrid`), model,
+and source policy (source text/personal notes and local-only restrictions) are
+retained; a missing search index defaults to hybrid. Cached embeddings are reused,
+but hybrid cache misses may require Google embedding credentials and paid calls.
+View failures preserve the generated review, report failed/partial steps and a
+retry command, and must not be reported as indexing complete. Retry the helper,
+not a paid review or a full rebuild. This refresh does not classify the corpus,
+recompute related-paper connections, regenerate timelines, ingest the bibliography
+DB, deploy, publish, or email. Those remain separate stages; publication and email
+require explicit requests and separate export-rights, recipient, and cloud checks.
 
 `keyword-search` and `semantic-search` accept `params.operation` of `query` or
 `build` (default `query`). `bibliography-update` is the independent local DB stage:
@@ -183,7 +206,7 @@ credential이 추가로 필요하다. Timeline에 쓸 PaperBanana도 운영자�
 | 2 | `pipeline/build_papers_index.py` | Rebuild `_papers_index.json` with integrity fields (`text_md_sha256`, `doi_verified`, `zotero_item_key`) via atomic write |
 | 3 | `pipeline/classify_papers.py` | **HDBSCAN approximate_predict (원 설계)** — `topic_modeling` 이 저장한 `_hdbscan_model.joblib` 번들(hdbscan_model + UMAP transformer + centroids + tid→cat) 로드 → UMAP 5D 투영 → `hdbscan.approximate_predict` 로 primary sub-cluster 결정. Outlier(-1)는 768D centroid 코사인 최단점으로 강제 배정. `all_categories` 는 centroid 거리 오름차순 top-N parent. SPECTER2 임베딩은 proximity adapter + CLS pooling (업그레이드 후 새 임베딩을 반영하려면 `topic_modeling.py` 를 한 번 재실행해 `_hdbscan_model.joblib` 번들을 재생성해야 함). LLM 호출 없음. **UMAP/hdbscan/sentence-transformers env 필수** (py312 단독 — py314 금지, `_env_guard` 가 py312 로 자동 재실행) |
 | 4 | `pipeline/build_category_summaries.py` | Per-category 한글 description + sub-themes via Haiku |
-| 4.5 | `pipeline/topic_modeling.py` + `pipeline/extract_insights.py` + `pipeline/lib/related.py` | Core paper connections: SPECTER2 cosine and title/author BM25 ranks are RRF-fused into up to `RELATED_LINKS` selections per paper per topic (default 5); cross-topic unions and reverse links can increase the displayed count. `lib.related.build_connections` records `relation: alternative` (similar research), `basis: embedding`, and numeric cosine evidence. **No LLM is called** to pick, judge, filter, or explain a pair. Step 6, the `extract_insights.py` connection pass, single-paper `refresh_paper_connections.py` (Curio), and `rebuild_connections.py --recompute` use this retrieval path. Full recomputation includes all indexed memberships and synchronizes the existing bibliography DB. Cross-category Research Insights remains opt-in with `run_full --insights`; its backend fallback is Anthropic → OpenAI → Gemini. |
+| 4.5 | `pipeline/topic_modeling.py` + `pipeline/extract_insights.py` + `pipeline/lib/related.py` | Required core paper-connection policy: SPECTER2 cosine and title/author BM25 ranks remain RRF-fused into up to `RELATED_LINKS` candidates per paper per topic (default 5); cross-topic unions and reverse links can increase the displayed count. LLM neighbor selection MUST NOT replace retrieval. Each related-paper reason MUST be a substantive Korean LLM explanation grounded in both papers: a shared research question, a specific methodological extension/difference, or an evidenced follow-up/counterexample. Directional claims require actual supporting paper evidence; similarity scores alone are neither explanations nor evidence of follow-up/refutation. This policy applies to the `extract_insights.py` connection pass, single-paper `refresh_paper_connections.py` (Curio), and `rebuild_connections.py --recompute`; it does not assert that the explanation path is already implemented or choose its API/model. Full recomputation includes all indexed memberships and synchronizes the existing bibliography DB. Cross-category Research Insights remains opt-in with `run_full --insights`; its backend fallback is Anthropic → OpenAI → Gemini. |
 | 5 | `pipeline/generate_timelines.py` | Bottom-up timeline narrative (Opus) + PaperBanana images. Gemini retry schedule 3×60s → 2×1800s |
 | 5.5 | `pipeline/generate_network.py` | D3.js force-directed network visualization |
 | 5.5 | `pipeline/generate_workflow.py` | Pipeline workflow diagram (PaperBanana, `--style cat/fairy/academic`) |
@@ -437,11 +460,12 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 
 ## Key Design Decisions
 
-- **연결 재계산 안전 계약**: 전체 범위는 기존 출력 파일이 아니라 논문 인덱스의 토픽 소속으로 정한다. `RELATED_LINKS`는 **토픽별·source별 선택 한도**이며 토픽 병합과 역방향 연결 후 표시 개수는 이를 넘을 수 있다. `--recompute --dry-run`은 계획만 읽고 originality·provenance·임베딩·JSON·DB를 쓰지 않는다. 실제 재계산은 공용 exclusive corpus lease 아래 수행하고 전역 JSON은 원자적으로 교체한다. 빈 결과와 삭제된 연결의 화면도 갱신한다. 기존 서지 DB에는 embedding 근거를 동기화하며 `evidence.cosine` 수치는 JSON↔DB 왕복에서 보존한다. 입력 JSON 하나라도 불완전하면 DB 전체 교체를 중단한다. `related-papers` 요청은 `provider`·`credential_ref` 없이 보내며 옛 Anthropic 요청을 자동 변환하지 않는다.
+- **연결 재계산 안전 계약**: 전체 범위는 기존 출력 파일이 아니라 논문 인덱스의 토픽 소속으로 정한다. `RELATED_LINKS`는 **토픽별·source별 선택 한도**이며 토픽 병합과 역방향 연결 후 표시 개수는 이를 넘을 수 있다. `--recompute --dry-run`은 계획만 읽고 originality·provenance·임베딩·JSON·DB를 쓰지 않는다. 실제 재계산은 공용 exclusive corpus lease 아래 수행하고 전역 JSON은 원자적으로 교체한다. 빈 결과와 삭제된 연결의 화면도 갱신한다. 기존 서지 DB의 검색 근거와 `evidence.cosine` 수치는 JSON↔DB 왕복에서 보존한다. LLM 설명도 양쪽 논문 근거와 관계 방향을 잃지 않게 JSON·DB·화면에 전달해야 한다. 입력 JSON 하나라도 불완전하면 DB 전체 교체를 중단한다. `related-papers` 설명 단계의 provider·model·credential 요청 계약은 별도 구현에서 정하며, 이 정책에서 특정 API·모델을 확정하지 않는다.
 - **Bottom-up topic modeling**: `topic_modeling.py`는 BERTopic 대신 sklearn HDBSCAN + UMAP을 직접 사용. HDBSCAN fine-grained clustering → c-TF-IDF 키워드 추출 (Grootendorst 2022, 클러스터=1문서 tf × 클래스 idf) → Sonnet 배치 작명 → Sonnet 카테고리 그룹핑. `min_cluster_size`를 자동 조정하여 sub-topic 40~100개를 목표로 한다.
 - **Multi-class classification**: Papers get 1 `primary_category` + 1-3 `all_categories`. The topic index shows cards under every matching category.
 - **연관 논문 후보는 dense + lexical 하이브리드**: `topic_modeling.compute_related_candidates` 가 SPECTER2 코사인 순위와 **제목·저자 BM25 순위**를 RRF(k=60, Deep Research 검색과 동일 상수)로 융합해 top-k 를 뽑는다. 코사인 단독이던 시절엔 같은 제목 시리즈의 직전편처럼 **명백히 연관인데 기여 내용이 옮겨간** 논문을 통째로 놓쳤다 — `10911 Accelerating Scientific Research with Gemini in the Real-World` 에서 직전편 `044 ... Case Studies and Common Techniques` 가 코사인 **465위/2929** 라 top-5·top-25 어디에도 못 들었다(그 논문 참고문헌에 실제로 인용돼 있는데도). 코퍼스 참고문헌에서 뽑은 **in-corpus 인용 956쌍** 기준 recall@5 6.80%→**8.89%**, recall@25 17.15%→**23.01%**. `papers` 인자를 안 넘기면 코사인 단독으로 떨어지므로 **호출부는 반드시 `{slug,title,authors}` 를 넘긴다**(topic_modeling·extract_insights·paper-curio pybridge 셋 다). ablation: 저자 토큰을 빼면 23.01%→19.56%, RRF 가중치를 0.5 로 낮추면 20.82% — 그래서 **제목+저자, 가중치 1.0(순정 RRF)** 이다.
-- **연관 논문은 임베딩 공간에서만 찾는다 — LLM judge 금지**: 연결 = SPECTER2 임베딩 최근접 이웃(+제목·저자 BM25 RRF). LLM으로 후보를 고르거나, 관계를 판정하거나, 무관 쌍을 거르거나, 설명 문장을 쓰지 않는다. 사용자가 여러 번 지적한 원칙이다. 예전 `lib/relation_judge.py`(Haiku→Sonnet 5.5 쌍 판정, `RELATION_JUDGE*` env, `--no-relation-judge`, `.llm_cache/relation_pairs/`)와 `lib/verify.py`의 connection 검증은 **삭제했다**. `lib.connections.load_global_connections()`는 `basis == "embedding"`이 아닌 항목(옛 judge·legacy·metadata)을 읽지 않고, `sync_paper_connections.py`도 embedding 항목만 DB(`model = none:embedding`)로 옮긴다. `tests/test_related_connections.py`의 `NoLlmInConnectionPathTests`가 연결 경로에 provider SDK·judge import가 다시 들어오면 실패한다. 관계 라벨은 항상 `alternative`(방향 없음)이고, 이는 인용·인과의 확정이 아니다. 후보 폭은 `RELATED_LINKS`(기본 5). 코퍼스 전체 재계산: `rebuild_connections.py --recompute`.
+- **연관 논문 검색과 설명은 분리한다**: 후보 검색은 SPECTER2 코사인 + 제목·저자 BM25/RRF를 유지하며 **LLM이 이웃 논문을 고르는 방식으로 대체하지 않는다**. 검색된 각 논문의 연결 이유는 **반드시 양쪽 논문의 내용을 근거로 LLM이 실질적인 한국어 설명을 작성**한다. 두 논문이 공유하는 연구 질문, 각자의 접근법, 구체적인 방법론의 확장·차이를 밝혀야 한다. "SPECTER2 임베딩 공간에서 가까운 논문 … 코사인" 같은 일반 문구나 점수 나열은 설명이 아니다. `basis: embedding`과 `evidence.cosine`은 검색 근거일 뿐, LLM 설명을 금지하거나 관계를 항상 `alternative`로 고정하는 근거가 아니다.
+- **관계 설명은 증거와 방향을 지킨다**: 양쪽 논문의 원문 또는 원문 근거가 확인된 리뷰에서 검증 가능한 내용을 사용한다. 후속 연구·방법 확장·반례·반박은 실제 인용, 방법 재사용, 비교 실험, 상충 결과 등 **해당 주장을 직접 뒷받침하는 근거가 있을 때만** 서술하고, 어느 논문이 어느 논문을 확장·반박하는지 방향을 명시한다. 유사도나 출판 순서만으로 후속·반박 관계를 만들어내지 않는다. 근거가 부족하면 확인된 공통 질문·방법 차이까지만 설명하고 강한 관계를 단정하지 않는다. 방향성 있는 설명을 역방향 연결에 그대로 복사하지 않는다. 설명용 API·모델은 이 문서에서 확정하지 않으며, 이 필수 정책을 기존 설명 경로의 구현 완료 주장으로 읽지 않는다. 후보 폭은 `RELATED_LINKS`(기본 5). 코퍼스 전체 재계산: `rebuild_connections.py --recompute`.
 - **`_load_connections()` 는 mtime 최신 파일이 이긴다**: 한 논문이 두 토픽에 속하면 두 토픽 파일에 같은 키가 있다. 두 목록은 **양쪽이 같은 시점에 sync 됐을 때만** 같다 — paper-curio 브리지는 primary 토픽 하나만 sync 하므로 나머지는 묵은 스냅샷으로 남는다. 디렉토리 이름 정렬로 `update()` 하던 동안엔 알파벳상 뒤인 파일이 이겼고(`ai4s-icml2026` 의 `-` > `ai4s+scisci` 의 `+`), 방금 재생성한 37개 링크가 묵은 28개로 덮여 페이지에 안 나왔다. **union 은 오답** — 토픽 파일은 이미 `build_slug_resolver` 로 pruning 된 뷰라 합치면 지운 엣지가 되살아난다.
 - **`originality.md` 는 자기 `text.md` 해시를 들고 있어야 신뢰된다**: 이 파일은 캐시인데 오래도록 **출처 기록이 없었다** — 존재하고 비어있지만 않으면 원문을 다시 보지 않아서, 한번 잘못 들어간 파일이 영구히 남아 그 논문의 임베딩·분류·연관논문을 전부 **남의 내용으로** 계산하게 만들었다. 실측 29편(0.7%): 슬러그 `256`(RFdiffusion, Nature 2023)이 슬러그 `065`(VibeGen)의 문장을 들고 있었고 256 의 text.md 에 "VibeGen" 은 **0회** 등장한다. 지금은 `originality.meta.json`(`text_md_sha256`)이 옆에 붙는다 — `bibliography.json` 사이드카와 같은 규약이다. **사이드카가 없는 기존 파일을 재추출하면 안 된다**: 전량 재추출은 임베딩을 흔들어 카테고리를 33% 뒤집는다(30편 표본, 구↔신 코사인 중앙값 0.965). `derives_from()` 으로 자기 원문에서 나올 수 있는지 검증해 통과하면 사이드카만 채우고(backfill), 실패한 것만 다시 뽑는다. `validate_papers.py` 의 `orphan-originality` 가 재발을 잡는다.
 - **`derives_from` 정규화는 `split_sentences` 와 반드시 맞춘다**: 추출기는 원문 문장을 그대로 잘라 쓰지만 그 전에 `split_sentences` 가 **NFKD 정규화**(합자 ﬁ→fi, 악센트 분해)를 걸고 `_strip_metadata_leaks` 가 공백·구두점을 손보며 PDF 는 단어를 하이픈으로 끊는다. 이 셋 중 하나라도 대조 쪽에서 빠지면 멀쩡한 파일이 "남의 것" 으로 걸린다 — 같은 코퍼스가 **거친 대조 729편 → 하이픈 복원 118편 → NFKD 까지 맞춰 29편** 으로 줄었다. 위양성으로 재추출하면 멀쩡한 논문의 임베딩까지 움직이므로 이 수치는 그냥 통계가 아니다.
@@ -454,7 +478,7 @@ PYTHONUTF8=1 python pipeline/cleanup.py --execute
 - **Figure extraction**: PyMuPDF renders pages containing "Figure N" / "Fig. N" at 3x zoom. Up to 5 figures per paper from pages 0-14.
 - **Slug format**: `{NNN}_{Title_first_40_chars}` where NNN is zero-padded sequence number.
 - **PDF-change auto-detect**: `run_update_force.py` 가 매 실행 시작 시 `_papers_index.json` 의 `pdf_path` 캐시와 디스크 mtime을 비교해 PDF가 review.md 보다 새 것이면 자동으로 `forced_slugs` 에 추가한다 (Zotero API 호출 0, 순수 stat). 캐시는 `find_pdf()` 성공 시 자동 적재되므로 처음 한 사이클을 돈 뒤부터 작동.
-- **Subprocess timeouts (LLM steps)**: `run_step()` 에 박힌 wall-clock cap — `topic_modeling=3600s`, `extract_insights=14400s (4h)`, `generate_timelines=21600s (6h)`. 실제 토픽 크기(논문 수)에 맞춰 한 번 늘려 둠 — 한국망↔Anthropic 응답 변동성을 흡수 (paper_connections 는 임베딩 계산뿐이라 LLM 호출이 없다).
+- **Subprocess timeouts (LLM steps)**: `run_step()` 에 박힌 wall-clock cap — `topic_modeling=3600s`, `extract_insights=14400s (4h)`, `generate_timelines=21600s (6h)`. 실제 토픽 크기(논문 수)에 맞춰 한 번 늘려 둠 — 한국망↔Anthropic 응답 변동성을 흡수. paper_connections는 후보 검색과 LLM 설명 생성을 구분하며, 임베딩 계산 전용·무모델 단계로 간주하지 않는다. 설명 생성의 시간·재시도 정책은 구현 시 명시한다.
 - **Anthropic SDK 안정화**: 모든 Anthropic client 는 `Anthropic(timeout=180.0, max_retries=4)` (streaming Opus 만 `timeout=600.0`). `generate_timelines.opus_streaming_call` 은 mid-stream `Connection reset` 을 5-회 exp backoff 로 자체 wrap (SDK 의 max_retries 가 stream 시작 후 끊김을 못 잡음). `fetch_zotero_items` 도 동일한 retry 로직 적용.
 - **Zotero `attachments:` URI 핸들링**: `find_pdf()` priority 1 (Zotero children API) 에서 `attachments:<filename>` 접두사를 `ZOTERO_DIR/<filename>` 으로 해석. Zotero 의 "Linked Attachment Base Directory" 설정을 따른다.
 

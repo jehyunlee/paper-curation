@@ -1,8 +1,7 @@
 """Focused regression coverage for related-paper connections.
 
-Connected papers are found in embedding space only. These tests replace
-embedding retrieval, so they never load SPECTER2 weights, and they guard that
-no connection writer can reach an LLM again.
+SPECTER2/BM25 retrieval chooses the candidates; a separate, mocked LLM writes
+evidence-grounded explanations without changing the retrieval order or limit.
 """
 from __future__ import annotations
 
@@ -19,7 +18,7 @@ import tempfile
 import types
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 PIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PIPELINE not in sys.path:
@@ -38,34 +37,111 @@ PAPERS = [
 ]
 
 
-class DeterministicBuilderTests(unittest.TestCase):
-    def test_relation_limit_and_empty_results_are_deterministic(self):
+def _explanation(source, target):
+    return {
+        "relation": "foundation",
+        "reason": (f"{target['slug']}의 단계별 탐색 방법을 기반으로 {source['slug']}는 "
+                   "후보 평가를 병렬화하고, 동일한 과제에서 탐색 비용과 정확도의 차이를 비교합니다."),
+        "model": "explanation-test-model",
+        "evidence": {"source_quote": f"{source['slug']} evaluates parallel search on the same tasks.",
+                     "target_quote": f"{target['slug']} introduces the sequential search baseline.",
+                     "provider": "anthropic", "prompt_version": "paper-comparison-v1"},
+        "reverse": {
+            "relation": "extension",
+            "reason": (f"{source['slug']}는 {target['slug']}의 순차 탐색을 병렬 후보 평가로 "
+                       "확장한 연구이며, 원래 방법과 같은 과제에서 비용과 정확도를 측정합니다."),
+            "evidence": {"source_quote": f"{target['slug']} introduces the sequential search baseline.",
+                         "target_quote": f"{source['slug']} evaluates parallel search on the same tasks.",
+                         "provider": "anthropic", "prompt_version": "paper-comparison-v1"},
+        },
+    }
+
+
+class ExplainedBuilderTests(unittest.TestCase):
+    def test_retrieval_order_limit_and_empty_results_are_preserved(self):
         candidates = {
-            "001_Source": [("002_Earlier", 0.91), ("003_Alternative", 0.88)],
+            "001_Source": [("002_Earlier", 0.31), ("003_Alternative", 0.98)],
             "003_Alternative": [],
         }
-        result = build_connections(candidates, PAPERS, limit=1)
+        with patch("lib.related.explain_pair", side_effect=_explanation) as explain:
+            result = build_connections(candidates, PAPERS, limit=1)
 
         self.assertEqual(result["003_Alternative"], [])
         self.assertEqual(len(result["001_Source"]), 1)
+        explain.assert_called_once_with(PAPERS[0], PAPERS[1])
         link = result["001_Source"][0]
         self.assertEqual(link["slug"], "002_Earlier")
-        self.assertEqual(link["relation"], "alternative")
-        self.assertEqual(link["reason"],
-                         "SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.91).")
+        self.assertEqual(link["relation"], "foundation")
+        self.assertEqual(link["reason"], _explanation(PAPERS[0], PAPERS[1])["reason"])
         self.assertEqual(link["basis"], "embedding")
-        self.assertEqual(link["model"], "")
-        self.assertEqual(link["evidence"], {"cosine": 0.91})
+        self.assertEqual(link["model"], "explanation-test-model")
+        self.assertEqual(link["evidence"], {
+            **_explanation(PAPERS[0], PAPERS[1])["evidence"], "cosine": 0.31})
+
+    def test_each_selected_candidate_is_explained_in_rank_order(self):
+        ranked = [("003_Alternative", .25), ("002_Earlier", .99)]
+        with patch("lib.related.explain_pair", side_effect=_explanation) as explain:
+            result = build_connections({"001_Source": ranked}, PAPERS, limit=2)
+        self.assertEqual([edge["slug"] for edge in result["001_Source"]],
+                         [slug for slug, _ in ranked])
+        self.assertEqual(explain.call_args_list,
+                         [call(PAPERS[0], PAPERS[2]), call(PAPERS[0], PAPERS[1])])
+
+    def test_empty_unknown_and_self_candidates_do_not_request_explanations(self):
+        with patch("lib.related.explain_pair") as explain:
+            result = build_connections({
+                "001_Source": [("001_Source", 1), ("999_Missing", .9)],
+                "003_Alternative": [], "999_Missing": [("001_Source", .8)],
+            }, PAPERS)
+        self.assertEqual(result, {"001_Source": [], "003_Alternative": [], "999_Missing": []})
+        explain.assert_not_called()
+
+    def test_explanation_failure_is_not_replaced_with_a_cosine_reason(self):
+        with patch("lib.related.explain_pair", side_effect=RuntimeError("explanation unavailable")):
+            with self.assertRaisesRegex(RuntimeError, "explanation unavailable"):
+                build_connections({"001_Source": [("002_Earlier", .91)]}, PAPERS)
+
+    def test_bidirectional_projection_uses_distinct_directional_explanations(self):
+        from lib.connections import make_bidirectional_deduped
+
+        with patch("lib.related.explain_pair", side_effect=_explanation):
+            raw = build_connections({"001_Source": [("002_Earlier", .912345)]}, PAPERS)
+        view = make_bidirectional_deduped(raw)
+        forward, reverse = view["001_Source"][0], view["002_Earlier"][0]
+        expected = _explanation(PAPERS[0], PAPERS[1])
+        self.assertEqual((forward["relation"], reverse["relation"]), ("foundation", "extension"))
+        self.assertEqual(forward["reason"], expected["reason"])
+        self.assertEqual(reverse["reason"], expected["reverse"]["reason"])
+        self.assertNotEqual(forward["reason"], reverse["reason"])
+        self.assertEqual(reverse["evidence"]["source_quote"], forward["evidence"]["target_quote"])
+        self.assertEqual(reverse["evidence"]["target_quote"], forward["evidence"]["source_quote"])
+        for edge in (forward, reverse):
+            self.assertEqual(edge["model"], expected["model"])
+            self.assertEqual(edge["basis"], "embedding")
+            self.assertEqual(edge["evidence"]["cosine"], .9123)
+            self.assertEqual(edge["reasons"][0]["reason"], edge["reason"])
+
+    def test_reverse_relation_uses_the_generated_judgment_not_a_mechanical_flip(self):
+        from lib.connections import make_bidirectional_deduped
+
+        explanation = _explanation(PAPERS[0], PAPERS[1])
+        explanation["reverse"]["relation"] = "application"
+        explanation["reverse"]["reason"] = (
+            "비교 논문은 이 논문에서 제시한 후보 탐색 방법을 생물학 실험의 설계에 적용합니다. "
+            "원래의 탐색 과제를 다른 실험 영역으로 옮긴 사례이므로 적용 범위의 차이를 보여 줍니다."
+        )
+        with patch("lib.related.explain_pair", return_value=explanation):
+            raw = build_connections({"001_Source": [("002_Earlier", .9)]}, PAPERS)
+        view = make_bidirectional_deduped(raw)
+        self.assertEqual(view["001_Source"][0]["relation"], "foundation")
+        self.assertEqual(view["002_Earlier"][0]["relation"], "application")
+        self.assertEqual(view["002_Earlier"][0]["reason"], explanation["reverse"]["reason"])
 
 
-class NoLlmInConnectionPathTests(unittest.TestCase):
-    """Connected papers are found in embedding space. No writer may call an LLM."""
+class LegacyConnectionLoadingTests(unittest.TestCase):
 
     WRITERS = ("lib/related.py", "lib/connections.py", "refresh_paper_connections.py",
                "sync_paper_connections.py")
-    PROVIDERS = {"anthropic", "openai", "google", "lib.relation_judge",
-                 "lib.credentials", "lib.verify"}
-
     @staticmethod
     def _imports(path):
         with open(os.path.join(PIPELINE, path), encoding="utf-8") as f:
@@ -78,13 +154,6 @@ class NoLlmInConnectionPathTests(unittest.TestCase):
                 names.add(node.module)
                 names.update(f"{node.module}.{alias.name}" for alias in node.names)
         return names
-
-    def test_connection_writers_import_no_provider_or_judge(self):
-        for path in self.WRITERS:
-            with self.subTest(path=path):
-                hits = {n for n in self._imports(path)
-                        if n in self.PROVIDERS or n.split(".")[0] in self.PROVIDERS}
-                self.assertEqual(hits, set())
 
     def test_relation_judge_module_is_gone(self):
         self.assertFalse(os.path.exists(os.path.join(PIPELINE, "lib", "relation_judge.py")))
@@ -126,22 +195,24 @@ class ExtractInsightsWiringTests(unittest.TestCase):
         self.modules.start()
         sys.modules.pop("extract_insights", None)
         self.ei = importlib.import_module("extract_insights")
+        self.explanations = patch("lib.related.explain_pair", side_effect=_explanation)
+        self.explain = self.explanations.start()
+        self.addCleanup(self.explanations.stop)
 
     def tearDown(self):
         sys.modules.pop("extract_insights", None)
         self.modules.stop()
 
-    def test_connection_caller_uses_builder_without_provider_client(self):
-        # Three papers make this category eligible. No provider SDK is importable:
-        # finding connections must not need one.
+    def test_connection_caller_explains_retrieved_candidates(self):
         with patch.dict(sys.modules, {"anthropic": None, "openai": None,
                                       "lib.relation_judge": None}):
             connections = self.ei.extract_paper_connections(
                 "demo", {"Methods": PAPERS}, PAPERS
             )
-        self.assertEqual(connections["001_Source"][0]["relation"], "alternative")
+        self.assertEqual(connections["001_Source"][0]["relation"], "foundation")
         self.assertEqual(connections["001_Source"][0]["basis"], "embedding")
         self.assertEqual(connections["003_Alternative"], [])
+        self.assertIn(call(PAPERS[0], PAPERS[1]), self.explain.call_args_list)
 
     def test_narrow_and_other_categories_do_not_become_targets(self):
         connections = self.ei.extract_paper_connections(
@@ -195,7 +266,7 @@ class ExtractInsightsWiringTests(unittest.TestCase):
                     topic_dir="/tmp/demo", topic_slugs=[paper["slug"] for paper in PAPERS],
                 )
 
-    def test_connections_only_does_not_construct_a_provider(self):
+    def test_connections_only_does_not_construct_the_insights_provider(self):
         with patch.object(self.ei, "load_topic_data", return_value=(PAPERS, {"Methods": PAPERS}, [])), \
              patch.object(self.ei, "get_topic_dir", return_value="/tmp/demo"), \
              patch.object(self.ei, "extract_paper_connections", return_value={}) as extract, \
@@ -220,7 +291,7 @@ class ExtractInsightsWiringTests(unittest.TestCase):
 class TopicModelingCliTests(unittest.TestCase):
     def test_main_passes_only_supported_defaults_to_programmatic_entrypoint(self):
         source_path = os.path.join(PIPELINE, "topic_modeling.py")
-        tree = ast.parse(open(source_path, encoding="utf-8").read(), source_path)
+        tree = ast.parse(Path(source_path).read_text(encoding="utf-8"), source_path)
         main = next(node for node in tree.body
                     if isinstance(node, ast.FunctionDef) and node.name == "main")
         calls = []
@@ -372,18 +443,19 @@ class DeeperSimilarityTests(unittest.TestCase):
                          "make the research lineage", "연결된 후속·반론·기반"):
             self.assertNotIn(obsolete, self.js)
 
-    def test_schema_diagram_describes_embedding_and_numeric_evidence(self):
+    def test_schema_diagram_distinguishes_retrieval_from_grounded_llm_explanations(self):
         tree = ast.parse(Path(PIPELINE, "generate_schema_diagram.py").read_text(encoding="utf-8"))
         notes = next(ast.literal_eval(node.value) for node in tree.body
                      if isinstance(node, ast.Assign)
                      and any(isinstance(target, ast.Name) and target.id == "NOTES"
                              for target in node.targets))
         note = notes["paper_connections"]
-        self.assertIn("Embedding-space similarity", note)
-        self.assertIn("numeric cosine", note)
-        self.assertIn("No LLM", note)
-        self.assertNotIn("LLM claims", note)
-        self.assertNotIn("every row names the model", note)
+        self.assertIn("SPECTER2", note)
+        self.assertIn("BM25", note)
+        self.assertIn("LLM", note)
+        self.assertIn("model", note)
+        self.assertIn("evidence", note.lower())
+        self.assertNotIn("No LLM", note)
 
 
 class RefreshPublishedViewTests(unittest.TestCase):
@@ -401,6 +473,7 @@ class RefreshPublishedViewTests(unittest.TestCase):
             (self.slug, "z_demo"), (self.old, "a_old"), (self.incoming, "m_old"),
             (self.unrelated, "z_demo"), (self.new, "z_demo"), (self.keep, "z_demo"))]
         self.index[3]["topics"].append("untouched")
+        self.stack.enter_context(patch("lib.related.explain_pair", side_effect=_explanation))
         self._write(self.papers / "_papers_index.json", self.index)
         self.global_path = self.papers / "_global_connections.json"
         self.connections = importlib.import_module("lib.connections")
@@ -516,8 +589,10 @@ class RefreshPublishedViewTests(unittest.TestCase):
         self.assertEqual(result["related_count"], 1)
         self.assertEqual(set(self.rendered), {self.slug, self.old, self.incoming, self.unrelated, self.new})
         (edge,) = self._view("z_demo")[self.slug]
-        self.assertEqual((edge["slug"], edge["basis"], edge["evidence"]),
-                         (self.new, "embedding", {"cosine": .8123}))
+        self.assertEqual((edge["slug"], edge["basis"], edge["evidence"]["cosine"]),
+                         (self.new, "embedding", .8123))
+        self.assertEqual(edge["reason"], _explanation(self.index[0], self.index[4])["reason"])
+        self.assertEqual(edge["model"], "explanation-test-model")
         self.assertEqual(self._view("a_old")[self.old], [])
 
     def test_cross_projection_preserves_all_indexed_sources_and_unrelated_clean_edges(self):

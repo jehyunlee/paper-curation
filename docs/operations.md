@@ -263,6 +263,69 @@ from pipeline.api import (
 )
 ```
 
+## Review view refresh and recovery
+
+Successful review generation/regeneration for a registered paper in canonical
+`docs/papers/` refreshes its topic pages, search indexes, and pre-existing
+interactive networks after the review locks are released. Relevant existing
+`_cross` aggregate views are refreshed too. New Curio reservations defer this
+step until registration commits and removes the reservation marker; do not index
+an unregistered reservation. Output outside the canonical corpus stays standalone.
+
+`pipeline/refresh_paper_views.py` is a views-only retry/catchup command:
+
+```bash
+# Refresh one registered paper's topic views without reviewing it again.
+python pipeline/refresh_paper_views.py --slug 042_Some_Paper
+
+# Catch up topic views across indexed memberships and configured topics.
+python pipeline/refresh_paper_views.py --all-topics
+
+# Inspect scope, retained search settings, and conditional costs without writes.
+python pipeline/refresh_paper_views.py --all-topics --dry-run
+
+# Also clear stale views for a former membership after registration/topic changes.
+# Repeat --previous-topic when more than one former topic needs refreshing.
+python pipeline/refresh_paper_views.py --slug 042_Some_Paper \
+  --previous-topic old_topic
+```
+
+The per-paper scope comes from registered corpus memberships, with any supplied
+previous topics included for stale-view cleanup. `--all-topics` does not rely only
+on pre-existing output folders. Networks are rebuilt only when already present;
+this does not create a new network for every topic. Existing `_cross` network
+rebuilds retain the all-topic membership rather than shrinking to whichever topic
+triggered the refresh.
+
+Search refresh preserves each existing index's `bm25`/`hybrid` mode, embedding
+model, and source policy, including source-text/personal-note inclusion and
+local-only restrictions. A missing index uses the default hybrid policy. Do not
+silently switch hybrid to BM25, change models, or expose local source text/notes
+to bypass a failure. Content-addressed embeddings are reused, but new/changed
+hybrid chunks can require Google embedding credentials and paid API calls; a
+BM25 refresh requires no embedding credential.
+`--timeout` bounds each builder in seconds (default 900, maximum 3600).
+A review request with `max_cost_usd` does not authorize unpriced Google embedding
+calls: its automatic hybrid refresh is blocked and reported separately. The
+completed review is retained; the explicit views-only retry is a separate operation.
+
+The helper returns `status`, `topics`, `steps`, `errors`, and a `retry_command`.
+If a view fails, the review remains on disk and the failure/partial outputs stay
+visible; completed review generation is not proof that search indexing completed.
+Restore the reported prerequisite and run the returned views-only retry command.
+An execute request for an already complete matching review bundle also retries
+the refresh without another paid review. A read-only review plan does not refresh
+views. Do not use a paid review rerun or a destructive full rebuild as an indexing
+retry.
+
+This refresh does not run whole-corpus classification/category refitting,
+related-paper candidate retrieval or LLM relationship explanations, timelines,
+paper collection, bibliography DB ingestion, remote Zotero sync, deployment,
+publication, or email. Classification and connection updates remain separate
+stages (including Curio's independently invoked related-papers feature); the
+helper only renders their current data. Publication and email still require
+explicit authorization.
+
 ## Modes (run_full.py)
 
 | Mode | Default `--source` | Default `--images` | Purpose |
@@ -369,13 +432,21 @@ brew install --cask temurin   # Java for opendataloader-pdf
   Temurin Java to get pdffigures2 structure
 - **Related-Papers connections**: `topic_modeling.py` Step 6, the
   `extract_insights.py` connections pass, and `refresh_paper_connections.py`
-  find connections in SPECTER2 embedding space only: cosine nearest-neighbour
+  retrieve candidates locally: SPECTER2 cosine nearest-neighbour
   ranks fused with title/author BM25 ranks through RRF (`k=60`), up to
   `RELATED_LINKS` per paper per topic (default 5). Cross-topic unions and reverse
-  links can exceed that displayed count. No LLM is called and no credential is
-  needed. Every edge is `relation: alternative`, `basis: embedding`, with the
-  cosine as evidence and in the reason. `lib.connections.load_global_connections`
-  ignores entries left by the retired LLM relation judges.
+  links can exceed that displayed count. LLM explanations are a separate paid
+  stage on cache misses: substantive Korean reasons must be grounded in both
+  original papers, with exact quotes and independently worded reverse reasons.
+  Each reason states the research field/application domain (corpus
+  classification labels are passed as hints and checked against the text), the
+  shared problem, and method/data/scope differences; reasons that talk about
+  retrieval (SPECTER2, embedding, cosine, BM25, RRF) are rejected.
+  The LLM does not choose the neighbours. `basis: embedding` and `evidence.cosine`
+  retain retrieval provenance; they do not replace the explanation or force every
+  relation to `alternative`. Directional follow-up, extension, or counterexample
+  claims require supporting paper evidence. This connection stage is not rerun
+  by the views-only review refresh.
 
   Recompute the whole corpus with
   `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute` (topic
@@ -386,9 +457,10 @@ brew install --cask temurin   # Java for opendataloader-pdf
   networks are rebuilt, and the existing bibliography DB is synchronized.
   `--recompute --dry-run` only reports the plan; it does not extract or embed.
   `sync_paper_connections.py --import` imports only embedding edges and refuses
-  incomplete inputs before replacing data. Each `paper_connections` row has
-  `model = none:embedding` and JSON `evidence` retaining the numeric cosine.
-  Connections are similarity, not verified causal or citation relationships.
+  incomplete inputs before replacing data. Generated `paper_connections` rows
+  retain their explanation model, quotes, reverse reasons, and numeric cosine;
+  older neutral embedding rows retain `model = none:embedding`. Similarity alone
+  never establishes a causal or citation relationship.
 
 ## Schema v1 frontmatter (Phase 3)
 

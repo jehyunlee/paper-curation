@@ -17,12 +17,19 @@ Turn hundreds of papers into structured Korean reviews, auto-classify them with 
 | **Collection** | Search indexes, metrics, bibliography DB, audio, timelines, Zotero sync, publication, email, full collection processing | per-capability requirements and explicit confirmation | module panel **Collection / Optional features** tabs · `run_feature.py` · `run_full.py` |
 
 Standalone module and CLI tasks follow **plan (requirements, destination, cost) → confirm → execute**.
-Standalone `local_review.py` performs only extraction, review generation, HTML and
-bibliography sidecar output. Curio **Review generation** additionally registers the
+`local_review.py` performs extraction, review generation, HTML and bibliography
+sidecar output. For registered shared-corpus papers it also refreshes their topic
+pages, search indexes, and existing interactive networks. Reserved new papers are
+refreshed after registration; output outside the shared corpus remains standalone.
+Curio **Review generation** additionally registers the
 review and runs the shared related-papers feature immediately after internal readiness
 and credential checks. Curio never passes a review budget. This one-click action has no plan dialog, OK, or cancel step;
-related papers are found locally in embedding space, so nothing beyond the review request leaves the machine. It does not trigger classification, whole-corpus
-category refitting, indexes, timelines, deployment, or bibliography-DB integration.
+related-paper candidates are retrieved locally using SPECTER2 cosine + title/author BM25/RRF,
+but explanation cache misses send excerpts from both papers to Anthropic Sonnet 5 in an
+additional paid LLM call. Search refresh preserves the existing mode/model and
+reuses cached embeddings; new hybrid chunks may require Google embedding calls.
+Refresh failures retain the completed review and explicitly report the failed stage.
+It does not trigger whole-corpus category refitting, timelines, deployment, or bibliography-DB integration.
 Failures are never re-sent to another provider, and API keys live in the **OS
 keyring**, not in settings files.
 
@@ -54,7 +61,7 @@ generated ID/requirement table in the
 | Path | Capability (ID) | Description |
 |------|-----------------|-------------|
 | Read | browsing · `institution-export` · `extract` | Read generated reviews/search/timelines without a key, export the public institution table, extract text and figures from a local PDF |
-| AI | **Structured review** `review` | `local_review.py`: text/figure extraction → the selected provider writes a 6-section Korean review (Essence·Motivation·Achievement·How·Originality·Evaluation) → HTML + bibliography sidecar. Curio Review generation additionally registers it and creates related-paper links |
+| AI | **Structured review** `review` | `local_review.py`: text/figure extraction → the selected provider writes a 7-section Korean review (Essence·Motivation·Achievement·How·Originality·Limitation & Further Study·Evaluation; Data Artifacts under Limitation flags errors the paper may commit, per the [Data Artifact Atlas](https://app.jehyunlee.dev/dataartifact/)) → HTML + bibliography sidecar. Curio Review generation additionally registers it and creates related-paper links |
 | AI | `summary` · `chat` · `comparison` | **Claims with verbatim quotations** grounded only in the selected PDF texts; answers whose quotations cannot be found are rejected. Summary and chat also run on local Ollama |
 | AI | **AI Chat / Citedby** | Multi-turn PDF conversation and citation genealogy — existing Zotero plugin features |
 | Collection | `keyword-search` · `semantic-search` | BM25 index/query without a key · Gemini-embedding hybrid index/query (Google key) |
@@ -63,17 +70,31 @@ generated ID/requirement table in the
 | Collection | `zotero-sync` · `publish` · `email` | Remote deletion sync (dry-run default), Cloudflare publication, forwarding an existing MP3 — **all require explicit confirmation** |
 
 **Full curation (advanced)** — `run_full.py --mode curate` runs these in order. Curio
-Review generation performs only its registered related-papers step, not the other
-full-curation stages:
+Review generation registers the paper, runs related-papers and refreshes its local
+topic/search/network views, not the other full-curation stages:
 
 | Feature | Description |
 |---------|-------------|
 | **Auto-Classification** | Bottom-up topic modeling (SPECTER2 + HDBSCAN + UMAP) creates categories and assigns papers — zero LLM calls |
-| **Related Papers** | Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF (`k=60`), including papers without a category. Cross-topic unions and reverse links can exceed five displayed neighbours. **No LLM is called** — the reason states the cosine evidence and the relation label is the direction-free `alternative` (similar research). Links are not verified citations or causal relationships. |
+| **Related Papers** | Select up to five neighbours per paper per topic using SPECTER2 cosine and title/author BM25 fused through RRF (`k=60`), including papers without a category. Cross-topic unions and reverse links can exceed five displayed neighbours. Retrieval is unchanged: the LLM does not choose neighbours. Anthropic Sonnet 5 writes substantive Korean explanations grounded in both papers' original text, comparing their shared question and specific methodological extensions/differences rather than repeating cosine scores or generic embedding-proximity text. |
 | **Deep Research** | Natural-language Q&A with hybrid search (BM25 + dense); the reader's own BYOK provider answers with clickable `[N]` citations |
 | **Timeline Visualization** | Per-category research trend narratives + auto-generated diagrams (PaperBanana) + main research timeline |
 | **Knowledge Compounding** | Obsidian integration: your notes feed back into future queries |
 | **Paper Discovery** | Parallel search across arXiv, Semantic Scholar, OpenAlex + auto-registration to Zotero (optional) |
+
+Related-paper explanations retain the generating `model`, exact source-text quotations
+from both papers (`source_quote` / `target_quote`), and a separately worded `reverse`
+reason with its own evidence. `basis: embedding` and cosine record retrieval provenance,
+not semantic evidence. Follow-up, counterexample, or refutation claims require direct
+paper evidence and the correct direction; similarity or publication order alone is
+insufficient. Missing source text or failed quote validation is an explicit error,
+not a reason to substitute a generic similarity sentence.
+
+The explanation default is the same Anthropic Sonnet 5 (`claude-sonnet-5`) as reviews.
+Explanation cache misses incur paid calls; valid cached pair explanations avoid repeat
+LLM calls. The [existing review-model rates table](README.md#-비용-가이드) applies, but
+explanation cost depends on both text contexts, output tokens, pair count, and cache
+reuse—not the single-paper review estimate.
 
 **Full-curation options** — enabled by flag/mode only:
 
@@ -184,7 +205,7 @@ It performs no network checks or full-pipeline run unless an explicit
 
 1. From the [latest Paper Curio release](https://github.com/jehyunlee/paper-curio/releases/latest), install the **XPI that matches your Zotero major version** via Zotero **Tools → Plugins** — `paper-curio-zotero10.xpi` for Zotero 10, `paper-curio-zotero9.xpi` for Zotero 9 (also 7 / 8). Every release ships both files with identical features.
 2. In Zotero **Settings → Paper Curio → Output Location**, enter this checkout's path (leave the Python path empty for `py312`).
-3. In **Settings → Paper Curio → API Keys**, save the selected review provider's key to the OS keyring. The related-papers step runs in embedding space and needs no key.
+3. In **Settings → Paper Curio → API Keys**, save the selected review provider's key to the OS keyring. Related-paper explanations use the same Anthropic Sonnet 5 (`claude-sonnet-5`) default as reviews, so Anthropic credentials are required even when OpenAI/Google is selected for the review (`ANTHROPIC_API_KEY` or `credential:anthropic`).
 4. Right-click a paper item → **paper-curation Review generation** to start immediately after internal readiness and credential checks. The nonmodal progress window remains open until a terminal status, so Zotero reading and importing can continue. A repeat click during generation shows that it is active and offers **Wait** (the default) or **Start over**. After Start over is chosen, the progress window displays restarting while it waits. It cooperatively cancels only after the current Python stage safely finishes atomic publication, completes the old work's reservation cleanup, then regenerates the current paper and unprocessed selected items with overwrite and without the saved review cache. It never starts duplicate concurrent generations, and charges already made are not refunded. Summary, chat, comparison and collection tasks use plan confirmation from **Paper Curation modules**.
 
 Per-screen settings and status messages are explained in the **[User Guide](docs/user-guide.en.md)**.
@@ -216,10 +237,13 @@ python pipeline/refresh_paper_connections.py --slug SLUG --execute
 ```
 
 The feature equivalent is `related-papers` with
-`params: {"slug":"SLUG"}`. Shared-corpus writers use
+`params: {"slug":"SLUG"}`. Retrieval is local, but explanations require both papers'
+`text.md` and Anthropic credentials; explanation cache misses incur paid calls.
+Shared-corpus writers use
 reserve/register/cancel transactions under a common lock and refresh the Curio
-list. Classification, indexes, timelines, publication, and email remain
-independent operations; publication/email require an explicit request and
+list. Registered reviews automatically refresh their topic/search/existing-network
+views; whole-corpus classification, timelines, publication, and email remain
+independent operations. Publication/email require an explicit request and
 separate cloud authorization, recipient, and export-right review.
 
 ### Full curate workflow prerequisites (separate)
@@ -299,7 +323,7 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 | | Description |
 |---|---|
 | **Input** | Extracted text + figures |
-| **Processing** | <ul><li>Claude Sonnet 5 writes 6-section Korean reviews (Essence · Motivation · Achievement · How · Originality · Evaluation)</li><li>Technical jargon kept verbatim</li><li>Concurrent workers (default 16)</li></ul> |
+| **Processing** | <ul><li>Claude Sonnet 5 writes 7-section Korean reviews (Essence · Motivation · Achievement · How · Originality · Limitation & Further Study + Data Artifacts · Evaluation)</li><li>Technical jargon kept verbatim</li><li>Concurrent workers (default 16)</li></ul> |
 | **Output** | <ul><li><code>papers/{slug}/review.md</code></li><li><code>papers/{slug}/index.html</code></li></ul> |
 | **Usage** | Browse reviews in browser with inline figures and auto-linked related papers |
 
@@ -315,8 +339,8 @@ The cat diagram at the top is the bird's-eye view. `run_full.py` runs the Core s
 
 | | Description |
 |---|---|
-| **Input** | Per-category paper lists + reviews |
-| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass link each paper to its nearest neighbours in SPECTER2 embedding space, fused with title/author BM25 through RRF (<code>k=60</code>). No LLM is called; the relation is the direction-free <code>alternative</code> and the reason states the cosine evidence. Links are not verified citations or causal relationships.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
+| **Input** | Per-category paper lists + reviews; both papers' original <code>text.md</code> for related-paper explanations |
+| **Processing (Core)** | <ul><li>Claude Sonnet extracts category summaries and sub-themes</li><li>**Related Papers**: Step 6 in <code>topic_modeling.py</code> and the <code>extract_insights.py</code> connections pass keep SPECTER2 cosine + title/author BM25/RRF (<code>k=60</code>) retrieval. Anthropic Sonnet 5 then compares both original texts to write grounded Korean explanations, retaining the generating model, exact quotes from both papers, and a distinct reverse-perspective reason. Explanation cache misses are paid calls; cosine remains retrieval provenance, not a substitute for the explanation or evidence of follow-up/refutation.</li><li>Claude Opus writes research-trend narratives per category</li><li>PaperBanana generates several diagram candidates per category, and a Claude vision review selects the best — judged on consistent per-category color, clear emergence/disappearance and convergence/divergence of categories, and the absence of spurious text such as color names or indices</li></ul> |
 | **Processing (Option O-2, `--insights`)** | <ul><li>Cross-category Research Insights (Anthropic → OpenAI → Gemini 3-backend fallback)</li><li>Regenerates the network visualization (<code>network.html</code>)</li></ul> |
 | **Output** | <ul><li><code>_category_summaries.json</code></li><li><code>_paper_connections.json</code></li><li><code>_timeline_narrative.json</code></li><li><code>category_timeline_*.png</code></li><li>(O-2) <code>_insights.json</code> + <code>network.html</code></li></ul> |
 
@@ -505,7 +529,7 @@ PYTHONUTF8=1 python pipeline/search_papers.py --topic scisci --since 2026-04-01 
 
 OpenAlex returns 1k+ items per keyword and dominates the result pool, so missing arXiv rarely degrades coverage.
 
-**3. Related Papers** — connections are SPECTER2 embedding-space neighbours fused with title/author BM25 (RRF), computed locally with no LLM call and no credential. `RELATED_LINKS` sets the per-paper, per-topic selection limit (default 5); unions and reverse links can increase the displayed count. To recompute all indexed topics, re-render pages and networks, and synchronize the existing bibliography DB, run `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`. Add `--dry-run` for a genuinely read-only plan.
+**3. Related Papers** — candidate retrieval remains local SPECTER2 cosine + title/author BM25/RRF; it is not replaced by LLM neighbour selection. Explanations use Anthropic Sonnet 5 with original-text evidence from both papers and need Anthropic credentials on cache misses, which incur paid calls even if embeddings are cached. The generating model, quotes, and distinct reverse reasons are retained. `RELATED_LINKS` sets the per-paper, per-topic selection limit (default 5); unions and reverse links can increase the displayed count. To recompute all indexed topics, re-render pages and networks, and synchronize the existing bibliography DB, run `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`. Add `--dry-run` for a genuinely read-only plan; recomputation is not an offline/no-LLM workaround.
 
 ---
 

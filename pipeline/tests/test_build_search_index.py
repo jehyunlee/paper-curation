@@ -129,6 +129,36 @@ Alpha catalyst retrieval improves the measured reaction yield over the baseline 
                 handle.write("\nNew source evidence.")
             self.assertFalse(prepare_deploy._search_index_freshness("demo")["fresh"])
 
+    def test_local_explicit_notes_exclusion_preserves_private_source_policy(self):
+        (self.docs / ".assetsignore").write_text("demo/\n", encoding="utf-8")
+        with _block_dense_dependencies():
+            built = builder._run_search_index(
+                "demo", mode="bm25", include_text="no", include_personal_notes="no")
+        payload = json.dumps(built)
+        self.assertNotIn("COLOCATED-NOTE-SECRET", payload)
+        self.assertNotIn("DOCS-NOTE-SECRET", payload)
+        self.assertEqual(built["source_options"],
+                         {"include_text": False, "include_personal_notes": False})
+        self.assertEqual(set(built["papers"]), {"alpha-paper"})
+        fingerprint = built["source_fingerprint"]
+        (self.paper_dir / "notes.md").write_text("Changed private note.", encoding="utf-8")
+        with _block_dense_dependencies():
+            rebuilt = builder._run_search_index(
+                "demo", mode="bm25", include_text="no", include_personal_notes="no")
+        self.assertEqual(rebuilt["source_fingerprint"], fingerprint)
+
+    def test_public_explicit_notes_inclusion_fails_before_publication(self):
+        before = self._snapshot()
+        with _block_dense_dependencies(), self.assertRaisesRegex(ValueError, "public topic"):
+            builder._run_search_index("demo", mode="bm25", include_personal_notes="yes")
+        self.assertEqual(self._snapshot(), before)
+
+    def test_invalid_notes_policy_is_rejected_before_filesystem_access(self):
+        self.topic_lookup.reset_mock()
+        with self.assertRaisesRegex(ValueError, "include_personal_notes"):
+            builder._run_search_index("demo", include_personal_notes="maybe")
+        self.topic_lookup.assert_not_called()
+
     def test_sparse_builder_to_query_is_keyless_and_has_real_no_match(self):
         binary_path = self.topic_dir / builder.EMB_BIN_NAME
         cache_path = self.topic_dir / builder.EMBED_CACHE_NAME

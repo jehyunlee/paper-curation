@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import json
 import os
 import subprocess
@@ -38,6 +39,11 @@ class RebuildConnectionsTests(unittest.TestCase):
         self.index_path = self.papers / "_papers_index.json"
         self.global_path = self.papers / "_global_connections.json"
         self.a, self.b, self.old = "001_Alpha", "002_Beta", "003_Old"
+        self.paper_texts = {
+            self.a: "Alpha selects experiments using calibrated uncertainty under a fixed measurement budget.",
+            self.b: "Beta selects experiments using ensemble disagreement under a fixed measurement budget.",
+        }
+        self.paper_methods = {self.a: "보정된 불확실도", self.b: "앙상블 예측의 불일치"}
         self.index = [{"slug": self.a, "topics": ["demo"]},
                       {"slug": self.b, "topics": ["demo"]}]
         self.write_index(self.index)
@@ -56,6 +62,8 @@ class RebuildConnectionsTests(unittest.TestCase):
                                                         return_value={"imported": 0}))
         self.db = self.root / "cache" / "bibliography.sqlite3"
         stack.enter_context(patch.object(sync, "DEFAULT_DB", self.db))
+        self.explain_pair = stack.enter_context(
+            patch("lib.related.explain_pair", side_effect=self.explanation))
 
     def write_json(self, path, value):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -68,7 +76,27 @@ class RebuildConnectionsTests(unittest.TestCase):
         directory = self.papers / slug
         directory.mkdir(exist_ok=True)
         (directory / "review.md").write_text(review, encoding="utf-8")
+        (directory / "text.md").write_text(self.paper_texts.get(slug, "No selected experiment."),
+                                          encoding="utf-8")
         return directory
+
+    def explanation(self, source, target):
+        def reason(first, second):
+            return (f"{first['slug']}와 {second['slug']}는 제한된 측정 예산에서 다음 실험을 고르는 문제를 공유한다. "
+                    f"{first['slug']}에서 사용하는 {self.paper_methods[first['slug']]} 기준을 "
+                    f"{second['slug']}의 {self.paper_methods[second['slug']]} 기준과 비교할 수 있다.")
+
+        def evidence(first, second):
+            first_text, second_text = self.paper_texts[first["slug"]], self.paper_texts[second["slug"]]
+            return {"source_quote": first_text, "target_quote": second_text,
+                    "source_sha256": hashlib.sha256(first_text.encode("utf-8")).hexdigest(),
+                    "target_sha256": hashlib.sha256(second_text.encode("utf-8")).hexdigest(),
+                    "provider": "anthropic", "prompt_version": "test-grounded-pairs-v1"}
+
+        return {"relation": "alternative", "reason": reason(source, target),
+                "model": "test-grounded-explainer", "evidence": evidence(source, target),
+                "reverse": {"relation": "alternative", "reason": reason(target, source),
+                            "evidence": evidence(target, source)}}
 
     def topic_json(self, topic, value):
         self.write_json(self.docs / topic / "_paper_connections.json", value)
@@ -106,7 +134,7 @@ class RebuildConnectionsTests(unittest.TestCase):
         self.assertEqual(self.snapshot(), before)
         for operation in (lock, write_json, write_text, save, network,
                           model.extract_originalities, model.compute_embeddings,
-                          model.compute_related_candidates, self.importer):
+                          model.compute_related_candidates, self.explain_pair, self.importer):
             operation.assert_not_called()
         self.assertFalse((self.docs / "new-topic").exists())
         self.assertFalse(self.db.exists())
@@ -138,10 +166,21 @@ class RebuildConnectionsTests(unittest.TestCase):
         self.assertEqual(set(stored), {p["slug"] for p in self.index})
         self.assertEqual(stored[self.old], [])
         self.assertEqual(stored["004_Unassigned"], [])
+        explanation = self.explanation(self.index[0], self.index[1])
+        self.explain_pair.assert_any_call(self.index[0], self.index[1])
+        self.assertEqual(stored[self.a][0]["reason"], explanation["reason"])
+        self.assertEqual(stored[self.a][0]["model"], explanation["model"])
+        self.assertEqual(stored[self.a][0]["evidence"], {**explanation["evidence"], "cosine": .8})
+        self.assertEqual(stored[self.a][0]["reverse"]["reason"], explanation["reverse"]["reason"])
         for topic in ("listed", "primary", "classified"):
             view = json.loads((self.docs / topic / "_paper_connections.json").read_text())
             self.assertEqual(view[self.a][0]["slug"], self.b)
             self.assertEqual(view[self.b][0]["slug"], self.a)
+            self.assertEqual(view[self.a][0]["reason"], explanation["reason"])
+            self.assertEqual(view[self.a][0]["model"], explanation["model"])
+            self.assertEqual(view[self.b][0]["reason"], explanation["reverse"]["reason"])
+            self.assertEqual(view[self.b][0]["evidence"],
+                             {**explanation["reverse"]["evidence"], "cosine": .8})
         self.assertEqual(json.loads((self.docs / "singleton" / "_paper_connections.json").read_text()),
                          {self.old: []})
         self.assertEqual(json.loads((self.docs / "retired" / "_paper_connections.json").read_text()), {})
@@ -186,6 +225,7 @@ class RebuildConnectionsTests(unittest.TestCase):
         self.assertEqual(json.loads((self.docs / "_cross" / "_paper_connections.json").read_text()),
                          {self.a: []})
         self.assertEqual(injector.build_related_section.call_count, 2)
+        self.explain_pair.assert_not_called()
 
     def test_empty_corpus_clears_existing_views_instead_of_retaining_graph(self):
         self.write_index([])
@@ -196,6 +236,7 @@ class RebuildConnectionsTests(unittest.TestCase):
         for path in (self.global_path, self.docs / "demo" / "_paper_connections.json",
                      self.docs / "_cross" / "_paper_connections.json"):
             self.assertEqual(json.loads(path.read_text()), {})
+        self.explain_pair.assert_not_called()
 
     def test_exclusive_lease_covers_snapshot_calculation_publication_and_db(self):
         held, events = [], []
@@ -220,6 +261,7 @@ class RebuildConnectionsTests(unittest.TestCase):
 
         model = self.model()
         model.extract_originalities.side_effect = checked("extract", model.extract_originalities.side_effect)
+        self.explain_pair.side_effect = checked("explain", self.explanation)
         with patch.dict(sys.modules, {"topic_modeling": model}), \
              patch.object(rebuild, "corpus_operation_lock", side_effect=lease), \
              patch.object(rebuild, "load_index", side_effect=checked("index", rebuild.load_index)), \
@@ -233,7 +275,7 @@ class RebuildConnectionsTests(unittest.TestCase):
              patch.object(rebuild, "sync_existing_database", side_effect=checked("db", lambda: None)), \
              patch("builtins.print"):
             rebuild.run_rebuild(recompute=True)
-        self.assertEqual(events, ["index", "global", "extract", "save", "render", "inject",
+        self.assertEqual(events, ["index", "global", "extract", "explain", "explain", "save", "render", "inject",
                                   "network", "db", "released"])
 
     def test_live_review_lease_and_pending_reservation_block_before_snapshot(self):
@@ -309,6 +351,31 @@ class RebuildConnectionsTests(unittest.TestCase):
                 self.assertFalse(any(str(c.args[0]).startswith("DONE") for c in printed.call_args_list))
         self.importer.assert_not_called()
 
+    def test_explanation_failure_does_not_publish_partial_graph_or_run_downstream(self):
+        self.topic_json("demo", {self.a: [edge(self.b)]})
+        previous = {self.a: [dict(edge(self.old), source_topic="demo")]}
+        self.write_json(self.global_path, previous)
+        published_paths = [self.global_path, self.docs / "demo" / "_paper_connections.json",
+                           self.papers / self.a / "review.md", self.papers / self.b / "review.md"]
+        before = {path: path.read_bytes() for path in published_paths}
+        self.explain_pair.side_effect = [self.explanation(self.index[0], self.index[1]),
+                                        RuntimeError("explanation provider unavailable")]
+        with patch.dict(sys.modules, {"topic_modeling": self.model()}), \
+             patch.object(rebuild, "save_global_connections") as save, \
+             patch.object(rebuild, "atomic_write_json") as write, \
+             patch.object(rebuild, "render_pages") as render, \
+             patch.object(rebuild, "inject_related") as inject, \
+             patch.object(rebuild, "regen_networks") as network, \
+             patch.object(rebuild, "sync_existing_database") as database, \
+             patch("builtins.print") as printed:
+            with self.assertRaisesRegex(RuntimeError, "explanation provider unavailable"):
+                rebuild.run_rebuild(recompute=True)
+        self.assertEqual(self.explain_pair.call_count, 2)
+        for operation in (save, write, render, inject, network, database, self.importer):
+            operation.assert_not_called()
+        self.assertEqual({path: path.read_bytes() for path in published_paths}, before)
+        self.assertFalse(any(str(c.args[0]).startswith("DONE") for c in printed.call_args_list))
+
     def test_render_shortfall_or_crash_propagates_and_stops_downstream(self):
         for outcome in ({"converted": 1, "skipped": 1}, RuntimeError("renderer failed")):
             with self.subTest(outcome=outcome):
@@ -347,6 +414,7 @@ class RebuildConnectionsTests(unittest.TestCase):
     def test_optional_database_only_syncs_existing_db_after_valid_full_views(self):
         with patch("builtins.print"):
             rebuild.run_rebuild(no_render=True, no_inject=True, no_networks=True)
+        self.explain_pair.assert_not_called()
         self.importer.assert_not_called()
         self.assertFalse(self.db.exists())
         self.db.parent.mkdir()

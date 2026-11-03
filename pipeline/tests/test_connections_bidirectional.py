@@ -27,16 +27,32 @@ PAPERS = [{"slug": "A"}, {"slug": "B"}, {"slug": "C"}]
 
 
 def _edge(target, cosine):
-    return build_connections({"A": [(target, cosine)]}, PAPERS)["A"][0]
+    explanation = {
+        "relation": "alternative",
+        "reason": "A는 실험 계획을 고정하며 B는 관측 결과에 따라 계획을 갱신한다.",
+        "model": "claude-sonnet-5",
+        "evidence": {"source_quote": "A uses fixed experimental plans.",
+                     "target_quote": "B updates plans using observations."},
+        "reverse": {
+            "relation": "alternative",
+            "reason": "B의 관측 기반 계획 갱신을 A의 고정 실험 계획과 비교할 수 있다.",
+            "evidence": {"source_quote": "B updates plans using observations.",
+                         "target_quote": "A uses fixed experimental plans."},
+        },
+    }
+    with patch("lib.related.explain_pair", return_value=explanation):
+        return build_connections({"A": [(target, cosine)]}, PAPERS)["A"][0]
 
 
 class BidirectionalConnectionTests(unittest.TestCase):
-    def test_reverse_edge_mirrors_the_mutual_embedding_neighbour(self):
+    def test_reverse_edge_uses_its_own_explanation_and_evidence(self):
         got = make_bidirectional_deduped({"A": [_edge("B", .8)]})
         forward, reverse = got["A"][0], got["B"][0]
         self.assertEqual((forward["slug"], reverse["slug"]), ("B", "A"))
         self.assertEqual(reverse["relation"], "alternative")
-        self.assertEqual(reverse["reason"], forward["reason"])
+        self.assertNotEqual(reverse["reason"], forward["reason"])
+        self.assertEqual(reverse["evidence"]["source_quote"],
+                         forward["evidence"]["target_quote"])
         self.assertEqual(reverse["basis"], "embedding")
 
     def test_forward_reason_wins_over_synthesized_reverse(self):
@@ -44,8 +60,8 @@ class BidirectionalConnectionTests(unittest.TestCase):
             "A": [_edge("B", .8)],
             "B": [{**_edge("B", .7), "slug": "A"}],
         })
-        self.assertEqual(got["A"][0]["evidence"], {"cosine": .8})
-        self.assertEqual(got["B"][0]["evidence"], {"cosine": .7})
+        self.assertEqual(got["A"][0]["evidence"]["cosine"], .8)
+        self.assertEqual(got["B"][0]["evidence"]["cosine"], .7)
 
     def test_provenance_survives_merge_and_filter(self):
         new = {"A": [_edge("B", .8)]}
@@ -55,8 +71,9 @@ class BidirectionalConnectionTests(unittest.TestCase):
         view = make_bidirectional_deduped(merged)
         item = filter_for_topic(view, ["A"])["A"][0]
         self.assertEqual(item["basis"], "embedding")
-        self.assertEqual(item["model"], "")
-        self.assertEqual(item["evidence"], {"cosine": .8})
+        self.assertEqual(item["model"], "claude-sonnet-5")
+        self.assertEqual(item["evidence"]["cosine"], .8)
+        self.assertEqual(item["evidence"]["source_quote"], "A uses fixed experimental plans.")
         self.assertEqual(item["reasons"][0]["basis"], "embedding")
         self.assertNotIn("source_topic", item)
 
@@ -86,7 +103,7 @@ class BidirectionalConnectionTests(unittest.TestCase):
             with patch.object(sync, "DOCS", root):
                 claims, _ = sync.load_json_connections()
         self.assertEqual(list(claims), [("A", "B", "alternative")])
-        self.assertEqual(claims[("A", "B", "alternative")]["model"], "none:embedding")
+        self.assertEqual(claims[("A", "B", "alternative")]["model"], "claude-sonnet-5")
 
     def test_consumer_graph_db_roundtrip_keeps_numeric_forward_and_reverse_evidence(self):
         graph = make_bidirectional_deduped({"A": [_edge("B", .8234)], "C": []})
@@ -111,8 +128,10 @@ class BidirectionalConnectionTests(unittest.TestCase):
             restored = json.loads(topic_path.read_text(encoding="utf-8"))
         self.assertEqual(restored, graph)
         for source in ("A", "B"):
-            self.assertEqual(restored[source][0]["evidence"], {"cosine": .8234})
-            self.assertEqual(restored[source][0]["reasons"][0]["evidence"], {"cosine": .8234})
+            self.assertEqual(restored[source][0]["evidence"]["cosine"], .8234)
+            self.assertEqual(restored[source][0]["reasons"][0]["evidence"]["cosine"], .8234)
+            self.assertIn("source_quote", restored[source][0]["evidence"])
+            self.assertIn("target_quote", restored[source][0]["evidence"])
             self.assertIsInstance(restored[source][0]["evidence"]["cosine"], float)
 
 

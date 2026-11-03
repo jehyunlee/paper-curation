@@ -6,15 +6,16 @@ Topic-specific _paper_connections.json files are derived from global by filterin
 
 This ensures cross-topic connections are preserved regardless of execution order.
 
-Connections are found in embedding space only (``lib.related``): every stored
-edge has ``basis == "embedding"``. Entries written by the retired LLM relation
-judges (``basis`` ``model``/``metadata``/missing) are discarded on load, so no
-view, page, or DB import can surface an LLM-judged connection again.
+Connections are selected by embedding/BM25 retrieval (``lib.related``): every
+stored edge has ``basis == "embedding"``. New explanations compare both original
+papers and retain the generating model, exact quotes, and an independently
+worded reverse. Older neutral embedding entries remain readable; retired
+``model``/``metadata``-basis entries are not retrieval-backed and are discarded.
 
 The global file stores the *raw, directional* edges exactly as generated (one
 ``source_topic``-tagged entry per A→B). The per-topic ``_paper_connections.json``
 files — which every renderer consumes — are derived as a **bidirectional,
-per-target-deduped** view: each A→B edge implies B→A (relation flipped), and a
+per-target-deduped** view: each A→B edge supplies its explicit B→A explanation, and a
 paper connected for several reasons appears once with all reasons listed. See
 :func:`make_bidirectional_deduped`.
 """
@@ -29,7 +30,7 @@ PAPERS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__)))), "docs", "papers")
 GLOBAL_CONN_PATH = os.path.join(PAPERS_DIR, "_global_connections.json")
 
-# When we synthesize the reverse edge B→A from a stored edge A→B, the relation
+# For legacy neutral entries without an explicit reverse explanation, the relation
 # must be re-expressed from B's point of view. The stored relation describes how
 # the *target* relates to the *source* (A→B "foundation" means "B is a
 # foundation for A"). Flipping the direction therefore flips the relation:
@@ -68,6 +69,27 @@ def _entry_reasons(entry):
             r.get("relation") or "alternative")} for r in rs]
     return [{**entry, "relation": _normalize_relation(
         entry.get("relation") or "alternative")}]
+
+
+def _is_explained(entry):
+    return bool(entry.get("model") and entry["model"] != "none:embedding")
+
+
+def _reverse_reason(forward):
+    reverse = forward.get("reverse")
+    if reverse is not None:
+        if (not isinstance(reverse, dict) or not reverse.get("relation")
+                or not isinstance(reverse.get("reason"), str) or not reverse["reason"].strip()
+                or not isinstance(reverse.get("evidence"), dict)):
+            raise ValueError("invalid reverse connection explanation")
+        return {"relation": _normalize_relation(reverse["relation"]),
+                "reason": reverse["reason"], "evidence": reverse["evidence"],
+                "basis": forward.get("basis", ""), "model": forward.get("model", ""),
+                "reverse": {key: forward[key] for key in ("relation", "reason", "evidence")}}
+    if _is_explained(forward):
+        raise ValueError("generated connection requires a reverse explanation")
+    return {**forward, "relation": _normalize_relation(
+        REVERSE_RELATION.get(forward["relation"], forward["relation"]))}
 
 
 def _title_part(slug):
@@ -131,8 +153,8 @@ def build_slug_resolver(index_slugs):
 def make_bidirectional_deduped(conns_by_slug, resolve=None):
     """Return a bidirectional, per-target-deduped connections dict.
 
-    For every directed edge A→B we also synthesize the reverse edge B→A (relation
-    flipped via :data:`REVERSE_RELATION`). For each ordered pair we keep **one
+    For every directed edge A→B we use its separately generated B→A explanation.
+    Only legacy neutral entries use :data:`REVERSE_RELATION`. For each ordered pair we keep **one
     reason per relation** — so a paper connected several times under the *same*
     relation (e.g. a forward "foundation" edge plus a reverse "application" edge
     that flips back to "foundation") shows a single "기반 연구" line, while genuinely
@@ -149,9 +171,19 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
             return
         rel = _normalize_relation(payload["relation"])
         payload = {key: payload.get(key, "") for key in
-                   ("relation", "reason", "basis", "model", "evidence")}
+                   ("relation", "reason", "basis", "model", "evidence")} | (
+                       {"reverse": payload["reverse"]} if "reverse" in payload else {})
         payload["relation"] = rel
         relmap = buckets.setdefault(src, OrderedDict()).setdefault(tgt, OrderedDict())
+        explained = _is_explained(payload)
+        if explained:
+            # A refreshed pair must not retain an incoming legacy cosine reason,
+            # even when it used a different relation or has a forward advantage.
+            for old_rel, (old, _) in list(relmap.items()):
+                if not _is_explained(old):
+                    del relmap[old_rel]
+        elif any(_is_explained(old) for old, _ in relmap.values()):
+            return
         cur = relmap.get(rel)
         # A source-perspective reason wins over a synthesized reverse.
         if cur is None or (is_forward and not cur[1]):
@@ -172,10 +204,7 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
                     continue
             for forward in _entry_reasons(entry):
                 _add(src, tgt, forward, True)
-                reverse = dict(forward)
-                reverse["relation"] = _normalize_relation(
-                    REVERSE_RELATION.get(forward["relation"], forward["relation"]))
-                _add(tgt, src, reverse, False)
+                _add(tgt, src, _reverse_reason(forward), False)
 
     result = {}
     for src, tgts in buckets.items():
@@ -184,15 +213,7 @@ def make_bidirectional_deduped(conns_by_slug, resolve=None):
             reasons = [dict(rr[0]) for rr in relmap.values()]
             reasons.sort(key=lambda r: REL_ORDER.get(r["relation"], 9))
             primary = reasons[0]
-            items.append({
-                "slug": tgt,
-                "relation": primary["relation"],
-                "reason": primary["reason"],
-                "reasons": reasons,
-                "basis": primary["basis"],
-                "model": primary["model"],
-                "evidence": primary["evidence"],
-            })
+            items.append({"slug": tgt, **primary, "reasons": reasons})
         items.sort(key=lambda c: (REL_ORDER.get(c["relation"], 9), c["slug"]))
         result[src] = items
     # A processed paper with no neighbour keeps an explicit empty list:
@@ -225,6 +246,8 @@ def merge_to_global(new_connections, source_topic=None):
     """Merge new connections into global file. Returns merged global connections.
 
     For each slug, new connections are added alongside existing ones (dedup by target slug).
+    A generated explanation replaces an older copy of the same target, so a
+    previous topic's neutral entry cannot prevent upgrading the explanation.
     If source_topic is given, existing connections from the SAME topic are replaced
     (prevents stale entries from prior runs of the same topic).
     """
@@ -242,14 +265,16 @@ def merge_to_global(new_connections, source_topic=None):
     # Merge new connections
     for slug, conns in new_connections.items():
         existing = global_conns.get(slug, [])
-        seen_targets = {c["slug"] for c in existing}
+        positions = {c["slug"]: i for i, c in enumerate(existing)}
         for c in conns:
-            if c["slug"] not in seen_targets:
-                entry = dict(c)
-                if source_topic:
-                    entry["source_topic"] = source_topic
+            entry = dict(c)
+            if source_topic:
+                entry["source_topic"] = source_topic
+            if c["slug"] not in positions:
+                positions[c["slug"]] = len(existing)
                 existing.append(entry)
-                seen_targets.add(c["slug"])
+            elif _is_explained(c):
+                existing[positions[c["slug"]]] = entry
         global_conns[slug] = existing
 
     save_global_connections(global_conns)

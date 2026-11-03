@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Classify one reviewed paper and refresh its related-paper links.
 
-No model is called. First the paper is routed into each topic's existing
+First the paper is routed into each topic's existing
 categories with the stored HDBSCAN bundle (``classify_papers``, approximate
 predict; topics without a bundle are skipped). Then neighbours come from
 SPECTER2 vectors (plus title/author BM25 through RRF) in the paper's topic
-embedding caches.
+embedding caches. Anthropic then explains each selected pair from both papers'
+source text; retrieval scores are provenance, not reader-facing explanations.
+Existing retrieval-backed incoming links are also re-explained. The raw store
+is replaced atomically only after every target-related explanation succeeds.
 
 ``plan_connections`` is strictly read-only. ``refresh_connections`` owns the
 exclusive corpus-operation lock; callers must not wrap it in another corpus
@@ -16,6 +19,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -134,12 +138,13 @@ def _is_classified(paper: dict, topic: str) -> bool:
 
 
 def plan_connections(slug: str) -> dict:
-    """Return the read-only classification and retrieval plan for one registered paper."""
+    """Plan local retrieval and cloud explanations without making paid calls."""
     paper, index, topics = _context(slug)
     classification_plan = [{"topic": t, "model_bundle": _has_model_bundle(t),
                             "classified": _is_classified(paper, t)} for t in topics]
     classify_topics = [c["topic"] for c in classification_plan if c["model_bundle"]]
     from lib.related import max_links
+    from lib.text_providers import DEFAULT_MODELS
     limit = max_links()
     details = []
     for topic in topics:
@@ -154,6 +159,11 @@ def plan_connections(slug: str) -> dict:
             "status": "ready",
             "embedding_required": sum(d["missing_embedding_count"] for d in details),
             "candidate_limit": limit, "topic_plan": details,
+            "explanation": {"provider": "anthropic",
+                            "model": DEFAULT_MODELS["anthropic"],
+                            "transmission": "source excerpts from selected pairs and existing retrieval-backed incoming pairs",
+                            "credential_ref": "credential:anthropic",
+                            "cost_class": "paid"},
             "classification_plan": classification_plan,
             "classify_topics": classify_topics,
             "steps": (["classify_papers"] if classify_topics else [])
@@ -230,6 +240,57 @@ def _published_topic_connections() -> dict[str, dict]:
     return views
 
 
+def _load_raw_connections() -> dict[str, list[dict]]:
+    """Keep unrelated raw entries, including retired bases hidden from views."""
+    root = Path(PAPERS_DIR).resolve()
+    path = root / "_global_connections.json"
+    if not path.exists() and not path.is_symlink():
+        return {}
+    stored = _load_json(_inside(root, path, kind="global connections"))
+    if (not isinstance(stored, dict)
+            or any(not isinstance(source, str) or not isinstance(entries, list)
+                   or any(not isinstance(entry, dict) or not isinstance(entry.get("slug"), str)
+                          for entry in entries)
+                   for source, entries in stored.items())):
+        raise ValueError("invalid raw global connections")
+    return stored
+
+
+def _target_connection_update(slug: str, connections: dict, previous: dict,
+                              papers: dict[str, dict], source_topic: str) -> dict:
+    """Prepare all outgoing/incoming replacements without publishing a partial graph."""
+    from lib.related import EMBEDDING_BASIS, build_connections
+
+    updated = {**previous, slug: [dict(entry, source_topic=source_topic)
+                                 for entry in connections[slug]]}
+    for source, entries in previous.items():
+        if source == slug:
+            continue
+        replacements = []
+        for entry in entries:
+            if entry.get("slug") != slug or entry.get("basis") != EMBEDDING_BASIS:
+                replacements.append(entry)
+                continue
+            if source not in papers:
+                raise ValueError(f"unregistered incoming connection source: {source}")
+            evidence = entry.get("evidence")
+            cosine = evidence.get("cosine") if isinstance(evidence, dict) else None
+            if (isinstance(cosine, bool) or not isinstance(cosine, (int, float))
+                    or not -1 <= cosine <= 1 or not math.isfinite(cosine)):
+                raise ValueError(f"incoming connection requires valid cosine evidence: {source}")
+            explained = build_connections({source: [(slug, cosine)]},
+                                          [papers[source], papers[slug]], limit=1)[source][0]
+            replacement = {**entry, **explained,
+                           "evidence": {**explained["evidence"], "cosine": cosine},
+                           "reverse": {**explained["reverse"], "evidence": {
+                               **explained["reverse"]["evidence"], "cosine": cosine}}}
+            # A legacy consumer-view payload must not override the new explanation.
+            replacement.pop("reasons", None)
+            replacements.append(replacement)
+        updated[source] = replacements
+    return updated
+
+
 def _refresh_connections_locked(slug: str) -> dict:
     """Classify, then embed/retrieve one paper and publish its bidirectional views.
 
@@ -274,18 +335,21 @@ def _refresh_connections_locked(slug: str) -> dict:
     selected = sorted(merged_candidates.items(), key=lambda x: (-fused_ranks[x[0]], x[0]))[:max_links()]
     all_papers = {p["slug"]: p for p in index if isinstance(p, dict) and p.get("slug")}
     candidate_papers = [paper] + [all_papers[s] for s, _ in selected if s in all_papers]
+    previous = _load_raw_connections()
     connections = build_connections({slug: selected}, candidate_papers, limit=len(selected))
+    updated = _target_connection_update(slug, connections, previous, all_papers, topics[0])
 
-    from lib.connections import (build_slug_resolver, load_global_connections,
-                                 make_bidirectional_deduped, merge_to_global,
-                                 sync_topic_connections)
-    # The global loader filters out old model/metadata edges. The published
-    # views are therefore the only remaining record of some removed neighbours,
-    # including reverse-only links, when this refresh finds no replacement.
-    previous = load_global_connections()
+    from lib.atomic_io import atomic_write_json
+    from lib.connections import (build_slug_resolver, filter_for_topic,
+                                 make_bidirectional_deduped, save_global_connections)
+    from lib.related import EMBEDDING_BASIS
+
+    # Published views can also contain retired-basis links absent from the
+    # retrieval-backed projection. Their pages must lose the obsolete reasons.
     affected_slugs = ({slug} | {e["slug"] for e in connections.get(slug, [])}
-                      | {e.get("slug") for e in previous.get(slug, [])
-                         if e.get("source_topic") == topics[0] and e.get("slug")})
+                      | {e["slug"] for e in previous.get(slug, [])}
+                      | {source for source, entries in previous.items()
+                         if any(e["slug"] == slug for e in entries)})
     for view in published_views.values():
         affected_slugs.update(e["slug"] for e in view.get(slug, []))
         affected_slugs.update(source for source, entries in view.items()
@@ -301,25 +365,28 @@ def _refresh_connections_locked(slug: str) -> dict:
                                 if affected_slugs.intersection(view)})
     old_sources = {source for topic in affected_topics
                    for source in published_views.get(topic, {}) if source in all_papers}
-    # Publish raw source claims before deriving every topic view.
-    # Calling sync on a lexically earlier neighbour topic first would otherwise
-    # render its view from stale global state.
-    merge_to_global(connections, source_topic=topics[0])
-    current_view = make_bidirectional_deduped(load_global_connections(),
+    # Keep the existing consumer basis filter, without dropping unrelated raw
+    # entries by round-tripping through the filtered global loader/merge path.
+    visible = {source: [entry for entry in entries if entry.get("basis") == EMBEDDING_BASIS]
+               for source, entries in updated.items()}
+    current_view = make_bidirectional_deduped(visible,
                                             resolve=build_slug_resolver(all_papers))
     # Keep deleted published sources explicitly empty, so a newer view clears
     # an older topic's cached legacy entry. Active reverse-only sources need no
     # raw key, and unrelated clean sources must not become render targets.
     cleared = {source: [] for source in sorted(old_sources - current_view.keys())}
-    if cleared:
-        merge_to_global(cleared)
+    updated.update(cleared)
+    current_view.update(cleared)
+    # All explanations and the projection have succeeded. Replace raw claims
+    # once, then publish each affected view from that exact snapshot.
+    save_global_connections(updated)
     for topic in affected_topics:
         topic_dir = _inside(Path(DOCS_DIR).resolve(), Path(DOCS_DIR).resolve() / topic,
                             kind="topic")
         topic_slugs = (list(all_papers) if topic == "_cross"
                        else [p["slug"] for p in _topic_pool(topic, index)])
-        view = sync_topic_connections({}, topic, topic_slugs,
-                                      str(topic_dir), log=lambda _m: None) or {}
+        view = filter_for_topic(current_view, topic_slugs)
+        atomic_write_json(topic_dir / "_paper_connections.json", view)
         old_view = published_views.get(topic, {})
         affected_slugs.update(source for source in set(old_view) | set(view)
                               if source in all_papers and old_view.get(source) != view.get(source))
@@ -341,10 +408,34 @@ def _refresh_connections_locked(slug: str) -> dict:
 
 
 def refresh_connections(slug: str) -> dict:
-    """Refresh one paper while owning the exclusive corpus operation lease."""
+    """Refresh connections, then their published views after releasing the lease."""
     from lib.corpus_store import corpus_operation_lock
     with corpus_operation_lock(PAPERS_DIR, exclusive=True):
-        return _refresh_connections_locked(slug)
+        result = _refresh_connections_locked(slug)
+    if result.get("status") != "completed":
+        return result
+    from refresh_paper_views import PAPERS_DIR as canonical_papers, refresh_paper_views
+    if Path(PAPERS_DIR).resolve() != Path(canonical_papers).resolve():
+        return result
+    try:
+        views = refresh_paper_views(slug, papers_dir=PAPERS_DIR,
+                                    previous_topics=result.get("topics", []))
+    except Exception as exc:
+        import shlex
+        command = [sys.executable, str(Path(__file__).with_name("refresh_paper_views.py")),
+                   "--slug", slug]
+        for topic in result.get("topics", []):
+            command += ["--previous-topic", topic]
+        views = {"status": "failed", "topics": [], "steps": [],
+                 "errors": [f"view refresh failed: {type(exc).__name__}"],
+                 "retry_command": shlex.join(command)}
+    result["views"] = views
+    if views["status"] != "completed":
+        result["status"] = "failed"
+        result["error"] = "Connections are retained; retry view refresh only."
+        result["partial"] = {"connections_published": True, "retry_safe": True,
+                             "retry_command": views["retry_command"]}
+    return result
 
 
 def main() -> int:

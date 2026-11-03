@@ -20,11 +20,16 @@
 | **Collection** | 검색 색인·지표·서지 DB·오디오·타임라인, Zotero 동기화·배포·이메일, 컬렉션 전체 처리 | 기능별 요구조건, 명시적 확인 | 기능 모듈 **컬렉션 관리 / 선택 기능** 탭 · `run_feature.py` · `run_full.py` |
 
 독립 기능 모듈과 CLI 작업은 **계획(요구조건·전송 대상·비용) → 확인 → 실행** 순서입니다.
-독립 `local_review.py`는 추출·리뷰·HTML·서지 사이드카만 만듭니다. Curio **Review 생성**은
+`local_review.py`는 추출·리뷰·HTML·서지 사이드카를 만들고, 공유 코퍼스에 등록된 논문은
+소속 토픽 페이지·검색 색인·이미 존재하는 네트워크까지 갱신합니다. 신규 예약 논문은
+등록 완료 후 갱신하며, 코퍼스 밖 독립 출력에는 적용하지 않습니다. Curio **Review 생성**은
 클릭 즉시 내부 준비 상태·자격증명을 검사한 뒤 리뷰 등록과 공유 관련 논문 기능을
-자동으로 더합니다. Curio는 리뷰 예산을 전달하지 않습니다. 이 원클릭 작업에는 계획 확인 창·OK·취소가 없습니다. 관련 논문은
-임베딩 공간에서 로컬로 찾으므로 리뷰 제공자 외에 추가 전송은 없습니다. 분류,
-코퍼스 전체 카테고리 재적합, 색인, 타임라인, 배포, 서지 DB 반영은 자동 실행하지
+자동으로 더합니다. Curio는 리뷰 예산을 전달하지 않습니다. 이 원클릭 작업에는 계획 확인 창·OK·취소가 없습니다. 관련 논문 후보는
+SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 캐시 미스 시에는
+양쪽 논문의 원문 발췌를 Anthropic Sonnet 5에 보내는 유료 설명 호출이 추가됩니다.
+검색 색인은 기존 모드·모델을 유지하고 캐시를 재사용하며, hybrid의 새 청크는 Google
+임베딩 호출이 필요할 수 있습니다. 갱신 실패 시 생성된 리뷰는 보존하고 실패 단계를
+명시합니다. 코퍼스 전체 카테고리 재적합, 타임라인, 배포, 서지 DB 반영은 자동 실행하지
 않습니다. 실패해도 다른 제공자로 자동 전송하지 않고, API 키는 설정 파일이 아닌
 **OS 키 저장소**에 둡니다.
 
@@ -110,7 +115,7 @@ OS keyring보다 우선하며, 없으면 `credential:<provider>` 참조가 OS ke
 
 1. [Paper Curio 최신 릴리스](https://github.com/jehyunlee/paper-curio/releases/latest)에서 **사용 중인 Zotero 버전에 맞는 XPI**를 받아 Zotero **Tools → Plugins**에서 설치합니다 — Zotero 10은 `paper-curio-zotero10.xpi`, Zotero 9(7·8 포함)는 `paper-curio-zotero9.xpi`. 릴리스마다 두 파일이 함께 나오며 기능은 동일합니다.
 2. Zotero **Settings → Paper Curio → 출력 위치**에 위 체크아웃 경로를 넣습니다(Python 경로는 비우면 `py312`).
-3. **Settings → Paper Curio → API 키**에서 선택한 리뷰 제공자의 키를 **OS 키 저장소에 저장**합니다. 관련 논문 단계는 임베딩 공간에서 계산하므로 별도 키가 필요 없습니다.
+3. **Settings → Paper Curio → API 키**에서 선택한 리뷰 제공자의 키를 **OS 키 저장소에 저장**합니다. 관련 논문 설명은 리뷰 기본값과 같은 Anthropic Sonnet 5(`claude-sonnet-5`)를 사용하므로, 리뷰에 OpenAI/Google을 골라도 Anthropic 자격증명이 필요합니다(`ANTHROPIC_API_KEY` 또는 `credential:anthropic`).
 4. 논문 항목 우클릭 → **paper-curation Review 생성**을 누르면 내부 준비 상태·자격증명 검사 후 즉시 시작합니다. 비모달 진행 창은 최종 상태까지 열려 있어 Zotero에서 읽기·가져오기를 계속할 수 있습니다. 실행 중 같은 메뉴를 다시 누르면 현재 생성 중임을 보여 주고 **대기**(기본값) 또는 **처음부터 다시 시작**을 고릅니다. 다시 시작을 고르면 진행 창은 기다리는 동안 재시작 중을 표시합니다. 현재 Python 단계가 원자적 게시를 안전하게 마친 뒤 이전 작업과 예약 정리를 끝내고, 같은 논문과 아직 처리하지 않은 선택 항목을 덮어써 캐시 없이 다시 생성합니다. 중복 생성은 시작하지 않으며 이미 발생한 API 비용은 환불되지 않습니다. 요약·질의·비교 등은 우클릭 **Paper Curation 기능 모듈**에서 계획 확인 후 실행합니다.
 
 화면별 설정 항목과 상태 메시지 해석은 **[활용 매뉴얼](docs/user-guide.md)** 을 따릅니다.
@@ -136,7 +141,8 @@ python pipeline/refresh_paper_connections.py --slug SLUG --execute
 ```
 
 기능 요청에서는 `related-papers`의
-`params: {"slug":"SLUG"}`를 사용합니다.
+`params: {"slug":"SLUG"}`를 사용합니다. 후보 검색은 로컬이지만 설명에는 양쪽 논문의
+`text.md`와 Anthropic 자격증명이 필요하며, 설명 캐시 미스 시 유료 호출이 발생합니다.
 
 기본 리뷰는 Anthropic Sonnet 5이며 자동 fallback이 없습니다. OpenAI와 Google은
 명시적으로 고르는 provider입니다. Ollama `qwen3.8:27b-mlx`는 요약·대화 전용이며
@@ -152,14 +158,14 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 
 ## 💰 비용 가이드
 
-> 정확한 실측이 아니라 **오더 오브 매그니튜드(order-of-magnitude) 가이드**입니다. 실제 비용은 논문 편수·본문 길이·타임라인 재생성 빈도·Insights opt-in 여부에 따라 크게 달라집니다.
+> 정확한 실측이 아니라 **오더 오브 매그니튜드(order-of-magnitude) 가이드**입니다. 실제 비용은 논문 편수·본문 길이·연결 설명 캐시 적중률·타임라인 재생성 빈도·Insights opt-in 여부에 따라 크게 달라집니다.
 
 단계별로 쓰이는 모델과 단가(입력/출력, 100만 토큰당):
 
 | 단계 | 모델 | 단가 (입력 / 출력) |
 |------|------|------|
 | 리뷰 기본 제공자 · 인사이트 | `claude-sonnet-5` | $3 / $15 |
-| 같이 보면 좋은 논문 | — (SPECTER2 임베딩 최근접 이웃 + BM25 RRF) | **LLM 호출 0회 → $0** |
+| 같이 보면 좋은 논문 | 후보: SPECTER2 + BM25/RRF · 설명: `claude-sonnet-5` | 후보 검색은 로컬 · 설명 캐시 미스 시 위 Sonnet 요율로 과금 |
 | Figure 검증 (vision judge) | `claude-haiku-4-5` | $1 / $5 |
 | 타임라인 내러티브 | `claude-opus-5` (5) | $5 / $25 |
 | 분류 | — (HDBSCAN + UMAP) | **LLM 호출 0회 → $0** |
@@ -168,15 +174,15 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 **편당 리뷰 대략치** — 리뷰 1편은 논문 본문 발췌 + 프롬프트를 입력, 6섹션 한국어 리뷰를 출력합니다. 대략 입력 ~15k · 출력 ~4k 토큰으로 잡으면:
 
 - `15k × $3/1M + 4k × $15/1M ≈ $0.045 + $0.06 = ~$0.11`
-- 관련 논문 연결은 임베딩 계산뿐이라 비용이 없습니다. Figure 검증(Haiku) 비용은 별도입니다.
+- 관련 논문 설명 비용은 별도입니다. 리뷰와 같은 Sonnet 5 요율을 적용하되, 양쪽 원문 컨텍스트 길이·생성 토큰·논문 쌍 수·설명 캐시 적중률에 따라 달라지므로 위 편당 리뷰 추정치를 그대로 적용할 수 없습니다. 유효한 설명 캐시를 재사용하면 해당 쌍의 LLM 재호출은 없습니다. Figure 검증(Haiku) 비용도 별도입니다.
 
-**월간 운영 대략치** — 주간 ~20편(월 ~80편) 사이클 기준:
+**월간 리뷰·타임라인 대략치** — 주간 ~20편(월 ~80편) 사이클 기준, 관련 논문 설명 비용 제외:
 
 - 리뷰: 80편 × ~$0.11 ≈ **$9**
 - 타임라인(변경된 카테고리만, Opus, 비정기) ≈ **$1–3**
-- **합계** ≈ **$10–12** (Insights opt-in `--insights` 또는 전체 타임라인 재생성 시 증가).
+- **소계** ≈ **$10–12**. 관련 논문 설명의 캐시 미스 비용은 여기에 추가됩니다(Insights opt-in `--insights` 또는 전체 타임라인 재생성 시에도 증가).
 
-> **각주**: 분류(HDBSCAN)와 관련 논문 연결(임베딩 최근접 이웃)은 LLM을 전혀 호출하지 않으므로 비용이 없습니다. Deep Research 답변 생성은 독자 BYOK라 운영자 비용에 포함되지 않습니다.
+> **각주**: 분류(HDBSCAN)는 LLM을 전혀 호출하지 않으므로 비용이 없습니다. 관련 논문은 로컬 후보 검색과 유료 LLM 설명 생성을 구분합니다. Deep Research 답변 생성은 독자 BYOK라 운영자 비용에 포함되지 않습니다.
 
 ## 기능
 
@@ -185,7 +191,7 @@ ingest하며, `--changed-only --skip-zotero --offline --no-email`로 외부 동�
 | 경로 | 기능 (ID) | 설명 |
 |------|-----------|------|
 | Read | 열람 · `institution-export` · `extract` | 생성된 리뷰·검색·타임라인 열람(키 없음), 공개 기관표 내보내기, 로컬 PDF 텍스트·그림 추출 |
-| AI | **구조화 리뷰** `review` | `local_review.py`: PDF에서 텍스트/Figure 추출 → 선택한 제공자가 6개 섹션(Essence·Motivation·Achievement·How·Originality·Evaluation) 한국어 리뷰 작성 → HTML + 서지 사이드카. Curio Review 생성은 등록과 관련 논문 연결도 수행 |
+| AI | **구조화 리뷰** `review` | `local_review.py`: PDF에서 텍스트/Figure 추출 → 선택한 제공자가 7개 섹션(Essence·Motivation·Achievement·How·Originality·Limitation & Further Study·Evaluation) 한국어 리뷰 작성. Limitation 아래 Data Artifacts는 [데이터 인위성 지도](https://app.jehyunlee.dev/dataartifact/) 기준으로 논문이 범할 수 있는 오류를 짚음 → HTML + 서지 사이드카. Curio Review 생성은 등록과 관련 논문 연결도 수행 |
 | AI | `summary` · `chat` · `comparison` | 선택한 PDF 본문만 근거로 **원문 인용이 붙은 주장**을 생성. 인용을 찾을 수 없는 답변은 거부. 요약·질의는 로컬 Ollama 가능 |
 | AI | **AI Chat / Citedby** | PDF와 멀티턴 대화, 인용 계보 분석 — Zotero 플러그인의 기존 기능 |
 | Collection | `keyword-search` · `semantic-search` | BM25 색인·조회(키 없음) / Gemini 임베딩 hybrid 색인·조회(Google 키) |
@@ -199,11 +205,17 @@ Review 생성은 등록된 리뷰의 관련 논문 연결만 수행하며, 나�
 | 기능 | 설명 |
 |------|------|
 | **자동 분류** | Bottom-up 토픽 모델링(SPECTER2 + HDBSCAN + UMAP)으로 카테고리 자동 생성·배정 — LLM 호출 0회 |
-| **같이 보면 좋은 논문** | SPECTER2 코사인과 제목·저자 BM25 순위를 RRF(`k=60`)로 합쳐 카테고리가 없는 논문도 토픽별로 최대 5편의 이웃을 선택합니다. 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있습니다. **LLM은 호출하지 않습니다** — 설명은 코사인 유사도 근거이고 관계 라벨은 방향 없는 `alternative`(유사 연구)입니다. 인용·인과관계의 확정이 아닙니다. |
+| **같이 보면 좋은 논문** | SPECTER2 코사인과 제목·저자 BM25 순위를 RRF(`k=60`)로 합쳐 카테고리가 없는 논문도 토픽별로 최대 5편의 이웃을 선택합니다. 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있습니다. 이 검색은 유지하며 LLM이 이웃을 고르지 않습니다. Anthropic Sonnet 5가 양쪽 원문을 근거로 공통 연구 질문·구체적인 방법 확장/차이를 설명하는 실질적인 한국어 이유를 작성합니다. 코사인 점수나 일반적인 임베딩 근접성 문구는 설명을 대신하지 않습니다. |
 | **Deep Research** | 자연어 질의 → hybrid 검색(BM25+dense) → 독자 BYOK 제공자의 답변 + `[N]` 인용 |
 | **타임라인** | 카테고리별 연구 동향 내러티브 + 다이어그램(PaperBanana) + main research timeline |
 | **지식 축적** | Obsidian 연동 — 메모가 다음 질의에 반영되는 compounding knowledge |
 | **논문 검색/등록** | arXiv·Semantic Scholar·OpenAlex 병렬 검색 + Zotero 자동 등록(선택) |
+
+관련 논문 설명에는 생성 `model`, 양쪽 원문의 정확한 인용(`source_quote`·`target_quote`),
+반대 관점에서 별도로 작성한 `reverse` 이유·근거를 보존합니다. `basis: embedding`과
+코사인은 검색 출처이지 의미 관계의 증거가 아닙니다. 후속 연구·반례·반박은 이를 직접
+뒷받침하는 원문 근거가 있을 때만 방향을 명시하며, 유사도나 출판 순서만으로 만들지 않습니다.
+원문이 없거나 인용 검증이 실패하면 일반적인 유사도 문구로 대체하지 않고 오류를 알립니다.
 
 **전체 큐레이션 옵션** — 플래그/모드로 켤 때만:
 
@@ -225,7 +237,7 @@ Review 생성은 등록된 리뷰의 관련 논문 연결만 수행하며, 나�
 2. **구조화 리뷰** — Claude가 6섹션 한국어 `review.md`
 3. **피인용·레퍼런스** — `citations.md`(이력 누적) + `references.md`. 기본 30일 증분, 외부 API 장애가 파이프라인을 죽이지 않는 soft step(`--skip-metrics`)
 4. **토픽 모델링 + 분류** — SPECTER2 + HDBSCAN + UMAP로 카테고리 자동 생성·배정
-5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6, `extract_insights.py` connections pass, 단일 논문 갱신(`refresh_paper_connections.py`) 모두 SPECTER2 임베딩 최근접 이웃 + 제목·저자 BM25 RRF(`k=60`)로 연결을 정합니다. LLM 호출은 없고, 코퍼스 전체는 `rebuild_connections.py --recompute`로 임베딩 캐시에서 다시 계산합니다.
+5. **같이 보면 좋은 논문** — `topic_modeling.py` Step 6, `extract_insights.py` connections pass, 단일 논문 갱신(`refresh_paper_connections.py`) 모두 SPECTER2 코사인 + 제목·저자 BM25/RRF(`k=60`)로 후보를 정한 뒤, 리뷰와 같은 기본 Anthropic Sonnet 5로 양쪽 원문 근거의 한국어 설명을 만듭니다. 생성 모델·양쪽 인용·별도 역방향 설명을 보존하고 설명 캐시를 재사용합니다. 코퍼스 전체는 `rebuild_connections.py --recompute`로 다시 계산하며, 임베딩 캐시가 있어도 설명 캐시 미스에는 유료 LLM 호출이 필요합니다.
 6. **카테고리 요약 + 타임라인 내러티브/main·category 다이어그램** & **Deep Research 검색 인덱스**(BM25 + Gemini 임베딩)
 7. **토픽 인덱스** `index.html`(Deep Research·Audio Overview 내장) → **로컬 열람**(`serve_local.py`) 또는 **배포**
 

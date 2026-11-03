@@ -171,10 +171,12 @@
           "run_steps": [
             "extract_insights"
           ],
-          "desc": "SPECTER2 코사인과 제목·저자 BM25 순위를 RRF로 합쳐 토픽별로 논문당 최대 5편을 선택합니다. 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있습니다. LLM 호출 0회.",
-          "cost": "local",
+          "desc": "SPECTER2 코사인과 제목·저자 BM25 RRF로 후보를 선택하고, LLM이 양쪽 원문 인용에 근거해 구체적인 연관 이유를 작성합니다. 모델·근거·역방향 설명을 보존하며, 토픽 병합·역방향 연결 후 표시 개수는 5편을 넘을 수 있습니다.",
+          "cost": "paid",
+          "model": "claude-sonnet-5",
           "inputs": [
-            "_embeddings_cache.json"
+            "_embeddings_cache.json",
+            "text.md"
           ],
           "outputs": [
             "_paper_connections.json"

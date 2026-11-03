@@ -18,7 +18,7 @@
 | | 설명 |
 |---|---|
 | **입력** | 추출된 텍스트 + Figure |
-| **처리** | <ul><li>기본 Anthropic Claude Sonnet 5가 한국어 리뷰 6개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Evaluation); OpenAI와 Google은 명시적 provider 선택이며 자동 fallback이 아님</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
+| **처리** | <ul><li>기본 Anthropic Claude Sonnet 5가 한국어 리뷰 7개 섹션 작성 (Essence · Motivation · Achievement · How · Originality · Limitation & Further Study · Evaluation). Limitation 아래 <code>### Data Artifacts</code>는 <a href="https://app.jehyunlee.dev/dataartifact/">데이터 인위성 지도</a>의 효과 목록(<code>pipeline/lib/data_artifacts.json</code>)으로 논문이 범할 수 있는 오류를 단계·관련도·근거·설명으로 적음(리뷰 호출과 별도인 같은 제공자의 구조화 호출, 실패 시 리뷰도 실패); OpenAI와 Google은 명시적 provider 선택이며 자동 fallback이 아님</li><li>기술 용어는 원문 그대로 유지</li><li>동시 처리 (기본 16, Tier 4)</li></ul> |
 | **출력** | <ul><li><code>papers/{slug}/review.md</code></li><li><code>papers/{slug}/index.html</code></li></ul> |
 | **활용** | 브라우저에서 리뷰 열람, Figure 인라인 표시, Related Papers 자동 연결 |
 

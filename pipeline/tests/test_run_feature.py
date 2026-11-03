@@ -28,6 +28,13 @@ class FeatureRunnerTests(unittest.TestCase):
         self.topic.mkdir(parents=True)
         self.entries = [{"slug": self.paper.name, "title": "Evidence", "topics": ["demo"],
                          "classifications": {"demo": {"primary_category": "Evidence"}}}]
+        self.related_plan = {
+            "status": "ready", "topics": ["demo"], "outputs": [],
+            "steps": ["refresh_paper_connections"],
+            "explanation": {"provider": "anthropic", "model": "claude-sonnet-5",
+                            "transmission": "source excerpts from both selected papers",
+                            "credential_ref": "credential:anthropic", "cost_class": "paid"},
+        }
         (self.papers / "_papers_index.json").write_text(json.dumps(self.entries))
         (self.paper / "review.md").write_text("Existing review is preserved.")
         self.index = {"retrieval_mode": "bm25", "model": None, "quant": None, "dim": 0,
@@ -46,75 +53,160 @@ class FeatureRunnerTests(unittest.TestCase):
     def request(self, feature, **params):
         return {"schema_version": 1, "feature": feature, "params": params}
 
-    def test_related_plan_is_read_only_local_and_needs_no_credential(self):
+    def test_related_plan_is_read_only_and_declares_paid_anthropic_explanations(self):
         with patch("refresh_paper_connections.plan_connections",
-                   return_value={"status": "ready", "topics": ["demo"], "outputs": []}) as plan, \
+                   return_value=self.related_plan) as plan, \
              patch("refresh_paper_connections.refresh_connections") as execute, \
-             patch.object(runner, "_credential", side_effect=AssertionError("no credential")), \
+             patch.object(runner.importlib.util, "find_spec", return_value=SimpleNamespace()), \
+             patch.object(runner, "_credential", return_value="sentinel-secret") as credential, \
              patch.object(runner, "_child") as child:
             result = runner.run_request(self.request("related-papers", slug=self.paper.name))
         self.assertEqual(result["status"], "ready", result)
-        self.assertIsNone(result.get("provider"))
-        self.assertNotIn("model", result)
-        self.assertEqual(result["cost"], {"status": "none"})
+        self.assertEqual(result["provider"], "anthropic")
+        self.assertEqual(result["model"], "claude-sonnet-5")
+        self.assertEqual(result["cost"], {"status": "unknown", "cost_class": "paid"})
+        self.assertIn("Anthropic", result["transmission"])
+        self.assertIn("source excerpts from both selected papers", result["transmission"])
+        self.assertEqual(result["steps"], ["refresh_paper_connections", "explain_related_papers"])
+        self.assertEqual(result["explanation"], self.related_plan["explanation"])
+        self.assertNotIn("sentinel-secret", json.dumps(result))
+        credential.assert_called_once_with("anthropic", None)
         plan.assert_called_once_with(self.paper.name)
         execute.assert_not_called()
         child.assert_not_called()
 
-    def test_related_rejects_provider_and_credential_fields_before_planning(self):
+    def test_related_rejects_other_providers_and_mismatched_references_before_planning(self):
         request = self.request("related-papers", slug=self.paper.name)
         with patch("refresh_paper_connections.plan_connections") as plan, \
              patch("refresh_paper_connections.refresh_connections") as execute, \
-             patch.object(runner, "_credential", side_effect=AssertionError("no credential")):
+             patch.object(runner, "_credential", side_effect=AssertionError("no credential")) as credential:
             for fields in (
-                {"provider": "anthropic"},
-                {"provider": "anthropic", "credential_ref": "credential:anthropic"},
                 {"provider": "google"},
-                {"credential_ref": "credential:anthropic"},
+                {"provider": "openai"},
+                {"provider": "ollama"},
+                {"provider": "google", "credential_ref": "credential:anthropic"},
+                {"provider": "anthropic", "credential_ref": "credential:openai"},
+                {"credential_ref": "credential:google"},
             ):
                 with self.subTest(fields=fields):
                     result = runner.run_request(request | fields, execute=True)
                     self.assertEqual(result["status"], "failed", result)
         plan.assert_not_called()
         execute.assert_not_called()
+        credential.assert_not_called()
+
+    def test_related_accepts_anthropic_and_its_reference_with_the_same_default(self):
+        request = self.request("related-papers", slug=self.paper.name)
+        for fields in (
+            {"provider": "anthropic"},
+            {"credential_ref": "credential:anthropic"},
+            {"provider": "anthropic", "credential_ref": "credential:anthropic"},
+        ):
+            with self.subTest(fields=fields), \
+                 patch("refresh_paper_connections.plan_connections", return_value=self.related_plan), \
+                 patch("refresh_paper_connections.refresh_connections") as execute, \
+                 patch.object(runner.importlib.util, "find_spec", return_value=SimpleNamespace()), \
+                 patch.object(runner, "_credential", return_value="test") as credential:
+                result = runner.run_request(request | fields)
+            self.assertEqual(result["status"], "ready", result)
+            self.assertEqual(result["provider"], "anthropic")
+            self.assertEqual(result["model"], "claude-sonnet-5")
+            credential.assert_called_once_with("anthropic", fields.get("credential_ref"))
+            execute.assert_not_called()
+
+    def test_related_missing_key_blocks_before_execution(self):
+        with patch("refresh_paper_connections.plan_connections", return_value=self.related_plan), \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner.importlib.util, "find_spec", return_value=SimpleNamespace()), \
+             patch.object(runner, "_credential", side_effect=runner.FeatureBlocked("needs-key", "Anthropic credential unavailable")) as credential:
+            result = runner.run_request(self.request("related-papers", slug=self.paper.name), execute=True)
+        self.assertEqual(result["status"], "needs-key", result)
+        credential.assert_called_once_with("anthropic", None)
+        execute.assert_not_called()
+
+    def test_related_missing_anthropic_sdk_blocks_before_execution(self):
+        with patch("refresh_paper_connections.plan_connections", return_value=self.related_plan), \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner.importlib.util, "find_spec", return_value=None) as runtime, \
+             patch.object(runner, "_credential") as credential:
+            result = runner.run_request(self.request("related-papers", slug=self.paper.name), execute=True)
+        self.assertEqual(result["status"], "needs-runtime", result)
+        runtime.assert_called_once_with("anthropic")
+        credential.assert_not_called()
+        execute.assert_not_called()
 
     def test_related_execution_delegates_without_outer_lock_or_unrequested_steps(self):
-        with patch("refresh_paper_connections.plan_connections", return_value={"status": "ready"}), \
+        request = self.request("related-papers", slug=self.paper.name)
+        request.update(provider="anthropic", credential_ref="credential:anthropic")
+        with patch("refresh_paper_connections.plan_connections", return_value=self.related_plan), \
              patch("refresh_paper_connections.refresh_connections",
                    return_value={"outputs": ["index.html"], "related_count": 5}) as execute, \
              patch("lib.corpus_store.corpus_operation_lock", side_effect=AssertionError("nested lock")), \
-             patch.object(runner, "_credential", return_value="test"), \
+             patch.object(runner.importlib.util, "find_spec", return_value=SimpleNamespace()), \
+             patch.object(runner, "_credential", return_value="test") as credential, \
              patch.object(runner, "_child") as child:
-            result = runner.run_request(self.request("related-papers", slug=self.paper.name), execute=True)
+            result = runner.run_request(request, execute=True)
         self.assertEqual(result["status"], "completed", result)
         self.assertEqual(result["related_count"], 5)
+        self.assertEqual(result["provider"], "anthropic")
+        self.assertEqual(result["model"], "claude-sonnet-5")
+        self.assertEqual(result["cost"], {"status": "unknown", "cost_class": "paid"})
+        credential.assert_called_once_with("anthropic", "credential:anthropic")
         execute.assert_called_once_with(self.paper.name)
         child.assert_not_called()
 
-    def test_related_legacy_caps_provider_and_path_are_validated_before_execution(self):
+    def test_related_invalid_paths_and_unsupported_controls_block_before_planning(self):
         request = self.request("related-papers", slug=self.paper.name)
         invalid = [
-            request | {"provider": "google"},
             request | {"params": {"slug": "../escape"}},
             request | {"params": {"slug": self.paper.name, "max_cost_usd": -1}},
             request | {"budget": {"max_cost_usd": float("nan")}},
+            request | {"budget": {"max_cost_usd": float("inf")}},
             request | {"budget": {"max_cost_usd": True}},
-            request | {"budget": {"max_cost_usd": 0}},
+            request | {"budget": {"max_cost_usd": -1}},
+            request | {"budget": {}},
             request | {"budget": {"input_per_million_usd": 1}},
-            request | {"budget": {"max_cost_usd": .1}},
+            request | {"budget": {"output_per_million_usd": 1}},
             request | {"budget": {"max_output_tokens": 100}},
         ]
-        with patch("refresh_paper_connections.refresh_connections") as execute:
+        with patch("refresh_paper_connections.plan_connections") as plan, \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner, "_credential") as credential:
             for payload in invalid:
                 self.assertEqual(runner.run_request(payload, execute=True)["status"], "failed", payload)
+        plan.assert_not_called()
+        credential.assert_not_called()
+        execute.assert_not_called()
+
+    def test_related_monetary_caps_fail_closed_without_invented_pricing(self):
+        request = self.request("related-papers", slug=self.paper.name)
+        budgets = [
+            {"max_cost_usd": 0},
+            {"max_cost_usd": .1},
+            {"max_cost_usd": 10, "input_per_million_usd": 0,
+             "output_per_million_usd": 0, "max_output_tokens": 100},
+            {"max_cost_usd": 10, "input_per_million_usd": 3,
+             "output_per_million_usd": 15, "max_output_tokens": 100},
+        ]
+        with patch("refresh_paper_connections.plan_connections") as plan, \
+             patch("refresh_paper_connections.refresh_connections") as execute, \
+             patch.object(runner, "_credential") as credential:
+            for budget in budgets:
+                for execute_request in (False, True):
+                    with self.subTest(budget=budget, execute=execute_request):
+                        result = runner.run_request(request | {"budget": budget}, execute=execute_request)
+                        self.assertEqual(result["status"], "budget-unavailable", result)
+        plan.assert_not_called()
+        credential.assert_not_called()
         execute.assert_not_called()
 
     def test_related_failures_are_not_reported_as_successful_zero_results(self):
         request = self.request("related-papers", slug=self.paper.name)
         with patch("refresh_paper_connections.plan_connections", side_effect=ValueError("missing corpus")):
             self.assertEqual(runner.run_request(request)["status"], "insufficient-data")
-        with patch("refresh_paper_connections.plan_connections", return_value={"status": "ready"}), \
+        with patch("refresh_paper_connections.plan_connections", return_value=self.related_plan), \
              patch("refresh_paper_connections.refresh_connections", side_effect=RuntimeError("private value")), \
+             patch.object(runner.importlib.util, "find_spec", return_value=SimpleNamespace()), \
              patch.object(runner, "_credential", return_value="test"):
             result = runner.run_request(request, execute=True)
         self.assertEqual(result["status"], "failed")
@@ -131,6 +223,13 @@ class FeatureRunnerTests(unittest.TestCase):
         self.assertEqual(by_id["related-papers"]["params_schema"]["properties"], {
             "slug": {"type": "string", "minLength": 1},
         })
+        self.assertEqual(by_id["related-papers"]["supported_providers"], ["anthropic"])
+        self.assertEqual(by_id["related-papers"]["required_capabilities"], ["text.structured"])
+        self.assertIn("anthropic", by_id["related-papers"]["runtime"])
+        self.assertEqual(by_id["related-papers"]["credential"]["role"], "personal")
+        self.assertEqual(by_id["related-papers"]["credential"]["cost_class"], "paid")
+        self.assertIn("Anthropic", by_id["related-papers"]["credential"]["transmission"])
+        self.assertIn("source excerpts from both selected papers", by_id["related-papers"]["credential"]["transmission"])
         self.assertEqual(by_id["extract"]["group"], "M0")
         self.assertNotEqual(by_id["timeline-text"]["credential"]["cost_class"], "local")
 

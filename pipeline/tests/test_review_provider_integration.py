@@ -29,6 +29,16 @@ VALID = {
 }
 
 
+ARTIFACTS = [{"id": "streetlight", "rel": 2, "evidence": "공개 데이터셋만 썼다.",
+              "note": "빠진 대상을 확인해야 한다."}]
+
+
+def _by_capability(*_args, capability, **_kwargs):
+    if capability == "data_artifacts":
+        return {"data": {"data_artifacts": list(ARTIFACTS)}}
+    return {"data": dict(VALID)}
+
+
 class ReviewCompletenessGateTests(unittest.TestCase):
     """Partial answers that validate_papers would flag must never be cached as complete."""
 
@@ -62,12 +72,24 @@ class ReviewProviderIntegrationTests(unittest.TestCase):
     def test_each_selected_provider_writes_same_canonical_review(self):
         import lib.text_providers as providers
         for provider, model in (("anthropic", "claude-sonnet-5"), ("openai", "gpt-5"), ("google", "gemini-3.1-pro-preview")):
-            with self.subTest(provider=provider), patch.object(providers, "generate_structured", return_value={"data": dict(VALID)} ) as call:
+            with self.subTest(provider=provider), patch.object(providers, "generate_structured", side_effect=_by_capability) as call:
                 self.assertTrue(engine.write_review(self.item, str(self.dir), [], provider=provider, model=model, cache_dir=str(self.dir / (provider + "-cache"))))
-            self.assertEqual(call.call_args.args[:2], (provider, model))
+            review_call, artifact_call = call.call_args_list
+            self.assertEqual(review_call.kwargs["capability"], "review")
+            self.assertEqual(artifact_call.kwargs["capability"], "data_artifacts")
+            self.assertEqual(review_call.args[:2], (provider, model))
+            self.assertEqual(artifact_call.args[:2], (provider, model))
             review = (self.dir / "review.md").read_text(encoding="utf-8")
             self.assertIn("## Essence", review)
             self.assertIn("## Evaluation", review)
+            limitation = review.split("## Limitation & Further Study", 1)[1].split("## Evaluation", 1)[0]
+            self.assertIn("### Data Artifacts", limitation)
+            self.assertIn("- **가로등 효과** (Streetlight effect) · 1 지표 설계 · ●●○", limitation)
+            self.assertIn("  - 근거: 공개 데이터셋만 썼다.", limitation)
+            self.assertIn("  - 설명: 빠진 대상을 확인해야 한다.", limitation)
+            self.assertIn("streetlight | 가로등 효과 | design |", artifact_call.args[2])
+            self.assertIn("source evidence", artifact_call.args[3])
+            self.assertNotIn("data_artifacts", review_call.args[4]["properties"])
 
     def test_malformed_provider_data_is_not_published_or_cached_complete(self):
         import lib.text_providers as providers
@@ -77,6 +99,21 @@ class ReviewProviderIntegrationTests(unittest.TestCase):
         self.assertFalse((self.dir / "review.md").exists())
         cached = list(cache.glob("*.json")) if cache.exists() else []
         self.assertFalse(any(json.loads(path.read_text()).get("result") == {"essence": "partial"} for path in cached))
+
+    def test_failed_data_artifacts_analysis_fails_the_review(self):
+        import lib.text_providers as providers
+
+        def no_list(*_args, capability, **_kwargs):
+            return {"data": dict(VALID) if capability == "review" else {"data_artifacts": "none"}}
+
+        with patch.object(providers, "generate_structured", side_effect=no_list):
+            self.assertFalse(engine.write_review(self.item, str(self.dir), [], cache_dir=str(self.dir / "cache")))
+        self.assertFalse((self.dir / "review.md").exists())
+
+    def test_data_artifacts_requires_a_cloud_provider(self):
+        import lib.text_providers as providers
+        with self.assertRaises(providers.UnsupportedCapabilityError):
+            providers._validate_selection("ollama", None, "data_artifacts")
 
     def test_adapter_uses_selected_sdk_with_retries_disabled(self):
         import lib.text_providers as providers

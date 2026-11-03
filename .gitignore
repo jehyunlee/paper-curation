@@ -26,6 +26,7 @@
 !pipeline/pipeline_map.json
 !pipeline/lib/
 !pipeline/lib/*.py
+!pipeline/lib/data_artifacts.json
 !pipeline/lib/citedby/
 !pipeline/lib/citedby/*.py
 !pipeline/lib/metrics/
