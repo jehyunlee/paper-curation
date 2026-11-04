@@ -285,11 +285,12 @@ class RelationExplanationTests(unittest.TestCase):
         self.generate.assert_called_once()
         self.assertEqual(result["evidence"]["prompt_version"], explanations.PROMPT_VERSION)
 
-    def test_invalid_grounded_entry_is_an_error(self):
+    def test_invalid_grounded_entry_is_not_served_and_summary_is_used(self):
         self._seed_grounded(quote_ok=False)
-        with self.assertRaises(explanations.RelationExplanationError):
-            self._explain()
-        self.generate.assert_not_called()
+        result = self._explain()
+        self.generate.assert_called_once()
+        self.assertEqual(result["reason"], FORWARD_REASON)
+        self.assertEqual(result["evidence"]["prompt_version"], explanations.PROMPT_VERSION)
 
     def test_paper_without_text_uses_summaries(self):
         (self.papers / self.target["slug"] / "text.md").unlink()

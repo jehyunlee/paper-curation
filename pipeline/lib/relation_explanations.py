@@ -147,8 +147,8 @@ target 관점에서 source를 설명한다. reverse는 forward 문장을 반복�
 # embeddings); banning it rejected ~400 valid reasons. Only talk about how the
 # pair was retrieved is banned.
 _RETRIEVAL_TALK = re.compile(
-    r"SPECTER|BM25|\bRRF\b|코사인\s*유사도|cosine\s+similarit|임베딩\s*공간|embedding\s+space"
-    r"|가까운\s*논문", re.I)
+    r"SPECTER|BM25|\bRRF\b|코사인\s*유사도|cosine\s+similarit|임베딩\s*공간|embedding\s+space",
+    re.I)
 # Prompt variable names leaking into prose. English "source"/"target" are
 # ordinary domain words (drug target, open source); only the variable use is.
 _VARIABLE_TALK = re.compile(r"\b(?:forward|reverse)\b|\b(?:source|target)\s*(?:논문|paper)", re.I)
@@ -396,7 +396,12 @@ def _grounded_cached(left: dict, right: dict, model: str):
     if result.get("model") != model or result.get("provider") != PROVIDER:
         raise RelationExplanationError("comparison explanation has invalid model provenance")
     data = result.get("data")
-    _validate_grounded(data, gl, gr)
+    try:
+        _validate_grounded(data, gl, gr)
+    except RelationExplanationError:
+        # The grounded cache is only a cost saving; an entry the current checks
+        # reject is not served, and the pair is explained from summaries instead.
+        return None
     return data, gl["sha256"], gr["sha256"], GROUNDED_PROMPT_VERSION
 
 
