@@ -73,7 +73,7 @@ python pipeline/run_feature.py --request feature-request.json --execute
 | 모듈 | 기능 ID | 기능 / Feature | 제공자 | 전송 대상 | 비용 유형 |
 |---|---|---|---|---|---|
 | M1 | `review` | 논문 리뷰 / Paper review | anthropic, openai, google | selected cloud provider; registered hybrid view cache misses also use Google embeddings | paid |
-| M1 | `related-papers` | 토픽 분류·관련 논문 연결 / Topic classification and related papers | anthropic | Anthropic; source excerpts from both selected papers for quote-grounded relationship explanations; changed hybrid view cache misses also use Google embeddings | paid |
+| M1 | `related-papers` | 토픽 분류·관련 논문 연결 / Topic classification and related papers | anthropic | Anthropic; title, year, first three authors, classification, review essence, and truncated originality summary (no original text) of both papers of each selected pair for the relationship explanation (~2k input tokens per pair); changed hybrid view cache misses also use Google embeddings | paid |
 | M1 | `summary` | 근거 기반 요약 / Grounded summary | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `chat` | 근거 기반 질의 / Grounded chat | anthropic, openai, google, ollama | selected provider; Ollama stays on loopback | provider-dependent |
 | M1 | `comparison` | 근거 기반 비교 / Grounded comparison | anthropic, openai, google | selected cloud provider | paid |

@@ -283,20 +283,29 @@ python pipeline/run_feature.py --list
 ### 5.1 현재 connections 구현
 
 `topic_modeling.py`의 Step 6, `extract_insights.py` connections pass, 단일 논문 갱신 `refresh_paper_connections.py`는 모두
-**SPECTER2 임베딩 공간에서** 연결을 찾는다. 논문마다 코사인 최근접 이웃 순위와 제목·저자 BM25 순위를 RRF(`k=60`)로
+**SPECTER2 임베딩 공간에서** 이웃을 고른다. 논문마다 코사인 최근접 이웃 순위와 제목·저자 BM25 순위를 RRF(`k=60`)로
 합쳐 토픽별로 `RELATED_LINKS`편(기본 5편)을 선택한다. 토픽 병합·역방향 연결 후 표시 개수는 이 한도를 넘을 수 있다.
-**LLM은 호출하지 않는다** — 후보 선택·관계 판정·무관 쌍 제거·설명 문장 어디에도
-모델이 없다. 관계 라벨은 방향 없는 `alternative`, 설명은 “SPECTER2 임베딩 공간에서 가까운 논문입니다 (코사인 유사도 0.83).”처럼
-근거 수치를 밝힌다. 양방향 뷰는 `lib/connections.py`가 만들며, 옛 LLM 판정 항목(`basis`가 `embedding`이 아닌 항목)은 읽지 않는다.
+**이웃 선택에 LLM은 관여하지 않는다.** 선택된 쌍마다 Anthropic Sonnet 5가 두 논문의 요약(제목·연도·앞 세 저자·코퍼스 분류·
+리뷰 핵심·`originality.md` 앞 1,200자)만으로 짧은 설명을 쓴다. 원문은 전송하지 않으며 쌍당 입력은 약 2k 토큰이다.
+이유는 연구 분야·응용 영역, 공통 문제, 방법·데이터·범위 차이를 밝히는 한국어 2~3문장이고, 관계 라벨은
+`alternative`(기본)·`foundation`·`extension`·`application`·`counterpoint` 중 하나다. 서베이와 그 분야 연구는 `alternative`이며
+발행 순서를 지킨다. 정방향·역방향은 각각 따로 쓰고, 검색 방식(SPECTER2·BM25·RRF·코사인 유사도·임베딩 공간)을 근거로 든 이유는 거부된다.
+`basis: embedding`과 증거의 코사인 값은 검색 출처 기록으로만 남는다. 양방향 뷰는 `lib/connections.py`가 만든다.
+예전 텍스트 근거 설명(paper-comparison-v5)은 논문 `text.md`가 바뀌지 않는 동안 `.cache/relation_explanations/`에서 재사용한다.
+수리 1회 후에도 설명이 유효하지 않은 쌍, 또는 리뷰 핵심과 `originality.md`가 모두 없는 논문은 그래프에서 제외되고
+(unexplainable로 기록, 무료 재시도 없음, 템플릿 문장으로 대체하지 않음), 공급자·네트워크 실패는 실행을 중단하되 성공분은
+캐시에 남아 재실행 시 나머지만 과금된다.
 Curio 최소 리뷰는 connections를 만들지 않는다.
 
 코퍼스 전체를 다시 계산하려면 `PYTHONUTF8=1 python pipeline/rebuild_connections.py --recompute`를 실행한다.
 기존 연결 파일 유무와 관계없이 인덱스의 모든 토픽 소속을 포함한다. 토픽별 `_embeddings_cache.json`을 쓰고 빠지거나 변경된
 벡터를 로컬에서 임베딩한다. 공용 exclusive corpus 잠금 아래 전역 저장소를 원자적으로 교체한 뒤 토픽·`_cross` 뷰,
 논문 페이지, `review.md`의 Related Papers 블록, 네트워크 및 기존 서지 DB를 갱신한다. 빈 결과의 이전 연결도 지운다.
-`--recompute --dry-run`은 파일을 쓰거나 임베딩하지 않고 계획만 출력한다. API 비용은 없다.
+`--recompute --dry-run`은 파일을 쓰거나 임베딩하지 않고 계획만 출력한다.
+`--recompute`는 코퍼스 전체의 설명을 다시 생성하므로 캐시 미스분에 Anthropic 비용이 든다. 동시성은 `RELATED_EXPLAIN_WORKERS`(기본 8)로
+정하고 순서 없는 쌍마다 설명은 한 번만 만든다.
 
-연결은 임베딩 유사도일 뿐 검증된 인용·인과·확장 관계가 아니다. 독자는 두 논문을 직접 확인해야 한다.
+연결은 검색 유사도와 LLM의 요약 비교일 뿐 검증된 인용·인과·확장 관계가 아니다. 독자는 두 논문을 직접 확인해야 한다.
 
 ### 5.2 Curio 컬렉션 전체 처리
 
