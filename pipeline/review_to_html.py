@@ -54,6 +54,9 @@ _connections_cache = {}
 _BSI = None
 
 from lib import license_util as _lic
+from lib.data_artifacts import HEADING as _DATA_ARTIFACTS_HEADING
+
+_DA_DOTS = re.compile(r'[●○]+')
 
 _DEPLOY_TOPICS = None
 def _deploy_topics():
@@ -193,6 +196,10 @@ code {{ background: #e8edf3; padding: 0.15rem 0.4rem; border-radius: 4px; font-s
 img {{ max-width: min(100%, 700px); border: 1px solid #e8e8e8; border-radius: 8px; margin: 0.8rem auto; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }}
 hr {{ border: none; border-top: 1px solid #e0e0e0; margin: 0.5rem 0; }}
 strong {{ color: #1a1a2e; }}
+.data-artifacts {{ background: #FDECEC; border: 1px solid #F3B4B4; border-left: 4px solid #C62828; border-radius: 8px; padding: 0.6rem 1rem; margin: 0.8rem 0; }}
+.data-artifacts h3 {{ color: #8B0000; margin: 0 0 0.4rem; }}
+.data-artifacts strong {{ color: #D32F2F; }}
+.data-artifacts .da-dots {{ color: #D32F2F; letter-spacing: 0.05em; }}
 a {{ color: {t['link_color']}; }}
 .back {{ margin-top: 1.5rem; padding: 0.8rem 0; border-top: 2px solid #e0e0e0; }}
 .back a {{ font-weight: 600; text-decoration: none; }}
@@ -309,6 +316,16 @@ def md_section_to_html(text, slug_dir=None):
     table_header_done = False
     # List state: stack of (tag, indent_level)
     list_stack = []
+    # Inside the ``### Data Artifacts`` block, which runs to the next H3/HR or
+    # the section end and renders as a red warning box.
+    in_artifacts = False
+
+    def close_artifacts():
+        nonlocal in_artifacts
+        if in_artifacts:
+            close_all_lists()
+            out.append('</div>')
+            in_artifacts = False
 
     def close_lists_to(target_depth):
         while len(list_stack) > target_depth:
@@ -350,6 +367,9 @@ def md_section_to_html(text, slug_dir=None):
         if _is_ul(s) or _is_ol(s):
             tag = 'ol' if _is_ol(s) else 'ul'
             content = _inline(_list_content(s))
+            if in_artifacts:
+                content = _DA_DOTS.sub(
+                    lambda m: f'<span class="da-dots">{m.group(0)}</span>', content)
 
             if not list_stack:
                 # Start new list
@@ -452,12 +472,17 @@ def md_section_to_html(text, slug_dir=None):
 
         # HR
         if s == '---' or s == '***':
+            close_artifacts()
             out.append('<hr>')
             i += 1
             continue
 
         # H3
         if s.startswith('### '):
+            close_artifacts()
+            if s == _DATA_ARTIFACTS_HEADING:
+                out.append('<div class="data-artifacts">')
+                in_artifacts = True
             out.append(f'<h3>{_inline(s[4:])}</h3>')
             i += 1
             continue
@@ -474,6 +499,7 @@ def md_section_to_html(text, slug_dir=None):
     close_all_lists()
     if in_table:
         out.append('</table>')
+    close_artifacts()
     return '\n'.join(out)
 
 

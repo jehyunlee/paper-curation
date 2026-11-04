@@ -174,6 +174,23 @@ def main():
             else:
                 os.environ["PAPER_CURATION_LOCAL_EMAILS"] = old_emails
 
+    # Data Artifacts renders as a red warning box that ends at the next H3.
+    html = R.md_section_to_html(
+        "본문 한계.\n\n### Data Artifacts\n\n"
+        "- **확증 편향** (Confirmation bias) · 6 분석 · ●●○\n"
+        "  - 근거: 자체 벤치마크\n\n### Further Study\n\n- 후속 과제")
+    box = html[html.find('<div class="data-artifacts">'):html.find('</div>') + 6]
+    check("artifacts box opens before its heading",
+          '<div class="data-artifacts">\n<h3>Data Artifacts</h3>' in html)
+    check("relevance dots are wrapped", '<span class="da-dots">●●○</span>' in box)
+    check("box closes before the next heading",
+          "Further Study" not in box and "후속 과제" not in box)
+    check("box lists are closed inside it", box.count("<ul>") == box.count("</ul>"))
+    check("dots outside the box stay plain",
+          "da-dots" not in R.md_section_to_html("- 평가 ●●○"))
+    check("box closes at section end",
+          R.md_section_to_html("### Data Artifacts\n\n- 없음").endswith("</div>"))
+
     print()
     if fails:
         print(f"RESULT: FAIL ({fails})")
