@@ -168,6 +168,14 @@ class RelationExplanationTests(unittest.TestCase):
         payload["reverse_reason"] = payload["forward_reason"]
         self._assert_invalid(payload)
 
+    def test_method_terms_and_domain_words_are_not_retrieval_talk(self):
+        # Rejected live before the filter was narrowed (397 of 470 "unexplainable").
+        self.payload["forward_reason"] = (
+            "ELISA는 scGPT 임베딩과 BioBERT 검색을 결합해 세포유형을 찾고, CASSIA는 다중 에이전트로 "
+            "drug target 주석의 품질을 평가한다. 둘 다 단일세포 분석을 다루지만 방법이 다르다.")
+        result = self._explain()
+        self.assertIn("scGPT 임베딩", result["reason"])
+
     def test_relation_must_respect_publication_order(self):
         payload = copy.deepcopy(self.payload)
         # Canonical order puts 001 (2025) first: the 2023 target cannot extend it.

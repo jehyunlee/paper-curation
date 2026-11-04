@@ -143,7 +143,15 @@ target 관점에서 source를 설명한다. reverse는 forward 문장을 반복�
 
 # Retrieval chose the pair; a reason that talks about how it was retrieved
 # says nothing about the papers' fields, problems or methods.
-_RETRIEVAL_TALK = re.compile(r"SPECTER|임베딩|코사인|cosine|embedding|BM25|RRF", re.I)
+# Plain "임베딩"/"embedding" is a legitimate method term (scGPT 임베딩, graph
+# embeddings); banning it rejected ~400 valid reasons. Only talk about how the
+# pair was retrieved is banned.
+_RETRIEVAL_TALK = re.compile(
+    r"SPECTER|BM25|\bRRF\b|코사인\s*유사도|cosine\s+similarit|임베딩\s*공간|embedding\s+space"
+    r"|가까운\s*논문", re.I)
+# Prompt variable names leaking into prose. English "source"/"target" are
+# ordinary domain words (drug target, open source); only the variable use is.
+_VARIABLE_TALK = re.compile(r"\b(?:forward|reverse)\b|\b(?:source|target)\s*(?:논문|paper)", re.I)
 
 
 class RelationExplanationError(ValueError):
@@ -277,10 +285,12 @@ def _check_directions(data, source: dict, target: dict) -> None:
                     or (relation == "foundation" and right_year > left_year)):
                 raise RelationExplanationError(f"{name} relation contradicts publication chronology")
         reason = direction["reason"].strip()
-        if (len(reason) < 40 or not re.search(r"[가-힣]", reason)
-                or re.search(r"\b(?:source|target|forward|reverse)\b", reason, re.I)
-                or _RETRIEVAL_TALK.search(reason)):
+        if len(reason) < 40 or not re.search(r"[가-힣]", reason):
             raise RelationExplanationError(f"{name} requires a substantive Korean comparison")
+        if _VARIABLE_TALK.search(reason):
+            raise RelationExplanationError(f"{name} reason uses prompt variable names")
+        if _RETRIEVAL_TALK.search(reason):
+            raise RelationExplanationError(f"{name} reason talks about retrieval")
     if " ".join(data["forward"]["reason"].split()) == " ".join(data["reverse"]["reason"].split()):
         raise RelationExplanationError("reverse explanation must use the other paper's perspective")
 
@@ -390,8 +400,8 @@ def _grounded_cached(left: dict, right: dict, model: str):
     return data, gl["sha256"], gr["sha256"], GROUNDED_PROMPT_VERSION
 
 
-def _give_up(cache: Path, identity: dict, reason: str):
-    atomic_write_json(cache, {"identity": identity, "unexplainable": reason})
+def _give_up(cache: Path, identity: dict, reason: str, data=None):
+    atomic_write_json(cache, {"identity": identity, "unexplainable": reason, "rejected": data})
     raise UnexplainablePair(reason)
 
 
@@ -459,7 +469,7 @@ def explain_pair(source: dict, target: dict) -> dict:
                 if cached:
                     raise
                 if attempt == 1:
-                    _give_up(cache, identity, str(exc))
+                    _give_up(cache, identity, str(exc), data)
                 request_prompt = json.dumps({
                     **context, "validation_error": str(exc), "previous_payload": data,
                     "repair_instruction": "이전 출력이 검증에 실패했다. 오류를 고친 완전한 JSON을 반환한다.",
