@@ -212,6 +212,51 @@ def _identity_consistent(candidate: dict[str, Any], identity: dict[str, Any]) ->
     return bool(key or doi or title)
 
 
+def _identity_compatible(stored: dict[str, Any], identity: dict[str, Any]) -> bool:
+    """An existing paper agrees with a review request.
+
+    Older index entries often lack the Zotero key or DOI (3,958 of 4,256 had
+    no key); an identifier the stored record does not carry is unknown, not a
+    conflict. Every identifier both sides carry must agree, and at least one
+    must, so a different key or DOI still blocks reuse of the slug.
+    """
+    agreed = False
+    key = str(identity.get("key") or "").strip()
+    stored_keys = {str(stored.get(k) or "").strip() for k in ("key", "zotero_item_key")} - {""}
+    if key and stored_keys:
+        if key not in stored_keys:
+            return False
+        agreed = True
+    doi, stored_doi = _doi(identity.get("doi")), _doi(stored.get("doi") or stored.get("DOI"))
+    if doi and stored_doi:
+        if doi != stored_doi:
+            return False
+        agreed = True
+    title, stored_title = _normal(identity.get("title")), _normal(stored.get("title"))
+    if title and stored_title:
+        if title != stored_title:
+            return False
+        agreed = True
+    return agreed
+
+
+def _recorded_identity(papers: Path, entry: dict[str, Any]) -> dict[str, Any]:
+    """Index entry plus the identifiers its bibliography sidecar recorded."""
+    merged = dict(entry)
+    slug = entry.get("slug")
+    if isinstance(slug, str) and _is_safe_slug(slug):
+        try:
+            sidecar = json.loads((papers / slug / "bibliography.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return merged
+        record = sidecar.get("zotero") if isinstance(sidecar, dict) else None
+        if isinstance(record, dict):
+            for name in ("key", "doi", "title"):
+                if not str(merged.get(name) or "").strip() and str(record.get(name) or record.get(name.upper()) or "").strip():
+                    merged[name] = record.get(name) or record.get(name.upper())
+    return merged
+
+
 def _safe_title(title: object) -> str:
     safe = "".join(c if c.isalnum() or c in " -_" else "" for c in str(title or "Unknown"))[:60].strip()
     return safe.replace(" ", "_") or "Unknown"
@@ -285,7 +330,7 @@ def reserve(papers_dir: str | Path, identity: dict[str, Any], requested_slug: st
         with corpus_index_lock(papers):
             entries = load_index_strict(papers)
             existing = next((entry for entry in entries if _identity_match(entry, identity)), None)
-            if existing is not None and not _identity_consistent(existing, identity):
+            if existing is not None and not _identity_compatible(_recorded_identity(papers, existing), identity):
                 raise CorpusStoreError("existing index identity conflicts with reservation",
                                        code="identity-conflict")
             slug = _safe_slug(existing["slug"]) if existing and existing.get("slug") else ""

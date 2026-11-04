@@ -228,6 +228,32 @@ class CorpusStoreTests(unittest.TestCase):
 
         self.assertFalse((self.papers / slug / ".corpus-reservation.json").exists())
 
+    def test_existing_entry_without_key_or_doi_is_reused_not_a_conflict(self):
+        # Observed: 10925 'AI in Science: Early Insights' had no key/doi in the
+        # index (only in its sidecar), and a Curio re-review was refused.
+        slug = "001_Early_Insights"
+        (self.papers / slug).mkdir()
+        (self.papers / slug / "bibliography.json").write_text(json.dumps({
+            "schema": "bibliography-sidecar-1",
+            "zotero": {"key": "K1", "title": "AI in Science: Early Insights"}}), encoding="utf-8")
+        (self.papers / "_papers_index.json").write_text(json.dumps([{
+            "slug": slug, "key": None, "doi": "", "title": "AI in Science: Early Insights"}]),
+            encoding="utf-8")
+        got = reserve(self.papers, {"key": "K1", "doi": "10.48550/arXiv.2609.28504",
+                                    "title": "AI in Science: Early Insights"})
+        self.assertEqual(got["slug"], slug)
+
+    def test_existing_entry_with_a_different_sidecar_key_still_conflicts(self):
+        slug = "001_Early_Insights"
+        (self.papers / slug).mkdir()
+        (self.papers / slug / "bibliography.json").write_text(json.dumps({
+            "schema": "bibliography-sidecar-1",
+            "zotero": {"key": "K1", "title": "AI in Science: Early Insights"}}), encoding="utf-8")
+        (self.papers / "_papers_index.json").write_text(json.dumps([{
+            "slug": slug, "doi": "", "title": "AI in Science: Early Insights"}]), encoding="utf-8")
+        with self.assertRaisesRegex(CorpusStoreError, "conflicts with reservation"):
+            reserve(self.papers, {"key": "K2", "title": "AI in Science: Early Insights"})
+
     def test_corruption_does_not_become_empty_index(self):
         (self.papers / "_papers_index.json").write_text("not json", encoding="utf-8")
         with self.assertRaises(CorpusStoreError):
