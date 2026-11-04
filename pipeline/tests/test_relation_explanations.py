@@ -72,12 +72,19 @@ class RelationExplanationTests(unittest.TestCase):
         return set(self.cache.glob("*.json"))
 
     def _assert_invalid(self, payload):
+        for path in self._cache_paths():
+            path.unlink()
         response = {"data": payload, "provider": "anthropic", "model": MODEL}
         with patch.object(text_providers, "generate_structured", return_value=response) as generate:
-            with self.assertRaises(explanations.RelationExplanationError):
+            with self.assertRaises(explanations.UnexplainablePair):
                 self._explain()
-        self.assertEqual(generate.call_count, 2)
-        self.assertEqual(self._cache_paths(), set())
+            self.assertEqual(generate.call_count, 2)
+            # Recorded: a rerun neither pays again nor serves an explanation.
+            (cache,) = self._cache_paths()
+            self.assertNotIn("result", json.loads(cache.read_text(encoding="utf-8")))
+            with self.assertRaises(explanations.UnexplainablePair):
+                self._explain()
+            self.assertEqual(generate.call_count, 2)
 
     # --- summary comparison -------------------------------------------------
 
@@ -178,7 +185,7 @@ class RelationExplanationTests(unittest.TestCase):
         with patch.object(text_providers, "generate_structured",
                           side_effect=text_providers.ProviderSchemaError("missing field")) as generate:
             self.source["essence"] = "다른 요약으로 바꿔 캐시를 피하는 후보 탐색 방법을 제안한다."
-            with self.assertRaises(text_providers.ProviderSchemaError):
+            with self.assertRaises(explanations.UnexplainablePair):
                 self._explain()
         self.assertEqual(generate.call_count, 2)
 

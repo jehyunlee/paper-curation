@@ -154,6 +154,14 @@ class MissingSourceText(RelationExplanationError):
     """The paper has no usable original text to ground an explanation."""
 
 
+class UnexplainablePair(RelationExplanationError):
+    """The model's explanation stayed invalid after the repair attempt.
+
+    Recorded in the cache so a rerun does not pay for the same pair again; the
+    connection is left out rather than shown with an invalid or template reason.
+    """
+
+
 def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
@@ -344,8 +352,11 @@ def _read_cache(cache: Path, identity: dict):
         stored = json.loads(cache.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, ValueError) as exc:
         raise RelationExplanationError("invalid comparison cache") from exc
-    if (not isinstance(stored, dict) or stored.get("identity") != identity
-            or not isinstance(stored.get("result"), dict)):
+    if not isinstance(stored, dict) or stored.get("identity") != identity:
+        raise RelationExplanationError("invalid comparison cache identity")
+    if isinstance(stored.get("unexplainable"), str):
+        raise UnexplainablePair(stored["unexplainable"])
+    if not isinstance(stored.get("result"), dict):
         raise RelationExplanationError("invalid comparison cache identity")
     return stored["result"]
 
@@ -377,6 +388,11 @@ def _grounded_cached(left: dict, right: dict, model: str):
     data = result.get("data")
     _validate_grounded(data, gl, gr)
     return data, gl["sha256"], gr["sha256"], GROUNDED_PROMPT_VERSION
+
+
+def _give_up(cache: Path, identity: dict, reason: str):
+    atomic_write_json(cache, {"identity": identity, "unexplainable": reason})
+    raise UnexplainablePair(reason)
 
 
 def explain_pair(source: dict, target: dict) -> dict:
@@ -425,7 +441,7 @@ def explain_pair(source: dict, target: dict) -> dict:
                     # A missing or malformed field (seen live) gets the same single
                     # repair attempt as a payload failing local validation.
                     if attempt == 1:
-                        raise
+                        _give_up(cache, identity, f"schema: {exc}")
                     detail = getattr(exc.__cause__, "message", "") or str(exc)
                     request_prompt = json.dumps({
                         **context, "validation_error": f"schema: {detail}"[:300],
@@ -440,8 +456,10 @@ def explain_pair(source: dict, target: dict) -> dict:
             try:
                 _validate(data, left, right)
             except RelationExplanationError as exc:
-                if cached or attempt == 1:
+                if cached:
                     raise
+                if attempt == 1:
+                    _give_up(cache, identity, str(exc))
                 request_prompt = json.dumps({
                     **context, "validation_error": str(exc), "previous_payload": data,
                     "repair_instruction": "이전 출력이 검증에 실패했다. 오류를 고친 완전한 JSON을 반환한다.",

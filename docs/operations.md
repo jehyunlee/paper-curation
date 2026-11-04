@@ -442,7 +442,10 @@ brew install --cask temurin   # Java for opendataloader-pdf
   Reasons must be substantive Korean with independently worded reverse reasons.
   Earlier text-grounded explanations are reused from `.cache/relation_explanations/`
   while the paper's `text.md` is unchanged; papers with neither essence nor
-  originality summary are skipped.
+  originality summary are skipped. A pair whose explanation is still invalid
+  after one repair is cached as unexplainable and left out of the graph, so a
+  rerun neither pays for it again nor blocks on it; provider failures still
+  stop the run.
   Each reason states the research field/application domain (corpus
   classification labels are passed as hints and checked against the text), the
   shared problem, and method/data/scope differences; reasons that talk about

@@ -255,6 +255,19 @@ class PairDedupAndMissingTextTests(unittest.TestCase):
             got = related.build_connections({"001_A": [("003_C", 0.95), ("002_B", 0.9)]}, papers)
         self.assertEqual([link["slug"] for link in got["001_A"]], ["002_B"])
 
+    def test_pair_whose_explanation_stays_invalid_is_left_out(self):
+        from lib.relation_explanations import UnexplainablePair
+        papers = self._papers()
+
+        def explain(source, target):
+            if "003_C" in (source["slug"], target["slug"]):
+                raise UnexplainablePair("forward relation contradicts publication chronology")
+            return self._explanation(source, target)
+
+        with patch.object(related, "explain_pair", side_effect=explain), patch("builtins.print"):
+            got = related.build_connections({"001_A": [("003_C", 0.95), ("002_B", 0.9)]}, papers)
+        self.assertEqual([link["slug"] for link in got["001_A"]], ["002_B"])
+
     def test_provider_failure_still_raises_after_all_pairs_ran(self):
         papers = self._papers()
         calls = []

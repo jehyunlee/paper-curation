@@ -14,16 +14,18 @@ turns those ranked candidates into ``_paper_connections.json`` entries:
   Each unordered pair is explained once, concurrently across
   ``RELATED_EXPLAIN_WORKERS`` threads; the opposite edge reuses it.
 * **provenance** — ``basis=embedding`` and cosine record retrieval, not a
-  bibliographic citation or influence claim. Explanation failures are explicit:
-  every pair is attempted (successes stay cached for a rerun), then the first
-  failure is raised.
+  bibliographic citation or influence claim. A pair whose explanation is still
+  invalid after one repair (e.g. a relation contradicting publication order)
+  is recorded as unexplainable and left out, never shown with a template
+  reason. Provider failures are explicit: every pair is attempted (successes
+  stay cached for a rerun), then the first failure is raised.
 """
 from __future__ import annotations
 
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-from lib.relation_explanations import MissingSourceText, explain_pair
+from lib.relation_explanations import MissingSourceText, UnexplainablePair, explain_pair
 
 MAX_LINKS_ENV = "RELATED_LINKS"
 DEFAULT_MAX_LINKS = 5
@@ -81,7 +83,7 @@ def build_connections(candidates: dict, papers: list[dict], *, limit: int | None
     def run(pair):
         try:
             explained[pair] = explain_pair(by_slug[pair[0]], by_slug[pair[1]])
-        except MissingSourceText:
+        except (MissingSourceText, UnexplainablePair):
             ungrounded.add(frozenset(pair))
         except Exception as exc:  # collected; raised after every pair was attempted
             failures.append(exc)
@@ -90,6 +92,9 @@ def build_connections(candidates: dict, papers: list[dict], *, limit: int | None
         list(pool.map(run, list(requests.values())))
     if failures:
         raise failures[0]
+    if ungrounded:
+        print(f"  {len(ungrounded)} of {len(requests)} pairs left out: no summary or no valid explanation",
+              flush=True)
 
     result = {}
     for slug, links in selected.items():
