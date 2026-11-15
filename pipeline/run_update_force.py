@@ -1537,6 +1537,10 @@ _REVIEW_STR_TAGS = ("essence", "known", "gap", "why", "approach", "achievement",
                     "how", "originality", "limitation", "verdict")
 _REVIEW_INT_TAGS = ("fig_essence", "fig_achievement", "fig_how",
                     "novelty", "technical", "significance", "clarity", "overall")
+_ALL_REVIEW_TAGS = _REVIEW_STR_TAGS + _REVIEW_INT_TAGS
+# An open review tag with attributes or a stray quote: `<achievement fig="0">`,
+# `<originality">`.
+_OPEN_TAG = re.compile(r"<(%s)\b[^<>]*>" % "|".join(_ALL_REVIEW_TAGS))
 
 
 # Fields that fill a review.md section on their own. validate_papers reports
@@ -1578,6 +1582,13 @@ def _salvage_review_data(data):
          known/gap/why/approach) appended inside `essence`.
     All render as empty sections + default 3/3/3/3/3 scores. Normalize the
     tool-parameter syntax and re-parse every field. No-op for clean responses.
+
+    Inside those dumps the tags themselves come out malformed, and each shape
+    cost a whole review (the RoRI "Seize the Meta-Moment" report failed three
+    calls in four): an attribute on the open tag (`<achievement fig="0">`), a
+    stray quote (`<originality">`), and a `<parameter name="achievement">`
+    that is never closed. An open tag is read with any attributes, and an
+    unclosed field ends at the next field's open tag.
     """
     d = dict(data or {})
     other = [t for t in _REVIEW_STR_TAGS if t != "essence"]
@@ -1587,6 +1598,7 @@ def _salvage_review_data(data):
                    s or "", flags=re.S)
         s = re.sub(r'<parameter name="([^"]+)">', r'<\1>', s)
         s = re.sub(r'</parameter[^>]*>', '', s)
+        s = _OPEN_TAG.sub(r"<\1>", s)
         return s.replace("</invoke>", "")
 
     normed = {k: _norm(v) for k, v in d.items() if isinstance(v, str)}
@@ -1614,7 +1626,12 @@ def _salvage_review_data(data):
         fixed["essence"] = essence
 
     for t in other:
-        m = re.search(r"<%s>(.*?)</%s>" % (t, t), combined, re.S)
+        # Each carrier field on its own: an unclosed tag ends with the field
+        # that holds it, never in the next field's clean text.
+        field = re.compile(r"<%s>(.*?)(?:</%s>|(?=<(?:%s)>)|\Z)"
+                           % (t, t, "|".join(_ALL_REVIEW_TAGS)), re.S)
+        m = next((found for found in map(field.search, normed.values())
+                  if found and found.group(1).strip()), None)
         if m and m.group(1).strip():
             val = m.group(1)
         else:

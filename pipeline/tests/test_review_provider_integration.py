@@ -59,6 +59,50 @@ class ReviewCompletenessGateTests(unittest.TestCase):
         self.assertTrue(engine._review_response_is_complete({**VALID, "known": "짧은 문장.", "verdict": "짧은 총평."}))
 
 
+def _xml_dump(fields: dict, open_tag=lambda t: f"<{t}>", close=True) -> str:
+    """The review as claude-sonnet-5 dumps it into one tool field."""
+    return "\n".join(
+        f"{open_tag(t)}{v}" + (f"</{t}>" if close else "")
+        for t, v in fields.items()) + "\n</emit_review>"
+
+
+class MalformedTagSalvageTests(unittest.TestCase):
+    """Tag shapes from the RoRI 'Seize the Meta-Moment' report: three of four
+    calls failed as 'review payload is incomplete'."""
+
+    def assert_recovers(self, data, field):
+        fixed = engine._salvage_review_data(data)
+        self.assertTrue(engine._review_response_is_complete(fixed), fixed)
+        self.assertEqual(fixed[field], VALID[field].strip())
+        return fixed
+
+    def test_open_tag_with_an_attribute(self):
+        dump = _xml_dump(VALID).replace("<achievement>", '<achievement fig="0">')
+        fixed = self.assert_recovers({"essence": dump}, "achievement")
+        self.assertEqual(fixed["overall"], 4)
+
+    def test_open_tag_with_a_stray_quote(self):
+        dump = _xml_dump(VALID).replace("<originality>", '<originality">')
+        self.assert_recovers({"essence": dump}, "originality")
+
+    def test_unclosed_parameter_ends_with_its_carrier_field(self):
+        # `known` carries an unclosed <parameter name="achievement">; the clean
+        # `how` field that follows must not be read into it.
+        rest = {k: v for k, v in VALID.items() if k not in {"essence", "known", "achievement"}}
+        data = {
+            "essence": VALID["essence"] + '</parameter>\n<parameter name="known">',
+            "known": VALID["known"] + '</parameter>\n<parameter name="achievement">'
+                     + VALID["achievement"],
+            **rest,
+        }
+        fixed = self.assert_recovers(data, "achievement")
+        self.assertEqual(fixed["known"], VALID["known"].strip())
+        self.assertEqual(fixed["how"], VALID["how"].strip())
+
+    def test_clean_payload_is_untouched(self):
+        self.assertEqual(engine._salvage_review_data(dict(VALID)), VALID)
+
+
 class ReviewProviderIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
