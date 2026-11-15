@@ -63,7 +63,9 @@ of a review run) applies them again.
    whatever a paper wrote. Schools, colleges and faculties fold into their university.
 2. **Parent** — only real structural umbrellas (Helmholtz Association, Max Planck Society,
    Chinese Academy of Sciences). University systems such as the University of California and
-   government bodies are not parents. Parent names follow rule 1. Institutes and laboratories
+   government bodies are not parents. Parent names follow rule 1. An umbrella is its own parent
+   (`IBM` has parent `IBM`), so grouping by parent keeps `IBM Research - Zurich` and `IBM`
+   together. Institutes and laboratories
    can be listed with their parent status for review.
 3. **Affiliation numbers removed** — `3Stanford University` → `Stanford University` (digits
    that are part of a name, `3M`, `23andMe`, stay).

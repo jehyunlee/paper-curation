@@ -9,8 +9,10 @@ The six rules (README "기관명 정규화 기준"):
 2. Parent: only a real structural umbrella (Helmholtz Association, Max Planck
    Society, Chinese Academy of Sciences). Multi-campus university systems such
    as the University of California are not parents. Named by the same Wikipedia
-   rule. Names containing "Institute" or "Laboratory" are listed by the audit
-   with their parent status so a missing umbrella is visible.
+   rule. An umbrella is its own parent (the row "IBM" has parent "IBM" when IBM
+   Research - Zurich rolls up to IBM), so grouping by parent keeps them
+   together. Names containing "Institute" or "Laboratory" are listed by the
+   audit with their parent status so a missing umbrella is visible.
 3. Affiliation numbers ("3Stanford University") are not part of any string.
 4. Download watermarks ("Authorized licensed use limited to: …") are not
    affiliations.
@@ -674,17 +676,27 @@ _GOVERNMENT = re.compile(r"(?i)\bgovernment\b")
 
 
 def _settle_parents(conn: sqlite3.Connection, index, names: Names) -> int:
-    """Rule 2 on the final rows: one Wikipedia name per parent, no self or
-    administrative parents.
+    """Rule 2 on the final rows.
+
+    One Wikipedia name per parent; administrative bodies, university systems
+    and governments are never parents. An umbrella is its own parent: when
+    IBM Research - Zurich rolls up to IBM, the row "IBM" carries parent "IBM"
+    too, so grouping by parent puts them together. A parent that is one of the
+    row's own names ("Georgia Tech" under "Georgia Institute of Technology")
+    becomes the row's own name.
     """
     try:
         from .ror_index import ADMINISTRATIVE_BODY, UNIVERSITY_SYSTEM
     except ImportError:
         from lib.ror_index import ADMINISTRATIVE_BODY, UNIVERSITY_SYSTEM
-    changed = 0
-    for institution_id, name, ror_id, parent, parent_ror in conn.execute(
-            "SELECT institution_id, institution_name, ror_id, parent_name, "
-            "parent_ror_id FROM institutions WHERE parent_name<>''").fetchall():
+    rows = conn.execute(
+        "SELECT institution_id, institution_name, ror_id, parent_name, "
+        "parent_ror_id FROM institutions").fetchall()
+    settled: dict[int, tuple[str, str]] = {}
+    for institution_id, name, ror_id, parent, parent_ror in rows:
+        if not parent:
+            settled[institution_id] = ("", "")
+            continue
         if not parent_ror:
             # Only an exact ROR label names a curated parent: normalised
             # lookup folds plurals, and "Indian Institutes of Technology" (the
@@ -696,18 +708,29 @@ def _settle_parents(conn: sqlite3.Connection, index, names: Names) -> int:
         own = {_normalize(name)}
         if ror_id:
             own.update(index.name_keys(ror_id))
-        if (_normalize(canonical) in own or _normalize(parent) in own
-                or (parent_ror and parent_ror == ror_id)
-                or ADMINISTRATIVE_BODY.search(canonical)
+        if (ADMINISTRATIVE_BODY.search(canonical)
                 or UNIVERSITY_SYSTEM.search(canonical)
                 or _GOVERNMENT.search(canonical)):
-            canonical, parent_ror = "", ""
-        if (canonical, parent_ror) != (parent, conn.execute(
-                "SELECT parent_ror_id FROM institutions WHERE institution_id=?",
-                (institution_id,)).fetchone()[0]):
+            settled[institution_id] = ("", "")
+        elif (_normalize(canonical) in own or _normalize(parent) in own
+                or (parent_ror and parent_ror == ror_id)):
+            settled[institution_id] = (name, ror_id)
+        else:
+            settled[institution_id] = (canonical, parent_ror)
+    # Umbrellas: a row that some other row names as parent is its own parent.
+    umbrella_rors = {pr for (pn, pr) in settled.values() if pr}
+    umbrella_names = {_norm(pn) for (pn, _pr) in settled.values() if pn}
+    for institution_id, name, ror_id, _parent, _parent_ror in rows:
+        if settled[institution_id] == ("", "") and (
+                (ror_id and ror_id in umbrella_rors)
+                or _norm(name) in umbrella_names):
+            settled[institution_id] = (name, ror_id)
+    changed = 0
+    for institution_id, _name, _ror, parent, parent_ror in rows:
+        if settled[institution_id] != (parent, parent_ror):
             conn.execute("UPDATE institutions SET parent_name=?, parent_ror_id=? "
                          "WHERE institution_id=?",
-                         (canonical, parent_ror, institution_id))
+                         (*settled[institution_id], institution_id))
             changed += 1
     return changed
 

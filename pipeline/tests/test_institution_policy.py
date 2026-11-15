@@ -90,6 +90,11 @@ ORGS = [
     {"ror_id": "r:google-ie", "display": "Google (Ireland)",
      "country_name": "Ireland", "city": "Dublin", "parent_id": "r:google",
      "wikipedia": "http://en.wikipedia.org/wiki/Google"},
+    {"ror_id": "r:ibm", "display": "IBM (United States)",
+     "country_name": "United States", "city": "Armonk",
+     "wikipedia": "http://en.wikipedia.org/wiki/IBM"},
+    {"ror_id": "r:ibm-zrl", "display": "IBM Research - Zurich",
+     "country_name": "Switzerland", "city": "Rüschlikon", "parent_id": "r:ibm"},
     {"ror_id": "r:harvard", "display": "Harvard University",
      "country_name": "United States", "city": "Cambridge", "org_types": "education",
      "wikipedia": "http://en.wikipedia.org/wiki/Harvard_University"},
@@ -103,7 +108,7 @@ TITLES = {"en:Stanford University": "Stanford University",
               "Korea Institute of Science and Technology",
           "ca:Universitat de Barcelona": "University of Barcelona",
           "en:Carnegie Mellon University": "Carnegie Mellon University",
-          "en:Google": "Google",
+          "en:Google": "Google", "en:IBM": "IBM",
           "en:Harvard University": "Harvard University"}
 
 
@@ -284,7 +289,38 @@ class ApplyPass(unittest.TestCase):
         self.run_policy(conn)
         rows = conn.execute("SELECT institution_name, ror_id, parent_name "
                             "FROM institutions").fetchall()
-        self.assertEqual(rows, [("Google", "r:google", "")])
+        # The subsidiary's parent was the company itself: the merged row is
+        # its own parent.
+        self.assertEqual(rows, [("Google", "r:google", "Google")])
+
+    def test_umbrella_is_its_own_parent(self):
+        conn = _db()
+        _paper(conn, 1)
+        _inst(conn, 10, "IBM (United States)", "r:ibm")
+        _inst(conn, 11, "IBM Research - Zurich", "r:ibm-zrl",
+              parent="IBM (United States)")
+        conn.execute("UPDATE institutions SET parent_ror_id='r:ibm' "
+                     "WHERE institution_id=11")
+        _link(conn, 1, 10, "IBM (United States)")
+        _link(conn, 1, 11, "IBM Research Europe, Rüschlikon, Switzerland")
+        self.run_policy(conn)
+        rows = conn.execute("SELECT institution_name, parent_name FROM institutions "
+                            "ORDER BY institution_name").fetchall()
+        self.assertEqual(rows, [("IBM", "IBM"), ("IBM Research - Zurich", "IBM")])
+        # Stable on a second pass.
+        self.run_policy(conn)
+        self.assertEqual(conn.execute("SELECT institution_name, parent_name FROM "
+                                      "institutions ORDER BY institution_name")
+                         .fetchall(), rows)
+
+    def test_standalone_institution_has_no_parent(self):
+        conn = _db()
+        _paper(conn, 1)
+        _inst(conn, 10, "Stanford University", "r:stanford")
+        _link(conn, 1, 10, "Stanford University")
+        self.run_policy(conn)
+        self.assertEqual(conn.execute("SELECT parent_name FROM institutions")
+                         .fetchone()[0], "")
 
     def test_generic_phrase_link_is_dropped(self):
         conn = _db()
