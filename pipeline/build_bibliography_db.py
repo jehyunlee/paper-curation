@@ -90,6 +90,8 @@ CREATE TABLE IF NOT EXISTS institutions (
  ror_id TEXT NOT NULL DEFAULT '',
  parent_name TEXT NOT NULL DEFAULT '',
  parent_ror_id TEXT NOT NULL DEFAULT '',
+ -- City the affiliation strings state, else the ROR (GeoNames) location.
+ city_name TEXT NOT NULL DEFAULT '',
  name_source TEXT NOT NULL DEFAULT '',
  source TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS institution_aliases (
@@ -279,6 +281,7 @@ def ensure_schema_migrations(conn: sqlite3.Connection) -> None:
                                ("hq_country_name_en", "TEXT NOT NULL DEFAULT ''"),
                                ("parent_name", "TEXT NOT NULL DEFAULT ''"),
                                ("parent_ror_id", "TEXT NOT NULL DEFAULT ''"),
+                               ("city_name", "TEXT NOT NULL DEFAULT ''"),
                                ("name_source", "TEXT NOT NULL DEFAULT ''")):
             if name not in existing:
                 conn.execute(
@@ -508,6 +511,7 @@ def ensure_legacy_institution_schema(conn: sqlite3.Connection) -> None:
   hq_country_name_en TEXT NOT NULL DEFAULT '',
           parent_name TEXT NOT NULL DEFAULT '',
           parent_ror_id TEXT NOT NULL DEFAULT '',
+          city_name TEXT NOT NULL DEFAULT '',
           name_source TEXT NOT NULL DEFAULT '',
           source TEXT NOT NULL);
         CREATE INDEX idx_institutions_identity
@@ -4060,14 +4064,16 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
     # streaming ingest defers them and runs them once when the run ends.
     if defer_consolidation:
         stale_pruned = pruned = recountried = reparented = 0
+        naming = {}
     else:
         stale_pruned = prune_missing_papers(conn)
         pruned = prune_orphan_institutions(conn)
         recountried = consolidate_institution_countries(conn)
         reparented = consolidate_institution_parents(conn)
+        naming = apply_institution_policy(conn)
     conn.commit()
     conn.execute("PRAGMA optimize"); conn.close()
-    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"stale_papers_pruned":stale_pruned,"orphan_institutions_pruned":pruned,"institution_countries_consolidated":recountried,"institution_parents_cleared":reparented,"db":str(db_path)}
+    return {"processed":len(entries),"seconds":round(time.perf_counter()-start,4),"zotero_items_seen":len(zitems),"zotero_updated":zupdated,"formal_publications_resolved":resolved,"stale_papers_pruned":stale_pruned,"orphan_institutions_pruned":pruned,"institution_countries_consolidated":recountried,"institution_parents_cleared":reparented,"institution_naming":naming,"db":str(db_path)}
 
 
 _ROR_INDEX = None
@@ -4161,7 +4167,13 @@ def resolve_institution_row(conn: sqlite3.Connection, name: str, country: str,
     """
     ror = ror or {}
     key = norm(name)
+    # The stored name is the Wikipedia title, which ROR's label need not match
+    # ("Swiss Federal Institute of Technology in Lausanne" is stored as EPFL),
+    # so a ROR identity finds its row before the name does.
     row = conn.execute(
+        "SELECT institution_id, country_name_en, ror_id, parent_name "
+        "FROM institutions WHERE ror_id=? AND ror_id<>'' "
+        "ORDER BY institution_id", (ror.get("ror_id", ""),)).fetchone() or conn.execute(
         "SELECT institution_id, country_name_en, ror_id, parent_name "
         "FROM institutions WHERE normalized_name=? "
         "ORDER BY country_name_en='', institution_id", (key,)).fetchone()
@@ -4189,6 +4201,20 @@ def resolve_institution_row(conn: sqlite3.Connection, name: str, country: str,
             "WHERE institution_id=?",
             (ror["parent"], ror.get("parent_ror_id", ""), institution_id))
     return institution_id
+
+
+def apply_institution_policy(conn: sqlite3.Connection) -> dict:
+    """Naming rules and operator corrections, after every other pass.
+
+    The parent and country passes above re-derive from sources; this pass is
+    last so Wikipedia names, explicit places and the corrections file always
+    have the final word (`lib/institution_policy.py`).
+    """
+    try:
+        from .lib import institution_policy
+    except ImportError:
+        from lib import institution_policy
+    return institution_policy.apply(conn, country_from_raw)
 
 
 def consolidate_institution_parents(conn: sqlite3.Connection) -> int:
@@ -4766,6 +4792,7 @@ def finalize(db_path: Path) -> dict:
                       "pruned": prune_orphan_institutions(conn),
                       "countries": consolidate_institution_countries(conn),
                       "parents": consolidate_institution_parents(conn)}
+            result["naming"] = apply_institution_policy(conn)
             conn.commit()
         finally:
             conn.close()

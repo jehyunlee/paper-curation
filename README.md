@@ -53,6 +53,45 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 > 기관에 귀속시키는 과정, 왜 LLM 을 마지막에 두는지, 저자 신원을 어떻게
 > 정하는지를 따로 정리했습니다.
 
+### 기관명 정규화 기준
+
+서지 DB의 기관명은 아래 규칙을 따릅니다. 일회성 정리가 아니라 **서지 DB를 빌드할 때마다**
+(`build_bibliography_db.py`, 리뷰 실행의 finalize) 마지막 단계로 다시 적용됩니다.
+
+1. **기관명** — 대학·연구소 단위로, 영문 위키백과 문서 제목을 씁니다(영문 문서가 없으면
+   ROR 영문명). 논문마다 표기가 달라도 한 기관은 한 이름입니다. 학부·단과대(School,
+   College, Faculty)는 소속 대학으로 합칩니다.
+2. **상위 기관(parent)** — Helmholtz Association, Max Planck Society, Chinese Academy of
+   Sciences처럼 실제 조직 구조상의 상위 기관만 둡니다. University of California 같은
+   대학 시스템, 정부·위원회는 상위 기관이 아닙니다. 상위 기관명도 1번 규칙을 따릅니다.
+   `Institute`·`Laboratory`가 들어간 기관은 상위 기관 유무를 검토 목록으로 뽑을 수 있습니다.
+3. **소속 번호 제거** — `3Stanford University` → `Stanford University` (`3M`, `23andMe`처럼
+   이름의 일부인 숫자는 유지).
+4. **워터마크 무시** — `Authorized licensed use limited to: …`, `Downloaded on/from …` 같은
+   출판사 다운로드 문구는 소속이 아닙니다.
+5. **한 줄로** — 줄바꿈과 줄끝 하이픈(`Uni- versity`)을 이어 붙입니다.
+6. **도시·국가** — 소속 문자열에 명시돼 있으면 그대로(`…, Seoul, Republic of Korea` → Seoul,
+   South Korea), 없으면 ROR 레코드의 위치(GeoNames)를 씁니다. 국가명은 위키백과 표기
+   (`South Korea`, `Czech Republic`)로 통일합니다.
+
+덧붙여 "Research Center", "Interaction"처럼 **일반 명사구만으로 맞은 ROR 연결은 버립니다**
+(본문 문장의 `interaction`이 기관 `InterAction`으로 붙던 문제).
+
+**검토 중 발견한 오류는 규칙 파일로 고칩니다.** 잘못 연결된 기관, 틀린 이름·도시·국가는
+[`pipeline/data/institution_corrections.json`](pipeline/data/institution_corrections.json)
+([내려받기](https://raw.githubusercontent.com/jehyunlee/paper-curation/master/pipeline/data/institution_corrections.json))에
+한 줄씩 추가하면 다음 빌드부터 계속 적용됩니다. 규칙마다 `reason`이 필수입니다.
+위키백과 제목 고정본은 [`pipeline/data/institution_wikipedia_titles.json`](pipeline/data/institution_wikipedia_titles.json)입니다.
+
+```bash
+python pipeline/normalize_institutions.py                      # 바뀔 내용 미리보기 (DB 안 씀)
+python pipeline/normalize_institutions.py --apply              # 적용
+python pipeline/normalize_institutions.py --refresh-wikipedia  # 위키백과 제목 갱신 (네트워크)
+python pipeline/normalize_institutions.py --parent-report institutes.csv  # 2번 검토 목록
+```
+
+교정 규칙 형식과 운영 절차는 [서지 확정 — 기관명 정규화](docs/attribution.md#기관명-정규화)에 있습니다.
+
 ## 목차
 
 - [📘 활용 매뉴얼](docs/user-guide.md) — 설정 위치와 단계별 동작법

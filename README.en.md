@@ -52,6 +52,45 @@ generated ID/requirement table in the
 > get tied to institutions, and why the page reader runs last, written up
 > separately.
 
+### Institution naming rules
+
+Institution names in the bibliography DB follow these rules. They are not a one-off cleanup:
+the last step of **every bibliography build** (`build_bibliography_db.py`, and the finalize step
+of a review run) applies them again.
+
+1. **Name** — the university or research institute, named by its English Wikipedia article
+   title (ROR's English label when there is no English article). One institution, one name,
+   whatever a paper wrote. Schools, colleges and faculties fold into their university.
+2. **Parent** — only real structural umbrellas (Helmholtz Association, Max Planck Society,
+   Chinese Academy of Sciences). University systems such as the University of California and
+   government bodies are not parents. Parent names follow rule 1. Institutes and laboratories
+   can be listed with their parent status for review.
+3. **Affiliation numbers removed** — `3Stanford University` → `Stanford University` (digits
+   that are part of a name, `3M`, `23andMe`, stay).
+4. **Watermarks ignored** — `Authorized licensed use limited to: …`, `Downloaded on/from …`
+   are publisher stamps, not affiliations.
+5. **One line** — line breaks and wrap hyphens (`Uni- versity`) are joined.
+6. **City and country** — as stated in the affiliation string when it states them, otherwise
+   the ROR record's location (GeoNames). Country names use Wikipedia titles (`South Korea`,
+   `Czech Republic`).
+
+ROR links matched only through a generic phrase ("Research Center", "Interaction") are dropped.
+
+**Errors found in review become correction rules.** Add a rule to
+[`pipeline/data/institution_corrections.json`](pipeline/data/institution_corrections.json)
+([download](https://raw.githubusercontent.com/jehyunlee/paper-curation/master/pipeline/data/institution_corrections.json))
+and every later build applies it. Each rule needs a `reason`. The pinned Wikipedia titles live in
+[`pipeline/data/institution_wikipedia_titles.json`](pipeline/data/institution_wikipedia_titles.json).
+
+```bash
+python pipeline/normalize_institutions.py                      # preview (read-only)
+python pipeline/normalize_institutions.py --apply              # write
+python pipeline/normalize_institutions.py --refresh-wikipedia  # refresh Wikipedia titles (network)
+python pipeline/normalize_institutions.py --parent-report institutes.csv  # rule 2 review list
+```
+
+Rule format and procedure: [Attribution — institution naming](docs/attribution.en.md#institution-naming).
+
 ---
 
 ## What It Does

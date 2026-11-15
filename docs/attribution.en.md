@@ -74,3 +74,43 @@ author coverage, which is what the per-institution researcher rankings rest on.
 python pipeline/extract_byline_llm.py --augment --execute     # partly-mapped papers
 python pipeline/experiment_ladder_order.py --sample 300       # re-check all three
 ```
+
+## Institution naming
+
+The six rules (README [Institution naming rules](../README.en.md#institution-naming-rules))
+live in `pipeline/lib/institution_policy.py` and run at the end of every build and every
+`finalize`, after the parent and country passes, so Wikipedia names, stated places and the
+corrections file always have the final word. A second run on the same DB changes nothing.
+
+Order: clean source strings and aliases (watermarks, affiliation numbers, line breaks) →
+link corrections (`relink`/`drop`) → identity check (a ROR link matched only by a generic
+phrase such as "Research Center", "Interaction" or "FAIR" moves to a distinctive organisation
+in the string or is dropped) → Wikipedia names (from the pinned
+`pipeline/data/institution_wikipedia_titles.json`; a redirect to a parent or topic article
+falls back to ROR's English label) → schools fold into their university, and rows with one
+ROR id, one Wikipedia article or one ROR family merge → city and country (a trailing segment
+counts as stated only if it is a country by itself) → parents (no self, administrative,
+university-system or government parents) → attribute corrections (`set`).
+
+### Correction rules
+
+Add to the `rules` array of `pipeline/data/institution_corrections.json`:
+
+```json
+{"id": "robotics-institute-cmu", "action": "relink",
+ "match": {"raw_contains": "Robotics Institute"},
+ "to": {"ror_id": "https://ror.org/05x2bcf33"},
+ "reason": "The Robotics Institute is a unit of Carnegie Mellon University."}
+```
+
+`action` is `relink`, `drop` or `set` (`institution`, `country`, `city`, `parent`,
+`parent_ror_id`, `ror_id`). `match` combines `ror_id`, `institution`, `raw_contains` and
+`paper` (slug prefix); prefer `ror_id`. `reason` is required and ids are unique, or the build
+fails. Preview with `normalize_institutions.py`, write with `--apply`, then run
+`check_bibliography_db.py --strict`, which fails on stored watermarks, multi-line names and
+institution rows sharing a ROR id.
+
+Refresh the pinned titles with `--refresh-wikipedia` when the result reports
+`wikipedia_unrefreshed` > 0. Wikidata is not used: the ROR dump already carries the Wikipedia
+link and the GeoNames location, so a build makes no network calls. A ROR index built before the
+wikipedia/city columns stops the pass; rebuild it with `python pipeline/lib/ror_index.py`.

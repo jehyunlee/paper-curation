@@ -318,6 +318,31 @@ def collect(
             issues.append("local-language institution names: "
                           + ", ".join(local_language[:10]))
 
+        # Naming rules (lib/institution_policy.py). The build applies them, so
+        # a violation means the pass did not run or regressed.
+        from lib import institution_policy
+        watermarked = [raw for (raw,) in conn.execute(
+            "SELECT raw_name FROM paper_institutions UNION ALL "
+            "SELECT raw_name FROM institution_aliases")
+            if institution_policy.is_access_watermark(raw)]
+        multiline = scalar(
+            conn, "SELECT COUNT(*) FROM institutions WHERE institution_name "
+                  "GLOB '*[" + "\n\r\t" + "]*'")
+        report["watermark_affiliations"] = len(watermarked)
+        report["multiline_institution_names"] = multiline
+        if watermarked:
+            issues.append("download watermarks stored as affiliations: "
+                          + ", ".join(w[:60] for w in watermarked[:3]))
+        if multiline:
+            issues.append(f"multi-line institution names: {multiline}")
+        if "ror_id" in columns:
+            duplicate_ror = scalar(
+                conn, "SELECT COUNT(*) FROM (SELECT ror_id FROM institutions "
+                      "WHERE ror_id<>'' GROUP BY ror_id HAVING COUNT(*)>1)")
+            report["duplicate_ror_institutions"] = duplicate_ror
+            if duplicate_ror:
+                issues.append(f"institutions sharing a ROR id: {duplicate_ror}")
+
         # Country is still unpopulated corpus-wide; report it rather than fail,
         # so the gap stays visible until the ISO map is wired into the build.
         with_country = scalar(

@@ -767,6 +767,9 @@ python pipeline/sync_bibliography_db.py \
 ```
 
 The DB is stale when its paper count differs from `docs/papers/_papers_index.json`. After Zotero ingestion, forced rebuilds, or review corpus changes, run the builder with `--all` on the Mac mini worker before treating institution statistics as current. Institution spelling changes must be added to `institution_aliases`, not patched in individual queries.
+
+Institution naming (Wikipedia names, parents, affiliation numbers, watermarks, one-line strings, stated city/country) is applied by the last step of every build and `finalize`. A wrong link, name, city or country found in review is fixed by adding a rule with a `reason` to `pipeline/data/institution_corrections.json`, never by editing rows: rows are rebuilt and the rule is what survives. Preview with `python pipeline/normalize_institutions.py`, write with `--apply` on the Mac mini (canonical DB), then run the strict checker and push. The pass needs a ROR index with the wikipedia/city columns (`python pipeline/lib/ror_index.py`); refresh pinned titles with `--refresh-wikipedia` when the result reports `wikipedia_unrefreshed`. See [Attribution — institution naming](attribution.md#기관명-정규화).
+
 ## Recovery flows
 
 ```bash

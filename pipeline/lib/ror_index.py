@@ -42,7 +42,11 @@ CREATE TABLE orgs (
   country_code TEXT NOT NULL DEFAULT '',
   org_types TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL DEFAULT '',
-  parent_id TEXT NOT NULL DEFAULT '');
+  parent_id TEXT NOT NULL DEFAULT '',
+  -- The record's Wikipedia article (naming authority for institution names)
+  -- and its GeoNames city (fallback when no affiliation string names one).
+  wikipedia TEXT NOT NULL DEFAULT '',
+  city TEXT NOT NULL DEFAULT '');
 CREATE TABLE names (
   normalized TEXT NOT NULL,
   ror_id TEXT NOT NULL REFERENCES orgs(ror_id),
@@ -50,6 +54,7 @@ CREATE TABLE names (
   lang TEXT NOT NULL DEFAULT '',
   PRIMARY KEY (normalized, ror_id, name_type));
 CREATE INDEX idx_names_normalized ON names(normalized);
+CREATE INDEX idx_names_ror ON names(ror_id);
 """
 
 # An acronym is only trustworthy when it is globally unique; "MIT" and "CAS" are
@@ -327,10 +332,14 @@ def build_index(dump: Path | None = None, index: Path | None = None) -> dict:
         parent = next(
             (r.get("id", "") for r in record.get("relationships") or []
              if r.get("type") == "parent"), "")
+        wikipedia = next(
+            (str(link.get("value") or "") for link in record.get("links") or []
+             if link.get("type") == "wikipedia"), "")
         org_rows.append((
             ror_id, display, geo.get("country_name") or "",
             geo.get("country_code") or "", ",".join(record.get("types") or []),
-            record.get("status") or "", parent))
+            record.get("status") or "", parent, wikipedia,
+            geo.get("name") or ""))
         seen = set()
         for value, name_type, lang in labels:
             # ROR disambiguates multinationals with a trailing country —
@@ -343,7 +352,7 @@ def build_index(dump: Path | None = None, index: Path | None = None) -> dict:
                     continue
                 seen.add((key, name_type))
                 name_rows.append((key, ror_id, name_type, lang))
-    conn.executemany("INSERT INTO orgs VALUES (?,?,?,?,?,?,?)", org_rows)
+    conn.executemany("INSERT INTO orgs VALUES (?,?,?,?,?,?,?,?,?)", org_rows)
     conn.executemany("INSERT OR IGNORE INTO names VALUES (?,?,?,?)", name_rows)
     conn.executemany(
         "INSERT INTO meta VALUES (?,?)",
@@ -367,6 +376,7 @@ class RorIndex:
         self._local = threading.local()
         self._cache: dict[tuple[str, str], dict | None] = {}
         self._children: dict[str, int] = {}
+        self._keys: dict[str, list[str]] = {}
 
     @property
     def available(self) -> bool:
@@ -443,6 +453,59 @@ class RorIndex:
         self._cache[cache_key] = result
         return result
 
+    def reference(self, ror_id: str) -> dict:
+        """Wikipedia article URL, GeoNames city and country of one record.
+
+        An index built before these columns existed cannot answer, and the
+        naming policy must not silently fall back to ROR display names, so it
+        is a hard error with the rebuild command.
+        """
+        try:
+            row = self._connect().execute(
+                "SELECT wikipedia, city, country_name FROM orgs WHERE ror_id=?",
+                (ror_id,)).fetchone()
+        except sqlite3.OperationalError as exc:
+            raise RuntimeError(
+                "ROR index predates the wikipedia/city columns; rebuild it: "
+                "python pipeline/lib/ror_index.py") from exc
+        if not row:
+            return {"wikipedia": "", "city": "", "country_name": ""}
+        return {"wikipedia": row[0], "city": row[1], "country_name": row[2]}
+
+    def other_records(self, name: str, ror_id: str) -> list[str]:
+        """ROR ids other than ``ror_id`` that carry ``name`` as a name or label."""
+        keys = alias_keys(name)
+        if not keys:
+            return []
+        return [other for (other,) in self._connect().execute(
+            "SELECT DISTINCT ror_id FROM names WHERE normalized=? AND ror_id<>? "
+            "AND name_type IN ('ror_display','label')", (keys[0], ror_id))]
+
+    def digit_led_names(self) -> set[str]:
+        """First word of every organisation whose name begins with a digit."""
+        return {display.split()[0].casefold() for (display,) in self._connect().execute(
+            "SELECT display FROM orgs WHERE display GLOB '[0-9]*'")}
+
+    def name_keys(self, ror_id: str) -> list[str]:
+        """Every normalised name, label, alias and acronym of one record."""
+        cached = self._keys.get(ror_id)
+        if cached is None:
+            cached = self._keys[ror_id] = [key for (key,) in self._connect().execute(
+                "SELECT DISTINCT normalized FROM names WHERE ror_id=?", (ror_id,))]
+        return cached
+
+    def cities(self) -> dict[str, set[str]]:
+        """GeoNames city names per country, from every ROR record.
+
+        The gazetteer that recognises a city written in an affiliation string:
+        a comma segment counts as a city only when some research organisation
+        in that country sits there.
+        """
+        result: dict[str, set[str]] = {}
+        for city, country in self._connect().execute(
+                "SELECT DISTINCT city, country_name FROM orgs WHERE city<>''"):
+            result.setdefault(country, set()).add(city)
+        return result
 
     def is_research_umbrella(self, org: dict | None) -> bool:
         """Can this organisation stand as a parent group?

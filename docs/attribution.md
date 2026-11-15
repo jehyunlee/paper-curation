@@ -58,6 +58,61 @@ python pipeline/audit_institution_names.py            # 미해결을 논문 수 
 python pipeline/audit_institution_names.py --propose  # 명단 초안 (사람이 결정)
 ```
 
+## 기관명 정규화
+
+규칙 여섯 개(README [기관명 정규화 기준](../README.md#기관명-정규화-기준))는
+`pipeline/lib/institution_policy.py` 한 곳에 있고, 빌드 끝(`build`의 마지막,
+`finalize`)에서 부모·국가 패스 다음에 돈다. 원천에서 다시 유도하는 패스들이 먼저 돌고
+이 패스가 마지막이라, 위키백과 이름·명시된 장소·교정 규칙이 항상 최종값이 된다.
+같은 DB에 두 번 돌려도 두 번째는 아무것도 바꾸지 않는다.
+
+순서는 이렇다.
+
+1. 소스 문자열·별칭 정리 — 워터마크 링크 삭제, 소속 번호 제거, 한 줄로.
+2. 링크 교정 규칙(`relink`/`drop`) 적용. 규칙이 옮긴 링크는 이후 검사에서 건드리지 않는다.
+3. 정체성 증거 검사 — ROR 이름 중 일반어로만 된 것("Research Center", "Interaction",
+   "FAIR")에만 맞은 링크는, 문자열에 다른 기관이 뚜렷이 있으면 그리로 옮기고 아니면
+   버린다. 문자열에 그 기관 이름이 아예 없으면(Scopus 기관 ID가 준 연결) 판단하지 않는다.
+4. 이름 — ROR 레코드의 위키백과 링크를 고정본
+   (`pipeline/data/institution_wikipedia_titles.json`)으로 현재 영문 제목으로 바꾼다.
+   리다이렉트가 상위 조직이나 주제 문서로 가면(`National Supercomputing Center in
+   Shenzhen` → `Supercomputing in China`) 버리고 ROR 영문명을 쓴다.
+5. 학부·단과대 → 소속 대학, 같은 ROR·같은 위키백과 문서·같은 ROR 계열의 행 병합.
+6. 도시·국가 — 문자열 끝 구간이 국가 그 자체일 때만 "명시"로 본다(`New Jersey`, `GA`,
+   `Georgia`는 아님). 다른 국가가 앞에 또 나오면 두 소속이 붙은 것이라 쓰지 않는다.
+7. 부모 정리 — 자기 자신·행정기관·대학 시스템·정부는 부모에서 뺀다.
+8. 속성 교정 규칙(`set`) — 마지막에 덮어쓴다.
+
+### 교정 규칙
+
+`pipeline/data/institution_corrections.json`의 `rules` 배열에 추가한다.
+
+```json
+{"id": "robotics-institute-cmu", "action": "relink",
+ "match": {"raw_contains": "Robotics Institute"},
+ "to": {"ror_id": "https://ror.org/05x2bcf33"},
+ "reason": "The Robotics Institute is a unit of Carnegie Mellon University."}
+```
+
+- `action` — `relink`(링크를 `to` 기관으로), `drop`(링크 삭제), `set`(기관 속성 덮어쓰기:
+  `institution`, `country`, `city`, `parent`, `parent_ror_id`, `ror_id`).
+- `match` — `ror_id`, `institution`(저장된 이름), `raw_contains`(소스 문자열, 대소문자 무시),
+  `paper`(slug 접두). 준 조건은 모두 만족해야 한다. 이름이 바뀔 수 있으니 `ror_id`를 우선 쓴다.
+- `to` — `ror_id`를 우선. ROR에 없는 기관만 `institution`(+`country`)으로 준다.
+- `reason` 필수, `id` 중복 금지 — 어긋나면 빌드가 실패한다.
+
+규칙을 넣고 `normalize_institutions.py`로 미리보기 → `--apply`, 그다음
+`check_bibliography_db.py --strict`. 검사기는 워터마크 소속, 여러 줄 기관명,
+ROR id를 공유하는 기관 행을 실패로 막는다.
+
+위키백과 제목 고정본은 `--refresh-wikipedia`로 갱신한다(Wikipedia API, 50건씩, 리다이렉트와
+영문 langlink 따라감). 결과의 `wikipedia_unrefreshed`가 0보다 크면 새 ROR 레코드가
+들어온 것이니 갱신한다. Wikidata는 쓰지 않는다 — ROR 덤프가 이미 위키백과 링크와
+GeoNames 위치를 담고 있어 외부 호출 없이 빌드가 끝난다.
+
+ROR 인덱스(`.cache/ror/ror_index.sqlite3`)가 위키백과·도시 열 이전 것이면 패스가
+멈추고 재생성을 요구한다: `python pipeline/lib/ror_index.py`.
+
 ## 미해결은 답이 아니다
 
 마커를 읽을 수 없는 다기관 논문은 전원×전기관으로 연결되고 `pdf.unmarked-multi`
