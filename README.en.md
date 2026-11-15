@@ -62,7 +62,8 @@ of a review run) applies them again.
    English name (`Georgia Institute of Technology`, not `Georgia Tech`). Without an English ROR
    name, the English Wikipedia article title; without either, the original name. A
    multinational's country suffix is dropped (`IBM (United States)` → `IBM`). One institution, one name,
-   whatever a paper wrote. Schools, colleges and faculties fold into their university.
+   whatever a paper wrote. Schools and faculties fold into their university (`Harvard Medical School` → Harvard
+   University); colleges that are institutions of their own (`King's College London`) stay.
 2. **Parent** — only real structural umbrellas (Helmholtz Association, Max Planck Society,
    Chinese Academy of Sciences). University systems such as the University of California and
    government bodies are not parents. Parent names follow rule 1. The parent is never empty:

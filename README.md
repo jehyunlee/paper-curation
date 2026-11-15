@@ -61,8 +61,10 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 1. **기관명** — 대학·연구소 단위로, 영문 공식 명칭을 씁니다. 공식 명칭은 ROR(연구기관
    레지스트리)의 영문명입니다(`Georgia Institute of Technology`, `Georgia Tech` 아님). ROR에
    영문명이 없으면 영문 위키백과 문서 제목, 그것도 없으면 원어 명칭을 씁니다. 다국적 기업의
-   국가 표기는 뗍니다(`IBM (United States)` → `IBM`). 논문마다 표기가 달라도 한 기관은 한 이름입니다. 학부·단과대(School,
-   College, Faculty)는 소속 대학으로 합칩니다.
+   국가 표기는 뗍니다(`IBM (United States)` → `IBM`). 논문마다 표기가 달라도 한 기관은 한 이름입니다. 학부·단과대
+   (`Harvard Medical School`, `Johns Hopkins University School of Medicine`)는 소속 대학으로
+   합칩니다. 단, 그 자체로 독립 기관인 곳(`King's College London`, `Hamamatsu University
+   School of Medicine`)은 그대로 둡니다.
 2. **상위 기관(parent)** — Helmholtz Association, Max Planck Society, Chinese Academy of
    Sciences처럼 실제 조직 구조상의 상위 기관만 둡니다. University of California 같은
    대학 시스템, 정부·위원회는 상위 기관이 아닙니다. 상위 기관명도 1번 규칙을 따릅니다.

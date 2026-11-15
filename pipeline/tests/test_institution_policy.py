@@ -108,7 +108,7 @@ ORGS = [
      "country_name": "United States", "city": "Cambridge", "org_types": "education",
      "wikipedia": "http://en.wikipedia.org/wiki/Harvard_University"},
     {"ror_id": "r:hks", "display": "Harvard Kennedy School",
-     "country_name": "United States", "city": "Cambridge", "parent_id": "r:harvard",
+     "country_name": "United States", "city": "Cambridge", "parent_id": "r:harvard", "org_types": "education",
      "aliases": ["John F. Kennedy School of Government"]},
 ]
 
@@ -356,6 +356,31 @@ class ApplyPass(unittest.TestCase):
         _link(conn, 1, 10, "John F. Kennedy School of Government")
         self.run_policy(conn)
         self.assertEqual(self.names(conn, 1), ["Harvard University"])
+
+    def test_withdrawn_school_record_folds_into_named_university(self):
+        index = FakeIndex(ORGS + [
+            {"ror_id": "r:jhu", "display": "Johns Hopkins University",
+             "country_name": "United States", "org_types": "education"},
+            {"ror_id": "r:jhusom", "display": "Johns Hopkins University School of Medicine",
+             "country_name": "United States", "org_types": "other",
+             "status": "withdrawn"},
+            {"ror_id": "r:hamamatsu-som", "display": "Hamamatsu University School of Medicine",
+             "country_name": "Japan", "org_types": "education"},
+            {"ror_id": "r:kcl", "display": "King's College London",
+             "country_name": "United Kingdom", "org_types": "education",
+             "parent_id": "r:uol"},
+            {"ror_id": "r:uol", "display": "University of London",
+             "country_name": "United Kingdom", "org_types": "education"}])
+        self.assertEqual(policy._university_of_unit(
+            "Johns Hopkins University School of Medicine", "r:jhusom", "", "", index),
+            "r:jhu")
+        # An active school with no parent is a university of its own.
+        self.assertEqual(policy._university_of_unit(
+            "Hamamatsu University School of Medicine", "r:hamamatsu-som", "", "",
+            index), "")
+        # A college inside a federation is an institution of its own.
+        self.assertEqual(policy._university_of_unit(
+            "King's College London", "r:kcl", "", "", index), "")
 
     def test_corrections_relink_and_survive_a_second_pass(self):
         conn = _db()

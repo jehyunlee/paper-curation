@@ -78,7 +78,9 @@ python pipeline/audit_institution_names.py --propose  # 명단 초안 (사람이
    레코드의 위키백과 링크를 고정본(`pipeline/data/institution_wikipedia_titles.json`)으로
    영문 제목으로 바꾼다(`Ludwig-Maximilians-Universität München` → `LMU Munich`). 리다이렉트가
    상위 조직이나 주제 문서로 가면 버리고 원어 명칭을 유지한다.
-5. 학부·단과대 → 소속 대학, 같은 ROR·같은 위키백과 문서·같은 ROR 계열의 행 병합.
+5. 학부·단과대 → 소속 대학(ROR 부모 연결, 큐레이션된 부모, 또는 ROR이 "독립 기관 아님"으로
+   철회한 레코드의 이름 속 대학. University of London·CUNY 같은 연합체 소속 칼리지와 부모 없는
+   독립 의대는 제외), 같은 ROR·같은 위키백과 문서·같은 ROR 계열의 행 병합.
 6. 도시·국가 — 문자열 끝 구간이 국가 그 자체일 때만 "명시"로 본다(`New Jersey`, `GA`,
    `Georgia`는 아님). 다른 국가가 앞에 또 나오면 두 소속이 붙은 것이라 쓰지 않는다.
 7. 부모 정리 — 행정기관·대학 시스템·정부는 부모에서 뺀다. 부모는 비워 두지 않는다 — 부모가

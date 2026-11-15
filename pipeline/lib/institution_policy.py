@@ -662,27 +662,95 @@ _RESEARCH_BODY = re.compile(r"(?i)\b(?:institut|laborator|centre|center|"
                             r"observator|hospital|clinic)")
 
 
+_UNIT_SPLIT = re.compile(
+    r"\s+(?:School|College|Faculty|Department|Division)\b|,|\s+at\s+(?:the\s+)?",
+    re.IGNORECASE)
+
+
+# A school or faculty inside a university. "College" alone is not: King's
+# College London, Harvey Mudd College and the University of Maryland, College
+# Park are institutions of their own even where ROR files them under a system.
+_SUB_UNIT = re.compile(r"(?i)\b(?:school|faculty|department|division)\b")
+# Federations and systems whose members are institutions in their own right.
+_FEDERATION = re.compile(
+    r"(?i)^(?:university of london|city university of new york|"
+    r"state university of new york|national university of ireland|"
+    r"claremont colleges)$|\bsystem\b|\bgroup$|\bcolleges$")
+
+
+def _is_university(org: dict) -> bool:
+    return "education" in (org.get("org_types") or "").split(",")
+
+
+def _university_of_unit(name: str, ror_id: str, parent_ror: str,
+                        parent_name: str, index) -> str:
+    """ROR id of the university a school or college belongs to, or "".
+
+    - ROR's parent edge ("Questrom School of Business" -> Boston University).
+    - The parent recorded on the row when it is a university ("Harvard
+      Medical School" carries "Harvard University"; ROR gives no edge).
+    - A withdrawn ROR record names its university inside its own name: ROR
+      withdrew "Johns Hopkins University School of Medicine" and "Stanford
+      University School of Medicine" as not separate organisations. Only the
+      part that says "University" counts, and only in the same country.
+    An active education record without either edge is a university of its
+    own ("Hamamatsu University School of Medicine", "Lincoln University
+    College" in Malaysia) and stays.
+    """
+    org = index.org(ror_id) or {}
+    withdrawn = org.get("status") == "withdrawn"
+    # A school is an education record; "Imperial College Healthcare NHS
+    # Trust" is a hospital trust, not a college of Imperial.
+    if not (_is_university(org) or withdrawn):
+        return ""
+    if _SUB_UNIT.search(name):
+        if not parent_ror and parent_name:
+            # A curated parent carries only a name; it counts when it is
+            # exactly a ROR record's English name.
+            hit = index.resolve(parent_name)
+            if hit and ror_display(hit).casefold() == parent_name.casefold():
+                parent_ror = hit["ror_id"]
+        for candidate in (org.get("parent_id") or "", parent_ror):
+            parent = index.org(candidate) if candidate else None
+            if parent and candidate != ror_id and _is_university(parent) \
+                    and not _FEDERATION.search(ror_display(parent)):
+                return candidate
+    if not withdrawn:
+        return ""
+    for part in _UNIT_SPLIT.split(name):
+        part = part.strip(" .")
+        if not re.search(r"(?i)universit", part):
+            continue
+        hit = index.resolve(part)
+        if not hit or hit["ror_id"] == ror_id:
+            continue
+        university = index.org(hit["ror_id"]) or {}
+        if _is_university(university) and \
+                university.get("country_name") == org.get("country_name"):
+            return hit["ror_id"]
+    return ""
+
+
 def _fold_university_units(conn: sqlite3.Connection, index, names: Names) -> int:
     """Rule 1: a school, college or faculty is its university.
 
-    ROR keeps "Harvard Medical School" and "Questrom School of Business" as
-    records whose parent is the university; the institution of record is the
-    university. Institutes, laboratories, centres and hospitals keep their
-    own rows (rule 1 names research institutes as institutions).
+    The institution of record is the university, so "Harvard Medical School"
+    links count for Harvard University. Institutes, laboratories, centres and
+    hospitals keep their own rows (rule 1 names research institutes as
+    institutions), and a school that is a university of its own ("Icahn
+    School of Medicine at Mount Sinai") stays.
     """
     folded = 0
-    for institution_id, name, ror_id in conn.execute(
-            "SELECT institution_id, institution_name, ror_id FROM institutions "
-            "WHERE ror_id<>''").fetchall():
-        org = index.org(ror_id) or {}
-        parent_id = org.get("parent_id") or ""
-        if not parent_id or not _UNIVERSITY_UNIT.search(name) \
-                or _RESEARCH_BODY.search(name):
+    for institution_id, name, ror_id, parent_ror, parent_name in conn.execute(
+            "SELECT institution_id, institution_name, ror_id, parent_ror_id, "
+            "parent_name FROM institutions WHERE ror_id<>''").fetchall():
+        if not _UNIVERSITY_UNIT.search(name) or _RESEARCH_BODY.search(name):
             continue
-        parent = index.org(parent_id) or {}
-        if "education" not in (parent.get("org_types") or "").split(","):
+        university = _university_of_unit(name, ror_id, parent_ror,
+                                         parent_name, index)
+        if not university:
             continue
-        target = _target_institution(conn, {"ror_id": parent_id}, names, index)
+        target = _target_institution(conn, {"ror_id": university}, names, index)
         if target != institution_id:
             merge_institutions(conn, target, institution_id)
             folded += 1
