@@ -85,6 +85,7 @@ PYTHONUTF8=1 python pipeline/setup.py --check-feature review                # re
 |------|-------|-----|
 | Browse the public site | Browser | [Humanoid](https://paper-curation.jehyunlee.dev/humanoid/) · [Physical AI](https://paper-curation.jehyunlee.dev/physical-ai/) — cards, search, timelines, per-paper reviews |
 | Open my review | Zotero context menu → **Open paper-curation Review HTML** | Opens the existing `docs/papers/{slug}/index.html` in the browser (no generation) |
+| View research institute info | Zotero context menu → **View Research Institute Info** | Opens the paper's institutions from the bibliography DB (institution, parent, city, country, ROR link, source) and each author's affiliation as HTML (read-only) |
 | Browse the whole local site | Terminal | `PYTHONUTF8=1 python pipeline/serve_local.py` → `http://localhost:8000/` |
 | Export the public institution table (`institution-export`) | Modules → **Read / export** → *Public institution table export* | Set `outdir` → Inspect plan → Execute. The export refuses private data, formulas and local paths |
 | Extract a local PDF only (`extract`) | Modules → **Read / export** → *Local PDF extraction* | The selected item's PDF path is prefilled. Writes `text.md` and `figures/` into an empty `output_dir`. No API call |
