@@ -4214,7 +4214,8 @@ def apply_institution_policy(conn: sqlite3.Connection) -> dict:
         from .lib import institution_policy
     except ImportError:
         from lib import institution_policy
-    return institution_policy.apply(conn, country_from_raw)
+    return institution_policy.apply(conn, country_from_raw,
+                                    is_local_language_institution)
 
 
 def consolidate_institution_parents(conn: sqlite3.Connection) -> int:

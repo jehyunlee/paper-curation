@@ -58,8 +58,10 @@ Institution names in the bibliography DB follow these rules. They are not a one-
 the last step of **every bibliography build** (`build_bibliography_db.py`, and the finalize step
 of a review run) applies them again.
 
-1. **Name** — the university or research institute, named by its English Wikipedia article
-   title (ROR's English label when there is no English article). One institution, one name,
+1. **Name** — the university or research institute, under its official English name: ROR's
+   English name (`Georgia Institute of Technology`, not `Georgia Tech`). Without an English ROR
+   name, the English Wikipedia article title; without either, the original name. A
+   multinational's country suffix is dropped (`IBM (United States)` → `IBM`). One institution, one name,
    whatever a paper wrote. Schools, colleges and faculties fold into their university.
 2. **Parent** — only real structural umbrellas (Helmholtz Association, Max Planck Society,
    Chinese Academy of Sciences). University systems such as the University of California and

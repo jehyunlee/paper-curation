@@ -125,7 +125,8 @@ def run(db_path: Path, *, write: bool) -> dict:
         conn = sqlite3.connect(db_path, timeout=60.0)
         try:
             bib.ensure_schema_migrations(conn)
-            result = policy.apply(conn, bib.country_from_raw)
+            result = policy.apply(conn, bib.country_from_raw,
+                                  bib.is_local_language_institution)
             if write:
                 conn.commit()
             else:

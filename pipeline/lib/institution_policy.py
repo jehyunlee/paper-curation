@@ -2,10 +2,11 @@
 
 The six rules (README "기관명 정규화 기준"):
 
-1. Institution name: the university or research institute itself, named by its
-   English Wikipedia article title. Without an English article, the native
-   Wikipedia title; without any article, ROR's English label. One name per
-   institution whatever language a paper wrote it in.
+1. Institution name: the university or research institute itself, under its
+   official English name, which is ROR's English name ("Georgia Institute of
+   Technology", not the Wikipedia title "Georgia Tech"). Without an English
+   ROR name, the English Wikipedia article title; without either, the native
+   name. One name per institution whatever language a paper wrote it in.
 2. Parent: only a real structural umbrella (Helmholtz Association, Max Planck
    Society, Chinese Academy of Sciences). Multi-campus university systems such
    as the University of California are not parents. Named by the same Wikipedia
@@ -203,17 +204,29 @@ def _initials(words: list[str]) -> str:
 
 
 class Names:
-    """Canonical institution names from ROR's Wikipedia links.
+    """Official institution names.
 
+    The official name is ROR's English name: the registry records the name an
+    organisation uses for itself ("Georgia Institute of Technology", not the
+    Wikipedia article title "Georgia Tech"; "Massachusetts Institute of
+    Technology", not "MIT"). ROR's country suffix for multinationals is
+    dropped ("IBM (United States)" -> "IBM").
+
+    Only when ROR has no English name ("Ludwig-Maximilians-Universität
+    München") does the English Wikipedia article title name the institution.
     The pinned title map holds, per linked article, the current English title
     ("" when the article has no English version). An English title is used
     only when it still describes the organisation: ROR links that now
-    redirect to a parent or a topic ("National Supercomputing Center in
-    Shenzhen" → "Supercomputing in China", "California Southern University" →
-    "Perdoceo") fail the fit test and the ROR English label is used instead.
+    redirect to a parent or a topic fail the fit test and the native ROR name
+    is kept.
     """
 
-    def __init__(self, index, titles: dict[str, str] | None = None) -> None:
+    def __init__(self, index, titles: dict[str, str] | None = None,
+                 is_local_language: Callable[[str], bool] | None = None) -> None:
+        if is_local_language is None:
+            raise ValueError("Names needs the local-language test "
+                             "(build_bibliography_db.is_local_language_institution)")
+        self.is_local_language = is_local_language
         self.index = index
         self.titles = load_titles() if titles is None else titles
         self.unrefreshed: set[str] = set()
@@ -257,6 +270,10 @@ class Names:
         org = self.index.org(ror_id)
         if not org:
             return "", ""
+        official = ror_display(org)
+        if self.index.display_is_english(ror_id) and \
+                not self.is_local_language(official):
+            return official, "ror"
         lang, title = wikipedia_page(self.index.reference(ror_id)["wikipedia"])
         if lang:
             key = title_key(lang, title)
@@ -274,7 +291,7 @@ class Names:
                         not self._broader(english, org):
                     return display_title(english), "wikipedia"
                 self.rejected[ror_id] = english
-        return ror_display(org), "ror"
+        return official, "ror"
 
 
 # --- Identity evidence ------------------------------------------------------
@@ -783,6 +800,8 @@ def _merge_duplicates(conn: sqlite3.Connection, index) -> int:
     """One row per institution.
 
     Rows merge when they carry the same ROR id, or the same name and
+    - all but at most one are ROR country records of a multinational
+      ("Meta (Israel)", "Meta (United States)"), or
     - belong to one ROR family (a company and its country subsidiaries:
       "Google (Ireland)" and "Google (United States)" share a root record), or
     - all name the same Wikipedia article, or
@@ -828,8 +847,14 @@ def _merge_duplicates(conn: sqlite3.Connection, index) -> int:
         if len(members) < 2:
             continue
         backed = [m for m in members if m[2]]
+        # ROR marks a multinational's country records with a suffix
+        # ("Meta (Israel)", "Meta (United States)"): same name, same company.
+        unsuffixed = [m for m in backed
+                      if (index.org(m[2]) or {}).get("display", "")
+                      == ror_display(index.org(m[2]) or {"display": ""})]
         if (len({m[2] for m in backed}) <= 1
                 or len({root(m[2]) for m in backed}) == 1
+                or len(unsuffixed) <= 1
                 or all(m[3] == "wikipedia" for m in backed)):
             clusters.append(members)
     done: set[int] = set()
@@ -894,6 +919,7 @@ def _places(conn: sqlite3.Connection, index, country_of) -> dict[str, int]:
 
 
 def apply(conn: sqlite3.Connection, country_of: Callable[[str], str],
+          is_local_language: Callable[[str], bool],
           index=None, titles: dict[str, str] | None = None,
           corrections: list[dict] | None = None) -> dict:
     """Bring the institution tables in line with the six rules.
@@ -912,7 +938,7 @@ def apply(conn: sqlite3.Connection, country_of: Callable[[str], str],
     if not index.available:
         raise RuntimeError("ROR index missing: python pipeline/lib/ror_index.py")
     try:
-        names = Names(index, titles)
+        names = Names(index, titles, is_local_language)
         rules = load_corrections() if corrections is None else corrections
 
         # Organisations whose own name starts with digits ("4Paradigm", "23andMe").

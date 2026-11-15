@@ -79,15 +79,16 @@ python pipeline/experiment_ladder_order.py --sample 300       # re-check all thr
 
 The six rules (README [Institution naming rules](../README.en.md#institution-naming-rules))
 live in `pipeline/lib/institution_policy.py` and run at the end of every build and every
-`finalize`, after the parent and country passes, so Wikipedia names, stated places and the
+`finalize`, after the parent and country passes, so official names, stated places and the
 corrections file always have the final word. A second run on the same DB changes nothing.
 
 Order: clean source strings and aliases (watermarks, affiliation numbers, line breaks) →
 link corrections (`relink`/`drop`) → identity check (a ROR link matched only by a generic
 phrase such as "Research Center", "Interaction" or "FAIR" moves to a distinctive organisation
-in the string or is dropped) → Wikipedia names (from the pinned
-`pipeline/data/institution_wikipedia_titles.json`; a redirect to a parent or topic article
-falls back to ROR's English label) → schools fold into their university, and rows with one
+in the string or is dropped) → official names (ROR's English name without the
+country suffix; Wikipedia titles are common names such as `Georgia Tech` and are used only
+when ROR has no English name, through the pinned `pipeline/data/institution_wikipedia_titles.json`;
+a redirect to a parent or topic article keeps the native name) → schools fold into their university, and rows with one
 ROR id, one Wikipedia article or one ROR family merge → city and country (a trailing segment
 counts as stated only if it is a country by itself) → parents (never empty: an institution without an umbrella gets its own name, `IBM` → `IBM`; no administrative,
 university-system or government parents) → attribute corrections (`set`).

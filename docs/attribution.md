@@ -63,7 +63,7 @@ python pipeline/audit_institution_names.py --propose  # 명단 초안 (사람이
 규칙 여섯 개(README [기관명 정규화 기준](../README.md#기관명-정규화-기준))는
 `pipeline/lib/institution_policy.py` 한 곳에 있고, 빌드 끝(`build`의 마지막,
 `finalize`)에서 부모·국가 패스 다음에 돈다. 원천에서 다시 유도하는 패스들이 먼저 돌고
-이 패스가 마지막이라, 위키백과 이름·명시된 장소·교정 규칙이 항상 최종값이 된다.
+이 패스가 마지막이라, 공식 명칭·명시된 장소·교정 규칙이 항상 최종값이 된다.
 같은 DB에 두 번 돌려도 두 번째는 아무것도 바꾸지 않는다.
 
 순서는 이렇다.
@@ -73,10 +73,11 @@ python pipeline/audit_institution_names.py --propose  # 명단 초안 (사람이
 3. 정체성 증거 검사 — ROR 이름 중 일반어로만 된 것("Research Center", "Interaction",
    "FAIR")에만 맞은 링크는, 문자열에 다른 기관이 뚜렷이 있으면 그리로 옮기고 아니면
    버린다. 문자열에 그 기관 이름이 아예 없으면(Scopus 기관 ID가 준 연결) 판단하지 않는다.
-4. 이름 — ROR 레코드의 위키백과 링크를 고정본
-   (`pipeline/data/institution_wikipedia_titles.json`)으로 현재 영문 제목으로 바꾼다.
-   리다이렉트가 상위 조직이나 주제 문서로 가면(`National Supercomputing Center in
-   Shenzhen` → `Supercomputing in China`) 버리고 ROR 영문명을 쓴다.
+4. 이름 — 공식 명칭인 ROR 영문명을 쓴다(국가 접미사 제거). 위키백과 제목은 `Georgia Tech`,
+   `MIT`처럼 통칭이라 쓰지 않는다. ROR에 영문명이 없을 때(언어 태그가 모두 비영어)만 ROR
+   레코드의 위키백과 링크를 고정본(`pipeline/data/institution_wikipedia_titles.json`)으로
+   영문 제목으로 바꾼다(`Ludwig-Maximilians-Universität München` → `LMU Munich`). 리다이렉트가
+   상위 조직이나 주제 문서로 가면 버리고 원어 명칭을 유지한다.
 5. 학부·단과대 → 소속 대학, 같은 ROR·같은 위키백과 문서·같은 ROR 계열의 행 병합.
 6. 도시·국가 — 문자열 끝 구간이 국가 그 자체일 때만 "명시"로 본다(`New Jersey`, `GA`,
    `Georgia`는 아님). 다른 국가가 앞에 또 나오면 두 소속이 붙은 것이라 쓰지 않는다.

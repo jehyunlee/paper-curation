@@ -44,6 +44,9 @@ class FakeIndex:
         hits = [o for o in self.orgs.values() if key in self.name_keys(o["ror_id"])]
         return self.org(hits[0]["ror_id"]) if len(hits) == 1 else None
 
+    def display_is_english(self, ror_id):
+        return self.orgs[ror_id].get("lang", "en") == "en"
+
     def other_records(self, name, ror_id):
         key = normalize(name)
         return [r for r in self.orgs if r != ror_id and key in self.name_keys(r)]
@@ -90,6 +93,12 @@ ORGS = [
     {"ror_id": "r:google-ie", "display": "Google (Ireland)",
      "country_name": "Ireland", "city": "Dublin", "parent_id": "r:google",
      "wikipedia": "http://en.wikipedia.org/wiki/Google"},
+    {"ror_id": "r:gt", "display": "Georgia Institute of Technology",
+     "country_name": "United States", "city": "Atlanta", "aliases": ["Georgia Tech"],
+     "wikipedia": "http://en.wikipedia.org/wiki/Georgia_Institute_of_Technology"},
+    {"ror_id": "r:lmu", "display": "Ludwig-Maximilians-Universität München", "lang": "de",
+     "country_name": "Germany", "city": "Munich", "aliases": ["LMU", "University of Munich"],
+     "wikipedia": "https://de.wikipedia.org/wiki/Ludwig-Maximilians-Universit%C3%A4t_M%C3%BCnchen"},
     {"ror_id": "r:ibm", "display": "IBM (United States)",
      "country_name": "United States", "city": "Armonk",
      "wikipedia": "http://en.wikipedia.org/wiki/IBM"},
@@ -108,6 +117,8 @@ TITLES = {"en:Stanford University": "Stanford University",
               "Korea Institute of Science and Technology",
           "ca:Universitat de Barcelona": "University of Barcelona",
           "en:Carnegie Mellon University": "Carnegie Mellon University",
+          "en:Georgia Institute of Technology": "Georgia Tech",
+          "de:Ludwig-Maximilians-Universität München": "LMU Munich",
           "en:Google": "Google", "en:IBM": "IBM",
           "en:Harvard University": "Harvard University"}
 
@@ -200,13 +211,23 @@ class WikipediaNames(unittest.TestCase):
             ("de", "Technische Universität München"))
         self.assertEqual(policy.wikipedia_page("https://www.example.org"), ("", ""))
 
-    def test_native_article_names_through_english_counterpart(self):
-        names = policy.Names(FakeIndex(ORGS), TITLES)
-        self.assertEqual(names.name_for("r:ub"), ("University of Barcelona",
-                                                  "wikipedia"))
+    def test_official_english_name_beats_wikipedia_short_title(self):
+        names = policy.Names(FakeIndex(ORGS), TITLES, bib.is_local_language_institution)
+        self.assertEqual(names.name_for("r:gt"),
+                         ("Georgia Institute of Technology", "ror"))
+        self.assertEqual(names.name_for("r:ub"), ("University of Barcelona", "ror"))
+        self.assertEqual(names.name_for("r:ibm"), ("IBM", "ror"))
+
+    def test_native_only_ror_name_uses_english_wikipedia_title(self):
+        names = policy.Names(FakeIndex(ORGS), TITLES, bib.is_local_language_institution)
+        self.assertEqual(names.name_for("r:lmu"), ("LMU Munich", "wikipedia"))
+
+    def test_names_require_the_local_language_test(self):
+        with self.assertRaises(ValueError):
+            policy.Names(FakeIndex(ORGS), TITLES)
 
     def test_no_article_falls_back_to_ror_without_country_suffix(self):
-        names = policy.Names(FakeIndex(ORGS), TITLES)
+        names = policy.Names(FakeIndex(ORGS), TITLES, bib.is_local_language_institution)
         self.assertEqual(names.name_for("r:interaction"), ("InterAction", "ror"))
         self.assertEqual(policy.ror_display(
             {"display": "Meta (Israel)", "country_name": "Israel"}), "Meta")
@@ -237,7 +258,7 @@ def _link(conn, pid, iid, raw):
 
 class ApplyPass(unittest.TestCase):
     def run_policy(self, conn, corrections=()):
-        return policy.apply(conn, COUNTRY_OF, index=FakeIndex(ORGS), titles=TITLES,
+        return policy.apply(conn, COUNTRY_OF, bib.is_local_language_institution, index=FakeIndex(ORGS), titles=TITLES,
                             corrections=list(corrections))
 
     def names(self, conn, pid):

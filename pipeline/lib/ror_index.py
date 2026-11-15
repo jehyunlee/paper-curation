@@ -472,6 +472,18 @@ class RorIndex:
             return {"wikipedia": "", "city": "", "country_name": ""}
         return {"wikipedia": row[0], "city": row[1], "country_name": row[2]}
 
+    def display_is_english(self, ror_id: str) -> bool:
+        """Is the record's display name English (or untagged)?
+
+        The index stores the English label as the display whenever ROR has
+        one, so a non-English tag on every display/label row means ROR knows
+        the organisation only by its native name ("Hôpital Cochin").
+        """
+        langs = {lang for (lang,) in self._connect().execute(
+            "SELECT DISTINCT lang FROM names WHERE ror_id=? "
+            "AND name_type IN ('ror_display','label')", (ror_id,))}
+        return not langs or bool(langs & {"", "en"})
+
     def other_records(self, name: str, ror_id: str) -> list[str]:
         """ROR ids other than ``ror_id`` that carry ``name`` as a name or label."""
         keys = alias_keys(name)

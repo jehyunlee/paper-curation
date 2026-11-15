@@ -58,8 +58,10 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 서지 DB의 기관명은 아래 규칙을 따릅니다. 일회성 정리가 아니라 **서지 DB를 빌드할 때마다**
 (`build_bibliography_db.py`, 리뷰 실행의 finalize) 마지막 단계로 다시 적용됩니다.
 
-1. **기관명** — 대학·연구소 단위로, 영문 위키백과 문서 제목을 씁니다(영문 문서가 없으면
-   ROR 영문명). 논문마다 표기가 달라도 한 기관은 한 이름입니다. 학부·단과대(School,
+1. **기관명** — 대학·연구소 단위로, 영문 공식 명칭을 씁니다. 공식 명칭은 ROR(연구기관
+   레지스트리)의 영문명입니다(`Georgia Institute of Technology`, `Georgia Tech` 아님). ROR에
+   영문명이 없으면 영문 위키백과 문서 제목, 그것도 없으면 원어 명칭을 씁니다. 다국적 기업의
+   국가 표기는 뗍니다(`IBM (United States)` → `IBM`). 논문마다 표기가 달라도 한 기관은 한 이름입니다. 학부·단과대(School,
    College, Faculty)는 소속 대학으로 합칩니다.
 2. **상위 기관(parent)** — Helmholtz Association, Max Planck Society, Chinese Academy of
    Sciences처럼 실제 조직 구조상의 상위 기관만 둡니다. University of California 같은
