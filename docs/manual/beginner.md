@@ -71,7 +71,7 @@ python pipeline/run_feature.py --list
 4. 맞으면 OK로 이 리뷰만 실행합니다. 취소하면 API 호출 없이 예약을 해제합니다. 예약이 있으므로 계획 단계에 파일이 절대 생기지 않는다고 가정하지 마세요.
 5. 완료 뒤 우클릭 → **paper-curation Review HTML 열기**를 선택합니다.
 
-성공하면 `review.md`, `index.html`, `bibliography.json`이 출력 폴더에 생기며, HTML이 브라우저에서 열립니다. “리뷰 완료 … **서지 DB 반영 대기**”는 리뷰 실패가 아니라 전역 서지 DB 갱신이 아직 별도라는 뜻입니다.
+성공하면 `review.md`, `index.html`, `bibliography.json`이 출력 폴더에 생기며, HTML이 브라우저에서 열립니다. 코퍼스에 등록된 리뷰는 그 논문의 저자 소속이 서지 DB에 기관명·상위 기관·도시·국가로 정리돼 들어갑니다.
 
 이미 완성된 리뷰는 기본적으로 건너뜁니다. 다시 만들려면 **기존 review 덮어쓰기 (Overwrite existing)**를 켜되, Paper Curio가 직접 만든 리뷰는 이 설정과 무관하게 재생성됩니다.
 

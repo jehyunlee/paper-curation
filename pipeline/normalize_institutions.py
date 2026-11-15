@@ -126,7 +126,8 @@ def run(db_path: Path, *, write: bool) -> dict:
         try:
             bib.ensure_schema_migrations(conn)
             result = policy.apply(conn, bib.country_from_raw,
-                                  bib.is_local_language_institution)
+                                  bib.is_local_language_institution,
+                                  bib.paper_text(conn))
             if write:
                 conn.commit()
             else:

@@ -13,7 +13,9 @@ it came from. These tests exist so that class of regression fails loudly
 instead of passing `check_bibliography_db.py --strict`.
 """
 import re
+import tempfile
 import unittest
+from pathlib import Path
 
 from pipeline import build_bibliography_db as bib
 
@@ -1021,6 +1023,41 @@ class ConcatenatedMarkerTests(unittest.TestCase):
     def test_no_block_leaves_everything_alone(self):
         self.assertEqual(
             bib.split_runs_beyond({"A": ["12"]}, set()), {"A": ["12"]})
+
+
+class SuperscriptMarkerTests(unittest.TestCase):
+    """Unicode superscript digits key affiliations like plain digits."""
+
+    def test_packed_line_splits_at_superscripts(self):
+        # LabOS printed Oregon State and UW on one line; UW was lost.
+        line = ("NJ, USA ⁴ School of Electrical Engineering and Computer Science, "
+                "Oregon State University, Corvallis, OR, USA ⁵ Department of "
+                "Bioengineering, University of Washington, Seattle, WA, USA")
+        self.assertEqual(bib._split_superscript_affiliations(line), [
+            "NJ, USA",
+            "⁴ School of Electrical Engineering and Computer Science, "
+            "Oregon State University, Corvallis, OR, USA",
+            "⁵ Department of Bioengineering, University of Washington, "
+            "Seattle, WA, USA"])
+
+    def test_plain_digits_do_not_split_a_short_line(self):
+        line = "Building 5 Room 12, Stanford University, Stanford, CA, USA"
+        self.assertEqual(bib._split_superscript_affiliations(line), [line])
+
+    def test_header_reads_each_superscript_affiliation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "text.md"
+            path.write_text(
+                "LabOS: A Paper\nJane Doe⁴ John Roe⁵\n"
+                "⁴ School of Electrical Engineering and Computer Science, Oregon State "
+                "University, Corvallis, OR, USA ⁵ Department of Bioengineering, "
+                "University of Washington, Seattle, WA, USA\nAbstract\nText.\n",
+                encoding="utf-8")
+            _header, raws, _conf = bib.extract_header(path)
+        self.assertTrue(any("University of Washington" in raw
+                            and "Oregon" not in raw for raw in raws), raws)
+        self.assertTrue(any("Oregon State University" in raw
+                            and "Washington" not in raw for raw in raws), raws)
 
 
 class OneAuthorPerLineTests(unittest.TestCase):

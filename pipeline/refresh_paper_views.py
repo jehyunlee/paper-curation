@@ -267,6 +267,17 @@ def _refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | No
                 "command": [sys.executable, "-c", render, str(PIPELINE_DIR), slug],
                 "outputs": [str(directory / "index.html")],
             })
+            # Review generation writes the paper's authors and institutions
+            # (name, parent, city, country under the naming rules) into the
+            # bibliography DB of the corpus it was registered in.
+            database = papers.parent.parent / ".cache" / "bibliography.sqlite3"
+            report["steps"].append({
+                "topic": "papers", "builder": "bibliography", "status": "planned",
+                "command": [sys.executable, str(PIPELINE_DIR / "build_bibliography_db.py"),
+                            "--review", slug, "--offline", "--no-email",
+                            "--output", str(database)],
+                "outputs": [str(database)],
+            })
         topics.discard("_cross")
         report["topics"] = sorted(topics)
         for topic in report["topics"]:
@@ -391,7 +402,7 @@ def _execute_steps(report: dict[str, Any], papers: Path, *, timeout: float, allo
             if step["topic"] == "_cross" and step["builder"] == "network" and any(
                     previous["builder"] == "cross" and previous["status"] == "failed" for previous in report["steps"]):
                 raise ValueError("aggregate network blocked by failed aggregate refresh")
-            if step["builder"] != "review":
+            if step["builder"] not in {"review", "bibliography"}:
                 _topic_path(papers, step["topic"]).mkdir(parents=True, exist_ok=True)
             result = _run_builder(step["command"], timeout=timeout)
             step.update(result)

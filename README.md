@@ -58,6 +58,12 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 서지 DB의 기관명은 아래 규칙을 따릅니다. 일회성 정리가 아니라 **서지 DB를 빌드할 때마다**
 (`build_bibliography_db.py`, 리뷰 실행의 finalize) 마지막 단계로 다시 적용됩니다.
 
+**리뷰를 생성하면 그 논문의 저자 소속이 바로 서지 DB에 들어갑니다.** 리뷰가 코퍼스에 등록된 뒤
+화면 갱신 단계(`refresh_paper_views.py`)가 `build_bibliography_db.py --review <slug> --offline`을
+실행합니다. Zotero 첨부 PDF의 텍스트와 사이드카로 논문·저자·소속을 넣고, 저자별 소속을 잇고,
+아래 규칙까지 적용해 기관명·상위 기관·도시·국가 네 칸이 채워진 상태로 끝납니다. 이 단계가
+실패하면 리뷰 결과는 남기고 화면 갱신을 실패로 보고합니다(재시도 명령 포함).
+
 1. **기관명** — 대학·연구소 단위로, 영문 공식 명칭을 씁니다. 공식 명칭은 ROR(연구기관
    레지스트리)의 영문명입니다(`Georgia Institute of Technology`, `Georgia Tech` 아님). ROR에
    영문명이 없으면 영문 위키백과 문서 제목, 그것도 없으면 원어 명칭을 씁니다. 다국적 기업의
@@ -83,6 +89,13 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 
 덧붙여 "Research Center", "Interaction"처럼 **일반 명사구만으로 맞은 ROR 연결은 버립니다**
 (본문 문장의 `interaction`이 기관 `InterAction`으로 붙던 문제).
+
+**출처 우선순위.** 소속은 논문 자체(Zotero 첨부 PDF의 바이라인·소속 블록, Scopus와 대조된
+PDF)를 따릅니다. DOI로 조회한 OpenAlex 소속은 **논문 본문에 그 기관 이름(ROR 이름·별칭·약칭)이
+실제로 나올 때만** 남깁니다. 저장된 DOI가 인용 문헌의 것이면 남의 논문 소속이 통째로 붙기
+때문입니다(HelioX에 Nature Methods 논문의 Tübingen이 붙던 문제). 같은 논문에 하위 기관
+(`IBM Research - Zurich`)이 있으면 조회로 붙은 상위 기관(`IBM`) 링크는 뺍니다. 한 줄에
+위첨자 번호(`⁴ … ⁵ …`)로 붙은 여러 소속은 번호마다 나눠 읽습니다.
 
 **검토 중 발견한 오류는 규칙 파일로 고칩니다.** 잘못 연결된 기관, 틀린 이름·도시·국가는
 [`pipeline/data/institution_corrections.json`](pipeline/data/institution_corrections.json)

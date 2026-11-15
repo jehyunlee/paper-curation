@@ -131,6 +131,8 @@ class CleaningRules(unittest.TestCase):
         self.assertEqual(clean("10 KU Leuven"), "KU Leuven")
         self.assertEqual(clean("3Tübingen AI Center"), "Tübingen AI Center")
         self.assertEqual(clean("†2Institute of X"), "Institute of X")
+        self.assertEqual(clean("¹ Department of Pathology, Stanford University"),
+                         "Department of Pathology, Stanford University")
 
     def test_digits_that_belong_to_a_name_stay(self):
         clean = policy.clean_affiliation_text
@@ -144,6 +146,8 @@ class CleaningRules(unittest.TestCase):
         self.assertEqual(policy.one_line("Korea Uni- versity,\n Seoul"),
                          "Korea University, Seoul")
         self.assertEqual(policy.one_line("Re- public of Korea"), "Republic of Korea")
+        self.assertEqual(policy.one_line("Electrical &amp; Computer Engineering"),
+                         "Electrical & Computer Engineering")
 
     def test_watermark(self):
         self.assertTrue(policy.is_access_watermark(
@@ -158,6 +162,15 @@ class PlaceRules(unittest.TestCase):
 
     def place(self, raw):
         return policy.explicit_place(raw, COUNTRY_OF, self.cities)
+
+    def test_superscript_packed_line_states_no_place(self):
+        # LabOS: Oregon State and UW on one line; "Seattle" is UW's city.
+        self.assertTrue(policy.is_multi_affiliation(
+            "School of EECS, Oregon State University, Corvallis, OR, USA "
+            "⁵ Department of Bioengineering, University of Washington, Seattle, WA, USA"))
+        self.assertEqual(self.place(
+            "Oregon State University, Corvallis, OR, USA "
+            "⁵ University of Washington, Atlanta, USA"), ("", ""))
 
     def test_explicit_city_and_country(self):
         self.assertEqual(self.place("Department of X, Stanford University, "
@@ -251,15 +264,82 @@ def _inst(conn, iid, name, ror="", country="", parent="", source="ror"):
                  (iid, name, bib.norm(name), country, ror, parent, source, "test"))
 
 
-def _link(conn, pid, iid, raw):
+def _link(conn, pid, iid, raw, source="scopus+pdf"):
     conn.execute("INSERT INTO paper_institutions VALUES (?,?,?,?,?)",
-                 (pid, iid, raw, "", "scopus+pdf"))
+                 (pid, iid, raw, "", source))
 
 
 class ApplyPass(unittest.TestCase):
-    def run_policy(self, conn, corrections=()):
-        return policy.apply(conn, COUNTRY_OF, bib.is_local_language_institution, index=FakeIndex(ORGS), titles=TITLES,
+    def run_policy(self, conn, corrections=(), texts=None):
+        texts = texts or {}
+        return policy.apply(conn, COUNTRY_OF, bib.is_local_language_institution,
+                            texts.get, index=FakeIndex(ORGS), titles=TITLES,
                             corrections=list(corrections))
+
+    def test_lookup_link_needs_the_paper_to_name_the_institution(self):
+        conn = _db()
+        for pid in (1, 2, 3):
+            _paper(conn, pid)
+        _inst(conn, 10, "Korea Institute of Science and Technology", "r:kist")
+        _inst(conn, 11, "University of Barcelona", "r:ub")
+        for pid in (1, 2, 3):
+            _link(conn, pid, 10, "Korea Institute of Science and Technology", "openalex")
+            _link(conn, pid, 11, "University of Barcelona", "openalex")
+        result = self.run_policy(conn, texts={
+            # A byline marker glued to the name still names it.
+            1: "Jane Doe1\n1Korea Institute of Science and Technology, Seoul",
+            # The stored DOI was a cited work's: neither institution appears.
+            2: "Anonymous authors\nAbstract ...",
+        })
+        self.assertEqual(result["lookup_links_unconfirmed"], 3)
+        self.assertEqual(self.names(conn, 1),
+                         ["Korea Institute of Science and Technology"])
+        self.assertEqual(self.names(conn, 2), [])
+        # No text to check against: the links stand.
+        self.assertEqual(self.names(conn, 3), [
+            "Korea Institute of Science and Technology", "University of Barcelona"])
+
+    def test_relink_rule_confirms_a_lookup_link_the_text_spells_differently(self):
+        conn = _db()
+        _paper(conn, 1)
+        _inst(conn, 10, "University of Barcelona", "r:ub")
+        _link(conn, 1, 10, "University of Barcelona", "openalex")
+        rule = {"id": "ub-faculty", "action": "relink",
+                "match": {"raw_contains": "Facultat de Biologia"},
+                "to": {"ror_id": "r:ub"}, "reason": "faculty of UB"}
+        result = self.run_policy(conn, corrections=[rule], texts={
+            1: "1 Facultat de Biologia, Barcelona"})
+        self.assertEqual(result["lookup_links_unconfirmed"], 0)
+        self.assertEqual(self.names(conn, 1), ["University of Barcelona"])
+        # A second pass keeps it too.
+        self.assertEqual(self.run_policy(conn, corrections=[rule], texts={
+            1: "1 Facultat de Biologia, Barcelona"})["lookup_links_unconfirmed"], 0)
+
+    def test_page_sourced_links_are_not_checked_against_text(self):
+        conn = _db()
+        _paper(conn, 1)
+        _inst(conn, 10, "University of Barcelona", "r:ub")
+        _link(conn, 1, 10, "University of Barcelona, Barcelona, Spain")
+        self.run_policy(conn, texts={1: "no institution printed"})
+        self.assertEqual(self.names(conn, 1), ["University of Barcelona"])
+
+    def test_lookup_umbrella_beside_its_member_is_dropped(self):
+        conn = _db()
+        _paper(conn, 1)
+        _inst(conn, 10, "IBM (United States)", "r:ibm", source="openalex")
+        _inst(conn, 11, "IBM Research - Zurich", "r:ibm-zrl",
+              parent="IBM (United States)")
+        conn.execute("UPDATE institutions SET parent_ror_id='r:ibm' "
+                     "WHERE institution_id=11")
+        _link(conn, 1, 10, "IBM (United States)", "openalex")
+        _link(conn, 1, 11, "IBM Research Europe, Rüschlikon, Switzerland")
+        result = self.run_policy(conn, texts={
+            1: "IBM Research Europe, Rüschlikon, Switzerland; IBM (United States)"})
+        self.assertEqual(result["redundant_umbrella_links"], 1)
+        self.assertEqual(self.names(conn, 1), ["IBM Research - Zurich"])
+        parent, = conn.execute("SELECT parent_name FROM institutions "
+                               "WHERE ror_id='r:ibm-zrl'").fetchone()
+        self.assertEqual(parent, "IBM")
 
     def names(self, conn, pid):
         return sorted(n for (n,) in conn.execute(

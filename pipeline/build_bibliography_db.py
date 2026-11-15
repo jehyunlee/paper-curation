@@ -818,8 +818,23 @@ _MARKER_SYMBOLS = "♣♢♡♠◊△▽○●□■◆★§¶αβγδεζηθ"
 
 # Suit symbols key ACL affiliation blocks the way digits key everyone
 # else's ("♣University of Illinois at Urbana-Champaign").
+# Unicode superscript digits ("⁴ School of …") key affiliations the same way
+# plain digits do; LabOS packed Oregon State and the University of Washington
+# onto one line behind them and lost UW.
+_SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹"
 _AFFILIATION_MARKER = re.compile(
-    r"(?=(?<![A-Za-z0-9])(?:[1-9]\d?|[" + _MARKER_SYMBOLS + r"])\s*[A-Z])")
+    r"(?=(?<![A-Za-z0-9])(?:[1-9]\d?|[" + _SUPERSCRIPT_DIGITS + r"]{1,2}|["
+    + _MARKER_SYMBOLS + r"])\s*[A-Z])")
+
+
+_SUPERSCRIPT_MARKER = re.compile(
+    r"(?=(?<![A-Za-z0-9])[" + _SUPERSCRIPT_DIGITS + r"]{1,2}\s*[A-Z])")
+
+
+def _split_superscript_affiliations(line: str) -> list[str]:
+    """Break a line at Unicode superscript affiliation markers only."""
+    return [piece.strip() for piece in _SUPERSCRIPT_MARKER.split(line)
+            if piece.strip()]
 
 
 def _split_marked_affiliations(line: str) -> list[str]:
@@ -2018,8 +2033,10 @@ def extract_header(text_path: Path) -> tuple[str, list[str], float]:
         # 468 characters, so the whole line was dropped and only Scopus knew
         # where those authors worked. Split on the superscript markers that
         # separate them and judge each piece on its own.
+        # A superscript digit is never part of an address, so it splits at
+        # any length; a plain digit ("Building 5") only on an overlong line.
         for piece in (_split_marked_affiliations(line)
-                      if len(line) > 240 else [line]):
+                      if len(line) > 240 else _split_superscript_affiliations(line)):
             if not (5 <= len(piece) <= 240) or not cues.search(piece):
                 continue
             if re.match(r"^(abstract|keywords?|초록|introduction)\b", piece, re.I):
@@ -4215,7 +4232,22 @@ def apply_institution_policy(conn: sqlite3.Connection) -> dict:
     except ImportError:
         from lib import institution_policy
     return institution_policy.apply(conn, country_from_raw,
-                                    is_local_language_institution)
+                                    is_local_language_institution,
+                                    paper_text(conn))
+
+
+def paper_text(conn: sqlite3.Connection):
+    """``paper_id -> text.md`` (None without text), the evidence the naming
+    pass checks lookup-sourced links against."""
+    dirs = dict(conn.execute("SELECT paper_id, review_dir FROM papers"))
+
+    def text(paper_id: int) -> str | None:
+        review_dir = dirs.get(paper_id)
+        path = ROOT / review_dir / "text.md" if review_dir else None
+        if path is None or not path.is_file():
+            return None
+        return path.read_text(encoding="utf-8", errors="replace")
+    return text
 
 
 def consolidate_institution_parents(conn: sqlite3.Connection) -> int:
@@ -4415,8 +4447,11 @@ def prune_orphan_institutions(conn: sqlite3.Connection) -> int:
 def backfill_author_institutions(db_path: Path, limit: int | None = None,
                                  retry_guessed: bool = True,
                                  offline: bool = False,
-                                 recompute: bool = False) -> dict:
+                                 recompute: bool = False,
+                                 slugs: set[str] | None = None) -> dict:
     """Fill `paper_author_institutions` for papers built before it existed.
+
+    ``slugs`` limits the pass to those papers (one freshly reviewed paper).
 
     The mapping derives from `text.md` and the paper's existing institution
     rows, so it needs neither Zotero nor Scopus nor the PDF — a full rebuild
@@ -4467,6 +4502,8 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     "   WHERE pai.paper_id=p.paper_id"
                     "     AND pai.source<>'pdf.unmarked-multi')"
                     " ORDER BY p.paper_id").fetchall()
+            if slugs is not None:
+                pending = [row for row in pending if row[1] in slugs]
             if limit:
                 pending = pending[:limit]
             filled = linked = skipped = 0
@@ -4894,6 +4931,49 @@ def changed_entries(entries: list[dict], db_path: Path) -> list[dict]:
             changed.append(p)
     return changed
 
+def paper_institution_rows(conn: sqlite3.Connection, slug: str) -> list[dict]:
+    """The four fields the naming rules settle, for one paper."""
+    return [
+        {"institution": name, "parent": parent, "city": city, "country": country,
+         "ror_id": ror_id, "source": source}
+        for name, parent, city, country, ror_id, source in conn.execute(
+            "SELECT i.institution_name, i.parent_name, i.city_name, "
+            "i.country_name_en, i.ror_id, pi.source "
+            "FROM paper_institutions pi JOIN papers p USING(paper_id) "
+            "JOIN institutions i USING(institution_id) WHERE p.slug=? "
+            "ORDER BY i.institution_name", (slug,))]
+
+
+def ingest_reviewed_paper(slug: str, db_path: Path = DEFAULT_DB,
+                          offline: bool = True) -> dict:
+    """Write one freshly reviewed paper into the bibliography DB.
+
+    Review generation calls this (through ``refresh_paper_views``) once the
+    paper is registered: its Zotero sidecar and PDF text become the paper's
+    rows, the byline is linked author by author, and ``finalize`` runs the
+    table-wide passes ending in the naming rules, so the paper's institutions
+    land with name, parent, city and country already settled. Offline by
+    default: a review's declared transmission does not include Scopus or the
+    ROR API, and the local ROR index carries what the rules need.
+    """
+    entries = [entry for entry in load_entries() if entry.get("slug") == slug]
+    if len(entries) != 1:
+        raise ValueError(f"{slug}: not registered exactly once in the corpus index")
+    built = build(entries, db_path, skip_zotero=True, offline=offline,
+                  defer_consolidation=True)
+    backfill = backfill_author_institutions(db_path, offline=offline,
+                                            slugs={slug})
+    finalized = finalize(db_path)
+    conn = sqlite3.connect(db_path)
+    try:
+        institutions = paper_institution_rows(conn, slug)
+    finally:
+        conn.close()
+    return {"slug": slug, "processed": built["processed"],
+            "author_links": backfill, "finalize": finalized,
+            "institutions": institutions}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     group = ap.add_mutually_exclusive_group()
@@ -4923,7 +5003,22 @@ def main() -> int:
     # database failing `check_bibliography_db --strict` is the symptom.
     ap.add_argument("--finalize", action="store_true",
                     help="run only the table-wide maintenance passes")
+    ap.add_argument("--review", metavar="SLUG",
+                    help="ingest one freshly reviewed paper and settle its "
+                         "institutions (review generation calls this)")
     args = ap.parse_args()
+    if args.review:
+        try:
+            result = ingest_reviewed_paper(args.review, args.output,
+                                           offline=args.offline)
+        except bibliography_lock.BibliographyWriterLockBusyError as exc:
+            print(str(exc), file=sys.stderr)
+            return 5
+        except (RuntimeError, ValueError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 3
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
     if args.finalize:
         print(json.dumps(finalize(args.output), ensure_ascii=False, indent=2))
         return 0

@@ -125,7 +125,9 @@ Shared-corpus writers coordinate reservation, registration, and cancellation
 transactions through a common lock and refresh the Curio list. Successful review
 generation/regeneration for a registered paper in canonical `docs/papers/` also
 refreshes its topic pages, search indexes, and pre-existing interactive networks
-(including the relevant existing `_cross` view). A new Curio reservation defers
+(including the relevant existing `_cross` view), and writes that paper into the
+corpus's bibliography DB (`build_bibliography_db.py --review <slug> --offline`:
+sidecar + PDF ingest, author links, `finalize` with the institution naming rules). A new Curio reservation defers
 this refresh until registration commits; an output outside the canonical corpus
 remains standalone. An execute request that reuses a complete matching review
 bundle can retry the view refresh without generating the review again.
@@ -145,8 +147,8 @@ but hybrid cache misses may require Google embedding credentials and paid calls.
 View failures preserve the generated review, report failed/partial steps and a
 retry command, and must not be reported as indexing complete. Retry the helper,
 not a paid review or a full rebuild. This refresh does not classify the corpus,
-recompute related-paper connections, regenerate timelines, ingest the bibliography
-DB, deploy, publish, or email. Those remain separate stages; publication and email
+recompute related-paper connections, regenerate timelines, re-ingest other papers
+into the bibliography DB, deploy, publish, or email. Those remain separate stages; publication and email
 require explicit requests and separate export-rights, recipient, and cloud checks.
 
 `keyword-search` and `semantic-search` accept `params.operation` of `query` or

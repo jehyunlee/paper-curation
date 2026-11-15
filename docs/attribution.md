@@ -87,6 +87,18 @@ python pipeline/audit_institution_names.py --propose  # 명단 초안 (사람이
    없거나 빠진 기관은 기관명을 부모로 넣는다(`IBM` → `IBM`). 부모가 자기 별칭이어도 자기
    이름으로 바꾼다. 검사기는 빈 부모를 실패로 막는다.
 8. 속성 교정 규칙(`set`) — 마지막에 덮어쓴다.
+9. 출처 우선순위 — 정체가 확정된 뒤(병합 이후), DOI 조회로 붙은 링크(`openalex`,
+   `link:openalex`)는 논문 `text.md` 전체에 그 기관 이름(저장된 이름, ROR 이름·별칭·약칭)이
+   나올 때만 남긴다. 논문 범위(`paper`)나 본문 구절(`raw_contains`)로 맞춘 `relink` 규칙의
+   대상은 규칙이 이름을 확인한 것으로 본다. `text.md`가 없는 논문은 판단하지 않는다.
+   이어서 같은 논문에 하위 기관이 있는 조회 상위 기관 링크를 뺀다. 실측: OpenAlex 링크
+   3,192개 중 약 2,440개가 본문에 이름이 없었고, 상당수는 저장된 DOI가 인용 문헌의 것이었다.
+
+리뷰 생성 경로는 `refresh_paper_views.py`의 `bibliography` 단계로 이 패스를 탄다.
+`build_bibliography_db.py --review <slug> --offline`이 그 논문만 사이드카·PDF로 넣고(Zotero
+전체 조회 없음), 그 논문의 저자↔기관을 잇고, `finalize`로 위 순서를 끝까지 돌린 뒤 그 논문의
+기관명·상위 기관·도시·국가를 JSON으로 출력한다. PDF 소속 줄은 위첨자 번호(`⁰`–`⁹`)에서도
+나눈다(평문 숫자는 240자를 넘는 줄에서만 — `Building 5` 같은 주소를 자르지 않도록).
 
 ### 교정 규칙
 

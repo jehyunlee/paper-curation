@@ -92,6 +92,20 @@ a redirect to a parent or topic article keeps the native name) → schools fold 
 ROR id, one Wikipedia article or one ROR family merge → city and country (a trailing segment
 counts as stated only if it is a country by itself) → parents (never empty: an institution without an umbrella gets its own name, `IBM` → `IBM`; no administrative,
 university-system or government parents) → attribute corrections (`set`).
+ → source priority:
+once identities are final, a link looked up by DOI (`openalex`, `link:openalex`) stays only
+when the paper's whole `text.md` names the institution (stored name, ROR name, alias or
+acronym); the target of a `relink` rule scoped to the paper (`paper`) or keyed on a phrase in
+its text (`raw_contains`) counts as named; papers without `text.md` are not judged. A looked-up
+umbrella beside its own member in the same paper is then dropped. Measured: about 2,440 of
+3,192 OpenAlex links had no name in the text, many because the stored DOI was a cited work's.
+
+Review generation reaches this pass through the `bibliography` step of
+`refresh_paper_views.py`: `build_bibliography_db.py --review <slug> --offline` ingests that one
+paper from its sidecar and PDF (no Zotero library scan), links its authors to institutions,
+runs `finalize` through the order above, and prints the paper's name, parent, city and
+country as JSON. PDF affiliation lines also split at superscript digits (`⁰`–`⁹`); plain digits
+split only lines over 240 characters, so addresses such as `Building 5` stay whole.
 
 ### Correction rules
 

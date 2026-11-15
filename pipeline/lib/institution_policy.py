@@ -28,6 +28,7 @@ so a rebuild cannot bring a corrected error back.
 """
 from __future__ import annotations
 
+import html
 import json
 import re
 import sqlite3
@@ -51,7 +52,7 @@ WATERMARK = re.compile(
 # Rule 3. A footnote marker welded to the following word: "3Stanford",
 # "26University". Two letters must follow so "3M" keeps its digit.
 _MARKER = re.compile(r"(?<![\w.])(\d{1,2})(?=[^\W\d_][´`¨]?[^\W\d_])")
-_LEADING_SYMBOLS = re.compile(r"^[\s*†‡§¶#♣♢♡♠◊△▽○●□■◆★]+")
+_LEADING_SYMBOLS = re.compile(r"^[\s*†‡§¶#♣♢♡♠◊△▽○●□■◆★⁰¹²³⁴⁵⁶⁷⁸⁹]+")
 _LEADING_SPACED_MARKER = re.compile(r"^\d{1,2}\s+(?=[A-Z])")
 # Rule 5. A line-break hyphen inside a word: "Uni- versity", "Re- public".
 _LINE_BREAK_HYPHEN = re.compile(r"(?<=[a-z])-\s+(?=[a-z])")
@@ -108,8 +109,12 @@ def is_access_watermark(text: str) -> bool:
 
 
 def one_line(text: str) -> str:
-    """Rule 5: collapse line breaks and rejoin words split by a wrap hyphen."""
-    value = unicodedata.normalize("NFC", str(text or ""))
+    """Rule 5: collapse line breaks and rejoin words split by a wrap hyphen.
+
+    HTML entities left by the text extractor ("Electrical &amp; Computer") are
+    decoded too.
+    """
+    value = unicodedata.normalize("NFC", html.unescape(str(text or "")))
     value = _SPACE.sub(" ", value).strip()
     return _LINE_BREAK_HYPHEN.sub("", value)
 
@@ -393,7 +398,8 @@ def _is_country_name(text: str) -> bool:
 
 def is_multi_affiliation(raw: str) -> bool:
     """A string that packs several numbered affiliations onto one line."""
-    return bool(re.search(r"[,;]\s*\d{1,2}\s*[A-Z]", raw))
+    return bool(re.search(r"[,;]\s*\d{1,2}\s*[A-Z]|\S\s*[⁰¹²³⁴⁵⁶⁷⁸⁹]{1,2}\s*[A-Z]",
+                          raw))
 
 
 def explicit_place(raw: str, country_of: Callable[[str], str],
@@ -843,6 +849,115 @@ def _verify_identities(conn: sqlite3.Connection, index, names: Names,
     return {"generic_links_relinked": relinked, "generic_links_dropped": dropped}
 
 
+# Sources whose links come from a publisher record looked up by DOI, not from
+# the paper's own pages, and the same links restored from an author link by
+# `reinstate_linked_institutions`. OpenAlex links were the ones that carried a
+# cited paper's institutions in when the stored DOI belonged to a reference
+# (paper 9957: Broad Institute, Dana-Farber, Revolution Medicines).
+LOOKUP_SOURCES = ("openalex", "link:openalex")
+_MARKER_GLUE = re.compile(r"(\d)([^\W\d_])")
+
+
+def _rule_assertions(conn: sqlite3.Connection, rules: list[dict],
+                     text_of: Callable[[int], str | None]) -> set:
+    """(paper_id, ror_id) pairs a relink rule states the paper names.
+
+    A rule scoped to a paper, or keyed on a phrase the paper's text contains,
+    is an operator's reading of that paper's byline ("Harvard Medical School"
+    for Harvard University on 9957), so it confirms the link however the
+    institution's ROR names are spelled there.
+    """
+    asserted = set()
+    for rule in rules:
+        target = (rule.get("to") or {}).get("ror_id")
+        match = rule["match"]
+        if rule["action"] != "relink" or not target or not (
+                match.get("paper") or match.get("raw_contains")):
+            continue
+        query, params = "SELECT paper_id FROM papers", []
+        if match.get("paper"):
+            query += " WHERE slug LIKE ?"
+            params.append(match["paper"] + "%")
+        for (paper_id,) in conn.execute(query, params).fetchall():
+            phrase = (match.get("raw_contains") or "").casefold()
+            if phrase:
+                text = text_of(paper_id)
+                if text is None or phrase not in text.casefold():
+                    continue
+            asserted.add((paper_id, target))
+    return asserted
+
+
+def _verify_lookup_links(conn: sqlite3.Connection, index,
+                         paper_text: Callable[[int], str | None],
+                         rules: list[dict]) -> int:
+    """Source priority: the paper's own pages outrank a DOI lookup.
+
+    A lookup-sourced link stands only when the paper's text names the
+    institution (any ROR name, label, alias or acronym, or the stored name),
+    or a relink rule states that it does. The whole text, not the byline
+    alone: journals print affiliations after the references too. Measured on
+    the corpus, about 2,450 of 3,192 OpenAlex links fail this, many on papers
+    whose stored DOI is a cited work's (HelioX carried
+    10.1038/s41592-025-02895-w and Tübingen with it). Papers without
+    extracted text are left alone: there is nothing to check against, and the
+    link's source column still says where it came from.
+    """
+    texts: dict[int, str | None] = {}
+
+    def text_of(paper_id: int) -> str | None:
+        if paper_id not in texts:
+            text = paper_text(paper_id)
+            # "4Tsinghua": a byline marker glued to the name.
+            texts[paper_id] = (None if text is None
+                               else _MARKER_GLUE.sub(r"\1 \2", text))
+        return texts[paper_id]
+
+    asserted = _rule_assertions(conn, rules, text_of)
+    keys: dict[str, list[str]] = {}
+    dropped = 0
+    marks = ",".join("?" * len(LOOKUP_SOURCES))
+    for paper_id, institution_id, name, ror_id in conn.execute(
+            "SELECT pi.paper_id, pi.institution_id, i.institution_name, i.ror_id "
+            "FROM paper_institutions pi JOIN institutions i USING(institution_id) "
+            f"WHERE pi.source IN ({marks})", LOOKUP_SOURCES).fetchall():
+        if (paper_id, ror_id) in asserted:
+            continue
+        text = text_of(paper_id)
+        if text is None:
+            continue
+        names = [_normalize(name)]
+        if ror_id:
+            if ror_id not in keys:
+                keys[ror_id] = index.name_keys(ror_id)
+            names += keys[ror_id]
+        if identity_evidence(text, [k for k in names if k]) is not True:
+            _drop_link(conn, paper_id, institution_id)
+            dropped += 1
+    return dropped
+
+
+def _drop_redundant_umbrellas(conn: sqlite3.Connection) -> int:
+    """A lookup-sourced umbrella next to its own member adds nothing.
+
+    OpenAlex lists "IBM" beside "IBM Research - Zurich" from the byline;
+    grouping by parent already counts the paper for IBM.
+    """
+    marks = ",".join("?" * len(LOOKUP_SOURCES))
+    rows = conn.execute(
+        "SELECT DISTINCT pi.paper_id, pi.institution_id FROM paper_institutions pi "
+        "JOIN institutions u USING(institution_id) "
+        "JOIN paper_institutions member ON member.paper_id=pi.paper_id "
+        "AND member.institution_id<>pi.institution_id "
+        "JOIN institutions m ON m.institution_id=member.institution_id "
+        f"WHERE pi.source IN ({marks}) AND (m.parent_name=u.institution_name "
+        "OR (u.ror_id<>'' AND m.parent_ror_id=u.ror_id))",
+        LOOKUP_SOURCES).fetchall()
+    for paper_id, institution_id in rows:
+        _drop_link(conn, paper_id, institution_id)
+    return len(rows)
+
+
 def _canonical_names(conn: sqlite3.Connection, names: Names) -> int:
     renamed = 0
     for institution_id, name, ror_id, parent, parent_ror in conn.execute(
@@ -988,9 +1103,14 @@ def _places(conn: sqlite3.Connection, index, country_of) -> dict[str, int]:
 
 def apply(conn: sqlite3.Connection, country_of: Callable[[str], str],
           is_local_language: Callable[[str], bool],
+          paper_text: Callable[[int], str | None],
           index=None, titles: dict[str, str] | None = None,
           corrections: list[dict] | None = None) -> dict:
     """Bring the institution tables in line with the six rules.
+
+    ``paper_text(paper_id)`` returns the paper's text as extracted from its
+    PDF (None when there is no text), the evidence lookup-sourced links are
+    checked against.
 
     Runs at the end of every build after the parent and country passes. The
     result counts what changed; ``wikipedia_unrefreshed`` counts ROR records
@@ -1031,6 +1151,11 @@ def apply(conn: sqlite3.Connection, country_of: Callable[[str], str],
         # Operator corrections have the last word on attributes.
         result["set_corrections"] = apply_set_corrections(conn, rules)
         result["merged"] += _merge_duplicates(conn, index)
+        # Source priority, once every row has its final identity: a merge
+        # can move a lookup link onto a row the paper does not name.
+        result["lookup_links_unconfirmed"] = _verify_lookup_links(
+            conn, index, paper_text, rules)
+        result["redundant_umbrella_links"] = _drop_redundant_umbrellas(conn)
         conn.execute("DELETE FROM institutions WHERE institution_id NOT IN "
                      "(SELECT institution_id FROM paper_institutions)")
         conn.execute("DELETE FROM institution_aliases WHERE institution_id NOT IN "

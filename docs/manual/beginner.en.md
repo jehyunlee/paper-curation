@@ -70,7 +70,7 @@ Pipeline API charges are separate from a GJC subscription.
 4. Select OK only when it is correct, to run this review only. Canceling releases the reservation without an API call. Because a reservation exists, do not assume planning can never create a file.
 5. When complete, right-click and choose **Open paper-curation Review HTML**.
 
-On success, the output folder contains `review.md`, `index.html`, and `bibliography.json`; HTML opens in the browser. “Review complete … bibliography database update pending” does not mean the review failed: updating the global bibliography database is separate.
+On success, the output folder contains `review.md`, `index.html`, and `bibliography.json`; HTML opens in the browser. A review registered in the corpus writes the paper's author affiliations into the bibliography database, settled to name, parent, city and country.
 
 Completed reviews are skipped by default. To rebuild one, enable **Overwrite existing review**. Reviews created directly by Paper Curio may be regenerated regardless of that setting.
 

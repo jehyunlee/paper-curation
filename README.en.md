@@ -58,6 +58,13 @@ Institution names in the bibliography DB follow these rules. They are not a one-
 the last step of **every bibliography build** (`build_bibliography_db.py`, and the finalize step
 of a review run) applies them again.
 
+**Generating a review writes the paper's author affiliations into the bibliography DB.** Once the
+review is registered in the corpus, the view refresh (`refresh_paper_views.py`) runs
+`build_bibliography_db.py --review <slug> --offline`: the Zotero-attached PDF text and the sidecar
+supply the paper, its authors and their affiliations, each author is linked to an institution, and
+the rules below run, so the paper ends with name, parent, city and country filled in. If this step
+fails, the review is kept and the view refresh reports failure with a retry command.
+
 1. **Name** — the university or research institute, under its official English name: ROR's
    English name (`Georgia Institute of Technology`, not `Georgia Tech`). Without an English ROR
    name, the English Wikipedia article title; without either, the original name. A
@@ -80,6 +87,14 @@ of a review run) applies them again.
    `Czech Republic`).
 
 ROR links matched only through a generic phrase ("Research Center", "Interaction") are dropped.
+
+**Source priority.** Affiliations follow the paper itself (the byline and affiliation block of the
+Zotero-attached PDF, and the PDF checked against Scopus). An OpenAlex affiliation looked up by DOI
+stays **only when the paper's text names that institution** (any ROR name, alias or acronym):
+when the stored DOI belongs to a cited work, its authors' institutions arrive wholesale (HelioX
+carried a Nature Methods paper's Tübingen). A looked-up umbrella (`IBM`) is dropped when the paper
+already lists its member (`IBM Research - Zurich`). Several affiliations packed on one line behind
+superscript numbers (`⁴ … ⁵ …`) are read one per number.
 
 **Errors found in review become correction rules.** Add a rule to
 [`pipeline/data/institution_corrections.json`](pipeline/data/institution_corrections.json)

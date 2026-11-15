@@ -213,7 +213,7 @@ Save each JSON in its own file, plan it, then build or query. Query needs a buil
 {"schema_version":1,"feature":"bibliography-update","params":{"topic":"__TOPIC__","offline":true}}
 ```
 
-Online mode can use configured bibliography sources, but pricing may not permit a verified budget cap. This feature does not page Zotero Web. A Curio minimal review's `bibliography.json` is sidecar-only; “bibliography database update pending” means a separate update has not run, not that review failed.
+Online mode can use configured bibliography sources, but pricing may not permit a verified budget cap. This feature does not page Zotero Web. Generating a review already writes that one paper into the bibliography DB, institutions settled to name, parent, city and country, through the `bibliography` step of the view refresh right after registration (offline, sidecar and PDF only). Use this feature to re-apply a whole topic or to enrich it from online sources.
 
 `metrics` independently updates citation/reference outputs. Remote Zotero sync is another `zotero-sync` feature. Keep its default dry run; applying remote deletion requires both `dry_run:false` and `confirm:true`.
 
@@ -322,7 +322,7 @@ BM25 search and offline bibliography updates are local. Semantic embeddings, clo
 | Shell works but Zotero reports `needs-key` | GUI may not inherit environment variables; check the OS keyring for the same provider |
 | Semantic query fails | Google key, completed hybrid build, and whether the index is BM25-only |
 | Timeline image fails | Saved narrative and PaperBanana preflight/backend credential |
-| Bibliography update pending | Inspect review output, then separately plan/execute `bibliography-update` |
+| View refresh failed at `bibliography` | The review is kept; run the reported retry command, or `python pipeline/build_bibliography_db.py --review <slug> --offline --no-email` |
 | `busy` | Wait for another Curio/CLI job; do not retry the same request in parallel |
 | Full run fails | Start by reproducing input matching with `--dry-run`, narrow `--slugs`, and `--strict-pdf` |
 

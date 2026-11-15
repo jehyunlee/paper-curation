@@ -271,8 +271,9 @@ python pipeline/run_feature.py --list
 ```
 
 온라인 모드는 설정된 서지 소스를 사용할 수 있으며 가격 추정이 검증되지 않아 예산 상한을 붙일 수 없다.
-이 기능은 Zotero Web paging을 하지 않는다. Curio 최소 리뷰의 `bibliography.json`은 sidecar-only이며,
-완료 메시지의 “서지 DB 반영 대기”는 리뷰 실패가 아니라 별도 업데이트가 아직 실행되지 않았다는 뜻이다.
+이 기능은 Zotero Web paging을 하지 않는다. 리뷰 생성은 등록 직후 화면 갱신의 `bibliography` 단계에서
+그 논문 하나를 서지 DB에 넣고 기관명·상위 기관·도시·국가까지 정리한다(오프라인, 사이드카·PDF만).
+이 기능은 토픽 전체를 다시 반영하거나 온라인 소스로 보강할 때 쓴다.
 
 `metrics`는 citations/references 산출물을 갱신하는 별도 기능이다. 원격 Zotero 동기화는 또 다른
 `zotero-sync` 기능이며, 기본 dry-run을 유지하고 실제 원격 삭제를 적용하려면 `dry_run:false`와
@@ -435,7 +436,7 @@ Cloudflare, Resend은 여기서 검증 가능한 가격 추정이 없을 수 있
 | shell은 되지만 Zotero는 `needs-key` | GUI 환경변수 미상속 가능성. OS keyring의 같은 provider를 확인 |
 | semantic query 실패 | Google 키, hybrid build 완료 여부, BM25 전용 색인 여부를 확인 |
 | timeline image 실패 | narrative 저장 여부와 PaperBanana preflight/backend credential을 확인 |
-| 서지 반영 대기 | review 출력은 확인하고 `bibliography-update`를 별도 plan/execute |
+| 화면 갱신이 `bibliography` 단계에서 실패 | 리뷰는 남아 있다. 보고된 재시도 명령이나 `python pipeline/build_bibliography_db.py --review <slug> --offline --no-email` 실행 |
 | `busy` | 다른 Curio/CLI 작업 종료를 기다리고 동일 request를 병렬 재시도하지 않음 |
 | 전체 실행 실패 | `--dry-run`, 좁은 `--slugs`, `--strict-pdf`로 입력 매칭부터 재현 |
 

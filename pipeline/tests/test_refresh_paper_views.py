@@ -85,6 +85,10 @@ class RefreshPaperViewsTests(unittest.TestCase):
         elif script == "generate_network.py":
             topic = command[command.index("--topic") + 1]
             (self.papers.parent / topic / "network.html").write_text("new network", encoding="utf-8")
+        elif script == "build_bibliography_db.py":
+            database = Path(command[command.index("--output") + 1])
+            database.parent.mkdir(parents=True, exist_ok=True)
+            database.write_bytes(b"SQLite format 3\x00")
         elif script == "build_cross_index.py":
             directory = self.papers.parent / "_cross"
             for name in ("index.html", "_search_index.json", "_paper_connections.json", "_cross_meta.json"):
@@ -118,6 +122,31 @@ class RefreshPaperViewsTests(unittest.TestCase):
         self.assertIn("_run_review_to_html", review["command"][2])
         self.assertNotIn("run_update_force", review["command"][2])
         self.network.assert_not_called()
+
+    def test_registered_review_is_written_to_the_corpus_bibliography_db(self):
+        report = self._refresh()
+        self.assertEqual(report["status"], "completed", report)
+        step, = self._steps(report, "bibliography")
+        command = step["command"]
+        self.assertEqual(Path(command[1]).name, "build_bibliography_db.py")
+        self.assertEqual(command[command.index("--review") + 1], self.slug)
+        self.assertIn("--offline", command)
+        self.assertIn("--no-email", command)
+        database = self.root.resolve() / ".cache" / "bibliography.sqlite3"
+        self.assertEqual(command[command.index("--output") + 1], str(database))
+        self.assertEqual(step["outputs"], [str(database)])
+        self.assertTrue(database.is_file())
+
+    def test_failed_bibliography_ingest_fails_the_refresh(self):
+        def build(command, *, timeout):
+            if Path(command[1]).name == "build_bibliography_db.py":
+                return {"status": "failed", "returncode": 3}
+            return self._build(command, timeout=timeout)
+        self.builder.side_effect = build
+        report = self._refresh()
+        self.assertEqual(report["status"], "failed", report)
+        step, = self._steps(report, "bibliography")
+        self.assertEqual(step["status"], "failed")
 
     def test_reregistration_refreshes_old_and_new_membership_union_once(self):
         self._topic("old")
@@ -169,8 +198,10 @@ class RefreshPaperViewsTests(unittest.TestCase):
         self.assertEqual([step["topic"] for step in self._steps(report, "network")], ["demo"])
         self.assertFalse((other / "network.html").exists())
         builders = {Path(call.args[0][1]).name for call in self.builder.call_args_list}
-        self.assertEqual(builders, {"-c", "build_search_index.py", "build_topic_index.py", "generate_network.py"})
-        self.assertEqual([step["builder"] for step in report["steps"][:2]], ["metadata", "review"])
+        self.assertEqual(builders, {"-c", "build_bibliography_db.py", "build_search_index.py",
+                                    "build_topic_index.py", "generate_network.py"})
+        self.assertEqual([step["builder"] for step in report["steps"][:3]],
+                         ["metadata", "review", "bibliography"])
         order = [step["builder"] for step in report["steps"] if step["topic"] == "demo"]
         self.assertLess(order.index("search"), order.index("topic"))
 
