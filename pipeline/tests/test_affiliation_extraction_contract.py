@@ -174,6 +174,14 @@ class TitleAndBylineGuardTests(unittest.TestCase):
             paper_title="A Dynamic Network Measure of Technological Change")}
         self.assertEqual(names, set())
 
+    def test_title_fragment_parsing_to_a_short_company_is_dropped(self):
+        # "Seize the Meta-Moment" parsed to "Meta", too short to match the
+        # title, and filed a RoRI report under Meta Platforms.
+        title = "Seize the Meta-Moment: how metascience is evolving worldwide"
+        names = {r["name"] for r in bib.reconcile_affiliations(
+            [], "", ["Seize the Meta-Moment"], offline=True, paper_title=title)}
+        self.assertEqual(names, set())
+
     def test_author_byline_is_stripped_from_the_affiliation(self):
         stripped = bib._strip_leading_author_names(
             "Iz Beltagy Kyle Lo Arman Cohan Allen Institute for AI",

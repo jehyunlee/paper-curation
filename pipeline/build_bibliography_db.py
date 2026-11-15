@@ -3426,6 +3426,11 @@ def reconcile_affiliations(
         # prose, which is how abstract and body text became institution names.
         if not raw or len(raw) > 240:
             continue
+        # The segment itself, not only the parsed name: "Seize the
+        # Meta-Moment" parsed to "Meta", too short to match the title, and
+        # filed a policy report under Meta Platforms.
+        if from_own_title(raw):
+            continue
         parsed = institution_from_raw(raw, allow_remote=not offline)
         if not parsed:
             continue
@@ -3941,6 +3946,12 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             # paper's own text before it can carry an author link.
             produced_sources = {record["source"]
                                 for record in affiliation_records}
+            # Plain `pdf` rows come from the paper's own text alone, so a run
+            # that read the text and found no affiliation has re-derived them
+            # as nothing. Keeping them kept a dropped title fragment ("Seize
+            # the Meta-Moment" -> Meta) after the extractor learned better.
+            if (pdf_text or text or "").strip():
+                produced_sources.add("pdf")
             if produced_sources:
                 marks = ",".join("?" * len(produced_sources))
                 conn.execute(

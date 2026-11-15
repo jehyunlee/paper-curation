@@ -319,20 +319,20 @@ class ShippedDatabaseTests(unittest.TestCase):
             <= self.columns)
 
     def test_no_ineligible_parent_groups(self):
+        # A ministry or university system may stand as its own parent (an
+        # institution without an umbrella names itself); it never groups others.
         parents = [p for (p,) in self.conn.execute(
-            "SELECT DISTINCT parent_name FROM institutions WHERE parent_name<>''")]
+            "SELECT DISTINCT parent_name FROM institutions "
+            "WHERE parent_name<>'' AND LOWER(parent_name)<>LOWER(institution_name)")]
         bad = [p for p in parents
                if ror_index.ADMINISTRATIVE_BODY.search(p)
                or ror_index.UNIVERSITY_SYSTEM.search(p)]
         self.assertEqual(bad, [])
 
-    def test_no_institution_is_its_own_parent(self):
+    def test_every_institution_has_a_parent(self):
+        """An institution without an umbrella is its own parent; none is empty."""
         self.assertEqual(self.scalar(
-            "SELECT COUNT(*) FROM institutions "
-            "WHERE parent_name<>'' AND normalized_name="
-            "  (SELECT normalized_name FROM institutions x"
-            "   WHERE x.institution_id=institutions.institution_id)"
-            " AND LOWER(parent_name)=LOWER(institution_name)"), 0)
+            "SELECT COUNT(*) FROM institutions WHERE COALESCE(parent_name,'')=''"), 0)
 
     def test_no_school_or_department_shaped_institution_names(self):
         """Unresolved school or department names are sub-units, not institutions.

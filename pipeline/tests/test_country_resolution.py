@@ -145,15 +145,20 @@ class ShippedDatabaseInvariantTests(unittest.TestCase):
     def scalar(self, sql):
         return self.conn.execute(sql).fetchone()[0]
 
-    def test_one_row_per_institution_name(self):
+    # Identity is the ROR record. Two registered bodies may share ROR's English
+    # name (Northeastern University in Boston and in Shenyang); one body never
+    # has two rows, and an unregistered name has one row.
+    IDENTITY = "normalized_name, COALESCE(NULLIF(ror_id, ''), '')"
+
+    def test_one_row_per_institution(self):
         self.assertEqual(self.scalar(
-            "SELECT COUNT(*) FROM (SELECT normalized_name FROM institutions"
-            " GROUP BY 1 HAVING COUNT(*)>1)"), 0)
+            f"SELECT COUNT(*) FROM (SELECT {self.IDENTITY} FROM institutions"
+            " GROUP BY 1, 2 HAVING COUNT(*)>1)"), 0)
 
     def test_no_institution_carries_two_countries(self):
         self.assertEqual(self.scalar(
-            "SELECT COUNT(*) FROM (SELECT normalized_name FROM institutions"
-            " WHERE country_name_en<>'' GROUP BY 1"
+            f"SELECT COUNT(*) FROM (SELECT {self.IDENTITY} FROM institutions"
+            " WHERE country_name_en<>'' GROUP BY 1, 2"
             " HAVING COUNT(DISTINCT country_name_en)>1)"), 0)
 
     def test_no_orphan_institutions(self):
