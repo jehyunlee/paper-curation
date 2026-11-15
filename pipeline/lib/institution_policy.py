@@ -9,9 +9,9 @@ The six rules (README "기관명 정규화 기준"):
 2. Parent: only a real structural umbrella (Helmholtz Association, Max Planck
    Society, Chinese Academy of Sciences). Multi-campus university systems such
    as the University of California are not parents. Named by the same Wikipedia
-   rule. An umbrella is its own parent (the row "IBM" has parent "IBM" when IBM
-   Research - Zurich rolls up to IBM), so grouping by parent keeps them
-   together. Names containing "Institute" or "Laboratory" are listed by the
+   rule. The parent is never empty: an institution without an umbrella has
+   its own name as parent ("IBM" -> "IBM"), so grouping by parent keeps IBM
+   Research - Zurich and IBM together. Names containing "Institute" or "Laboratory" are listed by the
    audit with their parent status so a missing umbrella is visible.
 3. Affiliation numbers ("3Stanford University") are not part of any string.
 4. Download watermarks ("Authorized licensed use limited to: …") are not
@@ -679,11 +679,12 @@ def _settle_parents(conn: sqlite3.Connection, index, names: Names) -> int:
     """Rule 2 on the final rows.
 
     One Wikipedia name per parent; administrative bodies, university systems
-    and governments are never parents. An umbrella is its own parent: when
-    IBM Research - Zurich rolls up to IBM, the row "IBM" carries parent "IBM"
-    too, so grouping by parent puts them together. A parent that is one of the
-    row's own names ("Georgia Tech" under "Georgia Institute of Technology")
-    becomes the row's own name.
+    and governments are never parents. The parent is never empty: a row with
+    no umbrella carries its own name ("IBM" -> "IBM", "Stanford University"
+    -> "Stanford University"), so grouping by parent puts IBM Research - Zurich
+    and IBM together and every institution in exactly one group. A parent that
+    is one of the row's own names ("Georgia Tech" under "Georgia Institute of
+    Technology") becomes the row's own name.
     """
     try:
         from .ror_index import ADMINISTRATIVE_BODY, UNIVERSITY_SYSTEM
@@ -717,13 +718,9 @@ def _settle_parents(conn: sqlite3.Connection, index, names: Names) -> int:
             settled[institution_id] = (name, ror_id)
         else:
             settled[institution_id] = (canonical, parent_ror)
-    # Umbrellas: a row that some other row names as parent is its own parent.
-    umbrella_rors = {pr for (pn, pr) in settled.values() if pr}
-    umbrella_names = {_norm(pn) for (pn, _pr) in settled.values() if pn}
+    # No empty parent: an institution without an umbrella is its own group.
     for institution_id, name, ror_id, _parent, _parent_ror in rows:
-        if settled[institution_id] == ("", "") and (
-                (ror_id and ror_id in umbrella_rors)
-                or _norm(name) in umbrella_names):
+        if settled[institution_id] == ("", ""):
             settled[institution_id] = (name, ror_id)
     changed = 0
     for institution_id, _name, _ror, parent, parent_ror in rows:

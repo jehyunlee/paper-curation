@@ -64,8 +64,9 @@ SPECTER2 코사인 + 제목·저자 BM25/RRF로 로컬 검색하지만, 설명 �
 2. **상위 기관(parent)** — Helmholtz Association, Max Planck Society, Chinese Academy of
    Sciences처럼 실제 조직 구조상의 상위 기관만 둡니다. University of California 같은
    대학 시스템, 정부·위원회는 상위 기관이 아닙니다. 상위 기관명도 1번 규칙을 따릅니다.
-   상위 기관 자신도 상위 기관을 자기 이름으로 가집니다(`IBM`의 상위 기관은 `IBM`). 그래야
-   상위 기관으로 묶을 때 `IBM Research - Zurich`와 `IBM`이 함께 묶입니다.
+   상위 기관 항목은 비워 두지 않습니다. 상위 기관이 없으면 기관명을 그대로 넣습니다(`IBM`의
+   상위 기관은 `IBM`). 그래야 상위 기관으로 묶을 때 `IBM Research - Zurich`와 `IBM`이 함께
+   묶입니다.
    `Institute`·`Laboratory`가 들어간 기관은 상위 기관 유무를 검토 목록으로 뽑을 수 있습니다.
 3. **소속 번호 제거** — `3Stanford University` → `Stanford University` (`3M`, `23andMe`처럼
    이름의 일부인 숫자는 유지).

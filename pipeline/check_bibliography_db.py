@@ -365,9 +365,17 @@ def collect(
                 conn, "SELECT COUNT(*) FROM institutions WHERE ror_id<>''")
             report["ror_resolved"] = resolved
             report["ror_share"] = round(resolved / report["institutions"], 3)
+            # Every institution carries a parent (its own name when it has no
+            # umbrella), so groups are counted where the parent is another
+            # organisation, and an empty parent is a naming-pass failure.
             report["parent_groups"] = scalar(
                 conn, "SELECT COUNT(DISTINCT parent_name) FROM institutions "
-                      "WHERE parent_name<>''")
+                      "WHERE parent_name<>'' AND parent_name<>institution_name")
+            empty_parent = scalar(
+                conn, "SELECT COUNT(*) FROM institutions WHERE parent_name=''")
+            report["institutions_without_parent"] = empty_parent
+            if empty_parent:
+                issues.append(f"institutions with an empty parent: {empty_parent}")
             if report["ror_share"] < 0.40:
                 issues.append(
                     f"ROR normalisation collapsed: {resolved}/"
@@ -377,7 +385,7 @@ def collect(
             ineligible = [
                 parent for (parent,) in conn.execute(
                     "SELECT DISTINCT parent_name FROM institutions "
-                    "WHERE parent_name<>''")
+                    "WHERE parent_name<>'' AND parent_name<>institution_name")
                 if ADMINISTRATIVE_BODY.search(parent)
                 or UNIVERSITY_SYSTEM.search(parent)]
             if ineligible:

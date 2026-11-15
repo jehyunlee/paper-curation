@@ -89,7 +89,7 @@ in the string or is dropped) → Wikipedia names (from the pinned
 `pipeline/data/institution_wikipedia_titles.json`; a redirect to a parent or topic article
 falls back to ROR's English label) → schools fold into their university, and rows with one
 ROR id, one Wikipedia article or one ROR family merge → city and country (a trailing segment
-counts as stated only if it is a country by itself) → parents (an umbrella is its own parent, `IBM` → `IBM`; no administrative,
+counts as stated only if it is a country by itself) → parents (never empty: an institution without an umbrella gets its own name, `IBM` → `IBM`; no administrative,
 university-system or government parents) → attribute corrections (`set`).
 
 ### Correction rules

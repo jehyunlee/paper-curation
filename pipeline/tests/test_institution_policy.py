@@ -289,8 +289,6 @@ class ApplyPass(unittest.TestCase):
         self.run_policy(conn)
         rows = conn.execute("SELECT institution_name, ror_id, parent_name "
                             "FROM institutions").fetchall()
-        # The subsidiary's parent was the company itself: the merged row is
-        # its own parent.
         self.assertEqual(rows, [("Google", "r:google", "Google")])
 
     def test_umbrella_is_its_own_parent(self):
@@ -313,14 +311,14 @@ class ApplyPass(unittest.TestCase):
                                       "institutions ORDER BY institution_name")
                          .fetchall(), rows)
 
-    def test_standalone_institution_has_no_parent(self):
+    def test_institution_without_umbrella_is_its_own_parent(self):
         conn = _db()
         _paper(conn, 1)
         _inst(conn, 10, "Stanford University", "r:stanford")
         _link(conn, 1, 10, "Stanford University")
         self.run_policy(conn)
         self.assertEqual(conn.execute("SELECT parent_name FROM institutions")
-                         .fetchone()[0], "")
+                         .fetchone()[0], "Stanford University")
 
     def test_generic_phrase_link_is_dropped(self):
         conn = _db()
