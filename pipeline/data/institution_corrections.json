@@ -155,6 +155,13 @@
   {"id": "saudi-moe-generic", "action": "drop",
    "match": {"ror_id": "https://ror.org/00q919b81"},
    "reason": "Chinese and Kazakh 'Ministry of Education' key-laboratory lines matched the Saudi ministry; a ministry is not a research affiliation."},
+  {"id": "new-college-swindon-343", "action": "drop",
+   "match": {"ror_id": "https://ror.org/05ab3fa41", "paper": "343_"},
+   "reason": "OpenAlex-only link; the PDF byline lists IBM Research Europe, Xyme (Oxford) and IBM TJ Watson, no New College, and the bare name resolved to New College Swindon."},
+  {"id": "xyme-oxford", "action": "set",
+   "match": {"institution": "Xyme"},
+   "to": {"city": "Oxford", "country": "United Kingdom"},
+   "reason": "Xyme is not in ROR; the PDF byline states 'Xyme, Oxford, UK'."},
   {"id": "independent-researcher", "action": "drop",
    "match": {"institution": "Independent Researcher"},
    "reason": "Independent Researcher states the absence of an institution."}
