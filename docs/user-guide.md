@@ -84,7 +84,7 @@ PYTHONUTF8=1 python pipeline/setup.py --check-feature review                # �
 |--------------|----------|--------|
 | 공개 사이트 열람 | 브라우저 | [Humanoid](https://paper-curation.jehyunlee.dev/humanoid/) · [Physical AI](https://paper-curation.jehyunlee.dev/physical-ai/) — 카드·검색·타임라인·논문별 리뷰 |
 | 내 리뷰 열기 | Zotero 우클릭 → **paper-curation Review HTML 열기** | 이미 생성된 `docs/papers/{slug}/index.html`을 브라우저로 엽니다(생성하지 않음) |
-| 연구기관 정보 보기 | Zotero 우클릭 → **paper-curation 연구기관 정보 보기** | 서지 DB에 든 그 논문의 소속기관·상위기관·도시·국가(ROR 링크·출처)와 저자별 소속을 HTML로 엽니다(읽기 전용) |
+| 연구기관 정보 보기 | Zotero 우클릭 → **paper-curation 연구기관 정보 보기** | 서지 DB에 든 그 논문의 소속기관·상위기관·도시·국가(ROR 링크·출처)와 저자별 소속을 별도 창에 표로 보여줍니다. 여러 편이면 한 창에 함께(읽기 전용) |
 | 로컬 사이트 전체 열람 | 터미널 | `PYTHONUTF8=1 python pipeline/serve_local.py` → `http://localhost:8000/` |
 | 공개 기관표 내보내기 (`institution-export`) | 기능 모듈 → **읽기 / 내보내기** → *공개 기관표 내보내기* | `outdir` 지정 → 실행 계획 확인 → 실행. 개인정보·수식·로컬 경로가 있으면 내보내기가 거부됩니다 |
 | 로컬 PDF 추출만 (`extract`) | 기능 모듈 → **읽기 / 내보내기** → *로컬 PDF 추출* | 선택 항목의 PDF 경로가 자동 채워짐. 빈 `output_dir`에 `text.md`·`figures/` 생성. API 호출 없음 |

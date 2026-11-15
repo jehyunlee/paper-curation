@@ -62,10 +62,12 @@ class InstitutionInfoTests(unittest.TestCase):
 
     def test_paper_page_lists_four_fields_and_author_links(self):
         page = self.dir / "out" / "042_x.html"
-        code, receipt = self.run_main("--slug", "042_x", "--out", str(page))
+        code, receipt = self.run_main("--paper", "042_x", "--out", str(page))
         self.assertEqual(code, 0)
-        self.assertEqual(receipt, {"schema_version": 1, "slug": "042_x", "ok": True,
-                                   "report": str(page), "institutions": 2, "authors": 3})
+        self.assertEqual(receipt, {
+            "schema_version": 1, "ok": True, "report": str(page), "papers": 1,
+            "shown": 1, "not_ingested": 0, "unreviewed": 0, "normalized": True,
+            "institutions": 2})
         html = page.read_text(encoding="utf-8")
         for value in ("IBM Research - Zurich", "Rüschlikon", "Switzerland",
                       "Stanford University", "United States", "Scopus·PDF 일치"):
@@ -73,6 +75,34 @@ class InstitutionInfoTests(unittest.TestCase):
         self.assertIn('<a href="https://ror.org/zrl"', html)
         self.assertIn("A &lt;Paper&gt;", html)
         self.assertNotIn("A <Paper>", html)
+        self.assertNotIn("class=warn", html)
+
+    def test_several_papers_share_one_page_with_their_status(self):
+        page = self.dir / "many.html"
+        code, receipt = self.run_main(
+            "--paper", "042_x", "--paper", "999_none",
+            "--unreviewed", "Zotero <only>", "--out", str(page))
+        self.assertEqual(code, 0)
+        self.assertEqual((receipt["papers"], receipt["shown"], receipt["not_ingested"],
+                          receipt["unreviewed"]), (3, 1, 1, 1))
+        html = page.read_text(encoding="utf-8")
+        self.assertIn("서지 DB에 아직 없습니다", html)
+        self.assertIn("코퍼스에 리뷰가 없습니다", html)
+        self.assertIn("Zotero &lt;only&gt;", html)
+
+    def test_db_before_the_naming_pass_is_shown_with_a_notice(self):
+        # The live DB failed with "no such column: i.city_name" (db-error).
+        conn = sqlite3.connect(self.db)
+        conn.execute("ALTER TABLE institutions DROP COLUMN city_name")
+        conn.commit()
+        conn.close()
+        page = self.dir / "old.html"
+        code, receipt = self.run_main("--paper", "042_x", "--out", str(page))
+        self.assertEqual(code, 0)
+        self.assertFalse(receipt["normalized"])
+        html = page.read_text(encoding="utf-8")
+        self.assertIn("IBM Research - Zurich", html)
+        self.assertIn("normalize_institutions.py --apply", html)
 
     def test_guessed_author_links_are_not_shown_as_affiliations(self):
         conn = info.connect(self.db)
@@ -88,22 +118,20 @@ class InstitutionInfoTests(unittest.TestCase):
 
     def test_english_page(self):
         page = self.dir / "en.html"
-        self.run_main("--slug", "042_x", "--out", str(page), "--lang", "en")
+        self.run_main("--paper", "042_x", "--out", str(page), "--lang", "en")
         html = page.read_text(encoding="utf-8")
         self.assertIn("Research institute info", html)
         self.assertIn("byline does not say which author sits where", html)
 
-    def test_paper_missing_from_db_is_not_ingested(self):
-        page = self.dir / "missing.html"
-        code, receipt = self.run_main("--slug", "999_none", "--out", str(page))
+    def test_no_papers_is_refused(self):
+        code, receipt = self.run_main("--out", str(self.dir / "none.html"))
         self.assertEqual(code, 1)
-        self.assertEqual(receipt["reason"], "not-ingested")
-        self.assertFalse(page.exists())
+        self.assertEqual(receipt["reason"], "no-papers")
 
     def test_missing_db(self):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
-            code = info.main(["--db", str(self.dir / "absent.sqlite3"), "--slug", "042_x",
+            code = info.main(["--db", str(self.dir / "absent.sqlite3"), "--paper", "042_x",
                               "--out", str(self.dir / "x.html")])
         self.assertEqual(code, 1)
         self.assertEqual(json.loads(out.getvalue())["reason"], "no-db")
