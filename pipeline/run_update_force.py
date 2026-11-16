@@ -812,7 +812,11 @@ def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
         return True, "no_text_skip"  # text extraction failed; downstream already fails
     try:
         with open(text_md_path, "r", encoding="utf-8", errors="replace") as f:
-            text = f.read(6000).lower()
+            full_text = f.read().lower()
+        # The title is checked on the front matter; DOI and first author on
+        # the whole paper. A Lancet correspondence signs its authors after the
+        # letter, and Nature Biotechnology prints the DOI in the page footer.
+        text = full_text[:6000]
     except Exception:
         return True, "read_error_skip"
 
@@ -850,7 +854,7 @@ def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
 
     # 2. DOI exact (ignore non-alphanumeric)
     doi = re.sub(r"[^a-z0-9]", "", (item.get("DOI") or "").lower())
-    text_norm = re.sub(r"[^a-z0-9]", "", text)
+    text_norm = re.sub(r"[^a-z0-9]", "", full_text)
     doi_ok = True if len(doi) < 10 else (doi in text_norm)
 
     # 3. First author lastName
@@ -861,7 +865,7 @@ def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
         if last:
             break
     author_ok = True if len(last) < 3 else (
-        last in text or _fold_accents(last) in _fold_accents(text))
+        last in full_text or _fold_accents(last) in _fold_accents(full_text))
 
     # title + doi 둘 다 통과면 author 무관 (corporate author, 이미지 헤더 등
     # 저자명 추출 실패가 흔해서 단독 blocker로 쓰지 않음).

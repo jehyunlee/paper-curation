@@ -123,6 +123,12 @@ class PdfMatchSanityTests(unittest.TestCase):
             "Barabási", "Evolution of the social network of scientiﬁc "
                         "collaborations A.L. Barab´asi1,2, H. Jeong"))
 
+    def test_author_signed_after_a_long_letter_matches(self):
+        # Lancet correspondence: the signature follows the letter body.
+        body = "Evolution of the social network of scientific collaborations. " \
+            + "Scientific literature depends on its references. " * 200
+        self.assertTrue(self.check("Barabási", body + "\nAlbert-László Barabási"))
+
     def test_other_first_author_still_fails(self):
         self.assertFalse(self.check(
             "Kubler", "Evolution of the social network of scientific "
