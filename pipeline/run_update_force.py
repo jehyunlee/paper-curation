@@ -23,6 +23,7 @@ import json
 import os
 import queue
 import re
+import unicodedata
 import shutil
 import subprocess
 import sys
@@ -787,6 +788,16 @@ def find_pdf(item):
 
 # ── Zotero ↔ text.md sanity check (zero-cost PDF integrity gate) ──
 
+# Spacing accents that TeX-built PDFs emit beside the letter ("Barab´asi").
+_SPACING_ACCENTS = dict.fromkeys(map(ord, "´`¨ˆ˜˘˙˚¸˛ˇ"), None)
+
+
+def _fold_accents(text):
+    """ASCII-fold a name: "Barabási" and the PDF's "Barab´asi" both -> "barabasi"."""
+    decomposed = unicodedata.normalize("NFKD", text.translate(_SPACING_ACCENTS))
+    return "".join(c for c in decomposed if not unicodedata.combining(c))
+
+
 def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
     """Verify Zotero metadata (title/DOI/first author) appears in the extracted
     text. Catches the "Zotero attachment is wrong PDF" failure mode that even
@@ -849,7 +860,8 @@ def _zotero_text_sanity(item, text_md_path, min_title_coverage=0.6):
         last = (c.get("lastName") or "").lower()
         if last:
             break
-    author_ok = True if len(last) < 3 else (last in text)
+    author_ok = True if len(last) < 3 else (
+        last in text or _fold_accents(last) in _fold_accents(text))
 
     # title + doi 둘 다 통과면 author 무관 (corporate author, 이미지 헤더 등
     # 저자명 추출 실패가 흔해서 단독 blocker로 쓰지 않음).

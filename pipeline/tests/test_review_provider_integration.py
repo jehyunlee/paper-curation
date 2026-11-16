@@ -103,6 +103,32 @@ class MalformedTagSalvageTests(unittest.TestCase):
         self.assertEqual(engine._salvage_review_data(dict(VALID)), VALID)
 
 
+class PdfMatchSanityTests(unittest.TestCase):
+    """The PDF-to-item check that blocks a review before any provider call."""
+
+    TITLE = "Evolution of the social network of scientific collaborations"
+
+    def check(self, last_name, text):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "text.md"
+            path.write_text(text, encoding="utf-8")
+            return engine._zotero_text_sanity(
+                {"title": self.TITLE, "DOI": "10.1016/S0378-4371(02)00736-7",
+                 "creators": [{"lastName": last_name, "firstName": "A.-L."}]},
+                str(path))[0]
+
+    def test_tex_spacing_accent_matches_the_zotero_name(self):
+        # arXiv PDF of Barabási et al. prints "Barab´asi"; the review was refused.
+        self.assertTrue(self.check(
+            "Barabási", "Evolution of the social network of scientiﬁc "
+                        "collaborations A.L. Barab´asi1,2, H. Jeong"))
+
+    def test_other_first_author_still_fails(self):
+        self.assertFalse(self.check(
+            "Kubler", "Evolution of the social network of scientific "
+                      "collaborations A.L. Barabasi, H. Jeong"))
+
+
 class ReviewProviderIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
