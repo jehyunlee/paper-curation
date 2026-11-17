@@ -312,6 +312,77 @@ class CompositeLocalLanguageAffiliationTests(unittest.TestCase):
         self.assertNotIn("France", seen)
 
 
+class LocalRorSegmentTests(unittest.TestCase):
+    """Offline, the local ROR index names what the English lookup cannot."""
+
+    def _parse(self, raw, records):
+        from unittest.mock import patch
+        asked = []
+
+        def ror(name):
+            asked.append(name)
+            return records.get(name)
+
+        with patch.object(bib, "resolve_english_institution",
+                          lambda *a, **k: ""), \
+                patch.object(bib, "_ror_record", ror):
+            return bib.institution_from_raw(raw, allow_remote=False), asked
+
+    def test_tex_accents_and_a_trailing_acronym(self):
+        # ASE (JPCM 2017), affiliation 1, as the PDF extracts it.
+        parsed, asked = self._parse(
+            "Nano-bio Spectroscopy Group and ETSF Scienti\ufb01c Development "
+            "Centre, Universidad del Pa\u0131\u00b4s Vasco UPV/EHU, "
+            "San Sebasti\u00b4an, Spain",
+            {"Universidad del Pais Vasco": {
+                "display": "University of the Basque Country"}})
+        self.assertEqual(parsed[0], "University of the Basque Country")
+        self.assertIn("Universidad del Pais Vasco UPV/EHU", asked)
+
+    def test_generic_or_truncated_segments_are_not_asked(self):
+        for raw in ("3Center for", "Graduate School of",
+                    "Institute of Technology, Cambridge",
+                    "The Hong Kong University of"):
+            _parsed, asked = self._parse(raw, {})
+            self.assertEqual(asked, [], raw)
+
+    def test_a_country_record_is_not_taken_for_the_company(self):
+        parsed, _ = self._parse(
+            "MIT-IBM Watson AI Lab, IBM Research",
+            {"IBM Research": {"display": "IBM Research (China)"}})
+        self.assertNotEqual(parsed and parsed[0], "IBM Research (China)")
+
+    def test_registry_name_leads_its_address(self):
+        parsed, _ = self._parse("S\u0131\u00b4minn, Reykjav\u0131\u00b4k, Iceland", {})
+        self.assertEqual(parsed[0], "S\u00edminn")
+
+
+class SecondDepartmentMarkerTests(unittest.TestCase):
+    def test_marker_resolves_by_institution_name(self):
+        names = {1: "Technical University of Denmark",
+                 2: "University of Copenhagen"}
+        self.assertEqual(bib.institution_named_by(
+            "Department of Energy Conversion and Storage, Technical "
+            "University of Denmark", names), 1)
+        self.assertIsNone(bib.institution_named_by(
+            "Department of Physics, Aarhus University, Denmark", names))
+
+
+class LongBylineTests(unittest.TestCase):
+    def test_a_byline_past_600_characters_is_read(self):
+        others = ", ".join(f"Author{i} Person{chr(97 + i % 26)}{i}{i % 5 + 1}"
+                           for i in range(60))
+        byline = ("Ask Hjorth Larsen1,2\u2217, Jens J\u00f8rgen Mortensen3, "
+                  "Jakob Blomqvist4, " + others)
+        self.assertGreater(len(byline), 600)
+        markers = bib.author_affiliation_markers(
+            byline, ["Ask Hjorth Larsen", "Jens J\u00f8rgen Mortensen",
+                     "J. Blomqvist"])
+        self.assertEqual(markers, {"Ask Hjorth Larsen": ["1", "2"],
+                                   "Jens J\u00f8rgen Mortensen": ["3"],
+                                   "J. Blomqvist": ["4"]})
+
+
 class HeaderCueBoundaryTests(unittest.TestCase):
     """Acronym cues must not fire inside ordinary words."""
 

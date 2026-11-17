@@ -1009,6 +1009,24 @@ def best_institution_for(label: str, institutions) -> int | None:
     return best if best_score >= AFFILIATION_MATCH_FLOOR else None
 
 
+def institution_named_by(label: str, names: dict[int, str]) -> int | None:
+    """The paper's institution whose name the label resolves to, or None.
+
+    Only an exact name match counts, and only when exactly one of the paper's
+    institutions carries that name.
+    """
+    parsed = institution_from_raw(label, allow_remote=False)
+    if not parsed:
+        return None
+    try:
+        from .lib.ror_index import normalize
+    except ImportError:
+        from lib.ror_index import normalize
+    key = normalize(parsed[0])
+    hits = [iid for iid, name in names.items() if key and normalize(name) == key]
+    return hits[0] if len(hits) == 1 else None
+
+
 # Which characters a paper keys its affiliations with cannot be fixed in
 # advance. "Architecture Design for Human-Driven Systems" writes
 #
@@ -1167,7 +1185,11 @@ def _byline_candidates(raw_header: str, surnames: set[str],
 
     lines = [re.sub(r"^#+\s*", "", line).strip()
              for line in raw_header.splitlines()]
-    lines = [line for line in lines if line and len(line) <= 600]
+    # A line past 600 characters is prose, unless it is a byline: the ASE
+    # paper prints 34 authors on one 1,100-character line. Three of the
+    # paper's own surnames on it say which.
+    lines = [line for line in lines if line and (
+        len(line) <= 600 or (len(line) <= 4000 and score(line) >= 3))]
 
     out = []
     for index, line in enumerate(lines):
@@ -1632,7 +1654,7 @@ def inline_author_affiliations(raw_header: str, authors) -> dict[str, str]:
 # State Space Models for Time Series" as one. An affiliation names a kind of
 # organisation outright.
 _AFFILIATION_ORG_CUE = re.compile(
-    r"universit|institut|laborator|college|academy|hospital|polytech|"
+    r"universi(?:t|dad|dade)|institut|laborator|college|academy|hospital|polytech|"
     r"school of|faculty|department of|centre for|center for|"
     r"\bcorporation\b|\bcompany\b|\binc\b|\bltd\b|\bllc\b|\bgmbh\b|"
     r"research (?:center|centre|institute|laborator)", re.I)
@@ -1674,6 +1696,11 @@ _LOOKS_LIKE_CITATION = re.compile(
 @functools.lru_cache(maxsize=4096)
 def _ror_knows(name: str) -> bool:
     """Whether ROR holds a record for this name. Cached; opens the index once."""
+    return bool(_ror_record(name))
+
+
+def _ror_record(name: str) -> dict | None:
+    """The local ROR record for this name, or None. Opens the index once."""
     try:
         from .lib.ror_index import RorIndex
     except ImportError:
@@ -1681,14 +1708,14 @@ def _ror_knows(name: str) -> bool:
             from lib.ror_index import RorIndex
         except ImportError:
             return False
-    index = _ror_knows.index if hasattr(_ror_knows, "index") else RorIndex()
-    _ror_knows.index = index
+    index = _ror_record.index if hasattr(_ror_record, "index") else RorIndex()
+    _ror_record.index = index
     if not index.available:
-        return False
+        return None
     try:
-        return bool(index.resolve(name))
+        return index.resolve(name)
     except Exception:
-        return False
+        return None
 
 
 def looks_like_affiliation(text: str) -> bool:
@@ -2394,7 +2421,14 @@ _INSTITUTION_REGISTRY_BY_TOKEN: dict[str, list[str]] = {}
 
 
 def _clean_affiliation_text(value: str) -> str:
-    value = re.sub(r"([A-Za-z])-\s+([a-z])", r"\1\2", value or "")
+    # "Malm¨o University", "Universidad del Paı´s Vasco": TeX accents set
+    # beside the letter, and "&amp;" left by the extractor (rule 5).
+    try:
+        from .lib.institution_policy import one_line
+    except ImportError:
+        from lib.institution_policy import one_line
+    value = one_line(value or "")
+    value = re.sub(r"([A-Za-z])-\s+([a-z])", r"\1\2", value)
     value = re.sub(r"^[a-z](?=[A-Z])", "", value)
     value = re.sub(r"(?<![A-Za-z])\d+\s*(?=[A-Z])", " ", value)
     value = re.sub(r"\{[^}]*\}|\S+@\S+", " ", value)
@@ -2430,7 +2464,7 @@ _PROSE_INSTITUTION_CUES = re.compile(
 # Network" and "HUN-REN Hungarian Research Network" survive while "Encoder
 # Network", "Policy Network" and "Acer Liquid Network" do not.
 _ORGANISATION_CUES = re.compile(
-    r"universit|institut|laborator|college|academy|hospital|cent(?:er|re)|"
+    r"universi(?:t|dad|dade)|institut|laborator|college|academy|hospital|cent(?:er|re)|"
     r"school|research|ministry|agency|foundation|association|society|council|"
     r"observator|museum|clinic|bureau|\bnational\b|\bstate\b|\bcorp|\binc\b|"
     r"\bltd\b|\bllc\b|\bgmbh\b|\bco\.|\bcompany\b|\bgroup\b|\btrust\b", re.I)
@@ -2638,6 +2672,31 @@ def resolve_institution_from_raw(raw: str, current_name: str = "") -> str:
     return ""
 
 
+_GENERIC_ORG_WORD = re.compile(
+    r"(?i)^(?:universi|institut|cent(?:er|re)|school|college|academ|laborator|"
+    r"lab$|labs$|depart|dept|facult|divis|graduate|technolog|science|research|"
+    r"national|international|of$|the$|for$|and$|at$|in$|de$|du$|des$|la$|"
+    r"le$|di$|del$|y$|e$)")
+
+
+def _names_something(segment: str) -> bool:
+    """Whether a segment says which organisation, not only what kind.
+
+    ROR answers generic words with whatever record carries them: "Center for"
+    gave "The Centers", "Graduate School of" gave "Graduate School USA" and
+    "Institute of Technology" a college in India. A segment ending on a
+    connective was cut by a line wrap ("The Hong Kong University of"), and
+    matching its stub named a different university.
+    """
+    words = re.findall(r"[^\W\d_]+", segment)
+    if not words or words[-1].casefold() in {
+            "of", "for", "and", "the", "at", "in", "de", "du", "des", "di",
+            "del", "y", "e", "und", "für"}:
+        return False
+    return any(len(word) >= 3 and not _GENERIC_ORG_WORD.match(word)
+               for word in words)
+
+
 def institution_from_raw(
         raw: str, *, allow_remote: bool = True) -> tuple[str, str] | None:
     original = raw
@@ -2663,7 +2722,10 @@ def institution_from_raw(
     # swallowed HKU, CUHK and HKUST across 53 papers.
     if _groups.is_excluded(raw):
         return None
-    registered = _groups.registry_canonical(raw)
+    # The organisation leads, the address follows: "Síminn, Reykjavík,
+    # Iceland" is registered under "Síminn".
+    registered = (_groups.registry_canonical(raw)
+                  or _groups.registry_canonical(re.split(r"[,;]", raw)[0]))
     if registered:
         return registered, _groups.group_for(registered)
     if len(raw) < 5:
@@ -2706,6 +2768,30 @@ def institution_from_raw(
             segment, country_from_raw(original), allow_remote=allow_remote)
         if english:
             return canonical_institution(english), group
+    # The local ROR index answers offline, where the lookup above does not:
+    # "Universidad del País Vasco UPV/EHU" and "Malmö University" fell through
+    # to the English-only patterns below, which kept "Development Centre" from
+    # the segment before them. It runs after the lookup above has seen every
+    # segment: ROR also holds "Institut de Physique Théorique", and asked
+    # first it would have pre-empted "Université Paris-Saclay".
+    for segment in re.split(r"[,;|]", raw):
+        segment = segment.strip(" ,;:-()")
+        if (not (5 <= len(segment) <= 120)
+                or not _ORGANISATION_CUES.search(segment)
+                or not _names_something(segment)):
+            continue
+        # A trailing acronym is not part of the name ROR holds.
+        bare = re.sub(r"(?:\s+[A-Z][A-Z/&-]+)+$", "", segment)
+        record = _ror_record(segment) or (
+            _ror_record(bare) if bare != segment else None)
+        display = (record or {}).get("display", "")
+        # "IBM Research" names a company, not one of its country records;
+        # ROR's answer "IBM Research (China)" would place a US lab in China.
+        suffix = re.search(r"\(([^)]+)\)$", display)
+        if suffix and suffix.group(1).casefold() not in raw.casefold():
+            continue
+        if display:
+            return canonical_institution(display), group
 
     parts = [
         part.strip(" ,;:-") for part in re.split(r"[,;|]", raw)
@@ -4057,6 +4143,20 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
                             AFFILIATION_MATCH_FLOOR:
                         institution_by_marker[marker] = iid
                         break
+            # Each institution keeps one raw string and so claims one marker;
+            # a second department of it ("6Department of Energy Conversion
+            # and Storage, Technical University of Denmark" beside "3Department
+            # of Physics, ...") is matched by the name it resolves to.
+            linked_names = {
+                iid: name for iid, name in conn.execute(
+                    "SELECT institution_id, institution_name FROM institutions"
+                    f" WHERE institution_id IN ({','.join('?' * len(linked_institution_ids))})",
+                    linked_institution_ids)} if linked_institution_ids else {}
+            for marker, text_of_marker in affiliation_by_marker.items():
+                if marker not in institution_by_marker:
+                    iid = institution_named_by(text_of_marker, linked_names)
+                    if iid is not None:
+                        institution_by_marker[marker] = iid
             author_links = [
                 (pid, aid, institution_by_marker[marker], marker, order,
                  "pdf.byline-marker")
@@ -4570,6 +4670,13 @@ def backfill_author_institutions(db_path: Path, limit: int | None = None,
                     iid = best_institution_for(label, institutions)
                     if iid is None and "@" in label:
                         iid = institution_for_email(label, institutions)
+                    if iid is None:
+                        # The row keeps one raw string per institution, and
+                        # a second department of it does not resemble that
+                        # one: "Department of Energy Conversion and Storage,
+                        # Technical University of Denmark" against "...of
+                        # Physics, ...". The name the label resolves to does.
+                        iid = institution_named_by(label, names)
                     if iid is not None:
                         by_marker[marker] = iid
                 if wanted - set(by_marker):

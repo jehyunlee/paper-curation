@@ -229,7 +229,9 @@ def normalize(name: str) -> str:
     only the first matched.
     """
     # TeX spacing accents ("Zu¨rich") fold like the composed letter ("Zürich").
-    value = unicodedata.normalize("NFKD", strip_marker_digits(name).translate(_SPACING_ACCENTS))
+    # A dotless ı is how TeX builds í ("Paı´s"); it folds to i like í does.
+    value = unicodedata.normalize("NFKD", strip_marker_digits(name)
+                                  .translate(_SPACING_ACCENTS).replace("ı", "i"))
     value = "".join(c for c in value if not unicodedata.combining(c))
     value = _PUNCT.sub(" ", value).casefold()
     tokens = []

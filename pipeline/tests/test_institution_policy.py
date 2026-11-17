@@ -189,6 +189,17 @@ class PlaceRules(unittest.TestCase):
         self.assertEqual(self.place("KIST, Seoul 02792, Republic of Korea"),
                          ("Seoul", "South Korea"))
 
+    def test_city_matches_without_accents_in_ror_spelling(self):
+        cities = {"Iceland": {"Reykjavik"},
+                  "Spain": {"Donostia / San Sebastian"}}
+        # ASE (JPCM 2017): TeX accents, and the Spanish half of a dual name.
+        self.assertEqual(policy.explicit_place(
+            "S\u0131\u00b4minn, Reykjav\u0131\u00b4k, Iceland", COUNTRY_OF, cities),
+            ("Reykjavik", "Iceland"))
+        self.assertEqual(policy.explicit_place(
+            "Universidad del Pa\u0131\u00b4s Vasco UPV/EHU, San Sebasti\u00b4an, Spain",
+            COUNTRY_OF, cities), ("San Sebastian", "Spain"))
+
     def test_state_and_postcode_are_not_countries(self):
         self.assertEqual(self.place("Princeton University, Princeton, New Jersey"),
                          ("", ""))

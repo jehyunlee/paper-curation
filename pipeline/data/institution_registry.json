@@ -162,6 +162,30 @@
       "country": "United Kingdom",
       "note": "byline prints the short form 'Inherent'; the paper's corresponding address is faraday@inherentlaboratories.com. Not in ROR. Country from the company's own privacy policy at inherentlabs.ai/privacy: the controller is 'Inherent Laboratories Ltd', mailing address 1 Pancras Sq, London N1C 4AG, governed by UK GDPR with the ICO as supervisory authority. The homepage calls itself a Public Benefit Corporation, which is a US form, but the entity with an address is the UK Ltd.",
       "seen": 0
+    },
+    "siminn": {
+      "name": "Síminn",
+      "country": "Iceland",
+      "note": "Icelandic telecommunications company (English Wikipedia title 'Síminn'). Not in ROR. ASE paper (JPCM 2017) affiliation 15, 'Síminn, Reykjavík, Iceland'.",
+      "seen": 1
+    },
+    "netcompany": {
+      "name": "Netcompany",
+      "country": "Denmark",
+      "note": "Danish IT company (English Wikipedia title 'Netcompany'). Not in ROR.",
+      "seen": 1
+    },
+    "netcompany it business consulting a s": {
+      "name": "Netcompany",
+      "country": "Denmark",
+      "note": "The company's former full name, 'Netcompany IT and business consulting A/S'. ASE paper (JPCM 2017) affiliation 17.",
+      "seen": 1
+    },
+    "sintef material chemistry": {
+      "name": "SINTEF",
+      "country": "Norway",
+      "note": "SINTEF Materials and Chemistry was a SINTEF institute, merged into SINTEF Industry in 2019; ROR holds no record for it. Folds into SINTEF (ror 01f677e56) as a unit folds into its organisation. ASE paper (JPCM 2017) affiliation 7.",
+      "seen": 1
     }
   },
   "exclude": {

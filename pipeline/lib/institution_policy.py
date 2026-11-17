@@ -124,6 +124,8 @@ def one_line(text: str) -> str:
     ("ETH Zu¨rich" -> "ETH Zurich").
     """
     value = unicodedata.normalize("NFC", html.unescape(str(text or "")))
+    # TeX builds í from a dotless ı and an acute: "Paı´s".
+    value = re.sub(rf"ı(?= ?{_ACCENTS})", "i", value)
     value = _SPACING_ACCENT.sub("", value)
     value = _SPACE.sub(" ", value).strip()
     return _LINE_BREAK_HYPHEN.sub("", value)
@@ -435,14 +437,26 @@ def explicit_place(raw: str, country_of: Callable[[str], str],
     earlier = wikipedia_country(country_of(", ".join(parts[:-1])))
     if earlier and earlier != country:
         return "", ""
-    known = cities.get(country, set())
+    # Matched without accents, so a TeX-mangled "Reykjavık" or a plain
+    # "San Sebastian" still finds ROR's "Reykjavik" and "Donostia / San
+    # Sebastian"; the spelling kept is ROR's, or the alternative the paper used.
+    known: dict[str, str] = {}
+    for name in cities.get(country, set()):
+        known.setdefault(_fold_place(name), name)
+        for alternative in name.split(" / ")[1:] if " / " in name else ():
+            known.setdefault(_fold_place(alternative), alternative.strip())
     city = ""
     for part in reversed(parts[-3:-1]):
         candidate = _SPACE.sub(" ", _POSTAL.sub(" ", part)).strip()
-        if candidate in known:
-            city = candidate
+        if _fold_place(candidate) in known:
+            city = known[_fold_place(candidate)]
             break
     return city, country
+
+
+def _fold_place(name: str) -> str:
+    value = unicodedata.normalize("NFKD", one_line(name).replace("ı", "i"))
+    return "".join(c for c in value if not unicodedata.combining(c)).casefold()
 
 
 # --- Merging --------------------------------------------------------------
