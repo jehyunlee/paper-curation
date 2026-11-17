@@ -1252,8 +1252,26 @@ def author_affiliation_markers(raw_header: str, authors,
 
     mapping: dict[str, list[str]] = {}
     for byline in _byline_candidates(raw_header, set(surnames), trailing):
-        for token_match in re.finditer(r"[^\s,;]+", byline):
+        tokens = list(re.finditer(r"[^\s,;]+", byline))
+        for position, token_match in enumerate(tokens):
             token = token_match.group(0)
+            # A PDF can break a surname at a ligature or a special letter:
+            # "Marcin Dul ak3" is Dułak. The token and its neighbour are read
+            # as one when only together do they spell the surname.
+            if (position + 1 < len(tokens)
+                    and not surnames.get(_fold(token))
+                    and byline[token_match.end():tokens[position + 1].start()] == " "):
+                following = tokens[position + 1].group(0)
+                tail = (trailing.sub("", following) if trailing else
+                        re.sub(r"[\d†‡*∗⋆," + _MARKER_SYMBOLS + r"]+$", "", following))
+                joined = surnames.get(_fold(token + tail))
+                if joined and tail and tail[:1].islower() and joined not in mapping:
+                    run_match = run.match(byline, tokens[position + 1].start() + len(tail))
+                    if run_match:
+                        markers = _split_marker_run(run_match.group(1))
+                        if markers:
+                            mapping[joined] = markers
+                    continue
             # The marker may be glued to the surname ("Li1", "Hovy1,2"), so the
             # token is not the name. Strip the trailing marker characters and
             # read the markers from exactly where the name ends — that one
@@ -1748,7 +1766,29 @@ def looks_like_affiliation(text: str) -> bool:
         return False
     if _fold(head) in _KNOWN_ORGANISATIONS:
         return True
-    return _ror_knows(head)
+    if _ror_knows(head):
+        return True
+    # The organisation need not lead: "Nanoscale Simulations, ETH Zu¨rich,
+    # 8093 Zu¨rich" names its group first. Each of the leading parts is asked,
+    # cleaned of TeX accents, of the registry and of ROR -- "Sı´minn" and
+    # "SINTEF Materials and Chemistry" are registered, not in ROR.
+    try:
+        from .lib import affiliation_groups as _groups
+        from .lib.institution_policy import one_line
+    except ImportError:
+        from lib import affiliation_groups as _groups
+        from lib.institution_policy import one_line
+    for position, part in enumerate(re.split(r"[,;]", one_line(text))[:3]):
+        part = part.strip(" .;:")
+        if not part[:1].isupper() or not _names_something(part):
+            continue
+        # Past the lead, a single word is a place, not an organisation: a
+        # postcode split "M5S 3G4, Canada" into marker 3 and "G4, Canada".
+        if position and len(part.split()) < 2:
+            continue
+        if _groups.registry_canonical(part) or _ror_knows(part):
+            return True
+    return False
 
 
 # Academic domains whose label is neither a prefix nor the initials of the

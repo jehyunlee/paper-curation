@@ -368,6 +368,30 @@ class SecondDepartmentMarkerTests(unittest.TestCase):
             "Department of Physics, Aarhus University, Denmark", names))
 
 
+class AffiliationBlockRecognitionTests(unittest.TestCase):
+    def test_organisation_after_a_group_name(self):
+        from unittest.mock import patch
+        known = {"ETH Zurich"}
+        with patch.object(bib, "_ror_knows", lambda name: name in known):
+            self.assertTrue(bib.looks_like_affiliation(
+                "Nanoscale Simulations, ETH Zu\u00a8rich, 8093 Zu\u00a8rich, "
+                "Switzerland"))
+
+    def test_postcode_tail_is_not_an_affiliation(self):
+        from unittest.mock import patch
+        # "Toronto, ON M5S 3G4, Canada" splits on the 3 into "G4, Canada".
+        # ROR does hold an organisation called "Canada".
+        with patch.object(bib, "_ror_knows", lambda name: name == "Canada"):
+            self.assertFalse(bib.looks_like_affiliation("G4, Canada"))
+
+    def test_surname_split_by_the_pdf(self):
+        markers = bib.author_affiliation_markers(
+            "Rune Christensen6, Marcin Dul ak3, Jesper Friis7",
+            ["Rune Christensen", "Marcin Du\u0142ak", "Jesper Friis"])
+        self.assertEqual(markers["Marcin Du\u0142ak"], ["3"])
+        self.assertEqual(markers["Jesper Friis"], ["7"])
+
+
 class LongBylineTests(unittest.TestCase):
     def test_a_byline_past_600_characters_is_read(self):
         others = ", ".join(f"Author{i} Person{chr(97 + i % 26)}{i}{i % 5 + 1}"
