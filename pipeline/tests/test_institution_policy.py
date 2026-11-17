@@ -149,6 +149,17 @@ class CleaningRules(unittest.TestCase):
         self.assertEqual(policy.one_line("Electrical &amp; Computer Engineering"),
                          "Electrical & Computer Engineering")
 
+    def test_tex_spacing_accents_are_dropped(self):
+        # "ETH Zürich" as TeX-built PDFs extract it, glued or spaced.
+        for raw in ("ETH Zu\u00a8rich", "ETH Zu \u00a8rich", "ETH Zu\u00a8 rich"):
+            self.assertEqual(policy.one_line(raw), "ETH Zurich")
+        self.assertEqual(
+            policy.one_line("Ecole Polytechnique F\u00b4ed\u00b4erale de Lausanne"),
+            "Ecole Polytechnique Federale de Lausanne")
+        # Composed letters and a stray accent between words are left alone.
+        self.assertEqual(policy.one_line("ETH Zürich"), "ETH Zürich")
+        self.assertEqual(policy.one_line("A \u00a8 B"), "A \u00a8 B")
+
     def test_watermark(self):
         self.assertTrue(policy.is_access_watermark(
             "Authorized licensed use limited to: Korea Institute of Science and "

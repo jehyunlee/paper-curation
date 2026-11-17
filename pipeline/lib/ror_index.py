@@ -63,6 +63,7 @@ NAME_TYPE_RANK = {"ror_display": 0, "label": 1, "alias": 2, "acronym": 3}
 
 _PUNCT = re.compile(r"[^\w\s]", re.UNICODE)
 _SPACE = re.compile(r"\s+")
+_SPACING_ACCENTS = dict.fromkeys(map(ord, "\u00a8\u00b4\u02c6\u02dc\u00af\u02da\u02dd\u02d8\u02c7\u02d9\u00b8\u02db"), None)
 # Leading sub-unit boilerplate: the part before the comma is a department, not
 # the institution ("Department of Computer Science, ETH Zurich").
 _STOPWORDS = {
@@ -227,7 +228,8 @@ def normalize(name: str) -> str:
     held both "University of Chinese Academy of Sciences" and "…of Science", and
     only the first matched.
     """
-    value = unicodedata.normalize("NFKD", strip_marker_digits(name))
+    # TeX spacing accents ("Zu¨rich") fold like the composed letter ("Zürich").
+    value = unicodedata.normalize("NFKD", strip_marker_digits(name).translate(_SPACING_ACCENTS))
     value = "".join(c for c in value if not unicodedata.combining(c))
     value = _PUNCT.sub(" ", value).casefold()
     tokens = []

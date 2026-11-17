@@ -57,6 +57,14 @@ _LEADING_SPACED_MARKER = re.compile(r"^\d{1,2}\s+(?=[A-Z])")
 # Rule 5. A line-break hyphen inside a word: "Uni- versity", "Re- public".
 _LINE_BREAK_HYPHEN = re.compile(r"(?<=[a-z])-\s+(?=[a-z])")
 _SPACE = re.compile(r"\s+")
+# A spacing accent next to a letter: TeX-built PDFs set the diaeresis beside
+# the vowel, so "ETH Zürich" arrives as "ETH Zu¨rich" (before or after the
+# letter, depending on the font). Dropped, the name reads "ETH Zurich", which
+# is ROR's official English name and the key the umlaut form folds to anyway.
+_ACCENTS = "[\u00a8\u00b4\u02c6\u02dc\u00af\u02da\u02dd\u02d8\u02c7\u02d9\u00b8\u02db]"
+_SPACING_ACCENT = re.compile(
+    rf"(?<=[^\W\d_]) ?{_ACCENTS} ?(?=[a-zà-ÿ])"
+    rf"|(?<=[^\W\d_]){_ACCENTS}|{_ACCENTS}(?=[^\W\d_])")
 
 # Wikipedia article titles for the country names ROR and the parsers write.
 WIKIPEDIA_COUNTRY = {
@@ -112,9 +120,11 @@ def one_line(text: str) -> str:
     """Rule 5: collapse line breaks and rejoin words split by a wrap hyphen.
 
     HTML entities left by the text extractor ("Electrical &amp; Computer") are
-    decoded too.
+    decoded too, and a TeX spacing accent beside a letter is dropped
+    ("ETH Zu¨rich" -> "ETH Zurich").
     """
     value = unicodedata.normalize("NFC", html.unescape(str(text or "")))
+    value = _SPACING_ACCENT.sub("", value)
     value = _SPACE.sub(" ", value).strip()
     return _LINE_BREAK_HYPHEN.sub("", value)
 

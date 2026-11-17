@@ -46,6 +46,9 @@ class NormalizeTests(unittest.TestCase):
                          ror_index.normalize("University of Melbourne"))
         self.assertEqual(ror_index.normalize("ETH Zürich"),
                          ror_index.normalize("ETH Zurich"))
+        # TeX-built PDFs set the diaeresis beside the vowel.
+        self.assertEqual(ror_index.normalize("ETH Zu\u00a8rich"),
+                         ror_index.normalize("ETH Zurich"))
 
     def test_trailing_acronym_yields_an_extra_key(self):
         keys = ror_index.alias_keys(
