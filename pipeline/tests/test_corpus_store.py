@@ -97,6 +97,40 @@ class CorpusStoreTests(unittest.TestCase):
         self.assertEqual(result["status"], "completed", result)
         refreshed.assert_called_once()
 
+    def test_deferred_register_commits_without_views_then_one_batch_pass(self):
+        import refresh_paper_views as views
+        from lib.corpus_store import handle_request
+
+        papers = self._canonical_papers()
+        (papers / "_papers_index.json").write_text("[]", encoding="utf-8")
+        slugs = []
+        for n in (1, 2):
+            identity = {"key": f"K{n}", "title": f"Paper {n}"}
+            reservation = reserve(papers, identity)
+            self._bundle(reservation["slug"], identity)
+            with patch.object(views, "PAPERS_DIR", papers), \
+                 patch.object(views, "refresh_paper_views") as refreshed:
+                result = register(papers, reservation["slug"], reservation["token"],
+                                  {**identity, "topics": ["demo"]}, defer_views=True)
+            refreshed.assert_not_called()
+            self.assertEqual(result["views"]["status"], "deferred")
+            slugs.append(reservation["slug"])
+        self.assertEqual(len(json.loads((papers / "_papers_index.json").read_text())), 2)
+        with patch.object(views, "refresh_paper_views",
+                          return_value=self._view_report()) as refreshed:
+            result = handle_request({"schema_version": 1, "op": "refresh_views",
+                                     "papers_dir": str(papers), "slugs": slugs})
+        refreshed.assert_called_once_with(slugs=slugs, papers_dir=papers.resolve(),
+                                          previous_topics=[])
+        self.assertEqual(result["status"], "completed")
+
+    def test_refresh_views_rejects_unsafe_slugs(self):
+        from lib.corpus_store import handle_request
+        for slugs in ([], ["../escape"], "001_A"):
+            with self.subTest(slugs=slugs), self.assertRaises(CorpusStoreError):
+                handle_request({"schema_version": 1, "op": "refresh_views",
+                                "papers_dir": str(self.papers), "slugs": slugs})
+
     def test_register_view_failure_is_nonzero_cli_but_registration_and_bundle_remain(self):
         import refresh_paper_views as views
 

@@ -333,7 +333,8 @@ def _execute(feature: dict, params: dict) -> dict:
         from classify_papers import BundleError
         # The shared stage owns its writer lease for both CLI and Curio calls.
         try:
-            return refresh_connections(params["slug"])
+            return refresh_connections(params["slug"],
+                                       views=not params.get("defer_views", False))
         except BundleError as exc:
             # A stale/incomplete HDBSCAN bundle is corpus state the operator
             # must retrain (topic_modeling.py); the message carries no secrets.

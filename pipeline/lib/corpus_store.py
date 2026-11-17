@@ -410,7 +410,14 @@ def restrict_view_refresh_to_budget(papers_dir: str | Path, slug: str, token: st
             Path(temporary).unlink(missing_ok=True)
 
 
-def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any]) -> dict[str, Any]:
+def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any],
+             defer_views: bool = False) -> dict[str, Any]:
+    """Commit a reviewed paper into the corpus index, then refresh its views.
+
+    ``defer_views`` leaves the views to one later ``refresh_views`` pass over
+    a batch (Paper Curio's review queue); the registration is complete either
+    way.
+    """
     if not isinstance(entry, dict):
         raise CorpusStoreError("entry must be an object")
     from refresh_paper_views import PAPERS_DIR as canonical_papers, paper_topics, refresh_paper_views
@@ -471,6 +478,9 @@ def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any
     result: dict[str, Any] = {"slug": slug, "registered": True}
     if papers != Path(canonical_papers).expanduser().resolve():
         return result
+    if defer_views:
+        result["views"] = {"status": "deferred", "previous_topics": previous_topics}
+        return result
     # Registration is committed and its marker and writer lock are gone before
     # taking the exclusive view-builder lease. Never roll back a paid review
     # merely because an optional credential or a downstream builder is missing.
@@ -491,6 +501,26 @@ def register(papers_dir: str | Path, slug: str, token: str, entry: dict[str, Any
         result["outputs"] = [str(directory / name) for name in
                              ("text.md", "review.md", "index.html", "bibliography.json")]
         result["partial"] = {"registered": True, "published": True, "retry_safe": True,
+                             "retry_command": views["retry_command"]}
+    return result
+
+
+def refresh_views(papers_dir: str | Path, slugs: Any, previous_topics: Any = ()) -> dict[str, Any]:
+    """One view pass for papers registered with ``defer_views``."""
+    if (not isinstance(slugs, list) or not slugs
+            or any(not isinstance(slug, str) or not _is_safe_slug(slug) for slug in slugs)):
+        raise CorpusStoreError("slugs must be a non-empty list of paper slugs")
+    if not isinstance(previous_topics, list) or any(not isinstance(t, str) for t in previous_topics):
+        raise CorpusStoreError("previous_topics must be a list of topics")
+    from refresh_paper_views import refresh_paper_views
+    papers = _papers_dir(papers_dir)
+    views = refresh_paper_views(slugs=slugs, papers_dir=papers, previous_topics=previous_topics)
+    result: dict[str, Any] = {"slugs": slugs, "views": views,
+                              "status": "completed" if views["status"] in {"completed", "skipped"}
+                              else "failed"}
+    if result["status"] == "failed":
+        result["error"] = "Registrations are retained; retry view refresh only."
+        result["partial"] = {"registered": True, "retry_safe": True,
                              "retry_command": views["retry_command"]}
     return result
 
@@ -517,10 +547,13 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any]:
     if op == "reserve":
         return reserve(papers_dir, request.get("identity"), request.get("requested_slug"))
     if op == "register":
-        return register(papers_dir, request.get("slug"), request.get("token"), request.get("entry"))
+        return register(papers_dir, request.get("slug"), request.get("token"), request.get("entry"),
+                        defer_views=request.get("defer_views") is True)
     if op == "cancel":
         return cancel(papers_dir, request.get("slug"), request.get("token"))
-    raise CorpusStoreError("op must be reserve, register, or cancel")
+    if op == "refresh_views":
+        return refresh_views(papers_dir, request.get("slugs"), request.get("previous_topics", []))
+    raise CorpusStoreError("op must be reserve, register, cancel, or refresh_views")
 
 
 def main() -> int:

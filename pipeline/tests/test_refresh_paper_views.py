@@ -233,6 +233,32 @@ class RefreshPaperViewsTests(unittest.TestCase):
         self.assertEqual((orphan / "index.html").read_bytes(), before)
         self.assertIn("--all-topics", shlex.split(report["retry_command"]))
 
+    def test_batch_rebuilds_each_topic_once_and_every_paper_page(self):
+        # Curio reviews several papers, then refreshes their views in one pass.
+        second = "043_Second"
+        (self.papers / second).mkdir()
+        (self.papers / second / "review.md").write_text("# Review", encoding="utf-8")
+        (self.papers / second / "index.html").write_text("review HTML", encoding="utf-8")
+        self.entries.append({"slug": second, "topics": ["demo", "other"]})
+        self._write_index()
+        self._topic("other")
+        report = views.refresh_paper_views(slugs=[self.slug, second, self.slug],
+                                           papers_dir=self.papers)
+        self.assertEqual(report["status"], "completed", report)
+        self.assertEqual(report["slugs"], [self.slug, second])
+        self.assertEqual(sorted(step["slug"] for step in self._steps(report, "review")),
+                         sorted([self.slug, second]))
+        self.assertEqual(sorted(step["topic"] for step in self._steps(report, "search")),
+                         ["demo", "other"])
+        self.assertEqual(sorted(call.args[1] for call in self.sync.call_args_list),
+                         sorted([self.slug, second]))
+        self.assertEqual(shlex.split(report["retry_command"]).count("--slug"), 2)
+
+    def test_batch_reports_unregistered_slugs(self):
+        report = views.refresh_paper_views(slugs=[self.slug, "099_Gone"], papers_dir=self.papers)
+        self.assertEqual(report["status"], "completed", report)
+        self.assertEqual(report["unregistered"], ["099_Gone"])
+
     def test_existing_cross_view_refreshes_only_for_affected_recorded_sources(self):
         cross = self._topic("_cross", network=True)
         meta = cross / "_cross_meta.json"
@@ -382,8 +408,14 @@ class RefreshPaperViewsTests(unittest.TestCase):
             code = views.main(["--all-topics", "--papers-dir", str(self.papers), "--dry-run", "--timeout", "30"])
         self.assertEqual(code, 1)
         self.assertEqual(json.loads(stdout.getvalue()), failure)
-        refresh.assert_called_once_with(None, papers_dir=str(self.papers), previous_topics=[],
+        refresh.assert_called_once_with(slugs=(), papers_dir=str(self.papers), previous_topics=[],
                                         all_topics=True, dry_run=True, timeout=30.0)
+
+    def test_cli_takes_several_slugs_for_one_pass(self):
+        with patch.object(views, "refresh_paper_views", return_value={"status": "completed"}) as refresh, \
+             contextlib.redirect_stdout(io.StringIO()):
+            views.main(["--slug", "042_A", "--slug", "043_B"])
+        self.assertEqual(refresh.call_args.kwargs["slugs"], ["042_A", "043_B"])
 
 
 class ReviewMetadataSyncTests(unittest.TestCase):

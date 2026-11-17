@@ -411,12 +411,19 @@ def _refresh_connections_locked(slug: str) -> dict:
             "unclassified_topics": unclassified_topics, "plan": plan}
 
 
-def refresh_connections(slug: str) -> dict:
-    """Refresh connections, then their published views after releasing the lease."""
+def refresh_connections(slug: str, *, views: bool = True) -> dict:
+    """Refresh connections, then their published views after releasing the lease.
+
+    ``views=False`` publishes the connections and the affected paper pages and
+    leaves the topic views to the caller's one batch pass (Curio's queue).
+    """
     from lib.corpus_store import corpus_operation_lock
     with corpus_operation_lock(PAPERS_DIR, exclusive=True):
         result = _refresh_connections_locked(slug)
     if result.get("status") != "completed":
+        return result
+    if not views:
+        result["views"] = {"status": "deferred"}
         return result
     from refresh_paper_views import PAPERS_DIR as canonical_papers, refresh_paper_views
     if Path(PAPERS_DIR).resolve() != Path(canonical_papers).resolve():

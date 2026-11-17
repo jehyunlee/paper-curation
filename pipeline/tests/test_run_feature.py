@@ -152,7 +152,7 @@ class FeatureRunnerTests(unittest.TestCase):
         self.assertEqual(result["model"], "claude-sonnet-5")
         self.assertEqual(result["cost"], {"status": "unknown", "cost_class": "paid"})
         credential.assert_called_once_with("anthropic", "credential:anthropic")
-        execute.assert_called_once_with(self.paper.name)
+        execute.assert_called_once_with(self.paper.name, views=True)
         child.assert_not_called()
 
     def test_related_invalid_paths_and_unsupported_controls_block_before_planning(self):
@@ -222,6 +222,8 @@ class FeatureRunnerTests(unittest.TestCase):
         self.assertEqual(by_id["review"]["group"], "M1")
         self.assertEqual(by_id["related-papers"]["params_schema"]["properties"], {
             "slug": {"type": "string", "minLength": 1},
+            "defer_views": {"type": "boolean", "description": "publish connections and paper pages "
+                            "only; topic views follow in one batch refresh"},
         })
         self.assertEqual(by_id["related-papers"]["supported_providers"], ["anthropic"])
         self.assertEqual(by_id["related-papers"]["required_capabilities"], ["text.structured"])

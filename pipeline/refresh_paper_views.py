@@ -156,9 +156,12 @@ def _run_builder(command: list[str], *, timeout: float) -> dict[str, Any]:
     return result
 
 
-def _retry_command(slug: str | None, papers: Path, previous_topics: list[str], all_topics: bool) -> str:
+def _retry_command(slugs: list[str], papers: Path, previous_topics: list[str], all_topics: bool) -> str:
     command = [sys.executable, str(PIPELINE_DIR / "refresh_paper_views.py")]
-    command += ["--all-topics"] if all_topics else ["--slug", str(slug)]
+    if all_topics:
+        command += ["--all-topics"]
+    for slug in slugs:
+        command += ["--slug", str(slug)]
     command += ["--papers-dir", str(papers)]
     for topic in previous_topics:
         command += ["--previous-topic", topic]
@@ -205,28 +208,67 @@ def _network_step(topic: str, directory: Path) -> dict[str, Any]:
             "outputs": [str(directory / "network.html")]}
 
 
-def _refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | None = None,
+def _targets(slug: str | None, slugs) -> list[str]:
+    targets = ([slug] if slug else []) + list(slugs or ())
+    return list(dict.fromkeys(targets))
+
+
+def _paper_steps(papers: Path, slug: str, index_path: Path) -> list[dict[str, Any]]:
+    """One registered paper's own outputs: index metadata, page and DB rows."""
+    directory = papers / slug
+    render = (
+        "import sys; sys.path.insert(0, sys.argv[1]); "
+        "from review_to_html import _run_review_to_html; "
+        "result = _run_review_to_html(slug=sys.argv[2]); "
+        "sys.exit(0 if result == {'converted': 1, 'skipped': 0} else 1)"
+    )
+    # Review generation writes the paper's authors and institutions (name,
+    # parent, city, country under the naming rules) into the bibliography DB
+    # of the corpus it was registered in.
+    database = papers.parent.parent / ".cache" / "bibliography.sqlite3"
+    return [
+        {"topic": "papers", "builder": "metadata", "slug": slug, "status": "planned",
+         "outputs": [str(index_path)]},
+        {"topic": "papers", "builder": "review", "slug": slug, "status": "planned",
+         "command": [sys.executable, "-c", render, str(PIPELINE_DIR), slug],
+         "outputs": [str(directory / "index.html")]},
+        {"topic": "papers", "builder": "bibliography", "slug": slug, "status": "planned",
+         "command": [sys.executable, str(PIPELINE_DIR / "build_bibliography_db.py"),
+                     "--review", slug, "--offline", "--no-email", "--output", str(database)],
+         "outputs": [str(database)]},
+    ]
+
+
+def _refresh_paper_views(slug: str | None = None, *, slugs=(), papers_dir: str | Path | None = None,
                          previous_topics=(), all_topics: bool = False, dry_run: bool = False,
                          timeout: float = 900.0, allow_paid: bool = True) -> dict[str, Any]:
-    """Plan and build from a single snapshot under the caller's operation lease."""
+    """Plan and build from a single snapshot under the caller's operation lease.
+
+    Several slugs share one pass: each paper's own steps run per paper, and
+    every topic they touch is rebuilt once. Paper Curio reviews a batch and
+    refreshes its views here once, instead of rebuilding a 2,700-paper topic
+    after every paper.
+    """
     papers = Path(papers_dir if papers_dir is not None else PAPERS_DIR).expanduser().resolve()
     previous = sorted(set(previous_topics))
+    targets = _targets(slug, slugs)
     report: dict[str, Any] = {"schema_version": 1, "status": "planned" if dry_run else "completed",
-                              "slug": slug, "topics": [], "steps": [], "errors": [],
-                              "retry_command": _retry_command(slug, papers, previous, all_topics)}
+                              "slug": targets[0] if len(targets) == 1 else None, "slugs": targets,
+                              "topics": [], "steps": [], "errors": [],
+                              "retry_command": _retry_command(targets, papers, previous, all_topics)}
     if papers != Path(PAPERS_DIR).expanduser().resolve():
         report.update(status="skipped", reason="standalone output outside the canonical corpus")
         return report
     try:
         if not math.isfinite(timeout) or timeout <= 0 or timeout > 3600:
             raise ValueError("timeout must be between 0 and 3600 seconds")
-        if all_topics == bool(slug):
-            raise ValueError("choose either a registered slug or all_topics")
-        if not all_topics:
-            from lib.corpus_store import _is_safe_slug
-            if not _is_safe_slug(slug):
+        if all_topics == bool(targets):
+            raise ValueError("choose registered slugs or all_topics")
+        from lib.corpus_store import _is_safe_slug
+        for target in targets:
+            if not _is_safe_slug(target):
                 raise ValueError("invalid paper slug")
-            directory = papers / slug
+            directory = papers / target
             if directory.is_symlink() or directory.resolve().parent != papers:
                 raise ValueError("paper directory escapes the canonical corpus")
             if (directory / ".corpus-reservation.json").exists():
@@ -241,43 +283,27 @@ def _refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | No
             configured = config.get("zotero", {}).get("collections", {})
             topics = set(configured) | {topic for entry in index for topic in paper_topics(entry)}
         else:
-            matches = [entry for entry in index if entry.get("slug") == slug]
-            if not matches:
+            topics = set(previous)
+            registered = []
+            for target in targets:
+                matches = [entry for entry in index if entry.get("slug") == target]
+                if not matches:
+                    report.setdefault("unregistered", []).append(target)
+                    continue
+                if len(matches) != 1:
+                    raise ValueError("paper slug is registered more than once")
+                paper_topic_set = set(paper_topics(matches[0]))
+                if not paper_topic_set:
+                    raise ValueError("registered paper has no topics")
+                if not (papers / target / "review.md").is_file():
+                    raise ValueError("registered paper review is missing")
+                topics |= paper_topic_set
+                registered.append(target)
+            if not registered:
                 report.update(status="skipped", reason="paper is not registered in the canonical corpus")
                 return report
-            if len(matches) != 1:
-                raise ValueError("paper slug is registered more than once")
-            topics = set(paper_topics(matches[0])) | set(previous)
-            if not topics:
-                raise ValueError("registered paper has no topics")
-            if not (directory / "review.md").is_file():
-                raise ValueError("registered paper review is missing")
-            report["steps"].append({
-                "topic": "papers", "builder": "metadata", "status": "planned",
-                "outputs": [str(index_path)],
-            })
-            render = (
-                "import sys; sys.path.insert(0, sys.argv[1]); "
-                "from review_to_html import _run_review_to_html; "
-                "result = _run_review_to_html(slug=sys.argv[2]); "
-                "sys.exit(0 if result == {'converted': 1, 'skipped': 0} else 1)"
-            )
-            report["steps"].append({
-                "topic": "papers", "builder": "review", "status": "planned",
-                "command": [sys.executable, "-c", render, str(PIPELINE_DIR), slug],
-                "outputs": [str(directory / "index.html")],
-            })
-            # Review generation writes the paper's authors and institutions
-            # (name, parent, city, country under the naming rules) into the
-            # bibliography DB of the corpus it was registered in.
-            database = papers.parent.parent / ".cache" / "bibliography.sqlite3"
-            report["steps"].append({
-                "topic": "papers", "builder": "bibliography", "status": "planned",
-                "command": [sys.executable, str(PIPELINE_DIR / "build_bibliography_db.py"),
-                            "--review", slug, "--offline", "--no-email",
-                            "--output", str(database)],
-                "outputs": [str(database)],
-            })
+            for target in registered:
+                report["steps"] += _paper_steps(papers, target, index_path)
         topics.discard("_cross")
         report["topics"] = sorted(topics)
         for topic in report["topics"]:
@@ -326,7 +352,7 @@ def _refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | No
     return report
 
 
-def refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | None = None,
+def refresh_paper_views(slug: str | None = None, *, slugs=(), papers_dir: str | Path | None = None,
                         previous_topics=(), all_topics: bool = False, dry_run: bool = False,
                         timeout: float = 900.0, allow_paid: bool = True) -> dict[str, Any]:
     """Refresh a registered paper's views, or all topics when explicit.
@@ -337,20 +363,22 @@ def refresh_paper_views(slug: str | None = None, *, papers_dir: str | Path | Non
     while reading membership/settings as well as publishing their derived views.
     """
     papers = Path(papers_dir if papers_dir is not None else PAPERS_DIR).expanduser().resolve()
-    arguments = {"papers_dir": papers, "previous_topics": previous_topics,
+    targets = _targets(slug, slugs)
+    arguments = {"slugs": targets, "papers_dir": papers, "previous_topics": previous_topics,
                  "all_topics": all_topics, "dry_run": dry_run,
                  "timeout": timeout, "allow_paid": allow_paid}
     if dry_run or papers != Path(PAPERS_DIR).expanduser().resolve():
-        return _refresh_paper_views(slug, **arguments)
+        return _refresh_paper_views(**arguments)
     from lib.corpus_store import _is_safe_slug, corpus_operation_lock
-    if not all_topics and _is_safe_slug(slug) and (papers / slug / ".corpus-reservation.json").exists():
-        return _refresh_paper_views(slug, **arguments)
+    if not all_topics and any(_is_safe_slug(target) and (papers / target / ".corpus-reservation.json").exists()
+                              for target in targets):
+        return _refresh_paper_views(**arguments)
     try:
         with corpus_operation_lock(papers, exclusive=True, timeout=5.0):
-            return _refresh_paper_views(slug, **arguments)
+            return _refresh_paper_views(**arguments)
     except Exception as exc:
         arguments["dry_run"] = True
-        report = _refresh_paper_views(slug, **arguments)
+        report = _refresh_paper_views(**arguments)
         report["status"] = "failed"
         report["errors"].append(_safe_output(f"{type(exc).__name__}: {exc}"))
         return report
@@ -384,7 +412,7 @@ def _execute_steps(report: dict[str, Any], papers: Path, *, timeout: float, allo
             if any(Path(path).is_symlink() for path in step.get("outputs", [])):
                 raise ValueError("refusing to overwrite a symlinked view output")
             if step["builder"] == "metadata":
-                _sync_review_metadata(papers, report["slug"])
+                _sync_review_metadata(papers, step["slug"])
                 step["status"] = "completed"
                 continue
             if step["builder"] == "search" and step["settings"]["mode"] == "hybrid" and not allow_paid:
@@ -417,14 +445,14 @@ def _execute_steps(report: dict[str, Any], papers: Path, *, timeout: float, allo
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     scope = parser.add_mutually_exclusive_group(required=True)
-    scope.add_argument("--slug")
+    scope.add_argument("--slug", action="append", help="registered paper (repeatable: one pass for all)")
     scope.add_argument("--all-topics", action="store_true")
     parser.add_argument("--papers-dir")
     parser.add_argument("--previous-topic", action="append", default=[])
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--timeout", type=float, default=900.0)
     args = parser.parse_args(argv)
-    result = refresh_paper_views(args.slug, papers_dir=args.papers_dir,
+    result = refresh_paper_views(slugs=args.slug or (), papers_dir=args.papers_dir,
                                  previous_topics=args.previous_topic, all_topics=args.all_topics,
                                  dry_run=args.dry_run, timeout=args.timeout)
     print(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
