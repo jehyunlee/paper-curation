@@ -4076,7 +4076,9 @@ def _build_unlocked(entries: list[dict], db_path: Path, update_zotero: bool = Fa
             # that read the text and found no affiliation has re-derived them
             # as nothing. Keeping them kept a dropped title fragment ("Seize
             # the Meta-Moment" -> Meta) after the extractor learned better.
-            if (pdf_text or text or "").strip():
+            if (pdf_text or "").strip() or (
+                    text.exists() and text.read_text(
+                        encoding="utf-8", errors="replace").strip()):
                 produced_sources.add("pdf")
             if produced_sources:
                 marks = ",".join("?" * len(produced_sources))

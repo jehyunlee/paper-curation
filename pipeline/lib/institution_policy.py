@@ -1180,10 +1180,12 @@ def apply(conn: sqlite3.Connection, country_of: Callable[[str], str],
         result["lookup_links_unconfirmed"] = _verify_lookup_links(
             conn, index, paper_text, rules)
         result["redundant_umbrella_links"] = _drop_redundant_umbrellas(conn)
+        # Aliases first: their foreign key does not cascade, so an orphan
+        # institution that still has an alias cannot be deleted.
+        conn.execute("DELETE FROM institution_aliases WHERE institution_id NOT IN "
+                     "(SELECT institution_id FROM paper_institutions)")
         conn.execute("DELETE FROM institutions WHERE institution_id NOT IN "
                      "(SELECT institution_id FROM paper_institutions)")
-        conn.execute("DELETE FROM institution_aliases WHERE institution_id NOT IN "
-                     "(SELECT institution_id FROM institutions)")
         result["wikipedia_unrefreshed"] = len(names.unrefreshed)
         return result
     finally:

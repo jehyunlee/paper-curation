@@ -298,6 +298,23 @@ class ApplyPass(unittest.TestCase):
                             texts.get, index=FakeIndex(ORGS), titles=TITLES,
                             corrections=list(corrections))
 
+    def test_unlinked_institution_with_an_alias_is_removed(self):
+        # The build runs with foreign keys on, and institution_aliases does
+        # not cascade: deleting the institution first failed the build.
+        conn = _db()
+        conn.execute("PRAGMA foreign_keys = ON")
+        _paper(conn, 1)
+        _inst(conn, 10, "University of Barcelona", "r:ub")
+        _inst(conn, 11, "Orphan Institute")
+        _link(conn, 1, 10, "University of Barcelona")
+        conn.execute("INSERT INTO institution_aliases (raw_name, normalized_alias,"
+                     " institution_id) VALUES ('Orphan Institute', 'orphan institute', 11)")
+        self.run_policy(conn)
+        self.assertEqual(conn.execute("SELECT institution_id FROM institutions"
+                                      ).fetchall(), [(10,)])
+        self.assertEqual(conn.execute("SELECT COUNT(*) FROM institution_aliases"
+                                      " WHERE institution_id=11").fetchone(), (0,))
+
     def test_lookup_link_needs_the_paper_to_name_the_institution(self):
         conn = _db()
         for pid in (1, 2, 3):
