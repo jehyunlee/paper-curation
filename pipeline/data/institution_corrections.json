@@ -193,6 +193,9 @@
    "reason": "The byline reads 'Computer Science Division, University of California, Berkeley, CA 94720'."},
   {"id": "independent-researcher", "action": "drop",
    "match": {"institution": "Independent Researcher"},
-   "reason": "Independent Researcher states the absence of an institution."}
+   "reason": "Independent Researcher states the absence of an institution."},
+  {"id": "trustworthy-roadmap-10908-section-heading", "action": "drop",
+   "match": {"raw_contains": "Trust, verification, and reproducibility", "paper": "10908_"},
+   "reason": "ORNL/TM-2026/4663 lists its contributors without affiliations; this is the section heading 'Trust, Verification, and Reproducibility', matched to Newark Trust for Education."}
  ]
 }
