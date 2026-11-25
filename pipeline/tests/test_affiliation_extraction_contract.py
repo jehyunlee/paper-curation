@@ -235,6 +235,33 @@ class PdfBibliographyIssueTests(unittest.TestCase):
         self.assertEqual(bib.pdf_bibliography("Issue S1, 2024")["issue"], "S1")
 
 
+class PdfBibliographyDoiTests(unittest.TestCase):
+    """A DOI in the reference list is the cited work's, not the paper's."""
+
+    def test_cited_doi_after_reference_heading_is_ignored(self):
+        # arXiv:2609.03621 shipped the DOI of its reference 1 (Burger 2020).
+        text = ("A computable representation of the physical laboratory\n"
+                "Abstract text.\n"
+                "#### References\n"
+                "- 1. Burger, B. et al. Nature 583, 237-241 (2020). "
+                "https://doi.org/10.1038/s41586-020-2442-2\n")
+        self.assertNotIn("doi", bib.pdf_bibliography(text))
+        plain = text.replace("#### References", "References")
+        self.assertNotIn("doi", bib.pdf_bibliography(plain))
+
+    def test_front_matter_doi_still_matches(self):
+        text = ("Nature Synthesis https://doi.org/10.1038/s44160-026-01053-0\n"
+                "Abstract.\nReferences\n1. Other work. doi:10.1000/xyz123\n")
+        self.assertEqual(bib.pdf_bibliography(text)["doi"],
+                         "10.1038/s44160-026-01053-0")
+
+    def test_reference_word_in_prose_does_not_cut(self):
+        text = ("We follow the references cited in prior work.\n"
+                "DOI: 10.1021/jacs.4c17738\n")
+        self.assertEqual(bib.pdf_bibliography(text)["doi"],
+                         "10.1021/jacs.4c17738")
+
+
 # Verbatim from the LC Agent PDF (Anal. Chem. 2026, 98, 18151−18163). The
 # separator is U+2212 MINUS SIGN and the heading carries a leading "■".
 ACS_AUTHOR_INFORMATION = (

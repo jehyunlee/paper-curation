@@ -167,6 +167,16 @@ class CleaningRules(unittest.TestCase):
         self.assertFalse(policy.is_access_watermark(
             "Korea Institute of Science and Technology (KIST), Seoul"))
 
+    def test_report_disclaimer_is_not_an_affiliation(self):
+        self.assertTrue(policy.is_access_watermark(
+            "Disclaimer. This report describes products of research sponsored "
+            "by the U.S. Department of Energy, Office of Science, Office"))
+        self.assertTrue(policy.is_access_watermark(
+            "This report was prepared as an account of work sponsored by an "
+            "agency of the United States Government"))
+        self.assertFalse(policy.is_access_watermark(
+            "Office of Science, U.S. Department of Energy, Washington, DC"))
+
 
 class PlaceRules(unittest.TestCase):
     cities = {"United States": {"Stanford", "Atlanta"}, "South Korea": {"Seoul"}}

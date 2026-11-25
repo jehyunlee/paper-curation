@@ -42,12 +42,19 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 WIKIPEDIA_TITLES_PATH = DATA_DIR / "institution_wikipedia_titles.json"
 CORRECTIONS_PATH = DATA_DIR / "institution_corrections.json"
 
-# Rule 4. Publisher download stamps printed on every page of a licensed PDF.
+# Rule 4. Page boilerplate that is not an affiliation: publisher download
+# stamps printed on every page of a licensed PDF, and the sponsor disclaimer of
+# a government technical report. ORNL/TM-2026/4663 opens with "Disclaimer. This
+# report describes products of research sponsored by the U.S. Department of
+# Energy, Office of Science", which was linked to DOE Office of Science and
+# became the sole affiliation of every author, Germany's HZDR included.
 WATERMARK = re.compile(
     r"(?i)authori[sz]ed licensed use limited to"
     r"|\bdownloaded (?:on|from)\b"
     r"|\bpersonal use is permitted\b"
-    r"|\brestrictions apply\b")
+    r"|\brestrictions apply\b"
+    r"|^\W*disclaimer\b"
+    r"|\bthis report (?:describes|was prepared)\b")
 
 # Rule 3. A footnote marker welded to the following word: "3Stanford",
 # "26University". Two letters must follow so "3M" keeps its digit.

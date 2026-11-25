@@ -3381,6 +3381,11 @@ def _human_date(value: str) -> str:
     return f"{match.group(3)}-{_MONTHS[match.group(2).lower()]}-{int(match.group(1)):02d}"
 
 
+_REFERENCE_HEADING = re.compile(
+    r"(?im)^[\s#*\d.]*(?:references|bibliography|literature cited|works cited)"
+    r"[\s*:]*$")
+
+
 def pdf_bibliography(pdf_text: str) -> dict:
     """Extract publisher-facing metadata from the PDF's front/back matter."""
     result = {}
@@ -3396,7 +3401,12 @@ def pdf_bibliography(pdf_text: str) -> dict:
         if match:
             result[field] = _human_date(match.group(1))
 
-    doi_match = re.search(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", pdf_text, re.I)
+    # The window holds the leading pages, and a short paper's reference list
+    # starts on them: two arXiv preprints (2609.03621, 2611.11690) were stored
+    # under 10.1038/s41586-020-2442-2, the DOI of their first citation. A DOI
+    # printed after the reference heading belongs to a cited work.
+    front = _REFERENCE_HEADING.split(pdf_text, maxsplit=1)[0]
+    doi_match = re.search(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", front, re.I)
     if doi_match:
         result["doi"] = clean_doi(doi_match.group(0))
 
